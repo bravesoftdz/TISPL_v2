@@ -51,14 +51,14 @@ int Cvykresli::CorEy(Cvektory::TObjekt *O)
 TPointD Cvykresli::Rxy(Cvektory::TElement *Element)
 {
 	TPointD RET; RET.x=Element->X; RET.y=Element->Y;
-	if(1<=Element->eID && Element->eID<=4)//ovlivní pouze roboty
+	if(1<=Element->eID && Element->eID<=4 || 7<=Element->eID && Element->eID<=18 || 101<=Element->eID && Element->eID<=108)//ovlivní pouze roboty
 	{
 		switch(Element->rotace_symbolu)
 		{
 			case 0:		RET.y=Element->Y+DoSkRB;break;
 			case 90:	RET.x=Element->X+DoSkRB;break;
 			case 180:	RET.y=Element->Y-DoSkRB;break;
-			case 270:	RET.y=Element->X-DoSkRB;break;
+			case 270:	RET.x=Element->X-DoSkRB;break;
 		}
 	}
 	return RET;
@@ -215,7 +215,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 			while(E!=NULL)
 			{
 				 vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,E->stav,E->LO1,E->OTOC_delka,E->LO2);
-         E->citelna_oblast.rect3=aktOblast;//uložení citelné oblasti pro další použití
+				 E->citelna_oblast.rect3=aktOblast;//uložení citelné oblasti pro další použití
 				 //vykreslení kót
 				 if(F->pom_temp->zobrazit_koty)vykresli_kotu(canv,E->predchozi,E);//mezi elementy
 				 E=E->dalsi;//posun na další element
@@ -2964,9 +2964,11 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 			else
 			{
 				rotace_textu(canv,-rotace*10);
-				if(rotace==90){x=m.round(X+h/2.0);y=m.round(Y-w/2.0);}
-				if(rotace==270){x=m.round(X-h/2.0);y=m.round(Y+w/2.0);}
+				if(rotace==90){x=m.round(X-h/2.0);y=m.round(Y-w/2.0);}
+				if(rotace==270){x=m.round(X-h/2.0);y=m.round(Y-w/2.0);}
 				aktOblast=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+h)/zAA),m.round((y+w)/zAA));//souřadnice pro citelnou oblast
+				if(rotace==90){x=m.round(X+h/2.0);y=m.round(Y-w/2.0);}//souřadnice vykreslení textu a souřadnice citelné oblasti nejsou totožné, nutné znova určit
+				if(rotace==270){x=m.round(X-h/2.0);y=m.round(Y+w/2.0);}
 			}
 			canv->TextOutW(x,y,name);//samotný vypis
 		}
@@ -3205,9 +3207,10 @@ void Cvykresli::vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiStr
 		}
 		else//ikona v knihovně elementů je text pod elementem
 		{
+			int odsazeni=55;//odsazení z důvodu správného zobrazení v knihovně
 			canv->Font->Size=F->m.round(sizeP*Z);if(F->aFont->Size==12)canv->Font->Size=F->m.round(3*Z);
-			canv->TextOutW(X-canv->TextWidth(name)/2,m.round(Y+vzdalenost+polomer),name); //1 pouze korekce
-			canv->TextOutW(X-canv->TextWidth(short_name)/2,m.round(Y+vzdalenost+polomer+1*Z+canv->TextHeight(name)),short_name);
+			canv->TextOutW(X-canv->TextWidth(name)/2,m.round(Y+vzdalenost+polomer-odsazeni),name); //1 pouze korekce
+			canv->TextOutW(X-canv->TextWidth(short_name)/2,m.round(Y+vzdalenost+polomer+1*Z+canv->TextHeight(name)-odsazeni),short_name);
 		}
 	}
 }
@@ -3465,32 +3468,32 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			Cvektory::TElement *E=F->pom_temp->elementy->dalsi;//přeskočí rovnou hlavičku
 			while(E!=NULL)
 			{
-				if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
-				{
-					E->mGrid->Redraw=false;
-					E->mGrid->SetVisibleComponents(false);
-					E->mGrid->Left=m.L2Px(E->Xt);//kvůli případnému přesouvání tabulky
-					E->mGrid->Top=m.L2Py(E->Yt);//kvůli případnému přesouvání tabulky
-					E->mGrid->Show(canv);    //F->Memo(0);
-				}
-				else
-				{     //F->Memo(1);
-					if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
-					{
-						E->mGrid->Redraw=true;
-						//E->mGrid->Buffer(false);
-						E->mGrid->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování
-						//možná zde ještě update pokud byla komponenta skyta
-						E->mGrid->VisibleComponents=true;//stačí volat toto, protože se pomocí Show cyklem všechny komponenty
-						E->mGrid->Left=m.L2Px(E->Xt);
-						E->mGrid->Top=m.L2Py(E->Yt);
-						E->mGrid->Show(canv);
+			  	if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
+			  	{
+			  		E->mGrid->Redraw=false;
+			  		E->mGrid->SetVisibleComponents(false);
+			  		E->mGrid->Left=m.L2Px(E->Xt);//kvůli případnému přesouvání tabulky
+			  		E->mGrid->Top=m.L2Py(E->Yt);//kvůli případnému přesouvání tabulky
+			  		E->mGrid->Show(canv);    //F->Memo(0);
+			  	}
+			  	else
+			  	{     //F->Memo(1);
+			  		if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
+			  		{
+			  			E->mGrid->Redraw=true;
+			  			//E->mGrid->Buffer(false);
+			  			E->mGrid->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování
+			  			//možná zde ještě update pokud byla komponenta skyta
+			  			E->mGrid->VisibleComponents=true;//stačí volat toto, protože se pomocí Show cyklem všechny komponenty
+			  			E->mGrid->Left=m.L2Px(E->Xt);
+							E->mGrid->Top=m.L2Py(E->Yt);
+			  			E->mGrid->Show(canv);
+			  		}
+			  		else//pokud ne, je třeba skrýt komponenty
+			  		{
+			  			E->mGrid->SetVisibleComponents(false);
+			  		}
 					}
-					else//pokud ne, je třeba skrýt komponenty
-					{
-						E->mGrid->SetVisibleComponents(false);
-					}
-				}
 				E=E->dalsi;
 			}
 			E=NULL;delete E;
@@ -3577,9 +3580,34 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 //	vykresli_kotu(canv,Element_od->X,Element_od->Y-C1,Element_do->X,Element_do->Y-C2,Element_do,O-C2,highlight);//mezi elementy
 
 	//pouze pro rychlé zobrazení - provizorní řešení pro levopravou vodorovnou kabinu
-	if(Element_od->n==0) vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do->X,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do,O,highlight);//od kabiny k prvnímu elementu + dodělat
-	else vykresli_kotu(canv,Element_od->X,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do->X,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do,O,highlight);//mezi elementy
-
+	double x1,y1,x2,y2;
+	if(Element_do->rotace_symbolu==0||Element_do->rotace_symbolu==180)//vodorovná kabina
+		{if(Element_od->n==0)x1=F->pom_temp->Xk;else x1=Element_od->X;y1=F->pom_temp->elementy->Y;x2=Element_do->X;y2=y1;}
+	else
+		{if(Element_od->n==0)y1=F->pom_temp->Yk;else y1=Element_od->Y;x1=F->pom_temp->elementy->X;y2=Element_do->Y;x2=x1;}
+	vykresli_kotu(canv,x1,y1,x2,y2,Element_do,O,highlight);
+	if(Element_od->n!=0&&Element_do->n>1)//pokud jsou minimálně 2 elementy vložené
+	{
+		bool test1=false,test2=false;
+		double x1,x2,y1,y2;
+		switch(Element_od->eID)
+		{case 1:case 7:case 11:case 15:case 101:case 105:case 3:case 9:case 13:case 17:case 103:case 107:test1=true;break;}
+		switch(Element_do->eID)
+		{case 1:case 7:case 11:case 15:case 101:case 105:case 3:case 9:case 13:case 17:case 103:case 107:test2=true;break;}
+		if(Element_do->rotace_symbolu==0||Element_do->rotace_symbolu==180)
+		{
+			if(Element_od->LO2>0)x1=Element_od->X+Element_od->LO2+Element_od->OTOC_delka/2.0;else x1=Element_od->X+Element_od->LO1/2.0;
+			if(Element_do->LO2>0)x2=Element_do->X-Element_do->LO1-Element_do->OTOC_delka/2.0;else x2=Element_do->X-Element_do->LO1/2.0;
+			y1=F->pom_temp->elementy->Y;y2=y1;
+		}
+		else
+    {
+			if(Element_od->LO2>0)y1=Element_od->Y-Element_od->LO2-Element_od->OTOC_delka/2.0;else y1=Element_od->Y-Element_od->LO1/2.0;
+			if(Element_do->LO2>0)y2=Element_do->Y+Element_do->LO1+Element_do->OTOC_delka/2.0;else y2=Element_do->Y+Element_do->LO1/2.0;
+			x1=F->pom_temp->elementy->X;x2=x1;
+		}
+		if(test1&&test2)vykresli_kotu(canv,x1,y1,x2,y2,NULL,1,highlight);
+	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //v metrických jednotkách kromě width, zde v px + automaticky dopočítává délku a dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně, aktElement pokud bude NULL, předpokládá se, že je to kóta kabiny
@@ -3676,13 +3704,13 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	else canv->Font->Style = TFontStyles();//vypnutí tučného písma
 	SetBkMode(canv->Handle,OPAQUE);//nastvení netransparentního pozadí
 	canv->Brush->Color=clWhite;
-	AnsiString Jednotky=" [m]";if(F->DKunit==1)Jednotky=" [mm]";if(F->DKunit==2)Jednotky=" [s]";if(F->DKunit==3)Jednotky=" [min]";
-	long X=(X1+X2)/2-canv->TextWidth(Text)/2;if(Y1==Y2)X=(X1+X2)/2-canv->TextWidth(Text+Jednotky)/2;//pro vodorovnou kótu zarovnání jinak
-	long Y=(Y1+Y2)/2-canv->TextHeight(Jednotky)/2; //pozn. záměrně je zde TextHeight(Jednotky) z důvodu, že při smazání hodnoty by byl text prázdný a následně by to špatně pozicovalo jednotky
+//	AnsiString Jednotky=" [m]";if(F->DKunit==1)Jednotky=" [mm]";if(F->DKunit==2)Jednotky=" [s]";if(F->DKunit==3)Jednotky=" [min]";
+	long X=(X1+X2)/2-canv->TextWidth(Text)/2;if(Y1==Y2)X=(X1+X2)/2-canv->TextWidth(Text/*+Jednotky*/)/2;//pro vodorovnou kótu zarovnání jinak
+	long Y=(Y1+Y2)/2-canv->TextHeight(/*Jednotky*/Text/*nahrazeno*/)/2; //pozn. záměrně je zde TextHeight(Jednotky) z důvodu, že při smazání hodnoty by byl text prázdný a následně by to špatně pozicovalo jednotky
 	canv->TextOutW(X,Y,Text);//číselná hodnota kóty
 	canv->Font->Color=(TColor)RGB(43,87,154);
 	if(F->JID==-10)canv->Font->Style = TFontStyles()<< fsBold;else canv->Font->Style = TFontStyles();//pokud se editují jednotky, jinak (ani při highlightu se neztučňují)
-	canv->TextOutW(X+canv->TextWidth(Text),Y,Jednotky);//jednotky
+//	canv->TextOutW(X+canv->TextWidth(Text),Y,Jednotky);//jednotky
 
 	////navrácení citelné oblasti popisku a jednotek kóty pro další použití a šetření strojového času
 	if(F->MOD==F->NAHLED && F->pom_temp!=NULL)//pouze pokud se jedná o náhled a existuje ukazatel na pom_temp (což by mělo být při náhledu sice vždy...)
@@ -3693,9 +3721,9 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 		if(Y1==Y2)R0=TRect(m.round(X1/AA),m.round((Y1-Presah)/AA),m.round(X2/AA),m.round((Y2+Presah)/AA));//pro vodorovnou kótu
 		else R0=TRect(m.round((X1-Presah)/AA),m.round(Y1/AA),m.round((X2+Presah)/AA),m.round(Y2/AA));//pro svislou kótu
 		//oblast hodnota
-		R.rect1=TRect(m.round(X/AA),m.round(Y/AA),m.round((X+canv->TextWidth(Text))/AA),m.round((Y+canv->TextHeight(Jednotky))/AA));//pozn. záměrně je zde TextHeight(Jednotky) z důvodu, že při smazání hodnoty by byl text prázdný a následně by to špatně pozicovalo jednotky
+		R.rect1=TRect(m.round(X/AA),m.round(Y/AA),m.round((X+canv->TextWidth(Text))/AA),m.round((Y+canv->TextHeight(/*Jednotky*/Text/*nahrazeno*/))/AA));//pozn. záměrně je zde TextHeight(Jednotky) z důvodu, že při smazání hodnoty by byl text prázdný a následně by to špatně pozicovalo jednotky
 		//oblast jednotky
-		R.rect2=TRect(m.round((X+canv->TextWidth(Text)+canv->TextWidth(" "))/AA),m.round(Y/AA),m.round((X+canv->TextWidth(Text)+canv->TextWidth(Jednotky))/AA),m.round((Y+canv->TextHeight(Jednotky))/AA));
+//		R.rect2=TRect(m.round((X+canv->TextWidth(Text)+canv->TextWidth(" "))/AA),m.round(Y/AA),m.round((X+canv->TextWidth(Text)+canv->TextWidth(Jednotky))/AA),m.round((Y+canv->TextHeight(Jednotky))/AA));
 		                                                           //odebrání mezery
 		if(aktElement==NULL)//předpokládá se, že je to kóta kabiny
 		{

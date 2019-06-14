@@ -302,6 +302,7 @@ bool Cmy::PtInCircle(double point_X,double point_Y,double center_X,double center
 //funkce ovìøí, zda se bod nachází v obdelníku
 bool Cmy::PtInRectangle(double X1,double Y1,double X2,double Y2,double Xkontrolovane,double Ykontrolovane)
 {
+	X1=abs_d(X1);Y1=abs_d(Y1);X2=abs_d(X2);Y2=abs_d(Y2);Xkontrolovane=abs_d(Xkontrolovane);Ykontrolovane=abs_d(Ykontrolovane);
 	return (X1<=Xkontrolovane&&Xkontrolovane<=X2&&Y1<=Ykontrolovane&&Ykontrolovane<=Y2);
 }
 /////////////////////////////////////////////////////////////////////////////

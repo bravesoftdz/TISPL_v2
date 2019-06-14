@@ -3282,7 +3282,7 @@ object Form1: TForm1
       TransparentBackground = False
       object DrawGrid_knihovna: TDrawGrid
         Left = 17
-        Top = 36
+        Top = 33
         Width = 160
         Height = 450
         ParentCustomHint = False
@@ -3346,7 +3346,7 @@ object Form1: TForm1
       TransparentBackground = False
       object DrawGrid_ostatni: TDrawGrid
         Left = 3
-        Top = 39
+        Top = 32
         Width = 160
         Height = 70
         ParentCustomHint = False
@@ -3535,7 +3535,7 @@ object Form1: TForm1
       TransparentBackground = False
       object DrawGrid_poznamky: TDrawGrid
         Left = 3
-        Top = 28
+        Top = 32
         Width = 160
         Height = 70
         ParentCustomHint = False
@@ -3974,7 +3974,6 @@ object Form1: TForm1
     Height = 25
     Caption = 'Button13'
     TabOrder = 36
-    Visible = False
     OnClick = Button13Click
   end
   object CheckBox_pouzit_zadane_kapacity_OLD: TCheckBox
@@ -4169,7 +4168,7 @@ object Form1: TForm1
       Left = 1
       Top = 0
       Width = 249
-      Height = 119
+      Height = 40
       Align = alTop
       Anchors = [akLeft, akTop, akRight, akBottom]
       Font.Charset = DEFAULT_CHARSET
@@ -4207,7 +4206,7 @@ object Form1: TForm1
     end
     object scExPanel_ostatni: TscExPanel
       Left = 1
-      Top = 119
+      Top = 40
       Width = 249
       Height = 88
       Margins.Left = 5
@@ -4456,8 +4455,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 2544
-        Top = 2707
+        Left = 2592
+        Top = 2755
         Width = 244
         Height = 31
         Align = alCustom
@@ -5250,11 +5249,11 @@ object Form1: TForm1
       end
     end
     object scExPanel_vrstvy: TscExPanel
-      Left = 3
-      Top = 508
+      Left = 1
+      Top = 361
       Width = 249
       Height = 30
-      Align = alCustom
+      Align = alTop
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWhite
       Font.Height = -15
@@ -5309,9 +5308,9 @@ object Form1: TForm1
     end
     object scExPanel_podklad: TscExPanel
       Left = 1
-      Top = 207
+      Top = 128
       Width = 249
-      Height = 334
+      Height = 233
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWhite
@@ -5555,11 +5554,12 @@ object Form1: TForm1
         AllowAllUp = False
       end
       object scGPCheckBox_stupne_sedi: TscGPCheckBox
+        AlignWithMargins = True
         Left = 3
-        Top = 69
-        Width = 225
-        Height = 36
-        Align = alCustom
+        Top = 75
+        Width = 243
+        Height = 33
+        Align = alTop
         TabOrder = 2
         TabStop = True
         OnClick = scGPCheckBox_stupne_sediClick
@@ -5647,11 +5647,12 @@ object Form1: TForm1
         UseFontColorToStyleColor = False
       end
       object scGPCheckBox_zobraz_podklad: TscGPCheckBox
+        AlignWithMargins = True
         Left = 3
-        Top = 41
-        Width = 246
+        Top = 33
+        Width = 243
         Height = 36
-        Align = alCustom
+        Align = alTop
         TabOrder = 3
         TabStop = True
         OnClick = scGPCheckBox_zobraz_podkladClick
@@ -5917,7 +5918,7 @@ object Form1: TForm1
   end
   object scGPLabel_poznamky: TscGPLabel
     Left = 0
-    Top = 542
+    Top = 540
     Width = 168
     Height = 32
     Font.Charset = EASTEUROPE_CHARSET
@@ -8141,7 +8142,7 @@ object Form1: TForm1
     object scGPComboBox_prepinacKot: TscGPComboBox
       Left = 379
       Top = 7
-      Width = 120
+      Width = 155
       Height = 35
       Enabled = False
       Font.Charset = DEFAULT_CHARSET
@@ -8161,13 +8162,13 @@ object Form1: TForm1
         item
           Header = False
           Enabled = True
-          Caption = 'Vzd'#225'lenost'
+          Caption = 'Vzd'#225'lenost [mm]'
           Checked = False
         end
         item
           Header = False
           Enabled = True
-          Caption = #268'as'
+          Caption = #268'as [s]'
           Checked = False
         end>
       ItemIndex = 0
@@ -8350,46 +8351,85 @@ object Form1: TForm1
       Transparent = True
     end
   end
-  object scGPSwitch_robot_clovek: TscGPSwitch
-    Left = 62
+  object scGPPanel_pomocn_proSwitch: TscGPPanel
+    Left = 61
     Top = 40
-    Width = 40
-    Height = 20
-    Margins.Left = 0
-    Margins.Top = 0
-    Margins.Right = 0
-    Margins.Bottom = 0
-    ParentShowHint = False
-    ShowHint = False
+    Width = 42
+    Height = 22
     TabOrder = 49
     Visible = False
-    Animation = True
-    FrameColor = 10114859
-    FrameOnColor = 10114859
-    FramePressedColor = clNone
-    ParentColor = True
-    State = scswOff
-    StyleKind = scswsStyled
-    ThumbColor = 10114859
-    ThumbOnColor = 10114859
-    ThumbPressedColor = 10114859
+    BlurBackground = False
+    BlurBackgroundAmount = 5
+    CustomImageIndex = -1
+    DragForm = False
+    DragTopForm = True
+    FillGradientAngle = 0
+    FillGradientBeginAlpha = 0
+    FillGradientEndAlpha = 0
+    FillGradientBeginColorOffset = 0
+    FillGradientEndColorOffset = 0
+    FrameWidth = 0
+    FillColor = clBtnFace
+    FillColorAlpha = 255
+    FillColor2 = clBtnFace
+    FrameColor = clBtnFace
     FrameColorAlpha = 255
-    FrameOnColorAlpha = 255
-    FramePressedColorAlpha = 255
-    ThumbColorAlpha = 255
-    ThumbOnColorAlpha = 255
-    ThumbPressedColorAlpha = 255
-    ThumbShadow = False
-    FrameSolid = False
-    FrameOnSolid = False
-    FrameInside = False
-    OnChangeState = scGPSwitch_robot_clovekChangeState
+    FrameRadius = 0
+    ShowCaption = False
+    CaptionGlowEffect.Enabled = False
+    CaptionGlowEffect.Color = clBtnShadow
+    CaptionGlowEffect.AlphaValue = 255
+    CaptionGlowEffect.GlowSize = 7
+    CaptionGlowEffect.Offset = 0
+    CaptionGlowEffect.Intensive = True
+    CaptionGlowEffect.StyleColors = True
+    Color = clBtnFace
+    Caption = 'scGPPanel_pomocn_proSwitch'
+    TransparentBackground = True
+    StorePaintBuffer = True
+    Sizeable = False
+    WallpaperIndex = -1
+    object scGPSwitch_robot_clovek: TscGPSwitch
+      Left = 0
+      Top = 0
+      Width = 40
+      Height = 20
+      Margins.Left = 0
+      Margins.Top = 0
+      Margins.Right = 0
+      Margins.Bottom = 0
+      ParentShowHint = False
+      ShowHint = False
+      TabOrder = 0
+      Visible = False
+      Animation = True
+      FrameColor = 10114859
+      FrameOnColor = 10114859
+      FramePressedColor = clNone
+      ParentColor = True
+      State = scswOff
+      StyleKind = scswsStyled
+      ThumbColor = 10114859
+      ThumbOnColor = 10114859
+      ThumbPressedColor = 10114859
+      FrameColorAlpha = 255
+      FrameOnColorAlpha = 255
+      FramePressedColorAlpha = 255
+      ThumbColorAlpha = 255
+      ThumbOnColorAlpha = 255
+      ThumbPressedColorAlpha = 255
+      ThumbShadow = False
+      FrameSolid = False
+      FrameOnSolid = False
+      FrameInside = False
+      OnChangeState = scGPSwitch_robot_clovekChangeState
+    end
   end
   object ImageList1: TImageList
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118005C07740710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118005C07940710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9520,7 +9560,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013E004C08DC0830003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013E004C08FC0830003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000000003000001002000000000000000
       0900000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
