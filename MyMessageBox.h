@@ -14,6 +14,8 @@
 #include "scControls.hpp"
 #include "scGPControls.hpp"
 #include "rHTMLLabel.hpp"
+#include "scGPExtControls.hpp"
+#include <Vcl.Mask.hpp>
 //---------------------------------------------------------------------------
 class TmyMessageBox : public TForm
 {
@@ -28,16 +30,21 @@ __published:	// IDE-managed Components
 	TscGPButton *Button_OK;
 	TscGPButton *Button_Cancel;
 	TscGPCheckBox *CheckBox_pamatovat;
+	TscGPGlyphButton *scGPGlyphButton_copy;
+	TscGPEdit *scGPEdit1;
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
+	void __fastcall scGPGlyphButton_copyClick(TObject *Sender);
+	void __fastcall scGPEdit1KeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+
 private:	// User declarations
 	enum T_mbTYPE{OK=0,OKCANCEL=1,YESNO=4,YESNOCANCEL=3};
 public:		// User declarations
 	__fastcall TmyMessageBox(TComponent* Owner);
-	int Show(long left,long top,UnicodeString text,UnicodeString caption_text="",int mbTYPE=OK,bool centrovat_text=true,bool checkbox_zobrazit=false,int width=366,bool default_button_caption=true);
-	int Show(UnicodeString text,int mbTYPE=OK,bool centrovat_text=true,int width=366,bool default_button_caption=true);
+	int Show(long left,long top,UnicodeString text,UnicodeString caption_text="",int mbTYPE=OK,bool centrovat_text=true,bool checkbox_zobrazit=false,int width=366,bool default_button_caption=true,bool copy_zobrazit=false);
+	int Show(UnicodeString text,int mbTYPE=OK,bool centrovat_text=true,int width=366,bool default_button_caption=true,bool copy_zobrazit=false);
 	bool zobrazitFrameForm;
 };
 //---------------------------------------------------------------------------

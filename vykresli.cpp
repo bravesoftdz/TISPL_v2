@@ -3589,12 +3589,26 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 	vykresli_kotu(canv,x1,y1,x2,y2,Element_do,O,highlight);
 	if(Element_od->n!=0&&Element_do->n>1)//pokud jsou minimálně 2 elementy vložené
 	{
+		//dojde k otestování zda mají tyto 2 elementy nebo alespoň jeden lakovací okna
 		bool test1=false,test2=false;
 		double x1,x2,y1,y2;
 		switch(Element_od->eID)
 		{case 1:case 7:case 11:case 15:case 101:case 105:case 3:case 9:case 13:case 17:case 103:case 107:test1=true;break;}
 		switch(Element_do->eID)
 		{case 1:case 7:case 11:case 15:case 101:case 105:case 3:case 9:case 13:case 17:case 103:case 107:test2=true;break;}
+		//pokud první element nemá lakovací okno projde se objekt a prohlédne všechny elementy před posledním zda nějaky nemá LO
+		if(!test1)
+		{
+			Cvektory::TElement *E=F->pom_temp->elementy->dalsi;
+			while(E!=NULL)
+			{
+				if(E->n==Element_do->n)break;
+				switch(E->eID)//pokud nějaký má dojde k uložení jeho ukazatele do prvního elementu
+				{case 1:case 7:case 11:case 15:case 101:case 105:case 3:case 9:case 13:case 17:case 103:case 107:Element_od=E;test1=true;break;}
+				E=E->dalsi;
+			}E=NULL;delete E;
+		}
+		//nastavení bodů vykreslení pro jednotlivé rotace
 		if(Element_do->rotace_symbolu==0||Element_do->rotace_symbolu==180)
 		{
 			if(Element_od->LO2>0)x1=Element_od->X+Element_od->LO2+Element_od->OTOC_delka/2.0;else x1=Element_od->X+Element_od->LO1/2.0+Element_od->LO_pozice;
@@ -3606,7 +3620,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 			if(Element_od->LO2>0)y1=Element_od->Y-Element_od->LO2-Element_od->OTOC_delka/2.0;else y1=Element_od->Y-Element_od->LO1/2.0-Element_od->LO_pozice;
 			if(Element_do->LO2>0)y2=Element_do->Y+Element_do->LO1+Element_do->OTOC_delka/2.0;else y2=Element_do->Y+Element_do->LO1/2.0-Element_do->LO_pozice;
 			x1=F->pom_temp->elementy->X;x2=x1;
-		}
+		}//pokud mají oba elementy lakovací okna je mezi nimi vykreslena needitavatelná kóta
 		if(test1&&test2)vykresli_kotu(canv,x1,y1,x2,y2,NULL,1,highlight,0.2,clGray,false);
 	}
 }
