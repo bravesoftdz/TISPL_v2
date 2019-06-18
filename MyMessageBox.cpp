@@ -9,6 +9,7 @@
 #pragma link "scControls"
 #pragma link "scGPControls"
 #pragma link "rHTMLLabel"
+#pragma link "scGPExtControls"
 #pragma resource "*.dfm"
 TmyMessageBox *myMessageBox;
 //---------------------------------------------------------------------------
@@ -25,23 +26,23 @@ void __fastcall TmyMessageBox::FormShow(TObject *Sender)
 	if(myMessageBox->Left>=Form1->Left+Form1->ClientWidth-myMessageBox->Width)//nastala situace že je mimo obraz (nebo èásteènì)
 	myMessageBox->Left=Form1->Left+Form1->ClientWidth-myMessageBox->Width-5;
 	if(myMessageBox->Top>=Form1->Top+Form1->ClientHeight-myMessageBox->Height)
-	myMessageBox->Top=Form1->Top+Form1->ClientHeight-myMessageBox->Height-5;
+	myMessageBox->Top=Form1->Top+Form1->ClientHeight-myMessageBox->Height-5;     scGPEdit1->SetFocus();
 }
 //---------------------------------------------------------------------------
 //pøetížená metoda
-int TmyMessageBox::Show(UnicodeString text,int mbTYPE,bool centrovat_text,int width,bool default_button_caption)
+int TmyMessageBox::Show(UnicodeString text,int mbTYPE,bool centrovat_text,int width,bool default_button_caption,bool copy_zobrazit)
 {
-	 return Show(-1,-1,text,"",mbTYPE,centrovat_text,false,width,default_button_caption);
+	 return Show(-1,-1,text,"",mbTYPE,centrovat_text,false,width,default_button_caption,copy_zobrazit);
 }
-int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString caption_text,int mbTYPE,bool centrovat_text,bool checkbox_zobrazit,int width,bool default_button_caption)
+int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString caption_text,int mbTYPE,bool centrovat_text,bool checkbox_zobrazit,int width,bool default_button_caption,bool copy_zobrazit)
 {
 	short O=26;//výchozí offset pro zohlednìní checkboxu
 	myMessageBox->Width=width;//výchozí šíøka MB z implicitního parametru 366px, pokud není uživatelsky zadaná
 
 	////naplnìní daty + naformátování Label_text
 	Label_text->Width=myMessageBox->Width-8-8;//pøevzetí šíøky labelu dle šíøky formu - oba okraje
+  Label_text->Caption=text;
 	if(centrovat_text)Label_text->Alignment=taCenter;else Label_text->Alignment=taLeftJustify;
-	Label_text->Caption=text;
 	if(text.Length()>=46)Label_text->AutoSize=true;
 
 	//výška myMessageBoxu dle zadaného textu
@@ -63,7 +64,10 @@ int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString capt
 		Button_Cancel->Caption="Storno";
 		Button_Yes->Caption="Ano";
 		Button_No->Caption="Ne";
-  }
+	}
+  //zobrazení èi skrytí tlaèítka kopíruj do schránky
+	if(copy_zobrazit)scGPGlyphButton_copy->Visible=true;
+	else scGPGlyphButton_copy->Visible=false;
 
 	//horizontální umístìní
 	switch(mbTYPE) //OK=0,OKCANCEL,YESNO,YESNOCANCEL
@@ -102,7 +106,7 @@ int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString capt
 				Button_No->Visible=true;
 				Button_Yes->Left=myMessageBox->Width/3-myMessageBox->Width/3/2-Button_Yes->Width/2;
 				Button_No->Left=myMessageBox->Width/3+myMessageBox->Width/3/2-Button_No->Width/2;
-				Button_Cancel->Left=myMessageBox->Width*2/3+myMessageBox->Width/3/2-Button_Cancel->Width/2;
+				Button_Cancel->Left=myMessageBox->Width*2/3+myMessageBox->Width/3/2-Button_Cancel->Width/2;if(copy_zobrazit)myMessageBox->Width+=scGPGlyphButton_copy->Width+11+10;
 			}break;
 	}
 	//vertikální umístìní
@@ -111,7 +115,8 @@ int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString capt
 	Button_Yes->Top=Button_OK->Top;
 	Button_No->Top=Button_OK->Top;
 	Button_Cancel->Top=Button_OK->Top;
-
+	scGPGlyphButton_copy->Top=Button_OK->Top;//Button_OK->Top;
+	scGPGlyphButton_copy->Left=myMessageBox->Width-12-scGPGlyphButton_copy->Width;
 	////pozice formuláøe
 	if(left<0 && top<0)//na støed, pokud se zadá libovolné záporné èíslo
 	{
@@ -144,7 +149,7 @@ void __fastcall TmyMessageBox::FormKeyDown(TObject *Sender, WORD &Key, TShiftSta
 		//BACKSPACE
 		case 8: break;
 		//ENTER
-		case 13:break;
+		case 13:if(Button_OK->Visible)Button_OK->Down=true;else Button_Yes->Down=true;break;
 		//ESC
 		case 27:Close();break;
 		//MEZERNÍK
@@ -156,6 +161,18 @@ void __fastcall TmyMessageBox::FormPaint(TObject *Sender)
 {
 	//zajišuje pøekreslování orámování okolo
 	if(zobrazitFrameForm)Form1->m.frameForm(myMessageBox,clWebOrange,1);
+}
+//---------------------------------------------------------------------------
+//kopírování obsahu label_text do schránky
+void __fastcall TmyMessageBox::scGPGlyphButton_copyClick(TObject *Sender)
+{
+	Clipboard()->AsText=Label_text->Caption;
+}
+//---------------------------------------------------------------------------
+//funguje pouze jako pøesmìrování této události na form, edit má na sobì neustále focus
+void __fastcall TmyMessageBox::scGPEdit1KeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+{
+	FormKeyDown(this,Key,Shift);
 }
 //---------------------------------------------------------------------------
 

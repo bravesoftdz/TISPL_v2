@@ -716,7 +716,7 @@ public:		// User declarations
 	void Sv(UnicodeString Text="",AnsiString umisteni="neuvedeno");//usnadňuje přístup k ShowMessage - MaVl
 	void Z(UnicodeString Text="",bool add=false,TColor color=clRed);//usnadňuje přístup ke zprávám, pokud jsou jen prázdné uvozovky (a druhý paremetry na false - což je implicitně), vymaže zpravu, parametr add rozhoduje, zda bude nový text předen k předešlému textu či nikoliv, pokud zpráva obsahuje nějaký text, je zobrazena ikona zprávy, poslední parametr je barva ikony zprávy
 	int MB(long left,long top,UnicodeString text,UnicodeString caption_text="",int mbTYPE=MB_OK,bool centrovat_text=true,bool checkbox_zobrazit=false,int width=366,bool default_button_caption=true);
-	int MB(UnicodeString text,int mbTYPE=MB_OK,bool centrovat_text=true,int width=366,bool default_button_caption=true,bool blurForm1=true);//pokud je blurForm1 na true - Form1 v době zobrazení MB rozmlží/udělá bluer efekt
+	int MB(UnicodeString text,int mbTYPE=MB_OK,bool centrovat_text=true,int width=366,bool default_button_caption=true,bool blurForm1=true,bool copy_zobrazit=false);//pokud je blurForm1 na true - Form1 v době zobrazení MB rozmlží/udělá bluer efekt
 	void writeINI(AnsiString Section,AnsiString Ident,AnsiString Value);//zajišťuje zápis do INI aplikace
 	AnsiString readINI(AnsiString Section,AnsiString Ident);//zajišťuje čtení z INI aplikace
 	void kopirovat_objekt();//pokud je označený objekt, zajistí jeho zkopírování, připočítá index 1,2,3

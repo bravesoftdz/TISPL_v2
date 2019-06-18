@@ -1289,14 +1289,14 @@ int TForm1::MB(long left,long top,UnicodeString text,UnicodeString caption_text,
 {
 	return myMessageBox->Show(left,top,text,caption_text,mbTYPE,centrovat_text,checkbox_zobrazit,width,default_button_caption);
 }
-int TForm1::MB(UnicodeString text,int mbTYPE,bool centrovat_text,int width,bool default_button_caption,bool blurForm1)
+int TForm1::MB(UnicodeString text,int mbTYPE,bool centrovat_text,int width,bool default_button_caption,bool blurForm1,bool copy_zobrazit)
 {
 	if(blurForm1)
 	{
 		scStyledForm1->InActiveClientBlurAmount=1;
 		scStyledForm1->ShowClientInActiveEffect();
 	}
-	int RET=myMessageBox->Show(text,mbTYPE,centrovat_text,width,default_button_caption);
+	int RET=myMessageBox->Show(text,mbTYPE,centrovat_text,width,default_button_caption,copy_zobrazit);
 	if(blurForm1)scStyledForm1->HideClientInActiveEffect();
 	return RET;
 }
@@ -2454,7 +2454,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			{
 				double delka=m.delka(m.P2Lx(vychozi_souradnice_kurzoru.X),m.P2Ly(vychozi_souradnice_kurzoru.Y),m.P2Lx(X),m.P2Ly(Y));
 				if(pom_temp->pohon==NULL) MB(AnsiString(m.round2double((delka*1000.0),3))+" [mm]");
-				else MB(AnsiString(m.round2double((delka*1000.0),3))+" [mm] "+AnsiString(m.round2double((delka/pom_temp->pohon->aRD),3))+" [s]");
+				else MB("Vzdálenost: "+AnsiString(m.round2double((delka*1000.0),3))+" [mm]; "+"Čas: "+AnsiString(m.round2double((delka/pom_temp->pohon->aRD),3))+" [s]",MB_OK,true,366,true,true,true);
 				Akce=NIC;kurzor(standard);
 				zobraz_tip("");//nahrazuje zároveň Refresh
 				break;
@@ -4592,6 +4592,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outLO(E->LO1);
 			E->mGrid->Cells[0][3].Text="vyosení "+LO;
 			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=0;
+			E->mGrid->Cells[1][3].isNegativeNumber->Color=(TColor)RGB(43,87,154);//musí být nastaveno ručně, vymazání podmíněného formátování
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_1;
@@ -4832,6 +4833,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outLO(E->LO1);
 			E->mGrid->Cells[0][3].Text="vyosení "+LO;
 			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outLO(E->LO_pozice);
+			E->mGrid->Cells[1][3].isNegativeNumber->Color=(TColor)RGB(43,87,154);//musí být nastaveno ručně, vymazání podmíněného formátování
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_1;
@@ -8045,13 +8047,15 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //		Memo3->Lines->Add(AnsiString(P->n)+"-"+P->name+":"+d.v.vypis_objekty_vyuzivajici_pohon(P->n));
 //		P=P->dalsi;//posun na další prvek
 //	}
-  Form_definice_zakazek->ShowModal();
-
+//  Form_definice_zakazek->ShowModal();
+							Sv("test");
 //		 Form2->ShowModal();
 //	Canvas->Pen->Style=psSolid;
 //	Canvas->Pen->Mode=pmNotXor;
 //	Canvas->Pen->Color=clRed;
-//	Canvas->Pen->Width=2; Memo(pom_temp->elementy->X); Memo(pom_temp->elementy->Y);
+//	Canvas->Pen->Width=2; //Memo(pom_temp->elementy->X); Memo(pom_temp->elementy->Y);
+//	Cvektory::TElement *E=pom_temp->elementy->dalsi;
+//	Canvas->Rectangle(E->citelna_oblast.rect3.left,E->citelna_oblast.rect3.bottom,E->citelna_oblast.rect3.right,E->citelna_oblast.rect3.top);
 //	Canvas->MoveTo(m.L2Px(pom_temp->Xk),m.L2Py(pom_temp->elementy->Y)); Canvas->LineTo(m.L2Px(pom_temp->Xk+1),m.L2Py(pom_temp->elementy->Y));
 //		pom_temp->elementy->dalsi->n=2;  //první
 //		pom_temp->elementy->dalsi->mGrid->ID=2;  pom_temp->elementy->dalsi->mGrid->Update();
