@@ -820,7 +820,7 @@ object myMessageBox: TmyMessageBox
     Top = 93
     Width = 37
     Height = 34
-    Hint = 'Zkop'#237'rovat paremetry objektu'
+    Hint = 'Kop'#237'rovat hodnoty'
     Align = alCustom
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clNone
