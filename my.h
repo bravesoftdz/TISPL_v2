@@ -25,6 +25,8 @@ class Cmy
 	double P2Ly(long fyzicka);
 	TPoint L2P(double logickaX, double logickaY);//Pøevede logické souøadnice na fyzické (displej zaøízení) , vraci fyzické souøadnice
 	TPoint L2P(TPointD logicke);
+	TPoint *L2P(TPointD *POLE,long posledni_prvek);
+	void L2P(TPointD *POLE,TPoint *POLEpx);
 	long L2Px(double logicka);
 	long L2Py(double logicka);
 	long m2px(double meter);//pøevede vzdálenost v metrech na vzdálenost monitoru dle konstanty m2px (metrù na pixel) a aktuální hodnoty promìnné Zoom
@@ -39,6 +41,10 @@ class Cmy
 	double azimut(double X1,double Y1,double X2,double Y2);
 	double uhel(double X1,double Y1,double X2,double Y2);
 	TPointD rotace(double delka, double akt_uhel, double rotace);
+	TPointD rotace(double X1,double Y1,double X2,double Y2,double uhel);//vrátí souøadnice X2,Y2 po daném úhlu rotace, rotuje okolo X1,Y2 proti smìru hodinových ruèièek
+	TPoint rotace_px(long X1,long Y1,long X2,long Y2,double uhel);//vrátí souøadnice X2,Y2 po daném úhlu rotace, rotuje okolo X1,Y2 proti smìru hodinových ruèièek
+	void rotace_polygon(double X,double Y,TPointD *POLE,long posledni_prvek,double uhel);//orotuje okolo daného bodu polygon
+	void rotace_polygon(double X,double Y,double oX,double oY,TPointD *POLE,TPoint *POLE_px,long posledni_prvek,double uhel);//orotuje okolo daného bodu polygon a vrátí do POLE i do POLE_px
 	TPointDbool zkratit_polygon_na_roztec(double d, double r,double xp, double yp, double x0, double y0, double x1, double y1);//d - delka linky,r - roztec palcuxp, yp - souradnice oznaceneho bodu x0, y0, x1, y1- souradnice sousedu k oznacenemu bodu
 	double cekani_na_palec(double cas, double roztec_palcu, double rychlost_dopravniku,int funkce);//vrátí dobu èekání na palec v sec, zadání je u èas (výstupu vozíku z objektu) v min, rozteèe je v m resp. v m za z minu u rychlosti dopravniku
 	double mezera_mezi_voziky(double dJ,double sJ,double rotace,double roztec,double mezera=0,unsigned short typ=0);//metoda vratí minimální možnou mezeru mezi vozíky (promìnná vozíku prezentuje šíøku èí délku vozíku dle aktuální rotace v objektu), za pøedpokladu, že je parametr mezera roven 0, v pøípadì nenulového parametru mezery vrací vhodnou nejmenší hodnotu této mezery vùèi rozmìrùm rozteè a rozmìr vozíku, lze parametrizovat vracený výsledek 0 (implicitnì) - kritická mezera, 1 èi 281 - mezera mezi JIG, 2 èi 282 mezera mezi PODVOZKY
@@ -70,8 +76,10 @@ class Cmy
 	double prejezd_voziku_rychlost(double CT,double MT,double PT,double WT,double DD);//vrátí požadovanou rychlost pøejezdu, umí si dopoèítat MT, není-li dodáno, pokud vyjde záporná rychlost tzn. nestíhá
 	double kontrola_rychlosti_prejezdu(double CT,double MT,double PT,double WT,double DD,double aRD);//vrátí rozdíl aktuální rychlosti pohonu a potøebné k uskuteèní pøejezdu, pokud je hodnota 0 je v poøádku, je-li záporná, pøejezd se nestíhá o danou hodnotu v m/s, je-li kladná, je aktuální rychlost o danou hodnoutu hodnotu v m/s vyšší
 	long LeziVblizkostiUsecky(double x, double y, double X1, double Y1, double X2, double Y2);
-	bool PtInCircle(double point_X,double point_Y,double center_X,double center_Y,double radius);//funkce ovìøí, zda se bod nachází v zadaném kruhu
-	bool PtInRectangle(double X1,double Y1,double X2,double Y2,double Xkontrolovane,double Ykontrolovane);//funkce ovìøí, zda se bod nachází v obdelníku
+	bool PtInCircle(double point_X,double point_Y,double center_X,double center_Y,double radius);//metoda ovìøí, zda se bod nachází v zadaném kruhu
+	bool PtInRectangle(double X1,double Y1,double X2,double Y2,double Xmys,double Ymys);//metoda ovìøí, zda se bod nachází v obdelníku
+	bool PtInClovek(double X,double Y,double Xmys,double Ymys,double rotace);//metoda ovìøí zda je bod ve vnitø obrysu èlovìka, který se nachází na daných souøadnicích
+	bool PtInIon(double X,double Y,double Xmys,double Ymys,double rotace);//metoda ovìøí zda je bod ve vnitø obrysu ION tyèí, který se nachází na daných souøadnicích
 	void designButton(TscGPButton *button,TForm *form, short rank,short sum,short horizontal_space=22,short vertikal_space=11);//nastaví horizontální a vertikální pozici tlaèítka a také designové vlasnosti podle tlaèítkek Ano, Uložit, OK, Storno dle MyMessageBox
 	void frameForm(TForm *form,TColor color,short width=1);//vykreslí danému oknu transparentní (kvùli možnému smazání - pøemaskování) dle zadané barvy a šíøky, nutno volat pøi formactive (lépe však pøi formpaint), pøi šíøce 1px (ta je zároveò implicitní) staèí volat, jenom pøi formactive, jinak i pøi formsize, formresize,formclose, pøíklad použití: frameForm(Form_parametry,clWebOrange,1);
 	void frameRect(TRect Rect,TColor color=clWebOrange,short width=1);//nakresli na libovolném místì na monitoru obdélník dle zadaných souøadnic ve formátu TRect, je možné nastavit barvu a šíøku èáry tohoto obdélníku
