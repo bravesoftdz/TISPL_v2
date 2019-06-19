@@ -309,7 +309,8 @@ void TForm1::DesignSettings()
 	scButton_zamek->Top=(scGPPanel_bottomtoolbar->Height-scButton_zamek->Height)/2;
 	scGPButton_viditelnostKoty->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_viditelnostKoty->Height)/2;
 	scGPButton_viditelnostmGrid->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_viditelnostmGrid->Height)/2;
-
+	////design přepínače člověk robot////
+	scGPPanel_pomocn_proSwitch->Color=scGPLabel_roboti->FillColor;//barva panelu pod přepínačem určuje barvu pozadí přepínače
 	//pozice ovládacích prvků
 //	scListGroupNastavProjektu->Left=0;
 //	scListGroupNastavProjektu->Top=0;
@@ -2235,10 +2236,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		case MOVE_KABINA://posun kabiny, příprava na implementaci kontroly zda je element v kabině
 		{
 			int mimo=el_mimoKabinu();//kontroluje zde je něco mimo kabinu, pokud ano vrátí index podle kterého je možné identifikovat co a kde je mimo kabinu
-			short trend=m.Rt90(d.trend(pom_temp));
-			//definice středu = pohonu
-//			short stredx=F->scSplitView_LEFTTOOLBAR->Width+(F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/2.0;
-//			short stredy=(F->ClientHeight-F->scGPPanel_statusbar->Height-F->scLabel_titulek->Height)/2.0;
+			short trend=m.Rt90(d.trend(pom));//musí být ukazatel na ostrý spoják
 			//posun pokud mimo==0 -> vše je v kabině
 			if ((mimo==0&&(trend==90||trend==270))||(mimo==0&&(trend!=90||trend!=270)))
 			{
@@ -2291,26 +2289,26 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			int mimo=el_mimoKabinu();//kontrola zda je vše v kabině, mimo==0 vše v kabině
 			double posunx=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
 			double posuny=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
-			if(JID==-4&&mimo!=-2&&mimo!=-1)
+			if(JID==-4)
 			{
 				pom_temp->rozmer_kabiny.x+=posunx;
 				if(pom_temp->elementy->Y==0&&offset_spolus_rozmerem)pom_temp->koty_elementu_offset+=posunx;
 			}
-			if(JID==-5&&mimo!=-2&&mimo!=-1)
+			if(JID==-5)
 			{
 				pom_temp->rozmer_kabiny.y-=posuny;
 				if(pom_temp->elementy->X==0&&offset_spolus_rozmerem)pom_temp->koty_elementu_offset-=posuny;
 			}
-			if(mimo==-2||mimo==-1)//něco mimo kabinu
+			if(mimo==-2||mimo==-1||mimo==2||mimo==5)//něco mimo kabinu
 			{
-				/*if(mimo==-2||mimo==-1)*/ zobraz_tip("Nelze provést, pohon musí být součástí objektu.");
-//				else zobraz_tip("Nelze provést, všichni roboti musí být v kabině.");
+				if(mimo==-2||mimo==-1)TIP="Nelze provést, pohon musí být součástí objektu.";
+				else TIP="Nelze provést, všichni roboti musí být v kabině.";
 				switch(mimo)//úprava rozměrů kabiny tak, aby bylo vše v kabině
 				{
 					case -2:pom_temp->rozmer_kabiny.x=pom_temp->elementy->X-pom_temp->Xk+1;break;
 					case -1:pom_temp->rozmer_kabiny.y=pom_temp->Yk-pom_temp->elementy->Y+1;break;
-//					case 2:pom_temp->rozmer_kabiny.x=vrat_hranici(mimo)-pom_temp->Xk+0.05;break;
-//					case 5:pom_temp->rozmer_kabiny.y=pom_temp->Yk-vrat_hranici(mimo)+0.05;break;
+					case 2:pom_temp->rozmer_kabiny.x=vrat_hranici(mimo)-pom_temp->Xk+0.05;break;
+					case 5:pom_temp->rozmer_kabiny.y=pom_temp->Yk-vrat_hranici(mimo)+0.05;break;
 //					case 4:pom_temp->rozmer_kabiny.x=vrat_hranici(mimo)-pom_temp->Xk+1;break;   //neroboti mimo kabinu
 //					case 7:pom_temp->rozmer_kabiny.y=pom_temp->Yk-vrat_hranici(mimo)+1;break;
 					default:break;
@@ -3548,11 +3546,11 @@ bool TForm1::el_vkabine(int X,int Y,int element_id)
 //vrací index co a kde je mimo kabinu
 int TForm1::el_mimoKabinu ()
 {
-	short stredx=m.L2Px(pom_temp->elementy->X);//scSplitView_LEFTTOOLBAR->Width+(ClientWidth-scSplitView_LEFTTOOLBAR->Width)/2.0;
-	short stredy=m.L2Py(pom_temp->elementy->Y);//(ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2.0;
+	short stredx=m.L2Px(pom_temp->elementy->X);
+	short stredy=m.L2Py(pom_temp->elementy->Y);
 	double xmin=9999999, xmax=-9999999,ymin=9999999, ymax=-9999999;
 	short trend=m.Rt90(d.trend(pom));
-	int xminID,xmaxID,yminID,ymaxID;
+	int xminID,xmaxID;
 	int vrat=0;
 	//najde hraniční sořadnice mezi elemety (max. hranice vlevo, vpravo, nahoře a dole..)
 	Cvektory::TElement *E=pom_temp->elementy;
@@ -3560,34 +3558,23 @@ int TForm1::el_mimoKabinu ()
 	{
 		if((E->n>0)&&(1<=E->eID && E->eID<=4 || 7<=E->eID && E->eID<=18 || 101<=E->eID && E->eID<=108))//prohledávám pouze roboty, možnost rozšířit i pro neroboty
 		{
-		if(E->X<xmin) {xmin=E->X;xminID=E->eID;}
-		if(E->X>xmax) {xmax=E->X;xmaxID=E->eID;}
-		if(E->Y<ymin) {ymin=E->Y;yminID=E->eID;}
-		if(E->Y>ymax) {ymax=E->Y;ymaxID=E->eID;}
+		double LO=(E->LO1+E->LO2)/2.0+E->LO_pozice;
+		if(E->X-LO<xmin) xmin=E->X-LO;
+		if(E->X+LO>xmax) xmax=E->X+LO;
+		if(E->Y<ymin) ymin=E->Y;
+		if(E->Y>ymax) ymax=E->Y;
 		}
 		E=E->dalsi;
 	}
 	E=NULL; delete E;
 	//kontrola přesažení elementuy
-	if(pom_temp->Xk>xmin/*&&(xminID>0 && xminID<5)*/) vrat=1;//robot z leva  																								pom_temp->Xk>xmin-d.Robot_sirka_zakladny/2
-	if(pom_temp->Xk+pom_temp->rozmer_kabiny.x<xmax/*&&(xmaxID>0 && xmaxID<5)*/) vrat=2;//robot z prava											xmax+d.Robot_sirka_zakladny/2
-	if(pom_temp->Yk-pom_temp->rozmer_kabiny.y>ymin/*&&(yminID>0 && yminID<5)*/) vrat=5;//robot ze spoda											ymin-d.Robot_sirka_zakladny/2
-	if(pom_temp->Yk<ymax/*&&(ymaxID>0 && ymaxID<5)*/) vrat=6;//robot z vrchu      																					ymax+d.Robot_sirka_zakladny/2
+	if(pom_temp->Xk>xmin) 															vrat=1;//robot z leva
+	if(pom_temp->Xk+pom_temp->rozmer_kabiny.x<xmax) 		vrat=2;//robot z prava
+	if(pom_temp->Yk-pom_temp->rozmer_kabiny.y>ymin)			vrat=5;//robot ze spoda
+	if(pom_temp->Yk<ymax) 															vrat=6;//robot z vrchu
 	//kontrola přesažení pohonu
 	if((m.L2Py(pom_temp->Yk)>=stredy||m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)<=stredy)&&(trend==90||trend==270)) vrat=-1;
 	if((m.L2Px(pom_temp->Xk)>=stredx||m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)<=stredx)&&(trend!=90&&trend!=270)) vrat=-2;
-
-//	kontrola zda kabina nepřekročí pracovní plochu
-//	if(m.L2Px(pom_temp->Xk)<=DrawGrid_knihovna->Width) vrat=10;//kabina mimo vlevo
-//	if(pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect2.right>=ClientWidth)vrat=11;//kabina mimo vpravo
-//	if(m.L2Py(pom_temp->Yk)-50<=scGPPanel_mainmenu->Height)vrat=12;//kabina mimo nahoře .. -50 kompenzace nadpisu
-//	if(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect2.bottom>=scGPPanel_bottomtoolbar->Top)vrat=13;//mimo dole
-//	Kontrola stop stanic a otočí momentálně nevyužito
-//	if(pom_temp->Xk>xmin-d.Robot_sirka_zakladny/2&&(xminID==0 || xminID>4)) vrat=3;//nerobot z leva
-//	if(pom_temp->Xk+pom_temp->rozmer_kabiny.x<xmax+d.Robot_sirka_zakladny/2&&(xmaxID==0 || xmaxID>4)) vrat=4;//nerobot z prava
-//	if(pom_temp->Yk-pom_temp->rozmer_kabiny.y>ymin-d.Robot_sirka_zakladny/2&&(yminID==0 || yminID>4)) vrat=7;//nerobot ze spoda
-//	if(pom_temp->Yk<ymax+d.Robot_sirka_zakladny/2&&(ymaxID==0 || ymaxID>4)) vrat=8;//nerobot z vrchu
-
 	return vrat;
 }
 //---------------------------------------------------------------------------
@@ -3607,7 +3594,7 @@ double TForm1::vrat_hranici(int mimo)
 			while (E!=NULL)
 			{
 				if((E->n>0)&&(1<=E->eID && E->eID<=4 || 7<=E->eID && E->eID<=18 || 101<=E->eID && E->eID<=108))//prohledává pouze roboty, lze rozšířit i pro neroboty
-					if(E->X>max) max=E->X;
+					if(E->X>max) max=E->X+(E->LO1+E->LO2)/2.0+E->LO_pozice;
 				E=E->dalsi;
 			}
 			souradnice=max;//+d.Robot_delka_zakladny/2
@@ -3638,46 +3625,6 @@ double TForm1::vrat_hranici(int mimo)
 			{
 				if((E->n>0)&&(1<=E->eID && E->eID<=4 || 7<=E->eID && E->eID<=18 || 101<=E->eID && E->eID<=108))
 					if(E->Y<min) min=E->Y;
-				E=E->dalsi;
-			}
-			souradnice=min;
-		}break;
-		//pro potřeby vektorů, vloz_element_za()
-		case 100://max X
-		{
-			while (E!=NULL)
-			{
-				if(E->n>0)
-					if(d.Rxy(E).x>max) max=d.Rxy(E).x;
-				E=E->dalsi;
-			}
-			souradnice=max;
-		}break;
-		case 101://min X
-		{
-			while (E!=NULL)
-			{
-				if(E->n>0)
-					if(d.Rxy(E).x<min) min=d.Rxy(E).x;
-				E=E->dalsi;
-			}
-			souradnice=min;
-		}break;  case 102://max Y
-		{
-			while (E!=NULL)
-			{
-				if(E->n>0)
-					if(d.Rxy(E).y>max) max=d.Rxy(E).y;
-				E=E->dalsi;
-			}
-			souradnice=max;
-		}break;
-		case 103://min Y
-		{
-			while (E!=NULL)
-			{
-				if(E->n>0)
-					if(d.Rxy(E).y<min) min=d.Rxy(E).y;
 				E=E->dalsi;
 			}
 			souradnice=min;
@@ -8048,7 +7995,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //		P=P->dalsi;//posun na další prvek
 //	}
 //  Form_definice_zakazek->ShowModal();
-							Sv("test");
+							Memo(pom->predchozi->name);
 //		 Form2->ShowModal();
 //	Canvas->Pen->Style=psSolid;
 //	Canvas->Pen->Mode=pmNotXor;
