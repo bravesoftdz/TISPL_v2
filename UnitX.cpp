@@ -152,6 +152,11 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					E->PT1=E->LO1/F->pom_temp->pohon->aRD;//uložení do pamìti + výpoèet
 					E->mGrid->Cells[Col][Row-1].Text = F->m.round2double(F->outPT(E->PT1),3); //OUTPUT
 				}
+				if(Row==3)// eidtace LO_pozice
+				{
+					input_state=LO2; //nastaveni stavu
+					E->LO_pozice=F->inLO(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text));//pouze uložení do dat
+				}
 			} break;
 			case 2:case 8:case 12:case 16:case 102:case 106: //robot se stop stanicí
 			{
@@ -233,7 +238,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				}
 				if (Row==7)//editace LO2
 				{
-					input_state=LO;//nastaveni stavu
+					input_state=LO2;//nastaveni stavu
 					E->LO2=F->inLO(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text)); //INPUT
 					E->PT2=E->LO2/F->pom_temp->pohon->aRD;//uložení do pamìti + výpoèet
 					E->mGrid->Cells[Col][Row-1].Text = F->m.round2double(F->outPT(E->PT2),3);//OUTPUT

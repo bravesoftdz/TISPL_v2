@@ -523,9 +523,10 @@ private:
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
 	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o,neco,posun_ind,zmena_j,edit_text,zmena_d_x,zmena_d_y};
 	struct Tnastaveni{bool autosave;unsigned short int minut;bool posledni_file;};Tnastaveni nastaveni;
-
+  enum Tlanguage{EN,MN,CS};Tlanguage language;
 	////instance
 	Cvektory::TProces *proces_pom;
+  TStringList *ls;
 
 	////metody
 	void aut_pozicovani(Cvektory::TElement *E, int X, int Y);
@@ -601,6 +602,7 @@ private:
 	void smaz_edit(bool refresh=true);//smaže edit, který sloužil pro změnu názvu elementu a nový název zapíše do elementu, defaultně provede refresh, pokud není předáno parametrem jinak
 	void vykresli_spojinici_EmGrid(TCanvas *Canv,Cvektory::TElement *E);//vykreslí spojnici mezi tabulkou a elementem z nejbližšího rohu tabulky
 	void nacti_podklad(TCanvas *Canv);
+  unsigned short load_language(Tlanguage language);
 
 	////proměnné
 	TDateTime TIME;
@@ -637,6 +639,7 @@ private:
 	TRect FOldBoundsRect;
 	bool PmGCheckLink;
 	bool offset_spolus_rozmerem;//uchovává v sobě, zda má být při změně rozmerů kabiny změně i offset kót elementů
+  UnicodeString Jazyk;
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
@@ -647,7 +650,6 @@ public:		// User declarations
 	Cgrafy g;
 	TPO_math pm;//INSTANCE NA VÝPOČETNÍ ČÁST PO tj. PO_math
 	Graphics::TBitmap *Pan_bmp;//kvůli mGridu jinak stačí private
-
 	//uklazatele
 	Cvektory::TObjekt *pom,*pom_vyhybka,*pom_temp,*copyObjekt;
 	Cvektory::TElement *pom_element,*pom_element_temp;
@@ -714,7 +716,7 @@ public:		// User declarations
 	void Sv(UnicodeString Text="",AnsiString umisteni="neuvedeno");//usnadňuje přístup k ShowMessage - MaVl
 	void Z(UnicodeString Text="",bool add=false,TColor color=clRed);//usnadňuje přístup ke zprávám, pokud jsou jen prázdné uvozovky (a druhý paremetry na false - což je implicitně), vymaže zpravu, parametr add rozhoduje, zda bude nový text předen k předešlému textu či nikoliv, pokud zpráva obsahuje nějaký text, je zobrazena ikona zprávy, poslední parametr je barva ikony zprávy
 	int MB(long left,long top,UnicodeString text,UnicodeString caption_text="",int mbTYPE=MB_OK,bool centrovat_text=true,bool checkbox_zobrazit=false,int width=366,bool default_button_caption=true);
-	int MB(UnicodeString text,int mbTYPE=MB_OK,bool centrovat_text=true,int width=366,bool default_button_caption=true,bool blurForm1=true);//pokud je blurForm1 na true - Form1 v době zobrazení MB rozmlží/udělá bluer efekt
+	int MB(UnicodeString text,int mbTYPE=MB_OK,bool centrovat_text=true,int width=366,bool default_button_caption=true,bool blurForm1=true,bool copy_zobrazit=false);//pokud je blurForm1 na true - Form1 v době zobrazení MB rozmlží/udělá bluer efekt
 	void writeINI(AnsiString Section,AnsiString Ident,AnsiString Value);//zajišťuje zápis do INI aplikace
 	AnsiString readINI(AnsiString Section,AnsiString Ident);//zajišťuje čtení z INI aplikace
 	void kopirovat_objekt();//pokud je označený objekt, zajistí jeho zkopírování, připočítá index 1,2,3

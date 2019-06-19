@@ -46,7 +46,7 @@ public:
 	AnsiString addDecimal(double number,unsigned short precision);//pøídá nuly na urovní decimální èásti do poètu dle precision napø. 3,23 -> 3,230, 5 -> 5,000
 	bool IsNumber(UnicodeString Text);//ovìøí, že se jedná o èíslo
 	//TPointD HexGes2Dec(UnicodeString Loc);//pøevede èíslo z hexagesimálního tvaru na dekadický
-	System::WideChar numericFilter(AnsiString aktText,System::WideChar &Key,bool ErrorMessageBeep=true);//metoda volatelná v onkeypress dané komponenty, dovolí pouze reálné èi celé èíslo, separátor desetinného místa dle lokálního nastavení, ošetøuje i, aby separátor byl v textu obsažen pouze jeden a aby nebyl na prvním místì, pokud nastane chybnì zadaný znak, mùže systemovì zazvonit - poslední parametr, implicitnì na true
+	System::WideChar numericFilter(AnsiString aktText,System::WideChar &Key,bool ErrorMessageBeep=true,short typ=2);//metoda volatelná v onkeypress dané komponenty, dovolí pouze reálné èi celé èíslo, separátor desetinného místa dle lokálního nastavení, ošetøuje i, aby separátor byl v textu obsažen pouze jeden a aby nebyl na prvním místì, pokud nastane chybnì zadaný znak, mùže systemovì zazvonit - poslední parametr, implicitnì na true, parametr typ urèuje typ filtru: 1 = reálná èísla, 2 = kladná reálná èísla, implicitnì = 2
 protected:
 };
 //---------------------------------------------------------------------------

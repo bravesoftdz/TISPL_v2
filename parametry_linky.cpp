@@ -496,11 +496,11 @@ void TForm_parametry_linky::nacti_pohony ()
 					mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
 
 
-          mGrid->Cells[2][i].InputNumbersOnly=true;
-          mGrid->Cells[3][i].InputNumbersOnly=true;
-          mGrid->Cells[4][i].InputNumbersOnly=true;
-          mGrid->Cells[5][i].InputNumbersOnly=true;
-          }
+					mGrid->Cells[2][i].InputNumbersOnly=2;
+					mGrid->Cells[3][i].InputNumbersOnly=2;
+					mGrid->Cells[4][i].InputNumbersOnly=2;
+          mGrid->Cells[5][i].InputNumbersOnly=2;
+					}
 
            mGrid->Refresh(); // kvùli prací s následných Checkboxem je nutný refresh
 
@@ -915,10 +915,10 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
 	 /*mGrid->Cells[6][i].Type=mGrid->CHECK;*/mGrid->Cells[6][i].RightBorder->Color=clWhite;//Check zobrazen pouze v pøípadì, že je pohon pøiøazen
    mGrid->Cells[7][i].Type=mGrid->BUTTON;
 
-   mGrid->Cells[2][i].InputNumbersOnly=true;
-   mGrid->Cells[3][i].InputNumbersOnly=true;
-	 mGrid->Cells[4][i].InputNumbersOnly=true;
-   mGrid->Cells[5][i].InputNumbersOnly=true;
+	 mGrid->Cells[2][i].InputNumbersOnly=2;
+	 mGrid->Cells[3][i].InputNumbersOnly=2;
+	 mGrid->Cells[4][i].InputNumbersOnly=2;
+   mGrid->Cells[5][i].InputNumbersOnly=2;
 
    mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
 
@@ -1155,10 +1155,10 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
 	 /*mGrid->Cells[6][i].Type=mGrid->CHECK;*/ mGrid->Cells[6][i].RightBorder->Color=clWhite;
 	 mGrid->Cells[7][i].Type=mGrid->BUTTON;
 
-   mGrid->Cells[2][i].InputNumbersOnly=true;
-   mGrid->Cells[3][i].InputNumbersOnly=true;
-	 mGrid->Cells[4][i].InputNumbersOnly=true;
-   mGrid->Cells[5][i].InputNumbersOnly=true;
+	 mGrid->Cells[2][i].InputNumbersOnly=2;
+	 mGrid->Cells[3][i].InputNumbersOnly=2;
+	 mGrid->Cells[4][i].InputNumbersOnly=2;
+   mGrid->Cells[5][i].InputNumbersOnly=2;
 
    if(i==2)
    {
@@ -2477,10 +2477,10 @@ void TForm_parametry_linky::getmGridColors()
    mGrid->Cells[6][i].Type=mGrid->CHECK;
    mGrid->Cells[7][i].Type=mGrid->BUTTON;
 
-   mGrid->Cells[2][i].InputNumbersOnly=true;
-   mGrid->Cells[3][i].InputNumbersOnly=true;
-   mGrid->Cells[4][i].InputNumbersOnly=true;
-   mGrid->Cells[5][i].InputNumbersOnly=true;
+	 mGrid->Cells[2][i].InputNumbersOnly=2;
+	 mGrid->Cells[3][i].InputNumbersOnly=2;
+	 mGrid->Cells[4][i].InputNumbersOnly=2;
+	 mGrid->Cells[5][i].InputNumbersOnly=2;
 
    if(i==2){
     mGrid->Cells[2][i].Text="0,2";

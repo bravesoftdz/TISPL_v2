@@ -987,7 +987,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 		case 4:case 10:case 14:case 18:case 104:case 108: T="Robot";				novy->PT1=60;novy->PTotoc=20;novy->PT2=60;novy->rotace_jig=180; break;//robot s aktivní otočí (tj. s otočí a se stopkou)
 		case 5: T="Otoč"; 																									novy->OTOC_delka=0.450;novy->rotace_jig=90;break;//pasivní otoč
 		case 6: T="Otoč"; 																									novy->PTotoc=20;novy->rotace_jig=90;break;//aktivní otoč
-		case 100: T="ION. tyč";
+		case 100: T="ION tyč";
 	}
 	if(novy->name=="")//přiřazení názvu pouze v případě, že element žádné nemá, při posuvu je novému elementu přiřazeno jméno
 	{
