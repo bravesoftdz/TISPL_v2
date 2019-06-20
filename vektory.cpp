@@ -60,6 +60,7 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->zobrazit_mGrid=true;//proměnná určující, zda budou zobrazeny mGridy
 	novy->uzamknout_nahled=false;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 	novy->predchozi=novy;//ukazuje sam na sebe
+	novy->predchozi2=NULL;
 	novy->dalsi=NULL;
 	novy->dalsi2=NULL;
 	OBJEKTY=novy;//OBJEKTY
@@ -69,12 +70,16 @@ void Cvektory::hlavicka_OBJEKTY()
 ////uloží objekt a jeho parametry do seznamu
 Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 {
+	AnsiString name,short_name;//dočasná konstrukce pro přiřazování spráných názvů objektům
+	if(id==F->VyID){name=knihovna_objektu[id].name+" "+AnsiString(pocet_vyhybek);short_name=knihovna_objektu[id].short_name+AnsiString(pocet_vyhybek);}
+	else if(id<=pocet_objektu_knihovny) {name=knihovna_objektu[id].name;short_name=knihovna_objektu[id].short_name;}else {name="Spojka "+AnsiString(pocet_vyhybek);short_name="S"+AnsiString(pocet_vyhybek);}
+
 	TObjekt *novy=new TObjekt;
 
 	novy->n=OBJEKTY->predchozi->n+1;//navýším počítadlo prvku o jedničku
 	novy->id=id;
-	novy->short_name=knihovna_objektu[id].short_name;
-	novy->name=knihovna_objektu[id].name;
+	novy->short_name=short_name;
+	novy->name=name;
 	novy->rezim=0;if(id==4 || id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
 	novy->X=X;//přiřadím X osu,pozice objektu
 	novy->Y=Y;//přiřadím Y osu,pozice objektu
@@ -114,6 +119,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 
 	OBJEKTY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
 	novy->predchozi=OBJEKTY->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+	novy->predchozi2=NULL;
 	novy->dalsi=NULL;
 	novy->dalsi2=NULL;
 	OBJEKTY->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
@@ -165,6 +171,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	novy->uzamknout_nahled=false;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 
 	novy->predchozi=p;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+	novy->predchozi2=NULL;
 	novy->dalsi=p->dalsi;
 	p->dalsi->predchozi=novy;
 	p->dalsi=novy;
@@ -183,6 +190,7 @@ void Cvektory::vloz_objekt(TObjekt *Objekt)
 	novy->n=OBJEKTY->predchozi->n+1;//navýším počítadlo prvku o jedničku
 	OBJEKTY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
 	novy->predchozi=OBJEKTY->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+	novy->predchozi2=NULL;
 	novy->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje
 	novy->dalsi2=NULL;
 	OBJEKTY->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
@@ -262,6 +270,7 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		novy->uzamknout_nahled=Objekt->uzamknout_nahled;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 
 		novy->predchozi=p;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+    novy->predchozi2=NULL;
 		novy->dalsi=p->dalsi;
 		p->dalsi->predchozi=novy;
 		p->dalsi=novy;
@@ -320,6 +329,8 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 //hledá objekt v dané oblasti                                       //pracuje v logic souradnicich tzn. již nepouživat *Zoom  použít pouze m2px
 Cvektory::TObjekt *Cvektory::najdi_objekt(double X, double Y,double offsetX, double offsetY,short typ)//hledá bod v dané oblasti
 {
+	int krok=1;//rozdílné kroky v procházení objekty, defaultně krok = 1
+	TPoint *tab_pruchodu=new TPoint[pocet_vyhybek+1];//+1 z důvodu indexace výhybka 1 bude mít index 1, nebude se začínat od indexu 0, tabulka.x = vyhybky, tabulka.y = spojky
 	Cvektory::TObjekt *O=OBJEKTY;//->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
 	{
@@ -331,8 +342,26 @@ Cvektory::TObjekt *Cvektory::najdi_objekt(double X, double Y,double offsetX, dou
 		{
 			if(m.PtInCircle(X,Y,O->X,O->Y,offsetX)){return O;}//nalezeno !
 		}
-		O=O->dalsi;//posun na další prvek
+		//přepínání kroků v cyklu (dalsi/dalsi2)
+		if(O->id==F->VyID)//výhybka
+		{
+			int n=F->ms.MyToDouble(O->short_name.SubString(2,1));//extrakce pořadového čísla výhybky
+			tab_pruchodu[n].x++;if(tab_pruchodu[n].x==1)krok=2;else krok=1;//navýšení "buňky", která udržuje počet průchodu přes vyhybky
+			//pokud se jedná o první průchod je krok nastaven na průchod sekundární větví, pokud druhý = průchod primární vetví
+		}else//pokud se nejedná o výhybku
+		if(O->id==pocet_objektu_knihovny+1)//spojka, neni přítomná v knihovně objektů, nelze ji z ní vkládat
+		{
+			int n=F->ms.MyToDouble(O->short_name.SubString(2,1));//extrakce pořadového čísla spojky
+			tab_pruchodu[n].y++;if(tab_pruchodu[n].y==1)krok=2;else krok=1;//navýšení "buňky", která udržuje počet průchodu přes spojku
+			//při prvním průchodu je krok nastaven tak, aby došlo ke skoku na spárovanou výhybku, při dalším průchodu základní krok (dalsi)
+		}else krok=1;//nejdená se o výhybku ani o spojku, krok nastavit na defaultní hodnotu
+		switch(krok)//rozdělení přistupů na další element popřípadě skok na spárovanou výhybku
+		{
+			case 1:O=O->dalsi;break;//defaultně
+			case 2:O=O->dalsi2;break;//pri průchodu sekundární vetví, skoku na spárovanou výhybku
+		}
 	}
+	tab_pruchodu=NULL;delete tab_pruchodu;
 	return O;
 }
 //---------------------------------------------------------------------------
