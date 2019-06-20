@@ -3054,9 +3054,12 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 void Cvykresli::vykresli_cloveka(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav)
 {
 	//změna orientace
-	rotace+=180;
-	rotace=fmod(rotace,360.0);// včetně ošetření přetečení přes 360 stupňů
-	if(rotace<0){rotace+=360;}//pro záporné hodnoty
+	if(rotace==0 || rotace==180)
+	{
+		rotace+=180;
+		rotace=fmod(rotace,360.0);// včetně ošetření přetečení přes 360 stupňů
+		if(rotace<0){rotace+=360;}//pro záporné hodnoty
+	}
 
 	////proměnné mimo paramety metody
 	double Z=F->Zoom;
@@ -3185,9 +3188,9 @@ void Cvykresli::vykresli_cloveka(TCanvas *canv,long X,long Y,AnsiString name,Ans
 		else//ikona
 		{
 			canv->Font->Name=F->aFont->Name;//musí tu být, jinak chyba popisku u prvního robota  //canv->Font->Name="Arial";
-			canv->Font->Size=F->m.round(sizeP*Z);if(F->aFont->Size==12)canv->Font->Size=F->m.round(3*Z);
-			canv->TextOutW(X-canv->TextWidth(name)/2,m.round(Y+Odsazeni+1*Z),name); //1 pouze korekce
-			canv->TextOutW(X-canv->TextWidth(short_name)/2,m.round(Y+Odsazeni+1*Z+1*Z+canv->TextHeight(name)),short_name);
+			canv->Font->Size=F->m.round(sizeP*Z/1.5);if(F->aFont->Size==12)canv->Font->Size=F->m.round(3*Z/1.5); ///1.5 kvůli dodatečnému zvětšování 1.5x člověka v knihovně elemementů
+			canv->TextOutW(X-canv->TextWidth(name)/2,m.round(Y+Odsazeni),name); //1 pouze korekce
+			canv->TextOutW(X-canv->TextWidth(short_name)/2,m.round(Y+Odsazeni+1*Z+canv->TextHeight(name)),short_name);
 		}
 	}
 }
