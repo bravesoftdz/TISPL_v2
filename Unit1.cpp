@@ -2333,29 +2333,29 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			break;
 		}
 		case VYH://přidávání vyhýbky, ROZPRACOVÁNO!!!!!!
-		{    //Cvektory::TObjekt *p;
-			d.odznac_oznac_vetev(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom_vyhybka);
-			minule_souradnice_kurzoru=TPoint(X,Y);
-			d.odznac_oznac_vetev(Canvas,X,Y,pom_vyhybka);
+		{    Cvektory::TObjekt *p;
+//			d.odznac_oznac_vetev(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom_vyhybka);
+//			minule_souradnice_kurzoru=TPoint(X,Y);
+//			d.odznac_oznac_vetev(Canvas,X,Y,pom_vyhybka);
 //			if(probehl_zoom==false)//ošetření proti nežádoucímu chování po zoomu
 //			{
-//				if(d.v.OBJEKTY->predchozi->n>=2)//pokud už existují alespoň dva prvky, jinak nemá smysl
-//				{
-//					Cvektory::TObjekt *p=add_objekt_za();//testuje zda se bude přidávat objekt mimo situace poslední-první objekt-prvek
-//					if(p!=NULL && p!=pom)//byl nalezen meziprostor k přidávání, porovnám tedy jestli se jedná o nový
-//					{
+				if(d.v.OBJEKTY->predchozi->n>=2)//pokud už existují alespoň dva prvky, jinak nemá smysl
+				{
+					Cvektory::TObjekt *p=add_objekt_za();//testuje zda se bude přidávat objekt mimo situace poslední-první objekt-prvek
+					if(p!=NULL && p!=pom)//byl nalezen meziprostor k přidávání, porovnám tedy jestli se jedná o nový
+					{
 //						if(add_posledni)d.odznac_oznac_objekt_novy_posledni(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y);
 //						else if(pom!=NULL)d.odznac_oznac_objekt_novy(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
-//						zneplatnit_minulesouradnice();pom=p;add_posledni=false;
-//						if(pom->dalsi->n!=pom_vyhybka->n)Memo("můžu přidat");else Memo("Nemůžu přidat");
-//					}           // p==NULL a  || d.v.OBJEKTY->predchozi->n==2 zajišťuje možnost přídání i mezi dva prvky nebo přídání za dva prvky standardně
+						zneplatnit_minulesouradnice();pom=p;add_posledni=false;
+						if(p->dalsi->n!=pom_vyhybka->n)Memo("můžu přidat");else Memo("Nemůžu přidat");
+					}           // p==NULL a  || d.v.OBJEKTY->predchozi->n==2 zajišťuje možnost přídání i mezi dva prvky nebo přídání za dva prvky standardně
 //					if(p==NULL && (d.lezi_v_pasmu_poslednim(Canvas,X,Y) || d.v.OBJEKTY->predchozi->n==2))//kurzor se nenachází v prostoru mezi prkvy, je tedy možné přidávat mezi poslední a první prvek, tedy na konec spojového seznamu
 //					{
 //						if(add_posledni)d.odznac_oznac_objekt_novy_posledni(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y);
 //						else if(pom!=NULL)d.odznac_oznac_objekt_novy(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
 //						zneplatnit_minulesouradnice();add_posledni=true;pom=NULL;
 //					}
-//				}
+				}
 //				if(!add_posledni)//pro situaci přidávání mezi prvky
 //				{
 //					d.odznac_oznac_objekt_novy(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
@@ -2369,7 +2369,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 //					d.odznac_oznac_objekt_novy_posledni(Canvas,X,Y);
 //				}
 //			}
-			probehl_zoom=false;
+//			probehl_zoom=false;
 			break;
 		}
 		case MEASURE://liniové měření vzdálenosti,vykreslení provizorní měřící linie
@@ -5405,7 +5405,7 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 			case 0:case 9://objekt navěšování + svěšování
 			{
 				//prvotní vykreslení všech robotů
-				Zoom=15;
+				Zoom=15;//zvětšení zoomu při použití robotů
 				int i=1;//použití z důvodu kopírování algoritmu z lakovny, kde tuto funkci zastává n z for cyklu
 				if(pom_temp->id==0)label_pom="navěšování";else label_pom="svěšování";//nastavování zda se jedná o navěšování či svěšování
 				for(unsigned short n=101;n<=104;n++)
@@ -5417,9 +5417,9 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 					if(n==104){ label1= "S&G s";  label2="akt. otočí"; }
 					if(pom_temp->pohon!=NULL)
 					{
-						d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((i+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(i/2.0)-1)*H+P+30-odsazeni,label1,label2,n,0,270);
+						d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((i+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(i/2.0)-1)*H+P+30-odsazeni,label1,label2,n);
 					}
-					else d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((i+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(i/2.0)-1)*H+P+30-odsazeni,label1,label2,n,0,270,-1);
+					else d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((i+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(i/2.0)-1)*H+P+30-odsazeni,label1,label2,n,0,0,-1);
 					i++;
 				}
 				//změna vykreslení robotů v případě vložení elementu
@@ -5428,20 +5428,20 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 					C->Pen->Color=clWhite;//nastavení barev pro vykreslení obdelníku
 					C->Brush->Color=clWhite;//musí být těsně před C->Rectangle
 					C->Rectangle(0,0,2*W,2*H);//překreslní původních robotů ("smazání")
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální",label_pom,101,0,270);
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G",label_pom,102,0,270,-1);
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",103,0,270);
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s","akt. otočí",104,0,270,-1);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální",label_pom,101);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G",label_pom,102,0,0,-1);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",103);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s","akt. otočí",104,0,0,-1);
 				}
 				else if ((EID==102 || EID==104 || EID==6) && pom_temp->pohon!=NULL)
 				{
           C->Pen->Color=clWhite;//nastavení barev pro vykreslení obdelníku
 					C->Brush->Color=clWhite;//musí být těsně před C->Rectangle
 					C->Rectangle(0,0,2*W,2*H);//překreslní původních robotů ("smazání")
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální",label_pom,101,0,270,-1);
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G",label_pom,102,0,270);
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",103,0,270,-1);
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s","akt. otočí",104,0,270);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální",label_pom,101,0,0,-1);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G",label_pom,102);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",103,0,0,-1);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s","akt. otočí",104);
 				}
 			}break;
 			case 1://objekt CO2
@@ -5529,9 +5529,9 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 				//prvotní vykreslení všech robotů
 				int i=1;//použití z důvodu kopírování algoritmu z lakovny, kde tuto funkci zastává n z for cyklu
 				//funkce přepínání mezi roboty  lidskými roboty
-				unsigned short n_od,n_do,rob1,rob2,rob3,rob4,rot;
-				if(scGPSwitch_robot_clovek->State==0){n_od=7;n_do=10;rob1=7;rob2=8;rob3=9;rob4=10;rot=0;Zoom=10;}
-				else{n_od=105;n_do=108;rob1=105;rob2=106;rob3=107;rob4=108;rot=270;Zoom=15;}
+				unsigned short n_od,n_do,rob1,rob2,rob3,rob4;
+				if(scGPSwitch_robot_clovek->State==0){n_od=7;n_do=10;rob1=7;rob2=8;rob3=9;rob4=10;Zoom=10;}
+				else{n_od=105;n_do=108;rob1=105;rob2=106;rob3=107;rob4=108;Zoom=15;}
 				for(unsigned short n=n_od;n<=n_do;n++)
 				{
 					//nastavení názvů
@@ -5541,9 +5541,9 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 					if(n==10||n==108){ label1= "S&G s";  label2="akt. otočí"; }
 					if(pom_temp->pohon!=NULL)
 					{
-						d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((i+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(i/2.0)-1)*H+P+30-odsazeni,label1,label2,n,0,rot);
+						d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((i+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(i/2.0)-1)*H+P+30-odsazeni,label1,label2,n,0,0);
 					}
-					else d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((i+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(i/2.0)-1)*H+P+30-odsazeni,label1,label2,n,0,rot,-1);
+					else d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((i+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(i/2.0)-1)*H+P+30-odsazeni,label1,label2,n,0,0,-1);
 					i++;
 				}
 				if((EID==7 || EID==9 || EID==105 || EID==107 || EID==5) && pom_temp->pohon!=NULL)
@@ -5551,20 +5551,20 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
           C->Pen->Color=clWhite;//nastavení barev pro vykreslení obdelníku
 					C->Brush->Color=clWhite;//musí být těsně před C->Rectangle
 					C->Rectangle(0,0,2*W,2*H);//překreslní původních robotů ("smazání")
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální","ionizace",rob1,0,rot);
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"test","ionizace",rob2,0,rot,-1);
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",rob3,0,rot);
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"test s","akt. otočí",rob4,0,rot,-1);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální","ionizace",rob1);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"test","ionizace",rob2,0,0,-1);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",rob3);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"test s","akt. otočí",rob4,0,0,-1);
 				}
 				else if ((EID==8 || EID==10 || EID==106 || EID==108 || EID==6) && pom_temp->pohon!=NULL)
 				{
           C->Pen->Color=clWhite;//nastavení barev pro vykreslení obdelníku
 					C->Brush->Color=clWhite;//musí být těsně před C->Rectangle
 					C->Rectangle(0,0,2*W,2*H);//překreslní původních robotů ("smazání")
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální","ionizace",rob1,0,rot,-1);
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G","ionizace",rob2,0,rot);
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",rob3,0,rot,-1);
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s","akt. otočí",rob4,0,rot);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální","ionizace",rob1,0,0,-1);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G","ionizace",rob2);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",rob3,0,0,-1);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s","akt. otočí",rob4);
 				}
 			}break;
 			case 5://objekt lakování
