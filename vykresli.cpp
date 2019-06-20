@@ -2797,6 +2797,14 @@ void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,Ans
 		case 17: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,OTOC_delka,LO2,F->RO,F->ROst);break;//robot s pasivní otočí
 		case 18: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0,F->RO,F->ROst);break;//robot s aktivní otočí (tj. s otočí a se stopkou)
 		case 100:vykresli_ion(canv,X,Y,name,short_name,typ,rotace,stav,F->ROst);break;//ion tyč
+		case 101:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//lidský robot
+		case 102:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//lidský robot se stop stanicí
+		case 103:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//lidský robot s pasivní otočí
+		case 104:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//lidský robot s aktivní otočí (resp. s otočí a stop stanicí)
+		case 105:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//lidský robot ionizace
+		case 106:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//lidský robot  ionizace se stop stanicí
+		case 107:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//lidský robot  ionizace s pasivní otočí
+		case 108:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//lidský robot  ionizace s aktivní otočí (resp. s otočí a stop stanicí)
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
