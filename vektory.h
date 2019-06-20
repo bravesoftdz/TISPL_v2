@@ -120,6 +120,7 @@ class Cvektory
 			bool zobrazit_mGrid;//proměnná určující, zda budou zobrazeny mGridy
 			bool uzamknout_nahled;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 			struct TObjekt *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+			struct TObjekt *predchozi2;//ukazatel na předchozí2 objekt ve spojovém seznamu
 			struct TObjekt *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 			struct TObjekt *dalsi2;//ukazatel na další2 objekt ve spojovém seznamu
 	};
@@ -322,6 +323,7 @@ class Cvektory
 		 double typ_vozik;
 	};
 	TFile_hlavicka File_hlavicka;
+	unsigned int pocet_vyhybek;//uchovává počet přidaných vyhybek, NUTNO PŘIDAT DO VÝHYBEK!!!
 
 //konstruktor
 		Cvektory();

@@ -32,7 +32,7 @@ Cvykresli::Cvykresli()
 //vrátí souřadnice dle typu buď středové nebo excentrické v podobě levého horního rohu objektu
 int Cvykresli::CorEx(Cvektory::TObjekt *O)
 {
-	if(O->id!=F->VyID)//nejde o výhybku
+	if(O->id!=F->VyID&&O->id!=pocet_objektu_knihovny+1)//nejde o výhybku a spojku
 	return m.L2Px(O->X)+O_width*Form1->Zoom/2;
 	else//jde o výhybku
 	return m.L2Px(O->X);
@@ -41,7 +41,7 @@ int Cvykresli::CorEx(Cvektory::TObjekt *O)
 //vrátí souřadnice dle typu buď středové nebo excentrické v podobě levého horního rohu objektu
 int Cvykresli::CorEy(Cvektory::TObjekt *O)
 {
-	if(O->id!=F->VyID)//nejde o výhybku
+	if(O->id!=F->VyID&&O->id!=pocet_objektu_knihovny+1)//nejde o výhybku a spojku
 	return m.L2Py(O->Y)+O_height*Form1->Zoom/2;
 	else//jde o výhybku
 	return m.L2Py(O->Y);
@@ -105,9 +105,25 @@ void Cvykresli::vykresli_objekty(TCanvas *canv)
 	}
 	else //pokud nejsou k dispozici nadefinované cesty vykreslí se přímo jen spojovací linie mezi objekty (tj. defaultní cesta)
 	{
+		int krok=1;//rozdílné kroky v procházení objekty, defaultně krok = 1
+		int n;//číslo vyhybky nebo spojky
+		TPoint *tab_pruchodu=new TPoint[F->d.v.pocet_vyhybek+1];//+1 z důvodu indexace výhybka 1 bude mít index 1, nebude se začínat od indexu 0, tabulka.x = vyhybky, tabulka.y = spojky
 		Cvektory::TObjekt* ukaz=v.OBJEKTY->dalsi;//přeskočí hlavičku
 		while (ukaz!=NULL)
 		{
+      //přepínání kroků v cyklu (dalsi/dalsi2),zde na začátku z důvodu potřeby tab_průchodů při vykreslění
+			if(ukaz->id==F->VyID)//výhybka
+			{
+				n=F->ms.MyToDouble(ukaz->short_name.SubString(2,1));//extrakce pořadového čísla výhybky
+				tab_pruchodu[n].x++;if(tab_pruchodu[n].x==1)krok=2;else krok=1;//navýšení "buňky", která udržuje počet průchodu přes vyhybky
+				//pokud se jedná o první průchod je krok nastaven na průchod sekundární větví, pokud druhý = průchod primární vetví
+			}else//nejedná se o výhybku
+			if(ukaz->id==pocet_objektu_knihovny+1)//spojka, neni přítomná v knihovně objektů, nelze ji z ní vkládat
+			{
+				n=F->ms.MyToDouble(ukaz->short_name.SubString(2,1));//extrakce pořadového čísla spojky
+				tab_pruchodu[n].y++;if(tab_pruchodu[n].y==1)krok=2;else krok=1;//navýšení "buňky", která udržuje počet průchodu přes spojku
+				//při prvním průchodu je krok nastaven tak, aby došlo ke skoku na spárovanou výhybku, při dalším průchodu základní krok (dalsi)
+			}else krok=1;//nejdená se o výhybku ani o spojku, krok nastavit na defaultní hodnotu
 			canv->Pen->Style=psSolid;
 			canv->Pen->Mode=pmCopy;
 			canv->Pen->Width=m.round(1*Form1->Zoom);//musí být tady, jina to přebije nastavení metody sipka
@@ -117,28 +133,65 @@ void Cvykresli::vykresli_objekty(TCanvas *canv)
 				//if(ukaz->n!=ukaz->predchozi->predchozi->n)//pokud jsou minimálně dva prky, ale šipka bude obousměrnná - možná žádoucí
 				if(v.OBJEKTY->predchozi->n>=3)//až budou alespoň tři prvky,tj. poslední prvek bude mít index n větší než 3
 				{
-					canv->MoveTo(CorEx(ukaz->predchozi->predchozi),CorEy(ukaz->predchozi->predchozi));
+					Cvektory::TObjekt *pom=ukaz->predchozi->predchozi;;//pomocný ukazatel, který uchovává předchozí objekt
+					if(ukaz->id==pocet_objektu_knihovny+1)//pokud jsem na spojce poprvé musí dojít k vykrelení spojnice k predchozi2 objektu, pokud podruhé dojde k vykreslení spojnice k predchozi objektu
+					{
+						if(tab_pruchodu[n].y==1)pom=ukaz->predchozi2->predchozi;
+						else pom=ukaz->predchozi->predchozi;
+					}
+					canv->MoveTo(CorEx(pom),CorEy(pom));
 					canv->LineTo(CorEx(ukaz),CorEy(ukaz));
-					sipka(canv,(CorEx(ukaz->predchozi->predchozi)+CorEx(ukaz))/2,(CorEy(ukaz->predchozi->predchozi)+CorEy(ukaz))/2,m.azimut(ukaz->predchozi->predchozi->X,ukaz->predchozi->predchozi->Y,ukaz->X,ukaz->Y));//zajistí vykreslení šipky - orientace spojovací linie
+					sipka(canv,(CorEx(pom)+CorEx(ukaz))/2,(CorEy(pom)+CorEy(ukaz))/2,m.azimut(pom->X,pom->Y,ukaz->X,ukaz->Y));//zajistí vykreslení šipky - orientace spojovací linie
+					pom=NULL;delete pom;
 				}
 			}
 			else
 			{
-				canv->MoveTo(CorEx(ukaz->predchozi),CorEy(ukaz->predchozi));
+				Cvektory::TObjekt *pom=ukaz->predchozi;;//pomocný ukazatel, který uchovává předchozí objekt
+				if(ukaz->id==pocet_objektu_knihovny+1)//pokud jsem na spojce poprvé musí dojít k vykrelení spojnice k predchozi2 objektu, pokud podruhé dojde k vykreslení spojnice k predchozi objektu
+				{
+					if(tab_pruchodu[n].y==1)pom=ukaz->predchozi2;
+					else pom=ukaz->predchozi;
+				}
+				canv->MoveTo(CorEx(pom),CorEy(pom));
 				canv->LineTo(CorEx(ukaz),CorEy(ukaz));
-				sipka(canv,(CorEx(ukaz->predchozi)+CorEx(ukaz))/2,(CorEy(ukaz->predchozi)+CorEy(ukaz))/2,m.azimut(ukaz->predchozi->X,ukaz->predchozi->Y,ukaz->X,ukaz->Y));//zajistí vykreslení šipky - orientace spojovací linie
+				sipka(canv,(CorEx(pom)+CorEx(ukaz))/2,(CorEy(pom)+CorEy(ukaz))/2,m.azimut(pom->X,pom->Y,ukaz->X,ukaz->Y));//zajistí vykreslení šipky - orientace spojovací linie
+				pom=NULL;delete pom;
 			}
-			ukaz=ukaz->dalsi;//posun na další prvek
+			switch(krok)//rozdělení přistupů na další element popřípadě skok na spárovanou výhybku
+			{
+				case 1:ukaz=ukaz->dalsi;break;//defaultně
+				case 2:ukaz=ukaz->dalsi2;break;//pri průchodu sekundární vetví, skoku na spárovanou výhybku
+			}
 		}
+		tab_pruchodu=NULL;delete tab_pruchodu;
 	}
-
 	////OBJEKTY
 	//samotné objekty, kreslím až v samostatném následujícím cyklu, aby se nakreslilo do horní vrstvy
+	int krok=1;//rozdílné kroky v procházení objekty, defaultně krok = 1
+	TPoint *tab_pruchodu=new TPoint[F->d.v.pocet_vyhybek+1];//+1 z důvodu indexace výhybka 1 bude mít index 1, nebude se začínat od indexu 0, tabulka.x = vyhybky, tabulka.y = spojky
 	Cvektory::TObjekt *O=v.OBJEKTY->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
 	{
 		vykresli_rectangle(canv,O);//if(O->id!=F->VyID) se řeší až ve vykresli rectangle
-		O=O->dalsi;//posun na další prvek
+		//přepínání kroků v cyklu (dalsi/dalsi2)
+		if(O->id==F->VyID)//výhybka
+		{
+			int n=F->ms.MyToDouble(O->short_name.SubString(2,1));//extrakce pořadového čísla výhybky
+			tab_pruchodu[n].x++;if(tab_pruchodu[n].x==1)krok=2;else krok=1;//navýšení "buňky", která udržuje počet průchodu přes vyhybky
+			//pokud se jedná o první průchod je krok nastaven na průchod sekundární větví, pokud druhý = průchod primární vetví
+		}else//nejedná se o výhybku
+		if(O->id==pocet_objektu_knihovny+1)//spojka, neni přítomná v knihovně objektů, nelze ji z ní vkládat
+		{
+			int n=F->ms.MyToDouble(O->short_name.SubString(2,1));//extrakce pořadového čísla spojky
+			tab_pruchodu[n].y++;if(tab_pruchodu[n].y==1)krok=2;else krok=1;//navýšení "buňky", která udržuje počet průchodu přes spojku
+			//při prvním průchodu je krok nastaven tak, aby došlo ke skoku na spárovanou výhybku, při dalším průchodu základní krok (dalsi)
+		}else krok=1;//nejdená se o výhybku ani o spojku, krok nastavit na defaultní hodnotu
+		switch(krok)//rozdělení přistupů na další element popřípadě skok na spárovanou výhybku
+		{
+			case 1:O=O->dalsi;break;//defaultně
+			case 2:O=O->dalsi2;break;//pri průchodu sekundární vetví, skoku na spárovanou výhybku
+		}
 	}
 	//povolení zobrazování LAYOUTU a ČASOVÝCH OS, pokud existují objekty, jinak ne
 	if(v.OBJEKTY->dalsi!=NULL && !Form1->TZF)
@@ -155,6 +208,7 @@ void Cvykresli::vykresli_objekty(TCanvas *canv)
 	if(F->scHTMLLabel_log_vypis->Caption=="")
 	F->Z("<b>Linka v pořádku.</b>",false);
 	O=NULL;delete O;
+	tab_pruchodu=NULL;delete tab_pruchodu;
 }
 //---------------------------------------------------------------------------
 void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, to jak funkční tak i geometrické elementy, v případě aktivního náhledu objektu nevykresluje od daného/nahlíženého objektu uložené vektory, ale vektory aktuální z náhledu, tedy z pom_temp
@@ -346,7 +400,7 @@ void Cvykresli::sipka(TCanvas *canv, int X, int Y, float azimut, bool bez_vyplne
 //---------------------------------------------------------------------------
 void Cvykresli::vykresli_rectangle(TCanvas *canv,Cvektory::TObjekt *ukaz)
 {
-	if((long)ukaz->id!=F->VyID)
+	if((long)ukaz->id!=F->VyID&&(long)ukaz->id!=pocet_objektu_knihovny+1)//vykreslování výhybky a spojky zvlášť
 	{
 		//INFO: Zoom_predchozi_AA je v případě nepoužítí AA totožný jako ZOOM
 
@@ -487,8 +541,14 @@ void Cvykresli::vykresli_kruh(TCanvas *canv, Cvektory::TObjekt *O)
 		////obdelník objektu
 		canv->Pen->Style=psSolid;
 		canv->Brush->Style=bsSolid;
+		if(O->id==F->VyID)//dočasné rozlišení výhybek a spojek
+		{
 		canv->Brush->Color=(TColor)RGB(19,115,169);//(TColor)RGB(254,254,254);//nemuže být čiště bílá pokud je zapnut antialising, tak aby se nezobrazoval skrz objekt grid
-		canv->Pen->Color=(TColor)RGB(19,115,169);//clBlack;
+		canv->Pen->Color=(TColor)RGB(19,115,169);}//clBlack;
+		else{
+		canv->Brush->Color=clRed;
+		canv->Pen->Color=(TColor)RGB(19,115,169);
+    }
 		canv->Pen->Mode=pmCopy;
 		canv->Pen->Width=m.round(2*Form1->Zoom);
 		canv->Ellipse(S.x-W,S.y-W,S.x+W,S.y+W);
