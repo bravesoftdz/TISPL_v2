@@ -74,17 +74,21 @@ class Cvykresli
 	void vykresli_palec(TCanvas *canv,double X,double Y,bool NEW,bool ACTIVE);//zajiöùuje samotnÈ vykreslenÌ palce, parametr NEW rozliöuje nov˝ palec a palace star˝ jiû ke smaz·nÌ (to slouûÌ pro simulaci), poslednÌ parametr znaËÌ, zda palec oznaËit jako aktivnÌ
 	void vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID=0,short typ=0,double rotace=0,short stav=1,double LO1=1.5,double OTOC_delka=0,double LO2=0,double LO_pozice=0);//celkov· vykreslovacÌ metoda, vykreslÌ buÔ stopku, robota nebo otoË
 	void vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID=1,short typ=0,double rotace=0,short stav=1,double LO1=1.5,double OTOC_delka=0,double LO2=0,double aP=0,float TS=0,double LO_pozice=0);
+	void vykresli_cloveka(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID=101,short typ=0,double rotace=0,short stav=1);
 	void vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ=0, double rotace=0, short stav=1);
 	void vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID=5,short typ=0,double rotace=0,short stav=1);
 	void vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ,double rotace,short stav,float TS=0);
 	void vykresli_lakovaci_okno(TCanvas *canv,long X,long Y,double LO1,double OTOC_delka,double LO2,double delka_ramena,double rotace=0,double LO_pozice=0);
-	TPoint polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float sirka1, float sirka2, double sklon, double rotace,TPenMode pmMode=pmCopy,TColor clFillOut=clBlack,TColor lFillIn=clWhite);
-	void linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,int Width,TColor Color=clBlack,TPenStyle PenStyle=psSolid,TPenMode PenMode=pmCopy);
-	void line(TCanvas *canv,long X1,long Y1,long X2,long Y2);
 	void vykresli_ikonu_linie(TCanvas *canv,int X,int Y,AnsiString Popisek="linie",short stav=0);
 	void vykresli_ikonu_oblouku(TCanvas *canv,int X,int Y,AnsiString Popisek="oblouky",short stav=0);
 	void vykresli_ikonu_textu(TCanvas *canv,int X,int Y,AnsiString Popisek="text",short stav=0);
 	void vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popisek="spojnice",short stav=0);
+ 	TPoint polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float sirka1, float sirka2, double sklon, double rotace,TPenMode pmMode=pmCopy,TColor clFillOut=clBlack,TColor lFillIn=clWhite);
+	void linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,int Width,TColor Color=clBlack,TPenStyle PenStyle=psSolid,TPenMode PenMode=pmCopy);
+	void line(TCanvas *canv,long X1,long Y1,long X2,long Y2);
+	void bezier(TCanvas *canv,TPointD *POLE,long posledni_prvek);
+	void bezier(TCanvas *canv,TPointD *POLE,long X,long Y,double oX,double oY,double rotace,long posledni_prvek);
+	void bezier(TCanvas *canv,TPoint *POLE_px,long posledni_prvek);
 	void vykresli_mGridy(TCanvas *canv=NULL);
 	void nabuffrovat_mGridy(TmGrid *mGrid=NULL);//pomocn· metoda vytv·¯ejÌcÌ rastrovÈ obrazy mGrid˘, pokud je buffer na NULL, buffrujÌ se vöechny tabulky, pokud ne, tak pouze ta z parametru
 	void vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvektory::TElement *Element_do);

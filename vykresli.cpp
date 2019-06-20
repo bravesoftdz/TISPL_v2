@@ -3043,6 +3043,147 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	}catch(...){if(DEBUG)MessageBeep(0);}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::vykresli_cloveka(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav)
+{
+	//změna orientace
+	rotace+=180;
+	rotace=fmod(rotace,360.0);// včetně ošetření přetečení přes 360 stupňů
+	if(rotace<0){rotace+=360;}//pro záporné hodnoty
+
+	////proměnné mimo paramety metody
+	double Z=F->Zoom;
+	double oX=0.5665; double oY=-0.33425;//souřadnice těžiště hlavy - uchopovací bod, offset v souřadnicích, lze snadno změnit, pokud bych chtěl uchopovací bod jinde
+	float zAA=1.0;if(F->antialiasing)zAA=3.0;
+
+	////nastavení barev
+	TColor barva=clBlack;if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
+
+	////nastavení pera
+	float W=0.02;if(F->antialiasing)W*=3;
+	TPenMode PenMode=pmCopy;
+	if(typ==-1)//typ kurzor
+	{
+		PenMode=pmNotXor;
+		canv->Pen->Style=psDot;
+		canv->Pen->Width=1;
+		canv->Brush->Style=bsClear;
+	}
+	else
+	{
+		canv->Pen->Style=psSolid;
+		canv->Pen->Width=m.round(W*Z);if(stav==2)canv->Pen->Width*=1.5;//pokud má být zvýrazněn
+		canv->Brush->Style=bsSolid;
+	}
+	canv->Pen->Mode=PenMode;
+	canv->Pen->Color=barva;
+	canv->Brush->Color=clWhite;
+
+	////vytvoření dvou pracovních statických polí s maximálním rozsahem alokace, logických a fyzických souřadnic
+	TPointD PL[49];TPoint PF[49];
+
+	////souřadnice kresby a vykreslování jednotlivých částí siluety
+	if(Z/zAA>=9)//boty se vykreslují až od daného zoomu
+	{
+		//pravá bota
+		PL[0].x=0.375569775287343;PL[0].y=-0.3889123449191;PL[1].x=0.371860255677329;PL[1].y=-0.440639618371226;PL[2].x=0.373070181874266;PL[2].y=-0.463963074881838;PL[3].x=0.382399534818622;PL[3].y=-0.500749498347804;PL[4].x=0.388562240639585;PL[4].y=-0.525049565820684;PL[5].x=0.435996889747796;PL[5].y=-0.565413359326415;PL[6].x=0.449989963736543;PL[6].y=-0.542001450146329;PL[7].x=0.465669342636659;PL[7].y=-0.515768172518775;PL[8].x=0.470331724441489;PL[8].y=-0.490280224477424;PL[9].x=0.478;PL[9].y=-0.46;
+		bezier(canv,PL,X,Y,oX,oY,rotace,9);
+		//levá bota
+		PL[0].x=0.760430224712657;PL[0].y=-0.3909123449191;PL[1].x=0.764139744322671;PL[1].y=-0.442639618371226;PL[2].x=0.762929818125734;PL[2].y=-0.465963074881838;PL[3].x=0.753600465181378;PL[3].y=-0.502749498347804;PL[4].x=0.747437759360415;PL[4].y=-0.527049565820684;PL[5].x=0.700003110252204;PL[5].y=-0.567413359326415;PL[6].x=0.686010036263457;PL[6].y=-0.544001450146329;PL[7].x=0.670330657363341;PL[7].y=-0.517768172518775;PL[8].x=0.665668275558511;PL[8].y=-0.492280224477424;PL[9].x=0.658;PL[9].y=-0.462;
+		bezier(canv,PL,X,Y,oX,oY,rotace,9);
+	}
+	//pravá ruka
+	PL[0].x=0.145;PL[0].y=-0.605;PL[1].x=0.169761356440884;PL[1].y=-0.648;PL[2].x=0.17329076820559;PL[2].y=-0.653098039215686;PL[3].x=0.19485939565657;PL[3].y=-0.684470588235294;PL[4].x=0.200775079385735;PL[4].y=-0.693075219114079;PL[5].x=0.205084597834833;PL[5].y=-0.69613157037026;PL[6].x=0.216428023107551;PL[6].y=-0.699372549019608;PL[7].x=0.260349591735002;PL[7].y=-0.711921568627451;PL[8].x=0.259565278009511;PL[8].y=-0.712313725490196;PL[9].x=0.268408415264413;PL[9].y=-0.712666666666667;PL[10].x=0.277074590335663;PL[10].y=-0.713012545050885;PL[11].x=0.288192728989904;PL[11].y=-0.713882352941176;PL[12].x=0.303486846636962;PL[12].y=-0.713098039215686;PL[13].x=0.32703754096554;PL[13].y=-0.7118903113014;PL[14].x=0.316455232303218;PL[14].y=-0.69839669172869;PL[15].x=0.308192728989904;PL[15].y=-0.697019607843137;PL[16].x=0.284663317225198;PL[16].y=-0.693098039215686;PL[17].x=0.270545670166374;PL[17].y=-0.692705882352941;PL[18].x=0.259957434872256;PL[18].y=-0.684078431372549;PL[19].x=0.251347886559472;PL[19].y=-0.677063243858428;PL[20].x=0.227429956425431;PL[20].y=-0.657044033129204;PL[21].x=0.230545670166374;PL[21].y=-0.654274509803922;PL[22].x=0.23407508193108;PL[22].y=-0.651137254901961;PL[23].x=0.241526062323237;PL[23].y=-0.651529411764706;PL[24].x=0.256428023107551;PL[24].y=-0.652705882352941;PL[25].x=0.262695275296554;PL[25].y=-0.653200665420494;PL[26].x=0.269565278009511;PL[26].y=-0.659568627450981;PL[27].x=0.270937827029119;PL[27].y=-0.661725490196078;PL[28].x=0.27958973180111;PL[28].y=-0.671098387032402;PL[29].x=0.304663317225198;PL[29].y=-0.66878431372549;PL[30].x=0.292114297617354;PL[30].y=-0.656235294117647;PL[31].x=0.288209923548386;PL[31].y=-0.652330920048679;PL[32].x=0.284290739103446;PL[32].y=-0.647576439545949;PL[33].x=0.27329076820559;PL[33].y=-0.635843137254902;PL[34].x=0.267408415264413;PL[34].y=-0.62956862745098;PL[35].x=0.266891476519433;PL[35].y=-0.628397119265468;PL[36].x=0.231329983891864;PL[36].y=-0.615843137254902;PL[37].x=0.216666666666667;PL[37].y=-0.610666666666667;PL[38].x=0.216745098039216;PL[38].y=-0.606823529411764;PL[39].x=0.204;PL[39].y=-0.591333333333333;
+	bezier(canv,PL,X,Y,oX,oY,rotace,39);
+	//levá ruka
+	PL[0].x=0.998333333333333;PL[0].y=-0.606666666666667;PL[1].x=0.974313725490196;PL[1].y=-0.648;PL[2].x=0.97078431372549;PL[2].y=-0.653098039215686;PL[3].x=0.94921568627451;PL[3].y=-0.684470588235294;PL[4].x=0.943300002545345;PL[4].y=-0.693075219114079;PL[5].x=0.938990484096247;PL[5].y=-0.69613157037026;PL[6].x=0.927647058823529;PL[6].y=-0.699372549019608;PL[7].x=0.883725490196078;PL[7].y=-0.711921568627451;PL[8].x=0.884509803921569;PL[8].y=-0.712313725490196;PL[9].x=0.875666666666667;PL[9].y=-0.712666666666667;PL[10].x=0.867000491595417;PL[10].y=-0.713012545050885;PL[11].x=0.855882352941176;PL[11].y=-0.713882352941176;PL[12].x=0.840588235294118;PL[12].y=-0.713098039215686;PL[13].x=0.81703754096554;PL[13].y=-0.7118903113014;PL[14].x=0.827619849627862;PL[14].y=-0.69839669172869;PL[15].x=0.835882352941176;PL[15].y=-0.697019607843137;PL[16].x=0.859411764705882;PL[16].y=-0.693098039215686;PL[17].x=0.873529411764706;PL[17].y=-0.692705882352941;PL[18].x=0.884117647058824;PL[18].y=-0.684078431372549;PL[19].x=0.892727195371608;PL[19].y=-0.677063243858428;PL[20].x=0.916645125505649;PL[20].y=-0.657044033129204;PL[21].x=0.913529411764706;PL[21].y=-0.654274509803922;PL[22].x=0.91;PL[22].y=-0.651137254901961;PL[23].x=0.902549019607843;PL[23].y=-0.651529411764706;PL[24].x=0.887647058823529;PL[24].y=-0.652705882352941;PL[25].x=0.881379806634526;PL[25].y=-0.653200665420494;PL[26].x=0.874509803921569;PL[26].y=-0.659568627450981;PL[27].x=0.873137254901961;PL[27].y=-0.661725490196078;PL[28].x=0.86448535012997;PL[28].y=-0.671098387032402;PL[29].x=0.839411764705882;PL[29].y=-0.66878431372549;PL[30].x=0.851960784313726;PL[30].y=-0.656235294117647;PL[31].x=0.855865158382694;PL[31].y=-0.652330920048679;PL[32].x=0.859784342827634;PL[32].y=-0.647576439545949;PL[33].x=0.87078431372549;PL[33].y=-0.635843137254902;PL[34].x=0.876666666666667;PL[34].y=-0.62956862745098;PL[35].x=0.877183605411647;PL[35].y=-0.628397119265468;PL[36].x=0.912745098039216;PL[36].y=-0.615843137254902;PL[37].x=0.927408415264413;PL[37].y=-0.610666666666667;PL[38].x=0.927329983891864;PL[38].y=-0.606823529411764;PL[39].x=0.94007508193108;PL[39].y=-0.591333333333333;
+	bezier(canv,PL,X,Y,oX,oY,rotace,39);
+	//tělo
+	if(typ!=-1)canv->Pen->Width*=2;
+	PL[0].x=0.438;PL[0].y=-0.405333333333333;PL[1].x=0.364;PL[1].y=-0.389333333333333;PL[2].x=0.352;PL[2].y=-0.382;PL[3].x=0.27558333333333;PL[3].y=-0.3335;PL[4].x=0.26933333333333;PL[4].y=-0.329333333333333;PL[5].x=0.17905052562645;PL[5].y=-0.39211010512529;PL[6].x=0.12558333333333;PL[6].y=-0.381416666666667;PL[7].x=0.11516666666667;PL[7].y=-0.379333333333333;PL[8].x=0.16377777777778;PL[8].y=-0.499333333333333;PL[9].x=0.21725;PL[9].y=-0.587666666666667;PL[10].x=0.21725;PL[10].y=-0.585583333333333;PL[11].x=0.14641666666667;PL[11].y=-0.606416666666667;PL[12].x=0.12975;PL[12].y=-0.6085;PL[13].x=0.076625;PL[13].y=-0.521;PL[14].x=0.03391666666667;PL[14].y=-0.51475;PL[15].x=0.0130833333333301;PL[15].y=-0.366833333333333;PL[16].x=0.0113159293774199;PL[16].y=-0.354284765246321;PL[17].x=-0.01115105718522;PL[17].y=-0.30999031404117;PL[18].x=0.0714166666666698;PL[18].y=-0.271;PL[19].x=0.180208333333335;PL[19].y=-0.2165;PL[20].x=0.181;PL[20].y=-0.232;PL[21].x=0.291;PL[21].y=-0.175;PL[22].x=0.407528527185643;PL[22].y=-0.114617035912894;PL[23].x=0.434999999999999;PL[23].y=-0.108;PL[24].x=0.571;PL[24].y=-0.108;
+	PL[25].x=0.707000000000001;PL[25].y=-0.108;PL[26].x=0.734471472814357;PL[26].y=-0.114617035912894;PL[27].x=0.851;PL[27].y=-0.175;PL[28].x=0.961;PL[28].y=-0.232;PL[29].x=0.961791666666665;PL[29].y=-0.2165;PL[30].x=1.07058333333333;PL[30].y=-0.271;PL[31].x=1.15315105718522;PL[31].y=-0.30999031404117;PL[32].x=1.13068407062258;PL[32].y=-0.354284765246321;PL[33].x=1.12891666666667;PL[33].y=-0.366833333333333;PL[34].x=1.10808333333333;PL[34].y=-0.51475;PL[35].x=1.065375;PL[35].y=-0.521;PL[36].x=1.01225;PL[36].y=-0.6085;PL[37].x=0.99558333333333;PL[37].y=-0.606416666666667;PL[38].x=0.92475;PL[38].y=-0.585583333333333;PL[39].x=0.92475;PL[39].y=-0.587666666666667;PL[40].x=0.97822222222222;PL[40].y=-0.499333333333333;PL[41].x=1.02683333333333;PL[41].y=-0.379333333333333;PL[42].x=1.01641666666667;PL[42].y=-0.381416666666667;PL[43].x=0.96294947437355;PL[43].y=-0.39211010512529;PL[44].x=0.87266666666667;PL[44].y=-0.329333333333333;PL[45].x=0.86641666666667;PL[45].y=-0.3335;PL[46].x=0.78266666666667;PL[46].y=-0.386;PL[47].x=0.76977777777777;PL[47].y=-0.392444444444445;PL[48].x=0.692;PL[48].y=-0.408;
+	bezier(canv,PL,X,Y,oX,oY,rotace,48);
+	if(typ!=-1)canv->Pen->Width/=2;
+	//lemy se vykreslují až od daného zoomu a pokud se nejedná o kurzor
+	if(Z/zAA>=9 && typ!=-1)
+	{
+		//lem pravá ruka
+		PL[0].x=0.123;PL[0].y=-0.381;PL[1].x=0.069;PL[1].y=-0.374;PL[2].x=0.052;PL[2].y=-0.342;PL[3].x=0.069;PL[3].y=-0.374;PL[4].x=0.051;PL[4].y=-0.391;
+		if(rotace)m.rotace_polygon(oX,oY,PL,4,rotace);
+		for(int i=0;i<=4;i++){PF[i].x=X+m.m2px(PL[i].x-oX);PF[i].y=Y+m.m2px(oY-PL[i].y);}
+		canv->Polyline(PF,4);
+		//sekundární lem pravá ruka
+		PL[0].x=0.126;PL[0].y=-0.245;PL[1].x=0.169;PL[1].y=-0.32;PL[2].x=0.152;PL[2].y=-0.291;PL[3].x=0.138;PL[3].y=-0.32;
+		if(rotace)m.rotace_polygon(oX,oY,PL,3,rotace);
+		for(int i=0;i<=3;i++){PF[i].x=X+m.m2px(PL[i].x-oX);PF[i].y=Y+m.m2px(oY-PL[i].y);}
+		canv->Polyline(PF,3);
+		//lem levá ruka
+		PL[0].x=1.018;PL[0].y=-0.381;PL[1].x=1.063;PL[1].y=-0.354;PL[2].x=1.101;PL[2].y=-0.353;PL[3].x=1.063;PL[3].y=-0.354;PL[4].x=1.088;PL[4].y=-0.319;
+		if(rotace)m.rotace_polygon(oX,oY,PL,4,rotace);
+		for(int i=0;i<=4;i++){PF[i].x=X+m.m2px(PL[i].x-oX);PF[i].y=Y+m.m2px(oY-PL[i].y);}
+		canv->Polyline(PF,4);
+		//sekundární lem levá ruka
+		PL[0].x=1.022;PL[0].y=-0.249;PL[1].x=0.995;PL[1].y=-0.296;PL[2].x=0.963;PL[2].y=-0.307;PL[3].x=0.995;PL[3].y=-0.296;PL[4].x=1.003;PL[4].y=-0.323;
+		if(rotace)m.rotace_polygon(oX,oY,PL,4,rotace);
+		for(int i=0;i<=4;i++){PF[i].x=X+m.m2px(PL[i].x-oX);PF[i].y=Y+m.m2px(oY-PL[i].y);}
+		canv->Polyline(PF,4);
+	}
+	//nos
+	PL[0].x=0.539;PL[0].y=-0.48;PL[1].x=0.553684210526316;PL[1].y=-0.483684210526316;PL[2].x=0.548954612960862;PL[2].y=-0.506794038841696;PL[3].x=0.564736842105263;PL[3].y=-0.506315789473684;PL[4].x=0.582105263157895;PL[4].y=-0.505789473684211;PL[5].x=0.572631578947368;PL[5].y=-0.484736842105263;PL[6].x=0.593;PL[6].y=-0.481;
+	bezier(canv,PL,X,Y,oX,oY,rotace,6);
+	//čelo
+	PL[0].x=0.441;PL[0].y=-0.421;PL[1].x=0.46;PL[1].y=-0.491;PL[2].x=0.668;PL[2].y=-0.514;PL[3].x=0.691;PL[3].y=-0.4165;
+	bezier(canv,PL,X,Y,oX,oY,rotace,3);
+	//zadní část hlavy - včetně vykreslení textury vlasů
+	PL[0].x=0.691;PL[0].y=-0.417;PL[1].x=0.6415;PL[1].y=-0.3485;PL[2].x=0.634;PL[2].y=-0.425;PL[3].x=0.568;PL[3].y=-0.425;PL[4].x=0.4975;PL[4].y=-0.425;PL[5].x=0.499;PL[5].y=-0.348;PL[6].x=0.441;PL[6].y=-0.421;PL[7].x=0.4105;PL[7].y=-0.243;PL[8].x=0.4665;PL[8].y=-0.1545;PL[9].x=0.571;PL[9].y=-0.155;PL[10].x=0.6795;PL[10].y=-0.1545;PL[11].x=0.7225;PL[11].y=-0.2425;PL[12].x=0.691;PL[12].y=-0.417;
+	canv->Brush->Style=bsDiagCross;//šrafy mód
+	canv->Brush->Color=clBlack;
+	if(typ!=-1)BeginPath(canv->Handle);
+	bezier(canv,PL,X,Y,oX,oY,rotace,12);
+	if(typ!=-1)EndPath(canv->Handle);
+	if(typ!=-1)FillPath(canv->Handle);
+
+	////text
+	if(typ!=-1)//v módu kurzor se název nezobrazuje
+	{              //pokud by tu nebylo ošetření zdisablovaného stavu, tak by se font již vypisoval bílou barvou....
+		if(typ==0 && stav!=-1)canv->Font->Color=m.clIntensive(barva,100);else canv->Font->Color=barva;//ikona vs. normální zobrazení
+		canv->Font->Style = TFontStyles();//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
+		//if(F->aFont->Size==12)canv->Font->Size=m.round(5.4*Z);else canv->Font->Size=m.round(5*Z);
+		AnsiString T=short_name;
+		//if(Z>4*3) //short_name odstaveno
+		{T=name;if(F->aFont->Size==12)canv->Font->Size=2*Z; else canv->Font->Size=m.round(2.4*Z);}//od daného zoomu zobrazuje celý název
+		float Odsazeni=3.5*Z;
+		if(typ==1)//pokud se jedná o standardní zobrazení
+		{
+			canv->Font->Name=F->aFont->Name;
+			if(/*stav==2 || */stav==3)canv->Font->Style = TFontStyles()<< fsBold;//došlo k vybrání elementu-tato část odstavena nebo přímo jeho textu
+			long x,y;
+			short h=canv->TextHeight(T);short w=canv->TextWidth(T);   //pozn. pro 180° neobracím text vzhůru nohama
+			if(rotace==0 || rotace==180)
+			{
+				x=m.round(X-w/2.0);
+				if(rotace==0)y=m.round(Y-Odsazeni-h);
+				if(rotace==180)y=m.round(Y+Odsazeni);
+				aktOblast=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+w)/zAA),m.round((y+h)/zAA));//souřadnice pro citelnou oblast
+			}
+			else
+			{
+				rotace_textu(canv,-rotace*10);
+				if(rotace==90){x=m.round(X-Odsazeni);y=m.round(Y-w/2.0);}
+				if(rotace==270){x=m.round(X+Odsazeni);y=m.round(Y+w/2.0);}
+				aktOblast=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+h)/zAA),m.round((y+w)/zAA));//souřadnice pro citelnou oblast
+			}
+			canv->TextOutW(x,y,name);//samotný vypis
+		}
+		else//ikona
+		{
+			canv->Font->Name=F->aFont->Name;//musí tu být, jinak chyba popisku u prvního robota  //canv->Font->Name="Arial";
+			canv->Font->Size=F->m.round(sizeP*Z);if(F->aFont->Size==12)canv->Font->Size=F->m.round(3*Z);
+			canv->TextOutW(X-canv->TextWidth(name)/2,m.round(Y+Odsazeni),name); //1 pouze korekce
+			canv->TextOutW(X-canv->TextWidth(short_name)/2,m.round(Y+Odsazeni+1*Z+canv->TextHeight(name)),short_name);
+		}
+	}
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav)
 {
 	double Z=F->Zoom;
@@ -3163,7 +3304,7 @@ void Cvykresli::vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiStr
 	double Z=Form1->Zoom;//zoom, pouze zkrácení zápisu
 
 	////konstanty
-	int polomer=m.m2px(0.2);if(stav==2)polomer=m.m2px(0.3);//poloměr kružnic zadaná v metrech
+	int polomer=m.m2px(0.2);if(stav==2)polomer=m.m2px(0.22);//poloměr kružnic zadaná v metrech
 	int vzdalenost=m.m2px(1.3/2.0);//vzdálenost kružnice od středu v metrech (vzádlenost kružnic podělená dvěmi)
 	float tloustka_linie=1.05/3.0;if(stav==2)tloustka_linie*=1.3;//pokud má být zvýrazněn  //vykreslovací linie
 	float DT=m.m2px(0.35);//delka trysky v metrech
@@ -3352,80 +3493,6 @@ void Cvykresli::vykresli_lakovaci_okno(TCanvas *canv,long X,long Y,double LO1,do
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-//vykreslí polygon dle osy, umí i kónický tvar, vratí souřadnice konce osy polygonu
-TPoint Cvykresli::polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float sirka1, float sirka2, double sklon, double rotace,TPenMode pmMode,TColor clFillOut,TColor clFillIn)
-{
-	//polovina od osy
-	sirka1/=2.0;
-	sirka2/=2.0;
-
-	//vytvoření pole pro vykreslení celého polygonu
-	TPoint *P=new TPoint[5];//vytvoří pole pro polyline
-	//nahoru ze skutečného referenčního bodu
-	TPointD K=m.rotace(sirka1,0+sklon,rotace);
-	P[0].x=m.round(X+K.x);P[0].y=m.round(Y+K.y);
-	///K=m.rotace(sirka1,0+sklon,rotace);
-	//nahoře doprava ze skutečného referenčního bodu
-	K=m.rotace(delka,90+sklon,rotace);
-	TPointD K2=m.rotace(sirka2,0+sklon,rotace);
-	P[1].x=m.round(X+K.x+K2.x);P[1].y=m.round(Y+K.y+K2.y);
-	//dolu ze z předchozího bodu
-	K=m.rotace(sirka2*2,180+sklon,rotace);
-	P[2].x=m.round(P[1].x+K.x);P[2].y=m.round(P[1].y+K.y);
-	//dole ze skutečného referenčního bodu
-	K=m.rotace(sirka1,0+sklon+180,rotace);
-	P[3].x=m.round(X+K.x);P[3].y=m.round(Y+K.y);
-	//zpět nahoru do P[0]
-	P[4]=P[0];
-
-	//záloha nastavení pera
-	TColor clBuffPen=canv->Pen->Color;
-	TColor clBuffBrush=canv->Brush->Color;
-	TPenStyle psBuffPen=canv->Pen->Style;
-	TBrushStyle bsBuffBrush=canv->Brush->Style;
-
-	//nastavení pera
-	canv->Pen->Color=clFillOut;
-	canv->Brush->Color=clFillIn;
-	canv->Pen->Mode=pmMode;
-	//if(transparent)canv->Pen->Mode=pmMask;else canv->Pen->Mode=pmCopy;
-	if(clFillOut==clWhite)canv->Pen->Style=psClear;//pokud je nastaveno bílé orámování je bráno, že se nemá orámování vykreslovat
-
-	//samotné vykreslení
-	canv->Polygon(P,4);//bylo tady polyline pro průhlednou variantu
-
-	//navrácení původních hodnot pera
-	canv->Pen->Color=clBuffPen;
-	canv->Brush->Color=clBuffBrush;
-	canv->Pen->Style=psBuffPen;
-	canv->Brush->Style=bsBuffBrush;
-
-	//vratí souřadnice konce osy polygonu
-	TPoint RET;
-	RET.x=m.round((P[1].x+P[2].x)/2.0);RET.y=m.round((P[1].y+P[2].y)/2.0);
-
-	//zrušení a uvolnění ukazatele
-	P=NULL;delete P;
-
-	return RET;//vratí souřadnice konce osy polygonu
-}
-////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,int Width,TColor Color,TPenStyle PenStyle,TPenMode PenMode)
-{
-	canv->Pen->Width=Width;
-	canv->Pen->Color=Color;
-	canv->Pen->Mode=PenMode;
-	canv->Pen->Style=PenStyle;
-	//set_pen(canv,clBlack,1*10,PS_ENDCAP_FLAT);
-	line(canv,X1,Y1,X2,Y2);
-}
-////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::line(TCanvas *canv,long X1,long Y1,long X2,long Y2)
-{
-	canv->MoveTo(X1,Y1);
-	canv->LineTo(X2,Y2);
-}
-////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_ikonu_linie(TCanvas *canv,int X,int Y,AnsiString Popisek,short stav)
 {
 	short o=10*3;
@@ -3518,6 +3585,105 @@ void Cvykresli::vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popise
 	if(stav!=-1)canv->Font->Color=m.clIntensive(barva,100);else canv->Font->Color=barva;//ikona vs. normální zobrazení
 	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+o/2,Popisek);
 }
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//vykreslí polygon dle osy, umí i kónický tvar, vratí souřadnice konce osy polygonu
+TPoint Cvykresli::polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float sirka1, float sirka2, double sklon, double rotace,TPenMode pmMode,TColor clFillOut,TColor clFillIn)
+{
+	//polovina od osy
+	sirka1/=2.0;
+	sirka2/=2.0;
+
+	//vytvoření pole pro vykreslení celého polygonu
+	TPoint *P=new TPoint[5];//vytvoří pole pro polyline
+	//nahoru ze skutečného referenčního bodu
+	TPointD K=m.rotace(sirka1,0+sklon,rotace);
+	P[0].x=m.round(X+K.x);P[0].y=m.round(Y+K.y);
+	///K=m.rotace(sirka1,0+sklon,rotace);
+	//nahoře doprava ze skutečného referenčního bodu
+	K=m.rotace(delka,90+sklon,rotace);
+	TPointD K2=m.rotace(sirka2,0+sklon,rotace);
+	P[1].x=m.round(X+K.x+K2.x);P[1].y=m.round(Y+K.y+K2.y);
+	//dolu ze z předchozího bodu
+	K=m.rotace(sirka2*2,180+sklon,rotace);
+	P[2].x=m.round(P[1].x+K.x);P[2].y=m.round(P[1].y+K.y);
+	//dole ze skutečného referenčního bodu
+	K=m.rotace(sirka1,0+sklon+180,rotace);
+	P[3].x=m.round(X+K.x);P[3].y=m.round(Y+K.y);
+	//zpět nahoru do P[0]
+	P[4]=P[0];
+
+	//záloha nastavení pera
+	TColor clBuffPen=canv->Pen->Color;
+	TColor clBuffBrush=canv->Brush->Color;
+	TPenStyle psBuffPen=canv->Pen->Style;
+	TBrushStyle bsBuffBrush=canv->Brush->Style;
+
+	//nastavení pera
+	canv->Pen->Color=clFillOut;
+	canv->Brush->Color=clFillIn;
+	canv->Pen->Mode=pmMode;
+	//if(transparent)canv->Pen->Mode=pmMask;else canv->Pen->Mode=pmCopy;
+	if(clFillOut==clWhite)canv->Pen->Style=psClear;//pokud je nastaveno bílé orámování je bráno, že se nemá orámování vykreslovat
+
+	//samotné vykreslení
+	canv->Polygon(P,4);//bylo tady polyline pro průhlednou variantu
+
+	//navrácení původních hodnot pera
+	canv->Pen->Color=clBuffPen;
+	canv->Brush->Color=clBuffBrush;
+	canv->Pen->Style=psBuffPen;
+	canv->Brush->Style=bsBuffBrush;
+
+	//vratí souřadnice konce osy polygonu
+	TPoint RET;
+	RET.x=m.round((P[1].x+P[2].x)/2.0);RET.y=m.round((P[1].y+P[2].y)/2.0);
+
+	//zrušení a uvolnění ukazatele
+	P=NULL;delete P;
+
+	return RET;//vratí souřadnice konce osy polygonu
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,int Width,TColor Color,TPenStyle PenStyle,TPenMode PenMode)
+{
+	canv->Pen->Width=Width;
+	canv->Pen->Color=Color;
+	canv->Pen->Mode=PenMode;
+	canv->Pen->Style=PenStyle;
+	//set_pen(canv,clBlack,1*10,PS_ENDCAP_FLAT);
+	line(canv,X1,Y1,X2,Y2);
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::line(TCanvas *canv,long X1,long Y1,long X2,long Y2)
+{
+	canv->MoveTo(X1,Y1);
+	canv->LineTo(X2,Y2);
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//https://stackoverflow.com/questions/785097/how-do-i-implement-a-b%C3%A9zier-curve-in-c nebo téměř totožné wiki   //http://www.yevol.com/bcb/Lesson12.htm
+void Cvykresli::bezier(TCanvas *canv,TPointD *POLE,long posledni_prvek)
+{
+	bezier(canv,m.L2P(POLE,posledni_prvek),posledni_prvek);
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::bezier(TCanvas *canv,TPointD *POLE,long X,long Y,double oX,double oY,double rotace,long posledni_prvek)
+{
+	TPoint *PF=new TPoint[posledni_prvek+1];
+	if(rotace)m.rotace_polygon(oX,oY,POLE,posledni_prvek,rotace);
+	for(int i=0;i<=posledni_prvek;i++){PF[i].x=X+m.m2px(POLE[i].x-oX);PF[i].y=Y+m.m2px(oY-POLE[i].y);}
+	canv->PolyBezier(PF,posledni_prvek);
+	PF=NULL;delete[] PF;
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::bezier(TCanvas *canv,TPoint *POLE_px,long posledni_prvek)
+{
+	float O=0.02;if(F->antialiasing)O*=3;
+	canv->Pen->Style=psSolid;canv->Pen->Color=clBlack;
+	canv->Pen->Width=m.round(O*F->Zoom);
+	canv->PolyBezier(POLE_px,posledni_prvek);//výsledné vykreslení Bézierovy křivky
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_mGridy(TCanvas *canv)
 {
