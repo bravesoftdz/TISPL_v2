@@ -311,7 +311,9 @@ void TForm1::DesignSettings()
 	scGPButton_viditelnostKoty->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_viditelnostKoty->Height)/2;
 	scGPButton_viditelnostmGrid->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_viditelnostmGrid->Height)/2;
 	////design přepínače člověk robot////
-	scGPPanel_pomocn_proSwitch->Color=scGPLabel_roboti->FillColor;//barva panelu pod přepínačem určuje barvu pozadí přepínače
+	scGPPanel_pomocn_proSwitch->FillColor=scGPLabel_roboti->FillColor;//barva panelu pod přepínačem určuje barvu pozadí přepínače
+	scGPPanel_pomocn_proSwitch->FillColor2=scGPLabel_roboti->FillColor2;
+	scGPPanel_pomocn_proSwitch->FillColorAlpha=scGPLabel_roboti->FillColorAlpha;
 	//pozice ovládacích prvků
 //	scListGroupNastavProjektu->Left=0;
 //	scListGroupNastavProjektu->Top=0;

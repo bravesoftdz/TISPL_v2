@@ -3079,7 +3079,7 @@ void Cvykresli::vykresli_cloveka(TCanvas *canv,long X,long Y,AnsiString name,Ans
 	else
 	{
 		canv->Pen->Style=psSolid;
-		canv->Pen->Width=m.round(W*Z);if(stav==2)canv->Pen->Width*=1.5;//pokud má být zvýrazněn
+		canv->Pen->Width=m.round(W*Z);if(stav==2)canv->Pen->Width*=2;//pokud má být zvýrazněn
 		canv->Brush->Style=bsSolid;
 	}
 	canv->Pen->Mode=PenMode;
@@ -3186,8 +3186,8 @@ void Cvykresli::vykresli_cloveka(TCanvas *canv,long X,long Y,AnsiString name,Ans
 		{
 			canv->Font->Name=F->aFont->Name;//musí tu být, jinak chyba popisku u prvního robota  //canv->Font->Name="Arial";
 			canv->Font->Size=F->m.round(sizeP*Z);if(F->aFont->Size==12)canv->Font->Size=F->m.round(3*Z);
-			canv->TextOutW(X-canv->TextWidth(name)/2,m.round(Y+Odsazeni),name); //1 pouze korekce
-			canv->TextOutW(X-canv->TextWidth(short_name)/2,m.round(Y+Odsazeni+1*Z+canv->TextHeight(name)),short_name);
+			canv->TextOutW(X-canv->TextWidth(name)/2,m.round(Y+Odsazeni+1*Z),name); //1 pouze korekce
+			canv->TextOutW(X-canv->TextWidth(short_name)/2,m.round(Y+Odsazeni+1*Z+1*Z+canv->TextHeight(name)),short_name);
 		}
 	}
 }
