@@ -2353,7 +2353,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 //						else if(pom!=NULL)d.odznac_oznac_objekt_novy(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
 //						zneplatnit_minulesouradnice();add_posledni=true;pom=NULL;
 //					}
-				}
+//				}
 //				if(!add_posledni)//pro situaci přidávání mezi prvky
 //				{
 //					d.odznac_oznac_objekt_novy(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
@@ -2366,7 +2366,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 //					minule_souradnice_kurzoru=TPoint(X,Y);
 //					d.odznac_oznac_objekt_novy_posledni(Canvas,X,Y);
 //				}
-			}
+//			}
 			probehl_zoom=false;
 			break;
 		}
