@@ -205,6 +205,8 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	DesignSettings();//nastavení designu v konstruktoru
 	language=MN;  //příprava na jazyk mutace
 	d.v.pocet_vyhybek=0;//nastavení při každém spuštění, do budoucna načítání z binárky nebo 0
+	count_memo=0;//jednoduchý counter zobrazovaný v memo3
+	d.v.akt_vetev=true;
 }
 //---------------------------------------------------------------------------
 //záležitost s novým designem
@@ -2136,7 +2138,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			d.editacni_okno(Canvas, vychozi_souradnice_kurzoru,akt_souradnice_kurzoru_PX,5,(TColor)RGB(0,128,192));//nakreslí nové okno
 			break;
 		}
-		case ADD://přídávání objektu či elementu, posun navigačních linii
+		case ADD:case VYH://přídávání objektu či elementu, posun navigačních linii
 		{        //algoritmy v tomto CASE (včetně dílčích algoritmu) by bylo možné sloučit, ale bylo by to dost práce navíc...
 			if(MOD!=NAHLED)
 			{
@@ -2145,17 +2147,19 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 					if(d.v.OBJEKTY->predchozi->n>=2)//pokud už existují alespoň dva prvky, jinak nemá smysl
 					{
 						Cvektory::TObjekt *p=add_objekt_za();//testuje zda se bude přidávat objekt mimo situace poslední-první objekt-prvek
-						if(p!=NULL && p!=pom)//byl nalezen meziprostor k přidávání, porovnám tedy jestli se jedná o nový
+						if(p!=NULL && p!=pom)if(d.lezi_v_pasmu(Canvas,X,Y,p)>0)//byl nalezen meziprostor k přidávání, porovnám tedy jestli se jedná o nový
 						{
 							if(add_posledni)d.odznac_oznac_objekt_novy_posledni(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y);
 							else if(pom!=NULL)d.odznac_oznac_objekt_novy(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
 							zneplatnit_minulesouradnice();pom=p;add_posledni=false;
+							if(d.lezi_v_pasmu(Canvas,X,Y,p)==2)d.v.akt_vetev=false;else d.v.akt_vetev=true;//uložení zda jsem v hlavní nebo sekundární
 						}          // p==NULL a  || d.v.OBJEKTY->predchozi->n==2 zajišťuje možnost přídání i mezi dva prvky nebo přídání za dva prvky standardně
 						if(p==NULL && (d.lezi_v_pasmu_poslednim(Canvas,X,Y) || d.v.OBJEKTY->predchozi->n==2))//kurzor se nenachází v prostoru mezi prkvy, je tedy možné přidávat mezi poslední a první prvek, tedy na konec spojového seznamu
 						{
 							if(add_posledni)d.odznac_oznac_objekt_novy_posledni(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y);
 							else if(pom!=NULL)d.odznac_oznac_objekt_novy(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
 							zneplatnit_minulesouradnice();add_posledni=true;pom=NULL;
+							d.v.akt_vetev=true;//na konci vždy hlavní větev
 						}
 					}
 					if(!add_posledni)//pro situaci přidávání mezi prvky
@@ -2332,46 +2336,31 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			nahled_ulozit(true);
 			break;
 		}
-		case VYH://přidávání vyhýbky, ROZPRACOVÁNO!!!!!!
-		{    Cvektory::TObjekt *p;
-//			d.odznac_oznac_vetev(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom_vyhybka);
-//			minule_souradnice_kurzoru=TPoint(X,Y);
-//			d.odznac_oznac_vetev(Canvas,X,Y,pom_vyhybka);
+//		case VYH://přidávání vyhýbky, ROZPRACOVÁNO!!!!!!
+//		{    Cvektory::TObjekt *p;
+//			//////nová koncepce vykreslování nutná!!
 //			if(probehl_zoom==false)//ošetření proti nežádoucímu chování po zoomu
 //			{
-				if(d.v.OBJEKTY->predchozi->n>=2)//pokud už existují alespoň dva prvky, jinak nemá smysl
-				{
-					Cvektory::TObjekt *p=add_objekt_za();//testuje zda se bude přidávat objekt mimo situace poslední-první objekt-prvek
-					if(p!=NULL && p!=pom)//byl nalezen meziprostor k přidávání, porovnám tedy jestli se jedná o nový
-					{
-//						if(add_posledni)d.odznac_oznac_objekt_novy_posledni(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y);
-//						else if(pom!=NULL)d.odznac_oznac_objekt_novy(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
-						zneplatnit_minulesouradnice();pom=p;add_posledni=false;
-						if(p->dalsi->n!=pom_vyhybka->n)Memo("můžu přidat");else Memo("Nemůžu přidat");
-					}           // p==NULL a  || d.v.OBJEKTY->predchozi->n==2 zajišťuje možnost přídání i mezi dva prvky nebo přídání za dva prvky standardně
+//				if(d.v.OBJEKTY->predchozi->n>=2)//pokud už existují alespoň dva prvky, jinak nemá smysl
+//				{
+//					p=add_objekt_za();//testuje zda se bude přidávat objekt mimo situace poslední-první objekt-prvek
+//					if(p!=NULL && p!=pom)//byl nalezen meziprostor k přidávání, porovnám tedy jestli se jedná o nový
+//					{
+//							pom=p;add_posledni=false;
+//					}
 //					if(p==NULL && (d.lezi_v_pasmu_poslednim(Canvas,X,Y) || d.v.OBJEKTY->predchozi->n==2))//kurzor se nenachází v prostoru mezi prkvy, je tedy možné přidávat mezi poslední a první prvek, tedy na konec spojového seznamu
 //					{
-//						if(add_posledni)d.odznac_oznac_objekt_novy_posledni(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y);
-//						else if(pom!=NULL)d.odznac_oznac_objekt_novy(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
-//						zneplatnit_minulesouradnice();add_posledni=true;pom=NULL;
+//						add_posledni=true;pom=NULL;
 //					}
-				}
-//				if(!add_posledni)//pro situaci přidávání mezi prvky
-//				{
-//					d.odznac_oznac_objekt_novy(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
-//					minule_souradnice_kurzoru=TPoint(X,Y);
-//					d.odznac_oznac_objekt_novy(Canvas,X,Y,pom);
-//				}
-//				else//pro situaci poslední první objekt, standardní přidávání nakonec
-//				{
-//					d.odznac_oznac_objekt_novy_posledni(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y);
-//					minule_souradnice_kurzoru=TPoint(X,Y);
-//					d.odznac_oznac_objekt_novy_posledni(Canvas,X,Y);
-//				}
+//				}  //if(pom!=NULL&&d.lezi_v_pasmu(Canvas,X,Y,pom)==1)Memo("za: "+pom->short_name+"  před: "+pom->dalsi->short_name,true);
+//					 //if(pom!=NULL&&d.lezi_v_pasmu(Canvas,X,Y,pom)==2)Memo("za: "+pom->short_name+"  před: "+pom->dalsi2->short_name,true);
+//				d.odznac_oznac_vyhybku(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
+//				minule_souradnice_kurzoru=TPoint(X,Y);
+//				d.odznac_oznac_vyhybku(Canvas,X,Y,pom);
 //			}
 //			probehl_zoom=false;
-			break;
-		}
+//			break;
+//		}
 		case MEASURE://liniové měření vzdálenosti,vykreslení provizorní měřící linie
 		{
 			//zobraz tip musí být zde, jelikož jinak pravé options tento TIP překryje
@@ -3316,25 +3305,48 @@ void TForm1::add_objekt(int X, int Y)
 			akutalizace_stavu_prichytavani_vSB();
 		}
 		else souradnice=m.P2L(TPoint(X,Y));
-    if(pom!=NULL)Memo("pom: "+pom->name);if(pom!=NULL)if(pom->dalsi!=NULL)Memo("pom->dalsi: "+pom->dalsi->name);if(pom_vyhybka!=NULL)Memo("pom_vyhybka: "+pom_vyhybka->name);
+    if(vybrany_objekt==VyID&&Akce!=VYH)d.v.pocet_vyhybek++;//pokud přidávám výhybku je nutné přičíst k počtu vyhybek
 		//uložení do paměti
 		bool spojka=false;
-		if(pom==NULL && pom_vyhybka!=NULL){pom=pom_vyhybka;spojka=true;}//druhokolové přidávání tzn. spojka
-		if(add_posledni)//vloží za poslední prvek
+		if(add_posledni&&Akce==ADD)//vloží za poslední prvek
 		{ //do pom_vyhybka přebírá pouze pro případné účely vyhýbky, pro ostatní objekty má význam metoda bez návratové hodnoty
 			pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y);
 		}
-		else//vkládá prvek mezi prvky
+		else if(Akce==ADD)//vkládá prvek mezi prvky
 		{ //do pom_vyhybka přebírá pouze pro případné účely vyhýbky,, pro ostatní objekty má význam metoda bez návratové hodnoty
-			pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,pom);
+			Cvektory::TObjekt *dalsi;
+			if(d.v.akt_vetev)dalsi=pom->dalsi;else dalsi=pom->dalsi2;
+			pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,pom,dalsi);
+			dalsi=NULL;delete dalsi;         //////////problém vy zvyš_indexy při vkládání na 2x sekundární rameno!!!!!
 			d.v.zvys_indexy(pom);//zvýší indexy nasledujicích bodů
 		}
-
+		else//zde se bude vkládat spojka, zatím test co je v ukazatelých
+		{
+			bool vkladat=false;
+			if(pom!=NULL)
+			{
+		  	if(pom->dalsi!=NULL)if(pom->dalsi->n!=pom_vyhybka->n&&pom->n!=pom_vyhybka->n)vkladat=true;
+		  	if(pom->dalsi==NULL)if(pom->n!=pom_vyhybka->n)vkladat=true;
+				if(pom->dalsi2!=NULL)if(pom->dalsi2->n!=pom_vyhybka->n&&pom->n!=pom_vyhybka->n)vkladat=true;
+			}
+			else if(d.v.OBJEKTY->predchozi->n!=pom_vyhybka->n)vkladat=true;
+			if(vkladat)
+			{
+				Cvektory::TObjekt *dalsi,*predchozi=pom;//pomocný ukazatel na další a předchozí objekt za spojkou
+				if(pom!=NULL)//pokud byl nalezen předchozí objekt a jedná se o výhybku je nutné určit do jaké větve se bude vkládat
+				{if(d.lezi_v_pasmu(Canvas,X,Y,pom)==2)dalsi=predchozi->dalsi2;else dalsi=predchozi->dalsi;}//pokud metoda lezi_v_pasmu vrátí 2, znamená to, že se bude vkládat do sekundární větve
+				else {dalsi=NULL;predchozi=d.v.OBJEKTY->predchozi;}//pokud neexistuje předchozí element, znamená to, že spojka je vkládána na konec, tudíž pom(předchozí)=poslední objekt, dalsi = NULL
+				Cvektory::TObjekt *S=d.v.vloz_objekt(pocet_objektu_knihovny+1,souradnice.x,souradnice.y,pom_vyhybka,predchozi,dalsi);//samotné přidání spojky
+				predchozi=NULL;dalsi=NULL;S=NULL;delete S;delete dalsi;delete predchozi;//vynulování a smazání vytvořených ukazatelů
+				spojka=true;//důlezité pro vypnutí akce
+				if(pom!=NULL)d.v.zvys_indexy(pom);//pokud nebylo provedeno vkládání na konec
+			}
+		}
 		pom=NULL;//odsranění pomocného ukazatele
 		//ihned vykreslení
 		//pokud zruším nutnost invalidate kvůli spojovacím liniim, možno odkomentovat
 		//d.vykresli_rectangle(Canvas,souradnice,knihovna_objektu[vybrany_objekt].name,knihovna_objektu[vybrany_objekt].short_name);
-															//pokud se jedná o spojku bude již ukončeno
+														//pokud se jedná o spojku bude již ukončeno
 		if(vybrany_objekt==VyID && spojka==false)//vyhybka
 		{
 			Akce=VYH;//kurzor(doplnit)
@@ -3356,18 +3368,17 @@ Cvektory::TObjekt *TForm1::add_objekt_za()
 {
 	Cvektory::TObjekt *p=d.v.OBJEKTY->dalsi;//přeskočí hlavičku
 	Cvektory::TObjekt *ret=NULL;
+	TPoint *tab_pruchodu=new TPoint[F->d.v.pocet_vyhybek+1];//+1 z důvodu indexace výhybka 1 bude mít index 1, nebude se začínat od indexu 0, tabulka.x = vyhybky, tabulka.y = spojky
 	while (p!=NULL)
-	{
-		if(p->dalsi!=NULL)//aby se neřešila situace poslední-prní prvek
+	{     //kontrola zda se jedná o poslední první objekt byla přesunuta do metody lezi_v_pasmu
+		if(d.lezi_v_pasmu(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,p)>0)
 		{
-			if(d.lezi_v_pasmu(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,p))
-			{
-				ret=p;
-				break;
-			}
+			ret=p;
+			break;
 		}
-		p=p->dalsi;//posun na další prvek
+		p=d.v.dalsi_krok(p,tab_pruchodu);//vrátí další krok (dalsi/dalsi2)
 	}
+	tab_pruchodu=NULL;delete tab_pruchodu;
 	return ret;
 }
 //---------------------------------------------------------------------------
@@ -3426,7 +3437,7 @@ void TForm1::zmen_poradi_objektu(int X, int Y)//testuje zda se nejedná o změnu
 					}
 					else//ostatní situace
 					{
-						if(d.lezi_v_pasmu(Canvas,X,Y,ukaz,false))
+						if(d.lezi_v_pasmu(Canvas,X,Y,ukaz,false)>0)
 						{
 							RET=TRUE;
 							break;
@@ -6168,10 +6179,11 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 					MB("Nelze smazat objekt, který je součástí technologické cesty zakázky např.: "+UnicodeString(Z->name));
 				else
 				{
-				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu objekt \""+pom->name.UpperCase()+"\" smazat?","",MB_YESNO))
+				if(pom->dalsi2!=pom->predchozi2)MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Nelze smazat objekt \""+pom->name.UpperCase()+"\", odstraňte nejdříve objekty ze sekundární větve.");
+				else if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu objekt \""+pom->name.UpperCase()+"\" smazat?","",MB_YESNO))
 				{
 					d.v.smaz_objekt(pom);//nalezeny můžeme odstranit odstranit
-					d.v.sniz_indexy(pom);
+					/*d.v.sniz_indexy(pom); */ d.v.zvys_indexy(pom);//přeindexuje všechny objekty podle toho jak jsou seřazené
 					pom=NULL;//delete p; nepoužívat delete je to ukazatel na ostra data
 					REFRESH();
 					DuvodUlozit(true);
@@ -8011,51 +8023,36 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 {
 	//vytovoření schématu
 	pom=NULL;pom_temp=NULL;pom_vyhybka=NULL;
-	Cvektory::TObjekt *O;  Cvektory::TObjekt *V=new Cvektory::TObjekt,*S=new Cvektory::TObjekt,*O5=new Cvektory::TObjekt,*O6=new Cvektory::TObjekt;
-	V->id=13;V->name="Výhybka 2";V->short_name="V2";V->X=120;V->Y=-40;
-	O5->id=5;O5->name="Objekt 5";O5->short_name="O5";O5->X=130;O5->Y=-50;
-	O6->id=6;O6->name="Objekt 6";O6->short_name="O6";O6->X=130;O6->Y=-30;
-	S->id=16;S->name="Spojka 2";S->short_name="S2";S->X=150;S->Y=-40;
-                                  //při použití O5 a spol paměťová chyba při zavírání aplikace (mazání objektů předpokládám), důvod nekompletní Objekt definovám ručně, pouze nezbytné věci
-	pom_temp=d.v.vloz_objekt(6,70,-60);pom_temp->short_name="O1";
-	pom_temp=NULL;
-	pom_temp=d.v.vloz_objekt(5,70,-40);pom_temp->short_name="O2";
-	pom_temp=NULL;
-	pom_vyhybka=d.v.vloz_objekt(13,90,-40);pom_vyhybka->short_name="V1"; d.v.pocet_vyhybek++; d.v.pocet_vyhybek=2;
-	pom_temp=d.v.vloz_objekt(1,110,-40);pom_temp->short_name="O3";  pom_temp->predchozi=pom_vyhybka;
-	pom=d.v.vloz_objekt(2,110,-20);pom->short_name="O4";   pom->predchozi=pom_vyhybka;
-	pom_vyhybka->dalsi2=pom; pom_vyhybka->dalsi=pom_temp;
-	O=d.v.vloz_objekt(16,160,-40);O->short_name="S1";//spojka, není definovaná v knihovně objektů
-	pom_temp->dalsi=O;pom->dalsi=O; O->dalsi2=pom_vyhybka;  O->predchozi2=pom; O->predchozi=pom_temp;
-			 pom_temp->dalsi=V;V->predchozi=pom_temp;V->predchozi2=S;
-			 V->dalsi=O5;O5->predchozi=V;V->dalsi2=O6;O6->predchozi=V;
-			 O5->dalsi=S;S->predchozi=O5;O6->dalsi=S;S->predchozi2=O6;S->dalsi2=V;S->dalsi=O;O->predchozi=S;
-	pom=NULL;pom_temp=NULL;pom_vyhybka=NULL;O=NULL;V=NULL;O5=NULL;O6=NULL;S=NULL;
+	Cvektory::TObjekt *O,*O1,*O2,*O3,*V1,*V2=new Cvektory::TObjekt,*S1,*S2=new Cvektory::TObjekt;
+	//ručně počet vyhybek
+	d.v.pocet_vyhybek=1;
+	//vkládání algoritmem
+	O1=d.v.vloz_objekt(6,50,-30);O1->short_name="O1";
+	O2=d.v.vloz_objekt(5,100,-30);O2->short_name="O2";
+	O3=d.v.vloz_objekt(7,75,-70);O3->short_name="O3";
+	V1=d.v.vloz_objekt(13,62,-50/*,O1*/);//V1->name="V1";//d.v.zvys_indexy(O1);
+	S1=d.v.vloz_objekt(16,75,-30,V1,O1,O1->dalsi);S1->short_name="S1";
+	d.v.zvys_indexy(O1);//pozor musí dojít ke zvýšení indexů !!!
+	//ruční vkládání
+//	V2->id=13;V2->name="Výhybka 2";V2->short_name="V2";V2->X=66;V2->Y=-40;d.v.pocet_vyhybek++;
+//	S2->id=16;S2->name="Spojka 2";S2->short_name="S2";S2->X=87;S2->Y=-50;
+//	V2->predchozi2=S2;S2->dalsi2=V2;
+//	O2->dalsi=S2;S2->predchozi=O2;S2->predchozi2=V2;V2->dalsi2=S2;
+//	S2->dalsi=O3;O3->predchozi=S2;
+//	V1->dalsi2=V2;V2->predchozi=V1;V2->dalsi=S1;S1->predchozi2=V2;
+	//nulování a mazání
+	O=NULL;O1=NULL;O2=NULL;O3=NULL;V1=NULL;V2=NULL;S1=NULL;S2=NULL;delete O;delete O1;delete O2;delete O3;delete V1;delete V2;delete S1;delete S2;
+
 	//procházení
-//	int typ=1;
-//	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//+1 z důvodu indexace výhybka 1 bude mít index 1, nebude se začínat od indexu 0
-//	//tabulku není třeba nulovat! tabulka.x = vyhybky, tabulka.y = spojky
+//	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];
 //	O=d.v.OBJEKTY->dalsi;
 //	while(O!=NULL)
-//	{    Memo(O->short_name);
-//		if(O->id==VyID)//vyhybka
-//		{
-//			int n=ms.MyToDouble(O->short_name.SubString(2,1));
-//			tab_pruchodu[n].x++;if(tab_pruchodu[n].x==1)typ=2;else typ=1;
-//		}else
-//		if(O->id==pocet_objektu_knihovny+1)//spojka
-//		{
-//			int n=ms.MyToDouble(O->short_name.SubString(2,1));
-//			tab_pruchodu[n].y++;if(tab_pruchodu[n].y==1)typ=2;else typ=1;
-//		}else typ=1;
-//		switch(typ)//rozdělení přistupů na další element
-//		{
-//			case 1:O=O->dalsi;break;
-//			case 2:O=O->dalsi2;break;
-//		}
+//	{
+//		Memo(O->short_name+", n: "+AnsiString(O->n));
+//		O=d.v.dalsi_krok(O,tab_pruchodu);
 //	}
 //	tab_pruchodu=NULL;delete tab_pruchodu;
-	O=NULL;delete O;delete V;delete O5;delete O6;delete S;
+//	O=NULL;delete O;
 }
 //---------------------------------------------------------------------------
 
@@ -8823,9 +8820,17 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //	B->Parent=this;//musí být až na konci
 //	B=NULL;delete B;
 
-
 //ShowMessage(pom_temp->elementy->name);
 
+	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];
+	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
+	while(O!=NULL)
+	{
+		Memo(O->short_name+", n: "+AnsiString(O->n));
+		O=d.v.dalsi_krok(O,tab_pruchodu);
+	}
+	tab_pruchodu=NULL;delete tab_pruchodu;
+	O=NULL;delete O;
 
 //d.v.POHONY->dalsi->name="ano";
 //Form2->ShowModal();
@@ -9717,9 +9722,10 @@ void __fastcall TForm1::scGPComboBox_prepinacKotClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 //urychlení vypsání do Mema
-void TForm1::Memo(AnsiString Text, bool clear)
+void TForm1::Memo(AnsiString Text, bool clear,bool count)
 {
 	if(clear)Memo3->Clear();
+	if(count){count_memo++;Text=count_memo;}
 	Memo3->Visible=true;
 	Memo3->Lines->Add(Text);
 	Memo3->CopyToClipboard();

@@ -116,25 +116,12 @@ void Cvykresli::vykresli_objekty(TCanvas *canv)
 	}
 	else //pokud nejsou k dispozici nadefinované cesty vykreslí se přímo jen spojovací linie mezi objekty (tj. defaultní cesta)
 	{
-		int krok=1;//rozdílné kroky v procházení objekty, defaultně krok = 1
 		int n;//číslo vyhybky nebo spojky
 		TPoint *tab_pruchodu=new TPoint[F->d.v.pocet_vyhybek+1];//+1 z důvodu indexace výhybka 1 bude mít index 1, nebude se začínat od indexu 0, tabulka.x = vyhybky, tabulka.y = spojky
 		Cvektory::TObjekt* ukaz=v.OBJEKTY->dalsi;//přeskočí hlavičku
 		while (ukaz!=NULL)
 		{
-      //přepínání kroků v cyklu (dalsi/dalsi2),zde na začátku z důvodu potřeby tab_průchodů při vykreslění
-			if(ukaz->id==F->VyID)//výhybka
-			{
-				n=F->ms.MyToDouble(ukaz->short_name.SubString(2,1));//extrakce pořadového čísla výhybky
-				tab_pruchodu[n].x++;if(tab_pruchodu[n].x==1)krok=2;else krok=1;//navýšení "buňky", která udržuje počet průchodu přes vyhybky
-				//pokud se jedná o první průchod je krok nastaven na průchod sekundární větví, pokud druhý = průchod primární vetví
-			}else//nejedná se o výhybku
-			if(ukaz->id==pocet_objektu_knihovny+1)//spojka, neni přítomná v knihovně objektů, nelze ji z ní vkládat
-			{
-				n=F->ms.MyToDouble(ukaz->short_name.SubString(2,1));//extrakce pořadového čísla spojky
-				tab_pruchodu[n].y++;if(tab_pruchodu[n].y==1)krok=2;else krok=1;//navýšení "buňky", která udržuje počet průchodu přes spojku
-				//při prvním průchodu je krok nastaven tak, aby došlo ke skoku na spárovanou výhybku, při dalším průchodu základní krok (dalsi)
-			}else krok=1;//nejdená se o výhybku ani o spojku, krok nastavit na defaultní hodnotu
+			Cvektory::TObjekt *O=F->d.v.dalsi_krok(ukaz,tab_pruchodu);//přepínání kroků v cyklu (dalsi/dalsi2),zde na začátku z důvodu potřeby tab_průchodů při vykreslění
 			canv->Pen->Style=psSolid;
 			canv->Pen->Mode=pmCopy;
 			canv->Pen->Width=m.round(1*Form1->Zoom);//musí být tady, jina to přebije nastavení metody sipka
@@ -147,6 +134,7 @@ void Cvykresli::vykresli_objekty(TCanvas *canv)
 					Cvektory::TObjekt *pom=ukaz->predchozi->predchozi;;//pomocný ukazatel, který uchovává předchozí objekt
 					if(ukaz->id==pocet_objektu_knihovny+1)//pokud jsem na spojce poprvé musí dojít k vykrelení spojnice k predchozi2 objektu, pokud podruhé dojde k vykreslení spojnice k predchozi objektu
 					{
+						n=F->ms.MyToDouble(ukaz->short_name.SubString(2,1));//extrakce pořadového čísla výhybky;
 						if(tab_pruchodu[n].y==1)pom=ukaz->predchozi2->predchozi;
 						else pom=ukaz->predchozi->predchozi;
 					}
@@ -161,6 +149,7 @@ void Cvykresli::vykresli_objekty(TCanvas *canv)
 				Cvektory::TObjekt *pom=ukaz->predchozi;;//pomocný ukazatel, který uchovává předchozí objekt
 				if(ukaz->id==pocet_objektu_knihovny+1)//pokud jsem na spojce poprvé musí dojít k vykrelení spojnice k predchozi2 objektu, pokud podruhé dojde k vykreslení spojnice k predchozi objektu
 				{
+					n=F->ms.MyToDouble(ukaz->short_name.SubString(2,1));//extrakce pořadového čísla spojky
 					if(tab_pruchodu[n].y==1)pom=ukaz->predchozi2;
 					else pom=ukaz->predchozi;
 				}
@@ -169,40 +158,19 @@ void Cvykresli::vykresli_objekty(TCanvas *canv)
 				sipka(canv,(CorEx(pom)+CorEx(ukaz))/2,(CorEy(pom)+CorEy(ukaz))/2,m.azimut(pom->X,pom->Y,ukaz->X,ukaz->Y));//zajistí vykreslení šipky - orientace spojovací linie
 				pom=NULL;delete pom;
 			}
-			switch(krok)//rozdělení přistupů na další element popřípadě skok na spárovanou výhybku
-			{
-				case 1:ukaz=ukaz->dalsi;break;//defaultně
-				case 2:ukaz=ukaz->dalsi2;break;//pri průchodu sekundární vetví, skoku na spárovanou výhybku
-			}
+			ukaz=O;
+			O=NULL;delete O;
 		}
 		tab_pruchodu=NULL;delete tab_pruchodu;
 	}
 	////OBJEKTY
 	//samotné objekty, kreslím až v samostatném následujícím cyklu, aby se nakreslilo do horní vrstvy
-	int krok=1;//rozdílné kroky v procházení objekty, defaultně krok = 1
 	TPoint *tab_pruchodu=new TPoint[F->d.v.pocet_vyhybek+1];//+1 z důvodu indexace výhybka 1 bude mít index 1, nebude se začínat od indexu 0, tabulka.x = vyhybky, tabulka.y = spojky
 	Cvektory::TObjekt *O=v.OBJEKTY->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
 	{
 		vykresli_rectangle(canv,O);//if(O->id!=F->VyID) se řeší až ve vykresli rectangle
-		//přepínání kroků v cyklu (dalsi/dalsi2)
-		if(O->id==F->VyID)//výhybka
-		{
-			int n=F->ms.MyToDouble(O->short_name.SubString(2,1));//extrakce pořadového čísla výhybky
-			tab_pruchodu[n].x++;if(tab_pruchodu[n].x==1)krok=2;else krok=1;//navýšení "buňky", která udržuje počet průchodu přes vyhybky
-			//pokud se jedná o první průchod je krok nastaven na průchod sekundární větví, pokud druhý = průchod primární vetví
-		}else//nejedná se o výhybku
-		if(O->id==pocet_objektu_knihovny+1)//spojka, neni přítomná v knihovně objektů, nelze ji z ní vkládat
-		{
-			int n=F->ms.MyToDouble(O->short_name.SubString(2,1));//extrakce pořadového čísla spojky
-			tab_pruchodu[n].y++;if(tab_pruchodu[n].y==1)krok=2;else krok=1;//navýšení "buňky", která udržuje počet průchodu přes spojku
-			//při prvním průchodu je krok nastaven tak, aby došlo ke skoku na spárovanou výhybku, při dalším průchodu základní krok (dalsi)
-		}else krok=1;//nejdená se o výhybku ani o spojku, krok nastavit na defaultní hodnotu
-		switch(krok)//rozdělení přistupů na další element popřípadě skok na spárovanou výhybku
-		{
-			case 1:O=O->dalsi;break;//defaultně
-			case 2:O=O->dalsi2;break;//pri průchodu sekundární vetví, skoku na spárovanou výhybku
-		}
+		O=F->d.v.dalsi_krok(O,tab_pruchodu);//přepínání kroků v cyklu (dalsi/dalsi2)
 	}
 	//povolení zobrazování LAYOUTU a ČASOVÝCH OS, pokud existují objekty, jinak ne
 	if(v.OBJEKTY->dalsi!=NULL && !Form1->TZF)
@@ -561,7 +529,7 @@ void Cvykresli::vykresli_kruh(TCanvas *canv, Cvektory::TObjekt *O)
 		{
 		canv->Brush->Color=(TColor)RGB(19,115,169);//(TColor)RGB(254,254,254);//nemuže být čiště bílá pokud je zapnut antialising, tak aby se nezobrazoval skrz objekt grid
 		canv->Pen->Color=(TColor)RGB(19,115,169);}//clBlack;
-		else{
+		if (O->id==pocet_objektu_knihovny+1){
 		canv->Brush->Color=clRed;
 		canv->Pen->Color=(TColor)RGB(19,115,169);
     }
@@ -1699,7 +1667,7 @@ void Cvykresli::editacni_okno(TCanvas *canv, TPoint LH, TPoint PD, unsigned shor
 //označí nebo odznačí objekt používá se při posouvání objektů
 void Cvykresli::odznac_oznac_objekt(TCanvas *canv, Cvektory::TObjekt *p, int posunX, int posunY,COLORREF color)
 {
-		if((long)p->id!=F->VyID)
+		if((long)p->id!=F->VyID&&(long)p->id!=pocet_objektu_knihovny+1)
 		{
 			//ShowMessage(UnicodeString(p->X)+" "+UnicodeString(p->Y));
 			//nastavení pera
@@ -1799,7 +1767,7 @@ void Cvykresli::odznac_oznac_objekt(TCanvas *canv, Cvektory::TObjekt *p, int pos
 //používá se pro přidávání objektu mezi poslední a první prvek
 void Cvykresli::odznac_oznac_objekt_novy_posledni(TCanvas *canv,int X, int Y)
 {
-		if(F->vybrany_objekt!=F->VyID)
+		if(F->vybrany_objekt!=F->VyID&&F->Akce!=F->VYH)
 		{
 			if(v.OBJEKTY->predchozi->n>0)//pokud už existuje nějaký prvek
 			{
@@ -1810,16 +1778,16 @@ void Cvykresli::odznac_oznac_objekt_novy_posledni(TCanvas *canv,int X, int Y)
 					canv->Pen->Style=psDot;//nastevení čarkované čáry
 					canv->Pen->Mode=pmNotXor;
 
-					canv->MoveTo(m.L2Px(v.OBJEKTY->predchozi->X)+O_width*Form1->Zoom/2,m.L2Py(v.OBJEKTY->predchozi->Y)+O_height*Form1->Zoom/2);
+					canv->MoveTo(CorEx(v.OBJEKTY->predchozi),CorEy(v.OBJEKTY->predchozi));
 					canv->LineTo(X+O_width*Form1->Zoom/2,Y+O_height*Form1->Zoom/2);
 					if(v.OBJEKTY->predchozi->n>1)//pokud je více než jenom jeden prvek
 					{
-						canv->LineTo(m.L2Px(v.OBJEKTY->dalsi->X)+O_width*Form1->Zoom/2,m.L2Py(v.OBJEKTY->dalsi->Y)+O_height*Form1->Zoom/2);
-						sipka(canv,(m.L2Px(v.OBJEKTY->dalsi->X)+X)/2+O_width*Form1->Zoom/2,(m.L2Py(v.OBJEKTY->dalsi->Y)+Y)/2+O_height*Form1->Zoom/2,m.azimut(m.P2Lx(X),m.P2Ly(Y),v.OBJEKTY->dalsi->X,v.OBJEKTY->dalsi->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
+						canv->LineTo(CorEx(v.OBJEKTY->dalsi),CorEy(v.OBJEKTY->dalsi));
+						sipka(canv,(CorEx(v.OBJEKTY->dalsi)+X)/2+O_width*Form1->Zoom/4,(CorEy(v.OBJEKTY->dalsi)+Y)/2+O_height*Form1->Zoom/4,m.azimut(m.P2Lx(X),m.P2Ly(Y),v.OBJEKTY->dalsi->X,v.OBJEKTY->dalsi->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
 						if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
 						vykresli_rectangle(canv,v.OBJEKTY->dalsi); //znovupřekreslení zúčastněných objektů pro lepší vzhled, nyní řešeno v formmousedown viz  d.odznac_oznac_objekt, nevýhodou pouze zůstavá překreslování linie v místě objektu
 					}
-					sipka(canv,(m.L2Px(v.OBJEKTY->predchozi->X)+X)/2+O_width*Form1->Zoom/2,(m.L2Py(v.OBJEKTY->predchozi->Y)+Y)/2+O_height*Form1->Zoom/2,m.azimut(v.OBJEKTY->predchozi->X,v.OBJEKTY->predchozi->Y,m.P2Lx(X),m.P2Ly(Y)),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
+					sipka(canv,(CorEx(v.OBJEKTY->predchozi)+X)/2+O_width*Form1->Zoom/4,(CorEy(v.OBJEKTY->predchozi)+Y)/2+O_height*Form1->Zoom/4,m.azimut(v.OBJEKTY->predchozi->X,v.OBJEKTY->predchozi->Y,m.P2Lx(X),m.P2Ly(Y)),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
 					if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
 					vykresli_rectangle(canv,v.OBJEKTY->predchozi); //znovupřekreslení zůčastněných objektů pro lepší vzhled, nyní řešeno v formmousedown viz  d.odznac_oznac_objekt, nevýhodou pouze zůstavá překreslování linie v místě objektu
 				}
@@ -1833,7 +1801,7 @@ void Cvykresli::odznac_oznac_objekt_novy_posledni(TCanvas *canv,int X, int Y)
 //používá se pro přidvání objektu mimo poslední a první prvek
 void Cvykresli::odznac_oznac_objekt_novy(TCanvas *canv, int X, int Y,Cvektory::TObjekt *p)
 {
-		if(F->vybrany_objekt!=F->VyID)
+		if(F->vybrany_objekt!=F->VyID&&F->Akce!=F->VYH)
 		{
 			if(p->n>0)//pokud už existuje nějaký prvek
 			{
@@ -1843,16 +1811,21 @@ void Cvykresli::odznac_oznac_objekt_novy(TCanvas *canv, int X, int Y,Cvektory::T
 					canv->Pen->Width=1;
 					canv->Pen->Style=psDot;//nastevení čarkované čáry
 					canv->Pen->Mode=pmNotXor;
+					//definování dalšího prvnku, ke kterému bude vykreslena linie (hlavní / sekundární větev)
+					Cvektory::TObjekt *dalsi=NULL;
+					if(v.akt_vetev)dalsi=p->dalsi;
+					else dalsi=p->dalsi2;
 					//spojovací linie
-					canv->MoveTo(m.L2Px(p->X)+O_width*Form1->Zoom/2,m.L2Py(p->Y)+O_height*Form1->Zoom/2);
+					canv->MoveTo(CorEx(p),CorEy(p));
 					canv->LineTo(X+O_width*Form1->Zoom/2,Y+O_height*Form1->Zoom/2);
-					canv->LineTo(m.L2Px(p->dalsi->X)+O_width*Form1->Zoom/2,m.L2Py(p->dalsi->Y)+O_height*Form1->Zoom/2);
-					sipka(canv,(m.L2Px(p->dalsi->X)+X)/2+O_width*Form1->Zoom/2,(m.L2Py(p->dalsi->Y)+Y)/2+O_height*Form1->Zoom/2,m.azimut(m.P2Lx(X),m.P2Ly(Y),p->dalsi->X,p->dalsi->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
+					canv->LineTo(CorEx(dalsi),CorEy(dalsi));
+					sipka(canv,(CorEx(dalsi)+X)/2+O_width*Form1->Zoom/4,(CorEy(dalsi)+Y)/2+O_height*Form1->Zoom/4,m.azimut(m.P2Lx(X),m.P2Ly(Y),dalsi->X,dalsi->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
 					if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
-					vykresli_rectangle(canv,p->dalsi); //znovupřekreslení zúčastněných objektů pro lepší vzhled, nyní řešeno v formmousedown viz  d.odznac_oznac_objekt, nevýhodou pouze zůstavá překreslování linie v místě objektu
-					sipka(canv,(m.L2Px(p->X)+X)/2+O_width*Form1->Zoom/2,(m.L2Py(p->Y)+Y)/2+O_height*Form1->Zoom/2,m.azimut(p->X,p->Y,m.P2Lx(X),m.P2Ly(Y)),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
+					vykresli_rectangle(canv,dalsi); //znovupřekreslení zúčastněných objektů pro lepší vzhled, nyní řešeno v formmousedown viz  d.odznac_oznac_objekt, nevýhodou pouze zůstavá překreslování linie v místě objektu
+					sipka(canv,(CorEx(p)+X)/2+O_width*Form1->Zoom/4,(CorEy(p)+Y)/2+O_height*Form1->Zoom/4,m.azimut(p->X,p->Y,m.P2Lx(X),m.P2Ly(Y)),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
 					if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
 					vykresli_rectangle(canv,p);//znovupřekreslení zůčastněných objektů pro lepší vzhled, nyní řešeno v formmousedown viz  d.odznac_oznac_objekt, nevýhodou pouze zůstavá překreslování linie v místě objektu
+					dalsi=NULL;delete dalsi;
 				}
 			}
 			editacni_okno(canv,X,Y,X+O_width*Form1->Zoom,Y+O_height*Form1->Zoom,1);
@@ -1866,14 +1839,14 @@ void Cvykresli::odznac_oznac_vyhybku(TCanvas *canv, int X, int Y,Cvektory::TObje
 {
 		//definice souřadnic
 		Cvektory::TObjekt *p1=NULL; if(p==NULL)p1=v.OBJEKTY->predchozi;else p1=p;
-		Cvektory::TObjekt *p2=NULL;	if(p==NULL)p2=v.OBJEKTY->dalsi;		 else p2=p->dalsi;
+		Cvektory::TObjekt *p2=NULL;	if(p==NULL)p2=v.OBJEKTY->dalsi;		 else {if(v.akt_vetev)p2=p->dalsi;else p2=p->dalsi2;}
 		if(posun)p1=p->predchozi;//pokud se jedná o posun objektu
 		if(posun && p->dalsi==NULL)p2=v.OBJEKTY->dalsi;//pokud se jedná o posun objektu a jedná se o poslední prvek
 
     //samotný algoritmus
-		if(p1->n>0)//pokud už existuje nějaký prvek
+		if(p1->n>0&&!posun)//pokud už existuje nějaký prvek
 		{
-			if(X!=-200 && Y!=-200)//spojovací linie  //pokud je mimo obraz -200 jen nahodilá hodnota
+			if(X!=-200 && Y!=-200 && p2!=NULL)//spojovací linie  //pokud je mimo obraz -200 jen nahodilá hodnota
 			{
 				//nastavení pera
 				canv->Pen->Color=clBlack;
@@ -1882,13 +1855,20 @@ void Cvykresli::odznac_oznac_vyhybku(TCanvas *canv, int X, int Y,Cvektory::TObje
 				canv->Pen->Mode=pmNotXor;
 				canv->Brush->Style=bsClear;
 				//spojovací linie
-				canv->MoveTo(m.L2Px(p1->X)+O_width*Form1->Zoom/2,m.L2Py(p1->Y)+O_height*Form1->Zoom/2);
+				canv->MoveTo(CorEx(p1),CorEy(p1));
 				canv->LineTo(X,Y);
-				canv->LineTo(m.L2Px(p2->X)+O_width*Form1->Zoom/2,m.L2Py(p2->Y)+O_height*Form1->Zoom/2);
-				sipka(canv,(m.L2Px(p2->X)+O_width*Form1->Zoom/2+X)/2,(m.L2Py(p2->Y)+O_height*Form1->Zoom/2+Y)/2,m.azimut(m.P2Lx(X),m.P2Ly(Y),p2->X,p2->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
+				canv->LineTo(CorEx(p2),CorEy(p2));
+				if(F->Akce==F->VYH)
+				{
+					canv->MoveTo(X,Y);
+					canv->LineTo(CorEx(F->pom_vyhybka),CorEy(F->pom_vyhybka));
+					sipka(canv,(CorEx(F->pom_vyhybka)+X)/2,(CorEy(F->pom_vyhybka)+Y)/2,m.azimut(F->pom_vyhybka->X,F->pom_vyhybka->Y,m.P2Lx(X),m.P2Ly(Y)),true,3,clBlack,clWhite,pmNotXor);
+				}
+				sipka(canv,(CorEx(p2)+X)/2,(CorEy(p2)+Y)/2,m.azimut(m.P2Lx(X),m.P2Ly(Y),p2->X,p2->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
 				if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
+				//problém ve vykresli_rectangle
 				vykresli_rectangle(canv,p2); //znovupřekreslení zúčastněných objektů pro lepší vzhled, nyní řešeno v formmousedown viz  d.odznac_oznac_objekt, nevýhodou pouze zůstavá překreslování linie v místě objektu
-				sipka(canv,(m.L2Px(p1->X)+O_width*Form1->Zoom/2+X)/2,(m.L2Py(p1->Y)+O_height*Form1->Zoom/2+Y)/2,m.azimut(p1->X,p1->Y,m.P2Lx(X),m.P2Ly(Y)),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
+				sipka(canv,(CorEx(p1)+X)/2,(CorEy(p1)+Y)/2,m.azimut(p1->X,p1->Y,m.P2Lx(X),m.P2Ly(Y)),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
 				if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
 				vykresli_rectangle(canv,p1);//znovupřekreslení zůčastněných objektů pro lepší vzhled, nyní řešeno v formmousedown viz  d.odznac_oznac_objekt, nevýhodou pouze zůstavá překreslování linie v místě objektu
 				//nutné znovu nastavení pera
@@ -1900,6 +1880,49 @@ void Cvykresli::odznac_oznac_vyhybku(TCanvas *canv, int X, int Y,Cvektory::TObje
 				//kruh
 				canv->Ellipse(X-V_width*F->Zoom,Y-V_width*F->Zoom,X+V_width*F->Zoom,Y+V_width*F->Zoom);
 			}
+		}
+		if(posun)
+		{
+      //nastavení pera
+			canv->Pen->Color=clBlack;
+			canv->Pen->Width=1;
+			canv->Pen->Style=psDot;//nastevení čarkované čáry
+			canv->Pen->Mode=pmNotXor;
+			canv->Brush->Style=bsClear;
+			//spojovací linie
+			canv->MoveTo(CorEx(p1),CorEy(p1));
+			canv->LineTo(X,Y);
+			canv->LineTo(CorEx(p2),CorEy(p2));
+			if(p->dalsi2!=NULL&&p->id==F->VyID)
+	  	{
+	  		canv->MoveTo(X,Y);
+	  		canv->LineTo(CorEx(p->dalsi2),CorEy(p->dalsi2));
+	  		sipka(canv,(CorEx(p->dalsi2)+X)/2,(CorEy(p->dalsi2)+Y)/2,m.azimut(m.P2Lx(X),m.P2Ly(Y),p->dalsi2->X,p->dalsi2->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
+	  		if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
+	  		vykresli_rectangle(canv,p->dalsi2); //znovupřekreslení zúčastněných objektů pro lepší vzhled, nyní řešeno v formmousedown viz  d.odznac_oznac_objekt, nevýhodou pouze zůstavá překreslování linie v místě objektu
+	  	}
+			if(p->predchozi2!=NULL&&p->id==pocet_objektu_knihovny+1)
+			{
+	  		canv->MoveTo(X,Y);
+	  		canv->LineTo(CorEx(p->predchozi2),CorEy(p->predchozi2));
+	  		sipka(canv,(CorEx(p->predchozi2)+X)/2,(CorEy(p->predchozi2)+Y)/2,m.azimut(p->predchozi2->X,p->predchozi2->Y,m.P2Lx(X),m.P2Ly(Y)),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
+	  		if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
+	  		vykresli_rectangle(canv,p->dalsi2); //znovupřekreslení zúčastněných objektů pro lepší vzhled, nyní řešeno v formmousedown viz  d.odznac_oznac_objekt, nevýhodou pouze zůstavá překreslování linie v místě objektu
+			}
+			sipka(canv,(CorEx(p2)+X)/2,(CorEy(p2)+Y)/2,m.azimut(m.P2Lx(X),m.P2Ly(Y),p2->X,p2->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
+			if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
+			vykresli_rectangle(canv,p2); //znovupřekreslení zúčastněných objektů pro lepší vzhled, nyní řešeno v formmousedown viz  d.odznac_oznac_objekt, nevýhodou pouze zůstavá překreslování linie v místě objektu
+			sipka(canv,(CorEx(p1)+X)/2,(CorEy(p1)+Y)/2,m.azimut(p1->X,p1->Y,m.P2Lx(X),m.P2Ly(Y)),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
+			if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
+			vykresli_rectangle(canv,p1);//znovupřekreslení zůčastněných objektů pro lepší vzhled, nyní řešeno v formmousedown viz  d.odznac_oznac_objekt, nevýhodou pouze zůstavá překreslování linie v místě objektu
+			//nutné znovu nastavení pera
+			canv->Pen->Color=clBlack;
+			canv->Pen->Width=1;
+			canv->Pen->Style=psDot;//nastevení čarkované čáry
+			canv->Pen->Mode=pmNotXor;
+			canv->Brush->Style=bsClear;
+			//kruh
+			canv->Ellipse(X-V_width*F->Zoom,Y-V_width*F->Zoom,X+V_width*F->Zoom,Y+V_width*F->Zoom);
 		}
 		p1=NULL;delete p1;
 		p2=NULL;delete p2;
@@ -1925,19 +1948,34 @@ void Cvykresli::odznac_oznac_vetev(TCanvas *canv, int X, int Y,Cvektory::TObjekt
 		}
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
-bool Cvykresli::lezi_v_pasmu(TCanvas *c,long X,long Y,Cvektory::TObjekt *p,bool odecti_region)
+//slouží k určení zda se kurzor vyskytuje v pásmu mezi dvěma objekty,0= nic nenalezeno, 1= nalezen dalsi objekt, 2= nalezen dalsi2 objekt
+short Cvykresli::lezi_v_pasmu(TCanvas *c,long X,long Y,Cvektory::TObjekt *p,bool odecti_region)
 {
-		bool ret=false;
-
+		short ret=0;//návratová proměnná, 0= nic nenalezeno, 1= nalezen dalsi objekt, 2= nalezen dalsi2 objekt
+		bool pom;//pomocná proměnná, která uchovává zda je kurzor v pásmu
+		Cvektory::TObjekt *O=F->d.v.OBJEKTY->dalsi;
 		int W=m.round(O_width*Form1->Zoom);
 		int H=m.round(O_height*Form1->Zoom);
+		if(p->dalsi!=NULL)//pouze v případě, že se nejedná o poslední objekt, prohledá oblast mezi p a p->dalsím
+		{
+	  	if((p->X<=p->dalsi->X && p->Y<p->dalsi->Y)||(p->X>p->dalsi->X && p->Y>=p->dalsi->Y))
+			pom=lezi_v_pasmu(c,X,Y,m.L2Px(p->X),m.L2Py(p->Y),m.L2Px(p->X)+W,m.L2Py(p->Y)+H,m.L2Px(p->dalsi->X)+W,m.L2Py(p->dalsi->Y)+H,m.L2Px(p->dalsi->X),m.L2Py(p->dalsi->Y),odecti_region);
 
-		if((p->X<=p->dalsi->X && p->Y<p->dalsi->Y)||(p->X>p->dalsi->X && p->Y>=p->dalsi->Y))
-		ret=lezi_v_pasmu(c,X,Y,m.L2Px(p->X),m.L2Py(p->Y),m.L2Px(p->X)+W,m.L2Py(p->Y)+H,m.L2Px(p->dalsi->X)+W,m.L2Py(p->dalsi->Y)+H,m.L2Px(p->dalsi->X),m.L2Py(p->dalsi->Y),odecti_region);
+	  	if((p->X>p->dalsi->X && p->Y<p->dalsi->Y)||(p->X<=p->dalsi->X && p->Y>=p->dalsi->Y))
+			pom=lezi_v_pasmu(c,X,Y,m.L2Px(p->X),m.L2Py(p->Y)+H,m.L2Px(p->X)+W,m.L2Py(p->Y),m.L2Px(p->dalsi->X)+W,m.L2Py(p->dalsi->Y),m.L2Px(p->dalsi->X),m.L2Py(p->dalsi->Y)+H,odecti_region);
 
-		if((p->X>p->dalsi->X && p->Y<p->dalsi->Y)||(p->X<=p->dalsi->X && p->Y>=p->dalsi->Y))
-		ret=lezi_v_pasmu(c,X,Y,m.L2Px(p->X),m.L2Py(p->Y)+H,m.L2Px(p->X)+W,m.L2Py(p->Y),m.L2Px(p->dalsi->X)+W,m.L2Py(p->dalsi->Y),m.L2Px(p->dalsi->X),m.L2Py(p->dalsi->Y)+H,odecti_region);
+			if(pom)ret=1;//pokud bylo něco nalezeno jedná se o nález další, ret = 1
+		}
+		if(!ret&&p->dalsi2!=NULL&&p->id==F->VyID)//pokud nebyl nalezen další objekt a zároveň se jedná o výhybku, která ma nadefinovanou sekundární větev, prohledá oblast mezi p a p->další2
+		{
+			if((p->X<=p->dalsi2->X && p->Y<p->dalsi2->Y)||(p->X>p->dalsi2->X && p->Y>=p->dalsi2->Y))
+			pom=lezi_v_pasmu(c,X,Y,m.L2Px(p->X),m.L2Py(p->Y),m.L2Px(p->X)+W,m.L2Py(p->Y)+H,m.L2Px(p->dalsi2->X)+W,m.L2Py(p->dalsi2->Y)+H,m.L2Px(p->dalsi2->X),m.L2Py(p->dalsi2->Y),odecti_region);
 
+			if((p->X>p->dalsi2->X && p->Y<p->dalsi2->Y)||(p->X<=p->dalsi2->X && p->Y>=p->dalsi2->Y))
+			pom=lezi_v_pasmu(c,X,Y,m.L2Px(p->X),m.L2Py(p->Y)+H,m.L2Px(p->X)+W,m.L2Py(p->Y),m.L2Px(p->dalsi2->X)+W,m.L2Py(p->dalsi2->Y),m.L2Px(p->dalsi2->X),m.L2Py(p->dalsi2->Y)+H,odecti_region);
+
+			if(pom)ret=2;//pokud bylo něco nalezeno jedná se o nález další2, ret = 2
+		}
 		return ret;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------

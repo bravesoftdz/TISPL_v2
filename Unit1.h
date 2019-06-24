@@ -639,7 +639,8 @@ private:
 	TRect FOldBoundsRect;
 	bool PmGCheckLink;
 	bool offset_spolus_rozmerem;//uchovává v sobě, zda má být při změně rozmerů kabiny změně i offset kót elementů
-  UnicodeString Jazyk;
+	UnicodeString Jazyk;
+	int count_memo;//counter pro memo
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
@@ -742,7 +743,7 @@ public:		// User declarations
 	double outR(double outR);
 	double inRz(double inRz);
 	double outRz(double outRz);
-	void Memo(AnsiString Text,bool clear=false);//urychlení vypsání do Mema
+	void Memo(AnsiString Text,bool clear=false,bool count=false);//urychlení vypsání do Mema
 	void pridani_elementu_tab_pohon(Cvektory::TElement *E);//předesign tabulky pohonu po přidání elementu
 };
 //---------------------------------------------------------------------------

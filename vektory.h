@@ -324,6 +324,7 @@ class Cvektory
 	};
 	TFile_hlavicka File_hlavicka;
 	unsigned int pocet_vyhybek;//uchovává počet přidaných vyhybek, NUTNO PŘIDAT DO VÝHYBEK!!!
+	bool akt_vetev;//nese informaci o jakou větev ve schématu se jedná, true = primární (dalsi) false = sekundarní (dalsi2)
 
 //konstruktor
 		Cvektory();
@@ -331,7 +332,8 @@ class Cvektory
 //metody pro OBJEKTY
 		void hlavicka_OBJEKTY();
 		TObjekt *vloz_objekt(unsigned int id, double X, double Y);//vloží prvek do seznamu + vrátí ukazatel na vložený prvek
-		TObjekt *vloz_objekt(unsigned int id, double X, double Y,TObjekt *p);//přetížená fce vkládá objekt za objekt p + vrátí ukazatel na vložený prvek
+		TObjekt *vloz_objekt(unsigned int id, double X, double Y,TObjekt *pred,TObjekt *po);//přetížená fce vkládá objekt za objekt p + vrátí ukazatel na vložený prvek
+		TObjekt *vloz_objekt(unsigned int id, double X, double Y,TObjekt *vyhybka,TObjekt *pred,TObjekt *po);//přetížená fce vkládá spojku + vrátí ukazatel na vložený prvek
 		void vloz_objekt(TObjekt *Objekt);//přetížená fce
 		TObjekt *kopiruj_objekt(TObjekt *Objekt,short offsetX=0,short offsetY=0,AnsiString index_name="",bool remove_pre_index=false,TObjekt *p=NULL);//zkopíruje objekt Objekt na konec spojového seznamu Objektů, za předpokladu že p==NULL, pokud p není NULL je objekt za tento objekt p ve spojovém seznamů objektů zařazen, hodnota offsetu je hodnota odsazení zkopírovoaného objektu od objektu vzorového,index_name slouží pro rozlišení např. LAK, LAK1, LAK2...,zároveň vrací ukazatel na právě zkopírovaný objekt např. pro další použití
 		void kopiruj_objekt(TObjekt *Original,TObjekt *Kopie);//zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze ukazatel na mGrid originálu zůstané propojený
@@ -354,13 +356,14 @@ class Cvektory
 		AnsiString vypis_objekty_s_pohony_bez_roztece(bool shortname=true);//vrátí AnsiString řetezec shortname či name (dle parametru, který je implicitně na shortname=true) seznam objektů, které mají přiřazený pohon bez uvedené rozteče jednotlivé názvy objektů oddělí  ", " tj. čárkou a mezerou, v případě že žádný objekt nenajde, vrátí prázdný řetězec, pozor pohony bez přiřazení k objektům nevypisuje
 		AnsiString vypis_objekty_mimo_100vytizeni(bool shortname=true, bool vypsat_procetna=true, AnsiString separator=", ");//vrátí AnsiString řetezec shortname či name (dle parametru, který je implicitně na shortname=true) seznam objektů podle zakázek, které nemají 100% vytížení
 		double vrat_min_rychlost_prejezdu();//najde ze všech objektů nejnižší rychlost přejezdu (tj. totál min RD), neřeší přiřazení k pohonům, pomůcka pro stanovení referenční rychlosti animace
-		short smaz_objekt(TObjekt *Objekt);//smaže prvek ze seznamu
+		short smaz_objekt(TObjekt *Objekt,bool opakovani=false);//smaže prvek ze seznamu, opakování určuje zda se smazání provedlou jednou či 2x, v případě odstranění vyhybky je potřeba odstranit i její spojku
 		void zmen_poradi_objektu(TObjekt *aktualni_poradi,TObjekt *nove_poradi);
 		void zmen_poradi_objektu(unsigned long aktualni_poradi,unsigned long nove_poradi);
 		void sniz_indexy(TObjekt *Objekt);
-		void zvys_indexy(TObjekt *Objekt);
+		void zvys_indexy(TObjekt *Objekt);//projde všechny objekty a nastavý nové indexy podle aktuálního pořadí objektů
 		void ortogonalizovat();//ortogonalizuje schéma
 		long vymaz_seznam_OBJEKTY();
+		TObjekt *dalsi_krok(TObjekt *Objekt,TPoint *tab_pruchodu);//určuje další krok cyklu při procházení objektů
 
 //metody pro ELEMENTY
 		void hlavicka_elementy(TObjekt *Objekt);//danému objektu vytvoří hlavičku elementů
