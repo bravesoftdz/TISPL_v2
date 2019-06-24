@@ -15,6 +15,6 @@ Tknihovna_objektu const knihovna_objektu[15]=
 	 {11, "BUF", "buffer"},
 	 {12, "VÝT", "výtah"},
 	 {13, "PRE", "pøejezd"},
-	 {14, "V ", "výhybka"},
+	 {14, "V", "výhybka"},
 	 {15, "...", "nedefinovaný"},
 };

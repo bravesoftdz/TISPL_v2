@@ -127,12 +127,16 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 }
 //---------------------------------------------------------------------------
 //uloží objekt a jeho parametry do seznamu za objekt p        //p předchozí
-Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *p)
+Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *pred,TObjekt *po)
 {
+	AnsiString name,short_name;//dočasná konstrukce pro přiřazování spráných názvů objektům
+	if(id==F->VyID){name=knihovna_objektu[id].name+" "+AnsiString(pocet_vyhybek);short_name="V"+AnsiString(pocet_vyhybek);}
+	else if(id<=pocet_objektu_knihovny) {name=knihovna_objektu[id].name;short_name=knihovna_objektu[id].short_name;}else {name="Spojka "+AnsiString(pocet_vyhybek);short_name="S"+AnsiString(pocet_vyhybek);}
+
 	TObjekt *novy=new TObjekt;
 	novy->id=id;
-	novy->short_name=knihovna_objektu[id].short_name;
-	novy->name=knihovna_objektu[id].name;
+	novy->short_name=short_name;
+	novy->name=name;
 	novy->rezim=0;if(id==4 || id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
 	novy->X=X;//přiřadím X osu
 	novy->Y=Y;//přiřadím Y osu
@@ -170,14 +174,91 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	novy->zobrazit_mGrid=true;//proměnná určující, zda budou zobrazeny mGridy
 	novy->uzamknout_nahled=false;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 
-	novy->predchozi=p;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+//	novy->predchozi=pred;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+//	novy->predchozi2=NULL;
+//	novy->dalsi=pred->dalsi;
+//	pred->dalsi->predchozi=novy;
+//	pred->dalsi=novy;
+//	novy->n=pred->n;//přiřadím počítadlo prvku ze současného prvku, v dalším kroku se totiž navýší
+
+	//////testovací konstrukce
+	novy->predchozi=pred;
 	novy->predchozi2=NULL;
-	novy->dalsi=p->dalsi;
-	p->dalsi->predchozi=novy;
-	p->dalsi=novy;
-	p->dalsi2=NULL;
-	novy->n=p->n;//přiřadím počítadlo prvku ze současného prvku, v dalším kroku se totiž navýší
+	if(po->predchozi==pred)po->predchozi=novy;
+	if(po->predchozi2==pred)po->predchozi2=novy;
+	novy->dalsi=po;
+	if(pred->dalsi==po)pred->dalsi=novy;
+	if(pred->dalsi2==po)pred->dalsi2=novy;
+	novy->n=pred->n;//přiřadím počítadlo prvku ze současného prvku, v dalším kroku se totiž navýší
 	//indexy zvýšit separátně
+	return novy;
+}
+//---------------------------------------------------------------------------
+Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *vyhybka,TObjekt *pred,TObjekt *po)
+{
+  AnsiString name,short_name;//dočasná konstrukce pro přiřazování spráných názvů objektům
+	if(id==F->VyID){name=knihovna_objektu[id].name+" "+AnsiString(pocet_vyhybek);short_name=knihovna_objektu[id].short_name+AnsiString(pocet_vyhybek);}
+	else if(id<=pocet_objektu_knihovny) {name=knihovna_objektu[id].name;short_name=knihovna_objektu[id].short_name;}else {name="Spojka "+AnsiString(pocet_vyhybek);short_name="S"+AnsiString(pocet_vyhybek);}
+
+	TObjekt *novy=new TObjekt;
+	novy->id=id;
+	novy->short_name=short_name;
+	novy->name=name;
+	novy->rezim=0;if(id==4 || id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
+	novy->X=X;//přiřadím X osu
+	novy->Y=Y;//přiřadím Y osu
+	novy->Xk=X;//výchozí pozice kabiny
+	novy->Yk=Y;//výchozí pozice kabiny
+	novy->sirka_steny=0.12;//šířka stěny kabiny objektu v metrech
+	novy->CT=PP.TT;//pro status návrh
+	novy->RD=m.UDV(0)/novy->CT;//pro status návrh
+	novy->delka_dopravniku=m.UDV(0);//delka dopravníku v rámci objektu
+	novy->kapacita=1;
+	novy->kapacita_dop=0;
+	novy->pozice=1;
+	novy->rotace=0;//rotace jigu v objektu
+	novy->mezera=0;//velikost mezery mezi vozíky  (kritická mezera)
+	novy->mezera_jig=0;//mezera mezi jigy
+	novy->mezera_podvozek=0;//mezera mezi podvozky
+	novy->pohon=NULL;//při vložení nemá vložen žádný pohon
+	novy->elementy=NULL;//ukazatel na přidružené elementy
+	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
+	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
+	novy->rozmer_kabiny.x=10;//výchozí rozměr kabiny
+	novy->rozmer_kabiny.y=6;//výchozí rozměr kabiny
+	novy->koty_elementu_offset=4;//odsazení kót elementů v metrech
+	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
+	novy->stopka=2;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
+	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
+	novy->obsazenost=0;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
+	novy->CT_zamek=0;
+	novy->RD_zamek=1;//defautlně zamčeno
+	novy->DD_zamek=0;
+	novy->K_zamek=0;
+	novy->poznamka="";
+	novy->probehla_aktualizace_prirazeni_pohonu=false;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
+	novy->zobrazit_koty=true;//proměnná určující, zda se budou zobrzovat kóty
+	novy->zobrazit_mGrid=true;//proměnná určující, zda budou zobrazeny mGridy
+	novy->uzamknout_nahled=false;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
+
+	//spojkové ukazatele
+	novy->predchozi2=vyhybka;//pohled zpět na sekundární větev, v momentě vložení totožná s vyhybkou
+	novy->predchozi=pred;//pohled na hlavní větev
+	novy->dalsi=po;
+	novy->dalsi2=vyhybka;//propojení s vyhybkou
+	if(po!=NULL)//spojka vkládaná mezi 2 ojekty
+	{
+		if(po->predchozi==pred)po->predchozi=novy;
+		if(po->predchozi2==pred)po->predchozi2=novy;
+	}
+	else OBJEKTY->predchozi=novy;//spojka vkládaná za poslední objekt
+	if(pred->dalsi==po)pred->dalsi=novy;
+	if(pred->dalsi2==po) pred->dalsi2=novy;
+	//výhybkobé ukazatele
+	vyhybka->dalsi2=novy;//propojení sekundární větve
+	vyhybka->predchozi2=novy;//propojení výhybky a spojky
+	//indexy zvýšit separátně
+	novy->n=pred->n;//přiřadím počítadlo prvku ze současného prvku, v dalším kroku se totiž navýší
 	return novy;
 }
 //---------------------------------------------------------------------------
@@ -329,7 +410,6 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 //hledá objekt v dané oblasti                                       //pracuje v logic souradnicich tzn. již nepouživat *Zoom  použít pouze m2px
 Cvektory::TObjekt *Cvektory::najdi_objekt(double X, double Y,double offsetX, double offsetY,short typ)//hledá bod v dané oblasti
 {
-	int krok=1;//rozdílné kroky v procházení objekty, defaultně krok = 1
 	TPoint *tab_pruchodu=new TPoint[pocet_vyhybek+1];//+1 z důvodu indexace výhybka 1 bude mít index 1, nebude se začínat od indexu 0, tabulka.x = vyhybky, tabulka.y = spojky
 	Cvektory::TObjekt *O=OBJEKTY;//->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
@@ -338,28 +418,11 @@ Cvektory::TObjekt *Cvektory::najdi_objekt(double X, double Y,double offsetX, dou
 		{
 			if(O->X<=X && X<=O->X+offsetX && O->Y>=Y && Y>=O->Y-offsetY){/*F->Memo3->Lines->Add(O->pohon->name);*/return O;}//nalezeno!
 		}
-		if(typ==F->VyID)//výhybka
+		if((typ==-1 || typ==(long)O->id) && ((long)O->id==F->VyID || (long)O->n==pocet_objektu_knihovny+1))//výhybka + spojka
 		{
 			if(m.PtInCircle(X,Y,O->X,O->Y,offsetX)){return O;}//nalezeno !
 		}
-		//přepínání kroků v cyklu (dalsi/dalsi2)
-		if(O->id==F->VyID)//výhybka
-		{
-			int n=F->ms.MyToDouble(O->short_name.SubString(2,1));//extrakce pořadového čísla výhybky
-			tab_pruchodu[n].x++;if(tab_pruchodu[n].x==1)krok=2;else krok=1;//navýšení "buňky", která udržuje počet průchodu přes vyhybky
-			//pokud se jedná o první průchod je krok nastaven na průchod sekundární větví, pokud druhý = průchod primární vetví
-		}else//pokud se nejedná o výhybku
-		if(O->id==pocet_objektu_knihovny+1)//spojka, neni přítomná v knihovně objektů, nelze ji z ní vkládat
-		{
-			int n=F->ms.MyToDouble(O->short_name.SubString(2,1));//extrakce pořadového čísla spojky
-			tab_pruchodu[n].y++;if(tab_pruchodu[n].y==1)krok=2;else krok=1;//navýšení "buňky", která udržuje počet průchodu přes spojku
-			//při prvním průchodu je krok nastaven tak, aby došlo ke skoku na spárovanou výhybku, při dalším průchodu základní krok (dalsi)
-		}else krok=1;//nejdená se o výhybku ani o spojku, krok nastavit na defaultní hodnotu
-		switch(krok)//rozdělení přistupů na další element popřípadě skok na spárovanou výhybku
-		{
-			case 1:O=O->dalsi;break;//defaultně
-			case 2:O=O->dalsi2;break;//pri průchodu sekundární vetví, skoku na spárovanou výhybku
-		}
+		O=dalsi_krok(O,tab_pruchodu);
 	}
 	tab_pruchodu=NULL;delete tab_pruchodu;
 	return O;
@@ -412,30 +475,37 @@ Cvektory::TObjekt *Cvektory::vrat_objekt(TElement *Element,bool In_pom_temp)
 }
 //---------------------------------------------------------------------------
 //smaze objekt ze seznamu
-short int Cvektory::smaz_objekt(TObjekt *Objekt)
+short int Cvektory::smaz_objekt(TObjekt *Objekt,bool opakovani)
 {
+	TObjekt *spojka_vyh=NULL;
+	if(Objekt->id==F->VyID&&!opakovani){spojka_vyh=Objekt->predchozi2;pocet_vyhybek--;}
+	if(Objekt->id==pocet_objektu_knihovny+1&&!opakovani){spojka_vyh=Objekt->dalsi2;pocet_vyhybek--;}
 	//vyřazení prvku ze seznamu a napojení prvku dalšího na prvek předchozí prku mazaného
 	if(Objekt->dalsi!=NULL)//ošetření proti poslednímu prvku
 	{
-		Objekt->predchozi->dalsi=Objekt->dalsi;
-		Objekt->dalsi->predchozi=Objekt->predchozi;
+		if(Objekt->predchozi->dalsi==Objekt)Objekt->predchozi->dalsi=Objekt->dalsi;
+		if(Objekt->predchozi->dalsi2==Objekt)Objekt->predchozi->dalsi2=Objekt->dalsi;
+		if(Objekt->dalsi->predchozi==Objekt)Objekt->dalsi->predchozi=Objekt->predchozi;
+		if(Objekt->dalsi->predchozi2==Objekt)Objekt->dalsi->predchozi2=Objekt->predchozi;
 	}
 	else//poslední prvek
 	{
-		if(Objekt->n==1)//pokud je mazaný prvek hned za hlavičkou
+		if(Objekt->n==1)//pokud je mazaný prvek hned za hlavičkou, v takovémto případě nemůže existovat výhybka ani spojka
 		{
 			OBJEKTY->predchozi=Objekt->predchozi; //popř hlavička bude ukazovat sama na sebe
 			OBJEKTY->dalsi=NULL;
 		}
 		else
 		{
-			Objekt->predchozi->dalsi=NULL;
 			OBJEKTY->predchozi=Objekt->predchozi;//zapis do hlavičky poslední prvek seznamu
+			if(Objekt->predchozi->dalsi==Objekt)Objekt->predchozi->dalsi=NULL;
+			if(Objekt->predchozi->dalsi2==Objekt)Objekt->predchozi->dalsi2=NULL; //možná jen zbytečně navíc
 		}
 	}
 
-  vymaz_elementy(Objekt);
-	Objekt=NULL;delete Objekt;//smaže mazaný prvek
+	vymaz_elementy(Objekt);
+	if(spojka_vyh!=NULL)smaz_objekt(spojka_vyh,true);
+	Objekt=NULL;spojka_vyh=NULL;delete Objekt;delete spojka_vyh;//smaže mazaný prvek
 
 	return 0;
 
@@ -799,13 +869,21 @@ void Cvektory::sniz_indexy(TObjekt *Objekt)
 	}
 }
 //---------------------------------------------------------------------------
-void Cvektory::zvys_indexy(TObjekt *Objekt)//zvýší indexy NÁSLEDUJICÍCH bodů
+//projde všechny objekty a nastavý nové indexy podle aktuálního pořadí objektů
+void Cvektory::zvys_indexy(TObjekt *Objekt)
 {
-	while (Objekt!=NULL)
+	TObjekt *O=OBJEKTY->dalsi;
+	TPoint *tab_pruchodu=new TPoint[F->d.v.pocet_vyhybek+1];
+	int i=1;
+	while(O!=NULL)
 	{
-		Objekt=Objekt->dalsi;//posun na další prvek
-		if(Objekt!=NULL)Objekt->n++;//sníží indexy nasledujicích bodů,protože optimalizace seznamu nefungovalo, navíc ušetřím strojový čas
+		int n=F->ms.MyToDouble(O->short_name.SubString(2,1));
+		if((long)O->id==pocet_objektu_knihovny+1)if(tab_pruchodu[n].y==0){O->n=i;i++;}
+		if((long)O->id==F->VyID)if(tab_pruchodu[n].x==0){O->n=i;i++;}
+		if((long)O->id!=F->VyID&&(long)O->id!=pocet_objektu_knihovny+1){O->n=i;i++;}
+		O=dalsi_krok(O,tab_pruchodu);
 	}
+	O=NULL;tab_pruchodu=NULL;delete O;delete tab_pruchodu;
 }
 //---------------------------------------------------------------------------
 //ortogonalizuje schéma
@@ -932,6 +1010,31 @@ long Cvektory::vymaz_seznam_OBJEKTY()
 
 	return pocet_smazanych_objektu;
 };
+////---------------------------------------------------------------------------
+//určuje další krok cyklu při procházení objektů
+Cvektory::TObjekt *Cvektory::dalsi_krok(TObjekt *Objekt,TPoint *tab_pruchodu)
+{
+  int krok=1;//rozdílné kroky v procházení objekty, defaultně krok = 1
+	if(Objekt->id==F->VyID)//výhybka
+	{
+		int n=F->ms.MyToDouble(Objekt->short_name.SubString(2,1));//extrakce pořadového čísla výhybky
+		tab_pruchodu[n].x++;if(tab_pruchodu[n].x==1)krok=2;else krok=1;//navýšení "buňky", která udržuje počet průchodu přes vyhybky
+		if(Objekt->predchozi2==NULL)krok=1;//v případě přidávání výhybky není plně nadefinovaná, nutno pokračovat defaultním krokem
+		//pokud se jedná o první průchod je krok nastaven na průchod sekundární větví, pokud druhý = průchod primární vetví
+	}else//nejedná se o výhybku
+	if(Objekt->id==pocet_objektu_knihovny+1)//spojka, neni přítomná v knihovně objektů, nelze ji z ní vkládat
+	{
+		int n=F->ms.MyToDouble(Objekt->short_name.SubString(2,1));//extrakce pořadového čísla spojky
+		tab_pruchodu[n].y++;if(tab_pruchodu[n].y==1)krok=2;else krok=1;//navýšení "buňky", která udržuje počet průchodu přes spojku
+		//při prvním průchodu je krok nastaven tak, aby došlo ke skoku na spárovanou výhybku, při dalším průchodu základní krok (dalsi)
+	}else krok=1;//nejdená se o výhybku ani o spojku, krok nastavit na defaultní hodnotu
+	switch(krok)//rozdělení přistupů na další element popřípadě skok na spárovanou výhybku
+	{
+		case 1:Objekt=Objekt->dalsi;break;//defaultně
+		case 2:Objekt=Objekt->dalsi2;break;//pri průchodu sekundární vetví, skoku na spárovanou výhybku
+	}
+	return Objekt;
+}
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------

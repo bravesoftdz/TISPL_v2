@@ -106,7 +106,7 @@ class Cvykresli
 	void odznac_oznac_objekt_novy_posledni(TCanvas *canv, int X, int Y);
 	void odznac_oznac_vyhybku(TCanvas *canv, int X, int Y,Cvektory::TObjekt *p, bool posun=false);//pøí umistivání èi posouvání vyhýbky
 	void odznac_oznac_vetev(TCanvas *canv, int X, int Y,Cvektory::TObjekt *p);//vykreslí èi odznaèí potenciální umístìní vìtve, další fáze po umístìní výhybky
-	bool lezi_v_pasmu(TCanvas *c,long X,long Y,Cvektory::TObjekt *p, bool odecti_region=true);
+	short lezi_v_pasmu(TCanvas *c,long X,long Y,Cvektory::TObjekt *p, bool odecti_region=true);//slouží k urèení zda se kurzor vyskytuje v pásmu mezi dvìma objekty,0= nic nenalezeno, 1= nalezen dalsi objekt, 2= nalezen dalsi2 objekt
 	bool lezi_v_pasmu_poslednim(TCanvas *c,long X,long Y,bool odecti_region=true);
 	double trend(Cvektory::TObjekt *Objekt);//vratí trend schématu pro objekt z parametru,pro jeden prvek automaticky bude trend schématu 0°, pokud se jedná o první prvek, tak výjimka, øeší trend podle prvku následujícího, pro další se hledí na trend podle azimutu k pøedchozímu prvku
 	void sound();
