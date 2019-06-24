@@ -1585,7 +1585,7 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 								if(m.PtInClovek(E->X,E->Y,X,Y,rotace))break;
 								else E=E->dalsi;
 						 }
-						 else E=E->dalsi;//pokud E neodpovídá žádnému odchytávanému elementu, může se jednat např. o element zarážka
+						 else E=E->dalsi;//pokud E neodpovídá žádnému odchytávanému elementu, může se ještě  jednat např. o element zarážka
 						}
 					}
 				}

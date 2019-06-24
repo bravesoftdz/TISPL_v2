@@ -74,7 +74,7 @@ class Cvykresli
 	void vykresli_palec(TCanvas *canv,double X,double Y,bool NEW,bool ACTIVE);//zajišuje samotné vykreslení palce, parametr NEW rozlišuje novı palec a palace starı ji ke smazání (to slouí pro simulaci), poslední parametr znaèí, zda palec oznaèit jako aktivní
 	void vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID=0,short typ=0,double rotace=0,short stav=1,double LO1=1.5,double OTOC_delka=0,double LO2=0,double LO_pozice=0);//celková vykreslovací metoda, vykreslí buï stopku, robota nebo otoè
 	void vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID=1,short typ=0,double rotace=0,short stav=1,double LO1=1.5,double OTOC_delka=0,double LO2=0,double aP=0,float TS=0,double LO_pozice=0);
-	void vykresli_cloveka(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID=101,short typ=0,double rotace=0,short stav=1);
+	void vykresli_cloveka(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,double LO1,double OTOC_delka,double LO2);//vykresli siluetu èlovìk s pøípadnì pøidruenım elememntem, rotuje po smìru hodinovıch ruèièek, pro animaci slouí okolo hranièních stupòu 0,90,180,270, vdy rozsah -45° a +44°, napø. 45-134° je maximální pracovní rozsah pro èlovìka rotovaného na 90° atd.
 	void vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ=0, double rotace=0, short stav=1);
 	void vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID=5,short typ=0,double rotace=0,short stav=1);
 	void vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ,double rotace,short stav,float TS=0);
@@ -115,13 +115,14 @@ class Cvykresli
 	//void vykresli_packy_PL(TCanvas *canv,short typ,short zamek_aRD,short zamek_R,short zamek_Rz,short zamek_Rx);
 	void vykresli_packy_PL(TCanvas *canv,TscGPButton *zamek_aRD,TscGPButton *zamek_R,TscGPButton *zamek_Rz,TscGPButton *zamek_Rx);
 	void vykresli_tip(TCanvas *canv);//zajišuje vykreslování-vypisování tool tipu
-	TPointD Rxy(Cvektory::TElement *Element);//vrátí referenèní logické (v metrech) souøadnice  robota (tzn. bod v místì trysky), pøevede dle aktuální rotace symbolu a uchopovacích (skuteènıch) souøadnic robota, kontroluje, zda se jedná skuteènì o Robota
+	TPointD Rxy(Cvektory::TElement *Element);//vrátí referenèní logické (v metrech) souøadnice  robota (tzn. bod v místì trysky, tj. bod v místì umístìní ve schématu), pøevede dle aktuální rotace symbolu a uchopovacích (skuteènıch) souøadnic robota, kontroluje, zda se jedná skuteènì o Robota
 
-  //globální public promìnné
+	//globální public promìnné
 	short O_width,O_height,V_width;//logické parametry, nezoomovat
 	float Robot_sirka_zakladny;
 	float Robot_delka_zakladny;
 	double DoSkRB;//delka od støedu (X,Y bodu) robota k referenènímu bodu robota (tj. k trysce) v metrech
+	double DkRB;//délka k referenènímu bodu od uchopovacího bodu, respektive odsazení èlovìka od linky
 	unsigned long cas;//ms
 	double PX2MIN;//mìøítko PX na MIN
 	short KrokY;//rozteè na èasovıch osách
