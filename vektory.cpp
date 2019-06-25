@@ -1621,7 +1621,7 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 	{
 		if(E->n!=0)
 		{
-			int rotace=E->rotace_symbolu;
+			short rotace=E->rotace_symbolu;
 			if(E->eID==0)//STOPKY
 			{
 				rotace=m.Rt90(rotace+180);//stopka je o 180° orotovaná
@@ -1645,12 +1645,12 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 				{
 					if(E->eID==100)//ION tyč
 					{
-						if(m.PtInIon(E->X,E->Y,X,Y,rotace))break;
+						if(m.PtInIon(E->X,E->Y,X,Y,rotace) || E->citelna_oblast.rect3.PtInRect(TPoint(m.L2Px(X),m.L2Py(Y))))break;
 						else E=E->dalsi;
 					}
 					else
 					{
-						if(1<=E->eID && E->eID<=4 || 7<=E->eID && E->eID<=18 || 101<=E->eID && E->eID<=108)//ROBOTI
+						if(1<=E->eID && E->eID<=4 || 7<=E->eID && E->eID<=18)//ROBOTI
 						{
 							//hledání, zda leží v regionu, region se liší dle rotace
 							HRGN hreg;
@@ -1665,7 +1665,7 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 							if(PtInRegion(hreg,m.L2Px(X),m.L2Py(Y)))break;
 							else//pokud nenalezeno, testuje ještě případně otoče robotů
 							{
-								if(E->eID==3 || E->eID==4 || E->eID==9 || E->eID==10 || E->eID==13 || E->eID==14 || E->eID==17 || E->eID==18 || E->eID==103 || E->eID==104 || E->eID==107 || E->eID==108)
+								if(E->eID==3 || E->eID==4 || E->eID==9 || E->eID==10 || E->eID==13 || E->eID==14 || E->eID==17 || E->eID==18)
 								{
 									if(rotace==0 || rotace==180)
 									{
@@ -1685,8 +1685,24 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 						{
 						 if(101<=E->eID && E->eID<=108)
 						 {
-								if(m.PtInClovek(E->X,E->Y,X,Y,rotace))break;
-								else E=E->dalsi;
+								if(m.PtInClovek(E->X,E->Y,X,Y,rotace)|| E->citelna_oblast.rect3.PtInRect(TPoint(m.L2Px(X),m.L2Py(Y))))break;
+								else //pokud nenalezeno, testuje ještě případně otoče lidských robotů
+								{
+									if(E->eID==103 || E->eID==104 || E->eID==107 || E->eID==108)//s otočemi
+									{
+										if(rotace==0 || rotace==180)
+										{
+											if(m.PtInCircle(X,Y,E->X,E->Y+F->d.DkRB,(otoc_sirka+otoc_tloustka/2.0)*F->m2px))break;
+											else E=E->dalsi;
+										}
+										else//90°, 270°
+										{
+											if(m.PtInCircle(X,Y,E->X+F->d.DkRB,E->Y,(otoc_sirka+otoc_tloustka/2.0)*F->m2px))break;
+											else E=E->dalsi;
+										}
+                  }
+									else E=E->dalsi;
+								}
 						 }
 						 else E=E->dalsi;//pokud E neodpovídá žádnému odchytávanému elementu, může se ještě  jednat např. o element zarážka
 						}
