@@ -235,7 +235,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 		}
 
 		//vykreslení g_elementu
-		//
+		//příprava
 
 		////vykreslení obrysu OBJEKTU - kabiny
 		vykresli_kabinu(canv);
@@ -249,11 +249,6 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 			{
 				 vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,E->stav,E->LO1,E->OTOC_delka,E->LO2,E->LO_pozice);
 				 E->citelna_oblast.rect3=aktOblast;//uložení citelné oblasti pro další použití
-				 if(E->eID>=100)//pouze test
-				 {
-					canv->FillRect(aktOblast);
-					F->Memo(aktOblast.left,true);F->Memo(aktOblast.top);F->Memo(aktOblast.right);F->Memo(aktOblast.bottom);
-				 }
 				 //vykreslení kót
 				 if(F->pom_temp->zobrazit_koty)vykresli_kotu(canv,E->predchozi,E);//mezi elementy
 				 E=E->dalsi;//posun na další element
@@ -3292,8 +3287,8 @@ void Cvykresli::vykresli_cloveka(TCanvas *canv,long X,long Y,AnsiString name,Ans
 			canv->Font->Name=F->aFont->Name;//musí tu být, jinak chyba popisku u prvního robota  //canv->Font->Name="Arial";
 			canv->Font->Size=F->m.round(sizeP*Z/1.5);if(F->aFont->Size==12)canv->Font->Size=F->m.round(3*Z/1.5);//1.5 kvůli dodatečnému zvětšování 1.5x člověka v knihovně elemementů
 			canv->TextOutW(X-canv->TextWidth(name)/2,m.round(Y+Odsazeni),name); //1 pouze korekce
-			canv->TextOutW(X-canv->TextWidth(short_name)/2,m.round(Y+Odsazeni+1*Z+canv->TextHeight(name)),short_name);
-		}
+			canv->TextOutW(X-canv->TextWidth(short_name)/2,m.round(Y+Odsazeni+1*Z/1.5+canv->TextHeight(name)),short_name);
+		}                                                                       //1.5 kvůli dodatečnému zvětšování 1.5x člověka v knihovně elemementů
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
