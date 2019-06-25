@@ -3259,7 +3259,7 @@ void Cvykresli::vykresli_cloveka(TCanvas *canv,long X,long Y,AnsiString name,Ans
 		AnsiString T=short_name;
 		//if(Z>4*3) //short_name odstaveno
 		{T=name;if(F->aFont->Size==12)canv->Font->Size=m.round(2*Z); else canv->Font->Size=m.round(2.8*Z);}//od daného zoomu zobrazuje celý název
-		float Odsazeni=3.5*Z;
+		float Odsazeni=3.5*Z+41;//+41 z důvodu vycentrování ikony člověka v knihovně elementů
 		if(typ==1)//pokud se jedná o standardní zobrazení
 		{
 			canv->Font->Name=F->aFont->Name;

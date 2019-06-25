@@ -3271,6 +3271,7 @@ void TForm1::ESC()
 		{
 			d.odznac_oznac_vetev(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,pom_vyhybka);
 			d.v.smaz_objekt(pom_vyhybka);
+			REFRESH();//dojde k překreslení odstraněné výhybky
 		}break;
 	}
 	pom_vyhybka=NULL;
@@ -3322,7 +3323,7 @@ void TForm1::add_objekt(int X, int Y)
 			if(d.v.akt_vetev)dalsi=pom->dalsi;else dalsi=pom->dalsi2;
 			pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,pom,dalsi);
 			dalsi=NULL;delete dalsi;
-			d.v.zvys_indexy(pom);//zvýší indexy nasledujicích bodů
+			d.v.nove_indexy();//zvýší indexy nasledujicích bodů
 		}
 		else//zde se bude vkládat spojka, zatím test co je v ukazatelých
 		{
@@ -3343,7 +3344,7 @@ void TForm1::add_objekt(int X, int Y)
 				Cvektory::TObjekt *S=d.v.vloz_objekt(pocet_objektu_knihovny+1,souradnice.x,souradnice.y,pom_vyhybka,predchozi,dalsi);//samotné přidání spojky
 				predchozi=NULL;dalsi=NULL;S=NULL;delete S;delete dalsi;delete predchozi;//vynulování a smazání vytvořených ukazatelů
 				spojka=true;//důlezité pro vypnutí akce
-				if(pom!=NULL)d.v.zvys_indexy(pom);//pokud nebylo provedeno vkládání na konec
+				if(pom!=NULL)d.v.nove_indexy();//pokud nebylo provedeno vkládání na konec
 			}
 		}
 		pom=NULL;//odsranění pomocného ukazatele
@@ -5429,6 +5430,7 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 			{
 				//prvotní vykreslení všech robotů
 				Zoom=15;//zvětšení zoomu při použití robotů
+				odsazeni=54;//vycentrování lidských robotů
 				int i=1;//použití z důvodu kopírování algoritmu z lakovny, kde tuto funkci zastává n z for cyklu
 				if(pom_temp->id==0)label_pom="navěšování";else label_pom="svěšování";//nastavování zda se jedná o navěšování či svěšování
 				for(unsigned short n=101;n<=104;n++)
@@ -5553,8 +5555,8 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 				int i=1;//použití z důvodu kopírování algoritmu z lakovny, kde tuto funkci zastává n z for cyklu
 				//funkce přepínání mezi roboty  lidskými roboty
 				unsigned short n_od,n_do,rob1,rob2,rob3,rob4;
-				if(scGPSwitch_robot_clovek->State==0){n_od=7;n_do=10;rob1=7;rob2=8;rob3=9;rob4=10;Zoom=10;}
-				else{n_od=105;n_do=108;rob1=105;rob2=106;rob3=107;rob4=108;Zoom=15;}
+				if(scGPSwitch_robot_clovek->State==0){n_od=7;n_do=10;rob1=7;rob2=8;rob3=9;rob4=10;Zoom=10;odsazeni=19;}
+				else{n_od=105;n_do=108;rob1=105;rob2=106;rob3=107;rob4=108;Zoom=15;odsazeni=54;}
 				for(unsigned short n=n_od;n<=n_do;n++)
 				{
 					//nastavení názvů
@@ -5575,9 +5577,9 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 					C->Brush->Color=clWhite;//musí být těsně před C->Rectangle
 					C->Rectangle(0,0,2*W,2*H);//překreslní původních robotů ("smazání")
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální","ionizace",rob1);
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"test","ionizace",rob2,0,0,-1);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G","ionizace",rob2,0,0,-1);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",rob3);
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"test s","akt. otočí",rob4,0,0,-1);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s","akt. otočí",rob4,0,0,-1);
 				}
 				else if ((EID==8 || EID==10 || EID==106 || EID==108 || EID==6) && pom_temp->pohon!=NULL)
 				{
@@ -6185,11 +6187,24 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 					MB("Nelze smazat objekt, který je součástí technologické cesty zakázky např.: "+UnicodeString(Z->name));
 				else
 				{
-				if(pom->dalsi2!=pom->predchozi2)MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Nelze smazat objekt \""+pom->name.UpperCase()+"\", odstraňte nejdříve objekty ze sekundární větve.");
-				else if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu objekt \""+pom->name.UpperCase()+"\" smazat?","",MB_YESNO))
+				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu objekt \""+pom->name.UpperCase()+"\" smazat?","",MB_YESNO))
 				{
+					if(((long)pom->id==VyID||(long)pom->id==pocet_objektu_knihovny+1)&&(pom->dalsi2!=pom->predchozi2))
+					{
+						//pokud není sekundární větev prázdná, musím smazat vše co je v ní
+						Cvektory::TObjekt *smaz=NULL;
+						if((long)pom->id==VyID)smaz=pom->dalsi2;//rozlišení pokud mažu z výhybky nebo spojky
+						else smaz=pom->dalsi2->dalsi2;
+						while(pom->dalsi2!=pom->predchozi2)
+						{
+							d.v.smaz_objekt(smaz);
+							smaz=smaz->dalsi;
+						}
+						smaz=NULL;delete smaz;
+					}
 					d.v.smaz_objekt(pom);//nalezeny můžeme odstranit odstranit
-					/*d.v.sniz_indexy(pom); */ d.v.zvys_indexy(pom);//přeindexuje všechny objekty podle toho jak jsou seřazené
+					if((long)pom->id==VyID||(long)pom->id==pocet_objektu_knihovny+1){d.v.nove_indexy(true);d.v.pocet_vyhybek--;d.v.nove_nazvy();}
+					else d.v.nove_indexy();
 					pom=NULL;//delete p; nepoužívat delete je to ukazatel na ostra data
 					REFRESH();
 					DuvodUlozit(true);
@@ -8038,7 +8053,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 	O3=d.v.vloz_objekt(7,75,-70);O3->short_name="O3";
 	V1=d.v.vloz_objekt(13,62,-50/*,O1*/);//V1->name="V1";//d.v.zvys_indexy(O1);
 	S1=d.v.vloz_objekt(16,75,-30,V1,O1,O1->dalsi);S1->short_name="S1";
-	d.v.zvys_indexy(O1);//pozor musí dojít ke zvýšení indexů !!!
+	d.v.nove_indexy();//pozor musí dojít ke zvýšení indexů !!!
 	//ruční vkládání
 //	V2->id=13;V2->name="Výhybka 2";V2->short_name="V2";V2->X=66;V2->Y=-40;d.v.pocet_vyhybek++;
 //	S2->id=16;S2->name="Spojka 2";S2->short_name="S2";S2->X=87;S2->Y=-50;
@@ -8832,13 +8847,9 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
 	while(O!=NULL)
 	{
-		Memo(O->short_name);
+		/*if(O->short_name=="V1")*/Memo(O->short_name);
 		O=d.v.dalsi_krok(O,tab_pruchodu);
 	}
-//	Canvas->Pen->Color=clRed;
-//	Canvas->Pen->Width=2;
-//	Canvas->MoveTo(m.L2Px(O->X)+d.O_width*Form1->Zoom/2,m.L2Py(O->Y)+d.O_height*Form1->Zoom/2);
-//	Canvas->LineTo(O->X+1,O->Y+1);
 	tab_pruchodu=NULL;delete tab_pruchodu;
 	O=NULL;delete O;
 
@@ -9759,6 +9770,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 void __fastcall TForm1::scGPSwitch_robot_clovekChangeState(TObject *Sender)
 {
 	DrawGrid_knihovna->Refresh();
+	ESC();//případné vypnutí akce
 }
 //---------------------------------------------------------------------------
 //načte zvolený jazyk

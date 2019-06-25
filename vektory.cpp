@@ -358,7 +358,7 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		p->dalsi=novy;
 		p->dalsi2=NULL;
 		novy->n=p->n;//přiřadím počítadlo prvku ze současného prvku, v dalším kroku se totiž navýší
-		zvys_indexy(p);//indexy zvýšit separátně se tady psalo
+		nove_indexy();//indexy zvýšit separátně se tady psalo
 		return novy;//vrátí ukazatel na posledně kopírovaný objekt
 	}
 }
@@ -479,8 +479,8 @@ Cvektory::TObjekt *Cvektory::vrat_objekt(TElement *Element,bool In_pom_temp)
 short int Cvektory::smaz_objekt(TObjekt *Objekt,bool opakovani)
 {
 	TObjekt *spojka_vyh=NULL;
-	if(Objekt->id==F->VyID&&!opakovani){spojka_vyh=Objekt->predchozi2;pocet_vyhybek--;}
-	if(Objekt->id==pocet_objektu_knihovny+1&&!opakovani){spojka_vyh=Objekt->dalsi2;pocet_vyhybek--;}
+	if(Objekt->id==F->VyID&&!opakovani)spojka_vyh=Objekt->predchozi2;
+	if(Objekt->id==pocet_objektu_knihovny+1&&!opakovani)spojka_vyh=Objekt->dalsi2;
 	//vyřazení prvku ze seznamu a napojení prvku dalšího na prvek předchozí prku mazaného
 	if(Objekt->dalsi!=NULL)//ošetření proti poslednímu prvku
 	{
@@ -861,27 +861,41 @@ void Cvektory::zmen_poradi_objektu(TObjekt *aktualni_poradi,TObjekt *nove_poradi
 	}
 }
 //---------------------------------------------------------------------------
-void Cvektory::sniz_indexy(TObjekt *Objekt)
-{
-	while (Objekt!=NULL)
-	{
-		Objekt=Objekt->dalsi;//posun na další prvek
-		if(Objekt!=NULL)Objekt->n--;//sníží indexy nasledujicích bodů,protože optimalizace seznamu nefungovalo, navíc ušetřím strojový čas
-	}
-}
-//---------------------------------------------------------------------------
-//projde všechny objekty a nastavý nové indexy podle aktuálního pořadí objektů
-void Cvektory::zvys_indexy(TObjekt *Objekt)
+//projde všechny objekty, výhybkám a spojkám upravý návez podle jejich n
+void Cvektory::nove_nazvy()
 {
 	TObjekt *O=OBJEKTY->dalsi;
 	TPoint *tab_pruchodu=new TPoint[F->d.v.pocet_vyhybek+1];
-	int i=1;
+	int n;
+	while(O!=NULL)//přejmutí čísla výhybek či spojek z jejich názvu, nutné před tímto spustit nove_indexy(true)!!!
+	{
+		if((long)O->id==F->VyID)n=F->ms.MyToDouble(O->name.SubString(9,1));else n=F->ms.MyToDouble(O->name.SubString(8,1));
+		if((long)O->id==pocet_objektu_knihovny+1)if(tab_pruchodu[n].y==0)O->short_name="S"+AnsiString(n);
+		if((long)O->id==F->VyID)if(tab_pruchodu[n].x==0)O->short_name="V"+AnsiString(n);
+		O=dalsi_krok(O,tab_pruchodu);
+	}
+	O=NULL;tab_pruchodu=NULL;delete O;delete tab_pruchodu;
+}
+//---------------------------------------------------------------------------
+//projde všechny objekty a nastavý nové indexy podle aktuálního pořadí objektů
+void Cvektory::nove_indexy(bool nasledne_zmena_nazvu)
+{
+	TObjekt *O=OBJEKTY->dalsi;
+	TPoint *tab_pruchodu=new TPoint[F->d.v.pocet_vyhybek+1];
+	int i=1,vyhybek=1;//i uchovává na kolikátém objektu se nacházím, vyhybek = počet vyhybek na které jsem narazil (jen jednou)
 	while(O!=NULL)
 	{
-		int n=F->ms.MyToDouble(O->short_name.SubString(2,1));
+		int n=F->ms.MyToDouble(O->short_name.SubString(2,1));//extrakce čísla výhybky / spojky
+		//přiřazení nového n
 		if((long)O->id==pocet_objektu_knihovny+1)if(tab_pruchodu[n].y==0){O->n=i;i++;}
 		if((long)O->id==F->VyID)if(tab_pruchodu[n].x==0){O->n=i;i++;}
 		if((long)O->id!=F->VyID&&(long)O->id!=pocet_objektu_knihovny+1){O->n=i;i++;}
+		//pokud došlo k události kvůli které bude nutné přejmenovat, uloží nová čísla výhybek a spojek do name
+		if(nasledne_zmena_nazvu)
+		{
+    	if((long)O->id==pocet_objektu_knihovny+1)if(tab_pruchodu[n].x==0&&tab_pruchodu[n].y==0){O->name="Spojka "+AnsiString(vyhybek);O->dalsi2->name="Výhybka "+AnsiString(vyhybek);vyhybek++;}
+			if((long)O->id==F->VyID)if(tab_pruchodu[n].x==0&&tab_pruchodu[n].y==0){O->name="Výhybka "+AnsiString(vyhybek);O->predchozi2->name="Spojka "+AnsiString(vyhybek);vyhybek++;}
+    }
 		O=dalsi_krok(O,tab_pruchodu);
 	}
 	O=NULL;tab_pruchodu=NULL;delete O;delete tab_pruchodu;
