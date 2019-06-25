@@ -3487,11 +3487,17 @@ void TForm1::add_element (int X, int Y)
 	bool vkabine=true;//=el_vkabine(X,Y,element_id);//pokud se jedná o robota kontrolovat zda je vložen do kabiny
 	//ovlivňování souřadnic, aby element byl umístěn přímo na osou - nelze použít makro Rxy
 	double DoSkRB=0;
-	if(1<=element_id && element_id<=4 || 7<=element_id && element_id<=18 || 101<=element_id && element_id<=108)//pro roboty, které mají uchopovací bod jinde než referenční
+	if(1<=element_id && element_id<=4 || 7<=element_id && element_id<=18)//pro roboty, které mají uchopovací bod jinde než referenční
 	{
-		DoSkRB=d.DoSkRB*Zoom/m2px;//délka od středu (uchopovacího bodu) k referenčnímu bodu, doplnit konstanty
+		DoSkRB=m.m2px(d.DoSkRB);//délka od středu (uchopovacího bodu) k referenčnímu bodu, doplnit konstanty
 		if(rotace_symbolu==90 || rotace_symbolu==180)DoSkRB*=-1;
-	}                                       //netradičně v hlavičce je umístěna elementární osa pohonu!!!
+	}
+	if(101<=element_id && element_id<=108)//pro lidské roboty, které mají uchopovací bod jinde než referenční
+	{
+		DoSkRB=m.m2px(d.DkRB);//délka od středu (uchopovacího bodu) k referenčnímu bodu, doplnit konstanty
+		if(rotace_symbolu==90 || rotace_symbolu==180)DoSkRB*=-1;
+	}
+																				 //netradičně v hlavičce je umístěna elementární osa pohonu!!!
 	if(trend==90 || trend==270)Y=m.L2Py(pom_temp->elementy->Y)+DoSkRB;
 	else X=m.L2Px(pom_temp->elementy->X)+DoSkRB;
 	//vložení elementu na dané souřadnice a do patřičného pomocného spojáku, pro případ storna

@@ -27,6 +27,7 @@ Cvykresli::Cvykresli()
 	Robot_sirka_zakladny=1.0;
 	Robot_delka_zakladny=1.2;
 	DoSkRB=(1.2+Robot_sirka_zakladny/2.0);//delka od středu (X,Y bodu) robota k referenčnímu bodu robota (tj. k trysce) v metrech
+	DkRB=0.8;//délka k referenčnímu bodu od uchopovacího bodu, respektive odsazení člověka od linky
 }
 //---------------------------------------------------------------------------
 //vrátí souřadnice dle typu buď středové nebo excentrické v podobě levého horního rohu objektu
@@ -51,7 +52,7 @@ int Cvykresli::CorEy(Cvektory::TObjekt *O)
 TPointD Cvykresli::Rxy(Cvektory::TElement *Element)
 {
 	TPointD RET; RET.x=Element->X; RET.y=Element->Y;
-	if(1<=Element->eID && Element->eID<=4 || 7<=Element->eID && Element->eID<=18 || 101<=Element->eID && Element->eID<=108)//ovlivní pouze roboty
+	if(1<=Element->eID && Element->eID<=4 || 7<=Element->eID && Element->eID<=18 || 101<=Element->eID && Element->eID<=108)//ovlivní patřičně pouze roboty
 	{
 		switch(Element->rotace_symbolu)
 		{
@@ -59,6 +60,16 @@ TPointD Cvykresli::Rxy(Cvektory::TElement *Element)
 			case 90:	RET.x=Element->X+DoSkRB;break;
 			case 180:	RET.y=Element->Y-DoSkRB;break;
 			case 270:	RET.x=Element->X-DoSkRB;break;
+		}
+	}
+	if(101<=Element->eID && Element->eID<=108)//ovlivní patřičně pouze lidské roboty
+	{
+		switch(Element->rotace_symbolu)
+		{
+			case 0:		RET.y=Element->Y+DkRB;break;
+			case 90:	RET.x=Element->X+DkRB;break;
+			case 180:	RET.y=Element->Y-DkRB;break;
+			case 270:	RET.x=Element->X-DkRB;break;
 		}
 	}
 	return RET;
@@ -224,7 +235,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 		}
 
 		//vykreslení g_elementu
-		//
+		//příprava
 
 		////vykreslení obrysu OBJEKTU - kabiny
 		vykresli_kabinu(canv);
@@ -2835,14 +2846,14 @@ void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,Ans
 		case 17: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,OTOC_delka,LO2,F->RO,F->ROst);break;//robot s pasivní otočí
 		case 18: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0,F->RO,F->ROst);break;//robot s aktivní otočí (tj. s otočí a se stopkou)
 		case 100:vykresli_ion(canv,X,Y,name,short_name,typ,rotace,stav,F->ROst);break;//ion tyč
-		case 101:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//lidský robot
-		case 102:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//lidský robot se stop stanicí
-		case 103:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//lidský robot s pasivní otočí
-		case 104:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//lidský robot s aktivní otočí (resp. s otočí a stop stanicí)
-		case 105:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//lidský robot ionizace
-		case 106:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//lidský robot  ionizace se stop stanicí
-		case 107:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//lidský robot  ionizace s pasivní otočí
-		case 108:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//lidský robot  ionizace s aktivní otočí (resp. s otočí a stop stanicí)
+		case 101:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0);break;//lidský robot
+		case 102:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0);break;//lidský robot se stop stanicí
+		case 103:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,OTOC_delka,LO2);break;//lidský robot s pasivní otočí
+		case 104:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0);break;//lidský robot s aktivní otočí (resp. s otočí a stop stanicí)
+		case 105:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0);break;//lidský robot ionizace
+		case 106:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0);break;//lidský robot  ionizace se stop stanicí
+		case 107:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,OTOC_delka,LO2);break;//lidský robot  ionizace s pasivní otočí
+		case 108:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0);break;//lidský robot  ionizace s aktivní otočí (resp. s otočí a stop stanicí)
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -3053,7 +3064,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 		//if(F->aFont->Size==12)canv->Font->Size=m.round(5.4*Z);else canv->Font->Size=m.round(5*Z);
 		AnsiString T=short_name;
 		//if(Z>4*3) //short_name odstaveno
-		{T=name;if(F->aFont->Size==12)canv->Font->Size=2*Z; else canv->Font->Size=m.round(2.4*Z);}//od daného zoomu zobrazuje celý název
+		{T=name;if(F->aFont->Size==12)canv->Font->Size=m.round(2*Z); else canv->Font->Size=m.round(2.4*Z);}//od daného zoomu zobrazuje celý název
 		if(typ==1)//pokud se jedná o standardní zobrazení
 		{
 			canv->Font->Name=F->aFont->Name;
@@ -3089,23 +3100,49 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	}catch(...){if(DEBUG)MessageBeep(0);}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::vykresli_cloveka(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav)
+//vykresli siluetu člověk s případně přidruženým elememntem, rotuje po směru hodinových ručiček, pro animaci slouží okolo hraničních stupňu 0,90,180,270, vždy rozsah -45° až +44°, např. 45-134° je maximální pracovní rozsah pro člověka rotovaného na 90° atd.
+void Cvykresli::vykresli_cloveka(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,double LO1,double OTOC_delka,double LO2)
 {
-	//změna orientace
-	if(rotace==0 || rotace==180)
+	////změna orientace - pozor
+	short rotace90=m.Rt90(rotace);
+	if(rotace90==0 || rotace90==180)//kvůli převrácené kresbě ve výchozí pozici tj. 0°
 	{
 		rotace+=180;
 		rotace=fmod(rotace,360.0);// včetně ošetření přetečení přes 360 stupňů
 		if(rotace<0){rotace+=360;}//pro záporné hodnoty
+		rotace90=m.Rt90(rotace);
 	}
+	rotace=rotace90-1*(rotace-rotace90);//kvůli převrácené orientaci rotace, kdy rotační metody rotují proti hodinovým ručičkám a naopak rotace elementu je po směru hodinových ručiček
 
 	////proměnné mimo paramety metody
 	double Z=F->Zoom;
 	double oX=0.5665; double oY=-0.33425;//souřadnice těžiště hlavy - uchopovací bod, offset v souřadnicích, lze snadno změnit, pokud bych chtěl uchopovací bod jinde
-	float zAA=1.0;if(F->antialiasing)zAA=3.0;
+	float  zAA=1.0;if(F->antialiasing)zAA=3.0;
+	double DkRBpx=m.m2px(DkRB);//délka k referenčnímu bodu od uchopovacího bodu, respektive odsazení člověka od linky
+	float  DT=m.m2px(0.35);//délka trysky
+	float  TW=m.m2px(0.1);//tryska šířka před zúžením, v místě z kloubu
+	float  TZ=TW/1.5;//tryska ve zúžení
+	float  PS=25;//pistole sklon ve stupních, nechat na 25, jinak nutno změnit 41, ale dělalo problémy zajistit výpočet u plamenu
+
+	////přidružené elementy
+	long pX=X;long pY=m.round(Y-DkRBpx);
+	short rotace2=0;
+	if(rotace90==0)	 {pX=X;pY=m.round(Y+DkRBpx);}
+	if(rotace90==90) {pX=m.round(X+DkRBpx);pY=Y;rotace2=180;}
+	if(rotace90==270){pX=m.round(X-DkRBpx);pY=Y;rotace2=180;}
+	if(typ==0)F->Zoom/=1.5;//pro případ ikony je třeba z důvodu zvětšení člověka zmenšit přidružený element
+	switch(eID)
+	{
+		case 101: case 105: if(typ==1)vykresli_lakovaci_okno(canv,X,Y,LO1,0,0,DkRBpx,m.Rt90(rotace90+180+rotace2));break;//pokud se jedná o kontinuálního robota v normálním zobrazení, zobrazí se ještě lakovací okno
+		case 102: case 106: vykresli_stopku(canv,pX,pY,"","",typ,m.Rt90(rotace90+rotace2),stav);break;//robot se stopkou
+		case 103: case 107: if(typ==1)vykresli_lakovaci_okno(canv,X,Y,LO1,OTOC_delka,LO2,DkRBpx,m.Rt90(rotace90+180+rotace2));vykresli_otoc(canv,pX,pY,"","",5,typ,m.Rt90(rotace90+rotace2),stav);break;//s pasivní otočí
+		case 104: case 108: vykresli_otoc(canv,pX,pY,"","",6,typ,m.Rt90(rotace90+rotace2),stav);break;//s aktivní otočí (tj. s otočí a se stopkou)
+	}
+	if(typ==0)F->Zoom*=1.5;//navrácení do původního stavu
 
 	////nastavení barev
-	TColor barva=clBlack;if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
+	TColor barva=clBlack;TColor clIon=(TColor)RGB(7,107,171);
+	if(stav==-1){barva=m.clIntensive(barva,180);clIon=m.clIntensive(clIon,180);}//pokud je aktivní nebo neaktivní
 
 	////nastavení pera
 	float W=0.02;if(F->antialiasing)W*=3;
@@ -3139,6 +3176,28 @@ void Cvykresli::vykresli_cloveka(TCanvas *canv,long X,long Y,AnsiString name,Ans
 		//levá bota
 		PL[0].x=0.760430224712657;PL[0].y=-0.3909123449191;PL[1].x=0.764139744322671;PL[1].y=-0.442639618371226;PL[2].x=0.762929818125734;PL[2].y=-0.465963074881838;PL[3].x=0.753600465181378;PL[3].y=-0.502749498347804;PL[4].x=0.747437759360415;PL[4].y=-0.527049565820684;PL[5].x=0.700003110252204;PL[5].y=-0.567413359326415;PL[6].x=0.686010036263457;PL[6].y=-0.544001450146329;PL[7].x=0.670330657363341;PL[7].y=-0.517768172518775;PL[8].x=0.665668275558511;PL[8].y=-0.492280224477424;PL[9].x=0.658;PL[9].y=-0.462;
 		bezier(canv,PL,X,Y,oX,oY,rotace,9);
+	}
+	////ION pistole
+	if(105<=eID && eID<=108)//ion pistole se zobrazuje pouze u ION robota
+	{
+		//pistole obrys
+		PL[0].x=0.28875;PL[0].y=-0.68;PL[1].x=0.34;PL[1].y=-0.68;PL[2].x=0.34;PL[2].y=-0.9475;PL[3].x=0.32;PL[3].y=-0.975;PL[4].x=0.32;PL[4].y=-1.04375;PL[5].x=0.27;PL[5].y=-1.04375;PL[6].x=0.27;PL[6].y=-0.975;PL[7].x=0.25;PL[7].y=-0.9475;PL[8].x=0.25;PL[8].y=-0.7225;
+		m.rotace_polygon(oX,oY,PL,8,rotace);
+		if(PS!=0)m.rotace_polygon(PL[0].x,PL[0].y,PL,8,PS);//jen samotná pistole, pozn. optimalizaci takto jsem nerochodil: if(PS!=0)m.rotace_polygon(oX,oY,PL[0].x,PL[0].y,PL,PF,8,PS);//jen samotná pistole
+		for(int i=0;i<=8;i++){PF[i].x=X+m.m2px(PL[i].x-oX);PF[i].y=Y+m.m2px(oY-PL[i].y);}
+		canv->Polyline(PF,8);
+		//osa ion pistole
+		if(Z/zAA>=5)
+		{
+			TPointD PL0=PL[0];
+			PL[0].x=(0.32+0.27)/2.0;PL[0].y=-0.7225-0.02;PL[1].x=PL[0].x;PL[1].y=-1.04375-0.05;
+			m.rotace_polygon(oX,oY,PL,1,rotace);
+			if(PS!=0)m.rotace_polygon(PL0.x,PL0.y,PL,1,PS);//jen samotná pistole
+			for(int i=0;i<=1;i++){PF[i].x=X+m.m2px(PL[i].x-oX);PF[i].y=Y+m.m2px(oY-PL[i].y);}
+			canv->Polyline(PF,1);
+		}
+		//"plamen"                                                                                             //PS něměnit, jinak problémy s plamenem
+		if(stav>0 && typ!=-1)polygonDleOsy(canv,(PF[4].x+PF[5].x)/2.0,(PF[4].y+PF[5].y)/2.0,DT/2.0,TW/2.0,TZ*4,PS+41+(rotace2-rotace)*2,rotace,pmMask,clWhite,clIon);//ion
 	}
 	//pravá ruka
 	PL[0].x=0.145;PL[0].y=-0.605;PL[1].x=0.169761356440884;PL[1].y=-0.648;PL[2].x=0.17329076820559;PL[2].y=-0.653098039215686;PL[3].x=0.19485939565657;PL[3].y=-0.684470588235294;PL[4].x=0.200775079385735;PL[4].y=-0.693075219114079;PL[5].x=0.205084597834833;PL[5].y=-0.69613157037026;PL[6].x=0.216428023107551;PL[6].y=-0.699372549019608;PL[7].x=0.260349591735002;PL[7].y=-0.711921568627451;PL[8].x=0.259565278009511;PL[8].y=-0.712313725490196;PL[9].x=0.268408415264413;PL[9].y=-0.712666666666667;PL[10].x=0.277074590335663;PL[10].y=-0.713012545050885;PL[11].x=0.288192728989904;PL[11].y=-0.713882352941176;PL[12].x=0.303486846636962;PL[12].y=-0.713098039215686;PL[13].x=0.32703754096554;PL[13].y=-0.7118903113014;PL[14].x=0.316455232303218;PL[14].y=-0.69839669172869;PL[15].x=0.308192728989904;PL[15].y=-0.697019607843137;PL[16].x=0.284663317225198;PL[16].y=-0.693098039215686;PL[17].x=0.270545670166374;PL[17].y=-0.692705882352941;PL[18].x=0.259957434872256;PL[18].y=-0.684078431372549;PL[19].x=0.251347886559472;PL[19].y=-0.677063243858428;PL[20].x=0.227429956425431;PL[20].y=-0.657044033129204;PL[21].x=0.230545670166374;PL[21].y=-0.654274509803922;PL[22].x=0.23407508193108;PL[22].y=-0.651137254901961;PL[23].x=0.241526062323237;PL[23].y=-0.651529411764706;PL[24].x=0.256428023107551;PL[24].y=-0.652705882352941;PL[25].x=0.262695275296554;PL[25].y=-0.653200665420494;PL[26].x=0.269565278009511;PL[26].y=-0.659568627450981;PL[27].x=0.270937827029119;PL[27].y=-0.661725490196078;PL[28].x=0.27958973180111;PL[28].y=-0.671098387032402;PL[29].x=0.304663317225198;PL[29].y=-0.66878431372549;PL[30].x=0.292114297617354;PL[30].y=-0.656235294117647;PL[31].x=0.288209923548386;PL[31].y=-0.652330920048679;PL[32].x=0.284290739103446;PL[32].y=-0.647576439545949;PL[33].x=0.27329076820559;PL[33].y=-0.635843137254902;PL[34].x=0.267408415264413;PL[34].y=-0.62956862745098;PL[35].x=0.266891476519433;PL[35].y=-0.628397119265468;PL[36].x=0.231329983891864;PL[36].y=-0.615843137254902;PL[37].x=0.216666666666667;PL[37].y=-0.610666666666667;PL[38].x=0.216745098039216;PL[38].y=-0.606823529411764;PL[39].x=0.204;PL[39].y=-0.591333333333333;
@@ -3199,7 +3258,7 @@ void Cvykresli::vykresli_cloveka(TCanvas *canv,long X,long Y,AnsiString name,Ans
 		//if(F->aFont->Size==12)canv->Font->Size=m.round(5.4*Z);else canv->Font->Size=m.round(5*Z);
 		AnsiString T=short_name;
 		//if(Z>4*3) //short_name odstaveno
-		{T=name;if(F->aFont->Size==12)canv->Font->Size=2*Z; else canv->Font->Size=m.round(2.4*Z);}//od daného zoomu zobrazuje celý název
+		{T=name;if(F->aFont->Size==12)canv->Font->Size=m.round(2*Z); else canv->Font->Size=m.round(2.8*Z);}//od daného zoomu zobrazuje celý název
 		float Odsazeni=3.5*Z;
 		if(typ==1)//pokud se jedná o standardní zobrazení
 		{
@@ -3207,18 +3266,18 @@ void Cvykresli::vykresli_cloveka(TCanvas *canv,long X,long Y,AnsiString name,Ans
 			if(/*stav==2 || */stav==3)canv->Font->Style = TFontStyles()<< fsBold;//došlo k vybrání elementu-tato část odstavena nebo přímo jeho textu
 			long x,y;
 			short h=canv->TextHeight(T);short w=canv->TextWidth(T);   //pozn. pro 180° neobracím text vzhůru nohama
-			if(rotace==0 || rotace==180)
+			if(rotace90==0 || rotace90==180)
 			{
 				x=m.round(X-w/2.0);
-				if(rotace==0)y=m.round(Y-Odsazeni-h);
-				if(rotace==180)y=m.round(Y+Odsazeni);
+				if(rotace90==0)y=m.round(Y-Odsazeni-h);
+				if(rotace90==180)y=m.round(Y+Odsazeni);
 				aktOblast=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+w)/zAA),m.round((y+h)/zAA));//souřadnice pro citelnou oblast
 			}
 			else
 			{
-				rotace_textu(canv,-rotace*10);
-				if(rotace==90){x=m.round(X-Odsazeni);y=m.round(Y-w/2.0);}
-				if(rotace==270){x=m.round(X+Odsazeni);y=m.round(Y+w/2.0);}
+				rotace_textu(canv,-rotace90*10);
+				if(rotace90==90){x=m.round(X-Odsazeni);y=m.round(Y-w/2.0);}
+				if(rotace90==270){x=m.round(X+Odsazeni);y=m.round(Y+w/2.0);}
 				aktOblast=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+h)/zAA),m.round((y+w)/zAA));//souřadnice pro citelnou oblast
 			}
 			canv->TextOutW(x,y,name);//samotný vypis
@@ -3226,10 +3285,10 @@ void Cvykresli::vykresli_cloveka(TCanvas *canv,long X,long Y,AnsiString name,Ans
 		else//ikona
 		{
 			canv->Font->Name=F->aFont->Name;//musí tu být, jinak chyba popisku u prvního robota  //canv->Font->Name="Arial";
-			canv->Font->Size=F->m.round(sizeP*Z/1.5);if(F->aFont->Size==12)canv->Font->Size=F->m.round(3*Z/1.5); ///1.5 kvůli dodatečnému zvětšování 1.5x člověka v knihovně elemementů
+			canv->Font->Size=F->m.round(sizeP*Z/1.5);if(F->aFont->Size==12)canv->Font->Size=F->m.round(3*Z/1.5);//1.5 kvůli dodatečnému zvětšování 1.5x člověka v knihovně elemementů
 			canv->TextOutW(X-canv->TextWidth(name)/2,m.round(Y+Odsazeni),name); //1 pouze korekce
-			canv->TextOutW(X-canv->TextWidth(short_name)/2,m.round(Y+Odsazeni+1*Z+canv->TextHeight(name)),short_name);
-		}
+			canv->TextOutW(X-canv->TextWidth(short_name)/2,m.round(Y+Odsazeni+1*Z/1.5+canv->TextHeight(name)),short_name);
+		}                                                                       //1.5 kvůli dodatečnému zvětšování 1.5x člověka v knihovně elemementů
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -3941,6 +4000,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	if(Y2<Y1){long Ytemp=Y2;Y2=Y1;Y1=Ytemp;}
 
 	//vykreslení postranních šipek
+	canv->Brush->Style=bsSolid;
 	if(X1==X2)//svislá kóta
 	{
 		linie(canv,X1,Y1,X1+Offset+Presah+Presah*V,Y1,width/(1+M*1.0),color);//vykreslení postranních spojnic
@@ -3981,8 +4041,8 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	}
 
 	//popisek
-	canv->Font->Pitch = TFontPitch::fpVariable;//každé písmeno fontu stejně široké
-	canv->Font->Pitch = System::Uitypes::TFontPitch::fpVariable;
+	canv->Font->Pitch=TFontPitch::fpVariable;//každé písmeno fontu stejně široké
+	canv->Font->Pitch=System::Uitypes::TFontPitch::fpVariable;
 	canv->Font->Name=F->aFont->Name;
 	canv->Font->Color=color;
 	canv->Font->Size=m.round(width*F->aFont->Size);//už se nenásobí *Zoom, protože width se již násobí v úvodu metody
