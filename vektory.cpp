@@ -415,11 +415,11 @@ Cvektory::TObjekt *Cvektory::najdi_objekt(double X, double Y,double offsetX, dou
 	Cvektory::TObjekt *O=OBJEKTY;//->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
 	{
-		if((typ==-1 || typ==(long)O->id) && (long)O->id!=F->VyID)
+		if((typ==-1 || typ==(long)O->id) && (long)O->id!=F->VyID && (long)O->id!=pocet_objektu_knihovny+1)
 		{
 			if(O->X<=X && X<=O->X+offsetX && O->Y>=Y && Y>=O->Y-offsetY){/*F->Memo3->Lines->Add(O->pohon->name);*/return O;}//nalezeno!
 		}
-		if((typ==-1 || typ==(long)O->id) && ((long)O->id==F->VyID || (long)O->n==pocet_objektu_knihovny+1))//výhybka + spojka
+		if((typ==-1 || typ==(long)O->id) && ((long)O->id==F->VyID || (long)O->id==pocet_objektu_knihovny+1))//výhybka + spojka
 		{
 			if(m.PtInCircle(X,Y,O->X,O->Y,offsetX)){return O;}//nalezeno !
 		}

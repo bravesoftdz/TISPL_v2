@@ -2010,7 +2010,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						{
 							if(MOD==SCHEMA)//OBJEKT
 							{
-								pom=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.V_width*m2px,d.V_width*m2px,VyID);//hledá v kruhové oblasti
+								pom=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.V_width*m2px,d.V_width*m2px/*,VyID*/);//hledá v kruhové oblasti
 								if(pom==NULL)//akcelerátor,aby se následně nehledalo znovu, pokud byla nalezena výhybka
 								pom=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width*m2px,d.O_height*m2px);
 								if(pom!=NULL){Akce=MOVE;kurzor(posun_l);posun_objektu=true;minule_souradnice_kurzoru=TPoint(X,Y);}
@@ -8843,15 +8843,15 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 
 //ShowMessage(pom_temp->elementy->name);
 
-	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];
-	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
-	while(O!=NULL)
-	{
-		/*if(O->short_name=="V1")*/Memo(O->short_name);
-		O=d.v.dalsi_krok(O,tab_pruchodu);
-	}
-	tab_pruchodu=NULL;delete tab_pruchodu;
-	O=NULL;delete O;
+//	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];
+//	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
+//	while(O!=NULL)
+//	{
+//		/*if(O->short_name=="V1")*/Memo(O->short_name);
+//		O=d.v.dalsi_krok(O,tab_pruchodu);
+//	}
+//	tab_pruchodu=NULL;delete tab_pruchodu;
+//	O=NULL;delete O;
 
 //d.v.POHONY->dalsi->name="ano";
 //Form2->ShowModal();
