@@ -187,6 +187,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	if(po->predchozi==pred)po->predchozi=novy;
 	if(po->predchozi2==pred)po->predchozi2=novy;
 	novy->dalsi=po;
+	novy->dalsi2=NULL;
 	if(pred->dalsi==po)pred->dalsi=novy;
 	if(pred->dalsi2==po)pred->dalsi2=novy;
 	novy->n=pred->n;//přiřadím počítadlo prvku ze současného prvku, v dalším kroku se totiž navýší

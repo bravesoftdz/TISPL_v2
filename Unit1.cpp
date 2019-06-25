@@ -1,4 +1,5 @@
-﻿//---------------------------------------------------------------------------
+﻿
+//---------------------------------------------------------------------------
 #include <vcl.h>
 #pragma hdrstop
 #include "Unit1.h"
@@ -2137,7 +2138,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			predchozi_souradnice_kurzoru=akt_souradnice_kurzoru_PX;//uloží souřadnice pro další vymazání
 			d.editacni_okno(Canvas, vychozi_souradnice_kurzoru,akt_souradnice_kurzoru_PX,5,(TColor)RGB(0,128,192));//nakreslí nové okno
 			break;
-		}
+		}                 //kontrola pro akci VYH!!!!!!
 		case ADD:case VYH://přídávání objektu či elementu, posun navigačních linii
 		{        //algoritmy v tomto CASE (včetně dílčích algoritmu) by bylo možné sloučit, ale bylo by to dost práce navíc...
 			if(MOD!=NAHLED)
@@ -2337,8 +2338,8 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			break;
 		}
 //		case VYH://přidávání vyhýbky, ROZPRACOVÁNO!!!!!!
-//		{    Cvektory::TObjekt *p;
-//			//////nová koncepce vykreslování nutná!!
+//		{
+//			Cvektory::TObjekt *p=NULL;
 //			if(probehl_zoom==false)//ošetření proti nežádoucímu chování po zoomu
 //			{
 //				if(d.v.OBJEKTY->predchozi->n>=2)//pokud už existují alespoň dva prvky, jinak nemá smysl
@@ -2347,16 +2348,19 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 //					if(p!=NULL && p!=pom)//byl nalezen meziprostor k přidávání, porovnám tedy jestli se jedná o nový
 //					{
 //							pom=p;add_posledni=false;
+//							if(d.lezi_v_pasmu(Canvas,X,Y,p)==2)d.v.akt_vetev=false;else d.v.akt_vetev=true;//uložení zda jsem v hlavní nebo sekundární
 //					}
 //					if(p==NULL && (d.lezi_v_pasmu_poslednim(Canvas,X,Y) || d.v.OBJEKTY->predchozi->n==2))//kurzor se nenachází v prostoru mezi prkvy, je tedy možné přidávat mezi poslední a první prvek, tedy na konec spojového seznamu
 //					{
 //						add_posledni=true;pom=NULL;
+//						d.v.akt_vetev=true;
 //					}
 //				}  //if(pom!=NULL&&d.lezi_v_pasmu(Canvas,X,Y,pom)==1)Memo("za: "+pom->short_name+"  před: "+pom->dalsi->short_name,true);
 //					 //if(pom!=NULL&&d.lezi_v_pasmu(Canvas,X,Y,pom)==2)Memo("za: "+pom->short_name+"  před: "+pom->dalsi2->short_name,true);
 //				d.odznac_oznac_vyhybku(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
 //				minule_souradnice_kurzoru=TPoint(X,Y);
 //				d.odznac_oznac_vyhybku(Canvas,X,Y,pom);
+//				p=NULL;delete p;
 //			}
 //			probehl_zoom=false;
 //			break;
@@ -3317,7 +3321,7 @@ void TForm1::add_objekt(int X, int Y)
 			Cvektory::TObjekt *dalsi;
 			if(d.v.akt_vetev)dalsi=pom->dalsi;else dalsi=pom->dalsi2;
 			pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,pom,dalsi);
-			dalsi=NULL;delete dalsi;         //////////problém vy zvyš_indexy při vkládání na 2x sekundární rameno!!!!!
+			dalsi=NULL;delete dalsi;
 			d.v.zvys_indexy(pom);//zvýší indexy nasledujicích bodů
 		}
 		else//zde se bude vkládat spojka, zatím test co je v ukazatelých
@@ -3370,7 +3374,7 @@ Cvektory::TObjekt *TForm1::add_objekt_za()
 	Cvektory::TObjekt *ret=NULL;
 	TPoint *tab_pruchodu=new TPoint[F->d.v.pocet_vyhybek+1];//+1 z důvodu indexace výhybka 1 bude mít index 1, nebude se začínat od indexu 0, tabulka.x = vyhybky, tabulka.y = spojky
 	while (p!=NULL)
-	{     //kontrola zda se jedná o poslední první objekt byla přesunuta do metody lezi_v_pasmu
+	{ //kontrola zda se jedná o poslední první objekt byla přesunuta do metody lezi_v_pasmu
 		if(d.lezi_v_pasmu(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,p)>0)
 		{
 			ret=p;
@@ -3422,6 +3426,7 @@ void TForm1::zmen_poradi_objektu(int X, int Y)//testuje zda se nejedná o změnu
 {
 		//zjištění oblasti, vynechává situace, kdy se nejedná o změnu pořadí
 		bool RET=false;
+		TPoint *tab_pruchodu=new TPoint[F->d.v.pocet_vyhybek+1];//+1 z důvodu indexace výhybka 1 bude mít index 1, nebude se začínat od indexu 0, tabulka.x = vyhybky, tabulka.y = spojky
 		Cvektory::TObjekt *ukaz=d.v.OBJEKTY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
 		while (ukaz!=NULL)//mimo posledního prvku
 		{
@@ -3444,8 +3449,9 @@ void TForm1::zmen_poradi_objektu(int X, int Y)//testuje zda se nejedná o změnu
 						}
 					}
 			}
-			ukaz=ukaz->dalsi;//posun na další prvek v seznamu
+			ukaz=d.v.dalsi_krok(ukaz,tab_pruchodu);//posun na další prvek v seznamu
 		}
+    tab_pruchodu=NULL;delete tab_pruchodu;
 		//pokud se může jednat o snahu (zjištěno z předchozí navrácenoho RET) o vložení ještě se na to dotazuje u uživatele
 		if(RET)
 		{
@@ -5774,14 +5780,14 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton
 				{
 					if(Row==0)element_id=Col+7;
 					if(Row==1)element_id=Col+9;
-					if(((EID==7||EID==9)&&(element_id==7||element_id==9)||(EID==8||EID==10)&&(element_id==8||element_id==10)||EID==-1||(funkcni_klavesa==2&&DEBUG))&&pom_temp->pohon!=NULL)//při stisku shift lze tuto podmínku v debugu obejít
+					if(((EID==7||EID==9||EID==105||EID==107)&&(element_id==7||element_id==9)||(EID==8||EID==10||EID==106||EID==108)&&(element_id==8||element_id==10)||EID==-1||(funkcni_klavesa==2&&DEBUG))&&pom_temp->pohon!=NULL)//při stisku shift lze tuto podmínku v debugu obejít
 						pridani=true;
 				}
 				else//člověk
 				{
 					if(Row==0)element_id=Col+105;
 					if(Row==1)element_id=Col+107;
-					if(((EID==105||EID==107)&&(element_id==105||element_id==107)||(EID==106||EID==108)&&(element_id==106||element_id==108)||EID==-1||(funkcni_klavesa==2&&DEBUG))&&pom_temp->pohon!=NULL)//při stisku shift lze tuto podmínku v debugu obejít
+					if(((EID==7||EID==9||EID==105||EID==107)&&(element_id==105||element_id==107)||(EID==8||EID==10||EID==106||EID==108)&&(element_id==106||element_id==108)||EID==-1||(funkcni_klavesa==2&&DEBUG))&&pom_temp->pohon!=NULL)//při stisku shift lze tuto podmínku v debugu obejít
 						pridani=true;
 				}
 			}break;
@@ -8826,9 +8832,13 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
 	while(O!=NULL)
 	{
-		Memo(O->short_name+", n: "+AnsiString(O->n));
+		Memo(O->short_name);
 		O=d.v.dalsi_krok(O,tab_pruchodu);
 	}
+//	Canvas->Pen->Color=clRed;
+//	Canvas->Pen->Width=2;
+//	Canvas->MoveTo(m.L2Px(O->X)+d.O_width*Form1->Zoom/2,m.L2Py(O->Y)+d.O_height*Form1->Zoom/2);
+//	Canvas->LineTo(O->X+1,O->Y+1);
 	tab_pruchodu=NULL;delete tab_pruchodu;
 	O=NULL;delete O;
 
