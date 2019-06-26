@@ -1613,8 +1613,6 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 	//vhodno přesunout do globálních proměnných do Cvykresli
 	float otoc_sirka=3.5;//ve skutečnosti poloměr
 	float otoc_tloustka=0.8;
-	float size=7*F->Zoom;//stopka
-	short sklon=50;//stopka
 
 	//algoritmus prochází jednotlivé elementy a porovnává vůči jejich pozici aktuální pozici kurzoru, aby se zbytečně netestovalo vše (metoda se volá neustále při každém posunu kurzoru), postupuje algoritmus maximálně větveně (šetření strojového času), tedy v případě uspěchu ihned končí, v případě neúspěchu testuje dále
 	TElement *E=Objekt->elementy;//NEPŘESKAKOVAT hlavičku!!! kvůli ošetření ohledně existence elementu v objektu
@@ -1626,13 +1624,7 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 			if(E->eID==0)//STOPKY
 			{
 				rotace=m.Rt90(rotace+180);//stopka je o 180° orotovaná
-				//referenční bode ve špičce, špička je směrem dolu (při nulové rotaci)
-				float sizeX=size;float sizeY=size;
-				if(rotace==0 || rotace==180)sizeX/=2.0;
-				if(rotace==90 || rotace==270)sizeY/=2.0;
-				POINT body[3]={{F->m.round(m.L2Px(E->X)+m.rotace(1,sklon,rotace).x*sizeX),F->m.round(m.L2Py(E->Y)+m.rotace(1,sklon,rotace).y*sizeY)},{m.L2Px(E->X),m.L2Py(E->Y)},{F->m.round(m.L2Px(E->X)+m.rotace(1,360-sklon,rotace).x*sizeX),F->m.round(m.L2Py(E->Y)+m.rotace(1,360-sklon,rotace).y*sizeY)}};
-				//F->Canvas->Pen->Color=clBlue;F->Canvas->Polygon((TPoint*)body,2);//pro testovací zákres
-				if(PtInRegion(CreatePolygonRgn(body,3,WINDING),m.L2Px(X),m.L2Py(Y)) || E->citelna_oblast.rect3.PtInRect(TPoint(m.L2Px(X),m.L2Py(Y))))break;//testování symbolu včetně popisku,pozn. CreatePolygonRgn i PtInRect - zahrnuje pouze vnitřní tvar, obrys tvaru je z oblasti vyloučen
+				if(m.PtInStopka(E->X,E->Y,X,Y,rotace) || E->citelna_oblast.rect3.PtInRect(TPoint(m.L2Px(X),m.L2Py(Y))))break;//testování symbolu včetně popisku,pozn. CreatePolygonRgn i PtInRect - zahrnuje pouze vnitřní tvar, obrys tvaru je z oblasti vyloučen
 				else E=E->dalsi;
 			}
 			else
@@ -1664,7 +1656,7 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 								case 270:hreg=CreateRectRgn(m.L2Px(E->X-DoSkRB),m.L2Py(E->Y+F->d.Robot_delka_zakladny/2.0),m.L2Px(E->X+F->d.Robot_sirka_zakladny/2.0),m.L2Py(E->Y-F->d.Robot_delka_zakladny/2.0));DoSkRB*=-1;break;
 							}
 							if(PtInRegion(hreg,m.L2Px(X),m.L2Py(Y)))break;
-							else//pokud nenalezeno, testuje ještě případně otoče robotů
+							else//pokud nenalezeno, testuje ještě případně OTOČE ROBOTŮ
 							{
 								if(E->eID==3 || E->eID==4 || E->eID==9 || E->eID==10 || E->eID==13 || E->eID==14 || E->eID==17 || E->eID==18)
 								{
@@ -1679,30 +1671,63 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 										else E=E->dalsi;
 									}
 								}
-								else E=E->dalsi;
+								else//ani mezi otočemi robotu nenalezeno, hledá mezi STOPKAMI ROBOTŮ
+								{
+									if(E->eID==2 || E->eID==4 || E->eID==8 || E->eID==10 || E->eID==12 || E->eID==14 || E->eID==16 || E->eID==18)
+									{
+										if(rotace==0 || rotace==180)
+										{
+											if(m.PtInStopka(E->X,E->Y+DoSkRB,X,Y,rotace))break;//ROBOTi se stopkami
+											else E=E->dalsi;
+										}
+										else//90°, 270°
+										{
+											if(m.PtInStopka(E->X+DoSkRB,E->Y,X,Y,rotace))break;//ROBOTi se stopkami
+											else E=E->dalsi;
+										}
+									}
+									else E=E->dalsi;//ani zde nenalezeno
+								}
 							}
 						}
 						else//ani roboti nanelezeny, hledá tedy mezi LIDSKÝMI ROBOTY
 						{
 						 if(101<=E->eID && E->eID<=108)
 						 {
-								if(m.PtInClovek(E->X,E->Y,X,Y,rotace)|| E->citelna_oblast.rect3.PtInRect(TPoint(m.L2Px(X),m.L2Py(Y))))break;
+								if(m.PtInClovek(E->X,E->Y,X,Y,rotace,E->eID)|| E->citelna_oblast.rect3.PtInRect(TPoint(m.L2Px(X),m.L2Py(Y))))break;
 								else //pokud nenalezeno, testuje ještě případně otoče lidských robotů
 								{
+									double DkRB=F->d.DkRB;if(rotace==180 || rotace==270)DkRB*=-1;
 									if(E->eID==103 || E->eID==104 || E->eID==107 || E->eID==108)//s otočemi
 									{
 										if(rotace==0 || rotace==180)
 										{
-											if(m.PtInCircle(X,Y,E->X,E->Y+F->d.DkRB,(otoc_sirka+otoc_tloustka/2.0)*F->m2px))break;
+											if(m.PtInCircle(X,Y,E->X,E->Y+DkRB,(otoc_sirka+otoc_tloustka/2.0)*F->m2px))break;
 											else E=E->dalsi;
 										}
 										else//90°, 270°
 										{
-											if(m.PtInCircle(X,Y,E->X+F->d.DkRB,E->Y,(otoc_sirka+otoc_tloustka/2.0)*F->m2px))break;
+											if(m.PtInCircle(X,Y,E->X+DkRB,E->Y,(otoc_sirka+otoc_tloustka/2.0)*F->m2px))break;
 											else E=E->dalsi;
 										}
-                  }
-									else E=E->dalsi;
+									}
+									else//ani mezi otočemi lidských robotu nenalezeno, hledá mezi STOPKAMI LIDSKÝCH ROBOTŮ
+									{
+										if(E->eID==102 || E->eID==104 || E->eID==106 || E->eID==108)
+										{
+											if(rotace==0 || rotace==180)
+											{
+												if(m.PtInStopka(E->X,E->Y+DkRB,X,Y,rotace))break;//ROBOTi se stopkami
+												else E=E->dalsi;
+											}
+											else//90°, 270°
+											{
+												if(m.PtInStopka(E->X+DkRB,E->Y,X,Y,rotace))break;//ROBOTi se stopkami
+												else E=E->dalsi;
+											}
+										}
+										else E=E->dalsi;//ani zde nenalezeno
+									}
 								}
 						 }
 						 else E=E->dalsi;//pokud E neodpovídá žádnému odchytávanému elementu, může se ještě  jednat např. o element zarážka
