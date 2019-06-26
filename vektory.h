@@ -359,8 +359,8 @@ class Cvektory
 		short smaz_objekt(TObjekt *Objekt,bool opakovani=false);//smaže prvek ze seznamu, opakování určuje zda se smazání provedlou jednou či 2x, v případě odstranění vyhybky je potřeba odstranit i její spojku
 		void zmen_poradi_objektu(TObjekt *aktualni_poradi,TObjekt *nove_poradi);
 		void zmen_poradi_objektu(unsigned long aktualni_poradi,unsigned long nove_poradi);
-		void sniz_indexy(TObjekt *Objekt);
-		void zvys_indexy(TObjekt *Objekt);//projde všechny objekty a nastavý nové indexy podle aktuálního pořadí objektů
+		void nove_nazvy();//projde všechny objekty, výhybkám a spojkám upravý návez podle jejich n
+		void nove_indexy(bool nasledne_zmena_nazvu=false);//projde všechny objekty a nastavý nové indexy podle aktuálního pořadí objektů
 		void ortogonalizovat();//ortogonalizuje schéma
 		long vymaz_seznam_OBJEKTY();
 		TObjekt *dalsi_krok(TObjekt *Objekt,TPoint *tab_pruchodu);//určuje další krok cyklu při procházení objektů
