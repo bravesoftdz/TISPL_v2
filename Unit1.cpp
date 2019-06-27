@@ -1418,7 +1418,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				delete (bmp_total);//velice nutné
 			}
 			break;
-    }
+		}
 		case SCHEMA://vykreslování všech vektorů ve schématu
 		{
 			if(!antialiasing)
@@ -1437,6 +1437,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu //zkoušel jsem nastavit plochu antialiasingu bez ovládacích prvků LeftToolbar a menu, ale kopírování do jiné BMP to zpomalovalo více neooptimalizovaná oblast pro 3xbmp
 				Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
 				d.vykresli_objekty(bmp_in->Canvas);
+				//smazat pouze pro test: d.vykresli_ikonu_komory(bmp_in->Canvas,600,600,"Komora",0);
 				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 				Cantialising a;
 				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
@@ -1527,6 +1528,8 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 //	Canvas->Pen->Width=5;Canvas->Pen->Color=clGreen;
 //	Memo3->Clear();Memo3->Visible=true;Memo3->Lines->Add(d.aktOblast.left);Memo3->Lines->Add(d.aktOblast.top);Memo3->Lines->Add(d.aktOblast.right);Memo3->Lines->Add(d.aktOblast.bottom);
 //	Canvas->FrameRect(TRect(d.aktOblast));
+
+
 }
 //---------------------------------------------------------------------------
 void TForm1::nacti_podklad(TCanvas *Canv)
@@ -6876,7 +6879,7 @@ void __fastcall TForm1::UlozitClick(TObject *Sender)
 {
 	if(duvod_ulozit_nahled&&MOD==NAHLED)
 	{
-		//toto ne d.v.vymaz_elementy(pom,false);
+		//toto ne: d.v.vymaz_elementy(pom,false); ani vymaz_komory
 		d.v.kopiruj_objekt(pom_temp,pom);
 		DuvodUlozit(true);
 		nahled_ulozit(false);
@@ -8042,18 +8045,30 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	//vytovoření schématu
-	pom=NULL;pom_temp=NULL;pom_vyhybka=NULL;
-	Cvektory::TObjekt *O,*O1,*O2,*O3,*V1,*V2=new Cvektory::TObjekt,*S1,*S2=new Cvektory::TObjekt;
-	//ručně počet vyhybek
-	d.v.pocet_vyhybek=1;
-	//vkládání algoritmem
-	O1=d.v.vloz_objekt(6,50,-30);O1->short_name="O1";
-	O2=d.v.vloz_objekt(5,100,-30);O2->short_name="O2";
-	O3=d.v.vloz_objekt(7,75,-70);O3->short_name="O3";
-	V1=d.v.vloz_objekt(13,62,-50/*,O1*/);//V1->name="V1";//d.v.zvys_indexy(O1);
-	S1=d.v.vloz_objekt(16,75,-30,V1,O1,O1->dalsi);S1->short_name="S1";
-	d.v.nove_indexy();//pozor musí dojít ke zvýšení indexů !!!
+//ShowMessage(d.v.OBJEKTY->predchozi->komora->predchozi->n);
+	Cvektory::TKomora *K=d.v.OBJEKTY->predchozi->komora->predchozi;//přeskočí hlavičku
+	ShowMessage(K->n);
+	K=K->predchozi;
+	ShowMessage(K->n);
+	K=K->predchozi;
+	ShowMessage(K->n);
+	K=K->predchozi;
+	ShowMessage(K->n);
+		K=K->predchozi;
+	ShowMessage(K->n);
+
+//	//vytovoření schématu
+//	pom=NULL;pom_temp=NULL;pom_vyhybka=NULL;
+//	Cvektory::TObjekt *O,*O1,*O2,*O3,*V1,*V2=new Cvektory::TObjekt,*S1,*S2=new Cvektory::TObjekt;
+//	//ručně počet vyhybek
+//	d.v.pocet_vyhybek=1;
+//	//vkládání algoritmem
+//	O1=d.v.vloz_objekt(6,50,-30);O1->short_name="O1";
+//	O2=d.v.vloz_objekt(5,100,-30);O2->short_name="O2";
+//	O3=d.v.vloz_objekt(7,75,-70);O3->short_name="O3";
+//	V1=d.v.vloz_objekt(13,62,-50/*,O1*/);//V1->name="V1";//d.v.zvys_indexy(O1);
+//	S1=d.v.vloz_objekt(16,75,-30,V1,O1,O1->dalsi);S1->short_name="S1";
+//	d.v.nove_indexy();//pozor musí dojít ke zvýšení indexů !!!
 	//ruční vkládání
 //	V2->id=13;V2->name="Výhybka 2";V2->short_name="V2";V2->X=66;V2->Y=-40;d.v.pocet_vyhybek++;
 //	S2->id=16;S2->name="Spojka 2";S2->short_name="S2";S2->X=87;S2->Y=-50;
@@ -8062,7 +8077,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //	S2->dalsi=O3;O3->predchozi=S2;
 //	V1->dalsi2=V2;V2->predchozi=V1;V2->dalsi=S1;S1->predchozi2=V2;
 	//nulování a mazání
-	O=NULL;O1=NULL;O2=NULL;O3=NULL;V1=NULL;V2=NULL;S1=NULL;S2=NULL;delete O;delete O1;delete O2;delete O3;delete V1;delete V2;delete S1;delete S2;
+//	O=NULL;O1=NULL;O2=NULL;O3=NULL;V1=NULL;V2=NULL;S1=NULL;S2=NULL;delete O;delete O1;delete O2;delete O3;delete V1;delete V2;delete S1;delete S2;
 
 	//procházení
 //	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];
@@ -8931,6 +8946,8 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		DrawGrid_knihovna->SetFocus();
 		if(editace_textu)Smaz_kurzor();//také volá Refresh//smaz_kurzor se zavolá, pouze pokud je to třeba odstraňuje zbytečný problik, dodělal MaKr
 		MOD=SCHEMA;//nutné před zoom, ale za smaz kurzor
+		//smazání případných komor
+		d.v.vymaz_komory(pom_temp);
 		//smazání elementů - musí být napočátku, aby nebyl problik
 		d.v.vymaz_elementy(pom_temp,true);   //&&pom_temp->elementy->dalsi!=NULL)
 		if(!mazani&&scGPButton_ulozit->Enabled)d.v.uprav_popisky_elementu(pom,NULL);//volání přejmenování elementů, pouze v případě kdy je něco v kabině a bylo stisknuto pouze storno, při ulož je stisk strona volán taky
@@ -9321,13 +9338,14 @@ MOD=SCHEMA;
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
 {
+  d.v.vymaz_komory(pom);
 	d.v.vymaz_elementy(pom,true);
 	d.v.kopiruj_objekt(pom_temp,pom);
 	DuvodUlozit(true);
 	nahled_ulozit(false);
 	mazani=true;//použití proměnné, která se v tomto čase nevyužívá, slouží k rozpoznání zda bylo stisknuto dříve storno či uližit
 	//a to z důvodu volání uprav_popisky_elementu(přejmenování změn po stisku storno)
-	scGPButton_stornoClick(Sender);//další funkcionalita je již stejná jako ve stornu, včetně vymazání ukazatele pom_temp včetně jeho elementů
+	scGPButton_stornoClick(Sender);//další funkcionalita je již stejná jako ve stornu, včetně vymazání ukazatele pom_temp včetně jeho elementů popř. komor
   mazani=false;
 }
 //---------------------------------------------------------------------------

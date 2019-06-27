@@ -46,6 +46,7 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->rozmer_kabiny.x=0;
 	novy->rozmer_kabiny.y=0;
 	novy->koty_elementu_offset=0;//odsazení kót elementů v metrech
+	novy->komora=NULL;//ukazatel na komory
 	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
 	novy->stopka=0;//zda následuje na konci objektu stopka//0-ne,1-ano,2-automaticky
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
@@ -80,7 +81,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->id=id;
 	novy->short_name=short_name;
 	novy->name=name;
-	novy->rezim=0;if(id==4 || id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
+	novy->rezim=0;if(id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
 	novy->X=X;//přiřadím X osu,pozice objektu
 	novy->Y=Y;//přiřadím Y osu,pozice objektu
 	novy->Xk=X;//výchozí pozice kabiny
@@ -103,6 +104,8 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->rozmer_kabiny.x=10;//výchozí rozměr kabiny
 	novy->rozmer_kabiny.y=6;//výchozí rozměr kabiny
 	novy->koty_elementu_offset=4;//odsazení kót elementů v metrech
+	novy->komora=NULL;//ukazatel na komory
+	if(id==3)for(short i=1;i<=4;i++)vloz_komoru(novy,novy->rozmer_kabiny.x/4.0);//pokud se jedná o POWash,nastaví defaultně 4 stejné komory
 	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
 	novy->stopka=2;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
@@ -137,7 +140,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	novy->id=id;
 	novy->short_name=short_name;
 	novy->name=name;
-	novy->rezim=0;if(id==4 || id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
+	novy->rezim=0;if(id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
 	novy->X=X;//přiřadím X osu
 	novy->Y=Y;//přiřadím Y osu
 	novy->Xk=X;//výchozí pozice kabiny
@@ -160,6 +163,8 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	novy->rozmer_kabiny.x=10;//výchozí rozměr kabiny
 	novy->rozmer_kabiny.y=6;//výchozí rozměr kabiny
 	novy->koty_elementu_offset=4;//odsazení kót elementů v metrech
+	novy->komora=NULL;//ukazatel na komory
+	if(id==3)for(short i=1;i<=4;i++)vloz_komoru(novy,novy->rozmer_kabiny.x/4.0);//pokud se jedná o POWash,nastaví defaultně 4 stejné komory
 	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
 	novy->stopka=2;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
@@ -205,7 +210,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	novy->id=id;
 	novy->short_name=short_name;
 	novy->name=name;
-	novy->rezim=0;if(id==4 || id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
+	novy->rezim=0;if(id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
 	novy->X=X;//přiřadím X osu
 	novy->Y=Y;//přiřadím Y osu
 	novy->Xk=X;//výchozí pozice kabiny
@@ -228,6 +233,8 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	novy->rozmer_kabiny.x=10;//výchozí rozměr kabiny
 	novy->rozmer_kabiny.y=6;//výchozí rozměr kabiny
 	novy->koty_elementu_offset=4;//odsazení kót elementů v metrech
+	novy->komora=NULL;//ukazatel na komory
+	if(id==3)for(short i=1;i<=4;i++)vloz_komoru(novy,novy->rozmer_kabiny.x/4.0);//pokud se jedná o POWash,nastaví defaultně 4 stejné komory
 	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
 	novy->stopka=2;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
@@ -255,7 +262,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	else OBJEKTY->predchozi=novy;//spojka vkládaná za poslední objekt
 	if(pred->dalsi==po)pred->dalsi=novy;
 	if(pred->dalsi2==po) pred->dalsi2=novy;
-	//výhybkobé ukazatele
+	//výhybkové ukazatele
 	vyhybka->dalsi2=novy;//propojení sekundární větve
 	vyhybka->predchozi2=novy;//propojení výhybky a spojky
 	//indexy zvýšit separátně
@@ -337,6 +344,8 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		novy->min_prujezdni_profil=Objekt->min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
 		novy->rozmer_kabiny=Objekt->rozmer_kabiny;//výchozí rozměr kabiny
 		novy->koty_elementu_offset=Objekt->koty_elementu_offset;//odsazení kót elementů v metrech
+		novy->komora=NULL;
+		if(novy->id==3)kopiruj_komory(Objekt,novy);//pokud se jedná o POWash
 		novy->cekat_na_palce=Objekt->cekat_na_palce;//0-ne,1-ano,2-automaticky
 		novy->stopka=Objekt->stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 		novy->odchylka=Objekt->odchylka;//odchylka z CT, využíváno hlavně u objektů v PP režimu
@@ -386,11 +395,12 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->mezera=Original->mezera;
 	Kopie->mezera_jig=Original->mezera_jig;
 	Kopie->mezera_podvozek=Original->mezera_podvozek;
-	//POHON
-	kopiruj_pohon(Original->pohon,Kopie);
+	kopiruj_pohon(Original->pohon,Kopie);//POHON
 	Kopie->min_prujezdni_profil=Original->min_prujezdni_profil;
 	Kopie->rozmer_kabiny=Original->rozmer_kabiny;
 	Kopie->koty_elementu_offset=Original->koty_elementu_offset;
+	Kopie->komora=NULL;
+	if(Kopie->id==3)kopiruj_komory(Original,Kopie);//pokud se jedná o POWash
 	Kopie->cekat_na_palce=Original->cekat_na_palce;
 	Kopie->stopka=Original->stopka;
 	Kopie->odchylka=Original->odchylka;
@@ -504,6 +514,7 @@ short int Cvektory::smaz_objekt(TObjekt *Objekt,bool opakovani)
 		}
 	}
 
+	vymaz_komory(Objekt);
 	vymaz_elementy(Objekt);
 	if(spojka_vyh!=NULL)smaz_objekt(spojka_vyh,true);
 	Objekt=NULL;spojka_vyh=NULL;delete Objekt;delete spojka_vyh;//smaže mazaný prvek
@@ -1010,12 +1021,90 @@ void Cvektory::ortogonalizovat()
 	}
 }
 //---------------------------------------------------------------------------
-//smaze objekty z pameti
+//vloží novou komoru na konec seznamu komor, nastaví velikost dle proměnné velikost
+void Cvektory::vloz_komoru(TObjekt *Objekt,double velikost)
+{
+	TKomora *Komora=new TKomora;
+	Komora->velikost=velikost;
+	vloz_komoru(Objekt,Komora);
+}
+//---------------------------------------------------------------------------
+//vloží novou komoru na konec seznamu komor, není třeba nastavovat ukazatele ani n-pořadí
+void Cvektory::vloz_komoru(TObjekt *Objekt,TKomora *Komora)
+{
+	if(Komora!=NULL)
+	{
+		//pokud ještě hlavička neexistuje, tak ji založí
+		if(Objekt->komora==NULL)
+		{
+			Objekt->komora=new TKomora;
+			Objekt->komora->n=0;
+			Objekt->komora->predchozi=Objekt->komora;//hlavička ukazuje sama na sebe
+			Objekt->komora->dalsi=NULL;
+		}
+		//vložení nové komory na konec seznamu komor
+		Komora->n=Objekt->komora->predchozi->n+1;//navýšení počítadla
+		Komora->predchozi=Objekt->komora->predchozi;//nová komora ukazuje na poslední prvek ve spojaku jako na prvek předchozí
+		Komora->dalsi=NULL;//nová komora neukazuje na žádný další prvek, resp. ukazuje na NULL
+		Objekt->komora->predchozi->dalsi=Komora;//za poslední prvek vloží novou poslední komoru
+		Objekt->komora->predchozi=Komora;//hlavička ukazuje již na novou komoru jako poslední prvek
+	}
+}
+//---------------------------------------------------------------------------
+//zkopíruje komory včetně jejich velikosti z originálu na kopii bez ukazatelového propojení
+void Cvektory::kopiruj_komory(TObjekt *Original,TObjekt *Kopie)
+{
+	//pokud kopie obsahuje původní komory, tak je smaže
+	vymaz_komory(Kopie);
+	//samotné nakopírování
+	TKomora *K=Original->komora->dalsi;//přeskočí hlavičku
+	while(K!=NULL)
+	{
+		vloz_komoru(Kopie,K->velikost);
+		K=K->dalsi;
+	}
+	K=NULL;delete K;
+}
+//---------------------------------------------------------------------------
+//smaže konkrétní komoru daného objektu
+void Cvektory::smaz_komoru(TObjekt *Objekt,TKomora *Komora)
+{
+	if(Komora!=NULL && Komora->n!=0)//pokud existuje a zároveň mimo hlavičky, ta nejde smazat
+	{
+		if(Komora->dalsi==NULL)//jedná se o poslední prvek (múže být i za hlavičkou)
+		{
+			Objekt->komora->predchozi=Komora->predchozi;
+			Komora->predchozi=NULL;
+		}
+		else//nejedná se o poslední prvek
+		{
+			Komora->predchozi->dalsi=Komora->dalsi;
+			Komora->dalsi->predchozi=Komora->predchozi;
+		}
+		Komora=NULL;delete Komora;
+	}
+}
+//---------------------------------------------------------------------------
+//vymaže všechny komory daného objektu včetně hlavičky
+void Cvektory::vymaz_komory(TObjekt* Objekt)
+{
+	if(Objekt->komora!=NULL)
+	{
+		//maže od zadu dokud nezbyde pouze hlavička
+		while(Objekt->komora->dalsi==NULL)smaz_komoru(Objekt,Objekt->komora->predchozi);
+
+		//na závěr ještě smaže hlavičku
+		Objekt->komora=NULL;delete Objekt->komora;
+	}
+}
+//---------------------------------------------------------------------------
+//vymaže spojový seznam technologických objektů včetně přidružených elementů a případných komor z paměti
 long Cvektory::vymaz_seznam_OBJEKTY()
 {
 	long pocet_smazanych_objektu=0;
 	while (OBJEKTY!=NULL)
 	{
+		vymaz_komory(OBJEKTY->predchozi);
 		vymaz_elementy(OBJEKTY->predchozi);
 		pocet_smazanych_objektu++;
 		OBJEKTY->predchozi=NULL;
