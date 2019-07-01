@@ -2648,9 +2648,10 @@ void TForm1::getJobID(int X, int Y)
 //dle místa kurzoru a vrácené JID (job id) nastaví úlohu
 void TForm1::setJobIDOnMouseMove(int X, int Y)
 {
+	refresh_mGrid=true;//defaultně se tabulky refreshují, zakázání refreshe se provádí při určitých úkonech, toto zajistí zapnutí refreshe po ukončení úkonu při kterém byl tento refresh potlačen
 	if(pom_element!=NULL)//ODSTRANĚNÍ předchozí případného highlightnutí elementu či tabulky
 	{
-		if(JID==0 || JID==1){pom_element->stav=1;}//ELEMENT
+		if(JID==0 || JID==1){pom_element->stav=1;refresh_mGrid=true;}//ELEMENT
 		pom_element->mGrid->Highlight=false;//tabulka zrušení highlightnutí
 	}
 	int puvJID=JID;//záloha původního JID
@@ -2659,7 +2660,6 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 	if(puvJID!=JID || pom_element_puv!=pom_element)//pokud došlo ke změně JID, nebo změně elementu bez změny JID (např. situace dva roboti vedle sebe nebo rychlý přesun), jinak nemá smysl řešit
 	{
 		//výchozí nastavení
-		refresh_mGrid=false;//ruší zbytečné vypočítávání tabulek
 		kurzor(standard);//umístít na začátek
 		PmGCheckLink=false;
 
@@ -2669,28 +2669,28 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 			if(pom_element_puv!=NULL)pom_element_puv->mGrid->MouseMove(X,Y);//najistotu zrušení hintů a highlignutí odkazu normálních tabulek dodáním pouze aktuálních souřadnic
 			if(puvJID>=4 && puvJID<=10)PmG->MouseMove(X,Y);//najistotu hintů a zrušení highlignutí tabulky pohonu dodáním pouze aktuálních souřadnic
 		}
-		if(JID==0){if(pom_element->rotace_symbolu==0||pom_element->rotace_symbolu==180)kurzor(zmena_d_x);else kurzor(zmena_d_y);pom_element->stav=2;}//posun ELEMENT
-		if(JID==1){kurzor(edit_text);pom_element->stav=3;}//ELEMENT název
+		if(JID==0){if(pom_element->rotace_symbolu==0||pom_element->rotace_symbolu==180)kurzor(zmena_d_x);else kurzor(zmena_d_y);pom_element->stav=2;refresh_mGrid=false;}//posun ELEMENT
+		if(JID==1){kurzor(edit_text);pom_element->stav=3;refresh_mGrid=false;}//ELEMENT název
 		//použit závěrečný REFRESH if(pom_element!=pom_element_puv && (puvJID==0 || JID==0)/* || (puvJID==0 && JID==1) || (puvJID==1 && JID==0)*/){REFRESH();}//důvod k REFRESH, pouze v případě změny elementu či přechodu z názvu na celý element a opačně
 		//použit závěrečný REFRESH if(10<JID && JID<1000){REFRESH();}//hodnota kóty
 		if(JID==100){kurzor(edit_text);pom_element->mGrid->CheckLink(X,Y);refresh_mGrid=true;}//název elementu v hlavičce tabulky - aktivace dodáním pouze aktuálních souřadnic
 		if(JID==1000){pom_element->mGrid->CheckLink(X,Y);refresh_mGrid=true;}//pouze pro přechod název hlavička, aby název nezůstal tučně - aktivace dodáním pouze aktuálních souřadnic
 		if(1000<=JID && JID<2000){kurzor(posun_ind);pom_element->mGrid->Highlight=true;pom_element->mGrid->MouseMove(X,Y);refresh_mGrid=true;}//indikace posunutí TABULKY, jeji highlignutí probíhá výše a případné volání HINTu
 		if(100<JID && JID<1000){kurzor(zmena_j);pom_element->mGrid->CheckLink(X,Y);refresh_mGrid=true;}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ  - aktivace dodáním pouze aktuálních souřadnic
-		if(JID==-2||JID==-3){kurzor(posun_ind);}//kurzor posun kabiny
-		if((JID==-6||JID==-7||JID==-8||JID==-9||JID<=-11)&&!editace_textu)kurzor(edit_text);//kurzor pro editaci textu
-		if(JID==-4)kurzor(zmena_d_x);//kurzor pro zmenu velikosti kabiny
-		if(JID==-5)kurzor(zmena_d_y);//kurzor pro zmenu velikosti kabiny
+		if(JID==-2||JID==-3){kurzor(posun_ind);refresh_mGrid=false;}//kurzor posun kabiny
+		if((JID==-6||JID==-7||JID==-8||JID==-9||JID<=-11)&&!editace_textu){kurzor(edit_text);refresh_mGrid=false;}//kurzor pro editaci textu
+		if(JID==-4){kurzor(zmena_d_x);refresh_mGrid=false;}//kurzor pro zmenu velikosti kabiny
+		if(JID==-5){kurzor(zmena_d_y);refresh_mGrid=false;}//kurzor pro zmenu velikosti kabiny
 		//použit závěrečný REFRESH if(-9<=JID && JID<=-6){REFRESH();}//refresh při akci s nadpisem či kótou kabiny
 		if(JID==-10){/*REFRESH();*/kurzor(zmena_j);}//indikace možnosti změnit jednotky na kótách
-		if(JID>=11 && JID<=99){if(pom_element->rotace_symbolu==0||pom_element->rotace_symbolu==180)kurzor(zmena_d_y);else kurzor(zmena_d_x);}//interaktivní kóty elementů
+		if(JID>=11 && JID<=99){if(pom_element->rotace_symbolu==0||pom_element->rotace_symbolu==180)kurzor(zmena_d_y);else kurzor(zmena_d_x);refresh_mGrid=false;}//interaktivní kóty elementů
 		if(JID>=4 && JID<=10){kurzor(zmena_j);if(PmG->CheckLink(X,Y)!=TPoint(-1,-1));refresh_mGrid=true;PmG->Refresh();}//pohonová tabulka odkazy - aktivace dodáním pouze aktuálních souřadnic
 
 		////inteligentní REFRESH
 		//if(!refresh_mGrid/* && !nabuffrovano*/){d.nabuffrovat_mGridy();nabuffrovano=true;}
 		//d.nabuffrovat_mGridy(pom_element->mGrid);
 		//if(!refresh_mGrid)Memo("false");else Memo("true");
-		refresh_mGrid=true;//provizorně
+		//refresh_mGrid=true;//provizorně
 		REFRESH();
 		//refresh_mGrid=true;
 	}
@@ -4600,7 +4600,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
 			E->mGrid->Cells[1][1].Text=outPT(m.PT(E->LO1,pom_temp->pohon->aRD));
 			E->PT1=inPT(ms.MyToDouble(E->mGrid->Cells[1][1].Text));
-			E->mGrid->Cells[0][2].Text="LO "+LO;
+			if(E->eID>100)E->mGrid->Cells[0][2].Text="PO "+LO;else E->mGrid->Cells[0][2].Text="LO "+LO;
 			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outLO(E->LO1);
 			E->mGrid->Cells[0][3].Text="vyosení "+LO;
 			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=0;
@@ -4610,9 +4610,9 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Columns[0].Width=sirka_1;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			//nastavení hintů
-			E->mGrid->Cells[0][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[0][1].Hint="celkový čas procesu, který je složen z dílčích časů";// (přesun robota, aretace, lakování, číštění pistole,...)";
 			E->mGrid->Cells[0][1].ShowHint=true;
-			E->mGrid->Cells[0][2].Hint="délka lakovácího okna";
+			if(E->eID>100)E->mGrid->Cells[0][2].Hint="délka pracovní oblasti"; else E->mGrid->Cells[0][2].Hint="délka lakovácího okna";
 			E->mGrid->Cells[0][2].ShowHint=true;
 			E->mGrid->Cells[0][3].Hint="vyosení lakovácího okna";
 			E->mGrid->Cells[0][3].ShowHint=true;
@@ -4637,7 +4637,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Columns[0].Width=sirka_2;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			//nastavení hintů
-			E->mGrid->Cells[0][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[0][1].Hint="celkový čas procesu, který je složen z dílčích časů";// (přesun robota, aretace, lakování, číštění pistole,...)";
 			E->mGrid->Cells[0][1].ShowHint=true;
 			E->mGrid->Cells[0][2].Hint="časová rezerva";
 			E->mGrid->Cells[0][2].ShowHint=true;
@@ -4654,7 +4654,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][1].Text="PT1 "+cas;
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outPT(m.PT(E->LO1,pom_temp->pohon->aRD));
 			E->PT1=inPT(ms.MyToDouble(E->mGrid->Cells[1][1].Text));
-			E->mGrid->Cells[0][2].Text="LO1 "+LO;
+			if(E->eID>100)E->mGrid->Cells[0][2].Text="PO1 "+LO; else E->mGrid->Cells[0][2].Text="LO1 "+LO;
 			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outLO(E->LO1);
 			E->mGrid->Cells[0][2].BottomBorder->Width=2;
 			E->mGrid->Cells[1][2].BottomBorder->Width=2;
@@ -4670,7 +4670,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][6].Text="PT2 "+cas;
 			E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Text=outPT(m.PT(E->LO2,pom_temp->pohon->aRD));
 			E->PT2=inPT(ms.MyToDouble(E->mGrid->Cells[1][6].Text));
-			E->mGrid->Cells[0][7].Text="LO2 "+LO;
+			if(E->eID>100)E->mGrid->Cells[0][7].Text="PO2 "+LO; else E->mGrid->Cells[0][7].Text="LO2 "+LO;
 			E->mGrid->Cells[1][7].Type=E->mGrid->EDIT;E->mGrid->Cells[1][7].Text=outLO(E->LO2);
 			E->mGrid->Cells[0][7].BottomBorder->Width=2;
 			E->mGrid->Cells[1][7].BottomBorder->Width=2;
@@ -4679,17 +4679,17 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Columns[0].Width=81;//sirka_3;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			//nastavení hintů
-			E->mGrid->Cells[0][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[0][1].Hint="celkový čas procesu, který je složen z dílčích časů";// (přesun robota, aretace, lakování, číštění pistole,...)";
 			E->mGrid->Cells[0][1].ShowHint=true;
-			E->mGrid->Cells[0][2].Hint="délka lakovácího okna";
+			if(E->eID>100)E->mGrid->Cells[0][2].Hint="délka pracovní oblasti"; else E->mGrid->Cells[0][2].Hint="délka lakovácího okna";
 			E->mGrid->Cells[0][2].ShowHint=true;
 			E->mGrid->Cells[0][4].Hint="celkový čas procesu otoče";
 			E->mGrid->Cells[0][4].ShowHint=true;
 			E->mGrid->Cells[0][5].Hint="délka otoče";
 			E->mGrid->Cells[0][5].ShowHint=true;
-			E->mGrid->Cells[0][6].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[0][6].Hint="celkový čas procesu, který je složen z dílčích časů";// (přesun robota, aretace, lakování, číštění pistole,...)";
 			E->mGrid->Cells[0][6].ShowHint=true;
-			E->mGrid->Cells[0][7].Hint="délka lakovácího okna";
+			if(E->eID>100)E->mGrid->Cells[0][7].Hint="délka pracovní oblasti"; else E->mGrid->Cells[0][7].Hint="délka lakovácího okna";
 			E->mGrid->Cells[0][7].ShowHint=true;
 			break;
 		}
@@ -4719,11 +4719,11 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Columns[0].Width=78;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			//nastavení hintů
-			E->mGrid->Cells[0][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[0][1].Hint="celkový čas procesu, který je složen z dílčích časů";// (přesun robota, aretace, lakování, číštění pistole,...)";
 			E->mGrid->Cells[0][1].ShowHint=true;
 			E->mGrid->Cells[0][3].Hint="celkový čas procesu otoče";
 			E->mGrid->Cells[0][3].ShowHint=true;
-			E->mGrid->Cells[0][4].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[0][4].Hint="celkový čas procesu, který je složen z dílčích časů";// (přesun robota, aretace, lakování, číštění pistole,...)";
 			E->mGrid->Cells[0][4].ShowHint=true;
 			E->mGrid->Cells[0][5].Hint="časová rezerva";
 			E->mGrid->Cells[0][5].ShowHint=true;
@@ -4841,7 +4841,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][1].Text="PT "+cas;
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
 			E->mGrid->Cells[1][1].Text=outPT(E->PT1);
-			E->mGrid->Cells[0][2].Text="LO "+LO;
+			if(E->eID>100)E->mGrid->Cells[0][2].Text="PO "+LO; else E->mGrid->Cells[0][2].Text="LO "+LO;
 			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outLO(E->LO1);
 			E->mGrid->Cells[0][3].Text="vyosení "+LO;
 			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outLO(E->LO_pozice);
@@ -4851,9 +4851,9 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Columns[0].Width=sirka_1;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			//nastavení hintů
-			E->mGrid->Cells[0][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[0][1].Hint="celkový čas procesu, který je složen z dílčích časů";// (přesun robota, aretace, lakování, číštění pistole,...)";
 			E->mGrid->Cells[0][1].ShowHint=true;
-			E->mGrid->Cells[0][2].Hint="délka lakovácího okna";
+			if(E->eID>100)E->mGrid->Cells[0][2].Hint="délka pracovní oblasti"; else E->mGrid->Cells[0][2].Hint="délka lakovácího okna";
 			E->mGrid->Cells[0][2].ShowHint=true;
 			E->mGrid->Cells[0][3].Hint="vyosení lakovácího okna";
 			E->mGrid->Cells[0][3].ShowHint=true;
@@ -4874,7 +4874,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Columns[0].Width=sirka_2;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			//nastavení hintů
-			E->mGrid->Cells[0][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[0][1].Hint="celkový čas procesu, který je složen z dílčích časů";// (přesun robota, aretace, lakování, číštění pistole,...)";
 			E->mGrid->Cells[0][1].ShowHint=true;
 			E->mGrid->Cells[0][2].Hint="časová rezerva";
 			E->mGrid->Cells[0][2].ShowHint=true;
@@ -4890,7 +4890,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT1 "+cas;
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outPT(E->PT1);
-			E->mGrid->Cells[0][2].Text="LO1 "+LO;
+			if(E->eID>100)E->mGrid->Cells[0][2].Text="PO1 "+LO; else E->mGrid->Cells[0][2].Text="LO1 "+LO;
 			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outLO(E->LO1);
 			E->mGrid->Cells[0][2].BottomBorder->Width=2;
 			E->mGrid->Cells[1][2].BottomBorder->Width=2;
@@ -4904,7 +4904,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[1][5].BottomBorder->Width=2;
 			E->mGrid->Cells[0][6].Text="PT2 "+cas;
 			E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Text=outPT(E->PT2);
-			E->mGrid->Cells[0][7].Text="LO2 "+LO;
+			if(E->eID>100)E->mGrid->Cells[0][7].Text="PO2 "+LO; else E->mGrid->Cells[0][7].Text="LO2 "+LO;
 			E->mGrid->Cells[1][7].Type=E->mGrid->EDIT;E->mGrid->Cells[1][7].Text=outLO(E->LO2);
 			E->mGrid->Cells[0][7].BottomBorder->Width=2;
 			E->mGrid->Cells[1][7].BottomBorder->Width=2;
@@ -4913,17 +4913,17 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Columns[0].Width=81;//sirka_3;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			//nastavení hintů
-			E->mGrid->Cells[0][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[0][1].Hint="celkový čas procesu, který je složen z dílčích časů";// (přesun robota, aretace, lakování, číštění pistole,...)";
 			E->mGrid->Cells[0][1].ShowHint=true;
-			E->mGrid->Cells[0][2].Hint="délka lakovácího okna";
+			if(E->eID>100)E->mGrid->Cells[0][2].Hint="délka pracovní oblasti"; else E->mGrid->Cells[0][2].Hint="délka lakovácího okna";
 			E->mGrid->Cells[0][2].ShowHint=true;
 			E->mGrid->Cells[0][4].Hint="celkový čas procesu otoče";
 			E->mGrid->Cells[0][4].ShowHint=true;
 			E->mGrid->Cells[0][5].Hint="délka otoče";
 			E->mGrid->Cells[0][5].ShowHint=true;
-			E->mGrid->Cells[0][6].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[0][6].Hint="celkový čas procesu, který je složen z dílčích časů";// (přesun robota, aretace, lakování, číštění pistole,...)";
 			E->mGrid->Cells[0][6].ShowHint=true;
-			E->mGrid->Cells[0][7].Hint="délka lakovácího okna";
+			if(E->eID>100)E->mGrid->Cells[0][7].Hint="délka pracovní oblasti"; else E->mGrid->Cells[0][7].Hint="délka lakovácího okna";
 			E->mGrid->Cells[0][7].ShowHint=true;
 			break;
 		}
@@ -4951,11 +4951,11 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Columns[0].Width=78;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			//nastavení hintů
-			E->mGrid->Cells[0][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[0][1].Hint="celkový čas procesu, který je složen z dílčích časů";// (přesun robota, aretace, lakování, číštění pistole,...)";
 			E->mGrid->Cells[0][1].ShowHint=true;
 			E->mGrid->Cells[0][3].Hint="celkový čas procesu otoče";
 			E->mGrid->Cells[0][3].ShowHint=true;
-			E->mGrid->Cells[0][4].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[0][4].Hint="celkový čas procesu, který je složen z dílčích časů";// (přesun robota, aretace, lakování, číštění pistole,...)";
 			E->mGrid->Cells[0][4].ShowHint=true;
 			E->mGrid->Cells[0][5].Hint="časová rezerva";
 			E->mGrid->Cells[0][5].ShowHint=true;
