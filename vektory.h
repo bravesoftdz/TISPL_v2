@@ -17,310 +17,321 @@ class Cvektory
 
 	struct TPohon
 	{
-	  	unsigned long n; //pořadí objektu ve spoj.seznamu
-	  	UnicodeString name;//název
-	  	double rychlost_od;//minimální pracovní rychlost dopravníku
-			double rychlost_do;//maximální pracovní rychlost dopravníku
-			double aRD;//aktuální rychlost dopravníku m/s
-			double roztec;//rozteč palců v m
-			double Rz;//rozestup aktivních palců v m
-			double Rx;//rozestup aktivních palců (počet aktivních palců)
-			struct TPohon *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-			struct TPohon *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+		unsigned long n; //pořadí objektu ve spoj.seznamu
+		UnicodeString name;//název
+		double rychlost_od;//minimální pracovní rychlost dopravníku
+		double rychlost_do;//maximální pracovní rychlost dopravníku
+		double aRD;//aktuální rychlost dopravníku m/s
+		double roztec;//rozteč palců v m
+		double Rz;//rozestup aktivních palců v m
+		double Rx;//rozestup aktivních palců (počet aktivních palců)
+		struct TPohon *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+		struct TPohon *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
 	TPohon *POHONY;//spojový seznam pohonů
 
 	struct TGeometrie//pouze struktura
 	{
-			//double X1,Y1,X2,Y2;//umístění objektu - otázka zda bude potřeba
-			//double radius;
-			unsigned short typ;//0-linie, 1 oblouk
-			double delka;
-			double rotace;
+		//double X1,Y1,X2,Y2;//umístění objektu - otázka zda bude potřeba
+		//double radius;
+		unsigned short typ;//0-linie, 1 oblouk
+		double delka;
+		double rotace;
+	};
+
+	struct TKomora
+	{
+		unsigned long n; //pořadí ve spoj.seznam
+		double velikost;//v metrech
+		TRect kota;//citelná oblast hodnoty kóty, neukládat do binárky, slouží jenom jako temp data při vykreslování
+		struct TKomora *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+		struct TKomora *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+
 	};
 
 	struct TElement
 	{
-			unsigned long n; //pořadí ve spoj.seznamu
-			unsigned int eID; //id typu elementu: 0 - stop stanice, 1 - robot, 2 - robot se stop stanicí, 3 - robot s pasivní otočí, 4 - robot s aktivní otočí (resp. s otočí a stop stanicí), 5 - otoč pasivní, 6 - otoč aktivní (resp. otoč se stop stanicí), 7 - pouze geometrická zarážka
-			UnicodeString short_name;//krátký název max. 4 znaky
-			UnicodeString name;//celý název objektu
-			double X, Y;//umístění v logických (metrických) souřadnicích
-			double Xt,Yt;//umístění tabulky, resp. mGridu v logických (metrických) souřadnicích
-			short rotace_symbolu;//v jaké orientaci je element na obrazovce vykreslen 0,90,180,270
-			double rotace_jig;//úhel o který element orotuje jig vzhledem k jeho aktuální rotaci jigu vůči podvozku, např. rotace_jig=90°, aktuální rotace jigu 90°, výsledek 180°
-			short stav;
+		unsigned long n; //pořadí ve spoj.seznamu
+		unsigned int eID; //id typu elementu: 0 - stop stanice, 1 - robot, 2 - robot se stop stanicí, 3 - robot s pasivní otočí, 4 - robot s aktivní otočí (resp. s otočí a stop stanicí), 5 - otoč pasivní, 6 - otoč aktivní (resp. otoč se stop stanicí), 7 - pouze geometrická zarážka
+		UnicodeString short_name;//krátký název max. 4 znaky
+		UnicodeString name;//celý název objektu
+		double X, Y;//umístění v logických (metrických) souřadnicích
+		double Xt,Yt;//umístění tabulky, resp. mGridu v logických (metrických) souřadnicích
+		short rotace_symbolu;//v jaké orientaci je element na obrazovce vykreslen 0,90,180,270
+		double rotace_jig;//úhel o který element orotuje jig vzhledem k jeho aktuální rotaci jigu vůči podvozku, např. rotace_jig=90°, aktuální rotace jigu 90°, výsledek 180°
+		short stav;
 
-			double LO1;
-			double OTOC_delka;
-			double LO2;
-			double LO_pozice;
+		double LO1;
+		double OTOC_delka;
+		double LO2;
+		double LO_pozice;
 
-			double PT1;
-			double PTotoc;
-			double PT2;
+		double PT1;
+		double PTotoc;
+		double PT2;
 
-			double WT;//čekání na palec
-			double WTstop;//čekání na stopce
-			double RT;//reserve time
+		double WT;//čekání na palec
+		double WTstop;//čekání na stopce
+		double RT;//reserve time
 
-			T4Rect citelna_oblast;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast celé kóty(rect0), popisku kóty (rect1), jednotek kóty (rect2) a samotného názvu např. Robot 3 (rect3) elementu - nedovávat  do CObjekt
+		T4Rect citelna_oblast;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast celé kóty(rect0), popisku kóty (rect1), jednotek kóty (rect2) a samotného názvu např. Robot 3 (rect3) elementu - nedovávat  do CObjekt
 
-			unsigned int akt_pocet_voziku;
-			unsigned int max_pocet_voziku;
+		unsigned int akt_pocet_voziku;
+		unsigned int max_pocet_voziku;
 
-			TGeometrie geo;
-			TmGrid *mGrid;
+		TGeometrie geo;
+		TmGrid *mGrid;
 
-			UnicodeString poznamka;//uloží poznámku
+		UnicodeString poznamka;//uloží poznámku
 
-			struct TElement *sparovany;//ukazatel na následující spárovaný element ve spojovém seznamu (nemusí být totožný s dalším)
-			struct TElement *predchozi;//ukazatel na předchozí element ve spojovém seznamu
-			struct TElement *dalsi;//ukazatel na  další element ve spojovém seznamu
+		struct TElement *sparovany;//ukazatel na následující spárovaný element ve spojovém seznamu (nemusí být totožný s dalším)
+		struct TElement *predchozi;//ukazatel na předchozí element ve spojovém seznamu
+		struct TElement *dalsi;//ukazatel na  další element ve spojovém seznamu
 	};
 
 	struct TObjekt
 	{
-			unsigned long n; //pořadí objektu ve spoj.seznamu
-			unsigned int id; //id typu objektu
-			UnicodeString short_name;//krátký název max. 4 znaky
-			UnicodeString name;//celý název objektu
-			double X,Y;//umístění objektu ve schématu
-			double Xk,Yk;//umístění levého horního rohu kabiny v layoutu a náhledu kabiny - NEW + dodat do CObjekt!!!!
-			double sirka_steny;//šířka stěny kabiny objektu v metrech  - NEW + dodat do CObjekt!!!!
-			short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking)KK,2-Postprocesní (PP), -1 nenastaven
-			double CT;//pro status návrh
-			double RD;//pro status návrh v m/s, jenom pomocná proměnná získaná jako DD/CT, stežejní je většinou aRD (aktuální rychlost), která se váže přímo (i datově) k pohonu
-			double delka_dopravniku;//delka dopravníku v rámci objektu
-			double kapacita;//uživatelsky zadaná kapacita
-			double kapacita_dop;//doporučená, vypočítáná
-			double pozice;//počet vozíků v kabině
-			double rotace;//rotace jigu v objektu - nově spíše rotace náhledu
-			double mezera;//mezera mezi vozíky (kritická mezera)
-			double mezera_jig;//mezera mezi jigy
-			double mezera_podvozek;//mezera mezi podvozky
-			TPohon *pohon;//ukazatel na použitý pohon
-			TElement *elementy;
-			TPointD min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
-			TPointD rozmer_kabiny;//délka a šířka obvodových zdí kabiny   - NEW + dodat do CObjekt
-			T2Rect kabinaKotaX_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny - nedovávat  do CObjekt
-			T2Rect kabinaKotaY_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny - nedovávat  do CObjekt
-			double koty_elementu_offset;//odsazení kót elementů v metrech  - NEW + dodat do CObjekt!!!!
-			unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky
-			unsigned short stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
-			double odchylka;//povolená odchylka u PP z CT
-			double obsazenost;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
-			short CT_zamek;
-			short RD_zamek;
-			short DD_zamek;
-			short K_zamek;
-			UnicodeString poznamka;//uloží poznámku ke vzniku CT
-			bool probehla_aktualizace_prirazeni_pohonu;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
-			bool zobrazit_koty;//proměnná určující, zda se budou zobrzovat kóty
-			bool zobrazit_mGrid;//proměnná určující, zda budou zobrazeny mGridy
-			bool uzamknout_nahled;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
-			struct TObjekt *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-			struct TObjekt *predchozi2;//ukazatel na předchozí2 objekt ve spojovém seznamu
-			struct TObjekt *dalsi;//ukazatel na  další objekt ve spojovém seznamu
-			struct TObjekt *dalsi2;//ukazatel na další2 objekt ve spojovém seznamu
+		unsigned long n; //pořadí objektu ve spoj.seznamu
+		unsigned int id; //id typu objektu
+		UnicodeString short_name;//krátký název max. 4 znaky
+		UnicodeString name;//celý název objektu
+		double X,Y;//umístění objektu ve schématu
+		double Xk,Yk;//umístění levého horního rohu kabiny v layoutu a náhledu kabiny - NEW + dodat do CObjekt!!!!
+		double sirka_steny;//šířka stěny kabiny objektu v metrech  - NEW + dodat do CObjekt!!!!
+		short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking)KK,2-Postprocesní (PP), -1 nenastaven
+		double CT;//pro status návrh
+		double RD;//pro status návrh v m/s, jenom pomocná proměnná získaná jako DD/CT, stežejní je většinou aRD (aktuální rychlost), která se váže přímo (i datově) k pohonu
+		double delka_dopravniku;//delka dopravníku v rámci objektu
+		double kapacita;//uživatelsky zadaná kapacita
+		double kapacita_dop;//doporučená, vypočítáná
+		double pozice;//počet vozíků v kabině
+		double rotace;//rotace jigu v objektu - nově spíše rotace náhledu
+		double mezera;//mezera mezi vozíky (kritická mezera)
+		double mezera_jig;//mezera mezi jigy
+		double mezera_podvozek;//mezera mezi podvozky
+		TPohon *pohon;//ukazatel na použitý pohon
+		TElement *elementy;
+		TPointD min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
+		TPointD rozmer_kabiny;//délka a šířka obvodových zdí kabiny   - NEW + dodat do CObjekt
+		T2Rect kabinaKotaX_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny - nedovávat  do CObjekt
+		T2Rect kabinaKotaY_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny - nedovávat  do CObjekt
+		double koty_elementu_offset;//odsazení kót elementů v metrech  - NEW + dodat do CObjekt!!!!
+		TKomora *komora;//ukazatel na případné komory objektu - NEW + dodat do CObjekt
+		unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky
+		unsigned short stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
+		double odchylka;//povolená odchylka u PP z CT
+		double obsazenost;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
+		short CT_zamek;
+		short RD_zamek;
+		short DD_zamek;
+		short K_zamek;
+		UnicodeString poznamka;//uloží poznámku ke vzniku CT
+		bool probehla_aktualizace_prirazeni_pohonu;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
+		bool zobrazit_koty;//proměnná určující, zda se budou zobrzovat kóty
+		bool zobrazit_mGrid;//proměnná určující, zda budou zobrazeny mGridy
+		bool uzamknout_nahled;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
+		struct TObjekt *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+		struct TObjekt *predchozi2;//ukazatel na předchozí2 objekt ve spojovém seznamu
+		struct TObjekt *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+		struct TObjekt *dalsi2;//ukazatel na další2 objekt ve spojovém seznamu
 	};
 	TObjekt *OBJEKTY;//seznam objektů
 
 	struct TJig//pouze složený datový typ
 	{
-			double sirka;
-			double delka;
-			double vyska;
-			double ks;//kusů
+		double sirka;
+		double delka;
+		double vyska;
+		double ks;//kusů
 	};
 
 	struct TCesta//pouze přidružený spoják, který je součástí zakázky, jeden objekt spojáku je jeden segment cesty
 	{
-			unsigned long n;
-			TObjekt *objekt;
-			double CT; //cycle time
-			double Tc;//čaš čištění v rámci zakázky resp. stejné barvy, vztahuje se na konkrétní objekt a a zároveň zakázku, musí být tady, pokud není použito, tak 0
-			double Tv;//čas čištění a výměny barev, vztahuje se na konkrétní objekt a a zároveň zakázku, musí být tady, pokud není použito, tak 0
-			unsigned int Opak;//počet opakování jak často se čištění opakuje
-			double RD;//rychlost dopravníku
-			double Rotace;// úhel natočení jigu v objektu pro danou zakázku
-			struct TCesta *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-			struct TCesta *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+		unsigned long n;
+		TObjekt *objekt;
+		double CT; //cycle time
+		double Tc;//čaš čištění v rámci zakázky resp. stejné barvy, vztahuje se na konkrétní objekt a a zároveň zakázku, musí být tady, pokud není použito, tak 0
+		double Tv;//čas čištění a výměny barev, vztahuje se na konkrétní objekt a a zároveň zakázku, musí být tady, pokud není použito, tak 0
+		unsigned int Opak;//počet opakování jak často se čištění opakuje
+		double RD;//rychlost dopravníku
+		double Rotace;// úhel natočení jigu v objektu pro danou zakázku
+		struct TCesta *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+		struct TCesta *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
 
 	struct TZakazka
 	{
-			unsigned long n;//pořadí objektu ve spoj.seznamu
-			UnicodeString id;//uživatelské ID objektu
-			unsigned short typ;//0- realná,1-servisní
-			UnicodeString name;//název zakázky
-			TColor barva;//barva zakáky
-			double pomer;//poměr z celkového množství výrobků
-			double TT;
-			TJig jig;//šířka délka, výška, rotace a  ks připadajících na jig/rám vozzíku
-			unsigned long pocet_voziku;//počet vozíků v zakázce
-			unsigned long serv_vozik_pocet;//počet servisních vozíků v zakázce
-			unsigned long opakov_servis;//cyklus opakování servisních vozíku
-			struct TCesta *cesta;//ukazatel na první segment cesty
-			struct TZakazka *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-			struct TZakazka *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+		unsigned long n;//pořadí objektu ve spoj.seznamu
+		UnicodeString id;//uživatelské ID objektu
+		unsigned short typ;//0- realná,1-servisní
+		UnicodeString name;//název zakázky
+		TColor barva;//barva zakáky
+		double pomer;//poměr z celkového množství výrobků
+		double TT;
+		TJig jig;//šířka délka, výška, rotace a  ks připadajících na jig/rám vozzíku
+		unsigned long pocet_voziku;//počet vozíků v zakázce
+		unsigned long serv_vozik_pocet;//počet servisních vozíků v zakázce
+		unsigned long opakov_servis;//cyklus opakování servisních vozíku
+		struct TCesta *cesta;//ukazatel na první segment cesty
+		struct TZakazka *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+		struct TZakazka *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
 	TZakazka *ZAKAZKY;//spojový seznam zakázek
 	TZakazka *ZAKAZKY_temp;//spojový seznam zakázek
 
 	struct TVozik
 	{
-			unsigned long n; //pořadí objektu ve spoj.seznamu
-			struct TZakazka *zakazka;//ukazatel na přidruženou zakázku
-			short typ;//0-normální, 1 - servisní
-			double start;//výchozí pozice v grafu časových os
-			double pozice;//aktuální pozice na dopravniku či v grafu časových os
-			struct TVozik *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-			struct TVozik *dalsi;//ukazatel na další objekt ve spojovém seznamu
+		unsigned long n; //pořadí objektu ve spoj.seznamu
+		struct TZakazka *zakazka;//ukazatel na přidruženou zakázku
+		short typ;//0-normální, 1 - servisní
+		double start;//výchozí pozice v grafu časových os
+		double pozice;//aktuální pozice na dopravniku či v grafu časových os
+		struct TVozik *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+		struct TVozik *dalsi;//ukazatel na další objekt ve spojovém seznamu
 	};
 	TVozik *VOZIKY;//spojový seznam vozíků
 
 	struct TVozik_parametry//paremtry vozíků - stejné pro všechny vozíky
 	{
-			double delka;
-			unsigned short typ;//0 - podlahový, 1 - závěsný
+		double delka;
+		unsigned short typ;//0 - podlahový, 1 - závěsný
 	};
 
 	struct T_raster
 	{
-			UnicodeString filename;//adresa umístění podkladového rastru na disku
-			long double resolution;//rozlišení metrů na jeden pixel rastrového podkladu
-			double X,Y;//logické souřadnice (v metrech) umístění rastrového podkladu v projektu
-			bool show;//indikace zda je raster zobrazen
-			bool grayscale;//zda bude či nebude rastrový podklad v odstínech šedi či nikoliv
-			int dim;//úroveň ztlumení
+		UnicodeString filename;//adresa umístění podkladového rastru na disku
+		long double resolution;//rozlišení metrů na jeden pixel rastrového podkladu
+		double X,Y;//logické souřadnice (v metrech) umístění rastrového podkladu v projektu
+		bool show;//indikace zda je raster zobrazen
+		bool grayscale;//zda bude či nebude rastrový podklad v odstínech šedi či nikoliv
+		int dim;//úroveň ztlumení
 	};
 
 	struct T_vector
 	{
-			int vector;//úroveň ztlumení vektorů - zatím nebude využito
-			bool transparent;//zda bude vektorová vrstva transparentní - zatím nebude využito
+		int vector;//úroveň ztlumení vektorů - zatím nebude využito
+		bool transparent;//zda bude vektorová vrstva transparentní - zatím nebude využito
 	};
 
 
 	struct T_parametry_projektu //(Parametry výroby + Parametry linky (vozíky)
 	{
-			TDateTime cas_start;//začátek výroby v SEČ (resp. LSEČ)
-			unsigned long  mnozstvi;//požadované množství
-			double hod_den;//počet hodin za den
-			double dni_rok;//počet hodin za den
-			double efektivita;//přepokládaná výrobní efektivina
-			double TT;//pro návrháře
-			double delka_jig;
-			double sirka_jig;
-			double vyska_jig;
-			double delka_podvozek;
-			short typ_voziku;//0 - podlahový, 1 - podvěsný
-			T_raster raster;
-			T_vector vector;
+		TDateTime cas_start;//začátek výroby v SEČ (resp. LSEČ)
+		unsigned long  mnozstvi;//požadované množství
+		double hod_den;//počet hodin za den
+		double dni_rok;//počet hodin za den
+		double efektivita;//přepokládaná výrobní efektivina
+		double TT;//pro návrháře
+		double delka_jig;
+		double sirka_jig;
+		double vyska_jig;
+		double delka_podvozek;
+		short typ_voziku;//0 - podlahový, 1 - podvěsný
+		T_raster raster;
+		T_vector vector;
 	};
 	T_parametry_projektu PP;
 
 	struct TPalec
 	{
-			unsigned long n; //pořadí objektu ve spoj.seznamu
-			//double pozice;
-			//struct TObjekt *segment;
-			//přiřazení k dopravníku???
-			struct TPalec *predchozi;
-			struct TPalec *dalsi;
+		unsigned long n; //pořadí objektu ve spoj.seznamu
+		//double pozice;
+		//struct TObjekt *segment;
+		//přiřazení k dopravníku???
+		struct TPalec *predchozi;
+		struct TPalec *dalsi;
 	};
 	TPalec *PALCE;//spojový seznam palců na řetězu
 
 	struct TProces
 	{
-			unsigned long n; //pořadí objektu ve spoj.seznamu
-			unsigned long n_v_zakazce;//pořadí objektu v rámci zakázky
-			double Tpoc;//X-počateční   //absolutní časy (i dále)
-			double Tkon;//X-koncové
-			double Tdor;//X-dorovnání předchozího vozíku
-			double Tpre;//X- nutná doba přejezdu, zpoždění za předchozím vozíkem
-			double Tcek;//X- nutná doba cekani na palec
-			double Trand;//hodnota vypočitán dle funkce náhodná doba čekání na palec
-			struct TCesta *segment_cesty;//příslušnost procesu k vyjmutému (ze spojáku) segmentu cesty (tedy objektu)
-			struct TVozik *vozik;//ukazatel na vozík jehož proces vyjadřuje
-			struct TProces *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-			struct TProces *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+		unsigned long n; //pořadí objektu ve spoj.seznamu
+		unsigned long n_v_zakazce;//pořadí objektu v rámci zakázky
+		double Tpoc;//X-počateční   //absolutní časy (i dále)
+		double Tkon;//X-koncové
+		double Tdor;//X-dorovnání předchozího vozíku
+		double Tpre;//X- nutná doba přejezdu, zpoždění za předchozím vozíkem
+		double Tcek;//X- nutná doba cekani na palec
+		double Trand;//hodnota vypočitán dle funkce náhodná doba čekání na palec
+		struct TCesta *segment_cesty;//příslušnost procesu k vyjmutému (ze spojáku) segmentu cesty (tedy objektu)
+		struct TVozik *vozik;//ukazatel na vozík jehož proces vyjadřuje
+		struct TProces *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+		struct TProces *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
 	TProces *PROCESY;//seznam vygenerovaných procesů  v rámci časových os
 
 	struct TOdstavka
 	{
-			unsigned long n; //pořadí objektu ve spoj.seznamu
-			double datum_od;
-			double datum_do;
-			struct TOdstavka *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-			struct TOdstavka *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+		unsigned long n; //pořadí objektu ve spoj.seznamu
+		double datum_od;
+		double datum_do;
+		struct TOdstavka *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+		struct TOdstavka *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
 	struct TOdstavka ODSTAVKY;//seznam plánovaných odstávek linky
 
 	struct TText
 	{
-			unsigned long n; //pořadí objektu ve spoj.seznamu
-			//unsigned int vrstva;//ID vrstvy
-			UnicodeString text;//samotný text
-			UnicodeString font;//název fontu
-			double X, Y;//umístění objektu levý horní okraj
-			unsigned short int size;
-			unsigned short int styl;//0-nic, 1-bold,2-italic,3-oboje
-			TColor barva;
-			TColor barva_pozadi;
-			struct TText *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-			struct TText *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+		unsigned long n; //pořadí objektu ve spoj.seznamu
+		//unsigned int vrstva;//ID vrstvy
+		UnicodeString text;//samotný text
+		UnicodeString font;//název fontu
+		double X, Y;//umístění objektu levý horní okraj
+		unsigned short int size;
+		unsigned short int styl;//0-nic, 1-bold,2-italic,3-oboje
+		TColor barva;
+		TColor barva_pozadi;
+		struct TText *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+		struct TText *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
 	struct TText *TEXTY;
 
 	struct TLinie
 	{
-			unsigned long n; //pořadí objektu ve spoj.seznamu
-			//unsigned int vrstva;//ID vrstvy
-			double X1,Y1,X2,Y2;//umístění objektu levý horní okraj
-			unsigned short int width;//šířka v px
-			TColor barva;
-			unsigned short int typ;//typ čáry
-			struct TLinie *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-			struct TLinie *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+		unsigned long n; //pořadí objektu ve spoj.seznamu
+		//unsigned int vrstva;//ID vrstvy
+		double X1,Y1,X2,Y2;//umístění objektu levý horní okraj
+		unsigned short int width;//šířka v px
+		TColor barva;
+		unsigned short int typ;//typ čáry
+		struct TLinie *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+		struct TLinie *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
 	struct TLinie *LINIE;//seznam linií sloužicích jako poznámky
 
 	struct TRetez
 	{
-			unsigned int n; //pořadí objektu ve spoj.seznamu
-			AnsiString name;//název řetězu
-			double roztec;//rozteč palců na řetězů v metrech
-			struct TRetez *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-			struct TRetez *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+		unsigned int n; //pořadí objektu ve spoj.seznamu
+		AnsiString name;//název řetězu
+		double roztec;//rozteč palců na řetězů v metrech
+		struct TRetez *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+		struct TRetez *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
 	struct TRetez *RETEZY;
 
 	struct TFile_hlavicka
 	{
-		 unsigned short int Verze;
-		 unsigned short int Mod;
-		 double Zoom;
-		 long PosunutiX;//proměnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souřadnicích zařízení
-		 long PosunutiY;//proměnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souřadnicích zařízení
-		 unsigned int pocet_objektu;
-		 unsigned int pocet_pohonu;
-		 unsigned int pocet_zakazek;
-		 unsigned int pocet_voziku;
-		 //parametry projektu (PP):
-		 TDateTime cas_start;//začátek výroby v SEČ (resp. LSEČ)
-		 unsigned long  mnozstvi;//požadované množství
-		 double hod_den;//počet hodin za den
-		 double dni_rok;//počet hodin za den
-		 double efektivita;//přepokládaná výrobní efektivina
-		 double TT;//globální TT linky
-		 double delka_jig;
-		 double sirka_jig;
-		 double vyska_jig;
-		 double delka_podvozek;
-		 double typ_vozik;
+		unsigned short int Verze;
+		unsigned short int Mod;
+		double Zoom;
+		long PosunutiX;//proměnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souřadnicích zařízení
+		long PosunutiY;//proměnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souřadnicích zařízení
+		unsigned int pocet_objektu;
+		unsigned int pocet_pohonu;
+		unsigned int pocet_zakazek;
+		unsigned int pocet_voziku;
+		//parametry projektu (PP):
+		TDateTime cas_start;//začátek výroby v SEČ (resp. LSEČ)
+		unsigned long  mnozstvi;//požadované množství
+		double hod_den;//počet hodin za den
+		double dni_rok;//počet hodin za den
+		double efektivita;//přepokládaná výrobní efektivina
+		double TT;//globální TT linky
+		double delka_jig;
+		double sirka_jig;
+		double vyska_jig;
+		double delka_podvozek;
+		double typ_vozik;
 	};
 	TFile_hlavicka File_hlavicka;
 	unsigned int pocet_vyhybek;//uchovává počet přidaných vyhybek, NUTNO PŘIDAT DO VÝHYBEK!!!
@@ -362,8 +373,13 @@ class Cvektory
 		void nove_nazvy();//projde všechny objekty, výhybkám a spojkám upravý návez podle jejich n
 		void nove_indexy(bool nasledne_zmena_nazvu=false);//projde všechny objekty a nastavý nové indexy podle aktuálního pořadí objektů
 		void ortogonalizovat();//ortogonalizuje schéma
-		long vymaz_seznam_OBJEKTY();
 		TObjekt *dalsi_krok(TObjekt *Objekt,TPoint *tab_pruchodu);//určuje další krok cyklu při procházení objektů
+		void vloz_komoru(TObjekt *Objekt,double velikost);//vloží novou komoru na konec seznamu komor, nastaví velikost dle proměnné velikost
+		void vloz_komoru(TObjekt* Objekt,TKomora *Komora);//vloží novou komoru na konec seznamu komor, není třeba nastavovat ukazatele ani n-pořadí
+		void kopiruj_komory(TObjekt *Original,TObjekt *Kopie);//zkopíruje komory včetně jejich velikosti z originálu na kopii bez ukazatelového propojení
+		void smaz_komoru(TObjekt* Objekt,TKomora* Komora);//smaže konkrétní komoru daného objektu
+		void vymaz_komory(TObjekt* Objekt);//vymaže všechny komory daného objektu včetně hlavičky
+		long vymaz_seznam_OBJEKTY();//vymaže spojový seznam technologických objektů včetně přidružených elementů a případných komor z paměti
 
 //metody pro ELEMENTY
 		void hlavicka_elementy(TObjekt *Objekt);//danému objektu vytvoří hlavičku elementů

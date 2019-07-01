@@ -49,7 +49,7 @@ class Cvykresli
 	void prislusnost_cesty(TCanvas *canv,TColor Color,int X,int Y,float A,short N);
 	void vykresli_vektory(TCanvas *canv);
 	void vykresli_kabinu(TCanvas *canv);//zajiöùuje kompletnÌ vykreslenÌ s vol·nÌm n·sledujÌcÌ metody
-	void vykresli_kabinu(TCanvas *canv,unsigned int TID,long X1,long Y1,long X2,long Y2, short pocet_komor,short rotace,short sirka_steny_px);//zajiöùuje vykreslenÌ pouze obrysu dle typu objektu
+	void vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O);//zajiöùuje vykreslenÌ pouze obrysu dle typu objektu
 	void vykresli_grid(TCanvas *canv,int size_grid=10);
 	void vykresli_meridlo(TCanvas *canv,int X,int Y,bool kalibracni_sipka=false);//v p¯ÌpadÏ mÏ¯enÌ vzd·lenosti vykreslÌ spojnici a pop¯. vypisuje hodnotu vzd·lenosti
 	//	void vykresli_graf_rezervy(TCanvas *canv);//mÛd graf rezerv
@@ -83,7 +83,8 @@ class Cvykresli
 	void vykresli_ikonu_oblouku(TCanvas *canv,int X,int Y,AnsiString Popisek="oblouky",short stav=0);
 	void vykresli_ikonu_textu(TCanvas *canv,int X,int Y,AnsiString Popisek="text",short stav=0);
 	void vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popisek="spojnice",short stav=0);
- 	TPoint polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float sirka1, float sirka2, double sklon, double rotace,TPenMode pmMode=pmCopy,TColor clFillOut=clBlack,TColor lFillIn=clWhite);
+	void vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popisek="komora",short typ=0,short stav=0);
+	TPoint polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float sirka1, float sirka2, double sklon, double rotace,TPenMode pmMode=pmCopy,TColor clFillOut=clBlack,TColor lFillIn=clWhite);
 	void linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,int Width,TColor Color=clBlack,TPenStyle PenStyle=psSolid,TPenMode PenMode=pmCopy);
 	void line(TCanvas *canv,long X1,long Y1,long X2,long Y2);
 	void bezier(TCanvas *canv,TPointD *POLE,long posledni_prvek);

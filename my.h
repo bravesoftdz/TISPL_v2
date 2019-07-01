@@ -78,7 +78,8 @@ class Cmy
 	long LeziVblizkostiUsecky(double x, double y, double X1, double Y1, double X2, double Y2);
 	bool PtInCircle(double point_X,double point_Y,double center_X,double center_Y,double radius);//metoda ovìøí, zda se bod nachází v zadaném kruhu
 	bool PtInRectangle(double X1,double Y1,double X2,double Y2,double Xmys,double Ymys);//metoda ovìøí, zda se bod nachází v obdelníku
-	bool PtInClovek(double X,double Y,double Xmys,double Ymys,double rotace);//metoda ovìøí zda je bod ve vnitø obrysu èlovìka, který se nachází na daných souøadnicích
+	bool PtInStopka(double Ex,double Ey,double X,double Y,short uhel);//metoda ovìøí, zda se bod nachází ve stopce
+	bool PtInClovek(double X,double Y,double Xmys,double Ymys,double rotace,short eID);//metoda ovìøí zda je bod ve vnitø obrysu èlovìka, který se nachází na daných souøadnicích
 	bool PtInIon(double X,double Y,double Xmys,double Ymys,double rotace);//metoda ovìøí zda je bod ve vnitø obrysu ION tyèí, který se nachází na daných souøadnicích
 	void designButton(TscGPButton *button,TForm *form, short rank,short sum,short horizontal_space=22,short vertikal_space=11);//nastaví horizontální a vertikální pozici tlaèítka a také designové vlasnosti podle tlaèítkek Ano, Uložit, OK, Storno dle MyMessageBox
 	void frameForm(TForm *form,TColor color,short width=1);//vykreslí danému oknu transparentní (kvùli možnému smazání - pøemaskování) dle zadané barvy a šíøky, nutno volat pøi formactive (lépe však pøi formpaint), pøi šíøce 1px (ta je zároveò implicitní) staèí volat, jenom pøi formactive, jinak i pøi formsize, formresize,formclose, pøíklad použití: frameForm(Form_parametry,clWebOrange,1);

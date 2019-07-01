@@ -46,6 +46,7 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->rozmer_kabiny.x=0;
 	novy->rozmer_kabiny.y=0;
 	novy->koty_elementu_offset=0;//odsazení kót elementů v metrech
+	novy->komora=NULL;//ukazatel na komory
 	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
 	novy->stopka=0;//zda následuje na konci objektu stopka//0-ne,1-ano,2-automaticky
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
@@ -80,7 +81,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->id=id;
 	novy->short_name=short_name;
 	novy->name=name;
-	novy->rezim=0;if(id==4 || id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
+	novy->rezim=0;if(id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
 	novy->X=X;//přiřadím X osu,pozice objektu
 	novy->Y=Y;//přiřadím Y osu,pozice objektu
 	novy->Xk=X;//výchozí pozice kabiny
@@ -103,6 +104,8 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->rozmer_kabiny.x=10;//výchozí rozměr kabiny
 	novy->rozmer_kabiny.y=6;//výchozí rozměr kabiny
 	novy->koty_elementu_offset=4;//odsazení kót elementů v metrech
+	novy->komora=NULL;//ukazatel na komory
+	if(id==3)for(short i=1;i<=4;i++)vloz_komoru(novy,novy->rozmer_kabiny.x/4.0);//pokud se jedná o POWash,nastaví defaultně 4 stejné komory
 	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
 	novy->stopka=2;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
@@ -137,7 +140,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	novy->id=id;
 	novy->short_name=short_name;
 	novy->name=name;
-	novy->rezim=0;if(id==4 || id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
+	novy->rezim=0;if(id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
 	novy->X=X;//přiřadím X osu
 	novy->Y=Y;//přiřadím Y osu
 	novy->Xk=X;//výchozí pozice kabiny
@@ -160,6 +163,8 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	novy->rozmer_kabiny.x=10;//výchozí rozměr kabiny
 	novy->rozmer_kabiny.y=6;//výchozí rozměr kabiny
 	novy->koty_elementu_offset=4;//odsazení kót elementů v metrech
+	novy->komora=NULL;//ukazatel na komory
+	if(id==3)for(short i=1;i<=4;i++)vloz_komoru(novy,novy->rozmer_kabiny.x/4.0);//pokud se jedná o POWash,nastaví defaultně 4 stejné komory
 	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
 	novy->stopka=2;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
@@ -205,7 +210,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	novy->id=id;
 	novy->short_name=short_name;
 	novy->name=name;
-	novy->rezim=0;if(id==4 || id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
+	novy->rezim=0;if(id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
 	novy->X=X;//přiřadím X osu
 	novy->Y=Y;//přiřadím Y osu
 	novy->Xk=X;//výchozí pozice kabiny
@@ -228,6 +233,8 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	novy->rozmer_kabiny.x=10;//výchozí rozměr kabiny
 	novy->rozmer_kabiny.y=6;//výchozí rozměr kabiny
 	novy->koty_elementu_offset=4;//odsazení kót elementů v metrech
+	novy->komora=NULL;//ukazatel na komory
+	if(id==3)for(short i=1;i<=4;i++)vloz_komoru(novy,novy->rozmer_kabiny.x/4.0);//pokud se jedná o POWash,nastaví defaultně 4 stejné komory
 	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
 	novy->stopka=2;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
@@ -255,7 +262,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	else OBJEKTY->predchozi=novy;//spojka vkládaná za poslední objekt
 	if(pred->dalsi==po)pred->dalsi=novy;
 	if(pred->dalsi2==po) pred->dalsi2=novy;
-	//výhybkobé ukazatele
+	//výhybkové ukazatele
 	vyhybka->dalsi2=novy;//propojení sekundární větve
 	vyhybka->predchozi2=novy;//propojení výhybky a spojky
 	//indexy zvýšit separátně
@@ -337,6 +344,8 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		novy->min_prujezdni_profil=Objekt->min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
 		novy->rozmer_kabiny=Objekt->rozmer_kabiny;//výchozí rozměr kabiny
 		novy->koty_elementu_offset=Objekt->koty_elementu_offset;//odsazení kót elementů v metrech
+		novy->komora=NULL;
+		if(novy->id==3)kopiruj_komory(Objekt,novy);//pokud se jedná o POWash
 		novy->cekat_na_palce=Objekt->cekat_na_palce;//0-ne,1-ano,2-automaticky
 		novy->stopka=Objekt->stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 		novy->odchylka=Objekt->odchylka;//odchylka z CT, využíváno hlavně u objektů v PP režimu
@@ -386,11 +395,12 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->mezera=Original->mezera;
 	Kopie->mezera_jig=Original->mezera_jig;
 	Kopie->mezera_podvozek=Original->mezera_podvozek;
-	//POHON
-	kopiruj_pohon(Original->pohon,Kopie);
+	kopiruj_pohon(Original->pohon,Kopie);//POHON
 	Kopie->min_prujezdni_profil=Original->min_prujezdni_profil;
 	Kopie->rozmer_kabiny=Original->rozmer_kabiny;
 	Kopie->koty_elementu_offset=Original->koty_elementu_offset;
+	Kopie->komora=NULL;
+	if(Kopie->id==3)kopiruj_komory(Original,Kopie);//pokud se jedná o POWash
 	Kopie->cekat_na_palce=Original->cekat_na_palce;
 	Kopie->stopka=Original->stopka;
 	Kopie->odchylka=Original->odchylka;
@@ -504,6 +514,7 @@ short int Cvektory::smaz_objekt(TObjekt *Objekt,bool opakovani)
 		}
 	}
 
+	vymaz_komory(Objekt);
 	vymaz_elementy(Objekt);
 	if(spojka_vyh!=NULL)smaz_objekt(spojka_vyh,true);
 	Objekt=NULL;spojka_vyh=NULL;delete Objekt;delete spojka_vyh;//smaže mazaný prvek
@@ -1010,12 +1021,90 @@ void Cvektory::ortogonalizovat()
 	}
 }
 //---------------------------------------------------------------------------
-//smaze objekty z pameti
+//vloží novou komoru na konec seznamu komor, nastaví velikost dle proměnné velikost
+void Cvektory::vloz_komoru(TObjekt *Objekt,double velikost)
+{
+	TKomora *Komora=new TKomora;
+	Komora->velikost=velikost;
+	vloz_komoru(Objekt,Komora);
+}
+//---------------------------------------------------------------------------
+//vloží novou komoru na konec seznamu komor, není třeba nastavovat ukazatele ani n-pořadí
+void Cvektory::vloz_komoru(TObjekt *Objekt,TKomora *Komora)
+{
+	if(Komora!=NULL)
+	{
+		//pokud ještě hlavička neexistuje, tak ji založí
+		if(Objekt->komora==NULL)
+		{
+			Objekt->komora=new TKomora;
+			Objekt->komora->n=0;
+			Objekt->komora->predchozi=Objekt->komora;//hlavička ukazuje sama na sebe
+			Objekt->komora->dalsi=NULL;
+		}
+		//vložení nové komory na konec seznamu komor
+		Komora->n=Objekt->komora->predchozi->n+1;//navýšení počítadla
+		Komora->predchozi=Objekt->komora->predchozi;//nová komora ukazuje na poslední prvek ve spojaku jako na prvek předchozí
+		Komora->dalsi=NULL;//nová komora neukazuje na žádný další prvek, resp. ukazuje na NULL
+		Objekt->komora->predchozi->dalsi=Komora;//za poslední prvek vloží novou poslední komoru
+		Objekt->komora->predchozi=Komora;//hlavička ukazuje již na novou komoru jako poslední prvek
+	}
+}
+//---------------------------------------------------------------------------
+//zkopíruje komory včetně jejich velikosti z originálu na kopii bez ukazatelového propojení
+void Cvektory::kopiruj_komory(TObjekt *Original,TObjekt *Kopie)
+{
+	//pokud kopie obsahuje původní komory, tak je smaže
+	vymaz_komory(Kopie);
+	//samotné nakopírování
+	TKomora *K=Original->komora->dalsi;//přeskočí hlavičku
+	while(K!=NULL)
+	{
+		vloz_komoru(Kopie,K->velikost);
+		K=K->dalsi;
+	}
+	K=NULL;delete K;
+}
+//---------------------------------------------------------------------------
+//smaže konkrétní komoru daného objektu
+void Cvektory::smaz_komoru(TObjekt *Objekt,TKomora *Komora)
+{
+	if(Komora!=NULL && Komora->n!=0)//pokud existuje a zároveň mimo hlavičky, ta nejde smazat
+	{
+		if(Komora->dalsi==NULL)//jedná se o poslední prvek (múže být i za hlavičkou)
+		{
+			Objekt->komora->predchozi=Komora->predchozi;
+			Komora->predchozi=NULL;
+		}
+		else//nejedná se o poslední prvek
+		{
+			Komora->predchozi->dalsi=Komora->dalsi;
+			Komora->dalsi->predchozi=Komora->predchozi;
+		}
+		Komora=NULL;delete Komora;
+	}
+}
+//---------------------------------------------------------------------------
+//vymaže všechny komory daného objektu včetně hlavičky
+void Cvektory::vymaz_komory(TObjekt* Objekt)
+{
+	if(Objekt->komora!=NULL)
+	{
+		//maže od zadu dokud nezbyde pouze hlavička
+		while(Objekt->komora->dalsi==NULL)smaz_komoru(Objekt,Objekt->komora->predchozi);
+
+		//na závěr ještě smaže hlavičku
+		Objekt->komora=NULL;delete Objekt->komora;
+	}
+}
+//---------------------------------------------------------------------------
+//vymaže spojový seznam technologických objektů včetně přidružených elementů a případných komor z paměti
 long Cvektory::vymaz_seznam_OBJEKTY()
 {
 	long pocet_smazanych_objektu=0;
 	while (OBJEKTY!=NULL)
 	{
+		vymaz_komory(OBJEKTY->predchozi);
 		vymaz_elementy(OBJEKTY->predchozi);
 		pocet_smazanych_objektu++;
 		OBJEKTY->predchozi=NULL;
@@ -1627,8 +1716,6 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 	//vhodno přesunout do globálních proměnných do Cvykresli
 	float otoc_sirka=3.5;//ve skutečnosti poloměr
 	float otoc_tloustka=0.8;
-	float size=7*F->Zoom;//stopka
-	short sklon=50;//stopka
 
 	//algoritmus prochází jednotlivé elementy a porovnává vůči jejich pozici aktuální pozici kurzoru, aby se zbytečně netestovalo vše (metoda se volá neustále při každém posunu kurzoru), postupuje algoritmus maximálně větveně (šetření strojového času), tedy v případě uspěchu ihned končí, v případě neúspěchu testuje dále
 	TElement *E=Objekt->elementy;//NEPŘESKAKOVAT hlavičku!!! kvůli ošetření ohledně existence elementu v objektu
@@ -1640,13 +1727,7 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 			if(E->eID==0)//STOPKY
 			{
 				rotace=m.Rt90(rotace+180);//stopka je o 180° orotovaná
-				//referenční bode ve špičce, špička je směrem dolu (při nulové rotaci)
-				float sizeX=size;float sizeY=size;
-				if(rotace==0 || rotace==180)sizeX/=2.0;
-				if(rotace==90 || rotace==270)sizeY/=2.0;
-				POINT body[3]={{F->m.round(m.L2Px(E->X)+m.rotace(1,sklon,rotace).x*sizeX),F->m.round(m.L2Py(E->Y)+m.rotace(1,sklon,rotace).y*sizeY)},{m.L2Px(E->X),m.L2Py(E->Y)},{F->m.round(m.L2Px(E->X)+m.rotace(1,360-sklon,rotace).x*sizeX),F->m.round(m.L2Py(E->Y)+m.rotace(1,360-sklon,rotace).y*sizeY)}};
-				//F->Canvas->Pen->Color=clBlue;F->Canvas->Polygon((TPoint*)body,2);//pro testovací zákres
-				if(PtInRegion(CreatePolygonRgn(body,3,WINDING),m.L2Px(X),m.L2Py(Y)) || E->citelna_oblast.rect3.PtInRect(TPoint(m.L2Px(X),m.L2Py(Y))))break;//testování symbolu včetně popisku,pozn. CreatePolygonRgn i PtInRect - zahrnuje pouze vnitřní tvar, obrys tvaru je z oblasti vyloučen
+				if(m.PtInStopka(E->X,E->Y,X,Y,rotace) || E->citelna_oblast.rect3.PtInRect(TPoint(m.L2Px(X),m.L2Py(Y))))break;//testování symbolu včetně popisku,pozn. CreatePolygonRgn i PtInRect - zahrnuje pouze vnitřní tvar, obrys tvaru je z oblasti vyloučen
 				else E=E->dalsi;
 			}
 			else
@@ -1678,7 +1759,7 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 								case 270:hreg=CreateRectRgn(m.L2Px(E->X-DoSkRB),m.L2Py(E->Y+F->d.Robot_delka_zakladny/2.0),m.L2Px(E->X+F->d.Robot_sirka_zakladny/2.0),m.L2Py(E->Y-F->d.Robot_delka_zakladny/2.0));DoSkRB*=-1;break;
 							}
 							if(PtInRegion(hreg,m.L2Px(X),m.L2Py(Y)))break;
-							else//pokud nenalezeno, testuje ještě případně otoče robotů
+							else//pokud nenalezeno, testuje ještě případně OTOČE ROBOTŮ
 							{
 								if(E->eID==3 || E->eID==4 || E->eID==9 || E->eID==10 || E->eID==13 || E->eID==14 || E->eID==17 || E->eID==18)
 								{
@@ -1693,30 +1774,63 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 										else E=E->dalsi;
 									}
 								}
-								else E=E->dalsi;
+								else//ani mezi otočemi robotu nenalezeno, hledá mezi STOPKAMI ROBOTŮ
+								{
+									if(E->eID==2 || E->eID==4 || E->eID==8 || E->eID==10 || E->eID==12 || E->eID==14 || E->eID==16 || E->eID==18)
+									{
+										if(rotace==0 || rotace==180)
+										{
+											if(m.PtInStopka(E->X,E->Y+DoSkRB,X,Y,rotace))break;//ROBOTi se stopkami
+											else E=E->dalsi;
+										}
+										else//90°, 270°
+										{
+											if(m.PtInStopka(E->X+DoSkRB,E->Y,X,Y,rotace))break;//ROBOTi se stopkami
+											else E=E->dalsi;
+										}
+									}
+									else E=E->dalsi;//ani zde nenalezeno
+								}
 							}
 						}
 						else//ani roboti nanelezeny, hledá tedy mezi LIDSKÝMI ROBOTY
 						{
 						 if(101<=E->eID && E->eID<=108)
 						 {
-								if(m.PtInClovek(E->X,E->Y,X,Y,rotace)|| E->citelna_oblast.rect3.PtInRect(TPoint(m.L2Px(X),m.L2Py(Y))))break;
+								if(m.PtInClovek(E->X,E->Y,X,Y,rotace,E->eID)|| E->citelna_oblast.rect3.PtInRect(TPoint(m.L2Px(X),m.L2Py(Y))))break;
 								else //pokud nenalezeno, testuje ještě případně otoče lidských robotů
 								{
+									double DkRB=F->d.DkRB;if(rotace==180 || rotace==270)DkRB*=-1;
 									if(E->eID==103 || E->eID==104 || E->eID==107 || E->eID==108)//s otočemi
 									{
 										if(rotace==0 || rotace==180)
 										{
-											if(m.PtInCircle(X,Y,E->X,E->Y+F->d.DkRB,(otoc_sirka+otoc_tloustka/2.0)*F->m2px))break;
+											if(m.PtInCircle(X,Y,E->X,E->Y+DkRB,(otoc_sirka+otoc_tloustka/2.0)*F->m2px))break;
 											else E=E->dalsi;
 										}
 										else//90°, 270°
 										{
-											if(m.PtInCircle(X,Y,E->X+F->d.DkRB,E->Y,(otoc_sirka+otoc_tloustka/2.0)*F->m2px))break;
+											if(m.PtInCircle(X,Y,E->X+DkRB,E->Y,(otoc_sirka+otoc_tloustka/2.0)*F->m2px))break;
 											else E=E->dalsi;
 										}
-                  }
-									else E=E->dalsi;
+									}
+									else//ani mezi otočemi lidských robotu nenalezeno, hledá mezi STOPKAMI LIDSKÝCH ROBOTŮ
+									{
+										if(E->eID==102 || E->eID==104 || E->eID==106 || E->eID==108)
+										{
+											if(rotace==0 || rotace==180)
+											{
+												if(m.PtInStopka(E->X,E->Y+DkRB,X,Y,rotace))break;//ROBOTi se stopkami
+												else E=E->dalsi;
+											}
+											else//90°, 270°
+											{
+												if(m.PtInStopka(E->X+DkRB,E->Y,X,Y,rotace))break;//ROBOTi se stopkami
+												else E=E->dalsi;
+											}
+										}
+										else E=E->dalsi;//ani zde nenalezeno
+									}
 								}
 						 }
 						 else E=E->dalsi;//pokud E neodpovídá žádnému odchytávanému elementu, může se ještě  jednat např. o element zarážka
