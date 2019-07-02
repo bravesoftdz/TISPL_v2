@@ -1437,7 +1437,8 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu //zkoušel jsem nastavit plochu antialiasingu bez ovládacích prvků LeftToolbar a menu, ale kopírování do jiné BMP to zpomalovalo více neooptimalizovaná oblast pro 3xbmp
 				Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
 				d.vykresli_objekty(bmp_in->Canvas);
-				//smazat pouze pro test: d.vykresli_ikonu_komory(bmp_in->Canvas,600,600,"Komora",0);
+				//smazat pouze pro test:
+				d.vykresli_ikonu_komory(bmp_in->Canvas,600,600,"Komora",0);
 				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 				Cantialising a;
 				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
@@ -8045,17 +8046,12 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-//ShowMessage(d.v.OBJEKTY->predchozi->komora->predchozi->n);
-	Cvektory::TKomora *K=d.v.OBJEKTY->predchozi->komora->predchozi;//přeskočí hlavičku
-	ShowMessage(K->n);
-	K=K->predchozi;
-	ShowMessage(K->n);
-	K=K->predchozi;
-	ShowMessage(K->n);
-	K=K->predchozi;
-	ShowMessage(K->n);
-		K=K->predchozi;
-	ShowMessage(K->n);
+	pom_temp->komora->dalsi->dalsi->velikost/=2;
+	d.v.vloz_komoru(pom_temp,0.5);
+	REFRESH();
+
+//if(d.v.najdi_komoru(pom_temp)!=NULL)ShowMessage(d.v.najdi_komoru(pom_temp)->n);
+//else ShowMessage("Na daných souřadnicích myši se nenachází komora");
 
 //	//vytovoření schématu
 //	pom=NULL;pom_temp=NULL;pom_vyhybka=NULL;

@@ -15,6 +15,21 @@ class Cvektory
 
 	public:
 
+	struct TBod
+	{
+		unsigned long n; //pořadí objektu ve spoj.seznamu
+		double X, Y;//umístění v logických (metrických) souřadnicích
+		struct TBod *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+		struct TBod *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+	};
+
+	struct THala// - NEW + dodat do CObjekt!!!!
+	{
+		UnicodeString name;//název
+		double X, Y;//umístění názvu v logických (metrických) souřadnicích
+		TBod *body;//definice obrysu haly
+	};THala HALA;
+
 	struct TPohon
 	{
 		unsigned long n; //pořadí objektu ve spoj.seznamu
@@ -95,6 +110,7 @@ class Cvektory
 		unsigned int id; //id typu objektu
 		UnicodeString short_name;//krátký název max. 4 znaky
 		UnicodeString name;//celý název objektu
+		TBod *body;//definice obrysu haly - NEW + dodat do CObjekt!!!!
 		double X,Y;//umístění objektu ve schématu
 		double Xk,Yk;//umístění levého horního rohu kabiny v layoutu a náhledu kabiny - NEW + dodat do CObjekt!!!!
 		double sirka_steny;//šířka stěny kabiny objektu v metrech  - NEW + dodat do CObjekt!!!!
@@ -340,6 +356,15 @@ class Cvektory
 //konstruktor
 		Cvektory();
 
+//společné metody pro HALU a OBJEKT, pokud je ukazatel na Objekt NULL, jedná se o metody pro HALU
+		void vloz_bod(double X, double Y,TObjekt *Objekt=NULL,TBod *ZaBod=NULL, bool ortogonalizovat=true);//vloží nový bod na konec seznamu bodů pokud je Za=NULL, jinak vloží za tento bod
+		//void posun_bod
+		//void pridej bod mezi body
+		TBod *najdi_bod(TObjekt* Objekt=NULL);//na aktuálních souřadnicích myši hledá bod, pokud je nalezen vrátí na něj ukazatel, pokud je ukazatel na Objekt NULL, jedná se o metodu pro HALU
+		void kopiruj_body(TObjekt *Original,TObjekt *Kopie);//zkopíruje body včetně z originálu na kopii bez ukazatelového propojení, funguje jenom pro body objektů nikoliv HALY!!!
+		void smaz_bod(TBod* Bod,TObjekt* Objekt=NULL);//smaže konkrétní bod, pokud je ukazatel na Objekt NULL, jedná se o metodu pro HALU
+		void vymaz_body(TObjekt* Objekt=NULL);//vymaže všechny body včetně hlavičky, pokud je ukazatel na Objekt NULL, jedná se o metodu pro HALU
+
 //metody pro OBJEKTY
 		void hlavicka_OBJEKTY();
 		TObjekt *vloz_objekt(unsigned int id, double X, double Y);//vloží prvek do seznamu + vrátí ukazatel na vložený prvek
@@ -374,8 +399,9 @@ class Cvektory
 		void nove_indexy(bool nasledne_zmena_nazvu=false);//projde všechny objekty a nastavý nové indexy podle aktuálního pořadí objektů
 		void ortogonalizovat();//ortogonalizuje schéma
 		TObjekt *dalsi_krok(TObjekt *Objekt,TPoint *tab_pruchodu);//určuje další krok cyklu při procházení objektů
-		void vloz_komoru(TObjekt *Objekt,double velikost);//vloží novou komoru na konec seznamu komor, nastaví velikost dle proměnné velikost
-		void vloz_komoru(TObjekt* Objekt,TKomora *Komora);//vloží novou komoru na konec seznamu komor, není třeba nastavovat ukazatele ani n-pořadí
+		void vloz_komoru(TObjekt *Objekt,double velikost,TKomora *ZaKomoru=NULL);//vloží novou komoru na konec seznamu komor, pokud je ZaKomoru=NULL, jinak vloží za tento objekt, nastaví velikost dané komory dle proměnné velikost
+		void vloz_komoru(TObjekt* Objekt,TKomora *Komora,TKomora *ZaKomoru=NULL);//vloží novou komoru na konec seznamu komor, pokud je ZaKomoru=NULL, jinak vloží za tento objekt, není třeba nastavovat ukazatele ani n-pořadí
+		TKomora *najdi_komoru(TObjekt* Objekt);//na aktuálních souřadnicích myši hledá komoru, pokud je nalezena vrátí na ni ukazatel
 		void kopiruj_komory(TObjekt *Original,TObjekt *Kopie);//zkopíruje komory včetně jejich velikosti z originálu na kopii bez ukazatelového propojení
 		void smaz_komoru(TObjekt* Objekt,TKomora* Komora);//smaže konkrétní komoru daného objektu
 		void vymaz_komory(TObjekt* Objekt);//vymaže všechny komory daného objektu včetně hlavičky
