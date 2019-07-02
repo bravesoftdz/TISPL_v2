@@ -1290,14 +1290,24 @@ void Cvektory::smaz_komoru(TObjekt *Objekt,TKomora *Komora)
 		if(Komora->dalsi==NULL)//jedná se o poslední prvek (múže být i za hlavičkou)
 		{
 			Objekt->komora->predchozi=Komora->predchozi;
-			Komora->predchozi=NULL;
+			Komora->predchozi->dalsi=NULL;   //Původní: Komora->predchozi=NULL;
 		}
 		else//nejedná se o poslední prvek
 		{
 			Komora->predchozi->dalsi=Komora->dalsi;
 			Komora->dalsi->predchozi=Komora->predchozi;
 		}
+		Objekt->komora->predchozi->velikost+=Komora->velikost;//zvětšení poslední komory o odstraněnou komoru
+		//přeindexování komor, index n souží k získání počtu komor v objektu
+		Komora=Objekt->komora->dalsi;int n=1;
+		while(Komora!=NULL)
+		{
+			Komora->n=n;
+			n++;
+			Komora=Komora->dalsi;
+		}
 		Komora=NULL;delete Komora;
+
 	}
 }
 //---------------------------------------------------------------------------
