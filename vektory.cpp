@@ -15,6 +15,7 @@ Cvektory::Cvektory()
 	hlavicka_VOZIKY();//vytvoří novou hlavičku pro vozíky
 	hlavicka_RETEZY();//vytvoří novou hlavičku pro řetězy
 	//	hlavicka_palce();
+	HALA.body=NULL;
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
@@ -24,9 +25,9 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod, bool ort
 {
 	////alokace paměti
 	TBod *Bod=new TBod;
-
+					 ortogonalizovat=false;
 	////data
-	if(ortogonalizovat)//pokud je požadavek na ortogonalizaci, tak ověření zda je správny
+	if(ortogonalizovat)//pokud je požadavek na ortogonalizaci, tak ověření zda je možný
 	{
 		ortogonalizovat=false;
 		if(Objekt!=NULL && Objekt->body!=NULL)//pro objekt
@@ -45,10 +46,10 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod, bool ort
 		else {Bod->X=X;Bod->Y=B->Y;}//zarovnat dle Y
 		B=NULL;delete B;
 	}
-	else //nikoliv
+	else//nikoliv vložení bez ortogonalizace
 	{
 		Bod->X=X;
-		Bod->X=Y;
+		Bod->Y=Y;
   }
 
 	////vkládání do bodů objektu
@@ -131,7 +132,15 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod, bool ort
 //na aktuálních souřadnicích myši hledá bod, pokud je nalezen vrátí na něj ukazatel, pokud je ukazatel na Objekt NULL, jedná se o metodu pro HALU
 Cvektory::TBod *Cvektory::najdi_bod(TObjekt* Objekt)
 {
-
+	float o=0.2;//citelná oblast v metrech, pokud nebudu chtít zvětšovat se zoomem, tak zde podělit zoomem
+	TBod *B=Objekt->body->dalsi;//jedná se o body objektu + přeskočí hlavičku
+	if(Objekt==NULL)HALA.body->dalsi;//jedná se bod haly + přeskočí hlavičku
+	while(B!=NULL)
+	{
+		if(m.PtInRectangle(B->X-o,B->Y+o,B->X+o,B->Y+o,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y))break;
+		B=B->dalsi;
+	}
+	return B;
 }
 ////---------------------------------------------------------------------------
 //zkopíruje body včetně z originálu na kopii bez ukazatelového propojení, funguje jenom pro body objektů nikoliv HALY!!!

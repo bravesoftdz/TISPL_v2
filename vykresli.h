@@ -43,6 +43,7 @@ class Cvykresli
 		bool A;//animace true nebo false
 	};TTP TP;//nastavení modu technologické procesy
 
+	void vykresli_halu(TCanvas *canv);
 	void vykresli_objekty(TCanvas *canv);
 	void vykresli_rectangle(TCanvas *canv, Cvektory::TObjekt *ukaz);
 	void vykresli_kruh(TCanvas *canv, Cvektory::TObjekt *O);

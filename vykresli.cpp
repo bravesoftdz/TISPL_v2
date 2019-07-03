@@ -30,6 +30,33 @@ Cvykresli::Cvykresli()
 	DkRB=0.8;//délka k referenčnímu bodu od uchopovacího bodu, respektive odsazení člověka od linky
 }
 //---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+void Cvykresli::vykresli_halu(TCanvas *canv)
+{
+	if(v.HALA.body!=NULL && v.HALA.body->predchozi->n>1)
+	{
+		short sirka_steny_px=m.m2px(0.3);//m->px
+		//short W=m.round(sirka_steny_px/2.0);//posunutí vykreslení orámování nad vnější rozměry kabiny
+
+		////nastavení pera
+		canv->Brush->Color=clWhite;canv->Brush->Style=bsSolid;//nastavení výplně
+		canv->Pen->Mode=pmNotXor;//pro transparentní zákres
+		canv->Pen->Color=clBlack;//barva
+		canv->Pen->Width=sirka_steny_px;//šířka v pixelech
+
+		Cvektory::TBod *B=v.HALA.body->dalsi->dalsi;//přeskočí hlavičku i první prvek
+		canv->MoveTo(m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y));//nastavení pera na výchozí pozici
+		while(B!=NULL)
+		{
+			canv->LineTo(m.L2Px(B->X),m.L2Py(B->Y));
+			if(B==v.HALA.body->predchozi)canv->LineTo(m.L2Px(v.HALA.body->dalsi->X),m.L2Py(v.HALA.body->dalsi->Y));//pokud se jedná o poslendí prvek spojí ještě s prvním, aby byla hala uzavřená
+			B=B->dalsi;//posun na další
+		}
+		B=NULL; delete B;
+	}
+}
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 //vrátí souřadnice dle typu buď středové nebo excentrické v podobě levého horního rohu objektu
 int Cvykresli::CorEx(Cvektory::TObjekt *O)
 {
