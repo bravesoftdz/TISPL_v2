@@ -8124,12 +8124,9 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
+//MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	d.v.vloz_bod(30,-30);d.v.vloz_bod(60,-30);d.v.vloz_bod(60,-60);d.v.vloz_bod(45,-60);d.v.vloz_bod(45,-45);d.v.vloz_bod(30,-45);d.v.vloz_bod(40,-45);
-//	REFRESH();
-
-
 	Cvektory::TKomora *k=pom_temp->komora;
 	while(k!=NULL)
 	{
@@ -8173,32 +8170,34 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //	O=NULL;delete O;
 }
 //---------------------------------------------------------------------------
-
+//MaKr testovací tlačítko
+void __fastcall TForm1::Button14Click(TObject *Sender)
+{
+	d.v.vloz_bod(30,-30);d.v.vloz_bod(60,-30);d.v.vloz_bod(60,-60);d.v.vloz_bod(45,-60);d.v.vloz_bod(45,-45);d.v.vloz_bod(30,-45);d.v.vloz_bod(40,-45);
+	REFRESH();
+}
+//---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
 {
-	 d.JIZPOCITANO=false;//zajistí přepočet časových os
-	 Invalidate();
-	 RM();//korekce chyby oskakování pravého menu
+	d.JIZPOCITANO=false;//zajistí přepočet časových os
+	Invalidate();
+	RM();//korekce chyby oskakování pravého menu
 }
-
 //-------------------------------------------------------------
 void __fastcall TForm1::ComboBoxODminChange(TObject *Sender)
 {
-		//ještě ošetření aby zadal hodnotu od menší nebo rovno hodnotě do
-
-		d.TP.OD=ms.MyToDouble(ComboBoxODmin->Text);
-		Invalidate();
-		RM();//korekce chyby oskakování pravého menu
+	//ještě ošetření aby zadal hodnotu od menší nebo rovno hodnotě do
+	d.TP.OD=ms.MyToDouble(ComboBoxODmin->Text);
+	Invalidate();
+	RM();//korekce chyby oskakování pravého menu
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm1::ComboBoxDOminChange(TObject *Sender)
 {
-
-		//ještě ošetření aby zadal hodnotu od menší nebo rovno hodnotě do
-		d.TP.DO=ms.MyToDouble(ComboBoxDOmin->Text);
-		Invalidate();
-		RM();//korekce chyby oskakování pravého menu
+	//ještě ošetření aby zadal hodnotu od menší nebo rovno hodnotě do
+	d.TP.DO=ms.MyToDouble(ComboBoxDOmin->Text);
+	Invalidate();
+	RM();//korekce chyby oskakování pravého menu
 }
 //---------------------------------------------------------------------------
 //zapne či vypne antialiasing
@@ -9928,5 +9927,7 @@ unsigned short TForm1::load_language(Tlanguage language)
 	return 0; //načte defaultní jazykové nastavení tzn. AJ
   }
 }
+
+
 
 

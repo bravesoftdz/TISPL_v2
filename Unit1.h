@@ -309,6 +309,7 @@ __published:	// IDE-managed Components
 	TscGPImage *scGPImage_mereni_vzdalenost;
 	TscGPSwitch *scGPSwitch_robot_clovek;
 	TscGPPanel *scGPPanel_pomocn_proSwitch;
+	TButton *Button14;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -507,6 +508,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPImage_mereni_vzdalenostClick(TObject *Sender);
 	void __fastcall scGPSwitch_robot_clovekChangeState(TObject *Sender);
 	void __fastcall scGPComboBox_prepinacKotClick(TObject *Sender);
+	void __fastcall Button14Click(TObject *Sender);
 
 
 // User declarations

@@ -231,7 +231,7 @@ object Form1: TForm1
     Top = 432
     Width = 75
     Height = 25
-    Caption = 'Button1'
+    Caption = 'ButtonZakazky'
     TabOrder = 1
     Visible = False
     OnClick = Button1Click
@@ -3596,11 +3596,11 @@ object Form1: TForm1
     OnClick = button_zakazky_tempClick
   end
   object Button11: TButton
-    Left = 280
-    Top = 432
-    Width = 75
+    Left = 355
+    Top = 329
+    Width = 116
     Height = 25
-    Caption = 'Button11'
+    Caption = 'ButtonROSTAtesty'
     TabOrder = 29
     Visible = False
     OnClick = Button11Click
@@ -3968,11 +3968,11 @@ object Form1: TForm1
     AllowAllUp = True
   end
   object Button13: TButton
-    Left = 371
-    Top = 432
-    Width = 75
+    Left = 355
+    Top = 360
+    Width = 116
     Height = 25
-    Caption = 'Button13'
+    Caption = 'ButtonMaVLtesty'
     TabOrder = 36
     OnClick = Button13Click
   end
@@ -4455,8 +4455,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 2592
-        Top = 2755
+        Left = 2598
+        Top = 2761
         Width = 244
         Height = 31
         Align = alCustom
@@ -8425,11 +8425,20 @@ object Form1: TForm1
       OnChangeState = scGPSwitch_robot_clovekChangeState
     end
   end
+  object Button14: TButton
+    Left = 355
+    Top = 391
+    Width = 116
+    Height = 25
+    Caption = 'ButtonMaKRtesty'
+    TabOrder = 50
+    OnClick = Button14Click
+  end
   object ImageList1: TImageList
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118005C07940710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118009807980710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9560,7 +9569,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013E004C08FC0830003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013E000009000930003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000000003000001002000000000000000
       0900000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
