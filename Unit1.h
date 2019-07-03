@@ -514,7 +514,7 @@ __published:	// IDE-managed Components
 public:
 	enum Tmod{NO=0,SCHEMA,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE,NAHLED};Tmod MOD;
 	enum Tstatus{NAVRH,OVEROVANI};Tstatus STATUS;
-	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE,MOVE_KABINA,ROZMER_KABINA,OFFSET_KOTY};Takce Akce;
+	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE,MOVE_KABINA,ROZMER_KABINA,OFFSET_KOTY,MOVE_KOMORA};Takce Akce;
 	enum Tm_mm{M=0,MM,SEKUNDY,MINUTY};Tm_mm DOtocunit,DKunit,LOunit,Runit,Rzunit;//přepínač jednotek vzdálenost,rozšířen o SEKUNDY,MINUTY (problém při použití SEC a MIN) z důvodu časových a vzdálenostních kót
 	enum Tminsec{SEC=0,MIN};Tminsec PTunit,aRDunit ;//přepínač jednotek času
 
@@ -545,6 +545,7 @@ private:
 	Cvektory::TObjekt *add_objekt_za();
 	void move_objekt(int X, int Y);
 	void add_element(int X, int Y);
+	void add_komoru();//přidávání komory kabině powerwashe, kontrola zda není součet kabin větší než rozměr kabiny
 	short rotace_symbol(short trend,int X, int Y);
 	void vytvoreni_tab_pohon();//vytvoření tabulky pohonu
   void odstraneni_elementu_tab_pohon(int operace);
@@ -655,6 +656,7 @@ public:		// User declarations
 	Cvektory::TObjekt *pom,*pom_vyhybka,*pom_temp,*copyObjekt;
 	Cvektory::TElement *pom_element,*pom_element_temp;
 	TmGrid *PmG;//ukazatel na mGridovou tabulku pohonu
+	Cvektory::TKomora *pom_komora;
 
 	//souřadnicové proměnné
 	TPoint akt_souradnice_kurzoru_PX;//uchová aktuální pozici kurzoru
