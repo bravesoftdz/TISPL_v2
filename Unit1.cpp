@@ -8172,8 +8172,8 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
 void __fastcall TForm1::Button14Click(TObject *Sender)
-{
-	d.v.vloz_bod(30,-30);d.v.vloz_bod(60,-30);d.v.vloz_bod(60,-60);d.v.vloz_bod(45,-60);d.v.vloz_bod(45,-45);d.v.vloz_bod(30,-45);d.v.vloz_bod(40,-45);
+{                                                       //test ortogonalizace
+	d.v.vloz_bod(30,-30);d.v.vloz_bod(60,-30);d.v.vloz_bod(50,-50);d.v.vloz_bod(45,-60);d.v.vloz_bod(45,-45);d.v.vloz_bod(30,-45);d.v.vloz_bod(40,-45);
 	REFRESH();
 }
 //---------------------------------------------------------------------------

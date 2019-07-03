@@ -28,6 +28,8 @@ Cvykresli::Cvykresli()
 	Robot_delka_zakladny=1.2;
 	DoSkRB=(1.2+Robot_sirka_zakladny/2.0);//delka od středu (X,Y bodu) robota k referenčnímu bodu robota (tj. k trysce) v metrech
 	DkRB=0.8;//délka k referenčnímu bodu od uchopovacího bodu, respektive odsazení člověka od linky
+	clStenaKabiny=m.clIntensive(clRed,180);
+	clStenaHaly=m.clIntensive(clBlue,100);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -35,14 +37,15 @@ void Cvykresli::vykresli_halu(TCanvas *canv)
 {
 	if(v.HALA.body!=NULL && v.HALA.body->predchozi->n>1)
 	{
-		short sirka_steny_px=m.m2px(0.3);//m->px
+		short sirka_steny_px=m.m2px(0.5);//m->px
 		//short W=m.round(sirka_steny_px/2.0);//posunutí vykreslení orámování nad vnější rozměry kabiny
 
 		////nastavení pera
-		canv->Brush->Color=clWhite;canv->Brush->Style=bsSolid;//nastavení výplně
-		canv->Pen->Mode=pmNotXor;//pro transparentní zákres
-		canv->Pen->Color=clBlack;//barva
+		canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
+		//canv->Pen->Mode=pmNotXor;//pro transparentní zákres
+		canv->Pen->Color=clStenaHaly;//barva
 		canv->Pen->Width=sirka_steny_px;//šířka v pixelech
+		set_pen(canv,canv->Pen->Color,sirka_steny_px,/*PS_ENDCAP_FLAT*/PS_ENDCAP_SQUARE);
 
 		Cvektory::TBod *B=v.HALA.body->dalsi->dalsi;//přeskočí hlavičku i první prvek
 		canv->MoveTo(m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y));//nastavení pera na výchozí pozici
@@ -341,10 +344,10 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O)
 	short W=m.round(sirka_steny_px/2.0);//posunutí vykreslení orámování nad vnější rozměry kabiny
 	short pmpp=m.m2px(v.PP.delka_jig); if(v.PP.delka_jig<v.PP.sirka_jig)pmpp=m.m2px(v.PP.sirka_jig);pmpp=m.round(pmpp/2.0);//polovina max. průjezdního profilu
 
-	////nastavení pera
+	////nastavení pera pro kabinu
 	canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
 	canv->Pen->Mode=pmNotXor;//pro transparentní zákres
-	canv->Pen->Color=m.clIntensive(clRed,200);//barva
+	canv->Pen->Color=clStenaKabiny;//barva
 	canv->Pen->Width=sirka_steny_px;//šířka v pixelech
 
 	////vnější obrys kabiny
@@ -353,17 +356,15 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O)
 	////vykreslení komor - pokud je objekt obsahuje, poslední komora má vždy velikost do konce objektu (nehledě na její skutečné délku), stav, kdy začíná komora za objektem, je nutné ošetřit separátně
 	if(O->komora!=NULL && O->komora->predchozi->n>0)
 	{
-		set_pen(canv,canv->Pen->Color,sirka_steny_px,PS_ENDCAP_FLAT);
 		unsigned int pocet_komor=O->komora->predchozi->n;
 		Cvektory::TKomora *K=O->komora->dalsi;//přeskočí hlavičku
 		double vzdalenost=0;
 		while(K->dalsi!=NULL)
 		{
-			////nastavení pera,musí být znova, vykreslení kót pero přenastavý
-    	canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
-    	canv->Pen->Mode=pmNotXor;//pro transparentní zákres
-    	canv->Pen->Color=m.clIntensive(clRed,200);//barva
-			canv->Pen->Width=sirka_steny_px;//šířka v pixelech
+			////nastavení pera, musí být znova, vykreslení kót pero přenastaví
+			canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
+			canv->Pen->Mode=pmNotXor;//pro transparentní zákres
+			set_pen(canv,clStenaKabiny,sirka_steny_px,PS_ENDCAP_FLAT);
 			vzdalenost+=K->velikost;//dle velikosti předchozích komor uchovává hodnotu součtu/pozice aktuálně vykreslované komory
 			if(rotace==0 || rotace==180)
 			{
@@ -386,6 +387,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O)
 		K=NULL;delete K;
 		//vykreslení kóty od poslení komory k okraji kabiny
 		vykresli_kotu(canv,F->pom_temp->Xk+vzdalenost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,1);
+		canv->Brush->Style=bsClear;//navrácení na průhledné pero, kvůli následujícím popiskům objektu, kóty jej totiž změnily
 	}
 }
 //---------------------------------------------------------------------------
@@ -3775,7 +3777,11 @@ void Cvykresli::vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popise
 //---------------------------------------------------------------------------
 void Cvykresli::vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popisek,short typ,short stav)
 {
-	short W,H,o;
+	////výchozí nastavení
+	short W=10;//šířka torza objektu
+	short H=15;//výška torza objektu
+	short o=3;//komora odsazení
+
 	////nastavení pera
 	if(typ==-1)//kurzor
 	{
@@ -3785,38 +3791,35 @@ void Cvykresli::vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popis
 		canv->Pen->Width=1;
 		canv->Brush->Color=clWhite;
 		canv->Brush->Style=bsClear;
-		W=10*10;//šířka torza objektu
-		H=15*10;//výška torza objektu
-		o=3*10;//komora odsazení
-	}//ikona
-	else
+		W*=10;//šířka torza objektu
+		H*=10;//výška torza objektu
+		o*=10;//komora odsazení
+	}
+	else//ikona
 	{
 		canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
-		canv->Pen->Mode=pmNotXor;//pro transparentní zákres
-		canv->Pen->Color=m.clIntensive(clRed,200);if(stav==-1)canv->Pen->Color=m.clIntensive(clBlack,180);//barva
+		canv->Pen->Mode=pmCopy;//pro transparentní zákres
+		canv->Pen->Color=clStenaKabiny;if(stav==-1)canv->Pen->Color=m.clIntensive(clStenaKabiny,50);//barva
 		canv->Pen->Width=m.m2px(0.12);//šířka v pixelech
-		set_pen(canv,canv->Pen->Color,canv->Pen->Width,PS_ENDCAP_FLAT);
-		W=10*30;//šířka torza objektu
-		H=15*30;//výška torza objektu
-		o=3*30;//komora odsazení
+		set_pen(canv,canv->Pen->Color,canv->Pen->Width,PS_ENDCAP_SQUARE);
+		W*=30;//šířka torza objektu
+		H*=30;//výška torza objektu
+		o*=30;//komora odsazení
 	}
 
-	////vykreslení obrysu , původně 10
-//	short W=10*20;//šířka torza objektu
-//	short H=15*20;//výška torza objektu
-//	short o=3*20;//komora odsazení
+	////vykreslení obrysu
 	line(canv,X,Y,X+W,Y);//horní vodorovná
 	line(canv,X+W,Y,X+W,Y+H);//pravá svislá
 	line(canv,X+W,Y+H,X,Y+H);//dolní vodorovná
 	line(canv,X+o,Y+H,X+o,Y+H/2+o/2);//dolní kus komory
-	line(canv,X+o,Y,X+o,Y+H/2-o/2);
+	line(canv,X+o,Y,X+o,Y+H/2-o/2);//horní kus komory
 
 	////popisek
-	if(typ==0)//typ ikona
+	if(typ==0)//pouze pro typ ikona
 	{
 		short oT=20;//odsazení textu od ikony
 		TColor barva=clBlack; if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
-		canv->Font->Color=barva;  //2,8*8                                                   //3*8
+		canv->Font->Color=barva;
 		canv->Font->Size=F->m.round(2.8*12);if(F->aFont->Size==12)canv->Font->Size=F->m.round(3*12);
 		canv->Font->Name=F->aFont->Name;
 		canv->Font->Style = TFontStyles();

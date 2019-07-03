@@ -25,7 +25,7 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod, bool ort
 {
 	////alokace paměti
 	TBod *Bod=new TBod;
-					 ortogonalizovat=false;
+
 	////data
 	if(ortogonalizovat)//pokud je požadavek na ortogonalizaci, tak ověření zda je možný
 	{
