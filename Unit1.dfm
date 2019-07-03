@@ -3604,6 +3604,7 @@ object Form1: TForm1
     TabOrder = 29
     Visible = False
     OnClick = Button11Click
+    OnKeyDown = FormKeyDown
   end
   object scGPGlyphButton_close_grafy: TscGPGlyphButton
     AlignWithMargins = True
@@ -3974,7 +3975,9 @@ object Form1: TForm1
     Height = 25
     Caption = 'ButtonMaVLtesty'
     TabOrder = 36
+    Visible = False
     OnClick = Button13Click
+    OnKeyDown = FormKeyDown
   end
   object CheckBox_pouzit_zadane_kapacity_OLD: TCheckBox
     Left = 288
@@ -8432,7 +8435,9 @@ object Form1: TForm1
     Height = 25
     Caption = 'ButtonMaKRtesty'
     TabOrder = 50
+    Visible = False
     OnClick = Button14Click
+    OnKeyDown = FormKeyDown
   end
   object ImageList1: TImageList
     Left = 216
