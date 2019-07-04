@@ -20,8 +20,9 @@ Cvektory::Cvektory()
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 ////společné metody pro HALU a objekty
-//vloží nový bod na konec seznamu bodů pokud je Za=NULL, jinak vloží za tento bod
-void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod, bool ortogonalizovat)
+//vloží nový bod na konec seznamu bodů pokud je Za=NULL, jinak vloží za tento bod, ošetřuje bod vložený na stejný místo jako předchozí, či jako první, pokud se jedná o poslední vložení při uzavírání polygonu a je zapnuta ortogonalizace, je zajištěno, aby byl první poslední a předposlední bod v ortogonalizovaném vztahu, zajištění poslední spojnice zajištuje vykreslovací metoda, pokud jsou vloženy pouze 3 body a ukončeno vkládání je dopočítán 4 bod do rozměrů obdélníku
+//ke konzultaci: integrace ortogonalizace a ošetření proti totožnosti posledního a prvního bodu (což bude z pohledu GUI oboje možná řešeno)
+void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod,bool ortogonalizovat,bool konec)
 {
 	////alokace paměti
 	TBod *Bod=new TBod;
@@ -42,17 +43,26 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod, bool ort
 	if(ortogonalizovat)//pokud je požadavek na ortogonalizaci
 	{
 		TBod *B=ZaBod;if(B==NULL){if(Objekt!=NULL)B=Objekt->body->predchozi;else B=HALA.body->predchozi;}
+		TBod *P=NULL;if(Objekt!=NULL)P=Objekt->body->dalsi; P=HALA.body->dalsi;
+
 		if(m.abs_d(B->X-X)<m.abs_d(B->Y-Y)){Bod->X=B->X;Bod->Y=Y;}//zarovnat dle X
-		else {Bod->X=X;Bod->Y=B->Y;}//zarovnat dle Y
-		B=NULL;delete B;
+		else{Bod->X=X;Bod->Y=B->Y;}//zarovnat dle Y
+
+		if(konec==true && ZaBod==NULL && B->n>2)//poslední bod
+		{
+			if(Bod->X==B->X){Bod->Y=P->Y;}
+			else{Bod->X=P->X;}
+		}
+
+		B=NULL;delete B;P=NULL;delete P;
 	}
-	else//nikoliv vložení bez ortogonalizace
+	else//vložení bez ortogonalizace
 	{
 		Bod->X=X;
 		Bod->Y=Y;
   }
 
-	////vkládání do bodů objektu
+	////vkládání do bodů OBJEKTU
 	if(Objekt!=NULL)
 	{
 		//pokud ještě HLAVIČKA neexistuje, tak ji založí
@@ -63,16 +73,20 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod, bool ort
 			Objekt->body->predchozi=Objekt->body;//hlavička ukazuje sama na sebe
 			Objekt->body->dalsi=NULL;
 		}
-		//vložení nového boud na konec seznamu bodů
+		//vložení nového bodu na konec seznamu bodů
 		if(ZaBod==NULL || ZaBod!=NULL && ZaBod==Objekt->body->predchozi)//pokud se má vkládat nakonec
-		{
-			Bod->n=Objekt->body->predchozi->n+1;//navýšení počítadla
-			Bod->predchozi=Objekt->body->predchozi;//nový bod ukazuje na poslední prvek ve spojaku jako na prvek předchozí
-			Bod->dalsi=NULL;//nový bod neukazuje na žádný další prvek, resp. ukazuje na NULL
-			Objekt->body->predchozi->dalsi=Bod;//za poslední aktuální prvek vloží nový poslední
-			Objekt->body->predchozi=Bod;//hlavička ukazuje již na novou komoru jako poslední prvek
+		{																		//situace aktuální (budoucí poslední) první         											//situace  aktuální (budoucí poslední) a poslední aktuální (budoucí předposlední)
+			if(Objekt->body->dalsi==NULL || (Bod->X!=Objekt->body->dalsi->X || Bod->Y!=Objekt->body->dalsi->Y) && (Bod->X!=Objekt->body->predchozi->X || Bod->Y!=Objekt->body->predchozi->Y))//pokud se vkládá první prvek, ale pokud je poslední vkládaný totožný jako první nebo totožný jako předchozí (např. u ukočování kresby, nebo u chybného kliku), tak ho ignoruje a neuložího do spojáku)
+			if(Bod->X!=Objekt->body->dalsi->X && Bod->Y!=Objekt->body->dalsi->Y && Bod->X!=Bod->predchozi->X && Bod->Y!=Bod->predchozi->Y)//pokud je poslední vkládaný totožný jako první nebo totožný jako předchozí (např. u ukočování kresby, nebo u chybného kliku), tak ho ignoruje a neuložího do spojáku
+			{
+				Bod->n=Objekt->body->predchozi->n+1;//navýšení počítadla
+				Bod->predchozi=Objekt->body->predchozi;//nový bod ukazuje na poslední prvek ve spojaku jako na prvek předchozí
+				Bod->dalsi=NULL;//nový bod neukazuje na žádný další prvek, resp. ukazuje na NULL
+				Objekt->body->predchozi->dalsi=Bod;//za poslední aktuální prvek vloží nový poslední
+				Objekt->body->predchozi=Bod;//hlavička ukazuje již na novou komoru jako poslední prvek
+			}
 		}
-		else////vložení mezi komory
+		else//vložení mezi body
 		{
 			//nastavení počítadla u vkládané komory
 			Bod->n=ZaBod->n+1;
@@ -102,14 +116,17 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod, bool ort
 		}
 		//vložení nového boud na konec seznamu bodů
 		if(ZaBod==NULL || ZaBod!=NULL && ZaBod==HALA.body->predchozi)//pokud se má vkládat nakonec
-		{
-			Bod->n=HALA.body->predchozi->n+1;//navýšení počítadla
-			Bod->predchozi=HALA.body->predchozi;//nový bod ukazuje na poslední prvek ve spojaku jako na prvek předchozí
-			Bod->dalsi=NULL;//nový bod neukazuje na žádný další prvek, resp. ukazuje na NULL
-			HALA.body->predchozi->dalsi=Bod;//za poslední aktuální prvek vloží nový poslední
-			HALA.body->predchozi=Bod;//hlavička ukazuje již na novou komoru jako poslední prvek
+		{                               //situace aktuální (budoucí poslední) první         						//situace  aktuální (budoucí poslední) a poslední aktuální (budoucí předposlední)
+			if(HALA.body->dalsi==NULL || (Bod->X!=HALA.body->dalsi->X || Bod->Y!=HALA.body->dalsi->Y) && (Bod->X!=HALA.body->predchozi->X || Bod->Y!=HALA.body->predchozi->Y))//pokud se vkládá první prvek, ale pokud je poslední vkládaný totožný jako první nebo totožný jako předchozí (např. u ukočování kresby, nebo u chybného kliku), tak ho ignoruje a neuložího do spojáku)
+			{    F->Memo("ano",true,true);
+				Bod->n=HALA.body->predchozi->n+1;//navýšení počítadla
+				Bod->predchozi=HALA.body->predchozi;//nový bod ukazuje na poslední prvek ve spojaku jako na prvek předchozí
+				Bod->dalsi=NULL;//nový bod neukazuje na žádný další prvek, resp. ukazuje na NULL
+				HALA.body->predchozi->dalsi=Bod;//za poslední aktuální prvek vloží nový poslední
+				HALA.body->predchozi=Bod;//hlavička ukazuje již na novou komoru jako poslední prvek
+			}
 		}
-		else////vložení mezi komory
+		else//vložení mezi body
 		{
 			//nastavení počítadla u vkládané komory
 			Bod->n=ZaBod->n+1;
@@ -126,18 +143,32 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod, bool ort
 			Bod->dalsi=ZaBod->dalsi;//vkládaná ukazuje na původní následují
 			ZaBod->dalsi=Bod;//za požadovanou komoru se vloží vkládaná komora
 		}
-  }
+	}
+
+	////pokud jsou jenom 3 body a je konec, tak se 4 bod automaticky dopočítá
+	if(ortogonalizovat && konec==true && ZaBod==NULL)
+	{
+		TBod *F=NULL;if(Objekt!=NULL)F=Objekt->body->dalsi; F=HALA.body->dalsi;//první
+		TBod *L=NULL;if(L==NULL){if(Objekt!=NULL)L=Objekt->body->predchozi;else L=HALA.body->predchozi;}//poslední
+		if(L->n==3)
+		{
+			if(L->Y>F->Y)vloz_bod(L->X,F->Y,Objekt,NULL,true,true);
+			else vloz_bod(F->X,L->Y,Objekt,NULL,true,true);
+		}
+		F=NULL;delete F;L=NULL;delete L;
+	}
 }
 ////---------------------------------------------------------------------------
 //na aktuálních souřadnicích myši hledá bod, pokud je nalezen vrátí na něj ukazatel, pokud je ukazatel na Objekt NULL, jedná se o metodu pro HALU
 Cvektory::TBod *Cvektory::najdi_bod(TObjekt* Objekt)
 {
-	float o=0.2;//citelná oblast v metrech, pokud nebudu chtít zvětšovat se zoomem, tak zde podělit zoomem
+	float o=0.4;//citelná oblast v metrech, pokud nebudu chtít zvětšovat se zoomem, tak zde podělit zoomem
 	TBod *B=Objekt->body->dalsi;//jedná se o body objektu + přeskočí hlavičku
 	if(Objekt==NULL)HALA.body->dalsi;//jedná se bod haly + přeskočí hlavičku
 	while(B!=NULL)
 	{
-		if(m.PtInRectangle(B->X-o,B->Y+o,B->X+o,B->Y+o,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y))break;
+		//if(m.PtInRectangle(B->X-o,B->Y+o,B->X+o,B->Y+o,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y))break;
+		if(m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,B->X,B->Y,o))break;
 		B=B->dalsi;
 	}
 	return B;

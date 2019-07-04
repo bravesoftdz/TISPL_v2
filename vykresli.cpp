@@ -33,20 +33,23 @@ Cvykresli::Cvykresli()
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-void Cvykresli::vykresli_halu(TCanvas *canv)
+void Cvykresli::vykresli_halu(TCanvas *canv,int mode)//mode: -2 normal (implicitně), -1-highlight bez editace, 0-editace, 1-až počet bodů zvýraznění daného bodu
 {
 	if(v.HALA.body!=NULL && v.HALA.body->predchozi->n>1)
 	{
-		short sirka_steny_px=m.m2px(0.5);//m->px
+		////výchozí parametry
+		short sirka_steny_px=m.m2px(0.4);//m->px
 		//short W=m.round(sirka_steny_px/2.0);//posunutí vykreslení orámování nad vnější rozměry kabiny
+		short o=m.m2px(0.4);
 
-		////nastavení pera
+		////nastavení pera spojnic
 		canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
 		//canv->Pen->Mode=pmNotXor;//pro transparentní zákres
-		canv->Pen->Color=clStenaHaly;//barva
+		canv->Pen->Color=clStenaHaly;if(mode==-1)canv->Pen->Color=m.clIntensive(clBlue,80);//barva
 		canv->Pen->Width=sirka_steny_px;//šířka v pixelech
 		set_pen(canv,canv->Pen->Color,sirka_steny_px,/*PS_ENDCAP_FLAT*/PS_ENDCAP_SQUARE);
 
+		////vykreslení spojnic
 		Cvektory::TBod *B=v.HALA.body->dalsi->dalsi;//přeskočí hlavičku i první prvek
 		canv->MoveTo(m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y));//nastavení pera na výchozí pozici
 		while(B!=NULL)
@@ -55,6 +58,24 @@ void Cvykresli::vykresli_halu(TCanvas *canv)
 			if(B==v.HALA.body->predchozi)canv->LineTo(m.L2Px(v.HALA.body->dalsi->X),m.L2Py(v.HALA.body->dalsi->Y));//pokud se jedná o poslendí prvek spojí ještě s prvním, aby byla hala uzavřená
 			B=B->dalsi;//posun na další
 		}
+
+		////Uchopy - pokud je považována editace, nutno vykreslit v samostatném cyklu až nad spojnice
+		if(mode>=0)
+		{
+			canv->Pen->Color=clWhite;//orámování uchopu
+			canv->Pen->Width=m.round(0.5*F->Zoom);
+			canv->Brush->Style=bsSolid;//nastavení výplně
+			canv->Brush->Color=clStenaHaly;
+			B=v.HALA.body->dalsi;//přeskakuje hlavičku
+			while(B!=NULL)
+			{
+				if(B->n==mode){canv->Ellipse(m.L2Px(B->X)-o,m.L2Py(B->Y)-o,m.L2Px(B->X)+o,m.L2Py(B->Y)+o);break;}//pouze konkrétní
+				else if(mode==0)canv->Ellipse(m.L2Px(B->X)-o,m.L2Py(B->Y)-o,m.L2Px(B->X)+o,m.L2Py(B->Y)+o);//všechny body
+				B=B->dalsi;//posun na další
+			}
+		}
+
+		////odstranění pomocného ukazatele
 		B=NULL; delete B;
 	}
 }
