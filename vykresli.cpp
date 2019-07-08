@@ -40,65 +40,6 @@ void Cvykresli::vykresli_halu(TCanvas *canv,int stav)
 	pravouhelnik(canv,v.HALA.body,clStenaHaly,sirka_steny_px,3);
 }
 //---------------------------------------------------------------------------
-//stav: -3 kurzor, -2 normal (implicitně), -1-highlight bez editace, 0-editace zvýrazní všechny body, 1-až počet bodů zvýraznění daného bodu
-void Cvykresli::pravouhelnik(TCanvas *canv,Cvektory::TBod *body,TColor barva, short sirka,int stav,bool automaticky_spojovat)
-{
-	if(body!=NULL && body->predchozi->n>1)
-	{
-		////výchozí parametry
-		//short W=m.round(sirka/2.0);//posunutí vykreslení orámování nad vnější rozměry kabiny
-		short o=m.m2px(0.4);
-
-		////nastavení pera spojnic
-		canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
-		if(stav==-3)//typ kurzor
-		{
-			canv->Pen->Mode=pmNotXor;
-			canv->Pen->Style=psDot;
-			canv->Pen->Color=clBlack;
-			canv->Pen->Width=1;
-			canv->Brush->Style=bsClear;
-		}
-		else//normální
-		{
-			//canv->Pen->Mode=pmNotXor;//pro transparentní zákres
-			canv->Pen->Mode=pmCopy;
-			canv->Pen->Color=barva;if(stav==-1)canv->Pen->Color=m.clIntensive(barva,80);//barva
-			canv->Pen->Width=sirka;//šířka v pixelech
-			set_pen(canv,canv->Pen->Color,sirka,/*PS_ENDCAP_FLAT*/PS_ENDCAP_SQUARE);
-		}
-
-		////vykreslení spojnic
-		Cvektory::TBod *B=body->dalsi->dalsi;//přeskočí hlavičku i první prvek
-		canv->MoveTo(m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y));//nastavení pera na výchozí pozici
-		while(B!=NULL)
-		{
-			canv->LineTo(m.L2Px(B->X),m.L2Py(B->Y));
-			if(B==body->predchozi && automaticky_spojovat)canv->LineTo(m.L2Px(body->dalsi->X),m.L2Py(body->dalsi->Y));//pokud se jedná o poslendí prvek spojí ještě s prvním, aby byl obrazec uzavřený, pokud je požadováno
-			B=B->dalsi;//posun na další
-		}
-
-		////Uchopy - pokud je považována editace, nutno vykreslit v samostatném cyklu až nad spojnice
-		if(stav>=0)
-		{
-			canv->Pen->Color=clWhite;//orámování uchopu
-			canv->Pen->Width=m.round(0.5*F->Zoom);
-			canv->Brush->Style=bsSolid;//nastavení výplně
-			canv->Brush->Color=clStenaHaly;
-			B=body->dalsi;//přeskakuje hlavičku
-			while(B!=NULL)
-			{
-				if(B->n==stav){canv->Ellipse(m.L2Px(B->X)-o,m.L2Py(B->Y)-o,m.L2Px(B->X)+o,m.L2Py(B->Y)+o);break;}//pouze konkrétní
-				else if(stav==0)canv->Ellipse(m.L2Px(B->X)-o,m.L2Py(B->Y)-o,m.L2Px(B->X)+o,m.L2Py(B->Y)+o);//všechny body
-				B=B->dalsi;//posun na další
-			}
-		}
-
-		////odstranění pomocného ukazatele
-		B=NULL; delete B;
-	}
-}
-//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //vrátí souřadnice dle typu buď středové nebo excentrické v podobě levého horního rohu objektu
 int Cvykresli::CorEx(Cvektory::TObjekt *O)
@@ -3965,6 +3906,65 @@ void Cvykresli::bezier(TCanvas *canv,TPoint *POLE_px,long posledni_prvek)
 	canv->Pen->Style=psSolid;canv->Pen->Color=clBlack;
 	canv->Pen->Width=m.round(O*F->Zoom);
 	canv->PolyBezier(POLE_px,posledni_prvek);//výsledné vykreslení Bézierovy křivky
+}
+//---------------------------------------------------------------------------
+//stav: -3 kurzor, -2 normal (implicitně), -1-highlight bez editace, 0-editace zvýrazní všechny body, 1-až počet bodů zvýraznění daného bodu
+void Cvykresli::pravouhelnik(TCanvas *canv,Cvektory::TBod *body,TColor barva, short sirka,int stav,bool automaticky_spojovat)
+{
+	if(body!=NULL && body->predchozi->n>1)
+	{
+		////výchozí parametry
+		//short W=m.round(sirka/2.0);//posunutí vykreslení orámování nad vnější rozměry kabiny
+		short o=m.m2px(0.4);
+
+		////nastavení pera spojnic
+		canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
+		if(stav==-3)//typ kurzor
+		{
+			canv->Pen->Mode=pmNotXor;
+			canv->Pen->Style=psDot;
+			canv->Pen->Color=clBlack;
+			canv->Pen->Width=1;
+			canv->Brush->Style=bsClear;
+		}
+		else//normální
+		{
+			//canv->Pen->Mode=pmNotXor;//pro transparentní zákres
+			canv->Pen->Mode=pmCopy;
+			canv->Pen->Color=barva;if(stav==-1)canv->Pen->Color=m.clIntensive(barva,80);//barva
+			canv->Pen->Width=sirka;//šířka v pixelech
+			set_pen(canv,canv->Pen->Color,sirka,/*PS_ENDCAP_FLAT*/PS_ENDCAP_SQUARE);
+		}
+
+		////vykreslení spojnic
+		Cvektory::TBod *B=body->dalsi->dalsi;//přeskočí hlavičku i první prvek
+		canv->MoveTo(m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y));//nastavení pera na výchozí pozici
+		while(B!=NULL)
+		{
+			canv->LineTo(m.L2Px(B->X),m.L2Py(B->Y));
+			if(B==body->predchozi && automaticky_spojovat)canv->LineTo(m.L2Px(body->dalsi->X),m.L2Py(body->dalsi->Y));//pokud se jedná o poslendí prvek spojí ještě s prvním, aby byl obrazec uzavřený, pokud je požadováno
+			B=B->dalsi;//posun na další
+		}
+
+		////Uchopy - pokud je považována editace, nutno vykreslit v samostatném cyklu až nad spojnice
+		if(stav>=0)
+		{
+			canv->Pen->Color=clWhite;//orámování uchopu
+			canv->Pen->Width=m.round(0.5*F->Zoom);
+			canv->Brush->Style=bsSolid;//nastavení výplně
+			canv->Brush->Color=clStenaHaly;
+			B=body->dalsi;//přeskakuje hlavičku
+			while(B!=NULL)
+			{
+				if(B->n==stav){canv->Ellipse(m.L2Px(B->X)-o,m.L2Py(B->Y)-o,m.L2Px(B->X)+o,m.L2Py(B->Y)+o);break;}//pouze konkrétní
+				else if(stav==0)canv->Ellipse(m.L2Px(B->X)-o,m.L2Py(B->Y)-o,m.L2Px(B->X)+o,m.L2Py(B->Y)+o);//všechny body
+				B=B->dalsi;//posun na další
+			}
+		}
+
+		////odstranění pomocného ukazatele
+		B=NULL; delete B;
+	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
