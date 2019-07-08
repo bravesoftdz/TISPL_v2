@@ -44,7 +44,8 @@ class Cvykresli
 		bool A;//animace true nebo false
 	};TTP TP;//nastavení modu technologické procesy
 
-	void vykresli_halu(TCanvas *canv,int mode=-2);//mode: -2 normal (implicitnì), -1-highlight bez editace, 0-editace, 1-až poèet bodù zvýraznìní daného bodu
+	void vykresli_halu(TCanvas *canv,int typ=-2);//stav: -3 kurzor, -2 normal (implicitnì), -1-highlight bez editace, 0-editace zvýrazní všechny body, 1-až poèet bodù zvýraznìní daného bodu
+	void pravouhelnik(TCanvas *canv,Cvektory::TBod *body,TColor barva=clBlack, short sirka=1,int stav=-2,bool automaticky_spojovat=true);//stav: -3 kurzor, -2 normal (implicitnì), -1-highlight bez editace, 0-editace zvýrazní všechny body, 1-až poèet bodù zvýraznìní daného bodu
 	void vykresli_objekty(TCanvas *canv);
 	void vykresli_rectangle(TCanvas *canv, Cvektory::TObjekt *ukaz);
 	void vykresli_kruh(TCanvas *canv, Cvektory::TObjekt *O);
@@ -92,6 +93,7 @@ class Cvykresli
 	void bezier(TCanvas *canv,TPointD *POLE,long posledni_prvek);
 	void bezier(TCanvas *canv,TPointD *POLE,long X,long Y,double oX,double oY,double rotace,long posledni_prvek);
 	void bezier(TCanvas *canv,TPoint *POLE_px,long posledni_prvek);
+	void pravouhelnik(TCanvas *canv);
 	void vykresli_mGridy(TCanvas *canv=NULL);
 	void nabuffrovat_mGridy(TmGrid *mGrid=NULL);//pomocná metoda vytváøející rastrové obrazy mGridù, pokud je buffer na NULL, buffrují se všechny tabulky, pokud ne, tak pouze ta z parametru
 	void vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvektory::TElement *Element_do);

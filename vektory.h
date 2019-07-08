@@ -58,10 +58,9 @@ class Cvektory
 	{
 		unsigned long n; //pořadí ve spoj.seznam
 		double velikost;//v metrech
-		TRect kota;//citelná oblast hodnoty kóty, neukládat do binárky, slouží jenom jako temp data při vykreslování
+		T3Rect kota;//citelná oblast hodnoty kóty ve fyzických souřadnicích (px), uchovávájící oblast celé kóty(rect0), popisku kóty (rect1), jednotek kóty (rect2), neukládat do binárky, slouží jenom jako temp data při vykreslování
 		struct TKomora *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 		struct TKomora *dalsi;//ukazatel na  další objekt ve spojovém seznamu
-
 	};
 
 	struct TElement

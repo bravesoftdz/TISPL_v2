@@ -114,11 +114,11 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod,bool orto
 			HALA.body->predchozi=HALA.body;//hlavička ukazuje sama na sebe
 			HALA.body->dalsi=NULL;
 		}
-		//vložení nového boud na konec seznamu bodů
+		//vložení nového bodu na konec seznamu bodů
 		if(ZaBod==NULL || ZaBod!=NULL && ZaBod==HALA.body->predchozi)//pokud se má vkládat nakonec
 		{                               //situace aktuální (budoucí poslední) první         						//situace  aktuální (budoucí poslední) a poslední aktuální (budoucí předposlední)
 			if(HALA.body->dalsi==NULL || (Bod->X!=HALA.body->dalsi->X || Bod->Y!=HALA.body->dalsi->Y) && (Bod->X!=HALA.body->predchozi->X || Bod->Y!=HALA.body->predchozi->Y))//pokud se vkládá první prvek, ale pokud je poslední vkládaný totožný jako první nebo totožný jako předchozí (např. u ukočování kresby, nebo u chybného kliku), tak ho ignoruje a neuložího do spojáku)
-			{    F->Memo("ano",true,true);
+			{    //F->Memo("ano",true,true);
 				Bod->n=HALA.body->predchozi->n+1;//navýšení počítadla
 				Bod->predchozi=HALA.body->predchozi;//nový bod ukazuje na poslední prvek ve spojaku jako na prvek předchozí
 				Bod->dalsi=NULL;//nový bod neukazuje na žádný další prvek, resp. ukazuje na NULL
@@ -1330,7 +1330,7 @@ void Cvektory::smaz_komoru(TObjekt *Objekt,TKomora *Komora)
 		if(Komora->dalsi==NULL)//jedná se o poslední prvek (múže být i za hlavičkou)
 		{
 			Objekt->komora->predchozi=Komora->predchozi;
-			Komora->predchozi->dalsi=NULL;   //Původní: Komora->predchozi=NULL;
+			Komora->predchozi->dalsi=NULL;
 		}
 		else//nejedná se o poslední prvek
 		{
@@ -1347,7 +1347,6 @@ void Cvektory::smaz_komoru(TObjekt *Objekt,TKomora *Komora)
 			Komora=Komora->dalsi;
 		}
 		Komora=NULL;delete Komora;
-
 	}
 }
 //---------------------------------------------------------------------------
