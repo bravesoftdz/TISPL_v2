@@ -658,7 +658,7 @@ public:		// User declarations
 	Cvektory::TObjekt *pom,*pom_vyhybka,*pom_temp,*copyObjekt;
 	Cvektory::TElement *pom_element,*pom_element_temp;
 	TmGrid *PmG;//ukazatel na mGridovou tabulku pohonu
-	Cvektory::TKomora *pom_komora;
+	Cvektory::TKomora *pom_komora,*pom_komora_temp;
 
 	//souřadnicové proměnné
 	TPoint akt_souradnice_kurzoru_PX;//uchová aktuální pozici kurzoru
