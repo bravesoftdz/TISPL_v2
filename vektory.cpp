@@ -316,7 +316,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->rozmer_kabiny.x=10;//výchozí rozměr kabiny
 	novy->rozmer_kabiny.y=6;//výchozí rozměr kabiny
-	novy->koty_elementu_offset=4;//odsazení kót elementů v metrech
+	if(id==3)novy->koty_elementu_offset=1;else novy->koty_elementu_offset=4;//odsazení kót elementů v metrech,v kabině POW se kóty vykroslují od hrany kabiny, ne od pohonu
 	novy->komora=NULL;//ukazatel na komory
 	if(id==3)for(short i=1;i<=4;i++)vloz_komoru(novy,novy->rozmer_kabiny.x/4.0);//pokud se jedná o POWash,nastaví defaultně 4 stejné komory
 	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
@@ -375,7 +375,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->rozmer_kabiny.x=10;//výchozí rozměr kabiny
 	novy->rozmer_kabiny.y=6;//výchozí rozměr kabiny
-	novy->koty_elementu_offset=4;//odsazení kót elementů v metrech
+	if(id==3)novy->koty_elementu_offset=1;else novy->koty_elementu_offset=4;//odsazení kót elementů v metrech,v kabině POW se kóty vykroslují od hrany kabiny, ne od pohonu
 	novy->komora=NULL;//ukazatel na komory
 	if(id==3)for(short i=1;i<=4;i++)vloz_komoru(novy,novy->rozmer_kabiny.x/4.0);//pokud se jedná o POWash,nastaví defaultně 4 stejné komory
 	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
@@ -445,7 +445,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->rozmer_kabiny.x=10;//výchozí rozměr kabiny
 	novy->rozmer_kabiny.y=6;//výchozí rozměr kabiny
-	novy->koty_elementu_offset=4;//odsazení kót elementů v metrech
+	if(id==3)novy->koty_elementu_offset=1;else novy->koty_elementu_offset=4;//odsazení kót elementů v metrech,v kabině POW se kóty vykroslují od hrany kabiny, ne od pohonu
 	novy->komora=NULL;//ukazatel na komory
 	if(id==3)for(short i=1;i<=4;i++)vloz_komoru(novy,novy->rozmer_kabiny.x/4.0);//pokud se jedná o POWash,nastaví defaultně 4 stejné komory
 	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
@@ -1268,18 +1268,19 @@ void Cvektory::vloz_komoru(TObjekt *Objekt,TKomora *Komora,TKomora *ZaKomoru)
 		{
 			//nastavení počítadla u vkládané komory
 			Komora->n=ZaKomoru->n+1;
+			//nové ukazatelové propojení
+			ZaKomoru->dalsi->predchozi=Komora;//následující komoře přídá ukaztel na předchozí na vkladanou
+			Komora->dalsi=ZaKomoru->dalsi;//vkládaná ukazuje na původní následují
+			Komora->predchozi=ZaKomoru;
+			ZaKomoru->dalsi=Komora;//za požadovanou komoru se vloží vkládaná komora
 			//navýšení počítadla u následujícíh komor
-			TKomora *K=ZaKomoru->dalsi;
+			TKomora *K=Komora->dalsi;
 			while(K!=NULL)
 			{
 				K->n++;
 				K=K->dalsi;
 			}
 			K=NULL;delete K;
-			//nové ukazatelové propojení
-			ZaKomoru->dalsi->predchozi=Komora;//následující komoře přídá ukaztel na předchozí na vkladanou
-			Komora->dalsi=ZaKomoru->dalsi;//vkládaná ukazuje na původní následují
-			ZaKomoru->dalsi=Komora;//za požadovanou komoru se vloží vkládaná komora
 		}
 	}
 }
@@ -1307,6 +1308,39 @@ Cvektory::TKomora *Cvektory::najdi_komoru(TObjekt* Objekt)
 	return K;
 }
 //---------------------------------------------------------------------------
+//ověří zda se na daných fyzických souřadnicích nachází kóta elementu, pokud ne vrací -1, pokud ano 0 v celé kótě, 1 - na hodnotě kóty, 2 - na jednotkách kóty, pozn. oblast kóty se testuje až jako poslední
+short Cvektory::PtInKota_komory(TObjekt *Objekt,long X,long Y)
+{
+	short RET=-1;//nic nenalezeno
+	TKomora *K=Objekt->komora->dalsi;//přeskočení hlavičky, vždy budou minimálně 2 komory
+	while(K!=NULL)
+	{
+		if(K->kota.rect1.PtInRect(TPoint(X,Y))){RET=1;F->pom_komora=K;break;}//hodnoty kóty
+		else
+		{
+			if(K->kota.rect2.PtInRect(TPoint(X,Y))){RET=2;F->pom_komora=K;break;}//jednotky kóty
+			else if(K->kota.rect0.PtInRect(TPoint(X,Y))){RET=0;F->pom_komora=K;break;}//kóta celá
+		}
+		K=K->dalsi;
+	}
+	K=NULL;delete K;
+	return RET;
+}
+//---------------------------------------------------------------------------
+//vrátí součet velikostí všech komor
+double Cvektory::vrat_velikosti_komor()
+{
+  double ret=0;
+	TKomora *K=F->pom_temp->komora->dalsi;
+	while(K!=NULL)
+	{
+		ret+=K->velikost;
+		K=K->dalsi;
+	}
+	K=NULL;delete K;
+	return ret;
+}
+//---------------------------------------------------------------------------
 //zkopíruje komory včetně jejich velikosti z originálu na kopii bez ukazatelového propojení
 void Cvektory::kopiruj_komory(TObjekt *Original,TObjekt *Kopie)
 {
@@ -1331,13 +1365,14 @@ void Cvektory::smaz_komoru(TObjekt *Objekt,TKomora *Komora)
 		{
 			Objekt->komora->predchozi=Komora->predchozi;
 			Komora->predchozi->dalsi=NULL;
+			Objekt->komora->predchozi->velikost+=Komora->velikost;//zvětšení poslední komory o odstraněnou komoru
 		}
 		else//nejedná se o poslední prvek
 		{
 			Komora->predchozi->dalsi=Komora->dalsi;
 			Komora->dalsi->predchozi=Komora->predchozi;
+			Objekt->komora->dalsi->velikost+=Komora->velikost;//zvětšení další komory o odstraněnou komoru
 		}
-		Objekt->komora->predchozi->velikost+=Komora->velikost;//zvětšení poslední komory o odstraněnou komoru
 		//přeindexování komor, index n souží k získání počtu komor v objektu
 		Komora=Objekt->komora->dalsi;int n=1;
 		while(Komora!=NULL)

@@ -393,6 +393,8 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O)
 	////vnější obrys kabiny
 	canv->Rectangle(X1-W,Y1-W,X2+W,Y2+W);//rám - kresleno pod komory, kvůli nastavení pera
 
+	short highlight=0;//nastavování zda mají být koty highlightovány
+
 	////vykreslení komor - pokud je objekt obsahuje, poslední komora má vždy velikost do konce objektu (nehledě na její skutečné délku), stav, kdy začíná komora za objektem, je nutné ošetřit separátně
 	if(O->komora!=NULL && O->komora->predchozi->n>0)
 	{
@@ -420,13 +422,23 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O)
 				line(canv,X1,Y,X-pmpp,Y);
 				line(canv,X2,Y,X+pmpp,Y);
 			}
+			if(F->JID*(-1)-100==K->n||F->JID>=11&&F->JID<=99)highlight=1;else highlight=0;
 			//vykreslení kót komor
-			vykresli_kotu(canv,F->pom_temp->Xk+vzdalenost-K->velikost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+vzdalenost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,1);
+			if(F->pom_temp->zobrazit_koty)
+			{
+				if(F->pom_temp->rotace==0||F->pom_temp->rotace==180)vykresli_kotu(canv,F->pom_temp->Xk+vzdalenost-K->velikost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+vzdalenost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,F->pom_temp->koty_elementu_offset,highlight,0.2,clGray,false,K);
+				else vykresli_kotu(canv,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0,F->pom_temp->Yk-vzdalenost+K->velikost,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0,F->pom_temp->Yk-vzdalenost,NULL,F->pom_temp->koty_elementu_offset,highlight,0.2,clGray,false,K);
+			}
 			K=K->dalsi;//posun ve spojáku na další prvek
 		}
 		K=NULL;delete K;
 		//vykreslení kóty od poslení komory k okraji kabiny
-		vykresli_kotu(canv,F->pom_temp->Xk+vzdalenost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,1);
+		if(F->JID*(-1)-100==F->pom_temp->komora->predchozi->n||F->JID>=11&&F->JID<=99)highlight=1;else highlight=0;
+		if(F->pom_temp->zobrazit_koty)
+		{
+			if(F->pom_temp->rotace==0||F->pom_temp->rotace==180)vykresli_kotu(canv,F->pom_temp->Xk+vzdalenost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,F->pom_temp->koty_elementu_offset,highlight,0.2,clGray,false,F->pom_temp->komora->predchozi);
+			else vykresli_kotu(canv,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0,F->pom_temp->Yk-vzdalenost,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,F->pom_temp->koty_elementu_offset,highlight,0.2,clGray,false,F->pom_temp->komora->predchozi);
+		}
 		canv->Brush->Style=bsClear;//navrácení na průhledné pero, kvůli následujícím popiskům objektu, kóty jej totiž změnily
 	}
 }
@@ -4135,7 +4147,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //v metrických jednotkách kromě width, zde v px + automaticky dopočítává délku a dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně, aktElement pokud bude NULL, předpokládá se, že je to kóta kabiny
-void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,Cvektory::TElement *aktElement,double Offset,short highlight,float width,TColor color,bool ukladat_do_elementu)
+void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,Cvektory::TElement *aktElement,double Offset,short highlight,float width,TColor color,bool ukladat_do_elementu,Cvektory::TKomora *komora)
 {    //Jednotky=" [s]";if(F->DKunit==3)Jednotky=" [min]";
 	double delka=0;
 	if(F->pom_temp->pohon==NULL && F->DKunit>1)F->DKunit=F->DKunit-2;//ošetření pro případ není pohon a jsou špatně nastaveny jednotky
@@ -4155,14 +4167,15 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double
 	//else delka=m.round2double(delka,3);//if(AnsiString(delka).Pos("00000000001"))F->ms.MyToDouble(AnsiString(delka).SubString(1,AnsiString(delka).Pos("00000000001")-1));//pro mm ošetření proti 00000000001, protože nelze použít zaokrouhlení na větší počet desitnných míst
 	AnsiString T=m.round2double(delka,3/*nefuguje zde správně,".."*/);//standardní zobrazení na 3 reálná místa
 	//odstaveno zobrazujeme na 3 realná if(highlight==1 || F->editace_textu)T=delka;//pokud se na kótu najede a předpokládá se editace tak se číslo rozbalí - nezaokrouhluje se, editace textu je možná navíc
-	vykresli_kotu(canv,m.L2Px(X1),m.L2Py(Y1),m.L2Px(X2),m.L2Py(Y2),T,aktElement,m.m2px(Offset),highlight,width,color,ukladat_do_elementu);
+	vykresli_kotu(canv,m.L2Px(X1),m.L2Py(Y1),m.L2Px(X2),m.L2Py(Y2),T,aktElement,m.m2px(Offset),highlight,width,color,ukladat_do_elementu,komora);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //v px + dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně, aktElement pokud bude NULL, předpokládá se, že je to kóta kabiny
-void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,AnsiString Text,Cvektory::TElement *aktElement,int Offset,short highlight,float width, TColor color,bool ukladat_do_elementu)
+void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,AnsiString Text,Cvektory::TElement *aktElement,int Offset,short highlight,float width, TColor color,bool ukladat_do_elementu,Cvektory::TKomora *komora)
 {
 	//highlight
 	if(F->JID==-10)highlight=0;//pokud se mění pouze jednotky, tak se kóta nehiglightuje
+  if(aktElement==NULL&&komora==NULL)highlight=0;//odstranění highlightu na kótách mezi lak. okny
 
 	width=m.round(width*F->Zoom);if(highlight)width*=2;//šířka linie
 	short Presah=m.round(1.3*F->Zoom);if(Offset<0)Presah*=-1;//přesah packy u kóty,v případě záporného offsetu je vystoupení kóty nazákladě tohot záporné
@@ -4214,6 +4227,11 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 			}
 		}
 	}
+	if(F->editace_textu&&komora!=NULL)//zobrazování editovaného textu v kótách komor
+	{
+		if(F->pom_komora_temp!=NULL)if(komora->n==F->pom_komora_temp->n)//ošetření + aktuální vykreslovaná kóta
+		{if(F->editovany_text=="")Text="";else Text=F->editovany_text;}
+  }
 
 	//popisek
 	canv->Font->Pitch=TFontPitch::fpVariable;//každé písmeno fontu stejně široké
@@ -4269,6 +4287,12 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 			aktElement->citelna_oblast.rect1=R.rect1;//hodnoty
 			aktElement->citelna_oblast.rect2=R.rect2;//jednotky
 		}
+		if(komora!=NULL)//ukládání citelných oblastí do komory
+		{
+			komora->kota.rect0=R0;
+			komora->kota.rect1=R.rect1;
+			komora->kota.rect2=R.rect2;
+    }
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
