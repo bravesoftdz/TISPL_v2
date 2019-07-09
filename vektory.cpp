@@ -117,7 +117,7 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod,bool orto
 		if(ZaBod==NULL || ZaBod!=NULL && ZaBod==HALA.body->predchozi)//pokud se má vkládat nakonec
 		{                               //situace aktuální (budoucí poslední) první         						//situace  aktuální (budoucí poslední) a poslední aktuální (budoucí předposlední)
 			if(HALA.body->dalsi==NULL || (Bod->X!=HALA.body->dalsi->X || Bod->Y!=HALA.body->dalsi->Y) && (Bod->X!=HALA.body->predchozi->X || Bod->Y!=HALA.body->predchozi->Y))//pokud se vkládá první prvek, ale pokud je poslední vkládaný totožný jako první nebo totožný jako předchozí (např. u ukočování kresby, nebo u chybného kliku), tak ho ignoruje a neuložího do spojáku)
-			{    //F->Memo("ano",true,true);
+			{    //F->Memo("ano",true,true);                           //zkontrolovat či doplnit duplcitu vůči předchozímu
 				Bod->n=HALA.body->predchozi->n+1;//navýšení počítadla
 				Bod->predchozi=HALA.body->predchozi;//nový bod ukazuje na poslední prvek ve spojaku jako na prvek předchozí
 				Bod->dalsi=NULL;//nový bod neukazuje na žádný další prvek, resp. ukazuje na NULL
@@ -127,9 +127,9 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod,bool orto
 		}
 		else//vložení mezi body
 		{
-			//nastavení počítadla u vkládané komory
+			//nastavení počítadla u vkládaného bodu
 			Bod->n=ZaBod->n+1;
-			//navýšení počítadla u následujícíh komor
+			//navýšení počítadla u následujícíh bodů
 			TBod *B=ZaBod->dalsi;
 			while(B!=NULL)
 			{
@@ -170,7 +170,7 @@ void Cvektory::posun_hranu(double OffsetX,double OffsetY,TBod* Bod1,TBod* Bod2)
 	Bod1->X+=OffsetX;Bod1->Y+=OffsetY;Bod2->X+=OffsetX;Bod2->Y+=OffsetY;
 }
 ////---------------------------------------------------------------------------
-//posune všechny body polygonu o daný offset - dodělat
+//posune všechny body polygonu objektu či haly o daný offset
 void Cvektory::posun_body(double OffsetX,double OffsetY,TObjekt* Objekt)
 {
 	TBod *B=NULL;
@@ -186,10 +186,23 @@ void Cvektory::posun_body(double OffsetX,double OffsetY,TObjekt* Objekt)
 	B=NULL;delete B;
 }
 ////---------------------------------------------------------------------------
-//orotuje celý polygon - dodělat
-void Cvektory::rotuj_body(double Rotace,TObjekt* Objekt)
+//orotuje celý polygon zadaného objektu či haly proti směru hodinových ručiček okolo osy dle bodu o souřadnicích X,Y, dle hodnoty rotace uhel
+void Cvektory::rotuj_body(double X, double Y,double uhel,TObjekt* Objekt)
 {
+	if(fmod(uhel,360)!=0)//pouze ošetření proti zbytečné rotaci
+	{
+		TBod *B=NULL;
+		if(Objekt!=NULL && Objekt->body!=NULL)B=Objekt->body->dalsi;//posun bodů OBJEKTU
+		else if(HALA.body!=NULL)B=HALA.body->dalsi;//posun bodů HALY
 
+		while(B!=NULL)
+		{
+			TPointD BOD=m.rotace(X,Y,B->X,B->Y,uhel);
+			B->X=BOD.x;B->Y=BOD.y;
+			B=B->dalsi;
+		}
+		B=NULL;delete B;
+	}
 }
 ////---------------------------------------------------------------------------
 //na aktuálních souřadnicích myši hledá bod, pokud je nalezen vrátí na něj ukazatel, pokud je ukazatel na Objekt NULL, jedná se o metodu pro HALU
@@ -201,7 +214,6 @@ Cvektory::TBod *Cvektory::najdi_bod(TObjekt* Objekt)
 	else HALA.body->dalsi;//jedná se bod haly + přeskočí hlavičku
 	while(B!=NULL)
 	{
-		//if(m.PtInRectangle(B->X-o,B->Y+o,B->X+o,B->Y+o,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y))break;
 		if(m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,B->X,B->Y,o))break;
 		B=B->dalsi;
 	}
@@ -231,7 +243,7 @@ short Cvektory::PtInKota_bod(TObjekt *Objekt)
 void Cvektory::kopiruj_body(TObjekt *Original,TObjekt *Kopie)
 {
 	//pokud kopie obsahuje původní body, tak je smaže
-	vymaz_body(Kopie);
+	//vymaz_body(Kopie);
 	//samotné nakopírování
 	if(Original->body!=NULL)
 	{
