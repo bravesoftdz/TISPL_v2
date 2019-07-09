@@ -21,7 +21,7 @@ Cvektory::Cvektory()
 ////---------------------------------------------------------------------------
 ////společné metody pro HALU a objekty
 //vloží nový bod na konec seznamu bodů pokud je Za=NULL, jinak vloží za tento bod, ošetřuje bod vložený na stejný místo jako předchozí, či jako první, pokud se jedná o poslední vložení při uzavírání polygonu a je zapnuta ortogonalizace, je zajištěno, aby byl první poslední a předposlední bod v ortogonalizovaném vztahu, zajištění poslední spojnice zajištuje vykreslovací metoda, pokud jsou vloženy pouze 3 body a ukončeno vkládání je dopočítán 4 bod do rozměrů obdélníku
-//ke konzultaci: integrace ortogonalizace a ošetření proti totožnosti posledního a prvního bodu (což bude z pohledu GUI oboje možná řešeno)
+//ke konzultaci: integrace přichytit na mřížku, ortogonalizace a ošetření proti totožnosti posledního a prvního bodu (což bude z pohledu GUI oboje možná řešeno)
 void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod,bool ortogonalizovat,bool konec)
 {
 	////alokace paměti
@@ -104,7 +104,7 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod,bool orto
 			ZaBod->dalsi=Bod;//za požadovanou komoru se vloží vkládaná komora
 		}
 	}
-	else//pro HALU
+	else////pro HALU
 	{
 		//pokud ještě HLAVIČKA neexistuje, tak ji založí
 		if(HALA.body==NULL)
@@ -159,12 +159,41 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod,bool orto
 	}
 }
 ////---------------------------------------------------------------------------
+//posune bod HALy nebo Objektu, záleží, kam bod náleží
+void Cvektory::posun_bod(double X, double Y,TBod* Bod)
+{
+	Bod->X=X;Bod->Y=Y;
+}
+////---------------------------------------------------------------------------
+//posune všechny body polygonu o daný offset - dodělat
+void Cvektory::posun_body(double OffsetX,double OffsetY,TObjekt* Objekt)
+{
+	TBod *B=NULL;
+	if(Objekt!=NULL && Objekt->body!=NULL)B=Objekt->body->dalsi;//posun bodů OBJEKTU
+	else if(HALA.body!=NULL)B=HALA.body->dalsi;//posun bodů HALY
+
+	while(B!=NULL)
+	{
+		B->X+=OffsetX;
+		B->Y+=OffsetY;
+		B=B->dalsi;
+	}
+	B=NULL;delete B;
+}
+////---------------------------------------------------------------------------
+//orotuje celý polygon - dodělat
+void Cvektory::rotuj_body(double Rotace,TObjekt* Objekt)
+{
+
+}
+////---------------------------------------------------------------------------
 //na aktuálních souřadnicích myši hledá bod, pokud je nalezen vrátí na něj ukazatel, pokud je ukazatel na Objekt NULL, jedná se o metodu pro HALU
 Cvektory::TBod *Cvektory::najdi_bod(TObjekt* Objekt)
 {
-	float o=0.4;//citelná oblast v metrech, pokud nebudu chtít zvětšovat se zoomem, tak zde podělit zoomem
-	TBod *B=Objekt->body->dalsi;//jedná se o body objektu + přeskočí hlavičku
-	if(Objekt==NULL)HALA.body->dalsi;//jedná se bod haly + přeskočí hlavičku
+	float o=0.4;//citelná oblast v metrech, pokud nebudu chtít zvětšovat se zoomem, tak zde podělit zoomem, pokud by se hodnota měnila, tak změnit i v vykresli v uchop metodě!!!
+	TBod *B=NULL;
+	if(Objekt!=NULL)Objekt->body->dalsi;//jedná se o body objektu + přeskočí hlavičku
+	else HALA.body->dalsi;//jedná se bod haly + přeskočí hlavičku
 	while(B!=NULL)
 	{
 		//if(m.PtInRectangle(B->X-o,B->Y+o,B->X+o,B->Y+o,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y))break;
@@ -172,6 +201,25 @@ Cvektory::TBod *Cvektory::najdi_bod(TObjekt* Objekt)
 		B=B->dalsi;
 	}
 	return B;
+}
+////---------------------------------------------------------------------------
+//ověří zda se na daných fyzických souřadnicích myši nachází kóta hrany/stěny HALy či Objektu (Objektu pokud Objekt!=NULL) , pokud ne vrací -1, pokud ano 0 v celé kótě, 1 - na hodnotě kóty, 2 - na jednotkách kóty , pozn. oblast kóty se testuje až jako poslední
+short Cvektory::PtInKota_bod(TObjekt *Objekt)
+{   //předělat na bod
+//	short RET=-1;//nic nenalezeno
+//	TElement *E=Objekt->elementy;//NEPŘESKAKOVAT hlavičku!!!
+//	while(E!=NULL)
+//	{
+//		if(E->citelna_oblast.rect1.PtInRect(TPoint(X,Y))){RET=1;F->pom_element=E;break;}//hodnoty kóty
+//		else
+//		{
+//			if(E->citelna_oblast.rect2.PtInRect(TPoint(X,Y))){RET=2;F->pom_element=E;break;}//jednotky kóty
+//			else if(E->citelna_oblast.rect0.PtInRect(TPoint(X,Y))){RET=0;F->pom_element=E;break;}//kóta celá
+//		}
+//		E=E->dalsi;
+//	}
+//	E=NULL;delete E;
+//	return RET;
 }
 ////---------------------------------------------------------------------------
 //zkopíruje body včetně z originálu na kopii bez ukazatelového propojení, funguje jenom pro body objektů nikoliv HALY!!!
@@ -196,14 +244,22 @@ void Cvektory::smaz_bod(TBod* Bod,TObjekt* Objekt)
 	{
 		if(Bod->dalsi==NULL)//jedná se o poslední prvek (múže být i za hlavičkou)
 		{
-			if(Objekt->body!=NULL)Objekt->body->predchozi=Bod->predchozi;//pro body
+			if(Objekt!=NULL)Objekt->body->predchozi=Bod->predchozi;//pro body
 			else HALA.body->predchozi=Bod->predchozi;//pro HALU
-			Bod->predchozi=NULL;
+			Bod->predchozi->dalsi=NULL;
 		}
 		else//nejedná se o poslední prvek
 		{
 			Bod->predchozi->dalsi=Bod->dalsi;
 			Bod->dalsi->predchozi=Bod->predchozi;
+		}
+
+		//přeindexování následujících bodů
+		Bod=Bod->dalsi;
+		while(Bod!=NULL)
+		{
+			Bod->n--;
+			Bod=Bod->dalsi;
 		}
 		Bod=NULL;delete Bod;
 	}
@@ -212,21 +268,26 @@ void Cvektory::smaz_bod(TBod* Bod,TObjekt* Objekt)
 //vymaže všechny body včetně hlavičky, pokud je ukazatel na Objekt NULL, jedná se o metodu pro HALU
 void Cvektory::vymaz_body(TObjekt* Objekt)
 {
-	if(Objekt->body!=NULL)//pro body
+	if(Objekt!=NULL)//pro body
 	{
-		//maže od zadu dokud nezbyde pouze hlavička
-		while(Objekt->body->dalsi==NULL)smaz_bod(Objekt->body->predchozi,Objekt);
-		//na závěr ještě smaže hlavičku
-		Objekt->body=NULL;delete Objekt->body;
+		if(Objekt->body!=NULL)
+		{
+			//maže odzadu dokud nezbyde pouze hlavička
+			while(Objekt->body->dalsi==NULL)smaz_bod(Objekt->body->predchozi,Objekt);
+			//na závěr ještě smaže hlavičku
+			Objekt->body=NULL;delete Objekt->body;
+    }
 	}
 	else//pro HALU
 	{
-		//maže od zadu dokud nezbyde pouze hlavička
-		while(HALA.body->dalsi==NULL)smaz_bod(HALA.body->predchozi);
-		//na závěr ještě smaže hlavičku
-		HALA.body=NULL;delete HALA.body;
+		if(HALA.body!=NULL)
+		{
+			//maže od zadu dokud nezbyde pouze hlavička
+			while(HALA.body->dalsi==NULL)smaz_bod(HALA.body->predchozi);
+			//na závěr ještě smaže hlavičku
+			HALA.body=NULL;delete HALA.body;
+		}
 	}
-
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
@@ -240,6 +301,7 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->Y=0;
 	novy->Xk=0;
 	novy->Yk=0;
+	novy->body=NULL;
 	novy->sirka_steny=0;
 	novy->short_name="";//krátký název
 	novy->name="";//celý název objektu
@@ -299,6 +361,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->Y=Y;//přiřadím Y osu,pozice objektu
 	novy->Xk=X;//výchozí pozice kabiny
 	novy->Yk=Y;//výchozí pozice kabiny
+	novy->body=NULL;//spojový seznam definičních bodů obrysu objektu
 	novy->sirka_steny=0.12;//šířka stěny kabiny objektu v metrech
 	novy->CT=PP.TT;//pro status návrh
 	novy->RD=m.UDV(0)/novy->CT;//pro status návrh
@@ -358,6 +421,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	novy->Y=Y;//přiřadím Y osu
 	novy->Xk=X;//výchozí pozice kabiny
 	novy->Yk=Y;//výchozí pozice kabiny
+	novy->body=NULL;//spojový seznam definičních bodů obrysu objektu
 	novy->sirka_steny=0.12;//šířka stěny kabiny objektu v metrech
 	novy->CT=PP.TT;//pro status návrh
 	novy->RD=m.UDV(0)/novy->CT;//pro status návrh
@@ -428,6 +492,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	novy->Y=Y;//přiřadím Y osu
 	novy->Xk=X;//výchozí pozice kabiny
 	novy->Yk=Y;//výchozí pozice kabiny
+	novy->body=NULL;//spojový seznam definičních bodů obrysu objektu
 	novy->sirka_steny=0.12;//šířka stěny kabiny objektu v metrech
 	novy->CT=PP.TT;//pro status návrh
 	novy->RD=m.UDV(0)/novy->CT;//pro status návrh
@@ -536,6 +601,7 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		OBJEKTY->predchozi->Y=novy->Y;
 		OBJEKTY->predchozi->Xk=novy->Xk;
 		OBJEKTY->predchozi->Yk=novy->Yk;
+		OBJEKTY->predchozi->body=novy->body;
 		return OBJEKTY->predchozi;//vrátí poslední ukazatel na prvek seznamu
 	}
 	else//vkládání mezi objekty
@@ -596,6 +662,7 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->Y=Original->Y;
 	Kopie->Xk=Original->Xk;
 	Kopie->Yk=Original->Yk;
+	kopiruj_body(Original,Kopie);
 	Kopie->sirka_steny=Original->sirka_steny;
 	Kopie->rezim=Original->rezim;
 	Kopie->CT=Original->CT;
@@ -727,6 +794,7 @@ short int Cvektory::smaz_objekt(TObjekt *Objekt,bool opakovani)
 		}
 	}
 
+	vymaz_body(Objekt);
 	vymaz_komory(Objekt);
 	vymaz_elementy(Objekt);
 	if(spojka_vyh!=NULL)smaz_objekt(spojka_vyh,true);
@@ -1373,7 +1441,7 @@ void Cvektory::smaz_komoru(TObjekt *Objekt,TKomora *Komora)
 			Komora->dalsi->predchozi=Komora->predchozi;
 			Komora->dalsi->velikost+=Komora->velikost;//zvětšení další komory o odstraněnou komoru
 		}
-		//přeindexování komor, index n souží k získání počtu komor v objektu
+		//přeindexování komor od počátku na konec, index n slouží k získání počtu komor v objektu
 		Komora=Objekt->komora->dalsi;int n=1;
 		while(Komora!=NULL)
 		{
@@ -1398,12 +1466,13 @@ void Cvektory::vymaz_komory(TObjekt* Objekt)
 	}
 }
 //---------------------------------------------------------------------------
-//vymaže spojový seznam technologických objektů včetně přidružených elementů a případných komor z paměti
+//vymaže spojový seznam technologických objektů včetně bodů, přidružených elementů a případných komor z paměti
 long Cvektory::vymaz_seznam_OBJEKTY()
 {
 	long pocet_smazanych_objektu=0;
 	while (OBJEKTY!=NULL)
 	{
+		vymaz_body(OBJEKTY->predchozi);
 		vymaz_komory(OBJEKTY->predchozi);
 		vymaz_elementy(OBJEKTY->predchozi);
 		pocet_smazanych_objektu++;
@@ -5234,6 +5303,9 @@ void Cvektory::Text2CSV(AnsiString text,AnsiString FileName,AnsiString Title,Ans
 //---------------------------------------------------------------------------
 void Cvektory::vse_odstranit()
 {
+		//hala
+		vymaz_body();
+
 		//vozíky
 		if(VOZIKY!=NULL && VOZIKY->predchozi->n>0)//pokud je více objektů
 		{

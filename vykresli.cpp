@@ -33,11 +33,12 @@ Cvykresli::Cvykresli()
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-//stav: -3 kurzor, -2 normal (implicitně), -1-highlight bez editace, 0-editace zvýrazní všechny body, 1-až počet bodů zvýraznění daného bodu
+//stav: -3 kurzor, -2 normal (implicitně), -1-highlight bez editace, 0-editace zvýrazní všechny body, 1-až počet bodů zvýraznění daného bodu,počet bodů+1 zvýraznění dané hrany včetně sousedícícíh úchopů (např. pro polygono o 6 bodech) bude hodnota stavu 7 zvýraznění první hrany (od bodu 1 do bodu 2)
 void Cvykresli::vykresli_halu(TCanvas *canv,int stav)
 {
+	stav=12;//pouze test
 	short sirka_steny_px=m.m2px(0.4);//m->px
-	pravouhelnik(canv,v.HALA.body,clStenaHaly,sirka_steny_px,3);
+	polygon(canv,v.HALA.body,clStenaHaly,sirka_steny_px,stav);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -3823,6 +3824,45 @@ void Cvykresli::vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popis
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,int Width,TColor Color,TPenStyle PenStyle,TPenMode PenMode)
+{
+	canv->Pen->Width=Width;
+	canv->Pen->Color=Color;
+	canv->Pen->Mode=PenMode;
+	canv->Pen->Style=PenStyle;
+	//set_pen(canv,clBlack,1*10,PS_ENDCAP_FLAT);
+	line(canv,X1,Y1,X2,Y2);
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::line(TCanvas *canv,long X1,long Y1,long X2,long Y2)
+{
+	canv->MoveTo(X1,Y1);
+	canv->LineTo(X2,Y2);
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//https://stackoverflow.com/questions/785097/how-do-i-implement-a-b%C3%A9zier-curve-in-c nebo téměř totožné wiki   //http://www.yevol.com/bcb/Lesson12.htm
+void Cvykresli::bezier(TCanvas *canv,TPointD *POLE,long posledni_prvek)
+{
+	bezier(canv,m.L2P(POLE,posledni_prvek),posledni_prvek);
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::bezier(TCanvas *canv,TPointD *POLE,long X,long Y,double oX,double oY,double rotace,long posledni_prvek)
+{
+	TPoint *PF=new TPoint[posledni_prvek+1];
+	if(rotace)m.rotace_polygon(oX,oY,POLE,posledni_prvek,rotace);
+	for(int i=0;i<=posledni_prvek;i++){PF[i].x=X+m.m2px(POLE[i].x-oX);PF[i].y=Y+m.m2px(oY-POLE[i].y);}
+	canv->PolyBezier(PF,posledni_prvek);
+	PF=NULL;delete[] PF;
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::bezier(TCanvas *canv,TPoint *POLE_px,long posledni_prvek)
+{
+	float O=0.02;if(F->antialiasing)O*=3;
+	canv->Pen->Style=psSolid;canv->Pen->Color=clBlack;
+	canv->Pen->Width=m.round(O*F->Zoom);
+	canv->PolyBezier(POLE_px,posledni_prvek);//výsledné vykreslení Bézierovy křivky
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
 //vykreslí polygon dle osy, umí i kónický tvar, vratí souřadnice konce osy polygonu
 TPoint Cvykresli::polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float sirka1, float sirka2, double sklon, double rotace,TPenMode pmMode,TColor clFillOut,TColor clFillIn)
 {
@@ -3880,54 +3920,15 @@ TPoint Cvykresli::polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float s
 
 	return RET;//vratí souřadnice konce osy polygonu
 }
-////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,int Width,TColor Color,TPenStyle PenStyle,TPenMode PenMode)
-{
-	canv->Pen->Width=Width;
-	canv->Pen->Color=Color;
-	canv->Pen->Mode=PenMode;
-	canv->Pen->Style=PenStyle;
-	//set_pen(canv,clBlack,1*10,PS_ENDCAP_FLAT);
-	line(canv,X1,Y1,X2,Y2);
-}
-////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::line(TCanvas *canv,long X1,long Y1,long X2,long Y2)
-{
-	canv->MoveTo(X1,Y1);
-	canv->LineTo(X2,Y2);
-}
-////------------------------------------------------------------------------------------------------------------------------------------------------------
-//https://stackoverflow.com/questions/785097/how-do-i-implement-a-b%C3%A9zier-curve-in-c nebo téměř totožné wiki   //http://www.yevol.com/bcb/Lesson12.htm
-void Cvykresli::bezier(TCanvas *canv,TPointD *POLE,long posledni_prvek)
-{
-	bezier(canv,m.L2P(POLE,posledni_prvek),posledni_prvek);
-}
-////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::bezier(TCanvas *canv,TPointD *POLE,long X,long Y,double oX,double oY,double rotace,long posledni_prvek)
-{
-	TPoint *PF=new TPoint[posledni_prvek+1];
-	if(rotace)m.rotace_polygon(oX,oY,POLE,posledni_prvek,rotace);
-	for(int i=0;i<=posledni_prvek;i++){PF[i].x=X+m.m2px(POLE[i].x-oX);PF[i].y=Y+m.m2px(oY-POLE[i].y);}
-	canv->PolyBezier(PF,posledni_prvek);
-	PF=NULL;delete[] PF;
-}
-////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::bezier(TCanvas *canv,TPoint *POLE_px,long posledni_prvek)
-{
-	float O=0.02;if(F->antialiasing)O*=3;
-	canv->Pen->Style=psSolid;canv->Pen->Color=clBlack;
-	canv->Pen->Width=m.round(O*F->Zoom);
-	canv->PolyBezier(POLE_px,posledni_prvek);//výsledné vykreslení Bézierovy křivky
-}
 //---------------------------------------------------------------------------
-//stav: -3 kurzor, -2 normal (implicitně), -1-highlight bez editace, 0-editace zvýrazní všechny body, 1-až počet bodů zvýraznění daného bodu
-void Cvykresli::pravouhelnik(TCanvas *canv,Cvektory::TBod *body,TColor barva, short sirka,int stav,bool automaticky_spojovat)
+//stav: -3 kurzor, -2 normal (implicitně), -1-highlight bez editace, 0-editace zvýrazní všechny body, 1-až počet bodů zvýraznění daného bodu,počet bodů+1 zvýraznění dané hrany včetně sousedícícíh úchopů (např. pro polygono o 6 bodech) bude hodnota stavu 7 zvýraznění první hrany (od bodu 1 do bodu 2)
+void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short sirka,int stav,bool automaticky_spojovat)
 {
 	if(body!=NULL && body->predchozi->n>1)
 	{
 		////výchozí parametry
 		//short W=m.round(sirka/2.0);//posunutí vykreslení orámování nad vnější rozměry kabiny
-		short o=m.m2px(0.4);
+		TColor clHighlight=m.clIntensive(barva,-50);
 
 		////nastavení pera spojnic
 		canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
@@ -3943,40 +3944,64 @@ void Cvykresli::pravouhelnik(TCanvas *canv,Cvektory::TBod *body,TColor barva, sh
 		{
 			//canv->Pen->Mode=pmNotXor;//pro transparentní zákres
 			canv->Pen->Mode=pmCopy;
-			canv->Pen->Color=barva;if(stav==-1)canv->Pen->Color=m.clIntensive(barva,80);//barva
+			canv->Pen->Color=barva;if(stav==-1)canv->Pen->Color=clHighlight;//barva
 			canv->Pen->Width=sirka;//šířka v pixelech
 			set_pen(canv,canv->Pen->Color,sirka,/*PS_ENDCAP_FLAT*/PS_ENDCAP_SQUARE);
 		}
 
-		////vykreslení spojnic
+		////vykreslení spojnic/hrany
 		Cvektory::TBod *B=body->dalsi->dalsi;//přeskočí hlavičku i první prvek
 		canv->MoveTo(m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y));//nastavení pera na výchozí pozici
 		while(B!=NULL)
 		{
+			//normální spojnice/hrana
+			if(body->predchozi->n+B->n-1==stav)set_pen(canv,clHighlight,sirka,/*PS_ENDCAP_FLAT*/PS_ENDCAP_SQUARE);//zvýraznění konkrétní spojnice/hrany
 			canv->LineTo(m.L2Px(B->X),m.L2Py(B->Y));
-			if(B==body->predchozi && automaticky_spojovat)canv->LineTo(m.L2Px(body->dalsi->X),m.L2Py(body->dalsi->Y));//pokud se jedná o poslendí prvek spojí ještě s prvním, aby byl obrazec uzavřený, pokud je požadováno
+			if(body->predchozi->n+B->n-1==stav)set_pen(canv,barva,sirka,/*PS_ENDCAP_FLAT*/PS_ENDCAP_SQUARE);//navrácení do výchozí barvy
+			//virtuální spojnice, pokud se jedná o poslendí prvek spojí ještě s prvním, aby byl obrazec uzavřený, pokud je požadováno
+			if(B==body->predchozi && automaticky_spojovat)
+			{
+				if(body->predchozi->n+B->n==stav)set_pen(canv,clHighlight,sirka,/*PS_ENDCAP_FLAT*/PS_ENDCAP_SQUARE);//zvýraznění konkrétní spojnice/hrany
+				canv->LineTo(m.L2Px(body->dalsi->X),m.L2Py(body->dalsi->Y));
+				if(body->predchozi->n+B->n==stav)set_pen(canv,barva,sirka,/*PS_ENDCAP_FLAT*/PS_ENDCAP_SQUARE);//navrácení do výchozí barvy
+			}
 			B=B->dalsi;//posun na další
 		}
 
-		////Uchopy - pokud je považována editace, nutno vykreslit v samostatném cyklu až nad spojnice
+		////uchopy - pokud je považována editace, nutno vykreslit v samostatném cyklu až nad spojnice
 		if(stav>=0)
 		{
-			canv->Pen->Color=clWhite;//orámování uchopu
-			canv->Pen->Width=m.round(0.5*F->Zoom);
-			canv->Brush->Style=bsSolid;//nastavení výplně
-			canv->Brush->Color=clStenaHaly;
 			B=body->dalsi;//přeskakuje hlavičku
 			while(B!=NULL)
 			{
-				if(B->n==stav){canv->Ellipse(m.L2Px(B->X)-o,m.L2Py(B->Y)-o,m.L2Px(B->X)+o,m.L2Py(B->Y)+o);break;}//pouze konkrétní
-				else if(stav==0)canv->Ellipse(m.L2Px(B->X)-o,m.L2Py(B->Y)-o,m.L2Px(B->X)+o,m.L2Py(B->Y)+o);//všechny body
-				B=B->dalsi;//posun na další
+				if(B->n==stav){uchop(canv,B,clHighlight);break;}//pouze jeden konkrétní bod
+				if(body->predchozi->n<stav && (B->n==stav-body->predchozi->n || B->n==stav-body->predchozi->n+1))uchop(canv,B,clHighlight);//editace hrany (dva body)
+				if(B==body->predchozi && automaticky_spojovat && body->predchozi->n+B->n==stav)uchop(canv,body->dalsi,clHighlight);//editace hrany druhý bod - ten virtuální resp. první
+				if(stav==0)uchop(canv,B,clHighlight);//všechny body
+				B=B->dalsi;//posun na další bod
 			}
 		}
+
+		////vykreslení kót
+		//doplnit + naplnění do T3Rect
 
 		////odstranění pomocného ukazatele
 		B=NULL; delete B;
 	}
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//vykreslí jeden uchop/kolečko znázorňující bod na polygonu
+void Cvykresli::uchop(TCanvas *canv,Cvektory::TBod *B,TColor barva)
+{
+	//nastavení pera a velikosti
+	short o=m.m2px(0.4);//citelná oblast uchopovací kružnice, pokud by se zde hodnota měnila, nutno změnit i v v.najdi_bod!!!
+	canv->Pen->Color=clWhite;//orámování uchopu
+	canv->Pen->Width=m.round(0.5*F->Zoom);
+	canv->Brush->Style=bsSolid;//nastavení výplně
+	canv->Brush->Color=barva;
+
+	//samotné vykreslení
+	canv->Ellipse(m.L2Px(B->X)-o,m.L2Py(B->Y)-o,m.L2Px(B->X)+o,m.L2Py(B->Y)+o);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
