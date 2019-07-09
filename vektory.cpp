@@ -1376,33 +1376,38 @@ Cvektory::TKomora *Cvektory::najdi_komoru(TObjekt* Objekt)
 	return K;
 }
 //---------------------------------------------------------------------------
-//ověří zda se na daných fyzických souřadnicích nachází kóta elementu, pokud ne vrací -1, pokud ano 0 v celé kótě, 1 - na hodnotě kóty, 2 - na jednotkách kóty, pozn. oblast kóty se testuje až jako poslední
+//ověří zda se na daných fyzických souřadnicích nachází kóta komory, pokud neexistují komory vrací -2, pokud se nenachází na kótě vrací -1, pokud ano 0 v celé kótě, 1 - na hodnotě kóty, 2 - na jednotkách kóty, pozn. oblast kóty se testuje až jako poslední
 short Cvektory::PtInKota_komory(TObjekt *Objekt,long X,long Y)
 {
 	short RET=-1;//nic nenalezeno
-	TKomora *K=Objekt->komora->dalsi;//přeskočení hlavičky, vždy budou minimálně 2 komory
-	while(K!=NULL)
+	if(Objekt->komora!=NULL)
 	{
-		if(K->kota.rect1.PtInRect(TPoint(X,Y))){RET=1;F->pom_komora=K;break;}//hodnoty kóty
-		else
-		{
-			if(K->kota.rect2.PtInRect(TPoint(X,Y))){RET=2;F->pom_komora=K;break;}//jednotky kóty
-			else if(K->kota.rect0.PtInRect(TPoint(X,Y))){RET=0;F->pom_komora=K;break;}//kóta celá
-		}
-		K=K->dalsi;
+  	TKomora *K=Objekt->komora->dalsi;//přeskočení hlavičky, vždy budou minimálně 2 komory
+  	while(K!=NULL)
+  	{
+  		if(K->kota.rect1.PtInRect(TPoint(X,Y))){RET=1;F->pom_komora=K;break;}//hodnoty kóty
+  		else
+  		{
+  			if(K->kota.rect2.PtInRect(TPoint(X,Y))){RET=2;F->pom_komora=K;break;}//jednotky kóty
+  			else if(K->kota.rect0.PtInRect(TPoint(X,Y))){RET=0;F->pom_komora=K;break;}//kóta celá
+  		}
+  		K=K->dalsi;
+  	}
+		K=NULL;delete K;
 	}
-	K=NULL;delete K;
+	else RET=-2;//neexistují komory
 	return RET;
 }
 //---------------------------------------------------------------------------
-//vrátí součet velikostí všech komor
-double Cvektory::vrat_velikosti_komor()
+//vrátí součet velikostí všech komor, nebo velikosti do konkrétní komory (včetně)
+double Cvektory::vrat_velikosti_komor(TKomora *po)
 {
   double ret=0;
 	TKomora *K=F->pom_temp->komora->dalsi;
 	while(K!=NULL)
 	{
 		ret+=K->velikost;
+		if(po!=NULL&&po->n==K->n)break;
 		K=K->dalsi;
 	}
 	K=NULL;delete K;
@@ -1422,6 +1427,46 @@ void Cvektory::kopiruj_komory(TObjekt *Original,TObjekt *Kopie)
 		K=K->dalsi;
 	}
 	K=NULL;delete K;
+}
+//---------------------------------------------------------------------------
+//slouží ke změně pořadí komor
+void Cvektory::presun_komoru(TObjekt *Objekt,TKomora *aktKomora,TKomora *za)
+{
+	if(za!=NULL)if(aktKomora->n!=za->n)//ošetření, parametr za je vrace funkcí najdi_komoru (může být NULL nebo stejná komora)
+	{
+		//odstranění aktKomory ze seznamu
+		if(aktKomora->dalsi==NULL)//poslední komora
+		{
+			Objekt->komora->predchozi=aktKomora->predchozi;
+			aktKomora->predchozi->dalsi=NULL;
+		}
+		else if(aktKomora->n==1)//první komora
+		{
+			Objekt->komora->dalsi=aktKomora->dalsi;
+			aktKomora->dalsi->predchozi=Objekt->komora;
+		}
+		else//ostatní komory
+		{
+			aktKomora->dalsi->predchozi=aktKomora->predchozi;
+			aktKomora->predchozi->dalsi=aktKomora->dalsi;
+    }
+		//vložení na nové místo
+    aktKomora->dalsi=za->dalsi;
+		aktKomora->predchozi=za;
+		if(za->dalsi==NULL)Objekt->komora->predchozi=aktKomora;
+		else za->dalsi->predchozi=aktKomora;
+		za->dalsi=aktKomora;
+		//přeindexování
+		TKomora *K=Objekt->komora->dalsi;
+		int n=1;
+		while(K!=NULL)
+		{
+			K->n=n;
+			n++;
+			K=K->dalsi;
+		}
+		K=NULL;delete K;
+	}
 }
 //---------------------------------------------------------------------------
 //smaže konkrétní komoru daného objektu
