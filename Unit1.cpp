@@ -2346,6 +2346,32 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			nahled_ulozit(true);
 			break;
 		}
+		case ROZMER_KOMORA://změna rozmerů komor pomocí úchopu
+		{
+			Cvektory::TKomora *ovlivneny;
+			if(pom_komora_temp->dalsi!=NULL)ovlivneny=pom_komora_temp->dalsi;else ovlivneny=pom_komora_temp->predchozi;//pokud se nejedná o poslední budu ubírat z dalšího prostor
+			if((pom_temp->rotace==0||pom_temp->rotace==180)&&ovlivneny->velikost>=0.5)
+			{
+				pom_komora_temp->velikost+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
+				ovlivneny->velikost-=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
+			}
+			else if(ovlivneny->velikost>=500)
+			{
+				pom_komora_temp->velikost-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+				ovlivneny->velikost+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+			}
+			else//překročil jsem rozmery ovlivněného
+			{
+				ovlivneny->velikost=0.5;
+				if(pom_temp->rotace==0||pom_temp->rotace==180)pom_temp->rozmer_kabiny.x=d.v.vrat_velikosti_komor();
+				else pom_temp->rozmer_kabiny.y=d.v.vrat_velikosti_komor();
+			}
+			refresh_mGrid=false;
+			REFRESH();
+      refresh_mGrid=true;
+			ovlivneny=NULL;delete ovlivneny;
+			break;
+    }
 		case OFFSET_KOTY:
 		{
 			if(pom_temp->rotace==0||pom_temp->rotace==180)pom_temp->koty_elementu_offset-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
@@ -2494,6 +2520,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			}                                                                          
 			case MOVE_KABINA:Akce=NIC;kurzor(standard);REFRESH();break;//konec posunu lakovny
 			case MOVE_KOMORA:Akce=NIC;refresh_mGrid=false;REFRESH();refresh_mGrid=true;break;
+			case ROZMER_KOMORA:Akce=NIC;break;
 			case ROZMER_KABINA:Akce=NIC;break;//konec editace rozmětu kabiny pomocí tahu
 			case OFFSET_KOTY:Akce=NIC;break;
 			case MEASURE:

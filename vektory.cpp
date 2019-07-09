@@ -1371,7 +1371,7 @@ void Cvektory::smaz_komoru(TObjekt *Objekt,TKomora *Komora)
 		{
 			Komora->predchozi->dalsi=Komora->dalsi;
 			Komora->dalsi->predchozi=Komora->predchozi;
-			Objekt->komora->dalsi->velikost+=Komora->velikost;//zvětšení další komory o odstraněnou komoru
+			Komora->dalsi->velikost+=Komora->velikost;//zvětšení další komory o odstraněnou komoru
 		}
 		//přeindexování komor, index n souží k získání počtu komor v objektu
 		Komora=Objekt->komora->dalsi;int n=1;
