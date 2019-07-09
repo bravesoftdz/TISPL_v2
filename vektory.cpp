@@ -117,7 +117,7 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod,bool orto
 		if(ZaBod==NULL || ZaBod!=NULL && ZaBod==HALA.body->predchozi)//pokud se má vkládat nakonec
 		{                               //situace aktuální (budoucí poslední) první         						//situace  aktuální (budoucí poslední) a poslední aktuální (budoucí předposlední)
 			if(HALA.body->dalsi==NULL || (Bod->X!=HALA.body->dalsi->X || Bod->Y!=HALA.body->dalsi->Y) && (Bod->X!=HALA.body->predchozi->X || Bod->Y!=HALA.body->predchozi->Y))//pokud se vkládá první prvek, ale pokud je poslední vkládaný totožný jako první nebo totožný jako předchozí (např. u ukočování kresby, nebo u chybného kliku), tak ho ignoruje a neuložího do spojáku)
-			{    //F->Memo("ano",true,true);
+			{    //F->Memo("ano",true,true);                           //zkontrolovat či doplnit duplcitu vůči předchozímu
 				Bod->n=HALA.body->predchozi->n+1;//navýšení počítadla
 				Bod->predchozi=HALA.body->predchozi;//nový bod ukazuje na poslední prvek ve spojaku jako na prvek předchozí
 				Bod->dalsi=NULL;//nový bod neukazuje na žádný další prvek, resp. ukazuje na NULL
@@ -201,7 +201,6 @@ Cvektory::TBod *Cvektory::najdi_bod(TObjekt* Objekt)
 	else HALA.body->dalsi;//jedná se bod haly + přeskočí hlavičku
 	while(B!=NULL)
 	{
-		//if(m.PtInRectangle(B->X-o,B->Y+o,B->X+o,B->Y+o,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y))break;
 		if(m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,B->X,B->Y,o))break;
 		B=B->dalsi;
 	}

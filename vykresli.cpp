@@ -28,15 +28,15 @@ Cvykresli::Cvykresli()
 	Robot_delka_zakladny=1.2;
 	DoSkRB=(1.2+Robot_sirka_zakladny/2.0);//delka od středu (X,Y bodu) robota k referenčnímu bodu robota (tj. k trysce) v metrech
 	DkRB=0.8;//délka k referenčnímu bodu od uchopovacího bodu, respektive odsazení člověka od linky
-	clStenaKabiny=m.clIntensive(clRed,180);
 	clStenaHaly=m.clIntensive(clBlue,100);
+	clStenaKabiny=m.clIntensive(clRed,180);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //stav: -3 kurzor, -2 normal (implicitně), -1-highlight bez editace, 0-editace zvýrazní všechny body, 1-až počet bodů zvýraznění daného bodu,počet bodů+1 zvýraznění dané hrany včetně sousedícícíh úchopů (např. pro polygono o 6 bodech) bude hodnota stavu 7 zvýraznění první hrany (od bodu 1 do bodu 2)
 void Cvykresli::vykresli_halu(TCanvas *canv,int stav)
 {
-	stav=12;//pouze test
+	stav=7;//pouze test
 	short sirka_steny_px=m.m2px(0.4);//m->px
 	polygon(canv,v.HALA.body,clStenaHaly,sirka_steny_px,stav);
 }
