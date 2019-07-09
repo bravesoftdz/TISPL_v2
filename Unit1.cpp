@@ -273,7 +273,7 @@ void TForm1::DesignSettings()
 	scSplitView_LEFTTOOLBAR->ShadowBorderColor=light_gray;
 	scGPPanel_bottomtoolbar->FrameColor=light_gray;
 
-	scExPanel_ostatni->Top=72+27;
+	//scExPanel_ostatni->Top=72+27;
 
 	if(MOD==SCHEMA) //zobrazeni labelu - je hezci, v hlavicce drawgrid knihovny
 	{
@@ -2540,6 +2540,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				else MB("Vzdálenost: "+AnsiString(m.round2double((delka*1000.0),3))+" [mm]; "+"Čas: "+AnsiString(m.round2double((delka/pom_temp->pohon->aRD),3))+" [s]",MB_OK,true,366,true,true,true);
 				Akce=NIC;kurzor(standard);
 				zobraz_tip("");//nahrazuje zároveň Refresh
+        scGPImage_mereni_vzdalenost->ClipFrameFillColor=clWhite;
 				break;
 			}
 			case KALIBRACE:
@@ -9359,6 +9360,7 @@ void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
   scGPButton_adjustace->Enabled=false;
   scGPButton_kalibrace->Enabled=false;
   scLabel1_svetelnost->Enabled=false;
+  scLabel1_svetelnost->Font->Color=clGray;
 
   }
   else
@@ -9370,6 +9372,7 @@ void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
   scGPButton_adjustace->Enabled=true;
   scGPButton_kalibrace->Enabled=true;
   scLabel1_svetelnost->Enabled=true;
+  scLabel1_svetelnost->Font->Color=clWhite;
   }
 }
 //---------------------------------------------------------------------------
@@ -9940,11 +9943,13 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 	{
 		Akce=MEASURE;
 		kurzor(add_o);
+    scGPImage_mereni_vzdalenost->ClipFrameFillColor=(TColor)RGB(225,225,225);
 	}
 	else
 	{
 		Akce=NIC;
 		kurzor(standard);
+    scGPImage_mereni_vzdalenost->ClipFrameFillColor=clWhite;
 	}
 }
 //---------------------------------------------------------------------------
