@@ -21,7 +21,6 @@ Cvektory::Cvektory()
 ////---------------------------------------------------------------------------
 ////společné metody pro HALU a objekty
 //vloží nový bod na konec seznamu bodů pokud je Za=NULL, jinak vloží za tento bod, ošetřuje bod vložený na stejný místo jako předchozí, či jako první, pokud se jedná o poslední vložení při uzavírání polygonu a je zapnuta ortogonalizace, je zajištěno, aby byl první poslední a předposlední bod v ortogonalizovaném vztahu, zajištění poslední spojnice zajištuje vykreslovací metoda, pokud jsou vloženy pouze 3 body a ukončeno vkládání je dopočítán 4 bod do rozměrů obdélníku
-//ke konzultaci: integrace přichytit na mřížku, ortogonalizace a ošetření proti totožnosti posledního a prvního bodu (což bude z pohledu GUI oboje možná řešeno)
 void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod,bool ortogonalizovat,bool konec)
 {
 	////alokace paměti
@@ -165,6 +164,12 @@ void Cvektory::posun_bod(double X, double Y,TBod* Bod)
 	Bod->X=X;Bod->Y=Y;
 }
 ////---------------------------------------------------------------------------
+//posune hranu tvořenou danými body o zadaný offset
+void Cvektory::posun_hranu(double OffsetX,double OffsetY,TBod* Bod1,TBod* Bod2)
+{
+	Bod1->X+=OffsetX;Bod1->Y+=OffsetY;Bod2->X+=OffsetX;Bod2->Y+=OffsetY;
+}
+////---------------------------------------------------------------------------
 //posune všechny body polygonu o daný offset - dodělat
 void Cvektory::posun_body(double OffsetX,double OffsetY,TObjekt* Objekt)
 {
@@ -228,13 +233,16 @@ void Cvektory::kopiruj_body(TObjekt *Original,TObjekt *Kopie)
 	//pokud kopie obsahuje původní body, tak je smaže
 	vymaz_body(Kopie);
 	//samotné nakopírování
-	TBod *B=Original->body->dalsi;//přeskočí hlavičku
-	while(B!=NULL)
+	if(Original->body!=NULL)
 	{
-		vloz_bod(B->X,B->Y,Kopie);
-		B=B->dalsi;
+		TBod *B=Original->body->dalsi;//přeskočí hlavičku
+		while(B!=NULL)
+		{
+			vloz_bod(B->X,B->Y,Kopie);
+			B=B->dalsi;
+		}
+		B=NULL;delete B;
 	}
-	B=NULL;delete B;
 }
 ////---------------------------------------------------------------------------
 //smaže konkrétní bod, pokud je ukazatel na Objekt NULL, jedná se o metodu pro HALU
@@ -276,7 +284,7 @@ void Cvektory::vymaz_body(TObjekt* Objekt)
 			while(Objekt->body->dalsi==NULL)smaz_bod(Objekt->body->predchozi,Objekt);
 			//na závěr ještě smaže hlavičku
 			Objekt->body=NULL;delete Objekt->body;
-    }
+		}
 	}
 	else//pro HALU
 	{
@@ -593,7 +601,7 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 	if(Objekt->dalsi==NULL)p=NULL;//tak se vkládá vždy nakonec
 
 	if(p==NULL)//vkládání nakonec
-	{
+	{                                   //dodělat!!!
 		vloz_objekt(Objekt);
 		OBJEKTY->predchozi->short_name=novy->short_name;
 		OBJEKTY->predchozi->name=novy->name;
@@ -601,11 +609,11 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		OBJEKTY->predchozi->Y=novy->Y;
 		OBJEKTY->predchozi->Xk=novy->Xk;
 		OBJEKTY->predchozi->Yk=novy->Yk;
-		OBJEKTY->predchozi->body=novy->body;
+		kopiruj_body(OBJEKTY->predchozi,novy);
 		return OBJEKTY->predchozi;//vrátí poslední ukazatel na prvek seznamu
 	}
 	else//vkládání mezi objekty
-	{
+	{                                //dodělat!!!
 		novy->rezim=Objekt->rezim;
 		novy->sirka_steny=Objekt->sirka_steny;//šířka stěny kabiny objektu v metrech
 		novy->CT=Objekt->CT;//pro status návrh převezme původní hodnoty
@@ -640,7 +648,7 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		novy->uzamknout_nahled=Objekt->uzamknout_nahled;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 
 		novy->predchozi=p;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
-    novy->predchozi2=NULL;
+		novy->predchozi2=NULL;
 		novy->dalsi=p->dalsi;
 		p->dalsi->predchozi=novy;
 		p->dalsi=novy;
@@ -662,7 +670,6 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->Y=Original->Y;
 	Kopie->Xk=Original->Xk;
 	Kopie->Yk=Original->Yk;
-	kopiruj_body(Original,Kopie);
 	Kopie->sirka_steny=Original->sirka_steny;
 	Kopie->rezim=Original->rezim;
 	Kopie->CT=Original->CT;
@@ -694,8 +701,9 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->zobrazit_koty=Original->zobrazit_koty;//proměnná určující, zda se budou zobrzovat kóty
 	Kopie->zobrazit_mGrid=Original->zobrazit_mGrid;//proměnná určující, zda budou zobrazeny mGridy
 	Kopie->uzamknout_nahled=Original->uzamknout_nahled;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
-	//ELEMENTY - musí být ke konci
+	//obě kopírovací metody musí být ke konci
 	kopiruj_elementy(Original,Kopie);
+	kopiruj_body(Original,Kopie);
 }
 //---------------------------------------------------------------------------
 //hledá objekt v dané oblasti                                       //pracuje v logic souradnicich tzn. již nepouživat *Zoom  použít pouze m2px
