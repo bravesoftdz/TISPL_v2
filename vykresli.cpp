@@ -349,22 +349,23 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O)
 			if(F->JID*(-1)-100==K->n || F->JID>=11 && F->JID<=99)highlight=1;else highlight=0;
 			//nastavení pera, musí být znova, vykreslení kót pero přenastaví
 			canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
-			canv->Pen->Mode=pmNotXor;//pro transparentní zákres
-			if(highlight)set_pen(canv,m.clIntensive(clStenaKabiny,-50),sirka_steny_px,PS_ENDCAP_FLAT);
+			canv->Pen->Mode=pmCopy;pmNotXor;//pro transparentní zákres
+			if(F->JID*(-1)-100==K->n)set_pen(canv,m.clIntensive(clStenaKabiny,-50),sirka_steny_px,PS_ENDCAP_SQUARE);
 			else set_pen(canv,clStenaKabiny,sirka_steny_px,PS_ENDCAP_FLAT);
 			vzdalenost+=K->velikost;//dle velikosti předchozích komor uchovává hodnotu součtu/pozice aktuálně vykreslované komory
+			short W1=0;if(K->n==1)W1=W;//pro první komoru odsazeni
 			if(rotace==0 || rotace==180)
 			{
 				long X=X1+m.m2px(vzdalenost);
 				long Y=(Y1+Y2)/2.0;
 				line(canv,X,Y1,X,Y-pmpp);
 				line(canv,X,Y2,X,Y+pmpp);
-				if(highlight)
+				if(F->JID*(-1)-100==K->n)//highlight komory
 				{
-					canv->MoveTo(X,Y1);
-					canv->LineTo(X-m.m2px(K->velikost),Y1);
-					canv->LineTo(X-m.m2px(K->velikost),Y2);
-					canv->LineTo(X,Y2);
+					canv->MoveTo(X,Y1-W);
+					canv->LineTo(X-m.m2px(K->velikost)-W1,Y1-W);
+					canv->LineTo(X-m.m2px(K->velikost)-W1,Y2+W);
+					canv->LineTo(X,Y2+W);
         }
 			}
 			else
@@ -373,12 +374,12 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O)
 				long Y=Y1+m.m2px(vzdalenost);
 				line(canv,X1,Y,X-pmpp,Y);
 				line(canv,X2,Y,X+pmpp,Y);
-				if(highlight)
+				if(F->JID*(-1)-100==K->n)//highlight komory
 				{
-					canv->MoveTo(X1,Y);
-					canv->LineTo(X1,Y-m.m2px(K->velikost));
-					canv->LineTo(X2,Y-m.m2px(K->velikost));
-					canv->LineTo(X2,Y);
+					canv->MoveTo(X1-W,Y);
+					canv->LineTo(X1-W,Y-m.m2px(K->velikost)-W1);
+					canv->LineTo(X2+W,Y-m.m2px(K->velikost)-W1);
+					canv->LineTo(X2+W,Y);
 				}
 			}
 			//vykreslení kót komor
@@ -390,11 +391,24 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O)
 			K=K->dalsi;//posun ve spojáku na další prvek
 		}
 		K=NULL;delete K;
+		////poslední komora
+		//vykreslení highlightu poslední komory
+		if(F->JID*(-1)-100==F->pom_temp->komora->predchozi->n)//highlight komory
+		{
+			if(F->pom_temp->rotace==0 || F->pom_temp->rotace==180)
+			{
+				//dodělat po změně souřadnicového modelu
+			}
+			else
+			{
+				//dodělat po změně souřadnicového modelu
+			}
+		}
 		//vykreslení kóty od poslení komory k okraji kabiny
 		if(F->JID*(-1)-100==F->pom_temp->komora->predchozi->n||F->JID>=11&&F->JID<=99)highlight=1;else highlight=0;
 		if(F->pom_temp->zobrazit_koty)
 		{
-			if(F->pom_temp->rotace==0||F->pom_temp->rotace==180)vykresli_kotu(canv,F->pom_temp->Xk+vzdalenost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,F->pom_temp->koty_elementu_offset,highlight,0.2,clGray,false,F->pom_temp->komora->predchozi);
+			if(F->pom_temp->rotace==0 || F->pom_temp->rotace==180)vykresli_kotu(canv,F->pom_temp->Xk+vzdalenost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,F->pom_temp->koty_elementu_offset,highlight,0.2,clGray,false,F->pom_temp->komora->predchozi);
 			else vykresli_kotu(canv,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0,F->pom_temp->Yk-vzdalenost,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,F->pom_temp->koty_elementu_offset,highlight,0.2,clGray,false,F->pom_temp->komora->predchozi);
 		}
 		canv->Brush->Style=bsClear;//navrácení na průhledné pero, kvůli následujícím popiskům objektu, kóty jej totiž změnily
