@@ -312,7 +312,6 @@ __published:	// IDE-managed Components
   TscGPButton *scGPButton_nakreslit_halu;
   TscExPanel *scExPanel_hala;
   TscExPanel *scExPanel_ostatni;
-  TscLabel *scLabel1;
   TscGPCheckBox *scGPCheckBox_ortogon;
   TscExPanel *scExPanel_nastaveni_starych_modu;
 	void __fastcall Konec1Click(TObject *Sender);
