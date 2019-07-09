@@ -19,6 +19,7 @@ class Cvektory
 	{
 		unsigned long n; //pořadí objektu ve spoj.seznamu
 		double X, Y;//umístění v logických (metrických) souřadnicích
+		T3Rect kota;//citelná oblast hodnoty kóty od aktuálního bodu k bodu předchozímu ve fyzických souřadnicích (px), uchovávájící oblast celé kóty(rect0), popisku kóty (rect1), jednotek kóty (rect2), neukládat do binárky, slouží jenom jako temp data při vykreslování
 		struct TBod *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 		struct TBod *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
@@ -58,10 +59,9 @@ class Cvektory
 	{
 		unsigned long n; //pořadí ve spoj.seznam
 		double velikost;//v metrech
-		TRect kota;//citelná oblast hodnoty kóty, neukládat do binárky, slouží jenom jako temp data při vykreslování
+		T3Rect kota;//citelná oblast hodnoty kóty ve fyzických souřadnicích (px), uchovávájící oblast celé kóty(rect0), popisku kóty (rect1), jednotek kóty (rect2), neukládat do binárky, slouží jenom jako temp data při vykreslování
 		struct TKomora *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 		struct TKomora *dalsi;//ukazatel na  další objekt ve spojovém seznamu
-
 	};
 
 	struct TElement
@@ -110,9 +110,9 @@ class Cvektory
 		unsigned int id; //id typu objektu
 		UnicodeString short_name;//krátký název max. 4 znaky
 		UnicodeString name;//celý název objektu
+		double X,Y;//umístění objektu ve schématu - prozatím, bude ale sloužit na umístění popisku objektu!!!
 		TBod *body;//definice obrysu haly - NEW + dodat do CObjekt!!!!
-		double X,Y;//umístění objektu ve schématu
-		double Xk,Yk;//umístění levého horního rohu kabiny v layoutu a náhledu kabiny - NEW + dodat do CObjekt!!!!
+		double Xk,Yk;//bude ke smazání - umístění levého horního rohu kabiny v layoutu a náhledu kabiny - NEW + dodat do CObjekt!!!!
 		double sirka_steny;//šířka stěny kabiny objektu v metrech  - NEW + dodat do CObjekt!!!!
 		short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking)KK,2-Postprocesní (PP), -1 nenastaven
 		double CT;//pro status návrh
@@ -229,7 +229,6 @@ class Cvektory
 		bool transparent;//zda bude vektorová vrstva transparentní - zatím nebude využito
 	};
 
-
 	struct T_parametry_projektu //(Parametry výroby + Parametry linky (vozíky)
 	{
 		TDateTime cas_start;//začátek výroby v SEČ (resp. LSEČ)
@@ -289,31 +288,33 @@ class Cvektory
 	struct TText
 	{
 		unsigned long n; //pořadí objektu ve spoj.seznamu
-		//unsigned int vrstva;//ID vrstvy
-		UnicodeString text;//samotný text
-		UnicodeString font;//název fontu
+		int vrstva;//ID vrstvy
 		double X, Y;//umístění objektu levý horní okraj
-		unsigned short int size;
-		unsigned short int styl;//0-nic, 1-bold,2-italic,3-oboje
-		TColor barva;
+		short zarvonani;//typ zarovnání textu vůči X,Y
+		UnicodeString text;//samotný text
+		TFont *Font;//název fontu
+		//použít na CFont:unsigned short int size;
+		//použít na CFont:unsigned short int styl;//0-nic, 1-bold,2-italic,3-oboje
+		//použít na CFont:TColor barva;
 		TColor barva_pozadi;
 		struct TText *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 		struct TText *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
 	struct TText *TEXTY;
 
-	struct TLinie
+	struct TSpojnice
 	{
 		unsigned long n; //pořadí objektu ve spoj.seznamu
-		//unsigned int vrstva;//ID vrstvy
-		double X1,Y1,X2,Y2;//umístění objektu levý horní okraj
+		int vrstva;//ID vrstvy
+		short typ;//0-liniová spojnice, 1-bézierová spojnice
+		TBod *body;//souřadnice vedení šipky
 		unsigned short int width;//šířka v px
 		TColor barva;
-		unsigned short int typ;//typ čáry
-		struct TLinie *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-		struct TLinie *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+		short cara_typ;//typ čáry
+		struct TSpojnice *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+		struct TSpojnice *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
-	struct TLinie *LINIE;//seznam linií sloužicích jako poznámky
+	struct TSpojnice *SPOJNICE;//seznam linií sloužicích jako poznámky
 
 	struct TRetez
 	{
@@ -333,6 +334,7 @@ class Cvektory
 		long PosunutiX;//proměnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souřadnicích zařízení
 		long PosunutiY;//proměnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souřadnicích zařízení
 		unsigned int pocet_objektu;
+		unsigned int pocet_vyhybek;
 		unsigned int pocet_pohonu;
 		unsigned int pocet_zakazek;
 		unsigned int pocet_voziku;
@@ -350,20 +352,24 @@ class Cvektory
 		double typ_vozik;
 	};
 	TFile_hlavicka File_hlavicka;
-	unsigned int pocet_vyhybek;//uchovává počet přidaných vyhybek, NUTNO PŘIDAT DO VÝHYBEK!!!
-	bool akt_vetev;//nese informaci o jakou větev ve schématu se jedná, true = primární (dalsi) false = sekundarní (dalsi2)
 
 //konstruktor
 		Cvektory();
 
 //společné metody pro HALU a OBJEKT, pokud je ukazatel na Objekt NULL, jedná se o metody pro HALU
-		void vloz_bod(double X, double Y,TObjekt *Objekt=NULL,TBod *ZaBod=NULL, bool ortogonalizovat=true);//vloží nový bod na konec seznamu bodů pokud je Za=NULL, jinak vloží za tento bod
-		//void posun_bod
-		//void pridej bod mezi body
+		void vloz_bod(double X, double Y,TObjekt *Objekt=NULL,TBod *ZaBod=NULL, bool ortogonalizovat=true,bool konec=false);//vloží nový bod na konec seznamu bodů pokud je Za=NULL, jinak vloží za tento bod, ošetřuje bod vložený na stejný místo jako předchozí, či jako první, pokud se jedná o poslední vložení při uzavírání polygonu a je zapnuta ortogonalizace, je zajištěno, aby byl první poslední a předposlední bod v ortogonalizovaném vztahu, zajištění poslední spojnice zajištuje vykreslovací metoda, pokud jsou vloženy pouze 3 body a ukončeno vkládání je dopočítán 4 bod do rozměrů obdélníku
+		void posun_bod(double X, double Y,TBod* Bod);//posune bod HALy nebo Objektu, záleží, kam bod náleží - dodělat
+		void posun_body(double OffsetX,double OffsetY,TObjekt* Objekt=NULL);//posune všechny body polygonu o daný offset - dodělat
+		void rotuj_body(double Rotace,TObjekt* Objekt=NULL);//orotuje celý polygon - dodělat
 		TBod *najdi_bod(TObjekt* Objekt=NULL);//na aktuálních souřadnicích myši hledá bod, pokud je nalezen vrátí na něj ukazatel, pokud je ukazatel na Objekt NULL, jedná se o metodu pro HALU
+		short PtInKota_bod(TObjekt *Objekt=NULL);//ověří zda se na daných fyzických souřadnicích myši nachází kóta hrany/stěny HALy či Objektu (Objektu pokud Objekt!=NULL), pokud ne vrací -1, pokud ano 0 v celé kótě, 1 - na hodnotě kóty, 2 - na jednotkách kóty , pozn. oblast kóty se testuje až jako poslední
 		void kopiruj_body(TObjekt *Original,TObjekt *Kopie);//zkopíruje body včetně z originálu na kopii bez ukazatelového propojení, funguje jenom pro body objektů nikoliv HALY!!!
 		void smaz_bod(TBod* Bod,TObjekt* Objekt=NULL);//smaže konkrétní bod, pokud je ukazatel na Objekt NULL, jedná se o metodu pro HALU
 		void vymaz_body(TObjekt* Objekt=NULL);//vymaže všechny body včetně hlavičky, pokud je ukazatel na Objekt NULL, jedná se o metodu pro HALU
+
+//výhybky
+		unsigned int pocet_vyhybek;//uchovává počet přidaných vyhybek, - NEW + dodat do CObjekt a do souborové hlavičky včetně souvisejícího!!!
+		bool akt_vetev;//nese informaci o jakou větev ve schématu se jedná, true = primární (dalsi) false = sekundarní (dalsi2)
 
 //metody pro OBJEKTY
 		void hlavicka_OBJEKTY();
@@ -402,6 +408,8 @@ class Cvektory
 		void vloz_komoru(TObjekt *Objekt,double velikost,TKomora *ZaKomoru=NULL);//vloží novou komoru na konec seznamu komor, pokud je ZaKomoru=NULL, jinak vloží za tento objekt, nastaví velikost dané komory dle proměnné velikost
 		void vloz_komoru(TObjekt* Objekt,TKomora *Komora,TKomora *ZaKomoru=NULL);//vloží novou komoru na konec seznamu komor, pokud je ZaKomoru=NULL, jinak vloží za tento objekt, není třeba nastavovat ukazatele ani n-pořadí
 		TKomora *najdi_komoru(TObjekt* Objekt);//na aktuálních souřadnicích myši hledá komoru, pokud je nalezena vrátí na ni ukazatel
+		short PtInKota_komory(TObjekt *Objekt,long X,long Y);//ověří zda se na daných fyzických souřadnicích nachází kóta komory, pokud ne vrací -1, pokud ano 0 v celé kótě, 1 - na hodnotě kóty, 2 - na jednotkách kóty , pozn. oblast kóty se testuje až jako poslední
+    double vrat_velikosti_komor();//vrátí součet velikostí komor
 		void kopiruj_komory(TObjekt *Original,TObjekt *Kopie);//zkopíruje komory včetně jejich velikosti z originálu na kopii bez ukazatelového propojení
 		void smaz_komoru(TObjekt* Objekt,TKomora* Komora);//smaže konkrétní komoru daného objektu
 		void vymaz_komory(TObjekt* Objekt);//vymaže všechny komory daného objektu včetně hlavičky
@@ -506,7 +514,6 @@ public:
 private:
 		void vloz_vozik(TZakazka *zakazka,short typ);//0-normální, 1-servisní
 		long vymaz_seznam_VOZIKY();
-
 
 //metody pro PROCESY
 public:

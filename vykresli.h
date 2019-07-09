@@ -44,7 +44,7 @@ class Cvykresli
 		bool A;//animace true nebo false
 	};TTP TP;//nastavení modu technologické procesy
 
-	void vykresli_halu(TCanvas *canv);
+	void vykresli_halu(TCanvas *canv,int typ=-2);//stav: -3 kurzor, -2 normal (implicitnì), -1-highlight bez editace, 0-editace zvýrazní všechny body, 1-až poèet bodù zvýraznìní daného bodu,poèet bodù+1 zvýraznìní dané hrany vèetnì sousedícícíh úchopù (napø. pro polygono o 6 bodech) bude hodnota stavu 7 zvýraznìní první hrany (od bodu 1 do bodu 2)
 	void vykresli_objekty(TCanvas *canv);
 	void vykresli_rectangle(TCanvas *canv, Cvektory::TObjekt *ukaz);
 	void vykresli_kruh(TCanvas *canv, Cvektory::TObjekt *O);
@@ -86,17 +86,19 @@ class Cvykresli
 	void vykresli_ikonu_textu(TCanvas *canv,int X,int Y,AnsiString Popisek="text",short stav=0);
 	void vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popisek="spojnice",short stav=0);
 	void vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popisek="komora",short typ=0,short stav=0);
-	TPoint polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float sirka1, float sirka2, double sklon, double rotace,TPenMode pmMode=pmCopy,TColor clFillOut=clBlack,TColor lFillIn=clWhite);
 	void linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,int Width,TColor Color=clBlack,TPenStyle PenStyle=psSolid,TPenMode PenMode=pmCopy);
 	void line(TCanvas *canv,long X1,long Y1,long X2,long Y2);
 	void bezier(TCanvas *canv,TPointD *POLE,long posledni_prvek);
 	void bezier(TCanvas *canv,TPointD *POLE,long X,long Y,double oX,double oY,double rotace,long posledni_prvek);
 	void bezier(TCanvas *canv,TPoint *POLE_px,long posledni_prvek);
+	TPoint polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float sirka1, float sirka2, double sklon, double rotace,TPenMode pmMode=pmCopy,TColor clFillOut=clBlack,TColor lFillIn=clWhite);
+	void polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva=clBlack, short sirka=1,int stav=-2,bool automaticky_spojovat=true);//stav: -3 kurzor, -2 normal (implicitnì), -1-highlight bez editace, 0-editace zvýrazní všechny body, 1-až poèet bodù zvýraznìní daného bodu,poèet bodù+1 zvýraznìní dané hrany vèetnì sousedícícíh úchopù (napø. pro polygono o 6 bodech) bude hodnota stavu 7 zvýraznìní první hrany (od bodu 1 do bodu 2)
+	void uchop(TCanvas *canv,Cvektory::TBod *B,TColor barva);//vykreslí jeden uchop/koleèko znázoròující bod na polygonu
 	void vykresli_mGridy(TCanvas *canv=NULL);
 	void nabuffrovat_mGridy(TmGrid *mGrid=NULL);//pomocná metoda vytváøející rastrové obrazy mGridù, pokud je buffer na NULL, buffrují se všechny tabulky, pokud ne, tak pouze ta z parametru
 	void vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvektory::TElement *Element_do);
-	void vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,Cvektory::TElement * aktElement=NULL,double Offset=0,short highlight=0,float width=0.2,TColor color=clGray,bool ukladat_do_elementu=true);//v metrických jednotkách kromì width, zde v px + automaticky dopoèítává délku a dosazuje aktuálnì nastavené jednotky highlight: 0-ne,1-ano,2-ano+vystoupení kóty i poziènì, aktElement pokud bude NULL, pøedpokládá se, že je to kóta kabiny, parametr ukladat_do_elementu pøeposílán do vnoøené metody
-	void vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,AnsiString Text,Cvektory::TElement *aktElement=NULL,int Offset=0,short highlight=0,float width=0.2,TColor color=clGray,bool ukladat_do_elementu=true);//v px + dosazuje aktuálnì nastavené jednotky, highlight: 0-ne,1-ano,2-ano+vystoupení kóty i poziènì, aktElement pokud bude NULL, pøedpokládá se, že je to kóta kabiny, pøidán parametr ukladat_do_elementu a to z dùvodu kóty mezi lak. okny, nesmí být ukládána do elementu ani do objektu
+	void vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,Cvektory::TElement * aktElement=NULL,double Offset=0,short highlight=0,float width=0.2,TColor color=clGray,bool ukladat_do_elementu=true,Cvektory::TKomora *komora=NULL);//v metrických jednotkách kromì width, zde v px + automaticky dopoèítává délku a dosazuje aktuálnì nastavené jednotky highlight: 0-ne,1-ano,2-ano+vystoupení kóty i poziènì, aktElement pokud bude NULL, pøedpokládá se, že je to kóta kabiny, parametr ukladat_do_elementu pøeposílán do vnoøené metody
+	void vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,AnsiString Text,Cvektory::TElement *aktElement=NULL,int Offset=0,short highlight=0,float width=0.2,TColor color=clGray,bool ukladat_do_elementu=true,Cvektory::TKomora *komora=NULL);//v px + dosazuje aktuálnì nastavené jednotky, highlight: 0-ne,1-ano,2-ano+vystoupení kóty i poziènì, aktElement pokud bude NULL, pøedpokládá se, že je to kóta kabiny, pøidán parametr ukladat_do_elementu a to z dùvodu kóty mezi lak. okny, nesmí být ukládána do elementu ani do objektu
 	void rotace_textu(TCanvas *canv, long rotace);//úhel rotace je desetinách stupnì
 	void set_pen(TCanvas *canv, TColor color, int width, int style=PS_ENDCAP_SQUARE);//vrátí HANDLE na nastavení pera,//popø.PS_ENDCAP_FLAT PS_ENDCAP_ROUND, PS_ENDCAP_SQUARE viz Matoušek III str. 179 èi http://www.zive.cz/clanky/geometricka-pera/sc-3-a-103079
 	TColor set_color(TCanvas *canv, Cvektory::TObjekt *O);

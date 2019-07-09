@@ -33,30 +33,12 @@ Cvykresli::Cvykresli()
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-void Cvykresli::vykresli_halu(TCanvas *canv)
+//stav: -3 kurzor, -2 normal (implicitně), -1-highlight bez editace, 0-editace zvýrazní všechny body, 1-až počet bodů zvýraznění daného bodu,počet bodů+1 zvýraznění dané hrany včetně sousedícícíh úchopů (např. pro polygono o 6 bodech) bude hodnota stavu 7 zvýraznění první hrany (od bodu 1 do bodu 2)
+void Cvykresli::vykresli_halu(TCanvas *canv,int stav)
 {
-	if(v.HALA.body!=NULL && v.HALA.body->predchozi->n>1)
-	{
-		short sirka_steny_px=m.m2px(0.5);//m->px
-		//short W=m.round(sirka_steny_px/2.0);//posunutí vykreslení orámování nad vnější rozměry kabiny
-
-		////nastavení pera
-		canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
-		//canv->Pen->Mode=pmNotXor;//pro transparentní zákres
-		canv->Pen->Color=clStenaHaly;//barva
-		canv->Pen->Width=sirka_steny_px;//šířka v pixelech
-		set_pen(canv,canv->Pen->Color,sirka_steny_px,/*PS_ENDCAP_FLAT*/PS_ENDCAP_SQUARE);
-
-		Cvektory::TBod *B=v.HALA.body->dalsi->dalsi;//přeskočí hlavičku i první prvek
-		canv->MoveTo(m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y));//nastavení pera na výchozí pozici
-		while(B!=NULL)
-		{
-			canv->LineTo(m.L2Px(B->X),m.L2Py(B->Y));
-			if(B==v.HALA.body->predchozi)canv->LineTo(m.L2Px(v.HALA.body->dalsi->X),m.L2Py(v.HALA.body->dalsi->Y));//pokud se jedná o poslendí prvek spojí ještě s prvním, aby byla hala uzavřená
-			B=B->dalsi;//posun na další
-		}
-		B=NULL; delete B;
-	}
+	stav=12;//pouze test
+	short sirka_steny_px=m.m2px(0.4);//m->px
+	polygon(canv,v.HALA.body,clStenaHaly,sirka_steny_px,stav);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -353,6 +335,8 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O)
 	////vnější obrys kabiny
 	canv->Rectangle(X1-W,Y1-W,X2+W,Y2+W);//rám - kresleno pod komory, kvůli nastavení pera
 
+	short highlight=0;//nastavování zda mají být koty highlightovány
+
 	////vykreslení komor - pokud je objekt obsahuje, poslední komora má vždy velikost do konce objektu (nehledě na její skutečné délku), stav, kdy začíná komora za objektem, je nutné ošetřit separátně
 	if(O->komora!=NULL && O->komora->predchozi->n>0)
 	{
@@ -380,13 +364,23 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O)
 				line(canv,X1,Y,X-pmpp,Y);
 				line(canv,X2,Y,X+pmpp,Y);
 			}
+			if(F->JID*(-1)-100==K->n||F->JID>=11&&F->JID<=99)highlight=1;else highlight=0;
 			//vykreslení kót komor
-			vykresli_kotu(canv,F->pom_temp->Xk+vzdalenost-K->velikost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+vzdalenost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,1);
+			if(F->pom_temp->zobrazit_koty)
+			{
+				if(F->pom_temp->rotace==0||F->pom_temp->rotace==180)vykresli_kotu(canv,F->pom_temp->Xk+vzdalenost-K->velikost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+vzdalenost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,F->pom_temp->koty_elementu_offset,highlight,0.2,clGray,false,K);
+				else vykresli_kotu(canv,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0,F->pom_temp->Yk-vzdalenost+K->velikost,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0,F->pom_temp->Yk-vzdalenost,NULL,F->pom_temp->koty_elementu_offset,highlight,0.2,clGray,false,K);
+			}
 			K=K->dalsi;//posun ve spojáku na další prvek
 		}
 		K=NULL;delete K;
 		//vykreslení kóty od poslení komory k okraji kabiny
-		vykresli_kotu(canv,F->pom_temp->Xk+vzdalenost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,1);
+		if(F->JID*(-1)-100==F->pom_temp->komora->predchozi->n||F->JID>=11&&F->JID<=99)highlight=1;else highlight=0;
+		if(F->pom_temp->zobrazit_koty)
+		{
+			if(F->pom_temp->rotace==0||F->pom_temp->rotace==180)vykresli_kotu(canv,F->pom_temp->Xk+vzdalenost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,F->pom_temp->koty_elementu_offset,highlight,0.2,clGray,false,F->pom_temp->komora->predchozi);
+			else vykresli_kotu(canv,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0,F->pom_temp->Yk-vzdalenost,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,F->pom_temp->koty_elementu_offset,highlight,0.2,clGray,false,F->pom_temp->komora->predchozi);
+		}
 		canv->Brush->Style=bsClear;//navrácení na průhledné pero, kvůli následujícím popiskům objektu, kóty jej totiž změnily
 	}
 }
@@ -3830,6 +3824,45 @@ void Cvykresli::vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popis
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,int Width,TColor Color,TPenStyle PenStyle,TPenMode PenMode)
+{
+	canv->Pen->Width=Width;
+	canv->Pen->Color=Color;
+	canv->Pen->Mode=PenMode;
+	canv->Pen->Style=PenStyle;
+	//set_pen(canv,clBlack,1*10,PS_ENDCAP_FLAT);
+	line(canv,X1,Y1,X2,Y2);
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::line(TCanvas *canv,long X1,long Y1,long X2,long Y2)
+{
+	canv->MoveTo(X1,Y1);
+	canv->LineTo(X2,Y2);
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//https://stackoverflow.com/questions/785097/how-do-i-implement-a-b%C3%A9zier-curve-in-c nebo téměř totožné wiki   //http://www.yevol.com/bcb/Lesson12.htm
+void Cvykresli::bezier(TCanvas *canv,TPointD *POLE,long posledni_prvek)
+{
+	bezier(canv,m.L2P(POLE,posledni_prvek),posledni_prvek);
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::bezier(TCanvas *canv,TPointD *POLE,long X,long Y,double oX,double oY,double rotace,long posledni_prvek)
+{
+	TPoint *PF=new TPoint[posledni_prvek+1];
+	if(rotace)m.rotace_polygon(oX,oY,POLE,posledni_prvek,rotace);
+	for(int i=0;i<=posledni_prvek;i++){PF[i].x=X+m.m2px(POLE[i].x-oX);PF[i].y=Y+m.m2px(oY-POLE[i].y);}
+	canv->PolyBezier(PF,posledni_prvek);
+	PF=NULL;delete[] PF;
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::bezier(TCanvas *canv,TPoint *POLE_px,long posledni_prvek)
+{
+	float O=0.02;if(F->antialiasing)O*=3;
+	canv->Pen->Style=psSolid;canv->Pen->Color=clBlack;
+	canv->Pen->Width=m.round(O*F->Zoom);
+	canv->PolyBezier(POLE_px,posledni_prvek);//výsledné vykreslení Bézierovy křivky
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
 //vykreslí polygon dle osy, umí i kónický tvar, vratí souřadnice konce osy polygonu
 TPoint Cvykresli::polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float sirka1, float sirka2, double sklon, double rotace,TPenMode pmMode,TColor clFillOut,TColor clFillIn)
 {
@@ -3887,44 +3920,88 @@ TPoint Cvykresli::polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float s
 
 	return RET;//vratí souřadnice konce osy polygonu
 }
-////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,int Width,TColor Color,TPenStyle PenStyle,TPenMode PenMode)
+//---------------------------------------------------------------------------
+//stav: -3 kurzor, -2 normal (implicitně), -1-highlight bez editace, 0-editace zvýrazní všechny body, 1-až počet bodů zvýraznění daného bodu,počet bodů+1 zvýraznění dané hrany včetně sousedícícíh úchopů (např. pro polygono o 6 bodech) bude hodnota stavu 7 zvýraznění první hrany (od bodu 1 do bodu 2)
+void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short sirka,int stav,bool automaticky_spojovat)
 {
-	canv->Pen->Width=Width;
-	canv->Pen->Color=Color;
-	canv->Pen->Mode=PenMode;
-	canv->Pen->Style=PenStyle;
-	//set_pen(canv,clBlack,1*10,PS_ENDCAP_FLAT);
-	line(canv,X1,Y1,X2,Y2);
+	if(body!=NULL && body->predchozi->n>1)
+	{
+		////výchozí parametry
+		//short W=m.round(sirka/2.0);//posunutí vykreslení orámování nad vnější rozměry kabiny
+		TColor clHighlight=m.clIntensive(barva,-50);
+
+		////nastavení pera spojnic
+		canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
+		if(stav==-3)//typ kurzor
+		{
+			canv->Pen->Mode=pmNotXor;
+			canv->Pen->Style=psDot;
+			canv->Pen->Color=clBlack;
+			canv->Pen->Width=1;
+			canv->Brush->Style=bsClear;
+		}
+		else//normální
+		{
+			//canv->Pen->Mode=pmNotXor;//pro transparentní zákres
+			canv->Pen->Mode=pmCopy;
+			canv->Pen->Color=barva;if(stav==-1)canv->Pen->Color=clHighlight;//barva
+			canv->Pen->Width=sirka;//šířka v pixelech
+			set_pen(canv,canv->Pen->Color,sirka,/*PS_ENDCAP_FLAT*/PS_ENDCAP_SQUARE);
+		}
+
+		////vykreslení spojnic/hrany
+		Cvektory::TBod *B=body->dalsi->dalsi;//přeskočí hlavičku i první prvek
+		canv->MoveTo(m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y));//nastavení pera na výchozí pozici
+		while(B!=NULL)
+		{
+			//normální spojnice/hrana
+			if(body->predchozi->n+B->n-1==stav)set_pen(canv,clHighlight,sirka,/*PS_ENDCAP_FLAT*/PS_ENDCAP_SQUARE);//zvýraznění konkrétní spojnice/hrany
+			canv->LineTo(m.L2Px(B->X),m.L2Py(B->Y));
+			if(body->predchozi->n+B->n-1==stav)set_pen(canv,barva,sirka,/*PS_ENDCAP_FLAT*/PS_ENDCAP_SQUARE);//navrácení do výchozí barvy
+			//virtuální spojnice, pokud se jedná o poslendí prvek spojí ještě s prvním, aby byl obrazec uzavřený, pokud je požadováno
+			if(B==body->predchozi && automaticky_spojovat)
+			{
+				if(body->predchozi->n+B->n==stav)set_pen(canv,clHighlight,sirka,/*PS_ENDCAP_FLAT*/PS_ENDCAP_SQUARE);//zvýraznění konkrétní spojnice/hrany
+				canv->LineTo(m.L2Px(body->dalsi->X),m.L2Py(body->dalsi->Y));
+				if(body->predchozi->n+B->n==stav)set_pen(canv,barva,sirka,/*PS_ENDCAP_FLAT*/PS_ENDCAP_SQUARE);//navrácení do výchozí barvy
+			}
+			B=B->dalsi;//posun na další
+		}
+
+		////uchopy - pokud je považována editace, nutno vykreslit v samostatném cyklu až nad spojnice
+		if(stav>=0)
+		{
+			B=body->dalsi;//přeskakuje hlavičku
+			while(B!=NULL)
+			{
+				if(B->n==stav){uchop(canv,B,clHighlight);break;}//pouze jeden konkrétní bod
+				if(body->predchozi->n<stav && (B->n==stav-body->predchozi->n || B->n==stav-body->predchozi->n+1))uchop(canv,B,clHighlight);//editace hrany (dva body)
+				if(B==body->predchozi && automaticky_spojovat && body->predchozi->n+B->n==stav)uchop(canv,body->dalsi,clHighlight);//editace hrany druhý bod - ten virtuální resp. první
+				if(stav==0)uchop(canv,B,clHighlight);//všechny body
+				B=B->dalsi;//posun na další bod
+			}
+		}
+
+		////vykreslení kót
+		//doplnit + naplnění do T3Rect
+
+		////odstranění pomocného ukazatele
+		B=NULL; delete B;
+	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::line(TCanvas *canv,long X1,long Y1,long X2,long Y2)
+//vykreslí jeden uchop/kolečko znázorňující bod na polygonu
+void Cvykresli::uchop(TCanvas *canv,Cvektory::TBod *B,TColor barva)
 {
-	canv->MoveTo(X1,Y1);
-	canv->LineTo(X2,Y2);
-}
-////------------------------------------------------------------------------------------------------------------------------------------------------------
-//https://stackoverflow.com/questions/785097/how-do-i-implement-a-b%C3%A9zier-curve-in-c nebo téměř totožné wiki   //http://www.yevol.com/bcb/Lesson12.htm
-void Cvykresli::bezier(TCanvas *canv,TPointD *POLE,long posledni_prvek)
-{
-	bezier(canv,m.L2P(POLE,posledni_prvek),posledni_prvek);
-}
-////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::bezier(TCanvas *canv,TPointD *POLE,long X,long Y,double oX,double oY,double rotace,long posledni_prvek)
-{
-	TPoint *PF=new TPoint[posledni_prvek+1];
-	if(rotace)m.rotace_polygon(oX,oY,POLE,posledni_prvek,rotace);
-	for(int i=0;i<=posledni_prvek;i++){PF[i].x=X+m.m2px(POLE[i].x-oX);PF[i].y=Y+m.m2px(oY-POLE[i].y);}
-	canv->PolyBezier(PF,posledni_prvek);
-	PF=NULL;delete[] PF;
-}
-////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::bezier(TCanvas *canv,TPoint *POLE_px,long posledni_prvek)
-{
-	float O=0.02;if(F->antialiasing)O*=3;
-	canv->Pen->Style=psSolid;canv->Pen->Color=clBlack;
-	canv->Pen->Width=m.round(O*F->Zoom);
-	canv->PolyBezier(POLE_px,posledni_prvek);//výsledné vykreslení Bézierovy křivky
+	//nastavení pera a velikosti
+	short o=m.m2px(0.4);//citelná oblast uchopovací kružnice, pokud by se zde hodnota měnila, nutno změnit i v v.najdi_bod!!!
+	canv->Pen->Color=clWhite;//orámování uchopu
+	canv->Pen->Width=m.round(0.5*F->Zoom);
+	canv->Brush->Style=bsSolid;//nastavení výplně
+	canv->Brush->Color=barva;
+
+	//samotné vykreslení
+	canv->Ellipse(m.L2Px(B->X)-o,m.L2Py(B->Y)-o,m.L2Px(B->X)+o,m.L2Py(B->Y)+o);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -4095,7 +4172,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //v metrických jednotkách kromě width, zde v px + automaticky dopočítává délku a dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně, aktElement pokud bude NULL, předpokládá se, že je to kóta kabiny
-void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,Cvektory::TElement *aktElement,double Offset,short highlight,float width,TColor color,bool ukladat_do_elementu)
+void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,Cvektory::TElement *aktElement,double Offset,short highlight,float width,TColor color,bool ukladat_do_elementu,Cvektory::TKomora *komora)
 {    //Jednotky=" [s]";if(F->DKunit==3)Jednotky=" [min]";
 	double delka=0;
 	if(F->pom_temp->pohon==NULL && F->DKunit>1)F->DKunit=F->DKunit-2;//ošetření pro případ není pohon a jsou špatně nastaveny jednotky
@@ -4115,14 +4192,15 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double
 	//else delka=m.round2double(delka,3);//if(AnsiString(delka).Pos("00000000001"))F->ms.MyToDouble(AnsiString(delka).SubString(1,AnsiString(delka).Pos("00000000001")-1));//pro mm ošetření proti 00000000001, protože nelze použít zaokrouhlení na větší počet desitnných míst
 	AnsiString T=m.round2double(delka,3/*nefuguje zde správně,".."*/);//standardní zobrazení na 3 reálná místa
 	//odstaveno zobrazujeme na 3 realná if(highlight==1 || F->editace_textu)T=delka;//pokud se na kótu najede a předpokládá se editace tak se číslo rozbalí - nezaokrouhluje se, editace textu je možná navíc
-	vykresli_kotu(canv,m.L2Px(X1),m.L2Py(Y1),m.L2Px(X2),m.L2Py(Y2),T,aktElement,m.m2px(Offset),highlight,width,color,ukladat_do_elementu);
+	vykresli_kotu(canv,m.L2Px(X1),m.L2Py(Y1),m.L2Px(X2),m.L2Py(Y2),T,aktElement,m.m2px(Offset),highlight,width,color,ukladat_do_elementu,komora);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //v px + dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně, aktElement pokud bude NULL, předpokládá se, že je to kóta kabiny
-void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,AnsiString Text,Cvektory::TElement *aktElement,int Offset,short highlight,float width, TColor color,bool ukladat_do_elementu)
+void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,AnsiString Text,Cvektory::TElement *aktElement,int Offset,short highlight,float width, TColor color,bool ukladat_do_elementu,Cvektory::TKomora *komora)
 {
 	//highlight
 	if(F->JID==-10)highlight=0;//pokud se mění pouze jednotky, tak se kóta nehiglightuje
+  if(aktElement==NULL&&komora==NULL)highlight=0;//odstranění highlightu na kótách mezi lak. okny
 
 	width=m.round(width*F->Zoom);if(highlight)width*=2;//šířka linie
 	short Presah=m.round(1.3*F->Zoom);if(Offset<0)Presah*=-1;//přesah packy u kóty,v případě záporného offsetu je vystoupení kóty nazákladě tohot záporné
@@ -4174,6 +4252,11 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 			}
 		}
 	}
+	if(F->editace_textu&&komora!=NULL)//zobrazování editovaného textu v kótách komor
+	{
+		if(F->pom_komora_temp!=NULL)if(komora->n==F->pom_komora_temp->n)//ošetření + aktuální vykreslovaná kóta
+		{if(F->editovany_text=="")Text="";else Text=F->editovany_text;}
+  }
 
 	//popisek
 	canv->Font->Pitch=TFontPitch::fpVariable;//každé písmeno fontu stejně široké
@@ -4229,6 +4312,12 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 			aktElement->citelna_oblast.rect1=R.rect1;//hodnoty
 			aktElement->citelna_oblast.rect2=R.rect2;//jednotky
 		}
+		if(komora!=NULL)//ukládání citelných oblastí do komory
+		{
+			komora->kota.rect0=R0;
+			komora->kota.rect1=R.rect1;
+			komora->kota.rect2=R.rect2;
+    }
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
