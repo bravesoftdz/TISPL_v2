@@ -21,7 +21,6 @@ Cvektory::Cvektory()
 ////---------------------------------------------------------------------------
 ////společné metody pro HALU a objekty
 //vloží nový bod na konec seznamu bodů pokud je Za=NULL, jinak vloží za tento bod, ošetřuje bod vložený na stejný místo jako předchozí, či jako první, pokud se jedná o poslední vložení při uzavírání polygonu a je zapnuta ortogonalizace, je zajištěno, aby byl první poslední a předposlední bod v ortogonalizovaném vztahu, zajištění poslední spojnice zajištuje vykreslovací metoda, pokud jsou vloženy pouze 3 body a ukončeno vkládání je dopočítán 4 bod do rozměrů obdélníku
-//ke konzultaci: integrace přichytit na mřížku, ortogonalizace a ošetření proti totožnosti posledního a prvního bodu (což bude z pohledu GUI oboje možná řešeno)
 void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod,bool ortogonalizovat,bool konec)
 {
 	////alokace paměti
@@ -232,7 +231,7 @@ short Cvektory::PtInKota_bod(TObjekt *Objekt)
 void Cvektory::kopiruj_body(TObjekt *Original,TObjekt *Kopie)
 {
 	//pokud kopie obsahuje původní body, tak je smaže
-	//if(Kopie!=NULL && Kopie->body!=NULL)vymaz_body(Kopie);//ač působí podmínka nadbytečně, její třeba
+	vymaz_body(Kopie);
 	//samotné nakopírování
 	if(Original->body!=NULL)
 	{
