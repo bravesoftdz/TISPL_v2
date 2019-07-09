@@ -231,7 +231,7 @@ short Cvektory::PtInKota_bod(TObjekt *Objekt)
 void Cvektory::kopiruj_body(TObjekt *Original,TObjekt *Kopie)
 {
 	//pokud kopie obsahuje původní body, tak je smaže
-	vymaz_body(Kopie);
+	//vymaz_body(Kopie);
 	//samotné nakopírování
 	if(Original->body!=NULL)
 	{

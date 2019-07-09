@@ -324,7 +324,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O)
 	}
 	short sirka_steny_px=m.m2px(O->sirka_steny);//m->px
 	short W=m.round(sirka_steny_px/2.0);//posunutí vykreslení orámování nad vnější rozměry kabiny
-	short pmpp=m.m2px(v.PP.delka_jig); if(v.PP.delka_jig<v.PP.sirka_jig)pmpp=m.m2px(v.PP.sirka_jig);pmpp=m.round(pmpp/2.0);//polovina max. průjezdního profilu
+	short pmpp=m.m2px(v.PP.delka_jig); if(v.PP.delka_jig<v.PP.sirka_jig)pmpp=m.m2px(v.PP.sirka_jig);pmpp=m.round(pmpp/2.0);if(pmpp>m.m2px(1))pmpp=m.m2px(1);/*ošetření*///polovina max. průjezdního profilu
 
 	////nastavení pera pro kabinu
 	canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
@@ -358,10 +358,15 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O)
 				long Y=(Y1+Y2)/2.0;
 				line(canv,X,Y1,X,Y-pmpp);
 				line(canv,X,Y2,X,Y+pmpp);
-				if(F->JID*(-1)-10==K->n||(F->JID==0&&F->pom_komora->n==K->n))//highlight komory
+				if(F->JID*(-1)-10==K->n || (F->JID==0 && F->pom_komora->n==K->n))//highlight komory
 				{
 					canv->MoveTo(X,Y1-W);
 					canv->LineTo(X-m.m2px(K->velikost)-W1,Y1-W);
+					if(K->n!=1)
+					{
+						canv->LineTo(X-m.m2px(K->velikost)-W1,Y-pmpp);
+						canv->MoveTo(X-m.m2px(K->velikost)-W1,Y+pmpp);
+					}
 					canv->LineTo(X-m.m2px(K->velikost)-W1,Y2+W);
 					canv->LineTo(X,Y2+W);
         }
@@ -372,22 +377,27 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O)
 				long Y=Y1+m.m2px(vzdalenost);
 				line(canv,X1,Y,X-pmpp,Y);
 				line(canv,X2,Y,X+pmpp,Y);
-				if(F->JID*(-1)-10==K->n||(F->JID==0&&F->pom_komora->n==K->n))//highlight komory
+				if(F->JID*(-1)-10==K->n || (F->JID==0 && F->pom_komora->n==K->n))//highlight komory
 				{
 					canv->MoveTo(X1-W,Y);
 					canv->LineTo(X1-W,Y-m.m2px(K->velikost)-W1);
+					if(K->n!=1)
+					{
+						canv->LineTo(X-pmpp,Y-m.m2px(K->velikost)-W1);
+						canv->MoveTo(X+pmpp,Y-m.m2px(K->velikost)-W1);
+					}
 					canv->LineTo(X2+W,Y-m.m2px(K->velikost)-W1);
 					canv->LineTo(X2+W,Y);
 				}
 			}
 			//nastavení highlight
-			if((F->JID==0&&F->pom_komora->n==K->n)||(F->JID*(-1)-10==K->n||F->JID*(-1)-10==K->predchozi->n)&&F->d.v.PtInKota_komory(F->pom_temp,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
-			else if(F->JID*(-1)-10==K->n||F->JID>=11&&F->JID<=99)highlight=1;
+			if((F->JID==0&&F->pom_komora->n==K->n) || (F->JID*(-1)-10==K->n || F->JID*(-1)-10==K->predchozi->n)&&F->d.v.PtInKota_komory(F->pom_temp,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
+			else if(F->JID*(-1)-10==K->n || F->JID>=11 && F->JID<=99)highlight=1;
 			else highlight=0;
 			//vykreslení kót komor
 			if(F->pom_temp->zobrazit_koty)
 			{
-				if(F->pom_temp->rotace==0||F->pom_temp->rotace==180)vykresli_kotu(canv,F->pom_temp->Xk+vzdalenost-K->velikost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+vzdalenost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,F->pom_temp->koty_elementu_offset,highlight,0.2,clGray,false,K);
+				if(F->pom_temp->rotace==0 || F->pom_temp->rotace==180)vykresli_kotu(canv,F->pom_temp->Xk+vzdalenost-K->velikost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+vzdalenost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,F->pom_temp->koty_elementu_offset,highlight,0.2,clGray,false,K);
 				else vykresli_kotu(canv,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0,F->pom_temp->Yk-vzdalenost+K->velikost,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0,F->pom_temp->Yk-vzdalenost,NULL,F->pom_temp->koty_elementu_offset,highlight,0.2,clGray,false,K);
 			}
 			K=K->dalsi;//posun ve spojáku na další prvek
@@ -407,8 +417,8 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O)
 			}
 		}
 		//vykreslení kóty od poslení komory k okraji kabiny
-		if((F->JID==0&&F->pom_komora->n==F->pom_temp->komora->predchozi->n)||(F->JID*(-1)-10==F->pom_temp->komora->predchozi->n||F->JID*(-1)-10==F->pom_temp->komora->predchozi->predchozi->n)&&F->d.v.PtInKota_komory(F->pom_temp,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
-		else if(F->JID*(-1)-10==F->pom_temp->komora->predchozi->n||F->JID>=11&&F->JID<=99)highlight=1;
+		if((F->JID==0&&F->pom_komora->n==F->pom_temp->komora->predchozi->n) || (F->JID*(-1)-10==F->pom_temp->komora->predchozi->n||F->JID*(-1)-10==F->pom_temp->komora->predchozi->predchozi->n)&&F->d.v.PtInKota_komory(F->pom_temp,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
+		else if(F->JID*(-1)-10==F->pom_temp->komora->predchozi->n || F->JID>=11&&F->JID<=99)highlight=1;
 		else highlight=0;
 		if(F->pom_temp->zobrazit_koty)
 		{
