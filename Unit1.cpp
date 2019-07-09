@@ -9854,6 +9854,8 @@ void TForm1::Memo(AnsiString Text, bool clear,bool count)
 //zapínání a vypínaní meření
 void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 {
+  if(scSplitView_OPTIONS->Visible) scSplitView_OPTIONS->Visible=false;
+
 	if(Akce==NIC)
 	{
 		Akce=MEASURE;
@@ -9930,4 +9932,16 @@ unsigned short TForm1::load_language(Tlanguage language)
 
 
 
+
+void __fastcall TForm1::scGPButton_posun_halyClick(TObject *Sender)
+{
+// posun haly
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::scGPButton_nakreslit_haluClick(TObject *Sender)
+{
+//nakresli halu
+}
+//---------------------------------------------------------------------------
 
