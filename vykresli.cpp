@@ -36,7 +36,13 @@ Cvykresli::Cvykresli()
 //stav: -3 kurzor, -2 normal (implicitně), -1-highlight bez editace, 0-editace zvýrazní všechny body, 1-až počet bodů zvýraznění daného bodu,počet bodů+1 zvýraznění dané hrany včetně sousedícícíh úchopů (např. pro polygono o 6 bodech) bude hodnota stavu 7 zvýraznění první hrany (od bodu 1 do bodu 2)
 void Cvykresli::vykresli_halu(TCanvas *canv,int stav)
 {
-	stav=7;//pouze test
+	//změny stavů
+	stav=-2;//defaultní stav
+	if(F->Akce==F->DRAW_HALA)stav=-3;
+	if(F->JID>0&&F->JID<=100)stav=F->JID;//body
+	if(F->JID==101)stav=2*v.HALA.body->predchozi->n;//101 = poslední úsečka
+	if(F->JID>101)stav=v.HALA.body->predchozi->n+F->JID-100-1;//ostatní úsečky
+	//vykreslení
 	short sirka_steny_px=m.m2px(0.4);//m->px
 	polygon(canv,v.HALA.body,clStenaHaly,sirka_steny_px,stav);
 }
@@ -4026,8 +4032,10 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 			}
 		}
 
-		////vykreslení kót
+		////vykreslení kót, testování vykreslení kóty pro první úsečku
 		//doplnit + naplnění do T3Rect
+		B=body->dalsi->dalsi;
+		vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),m.delka(B->predchozi->X,B->predchozi->Y,B->X,B->Y),NULL,-100,0,1,clGray,false);
 
 		////odstranění pomocného ukazatele
 		B=NULL; delete B;
@@ -4152,7 +4160,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 	//highlight
 	short highlight=0;
 	if(Element_od->stav==2 || Element_do->stav==2)highlight=2;//pokud bude jeden ze zúčastněných elementů vybrán, zvýrazní se a vystoupí daná kóta
-	if(Element_do!=NULL)
+	if(Element_do!=NULL && F->MOD==F->NAHLED)
 	{
 		if(!F->posun_dalsich_elementu && (F->JID+10)*(-1)==(long)Element_od->n)highlight=1;//v případě, že není požadován posun dalších elementů, zvýrazní i kótu následujícího elementu, že se bude také měnit
 		if((F->JID+10)*(-1)==(long)Element_do->n ||  (10<F->JID && F->JID<100))highlight=1;//když se bude editovat hodnota kóty, nebo se bude kóta posouvat, kvůli následnému zaokrouhlování musí bohužel zůstat tady
@@ -4243,14 +4251,14 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double
 void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,AnsiString Text,Cvektory::TElement *aktElement,int Offset,short highlight,float width, TColor color,bool ukladat_do_elementu,Cvektory::TKomora *komora)
 {
 	//highlight
-	if(F->JID==-10)highlight=0;//pokud se mění pouze jednotky, tak se kóta nehiglightuje
+	if(F->JID==-10 && F->MOD==F->NAHLED)highlight=0;//pokud se mění pouze jednotky, tak se kóta nehiglightuje
   if(aktElement==NULL&&komora==NULL)highlight=0;//odstranění highlightu na kótách mezi lak. okny
 
 	width=m.round(width*F->Zoom);if(highlight)width*=2;//šířka linie
 	short Presah=m.round(1.3*F->Zoom);if(Offset<0)Presah*=-1;//přesah packy u kóty,v případě záporného offsetu je vystoupení kóty nazákladě tohot záporné
 	short V=0;if(highlight==2)V=1;//vystoupení kóty
 	short H=0;if(highlight)H=1;
-	short M=0;if(10<F->JID && F->JID<100)M=1;//při celkovém posunu kót se postranní spojnice nově nezvýrazňují
+	short M=0;if(10<F->JID && F->JID<100 && F->MOD==F->NAHLED)M=1;//při celkovém posunu kót se postranní spojnice nově nezvýrazňují
 
 	//ošetření v případě opačných souřadnic
 	if(X2<X1){long Xtemp=X2;X2=X1;X1=Xtemp;}
@@ -4310,7 +4318,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	canv->Font->Size=m.round(width*F->aFont->Size);//už se nenásobí *Zoom, protože width se již násobí v úvodu metody
 	if(highlight)
 	{                                                                 //v případě, že není požadován posun dalších elementů, zvýrazní i kótu následujícího elementu, že se bude také měnit
-		if(aktElement!=NULL && (F->JID+10)*(-1)==(long)aktElement->n || !F->posun_dalsich_elementu && aktElement!=NULL && (F->JID+10)*(-1)==(long)aktElement->predchozi->n || F->JID==-8 || F->JID==-9)canv->Font->Style = TFontStyles()<< fsBold;//pouze když se mění hodnota kóty
+		if(aktElement!=NULL && (F->JID+10)*(-1)==(long)aktElement->n || !F->posun_dalsich_elementu && aktElement!=NULL && (F->JID+10)*(-1)==(long)aktElement->predchozi->n || ((F->JID==-8 || F->JID==-9) && F->MOD==F->NAHLED))canv->Font->Style = TFontStyles()<< fsBold;//pouze když se mění hodnota kóty
 		canv->Font->Size=m.round(canv->Font->Size/2.0);//při highlighnutí se text se šířkou nezvětštuje (proto /2 návrat na původní hodnotu, pouze ztučňuje a to jen za předpokladu, změny hodnot kót nikoliv linie kóty (její pozice/offsetu)
 	}
 	else canv->Font->Style = TFontStyles();//vypnutí tučného písma
@@ -4321,7 +4329,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	long Y=(Y1+Y2)/2-canv->TextHeight(/*Jednotky*/Text/*nahrazeno*/)/2; //pozn. záměrně je zde TextHeight(Jednotky) z důvodu, že při smazání hodnoty by byl text prázdný a následně by to špatně pozicovalo jednotky
 	canv->TextOutW(X,Y,Text);//číselná hodnota kóty
 	canv->Font->Color=(TColor)RGB(43,87,154);
-	if(F->JID==-10)canv->Font->Style = TFontStyles()<< fsBold;else canv->Font->Style = TFontStyles();//pokud se editují jednotky, jinak (ani při highlightu se neztučňují)
+	if(F->JID==-10 && F->MOD==F->NAHLED)canv->Font->Style = TFontStyles()<< fsBold;else canv->Font->Style = TFontStyles();//pokud se editují jednotky, jinak (ani při highlightu se neztučňují)
 //	canv->TextOutW(X+canv->TextWidth(Text),Y,Jednotky);//jednotky
 
 	////navrácení citelné oblasti popisku a jednotek kóty pro další použití a šetření strojového času

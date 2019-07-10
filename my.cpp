@@ -345,6 +345,23 @@ long Cmy::LeziVblizkostiUsecky(double x, double y, double X1, double Y1, double 
 	}
 }
 /////////////////////////////////////////////////////////////////////////////
+//funkce ovìøí, zda se bod nachází v zadané linii, parametr offset udává pøesnost s jakou hledém
+bool Cmy::PtInLine(double x, double y, double X1, double Y1, double X2, double Y2,double offset)
+{
+	if(X1==X2)//svislá úseèka
+	{
+		return(x<=X1+offset&&x>=X1-offset&&(y<=Y1&&y>=Y2&&Y1>Y2||y>=Y1&&y<=Y2&&Y1<Y2));
+	}
+	else if(Y1==Y2)//vodorovná úseèka
+	{
+		return(y<=Y1+offset&&y>=Y1-offset&&(x<=X1&&x>=X2&&X1>X2||x>=X1&&x<=X2&&X1<X2));
+	}
+	else//ostatní úseèky
+	{
+		return(((X1<=x&&x<=X2&&X1<X2)||(X2<=x&&x<=X1&&X2<X1))&&((Y1<=y&&y<=Y2&&Y1<Y2)||(Y2<=y&&y<=Y1&&Y2<Y1)));
+	}
+}
+/////////////////////////////////////////////////////////////////////////////
 //funkce ovìøí, zda se bod nachází v zadaném kruhu
 bool Cmy::PtInCircle(double point_X,double point_Y,double center_X,double center_Y,double radius)
 {

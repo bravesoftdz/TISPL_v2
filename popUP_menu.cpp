@@ -171,7 +171,13 @@ void __fastcall TPopUPmenu::scLabel_nastavit_parametryClick(TObject *Sender)
 	closing=true;
 	Close();
  //	Form1->NP(); //staré volání PO
-  Form1->NP_input();
+	if(Form1->pom_bod_temp==NULL)Form1->NP_input();
+	else
+	{
+		if(Form1->pom_bod_temp->n!=1)Form1->d.v.vloz_bod(Form1->akt_souradnice_kurzoru.x,Form1->akt_souradnice_kurzoru.y,Form1->pom,Form1->pom_bod_temp->predchozi);
+		else Form1->d.v.vloz_bod(Form1->akt_souradnice_kurzoru.x,Form1->akt_souradnice_kurzoru.y,Form1->pom);
+  	Form1->REFRESH();
+	}
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

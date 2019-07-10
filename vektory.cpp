@@ -101,6 +101,7 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod,bool orto
 			ZaBod->dalsi->predchozi=Bod;//následující komoře přídá ukaztel na předchozí na vkladanou
 			Bod->dalsi=ZaBod->dalsi;//vkládaná ukazuje na původní následují
 			ZaBod->dalsi=Bod;//za požadovanou komoru se vloží vkládaná komora
+			Bod->predchozi=ZaBod;//vkládaná ukazuje na predchozí (ZaBod)
 		}
 	}
 	else////pro HALU
@@ -141,6 +142,7 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod,bool orto
 			ZaBod->dalsi->predchozi=Bod;//následující komoře přídá ukaztel na předchozí na vkladanou
 			Bod->dalsi=ZaBod->dalsi;//vkládaná ukazuje na původní následují
 			ZaBod->dalsi=Bod;//za požadovanou komoru se vloží vkládaná komora
+			Bod->predchozi=ZaBod;//vkládaná ukazuje na predchozí (ZaBod)
 		}
 	}
 
@@ -197,13 +199,40 @@ Cvektory::TBod *Cvektory::najdi_bod(TObjekt* Objekt)
 {
 	float o=0.4;//citelná oblast v metrech, pokud nebudu chtít zvětšovat se zoomem, tak zde podělit zoomem, pokud by se hodnota měnila, tak změnit i v vykresli v uchop metodě!!!
 	TBod *B=NULL;
-	if(Objekt!=NULL)Objekt->body->dalsi;//jedná se o body objektu + přeskočí hlavičku
-	else HALA.body->dalsi;//jedná se bod haly + přeskočí hlavičku
+	if(Objekt!=NULL&&Objekt->body!=NULL)B=Objekt->body->dalsi;//jedná se o body objektu + přeskočí hlavičku
+	else if(HALA.body!=NULL)B=HALA.body->dalsi;//jedná se bod haly + přeskočí hlavičku
 	while(B!=NULL)
 	{
 		if(m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,B->X,B->Y,o))break;
 		B=B->dalsi;
 	}
+	return B;
+}
+////---------------------------------------------------------------------------
+//na aktuálních souřadnicích myši hledá úsečku, pokud je nalezena je vracen ukazatel na druhý bod, pokd nebylo nalezeno nic vrátí NULL, parametr Objekt implicitně NULLL, rozlišuje hledání úsečky v HALE nebo v Objektu
+Cvektory::TBod *Cvektory::najdi_usecku(TObjekt* Objekt)
+{
+	double x=F->akt_souradnice_kurzoru.x,y=F->akt_souradnice_kurzoru.y;//souřadnice kurzoru jsou neměnné po celou dobu metody
+	TBod *B=NULL,*pom=NULL;//return proměnná + krokování cyklu
+	if(Objekt!=NULL&&Objekt->body!=NULL)B=Objekt->body->dalsi;//jedná se o body objektu + přeskočí hlavičku + začátek na druhém bodu
+	else if(HALA.body!=NULL&&HALA.body->predchozi->n>1)B=HALA.body->dalsi->dalsi;//jedná se bod haly + přeskočí hlavičku + začně na druhém bodu (pokud existuje, jestli ne return NULL)
+	while(B!=NULL)
+	{
+		//prohledávání úseček mezi akt. bodem a předchozím bodem
+		if(m.PtInLine(x,y,B->predchozi->X,B->predchozi->Y,B->X,B->Y))break;
+		//pokud jsem na posledním bodu musím zkontrolovat úsečku mezi posledním a prvním
+		if(B->dalsi==NULL)
+		{
+			//předání ukazatele na první bod podle režimu (Objekt, HALA)
+			if(Objekt!=NULL)pom=Objekt->body->dalsi;
+			else pom=HALA.body->dalsi;
+			//prohledávání první, poslední, pokud nalezeno uloží do ret. proměnné B ukazatel na první bod
+			if(m.PtInLine(x,y,B->X,B->Y,pom->X,pom->Y)){B=pom;break;}
+		}
+		B=B->dalsi;
+	}
+  //nulování + mazání pomovného ukazatele
+	pom=NULL;delete pom;
 	return B;
 }
 ////---------------------------------------------------------------------------
