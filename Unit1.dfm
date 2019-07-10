@@ -252,7 +252,6 @@ object Form1: TForm1
     ParentFont = False
     TabOrder = 2
     Visible = False
-    ExplicitTop = 696
   end
   object Button3: TButton
     Left = 183
@@ -2739,7 +2738,6 @@ object Form1: TForm1
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
-    ExplicitTop = 738
     object RzStatusPane1: TRzStatusPane
       Left = 207
       Top = 0
@@ -3248,7 +3246,6 @@ object Form1: TForm1
     HideControls = False
     Animation = False
     DisplayMode = scsvmOverlay
-    ExplicitHeight = 662
     object scListGroupKnihovObjektu: TscListGroupPanel
       Left = 0
       Top = 0
@@ -4008,114 +4005,6 @@ object Form1: TForm1
     Visible = False
     OnClick = CheckBoxVytizenost_Click
   end
-  object scGPButton_header_def_zakazek: TscGPButton
-    AlignWithMargins = True
-    Left = 324
-    Top = 588
-    Width = 47
-    Height = 34
-    Hint = 'definice zak'#225'zek'
-    Margins.Left = 0
-    Margins.Top = 0
-    Margins.Right = 0
-    Margins.Bottom = 0
-    Align = alCustom
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 39
-    TabStop = True
-    Visible = False
-    OnClick = scGPGlyphButton_definice_zakazekClick
-    Animation = False
-    CanFocused = True
-    CustomDropDown = False
-    Margin = -1
-    Spacing = 1
-    Layout = blGlyphLeft
-    Images = scGPVirtualImageList1
-    ImageIndex = 48
-    ImageMargin = 0
-    TransparentBackground = True
-    Options.NormalColor = 10114859
-    Options.HotColor = clWhite
-    Options.PressedColor = 10114859
-    Options.FocusedColor = 10114859
-    Options.DisabledColor = clBtnFace
-    Options.NormalColor2 = clNone
-    Options.HotColor2 = clNone
-    Options.PressedColor2 = clNone
-    Options.FocusedColor2 = clNone
-    Options.DisabledColor2 = clNone
-    Options.NormalColorAlpha = 255
-    Options.HotColorAlpha = 35
-    Options.PressedColorAlpha = 50
-    Options.FocusedColorAlpha = 255
-    Options.DisabledColorAlpha = 255
-    Options.NormalColor2Alpha = 255
-    Options.HotColor2Alpha = 255
-    Options.PressedColor2Alpha = 255
-    Options.FocusedColor2Alpha = 255
-    Options.DisabledColor2Alpha = 255
-    Options.FrameNormalColor = 10114859
-    Options.FrameHotColor = 10114859
-    Options.FramePressedColor = 10114859
-    Options.FrameFocusedColor = 10114859
-    Options.FrameDisabledColor = clBtnShadow
-    Options.FrameWidth = 1
-    Options.FrameNormalColorAlpha = 255
-    Options.FrameHotColorAlpha = 100
-    Options.FramePressedColorAlpha = 100
-    Options.FrameFocusedColorAlpha = 100
-    Options.FrameDisabledColorAlpha = 255
-    Options.FontNormalColor = clBtnText
-    Options.FontHotColor = clBtnText
-    Options.FontPressedColor = clBtnText
-    Options.FontFocusedColor = clBtnText
-    Options.FontDisabledColor = clBtnShadow
-    Options.ShapeFillGradientAngle = 90
-    Options.ShapeFillGradientPressedAngle = -90
-    Options.ShapeFillGradientColorOffset = 25
-    Options.ShapeCornerRadius = 10
-    Options.ShapeStyle = scgpRect
-    Options.ArrowSize = 9
-    Options.ArrowAreaSize = 0
-    Options.ArrowType = scgpatDefault
-    Options.ArrowThickness = 2
-    Options.ArrowThicknessScaled = False
-    Options.StyleColors = True
-    HotImageIndex = -1
-    FocusedImageIndex = -1
-    PressedImageIndex = -1
-    UseGalleryMenuImage = False
-    UseGalleryMenuCaption = False
-    ScaleMarginAndSpacing = False
-    WidthWithCaption = 0
-    WidthWithoutCaption = 0
-    SplitButton = False
-    RepeatClick = False
-    RepeatClickInterval = 100
-    GlowEffect.Enabled = False
-    GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 95
-    GlowEffect.GlowSize = 7
-    GlowEffect.Offset = 0
-    GlowEffect.Intensive = True
-    GlowEffect.StyleColors = True
-    GlowEffect.HotColor = clNone
-    GlowEffect.PressedColor = clNone
-    GlowEffect.FocusedColor = clNone
-    GlowEffect.PressedGlowSize = 7
-    GlowEffect.PressedAlphaValue = 255
-    GlowEffect.States = [scsHot, scsPressed, scsFocused]
-    ImageGlow = False
-    ShowGalleryMenuFromTop = False
-    ShowGalleryMenuFromRight = False
-    ShowMenuArrow = True
-    ShowFocusRect = True
-    Down = False
-    GroupIndex = 0
-    AllowAllUp = False
-  end
   object scSplitView_OPTIONS: TscSplitView
     Left = 1031
     Top = 34
@@ -4170,7 +4059,6 @@ object Form1: TForm1
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
     OnOpened = scSplitView_OPTIONSOpened
-    ExplicitHeight = 662
     object pravyoption_nadpis: TscGPLabel
       Left = 1
       Top = 0
@@ -4180,8 +4068,8 @@ object Form1: TForm1
       Anchors = [akLeft, akTop, akRight, akBottom]
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWhite
-      Font.Height = -17
-      Font.Name = 'Tahoma'
+      Font.Height = -19
+      Font.Name = 'Roboto'
       Font.Style = []
       ParentFont = False
       TabOrder = 0
@@ -4211,1392 +4099,20 @@ object Form1: TForm1
       AutoSize = True
       Caption = 'N'#225'stroje'
     end
-    object scExPanel_ostatni: TscExPanel
+    object scExPanel_vrstvy: TscExPanel
       Left = 1
-      Top = 40
+      Top = 451
       Width = 249
-      Height = 181
+      Height = 64
       Margins.Left = 5
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWhite
-      Font.Height = -15
-      Font.Name = 'Tahoma'
+      Font.Height = -17
+      Font.Name = 'Roboto'
       Font.Style = []
       ParentFont = False
-      TabOrder = 1
-      OnClick = scExPanel_ostatniClick
-      BorderWidth = 1
-      BackgroundStyle = scexbgsPanel
-      FrameColor = clBtnShadow
-      HeaderColor = 33023
-      ButtonGlyphColor = clWhite
-      HeaderStyle = scexphsColor
-      CaptionImages = scGPVirtualImageList1
-      CaptionImageIndex = 3
-      ChangeRollStateWithCaptionClick = False
-      Spacing = 5
-      ShowFrame = False
-      RealWidth = 0
-      RealHeight = 0
-      ShowRollButton = True
-      ShowCloseButton = False
-      CaptionHeight = 30
-      RollKind = scrkRollVertical
-      RollUpState = False
-      Moveable = False
-      Sizeable = False
-      HideControlsInRollUpState = True
-      StorePaintBuffer = False
-      Caption = 'Obecn'#233
-      object ComboBoxCekani: TscComboBox
-        Left = 3
-        Top = 56
-        Width = 243
-        Height = 26
-        ItemIndex = 0
-        Items.Strings = (
-          #382#225'dn'#225
-          'st'#345'edn'#237' hodnota'
-          'n'#225'hodn'#225' hodnota'
-          'maxim'#225'ln'#237' hodnota')
-        WordBreak = False
-        SelectionStyle = scstStyled
-        SelectionColor = clGrayText
-        SelectionTextColor = clHighlightText
-        ImageIndex = -1
-        ItemHeight = 20
-        Align = alCustom
-        Color = 10114859
-        Ctl3D = False
-        ParentCtl3D = False
-        TabOrder = 0
-        Text = #382#225'dn'#225
-        StyleKind = scscbDefault
-        ShowFocusRect = True
-        OnChange = ComboBoxCekaniChange
-      end
-      object CheckBoxVytizenost: TscGPCheckBox
-        Left = 3
-        Top = 135
-        Width = 244
-        Height = 51
-        Align = alCustom
-        TabOrder = 1
-        TabStop = True
-        OnClick = CheckBoxVytizenost_Click
-        Animation = False
-        Caption = 'Zobrazit vyt'#237#382'enost objekt'#367
-        CanFocused = True
-        Spacing = 1
-        Layout = blGlyphLeft
-        ImageIndex = -1
-        GlowEffect.Enabled = False
-        GlowEffect.Color = clHighlight
-        GlowEffect.AlphaValue = 95
-        GlowEffect.GlowSize = 7
-        GlowEffect.Offset = 0
-        GlowEffect.Intensive = True
-        GlowEffect.StyleColors = True
-        GlowEffect.HotColor = clNone
-        GlowEffect.PressedColor = clNone
-        GlowEffect.FocusedColor = clNone
-        GlowEffect.PressedGlowSize = 7
-        GlowEffect.PressedAlphaValue = 255
-        GlowEffect.States = [scsHot, scsPressed, scsFocused]
-        ImageGlow = True
-        DisabledFontColor = clNone
-        Options.NormalColor = clWindow
-        Options.HotColor = clWindow
-        Options.PressedColor = clWindow
-        Options.DisabledColor = clWindow
-        Options.NormalColorAlpha = 255
-        Options.HotColorAlpha = 255
-        Options.PressedColorAlpha = 200
-        Options.DisabledColorAlpha = 125
-        Options.FrameNormalColor = clBtnShadow
-        Options.FrameHotColor = clHighlight
-        Options.FramePressedColor = clHighlight
-        Options.FrameDisabledColor = clBtnShadow
-        Options.FrameWidth = 2
-        Options.FrameNormalColorAlpha = 255
-        Options.FrameHotColorAlpha = 255
-        Options.FramePressedColorAlpha = 255
-        Options.FrameDisabledColorAlpha = 255
-        Options.CheckMarkNormalColor = clWindowText
-        Options.CheckMarkHotColor = clWindowText
-        Options.CheckMarkPressedColor = clWindowText
-        Options.CheckMarkDisabledColor = clWindowText
-        Options.CheckMarkNormalColorAlpha = 255
-        Options.CheckMarkHotColorAlpha = 255
-        Options.CheckMarkPressedColorAlpha = 255
-        Options.CheckMarkDisabledColorAlpha = 125
-        Options.ShapeSize = 20
-        Options.CheckMarkThickness = 2
-        Options.StyleColors = True
-        OptionsChecked.NormalColor = clWindow
-        OptionsChecked.HotColor = clWindow
-        OptionsChecked.PressedColor = clWindow
-        OptionsChecked.DisabledColor = clWindow
-        OptionsChecked.NormalColorAlpha = 255
-        OptionsChecked.HotColorAlpha = 255
-        OptionsChecked.PressedColorAlpha = 200
-        OptionsChecked.DisabledColorAlpha = 125
-        OptionsChecked.FrameNormalColor = clBtnShadow
-        OptionsChecked.FrameHotColor = clHighlight
-        OptionsChecked.FramePressedColor = clHighlight
-        OptionsChecked.FrameDisabledColor = clBtnShadow
-        OptionsChecked.FrameWidth = 2
-        OptionsChecked.FrameNormalColorAlpha = 255
-        OptionsChecked.FrameHotColorAlpha = 255
-        OptionsChecked.FramePressedColorAlpha = 255
-        OptionsChecked.FrameDisabledColorAlpha = 255
-        OptionsChecked.CheckMarkNormalColor = clWindowText
-        OptionsChecked.CheckMarkHotColor = clWindowText
-        OptionsChecked.CheckMarkPressedColor = clWindowText
-        OptionsChecked.CheckMarkDisabledColor = clWindowText
-        OptionsChecked.CheckMarkNormalColorAlpha = 255
-        OptionsChecked.CheckMarkHotColorAlpha = 255
-        OptionsChecked.CheckMarkPressedColorAlpha = 255
-        OptionsChecked.CheckMarkDisabledColorAlpha = 125
-        OptionsChecked.ShapeSize = 20
-        OptionsChecked.CheckMarkThickness = 2
-        OptionsChecked.StyleColors = True
-        Checked = False
-        ScaleFrameWidth = True
-        ScaleCheckMarkThickness = True
-        ShowFocusRect = True
-        UseFontColorToStyleColor = False
-      end
-      object CheckBoxVymena_barev: TscGPCheckBox
-        Left = 3
-        Top = 93
-        Width = 246
-        Height = 36
-        Align = alCustom
-        TabOrder = 2
-        TabStop = True
-        OnClick = CheckBoxVymena_barev_Click
-        Animation = False
-        Caption = 'Zohlednit '#269'i'#353't'#283'n'#237' pistole a v'#253'm'#283'nu barev'
-        CanFocused = True
-        Spacing = 1
-        Layout = blGlyphLeft
-        ImageIndex = -1
-        GlowEffect.Enabled = False
-        GlowEffect.Color = clHighlight
-        GlowEffect.AlphaValue = 95
-        GlowEffect.GlowSize = 7
-        GlowEffect.Offset = 0
-        GlowEffect.Intensive = True
-        GlowEffect.StyleColors = True
-        GlowEffect.HotColor = clNone
-        GlowEffect.PressedColor = clNone
-        GlowEffect.FocusedColor = clNone
-        GlowEffect.PressedGlowSize = 7
-        GlowEffect.PressedAlphaValue = 255
-        GlowEffect.States = [scsHot, scsPressed, scsFocused]
-        ImageGlow = True
-        DisabledFontColor = clNone
-        Options.NormalColor = clWindow
-        Options.HotColor = clWindow
-        Options.PressedColor = clWindow
-        Options.DisabledColor = clWindow
-        Options.NormalColorAlpha = 255
-        Options.HotColorAlpha = 255
-        Options.PressedColorAlpha = 200
-        Options.DisabledColorAlpha = 125
-        Options.FrameNormalColor = clBtnShadow
-        Options.FrameHotColor = clHighlight
-        Options.FramePressedColor = clHighlight
-        Options.FrameDisabledColor = clBtnShadow
-        Options.FrameWidth = 2
-        Options.FrameNormalColorAlpha = 255
-        Options.FrameHotColorAlpha = 255
-        Options.FramePressedColorAlpha = 255
-        Options.FrameDisabledColorAlpha = 255
-        Options.CheckMarkNormalColor = clWindowText
-        Options.CheckMarkHotColor = clWindowText
-        Options.CheckMarkPressedColor = clWindowText
-        Options.CheckMarkDisabledColor = clWindowText
-        Options.CheckMarkNormalColorAlpha = 255
-        Options.CheckMarkHotColorAlpha = 255
-        Options.CheckMarkPressedColorAlpha = 255
-        Options.CheckMarkDisabledColorAlpha = 125
-        Options.ShapeSize = 20
-        Options.CheckMarkThickness = 2
-        Options.StyleColors = True
-        OptionsChecked.NormalColor = clWindow
-        OptionsChecked.HotColor = clWindow
-        OptionsChecked.PressedColor = clWindow
-        OptionsChecked.DisabledColor = clWindow
-        OptionsChecked.NormalColorAlpha = 255
-        OptionsChecked.HotColorAlpha = 255
-        OptionsChecked.PressedColorAlpha = 200
-        OptionsChecked.DisabledColorAlpha = 125
-        OptionsChecked.FrameNormalColor = clBtnShadow
-        OptionsChecked.FrameHotColor = clHighlight
-        OptionsChecked.FramePressedColor = clHighlight
-        OptionsChecked.FrameDisabledColor = clBtnShadow
-        OptionsChecked.FrameWidth = 2
-        OptionsChecked.FrameNormalColorAlpha = 255
-        OptionsChecked.FrameHotColorAlpha = 255
-        OptionsChecked.FramePressedColorAlpha = 255
-        OptionsChecked.FrameDisabledColorAlpha = 255
-        OptionsChecked.CheckMarkNormalColor = clWindowText
-        OptionsChecked.CheckMarkHotColor = clWindowText
-        OptionsChecked.CheckMarkPressedColor = clWindowText
-        OptionsChecked.CheckMarkDisabledColor = clWindowText
-        OptionsChecked.CheckMarkNormalColorAlpha = 255
-        OptionsChecked.CheckMarkHotColorAlpha = 255
-        OptionsChecked.CheckMarkPressedColorAlpha = 255
-        OptionsChecked.CheckMarkDisabledColorAlpha = 125
-        OptionsChecked.ShapeSize = 20
-        OptionsChecked.CheckMarkThickness = 2
-        OptionsChecked.StyleColors = True
-        Checked = False
-        ScaleFrameWidth = True
-        ScaleCheckMarkThickness = True
-        ShowFocusRect = True
-        UseFontColorToStyleColor = False
-      end
-      object scGPCheckBox_ortogon: TscGPCheckBox
-        AlignWithMargins = True
-        Left = 2880
-        Top = 3043
-        Width = 244
-        Height = 31
-        Align = alCustom
-        TabOrder = 3
-        TabStop = True
-        OnClick = scGPCheckBox_ortogonClick
-        Animation = False
-        Caption = 'Ortogonalizovat sch'#233'ma'
-        CanFocused = True
-        Spacing = 1
-        Layout = blGlyphLeft
-        ImageIndex = -1
-        GlowEffect.Enabled = False
-        GlowEffect.Color = clHighlight
-        GlowEffect.AlphaValue = 95
-        GlowEffect.GlowSize = 7
-        GlowEffect.Offset = 0
-        GlowEffect.Intensive = True
-        GlowEffect.StyleColors = True
-        GlowEffect.HotColor = clNone
-        GlowEffect.PressedColor = clNone
-        GlowEffect.FocusedColor = clNone
-        GlowEffect.PressedGlowSize = 7
-        GlowEffect.PressedAlphaValue = 255
-        GlowEffect.States = [scsHot, scsPressed, scsFocused]
-        ImageGlow = True
-        DisabledFontColor = clNone
-        Options.NormalColor = clWindow
-        Options.HotColor = clWindow
-        Options.PressedColor = clWindow
-        Options.DisabledColor = clWindow
-        Options.NormalColorAlpha = 255
-        Options.HotColorAlpha = 255
-        Options.PressedColorAlpha = 200
-        Options.DisabledColorAlpha = 125
-        Options.FrameNormalColor = clBtnShadow
-        Options.FrameHotColor = clHighlight
-        Options.FramePressedColor = clHighlight
-        Options.FrameDisabledColor = clBtnShadow
-        Options.FrameWidth = 2
-        Options.FrameNormalColorAlpha = 255
-        Options.FrameHotColorAlpha = 255
-        Options.FramePressedColorAlpha = 255
-        Options.FrameDisabledColorAlpha = 255
-        Options.CheckMarkNormalColor = clWindowText
-        Options.CheckMarkHotColor = clWindowText
-        Options.CheckMarkPressedColor = clWindowText
-        Options.CheckMarkDisabledColor = clWindowText
-        Options.CheckMarkNormalColorAlpha = 255
-        Options.CheckMarkHotColorAlpha = 255
-        Options.CheckMarkPressedColorAlpha = 255
-        Options.CheckMarkDisabledColorAlpha = 125
-        Options.ShapeSize = 20
-        Options.CheckMarkThickness = 2
-        Options.StyleColors = True
-        OptionsChecked.NormalColor = clWindow
-        OptionsChecked.HotColor = clWindow
-        OptionsChecked.PressedColor = clWindow
-        OptionsChecked.DisabledColor = clWindow
-        OptionsChecked.NormalColorAlpha = 255
-        OptionsChecked.HotColorAlpha = 255
-        OptionsChecked.PressedColorAlpha = 200
-        OptionsChecked.DisabledColorAlpha = 125
-        OptionsChecked.FrameNormalColor = clBtnShadow
-        OptionsChecked.FrameHotColor = clHighlight
-        OptionsChecked.FramePressedColor = clHighlight
-        OptionsChecked.FrameDisabledColor = clBtnShadow
-        OptionsChecked.FrameWidth = 2
-        OptionsChecked.FrameNormalColorAlpha = 255
-        OptionsChecked.FrameHotColorAlpha = 255
-        OptionsChecked.FramePressedColorAlpha = 255
-        OptionsChecked.FrameDisabledColorAlpha = 255
-        OptionsChecked.CheckMarkNormalColor = clWindowText
-        OptionsChecked.CheckMarkHotColor = clWindowText
-        OptionsChecked.CheckMarkPressedColor = clWindowText
-        OptionsChecked.CheckMarkDisabledColor = clWindowText
-        OptionsChecked.CheckMarkNormalColorAlpha = 255
-        OptionsChecked.CheckMarkHotColorAlpha = 255
-        OptionsChecked.CheckMarkPressedColorAlpha = 255
-        OptionsChecked.CheckMarkDisabledColorAlpha = 125
-        OptionsChecked.ShapeSize = 20
-        OptionsChecked.CheckMarkThickness = 2
-        OptionsChecked.StyleColors = True
-        Checked = False
-        ScaleFrameWidth = True
-        ScaleCheckMarkThickness = True
-        ShowFocusRect = True
-        UseFontColorToStyleColor = False
-        ExplicitLeft = 2604
-        ExplicitTop = 2767
-      end
-      object ComboBoxDOmin: TComboBox
-        Left = 64
-        Top = 198
-        Width = 45
-        Height = 26
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 4
-        Text = 'Do'
-        Visible = False
-        OnChange = ComboBoxDOminChange
-        Items.Strings = (
-          ''
-          '')
-      end
-      object ComboBoxODmin: TComboBox
-        Left = 3
-        Top = 198
-        Width = 54
-        Height = 26
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clDefault
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 5
-        Text = 'Od'
-        Visible = False
-        OnChange = ComboBoxODminChange
-        Items.Strings = (
-          '')
-      end
-      object rComboBoxKrok: TrComboBoxEx
-        Left = 115
-        Top = 198
-        Width = 95
-        Height = 26
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 6
-        Text = 'Krok [min]'
-        OnChange = rComboBoxKrokChange
-        Items.Strings = (
-          '0.1'
-          '0.5'
-          '1'
-          '2'
-          '5'
-          '10'
-          '20'
-          '50'
-          '100')
-      end
-      object scLabel_filtrovat: TscLabel
-        Left = 0
-        Top = 172
-        Width = 249
-        Height = 21
-        Margins.Left = 0
-        Margins.Top = 0
-        Margins.Right = 0
-        Margins.Bottom = 1
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWhite
-        Font.Height = -16
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 7
-        Visible = False
-        DragForm = True
-        DragTopForm = True
-        GlowEffect.Enabled = False
-        GlowEffect.Color = clBtnShadow
-        GlowEffect.AlphaValue = 255
-        GlowEffect.GlowSize = 7
-        GlowEffect.Offset = 2
-        GlowEffect.Intensive = True
-        GlowEffect.StyleColors = True
-        AutoSize = False
-        VertAlignment = scvtaCenter
-        UseFontColorToStyleColor = True
-        Caption = ' Filtrovat '#269'asov'#233' '#250'seky'
-      end
-      object scLabel_doba_cekani: TscLabel
-        Left = 0
-        Top = 135
-        Width = 249
-        Height = 21
-        Margins.Left = 0
-        Margins.Top = 0
-        Margins.Right = 0
-        Margins.Bottom = 1
-        Align = alTop
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWhite
-        Font.Height = -16
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 8
-        Visible = False
-        DragForm = True
-        DragTopForm = True
-        GlowEffect.Enabled = False
-        GlowEffect.Color = clBtnShadow
-        GlowEffect.AlphaValue = 255
-        GlowEffect.GlowSize = 7
-        GlowEffect.Offset = 2
-        GlowEffect.Intensive = True
-        GlowEffect.StyleColors = True
-        AutoSize = False
-        VertAlignment = scvtaCenter
-        UseFontColorToStyleColor = True
-        Caption = ' Doba '#269'ek'#225'n'#237' na palec'
-        ExplicitTop = 78
-      end
-      object CheckBoxAnimovatSG: TscGPCheckBox
-        Left = 3
-        Top = 230
-        Width = 244
-        Height = 25
-        Align = alCustom
-        TabOrder = 9
-        TabStop = True
-        OnClick = CheckBoxVytizenost_Click
-        Animation = False
-        Caption = 'Animovat i jednokapacitn'#237
-        CanFocused = True
-        Spacing = 1
-        Layout = blGlyphLeft
-        ImageIndex = -1
-        GlowEffect.Enabled = False
-        GlowEffect.Color = clHighlight
-        GlowEffect.AlphaValue = 95
-        GlowEffect.GlowSize = 7
-        GlowEffect.Offset = 0
-        GlowEffect.Intensive = True
-        GlowEffect.StyleColors = True
-        GlowEffect.HotColor = clNone
-        GlowEffect.PressedColor = clNone
-        GlowEffect.FocusedColor = clNone
-        GlowEffect.PressedGlowSize = 7
-        GlowEffect.PressedAlphaValue = 255
-        GlowEffect.States = [scsHot, scsPressed, scsFocused]
-        ImageGlow = True
-        DisabledFontColor = clNone
-        Options.NormalColor = clWindow
-        Options.HotColor = clWindow
-        Options.PressedColor = clWindow
-        Options.DisabledColor = clWindow
-        Options.NormalColorAlpha = 255
-        Options.HotColorAlpha = 255
-        Options.PressedColorAlpha = 200
-        Options.DisabledColorAlpha = 125
-        Options.FrameNormalColor = clBtnShadow
-        Options.FrameHotColor = clHighlight
-        Options.FramePressedColor = clHighlight
-        Options.FrameDisabledColor = clBtnShadow
-        Options.FrameWidth = 2
-        Options.FrameNormalColorAlpha = 255
-        Options.FrameHotColorAlpha = 255
-        Options.FramePressedColorAlpha = 255
-        Options.FrameDisabledColorAlpha = 255
-        Options.CheckMarkNormalColor = clWindowText
-        Options.CheckMarkHotColor = clWindowText
-        Options.CheckMarkPressedColor = clWindowText
-        Options.CheckMarkDisabledColor = clWindowText
-        Options.CheckMarkNormalColorAlpha = 255
-        Options.CheckMarkHotColorAlpha = 255
-        Options.CheckMarkPressedColorAlpha = 255
-        Options.CheckMarkDisabledColorAlpha = 125
-        Options.ShapeSize = 20
-        Options.CheckMarkThickness = 2
-        Options.StyleColors = True
-        OptionsChecked.NormalColor = clWindow
-        OptionsChecked.HotColor = clWindow
-        OptionsChecked.PressedColor = clWindow
-        OptionsChecked.DisabledColor = clWindow
-        OptionsChecked.NormalColorAlpha = 255
-        OptionsChecked.HotColorAlpha = 255
-        OptionsChecked.PressedColorAlpha = 200
-        OptionsChecked.DisabledColorAlpha = 125
-        OptionsChecked.FrameNormalColor = clBtnShadow
-        OptionsChecked.FrameHotColor = clHighlight
-        OptionsChecked.FramePressedColor = clHighlight
-        OptionsChecked.FrameDisabledColor = clBtnShadow
-        OptionsChecked.FrameWidth = 2
-        OptionsChecked.FrameNormalColorAlpha = 255
-        OptionsChecked.FrameHotColorAlpha = 255
-        OptionsChecked.FramePressedColorAlpha = 255
-        OptionsChecked.FrameDisabledColorAlpha = 255
-        OptionsChecked.CheckMarkNormalColor = clWindowText
-        OptionsChecked.CheckMarkHotColor = clWindowText
-        OptionsChecked.CheckMarkPressedColor = clWindowText
-        OptionsChecked.CheckMarkDisabledColor = clWindowText
-        OptionsChecked.CheckMarkNormalColorAlpha = 255
-        OptionsChecked.CheckMarkHotColorAlpha = 255
-        OptionsChecked.CheckMarkPressedColorAlpha = 255
-        OptionsChecked.CheckMarkDisabledColorAlpha = 125
-        OptionsChecked.ShapeSize = 20
-        OptionsChecked.CheckMarkThickness = 2
-        OptionsChecked.StyleColors = True
-        Checked = True
-        State = cbChecked
-        ScaleFrameWidth = True
-        ScaleCheckMarkThickness = True
-        ShowFocusRect = True
-        UseFontColorToStyleColor = False
-      end
-      object CheckBox_pouzit_zadane_kapacity: TscGPCheckBox
-        Left = 3
-        Top = 263
-        Width = 244
-        Height = 25
-        Align = alCustom
-        TabOrder = 10
-        TabStop = True
-        OnClick = CheckBox_pouzit_zadane_kapacity_OLDClick
-        Animation = False
-        Caption = 'Pou'#382#237't zadan'#233' kapacity objekt'#367
-        CanFocused = True
-        Spacing = 1
-        Layout = blGlyphLeft
-        ImageIndex = -1
-        GlowEffect.Enabled = False
-        GlowEffect.Color = clHighlight
-        GlowEffect.AlphaValue = 95
-        GlowEffect.GlowSize = 7
-        GlowEffect.Offset = 0
-        GlowEffect.Intensive = True
-        GlowEffect.StyleColors = True
-        GlowEffect.HotColor = clNone
-        GlowEffect.PressedColor = clNone
-        GlowEffect.FocusedColor = clNone
-        GlowEffect.PressedGlowSize = 7
-        GlowEffect.PressedAlphaValue = 255
-        GlowEffect.States = [scsHot, scsPressed, scsFocused]
-        ImageGlow = True
-        DisabledFontColor = clNone
-        Options.NormalColor = clWindow
-        Options.HotColor = clWindow
-        Options.PressedColor = clWindow
-        Options.DisabledColor = clWindow
-        Options.NormalColorAlpha = 255
-        Options.HotColorAlpha = 255
-        Options.PressedColorAlpha = 200
-        Options.DisabledColorAlpha = 125
-        Options.FrameNormalColor = clBtnShadow
-        Options.FrameHotColor = clHighlight
-        Options.FramePressedColor = clHighlight
-        Options.FrameDisabledColor = clBtnShadow
-        Options.FrameWidth = 2
-        Options.FrameNormalColorAlpha = 255
-        Options.FrameHotColorAlpha = 255
-        Options.FramePressedColorAlpha = 255
-        Options.FrameDisabledColorAlpha = 255
-        Options.CheckMarkNormalColor = clWindowText
-        Options.CheckMarkHotColor = clWindowText
-        Options.CheckMarkPressedColor = clWindowText
-        Options.CheckMarkDisabledColor = clWindowText
-        Options.CheckMarkNormalColorAlpha = 255
-        Options.CheckMarkHotColorAlpha = 255
-        Options.CheckMarkPressedColorAlpha = 255
-        Options.CheckMarkDisabledColorAlpha = 125
-        Options.ShapeSize = 20
-        Options.CheckMarkThickness = 2
-        Options.StyleColors = True
-        OptionsChecked.NormalColor = clWindow
-        OptionsChecked.HotColor = clWindow
-        OptionsChecked.PressedColor = clWindow
-        OptionsChecked.DisabledColor = clWindow
-        OptionsChecked.NormalColorAlpha = 255
-        OptionsChecked.HotColorAlpha = 255
-        OptionsChecked.PressedColorAlpha = 200
-        OptionsChecked.DisabledColorAlpha = 125
-        OptionsChecked.FrameNormalColor = clBtnShadow
-        OptionsChecked.FrameHotColor = clHighlight
-        OptionsChecked.FramePressedColor = clHighlight
-        OptionsChecked.FrameDisabledColor = clBtnShadow
-        OptionsChecked.FrameWidth = 2
-        OptionsChecked.FrameNormalColorAlpha = 255
-        OptionsChecked.FrameHotColorAlpha = 255
-        OptionsChecked.FramePressedColorAlpha = 255
-        OptionsChecked.FrameDisabledColorAlpha = 255
-        OptionsChecked.CheckMarkNormalColor = clWindowText
-        OptionsChecked.CheckMarkHotColor = clWindowText
-        OptionsChecked.CheckMarkPressedColor = clWindowText
-        OptionsChecked.CheckMarkDisabledColor = clWindowText
-        OptionsChecked.CheckMarkNormalColorAlpha = 255
-        OptionsChecked.CheckMarkHotColorAlpha = 255
-        OptionsChecked.CheckMarkPressedColorAlpha = 255
-        OptionsChecked.CheckMarkDisabledColorAlpha = 125
-        OptionsChecked.ShapeSize = 20
-        OptionsChecked.CheckMarkThickness = 2
-        OptionsChecked.StyleColors = True
-        Checked = False
-        ScaleFrameWidth = True
-        ScaleCheckMarkThickness = True
-        ShowFocusRect = True
-        UseFontColorToStyleColor = False
-      end
-      object scGPButton_generuj: TscGPGlyphButton
-        Left = 200
-        Top = 48
-        Width = 46
-        Height = 37
-        Hint = 'p'#345'epo'#269#237'tej'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWhite
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 11
-        TabStop = True
-        Visible = False
-        OnClick = scGPButton_generujClick
-        Animation = False
-        Caption = 'scGPButton_generuj'
-        CanFocused = True
-        CustomDropDown = False
-        Layout = blGlyphLeft
-        TransparentBackground = True
-        ColorValue = clRed
-        Options.NormalColor = clBtnText
-        Options.HotColor = clBtnText
-        Options.PressedColor = clBtnText
-        Options.FocusedColor = clBtnFace
-        Options.DisabledColor = clBtnText
-        Options.NormalColor2 = clNone
-        Options.HotColor2 = clNone
-        Options.PressedColor2 = clNone
-        Options.FocusedColor2 = clNone
-        Options.DisabledColor2 = clNone
-        Options.NormalColorAlpha = 10
-        Options.HotColorAlpha = 20
-        Options.PressedColorAlpha = 30
-        Options.FocusedColorAlpha = 255
-        Options.DisabledColorAlpha = 5
-        Options.NormalColor2Alpha = 255
-        Options.HotColor2Alpha = 255
-        Options.PressedColor2Alpha = 255
-        Options.FocusedColor2Alpha = 255
-        Options.DisabledColor2Alpha = 255
-        Options.FrameNormalColor = 10114859
-        Options.FrameHotColor = 10114859
-        Options.FramePressedColor = clBtnText
-        Options.FrameFocusedColor = 10114859
-        Options.FrameDisabledColor = clBtnText
-        Options.FrameWidth = 1
-        Options.FrameNormalColorAlpha = 70
-        Options.FrameHotColorAlpha = 100
-        Options.FramePressedColorAlpha = 150
-        Options.FrameFocusedColorAlpha = 255
-        Options.FrameDisabledColorAlpha = 30
-        Options.FontNormalColor = clBtnText
-        Options.FontHotColor = clBtnText
-        Options.FontPressedColor = clBtnText
-        Options.FontFocusedColor = clBtnText
-        Options.FontDisabledColor = clBtnShadow
-        Options.ShapeFillGradientAngle = 90
-        Options.ShapeFillGradientPressedAngle = -90
-        Options.ShapeFillGradientColorOffset = 25
-        Options.ShapeCornerRadius = 10
-        Options.ShapeStyle = scgpRect
-        Options.ArrowSize = 9
-        Options.ArrowAreaSize = 0
-        Options.ArrowType = scgpatDefault
-        Options.ArrowThickness = 2
-        Options.ArrowThicknessScaled = False
-        Options.StyleColors = True
-        GlyphOptions.NormalColor = clWhite
-        GlyphOptions.HotColor = 33023
-        GlyphOptions.PressedColor = clWhite
-        GlyphOptions.FocusedColor = clWhite
-        GlyphOptions.DisabledColor = clBtnText
-        GlyphOptions.NormalColorAlpha = 200
-        GlyphOptions.HotColorAlpha = 255
-        GlyphOptions.PressedColorAlpha = 255
-        GlyphOptions.FocusedColorAlpha = 255
-        GlyphOptions.DisabledColorAlpha = 100
-        GlyphOptions.Kind = scgpbgkReplace
-        GlyphOptions.Thickness = 2
-        GlyphOptions.ThicknessScaled = False
-        GlyphOptions.Size = 0
-        GlyphOptions.StyleColors = True
-        TextMargin = -1
-        WidthWithCaption = 0
-        WidthWithoutCaption = 0
-        SplitButton = False
-        RepeatClick = False
-        RepeatClickInterval = 100
-        ShowGalleryMenuFromTop = False
-        ShowGalleryMenuFromRight = False
-        ShowMenuArrow = True
-        ShowFocusRect = True
-        Down = False
-        GroupIndex = 0
-        AllowAllUp = False
-      end
-      object ButtonPLAY: TscGPGlyphButton
-        Left = 208
-        Top = 192
-        Width = 38
-        Height = 37
-        Hint = 'spustit animaci'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWhite
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 12
-        TabStop = True
-        Visible = False
-        OnClick = ButtonPLAY_OClick
-        Animation = False
-        Caption = 'scGPButton_generuj'
-        CanFocused = True
-        CustomDropDown = False
-        Layout = blGlyphLeft
-        TransparentBackground = True
-        ColorValue = clRed
-        Options.NormalColor = clBtnText
-        Options.HotColor = clBtnText
-        Options.PressedColor = clBtnText
-        Options.FocusedColor = clBtnFace
-        Options.DisabledColor = clBtnText
-        Options.NormalColor2 = clNone
-        Options.HotColor2 = clNone
-        Options.PressedColor2 = clNone
-        Options.FocusedColor2 = clNone
-        Options.DisabledColor2 = clNone
-        Options.NormalColorAlpha = 10
-        Options.HotColorAlpha = 20
-        Options.PressedColorAlpha = 30
-        Options.FocusedColorAlpha = 255
-        Options.DisabledColorAlpha = 5
-        Options.NormalColor2Alpha = 255
-        Options.HotColor2Alpha = 255
-        Options.PressedColor2Alpha = 255
-        Options.FocusedColor2Alpha = 255
-        Options.DisabledColor2Alpha = 255
-        Options.FrameNormalColor = 10114859
-        Options.FrameHotColor = 10114859
-        Options.FramePressedColor = clBtnText
-        Options.FrameFocusedColor = 10114859
-        Options.FrameDisabledColor = clBtnText
-        Options.FrameWidth = 1
-        Options.FrameNormalColorAlpha = 70
-        Options.FrameHotColorAlpha = 100
-        Options.FramePressedColorAlpha = 150
-        Options.FrameFocusedColorAlpha = 255
-        Options.FrameDisabledColorAlpha = 30
-        Options.FontNormalColor = clBtnText
-        Options.FontHotColor = clBtnText
-        Options.FontPressedColor = clBtnText
-        Options.FontFocusedColor = clBtnText
-        Options.FontDisabledColor = clBtnShadow
-        Options.ShapeFillGradientAngle = 90
-        Options.ShapeFillGradientPressedAngle = -90
-        Options.ShapeFillGradientColorOffset = 25
-        Options.ShapeCornerRadius = 10
-        Options.ShapeStyle = scgpRect
-        Options.ArrowSize = 9
-        Options.ArrowAreaSize = 0
-        Options.ArrowType = scgpatDefault
-        Options.ArrowThickness = 2
-        Options.ArrowThicknessScaled = False
-        Options.StyleColors = True
-        GlyphOptions.NormalColor = clWhite
-        GlyphOptions.HotColor = 33023
-        GlyphOptions.PressedColor = clWhite
-        GlyphOptions.FocusedColor = clWhite
-        GlyphOptions.DisabledColor = clBtnText
-        GlyphOptions.NormalColorAlpha = 200
-        GlyphOptions.HotColorAlpha = 255
-        GlyphOptions.PressedColorAlpha = 255
-        GlyphOptions.FocusedColorAlpha = 255
-        GlyphOptions.DisabledColorAlpha = 100
-        GlyphOptions.Kind = scgpbgkPlay
-        GlyphOptions.Thickness = 2
-        GlyphOptions.ThicknessScaled = False
-        GlyphOptions.Size = 0
-        GlyphOptions.StyleColors = True
-        TextMargin = -1
-        WidthWithCaption = 0
-        WidthWithoutCaption = 0
-        SplitButton = False
-        RepeatClick = False
-        RepeatClickInterval = 100
-        ShowGalleryMenuFromTop = False
-        ShowGalleryMenuFromRight = False
-        ShowMenuArrow = True
-        ShowFocusRect = True
-        Down = False
-        GroupIndex = 0
-        AllowAllUp = False
-      end
-      object scGPCheckBox_pocet_voziku_dle_WIP: TscGPCheckBox
-        Left = 3
-        Top = 171
-        Width = 244
-        Height = 25
-        Align = alCustom
-        TabOrder = 13
-        TabStop = True
-        Visible = False
-        OnClick = scGPCheckBox_pocet_voziku_dle_WIPClick
-        Animation = False
-        Caption = 'Po'#269'et voz'#237'k'#367' dle WIP+1'
-        CanFocused = True
-        Spacing = 1
-        Layout = blGlyphLeft
-        ImageIndex = -1
-        GlowEffect.Enabled = False
-        GlowEffect.Color = clHighlight
-        GlowEffect.AlphaValue = 95
-        GlowEffect.GlowSize = 7
-        GlowEffect.Offset = 0
-        GlowEffect.Intensive = True
-        GlowEffect.StyleColors = True
-        GlowEffect.HotColor = clNone
-        GlowEffect.PressedColor = clNone
-        GlowEffect.FocusedColor = clNone
-        GlowEffect.PressedGlowSize = 7
-        GlowEffect.PressedAlphaValue = 255
-        GlowEffect.States = [scsHot, scsPressed, scsFocused]
-        ImageGlow = True
-        DisabledFontColor = clNone
-        Options.NormalColor = clWindow
-        Options.HotColor = clWindow
-        Options.PressedColor = clWindow
-        Options.DisabledColor = clWindow
-        Options.NormalColorAlpha = 255
-        Options.HotColorAlpha = 255
-        Options.PressedColorAlpha = 200
-        Options.DisabledColorAlpha = 125
-        Options.FrameNormalColor = clBtnShadow
-        Options.FrameHotColor = clHighlight
-        Options.FramePressedColor = clHighlight
-        Options.FrameDisabledColor = clBtnShadow
-        Options.FrameWidth = 2
-        Options.FrameNormalColorAlpha = 255
-        Options.FrameHotColorAlpha = 255
-        Options.FramePressedColorAlpha = 255
-        Options.FrameDisabledColorAlpha = 255
-        Options.CheckMarkNormalColor = clWindowText
-        Options.CheckMarkHotColor = clWindowText
-        Options.CheckMarkPressedColor = clWindowText
-        Options.CheckMarkDisabledColor = clWindowText
-        Options.CheckMarkNormalColorAlpha = 255
-        Options.CheckMarkHotColorAlpha = 255
-        Options.CheckMarkPressedColorAlpha = 255
-        Options.CheckMarkDisabledColorAlpha = 125
-        Options.ShapeSize = 20
-        Options.CheckMarkThickness = 2
-        Options.StyleColors = True
-        OptionsChecked.NormalColor = clWindow
-        OptionsChecked.HotColor = clWindow
-        OptionsChecked.PressedColor = clWindow
-        OptionsChecked.DisabledColor = clWindow
-        OptionsChecked.NormalColorAlpha = 255
-        OptionsChecked.HotColorAlpha = 255
-        OptionsChecked.PressedColorAlpha = 200
-        OptionsChecked.DisabledColorAlpha = 125
-        OptionsChecked.FrameNormalColor = clBtnShadow
-        OptionsChecked.FrameHotColor = clHighlight
-        OptionsChecked.FramePressedColor = clHighlight
-        OptionsChecked.FrameDisabledColor = clBtnShadow
-        OptionsChecked.FrameWidth = 2
-        OptionsChecked.FrameNormalColorAlpha = 255
-        OptionsChecked.FrameHotColorAlpha = 255
-        OptionsChecked.FramePressedColorAlpha = 255
-        OptionsChecked.FrameDisabledColorAlpha = 255
-        OptionsChecked.CheckMarkNormalColor = clWindowText
-        OptionsChecked.CheckMarkHotColor = clWindowText
-        OptionsChecked.CheckMarkPressedColor = clWindowText
-        OptionsChecked.CheckMarkDisabledColor = clWindowText
-        OptionsChecked.CheckMarkNormalColorAlpha = 255
-        OptionsChecked.CheckMarkHotColorAlpha = 255
-        OptionsChecked.CheckMarkPressedColorAlpha = 255
-        OptionsChecked.CheckMarkDisabledColorAlpha = 125
-        OptionsChecked.ShapeSize = 20
-        OptionsChecked.CheckMarkThickness = 2
-        OptionsChecked.StyleColors = True
-        Checked = True
-        State = cbChecked
-        ScaleFrameWidth = True
-        ScaleCheckMarkThickness = True
-        ShowFocusRect = True
-        UseFontColorToStyleColor = False
-      end
-      object scGPGlyphButton_info_cekani: TscGPGlyphButton
-        Left = 213
-        Top = 26
-        Width = 36
-        Height = 28
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clNone
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 14
-        OnClick = scGPGlyphButton_info_cekaniClick
-        Animation = True
-        CanFocused = False
-        CustomDropDown = False
-        Layout = blGlyphTop
-        TransparentBackground = True
-        ColorValue = clRed
-        Options.NormalColor = clBtnText
-        Options.HotColor = clBtnText
-        Options.PressedColor = clBtnText
-        Options.FocusedColor = clBtnFace
-        Options.DisabledColor = clBtnText
-        Options.NormalColor2 = clNone
-        Options.HotColor2 = clNone
-        Options.PressedColor2 = clNone
-        Options.FocusedColor2 = clNone
-        Options.DisabledColor2 = clNone
-        Options.NormalColorAlpha = 0
-        Options.HotColorAlpha = 20
-        Options.PressedColorAlpha = 30
-        Options.FocusedColorAlpha = 255
-        Options.DisabledColorAlpha = 5
-        Options.NormalColor2Alpha = 255
-        Options.HotColor2Alpha = 255
-        Options.PressedColor2Alpha = 255
-        Options.FocusedColor2Alpha = 255
-        Options.DisabledColor2Alpha = 255
-        Options.FrameNormalColor = clBtnText
-        Options.FrameHotColor = clBtnText
-        Options.FramePressedColor = clBtnText
-        Options.FrameFocusedColor = clHighlight
-        Options.FrameDisabledColor = clBtnText
-        Options.FrameWidth = 2
-        Options.FrameNormalColorAlpha = 0
-        Options.FrameHotColorAlpha = 0
-        Options.FramePressedColorAlpha = 0
-        Options.FrameFocusedColorAlpha = 0
-        Options.FrameDisabledColorAlpha = 0
-        Options.FontNormalColor = clBtnText
-        Options.FontHotColor = clBtnText
-        Options.FontPressedColor = clBtnText
-        Options.FontFocusedColor = clBtnText
-        Options.FontDisabledColor = clBtnShadow
-        Options.ShapeFillGradientAngle = 90
-        Options.ShapeFillGradientPressedAngle = -90
-        Options.ShapeFillGradientColorOffset = 25
-        Options.ShapeCornerRadius = 5
-        Options.ShapeStyle = scgpRoundedRect
-        Options.ArrowSize = 9
-        Options.ArrowAreaSize = 0
-        Options.ArrowType = scgpatDefault
-        Options.ArrowThickness = 2
-        Options.ArrowThicknessScaled = False
-        Options.StyleColors = True
-        GlyphOptions.NormalColor = 16744448
-        GlyphOptions.HotColor = 16744448
-        GlyphOptions.PressedColor = clBtnText
-        GlyphOptions.FocusedColor = 16744448
-        GlyphOptions.DisabledColor = 16744448
-        GlyphOptions.NormalColorAlpha = 200
-        GlyphOptions.HotColorAlpha = 255
-        GlyphOptions.PressedColorAlpha = 255
-        GlyphOptions.FocusedColorAlpha = 255
-        GlyphOptions.DisabledColorAlpha = 150
-        GlyphOptions.Kind = scgpbgkInfo
-        GlyphOptions.Thickness = 2
-        GlyphOptions.ThicknessScaled = False
-        GlyphOptions.Size = 0
-        GlyphOptions.StyleColors = True
-        TextMargin = 0
-        WidthWithCaption = 0
-        WidthWithoutCaption = 0
-        SplitButton = False
-        RepeatClick = False
-        RepeatClickInterval = 100
-        ShowGalleryMenuFromTop = False
-        ShowGalleryMenuFromRight = False
-        ShowMenuArrow = False
-        ShowFocusRect = True
-        Down = False
-        GroupIndex = 0
-        AllowAllUp = False
-      end
-      object scGPButton_mereni_vzdalenost: TscGPButton
-        Left = 0
-        Top = 100
-        Width = 249
-        Height = 35
-        Align = alTop
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWhite
-        Font.Height = -16
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 15
-        TabStop = True
-        OnClick = scGPImage_mereni_vzdalenostClick
-        Animation = False
-        Caption = 'Zm'#283#345'it vzd'#225'lenost'
-        CanFocused = True
-        CustomDropDown = False
-        Margin = -1
-        Spacing = 1
-        Layout = blGlyphLeft
-        Images = scGPVirtualImageList1
-        ImageIndex = 52
-        ImageMargin = 30
-        TransparentBackground = False
-        Options.NormalColor = 10114859
-        Options.HotColor = 10114859
-        Options.PressedColor = clBtnShadow
-        Options.FocusedColor = 10114859
-        Options.DisabledColor = 10114859
-        Options.NormalColor2 = clNone
-        Options.HotColor2 = clNone
-        Options.PressedColor2 = clNone
-        Options.FocusedColor2 = clNone
-        Options.DisabledColor2 = clNone
-        Options.NormalColorAlpha = 255
-        Options.HotColorAlpha = 200
-        Options.PressedColorAlpha = 255
-        Options.FocusedColorAlpha = 255
-        Options.DisabledColorAlpha = 255
-        Options.NormalColor2Alpha = 255
-        Options.HotColor2Alpha = 255
-        Options.PressedColor2Alpha = 255
-        Options.FocusedColor2Alpha = 230
-        Options.DisabledColor2Alpha = 255
-        Options.FrameNormalColor = 10114859
-        Options.FrameHotColor = 10114859
-        Options.FramePressedColor = clHighlight
-        Options.FrameFocusedColor = 10114859
-        Options.FrameDisabledColor = 10114859
-        Options.FrameWidth = 1
-        Options.FrameNormalColorAlpha = 255
-        Options.FrameHotColorAlpha = 200
-        Options.FramePressedColorAlpha = 255
-        Options.FrameFocusedColorAlpha = 200
-        Options.FrameDisabledColorAlpha = 255
-        Options.FontNormalColor = clWhite
-        Options.FontHotColor = clWhite
-        Options.FontPressedColor = clWhite
-        Options.FontFocusedColor = clWhite
-        Options.FontDisabledColor = clBtnShadow
-        Options.ShapeFillGradientAngle = 90
-        Options.ShapeFillGradientPressedAngle = -90
-        Options.ShapeFillGradientColorOffset = 25
-        Options.ShapeCornerRadius = 10
-        Options.ShapeStyle = scgpRect
-        Options.ArrowSize = 9
-        Options.ArrowAreaSize = 0
-        Options.ArrowType = scgpatDefault
-        Options.ArrowThickness = 2
-        Options.ArrowThicknessScaled = False
-        Options.StyleColors = True
-        HotImageIndex = -1
-        FocusedImageIndex = -1
-        PressedImageIndex = -1
-        UseGalleryMenuImage = False
-        UseGalleryMenuCaption = False
-        ScaleMarginAndSpacing = False
-        WidthWithCaption = 0
-        WidthWithoutCaption = 0
-        SplitButton = False
-        RepeatClick = False
-        RepeatClickInterval = 100
-        GlowEffect.Enabled = False
-        GlowEffect.Color = clHighlight
-        GlowEffect.AlphaValue = 95
-        GlowEffect.GlowSize = 7
-        GlowEffect.Offset = 0
-        GlowEffect.Intensive = True
-        GlowEffect.StyleColors = True
-        GlowEffect.HotColor = clNone
-        GlowEffect.PressedColor = clNone
-        GlowEffect.FocusedColor = clNone
-        GlowEffect.PressedGlowSize = 7
-        GlowEffect.PressedAlphaValue = 255
-        GlowEffect.States = [scsHot, scsPressed, scsFocused]
-        ImageGlow = True
-        ShowGalleryMenuFromTop = False
-        ShowGalleryMenuFromRight = False
-        ShowMenuArrow = True
-        ShowFocusRect = True
-        Down = False
-        GroupIndex = 0
-        AllowAllUp = False
-        ExplicitLeft = -2
-        ExplicitTop = 52
-        ExplicitWidth = 235
-      end
-      object scGPButton_posun_haly: TscGPButton
-        Left = 0
-        Top = 65
-        Width = 249
-        Height = 35
-        Align = alTop
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWhite
-        Font.Height = -16
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 16
-        TabStop = True
-        OnClick = scGPButton_posun_halyClick
-        Animation = False
-        Caption = 'Posun haly'
-        CanFocused = True
-        CustomDropDown = False
-        Margin = -1
-        Spacing = 1
-        Layout = blGlyphLeft
-        Images = scGPVirtualImageList1
-        ImageIndex = 53
-        ImageMargin = 30
-        TransparentBackground = False
-        Options.NormalColor = 10114859
-        Options.HotColor = 10114859
-        Options.PressedColor = clBtnShadow
-        Options.FocusedColor = 10114859
-        Options.DisabledColor = 10114859
-        Options.NormalColor2 = clNone
-        Options.HotColor2 = clNone
-        Options.PressedColor2 = clNone
-        Options.FocusedColor2 = clNone
-        Options.DisabledColor2 = clNone
-        Options.NormalColorAlpha = 255
-        Options.HotColorAlpha = 200
-        Options.PressedColorAlpha = 255
-        Options.FocusedColorAlpha = 255
-        Options.DisabledColorAlpha = 255
-        Options.NormalColor2Alpha = 255
-        Options.HotColor2Alpha = 255
-        Options.PressedColor2Alpha = 255
-        Options.FocusedColor2Alpha = 230
-        Options.DisabledColor2Alpha = 255
-        Options.FrameNormalColor = 10114859
-        Options.FrameHotColor = 10114859
-        Options.FramePressedColor = clHighlight
-        Options.FrameFocusedColor = 10114859
-        Options.FrameDisabledColor = 10114859
-        Options.FrameWidth = 1
-        Options.FrameNormalColorAlpha = 255
-        Options.FrameHotColorAlpha = 200
-        Options.FramePressedColorAlpha = 255
-        Options.FrameFocusedColorAlpha = 200
-        Options.FrameDisabledColorAlpha = 255
-        Options.FontNormalColor = clWhite
-        Options.FontHotColor = clWhite
-        Options.FontPressedColor = clWhite
-        Options.FontFocusedColor = clWhite
-        Options.FontDisabledColor = clBtnShadow
-        Options.ShapeFillGradientAngle = 90
-        Options.ShapeFillGradientPressedAngle = -90
-        Options.ShapeFillGradientColorOffset = 25
-        Options.ShapeCornerRadius = 10
-        Options.ShapeStyle = scgpRect
-        Options.ArrowSize = 9
-        Options.ArrowAreaSize = 0
-        Options.ArrowType = scgpatDefault
-        Options.ArrowThickness = 2
-        Options.ArrowThicknessScaled = False
-        Options.StyleColors = True
-        HotImageIndex = -1
-        FocusedImageIndex = -1
-        PressedImageIndex = -1
-        UseGalleryMenuImage = False
-        UseGalleryMenuCaption = False
-        ScaleMarginAndSpacing = False
-        WidthWithCaption = 0
-        WidthWithoutCaption = 0
-        SplitButton = False
-        RepeatClick = False
-        RepeatClickInterval = 100
-        GlowEffect.Enabled = False
-        GlowEffect.Color = clHighlight
-        GlowEffect.AlphaValue = 95
-        GlowEffect.GlowSize = 7
-        GlowEffect.Offset = 0
-        GlowEffect.Intensive = True
-        GlowEffect.StyleColors = True
-        GlowEffect.HotColor = clNone
-        GlowEffect.PressedColor = clNone
-        GlowEffect.FocusedColor = clNone
-        GlowEffect.PressedGlowSize = 7
-        GlowEffect.PressedAlphaValue = 255
-        GlowEffect.States = [scsHot, scsPressed, scsFocused]
-        ImageGlow = True
-        ShowGalleryMenuFromTop = False
-        ShowGalleryMenuFromRight = False
-        ShowMenuArrow = True
-        ShowFocusRect = True
-        Down = False
-        GroupIndex = 0
-        AllowAllUp = False
-        ExplicitLeft = -2
-        ExplicitTop = 52
-        ExplicitWidth = 235
-      end
-      object scGPButton_nakreslit_halu: TscGPButton
-        Left = 0
-        Top = 30
-        Width = 249
-        Height = 35
-        Align = alTop
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWhite
-        Font.Height = -16
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 17
-        TabStop = True
-        OnClick = scGPButton_nakreslit_haluClick
-        Animation = False
-        Caption = 'Nakreslit halu'
-        CanFocused = True
-        CustomDropDown = False
-        Margin = -1
-        Spacing = 1
-        Layout = blGlyphLeft
-        Images = scGPVirtualImageList1
-        ImageIndex = 52
-        ImageMargin = 30
-        TransparentBackground = False
-        Options.NormalColor = 10114859
-        Options.HotColor = 10114859
-        Options.PressedColor = clBtnShadow
-        Options.FocusedColor = 10114859
-        Options.DisabledColor = 10114859
-        Options.NormalColor2 = clNone
-        Options.HotColor2 = clNone
-        Options.PressedColor2 = clNone
-        Options.FocusedColor2 = clNone
-        Options.DisabledColor2 = clNone
-        Options.NormalColorAlpha = 255
-        Options.HotColorAlpha = 200
-        Options.PressedColorAlpha = 255
-        Options.FocusedColorAlpha = 255
-        Options.DisabledColorAlpha = 255
-        Options.NormalColor2Alpha = 255
-        Options.HotColor2Alpha = 255
-        Options.PressedColor2Alpha = 255
-        Options.FocusedColor2Alpha = 230
-        Options.DisabledColor2Alpha = 255
-        Options.FrameNormalColor = 10114859
-        Options.FrameHotColor = 10114859
-        Options.FramePressedColor = clHighlight
-        Options.FrameFocusedColor = 10114859
-        Options.FrameDisabledColor = 10114859
-        Options.FrameWidth = 1
-        Options.FrameNormalColorAlpha = 255
-        Options.FrameHotColorAlpha = 200
-        Options.FramePressedColorAlpha = 255
-        Options.FrameFocusedColorAlpha = 200
-        Options.FrameDisabledColorAlpha = 255
-        Options.FontNormalColor = clWhite
-        Options.FontHotColor = clWhite
-        Options.FontPressedColor = clWhite
-        Options.FontFocusedColor = clWhite
-        Options.FontDisabledColor = clBtnShadow
-        Options.ShapeFillGradientAngle = 90
-        Options.ShapeFillGradientPressedAngle = -90
-        Options.ShapeFillGradientColorOffset = 25
-        Options.ShapeCornerRadius = 10
-        Options.ShapeStyle = scgpRect
-        Options.ArrowSize = 9
-        Options.ArrowAreaSize = 0
-        Options.ArrowType = scgpatDefault
-        Options.ArrowThickness = 2
-        Options.ArrowThicknessScaled = False
-        Options.StyleColors = True
-        HotImageIndex = -1
-        FocusedImageIndex = -1
-        PressedImageIndex = -1
-        UseGalleryMenuImage = False
-        UseGalleryMenuCaption = False
-        ScaleMarginAndSpacing = False
-        WidthWithCaption = 0
-        WidthWithoutCaption = 0
-        SplitButton = False
-        RepeatClick = False
-        RepeatClickInterval = 100
-        GlowEffect.Enabled = False
-        GlowEffect.Color = clHighlight
-        GlowEffect.AlphaValue = 95
-        GlowEffect.GlowSize = 7
-        GlowEffect.Offset = 0
-        GlowEffect.Intensive = True
-        GlowEffect.StyleColors = True
-        GlowEffect.HotColor = clNone
-        GlowEffect.PressedColor = clNone
-        GlowEffect.FocusedColor = clNone
-        GlowEffect.PressedGlowSize = 7
-        GlowEffect.PressedAlphaValue = 255
-        GlowEffect.States = [scsHot, scsPressed, scsFocused]
-        ImageGlow = True
-        ShowGalleryMenuFromTop = False
-        ShowGalleryMenuFromRight = False
-        ShowMenuArrow = True
-        ShowFocusRect = True
-        Down = False
-        GroupIndex = 0
-        AllowAllUp = False
-        ExplicitLeft = -3
-        ExplicitTop = 32
-      end
-    end
-    object scExPanel_vrstvy: TscExPanel
-      Left = 1
-      Top = 454
-      Width = 249
-      Height = 30
-      Align = alTop
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
-      Font.Height = -15
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 2
+      TabOrder = 4
       Visible = False
       OnClick = scExPanel_vrstvyClick
       BorderWidth = 1
@@ -5606,65 +4122,7 @@ object Form1: TForm1
       ButtonGlyphColor = clWhite
       HeaderStyle = scexphsColor
       CaptionImages = scGPVirtualImageList1
-      CaptionImageIndex = 9
-      ChangeRollStateWithCaptionClick = False
-      Spacing = 5
-      ShowFrame = False
-      RealWidth = 0
-      RealHeight = 206
-      ShowRollButton = True
-      ShowCloseButton = False
-      CaptionHeight = 30
-      RollKind = scrkRollVertical
-      RollUpState = True
-      Moveable = False
-      Sizeable = False
-      HideControlsInRollUpState = True
-      StorePaintBuffer = False
-      Caption = 'Vrstvy'
-      ExplicitTop = 393
-      object scLabel4: TscLabel
-        Left = 3
-        Top = 39
-        Width = 136
-        Height = 18
-        TabOrder = 0
-        DragForm = False
-        DragTopForm = True
-        GlowEffect.Enabled = False
-        GlowEffect.Color = clBtnShadow
-        GlowEffect.AlphaValue = 255
-        GlowEffect.GlowSize = 7
-        GlowEffect.Offset = 0
-        GlowEffect.Intensive = True
-        GlowEffect.StyleColors = True
-        AutoSize = True
-        UseFontColorToStyleColor = False
-        Caption = 'Zobrazit/Skr'#253't vrstvy'
-      end
-    end
-    object scExPanel_podklad: TscExPanel
-      Left = 1
-      Top = 221
-      Width = 249
-      Height = 233
-      Align = alTop
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
-      Font.Height = -16
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 3
-      OnClick = scExPanel_podkladClick
-      BorderWidth = 1
-      BackgroundStyle = scexbgsPanel
-      FrameColor = clBtnShadow
-      HeaderColor = 33023
-      ButtonGlyphColor = clWhite
-      HeaderStyle = scexphsColor
-      CaptionImages = scGPVirtualImageList1
-      CaptionImageIndex = 9
+      CaptionImageIndex = -1
       ChangeRollStateWithCaptionClick = False
       Spacing = 5
       ShowFrame = False
@@ -5679,18 +4137,60 @@ object Form1: TForm1
       Sizeable = False
       HideControlsInRollUpState = True
       StorePaintBuffer = False
-      Caption = 'Podklad'
-      ExplicitLeft = 3
-      ExplicitTop = 175
+      Caption = '                  Vrstvy'
+      ExplicitTop = 461
+    end
+    object scExPanel_podklad: TscExPanel
+      Left = 1
+      Top = 144
+      Width = 249
+      Height = 203
+      Align = alTop
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -17
+      Font.Name = 'Roboto'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 2
+      OnClick = scExPanel_podkladClick
+      BorderWidth = 1
+      BackgroundStyle = scexbgsPanel
+      FrameColor = clBtnShadow
+      HeaderColor = 33023
+      ButtonGlyphColor = clWhite
+      HeaderStyle = scexphsColor
+      CaptionImages = scGPVirtualImageList1
+      CaptionImageIndex = -1
+      ChangeRollStateWithCaptionClick = False
+      Spacing = 5
+      ShowFrame = False
+      RealWidth = 0
+      RealHeight = 0
+      ShowRollButton = True
+      ShowCloseButton = False
+      CaptionHeight = 30
+      RollKind = scrkRollVertical
+      RollUpState = False
+      Moveable = False
+      Sizeable = False
+      HideControlsInRollUpState = True
+      StorePaintBuffer = False
+      Caption = '                  Podklad'
       object scGPButton_adjustace: TscGPButton
-        Left = 11
-        Top = 195
-        Width = 235
+        AlignWithMargins = True
+        Left = 3
+        Top = 59
+        Width = 246
         Height = 35
+        Margins.Top = 0
+        Margins.Right = 0
+        Margins.Bottom = 0
+        Align = alTop
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWhite
         Font.Height = -16
-        Font.Name = 'Tahoma'
+        Font.Name = 'Roboto'
         Font.Style = []
         ParentFont = False
         TabOrder = 0
@@ -5786,16 +4286,23 @@ object Form1: TForm1
         Down = False
         GroupIndex = 0
         AllowAllUp = False
+        ExplicitLeft = 0
+        ExplicitTop = 68
       end
       object scGPButton_kalibrace: TscGPButton
-        Left = 11
-        Top = 154
-        Width = 235
-        Height = 35
+        AlignWithMargins = True
+        Left = 3
+        Top = 30
+        Width = 246
+        Height = 29
+        Margins.Top = 0
+        Margins.Right = 0
+        Margins.Bottom = 0
+        Align = alTop
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWhite
         Font.Height = -16
-        Font.Name = 'Tahoma'
+        Font.Name = 'Roboto'
         Font.Style = []
         ParentFont = False
         TabOrder = 1
@@ -5891,14 +4398,26 @@ object Form1: TForm1
         Down = False
         GroupIndex = 0
         AllowAllUp = False
+        ExplicitTop = 36
+        ExplicitWidth = 243
       end
       object scGPCheckBox_stupne_sedi: TscGPCheckBox
         AlignWithMargins = True
-        Left = 3
-        Top = 75
-        Width = 243
+        Left = 7
+        Top = 130
+        Width = 242
         Height = 33
+        Margins.Left = 7
+        Margins.Top = 0
+        Margins.Right = 0
+        Margins.Bottom = 0
         Align = alTop
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -16
+        Font.Name = 'Roboto'
+        Font.Style = []
+        ParentFont = False
         TabOrder = 2
         TabStop = True
         OnClick = scGPCheckBox_stupne_sediClick
@@ -5984,14 +4503,26 @@ object Form1: TForm1
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
+        ExplicitLeft = 11
+        ExplicitWidth = 246
       end
       object scGPCheckBox_zobraz_podklad: TscGPCheckBox
         AlignWithMargins = True
-        Left = 3
-        Top = 33
-        Width = 243
+        Left = 7
+        Top = 94
+        Width = 242
         Height = 36
+        Margins.Left = 7
+        Margins.Top = 0
+        Margins.Right = 0
+        Margins.Bottom = 0
         Align = alTop
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -16
+        Font.Name = 'Roboto'
+        Font.Style = []
+        ParentFont = False
         TabOrder = 3
         TabStop = True
         OnClick = scGPCheckBox_zobraz_podkladClick
@@ -6077,12 +4608,18 @@ object Form1: TForm1
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
+        ExplicitLeft = 6
+        ExplicitWidth = 240
       end
       object scGPTrackBar_svetelnost_posuvka: TscGPTrackBar
-        Left = 163
-        Top = 111
+        AlignWithMargins = True
+        Left = 170
+        Top = 170
         Width = 73
         Height = 20
+        Margins.Top = 0
+        Margins.Right = 0
+        Margins.Bottom = 0
         TabOrder = 4
         TransparentBackground = True
         ShowFocusRect = True
@@ -6109,14 +4646,18 @@ object Form1: TForm1
         ThumbUseCursor = False
       end
       object scLabel1_svetelnost: TscLabel
+        AlignWithMargins = True
         Left = 3
-        Top = 111
-        Width = 154
+        Top = 170
+        Width = 156
         Height = 19
+        Margins.Top = 0
+        Margins.Right = 0
+        Margins.Bottom = 0
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWhite
         Font.Height = -16
-        Font.Name = 'Tahoma'
+        Font.Name = 'Roboto'
         Font.Style = []
         ParentFont = False
         TabOrder = 5
@@ -6134,6 +4675,525 @@ object Form1: TForm1
         Caption = 'Pr'#367'hlednost podkladu'
       end
     end
+    object scExPanel_hala: TscExPanel
+      Left = 1
+      Top = 40
+      Width = 249
+      Height = 104
+      Margins.Left = 5
+      Align = alTop
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -17
+      Font.Name = 'Roboto'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 1
+      OnClick = scExPanel_vrstvyClick
+      BorderWidth = 1
+      BackgroundStyle = scexbgsPanel
+      FrameColor = clBtnShadow
+      HeaderColor = 33023
+      ButtonGlyphColor = clWhite
+      HeaderStyle = scexphsColor
+      CaptionImages = scGPVirtualImageList1
+      CaptionImageIndex = -1
+      ChangeRollStateWithCaptionClick = False
+      Spacing = 5
+      ShowFrame = False
+      RealWidth = 0
+      RealHeight = 0
+      ShowRollButton = True
+      ShowCloseButton = False
+      CaptionHeight = 30
+      RollKind = scrkRollVertical
+      RollUpState = False
+      Moveable = False
+      Sizeable = False
+      HideControlsInRollUpState = True
+      StorePaintBuffer = False
+      Caption = '                  Hala'
+      object scGPButton_nakreslit_halu: TscGPButton
+        AlignWithMargins = True
+        Left = 3
+        Top = 30
+        Width = 243
+        Height = 35
+        Margins.Top = 0
+        Margins.Bottom = 0
+        Align = alTop
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -16
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 0
+        TabStop = True
+        OnClick = scGPButton_nakreslit_haluClick
+        Animation = False
+        Caption = 'Vytvo'#345'it'
+        CanFocused = True
+        CustomDropDown = False
+        Margin = -1
+        Spacing = 1
+        Layout = blGlyphLeft
+        Images = scGPVirtualImageList1
+        ImageIndex = 64
+        ImageMargin = 30
+        TransparentBackground = False
+        Options.NormalColor = 10114859
+        Options.HotColor = 10114859
+        Options.PressedColor = clBtnShadow
+        Options.FocusedColor = 10114859
+        Options.DisabledColor = 10114859
+        Options.NormalColor2 = clNone
+        Options.HotColor2 = clNone
+        Options.PressedColor2 = clNone
+        Options.FocusedColor2 = clNone
+        Options.DisabledColor2 = clNone
+        Options.NormalColorAlpha = 255
+        Options.HotColorAlpha = 200
+        Options.PressedColorAlpha = 255
+        Options.FocusedColorAlpha = 255
+        Options.DisabledColorAlpha = 255
+        Options.NormalColor2Alpha = 255
+        Options.HotColor2Alpha = 255
+        Options.PressedColor2Alpha = 255
+        Options.FocusedColor2Alpha = 230
+        Options.DisabledColor2Alpha = 255
+        Options.FrameNormalColor = 10114859
+        Options.FrameHotColor = 10114859
+        Options.FramePressedColor = clHighlight
+        Options.FrameFocusedColor = 10114859
+        Options.FrameDisabledColor = 10114859
+        Options.FrameWidth = 1
+        Options.FrameNormalColorAlpha = 255
+        Options.FrameHotColorAlpha = 200
+        Options.FramePressedColorAlpha = 255
+        Options.FrameFocusedColorAlpha = 200
+        Options.FrameDisabledColorAlpha = 255
+        Options.FontNormalColor = clWhite
+        Options.FontHotColor = clWhite
+        Options.FontPressedColor = clWhite
+        Options.FontFocusedColor = clWhite
+        Options.FontDisabledColor = clBtnShadow
+        Options.ShapeFillGradientAngle = 90
+        Options.ShapeFillGradientPressedAngle = -90
+        Options.ShapeFillGradientColorOffset = 25
+        Options.ShapeCornerRadius = 10
+        Options.ShapeStyle = scgpRect
+        Options.ArrowSize = 9
+        Options.ArrowAreaSize = 0
+        Options.ArrowType = scgpatDefault
+        Options.ArrowThickness = 2
+        Options.ArrowThicknessScaled = False
+        Options.StyleColors = True
+        HotImageIndex = -1
+        FocusedImageIndex = -1
+        PressedImageIndex = -1
+        UseGalleryMenuImage = False
+        UseGalleryMenuCaption = False
+        ScaleMarginAndSpacing = False
+        WidthWithCaption = 0
+        WidthWithoutCaption = 0
+        SplitButton = False
+        RepeatClick = False
+        RepeatClickInterval = 100
+        GlowEffect.Enabled = False
+        GlowEffect.Color = clHighlight
+        GlowEffect.AlphaValue = 95
+        GlowEffect.GlowSize = 7
+        GlowEffect.Offset = 0
+        GlowEffect.Intensive = True
+        GlowEffect.StyleColors = True
+        GlowEffect.HotColor = clNone
+        GlowEffect.PressedColor = clNone
+        GlowEffect.FocusedColor = clNone
+        GlowEffect.PressedGlowSize = 7
+        GlowEffect.PressedAlphaValue = 255
+        GlowEffect.States = [scsHot, scsPressed, scsFocused]
+        ImageGlow = True
+        ShowGalleryMenuFromTop = False
+        ShowGalleryMenuFromRight = False
+        ShowMenuArrow = True
+        ShowFocusRect = True
+        Down = False
+        GroupIndex = 0
+        AllowAllUp = False
+        ExplicitLeft = 0
+        ExplicitWidth = 249
+      end
+      object scGPButton_posun_haly: TscGPButton
+        AlignWithMargins = True
+        Left = 3
+        Top = 65
+        Width = 243
+        Height = 35
+        Margins.Top = 0
+        Margins.Bottom = 0
+        Align = alTop
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -16
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 1
+        TabStop = True
+        OnClick = scGPButton_posun_halyClick
+        Animation = False
+        Caption = 'Posun'
+        CanFocused = True
+        CustomDropDown = False
+        Margin = -1
+        Spacing = 1
+        Layout = blGlyphLeft
+        Images = scGPVirtualImageList1
+        ImageIndex = 53
+        ImageMargin = 30
+        TransparentBackground = False
+        Options.NormalColor = 10114859
+        Options.HotColor = 10114859
+        Options.PressedColor = clBtnShadow
+        Options.FocusedColor = 10114859
+        Options.DisabledColor = 10114859
+        Options.NormalColor2 = clNone
+        Options.HotColor2 = clNone
+        Options.PressedColor2 = clNone
+        Options.FocusedColor2 = clNone
+        Options.DisabledColor2 = clNone
+        Options.NormalColorAlpha = 255
+        Options.HotColorAlpha = 200
+        Options.PressedColorAlpha = 255
+        Options.FocusedColorAlpha = 255
+        Options.DisabledColorAlpha = 255
+        Options.NormalColor2Alpha = 255
+        Options.HotColor2Alpha = 255
+        Options.PressedColor2Alpha = 255
+        Options.FocusedColor2Alpha = 230
+        Options.DisabledColor2Alpha = 255
+        Options.FrameNormalColor = 10114859
+        Options.FrameHotColor = 10114859
+        Options.FramePressedColor = clHighlight
+        Options.FrameFocusedColor = 10114859
+        Options.FrameDisabledColor = 10114859
+        Options.FrameWidth = 1
+        Options.FrameNormalColorAlpha = 255
+        Options.FrameHotColorAlpha = 200
+        Options.FramePressedColorAlpha = 255
+        Options.FrameFocusedColorAlpha = 200
+        Options.FrameDisabledColorAlpha = 255
+        Options.FontNormalColor = clWhite
+        Options.FontHotColor = clWhite
+        Options.FontPressedColor = clWhite
+        Options.FontFocusedColor = clWhite
+        Options.FontDisabledColor = clBtnShadow
+        Options.ShapeFillGradientAngle = 90
+        Options.ShapeFillGradientPressedAngle = -90
+        Options.ShapeFillGradientColorOffset = 25
+        Options.ShapeCornerRadius = 10
+        Options.ShapeStyle = scgpRect
+        Options.ArrowSize = 9
+        Options.ArrowAreaSize = 0
+        Options.ArrowType = scgpatDefault
+        Options.ArrowThickness = 2
+        Options.ArrowThicknessScaled = False
+        Options.StyleColors = True
+        HotImageIndex = -1
+        FocusedImageIndex = -1
+        PressedImageIndex = -1
+        UseGalleryMenuImage = False
+        UseGalleryMenuCaption = False
+        ScaleMarginAndSpacing = False
+        WidthWithCaption = 0
+        WidthWithoutCaption = 0
+        SplitButton = False
+        RepeatClick = False
+        RepeatClickInterval = 100
+        GlowEffect.Enabled = False
+        GlowEffect.Color = clHighlight
+        GlowEffect.AlphaValue = 95
+        GlowEffect.GlowSize = 7
+        GlowEffect.Offset = 0
+        GlowEffect.Intensive = True
+        GlowEffect.StyleColors = True
+        GlowEffect.HotColor = clNone
+        GlowEffect.PressedColor = clNone
+        GlowEffect.FocusedColor = clNone
+        GlowEffect.PressedGlowSize = 7
+        GlowEffect.PressedAlphaValue = 255
+        GlowEffect.States = [scsHot, scsPressed, scsFocused]
+        ImageGlow = True
+        ShowGalleryMenuFromTop = False
+        ShowGalleryMenuFromRight = False
+        ShowMenuArrow = True
+        ShowFocusRect = True
+        Down = False
+        GroupIndex = 0
+        AllowAllUp = False
+        ExplicitLeft = 0
+        ExplicitWidth = 249
+      end
+    end
+    object scExPanel_ostatni: TscExPanel
+      Left = 1
+      Top = 347
+      Width = 249
+      Height = 104
+      Margins.Left = 5
+      Align = alTop
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -17
+      Font.Name = 'Roboto'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 3
+      OnClick = scExPanel_vrstvyClick
+      BorderWidth = 1
+      BackgroundStyle = scexbgsPanel
+      FrameColor = clBtnShadow
+      HeaderColor = 33023
+      ButtonGlyphColor = clWhite
+      HeaderStyle = scexphsColor
+      CaptionImages = scGPVirtualImageList1
+      CaptionImageIndex = -1
+      ChangeRollStateWithCaptionClick = False
+      Spacing = 5
+      ShowFrame = False
+      RealWidth = 0
+      RealHeight = 0
+      ShowRollButton = True
+      ShowCloseButton = False
+      CaptionHeight = 30
+      RollKind = scrkRollVertical
+      RollUpState = False
+      Moveable = False
+      Sizeable = False
+      HideControlsInRollUpState = True
+      StorePaintBuffer = False
+      Caption = '                  Obecn'#233
+      ExplicitTop = 357
+      object scGPButton_mereni_vzdalenost: TscGPButton
+        AlignWithMargins = True
+        Left = 3
+        Top = 30
+        Width = 243
+        Height = 35
+        Margins.Top = 0
+        Margins.Bottom = 0
+        Align = alTop
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -16
+        Font.Name = 'Roboto'
+        Font.Style = []
+        Font.Quality = fqClearType
+        ParentFont = False
+        TabOrder = 0
+        TabStop = True
+        OnClick = scGPImage_mereni_vzdalenostClick
+        Animation = False
+        Caption = 'Zm'#283#345'it vzd'#225'lenost'
+        CanFocused = True
+        CustomDropDown = False
+        Margin = -1
+        Spacing = 1
+        Layout = blGlyphLeft
+        Images = scGPVirtualImageList1
+        ImageIndex = 63
+        ImageMargin = 30
+        TransparentBackground = False
+        Options.NormalColor = 10114859
+        Options.HotColor = 10114859
+        Options.PressedColor = clBtnShadow
+        Options.FocusedColor = 10114859
+        Options.DisabledColor = 10114859
+        Options.NormalColor2 = clNone
+        Options.HotColor2 = clNone
+        Options.PressedColor2 = clNone
+        Options.FocusedColor2 = clNone
+        Options.DisabledColor2 = clNone
+        Options.NormalColorAlpha = 255
+        Options.HotColorAlpha = 200
+        Options.PressedColorAlpha = 255
+        Options.FocusedColorAlpha = 255
+        Options.DisabledColorAlpha = 255
+        Options.NormalColor2Alpha = 255
+        Options.HotColor2Alpha = 255
+        Options.PressedColor2Alpha = 255
+        Options.FocusedColor2Alpha = 230
+        Options.DisabledColor2Alpha = 255
+        Options.FrameNormalColor = 10114859
+        Options.FrameHotColor = 10114859
+        Options.FramePressedColor = clHighlight
+        Options.FrameFocusedColor = 10114859
+        Options.FrameDisabledColor = 10114859
+        Options.FrameWidth = 1
+        Options.FrameNormalColorAlpha = 255
+        Options.FrameHotColorAlpha = 200
+        Options.FramePressedColorAlpha = 255
+        Options.FrameFocusedColorAlpha = 200
+        Options.FrameDisabledColorAlpha = 255
+        Options.FontNormalColor = clWhite
+        Options.FontHotColor = clWhite
+        Options.FontPressedColor = clWhite
+        Options.FontFocusedColor = clWhite
+        Options.FontDisabledColor = clBtnShadow
+        Options.ShapeFillGradientAngle = 90
+        Options.ShapeFillGradientPressedAngle = -90
+        Options.ShapeFillGradientColorOffset = 25
+        Options.ShapeCornerRadius = 10
+        Options.ShapeStyle = scgpRect
+        Options.ArrowSize = 9
+        Options.ArrowAreaSize = 0
+        Options.ArrowType = scgpatDefault
+        Options.ArrowThickness = 2
+        Options.ArrowThicknessScaled = False
+        Options.StyleColors = True
+        HotImageIndex = -1
+        FocusedImageIndex = -1
+        PressedImageIndex = -1
+        UseGalleryMenuImage = False
+        UseGalleryMenuCaption = False
+        ScaleMarginAndSpacing = False
+        WidthWithCaption = 0
+        WidthWithoutCaption = 0
+        SplitButton = False
+        RepeatClick = False
+        RepeatClickInterval = 100
+        GlowEffect.Enabled = False
+        GlowEffect.Color = clHighlight
+        GlowEffect.AlphaValue = 95
+        GlowEffect.GlowSize = 7
+        GlowEffect.Offset = 0
+        GlowEffect.Intensive = True
+        GlowEffect.StyleColors = True
+        GlowEffect.HotColor = clNone
+        GlowEffect.PressedColor = clNone
+        GlowEffect.FocusedColor = clNone
+        GlowEffect.PressedGlowSize = 7
+        GlowEffect.PressedAlphaValue = 255
+        GlowEffect.States = [scsHot, scsPressed, scsFocused]
+        ImageGlow = True
+        ShowGalleryMenuFromTop = False
+        ShowGalleryMenuFromRight = False
+        ShowMenuArrow = True
+        ShowFocusRect = True
+        Down = False
+        GroupIndex = 0
+        AllowAllUp = False
+        ExplicitLeft = 46
+        ExplicitTop = 33
+        ExplicitWidth = 240
+      end
+      object scGPCheckBox_ortogon: TscGPCheckBox
+        AlignWithMargins = True
+        Left = 7
+        Top = 65
+        Width = 239
+        Height = 33
+        Margins.Left = 7
+        Margins.Top = 0
+        Margins.Bottom = 0
+        Align = alTop
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -16
+        Font.Name = 'Roboto'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 1
+        TabStop = True
+        OnClick = scGPCheckBox_stupne_sediClick
+        Animation = False
+        Caption = 'Ortogonalizovat'
+        CanFocused = True
+        Spacing = 1
+        Layout = blGlyphLeft
+        ImageIndex = -1
+        GlowEffect.Enabled = False
+        GlowEffect.Color = clHighlight
+        GlowEffect.AlphaValue = 95
+        GlowEffect.GlowSize = 7
+        GlowEffect.Offset = 0
+        GlowEffect.Intensive = True
+        GlowEffect.StyleColors = True
+        GlowEffect.HotColor = clNone
+        GlowEffect.PressedColor = clNone
+        GlowEffect.FocusedColor = clNone
+        GlowEffect.PressedGlowSize = 7
+        GlowEffect.PressedAlphaValue = 255
+        GlowEffect.States = [scsHot, scsPressed, scsFocused]
+        ImageGlow = True
+        DisabledFontColor = clNone
+        Options.NormalColor = clWindow
+        Options.HotColor = clWindow
+        Options.PressedColor = clWindow
+        Options.DisabledColor = clWindow
+        Options.NormalColorAlpha = 255
+        Options.HotColorAlpha = 255
+        Options.PressedColorAlpha = 200
+        Options.DisabledColorAlpha = 125
+        Options.FrameNormalColor = clBtnShadow
+        Options.FrameHotColor = clHighlight
+        Options.FramePressedColor = clHighlight
+        Options.FrameDisabledColor = clBtnShadow
+        Options.FrameWidth = 2
+        Options.FrameNormalColorAlpha = 255
+        Options.FrameHotColorAlpha = 255
+        Options.FramePressedColorAlpha = 255
+        Options.FrameDisabledColorAlpha = 255
+        Options.CheckMarkNormalColor = clWindowText
+        Options.CheckMarkHotColor = clWindowText
+        Options.CheckMarkPressedColor = clWindowText
+        Options.CheckMarkDisabledColor = clWindowText
+        Options.CheckMarkNormalColorAlpha = 255
+        Options.CheckMarkHotColorAlpha = 255
+        Options.CheckMarkPressedColorAlpha = 255
+        Options.CheckMarkDisabledColorAlpha = 125
+        Options.ShapeSize = 20
+        Options.CheckMarkThickness = 2
+        Options.StyleColors = True
+        OptionsChecked.NormalColor = clWindow
+        OptionsChecked.HotColor = clWindow
+        OptionsChecked.PressedColor = clWindow
+        OptionsChecked.DisabledColor = clWindow
+        OptionsChecked.NormalColorAlpha = 255
+        OptionsChecked.HotColorAlpha = 255
+        OptionsChecked.PressedColorAlpha = 200
+        OptionsChecked.DisabledColorAlpha = 125
+        OptionsChecked.FrameNormalColor = clBtnShadow
+        OptionsChecked.FrameHotColor = clHighlight
+        OptionsChecked.FramePressedColor = clHighlight
+        OptionsChecked.FrameDisabledColor = clBtnShadow
+        OptionsChecked.FrameWidth = 2
+        OptionsChecked.FrameNormalColorAlpha = 255
+        OptionsChecked.FrameHotColorAlpha = 255
+        OptionsChecked.FramePressedColorAlpha = 255
+        OptionsChecked.FrameDisabledColorAlpha = 255
+        OptionsChecked.CheckMarkNormalColor = clWindowText
+        OptionsChecked.CheckMarkHotColor = clWindowText
+        OptionsChecked.CheckMarkPressedColor = clWindowText
+        OptionsChecked.CheckMarkDisabledColor = clWindowText
+        OptionsChecked.CheckMarkNormalColorAlpha = 255
+        OptionsChecked.CheckMarkHotColorAlpha = 255
+        OptionsChecked.CheckMarkPressedColorAlpha = 255
+        OptionsChecked.CheckMarkDisabledColorAlpha = 125
+        OptionsChecked.ShapeSize = 20
+        OptionsChecked.CheckMarkThickness = 2
+        OptionsChecked.StyleColors = True
+        Checked = False
+        ScaleFrameWidth = True
+        ScaleCheckMarkThickness = True
+        ShowFocusRect = True
+        UseFontColorToStyleColor = False
+        ExplicitLeft = 6
+        ExplicitTop = 68
+        ExplicitWidth = 240
+      end
+    end
   end
   object scGPLabel_otoce: TscGPLabel
     Left = 0
@@ -6147,7 +5207,7 @@ object Form1: TForm1
     Font.Style = [fsBold]
     Font.Quality = fqAntialiased
     ParentFont = False
-    TabOrder = 41
+    TabOrder = 40
     Visible = False
     DragForm = False
     DragTopForm = True
@@ -6187,7 +5247,7 @@ object Form1: TForm1
     Font.Style = [fsBold]
     Font.Quality = fqAntialiased
     ParentFont = False
-    TabOrder = 42
+    TabOrder = 41
     Visible = False
     DragForm = False
     DragTopForm = True
@@ -6227,7 +5287,7 @@ object Form1: TForm1
     Font.Style = [fsBold]
     Font.Quality = fqAntialiased
     ParentFont = False
-    TabOrder = 43
+    TabOrder = 42
     Visible = False
     DragForm = False
     DragTopForm = True
@@ -6267,7 +5327,7 @@ object Form1: TForm1
     Font.Style = [fsBold]
     Font.Quality = fqAntialiased
     ParentFont = False
-    TabOrder = 44
+    TabOrder = 43
     Visible = False
     DragForm = False
     DragTopForm = True
@@ -6307,7 +5367,7 @@ object Form1: TForm1
     Font.Style = []
     Font.Quality = fqAntialiased
     ParentFont = False
-    TabOrder = 46
+    TabOrder = 45
     Visible = False
     DragForm = False
     DragTopForm = True
@@ -6383,7 +5443,6 @@ object Form1: TForm1
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
     OnOpened = scSplitView_MENUOpened
-    ExplicitHeight = 662
     object scButton_konec: TscButton
       Left = 0
       Top = 645
@@ -6476,7 +5535,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
-      ExplicitTop = 612
     end
     object scButton_otevrit: TscButton
       Left = 0
@@ -6753,7 +5811,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
-      ExplicitTop = 562
     end
     object scButton_report: TscButton
       Left = 0
@@ -7230,7 +6287,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
-      ExplicitTop = 512
     end
     object scGPSwitch_meritko: TscGPSwitch
       Left = 100
@@ -7665,7 +6721,7 @@ object Form1: TForm1
     Height = 224
     Lines.Strings = (
       'Memo3')
-    TabOrder = 47
+    TabOrder = 46
     Visible = False
   end
   object scGPPanel_bottomtoolbar: TscGPPanel
@@ -7673,7 +6729,7 @@ object Form1: TForm1
     Top = 687
     Width = 1216
     Height = 45
-    TabOrder = 48
+    TabOrder = 47
     Visible = False
     BlurBackground = False
     BlurBackgroundAmount = 5
@@ -8645,10 +7701,17 @@ object Form1: TForm1
     end
     object scGPImage_mereni_vzdalenost: TscGPImage
       Left = 174
-      Top = 21
-      Width = 43
-      Height = 21
+      Top = 10
+      Width = 33
+      Height = 35
       Hint = 'M'#283#345'en'#237' vzd'#225'lenosti'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      Font.Quality = fqAntialiased
+      ParentFont = False
       ParentShowHint = False
       ShowHint = True
       TabOrder = 10
@@ -8674,23 +7737,72 @@ object Form1: TForm1
       StorePaintBuffer = False
       ImageIndex = -1
       InterpolationMode = scgppimDefault
-      ClipFrame = scgpcfNone
-      ClipFrameRadius = 10
-      ClipFrameFillColor = clNone
+      ClipFrame = scgpcfRoundedRect
+      ClipFrameRadius = 8
+      ClipFrameFillColor = clWhite
       ClipFrameFillColorAlpha = 255
       ClipFrameColor = clNone
-      ClipFrameWidth = 2
+      ClipFrameWidth = 0
       RotationAngle = 0
       AnimationAcceleration = False
       RotateAnimation = False
       Picture.Data = {
-        0954506E67496D61676589504E470D0A1A0A0000000D494844520000002B0000
-        00150806000000DF2D171D000000017352474200AECE1CE90000000467414D41
-        0000B18F0BFC6105000000097048597300000EC300000EC301C76FA864000000
-        554944415478DA63D48D5EF29F618800C621E9D8CB4B6318B129C0264F0F316C
-        6E1875ECA8634977EC7F2066FC3FA41C4B6C0C50A28E0A8EA5DC11A38E1D928E
-        1D0C60D4B1A38E1D75ECA863878363870218528E0500DEA11DAC892B12CD0000
-        000049454E44AE426082}
+        0954506E67496D61676589504E470D0A1A0A0000000D49484452000000200000
+        0020080300000044A48AC6000000097048597300000B1300000B1301009A9C18
+        00000300504C544547704C000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000676767
+        6868686969696A6A6A6B6B6B6C6C6C6D6D6D6E6E6E6F6F6F7070707171717272
+        727373737474747575757676767777777878787979797A7A7A7B7B7B7C7C7C7D
+        7D7D7E7E7E7F7F7F808080818181828282838383848484858585868686878787
+        8888888989898A8A8A8B8B8B8C8C8C8D8D8D8E8E8E8F8F8F9090909191919292
+        929393939494949595959696969797979898989999999A9A9A9B9B9B9C9C9C9D
+        9D9D9E9E9E9F9F9FA0A0A0A1A1A1A2A2A2A3A3A3A4A4A4A5A5A5A6A6A6A7A7A7
+        A8A8A8A9A9A9AAAAAAABABABACACACADADADAEAEAEAFAFAFB0B0B0B1B1B1B2B2
+        B2B3B3B3B4B4B4B5B5B5B6B6B6B7B7B7B8B8B8B9B9B9BABABABBBBBBBCBCBCBD
+        BDBDBEBEBEBFBFBFC0C0C0C1C1C1C2C2C2C3C3C3C4C4C4C5C5C5C6C6C6C7C7C7
+        C8C8C8C9C9C9CACACACBCBCBCCCCCCCDCDCDCECECECFCFCFD0D0D0D1D1D1D2D2
+        D2D3D3D3D4D4D4D5D5D5D6D6D6D7D7D7D8D8D8D9D9D9DADADADBDBDBDCDCDCDD
+        DDDDDEDEDEDFDFDFE0E0E0E1E1E1E2E2E2E3E3E3E4E4E4E5E5E5E6E6E6E7E7E7
+        E8E8E8E9E9E9EAEAEAEBEBEBECECECEDEDEDEEEEEEEFEFEFF0F0F0F1F1F1F2F2
+        F2F3F3F3F4F4F4F5F5F5F6F6F6F7F7F7F8F8F8F9F9F9FAFAFAFBFBFBFCFCFCFD
+        FDFDFEFEFEFFFFFFEB789D7D0000000174524E530040E6D86600000127494441
+        5478DA6364C006F8B58EC3988C58E5C3DFAFC6A7803772CE3F063C0A50E4B128
+        4095C754C01BC9B0ED091E0540FD4A4EC82A18D1E52F9C6250415681AA803F7C
+        D5072065AD7D197B38F0873330CC02311299E76053C098BA4AC904A202AB1B80
+        F21F188CD596E352201A88E27F0C05A2810C0C7BEEE15600D4AF6A8F4D052392
+        F9EAD8543022DCC7C0A0698BE4076EFD6370058CA90C0CE74F0319FE9FF7C1E5
+        A32F9E8429604CDDA4AB88E67FEEE8159F605600E55F30E83CFA84551EA82050
+        F4ED5A749721E4810A78A2184E5CC2290FB202A862EF5D647996A4453F50BC89
+        A602451EE24DE664862DCFB0CB43030AA862FF6DACF2B0A086AB409787471650
+        C5D6A758E411D10D5681298F9460807E598AE47F4C05203330F4A3265A8BDF67
+        31E4190084206721107D27B60000000049454E44AE426082}
+      PngImage.Data = {
+        89504E470D0A1A0A0000000D4948445200000020000000200806000000737A7A
+        F4000000097048597300002E2300002E230178A53F76000001DD4944415478DA
+        BD95412844411880770F4A0A85B839500A59175B522E0ED4B672509B83727394
+        0B71512E2407E5E8A41C14E540887253120E16A514390AA570500EBE57B3DB33
+        66CDCC7BF3F6D5F4CF3F6FFEF9BEB76FE66D3C16C155975A6923649FF646E3BA
+        B9DA0941E1222D41E2BB6802C05B083722ED067E5CB45F2008DC998004EF047E
+        6A5A1B5A4082C74C369E3301097E464BDA4A041650BD73C656E98FD848041200
+        D44AB8166912D8B9EFDE1A61D854C25A403AE74A0873D60943CE05583841B814
+        E9062D63FAA4A105247817D013C6A6E8CFD32AC8DF231390365C07B08BA04F6C
+        2D209F73AE5204BE8A2220C1176913A25F83C46BA40205CE790FFD233156CBD8
+        732402D2864B00BAF2DDEB251C88B49C7B1F3A0835338459D569519D613FDCBB
+        9A28BC93E6A4093B318357C1DC49C282D7D70A48F031DAB2E837537C6BFBF3EA
+        E0BF0424783B0559DF3E6824BF770DCF0B30B99EF028C61A2878B07D5A099EFB
+        4069BF9239812A42EE5DF6517418023E4D983381E705446125E14DA4198A3703
+        C0C7094BA6F05F02612582C0FF08282406596C2B2AB852402C5846F814E9008B
+        6E47012F28A09048B3F8AE6BF8BF020A8914907D9770AD402109577023018584
+        F71FD0EF026E2CA0907002B7121012D584175770EFFA014483F621C39AEB8E00
+        00000049454E44AE426082}
       Transparent = True
     end
   end
@@ -8699,7 +7811,7 @@ object Form1: TForm1
     Top = 40
     Width = 42
     Height = 22
-    TabOrder = 49
+    TabOrder = 48
     Visible = False
     BlurBackground = False
     BlurBackgroundAmount = 5
@@ -8774,16 +7886,1106 @@ object Form1: TForm1
     Width = 116
     Height = 25
     Caption = 'ButtonMaKRtesty'
-    TabOrder = 50
+    TabOrder = 49
     Visible = False
     OnClick = Button14Click
     OnKeyDown = FormKeyDown
+  end
+  object scExPanel_nastaveni_starych_modu: TscExPanel
+    Left = 825
+    Top = 374
+    Width = 150
+    Height = 28
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBtnText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 50
+    Visible = False
+    BorderWidth = 1
+    BackgroundStyle = scexbgsPanel
+    FrameColor = clBtnShadow
+    HeaderColor = clBtnFace
+    ButtonGlyphColor = clBtnText
+    HeaderStyle = scexphsHeader
+    CaptionImageIndex = -1
+    ChangeRollStateWithCaptionClick = False
+    Spacing = 5
+    ShowFrame = True
+    RealWidth = 0
+    RealHeight = 0
+    ShowRollButton = True
+    ShowCloseButton = True
+    CaptionHeight = 24
+    RollKind = scrkRollVertical
+    RollUpState = False
+    Moveable = False
+    Sizeable = False
+    HideControlsInRollUpState = True
+    StorePaintBuffer = False
+    Caption = 'scExPanel_nastaveni_starych_modu'
+    object ButtonPLAY: TscGPGlyphButton
+      Left = 112
+      Top = 63
+      Width = 38
+      Height = 37
+      Hint = 'spustit animaci'
+      Align = alCustom
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+      TabStop = True
+      Visible = False
+      OnClick = ButtonPLAY_OClick
+      Animation = False
+      Caption = 'scGPButton_generuj'
+      CanFocused = True
+      CustomDropDown = False
+      Layout = blGlyphLeft
+      TransparentBackground = True
+      ColorValue = clRed
+      Options.NormalColor = clBtnText
+      Options.HotColor = clBtnText
+      Options.PressedColor = clBtnText
+      Options.FocusedColor = clBtnFace
+      Options.DisabledColor = clBtnText
+      Options.NormalColor2 = clNone
+      Options.HotColor2 = clNone
+      Options.PressedColor2 = clNone
+      Options.FocusedColor2 = clNone
+      Options.DisabledColor2 = clNone
+      Options.NormalColorAlpha = 10
+      Options.HotColorAlpha = 20
+      Options.PressedColorAlpha = 30
+      Options.FocusedColorAlpha = 255
+      Options.DisabledColorAlpha = 5
+      Options.NormalColor2Alpha = 255
+      Options.HotColor2Alpha = 255
+      Options.PressedColor2Alpha = 255
+      Options.FocusedColor2Alpha = 255
+      Options.DisabledColor2Alpha = 255
+      Options.FrameNormalColor = 10114859
+      Options.FrameHotColor = 10114859
+      Options.FramePressedColor = clBtnText
+      Options.FrameFocusedColor = 10114859
+      Options.FrameDisabledColor = clBtnText
+      Options.FrameWidth = 1
+      Options.FrameNormalColorAlpha = 70
+      Options.FrameHotColorAlpha = 100
+      Options.FramePressedColorAlpha = 150
+      Options.FrameFocusedColorAlpha = 255
+      Options.FrameDisabledColorAlpha = 30
+      Options.FontNormalColor = clBtnText
+      Options.FontHotColor = clBtnText
+      Options.FontPressedColor = clBtnText
+      Options.FontFocusedColor = clBtnText
+      Options.FontDisabledColor = clBtnShadow
+      Options.ShapeFillGradientAngle = 90
+      Options.ShapeFillGradientPressedAngle = -90
+      Options.ShapeFillGradientColorOffset = 25
+      Options.ShapeCornerRadius = 10
+      Options.ShapeStyle = scgpRect
+      Options.ArrowSize = 9
+      Options.ArrowAreaSize = 0
+      Options.ArrowType = scgpatDefault
+      Options.ArrowThickness = 2
+      Options.ArrowThicknessScaled = False
+      Options.StyleColors = True
+      GlyphOptions.NormalColor = clWhite
+      GlyphOptions.HotColor = 33023
+      GlyphOptions.PressedColor = clWhite
+      GlyphOptions.FocusedColor = clWhite
+      GlyphOptions.DisabledColor = clBtnText
+      GlyphOptions.NormalColorAlpha = 200
+      GlyphOptions.HotColorAlpha = 255
+      GlyphOptions.PressedColorAlpha = 255
+      GlyphOptions.FocusedColorAlpha = 255
+      GlyphOptions.DisabledColorAlpha = 100
+      GlyphOptions.Kind = scgpbgkPlay
+      GlyphOptions.Thickness = 2
+      GlyphOptions.ThicknessScaled = False
+      GlyphOptions.Size = 0
+      GlyphOptions.StyleColors = True
+      TextMargin = -1
+      WidthWithCaption = 0
+      WidthWithoutCaption = 0
+      SplitButton = False
+      RepeatClick = False
+      RepeatClickInterval = 100
+      ShowGalleryMenuFromTop = False
+      ShowGalleryMenuFromRight = False
+      ShowMenuArrow = True
+      ShowFocusRect = True
+      Down = False
+      GroupIndex = 0
+      AllowAllUp = False
+    end
+    object ComboBoxCekani: TscComboBox
+      Left = -93
+      Top = 79
+      Width = 243
+      Height = 21
+      ItemIndex = 0
+      Items.Strings = (
+        #382#225'dn'#225
+        'st'#345'edn'#237' hodnota'
+        'n'#225'hodn'#225' hodnota'
+        'maxim'#225'ln'#237' hodnota')
+      WordBreak = False
+      SelectionStyle = scstStyled
+      SelectionColor = clGrayText
+      SelectionTextColor = clHighlightText
+      ImageIndex = -1
+      ItemHeight = 15
+      Align = alCustom
+      Color = 10114859
+      Ctl3D = False
+      ParentCtl3D = False
+      TabOrder = 1
+      Text = #382#225'dn'#225
+      StyleKind = scscbDefault
+      ShowFocusRect = True
+      OnChange = ComboBoxCekaniChange
+    end
+    object ComboBoxDOmin: TComboBox
+      Left = 105
+      Top = 74
+      Width = 45
+      Height = 26
+      Align = alCustom
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clGray
+      Font.Height = -15
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 2
+      Text = 'Do'
+      Visible = False
+      OnChange = ComboBoxDOminChange
+      Items.Strings = (
+        ''
+        '')
+    end
+    object ComboBoxODmin: TComboBox
+      Left = 96
+      Top = 74
+      Width = 54
+      Height = 26
+      Align = alCustom
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clGray
+      Font.Height = -15
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 3
+      Text = 'Od'
+      Visible = False
+      OnChange = ComboBoxODminChange
+      Items.Strings = (
+        '')
+    end
+    object CheckBox_pouzit_zadane_kapacity: TscGPCheckBox
+      Left = -94
+      Top = 75
+      Width = 244
+      Height = 25
+      Align = alCustom
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clGray
+      Font.Height = -15
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 4
+      TabStop = True
+      OnClick = CheckBox_pouzit_zadane_kapacity_OLDClick
+      Animation = False
+      Caption = 'Pou'#382#237't zadan'#233' kapacity objekt'#367
+      CanFocused = True
+      Spacing = 1
+      Layout = blGlyphLeft
+      ImageIndex = -1
+      GlowEffect.Enabled = False
+      GlowEffect.Color = clHighlight
+      GlowEffect.AlphaValue = 95
+      GlowEffect.GlowSize = 7
+      GlowEffect.Offset = 0
+      GlowEffect.Intensive = True
+      GlowEffect.StyleColors = True
+      GlowEffect.HotColor = clNone
+      GlowEffect.PressedColor = clNone
+      GlowEffect.FocusedColor = clNone
+      GlowEffect.PressedGlowSize = 7
+      GlowEffect.PressedAlphaValue = 255
+      GlowEffect.States = [scsHot, scsPressed, scsFocused]
+      ImageGlow = True
+      DisabledFontColor = clNone
+      Options.NormalColor = clWindow
+      Options.HotColor = clWindow
+      Options.PressedColor = clWindow
+      Options.DisabledColor = clWindow
+      Options.NormalColorAlpha = 255
+      Options.HotColorAlpha = 255
+      Options.PressedColorAlpha = 200
+      Options.DisabledColorAlpha = 125
+      Options.FrameNormalColor = clBtnShadow
+      Options.FrameHotColor = clHighlight
+      Options.FramePressedColor = clHighlight
+      Options.FrameDisabledColor = clBtnShadow
+      Options.FrameWidth = 2
+      Options.FrameNormalColorAlpha = 255
+      Options.FrameHotColorAlpha = 255
+      Options.FramePressedColorAlpha = 255
+      Options.FrameDisabledColorAlpha = 255
+      Options.CheckMarkNormalColor = clWindowText
+      Options.CheckMarkHotColor = clWindowText
+      Options.CheckMarkPressedColor = clWindowText
+      Options.CheckMarkDisabledColor = clWindowText
+      Options.CheckMarkNormalColorAlpha = 255
+      Options.CheckMarkHotColorAlpha = 255
+      Options.CheckMarkPressedColorAlpha = 255
+      Options.CheckMarkDisabledColorAlpha = 125
+      Options.ShapeSize = 20
+      Options.CheckMarkThickness = 2
+      Options.StyleColors = True
+      OptionsChecked.NormalColor = clWindow
+      OptionsChecked.HotColor = clWindow
+      OptionsChecked.PressedColor = clWindow
+      OptionsChecked.DisabledColor = clWindow
+      OptionsChecked.NormalColorAlpha = 255
+      OptionsChecked.HotColorAlpha = 255
+      OptionsChecked.PressedColorAlpha = 200
+      OptionsChecked.DisabledColorAlpha = 125
+      OptionsChecked.FrameNormalColor = clBtnShadow
+      OptionsChecked.FrameHotColor = clHighlight
+      OptionsChecked.FramePressedColor = clHighlight
+      OptionsChecked.FrameDisabledColor = clBtnShadow
+      OptionsChecked.FrameWidth = 2
+      OptionsChecked.FrameNormalColorAlpha = 255
+      OptionsChecked.FrameHotColorAlpha = 255
+      OptionsChecked.FramePressedColorAlpha = 255
+      OptionsChecked.FrameDisabledColorAlpha = 255
+      OptionsChecked.CheckMarkNormalColor = clWindowText
+      OptionsChecked.CheckMarkHotColor = clWindowText
+      OptionsChecked.CheckMarkPressedColor = clWindowText
+      OptionsChecked.CheckMarkDisabledColor = clWindowText
+      OptionsChecked.CheckMarkNormalColorAlpha = 255
+      OptionsChecked.CheckMarkHotColorAlpha = 255
+      OptionsChecked.CheckMarkPressedColorAlpha = 255
+      OptionsChecked.CheckMarkDisabledColorAlpha = 125
+      OptionsChecked.ShapeSize = 20
+      OptionsChecked.CheckMarkThickness = 2
+      OptionsChecked.StyleColors = True
+      Checked = False
+      ScaleFrameWidth = True
+      ScaleCheckMarkThickness = True
+      ShowFocusRect = True
+      UseFontColorToStyleColor = False
+    end
+    object CheckBoxAnimovatSG: TscGPCheckBox
+      Left = -94
+      Top = 75
+      Width = 244
+      Height = 25
+      Align = alCustom
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clGray
+      Font.Height = -15
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 5
+      TabStop = True
+      OnClick = CheckBoxVytizenost_Click
+      Animation = False
+      Caption = 'Animovat i jednokapacitn'#237
+      CanFocused = True
+      Spacing = 1
+      Layout = blGlyphLeft
+      ImageIndex = -1
+      GlowEffect.Enabled = False
+      GlowEffect.Color = clHighlight
+      GlowEffect.AlphaValue = 95
+      GlowEffect.GlowSize = 7
+      GlowEffect.Offset = 0
+      GlowEffect.Intensive = True
+      GlowEffect.StyleColors = True
+      GlowEffect.HotColor = clNone
+      GlowEffect.PressedColor = clNone
+      GlowEffect.FocusedColor = clNone
+      GlowEffect.PressedGlowSize = 7
+      GlowEffect.PressedAlphaValue = 255
+      GlowEffect.States = [scsHot, scsPressed, scsFocused]
+      ImageGlow = True
+      DisabledFontColor = clNone
+      Options.NormalColor = clWindow
+      Options.HotColor = clWindow
+      Options.PressedColor = clWindow
+      Options.DisabledColor = clWindow
+      Options.NormalColorAlpha = 255
+      Options.HotColorAlpha = 255
+      Options.PressedColorAlpha = 200
+      Options.DisabledColorAlpha = 125
+      Options.FrameNormalColor = clBtnShadow
+      Options.FrameHotColor = clHighlight
+      Options.FramePressedColor = clHighlight
+      Options.FrameDisabledColor = clBtnShadow
+      Options.FrameWidth = 2
+      Options.FrameNormalColorAlpha = 255
+      Options.FrameHotColorAlpha = 255
+      Options.FramePressedColorAlpha = 255
+      Options.FrameDisabledColorAlpha = 255
+      Options.CheckMarkNormalColor = clWindowText
+      Options.CheckMarkHotColor = clWindowText
+      Options.CheckMarkPressedColor = clWindowText
+      Options.CheckMarkDisabledColor = clWindowText
+      Options.CheckMarkNormalColorAlpha = 255
+      Options.CheckMarkHotColorAlpha = 255
+      Options.CheckMarkPressedColorAlpha = 255
+      Options.CheckMarkDisabledColorAlpha = 125
+      Options.ShapeSize = 20
+      Options.CheckMarkThickness = 2
+      Options.StyleColors = True
+      OptionsChecked.NormalColor = clWindow
+      OptionsChecked.HotColor = clWindow
+      OptionsChecked.PressedColor = clWindow
+      OptionsChecked.DisabledColor = clWindow
+      OptionsChecked.NormalColorAlpha = 255
+      OptionsChecked.HotColorAlpha = 255
+      OptionsChecked.PressedColorAlpha = 200
+      OptionsChecked.DisabledColorAlpha = 125
+      OptionsChecked.FrameNormalColor = clBtnShadow
+      OptionsChecked.FrameHotColor = clHighlight
+      OptionsChecked.FramePressedColor = clHighlight
+      OptionsChecked.FrameDisabledColor = clBtnShadow
+      OptionsChecked.FrameWidth = 2
+      OptionsChecked.FrameNormalColorAlpha = 255
+      OptionsChecked.FrameHotColorAlpha = 255
+      OptionsChecked.FramePressedColorAlpha = 255
+      OptionsChecked.FrameDisabledColorAlpha = 255
+      OptionsChecked.CheckMarkNormalColor = clWindowText
+      OptionsChecked.CheckMarkHotColor = clWindowText
+      OptionsChecked.CheckMarkPressedColor = clWindowText
+      OptionsChecked.CheckMarkDisabledColor = clWindowText
+      OptionsChecked.CheckMarkNormalColorAlpha = 255
+      OptionsChecked.CheckMarkHotColorAlpha = 255
+      OptionsChecked.CheckMarkPressedColorAlpha = 255
+      OptionsChecked.CheckMarkDisabledColorAlpha = 125
+      OptionsChecked.ShapeSize = 20
+      OptionsChecked.CheckMarkThickness = 2
+      OptionsChecked.StyleColors = True
+      Checked = True
+      State = cbChecked
+      ScaleFrameWidth = True
+      ScaleCheckMarkThickness = True
+      ShowFocusRect = True
+      UseFontColorToStyleColor = False
+    end
+    object CheckBoxVymena_barev: TscGPCheckBox
+      Left = -96
+      Top = 64
+      Width = 246
+      Height = 36
+      Align = alCustom
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clGray
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 6
+      TabStop = True
+      OnClick = CheckBoxVymena_barev_Click
+      Animation = False
+      Caption = 'Zohlednit '#269'i'#353't'#283'n'#237' pistole a v'#253'm'#283'nu barev'
+      CanFocused = True
+      Spacing = 1
+      Layout = blGlyphLeft
+      ImageIndex = -1
+      GlowEffect.Enabled = False
+      GlowEffect.Color = clHighlight
+      GlowEffect.AlphaValue = 95
+      GlowEffect.GlowSize = 7
+      GlowEffect.Offset = 0
+      GlowEffect.Intensive = True
+      GlowEffect.StyleColors = True
+      GlowEffect.HotColor = clNone
+      GlowEffect.PressedColor = clNone
+      GlowEffect.FocusedColor = clNone
+      GlowEffect.PressedGlowSize = 7
+      GlowEffect.PressedAlphaValue = 255
+      GlowEffect.States = [scsHot, scsPressed, scsFocused]
+      ImageGlow = True
+      DisabledFontColor = clNone
+      Options.NormalColor = clWindow
+      Options.HotColor = clWindow
+      Options.PressedColor = clWindow
+      Options.DisabledColor = clWindow
+      Options.NormalColorAlpha = 255
+      Options.HotColorAlpha = 255
+      Options.PressedColorAlpha = 200
+      Options.DisabledColorAlpha = 125
+      Options.FrameNormalColor = clBtnShadow
+      Options.FrameHotColor = clHighlight
+      Options.FramePressedColor = clHighlight
+      Options.FrameDisabledColor = clBtnShadow
+      Options.FrameWidth = 2
+      Options.FrameNormalColorAlpha = 255
+      Options.FrameHotColorAlpha = 255
+      Options.FramePressedColorAlpha = 255
+      Options.FrameDisabledColorAlpha = 255
+      Options.CheckMarkNormalColor = clWindowText
+      Options.CheckMarkHotColor = clWindowText
+      Options.CheckMarkPressedColor = clWindowText
+      Options.CheckMarkDisabledColor = clWindowText
+      Options.CheckMarkNormalColorAlpha = 255
+      Options.CheckMarkHotColorAlpha = 255
+      Options.CheckMarkPressedColorAlpha = 255
+      Options.CheckMarkDisabledColorAlpha = 125
+      Options.ShapeSize = 20
+      Options.CheckMarkThickness = 2
+      Options.StyleColors = True
+      OptionsChecked.NormalColor = clWindow
+      OptionsChecked.HotColor = clWindow
+      OptionsChecked.PressedColor = clWindow
+      OptionsChecked.DisabledColor = clWindow
+      OptionsChecked.NormalColorAlpha = 255
+      OptionsChecked.HotColorAlpha = 255
+      OptionsChecked.PressedColorAlpha = 200
+      OptionsChecked.DisabledColorAlpha = 125
+      OptionsChecked.FrameNormalColor = clBtnShadow
+      OptionsChecked.FrameHotColor = clHighlight
+      OptionsChecked.FramePressedColor = clHighlight
+      OptionsChecked.FrameDisabledColor = clBtnShadow
+      OptionsChecked.FrameWidth = 2
+      OptionsChecked.FrameNormalColorAlpha = 255
+      OptionsChecked.FrameHotColorAlpha = 255
+      OptionsChecked.FramePressedColorAlpha = 255
+      OptionsChecked.FrameDisabledColorAlpha = 255
+      OptionsChecked.CheckMarkNormalColor = clWindowText
+      OptionsChecked.CheckMarkHotColor = clWindowText
+      OptionsChecked.CheckMarkPressedColor = clWindowText
+      OptionsChecked.CheckMarkDisabledColor = clWindowText
+      OptionsChecked.CheckMarkNormalColorAlpha = 255
+      OptionsChecked.CheckMarkHotColorAlpha = 255
+      OptionsChecked.CheckMarkPressedColorAlpha = 255
+      OptionsChecked.CheckMarkDisabledColorAlpha = 125
+      OptionsChecked.ShapeSize = 20
+      OptionsChecked.CheckMarkThickness = 2
+      OptionsChecked.StyleColors = True
+      Checked = False
+      ScaleFrameWidth = True
+      ScaleCheckMarkThickness = True
+      ShowFocusRect = True
+      UseFontColorToStyleColor = False
+    end
+    object CheckBoxVytizenost: TscGPCheckBox
+      Left = -94
+      Top = 70
+      Width = 244
+      Height = 30
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clGray
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 7
+      TabStop = True
+      OnClick = CheckBoxVytizenost_Click
+      Animation = False
+      Caption = 'Zobrazit vyt'#237#382'enost objekt'#367
+      CanFocused = True
+      Spacing = 1
+      Layout = blGlyphLeft
+      ImageIndex = -1
+      GlowEffect.Enabled = False
+      GlowEffect.Color = clHighlight
+      GlowEffect.AlphaValue = 95
+      GlowEffect.GlowSize = 7
+      GlowEffect.Offset = 0
+      GlowEffect.Intensive = True
+      GlowEffect.StyleColors = True
+      GlowEffect.HotColor = clNone
+      GlowEffect.PressedColor = clNone
+      GlowEffect.FocusedColor = clNone
+      GlowEffect.PressedGlowSize = 7
+      GlowEffect.PressedAlphaValue = 255
+      GlowEffect.States = [scsHot, scsPressed, scsFocused]
+      ImageGlow = True
+      DisabledFontColor = clNone
+      Options.NormalColor = clWindow
+      Options.HotColor = clWindow
+      Options.PressedColor = clWindow
+      Options.DisabledColor = clWindow
+      Options.NormalColorAlpha = 255
+      Options.HotColorAlpha = 255
+      Options.PressedColorAlpha = 200
+      Options.DisabledColorAlpha = 125
+      Options.FrameNormalColor = clBtnShadow
+      Options.FrameHotColor = clHighlight
+      Options.FramePressedColor = clHighlight
+      Options.FrameDisabledColor = clBtnShadow
+      Options.FrameWidth = 2
+      Options.FrameNormalColorAlpha = 255
+      Options.FrameHotColorAlpha = 255
+      Options.FramePressedColorAlpha = 255
+      Options.FrameDisabledColorAlpha = 255
+      Options.CheckMarkNormalColor = clWindowText
+      Options.CheckMarkHotColor = clWindowText
+      Options.CheckMarkPressedColor = clWindowText
+      Options.CheckMarkDisabledColor = clWindowText
+      Options.CheckMarkNormalColorAlpha = 255
+      Options.CheckMarkHotColorAlpha = 255
+      Options.CheckMarkPressedColorAlpha = 255
+      Options.CheckMarkDisabledColorAlpha = 125
+      Options.ShapeSize = 20
+      Options.CheckMarkThickness = 2
+      Options.StyleColors = True
+      OptionsChecked.NormalColor = clWindow
+      OptionsChecked.HotColor = clWindow
+      OptionsChecked.PressedColor = clWindow
+      OptionsChecked.DisabledColor = clWindow
+      OptionsChecked.NormalColorAlpha = 255
+      OptionsChecked.HotColorAlpha = 255
+      OptionsChecked.PressedColorAlpha = 200
+      OptionsChecked.DisabledColorAlpha = 125
+      OptionsChecked.FrameNormalColor = clBtnShadow
+      OptionsChecked.FrameHotColor = clHighlight
+      OptionsChecked.FramePressedColor = clHighlight
+      OptionsChecked.FrameDisabledColor = clBtnShadow
+      OptionsChecked.FrameWidth = 2
+      OptionsChecked.FrameNormalColorAlpha = 255
+      OptionsChecked.FrameHotColorAlpha = 255
+      OptionsChecked.FramePressedColorAlpha = 255
+      OptionsChecked.FrameDisabledColorAlpha = 255
+      OptionsChecked.CheckMarkNormalColor = clWindowText
+      OptionsChecked.CheckMarkHotColor = clWindowText
+      OptionsChecked.CheckMarkPressedColor = clWindowText
+      OptionsChecked.CheckMarkDisabledColor = clWindowText
+      OptionsChecked.CheckMarkNormalColorAlpha = 255
+      OptionsChecked.CheckMarkHotColorAlpha = 255
+      OptionsChecked.CheckMarkPressedColorAlpha = 255
+      OptionsChecked.CheckMarkDisabledColorAlpha = 125
+      OptionsChecked.ShapeSize = 20
+      OptionsChecked.CheckMarkThickness = 2
+      OptionsChecked.StyleColors = True
+      Checked = False
+      ScaleFrameWidth = True
+      ScaleCheckMarkThickness = True
+      ShowFocusRect = True
+      UseFontColorToStyleColor = False
+    end
+    object rComboBoxKrok: TrComboBoxEx
+      Left = 55
+      Top = 74
+      Width = 95
+      Height = 26
+      Align = alCustom
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clGray
+      Font.Height = -15
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 8
+      Text = 'Krok [min]'
+      OnChange = rComboBoxKrokChange
+      Items.Strings = (
+        '0.1'
+        '0.5'
+        '1'
+        '2'
+        '5'
+        '10'
+        '20'
+        '50'
+        '100')
+    end
+    object scGPCheckBox_pocet_voziku_dle_WIP: TscGPCheckBox
+      Left = -99
+      Top = 75
+      Width = 249
+      Height = 25
+      Align = alCustom
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clGray
+      Font.Height = -15
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 9
+      TabStop = True
+      Visible = False
+      OnClick = scGPCheckBox_pocet_voziku_dle_WIPClick
+      Animation = False
+      Caption = 'Po'#269'et voz'#237'k'#367' dle WIP+1'
+      CanFocused = True
+      Spacing = 1
+      Layout = blGlyphLeft
+      ImageIndex = -1
+      GlowEffect.Enabled = False
+      GlowEffect.Color = clHighlight
+      GlowEffect.AlphaValue = 95
+      GlowEffect.GlowSize = 7
+      GlowEffect.Offset = 0
+      GlowEffect.Intensive = True
+      GlowEffect.StyleColors = True
+      GlowEffect.HotColor = clNone
+      GlowEffect.PressedColor = clNone
+      GlowEffect.FocusedColor = clNone
+      GlowEffect.PressedGlowSize = 7
+      GlowEffect.PressedAlphaValue = 255
+      GlowEffect.States = [scsHot, scsPressed, scsFocused]
+      ImageGlow = True
+      DisabledFontColor = clNone
+      Options.NormalColor = clWindow
+      Options.HotColor = clWindow
+      Options.PressedColor = clWindow
+      Options.DisabledColor = clWindow
+      Options.NormalColorAlpha = 255
+      Options.HotColorAlpha = 255
+      Options.PressedColorAlpha = 200
+      Options.DisabledColorAlpha = 125
+      Options.FrameNormalColor = clBtnShadow
+      Options.FrameHotColor = clHighlight
+      Options.FramePressedColor = clHighlight
+      Options.FrameDisabledColor = clBtnShadow
+      Options.FrameWidth = 2
+      Options.FrameNormalColorAlpha = 255
+      Options.FrameHotColorAlpha = 255
+      Options.FramePressedColorAlpha = 255
+      Options.FrameDisabledColorAlpha = 255
+      Options.CheckMarkNormalColor = clWindowText
+      Options.CheckMarkHotColor = clWindowText
+      Options.CheckMarkPressedColor = clWindowText
+      Options.CheckMarkDisabledColor = clWindowText
+      Options.CheckMarkNormalColorAlpha = 255
+      Options.CheckMarkHotColorAlpha = 255
+      Options.CheckMarkPressedColorAlpha = 255
+      Options.CheckMarkDisabledColorAlpha = 125
+      Options.ShapeSize = 20
+      Options.CheckMarkThickness = 2
+      Options.StyleColors = True
+      OptionsChecked.NormalColor = clWindow
+      OptionsChecked.HotColor = clWindow
+      OptionsChecked.PressedColor = clWindow
+      OptionsChecked.DisabledColor = clWindow
+      OptionsChecked.NormalColorAlpha = 255
+      OptionsChecked.HotColorAlpha = 255
+      OptionsChecked.PressedColorAlpha = 200
+      OptionsChecked.DisabledColorAlpha = 125
+      OptionsChecked.FrameNormalColor = clBtnShadow
+      OptionsChecked.FrameHotColor = clHighlight
+      OptionsChecked.FramePressedColor = clHighlight
+      OptionsChecked.FrameDisabledColor = clBtnShadow
+      OptionsChecked.FrameWidth = 2
+      OptionsChecked.FrameNormalColorAlpha = 255
+      OptionsChecked.FrameHotColorAlpha = 255
+      OptionsChecked.FramePressedColorAlpha = 255
+      OptionsChecked.FrameDisabledColorAlpha = 255
+      OptionsChecked.CheckMarkNormalColor = clWindowText
+      OptionsChecked.CheckMarkHotColor = clWindowText
+      OptionsChecked.CheckMarkPressedColor = clWindowText
+      OptionsChecked.CheckMarkDisabledColor = clWindowText
+      OptionsChecked.CheckMarkNormalColorAlpha = 255
+      OptionsChecked.CheckMarkHotColorAlpha = 255
+      OptionsChecked.CheckMarkPressedColorAlpha = 255
+      OptionsChecked.CheckMarkDisabledColorAlpha = 125
+      OptionsChecked.ShapeSize = 20
+      OptionsChecked.CheckMarkThickness = 2
+      OptionsChecked.StyleColors = True
+      Checked = True
+      State = cbChecked
+      ScaleFrameWidth = True
+      ScaleCheckMarkThickness = True
+      ShowFocusRect = True
+      UseFontColorToStyleColor = False
+    end
+    object scLabel_filtrovat: TscLabel
+      Left = -99
+      Top = 79
+      Width = 249
+      Height = 21
+      Margins.Left = 0
+      Margins.Top = 0
+      Margins.Right = 0
+      Margins.Bottom = 1
+      Align = alCustom
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clGray
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 10
+      Visible = False
+      DragForm = True
+      DragTopForm = True
+      GlowEffect.Enabled = False
+      GlowEffect.Color = clBtnShadow
+      GlowEffect.AlphaValue = 255
+      GlowEffect.GlowSize = 7
+      GlowEffect.Offset = 2
+      GlowEffect.Intensive = True
+      GlowEffect.StyleColors = True
+      AutoSize = False
+      VertAlignment = scvtaCenter
+      UseFontColorToStyleColor = True
+      Caption = ' Filtrovat '#269'asov'#233' '#250'seky'
+    end
+    object scLabel_doba_cekani: TscLabel
+      Left = -99
+      Top = 79
+      Width = 249
+      Height = 21
+      Margins.Left = 0
+      Margins.Top = 0
+      Margins.Right = 0
+      Margins.Bottom = 1
+      Align = alCustom
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clGray
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 11
+      Visible = False
+      DragForm = True
+      DragTopForm = True
+      GlowEffect.Enabled = False
+      GlowEffect.Color = clBtnShadow
+      GlowEffect.AlphaValue = 255
+      GlowEffect.GlowSize = 7
+      GlowEffect.Offset = 2
+      GlowEffect.Intensive = True
+      GlowEffect.StyleColors = True
+      AutoSize = False
+      VertAlignment = scvtaCenter
+      UseFontColorToStyleColor = True
+      Caption = ' Doba '#269'ek'#225'n'#237' na palec'
+    end
+    object scGPButton_generuj: TscGPGlyphButton
+      Left = 104
+      Top = -9
+      Width = 46
+      Height = 37
+      Hint = 'p'#345'epo'#269#237'tej'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 12
+      TabStop = True
+      Visible = False
+      OnClick = scGPButton_generujClick
+      Animation = False
+      Caption = 'scGPButton_generuj'
+      CanFocused = True
+      CustomDropDown = False
+      Layout = blGlyphLeft
+      TransparentBackground = True
+      ColorValue = clRed
+      Options.NormalColor = clBtnText
+      Options.HotColor = clBtnText
+      Options.PressedColor = clBtnText
+      Options.FocusedColor = clBtnFace
+      Options.DisabledColor = clBtnText
+      Options.NormalColor2 = clNone
+      Options.HotColor2 = clNone
+      Options.PressedColor2 = clNone
+      Options.FocusedColor2 = clNone
+      Options.DisabledColor2 = clNone
+      Options.NormalColorAlpha = 10
+      Options.HotColorAlpha = 20
+      Options.PressedColorAlpha = 30
+      Options.FocusedColorAlpha = 255
+      Options.DisabledColorAlpha = 5
+      Options.NormalColor2Alpha = 255
+      Options.HotColor2Alpha = 255
+      Options.PressedColor2Alpha = 255
+      Options.FocusedColor2Alpha = 255
+      Options.DisabledColor2Alpha = 255
+      Options.FrameNormalColor = 10114859
+      Options.FrameHotColor = 10114859
+      Options.FramePressedColor = clBtnText
+      Options.FrameFocusedColor = 10114859
+      Options.FrameDisabledColor = clBtnText
+      Options.FrameWidth = 1
+      Options.FrameNormalColorAlpha = 70
+      Options.FrameHotColorAlpha = 100
+      Options.FramePressedColorAlpha = 150
+      Options.FrameFocusedColorAlpha = 255
+      Options.FrameDisabledColorAlpha = 30
+      Options.FontNormalColor = clBtnText
+      Options.FontHotColor = clBtnText
+      Options.FontPressedColor = clBtnText
+      Options.FontFocusedColor = clBtnText
+      Options.FontDisabledColor = clBtnShadow
+      Options.ShapeFillGradientAngle = 90
+      Options.ShapeFillGradientPressedAngle = -90
+      Options.ShapeFillGradientColorOffset = 25
+      Options.ShapeCornerRadius = 10
+      Options.ShapeStyle = scgpRect
+      Options.ArrowSize = 9
+      Options.ArrowAreaSize = 0
+      Options.ArrowType = scgpatDefault
+      Options.ArrowThickness = 2
+      Options.ArrowThicknessScaled = False
+      Options.StyleColors = True
+      GlyphOptions.NormalColor = clWhite
+      GlyphOptions.HotColor = 33023
+      GlyphOptions.PressedColor = clWhite
+      GlyphOptions.FocusedColor = clWhite
+      GlyphOptions.DisabledColor = clBtnText
+      GlyphOptions.NormalColorAlpha = 200
+      GlyphOptions.HotColorAlpha = 255
+      GlyphOptions.PressedColorAlpha = 255
+      GlyphOptions.FocusedColorAlpha = 255
+      GlyphOptions.DisabledColorAlpha = 100
+      GlyphOptions.Kind = scgpbgkReplace
+      GlyphOptions.Thickness = 2
+      GlyphOptions.ThicknessScaled = False
+      GlyphOptions.Size = 0
+      GlyphOptions.StyleColors = True
+      TextMargin = -1
+      WidthWithCaption = 0
+      WidthWithoutCaption = 0
+      SplitButton = False
+      RepeatClick = False
+      RepeatClickInterval = 100
+      ShowGalleryMenuFromTop = False
+      ShowGalleryMenuFromRight = False
+      ShowMenuArrow = True
+      ShowFocusRect = True
+      Down = False
+      GroupIndex = 0
+      AllowAllUp = False
+    end
+    object scGPGlyphButton_info_cekani: TscGPGlyphButton
+      Left = 114
+      Top = 0
+      Width = 36
+      Height = 28
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clNone
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 13
+      OnClick = scGPGlyphButton_info_cekaniClick
+      Animation = True
+      CanFocused = False
+      CustomDropDown = False
+      Layout = blGlyphTop
+      TransparentBackground = True
+      ColorValue = clRed
+      Options.NormalColor = clBtnText
+      Options.HotColor = clBtnText
+      Options.PressedColor = clBtnText
+      Options.FocusedColor = clBtnFace
+      Options.DisabledColor = clBtnText
+      Options.NormalColor2 = clNone
+      Options.HotColor2 = clNone
+      Options.PressedColor2 = clNone
+      Options.FocusedColor2 = clNone
+      Options.DisabledColor2 = clNone
+      Options.NormalColorAlpha = 0
+      Options.HotColorAlpha = 20
+      Options.PressedColorAlpha = 30
+      Options.FocusedColorAlpha = 255
+      Options.DisabledColorAlpha = 5
+      Options.NormalColor2Alpha = 255
+      Options.HotColor2Alpha = 255
+      Options.PressedColor2Alpha = 255
+      Options.FocusedColor2Alpha = 255
+      Options.DisabledColor2Alpha = 255
+      Options.FrameNormalColor = clBtnText
+      Options.FrameHotColor = clBtnText
+      Options.FramePressedColor = clBtnText
+      Options.FrameFocusedColor = clHighlight
+      Options.FrameDisabledColor = clBtnText
+      Options.FrameWidth = 2
+      Options.FrameNormalColorAlpha = 0
+      Options.FrameHotColorAlpha = 0
+      Options.FramePressedColorAlpha = 0
+      Options.FrameFocusedColorAlpha = 0
+      Options.FrameDisabledColorAlpha = 0
+      Options.FontNormalColor = clBtnText
+      Options.FontHotColor = clBtnText
+      Options.FontPressedColor = clBtnText
+      Options.FontFocusedColor = clBtnText
+      Options.FontDisabledColor = clBtnShadow
+      Options.ShapeFillGradientAngle = 90
+      Options.ShapeFillGradientPressedAngle = -90
+      Options.ShapeFillGradientColorOffset = 25
+      Options.ShapeCornerRadius = 5
+      Options.ShapeStyle = scgpRoundedRect
+      Options.ArrowSize = 9
+      Options.ArrowAreaSize = 0
+      Options.ArrowType = scgpatDefault
+      Options.ArrowThickness = 2
+      Options.ArrowThicknessScaled = False
+      Options.StyleColors = True
+      GlyphOptions.NormalColor = 16744448
+      GlyphOptions.HotColor = 16744448
+      GlyphOptions.PressedColor = clBtnText
+      GlyphOptions.FocusedColor = 16744448
+      GlyphOptions.DisabledColor = 16744448
+      GlyphOptions.NormalColorAlpha = 200
+      GlyphOptions.HotColorAlpha = 255
+      GlyphOptions.PressedColorAlpha = 255
+      GlyphOptions.FocusedColorAlpha = 255
+      GlyphOptions.DisabledColorAlpha = 150
+      GlyphOptions.Kind = scgpbgkInfo
+      GlyphOptions.Thickness = 2
+      GlyphOptions.ThicknessScaled = False
+      GlyphOptions.Size = 0
+      GlyphOptions.StyleColors = True
+      TextMargin = 0
+      WidthWithCaption = 0
+      WidthWithoutCaption = 0
+      SplitButton = False
+      RepeatClick = False
+      RepeatClickInterval = 100
+      ShowGalleryMenuFromTop = False
+      ShowGalleryMenuFromRight = False
+      ShowMenuArrow = False
+      ShowFocusRect = True
+      Down = False
+      GroupIndex = 0
+      AllowAllUp = False
+    end
+  end
+  object scGPButton_header_def_zakazek: TscGPButton
+    AlignWithMargins = True
+    Left = 656
+    Top = 543
+    Width = 47
+    Height = 34
+    Hint = 'definice zak'#225'zek'
+    Margins.Left = 0
+    Margins.Top = 0
+    Margins.Right = 0
+    Margins.Bottom = 0
+    Align = alCustom
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 51
+    TabStop = True
+    Visible = False
+    OnClick = scGPGlyphButton_definice_zakazekClick
+    Animation = False
+    CanFocused = True
+    CustomDropDown = False
+    Margin = -1
+    Spacing = 1
+    Layout = blGlyphLeft
+    Images = scGPVirtualImageList1
+    ImageIndex = 48
+    ImageMargin = 0
+    TransparentBackground = True
+    Options.NormalColor = 10114859
+    Options.HotColor = clWhite
+    Options.PressedColor = 10114859
+    Options.FocusedColor = 10114859
+    Options.DisabledColor = clBtnFace
+    Options.NormalColor2 = clNone
+    Options.HotColor2 = clNone
+    Options.PressedColor2 = clNone
+    Options.FocusedColor2 = clNone
+    Options.DisabledColor2 = clNone
+    Options.NormalColorAlpha = 255
+    Options.HotColorAlpha = 35
+    Options.PressedColorAlpha = 50
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 255
+    Options.NormalColor2Alpha = 255
+    Options.HotColor2Alpha = 255
+    Options.PressedColor2Alpha = 255
+    Options.FocusedColor2Alpha = 255
+    Options.DisabledColor2Alpha = 255
+    Options.FrameNormalColor = 10114859
+    Options.FrameHotColor = 10114859
+    Options.FramePressedColor = 10114859
+    Options.FrameFocusedColor = 10114859
+    Options.FrameDisabledColor = clBtnShadow
+    Options.FrameWidth = 1
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 100
+    Options.FramePressedColorAlpha = 100
+    Options.FrameFocusedColorAlpha = 100
+    Options.FrameDisabledColorAlpha = 255
+    Options.FontNormalColor = clBtnText
+    Options.FontHotColor = clBtnText
+    Options.FontPressedColor = clBtnText
+    Options.FontFocusedColor = clBtnText
+    Options.FontDisabledColor = clBtnShadow
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeFillGradientPressedAngle = -90
+    Options.ShapeFillGradientColorOffset = 25
+    Options.ShapeCornerRadius = 10
+    Options.ShapeStyle = scgpRect
+    Options.ArrowSize = 9
+    Options.ArrowAreaSize = 0
+    Options.ArrowType = scgpatDefault
+    Options.ArrowThickness = 2
+    Options.ArrowThicknessScaled = False
+    Options.StyleColors = True
+    HotImageIndex = -1
+    FocusedImageIndex = -1
+    PressedImageIndex = -1
+    UseGalleryMenuImage = False
+    UseGalleryMenuCaption = False
+    ScaleMarginAndSpacing = False
+    WidthWithCaption = 0
+    WidthWithoutCaption = 0
+    SplitButton = False
+    RepeatClick = False
+    RepeatClickInterval = 100
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clHighlight
+    GlowEffect.AlphaValue = 95
+    GlowEffect.GlowSize = 7
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    GlowEffect.HotColor = clNone
+    GlowEffect.PressedColor = clNone
+    GlowEffect.FocusedColor = clNone
+    GlowEffect.PressedGlowSize = 7
+    GlowEffect.PressedAlphaValue = 255
+    GlowEffect.States = [scsHot, scsPressed, scsFocused]
+    ImageGlow = False
+    ShowGalleryMenuFromTop = False
+    ShowGalleryMenuFromRight = False
+    ShowMenuArrow = True
+    ShowFocusRect = True
+    Down = False
+    GroupIndex = 0
+    AllowAllUp = False
   end
   object ImageList1: TImageList
     Left = 216
     Top = 40
     Bitmap = {
-      494C0101180098079C0710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118009807B40710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9914,8 +10116,8 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013E000009040930003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
-      0000000000003600000028000000C00000000003000001002000000000000000
+      494C010141000009400930003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      0000000000003600000028000000C00000003003000001002000000000000090
       0900000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9942,6 +10144,1158 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000000000000000000F1717
+      174D4B4B4C8B7E7E7FB4B4B4B5D7DBDBDCEDF4F4F5FADBDBDCEDB4B4B5D77D7D
+      7DB34B4B4C8B1717174D0000000E000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000001F1F1F5A828283B7FDFDFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFCFCFFFF7F7F80B51E1E1E5900000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000031313171CBCBCBE4FFFFFFFFFFFFFFFFFAFBFEFF9393
+      93C23F3F3F7F191919510707072B0101011300000006010101130707072C1A1A
+      1A533F3F3F7F939393C2FAFBFEFFFFFFFFFFFFFFFFFFCBCBCBE42F2F2F6E0000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000014141448BDBDBDDCFFFFFFFFFFFFFFFFA5A5A6CE29292967010101110000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000010101122B2B2B69A7A7A8CFFFFFFFFFFFFFFFFFBBBB
+      BCDB131313460000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000005757
+      5896FFFFFFFFFFFFFFFFAAAAABD1141414490000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000001515154BACACADD2FFFF
+      FFFFFFFFFFFF5353539200000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000A0A0A1CBFFFF
+      FFFFF8F9FEFF3131317100000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000003232
+      3272F9F9FEFFFFFFFFFF9F9FA0CA000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000004040421BDBDBDDCFFFFFFFFB7B7
+      B8D90808082F0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000009090930BDBDBDDCFFFFFFFFBBBBBCDB0303031F00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000B7B7B8D9FFFFFFFF9F9FA0CA0000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000999999C6FFFFFFFFBDBDBDDC00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000A0A0A1CBFFFFFFFF9C9C9DC8000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000009F9FA0CAFFFFFFFF9F9FA0CA000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000057575896FFFFFFFFB7B7B8D900000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000BDBDBDDCFFFFFFFF535353920000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000014141449FFFFFFFFF8F9FEFF0808082E00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000009090930F9F9FEFFFFFFFFFF1313
+      1346000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000BDBDBDDCFFFFFFFF3030306F0000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000032323272FFFFFFFFB7B7
+      B8D9000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000032323272FFFFFFFFA7A7A8CF000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000ACACADD2FFFF
+      FFFF2F2F2F6E0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000CBCBCBE4FFFFFFFF13131347000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000000000001616164CFFFF
+      FFFFCBCBCBE40000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000002121
+      215CFFFFFFFFA2A2A3CC00000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000000000000000000000A7A7
+      A8CFFFFFFFFF1E1E1E5900000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000008585
+      86B9FFFFFFFF2727276500000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000002B2B
+      2B69FFFFFFFF7F7F80B500000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000000000000001010111FDFD
+      FFFFFAFAFEFF0101011000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000101
+      0112FAFBFEFFFCFCFFFF0000000E000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000000000000019191950FFFF
+      FFFF8D8D8DBE0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000939393C2FFFFFFFF1616164C000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000000000004C4C4D8CFFFF
+      FFFF3E3E3E7E0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000041414181FFFFFFFF4B4B4C8B000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000000000007F7F80B5FFFF
+      FFFF1818184F0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00001A1A1A53FFFFFFFF7D7D7DB3000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000BBBBBCDBFFFF
+      FFFF060606290000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000707072BFFFFFFFFB7B7B8D9000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000DBDBDCEDFFFF
+      FFFF010101120000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000001010115FFFFFFFFD7D7D8EB000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000F4F4F5FAFFFF
+      FFFF000000060000000000000000000000000000000000000000000000000000
+      000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFF000000000000000000000000000000000000000000000000000000000000
+      000000000007FFFFFFFFF2F2F3F9000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000DBDBDCEDFFFF
+      FFFF010101120000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000001010114FFFFFFFFD7D7D8EB000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000BBBBBCDBFFFF
+      FFFF060606290000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000707072BFFFFFFFFB7B7B8D9000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000000000007F7F80B5FFFF
+      FFFF1818184F0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000019191951FFFFFFFF7D7D7DB3000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000000000004C4C4D8CFFFF
+      FFFF3E3E3E7E0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000041414181FFFFFFFF4B4B4C8B000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000000000000019191951FFFF
+      FFFF8D8D8DBE0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000939393C2FFFFFFFF1717174D000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000000000000001010112FDFD
+      FFFFFAFAFEFF0000000F00000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000101
+      0111FAFBFEFFFCFCFFFF0000000F000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000008888
+      89BBFFFFFFFF2727276400000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000002929
+      2967FFFFFFFF828283B700000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000002121
+      215CFFFFFFFFA0A0A1CB00000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000000000000000000000A5A5
+      A6CEFFFFFFFF1F1F1F5A00000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000CECECFE6FFFFFFFF12121245000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000000000001515154AFFFF
+      FFFFD0D0D1E70000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000034343474FFFFFFFFA5A5A6CE000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000AAAAABD1FFFF
+      FFFF313131710000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000C0C0C1DEFFFFFFFF2E2E2E6D0000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000031313171FFFFFFFFBDBD
+      BDDC000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000001515154BFFFFFFFFF7F8FEFF0707072C00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000808082EF8F9FEFFFFFFFFFF1414
+      1448000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000005A5A5A98FFFFFFFFB4B4B5D700000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000B7B7B8D9FFFFFFFF575758960000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000A5A5A6CEFFFFFFFF999999C6000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000009C9C9DC8FFFFFFFFA0A0A1CB000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000B7B7B8D9FFFFFFFF9F9FA0CA0000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000979798C5FFFFFFFFC0C0C1DE00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000004040421BDBDBDDCFFFFFFFFB4B4
+      B5D70707072C0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000808082EB7B7B8D9FFFFFFFFBDBDBDDC0404042100000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000A5A5A6CEFFFF
+      FFFFF7F8FEFF2E2E2E6D00000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000003030
+      306FF8F9FEFFFFFFFFFFA0A0A1CB000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000005A5A
+      5A98FFFFFFFFFFFFFFFFA5A5A6CE131313460000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000014141448A7A7A8CFFFFF
+      FFFFFFFFFFFF5757589600000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00001515154BC0C0C1DEFFFFFFFFFFFFFFFFA0A0A1CB272727640000000F0000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000101011027272765A2A2A3CCFFFFFFFFFFFFFFFFBDBD
+      BDDC141414490000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000034343474D0D0D1E7FFFFFFFFFFFFFFFFFAFAFEFF8D8D
+      8DBE3E3E3E7E1919195006060629010101110000000501010111060606291919
+      19503E3E3E7E909090C0FAFAFEFFFFFFFFFFFFFFFFFFCECECFE6323232720000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000002121215D888889BBFDFEFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFDFDFFFF858586B92121215C00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000010101121919
+      19504B4B4C8B7F7F80B5B7B7B8D9DFDFE0EFF4F4F5FADFDFE0EFB4B4B5D77F7F
+      80B54B4B4C8B1818184F01010111000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10008,32 +11362,8 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000009A562AFF9A562AFF9A56
-      2AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A56
-      2AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A56
-      2AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A56
-      2AFF9A562AFF9A562AFF9A562AFF9A562AFF0000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000000A45A
-      2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A
-      2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A
-      2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A
-      2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A
-      2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A
-      2CFFA45A2CFFA45A2CFF00000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
+      FFFFFFFFFFFF0000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10056,8 +11386,8 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000037373777FFFFFFFFFFFF
+      FFFFFFFFFFFF969696C400000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10080,8 +11410,32 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000040404080FFFFFFFFFFFFFFFFEEED
+      EAFFFFFFFFFFFFFFFFFF929292C1000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000009A562AFF9A562AFF9A56
+      2AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A56
+      2AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A56
+      2AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A56
+      2AFF9A562AFF9A562AFF9A562AFF9A562AFF0000000000000000000000000000
+      000000000000000000000000000000000000000000000000000000000000A45A
+      2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A
+      2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A
+      2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A
+      2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A
+      2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A2CFFA45A
+      2CFFA45A2CFFA45A2CFF00000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFF000000000000
+      000000000000FEFEFEFFFFFFFFFFFFFFFFFF0000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10104,32 +11458,8 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000009A562AFF9A562AFF9A56
-      2AFF9A562AFF0000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      00009A562AFF9A562AFF9A562AFF9A562AFF0000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000000A45A
-      2CFFA45A2CFF0000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000037373777FFFFFFFFFFFFFFFF808080B5000000000000
+      00000000000027272765FEFEFEFFFFFFFFFF969696C400000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10152,32 +11482,8 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000009A562AFF9A562AFF9A56
-      2AFF9A562AFF0000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      00009A562AFF9A562AFF9A562AFF9A562AFF0000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000000A45A
-      2CFFA45A2CFF0000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000037373777FFFFFFFFFFFFFFFF838383B700000000000000000000
+      0000000000000000000027272765FEFEFEFFFFFFFFFF969696C4000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10200,32 +11506,8 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000009A562AFF9A562AFF9A56
-      2AFF9A562AFF0000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      00009A562AFF9A562AFF9A562AFF9A562AFF0000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000000A45A
-      2CFFA45A2CFF0000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      0000FFFFFFFFFFFFFFFFFFFFFFFF000000000000000000000000000000000000
+      000000000000000000000000000000000000FEFEFEFFFFFFFFFFFFFFFFFF0000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10242,39 +11524,15 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000404
+      0422CECECCE86D6D6CA900000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000009A562AFF9A562AFF9A56
-      2AFF9A562AFF0000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      00009A562AFF9A562AFF9A562AFF9A562AFF0000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000000A45A
-      2CFFA45A2CFF0000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000003737
+      3777FFFFFFFFFFFFFFFF838383B7000000000000000000000000000000000000
+      00000000000000000000000000000000000027272765FEFEFEFFFFFFFFFF9696
+      96C4000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000000000009A562AFF9A562AFF9A56
@@ -10290,39 +11548,15 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000000000000004040422F4F4
+      F2FFFBFBFAFFFFFFFFFF767675B0000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000009A562AFF9A562AFF9A56
-      2AFF9A562AFF0000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      00009A562AFF9A562AFF9A562AFF9A562AFF0000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000000A45A
-      2CFFA45A2CFF0000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000000000000037373777FFFF
+      FFFFFFFFFFFF848484B800000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000027272765FEFEFEFFFFFF
+      FFFF969696C40000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000000000009A562AFF9A562AFF9A56
@@ -10338,39 +11572,15 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000003030320F3F3F1FFF9F9
+      F8FF0B0B0B3737373779FFFFFFFF7D7D7CB50000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000009A562AFF9A562AFF9A56
-      2AFF9A562AFF0000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      00009A562AFF9A562AFF9A562AFF9A562AFF0000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000000A45A
-      2CFFA45A2CFF0000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFF
+      FFFF000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000000000000000000000FEFE
+      FEFFFFFFFFFFFFFFFFFF00000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000000000009A562AFF9A562AFF9A56
@@ -10386,39 +11596,15 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000003030320F3F3F1FFF9F9F8FF0B0B
+      0B37000000000000000037373779FFFFFFFF7D7D7CB500000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000009A562AFF9A562AFF9A56
-      2AFF9A562AFF0000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      00009A562AFF9A562AFF9A562AFF9A562AFF0000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000000A45A
-      2CFFA45A2CFF0000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000037373777FFFFFFFFFFFFFFFF8484
+      84B8000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000002727
+      2765FEFEFEFFFFFFFFFF969696C4000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000000000009A562AFF9A562AFF9A56
@@ -10434,16 +11620,184 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000003030320F3F3F1FFF9F9F8FF0B0B0B370000
+      000000000000000000000000000037373779FFFFFFFF7D7D7CB5000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000037373777FFFFFFFFFFFFFFFF848484B80000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000027272765FEFEFEFFFFFFFFFF969696C40000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000009A562AFF9A562AFF9A56
+      2AFF9A562AFF0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00009A562AFF9A562AFF9A562AFF9A562AFF0000000000000000000000000000
+      000000000000000000000000000000000000000000000000000000000000A45A
+      2CFFA45A2CFF0000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000003030320F3F3F1FFF9F9F8FF0C0C0B38000000000000
+      00000000000000000000000000000000000037373779FFFFFFFF7D7D7CB50000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000FFFFFFFFFFFFFFFFFFFFFFFF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000FEFEFEFFFFFFFFFFFFFFFFFF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000009A562AFF9A562AFF9A56
+      2AFF9A562AFF0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00009A562AFF9A562AFF9A562AFF9A562AFF0000000000000000000000000000
+      000000000000000000000000000000000000000000000000000000000000A45A
+      2CFFA45A2CFF0000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000003030320F3F3F1FFF9F9F8FF0C0C0B3800000000000000000000
+      0000000000000000000000000000000000000000000037373779FFFFFFFF7D7D
+      7CB5000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000001C1C1C56FFFFFFFFFFFFFFFF848484B800000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000029292967FFFFFFFFFFFFFFFF929292C1000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000009A562AFF9A562AFF9A56
+      2AFF9A562AFF0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00009A562AFF9A562AFF9A562AFF9A562AFF0000000000000000000000000000
+      000000000000000000000000000000000000000000000000000000000000A45A
+      2CFFA45A2CFF0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000003030320F3F3F1FFF9F9F8FF0C0C0B380000000000000000000000000000
+      000000000000000000000000000000000000000000000000000037373779FFFF
+      FFFF7D7D7CB50000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000034343474FFFFFFFFFFFFFFFF3939397900000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000029292967FFFFFFFFFFFFFFFF929292C10000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000009A562AFF9A562AFF9A56
+      2AFF9A562AFF0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00009A562AFF9A562AFF9A562AFF9A562AFF0000000000000000000000000000
+      000000000000000000000000000000000000000000000000000000000000A45A
+      2CFFA45A2CFF0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000303
+      0320F3F3F1FFF9F9F8FF0C0C0C39000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000003737
+      3779FFFFFFFF7D7D7CB500000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000929292C1FFFFFFFFFFFFFFFF34343474000000000000
+      000000000000141414498D8D8DBE000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFF
+      FFFF000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000009A562AFF9A562AFF9A56
+      2AFF9A562AFF0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00009A562AFF9A562AFF9A562AFF9A562AFF0000000000000000000000000000
+      000000000000000000000000000000000000000000000000000000000000A45A
+      2CFFA45A2CFF0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000008080
+      7FB7FFFFFFFF1A1A1A5400000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00003A3A3A7CFFFFFFFF767675B0000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000929292C1FFFFFFFFFFFFFFFF343434740000
+      00001C1C1C56FDFDFDFFFFFFFFFF0000000B0000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000029292967FFFFFFFFFFFF
+      FFFF929292C10000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000009A562AFF9A562AFF9A56
+      2AFF9A562AFF0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00009A562AFF9A562AFF9A562AFF9A562AFF0000000000000000000000000000
+      000000000000000000000000000000000000000000000000000000000000A45A
+      2CFFA45A2CFF0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000C0C
+      0C39FAFAF9FFF3F3F0FF0303031F000000000000000012121246000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000003A3A3A7CFFFFFFFF767675B00000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000929292C1FFFFFFFFFFFFFFFF3434
+      3474FEFEFDFFFFFFFFFFFFFFFFFF000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000000000000029292967FFFF
+      FFFFFFFFFFFF929292C100000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000009A562AFF9A562AFF9A56
+      2AFF9A562AFF0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00009A562AFF9A562AFF9A562AFF9A562AFF0000000000000000000000000000
+      000000000000000000000000000000000000000000000000000000000000A45A
+      2CFFA45A2CFF0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000C0C0C3AFAFAF9FFF3F3F0FF0B0B0B37C7C7C5E4F7F7F5FE000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000003A3A3A7CFFFFFFFF767675B000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000929292C1FFFFFFFFFFFF
+      FFFFFFFFFFFFADADADD200000000000000000000000000000000000000000000
+      000000000000FAFAFAFFFFFFFFFF323232720000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000FFFFFFFFFFFFFFFFFFFFFFFF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000000000009A562AFF9A562AFF9A56
       2AFF9A562AFF0000000000000000000000000000000000000000000000000000
@@ -10458,16 +11812,16 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000C0C0C3AFAFAF9FFFFFFFFFFFBFBFAFF11111143000000000000
+      0000000000000000000053535293000000000000000000000000000000000000
+      00000000000000000000000000003A3A3A7CFFFFFFFF686867A5000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000929292C1FFFF
+      FFFFFFFFFFFF4949498900000000000000000000000000000000000000000000
+      00000F0F0F3FFFFFFFFFFFFFFFFF6363639F0000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      000029292967FFFFFFFFFFFFFFFF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000000000009A562AFF9A562AFF9A56
       2AFF9A562AFF0000000000000000000000000000000000000000000000000000
@@ -10482,14 +11836,38 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000C0C0C3AFAFAF9FFF5F5F3FF04040422000000000000
+      000000000000B4B4B2D9FCFCFCFF000000000000000000000000000000000000
+      00000000000000000000000000000000000032323173747473AE000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000009292
+      92C1FFFFFFFFFFFFFFFF40404080000000000000000000000000000000000F0F
+      0F3FFBFBFAFFFFFFFFFFC6C6C6E1000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000001C1C1C566C6C6CA6000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000009A562AFF9A562AFF9A56
+      2AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A56
+      2AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A56
+      2AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A56
+      2AFF9A562AFF9A562AFF9A562AFF9A562AFF0000000000000000000000000000
+      000000000000000000000000000000000000000000000000000000000000A45A
+      2CFFA45A2CFF0000000000000000000000000000000000000000A45A2CFFA45A
+      2CFF000000000000000000000000000000000000000000000000000000000000
+      000000000000A45A2CFFA45A2CFF000000000000000000000000000000000000
+      0000000000000000000000000000A45A2CFFA45A2CFFA45A2CFF000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000B0B0A36F9F9F8FFF5F4F3FF040404240000
+      0000B2B2B1D8FDFDFDFF1A1A1953000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      00008D8D8DBEFFFFFFFFFFFFFFFF3F3F3F7F0000000000000000FAFAFAFFFFFF
+      FFFFFFFFFFFF0404042200000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10506,38 +11884,14 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000C0C0C3AFAFAF9FFF4F4F2FFB7B7
+      B6DBFCFCFCFF1616164D00000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000009A562AFF9A562AFF9A56
-      2AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A56
-      2AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A56
-      2AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A562AFF9A56
-      2AFF9A562AFF9A562AFF9A562AFF9A562AFF0000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000000A45A
-      2CFFA45A2CFF0000000000000000000000000000000000000000A45A2CFFA45A
-      2CFF000000000000000000000000000000000000000000000000000000000000
-      000000000000A45A2CFFA45A2CFF000000000000000000000000000000000000
-      0000000000000000000000000000A45A2CFFA45A2CFFA45A2CFF000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000008D8D8DBEFFFFFFFFFFFFFFFF3F3F3F7F0E0E0E3CFFFFFFFFFFFF
+      FFFFF5F4F3FF0000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10554,14 +11908,14 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000000C0C0C3AFAFAF9FFFFFF
+      FFFF2B2B2B6B0000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000929292C1FFFFFFFFFFFFFFFFFDFDFDFFFFFFFFFFF4F4
+      F2FF0303031F0000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10578,13 +11932,13 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000000000000C0C0C3AFAFA
+      F9FFF4F4F2FF0404042200000000000000000E0E0E3E00000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000929292C1FFFFFFFFFFFFFFFF5050508F0000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10602,14 +11956,14 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000C0C
+      0C3AFAFAF9FFF4F4F2FF0808082EA4A4A3CFFCFCFBFF00000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000008D8D8DBEFFFFFFFFFFFFFFFF3F3F
+      3F7F000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10627,13 +11981,13 @@ object Form1: TForm1
       0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000C0C0C3AFAFAF9FFFEFEFEFFFDFDFDFF1D1D1D5800000000000000000000
+      0000000000004343428400000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000929292C1FFFFFFFFFFFF
+      FFFF40404080000000000000000000000000676767A224242461000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10651,37 +12005,13 @@ object Form1: TForm1
       0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000C0C0C3AFAFAF9FFF6F6F4FF0404042200000000000000000000
+      0000969695C6FEFEFEFF0E0E0E3E000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      00000000000000000000000000009A562AFF9A562AFF9A562AFF9A562AFF0000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000000A45A
-      2CFFA45A2CFF0000000000000000000000000000000000000000A45A2CFFA45A
-      2CFF000000000000000000000000A45A2CFFA45A2CFFA45A2CFF000000000000
-      000000000000A45A2CFFA45A2CFF000000000000000000000000A45A2CFFA45A
-      2CFF000000000000000000000000A45A2CFFA45A2CFFA45A2CFF000000000000
-      000000000000A45A2CFFA45A2CFF000000000000000000000000000000000000
-      0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000929292C1FFFF
+      FFFFFFFFFFFF404040800808082EF8F8F7FFFFFFFFFFD4D4D4E9000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10699,13 +12029,13 @@ object Form1: TForm1
       0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000B0B0A36F9F9F8FFF5F4F3FF04040424000000008D8D
+      8CC0FEFEFEFF2727266500000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000009292
+      92C1FFFFFFFFFFFFFFFFFCFBFBFFFFFFFFFFF8F8F7FF0808082E000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10723,14 +12053,38 @@ object Form1: TForm1
       0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000C0C0C3AFAFAF9FFF4F4F2FF9C9C9BCAFEFE
+      FEFF242424620000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000929292C1FFFFFFFFFFFFFFFFFFFFFFFF0808082E00000000000000000000
+      00000000000000000000000000000303031FBCBCBCDB3B3B3B7B000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000009A562AFF9A562AFF9A562AFF9A562AFF0000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000000000000000000000A45A
+      2CFFA45A2CFF0000000000000000000000000000000000000000A45A2CFFA45A
+      2CFF000000000000000000000000A45A2CFFA45A2CFFA45A2CFF000000000000
+      000000000000A45A2CFFA45A2CFF000000000000000000000000A45A2CFFA45A
+      2CFF000000000000000000000000A45A2CFFA45A2CFFA45A2CFF000000000000
+      000000000000A45A2CFFA45A2CFF000000000000000000000000000000000000
+      0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000C0C0C3AFAFAF9FFFFFFFFFF3A3A
+      3A7C000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000929292C1FFFFFFFFFFFFFFFF4040408000000000000000000000
+      00000000000000000000F4F4F2FFFFFFFFFFFFFFFFFF0C0C0C39000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10747,14 +12101,14 @@ object Form1: TForm1
       0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000000B0B0A36F9F9F8FFF5F4
+      F3FF040404240000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000008D8D8DBEFFFFFFFFFFFFFFFF3F3F3F7F000000000000
+      00000000000000000000FFFFFFFFFFFFFFFFFCFBFBFF00000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10771,14 +12125,14 @@ object Form1: TForm1
       0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000000000000B0B0A36F9F9
+      F8FFF5F4F3FF0404042400000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000008D8D8DBEFFFFFFFFFFFFFFFF3F3F3F7F0000
+      000000000000C1C1C1DEFFFFFFFFFCFBFBFF1010104100000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10795,14 +12149,14 @@ object Form1: TForm1
       0000A45A2CFFA45A2CFF00000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000C0C
+      0C3AFAFAF9FFF4F4F2FF02020219000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000929292C1FFFFFFFFFFFFFFFFF9F9
+      F8FFFFFFFFFFFFFFFFFF0F0F0F3F000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10820,13 +12174,13 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000C0C0C3AE9E9E7F71414144A000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000008D8D8DBEFFFFFFFFFFFF
+      FFFFFFFFFFFFFCFBFBFF00000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10849,8 +12203,8 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000929292C1FFFF
+      FFFFFFFFFFFF6363639F00000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10873,8 +12227,8 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000008D8D
+      8DBEFFFFFFFFFFFFFFFF3F3F3F7F000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10898,7 +12252,7 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      00008D8D8DBEFFFFFFFFFFFFFFFF3F3F3F7F0000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10922,7 +12276,7 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000008D8D8DBEFFFFFFFFFFFFFFFF3F3F3F7F00000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10946,7 +12300,7 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000929292C1FFFFFFFFFFFFFFFF2E2E2E6D000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10970,6 +12324,7 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000929292C1FFFFFFFFA0A0A0CA000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10993,8 +12348,7 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000848484B82B2B2B6A000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -28349,8 +29703,44 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000424D3E000000000000003E000000
-      28000000C0000000000300000100010000000000004800000000000000000000
+      28000000C0000000300300000100010000000000804C00000000000000000000
       000000000000000000000000FFFFFF0000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

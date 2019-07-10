@@ -1,4 +1,4 @@
-ï»¿//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 
 #ifndef Unit1H
 #define Unit1H
@@ -99,10 +99,10 @@
 #include "rHintWindow.hpp"
 #include "UnitX.h"
 #include <Vcl.Imaging.pngimage.hpp>
-//#include "vektory.h" //uÅ¾ vklÃ¡dÃ¡m pÅ™es vykresli.h
-//#include "knihovna_objektu.h" //uÅ¾ vklÃ¡dÃ¡m pÅ™es vykresli.h resp. vektory.h
+//#include "vektory.h" //u vkládám pøes vykresli.h
+//#include "knihovna_objektu.h" //u vkládám pøes vykresli.h resp. vektory.h
 
-//podmÃ­nÄ›nÃ½ pÅ™eklad, zda se jednÃ¡ ÄÃ­ nejednÃ¡ o debug
+//podmínìnı pøeklad, zda se jedná èí nejedná o debug
 #ifdef _DEBUG
 const bool DEBUG=true;
 #else
@@ -232,9 +232,7 @@ __published:	// IDE-managed Components
 	TscGPCheckBox *CheckBoxVytizenost;
 	TscComboBox *ComboBoxCekani;
 	TscGPLabel *pravyoption_nadpis;
-	TscExPanel *scExPanel_ostatni;
 	TscExPanel *scExPanel_vrstvy;
-	TscLabel *scLabel4;
 	TscLabel *scLabel_titulek;
 	TButton *hl_spojak_zakazky;
 	TMemo *Memo2;
@@ -253,7 +251,6 @@ __published:	// IDE-managed Components
 	TWebBrowser *WebBrowser1;
 	TButton *pohonobjekt;
 	TButton *Button12;
-	TscGPCheckBox *scGPCheckBox_ortogon;
 	TscGPGlyphButton *scGPGlyphButton_close_legenda_casove_osy;
 	TButton *Button13;
 	TscGPGlyphButton *scGPButton_generuj;
@@ -313,6 +310,10 @@ __published:	// IDE-managed Components
   TscGPButton *scGPButton_mereni_vzdalenost;
   TscGPButton *scGPButton_posun_haly;
   TscGPButton *scGPButton_nakreslit_halu;
+  TscExPanel *scExPanel_hala;
+  TscExPanel *scExPanel_ostatni;
+  TscGPCheckBox *scGPCheckBox_ortogon;
+  TscExPanel *scExPanel_nastaveni_starych_modu;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -517,13 +518,13 @@ __published:	// IDE-managed Components
 
 
 // User declarations
-	////jen public struktury a vÃ½Äty
+	////jen public struktury a vıèty
 public:
 	enum Tmod{NO=0,SCHEMA,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE,NAHLED};Tmod MOD;
 	enum Tstatus{NAVRH,OVEROVANI};Tstatus STATUS;
 	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE,MOVE_KABINA,ROZMER_KABINA,OFFSET_KOTY,MOVE_KOMORA,ROZMER_KOMORA,DRAW_HALA,MOVE_HALA,MOVE_BOD,MOVE_USECKA};Takce Akce;
-	enum Tm_mm{M=0,MM,SEKUNDY,MINUTY};Tm_mm DOtocunit,DKunit,LOunit,Runit,Rzunit;//pÅ™epÃ­naÄ jednotek vzdÃ¡lenost,rozÅ¡Ã­Å™en o SEKUNDY,MINUTY (problÃ©m pÅ™i pouÅ¾itÃ­ SEC a MIN) z dÅ¯vodu ÄasovÃ½ch a vzdÃ¡lenostnÃ­ch kÃ³t
-	enum Tminsec{SEC=0,MIN};Tminsec PTunit,aRDunit ;//pÅ™epÃ­naÄ jednotek Äasu
+	enum Tm_mm{M=0,MM,SEKUNDY,MINUTY};Tm_mm DOtocunit,DKunit,LOunit,Runit,Rzunit;//pøepínaè jednotek vzdálenost,rozšíøen o SEKUNDY,MINUTY (problém pøi pouití SEC a MIN) z dùvodu èasovıch a vzdálenostních kót
+	enum Tminsec{SEC=0,MIN};Tminsec PTunit,aRDunit ;//pøepínaè jednotek èasu
 
 
 private:
@@ -539,38 +540,38 @@ private:
 	void aut_pozicovani(Cvektory::TElement *E, int X, int Y);
 	void edice();
 	void ESC();
-	void UP();void DOWN();void RIGHT();void LEFT();void Uloz_predchozi_pohled();//realizujÃ­ posuny obrazu
-	void ZOOM();//samotnÃ½ ZOOM
-	void ZOOM_WINDOW();//pÅ™iblÃ­Å¾enÃ­ oknem
+	void UP();void DOWN();void RIGHT();void LEFT();void Uloz_predchozi_pohled();//realizují posuny obrazu
+	void ZOOM();//samotnı ZOOM
+	void ZOOM_WINDOW();//pøiblíení oknem
 	void on_change_zoom_change_scGPTrackBar();
 	void zneplatnit_minulesouradnice();
 	void kurzor(TKurzory typ_kurzor);
-	void pan_create();//vytvoÅ™Ã­ vÃ½Å™ez pro pan_move
+	void pan_create();//vytvoøí vıøez pro pan_move
 	void pan_map(TCanvas * canv, int X, int Y);
 	void pan_move_map();
 	void add_objekt(int X, int Y);
 	Cvektory::TObjekt *add_objekt_za();
 	void move_objekt(int X, int Y);
 	void add_element(int X, int Y);
-	void add_komoru();//pÅ™idÃ¡vÃ¡nÃ­ komory kabinÄ› powerwashe, kontrola zda nenÃ­ souÄet kabin vÄ›tÅ¡Ã­ neÅ¾ rozmÄ›r kabiny
+	void add_komoru();//pøidávání komory kabinì powerwashe, kontrola zda není souèet kabin vìtší ne rozmìr kabiny
 	short rotace_symbol(short trend,int X, int Y);
-	void vytvoreni_tab_pohon();//vytvoÅ™enÃ­ tabulky pohonu
+	void vytvoreni_tab_pohon();//vytvoøení tabulky pohonu
   void odstraneni_elementu_tab_pohon(int operace);
-	void prirazeni_pohonu_tab_pohon(int index_pohonu);//pÅ™edesignuje tabulku pohonu po pÅ™idÃ¡nÃ­ elementu, nebo pohonu
+	void prirazeni_pohonu_tab_pohon(int index_pohonu);//pøedesignuje tabulku pohonu po pøidání elementu, nebo pohonu
   void zmena_jednotek_tab_pohon();
-	void design_element(Cvektory::TElement *E,bool prvni_spusteni);//nadesignuje tabulky danÃ©ho elementu
+	void design_element(Cvektory::TElement *E,bool prvni_spusteni);//nadesignuje tabulky daného elementu
 	void prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla,AnsiString LO,AnsiString cas,AnsiString delka_otoce);
 	void dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla,AnsiString LO,AnsiString cas,AnsiString delka_otoce);
-	void zmen_poradi_objektu(int X, int Y);//testuje zda se nejednÃ¡ o zmÄ›nu poÅ™adÃ­ (to musÃ­ jeÅ¡tÄ› uÅ¾ivatel potvrdit)
-	void zobraz_tip(UnicodeString text="", TCanvas* canv=NULL);//prÃ¡zdnÃ½m (bez paremetrÅ¯) volÃ¡nÃ­m  metody se tip smaÅ¾e, //pokud nenÃ­ parametr canvas uveden, jednÃ¡ se o dlouhodobÃ© vykreslovÃ¡nÃ­ hodnoty TIP//pokud je parametrem pÅ™edÃ¡n Canvas vykreslÃ­ se pÅ™Ã­mo a jednorÃ¡zovÄ›
+	void zmen_poradi_objektu(int X, int Y);//testuje zda se nejedná o zmìnu poøadí (to musí ještì uivatel potvrdit)
+	void zobraz_tip(UnicodeString text="", TCanvas* canv=NULL);//prázdnım (bez paremetrù) voláním  metody se tip smae, //pokud není parametr canvas uveden, jedná se o dlouhodobé vykreslování hodnoty TIP//pokud je parametrem pøedán Canvas vykreslí se pøímo a jednorázovì
 	void akutalizace_stavu_prichytavani_vSB();
-	void Novy_soubor();//samotnÃ© vytvoÅ™enÃ­ novÃ©ho souboru
-	void Ulozit_soubor();//samotnÃ© uloÅ¾enÃ­
-	void Otevrit_soubor();//realizuje otevÅ™enÃ­ opendialogu s nÃ¡slednÃ½m volÃ¡nÃ­m realizace samotnÃ©ho otevÅ™enÃ­ souboru
-  void Nacist_podklad();//realizuje otevÅ™enÃ­ opendialogu s nÃ¡slednÃ½m volÃ¡nÃ­m realizace samotnÃ©ho nacteni podkladu
-	unsigned short int Otevrit_soubor(UnicodeString soubor);//realizuje samotnÃ© otevÅ™enÃ­ souboru
+	void Novy_soubor();//samotné vytvoøení nového souboru
+	void Ulozit_soubor();//samotné uloení
+	void Otevrit_soubor();//realizuje otevøení opendialogu s následnım voláním realizace samotného otevøení souboru
+  void Nacist_podklad();//realizuje otevøení opendialogu s následnım voláním realizace samotného nacteni podkladu
+	unsigned short int Otevrit_soubor(UnicodeString soubor);//realizuje samotné otevøení souboru
   unsigned short int Nacist_podklad(UnicodeString soubor);//realizuje nacteni podkladu
-	void ulozit_posledni_otevreny();//uloÅ¾Ã­ do ini nazev poslednÃ­ho pracovnÃ­ho souboru
+	void ulozit_posledni_otevreny();//uloí do ini nazev posledního pracovního souboru
 	void vse_odstranit();
 	UnicodeString get_computer_name();
 	UnicodeString get_user_name();
@@ -581,23 +582,23 @@ private:
 	AnsiString FileName_short(AnsiString FileName);
 	void nacist_nastaveni();
 	void ulozit_nastaveni();
-	void zavrit_uvod();//zavÅ™e ÃºvodnÃ­ dialog
+	void zavrit_uvod();//zavøe úvodní dialog
 	int vrat_max_vysku_grafu();
-	void getJobID(int X, int Y);//vrÃ¡tÃ­ do globÃ¡lnÃ­ promÄ›nnÃ© JID ID Ãºlohy/funkcionality v mÃ­stÄ› kurzoru, zÃ¡roveÅˆ pokud v mÃ­stÄ› tabulky Äi elementu nahraje ukazatel do globÃ¡lnÃ­ promÄ›nnÃ© pom_element, vÃ½znam jednotlivÃ½ch JID hodnot v komentÃ¡Å™i definici metody
-	void setJobIDOnMouseMove(int X, int Y);//dle mÃ­sta kurzoru a vrÃ¡cenÃ© JID (job id) nastavÃ­ Ãºlohu
+	void getJobID(int X, int Y);//vrátí do globální promìnné JID ID úlohy/funkcionality v místì kurzoru, zároveò pokud v místì tabulky èi elementu nahraje ukazatel do globální promìnné pom_element, vıznam jednotlivıch JID hodnot v komentáøi definici metody
+	void setJobIDOnMouseMove(int X, int Y);//dle místa kurzoru a vrácené JID (job id) nastaví úlohu
 	void nastaveni_grafickeho_vystupu(Graphics::TBitmap * Bitmap,unsigned int OD,unsigned int PO);
 	bool ttr(UnicodeString Text);
-	void log2web(UnicodeString Text);//automaticky pÅ™idÃ¡ parametry (Äas, uÅ¾ivatel, licence)
+	void log2web(UnicodeString Text);//automaticky pøidá parametry (èas, uivatel, licence)
 	void log2webOnlyText(UnicodeString Text);//pouze text
-	void startUP();//pÅ™i aktivaci formulÃ¡Å™e, pro zpÅ™ehlednÄ›nÃ­ kodu
-	void DesignSettings();//nastavenÃ­ designu v konstruktoru
-	void aktualizace();//kontrola aktuÃ¡lnosti verze a pÅ™Ã­padÄ› nabÃ­dka na staÅ¾enÃ­ novÃ©
-	void onPopUP(int X, int Y);//nastavenÃ­ zobrazenÃ­ popUPmenu a jeho volÃ¡nÃ­ vÄetnÄ› pozice
-	void close_all_items_popUPmenu();//zajistÃ­ skrÃ½tÃ­ vÅ¡ech poloÅ¾ek popUPmenu
-	void ortogonalizace_on_off();//zapÃ­nÃ¡ Äi vypÃ­nÃ¡ automatickou ortogonalizaci
-	void ortogonalizace();//volÃ¡ ortogonalizaci schÃ©ma, pokud je ortogonalizace povolena
-	void ortogonalizovat();//ortogonalizuje schÃ©ma
-	void db_connection();  // pÅ™ipojenÃ­ k DB serveru
+	void startUP();//pøi aktivaci formuláøe, pro zpøehlednìní kodu
+	void DesignSettings();//nastavení designu v konstruktoru
+	void aktualizace();//kontrola aktuálnosti verze a pøípadì nabídka na staení nové
+	void onPopUP(int X, int Y);//nastavení zobrazení popUPmenu a jeho volání vèetnì pozice
+	void close_all_items_popUPmenu();//zajistí skrıtí všech poloek popUPmenu
+	void ortogonalizace_on_off();//zapíná èi vypíná automatickou ortogonalizaci
+	void ortogonalizace();//volá ortogonalizaci schéma, pokud je ortogonalizace povolena
+	void ortogonalizovat();//ortogonalizuje schéma
+	void db_connection();  // pøipojení k DB serveru
 	void akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_otoce,AnsiString cas,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla);
 	bool el_vkabine(int X,int Y,int element_id);
 	bool nahled_ulozen;
@@ -605,22 +606,22 @@ private:
 	void Smaz_kurzor ();
 	void vykresli_kurzor(int index);
 	void zmenJednotekKot();
-	int pocet_vyskytu_elementu(Cvektory::TObjekt *Objekt);//prohledÃ¡ elementy v objektu, vrÃ¡tÃ­ 0 pokud je rotace v objektu vÅ¡ude stejnÃ¡, vrÃ¡tÃ­ 1 pokud je pÅ™Ã­tomno vÃ­ce rotacÃ­
-	void vytvor_edit();//vytvoÅ™Ã­ edit na mÃ­stÄ› hlaviÄky tabulky, slouÅ¾Ã­ ke zmÄ›nÄ› nÃ¡zvu elementu
-	void smaz_edit(bool refresh=true);//smaÅ¾e edit, kterÃ½ slouÅ¾il pro zmÄ›nu nÃ¡zvu elementu a novÃ½ nÃ¡zev zapÃ­Å¡e do elementu, defaultnÄ› provede refresh, pokud nenÃ­ pÅ™edÃ¡no parametrem jinak
-	void vykresli_spojinici_EmGrid(TCanvas *Canv,Cvektory::TElement *E);//vykreslÃ­ spojnici mezi tabulkou a elementem z nejbliÅ¾Å¡Ã­ho rohu tabulky
+	int pocet_vyskytu_elementu(Cvektory::TObjekt *Objekt);//prohledá elementy v objektu, vrátí 0 pokud je rotace v objektu všude stejná, vrátí 1 pokud je pøítomno více rotací
+	void vytvor_edit();//vytvoøí edit na místì hlavièky tabulky, slouí ke zmìnì názvu elementu
+	void smaz_edit(bool refresh=true);//smae edit, kterı slouil pro zmìnu názvu elementu a novı název zapíše do elementu, defaultnì provede refresh, pokud není pøedáno parametrem jinak
+	void vykresli_spojinici_EmGrid(TCanvas *Canv,Cvektory::TElement *E);//vykreslí spojnici mezi tabulkou a elementem z nejblišího rohu tabulky
 	void nacti_podklad(TCanvas *Canv);
   unsigned short load_language(Tlanguage language);
 
-	////promÄ›nnÃ©
+	////promìnné
 	TDateTime TIME;
 	UnicodeString LICENCE;
 	short n_prihlaseni;
 	bool ortogonalizace_stav;
 	bool kalibrace_hotova;
 	bool pan_non_locked;
-	bool stisknute_leve_tlacitko_mysi;//uchovÃ¡vÃ¡ stav levÃ©ho tlaÄÃ­tka myÅ¡i
-	unsigned short int funkcni_klavesa;//uchovÃ¡vÃ¡ stav poslednÃ­ stisknutÃ© funkÄnÃ­ klÃ¡vesy
+	bool stisknute_leve_tlacitko_mysi;//uchovává stav levého tlaèítka myši
+	unsigned short int funkcni_klavesa;//uchovává stav poslední stisknuté funkèní klávesy
 	unsigned short int vyska_menu;
 	double Zoom_predchozi,Zoom_predchozi2;
 	TPointD Posun_predchozi,Posun_predchozi2;
@@ -636,17 +637,17 @@ private:
 	bool SplitViewOpen;
 	bool duvod_k_ulozeni;
 	bool stisknuto_storno;
-	bool volat_parametry_linky;//pouÅ¾ito pÅ™i soubor novÃ½
+	bool volat_parametry_linky;//pouito pøi soubor novı
 	bool start_ortogonalizace;
 	bool stav_kurzoru;//kurzon vykreslen/nevykreslen
-	AnsiString nazev_puvodni;// pouÅ¾Ã­vÃ¡no pro uchovÃ¡vÃ¡nÃ­ pÅ¯vodnÃ­ho nÃ¡zvu objektu z dÅ¯vodu zruÅ¡enÃ­ editace
+	AnsiString nazev_puvodni;// pouíváno pro uchovávání pùvodního názvu objektu z dùvodu zrušení editace
 	AnsiString Caption;
 	short pocitadlo_doby_neaktivity;
 	TPoint pocitadlo_zmeny_pozice;
 	bool FMaximized;
 	TRect FOldBoundsRect;
 	bool PmGCheckLink;
-	bool offset_spolus_rozmerem;//uchovÃ¡vÃ¡ v sobÄ›, zda mÃ¡ bÃ½t pÅ™i zmÄ›nÄ› rozmerÅ¯ kabiny zmÄ›nÄ› i offset kÃ³t elementÅ¯
+	bool offset_spolus_rozmerem;//uchovává v sobì, zda má bıt pøi zmìnì rozmerù kabiny zmìnì i offset kót elementù
 	UnicodeString Jazyk;
 	int count_memo;//counter pro memo
 
@@ -657,8 +658,8 @@ public:		// User declarations
 	Cmy m;
 	Cvykresli d;
 	Cgrafy g;
-	TPO_math pm;//INSTANCE NA VÃPOÄŒETNÃ ÄŒÃST PO tj. PO_math
-	Graphics::TBitmap *Pan_bmp;//kvÅ¯li mGridu jinak staÄÃ­ private
+	TPO_math pm;//INSTANCE NA VİPOÈETNÍ ÈÁST PO tj. PO_math
+	Graphics::TBitmap *Pan_bmp;//kvùli mGridu jinak staèí private
 	//uklazatele
 	Cvektory::TObjekt *pom,*pom_vyhybka,*pom_temp,*copyObjekt;
 	Cvektory::TElement *pom_element,*pom_element_temp;
@@ -666,22 +667,22 @@ public:		// User declarations
 	Cvektory::TKomora *pom_komora,*pom_komora_temp;
 	Cvektory::TBod *pom_bod,*pom_bod_temp;
 
-	//souÅ™adnicovÃ© promÄ›nnÃ©
-	TPoint akt_souradnice_kurzoru_PX;//uchovÃ¡ aktuÃ¡lnÃ­ pozici kurzoru
-	TPointD akt_souradnice_kurzoru;//uchovÃ¡ aktuÃ¡lnÃ­ pozici kurzoru v logickÃ½ch jednotkÃ¡ch, resp. souÅ™adnicÃ­ch
-	TPoint vychozi_souradnice_kurzoru;//uchovÃ¡ vÃ½chozÃ­ pozici kurzoru
-	TPoint predchozi_souradnice_kurzoru;//uchovÃ¡ pÅ¯vodnÃ­ pozici kurzoru pÅ™i stisku tlaÄÃ­tka myÅ¡i
-	TPoint minule_souradnice_kurzoru;//uchovÃ¡ pÅ¯vodnÃ­ souÅ™adnice pÅ™i posunu
+	//souøadnicové promìnné
+	TPoint akt_souradnice_kurzoru_PX;//uchová aktuální pozici kurzoru
+	TPointD akt_souradnice_kurzoru;//uchová aktuální pozici kurzoru v logickıch jednotkách, resp. souøadnicích
+	TPoint vychozi_souradnice_kurzoru;//uchová vıchozí pozici kurzoru
+	TPoint predchozi_souradnice_kurzoru;//uchová pùvodní pozici kurzoru pøi stisku tlaèítka myši
+	TPoint minule_souradnice_kurzoru;//uchová pùvodní souøadnice pøi posunu
 
-	//promÄ›nnÃ©
+	//promìnné
 	UnicodeString VERZE;
-	double m2px;//uchovÃ¡vÃ¡ hodnotu prostorovÃ©ho rozliÅ¡enÃ­ programu, nativnÃ­ rozliÅ¡enÃ­ 0,1 m na 1 pixel pÅ™i zoomu 1x
-	double fps;//frames per second, Äetnost snÃ­mkÅ¯ za sekundu - pouÅ¾Ã­vÃ¡ se pro animace a simulace
-	double afps;//frames per second, aktuÃ¡lnÃ­ Äetnost snÃ­mkÅ¯ za sekundu - pouÅ¾Ã­vÃ¡ se pro animace a simulace
+	double m2px;//uchovává hodnotu prostorového rozlišení programu, nativní rozlišení 0,1 m na 1 pixel pøi zoomu 1x
+	double fps;//frames per second, èetnost snímkù za sekundu - pouívá se pro animace a simulace
+	double afps;//frames per second, aktuální èetnost snímkù za sekundu - pouívá se pro animace a simulace
 	UnicodeString FileName;
-	TFont *aFont;//aktuÃ¡lnÃ­ nastavenÃ½ vÃ½chozÃ­ font
-	double Zoom; //promÄ›nnÃ¡ uchovÃ¡vajicÃ­ velikost Zoomu
-	TPointD Posun;//promÄ›nnÃ© uchovÃ¡vajicÃ­ velikost posunu obrazu (pro scrollovÃ¡nÃ­ atp.), je to ve fyzickÃ½ch souÅ™adnicÃ­ch zaÅ™Ã­zenÃ­
+	TFont *aFont;//aktuální nastavenı vıchozí font
+	double Zoom; //promìnná uchovávajicí velikost Zoomu
+	TPointD Posun;//promìnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzickıch souøadnicích zaøízení
 	TPointD copyObjektRzRx;
 	bool grid;
 	int size_grid;
@@ -689,56 +690,56 @@ public:		// User declarations
 	bool zobrazit_barvy_casovych_rezerv;
 	bool zobrazit_meritko;
 	bool antialiasing;
-	double Zoom_predchozi_AA;//pÅ™i antialiasingu
-	bool nahled_objektu;//uchovÃ¡vÃ¡ stav, zda se jednÃ¡ o nÃ¡hled objekt Äi regulernÃ­ zobrazenÃ­ ve form1
+	double Zoom_predchozi_AA;//pøi antialiasingu
+	bool nahled_objektu;//uchovává stav, zda se jedná o náhled objekt èi regulerní zobrazení ve form1
 	bool TZF;//TRIAL_zakazat_funkcionality
 	bool dblClick;
 	int vybrany_objekt;
-	short VyID;//objekt-symbol vyhÃ½bky - ID typu
+	short VyID;//objekt-symbol vyhıbky - ID typu
 	int JID;//JOB ID
   int knihovna_id; // id drawgrid knihovny
 	int element_id;  // id vybraneho elementu z knihoven
-	AnsiString TIP;//uchovÃ¡vÃ¡ text TIPu
-	bool editace_textu;//mimo enum akce z dÅ¯vodu zobrazovÃ¡nÃ­ kurozÅ¯ pÅ™i editaci a pÅ™epÃ­nÃ¡nÃ­ na jinÃ© akce
-	UnicodeString editovany_text;//uchovÃ¡vÃ¡ editovanou hodnotu kÃ³t
+	AnsiString TIP;//uchovává text TIPu
+	bool editace_textu;//mimo enum akce z dùvodu zobrazování kurozù pøi editaci a pøepínání na jiné akce
+	UnicodeString editovany_text;//uchovává editovanou hodnotu kót
 	int index_kurzoru;
-	bool posun_dalsich_elementu;//indikuje zda je poÅ¾adovÃ¡n posun dalÅ¡Ã­ch elementÅ¯
+	bool posun_dalsich_elementu;//indikuje zda je poadován posun dalších elementù
 	bool mazani;
 	bool zobrazeni_tabulek;
 	double Poffset;
-	bool refresh_mGrid;//nevykresluje se z buffru ale pÅ™Ã­mo
-	bool nabuffrovano;//udrÅ¾uje, zda je buffer mgridovÃ½ch rastrÅ¯ aktuÃ¡lnÃ­
-	bool duvod_ulozit_nahled;//uchovÃ¡vÃ¡ v sobÄ› dÅ¯vod k uloÅ¾enÃ­ nÃ¡hledu
+	bool refresh_mGrid;//nevykresluje se z buffru ale pøímo
+	bool nabuffrovano;//udruje, zda je buffer mgridovıch rastrù aktuální
+	bool duvod_ulozit_nahled;//uchovává v sobì dùvod k uloení náhledu
   bool auto_settings_open;
 
 	//metody
-	void NP();//volÃ¡ form na nastevenÃ­ parametrÅ¯, dÅ™Ã­vÄ›jÅ¡Ã­ nastavparametry1click
-	void NPin();//podpÅ¯rnÃ¡ metoda NP(), Å™eÅ¡Ã­ vstupnÃ­ ÄÃ¡st dat, vyseparovÃ¡no, z dÅ¯vodu toho, Å¾e z GAPO aktulizauji pÅ™Ã­padnÄ› spuÅ¡tÄ›nÃ© PO a nemohu volat NP, protoÅ¾e to v sobÄ› obsahu ShowModal - vedlo k chybÄ›
-  void NP_input(); // volÃ¡ zobrazenÃ­ PO - nahrazuje NP a NPin
-	void ZOOM_IN();//pÅ™iblÃ­Å¾enÃ­
-	void ZOOM_OUT();//oddÃ¡lenÃ­
+	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click
+	void NPin();//podpùrná metoda NP(), øeší vstupní èást dat, vyseparováno, z dùvodu toho, e z GAPO aktulizauji pøípadnì spuštìné PO a nemohu volat NP, protoe to v sobì obsahu ShowModal - vedlo k chybì
+  void NP_input(); // volá zobrazení PO - nahrazuje NP a NPin
+	void ZOOM_IN();//pøiblíení
+	void ZOOM_OUT();//oddálení
 	void REFRESH();
 	void REFRESH(bool refreshovat_mGridy);
 	void DuvodUlozit(bool stav);
 	void nahled_ulozit(bool duvod_ulozit);
-	void SB(UnicodeString Text, unsigned short Pane=4);//domnÃ­vÃ¡m se, Å¾e zde mÃ¡ bÃ½t hodnota 5
-	void S(UnicodeString Text="");//usnadÅˆuje pÅ™Ã­stup k ShowMessage
-	void Sk(UnicodeString Text="",AnsiString umisteni="neuvedeno");//usnadÅˆuje pÅ™Ã­stup k ShowMessage - MaKr
-	void Sv(UnicodeString Text="",AnsiString umisteni="neuvedeno");//usnadÅˆuje pÅ™Ã­stup k ShowMessage - MaVl
-	void Z(UnicodeString Text="",bool add=false,TColor color=clRed);//usnadÅˆuje pÅ™Ã­stup ke zprÃ¡vÃ¡m, pokud jsou jen prÃ¡zdnÃ© uvozovky (a druhÃ½ paremetry na false - coÅ¾ je implicitnÄ›), vymaÅ¾e zpravu, parametr add rozhoduje, zda bude novÃ½ text pÅ™eden k pÅ™edeÅ¡lÃ©mu textu Äi nikoliv, pokud zprÃ¡va obsahuje nÄ›jakÃ½ text, je zobrazena ikona zprÃ¡vy, poslednÃ­ parametr je barva ikony zprÃ¡vy
+	void SB(UnicodeString Text, unsigned short Pane=4);//domnívám se, e zde má bıt hodnota 5
+	void S(UnicodeString Text="");//usnadòuje pøístup k ShowMessage
+	void Sk(UnicodeString Text="",AnsiString umisteni="neuvedeno");//usnadòuje pøístup k ShowMessage - MaKr
+	void Sv(UnicodeString Text="",AnsiString umisteni="neuvedeno");//usnadòuje pøístup k ShowMessage - MaVl
+	void Z(UnicodeString Text="",bool add=false,TColor color=clRed);//usnadòuje pøístup ke zprávám, pokud jsou jen prázdné uvozovky (a druhı paremetry na false - co je implicitnì), vymae zpravu, parametr add rozhoduje, zda bude novı text pøeden k pøedešlému textu èi nikoliv, pokud zpráva obsahuje nìjakı text, je zobrazena ikona zprávy, poslední parametr je barva ikony zprávy
 	int MB(long left,long top,UnicodeString text,UnicodeString caption_text="",int mbTYPE=MB_OK,bool centrovat_text=true,bool checkbox_zobrazit=false,int width=366,bool default_button_caption=true);
-	int MB(UnicodeString text,int mbTYPE=MB_OK,bool centrovat_text=true,int width=366,bool default_button_caption=true,bool blurForm1=true,bool copy_zobrazit=false);//pokud je blurForm1 na true - Form1 v dobÄ› zobrazenÃ­ MB rozmlÅ¾Ã­/udÄ›lÃ¡ bluer efekt
-	void writeINI(AnsiString Section,AnsiString Ident,AnsiString Value);//zajiÅ¡Å¥uje zÃ¡pis do INI aplikace
-	AnsiString readINI(AnsiString Section,AnsiString Ident);//zajiÅ¡Å¥uje ÄtenÃ­ z INI aplikace
-	void kopirovat_objekt();//pokud je oznaÄenÃ½ objekt, zajistÃ­ jeho zkopÃ­rovÃ¡nÃ­, pÅ™ipoÄÃ­tÃ¡ index 1,2,3
-	void RM();//korekce chyby oskakovÃ¡nÃ­ pravÃ©ho menu
-	void aktualizace_maro_a_roma();//aktualizace a pÅ™epoÄet hodnot volanÃ¡ kvÅ¯li ÄasovÃ½m osÃ¡m (maro) a techn.procesÅ¯m(roma)
-	void deaktivace_zamerovace();//deaktivuje zamÄ›Å™ovaÄ label a svislice a kolmice
-	void aktualizace_combobox_pohony_v_PO(short RDunitD=-1,short RDunitT=-1);//zaktualizuje ve formulÃ¡Å™i parametry objektÅ¯ combobox na vÃ½pis pohonÅ¯ vÄetnÄ› jednotek uvedenÃ©ho rozmezÃ­ rychlostÃ­, pokud jsou zanechanÃ© implicitnÃ­ parametry short RDunitD=-1,short RDunitT=-1, je naÄteno nastevnÃ­ jednotek z INI aplikace pro form parametry objektu, v pÅ™Ã­padech, kdy uvedenÃ© parametry nejsou danÃ© hodnotou -1, tak se uvaÅ¾ujÃ­ jednotky dle S==0,MIN==1 pro RDunitT, resp. M==0,MM==1 pro RDunitD
-	void tab_pohon_COMBO (int index);//0=naÄtenÃ­ pohonÅ¯ do COMBA, 1=pÅ™iÅ™azenÃ­ pohonu kabinÄ›
+	int MB(UnicodeString text,int mbTYPE=MB_OK,bool centrovat_text=true,int width=366,bool default_button_caption=true,bool blurForm1=true,bool copy_zobrazit=false);//pokud je blurForm1 na true - Form1 v dobì zobrazení MB rozmlí/udìlá bluer efekt
+	void writeINI(AnsiString Section,AnsiString Ident,AnsiString Value);//zajišuje zápis do INI aplikace
+	AnsiString readINI(AnsiString Section,AnsiString Ident);//zajišuje ètení z INI aplikace
+	void kopirovat_objekt();//pokud je oznaèenı objekt, zajistí jeho zkopírování, pøipoèítá index 1,2,3
+	void RM();//korekce chyby oskakování pravého menu
+	void aktualizace_maro_a_roma();//aktualizace a pøepoèet hodnot volaná kvùli èasovım osám (maro) a techn.procesùm(roma)
+	void deaktivace_zamerovace();//deaktivuje zamìøovaè label a svislice a kolmice
+	void aktualizace_combobox_pohony_v_PO(short RDunitD=-1,short RDunitT=-1);//zaktualizuje ve formuláøi parametry objektù combobox na vıpis pohonù vèetnì jednotek uvedeného rozmezí rychlostí, pokud jsou zanechané implicitní parametry short RDunitD=-1,short RDunitT=-1, je naèteno nastevní jednotek z INI aplikace pro form parametry objektu, v pøípadech, kdy uvedené parametry nejsou dané hodnotou -1, tak se uvaují jednotky dle S==0,MIN==1 pro RDunitT, resp. M==0,MM==1 pro RDunitD
+	void tab_pohon_COMBO (int index);//0=naètení pohonù do COMBA, 1=pøiøazení pohonu kabinì
   void aktualizace_ComboPohon ();
 	short RO; short ROs; short ROst;short ROsts;short Rotace_symbolu_minula;
-	double vrat_hranici(int mimo);//vracÃ­ max Äi min hodnoty x a y souÅ™adnic elementÅ¯ v kabinÄ›
+	double vrat_hranici(int mimo);//vrací max èi min hodnoty x a y souøadnic elementù v kabinì
 	double inLO  (double inLO);
   double outLO (double outLO);
   double inPT  (double inPT);
@@ -753,12 +754,12 @@ public:		// User declarations
 	double outR(double outR);
 	double inRz(double inRz);
 	double outRz(double outRz);
-	void Memo(AnsiString Text,bool clear=false,bool count=false);//urychlenÃ­ vypsÃ¡nÃ­ do Mema
-	void pridani_elementu_tab_pohon(Cvektory::TElement *E);//pÅ™edesign tabulky pohonu po pÅ™idÃ¡nÃ­ elementu
+	void Memo(AnsiString Text,bool clear=false,bool count=false);//urychlení vypsání do Mema
+	void pridani_elementu_tab_pohon(Cvektory::TElement *E);//pøedesign tabulky pohonu po pøidání elementu
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
-extern PACKAGE TForm1 *F;//pouze zkrÃ¡cenÃ½ zapis
-extern AnsiString Parametry; //pÅ™Ã­jÃ­mÃ¡ parametry programu, dÅ¯leÅ¾itÃ© pro otevÃ­rÃ¡nÃ­ programu konrkÃ©tnÃ­m souborem
+extern PACKAGE TForm1 *F;//pouze zkrácenı zapis
+extern AnsiString Parametry; //pøíjímá parametry programu, dùleité pro otevírání programu konrkétním souborem
 //---------------------------------------------------------------------------
 #endif

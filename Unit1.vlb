@@ -248,7 +248,7 @@ Coordinates=319,280,124,36
 Coordinates=10,280,90,36
 
 []
-Coordinates=841,326,90,36
+Coordinates=284,631,66,36
 Visible=True
 
 [scSplitView_OPTIONS]
@@ -317,14 +317,8 @@ Coordinates=1322,441,145,36
 [button_zakazky_temp]
 Coordinates=104,153,139,58
 
-[scExPanel_ostatni]
-Coordinates=1322,496,120,36
-
 [scLabel5]
 Coordinates=640,631,66,36
-
-[scLabel4]
-Coordinates=284,631,66,36
 
 [(TMenuItem)]
 Coordinates=1463,331,88,36
@@ -421,4 +415,7 @@ Coordinates=1145,631,49,36
 
 [Simulace]
 Coordinates=73,249,65,36
+
+[scExPanel_ostatni]
+Coordinates=1322,496,120,36
 

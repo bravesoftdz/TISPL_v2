@@ -128,9 +128,9 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod,bool orto
 		}
 		else//vložení mezi body
 		{
-			//nastavení počítadla u vkládané komory
+			//nastavení počítadla u vkládaného bodu
 			Bod->n=ZaBod->n+1;
-			//navýšení počítadla u následujícíh komor
+			//navýšení počítadla u následujícíh bodů
 			TBod *B=ZaBod->dalsi;
 			while(B!=NULL)
 			{
@@ -172,7 +172,7 @@ void Cvektory::posun_hranu(double OffsetX,double OffsetY,TBod* Bod1,TBod* Bod2)
 	Bod1->X+=OffsetX;Bod1->Y+=OffsetY;Bod2->X+=OffsetX;Bod2->Y+=OffsetY;
 }
 ////---------------------------------------------------------------------------
-//posune všechny body polygonu o daný offset - dodělat
+//posune všechny body polygonu objektu či haly o daný offset
 void Cvektory::posun_body(double OffsetX,double OffsetY,TObjekt* Objekt)
 {
 	TBod *B=NULL;
@@ -188,10 +188,23 @@ void Cvektory::posun_body(double OffsetX,double OffsetY,TObjekt* Objekt)
 	B=NULL;delete B;
 }
 ////---------------------------------------------------------------------------
-//orotuje celý polygon - dodělat
-void Cvektory::rotuj_body(double Rotace,TObjekt* Objekt)
+//orotuje celý polygon zadaného objektu či haly proti směru hodinových ručiček okolo osy dle bodu o souřadnicích X,Y, dle hodnoty rotace uhel
+void Cvektory::rotuj_body(double X, double Y,double uhel,TObjekt* Objekt)
 {
+	if(fmod(uhel,360)!=0)//pouze ošetření proti zbytečné rotaci
+	{
+		TBod *B=NULL;
+		if(Objekt!=NULL && Objekt->body!=NULL)B=Objekt->body->dalsi;//posun bodů OBJEKTU
+		else if(HALA.body!=NULL)B=HALA.body->dalsi;//posun bodů HALY
 
+		while(B!=NULL)
+		{
+			TPointD BOD=m.rotace(X,Y,B->X,B->Y,uhel);
+			B->X=BOD.x;B->Y=BOD.y;
+			B=B->dalsi;
+		}
+		B=NULL;delete B;
+	}
 }
 ////---------------------------------------------------------------------------
 //na aktuálních souřadnicích myši hledá bod, pokud je nalezen vrátí na něj ukazatel, pokud je ukazatel na Objekt NULL, jedná se o metodu pro HALU
