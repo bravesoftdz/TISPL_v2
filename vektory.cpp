@@ -237,8 +237,8 @@ Cvektory::TBod *Cvektory::najdi_usecku(TObjekt* Objekt)
 		if(B->dalsi==NULL)
 		{
 			//předání ukazatele na první bod podle režimu (Objekt, HALA)
-			if(Objekt!=NULL)pom=Objekt->body->dalsi;
-			else pom=HALA.body->dalsi;
+			if(Objekt!=NULL&&Objekt->body!=NULL)pom=Objekt->body->dalsi;
+			else if(HALA.body!=NULL&&HALA.body->predchozi->n>1)pom=HALA.body->dalsi;
 			//prohledávání první, poslední, pokud nalezeno uloží do ret. proměnné B ukazatel na první bod
 			if(m.PtInLine(x,y,B->X,B->Y,pom->X,pom->Y)){B=pom;break;}
 		}
