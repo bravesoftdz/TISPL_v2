@@ -25,7 +25,8 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod,bool orto
 {
 	////alokace paměti
 	TBod *Bod=new TBod;
-
+	//nastavení defaultních hodnot
+  Bod->kota_offset=-1;
 	////data
 	if(ortogonalizovat)//pokud je požadavek na ortogonalizaci, tak ověření zda je možný
 	{
@@ -222,17 +223,17 @@ Cvektory::TBod *Cvektory::najdi_bod(TObjekt* Objekt)
 	return B;
 }
 ////---------------------------------------------------------------------------
-//na aktuálních souřadnicích myši hledá úsečku, pokud je nalezena je vracen ukazatel na druhý bod, pokd nebylo nalezeno nic vrátí NULL, parametr Objekt implicitně NULLL, rozlišuje hledání úsečky v HALE nebo v Objektu
-Cvektory::TBod *Cvektory::najdi_usecku(TObjekt* Objekt)
+//na aktuálních souřadnicích myši hledá úsečku, pokud je nalezena je vracen ukazatel na druhý bod, pokd nebylo nalezeno nic vrátí NULL, parametr Objekt implicitně NULLL, rozlišuje hledání úsečky v HALE nebo v Objektu, parametr přesnost určuje vzdálenost od přímky, která je nutná k její detekci
+Cvektory::TBod *Cvektory::najdi_usecku(TObjekt* Objekt,long presnost)
 {
 	double x=F->akt_souradnice_kurzoru.x,y=F->akt_souradnice_kurzoru.y;//souřadnice kurzoru jsou neměnné po celou dobu metody
 	TBod *B=NULL,*pom=NULL;//return proměnná + krokování cyklu
-	if(Objekt!=NULL&&Objekt->body!=NULL)B=Objekt->body->dalsi;//jedná se o body objektu + přeskočí hlavičku + začátek na druhém bodu
+	if(Objekt!=NULL&&Objekt->body!=NULL)B=Objekt->body->dalsi->dalsi;//jedná se o body objektu + přeskočí hlavičku + začátek na druhém bodu
 	else if(HALA.body!=NULL&&HALA.body->predchozi->n>1)B=HALA.body->dalsi->dalsi;//jedná se bod haly + přeskočí hlavičku + začně na druhém bodu (pokud existuje, jestli ne return NULL)
 	while(B!=NULL)
 	{
 		//prohledávání úseček mezi akt. bodem a předchozím bodem
-		if(m.PtInLine(x,y,B->predchozi->X,B->predchozi->Y,B->X,B->Y))break;
+		if(m.LeziVblizkostiUsecky(x,y,B->predchozi->X,B->predchozi->Y,B->X,B->Y)<=presnost)break;
 		//pokud jsem na posledním bodu musím zkontrolovat úsečku mezi posledním a prvním
 		if(B->dalsi==NULL)
 		{
@@ -240,7 +241,7 @@ Cvektory::TBod *Cvektory::najdi_usecku(TObjekt* Objekt)
 			if(Objekt!=NULL&&Objekt->body!=NULL)pom=Objekt->body->dalsi;
 			else if(HALA.body!=NULL&&HALA.body->predchozi->n>1)pom=HALA.body->dalsi;
 			//prohledávání první, poslední, pokud nalezeno uloží do ret. proměnné B ukazatel na první bod
-			if(m.PtInLine(x,y,B->X,B->Y,pom->X,pom->Y)){B=pom;break;}
+			if(m.LeziVblizkostiUsecky(x,y,B->X,B->Y,pom->X,pom->Y)<=presnost){B=pom;break;}
 		}
 		B=B->dalsi;
 	}
@@ -251,21 +252,24 @@ Cvektory::TBod *Cvektory::najdi_usecku(TObjekt* Objekt)
 ////---------------------------------------------------------------------------
 //ověří zda se na daných fyzických souřadnicích myši nachází kóta hrany/stěny HALy či Objektu (Objektu pokud Objekt!=NULL) , pokud ne vrací -1, pokud ano 0 v celé kótě, 1 - na hodnotě kóty, 2 - na jednotkách kóty , pozn. oblast kóty se testuje až jako poslední
 short Cvektory::PtInKota_bod(TObjekt *Objekt)
-{   //předělat na bod
-//	short RET=-1;//nic nenalezeno
-//	TElement *E=Objekt->elementy;//NEPŘESKAKOVAT hlavičku!!!
-//	while(E!=NULL)
-//	{
-//		if(E->citelna_oblast.rect1.PtInRect(TPoint(X,Y))){RET=1;F->pom_element=E;break;}//hodnoty kóty
-//		else
-//		{
-//			if(E->citelna_oblast.rect2.PtInRect(TPoint(X,Y))){RET=2;F->pom_element=E;break;}//jednotky kóty
-//			else if(E->citelna_oblast.rect0.PtInRect(TPoint(X,Y))){RET=0;F->pom_element=E;break;}//kóta celá
-//		}
-//		E=E->dalsi;
-//	}
-//	E=NULL;delete E;
-//	return RET;
+{
+	short RET=-1;//nic nenalezeno
+	double x=F->akt_souradnice_kurzoru_PX.x,y=F->akt_souradnice_kurzoru_PX.y;//souřadnice kurzoru jsou neměnné po celou dobu metody, důležité použít fyzické souřadnice !!!
+	TBod *B=NULL,*pom=NULL;//return proměnná + krokování cyklu
+	if(Objekt!=NULL&&Objekt->body!=NULL)B=Objekt->body->dalsi;//jedná se o body objektu + přeskočí hlavičku + začátek na druhém bodu
+	else if(HALA.body!=NULL&&HALA.body->predchozi->n>1)B=HALA.body->dalsi;//jedná se bod haly + přeskočí hlavičku + začně na druhém bodu (pokud existuje, jestli ne return NULL)
+	while(B!=NULL)
+	{
+		if(B->kota.rect1.PtInRect(TPoint(x,y))){RET=1;F->pom_bod=B;break;}//hodnoty kóty
+		else
+		{
+			if(B->kota.rect2.PtInRect(TPoint(x,y))){RET=2;F->pom_bod=B;break;}//jednotky kóty
+			else if(m.LeziVblizkostiUsecky(x,y,B->kota.rect0.left,B->kota.rect0.top,B->kota.rect0.right,B->kota.rect0.bottom)<=1){RET=0;F->pom_bod=B;break;}//oblast kóty
+		}
+		B=B->dalsi;
+	}
+	B=NULL;delete B;
+	return RET;
 }
 ////---------------------------------------------------------------------------
 //zkopíruje body včetně z originálu na kopii bez ukazatelového propojení, funguje jenom pro body objektů nikoliv HALY!!!
@@ -1429,6 +1433,7 @@ Cvektory::TKomora *Cvektory::najdi_komoru(TObjekt* Objekt)
 short Cvektory::PtInKota_komory(TObjekt *Objekt,long X,long Y)
 {
 	short RET=-1;//nic nenalezeno
+	double x=F->akt_souradnice_kurzoru_PX.x,y=F->akt_souradnice_kurzoru_PX.y;//souřadnice kurzoru jsou neměnné po celou dobu metody, důležité použít fyzické souřadnice !!
 	if(Objekt->komora!=NULL)
 	{
   	TKomora *K=Objekt->komora->dalsi;//přeskočení hlavičky, vždy budou minimálně 2 komory
@@ -1438,7 +1443,7 @@ short Cvektory::PtInKota_komory(TObjekt *Objekt,long X,long Y)
   		else
   		{
   			if(K->kota.rect2.PtInRect(TPoint(X,Y))){RET=2;F->pom_komora=K;break;}//jednotky kóty
-  			else if(K->kota.rect0.PtInRect(TPoint(X,Y))){RET=0;F->pom_komora=K;break;}//kóta celá
+				else if(m.LeziVblizkostiUsecky(x,y,K->kota.rect0.left,K->kota.rect0.top,K->kota.rect0.right,K->kota.rect0.bottom)<=1){RET=0;F->pom_komora=K;break;}//oblast kóty
   		}
   		K=K->dalsi;
   	}
@@ -2339,6 +2344,7 @@ Cvektory::TElement *Cvektory::vrat_element(TObjekt *Objekt, unsigned int n)
 short Cvektory::PtInKota_elementu(TObjekt *Objekt,long X,long Y)
 {
 	short RET=-1;//nic nenalezeno
+	double x=F->akt_souradnice_kurzoru_PX.x,y=F->akt_souradnice_kurzoru_PX.y;//souřadnice kurzoru jsou neměnné po celou dobu metody, důležité použít fyzické souřadnice !!
 	TElement *E=Objekt->elementy;//NEPŘESKAKOVAT hlavičku!!!
 	while(E!=NULL)
 	{
@@ -2346,7 +2352,7 @@ short Cvektory::PtInKota_elementu(TObjekt *Objekt,long X,long Y)
 		else
 		{
 			if(E->citelna_oblast.rect2.PtInRect(TPoint(X,Y))){RET=2;F->pom_element=E;break;}//jednotky kóty
-			else if(E->citelna_oblast.rect0.PtInRect(TPoint(X,Y))){RET=0;F->pom_element=E;break;}//kóta celá
+			else if(m.LeziVblizkostiUsecky(x,y,E->citelna_oblast.rect0.left,E->citelna_oblast.rect0.top,E->citelna_oblast.rect0.right,E->citelna_oblast.rect0.bottom)<=1){RET=0;F->pom_element=E;break;}//kóta celá
 		}
 		E=E->dalsi;
 	}

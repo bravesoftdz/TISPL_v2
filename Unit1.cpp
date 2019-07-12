@@ -1639,7 +1639,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//CTRL+M
 		case 77: if(ssCtrl)Akce=MEASURE;kurzor(add_o);break;
 		//F1 - volání nápovědy
-		case 112:d.v.najdi_usecku();break;
+		case 112:break;
 		//F2
 		case 113:Memo3->CopyToClipboard();Memo3->Clear();break;
 		//F3 - pohled celé schéma
@@ -1730,7 +1730,7 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 		nahled_ulozit(true);
 		REFRESH(false);
 	}
-	if (editace_textu&&(index_kurzoru==-8||index_kurzoru==-9))//editace textu kót kabiny
+	if (editace_textu&&(index_kurzoru<=-11||index_kurzoru==-2||index_kurzoru==-8||index_kurzoru==-9))//editace kót elementů,kót haly nebo objektu, kót kabiny
 	{
 		if(Key==8)//pokud je stisknut backspace
 			editovany_text=editovany_text.SubString(1,editovany_text.Length()-1);
@@ -1739,19 +1739,7 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 			editovany_text+=key;
 			if(key=="")MessageBeep(0);
 		}
-		nahled_ulozit(true);
-		REFRESH(false);
-	}
-	if (editace_textu&&index_kurzoru<=-11)//editace kót elementů
-	{
-		if(Key==8)//pokud je stisknut backspace
-			editovany_text=editovany_text.SubString(1,editovany_text.Length()-1);
-		else
-		{
-			editovany_text+=key;
-			if(key=="")MessageBeep(0);
-		}
-		nahled_ulozit(true);
+		if(index_kurzoru!=-2)nahled_ulozit(true);
 		REFRESH(false);
 	}
 	if(editace_textu&&index_kurzoru==1)//editace názvu elementu skrze popisek elementu
@@ -1974,8 +1962,9 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 	if(MOD==NAHLED)FormX->odstranit_korelaci();
 	if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)//pokud je oteřeno hamburger menu a klikne se do plochy tak se nejdříve zavře
 	{    //testování skrývání knihoven
-		DrawGrid_knihovna->Visible=false;DrawGrid_otoce->Visible=false;DrawGrid_ostatni->Visible=false;DrawGrid_geometrie->Visible=false;DrawGrid_poznamky->Visible=false;
-		scSplitView_MENU->Opened=false;DrawGrid_knihovna->Visible=true;DrawGrid_otoce->Visible=true;DrawGrid_ostatni->Visible=true;DrawGrid_geometrie->Visible=true;DrawGrid_poznamky->Visible=true;
+		if(scSplitView_MENU->Opened){DrawGrid_knihovna->Visible=false;DrawGrid_otoce->Visible=false;DrawGrid_ostatni->Visible=false;DrawGrid_geometrie->Visible=false;DrawGrid_poznamky->Visible=false;}
+		scSplitView_MENU->Opened=false;
+		if(!DrawGrid_knihovna->Visible){DrawGrid_knihovna->Visible=true;DrawGrid_otoce->Visible=true;DrawGrid_ostatni->Visible=true;DrawGrid_geometrie->Visible=true;DrawGrid_poznamky->Visible=true;}
 		scSplitView_OPTIONS->Opened=false;
 	}
 	else
@@ -1984,98 +1973,126 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 		{
 			if(Button==mbLeft/* && MOD!=REZERVY*/)//je stisknuto levé tlačítko myši
 			{
-					stisknute_leve_tlacitko_mysi=true;
-					vychozi_souradnice_kurzoru=TPoint(X,Y);//výchozí souřadnice
+				stisknute_leve_tlacitko_mysi=true;
+				vychozi_souradnice_kurzoru=TPoint(X,Y);//výchozí souřadnice
 
-					//aktivuje POSUN OBJEKTU, ELEMENTU či TABULKY,pokud je kliknuto v místě objektu (v jeho vnitřku)
-					if(Akce==NIC && posun_objektu==false && funkcni_klavesa==0)//pokud není aktivovaná jiná akce
+				//aktivuje POSUN OBJEKTU, ELEMENTU či TABULKY,pokud je kliknuto v místě objektu (v jeho vnitřku)
+				if(Akce==NIC && posun_objektu==false && funkcni_klavesa==0)//pokud není aktivovaná jiná akce
+				{
+					if(MOD==NAHLED && pom_temp!=NULL)//TABULKA či ELEMENT
 					{
-						if(MOD==NAHLED && pom_temp!=NULL)//TABULKA či ELEMENT
-						{
-								if(JID==-1){Akce=PAN;pan_non_locked=true;}//pouze posun obrazu, protože v aktuálním místě pozici myši se nenachází vektor ani interaktivní text
-								if(JID==0&&pom_temp->id!=3){Akce=MOVE_ELEMENT;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;if(el_vkabine(X,Y,pom_element->eID))mazani=true;else mazani=false;pom_element_temp=pom_element;}//ELEMENT posun
-								if(1000<=JID && JID<2000){Akce=MOVE_TABLE;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;pom_element->mGrid->Highlight;refresh_mGrid=false;d.nabuffrovat_mGridy();}//TABULKA posun
-								if(100<JID && JID<900){redesign_element();}//nultý sloupec tabulky, libovolný řádek, přepnutí jednotek
-								if(JID==-2||JID==-3){Akce=MOVE_KABINA;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//posun lakovny
-								if(JID==-6) {DrawGrid_knihovna->SetFocus();stav_kurzoru=false;editace_textu=true;index_kurzoru=-6;nazev_puvodni=pom_temp->name;TimerKurzor->Enabled=true;}//editace názvu
-								if(JID==-7) {DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;stav_kurzoru=false;editace_textu=true;index_kurzoru=-7;nazev_puvodni=pom_temp->short_name;}//editace zkratky
-								if(JID==-4||JID==-5){Akce=ROZMER_KABINA;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;if(pom_temp->koty_elementu_offset==pom_temp->Xk+pom_temp->rozmer_kabiny.x-pom_temp->elementy->X+1||pom_temp->koty_elementu_offset==pom_temp->rozmer_kabiny.y-pom_temp->Yk+pom_temp->elementy->Y+1)offset_spolus_rozmerem=true;else offset_spolus_rozmerem=false;} //editace rozměrů kabiny posuvem X=-4 a Y=-5
-								if(JID==-10)zmenJednotekKot();//přepnutí jednotek všech kót
-								if(JID==-8){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=-8;editovany_text=m.round2double(pom_temp->rozmer_kabiny.x,2);if(DKunit==2||DKunit==3)editovany_text=editovany_text/pom_temp->pohon->aRD;editovany_text=outDK(ms.MyToDouble(editovany_text));}//editace kót kabiny
-								if(JID==-9){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=-9;editovany_text=m.round2double(pom_temp->rozmer_kabiny.y,2);if(DKunit==2||DKunit==3)editovany_text=editovany_text/pom_temp->pohon->aRD;editovany_text=outDK(ms.MyToDouble(editovany_text));}//editace kót kabiny
-								if(JID<=-11&&pom_temp->id!=3){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=m.round2double(d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp),2);if(DKunit==2||DKunit==3)editovany_text=editovany_text/pom_temp->pohon->aRD;editovany_text=outDK(ms.MyToDouble(editovany_text));}//editace kót elementu
-								if(JID<=-11&&pom_temp->id==3){if(d.v.PtInKota_komory(pom_temp,X,Y)==-1){Akce=ROZMER_KOMORA;pom_komora_temp=pom_komora;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}else {DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_komora_temp=pom_komora;editovany_text=m.round2double(outDK(pom_komora->velikost),2);}}
-								if(JID>=11&&JID<=99){Akce=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//změna offsetu kót elementů, nebo změna rozměru jednotlivých kabin
-								if(JID>=4&&JID<=10)zmena_jednotek_tab_pohon();//změna jednotek v tabulce pohonů
-								if(JID==100)vytvor_edit();//změna názvu elementu
-								if(JID==1){DrawGrid_knihovna->SetFocus();stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;nazev_puvodni=pom_element_temp->name;editace_textu=true;TimerKurzor->Enabled=true;}
-								if(JID==0&&pom_temp->id==3){Akce=MOVE_KOMORA;pom_komora_temp=pom_komora;}//uchopení a přesun komory, sloužící k jejímu odstranění
-						}
-						else
-						{
-							if(MOD==SCHEMA)//OBJEKT
-							{
-								pom=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.V_width*m2px,d.V_width*m2px/*,VyID*/);//hledá v kruhové oblasti
-								if(pom==NULL)//akcelerátor,aby se následně nehledalo znovu, pokud byla nalezena výhybka
-								pom=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width*m2px,d.O_height*m2px);
-								if(pom!=NULL){Akce=MOVE;kurzor(posun_l);posun_objektu=true;minule_souradnice_kurzoru=TPoint(X,Y);}
-								else if(JID==-1&&Akce==NIC){Akce=PAN;pan_non_locked=true;}//přímo dovolení PAN pokud se neposová objekt = Rosťova prosba
-								if(JID>0&&JID<=100){Akce=MOVE_BOD;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//posun jednoho bodu
-								if(JID>100){Akce=MOVE_USECKA;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//posun úsečky
-							}
-							else {Akce=PAN;pan_non_locked=true;}//přímo dovolení PAN pokud se neposová objekt   = Rosťova prosba
-						}
+							if(JID==-1){Akce=PAN;pan_non_locked=true;}//pouze posun obrazu, protože v aktuálním místě pozici myši se nenachází vektor ani interaktivní text
+							if(JID==0&&pom_temp->id!=3){Akce=MOVE_ELEMENT;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;if(el_vkabine(X,Y,pom_element->eID))mazani=true;else mazani=false;pom_element_temp=pom_element;}//ELEMENT posun
+							if(1000<=JID && JID<2000){Akce=MOVE_TABLE;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;pom_element->mGrid->Highlight;refresh_mGrid=false;d.nabuffrovat_mGridy();}//TABULKA posun
+							if(100<JID && JID<900){redesign_element();}//nultý sloupec tabulky, libovolný řádek, přepnutí jednotek
+							if(JID==-2||JID==-3){Akce=MOVE_KABINA;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//posun lakovny
+							if(JID==-6) {DrawGrid_knihovna->SetFocus();stav_kurzoru=false;editace_textu=true;index_kurzoru=-6;nazev_puvodni=pom_temp->name;TimerKurzor->Enabled=true;}//editace názvu
+							if(JID==-7) {DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;stav_kurzoru=false;editace_textu=true;index_kurzoru=-7;nazev_puvodni=pom_temp->short_name;}//editace zkratky
+							if(JID==-4||JID==-5){Akce=ROZMER_KABINA;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;if(pom_temp->koty_elementu_offset==pom_temp->Xk+pom_temp->rozmer_kabiny.x-pom_temp->elementy->X+1||pom_temp->koty_elementu_offset==pom_temp->rozmer_kabiny.y-pom_temp->Yk+pom_temp->elementy->Y+1)offset_spolus_rozmerem=true;else offset_spolus_rozmerem=false;} //editace rozměrů kabiny posuvem X=-4 a Y=-5
+							if(JID==-10)zmenJednotekKot();//přepnutí jednotek všech kót
+							if(JID==-8){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=-8;editovany_text=m.round2double(pom_temp->rozmer_kabiny.x,2);if(DKunit==2||DKunit==3)editovany_text=editovany_text/pom_temp->pohon->aRD;editovany_text=outDK(ms.MyToDouble(editovany_text));}//editace kót kabiny
+							if(JID==-9){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=-9;editovany_text=m.round2double(pom_temp->rozmer_kabiny.y,2);if(DKunit==2||DKunit==3)editovany_text=editovany_text/pom_temp->pohon->aRD;editovany_text=outDK(ms.MyToDouble(editovany_text));}//editace kót kabiny
+							if(JID<=-11&&pom_temp->id!=3){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=m.round2double(d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp),2);if(DKunit==2||DKunit==3)editovany_text=editovany_text/pom_temp->pohon->aRD;editovany_text=outDK(ms.MyToDouble(editovany_text));}//editace kót elementu
+							if(JID<=-11&&pom_temp->id==3){if(d.v.PtInKota_komory(pom_temp,X,Y)==-1){Akce=ROZMER_KOMORA;pom_komora_temp=pom_komora;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}else {DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_komora_temp=pom_komora;editovany_text=m.round2double(outDK(pom_komora->velikost),2);}}
+							if(JID>=11&&JID<=99){Akce=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//změna offsetu kót elementů, nebo změna rozměru jednotlivých kabin
+							if(JID>=4&&JID<=10)zmena_jednotek_tab_pohon();//změna jednotek v tabulce pohonů
+							if(JID==100)vytvor_edit();//změna názvu elementu
+							if(JID==1){DrawGrid_knihovna->SetFocus();stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;nazev_puvodni=pom_element_temp->name;editace_textu=true;TimerKurzor->Enabled=true;}
+							if(JID==0&&pom_temp->id==3){Akce=MOVE_KOMORA;pom_komora_temp=pom_komora;}//uchopení a přesun komory, sloužící k jejímu odstranění
 					}
-					if(funkcni_klavesa==1&&JID>0&&JID<=100){d.v.smaz_bod(pom_bod);funkcni_klavesa=0;REFRESH();pom_bod=NULL;}//ctrl+klik na bod -> odstranění bodu
-					else if(funkcni_klavesa==1 || Akce==ZOOM_W_MENU)Akce=ZOOM_W;
-          //přidávání bodu na úsečku
-					if(funkcni_klavesa==3&&JID>100&&d.v.HALA.body->predchozi->n>2)
+					else
 					{
-						if(pom_bod->n!=1)d.v.vloz_bod(m.P2Lx(X),m.P2Ly(Y),NULL,pom_bod->predchozi);//ukazatel B ukazuje vždy na druhý bod úsečky
-						else d.v.vloz_bod(m.P2Lx(X),m.P2Ly(Y));
-						REFRESH();
-						funkcni_klavesa=0;
-          }
-					switch(Akce)
+						if(MOD==SCHEMA)//OBJEKT
+						{
+							pom=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.V_width*m2px,d.V_width*m2px/*,VyID*/);//hledá v kruhové oblasti
+							if(pom==NULL)//akcelerátor,aby se následně nehledalo znovu, pokud byla nalezena výhybka
+							pom=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width*m2px,d.O_height*m2px);
+							if(pom!=NULL){Akce=MOVE;kurzor(posun_l);posun_objektu=true;minule_souradnice_kurzoru=TPoint(X,Y);}
+							else if(JID==-1&&Akce==NIC){Akce=PAN;pan_non_locked=true;}//přímo dovolení PAN pokud se neposová objekt = Rosťova prosba
+							if(JID==-2){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_bod_temp=pom_bod;if(pom_bod_temp->n!=1)editovany_text=m.round2double(m.delka(pom_bod_temp->predchozi->X,pom_bod_temp->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),0);else if(pom==NULL)editovany_text=m.round2double(m.delka(d.v.HALA.body->predchozi->X,d.v.HALA.body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),0);else if(pom->body!=NULL)editovany_text=m.round2double(m.delka(pom->body->predchozi->X,pom->body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),0);}
+							if(JID==0){Akce=MOVE_BOD;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//posun jednoho bodu
+							if(JID==1){Akce=MOVE_USECKA;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//posun úsečky
+							if(JID==2){Akce=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//změna offsetu kót
+						}
+						else {Akce=PAN;pan_non_locked=true;}//přímo dovolení PAN pokud se neposová objekt   = Rosťova prosba
+					}
+				}
+				if(funkcni_klavesa==1&&JID>0&&JID<=100){d.v.smaz_bod(pom_bod);funkcni_klavesa=0;REFRESH();pom_bod=NULL;}//ctrl+klik na bod -> odstranění bodu
+				else if(funkcni_klavesa==1 || Akce==ZOOM_W_MENU)Akce=ZOOM_W;
+        //přidávání bodu na úsečku
+				if(funkcni_klavesa==3&&JID>100&&d.v.HALA.body->predchozi->n>2)
+				{
+					if(pom_bod->n!=1)d.v.vloz_bod(m.P2Lx(X),m.P2Ly(Y),NULL,pom_bod->predchozi);//ukazatel B ukazuje vždy na druhý bod úsečky
+					else d.v.vloz_bod(m.P2Lx(X),m.P2Ly(Y));
+					REFRESH();
+					funkcni_klavesa=0;
+        }
+				switch(Akce)
+				{
+					case PAN:
 					{
-						case PAN:
-						{
-							kurzor(pan_move);Akce=PAN_MOVE;//přepne z PAN na PAN_MOVE
-							pan_create();//vytvoří výřez pro pan_move
-							break;
-						}
-						case ZOOM_W:
-						{
-							kurzor(window);
-							predchozi_souradnice_kurzoru=vychozi_souradnice_kurzoru;
-							break;
-						}
-						case MOVE: d.odznac_oznac_objekt(Canvas,pom,X-vychozi_souradnice_kurzoru.x,Y-vychozi_souradnice_kurzoru.y); break;
-						case MEASURE:minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;break;
-						case KALIBRACE:
-						{
-							minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;
-							//+změnit kurzor
+						kurzor(pan_move);Akce=PAN_MOVE;//přepne z PAN na PAN_MOVE
+						pan_create();//vytvoří výřez pro pan_move
 						break;
-						}
-						case ADJUSTACE:minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;break;
-						case DRAW_HALA:
-						{
-							d.v.vloz_bod(m.P2Lx(X),m.P2Ly(Y),pom);
-							if(d.v.HALA.body->predchozi->n>1)REFRESH();//vykreslovat pouze v případě jednoho a více bodů
-							break;
-            }
-						default: break;
 					}
-					DuvodUlozit(true);
+					case ZOOM_W:
+					{
+						kurzor(window);
+						predchozi_souradnice_kurzoru=vychozi_souradnice_kurzoru;
+						break;
+					}
+					case MOVE: d.odznac_oznac_objekt(Canvas,pom,X-vychozi_souradnice_kurzoru.x,Y-vychozi_souradnice_kurzoru.y); break;
+					case MEASURE:minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;break;
+					case KALIBRACE:
+					{
+						minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;
+						//+změnit kurzor
+					break;
+					}
+					case ADJUSTACE:minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;break;
+					case DRAW_HALA:
+					{
+            //přichytávání k mřížce
+						TPointD souradnice;
+	        	if(grid)//pokud je zobrazena mřížka
+	        	{
+	        		switch(prichytavat_k_mrizce)
+	        		{
+	        			case 0:
+	        			{
+									if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete přichytit bod k mřížce?","",MB_YESNO,true,true))
+	        				{
+	        					if(myMessageBox->CheckBox_pamatovat->Checked)prichytavat_k_mrizce=1;
+	        					souradnice.x=m.round(m.P2Lx(X)/(size_grid*1.0*m2px))*size_grid*m2px;souradnice.y=m.round(m.P2Ly(Y)/(size_grid*1.0*m2px))*size_grid*m2px;
+	        				}
+	        				else
+									{
+	        					if(myMessageBox->CheckBox_pamatovat->Checked)prichytavat_k_mrizce=2;
+	        					souradnice=m.P2L(TPoint(X,Y));
+	        				}
+	        				break;
+	        			}
+	        			case 1:	souradnice.x=m.round(m.P2Lx(X)/(size_grid*1.0*m2px))*size_grid*m2px;souradnice.y=m.round(m.P2Ly(Y)/(size_grid*1.0*m2px))*size_grid*m2px;break;//přichytí automaticky
+								case 2: souradnice=m.P2L(TPoint(X,Y));break;//automaticky nepřichyt
+	        		}
+	        		akutalizace_stavu_prichytavani_vSB();
+	        	}
+						else souradnice=m.P2L(TPoint(X,Y));
+						d.v.vloz_bod(souradnice.x,souradnice.y,pom);
+						if(d.v.HALA.body->predchozi->n>1)REFRESH();//vykreslovat pouze v případě jednoho a více bodů
+						break;
+          }
+					default: break;
+				}
+				DuvodUlozit(true);
 			}
 			//POPUP menu
 			else//pokud není stisknuto levé tlačítko, předpokládá se volání pop-up menu
 			{
-					//nejdříve deaktiviace zaměřovače, je-li aktivní
-					deaktivace_zamerovace();
-					//nastavení zobrazení popUPmenu a jeho volání včetně pozice
-					onPopUP(X,Y);
+				//nejdříve deaktiviace zaměřovače, je-li aktivní
+				deaktivace_zamerovace();
+				//nastavení zobrazení popUPmenu a jeho volání včetně pozice
+				onPopUP(X,Y);
 			}
 		}
 		else//ukončení akce DRAW_HALA
@@ -2343,17 +2360,22 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			Cvektory::TBod *A,*B;//body úsečky
 			if(pom_bod->n==1)//poslední úsečka
 			{
-				A=pom_bod;
-				if(pom!=NULL)B=pom->body->dalsi;
-				else B=d.v.HALA.body->dalsi;
+				if(pom!=NULL){A=pom->body->predchozi;B=pom->body->dalsi;}
+				else {A=d.v.HALA.body->predchozi;B=d.v.HALA.body->dalsi;}
 			}
 			else {A=pom_bod->predchozi;B=pom_bod;}//ostatní úsečky
 			if(A->X==B->X)//posun po x
 				d.v.posun_hranu(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),0,A,B);
 			else if(A->Y==B->Y)//posun po y
 				d.v.posun_hranu(0,akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),A,B);
-			else//skosená úsečka, libovolný posun
-				d.v.posun_hranu(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),A,B);
+			else//skosená úsečka, posun po kolmici na úsečku
+			{
+				double posunx,posuny,vysledek;
+				posunx=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);//posun po x
+				posuny=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);//posun po y
+				if(m.abs_d(posunx)>m.abs_d(posuny))posuny=0;else posunx=0;//vylepšení "pocitu" z posunu, není nezbytně nutné
+				d.v.posun_hranu(posunx,posuny,A,B);
+			}
 			minule_souradnice_kurzoru=TPoint(X,Y);
 			REFRESH();
 			break;
@@ -2362,6 +2384,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		{
 			if(stisknute_leve_tlacitko_mysi)//pokud je stisknuto levé tlačítko
 			{
+				if(Screen->Cursor!=pan_move)kurzor(pan_move);
 				d.v.posun_body(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),pom);
 				REFRESH();
 			}
@@ -2437,11 +2460,35 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
     }
 		case OFFSET_KOTY:
 		{
-			if(pom_temp->rotace==0||pom_temp->rotace==180)pom_temp->koty_elementu_offset-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
-			else pom_temp->koty_elementu_offset+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
-			minule_souradnice_kurzoru=TPoint(X,Y);
-			REFRESH(false);
-			nahled_ulozit(true);
+			if(MOD==NAHLED)
+			{
+				if(pom_temp->rotace==0||pom_temp->rotace==180)pom_temp->koty_elementu_offset-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+				else pom_temp->koty_elementu_offset+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
+				minule_souradnice_kurzoru=TPoint(X,Y);
+		  	REFRESH(false);
+				nahled_ulozit(true);
+			}
+			else//pro schéma
+			{
+				//definice předchozího bodu
+				Cvektory::TBod *Bod;
+				if(pom_bod->n==1&&pom==NULL)Bod=d.v.HALA.body->predchozi;
+				if(pom_bod->n==1&&pom!=NULL&&pom->body!=NULL)Bod=pom->body->predchozi;
+				if(pom_bod->n!=1)Bod=pom_bod->predchozi;
+				//výpočet posunů
+				double posunx,posuny,vysledek=0,x1,y1;
+				posunx=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);posuny=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+				if(m.abs_d(posunx)>m.abs_d(posuny))vysledek=sin(DegToRad(fmod(m.azimut(Bod->X,Bod->Y,pom_bod->X,pom_bod->Y)+90,360)))*posunx;
+				else vysledek=cos(DegToRad(fmod(m.azimut(Bod->X,Bod->Y,pom_bod->X,pom_bod->Y)+90,360)))*posuny;
+				//určení, který posun uložit + uložení
+				if(Bod->X==pom_bod->X)pom_bod->kota_offset-=posunx;
+				else if(Bod->Y==pom_bod->Y)pom_bod->kota_offset-=posuny;
+				else pom_bod->kota_offset+=vysledek;
+				//nutné na konec
+				Bod=NULL;delete Bod;
+				minule_souradnice_kurzoru=TPoint(X,Y);
+				REFRESH();
+      }
 			break;
 		}
 //		case VYH://přidávání vyhýbky, ROZPRACOVÁNO!!!!!!
@@ -2594,7 +2641,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			}
 			case MOVE_BOD:
 			case MOVE_USECKA:
-			case MOVE_HALA:Akce=NIC;break;
+			case MOVE_HALA:Akce=NIC;kurzor(standard);break;
 			case ROZMER_KOMORA:Akce=NIC;break;
 			case ROZMER_KABINA:Akce=NIC;break;//konec editace rozmětu kabiny pomocí tahu
 			case OFFSET_KOTY:Akce=NIC;break;
@@ -2753,8 +2800,8 @@ void TForm1::getJobID(int X, int Y)
   									JID=-9;
   								}
   								else//kóty elementů RET=11-99
-  								{
-  									if(PtInKota_elementu==0 && pom_element!=NULL)JID=10+pom_element->n;//oblast kóty - posun kóty
+									{
+										if(PtInKota_elementu==0 && pom_element!=NULL)JID=10+pom_element->n;//oblast kóty - posun kóty
   									if(PtInKota_elementu==1 && pom_element!=NULL)JID=(10+pom_element->n)*(-1);//hodnota kóty
   								}
   							}
@@ -2777,26 +2824,35 @@ void TForm1::getJobID(int X, int Y)
   				{if(Y>=m.L2Py(pom_temp->Yk+d.v.vrat_velikosti_komor(pom_komora))-3&&Y<=m.L2Py(pom_temp->Yk+d.v.vrat_velikosti_komor(pom_komora))+3)JID=(10+pom_komora->n)*(-1);}
   		}
   		else if(pom_temp->zobrazit_koty)//prohledávání kót
-  		{
-  			short PtInKota_komory=d.v.PtInKota_komory(pom_temp,X,Y);
-  			if(PtInKota_komory==0 && pom_komora!=NULL)JID=10+pom_komora->n;//oblast kóty - posun kóty
-  			if(PtInKota_komory==1 && pom_komora!=NULL)JID=(10+pom_komora->n)*(-1);//hodnota kóty
+			{
+				short PtInKota_komory=d.v.PtInKota_komory(pom_temp,X,Y);
+				if(PtInKota_komory==0 && pom_komora!=NULL)JID=10+pom_komora->n;//oblast kóty - posun kóty
+				if(PtInKota_komory==1 && pom_komora!=NULL)JID=(10+pom_komora->n)*(-1);//hodnota kóty
   		}
 
 		}
 	}
 	else//pro schéma, zjišťování jidů pro body a úsečky
 	{
-		//1 - 100; bod haly nebo objektu, 0+pom_bod->n
-		//101 a dál; úsečka haly nebo objektu, 100+pom_bod->n
+		//-2; hodnota kóty bodu (přímka [A,B] uložena v bodě B) 0-pom_bod->n
+    //-1=NIC!!!!!!!!!!!!!!!
+		//0; bod haly nebo objektu
+		//1; úsečka haly nebo objektu
+		//2; oblast kóty bodu (přímka [A,B] uložena v bodě B)
 		if((d.v.HALA.body!=NULL||pom!=NULL)&&Akce==NIC)//má smysl pouze pokd existuje hala nebo objekt
 		{
 	  	pom_bod=d.v.najdi_bod(pom);
-	  	if(pom_bod!=NULL)JID=0+pom_bod->n;
-	  	else
+			if(pom_bod!=NULL)JID=0;
+			else//bod nenalezen, pokusí se najít úsečku
 	  	{
-	  		pom_bod=d.v.najdi_usecku(pom);
-				if(pom_bod!=NULL)JID=100+pom_bod->n;
+				pom_bod=d.v.najdi_usecku(pom,0);//druhý parametr udává přesnost s jakou hledám, popřípadě velikost oblasti kolem úsečky
+				if(pom_bod!=NULL)JID=1;
+				else//usečka nenalezena, pokusí se najít kótu
+				{
+					short PtInKota_bod=d.v.PtInKota_bod(pom);
+					if(PtInKota_bod==0 && pom_bod!=NULL)JID=2;//oblast kóty - posun kóty
+					if(PtInKota_bod==1 && pom_bod!=NULL)JID=-2;//hodnota kóty
+        }
 	  	}
 		}
   }
@@ -2878,8 +2934,10 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 			//kurzory, ...
 			if(JID!=-1)kurzor(posun_ind);
 			else kurzor(standard);
+			if(JID==-2)kurzor(edit_text);//hodnota kóty
+			if(JID==2)kurzor(posun_ind);//oblast kóty
 			REFRESH();
-    }
+		}
 		pom_bod_puv=NULL;delete pom_bod_puv;
   }
 }
@@ -3437,6 +3495,14 @@ void TForm1::ESC()
 		switch (index_kurzoru)
 		{
 			case 1:pom_element_temp->name=nazev_puvodni;break;
+			case -2:
+			{
+      	Cvektory::TBod *A=pom_bod_temp->predchozi;
+				if(pom_bod_temp->n==1&&pom==NULL)A=d.v.HALA.body->predchozi;
+				if(pom_bod_temp->n==1&&pom!=NULL&&pom->body!=NULL)A=d.v.HALA.body->predchozi;
+				editovany_text=m.round2double(m.delka(A->X,A->Y,pom_bod_temp->X,pom_bod_temp->Y),0);
+				A=NULL;delete A;
+			}break;
 			case -6:pom_temp->name=nazev_puvodni;break;
 			case -7:pom_temp->short_name=nazev_puvodni;break;
 			case -8:editovany_text=pom_temp->rozmer_kabiny.x;break;
@@ -8328,7 +8394,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Memo(tan(DegToRad(40.0)));//výpočet tangens pro posunv úsečky
+//	Memo(tan(DegToRad(40.0)));//výpočet tangens pro posunv úsečky
 //	//vytovoření schématu
 //	pom=NULL;pom_temp=NULL;pom_vyhybka=NULL;
 //	Cvektory::TObjekt *O,*O1,*O2,*O3,*V1,*V2=new Cvektory::TObjekt,*S1,*S2=new Cvektory::TObjekt;
@@ -9824,6 +9890,14 @@ void TForm1::vykresli_kurzor(int index)
 			}
 			stav_kurzoru=!stav_kurzoru;
 		}break;
+		case -2://hodnota kót objektu a haly
+		{
+    	Canvas->Pen->Color=clGray;
+			Canvas->Pen->Width=1.5;
+			Canvas->MoveTo(pom_bod_temp->kota.rect1.right+1,pom_bod_temp->kota.rect1.top);
+			Canvas->LineTo(pom_bod_temp->kota.rect1.right+1,pom_bod_temp->kota.rect1.bottom);
+			stav_kurzoru=!stav_kurzoru;
+		}break;
 		case -6://název objektu
 		{
 			if(Tn=="")Tn="b";//při prázdném textu nemůžu zjistit TextHeight -> to zapříčiní čpatné vykreslení kurzoru, když uživatel odmaže veškerý text
@@ -9865,7 +9939,7 @@ void TForm1::vykresli_kurzor(int index)
 	}
 	if(index<=-11&&pom_temp->id==3)//kóty komor
 	{
-  	Canvas->Pen->Color=clGray;
+		Canvas->Pen->Color=clGray;
 		Canvas->Pen->Width=1.5;
 		Canvas->MoveTo(pom_komora_temp->kota.rect1.right+1,pom_komora_temp->kota.rect1.top);
 		Canvas->LineTo(pom_komora_temp->kota.rect1.right+1,pom_komora_temp->kota.rect1.bottom);
@@ -9876,7 +9950,7 @@ void TForm1::vykresli_kurzor(int index)
 void TForm1::Smaz_kurzor()
 {
 	TIP="";
-	if(editace_textu)//ukončí editaci textu
+	if(editace_textu&&pom_temp!=NULL)//ukončí editaci textu
 	{
 		//pokud bylo zadáno nic přepíše nic původními hodnotamy
 		if((editovany_text==""||ms.MyToDouble(editovany_text)==0)&&index_kurzoru==-8)if(DKunit==2)editovany_text=pom_temp->rozmer_kabiny.x/pom_temp->pohon->aRD;else editovany_text=outDK(pom_temp->rozmer_kabiny.x);
@@ -9940,15 +10014,29 @@ void TForm1::Smaz_kurzor()
 			}
 			while(mimo!=0);//provadí přizpůsobění velikosti kabiny dokud nejsou všechny elementy v kabině
 		}
+		if(index_kurzoru<=-11&&pom_temp->id!=3&&(pom_element_temp->eID==2||pom_element_temp->eID==4))pom_element_temp->mGrid->Refresh();//musí se refreshovat z důvodu přepočtu RT u S&G
+	}
+	else if(editovany_text!="")//pokud neexistuje otevřený objekt + očetření proti zapsání prázdné hodnoty
+	{
+		//deklarace pomocných proměnných
+		double puv,nov=ms.MyToDouble(editovany_text),posun;
+		Cvektory::TBod *A=pom_bod_temp->predchozi;
+		if(pom_bod_temp->n==1&&pom==NULL)A=d.v.HALA.body->predchozi;
+		if(pom_bod_temp->n==1&&pom!=NULL&&pom->body!=NULL)A=d.v.HALA.body->predchozi;
+		//výpočet posunu (jednotlivé souřadnice bodu) + posun
+		puv=m.round2double(m.delka(A->X,A->Y,pom_bod_temp->X,pom_bod_temp->Y),0);
+		posun=nov-puv;
+		d.v.posun_bod(pom_bod_temp->X+sin(DegToRad(fmod(m.azimut(A->X,A->Y,pom_bod_temp->X,pom_bod_temp->Y),360)))*posun,pom_bod_temp->Y+cos(DegToRad(fmod(m.azimut(A->X,A->Y,pom_bod_temp->X,pom_bod_temp->Y),360)))*posun,pom_bod_temp);
+		A=NULL;delete A;
 	}
 	//pokud je kurzor vykreslen překresli ho
 	if (stav_kurzoru) vykresli_kurzor(index_kurzoru);
 	TimerKurzor->Enabled=false;
 	editace_textu=false;
-	if(index_kurzoru<=-11&&pom_temp->id!=3&&(pom_element_temp->eID==2||pom_element_temp->eID==4))pom_element_temp->mGrid->Refresh();//musí se refreshovat z důvodu přepočtu RT u S&G
 	//využívání pro uchování ukazatele při editaci kót
 	pom_element_temp=NULL; delete pom_element_temp;
 	pom_komora_temp=NULL; delete pom_komora_temp;
+	pom_bod_temp=NULL; delete pom_bod_temp;
 	REFRESH(true);//uvolnění rastru
 }
 //---------------------------------------------------------------------------
@@ -10154,6 +10242,7 @@ void __fastcall TForm1::scGPButton_posun_halyClick(TObject *Sender)
 	{
 		Akce=MOVE_HALA;
 		scSplitView_OPTIONS->Close();
+		kurzor(pan);
 	}
 }
 //---------------------------------------------------------------------------

@@ -20,6 +20,7 @@ class Cvektory
 		unsigned long n; //pořadí objektu ve spoj.seznamu
 		double X, Y;//umístění v logických (metrických) souřadnicích
 		T3Rect kota;//citelná oblast hodnoty kóty od aktuálního bodu k bodu předchozímu ve fyzických souřadnicích (px), uchovávájící oblast celé kóty(rect0), popisku kóty (rect1), jednotek kóty (rect2), neukládat do binárky, slouží jenom jako temp data při vykreslování
+    double kota_offset;//odsazení kót v metrech  - NEW + dodat do CObjekt!!!!
 		struct TBod *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 		struct TBod *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
@@ -363,7 +364,7 @@ class Cvektory
 		void posun_body(double OffsetX,double OffsetY,TObjekt* Objekt=NULL);//posune všechny body polygonu objektu či haly o daný offset
 		void rotuj_body(double X, double Y,double uhel,TObjekt* Objekt=NULL);//orotuje celý polygonu objektu či haly proti směru hodinových ručiček okolo osy dle bodu o souřadnicích X,Y, dle hodnoty rotace uhel
 		TBod *najdi_bod(TObjekt* Objekt=NULL);//na aktuálních souřadnicích myši hledá bod, pokud je nalezen vrátí na něj ukazatel, pokud je ukazatel na Objekt NULL, jedná se o metodu pro HALU
-		TBod *najdi_usecku(TObjekt* Objekt=NULL);//na aktuálních souřadnicích myši hledá úsečku, pokud je nalezena je vracen ukazatel na druhý bod, pokd nebylo nalezeno nic vrátí NULL, parametr Objekt implicitně NULLL, rozlišuje hledání úsečky v HALE nebo v Objektu
+		TBod *najdi_usecku(TObjekt* Objekt=NULL,long presnost=0);//na aktuálních souřadnicích myši hledá úsečku, pokud je nalezena je vracen ukazatel na druhý bod, pokd nebylo nalezeno nic vrátí NULL, parametr Objekt implicitně NULLL, rozlišuje hledání úsečky v HALE nebo v Objektu, parametr přesnost určuje vzdálenost od přímky, která je nutná k její detekci
 		short PtInKota_bod(TObjekt *Objekt=NULL);//ověří zda se na daných fyzických souřadnicích myši nachází kóta hrany/stěny HALy či Objektu (Objektu pokud Objekt!=NULL), pokud ne vrací -1, pokud ano 0 v celé kótě, 1 - na hodnotě kóty, 2 - na jednotkách kóty , pozn. oblast kóty se testuje až jako poslední
 		void kopiruj_body(TObjekt *Original,TObjekt *Kopie);//zkopíruje body včetně z originálu na kopii bez ukazatelového propojení, funguje jenom pro body objektů nikoliv HALY!!!
 		void smaz_bod(TBod* Bod,TObjekt* Objekt=NULL);//smaže konkrétní bod, pokud je ukazatel na Objekt NULL, jedná se o metodu pro HALU
