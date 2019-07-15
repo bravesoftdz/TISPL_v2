@@ -40,7 +40,6 @@ void Cvykresli::vykresli_halu(TCanvas *canv,int stav)
 	stav=-2;//defaultní stav
 	if(F->MOD==F->SCHEMA)//ošetření, tato metoda se spouští i při náhledu !!!!
 	{
-  	if(F->Akce==F->DRAW_HALA)stav=-3;
 		if(F->JID==0)stav=F->pom_bod->n;//body
 		if(F->JID==1&&F->pom_bod->n==1)stav=2*v.HALA.body->predchozi->n;//poslední úsečka
 		if(F->JID==1&&F->pom_bod->n!=1)stav=v.HALA.body->predchozi->n+F->pom_bod->n-1;//ostatní úsečky
@@ -4035,14 +4034,15 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 			}
 		}
 
-		////vykreslení kót, testování vykreslení kóty pro první úsečku
-		//doplnit + naplnění do T3Rect
+		////vykreslení kót
 		B=body->dalsi->dalsi;
 		short highlight=0;
-		while(B!=NULL)//vykreslení kót musí být v samostatém cyklu!!!!!
+		while(B!=NULL)//vykreslení kót musí být v samostatém cyklu!!!!!(jinak ovlivňuje vykreslení spojnic bodů)
 		{
+			//nastavení highlightu
 			if(F->pom_bod!=NULL&&F->JID==2&&F->pom_bod->n==B->n)highlight=2;
 			else if(F->pom_bod!=NULL&&F->JID==-2&&F->pom_bod->n==B->n)highlight=1;else highlight=0;
+      //vykreslení kóty
 			vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),m.round2double(m.delka(B->predchozi->X,B->predchozi->Y,B->X,B->Y),0),NULL,B->kota_offset,highlight,0.2,clGray,false,NULL,B);
 			B=B->dalsi;
 		}
@@ -4059,7 +4059,7 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 void Cvykresli::uchop(TCanvas *canv,Cvektory::TBod *B,TColor barva)
 {
 	//nastavení pera a velikosti
-	short o=m.m2px(0.4);//citelná oblast uchopovací kružnice, pokud by se zde hodnota měnila, nutno změnit i v v.najdi_bod!!!
+	float o=0.4; if(F->Zoom<=1)o=o/F->Zoom*5.5; o=m.m2px(o);//citelná oblast uchopovací kružnice, pokud by se zde hodnota měnila, nutno změnit i v v.najdi_bod!!!
 	canv->Pen->Color=clWhite;//orámování uchopu
 	canv->Pen->Width=m.round(0.5*F->Zoom);
 	canv->Brush->Style=bsSolid;//nastavení výplně
