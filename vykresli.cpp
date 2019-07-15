@@ -4059,7 +4059,8 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 void Cvykresli::uchop(TCanvas *canv,Cvektory::TBod *B,TColor barva)
 {
 	//nastavení pera a velikosti
-	float o=0.4; if(F->Zoom<=1)o=o/F->Zoom*5.5; o=m.m2px(o);//citelná oblast uchopovací kružnice, pokud by se zde hodnota měnila, nutno změnit i v v.najdi_bod!!!
+	float z=1;if(F->Zoom<=1+2*(short)F->antialiasing)z=1.5/F->Zoom*(1+2*(short)F->antialiasing);//pokud bude hodnota zoomu menší nebo rovno 1, bude uchop stejně velký jako při zoomu 1,5x
+	short o=m.m2px(0.4*z);//citelná oblast uchopovací kružnice, pokud by se zde hodnota měnila, nutno změnit i v v.najdi_bod!!!
 	canv->Pen->Color=clWhite;//orámování uchopu
 	canv->Pen->Width=m.round(0.5*F->Zoom);
 	canv->Brush->Style=bsSolid;//nastavení výplně
