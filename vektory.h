@@ -548,13 +548,15 @@ public:
 	void vymaz_TEXTY();//vymaže všechny texty ze spojového seznamu TEXTY včetně hlavičky
 
 //metody pro SPOJNICE
+	void vloz_spojnici(int vrstva=-1,short zakonceni=0);//vytvoří novou spojnici, a tu vloží do spojového seznamu spojnici, pokud ještě nebyla vytvořena hlavička, tak ji nejdříve založí, parametry: vrstva - ID vrstvy (např. layout vs. editace), zakonceni: 0 - nebude zakončeno, 1- bude zakončeno šipkou
 	void vloz_bod_spojnice(double X, double Y,TSpojnice *Spojnice=NULL,TBod *ZaBod=NULL,bool ortogonalizovat=true);//vloží nový bod na konec seznamu dané Spojnice pokud je Za=NULL, jinak vloží za tento bod, ošetřuje bod vložený na stejný místo jako předchozí, pokud je Spojnice==NULL vkládání bodů probíhá přímo do vkládání poslední Spojnice ve spojovém seznamu SPOJINICE
 	//void posun_bod(double X, double Y,TBod* Bod);//posune bod spojnice - použít již existující metodu
 	//void posun_hranu(double OffsetX,double OffsetY,TBod* Bod1,TBod* Bod2);//posune hranu tvořenou danými body o zadaný offset  - použít již existující metodu
 	void posun_body_spojnice(double OffsetX,double OffsetY,TSpojnice *Spojnice);//posune všechny body polygonu o daný offset
 	//zatím nebude využito: void rotuj_body(double X, double Y,double uhel,TSpojnice *Spojnice);//orotuje celý polygonu proti směru hodinových ručiček okolo osy dle bodu o souřadnicích X,Y, dle hodnoty rotace uhel
-	TBod *najdi_bod_spojnice();//na aktuálních souřadnicích myši hledá bod libovolné spojnicei, pokud je nalezen vrátí na něj ukazatel, jinak NULL
+	TBod *najdi_bod_spojnice();//na aktuálních souřadnicích myši hledá bod libovolné spojnice, pokud je nalezen vrátí na něj ukazatel, jinak NULL
 	TBod *najdi_usecku_spojnice();//na aktuálních souřadnicích myši hledá úsečku libovolné spojnice, pokud je nalezena je vracen ukazatel na druhý bod, pokud nebylo nalezeno nic vrátí NULL
+	TSpojnice *najdi_spojnici();//na aktuálních souřadnicích myší hledá spojnici, pokud najde vrací ukazatel na nalezenou spojnici, využívá výše uvedenou metodu
 	void kopiruj_spojnici(TObjekt *Original,TObjekt *Kopie);//zkopíruje spojnici včetně bodů spojnice z originálu na kopii bez ukazatelového propojení
 	void smaz_bod_spojnice(TBod* Bod,TSpojnice *Spojnice=NULL);//smaže konkrétní bod konkrétní spojnice, pokud je ukazatel Spojnice=NULL, jedná se bod poslední spojnice (je praktické např. při backspacu posledního bodu editované spojnice)
 	void vymaz_body_spojnice(TSpojnice *Spojnice=NULL);//vymaže všechny body včetně hlavičky dané spojnice, pokud je ukazatel Spojnice=NULL, jedná se bod poslední spojnice (je praktické např. při ESC editované spojnice) - využívá výše uvedenou metodu
