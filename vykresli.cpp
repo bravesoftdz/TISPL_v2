@@ -320,6 +320,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv)
 void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O)
 {
 	////vstupní proměnné
+	TColor clAkt=clStenaKabiny;
 	short rotace=0; O->rotace;
 	long X1=m.L2Px(O->Xk);
 	long Y1=m.L2Py(O->Yk);
@@ -337,11 +338,12 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O)
 	////nastavení pera pro kabinu
 	canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
 	canv->Pen->Mode=pmNotXor;//pro transparentní zákres
-	canv->Pen->Color=clStenaKabiny;//barva
+	canv->Pen->Color=clAkt;//barva
 	canv->Pen->Width=sirka_steny_px;//šířka v pixelech
 
 	////vnější obrys kabiny
 	canv->Rectangle(X1-W,Y1-W,X2+W,Y2+W);//rám - kresleno pod komory, kvůli nastavení pera
+	//polygon(canv,O->body,clAkt,sirka_steny_px);//nové vykreslování příprava
 
 	short highlight=0;//nastavování zda mají být koty highlightovány
 
@@ -356,35 +358,49 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O)
 			//nastavení pera, musí být znova, vykreslení kót pero přenastaví
 			canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
 			canv->Pen->Mode=pmCopy;pmNotXor;//pro transparentní zákres
-			if(F->JID*(-1)-10==K->n||(F->JID==0&&F->pom_komora->n==K->n))set_pen(canv,m.clIntensive(clStenaKabiny,-50),sirka_steny_px,PS_ENDCAP_SQUARE);
-			else set_pen(canv,clStenaKabiny,sirka_steny_px,PS_ENDCAP_FLAT);
+			if(F->JID*(-1)-10==K->n||(F->JID==0&&F->pom_komora->n==K->n))clAkt=m.clIntensive(clStenaKabiny,-50);//highlight
+			else clAkt=clStenaKabiny;
+			set_pen(canv,clAkt,sirka_steny_px,PS_ENDCAP_FLAT);
 			vzdalenost+=K->velikost;//dle velikosti předchozích komor uchovává hodnotu součtu/pozice aktuálně vykreslované komory
 			short W1=0;if(K->n==1)W1=W;//pro první komoru odsazeni
 			if(rotace==0 || rotace==180)
 			{
+				//vykreslení přepážek
 				long X=X1+m.m2px(vzdalenost);
 				long Y=(Y1+Y2)/2.0;
 				line(canv,X,Y1,X,Y-pmpp);
 				line(canv,X,Y2,X,Y+pmpp);
-				if(F->JID*(-1)-10==K->n || (F->JID==0 && F->pom_komora->n==K->n))//highlight komory
+				//highlight komory
+				if(F->JID*(-1)-10==K->n || (F->JID==0 && F->pom_komora->n==K->n))
 				{
 					canv->MoveTo(X,Y1-W);
 					canv->LineTo(X-m.m2px(K->velikost)-W1,Y1-W);
-					if(K->n!=1)
+					if(K->n!=1)//mimo první komory
 					{
 						canv->LineTo(X-m.m2px(K->velikost)-W1,Y-pmpp);
 						canv->MoveTo(X-m.m2px(K->velikost)-W1,Y+pmpp);
 					}
 					canv->LineTo(X-m.m2px(K->velikost)-W1,Y2+W);
 					canv->LineTo(X,Y2+W);
-        }
+				}
+				//symbolika tekoucí kapaliny
+				set_pen(canv,clAkt,sirka_steny_px/4,PS_ENDCAP_SQUARE);
+				long Xp=X-m.m2px(K->velikost);//Xp-předchozí
+				short krok=sirka_steny_px;//pouze zneužití sirka_steny_px
+				for(unsigned int i=krok;i<m.m2px(K->velikost);i+=krok)
+				{				                 //pouze zneužití pmpp
+					line(canv,Xp+i,Y1,Xp+i,Y1+pmpp*2);
+					line(canv,Xp+i,Y2,Xp+i,Y2-pmpp*2);
+				}
 			}
 			else
 			{
+				//vykreslení přepážek
 				long X=(X1+X2)/2.0;
 				long Y=Y1+m.m2px(vzdalenost);
 				line(canv,X1,Y,X-pmpp,Y);
 				line(canv,X2,Y,X+pmpp,Y);
+				//highlight komory
 				if(F->JID*(-1)-10==K->n || (F->JID==0 && F->pom_komora->n==K->n))//highlight komory
 				{
 					canv->MoveTo(X1-W,Y);
@@ -397,7 +413,10 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O)
 					canv->LineTo(X2+W,Y-m.m2px(K->velikost)-W1);
 					canv->LineTo(X2+W,Y);
 				}
+				//symbolika tekoucí kapaliny
+				//doplnit dle doladení na vodorovné situaci!!!!!
 			}
+			//KÓTY
 			//nastavení highlight
 			if((F->JID==0&&F->pom_komora->n==K->n) || (F->JID*(-1)-10==K->n || F->JID*(-1)-10==K->predchozi->n)&&F->d.v.PtInKota_komory(F->pom_temp,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
 			else if(F->JID*(-1)-10==K->n || F->JID>=11 && F->JID<=99)highlight=1;
@@ -1678,26 +1697,43 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 ////---------------------------------------------------------------------------
 void Cvykresli::rotace_textu(TCanvas *canv, long rotace)//úhel rotace je desetinách stupně
 {
-		LOGFONT LogRec;
-		GetObject(canv->Font->Handle,sizeof(LogRec),&LogRec);
-		LogRec.lfEscapement=rotace;
-		canv->Font->Handle=CreateFontIndirect(&LogRec);
+	LOGFONT LogRec;
+	GetObject(canv->Font->Handle,sizeof(LogRec),&LogRec);
+	LogRec.lfEscapement=rotace;
+	canv->Font->Handle=CreateFontIndirect(&LogRec);
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 ////nastaví pero                                                             //http://www.zive.cz/clanky/geometricka-pera/sc-3-a-103079
 void Cvykresli::set_pen(TCanvas *canv, TColor color, int width, int style)//PS_ENDCAP_FLAT PS_ENDCAP_ROUND, PS_ENDCAP_SQUARE viz Matoušek III str. 179
 {
-		DeleteObject(canv->Pen->Handle);//zruší původní pero
-		DWORD pStyle = PS_GEOMETRIC | PS_SOLID | style /*| PS_JOIN_BEVEL*/ | PS_INSIDEFRAME;
-		DWORD pWidth = width;
+	DeleteObject(canv->Pen->Handle);//zruší původní pero
+	DWORD pStyle = PS_GEOMETRIC | PS_SOLID | style /*| PS_JOIN_BEVEL*/ | PS_INSIDEFRAME; //|PS_JOIN_MITER
+	DWORD pWidth = width;
 
-		LOGBRUSH lBrush;
-		lBrush.lbStyle = BS_SOLID;
-		lBrush.lbColor = color;
-		lBrush.lbHatch = 0;
+	LOGBRUSH lBrush;
+	lBrush.lbStyle = BS_SOLID;
+	lBrush.lbColor = color;
+	lBrush.lbHatch = 0;
+	//LOGBRUSH lBrush={BS_PATTERN,color,(unsigned)srafura()->Handle};
 
-		canv->Pen->Handle = ExtCreatePen(pStyle, pWidth, &lBrush, NULL, NULL);
+	canv->Pen->Handle = ExtCreatePen(pStyle, pWidth, &lBrush, 0, NULL);
+}
+////---------------------------------------------------------------------------
+Graphics::TBitmap *Cvykresli::srafura()
+{
+	Graphics::TBitmap * Vzor=new Graphics::TBitmap;
+	Vzor->Height=50*F->Zoom;Vzor->Width=50*F->Zoom;
+	Vzor->Canvas->Pen->Color=clStenaHaly;
+	for(unsigned int i=0;i<=Vzor->Width;i+=5*F->Zoom)
+	{
+		Vzor->Canvas->MoveTo(i,0);
+		Vzor->Canvas->LineTo(m.round(i-2*F->Zoom)/*m.rotace(i,180,sklon).x*/,Vzor->Height);
+	}
+//		SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
+//		Vzor->LoadFromFile("Vzor.bmp");
+
+	return Vzor;
 }
 ////---------------------------------------------------------------------------
 TColor Cvykresli::set_color(TCanvas *canv, Cvektory::TObjekt *O)
@@ -3981,6 +4017,7 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 		////výchozí parametry
 		//short W=m.round(sirka/2.0);//posunutí vykreslení orámování nad vnější rozměry kabiny
 		TColor clHighlight=m.clIntensive(barva,-50);
+		TColor clDisabled=m.clIntensive(barva,50);
 
 		////nastavení pera spojnic
 		canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
@@ -3996,7 +4033,7 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 		{
 			//canv->Pen->Mode=pmNotXor;//pro transparentní zákres
 			canv->Pen->Mode=pmCopy;
-			canv->Pen->Color=barva;if(stav==-1)canv->Pen->Color=clHighlight;//barva
+			canv->Pen->Color=barva;if(stav==-1)canv->Pen->Color=clDisabled;//barva
 			canv->Pen->Width=sirka;//šířka v pixelech
 			set_pen(canv,canv->Pen->Color,sirka,/*PS_ENDCAP_FLAT*/PS_ENDCAP_SQUARE);
 		}
