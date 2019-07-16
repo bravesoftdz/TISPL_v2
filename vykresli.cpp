@@ -4269,7 +4269,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	if(aktElement==NULL&&komora==NULL&&bod==NULL)highlight=0;//odstranění highlightu na kótách mezi lak. okny
 	//měřítko (náhled vs. schéma), provizorně
 	short meritko=1;
-	if(F->MOD==F->SCHEMA){meritko=20;width*=5;Offset*=70/3*F->Zoom;}
+	if(F->MOD==F->SCHEMA){meritko=20;width*=5;}
 	width=m.round(width*F->Zoom);if(highlight)width*=2;//šířka linie
 	short Presah=m.round(1.3*F->Zoom);if(Offset<0)Presah*=-1;//přesah packy u kóty,v případě záporného offsetu je vystoupení kóty nazákladě tohot záporné
 	short V=0;if(highlight==2)V=1;//vystoupení kóty
@@ -4278,6 +4278,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 
 	//vykreslení postranních šipek
 	canv->Brush->Style=bsSolid;
+	set_pen(canv,color,width,PS_ENDCAP_FLAT);
 	//vykreslení kóty
 	float azimut=fmod(m.azimut(X1,Y1,X2,Y2)+90,360);//určení azimutu kótované přímky
 	double x1=X1,y1=Y1,x2=X2,y2=Y2,odsazeni=Offset+Presah+Presah*V;//body sloužící k přepočtu souřadnic + hodnota celkového odsazení
