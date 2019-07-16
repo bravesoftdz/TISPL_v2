@@ -26,7 +26,7 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod,bool orto
 	////alokace paměti
 	TBod *Bod=new TBod;
 	//nastavení defaultních hodnot
-  Bod->kota_offset=-1;
+  Bod->kota_offset=-70;
 	////data
 	if(ortogonalizovat)//pokud je požadavek na ortogonalizaci, tak ověření zda je možný
 	{
@@ -211,7 +211,7 @@ void Cvektory::rotuj_body(double X, double Y,double uhel,TObjekt* Objekt)
 //na aktuálních souřadnicích myši hledá bod, pokud je nalezen vrátí na něj ukazatel, pokud je ukazatel na Objekt NULL, jedná se o metodu pro HALU
 Cvektory::TBod *Cvektory::najdi_bod(TObjekt* Objekt)
 {
-	float o=0.4;//citelná oblast v metrech, pokud nebudu chtít zvětšovat se zoomem, tak zde podělit zoomem, pokud by se hodnota měnila, tak změnit i v vykresli v uchop metodě!!!
+	float o=0.4;if(F->Zoom<=1)o=m.round(o/F->Zoom*5.5);//citelná oblast v metrech, pokud nebudu chtít zvětšovat se zoomem, tak zde podělit zoomem, pokud by se hodnota měnila, tak změnit i v vykresli v uchop metodě!!!
 	TBod *B=NULL;
 	if(Objekt!=NULL&&Objekt->body!=NULL)B=Objekt->body->dalsi;//jedná se o body objektu + přeskočí hlavičku
 	else if(HALA.body!=NULL)B=HALA.body->dalsi;//jedná se bod haly + přeskočí hlavičku
@@ -227,7 +227,7 @@ Cvektory::TBod *Cvektory::najdi_bod(TObjekt* Objekt)
 Cvektory::TBod *Cvektory::najdi_usecku(TObjekt* Objekt,long presnost)
 {
 	double x=F->akt_souradnice_kurzoru.x,y=F->akt_souradnice_kurzoru.y;//souřadnice kurzoru jsou neměnné po celou dobu metody
-	TBod *B=NULL,*pom=NULL;//return proměnná + krokování cyklu
+	TBod *A=NULL,*B=NULL;//return proměnná + krokování cyklu
 	if(Objekt!=NULL&&Objekt->body!=NULL)B=Objekt->body->dalsi->dalsi;//jedná se o body objektu + přeskočí hlavičku + začátek na druhém bodu
 	else if(HALA.body!=NULL&&HALA.body->predchozi->n>1)B=HALA.body->dalsi->dalsi;//jedná se bod haly + přeskočí hlavičku + začně na druhém bodu (pokud existuje, jestli ne return NULL)
 	while(B!=NULL)
@@ -238,15 +238,15 @@ Cvektory::TBod *Cvektory::najdi_usecku(TObjekt* Objekt,long presnost)
 		if(B->dalsi==NULL)
 		{
 			//předání ukazatele na první bod podle režimu (Objekt, HALA)
-			if(Objekt!=NULL&&Objekt->body!=NULL)pom=Objekt->body->dalsi;
-			else if(HALA.body!=NULL&&HALA.body->predchozi->n>1)pom=HALA.body->dalsi;
+			if(Objekt!=NULL&&Objekt->body!=NULL)A=Objekt->body->dalsi;
+			else if(HALA.body!=NULL&&HALA.body->predchozi->n>1)A=HALA.body->dalsi;
 			//prohledávání první, poslední, pokud nalezeno uloží do ret. proměnné B ukazatel na první bod
-			if(m.LeziVblizkostiUsecky(x,y,B->X,B->Y,pom->X,pom->Y)<=presnost){B=pom;break;}
+			if(m.LeziVblizkostiUsecky(x,y,A->X,A->Y,B->X,B->Y)<=presnost){B=A;break;}
 		}
 		B=B->dalsi;
 	}
 	//nulování + mazání pomovného ukazatele
-	pom=NULL;delete pom;
+	A=NULL;delete A;
 	return B;
 }
 ////---------------------------------------------------------------------------
@@ -255,7 +255,7 @@ short Cvektory::PtInKota_bod(TObjekt *Objekt)
 {
 	short RET=-1;//nic nenalezeno
 	double x=F->akt_souradnice_kurzoru_PX.x,y=F->akt_souradnice_kurzoru_PX.y;//souřadnice kurzoru jsou neměnné po celou dobu metody, důležité použít fyzické souřadnice !!!
-	TBod *B=NULL,*pom=NULL;//return proměnná + krokování cyklu
+	TBod *B=NULL;//return proměnná + krokování cyklu
 	if(Objekt!=NULL&&Objekt->body!=NULL)B=Objekt->body->dalsi;//jedná se o body objektu + přeskočí hlavičku + začátek na druhém bodu
 	else if(HALA.body!=NULL&&HALA.body->predchozi->n>1)B=HALA.body->dalsi;//jedná se bod haly + přeskočí hlavičku + začně na druhém bodu (pokud existuje, jestli ne return NULL)
 	while(B!=NULL)
@@ -264,7 +264,7 @@ short Cvektory::PtInKota_bod(TObjekt *Objekt)
 		else
 		{
 			if(B->kota.rect2.PtInRect(TPoint(x,y))){RET=2;F->pom_bod=B;break;}//jednotky kóty
-			else if(m.LeziVblizkostiUsecky(x,y,B->kota.rect0.left,B->kota.rect0.top,B->kota.rect0.right,B->kota.rect0.bottom)<=1){RET=0;F->pom_bod=B;break;}//oblast kóty
+			else if(m.LeziVblizkostiUsecky(x,y,B->kota.rect0.left,B->kota.rect0.top,B->kota.rect0.right,B->kota.rect0.bottom)<=5){RET=0;F->pom_bod=B;break;}//oblast kóty
 		}
 		B=B->dalsi;
 	}

@@ -4101,7 +4101,7 @@ object Form1: TForm1
     end
     object scExPanel_vrstvy: TscExPanel
       Left = 1
-      Top = 451
+      Top = 569
       Width = 249
       Height = 64
       Margins.Left = 5
@@ -4138,7 +4138,7 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  Vrstvy'
-      ExplicitTop = 461
+      ExplicitTop = 451
     end
     object scExPanel_podklad: TscExPanel
       Left = 1
@@ -4286,8 +4286,6 @@ object Form1: TForm1
         Down = False
         GroupIndex = 0
         AllowAllUp = False
-        ExplicitLeft = 0
-        ExplicitTop = 68
       end
       object scGPButton_kalibrace: TscGPButton
         AlignWithMargins = True
@@ -4398,8 +4396,6 @@ object Form1: TForm1
         Down = False
         GroupIndex = 0
         AllowAllUp = False
-        ExplicitTop = 36
-        ExplicitWidth = 243
       end
       object scGPCheckBox_stupne_sedi: TscGPCheckBox
         AlignWithMargins = True
@@ -4503,8 +4499,6 @@ object Form1: TForm1
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
-        ExplicitLeft = 11
-        ExplicitWidth = 246
       end
       object scGPCheckBox_zobraz_podklad: TscGPCheckBox
         AlignWithMargins = True
@@ -4608,8 +4602,6 @@ object Form1: TForm1
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
-        ExplicitLeft = 6
-        ExplicitWidth = 240
       end
       object scGPTrackBar_svetelnost_posuvka: TscGPTrackBar
         AlignWithMargins = True
@@ -4647,7 +4639,7 @@ object Form1: TForm1
       end
       object scLabel1_svetelnost: TscLabel
         AlignWithMargins = True
-        Left = 3
+        Left = 6
         Top = 170
         Width = 156
         Height = 19
@@ -4821,8 +4813,6 @@ object Form1: TForm1
         Down = False
         GroupIndex = 0
         AllowAllUp = False
-        ExplicitLeft = 0
-        ExplicitWidth = 249
       end
       object scGPButton_posun_haly: TscGPButton
         AlignWithMargins = True
@@ -4932,15 +4922,13 @@ object Form1: TForm1
         Down = False
         GroupIndex = 0
         AllowAllUp = False
-        ExplicitLeft = 0
-        ExplicitWidth = 249
       end
     end
     object scExPanel_ostatni: TscExPanel
       Left = 1
       Top = 347
       Width = 249
-      Height = 104
+      Height = 222
       Margins.Left = 5
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -4974,7 +4962,6 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  Obecn'#233
-      ExplicitTop = 357
       object scGPButton_mereni_vzdalenost: TscGPButton
         AlignWithMargins = True
         Left = 3
@@ -5084,9 +5071,6 @@ object Form1: TForm1
         Down = False
         GroupIndex = 0
         AllowAllUp = False
-        ExplicitLeft = 46
-        ExplicitTop = 33
-        ExplicitWidth = 240
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
@@ -5189,9 +5173,118 @@ object Form1: TForm1
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
-        ExplicitLeft = 6
-        ExplicitTop = 68
-        ExplicitWidth = 240
+      end
+      object scGPSwitch_grid: TscGPSwitch
+        AlignWithMargins = True
+        Left = 6
+        Top = 109
+        Width = 42
+        Height = 20
+        TabOrder = 2
+        Animation = True
+        FrameColor = clWhite
+        FrameOnColor = clWhite
+        FramePressedColor = 5912332
+        ParentColor = True
+        State = scswOn
+        StyleKind = scswsStyled
+        ThumbColor = clWhite
+        ThumbOnColor = 8538404
+        ThumbPressedColor = clWhite
+        FrameColorAlpha = 255
+        FrameOnColorAlpha = 255
+        FramePressedColorAlpha = 255
+        ThumbColorAlpha = 255
+        ThumbOnColorAlpha = 255
+        ThumbPressedColorAlpha = 255
+        ThumbShadow = False
+        FrameSolid = False
+        FrameOnSolid = True
+        FrameInside = False
+        OnChangeState = scGPSwitch_gridChangeState
+      end
+      object scGPSwitch_meritko: TscGPSwitch
+        AlignWithMargins = True
+        Left = 6
+        Top = 135
+        Width = 42
+        Height = 20
+        TabOrder = 3
+        Animation = True
+        FrameColor = clWhite
+        FrameOnColor = clWhite
+        FramePressedColor = 5912332
+        ParentColor = True
+        State = scswOn
+        StyleKind = scswsStyled
+        ThumbColor = clWhite
+        ThumbOnColor = 8538404
+        ThumbPressedColor = clWhite
+        FrameColorAlpha = 255
+        FrameOnColorAlpha = 255
+        FramePressedColorAlpha = 255
+        ThumbColorAlpha = 255
+        ThumbOnColorAlpha = 255
+        ThumbPressedColorAlpha = 255
+        ThumbShadow = False
+        FrameSolid = False
+        FrameOnSolid = True
+        FrameInside = False
+        OnChangeState = scGPSwitch_meritkoChangeState
+      end
+      object scLabel16: TscLabel
+        AlignWithMargins = True
+        Left = 57
+        Top = 109
+        Width = 52
+        Height = 20
+        Margins.Left = 6
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -17
+        Font.Name = 'Roboto'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 4
+        DragForm = False
+        DragTopForm = True
+        GlowEffect.Enabled = False
+        GlowEffect.Color = clBtnShadow
+        GlowEffect.AlphaValue = 255
+        GlowEffect.GlowSize = 7
+        GlowEffect.Offset = 0
+        GlowEffect.Intensive = True
+        GlowEffect.StyleColors = True
+        AutoSize = True
+        UseFontColorToStyleColor = False
+        Caption = 'M'#345#237#382'ka'
+      end
+      object scLabel5: TscLabel
+        AlignWithMargins = True
+        Left = 57
+        Top = 135
+        Width = 59
+        Height = 20
+        Margins.Left = 6
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -17
+        Font.Name = 'Roboto'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 5
+        DragForm = False
+        DragTopForm = True
+        GlowEffect.Enabled = False
+        GlowEffect.Color = clBtnShadow
+        GlowEffect.AlphaValue = 255
+        GlowEffect.GlowSize = 7
+        GlowEffect.Offset = 0
+        GlowEffect.Intensive = True
+        GlowEffect.StyleColors = True
+        AutoSize = True
+        UseFontColorToStyleColor = False
+        Caption = 'M'#283#345#237'tko'
       end
     end
   end
@@ -5933,34 +6026,6 @@ object Form1: TForm1
       FrameInside = False
       OnChangeState = scGPSwitch_AAChangeState
     end
-    object scGPSwitch_grid: TscGPSwitch
-      Left = 100
-      Top = 362
-      Width = 42
-      Height = 20
-      TabOrder = 6
-      Animation = True
-      FrameColor = clWhite
-      FrameOnColor = clWhite
-      FramePressedColor = 5912332
-      ParentColor = True
-      State = scswOn
-      StyleKind = scswsStyled
-      ThumbColor = clWhite
-      ThumbOnColor = 8538404
-      ThumbPressedColor = clWhite
-      FrameColorAlpha = 255
-      FrameOnColorAlpha = 255
-      FramePressedColorAlpha = 255
-      ThumbColorAlpha = 255
-      ThumbOnColorAlpha = 255
-      ThumbPressedColorAlpha = 255
-      ThumbShadow = False
-      FrameSolid = False
-      FrameOnSolid = True
-      FrameInside = False
-      OnChangeState = scGPSwitch_gridChangeState
-    end
     object scLabel11: TscLabel
       Left = 0
       Top = 340
@@ -5972,7 +6037,7 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      TabOrder = 7
+      TabOrder = 6
       Visible = False
       DragForm = False
       DragTopForm = True
@@ -5987,31 +6052,6 @@ object Form1: TForm1
       UseFontColorToStyleColor = False
       Caption = 'Antialiasing'
     end
-    object scLabel16: TscLabel
-      Left = 3
-      Top = 362
-      Width = 37
-      Height = 16
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
-      Font.Height = -13
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 8
-      DragForm = False
-      DragTopForm = True
-      GlowEffect.Enabled = False
-      GlowEffect.Color = clBtnShadow
-      GlowEffect.AlphaValue = 255
-      GlowEffect.GlowSize = 7
-      GlowEffect.Offset = 0
-      GlowEffect.Intensive = True
-      GlowEffect.StyleColors = True
-      AutoSize = True
-      UseFontColorToStyleColor = False
-      Caption = 'M'#345#237#382'ka'
-    end
     object scButton_ulozjako: TscButton
       Left = 0
       Top = 120
@@ -6024,7 +6064,7 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      TabOrder = 9
+      TabOrder = 7
       OnClick = UlozitjakoClick
       Animation = False
       Caption = 'Ulo'#382'it jako...'
@@ -6116,7 +6156,7 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      TabOrder = 10
+      TabOrder = 8
       OnClick = Export1Click
       Animation = False
       Caption = 'Export...'
@@ -6208,7 +6248,7 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      TabOrder = 11
+      TabOrder = 9
       OnClick = MagnaClick
       Animation = False
       Caption = 'Naposledy otev'#345'en'#253
@@ -6288,59 +6328,6 @@ object Form1: TForm1
       AllowAllUp = True
       WordWrap = False
     end
-    object scGPSwitch_meritko: TscGPSwitch
-      Left = 100
-      Top = 392
-      Width = 42
-      Height = 20
-      TabOrder = 12
-      Animation = True
-      FrameColor = clWhite
-      FrameOnColor = clWhite
-      FramePressedColor = 5912332
-      ParentColor = True
-      State = scswOn
-      StyleKind = scswsStyled
-      ThumbColor = clWhite
-      ThumbOnColor = 8538404
-      ThumbPressedColor = clWhite
-      FrameColorAlpha = 255
-      FrameOnColorAlpha = 255
-      FramePressedColorAlpha = 255
-      ThumbColorAlpha = 255
-      ThumbOnColorAlpha = 255
-      ThumbPressedColorAlpha = 255
-      ThumbShadow = False
-      FrameSolid = False
-      FrameOnSolid = True
-      FrameInside = False
-      OnChangeState = scGPSwitch_meritkoChangeState
-    end
-    object scLabel5: TscLabel
-      Left = 3
-      Top = 392
-      Width = 42
-      Height = 16
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
-      Font.Height = -13
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 13
-      DragForm = False
-      DragTopForm = True
-      GlowEffect.Enabled = False
-      GlowEffect.Color = clBtnShadow
-      GlowEffect.AlphaValue = 255
-      GlowEffect.GlowSize = 7
-      GlowEffect.Offset = 0
-      GlowEffect.Intensive = True
-      GlowEffect.StyleColors = True
-      AutoSize = True
-      UseFontColorToStyleColor = False
-      Caption = 'M'#283#345#237'tko'
-    end
     object scButton_novy: TscButton
       Left = 0
       Top = 0
@@ -6353,7 +6340,7 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      TabOrder = 14
+      TabOrder = 10
       OnClick = NovySouborClick
       Animation = False
       Caption = 'Nov'#253'...'
@@ -6446,7 +6433,7 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      TabOrder = 15
+      TabOrder = 11
       OnClick = UlozitClick
       Animation = False
       Caption = 'Ulo'#382'it'
@@ -6540,7 +6527,7 @@ object Form1: TForm1
       Font.Style = []
       ParentBiDiMode = False
       ParentFont = False
-      TabOrder = 16
+      TabOrder = 12
       OnClick = Button_dopravnik_parametryClick
       Animation = False
       Caption = 'Parametry linky'
@@ -6633,7 +6620,7 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      TabOrder = 17
+      TabOrder = 13
       OnClick = scButton_nacist_podkladClick
       Animation = False
       Caption = 'Na'#269#237'st podklad...'
@@ -8985,7 +8972,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118009807B40710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118009807B80710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10116,7 +10103,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C010141000009400930003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010141000009440930003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000003003000001002000000000000090
       0900000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
