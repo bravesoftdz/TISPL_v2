@@ -5,7 +5,6 @@
 #include "knihovna_objektu.h"
 #include "my.h"
 #include "TmGrid.h"
-//#define TITULEK "Omap editor"
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 class Cvektory
@@ -286,14 +285,24 @@ class Cvektory
 	};
 	struct TOdstavka ODSTAVKY;//seznam plánovaných odstávek linky
 
+	struct TRetez
+	{
+		unsigned int n; //pořadí objektu ve spoj.seznamu
+		AnsiString name;//název řetězu
+		double roztec;//rozteč palců na řetězů v metrech
+		struct TRetez *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+		struct TRetez *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+	};
+	struct TRetez *RETEZY;
+
 	struct TText
 	{
 		unsigned long n; //pořadí objektu ve spoj.seznamu
-		int vrstva;//ID vrstvy
+		int vrstva;//ID vrstvy, slouží na filtr vykreslení (např. layout vs. editace)
 		double X, Y;//umístění objektu levý horní okraj
 		short zarvonani;//typ zarovnání textu vůči X,Y
 		UnicodeString text;//samotný text
-		TFont *Font;//název fontu
+		TFont *Font;//vlastnosti font (název, velikost, rotace, barva, styl)
 		//použít na CFont:unsigned short int size;
 		//použít na CFont:unsigned short int styl;//0-nic, 1-bold,2-italic,3-oboje
 		//použít na CFont:TColor barva;
@@ -306,7 +315,8 @@ class Cvektory
 	struct TSpojnice
 	{
 		unsigned long n; //pořadí objektu ve spoj.seznamu
-		int vrstva;//ID vrstvy
+		int vrstva;//ID vrstvy (např. layout vs. editace)
+		short zakonceni;//0 - nebude zakončeno, 1- bude zakončeno šipkou, popř. další možné typy doplnit
 		short typ;//0-liniová spojnice, 1-bézierová spojnice
 		TBod *body;//souřadnice vedení šipky
 		unsigned short int width;//šířka v px
@@ -315,17 +325,7 @@ class Cvektory
 		struct TSpojnice *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 		struct TSpojnice *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
-	struct TSpojnice *SPOJNICE;//seznam linií sloužicích jako poznámky
-
-	struct TRetez
-	{
-		unsigned int n; //pořadí objektu ve spoj.seznamu
-		AnsiString name;//název řetězu
-		double roztec;//rozteč palců na řetězů v metrech
-		struct TRetez *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-		struct TRetez *dalsi;//ukazatel na  další objekt ve spojovém seznamu
-	};
-	struct TRetez *RETEZY;
+	struct TSpojnice *SPOJNICE;//seznam linií sloužicích pro účely poznámek
 
 	struct TFile_hlavicka
 	{
@@ -535,21 +535,45 @@ public:
 	long vymaz_seznam_RETEZY();//smaze RETEZY z pameti
 
 //metody pro PALCE
-//		void hlavicka_palce();
-//		void vloz_palec();//přidá nový vozík do seznamu PALCE
-//		long vymaz_seznam_palcu();
+// void hlavicka_palce();
+// void vloz_palec();//přidá nový vozík do seznamu PALCE
+// long vymaz_seznam_palcu();
 
-		//odstraní všechny vektory (všechny globální spojáky)
-		void vse_odstranit();
+//metody pro TEXTY
+	void vloz_text(double X, double Y,AnsiString text,int vrstva=-1);//vloží nový text na konec seznamu
+	void posun_text(double X, double Y,TText* Text);//posune datový objekt textu daný ukazatelem na dané nové souřadnice
+	TText *najdi_text(TText* Text);//na aktuálních souřadnicích myši hledá bod, pokud je nalezen vrátí na něj ukazatel, jinak vrátí NULL
+	void kopiruj_texty(TText *Original,TText *Kopie);//zkopíruje text z originálu na kopii bez ukazatelového propojení
+	void smaz_text(TText* Text);//smaže konkrétní Text
+	void vymaz_TEXTY();//vymaže všechny texty ze spojového seznamu TEXTY včetně hlavičky
 
-		//souborové operace
-		void vytvor_hlavicku_souboru();
-		short int uloz_do_souboru(UnicodeString FileName);
-		short int nacti_ze_souboru(UnicodeString FileName);
-		short int ulozit_report(UnicodeString FileName);
-		void nacti_CSV_retezy(AnsiString FileName);
-		AnsiString ReadFromTextFile(AnsiString FileName);
-		void SaveText2File(AnsiString Text,AnsiString FileName);
+//metody pro SPOJNICE
+	void vloz_spojnici(int vrstva=-1,short zakonceni=0);//vytvoří novou spojnici, a tu vloží do spojového seznamu spojnici, pokud ještě nebyla vytvořena hlavička, tak ji nejdříve založí, parametry: vrstva - ID vrstvy (např. layout vs. editace), zakonceni: 0 - nebude zakončeno, 1- bude zakončeno šipkou
+	void vloz_bod_spojnice(double X, double Y,TSpojnice *Spojnice=NULL,TBod *ZaBod=NULL,bool ortogonalizovat=true);//vloží nový bod na konec seznamu dané Spojnice pokud je Za=NULL, jinak vloží za tento bod, ošetřuje bod vložený na stejný místo jako předchozí, pokud je Spojnice==NULL vkládání bodů probíhá přímo do vkládání poslední Spojnice ve spojovém seznamu SPOJINICE
+	//void posun_bod(double X, double Y,TBod* Bod);//posune bod spojnice - použít již existující metodu
+	//void posun_hranu(double OffsetX,double OffsetY,TBod* Bod1,TBod* Bod2);//posune hranu tvořenou danými body o zadaný offset  - použít již existující metodu
+	void posun_body_spojnice(double OffsetX,double OffsetY,TSpojnice *Spojnice);//posune všechny body polygonu o daný offset
+	//zatím nebude využito: void rotuj_body(double X, double Y,double uhel,TSpojnice *Spojnice);//orotuje celý polygonu proti směru hodinových ručiček okolo osy dle bodu o souřadnicích X,Y, dle hodnoty rotace uhel
+	TBod *najdi_bod_spojnice();//na aktuálních souřadnicích myši hledá bod libovolné spojnice, pokud je nalezen vrátí na něj ukazatel, jinak NULL
+	TBod *najdi_usecku_spojnice();//na aktuálních souřadnicích myši hledá úsečku libovolné spojnice, pokud je nalezena je vracen ukazatel na druhý bod, pokud nebylo nalezeno nic vrátí NULL
+	TSpojnice *najdi_spojnici();//na aktuálních souřadnicích myší hledá spojnici, pokud najde vrací ukazatel na nalezenou spojnici, využívá výše uvedenou metodu
+	void kopiruj_spojnici(TObjekt *Original,TObjekt *Kopie);//zkopíruje spojnici včetně bodů spojnice z originálu na kopii bez ukazatelového propojení
+	void smaz_bod_spojnice(TBod* Bod,TSpojnice *Spojnice=NULL);//smaže konkrétní bod konkrétní spojnice, pokud je ukazatel Spojnice=NULL, jedná se bod poslední spojnice (je praktické např. při backspacu posledního bodu editované spojnice)
+	void vymaz_body_spojnice(TSpojnice *Spojnice=NULL);//vymaže všechny body včetně hlavičky dané spojnice, pokud je ukazatel Spojnice=NULL, jedná se bod poslední spojnice (je praktické např. při ESC editované spojnice) - využívá výše uvedenou metodu
+	void smaz_spojnici(TSpojnice *Spojnice=NULL);//vymaže spojnici včetně všech bodů a hlavičky dané spojnice, pokud je ukazatel Spojnice=NULL, jedná se bod poslední spojnice (je praktické např. při ESC editované spojnice) - využívá výše uvedenou metodu
+ 	void vymaz_SPOJNICE();//vymaže celý spojový seznam SPOJNICE včetně všech bodů a hlaviček - využívá výše uvedenou metodu, použít do vse_odstranit!!!
+
+//odstraní všechny vektory (všechny globální spojáky)
+	void vse_odstranit();
+
+//souborové operace
+	void vytvor_hlavicku_souboru();
+	short int uloz_do_souboru(UnicodeString FileName);
+	short int nacti_ze_souboru(UnicodeString FileName);
+	short int ulozit_report(UnicodeString FileName);
+	void nacti_CSV_retezy(AnsiString FileName);
+	AnsiString ReadFromTextFile(AnsiString FileName);
+	void SaveText2File(AnsiString Text,AnsiString FileName);
 
 //		//technické, statistické a ekonomické ukazatele
 //		void get_LT_a_max_min_TT();
