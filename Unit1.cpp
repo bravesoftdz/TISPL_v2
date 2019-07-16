@@ -2710,8 +2710,8 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			case MEASURE:
 			{
 				double delka=m.delka(m.P2Lx(vychozi_souradnice_kurzoru.X),m.P2Ly(vychozi_souradnice_kurzoru.Y),m.P2Lx(X),m.P2Ly(Y));
-				if(pom_temp->pohon==NULL) MB(AnsiString(m.round2double((delka*1000.0),3))+" [mm]");
-				else MB("Vzdálenost: "+AnsiString(m.round2double((delka*1000.0),3))+" [mm]; "+"Čas: "+AnsiString(m.round2double((delka/pom_temp->pohon->aRD),3))+" [s]",MB_OK,true,366,true,true,true);
+				if(pom_temp!=NULL&&pom_temp->pohon!=NULL)MB("Vzdálenost: "+AnsiString(m.round2double((delka*1000.0),3))+" [mm]; "+"Čas: "+AnsiString(m.round2double((delka/pom_temp->pohon->aRD),3))+" [s]",MB_OK,true,366,true,true,true);
+				else MB(AnsiString(m.round2double((delka*1000.0),3))+" [mm]");
 				Akce=NIC;kurzor(standard);
 				zobraz_tip("");//nahrazuje zároveň Refresh
         scGPImage_mereni_vzdalenost->ClipFrameFillColor=clWhite;
@@ -10258,9 +10258,10 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 
 	if(Akce==NIC)
 	{
+		scSplitView_OPTIONS->Close();
 		Akce=MEASURE;
 		kurzor(add_o);
-    scGPImage_mereni_vzdalenost->ClipFrameFillColor=(TColor)RGB(225,225,225);
+		scGPImage_mereni_vzdalenost->ClipFrameFillColor=(TColor)RGB(225,225,225);
 	}
 	else
 	{
