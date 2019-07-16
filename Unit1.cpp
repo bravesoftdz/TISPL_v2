@@ -885,7 +885,7 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
   scGPCheckBox_zobraz_podklad->Left=5;
   scGPCheckBox_stupne_sedi->Align=alTop;
   scGPCheckBox_stupne_sedi->Left=scGPCheckBox_zobraz_podklad->Left;
-  scLabel1_svetelnost->Top=scGPCheckBox_stupne_sedi->Top +  44;  //pár px navíc kvůli vzdušnosti
+  //scLabel1_svetelnost->Top=scGPCheckBox_stupne_sedi->Top +  44;  //pár px navíc kvůli vzdušnosti
   scGPTrackBar_svetelnost_posuvka->Top=scLabel1_svetelnost->Top;
 
   scGPButton_kalibrace->Left = 3;

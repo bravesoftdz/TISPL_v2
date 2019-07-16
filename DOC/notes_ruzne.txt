@@ -1,0 +1,43 @@
+Tab. pohon - pøi prvním zobrazení má být vidìt pouze roletka s výbìrem pohonu, po výbìru pohonu se zobrazí øádky Rychlost, rozteè.
+Dále záleží na typu umístìného robota - pokud volím robota S&G zùstává tabulka beze zmìny, pokud vyberu robota KK do tabulky pohonu pøibudou øádky Rozestup a Rx.
+
+Po pøidání robota dojde ihned k dopoèítání hodnot ze známých parametrù: 
+U KK robota - známe default LO (1,5m), tzn., že z nastavené rychlosti se spoèítá PT.Dále mìl bych dopoèítat takové Rz (mezeru mezi jigy, potažmo Rx) podle nastaveného RD, aby byl stíhán nastavený Takt linky.
+Zmìna PT u KK zpùsobí pøepoèet LO, ale další dopad? Asi žádný další pøepoèet není nutný.
+U S&G robota - default PT 60s, dochází k validaci (na základì známé rychlosti a délky kabiny), zda se stíhá pøejezd pøes kabinu (délka kabiny), když má robot ještì k pøejezdu jako takovému 60s vykonávat èinnost.
+WT je spoèítán jako max. doba èekání na palec - známá metoda. Zmìna PT zpùsobí pøepoèet MT (èas pøejezdu) na základì pøepoètu RD tak aby byl dodržel Takt linky. 
+
+Test
+Robot s&G - default hodnota WT je nìjaká šílená - mìla by se poèítat podle pøiøazeného pohonu, Martin st. - nastavil na 0 pøi naèítání dat.
+Pamìová chyba pøi vstupu do PT.
+Pamìová chyba vyskoèí vždy po nìjakém vstupu do editu  prozatimní konec testování - nefunkèní.
+
+
+
+
+valid - check rozmezi RD - u pohonu - jasný
+valid PT - oproti laboratornímu testování 
+valid - pøejezdu mezi elementy - obecnì, aby nedošlo ke srážce na trati - èas pøejezdu musí být vìtší než je èas èekání na pøedchozím elementu
+validace - ve vektorech je kostra pro nektere validace, zvážit zda je použít
+
+
+skladba PT - pravdìpodobnì vznik rozpadu èasù - èas aretace, odaretace, èas èištìní pistole, námìt - rozšíøení tabulky v designu
+cislovani elementu - zda v ramci objektu, nebo globalni cislovani elementu po cele lince 
+
+
+
+      C->Font->Color=clBlack;                  //barva fontu - vylistovaného comba
+      C->ListBoxOptions->FillColor=clWhite;     //barva pozadi vylistovaneho comba
+      C->ListBoxOptions->FrameColor=clBlack;   //barva okolniho ramecku vylistovaneho comba
+      C->ListBoxHeaderOptions->Color=clBlack;   // barva hlavièky v combu
+      C->ListBoxHeaderFont->Color=clBlack;     // barva textu a velikost
+
+      C->ListBoxScrollBarOptions->FillColor= clGray;  //  barva scrollbaru, size - šíøe scrollbaru
+
+      C->Options->FrameNormalColor=clBlack;    //barva orámování comba
+      C->Options->NormalColor=clWhite;    //barva zavøeného comba
+      C->Options->FocusedColor=clWhite;    //barva roletky po vybrání z comba
+
+
+
+

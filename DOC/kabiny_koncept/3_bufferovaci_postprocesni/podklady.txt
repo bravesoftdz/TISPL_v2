@@ -1,0 +1,32 @@
+PT - èas nábìhu a èas sušení 
+Chlazeni, vytekani, susarna - stejny princip, bude se skladat bud s bufferovaci casti, nebo casti prejezdu - automaticke vyhodnoceni rovnych useku kde je mozno bufferovat. 
+nebo moznost uzivatelsky definovat odkud -  kam je buffer. 
+V prvni verzi pravdepodobne bez uzivatelske volby kapacit
+
+Navesovani / Svesovani - viz papir - velmi podobne s lakovanim, vysledkem jsou casy PT na pracovistich.
+
+Prejezdy - zadani vzdalenosti, dopocita se cas z RD - pokud je cas prejezdu vetsi nezli takt, vznika pozadavek na bufferovani
+pøi bufferování - hlídání zdali správnì bufferuji, pøípadnì umístit otoè.
+
+
+Násobek rozteèe palcù = Rx
+
+Switch - Orientace - almdev
+Checkbox - pozadí 
+
+
+Hinty:
+PT - celkový èas procesu, který je složen z dílèích èasù (pøesun robota, aretace, lakování, èíštìní pistole,...)
+WT - maximální možná doba èekání na palec
+LO - délka lakovácího okna 
+ 
+
+PL - zobrazení formu - dát do støedu obrazovky
+
+PL - obrázek jigu - podlahový- zadávané hodnoty, napozicovat na støedy kót, pøi pøepínání jednotek m/mm - posouvat jednotky hned za zadávané èíslo
+PL - obrázek jigu - podvìsný - opìt dopozicovat s tím, že musí dojít i k prohození editu scGPNumericEdit_delka_jig a scGPNumericEdit_delka_podvozek oproti výchozímu zobrazení,
+když je zobrazen podlahový jig.
+možná si na to vytvoøit metodu, která by si to celé pozicovala pro podlahový/podvìsný vozík 
+ 
+PL - takt time - obrázek hodin vycentrovat horizontálnì, stejnì tak i zadávaná hodnota s jednotkama 
+
