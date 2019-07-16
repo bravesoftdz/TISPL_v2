@@ -8526,11 +8526,8 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
 void __fastcall TForm1::Button14Click(TObject *Sender)
-{                       //test duplikace                             //test ortogonalizace
-	d.v.vloz_bod(30,-30);d.v.vloz_bod(30,-30);d.v.vloz_bod(60,-30);d.v.vloz_bod(50,-50);d.v.vloz_bod(45,-60);d.v.vloz_bod(45,-45);d.v.vloz_bod(40,-45,NULL,NULL,true,true);
-	//d.v.vloz_bod(30,-30);d.v.vloz_bod(30,-30);d.v.vloz_bod(60,-30);d.v.vloz_bod(50,-50,NULL,NULL,true,true);
-	//d.v.vloz_bod(60,-30);d.v.vloz_bod(30,-30);d.v.vloz_bod(30,-60,NULL,NULL,true,true);
-	REFRESH();
+{
+	Sk((short)d.v.PtInBody());
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)

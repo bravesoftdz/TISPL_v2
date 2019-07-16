@@ -245,7 +245,7 @@ Cvektory::TBod *Cvektory::najdi_usecku(TObjekt* Objekt,long presnost)
 		}
 		B=B->dalsi;
 	}
-  //nulování + mazání pomovného ukazatele
+	//nulování + mazání pomovného ukazatele
 	A=NULL;delete A;
 	return B;
 }
@@ -269,6 +269,42 @@ short Cvektory::PtInKota_bod(TObjekt *Objekt)
 		B=B->dalsi;
 	}
 	B=NULL;delete B;
+	return RET;
+}
+////---------------------------------------------------------------------------
+//ověří zda se souřadnicích myši nachází ve vnitř polygonu, pokud je Objekt==NULL, hledá se v polygonu HALy
+bool Cvektory::PtInBody(TObjekt *Objekt)
+{
+	////vstupní proměnné
+	bool RET=false;
+	TBod *B=NULL;
+	if(Objekt!=NULL && Objekt->body!=NULL)B=Objekt->body;//jedná se o body objektu
+	else if(HALA.body!=NULL && HALA.body->predchozi->n>1)B=HALA.body;//jedná se bod haly +
+
+	////vytvoření regionu
+	if(B!=NULL)
+	{
+		unsigned long pocet=B->predchozi->n;//počet prvků pole
+		POINT *body=new POINT[pocet];//dynamické pole bodů již ve fyzických souřadnicích, zde jen alokace
+		B=B->dalsi;//přeskočí hlavičku
+		//plnění do pole
+		while(B!=NULL)
+		{
+			body[B->n-1].x=m.L2Px(B->X);body[B->n-1].y=m.L2Py(B->Y);
+			B=B->dalsi;
+		}
+
+		//testování oblasti
+		HRGN hreg=CreatePolygonRgn(body,pocet,WINDING);//vytvoření regionu
+		delete[] body;body=NULL;
+		RET=PtInRegion(hreg,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y);
+		DeleteObject(hreg);
+	}
+
+	////nulování + mazání pomovného ukazatele
+	B=NULL;delete B;
+
+	////návratová hodnota
 	return RET;
 }
 ////---------------------------------------------------------------------------
@@ -749,6 +785,19 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	//obě kopírovací metody musí být ke konci
 	kopiruj_elementy(Original,Kopie);
 	kopiruj_body(Original,Kopie);
+}
+//---------------------------------------------------------------------------
+//ověří, zda se na souřadnicích myši nachází nějaký objekt, pokud ano, vrátí na něj ukazatel, jinak vrátí NULL
+Cvektory::TObjekt *Cvektory::PtInObjekt()
+{
+	//dodělat dle potřeby a vyhýbek
+	Cvektory::TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
+	while (O!=NULL)
+	{
+		if(PtInBody(O))break;
+		else O=O->dalsi;
+	}
+	return O;
 }
 //---------------------------------------------------------------------------
 //hledá objekt v dané oblasti                                       //pracuje v logic souradnicich tzn. již nepouživat *Zoom  použít pouze m2px
