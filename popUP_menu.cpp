@@ -171,13 +171,24 @@ void __fastcall TPopUPmenu::scLabel_nastavit_parametryClick(TObject *Sender)
 	closing=true;
 	Close();
  //	Form1->NP(); //staré volání PO
-	if(Form1->pom_bod_temp==NULL)Form1->NP_input();
-	else
+	if(F->MOD==F->SCHEMA&&Form1->pom_bod_temp==NULL)Form1->NP_input();
+	else if(Form1->pom_bod_temp!=NULL)
 	{
 		if(Form1->pom_bod_temp->n!=1)Form1->d.v.vloz_bod(Form1->akt_souradnice_kurzoru.x,Form1->akt_souradnice_kurzoru.y,Form1->pom,Form1->pom_bod_temp->predchozi);
 		else Form1->d.v.vloz_bod(Form1->akt_souradnice_kurzoru.x,Form1->akt_souradnice_kurzoru.y,Form1->pom);
   	Form1->REFRESH();
 	}
+	else//otevírání náhledu z náhledu, pøechot na editaci jiného objektu
+	{
+		Cvektory::TObjekt *Objekt=F->pom_vyhybka;//F->pom_vyhybka použit z dùvodu, že v této chvíli je prázdný a nevyužitý, musí se ukládat do lokální promìnné, protože je vynulován pøi volaní metody vse_odstranit (spuštìno uzavøením starého náhledu)
+		F->KonecClick(this);//ukonèení aktuálního náhledu
+		if(F->MOD==F->SCHEMA)//pokud byl uzavèen starý náhled (uložit,storno,zùstat na náhledu)
+		{
+			F->pom=Objekt;//nastavení ukazatele na novì editovaný objekt
+			Form1->NP_input();//otevøení nového
+		}
+		Objekt=NULL;delete Objekt;
+  }
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

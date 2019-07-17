@@ -223,6 +223,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	Cvektory::TObjekt *O=v.OBJEKTY->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
 	{
+//     if(O->n!=F->pom_temp->n)vykresli_kabinu(canv,O,-1,false);
 		 Cvektory::TElement *E=O->elementy;
 		 if(E!=NULL)//pokud elementy existují
 		 {
@@ -245,6 +246,9 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	//vykreslení elementů z náhledu/tedy z provizorního spojáku, to kvůli aktuálnosti zobrazení
 	if(F->pom_temp!=NULL)//pro náhled
 	{
+    //nastavení pera
+		canv->Pen->Width=1;
+		canv->Pen->Color=clBlack;
 		////vykreslení prozatimní osy POHONU
 		short Trend=short (F->pom_temp->elementy->geo.rotace);
 		if(Trend==90 || Trend==270)//vodorovně
@@ -321,7 +325,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv)
 }
 //---------------------------------------------------------------------------
 //zajišťuje vykreslení pouze obrysu dle typu objektu
-void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O)
+void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool zobrazit_koty)
 {
 	////vstupní proměnné
 	TColor clAkt=clStenaKabiny;
@@ -347,11 +351,11 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O)
 
 	////vnější obrys kabiny
 	canv->Rectangle(X1-W,Y1-W,X2+W,Y2+W);//rám - kresleno pod komory, kvůli nastavení pera
-	polygon(canv,O->body,clAkt,sirka_steny_px);//nové vykreslování příprava
+//	polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
 
 	short highlight=0;//nastavování zda mají být koty highlightovány
 
-	////vykreslení komor - pokud je objekt obsahuje, poslední komora má vždy velikost do konce objektu (nehledě na její skutečné délku), stav, kdy začíná komora za objektem, je nutné ošetřit separátně
+	////vykreslení komor u POW - pokud je objekt obsahuje, poslední komora má vždy velikost do konce objektu (nehledě na její skutečné délku), stav, kdy začíná komora za objektem, je nutné ošetřit separátně
 	if(O->komora!=NULL && O->komora->predchozi->n>0)
 	{
 		unsigned int pocet_komor=O->komora->predchozi->n;
@@ -421,13 +425,12 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O)
 				//doplnit dle doladení na vodorovné situaci!!!!!
 			}
 			//KÓTY
-			//nastavení highlight
-			if((F->JID==0&&F->pom_komora->n==K->n) || (F->JID*(-1)-10==K->n || F->JID*(-1)-10==K->predchozi->n)&&F->d.v.PtInKota_komory(F->pom_temp,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
-			else if(F->JID*(-1)-10==K->n || F->JID>=11 && F->JID<=99)highlight=1;
-			else highlight=0;
-			//vykreslení kót komor
-			if(F->pom_temp->zobrazit_koty)
+			if(/*F->pom_temp!=NULL && F->pom_temp->zobrazit_koty && */zobrazit_koty)
 			{
+				//nastavení highlight
+				if((F->JID==0&&F->pom_komora->n==K->n) || (F->JID*(-1)-10==K->n || F->JID*(-1)-10==K->predchozi->n)&&F->d.v.PtInKota_komory(F->pom_temp,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
+				else if(F->JID*(-1)-10==K->n || F->JID>=11 && F->JID<=99)highlight=1;else highlight=0;
+				//vykreslení kót komor
 				if(F->pom_temp->rotace==0 || F->pom_temp->rotace==180)vykresli_kotu(canv,F->pom_temp->Xk+vzdalenost-K->velikost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+vzdalenost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,F->pom_temp->koty_elementu_offset,highlight,0.2,clGray,false,K);
 				else vykresli_kotu(canv,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0,F->pom_temp->Yk-vzdalenost+K->velikost,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0,F->pom_temp->Yk-vzdalenost,NULL,F->pom_temp->koty_elementu_offset,highlight,0.2,clGray,false,K);
 			}
@@ -436,7 +439,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O)
 		K=NULL;delete K;
 		////poslední komora
 		//vykreslení highlightu poslední komory
-		if(F->JID*(-1)-100==F->pom_temp->komora->predchozi->n)//highlight komory
+		if(F->pom_temp!=NULL && F->pom_temp->id==3 && F->JID*(-1)-100==F->pom_temp->komora->predchozi->n)//highlight komory
 		{
 			if(F->pom_temp->rotace==0 || F->pom_temp->rotace==180)
 			{
@@ -448,15 +451,15 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O)
 			}
 		}
 		//vykreslení kóty od poslení komory k okraji kabiny
-		if((F->JID==0&&F->pom_komora->n==F->pom_temp->komora->predchozi->n) || (F->JID*(-1)-10==F->pom_temp->komora->predchozi->n||F->JID*(-1)-10==F->pom_temp->komora->predchozi->predchozi->n)&&F->d.v.PtInKota_komory(F->pom_temp,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
-		else if(F->JID*(-1)-10==F->pom_temp->komora->predchozi->n || F->JID>=11&&F->JID<=99)highlight=1;
-		else highlight=0;
-		if(F->pom_temp->zobrazit_koty)
+		if(/*F->pom_temp!=NULL && F->pom_temp->zobrazit_koty && */zobrazit_koty)
 		{
+			if((F->JID==0&&F->pom_komora->n==F->pom_temp->komora->predchozi->n) || (F->JID*(-1)-10==F->pom_temp->komora->predchozi->n||F->JID*(-1)-10==F->pom_temp->komora->predchozi->predchozi->n)&&F->d.v.PtInKota_komory(F->pom_temp,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
+			else if(F->JID*(-1)-10==F->pom_temp->komora->predchozi->n || F->JID>=11&&F->JID<=99)highlight=1;
+			else highlight=0;
 			if(F->pom_temp->rotace==0 || F->pom_temp->rotace==180)vykresli_kotu(canv,F->pom_temp->Xk+vzdalenost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,F->pom_temp->koty_elementu_offset,highlight,0.2,clGray,false,F->pom_temp->komora->predchozi);
 			else vykresli_kotu(canv,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0,F->pom_temp->Yk-vzdalenost,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,F->pom_temp->koty_elementu_offset,highlight,0.2,clGray,false,F->pom_temp->komora->predchozi);
+			canv->Brush->Style=bsClear;//navrácení na průhledné pero, kvůli následujícím popiskům objektu, kóty jej totiž změnily
 		}
-		canv->Brush->Style=bsClear;//navrácení na průhledné pero, kvůli následujícím popiskům objektu, kóty jej totiž změnily
 	}
 }
 //---------------------------------------------------------------------------
@@ -469,6 +472,18 @@ void Cvykresli::nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv,unsigned sh
 	canv->Font->Style = TFontStyles();
 	if((F->JID==-6 && typ==1) || (F->JID==-7 && typ==2))canv->Font->Style = TFontStyles()<< fsBold;//zapnutí tučného písma
 	else canv->Font->Style = TFontStyles();//vypnutí
+}
+//---------------------------------------------------------------------------
+void Cvykresli::vykresli_pow_symboliku(TCanvas *canv,long X1,long X2,long Y1,long Y2,unsigned int velikost_komory_px,TColor color,short sirka,short pmpp)
+{
+	set_pen(canv,color,sirka,PS_ENDCAP_SQUARE);
+	long Xp=X1-velikost_komory_px;//Xp - X předchozí
+	short krok=sirka*8;//pouze zneužití sirka
+	for(unsigned int i=krok;i<velikost_komory_px;i+=krok)
+	{				                 //pouze zneužití pmpp
+		line(canv,Xp+i,Y1,Xp+i,Y1+pmpp*2);
+		line(canv,Xp+i,Y2,Xp+i,Y2-pmpp*2);
+	}
 }
 //---------------------------------------------------------------------------
 //vykreslí barevný čtvereček jako příslušnost k dané cestě
@@ -520,11 +535,11 @@ void Cvykresli::sipka(TCanvas *canv, int X, int Y, float azimut, bool bez_vyplne
 //---------------------------------------------------------------------------
 void Cvykresli::vykresli_rectangle(TCanvas *canv,Cvektory::TObjekt *ukaz)
 {
-//	//nová koncepce - metodu vykresli_rectangle - patřičně přejmenovat
+	//nová koncepce - metodu vykresli_rectangle - patřičně přejmenovat
 //	if((long)ukaz->id!=F->VyID&&(long)ukaz->id!=pocet_objektu_knihovny+1)//vykreslování objektů, pro výhybky a spojky zvlášť vykreslení
 //	{
-//		vykresli_kabinu(canv,ukaz);
-//		+doplnit volání vykreslení elementární osy (je na to metoda), metodu volat buď přímo zde nebo jako součásts vykresli_kabinu = porada
+//		vykresli_kabinu(canv,ukaz,-2,false);
+//		//+doplnit volání vykreslení elementární osy (je na to metoda), metodu volat buď přímo zde nebo jako součásts vykresli_kabinu = porada
 //	}
 //	else vykresli_kruh(canv,ukaz);//vykreslování výhybky a spojky zvlášť
 
@@ -4093,14 +4108,14 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 				//nastavení highlightu
 				if(F->pom_bod!=NULL&&F->JID==2&&F->pom_bod->n==B->n)highlight=2;
 				else if(F->pom_bod!=NULL&&F->JID==-2&&F->pom_bod->n==B->n)highlight=1;else highlight=0;
-      //vykreslení kóty                                                                                                                                               //převedení na mm
-			vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),F->outDK(m.round2double(m.delka(B->predchozi->X,B->predchozi->Y,B->X,B->Y),0)),NULL,B->kota_offset,highlight,0.2,clGray,false,NULL,B);
+      	//vykreslení kóty                                                                                                                                               //převedení na mm
+				vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),F->outDK(m.round2double(m.delka(B->predchozi->X,B->predchozi->Y,B->X,B->Y),0)),NULL,B->kota_offset,highlight,0.2,clGray,false,NULL,B);
 				B=B->dalsi;
 			}
 			//vykreslení poslední kóty
 			if(F->pom_bod!=NULL&&F->JID==2&&F->pom_bod->n==body->dalsi->n)highlight=2;
 			else if(F->pom_bod!=NULL&&F->JID==-2&&F->pom_bod->n==body->dalsi->n)highlight=1;else highlight=0;
-		if(body->predchozi->n>2)vykresli_kotu(canv,m.L2Px(body->predchozi->X),m.L2Py(body->predchozi->Y),m.L2Px(body->dalsi->X),m.L2Py(body->dalsi->Y),F->outDK(m.round2double(m.delka(body->predchozi->X,body->predchozi->Y,body->dalsi->X,body->dalsi->Y),0)),NULL,body->dalsi->kota_offset,highlight,0.2,clGray,false,NULL,body->dalsi);
+			if(body->predchozi->n>2)vykresli_kotu(canv,m.L2Px(body->predchozi->X),m.L2Py(body->predchozi->Y),m.L2Px(body->dalsi->X),m.L2Py(body->dalsi->Y),F->outDK(m.round2double(m.delka(body->predchozi->X,body->predchozi->Y,body->dalsi->X,body->dalsi->Y),0)),NULL,body->dalsi->kota_offset,highlight,0.2,clGray,false,NULL,body->dalsi);
 			////odstranění pomocného ukazatele
 			B=NULL; delete B;
 		}
@@ -4250,6 +4265,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 		{if(Element_od->n==0)x1=F->pom_temp->Xk;else x1=Element_od->X;y1=F->pom_temp->elementy->Y;x2=Element_do->X;y2=y1;}
 	else
 		{if(Element_od->n==0)y1=F->pom_temp->Yk;else y1=Element_od->Y;x1=F->pom_temp->elementy->X;y2=Element_do->Y;x2=x1;}
+	if(x2<F->pom_temp->Xk)O=(O-0.66)*(-1);//ošetření chybného zobrazení kóty elementu, který je před kabinou
 	vykresli_kotu(canv,x1,y1,x2,y2,Element_do,O,highlight);
 	if(Element_od->n!=0&&Element_do->n>1)//pokud jsou minimálně 2 elementy vložené
 	{

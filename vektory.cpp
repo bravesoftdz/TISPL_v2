@@ -572,7 +572,7 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 		default: rozmery_kabiny.x=10;rozmery_kabiny.y=6;break;//ostatní
 	}
 	vloz_bod(X,Y,novy);vloz_bod(X+rozmery_kabiny.x,Y,novy);
-	vloz_bod(X,Y+rozmery_kabiny.y,novy);vloz_bod(X+rozmery_kabiny.x,Y+rozmery_kabiny.y,novy);
+	vloz_bod(X+rozmery_kabiny.x,Y-rozmery_kabiny.y,novy);vloz_bod(X,Y-rozmery_kabiny.y,novy);
 
 	return novy;
 }
@@ -717,12 +717,14 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 Cvektory::TObjekt *Cvektory::PtInObjekt()
 {
 	//dodělat dle potřeby a vyhýbek
+	TPoint *tab_pruchodu=new TPoint[pocet_vyhybek+1];
 	Cvektory::TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
 	{
-		if(PtInBody(O))break;
-		else O=O->dalsi;
+		if(O->n!=F->VyID && O->n!=pocet_objektu_knihovny+1 && PtInBody(O))break;
+		O=dalsi_krok(O,tab_pruchodu);
 	}
+	tab_pruchodu=NULL;delete tab_pruchodu;
 	return O;
 }
 //---------------------------------------------------------------------------
