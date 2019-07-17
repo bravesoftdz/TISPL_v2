@@ -77,7 +77,6 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod,bool orto
 		if(ZaBod==NULL || ZaBod!=NULL && ZaBod==Objekt->body->predchozi)//pokud se má vkládat nakonec
 		{																	//situace aktuální (budoucí poslední) první         											//situace  aktuální (budoucí poslední) a poslední aktuální (budoucí předposlední)
 			if(Objekt->body->dalsi==NULL || (Bod->X!=Objekt->body->dalsi->X || Bod->Y!=Objekt->body->dalsi->Y) && (Bod->X!=Objekt->body->predchozi->X || Bod->Y!=Objekt->body->predchozi->Y))//pokud se vkládá první prvek, ale pokud je poslední vkládaný totožný jako první nebo totožný jako předchozí (např. u ukočování kresby, nebo u chybného kliku), tak ho ignoruje a neuložího do spojáku)
-//			if(Bod->X!=Objekt->body->dalsi->X && Bod->Y!=Objekt->body->dalsi->Y && Bod->X!=Bod->predchozi->X && Bod->Y!=Bod->predchozi->Y)//pokud je poslední vkládaný totožný jako první nebo totožný jako předchozí (např. u ukočování kresby, nebo u chybného kliku), tak ho ignoruje a neuložího do spojáku
 			{
 				Bod->n=Objekt->body->predchozi->n+1;//navýšení počítadla
 				Bod->predchozi=Objekt->body->predchozi;//nový bod ukazuje na poslední prvek ve spojaku jako na prvek předchozí
@@ -560,7 +559,7 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 	novy->zobrazit_mGrid=true;//proměnná určující, zda budou zobrazeny mGridy
 	novy->uzamknout_nahled=false;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 
-//	//nově, vkládání bodů + defaultní rozměry různých objektů
+	//nově, vkládání bodů + defaultní rozměry různých objektů
 //	TPoint rozmery_kabiny;
 //	switch(id)
 //	{
