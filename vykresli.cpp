@@ -425,7 +425,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				//doplnit dle doladení na vodorovné situaci!!!!!
 			}
 			//KÓTY
-			if(F->pom_temp!=NULL && F->pom_temp->zobrazit_koty && zobrazit_koty)
+			if(/*F->pom_temp!=NULL && F->pom_temp->zobrazit_koty && */zobrazit_koty)
 			{
 				//nastavení highlight
 				if((F->JID==0&&F->pom_komora->n==K->n) || (F->JID*(-1)-10==K->n || F->JID*(-1)-10==K->predchozi->n)&&F->d.v.PtInKota_komory(F->pom_temp,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
@@ -439,7 +439,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		K=NULL;delete K;
 		////poslední komora
 		//vykreslení highlightu poslední komory
-		if(F->pom_temp!=NULL && F->JID*(-1)-100==F->pom_temp->komora->predchozi->n)//highlight komory
+		if(F->pom_temp!=NULL && F->pom_temp->id==3 && F->JID*(-1)-100==F->pom_temp->komora->predchozi->n)//highlight komory
 		{
 			if(F->pom_temp->rotace==0 || F->pom_temp->rotace==180)
 			{
@@ -451,7 +451,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 			}
 		}
 		//vykreslení kóty od poslení komory k okraji kabiny
-		if(F->pom_temp!=NULL && F->pom_temp->zobrazit_koty && zobrazit_koty)
+		if(/*F->pom_temp!=NULL && F->pom_temp->zobrazit_koty && */zobrazit_koty)
 		{
 			if((F->JID==0&&F->pom_komora->n==F->pom_temp->komora->predchozi->n) || (F->JID*(-1)-10==F->pom_temp->komora->predchozi->n||F->JID*(-1)-10==F->pom_temp->komora->predchozi->predchozi->n)&&F->d.v.PtInKota_komory(F->pom_temp,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
 			else if(F->JID*(-1)-10==F->pom_temp->komora->predchozi->n || F->JID>=11&&F->JID<=99)highlight=1;
