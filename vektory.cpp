@@ -572,7 +572,7 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 		default: rozmery_kabiny.x=10;rozmery_kabiny.y=6;break;//ostatní
 	}
 	vloz_bod(X,Y,novy);vloz_bod(X+rozmery_kabiny.x,Y,novy);
-	vloz_bod(X,Y+rozmery_kabiny.y,novy);vloz_bod(X+rozmery_kabiny.x,Y+rozmery_kabiny.y,novy);
+	vloz_bod(X+rozmery_kabiny.x,Y-rozmery_kabiny.y,novy);vloz_bod(X,Y-rozmery_kabiny.y,novy);
 
 	return novy;
 }
