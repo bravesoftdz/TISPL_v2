@@ -51,7 +51,7 @@ class Cvykresli
 	void prislusnost_cesty(TCanvas *canv,TColor Color,int X,int Y,float A,short N);
 	void vykresli_vektory(TCanvas *canv);
 	void vykresli_kabinu(TCanvas *canv);//zajišuje kompletní vykreslení s voláním následující metody
-	void vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav=-2);//zajišuje vykreslení pouze obrysu dle typu objektu
+	void vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav=-2,bool zobrazit_koty=true);//zajišuje vykreslení pouze obrysu dle typu objektu
 	void vykresli_pow_symboliku(TCanvas *canv);
 	void vykresli_grid(TCanvas *canv,int size_grid=10);
 	void vykresli_meridlo(TCanvas *canv,int X,int Y,bool kalibracni_sipka=false);//v pøípadì mìøení vzdálenosti vykreslí spojnici a popø. vypisuje hodnotu vzdálenosti

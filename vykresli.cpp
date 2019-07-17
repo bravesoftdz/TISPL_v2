@@ -223,7 +223,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	Cvektory::TObjekt *O=v.OBJEKTY->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
 	{
-     if(O->n!=F->pom_temp->n)vykresli_kabinu(canv,O,-1);
+     if(O->n!=F->pom_temp->n)vykresli_kabinu(canv,O,-1,false);
 		 Cvektory::TElement *E=O->elementy;
 		 if(E!=NULL)//pokud elementy existují
 		 {
@@ -325,7 +325,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv)
 }
 //---------------------------------------------------------------------------
 //zajišťuje vykreslení pouze obrysu dle typu objektu
-void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav)
+void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool zobrazit_koty)
 {
 	////vstupní proměnné
 	TColor clAkt=clStenaKabiny;
@@ -351,7 +351,6 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav)
 
 	////vnější obrys kabiny
 //	canv->Rectangle(X1-W,Y1-W,X2+W,Y2+W);//rám - kresleno pod komory, kvůli nastavení pera
-	bool zobrazit_koty=false;if(stav!=-3 && stav!=-1)zobrazit_koty=true;
 	polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
 
 	short highlight=0;//nastavování zda mají být koty highlightovány
@@ -426,7 +425,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav)
 				//doplnit dle doladení na vodorovné situaci!!!!!
 			}
 			//KÓTY
-			if(F->pom_temp->zobrazit_koty && zobrazit_koty)
+			if(F->pom_temp!=NULL && F->pom_temp->zobrazit_koty && zobrazit_koty)
 			{
 				//nastavení highlight
 				if((F->JID==0&&F->pom_komora->n==K->n) || (F->JID*(-1)-10==K->n || F->JID*(-1)-10==K->predchozi->n)&&F->d.v.PtInKota_komory(F->pom_temp,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
@@ -440,7 +439,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav)
 		K=NULL;delete K;
 		////poslední komora
 		//vykreslení highlightu poslední komory
-		if(F->JID*(-1)-100==F->pom_temp->komora->predchozi->n)//highlight komory
+		if(F->pom_temp!=NULL && F->JID*(-1)-100==F->pom_temp->komora->predchozi->n)//highlight komory
 		{
 			if(F->pom_temp->rotace==0 || F->pom_temp->rotace==180)
 			{
@@ -452,7 +451,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav)
 			}
 		}
 		//vykreslení kóty od poslení komory k okraji kabiny
-		if(F->pom_temp->zobrazit_koty && zobrazit_koty)
+		if(F->pom_temp!=NULL && F->pom_temp->zobrazit_koty && zobrazit_koty)
 		{
 			if((F->JID==0&&F->pom_komora->n==F->pom_temp->komora->predchozi->n) || (F->JID*(-1)-10==F->pom_temp->komora->predchozi->n||F->JID*(-1)-10==F->pom_temp->komora->predchozi->predchozi->n)&&F->d.v.PtInKota_komory(F->pom_temp,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
 			else if(F->JID*(-1)-10==F->pom_temp->komora->predchozi->n || F->JID>=11&&F->JID<=99)highlight=1;
@@ -475,7 +474,7 @@ void Cvykresli::nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv,unsigned sh
 	else canv->Font->Style = TFontStyles();//vypnutí
 }
 //---------------------------------------------------------------------------
-void Cvykresli::vykresli_pow_symboliku(TCanvas *canv);
+void Cvykresli::vykresli_pow_symboliku(TCanvas *canv)
 {
 //	TColor-
 //	set_pen(canv,clAkt,sirka_steny_px/4,PS_ENDCAP_SQUARE);
@@ -540,7 +539,7 @@ void Cvykresli::vykresli_rectangle(TCanvas *canv,Cvektory::TObjekt *ukaz)
 	//nová koncepce - metodu vykresli_rectangle - patřičně přejmenovat
 	if((long)ukaz->id!=F->VyID&&(long)ukaz->id!=pocet_objektu_knihovny+1)//vykreslování objektů, pro výhybky a spojky zvlášť vykreslení
 	{
-		vykresli_kabinu(canv,ukaz);
+		vykresli_kabinu(canv,ukaz,-2,false);
 		//+doplnit volání vykreslení elementární osy (je na to metoda), metodu volat buď přímo zde nebo jako součásts vykresli_kabinu = porada
 	}
 	else vykresli_kruh(canv,ukaz);//vykreslování výhybky a spojky zvlášť
