@@ -346,8 +346,8 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O)
 	canv->Pen->Width=sirka_steny_px;//šířka v pixelech
 
 	////vnější obrys kabiny
-	canv->Rectangle(X1-W,Y1-W,X2+W,Y2+W);//rám - kresleno pod komory, kvůli nastavení pera
-	polygon(canv,O->body,clAkt,sirka_steny_px);//nové vykreslování příprava
+//	canv->Rectangle(X1-W,Y1-W,X2+W,Y2+W);//rám - kresleno pod komory, kvůli nastavení pera
+	polygon(canv,O->body,clAkt,sirka_steny_px,-2,false);//nové vykreslování příprava
 
 	short highlight=0;//nastavování zda mají být koty highlightovány
 
@@ -4250,6 +4250,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 		{if(Element_od->n==0)x1=F->pom_temp->Xk;else x1=Element_od->X;y1=F->pom_temp->elementy->Y;x2=Element_do->X;y2=y1;}
 	else
 		{if(Element_od->n==0)y1=F->pom_temp->Yk;else y1=Element_od->Y;x1=F->pom_temp->elementy->X;y2=Element_do->Y;x2=x1;}
+	if(x2<F->pom_temp->Xk)O=(O-0.66)*(-1);//ošetření chybného zobrazení kóty elementu, který je před kabinou
 	vykresli_kotu(canv,x1,y1,x2,y2,Element_do,O,highlight);
 	if(Element_od->n!=0&&Element_do->n>1)//pokud jsou minimálně 2 elementy vložené
 	{
