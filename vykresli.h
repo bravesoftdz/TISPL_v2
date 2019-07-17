@@ -92,7 +92,7 @@ class Cvykresli
 	void bezier(TCanvas *canv,TPointD *POLE,long X,long Y,double oX,double oY,double rotace,long posledni_prvek);
 	void bezier(TCanvas *canv,TPoint *POLE_px,long posledni_prvek);
 	TPoint polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float sirka1, float sirka2, double sklon, double rotace,TPenMode pmMode=pmCopy,TColor clFillOut=clBlack,TColor lFillIn=clWhite);
-	void polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva=clBlack, short sirka=1,int stav=-2,bool automaticky_spojovat=true);//stav: -3 kurzor, -2 normal (implicitnì), -1-highlight bez editace, 0-editace zvýrazní všechny body, 1-až poèet bodù zvýraznìní daného bodu,poèet bodù+1 zvýraznìní dané hrany vèetnì sousedícícíh úchopù (napø. pro polygono o 6 bodech) bude hodnota stavu 7 zvýraznìní první hrany (od bodu 1 do bodu 2)
+	void polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva=clBlack, short sirka=1,int stav=-2,bool zobrazit_koty=true,bool automaticky_spojovat=true);//stav: -3 kurzor, -2 normal (implicitnì), -1-highlight bez editace, 0-editace zvýrazní všechny body, 1-až poèet bodù zvýraznìní daného bodu,poèet bodù+1 zvýraznìní dané hrany vèetnì sousedícícíh úchopù (napø. pro polygono o 6 bodech) bude hodnota stavu 7 zvýraznìní první hrany (od bodu 1 do bodu 2)
 	void uchop(TCanvas *canv,Cvektory::TBod *B,TColor barva);//vykreslí jeden uchop/koleèko znázoròující bod na polygonu
 	void vykresli_mGridy(TCanvas *canv=NULL);
 	void nabuffrovat_mGridy(TmGrid *mGrid=NULL);//pomocná metoda vytváøející rastrové obrazy mGridù, pokud je buffer na NULL, buffrují se všechny tabulky, pokud ne, tak pouze ta z parametru
@@ -103,6 +103,7 @@ class Cvykresli
 	void set_pen(TCanvas *canv, TColor color, int width, int style=PS_ENDCAP_SQUARE);//vrátí HANDLE na nastavení pera,//popø.PS_ENDCAP_FLAT PS_ENDCAP_ROUND, PS_ENDCAP_SQUARE viz Matoušek III str. 179 èi http://www.zive.cz/clanky/geometricka-pera/sc-3-a-103079
 	TColor set_color(TCanvas *canv, Cvektory::TObjekt *O);
 	void drawRectText(TCanvas *canv,TRect Rect, UnicodeString Text);
+	Graphics::TBitmap *srafura();
 	void editacni_okno(TCanvas *canv, unsigned int X1, unsigned int Y1,unsigned  int X2,unsigned  int Y2, unsigned short int size=1, COLORREF color=clBlack);//nakreslí editacni_okno
 	void editacni_okno(TCanvas *canv, TPoint LH, TPoint PD, unsigned short int size=1, COLORREF color=clBlack);//nakreslí editacni_okno
 	void sipka(TCanvas *canv,int X, int Y,float azimut,bool bez_vyplne=false, float size=3, COLORREF color=clBlack,COLORREF color_brush=clGray,TPenMode PenMode=pmCopy,TPenStyle PenStyle=psSolid,bool teziste_stred=true);//zajistí vykreslení šipky - orientace spojovací linie

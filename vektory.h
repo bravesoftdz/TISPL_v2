@@ -366,6 +366,7 @@ class Cvektory
 		TBod *najdi_bod(TObjekt* Objekt=NULL);//na aktuálních souřadnicích myši hledá bod, pokud je nalezen vrátí na něj ukazatel, pokud je ukazatel na Objekt NULL, jedná se o metodu pro HALU
 		TBod *najdi_usecku(TObjekt* Objekt=NULL,long presnost=0);//na aktuálních souřadnicích myši hledá úsečku, pokud je nalezena je vracen ukazatel na druhý bod, pokd nebylo nalezeno nic vrátí NULL, parametr Objekt implicitně NULLL, rozlišuje hledání úsečky v HALE nebo v Objektu, parametr přesnost určuje vzdálenost od přímky, která je nutná k její detekci
 		short PtInKota_bod(TObjekt *Objekt=NULL);//ověří zda se na daných fyzických souřadnicích myši nachází kóta hrany/stěny HALy či Objektu (Objektu pokud Objekt!=NULL), pokud ne vrací -1, pokud ano 0 v celé kótě, 1 - na hodnotě kóty, 2 - na jednotkách kóty , pozn. oblast kóty se testuje až jako poslední
+		bool PtInBody(TObjekt *Objekt=NULL);//ověří zda se souřadnicích myši nachází ve vnitř polygonu, pokud je Objekt==NULL, hledá se v polygonu HALy
 		void kopiruj_body(TObjekt *Original,TObjekt *Kopie);//zkopíruje body včetně z originálu na kopii bez ukazatelového propojení, funguje jenom pro body objektů nikoliv HALY!!!
 		void smaz_bod(TBod* Bod,TObjekt* Objekt=NULL);//smaže konkrétní bod, pokud je ukazatel na Objekt NULL, jedná se o metodu pro HALU
 		void vymaz_body(TObjekt* Objekt=NULL);//vymaže všechny body včetně hlavičky, pokud je ukazatel na Objekt NULL, jedná se o metodu pro HALU
@@ -380,8 +381,10 @@ class Cvektory
 		TObjekt *vloz_objekt(unsigned int id, double X, double Y,TObjekt *pred,TObjekt *po);//přetížená fce vkládá objekt za objekt p + vrátí ukazatel na vložený prvek
 		TObjekt *vloz_objekt(unsigned int id, double X, double Y,TObjekt *vyhybka,TObjekt *pred,TObjekt *po);//přetížená fce vkládá spojku + vrátí ukazatel na vložený prvek
 		void vloz_objekt(TObjekt *Objekt);//přetížená fce
+		TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, double Y);//alokuje paměť pro objekt, nastavý atriuty objektu, vrátí ukazatel na nově vytvořený prvek
 		TObjekt *kopiruj_objekt(TObjekt *Objekt,short offsetX=0,short offsetY=0,AnsiString index_name="",bool remove_pre_index=false,TObjekt *p=NULL);//zkopíruje objekt Objekt na konec spojového seznamu Objektů, za předpokladu že p==NULL, pokud p není NULL je objekt za tento objekt p ve spojovém seznamů objektů zařazen, hodnota offsetu je hodnota odsazení zkopírovoaného objektu od objektu vzorového,index_name slouží pro rozlišení např. LAK, LAK1, LAK2...,zároveň vrací ukazatel na právě zkopírovaný objekt např. pro další použití
 		void kopiruj_objekt(TObjekt *Original,TObjekt *Kopie);//zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze ukazatel na mGrid originálu zůstané propojený
+		TObjekt *PtInObjekt();//ověří, zda se na souřadnicích myši nachází nějaký objekt, pokud ano, vrátí na něj ukazatel, jinak vrátí NULL
 		TObjekt *najdi_objekt(double X, double Y,double offsetX, double offsetY,short typ=-1);//hledá bod v dané oblasti
 		TObjekt *vrat_objekt(unsigned int n);//dle zadaného n vrátí ukazatel na hledaný objekt
 		TObjekt *vrat_objekt_z_roma(int X);//dle X kurzoru myši vrátí z modu procesy (ROMA) ukazatel na aktuální objekt
@@ -412,7 +415,7 @@ class Cvektory
 		void vloz_komoru(TObjekt* Objekt,TKomora *Komora,TKomora *ZaKomoru=NULL);//vloží novou komoru na konec seznamu komor, pokud je ZaKomoru=NULL, jinak vloží za tento objekt, není třeba nastavovat ukazatele ani n-pořadí
 		TKomora *najdi_komoru(TObjekt* Objekt);//na aktuálních souřadnicích myši hledá komoru, pokud je nalezena vrátí na ni ukazatel
 		short PtInKota_komory(TObjekt *Objekt,long X,long Y);//ověří zda se na daných fyzických souřadnicích nachází kóta komory, pokud neexistují komory vrací -2, pokud se nenachází na kótě vrací -1, pokud ano 0 v celé kótě, 1 - na hodnotě kóty, 2 - na jednotkách kóty, pozn. oblast kóty se testuje až jako poslední
-    double vrat_velikosti_komor(TKomora *po=NULL);//vrátí součet velikostí komor, nebo velikosti do konkrétní komory (včetně)
+		double vrat_velikosti_komor(TKomora *po=NULL);//vrátí součet velikostí komor, nebo velikosti do konkrétní komory (včetně)
 		void kopiruj_komory(TObjekt *Original,TObjekt *Kopie);//zkopíruje komory včetně jejich velikosti z originálu na kopii bez ukazatelového propojení
 		void presun_komoru(TObjekt *Objekt,TKomora *aktKomora,TKomora *za);//slouží ke změně pořadí komor
 		void smaz_komoru(TObjekt* Objekt,TKomora* Komora);//smaže konkrétní komoru daného objektu
