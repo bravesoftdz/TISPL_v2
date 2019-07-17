@@ -367,7 +367,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 			//nastavení pera, musí být znova, vykreslení kót pero přenastaví
 			canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
 			canv->Pen->Mode=pmCopy;pmNotXor;//pro transparentní zákres
-			if(F->JID*(-1)-10==K->n||(F->JID==0&&F->pom_komora->n==K->n))clAkt=m.clIntensive(clStenaKabiny,-50);//highlight
+			if(F->JID*(-1)-10==K->n || (F->JID==0 && F->pom_komora->n==K->n))clAkt=m.clIntensive(clStenaKabiny,-50);//highlight
 			else clAkt=clStenaKabiny;
 			set_pen(canv,clAkt,sirka_steny_px,PS_ENDCAP_SQUARE);
 			vzdalenost+=K->velikost;//dle velikosti předchozích komor uchovává hodnotu součtu/pozice aktuálně vykreslované komory
@@ -432,7 +432,8 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		}
 		K=NULL;delete K;
 		////poslední komora
-		//vykreslení highlightu poslední komory
+		if(F->pom_temp!=NULL && F->pom_temp->id==3 && F->JID*(-1)-100==(signed)F->pom_temp->komora->predchozi->n)clAkt=m.clIntensive(clStenaKabiny,-50);//highlight
+		else clAkt=clStenaKabiny;
 		if(rotace==0 || rotace==180)
 		{
 			if(F->pom_temp!=NULL && F->pom_temp->id==3 && F->JID*(-1)-100==(signed)F->pom_temp->komora->predchozi->n)//highlight komory
