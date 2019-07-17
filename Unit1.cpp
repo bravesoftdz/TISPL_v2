@@ -171,7 +171,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	scLabel_titulek->Caption=Caption+" - [Nový.tispl]";
 	Application->Title="TISPL";
 	LICENCE="TRIAL_GALATEK";
-	EDICE=ARCHITECT;//ARCHITECT,CLIENT,VIEWER,DEMO
+	EDICE=DEMO;//ARCHITECT;//ARCHITECT,CLIENT,VIEWER,DEMO
 	edice();//zakázání či povolení grafických uživatelských prvků dle úrovně edice
 	n_prihlaseni=0;
 	TZF=!DEBUG;//TRIAL_zakazat_funkcionality - nyní nastaveno pro RELEASE
@@ -771,20 +771,20 @@ AnsiString TForm1::readINI(AnsiString Section,AnsiString Ident)
 //automaticky přidá parametry (čas, uživatel, licence)
 void TForm1::log2web(UnicodeString Text)
 {
-	if(!DEBUG)
-	{
-		//log2webOnlyText(ms.DeleteSpace(LICENCE)+"_"+get_computer_name()+"_"+get_user_name()+"_"+TIME.CurrentDate()+"_"+TIME.CurrentTime()+"|"+Text);
-		try
-		{
-			AnsiString relation_id=GetCurrentProcessId();
-			AnsiString send_log_time= TIME.CurrentDateTime();
-			AnsiString ID ="1";
-			AnsiString strSQL = "INSERT INTO log_table (app_id,app_start,username,send_log_time,command,relation_id,verze) VALUES (\""+ID+"\",\""+send_log_time+"\",\""+get_user_name()+"\",\""+send_log_time+"\",\""+Text+"\",\""+relation_id+"\",\""+VERZE+"\")";
-
-			FDConnection1->ExecSQL(strSQL);
-		}
-		catch(...){;}//např. není připojení k internetu, tak pouze nezaloguje, dořešit uložení logu do doby získání připojení a volání opětovného odeslání logu
-	}
+//	if(!DEBUG)
+//	{
+//		//log2webOnlyText(ms.DeleteSpace(LICENCE)+"_"+get_computer_name()+"_"+get_user_name()+"_"+TIME.CurrentDate()+"_"+TIME.CurrentTime()+"|"+Text);
+//		try
+//		{
+//			AnsiString relation_id=GetCurrentProcessId();
+//			AnsiString send_log_time= TIME.CurrentDateTime();
+//			AnsiString ID ="1";
+//			AnsiString strSQL = "INSERT INTO log_table (app_id,app_start,username,send_log_time,command,relation_id,verze) VALUES (\""+ID+"\",\""+send_log_time+"\",\""+get_user_name()+"\",\""+send_log_time+"\",\""+Text+"\",\""+relation_id+"\",\""+VERZE+"\")";
+//
+//			FDConnection1->ExecSQL(strSQL);
+//		}
+//		catch(...){;}//např. není připojení k internetu, tak pouze nezaloguje, dořešit uložení logu do doby získání připojení a volání opětovného odeslání logu
+//	}
 }
 //pouze text
 void TForm1::log2webOnlyText(UnicodeString Text)
@@ -6971,6 +6971,7 @@ void TForm1::NP()
 void TForm1::NP_input()
 {
 	 //zablokování OnChange tabulek
+   JID=-1;//ošetření, s JID se pracuje i v náhledu
 	 FormX->input_state=FormX->NO;
 	 FormX->vstoupeno_poh=false;
 	 FormX->vstoupeno_elm=false;
@@ -8582,6 +8583,7 @@ void __fastcall TForm1::scGPSwitch_AAChangeState(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Timer_trTimer(TObject *Sender)
 {
+  //ShowMessage("hu");
 	if(!ttr("TimerTr")){Timer_tr->Enabled=false;Close();}//kontrola zda nevypršela trial verze
 }
 //---------------------------------------------------------------------------
@@ -9408,7 +9410,8 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 //		d.v.vymaz_elementy(pom_temp,true);
 		if(pom_temp!=NULL){pom_temp->pohon=NULL;delete pom_temp->pohon;}pom_temp=NULL;delete pom_temp;
 		PmG->Delete(); PmG=NULL; delete PmG;
-
+    //mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
+    pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element; JID=-1;
     //v případě animace vypnutí a nastavení do výchozího stavu
 		Timer_animace->Enabled=false;
 		ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
