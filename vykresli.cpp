@@ -223,6 +223,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	Cvektory::TObjekt *O=v.OBJEKTY->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
 	{
+     if(O->n!=F->pom_temp->n)vykresli_kabinu(canv,O,-1);
 		 Cvektory::TElement *E=O->elementy;
 		 if(E!=NULL)//pokud elementy existují
 		 {
@@ -245,6 +246,9 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	//vykreslení elementů z náhledu/tedy z provizorního spojáku, to kvůli aktuálnosti zobrazení
 	if(F->pom_temp!=NULL)//pro náhled
 	{
+    //nastavení pera
+		canv->Pen->Width=1;
+		canv->Pen->Color=clBlack;
 		////vykreslení prozatimní osy POHONU
 		short Trend=short (F->pom_temp->elementy->geo.rotace);
 		if(Trend==90 || Trend==270)//vodorovně
@@ -520,142 +524,142 @@ void Cvykresli::sipka(TCanvas *canv, int X, int Y, float azimut, bool bez_vyplne
 //---------------------------------------------------------------------------
 void Cvykresli::vykresli_rectangle(TCanvas *canv,Cvektory::TObjekt *ukaz)
 {
-//	//nová koncepce - metodu vykresli_rectangle - patřičně přejmenovat
-//	if((long)ukaz->id!=F->VyID&&(long)ukaz->id!=pocet_objektu_knihovny+1)//vykreslování objektů, pro výhybky a spojky zvlášť vykreslení
-//	{
-//		vykresli_kabinu(canv,ukaz);
-//		+doplnit volání vykreslení elementární osy (je na to metoda), metodu volat buď přímo zde nebo jako součásts vykresli_kabinu = porada
-//	}
-//	else vykresli_kruh(canv,ukaz);//vykreslování výhybky a spojky zvlášť
+	//nová koncepce - metodu vykresli_rectangle - patřičně přejmenovat
+	if((long)ukaz->id!=F->VyID&&(long)ukaz->id!=pocet_objektu_knihovny+1)//vykreslování objektů, pro výhybky a spojky zvlášť vykreslení
+	{
+		vykresli_kabinu(canv,ukaz);
+		//+doplnit volání vykreslení elementární osy (je na to metoda), metodu volat buď přímo zde nebo jako součásts vykresli_kabinu = porada
+	}
+	else vykresli_kruh(canv,ukaz);//vykreslování výhybky a spojky zvlášť
 
 //old verze - brzy bude nahrazeno
-	if((long)ukaz->id!=F->VyID&&(long)ukaz->id!=pocet_objektu_knihovny+1)//vykreslování výhybky a spojky zvlášť
-	{
-		//INFO: Zoom_predchozi_AA je v případě nepoužítí AA totožný jako ZOOM
-
-		////referenčni bod jsem nakonce stanovil pravý konec levé packy
-		TPoint S=m.L2P(ukaz->X,ukaz->Y);//Převede logické souřadnice na fyzické (displej zařízení), vrací fyzické souřadnice
-
-		unsigned short W=O_width*Form1->Zoom;
-		unsigned short H=O_height*Form1->Zoom;
-
-//		if(Form1->zobrazit_barvy_casovych_rezerv)
+//	if((long)ukaz->id!=F->VyID&&(long)ukaz->id!=pocet_objektu_knihovny+1)//vykreslování výhybky a spojky zvlášť
+//	{
+//		//INFO: Zoom_predchozi_AA je v případě nepoužítí AA totožný jako ZOOM
+//
+//		////referenčni bod jsem nakonce stanovil pravý konec levé packy
+//		TPoint S=m.L2P(ukaz->X,ukaz->Y);//Převede logické souřadnice na fyzické (displej zařízení), vrací fyzické souřadnice
+//
+//		unsigned short W=O_width*Form1->Zoom;
+//		unsigned short H=O_height*Form1->Zoom;
+//
+////		if(Form1->zobrazit_barvy_casovych_rezerv)
+////		{
+//			TColor errorColor=set_color(canv,ukaz);
+//			if(errorColor!=0)
+//			{
+//			unsigned short O=m.round(6*Form1->Zoom);//Okraj nutno zaokrouhlit tady
+//			canv->Rectangle(S.x-O,S.y-O,S.x+W+O,S.y+H+O);
+//      }
+////		}
+//
+//		////obdelník objektu
+//		canv->Pen->Style=psSolid;
+//		canv->Brush->Style=bsSolid;
+//		canv->Brush->Color=(TColor)RGB(19,115,169);//(TColor)RGB(254,254,254);//nemuže být čiště bílá pokud je zapnut antialising, tak aby se nezobrazoval skrz objekt grid
+//		canv->Pen->Color=(TColor)RGB(19,115,169);//clBlack;
+//		canv->Pen->Mode=pmCopy;
+//		canv->Pen->Width=m.round(2*Form1->Zoom);
+//		canv->Rectangle(S.x,S.y,S.x+W,S.y+H);
+//
+//		////packy
+//		/*unsigned short packy_W=5*Form1->Zoom;
+//		canv->Pen->Width=1*Form1->Zoom;
+//		canv->MoveTo(S.x-packy_W,S.y+H/2);canv->LineTo(S.x,S.y+H/2);
+//		canv->MoveTo(S.x+W,S.y+H/2);canv->LineTo(S.x+W+packy_W,S.y+H/2);*/
+//
+//		////nastavení písma
+//		canv->Font->Name="Arial";//canv->Font->Name="MS Sans Serif";
+//		if(Form1->antialiasing && Form1->Akce!=Form1->ADD && Form1->Akce!=Form1->MOVE)
 //		{
-			TColor errorColor=set_color(canv,ukaz);
-			if(errorColor!=0)
-			{
-			unsigned short O=m.round(6*Form1->Zoom);//Okraj nutno zaokrouhlit tady
-			canv->Rectangle(S.x-O,S.y-O,S.x+W+O,S.y+H+O);
-      }
+//			canv->Font->Pitch = TFontPitch::fpFixed;//každé písmeno fontu stejně široké
+//			//asi nepřináší zcela přínos
+//			canv->Font->Pitch = System::Uitypes::TFontPitch::fpFixed;
+//			canv->Font->Size=11*3+3;//+3 grafická korekce protože při AA dochází ke zmenšení písma
 //		}
-
-		////obdelník objektu
-		canv->Pen->Style=psSolid;
-		canv->Brush->Style=bsSolid;
-		canv->Brush->Color=(TColor)RGB(19,115,169);//(TColor)RGB(254,254,254);//nemuže být čiště bílá pokud je zapnut antialising, tak aby se nezobrazoval skrz objekt grid
-		canv->Pen->Color=(TColor)RGB(19,115,169);//clBlack;
-		canv->Pen->Mode=pmCopy;
-		canv->Pen->Width=m.round(2*Form1->Zoom);
-		canv->Rectangle(S.x,S.y,S.x+W,S.y+H);
-
-		////packy
-		/*unsigned short packy_W=5*Form1->Zoom;
-		canv->Pen->Width=1*Form1->Zoom;
-		canv->MoveTo(S.x-packy_W,S.y+H/2);canv->LineTo(S.x,S.y+H/2);
-		canv->MoveTo(S.x+W,S.y+H/2);canv->LineTo(S.x+W+packy_W,S.y+H/2);*/
-
-		////nastavení písma
-		canv->Font->Name="Arial";//canv->Font->Name="MS Sans Serif";
-		if(Form1->antialiasing && Form1->Akce!=Form1->ADD && Form1->Akce!=Form1->MOVE)
-		{
-			canv->Font->Pitch = TFontPitch::fpFixed;//každé písmeno fontu stejně široké
-			//asi nepřináší zcela přínos
-			canv->Font->Pitch = System::Uitypes::TFontPitch::fpFixed;
-			canv->Font->Size=11*3+3;//+3 grafická korekce protože při AA dochází ke zmenšení písma
-		}
-		else
-		{
-			//asi nepřináší zcela přínos
-			canv->Font->Pitch = TFontPitch::fpVariable;//každé písmeno fontu stejně široké
-			canv->Font->Pitch = System::Uitypes::TFontPitch::fpVariable;
-			canv->Font->Size=12;//tady zajist rozšíření písma
-		}
-		rotace_textu(canv,0);
-
-		//barva
-		canv->Font->Color=(TColor)RGB(254,254,254);//clBlack;//nemuže být čiště bílá pokud je zapnut antialising, tak aby se nezobrazoval skrz objekt grid
-
-		short zAA=1;//zvětšení pro antialising, jinak 1
-		if(Form1->antialiasing && Form1->Akce!=Form1->ADD && Form1->Akce!=Form1->MOVE)zAA=3;
-
-		////samotný text - pro jednotlivé zoomu různé podoby výpisu
-		//název objektu
-		if(Form1->Zoom_predchozi_AA>1)
-		{
-		 canv->Font->Style = TFontStyles()<< fsBold;//zapnutí tučného písma
-		 if(Form1->Zoom_predchozi_AA==1.5)	drawRectText(canv,TRect(S.x,S.y,S.x+W,S.y+H),ukaz->name.UpperCase());//zajistí vykreslení textu vycentrovaného vevnitř objektu/obdelníku
-		 else
-		 {
-			canv->Font->Size=canv->Font->Size; //*(Form1->Zoom_predchozi_AA-1) - zatím nepoužito
-			canv->TextOutW(S.x+4*zAA,S.y+2*zAA,ukaz->name.UpperCase());
-		 }
-
-		 canv->Font->Style = TFontStyles();//vypnutí tučného písma
-		 if(Form1->antialiasing && Form1->Akce!=Form1->ADD && Form1->Akce!=Form1->MOVE)canv->Font->Size=8*3+2;//+3 grafická korekce protože při AA dochází ke zmenšení písma
-		}
-
-		//vypis další datových položek
-		if(Form1->Zoom_predchozi_AA>1.5)
-		{
-		 UnicodeString T=""; unsigned short R=20;//řádkování
-
-		 bool CTunit=0;AnsiString CTunitT="[s]";
-		 bool aRDunit=0;AnsiString aRDunitT="[m/s]";
-		 bool DDunit=0;AnsiString DDunitT="[m]";
-		 if(Form1->readINI("nastaveni_form_parametry", "CT") == "1"){CTunit=1;CTunitT="[min]";}
-		 if(Form1->readINI("nastaveni_form_parametry", "RDt") == "1"){aRDunit=1;aRDunitT="[m/min]";}
-		 if(Form1->readINI("nastaveni_form_parametry", "DD") == "1") {DDunit=1;DDunitT="[mm]";}
-
-		 switch(ukaz->rezim)
-		 {
-			case 0:T="STOP & GO";break;
-			case 1:T="KONTINUÁLNÍ";break;
-			case 2:T="POSTPROCESNÍ";break;
-		 }
-		 canv->TextOutW(S.x+4*zAA,S.y+R*zAA,T);//výpis režimu
-		 if(ukaz->pohon==NULL)
-		 {
-			 canv->Font->Color=clRed;
-			 canv->Font->Style = TFontStyles()<< fsBold;//zapnutí tučného písma
-			 canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"POHON NEPŘIŘAZEN");//pohon name
-			 canv->Font->Style = TFontStyles();//vypnutí tučného písma
-			 canv->Font->Color=(TColor)RGB(254,254,254);
-		 }
-		 else canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,ukaz->pohon->name);//pohon name
-		 if(F->STATUS!=Form1->OVEROVANI && Form1->Zoom_predchozi_AA>2 && ukaz->pohon!=NULL)canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"RP: "+F->m.round2double(ukaz->pohon->aRD*(1+aRDunit*59.0),3,"..")+" "+aRDunitT);
-		 if(F->Zoom_predchozi_AA>2)canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"DD: "+F->m.round2double(ukaz->delka_dopravniku*(1+DDunit*999.0),3,"..")+" "+DDunitT);
-		 if(F->STATUS!=Form1->OVEROVANI && Form1->Zoom_predchozi_AA>2)canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"CT: "+F->m.round2double(ukaz->CT/(1+CTunit*59.0),3,"..")+" "+CTunitT);
-		 if(F->Zoom_predchozi_AA>2)canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"Kap.: "+F->m.round2double(ukaz->kapacita,3,"..")+" [v+mz]");
-		 if(F->Zoom_predchozi_AA>2)canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"Poz.: "+F->m.round2double(ukaz->pozice,3,"..")+" [v]");
-		}
-
-		//pro největší oddálení zobrazí jenom zkratku objektu
-		if(Form1->Zoom_predchozi_AA<=1)
-		{
-			if(Form1->Zoom_predchozi_AA==1)canv->Font->Style = TFontStyles()<< fsBold;else canv->Font->Style = TFontStyles();
-			if(Form1->Zoom_predchozi_AA==0.25)
-			drawRectText(canv,TRect(S.x,S.y,S.x+W,S.y+H),ukaz->short_name.SubString(1,1));
-			else
-			{
-				if(Form1->antialiasing && Form1->Akce!=Form1->ADD && Form1->Akce!=Form1->MOVE)//při antialiasingu se zobrazuje popisek trochu jinak
-				drawRectText(canv,TRect(S.x,S.y,S.x+W,S.y+H),ukaz->short_name.UpperCase());//zajistí vykreslení textu vycentrovaného vevnitř objektu/obdelníku
-				else
-				drawRectText(canv,TRect(S.x-1,S.y,S.x+W,S.y+H),ukaz->short_name.UpperCase());//zajistí vykreslení textu vycentrovaného vevnitř objektu/obdelníku
-			}
-		}
-	}
-	else
-	vykresli_kruh(canv,ukaz);
+//		else
+//		{
+//			//asi nepřináší zcela přínos
+//			canv->Font->Pitch = TFontPitch::fpVariable;//každé písmeno fontu stejně široké
+//			canv->Font->Pitch = System::Uitypes::TFontPitch::fpVariable;
+//			canv->Font->Size=12;//tady zajist rozšíření písma
+//		}
+//		rotace_textu(canv,0);
+//
+//		//barva
+//		canv->Font->Color=(TColor)RGB(254,254,254);//clBlack;//nemuže být čiště bílá pokud je zapnut antialising, tak aby se nezobrazoval skrz objekt grid
+//
+//		short zAA=1;//zvětšení pro antialising, jinak 1
+//		if(Form1->antialiasing && Form1->Akce!=Form1->ADD && Form1->Akce!=Form1->MOVE)zAA=3;
+//
+//		////samotný text - pro jednotlivé zoomu různé podoby výpisu
+//		//název objektu
+//		if(Form1->Zoom_predchozi_AA>1)
+//		{
+//		 canv->Font->Style = TFontStyles()<< fsBold;//zapnutí tučného písma
+//		 if(Form1->Zoom_predchozi_AA==1.5)	drawRectText(canv,TRect(S.x,S.y,S.x+W,S.y+H),ukaz->name.UpperCase());//zajistí vykreslení textu vycentrovaného vevnitř objektu/obdelníku
+//		 else
+//		 {
+//			canv->Font->Size=canv->Font->Size; //*(Form1->Zoom_predchozi_AA-1) - zatím nepoužito
+//			canv->TextOutW(S.x+4*zAA,S.y+2*zAA,ukaz->name.UpperCase());
+//		 }
+//
+//		 canv->Font->Style = TFontStyles();//vypnutí tučného písma
+//		 if(Form1->antialiasing && Form1->Akce!=Form1->ADD && Form1->Akce!=Form1->MOVE)canv->Font->Size=8*3+2;//+3 grafická korekce protože při AA dochází ke zmenšení písma
+//		}
+//
+//		//vypis další datových položek
+//		if(Form1->Zoom_predchozi_AA>1.5)
+//		{
+//		 UnicodeString T=""; unsigned short R=20;//řádkování
+//
+//		 bool CTunit=0;AnsiString CTunitT="[s]";
+//		 bool aRDunit=0;AnsiString aRDunitT="[m/s]";
+//		 bool DDunit=0;AnsiString DDunitT="[m]";
+//		 if(Form1->readINI("nastaveni_form_parametry", "CT") == "1"){CTunit=1;CTunitT="[min]";}
+//		 if(Form1->readINI("nastaveni_form_parametry", "RDt") == "1"){aRDunit=1;aRDunitT="[m/min]";}
+//		 if(Form1->readINI("nastaveni_form_parametry", "DD") == "1") {DDunit=1;DDunitT="[mm]";}
+//
+//		 switch(ukaz->rezim)
+//		 {
+//			case 0:T="STOP & GO";break;
+//			case 1:T="KONTINUÁLNÍ";break;
+//			case 2:T="POSTPROCESNÍ";break;
+//		 }
+//		 canv->TextOutW(S.x+4*zAA,S.y+R*zAA,T);//výpis režimu
+//		 if(ukaz->pohon==NULL)
+//		 {
+//			 canv->Font->Color=clRed;
+//			 canv->Font->Style = TFontStyles()<< fsBold;//zapnutí tučného písma
+//			 canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"POHON NEPŘIŘAZEN");//pohon name
+//			 canv->Font->Style = TFontStyles();//vypnutí tučného písma
+//			 canv->Font->Color=(TColor)RGB(254,254,254);
+//		 }
+//		 else canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,ukaz->pohon->name);//pohon name
+//		 if(F->STATUS!=Form1->OVEROVANI && Form1->Zoom_predchozi_AA>2 && ukaz->pohon!=NULL)canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"RP: "+F->m.round2double(ukaz->pohon->aRD*(1+aRDunit*59.0),3,"..")+" "+aRDunitT);
+//		 if(F->Zoom_predchozi_AA>2)canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"DD: "+F->m.round2double(ukaz->delka_dopravniku*(1+DDunit*999.0),3,"..")+" "+DDunitT);
+//		 if(F->STATUS!=Form1->OVEROVANI && Form1->Zoom_predchozi_AA>2)canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"CT: "+F->m.round2double(ukaz->CT/(1+CTunit*59.0),3,"..")+" "+CTunitT);
+//		 if(F->Zoom_predchozi_AA>2)canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"Kap.: "+F->m.round2double(ukaz->kapacita,3,"..")+" [v+mz]");
+//		 if(F->Zoom_predchozi_AA>2)canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"Poz.: "+F->m.round2double(ukaz->pozice,3,"..")+" [v]");
+//		}
+//
+//		//pro největší oddálení zobrazí jenom zkratku objektu
+//		if(Form1->Zoom_predchozi_AA<=1)
+//		{
+//			if(Form1->Zoom_predchozi_AA==1)canv->Font->Style = TFontStyles()<< fsBold;else canv->Font->Style = TFontStyles();
+//			if(Form1->Zoom_predchozi_AA==0.25)
+//			drawRectText(canv,TRect(S.x,S.y,S.x+W,S.y+H),ukaz->short_name.SubString(1,1));
+//			else
+//			{
+//				if(Form1->antialiasing && Form1->Akce!=Form1->ADD && Form1->Akce!=Form1->MOVE)//při antialiasingu se zobrazuje popisek trochu jinak
+//				drawRectText(canv,TRect(S.x,S.y,S.x+W,S.y+H),ukaz->short_name.UpperCase());//zajistí vykreslení textu vycentrovaného vevnitř objektu/obdelníku
+//				else
+//				drawRectText(canv,TRect(S.x-1,S.y,S.x+W,S.y+H),ukaz->short_name.UpperCase());//zajistí vykreslení textu vycentrovaného vevnitř objektu/obdelníku
+//			}
+//		}
+//	}
+//	else
+//	vykresli_kruh(canv,ukaz);
 }
 ////---------------------------------------------------------------------------
 void Cvykresli::vykresli_kruh(TCanvas *canv, Cvektory::TObjekt *O)
