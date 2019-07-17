@@ -370,10 +370,10 @@ void TForm1::edice()
         scLabel_architekt->Visible=false;
         scGPSwitch_rezim->Visible=false;
         scLabel_klient->Visible=false;
-        scGPButton_mereni_vzdalenost->Enabled=false;
+        scGPButton_mereni_vzdalenost->Enabled=true;
         scLabel1_svetelnost->Enabled=false;
         scGPCheckBox_stupne_sedi->Enabled=false;
-        scGPCheckBox_ortogon->Enabled=false;
+        scGPCheckBox_ortogon->Enabled=true;
 
 
 				RzToolButton1->Enabled=false;
@@ -10270,8 +10270,6 @@ void TForm1::Memo(AnsiString Text, bool clear,bool count)
 //zapínání a vypínaní meření
 void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 {
-  if(scSplitView_OPTIONS->Visible) scSplitView_OPTIONS->Visible=false;
-
 	if(Akce==NIC)
 	{
 		scSplitView_OPTIONS->Close();
