@@ -523,7 +523,7 @@ void Cvykresli::sipka(TCanvas *canv, int X, int Y, float azimut, bool bez_vyplne
 	canv->Pen->Style=PenStyle;
 	canv->Pen->Color=(TColor)color;
 	canv->Brush->Color=(TColor)color_brush;
-	//size=m.round(size*2*Form1->Zoom);
+	size=m.round(size*2*Form1->Zoom);//bacha může způsobovat problémy
 	short sklon=230;
 
 	if(!teziste_stred)//referenční bod není v těžišti,tak posun šipky tak, aby špička byla referenčním bodem
@@ -4376,8 +4376,8 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	x2+=sin(DegToRad(azimut))*(Presah);y2+=cos(DegToRad(azimut))*(Presah);
 	line(canv,x1,y1,x2,y2);
 	//vykreslení šipek
-	sipka(canv,x1,y1,m.azimut(X1,Y1,X2,Y2)*(-1),false,1*F->Zoom*(1+0.3*H)*meritko,color,color,pmCopy,psSolid,false);
-	sipka(canv,x2,y2,m.azimut(X1,Y1,X2,Y2)*(-1)-180,false,1*F->Zoom*(1+0.3*H)*meritko,color,color,pmCopy,psSolid,false);
+	sipka(canv,x1,y1,m.azimut(X1,Y1,X2,Y2)*(-1),false,0.5*(1+0.3*H)*meritko,color,color,pmCopy,psSolid,false);
+	sipka(canv,x2,y2,m.azimut(X1,Y1,X2,Y2)*(-1)-180,false,0.5*(1+0.3*H)*meritko,color,color,pmCopy,psSolid,false);
 
 	////záměna (podsunutí editovaného) textu v případě EDITACE právě touto metodou vykreslované kóty - editovaného textu (abychom mohli text koty refreshovat, ale aby ještě nebylo nutné měnit rozměry) (protože se cyklem vykreslují všechny kóty i při platném JID)
 	if(F->editace_textu && ukladat_do_elementu)//ošetření proti vykreslování editovaného textu na kótě mezi lak. okny
