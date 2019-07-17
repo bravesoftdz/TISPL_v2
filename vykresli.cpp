@@ -45,9 +45,12 @@ void Cvykresli::vykresli_halu(TCanvas *canv,int stav)
 		if(F->JID==1&&F->pom_bod->n==1)stav=2*v.HALA.body->predchozi->n;//poslední úsečka
 		if(F->JID==1&&F->pom_bod->n!=1)stav=v.HALA.body->predchozi->n+F->pom_bod->n-1;//ostatní úsečky
 	}
+	//nastavení kót
+	bool zobrazit_koty=true;
+	if(F->MOD==F->NAHLED)zobrazit_koty=false;
 	//vykreslení
 	short sirka_steny_px=m.m2px(0.4);//m->px
-	polygon(canv,v.HALA.body,clStenaHaly,sirka_steny_px,stav);
+	polygon(canv,v.HALA.body,clStenaHaly,sirka_steny_px,stav,zobrazit_koty);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

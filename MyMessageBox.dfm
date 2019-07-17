@@ -915,8 +915,8 @@ object myMessageBox: TmyMessageBox
     AllowAllUp = False
   end
   object scGPEdit1: TscGPEdit
-    Left = 279
-    Top = 144
+    Left = 32767
+    Top = 32767
     Width = 121
     Height = 23
     Options.NormalColor = clWindow
