@@ -343,11 +343,12 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	short W=m.round(sirka_steny_px/2.0);//posunutí vykreslení orámování nad vnější rozměry kabiny
 	short pmpp=m.m2px(v.PP.delka_jig); if(v.PP.delka_jig<v.PP.sirka_jig)pmpp=m.m2px(v.PP.sirka_jig);pmpp=m.round(pmpp/2.0);if(pmpp>m.m2px(1))pmpp=m.m2px(1);/*ošetření*///polovina max. průjezdního profilu
 
-	////nastavení pera pro kabinu
+	////nastavení pera pro kabinu //pro rectangle, následně možné také odstranit
 	canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
 	canv->Pen->Mode=pmNotXor;//pro transparentní zákres
 	canv->Pen->Color=clAkt;//barva
 	canv->Pen->Width=sirka_steny_px;//šířka v pixelech
+	canv->Pen->Style=psSolid;
 
 	////vnější obrys kabiny
 	canv->Rectangle(X1-W,Y1-W,X2+W,Y2+W);//rám - kresleno pod komory, kvůli nastavení pera
@@ -522,7 +523,7 @@ void Cvykresli::sipka(TCanvas *canv, int X, int Y, float azimut, bool bez_vyplne
 	canv->Pen->Style=PenStyle;
 	canv->Pen->Color=(TColor)color;
 	canv->Brush->Color=(TColor)color_brush;
-	size=m.round(size*2*Form1->Zoom);
+	//size=m.round(size*2*Form1->Zoom);
 	short sklon=230;
 
 	if(!teziste_stred)//referenční bod není v těžišti,tak posun šipky tak, aby špička byla referenčním bodem
@@ -4117,6 +4118,7 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 		////vykreslení kót
 		if(zobrazit_koty)//pokud je požádováno
 		{
+			short AA=1;if(F->antialiasing)AA=3;
 			B=body->dalsi->dalsi;
 			short highlight=0;
 			while(B!=NULL)//vykreslení kót musí být v samostatém cyklu!!!!!(jinak ovlivňuje vykreslení spojnic bodů)
@@ -4125,13 +4127,13 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 				if(F->pom_bod!=NULL&&F->JID==2&&F->pom_bod->n==B->n)highlight=2;
 				else if(F->pom_bod!=NULL&&F->JID==-2&&F->pom_bod->n==B->n)highlight=1;else highlight=0;
       	//vykreslení kóty                                                                                                                                               //převedení na mm
-				vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),F->outDK(m.round2double(m.delka(B->predchozi->X,B->predchozi->Y,B->X,B->Y),0)),NULL,B->kota_offset,highlight,0.2,clGray,false,NULL,B);
+				vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),F->outDK(m.round2double(m.delka(B->predchozi->X,B->predchozi->Y,B->X,B->Y),0)),NULL,B->kota_offset*F->Zoom/AA,highlight,0.2,clGray,false,NULL,B);
 				B=B->dalsi;
 			}
 			//vykreslení poslední kóty
 			if(F->pom_bod!=NULL&&F->JID==2&&F->pom_bod->n==body->dalsi->n)highlight=2;
 			else if(F->pom_bod!=NULL&&F->JID==-2&&F->pom_bod->n==body->dalsi->n)highlight=1;else highlight=0;
-			if(body->predchozi->n>2)vykresli_kotu(canv,m.L2Px(body->predchozi->X),m.L2Py(body->predchozi->Y),m.L2Px(body->dalsi->X),m.L2Py(body->dalsi->Y),F->outDK(m.round2double(m.delka(body->predchozi->X,body->predchozi->Y,body->dalsi->X,body->dalsi->Y),0)),NULL,body->dalsi->kota_offset,highlight,0.2,clGray,false,NULL,body->dalsi);
+			if(body->predchozi->n>2)vykresli_kotu(canv,m.L2Px(body->predchozi->X),m.L2Py(body->predchozi->Y),m.L2Px(body->dalsi->X),m.L2Py(body->dalsi->Y),F->outDK(m.round2double(m.delka(body->predchozi->X,body->predchozi->Y,body->dalsi->X,body->dalsi->Y),0)),NULL,body->dalsi->kota_offset*F->Zoom/AA,highlight,0.2,clGray,false,NULL,body->dalsi);
 			////odstranění pomocného ukazatele
 			B=NULL; delete B;
 		}
@@ -4348,37 +4350,37 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double
 //v px + dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně, aktElement pokud bude NULL, předpokládá se, že je to kóta kabiny
 void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,AnsiString Text,Cvektory::TElement *aktElement,int Offset,short highlight,float width, TColor color,bool ukladat_do_elementu,Cvektory::TKomora *komora,Cvektory::TBod *bod)
 {
-	//highlight
-	if(F->JID==-10 && F->MOD==F->NAHLED)highlight=0;//pokud se mění pouze jednotky, tak se kóta nehiglightuje
-	if(aktElement==NULL&&komora==NULL&&bod==NULL)highlight=0;//odstranění highlightu na kótách mezi lak. okny
-	//měřítko (náhled vs. schéma), provizorně
-	short meritko=1;
-//	if(F->MOD==F->SCHEMA){meritko=20;width*=5;}
+	////vstupní proměnné
+	if(F->JID==-10 && F->MOD==F->NAHLED)highlight=0;//highlight - pokud se mění pouze jednotky, tak se kóta nehiglightuje
+	if(aktElement==NULL&&komora==NULL&&bod==NULL)highlight=0;//highlight -odstranění highlightu na kótách mezi lak. okny
+	short meritko=1;if(F->MOD==F->SCHEMA){width*=5;meritko=5;}//měřítko (náhled vs. schéma)
 	width=m.round(width*F->Zoom);if(highlight)width*=2;//šířka linie
 	short Presah=m.round(1.3*F->Zoom);if(Offset<0)Presah*=-1;//přesah packy u kóty,v případě záporného offsetu je vystoupení kóty nazákladě tohot záporné
 	short V=0;if(highlight==2)V=1;//vystoupení kóty
 	short H=0;if(highlight)H=1;
 	short M=0;if(10<F->JID && F->JID<100 && F->MOD==F->NAHLED)M=1;//při celkovém posunu kót se postranní spojnice nově nezvýrazňují
 
-	//vykreslení postranních šipek
-	canv->Brush->Style=bsSolid;
-	set_pen(canv,color,width,PS_ENDCAP_FLAT);
-	//vykreslení kóty
+	////samotné vykreslení kót
+	//nastaveni pera
+	canv->Brush->Style=bsSolid;//asi nemá význam, možná kvůli písmu níže
+	set_pen(canv,color,width/(1+M*1.0),PS_ENDCAP_SQUARE);
+	//vykreslení postraních spojnic
 	float azimut=fmod(m.azimut(X1,Y1,X2,Y2)+90,360);//určení azimutu kótované přímky
 	double x1=X1,y1=Y1,x2=X2,y2=Y2,odsazeni=Offset+Presah+Presah*V;//body sloužící k přepočtu souřadnic + hodnota celkového odsazení
 	x1-=sin(DegToRad(azimut))*(Offset+Presah+Presah*V);y1-=cos(DegToRad(azimut))*(Offset+Presah+Presah*V);
 	x2-=sin(DegToRad(azimut))*(Offset+Presah+Presah*V);y2-=cos(DegToRad(azimut))*(Offset+Presah+Presah*V);
-	linie(canv,X1,Y1,x1,y1/*+Offset+Presah+Presah*V*/,width/(1+M*1.0),color);//vykreslení postraních spojnic
-	linie(canv,X2,Y2,x2,y2,width/(1+M*1.0),color);//vykreslení postraních spojnic
+	line(canv,X1,Y1,x1,y1);
+	line(canv,X2,Y2,x2,y2);
+	//vykreslení hlavní linie
 	x1+=sin(DegToRad(azimut))*(Presah);y1+=cos(DegToRad(azimut))*(Presah);
 	x2+=sin(DegToRad(azimut))*(Presah);y2+=cos(DegToRad(azimut))*(Presah);
-	sipka(canv,x1,y1,m.azimut(X1,Y1,X2,Y2)*(-1),false,0.1/3.0*F->Zoom*(1+0.3*H)*meritko,color,color,pmCopy,psSolid,false);
-	sipka(canv,x2,y2,m.azimut(X1,Y1,X2,Y2)*(-1)-180,false,0.1/3.0*F->Zoom*(1+0.3*H)*meritko,color,color,pmCopy,psSolid,false);
-	//vykreslení hlavní linie
-	linie(canv,x1,y1,x2,y2,width,color);
+	line(canv,x1,y1,x2,y2);
+	//vykreslení šipek
+	sipka(canv,x1,y1,m.azimut(X1,Y1,X2,Y2)*(-1),false,1*F->Zoom*(1+0.3*H)*meritko,color,color,pmCopy,psSolid,false);
+	sipka(canv,x2,y2,m.azimut(X1,Y1,X2,Y2)*(-1)-180,false,1*F->Zoom*(1+0.3*H)*meritko,color,color,pmCopy,psSolid,false);
 
-	//záměna (podsunutí editovaného) textu v případě EDITACE právě touto metodou vykreslované kóty - editovaného textu (abychom mohli text koty refreshovat, ale aby ještě nebylo nutné měnit rozměry) (protože se cyklem vykreslují všechny kóty i při platném JID)
-	if(F->editace_textu&&ukladat_do_elementu)//ošetření proti vykreslování editovaného textu na kótě mezi lak. okny
+	////záměna (podsunutí editovaného) textu v případě EDITACE právě touto metodou vykreslované kóty - editovaného textu (abychom mohli text koty refreshovat, ale aby ještě nebylo nutné měnit rozměry) (protože se cyklem vykreslují všechny kóty i při platném JID)
+	if(F->editace_textu && ukladat_do_elementu)//ošetření proti vykreslování editovaného textu na kótě mezi lak. okny
 	{
 		if(aktElement==NULL)//předpokládá se, že je to kóta kabiny
 		{
@@ -4406,7 +4408,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 		{if(F->editovany_text=="")Text="";else Text=F->editovany_text;}
 	}
 
-	//popisek
+	////popisek
 	canv->Font->Pitch=TFontPitch::fpVariable;//každé písmeno fontu stejně široké
 	canv->Font->Pitch=System::Uitypes::TFontPitch::fpVariable;
 	canv->Font->Name=F->aFont->Name;
