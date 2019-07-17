@@ -8526,7 +8526,13 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //MaKr testovací tlačítko
 void __fastcall TForm1::Button14Click(TObject *Sender)
 {
-	Sk((short)d.v.PtInBody());
+	Graphics::TBitmap * Vzor=new Graphics::TBitmap;
+	SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
+	Vzor->LoadFromFile("Vzor.bmp");
+	LOGBRUSH lb={BS_PATTERN,0,(unsigned)Vzor->Handle};
+	DeleteObject(Canvas->Pen->Handle);//zruší původní pero
+	Canvas->Pen->Handle = ExtCreatePen(PS_GEOMETRIC|PS_JOIN_MITER|PS_ENDCAP_FLAT,20,&lb,0,NULL);
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
