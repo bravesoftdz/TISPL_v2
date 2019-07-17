@@ -40,6 +40,7 @@ void Cvykresli::vykresli_halu(TCanvas *canv,int stav)
 	stav=-2;//defaultní stav
 	if(F->MOD==F->SCHEMA)//ošetření, tato metoda se spouští i při náhledu !!!!
 	{
+    if(F->Akce==F->MOVE_HALA)stav=0;
 		if(F->JID==0)stav=F->pom_bod->n;//body
 		if(F->JID==1&&F->pom_bod->n==1)stav=2*v.HALA.body->predchozi->n;//poslední úsečka
 		if(F->JID==1&&F->pom_bod->n!=1)stav=v.HALA.body->predchozi->n+F->pom_bod->n-1;//ostatní úsečky

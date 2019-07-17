@@ -60,7 +60,7 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod,bool orto
 	{
 		Bod->X=X;
 		Bod->Y=Y;
-  }
+	}
 
 	////vkládání do bodů OBJEKTU
 	if(Objekt!=NULL)
@@ -75,9 +75,9 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod,bool orto
 		}
 		//vložení nového bodu na konec seznamu bodů
 		if(ZaBod==NULL || ZaBod!=NULL && ZaBod==Objekt->body->predchozi)//pokud se má vkládat nakonec
-		{																		//situace aktuální (budoucí poslední) první         											//situace  aktuální (budoucí poslední) a poslední aktuální (budoucí předposlední)
+		{																	//situace aktuální (budoucí poslední) první         											//situace  aktuální (budoucí poslední) a poslední aktuální (budoucí předposlední)
 			if(Objekt->body->dalsi==NULL || (Bod->X!=Objekt->body->dalsi->X || Bod->Y!=Objekt->body->dalsi->Y) && (Bod->X!=Objekt->body->predchozi->X || Bod->Y!=Objekt->body->predchozi->Y))//pokud se vkládá první prvek, ale pokud je poslední vkládaný totožný jako první nebo totožný jako předchozí (např. u ukočování kresby, nebo u chybného kliku), tak ho ignoruje a neuložího do spojáku)
-			if(Bod->X!=Objekt->body->dalsi->X && Bod->Y!=Objekt->body->dalsi->Y && Bod->X!=Bod->predchozi->X && Bod->Y!=Bod->predchozi->Y)//pokud je poslední vkládaný totožný jako první nebo totožný jako předchozí (např. u ukočování kresby, nebo u chybného kliku), tak ho ignoruje a neuložího do spojáku
+//			if(Bod->X!=Objekt->body->dalsi->X && Bod->Y!=Objekt->body->dalsi->Y && Bod->X!=Bod->predchozi->X && Bod->Y!=Bod->predchozi->Y)//pokud je poslední vkládaný totožný jako první nebo totožný jako předchozí (např. u ukočování kresby, nebo u chybného kliku), tak ho ignoruje a neuložího do spojáku
 			{
 				Bod->n=Objekt->body->predchozi->n+1;//navýšení počítadla
 				Bod->predchozi=Objekt->body->predchozi;//nový bod ukazuje na poslední prvek ve spojaku jako na prvek předchozí
@@ -435,124 +435,23 @@ void Cvektory::hlavicka_OBJEKTY()
 ////uloží objekt a jeho parametry do seznamu
 Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 {
-	AnsiString name,short_name;//dočasná konstrukce pro přiřazování spráných názvů objektům
-	if(id==F->VyID){name=knihovna_objektu[id].name+" "+AnsiString(pocet_vyhybek);short_name=knihovna_objektu[id].short_name+AnsiString(pocet_vyhybek);}
-	else if(id<=pocet_objektu_knihovny) {name=knihovna_objektu[id].name;short_name=knihovna_objektu[id].short_name;}else {name="Spojka "+AnsiString(pocet_vyhybek);short_name="S"+AnsiString(pocet_vyhybek);}
-
-	TObjekt *novy=new TObjekt;
-
-	novy->n=OBJEKTY->predchozi->n+1;//navýším počítadlo prvku o jedničku
-	novy->id=id;
-	novy->short_name=short_name;
-	novy->name=name;
-	novy->rezim=0;if(id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
-	novy->X=X;//přiřadím X osu,pozice objektu
-	novy->Y=Y;//přiřadím Y osu,pozice objektu
-	novy->Xk=X;//výchozí pozice kabiny
-	novy->Yk=Y;//výchozí pozice kabiny
-	novy->body=NULL;//spojový seznam definičních bodů obrysu objektu
-	novy->sirka_steny=0.12;//šířka stěny kabiny objektu v metrech
-	novy->CT=PP.TT;//pro status návrh
-	novy->RD=m.UDV(0)/novy->CT;//pro status návrh
-	novy->delka_dopravniku=m.UDV(0);//delka dopravníku v rámci objektu
-	novy->kapacita=1;
-	novy->kapacita_dop=0;
-	novy->pozice=1;
-	novy->rotace=0;//rotace jigu v objektu
-	novy->mezera=0;//mezera mezi vozíky (kritická mezera)
-	novy->mezera_jig=0;//mezera mezi jigy
-	novy->mezera_podvozek=0;//mezera mezi podvozky
-	novy->pohon=NULL;//při vložení nemá vložen žádný pohon
-	novy->elementy=NULL;//ukazatel na přidružené elementy
-	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
-	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
-	novy->rozmer_kabiny.x=10;//výchozí rozměr kabiny
-	novy->rozmer_kabiny.y=6;//výchozí rozměr kabiny
-	if(id==3)novy->koty_elementu_offset=1;else novy->koty_elementu_offset=4;//odsazení kót elementů v metrech,v kabině POW se kóty vykroslují od hrany kabiny, ne od pohonu
-	novy->komora=NULL;//ukazatel na komory
-	if(id==3)for(short i=1;i<=4;i++)vloz_komoru(novy,novy->rozmer_kabiny.x/4.0);//pokud se jedná o POWash,nastaví defaultně 4 stejné komory
-	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
-	novy->stopka=2;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
-	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
-	novy->obsazenost=0;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
-	novy->CT_zamek=0;
-	novy->RD_zamek=1;//defautlně zamčeno
-	novy->DD_zamek=0;
-	novy->K_zamek=0;
-	novy->poznamka="";
-	novy->probehla_aktualizace_prirazeni_pohonu=false;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
-	novy->zobrazit_koty=true;//proměnná určující, zda se budou zobrzovat kóty
-	novy->zobrazit_mGrid=true;//proměnná určující, zda budou zobrazeny mGridy
-	novy->uzamknout_nahled=false;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
-
+	TObjekt *novy=nastav_atributy_objektu(id,X,Y);
+	//ukazatele
 	OBJEKTY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
 	novy->predchozi=OBJEKTY->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 	novy->predchozi2=NULL;
 	novy->dalsi=NULL;
 	novy->dalsi2=NULL;
 	OBJEKTY->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+
 	return novy;
 }
 //---------------------------------------------------------------------------
 //uloží objekt a jeho parametry do seznamu za objekt p        //p předchozí
 Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *pred,TObjekt *po)
 {
-	AnsiString name,short_name;//dočasná konstrukce pro přiřazování spráných názvů objektům
-	if(id==F->VyID){name=knihovna_objektu[id].name+" "+AnsiString(pocet_vyhybek);short_name="V"+AnsiString(pocet_vyhybek);}
-	else if(id<=pocet_objektu_knihovny) {name=knihovna_objektu[id].name;short_name=knihovna_objektu[id].short_name;}else {name="Spojka "+AnsiString(pocet_vyhybek);short_name="S"+AnsiString(pocet_vyhybek);}
-
-	TObjekt *novy=new TObjekt;
-	novy->id=id;
-	novy->short_name=short_name;
-	novy->name=name;
-	novy->rezim=0;if(id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
-	novy->X=X;//přiřadím X osu
-	novy->Y=Y;//přiřadím Y osu
-	novy->Xk=X;//výchozí pozice kabiny
-	novy->Yk=Y;//výchozí pozice kabiny
-	novy->body=NULL;//spojový seznam definičních bodů obrysu objektu
-	novy->sirka_steny=0.12;//šířka stěny kabiny objektu v metrech
-	novy->CT=PP.TT;//pro status návrh
-	novy->RD=m.UDV(0)/novy->CT;//pro status návrh
-	novy->delka_dopravniku=m.UDV(0);//delka dopravníku v rámci objektu
-	novy->kapacita=1;
-	novy->kapacita_dop=0;
-	novy->pozice=1;
-	novy->rotace=0;//rotace jigu v objektu
-	novy->mezera=0;//velikost mezery mezi vozíky  (kritická mezera)
-	novy->mezera_jig=0;//mezera mezi jigy
-	novy->mezera_podvozek=0;//mezera mezi podvozky
-	novy->pohon=NULL;//při vložení nemá vložen žádný pohon
-	novy->elementy=NULL;//ukazatel na přidružené elementy
-	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
-	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
-	novy->rozmer_kabiny.x=10;//výchozí rozměr kabiny
-	novy->rozmer_kabiny.y=6;//výchozí rozměr kabiny
-	if(id==3)novy->koty_elementu_offset=1;else novy->koty_elementu_offset=4;//odsazení kót elementů v metrech,v kabině POW se kóty vykroslují od hrany kabiny, ne od pohonu
-	novy->komora=NULL;//ukazatel na komory
-	if(id==3)for(short i=1;i<=4;i++)vloz_komoru(novy,novy->rozmer_kabiny.x/4.0);//pokud se jedná o POWash,nastaví defaultně 4 stejné komory
-	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
-	novy->stopka=2;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
-	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
-	novy->obsazenost=0;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
-	novy->CT_zamek=0;
-	novy->RD_zamek=1;//defautlně zamčeno
-	novy->DD_zamek=0;
-	novy->K_zamek=0;
-	novy->poznamka="";
-	novy->probehla_aktualizace_prirazeni_pohonu=false;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
-	novy->zobrazit_koty=true;//proměnná určující, zda se budou zobrzovat kóty
-	novy->zobrazit_mGrid=true;//proměnná určující, zda budou zobrazeny mGridy
-	novy->uzamknout_nahled=false;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
-
-//	novy->predchozi=pred;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
-//	novy->predchozi2=NULL;
-//	novy->dalsi=pred->dalsi;
-//	pred->dalsi->predchozi=novy;
-//	pred->dalsi=novy;
-//	novy->n=pred->n;//přiřadím počítadlo prvku ze současného prvku, v dalším kroku se totiž navýší
-
-	//////testovací konstrukce
+	TObjekt *novy=nastav_atributy_objektu(id,X,Y);
+	//ukazatele
 	novy->predchozi=pred;
 	novy->predchozi2=NULL;
 	if(po->predchozi==pred)po->predchozi=novy;
@@ -568,54 +467,8 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 //---------------------------------------------------------------------------
 Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *vyhybka,TObjekt *pred,TObjekt *po)
 {
-  AnsiString name,short_name;//dočasná konstrukce pro přiřazování spráných názvů objektům
-	if(id==F->VyID){name=knihovna_objektu[id].name+" "+AnsiString(pocet_vyhybek);short_name=knihovna_objektu[id].short_name+AnsiString(pocet_vyhybek);}
-	else if(id<=pocet_objektu_knihovny) {name=knihovna_objektu[id].name;short_name=knihovna_objektu[id].short_name;}else {name="Spojka "+AnsiString(pocet_vyhybek);short_name="S"+AnsiString(pocet_vyhybek);}
 
-	TObjekt *novy=new TObjekt;
-	novy->id=id;
-	novy->short_name=short_name;
-	novy->name=name;
-	novy->rezim=0;if(id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
-	novy->X=X;//přiřadím X osu
-	novy->Y=Y;//přiřadím Y osu
-	novy->Xk=X;//výchozí pozice kabiny
-	novy->Yk=Y;//výchozí pozice kabiny
-	novy->body=NULL;//spojový seznam definičních bodů obrysu objektu
-	novy->sirka_steny=0.12;//šířka stěny kabiny objektu v metrech
-	novy->CT=PP.TT;//pro status návrh
-	novy->RD=m.UDV(0)/novy->CT;//pro status návrh
-	novy->delka_dopravniku=m.UDV(0);//delka dopravníku v rámci objektu
-	novy->kapacita=1;
-	novy->kapacita_dop=0;
-	novy->pozice=1;
-	novy->rotace=0;//rotace jigu v objektu
-	novy->mezera=0;//velikost mezery mezi vozíky  (kritická mezera)
-	novy->mezera_jig=0;//mezera mezi jigy
-	novy->mezera_podvozek=0;//mezera mezi podvozky
-	novy->pohon=NULL;//při vložení nemá vložen žádný pohon
-	novy->elementy=NULL;//ukazatel na přidružené elementy
-	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
-	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
-	novy->rozmer_kabiny.x=10;//výchozí rozměr kabiny
-	novy->rozmer_kabiny.y=6;//výchozí rozměr kabiny
-	if(id==3)novy->koty_elementu_offset=1;else novy->koty_elementu_offset=4;//odsazení kót elementů v metrech,v kabině POW se kóty vykroslují od hrany kabiny, ne od pohonu
-	novy->komora=NULL;//ukazatel na komory
-	if(id==3)for(short i=1;i<=4;i++)vloz_komoru(novy,novy->rozmer_kabiny.x/4.0);//pokud se jedná o POWash,nastaví defaultně 4 stejné komory
-	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
-	novy->stopka=2;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
-	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
-	novy->obsazenost=0;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
-	novy->CT_zamek=0;
-	novy->RD_zamek=1;//defautlně zamčeno
-	novy->DD_zamek=0;
-	novy->K_zamek=0;
-	novy->poznamka="";
-	novy->probehla_aktualizace_prirazeni_pohonu=false;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
-	novy->zobrazit_koty=true;//proměnná určující, zda se budou zobrzovat kóty
-	novy->zobrazit_mGrid=true;//proměnná určující, zda budou zobrazeny mGridy
-	novy->uzamknout_nahled=false;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
-
+	TObjekt *novy=nastav_atributy_objektu(id,X,Y);
 	//spojkové ukazatele
 	novy->predchozi2=vyhybka;//pohled zpět na sekundární větev, v momentě vložení totožná s vyhybkou
 	novy->predchozi=pred;//pohled na hlavní větev
@@ -650,6 +503,79 @@ void Cvektory::vloz_objekt(TObjekt *Objekt)
 	novy->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje
 	novy->dalsi2=NULL;
 	OBJEKTY->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+}
+//---------------------------------------------------------------------------
+//alokuje paměť pro objekt, nastavý atriuty objektu, vrátí ukazatel na nově vytvořený prvek
+Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, double Y)
+{
+	AnsiString name,short_name;//dočasná konstrukce pro přiřazování spráných názvů objektům
+	if(id==F->VyID){name=knihovna_objektu[id].name+" "+AnsiString(pocet_vyhybek);short_name=knihovna_objektu[id].short_name+AnsiString(pocet_vyhybek);}
+	else if(id<=pocet_objektu_knihovny) {name=knihovna_objektu[id].name;short_name=knihovna_objektu[id].short_name;}else {name="Spojka "+AnsiString(pocet_vyhybek);short_name="S"+AnsiString(pocet_vyhybek);}
+
+	TObjekt *novy=new TObjekt;
+
+	novy->n=OBJEKTY->predchozi->n+1;//navýším počítadlo prvku o jedničku
+	novy->id=id;
+	novy->short_name=short_name;
+	novy->name=name;
+	novy->rezim=0;if(id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
+	novy->X=X;//přiřadím X osu,pozice objektu
+	novy->Y=Y;//přiřadím Y osu,pozice objektu
+	novy->Xk=X;//výchozí pozice kabiny
+	novy->Yk=Y;//výchozí pozice kabiny
+	novy->body=NULL;//spojový seznam definičních bodů obrysu objektu
+	novy->sirka_steny=0.12;//šířka stěny kabiny objektu v metrech
+	novy->CT=PP.TT;//pro status návrh
+	novy->RD=m.UDV(0)/novy->CT;//pro status návrh
+	novy->delka_dopravniku=m.UDV(0);//delka dopravníku v rámci objektu
+	novy->kapacita=1;
+	novy->kapacita_dop=0;
+	novy->pozice=1;
+	novy->rotace=0;//rotace jigu v objektu
+	novy->mezera=0;//mezera mezi vozíky (kritická mezera)
+	novy->mezera_jig=0;//mezera mezi jigy
+	novy->mezera_podvozek=0;//mezera mezi podvozky
+	novy->pohon=NULL;//při vložení nemá vložen žádný pohon
+	novy->elementy=NULL;//ukazatel na přidružené elementy
+	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
+	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
+	////stará konstrukce
+	novy->rozmer_kabiny.x=10;//výchozí rozměr kabiny
+	novy->rozmer_kabiny.y=6;//výchozí rozměr kabiny
+	////
+	if(id==3)novy->koty_elementu_offset=1;else novy->koty_elementu_offset=4;//odsazení kót elementů v metrech,v kabině POW se kóty vykroslují od hrany kabiny, ne od pohonu
+	novy->komora=NULL;//ukazatel na komory
+	if(id==3)for(short i=1;i<=4;i++)vloz_komoru(novy,novy->rozmer_kabiny.x/4.0);//pokud se jedná o POWash,nastaví defaultně 4 stejné komory
+	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
+	novy->stopka=2;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
+	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
+	novy->obsazenost=0;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
+	novy->CT_zamek=0;
+	novy->RD_zamek=1;//defautlně zamčeno
+	novy->DD_zamek=0;
+	novy->K_zamek=0;
+	novy->poznamka="";
+	novy->probehla_aktualizace_prirazeni_pohonu=false;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
+	novy->zobrazit_koty=true;//proměnná určující, zda se budou zobrzovat kóty
+	novy->zobrazit_mGrid=true;//proměnná určující, zda budou zobrazeny mGridy
+	novy->uzamknout_nahled=false;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
+
+//	//nově, vkládání bodů + defaultní rozměry různých objektů
+//	TPoint rozmery_kabiny;
+//	switch(id)
+//	{
+//		case 0:case 9://navěšování + svěšování
+//		rozmery_kabiny.x=5;rozmery_kabiny.y=3;break;//navěšování
+//		case 5:rozmery_kabiny.x=10;rozmery_kabiny.y=6;break;//lakovna
+//		case 6:rozmery_kabiny.x=10;rozmery_kabiny.y=3;break;//vytěkání
+//		case 7:rozmery_kabiny.x=20;rozmery_kabiny.y=3;break;//sušárna
+//		case 8:rozmery_kabiny.x=20;rozmery_kabiny.y=6;break;//chlazení
+//		default: rozmery_kabiny.x=10;rozmery_kabiny.y=6;break;//ostatní
+//	}
+//	vloz_bod(X,Y,novy);vloz_bod(X+rozmery_kabiny.x,Y,novy);
+//	vloz_bod(X,Y+rozmery_kabiny.y,novy);vloz_bod(X+rozmery_kabiny.x,Y+rozmery_kabiny.y,novy);
+
+	return novy;
 }
 //---------------------------------------------------------------------------
 //zkopíruje objekt Objekt na konec spojového seznamu Objektů, za předpokladu že p==NULL,

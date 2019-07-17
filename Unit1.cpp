@@ -1581,7 +1581,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//BACKSPACE
 		case 8:if(Akce==DRAW_HALA&&d.v.HALA.body->predchozi->n!=0){d.v.smaz_bod(d.v.HALA.body->predchozi);REFRESH();}else{Akce=NIC;kurzor(standard);}break;
 		//ENTER
-		case 13:if(editace_textu)Smaz_kurzor();if(Akce==DRAW_HALA)TIP="";if(Akce==DRAW_HALA&&d.v.HALA.body->predchozi->n>2){d.v.vloz_bod(d.v.HALA.body->dalsi->X,d.v.HALA.body->dalsi->Y,pom,NULL,true,true);Akce=NIC;kurzor(standard);REFRESH();}else if(Akce==DRAW_HALA){d.v.vymaz_body();Akce=NIC;kurzor(standard);REFRESH();}break;
+		case 13:if(editace_textu)Smaz_kurzor();if(Akce==DRAW_HALA)TIP="";if(Akce==DRAW_HALA&&d.v.HALA.body->predchozi->n>2){d.v.vloz_bod(d.v.HALA.body->dalsi->X,d.v.HALA.body->dalsi->Y,pom,NULL,ortogonalizace_stav,true);Akce=NIC;kurzor(standard);REFRESH();}else if(Akce==DRAW_HALA){d.v.vymaz_body();Akce=NIC;kurzor(standard);REFRESH();}break;
 		//ESC
 		case 27:ESC();break;
 		//MEZERNÍK
@@ -2026,8 +2026,8 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
         //přidávání bodu na úsečku
 				if(funkcni_klavesa==3&&JID>100&&d.v.HALA.body->predchozi->n>2)
 				{
-					if(pom_bod->n!=1)d.v.vloz_bod(m.P2Lx(X),m.P2Ly(Y),NULL,pom_bod->predchozi);//ukazatel B ukazuje vždy na druhý bod úsečky
-					else d.v.vloz_bod(m.P2Lx(X),m.P2Ly(Y));
+					if(pom_bod->n!=1)d.v.vloz_bod(m.P2Lx(X),m.P2Ly(Y),pom,pom_bod->predchozi,ortogonalizace_stav);//ukazatel B ukazuje vždy na druhý bod úsečky
+					else d.v.vloz_bod(m.P2Lx(X),m.P2Ly(Y),pom,NULL,ortogonalizace_stav);
 					REFRESH();
 					funkcni_klavesa=0;
         }
@@ -2084,7 +2084,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						}
 						else souradnice=m.P2L(TPoint(X,Y));
 						//////
-						d.v.vloz_bod(souradnice.x,souradnice.y,pom);
+						d.v.vloz_bod(souradnice.x,souradnice.y,pom,NULL,ortogonalizace_stav);
 						pom_bod=d.v.HALA.body->predchozi;//plnění ukazatele (vložený bod) pro účely vykreslování spojnice v mousemove
 						switch(pom_bod->n)
 						{
@@ -2148,7 +2148,7 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 				pom=d.v.najdi_objekt(m.P2Lx(X),m.P2Ly(Y),d.O_width*m2px,d.O_height*m2px);
 				if(Akce==DRAW_HALA)
 				{
-					d.v.vloz_bod(d.v.HALA.body->dalsi->X,d.v.HALA.body->dalsi->Y,pom,NULL,true,true);
+					d.v.vloz_bod(d.v.HALA.body->dalsi->X,d.v.HALA.body->dalsi->Y,pom,NULL,ortogonalizace_stav,true);
 					kurzor(standard);
 					TIP="";
 		  		REFRESH();
@@ -3581,7 +3581,7 @@ void __fastcall TForm1::RzToolButton11Click(TObject *Sender)
 void TForm1::ESC()
 {
 	TIP="";//smazání zobrazeného tipu
-	if(Akce==DRAW_HALA){d.v.vymaz_body();Akce=NIC;kurzor(standard);REFRESH();}//smazání haly a vypnutí akce
+	if(Akce==DRAW_HALA&&d.v.HALA.body->predchozi->n>2){d.v.vloz_bod(d.v.HALA.body->dalsi->X,d.v.HALA.body->dalsi->Y,pom,NULL,true,true);Akce=NIC;kurzor(standard);REFRESH();}else if(Akce==DRAW_HALA){d.v.vymaz_body();Akce=NIC;kurzor(standard);REFRESH();}
 	//vrácení původního textu při ukončení editace
 	if(editace_textu)
 	{
@@ -8487,8 +8487,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-  ortogonalizace_stav=!ortogonalizace_stav;
-	if(ortogonalizace_stav)Memo("zapnuto");else Memo("vypnuto");
+	d.v.vloz_bod(40,-40,d.v.OBJEKTY->dalsi);
 //	Memo(tan(DegToRad(40.0)));//výpočet tangens pro posunv úsečky
 //	//vytovoření schématu
 //	pom=NULL;pom_temp=NULL;pom_vyhybka=NULL;
@@ -8929,8 +8928,10 @@ void __fastcall TForm1::scExPanel_ostatniClick(TObject *Sender)
 //vypnutí či zapnutí ortogonolazice
 void __fastcall TForm1::scGPCheckBox_ortogonClick(TObject *Sender)
 {
-	if(!start_ortogonalizace)//pokud se nejedná o start aplikace, aby se nevolalo v tomto okamžiku
-	ortogonalizace_on_off();
+//	if(!start_ortogonalizace)//pokud se nejedná o start aplikace, aby se nevolalo v tomto okamžiku
+//	ortogonalizace_on_off();
+	if(scGPCheckBox_ortogon->State==0)ortogonalizace_stav=false;
+	else ortogonalizace_stav=true;
 }
 //---------------------------------------------------------------------------
 //vypnutí měřítko
@@ -10345,7 +10346,6 @@ void __fastcall TForm1::scGPButton_nakreslit_haluClick(TObject *Sender)
 {
   TIP="Klinutím na levé tlačítko myši přidejte bod.";
 	Akce=DRAW_HALA;
-	ortogonalizace_stav=true;//prozatimní řešení
 	kurzor(add_o);
 	scSplitView_OPTIONS->Close();
 }
