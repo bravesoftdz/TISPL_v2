@@ -171,7 +171,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	scLabel_titulek->Caption=Caption+" - [Nový.tispl]";
 	Application->Title="TISPL";
 	LICENCE="TRIAL_GALATEK";
-	EDICE=ARCHITECT;//ARCHITECT,CLIENT,VIEWER,DEMO
+	EDICE=DEMO;//ARCHITECT;//ARCHITECT,CLIENT,VIEWER,DEMO
 	edice();//zakázání či povolení grafických uživatelských prvků dle úrovně edice
 	n_prihlaseni=0;
 	TZF=!DEBUG;//TRIAL_zakazat_funkcionality - nyní nastaveno pro RELEASE
@@ -771,20 +771,20 @@ AnsiString TForm1::readINI(AnsiString Section,AnsiString Ident)
 //automaticky přidá parametry (čas, uživatel, licence)
 void TForm1::log2web(UnicodeString Text)
 {
-	if(!DEBUG)
-	{
-		//log2webOnlyText(ms.DeleteSpace(LICENCE)+"_"+get_computer_name()+"_"+get_user_name()+"_"+TIME.CurrentDate()+"_"+TIME.CurrentTime()+"|"+Text);
-		try
-		{
-			AnsiString relation_id=GetCurrentProcessId();
-			AnsiString send_log_time= TIME.CurrentDateTime();
-			AnsiString ID ="1";
-			AnsiString strSQL = "INSERT INTO log_table (app_id,app_start,username,send_log_time,command,relation_id,verze) VALUES (\""+ID+"\",\""+send_log_time+"\",\""+get_user_name()+"\",\""+send_log_time+"\",\""+Text+"\",\""+relation_id+"\",\""+VERZE+"\")";
-
-			FDConnection1->ExecSQL(strSQL);
-		}
-		catch(...){;}//např. není připojení k internetu, tak pouze nezaloguje, dořešit uložení logu do doby získání připojení a volání opětovného odeslání logu
-	}
+//	if(!DEBUG)
+//	{
+//		//log2webOnlyText(ms.DeleteSpace(LICENCE)+"_"+get_computer_name()+"_"+get_user_name()+"_"+TIME.CurrentDate()+"_"+TIME.CurrentTime()+"|"+Text);
+//		try
+//		{
+//			AnsiString relation_id=GetCurrentProcessId();
+//			AnsiString send_log_time= TIME.CurrentDateTime();
+//			AnsiString ID ="1";
+//			AnsiString strSQL = "INSERT INTO log_table (app_id,app_start,username,send_log_time,command,relation_id,verze) VALUES (\""+ID+"\",\""+send_log_time+"\",\""+get_user_name()+"\",\""+send_log_time+"\",\""+Text+"\",\""+relation_id+"\",\""+VERZE+"\")";
+//
+//			FDConnection1->ExecSQL(strSQL);
+//		}
+//		catch(...){;}//např. není připojení k internetu, tak pouze nezaloguje, dořešit uložení logu do doby získání připojení a volání opětovného odeslání logu
+//	}
 }
 //pouze text
 void TForm1::log2webOnlyText(UnicodeString Text)
@@ -1655,7 +1655,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//CTRL+M
 		case 77: if(ssCtrl)Akce=MEASURE;kurzor(add_o);break;
 		//F1 - volání nápovědy
-		case 112:break;
+		case 112:d.v.najdi_usecku(pom);break;
 		//F2
 		case 113:Memo3->CopyToClipboard();Memo3->Clear();break;
 		//F3 - pohled celé schéma
@@ -2914,6 +2914,7 @@ void TForm1::getJobID(int X, int Y)
 		//0; bod haly nebo objektu
 		//1; úsečka haly nebo objektu
 		//2; oblast kóty bodu (přímka [A,B] uložena v bodě B)
+//    pom=d.v.PtInObjekt();
 		if((d.v.HALA.body!=NULL||pom!=NULL&&pom->body!=NULL)&&Akce==NIC)//má smysl pouze pokd existuje hala nebo objekt
 		{
 			pom_bod=d.v.najdi_bod(pom);//pokouším se najít bod
@@ -3110,6 +3111,7 @@ void TForm1::onPopUP(int X, int Y)
 		case SIMULACE:break;
 		case NAHLED:
 		{
+			pom_vyhybka=d.v.PtInObjekt();//využití prázdného ukazatele pro uchovávání nalezeného objektu
 			pom_element_temp=pom_element;
 			mazani=true;
 			if (pom_element!=NULL)//Pokud bylo kliknuto na element
@@ -3128,6 +3130,9 @@ void TForm1::onPopUP(int X, int Y)
 			}
 			else
 			{
+				if(pom_vyhybka!=NULL && pom_vyhybka->n!=pom_temp->n && AnsiString("Nastavit "+pom->name).Length()>19)PopUPmenu->scLabel_nastavit_parametry->Caption="  "+N+"\n  "+pom_vyhybka->name.UpperCase();
+				else if(pom_vyhybka!=NULL && pom_vyhybka->n!=pom_temp->n)PopUPmenu->scLabel_nastavit_parametry->Caption="  "+N+" "+pom_vyhybka->name.UpperCase();
+				if(pom_vyhybka!=NULL && pom_vyhybka->n!=pom_temp->n){PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;}
 				PopUPmenu->Item_posouvat->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
 				PopUPmenu->Item_posunout->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
 				PopUPmenu->Item_priblizit->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
@@ -3949,7 +3954,7 @@ void TForm1::add_element (int X, int Y)
 //přidávání komory kabině powerwashe, kontrola zda není součet kabin větší než rozměr kabiny
 void TForm1::add_komoru()
 {
-	d.v.vloz_komoru(pom_temp,2,d.v.najdi_komoru(pom_temp));//vloží novou komoru, mezi ostatní či jako poslední
+	d.v.vloz_komoru(pom_temp,2.5,d.v.najdi_komoru(pom_temp));//vloží novou komoru, mezi ostatní či jako poslední
 	Cvektory::TKomora *k=pom_temp->komora->dalsi;
 	double celkem=0;
 	while(k!=NULL)//procházení přes všechny komory, suma jejich velikostí
@@ -6971,6 +6976,7 @@ void TForm1::NP()
 void TForm1::NP_input()
 {
 	 //zablokování OnChange tabulek
+   JID=-1;//ošetření, s JID se pracuje i v náhledu
 	 FormX->input_state=FormX->NO;
 	 FormX->vstoupeno_poh=false;
 	 FormX->vstoupeno_elm=false;
@@ -7045,8 +7051,10 @@ void TForm1::NP_input()
 	 //musí být nastaven i zde, protože se tento label používá jak ve schematu tak i zde
 	 scGPLabel_roboti->Font->Style =  TFontStyles() << fsBold;
 	 scGPLabel_roboti->Visible=true;
-	 if(pom_temp->id!=4)scGPLabel_roboti->Caption="Roboti";
-	 else scGPLabel_roboti->Caption="Robot              Člověk";//mezery tvoří místo, kde je zobrazen switch
+	 if(pom_temp->id==4)scGPLabel_roboti->Caption="Robot              Člověk";//mezery tvoří místo, kde je zobrazen switch
+	 else if(pom_temp->id==3)scGPLabel_roboti->Caption="";
+	 else scGPLabel_roboti->Caption="Roboti";
+
 	 scGPLabel_roboti->ContentMarginLeft=10;
 
 	//nastavení tlačítek na výchozí hodnoty
@@ -8582,6 +8590,7 @@ void __fastcall TForm1::scGPSwitch_AAChangeState(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Timer_trTimer(TObject *Sender)
 {
+  //ShowMessage("hu");
 	if(!ttr("TimerTr")){Timer_tr->Enabled=false;Close();}//kontrola zda nevypršela trial verze
 }
 //---------------------------------------------------------------------------
@@ -9408,7 +9417,8 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 //		d.v.vymaz_elementy(pom_temp,true);
 		if(pom_temp!=NULL){pom_temp->pohon=NULL;delete pom_temp->pohon;}pom_temp=NULL;delete pom_temp;
 		PmG->Delete(); PmG=NULL; delete PmG;
-
+    //mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
+    pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element; JID=-1;
     //v případě animace vypnutí a nastavení do výchozího stavu
 		Timer_animace->Enabled=false;
 		ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
@@ -9939,22 +9949,21 @@ void __fastcall TForm1::TimerKurzorTimer(TObject *Sender)
 void TForm1::vykresli_kurzor(int index)
 {
 	//nastavení rozměrů názvu a zkratky objektu
-	AnsiString Wn,Wl,Wz,Tn,Tl,Tz;
-	int Xl=0,Yd=0;
+	AnsiString Tn,Tl,Tz;
+	short Wn,Wl,Wz;
+	double Xl=0,Yd=0;
 	if(pom_temp!=NULL)
 	{
-		d.nastavit_text_popisu_objektu_v_nahledu(Canvas,1);Tn=F->pom_temp->name.UpperCase();short Wn=Canvas->TextWidth(Tn);//název objektu - nastavení
-		d.nastavit_text_popisu_objektu_v_nahledu(Canvas,0);Tl=+" / "; short Wl=Canvas->TextWidth(Tl);//lomítko objektu - nastavení
-		d.nastavit_text_popisu_objektu_v_nahledu(Canvas,2);Tz=F->pom_temp->short_name.UpperCase();short Wz=Canvas->TextWidth(Tz);//zkratka objektu - nastavení
+		d.nastavit_text_popisu_objektu_v_nahledu(Canvas,1);Tn=F->pom_temp->name.UpperCase();Wn=Canvas->TextWidth(Tn);//název objektu - nastavení
+		d.nastavit_text_popisu_objektu_v_nahledu(Canvas,0);Tl=+" / ";Wl=Canvas->TextWidth(Tl);//lomítko objektu - nastavení
+		d.nastavit_text_popisu_objektu_v_nahledu(Canvas,2);Tz=F->pom_temp->short_name.UpperCase();Wz=Canvas->TextWidth(Tz);//zkratka objektu - nastavení
 		Xl=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0)-m.round((Wn+Wl+Wz)/2.0);Yd=m.L2Py(F->pom_temp->Yk);//levá souřadnice textové oblasti a dolní souřadnice textové oblasti
 	}
-
 	//vykreslování kurzoru pro psaní textu
 	Canvas->Pen->Style=psSolid;
 	Canvas->Pen->Mode=pmNotXor;
 	Canvas->Pen->Color=clRed;
 	Canvas->Pen->Width=2;
-
 	switch ((index))//index=JID, kde a jaký kurzor vykreslit
 	{
 		case 1://editace názvu elementu
@@ -10013,8 +10022,8 @@ void TForm1::vykresli_kurzor(int index)
 		case -6://název objektu
 		{
 			if(Tn=="")Tn="b";//při prázdném textu nemůžu zjistit TextHeight -> to zapříčiní čpatné vykreslení kurzoru, když uživatel odmaže veškerý text
-			Canvas->MoveTo(Xl+2+Wn,Yd-Canvas->TextHeight(Tn)+3);
-			Canvas->LineTo(Xl+2+Wn,Yd-6);
+			Canvas->MoveTo(Xl+2+Wn,Yd-Canvas->TextHeight(Tn)+3.0);
+			Canvas->LineTo(Xl+2+Wn,Yd-6.0);
 			stav_kurzoru=!stav_kurzoru;
 		}break;
 		case -7://zkratka objektu
