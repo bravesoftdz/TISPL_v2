@@ -387,7 +387,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O)
 				//symbolika tekoucí kapaliny
 				set_pen(canv,clAkt,sirka_steny_px/4,PS_ENDCAP_SQUARE);
 				long Xp=X-m.m2px(K->velikost);//Xp-předchozí
-				short krok=sirka_steny_px;//pouze zneužití sirka_steny_px
+				short krok=sirka_steny_px*2;//pouze zneužití sirka_steny_px
 				for(unsigned int i=krok;i<m.m2px(K->velikost);i+=krok)
 				{				                 //pouze zneužití pmpp
 					line(canv,Xp+i,Y1,Xp+i,Y1+pmpp*2);
@@ -2199,7 +2199,8 @@ double Cvykresli::trend(Cvektory::TObjekt *Objekt)
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //zajišťuje vykreslení layoutu
 //void Cvykresli::vykresli_layout(TCanvas *canv)
-//{//	Cvektory::TObjekt *O=v.OBJEKTY->dalsi;//přeskočí hlavičku
+//{
+//	Cvektory::TObjekt *O=v.OBJEKTY->dalsi;//přeskočí hlavičku
 //	if(O!=NULL)//pokud existuje nějaký objekt
 //	{
 //		 ////stanovení rozeměrů a orientace nosného obdelníku layoutu
@@ -2434,7 +2435,9 @@ double Cvykresli::trend(Cvektory::TObjekt *Objekt)
 //			canv->TextOutW(m.L2Px((P[0].x+P[1].x)/2)-W/2,m.L2Py((P[0].y+P[3].y)/2)+canv->TextHeight(T6)*1,T6);
 //		 }
 //	}
-//}////------------------------------------------------------------------------------------------------------------------------------------------------------//duplicita - pouze pro testovací účely, hlavní odstavena
+//}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//duplicita - pouze pro testovací účely, hlavní odstavena
 void Cvykresli::vykresli_layout(TCanvas *canv)
 {
 	Cvektory::TObjekt *O=v.OBJEKTY->dalsi;//přeskočí hlavičku
@@ -2442,7 +2445,12 @@ void Cvykresli::vykresli_layout(TCanvas *canv)
 	{
 		//vykresli_objekt(canv,O,0,50);
 		//vykresli_objekt(bmp_in->Canvas,pom,F->m.P2Lx(Ox/F->m2px),F->m.P2Ly(F->m.round((scGPPanel_hlavicka->Height+Height)*3/2.0)),Poffset,Timer_animace->Enabled);
-		O=O->dalsi;	}	O=NULL;delete O;}////------------------------------------------------------------------------------------------------------------------------------------------------------//////------------------------------------------------------------------------------------------------------------------------------------------------------
+		O=O->dalsi;
+	}
+	O=NULL;delete O;
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//////------------------------------------------------------------------------------------------------------------------------------------------------------
 //metoda používaná ve starém náhledu objektu - možno odstranit
 //zajistí vykreslení náhledu objektu, XY -umístění L začátek (střed dopravníku) objektu v m, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu
 //za zmínění stojí lokální proměnná KR, což je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, DV - konec,
@@ -4011,10 +4019,12 @@ TPoint Cvykresli::polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float s
 }
 //---------------------------------------------------------------------------
 //stav: -3 kurzor, -2 normal (implicitně), -1-highlight bez editace, 0-editace zvýrazní všechny body, 1-až počet bodů zvýraznění daného bodu,počet bodů+1 zvýraznění dané hrany včetně sousedícícíh úchopů (např. pro polygono o 6 bodech) bude hodnota stavu 7 zvýraznění první hrany (od bodu 1 do bodu 2)
-void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short sirka,int stav,bool automaticky_spojovat)
+void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short sirka,int stav,bool zobrazit_koty,bool automaticky_spojovat)
 {
-	if(body!=NULL && body->predchozi->n>1)
-	{
+	if(body!=NULL)
+	{ //ShowMessage("ano");
+	if(body->predchozi!=NULL)if(body->predchozi->n>1)
+	{    //ShowMessage(body->predchozi->n);
 		////výchozí parametry
 		//short W=m.round(sirka/2.0);//posunutí vykreslení orámování nad vnější rozměry kabiny
 		TColor clHighlight=m.clIntensive(barva,-50);
@@ -4073,23 +4083,27 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 		}
 
 		////vykreslení kót
-		B=body->dalsi->dalsi;
-		short highlight=0;
-		while(B!=NULL)//vykreslení kót musí být v samostatém cyklu!!!!!(jinak ovlivňuje vykreslení spojnic bodů)
+		if(zobrazit_koty)//pokud je požádováno
 		{
-			//nastavení highlightu
-			if(F->pom_bod!=NULL&&F->JID==2&&F->pom_bod->n==B->n)highlight=2;
-			else if(F->pom_bod!=NULL&&F->JID==-2&&F->pom_bod->n==B->n)highlight=1;else highlight=0;
+			B=body->dalsi->dalsi;
+			short highlight=0;
+			while(B!=NULL)//vykreslení kót musí být v samostatém cyklu!!!!!(jinak ovlivňuje vykreslení spojnic bodů)
+			{
+				//nastavení highlightu
+				if(F->pom_bod!=NULL&&F->JID==2&&F->pom_bod->n==B->n)highlight=2;
+				else if(F->pom_bod!=NULL&&F->JID==-2&&F->pom_bod->n==B->n)highlight=1;else highlight=0;
       //vykreslení kóty                                                                                                                                               //převedení na mm
 			vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),F->outDK(m.round2double(m.delka(B->predchozi->X,B->predchozi->Y,B->X,B->Y),0)),NULL,B->kota_offset,highlight,0.2,clGray,false,NULL,B);
-			B=B->dalsi;
-		}
-		//vykreslení poslední kóty
-		if(F->pom_bod!=NULL&&F->JID==2&&F->pom_bod->n==body->dalsi->n)highlight=2;
-		else if(F->pom_bod!=NULL&&F->JID==-2&&F->pom_bod->n==body->dalsi->n)highlight=1;else highlight=0;
+				B=B->dalsi;
+			}
+			//vykreslení poslední kóty
+			if(F->pom_bod!=NULL&&F->JID==2&&F->pom_bod->n==body->dalsi->n)highlight=2;
+			else if(F->pom_bod!=NULL&&F->JID==-2&&F->pom_bod->n==body->dalsi->n)highlight=1;else highlight=0;
 		if(body->predchozi->n>2)vykresli_kotu(canv,m.L2Px(body->predchozi->X),m.L2Py(body->predchozi->Y),m.L2Px(body->dalsi->X),m.L2Py(body->dalsi->Y),F->outDK(m.round2double(m.delka(body->predchozi->X,body->predchozi->Y,body->dalsi->X,body->dalsi->Y),0)),NULL,body->dalsi->kota_offset,highlight,0.2,clGray,false,NULL,body->dalsi);
-		////odstranění pomocného ukazatele
-		B=NULL; delete B;
+			////odstranění pomocného ukazatele
+			B=NULL; delete B;
+		}
+	}
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
