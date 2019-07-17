@@ -4138,7 +4138,6 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  Vrstvy'
-      ExplicitTop = 451
     end
     object scExPanel_podklad: TscExPanel
       Left = 1
@@ -4242,7 +4241,7 @@ object Form1: TForm1
         Options.FontHotColor = clWhite
         Options.FontPressedColor = clWhite
         Options.FontFocusedColor = clWhite
-        Options.FontDisabledColor = clBtnShadow
+        Options.FontDisabledColor = clGray
         Options.ShapeFillGradientAngle = 90
         Options.ShapeFillGradientPressedAngle = -90
         Options.ShapeFillGradientColorOffset = 25
@@ -4352,7 +4351,7 @@ object Form1: TForm1
         Options.FontHotColor = clWhite
         Options.FontPressedColor = clWhite
         Options.FontFocusedColor = clWhite
-        Options.FontDisabledColor = clBtnShadow
+        Options.FontDisabledColor = clGray
         Options.ShapeFillGradientAngle = 90
         Options.ShapeFillGradientPressedAngle = -90
         Options.ShapeFillGradientColorOffset = 25
@@ -4441,11 +4440,11 @@ object Form1: TForm1
         Options.NormalColor = clWindow
         Options.HotColor = clWindow
         Options.PressedColor = clWindow
-        Options.DisabledColor = clWindow
+        Options.DisabledColor = 8538404
         Options.NormalColorAlpha = 255
         Options.HotColorAlpha = 255
         Options.PressedColorAlpha = 200
-        Options.DisabledColorAlpha = 125
+        Options.DisabledColorAlpha = 255
         Options.FrameNormalColor = clBtnShadow
         Options.FrameHotColor = clHighlight
         Options.FramePressedColor = clHighlight
@@ -4544,11 +4543,11 @@ object Form1: TForm1
         Options.NormalColor = clWindow
         Options.HotColor = clWindow
         Options.PressedColor = clWindow
-        Options.DisabledColor = clWindow
+        Options.DisabledColor = 8538404
         Options.NormalColorAlpha = 255
         Options.HotColorAlpha = 255
         Options.PressedColorAlpha = 200
-        Options.DisabledColorAlpha = 125
+        Options.DisabledColorAlpha = 255
         Options.FrameNormalColor = clBtnShadow
         Options.FrameHotColor = clHighlight
         Options.FramePressedColor = clHighlight
@@ -5027,7 +5026,7 @@ object Form1: TForm1
         Options.FontHotColor = clWhite
         Options.FontPressedColor = clWhite
         Options.FontFocusedColor = clWhite
-        Options.FontDisabledColor = clBtnShadow
+        Options.FontDisabledColor = clGray
         Options.ShapeFillGradientAngle = 90
         Options.ShapeFillGradientPressedAngle = -90
         Options.ShapeFillGradientColorOffset = 25
@@ -5090,9 +5089,9 @@ object Form1: TForm1
         ParentFont = False
         TabOrder = 1
         TabStop = True
-        OnClick = scGPCheckBox_stupne_sediClick
+        OnClick = scGPCheckBox_ortogonClick
         Animation = False
-        Caption = 'Ortogonalizovat'
+        Caption = 'Pravo'#250'hl'#233' zobrazen'#237
         CanFocused = True
         Spacing = 1
         Layout = blGlyphLeft
@@ -5565,7 +5564,7 @@ object Form1: TForm1
       ColorOptions.HotColor = clRed
       ColorOptions.PressedColor = 191
       ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 657930
+      ColorOptions.DisabledColor = 8538404
       ColorOptions.FrameNormalColor = clNone
       ColorOptions.FrameHotColor = clNone
       ColorOptions.FramePressedColor = clNone
@@ -5657,7 +5656,7 @@ object Form1: TForm1
       ColorOptions.HotColor = 7159583
       ColorOptions.PressedColor = 5648664
       ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 657930
+      ColorOptions.DisabledColor = 8538404
       ColorOptions.FrameNormalColor = clNone
       ColorOptions.FrameHotColor = clNone
       ColorOptions.FramePressedColor = clNone
@@ -5749,7 +5748,7 @@ object Form1: TForm1
       ColorOptions.HotColor = 7159583
       ColorOptions.PressedColor = 5648664
       ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 657930
+      ColorOptions.DisabledColor = 8538404
       ColorOptions.FrameNormalColor = clNone
       ColorOptions.FrameHotColor = clNone
       ColorOptions.FramePressedColor = clNone
@@ -5841,7 +5840,7 @@ object Form1: TForm1
       ColorOptions.HotColor = clGreen
       ColorOptions.PressedColor = 5648664
       ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 657930
+      ColorOptions.DisabledColor = 8538404
       ColorOptions.FrameNormalColor = clNone
       ColorOptions.FrameHotColor = clNone
       ColorOptions.FramePressedColor = clNone
@@ -6080,7 +6079,7 @@ object Form1: TForm1
       ColorOptions.HotColor = 7159583
       ColorOptions.PressedColor = 5648664
       ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 657930
+      ColorOptions.DisabledColor = 8538404
       ColorOptions.FrameNormalColor = clNone
       ColorOptions.FrameHotColor = clNone
       ColorOptions.FramePressedColor = clNone
@@ -6172,7 +6171,7 @@ object Form1: TForm1
       ColorOptions.HotColor = 7159583
       ColorOptions.PressedColor = 5648664
       ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 657930
+      ColorOptions.DisabledColor = 8538404
       ColorOptions.FrameNormalColor = clNone
       ColorOptions.FrameHotColor = clNone
       ColorOptions.FramePressedColor = clNone
@@ -6264,7 +6263,7 @@ object Form1: TForm1
       ColorOptions.HotColor = 7159583
       ColorOptions.PressedColor = 5648664
       ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 657930
+      ColorOptions.DisabledColor = 8538404
       ColorOptions.FrameNormalColor = clNone
       ColorOptions.FrameHotColor = clNone
       ColorOptions.FramePressedColor = clNone
@@ -6356,7 +6355,7 @@ object Form1: TForm1
       ColorOptions.HotColor = 7159583
       ColorOptions.PressedColor = 5648664
       ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 657930
+      ColorOptions.DisabledColor = 8538404
       ColorOptions.FrameNormalColor = clNone
       ColorOptions.FrameHotColor = clNone
       ColorOptions.FramePressedColor = clNone
@@ -6458,9 +6457,9 @@ object Form1: TForm1
       ColorOptions.FrameWidth = 0
       ColorOptions.FontNormalColor = clWhite
       ColorOptions.FontHotColor = clWhite
-      ColorOptions.FontPressedColor = clBtnShadow
+      ColorOptions.FontPressedColor = clWhite
       ColorOptions.FontFocusedColor = clWhite
-      ColorOptions.FontDisabledColor = clBtnShadow
+      ColorOptions.FontDisabledColor = clGray
       ColorOptions.TitleFontNormalColor = clBtnText
       ColorOptions.TitleFontHotColor = clBtnText
       ColorOptions.TitleFontPressedColor = clBtnText
@@ -6636,7 +6635,7 @@ object Form1: TForm1
       ColorOptions.HotColor = 7159583
       ColorOptions.PressedColor = 5648664
       ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 657930
+      ColorOptions.DisabledColor = 8538404
       ColorOptions.FrameNormalColor = clNone
       ColorOptions.FrameHotColor = clNone
       ColorOptions.FramePressedColor = clNone
@@ -8972,7 +8971,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118009807B80710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118009807C40710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10103,7 +10102,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C010141000009440930003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010141000009500930003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000003003000001002000000000000090
       0900000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

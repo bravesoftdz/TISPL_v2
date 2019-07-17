@@ -171,7 +171,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	scLabel_titulek->Caption=Caption+" - [Nový.tispl]";
 	Application->Title="TISPL";
 	LICENCE="TRIAL_GALATEK";
-	EDICE=ARCHITECT;//ARCHITECT,CLIENT,VIEWER,DEMO
+	EDICE=DEMO;//ARCHITECT;//ARCHITECT,CLIENT,VIEWER,DEMO
 	edice();//zakázání či povolení grafických uživatelských prvků dle úrovně edice
 	n_prihlaseni=0;
 	TZF=!DEBUG;//TRIAL_zakazat_funkcionality - nyní nastaveno pro RELEASE
@@ -344,10 +344,14 @@ void TForm1::edice()
 				/*Edice_caption="VIEWER - DEMO";*/
 				Toolbar_NovySoubor->Enabled=false;
 				Toolbar_Otevrit->Enabled=false;
-			//	Otevritsablonu->Enabled=false;
 				Toolbar_Ulozit->Enabled=false;
 				scButton_ulozit->Enabled=false;
-			//	Ulozitjako->Enabled=false;
+				scButton_ulozjako->Enabled=false;
+        scButton_report->Enabled=false;
+        scButton_zaloha->Enabled=false;
+        scButton_posledni_otevreny->Enabled=false;
+        scButton_otevrit->Enabled=false;
+        Toolbar_Ulozit->Enabled=false;
 			//	Export1->Enabled=false;
 			//	Report1->Enabled=false;
 			//	Obnovitzezlohy1->Enabled=false;
@@ -360,9 +364,17 @@ void TForm1::edice()
 			//	Vzhled1->Enabled=false;
 			 //	Button_kalkulatorTT->Enabled=false;
 			//M	Button_vozik_parametry->Enabled=false;
-				DrawGrid_knihovna->Enabled=false;
+				//DrawGrid_knihovna->Enabled=false;
 			//	Nastvitparametry1->Enabled=false;
 				//Smazat1->Enabled=false;
+        scLabel_architekt->Visible=false;
+        scGPSwitch_rezim->Visible=false;
+        scLabel_klient->Visible=false;
+        scGPButton_mereni_vzdalenost->Enabled=false;
+        scLabel1_svetelnost->Enabled=false;
+        scGPCheckBox_stupne_sedi->Enabled=false;
+        scGPCheckBox_ortogon->Enabled=false;
+
 
 				RzToolButton1->Enabled=false;
 				RzToolButton2->Enabled=false;
@@ -9500,6 +9512,7 @@ void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
 	{
 		//načtení podkladu
 		Nacist_podklad(OpenDialog1->FileName);
+    edice();
 	}
 }
 //---------------------------------------------------------------------------
@@ -9588,8 +9601,8 @@ void __fastcall TForm1::DrawGrid_geometrieDrawCell(TObject *Sender, int ACol, in
 void __fastcall TForm1::scGPCheckBox_zobraz_podkladClick(TObject *Sender)
 {
 
- if(auto_settings_open==false)
- {
+// if(auto_settings_open==false)
+// {
 	if(!scGPCheckBox_zobraz_podklad->Checked && scSplitView_OPTIONS->Opened)
 	{
 		d.v.PP.raster.show=false;
@@ -9606,7 +9619,7 @@ void __fastcall TForm1::scGPCheckBox_zobraz_podkladClick(TObject *Sender)
 		DuvodUlozit(true);
 	}
 	REFRESH();
-  }
+ // }
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPButton_kalibraceClick(TObject *Sender)
@@ -9653,7 +9666,6 @@ void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
   scLabel1_svetelnost->Enabled=false;
   scGPButton_adjustace->Enabled=false;
   scGPButton_kalibrace->Enabled=false;
-  scLabel1_svetelnost->Enabled=false;
   scLabel1_svetelnost->Font->Color=clGray;
 
   }
@@ -9665,9 +9677,9 @@ void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
   scLabel1_svetelnost->Enabled=false; // zatím zakázáno
   scGPButton_adjustace->Enabled=true;
   scGPButton_kalibrace->Enabled=true;
-  scLabel1_svetelnost->Enabled=true;
-  scLabel1_svetelnost->Font->Color=clWhite;
+ // scLabel1_svetelnost->Font->Color=clWhite;  // odkomentovat, pokud bude povoleno
   }
+  edice();
 }
 //---------------------------------------------------------------------------
 
