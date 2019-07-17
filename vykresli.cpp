@@ -45,9 +45,12 @@ void Cvykresli::vykresli_halu(TCanvas *canv,int stav)
 		if(F->JID==1&&F->pom_bod->n==1)stav=2*v.HALA.body->predchozi->n;//poslední úsečka
 		if(F->JID==1&&F->pom_bod->n!=1)stav=v.HALA.body->predchozi->n+F->pom_bod->n-1;//ostatní úsečky
 	}
+	//nastavení kót
+	bool zobrazit_koty=true;
+	if(F->MOD==F->NAHLED)zobrazit_koty=false;
 	//vykreslení
 	short sirka_steny_px=m.m2px(0.4);//m->px
-	polygon(canv,v.HALA.body,clStenaHaly,sirka_steny_px,stav);
+	polygon(canv,v.HALA.body,clStenaHaly,sirka_steny_px,stav,zobrazit_koty);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -344,7 +347,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O)
 
 	////vnější obrys kabiny
 	canv->Rectangle(X1-W,Y1-W,X2+W,Y2+W);//rám - kresleno pod komory, kvůli nastavení pera
-	//polygon(canv,O->body,clAkt,sirka_steny_px);//nové vykreslování příprava
+	polygon(canv,O->body,clAkt,sirka_steny_px);//nové vykreslování příprava
 
 	short highlight=0;//nastavování zda mají být koty highlightovány
 
@@ -4021,10 +4024,8 @@ TPoint Cvykresli::polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float s
 //stav: -3 kurzor, -2 normal (implicitně), -1-highlight bez editace, 0-editace zvýrazní všechny body, 1-až počet bodů zvýraznění daného bodu,počet bodů+1 zvýraznění dané hrany včetně sousedícícíh úchopů (např. pro polygono o 6 bodech) bude hodnota stavu 7 zvýraznění první hrany (od bodu 1 do bodu 2)
 void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short sirka,int stav,bool zobrazit_koty,bool automaticky_spojovat)
 {
-	if(body!=NULL)
-	{ //ShowMessage("ano");
-	if(body->predchozi!=NULL)if(body->predchozi->n>1)
-	{    //ShowMessage(body->predchozi->n);
+	if(body!=NULL && body->predchozi->n>1)
+	{
 		////výchozí parametry
 		//short W=m.round(sirka/2.0);//posunutí vykreslení orámování nad vnější rozměry kabiny
 		TColor clHighlight=m.clIntensive(barva,-50);
@@ -4103,7 +4104,6 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 			////odstranění pomocného ukazatele
 			B=NULL; delete B;
 		}
-	}
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
