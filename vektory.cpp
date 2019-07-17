@@ -692,7 +692,8 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->min_prujezdni_profil=Original->min_prujezdni_profil;
 	Kopie->rozmer_kabiny=Original->rozmer_kabiny;
 	Kopie->koty_elementu_offset=Original->koty_elementu_offset;
-	Kopie->komora=NULL;
+	Kopie->komora=NULL;//POZORO TOTO NENÍ ZCELA SPRÁVNĚ, MĚLO BY SE NEJDŘÍVE SMAZAT PŘIDRUŽENÝ SPOJÁK, ABY NEZŮSTAL V PAMĚTI
+	Kopie->body=NULL;//POZORO TOTO NENÍ ZCELA SPRÁVNĚ, MĚLO BY SE NEJDŘÍVE SMAZAT PŘIDRUŽENÝ SPOJÁK, ABY NEZŮSTAL V PAMĚTI
 	if(Kopie->id==3)kopiruj_komory(Original,Kopie);//pokud se jedná o POWash
 	Kopie->cekat_na_palce=Original->cekat_na_palce;
 	Kopie->stopka=Original->stopka;
