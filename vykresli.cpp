@@ -329,7 +329,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 {
 	////vstupní proměnné
 	TColor clAkt=clStenaKabiny;
-	short rotace=0; O->rotace;
+	short rotace=O->rotace;
 	long X1=m.L2Px(O->Xk);
 	long Y1=m.L2Py(O->Yk);
 	long X2=m.L2Px(O->Xk+O->rozmer_kabiny.x);
@@ -391,15 +391,8 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 					canv->LineTo(X-m.m2px(K->velikost)-W1,Y2+W);
 					canv->LineTo(X,Y2+W);
 				}
-				//symbolika tekoucí kapaliny
-				set_pen(canv,clAkt,sirka_steny_px/4,PS_ENDCAP_SQUARE);
-				long Xp=X-m.m2px(K->velikost);//Xp-předchozí
-				short krok=sirka_steny_px*2;//pouze zneužití sirka_steny_px
-				for(unsigned int i=krok;i<m.m2px(K->velikost);i+=krok)
-				{				                 //pouze zneužití pmpp
-					line(canv,Xp+i,Y1,Xp+i,Y1+pmpp*2);
-					line(canv,Xp+i,Y2,Xp+i,Y2-pmpp*2);
-				}
+				//symbolika tekoucí kapaliny u POW
+				vykresli_pow_sprchu(canv,X,X,Y1,Y2,m.m2px(K->velikost),clAkt,sirka_steny_px/4,pmpp);
 			}
 			else
 			{
@@ -409,7 +402,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				line(canv,X1,Y,X-pmpp,Y);
 				line(canv,X2,Y,X+pmpp,Y);
 				//highlight komory
-				if(F->JID*(-1)-10==K->n || (F->JID==0 && F->pom_komora->n==K->n))//highlight komory
+				if(F->JID*(-1)-10==(signed)K->n || (F->JID==0 && F->pom_komora->n==(signed)K->n))//highlight komory
 				{
 					canv->MoveTo(X1-W,Y);
 					canv->LineTo(X1-W,Y-m.m2px(K->velikost)-W1);
@@ -421,14 +414,14 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 					canv->LineTo(X2+W,Y-m.m2px(K->velikost)-W1);
 					canv->LineTo(X2+W,Y);
 				}
-				//symbolika tekoucí kapaliny
-				//doplnit dle doladení na vodorovné situaci!!!!!
+				//symbolika tekoucí kapaliny u POW
+				vykresli_pow_sprchu(canv,X1,X2,Y,Y,m.m2px(K->velikost),clAkt,sirka_steny_px/4,pmpp);
 			}
 			//KÓTY
 			if(F->pom_temp!=NULL && F->pom_temp->zobrazit_koty && zobrazit_koty)
 			{
 				//nastavení highlight
-				if((F->JID==0&&F->pom_komora->n==K->n) || (F->JID*(-1)-10==K->n || F->JID*(-1)-10==K->predchozi->n)&&F->d.v.PtInKota_komory(F->pom_temp,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
+				if((F->JID==0&&F->pom_komora->n==(signed)K->n) || (F->JID*(-1)-10==(signed)K->n || F->JID*(-1)-10==(signed)K->predchozi->n)&&F->d.v.PtInKota_komory(F->pom_temp,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
 				else if(F->JID*(-1)-10==K->n || F->JID>=11 && F->JID<=99)highlight=1;else highlight=0;
 				//vykreslení kót komor
 				if(F->pom_temp->rotace==0 || F->pom_temp->rotace==180)vykresli_kotu(canv,F->pom_temp->Xk+vzdalenost-K->velikost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+vzdalenost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,F->pom_temp->koty_elementu_offset,highlight,0.2,clGray,false,K);
@@ -439,22 +432,29 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		K=NULL;delete K;
 		////poslední komora
 		//vykreslení highlightu poslední komory
-		if(F->pom_temp!=NULL && F->JID*(-1)-100==F->pom_temp->komora->predchozi->n)//highlight komory
+		if(rotace==0 || rotace==180)
 		{
-			if(F->pom_temp->rotace==0 || F->pom_temp->rotace==180)
+			if(F->pom_temp!=NULL && F->JID*(-1)-100==(signed)F->pom_temp->komora->predchozi->n)//highlight komory
 			{
 				//dodělat po změně souřadnicového modelu
 			}
-			else
-			{
-				//dodělat po změně souřadnicového modelu
-			}
+			//symbolika tekoucí kapaliny u POW //dodělat po změně souřadnicového modelu
+			vykresli_pow_sprchu(canv,m.L2Px(O->Xk+O->rozmer_kabiny.x),m.L2Px(O->Xk+O->rozmer_kabiny.x),m.L2Py(O->Yk),m.L2Py(O->Yk-O->rozmer_kabiny.y),m.m2px(O->rozmer_kabiny.x-vzdalenost),clAkt,sirka_steny_px/4,pmpp);
 		}
-		//vykreslení kóty od poslení komory k okraji kabiny
+		else
+		{
+			if(F->pom_temp!=NULL && F->JID*(-1)-100==(signed)F->pom_temp->komora->predchozi->n)//highlight komory
+			{
+				//dodělat po změně souřadnicového modelu
+			}
+			//symbolika tekoucí kapaliny u POW //dodělat po změně souřadnicového modelu
+			vykresli_pow_sprchu(canv,m.L2Px(O->Xk),m.L2Px(O->Xk+O->rozmer_kabiny.x),m.L2Py(O->Yk-O->rozmer_kabiny.y),m.L2Py(O->Yk-O->rozmer_kabiny.y),m.m2px(O->rozmer_kabiny.x-vzdalenost),clAkt,sirka_steny_px/4,pmpp);
+		}
+		//vykreslení KÓTY od poslení komory k okraji kabiny
 		if(F->pom_temp!=NULL && F->pom_temp->zobrazit_koty && zobrazit_koty)
 		{
-			if((F->JID==0&&F->pom_komora->n==F->pom_temp->komora->predchozi->n) || (F->JID*(-1)-10==F->pom_temp->komora->predchozi->n||F->JID*(-1)-10==F->pom_temp->komora->predchozi->predchozi->n)&&F->d.v.PtInKota_komory(F->pom_temp,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
-			else if(F->JID*(-1)-10==F->pom_temp->komora->predchozi->n || F->JID>=11&&F->JID<=99)highlight=1;
+			if((F->JID==0 && F->pom_komora->n==(signed)F->pom_temp->komora->predchozi->n) || (F->JID*(-1)-10==(signed)F->pom_temp->komora->predchozi->n || F->JID*(-1)-10==(signed)F->pom_temp->komora->predchozi->predchozi->n)&&F->d.v.PtInKota_komory(F->pom_temp,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
+			else if(F->JID*(-1)-10==(signed)F->pom_temp->komora->predchozi->n || F->JID>=11&&F->JID<=99)highlight=1;
 			else highlight=0;
 			if(F->pom_temp->rotace==0 || F->pom_temp->rotace==180)vykresli_kotu(canv,F->pom_temp->Xk+vzdalenost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,F->pom_temp->koty_elementu_offset,highlight,0.2,clGray,false,F->pom_temp->komora->predchozi);
 			else vykresli_kotu(canv,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0,F->pom_temp->Yk-vzdalenost,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,F->pom_temp->koty_elementu_offset,highlight,0.2,clGray,false,F->pom_temp->komora->predchozi);
@@ -474,15 +474,28 @@ void Cvykresli::nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv,unsigned sh
 	else canv->Font->Style = TFontStyles();//vypnutí
 }
 //---------------------------------------------------------------------------
-void Cvykresli::vykresli_pow_symboliku(TCanvas *canv,long X1,long X2,long Y1,long Y2,unsigned int velikost_komory_px,TColor color,short sirka,short pmpp)
+//symbolika tekoucí kapaliny u POW
+void Cvykresli::vykresli_pow_sprchu(TCanvas *canv,long X1,long X2,long Y1,long Y2,unsigned int velikost_komory_px,TColor color,short sirka,short pmpp,short typ)
 {
-	set_pen(canv,color,sirka,PS_ENDCAP_SQUARE);
-	long Xp=X1-velikost_komory_px;//Xp - X předchozí
+	if(typ!=-1)set_pen(canv,color,sirka,PS_ENDCAP_SQUARE);//pokud se jedná o typ kurzor, tak se nezobrazuje
 	short krok=sirka*8;//pouze zneužití sirka
-	for(unsigned int i=krok;i<velikost_komory_px;i+=krok)
-	{				                 //pouze zneužití pmpp
-		line(canv,Xp+i,Y1,Xp+i,Y1+pmpp*2);
-		line(canv,Xp+i,Y2,Xp+i,Y2-pmpp*2);
+	if(X1==X2)//pro vodorovnou situaci
+	{
+		long Xp=X1-velikost_komory_px;//Xp - X předchozí
+		for(unsigned int i=krok;i<velikost_komory_px;i+=krok)
+		{				     //pouze zneužití krok                     //pouze zneužití krok a pmpp
+			line(canv,Xp+krok,Y1,Xp+i,m.round((Y1+Y2)/2.0-pmpp));//line(canv,Xp+i,Y1,Xp+i,Y1+pmpp*2);
+			line(canv,Xp+krok,Y2,Xp+i,m.round((Y1+Y2)/2.0+pmpp));//line(canv,Xp+i,Y2,Xp+i,Y2-pmpp*2);
+		}
+	}
+	else//pro svislou
+	{
+		long Yp=Y1-velikost_komory_px;//Xp - X předchozí
+		for(unsigned int i=krok;i<velikost_komory_px;i+=krok)
+		{				       //pouze zneužití krok                //pouze zneužití krok a pmpp
+			line(canv,X1,Yp+krok,m.round((X1+X2)/2.0-pmpp),Yp+i);//line(canv,X1,Yp+i,X1+pmpp*2,Yp+i);
+			line(canv,X2,Yp+krok,m.round((X1+X2)/2.0+pmpp),Yp+i);//line(canv,X2,Yp+i,X2-pmpp*2,Yp+i);
+		}
 	}
 }
 //---------------------------------------------------------------------------
@@ -1744,7 +1757,7 @@ Graphics::TBitmap *Cvykresli::srafura()
 	Graphics::TBitmap * Vzor=new Graphics::TBitmap;
 	Vzor->Height=50*F->Zoom;Vzor->Width=50*F->Zoom;
 	Vzor->Canvas->Pen->Color=clStenaHaly;
-	for(unsigned int i=0;i<=Vzor->Width;i+=5*F->Zoom)
+	for(int i=0;i<=Vzor->Width;i+=5*F->Zoom)
 	{
 		Vzor->Canvas->MoveTo(i,0);
 		Vzor->Canvas->LineTo(m.round(i-2*F->Zoom)/*m.rotace(i,180,sklon).x*/,Vzor->Height);
@@ -3916,6 +3929,9 @@ void Cvykresli::vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popis
 		o*=30;//komora odsazení
 	}
 
+	////symbolika tekoucí kapaliny
+	vykresli_pow_sprchu(canv,X+W,X+W,Y,Y+H,W-o,canv->Pen->Color,ceil(canv->Pen->Width/4.0),m.round(o/2.0),typ);
+
 	////vykreslení obrysu
 	line(canv,X,Y,X+W,Y);//horní vodorovná
 	line(canv,X+W,Y,X+W,Y+H);//pravá svislá
@@ -4337,7 +4353,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	if(aktElement==NULL&&komora==NULL&&bod==NULL)highlight=0;//odstranění highlightu na kótách mezi lak. okny
 	//měřítko (náhled vs. schéma), provizorně
 	short meritko=1;
-	if(F->MOD==F->SCHEMA){meritko=20;width*=5;}
+//	if(F->MOD==F->SCHEMA){meritko=20;width*=5;}
 	width=m.round(width*F->Zoom);if(highlight)width*=2;//šířka linie
 	short Presah=m.round(1.3*F->Zoom);if(Offset<0)Presah*=-1;//přesah packy u kóty,v případě záporného offsetu je vystoupení kóty nazákladě tohot záporné
 	short V=0;if(highlight==2)V=1;//vystoupení kóty
