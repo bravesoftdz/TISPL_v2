@@ -351,7 +351,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav)
 
 	short highlight=0;//nastavování zda mají být koty highlightovány
 
-	////vykreslení komor - pokud je objekt obsahuje, poslední komora má vždy velikost do konce objektu (nehledě na její skutečné délku), stav, kdy začíná komora za objektem, je nutné ošetřit separátně
+	////vykreslení komor u POW - pokud je objekt obsahuje, poslední komora má vždy velikost do konce objektu (nehledě na její skutečné délku), stav, kdy začíná komora za objektem, je nutné ošetřit separátně
 	if(O->komora!=NULL && O->komora->predchozi->n>0)
 	{
 		unsigned int pocet_komor=O->komora->predchozi->n;
@@ -451,7 +451,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav)
 		if((F->JID==0&&F->pom_komora->n==F->pom_temp->komora->predchozi->n) || (F->JID*(-1)-10==F->pom_temp->komora->predchozi->n||F->JID*(-1)-10==F->pom_temp->komora->predchozi->predchozi->n)&&F->d.v.PtInKota_komory(F->pom_temp,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
 		else if(F->JID*(-1)-10==F->pom_temp->komora->predchozi->n || F->JID>=11&&F->JID<=99)highlight=1;
 		else highlight=0;
-		if(F->pom_temp->zobrazit_koty)
+		if(F->pom_temp->zobrazit_koty && stav!=-3 && stav!=-1)
 		{
 			if(F->pom_temp->rotace==0 || F->pom_temp->rotace==180)vykresli_kotu(canv,F->pom_temp->Xk+vzdalenost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,F->pom_temp->koty_elementu_offset,highlight,0.2,clGray,false,F->pom_temp->komora->predchozi);
 			else vykresli_kotu(canv,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0,F->pom_temp->Yk-vzdalenost,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,F->pom_temp->koty_elementu_offset,highlight,0.2,clGray,false,F->pom_temp->komora->predchozi);
@@ -469,6 +469,19 @@ void Cvykresli::nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv,unsigned sh
 	canv->Font->Style = TFontStyles();
 	if((F->JID==-6 && typ==1) || (F->JID==-7 && typ==2))canv->Font->Style = TFontStyles()<< fsBold;//zapnutí tučného písma
 	else canv->Font->Style = TFontStyles();//vypnutí
+}
+//---------------------------------------------------------------------------
+void Cvykresli::vykresli_pow_symboliku(TCanvas *canv);
+{
+//	TColor-
+//	set_pen(canv,clAkt,sirka_steny_px/4,PS_ENDCAP_SQUARE);
+//	long Xp=X-m.m2px(K->velikost);//Xp-předchozí
+//	short krok=sirka_steny_px*2;//pouze zneužití sirka_steny_px
+//	for(unsigned int i=krok;i<m.m2px(K->velikost);i+=krok)
+//	{				                 //pouze zneužití pmpp
+//		line(canv,Xp+i,Y1,Xp+i,Y1+pmpp*2);
+//		line(canv,Xp+i,Y2,Xp+i,Y2-pmpp*2);
+//	}
 }
 //---------------------------------------------------------------------------
 //vykreslí barevný čtvereček jako příslušnost k dané cestě
