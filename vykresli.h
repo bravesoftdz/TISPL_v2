@@ -52,7 +52,7 @@ class Cvykresli
 	void vykresli_vektory(TCanvas *canv);
 	void vykresli_kabinu(TCanvas *canv);//zajišuje kompletní vykreslení s voláním následující metody
 	void vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav=-2);//zajišuje vykreslení pouze obrysu dle typu objektu
-	void vykresli_pow_symboliku(TCanvas *canv);
+	void vykresli_pow_symboliku(TCanvas *canv,long X1,long X2,long Y1,long Y2,unsigned int velikost_komory_px,TColor color,short sirka,short pmpp);
 	void vykresli_grid(TCanvas *canv,int size_grid=10);
 	void vykresli_meridlo(TCanvas *canv,int X,int Y,bool kalibracni_sipka=false);//v pøípadì mìøení vzdálenosti vykreslí spojnici a popø. vypisuje hodnotu vzdálenosti
 	//	void vykresli_graf_rezervy(TCanvas *canv);//mód graf rezerv

@@ -471,17 +471,16 @@ void Cvykresli::nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv,unsigned sh
 	else canv->Font->Style = TFontStyles();//vypnutí
 }
 //---------------------------------------------------------------------------
-void Cvykresli::vykresli_pow_symboliku(TCanvas *canv);
+void Cvykresli::vykresli_pow_symboliku(TCanvas *canv,long X1,long X2,long Y1,long Y2,unsigned int velikost_komory_px,TColor color,short sirka,short pmpp)
 {
-//	TColor-
-//	set_pen(canv,clAkt,sirka_steny_px/4,PS_ENDCAP_SQUARE);
-//	long Xp=X-m.m2px(K->velikost);//Xp-předchozí
-//	short krok=sirka_steny_px*2;//pouze zneužití sirka_steny_px
-//	for(unsigned int i=krok;i<m.m2px(K->velikost);i+=krok)
-//	{				                 //pouze zneužití pmpp
-//		line(canv,Xp+i,Y1,Xp+i,Y1+pmpp*2);
-//		line(canv,Xp+i,Y2,Xp+i,Y2-pmpp*2);
-//	}
+	set_pen(canv,color,sirka,PS_ENDCAP_SQUARE);
+	long Xp=X1-velikost_komory_px;//Xp - X předchozí
+	short krok=sirka*8;//pouze zneužití sirka
+	for(unsigned int i=krok;i<velikost_komory_px;i+=krok)
+	{				                 //pouze zneužití pmpp
+		line(canv,Xp+i,Y1,Xp+i,Y1+pmpp*2);
+		line(canv,Xp+i,Y2,Xp+i,Y2-pmpp*2);
+	}
 }
 //---------------------------------------------------------------------------
 //vykreslí barevný čtvereček jako příslušnost k dané cestě
