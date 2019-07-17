@@ -1581,7 +1581,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//BACKSPACE
 		case 8:if(Akce==DRAW_HALA&&d.v.HALA.body->predchozi->n!=0){d.v.smaz_bod(d.v.HALA.body->predchozi);REFRESH();}else{Akce=NIC;kurzor(standard);}break;
 		//ENTER
-		case 13:if(editace_textu)Smaz_kurzor();if(Akce==DRAW_HALA)TIP="";if(Akce==DRAW_HALA&&d.v.HALA.body->predchozi->n>2){d.v.vloz_bod(d.v.HALA.body->dalsi->X,d.v.HALA.body->dalsi->Y,pom,NULL,ortogonalizace_stav,true);Akce=NIC;kurzor(standard);REFRESH();}else if(Akce==DRAW_HALA){d.v.vymaz_body();Akce=NIC;kurzor(standard);REFRESH();}break;
+		case 13:if(editace_textu)Smaz_kurzor();if(Akce==DRAW_HALA&&d.v.HALA.body!=NULL&&d.v.HALA.body->predchozi->n>2){Sv();d.v.vloz_bod(d.v.HALA.body->dalsi->X,d.v.HALA.body->dalsi->Y,pom,NULL,ortogonalizace_stav,true);Akce=NIC;kurzor(standard);TIP="";REFRESH();}else if(Akce==DRAW_HALA){d.v.vymaz_body();Akce=NIC;kurzor(standard);TIP="";REFRESH();}break;
 		//ESC
 		case 27:ESC();break;
 		//MEZERNÍK
@@ -2013,7 +2013,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 							pom=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width*m2px,d.O_height*m2px);
 							if(pom!=NULL){Akce=MOVE;kurzor(posun_l);posun_objektu=true;minule_souradnice_kurzoru=TPoint(X,Y);}
 							else if(JID==-1&&Akce==NIC){Akce=PAN;pan_non_locked=true;}//přímo dovolení PAN pokud se neposová objekt = Rosťova prosba
-							if(JID==-2){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_bod_temp=pom_bod;if(pom_bod_temp->n!=1)editovany_text=m.round2double(m.delka(pom_bod_temp->predchozi->X,pom_bod_temp->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),0);else if(pom==NULL)editovany_text=m.round2double(m.delka(d.v.HALA.body->predchozi->X,d.v.HALA.body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),0);else if(pom->body!=NULL)editovany_text=m.round2double(m.delka(pom->body->predchozi->X,pom->body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),0);}
+							if(JID==-2){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_bod_temp=pom_bod;if(pom_bod_temp->n!=1)editovany_text=m.round2double(m.delka(pom_bod_temp->predchozi->X,pom_bod_temp->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),0);else if(pom==NULL)editovany_text=m.round2double(m.delka(d.v.HALA.body->predchozi->X,d.v.HALA.body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),0);else if(pom->body!=NULL)editovany_text=m.round2double(m.delka(pom->body->predchozi->X,pom->body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),0);editovany_text=outDK(ms.MyToDouble(editovany_text));}//převod na mm
 							if(JID==0){Akce=MOVE_BOD;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;ortogonalizace_stav=false;}//posun jednoho bodu
 							if(JID==1){Akce=MOVE_USECKA;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//posun úsečky
 							if(JID==2){Akce=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//změna offsetu kót
@@ -2702,8 +2702,8 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				break;
 			}
 			case MOVE_BOD:
-			case MOVE_USECKA:
-			case MOVE_HALA:Akce=NIC;kurzor(standard);break;
+			case MOVE_USECKA:Akce=NIC;kurzor(standard);break;
+			case MOVE_HALA:Akce=NIC;kurzor(standard);REFRESH();break;//refresh z důvodu znovu zapnutí měřítka a gridu
 			case ROZMER_KOMORA:Akce=NIC;break;
 			case ROZMER_KABINA:Akce=NIC;break;//konec editace rozmětu kabiny pomocí tahu
 			case OFFSET_KOTY:Akce=NIC;break;
@@ -3581,7 +3581,7 @@ void __fastcall TForm1::RzToolButton11Click(TObject *Sender)
 void TForm1::ESC()
 {
 	TIP="";//smazání zobrazeného tipu
-	if(Akce==DRAW_HALA&&d.v.HALA.body->predchozi->n>2){d.v.vloz_bod(d.v.HALA.body->dalsi->X,d.v.HALA.body->dalsi->Y,pom,NULL,true,true);Akce=NIC;kurzor(standard);REFRESH();}else if(Akce==DRAW_HALA){d.v.vymaz_body();Akce=NIC;kurzor(standard);REFRESH();}
+	if(Akce==DRAW_HALA&&d.v.HALA.body!=NULL&&d.v.HALA.body->predchozi->n>2){d.v.vloz_bod(d.v.HALA.body->dalsi->X,d.v.HALA.body->dalsi->Y,pom,NULL,ortogonalizace_stav,true);Akce=NIC;kurzor(standard);REFRESH();}else if(Akce==DRAW_HALA){d.v.vymaz_body();Akce=NIC;kurzor(standard);REFRESH();}
 	//vrácení původního textu při ukončení editace
 	if(editace_textu)
 	{
@@ -3593,7 +3593,7 @@ void TForm1::ESC()
       	Cvektory::TBod *A=pom_bod_temp->predchozi;
 				if(pom_bod_temp->n==1&&pom==NULL)A=d.v.HALA.body->predchozi;
 				if(pom_bod_temp->n==1&&pom!=NULL&&pom->body!=NULL)A=d.v.HALA.body->predchozi;
-				editovany_text=m.round2double(m.delka(A->X,A->Y,pom_bod_temp->X,pom_bod_temp->Y),0);
+				editovany_text=outDK(m.round2double(m.delka(A->X,A->Y,pom_bod_temp->X,pom_bod_temp->Y),0));//převod na mm
 				A=NULL;delete A;
 			}break;
 			case -6:pom_temp->name=nazev_puvodni;break;
@@ -10119,7 +10119,7 @@ void TForm1::Smaz_kurzor()
 	else if(editovany_text!="")//pokud neexistuje otevřený objekt + očetření proti zapsání prázdné hodnoty
 	{
 		//deklarace pomocných proměnných
-		double puv,nov=ms.MyToDouble(editovany_text),posun;
+		double puv,nov=inDK(ms.MyToDouble(editovany_text)),posun;
 		Cvektory::TBod *A=pom_bod_temp->predchozi;
 		if(pom_bod_temp->n==1&&pom==NULL)A=d.v.HALA.body->predchozi;
 		if(pom_bod_temp->n==1&&pom!=NULL&&pom->body!=NULL)A=d.v.HALA.body->predchozi;
@@ -10344,16 +10344,20 @@ void __fastcall TForm1::scGPButton_posun_halyClick(TObject *Sender)
 		scSplitView_OPTIONS->Close();
 		kurzor(pan);
 		Akce=MOVE_HALA;
+		REFRESH();//změna vykreslení kabiny při posunu
 	}
 }
 //---------------------------------------------------------------------------
 //zapnutí akce kreslení haly
 void __fastcall TForm1::scGPButton_nakreslit_haluClick(TObject *Sender)
 {
-  TIP="Klinutím na levé tlačítko myši přidejte bod.";
-	Akce=DRAW_HALA;
-	kurzor(add_o);
-	scSplitView_OPTIONS->Close();
+	if(d.v.HALA.body==NULL||d.v.HALA.body->dalsi==NULL)//pokud existuje hala, jinak nemá smysl
+	{
+  	TIP="Klinutím na levé tlačítko myši přidejte bod.";
+  	Akce=DRAW_HALA;
+  	kurzor(add_o);
+  	scSplitView_OPTIONS->Close();
+	}
 }
 //---------------------------------------------------------------------------
 

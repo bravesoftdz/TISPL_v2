@@ -43,7 +43,7 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod,bool orto
 	if(ortogonalizovat)//pokud je požadavek na ortogonalizaci
 	{
 		TBod *B=ZaBod;if(B==NULL){if(Objekt!=NULL)B=Objekt->body->predchozi;else B=HALA.body->predchozi;}
-		TBod *P=NULL;if(Objekt!=NULL)P=Objekt->body->dalsi; P=HALA.body->dalsi;
+		TBod *P=NULL;if(Objekt!=NULL)P=Objekt->body->dalsi;else P=HALA.body->dalsi;
 
 		if(m.abs_d(B->X-X)<m.abs_d(B->Y-Y)){Bod->X=B->X;Bod->Y=Y;}//zarovnat dle X
 		else{Bod->X=X;Bod->Y=B->Y;}//zarovnat dle Y
@@ -560,20 +560,20 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 	novy->zobrazit_mGrid=true;//proměnná určující, zda budou zobrazeny mGridy
 	novy->uzamknout_nahled=false;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 
-//	//nově, vkládání bodů + defaultní rozměry různých objektů
-//	TPoint rozmery_kabiny;
-//	switch(id)
-//	{
-//		case 0:case 9://navěšování + svěšování
-//		rozmery_kabiny.x=5;rozmery_kabiny.y=3;break;//navěšování
-//		case 5:rozmery_kabiny.x=10;rozmery_kabiny.y=6;break;//lakovna
-//		case 6:rozmery_kabiny.x=10;rozmery_kabiny.y=3;break;//vytěkání
-//		case 7:rozmery_kabiny.x=20;rozmery_kabiny.y=3;break;//sušárna
-//		case 8:rozmery_kabiny.x=20;rozmery_kabiny.y=6;break;//chlazení
-//		default: rozmery_kabiny.x=10;rozmery_kabiny.y=6;break;//ostatní
-//	}
-//	vloz_bod(X,Y,novy);vloz_bod(X+rozmery_kabiny.x,Y,novy);
-//	vloz_bod(X,Y+rozmery_kabiny.y,novy);vloz_bod(X+rozmery_kabiny.x,Y+rozmery_kabiny.y,novy);
+	//nově, vkládání bodů + defaultní rozměry různých objektů
+	TPoint rozmery_kabiny;
+	switch(id)
+	{
+		case 0:case 9://navěšování + svěšování
+		rozmery_kabiny.x=5;rozmery_kabiny.y=3;break;//navěšování
+		case 5:rozmery_kabiny.x=10;rozmery_kabiny.y=6;break;//lakovna
+		case 6:rozmery_kabiny.x=10;rozmery_kabiny.y=3;break;//vytěkání
+		case 7:rozmery_kabiny.x=20;rozmery_kabiny.y=3;break;//sušárna
+		case 8:rozmery_kabiny.x=20;rozmery_kabiny.y=6;break;//chlazení
+		default: rozmery_kabiny.x=10;rozmery_kabiny.y=6;break;//ostatní
+	}
+	vloz_bod(X,Y,novy);vloz_bod(X+rozmery_kabiny.x,Y,novy);
+	vloz_bod(X,Y+rozmery_kabiny.y,novy);vloz_bod(X+rozmery_kabiny.x,Y+rozmery_kabiny.y,novy);
 
 	return novy;
 }
