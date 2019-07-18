@@ -14,12 +14,12 @@ class Cvektory
 
 	public:
 
-	struct TBod
+	struct TBod// - NEW + dodat do CObjekt v rámci rodičovských spojáků!!!!
 	{
 		unsigned long n; //pořadí objektu ve spoj.seznamu
 		double X, Y;//umístění v logických (metrických) souřadnicích
 		T3Rect kota;//citelná oblast hodnoty kóty od aktuálního bodu k bodu předchozímu ve fyzických souřadnicích (px), uchovávájící oblast celé kóty(rect0), popisku kóty (rect1), jednotek kóty (rect2), neukládat do binárky, slouží jenom jako temp data při vykreslování
-    double kota_offset;//odsazení kót v metrech  - NEW + dodat do CObjekt!!!!
+		double kota_offset;//odsazení kót v metrech
 		struct TBod *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 		struct TBod *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
@@ -55,10 +55,11 @@ class Cvektory
 		double rotace;
 	};
 
-	struct TKomora
+	struct TKomora// - NEW + dodat do CObjekt v rámci rodičovských spojáků!!!!
 	{
 		unsigned long n; //pořadí ve spoj.seznam
 		double velikost;//v metrech
+		short typ;//1-se sprchou, 0 bez jen okap
 		T3Rect kota;//citelná oblast hodnoty kóty ve fyzických souřadnicích (px), uchovávájící oblast celé kóty(rect0), popisku kóty (rect1), jednotek kóty (rect2), neukládat do binárky, slouží jenom jako temp data při vykreslování
 		struct TKomora *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 		struct TKomora *dalsi;//ukazatel na  další objekt ve spojovém seznamu
@@ -412,8 +413,9 @@ class Cvektory
 		void nove_indexy(bool nasledne_zmena_nazvu=false);//projde všechny objekty a nastavý nové indexy podle aktuálního pořadí objektů
 		void ortogonalizovat();//ortogonalizuje schéma
 		TObjekt *dalsi_krok(TObjekt *Objekt,TPoint *tab_pruchodu);//určuje další krok cyklu při procházení objektů
-		void vloz_komoru(TObjekt *Objekt,double velikost,TKomora *ZaKomoru=NULL);//vloží novou komoru na konec seznamu komor, pokud je ZaKomoru=NULL, jinak vloží za tento objekt, nastaví velikost dané komory dle proměnné velikost
-		void vloz_komoru(TObjekt* Objekt,TKomora *Komora,TKomora *ZaKomoru=NULL);//vloží novou komoru na konec seznamu komor, pokud je ZaKomoru=NULL, jinak vloží za tento objekt, není třeba nastavovat ukazatele ani n-pořadí
+		//přidružené metody pro KOMORY
+		void vloz_komoru(TObjekt *Objekt,double velikost,TKomora *ZaKomoru=NULL,short typ=1);//vloží novou komoru na konec seznamu komor, pokud je ZaKomoru=NULL, jinak vloží za tento objekt, nastaví velikost dané komory dle proměnné velikost,short typ;//1-se sprchou, 0 bez jen okap
+		void vloz_komoru(TObjekt* Objekt,TKomora *Komora,TKomora *ZaKomoru=NULL,short typ=1);//vloží novou komoru na konec seznamu komor, pokud je ZaKomoru=NULL, jinak vloží za tento objekt, není třeba nastavovat ukazatele ani n-pořadí,short typ;//1-se sprchou, 0 bez jen okap
 		TKomora *najdi_komoru(TObjekt* Objekt);//na aktuálních souřadnicích myši hledá komoru, pokud je nalezena vrátí na ni ukazatel
 		short PtInKota_komory(TObjekt *Objekt,long X,long Y);//ověří zda se na daných fyzických souřadnicích nachází kóta komory, pokud neexistují komory vrací -2, pokud se nenachází na kótě vrací -1, pokud ano 0 v celé kótě, 1 - na hodnotě kóty, 2 - na jednotkách kóty, pozn. oblast kóty se testuje až jako poslední
 		double vrat_velikosti_komor(TKomora *po=NULL);//vrátí součet velikostí komor, nebo velikosti do konkrétní komory (včetně)

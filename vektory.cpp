@@ -1334,16 +1334,63 @@ void Cvektory::ortogonalizovat()
 	}
 }
 //---------------------------------------------------------------------------
-//vloží novou komoru na konec seznamu komor, pokud je ZaKomoru=NULL, jinak vloží za tento objekt, nastaví velikost dané komory dle proměnné velikost
-void Cvektory::vloz_komoru(TObjekt *Objekt,double velikost,TKomora *ZaKomoru)
+//vymaže spojový seznam technologických objektů včetně bodů, přidružených elementů a případných komor z paměti
+long Cvektory::vymaz_seznam_OBJEKTY()
+{
+	long pocet_smazanych_objektu=0;
+	while (OBJEKTY!=NULL)
+	{
+		vymaz_body(OBJEKTY->predchozi);
+		vymaz_komory(OBJEKTY->predchozi);
+		vymaz_elementy(OBJEKTY->predchozi);
+		pocet_smazanych_objektu++;
+		OBJEKTY->predchozi=NULL;
+		delete OBJEKTY->predchozi;
+		OBJEKTY=OBJEKTY->dalsi;
+	};
+
+	return pocet_smazanych_objektu;
+};
+////---------------------------------------------------------------------------
+//určuje další krok cyklu při procházení objektů
+Cvektory::TObjekt *Cvektory::dalsi_krok(TObjekt *Objekt,TPoint *tab_pruchodu)
+{
+  int krok=1;//rozdílné kroky v procházení objekty, defaultně krok = 1
+	if(Objekt->id==F->VyID)//výhybka
+	{
+		int n=F->ms.MyToDouble(Objekt->short_name.SubString(2,1));//extrakce pořadového čísla výhybky
+		tab_pruchodu[n].x++;if(tab_pruchodu[n].x==1)krok=2;else krok=1;//navýšení "buňky", která udržuje počet průchodu přes vyhybky
+		if(Objekt->predchozi2==NULL)krok=1;//v případě přidávání výhybky není plně nadefinovaná, nutno pokračovat defaultním krokem
+		//pokud se jedná o první průchod je krok nastaven na průchod sekundární větví, pokud druhý = průchod primární vetví
+	}else//nejedná se o výhybku
+	if(Objekt->id==pocet_objektu_knihovny+1)//spojka, neni přítomná v knihovně objektů, nelze ji z ní vkládat
+	{
+		int n=F->ms.MyToDouble(Objekt->short_name.SubString(2,1));//extrakce pořadového čísla spojky
+		tab_pruchodu[n].y++;if(tab_pruchodu[n].y==1)krok=2;else krok=1;//navýšení "buňky", která udržuje počet průchodu přes spojku
+		//při prvním průchodu je krok nastaven tak, aby došlo ke skoku na spárovanou výhybku, při dalším průchodu základní krok (dalsi)
+	}else krok=1;//nejdená se o výhybku ani o spojku, krok nastavit na defaultní hodnotu
+	switch(krok)//rozdělení přistupů na další element popřípadě skok na spárovanou výhybku
+	{
+		case 1:Objekt=Objekt->dalsi;break;//defaultně
+		case 2:Objekt=Objekt->dalsi2;break;//pri průchodu sekundární vetví, skoku na spárovanou výhybku
+	}
+	return Objekt;
+}
+////---------------------------------------------------------------------------
+////---------------------------------------------------------------------------
+////---------------------------------------------------------------------------
+//KOMORY
+//vloží novou komoru na konec seznamu komor, pokud je ZaKomoru=NULL, jinak vloží za tento objekt, nastaví velikost dané komory dle proměnné velikost,typ;//1-se sprchou, 0 bez jen okap
+void Cvektory::vloz_komoru(TObjekt *Objekt,double velikost,TKomora *ZaKomoru,short typ)
 {
 	TKomora *Komora=new TKomora;
 	Komora->velikost=velikost;
+	Komora->typ=typ;
 	vloz_komoru(Objekt,Komora,ZaKomoru);
 }
 //---------------------------------------------------------------------------
 //vloží novou komoru na konec seznamu komor, pokud je ZaKomoru=NULL, jinak vloží za tento objekt, není třeba nastavovat ukazatele ani n-pořadí
-void Cvektory::vloz_komoru(TObjekt *Objekt,TKomora *Komora,TKomora *ZaKomoru)
+void Cvektory::vloz_komoru(TObjekt *Objekt,TKomora *Komora,TKomora *ZaKomoru,short typ)
 {
 	if(Komora!=NULL)
 	{
@@ -1352,9 +1399,12 @@ void Cvektory::vloz_komoru(TObjekt *Objekt,TKomora *Komora,TKomora *ZaKomoru)
 		{
 			Objekt->komora=new TKomora;
 			Objekt->komora->n=0;
+			Objekt->komora->typ=0;
 			Objekt->komora->predchozi=Objekt->komora;//hlavička ukazuje sama na sebe
 			Objekt->komora->dalsi=NULL;
 		}
+		////nastavení typu komory
+		Objekt->komora->typ=typ;
 		////vložení nové komory na konec seznamu komor
 		if(ZaKomoru==NULL || ZaKomoru!=NULL && ZaKomoru==Objekt->komora->predchozi)//pokud se má vkládat nakonec
 		{
@@ -1456,7 +1506,7 @@ void Cvektory::kopiruj_komory(TObjekt *Original,TObjekt *Kopie)
 	TKomora *K=Original->komora->dalsi;//přeskočí hlavičku
 	while(K!=NULL)
 	{
-		vloz_komoru(Kopie,K->velikost);
+		vloz_komoru(Kopie,K->velikost,K->typ);
 		K=K->dalsi;
 	}
 	K=NULL;delete K;
@@ -1542,49 +1592,6 @@ void Cvektory::vymaz_komory(TObjekt* Objekt)
 		//na závěr ještě smaže hlavičku
 		Objekt->komora=NULL;delete Objekt->komora;
 	}
-}
-//---------------------------------------------------------------------------
-//vymaže spojový seznam technologických objektů včetně bodů, přidružených elementů a případných komor z paměti
-long Cvektory::vymaz_seznam_OBJEKTY()
-{
-	long pocet_smazanych_objektu=0;
-	while (OBJEKTY!=NULL)
-	{
-		vymaz_body(OBJEKTY->predchozi);
-		vymaz_komory(OBJEKTY->predchozi);
-		vymaz_elementy(OBJEKTY->predchozi);
-		pocet_smazanych_objektu++;
-		OBJEKTY->predchozi=NULL;
-		delete OBJEKTY->predchozi;
-		OBJEKTY=OBJEKTY->dalsi;
-	};
-
-	return pocet_smazanych_objektu;
-};
-////---------------------------------------------------------------------------
-//určuje další krok cyklu při procházení objektů
-Cvektory::TObjekt *Cvektory::dalsi_krok(TObjekt *Objekt,TPoint *tab_pruchodu)
-{
-  int krok=1;//rozdílné kroky v procházení objekty, defaultně krok = 1
-	if(Objekt->id==F->VyID)//výhybka
-	{
-		int n=F->ms.MyToDouble(Objekt->short_name.SubString(2,1));//extrakce pořadového čísla výhybky
-		tab_pruchodu[n].x++;if(tab_pruchodu[n].x==1)krok=2;else krok=1;//navýšení "buňky", která udržuje počet průchodu přes vyhybky
-		if(Objekt->predchozi2==NULL)krok=1;//v případě přidávání výhybky není plně nadefinovaná, nutno pokračovat defaultním krokem
-		//pokud se jedná o první průchod je krok nastaven na průchod sekundární větví, pokud druhý = průchod primární vetví
-	}else//nejedná se o výhybku
-	if(Objekt->id==pocet_objektu_knihovny+1)//spojka, neni přítomná v knihovně objektů, nelze ji z ní vkládat
-	{
-		int n=F->ms.MyToDouble(Objekt->short_name.SubString(2,1));//extrakce pořadového čísla spojky
-		tab_pruchodu[n].y++;if(tab_pruchodu[n].y==1)krok=2;else krok=1;//navýšení "buňky", která udržuje počet průchodu přes spojku
-		//při prvním průchodu je krok nastaven tak, aby došlo ke skoku na spárovanou výhybku, při dalším průchodu základní krok (dalsi)
-	}else krok=1;//nejdená se o výhybku ani o spojku, krok nastavit na defaultní hodnotu
-	switch(krok)//rozdělení přistupů na další element popřípadě skok na spárovanou výhybku
-	{
-		case 1:Objekt=Objekt->dalsi;break;//defaultně
-		case 2:Objekt=Objekt->dalsi2;break;//pri průchodu sekundární vetví, skoku na spárovanou výhybku
-	}
-	return Objekt;
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
