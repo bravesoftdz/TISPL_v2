@@ -4064,7 +4064,7 @@ TPoint Cvykresli::polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float s
 	return RET;//vratí souřadnice konce osy polygonu
 }
 //---------------------------------------------------------------------------
-//stav: -3 kurzor, -2 normal (implicitně), -1-highlight bez editace, 0-editace zvýrazní všechny body, 1-až počet bodů zvýraznění daného bodu,počet bodů+1 zvýraznění dané hrany včetně sousedícícíh úchopů (např. pro polygono o 6 bodech) bude hodnota stavu 7 zvýraznění první hrany (od bodu 1 do bodu 2)
+//stav: -3 kurzor, -2 normal (implicitně), -1-disabled, 0-editace zvýrazní všechny body, 1-až počet bodů zvýraznění daného bodu,počet bodů+1 zvýraznění dané hrany včetně sousedícícíh úchopů (např. pro polygono o 6 bodech) bude hodnota stavu 7 zvýraznění první hrany (od bodu 1 do bodu 2)
 void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short sirka,int stav,bool zobrazit_koty,bool automaticky_spojovat)
 {
 	if(body!=NULL && body->predchozi->n>1)
@@ -4135,15 +4135,15 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 			while(B!=NULL)//vykreslení kót musí být v samostatém cyklu!!!!!(jinak ovlivňuje vykreslení spojnic bodů)
 			{
 				//nastavení highlightu
-				if(F->pom_bod!=NULL&&F->JID==2&&F->pom_bod->n==B->n)highlight=2;
-				else if(F->pom_bod!=NULL&&F->JID==-2&&F->pom_bod->n==B->n)highlight=1;else highlight=0;
+				if(F->pom_bod!=NULL && F->JID==2&&F->pom_bod->n==B->n)highlight=2;
+				else if(F->pom_bod!=NULL && F->JID==-2&&F->pom_bod->n==B->n)highlight=1;else highlight=0;
 				//vykreslení kóty                                                                                                                                               //převedení na mm
 				vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),F->outDK(m.round2double(m.delka(B->predchozi->X,B->predchozi->Y,B->X,B->Y),0)),NULL,B->kota_offset*F->Zoom/AA,highlight,0.2,clGray,false,NULL,B);
 				B=B->dalsi;
 			}
 			//vykreslení poslední kóty
-			if(F->pom_bod!=NULL&&F->JID==2&&F->pom_bod->n==body->dalsi->n)highlight=2;
-			else if(F->pom_bod!=NULL&&F->JID==-2&&F->pom_bod->n==body->dalsi->n)highlight=1;else highlight=0;
+			if(F->pom_bod!=NULL && F->JID==2&&F->pom_bod->n==body->dalsi->n)highlight=2;
+			else if(F->pom_bod!=NULL && F->JID==-2&&F->pom_bod->n==body->dalsi->n)highlight=1;else highlight=0;
 			if(body->predchozi->n>2)vykresli_kotu(canv,m.L2Px(body->predchozi->X),m.L2Py(body->predchozi->Y),m.L2Px(body->dalsi->X),m.L2Py(body->dalsi->Y),F->outDK(m.round2double(m.delka(body->predchozi->X,body->predchozi->Y,body->dalsi->X,body->dalsi->Y),0)),NULL,body->dalsi->kota_offset*F->Zoom/AA,highlight,0.2,clGray,false,NULL,body->dalsi);
 			////odstranění pomocného ukazatele
 			B=NULL; delete B;

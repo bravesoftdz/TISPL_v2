@@ -25,9 +25,11 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod,bool orto
 {
 	////alokace paměti
 	TBod *Bod=new TBod;
-	//nastavení defaultních hodnot
-  Bod->kota_offset=-70;
+
 	////data
+	//nastavení defaultních hodnot
+	Bod->kota_offset=-70;if(Objekt!=NULL)Bod->kota_offset/=5;
+	//souřadnice připadně ortogonalizované
 	if(ortogonalizovat)//pokud je požadavek na ortogonalizaci, tak ověření zda je možný
 	{
 		ortogonalizovat=false;
