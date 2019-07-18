@@ -1506,7 +1506,7 @@ void Cvektory::kopiruj_komory(TObjekt *Original,TObjekt *Kopie)
 	TKomora *K=Original->komora->dalsi;//přeskočí hlavičku
 	while(K!=NULL)
 	{
-		vloz_komoru(Kopie,K->velikost,K->typ);
+		vloz_komoru(Kopie,K->velikost,NULL,K->typ);
 		K=K->dalsi;
 	}
 	K=NULL;delete K;
