@@ -546,7 +546,7 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 	////
 	if(id==3)novy->koty_elementu_offset=1;else novy->koty_elementu_offset=4;//odsazení kót elementů v metrech,v kabině POW se kóty vykroslují od hrany kabiny, ne od pohonu
 	novy->komora=NULL;//ukazatel na komory
-	if(id==3)for(short i=1;i<=4;i++)vloz_komoru(novy,novy->rozmer_kabiny.x/4.0);//pokud se jedná o POWash,nastaví defaultně 4 stejné komory
+	if(id==3)for(short i=1;i<=4;i++)vloz_komoru(novy,novy->rozmer_kabiny.x/4.0,NULL,i%2);//pokud se jedná o POWash,nastaví defaultně 4 stejné komory
 	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
 	novy->stopka=2;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
@@ -1386,7 +1386,7 @@ void Cvektory::vloz_komoru(TObjekt *Objekt,double velikost,TKomora *ZaKomoru,sho
 	TKomora *Komora=new TKomora;
 	Komora->velikost=velikost;
 	Komora->typ=typ;
-	vloz_komoru(Objekt,Komora,ZaKomoru);
+	vloz_komoru(Objekt,Komora,ZaKomoru,typ);
 }
 //---------------------------------------------------------------------------
 //vloží novou komoru na konec seznamu komor, pokud je ZaKomoru=NULL, jinak vloží za tento objekt, není třeba nastavovat ukazatele ani n-pořadí
@@ -1404,7 +1404,7 @@ void Cvektory::vloz_komoru(TObjekt *Objekt,TKomora *Komora,TKomora *ZaKomoru,sho
 			Objekt->komora->dalsi=NULL;
 		}
 		////nastavení typu komory
-		Objekt->komora->typ=typ;
+		Komora->typ=typ;
 		////vložení nové komory na konec seznamu komor
 		if(ZaKomoru==NULL || ZaKomoru!=NULL && ZaKomoru==Objekt->komora->predchozi)//pokud se má vkládat nakonec
 		{

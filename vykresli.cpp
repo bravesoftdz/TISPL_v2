@@ -298,7 +298,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 //zajišťuje vykreslení pouze obrysu dle typu objektu
 void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool zobrazit_koty)
 {
-  //poloha nadpisu
+	////poloha nadpisu
 	double X=O->body->dalsi->X+(O->body->dalsi->dalsi->X-O->body->dalsi->X)/2;
 	double Y=O->body->dalsi->Y;
 
@@ -368,7 +368,6 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	////vykreslení komor u POW - pokud je objekt obsahuje, poslední komora má vždy velikost do konce objektu (nehledě na její skutečné délku), stav, kdy začíná komora za objektem, je nutné ošetřit separátně
 	if(O->komora!=NULL && O->komora->predchozi->n>0)
 	{
-//		unsigned int pocet_komor=O->komora->predchozi->n;
 		Cvektory::TKomora *K=O->komora->dalsi;//přeskočí hlavičku
 		double vzdalenost=0;
 		while(K->dalsi!=NULL)
@@ -402,7 +401,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 					canv->LineTo(X,Y2+W);
 				}
 				//symbolika tekoucí kapaliny u POW
-				vykresli_pow_sprchu(canv,X,X,Y1,Y2,m.m2px(K->velikost),clAkt,sirka_steny_px/4,pmpp);
+				if(K->typ==1)vykresli_pow_sprchu(canv,X,X,Y1,Y2,m.m2px(K->velikost),clAkt,sirka_steny_px/4,pmpp);
 			}
 			else
 			{
@@ -425,7 +424,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 					canv->LineTo(X2+W,Y);
 				}
 				//symbolika tekoucí kapaliny u POW
-				vykresli_pow_sprchu(canv,X1,X2,Y,Y,m.m2px(K->velikost),clAkt,sirka_steny_px/4,pmpp);
+				if(K->typ==1)vykresli_pow_sprchu(canv,X1,X2,Y,Y,m.m2px(K->velikost),clAkt,sirka_steny_px/4,pmpp);
 			}
 			//KÓTY
 			if(zobrazit_koty)
@@ -450,7 +449,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				//dodělat po změně souřadnicového modelu
 			}
 			//symbolika tekoucí kapaliny u POW //dodělat po změně souřadnicového modelu
-			vykresli_pow_sprchu(canv,m.L2Px(O->Xk+O->rozmer_kabiny.x),m.L2Px(O->Xk+O->rozmer_kabiny.x),m.L2Py(O->Yk),m.L2Py(O->Yk-O->rozmer_kabiny.y),m.m2px(O->rozmer_kabiny.x-vzdalenost),clAkt,sirka_steny_px/4,pmpp);
+			if(O->komora->predchozi->typ==1)vykresli_pow_sprchu(canv,m.L2Px(O->Xk+O->rozmer_kabiny.x),m.L2Px(O->Xk+O->rozmer_kabiny.x),m.L2Py(O->Yk),m.L2Py(O->Yk-O->rozmer_kabiny.y),m.m2px(O->rozmer_kabiny.x-vzdalenost),clAkt,sirka_steny_px/4,pmpp);
 		}
 		else
 		{
@@ -459,7 +458,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				//dodělat po změně souřadnicového modelu
 			}
 			//symbolika tekoucí kapaliny u POW //dodělat po změně souřadnicového modelu
-			vykresli_pow_sprchu(canv,m.L2Px(O->Xk),m.L2Px(O->Xk+O->rozmer_kabiny.x),m.L2Py(O->Yk-O->rozmer_kabiny.y),m.L2Py(O->Yk-O->rozmer_kabiny.y),m.m2px(O->rozmer_kabiny.x-vzdalenost),clAkt,sirka_steny_px/4,pmpp);
+			if(O->komora->predchozi->typ==1)vykresli_pow_sprchu(canv,m.L2Px(O->Xk),m.L2Px(O->Xk+O->rozmer_kabiny.x),m.L2Py(O->Yk-O->rozmer_kabiny.y),m.L2Py(O->Yk-O->rozmer_kabiny.y),m.m2px(O->rozmer_kabiny.x-vzdalenost),clAkt,sirka_steny_px/4,pmpp);
 		}
 		//vykreslení KÓTY od poslení komory k okraji kabiny
 		if(zobrazit_koty)
@@ -3968,6 +3967,7 @@ void Cvykresli::vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popise
 	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+o/2,Popisek);
 }
 //---------------------------------------------------------------------------
+//typ: -2 kurzor se sprchy, -1 kurzor bez sprchy, 0 ikona bez sprchy, 1 ikona se sprchou, stav: -1 disabled, 0 normál
 void Cvykresli::vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popisek,short typ,short stav)
 {
 	////výchozí nastavení
@@ -3976,7 +3976,7 @@ void Cvykresli::vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popis
 	short o=3;//komora odsazení
 
 	////nastavení pera
-	if(typ==-1)//kurzor
+	if(typ==-1 && typ==-2)//kurzor
 	{
 		canv->Pen->Color=clBlack;
 		canv->Pen->Mode=pmNotXor;
@@ -4001,7 +4001,7 @@ void Cvykresli::vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popis
 	}
 
 	////symbolika tekoucí kapaliny
-	vykresli_pow_sprchu(canv,X+W,X+W,Y,Y+H,W-o,canv->Pen->Color,ceil(canv->Pen->Width/4.0),m.round(o/2.0),typ);
+	if(typ==1 || typ==-2)vykresli_pow_sprchu(canv,X+W,X+W,Y,Y+H,W-o,canv->Pen->Color,ceil(canv->Pen->Width/4.0),m.round(o/2.0),typ);
 
 	////vykreslení obrysu
 	line(canv,X,Y,X+W,Y);//horní vodorovná
@@ -4011,7 +4011,7 @@ void Cvykresli::vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popis
 	line(canv,X+o,Y,X+o,Y+H/2-o/2);//horní kus komory
 
 	////popisek
-	if(typ==0)//pouze pro typ ikona
+	if(typ==0 || typ==1)//pouze pro typ ikona se sprchou nebo bez
 	{
 		short oT=20;//odsazení textu od ikony
 		TColor barva=clBlack; if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
