@@ -57,7 +57,7 @@ void Cvykresli::vykresli_halu(TCanvas *canv,int stav)
 //vrátí souřadnice dle typu buď středové nebo excentrické v podobě levého horního rohu objektu
 int Cvykresli::CorEx(Cvektory::TObjekt *O)
 {
-	if(O->id!=F->VyID&&O->id!=pocet_objektu_knihovny+1)//nejde o výhybku a spojku
+	if(O->id!=(unsigned)F->VyID&&O->id!=pocet_objektu_knihovny+1)//nejde o výhybku a spojku
 	return m.L2Px(O->X)+O_width*Form1->Zoom/2;
 	else//jde o výhybku
 	return m.L2Px(O->X);
@@ -66,7 +66,7 @@ int Cvykresli::CorEx(Cvektory::TObjekt *O)
 //vrátí souřadnice dle typu buď středové nebo excentrické v podobě levého horního rohu objektu
 int Cvykresli::CorEy(Cvektory::TObjekt *O)
 {
-	if(O->id!=F->VyID&&O->id!=pocet_objektu_knihovny+1)//nejde o výhybku a spojku
+	if(O->id!=(unsigned)F->VyID&&O->id!=pocet_objektu_knihovny+1)//nejde o výhybku a spojku
 	return m.L2Py(O->Y)+O_height*Form1->Zoom/2;
 	else//jde o výhybku
 	return m.L2Py(O->Y);
@@ -162,9 +162,12 @@ void Cvykresli::vykresli_objekty(TCanvas *canv)
 						if(tab_pruchodu[n].y==1)pom=ukaz->predchozi2->predchozi;
 						else pom=ukaz->predchozi->predchozi;
 					}
-					canv->MoveTo(CorEx(pom),CorEy(pom));
-					canv->LineTo(CorEx(ukaz),CorEy(ukaz));
-					sipka(canv,(CorEx(pom)+CorEx(ukaz))/2,(CorEy(pom)+CorEy(ukaz))/2,m.azimut(pom->X,pom->Y,ukaz->X,ukaz->Y));//zajistí vykreslení šipky - orientace spojovací linie
+//					canv->MoveTo(CorEx(pom),CorEy(pom));
+//					canv->LineTo(CorEx(ukaz),CorEy(ukaz));
+//					sipka(canv,(CorEx(pom)+CorEx(ukaz))/2,(CorEy(pom)+CorEy(ukaz))/2,m.azimut(pom->X,pom->Y,ukaz->X,ukaz->Y));//zajistí vykreslení šipky - orientace spojovací linie
+					canv->MoveTo(m.L2Px(pom->body->dalsi->dalsi->X),m.L2Py(pom->body->dalsi->Y)+m.m2px(pom->body->dalsi->Y-pom->body->predchozi->Y)/2);
+					canv->LineTo(m.L2Px(ukaz->body->dalsi->X),m.L2Py(ukaz->body->dalsi->Y)+m.m2px(ukaz->body->dalsi->Y-ukaz->body->predchozi->Y)/2);
+					sipka(canv,(m.L2Px(pom->body->dalsi->dalsi->X)+m.L2Px(ukaz->body->dalsi->X))/2,(m.L2Py(pom->body->dalsi->Y)+m.m2px(pom->body->dalsi->Y-pom->body->predchozi->Y)/2+m.L2Py(ukaz->body->dalsi->Y)+m.m2px(ukaz->body->dalsi->Y-ukaz->body->predchozi->Y)/2)/2,m.azimut(m.L2Px(ukaz->body->dalsi->X),m.L2Py(ukaz->body->dalsi->Y)+m.m2px(ukaz->body->dalsi->Y-ukaz->body->predchozi->Y)/2,m.L2Px(pom->body->dalsi->dalsi->X),m.L2Py(pom->body->dalsi->Y)+m.m2px(pom->body->dalsi->Y-pom->body->predchozi->Y)/2)*(-1));//zajistí vykreslení šipky - orientace spojovací linie
 					pom=NULL;delete pom;
 				}
 			}
@@ -177,9 +180,12 @@ void Cvykresli::vykresli_objekty(TCanvas *canv)
 					if(tab_pruchodu[n].y==1)pom=ukaz->predchozi2;
 					else pom=ukaz->predchozi;
 				}
-				canv->MoveTo(CorEx(pom),CorEy(pom));
-				canv->LineTo(CorEx(ukaz),CorEy(ukaz));
-				sipka(canv,(CorEx(pom)+CorEx(ukaz))/2,(CorEy(pom)+CorEy(ukaz))/2,m.azimut(pom->X,pom->Y,ukaz->X,ukaz->Y));//zajistí vykreslení šipky - orientace spojovací linie
+//				canv->MoveTo(CorEx(pom),CorEy(pom));
+//				canv->LineTo(CorEx(ukaz),CorEy(ukaz));
+//				sipka(canv,(CorEx(pom)+CorEx(ukaz))/2,(CorEy(pom)+CorEy(ukaz))/2,m.azimut(pom->X,pom->Y,ukaz->X,ukaz->Y));//zajistí vykreslení šipky - orientace spojovací linie
+        canv->MoveTo(m.L2Px(pom->body->dalsi->dalsi->X),m.L2Py(pom->body->dalsi->Y)+m.m2px(pom->body->dalsi->Y-pom->body->predchozi->Y)/2);
+				canv->LineTo(m.L2Px(ukaz->body->dalsi->X),m.L2Py(ukaz->body->dalsi->Y)+m.m2px(ukaz->body->dalsi->Y-ukaz->body->predchozi->Y)/2);
+				sipka(canv,(m.L2Px(pom->body->dalsi->dalsi->X)+m.L2Px(ukaz->body->dalsi->X))/2,(m.L2Py(pom->body->dalsi->Y)+m.m2px(pom->body->dalsi->Y-pom->body->predchozi->Y)/2+m.L2Py(ukaz->body->dalsi->Y)+m.m2px(ukaz->body->dalsi->Y-ukaz->body->predchozi->Y)/2)/2,m.azimut(m.L2Px(ukaz->body->dalsi->X),m.L2Py(ukaz->body->dalsi->Y)+m.m2px(ukaz->body->dalsi->Y-ukaz->body->predchozi->Y)/2,m.L2Px(pom->body->dalsi->dalsi->X),m.L2Py(pom->body->dalsi->Y)+m.m2px(pom->body->dalsi->Y-pom->body->predchozi->Y)/2)*(-1));//zajistí vykreslení šipky - orientace spojovací linie
 				pom=NULL;delete pom;
 			}
 			ukaz=O;
@@ -269,7 +275,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 		//příprava
 
 		////vykreslení obrysu OBJEKTU - kabiny
-		vykresli_kabinu(canv);
+		vykresli_kabinu(canv,F->pom_temp);
 
 		////vykreslení jednotlivých ELEMENTŮ aktuálně nahlíženého objektu
 		Cvektory::TElement *E=F->pom_temp->elementy;
@@ -289,46 +295,40 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	}
 }
 //---------------------------------------------------------------------------
-//zajišťuje kompletní vykreslení s voláním následující metody
-void Cvykresli::vykresli_kabinu(TCanvas *canv)
-{
-	double X=F->pom_temp->rozmer_kabiny.x;
-	double Y=F->pom_temp->rozmer_kabiny.y;
-
-	///vykreslení obrysu kabiny
-	vykresli_kabinu(canv,F->pom_temp);
-
-	///název a zkratka
-	//název objektu - nastavení                 //záměrně nuly, aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
-	nastavit_text_popisu_objektu_v_nahledu(canv,0);AnsiString Tn=F->pom_temp->name.UpperCase();short Wn=canv->TextWidth(Tn);
-	//lomítko objektu - nastavení
-	nastavit_text_popisu_objektu_v_nahledu(canv,0);AnsiString Tl=+" / ";	short Wl=canv->TextWidth(Tl);
-	//zkratka objektu - nastavení
-	nastavit_text_popisu_objektu_v_nahledu(canv,0);AnsiString Tz=F->pom_temp->short_name.UpperCase();short Wz=canv->TextWidth(Tz);
-	//samotné vypsání názvu
-	nastavit_text_popisu_objektu_v_nahledu(canv,1);                                                                                          //záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
-	canv->TextOutW(m.L2Px(F->pom_temp->Xk+X/2.0)-m.round((Wn+Wl+Wz)/2.0),m.L2Py(F->pom_temp->Yk)-canv->TextHeight(Tl),Tn);
-	//samotné vypsání lomítka
-	nastavit_text_popisu_objektu_v_nahledu(canv,0);
-	canv->TextOutW(m.L2Px(F->pom_temp->Xk+X/2.0)-m.round((Wn+Wl+Wz)/2.0)+Wn,m.L2Py(F->pom_temp->Yk)-canv->TextHeight(Tl),Tl);
-	//samostné vypsání zkratky
-	nastavit_text_popisu_objektu_v_nahledu(canv,2);                                                                                               //záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamack
-	canv->TextOutW(m.L2Px(F->pom_temp->Xk+X/2.0)-m.round((Wn+Wl+Wz)/2.0)+Wn+Wl,m.L2Py(F->pom_temp->Yk)-canv->TextHeight(Tl),Tz);
-
-	///kóty
-	if(F->pom_temp->zobrazit_koty)
-	{
-		short highlight=0;
-		if(F->JID==-8)highlight=1;
-		vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk-Y,F->pom_temp->Xk+X,F->pom_temp->Yk-Y,NULL,0.35,highlight);
-		if(F->JID==-9)highlight=1;else  highlight=0;
-		vykresli_kotu(canv,F->pom_temp->Xk+X,F->pom_temp->Yk,F->pom_temp->Xk+X,F->pom_temp->Yk-Y,NULL,-0.35,highlight);//offset musí mít opačné znaménko, kvůli nové koncepci vykreslování kót
-	}
-}
-//---------------------------------------------------------------------------
 //zajišťuje vykreslení pouze obrysu dle typu objektu
 void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool zobrazit_koty)
 {
+  //poloha nadpisu
+	double X=O->body->dalsi->X+(O->body->dalsi->dalsi->X-O->body->dalsi->X)/2;
+	double Y=O->body->dalsi->Y;
+
+	///název a zkratka
+	//název objektu - nastavení                 //záměrně nuly, aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
+	nastavit_text_popisu_objektu_v_nahledu(canv,0);AnsiString Tn=O->name.UpperCase();short Wn=canv->TextWidth(Tn);
+	//lomítko objektu - nastavení
+	nastavit_text_popisu_objektu_v_nahledu(canv,0);AnsiString Tl=+" / ";	short Wl=canv->TextWidth(Tl);
+	//zkratka objektu - nastavení
+	nastavit_text_popisu_objektu_v_nahledu(canv,0);AnsiString Tz=O->short_name.UpperCase();short Wz=canv->TextWidth(Tz);
+	//samotné vypsání názvu
+	nastavit_text_popisu_objektu_v_nahledu(canv,1);                                                                                          //záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
+	canv->TextOutW(m.L2Px(X)-m.round((Wn+Wl+Wz)/2.0),m.L2Py(Y)-canv->TextHeight(Tl),Tn);
+	//samotné vypsání lomítka
+	nastavit_text_popisu_objektu_v_nahledu(canv,0);
+	canv->TextOutW(m.L2Px(X)-m.round((Wn+Wl+Wz)/2.0)+Wn,m.L2Py(Y)-canv->TextHeight(Tl),Tl);
+	//samostné vypsání zkratky
+	nastavit_text_popisu_objektu_v_nahledu(canv,2);                                                                                               //záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamack
+	canv->TextOutW(m.L2Px(X)-m.round((Wn+Wl+Wz)/2.0)+Wn+Wl,m.L2Py(Y)-canv->TextHeight(Tl),Tz);
+
+  ///kóty po staru
+//	if(zobrazit_koty)
+//	{
+//		short highlight=0;
+//		if(F->JID==-8)highlight=1;
+//		vykresli_kotu(canv,O->Xk,O->Yk-Y,O->Xk+X,O->Yk-Y,NULL,0.35,highlight);
+//		if(F->JID==-9)highlight=1;else  highlight=0;
+//		vykresli_kotu(canv,O->Xk+X,O->Yk,O->Xk+X,O->Yk-Y,NULL,-0.35,highlight);//offset musí mít opačné znaménko, kvůli nové koncepci vykreslování kót
+//	}
+
 	////vstupní proměnné
 	TColor clAkt=clStenaKabiny;
 	short rotace=O->rotace;
@@ -361,7 +361,6 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	canv->Pen->Style=psSolid;
 
 	////vnější obrys kabiny
-//	canv->Rectangle(X1-W,Y1-W,X2+W,Y2+W);//rám - kresleno pod komory, kvůli nastavení pera
 	polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
 
 	short highlight=0;//nastavování zda mají být koty highlightovány
@@ -369,7 +368,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	////vykreslení komor u POW - pokud je objekt obsahuje, poslední komora má vždy velikost do konce objektu (nehledě na její skutečné délku), stav, kdy začíná komora za objektem, je nutné ošetřit separátně
 	if(O->komora!=NULL && O->komora->predchozi->n>0)
 	{
-		unsigned int pocet_komor=O->komora->predchozi->n;
+//		unsigned int pocet_komor=O->komora->predchozi->n;
 		Cvektory::TKomora *K=O->komora->dalsi;//přeskočí hlavičku
 		double vzdalenost=0;
 		while(K->dalsi!=NULL)
@@ -377,7 +376,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 			//nastavení pera, musí být znova, vykreslení kót pero přenastaví
 			canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
 			canv->Pen->Mode=pmCopy;pmNotXor;//pro transparentní zákres
-			if(F->JID*(-1)-10==K->n || (F->JID==0 && F->pom_komora->n==K->n))clAkt=m.clIntensive(clStenaKabiny,-50);//highlight
+			if(F->JID*(-1)-10==(signed)K->n || (F->JID==0 && F->pom_komora->n==K->n))clAkt=m.clIntensive(clStenaKabiny,-50);//highlight
 			else clAkt=clStenaKabiny;
 			set_pen(canv,clAkt,sirka_steny_px,PS_ENDCAP_SQUARE);
 			vzdalenost+=K->velikost;//dle velikosti předchozích komor uchovává hodnotu součtu/pozice aktuálně vykreslované komory
@@ -390,7 +389,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				line(canv,X,Y1,X,Y-pmpp);
 				line(canv,X,Y2,X,Y+pmpp);
 				//highlight komory
-				if(F->JID*(-1)-10==K->n || (F->JID==0 && F->pom_komora->n==K->n))
+				if(F->JID*(-1)-10==(signed)K->n || (F->JID==0 && F->pom_komora->n==K->n))
 				{
 					canv->MoveTo(X,Y1-W);
 					canv->LineTo(X-m.m2px(K->velikost)-W1,Y1-W);
@@ -413,7 +412,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				line(canv,X1,Y,X-pmpp,Y);
 				line(canv,X2,Y,X+pmpp,Y);
 				//highlight komory
-				if(F->JID*(-1)-10==(signed)K->n || (F->JID==0 && F->pom_komora->n==(signed)K->n))//highlight komory
+				if(F->JID*(-1)-10==(signed)K->n || (F->JID==0 && F->pom_komora->n==K->n))//highlight komory
 				{
 					canv->MoveTo(X1-W,Y);
 					canv->LineTo(X1-W,Y-m.m2px(K->velikost)-W1);
@@ -429,14 +428,14 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				vykresli_pow_sprchu(canv,X1,X2,Y,Y,m.m2px(K->velikost),clAkt,sirka_steny_px/4,pmpp);
 			}
 			//KÓTY
-			if(/*F->pom_temp!=NULL && F->pom_temp->zobrazit_koty && */zobrazit_koty)
+			if(zobrazit_koty)
 			{
 				//nastavení highlight
-				if((F->JID==0&&F->pom_komora->n==(signed)K->n) || (F->JID*(-1)-10==(signed)K->n || F->JID*(-1)-10==(signed)K->predchozi->n)&&F->d.v.PtInKota_komory(F->pom_temp,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
-				else if(F->JID*(-1)-10==K->n || F->JID>=11 && F->JID<=99)highlight=1;else highlight=0;
+				if((F->JID==0&&F->pom_komora->n==K->n) || (F->JID*(-1)-10==(signed)K->n || F->JID*(-1)-10==(signed)K->predchozi->n)&&F->d.v.PtInKota_komory(O,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
+				else if(F->JID*(-1)-10==(signed)K->n || F->JID>=11 && F->JID<=99)highlight=1;else highlight=0;
 				//vykreslení kót komor
-				if(F->pom_temp->rotace==0 || F->pom_temp->rotace==180)vykresli_kotu(canv,F->pom_temp->Xk+vzdalenost-K->velikost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+vzdalenost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,F->pom_temp->koty_elementu_offset,highlight,0.2,clGray,false,K);
-				else vykresli_kotu(canv,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0,F->pom_temp->Yk-vzdalenost+K->velikost,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0,F->pom_temp->Yk-vzdalenost,NULL,F->pom_temp->koty_elementu_offset,highlight,0.2,clGray,false,K);
+				if(O->rotace==0 || O->rotace==180)vykresli_kotu(canv,O->Xk+vzdalenost-K->velikost,O->Yk-O->rozmer_kabiny.y,O->Xk+vzdalenost,O->Yk-O->rozmer_kabiny.y,NULL,O->koty_elementu_offset,highlight,0.2,clGray,false,K);
+				else vykresli_kotu(canv,O->Xk+O->rozmer_kabiny.x/2.0,O->Yk-vzdalenost+K->velikost,O->Xk+O->rozmer_kabiny.x/2.0,O->Yk-vzdalenost,NULL,O->koty_elementu_offset,highlight,0.2,clGray,false,K);
 			}
 			K=K->dalsi;//posun ve spojáku na další prvek
 		}
@@ -463,13 +462,13 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 			vykresli_pow_sprchu(canv,m.L2Px(O->Xk),m.L2Px(O->Xk+O->rozmer_kabiny.x),m.L2Py(O->Yk-O->rozmer_kabiny.y),m.L2Py(O->Yk-O->rozmer_kabiny.y),m.m2px(O->rozmer_kabiny.x-vzdalenost),clAkt,sirka_steny_px/4,pmpp);
 		}
 		//vykreslení KÓTY od poslení komory k okraji kabiny
-		if(/*F->pom_temp!=NULL && F->pom_temp->zobrazit_koty && */zobrazit_koty)
+		if(zobrazit_koty)
 		{
-			if((F->JID==0 && F->pom_komora->n==(signed)F->pom_temp->komora->predchozi->n) || (F->JID*(-1)-10==(signed)F->pom_temp->komora->predchozi->n || F->JID*(-1)-10==(signed)F->pom_temp->komora->predchozi->predchozi->n)&&F->d.v.PtInKota_komory(F->pom_temp,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
-			else if(F->JID*(-1)-10==(signed)F->pom_temp->komora->predchozi->n || F->JID>=11&&F->JID<=99)highlight=1;
+			if((F->JID==0 && F->pom_komora->n==O->komora->predchozi->n) || (F->JID*(-1)-10==(signed)O->komora->predchozi->n || F->JID*(-1)-10==(signed)O->komora->predchozi->predchozi->n)&&F->d.v.PtInKota_komory(O,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
+			else if(F->JID*(-1)-10==(signed)O->komora->predchozi->n || F->JID>=11&&F->JID<=99)highlight=1;
 			else highlight=0;
-			if(F->pom_temp->rotace==0 || F->pom_temp->rotace==180)vykresli_kotu(canv,F->pom_temp->Xk+vzdalenost,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,F->pom_temp->koty_elementu_offset,highlight,0.2,clGray,false,F->pom_temp->komora->predchozi);
-			else vykresli_kotu(canv,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0,F->pom_temp->Yk-vzdalenost,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,F->pom_temp->koty_elementu_offset,highlight,0.2,clGray,false,F->pom_temp->komora->predchozi);
+			if(O->rotace==0 || O->rotace==180)vykresli_kotu(canv,O->Xk+vzdalenost,O->Yk-O->rozmer_kabiny.y,O->Xk+O->rozmer_kabiny.x,O->Yk-O->rozmer_kabiny.y,NULL,O->koty_elementu_offset,highlight,0.2,clGray,false,O->komora->predchozi);
+			else vykresli_kotu(canv,O->Xk+O->rozmer_kabiny.x/2.0,O->Yk-vzdalenost,O->Xk+O->rozmer_kabiny.x/2.0,O->Yk-O->rozmer_kabiny.y,NULL,O->koty_elementu_offset,highlight,0.2,clGray,false,O->komora->predchozi);
 			canv->Brush->Style=bsClear;//navrácení na průhledné pero, kvůli následujícím popiskům objektu, kóty jej totiž změnily
 		}
 	}
@@ -710,7 +709,7 @@ void Cvykresli::vykresli_kruh(TCanvas *canv, Cvektory::TObjekt *O)
 		////obdelník objektu
 		canv->Pen->Style=psSolid;
 		canv->Brush->Style=bsSolid;
-		if(O->id==F->VyID)//dočasné rozlišení výhybek a spojek
+		if(O->id==(unsigned)F->VyID)//dočasné rozlišení výhybek a spojek
 		{
 		canv->Brush->Color=(TColor)RGB(19,115,169);//(TColor)RGB(254,254,254);//nemuže být čiště bílá pokud je zapnut antialising, tak aby se nezobrazoval skrz objekt grid
 		canv->Pen->Color=(TColor)RGB(19,115,169);}//clBlack;
@@ -1866,6 +1865,67 @@ void Cvykresli::editacni_okno(TCanvas *canv, TPoint LH, TPoint PD, unsigned shor
 	editacni_okno(canv, LH.x, LH.y, PD.x, PD.y, size, color);
 }
 //---------------------------------------------------------------------------
+//vykresluje kurzor kabiny + spojnice
+void Cvykresli::vykresli_kurzor_kabiny (TCanvas *canv, int id, int X, int Y, Cvektory::TObjekt *p)
+{
+	if((long)id!=F->VyID && (long)id!=pocet_objektu_knihovny+1 && X!=-200)
+	{
+		//nastavení rozměrů objektu
+		TPoint rozmery_kabiny;
+  	switch(id)
+  	{
+  		case 0:case 9://navěšování + svěšování
+			rozmery_kabiny.x=5;rozmery_kabiny.y=3;break;//navěšování
+  		case 5:rozmery_kabiny.x=10;rozmery_kabiny.y=6;break;//lakovna
+  		case 6:rozmery_kabiny.x=10;rozmery_kabiny.y=3;break;//vytěkání
+  		case 7:rozmery_kabiny.x=20;rozmery_kabiny.y=3;break;//sušárna
+  		case 8:rozmery_kabiny.x=20;rozmery_kabiny.y=6;break;//chlazení
+			default: rozmery_kabiny.x=10;rozmery_kabiny.y=6;break;//ostatní
+		}
+		//nastavení pera
+		canv->Pen->Color=clBlack;
+		canv->Pen->Width=1;
+		canv->Pen->Style=psDot;//nastevení čarkované čáry
+		canv->Pen->Mode=pmNotXor;
+		canv->Brush->Style=bsClear;
+		//vykreslení
+		if(v.OBJEKTY->dalsi==NULL)//pokud se vkládá první objekt
+		{
+			canv->Rectangle(X,Y-m.m2px(rozmery_kabiny.y)/2,X+m.m2px(rozmery_kabiny.x),Y-m.m2px(rozmery_kabiny.y)/2+m.m2px(rozmery_kabiny.y));//vykreslení objektu
+		}
+		else//1 a více objektů
+		{
+			canv->Rectangle(X,Y-m.m2px(rozmery_kabiny.y)/2,X+m.m2px(rozmery_kabiny.x),Y-m.m2px(rozmery_kabiny.y)/2+m.m2px(rozmery_kabiny.y));//vykreslení objektu
+			if(v.OBJEKTY->predchozi->n<2)//pouze jedna spojnice s předchozím
+			{
+				//ukazatel na předchozí
+				if(p==NULL)p=v.OBJEKTY->predchozi;
+				//vykreslení spojnice k předchozímu
+				canv->MoveTo(m.L2Px(p->body->dalsi->X)+m.m2px(p->body->dalsi->dalsi->X-p->body->dalsi->X),m.L2Py(p->body->dalsi->Y)+m.m2px(p->body->dalsi->Y-p->body->predchozi->Y)/2);
+				canv->LineTo(X,Y);                                                                                                                                                                                                                                                                                                                                   //azimut musí být násoben -1
+				sipka(canv,(m.L2Px(p->body->dalsi->X)+m.m2px(p->body->dalsi->dalsi->X-p->body->dalsi->X)+X)/2,(m.L2Py(p->body->dalsi->Y)+m.m2px(p->body->dalsi->Y-p->body->predchozi->Y)/2+Y)/2,m.azimut(X,Y,m.L2Px(p->body->dalsi->X)+m.m2px(p->body->dalsi->dalsi->X-p->body->dalsi->X),m.L2Py(p->body->dalsi->Y)+m.m2px(p->body->dalsi->Y-p->body->predchozi->Y)/2)*(-1),true,3,clBlack,clWhite,pmNotXor);
+			}
+			else//spojnice s předchozím + spojnice s posledním/dalším
+			{
+				//ukazatel na předchozí a poslední/další
+				Cvektory::TObjekt *dalsi;
+				if(p==NULL){p=v.OBJEKTY->predchozi;dalsi=v.OBJEKTY->dalsi;}
+				else dalsi=p->dalsi;
+				//vykreslení spojnice k předchozímu
+				canv->MoveTo(m.L2Px(p->body->dalsi->X)+m.m2px(p->body->dalsi->dalsi->X-p->body->dalsi->X),m.L2Py(p->body->dalsi->Y)+m.m2px(p->body->dalsi->Y-p->body->predchozi->Y)/2);
+				canv->LineTo(X,Y);
+				//vykreslení spojnice k poslední/další
+				canv->MoveTo(X+m.m2px(rozmery_kabiny.x),Y);
+				canv->LineTo(m.L2Px(dalsi->body->dalsi->X),m.L2Py(dalsi->body->dalsi->Y)+m.m2px(dalsi->body->dalsi->Y-dalsi->body->predchozi->Y)/2);
+				//vykreslení šipek                                                                                                                                                                                                                                                                                                                                 //azimut musí být násoben -1
+				sipka(canv,(m.L2Px(p->body->dalsi->X)+m.m2px(p->body->dalsi->dalsi->X-p->body->dalsi->X)+X)/2,(m.L2Py(p->body->dalsi->Y)+m.m2px(p->body->dalsi->Y-p->body->predchozi->Y)/2+Y)/2,m.azimut(X,Y,m.L2Px(p->body->dalsi->X)+m.m2px(p->body->dalsi->dalsi->X-p->body->dalsi->X),m.L2Py(p->body->dalsi->Y)+m.m2px(p->body->dalsi->Y-p->body->predchozi->Y)/2)*(-1),true,3,clBlack,clWhite,pmNotXor);
+				sipka(canv,(X+m.m2px(rozmery_kabiny.x)+m.L2Px(dalsi->body->dalsi->X))/2,(Y+m.L2Py(dalsi->body->dalsi->Y)+m.m2px(dalsi->body->dalsi->Y-dalsi->body->predchozi->Y)/2)/2,m.azimut(m.L2Px(dalsi->body->dalsi->X),m.L2Py(dalsi->body->dalsi->Y)+m.m2px(dalsi->body->dalsi->Y-dalsi->body->predchozi->Y)/2,X+m.m2px(rozmery_kabiny.x),Y)*(-1),true,3,clBlack,clWhite,pmNotXor);
+			}
+		}
+	}
+	else if(X!=-200)odznac_oznac_vyhybku(canv,X,Y,NULL);
+}
+//---------------------------------------------------------------------------
 //označí nebo odznačí objekt používá se při posouvání objektů
 void Cvykresli::odznac_oznac_objekt(TCanvas *canv, Cvektory::TObjekt *p, int posunX, int posunY,COLORREF color)
 {
@@ -2095,7 +2155,7 @@ void Cvykresli::odznac_oznac_vyhybku(TCanvas *canv, int X, int Y,Cvektory::TObje
 			canv->MoveTo(CorEx(p1),CorEy(p1));
 			canv->LineTo(X,Y);
 			canv->LineTo(CorEx(p2),CorEy(p2));
-			if(p->dalsi2!=NULL&&p->id==F->VyID)
+			if(p->dalsi2!=NULL&&p->id==(unsigned)F->VyID)
 	  	{
 	  		canv->MoveTo(X,Y);
 	  		canv->LineTo(CorEx(p->dalsi2),CorEy(p->dalsi2));
@@ -2155,7 +2215,6 @@ short Cvykresli::lezi_v_pasmu(TCanvas *c,long X,long Y,Cvektory::TObjekt *p,bool
 {
 		short ret=0;//návratová proměnná, 0= nic nenalezeno, 1= nalezen dalsi objekt, 2= nalezen dalsi2 objekt
 		bool pom;//pomocná proměnná, která uchovává zda je kurzor v pásmu
-		Cvektory::TObjekt *O=F->d.v.OBJEKTY->dalsi;
 		int W=m.round(O_width*Form1->Zoom);
 		int H=m.round(O_height*Form1->Zoom);
 		if(p->dalsi!=NULL)//pouze v případě, že se nejedná o poslední objekt, prohledá oblast mezi p a p->dalsím
@@ -2168,7 +2227,7 @@ short Cvykresli::lezi_v_pasmu(TCanvas *c,long X,long Y,Cvektory::TObjekt *p,bool
 
 			if(pom)ret=1;//pokud bylo něco nalezeno jedná se o nález další, ret = 1
 		}
-		if(!ret&&p->dalsi2!=NULL&&p->id==F->VyID)//pokud nebyl nalezen další objekt a zároveň se jedná o výhybku, která ma nadefinovanou sekundární větev, prohledá oblast mezi p a p->další2
+		if(!ret&&p->dalsi2!=NULL&&p->id==(unsigned)F->VyID)//pokud nebyl nalezen další objekt a zároveň se jedná o výhybku, která ma nadefinovanou sekundární větev, prohledá oblast mezi p a p->další2
 		{
 			if((p->X<=p->dalsi2->X && p->Y<p->dalsi2->Y)||(p->X>p->dalsi2->X && p->Y>=p->dalsi2->Y))
 			pom=lezi_v_pasmu(c,X,Y,m.L2Px(p->X),m.L2Py(p->Y),m.L2Px(p->X)+W,m.L2Py(p->Y)+H,m.L2Px(p->dalsi2->X)+W,m.L2Py(p->dalsi2->Y)+H,m.L2Px(p->dalsi2->X),m.L2Py(p->dalsi2->Y),odecti_region);
@@ -4099,15 +4158,15 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 		while(B!=NULL)
 		{
 			//normální spojnice/hrana
-			if(body->predchozi->n+B->n-1==stav)set_pen(canv,clHighlight,sirka,/*PS_ENDCAP_FLAT*/PS_ENDCAP_SQUARE);//zvýraznění konkrétní spojnice/hrany
+			if((signed)(body->predchozi->n+B->n-1)==stav)set_pen(canv,clHighlight,sirka,/*PS_ENDCAP_FLAT*/PS_ENDCAP_SQUARE);//zvýraznění konkrétní spojnice/hrany
 			canv->LineTo(m.L2Px(B->X),m.L2Py(B->Y));
-			if(body->predchozi->n+B->n-1==stav)set_pen(canv,barva,sirka,/*PS_ENDCAP_FLAT*/PS_ENDCAP_SQUARE);//navrácení do výchozí barvy
+			if((signed)(body->predchozi->n+B->n-1)==stav)set_pen(canv,barva,sirka,/*PS_ENDCAP_FLAT*/PS_ENDCAP_SQUARE);//navrácení do výchozí barvy
 			//virtuální spojnice, pokud se jedná o poslendí prvek spojí ještě s prvním, aby byl obrazec uzavřený, pokud je požadováno
 			if(B==body->predchozi && automaticky_spojovat)
 			{
-				if(body->predchozi->n+B->n==stav)set_pen(canv,clHighlight,sirka,/*PS_ENDCAP_FLAT*/PS_ENDCAP_SQUARE);//zvýraznění konkrétní spojnice/hrany
+				if((signed)(body->predchozi->n+B->n)==stav)set_pen(canv,clHighlight,sirka,/*PS_ENDCAP_FLAT*/PS_ENDCAP_SQUARE);//zvýraznění konkrétní spojnice/hrany
 				canv->LineTo(m.L2Px(body->dalsi->X),m.L2Py(body->dalsi->Y));
-				if(body->predchozi->n+B->n==stav)set_pen(canv,barva,sirka,/*PS_ENDCAP_FLAT*/PS_ENDCAP_SQUARE);//navrácení do výchozí barvy
+				if((signed)(body->predchozi->n+B->n)==stav)set_pen(canv,barva,sirka,/*PS_ENDCAP_FLAT*/PS_ENDCAP_SQUARE);//navrácení do výchozí barvy
 			}
 			B=B->dalsi;//posun na další
 		}
@@ -4118,9 +4177,9 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 			B=body->dalsi;//přeskakuje hlavičku
 			while(B!=NULL)
 			{
-				if(B->n==stav){uchop(canv,B,clHighlight);break;}//pouze jeden konkrétní bod
-				if(body->predchozi->n<stav && (B->n==stav-body->predchozi->n || B->n==stav-body->predchozi->n+1))uchop(canv,B,clHighlight);//editace hrany (dva body)
-				if(B==body->predchozi && automaticky_spojovat && body->predchozi->n+B->n==stav)uchop(canv,body->dalsi,clHighlight);//editace hrany druhý bod - ten virtuální resp. první
+				if((signed)B->n==stav){uchop(canv,B,clHighlight);break;}//pouze jeden konkrétní bod
+				if((signed)body->predchozi->n<stav && ((signed)B->n==stav-(signed)body->predchozi->n || (signed)B->n==stav-(signed)body->predchozi->n+1))uchop(canv,B,clHighlight);//editace hrany (dva body)
+				if(B==body->predchozi && automaticky_spojovat && (signed)(body->predchozi->n+B->n)==stav)uchop(canv,body->dalsi,clHighlight);//editace hrany druhý bod - ten virtuální resp. první
 				if(stav==0)uchop(canv,B,clHighlight);//všechny body
 				B=B->dalsi;//posun na další bod
 			}
@@ -4214,8 +4273,8 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
 			{
 				F->PmG->Redraw=false;
-			F->PmG->Left=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x);
-			F->PmG->Top=m.L2Py(F->pom_temp->Yk+0.5)-F->PmG->Height;
+				F->PmG->Left=m.L2Px(F->pom_temp->body->dalsi->X+F->pom_temp->body->dalsi->dalsi->X-F->pom_temp->body->dalsi->X+0.5);
+				F->PmG->Top=m.L2Py(F->pom_temp->body->dalsi->Y+0.5)-F->PmG->Height;
 				F->PmG->SetVisibleComponents(false);
 				F->PmG->Show(canv);
 			}
@@ -4227,8 +4286,8 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 					//F->PmG->Buffer(false);
 					F->PmG->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování
 					F->PmG->VisibleComponents=true;//stačí volat toto, protože se pomocí Show cyklem všechny komponenty
-					F->PmG->Left=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x);
-					F->PmG->Top=m.L2Py(F->pom_temp->Yk+0.5)-F->PmG->Height;
+					F->PmG->Left=m.L2Px(F->pom_temp->body->dalsi->X+F->pom_temp->body->dalsi->dalsi->X-F->pom_temp->body->dalsi->X+0.5);
+					F->PmG->Top=m.L2Py(F->pom_temp->body->dalsi->Y+0.5)-F->PmG->Height;
 					F->PmG->Show(canv);
 				}
 				else//pokud ne, je třeba skrýt komponenty
@@ -4377,7 +4436,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	set_pen(canv,color,width/(1+M*1.0),PS_ENDCAP_SQUARE);
 	//vykreslení postraních spojnic
 	float azimut=fmod(m.azimut(X1,Y1,X2,Y2)+90,360);//určení azimutu kótované přímky
-	double x1=X1,y1=Y1,x2=X2,y2=Y2,odsazeni=Offset+Presah+Presah*V;//body sloužící k přepočtu souřadnic + hodnota celkového odsazení
+	double x1=X1,y1=Y1,x2=X2,y2=Y2;//body sloužící k přepočtu souřadnic + hodnota celkového odsazení
 	x1-=sin(DegToRad(azimut))*(Offset+Presah+Presah*V);y1-=cos(DegToRad(azimut))*(Offset+Presah+Presah*V);
 	x2-=sin(DegToRad(azimut))*(Offset+Presah+Presah*V);y2-=cos(DegToRad(azimut))*(Offset+Presah+Presah*V);
 	line(canv,X1,Y1,x1,y1);
@@ -4442,8 +4501,8 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 //	canv->TextOutW(X+canv->TextWidth(Text),Y,Jednotky);//jednotky
 
 	////navrácení citelné oblasti popisku a jednotek kóty pro další použití a šetření strojového času
-	if(true)//F->MOD==F->NAHLED && F->pom_temp!=NULL)//pouze pokud se jedná o náhled a existuje ukazatel na pom_temp (což by mělo být při náhledu sice vždy...)
-	{
+//	if(F->MOD==F->NAHLED && F->pom_temp!=NULL)//pouze pokud se jedná o náhled a existuje ukazatel na pom_temp (což by mělo být při náhledu sice vždy...)
+//	{
 		T2Rect R;float AA=3.0;if(!F->antialiasing)AA=1;
 		//oblast kóty (pro kótu kabiny se zatím nevyužívá, protože kóta kabiny nelze odsadit)
 		TRect R0;   R0=TRect(m.round(x1/AA),m.round((y1)/AA),m.round(x2/AA),m.round((y2)/AA));
@@ -4485,7 +4544,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 			bod->kota.rect1=R.rect1;
 			bod->kota.rect2=R.rect2;
 		}
-	}
+//	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------

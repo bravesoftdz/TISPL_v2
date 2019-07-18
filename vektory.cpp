@@ -508,7 +508,7 @@ void Cvektory::vloz_objekt(TObjekt *Objekt)
 Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, double Y)
 {
 	AnsiString name,short_name;//dočasná konstrukce pro přiřazování spráných názvů objektům
-	if(id==F->VyID){name=knihovna_objektu[id].name+" "+AnsiString(pocet_vyhybek);short_name=knihovna_objektu[id].short_name+AnsiString(pocet_vyhybek);}
+	if(id==(unsigned)F->VyID){name=knihovna_objektu[id].name+" "+AnsiString(pocet_vyhybek);short_name=knihovna_objektu[id].short_name+AnsiString(pocet_vyhybek);}
 	else if(id<=pocet_objektu_knihovny) {name=knihovna_objektu[id].name;short_name=knihovna_objektu[id].short_name;}else {name="Spojka "+AnsiString(pocet_vyhybek);short_name="S"+AnsiString(pocet_vyhybek);}
 
 	TObjekt *novy=new TObjekt;
@@ -571,8 +571,8 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 		case 8:rozmery_kabiny.x=20;rozmery_kabiny.y=6;break;//chlazení
 		default: rozmery_kabiny.x=10;rozmery_kabiny.y=6;break;//ostatní
 	}
-	vloz_bod(X,Y,novy);vloz_bod(X+rozmery_kabiny.x,Y,novy);
-	vloz_bod(X+rozmery_kabiny.x,Y-rozmery_kabiny.y,novy);vloz_bod(X,Y-rozmery_kabiny.y,novy);
+	vloz_bod(X,Y+rozmery_kabiny.y/2,novy);vloz_bod(X+rozmery_kabiny.x,Y+rozmery_kabiny.y/2,novy);
+	vloz_bod(X+rozmery_kabiny.x,Y-rozmery_kabiny.y/2,novy);vloz_bod(X,Y-rozmery_kabiny.y/2,novy);
 
 	return novy;
 }
@@ -721,7 +721,7 @@ Cvektory::TObjekt *Cvektory::PtInObjekt()
 	Cvektory::TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
 	{
-		if(O->n!=F->VyID && O->n!=pocet_objektu_knihovny+1 && PtInBody(O))break;
+		if(O->n!=(unsigned)F->VyID && O->n!=pocet_objektu_knihovny+1 && PtInBody(O))break;
 		O=dalsi_krok(O,tab_pruchodu);
 	}
 	tab_pruchodu=NULL;delete tab_pruchodu;
@@ -799,7 +799,7 @@ Cvektory::TObjekt *Cvektory::vrat_objekt(TElement *Element,bool In_pom_temp)
 short int Cvektory::smaz_objekt(TObjekt *Objekt,bool opakovani)
 {
 	TObjekt *spojka_vyh=NULL;
-	if(Objekt->id==F->VyID&&!opakovani)spojka_vyh=Objekt->predchozi2;
+	if(Objekt->id==(unsigned)F->VyID&&!opakovani)spojka_vyh=Objekt->predchozi2;
 	if(Objekt->id==pocet_objektu_knihovny+1&&!opakovani)spojka_vyh=Objekt->dalsi2;
 	//vyřazení prvku ze seznamu a napojení prvku dalšího na prvek předchozí prku mazaného
 	if(Objekt->dalsi!=NULL)//ošetření proti poslednímu prvku
@@ -1564,7 +1564,7 @@ long Cvektory::vymaz_seznam_OBJEKTY()
 Cvektory::TObjekt *Cvektory::dalsi_krok(TObjekt *Objekt,TPoint *tab_pruchodu)
 {
   int krok=1;//rozdílné kroky v procházení objekty, defaultně krok = 1
-	if(Objekt->id==F->VyID)//výhybka
+	if(Objekt->id==(unsigned)F->VyID)//výhybka
 	{
 		int n=F->ms.MyToDouble(Objekt->short_name.SubString(2,1));//extrakce pořadového čísla výhybky
 		tab_pruchodu[n].x++;if(tab_pruchodu[n].x==1)krok=2;else krok=1;//navýšení "buňky", která udržuje počet průchodu přes vyhybky
@@ -2075,7 +2075,7 @@ unsigned int Cvektory::vrat_poradi_elementu(TObjekt *Objekt,unsigned int eID)
 //vrátí počet stejných elementů před Element, u robotů v jednom objektu, u otočí a stopek vrátí počet i z předchozích objektů
 unsigned int Cvektory::vrat_poradi_elementu_do (TObjekt *Objekt, TElement *Element)
 {
-	unsigned int r_pocet=0,s_pocet=0,o_pocet=0,t_pocet=0;//nastavení všech počtů na nulu
+	unsigned int r_pocet=0,s_pocet=0,o_pocet=0,t_pocet=0,ret=0;//nastavení všech počtů na nulu
 	if(Element->eID!=6&&Element->eID!=5&&Element->eID!=0)//pokud je Element robot projdi roboty v Objektu
 	{
 		Cvektory::TElement *E=Objekt->elementy->dalsi;//přeskočí hlavičku
@@ -2114,11 +2114,12 @@ unsigned int Cvektory::vrat_poradi_elementu_do (TObjekt *Objekt, TElement *Eleme
 	//podle eID vrátí příslušný počet elementů
 	switch(Element->eID)
 	{
-		case 0: return s_pocet;break;
-		case 5: case 6: return o_pocet;break;
-		case 100: return t_pocet;break;
-		default: return r_pocet;break;
+		case 0: ret=s_pocet;break;
+		case 5: case 6: ret=o_pocet;break;
+		case 100: ret=t_pocet;break;
+		default: ret=r_pocet;break;
 	}
+	return ret;
 }
 ////---------------------------------------------------------------------------
 //vrátí největší ID napříč mGridy v objektu, používáno pro přiřazování ID novým tabulkám, řešeno takto z důvodu chyby při odmazávání a následném přidávání elementu (v kabině jsou 3 elementy druhý se odmaže, tabulky v kabině mají nyní ID 1 a 3, po přidání dalšího elementu bylo dříve přidano ID=pocet elementů, což by se v tomto případě rovnalo 3)
@@ -2132,7 +2133,7 @@ unsigned int Cvektory::vrat_nejvetsi_ID_tabulek (TObjekt *Objekt)
 		{
 			if(E->n>0&&E->eID!=100)//přeskočení hlavičky a elementu bez tabulky
 			{
-				if(ret<E->mGrid->ID)ret=E->mGrid->ID;
+				if(ret<(unsigned)E->mGrid->ID)ret=E->mGrid->ID;
       }
 			E=E->dalsi;
 		}
