@@ -2219,40 +2219,67 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		{        //algoritmy v tomto CASE (včetně dílčích algoritmu) by bylo možné sloučit, ale bylo by to dost práce navíc...
 			if(MOD!=NAHLED)
 			{
+//				if(probehl_zoom==false)//ošetření proti nežádoucímu chování po zoomu
+//				{
+//					if(d.v.OBJEKTY->predchozi->n>=2)//pokud už existují alespoň dva prvky, jinak nemá smysl
+//					{
+//						Cvektory::TObjekt *p=add_objekt_za();//testuje zda se bude přidávat objekt mimo situace poslední-první objekt-prvek
+//						if(p!=NULL && p!=pom)if(d.lezi_v_pasmu(Canvas,X,Y,p)>0)//byl nalezen meziprostor k přidávání, porovnám tedy jestli se jedná o nový
+//						{
+//							if(add_posledni)d.odznac_oznac_objekt_novy_posledni(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y);
+//							else if(pom!=NULL)d.odznac_oznac_objekt_novy(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
+//							zneplatnit_minulesouradnice();pom=p;add_posledni=false;
+//							if(d.lezi_v_pasmu(Canvas,X,Y,p)==2)d.v.akt_vetev=false;else d.v.akt_vetev=true;//uložení zda jsem v hlavní nebo sekundární
+//						}          // p==NULL a  || d.v.OBJEKTY->predchozi->n==2 zajišťuje možnost přídání i mezi dva prvky nebo přídání za dva prvky standardně
+//						if(p==NULL && (d.lezi_v_pasmu_poslednim(Canvas,X,Y) || d.v.OBJEKTY->predchozi->n==2))//kurzor se nenachází v prostoru mezi prkvy, je tedy možné přidávat mezi poslední a první prvek, tedy na konec spojového seznamu
+//						{
+//							if(add_posledni)d.odznac_oznac_objekt_novy_posledni(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y);
+//							else if(pom!=NULL)d.odznac_oznac_objekt_novy(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
+//							zneplatnit_minulesouradnice();add_posledni=true;pom=NULL;
+//							d.v.akt_vetev=true;//na konci vždy hlavní větev
+//						}
+//					}
+//					if(!add_posledni)//pro situaci přidávání mezi prvky
+//					{
+//						d.odznac_oznac_objekt_novy(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
+//						minule_souradnice_kurzoru=TPoint(X,Y);
+//						d.odznac_oznac_objekt_novy(Canvas,X,Y,pom);
+//					}
+//					else//pro situaci poslední první objekt, standardní přidávání nakonec
+//					{
+//						d.odznac_oznac_objekt_novy_posledni(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y);
+//						minule_souradnice_kurzoru=TPoint(X,Y);
+//						d.odznac_oznac_objekt_novy_posledni(Canvas,X,Y);
+//					}
+//				}
+//				probehl_zoom=false;
 				if(probehl_zoom==false)//ošetření proti nežádoucímu chování po zoomu
 				{
+
 					if(d.v.OBJEKTY->predchozi->n>=2)//pokud už existují alespoň dva prvky, jinak nemá smysl
 					{
 						Cvektory::TObjekt *p=add_objekt_za();//testuje zda se bude přidávat objekt mimo situace poslední-první objekt-prvek
 						if(p!=NULL && p!=pom)if(d.lezi_v_pasmu(Canvas,X,Y,p)>0)//byl nalezen meziprostor k přidávání, porovnám tedy jestli se jedná o nový
 						{
-							if(add_posledni)d.odznac_oznac_objekt_novy_posledni(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y);
-							else if(pom!=NULL)d.odznac_oznac_objekt_novy(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
-							zneplatnit_minulesouradnice();pom=p;add_posledni=false;
+							d.vykresli_kurzor_kabiny(Canvas,vybrany_objekt,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
+							zneplatnit_minulesouradnice();
+							pom=p;add_posledni=false;
 							if(d.lezi_v_pasmu(Canvas,X,Y,p)==2)d.v.akt_vetev=false;else d.v.akt_vetev=true;//uložení zda jsem v hlavní nebo sekundární
-						}          // p==NULL a  || d.v.OBJEKTY->predchozi->n==2 zajišťuje možnost přídání i mezi dva prvky nebo přídání za dva prvky standardně
+						}
 						if(p==NULL && (d.lezi_v_pasmu_poslednim(Canvas,X,Y) || d.v.OBJEKTY->predchozi->n==2))//kurzor se nenachází v prostoru mezi prkvy, je tedy možné přidávat mezi poslední a první prvek, tedy na konec spojového seznamu
 						{
-							if(add_posledni)d.odznac_oznac_objekt_novy_posledni(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y);
-							else if(pom!=NULL)d.odznac_oznac_objekt_novy(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
-							zneplatnit_minulesouradnice();add_posledni=true;pom=NULL;
+							d.vykresli_kurzor_kabiny(Canvas,vybrany_objekt,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
+							zneplatnit_minulesouradnice();
+							add_posledni=true;pom=NULL;
 							d.v.akt_vetev=true;//na konci vždy hlavní větev
 						}
 					}
-					if(!add_posledni)//pro situaci přidávání mezi prvky
-					{
-						d.odznac_oznac_objekt_novy(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
-						minule_souradnice_kurzoru=TPoint(X,Y);
-						d.odznac_oznac_objekt_novy(Canvas,X,Y,pom);
-					}
-					else//pro situaci poslední první objekt, standardní přidávání nakonec
-					{
-						d.odznac_oznac_objekt_novy_posledni(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y);
-						minule_souradnice_kurzoru=TPoint(X,Y);
-						d.odznac_oznac_objekt_novy_posledni(Canvas,X,Y);
-					}
+					d.vykresli_kurzor_kabiny(Canvas,vybrany_objekt,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
+					minule_souradnice_kurzoru=TPoint(X,Y);
+					d.vykresli_kurzor_kabiny(Canvas,vybrany_objekt,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
 				}
 				probehl_zoom=false;
+
 			}
 			if(MOD==NAHLED)
 			{
@@ -3659,8 +3686,7 @@ void TForm1::ESC()
 		{
 			if(MOD!=NAHLED)
 			{
-				if(add_posledni)d.odznac_oznac_objekt_novy_posledni(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
-				else d.odznac_oznac_objekt_novy(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,pom);
+				d.vykresli_kurzor_kabiny(Canvas,vybrany_objekt,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,pom);
 				pom=NULL;//nesmí být v další sekci
 			}
 			else
@@ -7011,8 +7037,8 @@ void TForm1::NP_input()
 	 zneplatnit_minulesouradnice();
 	 //prozatim definice kabiny
 	 TPoint Centr;
-	 Centr.x=(pom_temp->Xk+pom_temp->Xk+pom_temp->rozmer_kabiny.x)/2;
-	 Centr.y=(pom_temp->Yk+pom_temp->Yk-pom_temp->rozmer_kabiny.y)/2;
+	 Centr.x=(pom_temp->body->dalsi->X+pom_temp->body->dalsi->X+pom_temp->body->dalsi->dalsi->X-pom_temp->body->dalsi->X)/2;
+	 Centr.y=(pom_temp->body->dalsi->Y+pom_temp->body->dalsi->Y-pom_temp->body->dalsi->Y+pom_temp->body->predchozi->Y)/2;
 	 //vycentrování obrazu na střed
 	 Posun.x=Centr.x/m2px-ClientWidth/2/Zoom;
 	 Posun.y=-Centr.y/m2px-(ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2/Zoom; //ClientHeight-scGPPanel_bottomtoolbar->Height

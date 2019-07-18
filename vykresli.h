@@ -50,7 +50,6 @@ class Cvykresli
 	void vykresli_kruh(TCanvas *canv, Cvektory::TObjekt *O);
 	void prislusnost_cesty(TCanvas *canv,TColor Color,int X,int Y,float A,short N);
 	void vykresli_vektory(TCanvas *canv);
-	void vykresli_kabinu(TCanvas *canv);//zajiöùuje kompletnÌ vykreslenÌ s vol·nÌm n·sledujÌcÌ metody
 	void vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav=-2,bool zobrazit_koty=true);//zajiöùuje vykreslenÌ pouze obrysu dle typu objektu
 	void vykresli_pow_sprchu(TCanvas *canv,long X1,long X2,long Y1,long Y2,unsigned int velikost_komory_px,TColor color,short sirka,short pmpp,short typ=0);//symbolika tekoucÌ kapaliny u POW
 	void vykresli_grid(TCanvas *canv,int size_grid=10);
@@ -108,6 +107,7 @@ class Cvykresli
 	void editacni_okno(TCanvas *canv, unsigned int X1, unsigned int Y1,unsigned  int X2,unsigned  int Y2, unsigned short int size=1, COLORREF color=clBlack);//nakreslÌ editacni_okno
 	void editacni_okno(TCanvas *canv, TPoint LH, TPoint PD, unsigned short int size=1, COLORREF color=clBlack);//nakreslÌ editacni_okno
 	void sipka(TCanvas *canv,int X, int Y,float azimut,bool bez_vyplne=false, float size=3, COLORREF color=clBlack,COLORREF color_brush=clGray,TPenMode PenMode=pmCopy,TPenStyle PenStyle=psSolid,bool teziste_stred=true);//zajistÌ vykreslenÌ öipky - orientace spojovacÌ linie
+	void vykresli_kurzor_kabiny (TCanvas *canv, int id, int X, int Y, Cvektory::TObjekt *p=NULL);//vykresluje kurzor kabiny + spojnice
 	void odznac_oznac_objekt(TCanvas *canv, Cvektory::TObjekt *p,int posunX=0, int posunY=0, COLORREF color=clBlack);
 	void odznac_oznac_objekt_novy(TCanvas *canv, int X, int Y,Cvektory::TObjekt *p);
 	void odznac_oznac_objekt_novy_posledni(TCanvas *canv, int X, int Y);
