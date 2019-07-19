@@ -1444,7 +1444,7 @@ Cvektory::TKomora *Cvektory::najdi_komoru(TObjekt* Objekt)
 	{
 		if(Objekt->rotace==0 || Objekt->rotace==180)
 		{
-			if(Objekt->Xk+vzdalenost<=F->akt_souradnice_kurzoru.x && F->akt_souradnice_kurzoru.x<=Objekt->Xk+vzdalenost+K->velikost && Objekt->Yk>=F->akt_souradnice_kurzoru.y && F->akt_souradnice_kurzoru.y>Objekt->Yk-Objekt->rozmer_kabiny.y)
+			if(Objekt->body->dalsi->X/*Objekt->Xk*/+vzdalenost<=F->akt_souradnice_kurzoru.x && F->akt_souradnice_kurzoru.x<=Objekt->body->dalsi->X/*Objekt->Xk*/+vzdalenost+K->velikost && Objekt->body->dalsi->Y/*Objekt->Yk*/>=F->akt_souradnice_kurzoru.y && F->akt_souradnice_kurzoru.y>Objekt->body->predchozi->Y/*Objekt->Yk-Objekt->rozmer_kabiny.y*/)
 			break;
 		}
 		else

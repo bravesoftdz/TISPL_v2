@@ -4444,7 +4444,7 @@ object Form1: TForm1
         Options.NormalColorAlpha = 255
         Options.HotColorAlpha = 255
         Options.PressedColorAlpha = 200
-        Options.DisabledColorAlpha = 255
+        Options.DisabledColorAlpha = 125
         Options.FrameNormalColor = clBtnShadow
         Options.FrameHotColor = clHighlight
         Options.FramePressedColor = clHighlight
@@ -4547,7 +4547,7 @@ object Form1: TForm1
         Options.NormalColorAlpha = 255
         Options.HotColorAlpha = 255
         Options.PressedColorAlpha = 200
-        Options.DisabledColorAlpha = 255
+        Options.DisabledColorAlpha = 125
         Options.FrameNormalColor = clBtnShadow
         Options.FrameHotColor = clHighlight
         Options.FramePressedColor = clHighlight
@@ -7793,7 +7793,7 @@ object Form1: TForm1
     end
   end
   object scGPPanel_pomocn_proSwitch: TscGPPanel
-    Left = 61
+    Left = 55
     Top = 40
     Width = 42
     Height = 22
@@ -8971,7 +8971,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118009807C40710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118009807D00710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10102,7 +10102,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C010141000009500930003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C0101410000095C0930003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000003003000001002000000000000090
       0900000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
