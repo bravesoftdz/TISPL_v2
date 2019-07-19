@@ -331,7 +331,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 
 	////vstupní proměnné
 	TColor clAkt=clStenaKabiny;
-	short rotace=O->rotace;
+	short rotace=O->rotace; //něco s tím udělat!!!! short->double
 	long X1=m.L2Px(O->Xk);
 	long Y1=m.L2Py(O->Yk);
 	long X2=m.L2Px(O->Xk+O->rozmer_kabiny.x);
@@ -342,7 +342,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		Y2=m.L2Py(O->Yk-O->rozmer_kabiny.x);
 	}
 	short sirka_steny_px=m.m2px(O->sirka_steny);//m->px
-	short W=m.round(sirka_steny_px/2.0);//posunutí vykreslení orámování nad vnější rozměry kabiny
+	short W=0;//smazat m.round(sirka_steny_px/2.0);//posunutí vykreslení orámování nad vnější rozměry kabiny
 	short pmpp=m.m2px(v.PP.delka_jig); if(v.PP.delka_jig<v.PP.sirka_jig)pmpp=m.m2px(v.PP.sirka_jig);pmpp=m.round(pmpp/2.0);if(pmpp>m.m2px(1))pmpp=m.m2px(1);/*ošetření*///polovina max. průjezdního profilu
 
 	//nastavení pera pro osu pohonu
@@ -373,8 +373,8 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		while(K->dalsi!=NULL)
 		{
 			//nastavení pera, musí být znova, vykreslení kót pero přenastaví
-			canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
-			canv->Pen->Mode=pmCopy;pmNotXor;//pro transparentní zákres
+			//canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
+			//canv->Pen->Mode=pmCopy;pmNotXor;//pro transparentní zákres
 			if(F->JID*(-1)-10==(signed)K->n || (F->JID==0 && F->pom_komora->n==K->n))clAkt=m.clIntensive(clStenaKabiny,-50);//highlight
 			else clAkt=clStenaKabiny;
 			set_pen(canv,clAkt,sirka_steny_px,PS_ENDCAP_SQUARE);
@@ -400,7 +400,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 					canv->LineTo(X-m.m2px(K->velikost)-W1,Y2+W);
 					canv->LineTo(X,Y2+W);
 				}
-				//symbolika tekoucí kapaliny u POW
+				//symbolika "sprchy"
 				if(K->typ==1)vykresli_pow_sprchu(canv,X,X,Y1,Y2,m.m2px(K->velikost),clAkt,sirka_steny_px/4,pmpp);
 			}
 			else
@@ -423,7 +423,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 					canv->LineTo(X2+W,Y-m.m2px(K->velikost)-W1);
 					canv->LineTo(X2+W,Y);
 				}
-				//symbolika tekoucí kapaliny u POW
+				//symbolika "sprchy"
 				if(K->typ==1)vykresli_pow_sprchu(canv,X1,X2,Y,Y,m.m2px(K->velikost),clAkt,sirka_steny_px/4,pmpp);
 			}
 			//KÓTY
@@ -3967,7 +3967,7 @@ void Cvykresli::vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popise
 	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+o/2,Popisek);
 }
 //---------------------------------------------------------------------------
-//typ: -2 kurzor se sprchy, -1 kurzor bez sprchy, 0 ikona bez sprchy, 1 ikona se sprchou, stav: -1 disabled, 0 normál
+//typ: -2 kurzor se sprchy, -1 kurzor bez sprchy, 0 ikona bez sprchy, 1 ikona se sprchou, stav: -1 disabled
 void Cvykresli::vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popisek,short typ,short stav)
 {
 	////výchozí nastavení
