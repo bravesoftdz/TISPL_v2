@@ -1654,6 +1654,10 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		case 104:{Mouse->CursorPos=TPoint(Mouse->CursorPos.x,Mouse->CursorPos.y-1);break;}
 		//CTRL+M
 		case 77: if(ssCtrl)Akce=MEASURE;kurzor(add_o);break;
+		//+
+		case 107:ZOOM_IN();break;
+		//-
+		case 109:ZOOM_OUT();break;
 		//F1 - volání nápovědy
 		case 112:d.v.najdi_usecku(pom);break;
 		//F2
@@ -3277,32 +3281,38 @@ void TForm1::close_all_items_popUPmenu()
 void __fastcall TForm1::Piblit1Click(TObject *Sender)
 {
 	ZOOM_IN();
+	zobraz_tip("TIP: Přiblížení obrazu lze také vykonat pomocí stisku klávesy + či F7 nebo CTRL a otáčením kolečko myši směrem nahoru.");
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Priblizit2Click(TObject *Sender)
 {
 	ZOOM_IN();
+	zobraz_tip("TIP: Přiblížení obrazu lze také vykonat pomocí stisku klávesy + či F7 nebo CTRL a otáčením kolečko myši směrem nahoru.");
 }
 void __fastcall TForm1::RzToolButton8Click(TObject *Sender)//Zoom in z toolbaru
 {
  vycentrovat=false;
  akt_souradnice_kurzoru=m.P2L(ClientWidth/2+scSplitView_LEFTTOOLBAR->Width,ClientHeight/2);
  ZOOM_IN();
+ zobraz_tip("TIP: Přiblížení obrazu lze také vykonat pomocí stisku klávesy + či F7 nebo CTRL a otáčením kolečko myši směrem nahoru.");
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Oddlit1Click(TObject *Sender)
 {
 	ZOOM_OUT();
+	zobraz_tip("TIP: Oddálení obrazu lze také vykonat pomocí stisku klávesy - či F8 nebo CTRL a otáčením kolečko myši směrem dolu.");
 }
 void __fastcall TForm1::Oddalit2Click(TObject *Sender)
 {
 	ZOOM_OUT();
+	zobraz_tip("TIP: Oddálení obrazu lze také vykonat pomocí stisku klávesy - či F8 nebo CTRL a otáčením kolečko myši směrem dolu.");
 }
 void __fastcall TForm1::RzToolButton9Click(TObject *Sender)//Zoom out z toolbaru
 {
 	vycentrovat=false;
 	akt_souradnice_kurzoru=m.P2L(ClientWidth/2+scSplitView_LEFTTOOLBAR->Width,ClientHeight/2);
 	ZOOM_OUT();
+	zobraz_tip("TIP: Oddálení obrazu lze také vykonat pomocí stisku klávesy - či F8 nebo CTRL a otáčením kolečko myši směrem dolu.");
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -3564,7 +3574,7 @@ void __fastcall TForm1::Posunout2Click(TObject *Sender)
 	Akce=PAN;
 	kurzor(pan);
 	pan_non_locked=true;
-	zobraz_tip("TIP: Posun obrazu lze také vykonat pomocí stisknutého mezerníku a posunem myši při stisknutém levém tlačítku.");
+	zobraz_tip("TIP: Posun obrazu lze také vykonat pomocí stisknutého levého tlačítka myší a posunem myši požadovaným směrem.");
 }
 void __fastcall TForm1::Posunout3Click(TObject *Sender)
 {
@@ -8780,6 +8790,7 @@ void __fastcall TForm1::scGPGlyphButton_ZOOM_MINUSClick(TObject *Sender)
 	vycentrovat=false;
 	akt_souradnice_kurzoru=m.P2L(ClientWidth/2+scSplitView_LEFTTOOLBAR->Width,ClientHeight/2);
 	ZOOM_OUT();
+	zobraz_tip("TIP: Oddálení obrazu lze také vykonat pomocí stisku klávesy - či F8 nebo CTRL a otáčením kolečko myši směrem dolu.");
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPGlyphButton_ZOOM_PLUSClick(TObject *Sender)
@@ -8787,6 +8798,7 @@ void __fastcall TForm1::scGPGlyphButton_ZOOM_PLUSClick(TObject *Sender)
  vycentrovat=false;
  akt_souradnice_kurzoru=m.P2L(ClientWidth/2+scSplitView_LEFTTOOLBAR->Width,ClientHeight/2);
  ZOOM_IN();
+ zobraz_tip("TIP: Přiblížení obrazu lze také vykonat pomocí stisku klávesy + či F7 nebo CTRL a otáčením kolečko myši směrem nahoru.");
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scLabel_titulekDblClick(TObject *Sender)

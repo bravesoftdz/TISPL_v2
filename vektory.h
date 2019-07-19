@@ -48,11 +48,10 @@ class Cvektory
 
 	struct TGeometrie//pouze struktura
 	{
-		//double X1,Y1,X2,Y2;//umístění objektu - otázka zda bude potřeba
-		//double radius;
 		unsigned short typ;//0-linie, 1 oblouk
 		double delka;
 		double rotace;
+		//double radius; -otázka zda bude potřeba, pokrývá délka a rotace
 	};
 
 	struct TKomora// - NEW + dodat do CObjekt v rámci rodičovských spojáků!!!!
