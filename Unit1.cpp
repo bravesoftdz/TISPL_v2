@@ -831,10 +831,13 @@ response->Text = IdHTTP1->Post("http://85.255.8.81/tispl/skript_tispl.php", requ
 //zapíše log do textového souboru a přidá datum
 void TForm1::log(AnsiString Text)
 {
-	//přídání datumu k textu
-	Text=TIME.CurrentDate().DateString()+"_"+TIME.CurrentTime().TimeString()+"_"+Text+"\n";
-	//samotný zápis do sobourou
-	LogFileStream->Write(Text.c_str(),Text.Length());
+	if(DEBUG)//pouze pro DEBUG
+	{
+		//přídání datumu k textu
+		Text=TIME.CurrentDate().DateString()+"_"+TIME.CurrentTime().TimeString()+"_"+Text+"\n";
+		//samotný zápis do sobourou
+		LogFileStream->Write(Text.c_str(),Text.Length());
+  }
 }
 //---------------------------------------------------------------------------
 void TForm1::SaveText2File(AnsiString Text,AnsiString FileName)
