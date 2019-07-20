@@ -166,7 +166,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	VERZE=UnicodeString(HIWORD(ver))+"."+UnicodeString(LOWORD(ver));
 	//VERZE=UnicodeString(UnicodeString(HIWORD(ver) >> 16)+"."+UnicodeString(HIWORD(ver) & 0xFFFF)+"."+UnicodeString(LOWORD(ver) >> 16)+"."+UnicodeString(LOWORD(ver) & 0xFFFF));
 
-	//licence atp.
+	//licence, logování atp.
 	Caption="ELTEP - tispl";
 	scLabel_titulek->Caption=Caption+" - [Nový.tispl]";
 	Application->Title="TISPL";
@@ -176,6 +176,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	n_prihlaseni=0;
 	TZF=!DEBUG;//TRIAL_zakazat_funkcionality - nyní nastaveno pro RELEASE
 	if(TZF)scGPSwitch_rezim->Enabled=false;
+	LogFileStream=new TFileStream("LOGFILE.txt",fmOpenWrite|fmCreate|fmShareDenyNone);
 
   //pomocné objekty pro kopírování paremtrů v PO
 	copyObjekt=new Cvektory::TObjekt;
@@ -207,11 +208,18 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	posun_dalsich_elementu=false;
 	zobrazit_meritko=true;
 
-	DesignSettings();//nastavení designu v konstruktoru
-	language=MN;  //příprava na jazyk mutace
+	//nastavení designu v konstruktoru
+	DesignSettings();
+
+	//příprava na jazyk mutace
+	language=MN;
+
+  //výhybky
 	d.v.pocet_vyhybek=0;//nastavení při každém spuštění, do budoucna načítání z binárky nebo 0
-	count_memo=0;//jednoduchý counter zobrazovaný v memo3
 	d.v.akt_vetev=true;
+
+	//ostatní
+	count_memo=0;//jednoduchý counter zobrazovaný v memo3
 }
 //---------------------------------------------------------------------------
 //záležitost s novým designem
@@ -820,6 +828,33 @@ response->Text = IdHTTP1->Post("http://85.255.8.81/tispl/skript_tispl.php", requ
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
+//zapíše log do textového souboru a přidá datum
+void TForm1::log(AnsiString Text)
+{
+	//přídání datumu k textu
+	Text=TIME.CurrentDate().DateString()+"_"+TIME.CurrentTime().TimeString()+"_"+Text+"\n";
+	//samotný zápis do sobourou
+	LogFileStream->Write(Text.c_str(),Text.Length());
+}
+//---------------------------------------------------------------------------
+void TForm1::SaveText2File(AnsiString Text,AnsiString FileName)
+{
+  ///////////////////////////převod dat do UTF8
+	/*WideString WData=Text;
+	char *CHData=new char[Text.Length()+1];
+	WideCharToMultiByte(/*CP_ACP*//*CP_UTF8,0,WData,Text.Length()+1,CHData,Text.Length()+1,NULL,NULL);
+	*/
+
+	//zapis data do souboru
+	TMemoryStream* MemoryStream=new TMemoryStream();
+	MemoryStream->Clear();
+	MemoryStream->Write(Text.c_str(),Text.Length());//Win
+	//MemoryStream->Write(CHData,Text.Length());//UTF8
+	MemoryStream->SaveToFile(FileName);
+	delete MemoryStream;
+}
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 void __fastcall TForm1::FormResize(TObject *Sender)
 {
 	////design spodní lišty////
@@ -1302,6 +1337,12 @@ void TForm1::Sk(UnicodeString Text,AnsiString umisteni)
 void TForm1::Sv(UnicodeString Text,AnsiString umisteni)
 {
 	S(umisteni+"/MaVl\n"+Text);
+}
+//---------------------------------------------------------------------------
+//usnadňuje přístup k ShowMessage - Rosta
+void TForm1::Sr(UnicodeString Text,AnsiString umisteni)
+{
+	S(umisteni+"/Rosta\n"+Text);
 }
 //---------------------------------------------------------------------------
 //vola rychle myMessageBox
@@ -7669,6 +7710,7 @@ void TForm1::vse_odstranit()
 		copyObjekt=NULL;delete copyObjekt;
 		copyObjektRzRx.x=0;copyObjektRzRx.y=0;
 		aFont=NULL; delete aFont;
+		delete LogFileStream;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -8621,13 +8663,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //MaKr testovací tlačítko
 void __fastcall TForm1::Button14Click(TObject *Sender)
 {
-	Graphics::TBitmap * Vzor=new Graphics::TBitmap;
-	SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
-	Vzor->LoadFromFile("Vzor.bmp");
-	LOGBRUSH lb={BS_PATTERN,0,(unsigned)Vzor->Handle};
-	DeleteObject(Canvas->Pen->Handle);//zruší původní pero
-	Canvas->Pen->Handle = ExtCreatePen(PS_GEOMETRIC|PS_JOIN_MITER|PS_ENDCAP_FLAT,20,&lb,0,NULL);
-
+ log(__func__);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
