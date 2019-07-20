@@ -1447,7 +1447,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				//rastr
 				Graphics::TBitmap *bmp_total=new Graphics::TBitmap;bmp_total->Width=ClientWidth;bmp_total->Height=ClientHeight;
 				if(d.v.PP.raster.show)nacti_podklad(bmp_total->Canvas);
-				if(grid && Zoom_predchozi_AA>0.5 && Akce!=MOVE_HALA)d.vykresli_grid(bmp_total->Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí//vykreslení gridu
+				if(grid && Zoom_predchozi_AA>0.5 && (Akce==MOVE_BOD||Akce==DRAW_HALA) && prichytavat_k_mrizce==1)d.vykresli_grid(bmp_total->Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí//vykreslení gridu
 				//vektory
 				Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
 				bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu //zkoušel jsem nastavit plochu antialiasingu bez ovládacích prvků LeftToolbar a menu, ale kopírování do jiné BMP to zpomalovalo více neooptimalizovaná oblast pro 3xbmp
@@ -2288,10 +2288,10 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			if(MOD==NAHLED)
 			{
 				short rotace_symbolu=rotace_symbol(m.Rt90(d.trend(pom)),X,Y);
-				if(pom->id==3)d.vykresli_ikonu_komory(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,"",-1);
+				if(pom->id==3)d.vykresli_ikonu_komory(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,"",element_id);
 				else d.vykresli_element(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,"","",element_id,-1,Rotace_symbolu_minula);
 				minule_souradnice_kurzoru=TPoint(X,Y);
-				if(pom->id==3)d.vykresli_ikonu_komory(Canvas,X,Y,"",-1);
+				if(pom->id==3)d.vykresli_ikonu_komory(Canvas,X,Y,"",element_id);
 				else d.vykresli_element(Canvas,X,Y,"","",element_id,-1,rotace_symbolu);
 				Rotace_symbolu_minula=rotace_symbolu;
 			}
@@ -2711,7 +2711,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			case ADD://přidání objekt či elementu
 			{
 				if(MOD==SCHEMA)add_objekt(X,Y);//přídání objektu v modu SCHEMA
-				else {if(element_id!=-1)add_element(X,Y);else add_komoru();/*d.vykresli_element(Canvas,X,Y,"","",element_id,-1,Rotace_symbolu_minula);-již není třeba, někde se refreshuje*/}//přídání elementu v modu NAHLED
+				else {if(element_id>=0)add_element(X,Y);else add_komoru();/*d.vykresli_element(Canvas,X,Y,"","",element_id,-1,Rotace_symbolu_minula);-již není třeba, někde se refreshuje*/}//přídání elementu v modu NAHLED
 				zneplatnit_minulesouradnice();
 				kurzor(standard);
 				break;
@@ -3170,10 +3170,12 @@ void TForm1::onPopUP(int X, int Y)
 			}
 			else if(pom_komora!=NULL)
 			{
-        pom_komora_temp=pom_komora;
-				PopUPmenu->scLabel_smazat->Caption="  Smazat komoru č. "+AnsiString(pom_komora->n);
+				pom_komora_temp=pom_komora;
+				PopUPmenu->scLabel_nastavit_parametry->Caption="  Změnit typ sekce";
+				PopUPmenu->scLabel_smazat->Caption="  Smazat sekci č. "+AnsiString(pom_komora->n);
 				PopUPmenu->Item_smazat->FillColor=(TColor)RGB(240,240,240);
-				PopUPmenu->Item_smazat->Visible=true;PopUPmenu->Panel_UP->Height+=34;	
+				PopUPmenu->Item_smazat->Visible=true;PopUPmenu->Panel_UP->Height+=34;
+				PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 			}
 			else
 			{
@@ -4005,9 +4007,22 @@ void TForm1::add_element (int X, int Y)
 //---------------------------------------------------------------------------
 //přidávání komory kabině powerwashe, kontrola zda není součet kabin větší než rozměr kabiny
 void TForm1::add_komoru()
-{
-	d.v.vloz_komoru(pom_temp,2.5,d.v.najdi_komoru(pom_temp));//vloží novou komoru, mezi ostatní či jako poslední
-	Cvektory::TKomora *k=pom_temp->komora->dalsi;
+{                 //stejné komory přidat jejich šířku jinak 2.5
+	if(element_id==-1)element_id=0;else element_id=1;//změna typu (předtím typ pro kurzory, nově typ do dat)
+	//určení velikosti komory
+  Cvektory::TKomora *k=pom_temp->komora->dalsi;
+	double velikost=k->velikost;
+	while(k!=NULL)//procházení přes všechny komory, suma jejich velikostí
+	{
+		if(velikost!=k->velikost){velikost=-100;break;}
+		k=k->dalsi;
+	}
+	k=NULL;
+	if(velikost==-100)velikost=2.5;//pokud nejsou stejné vložím defaul rozměr
+	//vložení komory
+	d.v.vloz_komoru(pom_temp,velikost,d.v.najdi_komoru(pom_temp),element_id);//vloží novou komoru, mezi ostatní či jako poslední
+	//změna rozmerů kabiny
+	k=pom_temp->komora->dalsi;
 	double celkem=0;
 	while(k!=NULL)//procházení přes všechny komory, suma jejich velikostí
 	{
@@ -4015,8 +4030,9 @@ void TForm1::add_komoru()
 		k=k->dalsi;
 	}
 	k=NULL;delete k;
-	//rozšíření pro ostatní orientace
-	if(celkem>pom_temp->rozmer_kabiny.x)pom_temp->rozmer_kabiny.x=celkem;
+	//doplnění pro ostatní orientace
+	double rozmer_kabiny=pom_temp->body->dalsi->dalsi->X-pom_temp->body->dalsi->X;
+	if(celkem>rozmer_kabiny)d.v.posun_hranu(celkem-rozmer_kabiny,0,pom_temp->body->dalsi->dalsi,pom_temp->body->dalsi->dalsi->dalsi);
 	Akce=NIC;
 	refresh_mGrid=false;
 	REFRESH();
@@ -5861,7 +5877,7 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 	if(MOD==NAHLED)
 	{
 		scListGroupKnihovObjektu->Caption="Roboti";
-		if(pom_temp->id!=3)DrawGrid_knihovna->RowCount=2;  //nastaveni poctu radku, aby nedochazelo k posunu gridu pri scrollovani
+		DrawGrid_knihovna->RowCount=2;  //nastaveni poctu radku, aby nedochazelo k posunu gridu pri scrollovani
 //		DrawGrid_knihovna->Left=3;
 		short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
 		int W=DrawGrid_knihovna->DefaultColWidth  *Z;
@@ -5885,9 +5901,17 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 		{
 			case 3:
 			{
-				DrawGrid_knihovna->RowCount=1;DrawGrid_knihovna->ColCount=1;
-				if(pom_temp->pohon!=NULL) d.vykresli_ikonu_komory(C,88,195,"komora",0);
-				else d.vykresli_ikonu_komory(C,88,195,"komora",0,-1);   
+				DrawGrid_knihovna->ColCount=1;
+				if(pom_temp->pohon!=NULL)
+				{
+					d.vykresli_ikonu_komory(C,140,60,"okap",0);
+					d.vykresli_ikonu_komory(C,140,480,"postřikový rám",1);
+				}
+				else
+				{
+					d.vykresli_ikonu_komory(C,140,60,"okap",0,-1);
+					d.vykresli_ikonu_komory(C,140,480,"postřikový rám",1,-1);
+				}
 			}break;
 			case 0:case 9://objekt navěšování + svěšování
 			{
@@ -6242,7 +6266,8 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton
 			}break;
 			case 3://POW
 			{
-				element_id=-1;
+				if(Row==0)element_id=-1;
+				if(Row==1)element_id=-2;
 				if(pom_temp->pohon!=NULL)pridani=true;
 			}break;
 			case 4://objekt ionizace
@@ -7057,13 +7082,11 @@ void TForm1::NP_input()
 	 vycentrovat=true;
 	 JID=-1;
 	 DrawGrid_knihovna->Visible=false; //nezobrazí přepozicování elementů
-	 if(pom_temp->id==3)DrawGrid_knihovna->DefaultRowHeight=280;
-	 else DrawGrid_knihovna->DefaultRowHeight=140;
+	 DrawGrid_knihovna->DefaultRowHeight=140;
 	 if(pom_temp->id==3)DrawGrid_knihovna->DefaultColWidth=160;
 	 else DrawGrid_knihovna->DefaultColWidth=80;
 	 DrawGrid_knihovna->Left=3;
-	 if(pom_temp->id==3)DrawGrid_knihovna->Height=DrawGrid_knihovna->DefaultRowHeight;
-	 else DrawGrid_knihovna->Height=DrawGrid_knihovna->DefaultRowHeight*2; // dle počtu řádků
+	 DrawGrid_knihovna->Height=DrawGrid_knihovna->DefaultRowHeight*2; // dle počtu řádků
 	 //přesunoto níže k refresh: DrawGrid_knihovna->Invalidate();
 
 	 //objekt ionizace
@@ -7103,8 +7126,8 @@ void TForm1::NP_input()
 	 //musí být nastaven i zde, protože se tento label používá jak ve schematu tak i zde
 	 scGPLabel_roboti->Font->Style =  TFontStyles() << fsBold;
 	 scGPLabel_roboti->Visible=true;
-	 if(pom_temp->id==4)scGPLabel_roboti->Caption="Robot              Člověk";//mezery tvoří místo, kde je zobrazen switch
-	 else if(pom_temp->id==3)scGPLabel_roboti->Caption="";
+	 if(pom_temp->id==4)scGPLabel_roboti->Caption="Robot           Operátor";//mezery tvoří místo, kde je zobrazen switch
+	 else if(pom_temp->id==3)scGPLabel_roboti->Caption="Sekce";
 	 else scGPLabel_roboti->Caption="Roboti";
 
 	 scGPLabel_roboti->ContentMarginLeft=10;
