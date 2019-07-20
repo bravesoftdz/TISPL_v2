@@ -2007,11 +2007,9 @@ void  Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 ////---------------------------------------------------------------------------
 void Cvektory::kopiruj_elementy(TObjekt *Original, TObjekt  *Kopie)//zkopíruje elementy a jejich atributy bez ukazatelového propojení z objektu do objektu, pouze ukazatelové propojení na mGrid je zachováno spojuje dvě metody vloz_element(TObjekt *Objekt,TElement *Element) a kopiruj_element(TElement *Original, TElement *Kopie)
 {
-	TElement *E=Original->elementy;
-	vytvor_elementarni_osu(Original,Kopie);//asi spíše provizorně
+	TElement *E=Original->elementy;//nepřeskakuje se hlavička, protože v ní jsou uloženy výchozí souřadnice
 	if(E!=NULL)//pokud elementy existují nakopíruje je do pomocného spojáku pomocného objektu
 	{
-		E=E->dalsi;//přeskočí hlavičku
 		while(E!=NULL)
 		{
 			TElement *Et=new TElement;
@@ -2020,21 +2018,21 @@ void Cvektory::kopiruj_elementy(TObjekt *Original, TObjekt  *Kopie)//zkopíruje 
 			E=E->dalsi;//posun na další element
 		}
 	}
-	//else vytvor_elementarni_osu(Original,Kopie);//pokud neexistují a jedná se o kopírování z pom do pom_temp, založí hlavičku, resp. v hlavičce vytvoří provizorní osu pohonu
 	E=NULL;delete E;
 }
 ////---------------------------------------------------------------------------
 //připraví vektor provizorní osy pohonu
 void Cvektory::vytvor_elementarni_osu(TObjekt *Original, TObjekt  *Kopie)
 {
-	if(Original==F->pom && Kopie==F->pom_temp)
-	{
-		hlavicka_elementy(Kopie);
-		Kopie->elementy->geo.rotace=m.Rt90(F->d.trend(F->pom));
-		Kopie->elementy->geo.typ=0;Kopie->elementy->X=0;Kopie->elementy->Y=0;Kopie->elementy->geo.delka=0;
-		if(Kopie->elementy->geo.rotace==90 || Kopie->elementy->geo.rotace==270)Kopie->elementy->Y=Kopie->Y-Kopie->rozmer_kabiny.y/2.0;//vodorovná kabina
-		else Kopie->elementy->X=Kopie->X+Kopie->rozmer_kabiny.x/2.0;//svislá
-	}
+//	if(Original==F->pom && Kopie==F->pom_temp)
+//	{
+//		hlavicka_elementy(Kopie);
+//		Kopie->elementy->geo.rotace=m.Rt90(F->d.trend(F->pom));
+//		Kopie->elementy->geo.typ=0;Kopie->elementy->X=0;Kopie->elementy->Y=0;Kopie->elementy->geo.delka=0;
+//		if(Kopie->elementy->geo.rotace==90 || Kopie->elementy->geo.rotace==270)Kopie->elementy->Y=Kopie->Y-Kopie->rozmer_kabiny.y/2.0;//vodorovná kabina
+//		else Kopie->elementy->X=Kopie->X+Kopie->rozmer_kabiny.x/2.0;//svislá
+//	}
+
 }
 ////---------------------------------------------------------------------------
 //vratí eID prvního použitého robota, slouží na filtrování, jaké roboty v knihovně robotů zakazazovat, pokud není nic nalezeno vrátí -1
@@ -3770,6 +3768,7 @@ void Cvektory::kopirujZAKAZKY2ZAKAZKY_temp()
 //pokud první zakázka neexistuje, založí ji a přiřadí ji cestu dle schématu, pokud existuje, tak ji pouze přiřadí cestu dle schématu
 void Cvektory::prvni_zakazka_dle_schematu()
 {
+
 	////ZAKAZKA
 	TZakazka *Z=ZAKAZKY->dalsi;
 	if(ZAKAZKY->dalsi==NULL)//pokud první zakázka neexistuje, založí ji

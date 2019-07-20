@@ -171,7 +171,7 @@ class Cvektory
 		double Tv;//čas čištění a výměny barev, vztahuje se na konkrétní objekt a a zároveň zakázku, musí být tady, pokud není použito, tak 0
 		unsigned int Opak;//počet opakování jak často se čištění opakuje
 		double RD;//rychlost dopravníku
-		double Rotace;// úhel natočení jigu v objektu pro danou zakázku
+		double Rotace;// úhel natočení jigu v objektu pro danou zakázku   - odstranit
 		struct TCesta *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 		struct TCesta *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
@@ -232,6 +232,7 @@ class Cvektory
 
 	struct T_parametry_projektu //(Parametry výroby + Parametry linky (vozíky)
 	{
+    int katalog;//ID katalogových komponent zvolených pro geometrické elementy linky
 		TDateTime cas_start;//začátek výroby v SEČ (resp. LSEČ)
 		unsigned long  mnozstvi;//požadované množství
 		double hod_den;//počet hodin za den
