@@ -4237,6 +4237,162 @@ long Cvektory::vymaz_seznam_RETEZY()
 };
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
+//vloží nový typ dopravníku do KATALOGu dopravníků, pokud neexistuje hlavička vytvoří ji, druh: 0 - podlahový, 1 - podvěsný
+void Cvektory::vloz_typ_dopravniku(AnsiString name,AnsiString subname,short druh)
+{
+	////hlavička
+	if(KATALOG==NULL)//pokud neexistuje hlavička ještě ji před vložením standardního prvku vytvoří
+	{
+		//alokace paměti
+		Ttyp_dopravniku *novy=new Ttyp_dopravniku;
+		//atributy
+		novy->n=0;
+		novy->druh=0;
+		novy->name="";
+		novy->subname="";
+		novy->roztec=NULL;
+		novy->hOblouk=NULL;
+		novy->hRadius=NULL;
+		novy->vOblouk=NULL;
+		novy->vRadius=NULL;
+		//ukazatelové propojení
+		novy->predchozi=novy;//ukazuje sam na sebe
+		novy->dalsi=NULL;
+		KATALOG=novy;
+	}
+
+	////standardní vložení nakonec
+	//alokace paměti
+	Ttyp_dopravniku *novy=new Ttyp_dopravniku;
+	//atributy
+	novy->n=KATALOG->predchozi->n+1;//navýším počítadlo prvku o jedničku
+	novy->druh=druh;
+	novy->name=name;
+	novy->subname=subname;
+	novy->roztec=NULL;
+	novy->hOblouk=NULL;
+	novy->hRadius=NULL;
+	novy->vOblouk=NULL;
+	novy->vRadius=NULL;
+	//ukazatelové propojení
+	KATALOG->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
+	novy->predchozi=KATALOG->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+	novy->dalsi=NULL;
+	KATALOG->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+}
+//---------------------------------------------------------------------------
+//vloží dle typu hodnoty hodnotu do typuDopravniku, pokud je NULL, vloží nakonec (do posledního typu dopravníku uloženém ve spojovém seznamu v KaTALOGu)
+void Cvektory::vloz_do_typu_dopravniku(TtypHodnoty typHodnoty,double hodnota,Ttyp_dopravniku *typDopravniku)
+{
+	if(KATALOG!=NULL)
+	{
+		if(typDopravniku==NULL)typDopravniku=KATALOG->predchozi;//pokud je NULL, vloží nakonec (do posledního typu dopravníku uloženém ve spojovém seznamu v KaTALOGu)
+		////typ hodnoty
+		TDoubleHodnota *TH=NULL;
+		switch(typHodnoty)
+		{
+			case R:	 TH=typDopravniku->roztec; break;
+			case hO: TH=typDopravniku->hOblouk;break;
+			case vO: TH=typDopravniku->vOblouk;break;
+			case vR: TH=typDopravniku->vRadius;break;
+			case hR: TH=typDopravniku->hRadius;break;
+		}
+		////hlavička
+		if(TH==NULL)//pokud neexistuje hlavička ještě ji před vložením standardního prvku vytvoří
+		{
+			//alokace paměti
+			TDoubleHodnota *novy=new TDoubleHodnota;
+			//atributy
+			novy->n=0;
+			novy->hodnota=0;
+			//ukazatelové propojení
+			novy->predchozi=novy;//ukazuje sam na sebe
+			novy->dalsi=NULL;
+			TH=novy;
+			switch(typHodnoty)
+			{
+				case R:	 typDopravniku->roztec= TH;break;
+				case hO: typDopravniku->hOblouk=TH;break;
+				case vO: typDopravniku->vOblouk=TH;break;
+				case vR: typDopravniku->vRadius=TH;break;
+				case hR: typDopravniku->hRadius=TH;break;
+			}
+		}
+		////standardní vložení nakonec
+		//alokace paměti
+		TDoubleHodnota *novy=new TDoubleHodnota;
+		//atributy
+		novy->n=TH->predchozi->n+1;//navýším počítadlo prvku o jedničku
+		novy->hodnota=hodnota;
+		//ukazatelové propojení
+		TH->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
+		novy->predchozi=TH->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+		novy->dalsi=NULL;
+		TH->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+	}
+}
+//---------------------------------------------------------------------------
+//vytvoří katalog typů dopravníku za pomocí volání nasledujících dvou metod
+void Cvektory::vytvor_KATALOG()
+{
+
+}
+//---------------------------------------------------------------------------
+//smaže celý katalog, včetně přidružených spojových seznamů
+void Cvektory::vymaz_seznam_KATALOG()
+{
+	////CALDAN VLD - S150
+	vloz_typ_dopravniku("CALDAN VLD","S150",0);
+	//rozteč
+	vloz_do_typu_dopravniku(R,150);
+	vloz_do_typu_dopravniku(R,180);
+	vloz_do_typu_dopravniku(R,200);
+	//horizontální oblouky
+	vloz_do_typu_dopravniku(hO,90);
+	vloz_do_typu_dopravniku(hO,45);
+	vloz_do_typu_dopravniku(hO,30);
+	vloz_do_typu_dopravniku(hO,15);
+	//horizontální radiusy
+	vloz_do_typu_dopravniku(hR,315);
+	vloz_do_typu_dopravniku(hR,500);
+	vloz_do_typu_dopravniku(hR,700);
+	vloz_do_typu_dopravniku(hR,1000);
+	//vertikální oblouky
+	vloz_do_typu_dopravniku(vO,90);
+	vloz_do_typu_dopravniku(vO,45);
+	vloz_do_typu_dopravniku(vO,30);
+	vloz_do_typu_dopravniku(vO,15);
+	//vertikální radiusy
+	vloz_do_typu_dopravniku(vR,700);
+	vloz_do_typu_dopravniku(vR,1000);
+
+	////CALDAN VLD - S180
+	vloz_typ_dopravniku("CALDAN VLD","S180",0);
+	vloz_do_typu_dopravniku(R,150);
+	vloz_do_typu_dopravniku(R,180);
+	vloz_do_typu_dopravniku(R,200);
+	//horizontální oblouky
+	vloz_do_typu_dopravniku(hO,90);
+	vloz_do_typu_dopravniku(hO,45);
+	vloz_do_typu_dopravniku(hO,30);
+	vloz_do_typu_dopravniku(hO,15);
+	//horizontální radiusy
+	vloz_do_typu_dopravniku(hR,315);
+	vloz_do_typu_dopravniku(hR,500);
+	vloz_do_typu_dopravniku(hR,700);
+	vloz_do_typu_dopravniku(hR,1000);
+	//vertikální oblouky
+	vloz_do_typu_dopravniku(vO,90);
+	vloz_do_typu_dopravniku(vO,45);
+	vloz_do_typu_dopravniku(vO,30);
+	vloz_do_typu_dopravniku(vO,15);
+	//vertikální radiusy
+	vloz_do_typu_dopravniku(vR,700);
+	vloz_do_typu_dopravniku(vR,1000);
+
+}
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //PRÁCE ZE SOUBORY
 //---------------------------------------------------------------------------
@@ -5451,6 +5607,8 @@ void Cvektory::vse_odstranit()
 			delete RETEZY; RETEZY=NULL;
 		}
 		hlavicka_RETEZY();//nutnost
+
+		vymaz_seznam_KATALOG();
 
 
 

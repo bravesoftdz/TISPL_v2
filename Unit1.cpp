@@ -794,14 +794,14 @@ void TForm1::log2web(UnicodeString Text)
 //		catch(...){;}//např. není připojení k internetu, tak pouze nezaloguje, dořešit uložení logu do doby získání připojení a volání opětovného odeslání logu
 //	}
 }
+//---------------------------------------------------------------------------
 //pouze text
 void TForm1::log2webOnlyText(UnicodeString Text)
 {
-
 	//   varianta odesílání dat přes GET
 	//IdHTTP1->Get(UnicodeString("http://85.255.8.81/tispl/skript_tispl.php?hash=erDSQgregdvgFEFSDDeporhrfFGOI98886732dfgorvmqwerfdvvcBHDE")+Text);
 
-/*    varianta odesílání dat přes POST
+	/*    varianta odesílání dat přes POST
 		TStringList *request = new TStringList;
 				TStringList *response = new TStringList();
 
@@ -810,19 +810,13 @@ void TForm1::log2webOnlyText(UnicodeString Text)
 				IdHTTP1->Request->ContentType = "application/x-www-form-urlencoded";
 		 //		Idssl
 
-request->Values["app"]      = "tispl";
-request->Values["key"]     = "";
-request->Values["pass"]        ="2011_bozp*-";
-request->Values["log_text"]     = "2011_bozp*-";
+	request->Values["app"]      = "tispl";
+	request->Values["key"]     = "";
+	request->Values["pass"]        ="2011_bozp*-";
+	request->Values["log_text"]     = "2011_bozp*-";
 
-response->Text = IdHTTP1->Post("http://85.255.8.81/tispl/skript_tispl.php", request);
- */
-
-
-
-
-
-
+	response->Text = IdHTTP1->Post("http://85.255.8.81/tispl/skript_tispl.php", request);
+	 */
 
 	//catch(...){;}//není připojení k internetu
 }
@@ -8666,7 +8660,9 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //MaKr testovací tlačítko
 void __fastcall TForm1::Button14Click(TObject *Sender)
 {
- log(__func__);
+ //log(__func__);
+
+ Sk(d.v.KATALOG->predchozi->hOblouk->predchozi->hodnota);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
