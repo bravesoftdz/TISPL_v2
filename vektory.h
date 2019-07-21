@@ -320,7 +320,6 @@ class Cvektory
 		struct Ttyp_dopravniku *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};Ttyp_dopravniku *KATALOG;
 
-
 	struct TText
 	{
 		unsigned long n; //pořadí objektu ve spoj.seznamu
@@ -569,6 +568,9 @@ public:
 	void vloz_typ_dopravniku(AnsiString name,AnsiString subname,short druh=0);//vloží nový typ dopravníku do KATALOGu dopravníků, pokud neexistuje hlavička vytvoří ji, druh: 0 - podlahový, 1 - podvěsný
 	void vloz_do_typu_dopravniku(TtypHodnoty typHodnoty,double hodnota,Ttyp_dopravniku *typDopravniku=NULL);//vloží dle typu hodnoty hodnotu do typuDopravniku, pokud je NULL, vloží nakonec (do posledního typu dopravníku uloženém ve spojovém seznamu v KaTALOGu)
 	void vytvor_KATALOG();//vytvoří katalog typů dopravníku za pomocí volání nasledujících dvou metod
+	Ttyp_dopravniku *vrat_typ_dopravniku(unsigned long n);//dla zadaného n vrátí daný typ dopravníku formou ukazatatele
+	double vrat_hodnotu_typu_dopravniku(unsigned long nDopravniku,TtypHodnoty typHodnoty,unsigned long n);//vrátí od zadaného typu dopravníku dle zadaného n a typu hodnoty hodnotu - přetížená následující
+	double vrat_hodnotu_typu_dopravniku(Ttyp_dopravniku *typDopravniku,TtypHodnoty typHodnoty,unsigned long n);//vrátí od zadaného typu dopravníku dle zadaného n a typu hodnoty hodnotu
 	void vymaz_seznam_KATALOG();//smaže celý katalog, včetně přidružených spojových seznamů
 
 //metody pro PALCE

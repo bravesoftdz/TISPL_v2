@@ -4335,12 +4335,6 @@ void Cvektory::vloz_do_typu_dopravniku(TtypHodnoty typHodnoty,double hodnota,Tty
 //vytvoří katalog typů dopravníku za pomocí volání nasledujících dvou metod
 void Cvektory::vytvor_KATALOG()
 {
-
-}
-//---------------------------------------------------------------------------
-//smaže celý katalog, včetně přidružených spojových seznamů
-void Cvektory::vymaz_seznam_KATALOG()
-{
 	////CALDAN VLD - S150
 	vloz_typ_dopravniku("CALDAN VLD","S150",0);
 	//rozteč
@@ -4389,7 +4383,106 @@ void Cvektory::vymaz_seznam_KATALOG()
 	//vertikální radiusy
 	vloz_do_typu_dopravniku(vR,700);
 	vloz_do_typu_dopravniku(vR,1000);
-
+}
+//---------------------------------------------------------------------------
+//dla zadaného n vrátí daný typ dopravníku formou ukazatatele
+Cvektory::Ttyp_dopravniku *Cvektory::vrat_typ_dopravniku(unsigned long n)
+{
+	Ttyp_dopravniku *K=KATALOG->dalsi;//přeskočí hlavičku
+	while(K!=NULL)
+	{
+		if(K->n==n)break;//pokud byl prvek nalezen vrátí na něj ukazatel
+		else K=K->dalsi;
+	}
+	return K;
+}
+//---------------------------------------------------------------------------
+//vrátí od zadaného typu dopravníku dle zadaného n a typu hodnoty hodnotu - přetížená následující
+double Cvektory::vrat_hodnotu_typu_dopravniku(unsigned long nDopravniku,TtypHodnoty typHodnoty,unsigned long n)
+{
+	return vrat_hodnotu_typu_dopravniku(vrat_typ_dopravniku(nDopravniku),typHodnoty,n);
+}
+//---------------------------------------------------------------------------
+//vrátí od zadaného typu dopravníku dle zadaného n a typu hodnoty hodnotu
+double Cvektory::vrat_hodnotu_typu_dopravniku(Ttyp_dopravniku *typDopravniku,TtypHodnoty typHodnoty,unsigned long n)
+{
+	if(typDopravniku!=NULL)
+	{
+		TDoubleHodnota *TH=NULL;
+		switch(typHodnoty)
+		{
+			case R:	 TH=typDopravniku->roztec; break;
+			case hO: TH=typDopravniku->hOblouk;break;
+			case vO: TH=typDopravniku->vOblouk;break;
+			case vR: TH=typDopravniku->vRadius;break;
+			case hR: TH=typDopravniku->hRadius;break;
+		}
+		if(TH!=NULL)
+		{
+			double RET=0;
+			TH=TH->dalsi;//přeskakuje hlavičku
+			while(TH!=NULL)
+			{
+				if(TH->n==n){RET=TH->hodnota;break;}//pokud byl prvek nalezen vrátí na něj ukazatel
+				else TH=TH->dalsi;
+			}
+			return RET;
+		}
+		else return -1;
+	}
+	else return -2;
+}
+//---------------------------------------------------------------------------
+//smaže celý katalog, včetně přidružených spojových seznamů
+void Cvektory::vymaz_seznam_KATALOG()
+{
+	while (KATALOG!=NULL)
+	{
+		//rozteč
+		while(KATALOG->predchozi->roztec!=NULL)
+		{
+			//posunutí ukazatele a smazání typu dopravníku
+			KATALOG->predchozi->roztec->predchozi=NULL;
+			delete KATALOG->predchozi->roztec->predchozi;
+			KATALOG->predchozi->roztec=KATALOG->predchozi->roztec->dalsi;
+		}
+		//hOblouk
+		while(KATALOG->predchozi->hOblouk!=NULL)
+		{
+			//posunutí ukazatele a smazání typu dopravníku
+			KATALOG->predchozi->hOblouk->predchozi=NULL;
+			delete KATALOG->predchozi->hOblouk->predchozi;
+			KATALOG->predchozi->hOblouk=KATALOG->predchozi->hOblouk->dalsi;
+		}
+		//hRadius
+		while(KATALOG->predchozi->hRadius!=NULL)
+		{
+			//posunutí ukazatele a smazání typu dopravníku
+			KATALOG->predchozi->hRadius->predchozi=NULL;
+			delete KATALOG->predchozi->hRadius->predchozi;
+			KATALOG->predchozi->hRadius=KATALOG->predchozi->hRadius->dalsi;
+		}
+		//vOblouk
+		while(KATALOG->predchozi->vOblouk!=NULL)
+		{
+			//posunutí ukazatele a smazání typu dopravníku
+			KATALOG->predchozi->vOblouk->predchozi=NULL;
+			delete KATALOG->predchozi->vOblouk->predchozi;
+			KATALOG->predchozi->vOblouk=KATALOG->predchozi->vOblouk->dalsi;
+		}
+		//vRadius
+		while(KATALOG->predchozi->vRadius!=NULL)
+		{
+			//posunutí ukazatele a smazání typu dopravníku
+			KATALOG->predchozi->vRadius->predchozi=NULL;
+			delete KATALOG->predchozi->vRadius->predchozi;
+			KATALOG->predchozi->vRadius=KATALOG->predchozi->vRadius->dalsi;
+		}
+		//posunutí ukazatele a smazání typu dopravníku
+		KATALOG->predchozi=NULL;
+		delete KATALOG->predchozi;
+		KATALOG=KATALOG->dalsi;
+	}
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

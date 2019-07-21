@@ -8661,8 +8661,9 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 void __fastcall TForm1::Button14Click(TObject *Sender)
 {
  //log(__func__);
-
- Sk(d.v.KATALOG->predchozi->hOblouk->predchozi->hodnota);
+ d.v.vytvor_KATALOG();
+ //Sk(d.v.KATALOG->predchozi->roztec->predchozi->n);
+ Sk(d.v.vrat_hodnotu_typu_dopravniku(2,Cvektory::TtypHodnoty::hR,3));
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
