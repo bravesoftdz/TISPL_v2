@@ -584,7 +584,7 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 		{konec.x=novy->body->dalsi->dalsi->X;konec.y=Y;}
 	else
 		{konec.x=X;konec.y=novy->body->dalsi->dalsi->Y;}
-	TElement *zarazka=vloz_element(novy,-1000,konec.x,konec.y,0);
+	TElement *zarazka=vloz_element(novy,MaxInt,konec.x,konec.y,0);
 	//definice bodů geometrie
 	zarazka->geo.X1=pocatek.x;zarazka->geo.Y1=pocatek.y;
 	zarazka->geo.X2=pocatek.x+(konec.x-pocatek.x)/2.0;zarazka->geo.Y2=pocatek.y+(konec.y-pocatek.y)/2.0;
@@ -1374,7 +1374,7 @@ long Cvektory::vymaz_seznam_OBJEKTY()
 Cvektory::TObjekt *Cvektory::dalsi_krok(TObjekt *Objekt,TPoint *tab_pruchodu)
 {
   int krok=1;//rozdílné kroky v procházení objekty, defaultně krok = 1
-	if(Objekt->id==F->VyID)//výhybka
+	if(Objekt->id==(unsigned)F->VyID)//výhybka
 	{
 		int n=F->ms.MyToDouble(Objekt->short_name.SubString(2,1));//extrakce pořadového čísla výhybky
 		tab_pruchodu[n].x++;if(tab_pruchodu[n].x==1)krok=2;else krok=1;//navýšení "buňky", která udržuje počet průchodu přes vyhybky
@@ -1704,7 +1704,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	}
 
 	//mGrid elementu
-	if(F->pom_temp!=NULL&&Objekt->n==F->pom_temp->n)//stačí nastavovat pouze v náhledu při vloz_element, nová strategie, je mgrid, nekopírovat a používat jenom v pom_temp, zde však podmínka zda se jedná o pom_temp nebyla z nějakého důvodu možná
+	if(F->pom_temp!=NULL&&Objekt->n==F->pom_temp->n||novy->eID==MaxInt)//stačí nastavovat pouze v náhledu při vloz_element, nová strategie, je mgrid, nekopírovat a používat jenom v pom_temp, zde však podmínka zda se jedná o pom_temp nebyla z nějakého důvodu možná
 	{
 		novy->mGrid=new TmGrid(F);
 		novy->mGrid->Tag=6;//ID formu
@@ -1750,6 +1750,18 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element)
 		Element->predchozi=p;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 		p->dalsi->predchozi=Element;
 		p->dalsi=Element;
+		//geometrie
+		Element->geo.X1=p->geo.X4;Element->geo.Y1=p->geo.Y4;
+		Element->geo.X2=Element->geo.X1+(Element->geo.X4-Element->geo.X1)/2.0;Element->geo.Y2=Element->geo.Y1+(Element->geo.Y4-Element->geo.Y1)/2.0;
+		Element->geo.X3=Element->geo.X2;Element->geo.Y3=Element->geo.Y2;
+		Element->geo.X4=Element->X;Element->geo.Y4=Element->Y;
+		//Element->geo.typ=?
+		//Element->geo.delka=?
+		Element->dalsi->geo.X1=Element->geo.X4;Element->dalsi->geo.Y1=Element->geo.Y4;
+		Element->dalsi->geo.X2=p->geo.X1+(p->geo.X4-p->geo.X1)/2.0;Element->dalsi->geo.Y2=p->geo.Y1+(p->geo.Y4-p->geo.Y1)/2.0;
+		Element->dalsi->geo.X3=p->geo.X2;Element->dalsi->geo.Y3=p->geo.Y2;
+		//Element->geo.typ=?
+		//Element->geo.delka=?
 		//změna indexů
 		int n=1;
 		Cvektory::TElement *E=Objekt->elementy->dalsi;
