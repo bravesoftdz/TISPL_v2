@@ -620,6 +620,7 @@ private:
 	TDateTime TIME;
 	UnicodeString LICENCE;
 	short n_prihlaseni;
+	bool logovat;
 	bool ortogonalizace_stav;
 	bool kalibrace_hotova;
 	bool pan_non_locked;

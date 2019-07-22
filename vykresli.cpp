@@ -78,7 +78,7 @@ TPointD Cvykresli::Rxy(Cvektory::TElement *Element)
 	TPointD RET; RET.x=Element->X; RET.y=Element->Y;
 	if(1<=Element->eID && Element->eID<=4 || 7<=Element->eID && Element->eID<=18 || 101<=Element->eID && Element->eID<=108)//ovlivní patřičně pouze roboty
 	{
-		switch(Element->rotace_symbolu)
+		switch(Element->orientace)
 		{
 			case 0:		RET.y=Element->Y+DoSkRB;break;
 			case 90:	RET.x=Element->X+DoSkRB;break;
@@ -88,7 +88,7 @@ TPointD Cvykresli::Rxy(Cvektory::TElement *Element)
 	}
 	if(101<=Element->eID && Element->eID<=108)//ovlivní patřičně pouze lidské roboty
 	{
-		switch(Element->rotace_symbolu)
+		switch(Element->orientace)
 		{
 			case 0:		RET.y=Element->Y+DkRB;break;
 			case 90:	RET.x=Element->X+DkRB;break;
@@ -239,7 +239,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 				{
 					if(F->pom_temp->n!=O->n)//aktuálně nahlížený editovaný objekt se nevykresluje zde nikdy
 					{
-						vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,-1/*stav*/,E->LO1,E->OTOC_delka,E->LO2,E->LO_pozice);
+						vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,-1/*stav*/,E->LO1,E->OTOC_delka,E->LO2,E->LO_pozice);
 						//zde bude ještě vykreslení g_elementu
 					}
 					E=E->dalsi;//posun na další element
@@ -284,7 +284,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 			E=E->dalsi;//přeskočí hlavičku
 			while(E!=NULL)
 			{
-				 vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,E->stav,E->LO1,E->OTOC_delka,E->LO2,E->LO_pozice);
+				 vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,E->stav,E->LO1,E->OTOC_delka,E->LO2,E->LO_pozice);
 				 E->citelna_oblast.rect3=aktOblast;//uložení citelné oblasti pro další použití
 				 //vykreslení kót
 				 if(F->pom_temp->zobrazit_koty)vykresli_kotu(canv,E->predchozi,E);//mezi elementy
@@ -4384,7 +4384,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 
 	//pouze pro rychlé zobrazení - provizorní řešení pro levopravou vodorovnou kabinu
 	double x1,y1,x2,y2;
-	if(Element_do->rotace_symbolu==0||Element_do->rotace_symbolu==180)//vodorovná kabina
+	if(Element_do->orientace==0||Element_do->orientace==180)//vodorovná kabina
 		{if(Element_od->n==0)x1=F->pom_temp->Xk;else x1=Element_od->X;y1=F->pom_temp->elementy->Y;x2=Element_do->X;y2=y1;}
 	else
 		{if(Element_od->n==0)y1=F->pom_temp->Yk;else y1=Element_od->Y;x1=F->pom_temp->elementy->X;y2=Element_do->Y;x2=x1;}
@@ -4412,7 +4412,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 			}E=NULL;delete E;
 		}
 		//nastavení bodů vykreslení pro jednotlivé rotace
-		if(Element_do->rotace_symbolu==0||Element_do->rotace_symbolu==180)
+		if(Element_do->orientace==0||Element_do->orientace==180)
 		{
 			if(Element_od->LO2>0)x1=Element_od->X+Element_od->LO2+Element_od->OTOC_delka/2.0;else x1=Element_od->X+Element_od->LO1/2.0+Element_od->LO_pozice;
 			if(Element_do->LO2>0)x2=Element_do->X-Element_do->LO1-Element_do->OTOC_delka/2.0;else x2=Element_do->X-Element_do->LO1/2.0+Element_do->LO_pozice;

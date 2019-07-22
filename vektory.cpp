@@ -1609,7 +1609,7 @@ void Cvektory::hlavicka_elementy(TObjekt *Objekt)
 	Objekt->elementy->Y=0;
 	Objekt->elementy->Xt=0;
 	Objekt->elementy->Yt=0;
-	Objekt->elementy->rotace_symbolu=0;
+	Objekt->elementy->orientace=0;
 	Objekt->elementy->rotace_jig=0;
 	Objekt->elementy->stav=true;
 
@@ -1634,7 +1634,7 @@ void Cvektory::hlavicka_elementy(TObjekt *Objekt)
 }
 ////---------------------------------------------------------------------------
 //vloží element do spojového seznamu elementů daného technologického objektu a zároveň na něj vrátí ukazatel
-Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, double X, double Y,short rotace_symbolu)
+Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, double X, double Y,short orientace)
 {
 	//pokud by ještě nebyla založena hlavička, tak ji založí
 	if(Objekt->elementy==NULL)hlavicka_elementy(Objekt);
@@ -1647,7 +1647,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->eID=eID;
 	novy->X=X;
 	novy->Y=Y;
-	novy->rotace_symbolu=rotace_symbolu;//důležité pro volání makra m.Rxy, bez tohoto by makro vracelo chybné hodnoty
+	novy->orientace=orientace;//důležité pro volání makra m.Rxy, bez tohoto by makro vracelo chybné hodnoty
 
   //ukazatelové propojení - bylo původně poslední, ale nemohlo fungovat správně
 //	vloz_element(Objekt,novy);
@@ -1768,7 +1768,7 @@ Cvektory::TElement *Cvektory::vloz_element_za(TObjekt *Objekt,TElement *Element)
 		//a to z důvodu rozdílné funkcionality
 		//řešeno přes minimální a maximální souřadnice elementů v kabině, při použití podobného hledání jako u hledání v oblasti problém
 		//s řazením elementů, pokud nejsou v řadě za sebou, což v tuto chvíli nejsou nedává hledání reálné výsledky
-		if(ret==NULL&&(Element->rotace_symbolu==0||Element->rotace_symbolu==180))//mezi 2 elementy nic nenalezeno = kontrola před prvním a za posledním
+		if(ret==NULL&&(Element->orientace==0||Element->orientace==180))//mezi 2 elementy nic nenalezeno = kontrola před prvním a za posledním
 		{
 			if(F->d.Rxy(Element).x<=F->d.Rxy(Objekt->elementy->dalsi).x&&Element->n!=1)pred1=true;
 			if(F->d.Rxy(Element).x>=F->d.Rxy(Objekt->elementy->predchozi).x&&Element->n!=Objekt->elementy->predchozi->n&&Element->name!="")zaposlednim=true;
@@ -1984,7 +1984,7 @@ void  Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->Y=Original->Y;
 	Kopie->Xt=Original->Xt;
 	Kopie->Yt=Original->Yt;
-	Kopie->rotace_symbolu=Original->rotace_symbolu;
+	Kopie->orientace=Original->orientace;
 	Kopie->rotace_jig=Original->rotace_jig;
 	Kopie->stav=Original->stav;
 	Kopie->LO1=Original->LO1;
@@ -2155,9 +2155,9 @@ void Cvektory::rotace_elementu(TObjekt *Objekt,short rotace)
 	TElement *E=Objekt->elementy->dalsi;//přeskočí rovnou hlavičku
 	while(E!=NULL)
 	{
-		if(E->rotace_symbolu+rotace>360)E->rotace_symbolu=0;//kvůli přetýkání na dvě podmínky
-		E->rotace_symbolu+=rotace;
-		if(E->rotace_symbolu==360)E->rotace_symbolu=0;
+		if(E->orientace+rotace>360)E->orientace=0;//kvůli přetýkání na dvě podmínky
+		E->orientace+=rotace;
+		if(E->orientace==360)E->orientace=0;
 		E=E->dalsi;
 	}
 	E=NULL;delete E;
@@ -2176,7 +2176,7 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 	{
 		if(E->n!=0)
 		{
-			short rotace=E->rotace_symbolu;
+			short rotace=E->orientace;
 			if(E->eID==0)//STOPKY
 			{
 				rotace=m.Rt90(rotace+180);//stopka je o 180° orotovaná
@@ -2380,24 +2380,24 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			TPointD vzd;
 			if(Element->n==1)//pro první element, od počátku kabiny
 			{
-				if(Element->rotace_symbolu==0||Element->rotace_symbolu==180)vzd.x=Element->X-F->pom_temp->Xk;
+				if(Element->orientace==0||Element->orientace==180)vzd.x=Element->X-F->pom_temp->Xk;
 				else vzd.x=Element->Y-F->pom_temp->Yk;
 			}
 			else//více elementů
 			{
-				if(Element->rotace_symbolu==0||Element->rotace_symbolu==180)vzd.x=Element->X-Element->predchozi->X;
+				if(Element->orientace==0||Element->orientace==180)vzd.x=Element->X-Element->predchozi->X;
 				else	vzd.x=Element->Y-Element->predchozi->Y;
 			}//odstavil MaKr F->Sv(vzd.x);
 			if(vzd.x!=0&&!posun_kurzorem)//posun z kót
 			{
-				if(Element->rotace_symbolu==0||Element->rotace_symbolu==180)Element->X=Element->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
+				if(Element->orientace==0||Element->orientace==180)Element->X=Element->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
 				else Element->Y=Element->Y-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
 				if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){posuv_aktualizace_RT(Element);posuv_aktualizace_RT(Element->dalsi);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
 				else posuv_aktualizace_RT(Element);
 			}
 			else if(posun_kurzorem)//posun kurozem
 			{
-				if(Element->rotace_symbolu==0||Element->rotace_symbolu==180)Element->X=Element->X+vzdalenost;
+				if(Element->orientace==0||Element->orientace==180)Element->X=Element->X+vzdalenost;
 				else	Element->Y=Element->Y+vzdalenost;
 				if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){posuv_aktualizace_RT(Element);posuv_aktualizace_RT(Element->dalsi);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
 				else posuv_aktualizace_RT(Element);
@@ -2411,12 +2411,12 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				{
 					if(vzd.x!=0&&!posun_kurzorem)
 					{
-						if(Element->rotace_symbolu==0||Element->rotace_symbolu==180)E->X=E->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);//výpočet pro posuv z kót
+						if(Element->orientace==0||Element->orientace==180)E->X=E->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);//výpočet pro posuv z kót
 						else E->Y=E->Y-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
 					}
 					if(posun_kurzorem)
 					{
-						if(Element->rotace_symbolu==0||Element->rotace_symbolu==180)E->X=E->X+vzdalenost;//výpočet pro posun kurzorem
+						if(Element->orientace==0||Element->orientace==180)E->X=E->X+vzdalenost;//výpočet pro posun kurzorem
 						else E->Y=E->Y+vzdalenost;
 					}
 					E=E->dalsi;
@@ -2523,7 +2523,7 @@ double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element,bool pouze
 		//pokud je element první v kabině
 		if(Element->n==1)
 		{
-			if(Element->rotace_symbolu==0||Element->rotace_symbolu==180)return m.delka(F->pom_temp->Xk,F->pom_temp->elementy->Y,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
+			if(Element->orientace==0||Element->orientace==180)return m.delka(F->pom_temp->Xk,F->pom_temp->elementy->Y,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
 			else return m.delka(F->pom_temp->elementy->X,F->pom_temp->Yk,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
 		}
 		else//pokud je v kabině více elementů
@@ -2547,7 +2547,7 @@ double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element,bool pouze
   	TPointD E=F->d.Rxy(Element);
   	if(Element->n==1)//pro první element od hrany kabiny
   	{                ///ještě vylepšít, provizorně jen pro vodorovnou levopravou kabinu
-			if(Element->rotace_symbolu==0||Element->rotace_symbolu==180)
+			if(Element->orientace==0||Element->orientace==180)
 				return m.delka(F->pom_temp->Xk,F->pom_temp->elementy->Y,E.x,E.y);//(bude nutno ještě vylepšit s příchodem oblouků)!!!
 			else
 				return m.delka(F->pom_temp->elementy->X,F->pom_temp->Yk,E.x,E.y);//(bude nutno ještě vylepšit s příchodem oblouků)!!!

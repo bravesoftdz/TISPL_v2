@@ -48,9 +48,10 @@ class Cvektory
 
 	struct TGeometrie//pouze struktura
 	{
-		unsigned short typ;//0-linie, 1 oblouk
-		double delka;
-		double rotace;
+		short typ;//0-linie, 1 oblouk - možná nebude třeba
+		double delka;// - možná nebude třeba
+		TPointD X1,Y1,X2,Y2,X3,Y3,X4,Y4;//body bézieru
+		//double orientace; - možná nebude třeba
 		//double radius; -otázka zda bude potřeba, pokrývá délka a rotace
 	};
 
@@ -72,8 +73,8 @@ class Cvektory
 		UnicodeString name;//celý název objektu
 		double X, Y;//umístění v logických (metrických) souřadnicích
 		double Xt,Yt;//umístění tabulky, resp. mGridu v logických (metrických) souřadnicích
-		short rotace_symbolu;//v jaké orientaci je element na obrazovce vykreslen 0,90,180,270
-		double rotace_jig;//úhel o který element orotuje jig vzhledem k jeho aktuální rotaci jigu vůči podvozku, např. rotace_jig=90°, aktuální rotace jigu 90°, výsledek 180°
+		short orientace;//v jaké orientaci je element na obrazovce vykreslen 0,90,180,270 (orientace dle světových stran)
+		double rotace_jig;//úhel o který element orotuje jig vzhledem k jeho aktuální rotaci jigu vůči podvozku, např. rotace_jig=90°, aktuální rotace jigu 90°, výsledek 180° - REVIZE!!!
 		short stav;
 
 		double LO1;
@@ -122,7 +123,8 @@ class Cvektory
 		double kapacita;//uživatelsky zadaná kapacita
 		double kapacita_dop;//doporučená, vypočítáná
 		double pozice;//počet vozíků v kabině
-		double rotace;//rotace jigu v objektu - nově spíše rotace náhledu
+		double rotace;//rotace jigu v objektu - nově spíše rotace náhledu  - ZRUŠIT
+		double orientace;//0,90,180,270 (orientace dle světových stran) - používat toto
 		double mezera;//mezera mezi vozíky (kritická mezera)
 		double mezera_jig;//mezera mezi jigy
 		double mezera_podvozek;//mezera mezi podvozky

@@ -177,6 +177,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	TZF=!DEBUG;//TRIAL_zakazat_funkcionality - nyní nastaveno pro RELEASE
 	if(TZF)scGPSwitch_rezim->Enabled=false;
 	LogFileStream=new TFileStream("LOGFILE.txt",fmOpenWrite|fmCreate|fmShareDenyNone);
+	logovat=true;
 
   //pomocné objekty pro kopírování paremtrů v PO
 	copyObjekt=new Cvektory::TObjekt;
@@ -825,7 +826,7 @@ void TForm1::log2webOnlyText(UnicodeString Text)
 //zapíše log do textového souboru a přidá datum
 void TForm1::log(AnsiString Text)
 {
-	if(DEBUG)//pouze pro DEBUG
+	if(DEBUG && logovat)//pouze pro DEBUG
 	{
 		//přídání datumu k textu
 		Text=TIME.CurrentDate().DateString()+"_"+TIME.CurrentTime().TimeString()+"_"+Text+"\n";
@@ -2401,7 +2402,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 //			//když nejsou viditelné tabulky elementu, a když se nejedná o element, který nemá tabulku -> nevykresli spojnici mezi elementem a tabulkou
 			if(pom_temp->zobrazit_mGrid&&pom_element->eID!=100)vykresli_spojinici_EmGrid(Canvas,pom_element);
 			//samotný pohyb, který je vázán na pohon
-			if (pom_element->rotace_symbolu==0 || pom_element->rotace_symbolu==180)
+			if (pom_element->orientace==0 || pom_element->orientace==180)
 				d.v.posun_element(pom_element,akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),posun_dalsich_elementu,true);
 			else
 				d.v.posun_element(pom_element,akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),posun_dalsich_elementu,true);
@@ -3046,8 +3047,8 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
   		{
   			if(pom_element_puv!=NULL)pom_element_puv->mGrid->MouseMove(X,Y);//najistotu zrušení hintů a highlignutí odkazu normálních tabulek dodáním pouze aktuálních souřadnic
   			if(puvJID>=4 && puvJID<=10)PmG->MouseMove(X,Y);//najistotu hintů a zrušení highlignutí tabulky pohonu dodáním pouze aktuálních souřadnic
-  		}
-  		if(JID==0&&pom_temp->id!=3){if(pom_element->rotace_symbolu==0||pom_element->rotace_symbolu==180)kurzor(zmena_d_x);else kurzor(zmena_d_y);pom_element->stav=2;refresh_mGrid=false;}//posun ELEMENT
+			}
+			if(JID==0&&pom_temp->id!=3){if(pom_element->orientace==0||pom_element->orientace==180)kurzor(zmena_d_x);else kurzor(zmena_d_y);pom_element->stav=2;refresh_mGrid=false;}//posun ELEMENT
   		if(JID==0&&pom_temp->id==3){kurzor(posun_ind);}//posun komory
   		if(JID==1){kurzor(edit_text);pom_element->stav=3;refresh_mGrid=false;}//ELEMENT název
   		//použit závěrečný REFRESH if(pom_element!=pom_element_puv && (puvJID==0 || JID==0)/* || (puvJID==0 && JID==1) || (puvJID==1 && JID==0)*/){REFRESH();}//důvod k REFRESH, pouze v případě změny elementu či přechodu z názvu na celý element a opačně
@@ -4221,7 +4222,7 @@ void TForm1::aut_pozicovani(Cvektory::TElement *E, int X, int Y)
 	double x=0,x1=0,y=0,y1=0;//původní a překlopené souřadnice tabulky
 	bool hor=false,ver=false;
 	int prekryti=0;//počet překrytí
-	switch(E->rotace_symbolu)
+	switch(E->orientace)
 	{
 		case 0:
 		hor=true;//jedná se o horizontálně orientovanou kabinu
@@ -10085,12 +10086,12 @@ void TForm1::vykresli_kurzor(int index)
 			Canvas->Pen->Width=1;
 			if(pom_element_temp->eID!=0&&pom_element_temp->eID!=5&&pom_element_temp->eID!=6&&pom_element_temp->eID!=100)//roboti mají vykreslován kurzor vodorovně
 			{
-				if(pom_element_temp->rotace_symbolu==0||pom_element_temp->rotace_symbolu==180)//pro vodorovnou kabinu
+				if(pom_element_temp->orientace==0||pom_element_temp->orientace==180)//pro vodorovnou kabinu
 				{
 					Canvas->MoveTo(pom_element_temp->citelna_oblast.rect3.right+1,pom_element_temp->citelna_oblast.rect3.top-2);
 					Canvas->LineTo(pom_element_temp->citelna_oblast.rect3.right+1,pom_element_temp->citelna_oblast.rect3.bottom+2);
 				}
-				else if(pom_element_temp->rotace_symbolu==90)//pro vertikálníkabinu, dělení na 2 rotace, text orientován 2 směry
+				else if(pom_element_temp->orientace==90)//pro vertikálníkabinu, dělení na 2 rotace, text orientován 2 směry
 				{
 					Canvas->MoveTo(pom_element_temp->citelna_oblast.rect3.right+2,pom_element_temp->citelna_oblast.rect3.bottom-1);
 					Canvas->LineTo(pom_element_temp->citelna_oblast.rect3.left-2,pom_element_temp->citelna_oblast.rect3.bottom-1);
@@ -10103,9 +10104,9 @@ void TForm1::vykresli_kurzor(int index)
 			}
 			else//otoče a stop mají kurzor otočený o 90°
 			{
-				if(pom_element_temp->rotace_symbolu==0||pom_element_temp->rotace_symbolu==180)//pro vodorovnou kabinu, 2 orientace textu
+				if(pom_element_temp->orientace==0||pom_element_temp->orientace==180)//pro vodorovnou kabinu, 2 orientace textu
 				{
-					if(pom_element_temp->rotace_symbolu==0)
+					if(pom_element_temp->orientace==0)
 					{
 						Canvas->MoveTo(pom_element_temp->citelna_oblast.rect3.right+2,pom_element_temp->citelna_oblast.rect3.bottom-1);
 						Canvas->LineTo(pom_element_temp->citelna_oblast.rect3.left-2,pom_element_temp->citelna_oblast.rect3.bottom-1);
