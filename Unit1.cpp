@@ -1479,7 +1479,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			{
 				nacti_podklad(Canvas);
 				d.vykresli_halu(Canvas);
-				d.vykresli_objekty(Canvas);
+				d.vykresli_vektory(Canvas);//d.vykresli_cesty(Canvas);
 				d.meritko(Canvas);
 			}
 			else
@@ -1493,7 +1493,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu //zkoušel jsem nastavit plochu antialiasingu bez ovládacích prvků LeftToolbar a menu, ale kopírování do jiné BMP to zpomalovalo více neooptimalizovaná oblast pro 3xbmp
 				Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
 				d.vykresli_halu(bmp_in->Canvas);
-				d.vykresli_objekty(bmp_in->Canvas);
+				d.vykresli_vektory(bmp_in->Canvas);//d.vykresli_cesty(bmp_in->Canvas);
 				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 				Cantialising a;
 				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
@@ -3970,7 +3970,7 @@ void TForm1::add_element (int X, int Y)
 	//rotace dle umístění na ose Y či X dle trendu
 	FormX->vstoupeno_poh=false;//blokace událostí při vkládání elementu
 	FormX->vstoupeno_elm=false;
-	short trend=m.Rt90(d.trend(pom));
+	short trend=pom_temp->orientace;
 	short rotace_symbolu=rotace_symbol(trend,X,Y);
 	bool vkabine=true;//=el_vkabine(X,Y,element_id);//pokud se jedná o robota kontrolovat zda je vložen do kabiny
 	//ovlivňování souřadnic, aby element byl umístěn přímo na osou - nelze použít makro Rxy
@@ -3985,16 +3985,14 @@ void TForm1::add_element (int X, int Y)
 		DoSkRB=m.m2px(d.DkRB);//délka od středu (uchopovacího bodu) k referenčnímu bodu, doplnit konstanty
 		if(rotace_symbolu==90 || rotace_symbolu==180)DoSkRB*=-1;
 	}
-																				 //netradičně v hlavičce je umístěna elementární osa pohonu!!!
-	if(trend==90 || trend==270)Y=m.L2Py(pom_temp->elementy->Y)+DoSkRB;
-	else X=m.L2Px(pom_temp->elementy->X)+DoSkRB;
+	//úprava souřadnic = přichycení na pohon
+	if(pom_temp->orientace==90 || pom_temp->orientace==270)Y=m.L2Py(pom_temp->elementy->predchozi->Y)+DoSkRB;
+	else X=m.L2Px(pom_temp->elementy->predchozi->X)+DoSkRB;
 	//vložení elementu na dané souřadnice a do patřičného pomocného spojáku, pro případ storna
-	if (vkabine)//příprava na kontrolu zda vkládám element do kabiny
+	if (vkabine||true)//příprava na kontrolu zda vkládám element do kabiny
 	{
 		TIP="";//smazání tipu, pro jistotu
 		Cvektory::TElement *E=d.v.vloz_element(pom_temp,element_id,m.P2Lx(X),m.P2Ly(Y),rotace_symbolu);
-		//navrácení rotace dle umístění v objektu
-//		E->rotace_symbolu=rotace_symbolu;
 		//nadesignuje tabulky daného elementu
 		design_element(E,true);
 		if(E->eID!=100)//E->mGrid!=NULL)//pokud je alokovaná paměť pro mGrid element bude mít tabulku, pokud není element nebude mít tabulku
@@ -7101,7 +7099,8 @@ void TForm1::NP()
 void TForm1::NP_input()
 {
 	 //zablokování OnChange tabulek
-   JID=-1;//ošetření, s JID se pracuje i v náhledu
+	 JID=-1;//ošetření, s JID se pracuje i v náhledu
+	 kurzor(standard);
 	 FormX->input_state=FormX->NO;
 	 FormX->vstoupeno_poh=false;
 	 FormX->vstoupeno_elm=false;
@@ -7859,13 +7858,13 @@ void __fastcall TForm1::Export1Click(TObject *Sender)
 			switch(MOD)//uloží obraz dle daného modu zobrazení
 			{
 				case SCHEMA:
-				if(!antialiasing)d.vykresli_objekty(Bitmap->Canvas);//vykreslování všech vektorů
+				if(!antialiasing)d.vykresli_vektory(Bitmap->Canvas);//vykreslování všech vektorů
 				else
 				{
 					Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
 					bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
 					Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
-					d.vykresli_objekty(bmp_in->Canvas);
+					d.vykresli_vektory(bmp_in->Canvas);
 					Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 					Cantialising a;
 					Bitmap=a.antialiasing(bmp_in);
@@ -8631,40 +8630,11 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	d.v.vloz_bod(40,-40,d.v.OBJEKTY->dalsi);
-//	Memo(tan(DegToRad(40.0)));//výpočet tangens pro posunv úsečky
-//	//vytovoření schématu
-//	pom=NULL;pom_temp=NULL;pom_vyhybka=NULL;
-//	Cvektory::TObjekt *O,*O1,*O2,*O3,*V1,*V2=new Cvektory::TObjekt,*S1,*S2=new Cvektory::TObjekt;
-//	//ručně počet vyhybek
-//	d.v.pocet_vyhybek=1;
-//	//vkládání algoritmem
-//	O1=d.v.vloz_objekt(6,50,-30);O1->short_name="O1";
-//	O2=d.v.vloz_objekt(5,100,-30);O2->short_name="O2";
-//	O3=d.v.vloz_objekt(7,75,-70);O3->short_name="O3";
-//	V1=d.v.vloz_objekt(13,62,-50/*,O1*/);//V1->name="V1";//d.v.zvys_indexy(O1);
-//	S1=d.v.vloz_objekt(16,75,-30,V1,O1,O1->dalsi);S1->short_name="S1";
-//	d.v.nove_indexy();//pozor musí dojít ke zvýšení indexů !!!
-	//ruční vkládání
-//	V2->id=13;V2->name="Výhybka 2";V2->short_name="V2";V2->X=66;V2->Y=-40;d.v.pocet_vyhybek++;
-//	S2->id=16;S2->name="Spojka 2";S2->short_name="S2";S2->X=87;S2->Y=-50;
-//	V2->predchozi2=S2;S2->dalsi2=V2;
-//	O2->dalsi=S2;S2->predchozi=O2;S2->predchozi2=V2;V2->dalsi2=S2;
-//	S2->dalsi=O3;O3->predchozi=S2;
-//	V1->dalsi2=V2;V2->predchozi=V1;V2->dalsi=S1;S1->predchozi2=V2;
-	//nulování a mazání
-//	O=NULL;O1=NULL;O2=NULL;O3=NULL;V1=NULL;V2=NULL;S1=NULL;S2=NULL;delete O;delete O1;delete O2;delete O3;delete V1;delete V2;delete S1;delete S2;
-
-	//procházení
-//	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];
-//	O=d.v.OBJEKTY->dalsi;
-//	while(O!=NULL)
-//	{
-//		Memo(O->short_name+", n: "+AnsiString(O->n));
-//		O=d.v.dalsi_krok(O,tab_pruchodu);
-//	}
-//	tab_pruchodu=NULL;delete tab_pruchodu;
-//	O=NULL;delete O;
+	Memo("originál: "+AnsiString(pom->orientace)+"; kopie: "+AnsiString(pom_temp->orientace));
+	Memo("originál: "+AnsiString(pom->elementy->predchozi->geo.X1)+"; kopie: "+AnsiString(pom_temp->elementy->predchozi->geo.X1));
+	Memo("originál: "+AnsiString(pom->elementy->predchozi->geo.X2)+"; kopie: "+AnsiString(pom_temp->elementy->predchozi->geo.X2));
+	Memo("originál: "+AnsiString(pom->elementy->predchozi->geo.X3)+"; kopie: "+AnsiString(pom_temp->elementy->predchozi->geo.X3));
+	Memo("originál: "+AnsiString(pom->elementy->predchozi->geo.X4)+"; kopie: "+AnsiString(pom_temp->elementy->predchozi->geo.X4));
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
