@@ -168,7 +168,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	mGrid->AntiAliasing_text=true;
 	mGrid->Border.Width=1;
 	//mGrid->DefaultCell.Font->Size=14;
-	mGrid->DefaultCell.Font->Name="Roboto";
+	//mGrid->DefaultCell.Font->Name="Roboto";
   mGrid->Create(9,2);//samotné vytvoøení matice-tabulky
 
   getmGridWidth();
