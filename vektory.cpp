@@ -2007,9 +2007,11 @@ void  Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 ////---------------------------------------------------------------------------
 void Cvektory::kopiruj_elementy(TObjekt *Original, TObjekt  *Kopie)//zkopíruje elementy a jejich atributy bez ukazatelového propojení z objektu do objektu, pouze ukazatelové propojení na mGrid je zachováno spojuje dvě metody vloz_element(TObjekt *Objekt,TElement *Element) a kopiruj_element(TElement *Original, TElement *Kopie)
 {
-	TElement *E=Original->elementy;//nepřeskakuje se hlavička, protože v ní jsou uloženy výchozí souřadnice
+  TElement *E=Original->elementy;//nepřeskakuje se hlavička, protože v ní jsou uloženy výchozí souřadnice
+	vytvor_elementarni_osu(Original,Kopie);//smazat
 	if(E!=NULL)//pokud elementy existují nakopíruje je do pomocného spojáku pomocného objektu
 	{
+   	E=E->dalsi;//přeskočí hlavičku //smazat
 		while(E!=NULL)
 		{
 			TElement *Et=new TElement;
@@ -2023,15 +2025,15 @@ void Cvektory::kopiruj_elementy(TObjekt *Original, TObjekt  *Kopie)//zkopíruje 
 ////---------------------------------------------------------------------------
 //připraví vektor provizorní osy pohonu
 void Cvektory::vytvor_elementarni_osu(TObjekt *Original, TObjekt  *Kopie)
-{
-//	if(Original==F->pom && Kopie==F->pom_temp)
-//	{
-//		hlavicka_elementy(Kopie);
-//		Kopie->elementy->geo.rotace=m.Rt90(F->d.trend(F->pom));
-//		Kopie->elementy->geo.typ=0;Kopie->elementy->X=0;Kopie->elementy->Y=0;Kopie->elementy->geo.delka=0;
-//		if(Kopie->elementy->geo.rotace==90 || Kopie->elementy->geo.rotace==270)Kopie->elementy->Y=Kopie->Y-Kopie->rozmer_kabiny.y/2.0;//vodorovná kabina
-//		else Kopie->elementy->X=Kopie->X+Kopie->rozmer_kabiny.x/2.0;//svislá
-//	}
+{                 //smazat
+	if(Original==F->pom && Kopie==F->pom_temp)
+	{
+		hlavicka_elementy(Kopie);
+	//	Kopie->elementy->geo.rotace=m.Rt90(F->d.trend(F->pom));
+	//	Kopie->elementy->geo.typ=0;Kopie->elementy->X=0;Kopie->elementy->Y=0;Kopie->elementy->geo.delka=0;
+	//	if(Kopie->elementy->geo.rotace==90 || Kopie->elementy->geo.rotace==270)Kopie->elementy->Y=Kopie->Y-Kopie->rozmer_kabiny.y/2.0;//vodorovná kabina
+	//	else Kopie->elementy->X=Kopie->X+Kopie->rozmer_kabiny.x/2.0;//svislá
+	}
 
 }
 ////---------------------------------------------------------------------------
