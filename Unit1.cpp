@@ -1501,6 +1501,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				nacti_podklad(Canvas);
 				d.vykresli_halu(Canvas);
 				d.vykresli_objekty(Canvas);
+
 			}
 			else
 			{
