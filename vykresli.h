@@ -45,11 +45,10 @@ class Cvykresli
 	};TTP TP;//nastavení modu technologické procesy
 
 	void vykresli_halu(TCanvas *canv,int typ=-2);//stav: -3 kurzor, -2 normal (implicitnì), -1-highlight bez editace, 0-editace zvırazní všechny body, 1-a poèet bodù zvıraznìní daného bodu,poèet bodù+1 zvıraznìní dané hrany vèetnì sousedícícíh úchopù (napø. pro polygono o 6 bodech) bude hodnota stavu 7 zvıraznìní první hrany (od bodu 1 do bodu 2)
-	void vykresli_objekty(TCanvas *canv);
-	void vykresli_rectangle(TCanvas *canv, Cvektory::TObjekt *ukaz);
+	void vykresli_vektory(TCanvas *canv);//vykreslí zakázky, cesty, spojnice, kabiny, pohony, elementy
+	void vykresli_objekt(TCanvas *canv, Cvektory::TObjekt *ukaz);
 	void vykresli_kruh(TCanvas *canv, Cvektory::TObjekt *O);
 	void prislusnost_cesty(TCanvas *canv,TColor Color,int X,int Y,float A,short N);
-	void vykresli_vektory(TCanvas *canv);
 	void vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav=-2,bool zobrazit_koty=true);//zajišuje vykreslení pouze obrysu dle typu objektu
 	void vykresli_pow_sprchu(TCanvas *canv,long X1,long X2,long Y1,long Y2,unsigned int velikost_komory_px,TColor color,short sirka,short pmpp,short typ=0);//symbolika tekoucí kapaliny u POW
 	void vykresli_grid(TCanvas *canv,int size_grid=10);
