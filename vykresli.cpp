@@ -2776,7 +2776,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,doubl
 //	if(O->pohon!=NULL)//řetez - je-li přiřazen pohon
 //	{
 
-    //vykreslí samotný pohon - spojnici
+		//vykreslí samotný pohon - spojnici
 		linie(canv,m.L2Px(X),m.L2Py(Y),m.L2Px(K.x),m.L2Py(K.y),F->Zoom*0.5,clBlack);
 
 		//palce, pokud je zadaná rozteč tak se vykreslí
@@ -2837,6 +2837,28 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,doubl
 //	canv->FillRect(TRect(m.L2Px(K.x)+Ov+Ov/2,m.L2Py(Y+sJ/2+1)-Ov,Form_objekt_nahled->Width*3,m.L2Py(K.y-sJ/2)+Ov));//napravo
 
 //	return RET;//vrátí index
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O)//sloučit s výše uvedenou metodou
+{
+	if(O!=NULL && O->elementy!=NULL)
+	{
+		TPoint *POLE=new TPoint[O->elementy->predchozi->n*4];
+		Cvektory::TElement *E=O->elementy->dalsi;
+		while(E!=NULL)
+		{
+			//plnění do pole
+			POLE[E->n-1]=TPoint(m.L2Px(E->geo.X1),m.L2Py(E->geo.Y1));
+			POLE[E->n]  =TPoint(m.L2Px(E->geo.X2),m.L2Py(E->geo.Y2));
+			POLE[E->n+1]=TPoint(m.L2Px(E->geo.X3),m.L2Py(E->geo.Y3));
+			POLE[E->n+2]=TPoint(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
+			//ukazatelové záležitosti
+			E=E->dalsi;//posun na další element
+			if(E==NULL)delete E;//smazání již nepotřebného ukazatele
+		}
+		canv->PolyBezier(POLE,O->elementy->predchozi->n*4-1);
+		delete[]POLE;POLE=NULL;
+	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
