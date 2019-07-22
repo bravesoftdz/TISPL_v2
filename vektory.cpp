@@ -4263,7 +4263,7 @@ long Cvektory::vymaz_seznam_RETEZY()
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //vloží nový typ dopravníku do KATALOGu dopravníků, pokud neexistuje hlavička vytvoří ji, druh: 0 - podlahový, 1 - podvěsný
-void Cvektory::vloz_typ_dopravniku(AnsiString name,AnsiString subname,short druh)
+void Cvektory::vloz_typ_dopravniku(AnsiString name,AnsiString subname,UnicodeString link,short druh)
 {
 	////hlavička
 	if(KATALOG==NULL)//pokud neexistuje hlavička ještě ji před vložením standardního prvku vytvoří
@@ -4275,6 +4275,7 @@ void Cvektory::vloz_typ_dopravniku(AnsiString name,AnsiString subname,short druh
 		novy->druh=0;
 		novy->name="";
 		novy->subname="";
+		novy->link="";
 		novy->roztec=NULL;
 		novy->hOblouk=NULL;
 		novy->hRadius=NULL;
@@ -4294,6 +4295,7 @@ void Cvektory::vloz_typ_dopravniku(AnsiString name,AnsiString subname,short druh
 	novy->druh=druh;
 	novy->name=name;
 	novy->subname=subname;
+	novy->link=link;
 	novy->roztec=NULL;
 	novy->hOblouk=NULL;
 	novy->hRadius=NULL;
@@ -4361,7 +4363,7 @@ void Cvektory::vloz_do_typu_dopravniku(TtypHodnoty typHodnoty,double hodnota,Tty
 void Cvektory::vytvor_KATALOG()
 {
 	////CALDAN VLD - S150
-	vloz_typ_dopravniku("CALDAN VLD","S150",0);
+	vloz_typ_dopravniku("CALDAN VLD","S150","http://caldan.dk/sites/default/files/TechSpecsPDF/VLD_2018_uk.pdf",0);
 	//rozteč
 	vloz_do_typu_dopravniku(R,150);
 	vloz_do_typu_dopravniku(R,180);
@@ -4386,7 +4388,7 @@ void Cvektory::vytvor_KATALOG()
 	vloz_do_typu_dopravniku(vR,1000);
 
 	////CALDAN VLD - S180
-	vloz_typ_dopravniku("CALDAN VLD","S180",0);
+	vloz_typ_dopravniku("CALDAN VLD","S180","http://caldan.dk/sites/default/files/TechSpecsPDF/VLD_2018_uk.pdf",0);
 	vloz_do_typu_dopravniku(R,150);
 	vloz_do_typu_dopravniku(R,180);
 	vloz_do_typu_dopravniku(R,200);
@@ -4504,6 +4506,7 @@ void Cvektory::vymaz_seznam_KATALOG()
 			KATALOG->predchozi->vRadius=KATALOG->predchozi->vRadius->dalsi;
 		}
 		//posunutí ukazatele a smazání typu dopravníku
+		//KATALOG->predchozi->name=KATALOG->predchozi->subname=KATALOG->predchozi->link="";//smazání textových řetězců
 		KATALOG->predchozi=NULL;
 		delete KATALOG->predchozi;
 		KATALOG=KATALOG->dalsi;

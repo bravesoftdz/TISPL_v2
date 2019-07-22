@@ -155,7 +155,7 @@ void Cvykresli::vykresli_objekty(TCanvas *canv)
 				//if(ukaz->n!=ukaz->predchozi->predchozi->n)//pokud jsou minimálně dva prky, ale šipka bude obousměrnná - možná žádoucí
 				if(v.OBJEKTY->predchozi->n>=3)//až budou alespoň tři prvky,tj. poslední prvek bude mít index n větší než 3
 				{
-					Cvektory::TObjekt *pom=ukaz->predchozi->predchozi;;//pomocný ukazatel, který uchovává předchozí objekt
+					Cvektory::TObjekt *pom=ukaz->predchozi->predchozi;//pomocný ukazatel, který uchovává předchozí objekt
 					if(ukaz->id==pocet_objektu_knihovny+1)//pokud jsem na spojce poprvé musí dojít k vykrelení spojnice k predchozi2 objektu, pokud podruhé dojde k vykreslení spojnice k predchozi objektu
 					{
 						n=F->ms.MyToDouble(ukaz->short_name.SubString(2,1));//extrakce pořadového čísla výhybky;
@@ -214,7 +214,7 @@ void Cvykresli::vykresli_objekty(TCanvas *canv)
 		Form1->Layout->Enabled=false;
 		Form1->Analyza->Enabled=false;
 	}
-	if(F->scHTMLLabel_log_vypis->Caption=="")
+	if(F->scHTMLLabel_log_vypis->Caption=="")       //toto budeme rušit
 	F->Z("<b>Linka v pořádku.</b>",false);
 	O=NULL;delete O;
 	tab_pruchodu=NULL;delete tab_pruchodu;

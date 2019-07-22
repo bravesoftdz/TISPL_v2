@@ -49,10 +49,10 @@ class Cvektory
 	struct TGeometrie//pouze struktura
 	{
 		short typ;//0-linie, 1 oblouk - možná nebude třeba
-		double delka;// - možná nebude třeba
-		TPointD X1,Y1,X2,Y2,X3,Y3,X4,Y4;//body bézieru
-		//double orientace; - možná nebude třeba
-		//double radius; -otázka zda bude potřeba, pokrývá délka a rotace
+		double delka;//akcelerátor
+		//double orientace;// možný akcelerátor - možná nebude třeba
+		//double radius; -otázka zda bude potřeba, pokrývá délka a rotace a body
+		double X1,Y1,X2,Y2,X3,Y3,X4,Y4;//body bézieru
 	};
 
 	struct TKomora// - NEW + dodat do CObjekt v rámci rodičovských spojáků!!!!
@@ -313,6 +313,7 @@ class Cvektory
 		short druh;//0 - podlahový, 1 - podvěsný
 		UnicodeString name;//název
 		UnicodeString subname;//podnázev
+		UnicodeString link;//hypertextový odkaz na katalog
 		TDoubleHodnota *roztec;//přidružený spojový seznam možných roztečí
 		TDoubleHodnota *hOblouk;//přidružený spojový seznam horizontálních oblouků
 		TDoubleHodnota *hRadius;//přidružený spojový seznam horizontálních radiusů
@@ -382,7 +383,7 @@ class Cvektory
 	TFile_hlavicka File_hlavicka;
 
 //konstruktor
-		Cvektory();
+	Cvektory();
 
 //společné metody pro HALU a OBJEKT, pokud je ukazatel na Objekt NULL, jedná se o metody pro HALU
 	void vloz_bod(double X, double Y,TObjekt *Objekt=NULL,TBod *ZaBod=NULL, bool ortogonalizovat=true,bool konec=false);//vloží nový bod na konec seznamu bodů pokud je Za=NULL, jinak vloží za tento bod, ošetřuje bod vložený na stejný místo jako předchozí, či jako první, pokud se jedná o poslední vložení při uzavírání polygonu a je zapnuta ortogonalizace, je zajištěno, aby byl první poslední a předposlední bod v ortogonalizovaném vztahu, zajištění poslední spojnice zajištuje vykreslovací metoda, pokud jsou vloženy pouze 3 body a ukončeno vkládání je dopočítán 4 bod do rozměrů obdélníku
@@ -567,7 +568,7 @@ public:
 
 //metody pro KATOLOG
 	enum TtypHodnoty{R,hO,vO,vR,hR};TtypHodnoty;
-	void vloz_typ_dopravniku(AnsiString name,AnsiString subname,short druh=0);//vloží nový typ dopravníku do KATALOGu dopravníků, pokud neexistuje hlavička vytvoří ji, druh: 0 - podlahový, 1 - podvěsný
+	void vloz_typ_dopravniku(AnsiString name,AnsiString subname,UnicodeString link="",short druh=0);//vloží nový typ dopravníku do KATALOGu dopravníků, pokud neexistuje hlavička vytvoří ji, druh: 0 - podlahový, 1 - podvěsný
 	void vloz_do_typu_dopravniku(TtypHodnoty typHodnoty,double hodnota,Ttyp_dopravniku *typDopravniku=NULL);//vloží dle typu hodnoty hodnotu do typuDopravniku, pokud je NULL, vloží nakonec (do posledního typu dopravníku uloženém ve spojovém seznamu v KaTALOGu)
 	void vytvor_KATALOG();//vytvoří katalog typů dopravníku za pomocí volání nasledujících dvou metod
 	Ttyp_dopravniku *vrat_typ_dopravniku(unsigned long n);//dla zadaného n vrátí daný typ dopravníku formou ukazatatele

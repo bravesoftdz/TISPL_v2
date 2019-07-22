@@ -1480,6 +1480,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				nacti_podklad(Canvas);
 				d.vykresli_halu(Canvas);
 				d.vykresli_objekty(Canvas);
+				d.meritko(Canvas);
 			}
 			else
 			{
@@ -2710,6 +2711,13 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		}
 		default: break;
 	}
+    //fix na pridani 1 obj pro demo
+//    if(EDICE==DEMO && MOD==SCHEMA)
+//    {
+//    if(d.v.OBJEKTY->predchozi->n >= 1) DrawGrid_knihovna->Visible=false;
+//    else   DrawGrid_knihovna->Visible=true;
+//    }
+//    if(MOD==NAHLED) DrawGrid_knihovna->Visible=true;
 }
 //---------------------------------------------------------------------------
 //vykreslí spojnici mezi tabulkou a elementem z nejbližšího rohu tabulky
@@ -6165,6 +6173,7 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 	}
 	if(MOD==SCHEMA)
 	{
+
 		////////////////////neAA verze
 		scListGroupKnihovObjektu->Caption="Technolog.objekty";
 		DrawGrid_knihovna->Left=14;
@@ -8661,8 +8670,9 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //MaKr testovací tlačítko
 void __fastcall TForm1::Button14Click(TObject *Sender)
 {
- //log(__func__);
+ log(__func__);
  d.v.vytvor_KATALOG();
+ Sk(d.v.KATALOG->predchozi->link);
  //Sk(d.v.KATALOG->predchozi->roztec->predchozi->n);
  Sk(d.v.vrat_hodnotu_typu_dopravniku(2,Cvektory::TtypHodnoty::hR,3));
 }
