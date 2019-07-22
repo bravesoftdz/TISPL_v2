@@ -534,7 +534,8 @@ private:
   enum Tlanguage{EN,MN,CS};Tlanguage language;
 	////instance
 	Cvektory::TProces *proces_pom;
-  TStringList *ls;
+	TStringList *ls;
+	TFileStream *LogFileStream;
 
 	////metody
 	void aut_pozicovani(Cvektory::TElement *E, int X, int Y);
@@ -590,6 +591,8 @@ private:
 	bool ttr(UnicodeString Text);
 	void log2web(UnicodeString Text);//automaticky pøidá parametry (èas, uživatel, licence)
 	void log2webOnlyText(UnicodeString Text);//pouze text
+	void log(AnsiString Text);//zapíše log do textového souboru a pøidá datum
+	void SaveText2File(AnsiString Text,AnsiString FileName);//zapíše daný textový øetìzec do daného textového souboru
 	void startUP();//pøi aktivaci formuláøe, pro zpøehlednìní kodu
 	void DesignSettings();//nastavení designu v konstruktoru
 	void aktualizace();//kontrola aktuálnosti verze a pøípadì nabídka na stažení nové
@@ -617,6 +620,7 @@ private:
 	TDateTime TIME;
 	UnicodeString LICENCE;
 	short n_prihlaseni;
+	bool logovat;
 	bool ortogonalizace_stav;
 	bool kalibrace_hotova;
 	bool pan_non_locked;
@@ -726,6 +730,7 @@ public:		// User declarations
 	void S(UnicodeString Text="");//usnadòuje pøístup k ShowMessage
 	void Sk(UnicodeString Text="",AnsiString umisteni="neuvedeno");//usnadòuje pøístup k ShowMessage - MaKr
 	void Sv(UnicodeString Text="",AnsiString umisteni="neuvedeno");//usnadòuje pøístup k ShowMessage - MaVl
+	void Sr(UnicodeString Text="",AnsiString umisteni="neuvedeno");//usnadòuje pøístup k ShowMessage - Rostovi
 	void Z(UnicodeString Text="",bool add=false,TColor color=clRed);//usnadòuje pøístup ke zprávám, pokud jsou jen prázdné uvozovky (a druhý paremetry na false - což je implicitnì), vymaže zpravu, parametr add rozhoduje, zda bude nový text pøeden k pøedešlému textu èi nikoliv, pokud zpráva obsahuje nìjaký text, je zobrazena ikona zprávy, poslední parametr je barva ikony zprávy
 	int MB(long left,long top,UnicodeString text,UnicodeString caption_text="",int mbTYPE=MB_OK,bool centrovat_text=true,bool checkbox_zobrazit=false,int width=366,bool default_button_caption=true);
 	int MB(UnicodeString text,int mbTYPE=MB_OK,bool centrovat_text=true,int width=366,bool default_button_caption=true,bool blurForm1=true,bool copy_zobrazit=false);//pokud je blurForm1 na true - Form1 v dobì zobrazení MB rozmlží/udìlá bluer efekt

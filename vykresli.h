@@ -50,7 +50,6 @@ class Cvykresli
 	void vykresli_kruh(TCanvas *canv, Cvektory::TObjekt *O);
 	void prislusnost_cesty(TCanvas *canv,TColor Color,int X,int Y,float A,short N);
 	void vykresli_vektory(TCanvas *canv);
-	void vykresli_kabinu(TCanvas *canv);//zajišuje kompletní vykreslení s voláním následující metody
 	void vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav=-2,bool zobrazit_koty=true);//zajišuje vykreslení pouze obrysu dle typu objektu
 	void vykresli_pow_sprchu(TCanvas *canv,long X1,long X2,long Y1,long Y2,unsigned int velikost_komory_px,TColor color,short sirka,short pmpp,short typ=0);//symbolika tekoucí kapaliny u POW
 	void vykresli_grid(TCanvas *canv,int size_grid=10);
@@ -86,14 +85,14 @@ class Cvykresli
 	void vykresli_ikonu_oblouku(TCanvas *canv,int X,int Y,AnsiString Popisek="oblouky",short stav=0);
 	void vykresli_ikonu_textu(TCanvas *canv,int X,int Y,AnsiString Popisek="text",short stav=0);
 	void vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popisek="spojnice",short stav=0);
-	void vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popisek="komora",short typ=0,short stav=0);
+	void vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popisek="komora",short typ=0,short stav=0);//typ: -2 kurzor se sprchy, -1 kurzor bez sprchy, 0 ikona bez sprchy, 1 ikona se sprchou, stav: -1 disabled, 0 normál
 	void linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,int Width,TColor Color=clBlack,TPenStyle PenStyle=psSolid,TPenMode PenMode=pmCopy);
 	void line(TCanvas *canv,long X1,long Y1,long X2,long Y2);
 	void bezier(TCanvas *canv,TPointD *POLE,long posledni_prvek);
 	void bezier(TCanvas *canv,TPointD *POLE,long X,long Y,double oX,double oY,double rotace,long posledni_prvek);
 	void bezier(TCanvas *canv,TPoint *POLE_px,long posledni_prvek);
 	TPoint polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float sirka1, float sirka2, double sklon, double rotace,TPenMode pmMode=pmCopy,TColor clFillOut=clBlack,TColor lFillIn=clWhite);
-	void polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva=clBlack, short sirka=1,int stav=-2,bool zobrazit_koty=true,bool automaticky_spojovat=true);//stav: -3 kurzor, -2 normal (implicitnì), -1-highlight bez editace, 0-editace zvırazní všechny body, 1-a poèet bodù zvıraznìní daného bodu,poèet bodù+1 zvıraznìní dané hrany vèetnì sousedícícíh úchopù (napø. pro polygono o 6 bodech) bude hodnota stavu 7 zvıraznìní první hrany (od bodu 1 do bodu 2)
+	void polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva=clBlack, short sirka=1,int stav=-2,bool zobrazit_koty=true,bool automaticky_spojovat=true);//stav: -3 kurzor, -2 normal (implicitnì), -1-disabled, 0-editace zvırazní všechny body, 1-a poèet bodù zvıraznìní daného bodu,poèet bodù+1 zvıraznìní dané hrany vèetnì sousedícícíh úchopù (napø. pro polygono o 6 bodech) bude hodnota stavu 7 zvıraznìní první hrany (od bodu 1 do bodu 2)
 	void uchop(TCanvas *canv,Cvektory::TBod *B,TColor barva);//vykreslí jeden uchop/koleèko znázoròující bod na polygonu
 	void vykresli_mGridy(TCanvas *canv=NULL);
 	void nabuffrovat_mGridy(TmGrid *mGrid=NULL);//pomocná metoda vytváøející rastrové obrazy mGridù, pokud je buffer na NULL, buffrují se všechny tabulky, pokud ne, tak pouze ta z parametru
@@ -108,6 +107,7 @@ class Cvykresli
 	void editacni_okno(TCanvas *canv, unsigned int X1, unsigned int Y1,unsigned  int X2,unsigned  int Y2, unsigned short int size=1, COLORREF color=clBlack);//nakreslí editacni_okno
 	void editacni_okno(TCanvas *canv, TPoint LH, TPoint PD, unsigned short int size=1, COLORREF color=clBlack);//nakreslí editacni_okno
 	void sipka(TCanvas *canv,int X, int Y,float azimut,bool bez_vyplne=false, float size=3, COLORREF color=clBlack,COLORREF color_brush=clGray,TPenMode PenMode=pmCopy,TPenStyle PenStyle=psSolid,bool teziste_stred=true);//zajistí vykreslení šipky - orientace spojovací linie
+	void vykresli_kurzor_kabiny (TCanvas *canv, int id, int X, int Y, Cvektory::TObjekt *p=NULL,int push_rotace=-1);//vykresluje kurzor kabiny + spojnice
 	void odznac_oznac_objekt(TCanvas *canv, Cvektory::TObjekt *p,int posunX=0, int posunY=0, COLORREF color=clBlack);
 	void odznac_oznac_objekt_novy(TCanvas *canv, int X, int Y,Cvektory::TObjekt *p);
 	void odznac_oznac_objekt_novy_posledni(TCanvas *canv, int X, int Y);
@@ -144,7 +144,7 @@ class Cvykresli
 	short Xofset;//zajistí správnı poèátek prvního objektu dle šíøky nejdelší vypisované minuty v ROMA
 	short precision;//poèet desetinnıch míst èísel na èasové ose
 	TRect aktOblast;//aktuální citelná oblast popisku elementu urèená k uloení
-
+	int rotace_objektu;
 	protected:
 
 
