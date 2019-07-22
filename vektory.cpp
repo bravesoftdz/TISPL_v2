@@ -562,7 +562,7 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 	novy->uzamknout_nahled=false;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 
 	//nově, vkládání bodů + defaultní rozměry různých objektů
-	TPoint rozmery_kabiny;
+	TPoint rozmery_kabiny,pocatek,konec;
 	switch(id)
 	{
 		case 0:case 9://navěšování + svěšování
@@ -575,7 +575,24 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 	}
 	vloz_bod(X,Y+rozmery_kabiny.y/2,novy);vloz_bod(X+rozmery_kabiny.x,Y+rozmery_kabiny.y/2,novy);
 	vloz_bod(X+rozmery_kabiny.x,Y-rozmery_kabiny.y/2,novy);vloz_bod(X,Y-rozmery_kabiny.y/2,novy);
-
+	//rotace na požadovanou orientaci
+	novy->orientace=F->d.orientace_objektu;
+	rotuj_body(X,Y,90-novy->orientace,novy);
+	//vložení zarážky na konec
+	pocatek.x=X;pocatek.y=Y;
+	if(novy->orientace==90||novy->orientace==270)//vodorovný objekt
+		{konec.x=novy->body->dalsi->dalsi->X;konec.y=Y;}
+	else
+		{konec.x=X;konec.y=novy->body->dalsi->dalsi->Y;}
+	TElement *zarazka=vloz_element(novy,-1000,konec.x,konec.y,0);
+	//definice bodů geometrie
+	zarazka->geo.X1=pocatek.x;zarazka->geo.Y1=pocatek.y;
+	zarazka->geo.X2=pocatek.x+(konec.x-pocatek.x)/2.0;zarazka->geo.Y2=pocatek.y+(konec.y-pocatek.y)/2.0;
+	zarazka->geo.X3=zarazka->geo.X2;zarazka->geo.Y3=zarazka->geo.Y2;
+	zarazka->geo.X4=konec.x;zarazka->geo.Y4=konec.y;
+	zarazka->geo.typ=0;
+	zarazka->geo.delka=m.delka(zarazka->geo.X1,zarazka->geo.Y1,zarazka->geo.X2,zarazka->geo.Y2);
+	zarazka=NULL;delete zarazka;
 	return novy;
 }
 //---------------------------------------------------------------------------
@@ -1687,7 +1704,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	}
 
 	//mGrid elementu
-	if(Objekt->n==F->pom_temp->n)//stačí nastavovat pouze v náhledu při vloz_element, nová strategie, je mgrid, nekopírovat a používat jenom v pom_temp, zde však podmínka zda se jedná o pom_temp nebyla z nějakého důvodu možná
+	if(F->pom_temp!=NULL&&Objekt->n==F->pom_temp->n)//stačí nastavovat pouze v náhledu při vloz_element, nová strategie, je mgrid, nekopírovat a používat jenom v pom_temp, zde však podmínka zda se jedná o pom_temp nebyla z nějakého důvodu možná
 	{
 		novy->mGrid=new TmGrid(F);
 		novy->mGrid->Tag=6;//ID formu
@@ -1718,6 +1735,13 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element)
 		Element->dalsi=NULL;
 		Element->sparovany=NULL;
 		Objekt->elementy->predchozi=Element;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+		//geometrie
+		Element->geo.X1=Element->predchozi->geo.X4;Element->geo.Y1=Element->predchozi->geo.Y4;
+		Element->geo.X2=Element->geo.X1+(Element->geo.X4-Element->geo.X1)/2.0;Element->geo.Y2=Element->geo.Y1+(Element->geo.Y4-Element->geo.Y1)/2.0;
+		Element->geo.X3=Element->geo.X2;Element->geo.Y3=Element->geo.Y2;
+		Element->geo.X4=Element->X;Element->geo.Y4=Element->Y;
+		//Element->geo.typ=?
+		//Element->geo.delka=?
 	}
 	else if(p->n!=Element->n)//vkládám mezi elementy, vpřípadě, že bylo vloženo před prví prvek vrací Element, přesun je již vyřešen
 	{
@@ -1731,6 +1755,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element)
 		Cvektory::TElement *E=Objekt->elementy->dalsi;
 		while(E!=NULL)
 		{
+			//indexy
 			E->n=n;
 			n++;
 			E=E->dalsi;
