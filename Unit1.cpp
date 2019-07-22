@@ -2636,6 +2636,13 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		}
 		default: break;
 	}
+    //fix na pridani 1 obj pro demo
+//    if(EDICE==DEMO && MOD==SCHEMA)
+//    {
+//    if(d.v.OBJEKTY->predchozi->n >= 1) DrawGrid_knihovna->Visible=false;
+//    else   DrawGrid_knihovna->Visible=true;
+//    }
+//    if(MOD==NAHLED) DrawGrid_knihovna->Visible=true;
 }
 //---------------------------------------------------------------------------
 //vykreslí spojnici mezi tabulkou a elementem z nejbližšího rohu tabulky
@@ -6050,6 +6057,7 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 	}
 	if(MOD==SCHEMA)
 	{
+
 		////////////////////neAA verze
 		scListGroupKnihovObjektu->Caption="Technolog.objekty";
 		DrawGrid_knihovna->Left=14;
