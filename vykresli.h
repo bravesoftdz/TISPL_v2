@@ -144,7 +144,7 @@ class Cvykresli
 	short Xofset;//zajistí správný poèátek prvního objektu dle šíøky nejdelší vypisované minuty v ROMA
 	short precision;//poèet desetinných míst èísel na èasové ose
 	TRect aktOblast;//aktuální citelná oblast popisku elementu urèená k uložení
-	int rotace_objektu;
+	int orientace_objektu;
 	protected:
 
 

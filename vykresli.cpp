@@ -155,7 +155,7 @@ void Cvykresli::vykresli_objekty(TCanvas *canv)
 				//if(ukaz->n!=ukaz->predchozi->predchozi->n)//pokud jsou minimálně dva prky, ale šipka bude obousměrnná - možná žádoucí
 				if(v.OBJEKTY->predchozi->n>=3)//až budou alespoň tři prvky,tj. poslední prvek bude mít index n větší než 3
 				{
-					Cvektory::TObjekt *pom=ukaz->predchozi->predchozi;;//pomocný ukazatel, který uchovává předchozí objekt
+					Cvektory::TObjekt *pom=ukaz->predchozi->predchozi;//pomocný ukazatel, který uchovává předchozí objekt
 					if(ukaz->id==pocet_objektu_knihovny+1)//pokud jsem na spojce poprvé musí dojít k vykrelení spojnice k predchozi2 objektu, pokud podruhé dojde k vykreslení spojnice k predchozi objektu
 					{
 						n=F->ms.MyToDouble(ukaz->short_name.SubString(2,1));//extrakce pořadového čísla výhybky;
@@ -165,9 +165,9 @@ void Cvykresli::vykresli_objekty(TCanvas *canv)
 //					canv->MoveTo(CorEx(pom),CorEy(pom));
 //					canv->LineTo(CorEx(ukaz),CorEy(ukaz));
 //					sipka(canv,(CorEx(pom)+CorEx(ukaz))/2,(CorEy(pom)+CorEy(ukaz))/2,m.azimut(pom->X,pom->Y,ukaz->X,ukaz->Y));//zajistí vykreslení šipky - orientace spojovací linie
-					canv->MoveTo(m.L2Px(pom->body->dalsi->dalsi->X),m.L2Py(pom->body->dalsi->Y)+m.m2px(pom->body->dalsi->Y-pom->body->predchozi->Y)/2);
-					canv->LineTo(m.L2Px(ukaz->body->dalsi->X),m.L2Py(ukaz->body->dalsi->Y)+m.m2px(ukaz->body->dalsi->Y-ukaz->body->predchozi->Y)/2);
-					sipka(canv,(m.L2Px(pom->body->dalsi->dalsi->X)+m.L2Px(ukaz->body->dalsi->X))/2,(m.L2Py(pom->body->dalsi->Y)+m.m2px(pom->body->dalsi->Y-pom->body->predchozi->Y)/2+m.L2Py(ukaz->body->dalsi->Y)+m.m2px(ukaz->body->dalsi->Y-ukaz->body->predchozi->Y)/2)/2,m.azimut(m.L2Px(ukaz->body->dalsi->X),m.L2Py(ukaz->body->dalsi->Y)+m.m2px(ukaz->body->dalsi->Y-ukaz->body->predchozi->Y)/2,m.L2Px(pom->body->dalsi->dalsi->X),m.L2Py(pom->body->dalsi->Y)+m.m2px(pom->body->dalsi->Y-pom->body->predchozi->Y)/2)*(-1));//zajistí vykreslení šipky - orientace spojovací linie
+					canv->MoveTo(m.L2Px(pom->elementy->predchozi->geo.X4),m.L2Py(pom->elementy->predchozi->geo.Y4));
+					canv->LineTo(m.L2Px(ukaz->elementy->dalsi->geo.X1),m.L2Py(ukaz->elementy->dalsi->geo.Y1));
+					sipka(canv,(m.L2Px(pom->elementy->predchozi->geo.X4)+m.L2Px(ukaz->elementy->dalsi->geo.X1))/2.0,(m.L2Py(pom->elementy->predchozi->geo.Y4)+m.L2Py(ukaz->elementy->dalsi->geo.Y1))/2.0,m.azimut(m.L2Px(ukaz->elementy->dalsi->geo.X1),m.L2Py(ukaz->elementy->dalsi->geo.Y1),m.L2Px(pom->elementy->predchozi->geo.X4),m.L2Py(pom->elementy->predchozi->geo.Y4))*(-1));//zajistí vykreslení šipky - orientace spojovací linie
 					pom=NULL;delete pom;
 				}
 			}
@@ -183,9 +183,9 @@ void Cvykresli::vykresli_objekty(TCanvas *canv)
 //				canv->MoveTo(CorEx(pom),CorEy(pom));
 //				canv->LineTo(CorEx(ukaz),CorEy(ukaz));
 //				sipka(canv,(CorEx(pom)+CorEx(ukaz))/2,(CorEy(pom)+CorEy(ukaz))/2,m.azimut(pom->X,pom->Y,ukaz->X,ukaz->Y));//zajistí vykreslení šipky - orientace spojovací linie
-        canv->MoveTo(m.L2Px(pom->body->dalsi->dalsi->X),m.L2Py(pom->body->dalsi->Y)+m.m2px(pom->body->dalsi->Y-pom->body->predchozi->Y)/2);
-				canv->LineTo(m.L2Px(ukaz->body->dalsi->X),m.L2Py(ukaz->body->dalsi->Y)+m.m2px(ukaz->body->dalsi->Y-ukaz->body->predchozi->Y)/2);
-				sipka(canv,(m.L2Px(pom->body->dalsi->dalsi->X)+m.L2Px(ukaz->body->dalsi->X))/2,(m.L2Py(pom->body->dalsi->Y)+m.m2px(pom->body->dalsi->Y-pom->body->predchozi->Y)/2+m.L2Py(ukaz->body->dalsi->Y)+m.m2px(ukaz->body->dalsi->Y-ukaz->body->predchozi->Y)/2)/2,m.azimut(m.L2Px(ukaz->body->dalsi->X),m.L2Py(ukaz->body->dalsi->Y)+m.m2px(ukaz->body->dalsi->Y-ukaz->body->predchozi->Y)/2,m.L2Px(pom->body->dalsi->dalsi->X),m.L2Py(pom->body->dalsi->Y)+m.m2px(pom->body->dalsi->Y-pom->body->predchozi->Y)/2)*(-1));//zajistí vykreslení šipky - orientace spojovací linie
+				canv->MoveTo(m.L2Px(pom->elementy->predchozi->geo.X4),m.L2Py(pom->elementy->predchozi->geo.Y4));
+				canv->LineTo(m.L2Px(ukaz->elementy->dalsi->geo.X1),m.L2Py(ukaz->elementy->dalsi->geo.Y1));
+				sipka(canv,(m.L2Px(pom->elementy->predchozi->geo.X4)+m.L2Px(ukaz->elementy->dalsi->geo.X1))/2.0,(m.L2Py(pom->elementy->predchozi->geo.Y4)+m.L2Py(ukaz->elementy->dalsi->geo.Y1))/2.0,m.azimut(m.L2Px(ukaz->elementy->dalsi->geo.X1),m.L2Py(ukaz->elementy->dalsi->geo.Y1),m.L2Px(pom->elementy->predchozi->geo.X4),m.L2Py(pom->elementy->predchozi->geo.Y4))*(-1));//zajistí vykreslení šipky - orientace spojovací linie
 				pom=NULL;delete pom;
 			}
 			ukaz=O;
@@ -214,7 +214,7 @@ void Cvykresli::vykresli_objekty(TCanvas *canv)
 		Form1->Layout->Enabled=false;
 		Form1->Analyza->Enabled=false;
 	}
-	if(F->scHTMLLabel_log_vypis->Caption=="")
+	if(F->scHTMLLabel_log_vypis->Caption=="")       //toto budeme rušit
 	F->Z("<b>Linka v pořádku.</b>",false);
 	O=NULL;delete O;
 	tab_pruchodu=NULL;delete tab_pruchodu;
@@ -298,6 +298,21 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 //zajišťuje vykreslení pouze obrysu dle typu objektu
 void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool zobrazit_koty)
 {
+  ////vstupní proměnné
+	TColor clAkt=clStenaKabiny;
+	short rotace=O->rotace; //něco s tím udělat!!!! short->double
+	long X1=m.L2Px(O->body->dalsi->X);//m.L2Px(O->Xk);
+	long Y1=m.L2Py(O->body->dalsi->Y);//m.L2Py(O->Yk);
+	long X2=m.L2Px(O->body->dalsi->dalsi->X);//m.L2Px(O->Xk+O->rozmer_kabiny.x);
+	long Y2=m.L2Py(O->body->predchozi->Y);//m.L2Py(O->Yk-O->rozmer_kabiny.y);
+	if(rotace==90 || rotace==270)
+	{
+		X2=m.L2Px(O->Xk+O->rozmer_kabiny.y);
+		Y2=m.L2Py(O->Yk-O->rozmer_kabiny.x);
+	}
+	short sirka_steny_px=m.m2px(O->sirka_steny);//m->px
+	short W=0;//smazat m.round(sirka_steny_px/2.0);//posunutí vykreslení orámování nad vnější rozměry kabiny
+	short pmpp=m.m2px(v.PP.delka_jig); if(v.PP.delka_jig<v.PP.sirka_jig)pmpp=m.m2px(v.PP.sirka_jig);pmpp=m.round(pmpp/2.0);if(pmpp>m.m2px(1))pmpp=m.m2px(1);/*ošetření*///polovina max. průjezdního profilu
 	////poloha nadpisu
 	double X=O->body->dalsi->X+(O->body->dalsi->dalsi->X-O->body->dalsi->X)/2;
 	double Y=O->body->dalsi->Y;
@@ -329,29 +344,12 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 //		vykresli_kotu(canv,O->Xk+X,O->Yk,O->Xk+X,O->Yk-Y,NULL,-0.35,highlight);//offset musí mít opačné znaménko, kvůli nové koncepci vykreslování kót
 //	}
 
-	////vstupní proměnné
-	TColor clAkt=clStenaKabiny;
-	short rotace=O->rotace; //něco s tím udělat!!!! short->double
-	long X1=m.L2Px(O->body->dalsi->X);//m.L2Px(O->Xk);
-	long Y1=m.L2Py(O->body->dalsi->Y);//m.L2Py(O->Yk);
-	long X2=m.L2Px(O->body->dalsi->dalsi->X);//m.L2Px(O->Xk+O->rozmer_kabiny.x);
-	long Y2=m.L2Py(O->body->predchozi->Y);//m.L2Py(O->Yk-O->rozmer_kabiny.y);
-	if(rotace==90 || rotace==270)
-	{
-		X2=m.L2Px(O->Xk+O->rozmer_kabiny.y);
-		Y2=m.L2Py(O->Yk-O->rozmer_kabiny.x);
-	}
-	short sirka_steny_px=m.m2px(O->sirka_steny);//m->px
-	short W=0;//smazat m.round(sirka_steny_px/2.0);//posunutí vykreslení orámování nad vnější rozměry kabiny
-	short pmpp=m.m2px(v.PP.delka_jig); if(v.PP.delka_jig<v.PP.sirka_jig)pmpp=m.m2px(v.PP.sirka_jig);pmpp=m.round(pmpp/2.0);if(pmpp>m.m2px(1))pmpp=m.m2px(1);/*ošetření*///polovina max. průjezdního profilu
-
 	//nastavení pera pro osu pohonu
 	canv->Pen->Width=1;
 	canv->Pen->Color=clBlack;
 	////vykreslení prozatimní osy POHONU
-	double x1=O->body->dalsi->X,x2=O->body->dalsi->dalsi->X,y=O->body->dalsi->Y-(O->body->dalsi->Y-O->body->predchozi->Y)/2;
-	line(canv,m.L2Px(x1),m.L2Py(y),m.L2Px(x2),m.L2Py(y));
-	if(O->pohon!=NULL&&F->pom_temp!=NULL&&O->n==F->pom_temp->n)vykresli_retez(canv,O,0,F->pom_temp->elementy->Y,F->Poffset,true);
+	double x1=O->elementy->dalsi->geo.X1,y1=O->elementy->dalsi->geo.Y1,x2=O->elementy->dalsi->geo.X4,y2=O->elementy->dalsi->geo.Y4;
+	line(canv,m.L2Px(x1),m.L2Py(y1),m.L2Px(x2),m.L2Py(y2));
 
 	////nastavení pera pro kabinu //pro rectangle, následně možné také odstranit
 	canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
@@ -1869,7 +1867,7 @@ void Cvykresli::vykresli_kurzor_kabiny (TCanvas *canv, int id, int X, int Y, Cve
 {
 	if((long)id!=F->VyID && (long)id!=pocet_objektu_knihovny+1 && X!=-200)
 	{
-		int rotace=90;//defaultní hodnota
+		int rotace=270;//defaultní hodnota,dáno azimutem přímky
 		double azimut,X1,Y1,X2,Y2,Xp,Yp;
 		//nastavení rozměrů objektu
 		TPoint rozmery_kabiny;
@@ -1901,15 +1899,15 @@ void Cvykresli::vykresli_kurzor_kabiny (TCanvas *canv, int id, int X, int Y, Cve
 				//ukazatel na předchozí
 				if(p==NULL)p=v.OBJEKTY->predchozi;
 				//zjištění rotace
-				azimut=m.azimut(m.L2Px(p->body->dalsi->X)+m.m2px(p->body->dalsi->dalsi->X-p->body->dalsi->X),m.L2Py(p->body->dalsi->Y)+m.m2px(p->body->dalsi->Y-p->body->predchozi->Y)/2,X,Y);
+				azimut=m.azimut(X,Y,m.L2Px(p->body->dalsi->X)+m.m2px(p->body->dalsi->dalsi->X-p->body->dalsi->X),m.L2Py(p->body->dalsi->Y)+m.m2px(p->body->dalsi->Y-p->body->predchozi->Y)/2);
 				rotace=m.Rt90(azimut);
 				//nastavení bodů objektu
-        switch(rotace)
+				switch(rotace)
 				{
-					case 0:X1=X+m.m2px(rozmery_kabiny.y)/2.0;Y1=Y;X2=X-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y+m.m2px(rozmery_kabiny.x);Xp=X;Yp=Y2;break;
-					case 90:X1=X;Y1=Y-m.m2px(rozmery_kabiny.y)/2.0;X2=X+m.m2px(rozmery_kabiny.x);Y2=Y+m.m2px(rozmery_kabiny.y)/2.0;Xp=X2;Yp=Y;break;
-					case 180:X1=X+m.m2px(rozmery_kabiny.y)/2.0;Y1=Y;X2=X-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y-m.m2px(rozmery_kabiny.x);Xp=X;Yp=Y2;break;
-					case 270:X1=X;Y1=Y-m.m2px(rozmery_kabiny.y)/2.0;X2=X-m.m2px(rozmery_kabiny.x);Y2=Y+m.m2px(rozmery_kabiny.y)/2.0;Xp=X2;Yp=Y;break;
+					case 0:X1=X+m.m2px(rozmery_kabiny.y)/2.0;Y1=Y;X2=X-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y-m.m2px(rozmery_kabiny.x);Xp=X;Yp=Y2;break;
+					case 90:X1=X;Y1=Y-m.m2px(rozmery_kabiny.y)/2.0;X2=X-m.m2px(rozmery_kabiny.x);Y2=Y+m.m2px(rozmery_kabiny.y)/2.0;Xp=X2;Yp=Y;break;
+					case 180:X1=X+m.m2px(rozmery_kabiny.y)/2.0;Y1=Y;X2=X-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y+m.m2px(rozmery_kabiny.x);Xp=X;Yp=Y2;break;
+					case 270:X1=X;Y1=Y-m.m2px(rozmery_kabiny.y)/2.0;X2=X+m.m2px(rozmery_kabiny.x);Y2=Y+m.m2px(rozmery_kabiny.y)/2.0;Xp=X2;Yp=Y;break;
 				}
 				//vykreslení kurzoru
 				canv->Rectangle(X1,Y1,X2,Y2);
@@ -1925,15 +1923,15 @@ void Cvykresli::vykresli_kurzor_kabiny (TCanvas *canv, int id, int X, int Y, Cve
 				if(p==NULL){p=v.OBJEKTY->predchozi;dalsi=v.OBJEKTY->dalsi;}
 				else dalsi=p->dalsi;
 				//zjištění rotace
-				azimut=m.azimut(m.L2Px(p->body->dalsi->X)+m.m2px(p->body->dalsi->dalsi->X-p->body->dalsi->X),m.L2Py(p->body->dalsi->Y)+m.m2px(p->body->dalsi->Y-p->body->predchozi->Y)/2,X,Y);
+				azimut=m.azimut(X,Y,m.L2Px(p->body->dalsi->X)+m.m2px(p->body->dalsi->dalsi->X-p->body->dalsi->X),m.L2Py(p->body->dalsi->Y)+m.m2px(p->body->dalsi->Y-p->body->predchozi->Y)/2);
 				rotace=m.Rt90(azimut);
 				//nastavení bodů objektu
 				switch(rotace)
 				{
-					case 0:X1=X+m.m2px(rozmery_kabiny.y)/2.0;Y1=Y;X2=X-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y+m.m2px(rozmery_kabiny.x);Xp=X;Yp=Y2;break;
-					case 90:X1=X;Y1=Y-m.m2px(rozmery_kabiny.y)/2.0;X2=X+m.m2px(rozmery_kabiny.x);Y2=Y+m.m2px(rozmery_kabiny.y)/2.0;Xp=X2;Yp=Y;break;
-					case 180:X1=X+m.m2px(rozmery_kabiny.y)/2.0;Y1=Y;X2=X-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y-m.m2px(rozmery_kabiny.x);Xp=X;Yp=Y2;break;
-					case 270:X1=X;Y1=Y-m.m2px(rozmery_kabiny.y)/2.0;X2=X-m.m2px(rozmery_kabiny.x);Y2=Y+m.m2px(rozmery_kabiny.y)/2.0;Xp=X2;Yp=Y;break;
+					case 0:X1=X+m.m2px(rozmery_kabiny.y)/2.0;Y1=Y;X2=X-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y-m.m2px(rozmery_kabiny.x);Xp=X;Yp=Y2;break;
+					case 90:X1=X;Y1=Y-m.m2px(rozmery_kabiny.y)/2.0;X2=X-m.m2px(rozmery_kabiny.x);Y2=Y+m.m2px(rozmery_kabiny.y)/2.0;Xp=X2;Yp=Y;break;
+					case 180:X1=X+m.m2px(rozmery_kabiny.y)/2.0;Y1=Y;X2=X-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y+m.m2px(rozmery_kabiny.x);Xp=X;Yp=Y2;break;
+					case 270:X1=X;Y1=Y-m.m2px(rozmery_kabiny.y)/2.0;X2=X+m.m2px(rozmery_kabiny.x);Y2=Y+m.m2px(rozmery_kabiny.y)/2.0;Xp=X2;Yp=Y;break;
 				}
 				//vykreslení kurzoru
 				canv->Rectangle(X1,Y1,X2,Y2);
@@ -1948,13 +1946,13 @@ void Cvykresli::vykresli_kurzor_kabiny (TCanvas *canv, int id, int X, int Y, Cve
 				sipka(canv,(Xp+m.L2Px(dalsi->body->dalsi->X))/2,(Yp+m.L2Py(dalsi->body->dalsi->Y)+m.m2px(dalsi->body->dalsi->Y-dalsi->body->predchozi->Y)/2)/2,m.azimut(m.L2Px(dalsi->body->dalsi->X),m.L2Py(dalsi->body->dalsi->Y)+m.m2px(dalsi->body->dalsi->Y-dalsi->body->predchozi->Y)/2,Xp,Yp)*(-1),true,3,clBlack,clWhite,pmNotXor);
 			}
 		}
-		//uložení rotace objektu, využítí při vkládání objektu
+		//uložení rotace objektu, využítí při vkládání objektu, přepočet z azimutu přímky na orientaci objektu
 		switch(rotace)
 		{
-			case 0:rotace_objektu=270;break;
-			case 90:rotace_objektu=0;break;
-			case 180:rotace_objektu==90;break;
-			case 270:rotace_objektu=180;break;
+			case 0:orientace_objektu=0;break;
+			case 90:orientace_objektu=270;break;
+			case 180:orientace_objektu=180;break;
+			case 270:orientace_objektu=90;break;
 		}
 	}
 	else if(X!=-200)odznac_oznac_vyhybku(canv,X,Y,p);
