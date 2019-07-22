@@ -226,6 +226,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 //záležitost s novým designem
 void TForm1::DesignSettings()
 {
+  log(__func__); //logování
 	//maximalizace formuláře jinak to s novým designem nejde
 	Form1->Width=Screen->WorkAreaWidth;
 	Form1->Height=Screen->WorkAreaHeight;
@@ -342,6 +343,7 @@ void TForm1::DesignSettings()
 //zakázání či povolení grafických uživatelských prvků dle úrovně edice
 void TForm1::edice()
 {
+  log(__func__); //logování
 	//switch na jednotlivé edice v kterém bude následné povolení či zakázání patřičných ovládacíh prvků
 	switch (EDICE)
 	{
@@ -400,6 +402,7 @@ void TForm1::edice()
 //kontrola aktuálnosti verze a případě nabídka na stažení nové
 void TForm1::aktualizace()
 {
+    log(__func__); //logování
 		//zjištění aktuální verze
 		UnicodeString AKT_VERZE=IdHTTP1->Get("http://81.2.243.72/TISPL/verze.txt");
 		//porovnání akt. verze a používané verze aplikace
@@ -429,6 +432,7 @@ void TForm1::aktualizace()
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormShow(TObject *Sender)
 {
+  log(__func__); //logování
   //DPI handling
 	int DPI;
 	DPI = get_DPI();
@@ -440,6 +444,7 @@ void __fastcall TForm1::FormShow(TObject *Sender)
 //volání založení nový soubor z menu = nové nastavení souboru, nastevení aplikace je v konstruktoru
 void __fastcall TForm1::NovySouborClick(TObject *Sender)
 {
+   log(__func__); //logování
 	 if(duvod_k_ulozeni) UlozitClick(this);
 	 Novy_soubor();//samotné vytvoření nového souboru
 	 //následující slouží pouze při uživatelsky volaném soubor nový
@@ -451,6 +456,7 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void TForm1::Novy_soubor()//samotné vytvoření nového souboru
 {
+   log(__func__); //logování
 	 scSplitView_MENU->Opened=false;
 	 scButton_novy->Down=false;
 	 bool novy=true;
@@ -538,6 +544,7 @@ void TForm1::Novy_soubor()//samotné vytvoření nového souboru
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormActivate(TObject *Sender)
 {
+  log(__func__); //logování
 	if(PopUPmenu->Showing || PopUPmenu->closing)PopUPmenu->Close();//pokud je spuštěné pop-up menu, tak ho vypne
 	else
 	{
@@ -566,6 +573,7 @@ void __fastcall TForm1::FormActivate(TObject *Sender)
 //Metoda pro trial verzi
 bool TForm1::ttr(UnicodeString Text)
 {
+  log(__func__); //logování
 	//licence
 	Timer_tr->Enabled=true;
 	UnicodeString LIC_FILE	= LICENCE;
@@ -658,6 +666,7 @@ bool TForm1::ttr(UnicodeString Text)
 //při aktivaci formuláře startující záležitosti, pro zpřehlednění kodu
 void TForm1::startUP()
 {
+  log(__func__); //logování
   //načtení jazykové mutace, nemůže být v konstruktoru, protože ještě neexistují všechny dílčí formuláře = nelze k nim přistoupit
    //load_language(language);   //aktivovani jazyk mutaci
 	//////otevrení posledního souboru
@@ -748,6 +757,7 @@ void TForm1::startUP()
 //zajišťuje zápis do INI aplikace, museli jsme dát do výjimky, protože jednou hodilo error
 void TForm1::writeINI(AnsiString Section,AnsiString Ident,AnsiString Value)
 {
+  log(__func__); //logování
 	try
 	{
 		TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
@@ -763,6 +773,7 @@ void TForm1::writeINI(AnsiString Section,AnsiString Ident,AnsiString Value)
 //zajišťuje čtení z INI aplikace
 AnsiString TForm1::readINI(AnsiString Section,AnsiString Ident)
 {
+  log(__func__); //logování
 	try
 	{
 		TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
@@ -829,7 +840,7 @@ void TForm1::log(AnsiString Text)
 	if(DEBUG && logovat)//pouze pro DEBUG
 	{
 		//přídání datumu k textu
-		Text=TIME.CurrentDate().DateString()+"_"+TIME.CurrentTime().TimeString()+"_"+Text+"\n";
+		Text=TIME.CurrentDate().DateString()+"_"+TIME.CurrentTime().TimeString()+"_"+Text+"\r\n";
 		//samotný zápis do sobourou
 		LogFileStream->Write(Text.c_str(),Text.Length());
   }
@@ -855,6 +866,7 @@ void TForm1::SaveText2File(AnsiString Text,AnsiString FileName)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormResize(TObject *Sender)
 {
+  log(__func__); //logování
 	////design spodní lišty////
 	scGPPanel_bottomtoolbar->Top=scGPPanel_statusbar->Top-scGPPanel_bottomtoolbar->Height;
 	scGPPanel_bottomtoolbar->Width=ClientWidth-scSplitView_LEFTTOOLBAR->Width;
@@ -892,6 +904,7 @@ void __fastcall TForm1::FormResize(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::schemaClick(TObject *Sender)
 {
+  log(__func__); //logování
 	if(MOD==NAHLED)KonecClick(this);
 	else
 	{
@@ -996,6 +1009,7 @@ void __fastcall TForm1::testovnkapacity1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::LayoutClick(TObject *Sender)
 {
+  log(__func__); //logování
 	ESC();//zruší případnou rozdělanou akci
 	MOD=LAYOUT;
 	scSplitView_MENU->Opened=false;//zavře případně otevřené menu
@@ -1050,6 +1064,7 @@ void __fastcall TForm1::casoverezervy1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::AnalyzaClick(TObject *Sender)
 {
+  log(__func__); //logování
 	d.v.prvni_zakazka_dle_schematu();//pokud první zakázka neexistuje, založí ji a přiřadí ji cestu dle schématu, pokud existuje, tak ji pouze přiřadí cestu dle schématu
 //	if(d.v.ZAKAZKY->dalsi==NULL)//pokud nebyla zakazka definovaná - nyní řeší příkaz nad
 //	{
@@ -1161,6 +1176,7 @@ void __fastcall TForm1::scGPGlyphButton_close_legenda_casove_osyClick(TObject *S
 //---------------------------------------------------------------------------
 void __fastcall TForm1::SyntezaClick(TObject *Sender)
 {
+  log(__func__); //logování
 	MOD=TECHNOPROCESY;
 	ESC();//zruší případně rozdělanou akci
 	SB("Zobrazení technologických procesů v čase v jednotlivých objektech.");
@@ -1299,6 +1315,7 @@ void __fastcall TForm1::simulace1Click(TObject *Sender)
 //skryje či zobrazí mřížku
 void __fastcall TForm1::scGPSwitch_gridChangeState(TObject *Sender)
 {
+  log(__func__); //logování
 	scSplitView_MENU->Opened=false;
 	grid=!grid;
 	if(!grid)SB("mřížka skryta",5);
@@ -1346,10 +1363,12 @@ void TForm1::Sr(UnicodeString Text,AnsiString umisteni)
 //vola rychle myMessageBox
 int TForm1::MB(long left,long top,UnicodeString text,UnicodeString caption_text,int mbTYPE,bool centrovat_text,bool checkbox_zobrazit,int width,bool default_button_caption)
 {
+  log(__func__); //logování
 	return myMessageBox->Show(left,top,text,caption_text,mbTYPE,centrovat_text,checkbox_zobrazit,width,default_button_caption);
 }
 int TForm1::MB(UnicodeString text,int mbTYPE,bool centrovat_text,int width,bool default_button_caption,bool blurForm1,bool copy_zobrazit)
 {
+  log(__func__); //logování
 	if(blurForm1)
 	{
 		scStyledForm1->InActiveClientBlurAmount=1;
@@ -1363,6 +1382,7 @@ int TForm1::MB(UnicodeString text,int mbTYPE,bool centrovat_text,int width,bool 
 //usnadňuje přístup ke zprávám, pokud jsou jen prázdné uvozovky (a druhý paremetry na false - což je implicitně), vymaže zpravu, parametr add rozhoduje, zda bude nový text předen k předešlému textu či nikoliv, pokud zpráva obsahuje nějaký text, je zobrazena ikona zprávy, poslední parametr je barva ikony zprávy
 void TForm1::Z(UnicodeString Text,bool add,TColor color)
 {
+  log(__func__); //logování
 	//plnění zprávy textem
 	if(add)scHTMLLabel_log_vypis->Caption = scHTMLLabel_log_vypis->Caption+Text;//text má být přidán k předchozímu textu
 	else scHTMLLabel_log_vypis->Caption = Text;//text má být přidán samostatně
@@ -1388,6 +1408,7 @@ void TForm1::Z(UnicodeString Text,bool add,TColor color)
 //metoda volá kurzory aplikace
 void TForm1::kurzor(TKurzory typ_kurzor)
 {
+  log(__func__); //logování
 	if(typ_kurzor>0)Screen->Cursor=(TCursor)typ_kurzor;
 	else Screen->Cursor=crDefault;
 }
@@ -1590,6 +1611,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 //---------------------------------------------------------------------------
 void TForm1::nacti_podklad(TCanvas *Canv)
 {
+  log(__func__); //logování
 	//načtení rastru
 	if(d.v.PP.raster.filename!="" &&  d.v.PP.raster.show)
 	{
@@ -1618,6 +1640,7 @@ void TForm1::REFRESH()
 //---------------------------------------------------------------------------
 void TForm1::REFRESH(bool refreshovat_mGridy)
 {
+  log(__func__); //logování
 	refresh_mGrid=refreshovat_mGridy;
   REFRESH();
 }
@@ -1625,6 +1648,7 @@ void TForm1::REFRESH(bool refreshovat_mGridy)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 {
+  log(__func__); //logování
 	funkcni_klavesa=0;
 	int HG=0; if(scGPGlyphButton_close_grafy->GlyphOptions->Kind==scgpbgkDownArrow)HG=Chart2->Height;//o výšku grafu
 	int PXM=50;int D=Form1->m.round(d.v.PP.delka_jig*PXM);int S=Form1->m.round(d.v.PP.sirka_jig*PXM);short Yofset=D;if(S>D)Yofset=S;//pro posun obrazu v technologických procesech
@@ -1760,6 +1784,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 //odchytávání znaků pro editaci názvů
 void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 {
+  log(__func__); //logování
 	////////filtr kláves
 	AnsiString key=Key;
 	if(AnsiString(Key)==ms.get_locale_decimal()&&editovany_text.Length()==0)key="";
@@ -1834,6 +1859,7 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 //vytvoří edit na místě hlavičky tabulky, slouží ke změně názvu elementu
 void TForm1::vytvor_edit()
 {
+  log(__func__); //logování
 	index_kurzoru=JID;
 	pom_element_temp=pom_element;//uloží ukazatel na element, při editaci může uživatel odjet kurzorem z editovaného elementu, proto je nutné si jej uložit
 	pom_element_temp->mGrid->Cells[0][0].Type=pom_element_temp->mGrid->EDIT;
@@ -1855,6 +1881,7 @@ void TForm1::vytvor_edit()
 //smaže edit, který sloužil pro změnu názvu elementu a nový název zapíše do elementu, defaultně provede refresh, pokud není předáno parametrem jinak
 void TForm1::smaz_edit(bool refresh)
 {
+  log(__func__); //logování
 	Konec->SetFocus();//před smazáním komponenty je důležité odstranit fosus!
 	TscGPEdit *E=pom_element_temp->mGrid->getEdit(0,0);E->Free();E=NULL;delete E;//smazání
 	pom_element_temp->mGrid->Cells[0][0].Type=pom_element_temp->mGrid->DRAW;
@@ -1867,6 +1894,7 @@ void TForm1::smaz_edit(bool refresh)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormKeyUp(TObject *Sender, WORD &Key, TShiftState Shift)
 {
+  log(__func__); //logování
 	if(funkcni_klavesa==0)
 	{
 	switch(Akce)
@@ -1933,6 +1961,7 @@ void __fastcall TForm1::FormShortCut(TWMKey &Msg, bool &Handled)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::TimerMouseWheelTimer(TObject *Sender)
 {
+   log(__func__); //logování
 	 if(++doba_neotaceni_mysi==2)
 	 {
 		TimerMouseWheel->Enabled=false;
@@ -1943,6 +1972,7 @@ void __fastcall TForm1::TimerMouseWheelTimer(TObject *Sender)
 void __fastcall TForm1::FormMouseWheelUp(TObject *Sender, TShiftState Shift, TPoint &MousePos,
 					bool &Handled)
 {
+  log(__func__); //logování
 	if(jedno_ze_tri_otoceni_koleckem_mysi==1)//Velice nutná konstrukce kvůli špatně fungujicí funkci OnMouseWheel, detukuje každé druhou událost FormMouseWheel
 	{
 			switch(funkcni_klavesa)//Velice nutná konstrukce kvůli špatně fungujicí funkci OnMouseWheel, detekuje stisk kláves ctrl, shift, ctrl+shift
@@ -1979,6 +2009,7 @@ void __fastcall TForm1::FormMouseWheelUp(TObject *Sender, TShiftState Shift, TPo
 void __fastcall TForm1::FormMouseWheelDown(TObject *Sender, TShiftState Shift, TPoint &MousePos,
 					bool &Handled)
 {
+  log(__func__); //logování
 	if(jedno_ze_tri_otoceni_koleckem_mysi==1)//Velice nutná konstrukce kvůli špatně fungujicí funkci OnMouseWheel, detukuje každé druhou událost FormMouseWheel
 	{
 			switch(funkcni_klavesa)//Velice nutná konstrukce kvůli špatně fungujicí funkci OnMouseWheel, detekuje stisk kláves ctrl, shift, ctrl+shift
@@ -2015,6 +2046,7 @@ void __fastcall TForm1::FormMouseWheelDown(TObject *Sender, TShiftState Shift, T
 void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
 					int X, int Y)
 {
+  log(__func__); //logování
 	TIP="";//odstranění zobrazeného tipu
 	if(MOD==NAHLED)if(PmG->CheckLink(X,Y)==TPoint(-2,-2))FormX->naplneni_dopRD();//pokud je mod náhled a bylo kliknuto na dopRD vrátí tuto rychlost do tabulky pohonu
 	if(MOD==NAHLED&&index_kurzoru==9999||index_kurzoru==100)smaz_edit(false);//smaže edit a neprovede refresh
@@ -4946,6 +4978,7 @@ void TForm1::aktualizace_ComboPohon ()
 //nadesignuje tabulky daného elementu
 void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 {
+  log(__func__); //logování
 	//definice barev
 	TColor clHeaderFont=clBlack;
 	TColor clBackgroundHidden=(TColor)RGB(240,240,240);//m.clIntensive((TColor)RGB(128,128,128),115);
@@ -5065,6 +5098,7 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 //vytvoření tabulek, první výpočty a zapsání do spojáku
 void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla,AnsiString LO,AnsiString cas,AnsiString delka_otoce)
 {
+  log(__func__); //logování
 	switch(E->eID)
 	{
 		case 0://stop stanice
@@ -5309,6 +5343,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 //další spuštěńí, pouze načítání hodnot ze spojáku
 void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla,AnsiString LO,AnsiString cas,AnsiString delka_otoce)
 {
+  log(__func__); //logování
 	switch(E->eID)
 	{
 		case 0://stop stanice
@@ -5540,6 +5575,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 //slouží k vyčtení stávajícího nastavení jednotek, k jejich úpravě a zanesení do INI
 void TForm1::redesign_element()
 {
+  log(__func__); //logování
 	FormX->vstoupeno_elm=false;//zabrání spouštění OnChange při změně jednotek
 	FormX->vstoupeno_poh=false;
 	AnsiString delka_otoce,LO,cas;
@@ -5642,6 +5678,7 @@ void TForm1::redesign_element()
 //přepisuje jednotky a upravuje šířku sloupců
 void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_otoce,AnsiString cas,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla)
 {
+  log(__func__); //logování
 	switch(E->eID)
 	{
 		case 0://stop stanice
@@ -5742,6 +5779,7 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 //přepnutí jednotek v kótách, zapíše do globální proměnné a do INI
 void TForm1::zmenJednotekKot()
 {
+  log(__func__); //logování
 	switch(scGPComboBox_prepinacKot->ItemIndex)
 	{
 		case 0:if(DKunit==M) DKunit=MM;else DKunit=M;break;//délkové
@@ -5755,6 +5793,7 @@ void TForm1::zmenJednotekKot()
 //zapíná či vypíná automatickou ortogonalizaci
 void TForm1::ortogonalizace_on_off()
 {
+   log(__func__); //logování
 	 if(ortogonalizace_stav)//pokud je zapnuta
 	 {
 		 ortogonalizace_stav=false;//tak vypne
@@ -5772,23 +5811,27 @@ void TForm1::ortogonalizace_on_off()
 //volá ortogonalizaci schéma, pokud je ortogonalizace povolena
 void TForm1::ortogonalizace()
 {
+   log(__func__); //logování
 	 if(ortogonalizace_stav)ortogonalizovat();
 }
 //---------------------------------------------------------------------------
 //ortogonalizuje schéma + přichytne ke mřížce pokud je požadováno
 void TForm1::ortogonalizovat()
 {
+  log(__func__); //logování
   d.v.ortogonalizovat();
 }
 //---------------------------------------------------------------------------
 void TForm1::zneplatnit_minulesouradnice()
 {
+  log(__func__); //logování
 	minule_souradnice_kurzoru=TPoint(-200,-200);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::DrawGrid_otoceDrawCell(TObject *Sender, int ACol, int ARow,
           TRect &Rect, TGridDrawState State)
 {
+  log(__func__); //logování
 	short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
 	int W=DrawGrid_otoce->DefaultColWidth  *Z;
 	int H=DrawGrid_otoce->DefaultRowHeight  *Z;
@@ -5839,6 +5882,7 @@ void __fastcall TForm1::DrawGrid_otoceDrawCell(TObject *Sender, int ACol, int AR
 void __fastcall TForm1::DrawGrid_ostatniDrawCell(TObject *Sender, int ACol, int ARow,
 					TRect &Rect, TGridDrawState State)
 {
+  log(__func__); //logování
 	short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
 	int W=DrawGrid_ostatni->DefaultColWidth  *Z;
 	int H=DrawGrid_ostatni->DefaultRowHeight  *Z;
@@ -5875,6 +5919,7 @@ void __fastcall TForm1::DrawGrid_ostatniDrawCell(TObject *Sender, int ACol, int 
 void __fastcall TForm1::DrawGrid_poznamkyDrawCell(TObject *Sender, int ACol, int ARow,
           TRect &Rect, TGridDrawState State)
 {
+  log(__func__); //logování
 	short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
 	int odsazeni=8;
 	int W=DrawGrid_poznamky->DefaultColWidth  *Z;
@@ -5919,6 +5964,7 @@ void __fastcall TForm1::DrawGrid_poznamkyDrawCell(TObject *Sender, int ACol, int
 void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int ARow, TRect &Rect,
 			TGridDrawState State)
 {
+  log(__func__); //logování
 	if(MOD==NAHLED)
 	{
 		scListGroupKnihovObjektu->Caption="Roboti";
@@ -6276,6 +6322,7 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 void __fastcall TForm1::DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y)
 {
+  log(__func__); //logování
 	int Col,Row;
 	//DrawGrid_knihovna->MouseToCell(X,Y,Col,Row);
 	Col=DrawGrid_knihovna->Col; Row=DrawGrid_knihovna->Row;
@@ -6378,6 +6425,7 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton
 void __fastcall TForm1::DrawGrid_otoceMouseDown(TObject *Sender, TMouseButton Button,
 					TShiftState Shift, int X, int Y)
 {
+  log(__func__); //logování
 	if(editace_textu)	Smaz_kurzor();
 	if(MOD==NAHLED)if(PmG->Rows[3].Visible)FormX->odstranit_korelaci();
 	int Col,Row;
@@ -6395,6 +6443,7 @@ void __fastcall TForm1::DrawGrid_otoceMouseDown(TObject *Sender, TMouseButton Bu
 void __fastcall TForm1::DrawGrid_ostatniMouseDown(TObject *Sender, TMouseButton Button,
 					TShiftState Shift, int X, int Y)
 {
+  log(__func__); //logování
 	if(editace_textu)	Smaz_kurzor();
 	if(MOD==NAHLED)if(PmG->Rows[3].Visible)FormX->odstranit_korelaci();
 	if(pom_temp->pohon!=NULL)
@@ -6411,6 +6460,7 @@ void __fastcall TForm1::DrawGrid_ostatniMouseDown(TObject *Sender, TMouseButton 
 void __fastcall TForm1::DrawGrid_geometrieMouseDown(TObject *Sender, TMouseButton Button,
 					TShiftState Shift, int X, int Y)
 {
+  log(__func__); //logování
 	int Col,Row;
 	Col=DrawGrid_ostatni->Col; Row=DrawGrid_ostatni->Row;
 	knihovna_id=4;
@@ -6428,6 +6478,7 @@ void __fastcall TForm1::DrawGrid_geometrieMouseDown(TObject *Sender, TMouseButto
 void __fastcall TForm1::DrawGrid_knihovnaMouseWheelDown(TObject *Sender, TShiftState Shift,
 					TPoint &MousePos, bool &Handled)
 {
+  log(__func__); //logování
 	//SB("down");
 	FormMouseWheelDown(Sender,Shift,MousePos,Handled);
 }
@@ -6436,6 +6487,7 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseWheelDown(TObject *Sender, TShiftS
 void __fastcall TForm1::DrawGrid_knihovnaMouseWheelUp(TObject *Sender, TShiftState Shift,
 					TPoint &MousePos, bool &Handled)
 {
+  log(__func__); //logování
 	//SB("up");
 	FormMouseWheelUp(Sender,Shift,MousePos,Handled);
 }
@@ -6608,6 +6660,7 @@ HRGN hreg=CreatePolygonRgn(body,5,WINDING);//vytvoření regionu
 //---------------------------------------------------------------------------
 void TForm1::zobraz_tip(UnicodeString text,TCanvas* canv)//prázdným (bez paremetrů) voláním  metody se tip smaže
 {
+  log(__func__); //logování
 	TIP=text;
 	if(canv==NULL)REFRESH();//pokud není parametr canvas uveden, jedná se o dlouhodobé vykreslování hodnoty TIP
 	else d.vykresli_tip(canv);//pokud je parametrem předán Canvas vykreslí se přímo a jednorázově
@@ -6615,6 +6668,7 @@ void TForm1::zobraz_tip(UnicodeString text,TCanvas* canv)//prázdným (bez parem
 //---------------------------------------------------------------------------
 void TForm1::akutalizace_stavu_prichytavani_vSB()
 {
+    log(__func__); //logování
 		switch(prichytavat_k_mrizce)
 		{
 			case 0:SB("přichytávat?",5);grid=true;myMessageBox->CheckBox_pamatovat->Checked=false;break;
@@ -6626,6 +6680,7 @@ void TForm1::akutalizace_stavu_prichytavani_vSB()
 //přepínání dotazu, přichytávání, nepřychtávání k mřížce
 void __fastcall TForm1::RzStatusPane5Click(TObject *Sender)
 {
+    log(__func__); //logování
 		if(grid)//aby se po zobrazení mřížky zachoval stavající stav,tedy nebude zohledněn další if
 		if(++prichytavat_k_mrizce==3)prichytavat_k_mrizce=0;
 
@@ -6636,6 +6691,7 @@ void __fastcall TForm1::RzStatusPane5Click(TObject *Sender)
 //přepíná mody zobrazení
 void __fastcall TForm1::RzStatusPane1Click(TObject *Sender)
 {
+    log(__func__); //logování
 		switch(MOD)
 		{
 			case 0:schemaClick(Sender);break;
@@ -6650,12 +6706,14 @@ void __fastcall TForm1::RzStatusPane1Click(TObject *Sender)
 //Zavreni programu volbami Konec - ALT+F4 z menu, odchytáváno včetně všeho dalšího pomocí metoda FormCloseQuery
 void __fastcall TForm1::Konec1Click(TObject *Sender)
 {
+ log(__func__); //logování
  Close();//ukončí aplikaci
 }
 //---------------------------------------------------------------------------
 //Zavreni programu volbou krizek + reaguje na reakci zavirani formulare pri Konec1Click
 void __fastcall TForm1::FormCloseQuery(TObject *Sender, bool &CanClose)
 {
+  log(__func__); //logování
 	if(duvod_k_ulozeni)
 	{
 		AnsiString FNs=FileName_short(FileName);
@@ -6693,6 +6751,7 @@ void __fastcall TForm1::FormCloseQuery(TObject *Sender, bool &CanClose)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Smazat1Click(TObject *Sender)
 {
+  log(__func__); //logování
 	switch (MOD)
 	{
 		case NAHLED:       //kvůli MB hází při mazání z popUP paměťovou chybu
@@ -6798,6 +6857,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 //zobrazí paramety jednoho procesu na časových osách
 void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 {
+  log(__func__); //logování
 	double prozatim_delka_voziku=m.UDV(0);//doplnit rotaci, bylo zde Form1->d.v.PP.delka_jigu;
 	AnsiString rezim="";
 	AnsiString delka="v tuto chvíli neznamá";
@@ -6891,6 +6951,7 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 //podpůrná metoda řeší vstupní část dat, vyseparováno, z důvodu toho, že z GAPO aktulizauji případně spuštěné PO a nemohu volat NP, protože to v sobě obsahu ShowModal - vedlo k chybě, nutno řešit převody jednotek
 void TForm1::NPin()
 {
+  log(__func__); //logování
 	short CTunit=0;if(Form1->readINI("nastaveni_form_parametry", "CT") == "1") CTunit=1;
 	short RDunit=0;if(Form1->readINI("nastaveni_form_parametry", "RDt") == "1")RDunit=1;
 	short DDunit=0;if(Form1->readINI("nastaveni_form_parametry", "DD") == "1") DDunit=1;
@@ -6940,6 +7001,7 @@ void TForm1::NPin()
 //volá form na nastevení parametrů, dřívější nastavparametry1click, převody jednotek se řeší při formshow formu
 void TForm1::NP()
 {
+  log(__func__); //logování
 	if(pom!=NULL)
 	{
 		//////////////////////////plnění dat do formu z daného objektu
@@ -7098,6 +7160,7 @@ void TForm1::NP()
 //---------------------------------------------------------------------------
 void TForm1::NP_input()
 {
+   log(__func__); //logování
 	 //zablokování OnChange tabulek
 	 JID=-1;//ošetření, s JID se pracuje i v náhledu
 	 kurzor(standard);
@@ -7272,6 +7335,7 @@ void TForm1::NP_input()
 //zaktualizuje ve formuláři parametry objektů combobox na výpis pohonů včetně jednotek uvedeného rozmezí rychlostí, pokud jsou zanechané implicitní parametry short RDunitD=-1,short RDunitT=-1, je načteno nastevní jednotek z INI aplikace pro form parametry objektu, v případech, kdy uvedené parametry nejsou dané hodnotou -1, tak se uvažují jednotky dle S==0,MIN==1 pro RDunitT, resp. M==0,MM==1 pro RDunitD
 void TForm1::aktualizace_combobox_pohony_v_PO(short RDunitD,short RDunitT)
 {       
+    log(__func__); //logování
 		Cvektory::TPohon *P=Form1->d.v.POHONY->dalsi;//ukazatel na pohony, přeskakuje hlavičku, která je již vytvořena
 		Form_parametry->scComboBox_pohon->Items->Clear();//smazání původního obsahu
 		TscGPListBoxItem *t=NULL;
@@ -7338,7 +7402,9 @@ void TForm1::aktualizace_combobox_pohony_v_PO(short RDunitD,short RDunitT)
 //---------------------------------------------------------------------------
 //aktualizace a přepočet hodnot volaná kvůli časovým osám (maro) a techn.procesům(roma)
 void TForm1::aktualizace_maro_a_roma()
-{                //toto je v testování - prvni_zakazka.....
+{
+    log(__func__); //logování
+    //toto je v testování - prvni_zakazka.....
 		d.v.prvni_zakazka_dle_schematu();//pokud první zakázka neexistuje, založí ji a přiřadí ji cestu dle schématu, pokud existuje, tak ji pouze přiřadí cestu dle schématu
 		if(scGPCheckBox_pocet_voziku_dle_WIP->Checked)//pokud je aktulizace dle hodnoty WIP+1 povolena
 		{
@@ -7362,6 +7428,7 @@ void TForm1::aktualizace_maro_a_roma()
 //pokud je označený objekt, zajistí jeho zkopírování, připočítá index 1,2,3
 void TForm1::kopirovat_objekt()
 {
+    log(__func__); //logování
 		if(pom!=NULL)//pokud je vybraný objekt
 		{
 				bool remove_pre_index=true;
@@ -7422,6 +7489,7 @@ void __fastcall TForm1::Edit_takt_timeEnter(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Edit_pocet_vozikuChange(TObject *Sender)
 {
+   log(__func__); //logování
 	 //Edit_takt_timeChange(this);
 	 DuvodUlozit(true);
 }
@@ -7451,11 +7519,13 @@ void __fastcall TForm1::Button_dopravnik_parametry_OLDClick(TObject *Sender)
 //---------------------------------------------------------------------------
 AnsiString TForm1::FileName_short(AnsiString FileName)
 {
+  log(__func__); //logování
 	return ms.delete_repeat_all(FileName,"\\");
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::UlozitClick(TObject *Sender)
 {
+  log(__func__); //logování
 	if(duvod_ulozit_nahled&&MOD==NAHLED)
 	{
 		//toto ne: d.v.vymaz_elementy(pom,false); ani vymaz_komory
@@ -7476,6 +7546,7 @@ void __fastcall TForm1::UlozitClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::UlozitjakoClick(TObject *Sender)
 {
+  log(__func__); //logování
   scButton_ulozjako->Down=false;
 	scSplitView_MENU->Opened=false;
 	SaveDialog->Title="Uložit soubor jako";
@@ -7499,6 +7570,7 @@ void __fastcall TForm1::UlozitjakoClick(TObject *Sender)
 //samotné uložení
 void TForm1::Ulozit_soubor()
 {
+    log(__func__); //logování
 		//zapis dat do souboru
 		d.v.uloz_do_souboru(FileName);
 
@@ -7518,6 +7590,7 @@ void TForm1::Ulozit_soubor()
 //otevře soubor
 void __fastcall TForm1::Toolbar_OtevritClick(TObject *Sender)
 {
+  log(__func__); //logování
 	scSplitView_MENU->Opened=false;
 	scButton_otevrit->Down=false;
 	if(duvod_k_ulozeni)//pokud existuje předcházejicí soubor, který je nutný uložit
@@ -7538,6 +7611,7 @@ void __fastcall TForm1::Toolbar_OtevritClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void TForm1::Otevrit_soubor()//realizuje otevření opendialogu s následným voláním realizace samotného otevření souboru
 {
+  log(__func__); //logování
 	OpenDialog1->Title="Otevřít soubor";
 	OpenDialog1->DefaultExt="*.tispl";
 	OpenDialog1->Filter="Soubory formátu TISPL (*.tispl)|*.tispl";
@@ -7553,6 +7627,7 @@ void TForm1::Otevrit_soubor()//realizuje otevření opendialogu s následným vo
 //-------------------------------------------------------------------------
 unsigned short int TForm1::Otevrit_soubor(UnicodeString soubor)//realizuje samotné otevření souboru
 {
+  log(__func__); //logování
 	//načte data ze souboru a reaguje na návratovou hodnotu
 	switch(d.v.nacti_ze_souboru(soubor))
 	{
@@ -7615,6 +7690,7 @@ unsigned short int TForm1::Otevrit_soubor(UnicodeString soubor)//realizuje samot
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Obnovitzezlohy1Click(TObject *Sender)
 {
+  log(__func__); //logování
 	scButton_zaloha->Down=false;
 	scSplitView_MENU->Opened=false;
 	OpenDialog1->Title="Otevřít soubor ze zálohy";
@@ -7641,6 +7717,7 @@ void __fastcall TForm1::Obnovitzezlohy1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::OtevritsablonuClick(TObject *Sender)
 {
+  log(__func__); //logování
 	OpenDialog1->Title="Otevřít šablonu";
 	OpenDialog1->DefaultExt="*tisplTemp";
 	AnsiString nazev="Soubory šablon TISPL (*.tisplTemp)|*.tisplTemp";
@@ -7662,6 +7739,7 @@ void __fastcall TForm1::OtevritsablonuClick(TObject *Sender)
 //uložení posledního otevřeného souboru
 void TForm1::ulozit_posledni_otevreny()
 {
+  log(__func__); //logování
 	//-TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
 	//-ini->WriteString("otevrene_soubory","posledni_soubor",FileName);
 	//-delete ini;
@@ -7671,6 +7749,7 @@ void TForm1::ulozit_posledni_otevreny()
 //zavře úvodní dialog
 void TForm1::zavrit_uvod()
 {
+    log(__func__); //logování
 		Form_uvod->Timer1->Enabled=false;
 		Form_uvod->Close();
 }
@@ -7680,6 +7759,7 @@ void TForm1::zavrit_uvod()
 //zajišťuje průběžné zálohování aplikace
 void __fastcall TForm1::Timer_backupTimer(TObject *Sender)
 {
+     log(__func__); //logování
 		 //zapis hlavičky do souboru
 		//test vytvor_hlavicku_souboru();
 
@@ -7703,6 +7783,7 @@ void __fastcall TForm1::Timer_backupTimer(TObject *Sender)
 //vše smaže z paměti
 void TForm1::vse_odstranit()
 {
+    log(__func__); //logování
 		d.v.vse_odstranit();
 		if(pom!=NULL){pom->pohon=NULL;delete pom->pohon;}pom=NULL;delete pom;
 		if(pom_temp!=NULL){pom_temp->pohon=NULL;delete pom_temp->pohon;}pom_temp=NULL;delete pom_temp;
@@ -7735,6 +7816,7 @@ int TForm1::get_DPI ()
 //---------------------------------------------------------------------------
 UnicodeString TForm1::get_computer_name()
 {
+   log(__func__); //logování
 	 wchar_t *pc=new wchar_t[MAX_COMPUTERNAME_LENGTH+1];
 	 DWORD dwSize=MAX_COMPUTERNAME_LENGTH+1;
    if(GetComputerName(pc,&dwSize))return AnsiString(pc);
@@ -7743,6 +7825,7 @@ UnicodeString TForm1::get_computer_name()
 //---------------------------------------------------------------------------
 UnicodeString TForm1::get_user_name()
 {
+   log(__func__); //logování
 	 wchar_t *user=new wchar_t[20+1];
    DWORD dwSize_user=20+1;
 	 if(GetUserName(user,&dwSize_user))return AnsiString(user);
@@ -7751,6 +7834,7 @@ UnicodeString TForm1::get_user_name()
 //---------------------------------------------------------------------------
 UnicodeString TForm1::get_temp_dir()
 {
+   log(__func__); //logování
 	 WCHAR lpTempPathBuffer[MAX_PATH];
 	 GetTempPathW(MAX_PATH,lpTempPathBuffer);
 	 UnicodeString TempPath=lpTempPathBuffer;
@@ -7759,6 +7843,7 @@ UnicodeString TForm1::get_temp_dir()
 //---------------------------------------------------------------------------
 UnicodeString TForm1::get_Windows_dir()
 {
+  log(__func__); //logování
 	const unsigned int INFO_BUFFER_SIZE=32767;
 	TCHAR  infoBuf[INFO_BUFFER_SIZE];
 	DWORD  bufCharCount = INFO_BUFFER_SIZE;
@@ -7798,6 +7883,7 @@ void TForm1::nacist_nastaveni()
 //uloží nastavení programu do INI souboru
 void TForm1::ulozit_nastaveni()
 {
+  log(__func__); //logování
 	ChangeFileExt(Application->ExeName, ".ini");
 	//TIniFile *ini = new TIniFile(ExtractFilePath(Application->ExeName) + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
 	TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
@@ -7817,6 +7903,7 @@ void TForm1::ulozit_nastaveni()
 //---------------------------------------------------------------------------
 void TForm1::DuvodUlozit(bool stav)
 {
+   log(__func__); //logování
 	 //nastavení stavu ovládacích prvků
 	 RzToolButton3->Enabled=stav;
 	 Toolbar_Ulozit->Enabled=stav;
@@ -7829,6 +7916,7 @@ void TForm1::DuvodUlozit(bool stav)
 //zajistí export do rastrového formátu
 void __fastcall TForm1::Export1Click(TObject *Sender)
 {
+   log(__func__); //logování
 	 scSplitView_MENU->Opened=false;
 	 scButton_export->Down=false;
 	 SavePictureDialog1->Filter="Soubory formátu BMP (*.bmp)|*.bmp|Soubory formátu JPG (*.jpg)|*.jpg|Soubory formátu PNG (*.png)|*.png";
@@ -7922,6 +8010,7 @@ void __fastcall TForm1::Export1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Rychlexport1Click(TObject *Sender)
 {
+   log(__func__); //logování
 	 Screen->Cursor=crHourGlass;//změní kurzor na přesýpací hodiny
 
 	 unsigned int PO=100;//po kolika vozících se bude stránkovat export
@@ -7950,7 +8039,7 @@ void __fastcall TForm1::Rychlexport1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void TForm1::nastaveni_grafickeho_vystupu(Graphics::TBitmap * Bitmap,unsigned int OD,unsigned int PO)
 {
-
+   log(__func__); //logování
 	 if(OD==0)OD=1;//ošetření kvůli následujícímu OD-1=aby se nešlo do minusu resp. 0 ošetřuje d.v.vrat_start_a_pozici_vozikuPX
 	 //souřadnice X pro pozici a šířku (pozor: .y mate jedná se o pravou souřadnici X)
 	 int L=0;int R=0;
@@ -8015,6 +8104,7 @@ void __fastcall TForm1::csv1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::html1Click(TObject *Sender)
 {
+  log(__func__); //logování
 	scSplitView_MENU->Opened=false;
 	scButton_report->Down=false;
 	if(d.v.OBJEKTY->dalsi==NULL)//pokud existují nějaka data
@@ -8067,12 +8157,14 @@ void __fastcall TForm1::Button2Click(TObject *Sender)
 */
 void __fastcall TForm1::Obnovitobraz1Click(TObject *Sender)
 {
+  log(__func__); //logování
 	//nezabira zneplatnit_minulesouradnice();
 	Invalidate();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Timer_simulaceTimer(TObject *Sender)
 {
+   log(__func__); //logování
 	 Canvas->TextOutW(90,90,d.cas);
 	 if(d.cas%100==0) //&& cas>0)
 	 {
@@ -8119,12 +8211,14 @@ void __fastcall TForm1::Button3Click(TObject *Sender)
 
 void __fastcall TForm1::Vypicestuktempu1Click(TObject *Sender)
 {
+  log(__func__); //logování
 	MB(-1,-1,"<b>Verze: </b>"+VERZE+"<br><br><b>Umístění: </b>"+Application->ExeName+"<br><br><b>Temp : </b>"+get_temp_dir(),"Informace o aplikaci");
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TForm1::Button4Click(TObject *Sender)
 {
+  log(__func__); //logování
 	Timer_simulace->Enabled=!Timer_simulace->Enabled;
 	if(Button4->Caption=="Pauza simulace")Button4->Caption="Start simulace";
 	else Button4->Caption="Pauza simulace";
@@ -8501,6 +8595,7 @@ void __fastcall TForm1::Timer_neaktivityTimer(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::ButtonPLAY_OClick(TObject *Sender)
 {
+  log(__func__); //logování
 	Timer_animace->Enabled=!Timer_animace->Enabled;
 
 	if(Timer_animace->Enabled)
@@ -8527,6 +8622,7 @@ void __fastcall TForm1::ButtonPLAY_OClick(TObject *Sender)
 //tlačítko na spuštění animace v náhledu kabiny
 void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 {
+  log(__func__); //logování
 	RO-=(1.5*Zoom/m2px)/20.0;
 	Poffset=0;
 	scGPButton_viditelnostmGridClick(Sender);//zakáže mgridy
@@ -8552,6 +8648,7 @@ void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Timer_animaceTimer(TObject *Sender)
 {
+  log(__func__); //logování
 	if(MOD==NAHLED)
 	{
 		short LO=1.5;//lakovací okno
@@ -8610,6 +8707,7 @@ void __fastcall TForm1::Timer_animaceTimer(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 {
+  log(__func__); //logování
 	if(d.v.PROCESY!=NULL && d.v.PROCESY->predchozi->n>0)//pokud je více objektů
 	{
 		d.mod_vytizenost_objektu=!d.mod_vytizenost_objektu;
@@ -8649,6 +8747,7 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
 {
+  log(__func__); //logování
 	d.JIZPOCITANO=false;//zajistí přepočet časových os
 	Invalidate();
 	RM();//korekce chyby oskakování pravého menu
@@ -8656,6 +8755,7 @@ void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
 //-------------------------------------------------------------
 void __fastcall TForm1::ComboBoxODminChange(TObject *Sender)
 {
+  log(__func__); //logování
 	//ještě ošetření aby zadal hodnotu od menší nebo rovno hodnotě do
 	d.TP.OD=ms.MyToDouble(ComboBoxODmin->Text);
 	Invalidate();
@@ -8664,6 +8764,7 @@ void __fastcall TForm1::ComboBoxODminChange(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::ComboBoxDOminChange(TObject *Sender)
 {
+  log(__func__); //logování
 	//ještě ošetření aby zadal hodnotu od menší nebo rovno hodnotě do
 	d.TP.DO=ms.MyToDouble(ComboBoxDOmin->Text);
 	Invalidate();
@@ -8673,6 +8774,7 @@ void __fastcall TForm1::ComboBoxDOminChange(TObject *Sender)
 //zapne či vypne antialiasing
 void __fastcall TForm1::scGPSwitch_AAChangeState(TObject *Sender)
 {
+  log(__func__); //logování
 	antialiasing=!antialiasing;//musí být před scSplitView_MENU->Opened!!!
 	scSplitView_MENU->Opened=false;
 	DrawGrid_knihovna->Invalidate();
@@ -8733,6 +8835,7 @@ void __fastcall TForm1::rComboBoxKrokChange(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::MaxButtonClick(TObject *Sender)
 {
+  log(__func__); //logování
 	if (FMaximized)//zmenšení
 	{
 			 //BoundsRect =  FOldBoundsRect;
@@ -8774,6 +8877,7 @@ void __fastcall TForm1::scGPGlyphButton_OPTIONS_OldClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::KonecClick(TObject *Sender)
 {
+  log(__func__); //logování
 	//zalogování vypnutí aplikace
 //	AnsiString relation_id=GetCurrentProcessId();
 //	AnsiString send_log_time= TIME.CurrentDateTime();
@@ -8804,6 +8908,7 @@ void __fastcall TForm1::KonecClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPGlyphButton_ZOOM_MINUSClick(TObject *Sender)
 {
+  log(__func__); //logování
 	vycentrovat=false;
 	akt_souradnice_kurzoru=m.P2L(ClientWidth/2+scSplitView_LEFTTOOLBAR->Width,ClientHeight/2);
 	ZOOM_OUT();
@@ -8812,6 +8917,7 @@ void __fastcall TForm1::scGPGlyphButton_ZOOM_MINUSClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPGlyphButton_ZOOM_PLUSClick(TObject *Sender)
 {
+ log(__func__); //logování
  vycentrovat=false;
  akt_souradnice_kurzoru=m.P2L(ClientWidth/2+scSplitView_LEFTTOOLBAR->Width,ClientHeight/2);
  ZOOM_IN();
@@ -8820,23 +8926,27 @@ void __fastcall TForm1::scGPGlyphButton_ZOOM_PLUSClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scLabel_titulekDblClick(TObject *Sender)
 {
+  log(__func__); //logování
   //zajistí maximalizaci či zmenšení okna po double clicku na titulek
 	MaxButtonClick(Sender);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::MinButtonClick(TObject *Sender)
 {
+  log(__func__); //logování
 	Application->Minimize();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPGlyphButton2Click(TObject *Sender)
 {
+  log(__func__); //logování
 	scSplitView_LEFTTOOLBAR->Opened = !scSplitView_LEFTTOOLBAR->Opened;
 }
 //---------------------------------------------------------------------------
 //volání parametrů linky nebo definice zakázek - dle zvoleného režimu
 void __fastcall TForm1::Button_dopravnik_parametryClick(TObject *Sender)
 {
+  log(__func__); //logování
 	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;//zavře případně otevřené menu
 	if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
  //	scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
@@ -8899,6 +9009,7 @@ void __fastcall TForm1::scGPGlyphButton_definice_zakazekClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::DetailsButtonClick(TObject *Sender)
 {
+  log(__func__); //logování
 	ESC();//zruší případnou rozdělanou akci
 	DrawGrid_knihovna->Visible=false;DrawGrid_otoce->Visible=false;DrawGrid_ostatni->Visible=false;DrawGrid_geometrie->Visible=false;DrawGrid_poznamky->Visible=false;
 	scSplitView_MENU->Opened = !scSplitView_MENU->Opened;
@@ -8910,6 +9021,7 @@ void __fastcall TForm1::DetailsButtonClick(TObject *Sender)
 //při změnně palce na tracBaru aktualizuje zoom a zavolá překreslení obrazu
 void __fastcall TForm1::scGPTrackBar1Change(TObject *Sender)
 {
+    log(__func__); //logování
 		switch(scGPTrackBar1->Value)
 		{
 			case 0:Zoom=0.25;break;
@@ -8936,6 +9048,7 @@ void __fastcall TForm1::scGPTrackBar1Change(TObject *Sender)
 //při změně zoomu aktulizuje palec na trackBaru, inverzní funkce k funkci předchozí
 void TForm1::on_change_zoom_change_scGPTrackBar()
 {
+  log(__func__); //logování
 	if(Zoom==0.25)	scGPTrackBar1->Value=0;
 	if(Zoom==0.5)		scGPTrackBar1->Value=1;
 	if(Zoom==1)			scGPTrackBar1->Value=2;
@@ -8958,6 +9071,7 @@ void TForm1::on_change_zoom_change_scGPTrackBar()
 //přepínání režimu aplikace návrh ověřování
 void __fastcall TForm1::scGPSwitch_rezimChangeState(TObject *Sender)
 {
+  log(__func__); //logování
 	scSplitView_MENU->Opened=false;
  //	ShowMessage(STATUS);
 	if(STATUS==NAVRH)
@@ -9004,6 +9118,7 @@ void __fastcall TForm1::scGPSwitch_rezimChangeState(TObject *Sender)
 //pokud je při zavírání okna aktivní AA, tak udělá kopii pracovní oblasti AA vypne a zavře okno, bez toho by se zavíralo trhaně
 void __fastcall TForm1::scSplitViewsClosing(TObject *Sender)
 {
+  log(__func__); //logování
 	scSplitViews_closing_on_AA=false;
 	SplitViewOpen=true;
 	if(antialiasing)
@@ -9024,6 +9139,7 @@ void __fastcall TForm1::scSplitViewsClosing(TObject *Sender)
 //pokud byl AA zapnutý, tak navrácení do původního stavu na true
 void __fastcall TForm1::scSplitViewsClosed(TObject *Sender)
 {
+    log(__func__); //logování
 		if(scSplitViews_closing_on_AA)antialiasing=true;
 		SplitViewOpen=false;
 		if(MOD==CASOVAOSA || TECHNOPROCESY)REFRESH();
@@ -9031,11 +9147,13 @@ void __fastcall TForm1::scSplitViewsClosed(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scExPanel_vrstvyClick(TObject *Sender)
 {
+  log(__func__); //logování
 	scExPanel_vrstvy->RollUpState=!scExPanel_vrstvy->RollUpState;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scExPanel_ostatniClick(TObject *Sender)
 {
+  log(__func__); //logování
 	scExPanel_ostatni->RollUpState=!scExPanel_ostatni->RollUpState;
 	if(MOD==CASOVAOSA)
 	{
@@ -9049,6 +9167,7 @@ void __fastcall TForm1::scExPanel_ostatniClick(TObject *Sender)
 //vypnutí či zapnutí ortogonolazice
 void __fastcall TForm1::scGPCheckBox_ortogonClick(TObject *Sender)
 {
+  log(__func__); //logování
 //	if(!start_ortogonalizace)//pokud se nejedná o start aplikace, aby se nevolalo v tomto okamžiku
 //	ortogonalizace_on_off();
 	if(scGPCheckBox_ortogon->State==0)ortogonalizace_stav=false;
@@ -9058,6 +9177,7 @@ void __fastcall TForm1::scGPCheckBox_ortogonClick(TObject *Sender)
 //vypnutí měřítko
 void __fastcall TForm1::scGPSwitch_meritkoChangeState(TObject *Sender)
 {
+   log(__func__); //logování
 	 scSplitView_MENU->Opened=false;
 	 zobrazit_meritko=scGPSwitch_meritko->State;
 	 REFRESH();
@@ -9118,6 +9238,7 @@ void __fastcall TForm1::button_zakazky_tempClick(TObject *Sender)
 //volání eDesignera
 void __fastcall TForm1::scButton2Click(TObject *Sender)
 {
+   log(__func__); //logování
 	 scSplitView_MENU->Close();//zavře menu
 	 Novy_soubor();//prvně zavřu starý, který ho donutím uložit a vytvořím nový soubor
 	 //Form_eDesigner->Show();
@@ -9176,6 +9297,7 @@ void __fastcall TForm1::scButton2Click(TObject *Sender)
 
 void __fastcall TForm1::ComboBoxCekaniChange(TObject *Sender)
 {
+  log(__func__); //logování
 	//pokud bych chtěl používat i v v modu vytzení objektu, ale při znovu výberu náhodne hodnoty házelo chybu:if(d.mod_vytizenost_objektu){d.JIZPOCITANO=false;d.mod_vytizenost_objektu=false;d.vykresli_casove_osy(Canvas);d.mod_vytizenost_objektu=true;}
 	if(ComboBoxCekani->ItemIndex==2)//tak se zobrazí vedle toho comba tlačítko pro nové generování
 	{
@@ -9236,6 +9358,7 @@ void __fastcall TForm1::ComboBoxCekaniChange(TObject *Sender)
 
 void __fastcall TForm1::scExPanel_log_headerClose(TObject *Sender)
 {
+  log(__func__); //logování
 //	scExPanel_log_header->Visible=false;
 	scGPGlyphButton_zpravy_ikona->Visible=true;
 	scExPanel_log_header->Visible=false;
@@ -9246,6 +9369,7 @@ void __fastcall TForm1::scExPanel_log_headerClose(TObject *Sender)
 
 void __fastcall TForm1::scGPGlyphButton_zpravy_ikonaClick(TObject *Sender)
 {
+  log(__func__); //logování
 	if(scExPanel_log_header->Visible==false)
 	{
 		scExPanel_log_header->Visible=true;
@@ -9260,6 +9384,7 @@ void __fastcall TForm1::scGPGlyphButton_zpravy_ikonaClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scSplitView_OPTIONSOpened(TObject *Sender)
 {
+  log(__func__); //logování
 	scSplitView_OPTIONS->Left=ClientWidth-scSplitView_OPTIONS->OpenedWidth;
 
 	scGPButton_generuj->Options->NormalColor=scSplitView_OPTIONS->Color;
@@ -9333,12 +9458,14 @@ void __fastcall TForm1::scGPButton_generujClick(TObject *Sender)
 //korekce chyby oskakování pravého menu
 void TForm1::RM()
 {
+  log(__func__); //logování
 	if(scSplitView_OPTIONS->Visible)scSplitView_OPTIONS->Align=alRight;
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TForm1::scExPanel_log_headerClick(TObject *Sender)
 {
+log(__func__); //logování
 scSplitView_OPTIONS->Opened=false;
 }
 //---------------------------------------------------------------------------
@@ -9346,6 +9473,7 @@ scSplitView_OPTIONS->Opened=false;
 void __fastcall TForm1::scExPanel_log_headerMouseDown(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y)
 {
+log(__func__); //logování
 scSplitView_OPTIONS->Opened=false;
 }
 //---------------------------------------------------------------------------
@@ -9355,6 +9483,7 @@ void __fastcall TForm1::scExPanel_log_headerMouseActivate(TObject *Sender, TMous
           TShiftState Shift, int X, int Y, int HitTest, TMouseActivate &MouseActivate)
 
 {
+log(__func__); //logování
 scSplitView_OPTIONS->Opened=false;
 }
 //---------------------------------------------------------------------------
@@ -9495,6 +9624,7 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 {
+  log(__func__); //logování
 	if(MOD==NAHLED)  //navrácení do módu schéma
 	{
 		if(MOD==NAHLED&&index_kurzoru==9999||index_kurzoru==100)
@@ -9612,6 +9742,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
 {
+  log(__func__); //logování
 	scSplitView_MENU->Opened=false;
 	OpenDialog1->Title="Načíst podklad";
 	OpenDialog1->DefaultExt="*.bmp";
@@ -9626,6 +9757,7 @@ void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
 //---------------------------------------------------------------------------
  unsigned short int  TForm1::Nacist_podklad(UnicodeString soubor)
  {
+  log(__func__); //logování
   d.v.PP.raster.show=true;
 	d.v.PP.raster.filename=soubor;
 	d.v.PP.raster.X=m.P2Lx(scSplitView_LEFTTOOLBAR->Width +10);d.v.PP.raster.Y=m.P2Ly(scGPPanel_mainmenu->Height + 10);//souřadnice v metrech
@@ -9654,6 +9786,7 @@ void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
 void __fastcall TForm1::DrawGrid_geometrieDrawCell(TObject *Sender, int ACol, int ARow,
           TRect &Rect, TGridDrawState State)
 {
+  log(__func__); //logování
 	short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
 	int W=DrawGrid_geometrie->DefaultColWidth  *Z;
 	int H=DrawGrid_geometrie->DefaultRowHeight  *Z;
@@ -9708,7 +9841,7 @@ void __fastcall TForm1::DrawGrid_geometrieDrawCell(TObject *Sender, int ACol, in
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPCheckBox_zobraz_podkladClick(TObject *Sender)
 {
-
+ log(__func__); //logování
 // if(auto_settings_open==false)
 // {
 	if(!scGPCheckBox_zobraz_podklad->Checked && scSplitView_OPTIONS->Opened)
@@ -9732,6 +9865,7 @@ void __fastcall TForm1::scGPCheckBox_zobraz_podkladClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPButton_kalibraceClick(TObject *Sender)
 {
+  log(__func__); //logování
 	kurzor(add_o);//pozor kurzor kalibrovat neni vycentrovaný, je třeba jej imageeditoru předělat
 	Akce=KALIBRACE;
   scSplitView_OPTIONS->Opened=false;
@@ -9739,6 +9873,7 @@ void __fastcall TForm1::scGPButton_kalibraceClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPButton_adjustaceClick(TObject *Sender)
 {
+  log(__func__); //logování
 	kurzor(add_o);
   Akce=ADJUSTACE;
   scSplitView_OPTIONS->Opened=false;
@@ -9747,6 +9882,7 @@ void __fastcall TForm1::scGPButton_adjustaceClick(TObject *Sender)
 
 void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
 {
+  log(__func__); //logování
   ESC();//zruší případnou rozdělanou akci  - způsobuje problém při zavírání splitview
   scSplitView_OPTIONS->Opened = !scSplitView_OPTIONS->Opened;
 
@@ -9794,13 +9930,15 @@ void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
 
 void __fastcall TForm1::scGPGlyphButton_OPTIONSMouseEnter(TObject *Sender)
 {
-    scGPGlyphButton_OPTIONS->GlyphColor=(TColor)RGB(0,120,215);
+log(__func__); //logování
+scGPGlyphButton_OPTIONS->GlyphColor=(TColor)RGB(0,120,215);
 }
 //---------------------------------------------------------------------------
 
 
 void __fastcall TForm1::scGPGlyphButton_OPTIONSMouseLeave(TObject *Sender)
 {
+log(__func__); //logování
 scGPGlyphButton_OPTIONS->GlyphColor=clWhite;
 }
 //---------------------------------------------------------------------------
@@ -9810,12 +9948,14 @@ scGPGlyphButton_OPTIONS->GlyphColor=clWhite;
 void __fastcall TForm1::scExPanel_podkladClick(TObject *Sender)
 {
 //
+  log(__func__); //logování
 	scExPanel_podklad->RollUpState=!scExPanel_podklad->RollUpState;
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TForm1::scGPTrackBar_svetelnost_posuvkaChange(TObject *Sender)
 {
+log(__func__); //logování
 d.v.PP.raster.dim=scGPTrackBar_svetelnost_posuvka->Value;
 REFRESH();
 DuvodUlozit(true);
@@ -9824,6 +9964,7 @@ DuvodUlozit(true);
 
 void __fastcall TForm1::scGPCheckBox_stupne_sediClick(TObject *Sender)
 {
+ log(__func__); //logování
  if(!scGPCheckBox_stupne_sedi->Checked && scSplitView_OPTIONS->Opened)
 		{
 		d.v.PP.raster.grayscale=false;
@@ -9850,6 +9991,7 @@ void __fastcall TForm1::scGPCheckBox_stupne_sediClick(TObject *Sender)
 void __fastcall TForm1::DrawGrid_ostatniMouseWheelDown(TObject *Sender, TShiftState Shift,
           TPoint &MousePos, bool &Handled)
 {
+log(__func__); //logování
 FormMouseWheelDown(Sender,Shift,MousePos,Handled);
 
 }
@@ -9865,6 +10007,7 @@ void __fastcall TForm1::DrawGrid_geometrieMouseWheelDown(TObject *Sender, TShift
 void __fastcall TForm1::DrawGrid_poznamkyMouseWheelDown(TObject *Sender, TShiftState Shift,
           TPoint &MousePos, bool &Handled)
 {
+log(__func__); //logování
 FormMouseWheelDown(Sender,Shift,MousePos,Handled);
 }
 //---------------------------------------------------------------------------
@@ -9872,6 +10015,7 @@ FormMouseWheelDown(Sender,Shift,MousePos,Handled);
 void __fastcall TForm1::DrawGrid_ostatniMouseWheelUp(TObject *Sender, TShiftState Shift,
 					TPoint &MousePos, bool &Handled)
 {
+  log(__func__); //logování
 	FormMouseWheelUp(Sender,Shift,MousePos,Handled);
 }
 //---------------------------------------------------------------------------
@@ -9879,6 +10023,7 @@ void __fastcall TForm1::DrawGrid_ostatniMouseWheelUp(TObject *Sender, TShiftStat
 void __fastcall TForm1::DrawGrid_geometrieMouseWheelUp(TObject *Sender, TShiftState Shift,
           TPoint &MousePos, bool &Handled)
 {
+  log(__func__); //logování
 	FormMouseWheelUp(Sender,Shift,MousePos,Handled);
 }
 //---------------------------------------------------------------------------
@@ -9886,6 +10031,7 @@ void __fastcall TForm1::DrawGrid_geometrieMouseWheelUp(TObject *Sender, TShiftSt
 void __fastcall TForm1::DrawGrid_poznamkyMouseWheelUp(TObject *Sender, TShiftState Shift,
           TPoint &MousePos, bool &Handled)
 {
+  log(__func__); //logování
 	FormMouseWheelUp(Sender,Shift,MousePos,Handled);
 }
 //---------------------------------------------------------------------------
@@ -9898,6 +10044,7 @@ MOD=SCHEMA;
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
 {
+  log(__func__); //logování
 	d.v.vymaz_komory(pom);
 	d.v.vymaz_elementy(pom,true);
 	d.v.kopiruj_objekt(pom_temp,pom);
@@ -10021,6 +10168,7 @@ Memo3->Lines->Add("onchange");
 
 void __fastcall TForm1::Timer2Timer(TObject *Sender)
 {
+ log(__func__); //logování
  if(pom_element_temp!=NULL&&index_kurzoru==9999)//pro smazání editu při editaci názvu elementu skrze tabulku
  {
 	 smaz_edit();
@@ -10036,12 +10184,14 @@ void __fastcall TForm1::Timer2Timer(TObject *Sender)
 //volá metodu vykresli_kurzor při editaci textu
 void __fastcall TForm1::TimerKurzorTimer(TObject *Sender)
 {
+  log(__func__); //logování
 	vykresli_kurzor(index_kurzoru);
 }
 //---------------------------------------------------------------------------
 //vykresluje a maže kurzor
 void TForm1::vykresli_kurzor(int index)
 {
+  log(__func__); //logování
 	//nastavení rozměrů názvu a zkratky objektu
 	AnsiString Tn,Tl,Tz;
 	short Wn,Wl,Wz;
@@ -10164,6 +10314,7 @@ void TForm1::vykresli_kurzor(int index)
 //smaže kurzor pokud je stále vykreslený i po vypnutí editace textu
 void TForm1::Smaz_kurzor()
 {
+  log(__func__); //logování
 	TIP="";
 	if(editace_textu&&pom_temp!=NULL)//ukončí editaci textu
 	{
@@ -10258,6 +10409,7 @@ void TForm1::Smaz_kurzor()
 //vypnutí/zapnutí zamčení náhledu
 void __fastcall TForm1::scButton_zamekClick(TObject *Sender)
 {
+  log(__func__); //logování
 	if(scButton_zamek->ImageIndex==37)//zamčeno budu odemykat
 	{
 		pom_temp->uzamknout_nahled=false;
@@ -10280,6 +10432,7 @@ void __fastcall TForm1::scButton_zamekClick(TObject *Sender)
 //přepíná viditelnost mGridů
 void __fastcall TForm1::scGPButton_viditelnostmGridClick(TObject *Sender)
 {
+  log(__func__); //logování
 	if(scGPButton_viditelnostmGrid->ImageIndex==55)//vypnuto budu zapínat
 	{
 		scGPButton_viditelnostmGrid->ImageIndex=54;//zapnuto
@@ -10301,6 +10454,7 @@ void __fastcall TForm1::scGPButton_viditelnostmGridClick(TObject *Sender)
 //přepíná viditelnost kót
 void __fastcall TForm1::scGPButton_viditelnostKotyClick(TObject *Sender)
 {
+  log(__func__); //logování
 	if(scGPButton_viditelnostKoty->ImageIndex==57)//vypnuto budu zapínat
 	{
 		scGPButton_viditelnostKoty->ImageIndex=56;//zapnuto
@@ -10321,6 +10475,7 @@ void __fastcall TForm1::scGPButton_viditelnostKotyClick(TObject *Sender)
 //přepínání posunu dalších elementů
 void __fastcall TForm1::scGPButton_posun_dalsich_elementuClick(TObject *Sender)
 {
+  log(__func__); //logování
 	if(scGPButton_posun_dalsich_elementu->ImageIndex==59)//vypnuto budu zapínat
 		{
 			scGPButton_posun_dalsich_elementu->ImageIndex=58;
@@ -10339,6 +10494,7 @@ void __fastcall TForm1::scGPButton_posun_dalsich_elementuClick(TObject *Sender)
 //combo pro přepínání typu kót
 void __fastcall TForm1::scGPComboBox_prepinacKotClick(TObject *Sender)
 {
+  log(__func__); //logování
 	if(FormX->input_state==FormX->NOTHING)//ošetření proti spouštění 2x při změně COMBA v tabulce pohonu
 	{
   	//není nutno provádět kontrolu, prováděna jinde -> aktivace / deaktivace komponenty
@@ -10363,6 +10519,7 @@ void __fastcall TForm1::scGPComboBox_prepinacKotClick(TObject *Sender)
 //urychlení vypsání do Mema
 void TForm1::Memo(AnsiString Text, bool clear,bool count)
 {
+  log(__func__); //logování
 	if(clear)Memo3->Clear();
 	if(count){count_memo++;Text=count_memo;}
 	Memo3->Visible=true;
@@ -10373,6 +10530,7 @@ void TForm1::Memo(AnsiString Text, bool clear,bool count)
 //zapínání a vypínaní meření
 void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 {
+  log(__func__); //logování
 	if(Akce==NIC)
 	{
 		scSplitView_OPTIONS->Close();
@@ -10390,6 +10548,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPSwitch_robot_clovekChangeState(TObject *Sender)
 {
+  log(__func__); //logování
 	DrawGrid_knihovna->Refresh();
 	ESC();//případné vypnutí akce
 }
@@ -10397,6 +10556,7 @@ void __fastcall TForm1::scGPSwitch_robot_clovekChangeState(TObject *Sender)
 //načte zvolený jazyk
 unsigned short TForm1::load_language(Tlanguage language)
 {
+   log(__func__); //logování
    //nastavení adresáře k místě aplikace
   ChDir(ExtractFilePath(Application->ExeName));    //přesune k EXE
   UnicodeString File_language= "MK.language"; //cache_dir+"MK.language" už nenačítám v tempu aplikace
@@ -10452,6 +10612,7 @@ unsigned short TForm1::load_language(Tlanguage language)
 //zapnutí posunu haly
 void __fastcall TForm1::scGPButton_posun_halyClick(TObject *Sender)
 {
+  log(__func__); //logování
 	if(d.v.HALA.body!=NULL)//pokud existuje hala, jinak nemá smysl
 	{
 		scSplitView_OPTIONS->Close();
@@ -10464,6 +10625,7 @@ void __fastcall TForm1::scGPButton_posun_halyClick(TObject *Sender)
 //zapnutí akce kreslení haly
 void __fastcall TForm1::scGPButton_nakreslit_haluClick(TObject *Sender)
 {
+  log(__func__); //logování
 	if(d.v.HALA.body==NULL||d.v.HALA.body->dalsi==NULL)//pokud existuje hala, jinak nemá smysl
 	{
   	TIP="Klinutím na levé tlačítko myši přidejte bod.";
