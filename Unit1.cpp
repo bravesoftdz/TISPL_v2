@@ -837,7 +837,7 @@ void TForm1::log2webOnlyText(UnicodeString Text)
 //zapíše log do textového souboru a přidá datum
 void TForm1::log(AnsiString Text)
 {
-	if(DEBUG && logovat)//pouze pro DEBUG
+	if(DEBUG && logovat && LogFileStream=!NULL)//pouze pro DEBUG
 	{
 		//přídání datumu k textu
 		Text=TIME.CurrentDate().DateString()+"_"+TIME.CurrentTime().TimeString()+"_"+Text+"\r\n";
@@ -1501,7 +1501,6 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				nacti_podklad(Canvas);
 				d.vykresli_halu(Canvas);
 				d.vykresli_objekty(Canvas);
-				d.meritko(Canvas);
 			}
 			else
 			{
@@ -4579,6 +4578,7 @@ void TForm1::vytvoreni_tab_pohon()
 //předesignování tabulky po přidání každého elementu
 void TForm1::pridani_elementu_tab_pohon(Cvektory::TElement *E)
 {
+  log(__func__); //logování
 	AnsiString Rz;
 	//nastavení jednotek podle posledních nastavení
 	if (Rzunit==M) Rz="<a>[m]</a>";
@@ -4629,6 +4629,7 @@ void TForm1::pridani_elementu_tab_pohon(Cvektory::TElement *E)
 //volána po přiřazení pohonu
 void TForm1::prirazeni_pohonu_tab_pohon(int index_pohonu)
 {
+  log(__func__); //logování
 	FormX->vstoupeno_poh=false;//blokace událostí při vkládání elementu
 	FormX->vstoupeno_elm=false;
 	AnsiString Rz;
@@ -4707,6 +4708,7 @@ void TForm1::prirazeni_pohonu_tab_pohon(int index_pohonu)
 //metoda volaná při odstranění elementu a při odebrání pohonu
 void TForm1::odstraneni_elementu_tab_pohon(int operace)
 {
+  log(__func__); //logování
 	FormX->vstoupeno_poh=false;//blokace událostí při vkládání elementu
 	FormX->vstoupeno_elm=false;
 	//0 = odebrání pohonu
@@ -4762,6 +4764,7 @@ void TForm1::odstraneni_elementu_tab_pohon(int operace)
 //provede změnu jednotek v tabulce pohonu
 void TForm1::zmena_jednotek_tab_pohon()
 {
+  log(__func__); //logování
 	FormX->vstoupeno_poh=false;//blokace událostí při vkládání elementu
 	FormX->vstoupeno_elm=false;
 	//překlopení jednotek
@@ -4844,6 +4847,7 @@ void TForm1::zmena_jednotek_tab_pohon()
 //prohledá elementy v objektu, vrátí 0 pokud se vyskytuje pouze jedna rotace, vrátí 1 pokud se vyskytují 2 rotace
 int TForm1::pocet_vyskytu_elementu(Cvektory::TObjekt *Objekt)
 {
+  log(__func__); //logování
 	int ret=0;int rotace=0;
 	Cvektory::TElement *E=Objekt->elementy;//nepřeskakovat hlavičku
 	while(E!=NULL)
@@ -4861,6 +4865,7 @@ int TForm1::pocet_vyskytu_elementu(Cvektory::TObjekt *Objekt)
 //---------------------------------------------------------------------------
 void TForm1::tab_pohon_COMBO (int index)
 {
+ log(__func__); //logování
 	TscGPComboBox *PCombo=PmG->getCombo(0,0);
 	Cvektory::TPohon *P=d.v.POHONY->dalsi;//ukazatel na pohony, přeskakuje hlavičku, která je již vytvořena
 	TscGPListBoxItem *t=NULL;
@@ -4934,6 +4939,7 @@ void TForm1::tab_pohon_COMBO (int index)
 //aktualizuje combo při změně jednotek nebo při změně rychlosti
 void TForm1::aktualizace_ComboPohon ()
 {
+  log(__func__); //logování
 	Cvektory::TPohon *P=F->d.v.POHONY->dalsi;//ukazatel na pohony, přeskakuje hlavičku, která je již vytvořena
 	TscGPComboBox *Combo=F->PmG->getCombo(0,0);
 	Combo->Items->Clear();//smazání původního obsahu
@@ -6746,6 +6752,7 @@ void __fastcall TForm1::FormCloseQuery(TObject *Sender, bool &CanClose)
 		writeINI("Nastaveni_app","prichytavat",prichytavat_k_mrizce);
 		writeINI("Nastaveni_app","ortogonalizace",(short)ortogonalizace_stav);
 		//zatím nepoužíváme writeINI("Nastaveni_app","status",STATUS);
+    delete LogFileStream;
 	}
 }
 //---------------------------------------------------------------------------
@@ -7798,7 +7805,7 @@ void TForm1::vse_odstranit()
 		copyObjekt=NULL;delete copyObjekt;
 		copyObjektRzRx.x=0;copyObjektRzRx.y=0;
 		aFont=NULL; delete aFont;
-		delete LogFileStream;
+	 //	delete LogFileStream; //zde nesmí být kvůli logování
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -8768,9 +8775,8 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //MaKr testovací tlačítko
 void __fastcall TForm1::Button14Click(TObject *Sender)
 {
- log(__func__);
+ //log(__func__);
  d.v.vytvor_KATALOG();
- Sk(d.v.KATALOG->predchozi->link);
  //Sk(d.v.KATALOG->predchozi->roztec->predchozi->n);
  Sk(d.v.vrat_hodnotu_typu_dopravniku(2,Cvektory::TtypHodnoty::hR,3));
 }
@@ -10665,4 +10671,5 @@ void __fastcall TForm1::scGPButton_nakreslit_haluClick(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
+
 
