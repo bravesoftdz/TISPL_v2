@@ -2414,6 +2414,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 //		}
 						 //dodělat MaVl
 		//provizorně jen pro vodorovnou levopravou kabinu
+		bool posun_povolit=true;
 		if(F->pom_temp->elementy->dalsi!=NULL&&vzdalenost!=0)//musí existovat alespoň jeden element&&nesmí být vzdálenost rovna nule
 		{
 			TPointD vzd;
@@ -2427,7 +2428,10 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				if(Element->orientace==0||Element->orientace==180)vzd.x=Element->X-Element->predchozi->X;
 				else	vzd.x=Element->Y-Element->predchozi->Y;
 			}//odstavil MaKr F->Sv(vzd.x);
-			if(vzd.x!=0&&!posun_kurzorem)//posun z kót
+      //kontrola zda bude posunutý element mimo pohon, pokud ano nedovolí posun, kontrolováno pouze v případě posunu z kót
+			if((Element->orientace==0 || Element->orientace==180)&&(Element->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost)<F->pom_temp->elementy->dalsi->geo.X1 || F->pom_temp->elementy->predchozi->geo.X4<Element->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost)))posun_povolit=false;
+			if((Element->orientace==90 || Element->orientace==270)&&(Element->Y-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost)>F->pom_temp->elementy->dalsi->geo.Y1 || F->pom_temp->elementy->predchozi->geo.Y4<Element->Y-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost)))posun_povolit=false;
+			if(vzd.x!=0 && !posun_kurzorem && posun_povolit)//posun z kót
 			{
 				if(Element->orientace==0||Element->orientace==180)Element->X=Element->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
 				else Element->Y=Element->Y-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
@@ -2437,7 +2441,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			else if(posun_kurzorem)//posun kurozem
 			{
 				if(Element->orientace==0||Element->orientace==180)Element->X=Element->X+vzdalenost;
-				else	Element->Y=Element->Y+vzdalenost;
+				else Element->Y=Element->Y+vzdalenost;
 				if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){posuv_aktualizace_RT(Element);posuv_aktualizace_RT(Element->dalsi);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
 				else posuv_aktualizace_RT(Element);
 			}
@@ -2445,10 +2449,15 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			//v případě požadavku na posun i následujících elementů
 			if(pusun_dalsich_elementu)
 			{
+        //kontrola zda poslední element nebude mimo pohon, poslední ve spojáku je zarážka, nás zajímá poslendní element (předchozi->předchozi)
+				posun_povolit=true;
+				if((Element->orientace==0 || Element->orientace==180) && F->pom_temp->elementy->predchozi->geo.X4<F->pom_temp->elementy->predchozi->predchozi->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost))posun_povolit=false;
+				if((Element->orientace==90 || Element->orientace==270) && F->pom_temp->elementy->predchozi->geo.Y4<F->pom_temp->elementy->predchozi->predchozi->Y-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost))posun_povolit=false;
+
 				TElement *E=Element->dalsi;
 				while(E!=NULL)
 				{
-					if(vzd.x!=0 && !posun_kurzorem && E->eID!=MaxInt)//neposunovat zarážku
+					if(vzd.x!=0 && !posun_kurzorem && posun_povolit && E->eID!=MaxInt)//neposunovat zarážku
 					{
 						if(Element->orientace==0||Element->orientace==180)E->X=E->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);//výpočet pro posuv z kót
 						else E->Y=E->Y-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);

@@ -272,12 +272,8 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	nastavit_text_popisu_objektu_v_nahledu(canv,2);                                                                                               //záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamack
 	canv->TextOutW(m.L2Px(X)-m.round((Wn+Wl+Wz)/2.0)+Wn+Wl,m.L2Py(Y)-canv->TextHeight(Tl),Tz);
 
-	//nastavení pera pro osu pohonu
-	canv->Pen->Width=1;
-	canv->Pen->Color=clBlack;
 	////vykreslení prozatimní osy POHONU
-	double x1=O->elementy->dalsi->geo.X1,y1=O->elementy->dalsi->geo.Y1,x2=O->elementy->dalsi->geo.X4,y2=O->elementy->dalsi->geo.Y4;
-	line(canv,m.L2Px(x1),m.L2Py(y1),m.L2Px(x2),m.L2Py(y2));
+	vykresli_retez(canv,O);
 
 	////nastavení pera pro kabinu //pro rectangle, následně možné také odstranit
 	canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
