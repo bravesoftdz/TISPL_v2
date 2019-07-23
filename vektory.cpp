@@ -704,6 +704,7 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->kapacita_dop=Original->kapacita_dop;
 	Kopie->pozice=Original->pozice;
 	Kopie->rotace=Original->rotace;
+	Kopie->orientace=Original->orientace;
 	Kopie->mezera=Original->mezera;
 	Kopie->mezera_jig=Original->mezera_jig;
 	Kopie->mezera_podvozek=Original->mezera_podvozek;
@@ -1667,7 +1668,6 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->orientace=orientace;//důležité pro volání makra m.Rxy, bez tohoto by makro vracelo chybné hodnoty
 
   //ukazatelové propojení - bylo původně poslední, ale nemohlo fungovat správně
-//	vloz_element(Objekt,novy);
 	vloz_element(Objekt,novy);
 
 	//defaultní data
@@ -2011,7 +2011,7 @@ void	Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 }
 ////---------------------------------------------------------------------------
 //zkopíruje atributy elementu bez ukazatelového propojení, pouze ukazatelové propojení na mGrid je zachováno
-void  Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
+void Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 {
 	Kopie->n=Original->n;
 	Kopie->eID=Original->eID;
@@ -2045,15 +2045,15 @@ void  Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 void Cvektory::kopiruj_elementy(TObjekt *Original, TObjekt  *Kopie)//zkopíruje elementy a jejich atributy bez ukazatelového propojení z objektu do objektu, pouze ukazatelové propojení na mGrid je zachováno spojuje dvě metody vloz_element(TObjekt *Objekt,TElement *Element) a kopiruj_element(TElement *Original, TElement *Kopie)
 {
   TElement *E=Original->elementy;//nepřeskakuje se hlavička, protože v ní jsou uloženy výchozí souřadnice
-	vytvor_elementarni_osu(Original,Kopie);//smazat
+	//vytvor_elementarni_osu(Original,Kopie);//smazat
 	if(E!=NULL)//pokud elementy existují nakopíruje je do pomocného spojáku pomocného objektu
 	{
    	E=E->dalsi;//přeskočí hlavičku //smazat
 		while(E!=NULL)
 		{
 			TElement *Et=new TElement;
-			kopiruj_element(E,Et);
-			vloz_element(Kopie,Et);
+			vloz_element(Kopie,Et);//pokus zaměna pořadí
+			kopiruj_element(E,Et);//pokus zaměna pořadí - kvůli dodatečnému vložení geometrie
 			E=E->dalsi;//posun na další element
 		}
 	}
@@ -4520,7 +4520,7 @@ void Cvektory::vymaz_seznam_KATALOG()
 			KATALOG->predchozi->vRadius=KATALOG->predchozi->vRadius->dalsi;
 		}
 		//posunutí ukazatele a smazání typu dopravníku
-		//KATALOG->predchozi->name=KATALOG->predchozi->subname=KATALOG->predchozi->link="";//smazání textových řetězců
+		KATALOG->predchozi->name=KATALOG->predchozi->subname=KATALOG->predchozi->link="";//smazání textových řetězců
 		KATALOG->predchozi=NULL;
 		delete KATALOG->predchozi;
 		KATALOG=KATALOG->dalsi;
