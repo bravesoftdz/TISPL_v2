@@ -2448,12 +2448,12 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				TElement *E=Element->dalsi;
 				while(E!=NULL)
 				{
-					if(vzd.x!=0&&!posun_kurzorem)
+					if(vzd.x!=0 && !posun_kurzorem && E->eID!=MaxInt)//neposunovat zarážku
 					{
 						if(Element->orientace==0||Element->orientace==180)E->X=E->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);//výpočet pro posuv z kót
 						else E->Y=E->Y-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
 					}
-					if(posun_kurzorem)
+					if(posun_kurzorem && E->eID!=MaxInt)
 					{
 						if(Element->orientace==0||Element->orientace==180)E->X=E->X+vzdalenost;//výpočet pro posun kurzorem
 						else E->Y=E->Y+vzdalenost;

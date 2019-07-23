@@ -2431,9 +2431,9 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		}
 		case MOVE_ELEMENT://posun elementu + příprava na kontrolu
 		{
-			short trend=m.Rt90(d.trend(pom));
-//			//když nejsou viditelné tabulky elementu, a když se nejedná o element, který nemá tabulku -> nevykresli spojnici mezi elementem a tabulkou
-			if(pom_temp->zobrazit_mGrid&&pom_element->eID!=100)vykresli_spojinici_EmGrid(Canvas,pom_element);
+			double orientace_ob=pom_temp->orientace;
+			//když nejsou viditelné tabulky elementu, a když se nejedná o element, který nemá tabulku -> nevykresli spojnici mezi elementem a tabulkou
+			if(pom_temp->zobrazit_mGrid&&pom_element->eID!=100&&pom_element->eID!=MaxInt)vykresli_spojinici_EmGrid(Canvas,pom_element);
 			//samotný pohyb, který je vázán na pohon
 			if (pom_element->orientace==0 || pom_element->orientace==180)
 				d.v.posun_element(pom_element,akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),posun_dalsich_elementu,true);
@@ -2441,21 +2441,32 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				d.v.posun_element(pom_element,akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),posun_dalsich_elementu,true);
 			//aktuální souřadnice se po posunu zapíší do minule_souřadnice, z důvodu okamžité změny známénka posuvu
 			minule_souradnice_kurzoru=TPoint(X,Y);
+			//při posunu dalších elementů nesmí být poslední mimo pohon
+			if(posun_dalsich_elementu)
+			{
+				if(el_vkabine(0,0,0,pom_temp->elementy->predchozi->predchozi)//poslední bude vždy zarážka
+				{
+					//pokud je poslední element mimo pohon, akce je ukončena a elementy posunuty, tak aby poslední element nebyl přímo na konci pohonu
+					Akce=NIC;
+					d.v.posun_element(pom_element,-0.05,posun_dalsich_elementu,true);
+				}
+      }
 			//kontrola zda robot nepřekročil hranice kabiny, pokud ano je volaná metoda mazání elementu
-			if(mazani&&(trend==90||trend==270)&&(1<=pom_element->eID && pom_element->eID<=4 || 7<=pom_element->eID && pom_element->eID<=18 || 101<=pom_element->eID && pom_element->eID<=108))
-				if(pom_element->X<pom_temp->Xk||pom_element->X>pom_temp->Xk+pom_temp->rozmer_kabiny.x)
-					{
-						if(pom_element->X<pom_temp->Xk)pom_element->X=pom_temp->Xk+0.05;
-						else pom_element->X=pom_temp->Xk+pom_temp->rozmer_kabiny.x-0.05;
-						Smazat1Click(this);
-					}
-			if(mazani&&(trend!=90&&trend!=270)&&(1<=pom_element->eID && pom_element->eID<=4 || 7<=pom_element->eID && pom_element->eID<=18 || 101<=pom_element->eID && pom_element->eID<=108))
-				if(pom_element->Y>pom_temp->Yk||pom_element->Y<pom_temp->Yk-pom_temp->rozmer_kabiny.y)
-					{  //podrobit kontrole až budou funkční ostatní rotace
-						if(pom_element->Y>pom_temp->Yk)pom_element->Y=pom_temp->Yk-0.05;
-						else pom_element->Y=pom_temp->Yk-pom_temp->rozmer_kabiny.y+0.05;
-						Smazat1Click(this);
-					}
+			if(mazani && !el_vkabine(0,0,0,pom_element))//první 3 parametry jsou X,Y,eID, všechny tyto informace jsou obsaženy v elementu
+			{
+				//nastavení souřadnic elementu před hranu objektu, pro případ zrušení smazání
+				if(orientace_ob==90 || orientace_ob==270)
+				{
+					if(pom_element->X<pom_temp->elementy->dalsi->geo.X1)pom_element->X=pom_temp->elementy->dalsi->geo.X1+0.05;
+					else pom_element->X=pom_temp->elementy->predchozi->geo.X4-0.05;
+				}
+				else
+				{
+					if(pom_element->Y>pom_temp->elementy->dalsi->geo.Y1)pom_element->Y=pom_temp->elementy->dalsi->geo.Y1-0.05;
+					else pom_element->Y=pom_temp->elementy->predchozi->geo.Y4+0.05;
+				}
+				Smazat1Click(this);
+			}
 			REFRESH(false);
 			nahled_ulozit(true);
 			break;
@@ -4004,7 +4015,7 @@ void TForm1::add_element (int X, int Y)
 	FormX->vstoupeno_elm=false;
 	short trend=pom_temp->orientace;
 	short rotace_symbolu=rotace_symbol(trend,X,Y);
-	bool vkabine=true;//=el_vkabine(X,Y,element_id);//pokud se jedná o robota kontrolovat zda je vložen do kabiny
+	bool vkabine=el_vkabine(X,Y,element_id);//pokud se jedná o robota kontrolovat zda je vložen do kabiny
 	//ovlivňování souřadnic, aby element byl umístěn přímo na osou - nelze použít makro Rxy
 	double DoSkRB=0;
 	if(1<=element_id && element_id<=4 || 7<=element_id && element_id<=18)//pro roboty, které mají uchopovací bod jinde než referenční
@@ -4021,13 +4032,13 @@ void TForm1::add_element (int X, int Y)
 	if(pom_temp->orientace==90 || pom_temp->orientace==270)Y=m.L2Py(pom_temp->elementy->predchozi->Y)+DoSkRB;
 	else X=m.L2Px(pom_temp->elementy->predchozi->X)+DoSkRB;
 	//vložení elementu na dané souřadnice a do patřičného pomocného spojáku, pro případ storna
-	if (vkabine||true)//příprava na kontrolu zda vkládám element do kabiny
+	if (vkabine)//příprava na kontrolu zda vkládám element do kabiny
 	{
 		TIP="";//smazání tipu, pro jistotu
 		Cvektory::TElement *E=d.v.vloz_element(pom_temp,element_id,m.P2Lx(X),m.P2Ly(Y),rotace_symbolu);
 		//nadesignuje tabulky daného elementu
 		design_element(E,true);
-		if(E->eID!=100)//E->mGrid!=NULL)//pokud je alokovaná paměť pro mGrid element bude mít tabulku, pokud není element nebude mít tabulku
+		if(E->eID!=100 && E->eID!=MaxInt)//pokud je alokovaná paměť pro mGrid element bude mít tabulku, pokud není element nebude mít tabulku
 		{
       //automatické výchozí umístění mGridové tabulky dle rotace elementu a nadesignováné tabulky (jejích rozměrů) - proto musí být až za nastevením designu
 			aut_pozicovani(E,X,Y);
@@ -4116,41 +4127,26 @@ void TForm1::add_komoru()
 	refresh_mGrid=true;
 }
 //---------------------------------------------------------------------------
-//vrací zda se element nachází v lakovací kabině
-bool TForm1::el_vkabine(int X,int Y,int element_id)
+//vrací zda se element nachází na pohonu jakéhokoliv sklonu, dvojí způsob použití: zadání parametru X,Y,eID pokud nemám ukazatel na element nebo 0,0,0,ukazatel, vrátí true nebo false
+bool TForm1::el_vkabine(int X,int Y,int element_id,Cvektory::TElement *E)
 {
-	short trend=m.Rt90(d.trend(pom));
-	bool vkabine;     //=0 zajišťuje, že se kontroluje pouze vkládací bod robota né jeho obrys
-	double delka_robota=0;//d.Robot_delka_zakladny/2.0*Zoom/m2px;//20 = odsazení pro otoče a stopku od hrany lakovny
-	double odsazeni=5;//odsazení slouží k tomu aby element nebyl vkládán na obrys lakovny
-
-	/////////kontrola obou souřadnic při vkládání elementu tz., že ikona robota musí být celá uvnitř kabiny
-//	if(1<=element_id && element_id<=4)
-//	{																															 //-5 odsazení od xt = nelze vložit objekt prímo na obrys kabiny
-//		if ((m.L2Px(pom_temp->Xk)>X-delka_robota-odsazeni||X+delka_robota+odsazeni>m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x))||
-//		(m.L2Py(pom_temp->Yk)>Y-delka_robota-odsazeni||Y+delka_robota+odsazeni>m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)))
-//			vkabine=false;
-//		else vkabine=true;
-//	}
-//	else vkabine=true;
-	/////////
-	/////////kontrola pouze jedné souřadnice (dáno orientaci kabiny), ikona robota může přesahovat kabinu
-	if(1<=element_id && element_id<=4 || 7<=element_id && element_id<=18 || 101<=element_id && element_id<=108)
+  //pomocná proměnná, pokud není zadán element metoda si vytvoří vlastní pomocný, který musí být smazán
+	bool mazat_el=false;
+	//vytvoření oblasti pohonu
+	TRect pohon;
+	pohon.left=pom_temp->elementy->dalsi->geo.X1;pohon.top=pom_temp->elementy->dalsi->geo.Y1;
+	pohon.right=pom_temp->elementy->predchozi->geo.X4;pohon.bottom=pom_temp->elementy->predchozi->geo.Y4;
+	//vytvoření pomocného elementu (pokud neexistuje), souřadnice a eID totožné s vkládáným (vytvořen z důvodu použítí makra d.Rxy)
+	if(E==NULL)
 	{
-		if(trend==90 || trend==270)
-		{                                                                //-5 odsazení od xt = nelze vložit objekt prímo na obrys kabiny
-			if (m.L2Px(pom_temp->Xk)>X-delka_robota-odsazeni||X+delka_robota+odsazeni>m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)) vkabine=false;
-			else vkabine=true;
-		}
-		else
-		{
-			if (m.L2Py(pom_temp->Yk)>Y-delka_robota-odsazeni||Y+delka_robota+odsazeni>m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)) vkabine=false;
-			else vkabine=true;
-		}
+		Cvektory::TElement *E=new Cvektory::TElement;
+		E->X=m.P2Lx(X);E->Y=m.P2Ly(Y);E->eID=element_id;
+		mazat_el=true;
 	}
-	else vkabine=true;
-	/////////
-	return vkabine;
+	//kontrola zda je element vkládán na pohon
+	return pohon.PtInRect(TPoint(d.Rxy(E).x,d.Rxy(E).y));
+	//smazání pomocného elementu
+	if(mazat_el){E=NULL;delete E;}
 }
 //---------------------------------------------------------------------------
 //vrací index co a kde je mimo kabinu
@@ -10338,8 +10334,7 @@ void TForm1::Smaz_kurzor()
 		if(index_kurzoru==-8||index_kurzoru==-9)//zapisuje editované hodnoty do rozměrů kabiny
 		{
 			//převedení na základní jednotky
-//			if(index_kurzoru==-8)editovany_text=inDK(ms.MyToDouble(editovany_text));
-			/*else*/ editovany_text=inDK(ms.MyToDouble(editovany_text));
+			editovany_text=inDK(ms.MyToDouble(editovany_text));
 			if(DKunit==2||DKunit==3)editovany_text=editovany_text*pom_temp->pohon->aRD;//pokud jsou kóty v časovém režimu, převede na vzdálenost
 			//zapsání vzdáleností
 			if(index_kurzoru==-8)pom_temp->rozmer_kabiny.x=ms.MyToDouble(editovany_text);

@@ -163,9 +163,6 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 						if(tab_pruchodu[n].y==1)pom=ukaz->predchozi2->predchozi;
 						else pom=ukaz->predchozi->predchozi;
 					}
-//					canv->MoveTo(CorEx(pom),CorEy(pom));
-//					canv->LineTo(CorEx(ukaz),CorEy(ukaz));
-//					sipka(canv,(CorEx(pom)+CorEx(ukaz))/2,(CorEy(pom)+CorEy(ukaz))/2,m.azimut(pom->X,pom->Y,ukaz->X,ukaz->Y));//zajistí vykreslení šipky - orientace spojovací linie
 					canv->MoveTo(m.L2Px(pom->elementy->predchozi->geo.X4),m.L2Py(pom->elementy->predchozi->geo.Y4));
 					canv->LineTo(m.L2Px(ukaz->elementy->dalsi->geo.X1),m.L2Py(ukaz->elementy->dalsi->geo.Y1));
 					sipka(canv,(m.L2Px(pom->elementy->predchozi->geo.X4)+m.L2Px(ukaz->elementy->dalsi->geo.X1))/2.0,(m.L2Py(pom->elementy->predchozi->geo.Y4)+m.L2Py(ukaz->elementy->dalsi->geo.Y1))/2.0,m.azimut(m.L2Px(ukaz->elementy->dalsi->geo.X1),m.L2Py(ukaz->elementy->dalsi->geo.Y1),m.L2Px(pom->elementy->predchozi->geo.X4),m.L2Py(pom->elementy->predchozi->geo.Y4))*(-1));//zajistí vykreslení šipky - orientace spojovací linie
@@ -181,9 +178,6 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 					if(tab_pruchodu[n].y==1)pom=ukaz->predchozi2;
 					else pom=ukaz->predchozi;
 				}
-//				canv->MoveTo(CorEx(pom),CorEy(pom));
-//				canv->LineTo(CorEx(ukaz),CorEy(ukaz));
-//				sipka(canv,(CorEx(pom)+CorEx(ukaz))/2,(CorEy(pom)+CorEy(ukaz))/2,m.azimut(pom->X,pom->Y,ukaz->X,ukaz->Y));//zajistí vykreslení šipky - orientace spojovací linie
 				canv->MoveTo(m.L2Px(pom->elementy->predchozi->geo.X4),m.L2Py(pom->elementy->predchozi->geo.Y4));
 				canv->LineTo(m.L2Px(ukaz->elementy->dalsi->geo.X1),m.L2Py(ukaz->elementy->dalsi->geo.Y1));
 				sipka(canv,(m.L2Px(pom->elementy->predchozi->geo.X4)+m.L2Px(ukaz->elementy->dalsi->geo.X1))/2.0,(m.L2Py(pom->elementy->predchozi->geo.Y4)+m.L2Py(ukaz->elementy->dalsi->geo.Y1))/2.0,m.azimut(m.L2Px(ukaz->elementy->dalsi->geo.X1),m.L2Py(ukaz->elementy->dalsi->geo.Y1),m.L2Px(pom->elementy->predchozi->geo.X4),m.L2Py(pom->elementy->predchozi->geo.Y4))*(-1));//zajistí vykreslení šipky - orientace spojovací linie
