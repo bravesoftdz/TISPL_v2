@@ -1500,7 +1500,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			{
 				nacti_podklad(Canvas);
 				d.vykresli_halu(Canvas);
-				d.vykresli_objekty(Canvas);
+				d.vykresli_vektory(Canvas);
 
 			}
 			else
@@ -1514,7 +1514,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu //zkoušel jsem nastavit plochu antialiasingu bez ovládacích prvků LeftToolbar a menu, ale kopírování do jiné BMP to zpomalovalo více neooptimalizovaná oblast pro 3xbmp
 				Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
 				d.vykresli_halu(bmp_in->Canvas);
-				d.vykresli_objekty(bmp_in->Canvas);
+				d.vykresli_vektory(bmp_in->Canvas);
 				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 				Cantialising a;
 				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
@@ -2444,7 +2444,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			//při posunu dalších elementů nesmí být poslední mimo pohon
 			if(posun_dalsich_elementu)
 			{
-				if(el_vkabine(0,0,0,pom_temp->elementy->predchozi->predchozi)//poslední bude vždy zarážka
+				if(el_vkabine(0,0,0,pom_temp->elementy->predchozi->predchozi))//poslední bude vždy zarážka
 				{
 					//pokud je poslední element mimo pohon, akce je ukončena a elementy posunuty, tak aby poslední element nebyl přímo na konci pohonu
 					Akce=NIC;
@@ -4013,7 +4013,7 @@ void TForm1::add_element (int X, int Y)
 	//rotace dle umístění na ose Y či X dle trendu
 	FormX->vstoupeno_poh=false;//blokace událostí při vkládání elementu
 	FormX->vstoupeno_elm=false;
-	short trend=m.Rt90(d.trend(pom));
+	short trend=pom_temp->orientace;
 	short rotace_symbolu=rotace_symbol(trend,X,Y);
 	bool vkabine=el_vkabine(X,Y,element_id);//pokud se jedná o robota kontrolovat zda je vložen do kabiny
 	//ovlivňování souřadnic, aby element byl umístěn přímo na osou - nelze použít makro Rxy
@@ -4028,16 +4028,14 @@ void TForm1::add_element (int X, int Y)
 		DoSkRB=m.m2px(d.DkRB);//délka od středu (uchopovacího bodu) k referenčnímu bodu, doplnit konstanty
 		if(rotace_symbolu==90 || rotace_symbolu==180)DoSkRB*=-1;
 	}
-																				 //netradičně v hlavičce je umístěna elementární osa pohonu!!!
-	if(trend==90 || trend==270)Y=m.L2Py(pom_temp->elementy->Y)+DoSkRB;
-	else X=m.L2Px(pom_temp->elementy->X)+DoSkRB;
+	//úprava souřadnic = přichycení na pohon
+	if(pom_temp->orientace==90 || pom_temp->orientace==270)Y=m.L2Py(pom_temp->elementy->predchozi->Y)+DoSkRB;
+	else X=m.L2Px(pom_temp->elementy->predchozi->X)+DoSkRB;
 	//vložení elementu na dané souřadnice a do patřičného pomocného spojáku, pro případ storna
 	if (vkabine)//příprava na kontrolu zda vkládám element do kabiny
 	{
 		TIP="";//smazání tipu, pro jistotu
 		Cvektory::TElement *E=d.v.vloz_element(pom_temp,element_id,m.P2Lx(X),m.P2Ly(Y),rotace_symbolu);
-		//navrácení rotace dle umístění v objektu
-//		E->rotace_symbolu=rotace_symbolu;
 		//nadesignuje tabulky daného elementu
 		design_element(E,true);
 		if(E->eID!=100 && E->eID!=MaxInt)//pokud je alokovaná paměť pro mGrid element bude mít tabulku, pokud není element nebude mít tabulku
@@ -7168,7 +7166,8 @@ void TForm1::NP_input()
 {
    log(__func__); //logování
 	 //zablokování OnChange tabulek
-   JID=-1;//ošetření, s JID se pracuje i v náhledu
+	 JID=-1;//ošetření, s JID se pracuje i v náhledu
+	 kurzor(standard);
 	 FormX->input_state=FormX->NO;
 	 FormX->vstoupeno_poh=false;
 	 FormX->vstoupeno_elm=false;
@@ -7951,13 +7950,13 @@ void __fastcall TForm1::Export1Click(TObject *Sender)
 			switch(MOD)//uloží obraz dle daného modu zobrazení
 			{
 				case SCHEMA:
-				if(!antialiasing)d.vykresli_objekty(Bitmap->Canvas);//vykreslování všech vektorů
+				if(!antialiasing)d.vykresli_vektory(Bitmap->Canvas);//vykreslování všech vektorů
 				else
 				{
 					Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
 					bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
 					Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
-					d.vykresli_objekty(bmp_in->Canvas);
+					d.vykresli_vektory(bmp_in->Canvas);
 					Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 					Cantialising a;
 					Bitmap=a.antialiasing(bmp_in);
