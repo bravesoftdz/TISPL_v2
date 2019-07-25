@@ -602,7 +602,7 @@ private:
 	void ortogonalizovat();//ortogonalizuje schéma
 	void db_connection();  // pøipojení k DB serveru
 	void akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_otoce,AnsiString cas,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla);
-	bool el_vkabine(int X,int Y,int element_id,Cvektory::TElement *E=NULL);//vrací zda se element nachází na pohonu jakéhokoliv sklonu, dvojí zpùsob použití: zadání parametru X,Y,eID pokud nemám ukazatel na element nebo 0,0,0,ukazatel, vrátí true nebo false
+	bool el_vkabine(int X,int Y,int element_id,short orientace_el,Cvektory::TElement *E=NULL,double tolerance_x=0,double tolerance_y=0);//vrací zda se element nachází na pohonu jakéhokoliv sklonu, dvojí zpùsob použití: zadání parametru X,Y,eID pokud nemám ukazatel na element nebo 0,0,0,ukazatel, vrátí true nebo false
 	bool nahled_ulozen;
 	int el_mimoKabinu ();//1-robot z leva, 2-robot z prava, 3-nerobot zl., 4-nerobot zp., 5-robot ze spoda, 6-robot z vrchu, 7-nerobot zes., 8-nerobot zvr.
 	void Smaz_kurzor ();
