@@ -2780,6 +2780,9 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O)//sloučit s v
 			E=E->dalsi;//posun na další element
 			if(E==NULL)delete E;//smazání již nepotřebného ukazatele
 		}
+		if(O->pohon==NULL)canv->Pen->Width=1;//pokud není pohon přiřazen, tak jen elementární osa
+		else canv->Pen->Width=m.round(F->Zoom*0.5);//pokud není přiřazen
+		canv->Pen->Color=clBlack;
 		canv->PolyBezier(POLE,O->elementy->predchozi->n*4-1);
 		delete[]POLE;POLE=NULL;
 	}

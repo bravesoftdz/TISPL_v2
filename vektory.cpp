@@ -19,6 +19,54 @@ Cvektory::Cvektory()
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
+//pomocná metoda, není třeba volat, volá se automaticky při vkládání prvního bodu při vloz_bod, pokud je ukazatel na Objekt NULL, jedná se o metody pro HALU
+void Cvektory::hlavicka_body(TObjekt *Objekt)
+{
+	if(Objekt!=NULL)//pro objekt
+	{
+		Objekt->body=new TBod;
+		Objekt->body->n=0;
+		Objekt->body->predchozi=Objekt->body;//hlavička ukazuje sama na sebe
+		Objekt->body->dalsi=NULL;
+	}
+	else
+	{
+		HALA.body=new TBod;
+		HALA.body->n=0;
+		HALA.body->predchozi=HALA.body;//hlavička ukazuje sama na sebe
+		HALA.body->dalsi=NULL;
+	}
+}
+////---------------------------------------------------------------------------
+//vloží nový bod na konec seznamu bodů, pokud je ukazatel na Objekt NULL, jedná se o metody pro HALU
+void Cvektory::vloz_bod(TBod *Bod,TObjekt *Objekt)
+{
+	//OBJEKTY
+	if(Objekt!=NULL)
+	{
+		//pokud ještě HLAVIČKA neexistuje, tak ji založí
+		if(Objekt->body==NULL)hlavicka_body(Objekt);
+
+		//vložení nového bodu na konec seznamu bodů
+		Bod->n=Objekt->body->predchozi->n+1;//navýšení počítadla
+		Bod->predchozi=Objekt->body->predchozi;//nový bod ukazuje na poslední prvek ve spojaku jako na prvek předchozí
+		Bod->dalsi=NULL;//nový bod neukazuje na žádný další prvek, resp. ukazuje na NULL
+		Objekt->body->predchozi->dalsi=Bod;//za poslední aktuální prvek vloží nový poslední
+		Objekt->body->predchozi=Bod;//hlavička ukazuje již na novou komoru jako poslední prvek
+	}
+	else//HALA
+	{
+		//pokud ještě HLAVIČKA neexistuje, tak ji založí
+		if(HALA.body==NULL)hlavicka_body();
+
+		Bod->n=HALA.body->predchozi->n+1;//navýšení počítadla
+		Bod->predchozi=HALA.body->predchozi;//nový bod ukazuje na poslední prvek ve spojaku jako na prvek předchozí
+		Bod->dalsi=NULL;//nový bod neukazuje na žádný další prvek, resp. ukazuje na NULL
+		HALA.body->predchozi->dalsi=Bod;//za poslední aktuální prvek vloží nový poslední
+		HALA.body->predchozi=Bod;//hlavička ukazuje již na novou komoru jako poslední prvek
+	}
+}
+////---------------------------------------------------------------------------
 ////společné metody pro HALU a objekty
 //vloží nový bod na konec seznamu bodů pokud je Za=NULL, jinak vloží za tento bod, ošetřuje bod vložený na stejný místo jako předchozí, či jako první, pokud se jedná o poslední vložení při uzavírání polygonu a je zapnuta ortogonalizace, je zajištěno, aby byl první poslední a předposlední bod v ortogonalizovaném vztahu, zajištění poslední spojnice zajištuje vykreslovací metoda, pokud jsou vloženy pouze 3 body a ukončeno vkládání je dopočítán 4 bod do rozměrů obdélníku
 void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod,bool ortogonalizovat,bool konec)

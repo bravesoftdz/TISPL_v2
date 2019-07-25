@@ -386,6 +386,8 @@ class Cvektory
 	Cvektory();
 
 //společné metody pro HALU a OBJEKT, pokud je ukazatel na Objekt NULL, jedná se o metody pro HALU
+	void hlavicka_body(TObjekt *Objekt=NULL);//pomocná metoda, není třeba volat, volá se automaticky při vkládání prvního bodu při vloz_bod, pokud je ukazatel na Objekt NULL, jedná se o metody pro HALU
+	void vloz_bod(TBod *Bod,TObjekt *Objekt=NULL);//vloží nový bod na konec seznamu bodů, pokud je ukazatel na Objekt NULL, jedná se o metody pro HALU
 	void vloz_bod(double X, double Y,TObjekt *Objekt=NULL,TBod *ZaBod=NULL, bool ortogonalizovat=true,bool konec=false);//vloží nový bod na konec seznamu bodů pokud je Za=NULL, jinak vloží za tento bod, ošetřuje bod vložený na stejný místo jako předchozí, či jako první, pokud se jedná o poslední vložení při uzavírání polygonu a je zapnuta ortogonalizace, je zajištěno, aby byl první poslední a předposlední bod v ortogonalizovaném vztahu, zajištění poslední spojnice zajištuje vykreslovací metoda, pokud jsou vloženy pouze 3 body a ukončeno vkládání je dopočítán 4 bod do rozměrů obdélníku
 	void posun_bod(double X, double Y,TBod* Bod);//posune bod HALy nebo Objektu, záleží, kam bod náleží
 	void posun_hranu(double OffsetX,double OffsetY,TBod* Bod1,TBod* Bod2);//posune hranu tvořenou danými body o zadaný offset
