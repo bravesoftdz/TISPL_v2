@@ -275,14 +275,14 @@ Cvektory::TBod *Cvektory::najdi_bod(TObjekt* Objekt)
 //na aktuálních souřadnicích myši hledá úsečku, pokud je nalezena je vracen ukazatel na druhý bod, pokd nebylo nalezeno nic vrátí NULL, parametr Objekt implicitně NULLL, rozlišuje hledání úsečky v HALE nebo v Objektu, parametr přesnost určuje vzdálenost od přímky, která je nutná k její detekci
 Cvektory::TBod *Cvektory::najdi_usecku(TObjekt* Objekt,long presnost)
 {
-	double x=F->akt_souradnice_kurzoru.x,y=F->akt_souradnice_kurzoru.y;//souřadnice kurzoru jsou neměnné po celou dobu metody
+	double x=F->akt_souradnice_kurzoru_PX.x,y=F->akt_souradnice_kurzoru_PX.y;//souřadnice kurzoru jsou neměnné po celou dobu metody
 	TBod *A=NULL,*B=NULL;//return proměnná + krokování cyklu
 	if(Objekt!=NULL&&Objekt->body!=NULL)B=Objekt->body->dalsi->dalsi;//jedná se o body objektu + přeskočí hlavičku + začátek na druhém bodu
 	else if(HALA.body!=NULL&&HALA.body->predchozi->n>1)B=HALA.body->dalsi->dalsi;//jedná se bod haly + přeskočí hlavičku + začně na druhém bodu (pokud existuje, jestli ne return NULL)
 	while(B!=NULL)
 	{
 		//prohledávání úseček mezi akt. bodem a předchozím bodem
-		if(m.LeziVblizkostiUsecky(x,y,B->predchozi->X,B->predchozi->Y,B->X,B->Y)<=presnost)break;
+		if(m.LeziVblizkostiUsecky(x,y,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y))<=presnost)break;
 		//pokud jsem na posledním bodu musím zkontrolovat úsečku mezi posledním a prvním
 		if(B->dalsi==NULL)
 		{
@@ -290,7 +290,7 @@ Cvektory::TBod *Cvektory::najdi_usecku(TObjekt* Objekt,long presnost)
 			if(Objekt!=NULL&&Objekt->body!=NULL)A=Objekt->body->dalsi;
 			else if(HALA.body!=NULL&&HALA.body->predchozi->n>1)A=HALA.body->dalsi;
 			//prohledávání první, poslední, pokud nalezeno uloží do ret. proměnné B ukazatel na první bod
-			if(m.LeziVblizkostiUsecky(x,y,A->X,A->Y,B->X,B->Y)<=presnost){B=A;break;}
+			if(m.LeziVblizkostiUsecky(x,y,m.L2Px(A->X),m.L2Py(A->Y),m.L2Px(B->X),m.L2Py(B->Y))<=presnost){B=A;break;}
 		}
 		B=B->dalsi;
 	}
@@ -635,9 +635,9 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 	TElement *zarazka=vloz_element(novy,MaxInt,konec.x,konec.y,0);
 	//definice bodů geometrie
 	zarazka->geo.X1=pocatek.x;zarazka->geo.Y1=pocatek.y;
+	zarazka->geo.X4=konec.x;zarazka->geo.Y4=konec.y;
 	zarazka->geo.X2=pocatek.x+(konec.x-pocatek.x)/2.0;zarazka->geo.Y2=pocatek.y+(konec.y-pocatek.y)/2.0;
 	zarazka->geo.X3=zarazka->geo.X2;zarazka->geo.Y3=zarazka->geo.Y2;
-	zarazka->geo.X4=konec.x;zarazka->geo.Y4=konec.y;
 	zarazka->geo.typ=0;
 	zarazka->geo.delka=m.delka(zarazka->geo.X1,zarazka->geo.Y1,zarazka->geo.X2,zarazka->geo.Y2);
 	zarazka=NULL;delete zarazka;
@@ -1785,9 +1785,9 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element)
 		Objekt->elementy->predchozi=Element;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
 		//geometrie
 		Element->geo.X1=Element->predchozi->geo.X4;Element->geo.Y1=Element->predchozi->geo.Y4;
+		Element->geo.X4=F->d.Rxy(Element).x;Element->geo.Y4=F->d.Rxy(Element).y;
 		Element->geo.X2=Element->geo.X1+(Element->geo.X4-Element->geo.X1)/2.0;Element->geo.Y2=Element->geo.Y1+(Element->geo.Y4-Element->geo.Y1)/2.0;
 		Element->geo.X3=Element->geo.X2;Element->geo.Y3=Element->geo.Y2;
-		Element->geo.X4=Element->X;Element->geo.Y4=Element->Y;
 		//Element->geo.typ=?
 		//Element->geo.delka=?
 	}
@@ -1800,9 +1800,9 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element)
 		p->dalsi=Element;
 		//geometrie
 		Element->geo.X1=p->geo.X4;Element->geo.Y1=p->geo.Y4;
+		Element->geo.X4=F->d.Rxy(Element).x;Element->geo.Y4=F->d.Rxy(Element).y;
 		Element->geo.X2=Element->geo.X1+(Element->geo.X4-Element->geo.X1)/2.0;Element->geo.Y2=Element->geo.Y1+(Element->geo.Y4-Element->geo.Y1)/2.0;
 		Element->geo.X3=Element->geo.X2;Element->geo.Y3=Element->geo.Y2;
-		Element->geo.X4=Element->X;Element->geo.Y4=Element->Y;
 		//Element->geo.typ=?
 		//Element->geo.delka=?
 		Element->dalsi->geo.X1=Element->geo.X4;Element->dalsi->geo.Y1=Element->geo.Y4;
@@ -1871,6 +1871,11 @@ Cvektory::TElement *Cvektory::vloz_element_za(TObjekt *Objekt,TElement *Element)
 				{
 					Element->predchozi->dalsi=Element->dalsi;//předchozí bude ukazovat na následující
 					Element->dalsi->predchozi=Element->predchozi; //následující bude ukazovat na další
+					//geometrie
+					Element->dalsi->geo.X1=Element->predchozi->geo.X4;Element->dalsi->geo.Y1=Element->predchozi->geo.Y4;
+					Element->dalsi->geo.X4=F->d.Rxy(Element->dalsi).x;Element->dalsi->geo.Y4=F->d.Rxy(Element->dalsi).y;
+					Element->dalsi->geo.X2=Element->dalsi->geo.X1+(Element->dalsi->geo.X4-Element->dalsi->geo.X1)/2.0;Element->dalsi->geo.Y2=Element->dalsi->geo.Y1+(Element->dalsi->geo.Y4-Element->dalsi->geo.Y1)/2.0;
+					Element->dalsi->geo.X3=Element->dalsi->geo.X2;Element->dalsi->geo.Y3=Element->dalsi->geo.Y2;
 				}
 				else//pokud se jedná o poslední prvek
 				{
@@ -1885,6 +1890,15 @@ Cvektory::TElement *Cvektory::vloz_element_za(TObjekt *Objekt,TElement *Element)
 			Objekt->elementy->dalsi->predchozi=Element;//za předchozým prvním prvkem nový Element
 			Objekt->elementy->dalsi=Element;//za hlavičkou nový element
 			Element->predchozi=Objekt->elementy;//před elementem hlavička
+			//geometrie vkládaného elementu
+			Element->geo.X1=Element->dalsi->geo.X1;Element->geo.Y1=Element->dalsi->geo.Y1;
+			Element->geo.X4=F->d.Rxy(Element).x;Element->geo.Y4=F->d.Rxy(Element).y;
+			Element->geo.X2=Element->geo.X1+(Element->geo.X4-Element->geo.X1)/2.0;Element->geo.Y2=Element->geo.Y1+(Element->geo.Y4-Element->geo.Y1)/2.0;
+			Element->geo.X3=Element->geo.X2;Element->geo.Y3=Element->geo.Y2;
+			//geometrie bývalého prvního
+			Element->dalsi->geo.X1=F->d.Rxy(Element).x;Element->dalsi->geo.Y1=F->d.Rxy(Element).y;
+			Element->dalsi->geo.X2=Element->dalsi->geo.X1+(Element->dalsi->geo.X4-Element->dalsi->geo.X1)/2.0;Element->dalsi->geo.Y2=Element->dalsi->geo.Y1+(Element->dalsi->geo.Y4-Element->dalsi->geo.Y1)/2.0;
+			Element->dalsi->geo.X3=Element->dalsi->geo.X2;Element->dalsi->geo.Y3=Element->dalsi->geo.Y2;
 		}
 		if(zaposlednim)//ukazatelové propojení pro případ vložení za poseední element
 		{
@@ -2435,7 +2449,7 @@ short Cvektory::PtInKota_elementu(TObjekt *Objekt,long X,long Y)
 //posune pouze Element z pomocného spojového seznamu pom_temp na parametrem uvedenou vzádlenost (v metrech) od elementu předchozího, pokud je implicitní hodnota pusun_dalsich_elementu false změněna na true, jsou o danou změnu posunu přesunuty i elementy následující Elementu (tudíž jejich vzdálenost od Elementu bude zachována, naopak v případě výchozí hodnoty false je následujícím/dalším elementům poloha zachována)
 bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dalsich_elementu,bool posun_kurzorem)
 { //!!!!!!po nasazení geometrie nutno zdokonalit, nebude se pracovát pouze se vzdálenosti na linii buď vodorvné či svislé, ale i v oblouku
-	bool RET=false;
+	bool RET=true;
 	if(F->pom_temp!=NULL && F->pom_temp->elementy!=NULL/*&&F->Akce!=F->MOVE_ELEMENT*/)//raději ošetření, ač by se metoda měla volat jen v případě existence pom_temp
 	{
 	//použít makro F->d.Rxy(uvažovaný element), m.delka() vrací pouze abs. hodnotu
@@ -2477,8 +2491,26 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				else	vzd.x=Element->Y-Element->predchozi->Y;
 			}//odstavil MaKr F->Sv(vzd.x);
       //kontrola zda bude posunutý element mimo pohon, pokud ano nedovolí posun, kontrolováno pouze v případě posunu z kót
-			if((Element->orientace==0 || Element->orientace==180)&&(Element->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost)<F->pom_temp->elementy->dalsi->geo.X1 || F->pom_temp->elementy->predchozi->geo.X4<Element->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost)))posun_povolit=false;
-			if((Element->orientace==90 || Element->orientace==270)&&(Element->Y-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost)>F->pom_temp->elementy->dalsi->geo.Y1 || F->pom_temp->elementy->predchozi->geo.Y4<Element->Y-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost)))posun_povolit=false;
+			if(posun_kurzorem)//rozdílné výpočty součadnic pro posun z kurzoru a posun z kóty
+			{
+				if((Element->orientace==0 || Element->orientace==180)&&(Element->X+vzdalenost<F->pom_temp->elementy->dalsi->geo.X1 || F->pom_temp->elementy->predchozi->geo.X4<Element->X+vzdalenost))posun_povolit=false;
+				if((Element->orientace==90 || Element->orientace==270)&&(Element->Y+vzdalenost>F->pom_temp->elementy->dalsi->geo.Y1 || F->pom_temp->elementy->predchozi->geo.Y4<Element->Y+vzdalenost))posun_povolit=false;
+				if(pusun_dalsich_elementu)//kontrola pro poslední prvek pokud je povolen posun dalších elementů
+				{
+					if((Element->orientace==0 || Element->orientace==180) && F->pom_temp->elementy->predchozi->geo.X4<F->pom_temp->elementy->predchozi->predchozi->X+vzdalenost)posun_povolit=false;
+					if((Element->orientace==90 || Element->orientace==270) && F->pom_temp->elementy->predchozi->geo.Y4<F->pom_temp->elementy->predchozi->predchozi->Y+vzdalenost)posun_povolit=false;
+				}
+			}
+			else
+			{
+				if((Element->orientace==0 || Element->orientace==180)&&(Element->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost)<F->pom_temp->elementy->dalsi->geo.X1 || F->pom_temp->elementy->predchozi->geo.X4<Element->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost)))posun_povolit=false;
+				if((Element->orientace==90 || Element->orientace==270)&&(Element->Y-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost)>F->pom_temp->elementy->dalsi->geo.Y1 || F->pom_temp->elementy->predchozi->geo.Y4<Element->Y-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost)))posun_povolit=false;
+				if(pusun_dalsich_elementu)//kontrola pro poslední prvek pokud je povolen posun dalších elementů
+				{
+					if((Element->orientace==0 || Element->orientace==180) && F->pom_temp->elementy->predchozi->geo.X4<F->pom_temp->elementy->predchozi->predchozi->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost))posun_povolit=false;
+					if((Element->orientace==90 || Element->orientace==270) && F->pom_temp->elementy->predchozi->geo.Y4<F->pom_temp->elementy->predchozi->predchozi->Y-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost))posun_povolit=false;
+				}
+			}
 			if(vzd.x!=0 && !posun_kurzorem && posun_povolit)//posun z kót
 			{
 				if(Element->orientace==0||Element->orientace==180)Element->X=Element->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
@@ -2486,42 +2518,52 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){posuv_aktualizace_RT(Element);posuv_aktualizace_RT(Element->dalsi);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
 				else posuv_aktualizace_RT(Element);
 			}
-			else if(posun_kurzorem)//posun kurozem
+			else if(vzd.x!=0 && posun_kurzorem && posun_povolit)//posun kurozem
 			{
 				if(Element->orientace==0||Element->orientace==180)Element->X=Element->X+vzdalenost;
 				else Element->Y=Element->Y+vzdalenost;
 				if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){posuv_aktualizace_RT(Element);posuv_aktualizace_RT(Element->dalsi);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
 				else posuv_aktualizace_RT(Element);
 			}
-
-			//v případě požadavku na posun i následujících elementů
-			if(pusun_dalsich_elementu)
+			//aktualizace geometrie, pokud byl proveden posun
+			if(posun_povolit)
 			{
-        //kontrola zda poslední element nebude mimo pohon, poslední ve spojáku je zarážka, nás zajímá poslendní element (předchozi->předchozi)
-				posun_povolit=true;
-				if((Element->orientace==0 || Element->orientace==180) && F->pom_temp->elementy->predchozi->geo.X4<F->pom_temp->elementy->predchozi->predchozi->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost))posun_povolit=false;
-				if((Element->orientace==90 || Element->orientace==270) && F->pom_temp->elementy->predchozi->geo.Y4<F->pom_temp->elementy->predchozi->predchozi->Y-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost))posun_povolit=false;
-
+				//aktualizace posouvaného elementu
+				Element->geo.X4=F->d.Rxy(Element).x;Element->geo.Y4=F->d.Rxy(Element).y;
+				Element->geo.X2=Element->geo.X1+(Element->geo.X4-Element->geo.X1)/2.0;Element->geo.Y2=Element->geo.Y1+(Element->geo.Y4-Element->geo.Y1)/2.0;
+				Element->geo.X3=Element->geo.X2;Element->geo.Y3=Element->geo.Y2;
+				//aktualizace dalšího elemtnu
+				Element->dalsi->geo.X1=F->d.Rxy(Element).x;Element->dalsi->geo.Y1=F->d.Rxy(Element).y;
+				Element->dalsi->geo.X2=Element->dalsi->geo.X1+(Element->dalsi->geo.X4-Element->dalsi->geo.X1)/2.0;Element->dalsi->geo.Y2=Element->dalsi->geo.Y1+(Element->dalsi->geo.Y4-Element->dalsi->geo.Y1)/2.0;
+				Element->dalsi->geo.X3=Element->dalsi->geo.X2;Element->dalsi->geo.Y3=Element->dalsi->geo.Y2;
+			}else F->TIP="Nelze provést přesun, elementy musí být na pohonu!";
+			//v případě požadavku na posun i následujících elementů
+			if(pusun_dalsich_elementu && posun_povolit)
+			{
 				TElement *E=Element->dalsi;
 				while(E!=NULL)
 				{
-					if(vzd.x!=0 && !posun_kurzorem && posun_povolit && E->eID!=MaxInt)//neposunovat zarážku
+					if(vzd.x!=0 && !posun_kurzorem && E->eID!=MaxInt)//neposunovat zarážku
 					{
 						if(Element->orientace==0||Element->orientace==180)E->X=E->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);//výpočet pro posuv z kót
 						else E->Y=E->Y-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
 					}
-					if(posun_kurzorem && E->eID!=MaxInt)
+					if(vzd.x!=0 && posun_kurzorem && E->eID!=MaxInt)
 					{
 						if(Element->orientace==0||Element->orientace==180)E->X=E->X+vzdalenost;//výpočet pro posun kurzorem
 						else E->Y=E->Y+vzdalenost;
 					}
+					//aktualizace geometrie
+					Element->geo.X4=F->d.Rxy(Element).x;Element->geo.Y4=F->d.Rxy(Element).y;
+					Element->geo.X2=Element->geo.X1+(Element->geo.X4-Element->geo.X1)/2.0;Element->geo.Y2=Element->geo.Y1+(Element->geo.Y4-Element->geo.Y1)/2.0;
+					Element->geo.X3=Element->geo.X2;Element->geo.Y3=Element->geo.Y2;
 					E=E->dalsi;
 				}
 				E=NULL;delete E;
 			}
 			// případně ještě kontrola zda se vejdou stále všechny elementy do objektu možno použít MaVl metodu z Unit1
 			//RET=
-		}
+		}RET=posun_povolit;
 	}
 	Cvektory::TElement *E=vloz_element_za(F->pom_temp,Element);
 	if(E!=NULL&&E->n!=Element->n)zmen_poradi_elementu(Element,E);
@@ -2572,35 +2614,53 @@ void Cvektory::zmen_poradi_elementu(TElement *aktualni_poradi,TElement *nove_por
 	TElement *ukaz_np=nove_poradi;//musí být tu, aby byl uložen aktuální seznam, ne po vyjmutí
 	if(ukaz_ap!=NULL && ukaz_np!=NULL)
 	{
-		//vyjmutí ze spojáku
+		////////////vyjmutí ze spojáku
 		if(ukaz_ap->dalsi!=NULL)//pokud se nejedná o poslední prvek
 		{
 			ukaz_ap->predchozi->dalsi=ukaz_ap->dalsi;//předchozí bude ukazovat na následující
 			ukaz_ap->dalsi->predchozi=ukaz_ap->predchozi; //následující bude ukazovat na další
+			//aktualizace geometrie
+			ukaz_ap->dalsi->geo.X1=ukaz_ap->predchozi->geo.X4;ukaz_ap->dalsi->geo.Y1=ukaz_ap->predchozi->geo.Y4;
+			ukaz_ap->dalsi->geo.X4=F->d.Rxy(ukaz_ap->dalsi).x;ukaz_ap->dalsi->geo.Y4=F->d.Rxy(ukaz_ap->dalsi).y;
+			ukaz_ap->dalsi->geo.X2=ukaz_ap->dalsi->geo.X1+(ukaz_ap->dalsi->geo.X4-ukaz_ap->dalsi->geo.X1)/2.0;ukaz_ap->dalsi->geo.Y2=ukaz_ap->dalsi->geo.Y1+(ukaz_ap->dalsi->geo.Y4-ukaz_ap->dalsi->geo.Y1)/2.0;
+			ukaz_ap->dalsi->geo.X3=ukaz_ap->dalsi->geo.X2;ukaz_ap->dalsi->geo.Y3=ukaz_ap->dalsi->geo.Y2;
 		}
 		else//pokud se jedná o poslední prvek
 		{
 			F->pom_temp->elementy->predchozi=ukaz_ap->predchozi;
 			ukaz_ap->predchozi->dalsi=NULL;
 		}
-		//ukazatelové propojení
+		////////////ukazatelové propojení
 		ukaz_ap->dalsi=ukaz_np->dalsi;
 		ukaz_ap->predchozi=ukaz_np;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 		ukaz_np->dalsi->predchozi=ukaz_ap;
 		ukaz_np->dalsi=ukaz_ap;
-		/////konec testu
+		////////////Aktualizace geometrie
+    //geometrie predchozího elementu pokud předchozím není hlavička
+		if(ukaz_ap->n!=F->pom_temp->elementy->dalsi->n)
+		{
+			if(ukaz_np->n==F->pom_temp->elementy->dalsi->n && ukaz_np->n!=1)//z druhého prvku se stává prvek první, potřeba počátečních souřadnic kabiny
+			ukaz_np->geo.X1=ukaz_ap->geo.X1;ukaz_np->geo.Y1=ukaz_ap->geo.Y1;
+			ukaz_np->geo.X4=F->d.Rxy(ukaz_ap).x;ukaz_np->geo.Y4=F->d.Rxy(ukaz_ap).y;
+			ukaz_np->geo.X2=ukaz_np->geo.X1+(ukaz_np->geo.X4-ukaz_np->geo.X1)/2.0;ukaz_np->geo.Y2=ukaz_np->geo.Y1+(ukaz_np->geo.Y4-ukaz_np->geo.Y1)/2.0;
+			ukaz_np->geo.X3=ukaz_np->geo.X2;ukaz_np->geo.Y3=ukaz_np->geo.Y2;
+		}
+		//geometrie vkládaného elementu
+		ukaz_ap->geo.X1=F->d.Rxy(ukaz_np).x;ukaz_ap->geo.Y1=F->d.Rxy(ukaz_np).y;
+		ukaz_ap->geo.X4=F->d.Rxy(ukaz_ap).x;ukaz_ap->geo.Y4=F->d.Rxy(ukaz_ap).y;
+		ukaz_ap->geo.X2=ukaz_ap->geo.X1+(ukaz_ap->geo.X4-ukaz_ap->geo.X1)/2.0;ukaz_ap->geo.Y2=ukaz_ap->geo.Y1+(ukaz_ap->geo.Y4-ukaz_ap->geo.Y1)/2.0;
+		ukaz_ap->geo.X3=ukaz_ap->geo.X2;ukaz_ap->geo.Y3=ukaz_ap->geo.Y2;
+		//geometrie dalsího elementu
+		ukaz_ap->dalsi->geo.X1=F->d.Rxy(ukaz_ap).x;ukaz_ap->dalsi->geo.Y1=F->d.Rxy(ukaz_ap).y;
+		ukaz_ap->dalsi->geo.X2=ukaz_ap->dalsi->geo.X1+(ukaz_ap->dalsi->geo.X4-ukaz_ap->dalsi->geo.X1)/2.0;ukaz_ap->dalsi->geo.Y2=ukaz_ap->dalsi->geo.Y1+(ukaz_ap->dalsi->geo.Y4-ukaz_ap->dalsi->geo.Y1)/2.0;
+		ukaz_ap->dalsi->geo.X3=ukaz_ap->dalsi->geo.X2;ukaz_ap->dalsi->geo.Y3=ukaz_ap->dalsi->geo.Y2;
 	}
-	//přeindexování (N-hodnoty) v celém seznamu, možno řešit sepáratáně, ale takto to bylo rychleji napsané
+	////////////přeindexování (N-hodnoty) v celém seznamu, možno řešit sepáratáně, ale takto to bylo rychleji napsané
 	TElement *E=F->pom_temp->elementy->dalsi;//ukazatel na první element, přeskočí hlavičku, metoda volaná jen v případě, že existují min. 2 elementy
 	int n=1;
 	while (E!=NULL)
 	{
 		E->n=n;
-//		if(E->name!="")//nutné, přeindexovává se i první element, který nemá vytvořený mGrid
-//		{
-//			E->mGrid->ID=E->n;//F->Sv(E->name);
-//			E->mGrid->Show(NULL);//musí zde být Show, Update() dělal problémy
-//		}
 		n++;
 		E=E->dalsi;
 	}
@@ -2619,7 +2679,7 @@ double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element,bool pouze
 		//pokud je element první v kabině
 		if(Element->n==1)
 		{
-			if(Element->orientace==0||Element->orientace==180)return m.delka(F->pom_temp->Xk,F->pom_temp->elementy->Y,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
+			if(Element->orientace==0||Element->orientace==180)return m.delka(F->pom_temp->elementy->dalsi->geo.X1,F->pom_temp->elementy->dalsi->geo.Y1,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
 			else return m.delka(F->pom_temp->elementy->X,F->pom_temp->Yk,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
 		}
 		else//pokud je v kabině více elementů
@@ -2643,11 +2703,8 @@ double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element,bool pouze
   	TPointD E=F->d.Rxy(Element);
   	if(Element->n==1)//pro první element od hrany kabiny
   	{                ///ještě vylepšít, provizorně jen pro vodorovnou levopravou kabinu
-			if(Element->orientace==0||Element->orientace==180)
-				return m.delka(F->pom_temp->Xk,F->pom_temp->elementy->Y,E.x,E.y);//(bude nutno ještě vylepšit s příchodem oblouků)!!!
-			else
-				return m.delka(F->pom_temp->elementy->X,F->pom_temp->Yk,E.x,E.y);//(bude nutno ještě vylepšit s příchodem oblouků)!!!
-  	}
+			return m.delka(F->pom_temp->elementy->dalsi->geo.X1,F->pom_temp->elementy->dalsi->geo.Y1,E.x,E.y);//(bude nutno ještě vylepšit s příchodem oblouků)!!!
+		}
   	else//mezi elementy
   	{
   		TPointD Ep=F->d.Rxy(Element->predchozi);
@@ -2844,6 +2901,11 @@ void Cvektory::smaz_element(TElement *Element)
 	{
 		Element->predchozi->dalsi=Element->dalsi;
 		Element->dalsi->predchozi=Element->predchozi;
+		//aktualizace geometrie
+		Element->dalsi->geo.X1=Element->predchozi->geo.X4;Element->dalsi->geo.Y1=Element->predchozi->geo.Y4;
+		Element->dalsi->geo.X4=F->d.Rxy(Element->dalsi).x;Element->dalsi->geo.Y4=F->d.Rxy(Element->dalsi).y;
+		Element->dalsi->geo.X2=Element->dalsi->geo.X1+(Element->dalsi->geo.X4-Element->dalsi->geo.X1)/2.0;Element->dalsi->geo.Y2=Element->dalsi->geo.Y1+(Element->dalsi->geo.Y4-Element->dalsi->geo.Y1)/2.0;
+		Element->dalsi->geo.X3=Element->dalsi->geo.X2;Element->dalsi->geo.Y3=Element->dalsi->geo.Y2;
 	}
 	else//poslední prvek
 	{
