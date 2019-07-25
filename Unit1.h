@@ -591,7 +591,6 @@ private:
 	bool ttr(UnicodeString Text);
 	void log2web(UnicodeString Text);//automaticky pøidá parametry (èas, uživatel, licence)
 	void log2webOnlyText(UnicodeString Text);//pouze text
-	void log(AnsiString Text);//zapíše log do textového souboru a pøidá datum
 	void SaveText2File(AnsiString Text,AnsiString FileName);//zapíše daný textový øetìzec do daného textového souboru
 	void startUP();//pøi aktivaci formuláøe, pro zpøehlednìní kodu
 	void DesignSettings();//nastavení designu v konstruktoru
@@ -761,6 +760,7 @@ public:		// User declarations
 	double outRz(double outRz);
 	void Memo(AnsiString Text,bool clear=false,bool count=false);//urychlení vypsání do Mema
 	void pridani_elementu_tab_pohon(Cvektory::TElement *E);//pøedesign tabulky pohonu po pøidání elementu
+  void log(AnsiString Text);//zapíše log do textového souboru a pøidá datum
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
