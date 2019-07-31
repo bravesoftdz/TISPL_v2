@@ -312,7 +312,6 @@ class Cvektory
 		unsigned long n; //pořadí objektu ve spoj.seznamu
 		short druh;//0 - podlahový, 1 - podvěsný
 		UnicodeString name;//název
-		UnicodeString subname;//podnázev
 		UnicodeString link;//hypertextový odkaz na katalog
 		TDoubleHodnota *roztec;//přidružený spojový seznam možných roztečí
 		TDoubleHodnota *hOblouk;//přidružený spojový seznam horizontálních oblouků
@@ -570,7 +569,7 @@ public:
 
 //metody pro KATOLOG
 	enum TtypHodnoty{R,hO,vO,vR,hR};TtypHodnoty;
-	void vloz_typ_dopravniku(AnsiString name,AnsiString subname,UnicodeString link="",short druh=0);//vloží nový typ dopravníku do KATALOGu dopravníků, pokud neexistuje hlavička vytvoří ji, druh: 0 - podlahový, 1 - podvěsný
+	void vloz_typ_dopravniku(AnsiString name,UnicodeString link="",short druh=0);//vloží nový typ dopravníku do KATALOGu dopravníků, pokud neexistuje hlavička vytvoří ji, druh: 0 - podlahový, 1 - podvěsný
 	void vloz_do_typu_dopravniku(TtypHodnoty typHodnoty,double hodnota,Ttyp_dopravniku *typDopravniku=NULL);//vloží dle typu hodnoty hodnotu do typuDopravniku, pokud je NULL, vloží nakonec (do posledního typu dopravníku uloženém ve spojovém seznamu v KaTALOGu)
 	void vytvor_KATALOG();//vytvoří katalog typů dopravníku za pomocí volání nasledujících dvou metod
 	Ttyp_dopravniku *vrat_typ_dopravniku(unsigned long n);//dla zadaného n vrátí daný typ dopravníku formou ukazatatele
