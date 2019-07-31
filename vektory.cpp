@@ -52,7 +52,7 @@ void Cvektory::vloz_bod(TBod *Bod,TObjekt *Objekt)
 		Bod->predchozi=Objekt->body->predchozi;//nový bod ukazuje na poslední prvek ve spojaku jako na prvek předchozí
 		Bod->dalsi=NULL;//nový bod neukazuje na žádný další prvek, resp. ukazuje na NULL
 		Objekt->body->predchozi->dalsi=Bod;//za poslední aktuální prvek vloží nový poslední
-		Objekt->body->predchozi=Bod;//hlavička ukazuje již na novou komoru jako poslední prvek
+		Objekt->body->predchozi=Bod;//hlavička ukazuje již na nový bod jako poslední prvek
 	}
 	else//HALA
 	{
@@ -63,7 +63,7 @@ void Cvektory::vloz_bod(TBod *Bod,TObjekt *Objekt)
 		Bod->predchozi=HALA.body->predchozi;//nový bod ukazuje na poslední prvek ve spojaku jako na prvek předchozí
 		Bod->dalsi=NULL;//nový bod neukazuje na žádný další prvek, resp. ukazuje na NULL
 		HALA.body->predchozi->dalsi=Bod;//za poslední aktuální prvek vloží nový poslední
-		HALA.body->predchozi=Bod;//hlavička ukazuje již na novou komoru jako poslední prvek
+		HALA.body->predchozi=Bod;//hlavička ukazuje již na nový bod jako poslední prvek
 	}
 }
 ////---------------------------------------------------------------------------
@@ -132,14 +132,14 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod,bool orto
 				Bod->predchozi=Objekt->body->predchozi;//nový bod ukazuje na poslední prvek ve spojaku jako na prvek předchozí
 				Bod->dalsi=NULL;//nový bod neukazuje na žádný další prvek, resp. ukazuje na NULL
 				Objekt->body->predchozi->dalsi=Bod;//za poslední aktuální prvek vloží nový poslední
-				Objekt->body->predchozi=Bod;//hlavička ukazuje již na novou komoru jako poslední prvek
+				Objekt->body->predchozi=Bod;//hlavička ukazuje již na nový bod jako poslední prvek
 			}
 		}
 		else//vložení mezi body
 		{
-			//nastavení počítadla u vkládané komory
+			//nastavení počítadla u vkládaného bodu
 			Bod->n=ZaBod->n+1;
-			//navýšení počítadla u následujícíh komor
+			//navýšení počítadla u následujícího bodu
 			TBod *B=ZaBod->dalsi;
 			while(B!=NULL)
 			{
@@ -148,9 +148,9 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod,bool orto
 			}
 			B=NULL;delete B;
 			//nové ukazatelové propojení
-			ZaBod->dalsi->predchozi=Bod;//následující komoře přídá ukaztel na předchozí na vkladanou
+			ZaBod->dalsi->predchozi=Bod;//následujícímu bodu přídá ukazatel na předchozí na vkladaný
 			Bod->dalsi=ZaBod->dalsi;//vkládaná ukazuje na původní následují
-			ZaBod->dalsi=Bod;//za požadovanou komoru se vloží vkládaná komora
+			ZaBod->dalsi=Bod;//za požadovaný bod se vloží vkládaný bod
 			Bod->predchozi=ZaBod;//vkládaná ukazuje na predchozí (ZaBod)
 		}
 	}
@@ -173,7 +173,7 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod,bool orto
 				Bod->predchozi=HALA.body->predchozi;//nový bod ukazuje na poslední prvek ve spojaku jako na prvek předchozí
 				Bod->dalsi=NULL;//nový bod neukazuje na žádný další prvek, resp. ukazuje na NULL
 				HALA.body->predchozi->dalsi=Bod;//za poslední aktuální prvek vloží nový poslední
-				HALA.body->predchozi=Bod;//hlavička ukazuje již na novou komoru jako poslední prvek
+				HALA.body->predchozi=Bod;//hlavička ukazuje již na novbod jako poslední prvek
 			}
 		}
 		else//vložení mezi body
@@ -191,7 +191,7 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod,bool orto
 			//nové ukazatelové propojení
 			ZaBod->dalsi->predchozi=Bod;//následující komoře přídá ukaztel na předchozí na vkladanou
 			Bod->dalsi=ZaBod->dalsi;//vkládaná ukazuje na původní následují
-			ZaBod->dalsi=Bod;//za požadovanou komoru se vloží vkládaná komora
+			ZaBod->dalsi=Bod;//za požadovaný bod se vloží vkládaný bod
 			Bod->predchozi=ZaBod;//vkládaná ukazuje na predchozí (ZaBod)
 		}
 	}
