@@ -760,7 +760,7 @@ public:		// User declarations
 	double outRz(double outRz);
 	void Memo(AnsiString Text,bool clear=false,bool count=false);//urychlení vypsání do Mema
 	void pridani_elementu_tab_pohon(Cvektory::TElement *E);//pøedesign tabulky pohonu po pøidání elementu
-  void log(AnsiString Text);//zapíše log do textového souboru a pøidá datum
+  void log(AnsiString Text,AnsiString Text2="");//zapíše log do textového souboru a pøidá datum
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

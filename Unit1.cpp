@@ -218,6 +218,9 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	d.v.pocet_vyhybek=0;//nastavení při každém spuštění, do budoucna načítání z binárky nebo 0
 	d.v.akt_vetev=true;
 
+  //vytvoření katalogu dopravníků
+  d.v.vytvor_KATALOG();
+
 	//ostatní
 	count_memo=0;//jednoduchý counter zobrazovaný v memo3
 }
@@ -834,12 +837,12 @@ void TForm1::log2webOnlyText(UnicodeString Text)
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //zapíše log do textového souboru a přidá datum
-void TForm1::log(AnsiString Text)
+void TForm1::log(AnsiString Text,AnsiString Text2)
 {
 	if(DEBUG && logovat && LogFileStream!=NULL)//pouze pro DEBUG
 	{
 		//přídání datumu k textu
-		Text=TIME.CurrentDate().DateString()+"_"+TIME.CurrentTime().TimeString()+"_"+Text+"\r\n";
+		Text=TIME.CurrentDate().DateString()+"_"+TIME.CurrentTime().TimeString()+"_"+Text+"_"+Text2+"\r\n";
 		//samotný zápis do sobourou
 		LogFileStream->Write(Text.c_str(),Text.Length());
   }
@@ -6592,7 +6595,8 @@ void __fastcall TForm1::FormCloseQuery(TObject *Sender, bool &CanClose)
   //v případě uzavírání aplikace
 	if(CanClose)
 	{
-		log2web("konec");
+    log(__func__,"CanClose");//logování
+    d.v.vymaz_seznam_KATALOG();
 		//pro ochranu v případě pádu programu
 		//TIniFile *ini = new TIniFile(ExtractFilePath(Application->ExeName) + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
 		writeINI("Konec","status","OK");
@@ -6600,6 +6604,7 @@ void __fastcall TForm1::FormCloseQuery(TObject *Sender, bool &CanClose)
 		writeINI("Nastaveni_app","prichytavat",prichytavat_k_mrizce);
 		writeINI("Nastaveni_app","ortogonalizace",(short)ortogonalizace_stav);
 		//zatím nepoužíváme writeINI("Nastaveni_app","status",STATUS);
+    delete aFont; aFont=NULL;
     delete LogFileStream;
 	}
 }
@@ -7654,7 +7659,6 @@ void TForm1::vse_odstranit()
 		pom_bod_temp=NULL;delete pom_bod_temp;
 		copyObjekt=NULL;delete copyObjekt;
 		copyObjektRzRx.x=0;copyObjektRzRx.y=0;
-		aFont=NULL; delete aFont;
 	 //	delete LogFileStream; //zde nesmí být kvůli logování
 }
 //---------------------------------------------------------------------------
@@ -8600,9 +8604,11 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 void __fastcall TForm1::Button14Click(TObject *Sender)
 {
  //log(__func__);
- d.v.vytvor_KATALOG();
+ //d.v.vytvor_KATALOG();
  //Sk(d.v.KATALOG->predchozi->roztec->predchozi->n);
- Sk(d.v.vrat_hodnotu_typu_dopravniku(2,Cvektory::TtypHodnoty::hR,3));
+// Sk(d.v.vrat_hodnotu_typu_dopravniku(2,Cvektory::TtypHodnoty::hR,3));
+ Sk(d.v.KATALOG->predchozi->roztec->predchozi->hodnota);
+ Sk(d.v.KATALOG->predchozi->hOblouk->predchozi->hodnota);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
