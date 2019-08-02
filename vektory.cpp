@@ -4541,6 +4541,30 @@ void Cvektory::vytvor_KATALOG()
 	//vertikální radiusy
 	vloz_do_typu_dopravniku(vR,700);
 	vloz_do_typu_dopravniku(vR,1000);
+
+  ////CALDAN VLD - S200
+	vloz_typ_dopravniku("VLD S200","http://caldan.dk/sites/default/files/TechSpecsPDF/VLD_2018_uk.pdf",0);
+	vloz_do_typu_dopravniku(R,150);
+	vloz_do_typu_dopravniku(R,180);
+	vloz_do_typu_dopravniku(R,200);
+	//horizontální oblouky
+	vloz_do_typu_dopravniku(hO,90);
+	vloz_do_typu_dopravniku(hO,45);
+	vloz_do_typu_dopravniku(hO,30);
+	vloz_do_typu_dopravniku(hO,15);
+	//horizontální radiusy
+	vloz_do_typu_dopravniku(hR,315);
+	vloz_do_typu_dopravniku(hR,500);
+	vloz_do_typu_dopravniku(hR,700);
+	vloz_do_typu_dopravniku(hR,1000);
+	//vertikální oblouky
+	vloz_do_typu_dopravniku(vO,90);
+	vloz_do_typu_dopravniku(vO,45);
+	vloz_do_typu_dopravniku(vO,30);
+	vloz_do_typu_dopravniku(vO,15);
+	//vertikální radiusy
+	vloz_do_typu_dopravniku(vR,700);
+	vloz_do_typu_dopravniku(vR,1000);
 }
 //---------------------------------------------------------------------------
 //dla zadaného n vrátí daný typ dopravníku formou ukazatatele
@@ -4599,14 +4623,22 @@ void Cvektory::vymaz_seznam_KATALOG()
 		//rozteč
 		while(KATALOG->predchozi->roztec!=NULL)
 		{
+      ShowMessage(KATALOG->predchozi->name);
 			//posunutí ukazatele a smazání typu dopravníku
 			KATALOG->predchozi->roztec->predchozi=NULL;
-			delete KATALOG->predchozi->roztec->predchozi;
+      delete KATALOG->predchozi->roztec->predchozi;
+       ShowMessage("1_2");
+
+       ShowMessage("1_3");
 			KATALOG->predchozi->roztec=KATALOG->predchozi->roztec->dalsi;
+       ShowMessage("1_4");
+       ShowMessage(KATALOG->predchozi->hOblouk->predchozi->hodnota);
+
 		}
 		//hOblouk
 		while(KATALOG->predchozi->hOblouk!=NULL)
 		{
+     ShowMessage("2");
 			//posunutí ukazatele a smazání typu dopravníku
 			KATALOG->predchozi->hOblouk->predchozi=NULL;
 			delete KATALOG->predchozi->hOblouk->predchozi;
@@ -4615,6 +4647,7 @@ void Cvektory::vymaz_seznam_KATALOG()
 		//hRadius
 		while(KATALOG->predchozi->hRadius!=NULL)
 		{
+     ShowMessage("3");
 			//posunutí ukazatele a smazání typu dopravníku
 			KATALOG->predchozi->hRadius->predchozi=NULL;
 			delete KATALOG->predchozi->hRadius->predchozi;
@@ -4623,6 +4656,7 @@ void Cvektory::vymaz_seznam_KATALOG()
 		//vOblouk
 		while(KATALOG->predchozi->vOblouk!=NULL)
 		{
+     ShowMessage("4");
 			//posunutí ukazatele a smazání typu dopravníku
 			KATALOG->predchozi->vOblouk->predchozi=NULL;
 			delete KATALOG->predchozi->vOblouk->predchozi;
@@ -4631,15 +4665,20 @@ void Cvektory::vymaz_seznam_KATALOG()
 		//vRadius
 		while(KATALOG->predchozi->vRadius!=NULL)
 		{
+     ShowMessage("5");
 			//posunutí ukazatele a smazání typu dopravníku
 			KATALOG->predchozi->vRadius->predchozi=NULL;
 			delete KATALOG->predchozi->vRadius->predchozi;
 			KATALOG->predchozi->vRadius=KATALOG->predchozi->vRadius->dalsi;
 		}
+     ShowMessage("whileOK");
 		//posunutí ukazatele a smazání typu dopravníku
 		KATALOG->predchozi->name=KATALOG->predchozi->link="";//smazání textových řetězců
+     ShowMessage("text ret smazano");
 		KATALOG->predchozi=NULL;
+    ShowMessage("KATALOG->predchozi=NULL");
 		delete KATALOG->predchozi;
+    ShowMessage("KATALOG smazano");
 		KATALOG=KATALOG->dalsi;
 	}
 }
@@ -5860,7 +5899,7 @@ void Cvektory::vse_odstranit()
 		}
 		hlavicka_RETEZY();//nutnost
 
-		vymaz_seznam_KATALOG();
+
 
 
 
