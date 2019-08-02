@@ -684,28 +684,43 @@ private:
 				//UnicodeString name; nelze
 				unsigned int text_length;
 				double X, Y;
+        unsigned long pocet_bodu;
+        unsigned long pocet_elementu;
+        unsigned long pocet_komor;
 				unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
-				double CT;//kvůli návrháři
-				double RD;//kvůli návrháři
-				double kapacita;
-				double kapacita_dop;
-				double pozice;//počet vozíků v kabině
+        double sirka_steny;//šířka stěny kabiny objektu v metrech
 				double rotace;//rotace jigu v objektu
-				double mezera;//mezera mezi vozíky (kritická mezera)
-				double mezera_jig;//mezera mezi jigy
-				double mezera_podvozek;//mezera mezi podvozky
 				unsigned int pohon;//"id" resp. n přidruženého - roletkou vybraného pohonu
 				double delka_dopravniku;//delka dopravníku v rámci objektu
-				unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky
-				unsigned short  stopka;//zda následuje na konci objektu stopka//0-ne,1-ano,2-automaticky
-				double odchylka;//povolená odchylka z CT (užito u PP)
-				short CT_zamek;
-				short RD_zamek;
-				short DD_zamek;
-				short K_zamek;
+        double koty_elementu_offset;
 				//UnicodeString poznamka; nelze
 				unsigned long poznamka_length;
+        bool zobrazit_koty;//proměnná určující, zda se budou zobrzovat kóty - NEW pridat do binarky
+        bool zobrazit_mGrid;//proměnná určující, zda budou zobrazeny mGridy - NEW pridat do binarky
+        bool uzamknout_nahled;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu - NEW pridat do binarky
+
 		};
+
+     struct C_bod//pouze pridruzeny spojak
+    {
+      unsigned long n; //pořadí objektu ve spoj.seznamu
+      double X, Y;//umístění v logických (metrických) souřadnicích
+      double kota_offset;//odsazení kót v metrech
+    };
+
+		struct C_hala
+		{
+			double name_delka;
+      double X, Y;//umístění názvu v logických (metrických) souřadnicích
+      unsigned long pocet_bodu;
+    };
+
+    struct C_komora
+    {
+      unsigned long n; //pořadí ve spoj.seznam
+      double velikost;//v metrech
+		};
+
 		struct C_zakazka
 		{
 				unsigned long n;//pořadí objektu ve spoj.seznamu
@@ -723,6 +738,37 @@ private:
 				unsigned long serv_vozik_pocet;//počet servisních vozíků v zakázce
 				unsigned long opakov_servis;//cyklus opakování servisních vozíku
 		};
+
+      struct C_element//pouze pridruzeny spojak
+		{
+        unsigned long n; //pořadí ve spoj.seznamu
+        unsigned int eID; //id typu elementu: 0 - stop stanice, 1 - robot, 2 - robot se stop stanicí, 3 - robot s pasivní otočí, 4 - robot s aktivní otočí (resp. s otočí a stop stanicí), 5 - otoč pasivní, 6 - otoč aktivní (resp. otoč se stop stanicí), 7 - pouze geometrická zarážka
+       //	UnicodeString short_name;//krátký název max. 4 znaky
+       //	UnicodeString name;//celý název objektu
+        double name_delka;  // celý název objektu
+        double X, Y;//umístění v logických (metrických) souřadnicích
+        double Xt,Yt;//umístění tabulky, resp. mGridu v logických (metrických) souřadnicích
+        short orientace;//v jaké orientaci je element na obrazovce vykreslen 0,90,180,270
+        double rotace_jig;//úhel o který element orotuje jig vzhledem k jeho aktuální rotaci jigu vůči podvozku, např. rotace_jig=90°, aktuální rotace jigu 90°, výsledek 180°
+        short stav;
+
+        double LO1;
+        double OTOC_delka;
+        double LO2;
+        double LO_pozice;
+
+        double PT1;
+        double PTotoc;
+        double PT2;
+
+        double WT;//čekání na palec
+        double WTstop;//čekání na stopce
+        double RT;//reserve time
+
+        unsigned int akt_pocet_voziku;
+        unsigned int max_pocet_voziku;
+		};
+
 		struct C_cesta//pouze přidružený spoják, který je součástí zakázky, jeden objekt spojáku je jeden segment cesty
 		{
 				unsigned long n;//n segmentu cesty
