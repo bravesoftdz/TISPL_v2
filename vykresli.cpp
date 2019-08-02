@@ -262,6 +262,20 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	double X=O->body->dalsi->X+(O->body->dalsi->dalsi->X-O->body->dalsi->X)/2;
 	double Y=O->body->dalsi->Y;
 
+  ////vykreslení prozatimní osy POHONU
+	vykresli_retez(canv,O);
+
+	////nastavení pera pro kabinu //pro rectangle, následně možné také odstranit
+	canv->Brush->Color=clWhite;
+	canv->Brush->Style=bsClear;//nastavení výplně
+	canv->Pen->Mode=pmNotXor;//pro transparentní zákres
+	canv->Pen->Color=clAkt;//barva
+	canv->Pen->Width=sirka_steny_px;//šířka v pixelech
+	canv->Pen->Style=psSolid;
+
+	////vnější obrys kabiny
+	polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
+
 	///název a zkratka
 	//název objektu - nastavení                 //záměrně nuly, aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
 	nastavit_text_popisu_objektu_v_nahledu(canv,0);AnsiString Tn=O->name.UpperCase();short Wn=canv->TextWidth(Tn);
@@ -270,27 +284,17 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	//zkratka objektu - nastavení
 	nastavit_text_popisu_objektu_v_nahledu(canv,0);AnsiString Tz=O->short_name.UpperCase();short Wz=canv->TextWidth(Tz);
 	//samotné vypsání názvu
-	nastavit_text_popisu_objektu_v_nahledu(canv,1);                                                                                          //záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
-	canv->TextOutW(m.L2Px(X)-m.round((Wn+Wl+Wz)/2.0),m.L2Py(Y)-canv->TextHeight(Tl),Tn);
+	nastavit_text_popisu_objektu_v_nahledu(canv,1);
+	TextFraming(canv,m.L2Px(X)-m.round((Wn+Wl+Wz)/2.0),m.L2Py(Y)-canv->TextHeight(Tl),Tn);                //záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
+//	canv->TextOutW(m.L2Px(X)-m.round((Wn+Wl+Wz)/2.0),m.L2Py(Y)-canv->TextHeight(Tl),Tn);
 	//samotné vypsání lomítka
 	nastavit_text_popisu_objektu_v_nahledu(canv,0);
-	canv->TextOutW(m.L2Px(X)-m.round((Wn+Wl+Wz)/2.0)+Wn,m.L2Py(Y)-canv->TextHeight(Tl),Tl);
+	TextFraming(canv,m.L2Px(X)-m.round((Wn+Wl+Wz)/2.0)+Wn,m.L2Py(Y)-canv->TextHeight(Tl),Tl);
+//	canv->TextOutW(m.L2Px(X)-m.round((Wn+Wl+Wz)/2.0)+Wn,m.L2Py(Y)-canv->TextHeight(Tl),Tl);
 	//samostné vypsání zkratky
-	nastavit_text_popisu_objektu_v_nahledu(canv,2);                                                                                               //záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamack
-	canv->TextOutW(m.L2Px(X)-m.round((Wn+Wl+Wz)/2.0)+Wn+Wl,m.L2Py(Y)-canv->TextHeight(Tl),Tz);
-
-	////vykreslení prozatimní osy POHONU
-	vykresli_retez(canv,O);
-
-	////nastavení pera pro kabinu //pro rectangle, následně možné také odstranit
-	canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
-	canv->Pen->Mode=pmNotXor;//pro transparentní zákres
-	canv->Pen->Color=clAkt;//barva
-	canv->Pen->Width=sirka_steny_px;//šířka v pixelech
-	canv->Pen->Style=psSolid;
-
-	////vnější obrys kabiny
-	polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
+	nastavit_text_popisu_objektu_v_nahledu(canv,2);                   //záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamack
+	TextFraming(canv,m.L2Px(X)-m.round((Wn+Wl+Wz)/2.0)+Wn+Wl,m.L2Py(Y)-canv->TextHeight(Tl),Tz);
+//	canv->TextOutW(m.L2Px(X)-m.round((Wn+Wl+Wz)/2.0)+Wn+Wl,m.L2Py(Y)-canv->TextHeight(Tl),Tz);
 
 	short highlight=0;//nastavování zda mají být koty highlightovány
 
@@ -4201,8 +4205,8 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 		if(zobrazit_koty)//pokud je požádováno
 		{
 			Cvektory::TBod *vykreslovat=NULL;
-			if(F->pom_temp!=NULL && body->predchozi->n==4 /*&& F->ortogonalizace_stav*/)//pokud má objekt jen 4 body a zároven je ortogonalizován jedná se o obdelník nebo čtverec
-				vykreslovat=body->dalsi->dalsi->dalsi;
+//			if(F->pom_temp!=NULL && body->predchozi->n==4 /*&& F->ortogonalizace_stav*/)//pokud má objekt jen 4 body a zároven je ortogonalizován jedná se o obdelník nebo čtverec
+//				vykreslovat=body->dalsi->dalsi->dalsi;
 			short AA=1;if(F->antialiasing)AA=3;
 			B=body->dalsi->dalsi;
 			short highlight=0;
