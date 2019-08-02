@@ -127,6 +127,22 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentColor = False
     ParentFont = False
   end
+  object rHTMLLabel_katalog_nazev: TrHTMLLabel
+    Left = 605
+    Top = 52
+    Width = 45
+    Height = 18
+    Caption = 'HD100'
+    Color = clBackground
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWhite
+    Font.Height = -15
+    Font.Name = 'Roboto'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentColor = False
+    ParentFont = False
+  end
   object Button_save: TscGPButton
     Left = 214
     Top = 580
@@ -716,7 +732,7 @@ object Form_parametry_linky: TForm_parametry_linky
   object scGPButton_vozik: TscGPButton
     Left = 450
     Top = 48
-    Width = 200
+    Width = 120
     Height = 29
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clMenuBar
@@ -820,7 +836,7 @@ object Form_parametry_linky: TForm_parametry_linky
   object scGPButton_pohon: TscGPButton
     Left = 8
     Top = 283
-    Width = 200
+    Width = 120
     Height = 29
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clMenuBar
@@ -3440,7 +3456,7 @@ object Form_parametry_linky: TForm_parametry_linky
   object scGPButton_obecne: TscGPButton
     Left = 10
     Top = 48
-    Width = 200
+    Width = 120
     Height = 29
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clActiveCaption
@@ -7273,8 +7289,8 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 6266
-    Top = 9814
+    Left = 6410
+    Top = 10054
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -7299,8 +7315,8 @@ object Form_parametry_linky: TForm_parametry_linky
     GlyphThickness = 1
     Kind = scgpgkOneGear
     TransparentBackground = True
-    ExplicitLeft = 6260
-    ExplicitTop = 9804
+    ExplicitLeft = 6275
+    ExplicitTop = 9829
     ExplicitWidth = 100
   end
   object scGPSwitch: TscGPSwitch
@@ -7345,6 +7361,107 @@ object Form_parametry_linky: TForm_parametry_linky
     FrameOnSolid = True
     FrameInside = False
     OnChangeState = scGPSwitchChangeState
+  end
+  object scGPGlyphButton_katalog: TscGPGlyphButton
+    Left = 567
+    Top = 48
+    Width = 30
+    Height = 29
+    Hint = 'Katalog dopravn'#237'k'#367
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWhite
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 26
+    TabStop = True
+    OnClick = scGPGlyphButton_katalogClick
+    Animation = False
+    Caption = 'scGPGlyphButton_katalog'
+    CanFocused = True
+    CustomDropDown = False
+    Layout = blGlyphLeft
+    TransparentBackground = True
+    ColorValue = clRed
+    Options.NormalColor = clBtnText
+    Options.HotColor = clBtnText
+    Options.PressedColor = clBtnText
+    Options.FocusedColor = clBtnFace
+    Options.DisabledColor = clBtnText
+    Options.NormalColor2 = clNone
+    Options.HotColor2 = clNone
+    Options.PressedColor2 = clNone
+    Options.FocusedColor2 = clNone
+    Options.DisabledColor2 = clNone
+    Options.NormalColorAlpha = 0
+    Options.HotColorAlpha = 20
+    Options.PressedColorAlpha = 30
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 5
+    Options.NormalColor2Alpha = 255
+    Options.HotColor2Alpha = 255
+    Options.PressedColor2Alpha = 255
+    Options.FocusedColor2Alpha = 255
+    Options.DisabledColor2Alpha = 255
+    Options.FrameNormalColor = clNone
+    Options.FrameHotColor = clNone
+    Options.FramePressedColor = clNone
+    Options.FrameFocusedColor = clNone
+    Options.FrameDisabledColor = clBtnText
+    Options.FrameWidth = 1
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 255
+    Options.FramePressedColorAlpha = 150
+    Options.FrameFocusedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 30
+    Options.FontNormalColor = clBtnText
+    Options.FontHotColor = clBtnText
+    Options.FontPressedColor = clBtnText
+    Options.FontFocusedColor = clBtnText
+    Options.FontDisabledColor = clBtnShadow
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeFillGradientPressedAngle = -90
+    Options.ShapeFillGradientColorOffset = 25
+    Options.ShapeCornerRadius = 10
+    Options.ShapeStyle = scgpRect
+    Options.ArrowSize = 9
+    Options.ArrowAreaSize = 0
+    Options.ArrowType = scgpatDefault
+    Options.ArrowThickness = 2
+    Options.ArrowThicknessScaled = False
+    Options.StyleColors = True
+    GlyphOptions.NormalColor = clWhite
+    GlyphOptions.HotColor = clBtnText
+    GlyphOptions.PressedColor = clBtnText
+    GlyphOptions.FocusedColor = clBtnText
+    GlyphOptions.DisabledColor = clBtnText
+    GlyphOptions.NormalColorAlpha = 200
+    GlyphOptions.HotColorAlpha = 255
+    GlyphOptions.PressedColorAlpha = 255
+    GlyphOptions.FocusedColorAlpha = 255
+    GlyphOptions.DisabledColorAlpha = 100
+    GlyphOptions.Kind = scgpbgkFolder
+    GlyphOptions.Thickness = 2
+    GlyphOptions.ThicknessScaled = False
+    GlyphOptions.Size = 0
+    GlyphOptions.StyleColors = True
+    TextMargin = -1
+    WidthWithCaption = 0
+    WidthWithoutCaption = 0
+    SplitButton = False
+    RepeatClick = False
+    RepeatClickInterval = 100
+    ShowGalleryMenuFromTop = False
+    ShowGalleryMenuFromRight = False
+    ShowMenuArrow = True
+    ShowFocusRect = True
+    Down = False
+    GroupIndex = 0
+    AllowAllUp = False
   end
   object rHTMLHint1: TrHTMLHint
     HintFont.Charset = DEFAULT_CHARSET

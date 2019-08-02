@@ -106,6 +106,8 @@ __published:	// IDE-managed Components
 	TrImageEx *rImageEx_jig_podvesny;
   TscHTMLLabel *scHTMLLabel_jig_info;
   TscStyledForm *scStyledForm1;
+  TscGPGlyphButton *scGPGlyphButton_katalog;
+  TrHTMLLabel *rHTMLLabel_katalog_nazev;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -162,6 +164,7 @@ __published:	// IDE-managed Components
   void __fastcall FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
   void __fastcall Button1Click(TObject *Sender);
+  void __fastcall scGPGlyphButton_katalogClick(TObject *Sender);
 
 
 

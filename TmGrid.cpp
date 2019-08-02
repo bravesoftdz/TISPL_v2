@@ -11,6 +11,7 @@
 #include "unitX.h"
 #include "poznamky.h"
 #include "parametry_linky.h"
+#include "katalog_dopravniku.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 TmGrid *mGrid;
@@ -1612,6 +1613,7 @@ void __fastcall TmGrid::getTagOnClick(TObject *Sender)
 		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnClick(Tag,Col,Row);
     if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnClick(Tag,ID,Col,Row);   //z unit1 do unitX
 		if(AnsiString(Tag).SubString(1,1)=="7")Form_parametry_linky->OnClick(Tag,ID,Col,Row);
+    if(AnsiString(Tag).SubString(1,1)=="8")Form_katalog->OnClick(Tag,ID,Col,Row);
 	}
 }
 //---------------------------------------------------------------------------

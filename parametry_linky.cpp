@@ -14,6 +14,7 @@
 #include "gapoTT.h"
 #include "gapoV.h"
 #include "TmGrid.h"
+#include "katalog_dopravniku.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "rHTMLLabel"
@@ -57,6 +58,7 @@ __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 //---------------------------------------------------------------------------
 void TForm_parametry_linky::pasiveColor()//nastaví všechny položky pop-up na pasivní resp. default barvu
 {
+  F->log(__func__); //logování
 	Item_zobrazit_parametry->FillColor=clBg;
 	Item_nastavit_parametry->FillColor=clBg;
 	Item_kopirovat->FillColor=clBg;
@@ -95,6 +97,7 @@ void TForm_parametry_linky::pasiveColor()//nastaví všechny položky pop-up na pas
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 {
+    F->log(__func__); //logování
     input_state=LOADING;
     COL=0; ROW=0;
 		Form_parametry_linky->Color=F->m.clIntensive((TColor)RGB(43,87,154),10);
@@ -152,6 +155,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
       scGPNumericEdit_delka_jig->Value=Form1->d.v.PP.delka_jig*(1+999*Delkaunit);
 			scGPNumericEdit_sirka_jig->Value=Form1->d.v.PP.sirka_jig*(1+999*Delkaunit);
 			scGPNumericEdit_delka_podvozek->Value=Form1->d.v.PP.delka_podvozek*(1+999*Delkaunit);
+      scGPNumericEdit_vyska_jig->Value=Form1->d.v.PP.vyska_jig*(1+999*Delkaunit);
 
     //  ShowMessage(scGPNumericEdit_delka_jig->Value);
 
@@ -427,11 +431,14 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 vozik_zmena_jednotek();
 	 //zapnutí tlaèítka add, v pøípadì chybné validace (tlaèítko skryto) a následnému stisku storno a znovu otevøení PL, zùstal button skryt
 	 scGPGlyphButton_ADD->Visible=true;
+   scGPGlyphButton_katalog->Top=scGPButton_vozik->Top;
+   scGPGlyphButton_katalog->Left=scGPButton_vozik->Left + scGPButton_vozik->Width;
 }
 //---------------------------------------------------------------------------
 //
 void TForm_parametry_linky::nacti_pohony ()
 {
+   F->log(__func__); //logování
 	 data_nalezena=false;
 	 Cvektory::TPohon *ukaz=Form1->d.v.POHONY->dalsi;
 	 if (ukaz!=NULL)
@@ -563,6 +570,7 @@ void TForm_parametry_linky::nacti_pohony ()
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::Button_stornoClick(TObject *Sender)
 {
+  F->log(__func__); //logování
   mGrid->Delete();
 	//M toto tu nesmí být:Form_parametry_linky->Close();
 	zrusena_prirazeni_PID=NULL;delete zrusena_prirazeni_PID;
@@ -572,11 +580,13 @@ void __fastcall TForm_parametry_linky::Button_stornoClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::KonecClick(TObject *Sender)
 {
+  F->log(__func__); //logování
 	Button_stornoClick(Sender);//stejná funkcionalita jako u storna
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 {
+    F->log(__func__); //logování
 		Changes=false;  //obecna zmena = zmena PP ci TT
 		Changes_TT=false;    // konkretni zmena TT
 		Changes_PP=false;   // konkretni zmena PP
@@ -896,6 +906,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
 {
+  F->log(__func__); //logování
 	//navýší poèet øádkù
   input_state=JOB;
   mGrid->AddRow(true,false);
@@ -976,6 +987,7 @@ void __fastcall TForm_parametry_linky::Button_DEL_Click(TObject *Sender)
 
 void __fastcall TForm_parametry_linky::Vypis_pohonyClick(TObject *Sender)
 {
+   F->log(__func__); //logování
 	 Cvektory::TPohon *ukaz=Form1->d.v.POHONY->dalsi;
 
 	 while (ukaz!=NULL)
@@ -991,6 +1003,7 @@ void __fastcall TForm_parametry_linky::Vypis_pohonyClick(TObject *Sender)
 //zobrazí panel se navrženými pohony
 void __fastcall TForm_parametry_linky::scGPButton_doporuceneClick(TObject *Sender)
 {
+    F->log(__func__); //logování
 		scExPanel_doporuc_pohony->Visible=false;
 		scGPButton_doporucene->Visible=false;
 		if(F->pom==NULL)//pokud je voláno PL pøímo                        //zajistí zobrazení ve stejných jednotkách jako na PO
@@ -1013,16 +1026,16 @@ void __fastcall TForm_parametry_linky::scGPButton_doporuceneClick(TObject *Sende
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::scExPanel_doporuc_pohonyClose(TObject *Sender)
-
 {
-scExPanel_doporuc_pohony->Visible=false;
-scGPButton_doporucene->Visible=true;
+    F->log(__func__); //logování
+    scExPanel_doporuc_pohony->Visible=false;
+    scGPButton_doporucene->Visible=true;
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TForm_parametry_linky::rEditNum_takt_Change(TObject *Sender)
 {
-
+   F->log(__func__); //logování
 	if(input_state==NOTHING && input_clicked_edit==TT_klik)
 	{
 
@@ -1033,18 +1046,20 @@ void __fastcall TForm_parametry_linky::rEditNum_takt_Change(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::rHTMLLabel_delkavozikuClick(TObject *Sender)
 {
+  F->log(__func__); //logování
 	rHTMLLabel_delka_jigClick(Sender);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::rHTMLLabel_sirka_jigClick(TObject *Sender)
 {
+  F->log(__func__); //logování
 	rHTMLLabel_delka_jigClick(Sender);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::rHTMLLabel_taktClick(TObject *Sender)
 {
 //
-
+   F->log(__func__); //logování
 	if(Taktunit==MIN)//pokud je v MM, tak pøepne na metry
 	{
 		Taktunit=S;
@@ -1111,6 +1126,7 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_add_mezi_pohonyClick(TObj
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 {
+  F->log(__func__); //logování
 	if(Key==13)//ENTER
 	{
 		 if(Button_save->Enabled)Button_saveClick(Sender);//pokud jsou zároveò splnìny podmínky pro stisk OK
@@ -1209,11 +1225,13 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
 
 void __fastcall TForm_parametry_linky::rEditNum_delkavozikuClick(TObject *Sender)
 {
+  F->log(__func__); //logování
 	rHTMLLabel_delka_jigClick(Sender);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::rHTMLLabel_delka_jigClick(TObject *Sender)
 {
+  F->log(__func__); //logování
 	if(Delkaunit==MM)//pokud je v MM, tak pøepne na metry
 	{
 		Delkaunit=M;
@@ -1252,6 +1270,7 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_delka_jigClick(TObject *Sender
 //---------------------------------------------------------------------------
 void TForm_parametry_linky::vozik_zmena_jednotek()
 {
+  F->log(__func__); //logování
 	if(Delkaunit==M)
 	{
 		scGPNumericEdit_sirka_jig->Width=34;//scGPNumericEdit_sirka_jig->Width-27;//61 default
@@ -1357,6 +1376,7 @@ void TForm_parametry_linky::show_min_Rz()
 //zavolá náhled kabiny, pøípadnì v budoucnu info a o požadovaných parametrech
 void __fastcall TForm_parametry_linky::scGPGlyphButton_infoClick(TObject *Sender)
 {
+    F->log(__func__); //logování
 		bool zFFtemp=false;if(zobrazitFrameForm){zFFtemp=true;zobrazitFrameForm=false;Invalidate();}//pokud je orámování, tak zruší, aby mohlo mít orámování jen na formu kabina_schema, ale zapamatuje si stav pro následné navrácení
 		// formuláø na støed
 		if(!Form_objekt_nahled->Visible)
@@ -1377,6 +1397,7 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_infoClick(TObject *Sender
 //vrátí ID pohonu na daném øádku
 unsigned int TForm_parametry_linky::getPID(int ROW)
 {
+  F->log(__func__); //logování
 	try
 	{
 		return mGrid->Cells[0][ROW].Text.ToInt();
@@ -1390,6 +1411,7 @@ unsigned int TForm_parametry_linky::getPID(int ROW)
 //najde max použité ID pohonu (protože ID nejsou seøazena,nelze vzít index posledního øádku)
 unsigned int TForm_parametry_linky::getMaxPID()
 {
+  F->log(__func__); //logování
 	unsigned int ID=0;//id
 	for(unsigned i=2;i<mGrid->RowCount;i++)
 	if(ID<getPID(i))ID=getPID(i);
@@ -1399,6 +1421,7 @@ unsigned int TForm_parametry_linky::getMaxPID()
 //vrátí èíslo øádku dle pohon ID, pokud nenajde vrátí -1
 int TForm_parametry_linky::getROW(int PID)
 {
+  F->log(__func__); //logování
 	int RET=-1;
 	for(unsigned i=2;i<mGrid->RowCount;i++)
 	{
@@ -1413,6 +1436,7 @@ int TForm_parametry_linky::getROW(int PID)
 //---------------------------------------------------------------------------
 void TForm_parametry_linky::zrusit_prirazeni_smazanych_ci_odrazenych_pohunu_k_objektum()
 {   //pøeindexovat nesmazané nebo jim dat nový odkaz, nebo mazat jen konkrétní
+  F->log(__func__); //logování
 	for(unsigned PID=0;PID<zrusena_prirazeni_PID_size;PID++)
 	{
 		if(zrusena_prirazeni_PID[PID])
@@ -1431,6 +1455,7 @@ void TForm_parametry_linky::pozice_scGPGlyphButton_hint()
 //musí být zde, nikoliv ve vektorech, protože zde mohou vznikat novéh návrhy na pohony, které nejsou ještì ve spojáku POHONY
 bool TForm_parametry_linky::existuji_nepouzivane_pohony()
 {
+   F->log(__func__); //logování
 	 bool RET=false;
 	 for(unsigned int i=2;i<mGrid->RowCount;i++)//prochází všechny pohany a pokud je pohon nepoužíván, smažeho
 	 {
@@ -1450,6 +1475,7 @@ bool TForm_parametry_linky::existuji_nepouzivane_pohony()
 //køížek, který skryje pop-up menu
 void __fastcall TForm_parametry_linky::GlyphButton_closeClick(TObject *Sender)
 {
+  F->log(__func__); //logování
 	PopUPmenu->Visible=false;
 }
 //---------------------------------------------------------------------------
@@ -1457,6 +1483,7 @@ void __fastcall TForm_parametry_linky::GlyphButton_closeClick(TObject *Sender)
 //hlídání horní pozice, je-li daná komponenta horní kvùli nastavení køížku
 void TForm_parametry_linky::top_positon(int top)
 {
+  F->log(__func__); //logování
 	if(top==0)
 	{
 		GlyphButton_close->Options->NormalColor=clAcBg2;
@@ -1492,6 +1519,7 @@ void __fastcall TForm_parametry_linky::scLabel_kopirovatClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::scLabel_kopirovatMouseEnter(TObject *Sender)
 {
+  F->log(__func__); //logování
 	pasiveColor();
 	Item_kopirovat->FillColor=clAcBg;
 	GlyphButton_kopirovat->Options->NormalColor=clAcBg;
@@ -1504,16 +1532,19 @@ void __fastcall TForm_parametry_linky::scLabel_kopirovatMouseEnter(TObject *Send
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::scLabel_kopirovatMouseLeave(TObject *Sender)
 {
+  F->log(__func__); //logování
 	pasiveColor();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::GlyphButton_kopirovatMouseEnter(TObject *Sender)
 {
+  F->log(__func__); //logování
 	scLabel_kopirovatMouseEnter(Sender);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::GlyphButton_kopirovatMouseLeave(TObject *Sender)
 {
+  F->log(__func__); //logování
 	pasiveColor();
 }
 //---------------------------------------------------------------------------
@@ -1550,6 +1581,7 @@ void __fastcall TForm_parametry_linky::scLabel_smazatClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::scLabel_smazatMouseEnter(TObject *Sender)
 {
+  F->log(__func__); //logování
 	pasiveColor();
 	Item_smazat->FillColor=clAcBg;
 	GlyphButton_smazat->Options->NormalColor=clAcBg;
@@ -1562,16 +1594,19 @@ void __fastcall TForm_parametry_linky::scLabel_smazatMouseEnter(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::scLabel_smazatMouseLeave(TObject *Sender)
 {
+  F->log(__func__); //logování
 	pasiveColor();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::GlyphButton_smazatMouseEnter(TObject *Sender)
 {
+  F->log(__func__); //logování
 	scLabel_smazatMouseEnter(Sender);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::GlyphButton_smazatMouseLeave(TObject *Sender)
 {
+  F->log(__func__); //logování
 	pasiveColor();
 }
 //---------------------------------------------------------------------------
@@ -1579,7 +1614,7 @@ void __fastcall TForm_parametry_linky::GlyphButton_smazatMouseLeave(TObject *Sen
 //prochází všechny pohany a pokud je pohon nepoužíván, smaže ho
 void __fastcall TForm_parametry_linky::scLabel_smazat_nepouziteClick(TObject *Sender)
 {
-
+  F->log(__func__); //logování
 	if(mrYes==F->MB("Opravdu chcete smazat nepoužívané pohony?",MB_YESNO))
 	{
 		for(unsigned int j=2;j<mGrid->RowCount;j++)//prochází všechny pohony a pokud je pohon nepoužíván, smažeho
@@ -1610,6 +1645,7 @@ void __fastcall TForm_parametry_linky::scLabel_smazat_nepouziteClick(TObject *Se
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::scLabel_smazat_nepouziteMouseEnter(TObject *Sender)
 {
+  F->log(__func__); //logování
 	pasiveColor();
 	Item_smazat_nepouzite->FillColor=clAcBg;
 	GlyphButton_smazat_nepouzite->Options->NormalColor=clAcBg;
@@ -1622,16 +1658,19 @@ void __fastcall TForm_parametry_linky::scLabel_smazat_nepouziteMouseEnter(TObjec
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::scLabel_smazat_nepouziteMouseLeave(TObject *Sender)
 {
+  F->log(__func__); //logování
 	pasiveColor();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::GlyphButton_smazat_nepouziteMouseEnter(TObject *Sender)
 {
+  F->log(__func__); //logování
 	scLabel_smazat_nepouziteMouseEnter(Sender);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::GlyphButton_smazat_nepouziteMouseLeave(TObject *Sender)
 {
+  F->log(__func__); //logování
 	pasiveColor();
 }
 //---------------------------------------------------------------------------
@@ -1640,13 +1679,15 @@ void __fastcall TForm_parametry_linky::GlyphButton_smazat_nepouziteMouseLeave(TO
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::scHTMLLabel_doporuc_pohonyClick(TObject *Sender)
 {
-		// zavolá funkcionalitu tlaèítka na kopírování navržených pohonù do striggridu, nepøidává ale do pohonù
+  F->log(__func__); //logování
+  // zavolá funkcionalitu tlaèítka na kopírování navržených pohonù do striggridu, nepøidává ale do pohonù
 	scGPGlyphButton_add_mezi_pohonyClick(Sender);
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TForm_parametry_linky::scGPSwitchChangeState(TObject *Sender)
 {
+    F->log(__func__); //logování
 		if(scGPSwitch->State==0)
     {
 		 rImageEx_jig_podlahovy->Visible=true;//bude podlahový
@@ -1663,6 +1704,7 @@ void __fastcall TForm_parametry_linky::scGPSwitchChangeState(TObject *Sender)
 //metoda vymìní edit pro délku podvozku a délku jigu podle typu vozíku podlahový/podvìsný
 void TForm_parametry_linky::nastav_edity ()
 {
+  F->log(__func__); //logování
 	int y=0,x=0;
 
 	if(rImageEx_jig_podlahovy->Visible)
@@ -1709,6 +1751,7 @@ void TForm_parametry_linky::nastav_edity ()
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormClose(TObject *Sender, TCloseAction &Action)
 {
+  F->log(__func__); //logování
   //zapis do PL ini
   if(aRDunit==MIN)  F->aRDunit=F->MIN;
   else F->aRDunit=F->SEC;
@@ -1723,6 +1766,7 @@ void __fastcall TForm_parametry_linky::FormClose(TObject *Sender, TCloseAction &
 //---------------------------------------------------------------------------
 void TForm_parametry_linky::vypis(UnicodeString text,bool red,bool link)
 {
+    F->log(__func__); //logování
 		Button_save->Enabled=true;
 		Button_save->Caption = "Uložit";
  //if(text=="m].</b>")text="";//provizorní WA, pøi zmìnì Rz a byla-li v poøádku to vrací toto  - již není tøeba, ale zatím nechávám
@@ -1759,7 +1803,7 @@ void TForm_parametry_linky::vypis(UnicodeString text,bool red,bool link)
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::rEditNum_taktClick(TObject *Sender)
 {
-//
+     F->log(__func__); //logování
 		 input_clicked_edit=TT_klik;
 		 input_clicked_icon=empty_klik_ico;
 		// Nastav_zamky(empty_klik_ico,TT_klik);
@@ -1785,6 +1829,7 @@ void TForm_parametry_linky::Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_ed
 void TForm_parametry_linky::input_TT()
 
 {
+  F->log(__func__); //logování
 	input_state=TT;
 	INPUT(0,0);   // pøi volání INPUT z TT je souèástí rovnou i volání OUTPUT + volání výpoèetního modelu
 	input_state=NOTHING;
@@ -1837,6 +1882,7 @@ void TForm_parametry_linky::Roletka_roztec(int Row)
 
 double  TForm_parametry_linky::getTT()
 {
+  F->log(__func__); //logování
 	double TT=0;
 	if(Taktunit==S) TT=rEditNum_takt->Value;
 	else            TT=rEditNum_takt->Value*60.0;
@@ -1847,7 +1893,7 @@ double  TForm_parametry_linky::getTT()
 
 void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 {
-
+    F->log(__func__); //logování
     //vypis("");
     VID=-1;
     Row_validace=0;
@@ -1978,6 +2024,7 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 void __fastcall TForm_parametry_linky::scGPGlyphButton_TTClick(TObject *Sender)
 {
 
+  F->log(__func__); //logování
 	bool Changes_TT=false;
 	Form_TT_kalkulator->Left=Form1->ClientWidth/2-Form_TT_kalkulator->Width/2;
 	Form_TT_kalkulator->Top=Form1->ClientHeight/2-Form_TT_kalkulator->Height/2;
@@ -2050,6 +2097,7 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_TTClick(TObject *Sender)
 void __fastcall TForm_parametry_linky::sc(TObject *Sender)
 
 {
+    F->log(__func__); //logování
 		bool Changes_vozik=false;
 		Form_parametry_vozik->Left=Form1->ClientWidth/2-Form_parametry_vozik->Width/2;
 		Form_parametry_vozik->Top=Form1->ClientHeight/2-Form_parametry_vozik->Height/2;
@@ -2121,6 +2169,7 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_InfoTextClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormCloseQuery(TObject *Sender, bool &CanClose)
 {
+  F->log(__func__); //logování
 	if(Ulozit || Storno)CanClose=true;
 	else CanClose=false;
 }
@@ -2129,6 +2178,7 @@ void __fastcall TForm_parametry_linky::FormCloseQuery(TObject *Sender, bool &Can
 //metody volané z Tmgrid
 void TForm_parametry_linky::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row)
 {
+  F->log(__func__); //logování
 //
 //	ShowMessage("PL\nDošlo ke kliku v tabulce tag formu: "+AnsiString(Tag)+", ID tabulky: "+AnsiString(ID)+", na buòce: "+AnsiString(Col)+","+AnsiString(Row));
 //	mGrid->HighlightCell(Col,Row);
@@ -2232,6 +2282,7 @@ void TForm_parametry_linky::OnEnter(long Tag,unsigned long Col,unsigned long Row
 }
 void TForm_parametry_linky::OnChange(long Tag,unsigned long Col,unsigned long Row)
 {
+ F->log(__func__); //logování
  if(Col>1 && Col<=4 && input_state==NOTHING )
     {
        VALIDACE(Col,Row);
@@ -2243,6 +2294,7 @@ void TForm_parametry_linky::OnChange(long Tag,unsigned long Col,unsigned long Ro
 void __fastcall TForm_parametry_linky::FormMouseDown(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y)
 {
+ F->log(__func__); //logování
 //	 if(Button==mbRight && mGrid->Row>=2)//je stisknuto pravé tlaèítko myši ve stringridu, tzn. volat popupmenu
 //	 {
 //      mGrid->MovingTable=true; mGrid->Refresh();
@@ -2328,6 +2380,7 @@ void __fastcall TForm_parametry_linky::FormMouseDown(TObject *Sender, TMouseButt
 //---------------------------------------------------------------------------
 void TForm_parametry_linky::getmGridColors()
   {
+  F->log(__func__); //logování
   mGrid->Cells[0][0].Font->Color=clBlack;//F->m.clIntensive(clBlack,80);
   mGrid->Cells[1][0].Font->Color=clBlack;//F->m.clIntensive(clBlack,50);
   mGrid->Cells[2][0].Font->Color= mGrid->Cells[1][0].Font->Color;
@@ -2369,6 +2422,7 @@ void TForm_parametry_linky::getmGridColors()
 //---------------------------------------------------------------------------
   void TForm_parametry_linky::getmGridWidth()
   {
+  F->log(__func__); //logování
   mGrid->Columns[0].Width=30;
   mGrid->Columns[0].Visible=false;
   mGrid->Columns[1].Width=220;
@@ -2383,6 +2437,7 @@ void TForm_parametry_linky::getmGridColors()
 //---------------------------------------------------------------------------
   void TForm_parametry_linky::getDeleteButtonSettings(int Row)
   {
+  F->log(__func__); //logování
   TscGPGlyphButton *H=mGrid->getGlyphButton(8,Row);
 
   H->GlyphOptions->Kind=scgpbgkCancel;
@@ -2438,6 +2493,7 @@ void TForm_parametry_linky::getmGridColors()
 
   void TForm_parametry_linky::setADD_ButtonPosition ()
   {
+  F->log(__func__); //logování
   scGPGlyphButton_ADD->Top=mGrid->Top+mGrid->Height + 1;
   scGPGlyphButton_ADD->Left=mGrid->Left;
   scGPGlyphButton_ADD->Width=26;//mGrid->Columns[0].Width+1;
@@ -2446,6 +2502,7 @@ void TForm_parametry_linky::getmGridColors()
 
 	void TForm_parametry_linky::setFormHeight()
   {
+   F->log(__func__); //logování
    Form_parametry_linky->Height=mGrid->Top + mGrid->RowCount*mGrid->DefaultRowHeight + 80;
 	 Button_save->Top=Form_parametry_linky->Height-11-Button_save->Height;//Form_parametry_linky->Height - 40;
 	 Button_storno->Top=Button_save->Top;//Form_parametry_linky->Height - 40;
@@ -2459,6 +2516,7 @@ void TForm_parametry_linky::getmGridColors()
 
   void __fastcall TForm_parametry_linky::Button1Click(TObject *Sender)
   {
+  F->log(__func__); //logování
   //automatické vygenerování pohonù
   for (int i = mGrid->RowCount ; i <= 4; i++) {
 
@@ -2524,6 +2582,7 @@ void TForm_parametry_linky::OnKeyPress(TObject *Sender, System::WideChar &Key)
 
 void TForm_parametry_linky::vykresli_obdelnik_vpravo()
 {
+    F->log(__func__); //logování
      	 //	workaround - zrušení orámování okolo nepoužitých vnìjších bunìk
 		Canvas->Pen->Width=2;
 		Canvas->Pen->Color=Form_parametry_linky->Color;//(TColor)RGB(240,240,240);
@@ -2538,4 +2597,12 @@ void TForm_parametry_linky::vykresli_obdelnik_vpravo()
 
 
 
+
+
+void __fastcall TForm_parametry_linky::scGPGlyphButton_katalogClick(TObject *Sender)
+
+{
+ Form_katalog->ShowModal();
+}
+//---------------------------------------------------------------------------
 

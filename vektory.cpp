@@ -4565,6 +4565,216 @@ void Cvektory::vytvor_KATALOG()
 	//vertikální radiusy
 	vloz_do_typu_dopravniku(vR,700);
 	vloz_do_typu_dopravniku(vR,1000);
+
+    ////CALDAN VLD - S270
+	vloz_typ_dopravniku("VLD S270","http://caldan.dk/sites/default/files/TechSpecsPDF/VLD_2018_uk.pdf",0);
+	vloz_do_typu_dopravniku(R,270);
+	vloz_do_typu_dopravniku(R,300);
+	//horizontální oblouky
+	vloz_do_typu_dopravniku(hO,90);
+	vloz_do_typu_dopravniku(hO,45);
+	vloz_do_typu_dopravniku(hO,30);
+	vloz_do_typu_dopravniku(hO,15);
+	//horizontální radiusy
+	vloz_do_typu_dopravniku(hR,700);
+	vloz_do_typu_dopravniku(hR,1000);
+	//vertikální oblouky
+	vloz_do_typu_dopravniku(vO,90);
+	vloz_do_typu_dopravniku(vO,45);
+	vloz_do_typu_dopravniku(vO,30);
+	vloz_do_typu_dopravniku(vO,15);
+	//vertikální radiusy
+	vloz_do_typu_dopravniku(vR,1000);
+
+      ////CALDAN VLD - S300
+	vloz_typ_dopravniku("VLD S300","http://caldan.dk/sites/default/files/TechSpecsPDF/VLD_2018_uk.pdf",0);
+	vloz_do_typu_dopravniku(R,270);
+	vloz_do_typu_dopravniku(R,300);
+	//horizontální oblouky
+	vloz_do_typu_dopravniku(hO,90);
+	vloz_do_typu_dopravniku(hO,45);
+	vloz_do_typu_dopravniku(hO,30);
+	vloz_do_typu_dopravniku(hO,15);
+	//horizontální radiusy
+	vloz_do_typu_dopravniku(hR,700);
+	vloz_do_typu_dopravniku(hR,1000);
+	//vertikální oblouky
+	vloz_do_typu_dopravniku(vO,90);
+	vloz_do_typu_dopravniku(vO,45);
+	vloz_do_typu_dopravniku(vO,30);
+	vloz_do_typu_dopravniku(vO,15);
+	//vertikální radiusy
+	vloz_do_typu_dopravniku(vR,1000);
+
+  ////CALDAN SD
+	vloz_typ_dopravniku("SD","http://caldan.dk/sites/default/files/TechSpecsPDF/SD_2018_uk.pdf",0);
+	vloz_do_typu_dopravniku(R,180);
+	vloz_do_typu_dopravniku(R,270);
+	//horizontální oblouky
+	vloz_do_typu_dopravniku(hO,90);
+	vloz_do_typu_dopravniku(hO,45);
+	vloz_do_typu_dopravniku(hO,30);
+	vloz_do_typu_dopravniku(hO,15);
+	//horizontální radiusy
+	vloz_do_typu_dopravniku(hR,315);
+	vloz_do_typu_dopravniku(hR,500);
+  vloz_do_typu_dopravniku(hR,700);
+	vloz_do_typu_dopravniku(hR,1000);
+	//vertikální oblouky
+	vloz_do_typu_dopravniku(vO,30);
+	vloz_do_typu_dopravniku(vO,15);
+	//vertikální radiusy
+	vloz_do_typu_dopravniku(vR,1000);
+
+    ////CALDAN HD100
+	vloz_typ_dopravniku("HD100","http://caldan.dk/sites/default/files/TechSpecsPDF/HD100_2018_uk.pdf",0);
+	vloz_do_typu_dopravniku(R,180);
+	vloz_do_typu_dopravniku(R,270);
+	//horizontální oblouky
+	vloz_do_typu_dopravniku(hO,90);
+	vloz_do_typu_dopravniku(hO,45);
+	vloz_do_typu_dopravniku(hO,30);
+	vloz_do_typu_dopravniku(hO,15);
+	//horizontální radiusy
+  vloz_do_typu_dopravniku(hR,700);
+	vloz_do_typu_dopravniku(hR,1000);
+	//vertikální oblouky
+	vloz_do_typu_dopravniku(vO,30);
+	vloz_do_typu_dopravniku(vO,15);
+	//vertikální radiusy
+	vloz_do_typu_dopravniku(vR,1500);
+  vloz_do_typu_dopravniku(vR,2500);
+
+      ////CALDAN HD100S
+	vloz_typ_dopravniku("HD100S","http://caldan.dk/sites/default/files/TechSpecsPDF/HD100S_2019_uk.pdf",0);
+	vloz_do_typu_dopravniku(R,180);
+	vloz_do_typu_dopravniku(R,270);
+	//horizontální oblouky
+	vloz_do_typu_dopravniku(hO,90);
+	vloz_do_typu_dopravniku(hO,45);
+	vloz_do_typu_dopravniku(hO,30);
+	vloz_do_typu_dopravniku(hO,15);
+	//horizontální radiusy
+  vloz_do_typu_dopravniku(hR,700);
+	vloz_do_typu_dopravniku(hR,1000);
+	//vertikální oblouky
+	vloz_do_typu_dopravniku(vO,30);
+	//vertikální radiusy
+	vloz_do_typu_dopravniku(vR,1500);
+  vloz_do_typu_dopravniku(vR,2500);
+
+        ////CALDAN HD140
+	vloz_typ_dopravniku("HD140","http://caldan.dk/sites/default/files/TechSpecsPDF/HD140_2018_uk.pdf",0);
+	vloz_do_typu_dopravniku(R,180);
+	vloz_do_typu_dopravniku(R,270);
+  vloz_do_typu_dopravniku(R,300);
+	//horizontální oblouky
+	vloz_do_typu_dopravniku(hO,90);
+	vloz_do_typu_dopravniku(hO,45);
+	vloz_do_typu_dopravniku(hO,30);
+	vloz_do_typu_dopravniku(hO,15);
+	//horizontální radiusy
+	vloz_do_typu_dopravniku(hR,1250);
+	//vertikální oblouky
+	vloz_do_typu_dopravniku(vO,30);
+  vloz_do_typu_dopravniku(vO,15);
+	//vertikální radiusy
+  vloz_do_typu_dopravniku(vR,2000);
+
+          ////CALDAN PF100
+	vloz_typ_dopravniku("PF100","http://caldan.dk/sites/default/files/TechSpecsPDF/PF100_2018_uk.pdf",0);
+	vloz_do_typu_dopravniku(R,180);
+	vloz_do_typu_dopravniku(R,270);
+	//horizontální oblouky
+	vloz_do_typu_dopravniku(hO,90);
+	vloz_do_typu_dopravniku(hO,45);
+	vloz_do_typu_dopravniku(hO,30);
+	vloz_do_typu_dopravniku(hO,15);
+	//horizontální radiusy
+	vloz_do_typu_dopravniku(hR,700);
+  vloz_do_typu_dopravniku(hR,1000);
+	//vertikální oblouky
+	vloz_do_typu_dopravniku(vO,30);
+  vloz_do_typu_dopravniku(vO,15);
+	//vertikální radiusy
+  vloz_do_typu_dopravniku(vR,2500);
+  vloz_do_typu_dopravniku(vR,1500);
+
+            ////CALDAN PF100S
+	vloz_typ_dopravniku("PF100S","http://caldan.dk/sites/default/files/TechSpecsPDF/PF100S_2018_uk.pdf",0);
+	vloz_do_typu_dopravniku(R,180);
+	vloz_do_typu_dopravniku(R,270);
+	//horizontální oblouky
+	vloz_do_typu_dopravniku(hO,90);
+	vloz_do_typu_dopravniku(hO,45);
+	vloz_do_typu_dopravniku(hO,30);
+	vloz_do_typu_dopravniku(hO,15);
+	//horizontální radiusy
+	vloz_do_typu_dopravniku(hR,700);
+  vloz_do_typu_dopravniku(hR,1000);
+	//vertikální oblouky
+	vloz_do_typu_dopravniku(vO,30);
+  vloz_do_typu_dopravniku(vO,15);
+	//vertikální radiusy
+  vloz_do_typu_dopravniku(vR,2500);
+  vloz_do_typu_dopravniku(vR,1500);
+
+  ////CALDAN PF120
+	vloz_typ_dopravniku("PF120","http://caldan.dk/sites/default/files/TechSpecsPDF/PF120_2018_uk.pdf",0);
+	vloz_do_typu_dopravniku(R,180);
+	vloz_do_typu_dopravniku(R,270);
+	//horizontální oblouky
+	vloz_do_typu_dopravniku(hO,90);
+	vloz_do_typu_dopravniku(hO,45);
+	vloz_do_typu_dopravniku(hO,30);
+	vloz_do_typu_dopravniku(hO,15);
+	//horizontální radiusy
+	vloz_do_typu_dopravniku(hR,700);
+  vloz_do_typu_dopravniku(hR,1000);
+	//vertikální oblouky
+	vloz_do_typu_dopravniku(vO,30);
+  vloz_do_typu_dopravniku(vO,15);
+	//vertikální radiusy
+  vloz_do_typu_dopravniku(vR,1000);
+
+    ////CALDAN PF140
+	vloz_typ_dopravniku("PF140","http://caldan.dk/sites/default/files/TechSpecsPDF/PF140_2018_uk.pdf",0);
+	vloz_do_typu_dopravniku(R,180);
+	vloz_do_typu_dopravniku(R,270);
+  vloz_do_typu_dopravniku(R,300);
+	//horizontální oblouky
+	vloz_do_typu_dopravniku(hO,90);
+	vloz_do_typu_dopravniku(hO,45);
+	vloz_do_typu_dopravniku(hO,30);
+	vloz_do_typu_dopravniku(hO,15);
+	//horizontální radiusy
+  vloz_do_typu_dopravniku(hR,1250);
+	//vertikální oblouky
+	vloz_do_typu_dopravniku(vO,30);
+  vloz_do_typu_dopravniku(vO,15);
+	//vertikální radiusy
+  vloz_do_typu_dopravniku(vR,1000);
+  vloz_do_typu_dopravniku(vR,2500);
+
+
+        ////CALDAN PF160
+	vloz_typ_dopravniku("PF160","http://caldan.dk/sites/default/files/TechSpecsPDF/PF160_2018_uk.pdf",0);
+	vloz_do_typu_dopravniku(R,180);
+	vloz_do_typu_dopravniku(R,270);
+  vloz_do_typu_dopravniku(R,300);
+	//horizontální oblouky
+	vloz_do_typu_dopravniku(hO,90);
+	vloz_do_typu_dopravniku(hO,45);
+	vloz_do_typu_dopravniku(hO,30);
+	vloz_do_typu_dopravniku(hO,15);
+	//horizontální radiusy
+  vloz_do_typu_dopravniku(hR,1250);
+	//vertikální oblouky
+	vloz_do_typu_dopravniku(vO,30);
+  vloz_do_typu_dopravniku(vO,15);
+	//vertikální radiusy
+  vloz_do_typu_dopravniku(vR,1500);
+  vloz_do_typu_dopravniku(vR,2500);
 }
 //---------------------------------------------------------------------------
 //dla zadaného n vrátí daný typ dopravníku formou ukazatatele
@@ -4623,22 +4833,14 @@ void Cvektory::vymaz_seznam_KATALOG()
 		//rozteč
 		while(KATALOG->predchozi->roztec!=NULL)
 		{
-      ShowMessage(KATALOG->predchozi->name);
 			//posunutí ukazatele a smazání typu dopravníku
 			KATALOG->predchozi->roztec->predchozi=NULL;
       delete KATALOG->predchozi->roztec->predchozi;
-       ShowMessage("1_2");
-
-       ShowMessage("1_3");
 			KATALOG->predchozi->roztec=KATALOG->predchozi->roztec->dalsi;
-       ShowMessage("1_4");
-       ShowMessage(KATALOG->predchozi->hOblouk->predchozi->hodnota);
-
 		}
 		//hOblouk
 		while(KATALOG->predchozi->hOblouk!=NULL)
 		{
-     ShowMessage("2");
 			//posunutí ukazatele a smazání typu dopravníku
 			KATALOG->predchozi->hOblouk->predchozi=NULL;
 			delete KATALOG->predchozi->hOblouk->predchozi;
@@ -4647,7 +4849,6 @@ void Cvektory::vymaz_seznam_KATALOG()
 		//hRadius
 		while(KATALOG->predchozi->hRadius!=NULL)
 		{
-     ShowMessage("3");
 			//posunutí ukazatele a smazání typu dopravníku
 			KATALOG->predchozi->hRadius->predchozi=NULL;
 			delete KATALOG->predchozi->hRadius->predchozi;
@@ -4656,7 +4857,6 @@ void Cvektory::vymaz_seznam_KATALOG()
 		//vOblouk
 		while(KATALOG->predchozi->vOblouk!=NULL)
 		{
-     ShowMessage("4");
 			//posunutí ukazatele a smazání typu dopravníku
 			KATALOG->predchozi->vOblouk->predchozi=NULL;
 			delete KATALOG->predchozi->vOblouk->predchozi;
@@ -4665,20 +4865,15 @@ void Cvektory::vymaz_seznam_KATALOG()
 		//vRadius
 		while(KATALOG->predchozi->vRadius!=NULL)
 		{
-     ShowMessage("5");
 			//posunutí ukazatele a smazání typu dopravníku
 			KATALOG->predchozi->vRadius->predchozi=NULL;
 			delete KATALOG->predchozi->vRadius->predchozi;
 			KATALOG->predchozi->vRadius=KATALOG->predchozi->vRadius->dalsi;
 		}
-     ShowMessage("whileOK");
 		//posunutí ukazatele a smazání typu dopravníku
 		KATALOG->predchozi->name=KATALOG->predchozi->link="";//smazání textových řetězců
-     ShowMessage("text ret smazano");
 		KATALOG->predchozi=NULL;
-    ShowMessage("KATALOG->predchozi=NULL");
 		delete KATALOG->predchozi;
-    ShowMessage("KATALOG smazano");
 		KATALOG=KATALOG->dalsi;
 	}
 }
@@ -4771,7 +4966,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 		 };
 		 ukaz1=NULL;delete ukaz1;
 
-		 //uložení seznamu technologických objektů
+		 ////OBJEKTů
 		 TObjekt *ukaz=OBJEKTY->dalsi;
 		 while (ukaz!=NULL)
 		 {
@@ -4780,54 +4975,171 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 
 			 if(ukaz->n>0 && File_hlavicka.pocet_objektu>=ukaz->n)//mimo hlavičky či shitu
 			 {
-					//samotná data
-					c_ukaz->n=ukaz->n;
-					c_ukaz->id=ukaz->id;
-					c_ukaz->X=ukaz->X;
-					c_ukaz->Y=ukaz->Y;
-					c_ukaz->rezim=ukaz->rezim;
-					c_ukaz->CT=ukaz->CT;
-					c_ukaz->RD=ukaz->RD;
-					c_ukaz->kapacita_dop=ukaz->kapacita_dop;
-					c_ukaz->kapacita=ukaz->kapacita;
-					c_ukaz->pozice=ukaz->pozice;
-					c_ukaz->rotace=ukaz->rotace;
-					c_ukaz->mezera=ukaz->mezera;
-					c_ukaz->mezera_jig=ukaz->mezera_jig;
-					c_ukaz->mezera_podvozek=ukaz->mezera_podvozek;
-					if(ukaz->pohon!=NULL)c_ukaz->pohon=ukaz->pohon->n;
-					else c_ukaz->pohon=0;
-					c_ukaz->delka_dopravniku=ukaz->delka_dopravniku;
-					c_ukaz->cekat_na_palce=ukaz->cekat_na_palce;
-					c_ukaz->stopka=ukaz->stopka;
-					c_ukaz->odchylka=ukaz->odchylka;
-					c_ukaz->CT_zamek=ukaz->CT_zamek;
-					c_ukaz->RD_zamek=ukaz->RD_zamek;
-					c_ukaz->DD_zamek=ukaz->DD_zamek;
-					c_ukaz->K_zamek=ukaz->K_zamek;
-					c_ukaz->text_length=ukaz->name.Length()+1;
-					c_ukaz->poznamka_length=ukaz->poznamka.Length()+1;
-					FileStream->Write(c_ukaz,sizeof(C_objekt));//zapiše jeden prvek do souboru
-					//text - short name
-					wchar_t *short_name=new wchar_t[5];//max 4 znaky
-					short_name=ukaz->short_name.c_str();
-					FileStream->Write(short_name,5*sizeof(wchar_t));//zapiše jeden řetězec za prvek bod
-					short_name=NULL; delete[] short_name;
-					//text - name
-					wchar_t *name=new wchar_t [c_ukaz->text_length];
-					name=ukaz->name.c_str();
-					FileStream->Write(name,c_ukaz->text_length*sizeof(wchar_t));//zapiše druhý řetězec za prvek bod
-					name=NULL; delete[] name;
-					//text - poznámka
-					wchar_t *poznamka=new wchar_t [c_ukaz->poznamka_length];
-					poznamka=ukaz->poznamka.c_str();
-					FileStream->Write(poznamka,c_ukaz->poznamka_length*sizeof(wchar_t));//zapiše druhý řetězec za prvek bod
-					poznamka=NULL; delete[] poznamka;
+				 //samotná data
+				 c_ukaz->n=ukaz->n;
+				 c_ukaz->id=ukaz->id;
+				 c_ukaz->X=ukaz->X;
+				 c_ukaz->Y=ukaz->Y;
+				 c_ukaz->sirka_steny=ukaz->sirka_steny;
+				 c_ukaz->rezim=ukaz->rezim;
+				 if(ukaz->body!=NULL)c_ukaz->pocet_bodu=ukaz->body->predchozi->n;
+				 else c_ukaz->pocet_bodu=0;
+				 if(ukaz->elementy!=NULL) c_ukaz->pocet_elementu=ukaz->elementy->predchozi->n;
+				 else c_ukaz->pocet_elementu=0;
+				 if(ukaz->komora!=NULL) c_ukaz->pocet_komor=ukaz->komora->predchozi->n;
+				 else c_ukaz->pocet_komor=0;
+				 c_ukaz->rotace=ukaz->rotace;
+				 if(ukaz->pohon!=NULL)c_ukaz->pohon=ukaz->pohon->n;
+				 else c_ukaz->pohon=0;
+				 c_ukaz->koty_elementu_offset=ukaz->koty_elementu_offset;
+				 c_ukaz->zobrazit_koty=ukaz->zobrazit_koty;
+				 c_ukaz->zobrazit_mGrid=ukaz->zobrazit_mGrid;
+				 c_ukaz->uzamknout_nahled=ukaz->uzamknout_nahled;
+				 c_ukaz->text_length=ukaz->name.Length()+1;
+				 FileStream->Write(c_ukaz,sizeof(C_objekt));//zapiše jeden prvek do souboru
+				 //text - short name
+				 wchar_t *short_name=new wchar_t[5];//max 4 znaky
+				 short_name=ukaz->short_name.c_str();
+				 FileStream->Write(short_name,5*sizeof(wchar_t));//zapiše jeden řetězec za prvek bod
+				 short_name=NULL; delete[] short_name;
+				 //text - name
+				 wchar_t *name=new wchar_t [c_ukaz->text_length];
+				 name=ukaz->name.c_str();
+				 FileStream->Write(name,c_ukaz->text_length*sizeof(wchar_t));//zapiše druhý řetězec za prvek bod
+				 name=NULL; delete[] name;
+				 //zapis bodu objektu
+				 if(c_ukaz->n>0 && c_ukaz->pocet_bodu>0)
+				 {
+					 TBod *B=ukaz->body->dalsi;
+					 while(B!=NULL)
+					 {
+						 //překopírování dat do pomocného objektu uložitelného do bináru
+						 C_bod *cB=new C_bod;
+						 //plněný - kopírování dat jednotlivých atributů
+						 cB->n=B->n;
+						 cB->X=B->X;
+						 cB->Y=B->Y;
+						 cB->kota_offset=B->kota_offset;
+						 FileStream->Write(cB,sizeof(C_bod));//zapiše jeden prvek do souboru
+						 //posun na další bod
+						 B=B->dalsi;
+						 delete cB; cB=NULL;
+					 }
+					 delete B; B=NULL;
+				 }
+
+				 if(c_ukaz->n>0 && c_ukaz->pocet_elementu>0) //poc elementu
+				 {
+				 	TElement *E=ukaz->elementy->dalsi;
+				 	while(E!=NULL)
+				 	{
+				 		//překopírování dat do pomocného objektu uložitelného do bináru
+				 		C_element *cE=new C_element;
+				 		//plněný - kopírování dat jednotlivých atributů
+				 		cE->n=E->n;
+				 		cE->eID=E->eID;
+				 		cE->name_delka=E->name.Length()+1;
+				 		cE->X=E->X;
+				 		cE->Y=E->Y;
+				 		cE->Xt=E->Xt;
+				 		cE->Yt=E->Yt;
+				 		cE->orientace=E->orientace;
+				 		cE->rotace_jig=E->rotace_jig;
+				 		cE->stav=E->stav;
+						cE->LO1=E->LO1;
+						cE->OTOC_delka=E->OTOC_delka;
+						cE->LO2=E->LO2;
+						cE->LO_pozice=E->LO_pozice;
+						cE->PT1=E->PT1;
+						cE->PTotoc=E->PTotoc;
+						cE->PT2=E->PT2;
+						cE->WT=E->WT;
+						cE->WTstop=E->WTstop;
+						cE->RT=E->RT;
+						cE->akt_pocet_voziku=E->akt_pocet_voziku;
+				 		cE->max_pocet_voziku=E->max_pocet_voziku;
+						//uložení do binárního filu
+						FileStream->Write(cE,sizeof(C_element));//zapiše jeden prvek do souboru
+
+						//text - short_name
+						wchar_t *short_name=new wchar_t[5];
+						short_name=E->short_name.c_str();
+						FileStream->Write(short_name,5*sizeof(wchar_t));// fixni pocet pozic
+						short_name=NULL; delete[] short_name;
+
+						//text - name
+						wchar_t *name=new wchar_t [cE->name_delka];
+						name=E->name.c_str();
+						FileStream->Write(name,cE->name_delka*sizeof(wchar_t));//
+						name=NULL; delete[] name;
+
+						//posun na další segment cesty
+						E=E->dalsi;
+				 		delete cE; cE=NULL;
+           }
+         }
+				 	 //zapis komor do objektu
+         if(c_ukaz->n>0 && c_ukaz->pocet_komor>0)
+         {
+				 	TKomora *K=ukaz->komora->dalsi;
+           while(K!=NULL)
+           {
+				 		//překopírování dat do pomocného objektu uložitelného do bináru
+             C_komora *cK=new C_komora;
+				 		//plněný - kopírování dat jednotlivých atributů
+             cK->n=K->n;
+				 		cK->velikost=K->velikost;
+				 		FileStream->Write(cK,sizeof(C_komora));//zapiše jeden prvek do souboru
+				 		//posun na další bod
+				 		K=K->dalsi;
+				 		delete cK; cK=NULL;
+				 	}
+				 	delete K; K=NULL;
+				 }
 			 }
 			 c_ukaz=NULL;delete c_ukaz;
 			 ukaz=ukaz->dalsi;//posunutí na další pozici v seznamu
 		 };
 		 ukaz=NULL;delete ukaz;
+
+		 ////uložení HALy do_souboru
+		 ////překopírování dat do pomocného objektu uložitelného do bináru
+		 //alokace
+		 C_hala *cH=new C_hala;
+		 //samotná data
+		 cH->X=HALA.X;
+		 cH->Y=HALA.Y;
+		 if(HALA.body!=NULL)cH->pocet_bodu=HALA.body->predchozi->n;
+		 else cH->pocet_bodu=0;
+		 cH->name_delka=HALA.name.Length()+1;
+		 FileStream->Write(cH,sizeof(C_hala));//zapiše jeden prvek do souboru
+		 //text - name
+		 wchar_t *name_hala=new wchar_t [cH->name_delka];
+		 name_hala=HALA.name.c_str();
+		 FileStream->Write(name_hala,cH->name_delka*sizeof(wchar_t));//zápis názvu do souboru
+		 name_hala=NULL; delete[] name_hala;
+		 //odstranění ukazatele na Halu, již není třeba
+		 delete cH; cH=NULL;
+		 //zápis jednotlivých bodů
+		 if(HALA.body!=NULL)
+		 {
+		 	 TBod *B=HALA.body->dalsi;//přeskočí hlavičku
+		 	 while(B!=NULL)
+		 	 {
+		 		 //překopírování dat do pomocného objektu uložitelného do bináru
+		 		 C_bod *cB=new C_bod;
+		 		 //plněný - kopírování dat jednotlivých atributů
+		 		 cB->n=B->n;
+		 		 cB->X=B->X;
+		 		 cB->Y=B->Y;
+		 		 cB->kota_offset=B->kota_offset;
+		 		 FileStream->Write(cB,sizeof(C_bod));//zapiše jeden prvek do souboru
+		 		 delete cB; cB=NULL;
+		 		 //posun na další bod
+		 		 B=B->dalsi;
+		 	 }
+		 	 delete B; B=NULL;
+		 }
 
 		 //uložení zakázek
 		 TZakazka *ukaz2=ZAKAZKY->dalsi;
@@ -5003,7 +5315,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 				c_ukaz1=NULL; delete c_ukaz1;
 			};
 
-			//technologické objekty
+			////OBJEKTY
 			for(unsigned int i=1;i<=File_hlavicka.pocet_objektu;i++)//možno řešit sice while, po strukturách, ale toto je připravené pro případ, kdy budu načítat i objekty jiného typu než objekt
 			{
 				TObjekt *ukaz=new TObjekt;
@@ -5012,55 +5324,137 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 
 				if(c_ukaz->n!=0 && File_hlavicka.pocet_objektu>=c_ukaz->n)//pokud nenačte hlavičku či nějaký shit
 				{
-						//ShowMessage(c_ukaz->n);
-						//samotná data
-						ukaz->n=c_ukaz->n;
-						ukaz->id=c_ukaz->id;
-						ukaz->X=c_ukaz->X;
-						ukaz->Y=c_ukaz->Y;
-						ukaz->rezim=c_ukaz->rezim;
-						ukaz->CT=c_ukaz->CT;
-						ukaz->RD=c_ukaz->RD;
-						ukaz->kapacita=c_ukaz->kapacita;
-						ukaz->kapacita_dop=c_ukaz->kapacita_dop;
-						ukaz->pozice=c_ukaz->pozice;
-						ukaz->rotace=c_ukaz->rotace;
-						ukaz->mezera=c_ukaz->mezera;
-						ukaz->mezera_jig=c_ukaz->mezera_jig;
-						ukaz->mezera_podvozek=c_ukaz->mezera_podvozek;
-						ukaz->pohon=vrat_pohon(c_ukaz->pohon);
-						ukaz->delka_dopravniku=c_ukaz->delka_dopravniku;
-						ukaz->cekat_na_palce=c_ukaz->cekat_na_palce;
-						ukaz->stopka=c_ukaz->stopka;
-						ukaz->odchylka=c_ukaz->odchylka;
-						ukaz->CT_zamek=c_ukaz->CT_zamek;
-						ukaz->RD_zamek=c_ukaz->RD_zamek;
-						ukaz->DD_zamek=c_ukaz->DD_zamek;
-						ukaz->K_zamek=c_ukaz->K_zamek;
-						ukaz->probehla_aktualizace_prirazeni_pohonu=false;//neukládá se do binárky
+					//samotná data
+					ukaz->n=c_ukaz->n;
+					ukaz->id=c_ukaz->id;
+					ukaz->X=c_ukaz->X;
+					ukaz->Y=c_ukaz->Y;
+          ukaz->sirka_steny=c_ukaz->sirka_steny;
+          ukaz->body=NULL;  //NUTNOST PRO AUTO VYTVARENI HLAVICKY
+					ukaz->rezim=c_ukaz->rezim;
+					ukaz->rotace=c_ukaz->rotace;
+					ukaz->pohon=vrat_pohon(c_ukaz->pohon);
+					ukaz->koty_elementu_offset=c_ukaz->koty_elementu_offset;
+					ukaz->elementy=NULL;   //NUTNOST PRO AUTO VYTVARENI HLAVICKY
+					ukaz->komora=NULL;    //NUTNOST PRO AUTO VYTVARENI HLAVICKY
+					ukaz->zobrazit_koty=c_ukaz->zobrazit_koty;
+					ukaz->zobrazit_mGrid=c_ukaz->zobrazit_mGrid;
+					ukaz->uzamknout_nahled=c_ukaz->uzamknout_nahled;
+					ukaz->probehla_aktualizace_prirazeni_pohonu=false;//neukládá se do binárky
+					//zkratku
+					wchar_t *short_name=new wchar_t [5];
+					FileStream->Read(short_name,5*sizeof(wchar_t));//načte popisek umístěný za strukturou bod
+					ukaz->short_name=short_name;
+					short_name=NULL; delete[] short_name;
+					//popisek
+					wchar_t *name=new wchar_t[c_ukaz->text_length];
+					FileStream->Read(name,c_ukaz->text_length*sizeof(wchar_t));
+					ukaz->name=name;
+					name=NULL; delete[] name;
 
-						//zkratku
+					//přiřazení bodů objektu
+					for(unsigned int j=1;j<=c_ukaz->pocet_bodu;j++)
+					{
+						C_bod cB;//=new C_cesta;
+						FileStream->Read(&cB,sizeof(C_bod));//načte jeden prvek ze souboru
+						TBod *B=new TBod;
+						B->n=cB.n;
+						B->kota_offset=cB.kota_offset;
+						B->X=cB.X;
+						B->Y=cB.Y;
+						vloz_bod(B,ukaz);
+					 //delete B; B=NULL; nesmí být
+					}
+
+          //přiřazení elementů objektu
+					for(unsigned int j=1;j<=c_ukaz->pocet_elementu;j++)
+					{
+					  C_element cE;//=new C_cesta;
+					  FileStream->Read(&cE,sizeof(C_element));//načte jeden prvek ze souboru
+						TElement *E=new TElement;
+            E->n=cE.n;
+            E->eID=cE.eID;
+						E->X=cE.X;
+            E->Y=cE.Y;
+            E->Xt=cE.Xt;
+						E->Yt=cE.Yt;
+            E->orientace=cE.orientace;
+            E->rotace_jig=cE.rotace_jig;
+						E->stav=cE.stav;
+            E->LO1=cE.LO1;
+            E->OTOC_delka=cE.OTOC_delka;
+						E->LO2=cE.LO2;
+            E->LO_pozice=cE.LO_pozice;
+            E->PT1=cE.PT1;
+						E->PTotoc=cE.PTotoc;
+            E->PT2=cE.PT2;
+            E->WT=cE.WT;
+						E->WTstop=cE.WTstop;
+            E->RT=cE.RT;
+            E->akt_pocet_voziku=cE.akt_pocet_voziku;
+						E->max_pocet_voziku=cE.max_pocet_voziku;
+
+						//shortname
 						wchar_t *short_name=new wchar_t [5];
 						FileStream->Read(short_name,5*sizeof(wchar_t));//načte popisek umístěný za strukturou bod
-						ukaz->short_name=short_name;
-						short_name=NULL; delete[] short_name;
-						//popisek
-						wchar_t *name=new wchar_t[c_ukaz->text_length];
-						FileStream->Read(name,c_ukaz->text_length*sizeof(wchar_t));
-						ukaz->name=name;
-						name=NULL; delete[] name;
-						//poznámku
-						wchar_t *poznamka=new wchar_t[c_ukaz->poznamka_length];
-						FileStream->Read(poznamka,c_ukaz->poznamka_length*sizeof(wchar_t));
-						ukaz->poznamka=poznamka;
-						poznamka=NULL; delete[] poznamka;
+						E->short_name=short_name;
+						delete[] short_name; short_name=NULL;
 
-						//vloží prvek do spojového seznamu
-						vloz_objekt(ukaz);
+						//name
+						wchar_t *name=new wchar_t[cE.name_delka];
+						FileStream->Read(name,cE.name_delka*sizeof(wchar_t));
+						E->name=name;
+						delete[] name; name=NULL;
+
+						vloz_element(ukaz,E);
+						//delete E; E=NULL; - nesmí být
+					}
+
+					//přiřazení komora
+					for(unsigned int j=1;j<=c_ukaz->pocet_komor;j++)
+					{
+						C_komora cK;//=new C_cesta;
+						FileStream->Read(&cK,sizeof(C_komora));//načte jeden prvek ze souboru
+						TKomora *K=new TKomora;
+						K->n=cK.n;
+						K->velikost=cK.velikost;
+						vloz_komoru(ukaz,K,NULL);
+						//delete K; K=NULL; - nesmí být
+					}
+					//vložení finálního objektu do spojáku
+					vloz_objekt(ukaz);
 				}
 				ukaz=NULL; delete ukaz;
 				c_ukaz=NULL; delete c_ukaz;
 			};
+
+		 ////HALA
+		 //alokace pomocného ukazatele
+		 C_hala *cH=new C_hala;
+		 //načtení atributů haly ze souboru
+		 FileStream->Read(cH,sizeof(C_hala));
+		 //samotná data
+		 HALA.body=NULL;
+		 HALA.X=cH->X;
+		 HALA.Y=cH->Y;
+		 //name
+		 wchar_t *nameH=new wchar_t[cH->name_delka];
+		 FileStream->Read(nameH,cH->name_delka*sizeof(wchar_t));
+		 HALA.name=nameH;
+		 delete[] nameH; nameH=NULL;
+		 //načtení bodu haly
+		 for(unsigned int j=1;j<=cH->pocet_bodu;j++)
+		 {
+			 C_bod cB;
+			 FileStream->Read(&cB,sizeof(C_bod));//načte jeden prvek ze souboru
+			 TBod *B=new TBod;
+			 B->n=cB.n;
+			 B->kota_offset=cB.kota_offset;
+			 B->X=cB.X;
+			 B->Y=cB.Y;
+			 vloz_bod(B);
+			 //delete B; B=NULL; nesmí být
+		 }
 
 			//zakázky
 			for(unsigned int i=1;i<=File_hlavicka.pocet_zakazek;i++)//možno řešit sice while, po strukturách, ale toto je připravené pro případ, kdy budu načítat i objekty jiného typu než objekt
