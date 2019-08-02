@@ -1784,12 +1784,15 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element)
 		Element->sparovany=NULL;
 		Objekt->elementy->predchozi=Element;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
 		//geometrie
-		Element->geo.X1=Element->predchozi->geo.X4;Element->geo.Y1=Element->predchozi->geo.Y4;
-		Element->geo.X4=F->d.Rxy(Element).x;Element->geo.Y4=F->d.Rxy(Element).y;
-		Element->geo.X2=Element->geo.X1+(Element->geo.X4-Element->geo.X1)/2.0;Element->geo.Y2=Element->geo.Y1+(Element->geo.Y4-Element->geo.Y1)/2.0;
-		Element->geo.X3=Element->geo.X2;Element->geo.Y3=Element->geo.Y2;
-		//Element->geo.typ=?
-		//Element->geo.delka=?
+    if(F->pom_temp!=NULL) //nutna podminka, pri nacitani z binarky je pom_temp=NULL a nactou se hodnoty OK
+    {                     // bez podminky jsou geo body spatne dopocitavany
+      Element->geo.X1=Element->predchozi->geo.X4;Element->geo.Y1=Element->predchozi->geo.Y4;
+      Element->geo.X4=F->d.Rxy(Element).x;Element->geo.Y4=F->d.Rxy(Element).y;
+      Element->geo.X2=Element->geo.X1+(Element->geo.X4-Element->geo.X1)/2.0;Element->geo.Y2=Element->geo.Y1+(Element->geo.Y4-Element->geo.Y1)/2.0;
+      Element->geo.X3=Element->geo.X2;Element->geo.Y3=Element->geo.Y2;
+      //Element->geo.typ=?
+      //Element->geo.delka=?
+    }
 	}
 	else if(p->n!=Element->n)//vkládám mezi elementy, vpřípadě, že bylo vloženo před prví prvek vrací Element, přesun je již vyřešen
 	{
@@ -5058,6 +5061,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 						cE->RT=E->RT;
 						cE->akt_pocet_voziku=E->akt_pocet_voziku;
 				 		cE->max_pocet_voziku=E->max_pocet_voziku;
+            cE->geo=E->geo;
 						//uložení do binárního filu
 						FileStream->Write(cE,sizeof(C_element));//zapiše jeden prvek do souboru
 
@@ -5087,8 +5091,9 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 				 		//překopírování dat do pomocného objektu uložitelného do bináru
              C_komora *cK=new C_komora;
 				 		//plněný - kopírování dat jednotlivých atributů
-             cK->n=K->n;
+            cK->n=K->n;
 				 		cK->velikost=K->velikost;
+            cK->typ=K->typ;
 				 		FileStream->Write(cK,sizeof(C_komora));//zapiše jeden prvek do souboru
 				 		//posun na další bod
 				 		K=K->dalsi;
@@ -5393,7 +5398,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
             E->RT=cE.RT;
             E->akt_pocet_voziku=cE.akt_pocet_voziku;
 						E->max_pocet_voziku=cE.max_pocet_voziku;
-
+            E->geo=cE.geo;
 						//shortname
 						wchar_t *short_name=new wchar_t [5];
 						FileStream->Read(short_name,5*sizeof(wchar_t));//načte popisek umístěný za strukturou bod
@@ -5418,7 +5423,8 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 						TKomora *K=new TKomora;
 						K->n=cK.n;
 						K->velikost=cK.velikost;
-						vloz_komoru(ukaz,K,NULL);
+            K->typ=cK.typ;
+						vloz_komoru(ukaz,K,NULL,K->typ);
 						//delete K; K=NULL; - nesmí být
 					}
 					//vložení finálního objektu do spojáku
