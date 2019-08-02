@@ -195,7 +195,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	while (O!=NULL)
 	{
 		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)O=F->pom_temp;//slouží pro vykreslení aktuálně editované kabiny
-		vykresli_objekt(canv,O);//if(O->id!=F->VyID) se řeší až ve vykresli rectangle
+		vykresli_objekt(canv,O);
 		////vykreslení elementů
 		short stav=1;
 		Cvektory::TElement *E=O->elementy;
@@ -214,6 +214,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 			E=E->dalsi;//posun na další element
 		}
 		E=NULL;delete E;
+		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)O=v.vrat_objekt(O->n);//pokud byl objekt nahrazen pom_temp, musí dojít k jeho vrácení, pom_temp->dalsi != Objekty->dalsi
 		O=F->d.v.dalsi_krok(O,tab_pruchodu);//přepínání kroků v cyklu (dalsi/dalsi2)
 	}
 	//povolení zobrazování LAYOUTU a ČASOVÝCH OS, pokud existují objekty, jinak ne
@@ -252,12 +253,19 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	short sirka_steny_px=m.m2px(O->sirka_steny);//m->px
 	short W=0;//smazat m.round(sirka_steny_px/2.0);//posunutí vykreslení orámování nad vnější rozměry kabiny
 	short pmpp=m.m2px(v.PP.delka_jig); if(v.PP.delka_jig<v.PP.sirka_jig)pmpp=m.m2px(v.PP.sirka_jig);pmpp=m.round(pmpp/2.0);if(pmpp>m.m2px(1))pmpp=m.m2px(1);/*ošetření*///polovina max. průjezdního profilu
-  //nastavení zobrazení, rozdíl mezi Layoutem a editaci, editovaným objektem a ostatnímy
-	switch(F->MOD)
+	//nastavení zobrazení, rozdíl mezi Layoutem a editaci, editovaným objektem a ostatnímy
+	if(F->pom_temp!=NULL){if(F->pom_temp->n==O->n){stav=-2;if(F->pom_temp->zobrazit_koty)zobrazit_koty=true;else zobrazit_koty=false;}else {stav=-1;zobrazit_koty=false;}}
+	else {stav=-2;zobrazit_koty=false;}
+  //highlight polygonu (editace rozmerů, bodů)
+	if(F->pom_temp!=NULL && F->pom_temp->n==O->n && F->pom_bod!=NULL)
+	switch(F->JID)
 	{
-		case F->NAHLED:if(F->pom_temp->n==O->n){stav=-2;if(F->pom_temp->zobrazit_koty)zobrazit_koty=true;else zobrazit_koty=false;}else {stav=-1;zobrazit_koty=false;}break;
-		case F->SCHEMA:stav=-2;zobrazit_koty=false;break;
+		//highlight úsečky
+		case -2:if(F->pom_bod->n==1)stav=O->body->predchozi->n*2;else stav=O->body->predchozi->n+F->pom_bod->n-1;break;
+    //highlight bodu
+		case -3:stav=F->pom_bod->n;break;
 	}
+
 	////poloha nadpisu
 	double X=O->body->dalsi->X+(O->body->dalsi->dalsi->X-O->body->dalsi->X)/2;
 	double Y=O->body->dalsi->Y;
@@ -4204,34 +4212,61 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 		////vykreslení kót
 		if(zobrazit_koty)//pokud je požádováno
 		{
-			Cvektory::TBod *vykreslovat=NULL;
-//			if(F->pom_temp!=NULL && body->predchozi->n==4 /*&& F->ortogonalizace_stav*/)//pokud má objekt jen 4 body a zároven je ortogonalizován jedná se o obdelník nebo čtverec
-//				vykreslovat=body->dalsi->dalsi->dalsi;
+			//nastavení hodnot pro highlight, jiné hodnoty pro highlighty na hale a kabině
+      int hodnota_koty=-2,oblast_koty=2;//defaultní hodnoty pro halu
+			if(F->pom_temp!=NULL)//highlight pro objekt
+			{hodnota_koty=-5,oblast_koty=-4;}
+			//kontrola zda se jedná o čtverec či odelník (vykreslení pouze dvou kót)
+			Cvektory::TBod *kota_od=NULL;
+			double delka_koty=0;//zavedeno pro přepočet mezi časovou a délkovou kótou
+			if(F->pom_temp!=NULL && body->predchozi->n==4)//pokud má objekt jen 4 body je otestován zda se jedná o obdelník nebo čtverec
+			{
+				double a=m.delka(body->dalsi->X,body->dalsi->Y,body->dalsi->dalsi->X,body->dalsi->dalsi->Y),b=m.delka(body->dalsi->dalsi->X,body->dalsi->dalsi->Y,body->predchozi->predchozi->X,body->predchozi->predchozi->Y),c=m.delka(body->predchozi->predchozi->X,body->predchozi->predchozi->Y,body->predchozi->X,body->predchozi->Y),d=m.delka(body->dalsi->X,body->dalsi->Y,body->predchozi->X,body->predchozi->Y);
+				if(a==c && b==d)kota_od=body->dalsi->dalsi->dalsi;//jedná se o obdelník nebo čtverec
+			}
+			//příprava pro vykreslení kót
 			short AA=1;if(F->antialiasing)AA=3;
-			B=body->dalsi->dalsi;
+			//akcelerátor
+			if(kota_od!=NULL)B=kota_od;
+			else B=body->dalsi->dalsi;
 			short highlight=0;
 			while(B!=NULL)//vykreslení kót musí být v samostatém cyklu!!!!!(jinak ovlivňuje vykreslení spojnic bodů)
 			{
 				//nastavení highlightu
-				if(F->pom_bod!=NULL && F->JID==2&&F->pom_bod->n==B->n)highlight=2;
-				else if(F->pom_bod!=NULL && F->JID==-2&&F->pom_bod->n==B->n)highlight=1;else highlight=0;
+				if(F->pom_bod!=NULL && F->JID==oblast_koty&&F->pom_bod->n==B->n)highlight=2;
+				else if(F->pom_bod!=NULL && F->JID==hodnota_koty&&F->pom_bod->n==B->n)highlight=1;else highlight=0;
+				//výpočet délky kóty
+				delka_koty=m.round2double(m.delka(B->predchozi->X,B->predchozi->Y,B->X,B->Y),0);
+				if(F->DKunit==2 || F->DKunit==3)delka_koty=delka_koty/F->pom_temp->pohon->aRD;
 				//vykreslení kóty
-				if(vykreslovat==NULL)                                                                                                                                              //převedení na mm
-				vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),F->outDK(m.round2double(m.delka(B->predchozi->X,B->predchozi->Y,B->X,B->Y),0)),NULL,B->kota_offset*F->Zoom/AA,highlight,0.2,clGray,false,NULL,B);
-				else if(vykreslovat->n==B->n)
+				if(kota_od==NULL)                                                                                                                                              //převedení na mm
+				vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),F->outDK(delka_koty),NULL,B->kota_offset*F->Zoom/AA,highlight,0.2,clGray,false,NULL,B);
+				else
 				{
-					vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),F->outDK(m.round2double(m.delka(B->predchozi->X,B->predchozi->Y,B->X,B->Y),0)),NULL,B->kota_offset*F->Zoom/AA,highlight,0.2,clGray,false,NULL,B);
-					vykresli_kotu(canv,m.L2Px(B->X),m.L2Py(B->Y),m.L2Px(B->dalsi->X),m.L2Py(B->dalsi->Y),F->outDK(m.round2double(m.delka(B->X,B->Y,B->dalsi->X,B->dalsi->Y),0)),NULL,B->dalsi->kota_offset*F->Zoom/AA,highlight,0.2,clGray,false,NULL,B->dalsi);
+					//určení nové vzdálenosti
+					delka_koty=m.round2double(m.delka(B->predchozi->X,B->predchozi->Y,B->X,B->Y),0);if(F->DKunit==2 || F->DKunit==3)delka_koty=delka_koty/F->pom_temp->pohon->aRD;
+					//vykreslení jedné kóty pro obdelník/čtverec
+					vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),F->outDK(delka_koty),NULL,B->kota_offset*F->Zoom/AA,highlight,0.2,clGray,false,NULL,B);
+					//zjištění highlightu pro druhou kótu obdelníku/čtverce
+					if(F->pom_bod!=NULL && F->JID==oblast_koty&&F->pom_bod->n==B->dalsi->n)highlight=2;
+					else if(F->pom_bod!=NULL && F->JID==hodnota_koty&&F->pom_bod->n==B->dalsi->n)highlight=1;else highlight=0;
+					//délka
+					delka_koty=m.round2double(m.delka(B->X,B->Y,B->dalsi->X,B->dalsi->Y),0);if(F->DKunit==2 || F->DKunit==3)delka_koty=delka_koty/F->pom_temp->pohon->aRD;
+					//vykreslení
+					vykresli_kotu(canv,m.L2Px(B->X),m.L2Py(B->Y),m.L2Px(B->dalsi->X),m.L2Py(B->dalsi->Y),F->outDK(delka_koty),NULL,B->dalsi->kota_offset*F->Zoom/AA,highlight,0.2,clGray,false,NULL,B->dalsi);
+					break;
 				}
 				B=B->dalsi;
 			}
 			//vykreslení poslední kóty
-			if(F->pom_bod!=NULL && F->JID==2&&F->pom_bod->n==body->dalsi->n)highlight=2;
-			else if(F->pom_bod!=NULL && F->JID==-2&&F->pom_bod->n==body->dalsi->n)highlight=1;else highlight=0;
-			if(vykreslovat==NULL && body->predchozi->n>2)vykresli_kotu(canv,m.L2Px(body->predchozi->X),m.L2Py(body->predchozi->Y),m.L2Px(body->dalsi->X),m.L2Py(body->dalsi->Y),F->outDK(m.round2double(m.delka(body->predchozi->X,body->predchozi->Y,body->dalsi->X,body->dalsi->Y),0)),NULL,body->dalsi->kota_offset*F->Zoom/AA,highlight,0.2,clGray,false,NULL,body->dalsi);
+			delka_koty=m.round2double(m.delka(body->predchozi->X,body->predchozi->Y,body->dalsi->X,body->dalsi->Y),0);if(F->DKunit==2 || F->DKunit==3)delka_koty=delka_koty/F->pom_temp->pohon->aRD;
+			if(F->pom_bod!=NULL && F->JID==oblast_koty&&F->pom_bod->n==body->dalsi->n)highlight=2;
+			else if(F->pom_bod!=NULL && F->JID==hodnota_koty&&F->pom_bod->n==body->dalsi->n)highlight=1;else highlight=0;
+			if(kota_od==NULL && body->predchozi->n>2)vykresli_kotu(canv,m.L2Px(body->predchozi->X),m.L2Py(body->predchozi->Y),m.L2Px(body->dalsi->X),m.L2Py(body->dalsi->Y),F->outDK(delka_koty),NULL,body->dalsi->kota_offset*F->Zoom/AA,highlight,0.2,clGray,false,NULL,body->dalsi);
+
 			////odstranění pomocného ukazatele
 			B=NULL; delete B;
-			vykreslovat=NULL; delete vykreslovat;
+			kota_od=NULL; delete kota_od;
 		}
 	}
 }

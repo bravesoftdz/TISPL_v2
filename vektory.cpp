@@ -820,12 +820,14 @@ Cvektory::TObjekt *Cvektory::najdi_objekt(double X, double Y,double offsetX, dou
 //vrátí ukazatel na objekt dle n objektu
 Cvektory::TObjekt *Cvektory::vrat_objekt(unsigned int n)
 {
+	TPoint *tab_pruchodu=new TPoint[pocet_vyhybek+1];//+1 z důvodu indexace výhybka 1 bude mít index 1, nebude se začínat od indexu 0, tabulka.x = vyhybky, tabulka.y = spojky
 	TObjekt *p=OBJEKTY->dalsi;//přeskočí hlavičku
 	while (p!=NULL)
 	{
 		if(p->n==n)break;//akce s ukazatelem
-		else p=p->dalsi;//posun na další prvek v seznamu
+		else p=dalsi_krok(p,tab_pruchodu);//posun na další prvek v seznamu
 	}
+	tab_pruchodu=NULL;delete tab_pruchodu;
 	return p;
 }
 //---------------------------------------------------------------------------
