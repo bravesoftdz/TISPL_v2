@@ -4177,6 +4177,9 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 		////vykreslení kót
 		if(zobrazit_koty)//pokud je požádováno
 		{
+			Cvektory::TBod *vykreslovat=NULL;
+			if(F->pom_temp!=NULL && body->predchozi->n==4 /*&& F->ortogonalizace_stav*/)//pokud má objekt jen 4 body a zároven je ortogonalizován jedná se o obdelník nebo čtverec
+				vykreslovat=body->dalsi->dalsi->dalsi;
 			short AA=1;if(F->antialiasing)AA=3;
 			B=body->dalsi->dalsi;
 			short highlight=0;
@@ -4185,16 +4188,23 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 				//nastavení highlightu
 				if(F->pom_bod!=NULL && F->JID==2&&F->pom_bod->n==B->n)highlight=2;
 				else if(F->pom_bod!=NULL && F->JID==-2&&F->pom_bod->n==B->n)highlight=1;else highlight=0;
-				//vykreslení kóty                                                                                                                                               //převedení na mm
+				//vykreslení kóty
+				if(vykreslovat==NULL)                                                                                                                                              //převedení na mm
 				vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),F->outDK(m.round2double(m.delka(B->predchozi->X,B->predchozi->Y,B->X,B->Y),0)),NULL,B->kota_offset*F->Zoom/AA,highlight,0.2,clGray,false,NULL,B);
+				else if(vykreslovat->n==B->n)
+				{
+					vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),F->outDK(m.round2double(m.delka(B->predchozi->X,B->predchozi->Y,B->X,B->Y),0)),NULL,B->kota_offset*F->Zoom/AA,highlight,0.2,clGray,false,NULL,B);
+					vykresli_kotu(canv,m.L2Px(B->X),m.L2Py(B->Y),m.L2Px(B->dalsi->X),m.L2Py(B->dalsi->Y),F->outDK(m.round2double(m.delka(B->X,B->Y,B->dalsi->X,B->dalsi->Y),0)),NULL,B->dalsi->kota_offset*F->Zoom/AA,highlight,0.2,clGray,false,NULL,B->dalsi);
+				}
 				B=B->dalsi;
 			}
 			//vykreslení poslední kóty
 			if(F->pom_bod!=NULL && F->JID==2&&F->pom_bod->n==body->dalsi->n)highlight=2;
 			else if(F->pom_bod!=NULL && F->JID==-2&&F->pom_bod->n==body->dalsi->n)highlight=1;else highlight=0;
-			if(body->predchozi->n>2)vykresli_kotu(canv,m.L2Px(body->predchozi->X),m.L2Py(body->predchozi->Y),m.L2Px(body->dalsi->X),m.L2Py(body->dalsi->Y),F->outDK(m.round2double(m.delka(body->predchozi->X,body->predchozi->Y,body->dalsi->X,body->dalsi->Y),0)),NULL,body->dalsi->kota_offset*F->Zoom/AA,highlight,0.2,clGray,false,NULL,body->dalsi);
+			if(vykreslovat==NULL && body->predchozi->n>2)vykresli_kotu(canv,m.L2Px(body->predchozi->X),m.L2Py(body->predchozi->Y),m.L2Px(body->dalsi->X),m.L2Py(body->dalsi->Y),F->outDK(m.round2double(m.delka(body->predchozi->X,body->predchozi->Y,body->dalsi->X,body->dalsi->Y),0)),NULL,body->dalsi->kota_offset*F->Zoom/AA,highlight,0.2,clGray,false,NULL,body->dalsi);
 			////odstranění pomocného ukazatele
 			B=NULL; delete B;
+			vykreslovat=NULL; delete vykreslovat;
 		}
 	}
 }
@@ -4217,7 +4227,7 @@ void Cvykresli::uchop(TCanvas *canv,Cvektory::TBod *B,TColor barva)
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_mGridy(TCanvas *canv)
 {
-	if(F->Timer_animace->Enabled==false)//při timeru aplikace se nezobrazí
+	if(F->pom_temp!=NULL && F->Timer_animace->Enabled==false)//pokud není editovaný nějaký objekt nebo při timeru aplikace se tabulky nezobrazí
 	{
 		////tabulky elementů
 		if(F->pom_temp->elementy!=NULL)

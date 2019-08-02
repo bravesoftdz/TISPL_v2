@@ -1505,6 +1505,8 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				Cantialising a;
 				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 				bmp_total->Canvas->Draw(0,0,bmp_out);delete (bmp_out);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+				//mGridy
+				d.vykresli_mGridy(bmp_total->Canvas); //přesunuto do vnitř metody: pom_temp->elementy!=NULL kvůli pohonům
 				//grafické měřítko
 				if(zobrazit_meritko && Akce!=MOVE_HALA)d.meritko(bmp_total->Canvas);
 				//finální předání bmp_out do Canvasu
@@ -2825,7 +2827,7 @@ void TForm1::getJobID(int X, int Y)
 //					else if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x) && m.L2Py(pom_temp->Yk)-Ov<=Y && m.L2Py(pom_temp->Yk)>=Y)JID=-3;//vodorovná horní
 //					else if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x) && m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)<=Y && m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov>=Y)JID=-5;//vodorovná dolní
 					pom_bod=d.v.najdi_usecku(pom_temp);
-					if(pom_bod!=NULL)JID=MaxInt;//pro testy
+					if(pom_bod!=NULL)JID=-2;//pro testy
 					else
   				{ //testování zda se nejedná o NÁZEV či ZKRATKA objektu, ZATÍM NEREFLEKTUJE ORIENTACI NÁHLEDU
   					d.nastavit_text_popisu_objektu_v_nahledu(Canvas,1);AnsiString Tn=F->pom_temp->name.UpperCase();short Wn=Canvas->TextWidth(Tn);//název objektu - nastavení
@@ -2840,7 +2842,7 @@ void TForm1::getJobID(int X, int Y)
   						if(pom_temp->zobrazit_koty)//pouze pokud je náhled povolen a jsou kóty zobrazeny
   						{
   							short PtInKota_elementu=d.v.PtInKota_elementu(pom_temp,X,Y);
-  							//jednotky kóty buď kabiny nebo kót elementů JID=-10
+								//jednotky kóty buď kabiny nebo kót elementů JID=-10
   							if(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || PtInKota_elementu==2)JID=-10;
   							else if(pom_temp->uzamknout_nahled==false)//kóty hodnoty
   							{
@@ -2862,7 +2864,7 @@ void TForm1::getJobID(int X, int Y)
   							}
   						}
   					}
-  				}
+					}
   			}
   		}
   	}
@@ -2973,7 +2975,20 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
   		if(JID==-10){/*REFRESH();*/kurzor(zmena_j);}//indikace možnosti změnit jednotky na kótách
   		if(JID>=11 && JID<=99){if(pom_temp->rotace==0||pom_temp->rotace==180)kurzor(zmena_d_y);else kurzor(zmena_d_x);refresh_mGrid=false;}//interaktivní kóty elementů
   		if(JID>=4 && JID<=10){kurzor(zmena_j);if(PmG->CheckLink(X,Y)!=TPoint(-1,-1));refresh_mGrid=true;PmG->Refresh();}//pohonová tabulka odkazy - aktivace dodáním pouze aktuálních souřadnic
-      if(JID==MaxInt)kurzor(posun_ind);
+			if(JID==-2)//posun úsečky objektu
+			{
+				//načtení bodů úsečky
+				Cvektory::TBod *A=NULL,*B=pom_bod;//return proměnná + krokování cyklu
+				if(pom_bod->n!=1)A=pom_bod->predchozi;
+				else A=pom_temp->body->predchozi;
+				//zjištění azimutu úsečky + nastavení kurzoru
+				if(A->X==B->X)kurzor(zmena_d_x);
+				else if(A->Y==B->Y)kurzor(zmena_d_y);
+				//úsečka a kóta se posouvají rozdílně, proto jiné kurzory
+				else kurzor(posun_ind);
+				//smazání pomocných ukazatelů
+				A=NULL;B=NULL;delete A;delete B;
+			}
 			////inteligentní REFRESH
   		//if(!refresh_mGrid/* && !nabuffrovano*/){d.nabuffrovat_mGridy();nabuffrovano=true;}
   		//d.nabuffrovat_mGridy(pom_element->mGrid);
@@ -8590,14 +8605,14 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Cvektory::TElement *E=pom_temp->elementy->dalsi;
-	while(E!=NULL)
-	{
-		Memo("X1: "+AnsiString(E->geo.X1)+"; Y1: "+AnsiString(E->geo.Y1));
-		Memo("X4: "+AnsiString(E->geo.X4)+"; Y4: "+AnsiString(E->geo.Y4));
-		E=E->dalsi;
-	}
-	delete E;E=NULL;
+//	Cvektory::TElement *E=pom_temp->elementy->dalsi;
+//	while(E!=NULL)
+//	{
+//		Memo("X1: "+AnsiString(E->geo.X1)+"; Y1: "+AnsiString(E->geo.Y1));
+//		Memo("X4: "+AnsiString(E->geo.X4)+"; Y4: "+AnsiString(E->geo.Y4));
+//		E=E->dalsi;
+//	}
+//	delete E;E=NULL;
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -10455,7 +10470,7 @@ unsigned short TForm1::load_language(Tlanguage language)
 void __fastcall TForm1::scGPButton_posun_halyClick(TObject *Sender)
 {
   log(__func__);//logování
-	if(d.v.HALA.body!=NULL)//pokud existuje hala, jinak nemá smysl
+	if(d.v.HALA.body!=NULL && pom_temp==NULL)//pokud existuje hala a není aktivní editace objektu, jinak nemá smysl
 	{
 		scSplitView_OPTIONS->Close();
 		kurzor(pan);
