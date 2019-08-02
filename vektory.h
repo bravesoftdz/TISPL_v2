@@ -719,6 +719,7 @@ private:
     {
       unsigned long n; //pořadí ve spoj.seznam
       double velikost;//v metrech
+      short typ;//1-se sprchou, 0 bez jen okap
 		};
 
 		struct C_zakazka
@@ -767,6 +768,7 @@ private:
 
         unsigned int akt_pocet_voziku;
         unsigned int max_pocet_voziku;
+        TGeometrie geo;
 		};
 
 		struct C_cesta//pouze přidružený spoják, který je součástí zakázky, jeden objekt spojáku je jeden segment cesty
