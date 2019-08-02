@@ -273,14 +273,6 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
   ////vykreslení prozatimní osy POHONU
 	vykresli_retez(canv,O);
 
-	////nastavení pera pro kabinu //pro rectangle, následně možné také odstranit
-	canv->Brush->Color=clWhite;
-	canv->Brush->Style=bsClear;//nastavení výplně
-	canv->Pen->Mode=pmNotXor;//pro transparentní zákres
-	canv->Pen->Color=clAkt;//barva
-	canv->Pen->Width=sirka_steny_px;//šířka v pixelech
-	canv->Pen->Style=psSolid;
-
 	////vnější obrys kabiny
 	polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
 
@@ -294,15 +286,12 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	//samotné vypsání názvu
 	nastavit_text_popisu_objektu_v_nahledu(canv,1);
 	TextFraming(canv,m.L2Px(X)-m.round((Wn+Wl+Wz)/2.0),m.L2Py(Y)-canv->TextHeight(Tl),Tn);                //záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
-//	canv->TextOutW(m.L2Px(X)-m.round((Wn+Wl+Wz)/2.0),m.L2Py(Y)-canv->TextHeight(Tl),Tn);
 	//samotné vypsání lomítka
 	nastavit_text_popisu_objektu_v_nahledu(canv,0);
 	TextFraming(canv,m.L2Px(X)-m.round((Wn+Wl+Wz)/2.0)+Wn,m.L2Py(Y)-canv->TextHeight(Tl),Tl);
-//	canv->TextOutW(m.L2Px(X)-m.round((Wn+Wl+Wz)/2.0)+Wn,m.L2Py(Y)-canv->TextHeight(Tl),Tl);
 	//samostné vypsání zkratky
 	nastavit_text_popisu_objektu_v_nahledu(canv,2);                   //záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamack
 	TextFraming(canv,m.L2Px(X)-m.round((Wn+Wl+Wz)/2.0)+Wn+Wl,m.L2Py(Y)-canv->TextHeight(Tl),Tz);
-//	canv->TextOutW(m.L2Px(X)-m.round((Wn+Wl+Wz)/2.0)+Wn+Wl,m.L2Py(Y)-canv->TextHeight(Tl),Tz);
 
 	short highlight=0;//nastavování zda mají být koty highlightovány
 
@@ -676,6 +665,10 @@ void Cvykresli::TextFraming(TCanvas *canv,int X,int Y,UnicodeString Text,TFont *
 
 	//záloha
 	TColor clText=Font->Color;
+
+	//nastavení průhledného pozadí písma - důležitée
+	canv->Brush->Color=clWhite;
+	canv->Brush->Style=bsClear;//nastavení výplně
 
 	//framing
 	canv->Font->Color=clFraming;
@@ -4551,8 +4544,8 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 		canv->Font->Size=m.round(canv->Font->Size/2.0);//při highlighnutí se text se šířkou nezvětštuje (proto /2 návrat na původní hodnotu, pouze ztučňuje a to jen za předpokladu, změny hodnot kót nikoliv linie kóty (její pozice/offsetu)
 	}
 	else canv->Font->Style = TFontStyles();//vypnutí tučného písma
-	SetBkMode(canv->Handle,OPAQUE);//nastvení netransparentního pozadí
-	canv->Brush->Color=clWhite;
+	SetBkMode(canv->Handle,OPAQUE);//nastvení netransparentního pozadí kóty
+	canv->Brush->Color=clWhite;//nastvení netransparentního pozadí popisku kóty
 //	AnsiString Jednotky=" [m]";if(F->DKunit==1)Jednotky=" [mm]";if(F->DKunit==2)Jednotky=" [s]";if(F->DKunit==3)Jednotky=" [min]";
 	long X=(x1+x2)/2-canv->TextWidth(Text)/2;if(y1==y2)X=(x1+x2)/2-canv->TextWidth(Text/*+Jednotky*/)/2;//pro vodorovnou kótu zarovnání jinak
 	long Y=(y1+y2)/2-canv->TextHeight(/*Jednotky*/Text/*nahrazeno*/)/2; //pozn. záměrně je zde TextHeight(Jednotky) z důvodu, že při smazání hodnoty by byl text prázdný a následně by to špatně pozicovalo jednotky
