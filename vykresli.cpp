@@ -656,6 +656,29 @@ void Cvykresli::drawRectText(TCanvas *canv,TRect Rect,UnicodeString Text)
 		canv->TextOutW(Rect.Left+Rect.Width()/2-canv->TextWidth(Text)/2,Rect.Top+Rect.Height()/2-canv->TextHeight(Text)/2,Text);
 }
 ////---------------------------------------------------------------------------
+//zajistí vykreslení daného textu dle nastaveného Fontu (pokud je NULL, převezme se akutální font canvasu) včetně framingu, který je baravně a velikostně nastavitelný
+void Cvykresli::TextFraming(TCanvas *canv,int X,int Y,UnicodeString Text,TFont *Font,TColor clFraming,unsigned short FramingSize)
+{
+	//pokud není font nastaven, převezme se akutální font, převezme se akutální font canvasu
+	if(Font==NULL)Font=canv->Font;else canv->Font=Font;
+
+	//záloha
+	TColor clText=Font->Color;
+
+	//framing
+	canv->Font->Color=clFraming;
+	for(short i=-1*FramingSize;i<=FramingSize;i++)
+	{
+		if(i==0)continue;
+		canv->TextOutW(X+i,Y+i,Text);
+		canv->TextOutW(X+i,Y+i*(-1),Text);
+	}
+
+	//samotný text
+	canv->Font->Color=clText;
+	canv->TextOutW(X,Y,Text);
+}
+////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 void Cvykresli::vykresli_grid(TCanvas *canv, int size_grid)
 {
