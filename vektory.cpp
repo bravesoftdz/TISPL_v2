@@ -621,8 +621,8 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 		case 8:rozmery_kabiny.x=20;rozmery_kabiny.y=6;break;//chlazení
 		default: rozmery_kabiny.x=10;rozmery_kabiny.y=6;break;//ostatní
 	}
-	vloz_bod(X,Y+rozmery_kabiny.y/2,novy);vloz_bod(X+rozmery_kabiny.x,Y+rozmery_kabiny.y/2,novy);
-	vloz_bod(X+rozmery_kabiny.x,Y-rozmery_kabiny.y/2,novy);vloz_bod(X,Y-rozmery_kabiny.y/2,novy);
+	vloz_bod(X,Y+rozmery_kabiny.y/2.0,novy);vloz_bod(X+rozmery_kabiny.x,Y+rozmery_kabiny.y/2.0,novy);
+	vloz_bod(X+rozmery_kabiny.x,Y-rozmery_kabiny.y/2.0,novy);vloz_bod(X,Y-rozmery_kabiny.y/2.0,novy);
 	//rotace na požadovanou orientaci
 	novy->orientace=F->d.orientace_objektu;
 	rotuj_body(X,Y,90-novy->orientace,novy);
@@ -641,6 +641,14 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 	zarazka->geo.typ=0;
 	zarazka->geo.delka=m.delka(zarazka->geo.X1,zarazka->geo.Y1,zarazka->geo.X2,zarazka->geo.Y2);
 	zarazka=NULL;delete zarazka;
+	//definice pozice názvu kabiny
+	switch((int)novy->orientace)
+	{
+		case 0:novy->Xk=X-rozmery_kabiny.y/2.0;novy->Yk=Y+rozmery_kabiny.x/2.0;break;
+		case 90:novy->Xk=X+rozmery_kabiny.x/2.0;novy->Yk=Y+rozmery_kabiny.y/2.0;break;
+		case 180:novy->Xk=X+rozmery_kabiny.y/2.0;novy->Yk=Y-rozmery_kabiny.x/2.0;break;
+		case 270:novy->Xk=X-rozmery_kabiny.x/2.0;novy->Yk=Y+rozmery_kabiny.y/2.0;break;
+	}
 	return novy;
 }
 //---------------------------------------------------------------------------
