@@ -172,7 +172,7 @@ void __fastcall TPopUPmenu::scLabel_nastavit_parametryClick(TObject *Sender)
 	Close();
  //	Form1->NP(); //staré volání PO
 	if(F->MOD==F->SCHEMA&&Form1->pom_bod_temp==NULL)Form1->NP_input();
-	if(Form1->pom_bod_temp!=NULL && Form1->pom_temp==NULL)//pøidání bodu haly
+	if(Form1->pom_bod_temp!=NULL && Form1->pom_temp==NULL && Form1->pom==NULL)//pøidání bodu haly
 	{
 		if(Form1->pom_bod_temp->n!=1)Form1->d.v.vloz_bod(Form1->akt_souradnice_kurzoru.x,Form1->akt_souradnice_kurzoru.y,Form1->pom,Form1->pom_bod_temp->predchozi);
 		else Form1->d.v.vloz_bod(Form1->akt_souradnice_kurzoru.x,Form1->akt_souradnice_kurzoru.y,Form1->pom);
@@ -206,15 +206,6 @@ void __fastcall TPopUPmenu::scLabel_nastavit_parametryClick(TObject *Sender)
 		F->REFRESH();
 		F->refresh_mGrid=true;
 		F->nahled_ulozit(true);
-	}
-	if(Form1->pom_temp!=NULL && Form1->pom_vyhybka!=NULL && Form1->pom_temp->n==Form1->pom_vyhybka->n)//posun obrysu
-	{
-		F->Akce=F->MOVE_HALA;
-		F->nahled_ulozit(true);
-		F->TIP="Kliknutím urèíte bod posunu, táhnutím posunete obrys objektu.";
-		F->refresh_mGrid=false;
-		F->REFRESH();
-		F->refresh_mGrid=true;
 	}
 }
 //---------------------------------------------------------------------------
