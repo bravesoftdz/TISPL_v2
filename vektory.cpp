@@ -2105,7 +2105,7 @@ void Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->max_pocet_voziku=Original->max_pocet_voziku;
 	Kopie->geo=Original->geo;
 	Kopie->mGrid=new TmGrid(F);//nová strategie, je mgrid, nekopírovat a používat jenom v pom_temp, zde však podmínka zda se jedná o pom_temp nebyla z nějakého důvodu možná
-	Kopie->poznamka=Original->poznamka;
+	//Kopie->poznamka=Original->poznamka;
 	Kopie->sparovany=Original->sparovany;
 }
 ////---------------------------------------------------------------------------
@@ -4902,7 +4902,7 @@ void Cvektory::vytvor_hlavicku_souboru()
 		File_hlavicka.dni_rok=PP.dni_rok;
 		File_hlavicka.efektivita=PP.efektivita;
 		File_hlavicka.TT=PP.TT;
-		File_hlavicka.typ_vozik=PP.typ_voziku;
+		File_hlavicka.typ_linky=PP.typ_linky;
 		File_hlavicka.delka_jig=PP.delka_jig;
 		File_hlavicka.sirka_jig=PP.sirka_jig;
 		File_hlavicka.vyska_jig=PP.vyska_jig;

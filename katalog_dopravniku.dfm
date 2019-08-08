@@ -12,6 +12,8 @@ object Form_katalog: TForm_katalog
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnClose = FormClose
+  OnMouseMove = FormMouseMove
   OnPaint = FormPaint
   OnShow = FormShow
   PixelsPerInch = 96
@@ -54,7 +56,6 @@ object Form_katalog: TForm_katalog
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
-    ExplicitWidth = 1800
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 1113
@@ -151,7 +152,6 @@ object Form_katalog: TForm_katalog
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 1750
     end
     object scLabel_header: TscLabel
       Left = 0
@@ -185,7 +185,6 @@ object Form_katalog: TForm_katalog
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Katalog dopravn'#237'k'#367
-      ExplicitWidth = 1750
     end
   end
   object Button_save: TscGPButton
@@ -202,6 +201,7 @@ object Form_katalog: TForm_katalog
     ParentFont = False
     TabOrder = 1
     TabStop = True
+    OnClick = Button_saveClick
     Animation = False
     Caption = 'Ulo'#382'it'
     CanFocused = True
@@ -402,5 +402,15 @@ object Form_katalog: TForm_katalog
     Down = False
     GroupIndex = 0
     AllowAllUp = False
+  end
+  object Memo1: TMemo
+    Left = 784
+    Top = 551
+    Width = 89
+    Height = 33
+    Lines.Strings = (
+      'Memo1')
+    TabOrder = 3
+    Visible = False
   end
 end

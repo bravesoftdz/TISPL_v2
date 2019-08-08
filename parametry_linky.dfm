@@ -127,22 +127,6 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentColor = False
     ParentFont = False
   end
-  object rHTMLLabel_katalog_nazev: TrHTMLLabel
-    Left = 605
-    Top = 52
-    Width = 45
-    Height = 18
-    Caption = 'HD100'
-    Color = clBackground
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWhite
-    Font.Height = -15
-    Font.Name = 'Roboto'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentColor = False
-    ParentFont = False
-  end
   object Button_save: TscGPButton
     Left = 214
     Top = 580
@@ -7289,8 +7273,8 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 6410
-    Top = 10054
+    Left = 6605
+    Top = 10379
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -7315,9 +7299,8 @@ object Form_parametry_linky: TForm_parametry_linky
     GlyphThickness = 1
     Kind = scgpgkOneGear
     TransparentBackground = True
-    ExplicitLeft = 6275
-    ExplicitTop = 9829
-    ExplicitWidth = 100
+    ExplicitLeft = 6419
+    ExplicitTop = 10069
   end
   object scGPSwitch: TscGPSwitch
     Left = 762
@@ -7363,14 +7346,14 @@ object Form_parametry_linky: TForm_parametry_linky
     OnChangeState = scGPSwitchChangeState
   end
   object scGPGlyphButton_katalog: TscGPGlyphButton
-    Left = 567
-    Top = 48
-    Width = 30
+    Left = 134
+    Top = 283
+    Width = 180
     Height = 29
     Hint = 'Katalog dopravn'#237'k'#367
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWhite
-    Font.Height = -11
+    Font.Height = -15
     Font.Name = 'Tahoma'
     Font.Style = []
     Font.Quality = fqClearType
@@ -7388,7 +7371,7 @@ object Form_parametry_linky: TForm_parametry_linky
     TransparentBackground = True
     ColorValue = clRed
     Options.NormalColor = clBtnText
-    Options.HotColor = clBtnText
+    Options.HotColor = clWhite
     Options.PressedColor = clBtnText
     Options.FocusedColor = clBtnFace
     Options.DisabledColor = clBtnText
@@ -7403,7 +7386,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 5
     Options.NormalColor2Alpha = 255
-    Options.HotColor2Alpha = 255
+    Options.HotColor2Alpha = 200
     Options.PressedColor2Alpha = 255
     Options.FocusedColor2Alpha = 255
     Options.DisabledColor2Alpha = 255
@@ -7418,8 +7401,8 @@ object Form_parametry_linky: TForm_parametry_linky
     Options.FramePressedColorAlpha = 150
     Options.FrameFocusedColorAlpha = 255
     Options.FrameDisabledColorAlpha = 30
-    Options.FontNormalColor = clBtnText
-    Options.FontHotColor = clBtnText
+    Options.FontNormalColor = clWhite
+    Options.FontHotColor = clWhite
     Options.FontPressedColor = clBtnText
     Options.FontFocusedColor = clBtnText
     Options.FontDisabledColor = clBtnShadow
@@ -7435,12 +7418,12 @@ object Form_parametry_linky: TForm_parametry_linky
     Options.ArrowThicknessScaled = False
     Options.StyleColors = True
     GlyphOptions.NormalColor = clWhite
-    GlyphOptions.HotColor = clBtnText
+    GlyphOptions.HotColor = clWhite
     GlyphOptions.PressedColor = clBtnText
     GlyphOptions.FocusedColor = clBtnText
     GlyphOptions.DisabledColor = clBtnText
     GlyphOptions.NormalColorAlpha = 200
-    GlyphOptions.HotColorAlpha = 255
+    GlyphOptions.HotColorAlpha = 200
     GlyphOptions.PressedColorAlpha = 255
     GlyphOptions.FocusedColorAlpha = 255
     GlyphOptions.DisabledColorAlpha = 100
@@ -7452,6 +7435,7 @@ object Form_parametry_linky: TForm_parametry_linky
     TextMargin = -1
     WidthWithCaption = 0
     WidthWithoutCaption = 0
+    ShowCaption = True
     SplitButton = False
     RepeatClick = False
     RepeatClickInterval = 100
