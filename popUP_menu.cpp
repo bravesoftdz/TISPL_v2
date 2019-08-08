@@ -172,21 +172,22 @@ void __fastcall TPopUPmenu::scLabel_nastavit_parametryClick(TObject *Sender)
 	Close();
  //	Form1->NP(); //staré volání PO
 	if(F->MOD==F->SCHEMA&&Form1->pom_bod_temp==NULL)Form1->NP_input();
-	else if(Form1->pom_bod_temp!=NULL)
+	if(Form1->pom_bod_temp!=NULL && Form1->pom_temp==NULL && Form1->pom==NULL)//pøidání bodu haly
 	{
 		if(Form1->pom_bod_temp->n!=1)Form1->d.v.vloz_bod(Form1->akt_souradnice_kurzoru.x,Form1->akt_souradnice_kurzoru.y,Form1->pom,Form1->pom_bod_temp->predchozi);
 		else Form1->d.v.vloz_bod(Form1->akt_souradnice_kurzoru.x,Form1->akt_souradnice_kurzoru.y,Form1->pom);
-  	Form1->REFRESH();
+		Form1->REFRESH();
 	}
-	else if(F->pom_komora_temp!=NULL)//zmìna typu kabiny
+	if(Form1->pom_temp!=NULL && F->pom_komora_temp!=NULL)//zmìna typu kabiny
 	{
 		if(F->pom_komora_temp->typ==0)F->pom_komora_temp->typ=1;
 		else F->pom_komora_temp->typ=0;
 		F->refresh_mGrid=false;
 		F->REFRESH();
 		F->refresh_mGrid=true;
+		F->nahled_ulozit(true);
 	}
-	else//otevírání náhledu z náhledu, pøechot na editaci jiného objektu
+	if(Form1->pom_temp!=NULL && Form1->pom_vyhybka!=NULL && Form1->pom_temp->n!=Form1->pom_vyhybka->n)//otevírání náhledu z náhledu, pøechot na editaci jiného objektu
 	{
 		Cvektory::TObjekt *Objekt=F->pom_vyhybka;//F->pom_vyhybka použit z dùvodu, že v této chvíli je prázdný a nevyužitý, musí se ukládat do lokální promìnné, protože je vynulován pøi volaní metody vse_odstranit (spuštìno uzavøením starého náhledu)
 		F->KonecClick(this);//ukonèení aktuálního náhledu
@@ -196,6 +197,15 @@ void __fastcall TPopUPmenu::scLabel_nastavit_parametryClick(TObject *Sender)
 			Form1->NP_input();//otevøení nového
 		}
 		Objekt=NULL;delete Objekt;
+	}
+	if(Form1->pom_temp!=NULL && Form1->pom_bod_temp!=NULL)//pøidání bodu objektu
+	{
+		if(Form1->pom_bod_temp->n!=1)Form1->d.v.vloz_bod(Form1->akt_souradnice_kurzoru.x,Form1->akt_souradnice_kurzoru.y,Form1->pom_temp,Form1->pom_bod_temp->predchozi);
+		else Form1->d.v.vloz_bod(Form1->akt_souradnice_kurzoru.x,Form1->akt_souradnice_kurzoru.y,Form1->pom_temp);
+		F->refresh_mGrid=false;
+		F->REFRESH();
+		F->refresh_mGrid=true;
+		F->nahled_ulozit(true);
 	}
 }
 //---------------------------------------------------------------------------
