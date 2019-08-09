@@ -8579,21 +8579,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //MaKr testovací tlačítko
 void __fastcall TForm1::Button14Click(TObject *Sender)
 {
- //log(__func__);
- //d.v.vytvor_KATALOG();
- //Sk(d.v.KATALOG->predchozi->roztec->predchozi->n);
-// Sk(d.v.vrat_hodnotu_typu_dopravniku(2,Cvektory::TtypHodnoty::hR,3));
-// Sk(d.v.KATALOG->predchozi->roztec->predchozi->hodnota);
-// Sk(d.v.KATALOG->predchozi->hOblouk->predchozi->hodnota);
-
-Memo(d.v.OBJEKTY->dalsi->elementy->dalsi->geo.X1);
-Memo(d.v.OBJEKTY->dalsi->elementy->dalsi->geo.Y1);
-Memo(d.v.OBJEKTY->dalsi->elementy->dalsi->geo.X2);
-Memo(d.v.OBJEKTY->dalsi->elementy->dalsi->geo.Y2);
-Memo(d.v.OBJEKTY->dalsi->elementy->dalsi->geo.X3);
-Memo(d.v.OBJEKTY->dalsi->elementy->dalsi->geo.Y3);
-Memo(d.v.OBJEKTY->dalsi->elementy->dalsi->geo.X4);
-Memo(d.v.OBJEKTY->dalsi->elementy->dalsi->geo.Y4);
+	d.v.vymaz_seznam_KATALOG();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)

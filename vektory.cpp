@@ -4685,7 +4685,7 @@ void Cvektory::vytvor_KATALOG()
 	vloz_do_typu_dopravniku(vR,700);
 	vloz_do_typu_dopravniku(vR,1000);
 
-    ////CALDAN VLD - S270
+	////CALDAN VLD - S270
 	vloz_typ_dopravniku("VLD S270","http://caldan.dk/sites/default/files/TechSpecsPDF/VLD_2018_uk.pdf",0);
 	vloz_do_typu_dopravniku(R,270);
 	vloz_do_typu_dopravniku(R,300);
@@ -4705,7 +4705,7 @@ void Cvektory::vytvor_KATALOG()
 	//vertikální radiusy
 	vloz_do_typu_dopravniku(vR,1000);
 
-      ////CALDAN VLD - S300
+	////CALDAN VLD - S300
 	vloz_typ_dopravniku("VLD S300","http://caldan.dk/sites/default/files/TechSpecsPDF/VLD_2018_uk.pdf",0);
 	vloz_do_typu_dopravniku(R,270);
 	vloz_do_typu_dopravniku(R,300);
@@ -4745,7 +4745,7 @@ void Cvektory::vytvor_KATALOG()
 	//vertikální radiusy
 	vloz_do_typu_dopravniku(vR,1000);
 
-    ////CALDAN HD100
+	////CALDAN HD100
 	vloz_typ_dopravniku("HD100","http://caldan.dk/sites/default/files/TechSpecsPDF/HD100_2018_uk.pdf",0);
 	vloz_do_typu_dopravniku(R,180);
 	vloz_do_typu_dopravniku(R,270);
@@ -4764,7 +4764,7 @@ void Cvektory::vytvor_KATALOG()
 	vloz_do_typu_dopravniku(vR,1500);
   vloz_do_typu_dopravniku(vR,2500);
 
-      ////CALDAN HD100S
+	////CALDAN HD100S
 	vloz_typ_dopravniku("HD100S","http://caldan.dk/sites/default/files/TechSpecsPDF/HD100S_2019_uk.pdf",0);
 	vloz_do_typu_dopravniku(R,180);
 	vloz_do_typu_dopravniku(R,270);
@@ -4782,7 +4782,7 @@ void Cvektory::vytvor_KATALOG()
 	vloz_do_typu_dopravniku(vR,1500);
   vloz_do_typu_dopravniku(vR,2500);
 
-        ////CALDAN HD140
+	////CALDAN HD140
 	vloz_typ_dopravniku("HD140","http://caldan.dk/sites/default/files/TechSpecsPDF/HD140_2018_uk.pdf",0);
 	vloz_do_typu_dopravniku(R,180);
 	vloz_do_typu_dopravniku(R,270);
@@ -4800,7 +4800,7 @@ void Cvektory::vytvor_KATALOG()
 	//vertikální radiusy
   vloz_do_typu_dopravniku(vR,2000);
 
-          ////CALDAN PF100
+	////CALDAN PF100
 	vloz_typ_dopravniku("PF100","http://caldan.dk/sites/default/files/TechSpecsPDF/PF100_2018_uk.pdf",0);
 	vloz_do_typu_dopravniku(R,180);
 	vloz_do_typu_dopravniku(R,270);
@@ -4811,15 +4811,15 @@ void Cvektory::vytvor_KATALOG()
 	vloz_do_typu_dopravniku(hO,15);
 	//horizontální radiusy
 	vloz_do_typu_dopravniku(hR,700);
-  vloz_do_typu_dopravniku(hR,1000);
+	vloz_do_typu_dopravniku(hR,1000);
 	//vertikální oblouky
 	vloz_do_typu_dopravniku(vO,30);
-  vloz_do_typu_dopravniku(vO,15);
+	vloz_do_typu_dopravniku(vO,15);
 	//vertikální radiusy
-  vloz_do_typu_dopravniku(vR,2500);
-  vloz_do_typu_dopravniku(vR,1500);
+	vloz_do_typu_dopravniku(vR,2500);
+	vloz_do_typu_dopravniku(vR,1500);
 
-            ////CALDAN PF100S
+	////CALDAN PF100S
 	vloz_typ_dopravniku("PF100S","http://caldan.dk/sites/default/files/TechSpecsPDF/PF100S_2018_uk.pdf",0);
 	vloz_do_typu_dopravniku(R,180);
 	vloz_do_typu_dopravniku(R,270);
@@ -4856,7 +4856,7 @@ void Cvektory::vytvor_KATALOG()
 	//vertikální radiusy
   vloz_do_typu_dopravniku(vR,1000);
 
-    ////CALDAN PF140
+	////CALDAN PF140
 	vloz_typ_dopravniku("PF140","http://caldan.dk/sites/default/files/TechSpecsPDF/PF140_2018_uk.pdf",0);
 	vloz_do_typu_dopravniku(R,180);
 	vloz_do_typu_dopravniku(R,270);
@@ -4875,8 +4875,7 @@ void Cvektory::vytvor_KATALOG()
   vloz_do_typu_dopravniku(vR,1000);
   vloz_do_typu_dopravniku(vR,2500);
 
-
-        ////CALDAN PF160
+	////CALDAN PF160
 	vloz_typ_dopravniku("PF160","http://caldan.dk/sites/default/files/TechSpecsPDF/PF160_2018_uk.pdf",0);
 	vloz_do_typu_dopravniku(R,180);
 	vloz_do_typu_dopravniku(R,270);
@@ -4947,53 +4946,84 @@ double Cvektory::vrat_hodnotu_typu_dopravniku(Ttyp_dopravniku *typDopravniku,Tty
 //smaže celý katalog, včetně přidružených spojových seznamů
 void Cvektory::vymaz_seznam_KATALOG()
 {
-	while (KATALOG!=NULL)
+	if(KATALOG!=NULL)//pokud existuje katalog
 	{
-		//rozteč
-		while(KATALOG->predchozi->roztec!=NULL)
+		Ttyp_dopravniku *K=KATALOG->dalsi;
+		delete KATALOG;KATALOG==NULL;//smazání hlavičky
+		while(K!=NULL)
 		{
-			//posunutí ukazatele a smazání typu dopravníku
-			KATALOG->predchozi->roztec->predchozi=NULL;
-      delete KATALOG->predchozi->roztec->predchozi;
-			KATALOG->predchozi->roztec=KATALOG->predchozi->roztec->dalsi;
+			////atributy
+			//rozteč
+			if(K->roztec!=NULL)
+			{
+				TDoubleHodnota *H=K->roztec->dalsi;
+				delete K->roztec;K->roztec==NULL;//smazání hlavičky
+				while(H!=NULL)
+				{
+					TDoubleHodnota *Ht=H;//ukazatel na následně mazaný objekt
+					H=H->dalsi;//posun na další
+					delete Ht;Ht=NULL;//odstranění již nebotřebného objektu
+				}
+				delete H;H=NULL;//závěrečné odstranění
+			}
+			//hOblouk
+			if(K->hOblouk!=NULL)
+			{
+				TDoubleHodnota *H=K->hOblouk->dalsi;
+				delete K->roztec;K->hOblouk==NULL;//smazání hlavičky
+				while(H!=NULL)
+				{
+					TDoubleHodnota *Ht=H;//ukazatel na následně mazaný objekt
+					H=H->dalsi;//posun na další
+					delete Ht;Ht=NULL;//odstranění již nebotřebného objektu
+				}
+				delete H;H=NULL;//závěrečné odstranění
+			}
+			//hRadius
+			if(K->hRadius!=NULL)
+			{
+				TDoubleHodnota *H=K->hRadius->dalsi;
+				delete K->roztec;K->hRadius==NULL;//smazání hlavičky
+				while(H!=NULL)
+				{
+					TDoubleHodnota *Ht=H;//ukazatel na následně mazaný objekt
+					H=H->dalsi;//posun na další
+					delete Ht;Ht=NULL;//odstranění již nebotřebného objektu
+				}
+				delete H;H=NULL;//závěrečné odstranění
+			}
+			//vOblouk
+			if(K->vOblouk!=NULL)
+			{
+				TDoubleHodnota *H=K->vOblouk->dalsi;
+				delete K->roztec;K->vOblouk==NULL;//smazání hlavičky
+				while(H!=NULL)
+				{
+					TDoubleHodnota *Ht=H;//ukazatel na následně mazaný objekt
+					H=H->dalsi;//posun na další
+					delete Ht;Ht=NULL;//odstranění již nebotřebného objektu
+				}
+				delete H;H=NULL;//závěrečné odstranění
+			}
+			//vRadius
+			if(K->vRadius!=NULL)
+			{
+				TDoubleHodnota *H=K->vRadius->dalsi;
+				delete K->roztec;K->vRadius==NULL;//smazání hlavičky
+				while(H!=NULL)
+				{
+					TDoubleHodnota *Ht=H;//ukazatel na následně mazaný objekt
+					H=H->dalsi;//posun na další
+					delete Ht;Ht=NULL;//odstranění již nebotřebného objektu
+				}
+				delete H;H=NULL;//závěrečné odstranění
+			}
+			////samotný typ dopravniku
+			Ttyp_dopravniku *Kt=K;//ukazatel na následně mazaný objekt
+			K=K->dalsi; //posun na další
+			delete Kt;Kt=NULL;//odstranění již nebotřebného objektu
 		}
-		//hOblouk
-		while(KATALOG->predchozi->hOblouk!=NULL)
-		{
-			//posunutí ukazatele a smazání typu dopravníku
-			KATALOG->predchozi->hOblouk->predchozi=NULL;
-			delete KATALOG->predchozi->hOblouk->predchozi;
-			KATALOG->predchozi->hOblouk=KATALOG->predchozi->hOblouk->dalsi;
-		}
-		//hRadius
-		while(KATALOG->predchozi->hRadius!=NULL)
-		{
-			//posunutí ukazatele a smazání typu dopravníku
-			KATALOG->predchozi->hRadius->predchozi=NULL;
-			delete KATALOG->predchozi->hRadius->predchozi;
-			KATALOG->predchozi->hRadius=KATALOG->predchozi->hRadius->dalsi;
-		}
-		//vOblouk
-		while(KATALOG->predchozi->vOblouk!=NULL)
-		{
-			//posunutí ukazatele a smazání typu dopravníku
-			KATALOG->predchozi->vOblouk->predchozi=NULL;
-			delete KATALOG->predchozi->vOblouk->predchozi;
-			KATALOG->predchozi->vOblouk=KATALOG->predchozi->vOblouk->dalsi;
-		}
-		//vRadius
-		while(KATALOG->predchozi->vRadius!=NULL)
-		{
-			//posunutí ukazatele a smazání typu dopravníku
-			KATALOG->predchozi->vRadius->predchozi=NULL;
-			delete KATALOG->predchozi->vRadius->predchozi;
-			KATALOG->predchozi->vRadius=KATALOG->predchozi->vRadius->dalsi;
-		}
-		//posunutí ukazatele a smazání typu dopravníku
-		KATALOG->predchozi->name=KATALOG->predchozi->link="";//smazání textových řetězců
-		KATALOG->predchozi=NULL;
-		delete KATALOG->predchozi;
-		KATALOG=KATALOG->dalsi;
+		delete K;K=NULL;//závěrečné odstranění
 	}
 }
 //---------------------------------------------------------------------------
