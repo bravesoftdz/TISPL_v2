@@ -49,9 +49,10 @@ class Cvektory
 	struct TGeometrie//pouze struktura
 	{
 		short typ;//0-linie, 1 oblouk - možná nebude třeba
-		double delka;//akcelerátor
-		//double orientace;// možný akcelerátor - možná nebude třeba
-		//double radius; -otázka zda bude potřeba, pokrývá délka a rotace a body
+		double delka;
+    double radius;
+		double orientace;
+    double rotacni_uhel;
 		double X1,Y1,X2,Y2,X3,Y3,X4,Y4;//body bézieru
 	};
 
@@ -98,7 +99,7 @@ class Cvektory
 		TGeometrie geo;
 		TmGrid *mGrid;
 
-		UnicodeString poznamka;//uloží poznámku
+		//UnicodeString poznamka;//uloží poznámku   //DOPRYC
 
 		struct TElement *sparovany;//ukazatel na následující spárovaný element ve spojovém seznamu (nemusí být totožný s dalším)
 		struct TElement *predchozi;//ukazatel na předchozí element ve spojovém seznamu
@@ -109,42 +110,42 @@ class Cvektory
 	{
 		unsigned long n; //pořadí objektu ve spoj.seznamu
 		unsigned int id; //id typu objektu
-		UnicodeString short_name;//krátký název max. 4 znaky
+	 	UnicodeString short_name;//krátký název max. 4 znaky         //DOPRYC
 		UnicodeString name;//celý název objektu
 		double X,Y;//umístění objektu ve schématu - prozatím, bude ale sloužit na umístění popisku objektu!!!
 		TBod *body;//definice obrysu haly - NEW + dodat do CObjekt!!!!
-		double Xk,Yk;//bude ke smazání - umístění levého horního rohu kabiny v layoutu a náhledu kabiny - NEW + dodat do CObjekt!!!!
-		//double Xt,Yt;- souřadnice popisku objektu pro možnost posouvání dodat!!!
+		double Xk,Yk;//bude ke smazání - umístění levého horního rohu kabiny v layoutu a náhledu kabiny  //DOPRYC
+		//double Xt,Yt;- souřadnice popisku objektu pro možnost posouvání dodat!!!   //PRIDAT
 		double sirka_steny;//šířka stěny kabiny objektu v metrech  - NEW + dodat do CObjekt!!!!
-		short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking)KK,2-Postprocesní (PP), -1 nenastaven
-		double CT;//pro status návrh
-		double RD;//pro status návrh v m/s, jenom pomocná proměnná získaná jako DD/CT, stežejní je většinou aRD (aktuální rychlost), která se váže přímo (i datově) k pohonu
-		double delka_dopravniku;//delka dopravníku v rámci objektu
-		double kapacita;//uživatelsky zadaná kapacita
-		double kapacita_dop;//doporučená, vypočítáná
-		double pozice;//počet vozíků v kabině
-		double rotace;//rotace jigu v objektu - nově spíše rotace náhledu  - ZRUŠIT
+		short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking)KK,2-Postprocesní (PP), -1 nenastaven, pouzíva tab.pohonu
+		double CT;//pro status návrh   //DOPRYC
+		double RD;//pro status návrh v m/s, jenom pomocná proměnná získaná jako DD/CT, stežejní je většinou aRD (aktuální rychlost), která se váže přímo (i datově) k pohonu  //DOPRYC
+		double delka_dopravniku;//delka dopravníku v rámci objektu   //DOPRYC
+		double kapacita;//uživatelsky zadaná kapacita  //DOPRYC
+		double kapacita_dop;//doporučená, vypočítáná  //DOPRYC
+		double pozice;//počet vozíků v kabině  //DOPRYC
+		double rotace;//rotace jigu v objektu - nově spíše rotace náhledu  - //DOPRYC
 		double orientace;//0,90,180,270 (orientace dle světových stran) - používat toto
-		double mezera;//mezera mezi vozíky (kritická mezera)
-		double mezera_jig;//mezera mezi jigy
-		double mezera_podvozek;//mezera mezi podvozky
+		double mezera;//mezera mezi vozíky (kritická mezera) //DOPRYC
+		double mezera_jig;//mezera mezi jigy //DOPRYC
+		double mezera_podvozek;//mezera mezi podvozky  //DOPRYC
 		TPohon *pohon;//ukazatel na použitý pohon
 		TElement *elementy;
 		TPointD min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
-		TPointD rozmer_kabiny;//délka a šířka obvodových zdí kabiny   - NEW + dodat do CObjekt
-		T2Rect kabinaKotaX_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny - nedovávat  do CObjekt
-		T2Rect kabinaKotaY_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny - nedovávat  do CObjekt
+		TPointD rozmer_kabiny;//délka a šířka obvodových zdí kabiny   //DOPRYC
+		T2Rect kabinaKotaX_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny -//DOPRYC
+		T2Rect kabinaKotaY_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny -//DOPRYC
 		double koty_elementu_offset;//odsazení kót elementů v metrech  - NEW + dodat do CObjekt!!!!
 		TKomora *komora;//ukazatel na případné komory objektu - NEW + dodat do CObjekt
-		unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky
-		unsigned short stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
-		double odchylka;//povolená odchylka u PP z CT
-		double obsazenost;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
-		short CT_zamek;
-		short RD_zamek;
-		short DD_zamek;
-		short K_zamek;
-		UnicodeString poznamka;//uloží poznámku ke vzniku CT
+		unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky   //DOPRYC
+		unsigned short stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky   //DOPRYC
+		double odchylka;//povolená odchylka u PP z CT  //DOPRYC
+		double obsazenost;//slouží pro uchování času obsazenosti pro vykreslování na časových osách //DOPRYC
+		short CT_zamek; //DOPRYC
+		short RD_zamek;  //DOPRYC
+		short DD_zamek;   //DOPRYC
+		short K_zamek;   //DOPRYC
+		UnicodeString poznamka;//uloží poznámku ke vzniku CT   //DOPRYC
 		bool probehla_aktualizace_prirazeni_pohonu;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
 		bool zobrazit_koty;//proměnná určující, zda se budou zobrzovat kóty
 		bool zobrazit_mGrid;//proměnná určující, zda budou zobrazeny mGridy
@@ -235,6 +236,8 @@ class Cvektory
 	struct T_parametry_projektu //(Parametry výroby + Parametry linky (vozíky)
 	{
     int katalog;//ID katalogových komponent zvolených pro geometrické elementy linky
+    short typ_linky; //0 - podlahový, 1 - podvěsný
+    double radius;
 		TDateTime cas_start;//začátek výroby v SEČ (resp. LSEČ)
 		unsigned long  mnozstvi;//požadované množství
 		double hod_den;//počet hodin za den
@@ -245,7 +248,6 @@ class Cvektory
 		double sirka_jig;
 		double vyska_jig;
 		double delka_podvozek;
-		short typ_voziku;//0 - podlahový, 1 - podvěsný
 		T_raster raster;
 		T_vector vector;
 	};
@@ -377,7 +379,7 @@ class Cvektory
 		double sirka_jig;
 		double vyska_jig;
 		double delka_podvozek;
-		double typ_vozik;
+		double typ_linky;
 	};
 	TFile_hlavicka File_hlavicka;
 

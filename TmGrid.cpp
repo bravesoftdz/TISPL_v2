@@ -841,6 +841,10 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 		{
 			SetCombo(R,X,Y,Cell);
 		}break;
+    case COMBOEDIT:
+		{
+			SetComboEdit(R,X,Y,Cell);
+		}break;
 		case CHECK:
 		{
 			SetCheck(R,X,Y,Cell);
@@ -1174,6 +1178,48 @@ void TmGrid::SetCombo(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	C=NULL;delete C;
 }
 //---------------------------------------------------------------------------
+//nastaví danou buňku na ComboBox, pomocná metoda objednu výše uvedené
+void TmGrid::SetComboEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
+{
+	//založení + tag + název
+	TscGPComboEdit *C=createComboEdit(X,Y);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
+
+	//pozice
+	C->Top=R.Top+ceil(Cell.TopBorder->Width/2.0);
+	C->Left=R.Left+ceil(Cell.LeftBorder->Width/2.0);
+
+	//velikost
+	short o=0;
+	if(Y==ColCount-2 && (!Columns[ColCount-1].Visible || Columns[ColCount-1].Width==0))o=1;else o=0;//pokud je poslední sloupe skryt, převezme jeho pravé orámování předposlední, u jiné situace netřeba
+	if(Cell.MergeState==false)C->Width=Columns[X].Width-floor(Cells[X+o][Y].RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);   //pokud neplatí nastavuje se přímo v mergovaní, ubere pouze velikost komponenty podle šířky orámování
+	if(Y==RowCount-2 && (!Rows[RowCount-1].Visible || Rows[RowCount-1].Height==0))o=1;else o=0;//pokud je poslední řádek skryt, převezme jeho spodní orámování předposlední, u jiné situace netřeba
+	/*if(Cell.MergeState==false)*/C->Height=Rows[Y].Height-floor(Cells[X+o][Y].BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodělat ubere velikost komponenty podle šířky orámování
+
+	//zobrazení komponenty
+	if(!VisibleComponents)C->Visible=false;else C->Visible=true;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
+
+	//volitelné atributy
+	if(!Cell.Highlight)C->Options->FrameNormalColor=Cell.Background->Color;//rámeček musí být stejnou barvou jakou buňka, protože mřížka je o 1px na všechny strany roztažená
+	else C->Options->FrameNormalColor=clHighlight;
+
+	C->Options->NormalColor=Cell.Background->Color;
+	C->Options->FrameFocusedColor=clHighlight;
+	C->Options->FocusedColor=Cell.Background->Color;
+	C->Options->HotColor=Cell.Background->Color;
+
+	//font
+	C->Font=Cell.Font;
+	if(C->Font->Name=="Roboto Cn")C->Font->Quality=System::Uitypes::TFontQuality::fqAntialiased;else C->Font->Quality=System::Uitypes::TFontQuality::fqDefault;//zapíná AA, pozor může dělat problémy při zvětšování písma, alternativa fqProof či fqClearType
+	C->Options->FontNormalColor=Cell.Font->Color;
+	//C->ItemIndex=1;//nelze předoznační první položku
+
+	if(Cell.ShowHint){C->ShowHint=true;C->Hint=Cell.Hint;}
+
+	//vlastník
+	C->Parent=Form;//musí být až na konci
+	C=NULL;delete C;
+}
+//---------------------------------------------------------------------------
 //nastaví danou buňku na Checkbox, pomocná metoda objednu výše uvedené
 void TmGrid::SetCheck(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 {
@@ -1362,6 +1408,31 @@ TscGPComboBox *TmGrid::createCombo(unsigned long Col,unsigned long Row)
 		C=new TscGPComboBox(Form);//založí
 		C->Tag=getTag(Col,Row);//vratí ID tag komponenty,absolutní pořadí v paměti
 		C->Name="mGrid_COMBO_"+AnsiString(ID)+"_"+AnsiString(C->Tag);
+
+		//události
+		C->OnClick=&getTagOnClick;
+		C->OnEnter=&getTagOnEnter;
+		C->OnChange=&getTagOnChange;
+		C->OnMouseEnter=&getTagOnMouseEnter;
+
+		//výchozí nastavení
+		C->Options->NormalColorAlpha=255;
+		C->Options->FocusedColorAlpha=255;
+		C->Options->FrameFocusedColorAlpha=255;
+		C->Options->HotColorAlpha=255;
+	}
+	return C;
+}
+//---------------------------------------------------------------------------
+//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
+TscGPComboEdit *TmGrid::createComboEdit(unsigned long Col,unsigned long Row)
+{
+	TscGPComboEdit *C=getComboEdit(Col,Row);//pokud již existuje
+	if(C==NULL)//pokud ne, tak založí, pouze poprvé, když neexistuje
+	{
+		C=new TscGPComboEdit(Form);//založí
+		C->Tag=getTag(Col,Row);//vratí ID tag komponenty,absolutní pořadí v paměti
+		C->Name="mGrid_COMBOEDIT_"+AnsiString(ID)+"_"+AnsiString(C->Tag);
 
 		//události
 		C->OnClick=&getTagOnClick;
@@ -1576,6 +1647,7 @@ TscGPEdit *TmGrid::getEdit(unsigned long Col,unsigned long Row){return (TscGPEdi
 TscGPButton *TmGrid::getButton(unsigned long Col,unsigned long Row){return (TscGPButton *)Form->FindComponent("mGrid_BUTTON_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));}//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
 TscGPGlyphButton *TmGrid::getGlyphButton(unsigned long Col,unsigned long Row){return (TscGPGlyphButton *)Form->FindComponent("mGrid_GlyphBUTTON_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));}//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
 TscGPComboBox *TmGrid::getCombo(unsigned long Col,unsigned long Row){return (TscGPComboBox *)Form->FindComponent("mGrid_COMBO_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));}//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
+TscGPComboEdit *TmGrid::getComboEdit(unsigned long Col,unsigned long Row){return (TscGPComboEdit *)Form->FindComponent("mGrid_COMBOEDIT_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));}//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
 TscGPCheckBox *TmGrid::getCheck(unsigned long Col,unsigned long Row){return (TscGPCheckBox *)Form->FindComponent("mGrid_CHECK_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));}//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
 TscGPRadioButton *TmGrid::getRadio(unsigned long Col,unsigned long Row){return (TscGPRadioButton *)Form->FindComponent("mGrid_RADIO_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));}//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
 TscGPNumericEdit *TmGrid::getNumeric(unsigned long Col,unsigned long Row){return (TscGPNumericEdit *)Form->FindComponent("mGrid_NUMERIC_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));};//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
@@ -1789,6 +1861,14 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 							C->Width-=ceil(Cells[ColCell_1][RowCell_1].LeftBorder->Width/2.0);if(ColCell_2==ColCount-1)C->Width-=floor(Border.Width/2.0);else C->Width-=floor(Cells[ColCell_2][RowCell_2].RightBorder->Width/2.0);//ještě orámování
 							C=NULL;delete C;
 						}break;
+            case COMBOEDIT:
+						{
+							Cells[ColCell_1][RowCell_1].Align=CENTER;
+							TscGPComboEdit *C=createComboEdit(ColCell_1,RowCell_1);
+							C->Width=Columns[ColCell_2].Left+Columns[ColCell_2].Width-Columns[ColCell_1].Left;
+							C->Width-=ceil(Cells[ColCell_1][RowCell_1].LeftBorder->Width/2.0);if(ColCell_2==ColCount-1)C->Width-=floor(Border.Width/2.0);else C->Width-=floor(Cells[ColCell_2][RowCell_2].RightBorder->Width/2.0);//ještě orámování
+							C=NULL;delete C;
+						}break;
 						case EDIT:
 						{
 							Cells[ColCell_1][RowCell_1].Align=CENTER;
@@ -1854,6 +1934,13 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 						{
 							Cells[ColCell_1][RowCell_1].Valign=MIDDLE;
 							TscGPComboBox *C=createCombo(ColCell_1,RowCell_1);
+							C->Height=Rows[ColCell_2].Top+Rows[ColCell_2].Height-Rows[ColCell_1].Top-Cells[ColCell_2][RowCell_2].BottomBorder->Width;
+							C=NULL;delete C;
+						}break;
+            case COMBOEDIT:
+						{
+							Cells[ColCell_1][RowCell_1].Valign=MIDDLE;
+							TscGPComboEdit *C=createComboEdit(ColCell_1,RowCell_1);
 							C->Height=Rows[ColCell_2].Top+Rows[ColCell_2].Height-Rows[ColCell_1].Top-Cells[ColCell_2][RowCell_2].BottomBorder->Width;
 							C=NULL;delete C;
 						}break;
@@ -2263,6 +2350,7 @@ void TmGrid::createComponent(Ttype Type, unsigned long Col,unsigned long Row)
 		case BUTTON:		 	createButton(Col,Row);break;
 		case glyphBUTTON:	createGlyphButton(Col,Row);break;
 		case COMBO:				createCombo(Col,Row); break;
+    case COMBOEDIT:		createComboEdit(Col,Row); break;
 		case CHECK:				createCheck(Col,Row);break;
 		case RADIO:				createRadio(Col,Row);break;
 		case DRAW:break;
@@ -2292,6 +2380,7 @@ void TmGrid::DeleteComponents(unsigned long sCol,unsigned long sRow,unsigned lon
 				case readNUMERIC: {TscGPNumericEdit *N=getNumeric(X,Y);N->Free();N=NULL;delete N;}break;
 				case BUTTON: {TscGPButton *B=getButton(X,Y);B->Free();B=NULL;delete B;}break;
 				case COMBO: {TscGPComboBox *C=getCombo(X,Y);C->Free();C=NULL;delete C;}break;
+        case COMBOEDIT: {TscGPComboEdit *C=getComboEdit(X,Y);C->Free();C=NULL;delete C;}break;
 				case CHECK:{TscGPCheckBox *CH=getCheck(X,Y);CH->Free();CH=NULL;delete CH;break;} ///*CH->DisposeOf();*/ ani toto ani free při kliku nefungují správně, chyba byla, že daná komponenta měla focus, focus je potřeba při odstraňování komponent odevzdat nějaké komponentě, která zůstává ve formu
 				case RADIO:{TscGPRadioButton *R=getRadio(X,Y);R->Free();R=NULL;delete R;}break;
 				case glyphBUTTON:{TscGPGlyphButton *gB=getGlyphButton(X,Y);gB->Free();gB=NULL;delete gB;}break;
@@ -2353,6 +2442,14 @@ void TmGrid::MoveComponentUP(unsigned long Col,unsigned long Row)
 			TscGPComboBox *C=getCombo(Col,Row+1);
 			C->Tag=getTag(Col,Row);//přeindexování na řádek níže
 			C->Name="mGrid_COMBO_"+AnsiString(ID)+"_"+AnsiString(C->Tag);//přeindexování na řádek níže
+			C=NULL;delete C;
+		}
+		break;
+    case COMBOEDIT:
+		{
+			TscGPComboEdit *C=getComboEdit(Col,Row+1);
+			C->Tag=getTag(Col,Row);//přeindexování na řádek níže
+			C->Name="mGrid_COMBOEDIT_"+AnsiString(ID)+"_"+AnsiString(C->Tag);//přeindexování na řádek níže
 			C=NULL;delete C;
 		}
 		break;
@@ -2544,6 +2641,7 @@ void TmGrid::SetVisibleComponent(unsigned long Col,unsigned long Row,bool state)
 		case readNUMERIC:	{TscGPNumericEdit *N=getNumeric(Col,Row);if(N!=NULL)N->Visible=state;N=NULL;delete N;}break;
 		case BUTTON: 			{TscGPButton *B=getButton(Col,Row);if(B!=NULL)B->Visible=state;B=NULL;delete B;}break;
 		case COMBO:	 			{TscGPComboBox *C=getCombo(Col,Row);if(C!=NULL)C->Visible=state;C=NULL;delete C;}break;
+    case COMBOEDIT:	 	{TscGPComboEdit *C=getComboEdit(Col,Row);if(C!=NULL)C->Visible=state;C=NULL;delete C;}break;
 		case CHECK:				{TscGPCheckBox *CH=getCheck(Col,Row);if(CH!=NULL)CH->Visible=state;CH=NULL;delete CH;}break;
 		case RADIO:				{TscGPRadioButton *R=getRadio(Col,Row);if(R!=NULL)R->Visible=state;R=NULL;delete R;}break;
 		case glyphBUTTON:	{TscGPGlyphButton *gB=getGlyphButton(Col,Row);if(gB!=NULL)gB->Visible=state;gB=NULL;delete gB;}break;
@@ -2574,6 +2672,7 @@ void TmGrid::SetEnabledComponent(unsigned long Col,unsigned long Row,bool state)
 		case readNUMERIC:	{TscGPNumericEdit *N=getNumeric(Col,Row);if(N!=NULL)N->Enabled=false;N=NULL;delete N;}break;
 		case BUTTON: 			{TscGPButton *B=getButton(Col,Row);if(B!=NULL)B->Enabled=state;B=NULL;delete B;}break;
 		case COMBO:	 			{TscGPComboBox *C=getCombo(Col,Row);if(C!=NULL)C->Enabled=state;C=NULL;delete C;}break;
+    case COMBOEDIT:	 	{TscGPComboEdit *C=getComboEdit(Col,Row);if(C!=NULL)C->Enabled=state;C=NULL;delete C;}break;
 		case CHECK:				{TscGPCheckBox *CH=getCheck(Col,Row);if(CH!=NULL)CH->Enabled=state;CH=NULL;delete CH;}break;
 		case RADIO:				{TscGPRadioButton *R=getRadio(Col,Row);if(R!=NULL)R->Enabled=state;R=NULL;delete R;}break;
 		case glyphBUTTON:	{TscGPGlyphButton *gB=getGlyphButton(Col,Row);if(gB!=NULL)gB->Enabled=state;gB=NULL;delete gB;}break;

@@ -10,7 +10,7 @@
 class TmGrid
 {
  public:
-	 enum Ttype{readEDIT,EDIT,NUMERIC,readNUMERIC,BUTTON,glyphBUTTON,COMBO,CHECK,RADIO,/*IMAGE,*/DRAW,LABEL};
+	 enum Ttype{readEDIT,EDIT,NUMERIC,readNUMERIC,BUTTON,glyphBUTTON,COMBO,COMBOEDIT,CHECK,RADIO,/*IMAGE,*/DRAW,LABEL};
 	 enum Talign{aNO,LEFT,CENTER,RIGHT};
 	 enum Tvalign{vNO,TOP,MIDDLE,BOTTOM};
 
@@ -124,6 +124,7 @@ class TmGrid
 	TscGPButton *getButton(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
 	TscGPGlyphButton *getGlyphButton(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
 	TscGPComboBox *getCombo(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
+  TscGPComboEdit *getComboEdit(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
 	TscGPCheckBox *getCheck(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
 	TscGPRadioButton *getRadio(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
 	TscHTMLLabel *getLabel(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
@@ -133,6 +134,7 @@ class TmGrid
 	TscGPButton *createButton(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
 	TscGPGlyphButton *createGlyphButton(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
 	TscGPComboBox *createCombo(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
+  TscGPComboEdit *createComboEdit(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
 	TscGPCheckBox *createCheck(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
 	TscGPRadioButton *createRadio(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
 	TscHTMLLabel *createLabel(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
@@ -212,6 +214,7 @@ class TmGrid
 	void SetButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buňku na button, pomocná metoda objednu výše uvedené
 	void SetGlyphButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buňku na glyphButton, pomocná metoda objednu výše uvedené
 	void SetCombo(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buňku na combo, pomocná metoda objednu výše uvedené
+  void SetComboEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buňku na combo, pomocná metoda objednu výše uvedené
 	void SetCheck(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buňku na check, pomocná metoda objednu výše uvedené
 	void SetRadio(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buňku na radio, pomocná metoda objednu výše uvedené
 	void CreateLinkBorder(unsigned long X,unsigned long Y,TCells &refCell);//patřičně prolinkuje orámování, že sousední orámování má ukazatel na totožný objekt, vzor orámvání získá dle refCell

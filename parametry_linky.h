@@ -107,7 +107,6 @@ __published:	// IDE-managed Components
   TscHTMLLabel *scHTMLLabel_jig_info;
   TscStyledForm *scStyledForm1;
   TscGPGlyphButton *scGPGlyphButton_katalog;
-  TrHTMLLabel *rHTMLLabel_katalog_nazev;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
