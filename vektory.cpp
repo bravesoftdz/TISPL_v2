@@ -5021,6 +5021,7 @@ void Cvektory::vytvor_hlavicku_souboru()
 		File_hlavicka.sirka_jig=PP.sirka_jig;
 		File_hlavicka.vyska_jig=PP.vyska_jig;
 		File_hlavicka.delka_podvozek=PP.delka_podvozek;
+  //  File_hlavicka.katalog=PP.katalog;   File_hlavicka.radius=PP.radius;
 		//objektové záležitosti
 		File_hlavicka.pocet_pohonu=POHONY->predchozi->n;
 		File_hlavicka.pocet_objektu=OBJEKTY->predchozi->n;

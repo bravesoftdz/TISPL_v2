@@ -379,7 +379,7 @@ class Cvektory
 		double sirka_jig;
 		double vyska_jig;
 		double delka_podvozek;
-		double typ_linky;
+		short typ_linky;
 	};
 	TFile_hlavicka File_hlavicka;
 
@@ -683,8 +683,6 @@ private:
 		{
 				unsigned int n;
 				unsigned int id;
-				//UnicodeString short_name; nelze
-				//UnicodeString name; nelze
 				unsigned int text_length;
 				double X, Y;
         unsigned long pocet_bodu;
@@ -696,12 +694,9 @@ private:
 				unsigned int pohon;//"id" resp. n přidruženého - roletkou vybraného pohonu
 				double delka_dopravniku;//delka dopravníku v rámci objektu
         double koty_elementu_offset;
-				//UnicodeString poznamka; nelze
-				unsigned long poznamka_length;
         bool zobrazit_koty;//proměnná určující, zda se budou zobrzovat kóty - NEW pridat do binarky
         bool zobrazit_mGrid;//proměnná určující, zda budou zobrazeny mGridy - NEW pridat do binarky
         bool uzamknout_nahled;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu - NEW pridat do binarky
-
 		};
 
      struct C_bod//pouze pridruzeny spojak
