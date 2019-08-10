@@ -114,9 +114,10 @@ class Cvektory
 		UnicodeString name;//celý název objektu
 		double X,Y;//umístění objektu ve schématu - prozatím, bude ale sloužit na umístění popisku objektu!!!
 		TBod *body;//definice obrysu haly - NEW + dodat do CObjekt!!!!
+    double sirka_steny;//šířka stěny kabiny objektu v metrech  - NEW + dodat do CObjekt!!!!
 		double Xk,Yk;//bude ke smazání - umístění levého horního rohu kabiny v layoutu a náhledu kabiny  //DOPRYC
-		//double Xt,Yt;- souřadnice popisku objektu pro možnost posouvání dodat!!!   //PRIDAT
-		double sirka_steny;//šířka stěny kabiny objektu v metrech  - NEW + dodat do CObjekt!!!!
+		double Xt,Yt;// souřadnice popisku objektu pro možnost posouvání dodat!!!   //PRIDAT
+    double Xp,Yp;// souřadnice tab pohonu pro možnost posouvání dodat!!!   //PRIDAT
 		short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking)KK,2-Postprocesní (PP), -1 nenastaven, pouzíva tab.pohonu
 		double CT;//pro status návrh   //DOPRYC
 		double RD;//pro status návrh v m/s, jenom pomocná proměnná získaná jako DD/CT, stežejní je většinou aRD (aktuální rychlost), která se váže přímo (i datově) k pohonu  //DOPRYC
@@ -291,16 +292,6 @@ class Cvektory
 	};
 	struct TOdstavka ODSTAVKY;//seznam plánovaných odstávek linky
 
-	struct TRetez
-	{
-		unsigned int n; //pořadí objektu ve spoj.seznamu
-		AnsiString name;//název řetězu
-		double roztec;//rozteč palců na řetězů v metrech
-		struct TRetez *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-		struct TRetez *dalsi;//ukazatel na  další objekt ve spojovém seznamu
-	};
-	struct TRetez *RETEZY;
-
 	struct TDoubleHodnota
 	{
 		unsigned int n; //pořadí objektu ve spoj.seznamu
@@ -379,7 +370,10 @@ class Cvektory
 		double sirka_jig;
 		double vyska_jig;
 		double delka_podvozek;
-		double typ_linky;
+    int katalog;
+		short typ_linky;
+    double radius;
+    short objekt_posunout_vse;
 	};
 	TFile_hlavicka File_hlavicka;
 
@@ -671,8 +665,6 @@ private:
 	{
 			unsigned int n;
 			unsigned int id;
-			//UnicodeString short_name; nelze
-			//UnicodeString name; nelze
 			unsigned int text_length;
 			double X, Y;
       unsigned long pocet_bodu;
@@ -684,8 +676,6 @@ private:
 			unsigned int pohon;//"id" resp. n přidruženého - roletkou vybraného pohonu
 			double delka_dopravniku;//delka dopravníku v rámci objektu
       double koty_elementu_offset;
-			//UnicodeString poznamka; nelze
-			unsigned long poznamka_length;
 			bool zobrazit_koty;//proměnná určující, zda se budou zobrzovat kóty - NEW pridat do binarky
 			bool zobrazit_mGrid;//proměnná určující, zda budou zobrazeny mGridy - NEW pridat do binarky
 			bool uzamknout_nahled;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu - NEW pridat do binarky

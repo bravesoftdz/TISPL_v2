@@ -4994,6 +4994,12 @@ void Cvektory::vytvor_hlavicku_souboru()
 		File_hlavicka.pocet_objektu=OBJEKTY->predchozi->n;
 		File_hlavicka.pocet_zakazek=ZAKAZKY->predchozi->n;
 		File_hlavicka.pocet_voziku=VOZIKY->predchozi->n;
+    //katalogové záležitosti
+    File_hlavicka.katalog=PP.katalog;
+		File_hlavicka.typ_linky=PP.typ_linky;
+    File_hlavicka.radius=PP.radius;
+    //stav ikony  TODO ROSTA dodelat
+    //File_hlavicka.objekt_posunout_vse
 }
 //---------------------------------------------------------------------------
 //Uloží vektorová data do souboru
