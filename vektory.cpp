@@ -437,8 +437,8 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->id=0;
 	novy->X=0;
 	novy->Y=0;
-	novy->Xk=0;
-	novy->Yk=0;
+	//novy->Xk=0;
+	//novy->Yk=0;
 	novy->body=NULL;
 	novy->sirka_steny=0;
 	novy->short_name="";//krátký název
@@ -456,8 +456,8 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->elementy=NULL;//ukazatel na přidružené elementy
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
-	novy->rozmer_kabiny.x=0;
-	novy->rozmer_kabiny.y=0;
+	//novy->rozmer_kabiny.x=0;
+	//novy->rozmer_kabiny.y=0;
 	novy->koty_elementu_offset=0;//odsazení kót elementů v metrech
 	novy->komora=NULL;//ukazatel na komory
 	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
@@ -570,8 +570,8 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 	novy->rezim=0;if(id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
 	novy->X=X;//přiřadím X osu,pozice objektu
 	novy->Y=Y;//přiřadím Y osu,pozice objektu
-	novy->Xk=X;//výchozí pozice kabiny
-	novy->Yk=Y;//výchozí pozice kabiny
+	//novy->Xk=X;//výchozí pozice kabiny
+	//novy->Yk=Y;//výchozí pozice kabiny
 	novy->body=NULL;//spojový seznam definičních bodů obrysu objektu
 	novy->sirka_steny=0.12;//šířka stěny kabiny objektu v metrech
 	novy->CT=PP.TT;//pro status návrh
@@ -588,13 +588,10 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 	novy->elementy=NULL;//ukazatel na přidružené elementy
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
-	////stará konstrukce
-	novy->rozmer_kabiny.x=10;//výchozí rozměr kabiny
-	novy->rozmer_kabiny.y=6;//výchozí rozměr kabiny
 	////
 	if(id==3)novy->koty_elementu_offset=1;else novy->koty_elementu_offset=4;//odsazení kót elementů v metrech,v kabině POW se kóty vykroslují od hrany kabiny, ne od pohonu
 	novy->komora=NULL;//ukazatel na komory
-	if(id==3)for(short i=1;i<=4;i++)vloz_komoru(novy,novy->rozmer_kabiny.x/4.0,NULL,i%2);//pokud se jedná o POWash,nastaví defaultně 4 stejné komory
+	if(id==3)for(short i=1;i<=4;i++)vloz_komoru(novy,2.5,NULL,i%2);//pokud se jedná o POWash,nastaví defaultně 4 stejné komory
 	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
 	novy->stopka=2;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
@@ -644,10 +641,10 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 	//definice pozice názvu kabiny
 	switch((int)novy->orientace)
 	{
-		case 0:novy->Xk=X-rozmery_kabiny.y/2.0;novy->Yk=Y+rozmery_kabiny.x/2.0;break;
-		case 90:novy->Xk=X+rozmery_kabiny.x/2.0;novy->Yk=Y+rozmery_kabiny.y/2.0;break;
-		case 180:novy->Xk=X+rozmery_kabiny.y/2.0;novy->Yk=Y-rozmery_kabiny.x/2.0;break;
-		case 270:novy->Xk=X-rozmery_kabiny.x/2.0;novy->Yk=Y+rozmery_kabiny.y/2.0;break;
+		case 0:novy->Xt=X-rozmery_kabiny.y/2.0;novy->Yt=Y+rozmery_kabiny.x/2.0;break;
+		case 90:novy->Xt=X+rozmery_kabiny.x/2.0;novy->Yt=Y+rozmery_kabiny.y/2.0;break;
+		case 180:novy->Xt=X+rozmery_kabiny.y/2.0;novy->Yt=Y-rozmery_kabiny.x/2.0;break;
+		case 270:novy->Xt=X-rozmery_kabiny.x/2.0;novy->Yt=Y+rozmery_kabiny.y/2.0;break;
 	}
 	return novy;
 }
@@ -688,8 +685,8 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		OBJEKTY->predchozi->name=novy->name;
 		OBJEKTY->predchozi->X=novy->X;
 		OBJEKTY->predchozi->Y=novy->Y;
-		OBJEKTY->predchozi->Xk=novy->Xk;
-		OBJEKTY->predchozi->Yk=novy->Yk;
+		//OBJEKTY->predchozi->Xk=novy->Xk;
+		//OBJEKTY->predchozi->Yk=novy->Yk;
 		kopiruj_body(OBJEKTY->predchozi,novy);
 		return OBJEKTY->predchozi;//vrátí poslední ukazatel na prvek seznamu
 	}
@@ -710,7 +707,7 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		novy->pohon=Objekt->pohon;
 		kopiruj_elementy(Objekt,novy);
 		novy->min_prujezdni_profil=Objekt->min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
-		novy->rozmer_kabiny=Objekt->rozmer_kabiny;//výchozí rozměr kabiny
+		//novy->rozmer_kabiny=Objekt->rozmer_kabiny;//výchozí rozměr kabiny
 		novy->koty_elementu_offset=Objekt->koty_elementu_offset;//odsazení kót elementů v metrech
 		novy->komora=NULL;
 		if(novy->id==3)kopiruj_komory(Objekt,novy);//pokud se jedná o POWash
@@ -749,8 +746,8 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->name=Original->name;
 	Kopie->X=Original->X;
 	Kopie->Y=Original->Y;
-	Kopie->Xk=Original->Xk;
-	Kopie->Yk=Original->Yk;
+	//Kopie->Xk=Original->Xk;
+	//Kopie->Yk=Original->Yk;
 	Kopie->sirka_steny=Original->sirka_steny;
 	Kopie->rezim=Original->rezim;
 	Kopie->CT=Original->CT;
@@ -766,7 +763,7 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->mezera_podvozek=Original->mezera_podvozek;
 	kopiruj_pohon(Original->pohon,Kopie);//POHON
 	Kopie->min_prujezdni_profil=Original->min_prujezdni_profil;
-	Kopie->rozmer_kabiny=Original->rozmer_kabiny;
+	//Kopie->rozmer_kabiny=Original->rozmer_kabiny;
 	Kopie->koty_elementu_offset=Original->koty_elementu_offset;
 	Kopie->komora=NULL;//POZORO TOTO NENÍ ZCELA SPRÁVNĚ, MĚLO BY SE NEJDŘÍVE SMAZAT PŘIDRUŽENÝ SPOJÁK, ABY NEZŮSTAL V PAMĚTI
 	Kopie->body=NULL;//POZORO TOTO NENÍ ZCELA SPRÁVNĚ, MĚLO BY SE NEJDŘÍVE SMAZAT PŘIDRUŽENÝ SPOJÁK, ABY NEZŮSTAL V PAMĚTI
@@ -1459,8 +1456,8 @@ void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt)
 	////posun kabiny-polygonu
 	posun_body(X,Y,Objekt);
 	////posun nadpisu
-	Objekt->Xk+=X;
-	Objekt->Yk+=Y;
+	Objekt->Xt+=X;
+	Objekt->Yt+=Y;
 	////posun elementů
 	TElement *E=Objekt->elementy->dalsi;//objekt má vždy element (zarážka)
 	while(E!=NULL)
@@ -1489,8 +1486,8 @@ void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt)
 			O=dalsi_krok(O,tab_pruchodu);
 		}
 		//posunovaný objekt se nachází v pásmu mezi 2 objekty
-		//if(O!=NULL && mrYes==F->MB("Chcete změnit pořadí objektů?",MB_YESNO))zmen_poradi_objektu(O,Objekt);			 
-		delete O;O=NULL;
+		if(O!=NULL /*&& mrYes==F->MB("Chcete změnit pořadí objektů?",MB_YESNO)*/)zmen_poradi_objektu(Objekt,O);
+		O=NULL;
 		delete tab_pruchodu;tab_pruchodu=NULL;
 	}  
 	////změna rotace
@@ -1501,31 +1498,9 @@ void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt)
 		double rotace=Objekt->orientace-azimut;
 		if(rotace!=0)
 		{
-			TPointD Bod; 
-			double max=(-1)*MaxInt;
+			TPointD Bod;
       ////rotace kabiny-polygonu
 			rotuj_body(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,rotace,Objekt);
-			////rotace nadpisu
-			Bod=m.rotace(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,Objekt->Xk,Objekt->Yk,rotace);
-			Objekt->Xk=Bod.x;Objekt->Yk=Bod.y;//dodělání posunu textu v případě rotace na orientaci 270
-//			if(azimut==270)//korekce referenčního bodu textu
-//			{
-//				Cvektory::TBod *B=Objekt->body->dalsi;
-//				while(B!=NULL)
-//				{
-//					if(B->Y>max)max=B->Y;
-//					B=B->dalsi;
-//				}
-//				delete B;B=NULL; 
-//				Objekt->Yk+=max-Objekt->Yk;   		
-//			}
-//			switch((int)azimut)
-//    	{
-//				case 0:Objekt->Xk=Objekt->elementy->dalsi->geo.X1;Objekt->Yk=Objekt->elementy->predchozi->geo.Y1-(Objekt->elementy->predchozi->geo.Y1-Objekt->elementy->dalsi->geo.Y4)/2.0;break;
-//				case 90:Objekt->Xk=X+rozmery_kabiny.x/2.0;Objekt->Yk=Y+rozmery_kabiny.y/2.0;break;
-//				case 180:Objekt->Xk=X+rozmery_kabiny.y/2.0;Objekt->Yk=Y-rozmery_kabiny.x/2.0;break;
-//				case 270:Objekt->Xk=X-rozmery_kabiny.x/2.0;Objekt->Yk=Y+rozmery_kabiny.y/2.0;break;
-//			}
 			////rotace elementů
 			TElement *E=Objekt->elementy->dalsi;//objekt má vždy element (zarážka)
     	while(E!=NULL)
@@ -1552,6 +1527,13 @@ void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt)
     		E=E->dalsi;
     	}
 			delete E;E=NULL;
+			//rotace nadpisu
+			switch((int)azimut)
+			{
+				case 0:Objekt->Xt=m.P2Lx(F->vrat_max_oblast(Objekt).left);Objekt->Yt=Objekt->elementy->predchozi->geo.Y4-(Objekt->elementy->predchozi->geo.Y4-Objekt->elementy->dalsi->geo.Y1)/2.0;break;
+				case 90:case 270:Objekt->Xt=Objekt->elementy->predchozi->geo.X4-(Objekt->elementy->predchozi->geo.X4-Objekt->elementy->dalsi->geo.X1)/2.0;Objekt->Yt=m.P2Ly(F->vrat_max_oblast(Objekt).top);break;
+				case 180:Objekt->Xt=m.P2Lx(F->vrat_max_oblast(Objekt).right);Objekt->Yt=Objekt->elementy->predchozi->geo.Y4-(Objekt->elementy->predchozi->geo.Y4-Objekt->elementy->dalsi->geo.Y1)/2.0;break;
+			}
 			Objekt->orientace=azimut;		
 		}
 	}
@@ -1629,7 +1611,7 @@ Cvektory::TKomora *Cvektory::najdi_komoru(TObjekt* Objekt)
 		}
 		else
 		{
-			if(Objekt->Yk+vzdalenost>=F->akt_souradnice_kurzoru.y && F->akt_souradnice_kurzoru.y<=Objekt->Yk+vzdalenost+K->velikost && Objekt->Xk<=F->akt_souradnice_kurzoru.x && F->akt_souradnice_kurzoru.x<Objekt->Yk+Objekt->rozmer_kabiny.x)
+			//if(Objekt->Yk+vzdalenost>=F->akt_souradnice_kurzoru.y && F->akt_souradnice_kurzoru.y<=Objekt->Yk+vzdalenost+K->velikost && Objekt->Xk<=F->akt_souradnice_kurzoru.x && F->akt_souradnice_kurzoru.x<Objekt->Yk+Objekt->rozmer_kabiny.x)
 			break;
 		}
 		vzdalenost+=K->velikost;//přičtení šířky další komory
@@ -2601,8 +2583,8 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			TPointD vzd;
 			if(Element->n==1)//pro první element, od počátku kabiny
 			{
-				if(Element->orientace==0||Element->orientace==180)vzd.x=Element->X-F->pom_temp->Xk;
-				else vzd.x=Element->Y-F->pom_temp->Yk;
+				if(Element->orientace==0||Element->orientace==180)vzd.x=Element->X-F->pom_temp->elementy->dalsi->geo.X1;
+				else vzd.x=Element->Y-F->pom_temp->elementy->dalsi->geo.Y1;
 			}
 			else//více elementů
 			{
@@ -2799,7 +2781,7 @@ double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element,bool pouze
 		if(Element->n==1)
 		{
 			if(Element->orientace==0||Element->orientace==180)return m.delka(F->pom_temp->elementy->dalsi->geo.X1,F->pom_temp->elementy->dalsi->geo.Y1,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
-			else return m.delka(F->pom_temp->elementy->X,F->pom_temp->Yk,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
+			else return m.delka(F->pom_temp->elementy->X,F->pom_temp->elementy->dalsi->geo.X1,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
 		}
 		else//pokud je v kabině více elementů
 		{
@@ -2814,7 +2796,7 @@ double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element,bool pouze
 			E=NULL; delete E;
 			//pokud byla nalezena alespoň jedna vzdálenost
 			if(celkem!=0)return celkem;
-			else return m.delka(F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
+			else return m.delka(F->pom_temp->elementy->dalsi->geo.X1,F->pom_temp->elementy->dalsi->geo.Y1,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
 		}
 	}
 	else//////Původní funkce
