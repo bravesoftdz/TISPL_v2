@@ -358,11 +358,16 @@ bool Cmy::PtInCircle(double point_X,double point_Y,double center_X,double center
 	return delka(point_X,point_Y,center_X,center_Y)<=radius;
 }
 /////////////////////////////////////////////////////////////////////////////
-//funkce ovìøí, zda se bod nachází v obdelníku
+//funkce ovìøí, zda se bod nachází v obdelníku, zadání je v logických souøadnicích
 bool Cmy::PtInRectangle(double X1,double Y1,double X2,double Y2,double Xmys,double Ymys)
 {
-	X1=abs_d(X1);Y1=abs_d(Y1);X2=abs_d(X2);Y2=abs_d(Y2);Xmys=abs_d(Xmys);Ymys=abs_d(Ymys);
-	return (X1<=Xmys&&Xmys<=X2&&Y1<=Ymys&&Ymys<=Y2);
+//podle mého chybný algoritmus:
+//	X1=abs_d(X1);Y1=abs_d(Y1);X2=abs_d(X2);Y2=abs_d(Y2);Xmys=abs_d(Xmys);Ymys=abs_d(Ymys);
+//	return (X1<=Xmys&&Xmys<=X2&&Y1<=Ymys&&Ymys<=Y2);
+//oprava:
+	if(X1>X2){double Xt=X1;X1=X2;X2=Xt;}//v pøípadì opaèného poøadí, zámìna poøadí
+	if(Y1>Y2){double Yt=Y1;Y1=Y2;Y2=Yt;}//v pøípadì opaèného poøadí, zámìna poøadí
+	return (X1<=Xmys && Xmys<=X2 && Y1<=Ymys && Ymys<=Y2);
 }
 /////////////////////////////////////////////////////////////////////////////
 //metoda ovìøí, zda se bod nachází ve stopce

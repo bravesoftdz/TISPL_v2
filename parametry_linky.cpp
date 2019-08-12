@@ -104,21 +104,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
     //F->scStyledForm1->ShowClientInActiveEffect();
    // scHTMLLabel1->Caption="Ahojky - <bgcolor =clWhite>[mm]</bgcolor>";
 
-    //C->Items[1].operator [](C->Items->Count)->Header=true;
-   // C->Items->operator [](C->Items->Count)->Header=true;
-  // scGPComboBox2->Images->Assign(F->scGPVirtualImageList1);
- //   scGPComboBox2->Images->AddImage(F->scGPVirtualImageList1,37);
-// scGPComboBox2->Images->AddImages(F->scGPVirtualImageList1);
-// scGPComboBox2->Images->AddImages
-// scGPComboBox2->Images = Form1.scGPVirtualImageList1;
-//scGPComboBox2->Images->AddImages(F->scgpvi)
- // scGPComboBox2->Images->AddImages(F->scGPVirtualImageList1->SourceImageList->AddImages(F->scGPVirtualImageList1));
-
-  //  scGPComboBox2->Images->AddImages(F->scGPVirtualImageList1->SourceImageList);
-   // scGPComboBox2->Items->operator [](1)->Header=false;
-   // scGPComboBox2->Items->operator [](1)->ImageIndex=37;
-    //scGPComboBox4.Items[scGPComboBox4.ItemIndex].
-    //scGPComboBox2->Items[1].
+    Cvektory::Ttyp_dopravniku *K=F->d.v.vrat_typ_dopravniku(F->d.v.PP.katalog);
+    scGPGlyphButton_katalog->Caption=K->name+", R="+F->d.v.PP.radius;
 
   	if(Form1->readINI("nastaveni_form_parametry", "RDt") == "1")
     {  //budu pøevádìt na m/min
@@ -171,6 +158,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
   mGrid->Top=scGPButton_pohon->Top+scGPButton_pohon->Height ;//vhodné jako druhé (popø. by bylo nutné pøekreslovat)
 	mGrid->AntiAliasing_text=true;
 	mGrid->Border.Width=1;
+  mGrid->DefaultRowHeight=28; //vìtší výška øádku, kvùli velikosti comba - aby se vešlo celé
 	//mGrid->DefaultCell.Font->Size=14;
 	//mGrid->DefaultCell.Font->Name="Roboto";
   mGrid->Create(9,2);//samotné vytvoøení matice-tabulky
@@ -363,7 +351,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 scGPButton_doporucene->Options->FrameNormalColor=Form_parametry_linky->Color;
 
 
-	 if(Form1->d.v.PP.typ_voziku==0) scGPSwitch->State=scswOff;
+	 if(Form1->d.v.PP.typ_linky==0) scGPSwitch->State=scswOff;
 	 else  { scGPSwitch->State=scswOn; }
 	 //scRadioGroup_typVoziku->ItemIndex=Form1->d.v.PP.typ_voziku;
 
@@ -431,8 +419,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 vozik_zmena_jednotek();
 	 //zapnutí tlaèítka add, v pøípadì chybné validace (tlaèítko skryto) a následnému stisku storno a znovu otevøení PL, zùstal button skryt
 	 scGPGlyphButton_ADD->Visible=true;
-   scGPGlyphButton_katalog->Top=scGPButton_vozik->Top;
-   scGPGlyphButton_katalog->Left=scGPButton_vozik->Left + scGPButton_vozik->Width;
+   scGPGlyphButton_katalog->Top=scGPButton_pohon->Top;
+   scGPGlyphButton_katalog->Left=scGPButton_pohon->Left + scGPButton_pohon->Width;
 }
 //---------------------------------------------------------------------------
 //
@@ -497,7 +485,7 @@ void TForm_parametry_linky::nacti_pohony ()
           mGrid->Cells[2][i].Type=mGrid->EDIT;
           mGrid->Cells[3][i].Type=mGrid->EDIT;
           mGrid->Cells[4][i].Type=mGrid->EDIT;
-          mGrid->Cells[5][i].Type=mGrid->EDIT;
+          mGrid->Cells[5][i].Type=mGrid->COMBOEDIT;
 					/*mGrid->Cells[6][i].Type=mGrid->CHECK;*/mGrid->Cells[6][i].RightBorder->Color=clWhite;
 					mGrid->Cells[7][i].Type=mGrid->BUTTON;
 					mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
@@ -877,7 +865,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			int typ;
 			if(scGPSwitch->State==scswOff){typ=0;}
 			else {typ=1;}
-			Form1->d.v.PP.typ_voziku=Form1->ms.MyToDouble(typ);
+			Form1->d.v.PP.typ_linky=Form1->ms.MyToDouble(typ);
 
 			double Takt=0;
 			if(Taktunit==MIN)  Takt=rEditNum_takt->Value*60.0; else Takt=rEditNum_takt->Value;
@@ -922,7 +910,7 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
    mGrid->Cells[2][i].Type=mGrid->EDIT;
    mGrid->Cells[3][i].Type=mGrid->EDIT;
    mGrid->Cells[4][i].Type=mGrid->EDIT;
-   mGrid->Cells[5][i].Type=mGrid->EDIT;
+   mGrid->Cells[5][i].Type=mGrid->COMBOEDIT;
 	 /*mGrid->Cells[6][i].Type=mGrid->CHECK;*/mGrid->Cells[6][i].RightBorder->Color=clWhite;//Check zobrazen pouze v pøípadì, že je pohon pøiøazen
    mGrid->Cells[7][i].Type=mGrid->BUTTON;
 
@@ -931,11 +919,27 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
 	 mGrid->Cells[4][i].InputNumbersOnly=2;
    mGrid->Cells[5][i].InputNumbersOnly=2;
 
-   mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
+  mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
 
-  mGrid->Refresh();
+   mGrid->Refresh();
+
+   TscGPComboEdit *C=mGrid->getComboEdit(5,i);
+   TscGPListBoxItem *I;
+
+   Cvektory::Ttyp_dopravniku *K=F->d.v.vrat_typ_dopravniku(F->d.v.PP.katalog);
+   Cvektory::TDoubleHodnota *H=K->roztec->dalsi;
+    while(H!=NULL)
+   {
+    I=C->Items->Add();
+    I->Caption=H->hodnota;
+    H=H->dalsi;
+   }
+
+  	I=NULL;delete I;
+
 //  mGrid->getCheck(6,i)->Enabled=false;
 //	mGrid->getCheck(6,i)->ShowHint=true; mGrid->getCheck(6,i)->Hint="Zrušit pøiøazení k objektùm";
+//mGrid->getComboEdit(5,i)->Height=mGrid->getEdit(4,i)->Height;
 	getDeleteButtonSettings(i);
   getPrirazeneObjDesign(i);
   setADD_ButtonPosition();
@@ -2596,13 +2600,15 @@ void TForm_parametry_linky::vykresli_obdelnik_vpravo()
 }
 
 
-
-
-
 void __fastcall TForm_parametry_linky::scGPGlyphButton_katalogClick(TObject *Sender)
-
 {
- Form_katalog->ShowModal();
+
+  		//Form_katalog->ShowModal();
+      if(Form_katalog->ShowModal()==mrOk)
+      { //refresh kvùli natažení dat do popisku názvu katalogu na PL
+     Form_parametry_linky->Visible=false;
+     Form_parametry_linky->Visible=true;
+      }
 }
 //---------------------------------------------------------------------------
 

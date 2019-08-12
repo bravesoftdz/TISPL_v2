@@ -13,8 +13,8 @@ Cvektory::Cvektory()
 	hlavicka_POHONY();//vytvoří novou hlavičku pro pohony
 	hlavicka_ZAKAZKY();//vytvoří novou hlavičku pro zakazky
 	hlavicka_VOZIKY();//vytvoří novou hlavičku pro vozíky
-	hlavicka_RETEZY();//vytvoří novou hlavičku pro řetězy
-	//	hlavicka_palce();
+	//hlavicka_RETEZY();//vytvoří novou hlavičku pro řetězy - nepoužíváno
+	//hlavicka_palce();//vytvoří novou hlavičku pro palce - zatím nepoužíváno
 	HALA.body=NULL;
 }
 ////---------------------------------------------------------------------------
@@ -1489,7 +1489,7 @@ void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt)
 		if(O!=NULL /*&& mrYes==F->MB("Chcete změnit pořadí objektů?",MB_YESNO)*/)zmen_poradi_objektu(Objekt,O);
 		O=NULL;
 		delete tab_pruchodu;tab_pruchodu=NULL;
-	}  
+	}
 	////změna rotace
 	if(Objekt->n>1)
 	{
@@ -1504,7 +1504,7 @@ void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt)
 			////rotace elementů
 			TElement *E=Objekt->elementy->dalsi;//objekt má vždy element (zarážka)
     	while(E!=NULL)
-			{                    
+			{
 				E->orientace-=rotace;//zapsání nové orientace do elementu
 				//souřadnice elementu
 				Bod=m.rotace(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,E->X,E->Y,rotace);
@@ -1534,7 +1534,7 @@ void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt)
 				case 90:case 270:Objekt->Xt=Objekt->elementy->predchozi->geo.X4-(Objekt->elementy->predchozi->geo.X4-Objekt->elementy->dalsi->geo.X1)/2.0;Objekt->Yt=m.P2Ly(F->vrat_max_oblast(Objekt).top);break;
 				case 180:Objekt->Xt=m.P2Lx(F->vrat_max_oblast(Objekt).right);Objekt->Yt=Objekt->elementy->predchozi->geo.Y4-(Objekt->elementy->predchozi->geo.Y4-Objekt->elementy->dalsi->geo.Y1)/2.0;break;
 			}
-			Objekt->orientace=azimut;		
+			Objekt->orientace=azimut;
 		}
 	}
 }
@@ -1939,7 +1939,7 @@ Cvektory::TElement *Cvektory::vloz_element_za(TObjekt *Objekt,TElement *Element)
 		while (p!=NULL)
 		{
 			if(p->dalsi!=NULL&&p->n!=Element->n&&p->dalsi->n!=Element->n)//aby se neřešila situace poslední-prní prvek,řešeno separátně
-			{   
+			{
 				//kontrola zda vkládaný element neleží mezi prvním a druhým elementem, druhým až n
 				if(m.LeziVblizkostiUsecky(F->d.Rxy(Element).x,F->d.Rxy(Element).y,F->d.Rxy(p).x,F->d.Rxy(p).y,F->d.Rxy(p->dalsi).x,F->d.Rxy(p->dalsi).y)==0)
 				{
@@ -2201,7 +2201,7 @@ void Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->max_pocet_voziku=Original->max_pocet_voziku;
 	Kopie->geo=Original->geo;
 	Kopie->mGrid=new TmGrid(F);//nová strategie, je mgrid, nekopírovat a používat jenom v pom_temp, zde však podmínka zda se jedná o pom_temp nebyla z nějakého důvodu možná
-	Kopie->poznamka=Original->poznamka;
+	//Kopie->poznamka=Original->poznamka;
 	Kopie->sparovany=Original->sparovany;
 }
 ////---------------------------------------------------------------------------
@@ -3425,145 +3425,83 @@ void Cvektory::generuj_POHONY()
 //řeší pouze pro objekty bez přiřazených pohonů
 //umí řešit i pro aktuální PO parametry
 AnsiString Cvektory::navrhni_POHONY(AnsiString separator,short m_min)
-{
-	AnsiString data="";
-	TObjekt *O=OBJEKTY->dalsi;
-	double *pole_rychlosti=new double[OBJEKTY->predchozi->n];//dynamické pole unikátních rychlostí, pole je o max. velikosti počtu objektů
-	for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)pole_rychlosti[j]=0;//vynulování pole
-	AnsiString *pole_pohonu=new AnsiString[OBJEKTY->predchozi->n];//dynamické pole unikátních pohonu, pole je o max. velikosti počtu objektů
-	for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)pole_pohonu[j]="";//vynulování pole
-	double *pole_rozteci=new double[OBJEKTY->predchozi->n];//dynamické pole unikátních rychlostí, pole je o max. velikosti počtu objektů
-	for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)pole_rozteci[j]=0;//vynulování pole
-
-	TPohon *P=POHONY->dalsi;
-	//projíždí jedntolivé objekty, které nemají přiřařezen pohon, tak jim doporučí, s tím, že navrhuje sloučit se stejnou rychlostí
-	while (O!=NULL)
-	{
-		//hodnoty z procházeného objektu
-		double RD=O->RD;
-		bool pohon_prirazen=false;if(O->pohon!=NULL)pohon_prirazen=true;
-		AnsiString short_name=O->short_name;
-
-		//pokud dochází k volání z PO, tzn. je třeba zohlednti aktulně zadaná data z jednotlivých editů
-		//tak se převezmetou tyto hodnoty
-		if(F->pom!=NULL)
-		{   //a pokud se jedná o stejný objekt, jako právě projížděný cyklemmusí být samostatně
-				if(O==F->pom && Form_parametry->scComboBox_pohon->ItemIndex==0)//a nemá přiřazen pohon
-				{
-					pohon_prirazen=false;
-					short_name=Form_parametry->scGPEdit_shortname->Text;
-					RD=Form_parametry->scGPNumericEdit_RD->Value; // RD	od uživatele
-					if(Form_parametry->RDunitT == Form_parametry->MIN)RD /= 60.0;//převod jednotek
-				}
-		}
-
-		//řeší pouze pro objekty bez přiřazených pohonů (ty jsou již definovatelné) a zároveň pokud je rychlost dopravníku nenulová
-    //zvažit zda nepřeskakovat již navržené stažené do správy pohonů, takto se duplikují ve správě pohonu (ve stringridu po přidání)
-		if(pohon_prirazen==false && RD>0)
-		{
-			for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)
-			{
-				if(pole_rychlosti[j]==RD)//RD je již v poli, užívá ho jiný objekt
-				{
-					pole_pohonu[j]+=", "+short_name;
-					break;
-				}
-				if(pole_rychlosti[j]==0)//neni, přídání nově do všech třech polí
-				{
-					if(m_min)pole_pohonu[j]="Navržený pohon s rychlostí "+AnsiString(RD*60)+" [m/min] pro objekt(y): "+short_name;//v m/min
-					else pole_pohonu[j]="Navržený pohon s rychlostí "+AnsiString(RD)+" [m/s] pro objekt(y): "+short_name;//v m/s
-					pole_rychlosti[j]=RD;
-					pole_rozteci[j]=m.Rz(RD);
-					break;
-				}
-			}
-		}
-		O=O->dalsi;//posun na další prvek
-	}
-
-	//překopíruje pole_pohonu do dat k navrácení, pokud není záznam prázdný
-	for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)
-	{
-		if(pole_pohonu[j]!="")data+=pole_pohonu[j]+".";
-		if(pole_rozteci[j]!=0)
-		{
-		 AnsiString CH=vypis_retezy_s_pouzitelnou_rozteci(pole_rozteci[j],"",",");
-		 if(CH!="")data+=" Použ. řetezy s roztečí [m]:"+CH;
-		}
-		if(pole_pohonu[j]!="")data+=separator;
-	}
-
-	//odstranění již nepotřebných dat z paměti
-	delete [] pole_rychlosti;
-	delete [] pole_pohonu;
-	delete [] pole_rozteci;
-	O=NULL;delete O;
-	P=NULL;delete P;
-
-	return data;
-}
-//zaloha old provedení
-//AnsiString Cvektory::navrhni_POHONY(AnsiString separator)
-//{
+{    //FUNKČNÍ ALE ODSTAVENÁ METODA
 //	AnsiString data="";
 //	TObjekt *O=OBJEKTY->dalsi;
-//	double *pole_rychlosti=new double[OBJEKTY->predchozi->n];//dynamické pole unikátních rychlostí, pole je  o max. velikosti počtu objektů
+//	double *pole_rychlosti=new double[OBJEKTY->predchozi->n];//dynamické pole unikátních rychlostí, pole je o max. velikosti počtu objektů
 //	for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)pole_rychlosti[j]=0;//vynulování pole
-//	unsigned int i=0;//i vygenerovaného pohonu
-//	//prvně najde "i" v názvu nejvýššího dříve navrženého pohonu (který se generoval v jiném zobrazení formuláře)
-//	TPohon *P=POHONY->dalsi;
-//	while(P!=NULL)
-//	{
-//		 if(P->name.Pos("Navržený pohon "))
-//		 {
-//			unsigned int i_potencial=Form1->ms.a2i(Form1->ms.TrimLeftFromText(P->name,"ý pohon "));
-//			if(i_potencial>i)i=i_potencial;
-//		 }
-//		 P=P->dalsi;//posun na další prvek
-//	}
+//	AnsiString *pole_pohonu=new AnsiString[OBJEKTY->predchozi->n];//dynamické pole unikátních pohonu, pole je o max. velikosti počtu objektů
+//	for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)pole_pohonu[j]="";//vynulování pole
+//	double *pole_rozteci=new double[OBJEKTY->predchozi->n];//dynamické pole unikátních rychlostí, pole je o max. velikosti počtu objektů
+//	for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)pole_rozteci[j]=0;//vynulování pole
 //
+//	TPohon *P=POHONY->dalsi;
+//	//projíždí jedntolivé objekty, které nemají přiřařezen pohon, tak jim doporučí, s tím, že navrhuje sloučit se stejnou rychlostí
 //	while (O!=NULL)
 //	{
-//		if(O->RD>0)//vypisuje pouze pokud je rychlost dopravníku nenulová,nulové pohony (tj. z režimu S&G a post-procesní - to je již zavádějící, i v těchto režimech) nezohledňuje
+//		//hodnoty z procházeného objektu
+//		double RD=O->RD;
+//		bool pohon_prirazen=false;if(O->pohon!=NULL)pohon_prirazen=true;
+//		AnsiString short_name=O->short_name;
+//
+//		//pokud dochází k volání z PO, tzn. je třeba zohlednti aktulně zadaná data z jednotlivých editů
+//		//tak se převezmetou tyto hodnoty
+//		if(F->pom!=NULL)
+//		{   //a pokud se jedná o stejný objekt, jako právě projížděný cyklemmusí být samostatně
+//				if(O==F->pom && Form_parametry->scComboBox_pohon->ItemIndex==0)//a nemá přiřazen pohon
+//				{
+//					pohon_prirazen=false;
+//					short_name=Form_parametry->scGPEdit_shortname->Text;
+//					RD=Form_parametry->scGPNumericEdit_RD->Value; // RD	od uživatele
+//					if(Form_parametry->RDunitT == Form_parametry->MIN)RD /= 60.0;//převod jednotek
+//				}
+//		}
+//
+//		//řeší pouze pro objekty bez přiřazených pohonů (ty jsou již definovatelné) a zároveň pokud je rychlost dopravníku nenulová
+//    //zvažit zda nepřeskakovat již navržené stažené do správy pohonů, takto se duplikují ve správě pohonu (ve stringridu po přidání)
+//		if(pohon_prirazen==false && RD>0)
 //		{
-//			bool nalezen=false;
-//			for(unsigned int j=0;j<O->n;j++)//zajištění UNIKATNOSTI, kontroluje pole unikátních rychlosti
+//			for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)
 //			{
-//				if(pole_rychlosti[j]==O->RD)//shodný nalezen
+//				if(pole_rychlosti[j]==RD)//RD je již v poli, užívá ho jiný objekt
 //				{
-//					nalezen=true;
-//					//break;//přeruší další zbytečné vyhledávání ve for, může se přejít na další objekt a tedy potenciální rychlost
+//					pole_pohonu[j]+=", "+short_name;
+//					break;
 //				}
-//			}
-//			if(!nalezen)//pokud nebyla rychlost nalezena, tak vypíše a uloží ji do pole_rychlostí kvůli kontrole dalšího prvku//zajištění UNIKATNOSTI
-//			{
-//				P=POHONY->dalsi;
-//				while(P!=NULL)//ještě kontroluje zda již dříve nebyl uložen stejný pohon v navržených pohonech
+//				if(pole_rychlosti[j]==0)//neni, přídání nově do všech třech polí
 //				{
-//						 if(P->name.Pos("Navržený pohon ") && P->rychlost_od==O->RD && P->rychlost_do==O->RD && P->aRD==O->RD)//byl-li pohon se stejnými parametry nalezen
-//						 nalezen=true;
-//						 P=P->dalsi;//posun na další prvek
+//					if(m_min)pole_pohonu[j]="Navržený pohon s rychlostí "+AnsiString(RD*60)+" [m/min] pro objekt(y): "+short_name;//v m/min
+//					else pole_pohonu[j]="Navržený pohon s rychlostí "+AnsiString(RD)+" [m/s] pro objekt(y): "+short_name;//v m/s
+//					pole_rychlosti[j]=RD;
+//					pole_rozteci[j]=m.Rz(RD);
+//					break;
 //				}
-//				if(!nalezen)//pokud stále platí, že nebyl nalezen
-//				{ //libovolný			  //html tabulka                   //csv
-//					AnsiString mS=", ";if(separator=="</tr>")mS="</td>";if(separator!="</tr>" && separator!="</br>")mS=";";
-//					//název, rychlost, RZ
-//					if(mS==", ")		data+="Navržený pohon "+AnsiString(++i)+mS+AnsiString(O->RD*60)+" [m/min]"+mS+AnsiString(Form1->m.Rz(O->RD))+" [m]";//LIBOVOLNÉ
-//					if(mS==";")			data+="Navržený pohon "+AnsiString(++i)+mS+AnsiString(O->RD*60)+mS+AnsiString(Form1->m.Rz(O->RD));//CSV
-//					if(mS=="</td>")	data+="<tr><th scope=\"row\">Navržený pohon "+AnsiString(++i)+"</th><td>"+AnsiString(O->RD*60)+mS+"<td>"+AnsiString(Form1->m.Rz(O->RD))+mS;//HTML TABLE
-//					data+=separator;
-//					pole_rychlosti[O->n-1]=O->RD;
-//				}                //indexuje se v poly od nuly ale objekty jsou indexované od 1
 //			}
 //		}
 //		O=O->dalsi;//posun na další prvek
 //	}
+//
+//	//překopíruje pole_pohonu do dat k navrácení, pokud není záznam prázdný
+//	for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)
+//	{
+//		if(pole_pohonu[j]!="")data+=pole_pohonu[j]+".";
+//		if(pole_rozteci[j]!=0)
+//		{
+//		 AnsiString CH=vypis_retezy_s_pouzitelnou_rozteci(pole_rozteci[j],"",",");
+//		 if(CH!="")data+=" Použ. řetezy s roztečí [m]:"+CH;
+//		}
+//		if(pole_pohonu[j]!="")data+=separator;
+//	}
+//
+//	//odstranění již nepotřebných dat z paměti
 //	delete [] pole_rychlosti;
-//	delete O;
-//	delete P;
+//	delete [] pole_pohonu;
+//	delete [] pole_rozteci;
+//	O=NULL;delete O;
+//	P=NULL;delete P;
+//
 //	return data;
-//}
-
+}
 ////---------------------------------------------------------------------------
 //smaze body z pameti
 long Cvektory::vymaz_seznam_POHONY()
@@ -4425,75 +4363,75 @@ long Cvektory::vymaz_seznam_PROCESY()
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
-////vytvoří novou hlavičku pro řetězy
-void Cvektory::hlavicka_RETEZY()
-{
-	TRetez *novy=new TRetez;
-	novy->n=0;
-	novy->name="";//celý název objektu
-
-	novy->predchozi=novy;//ukazuje sam na sebe
-	novy->dalsi=NULL;
-	RETEZY=novy;//RETEZY
-}
+//////vytvoří novou hlavičku pro řetězy
+//void Cvektory::hlavicka_RETEZY()
+//{
+//	TRetez *novy=new TRetez;
+//	novy->n=0;
+//	novy->name="";//celý název objektu
+//
+//	novy->predchozi=novy;//ukazuje sam na sebe
+//	novy->dalsi=NULL;
+//	RETEZY=novy;//RETEZY
+//}
+//////---------------------------------------------------------------------------
+//////uloží retez a jeho parametry do spojového seznamu
+//void Cvektory::vloz_retez(AnsiString name, double roztec)
+//{
+//	TRetez *novy=new TRetez;
+//
+//	novy->n=RETEZY->predchozi->n+1;//navýším počítadlo prvku o jedničku
+//	novy->name=name;
+//	novy->roztec=roztec;
+//
+//	RETEZY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
+//	novy->predchozi=RETEZY->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+//	novy->dalsi=NULL;
+//	RETEZY->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+//}
 ////---------------------------------------------------------------------------
-////uloží retez a jeho parametry do spojového seznamu
-void Cvektory::vloz_retez(AnsiString name, double roztec)
-{
-	TRetez *novy=new TRetez;
-
-	novy->n=RETEZY->predchozi->n+1;//navýším počítadlo prvku o jedničku
-	novy->name=name;
-	novy->roztec=roztec;
-
-	RETEZY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
-	novy->predchozi=RETEZY->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
-	novy->dalsi=NULL;
-	RETEZY->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
-}
-//---------------------------------------------------------------------------
-//z položky (předpoklad vybrané) v comboboxů řetězů vrátí pouze hodnotu rozteče
-double Cvektory::vrat_roztec_retezu_z_item(AnsiString item,AnsiString separator)
-{
-	return Form1->ms.MyToDouble(Form1->ms.TrimLeftFromText(item,separator));
-}
-//---------------------------------------------------------------------------
-//vypíše všechny použitelné řetezy použitelné pro zadané rozmezí dle užité rozteče, separátor odděluje název řetězu od rozteče, totál separátor jednotlivé řetězy, pokud je Rz zadané nulové vrátí hodnotu nula, pokud chci vypsat všechny načtené řetězy ze souboru retezy.csv použiji parametr Rz=-1, pokud není požadován výpis názvu řetězu použiji prázdné uvozovky
-AnsiString Cvektory::vypis_retezy_s_pouzitelnou_rozteci(double Rz,AnsiString separator,AnsiString total_separator,bool mm)
-{
-	AnsiString RET="";
-	short J=1.0;if(mm)J=1000.0;
-	if(Rz)
-	{
-			TRetez *CH=RETEZY->dalsi;
-			while(CH!=NULL)
-			{                                 //pokud chci vypsat vše
-				if(m.mod_d(Rz,CH->roztec)==0 || Rz==-1)//zbytek po dělení je nula, tzn. vhodný řetěz s roztečí vhodnou pro požadovaný rozestup nalezen nebo -1 pokud chci vypsat všechny načtené řetězy ze souboru retezy.csv
-				{
-					if(separator=="")RET+=AnsiString(J*CH->roztec)+total_separator;//pokud není požadován výpis názvu řetězu
-					else RET+=CH->name+separator+AnsiString(J*CH->roztec)+total_separator;
-				}
-				CH=CH->dalsi;
-			}
-			CH=NULL;delete CH;
-	}
-	return RET;
-}
-//---------------------------------------------------------------------------
-//smaze RETEZY z pameti
-long Cvektory::vymaz_seznam_RETEZY()
-{
-	long pocet_smazanych_objektu=0;
-	while (RETEZY!=NULL)
-	{
-		pocet_smazanych_objektu++;
-		RETEZY->predchozi=NULL;
-		delete RETEZY->predchozi;
-		RETEZY=RETEZY->dalsi;
-	};
-
-	return pocet_smazanych_objektu;
-};
+////z položky (předpoklad vybrané) v comboboxů řetězů vrátí pouze hodnotu rozteče
+//double Cvektory::vrat_roztec_retezu_z_item(AnsiString item,AnsiString separator)
+//{
+//	return Form1->ms.MyToDouble(Form1->ms.TrimLeftFromText(item,separator));
+//}
+////---------------------------------------------------------------------------
+////vypíše všechny použitelné řetezy použitelné pro zadané rozmezí dle užité rozteče, separátor odděluje název řetězu od rozteče, totál separátor jednotlivé řetězy, pokud je Rz zadané nulové vrátí hodnotu nula, pokud chci vypsat všechny načtené řetězy ze souboru retezy.csv použiji parametr Rz=-1, pokud není požadován výpis názvu řetězu použiji prázdné uvozovky
+//AnsiString Cvektory::vypis_retezy_s_pouzitelnou_rozteci(double Rz,AnsiString separator,AnsiString total_separator,bool mm)
+//{
+//	AnsiString RET="";
+//	short J=1.0;if(mm)J=1000.0;
+//	if(Rz)
+//	{
+//			TRetez *CH=RETEZY->dalsi;
+//			while(CH!=NULL)
+//			{                                 //pokud chci vypsat vše
+//				if(m.mod_d(Rz,CH->roztec)==0 || Rz==-1)//zbytek po dělení je nula, tzn. vhodný řetěz s roztečí vhodnou pro požadovaný rozestup nalezen nebo -1 pokud chci vypsat všechny načtené řetězy ze souboru retezy.csv
+//				{
+//					if(separator=="")RET+=AnsiString(J*CH->roztec)+total_separator;//pokud není požadován výpis názvu řetězu
+//					else RET+=CH->name+separator+AnsiString(J*CH->roztec)+total_separator;
+//				}
+//				CH=CH->dalsi;
+//			}
+//			CH=NULL;delete CH;
+//	}
+//	return RET;
+//}
+////---------------------------------------------------------------------------
+////smaze RETEZY z pameti
+//long Cvektory::vymaz_seznam_RETEZY()
+//{
+//	long pocet_smazanych_objektu=0;
+//	while (RETEZY!=NULL)
+//	{
+//		pocet_smazanych_objektu++;
+//		RETEZY->predchozi=NULL;
+//		delete RETEZY->predchozi;
+//		RETEZY=RETEZY->dalsi;
+//	};
+//
+//	return pocet_smazanych_objektu;
+//};
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //vloží nový typ dopravníku do KATALOGu dopravníků, pokud neexistuje hlavička vytvoří ji, druh: 0 - podlahový, 1 - podvěsný
@@ -4667,7 +4605,7 @@ void Cvektory::vytvor_KATALOG()
 	vloz_do_typu_dopravniku(vR,700);
 	vloz_do_typu_dopravniku(vR,1000);
 
-    ////CALDAN VLD - S270
+	////CALDAN VLD - S270
 	vloz_typ_dopravniku("VLD S270","http://caldan.dk/sites/default/files/TechSpecsPDF/VLD_2018_uk.pdf",0);
 	vloz_do_typu_dopravniku(R,270);
 	vloz_do_typu_dopravniku(R,300);
@@ -4687,7 +4625,7 @@ void Cvektory::vytvor_KATALOG()
 	//vertikální radiusy
 	vloz_do_typu_dopravniku(vR,1000);
 
-      ////CALDAN VLD - S300
+	////CALDAN VLD - S300
 	vloz_typ_dopravniku("VLD S300","http://caldan.dk/sites/default/files/TechSpecsPDF/VLD_2018_uk.pdf",0);
 	vloz_do_typu_dopravniku(R,270);
 	vloz_do_typu_dopravniku(R,300);
@@ -4727,7 +4665,7 @@ void Cvektory::vytvor_KATALOG()
 	//vertikální radiusy
 	vloz_do_typu_dopravniku(vR,1000);
 
-    ////CALDAN HD100
+	////CALDAN HD100
 	vloz_typ_dopravniku("HD100","http://caldan.dk/sites/default/files/TechSpecsPDF/HD100_2018_uk.pdf",0);
 	vloz_do_typu_dopravniku(R,180);
 	vloz_do_typu_dopravniku(R,270);
@@ -4746,7 +4684,7 @@ void Cvektory::vytvor_KATALOG()
 	vloz_do_typu_dopravniku(vR,1500);
   vloz_do_typu_dopravniku(vR,2500);
 
-      ////CALDAN HD100S
+	////CALDAN HD100S
 	vloz_typ_dopravniku("HD100S","http://caldan.dk/sites/default/files/TechSpecsPDF/HD100S_2019_uk.pdf",0);
 	vloz_do_typu_dopravniku(R,180);
 	vloz_do_typu_dopravniku(R,270);
@@ -4764,7 +4702,7 @@ void Cvektory::vytvor_KATALOG()
 	vloz_do_typu_dopravniku(vR,1500);
   vloz_do_typu_dopravniku(vR,2500);
 
-        ////CALDAN HD140
+	////CALDAN HD140
 	vloz_typ_dopravniku("HD140","http://caldan.dk/sites/default/files/TechSpecsPDF/HD140_2018_uk.pdf",0);
 	vloz_do_typu_dopravniku(R,180);
 	vloz_do_typu_dopravniku(R,270);
@@ -4782,7 +4720,7 @@ void Cvektory::vytvor_KATALOG()
 	//vertikální radiusy
   vloz_do_typu_dopravniku(vR,2000);
 
-          ////CALDAN PF100
+	////CALDAN PF100
 	vloz_typ_dopravniku("PF100","http://caldan.dk/sites/default/files/TechSpecsPDF/PF100_2018_uk.pdf",0);
 	vloz_do_typu_dopravniku(R,180);
 	vloz_do_typu_dopravniku(R,270);
@@ -4793,15 +4731,15 @@ void Cvektory::vytvor_KATALOG()
 	vloz_do_typu_dopravniku(hO,15);
 	//horizontální radiusy
 	vloz_do_typu_dopravniku(hR,700);
-  vloz_do_typu_dopravniku(hR,1000);
+	vloz_do_typu_dopravniku(hR,1000);
 	//vertikální oblouky
 	vloz_do_typu_dopravniku(vO,30);
-  vloz_do_typu_dopravniku(vO,15);
+	vloz_do_typu_dopravniku(vO,15);
 	//vertikální radiusy
-  vloz_do_typu_dopravniku(vR,2500);
-  vloz_do_typu_dopravniku(vR,1500);
+	vloz_do_typu_dopravniku(vR,2500);
+	vloz_do_typu_dopravniku(vR,1500);
 
-            ////CALDAN PF100S
+	////CALDAN PF100S
 	vloz_typ_dopravniku("PF100S","http://caldan.dk/sites/default/files/TechSpecsPDF/PF100S_2018_uk.pdf",0);
 	vloz_do_typu_dopravniku(R,180);
 	vloz_do_typu_dopravniku(R,270);
@@ -4838,7 +4776,7 @@ void Cvektory::vytvor_KATALOG()
 	//vertikální radiusy
   vloz_do_typu_dopravniku(vR,1000);
 
-    ////CALDAN PF140
+	////CALDAN PF140
 	vloz_typ_dopravniku("PF140","http://caldan.dk/sites/default/files/TechSpecsPDF/PF140_2018_uk.pdf",0);
 	vloz_do_typu_dopravniku(R,180);
 	vloz_do_typu_dopravniku(R,270);
@@ -4857,8 +4795,7 @@ void Cvektory::vytvor_KATALOG()
   vloz_do_typu_dopravniku(vR,1000);
   vloz_do_typu_dopravniku(vR,2500);
 
-
-        ////CALDAN PF160
+	////CALDAN PF160
 	vloz_typ_dopravniku("PF160","http://caldan.dk/sites/default/files/TechSpecsPDF/PF160_2018_uk.pdf",0);
 	vloz_do_typu_dopravniku(R,180);
 	vloz_do_typu_dopravniku(R,270);
@@ -4929,53 +4866,84 @@ double Cvektory::vrat_hodnotu_typu_dopravniku(Ttyp_dopravniku *typDopravniku,Tty
 //smaže celý katalog, včetně přidružených spojových seznamů
 void Cvektory::vymaz_seznam_KATALOG()
 {
-	while (KATALOG!=NULL)
+	if(KATALOG!=NULL)//pokud existuje katalog
 	{
-		//rozteč
-		while(KATALOG->predchozi->roztec!=NULL)
+		Ttyp_dopravniku *K=KATALOG->dalsi;
+		delete KATALOG;KATALOG==NULL;//smazání hlavičky
+		while(K!=NULL)
 		{
-			//posunutí ukazatele a smazání typu dopravníku
-			KATALOG->predchozi->roztec->predchozi=NULL;
-      delete KATALOG->predchozi->roztec->predchozi;
-			KATALOG->predchozi->roztec=KATALOG->predchozi->roztec->dalsi;
+			////atributy
+			//rozteč
+			if(K->roztec!=NULL)
+			{
+				TDoubleHodnota *H=K->roztec->dalsi;
+				delete K->roztec;K->roztec==NULL;//smazání hlavičky
+				while(H!=NULL)
+				{
+					TDoubleHodnota *Ht=H;//ukazatel na následně mazaný objekt
+					H=H->dalsi;//posun na další
+					delete Ht;Ht=NULL;//odstranění již nebotřebného objektu
+				}
+				delete H;H=NULL;//závěrečné odstranění
+			}
+			//hOblouk
+			if(K->hOblouk!=NULL)
+			{
+				TDoubleHodnota *H=K->hOblouk->dalsi;
+				delete K->roztec;K->hOblouk==NULL;//smazání hlavičky
+				while(H!=NULL)
+				{
+					TDoubleHodnota *Ht=H;//ukazatel na následně mazaný objekt
+					H=H->dalsi;//posun na další
+					delete Ht;Ht=NULL;//odstranění již nebotřebného objektu
+				}
+				delete H;H=NULL;//závěrečné odstranění
+			}
+			//hRadius
+			if(K->hRadius!=NULL)
+			{
+				TDoubleHodnota *H=K->hRadius->dalsi;
+				delete K->roztec;K->hRadius==NULL;//smazání hlavičky
+				while(H!=NULL)
+				{
+					TDoubleHodnota *Ht=H;//ukazatel na následně mazaný objekt
+					H=H->dalsi;//posun na další
+					delete Ht;Ht=NULL;//odstranění již nebotřebného objektu
+				}
+				delete H;H=NULL;//závěrečné odstranění
+			}
+			//vOblouk
+			if(K->vOblouk!=NULL)
+			{
+				TDoubleHodnota *H=K->vOblouk->dalsi;
+				delete K->roztec;K->vOblouk==NULL;//smazání hlavičky
+				while(H!=NULL)
+				{
+					TDoubleHodnota *Ht=H;//ukazatel na následně mazaný objekt
+					H=H->dalsi;//posun na další
+					delete Ht;Ht=NULL;//odstranění již nebotřebného objektu
+				}
+				delete H;H=NULL;//závěrečné odstranění
+			}
+			//vRadius
+			if(K->vRadius!=NULL)
+			{
+				TDoubleHodnota *H=K->vRadius->dalsi;
+				delete K->roztec;K->vRadius==NULL;//smazání hlavičky
+				while(H!=NULL)
+				{
+					TDoubleHodnota *Ht=H;//ukazatel na následně mazaný objekt
+					H=H->dalsi;//posun na další
+					delete Ht;Ht=NULL;//odstranění již nebotřebného objektu
+				}
+				delete H;H=NULL;//závěrečné odstranění
+			}
+			////samotný typ dopravniku
+			Ttyp_dopravniku *Kt=K;//ukazatel na následně mazaný objekt
+			K=K->dalsi; //posun na další
+			delete Kt;Kt=NULL;//odstranění již nebotřebného objektu
 		}
-		//hOblouk
-		while(KATALOG->predchozi->hOblouk!=NULL)
-		{
-			//posunutí ukazatele a smazání typu dopravníku
-			KATALOG->predchozi->hOblouk->predchozi=NULL;
-			delete KATALOG->predchozi->hOblouk->predchozi;
-			KATALOG->predchozi->hOblouk=KATALOG->predchozi->hOblouk->dalsi;
-		}
-		//hRadius
-		while(KATALOG->predchozi->hRadius!=NULL)
-		{
-			//posunutí ukazatele a smazání typu dopravníku
-			KATALOG->predchozi->hRadius->predchozi=NULL;
-			delete KATALOG->predchozi->hRadius->predchozi;
-			KATALOG->predchozi->hRadius=KATALOG->predchozi->hRadius->dalsi;
-		}
-		//vOblouk
-		while(KATALOG->predchozi->vOblouk!=NULL)
-		{
-			//posunutí ukazatele a smazání typu dopravníku
-			KATALOG->predchozi->vOblouk->predchozi=NULL;
-			delete KATALOG->predchozi->vOblouk->predchozi;
-			KATALOG->predchozi->vOblouk=KATALOG->predchozi->vOblouk->dalsi;
-		}
-		//vRadius
-		while(KATALOG->predchozi->vRadius!=NULL)
-		{
-			//posunutí ukazatele a smazání typu dopravníku
-			KATALOG->predchozi->vRadius->predchozi=NULL;
-			delete KATALOG->predchozi->vRadius->predchozi;
-			KATALOG->predchozi->vRadius=KATALOG->predchozi->vRadius->dalsi;
-		}
-		//posunutí ukazatele a smazání typu dopravníku
-		KATALOG->predchozi->name=KATALOG->predchozi->link="";//smazání textových řetězců
-		KATALOG->predchozi=NULL;
-		delete KATALOG->predchozi;
-		KATALOG=KATALOG->dalsi;
+		delete K;K=NULL;//závěrečné odstranění
 	}
 }
 //---------------------------------------------------------------------------
@@ -4998,7 +4966,7 @@ void Cvektory::vytvor_hlavicku_souboru()
 		File_hlavicka.dni_rok=PP.dni_rok;
 		File_hlavicka.efektivita=PP.efektivita;
 		File_hlavicka.TT=PP.TT;
-		File_hlavicka.typ_vozik=PP.typ_voziku;
+		File_hlavicka.typ_linky=PP.typ_linky;
 		File_hlavicka.delka_jig=PP.delka_jig;
 		File_hlavicka.sirka_jig=PP.sirka_jig;
 		File_hlavicka.vyska_jig=PP.vyska_jig;
@@ -5008,6 +4976,12 @@ void Cvektory::vytvor_hlavicku_souboru()
 		File_hlavicka.pocet_objektu=OBJEKTY->predchozi->n;
 		File_hlavicka.pocet_zakazek=ZAKAZKY->predchozi->n;
 		File_hlavicka.pocet_voziku=VOZIKY->predchozi->n;
+    //katalogové záležitosti
+    File_hlavicka.katalog=PP.katalog;
+		File_hlavicka.typ_linky=PP.typ_linky;
+    File_hlavicka.radius=PP.radius;
+    //stav ikony  TODO ROSTA dodelat
+    //File_hlavicka.objekt_posunout_vse
 }
 //---------------------------------------------------------------------------
 //Uloží vektorová data do souboru
@@ -5021,7 +4995,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 		 vytvor_hlavicku_souboru();
 		 FileStream->Write(&File_hlavicka,sizeof(TFile_hlavicka));
 
-		 //uložení parametrů rastru
+		 //uložení parametrů RASTRU
 		 C_raster *R=new C_raster;
 		 R->text_length=PP.raster.filename.Length()+1;
 		 R->resolution=PP.raster.resolution;
@@ -5031,7 +5005,6 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 		 R->grayscale=PP.raster.grayscale;
 		 R->dim=PP.raster.dim;
 		 FileStream->Write(R,sizeof(C_raster));//zapiše jeden prvek do souboru
-
 		 //text - adresa rastru
 		 wchar_t *name=new wchar_t[R->text_length];
 		 name=PP.raster.filename.c_str();
@@ -5039,7 +5012,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 		 name=NULL; delete[] name;
 		 R=NULL;delete R;
 
-		 //uložení pohonu
+		 //uložení POHONŮ
 		 TPohon *ukaz1=POHONY->dalsi;
 		 while (ukaz1!=NULL)
 		 {
@@ -5244,7 +5217,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 		 	 delete B; B=NULL;
 		 }
 
-		 //uložení zakázek
+		 //uložení ZAKÁZEK
 		 TZakazka *ukaz2=ZAKAZKY->dalsi;
 		 while (ukaz2!=NULL)
 		 {
@@ -5307,47 +5280,6 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 		 };
 		 ukaz2=NULL;delete ukaz2;
 
-//ZDM
-//		 //uložení vozíků
-//		 TVozik *ukaz1=VOZIKY->dalsi;
-//
-//		 while (ukaz1!=NULL)
-//		 {
-//			 ////překopírování dat do pomocného objektu uložitelného do bináru
-//			 C_vozik *c_ukaz1=new C_vozik;
-//
-//			 //samotná data
-//			 c_ukaz1->n=ukaz1->n;
-//			 c_ukaz1->id_length=ukaz1->id.Length()+1;
-//			 c_ukaz1->delka=ukaz1->delka;
-//			 c_ukaz1->sirka=ukaz1->sirka;
-//			 c_ukaz1->vyska=ukaz1->vyska;
-//			 c_ukaz1->rotace=ukaz1->rotace;
-//			 c_ukaz1->max_vyrobku=ukaz1->max_vyrobku;
-//			 c_ukaz1->akt_vyrobku=ukaz1->akt_vyrobku;
-//			 c_ukaz1->delka_vcetne_vyrobku=ukaz1->delka_vcetne_vyrobku;
-//			 c_ukaz1->sirka_vcetne_vyrobku=ukaz1->sirka_vcetne_vyrobku;
-//			 c_ukaz1->vyska_vcetne_vyrobku=ukaz1->vyska_vcetne_vyrobku;
-//			 c_ukaz1->stav=ukaz1->stav;
-//			 c_ukaz1->barva=ukaz1->barva;
-//			 c_ukaz1->text_length=ukaz1->nazev_vyrobku.Length()+1;
-//			 FileStream->Write(c_ukaz1,sizeof(C_vozik));//zapiše jeden prvek do souboru
-//			 //text - ID
-//			 wchar_t *id=new wchar_t [c_ukaz1->id_length];
-//			 id=ukaz1->id.c_str();
-//			 FileStream->Write(id,c_ukaz1->id_length*sizeof(wchar_t));//zapiše druhý řetězec za prvek bod
-//			 id=NULL; delete[] id;
-//			 //text - name
-//			 wchar_t *name=new wchar_t [c_ukaz1->text_length];
-//			 name=ukaz1->nazev_vyrobku.c_str();
-//			 FileStream->Write(name,c_ukaz1->text_length*sizeof(wchar_t));//zapiše druhý řetězec za prvek bod
-//			 name=NULL; delete[] name;
-//
-//			 c_ukaz1=NULL;delete c_ukaz1;
-//			 ukaz1=ukaz1->dalsi;//posunutí na další pozici v seznamu
-//		 };
-//		 ukaz1=NULL;delete ukaz1;
-
 		 delete FileStream;
 		 return 1;
 	}
@@ -5367,7 +5299,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			//načte hlavičku ze souboru
 			FileStream->Read(&File_hlavicka,sizeof(TFile_hlavicka));//načte hlavičku ze souboru
 
-			//uložení parametrů rastru
+			//uložení parametrů RASTRu
 			C_raster *R=new C_raster;
 			FileStream->Read(R,sizeof(C_raster));//načte jeden prvek ze souboru
 			PP.raster.resolution=R->resolution;
@@ -5560,7 +5492,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			 //delete B; B=NULL; nesmí být
 		 }
 
-			//zakázky
+			//ZAKÁZKY
 			for(unsigned int i=1;i<=File_hlavicka.pocet_zakazek;i++)//možno řešit sice while, po strukturách, ale toto je připravené pro případ, kdy budu načítat i objekty jiného typu než objekt
 			{
 				TZakazka *ukaz2=new TZakazka;
@@ -5607,49 +5539,6 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 				c_ukaz2=NULL; delete c_ukaz2;
 			};
 
-
-			//ZDM
-//			for(unsigned int i=1;i<=File_hlavicka.pocet_voziku;i++)//možno řešit sice while, po strukturách, ale toto je připravené pro případ, kdy budu načítat i objekty jiného typu než objekt
-//			{
-//				TVozik *ukaz1=new TVozik;
-//				C_vozik *c_ukaz1=new C_vozik;
-//				FileStream->Read(c_ukaz1,sizeof(C_vozik));//načte jeden prvek ze souboru
-//				if(c_ukaz1->n!=0 && File_hlavicka.pocet_voziku>=c_ukaz1->n)//pokud nenačte hlavičku či nějaký shit
-//				{
-//						//samotná data
-//					ukaz1->n=c_ukaz1->n;
-//					ukaz1->delka=c_ukaz1->delka;
-//					ukaz1->sirka=c_ukaz1->sirka;
-//					ukaz1->vyska=c_ukaz1->vyska;
-//					ukaz1->rotace=c_ukaz1->rotace;
-//					ukaz1->max_vyrobku=c_ukaz1->max_vyrobku;
-//					ukaz1->akt_vyrobku=c_ukaz1->akt_vyrobku;
-//					ukaz1->delka_vcetne_vyrobku=c_ukaz1->delka_vcetne_vyrobku;
-//					ukaz1->sirka_vcetne_vyrobku=c_ukaz1->sirka_vcetne_vyrobku;
-//					ukaz1->vyska_vcetne_vyrobku=c_ukaz1->vyska_vcetne_vyrobku;
-//					ukaz1->stav=c_ukaz1->stav;
-//					ukaz1->barva=c_ukaz1->barva;
-//
-//
-//					//id
-//					wchar_t *id=new wchar_t[c_ukaz1->id_length];
-//					FileStream->Read(id,c_ukaz1->id_length*sizeof(wchar_t));//načte jeden nazev fontu za prvekem bod a popisek bodu
-//					ukaz1->id=id;
-//					id=NULL; delete[] id;
-//
-//					//popisek
-//					wchar_t *name=new wchar_t[c_ukaz1->text_length];
-//					FileStream->Read(name,c_ukaz1->text_length*sizeof(wchar_t));//načte jeden nazev fontu za prvekem bod a popisek bodu
-//					ukaz1->nazev_vyrobku=name;
-//					name=NULL; delete[] name;
-//
-//					//vloží finální prvek do spojového seznamu
-//					vloz_vozik(ukaz1);
-//				}
-//				ukaz1=NULL; delete ukaz1;
-//				c_ukaz1=NULL; delete c_ukaz1;
-//			};
-
 			delete FileStream;
 			return 1;
 			}
@@ -5658,26 +5547,26 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 }
 ////---------------------------------------------------------------------------
 void Cvektory::nacti_CSV_retezy(AnsiString FileName)
-{
-	try
-	{
-		AnsiString DATA=ReadFromTextFile(FileName);
-
-		//parsování a ukládání do spojového seznamu
-		if(DATA.Pos("název") || DATA.Pos("name"))DATA=Form1->ms.delete_repeat(DATA,"\r\n",1);//smaže případnou hlavičku csv souboru
-		while(DATA.Pos(";"))//bude parsovat, dokud budou data obsahovat středník
-		{
-			//pársování
-			AnsiString name=DATA.SubString(1,DATA.Pos(";")-1);DATA=Form1->ms.delete_repeat(DATA,";",1);
-			AnsiString roztec=DATA.SubString(1,DATA.Pos("\r\n")-1);DATA=Form1->ms.delete_repeat(DATA,"\r\n",1);//smaže konec řádku
-			//uložení do spojáku pro další využítí
-			vloz_retez(name,Form1->ms.MyToDouble(roztec));
-		}
-	}
-	catch(...)//např. soubor nenalezen
-	{
-		; //nic se neděje
-	}
+{   //FUNKČNÍ ALE ODSTAVENÁ METODA
+//	try
+//	{
+//		AnsiString DATA=ReadFromTextFile(FileName);
+//
+//		//parsování a ukládání do spojového seznamu
+//		if(DATA.Pos("název") || DATA.Pos("name"))DATA=Form1->ms.delete_repeat(DATA,"\r\n",1);//smaže případnou hlavičku csv souboru
+//		while(DATA.Pos(";"))//bude parsovat, dokud budou data obsahovat středník
+//		{
+//			//pársování
+//			AnsiString name=DATA.SubString(1,DATA.Pos(";")-1);DATA=Form1->ms.delete_repeat(DATA,";",1);
+//			AnsiString roztec=DATA.SubString(1,DATA.Pos("\r\n")-1);DATA=Form1->ms.delete_repeat(DATA,"\r\n",1);//smaže konec řádku
+//			//uložení do spojáku pro další využítí
+//			vloz_retez(name,Form1->ms.MyToDouble(roztec));
+//		}
+//	}
+//	catch(...)//např. soubor nenalezen
+//	{
+//		; //nic se neděje
+//	}
 }
 ////---------------------------------------------------------------------------
 AnsiString Cvektory::ReadFromTextFile(AnsiString FileName)
@@ -5796,39 +5685,6 @@ void Cvektory::SaveText2File(AnsiString Text,AnsiString FileName)
 
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
-//void Cvektory::get_LT_a_max_min_TT()
-//{
-//		LT=0.0;
-//		MAX_TT=-100.0;
-//		MIN_TT=+1000.0;
-//		Cvektory::TObjekt *ukaz;
-//		ukaz=OBJEKTY->dalsi;//přeskočí hlavičku
-//		while (ukaz!=NULL)
-//		{
-//			LT+=ukaz->CT;
-//			if(MAX_TT<ukaz->TTo)MAX_TT=ukaz->TTo;
-//			if(MIN_TT>ukaz->TTo)MIN_TT=ukaz->TTo;
-//			ukaz=ukaz->dalsi;//posun na další prvek
-//		}
-//}
-////---------------------------------------------------------------------------
-//double Cvektory::sum_WT()
-//{
-//	 double SUM=0;
-//	 Cvektory::TObjekt *ukaz;
-//	 ukaz=OBJEKTY->dalsi;//přeskočí hlavičku
-//	 while (ukaz!=NULL)
-//	 {
-//			switch(ukaz->rezim)
-//			{
-//					case 0:SUM+=ukaz->CT-Form1->ms.MyToDouble(Form1->ms.EP(Form1->ms.EP(ukaz->techn_parametry,"PT","\n")+"|","=",+"|"));break;//S&G
-//					case 1:SUM+=0;break;//Kontinual - je efektivní bez prostojů prostě kontinuální
-//					case 2:SUM+=ukaz->CT;break;//PP - je jeden velký prostoj
-//      }
-//			ukaz=ukaz->dalsi;//posun na další prvek
-//	 }
-//	 return SUM;
-//}
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
@@ -6334,10 +6190,10 @@ void Cvektory::Text2CSV(AnsiString text,AnsiString FileName,AnsiString Title,Ans
 //---------------------------------------------------------------------------
 void Cvektory::vse_odstranit()
 {
-		//hala
+		//HALA
 		vymaz_body();
 
-		//vozíky
+		//VOZÍKY
 		if(VOZIKY!=NULL && VOZIKY->predchozi->n>0)//pokud je více objektů
 		{
 			vymaz_seznam_VOZIKY();//vymaze vozíky z paměti
@@ -6345,7 +6201,7 @@ void Cvektory::vse_odstranit()
 		}
 		hlavicka_VOZIKY();//nutnost
 
-		//zakazky
+		//ZAKÁZKY
 		if(ZAKAZKY!=NULL && ZAKAZKY->predchozi->n>0)//pokud je více objektů
 		{
 			vymaz_seznam_ZAKAZKY();//byla zde poznámka, že před zdm padalo
@@ -6353,7 +6209,7 @@ void Cvektory::vse_odstranit()
 		}
 		hlavicka_ZAKAZKY();//nutnost
 
-		//objekty
+		//OBJEKTY včetně elementů
 		if(OBJEKTY!=NULL && OBJEKTY->predchozi->n>0)//pokud je více objektů
 		{
 			vymaz_seznam_OBJEKTY();//vymaze objekty z paměti
@@ -6361,26 +6217,21 @@ void Cvektory::vse_odstranit()
 		}
 		hlavicka_OBJEKTY();//nutnost
 
-		//pohony
+		//POHONY
 		if(POHONY!=NULL && POHONY->predchozi->n>0)//pokud je více objektů
 		{
 			vymaz_seznam_POHONY();//vymaze pohony z paměti
 			delete POHONY; POHONY=NULL;
 		}
 		hlavicka_POHONY();//nutnost
-//
-//
-//
-//
-////
-////		//palce
-////		if(PALCE->predchozi->n>0)//pokud je více objektů
-////		{
-////			vymaz_seznam();//vymaze body z paměti
-////			delete PALCE; PALCE=NULL;
-////		}
-////
-////
+
+//		//palce
+//		if(PALCE->predchozi->n>0)//pokud je více objektů
+//		{
+//			vymaz_seznam();//vymaze body z paměti
+//			delete PALCE; PALCE=NULL;
+//		}
+
 		//procesy
 		if(PROCESY!=NULL && PROCESY->predchozi->n>0)//pokud je více objektů
 		{
@@ -6389,19 +6240,8 @@ void Cvektory::vse_odstranit()
 		}
 		hlavicka_PROCESY();
 
-		//retezy
-		if(RETEZY!=NULL && RETEZY->predchozi->n>0)//pokud je více objektů
-		{
-			vymaz_seznam_RETEZY();//vymaze objekty z paměti
-			delete RETEZY; RETEZY=NULL;
-		}
-		hlavicka_RETEZY();//nutnost
 
-
-
-
-
-				/*  až budu pracovat s UNDO a REDO
+		/*  až budu pracovat s UNDO a REDO
 		v.vymaz_seznam(v.p_redo);
 		v.vymaz_seznam(v.p_undo);
 		v.vymaz_seznam(v.l_redo);

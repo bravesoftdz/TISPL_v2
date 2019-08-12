@@ -49,9 +49,10 @@ class Cvektory
 	struct TGeometrie//pouze struktura
 	{
 		short typ;//0-linie, 1 oblouk - možná nebude třeba
-		double delka;//akcelerátor
-		//double orientace;// možný akcelerátor - možná nebude třeba
-		//double radius; -otázka zda bude potřeba, pokrývá délka a rotace a body
+		double delka;
+    double radius;
+		double orientace;
+    double rotacni_uhel;
 		double X1,Y1,X2,Y2,X3,Y3,X4,Y4;//body bézieru
 	};
 
@@ -98,7 +99,7 @@ class Cvektory
 		TGeometrie geo;
 		TmGrid *mGrid;
 
-		UnicodeString poznamka;//uloží poznámku
+		//UnicodeString poznamka;//uloží poznámku   //DOPRYC
 
 		struct TElement *sparovany;//ukazatel na následující spárovaný element ve spojovém seznamu (nemusí být totožný s dalším)
 		struct TElement *predchozi;//ukazatel na předchozí element ve spojovém seznamu
@@ -109,42 +110,43 @@ class Cvektory
 	{
 		unsigned long n; //pořadí objektu ve spoj.seznamu
 		unsigned int id; //id typu objektu
-		UnicodeString short_name;//krátký název max. 4 znaky
+	 	UnicodeString short_name;//krátký název max. 4 znaky         //DOPRYC
 		UnicodeString name;//celý název objektu
 		double X,Y;//umístění objektu ve schématu - prozatím, bude ale sloužit na umístění popisku objektu!!!
 		TBod *body;//definice obrysu haly - NEW + dodat do CObjekt!!!!
-		double Xk,Yk;//bude ke smazání - umístění levého horního rohu kabiny v layoutu a náhledu kabiny - NEW + dodat do CObjekt!!!!
-		//double Xt,Yt;- souřadnice popisku objektu pro možnost posouvání dodat!!!
-		double sirka_steny;//šířka stěny kabiny objektu v metrech  - NEW + dodat do CObjekt!!!!
-		short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking)KK,2-Postprocesní (PP), -1 nenastaven
-		double CT;//pro status návrh
-		double RD;//pro status návrh v m/s, jenom pomocná proměnná získaná jako DD/CT, stežejní je většinou aRD (aktuální rychlost), která se váže přímo (i datově) k pohonu
-		double delka_dopravniku;//delka dopravníku v rámci objektu
-		double kapacita;//uživatelsky zadaná kapacita
-		double kapacita_dop;//doporučená, vypočítáná
-		double pozice;//počet vozíků v kabině
-		double rotace;//rotace jigu v objektu - nově spíše rotace náhledu  - ZRUŠIT
+    double sirka_steny;//šířka stěny kabiny objektu v metrech  - NEW + dodat do CObjekt!!!!
+		double Xk,Yk;//bude ke smazání - umístění levého horního rohu kabiny v layoutu a náhledu kabiny  //DOPRYC
+		double Xt,Yt;// souřadnice popisku objektu pro možnost posouvání dodat!!!   //PRIDAT
+    double Xp,Yp;// souřadnice tab pohonu pro možnost posouvání dodat!!!   //PRIDAT
+		short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking)KK,2-Postprocesní (PP), -1 nenastaven, pouzíva tab.pohonu
+		double CT;//pro status návrh   //DOPRYC
+		double RD;//pro status návrh v m/s, jenom pomocná proměnná získaná jako DD/CT, stežejní je většinou aRD (aktuální rychlost), která se váže přímo (i datově) k pohonu  //DOPRYC
+		double delka_dopravniku;//delka dopravníku v rámci objektu   //DOPRYC
+		double kapacita;//uživatelsky zadaná kapacita  //DOPRYC
+		double kapacita_dop;//doporučená, vypočítáná  //DOPRYC
+		double pozice;//počet vozíků v kabině  //DOPRYC
+		double rotace;//rotace jigu v objektu - nově spíše rotace náhledu  - //DOPRYC
 		double orientace;//0,90,180,270 (orientace dle světových stran) - používat toto
-		double mezera;//mezera mezi vozíky (kritická mezera)
-		double mezera_jig;//mezera mezi jigy
-		double mezera_podvozek;//mezera mezi podvozky
+		double mezera;//mezera mezi vozíky (kritická mezera) //DOPRYC
+		double mezera_jig;//mezera mezi jigy //DOPRYC
+		double mezera_podvozek;//mezera mezi podvozky  //DOPRYC
 		TPohon *pohon;//ukazatel na použitý pohon
 		TElement *elementy;
 		TPointD min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
-		TPointD rozmer_kabiny;//délka a šířka obvodových zdí kabiny   - NEW + dodat do CObjekt
-		T2Rect kabinaKotaX_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny - nedovávat  do CObjekt
-		T2Rect kabinaKotaY_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny - nedovávat  do CObjekt
+		TPointD rozmer_kabiny;//délka a šířka obvodových zdí kabiny   //DOPRYC
+		T2Rect kabinaKotaX_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny -//DOPRYC
+		T2Rect kabinaKotaY_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny -//DOPRYC
 		double koty_elementu_offset;//odsazení kót elementů v metrech  - NEW + dodat do CObjekt!!!!
 		TKomora *komora;//ukazatel na případné komory objektu - NEW + dodat do CObjekt
-		unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky
-		unsigned short stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
-		double odchylka;//povolená odchylka u PP z CT
-		double obsazenost;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
-		short CT_zamek;
-		short RD_zamek;
-		short DD_zamek;
-		short K_zamek;
-		UnicodeString poznamka;//uloží poznámku ke vzniku CT
+		unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky   //DOPRYC
+		unsigned short stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky   //DOPRYC
+		double odchylka;//povolená odchylka u PP z CT  //DOPRYC
+		double obsazenost;//slouží pro uchování času obsazenosti pro vykreslování na časových osách //DOPRYC
+		short CT_zamek; //DOPRYC
+		short RD_zamek;  //DOPRYC
+		short DD_zamek;   //DOPRYC
+		short K_zamek;   //DOPRYC
+		UnicodeString poznamka;//uloží poznámku ke vzniku CT   //DOPRYC
 		bool probehla_aktualizace_prirazeni_pohonu;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
 		bool zobrazit_koty;//proměnná určující, zda se budou zobrzovat kóty
 		bool zobrazit_mGrid;//proměnná určující, zda budou zobrazeny mGridy
@@ -235,6 +237,8 @@ class Cvektory
 	struct T_parametry_projektu //(Parametry výroby + Parametry linky (vozíky)
 	{
     int katalog;//ID katalogových komponent zvolených pro geometrické elementy linky
+    short typ_linky; //0 - podlahový, 1 - podvěsný
+    double radius;
 		TDateTime cas_start;//začátek výroby v SEČ (resp. LSEČ)
 		unsigned long  mnozstvi;//požadované množství
 		double hod_den;//počet hodin za den
@@ -245,7 +249,6 @@ class Cvektory
 		double sirka_jig;
 		double vyska_jig;
 		double delka_podvozek;
-		short typ_voziku;//0 - podlahový, 1 - podvěsný
 		T_raster raster;
 		T_vector vector;
 	};
@@ -288,16 +291,6 @@ class Cvektory
 		struct TOdstavka *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
 	struct TOdstavka ODSTAVKY;//seznam plánovaných odstávek linky
-
-	struct TRetez
-	{
-		unsigned int n; //pořadí objektu ve spoj.seznamu
-		AnsiString name;//název řetězu
-		double roztec;//rozteč palců na řetězů v metrech
-		struct TRetez *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-		struct TRetez *dalsi;//ukazatel na  další objekt ve spojovém seznamu
-	};
-	struct TRetez *RETEZY;
 
 	struct TDoubleHodnota
 	{
@@ -377,7 +370,10 @@ class Cvektory
 		double sirka_jig;
 		double vyska_jig;
 		double delka_podvozek;
-		double typ_vozik;
+    int katalog;
+		short typ_linky;
+    double radius;
+    short objekt_posunout_vse;
 	};
 	TFile_hlavicka File_hlavicka;
 
@@ -561,13 +557,6 @@ public:
 	TProces *vrat_nasledujici_proces_objektu(TProces *Proces);//vratí následující proces na stejném objektu jako proces zadaný
 	long vymaz_seznam_PROCESY();
 
-//metody pro RETEZY
-	void hlavicka_RETEZY();//vytvoří novou hlavičku pro řetězy
-	void vloz_retez(AnsiString name, double roztec);//uloží retez a jeho parametry do spojového seznamu
-	double vrat_roztec_retezu_z_item(AnsiString item,AnsiString separator=",");//z položky (předpoklad vybrané) v comboboxů řetězů vrátí pouze hodnotu rozteče
-	AnsiString vypis_retezy_s_pouzitelnou_rozteci(double Rz,AnsiString separator=",",AnsiString total_separator=";",bool mm=false);//vypíše všechny použitelné řetezy použitelné pro zadané rozmezí dle užité rozteče, separátor odděluje název řetězu od rozteče, totál separátor jednotlivé řetězy, pokud je Rz zadané nulové vrátí hodnotu nula, //vypíše všechny použitelné řetezy použitelné pro zadané rozmezí dle užité rozteče, separátor odděluje název řetězu od rozteče, totál separátor jednotlivé řetězy, pokud je Rz zadané nulové vrátí hodnotu nula, pokud chci vypsat všechny načtené řetězy ze souboru retezy.csv použiji parametr Rz=-1, pokud není požadován výpis názvu řetězu použiji prázdné uvozovky
-	long vymaz_seznam_RETEZY();//smaze RETEZY z pameti
-
 //metody pro KATOLOG
 	enum TtypHodnoty{R,hO,vO,vR,hR};TtypHodnoty;
 	void vloz_typ_dopravniku(AnsiString name,UnicodeString link="",short druh=0);//vloží nový typ dopravníku do KATALOGu dopravníků, pokud neexistuje hlavička vytvoří ji, druh: 0 - podlahový, 1 - podvěsný
@@ -619,193 +608,184 @@ public:
 	AnsiString ReadFromTextFile(AnsiString FileName);
 	void SaveText2File(AnsiString Text,AnsiString FileName);
 
-//		//technické, statistické a ekonomické ukazatele
-//		void get_LT_a_max_min_TT();
-//		double sum_WT();
-//		double LT;
-//		double MAX_TT;
-//		double MIN_TT;
-		TPointD vrat_zacatek_a_konec_zakazky(TZakazka *jaka);//ukazatel na cestu resp, zakázku
-		TPointD vrat_zacatek_a_konec_zakazky(unsigned int n_zakazky);//n resp. ID cestu resp, zakázku
-		double vrat_nejpozdejsi_konec_zakazek();//nemusí se vždy jednat o poslední zakázku
-		double vrat_LT();//vratí součet CT časů objektů ze statusu návrh/architekt
-		double vrat_LT_voziku(TVozik *jaky);//vrátí celkový čas, který strávil vozík ve výrobě včetně čekání
-		double vrat_LT_voziku(unsigned int n_voziku);//vrátí celkový čas, který strávil vozík ve výrobě včetně čekání
-		double vrat_sumPT_voziku(TVozik *jaky);//vrátí čistý čas, který strávil vozík ve výrobě bez čekání
-		double vrat_sumPT_voziku(unsigned int n_voziku);//vrátí čistý čas, který strávil vozík ve výrobě bez čekání
-		double vrat_AVGsumPT_zakazky(TZakazka *jaka);//vrátí čistý čas, který strávily vozík ve výrobě bez čekání pro danou zakazku
-		double vrat_WT_voziku(TVozik *jaky);//vrátí čas čeká vozíku během výroby
-		double vrat_WT_voziku(unsigned int n_voziku);//vrátí čas čeká vozíku během výroby
-		double vrat_AVGsumWT_zakazky(TZakazka *jaka);//vrátí čistý čas, který vozíky čekaly pro danou zakazku
-		double vrat_TT_voziku(TVozik *jaky);//vrátí takt, resp. rozdíl čásů mezi dokončením tohoto a předchozího vozíku
-		double vrat_TT_voziku(unsigned int n_voziku);//vrátí takt, resp. rozdíl čásů mezi dokončením tohoto a předchozího vozíku
-		double vrat_AVG_TT_zakazky(TZakazka *jaka);//vrátí hodnotu průměrného TT mezi vozíky v rámci dané zakázky/cesty
-		double vrat_AVG_TT_zakazky(unsigned int n_zakazky);//vrátí hodnotu průměrného TT mezi vozíky v rámci
-		unsigned int vrat_pocet_voziku_zakazky(TZakazka *jaka);
-		unsigned int vrat_pocet_voziku_zakazky(unsigned int n_zakazky);
-		TPoint vrat_start_a_pozici_vozikuPX(unsigned int n_voziku);//vrátí začátek a konec vozíku na časové ose v PX
-		double WIP(short typ_vypoctu=0);//vrátí max. počet vozíků na lince, kde parametr s implicitní hodnotou 0 je volaný výpočet z překrytí vozíků na časových osách, hodnot 1 - součtem kapacit zadaných (resp. v návrháru/architektovi vypočítaných), hodnota 2 - součtem kapacit vypočtených v časových osách,  3 - tradiční výpočet WIP=1/TT*LT
-		void uloz_doporucene_kapacity_objetku();//ukládá vypočtené doporučené kapacity jednotlivým technologickým objektům do jejich atribitu dop_kapacita, která se nezadává uživatelsky, ale jedině v tomto algoritmu
-		TMinMedAvgMax_d vrat_statisticke_doby_cekani_na_palec(TCesta *segment_cesty);//vrátí minimální, střední, průměrnou a maximální dobu čekání na palec v sec pro daný objekt (segment cesty) tak, jak bylo vypočteno v analýze/na časových osách, musí být tedy zde zvolena nějaká (libovolná) volba čekání na palec, mimo "žádná", Struktura TMinMedAvgMax_d vrací 4 hodnoty, min, med, agv, max datového typu double, volání výsledků probíhá přes “tečkový selektor”
+//technické, statistické a ekonomické ukazatele
+	TPointD vrat_zacatek_a_konec_zakazky(TZakazka *jaka);//ukazatel na cestu resp, zakázku
+	TPointD vrat_zacatek_a_konec_zakazky(unsigned int n_zakazky);//n resp. ID cestu resp, zakázku
+	double vrat_nejpozdejsi_konec_zakazek();//nemusí se vždy jednat o poslední zakázku
+	double vrat_LT();//vratí součet CT časů objektů ze statusu návrh/architekt
+	double vrat_LT_voziku(TVozik *jaky);//vrátí celkový čas, který strávil vozík ve výrobě včetně čekání
+	double vrat_LT_voziku(unsigned int n_voziku);//vrátí celkový čas, který strávil vozík ve výrobě včetně čekání
+	double vrat_sumPT_voziku(TVozik *jaky);//vrátí čistý čas, který strávil vozík ve výrobě bez čekání
+	double vrat_sumPT_voziku(unsigned int n_voziku);//vrátí čistý čas, který strávil vozík ve výrobě bez čekání
+	double vrat_AVGsumPT_zakazky(TZakazka *jaka);//vrátí čistý čas, který strávily vozík ve výrobě bez čekání pro danou zakazku
+	double vrat_WT_voziku(TVozik *jaky);//vrátí čas čeká vozíku během výroby
+	double vrat_WT_voziku(unsigned int n_voziku);//vrátí čas čeká vozíku během výroby
+	double vrat_AVGsumWT_zakazky(TZakazka *jaka);//vrátí čistý čas, který vozíky čekaly pro danou zakazku
+	double vrat_TT_voziku(TVozik *jaky);//vrátí takt, resp. rozdíl čásů mezi dokončením tohoto a předchozího vozíku
+	double vrat_TT_voziku(unsigned int n_voziku);//vrátí takt, resp. rozdíl čásů mezi dokončením tohoto a předchozího vozíku
+	double vrat_AVG_TT_zakazky(TZakazka *jaka);//vrátí hodnotu průměrného TT mezi vozíky v rámci dané zakázky/cesty
+	double vrat_AVG_TT_zakazky(unsigned int n_zakazky);//vrátí hodnotu průměrného TT mezi vozíky v rámci
+	unsigned int vrat_pocet_voziku_zakazky(TZakazka *jaka);
+	unsigned int vrat_pocet_voziku_zakazky(unsigned int n_zakazky);
+	TPoint vrat_start_a_pozici_vozikuPX(unsigned int n_voziku);//vrátí začátek a konec vozíku na časové ose v PX
+	double WIP(short typ_vypoctu=0);//vrátí max. počet vozíků na lince, kde parametr s implicitní hodnotou 0 je volaný výpočet z překrytí vozíků na časových osách, hodnot 1 - součtem kapacit zadaných (resp. v návrháru/architektovi vypočítaných), hodnota 2 - součtem kapacit vypočtených v časových osách,  3 - tradiční výpočet WIP=1/TT*LT
+	void uloz_doporucene_kapacity_objetku();//ukládá vypočtené doporučené kapacity jednotlivým technologickým objektům do jejich atribitu dop_kapacita, která se nezadává uživatelsky, ale jedině v tomto algoritmu
+	TMinMedAvgMax_d vrat_statisticke_doby_cekani_na_palec(TCesta *segment_cesty);//vrátí minimální, střední, průměrnou a maximální dobu čekání na palec v sec pro daný objekt (segment cesty) tak, jak bylo vypočteno v analýze/na časových osách, musí být tedy zde zvolena nějaká (libovolná) volba čekání na palec, mimo "žádná", Struktura TMinMedAvgMax_d vrací 4 hodnoty, min, med, agv, max datového typu double, volání výsledků probíhá přes “tečkový selektor”
 
 //SQL
-		AnsiString QUERY(AnsiString query);//vratí AnsiString hodnod dle zadaného dotazu v syntaxi SQL, zatím umí jen základní úroveň
+	AnsiString QUERY(AnsiString query);//vratí AnsiString hodnod dle zadaného dotazu v syntaxi SQL, zatím umí jen základní úroveň
 
 //pomocné metody
-		void Text2CSV(AnsiString text,AnsiString FileName="",AnsiString Title="",AnsiString DefaultExt="",AnsiString Filter="",bool openDialog=true,bool open=true);//vytovoří a otevře CSV, je-li požadováno
+	void Text2CSV(AnsiString text,AnsiString FileName="",AnsiString Title="",AnsiString DefaultExt="",AnsiString Filter="",bool openDialog=true,bool open=true);//vytovoří a otevře CSV, je-li požadováno
 
 //pomocné struktury pro ukládání do bináru
 private:
-		struct C_raster
-		{
+	struct C_raster
+	{
+		unsigned int text_length;
+		long double resolution;//rozlišení metrů na jeden pixel rastrového podkladu
+		double X,Y;//logické souřadnice (v metrech) umístění rastrového podkladu v projektu
+		bool show;//indikace zda je raster zobrazen
+		bool grayscale;//zda bude či nebude rastrový podklad v odstínech šedi či nikoliv
+		int dim;//úroveň ztlumení
+	};
+
+	struct C_pohon//pro konverzi do bináru
+	{
+			unsigned int n;
 			unsigned int text_length;
-			long double resolution;//rozlišení metrů na jeden pixel rastrového podkladu
-			double X,Y;//logické souřadnice (v metrech) umístění rastrového podkladu v projektu
-			bool show;//indikace zda je raster zobrazen
-			bool grayscale;//zda bude či nebude rastrový podklad v odstínech šedi či nikoliv
-			int dim;//úroveň ztlumení
-		};
-
-		struct C_pohon//pro konverzi do bináru
-		{
-				unsigned int n;
-				unsigned int text_length;
-				double rychlost_od;//minimální pracovní rychlost dopravníku
-				double rychlost_do;//maximální pracovní rychlost dopravníku
-				double aRD;//aktuální rychlost dopravníku m/s
-				double roztec;//rozteč palců v m
-				double Rz;//rozestup aktivních palců v m
-				double Rx;//rozestup aktivních palců (počet aktivních palců)
-		};
-		struct C_objekt//pro konverzi do bináru
-		{
-				unsigned int n;
-				unsigned int id;
-				//UnicodeString short_name; nelze
-				//UnicodeString name; nelze
-				unsigned int text_length;
-				double X, Y;
-        unsigned long pocet_bodu;
-        unsigned long pocet_elementu;
-        unsigned long pocet_komor;
-				unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
-        double sirka_steny;//šířka stěny kabiny objektu v metrech
-				double rotace;//rotace jigu v objektu
-				unsigned int pohon;//"id" resp. n přidruženého - roletkou vybraného pohonu
-				double delka_dopravniku;//delka dopravníku v rámci objektu
-        double koty_elementu_offset;
-				//UnicodeString poznamka; nelze
-				unsigned long poznamka_length;
-        bool zobrazit_koty;//proměnná určující, zda se budou zobrzovat kóty - NEW pridat do binarky
-        bool zobrazit_mGrid;//proměnná určující, zda budou zobrazeny mGridy - NEW pridat do binarky
-        bool uzamknout_nahled;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu - NEW pridat do binarky
-
-		};
-
-     struct C_bod//pouze pridruzeny spojak
-    {
-      unsigned long n; //pořadí objektu ve spoj.seznamu
-      double X, Y;//umístění v logických (metrických) souřadnicích
-      double kota_offset;//odsazení kót v metrech
-    };
-
-		struct C_hala
-		{
-			double name_delka;
-      double X, Y;//umístění názvu v logických (metrických) souřadnicích
+			double rychlost_od;//minimální pracovní rychlost dopravníku
+			double rychlost_do;//maximální pracovní rychlost dopravníku
+			double aRD;//aktuální rychlost dopravníku m/s
+			double roztec;//rozteč palců v m
+			double Rz;//rozestup aktivních palců v m
+			double Rx;//rozestup aktivních palců (počet aktivních palců)
+	};
+	struct C_objekt//pro konverzi do bináru
+	{
+			unsigned int n;
+			unsigned int id;
+			unsigned int text_length;
+			double X, Y;
       unsigned long pocet_bodu;
-    };
+			unsigned long pocet_elementu;
+      unsigned long pocet_komor;
+			unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
+      double sirka_steny;//šířka stěny kabiny objektu v metrech
+			double rotace;//rotace jigu v objektu
+			unsigned int pohon;//"id" resp. n přidruženého - roletkou vybraného pohonu
+			double delka_dopravniku;//delka dopravníku v rámci objektu
+      double koty_elementu_offset;
+			bool zobrazit_koty;//proměnná určující, zda se budou zobrzovat kóty - NEW pridat do binarky
+			bool zobrazit_mGrid;//proměnná určující, zda budou zobrazeny mGridy - NEW pridat do binarky
+			bool uzamknout_nahled;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu - NEW pridat do binarky
+	};
 
-    struct C_komora
-    {
-      unsigned long n; //pořadí ve spoj.seznam
-      double velikost;//v metrech
-      short typ;//1-se sprchou, 0 bez jen okap
-		};
+   struct C_bod//pouze pridruzeny spojak
+	{
+    unsigned long n; //pořadí objektu ve spoj.seznamu
+		double X, Y;//umístění v logických (metrických) souřadnicích
+    double kota_offset;//odsazení kót v metrech
+	};
 
-		struct C_zakazka
-		{
-				unsigned long n;//pořadí objektu ve spoj.seznamu
-				//UnicodeString id;//uživatelské ID objektu - nelze UnicodeString
-				unsigned int id_length;
-				unsigned short typ;//0- realná,1-servisní
-				//UnicodeString name;//název zakázky nelze jako UnicodeString
-				unsigned int name_length;
-				TColor barva;//barva zakáky
-				double pomer;//poměr z celkového množství výrobků
-				double TT;
-				TJig jig;//šířka délka, výška, rotace a  ks připadajících na jig/rám vozíku
-				unsigned long pocet_segmentu_cesty;//udržuje počet jednotlivých segmentů cesty, slouží kvůli tomu, aby se vědělo, kolikrát cyklem načítat strukturu která načítá jednotlivé segmenty konkrétně objekty typu TCesta dané zakázky
-				unsigned long pocet_voziku;//počet vozíků v zakázce
-				unsigned long serv_vozik_pocet;//počet servisních vozíků v zakázce
-				unsigned long opakov_servis;//cyklus opakování servisních vozíku
-		};
+	struct C_hala
+	{
+		double name_delka;
+    double X, Y;//umístění názvu v logických (metrických) souřadnicích
+		unsigned long pocet_bodu;
+  };
 
-      struct C_element//pouze pridruzeny spojak
-		{
-        unsigned long n; //pořadí ve spoj.seznamu
-        unsigned int eID; //id typu elementu: 0 - stop stanice, 1 - robot, 2 - robot se stop stanicí, 3 - robot s pasivní otočí, 4 - robot s aktivní otočí (resp. s otočí a stop stanicí), 5 - otoč pasivní, 6 - otoč aktivní (resp. otoč se stop stanicí), 7 - pouze geometrická zarážka
-       //	UnicodeString short_name;//krátký název max. 4 znaky
-       //	UnicodeString name;//celý název objektu
-        double name_delka;  // celý název objektu
-        double X, Y;//umístění v logických (metrických) souřadnicích
-        double Xt,Yt;//umístění tabulky, resp. mGridu v logických (metrických) souřadnicích
-        short orientace;//v jaké orientaci je element na obrazovce vykreslen 0,90,180,270
-        double rotace_jig;//úhel o který element orotuje jig vzhledem k jeho aktuální rotaci jigu vůči podvozku, např. rotace_jig=90°, aktuální rotace jigu 90°, výsledek 180°
-        short stav;
+  struct C_komora
+	{
+    unsigned long n; //pořadí ve spoj.seznam
+		double velikost;//v metrech
+    short typ;//1-se sprchou, 0 bez jen okap
+	};
 
-        double LO1;
-        double OTOC_delka;
-        double LO2;
-        double LO_pozice;
+	struct C_zakazka
+	{
+			unsigned long n;//pořadí objektu ve spoj.seznamu
+			//UnicodeString id;//uživatelské ID objektu - nelze UnicodeString
+			unsigned int id_length;
+			unsigned short typ;//0- realná,1-servisní
+			//UnicodeString name;//název zakázky nelze jako UnicodeString
+			unsigned int name_length;
+			TColor barva;//barva zakáky
+			double pomer;//poměr z celkového množství výrobků
+			double TT;
+			TJig jig;//šířka délka, výška, rotace a  ks připadajících na jig/rám vozíku
+			unsigned long pocet_segmentu_cesty;//udržuje počet jednotlivých segmentů cesty, slouží kvůli tomu, aby se vědělo, kolikrát cyklem načítat strukturu která načítá jednotlivé segmenty konkrétně objekty typu TCesta dané zakázky
+			unsigned long pocet_voziku;//počet vozíků v zakázce
+			unsigned long serv_vozik_pocet;//počet servisních vozíků v zakázce
+			unsigned long opakov_servis;//cyklus opakování servisních vozíku
+	};
 
-        double PT1;
-        double PTotoc;
-        double PT2;
+		struct C_element//pouze pridruzeny spojak
+	{
+			unsigned long n; //pořadí ve spoj.seznamu
+      unsigned int eID; //id typu elementu: 0 - stop stanice, 1 - robot, 2 - robot se stop stanicí, 3 - robot s pasivní otočí, 4 - robot s aktivní otočí (resp. s otočí a stop stanicí), 5 - otoč pasivní, 6 - otoč aktivní (resp. otoč se stop stanicí), 7 - pouze geometrická zarážka
+		 //	UnicodeString short_name;//krátký název max. 4 znaky
+     //	UnicodeString name;//celý název objektu
+			double name_delka;  // celý název objektu
+      double X, Y;//umístění v logických (metrických) souřadnicích
+			double Xt,Yt;//umístění tabulky, resp. mGridu v logických (metrických) souřadnicích
+      short orientace;//v jaké orientaci je element na obrazovce vykreslen 0,90,180,270
+			double rotace_jig;//úhel o který element orotuje jig vzhledem k jeho aktuální rotaci jigu vůči podvozku, např. rotace_jig=90°, aktuální rotace jigu 90°, výsledek 180°
+      short stav;
 
-        double WT;//čekání na palec
-        double WTstop;//čekání na stopce
-        double RT;//reserve time
+      double LO1;
+			double OTOC_delka;
+      double LO2;
+			double LO_pozice;
 
-        unsigned int akt_pocet_voziku;
-        unsigned int max_pocet_voziku;
-        TGeometrie geo;
-		};
+			double PT1;
+      double PTotoc;
+      double PT2;
 
-		struct C_cesta//pouze přidružený spoják, který je součástí zakázky, jeden objekt spojáku je jeden segment cesty
-		{
-				unsigned long n;//n segmentu cesty
-				unsigned long n_objekt;//n na vybraný objekt
-		  	double CT; //cycle time
-		  	double Tc;//čaš čištění v rámci zakázky resp. stejné barvy, vztahuje se na konkrétní objekt a a zároveň zakázku, musí být tady, pokud není použito, tak 0
-				double Tv;//čas čištění a výměny barev, vztahuje se na konkrétní objekt a a zároveň zakázku, musí být tady, pokud není použito, tak 0
-				double RD;//rychlost dopravníku
-				unsigned int Opak;//počet opakování jak často se čištění opakuje
-		};
-//		struct C_vozik//pro konverzi do bináru
-//		{
-//			unsigned int n; //pořadí objektu ve spoj.seznamu
-//			unsigned int id_length;   //délka řetězce id
-//			double delka;
-//			double sirka;
-//			double vyska;
-//			double rotace;
-//			unsigned int text_length;
-//			double max_vyrobku;
-//			double akt_vyrobku;
-//			double delka_vcetne_vyrobku;
-//			double sirka_vcetne_vyrobku;
-//			double vyska_vcetne_vyrobku;
-//			short stav;//-1 - není na lince, 0 - stop, 1 - čeká, 2 - jede
-//			TColor barva;
-//		};
+      double WT;//čekání na palec
+      double WTstop;//čekání na stopce
+			double RT;//reserve time
+
+      unsigned int akt_pocet_voziku;
+      unsigned int max_pocet_voziku;
+			TGeometrie geo;
+	};
+
+	struct C_cesta//pouze přidružený spoják, který je součástí zakázky, jeden objekt spojáku je jeden segment cesty
+	{
+			unsigned long n;//n segmentu cesty
+			unsigned long n_objekt;//n na vybraný objekt
+	  	double CT; //cycle time
+			double Tc;//čaš čištění v rámci zakázky resp. stejné barvy, vztahuje se na konkrétní objekt a a zároveň zakázku, musí být tady, pokud není použito, tak 0
+			double Tv;//čas čištění a výměny barev, vztahuje se na konkrétní objekt a a zároveň zakázku, musí být tady, pokud není použito, tak 0
+			double RD;//rychlost dopravníku
+			unsigned int Opak;//počet opakování jak často se čištění opakuje
+	};
+
+//	struct C_vozik//pro konverzi do bináru
+//	{
+//		unsigned int n; //pořadí objektu ve spoj.seznamu
+//		unsigned int id_length;   //délka řetězce id
+//		double delka;
+//		double sirka;
+//		double vyska;
+//		double rotace;
+//		unsigned int text_length;
+//		double max_vyrobku;
+//		double akt_vyrobku;
+//		double delka_vcetne_vyrobku;
+//		double sirka_vcetne_vyrobku;
+//		double vyska_vcetne_vyrobku;
+//		short stav;//-1 - není na lince, 0 - stop, 1 - čeká, 2 - jede
+//		TColor barva;
+//	};
 //
 
-		unsigned int vrat_kapacitu_objektu(TObjekt *O);//stačí v sekci private, protože ukládám přímo přímo do atributů objektu pomocí uloz_doporucene_kapacity_objetku();
+	unsigned int vrat_kapacitu_objektu(TObjekt *O);//stačí v sekci private, protože ukládám přímo přímo do atributů objektu pomocí uloz_doporucene_kapacity_objetku();
 //
-//	protected:
-
+//protected:
 };
 //---------------------------------------------------------------------------
 #endif
+
 

@@ -509,12 +509,15 @@ void TForm1::Novy_soubor()//samotné vytvoření nového souboru
 			 d.v.PP.sirka_jig=1;
 			 d.v.PP.vyska_jig=1;
 			 d.v.PP.delka_podvozek=1;
-			 d.v.PP.typ_voziku=0;
+			 d.v.PP.typ_linky=0;
 			 d.v.PP.raster.filename="";
 			 d.v.PP.raster.resolution=m2px;
 			 d.v.PP.raster.X=0;
 			 d.v.PP.raster.Y=0;
 			 d.v.PP.raster.show=false;
+       d.v.PP.katalog=1;
+       d.v.PP.radius=1000;
+
 
 
 			 Akce=NIC;Screen->Cursor=crDefault;//změní kurzor na default
@@ -2975,7 +2978,9 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 		}
 		pom_bod_puv=NULL;delete pom_bod_puv;
 	}
-}//---------------------------------------------------------------------------
+}
+
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //deaktivuje zaměřovač label a svislice a kolmice
 void TForm1::deaktivace_zamerovace()
@@ -7433,7 +7438,7 @@ unsigned short int TForm1::Otevrit_soubor(UnicodeString soubor)//realizuje samot
 			d.v.PP.dni_rok=d.v.File_hlavicka.dni_rok;
 			d.v.PP.TT=d.v.File_hlavicka.TT;
 			d.v.PP.efektivita=d.v.File_hlavicka.efektivita;
-			d.v.PP.typ_voziku=d.v.File_hlavicka.typ_vozik;
+			d.v.PP.typ_linky=d.v.File_hlavicka.typ_linky;
 			d.v.PP.delka_jig=d.v.File_hlavicka.delka_jig;
 			d.v.PP.sirka_jig=d.v.File_hlavicka.sirka_jig;
 			d.v.PP.vyska_jig=d.v.File_hlavicka.vyska_jig;
@@ -9408,6 +9413,11 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 
 //	d.v.rotace_elementu(pom_temp,90);
 //	REFRESH();
+double r=d.v.PP.katalog;
+double rad=d.v.PP.radius;
+
+Memo(r);
+Memo(rad);
 
 
 
