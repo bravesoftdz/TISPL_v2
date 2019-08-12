@@ -456,10 +456,30 @@ void TForm_parametry_linky::nacti_pohony ()
 						if(ukaz->aRD==0)  	mGrid->Cells[4][i].Text = "";
 						else mGrid->Cells[4][i].Text = ukaz->aRD*(1+59.0*aRDunit);
 
+            mGrid->Cells[5][i].Type=mGrid->COMBOEDIT;
+            mGrid->Refresh();   //kvùli práci s combem je nutný refresh po nastavení na typ COMBOEDIT
+            TscGPComboEdit *C=mGrid->getComboEdit(5,i);
+            TscGPListBoxItem *I;
 
-						if(ukaz->roztec==0) mGrid->Cells[5][i].Text="";
-						if(Runit==MM) mGrid->Cells[5][i].Text = ukaz->roztec*(1+999.0*Runit);
-						else    mGrid->Cells[5][i].Text = ukaz->roztec;
+           //naètení hodnoty rozteèe do roletky + nastavení jako ItemIndex=0
+            I=C->Items->Add();
+						if(ukaz->roztec==0) C->ItemIndex=-1;
+						if(Runit==MM) { I->Caption = ukaz->roztec*(1+999.0*Runit); C->ItemIndex=0; }
+						else  { I->Caption = ukaz->roztec; C->ItemIndex=0; }
+
+
+           //naètení ostatních hodnot z katalogu do roletky
+           Cvektory::Ttyp_dopravniku *K=F->d.v.vrat_typ_dopravniku(F->d.v.PP.katalog);
+           Cvektory::TDoubleHodnota *H=K->roztec->dalsi;
+           C->Items->Clear();
+            while(H!=NULL)
+           {
+            I=C->Items->Add();
+            I->Caption=H->hodnota;
+            H=H->dalsi;
+           }
+            I=NULL;delete I;
+
 
 
          getmGridWidth();
@@ -474,7 +494,7 @@ void TForm_parametry_linky::nacti_pohony ()
           mGrid->Cells[3][i].Type=mGrid->readEDIT;
           mGrid->Cells[4][i].Type=mGrid->readEDIT;
           mGrid->Cells[5][i].Type=mGrid->readEDIT;
-
+          mGrid->Cells[5][i].Type=mGrid->COMBOEDIT;
 					mGrid->Cells[6][i].Type=mGrid->CHECK;
           mGrid->Cells[7][i].Type=mGrid->BUTTON;
           mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
@@ -603,7 +623,8 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 				if(mGrid->Cells[2][i].Text=="") count++;
 				if(mGrid->Cells[3][i].Text=="") count++;
 				if(mGrid->Cells[4][i].Text=="") count++;
-				if(mGrid->Cells[5][i].Text=="") count++;
+				//if(mGrid->Cells[5][i].Text=="") count++;
+        if(mGrid->getComboEdit(5,i)->Text=="") count++;
       }
 
         if(count>0)
@@ -828,9 +849,10 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 				if(mGrid->Cells[4][i].Text=="") {aRD=0; nelze_ulozit=true; }
 				else aRD=Form1->ms.MyToDouble(mGrid->Cells[4][i].Text)/(1+59.0*aRDunit);
 
-				if(mGrid->Cells[5][i].Text=="") {roztec=0; nelze_ulozit=true; }
-				if(Runit==MM) roztec=Form1->ms.MyToDouble(mGrid->Cells[5][i].Text)/1000.0;
-				else roztec=Form1->ms.MyToDouble(mGrid->Cells[5][i].Text);
+      //  ShowMessage(mGrid->getComboEdit(5,i)->Text);
+				if(mGrid->getComboEdit(5,i)->Text=="") {roztec=0; nelze_ulozit=true; }
+				if(Runit==MM) roztec=Form1->ms.MyToDouble(mGrid->getComboEdit(5,i)->Text)/1000.0;
+				else roztec=Form1->ms.MyToDouble(mGrid->getComboEdit(5,i)->Text);
 
 				if(mGrid->getButton(7,i)->Caption==""){Rz=0.0;Rx=0.0;}//pokud není pohon pøiøazen nuluj
 
@@ -911,6 +933,7 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
    mGrid->Cells[3][i].Type=mGrid->EDIT;
    mGrid->Cells[4][i].Type=mGrid->EDIT;
    mGrid->Cells[5][i].Type=mGrid->COMBOEDIT;
+
 	 /*mGrid->Cells[6][i].Type=mGrid->CHECK;*/mGrid->Cells[6][i].RightBorder->Color=clWhite;//Check zobrazen pouze v pøípadì, že je pohon pøiøazen
    mGrid->Cells[7][i].Type=mGrid->BUTTON;
 
@@ -936,6 +959,8 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
    }
 
   	I=NULL;delete I;
+   //defaultní item index pøi klik na + pohonu
+   mGrid->getComboEdit(5,i)->ItemIndex=0;
 
 //  mGrid->getCheck(6,i)->Enabled=false;
 //	mGrid->getCheck(6,i)->ShowHint=true; mGrid->getCheck(6,i)->Hint="Zrušit pøiøazení k objektùm";
@@ -2209,7 +2234,7 @@ ROW=Row;
                  mGrid->Cells[2][Row].Type=mGrid->EDIT;
                  mGrid->Cells[3][Row].Type=mGrid->EDIT;
                  mGrid->Cells[4][Row].Type=mGrid->EDIT;
-								 mGrid->Cells[5][Row].Type=mGrid->EDIT;
+								 mGrid->Cells[5][Row].Type=mGrid->COMBOEDIT;
 								 mGrid->Cells[6][Row].Type=mGrid->DRAW;mGrid->Cells[6][Row].RightBorder->Color=clWhite;
 
                  mGrid->Cells[1][Row].Background->Color=clWhite;
@@ -2609,6 +2634,18 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_katalogClick(TObject *Sen
      Form_parametry_linky->Visible=false;
      Form_parametry_linky->Visible=true;
       }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::scGPComboEdit12Click(TObject *Sender)
+{
+ShowMessage("Click");
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::scGPComboEdit12DropDown(TObject *Sender)
+{
+ShowMessage("DropDown");
 }
 //---------------------------------------------------------------------------
 

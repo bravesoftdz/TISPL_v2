@@ -164,6 +164,8 @@ __published:	// IDE-managed Components
           int X, int Y);
   void __fastcall Button1Click(TObject *Sender);
   void __fastcall scGPGlyphButton_katalogClick(TObject *Sender);
+  void __fastcall scGPComboEdit12Click(TObject *Sender);
+  void __fastcall scGPComboEdit12DropDown(TObject *Sender);
 
 
 
