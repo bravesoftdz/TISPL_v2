@@ -1566,12 +1566,12 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 		{
 			if(Form1->CheckBox_pouzit_zadane_kapacity->Checked)
 			{
-				if(ukaz->rotace)X+=ukaz->kapacita*S;//pokud se mají použít zadané kapacity
+				if(ukaz->orientace)X+=ukaz->kapacita*S;//pokud se mají použít zadané kapacity
 				else X+=ukaz->kapacita*D;//pokud se mají použít zadané kapacity
 			}
 			else
 			{
-				if(ukaz->rotace)X+=ukaz->kapacita_dop*S;//pokud se mají použít zadané kapacity
+				if(ukaz->orientace)X+=ukaz->kapacita_dop*S;//pokud se mají použít zadané kapacity
 				else X+=ukaz->kapacita_dop*D;//pokud se mají použít zadané kapacity
 			}
 		}
@@ -1607,7 +1607,7 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 				if(((Nod<=P->vozik->n && P->vozik->n<=Ndo) || Ndo==0) && P->Tpoc/60.0<=MIN && (MIN<P->Tcek/60.0 || DO==P->Tcek/60.0))//filtr
 				{
 					int Rx=D;int Ry=S;//rozměr
-					if(P->segment_cesty->objekt->rotace)//pokud je požadovaná rotace jigu v objektu
+					if(P->segment_cesty->objekt->orientace)//pokud je požadovaná rotace jigu v objektu
 					{
 						Rx=S;Ry=D;
 						//v případě, že se vozík blíží ke konci objektu orotuje jig zase zpět, Xp - X predikce následného výpočtu
@@ -1670,7 +1670,7 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 		//ověřit proč není použito int Rx=D;
 		//int Ry=S;if(ukaz->rotace==90){Rx=S;Ry=D;}//rozměr
 		//prověřit§§§§
-		int Ry=m.round(m.UDV(S,D,ukaz->rotace));//hodnoty záměrně obráceně
+		int Ry=m.round(m.UDV(S,D,ukaz->orientace));//hodnoty záměrně obráceně
 		X=ukaz->obsazenost+Xofset;
 		canv->MoveTo(X-PosunT.x,Y);
 		if(!A)canv->LineTo(X-PosunT.x,Yofset+Ry*DO/K+Yofset/2-PosunT.y);//pokud se nejedná o animaci, pozn. osa Y si stejně vypisuje nějak divně
@@ -2579,8 +2579,8 @@ unsigned int Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,doubl
 {
 	////vychozí geometrické proměnné
 	double DD=O->delka_dopravniku;//délka objektu v metrech
-	double dJ=m.UDJ(v.PP.delka_jig,v.PP.sirka_jig,O->rotace);//délka jigu
-	double sJ=m.UDJ(v.PP.sirka_jig,v.PP.delka_jig,O->rotace);//šířka jigu a tím pádem i minimální kabiny
+	double dJ=m.UDJ(v.PP.delka_jig,v.PP.sirka_jig,O->orientace);//délka jigu
+	double sJ=m.UDJ(v.PP.sirka_jig,v.PP.delka_jig,O->orientace);//šířka jigu a tím pádem i minimální kabiny
 	double dP=v.PP.delka_podvozek;
 	double DV=dJ;if(dP>dJ)DV=dP;
 	double M=O->mezera;//mezera
@@ -2749,8 +2749,8 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,doubl
 	TPointD S;S.x=X;S.y=Y;//Start
 	TPointD K;K.x=X+DD;K.y=Y;//Konec
 	//vozíková data - v případě nevykreslení vozíku zde monžno odstranit
-	double dJ=m.UDJ(v.PP.delka_jig,v.PP.sirka_jig,O->rotace);//délka jigu
-	double sJ=m.UDJ(v.PP.sirka_jig,v.PP.delka_jig,O->rotace);//šířka jigu a tím pádem i minimální kabiny
+	double dJ=m.UDJ(v.PP.delka_jig,v.PP.sirka_jig,O->orientace);//délka jigu
+	double sJ=m.UDJ(v.PP.sirka_jig,v.PP.delka_jig,O->orientace);//šířka jigu a tím pádem i minimální kabiny
 	double dP=v.PP.delka_podvozek;
 	double DV=dJ;if(dP>dJ)DV=dP;
 																	 //ShowMessage("R="+AnsiString(R)+"Rz="+AnsiString(Rz)+"Rx="+AnsiString(Rx));

@@ -2400,7 +2400,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		case ROZMER_KOMORA://změna rozmerů komor pomocí úchopu
 		{
 			Cvektory::TKomora *ovlivneny=pom_komora_temp->dalsi;
-			if((pom_temp->rotace==0||pom_temp->rotace==180)&&ovlivneny->velikost>=0.5&&pom_komora_temp->velikost>=0.5)
+			if((pom_temp->orientace==90||pom_temp->orientace==270)&&ovlivneny->velikost>=0.5&&pom_komora_temp->velikost>=0.5)
 			{
 				pom_komora_temp->velikost+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
 				ovlivneny->velikost-=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
@@ -2429,7 +2429,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		{
 			if(JID>=11&&JID<=99)//offset kót elementu a komor
 			{
-				if(pom_temp->rotace==0||pom_temp->rotace==180)pom_temp->koty_elementu_offset-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+				if(pom_temp->orientace==90||pom_temp->orientace==270)pom_temp->koty_elementu_offset-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
 				else pom_temp->koty_elementu_offset+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
 				minule_souradnice_kurzoru=TPoint(X,Y);
 		  	REFRESH(false);
@@ -2782,7 +2782,7 @@ void TForm1::getJobID(int X, int Y)
   		{
   			JID=0;//uložení komory do JID
   			//detekce hrany komory
-  			if(pom_temp->rotace==0||pom_temp->rotace==180)
+				if(pom_temp->orientace==90||pom_temp->orientace==270)
 					{if(X<=m.L2Px(pom_temp->elementy->dalsi->geo.X1+d.v.vrat_velikosti_komor(pom_komora))+9&&X>=m.L2Px(pom_temp->elementy->dalsi->geo.X1+d.v.vrat_velikosti_komor(pom_komora))-3)JID=(10+pom_komora->n)*(-1);}
   			else
 					{if(Y>=m.L2Py(pom_temp->elementy->dalsi->geo.Y1+d.v.vrat_velikosti_komor(pom_komora))-3&&Y<=m.L2Py(pom_temp->elementy->dalsi->geo.Y1+d.v.vrat_velikosti_komor(pom_komora))+3)JID=(10+pom_komora->n)*(-1);}
@@ -2874,11 +2874,11 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
   		if(1000<=JID && JID<2000){kurzor(posun_ind);pom_element->mGrid->Highlight=true;pom_element->mGrid->MouseMove(X,Y);refresh_mGrid=true;}//indikace posunutí TABULKY, jeji highlignutí probíhá výše a případné volání HINTu
 			if(100<JID && JID<1000){kurzor(zmena_j);pom_element->mGrid->CheckLink(X,Y);refresh_mGrid=true;}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ  - aktivace dodáním pouze aktuálních souřadnic
 			if((JID==-6||JID==-7||JID==-8||JID==-9||JID<=-11)&&!editace_textu){kurzor(edit_text);refresh_mGrid=false;}//kurzor pro editaci textu
-			if(JID<=-11&&d.v.PtInKota_komory(pom_temp,X,Y)==-1){if(pom_temp->rotace==0||pom_temp->rotace==180)kurzor(zmena_d_x);else kurzor(zmena_d_y);}//změna rozměru komory
+			if(JID<=-11&&d.v.PtInKota_komory(pom_temp,X,Y)==-1){if(pom_temp->orientace==90||pom_temp->orientace==270)kurzor(zmena_d_x);else kurzor(zmena_d_y);}//změna rozměru komory
   		//použit závěrečný REFRESH if(-9<=JID && JID<=-6){REFRESH();}//refresh při akci s nadpisem či kótou kabiny
   		if(JID==-10){/*REFRESH();*/kurzor(zmena_j);}//indikace možnosti změnit jednotky na kótách
-  		if(JID>=11 && JID<=99){if(pom_temp->rotace==0||pom_temp->rotace==180)kurzor(zmena_d_y);else kurzor(zmena_d_x);refresh_mGrid=false;}//interaktivní kóty elementů
-  		if(JID>=4 && JID<=10){kurzor(zmena_j);if(PmG->CheckLink(X,Y)!=TPoint(-1,-1));refresh_mGrid=true;PmG->Refresh();}//pohonová tabulka odkazy - aktivace dodáním pouze aktuálních souřadnic
+			if(JID>=11 && JID<=99){if(pom_temp->orientace==90||pom_temp->orientace==270)kurzor(zmena_d_y);else kurzor(zmena_d_x);refresh_mGrid=false;}//interaktivní kóty elementů
+			if(JID>=4 && JID<=10){kurzor(zmena_j);if(PmG->CheckLink(X,Y)!=TPoint(-1,-1));refresh_mGrid=true;PmG->Refresh();}//pohonová tabulka odkazy - aktivace dodáním pouze aktuálních souřadnic
 			if(JID==-2)//posun úsečky objektu
 			{
 				refresh_mGrid=false;
@@ -6741,7 +6741,7 @@ void TForm1::NPin()
 	short Munit=0;if(Form1->readINI("nastaveni_form_parametry", "DM") == "1")  Munit=1;
 	//////////////////////////plnění dat do formu z daného objektu
 	////plnění daty
-	Form_parametry->scComboBox_rotace->ItemIndex=pom->rotace;//musí být nad aktualizací
+	Form_parametry->scComboBox_rotace->ItemIndex=pom->orientace;//musí být nad aktualizací
 	aktualizace_combobox_pohony_v_PO();
 	if(pom->pohon!=NULL)Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n;else Form_parametry->scComboBox_pohon->ItemIndex=0;//musí být takto separé, protože metoda se volá z více míst
 	//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry v SI jednotkách
@@ -6789,7 +6789,7 @@ void TForm1::NP()
 	{
 		//////////////////////////plnění dat do formu z daného objektu
 		////plnění daty
-		Form_parametry->scComboBox_rotace->ItemIndex=pom->rotace;//musí být nad aktualizací
+		Form_parametry->scComboBox_rotace->ItemIndex=pom->orientace;//musí být nad aktualizací
 		aktualizace_combobox_pohony_v_PO();
 		if(pom->pohon!=NULL)Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n;else Form_parametry->scComboBox_pohon->ItemIndex=0;//musí být takto separé, protože metoda se volá z více míst
 		//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry v SI jednotkách
@@ -6871,7 +6871,7 @@ void TForm1::NP()
 				pom->mezera_jig=Form_parametry->scGPNumericEdit_mezera_JIG->Value/jednotky_vzdalenost;
 				pom->mezera_podvozek=Form_parametry->scGPNumericEdit_mezera_PODVOZEK->Value/jednotky_vzdalenost;
 				//Rz,Rx
-				pom->rotace=Form_parametry->scComboBox_rotace->ItemIndex;
+				pom->orientace=Form_parametry->scComboBox_rotace->ItemIndex;
 				if(Form_parametry->scComboBox_pohon->ItemIndex!=0 && pom->rezim==1)//pouze pokud je prirazen pohon a jedná se o KK režim, tak ulozim do nej hodnoty Rx,Rz
 				{
 					pom->pohon->Rx=Form_parametry->scGPNumericEdit_rx->Value;
