@@ -2330,7 +2330,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			d.vykresli_ikonu_komory(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,"",-1);
 			minule_souradnice_kurzoru=TPoint(X,Y);
 			d.vykresli_ikonu_komory(Canvas,X,Y,"",-1);
-			if(m.P2Lx(X)<pom_temp->Xk||m.P2Lx(X)>pom_temp->Xk+pom_temp->rozmer_kabiny.x||m.P2Ly(Y)>pom_temp->Yk||m.P2Ly(Y)<pom_temp->Yk-pom_temp->rozmer_kabiny.y)Smazat1Click(this);
+			if(m.P2Lx(X)<pom_temp->elementy->dalsi->geo.X1||m.P2Lx(X)>pom_temp->elementy->predchozi->geo.X4||m.P2Ly(Y)>pom_temp->elementy->dalsi->geo.Y1||m.P2Ly(Y)<pom_temp->elementy->predchozi->geo.Y4)Smazat1Click(this);
 			nahled_ulozit(true);
 			break;
 		}
@@ -2400,7 +2400,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		case ROZMER_KOMORA://změna rozmerů komor pomocí úchopu
 		{
 			Cvektory::TKomora *ovlivneny=pom_komora_temp->dalsi;
-			if((pom_temp->rotace==0||pom_temp->rotace==180)&&ovlivneny->velikost>=0.5&&pom_komora_temp->velikost>=0.5)
+			if((pom_temp->orientace==90||pom_temp->orientace==270)&&ovlivneny->velikost>=0.5&&pom_komora_temp->velikost>=0.5)
 			{
 				pom_komora_temp->velikost+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
 				ovlivneny->velikost-=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
@@ -2429,7 +2429,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		{
 			if(JID>=11&&JID<=99)//offset kót elementu a komor
 			{
-				if(pom_temp->rotace==0||pom_temp->rotace==180)pom_temp->koty_elementu_offset-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+				if(pom_temp->orientace==90||pom_temp->orientace==270)pom_temp->koty_elementu_offset-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
 				else pom_temp->koty_elementu_offset+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
 				minule_souradnice_kurzoru=TPoint(X,Y);
 		  	REFRESH(false);
@@ -2782,10 +2782,10 @@ void TForm1::getJobID(int X, int Y)
   		{
   			JID=0;//uložení komory do JID
   			//detekce hrany komory
-  			if(pom_temp->rotace==0||pom_temp->rotace==180)
-  				{if(X<=m.L2Px(pom_temp->Xk+d.v.vrat_velikosti_komor(pom_komora))+9&&X>=m.L2Px(pom_temp->Xk+d.v.vrat_velikosti_komor(pom_komora))-3)JID=(10+pom_komora->n)*(-1);}
+				if(pom_temp->orientace==90||pom_temp->orientace==270)
+					{if(X<=m.L2Px(pom_temp->elementy->dalsi->geo.X1+d.v.vrat_velikosti_komor(pom_komora))+9&&X>=m.L2Px(pom_temp->elementy->dalsi->geo.X1+d.v.vrat_velikosti_komor(pom_komora))-3)JID=(10+pom_komora->n)*(-1);}
   			else
-  				{if(Y>=m.L2Py(pom_temp->Yk+d.v.vrat_velikosti_komor(pom_komora))-3&&Y<=m.L2Py(pom_temp->Yk+d.v.vrat_velikosti_komor(pom_komora))+3)JID=(10+pom_komora->n)*(-1);}
+					{if(Y>=m.L2Py(pom_temp->elementy->dalsi->geo.Y1+d.v.vrat_velikosti_komor(pom_komora))-3&&Y<=m.L2Py(pom_temp->elementy->dalsi->geo.Y1+d.v.vrat_velikosti_komor(pom_komora))+3)JID=(10+pom_komora->n)*(-1);}
   		}
   		else if(pom_temp->zobrazit_koty)//prohledávání kót
 			{
@@ -2853,7 +2853,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
   	Cvektory::TKomora *pom_komora_puv=pom_komora;
   	getJobID(X,Y);//zjištění aktuálního JID
   	if(puvJID!=JID || pom_element_puv!=pom_element || pom_komora_puv!=pom_komora)//pokud došlo ke změně JID, nebo změně elementu bez změny JID (např. situace dva roboti vedle sebe nebo rychlý přesun), jinak nemá smysl řešit
-  	{
+		{
   		//výchozí nastavení
   		kurzor(standard);//umístít na začátek
   		PmGCheckLink=false;
@@ -2874,11 +2874,11 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
   		if(1000<=JID && JID<2000){kurzor(posun_ind);pom_element->mGrid->Highlight=true;pom_element->mGrid->MouseMove(X,Y);refresh_mGrid=true;}//indikace posunutí TABULKY, jeji highlignutí probíhá výše a případné volání HINTu
 			if(100<JID && JID<1000){kurzor(zmena_j);pom_element->mGrid->CheckLink(X,Y);refresh_mGrid=true;}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ  - aktivace dodáním pouze aktuálních souřadnic
 			if((JID==-6||JID==-7||JID==-8||JID==-9||JID<=-11)&&!editace_textu){kurzor(edit_text);refresh_mGrid=false;}//kurzor pro editaci textu
-			if(JID<=-11&&d.v.PtInKota_komory(pom_temp,X,Y)==-1){if(pom_temp->rotace==0||pom_temp->rotace==180)kurzor(zmena_d_x);else kurzor(zmena_d_y);}//změna rozměru komory
+			if(JID<=-11&&d.v.PtInKota_komory(pom_temp,X,Y)==-1){if(pom_temp->orientace==90||pom_temp->orientace==270)kurzor(zmena_d_x);else kurzor(zmena_d_y);}//změna rozměru komory
   		//použit závěrečný REFRESH if(-9<=JID && JID<=-6){REFRESH();}//refresh při akci s nadpisem či kótou kabiny
   		if(JID==-10){/*REFRESH();*/kurzor(zmena_j);}//indikace možnosti změnit jednotky na kótách
-  		if(JID>=11 && JID<=99){if(pom_temp->rotace==0||pom_temp->rotace==180)kurzor(zmena_d_y);else kurzor(zmena_d_x);refresh_mGrid=false;}//interaktivní kóty elementů
-  		if(JID>=4 && JID<=10){kurzor(zmena_j);if(PmG->CheckLink(X,Y)!=TPoint(-1,-1));refresh_mGrid=true;PmG->Refresh();}//pohonová tabulka odkazy - aktivace dodáním pouze aktuálních souřadnic
+			if(JID>=11 && JID<=99){if(pom_temp->orientace==90||pom_temp->orientace==270)kurzor(zmena_d_y);else kurzor(zmena_d_x);refresh_mGrid=false;}//interaktivní kóty elementů
+			if(JID>=4 && JID<=10){kurzor(zmena_j);if(PmG->CheckLink(X,Y)!=TPoint(-1,-1));refresh_mGrid=true;PmG->Refresh();}//pohonová tabulka odkazy - aktivace dodáním pouze aktuálních souřadnic
 			if(JID==-2)//posun úsečky objektu
 			{
 				refresh_mGrid=false;
@@ -2915,22 +2915,22 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 			////inteligentní REFRESH
   		//if(!refresh_mGrid/* && !nabuffrovano*/){d.nabuffrovat_mGridy();nabuffrovano=true;}
   		//d.nabuffrovat_mGridy(pom_element->mGrid);
-  		//if(!refresh_mGrid)Memo("false");else Memo("true");
-  		//refresh_mGrid=true;//provizorně
-  		REFRESH();
+			//if(!refresh_mGrid)Memo("false");else Memo("true");
+  		if(element_id!=-1 && Akce !=ADD){refresh_mGrid=true;element_id=-1;}//mazání eid po vkládání, podmínka nutná ke správnému vykreslení mgridů
+			REFRESH();
   		//refresh_mGrid=true;
-  	}
+		}
 
   	////oblasti poznámek pod čarou - NOTE, nejdou přes JID
   	if(JID==-1)
   	{                                                       //zajištuje unhighlight odkazu
-  		if(PmG!=NULL)if(PmG->CheckLink(X,Y)==TPoint(-2,-2) || PmGCheckLink){PmGCheckLink=true;refresh_mGrid=true;REFRESH();}
-  		//pokud budu chtít ještě získat CheckLink z tabulek elementů budu muset rozšířit testování oblasti tabulky a aby vrátila platný ukazatel na element resp. jeho mgrid
-  	}
+			if(PmG!=NULL)if(PmG->CheckLink(X,Y)==TPoint(-2,-2) || PmGCheckLink){PmGCheckLink=true;refresh_mGrid=true;REFRESH();}
+			//pokud budu chtít ještě získat CheckLink z tabulek elementů budu muset rozšířit testování oblasti tabulky a aby vrátila platný ukazatel na element resp. jeho mgrid
+		}
 
-  	////vynulování a odstranění pomocného ukazatele na element
-  	pom_element_puv=NULL;delete pom_element_puv;
-  	pom_komora_puv=NULL;delete pom_komora_puv;
+		////vynulování a odstranění pomocného ukazatele na element
+		pom_element_puv=NULL;delete pom_element_puv;
+		pom_komora_puv=NULL;delete pom_komora_puv;
 	}
 	else//pro schéma, změna kurzorů pro body a úsečky
 	{
@@ -2977,8 +2977,9 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 			REFRESH();
 		}
 		pom_bod_puv=NULL;delete pom_bod_puv;
-  }
+	}
 }
+
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //deaktivuje zaměřovač label a svislice a kolmice
@@ -3726,11 +3727,12 @@ Cvektory::TObjekt *TForm1::add_objekt_za()
 	TPoint *tab_pruchodu=new TPoint[F->d.v.pocet_vyhybek+1];//+1 z důvodu indexace výhybka 1 bude mít index 1, nebude se začínat od indexu 0, tabulka.x = vyhybky, tabulka.y = spojky
 	while (p!=NULL)
 	{ //kontrola zda se jedná o poslední první objekt byla přesunuta do metody lezi_v_pasmu
-		if(d.lezi_v_pasmu(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,p)>0)
-		{
-			ret=p;
-			break;
-		}
+		if(p->dalsi!=NULL && m.LeziVblizkostiUsecky(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,m.L2Px(p->elementy->predchozi->geo.X4),m.L2Py(p->elementy->predchozi->geo.Y4),m.L2Px(p->dalsi->elementy->dalsi->geo.X1),m.L2Py(p->dalsi->elementy->dalsi->geo.Y1))<=20){ret=p;break;}
+//		if(d.lezi_v_pasmu(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,p)>0)
+//		{
+//			ret=p;
+//			break;
+//		}
 		p=d.v.dalsi_krok(p,tab_pruchodu);//vrátí další krok (dalsi/dalsi2)
 	}
 	tab_pruchodu=NULL;delete tab_pruchodu;
@@ -3890,6 +3892,7 @@ void TForm1::add_element (int X, int Y)
 		}
 		if((!PmG->Rows[3].Visible&&(E->eID==KK1||E->eID==KK2))||(PmG->Rows[3].Visible&&!PmG->Rows[7].Visible&&(E->eID==KK1||E->eID==KK2||E->eID==5||E->eID==6)))
 			pridani_elementu_tab_pohon(E);
+		//REFRESH(true);//nutné zde z důvodu dobrého vykreslení tabulek
 		if(E->dalsi!=NULL)//spouštěno jen pokud před elementem existuje jiný, snažím se najít další S&G element, tomuto elementu je nutné přepočítat RT
 		{
 			Cvektory::TElement *A=pom_temp->elementy->dalsi;
@@ -3902,14 +3905,15 @@ void TForm1::add_element (int X, int Y)
 		//až na konec:
 		E=NULL;delete E;
 		Akce=NIC;
-		element_id=-1;//new kvůli skrývání komponent v mGridech, využívá metoda d.vykresli_mGridy(TCanvas *canv)
+		element_id=99999;//ošetření pro správné zobrazování mgridů
 		DrawGrid_knihovna->Invalidate();
 		DuvodUlozit(true);
 		//Zde vložit podmínku pro kontrolu jaký element byl vložen, na základě toho znemožnit klik na roboty opačné funkcionality
 		nahled_ulozit(true);//důvod k uložení náhledu
 	}
 	else TIP="Nelze vložit robota mimo kabinu!";//hláška uživateli
-	REFRESH(true);
+	refresh_mGrid=true;//nutné pro správné zobrazení mgridů po přidání elementu
+	REFRESH();
 }
 //---------------------------------------------------------------------------
 //přidávání komory kabině powerwashe, kontrola zda není součet kabin větší než rozměr kabiny
@@ -3970,95 +3974,33 @@ bool TForm1::el_vkabine(double X,double Y,int element_id,short orientace_el,Cvek
 	if(mazat_el){delete E;E=NULL;}
 }
 //---------------------------------------------------------------------------
-//vrací index co a kde je mimo kabinu
-int TForm1::el_mimoKabinu ()
+//vrací max a min hodnoty x a y souřadnic, všecho v layout(elementů, objektů), nebo parametrem Objekt lze hledat max souřadnice v jednom objektu
+TRect TForm1::vrat_max_oblast(Cvektory::TObjekt *Objekt)
 {
-	short stredx=m.L2Px(pom_temp->elementy->X);
-	short stredy=m.L2Py(pom_temp->elementy->Y);
-	double xmin=9999999, xmax=-9999999,ymin=9999999, ymax=-9999999;
-	short trend=m.Rt90(d.trend(pom));
-	int xminID,xmaxID;
-	int vrat=0;
-	//najde hraniční sořadnice mezi elemety (max. hranice vlevo, vpravo, nahoře a dole..)
-	Cvektory::TElement *E=pom_temp->elementy;
-	while (E!=NULL)
+	TRect ret;
+	//nastavení základníh hodnot sloužících pro vyhledávání
+	ret.left=MaxInt;ret.right=MaxInt*(-1);
+	ret.top=MaxInt;ret.bottom=MaxInt*(-1);
+	//hledání souřadnic v jednom objektu
+	if(Objekt!=NULL)
 	{
-		if((E->n>0)&&(1<=E->eID && E->eID<=4 || 7<=E->eID && E->eID<=18 || 101<=E->eID && E->eID<=108))//prohledávám pouze roboty, možnost rozšířit i pro neroboty
+		Cvektory::TBod *B=Objekt->body->dalsi;
+		while(B!=NULL)
 		{
-		double LO=(E->LO1+E->LO2)/2.0+E->LO_pozice;
-		if(E->X-LO<xmin) xmin=E->X-LO;
-		if(E->X+LO>xmax) xmax=E->X+LO;
-		if(E->Y<ymin) ymin=E->Y;
-		if(E->Y>ymax) ymax=E->Y;
+			if(m.L2Px(B->X)<ret.left)ret.left=m.L2Px(B->X);
+			if(m.L2Px(B->X)>ret.right)ret.right=m.L2Px(B->X);
+			if(m.L2Py(B->Y)<ret.top)ret.top=m.L2Py(B->Y);
+			if(m.L2Py(B->Y)>ret.bottom)ret.bottom=m.L2Py(B->Y);
+			B=B->dalsi;
 		}
-		E=E->dalsi;
+		delete B;B=NULL;
 	}
-	E=NULL; delete E;
-	//kontrola přesažení elementuy
-	if(pom_temp->Xk>xmin) 															vrat=1;//robot z leva
-	if(pom_temp->Xk+pom_temp->rozmer_kabiny.x<xmax) 		vrat=2;//robot z prava
-	if(pom_temp->Yk-pom_temp->rozmer_kabiny.y>ymin)			vrat=5;//robot ze spoda
-	if(pom_temp->Yk<ymax) 															vrat=6;//robot z vrchu
-	//kontrola přesažení pohonu
-	if((m.L2Py(pom_temp->Yk)>=stredy||m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)<=stredy)&&(trend==90||trend==270)) vrat=-1;
-	if((m.L2Px(pom_temp->Xk)>=stredx||m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)<=stredx)&&(trend!=90&&trend!=270)) vrat=-2;
-	return vrat;
-}
-//---------------------------------------------------------------------------
-//vrátí souřadnice posledního prvku, vstupní parametr rozhoduje z jaké strany
-double TForm1::vrat_hranici(int mimo)
-{
-	double souradnice;
-	double min=9999999, max=-9999999;
-	Cvektory::TElement *E=pom_temp->elementy;
-	//podle indexu hledá souřadnici elementu, který je mimo kabinu
-	switch(mimo)
+	//hledání souřadnic v celém layoutu
+	else
 	{
-		case -2:souradnice=scSplitView_LEFTTOOLBAR->Width+(ClientWidth-scSplitView_LEFTTOOLBAR->Width)/2.0;break;
-		case -1:souradnice=(ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2.0;break;
-		case 2:
-		{
-			while (E!=NULL)
-			{
-				if((E->n>0)&&(1<=E->eID && E->eID<=4 || 7<=E->eID && E->eID<=18 || 101<=E->eID && E->eID<=108))//prohledává pouze roboty, lze rozšířit i pro neroboty
-					if(E->X>max) max=E->X+(E->LO1+E->LO2)/2.0+E->LO_pozice;
-				E=E->dalsi;
-			}
-			souradnice=max;//+d.Robot_delka_zakladny/2
-		}break;
-		case 5:
-		{
-			while (E!=NULL)
-			{
-				if((E->n>0)&&(1<=E->eID && E->eID<=4 || 7<=E->eID && E->eID<=18 || 101<=E->eID && E->eID<=108))
-					if(E->Y<min) min=E->Y;
-				E=E->dalsi;
-			}
-			souradnice=min;//-d.Robot_sirka_zakladny/2
-		}break;
-		case 4:
-		{
-			while (E!=NULL)
-			{
-				if((E->n>0)&&(1<=E->eID && E->eID<=4 || 7<=E->eID && E->eID<=18 || 101<=E->eID && E->eID<=108))
-					if(E->X>max) max=E->X;
-				E=E->dalsi;
-			}
-			souradnice=max;
-		}break;
-		case 7:
-		{
-			while (E!=NULL)
-			{
-				if((E->n>0)&&(1<=E->eID && E->eID<=4 || 7<=E->eID && E->eID<=18 || 101<=E->eID && E->eID<=108))
-					if(E->Y<min) min=E->Y;
-				E=E->dalsi;
-			}
-			souradnice=min;
-		}break;
-	}
-	E=NULL; delete E;
-	return souradnice;//vrátí souřadnici, následně použito pro úpravy rozměrů či pozice kabiny
+	//propraveno pro funkci celý pohled!!!!
+  }
+	return ret;
 }
 //---------------------------------------------------------------------------
 //metoda pro sledování zda je nutné náhled uložit
@@ -4379,7 +4321,7 @@ void TForm1::vytvoreni_tab_pohon()
 		PmG->Cells[0][i].Font->Color=(TColor)RGB(128,128,128);
 		PmG->Cells[0][i].RightMargin=3;
 	}
-  //naplnění comba hodnotami 
+  //naplnění comba hodnotami
 	tab_pohon_COMBO(0);
 	if(pom_temp->pohon!=NULL)
 	if(d.v.pohon_je_pouzivan(pom_temp->pohon->n,pom)!=NULL)//kontrola zda je pohon používán v jiném objektu, nutné posílat pom místo pom_temp do parametru mimo_objetk!!!!!
@@ -4531,7 +4473,7 @@ void TForm1::odstraneni_elementu_tab_pohon(int operace)
 	switch(operace)
 	{
 		case 0://odstranění pohonu, vše skryto zůstane pouze Combo
-		{      
+		{
 			PmG->VisibleRow(1,false,false);
 			PmG->VisibleRow(2,false,false);
 			PmG->VisibleRow(3,false,false);
@@ -4655,7 +4597,7 @@ void TForm1::zmena_jednotek_tab_pohon()
   	double uhel=d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(pom_temp,pom_temp->elementy->dalsi);
 		PmG->Cells[0][6].Text="Mezera mezi jigy "+AnsiString(uhel)+"° "+Rz;
 		PmG->Cells[1][6].Text=m.round2double(outRz(m.mezera(uhel,pom_temp->pohon->Rz,1)),3);
-	}	      
+	}
 	aktualizace_ComboPohon();//v combo jsou vypsány jednotky, proto nutné aktualizovat
 	FormX->vstoupeno_poh=true;//blokace událostí při vkládání elementu
 }
@@ -6604,7 +6546,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 		  		if(pom_temp->elementy->dalsi!=NULL)d.v.uprav_popisky_elementu(pom_temp,pom_temp->elementy->dalsi);//pokud jsou v kabině jěště nějaké elementy dojde k přejmenování
 		  		pom_element=NULL;//přidáno nově 13.5.2019 - v režimu testování kvůli setJobID a předání do pom_element_puv
 		  		dalsi_element=NULL;delete dalsi_element;
-				}else {mazani=false;Akce=NIC;} 
+				}else {mazani=false;Akce=NIC;}
 			}
 			if(pom_bod_temp!=NULL)//mazání bodu v obrysu kabiny
 			{
@@ -6799,7 +6741,7 @@ void TForm1::NPin()
 	short Munit=0;if(Form1->readINI("nastaveni_form_parametry", "DM") == "1")  Munit=1;
 	//////////////////////////plnění dat do formu z daného objektu
 	////plnění daty
-	Form_parametry->scComboBox_rotace->ItemIndex=pom->rotace;//musí být nad aktualizací
+	Form_parametry->scComboBox_rotace->ItemIndex=pom->orientace;//musí být nad aktualizací
 	aktualizace_combobox_pohony_v_PO();
 	if(pom->pohon!=NULL)Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n;else Form_parametry->scComboBox_pohon->ItemIndex=0;//musí být takto separé, protože metoda se volá z více míst
 	//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry v SI jednotkách
@@ -6847,7 +6789,7 @@ void TForm1::NP()
 	{
 		//////////////////////////plnění dat do formu z daného objektu
 		////plnění daty
-		Form_parametry->scComboBox_rotace->ItemIndex=pom->rotace;//musí být nad aktualizací
+		Form_parametry->scComboBox_rotace->ItemIndex=pom->orientace;//musí být nad aktualizací
 		aktualizace_combobox_pohony_v_PO();
 		if(pom->pohon!=NULL)Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n;else Form_parametry->scComboBox_pohon->ItemIndex=0;//musí být takto separé, protože metoda se volá z více míst
 		//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry v SI jednotkách
@@ -6929,7 +6871,7 @@ void TForm1::NP()
 				pom->mezera_jig=Form_parametry->scGPNumericEdit_mezera_JIG->Value/jednotky_vzdalenost;
 				pom->mezera_podvozek=Form_parametry->scGPNumericEdit_mezera_PODVOZEK->Value/jednotky_vzdalenost;
 				//Rz,Rx
-				pom->rotace=Form_parametry->scComboBox_rotace->ItemIndex;
+				pom->orientace=Form_parametry->scComboBox_rotace->ItemIndex;
 				if(Form_parametry->scComboBox_pohon->ItemIndex!=0 && pom->rezim==1)//pouze pokud je prirazen pohon a jedná se o KK režim, tak ulozim do nej hodnoty Rx,Rz
 				{
 					pom->pohon->Rx=Form_parametry->scGPNumericEdit_rx->Value;
@@ -7004,6 +6946,7 @@ void TForm1::NP_input()
    log(__func__);//logování
 	 //zablokování OnChange tabulek
 	 JID=-1;//ošetření, s JID se pracuje i v náhledu
+	 element_id=99999;//ošetření pro správné zobrazování mgridů
 	 pom_bod=NULL;pom_bod_temp=NULL;//s těmito ukazateli pracuje jak náhled tak schéma, ošetření
 	 kurzor(standard);
 	 FormX->input_state=FormX->NO;
@@ -7176,7 +7119,7 @@ void TForm1::NP_input()
 //---------------------------------------------------------------------------
 //zaktualizuje ve formuláři parametry objektů combobox na výpis pohonů včetně jednotek uvedeného rozmezí rychlostí, pokud jsou zanechané implicitní parametry short RDunitD=-1,short RDunitT=-1, je načteno nastevní jednotek z INI aplikace pro form parametry objektu, v případech, kdy uvedené parametry nejsou dané hodnotou -1, tak se uvažují jednotky dle S==0,MIN==1 pro RDunitT, resp. M==0,MM==1 pro RDunitD
 void TForm1::aktualizace_combobox_pohony_v_PO(short RDunitD,short RDunitT)
-{       
+{
     log(__func__);//logování
 		Cvektory::TPohon *P=Form1->d.v.POHONY->dalsi;//ukazatel na pohony, přeskakuje hlavičku, která je již vytvořena
 		Form_parametry->scComboBox_pohon->Items->Clear();//smazání původního obsahu
@@ -8569,14 +8512,13 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-//	Cvektory::TElement *E=pom_temp->elementy->dalsi;
-//	while(E!=NULL)
-//	{
-//		Memo("X1: "+AnsiString(E->geo.X1)+"; Y1: "+AnsiString(E->geo.Y1));
-//		Memo("X4: "+AnsiString(E->geo.X4)+"; Y4: "+AnsiString(E->geo.Y4));
-//		E=E->dalsi;
-//	}
-//	delete E;E=NULL;
+	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
+	while(O!=NULL)
+	{
+		Memo(O->name);
+		O=O->dalsi;
+	}
+	delete O;O=NULL;
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -8667,7 +8609,7 @@ void __fastcall TForm1::SQL_processIDClick(TObject *Sender)
 
 
 
-			
+
 
 }
 //---------------------------------------------------------------------------
@@ -10061,7 +10003,7 @@ void TForm1::vykresli_kurzor(int index)
 		d.nastavit_text_popisu_objektu_v_nahledu(Canvas,1);Tn=F->pom_temp->name.UpperCase();Wn=Canvas->TextWidth(Tn);//název objektu - nastavení
 		d.nastavit_text_popisu_objektu_v_nahledu(Canvas,0);Tl=+" / ";Wl=Canvas->TextWidth(Tl);//lomítko objektu - nastavení
 		d.nastavit_text_popisu_objektu_v_nahledu(Canvas,2);Tz=F->pom_temp->short_name.UpperCase();Wz=Canvas->TextWidth(Tz);//zkratka objektu - nastavení
-		Xl=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0)-m.round((Wn+Wl+Wz)/2.0);Yd=m.L2Py(F->pom_temp->Yk);//levá souřadnice textové oblasti a dolní souřadnice textové oblasti
+		Xl=m.L2Px(F->pom_temp->Xt)-m.round((Wn+Wl+Wz)/2.0);Yd=m.L2Py(F->pom_temp->Yt);//levá souřadnice textové oblasti a dolní souřadnice textové oblasti
 	}
 	//vykreslování kurzoru pro psaní textu
 	Canvas->Pen->Style=psSolid;
@@ -10203,7 +10145,8 @@ void TForm1::Smaz_kurzor()
 		if(index_kurzoru<=-11&&pom_temp->id==3)//editace rozmeru komor v POW
 		{
 			editovany_text=inDK(ms.MyToDouble(editovany_text));
-			pom_temp->rozmer_kabiny.x+=ms.MyToDouble(editovany_text)-pom_komora_temp->velikost;//zajištění, že kabina bude vždy přesně na komory
+			if(pom_temp->orientace==90 || pom_temp->orientace==270)d.v.posun_hranu(ms.MyToDouble(editovany_text),0,pom_temp->body->dalsi->dalsi,pom_temp->body->dalsi->dalsi->dalsi);
+			else d.v.posun_hranu(0,ms.MyToDouble(editovany_text),pom_temp->body->dalsi->dalsi,pom_temp->body->dalsi->dalsi->dalsi);
 			pom_komora_temp->velikost=ms.MyToDouble(editovany_text);
 		}
 		if(index_kurzoru<=-11&&pom_temp->id!=3&&(pom_element_temp->eID==2||pom_element_temp->eID==4))pom_element_temp->mGrid->Refresh();//musí se refreshovat z důvodu přepočtu RT u S&G
@@ -10234,7 +10177,7 @@ void TForm1::Smaz_kurzor()
 //vypnutí/zapnutí zamčení náhledu
 void __fastcall TForm1::scButton_zamekClick(TObject *Sender)
 {
-  log(__func__);//logování
+	log(__func__);//logování
 	if(scButton_zamek->ImageIndex==37)//zamčeno budu odemykat
 	{
 		pom_temp->uzamknout_nahled=false;
@@ -10475,5 +10418,3 @@ void __fastcall TForm1::scGPButton_nakreslit_haluClick(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
-
-

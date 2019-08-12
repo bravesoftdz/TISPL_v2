@@ -276,8 +276,8 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	//název objektu - nastavení                 //záměrně nuly, aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
 	nastavit_text_popisu_objektu_v_nahledu(canv,0);AnsiString Tn=O->name.UpperCase();AnsiString Tl=+" / ";short Wn=canv->TextWidth(Tn);
   ////poloha nadpisu
-	double X=O->Xk;
-	double Y=O->Yk;
+	double X=O->Xt;
+	double Y=O->Yt;
 	switch((int)orientace)
 	{
 		case 0:X=m.L2Px(X)-canv->TextHeight(Tl);Y=m.L2Py(Y)+m.round((Wn)/2.0);canv->Font->Orientation=(orientace+90)*10;break;//nastavení rotace canvasu
@@ -382,7 +382,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				//dodělat po změně souřadnicového modelu
 			}
 			//symbolika tekoucí kapaliny u POW //dodělat po změně souřadnicového modelu
-			if(O->komora->predchozi->typ==1)vykresli_pow_sprchu(canv,m.L2Px(O->Xk+O->rozmer_kabiny.x),m.L2Px(O->Xk+O->rozmer_kabiny.x),m.L2Py(O->Yk),m.L2Py(O->Yk-O->rozmer_kabiny.y),m.m2px(O->rozmer_kabiny.x-vzdalenost),clAkt,sirka_steny_px/4,pmpp,0,orientace);
+			if(O->komora->predchozi->typ==1)vykresli_pow_sprchu(canv,m.L2Px(O->elementy->dalsi->geo.X1),m.L2Px(O->elementy->predchozi->geo.X4),m.L2Py(O->elementy->dalsi->geo.X1),m.L2Py(O->elementy->predchozi->geo.Y4),m.m2px(O->elementy->predchozi->geo.X4-O->elementy->dalsi->geo.X1-vzdalenost),clAkt,sirka_steny_px/4,pmpp,0,orientace);
 		}
 		else
 		{
@@ -391,7 +391,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				//dodělat po změně souřadnicového modelu
 			}
 			//symbolika tekoucí kapaliny u POW //dodělat po změně souřadnicového modelu
-			if(O->komora->predchozi->typ==1)vykresli_pow_sprchu(canv,m.L2Px(O->Xk),m.L2Px(O->Xk+O->rozmer_kabiny.x),m.L2Py(O->Yk-O->rozmer_kabiny.y),m.L2Py(O->Yk-O->rozmer_kabiny.y),m.m2px(O->rozmer_kabiny.x-vzdalenost),clAkt,sirka_steny_px/4,pmpp,0,orientace);
+			if(O->komora->predchozi->typ==1)vykresli_pow_sprchu(canv,m.L2Px(O->elementy->dalsi->geo.X1),m.L2Px(O->elementy->predchozi->geo.X4),m.L2Py(O->elementy->predchozi->geo.Y4),m.L2Py(O->elementy->predchozi->geo.Y4),m.m2px(O->elementy->predchozi->geo.X4-O->elementy->dalsi->geo.X1-vzdalenost),clAkt,sirka_steny_px/4,pmpp,0,orientace);
 		}
 		//vykreslení KÓTY od poslení komory k okraji kabiny
 		if(zobrazit_koty)
@@ -1566,12 +1566,12 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 		{
 			if(Form1->CheckBox_pouzit_zadane_kapacity->Checked)
 			{
-				if(ukaz->rotace)X+=ukaz->kapacita*S;//pokud se mají použít zadané kapacity
+				if(ukaz->orientace)X+=ukaz->kapacita*S;//pokud se mají použít zadané kapacity
 				else X+=ukaz->kapacita*D;//pokud se mají použít zadané kapacity
 			}
 			else
 			{
-				if(ukaz->rotace)X+=ukaz->kapacita_dop*S;//pokud se mají použít zadané kapacity
+				if(ukaz->orientace)X+=ukaz->kapacita_dop*S;//pokud se mají použít zadané kapacity
 				else X+=ukaz->kapacita_dop*D;//pokud se mají použít zadané kapacity
 			}
 		}
@@ -1607,7 +1607,7 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 				if(((Nod<=P->vozik->n && P->vozik->n<=Ndo) || Ndo==0) && P->Tpoc/60.0<=MIN && (MIN<P->Tcek/60.0 || DO==P->Tcek/60.0))//filtr
 				{
 					int Rx=D;int Ry=S;//rozměr
-					if(P->segment_cesty->objekt->rotace)//pokud je požadovaná rotace jigu v objektu
+					if(P->segment_cesty->objekt->orientace)//pokud je požadovaná rotace jigu v objektu
 					{
 						Rx=S;Ry=D;
 						//v případě, že se vozík blíží ke konci objektu orotuje jig zase zpět, Xp - X predikce následného výpočtu
@@ -1670,7 +1670,7 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 		//ověřit proč není použito int Rx=D;
 		//int Ry=S;if(ukaz->rotace==90){Rx=S;Ry=D;}//rozměr
 		//prověřit§§§§
-		int Ry=m.round(m.UDV(S,D,ukaz->rotace));//hodnoty záměrně obráceně
+		int Ry=m.round(m.UDV(S,D,ukaz->orientace));//hodnoty záměrně obráceně
 		X=ukaz->obsazenost+Xofset;
 		canv->MoveTo(X-PosunT.x,Y);
 		if(!A)canv->LineTo(X-PosunT.x,Yofset+Ry*DO/K+Yofset/2-PosunT.y);//pokud se nejedná o animaci, pozn. osa Y si stejně vypisuje nějak divně
@@ -2579,8 +2579,8 @@ unsigned int Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,doubl
 {
 	////vychozí geometrické proměnné
 	double DD=O->delka_dopravniku;//délka objektu v metrech
-	double dJ=m.UDJ(v.PP.delka_jig,v.PP.sirka_jig,O->rotace);//délka jigu
-	double sJ=m.UDJ(v.PP.sirka_jig,v.PP.delka_jig,O->rotace);//šířka jigu a tím pádem i minimální kabiny
+	double dJ=m.UDJ(v.PP.delka_jig,v.PP.sirka_jig,O->orientace);//délka jigu
+	double sJ=m.UDJ(v.PP.sirka_jig,v.PP.delka_jig,O->orientace);//šířka jigu a tím pádem i minimální kabiny
 	double dP=v.PP.delka_podvozek;
 	double DV=dJ;if(dP>dJ)DV=dP;
 	double M=O->mezera;//mezera
@@ -2749,8 +2749,8 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,doubl
 	TPointD S;S.x=X;S.y=Y;//Start
 	TPointD K;K.x=X+DD;K.y=Y;//Konec
 	//vozíková data - v případě nevykreslení vozíku zde monžno odstranit
-	double dJ=m.UDJ(v.PP.delka_jig,v.PP.sirka_jig,O->rotace);//délka jigu
-	double sJ=m.UDJ(v.PP.sirka_jig,v.PP.delka_jig,O->rotace);//šířka jigu a tím pádem i minimální kabiny
+	double dJ=m.UDJ(v.PP.delka_jig,v.PP.sirka_jig,O->orientace);//délka jigu
+	double sJ=m.UDJ(v.PP.sirka_jig,v.PP.delka_jig,O->orientace);//šířka jigu a tím pádem i minimální kabiny
 	double dP=v.PP.delka_podvozek;
 	double DV=dJ;if(dP>dJ)DV=dP;
 																	 //ShowMessage("R="+AnsiString(R)+"Rz="+AnsiString(Rz)+"Rx="+AnsiString(Rx));
@@ -4509,6 +4509,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	short meritko=1;if(F->MOD==F->SCHEMA){width*=5;meritko=5;}//měřítko (náhled vs. schéma)
 	width=m.round(width*F->Zoom);if(highlight)width*=2;//šířka linie
 	short Presah=m.round(1.3*F->Zoom);if(Offset<0)Presah*=-1;//přesah packy u kóty,v případě záporného offsetu je vystoupení kóty nazákladě tohot záporné
+  if(F->pom_temp!=NULL)Presah/=2.0;//zmenšení odsazení kót při highlightu v náhledu
 	short V=0;if(highlight==2)V=1;//vystoupení kóty
 	short H=0;if(highlight)H=1;
 	short M=0;if(10<F->JID && F->JID<100 && F->MOD==F->NAHLED)M=1;//při celkovém posunu kót se postranní spojnice nově nezvýrazňují
