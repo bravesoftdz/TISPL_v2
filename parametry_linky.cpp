@@ -1196,7 +1196,7 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
    mGrid->Cells[2][i].Type=mGrid->EDIT;
    mGrid->Cells[3][i].Type=mGrid->EDIT;
    mGrid->Cells[4][i].Type=mGrid->EDIT;
-   mGrid->Cells[5][i].Type=mGrid->EDIT;
+   mGrid->Cells[5][i].Type=mGrid->COMBOEDIT;
 	 /*mGrid->Cells[6][i].Type=mGrid->CHECK;*/ mGrid->Cells[6][i].RightBorder->Color=clWhite;
 	 mGrid->Cells[7][i].Type=mGrid->BUTTON;
 
@@ -1205,12 +1205,20 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
 	 mGrid->Cells[4][i].InputNumbersOnly=2;
    mGrid->Cells[5][i].InputNumbersOnly=2;
 
+   mGrid->Refresh();   //kvùli práci s combem je nutný refresh po nastavení na typ COMBOEDIT
+   TscGPComboEdit *C=mGrid->getComboEdit(5,i);
+   TscGPListBoxItem *I;
+
+   //naètení hodnoty rozteèe do roletky + nastavení jako ItemIndex=0
+
    if(i==2)
    {
     mGrid->Cells[2][i].Text="0,2";
     mGrid->Cells[3][i].Text="5";
     mGrid->Cells[4][i].Text="0,5";
-    mGrid->Cells[5][i].Text="250";
+    I=C->Items->Add();
+    I->Caption = "250";
+    C->ItemIndex=0;
     }
 
     if(i==3)
@@ -1218,7 +1226,9 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
     mGrid->Cells[2][i].Text="1";
     mGrid->Cells[3][i].Text="3";
     mGrid->Cells[4][i].Text="2,2";
-    mGrid->Cells[5][i].Text="450";
+    I=C->Items->Add();
+    I->Caption = "450";
+    C->ItemIndex=0;
     }
 
     if(i==4)
@@ -1226,7 +1236,9 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
     mGrid->Cells[2][i].Text="1,5";
     mGrid->Cells[3][i].Text="5";
     mGrid->Cells[4][i].Text="4";
-    mGrid->Cells[5][i].Text="1230";
+    I=C->Items->Add();
+    I->Caption = "1230";
+    C->ItemIndex=0;
     }
 
    mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
