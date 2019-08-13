@@ -289,6 +289,17 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	nastavit_text_popisu_objektu_v_nahledu(canv,1);
 	TextFraming(canv,X,Y,Tn);//záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
 	canv->Font->Orientation=0;//vrácení původní hodnoty rotace canvasu
+	if(F->JID==-6 || F->JID==-7)//vykreslení uchopovacího kříže u textu
+	{
+		line(canv,m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0),m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn)+20,m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0)-40,m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn)+20);
+		line(canv,m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0)-20,m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn),m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0)-20,m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn)+40);
+	}
+//	if(F->pom_temp!=NULL && F->pom_temp->n==O->n)//vykreslení kříže posuvu u tabulky pohonu, natrvalo
+//	{
+//		line(canv,m.L2Px(F->pom_temp->Xp)-20,m.L2Py(F->pom_temp->Yp)-20,m.L2Px(F->pom_temp->Xp)-60,m.L2Py(F->pom_temp->Yp)-20);
+//		line(canv,m.L2Px(F->pom_temp->Xp)-40,m.L2Py(F->pom_temp->Yp),m.L2Px(F->pom_temp->Xp)-40,m.L2Py(F->pom_temp->Yp)-40);
+//	}
+
 	short highlight=0;//nastavování zda mají být koty highlightovány
 
 	////vykreslení komor u POW - pokud je objekt obsahuje, poslední komora má vždy velikost do konce objektu (nehledě na její skutečné délku), stav, kdy začíná komora za objektem, je nutné ošetřit separátně
@@ -302,7 +313,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 			//canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
 			//canv->Pen->Mode=pmCopy;pmNotXor;//pro transparentní zákres
 			if((F->JID*(-1)-10==(signed)K->n || (F->JID==0 && F->pom_komora->n==K->n)) && F->pom_temp!=NULL && F->pom_temp->n==O->n)clAkt=m.clIntensive(clStenaKabiny,-50);//highlight
-			else clAkt=clStenaKabiny;                //if(K->n==3)break;
+			else clAkt=clStenaKabiny;
 			set_pen(canv,clAkt,sirka_steny_px,PS_ENDCAP_SQUARE);
 			vzdalenost+=K->velikost;//dle velikosti předchozích komor uchovává hodnotu součtu/pozice aktuálně vykreslované komory
 			short W1=0;if(K->n==1)W1=W;//pro první komoru odsazeni
@@ -4363,7 +4374,7 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			  			E->mGrid->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování
 			  			//možná zde ještě update pokud byla komponenta skyta
 			  			E->mGrid->VisibleComponents=true;//stačí volat toto, protože se pomocí Show cyklem všechny komponenty
-			  			E->mGrid->Left=m.L2Px(E->Xt);
+							E->mGrid->Left=m.L2Px(E->Xt);
 							E->mGrid->Top=m.L2Py(E->Yt);
 			  			E->mGrid->Show(canv);
 			  		}
@@ -4384,8 +4395,10 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
 			{
 				F->PmG->Redraw=false;
-				F->PmG->Left=oblast_kabiny.right+30;
-				F->PmG->Top=oblast_kabiny.top-F->PmG->Height-30;
+				F->PmG->Left=m.L2Px(F->pom_temp->Xp);
+				F->PmG->Top=m.L2Py(F->pom_temp->Yp);
+				//F->PmG->Left=oblast_kabiny.right+30;
+				//F->PmG->Top=oblast_kabiny.top-F->PmG->Height-30;
 				F->PmG->SetVisibleComponents(false);
 				F->PmG->Show(canv);
 			}
@@ -4397,8 +4410,10 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 					//F->PmG->Buffer(false);
 					F->PmG->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování
 					F->PmG->VisibleComponents=true;//stačí volat toto, protože se pomocí Show cyklem všechny komponenty
-					F->PmG->Left=oblast_kabiny.right+30;
-					F->PmG->Top=oblast_kabiny.top-F->PmG->Height-30;
+					F->PmG->Left=m.L2Px(F->pom_temp->Xp);
+					F->PmG->Top=m.L2Py(F->pom_temp->Yp);
+					//F->PmG->Left=oblast_kabiny.right+30;
+					//F->PmG->Top=oblast_kabiny.top-F->PmG->Height-30;
 					F->PmG->Show(canv);
 				}
 				else//pokud ne, je třeba skrýt komponenty
