@@ -2330,7 +2330,10 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			d.vykresli_ikonu_komory(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,"",-1);
 			minule_souradnice_kurzoru=TPoint(X,Y);
 			d.vykresli_ikonu_komory(Canvas,X,Y,"",-1);
-			if(m.P2Lx(X)<pom_temp->elementy->dalsi->geo.X1||m.P2Lx(X)>pom_temp->elementy->predchozi->geo.X4||m.P2Ly(Y)>pom_temp->elementy->dalsi->geo.Y1||m.P2Ly(Y)<pom_temp->elementy->predchozi->geo.Y4)Smazat1Click(this);
+			if(pom_temp->orientace==90 && (m.P2Lx(X)<pom_temp->body->dalsi->X || m.P2Lx(X)>pom_temp->body->dalsi->dalsi->X))Smazat1Click(this);
+			if(pom_temp->orientace==180 && (m.P2Ly(Y)>pom_temp->body->dalsi->Y || m.P2Ly(Y)<pom_temp->body->dalsi->dalsi->Y))Smazat1Click(this);
+			if(pom_temp->orientace==270 && (m.P2Lx(X)>pom_temp->body->dalsi->X || m.P2Lx(X)<pom_temp->body->dalsi->dalsi->X))Smazat1Click(this);
+			if(pom_temp->orientace==0 && (m.P2Ly(Y)<pom_temp->body->dalsi->Y || m.P2Ly(Y)>pom_temp->body->dalsi->dalsi->Y))Smazat1Click(this);
 			nahled_ulozit(true);
 			break;
 		}
@@ -2375,6 +2378,14 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				if(m.abs_d(posunx)>m.abs_d(posuny))posuny=0;else posunx=0;//vylepšení "pocitu" z posunu, není nezbytně nutné
 				d.v.posun_hranu(posunx,posuny,A,B);
 			}
+			//u POW při posunu úsečky totožné s hranou poslední kabiny je nutné rozšiřovat zároven poslední komoru!!
+			if(pom_temp!=NULL && pom_temp->id==3 && A->n==2)
+			{
+				if(pom_temp->orientace==0)pom_temp->komora->predchozi->velikost+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+				if(pom_temp->orientace==90)pom_temp->komora->predchozi->velikost+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
+				if(pom_temp->orientace==180)pom_temp->komora->predchozi->velikost-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+				if(pom_temp->orientace==270)pom_temp->komora->predchozi->velikost-=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
+			}
 			minule_souradnice_kurzoru=TPoint(X,Y);
 			REFRESH();
 			A=NULL;B=NULL;delete A;delete B;
@@ -2402,13 +2413,17 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			Cvektory::TKomora *ovlivneny=pom_komora_temp->dalsi;
 			if((pom_temp->orientace==90||pom_temp->orientace==270)&&ovlivneny->velikost>=0.5&&pom_komora_temp->velikost>=0.5)
 			{
-				pom_komora_temp->velikost+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
-				ovlivneny->velikost-=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
+				double posun=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
+				if(pom_temp->orientace==270)posun*=-1;
+				pom_komora_temp->velikost+=posun;
+				ovlivneny->velikost-=posun;
 			}
-			else if(ovlivneny->velikost>=500&&pom_komora_temp->velikost>=0.5)
+			else if(ovlivneny->velikost>=0.5&&pom_komora_temp->velikost>=0.5)
 			{
-				pom_komora_temp->velikost-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
-				ovlivneny->velikost+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+				double posun=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+				if(pom_temp->orientace==0)posun*=-1;
+				pom_komora_temp->velikost-=posun;
+				ovlivneny->velikost+=posun;
 			}
 			else//překročil jsem rozmery ovlivněného nebo aktuální komory
 			{
@@ -2782,11 +2797,14 @@ void TForm1::getJobID(int X, int Y)
   		{
   			JID=0;//uložení komory do JID
   			//detekce hrany komory
-				if(pom_temp->orientace==90||pom_temp->orientace==270)
-					{if(X<=m.L2Px(pom_temp->elementy->dalsi->geo.X1+d.v.vrat_velikosti_komor(pom_komora))+9&&X>=m.L2Px(pom_temp->elementy->dalsi->geo.X1+d.v.vrat_velikosti_komor(pom_komora))-3)JID=(10+pom_komora->n)*(-1);}
-  			else
-					{if(Y>=m.L2Py(pom_temp->elementy->dalsi->geo.Y1+d.v.vrat_velikosti_komor(pom_komora))-3&&Y<=m.L2Py(pom_temp->elementy->dalsi->geo.Y1+d.v.vrat_velikosti_komor(pom_komora))+3)JID=(10+pom_komora->n)*(-1);}
-  		}
+				switch((int)pom_temp->orientace)
+				{
+					case 0:if(Y<=m.L2Py(pom_temp->body->dalsi->Y+d.v.vrat_velikosti_komor(pom_komora))+9&&Y>=m.L2Py(pom_temp->body->dalsi->Y+d.v.vrat_velikosti_komor(pom_komora))-3)JID=(10+pom_komora->n)*(-1);break;
+					case 90:if(X<=m.L2Px(pom_temp->body->dalsi->X+d.v.vrat_velikosti_komor(pom_komora))+9&&X>=m.L2Px(pom_temp->body->dalsi->X+d.v.vrat_velikosti_komor(pom_komora))-3)JID=(10+pom_komora->n)*(-1);break;
+					case 180:if(Y>=m.L2Py(pom_temp->body->dalsi->Y-d.v.vrat_velikosti_komor(pom_komora))-9&&Y<=m.L2Py(pom_temp->body->dalsi->Y-d.v.vrat_velikosti_komor(pom_komora))+3)JID=(10+pom_komora->n)*(-1);break;
+					case 270:if(X>=m.L2Px(pom_temp->body->dalsi->X-d.v.vrat_velikosti_komor(pom_komora))-9&&X<=m.L2Px(pom_temp->body->dalsi->X-d.v.vrat_velikosti_komor(pom_komora))+3)JID=(10+pom_komora->n)*(-1);break;
+				}
+			}
   		else if(pom_temp->zobrazit_koty)//prohledávání kót
 			{
 				short PtInKota_komory=d.v.PtInKota_komory(pom_temp,X,Y);
@@ -3941,9 +3959,12 @@ void TForm1::add_komoru()
 		k=k->dalsi;
 	}
 	k=NULL;delete k;
-	//doplnění pro ostatní orientace
-	double rozmer_kabiny=pom_temp->body->dalsi->dalsi->X-pom_temp->body->dalsi->X;
-	if(celkem>rozmer_kabiny)d.v.posun_hranu(celkem-rozmer_kabiny,0,pom_temp->body->dalsi->dalsi,pom_temp->body->dalsi->dalsi->dalsi);
+	//změna rozměru kabiny
+	double rozmer_kabiny_x=pom_temp->body->dalsi->dalsi->X-pom_temp->body->dalsi->X,rozmer_kabiny_y=pom_temp->body->dalsi->dalsi->Y-pom_temp->body->dalsi->Y;
+	double posun_x=celkem-rozmer_kabiny_x,posun_y=celkem-rozmer_kabiny_y;
+	if(pom_temp->orientace==270 || pom_temp->orientace==180){posun_x=-celkem-rozmer_kabiny_x;posun_y=-celkem-rozmer_kabiny_y;}
+	if((pom_temp->orientace==90 || pom_temp->orientace==270) && m.abs_d(celkem)>m.abs_d(rozmer_kabiny_x))d.v.posun_hranu(posun_x,0,pom_temp->body->dalsi->dalsi,pom_temp->body->dalsi->dalsi->dalsi);
+	if((pom_temp->orientace==0 || pom_temp->orientace==180) && m.abs_d(celkem)>m.abs_d(rozmer_kabiny_y))d.v.posun_hranu(0,posun_y,pom_temp->body->dalsi->dalsi,pom_temp->body->dalsi->dalsi->dalsi);
 	Akce=NIC;
 	refresh_mGrid=false;
 	REFRESH();
@@ -6565,21 +6586,21 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
       }
 			if(pom_komora_temp!=NULL && pom_temp->komora->predchozi->n>2)//případ mazání kabiny
 			{
-				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu smazat komoru číslo \""+AnsiString(pom_komora_temp->n)+"\"?","",MB_YESNO))
+				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu smazat sekci číslo \""+AnsiString(pom_komora_temp->n)+"\"?","",MB_YESNO))
 				{
 					int n=pom_komora_temp->n;
 					d.v.smaz_komoru(pom_temp,pom_komora_temp);
 					pom_komora_temp=NULL;delete pom_komora_temp;
 					DuvodUlozit(true);
-					refresh_mGrid=false;
-			  	REFRESH();
+					refresh_mGrid=false;  editace_textu=true;
+					REFRESH();
 					refresh_mGrid=true;
 				}
 				Akce=NIC;
 			}
 			else if(pom_komora_temp!=NULL)//mazání komory, v objektu už bylo dosaženo minimálního množství komor
 			{
-				MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Nelze smazat komoru, v objektu musí být nejméně dvě komory!","",MB_OK);
+				MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Nelze smazat sekci, v objektu musí být nejméně dvě sekce!","",MB_OK);
 				Akce=NIC;
 			}
 			break;
@@ -8512,13 +8533,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
-	while(O!=NULL)
-	{
-		Memo(O->name);
-		O=O->dalsi;
-	}
-	delete O;O=NULL;
+	Sv(m.m2px(0.5));
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -10145,8 +10160,9 @@ void TForm1::Smaz_kurzor()
 		if(index_kurzoru<=-11&&pom_temp->id==3)//editace rozmeru komor v POW
 		{
 			editovany_text=inDK(ms.MyToDouble(editovany_text));
-			if(pom_temp->orientace==90 || pom_temp->orientace==270)d.v.posun_hranu(ms.MyToDouble(editovany_text),0,pom_temp->body->dalsi->dalsi,pom_temp->body->dalsi->dalsi->dalsi);
-			else d.v.posun_hranu(0,ms.MyToDouble(editovany_text),pom_temp->body->dalsi->dalsi,pom_temp->body->dalsi->dalsi->dalsi);
+			double posun=ms.MyToDouble(editovany_text)-pom_komora_temp->velikost;if(pom_temp->orientace==270 ||pom_temp->orientace==180)posun*=-1;
+			if(pom_temp->orientace==90 || pom_temp->orientace==270)d.v.posun_hranu(posun,0,pom_temp->body->dalsi->dalsi,pom_temp->body->dalsi->dalsi->dalsi);
+			else d.v.posun_hranu(0,posun,pom_temp->body->dalsi->dalsi,pom_temp->body->dalsi->dalsi->dalsi);
 			pom_komora_temp->velikost=ms.MyToDouble(editovany_text);
 		}
 		if(index_kurzoru<=-11&&pom_temp->id!=3&&(pom_element_temp->eID==2||pom_element_temp->eID==4))pom_element_temp->mGrid->Refresh();//musí se refreshovat z důvodu přepočtu RT u S&G

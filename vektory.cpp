@@ -1608,25 +1608,15 @@ Cvektory::TKomora *Cvektory::najdi_komoru(TObjekt* Objekt)
 	{
 		switch((int)Objekt->orientace)
 		{
-			case 0:if(Objekt->elementy->dalsi->geo.Y1+vzdalenost>=F->akt_souradnice_kurzoru.y && F->akt_souradnice_kurzoru.y<=Objekt->elementy->dalsi->geo.Y1+vzdalenost+K->velikost/* && oblast.top<F->akt_souradnice_kurzoru_PX.y && oblast.bottom>F->akt_souradnice_kurzoru_PX.y*/)nalezeno=true;break;
-			case 90:{if(Objekt->elementy->dalsi->geo.X1+vzdalenost<=F->akt_souradnice_kurzoru.x && F->akt_souradnice_kurzoru.x<=Objekt->elementy->dalsi->geo.X1+vzdalenost+K->velikost && oblast.top<F->akt_souradnice_kurzoru_PX.y && oblast.bottom>F->akt_souradnice_kurzoru_PX.y)nalezeno=true;}break;
-			case 180:break;
-			case 270:{if(Objekt->elementy->dalsi->geo.X1-vzdalenost>=F->akt_souradnice_kurzoru.x && F->akt_souradnice_kurzoru.x>=Objekt->elementy->dalsi->geo.X1-vzdalenost-K->velikost && oblast.top<F->akt_souradnice_kurzoru_PX.y && oblast.bottom>F->akt_souradnice_kurzoru_PX.y)nalezeno=true;}break;
+			case 0:if(Objekt->elementy->dalsi->geo.Y1+vzdalenost<=F->akt_souradnice_kurzoru.y && F->akt_souradnice_kurzoru.y<=Objekt->elementy->dalsi->geo.Y1+vzdalenost+K->velikost && oblast.left<F->akt_souradnice_kurzoru_PX.x && oblast.right>F->akt_souradnice_kurzoru_PX.x)nalezeno=true;break;
+			case 90:if(Objekt->elementy->dalsi->geo.X1+vzdalenost<=F->akt_souradnice_kurzoru.x && F->akt_souradnice_kurzoru.x<=Objekt->elementy->dalsi->geo.X1+vzdalenost+K->velikost && oblast.top<F->akt_souradnice_kurzoru_PX.y && oblast.bottom>F->akt_souradnice_kurzoru_PX.y)nalezeno=true;break;
+			case 180:if(Objekt->elementy->dalsi->geo.Y1-vzdalenost>=F->akt_souradnice_kurzoru.y && F->akt_souradnice_kurzoru.y>=Objekt->elementy->dalsi->geo.Y1-vzdalenost-K->velikost && oblast.left<F->akt_souradnice_kurzoru_PX.x && oblast.right>F->akt_souradnice_kurzoru_PX.x)nalezeno=true;break;
+			case 270:if(Objekt->elementy->dalsi->geo.X1-vzdalenost>=F->akt_souradnice_kurzoru.x && F->akt_souradnice_kurzoru.x>=Objekt->elementy->dalsi->geo.X1-vzdalenost-K->velikost && oblast.top<F->akt_souradnice_kurzoru_PX.y && oblast.bottom>F->akt_souradnice_kurzoru_PX.y)nalezeno=true;break;
 		}
-//		if(Objekt->rotace==0 || Objekt->rotace==180)
-//		{
-//			if(Objekt->body->dalsi->X/*Objekt->Xk*/+vzdalenost<=F->akt_souradnice_kurzoru.x && F->akt_souradnice_kurzoru.x<=Objekt->body->dalsi->X/*Objekt->Xk*/+vzdalenost+K->velikost && Objekt->body->dalsi->Y/*Objekt->Yk*/>=F->akt_souradnice_kurzoru.y && F->akt_souradnice_kurzoru.y>Objekt->body->predchozi->Y/*Objekt->Yk-Objekt->rozmer_kabiny.y*/)
-//			break;
-//		}
-//		else
-//		{
-//			//if(Objekt->Yk+vzdalenost>=F->akt_souradnice_kurzoru.y && F->akt_souradnice_kurzoru.y<=Objekt->Yk+vzdalenost+K->velikost && Objekt->Xk<=F->akt_souradnice_kurzoru.x && F->akt_souradnice_kurzoru.x<Objekt->Yk+Objekt->rozmer_kabiny.x)
-//			break;
-//		}
 		vzdalenost+=K->velikost;//přičtení šířky další komory
 		if(!nalezeno)K=K->dalsi;
 		else break;
-	}  if(K!=NULL)F->Memo(K->n,true,true);
+	}
 	return K;
 }
 //---------------------------------------------------------------------------
