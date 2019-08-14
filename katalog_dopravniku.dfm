@@ -3,7 +3,7 @@ object Form_katalog: TForm_katalog
   Top = 0
   BorderStyle = bsNone
   Caption = 'Form_katalog'
-  ClientHeight = 592
+  ClientHeight = 563
   ClientWidth = 1163
   Color = 15790320
   Font.Charset = DEFAULT_CHARSET
@@ -189,7 +189,7 @@ object Form_katalog: TForm_katalog
   end
   object Button_save: TscGPButton
     Left = 366
-    Top = 554
+    Top = 514
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -297,7 +297,7 @@ object Form_katalog: TForm_katalog
   end
   object Button_storno: TscGPButton
     Left = 508
-    Top = 554
+    Top = 514
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET

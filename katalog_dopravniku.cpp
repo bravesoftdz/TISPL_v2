@@ -33,7 +33,7 @@ void __fastcall TForm_katalog::FormShow(TObject *Sender)
 	unsigned long RowCount=15;//pevný počet řádků
   mGrid->Create(ColCount,RowCount);//samotné vytvoření matice-tabulky
   mGrid->Top=scLabel_header->Height + 10;
-  mGrid->Left= 20;
+
 
   mGrid->Columns[0].Width=120;
   for(int i=1;i<=ColCount;i++)
@@ -54,6 +54,11 @@ void __fastcall TForm_katalog::FormShow(TObject *Sender)
   //pozice formu - střed obrazovky
   Left=Form1->ClientWidth/2-Form_katalog->Width/2;
   Top=Form1->ClientHeight/2-Form_katalog->Height/2;
+  mGrid->Left=2;
+  Form_katalog->Width=mGrid->Width + 4;
+  Button_save->Top= mGrid->Height + scLabel_header->Height + 30;
+  Button_storno->Top= mGrid->Height + scLabel_header->Height + 30;
+  Form_katalog->Height = scLabel_header->Height +  mGrid->Height + Button_save->Height + 70;
 }
 //---------------------------------------------------------------------------
 
