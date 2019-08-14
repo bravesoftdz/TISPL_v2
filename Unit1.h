@@ -515,6 +515,7 @@ __published:	// IDE-managed Components
 	void __fastcall Button14Click(TObject *Sender);
   void __fastcall scGPButton_posun_halyClick(TObject *Sender);
   void __fastcall scGPButton_nakreslit_haluClick(TObject *Sender);
+	void __fastcall NahledClick(TObject *Sender);
 
 
 // User declarations
@@ -584,7 +585,8 @@ private:
 	void nacist_nastaveni();
 	void ulozit_nastaveni();
 	void zavrit_uvod();//zavøe úvodní dialog
-	int vrat_max_vysku_grafu();
+	int vrat_max_vysku_grafu();//vratí maximální oblast
+	bool najdi_nazev_obj(double X,double Y,Cvektory::TObjekt *Objekt,int typ=0);//vratí zda jsem v oblasti textu, typ 0 citelná oblast textu, typ 1 citelná oblast posun. køíže
 	void getJobID(int X, int Y);//vrátí do globální promìnné JID ID úlohy/funkcionality v místì kurzoru, zároveò pokud v místì tabulky èi elementu nahraje ukazatel do globální promìnné pom_element, význam jednotlivých JID hodnot v komentáøi definici metody
 	void setJobIDOnMouseMove(int X, int Y);//dle místa kurzoru a vrácené JID (job id) nastaví úlohu
 	void nastaveni_grafickeho_vystupu(Graphics::TBitmap * Bitmap,unsigned int OD,unsigned int PO);
@@ -663,7 +665,7 @@ public:		// User declarations
 	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
 	Graphics::TBitmap *Pan_bmp;//kvùli mGridu jinak staèí private
 	//uklazatele
-	Cvektory::TObjekt *pom,*pom_vyhybka,*pom_temp,*copyObjekt;
+	Cvektory::TObjekt *pom,*pom_vyhybka,*pom_temp,*copyObjekt,*posledni_editovany;
 	Cvektory::TElement *pom_element,*pom_element_temp;
 	TmGrid *PmG;//ukazatel na mGridovou tabulku pohonu
 	Cvektory::TKomora *pom_komora,*pom_komora_temp;

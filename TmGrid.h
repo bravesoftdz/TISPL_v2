@@ -194,6 +194,7 @@ class TmGrid
 	void __fastcall getTagOnChange(TObject *Sender);//vrací událost při OnChange
 	void __fastcall getTagOnKeyDown(TObject *Sender,WORD &Key, TShiftState Shift);//vrací událost při OnKeyDown
 	void __fastcall getTagOnKeyPress(TObject *Sender,System::WideChar &Key);//vrací událost při OnKeyPress
+	void __fastcall getTagMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall getTagOnMouseEnter(TObject *Sender);//vrací událost při vstupu či přejetí myší přes komponentu
 	void __fastcall OnTimer(TObject *Sender);//událost časovače
 	void __fastcall OnMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);//metoda voláná z rodičovského formuláře, pozor u více tabulek ve formuláři beru to poslední
