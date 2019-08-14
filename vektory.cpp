@@ -570,8 +570,6 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 	novy->rezim=0;if(id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
 	novy->X=X;//přiřadím X osu,pozice objektu
 	novy->Y=Y;//přiřadím Y osu,pozice objektu
-	//novy->Xk=X;//výchozí pozice kabiny
-	//novy->Yk=Y;//výchozí pozice kabiny
 	novy->body=NULL;//spojový seznam definičních bodů obrysu objektu
 	novy->sirka_steny=0.12;//šířka stěny kabiny objektu v metrech
 	novy->CT=PP.TT;//pro status návrh
@@ -5054,7 +5052,10 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 				 c_ukaz->id=ukaz->id;
 				 c_ukaz->X=ukaz->X;
 				 c_ukaz->Y=ukaz->Y;
+         c_ukaz->Xt=ukaz->Xt;
+				 c_ukaz->Yt=ukaz->Yt;
 				 c_ukaz->sirka_steny=ukaz->sirka_steny;
+         c_ukaz->orientace=ukaz->orientace;
 				 c_ukaz->rezim=ukaz->rezim;
 				 if(ukaz->body!=NULL)c_ukaz->pocet_bodu=ukaz->body->predchozi->n;
 				 else c_ukaz->pocet_bodu=0;
@@ -5364,10 +5365,12 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 					ukaz->id=c_ukaz->id;
 					ukaz->X=c_ukaz->X;
 					ukaz->Y=c_ukaz->Y;
+          ukaz->Xt=c_ukaz->Xt;
+					ukaz->Yt=c_ukaz->Yt;
           ukaz->sirka_steny=c_ukaz->sirka_steny;
           ukaz->body=NULL;  //NUTNOST PRO AUTO VYTVARENI HLAVICKY
 					ukaz->rezim=c_ukaz->rezim;
-					//ukaz->rotace=c_ukaz->rotace;
+					ukaz->orientace=c_ukaz->orientace;
 					ukaz->pohon=vrat_pohon(c_ukaz->pohon);
 					ukaz->koty_elementu_offset=c_ukaz->koty_elementu_offset;
 					ukaz->elementy=NULL;   //NUTNOST PRO AUTO VYTVARENI HLAVICKY
