@@ -294,11 +294,11 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		line(canv,m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0),m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn)+20,m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0)-40,m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn)+20);
 		line(canv,m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0)-20,m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn),m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0)-20,m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn)+40);
 	}
-//	if(F->pom_temp!=NULL && F->pom_temp->n==O->n)//vykreslení kříže posuvu u tabulky pohonu, natrvalo
-//	{
-//		line(canv,m.L2Px(F->pom_temp->Xp)-20,m.L2Py(F->pom_temp->Yp)-20,m.L2Px(F->pom_temp->Xp)-60,m.L2Py(F->pom_temp->Yp)-20);
-//		line(canv,m.L2Px(F->pom_temp->Xp)-40,m.L2Py(F->pom_temp->Yp),m.L2Px(F->pom_temp->Xp)-40,m.L2Py(F->pom_temp->Yp)-40);
-//	}
+	if(F->pom_temp!=NULL && F->pom_temp->n==O->n)//vykreslení kříže posuvu u tabulky pohonu, natrvalo
+	{
+		line(canv,m.L2Px(F->pom_temp->Xp)-20,m.L2Py(F->pom_temp->Yp)-20,m.L2Px(F->pom_temp->Xp)-60,m.L2Py(F->pom_temp->Yp)-20);
+		line(canv,m.L2Px(F->pom_temp->Xp)-40,m.L2Py(F->pom_temp->Yp),m.L2Px(F->pom_temp->Xp)-40,m.L2Py(F->pom_temp->Yp)-40);
+	}
 
 	short highlight=0;//nastavování zda mají být koty highlightovány
 
@@ -4282,6 +4282,7 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 			{
 				double a=m.delka(body->dalsi->X,body->dalsi->Y,body->dalsi->dalsi->X,body->dalsi->dalsi->Y),b=m.delka(body->dalsi->dalsi->X,body->dalsi->dalsi->Y,body->predchozi->predchozi->X,body->predchozi->predchozi->Y),c=m.delka(body->predchozi->predchozi->X,body->predchozi->predchozi->Y,body->predchozi->X,body->predchozi->Y),d=m.delka(body->dalsi->X,body->dalsi->Y,body->predchozi->X,body->predchozi->Y);
 				if(a==c && b==d)kota_od=body->dalsi->dalsi->dalsi;//jedná se o obdelník nebo čtverec
+				if(F->scGPComboBox_prepinacKot->ItemIndex==1)kota_od=body->predchozi;//vykreslení pouze poslední kóty v časovém režimu
 			}
 			//příprava pro vykreslení kót
 			short AA=1;if(F->antialiasing)AA=3;
@@ -4306,13 +4307,16 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 					delka_koty=m.round2double(m.delka(B->predchozi->X,B->predchozi->Y,B->X,B->Y),3);if(F->DKunit==2 || F->DKunit==3)delka_koty=delka_koty/F->pom_temp->pohon->aRD;
 					//vykreslení jedné kóty pro obdelník/čtverec
 					vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),F->outDK(delka_koty),NULL,B->kota_offset*F->Zoom/AA,highlight,0.2,clGray,false,NULL,B);
-					//zjištění highlightu pro druhou kótu obdelníku/čtverce
-					if(F->pom_bod!=NULL && F->JID==oblast_koty&&F->pom_bod->n==B->dalsi->n)highlight=2;
-					else if(F->pom_bod!=NULL && F->JID==hodnota_koty&&F->pom_bod->n==B->dalsi->n)highlight=1;else highlight=0;
-					//délka
-					delka_koty=m.round2double(m.delka(B->X,B->Y,B->dalsi->X,B->dalsi->Y),3);if(F->DKunit==2 || F->DKunit==3)delka_koty=delka_koty/F->pom_temp->pohon->aRD;
-					//vykreslení
-					vykresli_kotu(canv,m.L2Px(B->X),m.L2Py(B->Y),m.L2Px(B->dalsi->X),m.L2Py(B->dalsi->Y),F->outDK(delka_koty),NULL,B->dalsi->kota_offset*F->Zoom/AA,highlight,0.2,clGray,false,NULL,B->dalsi);
+					if(kota_od->dalsi!=NULL)//ošetření
+					{
+				  	//zjištění highlightu pro druhou kótu obdelníku/čtverce
+				  	if(F->pom_bod!=NULL && F->JID==oblast_koty&&F->pom_bod->n==B->dalsi->n)highlight=2;
+				  	else if(F->pom_bod!=NULL && F->JID==hodnota_koty&&F->pom_bod->n==B->dalsi->n)highlight=1;else highlight=0;
+				  	//délka
+				  	delka_koty=m.round2double(m.delka(B->X,B->Y,B->dalsi->X,B->dalsi->Y),3);if(F->DKunit==2 || F->DKunit==3)delka_koty=delka_koty/F->pom_temp->pohon->aRD;
+				  	//vykreslení
+				  	vykresli_kotu(canv,m.L2Px(B->X),m.L2Py(B->Y),m.L2Px(B->dalsi->X),m.L2Py(B->dalsi->Y),F->outDK(delka_koty),NULL,B->dalsi->kota_offset*F->Zoom/AA,highlight,0.2,clGray,false,NULL,B->dalsi);
+					}
 					break;
 				}
 				B=B->dalsi;

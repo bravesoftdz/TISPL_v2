@@ -4426,7 +4426,8 @@ void TForm1::prirazeni_pohonu_tab_pohon(int index_pohonu)
 	else Rz="<a>[mm]</a>";
 	if(index_pohonu!=0)//pokud je přiřazen nějaký pohon
 	{
-   	switch(pom_temp->rezim)//tabulka má 7 řádků
+    if(pom_temp->id==3)pom_temp->rezim=1;//pro objekt POW bude vždy zobrazena tabulka v KK režimu
+		switch(pom_temp->rezim)//tabulka má 7 řádků
    	{
    		case -1://nic, stejné jako S&G
    		case 0://S&G, tři řádky
@@ -5644,28 +5645,17 @@ void __fastcall TForm1::DrawGrid_otoceDrawCell(TObject *Sender, int ACol, int AR
 	Zoom=10;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
 	short pocet_elementu=2;
   AnsiString label1;
-  AnsiString label2;
-//	int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
+	AnsiString label2;
+
  	for(unsigned short n=1;n<=pocet_elementu;n++)
 	{
     if(n==1){ label1= "pasivní"; label2=""; }
     if(n==2){ label1= "aktivní"; label2=""; }
-		if(/*pom_temp->id==5&&*/pom_temp->pohon!=NULL)
+		if(pom_temp->id!=3 && pom_temp->pohon!=NULL)
 		{
-				 d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P - 15-odsazeni,label1,label2,n+4,0,180,1);
+		  d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P - 15-odsazeni,label1,label2,n+4,0,180,1);
 		}
 		else d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P - 15-odsazeni,label1,label2,n+4,0,180,-1);
-	}
-
-	if(/*(EID==1||EID==3)&&*/pom_temp->pohon!=NULL)
-	{
-		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((2)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P - 15-odsazeni,"pasivní","",1+4,0,180,1);
-		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((3)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P - 15-odsazeni,"aktivní","",2+4,0,180,1);
-	}
-	else /*if((EID==2||EID==4)&&pom_temp->pohon!=NULL)*/
-	{
-		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((2)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P - 15-odsazeni,"pasivní","",1+4,0,180,-1);
-		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((3)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P - 15-odsazeni,"aktivní","",2+4,0,180,-1);
 	}
 
 	Zoom=Zoom_back;//návrácení původního zoomu
@@ -5690,16 +5680,16 @@ void __fastcall TForm1::DrawGrid_ostatniDrawCell(TObject *Sender, int ACol, int 
 	bmp_in->Width=DrawGrid_ostatni->Width*Z;bmp_in->Height=DrawGrid_ostatni->Height *Z;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
 	TCanvas* C=bmp_in->Canvas;//pouze zkrácení ukazatelového zápisu/cesty
 
-//	unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
 	double Zoom_back=Zoom;//záloha zoomu
 	Zoom=10;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
 	short pocet_elementu=1;
 	for(unsigned short n=1;n<=pocet_elementu;n++)
 	{
-	if(/*pom_temp->id==5&&*/pom_temp->pohon!=NULL)
-	{
-					d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 2-odsazeni,"STOP","",0,180);
-	} else  d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 2-odsazeni,"STOP","",0,180,-1);
+		if(pom_temp->id!=3 && pom_temp->pohon!=NULL)
+		{
+			d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 2-odsazeni,"STOP","",0,180);
+		}
+	else d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 2-odsazeni,"STOP","",0,180,-1);
 
 
 	}
@@ -6258,8 +6248,7 @@ void __fastcall TForm1::DrawGrid_otoceMouseDown(TObject *Sender, TMouseButton Bu
 	Col=DrawGrid_otoce->Col; Row=DrawGrid_otoce->Row;
 	knihovna_id=2;
 	if(Row==0) element_id=Col+5;
-//	int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
-	if(pom_temp->pohon!=NULL)
+	if(pom_temp->pohon!=NULL && pom_temp->id!=3)
 	{
 		SB("Kliknutím na libovolné místo umístíte vybraný element.");
 		Akce=ADD;kurzor(add_o);
@@ -6272,7 +6261,7 @@ void __fastcall TForm1::DrawGrid_ostatniMouseDown(TObject *Sender, TMouseButton 
   log(__func__);//logování
 	if(editace_textu)	Smaz_kurzor();
 	if(MOD==NAHLED)if(PmG->Rows[3].Visible)FormX->odstranit_korelaci();
-	if(pom_temp->pohon!=NULL)
+	if(pom_temp->pohon!=NULL && pom_temp->id!=3)
 	{
 		int Row;
 		Row=DrawGrid_ostatni->Row;
