@@ -667,12 +667,13 @@ private:
 			unsigned int id;
 			unsigned int text_length;
 			double X, Y;
+      double Xt,Yt;
       unsigned long pocet_bodu;
 			unsigned long pocet_elementu;
       unsigned long pocet_komor;
 			unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
       double sirka_steny;//šířka stěny kabiny objektu v metrech
-			double rotace;//rotace jigu v objektu
+			double orientace;//orientace objektu
 			unsigned int pohon;//"id" resp. n přidruženého - roletkou vybraného pohonu
 			double delka_dopravniku;//delka dopravníku v rámci objektu
       double koty_elementu_offset;
