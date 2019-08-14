@@ -1314,6 +1314,7 @@ TscGPEdit *TmGrid::createEdit(unsigned long Col,unsigned long Row)
 		E->OnKeyDown=&getTagOnKeyDown;
 		E->OnKeyPress=&getTagOnKeyPress;
 		E->OnMouseEnter=&getTagOnMouseEnter;
+		E->OnMouseMove=&getTagMouseMove;
 	}
 	return E;
 }
@@ -1334,6 +1335,7 @@ TscGPNumericEdit *TmGrid::createNumeric(unsigned long Col,unsigned long Row)
 		N->OnKeyDown=&getTagOnKeyDown;
 		N->OnKeyPress=&getTagOnKeyPress;
 		N->OnMouseEnter=&getTagOnMouseEnter;
+		N->OnMouseMove=&getTagMouseMove;
 	}
 	return N;
 }
@@ -1352,6 +1354,7 @@ TscHTMLLabel *TmGrid::createLabel(unsigned long Col,unsigned long Row)
 		L->OnClick=&getTagOnClick;
 		L->OnEnter=&getTagOnEnter;
 		L->OnMouseEnter=&getTagOnMouseEnter;
+		L->OnMouseMove=&getTagMouseMove;
 	}
 	return L;
 }
@@ -1370,6 +1373,7 @@ TscGPButton *TmGrid::createButton(unsigned long Col,unsigned long Row)
 		B->OnClick=&getTagOnClick;
 		B->OnEnter=&getTagOnEnter;
 		B->OnMouseEnter=&getTagOnMouseEnter;
+		B->OnMouseMove=&getTagMouseMove;
 	}
 	return B;
 }
@@ -1395,6 +1399,7 @@ TscGPGlyphButton *TmGrid::createGlyphButton(unsigned long Col,unsigned long Row)
 		gB->OnClick=&getTagOnClick;
 		gB->OnEnter=&getTagOnEnter;
 		gB->OnMouseEnter=&getTagOnMouseEnter;
+		gB->OnMouseMove=&getTagMouseMove;
 	}
 	return gB;
 }
@@ -1414,6 +1419,7 @@ TscGPComboBox *TmGrid::createCombo(unsigned long Col,unsigned long Row)
 		C->OnEnter=&getTagOnEnter;
 		C->OnChange=&getTagOnChange;
 		C->OnMouseEnter=&getTagOnMouseEnter;
+		C->OnMouseMove=&getTagMouseMove;
 
 		//výchozí nastavení
 		C->Options->NormalColorAlpha=255;
@@ -1439,6 +1445,7 @@ TscGPComboEdit *TmGrid::createComboEdit(unsigned long Col,unsigned long Row)
 		C->OnEnter=&getTagOnEnter;
 		C->OnChange=&getTagOnChange;
 		C->OnMouseEnter=&getTagOnMouseEnter;
+		C->OnMouseMove=&getTagMouseMove;
 
 		//výchozí nastavení
 		C->Options->NormalColorAlpha=255;
@@ -1468,6 +1475,7 @@ TscGPCheckBox *TmGrid::createCheck(unsigned long Col,unsigned long Row)
 		Ch->OnClick=&getTagOnClick;
 		Ch->OnEnter=&getTagOnEnter;
 		Ch->OnMouseEnter=&getTagOnMouseEnter;
+		Ch->OnMouseMove=&getTagMouseMove;
 	}
 	return Ch;
 }
@@ -1487,6 +1495,7 @@ TscGPRadioButton *TmGrid::createRadio(unsigned long Col,unsigned long Row)
 		Ra->OnClick=&getTagOnClick;
 		//Ra->OnEnter=&getTagOnEnter;//asi zbytečná událost
 		Ra->OnMouseEnter=&getTagOnMouseEnter;
+		Ra->OnMouseMove=&getTagMouseMove;
 	}
 	return Ra;
 }
@@ -1772,6 +1781,11 @@ void __fastcall TmGrid::getTagOnKeyPress(TObject *Sender,System::WideChar &Key)
 		if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnKeyPress(Tag,ID,Col,Row,Key);//z unit1 do unitX
 		//if(AnsiString(Tag).SubString(1,1)=="7")Form_parametry_linky->OnKeyPress(Tag,ID,Col,Row,Key);
 	}
+}
+//---------------------------------------------------------------------------
+void __fastcall TmGrid::getTagMouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
+{
+	Form1->FormMouseMove(Sender,Shift,X,Y);
 }
 //---------------------------------------------------------------------------
 //vrací událost při vstupu či přejetí myší přes komponentu

@@ -218,17 +218,17 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 		O=F->d.v.dalsi_krok(O,tab_pruchodu);//přepínání kroků v cyklu (dalsi/dalsi2)
 	}
 	//povolení zobrazování LAYOUTU a ČASOVÝCH OS, pokud existují objekty, jinak ne
-	if(v.OBJEKTY->dalsi!=NULL && !Form1->TZF)
-	{
-		if(v.OBJEKTY->predchozi->n>3)Form1->Layout->Enabled=true;else Form1->Layout->Enabled=false;///pokud je více jak 3 objekty
-		if(DEBUG)Form1->Layout->Enabled=true;
-		Form1->Analyza->Enabled=true;
-	}
-	else
-	{
-		Form1->Layout->Enabled=false;
-		Form1->Analyza->Enabled=false;
-	}
+//	if(v.OBJEKTY->dalsi!=NULL && !Form1->TZF)
+//	{
+//		if(v.OBJEKTY->predchozi->n>3)Form1->Layout->Enabled=true;else Form1->Layout->Enabled=false;///pokud je více jak 3 objekty
+//		if(DEBUG)Form1->Layout->Enabled=true;
+//		Form1->Analyza->Enabled=true;
+//	}
+//	else
+//	{
+//		Form1->Layout->Enabled=false;
+//		Form1->Analyza->Enabled=false;
+//	}
 	if(F->scHTMLLabel_log_vypis->Caption=="")       //toto budeme rušit
 	F->Z("<b>Linka v pořádku.</b>",false);
 	O=NULL;delete O;
@@ -285,16 +285,19 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		case 180:X=m.L2Px(X)+canv->TextHeight(Tl);Y=m.L2Py(Y)-m.round((Wn)/2.0);canv->Font->Orientation=(orientace+90)*10;break;//nastavení rotace canvasu
 		case 270:X=m.L2Px(X)-m.round((Wn)/2.0);Y=m.L2Py(Y)-canv->TextHeight(Tl);break;
 	}
+	//nastavení highlight textu
+	if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID==-6 || F->JID==-7))canv->Font->Style = TFontStyles()<< fsBold;//zapnutí tučného písma
+	else canv->Font->Style = TFontStyles();//vypnutí
 	//samotné vypsání názvu
 	nastavit_text_popisu_objektu_v_nahledu(canv,1);
 	TextFraming(canv,X,Y,Tn);//záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
 	canv->Font->Orientation=0;//vrácení původní hodnoty rotace canvasu
-	if(F->JID==-6 || F->JID==-7)//vykreslení uchopovacího kříže u textu
+	if(F->pom_temp!=NULL &&(F->JID==-6 || F->JID==-7))//vykreslení uchopovacího kříže u textu
 	{
 		line(canv,m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0),m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn)+20,m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0)-40,m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn)+20);
 		line(canv,m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0)-20,m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn),m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0)-20,m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn)+40);
 	}
-	if(F->pom_temp!=NULL && F->pom_temp->n==O->n)//vykreslení kříže posuvu u tabulky pohonu, natrvalo
+	if(F->pom_temp!=NULL &&(F->JID==4 || F->JID==-9 || (F->JID>=5 && F->JID<=10)))//vykreslení kříže posuvu u tabulky pohonu, natrvalo
 	{
 		line(canv,m.L2Px(F->pom_temp->Xp)-20,m.L2Py(F->pom_temp->Yp)-20,m.L2Px(F->pom_temp->Xp)-60,m.L2Py(F->pom_temp->Yp)-20);
 		line(canv,m.L2Px(F->pom_temp->Xp)-40,m.L2Py(F->pom_temp->Yp),m.L2Px(F->pom_temp->Xp)-40,m.L2Py(F->pom_temp->Yp)-40);
@@ -457,8 +460,8 @@ void Cvykresli::nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv,unsigned sh
 	canv->Font->Color=clRed;
 	canv->Font->Size=2*3*F->Zoom;
 	canv->Font->Style = TFontStyles();
-	if((F->JID==-6 && typ==1) || (F->JID==-7 && typ==2))canv->Font->Style = TFontStyles()<< fsBold;//zapnutí tučného písma
-	else canv->Font->Style = TFontStyles();//vypnutí
+//	if((F->JID==-6 && typ==1) || (F->JID==-7 && typ==2))canv->Font->Style = TFontStyles()<< fsBold;//zapnutí tučného písma
+//	else canv->Font->Style = TFontStyles();//vypnutí
 }
 //---------------------------------------------------------------------------
 //symbolika tekoucí kapaliny u POW

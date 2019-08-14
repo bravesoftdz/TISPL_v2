@@ -577,12 +577,15 @@ void TForm_parametry_linky::nacti_pohony ()
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::Button_stornoClick(TObject *Sender)
 {
-  F->log(__func__); //logování
+	F->log(__func__); //logování
   mGrid->Delete();
 	//M toto tu nesmí být:Form_parametry_linky->Close();
 	zrusena_prirazeni_PID=NULL;delete zrusena_prirazeni_PID;
-   F->scStyledForm1->HideClientInActiveEffect();
+	 F->scStyledForm1->HideClientInActiveEffect();
 	Storno=true;
+	//zmìna záložek
+	F->Layout->Down=false;
+	F->Schema->Down=true;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::KonecClick(TObject *Sender)
@@ -911,6 +914,9 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
     F->scStyledForm1->HideClientInActiveEffect();
 		Close();//v testu, mùže padat
 	 }
+	 //zmìna záložek
+	 F->Layout->Down=false;
+	 F->Schema->Down=true;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
@@ -1387,7 +1393,6 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyEnter(TObject
 void __fastcall TForm_parametry_linky::FormMouseMove(TObject *Sender, TShiftState Shift,
           int X, int Y)
 {
-
 //  TPoint RET=mGrid->CheckLink(X,Y);
 //  Memo2->Lines->Add(RET.x);
 

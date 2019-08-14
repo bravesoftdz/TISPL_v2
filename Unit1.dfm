@@ -866,7 +866,7 @@ object Form1: TForm1
       TabOrder = 2
       OnClick = schemaClick
       Animation = True
-      Caption = 'Sch'#233'ma'
+      Caption = 'Layout'
       CanFocused = False
       CustomDropDown = False
       Margin = -1
@@ -1076,6 +1076,7 @@ object Form1: TForm1
       Margins.Right = 0
       Margins.Bottom = 1
       Align = alRight
+      Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
@@ -1085,7 +1086,7 @@ object Form1: TForm1
       TabOrder = 4
       OnClick = AnalyzaClick
       Animation = True
-      Caption = 'Anal'#253'za'
+      Caption = 'Zak'#225'zky'
       CanFocused = False
       CustomDropDown = False
       Margin = -1
@@ -1184,7 +1185,6 @@ object Form1: TForm1
       Margins.Right = 0
       Margins.Bottom = 1
       Align = alRight
-      Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
@@ -1192,6 +1192,7 @@ object Form1: TForm1
       Font.Style = []
       ParentFont = False
       TabOrder = 5
+      Visible = False
       OnClick = SyntezaClick
       Animation = True
       Caption = 'Animace'
@@ -1784,7 +1785,6 @@ object Form1: TForm1
       Margins.Right = 0
       Margins.Bottom = 1
       Align = alRight
-      Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
@@ -1792,9 +1792,9 @@ object Form1: TForm1
       Font.Style = []
       ParentFont = False
       TabOrder = 11
-      OnClick = LayoutClick
+      OnClick = Button_dopravnik_parametryClick
       Animation = True
-      Caption = 'Layout'
+      Caption = 'PL'
       CanFocused = False
       CustomDropDown = False
       Margin = -1
@@ -1893,7 +1893,6 @@ object Form1: TForm1
       Margins.Right = 0
       Margins.Bottom = 1
       Align = alRight
-      Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
@@ -1901,6 +1900,7 @@ object Form1: TForm1
       Font.Style = []
       ParentFont = False
       TabOrder = 12
+      Visible = False
       OnClick = AnalyzaClick
       Animation = True
       Caption = 'Simulace'
@@ -2508,9 +2508,9 @@ object Form1: TForm1
       Font.Style = []
       ParentFont = False
       TabOrder = 22
-      Visible = False
+      OnClick = NahledClick
       Animation = True
-      Caption = 'N'#225'hled'
+      Caption = 'Editace'
       CanFocused = False
       CustomDropDown = False
       Margin = -1
@@ -3975,7 +3975,6 @@ object Form1: TForm1
     Height = 25
     Caption = 'ButtonMaVLtesty'
     TabOrder = 36
-    Visible = False
     OnClick = Button13Click
     OnKeyDown = FormKeyDown
   end
@@ -8971,7 +8970,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118009807D00710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118009807D80710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9919,14 +9918,6 @@ object Form1: TForm1
   end
   object SavePictureDialog1: TSavePictureDialog
     DefaultExt = '*.bmp'
-    Filter = 
-      'All (*.gif;*.png;*.jpg;*.jpeg;*.bmp;*.tif;*.tiff;*.ico;*.emf;*.w' +
-      'mf)|*.gif;*.png;*.jpg;*.jpeg;*.bmp;*.tif;*.tiff;*.ico;*.emf;*.wm' +
-      'f|GIF Image (*.gif)|*.gif|Portable Network Graphics (*.png)|*.pn' +
-      'g|JPEG Image File (*.jpg)|*.jpg|JPEG Image File (*.jpeg)|*.jpeg|' +
-      'Bitmaps (*.bmp)|*.bmp|TIFF Images (*.tif)|*.tif|TIFF Images (*.t' +
-      'iff)|*.tiff|Icons (*.ico)|*.ico|Enhanced Metafiles (*.emf)|*.emf' +
-      '|Metafiles (*.wmf)|*.wmf'
     Left = 312
     Top = 40
   end
@@ -10102,7 +10093,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C0101410000095C0930003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010141000009640930003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000003003000001002000000000000090
       0900000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
