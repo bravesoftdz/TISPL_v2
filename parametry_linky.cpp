@@ -467,20 +467,19 @@ void TForm_parametry_linky::nacti_pohony ()
 						if(Runit==MM) { I->Caption = ukaz->roztec*(1+999.0*Runit); C->ItemIndex=0; }
 						else  { I->Caption = ukaz->roztec; C->ItemIndex=0; }
 
-
+           //  ShowMessage(Runit);
            //naètení ostatních hodnot z katalogu do roletky
            Cvektory::Ttyp_dopravniku *K=F->d.v.vrat_typ_dopravniku(F->d.v.PP.katalog);
            Cvektory::TDoubleHodnota *H=K->roztec->dalsi;
            C->Items->Clear();
-            while(H!=NULL)
+            while(H!=NULL) // zatím není fèní - rozteè se neukládá v SI jednotkách
            {
             I=C->Items->Add();
-            I->Caption=H->hodnota;
+            if(Runit==MM) I->Caption=H->hodnota*(1+999.0*Runit);
+            else I->Caption=H->hodnota;
             H=H->dalsi;
            }
             I=NULL;delete I;
-
-
 
          getmGridWidth();
 
@@ -2393,7 +2392,7 @@ void __fastcall TForm_parametry_linky::FormMouseDown(TObject *Sender, TMouseButt
        mGrid->MergeCells(2,0,4,0);
 
       }
-      if(RET.x==5)
+      if(RET.x==5)  //ZATÍM NENÍ ZCELA FÈNÍ, protože ukládání do katalogu není v zákl. SI jednotkách
       {
 					 if(Runit==MM) {mGrid->Cells[5][1].Text="<a>[m]</a>";   Runit=M;  }
 					 else          {mGrid->Cells[5][1].Text="<a>[mm]</a>";  Runit=MM; }
@@ -2402,17 +2401,34 @@ void __fastcall TForm_parametry_linky::FormMouseDown(TObject *Sender, TMouseButt
            {
                for(unsigned int i=2;i<mGrid->RowCount;i++)
                {
-                mGrid->Cells[5][i].Text=F->ms.MyToDouble(mGrid->Cells[5][i].Text)*1000.0;
+                TscGPComboEdit *C=mGrid->getComboEdit(5,i);
+                TscGPListBoxItem *I;
+                double value=F->ms.MyToDouble(mGrid->getComboEdit(5,i)->Text);
+                C->Items->Clear();
+                I=C->Items->Add();
+                I->Caption=value*1000.0;
+                C->ItemIndex=0;
+                getROtherValues(Runit,i);
                }
+
            }
            else
            {
                for(unsigned int i=2;i<mGrid->RowCount;i++)
                {
-                mGrid->Cells[5][i].Text=F->ms.MyToDouble(mGrid->Cells[5][i].Text)/1000.0;
+                TscGPComboEdit *C=mGrid->getComboEdit(5,i);
+                TscGPListBoxItem *I;
+                double value=F->ms.MyToDouble(mGrid->getComboEdit(5,i)->Text);
+                C->Items->Clear();
+                I=C->Items->Add();
+                I->Caption=value/1000.0;
+                C->ItemIndex=0;
+                getROtherValues(Runit,i);
                }
+
            }
 //            mGrid->MergeCells(5,0,5,1);
+              mGrid->Refresh();
       }
        Button_storno->SetFocus();
        mGrid->Refresh();
@@ -2660,4 +2676,24 @@ void __fastcall TForm_parametry_linky::scGPComboEdit12DropDown(TObject *Sender)
 ShowMessage("DropDown");
 }
 //---------------------------------------------------------------------------
+void TForm_parametry_linky::getROtherValues(Tm_mm Runit, int Row)
+{
+//ShowMessage(Runit);
 
+            TscGPComboEdit *C=mGrid->getComboEdit(5,Row);
+            TscGPListBoxItem *I;
+
+           //naètení ostatních hodnot z katalogu do roletky
+           Cvektory::Ttyp_dopravniku *K=F->d.v.vrat_typ_dopravniku(F->d.v.PP.katalog);
+           Cvektory::TDoubleHodnota *H=K->roztec->dalsi;
+           C->Items->Clear();
+            while(H!=NULL)
+           {
+            I=C->Items->Add();
+             if(Runit==MM) I->Caption=H->hodnota*1000.0;
+             else I->Caption=H->hodnota/1000.0;
+
+            H=H->dalsi;
+           }
+            I=NULL;delete I;
+}

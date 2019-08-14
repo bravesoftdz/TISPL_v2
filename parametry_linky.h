@@ -218,6 +218,7 @@ public:		// User declarations
   void setADD_ButtonPosition();
   void setFormHeight();
 
+
 	short VID;//validation ID
 	double VID_value;
 	short Row_validace;
@@ -245,6 +246,7 @@ public:		// User declarations
 	bool zobrazitFrameForm;
 	bool zobrazOramovani;
   AnsiString OBJEKTY_POUZIVAJICI_POHON;
+  void getROtherValues(Tm_mm Runit,int Row);
 
 	int roletka_data;
 };
