@@ -4510,18 +4510,15 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 			}E=NULL;delete E;
 		}
 		//nastavení bodů vykreslení pro jednotlivé rotace
-		if(Element_do->orientace==0||Element_do->orientace==180)
+		TRect E_od=F->souradnice_LO(Element_od),E_do=F->souradnice_LO(Element_do);
+		switch((int)F->pom_temp->orientace)
 		{
-			if(Element_od->LO2>0)x1=Element_od->X+Element_od->LO2+Element_od->OTOC_delka/2.0;else x1=Element_od->X+Element_od->LO1/2.0+Element_od->LO_pozice;
-			if(Element_do->LO2>0)x2=Element_do->X-Element_do->LO1-Element_do->OTOC_delka/2.0;else x2=Element_do->X-Element_do->LO1/2.0+Element_do->LO_pozice;
-			y1=F->pom_temp->elementy->dalsi->geo.Y1;y2=y1;
+			case 0:y1=m.P2Ly(E_od.top);y2=m.P2Ly(E_do.bottom);x1=x2=F->pom_temp->elementy->dalsi->geo.X1;break;
+			case 90:x1=m.P2Lx(E_od.right);x2=m.P2Lx(E_do.left);y1=y2=F->pom_temp->elementy->dalsi->geo.Y1;break;
+			case 180:y1=m.P2Ly(E_od.bottom);y2=m.P2Ly(E_do.top);x1=x2=F->pom_temp->elementy->dalsi->geo.X1;break;
+			case 270:x1=m.P2Lx(E_od.left);x2=m.P2Lx(E_do.right);y1=y2=F->pom_temp->elementy->dalsi->geo.Y1;break;
 		}
-		else
-		{
-			if(Element_od->LO2>0)y1=Element_od->Y-Element_od->LO2-Element_od->OTOC_delka/2.0;else y1=Element_od->Y-Element_od->LO1/2.0-Element_od->LO_pozice;
-			if(Element_do->LO2>0)y2=Element_do->Y+Element_do->LO1+Element_do->OTOC_delka/2.0;else y2=Element_do->Y+Element_do->LO1/2.0-Element_do->LO_pozice;
-			x1=F->pom_temp->elementy->dalsi->geo.X1;x2=x1;
-		}//pokud mají oba elementy lakovací okna je mezi nimi vykreslena needitavatelná kóta
+		//pokud mají oba elementy lakovací okna je mezi nimi vykreslena needitavatelná kóta
 		if(test1&&test2)vykresli_kotu(canv,x1,y1,x2,y2,NULL,1,highlight,0.2,clGray,false);
 	}
 }

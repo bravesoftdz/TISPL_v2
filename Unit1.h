@@ -614,7 +614,7 @@ private:
 	void smaz_edit(bool refresh=true);//smaže edit, který sloužil pro zmìnu názvu elementu a nový název zapíše do elementu, defaultnì provede refresh, pokud není pøedáno parametrem jinak
 	void vykresli_spojinici_EmGrid(TCanvas *Canv,Cvektory::TElement *E);//vykreslí spojnici mezi tabulkou a elementem z nejbližšího rohu tabulky
 	void nacti_podklad(TCanvas *Canv);
-  unsigned short load_language(Tlanguage language);
+	unsigned short load_language(Tlanguage language);
 
 	////promìnné
 	TDateTime TIME;
@@ -654,6 +654,7 @@ private:
 	bool offset_spolus_rozmerem;//uchovává v sobì, zda má být pøi zmìnì rozmerù kabiny zmìnì i offset kót elementù
 	UnicodeString Jazyk;
 	int count_memo;//counter pro memo
+	TPointD puv_souradnice;//slouží k ukládání pùvodních souøadnic, napø. pøi posunu elementu
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
@@ -761,7 +762,8 @@ public:		// User declarations
 	double outRz(double outRz);
 	void Memo(AnsiString Text,bool clear=false,bool count=false);//urychlení vypsání do Mema
 	void pridani_elementu_tab_pohon(Cvektory::TElement *E);//pøedesign tabulky pohonu po pøidání elementu
-  void log(AnsiString Text,AnsiString Text2="");//zapíše log do textového souboru a pøidá datum
+	void log(AnsiString Text,AnsiString Text2="");//zapíše log do textového souboru a pøidá datum
+	TRect souradnice_LO(Cvektory::TElement *E);//vrací souøadnice (PX) lakovacího okna elementu pokud nìjaké má,pokud ne vrátí souøadnice elementu
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

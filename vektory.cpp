@@ -1952,15 +1952,21 @@ Cvektory::TElement *Cvektory::vloz_element_za(TObjekt *Objekt,TElement *Element)
 		//a to z důvodu rozdílné funkcionality
 		//řešeno přes minimální a maximální souřadnice elementů v kabině, při použití podobného hledání jako u hledání v oblasti problém
 		//s řazením elementů, pokud nejsou v řadě za sebou, což v tuto chvíli nejsou nedává hledání reálné výsledky
-		if(ret==NULL&&(Element->orientace==0||Element->orientace==180))//mezi 2 elementy nic nenalezeno = kontrola před prvním a za posledním
+		if(ret==NULL&&(F->pom_temp->orientace==90 || F->pom_temp->orientace==270))//mezi 2 elementy nic nenalezeno = kontrola před prvním a za posledním
 		{
-			if(F->d.Rxy(Element).x<=F->d.Rxy(Objekt->elementy->dalsi).x&&Element->n!=1)pred1=true;
-			if(F->d.Rxy(Element).x>=F->d.Rxy(Objekt->elementy->predchozi).x&&Element->n!=Objekt->elementy->predchozi->n&&Element->name!="")zaposlednim=true;
+			if(F->pom_temp->orientace==270)
+				{if(F->d.Rxy(Element).x>=F->d.Rxy(Objekt->elementy->dalsi).x&&Element->n!=1)pred1=true;}
+			else
+				{if(F->d.Rxy(Element).x<=F->d.Rxy(Objekt->elementy->dalsi).x&&Element->n!=1)pred1=true;}
+			//if(F->d.Rxy(Element).x>=F->d.Rxy(Objekt->elementy->predchozi).x&&Element->n!=Objekt->elementy->predchozi->n&&Element->name!="")zaposlednim=true;
 		}
 		else if(ret==NULL)
     {
-			if(F->d.Rxy(Element).y>=F->d.Rxy(Objekt->elementy->dalsi).y&&Element->n!=1)pred1=true;
-			if(F->d.Rxy(Element).y<=F->d.Rxy(Objekt->elementy->predchozi).y&&Element->n!=Objekt->elementy->predchozi->n&&Element->name!="")zaposlednim=true;
+			if(F->pom_temp->orientace==180)
+				{if(F->d.Rxy(Element).y>=F->d.Rxy(Objekt->elementy->dalsi).y&&Element->n!=1)pred1=true;}
+			else
+				{if(F->d.Rxy(Element).y<=F->d.Rxy(Objekt->elementy->dalsi).y&&Element->n!=1)pred1=true;}
+			//if(F->d.Rxy(Element).y<=F->d.Rxy(Objekt->elementy->predchozi).y&&Element->n!=Objekt->elementy->predchozi->n&&Element->name!="")zaposlednim=true;
 		}
 		if(pred1||zaposlednim)//výjmutí ze spojáku, pro oba případy stejné
 		{
@@ -2551,30 +2557,6 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 	bool RET=true;
 	if(F->pom_temp!=NULL && F->pom_temp->elementy!=NULL/*&&F->Akce!=F->MOVE_ELEMENT*/)//raději ošetření, ač by se metoda měla volat jen v případě existence pom_temp
 	{
-	//použít makro F->d.Rxy(uvažovaný element), m.delka() vrací pouze abs. hodnotu
-
-//		if(F->pom_temp->elementy->dalsi!=NULL)//musí existovat alespoň jeden element
-//		{
-//			TPointD vzd;
-//			if(F->pom_temp->elementy->predchozi->n==1)//pokud existuje jenom jeden element
-//			{               ///ještě vylepšít, provizorně jen pro vodorovnou levopravou kabinu
-//				vzd.x=Element->X-F->pom_temp->Xk;
-//				vzd.y=Element->Y-F->pom_temp->Yk;
-//			}
-//			else//více elementů
-//			{                     použít makro F->d.Rxy(uvažovaný element), m.delka() vrací pouze abs. hodnotu
-//				vzd.x=Element->X-Element->predchozi->X;
-//				vzd.y=Element->Y-Element->predchozi->Y;
-//			}
-//
-//			if(vzd.x!=0)Element->X-=-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
-//			if(vzd.y!=0)Element->Y-=-(vzd.y/m.abs_d(vzd.y))*(m.abs_d(vzd.y)-vzdalenost);
-//
-//			//kontrola zda se vejdou stále všechny elementy do objektu - dodělat
-//			//RET=
-//		}
-						 //dodělat MaVl
-		//provizorně jen pro vodorovnou levopravou kabinu
 		bool posun_povolit=true;
 		if(F->pom_temp->elementy->dalsi!=NULL&&vzdalenost!=0)//musí existovat alespoň jeden element&&nesmí být vzdálenost rovna nule
 		{
@@ -2590,25 +2572,20 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				else	vzd.x=Element->Y-Element->predchozi->Y;
 			}//odstavil MaKr F->Sv(vzd.x);
       //kontrola zda bude posunutý element mimo pohon, pokud ano nedovolí posun, kontrolováno pouze v případě posunu z kót
-			if(posun_kurzorem)//rozdílné výpočty součadnic pro posun z kurzoru a posun z kóty
+			double vzd_pos=-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
+			if(posun_kurzorem)vzd_pos=vzdalenost;//rozdílné výpočty součadnic pro posun z kurzoru a posun z kóty
+			TRect E=F->souradnice_LO(Element);
+			if(F->pom_temp->orientace==0 && (m.P2Ly(E.bottom)+vzd_pos<F->pom_temp->elementy->dalsi->geo.Y1 || F->pom_temp->elementy->predchozi->geo.Y4<m.P2Ly(E.top)+vzd_pos))posun_povolit=false;
+			if(F->pom_temp->orientace==90 && (m.P2Lx(E.left)+vzd_pos<F->pom_temp->elementy->dalsi->geo.X1 || F->pom_temp->elementy->predchozi->geo.X4<m.P2Lx(E.right)+vzd_pos))posun_povolit=false;
+			if(F->pom_temp->orientace==180 && (m.P2Ly(E.top)+vzd_pos>F->pom_temp->elementy->dalsi->geo.Y1 || F->pom_temp->elementy->predchozi->geo.Y4>m.P2Ly(E.bottom)))posun_povolit=false;
+			if(F->pom_temp->orientace==270 && (m.P2Lx(E.right)+vzd_pos>F->pom_temp->elementy->dalsi->geo.X1 || F->pom_temp->elementy->predchozi->geo.X4>m.P2Lx(E.left)+vzd_pos))posun_povolit=false;
+			if(pusun_dalsich_elementu)//kontrola pro poslední prvek pokud je povolen posun dalších elementů
 			{
-				if((Element->orientace==0 || Element->orientace==180)&&(Element->X+vzdalenost<F->pom_temp->elementy->dalsi->geo.X1 || F->pom_temp->elementy->predchozi->geo.X4<Element->X+vzdalenost))posun_povolit=false;
-				if((Element->orientace==90 || Element->orientace==270)&&(Element->Y+vzdalenost>F->pom_temp->elementy->dalsi->geo.Y1 || F->pom_temp->elementy->predchozi->geo.Y4<Element->Y+vzdalenost))posun_povolit=false;
-				if(pusun_dalsich_elementu)//kontrola pro poslední prvek pokud je povolen posun dalších elementů
-				{
-					if((Element->orientace==0 || Element->orientace==180) && F->pom_temp->elementy->predchozi->geo.X4<F->pom_temp->elementy->predchozi->predchozi->X+vzdalenost)posun_povolit=false;
-					if((Element->orientace==90 || Element->orientace==270) && F->pom_temp->elementy->predchozi->geo.Y4<F->pom_temp->elementy->predchozi->predchozi->Y+vzdalenost)posun_povolit=false;
-				}
-			}
-			else
-			{
-				if((Element->orientace==0 || Element->orientace==180)&&(Element->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost)<F->pom_temp->elementy->dalsi->geo.X1 || F->pom_temp->elementy->predchozi->geo.X4<Element->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost)))posun_povolit=false;
-				if((Element->orientace==90 || Element->orientace==270)&&(Element->Y-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost)>F->pom_temp->elementy->dalsi->geo.Y1 || F->pom_temp->elementy->predchozi->geo.Y4<Element->Y-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost)))posun_povolit=false;
-				if(pusun_dalsich_elementu)//kontrola pro poslední prvek pokud je povolen posun dalších elementů
-				{
-					if((Element->orientace==0 || Element->orientace==180) && F->pom_temp->elementy->predchozi->geo.X4<F->pom_temp->elementy->predchozi->predchozi->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost))posun_povolit=false;
-					if((Element->orientace==90 || Element->orientace==270) && F->pom_temp->elementy->predchozi->geo.Y4<F->pom_temp->elementy->predchozi->predchozi->Y-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost))posun_povolit=false;
-				}
+				TRect E_posledni=F->souradnice_LO(F->pom_temp->elementy->predchozi->predchozi);
+				if(F->pom_temp->orientace==0 && F->pom_temp->elementy->predchozi->geo.Y4<m.P2Ly(E_posledni.top)+vzd_pos)posun_povolit=false;
+				if(F->pom_temp->orientace==90 && F->pom_temp->elementy->predchozi->geo.X4<m.P2Lx(E_posledni.right)+vzd_pos)posun_povolit=false;
+				if(F->pom_temp->orientace==180 && F->pom_temp->elementy->predchozi->geo.Y4>m.P2Ly(E_posledni.bottom)+vzd_pos)posun_povolit=false;
+				if(F->pom_temp->orientace==270 && F->pom_temp->elementy->predchozi->geo.X4>m.P2Lx(E_posledni.left)+vzd_pos)posun_povolit=false;
 			}
 			if(vzd.x!=0 && !posun_kurzorem && posun_povolit)//posun z kót
 			{
@@ -2632,10 +2609,11 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				Element->geo.X2=Element->geo.X1+(Element->geo.X4-Element->geo.X1)/2.0;Element->geo.Y2=Element->geo.Y1+(Element->geo.Y4-Element->geo.Y1)/2.0;
 				Element->geo.X3=Element->geo.X2;Element->geo.Y3=Element->geo.Y2;
 				//aktualizace dalšího elemtnu
+				if(Element->dalsi!=NULL){
 				Element->dalsi->geo.X1=F->d.Rxy(Element).x;Element->dalsi->geo.Y1=F->d.Rxy(Element).y;
 				Element->dalsi->geo.X2=Element->dalsi->geo.X1+(Element->dalsi->geo.X4-Element->dalsi->geo.X1)/2.0;Element->dalsi->geo.Y2=Element->dalsi->geo.Y1+(Element->dalsi->geo.Y4-Element->dalsi->geo.Y1)/2.0;
-				Element->dalsi->geo.X3=Element->dalsi->geo.X2;Element->dalsi->geo.Y3=Element->dalsi->geo.Y2;
-			}else F->TIP="Nelze provést přesun, elementy musí být na pohonu!";
+				Element->dalsi->geo.X3=Element->dalsi->geo.X2;Element->dalsi->geo.Y3=Element->dalsi->geo.Y2; }
+			}else F->TIP="Nelze provést přesun, elementy musí být na pohonu, včetně lakovacích oken!";
 			//v případě požadavku na posun i následujících elementů
 			if(pusun_dalsich_elementu && posun_povolit)
 			{
@@ -2660,8 +2638,6 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				}
 				E=NULL;delete E;
 			}
-			// případně ještě kontrola zda se vejdou stále všechny elementy do objektu možno použít MaVl metodu z Unit1
-			//RET=
 		}RET=posun_povolit;
 	}
 	Cvektory::TElement *E=vloz_element_za(F->pom_temp,Element);
