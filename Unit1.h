@@ -314,6 +314,8 @@ __published:	// IDE-managed Components
   TscExPanel *scExPanel_ostatni;
   TscGPCheckBox *scGPCheckBox_ortogon;
   TscExPanel *scExPanel_nastaveni_starych_modu;
+	TscGPImage *scGPImage_zamek_posunu;
+	TscButton *scButton_zamek_layoutu;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -516,6 +518,8 @@ __published:	// IDE-managed Components
   void __fastcall scGPButton_posun_halyClick(TObject *Sender);
   void __fastcall scGPButton_nakreslit_haluClick(TObject *Sender);
 	void __fastcall NahledClick(TObject *Sender);
+	void __fastcall scGPImage_zamek_posunuClick(TObject *Sender);
+	void __fastcall scButton_zamek_layoutuClick(TObject *Sender);
 
 
 // User declarations
@@ -586,6 +590,7 @@ private:
 	void ulozit_nastaveni();
 	void zavrit_uvod();//zavøe úvodní dialog
 	int vrat_max_vysku_grafu();//vratí maximální oblast
+	bool prekryti_LO(Cvektory::TElement *E);//prozkoumá zda se element nepøekrýva lak. oknem se sousedními
 	bool najdi_nazev_obj(double X,double Y,Cvektory::TObjekt *Objekt,int typ=0);//vratí zda jsem v oblasti textu, typ 0 citelná oblast textu, typ 1 citelná oblast posun. køíže
 	void getJobID(int X, int Y);//vrátí do globální promìnné JID ID úlohy/funkcionality v místì kurzoru, zároveò pokud v místì tabulky èi elementu nahraje ukazatel do globální promìnné pom_element, význam jednotlivých JID hodnot v komentáøi definici metody
 	void setJobIDOnMouseMove(int X, int Y);//dle místa kurzoru a vrácené JID (job id) nastaví úlohu
@@ -666,8 +671,8 @@ public:		// User declarations
 	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
 	Graphics::TBitmap *Pan_bmp;//kvùli mGridu jinak staèí private
 	//uklazatele
-	Cvektory::TObjekt *pom,*pom_vyhybka,*pom_temp,*copyObjekt,*posledni_editovany;
-	Cvektory::TElement *pom_element,*pom_element_temp;
+	Cvektory::TObjekt *pom,*pom_vyhybka,*pom_temp,*copyObjekt,*posledni_editovany_objekt;
+	Cvektory::TElement *pom_element,*pom_element_temp,*posledni_editovany_element;
 	TmGrid *PmG;//ukazatel na mGridovou tabulku pohonu
 	Cvektory::TKomora *pom_komora,*pom_komora_temp;
 	Cvektory::TBod *pom_bod,*pom_bod_temp;

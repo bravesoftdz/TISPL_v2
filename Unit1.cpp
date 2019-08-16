@@ -311,8 +311,9 @@ void TForm1::DesignSettings()
 	//vodorovné zarovnání prvků
 	scGPButton_zahodit->Left=scGPPanel_bottomtoolbar->Width/2+11-68;
 	scGPButton_ulozit->Left=scGPButton_zahodit->Left-scGPButton_zahodit->Width-22;
-	scGPImage_mereni_vzdalenost->Left=22;
-	scGPLabel1->Left=scGPImage_mereni_vzdalenost->Left+scGPImage_mereni_vzdalenost->Width+22;
+	scGPImage_mereni_vzdalenost->Left=22-9;//okraj komponenty != okraji obrázku
+	scGPImage_zamek_posunu->Left=scGPImage_mereni_vzdalenost->Left+scGPImage_mereni_vzdalenost->Width+22-11;
+	scGPLabel1->Left=scGPImage_zamek_posunu->Left+scGPImage_zamek_posunu->Width+22-5;
 	scGPLabel_prepinacKot->Left=scGPLabel1->Left;//label k přepínači kót
 	scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
 	scGPComboBox_prepinacKot->Left=scGPLabel_prepinacKot->Left+scGPLabel_prepinacKot->Width;//combobox na přepínání mezi kotami čas -- delka
@@ -328,6 +329,7 @@ void TForm1::DesignSettings()
 	scGPLabel1->Top=(scGPPanel_bottomtoolbar->Height-scGPLabel1->Height)/2;
 	scGPLabel_prepinacKot->Top=scGPLabel1->Top;
 	scGPImage_mereni_vzdalenost->Top=(scGPPanel_bottomtoolbar->Height-scGPImage_mereni_vzdalenost->Height)/2;
+	scGPImage_zamek_posunu->Top=(scGPPanel_bottomtoolbar->Height-scGPImage_zamek_posunu->Height)/2;
 	scGPButton_posun_dalsich_elementu->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_posun_dalsich_elementu->Height)/2;
 	scButton_zamek->Top=(scGPPanel_bottomtoolbar->Height-scButton_zamek->Height)/2;
 	scGPButton_viditelnostKoty->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_viditelnostKoty->Height)/2;
@@ -878,11 +880,12 @@ void __fastcall TForm1::FormResize(TObject *Sender)
 	scGPPanel_bottomtoolbar->Top=scGPPanel_statusbar->Top-scGPPanel_bottomtoolbar->Height;
 	scGPPanel_bottomtoolbar->Width=ClientWidth-scSplitView_LEFTTOOLBAR->Width;
 	scGPPanel_bottomtoolbar->Left=scSplitView_LEFTTOOLBAR->Width;
-	//vodorovné zarovnání prvků
+	//vodorovné zarovnání
 	scGPButton_zahodit->Left=scGPPanel_bottomtoolbar->Width/2+11-68;
 	scGPButton_ulozit->Left=scGPButton_zahodit->Left-scGPButton_zahodit->Width-22;
-	scGPImage_mereni_vzdalenost->Left=22;
-	scGPLabel1->Left=scGPImage_mereni_vzdalenost->Left+scGPImage_mereni_vzdalenost->Width+22;
+	scGPImage_mereni_vzdalenost->Left=22-9;//okraj komponenty != okraji obrázku
+	scGPImage_zamek_posunu->Left=scGPImage_mereni_vzdalenost->Left+scGPImage_mereni_vzdalenost->Width+22-11;
+	scGPLabel1->Left=scGPImage_zamek_posunu->Left+scGPImage_zamek_posunu->Width+22-5;
 	scGPLabel_prepinacKot->Left=scGPLabel1->Left;//label k přepínači kót
 	scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
 	scGPComboBox_prepinacKot->Left=scGPLabel_prepinacKot->Left+scGPLabel_prepinacKot->Width;//combobox na přepínání mezi kotami čas -- delka
@@ -898,6 +901,7 @@ void __fastcall TForm1::FormResize(TObject *Sender)
 	scGPLabel1->Top=(scGPPanel_bottomtoolbar->Height-scGPLabel1->Height)/2;
 	scGPLabel_prepinacKot->Top=scGPLabel1->Top;
 	scGPImage_mereni_vzdalenost->Top=(scGPPanel_bottomtoolbar->Height-scGPImage_mereni_vzdalenost->Height)/2;
+	scGPImage_zamek_posunu->Top=(scGPPanel_bottomtoolbar->Height-scGPImage_zamek_posunu->Height)/2;
 	scGPButton_posun_dalsich_elementu->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_posun_dalsich_elementu->Height)/2;
 	scButton_zamek->Top=(scGPPanel_bottomtoolbar->Height-scButton_zamek->Height)/2;
 	scGPButton_viditelnostKoty->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_viditelnostKoty->Height)/2;
@@ -2017,7 +2021,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 //							pom=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.V_width*m2px,d.V_width*m2px/*,VyID*/);//hledá v kruhové oblasti
 //							if(pom==NULL)//akcelerátor,aby se následně nehledalo znovu, pokud byla nalezena výhybka
 //							pom=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width*m2px,d.O_height*m2px);
-							if(JID==3/*pom!=NULL*/){Akce=MOVE;kurzor(posun_l);/*posun_objektu=true;*/minule_souradnice_kurzoru=TPoint(X,Y);}
+							if(JID==3&&scButton_zamek_layoutu->ImageIndex==68){Akce=MOVE;kurzor(posun_l);/*posun_objektu=true;*/minule_souradnice_kurzoru=TPoint(X,Y);}
 							else if(JID==-1&&Akce==NIC){Akce=PAN;pan_non_locked=true;}//přímo dovolení PAN pokud se neposová objekt = Rosťova prosba
 							if(JID==-2){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_bod_temp=pom_bod;if(pom_bod_temp->n!=1)editovany_text=m.round2double(m.delka(pom_bod_temp->predchozi->X,pom_bod_temp->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);else editovany_text=m.round2double(m.delka(d.v.HALA.body->predchozi->X,d.v.HALA.body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);editovany_text=outDK(ms.MyToDouble(editovany_text));}//převod na mm
 							if(JID==0){Akce=MOVE_BOD;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;ortogonalizace_stav=false;}//posun jednoho bodu
@@ -2254,9 +2258,13 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		}
 		case MOVE://posun objektu
 		{
-      d.v.posun_objekt(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),pom);
-      minule_souradnice_kurzoru=TPoint(X,Y);
-			REFRESH();
+      //zapnutí kurzoru
+			if(pom_temp!=NULL&&stisknute_leve_tlacitko_mysi&&Screen->Cursor!=pan_move)kurzor(pan_move);
+			//posun
+			if(pom_temp!=NULL&&stisknute_leve_tlacitko_mysi)d.v.posun_objekt(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),pom_temp);
+			if(pom_temp==NULL)d.v.posun_objekt(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),pom);
+			minule_souradnice_kurzoru=TPoint(X,Y);
+			REFRESH(false);
 			break;
 		}
 		case DRAW_HALA:
@@ -2613,7 +2621,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				break;
 			}
 			case VYH:/*Akce=ADD;*/add_objekt(X,Y);zneplatnit_minulesouradnice();break;//přidání objekt
-			case MOVE:/*move_objekt(X,Y);*/Akce=NIC;kurzor(standard);break;//posun objektu
+			case MOVE:/*move_objekt(X,Y);*/Akce=NIC;kurzor(standard);if(pom_temp!=NULL)scGPImage_zamek_posunu->ClipFrameFillColor=clWhite;break;//posun objektu
 			case MOVE_TABLE:
 			{
 				if(pom_element!=NULL)
@@ -2626,31 +2634,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			}
 			case MOVE_ELEMENT:
 			{
-				//kontrola zda se element nepřekrývá lak. oknem s jiným elementem
-				bool chybne=false;
-				TRect el1=souradnice_LO(pom_element),el2;
-				if(pom_element_temp->dalsi!=NULL)
-				{
-					el2=souradnice_LO(pom_element->dalsi);
-					switch((int)pom_temp->orientace)
-					{
-						case 0:if(el1.top<el2.bottom)chybne=true;break;
-						case 90:if(el1.right>el2.left)chybne=true;break;
-						case 180:if(el1.bottom>el2.top)chybne=true;break;
-						case 270:if(el1.left<el2.right)chybne=true;break;
-					}
-				}
-				if(pom_element_temp->predchozi!=NULL && pom_element_temp->n!=1)
-				{
-					el2=souradnice_LO(pom_element->predchozi);
-					switch((int)pom_temp->orientace)
-					{
-						case 0:if(el1.bottom>el2.top)chybne=true;break;
-						case 90:if(el1.left<el2.right)chybne=true;break;
-						case 180:if(el1.top<el2.bottom)chybne=true;break;
-						case 270:if(el1.right>el2.left)chybne=true;break;
-					}
-				}
+				bool chybne=prekryti_LO(pom_element);//kontrola zda se element nepřekrývá lak. oknem s jiným elementem
 				FormX->odstranit_korelaci();//přidáno z důvodu odmazávání korelace při posuvu elementu
 				TIP="";
 				Akce=NIC;kurzor(standard);
@@ -3011,7 +2995,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 			//kurzory (provizorně), ...
 			kurzor(standard);
 			if(JID==-2)kurzor(edit_text);//hodnota kóty
-			if(JID==0||JID==3)kurzor(posun_ind);//posun bodu
+			if(JID==0||(JID==3&&scButton_zamek_layoutu->ImageIndex==68))kurzor(posun_ind);//posun bodu
 			if(JID==1||JID==4)//posun úsečky
 			{
 				//načtení bodů úsečky
@@ -3697,6 +3681,7 @@ void TForm1::ESC()
 	proces_pom=NULL;
 	kurzor(standard);
 	Akce=NIC;//musí být nad refresh
+	if(pom_temp!=NULL){scGPImage_mereni_vzdalenost->ClipFrameFillColor=clWhite;scGPImage_zamek_posunu->ClipFrameFillColor=clWhite;}//pro případ ukončení akce měření
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -3971,7 +3956,14 @@ void TForm1::add_element (int X, int Y)
 				if(A->eID%2==0&&A->n!=E->n){d.v.posuv_aktualizace_RT(A);break;}
 				A=A->dalsi;
 			}A=NULL;delete A;
-    }
+		}
+		//kontrola překrytí lak. oken
+		bool prekryti=prekryti_LO(E);
+  	if(prekryti)
+  	{
+  		TIP="Lakovací okna se překrývají!";
+			nahled_ulozit(false);
+		}
 		//až na konec:
 		E=NULL;delete E;
 		Akce=NIC;
@@ -4036,12 +4028,19 @@ bool TForm1::el_vkabine(double X,double Y,int element_id,short orientace_el,Cvek
 	//vytvoření pomocného elementu (pokud neexistuje), souřadnice a eID totožné s vkládáným (vytvořen z důvodu použítí makra d.Rxy)
 	if(E==NULL)
 	{
-		E=new Cvektory::TElement;
+		E=new Cvektory::TElement;              //case 3:case 9:case 13:case 17:case 103:case 107:
 		E->X=m.P2Lx(X);E->Y=m.P2Ly(Y);E->eID=element_id;E->orientace=orientace_el;
+		E->LO1=1.5;E->LO_pozice=0;
+		if(element_id==3 || element_id==9 || element_id==13 || element_id==17 || element_id==103 || element_id==107){E->LO2=1.5;E->OTOC_delka=0.450;}
 		mazat_el=true;
 	}
+	TRect el=souradnice_LO(E);
 	//kontrola zda je element vkládán na pohon
-	if(m.LeziVblizkostiUsecky(d.Rxy(E).x+tolerance_x,d.Rxy(E).y+tolerance_y,x1,y1,x2,y2)==0)ret=true;
+	switch((int)pom_temp->orientace)
+	{
+		case 0:case 180:if(m.LeziVblizkostiUsecky(d.Rxy(E).x+tolerance_x,m.P2Ly(el.top)+tolerance_y,x1,y1,x2,y2)==0 && m.LeziVblizkostiUsecky(d.Rxy(E).x+tolerance_x,m.P2Ly(el.bottom)+tolerance_y,x1,y1,x2,y2)==0)ret=true;break;
+		case 90:case 270:if(m.LeziVblizkostiUsecky(m.P2Lx(el.left)+tolerance_x,d.Rxy(E).y+tolerance_y,x1,y1,x2,y2)==0 && m.LeziVblizkostiUsecky(m.P2Lx(el.right)+tolerance_x,d.Rxy(E).y+tolerance_y,x1,y1,x2,y2)==0)ret=true;break;
+	}
 	return ret;
 	//smazání pomocného elementu
 	if(mazat_el){delete E;E=NULL;}
@@ -4116,6 +4115,39 @@ TRect TForm1::souradnice_LO(Cvektory::TElement *E)
 		}break;
 	}
 	return ret;
+}
+//---------------------------------------------------------------------------
+//prozkoumá zda se element nepřekrýva lak. oknem se sousedními
+bool TForm1::prekryti_LO(Cvektory::TElement *E)
+{
+	bool prekryti=false;
+	if(pom_temp!=NULL && E!=NULL)
+	{
+		TRect el1=souradnice_LO(E),el2;
+		if(E->dalsi!=NULL)
+		{
+			el2=souradnice_LO(E->dalsi);
+			switch((int)pom_temp->orientace)
+			{
+				case 0:if(el1.top<el2.bottom)prekryti=true;break;
+				case 90:if(el1.right>el2.left)prekryti=true;break;
+				case 180:if(el1.bottom>el2.top)prekryti=true;break;
+				case 270:if(el1.left<el2.right)prekryti=true;break;
+			}
+		}
+		if(E->predchozi!=NULL && E->n!=1)
+		{
+			el2=souradnice_LO(E->predchozi);
+			switch((int)pom_temp->orientace)
+			{
+				case 0:if(el1.bottom>el2.top)prekryti=true;break;
+				case 90:if(el1.left<el2.right)prekryti=true;break;
+				case 180:if(el1.top<el2.bottom)prekryti=true;break;
+				case 270:if(el1.right>el2.left)prekryti=true;break;
+			}
+		}
+	}
+	return prekryti;
 }
 //---------------------------------------------------------------------------
 //vratí zda jsem v oblasti textu, typ 0 citelná oblast textu, typ 1 citelná oblast posun. kříže
@@ -7110,6 +7142,7 @@ void TForm1::NP_input()
 {
    log(__func__);//logování
 	 //zablokování OnChange tabulek
+	 scButton_zamek_layoutu->Visible=false;//vypnutí tlačítka pro zámek layoutu
 	 JID=-1;//ošetření, s JID se pracuje i v náhledu
 	 element_id=99999;//ošetření pro správné zobrazování mgridů
 	 pom_bod=NULL;pom_bod_temp=NULL;//s těmito ukazateli pracuje jak náhled tak schéma, ošetření
@@ -7122,7 +7155,7 @@ void TForm1::NP_input()
 	 pom_temp=new Cvektory::TObjekt; pom_temp->pohon=NULL; pom_temp->pohon=new Cvektory::TPohon; pom_temp->elementy=NULL;
 	 //zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze mGrid je propojen
 	 d.v.kopiruj_objekt(pom,pom_temp);//pokud elementy existují nakopíruje je do pomocného nezávislého spojáku pomocného objektu
-   posledni_editovany=pom;
+	 posledni_editovany_objekt=pom;
 	 ////řešení nového zoomu a posunu obrazu pro účely náhldeu
 	 //zazálohování hodnot posunu a zoomu
 	 Posun_predchozi2=Posun_predchozi=Posun;
@@ -7745,7 +7778,8 @@ void TForm1::vse_odstranit()
 		pom_komora_temp=NULL;delete pom_komora_temp;
 		pom_bod=NULL;delete pom_bod;
 		pom_bod_temp=NULL;delete pom_bod_temp;
-		posledni_editovany=NULL;delete posledni_editovany;
+		posledni_editovany_objekt=NULL;delete posledni_editovany_objekt;
+		posledni_editovany_element=NULL;delete posledni_editovany_element;
 		copyObjekt=NULL;delete copyObjekt;
 		copyObjektRzRx.x=0;copyObjektRzRx.y=0;
 	 //	delete LogFileStream; //zde nesmí být kvůli logování
@@ -8540,8 +8574,14 @@ void __fastcall TForm1::Timer_neaktivityTimer(TObject *Sender)
 //			Timer_neaktivity->Enabled=false;
 //			setJobIDOnMouseMove(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
 //		}
-		REFRESH(true); //nedocází k refresh tabulek, tabulky jsou v tuto chvíli naplněny aktuálními hodnotami
-		Timer_neaktivity->Enabled=false;
+	bool prekryti=prekryti_LO(posledni_editovany_element);
+	if(prekryti)
+	{
+		TIP="Lakovací okna se překrývají!";
+		nahled_ulozit(false);
+	}else if(FormX->dopRD==pom_temp->pohon->aRD && pom_temp!=NULL && posledni_editovany_element!=NULL)nahled_ulozit(true);
+	REFRESH(true); //nedocází k refresh tabulek, tabulky jsou v tuto chvíli naplněny aktuálními hodnotami
+	Timer_neaktivity->Enabled=false;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::ButtonPLAY_OClick(TObject *Sender)
@@ -8679,8 +8719,8 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	 TRect El_1=souradnice_LO(pom_temp->elementy->dalsi),El_2=souradnice_LO(pom_temp->elementy->dalsi->dalsi);
-	 d.line(Canvas,El_1.left,El_1.bottom,El_2.left,El_2.top);
+//	 TRect El_1=souradnice_LO(pom_temp->elementy->dalsi),El_2=souradnice_LO(pom_temp->elementy->dalsi->dalsi);
+//	 d.line(Canvas,El_1.left,El_1.bottom,El_2.left,El_2.top);
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -8800,7 +8840,9 @@ void __fastcall TForm1::MaxButtonClick(TObject *Sender)
 			 FMaximized = false;
 			 scLabel_titulek->DragForm = true;
 			 MaxButton->GlyphOptions->Kind = scgpbgkMaximize;
+			 if(pom_temp==NULL)scButton_zamek_layoutu->Visible=false;
 			 scGPSizeBox->Visible = true;
+			 if(pom_temp==NULL)scButton_zamek_layoutu->Visible=true;
 			 Form1->Width=Screen->Width/3*2;//zmenší formulář na 2/3 jeho velikosti
 			 Form1->Height=Screen->Height/3*2;//zmenší formulář na 2/3 jeho velikosti
 			 scSplitView_OPTIONS->Opened=false;
@@ -9606,7 +9648,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		if(pom_temp!=NULL){pom_temp->pohon=NULL;delete pom_temp->pohon;}pom_temp=NULL;delete pom_temp;
 		PmG->Delete(); PmG=NULL; delete PmG;
     //mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
-    pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp; JID=-1;
+    pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp;posledni_editovany_element=NULL;delete posledni_editovany_element;JID=-1;
     //v případě animace vypnutí a nastavení do výchozího stavu
 		Timer_animace->Enabled=false;
 		ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
@@ -9614,59 +9656,11 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		zobrazit_meritko=scGPSwitch_meritko->State;//navrácení do původního stavu
 		//vypnutí spodního panelu
 		scGPPanel_bottomtoolbar->Visible=false;
-		//změna horní lišty
-//		Schema->Visible=false;
-//		Schema->Align=alNone;
-//		scGPGlyphButton_zpravy_ikona->Visible=false;
-//		scGPGlyphButton_zpravy_ikona->Align=alNone;
 		//vlevo
 		scLabel_klient->Visible=true;
 		scGPSwitch_rezim->Visible=true;
 		scLabel_architekt->Visible=true;
 		scGPGlyphButton_PLAY->Visible=false;
-		//vpravo
-//		Nahled->Visible=false;//musí být vypnuto
-//		//vypnutí všech tlačítek před zarovnáním, zabraňuje viditelnému přerovnání
-//		Simulace->Visible=false;
-//		Synteza->Visible=false;
-//		Analyza->Visible=false;
-//		Layout->Visible=false;
-//		Schema->Visible=false;
-//		scGPGlyphButton_zpravy_ikona->Visible=false;
-//		//vypnutí zarovnání
-//		Konec->Align=alNone;
-//		MaxButton->Align=alNone;
-//		MinButton->Align=alNone;
-//		scGPGlyphButton15->Align=alNone;
-//		scGPGlyphButton_OPTIONS->Align=alNone;
-//		Simulace->Align=alNone;
-//		Synteza->Align=alNone;
-//		Analyza->Align=alNone;
-//		Layout->Align=alNone;
-//		Schema->Align=alNone;
-//		scGPGlyphButton_zpravy_ikona->Align=alNone;
-//		//znovu nastavení zarovnání
-//		Konec->Align=alRight;
-//		MaxButton->Align=alRight;
-//		MinButton->Align=alRight;
-//		scGPGlyphButton15->Align=alRight;
-//		scGPGlyphButton_OPTIONS->Align=alRight;
-//		Simulace->Align=alRight;
-//		Synteza->Align=alRight;
-//		Analyza->Align=alRight;
-//		Layout->Align=alRight;
-//		Schema->Align=alRight;
-//		//zapnutí viditelnosti - zarovnání dokončeno
-//		Simulace->Visible=true;
-//		Synteza->Visible=true;
-//		Analyza->Visible=true;
-//		Layout->Visible=true;
-//		Schema->Visible=true;
-//		scGPGlyphButton_zpravy_ikona->Left=Schema->Left-scGPGlyphButton_zpravy_ikona->Width;
-//		scGPGlyphButton_zpravy_ikona->Visible=true;
-		//////
-//		scGPGlyphButton_zpravy_ikona->Visible=true;
-//		scGPGlyphButton_zpravy_ikona->Align=alRight;
 		//navrácení zoomu a posunu do původních hodnt
 		Zoom=Zoom_predchozi2;
 		on_change_zoom_change_scGPTrackBar();//pozor asi volá refresh
@@ -9703,6 +9697,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		//REFRESH(); //- asi netřeba  asi vyvolává výše uvedený on_change_zoom_change_scGPTrackBar()
 		DrawGrid_knihovna->Visible=true;
 		scGPComboBox_prepinacKot->ItemIndex=0;//ošetření pokud bylo při vypínání editace nastaveno na časové kóty
+		scButton_zamek_layoutu->Visible=true;//zapnutí tlačítka zámek layoutu
 	}
 }
 //---------------------------------------------------------------------------
@@ -10456,7 +10451,7 @@ void TForm1::Memo(AnsiString Text, bool clear,bool count)
 //zapínání a vypínaní meření
 void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 {
-  log(__func__);//logování
+	log(__func__);//logování
 	if(Akce==NIC)
 	{
 		scSplitView_OPTIONS->Close();
@@ -10468,7 +10463,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 	{
 		Akce=NIC;
 		kurzor(standard);
-    scGPImage_mereni_vzdalenost->ClipFrameFillColor=clWhite;
+		scGPImage_mereni_vzdalenost->ClipFrameFillColor=clWhite;
 	}
 }
 //---------------------------------------------------------------------------
@@ -10581,9 +10576,35 @@ void __fastcall TForm1::NahledClick(TObject *Sender)
 {
 	if(d.v.OBJEKTY->dalsi!=NULL && pom_temp==NULL)
 	{
-		if(posledni_editovany!=NULL)pom=posledni_editovany;
+		if(posledni_editovany_objekt!=NULL)pom=posledni_editovany_objekt;
 		else pom=d.v.OBJEKTY->predchozi;
 		NP_input();
+	}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::scGPImage_zamek_posunuClick(TObject *Sender)
+{
+	log(__func__);//logování
+	scGPImage_zamek_posunu->ClipFrameFillColor=(TColor)RGB(225,225,225);
+	Akce=MOVE;
+	kurzor(pan);
+	TIP="Kliknutím a tažením myši posunujete celý objekt.";
+	nahled_ulozit(true);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::scButton_zamek_layoutuClick(TObject *Sender)
+{
+	if(scButton_zamek_layoutu->ImageIndex==68)//odemčeno budu zamykat
+	{
+		scButton_zamek_layoutu->ImageIndex=67;
+		scButton_zamek_layoutu->Hint="Odemknout layout";
+  }
+	else
+	{
+		scButton_zamek_layoutu->ImageIndex=68;
+		scButton_zamek_layoutu->Hint="Zamknout layout";
 	}
 }
 //---------------------------------------------------------------------------

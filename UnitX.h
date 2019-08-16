@@ -26,7 +26,6 @@ private:	// User declarations
 	Cvektory::TElement *vrat_element_z_tabulky(long ID);//vrátí ukazatel na element, nelze pouít vra element stavající, z dùvodu e ID tabulky ji nemusí bıt totoné s n robota
 
 	//promìnné pro UnitX
-	double dopRD;
 	bool editace_pohonu;
 	long rychlost, roztec_palce, nasobek_roztece, roztec_jigu, mezera_podvozky, mezera_jig1, mezera_jig2;
 	//     aRD       R,roztec          Rx          Rz,rozestup
@@ -45,6 +44,7 @@ public:		// User declarations
   enum Tinput_state{NO,NOTHING,PT,PT2,LO,LO2,WT,DO,PTotoc,COMBO,aRD,R,Rz,Rx};//uchovává vıbìr input hodnoty (aby se formuláøe necyklyly)
 	Tinput_state input_state;//stav vstupu PT,LO,DelkaOtoce...
 	bool vstoupeno_poh, vstoupeno_elm,validace_true;
+	double dopRD;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFormX *FormX;

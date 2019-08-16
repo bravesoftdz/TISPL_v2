@@ -104,6 +104,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 	{
 		F->Timer_neaktivity->Enabled=false;//vypnutí timeru neaktivity, pokud dochází k OnChange rychle za sebou nestpustí timer refresh
 		Cvektory::TElement *E=vrat_element_z_tabulky(ID);//ne vždy je ID tabulky stejné jako n robota, proto nutné hledat ID=ID ne ID=n
+    F->posledni_editovany_element=E;
 		switch(E->eID)
 		{
 			case 0: //stop

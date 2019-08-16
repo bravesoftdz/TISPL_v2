@@ -1456,6 +1456,9 @@ void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt)
 	////posun nadpisu
 	Objekt->Xt+=X;
 	Objekt->Yt+=Y;
+	////posun tabulky pohonů
+	Objekt->Xp+=X;
+	Objekt->Yp+=Y;
 	////posun elementů
 	TElement *E=Objekt->elementy->dalsi;//objekt má vždy element (zarážka)
 	while(E!=NULL)
@@ -2755,7 +2758,7 @@ double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element,bool pouze
 		if(Element->n==1)
 		{
 			if(Element->orientace==0||Element->orientace==180)return m.delka(F->pom_temp->elementy->dalsi->geo.X1,F->pom_temp->elementy->dalsi->geo.Y1,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
-			else return m.delka(F->pom_temp->elementy->X,F->pom_temp->elementy->dalsi->geo.X1,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
+			else return m.delka(F->pom_temp->elementy->dalsi->geo.X1,F->pom_temp->elementy->dalsi->geo.Y1,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
 		}
 		else//pokud je v kabině více elementů
 		{
