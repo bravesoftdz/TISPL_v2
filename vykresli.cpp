@@ -2871,23 +2871,25 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O)//sloučit s v
 {
 	if(O!=NULL && O->elementy!=NULL)
 	{
-		TPoint *POLE=new TPoint[O->elementy->predchozi->n*4];
+		TPoint *POLE=new TPoint[O->elementy->predchozi->n*3+1];
 		Cvektory::TElement *E=O->elementy->dalsi;
+		long i=-1;//počítadlo aktuálního vkládaného bodu
 		while(E!=NULL)
 		{
 			//plnění do pole
-			POLE[E->n-1]=TPoint(m.L2Px(E->geo.X1),m.L2Py(E->geo.Y1));
-			POLE[E->n]  =TPoint(m.L2Px(E->geo.X2),m.L2Py(E->geo.Y2));
-			POLE[E->n+1]=TPoint(m.L2Px(E->geo.X3),m.L2Py(E->geo.Y3));
-			POLE[E->n+2]=TPoint(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
+			POLE[++i]=TPoint(m.L2Px(E->geo.X1),m.L2Py(E->geo.Y1));F->Memo(AnsiString(E->geo.X1)+" "+AnsiString(E->geo.Y1));
+			POLE[++i]=TPoint(m.L2Px(E->geo.X2),m.L2Py(E->geo.Y2));F->Memo(AnsiString(E->geo.X2)+" "+AnsiString(E->geo.Y2));
+			POLE[++i]=TPoint(m.L2Px(E->geo.X3),m.L2Py(E->geo.Y3));F->Memo(AnsiString(E->geo.X3)+" "+AnsiString(E->geo.Y3));
+			if(E->n==O->elementy->predchozi->n)//poslední bod se bere pouze v případě posledního segmentu, jinak je poslední bod totožný s prvním následujícího segmentu, takže se zbytečně nepoužívá, vyplývá z principu algoritmu bézierovy křivky
+			POLE[++i]=TPoint(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));F->Memo(AnsiString(E->geo.X4)+" "+AnsiString(E->geo.Y4));
 			//ukazatelové záležitosti
 			E=E->dalsi;//posun na další element
-			if(E==NULL)delete E;//smazání již nepotřebného ukazatele
 		}
+		delete E;E=NULL;//smazání již nepotřebného ukazatele
 		if(O->pohon==NULL)canv->Pen->Width=1;//pokud není pohon přiřazen, tak jen elementární osa
 		else canv->Pen->Width=m.round(F->Zoom*0.5);//pokud není přiřazen
 		canv->Pen->Color=clBlack;
-		canv->PolyBezier(POLE,O->elementy->predchozi->n*4-1);
+		canv->PolyBezier(POLE,O->elementy->predchozi->n*3);
 		delete[]POLE;POLE=NULL;
 	}
 }
