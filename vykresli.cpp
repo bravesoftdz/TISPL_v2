@@ -477,13 +477,13 @@ void Cvykresli::vykresli_pow_sprchu(TCanvas *canv,long X1,long X2,long Y1,long Y
 		{				     //pouze zneužití krok                     //pouze zneužití krok a pmpp
 			if(orientace==90 || orientace==-90)//ošetření při nezadání parametru orientace
 			{
-				line(canv,Xp+krok,Y1,Xp+i,m.round((Y1+Y2)/2.0-pmpp));//line(canv,Xp+i,Y1,Xp+i,Y1+pmpp*2);
-				line(canv,Xp+krok,Y2,Xp+i,m.round((Y1+Y2)/2.0+pmpp));//line(canv,Xp+i,Y2,Xp+i,Y2-pmpp*2);
+				line(canv,Xp+krok,Y1,Xp+i,m.round((Y1+Y2)/2.0-pmpp));
+				line(canv,Xp+krok,Y2,Xp+i,m.round((Y1+Y2)/2.0+pmpp));
 			}
 			else
 			{
-				line(canv,Xp-krok,Y1,Xp-i,m.round((Y1+Y2)/2.0-pmpp));//line(canv,Xp+i,Y1,Xp+i,Y1+pmpp*2);
-				line(canv,Xp-krok,Y2,Xp-i,m.round((Y1+Y2)/2.0+pmpp));//line(canv,Xp+i,Y2,Xp+i,Y2-pmpp*2);
+				line(canv,Xp-krok,Y1,Xp-i,m.round((Y1+Y2)/2.0-pmpp));
+				line(canv,Xp-krok,Y2,Xp-i,m.round((Y1+Y2)/2.0+pmpp));
       }
 		}
 	}
@@ -495,13 +495,13 @@ void Cvykresli::vykresli_pow_sprchu(TCanvas *canv,long X1,long X2,long Y1,long Y
 		{				       //pouze zneužití krok                //pouze zneužití krok a pmpp
 			if(orientace==0 || orientace==-90)//ošetření při nezadání parametru orientace
 			{
-				line(canv,X1,Yp-krok,m.round((X1+X2)/2.0-pmpp),Yp-i);//line(canv,X1,Yp+i,X1+pmpp*2,Yp+i);
-				line(canv,X2,Yp-krok,m.round((X1+X2)/2.0+pmpp),Yp-i);//line(canv,X2,Yp+i,X2-pmpp*2,Yp+i);
+				line(canv,X1,Yp-krok,m.round((X1+X2)/2.0-pmpp),Yp-i);
+				line(canv,X2,Yp-krok,m.round((X1+X2)/2.0+pmpp),Yp-i);
 			}
 			else
 			{
-				line(canv,X1,Yp+krok,m.round((X1+X2)/2.0-pmpp),Yp+i);//line(canv,X1,Yp+i,X1+pmpp*2,Yp+i);
-				line(canv,X2,Yp+krok,m.round((X1+X2)/2.0+pmpp),Yp+i);//line(canv,X2,Yp+i,X2-pmpp*2,Yp+i);
+				line(canv,X1,Yp+krok,m.round((X1+X2)/2.0-pmpp),Yp+i);
+				line(canv,X2,Yp+krok,m.round((X1+X2)/2.0+pmpp),Yp+i);
       }
 		}
 	}
@@ -2877,11 +2877,11 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O)//sloučit s v
 		while(E!=NULL)
 		{
 			//plnění do pole
-			POLE[++i]=TPoint(m.L2Px(E->geo.X1),m.L2Py(E->geo.Y1));F->Memo(AnsiString(E->geo.X1)+" "+AnsiString(E->geo.Y1));
-			POLE[++i]=TPoint(m.L2Px(E->geo.X2),m.L2Py(E->geo.Y2));F->Memo(AnsiString(E->geo.X2)+" "+AnsiString(E->geo.Y2));
-			POLE[++i]=TPoint(m.L2Px(E->geo.X3),m.L2Py(E->geo.Y3));F->Memo(AnsiString(E->geo.X3)+" "+AnsiString(E->geo.Y3));
+			POLE[++i]=TPoint(m.L2Px(E->geo.X1),m.L2Py(E->geo.Y1));
+			POLE[++i]=TPoint(m.L2Px(E->geo.X2),m.L2Py(E->geo.Y2));
+			POLE[++i]=TPoint(m.L2Px(E->geo.X3),m.L2Py(E->geo.Y3));
 			if(E->n==O->elementy->predchozi->n)//poslední bod se bere pouze v případě posledního segmentu, jinak je poslední bod totožný s prvním následujícího segmentu, takže se zbytečně nepoužívá, vyplývá z principu algoritmu bézierovy křivky
-			POLE[++i]=TPoint(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));F->Memo(AnsiString(E->geo.X4)+" "+AnsiString(E->geo.Y4));
+			POLE[++i]=TPoint(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
 			//ukazatelové záležitosti
 			E=E->dalsi;//posun na další element
 		}
@@ -4056,7 +4056,7 @@ void Cvykresli::vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popise
 }
 //---------------------------------------------------------------------------
 //typ: -2 kurzor se sprchy, -1 kurzor bez sprchy, 0 ikona bez sprchy, 1 ikona se sprchou, stav: -1 disabled
-void Cvykresli::vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popisek,short typ,short stav)
+void Cvykresli::vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popisek,short typ,short stav,double orientace)
 {
 	////výchozí nastavení
 	short W=10;//šířka torza objektu
@@ -4089,14 +4089,15 @@ void Cvykresli::vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popis
 	}
 
 	////vykreslení obrysu
+	//k řešení: zde konstruovat switch dle orientace
 	line(canv,X,Y,X+W,Y);//horní vodorovná
 	line(canv,X+W,Y,X+W,Y+H);//pravá svislá
 	line(canv,X+W,Y+H,X,Y+H);//dolní vodorovná
 	line(canv,X+o,Y+H,X+o,Y+H/2+o/2);//dolní kus komory
 	line(canv,X+o,Y,X+o,Y+H/2-o/2);//horní kus komory
 
-  ////symbolika tekoucí kapaliny
-	if(typ==1 || typ==-2)vykresli_pow_sprchu(canv,X+W,X+W,Y,Y+H,W-o,canv->Pen->Color,ceil(canv->Pen->Width/4.0),m.round(o/2.0),typ);
+	////symbolika tekoucí kapaliny                                                                                                //k řešení: orientace doplněno, možná orientace + 90
+	if(typ==1 || typ==-2)vykresli_pow_sprchu(canv,X+W,X+W,Y,Y+H,W-o,canv->Pen->Color,ceil(canv->Pen->Width/4.0),m.round(o/2.0),typ,orientace);
 
 	////popisek
 	if(typ==0 || typ==1)//pouze pro typ ikona se sprchou nebo bez
