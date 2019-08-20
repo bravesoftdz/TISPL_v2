@@ -929,7 +929,7 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	if(Cell.Type==readEDIT)E->Enabled=false;
 	E->AutoSize=false;//nutnost
 	E->Transparent=false;//nutnost
-	if(!VisibleComponents)E->Visible=false;else E->Visible=true;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
+	if(VisibleComponents>-1)E->Visible=VisibleComponents;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
 	//E->ShowHint=false;//toto by bylo vždy u editu na false, pokus automatizace pro dlouhý textif(Cell.Text.Length()>E->Width/(Cell.Font->Size-2))E->ShowHint=true;else //asi nepřesné
 	if(Cell.ShowHint){E->ShowHint=true;E->Hint=Cell.Hint;}
 	if(Cell.Text=="")E->Options->NormalColor=Cell.isEmpty->Color;else E->Options->NormalColor=Cell.Background->Color;
@@ -996,7 +996,7 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	if(Cell.Type==NUMERIC)N->Enabled=true;else N->Enabled=false;
 	N->AutoSize=false;
 	N->Transparent=false;
-	if(!VisibleComponents)N->Visible=false;else N->Visible=true;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
+	if(VisibleComponents>-1)N->Visible=VisibleComponents;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
 	N->Decimal=Decimal;
 	//if(!N->Focused() && !IntegerDecimalNull && m.cele_cislo(ms.MyToDouble(Cell.Text)))N->Decimal=0;//pokud se jedná o celé číslo, nezobrazuje "reálnou část" celého čísla tj. počet nul do počtu decimal, nastavuje se pouze pokud není daný NUMERIC editovaný
 	N->DisplayType=scedtNumeric;
@@ -1070,7 +1070,7 @@ void TmGrid::SetLabel(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 //		case MIDDLE:L->ContentMarginTop=E->Height/2-getWidthHeightText(Cell).Y/2;break;
 //		case BOTTOM:L->ContentMarginTop=E->Height-getWidthHeightText(Cell).Y;break;
 //	}
-	L->Visible=VisibleComponents;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
+	if(VisibleComponents>-1)L->Visible=VisibleComponents;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
 
 	//text
 	L->Font=Cell.Font;
@@ -1095,7 +1095,7 @@ void TmGrid::SetButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	B->Left=R.Left+ceil(Cell.LeftBorder->Width/2.0)+1;
 	B->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0)-1;
 	B->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0)-1;
-	if(!VisibleComponents)B->Visible=false;else B->Visible=true;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
+	if(VisibleComponents>-1)B->Visible=VisibleComponents;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
 	if(Cell.ShowHint){B->ShowHint=true;B->Hint=Cell.Hint;}
 	//B->Options->NormalColor=Cell.Background->Color; zde nenastavovat!
 	B->Options->FrameNormalColor=B->Options->NormalColor;
@@ -1122,7 +1122,7 @@ void TmGrid::SetGlyphButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell
 	gB->Left=R.Left+floor(Cell.LeftBorder->Width/2.0)+1;
 	gB->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0)-1;
 	gB->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-floor(Cell.TopBorder->Width/2.0)-1;
-	if(!VisibleComponents)gB->Visible=false;else gB->Visible=true;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
+	if(VisibleComponents>-1)gB->Visible=VisibleComponents;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
 	//gB->Options->NormalColor=Cell.Background->Color; zde nenastavovat!
 	if(Cell.ShowHint){gB->ShowHint=true;gB->Hint=Cell.Hint;}
 
@@ -1153,7 +1153,7 @@ void TmGrid::SetCombo(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	/*if(Cell.MergeState==false)*/C->Height=Rows[Y].Height-floor(Cells[X+o][Y].BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodělat ubere velikost komponenty podle šířky orámování
 
 	//zobrazení komponenty
-	if(!VisibleComponents)C->Visible=false;else C->Visible=true;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
+	if(VisibleComponents>-1)C->Visible=VisibleComponents;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
 
 	//volitelné atributy
 	if(!Cell.Highlight)C->Options->FrameNormalColor=Cell.Background->Color;//rámeček musí být stejnou barvou jakou buňka, protože mřížka je o 1px na všechny strany roztažená
@@ -1196,7 +1196,7 @@ void TmGrid::SetComboEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	/*if(Cell.MergeState==false)*/C->Height=Rows[Y].Height-floor(Cells[X+o][Y].BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodělat ubere velikost komponenty podle šířky orámování
 
 	//zobrazení komponenty
-	if(!VisibleComponents)C->Visible=false;else C->Visible=true;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
+	if(VisibleComponents>-1)C->Visible=VisibleComponents;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
 
 	//volitelné atributy
 	if(!Cell.Highlight)C->Options->FrameNormalColor=Cell.Background->Color;//rámeček musí být stejnou barvou jakou buňka, protože mřížka je o 1px na všechny strany roztažená
@@ -1243,7 +1243,7 @@ void TmGrid::SetCheck(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	 	case MIDDLE:Ch->Top=R.Top+m.round(Rows[Y].Height/2.0-Ch->Height/2.0);break;
 		case BOTTOM:Ch->Height=Ch->OptionsChecked->ShapeSize;Ch->Top=R.Top+Rows[Y].Height-Ch->Height;break;
 	}
-	if(!VisibleComponents)Ch->Visible=false;else Ch->Visible=true;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
+	if(VisibleComponents>-1)Ch->Visible=VisibleComponents;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
 	Ch->Options->NormalColor=Cell.Background->Color;
 	Ch->Options->NormalColorAlpha=255;
 	if(Cell.ShowHint){Ch->ShowHint=true;Ch->Hint=Cell.Hint;}
@@ -1264,7 +1264,7 @@ void TmGrid::SetRadio(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	//založení + tag + název
 	TscGPRadioButton *Ra = createRadio(X,Y);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
 	//atributy
-	Ra->Visible=VisibleComponents;
+	if(VisibleComponents>-1)Ra->Visible=VisibleComponents;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
 	switch(Cell.Align)
 	{
 		case aNO:break;
@@ -1291,6 +1291,7 @@ void TmGrid::SetRadio(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	Ra->Parent=Form;//musí být až na konci
 	Ra=NULL;delete Ra;
 }
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
 TscGPEdit *TmGrid::createEdit(unsigned long Col,unsigned long Row)
