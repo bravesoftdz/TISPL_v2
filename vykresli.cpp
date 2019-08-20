@@ -477,13 +477,13 @@ void Cvykresli::vykresli_pow_sprchu(TCanvas *canv,long X1,long X2,long Y1,long Y
 		{				     //pouze zneužití krok                     //pouze zneužití krok a pmpp
 			if(orientace==90 || orientace==-90)//ošetření při nezadání parametru orientace
 			{
-				line(canv,Xp+krok,Y1,Xp+i,m.round((Y1+Y2)/2.0-pmpp));//line(canv,Xp+i,Y1,Xp+i,Y1+pmpp*2);
-				line(canv,Xp+krok,Y2,Xp+i,m.round((Y1+Y2)/2.0+pmpp));//line(canv,Xp+i,Y2,Xp+i,Y2-pmpp*2);
+				line(canv,Xp+krok,Y1,Xp+i,m.round((Y1+Y2)/2.0-pmpp));
+				line(canv,Xp+krok,Y2,Xp+i,m.round((Y1+Y2)/2.0+pmpp));
 			}
 			else
 			{
-				line(canv,Xp-krok,Y1,Xp-i,m.round((Y1+Y2)/2.0-pmpp));//line(canv,Xp+i,Y1,Xp+i,Y1+pmpp*2);
-				line(canv,Xp-krok,Y2,Xp-i,m.round((Y1+Y2)/2.0+pmpp));//line(canv,Xp+i,Y2,Xp+i,Y2-pmpp*2);
+				line(canv,Xp-krok,Y1,Xp-i,m.round((Y1+Y2)/2.0-pmpp));
+				line(canv,Xp-krok,Y2,Xp-i,m.round((Y1+Y2)/2.0+pmpp));
       }
 		}
 	}
@@ -495,13 +495,13 @@ void Cvykresli::vykresli_pow_sprchu(TCanvas *canv,long X1,long X2,long Y1,long Y
 		{				       //pouze zneužití krok                //pouze zneužití krok a pmpp
 			if(orientace==0 || orientace==-90)//ošetření při nezadání parametru orientace
 			{
-				line(canv,X1,Yp-krok,m.round((X1+X2)/2.0-pmpp),Yp-i);//line(canv,X1,Yp+i,X1+pmpp*2,Yp+i);
-				line(canv,X2,Yp-krok,m.round((X1+X2)/2.0+pmpp),Yp-i);//line(canv,X2,Yp+i,X2-pmpp*2,Yp+i);
+				line(canv,X1,Yp-krok,m.round((X1+X2)/2.0-pmpp),Yp-i);
+				line(canv,X2,Yp-krok,m.round((X1+X2)/2.0+pmpp),Yp-i);
 			}
 			else
 			{
-				line(canv,X1,Yp+krok,m.round((X1+X2)/2.0-pmpp),Yp+i);//line(canv,X1,Yp+i,X1+pmpp*2,Yp+i);
-				line(canv,X2,Yp+krok,m.round((X1+X2)/2.0+pmpp),Yp+i);//line(canv,X2,Yp+i,X2-pmpp*2,Yp+i);
+				line(canv,X1,Yp+krok,m.round((X1+X2)/2.0-pmpp),Yp+i);
+				line(canv,X2,Yp+krok,m.round((X1+X2)/2.0+pmpp),Yp+i);
       }
 		}
 	}
@@ -2871,23 +2871,25 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O)//sloučit s v
 {
 	if(O!=NULL && O->elementy!=NULL)
 	{
-		TPoint *POLE=new TPoint[O->elementy->predchozi->n*4];
+		TPoint *POLE=new TPoint[O->elementy->predchozi->n*3+1];
 		Cvektory::TElement *E=O->elementy->dalsi;
+		long i=-1;//počítadlo aktuálního vkládaného bodu
 		while(E!=NULL)
 		{
 			//plnění do pole
-			POLE[E->n-1]=TPoint(m.L2Px(E->geo.X1),m.L2Py(E->geo.Y1));
-			POLE[E->n]  =TPoint(m.L2Px(E->geo.X2),m.L2Py(E->geo.Y2));
-			POLE[E->n+1]=TPoint(m.L2Px(E->geo.X3),m.L2Py(E->geo.Y3));
-			POLE[E->n+2]=TPoint(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
+			POLE[++i]=TPoint(m.L2Px(E->geo.X1),m.L2Py(E->geo.Y1));
+			POLE[++i]=TPoint(m.L2Px(E->geo.X2),m.L2Py(E->geo.Y2));
+			POLE[++i]=TPoint(m.L2Px(E->geo.X3),m.L2Py(E->geo.Y3));
+			if(E->n==O->elementy->predchozi->n)//poslední bod se bere pouze v případě posledního segmentu, jinak je poslední bod totožný s prvním následujícího segmentu, takže se zbytečně nepoužívá, vyplývá z principu algoritmu bézierovy křivky
+			POLE[++i]=TPoint(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
 			//ukazatelové záležitosti
 			E=E->dalsi;//posun na další element
-			if(E==NULL)delete E;//smazání již nepotřebného ukazatele
 		}
+		delete E;E=NULL;//smazání již nepotřebného ukazatele
 		if(O->pohon==NULL)canv->Pen->Width=1;//pokud není pohon přiřazen, tak jen elementární osa
 		else canv->Pen->Width=m.round(F->Zoom*0.5);//pokud není přiřazen
 		canv->Pen->Color=clBlack;
-		canv->PolyBezier(POLE,O->elementy->predchozi->n*4-1);
+		canv->PolyBezier(POLE,O->elementy->predchozi->n*3);
 		delete[]POLE;POLE=NULL;
 	}
 }
@@ -4054,7 +4056,7 @@ void Cvykresli::vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popise
 }
 //---------------------------------------------------------------------------
 //typ: -2 kurzor se sprchy, -1 kurzor bez sprchy, 0 ikona bez sprchy, 1 ikona se sprchou, stav: -1 disabled
-void Cvykresli::vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popisek,short typ,short stav)
+void Cvykresli::vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popisek,short typ,short stav,double orientace)
 {
 	////výchozí nastavení
 	short W=10;//šířka torza objektu
@@ -4382,22 +4384,20 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 						E->mGrid->SetVisibleComponents(false);
 			  		E->mGrid->Left=m.L2Px(E->Xt);//kvůli případnému přesouvání tabulky
 			  		E->mGrid->Top=m.L2Py(E->Yt);//kvůli případnému přesouvání tabulky
-			  		E->mGrid->Show(canv);    //F->Memo(0);
+						E->mGrid->Show(canv);
 			  	}
-			  	else
-					{     //F->Memo(1);
+					else
+					{
 						if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
 			  		{
 			  			E->mGrid->Redraw=true;
-			  			//E->mGrid->Buffer(false);
-			  			E->mGrid->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování
-			  			//možná zde ještě update pokud byla komponenta skyta
-							E->mGrid->VisibleComponents=true;//stačí volat toto, protože se pomocí Show cyklem všechny komponenty
+							E->mGrid->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak E->mGrid->Buffer(false);
+							if(E->mGrid->VisibleComponents>-1)E->mGrid->VisibleComponents=true;//stačí volat toto, protože se pomocí Show (resp. Draw-SetCompontens-Set...) cyklem všechny komponenty na základě tohoto zobrazí pokud je nastaveno na -1 tak se při překreslování zohlední individuální nastavení komponent (z tohoto stavu je však pro další použítí třeba vrátit do stavu 0 nebo 1)
 							E->mGrid->Left=m.L2Px(E->Xt);
 							E->mGrid->Top=m.L2Py(E->Yt);
 			  			E->mGrid->Show(canv);
 			  		}
-			  		else//pokud ne, je třeba skrýt komponenty
+						else//pokud ne, je třeba skrýt všechny komponenty (posun obrazu PAN MOVE či skryté mGridy)
 			  		{
 			  			E->mGrid->SetVisibleComponents(false);
 			  		}
@@ -4406,7 +4406,6 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			}
 			E=NULL;delete E;
 		}
-				 //	F->Memo("--------------------");
 		////tabulka pohonu
 		if(F->PmG!=NULL)
 		{
@@ -4416,8 +4415,6 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 				F->PmG->Redraw=false;
 				F->PmG->Left=m.L2Px(F->pom_temp->Xp);
 				F->PmG->Top=m.L2Py(F->pom_temp->Yp);
-				//F->PmG->Left=oblast_kabiny.right+30;
-				//F->PmG->Top=oblast_kabiny.top-F->PmG->Height-30;
 				F->PmG->SetVisibleComponents(false);
 				F->PmG->Show(canv);
 			}
@@ -4426,13 +4423,10 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 				if(F->pom_temp->zobrazit_mGrid &&  F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
 				{
 					F->PmG->Redraw=true;
-					//F->PmG->Buffer(false);
-					F->PmG->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování
-					F->PmG->VisibleComponents=true;//stačí volat toto, protože se pomocí Show cyklem všechny komponenty
+					F->PmG->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak F->PmG->Buffer(false);
+					if(F->PmG->VisibleComponents>-1)F->PmG->VisibleComponents=true;//stačí volat toto, protože se pomocí Show (resp. Draw-SetCompontens-Set...) cyklem všechny komponenty, pokud je nastaveno na -1 tak se při překreslování zohlední individuální nastavení komponent (z tohoto stavu je však pro další použítí třeba vrátit do stavu 0 nebo 1)
 					F->PmG->Left=m.L2Px(F->pom_temp->Xp);
 					F->PmG->Top=m.L2Py(F->pom_temp->Yp);
-					//F->PmG->Left=oblast_kabiny.right+30;
-					//F->PmG->Top=oblast_kabiny.top-F->PmG->Height-30;
 					F->PmG->Show(canv);
 				}
 				else//pokud ne, je třeba skrýt komponenty

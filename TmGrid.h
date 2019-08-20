@@ -35,7 +35,6 @@ class TmGrid
 		bool Visible;//zda bude řádek zobrazen
 	};
 
-
 	struct TCells//datový typ používaný pro buňky
 	{
 		Ttype Type;//typ komponenty v buňce dle Ttype
@@ -168,7 +167,7 @@ class TmGrid
 	bool exBUTTONLockPosition;//uzamkne pozici exButtonu (použito při updatu)
 	short Decimal;//implicitní počet desetinných míst u numericeditů
 	bool IntegerDecimalNull;//pokud je výše uvedené Decimal na hodnotu vyšší než 0, toto nastavuje zda se nuly doplní do počtu decimál i u celých čísel
-	bool VisibleComponents;//nastaví componenty na skryté nebo zobrazené
+	short VisibleComponents;//nastaví componenty na skryté (0 či false) či zobrazené (1 či true) nebo pokud je nastaveno na -1 tak se při překreslování zohlední individuální nastavení komponent (z tohoto stavu je však pro další použítí třeba vrátit do stavu 0 nebo 1)
 	TColor clHighlight;//přednastavená barva zvýraznění, slouží i pro nastavení barvy focusu komponent
 	int SleepHint;//zpoždění zobrazení Hintu v ms
 	bool Highlight;//zda bude orámování tabulky zvýrazněna nebo nikoliv
