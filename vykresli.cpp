@@ -4378,30 +4378,30 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			Cvektory::TElement *E=F->pom_temp->elementy->dalsi;//přeskočí rovnou hlavičku
 			while(E!=NULL)
 			{
-					if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
-			  	{
-			  		E->mGrid->Redraw=false;
-						E->mGrid->SetVisibleComponents(false);
-			  		E->mGrid->Left=m.L2Px(E->Xt);//kvůli případnému přesouvání tabulky
-			  		E->mGrid->Top=m.L2Py(E->Yt);//kvůli případnému přesouvání tabulky
-						E->mGrid->Show(canv);
-			  	}
-					else
+				if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
+				{
+					E->mGrid->Redraw=false;
+					E->mGrid->SetVisibleComponents(false);
+					E->mGrid->Left=m.L2Px(E->Xt);//kvůli případnému přesouvání tabulky
+					E->mGrid->Top=m.L2Py(E->Yt);//kvůli případnému přesouvání tabulky
+					E->mGrid->Show(canv);
+				}
+				else
+				{
+					if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
 					{
-						if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
-			  		{
-							E->mGrid->Redraw=true;
-							E->mGrid->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak E->mGrid->Buffer(false);
-							if(E->mGrid->VisibleComponents>-1)E->mGrid->VisibleComponents=true;//stačí volat toto, protože se pomocí Show (resp. Draw-SetCompontens-Set...) cyklem všechny komponenty na základě tohoto zobrazí pokud je nastaveno na -1 tak se při překreslování zohlední individuální nastavení komponent (z tohoto stavu je však pro další použítí třeba vrátit do stavu 0 nebo 1)
-							E->mGrid->Left=m.L2Px(E->Xt);
-							E->mGrid->Top=m.L2Py(E->Yt);
-							E->mGrid->Show(canv);
-			  		}
-						else//pokud ne, je třeba skrýt všechny komponenty (posun obrazu PAN MOVE či skryté mGridy)
-			  		{
-			  			E->mGrid->SetVisibleComponents(false);
-			  		}
+						E->mGrid->Redraw=true;
+						E->mGrid->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak E->mGrid->Buffer(false);
+						if(E->mGrid->VisibleComponents>-1)E->mGrid->VisibleComponents=true;//stačí volat toto, protože se pomocí Show (resp. Draw-SetCompontens-Set...) cyklem všechny komponenty na základě tohoto zobrazí pokud je nastaveno na -1 tak se při překreslování zohlední individuální nastavení komponent (z tohoto stavu je však pro další použítí třeba vrátit do stavu 0 nebo 1)
+						E->mGrid->Left=m.L2Px(E->Xt);
+						E->mGrid->Top=m.L2Py(E->Yt);
+						E->mGrid->Show(canv);
 					}
+					else//pokud ne, je třeba skrýt všechny komponenty (posun obrazu PAN MOVE či skryté mGridy)
+					{
+						E->mGrid->SetVisibleComponents(false);
+					}
+				}
 				E=E->dalsi;
 			}
 			E=NULL;delete E;
