@@ -437,6 +437,7 @@ class Cvektory
 	void ortogonalizovat();//ortogonalizuje schéma
 	TObjekt *dalsi_krok(TObjekt *Objekt,TPoint *tab_pruchodu);//určuje další krok cyklu při procházení objektů
 	void posun_objekt(double X,double Y,TObjekt *Objekt);//slouží k posunu objektu jako celku o X a Y, posun kabiny, pohonu, elementů, tabulek, nadpisu
+	void rotuj_objekt(TObjekt *Objekt, double rotace);//orotuje objekt o danou rotaci
 	//přidružené metody pro KOMORY
 	void vloz_komoru(TObjekt *Objekt,double velikost,TKomora *ZaKomoru=NULL,short typ=1);//vloží novou komoru na konec seznamu komor, pokud je ZaKomoru=NULL, jinak vloží za tento objekt, nastaví velikost dané komory dle proměnné velikost,short typ;//1-se sprchou, 0 bez jen okap
 	void vloz_komoru(TObjekt* Objekt,TKomora *Komora,TKomora *ZaKomoru=NULL,short typ=1);//vloží novou komoru na konec seznamu komor, pokud je ZaKomoru=NULL, jinak vloží za tento objekt, není třeba nastavovat ukazatele ani n-pořadí,short typ;//1-se sprchou, 0 bez jen okap

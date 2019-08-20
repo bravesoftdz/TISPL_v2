@@ -312,10 +312,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		double vzdalenost=0;
 		while(K->dalsi!=NULL)
 		{
-			//nastavení pera, musí být znova, vykreslení kót pero přenastaví
-			//canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
-			//canv->Pen->Mode=pmCopy;pmNotXor;//pro transparentní zákres
-			if((F->JID*(-1)-10==(signed)K->n || (F->JID==0 && F->pom_komora->n==K->n)) && F->pom_temp!=NULL && F->pom_temp->n==O->n)clAkt=m.clIntensive(clStenaKabiny,-50);//highlight
+			if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)K->n || F->JID==0 && F->pom_komora->n==K->n))clAkt=m.clIntensive(clStenaKabiny,-50);//highlight
 			else clAkt=clStenaKabiny;
 			set_pen(canv,clAkt,sirka_steny_px,PS_ENDCAP_SQUARE);
 			vzdalenost+=K->velikost;//dle velikosti předchozích komor uchovává hodnotu součtu/pozice aktuálně vykreslované komory
@@ -330,7 +327,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				line(canv,X,Y1,X,Y-pmpp);
 				line(canv,X,Y2,X,Y+pmpp);
 				//highlight komory
-				if((F->JID*(-1)-10==(signed)K->n || (F->JID==0 && F->pom_komora->n==K->n)) && F->pom_temp!=NULL && F->pom_temp->n==O->n)
+				if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)K->n || F->JID==0 && F->pom_komora->n==K->n))
 				{
 					double hl_X=0;
 					if(orientace==90)hl_X=X-m.m2px(K->velikost)-W1;else hl_X=X+m.m2px(K->velikost)-W1;
@@ -357,7 +354,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				line(canv,X1,Y,X-pmpp,Y);
 				line(canv,X2,Y,X+pmpp,Y);
 				//highlight komory
-				if((F->JID*(-1)-10==(signed)K->n || (F->JID==0 && F->pom_komora->n==K->n)) && F->pom_temp!=NULL && F->pom_temp->n==O->n)//highlight komory
+				if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)K->n || F->JID==0 && F->pom_komora->n==K->n))//highlight komory
 				{
 					double hl_Y=0;
 					if(orientace==180)hl_Y=Y-m.m2px(K->velikost)-W1;else hl_Y=Y+m.m2px(K->velikost)-W1;
@@ -375,7 +372,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				if(K->typ==1)vykresli_pow_sprchu(canv,X1,X2,Y,Y,m.m2px(K->velikost),clAkt,sirka_steny_px/4,pmpp,0,orientace);
 			}
 			//KÓTY
-			if(zobrazit_koty)
+			if(zobrazit_koty && F->pom_temp->n==O->n)
 			{
 				//nastavení highlight
 				if((F->JID==0&&F->pom_komora->n==K->n) || (F->JID*(-1)-10==(signed)K->n || F->JID*(-1)-10==(signed)K->predchozi->n)&&F->d.v.PtInKota_komory(O,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
@@ -413,13 +410,15 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				canv->LineTo(X2,Y1-W);
 			}
 			//symbolika tekoucí kapaliny u POW //dodělat po změně souřadnicového modelu
-			if(O->komora->predchozi->typ==1)vykresli_pow_sprchu(canv,m.L2Px(O->elementy->dalsi->geo.X1),m.L2Px(O->elementy->predchozi->geo.X4),m.L2Py(O->elementy->dalsi->geo.X1),m.L2Py(O->elementy->predchozi->geo.Y4),m.m2px(O->elementy->predchozi->geo.X4-O->elementy->dalsi->geo.X1-vzdalenost),clAkt,sirka_steny_px/4,pmpp,0,orientace);
+			if(O->komora->predchozi->typ==1)vykresli_pow_sprchu(canv,m.L2Px(O->elementy->dalsi->geo.X4),m.L2Px(O->elementy->predchozi->geo.X4),m.L2Py(O->body->dalsi->Y),m.L2Py(O->body->predchozi->Y),m.m2px(O->komora->predchozi->velikost),clAkt,sirka_steny_px/4,pmpp,0,orientace);
 		}
 		else
-		{    pmpp=m.m2px(v.PP.delka_jig); if(v.PP.delka_jig<v.PP.sirka_jig)pmpp=m.m2px(v.PP.sirka_jig);pmpp=m.round(pmpp/2.0);if(pmpp>m.m2px(1))pmpp=m.m2px(1);
+		{
+			bool highlight=false;
 			if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)F->pom_temp->komora->predchozi->n || (F->JID==0 && F->pom_komora->n==F->pom_temp->komora->predchozi->n)))//highlight komory
 			{
 				//nastavení proměnných podle orientace
+				highlight=true;
 				double hl_Y=0;
 				if(orientace==180){hl_Y=Y2-m.m2px(F->pom_temp->komora->predchozi->velikost);pmpp*=-1;}else hl_Y=Y2+m.m2px(F->pom_temp->komora->predchozi->velikost);
 				//vykreslení
@@ -432,10 +431,11 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				canv->LineTo(X1-W,Y2);
 			}
 			//symbolika tekoucí kapaliny u POW //dodělat po změně souřadnicového modelu
-			if(O->komora->predchozi->typ==1)vykresli_pow_sprchu(canv,m.L2Px(O->elementy->dalsi->geo.X1),m.L2Px(O->elementy->predchozi->geo.X4),m.L2Py(O->elementy->predchozi->geo.Y4),m.L2Py(O->elementy->predchozi->geo.Y4),m.m2px(O->elementy->predchozi->geo.X4-O->elementy->dalsi->geo.X1-vzdalenost),clAkt,sirka_steny_px/4,pmpp,0,orientace);
+			if(O->komora->predchozi->typ==1 && (O->orientace==0 || O->orientace==180 && !highlight))vykresli_pow_sprchu(canv,m.L2Px(O->body->dalsi->X),m.L2Px(O->body->predchozi->X),m.L2Py(O->elementy->predchozi->geo.Y4),m.L2Py(O->elementy->predchozi->geo.Y4),m.m2px(O->komora->predchozi->velikost),clAkt,sirka_steny_px/4,pmpp,0,orientace);
+			if(O->komora->predchozi->typ==1 && O->orientace==180 && highlight)vykresli_pow_sprchu(canv,m.L2Px(O->body->predchozi->X),m.L2Px(O->body->dalsi->X),m.L2Py(O->elementy->predchozi->geo.Y4),m.L2Py(O->elementy->predchozi->geo.Y4),m.m2px(O->komora->predchozi->velikost),clAkt,sirka_steny_px/4,pmpp,0,orientace);//z důvodu špatného vykreslení při highlightu
 		}
 		//vykreslení KÓTY od poslení komory k okraji kabiny
-		if(zobrazit_koty)
+		if(zobrazit_koty && F->pom_temp->n==O->n)
 		{
 			if((F->JID==0 && F->pom_komora->n==O->komora->predchozi->n) || (F->JID*(-1)-10==(signed)O->komora->predchozi->n || F->JID*(-1)-10==(signed)O->komora->predchozi->predchozi->n)&&F->d.v.PtInKota_komory(O,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
 			else if(F->JID*(-1)-10==(signed)O->komora->predchozi->n || F->JID>=11&&F->JID<=99)highlight=1;
@@ -4087,14 +4087,26 @@ void Cvykresli::vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popis
 	}
 
 	////vykreslení obrysu
-	line(canv,X,Y,X+W,Y);//horní vodorovná
-	line(canv,X+W,Y,X+W,Y+H);//pravá svislá
-	line(canv,X+W,Y+H,X,Y+H);//dolní vodorovná
-	line(canv,X+o,Y+H,X+o,Y+H/2+o/2);//dolní kus komory
-	line(canv,X+o,Y,X+o,Y+H/2-o/2);//horní kus komory
-
-  ////symbolika tekoucí kapaliny
-	if(typ==1 || typ==-2)vykresli_pow_sprchu(canv,X+W,X+W,Y,Y+H,W-o,canv->Pen->Color,ceil(canv->Pen->Width/4.0),m.round(o/2.0),typ);
+	if(F->pom_temp!=NULL && (F->pom_temp->orientace==90 || F->pom_temp->orientace==270) || typ>=0)
+	{
+  	line(canv,X,Y,X+W,Y);//horní vodorovná
+  	line(canv,X+W,Y,X+W,Y+H);//pravá svislá
+  	line(canv,X+W,Y+H,X,Y+H);//dolní vodorovná
+  	line(canv,X+o,Y+H,X+o,Y+H/2+o/2);//dolní kus komory
+		line(canv,X+o,Y,X+o,Y+H/2-o/2);//horní kus komory
+		////symbolika tekoucí kapaliny
+		if(typ==1 || typ==-2)vykresli_pow_sprchu(canv,X+W,X+W,Y,Y+H,W-o,canv->Pen->Color,ceil(canv->Pen->Width/4.0),m.round(o/2.0),typ);
+	}
+	if(F->pom_temp!=NULL && (F->pom_temp->orientace==0 || F->pom_temp->orientace==180) && typ<0)
+	{
+		line(canv,X,Y,X,Y-W);//horní vodorovná
+		line(canv,X,Y-W,X+H,Y-W);//pravá svislá
+		line(canv,X+H,Y-W,X+H,Y);//dolní vodorovná
+		line(canv,X,Y-o,X+H/2-o/2,Y-o);//dolní kus komory,
+		line(canv,X+H/2+o/2,Y-o,X+H,Y-o);//horní kus komory
+		////symbolika tekoucí kapaliny
+		if(typ==1 || typ==-2)vykresli_pow_sprchu(canv,X,X+H,Y+o+10,Y+o+10,W-o,canv->Pen->Color,ceil(canv->Pen->Width/4.0),m.round(o/2.0),typ);//+10 korekce vykreslení
+	}
 
 	////popisek
 	if(typ==0 || typ==1)//pouze pro typ ikona se sprchou nebo bez
@@ -4364,23 +4376,23 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			Cvektory::TElement *E=F->pom_temp->elementy->dalsi;//přeskočí rovnou hlavičku
 			while(E!=NULL)
 			{
-			  	if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
+					if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
 			  	{
 			  		E->mGrid->Redraw=false;
-			  		E->mGrid->SetVisibleComponents(false);
+						E->mGrid->SetVisibleComponents(false);
 			  		E->mGrid->Left=m.L2Px(E->Xt);//kvůli případnému přesouvání tabulky
 			  		E->mGrid->Top=m.L2Py(E->Yt);//kvůli případnému přesouvání tabulky
 			  		E->mGrid->Show(canv);    //F->Memo(0);
 			  	}
 			  	else
-			  	{     //F->Memo(1);
-			  		if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
+					{     //F->Memo(1);
+						if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
 			  		{
 			  			E->mGrid->Redraw=true;
 			  			//E->mGrid->Buffer(false);
 			  			E->mGrid->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování
 			  			//možná zde ještě update pokud byla komponenta skyta
-			  			E->mGrid->VisibleComponents=true;//stačí volat toto, protože se pomocí Show cyklem všechny komponenty
+							E->mGrid->VisibleComponents=true;//stačí volat toto, protože se pomocí Show cyklem všechny komponenty
 							E->mGrid->Left=m.L2Px(E->Xt);
 							E->mGrid->Top=m.L2Py(E->Yt);
 			  			E->mGrid->Show(canv);

@@ -56,6 +56,9 @@ void TPopUPmenu::pasiveColor()//nastaví všechny položky na pasivní resp. default
 	Item_vybrat_oknem->FillColor=clBg;
 	Item_cely_pohled->FillColor=clBg;
 	Item_kopirovat->FillColor=clBg;
+	Item_otocit_doleva->FillColor=clBg;
+	Item_otocit_doprava->FillColor=clBg;
+	Item_posun_obrysu->FillColor=clBg;
 	GlyphButton_close->Options->NormalColor=clAcBg;
 	GlyphButton_close->Options->HotColor=clRed;
 	GlyphButton_close->Options->FocusedColor=clAcBg;
@@ -95,6 +98,15 @@ void TPopUPmenu::pasiveColor()//nastaví všechny položky na pasivní resp. default
 	GlyphButton_kopirovat->Options->NormalColor=clGlyph;
 	GlyphButton_kopirovat->GlyphOptions->NormalColor=clWhite;
 	GlyphButton_kopirovat->GlyphOptions->NormalColorAlpha=200;
+	GlyphButton_otocit_doleva->Options->NormalColor=clGlyph;
+	GlyphButton_otocit_doleva->GlyphOptions->NormalColor=clWhite;
+	GlyphButton_otocit_doleva->GlyphOptions->NormalColorAlpha=200;
+	GlyphButton_otocit_doprava->Options->NormalColor=clGlyph;
+	GlyphButton_otocit_doprava->GlyphOptions->NormalColor=clWhite;
+	GlyphButton_otocit_doprava->GlyphOptions->NormalColorAlpha=200;
+	GlyphButton_posun_obrysu->Options->NormalColor=clGlyph;
+	GlyphButton_posun_obrysu->GlyphOptions->NormalColor=clWhite;
+	GlyphButton_posun_obrysu->GlyphOptions->NormalColorAlpha=200;
 	closing=false;
 }
 //---------------------------------------------------------------------------
@@ -170,43 +182,7 @@ void __fastcall TPopUPmenu::scLabel_nastavit_parametryClick(TObject *Sender)
 {
 	closing=true;
 	Close();
- //	Form1->NP(); //staré volání PO
-	if(F->MOD==F->SCHEMA&&Form1->pom_bod_temp==NULL)Form1->NP_input();
-	if(Form1->pom_bod_temp!=NULL && Form1->pom_temp==NULL && Form1->pom==NULL)//pøidání bodu haly
-	{
-		if(Form1->pom_bod_temp->n!=1)Form1->d.v.vloz_bod(Form1->akt_souradnice_kurzoru.x,Form1->akt_souradnice_kurzoru.y,Form1->pom,Form1->pom_bod_temp->predchozi);
-		else Form1->d.v.vloz_bod(Form1->akt_souradnice_kurzoru.x,Form1->akt_souradnice_kurzoru.y,Form1->pom);
-		Form1->REFRESH();
-	}
-	if(Form1->pom_temp!=NULL && F->pom_komora_temp!=NULL)//zmìna typu kabiny
-	{
-		if(F->pom_komora_temp->typ==0)F->pom_komora_temp->typ=1;
-		else F->pom_komora_temp->typ=0;
-		F->refresh_mGrid=false;
-		F->REFRESH();
-		F->refresh_mGrid=true;
-		F->nahled_ulozit(true);
-	}
-	if(Form1->pom_temp!=NULL && Form1->pom_vyhybka!=NULL && Form1->pom_temp->n!=Form1->pom_vyhybka->n)//otevírání náhledu z náhledu, pøechot na editaci jiného objektu
-	{
-		Cvektory::TObjekt *Objekt=F->pom_vyhybka;//F->pom_vyhybka použit z dùvodu, že v této chvíli je prázdný a nevyužitý, musí se ukládat do lokální promìnné, protože je vynulován pøi volaní metody vse_odstranit (spuštìno uzavøením starého náhledu)
-		F->KonecClick(this);//ukonèení aktuálního náhledu
-		if(F->MOD==F->SCHEMA)//pokud byl uzavèen starý náhled (uložit,storno,zùstat na náhledu)
-		{
-			F->pom=Objekt;//nastavení ukazatele na novì editovaný objekt
-			Form1->NP_input();//otevøení nového
-		}
-		Objekt=NULL;delete Objekt;
-	}
-	if(Form1->pom_temp!=NULL && Form1->pom_bod_temp!=NULL)//pøidání bodu objektu
-	{
-		if(Form1->pom_bod_temp->n!=1)Form1->d.v.vloz_bod(Form1->akt_souradnice_kurzoru.x,Form1->akt_souradnice_kurzoru.y,Form1->pom_temp,Form1->pom_bod_temp->predchozi);
-		else Form1->d.v.vloz_bod(Form1->akt_souradnice_kurzoru.x,Form1->akt_souradnice_kurzoru.y,Form1->pom_temp);
-		F->refresh_mGrid=false;
-		F->REFRESH();
-		F->refresh_mGrid=true;
-		F->nahled_ulozit(true);
-	}
+	Form1->NastavitparametryClick1Click(Sender);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -545,7 +521,7 @@ void __fastcall TPopUPmenu::scLabel_cely_pohledMouseLeave(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TPopUPmenu::GlyphButton_cely_pohledMouseEnter(TObject *Sender)
 {
-  scLabel_cely_pohledMouseEnter(Sender);
+	scLabel_cely_pohledMouseEnter(Sender);
 }
 //---------------------------------------------------------------------------
 void __fastcall TPopUPmenu::GlyphButton_cely_pohledMouseLeave(TObject *Sender)
@@ -561,5 +537,117 @@ void __fastcall TPopUPmenu::scLabel_cely_pohledClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
+/////////////////////////Otoèit_doleva
+void __fastcall TPopUPmenu::scLabel_otocit_dolevaClick(TObject *Sender)
+{
+	closing=true;
+	Close();
+	F->d.v.rotuj_objekt(F->pom,90);
+}
+//---------------------------------------------------------------------------
+void __fastcall TPopUPmenu::scLabel_otocit_dolevaMouseEnter(TObject *Sender)
+{
+	pasiveColor();
+	Item_otocit_doleva->FillColor=clAcBg;
+	GlyphButton_otocit_doleva->Options->NormalColor=clAcBg;
+	GlyphButton_otocit_doleva->Options->HotColor=clAcBg;
+	GlyphButton_otocit_doleva->Options->FocusedColor=clAcBg;
+	GlyphButton_otocit_doleva->GlyphOptions->NormalColor=clAcGlyph;
+	GlyphButton_otocit_doleva->GlyphOptions->NormalColorAlpha=255;
+	top_positon(Item_otocit_doleva->Top);//hlídání horní pozice, je-li daná komponenta horní
+}
+//---------------------------------------------------------------------------
+void __fastcall TPopUPmenu::scLabel_otocit_dolevaMouseLeave(TObject *Sender)
+{
+	pasiveColor();
+}
+//---------------------------------------------------------------------------
+void __fastcall TPopUPmenu::GlyphButton_otocit_dolevaMouseEnter(TObject *Sender)
+{
+	scLabel_otocit_dolevaMouseEnter(Sender);
+}
+//---------------------------------------------------------------------------
+void __fastcall TPopUPmenu::GlyphButton_otocit_dolevaMouseLeave(TObject *Sender)
+{
+	pasiveColor();
+}
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+/////////////////////////Otoèit_doprava
+void __fastcall TPopUPmenu::scLabel_otocit_dopravaClick(TObject *Sender)
+{
+	closing=true;
+	Close();
+	F->d.v.rotuj_objekt(F->pom,-90);
+}
+//---------------------------------------------------------------------------
+void __fastcall TPopUPmenu::scLabel_otocit_dopravaMouseEnter(TObject *Sender)
+{
+	pasiveColor();
+	Item_otocit_doprava->FillColor=clAcBg;
+	GlyphButton_otocit_doprava->Options->NormalColor=clAcBg;
+	GlyphButton_otocit_doprava->Options->HotColor=clAcBg;
+	GlyphButton_otocit_doprava->Options->FocusedColor=clAcBg;
+	GlyphButton_otocit_doprava->GlyphOptions->NormalColor=clAcGlyph;
+	GlyphButton_otocit_doprava->GlyphOptions->NormalColorAlpha=255;
+	top_positon(Item_otocit_doprava->Top);//hlídání horní pozice, je-li daná komponenta horní
+}
+//---------------------------------------------------------------------------
+void __fastcall TPopUPmenu::scLabel_otocit_dopravaMouseLeave(TObject *Sender)
+{
+	pasiveColor();
+}
+//---------------------------------------------------------------------------
+void __fastcall TPopUPmenu::GlyphButton_otocit_dopravaMouseEnter(TObject *Sender)
 
+{
+	scLabel_otocit_dopravaMouseEnter(Sender);
+}
+//---------------------------------------------------------------------------
+void __fastcall TPopUPmenu::GlyphButton_otocit_dopravaMouseLeave(TObject *Sender)
+
+{
+	pasiveColor();
+}
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+/////////////////////////Posun_obrysu
+void __fastcall TPopUPmenu::scLabel_posun_obrysuClick(TObject *Sender)
+{
+	closing=true;
+	Close();
+  F->Posouvat1Click(Sender);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TPopUPmenu::scLabel_posun_obrysuMouseEnter(TObject *Sender)
+{
+	pasiveColor();
+	Item_posun_obrysu->FillColor=clAcBg;
+	GlyphButton_posun_obrysu->Options->NormalColor=clAcBg;
+	GlyphButton_posun_obrysu->Options->HotColor=clAcBg;
+	GlyphButton_posun_obrysu->Options->FocusedColor=clAcBg;
+	GlyphButton_posun_obrysu->GlyphOptions->NormalColor=clAcGlyph;
+	GlyphButton_posun_obrysu->GlyphOptions->NormalColorAlpha=255;
+	top_positon(Item_posun_obrysu->Top);//hlídání horní pozice, je-li daná komponenta horní
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TPopUPmenu::scLabel_posun_obrysuMouseLeave(TObject *Sender)
+{
+	pasiveColor();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TPopUPmenu::GlyphButton_posun_obrysuMouseEnter(TObject *Sender)
+{
+	scLabel_posun_obrysuMouseEnter(Sender);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TPopUPmenu::GlyphButton_posun_obrysuMouseLeave(TObject *Sender)
+{
+	pasiveColor();
+}
+//---------------------------------------------------------------------------
 

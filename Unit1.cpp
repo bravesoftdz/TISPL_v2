@@ -2312,6 +2312,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				REFRESH(false);
 				//vykreslení spojnice tabulky a elementu
 				vykresli_spojinici_EmGrid(Canvas,pom_element);
+				mGrid_mimo_obraz(pom_element);
 			}
 			else//posun tabulky pohonu
 			{
@@ -2596,6 +2597,39 @@ void TForm1::vykresli_spojinici_EmGrid(TCanvas *Canv,Cvektory::TElement *E)
 	if(delka==pravydolni&&!vykresleno){d.linie(Canv,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt)+pom_element->mGrid->Width,m.L2Py(pom_element->Yt)+pom_element->mGrid->Height,2,(TColor)RGB(200,200,200));vykresleno=true;}
 }
 //---------------------------------------------------------------------------
+//kontrola zde je mGrid mimo obraz, pokud ano vypnutí komponent
+void TForm1::mGrid_mimo_obraz(Cvektory::TElement *E)
+{
+	double presah;
+	int pocet_radku;
+	bool probehlo=false;
+	//////kontrola, zda jsou řádky pod spodní lištou
+	presah=E->mGrid->Top+E->mGrid->Height-scGPPanel_bottomtoolbar->Top;
+	if(presah>0)
+	{
+		pocet_radku=Ceil(presah/(double)E->mGrid->DefaultRowHeight);
+		for (int i=E->mGrid->RowCount-1;i!=0 && i>=E->mGrid->RowCount-1-pocet_radku; i--)
+		{
+			E->mGrid->SetVisibleComponent(1,i,false);
+		}
+		E->mGrid->VisibleComponents=false;
+	}
+	else E->mGrid->VisibleComponents=true;
+	//////kontrola, zda je sloupec s komponenty za levou knihovnou
+	if(E->mGrid->Left+E->mGrid->Columns[0].Width<scSplitView_LEFTTOOLBAR->Width){E->mGrid->SetVisibleComponents(false);E->mGrid->VisibleComponents=false;}else if(!probehlo)E->mGrid->VisibleComponents=true;//pokud jsou komponenty z malé části zakryté
+	//////kontrola horní lišta
+	presah=scGPPanel_mainmenu->Height-E->mGrid->Top;
+	pocet_radku=Ceil(presah/(double)E->mGrid->DefaultRowHeight);
+	if(pocet_radku>1)
+	{
+		for (int i=1;i<=E->mGrid->RowCount-1 && i<pocet_radku; i++)
+		{
+		  E->mGrid->SetVisibleComponent(1,i,false);
+		}
+		E->mGrid->VisibleComponents=false;
+	}else if(!probehlo)E->mGrid->VisibleComponents=true;
+}
+//---------------------------------------------------------------------------
 void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
 					int X, int Y)
 {
@@ -2754,8 +2788,8 @@ void TForm1::getJobID(int X, int Y)
 			//citelná oblast kříže pro posun
 			if(m.L2Px(F->pom_temp->Xp)-20<X && X<m.L2Px(F->pom_temp->Xp) && m.L2Py(F->pom_temp->Yp)>Y && Y>m.L2Py(F->pom_temp->Yp)-15)JID=-9;
 		}
-  	if(JID==-1)//pokud nebyla tabulka pohonu nalezena zkouší hledat další aktivní prvky náhledu
-  	{
+		if(JID==-1)//pokud nebyla tabulka pohonu nalezena zkouší hledat další aktivní prvky náhledu
+		{
   		//dále TABULKY ELEMENTŮ
   		pom_element=F->d.v.najdi_tabulku(pom_temp,m.P2Lx(X),m.P2Ly(Y));
   		if(pom_element!=NULL && pom_temp->zobrazit_mGrid)//možné měnit rozmístění a rozměry a tabulka nalezena, tzn. klik či přejetí myší přes tabulku
@@ -2775,11 +2809,11 @@ void TForm1::getJobID(int X, int Y)
   					else if(pom_temp->uzamknout_nahled==false)JID=1000+IdxRow;//řádky bez odkazu možné posouvat tabulku je možné pouze při odemčeném náhledu
   				}
   				else if(pom_temp->uzamknout_nahled==false)JID=2000+IdxRow;//řádky v druhém a dalších sloupcích
-  			}
+				}
   		}
   		else//tabulka nenalezena, takže zkouší najít ELEMENT
-  		{
-  			pom_element=NULL;
+			{
+				pom_element=NULL;
   			if(pom_temp->uzamknout_nahled==false)pom_element=F->d.v.najdi_element(pom_temp,m.P2Lx(X),m.P2Ly(Y));//pouze pokud je možné měnit rozmístění a rozměry,nutné jako samostatná podmínka
   			if(pom_element!=NULL)//element nalezen, tzn. klik či přejetí myší přes elemement nikoliv tabulku
   			{
@@ -2844,8 +2878,7 @@ void TForm1::getJobID(int X, int Y)
 				short PtInKota_komory=d.v.PtInKota_komory(pom_temp,X,Y);
 				if(PtInKota_komory==0 && pom_komora!=NULL)JID=10+pom_komora->n;//oblast kóty - posun kóty
 				if(PtInKota_komory==1 && pom_komora!=NULL)JID=(10+pom_komora->n)*(-1);//hodnota kóty
-  		}
-
+			}
 		}
 	}
 	else//pro schéma, zjišťování jidů pro body a úsečky
@@ -2902,7 +2935,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
   	}
   	int puvJID=JID;//záloha původního JID
   	Cvektory::TElement *pom_element_puv=pom_element;//pouze ošetření, aby neproblikával mGrid elementu, při přejíždění přes element
-  	Cvektory::TKomora *pom_komora_puv=pom_komora;
+		Cvektory::TKomora *pom_komora_puv=pom_komora;
   	getJobID(X,Y);//zjištění aktuálního JID
   	if(puvJID!=JID || pom_element_puv!=pom_element || pom_komora_puv!=pom_komora)//pokud došlo ke změně JID, nebo změně elementu bez změny JID (např. situace dva roboti vedle sebe nebo rychlý přesun), jinak nemá smysl řešit
 		{
@@ -2969,9 +3002,9 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
   		//if(!refresh_mGrid/* && !nabuffrovano*/){d.nabuffrovat_mGridy();nabuffrovano=true;}
   		//d.nabuffrovat_mGridy(pom_element->mGrid);
 			//if(!refresh_mGrid)Memo("false");else Memo("true");
-  		if(element_id!=-1 && Akce !=ADD){refresh_mGrid=true;element_id=-1;}//mazání eid po vkládání, podmínka nutná ke správnému vykreslení mgridů
+			if(element_id!=-1 && Akce !=ADD){refresh_mGrid=true;element_id=-1;}//mazání eid po vkládání, podmínka nutná ke správnému vykreslení mgridů
 			REFRESH();
-  		//refresh_mGrid=true;
+			//refresh_mGrid=true;
 		}
 
   	////oblasti poznámek pod čarou - NOTE, nejdou přes JID
@@ -3049,6 +3082,7 @@ void TForm1::deaktivace_zamerovace()
 //nastavení zobrazení popUPmenu a jeho volání včetně pozice
 void TForm1::onPopUP(int X, int Y)
 {
+  if(Screen->Cursor!=standard)kurzor(standard);//ošetření proti zůstávání kurzoru
 	//výchozí skrytí všech položek, další postup je založen na postupném odkrývání a zvětšování panelu UP nebo DOWN
 	close_all_items_popUPmenu();
 	PopUPmenu->Item_zobrazit_parametry->FillColor=(TColor)RGB(240,240,240);//workaround, nutnost takto vytáhnout, jinak se položka zvýrazňuje, musí být tady
@@ -3134,10 +3168,9 @@ void TForm1::onPopUP(int X, int Y)
 				PopUPmenu->scLabel_nastavit_parametry->Caption="  Přidat bod";
 				PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 			}
-			if(pom_bod!=NULL || (pom_vyhybka!=NULL && pom_vyhybka->n==pom_temp->n))PopUPmenu->scLabel_posouvat->Caption="  Posun obrysu";
-			else PopUPmenu->scLabel_posouvat->Caption="  Posouvat";
+			if(pom_bod!=NULL || (pom_vyhybka!=NULL && pom_vyhybka->n==pom_temp->n))PopUPmenu->Item_posun_obrysu->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 			////
-			PopUPmenu->Item_posouvat->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
+			//PopUPmenu->Item_posouvat->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
 			PopUPmenu->Item_posunout->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
 			PopUPmenu->Item_priblizit->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
 			PopUPmenu->Item_oddalit->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
@@ -3184,10 +3217,13 @@ void TForm1::onPopUP(int X, int Y)
 				PopUPmenu->scLabel_nastavit_parametry->Caption="  Přidat bod";
 				PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 			}
-			if(pom_bod!=NULL || d.v.PtInBody()!=NULL || pom!=NULL)PopUPmenu->scLabel_posouvat->Caption="  Posun obrysu";
-			else PopUPmenu->scLabel_posouvat->Caption="  Posouvat";
+			if(pom_bod!=NULL || d.v.PtInBody()!=NULL || pom!=NULL)PopUPmenu->Item_posun_obrysu->Visible=true;PopUPmenu->Panel_UP->Height+=34;
+
+			PopUPmenu->Item_otocit_doleva->Visible=true;PopUPmenu->Panel_UP->Height+=34;
+			PopUPmenu->Item_otocit_doprava->Visible=true;PopUPmenu->Panel_UP->Height+=34;
+
 			//zobrazení běžných položek, pozor rozhoduje pořadí
-			PopUPmenu->Item_posouvat->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
+			//PopUPmenu->Item_posouvat->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
 			PopUPmenu->Item_posunout->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
 			PopUPmenu->Item_priblizit->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
 			PopUPmenu->Item_oddalit->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
@@ -3224,6 +3260,10 @@ void TForm1::close_all_items_popUPmenu()
 	PopUPmenu->Item_rychly_export->Visible=false;
 	PopUPmenu->Item_smazat->Visible=false;
 	PopUPmenu->Item_kopirovat->Visible=false;
+  //nové
+	PopUPmenu->Item_otocit_doleva->Visible=false;
+	PopUPmenu->Item_otocit_doprava->Visible=false;
+	PopUPmenu->Item_posun_obrysu->Visible=false;
 
 	PopUPmenu->Panel_UP->Height=0;
 	PopUPmenu->Panel_DOWN->Height=0;
@@ -4070,7 +4110,31 @@ TRect TForm1::vrat_max_oblast(Cvektory::TObjekt *Objekt)
 	//hledání souřadnic v celém layoutu
 	else
 	{
-	//propraveno pro funkci celý pohled!!!!
+		Cvektory::TObjekt *O=d.v.OBJEKTY;
+		while(O!=NULL)
+		{
+			if(O->n>0)//ošetření proti práznému spojáku
+			{
+				//kontrola bodů
+				Cvektory::TBod *B=Objekt->body->dalsi;
+	    	while(B!=NULL)
+	    	{
+					if(m.L2Px(B->X)<ret.left)ret.left=m.L2Px(B->X);
+					if(m.L2Px(B->X)>ret.right)ret.right=m.L2Px(B->X);
+					if(m.L2Py(B->Y)<ret.top)ret.top=m.L2Py(B->Y);
+					if(m.L2Py(B->Y)>ret.bottom)ret.bottom=m.L2Py(B->Y);
+	    		B=B->dalsi;
+				}
+				delete B;B=NULL;
+				//kontrola názvu
+				if(m.L2Px(O->Xt)<ret.left)ret.left=m.L2Px(O->Xt);
+				if(m.L2Px(O->Xt)>ret.right)ret.right=m.L2Px(O->Xt);
+				if(m.L2Py(O->Yt)<ret.top)ret.top=m.L2Py(O->Yt);
+				if(m.L2Py(O->Yt)>ret.bottom)ret.bottom=m.L2Py(O->Yt);
+			}  Memo(O->n);
+			O=O->dalsi;   Memo(O->n);
+		}
+		delete O,O=NULL;
   }
 	return ret;
 }
@@ -4079,41 +4143,50 @@ TRect TForm1::vrat_max_oblast(Cvektory::TObjekt *Objekt)
 TRect TForm1::souradnice_LO(Cvektory::TElement *E)
 {
 	double x1,x2,y1,y2; TRect ret;
-	switch((int)pom_temp->orientace)
+	//pouze pro kontinuální
+	if(E->eID==7 || E->eID==9 || E->eID==11 || E->eID==13 || E->eID==15 || E->eID==17 || E->eID==101 || E->eID==103 || E->eID==105 || E->eID==107)
 	{
-		case 0:
-		{
-			ret.left=ret.right=m.L2Px(E->X-2);
-			if(E->LO2>0)ret.top=m.L2Py(E->Y+E->LO2+(E->OTOC_delka)/2.0+E->LO_pozice);
-			else ret.top=m.L2Py(E->Y+(E->LO1+E->LO2)/2.0+E->LO_pozice);
-			if(E->LO2>0)ret.bottom=m.L2Py(E->Y-E->LO1-(E->OTOC_delka)/2.0+E->LO_pozice);
-			else ret.bottom=m.L2Py(E->Y-(E->LO1)/2.0+E->LO_pozice);
-		}break;
-		case 90:
-		{
-			ret.top=ret.bottom=m.L2Py(E->Y+2);
-			if(E->LO2>0)ret.right=m.L2Px(E->X+E->LO2+(E->OTOC_delka)/2.0+E->LO_pozice);
-			else ret.right=m.L2Px(E->X+(E->LO1+E->LO2)/2.0+E->LO_pozice);
-			if(E->LO2>0)ret.left=m.L2Px(E->X-E->LO1-(E->OTOC_delka)/2.0+E->LO_pozice);
-			else ret.left=m.L2Px(E->X-(E->LO1)/2.0+E->LO_pozice);
-		}break;
-		case 180:
-		{
-			ret.left=ret.right=m.L2Px(E->X+2);
-			if(E->LO2>0)ret.bottom=m.L2Py(E->Y-E->LO2-(E->OTOC_delka)/2.0+E->LO_pozice);
-			else ret.bottom=m.L2Py(E->Y-(E->LO1+E->LO2)/2.0+E->LO_pozice);
-			if(E->LO2>0)ret.top=m.L2Py(E->Y+E->LO1+(E->OTOC_delka)/2.0+E->LO_pozice);
-			else ret.top=m.L2Py(E->Y+(E->LO1)/2.0+E->LO_pozice);
-		}break;
-		case 270:
-		{
-			ret.top=ret.bottom=m.L2Py(E->Y+2);
-			if(E->LO2>0)ret.left=m.L2Px(E->X-E->LO2-(E->OTOC_delka)/2.0+E->LO_pozice);
-			else ret.left=m.L2Px(E->X-(E->LO1+E->LO2)/2.0+E->LO_pozice);
-			if(E->LO2>0)ret.right=m.L2Px(E->X+E->LO1+(E->OTOC_delka)/2.0+E->LO_pozice);
-			else ret.right=m.L2Px(E->X+(E->LO1)/2.0+E->LO_pozice);
-		}break;
+  	switch((int)pom_temp->orientace)
+  	{
+  		case 0:
+  		{
+  			ret.left=ret.right=m.L2Px(E->X-2);
+  			if(E->LO2>0)ret.top=m.L2Py(E->Y+E->LO2+(E->OTOC_delka)/2.0+E->LO_pozice);
+  			else ret.top=m.L2Py(E->Y+(E->LO1+E->LO2)/2.0+E->LO_pozice);
+  			if(E->LO2>0)ret.bottom=m.L2Py(E->Y-E->LO1-(E->OTOC_delka)/2.0+E->LO_pozice);
+  			else ret.bottom=m.L2Py(E->Y-(E->LO1)/2.0+E->LO_pozice);
+  		}break;
+  		case 90:
+  		{
+  			ret.top=ret.bottom=m.L2Py(E->Y+2);
+  			if(E->LO2>0)ret.right=m.L2Px(E->X+E->LO2+(E->OTOC_delka)/2.0+E->LO_pozice);
+  			else ret.right=m.L2Px(E->X+(E->LO1+E->LO2)/2.0+E->LO_pozice);
+  			if(E->LO2>0)ret.left=m.L2Px(E->X-E->LO1-(E->OTOC_delka)/2.0+E->LO_pozice);
+  			else ret.left=m.L2Px(E->X-(E->LO1)/2.0+E->LO_pozice);
+  		}break;
+  		case 180:
+  		{
+  			ret.left=ret.right=m.L2Px(E->X+2);
+  			if(E->LO2>0)ret.bottom=m.L2Py(E->Y-E->LO2-(E->OTOC_delka)/2.0+E->LO_pozice);
+  			else ret.bottom=m.L2Py(E->Y-(E->LO1+E->LO2)/2.0+E->LO_pozice);
+  			if(E->LO2>0)ret.top=m.L2Py(E->Y+E->LO1+(E->OTOC_delka)/2.0+E->LO_pozice);
+  			else ret.top=m.L2Py(E->Y+(E->LO1)/2.0+E->LO_pozice);
+  		}break;
+  		case 270:
+  		{
+  			ret.top=ret.bottom=m.L2Py(E->Y+2);
+				if(E->LO2>0)ret.left=m.L2Px(E->X-E->LO2-(E->OTOC_delka)/2.0+E->LO_pozice);
+  			else ret.left=m.L2Px(E->X-(E->LO1+E->LO2)/2.0+E->LO_pozice);
+  			if(E->LO2>0)ret.right=m.L2Px(E->X+E->LO1+(E->OTOC_delka)/2.0+E->LO_pozice);
+  			else ret.right=m.L2Px(E->X+(E->LO1)/2.0+E->LO_pozice);
+  		}break;
+  	}
 	}
+	else//element bez lakovacího okna
+	{
+		ret.left=ret.right=m.L2Px(E->X);
+		ret.top=ret.bottom=m.L2Px(E->Y);
+  }
 	return ret;
 }
 //---------------------------------------------------------------------------
@@ -6928,6 +7001,46 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 
 }
 //---------------------------------------------------------------------------
+void __fastcall TForm1::NastavitparametryClick1Click(TObject *Sender)
+{
+	if(MOD==SCHEMA && pom_bod_temp==NULL)NP_input();
+	if(pom_bod_temp!=NULL && pom_temp==NULL && pom==NULL)//přidání bodu haly
+	{
+		if(pom_bod_temp->n!=1)d.v.vloz_bod(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,pom,pom_bod_temp->predchozi);
+		else d.v.vloz_bod(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,pom);
+		REFRESH();
+	}
+	if(pom_temp!=NULL && pom_komora_temp!=NULL)//změna typu kabiny
+	{
+		if(pom_komora_temp->typ==0)pom_komora_temp->typ=1;
+		else pom_komora_temp->typ=0;
+		refresh_mGrid=false;
+		REFRESH();
+		refresh_mGrid=true;
+		nahled_ulozit(true);
+	}
+	if(pom_temp!=NULL && pom_vyhybka!=NULL && pom_temp->n!=pom_vyhybka->n)//otevírání náhledu z náhledu, přechot na editaci jiného objektu
+	{
+		Cvektory::TObjekt *Objekt=pom_vyhybka;//pom_vyhybka použit z důvodu, že v této chvíli je prázdný a nevyužitý, musí se ukládat do lokální proměnné, protože je vynulován při volaní metody vse_odstranit (spuštěno uzavřením starého náhledu)
+		KonecClick(this);//ukončení aktuálního náhledu
+		if(MOD==SCHEMA)//pokud byl uzavčen starý náhled (uložit,storno,zůstat na náhledu)
+		{
+			pom=Objekt;//nastavení ukazatele na nově editovaný objekt
+			NP_input();//otevření nového
+		}
+		Objekt=NULL;delete Objekt;
+	}
+	if(pom_temp!=NULL && pom_bod_temp!=NULL)//přidání bodu objektu
+	{
+		if(pom_bod_temp->n!=1)d.v.vloz_bod(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,pom_temp,pom_bod_temp->predchozi);
+		else d.v.vloz_bod(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,pom_temp);
+		refresh_mGrid=false;
+		REFRESH();
+		refresh_mGrid=true;
+		nahled_ulozit(true);
+	}
+}
+//---------------------------------------------------------------------------
 //podpůrná metoda řeší vstupní část dat, vyseparováno, z důvodu toho, že z GAPO aktulizauji případně spuštěné PO a nemohu volat NP, protože to v sobě obsahu ShowModal - vedlo k chybě, nutno řešit převody jednotek
 void TForm1::NPin()
 {
@@ -8719,8 +8832,8 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-//	 TRect El_1=souradnice_LO(pom_temp->elementy->dalsi),El_2=souradnice_LO(pom_temp->elementy->dalsi->dalsi);
-//	 d.line(Canvas,El_1.left,El_1.bottom,El_2.left,El_2.top);
+	TRect A=vrat_max_oblast();
+	Canvas->Rectangle(A.left,A.top,A.right,A.bottom);
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -9692,7 +9805,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		scGPSwitch_robot_clovek->Visible=false;
 		scGPPanel_pomocn_proSwitch->Visible=false;
 
-    Schema->Down=false;//musí zde být, zavírání přes tlačítko layout by jinak nebylo plně funkční!!
+		Schema->Down=false;//musí zde být, zavírání přes tlačítko layout by jinak nebylo plně funkční!!
 		Schema->Down=true;
 		//REFRESH(); //- asi netřeba  asi vyvolává výše uvedený on_change_zoom_change_scGPTrackBar()
 		DrawGrid_knihovna->Visible=true;

@@ -1496,47 +1496,55 @@ void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt)
 	{
 		double azimut=0;
 		azimut=m.Rt90(m.azimut(Objekt->predchozi->elementy->predchozi->geo.X4,Objekt->predchozi->elementy->predchozi->geo.Y4,Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1));
-		double rotace=Objekt->orientace-azimut;
-		if(rotace!=0)
+		rotuj_objekt(Objekt,Objekt->orientace-azimut);
+	}
+}
+////---------------------------------------------------------------------------
+//orotuje objekt o danou rotaci
+void Cvektory::rotuj_objekt(TObjekt *Objekt, double rotace)
+{
+	if(rotace!=0)
+	{
+		double azimut=Objekt->orientace-rotace;
+		if(azimut<0)azimut=270;//ošetření proti přetotočení 
+		if(azimut==360)azimut=0;//ošetření proti přetotočení
+		TPointD Bod;
+		////rotace kabiny-polygonu
+		rotuj_body(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,rotace,Objekt);
+		////rotace elementů
+		TElement *E=Objekt->elementy->dalsi;//objekt má vždy element (zarážka)
+		while(E!=NULL)
 		{
-			TPointD Bod;
-      ////rotace kabiny-polygonu
-			rotuj_body(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,rotace,Objekt);
-			////rotace elementů
-			TElement *E=Objekt->elementy->dalsi;//objekt má vždy element (zarážka)
-    	while(E!=NULL)
+			E->orientace-=rotace;//zapsání nové orientace do elementu
+			//souřadnice elementu
+			Bod=m.rotace(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,E->X,E->Y,rotace);
+			E->X=Bod.x;E->Y=Bod.y;
+			//souřadnice tabulky + kontrola zda je vytvořená
+			if(E->Xt!=-100)
 			{
-				E->orientace-=rotace;//zapsání nové orientace do elementu
-				//souřadnice elementu
-				Bod=m.rotace(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,E->X,E->Y,rotace);
-				E->X=Bod.x;E->Y=Bod.y;
-        //souřadnice tabulky + kontrola zda je vytvořená
-				if(E->Xt!=-100)
-				{
-					Bod=m.rotace(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,E->Xt,E->Yt,rotace);
-					E->Xt=Bod.x;E->Yt=Bod.y;
-				}
-				//geometrie elementu
-				Bod=m.rotace(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,E->geo.X1,E->geo.Y1,rotace);
-				E->geo.X1=Bod.x;E->geo.Y1=Bod.y;
-				Bod=m.rotace(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,E->geo.X2,E->geo.Y2,rotace);
-				E->geo.X2=Bod.x;E->geo.Y2=Bod.y;
-				Bod=m.rotace(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,E->geo.X3,E->geo.Y3,rotace);
-				E->geo.X3=Bod.x;E->geo.Y3=Bod.y;
-				Bod=m.rotace(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,E->geo.X4,E->geo.Y4,rotace);
-				E->geo.X4=Bod.x;E->geo.Y4=Bod.y;
-    		E=E->dalsi;
-    	}
-			delete E;E=NULL;
-			//rotace nadpisu
-			switch((int)azimut)
-			{
-				case 0:Objekt->Xt=m.P2Lx(F->vrat_max_oblast(Objekt).left);Objekt->Yt=Objekt->elementy->predchozi->geo.Y4-(Objekt->elementy->predchozi->geo.Y4-Objekt->elementy->dalsi->geo.Y1)/2.0;break;
-				case 90:case 270:Objekt->Xt=Objekt->elementy->predchozi->geo.X4-(Objekt->elementy->predchozi->geo.X4-Objekt->elementy->dalsi->geo.X1)/2.0;Objekt->Yt=m.P2Ly(F->vrat_max_oblast(Objekt).top);break;
-				case 180:Objekt->Xt=m.P2Lx(F->vrat_max_oblast(Objekt).right);Objekt->Yt=Objekt->elementy->predchozi->geo.Y4-(Objekt->elementy->predchozi->geo.Y4-Objekt->elementy->dalsi->geo.Y1)/2.0;break;
+				Bod=m.rotace(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,E->Xt,E->Yt,rotace);
+				E->Xt=Bod.x;E->Yt=Bod.y;
 			}
-			Objekt->orientace=azimut;
+			//geometrie elementu
+			Bod=m.rotace(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,E->geo.X1,E->geo.Y1,rotace);
+			E->geo.X1=Bod.x;E->geo.Y1=Bod.y;
+			Bod=m.rotace(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,E->geo.X2,E->geo.Y2,rotace);
+			E->geo.X2=Bod.x;E->geo.Y2=Bod.y;
+			Bod=m.rotace(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,E->geo.X3,E->geo.Y3,rotace);
+			E->geo.X3=Bod.x;E->geo.Y3=Bod.y;
+			Bod=m.rotace(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,E->geo.X4,E->geo.Y4,rotace);
+			E->geo.X4=Bod.x;E->geo.Y4=Bod.y;
+			E=E->dalsi;
 		}
+		delete E;E=NULL;
+		//rotace nadpisu
+		switch((int)azimut)
+		{
+			case 0:Objekt->Xt=m.P2Lx(F->vrat_max_oblast(Objekt).left);Objekt->Yt=Objekt->elementy->predchozi->geo.Y4-(Objekt->elementy->predchozi->geo.Y4-Objekt->elementy->dalsi->geo.Y1)/2.0;break;
+			case 90:case 270:Objekt->Xt=Objekt->elementy->predchozi->geo.X4-(Objekt->elementy->predchozi->geo.X4-Objekt->elementy->dalsi->geo.X1)/2.0;Objekt->Yt=m.P2Ly(F->vrat_max_oblast(Objekt).top);break;
+			case 180:Objekt->Xt=m.P2Lx(F->vrat_max_oblast(Objekt).right);Objekt->Yt=Objekt->elementy->predchozi->geo.Y4-(Objekt->elementy->predchozi->geo.Y4-Objekt->elementy->dalsi->geo.Y1)/2.0;break;
+		}
+		Objekt->orientace=azimut;
 	}
 }
 ////---------------------------------------------------------------------------

@@ -360,6 +360,7 @@ __published:	// IDE-managed Components
 	void __fastcall RzToolButton9Click(TObject *Sender);
 	void __fastcall RzToolButton11Click(TObject *Sender);
 	void __fastcall Smazat1Click(TObject *Sender);
+	void __fastcall NastavitparametryClick1Click(TObject *Sender);
 	void __fastcall RzStatusPane5Click(TObject *Sender);
 	void __fastcall Edit_takt_timeChange(TObject *Sender);
 	void __fastcall Edit_pocet_vozikuChange(TObject *Sender);
@@ -618,6 +619,7 @@ private:
 	void vytvor_edit();//vytvoøí edit na místì hlavièky tabulky, slouží ke zmìnì názvu elementu
 	void smaz_edit(bool refresh=true);//smaže edit, který sloužil pro zmìnu názvu elementu a nový název zapíše do elementu, defaultnì provede refresh, pokud není pøedáno parametrem jinak
 	void vykresli_spojinici_EmGrid(TCanvas *Canv,Cvektory::TElement *E);//vykreslí spojnici mezi tabulkou a elementem z nejbližšího rohu tabulky
+  void mGrid_mimo_obraz(Cvektory::TElement *E);//kontrola zde je mGrid mimo obraz, pokud ano vypnutí komponent
 	void nacti_podklad(TCanvas *Canv);
 	unsigned short load_language(Tlanguage language);
 
@@ -750,7 +752,7 @@ public:		// User declarations
 	void tab_pohon_COMBO (int index);//0=naètení pohonù do COMBA, 1=pøiøazení pohonu kabinì
   void aktualizace_ComboPohon ();
 	short RO; short ROs; short ROst;short ROsts;short Rotace_symbolu_minula;
-	TRect vrat_max_oblast(Cvektory::TObjekt *Objekt);//vrací max a min hodnoty x a y souøadnic, všecho v layout(elementù, objektù), nebo parametrem Objekt lze hledat max souøadnice v jednom objektu
+	TRect vrat_max_oblast(Cvektory::TObjekt *Objekt=NULL);//vrací max a min hodnoty x a y souøadnic, všecho v layout(elementù, objektù), nebo parametrem Objekt lze hledat max souøadnice v jednom objektu
 	double inLO  (double inLO);
 	double outLO (double outLO);
   double inPT  (double inPT);

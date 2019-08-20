@@ -53,6 +53,15 @@ __published:	// IDE-managed Components
 	TscGPPanel *Panel_UP;
 	TscGPPanel *Panel_DOWN;
 	TscLabel *scLabel_smazat;
+	TscGPPanel *Item_posun_obrysu;
+	TscLabel *scLabel_posun_obrysu;
+	TscGPGlyphButton *GlyphButton_posun_obrysu;
+	TscGPPanel *Item_otocit_doleva;
+	TscLabel *scLabel_otocit_doleva;
+	TscGPGlyphButton *GlyphButton_otocit_doleva;
+	TscGPPanel *Item_otocit_doprava;
+	TscLabel *scLabel_otocit_doprava;
+	TscGPGlyphButton *GlyphButton_otocit_doprava;
 	void __fastcall scLabel_smazatClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall scLabel_zobrazit_parametryMouseEnter(TObject *Sender);
@@ -112,6 +121,21 @@ __published:	// IDE-managed Components
 	void __fastcall GlyphButton_kopirovatMouseLeave(TObject *Sender);
 	void __fastcall scLabel_kopirovatMouseEnter(TObject *Sender);
 	void __fastcall scLabel_smazatLeave(TObject *Sender);
+	void __fastcall scLabel_otocit_dopravaMouseEnter(TObject *Sender);
+	void __fastcall scLabel_otocit_dopravaMouseLeave(TObject *Sender);
+	void __fastcall scLabel_otocit_dopravaClick(TObject *Sender);
+	void __fastcall GlyphButton_otocit_dopravaMouseEnter(TObject *Sender);
+	void __fastcall GlyphButton_otocit_dopravaMouseLeave(TObject *Sender);
+	void __fastcall scLabel_otocit_dolevaClick(TObject *Sender);
+	void __fastcall scLabel_otocit_dolevaMouseEnter(TObject *Sender);
+	void __fastcall scLabel_otocit_dolevaMouseLeave(TObject *Sender);
+	void __fastcall GlyphButton_otocit_dolevaMouseEnter(TObject *Sender);
+	void __fastcall GlyphButton_otocit_dolevaMouseLeave(TObject *Sender);
+	void __fastcall scLabel_posun_obrysuClick(TObject *Sender);
+	void __fastcall scLabel_posun_obrysuMouseEnter(TObject *Sender);
+	void __fastcall scLabel_posun_obrysuMouseLeave(TObject *Sender);
+	void __fastcall GlyphButton_posun_obrysuMouseEnter(TObject *Sender);
+	void __fastcall GlyphButton_posun_obrysuMouseLeave(TObject *Sender);
 private:	// User declarations
 	TColor clBg,clAcBg,clAcBg2,clGlyph,clAcGlyph;
 	void top_positon(int top);//hlídání horní pozice, je-li daná komponenta horní
