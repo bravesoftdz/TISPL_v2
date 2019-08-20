@@ -4373,22 +4373,20 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			  		E->mGrid->SetVisibleComponents(false);
 			  		E->mGrid->Left=m.L2Px(E->Xt);//kvůli případnému přesouvání tabulky
 			  		E->mGrid->Top=m.L2Py(E->Yt);//kvůli případnému přesouvání tabulky
-			  		E->mGrid->Show(canv);    //F->Memo(0);
+						E->mGrid->Show(canv);
 			  	}
-			  	else
-			  	{     //F->Memo(1);
+					else
+					{
 			  		if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
 			  		{
 			  			E->mGrid->Redraw=true;
-			  			//E->mGrid->Buffer(false);
-			  			E->mGrid->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování
-			  			//možná zde ještě update pokud byla komponenta skyta
-			  			E->mGrid->VisibleComponents=true;//stačí volat toto, protože se pomocí Show cyklem všechny komponenty
+							E->mGrid->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak E->mGrid->Buffer(false);
+							if(E->mGrid->VisibleComponents>-1)E->mGrid->VisibleComponents=true;//stačí volat toto, protože se pomocí Show (resp. Draw-SetCompontens-Set...) cyklem všechny komponenty na základě tohoto zobrazí pokud je nastaveno na -1 tak se při překreslování zohlední individuální nastavení komponent (z tohoto stavu je však pro další použítí třeba vrátit do stavu 0 nebo 1)
 							E->mGrid->Left=m.L2Px(E->Xt);
 							E->mGrid->Top=m.L2Py(E->Yt);
 			  			E->mGrid->Show(canv);
 			  		}
-			  		else//pokud ne, je třeba skrýt komponenty
+						else//pokud ne, je třeba skrýt všechny komponenty (posun obrazu PAN MOVE či skryté mGridy)
 			  		{
 			  			E->mGrid->SetVisibleComponents(false);
 			  		}
@@ -4397,7 +4395,6 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			}
 			E=NULL;delete E;
 		}
-				 //	F->Memo("--------------------");
 		////tabulka pohonu
 		if(F->PmG!=NULL)
 		{
@@ -4407,8 +4404,6 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 				F->PmG->Redraw=false;
 				F->PmG->Left=m.L2Px(F->pom_temp->Xp);
 				F->PmG->Top=m.L2Py(F->pom_temp->Yp);
-				//F->PmG->Left=oblast_kabiny.right+30;
-				//F->PmG->Top=oblast_kabiny.top-F->PmG->Height-30;
 				F->PmG->SetVisibleComponents(false);
 				F->PmG->Show(canv);
 			}
@@ -4417,13 +4412,10 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 				if(F->pom_temp->zobrazit_mGrid &&  F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
 				{
 					F->PmG->Redraw=true;
-					//F->PmG->Buffer(false);
-					F->PmG->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování
-					F->PmG->VisibleComponents=true;//stačí volat toto, protože se pomocí Show cyklem všechny komponenty
+					F->PmG->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak F->PmG->Buffer(false);
+					if(F->PmG->VisibleComponents>-1)F->PmG->VisibleComponents=true;//stačí volat toto, protože se pomocí Show (resp. Draw-SetCompontens-Set...) cyklem všechny komponenty, pokud je nastaveno na -1 tak se při překreslování zohlední individuální nastavení komponent (z tohoto stavu je však pro další použítí třeba vrátit do stavu 0 nebo 1)
 					F->PmG->Left=m.L2Px(F->pom_temp->Xp);
 					F->PmG->Top=m.L2Py(F->pom_temp->Yp);
-					//F->PmG->Left=oblast_kabiny.right+30;
-					//F->PmG->Top=oblast_kabiny.top-F->PmG->Height-30;
 					F->PmG->Show(canv);
 				}
 				else//pokud ne, je třeba skrýt komponenty
