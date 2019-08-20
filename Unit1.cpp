@@ -2604,30 +2604,32 @@ void TForm1::mGrid_mimo_obraz(Cvektory::TElement *E)
 	int pocet_radku;
 	bool probehlo=false;
 	//////kontrola, zda jsou řádky pod spodní lištou
-	presah=E->mGrid->Top+E->mGrid->Height-scGPPanel_bottomtoolbar->Top;
-	if(presah>0)
-	{
-		pocet_radku=Ceil(presah/(double)E->mGrid->DefaultRowHeight);
-		for (int i=E->mGrid->RowCount-1;i!=0 && i>=E->mGrid->RowCount-1-pocet_radku; i--)
-		{
-			E->mGrid->SetVisibleComponent(1,i,false);
-		}
-		E->mGrid->VisibleComponents=false;
-	}
-	else E->mGrid->VisibleComponents=true;
+//	presah=E->mGrid->Top+E->mGrid->Height-scGPPanel_bottomtoolbar->Top;
+//	if(presah>0)
+//	{
+//		pocet_radku=Ceil(presah/(double)E->mGrid->DefaultRowHeight);
+//		for (int i=E->mGrid->RowCount-1;i!=0 && i>=E->mGrid->RowCount-1-pocet_radku; i--)
+//		{
+//			E->mGrid->SetVisibleComponent(1,i,false);
+//		}
+//		E->mGrid->VisibleComponents=-1;//individuální nastavenén zobrazení
+//		probehlo=true;
+//	}
 	//////kontrola, zda je sloupec s komponenty za levou knihovnou
-	if(E->mGrid->Left+E->mGrid->Columns[0].Width<scSplitView_LEFTTOOLBAR->Width){E->mGrid->SetVisibleComponents(false);E->mGrid->VisibleComponents=false;}else if(!probehlo)E->mGrid->VisibleComponents=true;//pokud jsou komponenty z malé části zakryté
+	if(E->mGrid->Left+E->mGrid->Columns[0].Width<scSplitView_LEFTTOOLBAR->Width){E->mGrid->SetVisibleComponents(false);E->mGrid->VisibleComponents=-1;probehlo=true;Memo("skrýt vše");}
 	//////kontrola horní lišta
-	presah=scGPPanel_mainmenu->Height-E->mGrid->Top;
-	pocet_radku=Ceil(presah/(double)E->mGrid->DefaultRowHeight);
-	if(pocet_radku>1)
-	{
-		for (int i=1;i<=E->mGrid->RowCount-1 && i<pocet_radku; i++)
-		{
-		  E->mGrid->SetVisibleComponent(1,i,false);
-		}
-		E->mGrid->VisibleComponents=false;
-	}else if(!probehlo)E->mGrid->VisibleComponents=true;
+//	presah=scGPPanel_mainmenu->Height-E->mGrid->Top;
+//	pocet_radku=Ceil(presah/(double)E->mGrid->DefaultRowHeight);
+//	if(pocet_radku>1)
+//	{
+//		for (int i=1;i<=E->mGrid->RowCount-1 && i<pocet_radku; i++)
+//		{
+//			E->mGrid->SetVisibleComponent(1,i,false);
+//		}
+//		E->mGrid->VisibleComponents=-1;//individuální nastavenén zobrazení
+//		probehlo=true;
+//	}
+//	if(!probehlo)E->mGrid->VisibleComponents=1;//vše zobrazeno
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
@@ -8832,8 +8834,9 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	TRect A=vrat_max_oblast();
-	Canvas->Rectangle(A.left,A.top,A.right,A.bottom);
+	Memo(pom_temp->elementy->dalsi->mGrid->VisibleComponents);
+//	TRect A=vrat_max_oblast();
+//	Canvas->Rectangle(A.left,A.top,A.right,A.bottom);
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
