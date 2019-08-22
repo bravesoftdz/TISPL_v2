@@ -1330,6 +1330,7 @@ void TmGrid::SetImage(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	if(Cell.ShowHint){I->ShowHint=true;I->Hint=Cell.Hint;}
 	I->Font=Cell.Font;
 	if(I->Font->Name=="Roboto Cn")I->Font->Quality=System::Uitypes::TFontQuality::fqAntialiased;else I->Font->Quality=System::Uitypes::TFontQuality::fqDefault;//zapíná AA, pozor může dělat problémy při zvětšování písma, alternativa fqProof či fqClearType
+	I->AutoSize=false;//vhodné jako výchozí stav kvůli menším obrázkům, jinak by se naduplikovaly
 	//vlastník
 	I->Parent=Form;//musí být až na konci
 	I=NULL;delete I;
@@ -1554,8 +1555,6 @@ TscGPImage *TmGrid::createImage(unsigned long Col,unsigned long Row)
 		I->Tag=getTag(Col,Row);//vratí ID tag komponenty,absolutní pořadí v paměti
 		//Cell.Text=I->Tag; ShowMessage(I->Tag);
 		I->Name="mGrid_IMAGE_"+AnsiString(ID)+"_"+AnsiString(I->Tag);
-		I->AutoSize=false;//vhodné jako výchozí stav kvůli menším obrázkům, jinak by se naduplikovaly
-
 		//události
 		I->OnClick=&getTagOnClick;
 		I->OnMouseEnter=&getTagOnMouseEnter;
