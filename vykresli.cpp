@@ -4438,13 +4438,6 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			}
 		}
 	}
-	if(F->mGrid_knihovna!=NULL && F->pom_temp==NULL)//vykreslování tabulky pro přidávání objektů, temp řešení
-	{
-    F->mGrid_knihovna->Redraw=true;
-		F->mGrid_knihovna->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak F->mGrid_knihovna->Buffer(false);
-		if(F->mGrid_knihovna->VisibleComponents>-1)F->mGrid_knihovna->VisibleComponents=true;//stačí volat toto, protože se pomocí Show (resp. Draw-SetCompontens-Set...) cyklem všechny komponenty na základě tohoto zobrazí pokud je nastaveno na -1 tak se při překreslování zohlední individuální nastavení komponent (z tohoto stavu je však pro další použítí třeba vrátit do stavu 0 nebo 1)
-		F->mGrid_knihovna->Show(canv);
-  }
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //pomocná metoda vytvářející rastrové obrazy mGridů, pokud je buffer na NULL, buffrují se všechny tabulky, pokud ne, tak pouze ta z parametru
