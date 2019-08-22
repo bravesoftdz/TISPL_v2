@@ -675,7 +675,7 @@ public:		// User declarations
 	//uklazatele
 	Cvektory::TObjekt *pom,*pom_vyhybka,*pom_temp,*copyObjekt,*posledni_editovany_objekt;
 	Cvektory::TElement *pom_element,*pom_element_temp,*posledni_editovany_element;
-	TmGrid *PmG;//ukazatel na mGridovou tabulku pohonu
+	TmGrid *PmG,*mGrid_knihovna;//ukazatel na mGridovou tabulku pohonu
 	Cvektory::TKomora *pom_komora,*pom_komora_temp;
 	Cvektory::TBod *pom_bod,*pom_bod_temp;
 
