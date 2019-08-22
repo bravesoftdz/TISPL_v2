@@ -3195,9 +3195,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 1174
-      ExplicitTop = -1
-      ExplicitHeight = 29
     end
   end
   object scGPGlyphButton2: TscGPGlyphButton
@@ -3657,6 +3654,274 @@ object Form1: TForm1
         OnMouseWheelDown = DrawGrid_poznamkyMouseWheelDown
         OnMouseWheelUp = DrawGrid_poznamkyMouseWheelUp
       end
+    end
+    object scGPLabel_roboti: TscGPLabel
+      Left = 0
+      Top = 0
+      Width = 168
+      Height = 32
+      Font.Charset = EASTEUROPE_CHARSET
+      Font.Color = 10114859
+      Font.Height = -16
+      Font.Name = 'Roboto'
+      Font.Style = []
+      Font.Quality = fqAntialiased
+      ParentFont = False
+      TabOrder = 5
+      DragForm = False
+      DragTopForm = True
+      ContentMarginLeft = 10
+      ContentMarginRight = 5
+      ContentMarginTop = 7
+      ContentMarginBottom = 5
+      DisabledFontColor = clNone
+      FrameWidth = 0
+      FillColor = clBtnFace
+      FillColorAlpha = 255
+      FillColor2 = clBtnFace
+      FillColor2Alpha = 255
+      FillGradientAngle = 0
+      FrameColor = clBtnText
+      FrameColorAlpha = 40
+      FrameRadius = 0
+      GlowEffect.Enabled = False
+      GlowEffect.Color = clBtnShadow
+      GlowEffect.AlphaValue = 255
+      GlowEffect.GlowSize = 7
+      GlowEffect.Offset = 0
+      GlowEffect.Intensive = True
+      GlowEffect.StyleColors = True
+      AutoSize = False
+      Caption = 'Roboti'
+    end
+    object scGPPanel_pomocn_proSwitch: TscGPPanel
+      Left = 55
+      Top = 6
+      Width = 42
+      Height = 22
+      TabOrder = 6
+      Visible = False
+      BlurBackground = False
+      BlurBackgroundAmount = 5
+      CustomImageIndex = -1
+      DragForm = False
+      DragTopForm = True
+      FillGradientAngle = 0
+      FillGradientBeginAlpha = 0
+      FillGradientEndAlpha = 0
+      FillGradientBeginColorOffset = 0
+      FillGradientEndColorOffset = 0
+      FrameWidth = 0
+      FillColor = clBtnFace
+      FillColorAlpha = 255
+      FillColor2 = clBtnFace
+      FrameColor = clBtnFace
+      FrameColorAlpha = 255
+      FrameRadius = 0
+      ShowCaption = False
+      CaptionGlowEffect.Enabled = False
+      CaptionGlowEffect.Color = clBtnShadow
+      CaptionGlowEffect.AlphaValue = 255
+      CaptionGlowEffect.GlowSize = 7
+      CaptionGlowEffect.Offset = 0
+      CaptionGlowEffect.Intensive = True
+      CaptionGlowEffect.StyleColors = True
+      Color = clBtnFace
+      Caption = 'scGPPanel_pomocn_proSwitch'
+      TransparentBackground = True
+      StorePaintBuffer = True
+      Sizeable = False
+      WallpaperIndex = -1
+      object scGPSwitch_robot_clovek: TscGPSwitch
+        Left = 0
+        Top = 0
+        Width = 40
+        Height = 20
+        Margins.Left = 0
+        Margins.Top = 0
+        Margins.Right = 0
+        Margins.Bottom = 0
+        ParentShowHint = False
+        ShowHint = False
+        TabOrder = 0
+        Animation = True
+        FrameColor = 10114859
+        FrameOnColor = 10114859
+        FramePressedColor = clNone
+        ParentColor = True
+        State = scswOff
+        StyleKind = scswsStyled
+        ThumbColor = 10114859
+        ThumbOnColor = 10114859
+        ThumbPressedColor = 10114859
+        FrameColorAlpha = 255
+        FrameOnColorAlpha = 255
+        FramePressedColorAlpha = 255
+        ThumbColorAlpha = 255
+        ThumbOnColorAlpha = 255
+        ThumbPressedColorAlpha = 255
+        ThumbShadow = False
+        FrameSolid = False
+        FrameOnSolid = False
+        FrameInside = False
+        OnChangeState = scGPSwitch_robot_clovekChangeState
+      end
+    end
+    object scGPLabel_otoce: TscGPLabel
+      Left = 0
+      Top = 224
+      Width = 168
+      Height = 32
+      Font.Charset = EASTEUROPE_CHARSET
+      Font.Color = 10114859
+      Font.Height = -16
+      Font.Name = 'Roboto'
+      Font.Style = [fsBold]
+      Font.Quality = fqAntialiased
+      ParentFont = False
+      TabOrder = 7
+      DragForm = False
+      DragTopForm = True
+      ContentMarginLeft = 10
+      ContentMarginRight = 5
+      ContentMarginTop = 7
+      ContentMarginBottom = 5
+      DisabledFontColor = clNone
+      FrameWidth = 0
+      FillColor = clBtnFace
+      FillColorAlpha = 255
+      FillColor2 = clBtnFace
+      FillColor2Alpha = 255
+      FillGradientAngle = 0
+      FrameColor = clBtnText
+      FrameColorAlpha = 40
+      FrameRadius = 0
+      GlowEffect.Enabled = False
+      GlowEffect.Color = clBtnShadow
+      GlowEffect.AlphaValue = 255
+      GlowEffect.GlowSize = 7
+      GlowEffect.Offset = 0
+      GlowEffect.Intensive = True
+      GlowEffect.StyleColors = True
+      AutoSize = False
+      Caption = 'Oto'#269'e'
+    end
+    object scGPLabel_stop: TscGPLabel
+      Left = 0
+      Top = 315
+      Width = 168
+      Height = 32
+      Font.Charset = EASTEUROPE_CHARSET
+      Font.Color = 10114859
+      Font.Height = -16
+      Font.Name = 'Roboto'
+      Font.Style = [fsBold]
+      Font.Quality = fqAntialiased
+      ParentFont = False
+      TabOrder = 8
+      DragForm = False
+      DragTopForm = True
+      ContentMarginLeft = 10
+      ContentMarginRight = 5
+      ContentMarginTop = 7
+      ContentMarginBottom = 5
+      DisabledFontColor = clNone
+      FrameWidth = 0
+      FillColor = clBtnFace
+      FillColorAlpha = 255
+      FillColor2 = clBtnFace
+      FillColor2Alpha = 255
+      FillGradientAngle = 0
+      FrameColor = clBtnText
+      FrameColorAlpha = 40
+      FrameRadius = 0
+      GlowEffect.Enabled = False
+      GlowEffect.Color = clBtnShadow
+      GlowEffect.AlphaValue = 255
+      GlowEffect.GlowSize = 7
+      GlowEffect.Offset = 0
+      GlowEffect.Intensive = True
+      GlowEffect.StyleColors = True
+      AutoSize = False
+      Caption = 'Stop stanice'
+    end
+    object scGPLabel_geometrie: TscGPLabel
+      Left = 0
+      Top = 398
+      Width = 168
+      Height = 32
+      Font.Charset = EASTEUROPE_CHARSET
+      Font.Color = 10114859
+      Font.Height = -16
+      Font.Name = 'Roboto'
+      Font.Style = [fsBold]
+      Font.Quality = fqAntialiased
+      ParentFont = False
+      TabOrder = 9
+      DragForm = False
+      DragTopForm = True
+      ContentMarginLeft = 10
+      ContentMarginRight = 5
+      ContentMarginTop = 7
+      ContentMarginBottom = 5
+      DisabledFontColor = clNone
+      FrameWidth = 0
+      FillColor = clBtnFace
+      FillColorAlpha = 255
+      FillColor2 = clBtnFace
+      FillColor2Alpha = 255
+      FillGradientAngle = 0
+      FrameColor = clBtnText
+      FrameColorAlpha = 40
+      FrameRadius = 0
+      GlowEffect.Enabled = False
+      GlowEffect.Color = clBtnShadow
+      GlowEffect.AlphaValue = 255
+      GlowEffect.GlowSize = 7
+      GlowEffect.Offset = 0
+      GlowEffect.Intensive = True
+      GlowEffect.StyleColors = True
+      AutoSize = False
+      Caption = 'Geometrie linky'
+    end
+    object scGPLabel_poznamky: TscGPLabel
+      Left = 0
+      Top = 506
+      Width = 168
+      Height = 32
+      Font.Charset = EASTEUROPE_CHARSET
+      Font.Color = 10114859
+      Font.Height = -16
+      Font.Name = 'Roboto'
+      Font.Style = [fsBold]
+      Font.Quality = fqAntialiased
+      ParentFont = False
+      TabOrder = 10
+      DragForm = False
+      DragTopForm = True
+      ContentMarginLeft = 10
+      ContentMarginRight = 5
+      ContentMarginTop = 7
+      ContentMarginBottom = 5
+      DisabledFontColor = clNone
+      FrameWidth = 0
+      FillColor = clBtnFace
+      FillColorAlpha = 255
+      FillColor2 = clBtnFace
+      FillColor2Alpha = 255
+      FillGradientAngle = 0
+      FrameColor = clBtnText
+      FrameColorAlpha = 40
+      FrameRadius = 0
+      GlowEffect.Enabled = False
+      GlowEffect.Color = clBtnShadow
+      GlowEffect.AlphaValue = 255
+      GlowEffect.GlowSize = 7
+      GlowEffect.Offset = 0
+      GlowEffect.Intensive = True
+      GlowEffect.StyleColors = True
+      AutoSize = False
+      Caption = 'Pozn'#225'mky'
     end
   end
   object hl_spojak_zakazky: TButton
@@ -5380,206 +5645,6 @@ object Form1: TForm1
       end
     end
   end
-  object scGPLabel_otoce: TscGPLabel
-    Left = 0
-    Top = 258
-    Width = 168
-    Height = 32
-    Font.Charset = EASTEUROPE_CHARSET
-    Font.Color = 10114859
-    Font.Height = -16
-    Font.Name = 'Roboto'
-    Font.Style = [fsBold]
-    Font.Quality = fqAntialiased
-    ParentFont = False
-    TabOrder = 40
-    Visible = False
-    DragForm = False
-    DragTopForm = True
-    ContentMarginLeft = 10
-    ContentMarginRight = 5
-    ContentMarginTop = 7
-    ContentMarginBottom = 5
-    DisabledFontColor = clNone
-    FrameWidth = 0
-    FillColor = clBtnFace
-    FillColorAlpha = 255
-    FillColor2 = clBtnFace
-    FillColor2Alpha = 255
-    FillGradientAngle = 0
-    FrameColor = clBtnText
-    FrameColorAlpha = 40
-    FrameRadius = 0
-    GlowEffect.Enabled = False
-    GlowEffect.Color = clBtnShadow
-    GlowEffect.AlphaValue = 255
-    GlowEffect.GlowSize = 7
-    GlowEffect.Offset = 0
-    GlowEffect.Intensive = True
-    GlowEffect.StyleColors = True
-    AutoSize = False
-    Caption = 'Oto'#269'e'
-  end
-  object scGPLabel_stop: TscGPLabel
-    Left = 0
-    Top = 349
-    Width = 168
-    Height = 32
-    Font.Charset = EASTEUROPE_CHARSET
-    Font.Color = 10114859
-    Font.Height = -16
-    Font.Name = 'Roboto'
-    Font.Style = [fsBold]
-    Font.Quality = fqAntialiased
-    ParentFont = False
-    TabOrder = 41
-    Visible = False
-    DragForm = False
-    DragTopForm = True
-    ContentMarginLeft = 10
-    ContentMarginRight = 5
-    ContentMarginTop = 7
-    ContentMarginBottom = 5
-    DisabledFontColor = clNone
-    FrameWidth = 0
-    FillColor = clBtnFace
-    FillColorAlpha = 255
-    FillColor2 = clBtnFace
-    FillColor2Alpha = 255
-    FillGradientAngle = 0
-    FrameColor = clBtnText
-    FrameColorAlpha = 40
-    FrameRadius = 0
-    GlowEffect.Enabled = False
-    GlowEffect.Color = clBtnShadow
-    GlowEffect.AlphaValue = 255
-    GlowEffect.GlowSize = 7
-    GlowEffect.Offset = 0
-    GlowEffect.Intensive = True
-    GlowEffect.StyleColors = True
-    AutoSize = False
-    Caption = 'Stop stanice'
-  end
-  object scGPLabel_geometrie: TscGPLabel
-    Left = 0
-    Top = 432
-    Width = 168
-    Height = 32
-    Font.Charset = EASTEUROPE_CHARSET
-    Font.Color = 10114859
-    Font.Height = -16
-    Font.Name = 'Roboto'
-    Font.Style = [fsBold]
-    Font.Quality = fqAntialiased
-    ParentFont = False
-    TabOrder = 42
-    Visible = False
-    DragForm = False
-    DragTopForm = True
-    ContentMarginLeft = 10
-    ContentMarginRight = 5
-    ContentMarginTop = 7
-    ContentMarginBottom = 5
-    DisabledFontColor = clNone
-    FrameWidth = 0
-    FillColor = clBtnFace
-    FillColorAlpha = 255
-    FillColor2 = clBtnFace
-    FillColor2Alpha = 255
-    FillGradientAngle = 0
-    FrameColor = clBtnText
-    FrameColorAlpha = 40
-    FrameRadius = 0
-    GlowEffect.Enabled = False
-    GlowEffect.Color = clBtnShadow
-    GlowEffect.AlphaValue = 255
-    GlowEffect.GlowSize = 7
-    GlowEffect.Offset = 0
-    GlowEffect.Intensive = True
-    GlowEffect.StyleColors = True
-    AutoSize = False
-    Caption = 'Geometrie linky'
-  end
-  object scGPLabel_poznamky: TscGPLabel
-    Left = 0
-    Top = 540
-    Width = 168
-    Height = 32
-    Font.Charset = EASTEUROPE_CHARSET
-    Font.Color = 10114859
-    Font.Height = -16
-    Font.Name = 'Roboto'
-    Font.Style = [fsBold]
-    Font.Quality = fqAntialiased
-    ParentFont = False
-    TabOrder = 43
-    Visible = False
-    DragForm = False
-    DragTopForm = True
-    ContentMarginLeft = 10
-    ContentMarginRight = 5
-    ContentMarginTop = 7
-    ContentMarginBottom = 5
-    DisabledFontColor = clNone
-    FrameWidth = 0
-    FillColor = clBtnFace
-    FillColorAlpha = 255
-    FillColor2 = clBtnFace
-    FillColor2Alpha = 255
-    FillGradientAngle = 0
-    FrameColor = clBtnText
-    FrameColorAlpha = 40
-    FrameRadius = 0
-    GlowEffect.Enabled = False
-    GlowEffect.Color = clBtnShadow
-    GlowEffect.AlphaValue = 255
-    GlowEffect.GlowSize = 7
-    GlowEffect.Offset = 0
-    GlowEffect.Intensive = True
-    GlowEffect.StyleColors = True
-    AutoSize = False
-    Caption = 'Pozn'#225'mky'
-  end
-  object scGPLabel_roboti: TscGPLabel
-    Left = 0
-    Top = 34
-    Width = 168
-    Height = 32
-    Font.Charset = EASTEUROPE_CHARSET
-    Font.Color = 10114859
-    Font.Height = -16
-    Font.Name = 'Roboto'
-    Font.Style = []
-    Font.Quality = fqAntialiased
-    ParentFont = False
-    TabOrder = 45
-    Visible = False
-    DragForm = False
-    DragTopForm = True
-    ContentMarginLeft = 10
-    ContentMarginRight = 5
-    ContentMarginTop = 7
-    ContentMarginBottom = 5
-    DisabledFontColor = clNone
-    FrameWidth = 0
-    FillColor = clBtnFace
-    FillColorAlpha = 255
-    FillColor2 = clBtnFace
-    FillColor2Alpha = 255
-    FillGradientAngle = 0
-    FrameColor = clBtnText
-    FrameColorAlpha = 40
-    FrameRadius = 0
-    GlowEffect.Enabled = False
-    GlowEffect.Color = clBtnShadow
-    GlowEffect.AlphaValue = 255
-    GlowEffect.GlowSize = 7
-    GlowEffect.Offset = 0
-    GlowEffect.Intensive = True
-    GlowEffect.StyleColors = True
-    AutoSize = False
-    Caption = 'Roboti'
-  end
   object scSplitView_MENU: TscSplitView
     Left = 0
     Top = 34
@@ -6800,7 +6865,7 @@ object Form1: TForm1
     Height = 224
     Lines.Strings = (
       'Memo3')
-    TabOrder = 46
+    TabOrder = 41
     Visible = False
   end
   object scGPPanel_bottomtoolbar: TscGPPanel
@@ -6808,7 +6873,7 @@ object Form1: TForm1
     Top = 687
     Width = 1216
     Height = 45
-    TabOrder = 47
+    TabOrder = 42
     Visible = False
     BlurBackground = False
     BlurBackgroundAmount = 5
@@ -7938,104 +8003,33 @@ object Form1: TForm1
       AnimationAcceleration = False
       RotateAnimation = False
       Picture.Data = {
-        0954506E67496D61676589504E470D0A1A0A0000000D49484452000000350000
-        003F0806000000407D8016000000017352474200AECE1CE90000000467414D41
-        0000B18F0BFC6105000000097048597300000EC300000EC301C76FA864000000
-        B54944415478DAEDD7C1098030140451ADC29E2CC4A22CC49EAC424F82089104
-        0DD9CD9F397BD88721E23874D8D87A0028509D05CA25502EC5454DF37AB41E0A
-        AA04B56F8BF471BD7682EA0AE5526CD4F3E6533E8259A8D455AE0A7B45A5DE8E
-        FA5B4BA2EEC353A3739E9141958C5584C543E58E54FB28830205AA12EAEF1FC0
-        96C018A8AF63148E222850A0408102050A14A8C0A8BF02550BD56A00A81A2885
-        4B005478944B71516E817209944BA05C02E51228974E0CED3353A628FF660000
-        000049454E44AE426082}
+        0954506E67496D61676589504E470D0A1A0A0000000D49484452000000410000
+        003F0806000000BFDFA5F4000000017352474200AECE1CE90000000467414D41
+        0000B18F0BFC6105000000097048597300000EC300000EC301C76FA864000001
+        024944415478DAEDD8DB0DC3200C4051678AEE94413A5407E94E9DA291FC5545
+        4020D8C5A07BBF11829307693721D9462F20422008081A080282068280A08120
+        20685D088FFDF51DBD81963EEF6772BF205821E4268FD2D53A4100C100619640
+        F044389F0C911F091784DCD11815C2142177F5A3DF156608BF1BCD4D5633665A
+        8496CD458400C11AA17653D13EA24000612284D24FF2D41C77C7837007C1FA0F
+        9312486A91A5855B8C07A115A1F7E5769EA7F656AEB9083DE341188D503B66E9
+        C701848B31A9421C9120FC09C13B104000010410407040B00A845911560A046F
+        84082F3D10400886304B207821AC12080282068280A0812020682008081A0802
+        827600F26DF84FB9C790A80000000049454E44AE426082}
       PngImage.Data = {
         89504E470D0A1A0A0000000D49484452000000410000003F0806000000BFDFA5
         F4000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
-        00097048597300000EC300000EC301C76FA864000000DC4944415478DAEDD8C1
-        0D82401040D1A10A7BB2108BB2107BB20A4DE6648C4408B33298F7CF84EC3C58
-        204CA198F65E40872004840C4240C82004840C4240C836219CCED7C7DE03ACE9
-        7EBB7C9C174215C2DCC9BBF46D9D102014201C25082311DEDF0C9DB7C41084B9
-        576357885284B9ABDFFDAE2843781D74EE644B8E392CC29AE13A4240A846583A
-        54B78F28081020402841A8FE61B22708840A84AD8BEFB0352040800001020408
-        1020408000E127085541382AC23F0561344287871E0408CD108E12845108FF12
-        84809041080819848090410808198480903D01B9D3884FE60FAB450000000049
-        454E44AE426082}
+        00097048597300000EC300000EC301C76FA864000001024944415478DAEDD8DB
+        0DC3200C4051678AEE94413A5407E94E9DA291FC55454020D8C5A07BBF118293
+        07693721D9462F20422008081A080282068280A0812020685D088FFDF51DBD81
+        963EEF6772BF205821E4268FD2D53A4100C100619640F044389F0C911F091784
+        DCD11815C2142177F5A3DF156608BF1BCD4D5633665A8496CD458400C11AA176
+        53D13EA24000612284D24FF2D41C77C7837007C1FA0F9312486A91A5855B8C07
+        A115A1F7E5769EA7F656AEB9083DE341188D503B66E9C701848B31A9421C9120
+        FC09C13B104000010410407040B00A845911560A046F84082F3D10400886304B
+        207821AC12080282068280A0812020682008081A0802827600F26DF84FB9C790
+        A80000000049454E44AE426082}
       Stretch = True
       Transparent = True
-    end
-  end
-  object scGPPanel_pomocn_proSwitch: TscGPPanel
-    Left = 55
-    Top = 40
-    Width = 42
-    Height = 22
-    TabOrder = 48
-    Visible = False
-    BlurBackground = False
-    BlurBackgroundAmount = 5
-    CustomImageIndex = -1
-    DragForm = False
-    DragTopForm = True
-    FillGradientAngle = 0
-    FillGradientBeginAlpha = 0
-    FillGradientEndAlpha = 0
-    FillGradientBeginColorOffset = 0
-    FillGradientEndColorOffset = 0
-    FrameWidth = 0
-    FillColor = clBtnFace
-    FillColorAlpha = 255
-    FillColor2 = clBtnFace
-    FrameColor = clBtnFace
-    FrameColorAlpha = 255
-    FrameRadius = 0
-    ShowCaption = False
-    CaptionGlowEffect.Enabled = False
-    CaptionGlowEffect.Color = clBtnShadow
-    CaptionGlowEffect.AlphaValue = 255
-    CaptionGlowEffect.GlowSize = 7
-    CaptionGlowEffect.Offset = 0
-    CaptionGlowEffect.Intensive = True
-    CaptionGlowEffect.StyleColors = True
-    Color = clBtnFace
-    Caption = 'scGPPanel_pomocn_proSwitch'
-    TransparentBackground = True
-    StorePaintBuffer = True
-    Sizeable = False
-    WallpaperIndex = -1
-    object scGPSwitch_robot_clovek: TscGPSwitch
-      Left = 0
-      Top = 0
-      Width = 40
-      Height = 20
-      Margins.Left = 0
-      Margins.Top = 0
-      Margins.Right = 0
-      Margins.Bottom = 0
-      ParentShowHint = False
-      ShowHint = False
-      TabOrder = 0
-      Visible = False
-      Animation = True
-      FrameColor = 10114859
-      FrameOnColor = 10114859
-      FramePressedColor = clNone
-      ParentColor = True
-      State = scswOff
-      StyleKind = scswsStyled
-      ThumbColor = 10114859
-      ThumbOnColor = 10114859
-      ThumbPressedColor = 10114859
-      FrameColorAlpha = 255
-      FrameOnColorAlpha = 255
-      FramePressedColorAlpha = 255
-      ThumbColorAlpha = 255
-      ThumbOnColorAlpha = 255
-      ThumbPressedColorAlpha = 255
-      ThumbShadow = False
-      FrameSolid = False
-      FrameOnSolid = False
-      FrameInside = False
-      OnChangeState = scGPSwitch_robot_clovekChangeState
     end
   end
   object Button14: TButton
@@ -8044,7 +8038,7 @@ object Form1: TForm1
     Width = 116
     Height = 25
     Caption = 'ButtonMaKRtesty'
-    TabOrder = 49
+    TabOrder = 43
     Visible = False
     OnClick = Button14Click
     OnKeyDown = FormKeyDown
@@ -8060,7 +8054,7 @@ object Form1: TForm1
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 50
+    TabOrder = 44
     Visible = False
     BorderWidth = 1
     BackgroundStyle = scexbgsPanel
@@ -9045,7 +9039,7 @@ object Form1: TForm1
     Align = alCustom
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 51
+    TabOrder = 45
     TabStop = True
     Visible = False
     OnClick = scGPGlyphButton_definice_zakazekClick
@@ -9143,7 +9137,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118009807EC0710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118009807140810001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10266,7 +10260,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C0101450000099C0930003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010145000009C40930003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000006003000001002000000000000020
       0A00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
