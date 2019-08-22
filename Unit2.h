@@ -12,6 +12,8 @@
 #include "scGPExtControls.hpp"
 #include <Vcl.Mask.hpp>
 #include "TmGrid.h"
+#include "scGPImages.hpp"
+#include "scImageCollection.hpp"
 //---------------------------------------------------------------------------
 class TForm2 : public TForm
 {
@@ -25,6 +27,7 @@ __published:	// IDE-managed Components
 	TButton *Button6;
 	TMemo *Memo1;
 	TButton *Button7;
+	TscGPImageCollection *scGPImageCollection1;
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall Button1Click(TObject *Sender);
 	void __fastcall Button2Click(TObject *Sender);

@@ -39,8 +39,8 @@ class Cvektory
 		double rychlost_do;//maximální pracovní rychlost dopravníku
 		double aRD;//aktuální rychlost dopravníku m/s
 		double roztec;//rozteč palců v m
-		double Rz;//rozestup aktivních palců v m
-		double Rx;//rozestup aktivních palců (počet aktivních palců)
+		double Rz;//rozestup aktivních palců v m                        -asi bude možné odstranit
+		double Rx;//rozestup aktivních palců (počet aktivních palců)    -asi bude možné odstranit
 		struct TPohon *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 		struct TPohon *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
@@ -48,8 +48,8 @@ class Cvektory
 
 	struct TGeometrie//pouze struktura
 	{
-		short typ;//0-linie, 1 oblouk - možná nebude třeba
-		double delka;
+		short typ;//0-linie, 1 oblouk - možná nebude třeba nahrazuje rotační úhel
+		double delka; //může být společné s radiusem
     double radius;
 		double orientace;
     double rotacni_uhel;
