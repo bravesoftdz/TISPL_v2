@@ -292,12 +292,14 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	nastavit_text_popisu_objektu_v_nahledu(canv,1);
 	TextFraming(canv,X,Y,Tn);//záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
 	canv->Font->Orientation=0;//vrácení původní hodnoty rotace canvasu
-	if(F->pom_temp!=NULL &&(F->JID==-6 || F->JID==-7))//vykreslení uchopovacího kříže u textu
+	//vykreslení uchopovacího kříže u textu
+	if(F->pom_temp!=NULL &&(F->JID==-6 || F->JID==-7))
 	{
 		line(canv,m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0),m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn)+20,m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0)-40,m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn)+20);
 		line(canv,m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0)-20,m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn),m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0)-20,m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn)+40);
 	}
-	if(F->pom_temp!=NULL &&(F->JID==4 || F->JID==-9 || (F->JID>=5 && F->JID<=10)))//vykreslení kříže posuvu u tabulky pohonu, natrvalo
+	//vykreslení kříže posuvu u tabulky pohonu, natrvalo
+	if(F->pom_temp!=NULL && F->PmG->Highlight)
 	{
 		line(canv,m.L2Px(F->pom_temp->Xp)-20,m.L2Py(F->pom_temp->Yp)-20,m.L2Px(F->pom_temp->Xp)-60,m.L2Py(F->pom_temp->Yp)-20);
 		line(canv,m.L2Px(F->pom_temp->Xp)-40,m.L2Py(F->pom_temp->Yp),m.L2Px(F->pom_temp->Xp)-40,m.L2Py(F->pom_temp->Yp)-40);

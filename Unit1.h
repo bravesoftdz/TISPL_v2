@@ -722,7 +722,8 @@ public:		// User declarations
 	bool refresh_mGrid;//nevykresluje se z buffru ale pøímo
 	bool nabuffrovano;//udržuje, zda je buffer mgridových rastrù aktuální
 	bool duvod_ulozit_nahled;//uchovává v sobì dùvod k uložení náhledu
-  bool auto_settings_open;
+	bool auto_settings_open;
+	int ID_tabulky;
 
 	//metody
 	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click

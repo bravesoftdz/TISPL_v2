@@ -2988,7 +2988,8 @@ void Cvektory::smaz_element(TElement *Element)
 		Element->predchozi->dalsi=Element->dalsi;
 		Element->dalsi->predchozi=Element->predchozi;
 		//aktualizace geometrie
-		Element->dalsi->geo.X1=Element->predchozi->geo.X4;Element->dalsi->geo.Y1=Element->predchozi->geo.Y4;
+		if(Element->n!=1){Element->dalsi->geo.X1=Element->predchozi->geo.X4;Element->dalsi->geo.Y1=Element->predchozi->geo.Y4;}
+		else {Element->dalsi->geo.X1=Element->geo.X1;Element->dalsi->geo.Y1=Element->geo.Y1;}
 		Element->dalsi->geo.X4=F->d.Rxy(Element->dalsi).x;Element->dalsi->geo.Y4=F->d.Rxy(Element->dalsi).y;
 		Element->dalsi->geo.X2=Element->dalsi->geo.X1+(Element->dalsi->geo.X4-Element->dalsi->geo.X1)/2.0;Element->dalsi->geo.Y2=Element->dalsi->geo.Y1+(Element->dalsi->geo.Y4-Element->dalsi->geo.Y1)/2.0;
 		Element->dalsi->geo.X3=Element->dalsi->geo.X2;Element->dalsi->geo.Y3=Element->dalsi->geo.Y2;
