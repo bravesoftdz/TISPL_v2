@@ -4,13 +4,14 @@
 #include "scGPControls.hpp"//knihovna kvůli buttonumatp.
 #include "scGPExtControls.hpp"//knihovna kvůli editbox
 #include "scHtmlControls.hpp"//knihovna kvůli scHTMLLabel
+#include "scGPImages.hpp"//knihovna kvůli scGPImage
 #include "MyString.h"//kvůli parsování
 #include "my.h"
 //---------------------------------------------------------------------------
 class TmGrid
 {
  public:
-	 enum Ttype{readEDIT,EDIT,NUMERIC,readNUMERIC,BUTTON,glyphBUTTON,COMBO,COMBOEDIT,CHECK,RADIO,/*IMAGE,*/DRAW,LABEL};
+	 enum Ttype{readEDIT,EDIT,NUMERIC,readNUMERIC,BUTTON,glyphBUTTON,COMBO,COMBOEDIT,CHECK,RADIO,DRAW,LABEL,IMAGE};
 	 enum Talign{aNO,LEFT,CENTER,RIGHT};
 	 enum Tvalign{vNO,TOP,MIDDLE,BOTTOM};
 
@@ -66,6 +67,7 @@ class TmGrid
 		bool ShowHint;//stav zobrazení hintu dané buňky, zda se budu zobrazovat
 		UnicodeString Hint;//text hintu buňky
 		UnicodeString Text;//samotný text buňky
+		int ImageIndex;//číslo obrázku z scGPImageCollection, pokud je použitou načítaní obrázku z něj v případě použití komponenty IMAGE
 	};
 
 	struct TNote//datový typ použitý pro poznámku "pod čarou" - pod či okolo tabulky, TmGrid - poznámka "pod čarou" resp. pod tabulkou, přístup mGrid->Note, možno nastavovat hodnotu textu, font textu, ukládá si citelnou oblast, zarovnává na šířku tabulky pokud se text nevejde zalomí na další řádek (dle poslední mezery na řádku), max zobrazí dva řádky, výchozí barva červená a 11pt velikost písma
@@ -127,6 +129,7 @@ class TmGrid
 	TscGPCheckBox *getCheck(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
 	TscGPRadioButton *getRadio(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
 	TscHTMLLabel *getLabel(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
+	TscGPImage *getImage(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
 	void createComponent(Ttype Type, unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vytvořenou komponentu dle Type, pokud existuje, tak se nic neděje
 	TscGPEdit *createEdit(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
 	TscGPNumericEdit *createNumeric(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
@@ -137,6 +140,7 @@ class TmGrid
 	TscGPCheckBox *createCheck(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
 	TscGPRadioButton *createRadio(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
 	TscHTMLLabel *createLabel(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
+	TscGPImage *createImage(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
 	long GetIdxRow(int X,int Y);//dle souřadnic ve formuláři, kde je tabulka zobrazena (např. dle myšího kurzoru) vrátí řádek
 	long GetIdxColumn(int X,int Y);//dle souřadnic ve formuláři, kde je tabulka zobrazena (např. dle myšího kurzoru) vrátí sloupec
 	bool CheckPTinTable(int X,int Y);//dle souřadnic ve formuláři, kde je tabulka zobrazena (např. dle myšího kurzoru) zjistí, zda jsou souřadnice ve vnitř tabulky
@@ -173,6 +177,7 @@ class TmGrid
 	bool Highlight;//zda bude orámování tabulky zvýrazněna nebo nikoliv
 	bool Redraw;//zda se bude tabulka nanovo překreslovat
 	Graphics::TBitmap *Raster;//buffrovací a případně exportní raster
+	TscGPImageCollection *scGPImageCollection;//ukazatel na komponentu z které se načítájí obrázky v případě použití komponenty IMAGE
 
  //protected: - nefugovalo, jak jsme si představoval
 	long Width,Height;//velikost komponenty, jen zobrazovat mimo třídu, nelze hodnotami nic nastavovat
@@ -193,7 +198,7 @@ class TmGrid
 	void __fastcall getTagOnChange(TObject *Sender);//vrací událost při OnChange
 	void __fastcall getTagOnKeyDown(TObject *Sender,WORD &Key, TShiftState Shift);//vrací událost při OnKeyDown
 	void __fastcall getTagOnKeyPress(TObject *Sender,System::WideChar &Key);//vrací událost při OnKeyPress
-	void __fastcall getTagMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
+	void __fastcall getTagMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);//vrací událost při přejetí myší přes komponentu
 	void __fastcall getTagOnMouseEnter(TObject *Sender);//vrací událost při vstupu či přejetí myší přes komponentu
 	void __fastcall OnTimer(TObject *Sender);//událost časovače
 	void __fastcall OnMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);//metoda voláná z rodičovského formuláře, pozor u více tabulek ve formuláři beru to poslední
@@ -217,6 +222,7 @@ class TmGrid
   void SetComboEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buňku na combo, pomocná metoda objednu výše uvedené
 	void SetCheck(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buňku na check, pomocná metoda objednu výše uvedené
 	void SetRadio(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buňku na radio, pomocná metoda objednu výše uvedené
+	void SetImage(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buňku na Image, pomocná metoda objednu výše uvedené
 	void CreateLinkBorder(unsigned long X,unsigned long Y,TCells &refCell);//patřičně prolinkuje orámování, že sousední orámování má ukazatel na totožný objekt, vzor orámvání získá dle refCell
 	void CreateLinkBorder2(unsigned long X,unsigned long Y,TCells &refCell);//patřičně prolinkuje orámování, že sousední orámování má ukazatel na totožný objekt, vzor orámvání získá dle refCell
 	void CreateCell(TCells &NewCell);//vytvoří novou buňku (alokuje ji paměť)

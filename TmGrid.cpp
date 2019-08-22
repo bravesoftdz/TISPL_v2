@@ -122,6 +122,8 @@ TmGrid::TmGrid(TForm *Owner)
 	*DefaultCell.RightBorder=defBorder;
 	//hint
 	DefaultCell.ShowHint=false;//výchozí stav zobrazení hintu dané buňky
+	//ImageIndex
+	DefaultCell.ImageIndex=-1;//výchozí stav
 
 	////HINT
 	Hint=new TscHTMLLabel(Form);//TrHTMLLabel(Form);
@@ -853,6 +855,10 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 		{
 			SetRadio(R,X,Y,Cell);
 		}break;
+		case IMAGE:
+		{
+			SetImage(R,X,Y,Cell);
+		}break;
 	}
 }
 //---------------------------------------------------------------------------
@@ -1292,6 +1298,37 @@ void TmGrid::SetRadio(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	Ra=NULL;delete Ra;
 }
 //---------------------------------------------------------------------------
+//nastaví danou buňku na radio, pomocná metoda objednu výše uvedené
+void TmGrid::SetImage(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
+{
+	//založení + tag + název
+	TscGPImage *I = createImage(X,Y);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
+	//atributy
+	if(VisibleComponents>-1)I->Visible=VisibleComponents;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
+	switch(Cell.Align)
+	{
+		case aNO:break;
+//		case LEFT:	I->Width=Columns[X].Width;I->Left=R.Left;
+		case CENTER: I->Left=R.Left+Cell.LeftBorder->Width;I->Width=Columns[X].Width-Cell.LeftBorder->Width-Cell.RightBorder->Width+1;break;
+//		case RIGHT:	I->Width=Columns[X].Width;I->Left=R.Left;
+	}
+	switch(Cell.Valign)
+	{
+		case aNO:break;
+//		case TOP:		I->Top=R.Top+1;I->Height=Rows[Y].Height-2;break;
+		case MIDDLE: I->Top=R.Top+Cell.TopBorder->Width;I->Height=Rows[Y].Height-Cell.TopBorder->Width-Cell.BottomBorder->Width+1;break;
+//		case BOTTOM:I->Top=R.Top+Rows[Y].Height-I->Height;I->Height=Rows[Y].Height-2;break;
+	}
+	if(Cell.ImageIndex>-1 && scGPImageCollection!=NULL){I->Images=scGPImageCollection;I->ImageIndex=Cell.ImageIndex;}
+	if(Cell.ShowHint){I->ShowHint=true;I->Hint=Cell.Hint;}
+	I->Font=Cell.Font;
+	if(I->Font->Name=="Roboto Cn")I->Font->Quality=System::Uitypes::TFontQuality::fqAntialiased;else I->Font->Quality=System::Uitypes::TFontQuality::fqDefault;//zapíná AA, pozor může dělat problémy při zvětšování písma, alternativa fqProof či fqClearType
+	I->Caption=Cell.Text;
+	//vlastník
+	I->Parent=Form;//musí být až na konci
+	I=NULL;delete I;
+}
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
 TscGPEdit *TmGrid::createEdit(unsigned long Col,unsigned long Row)
@@ -1501,6 +1538,26 @@ TscGPRadioButton *TmGrid::createRadio(unsigned long Col,unsigned long Row)
 	return Ra;
 }
 //---------------------------------------------------------------------------
+//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
+TscGPImage *TmGrid::createImage(unsigned long Col,unsigned long Row)
+{
+	TscGPImage *I=getImage(Col,Row);//pokud již existuje
+	if(I==NULL)//pokud ne, tak založí
+	{
+		I = new TscGPImage(Form);
+		I->Tag=getTag(Col,Row);//vratí ID tag komponenty,absolutní pořadí v paměti
+		//Cell.Text=I->Tag; ShowMessage(I->Tag);
+		I->Name="mGrid_IMAGE_"+AnsiString(ID)+"_"+AnsiString(I->Tag);
+
+		//události
+		I->OnClick=&getTagOnClick;
+		I->OnMouseEnter=&getTagOnMouseEnter;
+		I->OnMouseMove=&getTagMouseMove;
+	}
+	return I;
+}
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 //vratí ID tag komponenty,absolutní pořadí v paměti
 unsigned long TmGrid::getTag(unsigned long Col,unsigned long Row)
 {
@@ -1662,6 +1719,7 @@ TscGPCheckBox *TmGrid::getCheck(unsigned long Col,unsigned long Row){return (Tsc
 TscGPRadioButton *TmGrid::getRadio(unsigned long Col,unsigned long Row){return (TscGPRadioButton *)Form->FindComponent("mGrid_RADIO_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));}//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
 TscGPNumericEdit *TmGrid::getNumeric(unsigned long Col,unsigned long Row){return (TscGPNumericEdit *)Form->FindComponent("mGrid_NUMERIC_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));};//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
 TscHTMLLabel *TmGrid::getLabel(unsigned long Col,unsigned long Row){return (TscHTMLLabel *)Form->FindComponent("mGrid_LABEL_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));};//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
+TscGPImage *TmGrid::getImage(unsigned long Col,unsigned long Row){return (TscGPImage *)Form->FindComponent("mGrid_IMAGE_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));};//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
 //---------------------------------------------------------------------------
 //dle zadaného čísla sloupce a čísla řádku vrátí z dané komponenty text do paměťové buňky, slouží např. při události onchange popř. dálších
 void TmGrid::getTextFromComponentToMemoryCell(unsigned long Col,unsigned long Row)
@@ -2162,6 +2220,7 @@ void TmGrid::CopyAreaCell(TCells &RefCell,TCells &CopyCell,bool copyComponent)
 	CopyCell.Background->Style=RefCell.Background->Style;
 	CopyCell.isEmpty->Color=RefCell.isEmpty->Color;
 	CopyCell.isEmpty->Style=RefCell.isEmpty->Style;
+	CopyCell.ImageIndex=RefCell.ImageIndex;
 }
 //---------------------------------------------------------------------------
 //zkopíruje orámování z buňky na buňku (bez ukazatelového propojení)
@@ -2371,6 +2430,7 @@ void TmGrid::createComponent(Ttype Type, unsigned long Col,unsigned long Row)
 		case RADIO:				createRadio(Col,Row);break;
 		case DRAW:break;
 		case LABEL:				createLabel(Col,Row);break;
+		case IMAGE:				createImage(Col,Row);break;
 	}
 }
 //---------------------------------------------------------------------------
@@ -2395,11 +2455,12 @@ void TmGrid::DeleteComponents(unsigned long sCol,unsigned long sRow,unsigned lon
 				case NUMERIC: {TscGPNumericEdit *N=getNumeric(X,Y);N->Free();N=NULL;delete N;}break;
 				case readNUMERIC: {TscGPNumericEdit *N=getNumeric(X,Y);N->Free();N=NULL;delete N;}break;
 				case BUTTON: {TscGPButton *B=getButton(X,Y);B->Free();B=NULL;delete B;}break;
+				case glyphBUTTON:{TscGPGlyphButton *gB=getGlyphButton(X,Y);gB->Free();gB=NULL;delete gB;}break;
 				case COMBO: {TscGPComboBox *C=getCombo(X,Y);C->Free();C=NULL;delete C;}break;
-        case COMBOEDIT: {TscGPComboEdit *C=getComboEdit(X,Y);C->Free();C=NULL;delete C;}break;
+				case COMBOEDIT: {TscGPComboEdit *C=getComboEdit(X,Y);C->Free();C=NULL;delete C;}break;
 				case CHECK:{TscGPCheckBox *CH=getCheck(X,Y);CH->Free();CH=NULL;delete CH;break;} ///*CH->DisposeOf();*/ ani toto ani free při kliku nefungují správně, chyba byla, že daná komponenta měla focus, focus je potřeba při odstraňování komponent odevzdat nějaké komponentě, která zůstává ve formu
 				case RADIO:{TscGPRadioButton *R=getRadio(X,Y);R->Free();R=NULL;delete R;}break;
-				case glyphBUTTON:{TscGPGlyphButton *gB=getGlyphButton(X,Y);gB->Free();gB=NULL;delete gB;}break;
+				case IMAGE:{TscGPImage *I=getImage(X,Y);I->Free();I=NULL;delete I;}break;
 			}
 		}
 	}
@@ -2483,6 +2544,14 @@ void TmGrid::MoveComponentUP(unsigned long Col,unsigned long Row)
 			R->Tag=getTag(Col,Row);//přeindexování na řádek níže
 			R->Name="mGrid_RADIO_"+AnsiString(ID)+"_"+AnsiString(R->Tag);//přeindexování na řádek níže
 			R=NULL;delete R;
+		}
+		break;
+		case IMAGE:
+		{
+			TscGPImage *I=getImage(Col,Row+1);
+			I->Tag=getTag(Col,Row);//přeindexování na řádek níže
+			I->Name="mGrid_IMAGE_"+AnsiString(ID)+"_"+AnsiString(I->Tag);//přeindexování na řádek níže
+			I=NULL;delete I;
 		}
 		break;
 	}
@@ -2657,10 +2726,11 @@ void TmGrid::SetVisibleComponent(unsigned long Col,unsigned long Row,bool state)
 		case readNUMERIC:	{TscGPNumericEdit *N=getNumeric(Col,Row);if(N!=NULL)N->Visible=state;N=NULL;delete N;}break;
 		case BUTTON: 			{TscGPButton *B=getButton(Col,Row);if(B!=NULL)B->Visible=state;B=NULL;delete B;}break;
 		case COMBO:	 			{TscGPComboBox *C=getCombo(Col,Row);if(C!=NULL)C->Visible=state;C=NULL;delete C;}break;
-    case COMBOEDIT:	 	{TscGPComboEdit *C=getComboEdit(Col,Row);if(C!=NULL)C->Visible=state;C=NULL;delete C;}break;
+		case COMBOEDIT:	 	{TscGPComboEdit *C=getComboEdit(Col,Row);if(C!=NULL)C->Visible=state;C=NULL;delete C;}break;
 		case CHECK:				{TscGPCheckBox *CH=getCheck(Col,Row);if(CH!=NULL)CH->Visible=state;CH=NULL;delete CH;}break;
 		case RADIO:				{TscGPRadioButton *R=getRadio(Col,Row);if(R!=NULL)R->Visible=state;R=NULL;delete R;}break;
 		case glyphBUTTON:	{TscGPGlyphButton *gB=getGlyphButton(Col,Row);if(gB!=NULL)gB->Visible=state;gB=NULL;delete gB;}break;
+		case IMAGE:				{TscGPImage *I=getImage(Col,Row);if(I!=NULL)I->Visible=state;I=NULL;delete I;}break;
 	}
 }
 //---------------------------------------------------------------------------
@@ -2692,6 +2762,7 @@ void TmGrid::SetEnabledComponent(unsigned long Col,unsigned long Row,bool state)
 		case CHECK:				{TscGPCheckBox *CH=getCheck(Col,Row);if(CH!=NULL)CH->Enabled=state;CH=NULL;delete CH;}break;
 		case RADIO:				{TscGPRadioButton *R=getRadio(Col,Row);if(R!=NULL)R->Enabled=state;R=NULL;delete R;}break;
 		case glyphBUTTON:	{TscGPGlyphButton *gB=getGlyphButton(Col,Row);if(gB!=NULL)gB->Enabled=state;gB=NULL;delete gB;}break;
+		case IMAGE:				{TscGPImage *I=getImage(Col,Row);if(I!=NULL)I->Enabled=state;I=NULL;delete I;}break;
 	}
 }
 //---------------------------------------------------------------------------

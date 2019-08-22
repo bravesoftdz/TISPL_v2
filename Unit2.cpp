@@ -9,6 +9,8 @@
 #pragma link "scControls"
 #pragma link "scGPControls"
 #pragma link "scGPExtControls"
+#pragma link "scGPImages"
+#pragma link "scImageCollection"
 #pragma resource "*.dfm"
 TForm2 *Form2;
 #include "antialiasing.h"
@@ -35,6 +37,7 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		E->mG->Border.Width=2;
 		E->mG->exBUTTONVisible=true;
 		E->mG->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
+		E->mG->scGPImageCollection=scGPImageCollection1;
 
 		unsigned long ColCount=3;//pevný poèet slopcù
 		unsigned long RowCount=6;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
@@ -54,7 +57,10 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		E->mG->Cells[0][3].Text="3";E->mG->Cells[0][3].Type=E->mG->EDIT;
 		E->mG->Cells[0][4].Text="4";E->mG->Cells[0][4].Type=E->mG->EDIT;
 		E->mG->Cells[0][5].Text="5";E->mG->Cells[0][5].Type=E->mG->EDIT;
-		//E->mG->Cells[1][3].Text="abc0";
+
+		//test obrázku
+		E->mG->Cells[1][2].Type=E->mG->IMAGE;E->mG->Cells[1][2].ImageIndex=0;
+		E->mG->Cells[2][2].Type=E->mG->IMAGE;E->mG->Cells[2][2].ImageIndex=1;
 
 		//E->mG->Columns[0].Width=800;
 		//E->mG->SetColumnAutoFit(0);
@@ -356,9 +362,18 @@ void __fastcall TForm2::Button1Click(TObject *Sender)
 		//Invalidate();
 
 		//ELEMENTY->mG->Cells[1][1].LeftBorder->Color=(TColor)10114859;
-	 ELEMENTY->mG->Cells[1][1].Highlight=!ELEMENTY->mG->Cells[1][1].Highlight;
-	 ELEMENTY->mG->Cells[0][1].Highlight=!ELEMENTY->mG->Cells[0][1].Highlight;
-	 ELEMENTY->mG->Refresh();
+//	 ELEMENTY->mG->Cells[1][1].Highlight=!ELEMENTY->mG->Cells[1][1].Highlight;
+//	 ELEMENTY->mG->Cells[0][1].Highlight=!ELEMENTY->mG->Cells[0][1].Highlight;
+//	 ELEMENTY->mG->Refresh();
+
+
+		TscGPImage *I=ELEMENTY->mG->getImage(1,2);
+		I->Images=scGPImageCollection1;
+		I->ImageIndex=1;
+
+		I=ELEMENTY->mG->getImage(2,2);
+		I->Images=scGPImageCollection1;
+		I->ImageIndex=0;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm2::Button2Click(TObject *Sender)
