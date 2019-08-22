@@ -1323,7 +1323,7 @@ void TmGrid::SetImage(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	if(Cell.ShowHint){I->ShowHint=true;I->Hint=Cell.Hint;}
 	I->Font=Cell.Font;
 	if(I->Font->Name=="Roboto Cn")I->Font->Quality=System::Uitypes::TFontQuality::fqAntialiased;else I->Font->Quality=System::Uitypes::TFontQuality::fqDefault;//zapíná AA, pozor může dělat problémy při zvětšování písma, alternativa fqProof či fqClearType
-	I->Caption=Cell.Text;
+	if(Cell.Text!="")if(FileExists(Cell.Text))I->Picture->LoadFromFile(Cell.Text);//pokud obsahuje buňka adresu na daný soubor a soubor je nalezen - nutno ještě otestovat delší adresu kvůli lomítkům!!!
 	//vlastník
 	I->Parent=Form;//musí být až na konci
 	I=NULL;delete I;
