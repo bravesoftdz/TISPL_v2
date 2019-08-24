@@ -1305,7 +1305,7 @@ void TmGrid::SetImage(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	TscGPImage *I = createImage(X,Y);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
 	//načtení obrázku ze zdroje
 	if(Cell.ImageIndex>-1 && scGPImageCollection!=NULL){I->Images=scGPImageCollection;I->ImageIndex=Cell.ImageIndex;}
-	if(Cell.Text!="")if(FileExists(Cell.Text))I->Picture->LoadFromFile(Cell.Text);//pokud obsahuje buňka adresu na daný soubor a soubor je nalezen - nutno ještě otestovat delší adresu kvůli lomítkům!!!
+	if(Cell.Text!="")if(FileExists(Cell.Text)){/*Cell.ImageIndex=-1;*/I->Picture->LoadFromFile(Cell.Text);}//pokud obsahuje buňka adresu na daný soubor a soubor je nalezen - nutno ještě otestovat delší adresu kvůli lomítkům!!!
 	//viditelnost
 	if(VisibleComponents>-1)I->Visible=VisibleComponents;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
 	//velikost - v případě, že obrázek je větší než buňka, zmenší jeho velikost na velikost buňky, nestrečuje
@@ -1330,7 +1330,6 @@ void TmGrid::SetImage(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	if(Cell.ShowHint){I->ShowHint=true;I->Hint=Cell.Hint;}
 	I->Font=Cell.Font;
 	if(I->Font->Name=="Roboto Cn")I->Font->Quality=System::Uitypes::TFontQuality::fqAntialiased;else I->Font->Quality=System::Uitypes::TFontQuality::fqDefault;//zapíná AA, pozor může dělat problémy při zvětšování písma, alternativa fqProof či fqClearType
-	I->AutoSize=false;//vhodné jako výchozí stav kvůli menším obrázkům, jinak by se naduplikovaly
 	//vlastník
 	I->Parent=Form;//musí být až na konci
 	I=NULL;delete I;
@@ -1555,6 +1554,7 @@ TscGPImage *TmGrid::createImage(unsigned long Col,unsigned long Row)
 		I->Tag=getTag(Col,Row);//vratí ID tag komponenty,absolutní pořadí v paměti
 		//Cell.Text=I->Tag; ShowMessage(I->Tag);
 		I->Name="mGrid_IMAGE_"+AnsiString(ID)+"_"+AnsiString(I->Tag);
+		I->AutoSize=true;//vhodné jako výchozí stav kvůli menším obrázkům, jinak by se naduplikovaly
 		//události
 		I->OnClick=&getTagOnClick;
 		I->OnMouseEnter=&getTagOnMouseEnter;
