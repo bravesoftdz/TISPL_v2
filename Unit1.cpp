@@ -226,7 +226,8 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	vytvoreni_tab_knihovna();
 
 	//ostatní
-	scSplitView_LEFTTOOLBAR->Visible=false;//vypnutí levého toolbaru
+	Image_knihovna_objektu->Height=ClientHeight-34;
+	scSplitView_LEFTTOOLBAR->Visible=true;//zapnuti levého toolbaru
 	ID_tabulky=0;//uchovává ID tabulky, použiváné při mousemove
 	count_memo=0;//jednoduchý counter zobrazovaný v memo3
 	TIP="Kliknutím na objekt v knihovně objektu, tažením a následným usazením přidáte objekt.";//nastavení TIPu defautlně na nápovědu pro vložení objektu
@@ -300,9 +301,10 @@ void TForm1::DesignSettings()
 
 	if(MOD==SCHEMA) //zobrazeni labelu - je hezci, v hlavicce drawgrid knihovny
 	{
-		scGPLabel_roboti->Visible=true;
-		scGPLabel_roboti->Caption="Technolog. objekty";
-		scGPLabel_roboti->ContentMarginLeft=4;
+		//scGPLabel_roboti->Visible=true;
+//		scGPLabel_roboti->Caption="Technolog. objekty";
+//		scGPLabel_roboti->ContentMarginLeft=4;
+		scListGroupKnihovObjektu->Visible=false;
 		scListGroupKnihovObjektu->Height=1920; // kvůli odstranění bílé linky, která vznikala pod knihovnou objektů
 	}
 
@@ -936,7 +938,7 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
 	//scSplitView_LEFTTOOLBAR->Visible=true;
 	scListGroupKnihovObjektu->Top=0;
 //	scListGroupNastavProjektu->Visible=true;
-	scListGroupKnihovObjektu->Visible=true;
+	//scListGroupKnihovObjektu->Visible=true;
  //	scListGroupKnihovObjektu->Top=scListGroupNastavProjektu->Height;
 	DuvodUlozit(true);
 	ButtonPLAY->Visible=false;
@@ -1107,7 +1109,7 @@ void __fastcall TForm1::AnalyzaClick(TObject *Sender)
 			scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
 	 //		scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
 			//scSplitView_LEFTTOOLBAR->Visible=false;
-			scListGroupKnihovObjektu->Visible=false;
+			//scListGroupKnihovObjektu->Visible=false;
 			Button3->Visible=false;
 			Timer_neaktivity->Enabled=true;
 			pocitadlo_doby_neaktivity=0;//implicitní hodnota
@@ -1538,7 +1540,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		mGrid_knihovna->Redraw=true;
 		mGrid_knihovna->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak mGrid_knihovna->Buffer(false);
 		if(mGrid_knihovna->VisibleComponents>-1)mGrid_knihovna->VisibleComponents=true;//stačí volat toto, protože se pomocí Show (resp. Draw-SetCompontens-Set...) cyklem všechny komponenty na základě tohoto zobrazí pokud je nastaveno na -1 tak se při překreslování zohlední individuální nastavení komponent (z tohoto stavu je však pro další použítí třeba vrátit do stavu 0 nebo 1)
-		mGrid_knihovna->Show(Canvas); //Image_knihovna_objektu->
+		mGrid_knihovna->Show(Image_knihovna_objektu->Canvas);
 	}
 }
 //---------------------------------------------------------------------------
@@ -4427,7 +4429,6 @@ void TForm1::vytvoreni_tab_knihovna()
 {
 	log(__func__);//logování
 	/////////mGrid_knihovny/////////
-	scGPLabel_roboti->Visible=false;
 	mGrid_knihovna=new TmGrid(this);//vždy nutno jako první
 	/////////nastavení defaultního designu
 	mGrid_knihovna->Left=-500;mGrid_knihovna->Top=-500;//pouze aby se při prvním zobrazení nezobrazovala formou probliku vlevo nahoře
@@ -4442,32 +4443,31 @@ void TForm1::vytvoreni_tab_knihovna()
 	mGrid_knihovna->DefaultCell.isActiveLink->Name=aFont->Name;
 	mGrid_knihovna->DefaultCell.isActiveLink->Size=aFont->Size;
 	mGrid_knihovna->Note.Font->Name=aFont->Name;
-	//mGrid_knihovna->Note.Font->Size=12;
-	//mGrid_knihovna->AntiAliasing_text=true;
-//	mGrid_knihovna->DefaultCell.RightBorder->Color=clWhite;
-//	mGrid_knihovna->DefaultCell.TopBorder->Color=clWhite;
-//	mGrid_knihovna->DefaultCell.BottomBorder->Color=clWhite;
+	mGrid_knihovna->DefaultCell.RightBorder->Color=clWhite;
+	mGrid_knihovna->DefaultCell.TopBorder->Color=clWhite;
+	mGrid_knihovna->DefaultCell.BottomBorder->Color=clWhite;
 	mGrid_knihovna->Border.Width=1;
 	mGrid_knihovna->Border.Color=(TColor)(RGB(240,240,240));
 	mGrid_knihovna->scGPImageCollection=scGPImageCollection_Objekty;
 	mGrid_knihovna->ID=6666;
 	mGrid_knihovna->Tag=6;//ID formu
 	/////////vytvoření konkrétní tabulky podle režimu kabiny
-	mGrid_knihovna->Create(2,16);//vytvoření celé tabulky najednou
+	mGrid_knihovna->Create(2,19);//vytvoření celé tabulky najednou
 	mGrid_knihovna->Left=-1;
-	mGrid_knihovna->Top=33;
+	mGrid_knihovna->Top=-1;
 	mGrid_knihovna->SetColumnAutoFit(-4);
 	mGrid_knihovna->Columns[0].Width=mGrid_knihovna->Columns[1].Width=84;//polovina šířky left toolbaru
 	/////////nadpisy
-	mGrid_knihovna->Cells[0][0].Text="Navěšování/svěšování";
-	mGrid_knihovna->Cells[0][2].Text="Předúpravy";
-	mGrid_knihovna->Cells[0][5].Text="Lakovna";
-	mGrid_knihovna->Cells[0][7].Text="Postprocesní";
-	mGrid_knihovna->Cells[0][11].Text="Ostatní";
+	mGrid_knihovna->Cells[0][0].Text="Hala";
+	mGrid_knihovna->Cells[0][3].Text="Navěšování/svěšování";
+	mGrid_knihovna->Cells[0][5].Text="Předúpravy";
+	mGrid_knihovna->Cells[0][8].Text="Lakovna";
+	mGrid_knihovna->Cells[0][10].Text="Postprocesní";
+	mGrid_knihovna->Cells[0][14].Text="Ostatní";
 	/////////úprava výšky řádků
 	for(int i=0;i<=mGrid_knihovna->RowCount-1;i++)
 	{
-		if(i!=0 && i!=2 && i!=5 && i!=7 && i!=11)mGrid_knihovna->Rows[i].Height=59;
+		if(i!=0 && i!=1 && i!=2 && i!=3 && i!=5 && i!=8 && i!=10 && i!=14)mGrid_knihovna->Rows[i].Height=59;
 		else
 		{
 			mGrid_knihovna->Cells[0][i].Align=mGrid_knihovna->Talign::LEFT;
@@ -4477,52 +4477,65 @@ void TForm1::vytvoreni_tab_knihovna()
 			mGrid_knihovna->Cells[0][i].Font=scGPLabel_roboti->Font;
 		}
 	}
-	mGrid_knihovna->Rows[15].Height=300;//přesah mimo obrazovku, nezobrazování spodní hranice tabulky
+	mGrid_knihovna->Rows[18].Height=scSplitView_LEFTTOOLBAR->Height-(mGrid_knihovna->Top+mGrid_knihovna->Height);//přesah mimo obrazovku, nezobrazování spodní hranice tabulky
 	/////////sloučení nadpisů
 	mGrid_knihovna->MergeCells(0,0,1,0);
-	mGrid_knihovna->MergeCells(0,2,1,2);
+	mGrid_knihovna->MergeCells(0,3,1,3);
 	mGrid_knihovna->MergeCells(0,5,1,5);
-	mGrid_knihovna->MergeCells(0,7,1,7);
-	mGrid_knihovna->MergeCells(0,11,1,11);
+	mGrid_knihovna->MergeCells(0,8,1,8);
+	mGrid_knihovna->MergeCells(0,10,1,10);
+	mGrid_knihovna->MergeCells(0,14,1,14);
+	/////////hala
+	mGrid_knihovna->Cells[0][1].Type=mGrid_knihovna->IMAGE;
+	mGrid_knihovna->Cells[0][1].ImageIndex=15;
+	mGrid_knihovna->Cells[0][2].Type=mGrid_knihovna->IMAGE;
+	mGrid_knihovna->Cells[0][2].ImageIndex=15;
 	/////////objekty
 	//navěšování/svěšování
-	mGrid_knihovna->Cells[0][1].Type=mGrid_knihovna->IMAGE;
-	mGrid_knihovna->Cells[0][1].ImageIndex=0;
-	mGrid_knihovna->Cells[1][1].Type=mGrid_knihovna->IMAGE;
-	mGrid_knihovna->Cells[1][1].ImageIndex=9;
-	//předúpravy
-	mGrid_knihovna->Cells[0][3].Type=mGrid_knihovna->IMAGE;
-	mGrid_knihovna->Cells[0][3].ImageIndex=1;
-	mGrid_knihovna->Cells[1][3].Type=mGrid_knihovna->IMAGE;
-	mGrid_knihovna->Cells[1][3].ImageIndex=4;
 	mGrid_knihovna->Cells[0][4].Type=mGrid_knihovna->IMAGE;
-	mGrid_knihovna->Cells[0][4].ImageIndex=2;
+	mGrid_knihovna->Cells[0][4].ImageIndex=0;
 	mGrid_knihovna->Cells[1][4].Type=mGrid_knihovna->IMAGE;
-	mGrid_knihovna->Cells[1][4].ImageIndex=3;
-	//lakování
+	mGrid_knihovna->Cells[1][4].ImageIndex=9;
+	//předúpravy
 	mGrid_knihovna->Cells[0][6].Type=mGrid_knihovna->IMAGE;
-	mGrid_knihovna->Cells[0][6].ImageIndex=5;
-	//postprocesní
-	mGrid_knihovna->Cells[0][8].Type=mGrid_knihovna->IMAGE;
-	mGrid_knihovna->Cells[0][8].ImageIndex=6;
+	mGrid_knihovna->Cells[0][6].ImageIndex=1;
+	mGrid_knihovna->Cells[1][6].Type=mGrid_knihovna->IMAGE;
+	mGrid_knihovna->Cells[1][6].ImageIndex=4;
+	mGrid_knihovna->Cells[0][7].Type=mGrid_knihovna->IMAGE;
+	mGrid_knihovna->Cells[0][7].ImageIndex=2;
+	mGrid_knihovna->Cells[1][7].Type=mGrid_knihovna->IMAGE;
+	mGrid_knihovna->Cells[1][7].ImageIndex=3;
+	//lakování
 	mGrid_knihovna->Cells[0][9].Type=mGrid_knihovna->IMAGE;
-	mGrid_knihovna->Cells[0][9].ImageIndex=7;
-	mGrid_knihovna->Cells[0][10].Type=mGrid_knihovna->IMAGE;
-	mGrid_knihovna->Cells[0][10].ImageIndex=8;
-	//ostatní
+	mGrid_knihovna->Cells[0][9].ImageIndex=5;
+	//postprocesní
+	mGrid_knihovna->Cells[0][11].Type=mGrid_knihovna->IMAGE;
+	mGrid_knihovna->Cells[0][11].ImageIndex=6;
 	mGrid_knihovna->Cells[0][12].Type=mGrid_knihovna->IMAGE;
-	mGrid_knihovna->Cells[0][12].ImageIndex=10;
-	mGrid_knihovna->Cells[1][12].Type=mGrid_knihovna->IMAGE;
-	mGrid_knihovna->Cells[1][12].ImageIndex=12;
+	mGrid_knihovna->Cells[0][12].ImageIndex=7;
 	mGrid_knihovna->Cells[0][13].Type=mGrid_knihovna->IMAGE;
-	mGrid_knihovna->Cells[0][13].ImageIndex=11;
-	mGrid_knihovna->Cells[1][13].Type=mGrid_knihovna->IMAGE;
-	mGrid_knihovna->Cells[1][13].ImageIndex=14;
-	mGrid_knihovna->Cells[0][14].Type=mGrid_knihovna->IMAGE;
-	mGrid_knihovna->Cells[0][14].ImageIndex=13;
-//					mGrid_knihovna->Update();
-//	TscGPImage *I=mGrid_knihovna->getImage(1,1);
-//		I->AutoSize=true;
+	mGrid_knihovna->Cells[0][13].ImageIndex=8;
+	//ostatní
+	mGrid_knihovna->Cells[0][15].Type=mGrid_knihovna->IMAGE;
+	mGrid_knihovna->Cells[0][15].ImageIndex=10;
+	mGrid_knihovna->Cells[1][15].Type=mGrid_knihovna->IMAGE;
+	mGrid_knihovna->Cells[1][15].ImageIndex=12;
+	mGrid_knihovna->Cells[0][16].Type=mGrid_knihovna->IMAGE;
+	mGrid_knihovna->Cells[0][16].ImageIndex=11;
+	mGrid_knihovna->Cells[1][16].Type=mGrid_knihovna->IMAGE;
+	mGrid_knihovna->Cells[1][16].ImageIndex=14;
+	mGrid_knihovna->Cells[0][17].Type=mGrid_knihovna->IMAGE;
+	mGrid_knihovna->Cells[0][17].ImageIndex=13;
+	////////////Testy
+	mGrid_knihovna->Update();
+	mGrid_knihovna->Cells[0][9].Valign=mGrid_knihovna->vNO;
+	mGrid_knihovna->getImage(0,9)->Top+=34;
+//	TscGPButton *B=mGrid_knihovna->getButton(0,1);
+//	B->Options->NormalColor=mGrid_knihovna->DefaultCell.Font->Color;
+//	B->Images=scGPVirtualImageList1; B->ImageIndex=64;
+//	B->Options->HotColor=mGrid_knihovna->DefaultCell.Font->Color;
+//	B->Options->FrameHotColor=mGrid_knihovna->DefaultCell.Font->Color;
+//	B->Caption="Vytvořit";B->Layout=blGlyphLeft;
 }
 //---------------------------------------------------------------------------
 //klik do knihovny objektů, spouštění akce přidávání objektu
@@ -4536,15 +4549,22 @@ void TForm1::tab_knihovna_click(double X,double Y,long Col,long Row)
 	}
 	if(mGrid_knihovna->Cells[Col][Row].Type==mGrid_knihovna->IMAGE)
 	{
-		SB("Kliknutím na libovolné místo umístíte objekt "+knihovna_objektu[Col+Row+Row].name);
 		vybrany_objekt=mGrid_knihovna->Cells[Col][Row].ImageIndex;
-		Akce=ADD;kurzor(add_o);
-		add_posledni=true;pom=NULL;
-		if(VyID==vybrany_objekt && d.v.OBJEKTY->predchozi->n<3)//pokud je vybraná vyhýbka nejsou alespoň 3 objekty
+		if(vybrany_objekt!=15)//klik na objekty
 		{
-			MB("Výhybku lze nastavit, pokud jsou k dispozici minimálně 3 technologické objekty!");
-			Akce=NIC;kurzor(standard);
+   		SB("Kliknutím na libovolné místo umístíte objekt "+knihovna_objektu[vybrany_objekt].name);
+			Akce=ADD;kurzor(add_o);
+   		add_posledni=true;pom=NULL;
+   		if(VyID==vybrany_objekt && d.v.OBJEKTY->predchozi->n<3)//pokud je vybraná vyhýbka nejsou alespoň 3 objekty
+   		{
+   			MB("Výhybku lze nastavit, pokud jsou k dispozici minimálně 3 technologické objekty!");
+   			Akce=NIC;kurzor(standard);
+			}
 		}
+		else//klik do sekce hala
+		{
+      scGPButton_nakreslit_haluClick(this);
+    }
 	}
 }
 //---------------------------------------------------------------------------
@@ -7389,7 +7409,7 @@ void TForm1::NP_input()
    log(__func__);//logování
 	 //zablokování OnChange tabulek
 	 scButton_zamek_layoutu->Visible=false;//vypnutí tlačítka pro zámek layoutu
-	 scSplitView_LEFTTOOLBAR->Visible=true;//zapnutí levého toolbaru
+	 Image_knihovna_objektu->Visible=false;//vypnutí komponenty s knihovnou
 	 JID=-1;//ošetření, s JID se pracuje i v náhledu
 	 element_id=99999;//ošetření pro správné zobrazování mgridů
 	 pom_bod=NULL;pom_bod_temp=NULL;//s těmito ukazateli pracuje jak náhled tak schéma, ošetření
@@ -7422,7 +7442,7 @@ void TForm1::NP_input()
 	 if(vycentrovat)Mouse->CursorPos=TPoint(m.L2Px(akt_souradnice_kurzoru.x),m.L2Py(akt_souradnice_kurzoru.y)+vyska_menu);
 	 vycentrovat=true;
 	 JID=-1;
-	 DrawGrid_knihovna->Visible=false; //nezobrazí přepozicování elementů
+	 //DrawGrid_knihovna->Visible=false; //nezobrazí přepozicování elementů
 	 DrawGrid_knihovna->DefaultRowHeight=140;
 	 if(pom_temp->id==3)DrawGrid_knihovna->DefaultColWidth=160;
 	 else DrawGrid_knihovna->DefaultColWidth=80;
@@ -7436,13 +7456,13 @@ void TForm1::NP_input()
 	 DrawGrid_otoce->DefaultColWidth=80;
 
 	 scGPLabel_roboti->Visible=true;
-//	 scGPLabel_otoce->Visible=true;
-//	 scGPLabel_stop->Visible=true;
-//	 scGPLabel_geometrie->Visible=true;
-//	 scGPLabel_poznamky->Visible=true;
+	 scGPLabel_otoce->Visible=true;
+	 scGPLabel_stop->Visible=true;
+	 scGPLabel_geometrie->Visible=true;
+	 scGPLabel_poznamky->Visible=true;
 
 	 //scGPLabel_roboti->Top=scGPPanel_mainmenu->Height;
-	 DrawGrid_knihovna->Visible=true;
+	 scListGroupKnihovObjektu->Visible=true;
 
 	 scListGroupPanel_hlavickaOtoce->Visible=true;
 	 scListGroupPanel_hlavickaOtoce->Top=DrawGrid_knihovna->Height + scGPPanel_mainmenu->Height;
@@ -8966,15 +8986,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Image_knihovna_objektu->Height=ClientHeight-34;
-	scSplitView_LEFTTOOLBAR->Visible=true;
-	Image_knihovna_objektu->Visible=true;
-	scGPLabel_roboti->Visible=false;
-	scGPLabel_otoce->Visible=false;
-	scGPLabel_stop->Visible=false;
-	scGPLabel_geometrie->Visible=false;
-	scGPLabel_poznamky->Visible=false;
-	scListGroupKnihovObjektu->Visible=false; Image_knihovna_objektu->Invalidate();
+	Zoom=0.75;
 //	TRect A=vrat_max_oblast();
 //	d.line(Canvas,(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0,A.top,(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0,A.bottom);
 }
@@ -9915,7 +9927,6 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		DrawGrid_knihovna->DefaultRowHeight=50;
 		DrawGrid_knihovna->DefaultColWidth=70;
 		DrawGrid_knihovna->Left=14;
-		DrawGrid_knihovna->Visible=false;
 		scListGroupPanel_hlavickaOtoce->Visible=false;
 		scListGroupPanel_hlavickaOstatni->Visible=false;
 		scListGroupPanel_geometrie->Visible=false;
@@ -9925,13 +9936,13 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		DrawGrid_knihovna->Invalidate();
 
 		scGPLabel_roboti->Visible=false;
-//		scGPLabel_otoce->Visible=false;
-//		scGPLabel_stop->Visible=false;
-//		scGPLabel_geometrie->Visible=false;
-//		scGPLabel_poznamky->Visible=false;
+		scGPLabel_otoce->Visible=false;
+		scGPLabel_stop->Visible=false;
+		scGPLabel_geometrie->Visible=false;
+		scGPLabel_poznamky->Visible=false;
 
 		scGPLabel_roboti->Font->Style = TFontStyles(); // zrušení tučného písma resp. všech případných dalších Font style nastavení
-		scGPLabel_roboti->Visible=true;
+//		scGPLabel_roboti->Visible=true;
 		scGPLabel_roboti->Caption="Technolog. objekty";
 		scGPLabel_roboti->ContentMarginLeft=4;
 		scGPSwitch_robot_clovek->Visible=false;
@@ -9940,10 +9951,10 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		Schema->Down=false;//musí zde být, zavírání přes tlačítko layout by jinak nebylo plně funkční!!
 		Schema->Down=true;
 		//REFRESH(); //- asi netřeba  asi vyvolává výše uvedený on_change_zoom_change_scGPTrackBar()
-		DrawGrid_knihovna->Visible=true;
+		scListGroupKnihovObjektu->Visible=false;
 		scGPComboBox_prepinacKot->ItemIndex=0;//ošetření pokud bylo při vypínání editace nastaveno na časové kóty
 		scButton_zamek_layoutu->Visible=true;//zapnutí tlačítka zámek layoutu
-		scSplitView_LEFTTOOLBAR->Visible=false;//vypnutí levého toolbaru
+		Image_knihovna_objektu->Visible=true;//zapnutí knihovny
 	}
 }
 //---------------------------------------------------------------------------
