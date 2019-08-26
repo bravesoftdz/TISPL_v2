@@ -6,3 +6,4 @@ struct TTextNumber{AnsiString text;double number1;int number2;};
 struct T2Rect{TRect rect1; TRect rect2;};
 struct T3Rect{TRect rect0; TRect rect1; TRect rect2;};
 struct T4Rect{TRect rect0; TRect rect1; TRect rect2; TRect rect3;};
+struct T5Rect{TRect rect0; TRect rect1; TRect rect2; TRect rect3; TRect rect4;};
