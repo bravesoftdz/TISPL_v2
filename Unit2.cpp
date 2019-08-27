@@ -392,7 +392,9 @@ void __fastcall TForm2::Button2Click(TObject *Sender)
 	//mGrid->AntiAliasing_grid=!mGrid->AntiAliasing_grid;
 	// ELEMENTY->mG->Left+=10;
 	//zmìna posunu tabulky
-	 ELEMENTY->mG->unHighlightAll();
+	// ELEMENTY->mG->unHighlightAll();
+
+	ELEMENTY->mG->Cells[1][2].Text="Vzor.bmp";
 
 	Invalidate();
 	FormPaint(this);//volání po Invalidate zajistí, že nedochází k probliku komponent, nemùže být samotné

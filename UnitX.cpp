@@ -33,7 +33,8 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 {
 // pøi kliku do nìjaké buòky nastavím input_state=NOTHING, pokud udìlám zmìnu buòky je v OnChange události switch, který zajistí
 // výpoèet konkrétní buòky dle pøedávaných parametrù v události
-	input_state=NO;
+	input_state=NO;    //F->Sv(ID);
+	if(ID==6666)F->tab_knihovna_click(-100,-100,Col,Row);//pøeposání události
 	//funkcionalita exBUTTONu v tabulce pohonu
 	if(ID==9999&&Row==-2)//pokud je stisknut exButton v tabulce pohonu
 	{

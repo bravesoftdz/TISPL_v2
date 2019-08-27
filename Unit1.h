@@ -99,6 +99,7 @@
 #include "rHintWindow.hpp"
 #include "UnitX.h"
 #include <Vcl.Imaging.pngimage.hpp>
+#include "scImageCollection.hpp"
 //#include "vektory.h" //už vkládám pøes vykresli.h
 //#include "knihovna_objektu.h" //už vkládám pøes vykresli.h resp. vektory.h
 
@@ -316,6 +317,8 @@ __published:	// IDE-managed Components
   TscExPanel *scExPanel_nastaveni_starych_modu;
 	TscGPImage *scGPImage_zamek_posunu;
 	TscButton *scButton_zamek_layoutu;
+	TscGPImageCollection *scGPImageCollection_Objekty;
+	TImage *Image_knihovna_objektu;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -562,10 +565,11 @@ private:
 	void add_element(int X, int Y);
 	void add_komoru();//pøidávání komory kabinì powerwashe, kontrola zda není souèet kabin vìtší než rozmìr kabiny
 	short rotace_symbol(short trend,int X, int Y);
+	void vytvoreni_tab_knihovna();//vytovoøení tabulky knihovny objektù
 	void vytvoreni_tab_pohon();//vytvoøení tabulky pohonu
   void odstraneni_elementu_tab_pohon(int operace);
 	void prirazeni_pohonu_tab_pohon(int index_pohonu);//pøedesignuje tabulku pohonu po pøidání elementu, nebo pohonu
-  void zmena_jednotek_tab_pohon();
+	void zmena_jednotek_tab_pohon();
 	void design_element(Cvektory::TElement *E,bool prvni_spusteni);//nadesignuje tabulky daného elementu
 	void prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla,AnsiString LO,AnsiString cas,AnsiString delka_otoce);
 	void dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla,AnsiString LO,AnsiString cas,AnsiString delka_otoce);
@@ -751,6 +755,7 @@ public:		// User declarations
 	void deaktivace_zamerovace();//deaktivuje zamìøovaè label a svislice a kolmice
 	void aktualizace_combobox_pohony_v_PO(short RDunitD=-1,short RDunitT=-1);//zaktualizuje ve formuláøi parametry objektù combobox na výpis pohonù vèetnì jednotek uvedeného rozmezí rychlostí, pokud jsou zanechané implicitní parametry short RDunitD=-1,short RDunitT=-1, je naèteno nastevní jednotek z INI aplikace pro form parametry objektu, v pøípadech, kdy uvedené parametry nejsou dané hodnotou -1, tak se uvažují jednotky dle S==0,MIN==1 pro RDunitT, resp. M==0,MM==1 pro RDunitD
 	void tab_pohon_COMBO (int index);//0=naètení pohonù do COMBA, 1=pøiøazení pohonu kabinì
+	void tab_knihovna_click(double X,double Y,long Col=-1,long Row=-1);//klik do knihovny objektù, spouštìní akce pøidávání objektu
   void aktualizace_ComboPohon ();
 	short RO; short ROs; short ROst;short ROsts;short Rotace_symbolu_minula;
 	TRect vrat_max_oblast(Cvektory::TObjekt *Objekt=NULL);//vrací max a min hodnoty x a y souøadnic, všecho v layout(elementù, objektù), nebo parametrem Objekt lze hledat max souøadnice v jednom objektu

@@ -91,7 +91,7 @@ class Cvektory
 		double WTstop;//čekání na stopce
 		double RT;//reserve time
 
-		T4Rect citelna_oblast;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast celé kóty(rect0), popisku kóty (rect1), jednotek kóty (rect2) a samotného názvu např. Robot 3 (rect3) elementu - nedovávat  do CObjekt
+		T5Rect citelna_oblast;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast celé kóty(rect0), popisku kóty (rect1), jednotek kóty (rect2) a samotného názvu např. Robot 3 (rect3) elementu, hodnota koty mezi LO (rect4) - nedovávat  do CObjekt
 
 		unsigned int akt_pocet_voziku;
 		unsigned int max_pocet_voziku;

@@ -1303,27 +1303,33 @@ void TmGrid::SetImage(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 {
 	//založení + tag + název
 	TscGPImage *I = createImage(X,Y);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
-	//atributy
-	if(VisibleComponents>-1)I->Visible=VisibleComponents;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
-	switch(Cell.Align)
-	{
-		case aNO:break;
-//		case LEFT:	I->Width=Columns[X].Width;I->Left=R.Left;
-		case CENTER: I->Left=R.Left+Cell.LeftBorder->Width;I->Width=Columns[X].Width-Cell.LeftBorder->Width-Cell.RightBorder->Width+1;break;
-//		case RIGHT:	I->Width=Columns[X].Width;I->Left=R.Left;
-	}
-	switch(Cell.Valign)
-	{
-		case aNO:break;
-//		case TOP:		I->Top=R.Top+1;I->Height=Rows[Y].Height-2;break;
-		case MIDDLE: I->Top=R.Top+Cell.TopBorder->Width;I->Height=Rows[Y].Height-Cell.TopBorder->Width-Cell.BottomBorder->Width+1;break;
-//		case BOTTOM:I->Top=R.Top+Rows[Y].Height-I->Height;I->Height=Rows[Y].Height-2;break;
-	}
+	//načtení obrázku ze zdroje
 	if(Cell.ImageIndex>-1 && scGPImageCollection!=NULL){I->Images=scGPImageCollection;I->ImageIndex=Cell.ImageIndex;}
+	if(Cell.Text!="")if(FileExists(Cell.Text)){/*Cell.ImageIndex=-1;*/I->Picture->LoadFromFile(Cell.Text);}//pokud obsahuje buňka adresu na daný soubor a soubor je nalezen - nutno ještě otestovat delší adresu kvůli lomítkům!!!
+	//viditelnost
+	if(VisibleComponents>-1)I->Visible=VisibleComponents;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
+	//velikost - v případě, že obrázek je větší než buňka, zmenší jeho velikost na velikost buňky, nestrečuje
+	if(I->Width>Columns[X].Width-Cell.LeftBorder->Width-Cell.RightBorder->Width+1)I->Width=Columns[X].Width-Cell.LeftBorder->Width-Cell.RightBorder->Width+1;//šířka
+	if(I->Height>Rows[Y].Height-Cell.TopBorder->Width-Cell.BottomBorder->Width+1)I->Height=Rows[Y].Height-Cell.TopBorder->Width-Cell.BottomBorder->Width+1;//výška
+	//pozice
+	switch(Cell.Align)//horizontální
+	{
+		case aNO:break;
+		case LEFT:	I->Left=R.Left+Cell.LeftBorder->Width;I->Width=Columns[X].Width-Cell.LeftBorder->Width-Cell.RightBorder->Width+1;break;
+		case CENTER:I->Left=m.round((R.Left+Cell.LeftBorder->Width+R.Right-Cell.RightBorder->Width)/2.0-I->Width/2.0);break;
+		case RIGHT:	I->Left=R.Right-I->Width-Cell.RightBorder->Width+1;
+	}
+	switch(Cell.Valign)//vertikální
+	{
+		case aNO:break;
+		case TOP:		I->Top=R.Top+Cell.TopBorder->Width;break;
+		case MIDDLE:I->Top=m.round((R.Top+Cell.TopBorder->Width+R.Bottom-Cell.BottomBorder->Width)/2.0-I->Height/2.0);break;
+		case BOTTOM:I->Top=R.Bottom-I->Height-Cell.TopBorder->Width+1;break;
+	}
+	//ostatní atributy
 	if(Cell.ShowHint){I->ShowHint=true;I->Hint=Cell.Hint;}
 	I->Font=Cell.Font;
 	if(I->Font->Name=="Roboto Cn")I->Font->Quality=System::Uitypes::TFontQuality::fqAntialiased;else I->Font->Quality=System::Uitypes::TFontQuality::fqDefault;//zapíná AA, pozor může dělat problémy při zvětšování písma, alternativa fqProof či fqClearType
-	if(Cell.Text!="")if(FileExists(Cell.Text))I->Picture->LoadFromFile(Cell.Text);//pokud obsahuje buňka adresu na daný soubor a soubor je nalezen - nutno ještě otestovat delší adresu kvůli lomítkům!!!
 	//vlastník
 	I->Parent=Form;//musí být až na konci
 	I=NULL;delete I;
@@ -1548,7 +1554,7 @@ TscGPImage *TmGrid::createImage(unsigned long Col,unsigned long Row)
 		I->Tag=getTag(Col,Row);//vratí ID tag komponenty,absolutní pořadí v paměti
 		//Cell.Text=I->Tag; ShowMessage(I->Tag);
 		I->Name="mGrid_IMAGE_"+AnsiString(ID)+"_"+AnsiString(I->Tag);
-
+		I->AutoSize=true;//vhodné jako výchozí stav kvůli menším obrázkům, jinak by se naduplikovaly
 		//události
 		I->OnClick=&getTagOnClick;
 		I->OnMouseEnter=&getTagOnMouseEnter;
@@ -1790,7 +1796,7 @@ void __fastcall TmGrid::getTagOnChange(TObject *Sender)
 		if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnChange(Tag,Col,Row);
 		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnChange(Tag,Col,Row);
     if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnChange(Tag,ID,Col,Row);//z unit1 do unitX
-    if(AnsiString(Tag).SubString(1,1)=="7")Form_parametry_linky->OnChange(Tag,Col,Row);
+		if(AnsiString(Tag).SubString(1,1)=="7")Form_parametry_linky->OnChange(Tag,Col,Row);
 	}
 }
 //---------------------------------------------------------------------------
