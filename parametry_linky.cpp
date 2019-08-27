@@ -104,8 +104,10 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
     //F->scStyledForm1->ShowClientInActiveEffect();
    // scHTMLLabel1->Caption="Ahojky - <bgcolor =clWhite>[mm]</bgcolor>";
 
+
+
     Cvektory::Ttyp_dopravniku *K=F->d.v.vrat_typ_dopravniku(F->d.v.PP.katalog);
-    scGPGlyphButton_katalog->Caption=K->name+", R="+F->d.v.PP.radius;
+    scGPGlyphButton_katalog->Caption=K->name+", rádius "+F->d.v.PP.radius +" mm";
 
   	if(Form1->readINI("nastaveni_form_parametry", "RDt") == "1")
     {  //budu pøevádìt na m/min
@@ -138,6 +140,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
      //nahrání hodnot / bud v MM nebo M
 
     }
+     //Runit=MM;
 
       scGPNumericEdit_delka_jig->Value=Form1->d.v.PP.delka_jig*(1+999*Delkaunit);
 			scGPNumericEdit_sirka_jig->Value=Form1->d.v.PP.sirka_jig*(1+999*Delkaunit);
@@ -162,6 +165,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	//mGrid->DefaultCell.Font->Size=14;
 	//mGrid->DefaultCell.Font->Name="Roboto";
   mGrid->Create(9,2);//samotné vytvoøení matice-tabulky
+ // mGrid->Border.Color=(TColor)RGB(240,240,240);
 
   getmGridWidth();
 
@@ -404,7 +408,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 rHTMLLabel_takt->Top=scPanel_takt->Height/2-rHTMLLabel_takt->Height/2+1;
 	 //Left uvnitø
 	 scImage1->Left=40+6;//scImage1->Left=40 nelze použít scImage1->Left proto zmìøeno a pøidáno ruènì 40
-	 rEditNum_takt->Left=rEditNum_takt->Left+6;
+	 rEditNum_takt->Left=169;
 	 rHTMLLabel_takt->Left=rHTMLLabel_takt->Left+6;
 	 //obrázky
 	 rImageEx_jig_podlahovy->Left=scPanel_vozik->Width/2-rImageEx_jig_podlahovy->Width/2;
@@ -432,7 +436,7 @@ void TForm_parametry_linky::nacti_pohony ()
 	 if (ukaz!=NULL)
 	 {
 				mGrid->RowCount = Form1->d.v.POHONY->predchozi->n + 2;
-        mGrid->Refresh();
+        mGrid->Refresh();  //nutné
 				data_nalezena=true; //pokud jsou ve spojaku nejaka data, nastavit na true
 				 for (unsigned int i=2;i<mGrid->RowCount;i++)
 				 {
@@ -462,24 +466,28 @@ void TForm_parametry_linky::nacti_pohony ()
             TscGPListBoxItem *I;
 
            //naètení hodnoty rozteèe do roletky + nastavení jako ItemIndex=0
+          // ShowMessage(ukaz->roztec);
             I=C->Items->Add();
 						if(ukaz->roztec==0) C->ItemIndex=-1;
 						if(Runit==MM) { I->Caption = ukaz->roztec*(1+999.0*Runit); C->ItemIndex=0; }
 						else  { I->Caption = ukaz->roztec; C->ItemIndex=0; }
 
            //  ShowMessage(Runit);
-           //naètení ostatních hodnot z katalogu do roletky
+          // naètení ostatních hodnot z katalogu do roletky
+            if(!Form1->d.v.pohon_je_pouzivan(ukaz->n))
+          {
            Cvektory::Ttyp_dopravniku *K=F->d.v.vrat_typ_dopravniku(F->d.v.PP.katalog);
            Cvektory::TDoubleHodnota *H=K->roztec->dalsi;
            C->Items->Clear();
-            while(H!=NULL) // zatím není fèní - rozteè se neukládá v SI jednotkách
+            while(H!=NULL)
            {
             I=C->Items->Add();
-            if(Runit==MM) I->Caption=H->hodnota*(1+999.0*Runit);
+            if(Runit==M) I->Caption=H->hodnota/(1+999.0*Runit); //obrácenì, jelikož v katalogu jsou vždy mm
             else I->Caption=H->hodnota;
             H=H->dalsi;
            }
             I=NULL;delete I;
+           }
 
          getmGridWidth();
 
@@ -494,8 +502,19 @@ void TForm_parametry_linky::nacti_pohony ()
           mGrid->Cells[4][i].Type=mGrid->readEDIT;
           mGrid->Cells[5][i].Type=mGrid->readEDIT;
           mGrid->Cells[5][i].Type=mGrid->COMBOEDIT;
+          mGrid->getComboEdit(5,i)->Enabled=false; //nechám typ combo, pouze ho zakážu
+          mGrid->getComboEdit(5,i)->Options->DisabledColorAlpha=250;
+          mGrid->getComboEdit(5,i)->Options->FrameWidth=1;
+          mGrid->getComboEdit(5,i)->Options->FrameDisabledColor=(TColor)RGB(200,200,200);
+          mGrid->getComboEdit(5,i)->Options->FrameDisabledColorAlpha=250;
 					mGrid->Cells[6][i].Type=mGrid->CHECK;
           mGrid->Cells[7][i].Type=mGrid->BUTTON;
+          mGrid->Refresh();
+          mGrid->getButton(7,i)->Options->NormalColor=(TColor)RGB(250,250,250);
+          mGrid->getButton(7,i)->Options->NormalColorAlpha=250;
+          mGrid->getButton(7,i)->Options->FrameWidth=1;
+          mGrid->getButton(7,i)->Options->FrameNormalColor=(TColor)RGB(200,200,200);
+          mGrid->getButton(7,i)->Options->FrameNormalColorAlpha=250;
           mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
           }
           else
@@ -509,6 +528,12 @@ void TForm_parametry_linky::nacti_pohony ()
 					mGrid->Cells[7][i].Type=mGrid->BUTTON;
 					mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
 
+          mGrid->Refresh();
+          mGrid->getButton(7,i)->Options->NormalColor=(TColor)RGB(250,250,250);
+          mGrid->getButton(7,i)->Options->NormalColorAlpha=250;
+          mGrid->getButton(7,i)->Options->FrameWidth=1;
+          mGrid->getButton(7,i)->Options->FrameNormalColor=(TColor)RGB(200,200,200);
+          mGrid->getButton(7,i)->Options->FrameNormalColorAlpha=250;
 
 					mGrid->Cells[2][i].InputNumbersOnly=2;
 					mGrid->Cells[3][i].InputNumbersOnly=2;
@@ -632,12 +657,12 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
         if(count>0)
         {
 
-             scStyledForm1->ShowClientInActiveEffect();
+             scStyledForm2->ShowClientInActiveEffect();
 
             if(mrOk==Form1->MB("Nelze uložit, vyplòte všechny údaje o pohonu",MB_OK))
             {
              Ulozit=false;
-             scStyledForm1->HideClientInActiveEffect();
+             scStyledForm2->HideClientInActiveEffect();
              }
         }
 
@@ -959,7 +984,8 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
     while(H!=NULL)
    {
     I=C->Items->Add();
-    I->Caption=H->hodnota;
+    if(Runit==MM) I->Caption=H->hodnota;
+    else I->Caption=H->hodnota/1000.0;
     H=H->dalsi;
    }
 
@@ -2340,33 +2366,7 @@ void __fastcall TForm_parametry_linky::FormMouseDown(TObject *Sender, TMouseButt
           TShiftState Shift, int X, int Y)
 {
  F->log(__func__); //logování
-//	 if(Button==mbRight && mGrid->Row>=2)//je stisknuto pravé tlaèítko myši ve stringridu, tzn. volat popupmenu
-//	 {
-//      mGrid->MovingTable=true; mGrid->Refresh();
-//			PopUPmenu->Height=34*2;//zobrazené dvì položky
-//			PopUPmenu->Left=X;PopUPmenu->Top=Y+mGrid->Top;//pozice
-//			//nastávení textu polože
-//			scLabel_kopirovat->Caption="  Kopírovat "+mGrid->Cells[1][mGrid->Row].Text;
-//			scLabel_smazat->Caption="  Smazat "+mGrid->Cells[1][mGrid->Row].Text;
-//			//testuje zda existují nepoužíté pohony a je tedy vhodné nabídku na smazání nepoužitých zobrazovat
-//			if(existuji_nepouzivane_pohony())
-//			{
-//				PopUPmenu->Height=34*3;//zobrazené již tøi položky
-//				Item_smazat_nepouzite->Visible=true;
-//				scGPGlyphButton_DEL_nepouzite->Visible=true;
-//			}
-//			else
-//			{
-//				Item_smazat_nepouzite->Visible=false;
-//				scGPGlyphButton_DEL_nepouzite->Visible=false;
-//			}
-//			//ošetøení, pokud je mimo obrazovku + 5 px okraj
-//			if(PopUPmenu->Left>=ClientWidth-PopUPmenu->Width)//nastala situace že je mimo obraz (nebo èásteènì)
-//			PopUPmenu->Left=ClientWidth-PopUPmenu->Width-5;
-//			if(PopUPmenu->Top>=mGrid->Top+mGrid->Height-PopUPmenu->Height)
-//			PopUPmenu->Top=mGrid->Top+mGrid->Height-PopUPmenu->Height-5;
-//			PopUPmenu->Visible=true;
-//	 }
+
    if(Button==mbLeft && mGrid->CheckPTinTable(X,Y))      //pøepnutí jednotek
    {
 
@@ -2660,13 +2660,11 @@ void TForm_parametry_linky::vykresli_obdelnik_vpravo()
 
 void __fastcall TForm_parametry_linky::scGPGlyphButton_katalogClick(TObject *Sender)
 {
-
-  		//Form_katalog->ShowModal();
-      if(Form_katalog->ShowModal()==mrOk)
-      { //refresh kvùli natažení dat do popisku názvu katalogu na PL
+    if(Form_katalog->ShowModal()==mrOk)
+    {
      Form_parametry_linky->Visible=false;
      Form_parametry_linky->Visible=true;
-      }
+    } else {Form_parametry_linky->Visible=false;Form_parametry_linky->Visible=true;}
 }
 //---------------------------------------------------------------------------
 
@@ -2695,7 +2693,7 @@ void TForm_parametry_linky::getROtherValues(Tm_mm Runit, int Row)
             while(H!=NULL)
            {
             I=C->Items->Add();
-             if(Runit==MM) I->Caption=H->hodnota*1000.0;
+             if(Runit==MM) I->Caption=H->hodnota;
              else I->Caption=H->hodnota/1000.0;
 
             H=H->dalsi;

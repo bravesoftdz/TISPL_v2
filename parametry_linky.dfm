@@ -7273,8 +7273,8 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 6629
-    Top = 10419
+    Left = 6758
+    Top = 10634
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -7346,7 +7346,7 @@ object Form_parametry_linky: TForm_parametry_linky
   object scGPGlyphButton_katalog: TscGPGlyphButton
     Left = 134
     Top = 283
-    Width = 180
+    Width = 222
     Height = 29
     Hint = 'Katalog dopravn'#237'k'#367
     Font.Charset = DEFAULT_CHARSET
@@ -7455,7 +7455,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Left = 920
     Top = 336
   end
-  object scStyledForm1: TscStyledForm
+  object scStyledForm2: TscStyledForm
     DWMClientShadow = False
     DWMClientShadowHitTest = False
     DropDownForm = False
@@ -7481,7 +7481,7 @@ object Form_parametry_linky: TForm_parametry_linky
     CaptionAlignment = taLeftJustify
     InActiveClientColor = clWindow
     InActiveClientColorAlpha = 100
-    InActiveClientBlurAmount = 1
+    InActiveClientBlurAmount = 5
     Tabs = <>
     TabFont.Charset = DEFAULT_CHARSET
     TabFont.Color = clWindowText
@@ -7499,7 +7499,7 @@ object Form_parametry_linky: TForm_parametry_linky
     CaptionWallpaperTopMargin = 1
     CaptionWallpaperRightMargin = 1
     CaptionWallpaperBottomMargin = 1
-    Left = 567
-    Top = 296
+    Left = 440
+    Top = 288
   end
 end

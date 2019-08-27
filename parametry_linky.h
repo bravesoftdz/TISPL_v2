@@ -105,8 +105,8 @@ __published:	// IDE-managed Components
   TrImageEx *rImageEx_jig_podlahovy;
 	TrImageEx *rImageEx_jig_podvesny;
   TscHTMLLabel *scHTMLLabel_jig_info;
-  TscStyledForm *scStyledForm1;
   TscGPGlyphButton *scGPGlyphButton_katalog;
+  TscStyledForm *scStyledForm2;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
