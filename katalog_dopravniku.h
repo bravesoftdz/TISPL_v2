@@ -13,6 +13,8 @@
 #include "Unit1.h"
 #include "vektory.h"
 #include "parametry_linky.h"
+#include "rHTMLLabel.hpp"
+#include "rHintWindow.hpp"
 //---------------------------------------------------------------------------
 class TForm_katalog : public TForm
 {
@@ -23,12 +25,15 @@ __published:	// IDE-managed Components
   TscGPButton *Button_save;
   TscGPButton *Button_storno;
   TMemo *Memo1;
+  TrHTMLLabel *rHTMLLabel_InfoText;
+  TrHTMLHint *rHTMLHint1;
   void __fastcall FormShow(TObject *Sender);
   void __fastcall FormPaint(TObject *Sender);
   void __fastcall Button_stornoClick(TObject *Sender);
   void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
   void __fastcall Button_saveClick(TObject *Sender);
   void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
+  void __fastcall KonecClick(TObject *Sender);
 
 private:	// User declarations
     void LoadValues();
@@ -40,6 +45,7 @@ public:		// User declarations
     bool zmena;
     double radius;
     int katalog_id;
+    void vypis(UnicodeString text,bool red=true,bool link=false);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm_katalog *Form_katalog;

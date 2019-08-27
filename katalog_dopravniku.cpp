@@ -8,6 +8,8 @@
 #pragma package(smart_init)
 #pragma link "scControls"
 #pragma link "scGPControls"
+#pragma link "rHTMLLabel"
+#pragma link "rHintWindow"
 #pragma resource "*.dfm"
 TForm_katalog *Form_katalog;
 //---------------------------------------------------------------------------
@@ -27,6 +29,12 @@ void __fastcall TForm_katalog::FormShow(TObject *Sender)
 {
 	mGrid=new TmGrid(this);//vždy nutno jako první
   mGrid->Tag=8;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
+
+  Form_parametry_linky->scStyledForm2->InActiveClientBlurAmount=1;
+  Form_parametry_linky->scStyledForm2->ShowClientInActiveEffect();
+
+  F->scStyledForm1->InActiveClientBlurAmount=1;
+  F->scStyledForm1->ShowClientInActiveEffect();
 
   ////////vytvoření tabulky s požadovaným počtem sloupců a řádků////////
 	unsigned long ColCount=20;//pevný počet slopců
@@ -59,6 +67,8 @@ void __fastcall TForm_katalog::FormShow(TObject *Sender)
   Button_save->Top= mGrid->Height + scLabel_header->Height + 30;
   Button_storno->Top= mGrid->Height + scLabel_header->Height + 30;
   Form_katalog->Height = scLabel_header->Height +  mGrid->Height + Button_save->Height + 70;
+ 
+  vypis("Kliknutím do seznamu rádiusů vyberete katalog dopravníků",false);
 }
 //---------------------------------------------------------------------------
 
@@ -228,8 +238,11 @@ void TForm_katalog::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row
 
 void __fastcall TForm_katalog::Button_stornoClick(TObject *Sender)
 {
+F->scStyledForm1->HideClientInActiveEffect();
+Form_parametry_linky->scStyledForm2->HideClientInActiveEffect();
+Button_storno->SetFocus();//workaround proti padání mGridu (padalo při odstraňování komponent), Focus se přesune z mazané komponenty na mGridu, na komponentu nemazanou
+mGrid->Delete();
 
-Close();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_katalog::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
@@ -245,12 +258,9 @@ void __fastcall TForm_katalog::Button_saveClick(TObject *Sender)
 F->d.v.PP.katalog=katalog_id;
 F->d.v.PP.radius=radius;
 
-//Cvektory::Ttyp_dopravniku *D=F->d.v.vrat_typ_dopravniku(katalog_id);
-//  ShowMessage(D->name);
-//Form_parametry_linky->rHTMLLabel_katalog_nazev->Caption=D->name+", R="+F->d.v.PP.radius;
-//delete D; D=NULL;
-//
-//Form_parametry_linky->Button_save->SetFocus();
+F->scStyledForm1->HideClientInActiveEffect();
+Form_parametry_linky->scStyledForm2->HideClientInActiveEffect();
+
 Button_storno->SetFocus();
 //Form_parametry_linky->Close();
 
@@ -265,3 +275,48 @@ mGrid->Delete();
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TForm_katalog::KonecClick(TObject *Sender)
+{
+F->scStyledForm1->HideClientInActiveEffect();
+Form_parametry_linky->scStyledForm2->HideClientInActiveEffect();
+Button_storno->SetFocus();//workaround proti padání mGridu (padalo při odstraňování komponent), Focus se přesune z mazané komponenty na mGridu, na komponentu nemazanou
+mGrid->Delete();
+Close();
+}
+//---------------------------------------------------------------------------
+void TForm_katalog::vypis(UnicodeString text,bool red,bool link)
+{
+    F->log(__func__); //logování
+		Button_save->Enabled=true;
+		Button_save->Caption = "Uložit";
+ //if(text=="m].</b>")text="";//provizorní WA, při změně Rz a byla-li v pořádku to vrací toto  - již není třeba, ale zatím nechávám
+		if (text != "") // zobrazí a vypíše
+		{
+				rHTMLHint1->ToString()=text;//natežení do hintu zajišťuje zobrazení celého textu, nepoužívá se klasický hint
+				//prodllužení formu if(!rHTMLLabel_InfoText->Visible){Height+=(40+19);position();}pouze pokud byl předtím popisek skrytý + kontrola pozice formu
+
+				if(link)rHTMLLabel_InfoText->Font->Style = TFontStyles()<< fsUnderline;//zapnutí podtrženého písma
+				else rHTMLLabel_InfoText->Font->Style = TFontStyles();
+
+				if (red)
+				{
+						Button_save->Enabled=false;  //R - dočasné povolení ukládání při validaci
+						rHTMLLabel_InfoText->Font->Color = clRed;
+            rHTMLLabel_InfoText->Color=clWhite;
+				}
+				else
+				{
+						rHTMLLabel_InfoText->Font->Color = (TColor)RGB(0,128,255);
+				}
+        rHTMLLabel_InfoText->Top = mGrid->Height + scLabel_header->Height + 14;
+        rHTMLLabel_InfoText->Left = 4;
+				rHTMLLabel_InfoText->Caption = text;
+				rHTMLLabel_InfoText->Visible = true;
+        rHTMLLabel_InfoText->Color=clWhite;
+		}
+		else // skryje
+		{
+				//zkrácení formu if(rHTMLLabel_InfoText->Visible)Height-=(40+19);
+				rHTMLLabel_InfoText->Visible = false;
+		}
+}

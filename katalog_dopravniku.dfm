@@ -18,6 +18,25 @@ object Form_katalog: TForm_katalog
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
+  object rHTMLLabel_InfoText: TrHTMLLabel
+    Left = 8
+    Top = 496
+    Width = 153
+    Height = 19
+    Caption = 'rHTMLLabel_InfoText'
+    Color = clWhite
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clActiveCaption
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentColor = False
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    Transparent = False
+  end
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
@@ -68,6 +87,7 @@ object Form_katalog: TForm_katalog
       Margins.Bottom = 1
       Align = alRight
       TabOrder = 0
+      OnClick = KonecClick
       Animation = True
       Caption = 'Konec'
       CanFocused = False
@@ -412,5 +432,15 @@ object Form_katalog: TForm_katalog
       'Memo1')
     TabOrder = 3
     Visible = False
+  end
+  object rHTMLHint1: TrHTMLHint
+    HintFont.Charset = DEFAULT_CHARSET
+    HintFont.Color = clActiveCaption
+    HintFont.Height = -16
+    HintFont.Name = 'Tahoma'
+    HintFont.Style = []
+    HintFont.Quality = fqClearType
+    Left = 8
+    Top = 528
   end
 end
