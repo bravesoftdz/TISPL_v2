@@ -33,7 +33,7 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 {
 // pøi kliku do nìjaké buòky nastavím input_state=NOTHING, pokud udìlám zmìnu buòky je v OnChange události switch, který zajistí
 // výpoèet konkrétní buòky dle pøedávaných parametrù v události
-	input_state=NO;    //F->Sv(ID);
+	input_state=NO;
 	if(ID==6666)F->tab_knihovna_click(-100,-100,Col,Row);//pøeposání události
 	//funkcionalita exBUTTONu v tabulce pohonu
 	if(ID==9999&&Row==-2)//pokud je stisknut exButton v tabulce pohonu
@@ -159,6 +159,11 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					input_state=LO2; //nastaveni stavu
 					E->LO_pozice=F->inLO(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text));//pouze uložení do dat
 				}
+				if(Row==4)// eidtace COMBO PD
+				{
+					input_state=COMBO; //nastaveni stavu
+					E->PD=E->mGrid->getCombo(1,Row)->ItemIndex;//pouze uložení do dat
+				}
 			} break;
 			case 2:case 8:case 12:case 16:case 102:case 106: //robot se stop stanicí
 			{
@@ -244,6 +249,11 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					E->LO2=F->inLO(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text)); //INPUT
 					E->PT2=E->LO2/F->pom_temp->pohon->aRD;//uložení do pamìti + výpoèet
 					E->mGrid->Cells[Col][Row-1].Text = F->m.round2double(F->outPT(E->PT2),3);//OUTPUT
+				}
+				if(Row==8)// eidtace COMBO PD
+				{
+					input_state=COMBO; //nastaveni stavu
+					E->PD=E->mGrid->getCombo(1,Row)->ItemIndex;//pouze uložení do dat
 				}
 			} break;
 			case 4:case 10:case 14:case 18:case 104:case 108://robot s aktivní otoèí (resp. s otoèí a stop stanicí)

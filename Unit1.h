@@ -319,6 +319,7 @@ __published:	// IDE-managed Components
 	TscButton *scButton_zamek_layoutu;
 	TscGPImageCollection *scGPImageCollection_Objekty;
 	TImage *Image_knihovna_objektu;
+	TscGPLabel *scGPLabel_ostatni;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -566,6 +567,7 @@ private:
 	void add_komoru();//pøidávání komory kabinì powerwashe, kontrola zda není souèet kabin vìtší než rozmìr kabiny
 	short rotace_symbol(short trend,int X, int Y);
 	void vytvoreni_tab_knihovna();//vytovoøení tabulky knihovny objektù
+	void popisky_knihovna_nahled(bool knihovna);//pøepíná popisky mezi knihovnou a editací
 	void vytvoreni_tab_pohon();//vytvoøení tabulky pohonu
   void odstraneni_elementu_tab_pohon(int operace);
 	void prirazeni_pohonu_tab_pohon(int index_pohonu);//pøedesignuje tabulku pohonu po pøidání elementu, nebo pohonu
@@ -595,7 +597,6 @@ private:
 	void ulozit_nastaveni();
 	void zavrit_uvod();//zavøe úvodní dialog
 	int vrat_max_vysku_grafu();//vratí maximální oblast
-	bool prekryti_LO(Cvektory::TElement *E);//prozkoumá zda se element nepøekrýva lak. oknem se sousedními
 	bool najdi_nazev_obj(double X,double Y,Cvektory::TObjekt *Objekt,int typ=0);//vratí zda jsem v oblasti textu, typ 0 citelná oblast textu, typ 1 citelná oblast posun. køíže
 	void getJobID(int X, int Y);//vrátí do globální promìnné JID ID úlohy/funkcionality v místì kurzoru, zároveò pokud v místì tabulky èi elementu nahraje ukazatel do globální promìnné pom_element, význam jednotlivých JID hodnot v komentáøi definici metody
 	void setJobIDOnMouseMove(int X, int Y);//dle místa kurzoru a vrácené JID (job id) nastaví úlohu
@@ -665,7 +666,6 @@ private:
 	bool offset_spolus_rozmerem;//uchovává v sobì, zda má být pøi zmìnì rozmerù kabiny zmìnì i offset kót elementù
 	UnicodeString Jazyk;
 	int count_memo;//counter pro memo
-	TPointD puv_souradnice;//slouží k ukládání pùvodních souøadnic, napø. pøi posunu elementu
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
@@ -728,6 +728,7 @@ public:		// User declarations
 	bool duvod_ulozit_nahled;//uchovává v sobì dùvod k uložení náhledu
 	bool auto_settings_open;
 	int ID_tabulky;
+	TPointD puv_souradnice;//slouží k ukládání pùvodních souøadnic, napø. pøi posunu elementu
 
 	//metody
 	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click
@@ -777,6 +778,8 @@ public:		// User declarations
 	void pridani_elementu_tab_pohon(Cvektory::TElement *E);//pøedesign tabulky pohonu po pøidání elementu
 	void log(AnsiString Text,AnsiString Text2="");//zapíše log do textového souboru a pøidá datum
 	TRect souradnice_LO(Cvektory::TElement *E);//vrací souøadnice (PX) lakovacího okna elementu pokud nìjaké má,pokud ne vrátí souøadnice elementu
+	bool prekryti_LO(Cvektory::TElement *E);//prozkoumá zda se element nepøekrýva lak. oknem se sousedními
+	double vzdalenost_meziLO(Cvektory::TElement *E,double orientace);//vrati delku v metrech mezi LO elementù
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
