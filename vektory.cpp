@@ -1837,15 +1837,16 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->WTstop=0;//čekání na stopce
 	novy->RT=0;//reserve time
 	novy->stav=1;
+	novy->PD=-1;//defaultní stav pro S&G roboty
 
 	//název
 	AnsiString T="";
 	switch(eID)
 	{
 		case 0: T="Stop"; break;//stop stanice
-		case 1:case 7:case 11:case 15:case 101:case 105:  T="Robot"; 				break;//kontinuální robota
+		case 1:case 7:case 11:case 15:case 101:case 105:  T="Robot"; 				novy->PD=0;break;//kontinuální robota
 		case 2:case 8:case 12:case 16:case 102:case 106:  T="Robot"; 				novy->PT1=60;break;//robot se stopkou
-		case 3:case 9:case 13:case 17:case 103:case 107:  T="Robot"; 				novy->OTOC_delka=0.450;novy->LO1=(1.5-novy->OTOC_delka)/2.0;novy->LO2=novy->LO1;novy->rotace_jig=180;break;//kontinuální robot s pasivní otočí
+		case 3:case 9:case 13:case 17:case 103:case 107:  T="Robot"; 				novy->PD=0;novy->OTOC_delka=0.450;novy->LO1=(1.5-novy->OTOC_delka)/2.0;novy->LO2=novy->LO1;novy->rotace_jig=180;break;//kontinuální robot s pasivní otočí
 		case 4:case 10:case 14:case 18:case 104:case 108: T="Robot";				novy->PT1=60;novy->PTotoc=20;novy->PT2=60;novy->rotace_jig=180; break;//robot s aktivní otočí (tj. s otočí a se stopkou)
 		case 5: T="Otoč"; 																									novy->OTOC_delka=0.450;novy->rotace_jig=90;break;//pasivní otoč
 		case 6: T="Otoč"; 																									novy->PTotoc=20;novy->rotace_jig=90;break;//aktivní otoč
@@ -2202,6 +2203,7 @@ void Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->orientace=Original->orientace;
 	Kopie->rotace_jig=Original->rotace_jig;
 	Kopie->stav=Original->stav;
+	Kopie->PD=Original->PD;
 	Kopie->LO1=Original->LO1;
 	Kopie->OTOC_delka=Original->OTOC_delka;
 	Kopie->LO2=Original->LO2;
@@ -2551,6 +2553,7 @@ short Cvektory::PtInKota_elementu(TObjekt *Objekt,long X,long Y)
 	while(E!=NULL)
 	{
 		if(E->citelna_oblast.rect1.PtInRect(TPoint(X,Y))){RET=1;F->pom_element=E;break;}//hodnoty kóty
+		else if(E->citelna_oblast.rect4.left!=E->citelna_oblast.rect4.right!=0 && E->citelna_oblast.rect4.PtInRect(TPoint(X,Y))){RET=3;F->pom_element=E;break;}
 		else
 		{
 			if(E->citelna_oblast.rect2.PtInRect(TPoint(X,Y))){RET=2;F->pom_element=E;break;}//jednotky kóty
@@ -2569,6 +2572,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 	if(F->pom_temp!=NULL && F->pom_temp->elementy!=NULL/*&&F->Akce!=F->MOVE_ELEMENT*/)//raději ošetření, ač by se metoda měla volat jen v případě existence pom_temp
 	{
 		bool posun_povolit=true;
+		F->puv_souradnice.x=Element->X;F->puv_souradnice.y=Element->Y;
 		if(F->pom_temp->elementy->dalsi!=NULL&&vzdalenost!=0)//musí existovat alespoň jeden element&&nesmí být vzdálenost rovna nule
 		{
 			TPointD vzd;
@@ -2612,6 +2616,12 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){posuv_aktualizace_RT(Element);posuv_aktualizace_RT(Element->dalsi);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
 				else posuv_aktualizace_RT(Element);
 			}
+      //kontrola zda je element v konfliktu LO a dotaz na uživatele zda chce přesun uskutečnit
+			if(F->prekryti_LO(Element) && !posun_kurzorem && mrYes!=F->MB(F->akt_souradnice_kurzoru_PX.x+10,F->akt_souradnice_kurzoru_PX.y+10,"Posunem dojde k překrytí lakovacích oken, chcete element posunout?","",MB_YESNO))
+			{
+				Element->X=F->puv_souradnice.x;Element->Y=F->puv_souradnice.y;
+				posun_povolit=false;
+			}
 			//aktualizace geometrie, pokud byl proveden posun
 			if(posun_povolit)
 			{
@@ -2624,7 +2634,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				Element->dalsi->geo.X1=F->d.Rxy(Element).x;Element->dalsi->geo.Y1=F->d.Rxy(Element).y;
 				Element->dalsi->geo.X2=Element->dalsi->geo.X1+(Element->dalsi->geo.X4-Element->dalsi->geo.X1)/2.0;Element->dalsi->geo.Y2=Element->dalsi->geo.Y1+(Element->dalsi->geo.Y4-Element->dalsi->geo.Y1)/2.0;
 				Element->dalsi->geo.X3=Element->dalsi->geo.X2;Element->dalsi->geo.Y3=Element->dalsi->geo.Y2; }
-			}else F->TIP="Nelze provést přesun, elementy musí být na pohonu, včetně lakovacích oken!";
+			}
 			//v případě požadavku na posun i následujících elementů
 			if(pusun_dalsich_elementu && posun_povolit)
 			{
