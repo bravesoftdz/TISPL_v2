@@ -1898,7 +1898,7 @@ void Cvykresli::vykresli_kurzor_kabiny (TCanvas *canv, int id, int X, int Y, Cve
 	if((long)id!=F->VyID && (long)id!=pocet_objektu_knihovny+1 && X!=-200)
 	{
 		int rotace=270;//defaultní hodnota,dáno azimutem přímky
-		double azimut,X1,Y1,X2,Y2,Xp,Yp;
+		double X1,Y1,X2,Y2,Xd,Yd,azimut;
 		//nastavení rozměrů objektu
 		TPoint rozmery_kabiny;
   	switch(id)
@@ -1926,64 +1926,94 @@ void Cvykresli::vykresli_kurzor_kabiny (TCanvas *canv, int id, int X, int Y, Cve
 		{
 			if(v.OBJEKTY->predchozi->n<2)//pouze jedna spojnice s předchozím
 			{
-				//ukazatel na předchozí
+        //ukazatel na předchozí
 				if(p==NULL)p=v.OBJEKTY->predchozi;
-				//zjištění rotace
-				azimut=m.azimut(X,Y,m.L2Px(p->elementy->predchozi->geo.X4),m.L2Py(p->elementy->predchozi->geo.Y4));
-				rotace=m.Rt90(azimut);
+				//souřadncie předchozího objektu
+				double Xp=m.L2Px(p->elementy->predchozi->geo.X4),Yp=m.L2Py(p->elementy->predchozi->geo.Y4);
 				//nastavení bodů objektu
-				switch(rotace)
+				//nová koncepce
+				short oblast=v.oblast_objektu(p,X,Y);
+        if(oblast==0)
 				{
-					case 0:X1=X+m.m2px(rozmery_kabiny.y)/2.0;Y1=Y;X2=X-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y-m.m2px(rozmery_kabiny.x);Xp=X;Yp=Y2;break;
-					case 90:X1=X;Y1=Y-m.m2px(rozmery_kabiny.y)/2.0;X2=X-m.m2px(rozmery_kabiny.x);Y2=Y+m.m2px(rozmery_kabiny.y)/2.0;Xp=X2;Yp=Y;break;
-					case 180:X1=X+m.m2px(rozmery_kabiny.y)/2.0;Y1=Y;X2=X-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y+m.m2px(rozmery_kabiny.x);Xp=X;Yp=Y2;break;
-					case 270:X1=X;Y1=Y-m.m2px(rozmery_kabiny.y)/2.0;X2=X+m.m2px(rozmery_kabiny.x);Y2=Y+m.m2px(rozmery_kabiny.y)/2.0;Xp=X2;Yp=Y;break;
+					//zjištění rotace
+					azimut=m.azimut(m.P2Lx(Xp),m.P2Ly(Yp),m.P2Lx(X),m.P2Ly(Y));
+					rotace=m.Rt90(azimut);
+					switch(rotace)
+					{
+						case 0:X1=X+m.m2px(rozmery_kabiny.y)/2.0;Y1=Y;X2=X-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y-m.m2px(rozmery_kabiny.x);Xd=X;Yd=Y2;break;
+						case 270:X1=X;Y1=Y-m.m2px(rozmery_kabiny.y)/2.0;X2=X-m.m2px(rozmery_kabiny.x);Y2=Y+m.m2px(rozmery_kabiny.y)/2.0;Xd=X2;Yd=Y;break;
+						case 180:X1=X+m.m2px(rozmery_kabiny.y)/2.0;Y1=Y;X2=X-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y+m.m2px(rozmery_kabiny.x);Xd=X;Yd=Y2;break;
+						case 90:X1=X;Y1=Y-m.m2px(rozmery_kabiny.y)/2.0;X2=X+m.m2px(rozmery_kabiny.x);Y2=Y+m.m2px(rozmery_kabiny.y)/2.0;Xd=X2;Yd=Y;break;
+					}
+				}
+				if(oblast==1)
+				{
+					//zjištění rotace
+					azimut=m.azimut(m.P2Lx(Xp),m.P2Ly(Yp),m.P2Lx(X),m.P2Ly(Y));
+					rotace=m.Rt90(azimut);
+					switch(rotace)
+					{
+						case 0:if(p->orientace!=180){X1=Xp+m.m2px(rozmery_kabiny.y)/2.0;Y1=Yp;X2=Xp-m.m2px(rozmery_kabiny.y)/2.0;Y2=Yp-m.m2px(rozmery_kabiny.x);}else{X1=Xp+m.m2px(rozmery_kabiny.y)/2.0;Y1=Yp;X2=Xp-m.m2px(rozmery_kabiny.y)/2.0;Y2=Yp+m.m2px(rozmery_kabiny.x);}break;
+						case 90:if(p->orientace==90 || p->orientace==0 || p->orientace==180){X1=Xp;Y1=Yp-m.m2px(rozmery_kabiny.y)/2.0;X2=Xp+m.m2px(rozmery_kabiny.x);Y2=Yp+m.m2px(rozmery_kabiny.y)/2.0;}else{X1=Xp;Y1=Yp-m.m2px(rozmery_kabiny.y)/2.0;X2=Xp-m.m2px(rozmery_kabiny.x);Y2=Yp+m.m2px(rozmery_kabiny.y)/2.0;}break;
+						case 180:if(p->orientace!=0){X1=Xp+m.m2px(rozmery_kabiny.y)/2.0;Y1=Yp;X2=Xp-m.m2px(rozmery_kabiny.y)/2.0;Y2=Yp+m.m2px(rozmery_kabiny.x);}else{X1=Xp+m.m2px(rozmery_kabiny.y)/2.0;Y1=Yp;X2=Xp-m.m2px(rozmery_kabiny.y)/2.0;Y2=Yp-m.m2px(rozmery_kabiny.x);}break;
+						case 270:if(p->orientace==270 || p->orientace==0 || p->orientace==180){X1=Xp;Y1=Yp-m.m2px(rozmery_kabiny.y)/2.0;X2=Xp-m.m2px(rozmery_kabiny.x);Y2=Yp+m.m2px(rozmery_kabiny.y)/2.0;}else{X1=Xp;Y1=Yp-m.m2px(rozmery_kabiny.y)/2.0;X2=Xp+m.m2px(rozmery_kabiny.x);Y2=Yp+m.m2px(rozmery_kabiny.y)/2.0;}break;
+					}
+				}
+				if(oblast==2)
+				{
+					//zjištění rotace
+					azimut=m.azimut(p->elementy->dalsi->geo.X1,p->elementy->dalsi->geo.Y1,m.P2Lx(X),m.P2Ly(Y));
+					rotace=m.Rt90(azimut);
+					switch(rotace)
+					{
+						case 0:if(p->orientace!=0){X1=m.L2Px(p->elementy->dalsi->geo.X1)+m.m2px(rozmery_kabiny.y)/2.0;Y1=m.L2Py(p->elementy->dalsi->geo.Y1);X2=m.L2Px(p->elementy->dalsi->geo.X1)-m.m2px(rozmery_kabiny.y)/2.0;Y2=m.L2Py(p->elementy->dalsi->geo.Y1)-m.m2px(rozmery_kabiny.x);}else{X1=m.L2Px(p->elementy->dalsi->geo.X1)+m.m2px(rozmery_kabiny.y)/2.0;Y1=m.L2Py(p->elementy->dalsi->geo.Y1);X2=m.L2Px(p->elementy->dalsi->geo.X1)-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y1+m.m2px(rozmery_kabiny.x);}break;
+						case 90:if(p->orientace!=90){X1=m.L2Px(p->elementy->dalsi->geo.X1);Y1=m.L2Py(p->elementy->dalsi->geo.Y1)-m.m2px(rozmery_kabiny.y)/2.0;X2=X1+m.m2px(rozmery_kabiny.x);Y2=m.L2Py(p->elementy->dalsi->geo.Y1)+m.m2px(rozmery_kabiny.y)/2.0;}else{X1=m.L2Px(p->elementy->dalsi->geo.X1);Y1=m.L2Py(p->elementy->dalsi->geo.Y1)-m.m2px(rozmery_kabiny.y)/2.0;X2=X1-m.m2px(rozmery_kabiny.x);Y2=m.L2Py(p->elementy->dalsi->geo.Y1)+m.m2px(rozmery_kabiny.y)/2.0;}break;
+						case 180:if(p->orientace!=180){X1=m.L2Px(p->elementy->dalsi->geo.X1)+m.m2px(rozmery_kabiny.y)/2.0;Y1=m.L2Py(p->elementy->dalsi->geo.Y1);X2=m.L2Px(p->elementy->dalsi->geo.X1)-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y1+m.m2px(rozmery_kabiny.x);}else{X1=m.L2Px(p->elementy->dalsi->geo.X1)+m.m2px(rozmery_kabiny.y)/2.0;Y1=m.L2Py(p->elementy->dalsi->geo.Y1);X2=m.L2Px(p->elementy->dalsi->geo.X1)-m.m2px(rozmery_kabiny.y)/2.0;Y2=m.L2Py(p->elementy->dalsi->geo.Y1)-m.m2px(rozmery_kabiny.x);}break;
+						case 270:if(p->orientace==270){X1=m.L2Px(p->elementy->dalsi->geo.X1);Y1=m.L2Py(p->elementy->dalsi->geo.Y1)-m.m2px(rozmery_kabiny.y)/2.0;X2=X1+m.m2px(rozmery_kabiny.x);Y2=m.L2Py(p->elementy->dalsi->geo.Y1)+m.m2px(rozmery_kabiny.y)/2.0;}else{X1=m.L2Px(p->elementy->dalsi->geo.X1);Y1=m.L2Py(p->elementy->dalsi->geo.Y1)-m.m2px(rozmery_kabiny.y)/2.0;X2=X1-m.m2px(rozmery_kabiny.x);Y2=m.L2Py(p->elementy->dalsi->geo.Y1)+m.m2px(rozmery_kabiny.y)/2.0;}break;
+					}
 				}
 				//vykreslení kurzoru
 				canv->Rectangle(X1,Y1,X2,Y2);
 				//vykreslení spojnice k předchozímu
-				canv->MoveTo(m.L2Px(p->elementy->predchozi->geo.X4),m.L2Py(p->elementy->predchozi->geo.Y4));
-				canv->LineTo(X,Y);                                                                                                                                                                                                                                                                                                                                   //azimut musí být násoben -1
-				sipka(canv,(X+m.L2Px(p->elementy->predchozi->geo.X4))/2.0,(Y+m.L2Py(p->elementy->predchozi->geo.Y4))/2.0,azimut*(-1),true,3,clBlack,clWhite,pmNotXor);
+				if(oblast==0)
+				{
+					canv->MoveTo(m.L2Px(p->elementy->predchozi->geo.X4),m.L2Py(p->elementy->predchozi->geo.Y4));
+					canv->LineTo(X,Y);
+					sipka(canv,(X+m.L2Px(p->elementy->predchozi->geo.X4))/2.0,(Y+m.L2Py(p->elementy->predchozi->geo.Y4))/2.0,azimut,true,3,clBlack,clWhite,pmNotXor);
+				}
 			}
 			else//spojnice s předchozím + spojnice s posledním/dalším
 			{
 				//ukazatel na předchozí a poslední/další
-				Cvektory::TObjekt *dalsi;
-				if(p==NULL){p=v.OBJEKTY->predchozi;dalsi=v.OBJEKTY->dalsi;}
-				else dalsi=p->dalsi;
-				//zjištění rotace
-				azimut=m.azimut(X,Y,m.L2Px(p->elementy->predchozi->geo.X4),m.L2Py(p->elementy->predchozi->geo.Y4));
-				rotace=m.Rt90(azimut);
-				//nastavení bodů objektu
-				switch(rotace)
-				{
-					case 0:X1=X+m.m2px(rozmery_kabiny.y)/2.0;Y1=Y;X2=X-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y-m.m2px(rozmery_kabiny.x);Xp=X;Yp=Y2;break;
-					case 90:X1=X;Y1=Y-m.m2px(rozmery_kabiny.y)/2.0;X2=X-m.m2px(rozmery_kabiny.x);Y2=Y+m.m2px(rozmery_kabiny.y)/2.0;Xp=X2;Yp=Y;break;
-					case 180:X1=X+m.m2px(rozmery_kabiny.y)/2.0;Y1=Y;X2=X-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y+m.m2px(rozmery_kabiny.x);Xp=X;Yp=Y2;break;
-					case 270:X1=X;Y1=Y-m.m2px(rozmery_kabiny.y)/2.0;X2=X+m.m2px(rozmery_kabiny.x);Y2=Y+m.m2px(rozmery_kabiny.y)/2.0;Xp=X2;Yp=Y;break;
-				}
-				//vykreslení kurzoru
-				canv->Rectangle(X1,Y1,X2,Y2);
-				//vykreslení spojnice k předchozímu
-				canv->MoveTo(m.L2Px(p->elementy->predchozi->geo.X4),m.L2Py(p->elementy->predchozi->geo.Y4));
-				canv->LineTo(X,Y);
-				//vykreslení spojnice k poslední/další
-				canv->MoveTo(Xp,Yp);
-				canv->LineTo(m.L2Px(dalsi->elementy->dalsi->geo.X1),m.L2Py(dalsi->elementy->dalsi->geo.Y1));
-				//vykreslení šipek                                                                                                                                                                     //azimut musí být násoben -1
-				sipka(canv,(X+m.L2Px(p->elementy->predchozi->geo.X4))/2.0,(Y+m.L2Py(p->elementy->predchozi->geo.Y4))/2.0,azimut*(-1),true,3,clBlack,clWhite,pmNotXor);
-				sipka(canv,(Xp+m.L2Px(dalsi->elementy->dalsi->geo.X1))/2.0,(Yp+m.L2Py(dalsi->elementy->dalsi->geo.Y1))/2.0,m.azimut(m.L2Px(dalsi->body->dalsi->X),m.L2Py(dalsi->body->dalsi->Y)+m.m2px(dalsi->body->dalsi->Y-dalsi->body->predchozi->Y)/2,Xp,Yp)*(-1),true,3,clBlack,clWhite,pmNotXor);
+//				Cvektory::TObjekt *dalsi;
+//				if(p==NULL){p=v.OBJEKTY->predchozi;dalsi=v.OBJEKTY->dalsi;}
+//				else dalsi=p->dalsi;
+//				//zjištění rotace
+//				azimut=m.azimut(X,Y,m.L2Px(p->elementy->predchozi->geo.X4),m.L2Py(p->elementy->predchozi->geo.Y4));
+//				rotace=m.Rt90(azimut);
+//				//nastavení bodů objektu
+//				switch(rotace)
+//				{
+//					case 0:X1=X+m.m2px(rozmery_kabiny.y)/2.0;Y1=Y;X2=X-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y-m.m2px(rozmery_kabiny.x);Xp=X;Yp=Y2;break;
+//					case 90:X1=X;Y1=Y-m.m2px(rozmery_kabiny.y)/2.0;X2=X-m.m2px(rozmery_kabiny.x);Y2=Y+m.m2px(rozmery_kabiny.y)/2.0;Xp=X2;Yp=Y;break;
+//					case 180:X1=X+m.m2px(rozmery_kabiny.y)/2.0;Y1=Y;X2=X-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y+m.m2px(rozmery_kabiny.x);Xp=X;Yp=Y2;break;
+//					case 270:X1=X;Y1=Y-m.m2px(rozmery_kabiny.y)/2.0;X2=X+m.m2px(rozmery_kabiny.x);Y2=Y+m.m2px(rozmery_kabiny.y)/2.0;Xp=X2;Yp=Y;break;
+//				}
+//				//vykreslení kurzoru
+//				canv->Rectangle(X1,Y1,X2,Y2);
+//				//vykreslení spojnice k předchozímu
+//				canv->MoveTo(m.L2Px(p->elementy->predchozi->geo.X4),m.L2Py(p->elementy->predchozi->geo.Y4));
+//				canv->LineTo(X,Y);
+//				//vykreslení spojnice k poslední/další
+//				canv->MoveTo(Xp,Yp);
+//				canv->LineTo(m.L2Px(dalsi->elementy->dalsi->geo.X1),m.L2Py(dalsi->elementy->dalsi->geo.Y1));
+//				//vykreslení šipek                                                                                                                                                                     //azimut musí být násoben -1
+//				sipka(canv,(X+m.L2Px(p->elementy->predchozi->geo.X4))/2.0,(Y+m.L2Py(p->elementy->predchozi->geo.Y4))/2.0,azimut*(-1),true,3,clBlack,clWhite,pmNotXor);
+//				sipka(canv,(Xp+m.L2Px(dalsi->elementy->dalsi->geo.X1))/2.0,(Yp+m.L2Py(dalsi->elementy->dalsi->geo.Y1))/2.0,m.azimut(m.L2Px(dalsi->body->dalsi->X),m.L2Py(dalsi->body->dalsi->Y)+m.m2px(dalsi->body->dalsi->Y-dalsi->body->predchozi->Y)/2,Xp,Yp)*(-1),true,3,clBlack,clWhite,pmNotXor);
 			}
 		}
 		//uložení rotace objektu, využítí při vkládání objektu, přepočet z azimutu přímky na orientaci objektu
-		switch(rotace)
-		{
-			case 0:orientace_objektu=0;break;
-			case 90:orientace_objektu=270;break;
-			case 180:orientace_objektu=180;break;
-			case 270:orientace_objektu=90;break;
-		}
+		orientace_objektu=rotace;
 	}
 	else if(X!=-200)odznac_oznac_vyhybku(canv,X,Y,p);
 }
