@@ -530,7 +530,7 @@ void TForm1::Novy_soubor()//samotné vytvoření nového souboru
 			 d.v.PP.raster.Y=0;
 			 d.v.PP.raster.show=false;
        d.v.PP.katalog=1;
-       d.v.PP.radius=1000;
+       d.v.PP.radius=1;
 
 
 

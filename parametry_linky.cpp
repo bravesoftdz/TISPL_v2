@@ -107,7 +107,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
 
     Cvektory::Ttyp_dopravniku *K=F->d.v.vrat_typ_dopravniku(F->d.v.PP.katalog);
-    scGPGlyphButton_katalog->Caption=K->name+", rádius "+F->d.v.PP.radius +" mm";
+    scGPGlyphButton_katalog->Caption=K->name+", rádius "+F->d.v.PP.radius*1000.0 +" mm";
 
   	if(Form1->readINI("nastaveni_form_parametry", "RDt") == "1")
     {  //budu pøevádìt na m/min

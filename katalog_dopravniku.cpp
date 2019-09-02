@@ -22,7 +22,7 @@ __fastcall TForm_katalog::TForm_katalog(TComponent* Owner)
   zmena=false;
   //načtení hodnot z PP
   katalog_id=F->d.v.PP.katalog;
-  radius=F->d.v.PP.radius;
+  radius=F->d.v.PP.radius*1000.0;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_katalog::FormShow(TObject *Sender)
@@ -256,7 +256,7 @@ mGrid->HighlightRowOnMouse(X,Y,(TColor)RGB(240,240,240));
 void __fastcall TForm_katalog::Button_saveClick(TObject *Sender)
 {
 F->d.v.PP.katalog=katalog_id;
-F->d.v.PP.radius=radius;
+F->d.v.PP.radius=radius/1000.0;
 
 F->scStyledForm1->HideClientInActiveEffect();
 Form_parametry_linky->scStyledForm2->HideClientInActiveEffect();
