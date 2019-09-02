@@ -1,61 +1,42 @@
-//---------------------------------------------------------------------------
+ï»¿//---------------------------------------------------------------------------
 #pragma hdrstop
 #include "my.h"
 #include "Unit1.h"
-#include "MyMessageBox.h"//kvùli referenci na tlaèítka v MyMessageBox
+#include "MyMessageBox.h"//kvÅ¯li referenci na tlaÄÃ­tka v MyMessageBox
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 /////////////////////////////////////////////////////////////////////////////
-//fce pro zaokrouhlení realného èísla na nejblíší celé èíslo
+//fce pro zaokrouhlenÃ­ realnÃ©ho ÄÃ­sla na nejblÃ­Å¾Å¡Ã­ celÃ© ÄÃ­slo
 long Cmy::round(double number)
 {
 	if(number>0)
-	return (long)(number+0.5);//pro kladné hodnoty
+	return (long)(number+0.5);//pro kladnÃ© hodnoty
 	else
-	return (long)(number-0.5);//pro záporné hodnoty
+	return (long)(number-0.5);//pro zÃ¡pornÃ© hodnoty
 }
 /////////////////////////////////////////////////////////////////////////////
-//zaokrouhlí na poèet desetinnıch míst dle precison
+//zaokrouhlÃ­ na poÄet desetinnÃ½ch mÃ­st dle precison
 double Cmy::round2double(double number,unsigned short precision)
 {
-	double decimal=number-floor(number);//nutno takto rozkládat, protoe jinak by v pøípadì vìtšího celého základu nestaèil double
+	double decimal=number-floor(number);//nutno takto rozklÃ¡dat, protoÅ¾e jinak by v pÅ™Ã­padÄ› vÄ›tÅ¡Ã­ho celÃ©ho zÃ¡kladu nestaÄil double
 	return number=floor(number)+round(decimal*pow(10.0,precision))/pow(10.0,precision);
 }
 /////////////////////////////////////////////////////////////////////////////
-//zaokrouhlí na poèet desetinnıch míst dle precison a vratí hodnotu pomocí øetezce, za èíslem následuje znak, dle posledního parametru (napø. dvì teèky .. jakoe èíslo pokraèuje), pokud èíslo obsahuje reálnou èást nezobrazenou v rámci precision, pokud je nastaven poslední parametr add_decimal na true a je-li reálná èást kratší ne poèet reaálnıch míst decimál, jsou do tohototo poètu doplnìny nuly
+//zaokrouhlÃ­ na poÄet desetinnÃ½ch mÃ­st dle precison a vratÃ­ hodnotu pomocÃ­ Å™etezce, za ÄÃ­slem nÃ¡sleduje znak, dle poslednÃ­ho parametru (napÅ™. dvÄ› teÄky .. jakoÅ¾e ÄÃ­slo pokraÄuje), pokud ÄÃ­slo obsahuje reÃ¡lnou ÄÃ¡st nezobrazenou v rÃ¡mci precision, pokud je nastaven poslednÃ­ parametr add_decimal na true a je-li reÃ¡lnÃ¡ ÄÃ¡st kratÅ¡Ã­ neÅ¾ poÄet reaÃ¡lnÃ½ch mÃ­st decimÃ¡l, jsou do tohototo poÄtu doplnÄ›ny nuly
 AnsiString Cmy::round2double(double number,unsigned short precision,AnsiString mark,bool add_decimal)
 {
 	double RET=round2double(number,precision);
-	AnsiString RETT="0"; //floor musí bıt z dùvodu porovnávání kladnıch i zápornıch èísel a také z dùvodu e není moné porovnávat double a int, ale je nutné porovnat int vs. int
-	if(floor(RET*pow(10.0,precision))!=ceil(number*pow(10.0,precision)))RETT=AnsiString(RET)+mark;//pokud èíslo obsahuje reálnou èást vrátí i se znakem pokraèování
+	AnsiString RETT="0"; //floor musÃ­ bÃ½t z dÅ¯vodu porovnÃ¡vÃ¡nÃ­ kladnÃ½ch i zÃ¡pornÃ½ch ÄÃ­sel a takÃ© z dÅ¯vodu Å¾e nenÃ­ moÅ¾nÃ© porovnÃ¡vat double a int, ale je nutnÃ© porovnat int vs. int
+	if(floor(RET*pow(10.0,precision))!=ceil(number*pow(10.0,precision)))RETT=AnsiString(RET)+mark;//pokud ÄÃ­slo obsahuje reÃ¡lnou ÄÃ¡st vrÃ¡tÃ­ i se znakem pokraÄovÃ¡nÃ­
 	else
 	{
-		if(add_decimal)RETT=F->ms.addDecimal(RET,precision);//pokud je poadavek na doplnìní reálnıch míst do stanoveného poètu
+		if(add_decimal)RETT=F->ms.addDecimal(RET,precision);//pokud je poÅ¾adavek na doplnÄ›nÃ­ reÃ¡lnÃ½ch mÃ­st do stanovenÃ©ho poÄtu
 		else RETT=AnsiString(RET);
 	}
 	return RETT;
 }
 /////////////////////////////////////////////////////////////////////////////
-//zaokrouhlí na násobky 90tky, 360° pøevede na 0°, vìtší ne 360° vratí za 0°
-short Cmy::Rt90(double number)
-{
-	short RET=round(number/90.0)*90;
-	if(RET>=360)RET-=360;     //pøípadnì: RET=fmod(number,360.0);
-	if(RET>=360)RET=Rt90(RET);//rekurzce pro pøípady, e se bude jednát o nìkolikanásobnou rotaci èi kvùlip pøevodu z 360° na 0°
-	if(RET<0)RET+=360;//pro záporné hodnoty
-	if(RET<0)RET=Rt90(RET);//rekurzce pro pøípady, e se bude jednát o nìkolikanásobnou rotaci
-	return RET;
-}
-/////////////////////////////////////////////////////////////////////////////
-//záporné stupnì pøevede do kladnıch v rámci 360°
-double Cmy::a360(double number)
-{
-	if(number<0)number+=360;//pro záporné hodnoty
-	if(number<0)number=a360(number);//rekurzce pro pøípady, e se bude jednát o nìkolikanásobnou rotaci
-	return number;
-}
-/////////////////////////////////////////////////////////////////////////////
-//ovìøí, zda dané èíslo je celé èíslo
+//ovÄ›Å™Ã­, zda danÃ© ÄÃ­slo je celÃ© ÄÃ­slo
 bool Cmy::cele_cislo(double number)
 {
   return number==floor(number);
@@ -64,29 +45,54 @@ bool Cmy::cele_cislo(double number)
 //modulo pro double hodnoty
 double Cmy::mod_d(double number1,double number2)
 {
-	//nedotaené: return number1-floor(number1/number2)*number2;
-	return fmod(number1,number2);//toto ale také nefunguje pro druhou reálnou hodnotu dobøe
+	//nedotaÅ¾enÃ©: return number1-floor(number1/number2)*number2;
+	return fmod(number1,number2);//toto ale takÃ© nefunguje pro druhou reÃ¡lnou hodnotu dobÅ™e
 }
 /////////////////////////////////////////////////////////////////////////////
-//fce vrátí absolutní hodnotu z double èísla, mono nahradit mocí fabs z math
+//fce vrÃ¡tÃ­ absolutnÃ­ hodnotu z double ÄÃ­sla, moÅ¾no nahradit mocÃ­ fabs z math
 double Cmy::abs_d(double number)
 {
   return fabs(number);
 }
 /////////////////////////////////////////////////////////////////////////////
-//pøevede stupnì na radiány
+//pÅ™evede stupnÄ› na radiÃ¡ny
 double Cmy::ToRad(double number)
 {
 	return number*M_PI/180.0;
 }
 /////////////////////////////////////////////////////////////////////////////
-//pøevede radiány na stupnì
+//pÅ™evede radiÃ¡ny na stupnÄ›
 double Cmy::ToDeg(double number)
 {
 	return number*180/M_PI;
 }
+/////////////////////////////////////////////////////////////////////////////
+//pÅ™evede na nÃ¡sobky 90tky, 360Â° pÅ™evede na 0Â°, vÄ›tÅ¡Ã­ neÅ¾ 360Â° vratÃ­ za 0Â°
+short Cmy::Rt90(double number)
+{
+	short RET=round(number/90.0)*90;
+	if(RET>=360)RET-=360;     //pÅ™Ã­padnÄ›: RET=fmod(number,360.0);
+	if(RET>=360)RET=Rt90(RET);//rekurzce pro pÅ™Ã­pady, Å¾e se bude jednÃ¡t o nÄ›kolikanÃ¡sobnou rotaci Äi kvÅ¯lip pÅ™evodu z 360Â° na 0Â°
+	if(RET<0)RET+=360;//pro zÃ¡pornÃ© hodnoty
+	if(RET<0)RET=Rt90(RET);//rekurzce pro pÅ™Ã­pady, Å¾e se bude jednÃ¡t o nÄ›kolikanÃ¡sobnou rotaci
+	return RET;
+}
+/////////////////////////////////////////////////////////////////////////////
+//zÃ¡pornÃ© stupnÄ› pÅ™evede do kladnÃ½ch v rÃ¡mci 360Â°
+double Cmy::a360(double number)
+{
+	if(number<0)number+=360;//pro zÃ¡pornÃ© hodnoty
+	if(number<0)number=a360(number);//rekurzce pro pÅ™Ã­pady, Å¾e se bude jednÃ¡t o nÄ›kolikanÃ¡sobnou rotaci
+	return number;
+}
+/////////////////////////////////////////////////////////////////////////////
+//ze zadanÃ©ho radiusu vrÃ¡tÃ­ obvod kruhovÃ© vÃ½seÄe o velikosti definovanÃ© Ãºhlem vÃ½seÄe ve stupnÃ­ch
+double Cmy::R2Larc(double radius,double angle)
+{
+	return radius*2*M_PI*a360(angle)/360.0;
+}
 //////////////////////////////////////////////////////////////////////////////
-//Pøevede logické souøadnice na fyzické (displej zaøízení) , vraci fyzické souøadnice
+//PÅ™evede logickÃ© souÅ™adnice na fyzickÃ© (displej zaÅ™Ã­zenÃ­) , vraci fyzickÃ© souÅ™adnice
 TPoint Cmy::L2P(double logickaX, double logickaY)
 {
 	return TPoint(L2Px(logickaX),L2Py(logickaY));
@@ -123,7 +129,7 @@ void Cmy::L2P(TPointD *POLE,TPoint *POLEpx)
 	//POLEpx=L2P(POLE);
 }
 /////////////////////////////////////////////////////////////////////////////
-//Pøevede  fyzické na logické souøadnice (displej zaøízení) , vraci logické souøadnice
+//PÅ™evede  fyzickÃ© na logickÃ© souÅ™adnice (displej zaÅ™Ã­zenÃ­) , vraci logickÃ© souÅ™adnice
 TPointD Cmy::P2L(TPoint fyzicke)
 {
 	TPointD logicke;logicke.x=P2Lx(fyzicke.X);logicke.y=P2Ly(fyzicke.Y);
@@ -153,60 +159,60 @@ double Cmy::P2Ly(long fyzicka)
 	{return 0;}
 }
 /////////////////////////////////////////////////////////////////////////////
-//pøevede vzdálenost v metrech na vzdálenost monitoru dle konstanty m2px (metrù na pixel) a aktuální hodnoty promìnné Zoom
+//pÅ™evede vzdÃ¡lenost v metrech na vzdÃ¡lenost monitoru dle konstanty m2px (metrÅ¯ na pixel) a aktuÃ¡lnÃ­ hodnoty promÄ›nnÃ© Zoom
 long Cmy::m2px(double meter)
 {
 	return round(meter*F->Zoom/F->m2px);
 }
 /////////////////////////////////////////////////////////////////////////////
-//pøevede logické jednotky (metry) na pixely monitoru dle konstanty m2px (metrù na pixel) a aktuální hodnoty promìnné Zoom
+//pÅ™evede logickÃ© jednotky (metry) na pixely monitoru dle konstanty m2px (metrÅ¯ na pixel) a aktuÃ¡lnÃ­ hodnoty promÄ›nnÃ© Zoom
 double Cmy::px2m(long px)
 {
 	return px/F->Zoom*F->m2px;
 }
 /////////////////////////////////////////////////////////////////////////////
-//dle zmìøeného úseku na monitoru pøevede tuto pixelovou vzádlenost a hodnotu v podobì uivatelského vstupu v metrech na hodnotu rozlišení podkladu
+//dle zmÄ›Å™enÃ©ho Ãºseku na monitoru pÅ™evede tuto pixelovou vzÃ¡dlenost a hodnotu v podobÄ› uÅ¾ivatelskÃ©ho vstupu v metrech na hodnotu rozliÅ¡enÃ­ podkladu
 long double Cmy::getResolution(int puvX,int puvY,int aktX,int aktY,double metry)
 {
-	return metry/delka(P2Lx(puvX),P2Ly(puvY),P2Lx(aktX),P2Ly(aktY))*F->m2px;//vıpoèet metry dìleno poèet PX, vıchozí zobrazení v nativním rozlišení (bez usazení do metrického mìøítka) je 0.1
+	return metry/delka(P2Lx(puvX),P2Ly(puvY),P2Lx(aktX),P2Ly(aktY))*F->m2px;//vÃ½poÄet metry dÄ›leno poÄet PX, vÃ½chozÃ­ zobrazenÃ­ v nativnÃ­m rozliÅ¡enÃ­ (bez usazenÃ­ do metrickÃ©ho mÄ›Å™Ã­tka) je 0.1
 }
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
-//vrátí vzdálenost od vıchozího a koncového bodu k øídícímu bodu oblouku realizovaného bézierovou køivkou, vstupním parametrem je rotaèní úhel a radius, pøipraveno pouze pro nìkteré úhly, vıpoèet není sice zcela exaktní, ale v rámci poadované tolerance vıbornı
+//vrÃ¡tÃ­ vzdÃ¡lenost od vÃ½chozÃ­ho a koncovÃ©ho bodu k Å™Ã­dÃ­cÃ­mu bodu oblouku realizovanÃ©ho bÃ©zierovou kÅ™ivkou, vstupnÃ­m parametrem je rotaÄnÃ­ Ãºhel a radius, pÅ™ipraveno pouze pro nÄ›kterÃ© Ãºhly, vÃ½poÄet nenÃ­ sice zcela exaktnÃ­, ale v rÃ¡mci poÅ¾adovanÃ© tolerance vÃ½bornÃ½
 double Cmy::getL(double RA,double R)
 {
-	double L=0.55191502449;//L - je vzdálenost od vıchozího a koncového bodu vs. øídícího bodu, 0.552284749798297 resp. 0.55191502449 (pøesnìjší), je tato hodnota na oblouku s polomìrem 1, viz http://spencermortensen.com/articles/bezier-circle/
+	double L=0.55191502449;//L - je vzdÃ¡lenost od vÃ½chozÃ­ho a koncovÃ©ho bodu vs. Å™Ã­dÃ­cÃ­ho bodu, 0.552284749798297 resp. 0.55191502449 (pÅ™esnÄ›jÅ¡Ã­), je tato hodnota na oblouku s polomÄ›rem 1, viz http://spencermortensen.com/articles/bezier-circle/
 	switch(round(abs(RA)))
 	{
 		case 15:L=R*0.0873912837529813;break;
 		case 30:L=R*0.175536663479836;break;
 		case 45:L=R*0.26521649;break;
 		case 90:L*=R;break;
-		default: L*=R*RA/90.0;//u se znaènou nepøesností
+		default: L*=R*RA/90.0;//uÅ¾ se znaÄnou nepÅ™esnostÃ­
 	}
 	return L;
 }
 /////////////////////////////////////////////////////////////////////////////
-//vrátí souøadnice (4 místné pole TPointD tj. 8 hodnot) bézierovy køivky oblouku èi linie dle zadanıch souøadnic, X,Y jsou fyzické souøadnice vıchozího vykreslování, parametry: orientace oblouku - dle svìtovıch stran (umí i jiné ne 90° násobky), rotaèní úhel - pod kterım je oblouk rotován, mùe bıt zápornı (znaménko urèuje smìr rotace, + proti smìru hodinovıch ruèièek, - po smìru), max. hodnota +90 a min. hodnota -90 (je-li nastaven na 0° jedná se o linii), radius - je radius oblouku v metrech nebo pokud je rotaèní úhel nastaven na 0° tedy se jedná o linii, je radius délkou linie
+//vrÃ¡tÃ­ souÅ™adnice (4 mÃ­stnÃ© pole TPointD tj. 8 hodnot) bÃ©zierovy kÅ™ivky oblouku Äi linie dle zadanÃ½ch souÅ™adnic, X,Y jsou fyzickÃ© souÅ™adnice vÃ½chozÃ­ho vykreslovÃ¡nÃ­, parametry: orientace oblouku - dle svÄ›tovÃ½ch stran (umÃ­ i jinÃ© neÅ¾ 90Â° nÃ¡sobky), rotaÄnÃ­ Ãºhel - pod kterÃ½m je oblouk rotovÃ¡n, mÅ¯Å¾e bÃ½t zÃ¡pornÃ½ (znamÃ©nko urÄuje smÄ›r rotace, + proti smÄ›ru hodinovÃ½ch ruÄiÄek, - po smÄ›ru), max. hodnota +90 a min. hodnota -90 (je-li nastaven na 0Â° jednÃ¡ se o linii), radius - je radius oblouku v metrech nebo pokud je rotaÄnÃ­ Ãºhel nastaven na 0Â° tedy se jednÃ¡ o linii, je radius dÃ©lkou linie
 TPointD *Cmy::vrat_Gelement(int X,int Y,double orientace,double rotacni_uhel,double radius)
 {
-	//parametry pro vıchozí vıpoèetní model oblouku s OR 90, ten se následnì dle skuteèné OR resp. Orientace pøerotuje a vèetnì znaménka pøezrcadlí (znaménko urèuje smìr rotace, + proti smìru hodinovıch ruèièek, - po smìru)
-	double OR=orientace;//orientace oblouku, dle svìtovıch stran
-	double RA=rotacni_uhel;if(RA>90)RA=90;if(RA<-90)RA=-90;//rotaèní úhel, pod kterım je oblouk rotován, mùe bıt zápornı (znaménko urèuje smìr rotace, + proti smìru hodinovıch ruèièek, - po smìru), max. hodnota +90 a min. hodnota -90
-	double R=radius;//Radius resp. délka u linie v metrech
-	double L=getL(RA,R);//L - je vzdálenost od vıchozího a koncového bodu vs. øídícího bodu
-	double X1=P2Lx(X);//vıchozí bod oblouku
-	double Y1=P2Ly(Y);//vıchozí bod oblouku
-	double a=R*cos(ToRad(90-fabs(RA)));//vıpoèet polohy koncového bodu na ose X - vıpoèet dle goniometrické funkce v pravoúhlém trojúhelníku  - JE OK
-	double b=R-sqrt(R*R-a*a);//vıpoèet polohy koncového bodu na ose Y - odeètení hodnoty dle pythagorovy vìty od radiusu - JE OK
-	if(RA==0){a=R;b=0;L=0;}//pokud se jedná o linii nastaví takovéto parametry
-	double X2=X1+a;//koncovı bod oblouku
-	double Y2=Y1+b;//koncovı bod oblouku
-	TPointD K=rotace(X2,Y2,X2,Y2-L,-90+fabs(RA));//novı koncovı øídící po rotaci
+	//parametry pro vÃ½chozÃ­ vÃ½poÄetnÃ­ model oblouku s OR 90, ten se nÃ¡slednÄ› dle skuteÄnÃ© OR resp. Orientace pÅ™erotuje a vÄetnÄ› znamÃ©nka pÅ™ezrcadlÃ­ (znamÃ©nko urÄuje smÄ›r rotace, + proti smÄ›ru hodinovÃ½ch ruÄiÄek, - po smÄ›ru)
+	double OR=orientace;//orientace oblouku, dle svÄ›tovÃ½ch stran
+	double RA=rotacni_uhel;if(RA>90)RA=90;if(RA<-90)RA=-90;//rotaÄnÃ­ Ãºhel, pod kterÃ½m je oblouk rotovÃ¡n, mÅ¯Å¾e bÃ½t zÃ¡pornÃ½ (znamÃ©nko urÄuje smÄ›r rotace, + proti smÄ›ru hodinovÃ½ch ruÄiÄek, - po smÄ›ru), max. hodnota +90 a min. hodnota -90
+	double R=radius;//Radius resp. dÃ©lka u linie v metrech
+	double L=getL(RA,R);//L - je vzdÃ¡lenost od vÃ½chozÃ­ho a koncovÃ©ho bodu vs. Å™Ã­dÃ­cÃ­ho bodu
+	double X1=P2Lx(X);//vÃ½chozÃ­ bod oblouku
+	double Y1=P2Ly(Y);//vÃ½chozÃ­ bod oblouku
+	double a=R*cos(ToRad(90-fabs(RA)));//vÃ½poÄet polohy koncovÃ©ho bodu na ose X - vÃ½poÄet dle goniometrickÃ© funkce v pravoÃºhlÃ©m trojÃºhelnÃ­ku  - JE OK
+	double b=R-sqrt(R*R-a*a);//vÃ½poÄet polohy koncovÃ©ho bodu na ose Y - odeÄtenÃ­ hodnoty dle pythagorovy vÄ›ty od radiusu - JE OK
+	if(RA==0){a=R;b=0;L=0;}//pokud se jednÃ¡ o linii nastavÃ­ takovÃ©to parametry
+	double X2=X1+a;//koncovÃ½ bod oblouku
+	double Y2=Y1+b;//koncovÃ½ bod oblouku
+	TPointD K=rotace(X2,Y2,X2,Y2-L,-90+fabs(RA));//novÃ½ koncovÃ½ Å™Ã­dÃ­cÃ­ po rotaci
 	TPointD *PL=new TPointD[4]; PL[0].x=X1;PL[0].y=Y1;PL[1].x=X1+L;PL[1].y=Y1;PL[2].x=K.x;PL[2].y=K.y;PL[3].x=X2;PL[3].y=Y2;
-	if(RA<0)zrcadli_polygon(PL,3,180);//v pøípadì záporné hodnoty pøerotuje
-	rotace_polygon(X1,Y1,PL,3,90-OR);//orotuje se dle skuteèné orientace
-	return PL;//navrácení hodnoty
+	if(RA<0)zrcadli_polygon(PL,3,180);//v pÅ™Ã­padÄ› zÃ¡pornÃ© hodnoty pÅ™erotuje
+	rotace_polygon(X1,Y1,PL,3,90-OR);//orotuje se dle skuteÄnÃ© orientace
+	return PL;//navrÃ¡cenÃ­ hodnoty
 }
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
@@ -214,6 +220,20 @@ double Cmy::delka(double X1,double Y1,double X2,double Y2)
 {
 	return sqrt(pow(X2-X1,2)+ pow(Y2-Y1,2));
 }
+/////////////////////////////////////////////////////////////////////////////
+//prec=preciznost vÃ½poÄtu
+//double Cvykresli::bezierDelka(double x1,double y1,double x2,double y2,double x3,double y3,double x4,double y4,double prec)
+//{           DODÄšLAT
+//	double delka=0, x_pre=x1,y_pre=y1;
+//	for( double i=0;i<=1;i+=prec)
+//	{
+//		TPointD_3D P=bezierPt(x1,y1,x2,y2,x3,y3,x4,y4,i);double x=P.x;double y=P.y;
+//		//delka_px+=m.delka(x_pre,y_pre,x,y);
+//		delka+=m.delka(m.P2Lx(x_pre),m.P2Ly(y_pre),m.P2Lx(x),m.P2Ly(y));
+//		x_pre=x;y_pre=y;
+//	}
+//	return delka;
+//}
 /////////////////////////////////////////////////////////////////////////////
 double Cmy::azimut(double X1,double Y1,double X2,double Y2)
 {
@@ -248,8 +268,8 @@ double Cmy::uhel(double X1,double Y1,double X2,double Y2)
 //rotace
 TPointD Cmy::rotace(double delka, double akt_uhel, double rotace)
 {
-	double Uhel=fmod(akt_uhel+rotace,360.0);// vèetnì ošetøení pøeteèení pøes 360 stupòù
-	if(Uhel<0){Uhel+=360;}//pro záporné hodnoty
+	double Uhel=fmod(akt_uhel+rotace,360.0);// vÄetnÄ› oÅ¡etÅ™enÃ­ pÅ™eteÄenÃ­ pÅ™es 360 stupÅˆÅ¯
+	if(Uhel<0){Uhel+=360;}//pro zÃ¡pornÃ© hodnoty
 
 	short ZnamenkoX,ZnamenkoY;
 
@@ -281,7 +301,7 @@ TPointD Cmy::rotace(double delka, double akt_uhel, double rotace)
 	return ret;
 }
 /////////////////////////////////////////////////////////////////////////////
-//vrátí souøadnice X2,Y2 po daném úhlu rotace, rotuje okolo X1,Y1 proti smìru hodinovıch ruèièek
+//vrÃ¡tÃ­ souÅ™adnice X2,Y2 po danÃ©m Ãºhlu rotace, rotuje okolo X1,Y1 proti smÄ›ru hodinovÃ½ch ruÄiÄek
 TPointD Cmy::rotace(double X1,double Y1,double X2,double Y2,double uhel)
 {
 	TPointD RET=rotace(delka(X1,Y1,X2,Y2),180-azimut(X1,Y1,X2,Y2),uhel);
@@ -289,7 +309,7 @@ TPointD Cmy::rotace(double X1,double Y1,double X2,double Y2,double uhel)
 	return RET;
 }
 /////////////////////////////////////////////////////////////////////////////
-//vrátí souøadnice X2,Y2 po daném úhlu rotace, rotuje okolo X1,Y1 proti smìru hodinovıch ruèièek
+//vrÃ¡tÃ­ souÅ™adnice X2,Y2 po danÃ©m Ãºhlu rotace, rotuje okolo X1,Y1 proti smÄ›ru hodinovÃ½ch ruÄiÄek
 TPoint Cmy::rotace_px(long X1,long Y1,long X2,long Y2,double uhel)
 {
 	TPointD RETd=rotace(P2Lx(X1),P2Ly(Y1),P2Lx(X2),P2Ly(Y2),uhel);
@@ -297,16 +317,16 @@ TPoint Cmy::rotace_px(long X1,long Y1,long X2,long Y2,double uhel)
 	return RET;
 }
 /////////////////////////////////////////////////////////////////////////////
-//orotuje okolo daného bodu polygon
+//orotuje okolo danÃ©ho bodu polygon
 void Cmy::rotace_polygon(double X,double Y,TPointD *POLE,long posledni_prvek,double uhel)
 {
-	if(fmod(uhel,360)!=0)//pouze akcelerátor
+	if(fmod(uhel,360)!=0)//pouze akcelerÃ¡tor
 	{
 		for(long i=0;i<=posledni_prvek;i++)POLE[i]=rotace(X,Y,POLE[i].x,POLE[i].y,uhel);
 	}
 }
 /////////////////////////////////////////////////////////////////////////////
-//orotuje okolo daného bodu polygon a vrátí do POLE i do POLE_px
+//orotuje okolo danÃ©ho bodu polygon a vrÃ¡tÃ­ do POLE i do POLE_px
 void Cmy::rotace_polygon(double oX,double oY,double X,double Y,TPointD *POLE,TPoint *POLE_px,long posledni_prvek,double uhel)
 {
 	for(long i=0;i<=posledni_prvek;i++)
@@ -316,7 +336,7 @@ void Cmy::rotace_polygon(double oX,double oY,double X,double Y,TPointD *POLE,TPo
 	}
 }
 /////////////////////////////////////////////////////////////////////////////
-//zajistí pøezrcadlení polygonù zadaného v logickıch souøadnicích pomocí pole dle poadovaného parametru uhel zrcadlení
+//zajistÃ­ pÅ™ezrcadlenÃ­ polygonÅ¯ zadanÃ©ho v logickÃ½ch souÅ™adnicÃ­ch pomocÃ­ pole dle poÅ¾adovanÃ©ho parametru uhel zrcadlenÃ­
 void Cmy::zrcadli_polygon(TPointD *POLE,long posledni_prvek,double uhel)
 {
 	uhel=Rt90(uhel);
@@ -325,25 +345,25 @@ void Cmy::zrcadli_polygon(TPointD *POLE,long posledni_prvek,double uhel)
 		case 0:
 		{
 			double MaxY=POLE[0].y;
-			for(long i=0;i<=posledni_prvek;i++)if(POLE[i].y>MaxY)MaxY=POLE[i].y;//najde co nejvíce vpravo bod a okolo toho probìhne mirroring
+			for(long i=0;i<=posledni_prvek;i++)if(POLE[i].y>MaxY)MaxY=POLE[i].y;//najde co nejvÃ­ce vpravo bod a okolo toho probÄ›hne mirroring
 			for(long i=0;i<=posledni_prvek;i++)POLE[i].y=MaxY+MaxY-POLE[i].y;
 		}break;
 		case 90:
 		{
 			double MaxX=POLE[0].x;
-			for(long i=0;i<=posledni_prvek;i++)if(POLE[i].x>MaxX)MaxX=POLE[i].x;//najde co nejvíce vpravo bod a okolo toho probìhne mirroring
+			for(long i=0;i<=posledni_prvek;i++)if(POLE[i].x>MaxX)MaxX=POLE[i].x;//najde co nejvÃ­ce vpravo bod a okolo toho probÄ›hne mirroring
 			for(long i=0;i<=posledni_prvek;i++)POLE[i].x=MaxX+MaxX-POLE[i].x;
 		}break;
 		case 180:
 		{
 			double MinY=POLE[0].y;
-			for(long i=0;i<=posledni_prvek;i++)if(POLE[i].y<MinY)MinY=POLE[i].y;//najde co nejvíce vpravo bod a okolo toho probìhne mirroring
+			for(long i=0;i<=posledni_prvek;i++)if(POLE[i].y<MinY)MinY=POLE[i].y;//najde co nejvÃ­ce vpravo bod a okolo toho probÄ›hne mirroring
 			for(long i=0;i<=posledni_prvek;i++)POLE[i].y=MinY-(POLE[i].y-MinY);
 		}break;
 		case 270:
 		{
 			double MinX=POLE[0].x;
-			for(long i=0;i<=posledni_prvek;i++)if(POLE[i].x<MinX)MinX=POLE[i].x;//najde co nejvíce vpravo bod a okolo toho probìhne mirroring
+			for(long i=0;i<=posledni_prvek;i++)if(POLE[i].x<MinX)MinX=POLE[i].x;//najde co nejvÃ­ce vpravo bod a okolo toho probÄ›hne mirroring
 			for(long i=0;i<=posledni_prvek;i++)POLE[i].x=MinX-(POLE[i].x-MinX);
 		}break;
 	}
@@ -357,9 +377,9 @@ void Cmy::zrcadli_polygon(TPointD *POLE,long posledni_prvek,double uhel)
 //	unsigned int pocet=0;
 //	bool pouze_usecka=false;
 //
-//	while (ukaz!=NULL)//pro všechny linie
+//	while (ukaz!=NULL)//pro vÅ¡echny linie
 //	{
-//		if(ukaz->n>0)//vynechá hlavièku
+//		if(ukaz->n>0)//vynechÃ¡ hlaviÄku
 //		{
 //			pocet++;
 //			Cvektory::TBod_LP *p;
@@ -369,17 +389,17 @@ void Cmy::zrcadli_polygon(TPointD *POLE,long posledni_prvek,double uhel)
 //				TPointD P=w.WebMercator2UTM(p->X,p->Y);
 //				TPointD P_dalsi=w.WebMercator2UTM(p->dalsi->X,p->dalsi->Y);
 //				TPointD P_pred=w.WebMercator2UTM(p->predchozi->X,p->predchozi->Y);
-//				if(p->n>0)//vynechá hlavièku
+//				if(p->n>0)//vynechÃ¡ hlaviÄku
 //				{
 //					delka+=my.round(sqrt(pow(P_dalsi.x - P.x, 2)+ pow(P_dalsi.y - P.y, 2)));
-//					if(p->n!=1)obsah+=P.x*(P_dalsi.y - P_pred.y); //Vıpoèet_plochy_pomocí_L´Huillierovıch_vzorcù vèetnì nedokonèenıch ploch èi linii, alternativa Mascheroniho vzorec:http://klobouk.fsv.cvut.cz/~hanek/K154/PDF/Vypocet_vymer.pdf
-////					if(pouze_usecka)//spoèítá azimut
+//					if(p->n!=1)obsah+=P.x*(P_dalsi.y - P_pred.y); //VÃ½poÄet_plochy_pomocÃ­_LÂ´HuillierovÃ½ch_vzorcÅ¯ vÄetnÄ› nedokonÄenÃ½ch ploch Äi linii, alternativa Mascheroniho vzorec:http://klobouk.fsv.cvut.cz/~hanek/K154/PDF/Vypocet_vymer.pdf
+////					if(pouze_usecka)//spoÄÃ­tÃ¡ azimut
 ////					{
 ////						azimut=acos((P_dalsi.y-P.y)/(delka*1.0))*180/M_PI;
 ////						if(P_dalsi.x<P.x)azimut=360-azimut;
 ////					}
 //				}
-////				else //zjistí, jestli obsahuje pouze dva body, tj. jestli se jedná o úseèku a je dùvod zmìøit i azimut
+////				else //zjistÃ­, jestli obsahuje pouze dva body, tj. jestli se jednÃ¡ o ÃºseÄku a je dÅ¯vod zmÄ›Å™it i azimut
 ////				{
 ////					if(p->predchozi->n==2)pouze_usecka=true;
 ////					TPointD P_pred_pred=w.WebMercator2UTM(p->predchozi->predchozi->X,p->predchozi->predchozi->Y);
@@ -387,19 +407,19 @@ void Cmy::zrcadli_polygon(TPointD *POLE,long posledni_prvek,double uhel)
 ////					obsah+=P_pred.x*(P_dalsi.y - P_pred_pred.y); //pro posledni
 ////					obsah+=P_dalsi.x*(P_dalsi_dalsi.y - P_pred.y); //pro n=1
 ////				}
-//				p=p->dalsi;//posun na další prvek
+//				p=p->dalsi;//posun na dalÅ¡Ã­ prvek
 //			}
 //			p=NULL;delete p;
 //		}
-//		ukaz=ukaz->dalsi;//posun na další prvek
+//		ukaz=ukaz->dalsi;//posun na dalÅ¡Ã­ prvek
 //		obsah=fabs(obsah);
 //	}
 //	ukaz=NULL;delete ukaz;
 //	obsah=fabs(obsah/2);
 //
 //	TPointD ret;
-//	ret.x=delka;//v m - reálné èíslo
-//	ret.y=obsah;//v m2 - reálné èíslo
+//	ret.x=delka;//v m - reÃ¡lnÃ© ÄÃ­slo
+//	ret.y=obsah;//v m2 - reÃ¡lnÃ© ÄÃ­slo
 //	return ret;
 // }
 /////////////////////////////////////////////////////////////////////////////
@@ -409,142 +429,142 @@ long Cmy::LeziVblizkostiUsecky(double x, double y, double X1, double Y1, double 
 	double b=X1-X2;
 	double c=-a*X1-b*Y1;
 
-  if(X2==X1)//pokud jsou v jedné "linii" tj. je abs. svislá
+  if(X2==X1)//pokud jsou v jednÃ© "linii" tj. je abs. svislÃ¡
   {
 		if((Y1<=y && y<=Y2 && Y1<Y2) || (Y2<=y && y<=Y1 && Y2<Y1))
 			return round(fabs((a*x + b*y + c) / sqrt(fabs(a*a + b*b))));
 		else
-			return 2147483647;//vrací nesmyslnì vysoké èíslo jako neúspìch (zøejmì leí na pøímce ale ne na úseèce)
+			return 2147483647;//vracÃ­ nesmyslnÄ› vysokÃ© ÄÃ­slo jako neÃºspÄ›ch (zÅ™ejmÄ› leÅ¾Ã­ na pÅ™Ã­mce ale ne na ÃºseÄce)
 	}
-	else if(Y2==Y1)//pokud jsou v jedné "linii" tj. je abs. vodorovná
+	else if(Y2==Y1)//pokud jsou v jednÃ© "linii" tj. je abs. vodorovnÃ¡
 	{
 		if((X1<=x && x<=X2 && X1<X2) || (X2<=x && x<=X1 && X2<X1))
 			return round(fabs((a*x + b*y + c) / sqrt(fabs(a*a + b*b))));
 		else
-			return 2147483647;//vrací nesmyslnì vysoké èíslo jako neúspìch (zøejmì leí na pøímce ale ne na úseèce)
+			return 2147483647;//vracÃ­ nesmyslnÄ› vysokÃ© ÄÃ­slo jako neÃºspÄ›ch (zÅ™ejmÄ› leÅ¾Ã­ na pÅ™Ã­mce ale ne na ÃºseÄce)
 	}
-	else//pro ostatní situace
+	else//pro ostatnÃ­ situace
   {
 		if(((X1<=x && x<=X2 && X1<X2) || (X2<=x && x<=X1 && X2<X1)) && ((Y1<=y && y<=Y2 && Y1<Y2) || (Y2<=y && y<=Y1 && Y2<Y1)))
 			return round(fabs((a*x + b*y + c) / sqrt(fabs(a*a + b*b))));
 		else
-			return 2147483647;//vrací nesmyslnì vysoké èíslo jako neúspìch (zøejmì leí na pøímce ale ne na úseèce)
+			return 2147483647;//vracÃ­ nesmyslnÄ› vysokÃ© ÄÃ­slo jako neÃºspÄ›ch (zÅ™ejmÄ› leÅ¾Ã­ na pÅ™Ã­mce ale ne na ÃºseÄce)
 	}
 }
 /////////////////////////////////////////////////////////////////////////////
-//funkce ovìøující, zda kurzor myši, leí v obdelníku obsaném danému oblouku, souøadnice kurzoru myši se zadávají v logickıch souøadnicích, ostatní v logickıch
+//funkce ovÄ›Å™ujÃ­cÃ­, zda kurzor myÅ¡i, leÅ¾Ã­ v obdelnÃ­ku obsanÃ©m danÃ©mu oblouku, souÅ™adnice kurzoru myÅ¡i se zadÃ¡vajÃ­ v logickÃ½ch souÅ™adnicÃ­ch, ostatnÃ­ v logickÃ½ch
 bool Cmy::LeziVoblouku(double X,double Y,double orientace,double RA,double R,double Xmys,double Ymys)
 {
 	bool RET=false;
 	TPointD *PL=vrat_Gelement(L2Px(X),L2Py(Y),orientace,RA,R);
-	double KorekceX=0,KorekceY=0;//pro pøípady, kdy poèáteèní i koncovı bod je v jedné linii (vodorovné èi svislé)
-	if(round2double(PL[0].x,2)==round2double(PL[3].y,2))KorekceX=vrat_Gelement(L2Px(X),L2Py(Y),orientace,RA/2.0,R)[3].x-PL[3].x;//round2double nasazeno z dùvodu divného chování pøi porovnání dvou totonıch èísel, kdy bylo vraceno false, bylo zaznamenáno u korekceY
-	if(round2double(PL[0].y,2)==round2double(PL[3].y,2))KorekceY=vrat_Gelement(L2Px(X),L2Py(Y),orientace,RA/2.0,R)[3].y-PL[3].y;//round2double nasazeno z dùvodu divného chování pøi porovnání dvou totonıch èísel, kdy bylo vraceno false, bylo zaznamenáno u korekceY
+	double KorekceX=0,KorekceY=0;//pro pÅ™Ã­pady, kdy poÄÃ¡teÄnÃ­ i koncovÃ½ bod je v jednÃ© linii (vodorovnÃ© Äi svislÃ©)
+	if(round2double(PL[0].x,2)==round2double(PL[3].y,2))KorekceX=vrat_Gelement(L2Px(X),L2Py(Y),orientace,RA/2.0,R)[3].x-PL[3].x;//round2double nasazeno z dÅ¯vodu divnÃ©ho chovÃ¡nÃ­ pÅ™i porovnÃ¡nÃ­ dvou totoÅ¾nÃ½ch ÄÃ­sel, kdy bylo vraceno false, bylo zaznamenÃ¡no u korekceY
+	if(round2double(PL[0].y,2)==round2double(PL[3].y,2))KorekceY=vrat_Gelement(L2Px(X),L2Py(Y),orientace,RA/2.0,R)[3].y-PL[3].y;//round2double nasazeno z dÅ¯vodu divnÃ©ho chovÃ¡nÃ­ pÅ™i porovnÃ¡nÃ­ dvou totoÅ¾nÃ½ch ÄÃ­sel, kdy bylo vraceno false, bylo zaznamenÃ¡no u korekceY
 	if(PtInRectangle(PL[3].x,PL[3].y,X+KorekceX,Y+KorekceY,Xmys,Ymys))RET=true;
-	delete []PL;PL=NULL;//smazání ji nepotøebnıch ukazatelù
+	delete []PL;PL=NULL;//smazÃ¡nÃ­ jiÅ¾ nepotÅ™ebnÃ½ch ukazatelÅ¯
 	return RET;
 }
 /////////////////////////////////////////////////////////////////////////////
-//funkce ovìøí, zda se bod nachází v zadaném kruhu
+//funkce ovÄ›Å™Ã­, zda se bod nachÃ¡zÃ­ v zadanÃ©m kruhu
 bool Cmy::PtInCircle(double point_X,double point_Y,double center_X,double center_Y,double radius)
 {
 	return delka(point_X,point_Y,center_X,center_Y)<=radius;
 }
 /////////////////////////////////////////////////////////////////////////////
-//funkce ovìøí, zda se bod nachází v obdelníku, zadání je v logickıch souøadnicích
+//funkce ovÄ›Å™Ã­, zda se bod nachÃ¡zÃ­ v obdelnÃ­ku, zadÃ¡nÃ­ je v logickÃ½ch souÅ™adnicÃ­ch
 bool Cmy::PtInRectangle(double X1,double Y1,double X2,double Y2,double Xmys,double Ymys)
 {
-//podle mého chybnı algoritmus:
+//podle mÃ©ho chybnÃ½ algoritmus:
 //	X1=abs_d(X1);Y1=abs_d(Y1);X2=abs_d(X2);Y2=abs_d(Y2);Xmys=abs_d(Xmys);Ymys=abs_d(Ymys);
 //	return (X1<=Xmys&&Xmys<=X2&&Y1<=Ymys&&Ymys<=Y2);
 //oprava:
-	if(X1>X2){double Xt=X1;X1=X2;X2=Xt;}//v pøípadì opaèného poøadí, zámìna poøadí
-	if(Y1>Y2){double Yt=Y1;Y1=Y2;Y2=Yt;}//v pøípadì opaèného poøadí, zámìna poøadí
+	if(X1>X2){double Xt=X1;X1=X2;X2=Xt;}//v pÅ™Ã­padÄ› opaÄnÃ©ho poÅ™adÃ­, zÃ¡mÄ›na poÅ™adÃ­
+	if(Y1>Y2){double Yt=Y1;Y1=Y2;Y2=Yt;}//v pÅ™Ã­padÄ› opaÄnÃ©ho poÅ™adÃ­, zÃ¡mÄ›na poÅ™adÃ­
 	return (X1<=Xmys && Xmys<=X2 && Y1<=Ymys && Ymys<=Y2);
 }
 /////////////////////////////////////////////////////////////////////////////
-//metoda ovìøí, zda se bod nachází ve stopce
+//metoda ovÄ›Å™Ã­, zda se bod nachÃ¡zÃ­ ve stopce
 bool Cmy::PtInStopka(double Ex,double Ey,double X,double Y,short uhel)
 {
-  //vhodno pøesunout do globálních promìnnıch do Cvykresli
+  //vhodno pÅ™esunout do globÃ¡lnÃ­ch promÄ›nnÃ½ch do Cvykresli
 	float size=7*F->Zoom;//stopka
 	short sklon=50;//stopka
 
-	//referenèní bode ve špièce, špièka je smìrem dolu (pøi nulové rotaci)
+	//referenÄnÃ­ bode ve Å¡piÄce, Å¡piÄka je smÄ›rem dolu (pÅ™i nulovÃ© rotaci)
 	float sizeX=size;float sizeY=size;
 	if(uhel==0 || uhel==180)sizeX/=2.0;
 	if(uhel==90 || uhel==270)sizeY/=2.0;
 	POINT body[3]={{round(L2Px(Ex)+rotace(1,sklon,uhel).x*sizeX),round(L2Py(Ey)+rotace(1,sklon,uhel).y*sizeY)},{L2Px(Ex),L2Py(Ey)},{round(L2Px(Ex)+rotace(1,360-sklon,uhel).x*sizeX),round(L2Py(Ey)+rotace(1,360-sklon,uhel).y*sizeY)}};
-	//F->Canvas->Pen->Color=clBlue;F->Canvas->Polygon((TPoint*)body,2);//pro testovací zákres
+	//F->Canvas->Pen->Color=clBlue;F->Canvas->Polygon((TPoint*)body,2);//pro testovacÃ­ zÃ¡kres
 	return PtInRegion(CreatePolygonRgn(body,3,WINDING),L2Px(X),L2Py(Y));
 }
 /////////////////////////////////////////////////////////////////////////////
-//metoda ovìøí zda je bod ve vnitø obrysu èlovìka, kterı se nachází na danıch souøadnicích
+//metoda ovÄ›Å™Ã­ zda je bod ve vnitÅ™ obrysu ÄlovÄ›ka, kterÃ½ se nachÃ¡zÃ­ na danÃ½ch souÅ™adnicÃ­ch
 bool Cmy::PtInClovek(double X,double Y,double Xmys,double Ymys,double rotace,short eID)
 {
-	//zmìna orientace - pozor
+	//zmÄ›na orientace - pozor
 	short rotace90=Rt90(rotace);
-	if(rotace90==0 || rotace90==180)//kvùli pøevrácené kresbì ve vıchozí pozici tj. 0°
+	if(rotace90==0 || rotace90==180)//kvÅ¯li pÅ™evrÃ¡cenÃ© kresbÄ› ve vÃ½chozÃ­ pozici tj. 0Â°
 	{
 		rotace+=180;
-		rotace=fmod(rotace,360.0);// vèetnì ošetøení pøeteèení pøes 360 stupòù
-		if(rotace<0){rotace+=360;}//pro záporné hodnoty
+		rotace=fmod(rotace,360.0);// vÄetnÄ› oÅ¡etÅ™enÃ­ pÅ™eteÄenÃ­ pÅ™es 360 stupÅˆÅ¯
+		if(rotace<0){rotace+=360;}//pro zÃ¡pornÃ© hodnoty
 		rotace90=Rt90(rotace);
 	}
-	rotace=rotace90-1*(rotace-rotace90);//kvùli pøevrácené orientaci rotace, kdy rotaèní metody rotují proti hodinovım ruèièkám a naopak rotace elementu je po smìru hodinovıch ruèièek
+	rotace=rotace90-1*(rotace-rotace90);//kvÅ¯li pÅ™evrÃ¡cenÃ© orientaci rotace, kdy rotaÄnÃ­ metody rotujÃ­ proti hodinovÃ½m ruÄiÄkÃ¡m a naopak rotace elementu je po smÄ›ru hodinovÃ½ch ruÄiÄek
 
-	//funkcionalita èlovìk - vyvoøení cesty pera
-	double oX=0.5665; double oY=-0.33425;//souøadnice tìištì hlavy - uchopovací bod, offset v souøadnicích, nemusí bıt støedem vypoèítanım z min a max hodnot níe...
+	//funkcionalita ÄlovÄ›k - vyvoÅ™enÃ­ cesty pera
+	double oX=0.5665; double oY=-0.33425;//souÅ™adnice tÄ›Å¾iÅ¡tÄ› hlavy - uchopovacÃ­ bod, offset v souÅ™adnicÃ­ch, nemusÃ­ bÃ½t stÅ™edem vypoÄÃ­tanÃ½m z min a max hodnot nÃ­Å¾e...
 	int posledni_prvek=63;TPoint PF[64];TPointD PL[64];
-	if(F->Zoom>=9){PL[0].x=0.318;PL[0].y=-0.71;PL[1].x=0.276;PL[1].y=-0.718;PL[2].x=0.262;PL[2].y=-0.718;PL[3].x=0.198;PL[3].y=-0.692;PL[4].x=0.12;PL[4].y=-0.572;PL[5].x=0.036;PL[5].y=-0.55;PL[6].x=0.008;PL[6].y=-0.342;PL[7].x=0.024;PL[7].y=-0.26;PL[8].x=0.09;PL[8].y=-0.274;PL[9].x=0.228;PL[9].y=-0.204;PL[10].x=0.336;PL[10].y=-0.156;PL[11].x=0.366;PL[11].y=-0.11;PL[12].x=0.574;PL[12].y=-0.106;PL[13].x=0.716;PL[13].y=-0.108;PL[14].x=0.776;PL[14].y=-0.132;PL[15].x=0.878;PL[15].y=-0.188;PL[16].x=0.987;PL[16].y=-0.235;PL[17].x=1.166;PL[17].y=-0.282;PL[18].x=1.128;PL[18].y=-0.366;PL[19].x=1.116;PL[19].y=-0.468;PL[20].x=1.092;PL[20].y=-0.512;PL[21].x=0.946;PL[21].y=-0.692;PL[22].x=0.898;PL[22].y=-0.706;PL[23].x=0.89;PL[23].y=-0.716;PL[24].x=0.826;PL[24].y=-0.712;PL[25].x=0.828;PL[25].y=-0.7;PL[26].x=0.834;PL[26].y=-0.66;PL[27].x=0.928;PL[27].y=-0.584;PL[28].x=0.978;PL[28].y=-0.488;PL[29].x=1.002;PL[29].y=-0.46;PL[30].x=1.018;PL[30].y=-0.378;PL[31].x=0.956;PL[31].y=-0.384;PL[32].x=0.956;PL[32].y=-0.378;PL[33].x=0.868;PL[33].y=-0.33;PL[34].x=0.814;PL[34].y=-0.361;PL[35].x=0.814;PL[35].y=-0.37;PL[36].x=0.76;PL[36].y=-0.392;PL[37].x=0.782;PL[37].y=-0.5;PL[38].x=0.694;PL[38].y=-0.654;PL[39].x=0.656;PL[39].y=-0.458;PL[40].x=0.64;PL[40].y=-0.474;PL[41].x=0.63;PL[41].y=-0.478;PL[42].x=0.586;PL[42].y=-0.48;PL[43].x=0.576;PL[43].y=-0.484;PL[44].x=0.582;PL[44].y=-0.532;PL[45].x=0.538;PL[45].y=-0.48;PL[46].x=0.507;PL[46].y=-0.469;PL[47].x=0.506;PL[47].y=-0.474;PL[48].x=0.476;PL[48].y=-0.458;PL[49].x=0.476;PL[49].y=-0.56;PL[50].x=0.38;PL[50].y=-0.62;PL[51].x=0.372;PL[51].y=-0.388;PL[52].x=0.322;PL[52].y=-0.36;PL[53].x=0.326;PL[53].y=-0.368;PL[54].x=0.272;PL[54].y=-0.332;PL[55].x=0.218;PL[55].y=-0.36;PL[56].x=0.18;PL[56].y=-0.392;PL[57].x=0.122;PL[57].y=-0.378;PL[58].x=0.148;PL[58].y=-0.456;PL[59].x=0.152;PL[59].y=-0.478;PL[60].x=0.214;PL[60].y=-0.584;PL[61].x=0.242;PL[61].y=-0.63;PL[62].x=0.29;PL[62].y=-0.626;PL[63].x=0.316;PL[63].y=-0.704;}//vèetnì noh
+	if(F->Zoom>=9){PL[0].x=0.318;PL[0].y=-0.71;PL[1].x=0.276;PL[1].y=-0.718;PL[2].x=0.262;PL[2].y=-0.718;PL[3].x=0.198;PL[3].y=-0.692;PL[4].x=0.12;PL[4].y=-0.572;PL[5].x=0.036;PL[5].y=-0.55;PL[6].x=0.008;PL[6].y=-0.342;PL[7].x=0.024;PL[7].y=-0.26;PL[8].x=0.09;PL[8].y=-0.274;PL[9].x=0.228;PL[9].y=-0.204;PL[10].x=0.336;PL[10].y=-0.156;PL[11].x=0.366;PL[11].y=-0.11;PL[12].x=0.574;PL[12].y=-0.106;PL[13].x=0.716;PL[13].y=-0.108;PL[14].x=0.776;PL[14].y=-0.132;PL[15].x=0.878;PL[15].y=-0.188;PL[16].x=0.987;PL[16].y=-0.235;PL[17].x=1.166;PL[17].y=-0.282;PL[18].x=1.128;PL[18].y=-0.366;PL[19].x=1.116;PL[19].y=-0.468;PL[20].x=1.092;PL[20].y=-0.512;PL[21].x=0.946;PL[21].y=-0.692;PL[22].x=0.898;PL[22].y=-0.706;PL[23].x=0.89;PL[23].y=-0.716;PL[24].x=0.826;PL[24].y=-0.712;PL[25].x=0.828;PL[25].y=-0.7;PL[26].x=0.834;PL[26].y=-0.66;PL[27].x=0.928;PL[27].y=-0.584;PL[28].x=0.978;PL[28].y=-0.488;PL[29].x=1.002;PL[29].y=-0.46;PL[30].x=1.018;PL[30].y=-0.378;PL[31].x=0.956;PL[31].y=-0.384;PL[32].x=0.956;PL[32].y=-0.378;PL[33].x=0.868;PL[33].y=-0.33;PL[34].x=0.814;PL[34].y=-0.361;PL[35].x=0.814;PL[35].y=-0.37;PL[36].x=0.76;PL[36].y=-0.392;PL[37].x=0.782;PL[37].y=-0.5;PL[38].x=0.694;PL[38].y=-0.654;PL[39].x=0.656;PL[39].y=-0.458;PL[40].x=0.64;PL[40].y=-0.474;PL[41].x=0.63;PL[41].y=-0.478;PL[42].x=0.586;PL[42].y=-0.48;PL[43].x=0.576;PL[43].y=-0.484;PL[44].x=0.582;PL[44].y=-0.532;PL[45].x=0.538;PL[45].y=-0.48;PL[46].x=0.507;PL[46].y=-0.469;PL[47].x=0.506;PL[47].y=-0.474;PL[48].x=0.476;PL[48].y=-0.458;PL[49].x=0.476;PL[49].y=-0.56;PL[50].x=0.38;PL[50].y=-0.62;PL[51].x=0.372;PL[51].y=-0.388;PL[52].x=0.322;PL[52].y=-0.36;PL[53].x=0.326;PL[53].y=-0.368;PL[54].x=0.272;PL[54].y=-0.332;PL[55].x=0.218;PL[55].y=-0.36;PL[56].x=0.18;PL[56].y=-0.392;PL[57].x=0.122;PL[57].y=-0.378;PL[58].x=0.148;PL[58].y=-0.456;PL[59].x=0.152;PL[59].y=-0.478;PL[60].x=0.214;PL[60].y=-0.584;PL[61].x=0.242;PL[61].y=-0.63;PL[62].x=0.29;PL[62].y=-0.626;PL[63].x=0.316;PL[63].y=-0.704;}//vÄetnÄ› noh
 	else {posledni_prvek=60;PL[0].x=0.318;PL[0].y=-0.71;PL[1].x=0.276;PL[1].y=-0.718;PL[2].x=0.262;PL[2].y=-0.718;PL[3].x=0.198;PL[3].y=-0.692;PL[4].x=0.12;PL[4].y=-0.572;PL[5].x=0.036;PL[5].y=-0.55;PL[6].x=0.008;PL[6].y=-0.342;PL[7].x=0.024;PL[7].y=-0.26;PL[8].x=0.09;PL[8].y=-0.274;PL[9].x=0.228;PL[9].y=-0.204;PL[10].x=0.336;PL[10].y=-0.156;PL[11].x=0.366;PL[11].y=-0.11;PL[12].x=0.574;PL[12].y=-0.106;PL[13].x=0.716;PL[13].y=-0.108;PL[14].x=0.776;PL[14].y=-0.132;PL[15].x=0.878;PL[15].y=-0.188;PL[16].x=0.987;PL[16].y=-0.235;PL[17].x=1.166;PL[17].y=-0.282;PL[18].x=1.128;PL[18].y=-0.366;PL[19].x=1.116;PL[19].y=-0.468;PL[20].x=1.092;PL[20].y=-0.512;PL[21].x=0.946;PL[21].y=-0.692;PL[22].x=0.898;PL[22].y=-0.706;PL[23].x=0.89;PL[23].y=-0.716;PL[24].x=0.826;PL[24].y=-0.712;PL[25].x=0.828;PL[25].y=-0.7;PL[26].x=0.834;PL[26].y=-0.66;PL[27].x=0.928;PL[27].y=-0.584;PL[28].x=0.978;PL[28].y=-0.488;PL[29].x=1.002;PL[29].y=-0.46;PL[30].x=1.018;PL[30].y=-0.378;PL[31].x=0.956;PL[31].y=-0.384;PL[32].x=0.956;PL[32].y=-0.378;PL[33].x=0.868;PL[33].y=-0.33;PL[34].x=0.814;PL[34].y=-0.361;PL[35].x=0.814;PL[35].y=-0.37;PL[36].x=0.76;PL[36].y=-0.392;PL[37].x=0.731;PL[37].y=-0.397;PL[38].x=0.709;PL[38].y=-0.404;PL[39].x=0.691;PL[39].y=-0.407;PL[40].x=0.679;PL[40].y=-0.457;PL[41].x=0.633;PL[41].y=-0.479;PL[42].x=0.589;PL[42].y=-0.481;PL[43].x=0.579;PL[43].y=-0.485;PL[44].x=0.579;PL[44].y=-0.54;PL[45].x=0.541;PL[45].y=-0.48;PL[46].x=0.492;PL[46].y=-0.465;PL[47].x=0.439;PL[47].y=-0.452;PL[48].x=0.441;PL[48].y=-0.405;PL[49].x=0.372;PL[49].y=-0.389;PL[50].x=0.326;PL[50].y=-0.368;PL[51].x=0.272;PL[51].y=-0.332;PL[52].x=0.218;PL[52].y=-0.36;PL[53].x=0.18;PL[53].y=-0.392;PL[54].x=0.122;PL[54].y=-0.378;PL[55].x=0.148;PL[55].y=-0.456;PL[56].x=0.152;PL[56].y=-0.478;PL[57].x=0.214;PL[57].y=-0.584;PL[58].x=0.242;PL[58].y=-0.63;PL[59].x=0.29;PL[59].y=-0.626;PL[60].x=0.316;PL[60].y=-0.704;}
-	rotace_polygon(oX,oY,X,Y,PL,PF,posledni_prvek,rotace);//orotuje a rovnou pøevede do fyzickıch souøadnic nahrazuje pùvodní: for(int i=0;i<=posledni_prvek;i++){PF2[i].x=L2PxX+m2px(PL[i].x-oX);PF2[i].y=L2PyY+m2px(oY-PL[i].y);}
+	rotace_polygon(oX,oY,X,Y,PL,PF,posledni_prvek,rotace);//orotuje a rovnou pÅ™evede do fyzickÃ½ch souÅ™adnic nahrazuje pÅ¯vodnÃ­: for(int i=0;i<=posledni_prvek;i++){PF2[i].x=L2PxX+m2px(PL[i].x-oX);PF2[i].y=L2PyY+m2px(oY-PL[i].y);}
 
-	//pistole obrys v pøípadì ION
+	//pistole obrys v pÅ™Ã­padÄ› ION
 	TPoint PF1[9];
 	if(105<=eID && eID<=108)
 	{
 		float PS=25;
 		PL[0].x=0.28875;PL[0].y=-0.68;PL[1].x=0.34;PL[1].y=-0.68;PL[2].x=0.34;PL[2].y=-0.9475;PL[3].x=0.32;PL[3].y=-0.975;PL[4].x=0.32;PL[4].y=-1.04375;PL[5].x=0.27;PL[5].y=-1.04375;PL[6].x=0.27;PL[6].y=-0.975;PL[7].x=0.25;PL[7].y=-0.9475;PL[8].x=0.25;PL[8].y=-0.7225;
 		rotace_polygon(oX,oY,PL,8,rotace);
-		if(PS!=0)rotace_polygon(PL[0].x,PL[0].y,PL,8,PS);//jen samotná pistole, pozn. optimalizaci takto jsem nerozchodil: if(PS!=0)m.rotace_polygon(oX,oY,PL[0].x,PL[0].y,PL,PF,8,PS);//jen samotná pistole
+		if(PS!=0)rotace_polygon(PL[0].x,PL[0].y,PL,8,PS);//jen samotnÃ¡ pistole, pozn. optimalizaci takto jsem nerozchodil: if(PS!=0)m.rotace_polygon(oX,oY,PL[0].x,PL[0].y,PL,PF,8,PS);//jen samotnÃ¡ pistole
 		for(int i=0;i<=8;i++){PF1[i].x=L2Px(X+PL[i].x-oX);PF1[i].y=L2Py(Y+PL[i].y-oY);}
 	}
 
-	//uzavøení do cesty
+	//uzavÅ™enÃ­ do cesty
 	BeginPath(F->Canvas->Handle);
 	F->Canvas->PolyBezier(PF,posledni_prvek);
-	if(105<=eID && eID<=108)F->Canvas->Polygon(PF1,8);//v pøípadì ION ještì pistole
+	if(105<=eID && eID<=108)F->Canvas->Polygon(PF1,8);//v pÅ™Ã­padÄ› ION jeÅ¡tÄ› pistole
 	EndPath(F->Canvas->Handle);
 
-	//testování finální citelné oblasti
+	//testovÃ¡nÃ­ finÃ¡lnÃ­ citelnÃ© oblasti
 	if(PtInRegion(PathToRegion(F->Canvas->Handle),L2Px(Xmys),L2Py(Ymys)))return true;
 	else return false;
 }
 /////////////////////////////////////////////////////////////////////////////
-//metoda ovìøí zda je bod ve vnitø obrysu ION tyèí, kterı se nachází na danıch souøadnicích
+//metoda ovÄ›Å™Ã­ zda je bod ve vnitÅ™ obrysu ION tyÄÃ­, kterÃ½ se nachÃ¡zÃ­ na danÃ½ch souÅ™adnicÃ­ch
 bool Cmy::PtInIon(double X,double Y,double Xmys,double Ymys,double rotace)
 {
-	double oX=0.5;double oY=-1;//støed offset
+	double oX=0.5;double oY=-1;//stÅ™ed offset
 	int posledni_prvek=21;TPointD PL[22];
 
-	//jedna krunice
+	//jedna kruÅ¾nice
 	TPoint PF1[22];
 	PL[0].x=0.5;PL[0].y=-1.86333333333333;PL[1].x=0.65;PL[1].y=-1.88666666666667;PL[2].x=0.846666666666667;PL[2].y=-1.62666666666667;PL[3].x=0.596666666666667;PL[3].y=-1.45666666666667;PL[4].x=0.58;PL[4].y=-1.38333333333333;PL[5].x=0.576666666666667;PL[5].y=-1.37333333333333;PL[6].x=0.56;PL[6].y=-1.3;PL[7].x=0.628333333333333;PL[7].y=-1.22;PL[8].x=0.628333333333333;PL[8].y=-1.22333333333333;PL[9].x=0.696666666666667;PL[9].y=-1.14333333333333;PL[10].x=0.498333333333333;PL[10].y=-1.14166666666667;PL[11].x=0.501666666666667;PL[11].y=-1.14833333333333;PL[12].x=0.3;PL[12].y=-1.14333333333333;PL[13].x=0.366666666666667;PL[13].y=-1.22;PL[14].x=0.366666666666667;PL[14].y=-1.22;PL[15].x=0.433333333333333;PL[15].y=-1.29666666666667;PL[16].x=0.416666666666667;PL[16].y=-1.37333333333333;PL[17].x=0.42;PL[17].y=-1.38;PL[18].x=0.403333333333333;PL[18].y=-1.45666666666667;PL[19].x=0.26;PL[19].y=-1.53;PL[20].x=0.2;PL[20].y=-1.83333333333333;PL[21].x=0.493333333333333;PL[21].y=-1.86;
-	rotace_polygon(oX,oY,X,Y,PL,PF1,posledni_prvek,rotace);//orotuje a rovnou pøevede do fyzickıch souøadnic nahrazuje pùvodní: for(int i=0;i<=posledni_prvek;i++){PF2[i].x=X+m2px(PL[i].x-oX);PF2[i].y=Y+m2px(oY-PL[i].y);}
+	rotace_polygon(oX,oY,X,Y,PL,PF1,posledni_prvek,rotace);//orotuje a rovnou pÅ™evede do fyzickÃ½ch souÅ™adnic nahrazuje pÅ¯vodnÃ­: for(int i=0;i<=posledni_prvek;i++){PF2[i].x=X+m2px(PL[i].x-oX);PF2[i].y=Y+m2px(oY-PL[i].y);}
 
-	//druhá krunice
+	//druhÃ¡ kruÅ¾nice
 	TPoint PF2[22];
 	PL[0].x=0.5;PL[0].y=-0.14;PL[1].x=0.65;PL[1].y=-0.116666666666666;PL[2].x=0.846666666666667;PL[2].y=-0.376666666666666;PL[3].x=0.596666666666667;PL[3].y=-0.546666666666666;PL[4].x=0.58;PL[4].y=-0.62;PL[5].x=0.576666666666667;PL[5].y=-0.63;PL[6].x=0.56;PL[6].y=-0.703333333333333;PL[7].x=0.628333333333333;PL[7].y=-0.783333333333333;PL[8].x=0.628333333333333;PL[8].y=-0.78;PL[9].x=0.696666666666667;PL[9].y=-0.86;PL[10].x=0.498333333333333;PL[10].y=-0.861666666666666;PL[11].x=0.501666666666667;PL[11].y=-0.855;PL[12].x=0.3;PL[12].y=-0.86;PL[13].x=0.366666666666667;PL[13].y=-0.783333333333333;PL[14].x=0.366666666666667;PL[14].y=-0.783333333333333;PL[15].x=0.433333333333333;PL[15].y=-0.706666666666667;PL[16].x=0.416666666666667;PL[16].y=-0.63;PL[17].x=0.42;PL[17].y=-0.623333333333333;PL[18].x=0.403333333333333;PL[18].y=-0.546666666666666;PL[19].x=0.26;PL[19].y=-0.473333333333333;PL[20].x=0.21;PL[20].y=-0.156666666666667;PL[21].x=0.493333333333333;PL[21].y=-0.143333333333333;
-	rotace_polygon(oX,oY,X,Y,PL,PF2,posledni_prvek,rotace);//orotuje a rovnou pøevede do fyzickıch souøadnic nahrazuje pùvodní:
+	rotace_polygon(oX,oY,X,Y,PL,PF2,posledni_prvek,rotace);//orotuje a rovnou pÅ™evede do fyzickÃ½ch souÅ™adnic nahrazuje pÅ¯vodnÃ­:
 
-	//uzavøení do cesty
+	//uzavÅ™enÃ­ do cesty
 	BeginPath(F->Canvas->Handle);
 	F->Canvas->PolyBezier(PF1,posledni_prvek);
 	F->Canvas->PolyBezier(PF2,posledni_prvek);
 	EndPath(F->Canvas->Handle);
 
-	//testování finální citelné oblasti
+	//testovÃ¡nÃ­ finÃ¡lnÃ­ citelnÃ© oblasti
 	if(PtInRegion(PathToRegion(F->Canvas->Handle),L2Px(Xmys),L2Py(Ymys)))return true;
 	else return false;
 }
@@ -570,7 +590,7 @@ TPointDbool Cmy::zkratit_polygon_na_roztec(double d, double r,double xp, double 
 
 			double m=((pow(d0n,2)-pow(d1n,2))/2*dt)+(dt/2); // prusecik pocitan metodikou popsanou na wikibooks(prusecik dvou kruznic)
 			ShowMessage(pow(d0n,2)); ShowMessage(pow(m,2));
-			double v=sqrt(fabs(pow(d0n,2)-pow(m,2)));// dela se to trojuhelnikama  <--DOPLNÌNA ABSOLUTNÍ HODNOTA PRO REÁLNÁ ÈÍSLA
+			double v=sqrt(fabs(pow(d0n,2)-pow(m,2)));// dela se to trojuhelnikama  <--DOPLNÄšNA ABSOLUTNÃ HODNOTA PRO REÃLNÃ ÄŒÃSLA
 
 			double xs=x0+(m/dt)*(x1-x0); // vypocet pruseciku spojnice bodu s osou
 			double ys=y0+(m/dt)*(y1-y0);
@@ -603,56 +623,56 @@ TPointDbool Cmy::zkratit_polygon_na_roztec(double d, double r,double xp, double 
 }
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
-double Cmy::cekani_na_palec(double cas, double roztec_palcu,double rychlost_dopravniku,int funkce)//vrátí dobu èekání na palec v sec, rozteè je v m, rychlost dopravníku v m/s
+double Cmy::cekani_na_palec(double cas, double roztec_palcu,double rychlost_dopravniku,int funkce)//vrÃ¡tÃ­ dobu ÄekÃ¡nÃ­ na palec v sec, rozteÄ je v m, rychlost dopravnÃ­ku v m/s
 {
-		//if(zohlednit && rezim!=1)//pokud se jedná o kontinuální reim neøeší se, pøedpokládá se, e jede na stejném dopravníku
+		//if(zohlednit && rezim!=1)//pokud se jednÃ¡ o kontinuÃ¡lnÃ­ reÅ¾im neÅ™eÅ¡Ã­ se, pÅ™edpoklÃ¡dÃ¡ se, Å¾e jede na stejnÃ©m dopravnÃ­ku
 		{
-			//exaktní vıpoèet je pouitelnı jenom v pøípad známe goemetrie, navíc obsahuje chybu
-			//double cas_presunu_mezi_palci=(60*roztec_palcu)/(rychlost_dopravniku*100);  //to 100 je pøevod na cm z m
-			//nn, neceloèíselnı zbyte double zbytek_po_deleni=(cas*60/cas_presunu_mezi_palci)-floor(cas*60/cas_presunu_mezi_palci);//tzn. kde se nachází
+			//exaktnÃ­ vÃ½poÄet je pouÅ¾itelnÃ½ jenom v pÅ™Ã­pad znÃ¡me goemetrie, navÃ­c obsahuje chybu
+			//double cas_presunu_mezi_palci=(60*roztec_palcu)/(rychlost_dopravniku*100);  //to 100 je pÅ™evod na cm z m
+			//nn, neceloÄÃ­selnÃ½ zbyte double zbytek_po_deleni=(cas*60/cas_presunu_mezi_palci)-floor(cas*60/cas_presunu_mezi_palci);//tzn. kde se nachÃ¡zÃ­
 			//return cas_presunu_mezi_palci*zbytek_po_deleni;
-			//jako støední hodnota vyplıvající z normálního pravdìpodonostního rozdìlení hodnot
+			//jako stÅ™ednÃ­ hodnota vyplÃ½vajÃ­cÃ­ z normÃ¡lnÃ­ho pravdÄ›podonostnÃ­ho rozdÄ›lenÃ­ hodnot
 			//(cas_presunu_mezi_palci-0)/2 resp. (max-min)/2
-			//return (roztec_palcu/(rychlost_dopravniku*1000.0))/2.0; //vrátí dobu èekání na palec v min, rozteèe je v mm resp. v m za z minu u rychlosti dopravniku
+			//return (roztec_palcu/(rychlost_dopravniku*1000.0))/2.0; //vrÃ¡tÃ­ dobu ÄekÃ¡nÃ­ na palec v min, rozteÄe je v mm resp. v m za z minu u rychlosti dopravniku
 		}
 		//else return 0;
 
-		//vrátí dobu èekání na palec v sec, rozteè je v m, rychlost dopravníku v m/s
+		//vrÃ¡tÃ­ dobu ÄekÃ¡nÃ­ na palec v sec, rozteÄ je v m, rychlost dopravnÃ­ku v m/s
 		double RET=0.0;
 		double MIN=0.0;double MAX=0.0; if(rychlost_dopravniku!=0)MAX=roztec_palcu/rychlost_dopravniku;
-		double ZOI=0.1;if(MAX==0 || MAX<=ZOI)ZOI=0.0;//korekce pro zajištìní zprava otevøeného intervalu (nemùe bıt uzavøenı, protoe to není reálné, dochází v takové situaci ještì k uchopení pùvodním palcem), øád kokekce zvolen neexaktnì, pouze dle úvahy, pokud není MAX hodnota (napøíklad z dùvodu 0 hodnoty rozteèe) kladné èíslo vìtší ne nula, tak se korekce neuvauje, aby se nešlo do mínusu s vıpoètem (tedy èekáním)
+		double ZOI=0.1;if(MAX==0 || MAX<=ZOI)ZOI=0.0;//korekce pro zajiÅ¡tÄ›nÃ­ zprava otevÅ™enÃ©ho intervalu (nemÅ¯Å¾e bÃ½t uzavÅ™enÃ½, protoÅ¾e to nenÃ­ reÃ¡lnÃ©, dochÃ¡zÃ­ v takovÃ© situaci jeÅ¡tÄ› k uchopenÃ­ pÅ¯vodnÃ­m palcem), Å™Ã¡d kokekce zvolen neexaktnÄ›, pouze dle Ãºvahy, pokud nenÃ­ MAX hodnota (napÅ™Ã­klad z dÅ¯vodu 0 hodnoty rozteÄe) kladnÃ© ÄÃ­slo vÄ›tÅ¡Ã­ neÅ¾ nula, tak se korekce neuvaÅ¾uje, aby se neÅ¡lo do mÃ­nusu s vÃ½poÄtem (tedy ÄekÃ¡nÃ­m)
 		switch(funkce)
 		{
-				case 0:RET=MIN;break;//nic resp minimum=0, neèeká na palec vùbec buï vyšel pøesnì nebo se nezohledòuje
-				case 1:RET=(MAX-ZOI+MIN)/2.0;break;//støední hodnota (v tomto pøípadì i prùmìr) dle normálního rozdìlení pro hodnoty <0,max)
-				case 2:RET=fmod(rand(),MAX*10)/10.0+MIN;break;//náhodná hodnota v rozmezí <0,max) èekání na palce, zde ZOI není nutné zohledòovat, protoe ji vyplıvá z pouitého algoritmu
-				case 3:RET=MAX-ZOI;break;//max.moná hodnota èekání na pale
-				case 4:/*RET=tady bude exaktní vıpoèet pro geometrii*/break;
+				case 0:RET=MIN;break;//nic resp minimum=0, neÄekÃ¡ na palec vÅ¯bec buÄ vyÅ¡el pÅ™esnÄ› nebo se nezohledÅˆuje
+				case 1:RET=(MAX-ZOI+MIN)/2.0;break;//stÅ™ednÃ­ hodnota (v tomto pÅ™Ã­padÄ› i prÅ¯mÄ›r) dle normÃ¡lnÃ­ho rozdÄ›lenÃ­ pro hodnoty <0,max)
+				case 2:RET=fmod(rand(),MAX*10)/10.0+MIN;break;//nÃ¡hodnÃ¡ hodnota v rozmezÃ­ <0,max) ÄekÃ¡nÃ­ na palce, zde ZOI nenÃ­ nutnÃ© zohledÅˆovat, protoÅ¾e jiÅ¾ vyplÃ½vÃ¡ z pouÅ¾itÃ©ho algoritmu
+				case 3:RET=MAX-ZOI;break;//max.moÅ¾nÃ¡ hodnota ÄekÃ¡nÃ­ na pale
+				case 4:/*RET=tady bude exaktnÃ­ vÃ½poÄet pro geometrii*/break;
 		}
 		return RET;
 }
 /////////////////////////////////////////////////////////////////////////////
-//metoda vratí minimální monou mezeru mezi vozíky, pokud je parametr mezera roven 0, v pøípadì nenulového parametru mezery vrací vhodnou nejbliší hodnotu této mezery vùèi rozmìrùm rozteè a rozmìr vozíku, pokud nebude zadaná rozteè tj. bude 0, vrací hodnotu 0, lze parametrizovat vracenı vısledek 0 (implicitnì) - kritická mezera, 1 èi 281 - mezera mezi JIG, 2 èi 282 mezera mezi PODVOZKY
+//metoda vratÃ­ minimÃ¡lnÃ­ moÅ¾nou mezeru mezi vozÃ­ky, pokud je parametr mezera roven 0, v pÅ™Ã­padÄ› nenulovÃ©ho parametru mezery vracÃ­ vhodnou nejbliÅ¾Å¡Ã­ hodnotu tÃ©to mezery vÅ¯Äi rozmÄ›rÅ¯m rozteÄ a rozmÄ›r vozÃ­ku, pokud nebude zadanÃ¡ rozteÄ tj. bude 0, vracÃ­ hodnotu 0, lze parametrizovat vracenÃ½ vÃ½sledek 0 (implicitnÄ›) - kritickÃ¡ mezera, 1 Äi 281 - mezera mezi JIG, 2 Äi 282 mezera mezi PODVOZKY
 double Cmy::mezera_mezi_voziky(double dJ,double sJ,double rotace,double roztec,double mezera,unsigned short typ)
 {
-	//poadovaná hodnota
-	double DV=UDV(dJ,sJ,rotace);//kritická mezera
+	//poÅ¾adovanÃ¡ hodnota
+	double DV=UDV(dJ,sJ,rotace);//kritickÃ¡ mezera
 	double RET=0.0;
 
 	if(roztec!=0)
 	{
-		double min_mezera=ceil(DV/roztec)*roztec-DV;//vrátí minimální monou mezi vozíky, nepokrácené: ceil((vozik/2+vozik/2)/roztec]*roztec-vozik
+		double min_mezera=ceil(DV/roztec)*roztec-DV;//vrÃ¡tÃ­ minimÃ¡lnÃ­ moÅ¾nou mezi vozÃ­ky, nepokrÃ¡cenÃ©: ceil((vozik/2+vozik/2)/roztec]*roztec-vozik
 		if(mezera==0)
 		{
 			RET=min_mezera;
 		}
-		if(mezera!=0)//pokud by bylo nula, tak by vrátilo hodnotu min_mezera
+		if(mezera!=0)//pokud by bylo nula, tak by vrÃ¡tilo hodnotu min_mezera
 		{
-			if(min_mezera>=mezera || mezera<0)RET=min_mezera;//pokud je minimální moná mezera menší ne nebo stejná jak zadaná, pøípadnì chybnì zadaná v podobì záporného èísla tak vrátí minimální monou resp. zadanou v pøípadì ==
-			else {RET=min_mezera+round((mezera-min_mezera)/roztec)*roztec;}//vratí nejbliší monou mezeru mezi vozíky
+			if(min_mezera>=mezera || mezera<0)RET=min_mezera;//pokud je minimÃ¡lnÃ­ moÅ¾nÃ¡ mezera menÅ¡Ã­ neÅ¾ nebo stejnÃ¡ jak zadanÃ¡, pÅ™Ã­padnÄ› chybnÄ› zadanÃ¡ v podobÄ› zÃ¡pornÃ©ho ÄÃ­sla tak vrÃ¡tÃ­ minimÃ¡lnÃ­ moÅ¾nou resp. zadanou v pÅ™Ã­padÄ› ==
+			else {RET=min_mezera+round((mezera-min_mezera)/roztec)*roztec;}//vratÃ­ nejbliÅ¾Å¡Ã­ moÅ¾nou mezeru mezi vozÃ­ky
 		}
-		//pokud je poadovaná mezi jigy èi vozíky
-		bool JMK=false; if(UDV(dJ,sJ,rotace)==UDJ(dJ,sJ,rotace))JMK=true;//mezera mezi JIGy je kritická
+		//pokud je poÅ¾adovanÃ¡ mezi jigy Äi vozÃ­ky
+		bool JMK=false; if(UDV(dJ,sJ,rotace)==UDJ(dJ,sJ,rotace))JMK=true;//mezera mezi JIGy je kritickÃ¡
 		switch(typ)
 		{
 			//jig
@@ -664,116 +684,116 @@ double Cmy::mezera_mezi_voziky(double dJ,double sJ,double rotace,double roztec,d
 		}
 		return RET;
 	}
-	else return 0;//pokud nebude známa rozteè
+	else return 0;//pokud nebude znÃ¡ma rozteÄ
 }
 ////////////////////////
-//vrátí mezeru dle rozestupu v palcích a rozteèe a velikosti vozíku dle rotace, typ==-1 vrátí velikost mezery automaticky co je kritištìjší, zda podovzek èi jig, 0 - podvozek, 1 - jig
+//vrÃ¡tÃ­ mezeru dle rozestupu v palcÃ­ch a rozteÄe a velikosti vozÃ­ku dle rotace, typ==-1 vrÃ¡tÃ­ velikost mezery automaticky co je kritiÅ¡tÄ›jÅ¡Ã­, zda podovzek Äi jig, 0 - podvozek, 1 - jig
 double Cmy::mezera(double dJ,double sJ,double rotace,double Rx,double R,short typ)
 {
 	switch(typ)
 	{
 		case  0: return (Rx*R)-F->d.v.PP.delka_podvozek;//mezi podvozky
 		case  1: return (Rx*R)-UDJ(dJ,sJ,rotace);//mezi JIGy
-		default: return (Rx*R)-UDV(dJ,sJ,rotace);//automaticky co je kritiètìjší
+		default: return (Rx*R)-UDV(dJ,sJ,rotace);//automaticky co je kritiÄtÄ›jÅ¡Ã­
 	}
 }
 ////////////////////////
-//vrátí mezeru dle rozestupu a rotace (resp. velikosti vozíku spoèítané dle rotace), typ==-1 vrátí velikost mezery automaticky co je kritištìjší, zda podovzek èi jig, 0 - podvozek, 1 - jig
+//vrÃ¡tÃ­ mezeru dle rozestupu a rotace (resp. velikosti vozÃ­ku spoÄÃ­tanÃ© dle rotace), typ==-1 vrÃ¡tÃ­ velikost mezery automaticky co je kritiÅ¡tÄ›jÅ¡Ã­, zda podovzek Äi jig, 0 - podvozek, 1 - jig
 double Cmy::mezera(double rotace,double Rz,short typ)
 {
 	switch(typ)
 	{
 		case  0: return Rz-F->d.v.PP.delka_podvozek;//mezi podvozky
 		case  1: return Rz-UDJ(rotace);//mezi JIGy
-		default: return Rz-UDV(rotace);//automaticky co je kritiètìjší
+		default: return Rz-UDV(rotace);//automaticky co je kritiÄtÄ›jÅ¡Ã­
 	}
 }
 /////////////////////////////////////////////////////////////////////////////
-//vrátí velikokost minimální mezery tak, aby se stíhálo èekání na palce a vozíky se nesrazily
+//vrÃ¡tÃ­ velikokost minimÃ¡lnÃ­ mezery tak, aby se stÃ­hÃ¡lo ÄekÃ¡nÃ­ na palce a vozÃ­ky se nesrazily
 double Cmy::minM(double RD1,double RD2,double R2)
 {
 	double M=0.0;
-	double maxTcek=cekani_na_palec(0,R2,RD2,3);//R2/RD2-ZOI;//maximální doba èekání na uchycení na palec
+	double maxTcek=cekani_na_palec(0,R2,RD2,3);//R2/RD2-ZOI;//maximÃ¡lnÃ­ doba ÄekÃ¡nÃ­ na uchycenÃ­ na palec
 	if(RD2>=RD1)M=maxTcek*RD1;
 	else M=maxTcek/(2*(1/RD1-1/RD2));
 	return M;
 }
 /////////////////////////////////////////////////////////////////////////////
-//vrátí rozestup v metrech mezi aktivními palci, byla-li zadáná správnì mezera
+//vrÃ¡tÃ­ rozestup v metrech mezi aktivnÃ­mi palci, byla-li zadÃ¡nÃ¡ sprÃ¡vnÄ› mezera
 double Cmy::Rz(double dJ,double sJ,double rotace,double M)
 {
 	return M+UDV(dJ,sJ,rotace);
 }
 ////////////////////////
-//vrátí rozestup v metrech mezi aktivními palci v souvstanosti k RD (a resp. TT)
+//vrÃ¡tÃ­ rozestup v metrech mezi aktivnÃ­mi palci v souvstaÅ¾nosti k RD (a resp. TT)
 double Cmy::Rz(double RD)
 {
 	return RD*F->d.v.PP.TT;
 }
 ////////////////////////
-//vrátí rozestup v metrech mezi aktivními palci v souvstanosti k Rx a R
+//vrÃ¡tÃ­ rozestup v metrech mezi aktivnÃ­mi palci v souvstaÅ¾nosti k Rx a R
 double Cmy::Rz(double Rx, double R)
 {
 	return Rx*R;
 }
 /////////////////////////////////////////////////////////////////////////////
-//vrátí rozestup v poètech palcù mezi aktivními palci, byla-li zadáná správnì mezera
+//vrÃ¡tÃ­ rozestup v poÄtech palcÅ¯ mezi aktivnÃ­mi palci, byla-li zadÃ¡nÃ¡ sprÃ¡vnÄ› mezera
 double Cmy::Rx(double dJ,double sJ,double rotace,double M,double R)
 {
-	if(R==0)return 0;//nebyla definováná rozteè palcù, tudí se nepracuje s palci
+	if(R==0)return 0;//nebyla definovÃ¡nÃ¡ rozteÄ palcÅ¯, tudÃ­Å¾ se nepracuje s palci
 	else return (M+UDV(dJ,sJ,rotace))/R;
 }
 ////////////////////////
-//vrátí rozestup v poètech palcù mezi aktivními palci z RD a R (a resp. TT)
+//vrÃ¡tÃ­ rozestup v poÄtech palcÅ¯ mezi aktivnÃ­mi palci z RD a R (a resp. TT)
 double Cmy::Rx(double RD,double R)
 {
 	return Rx2(Rz(RD),R);
 }
 ////////////////////////
-//vrátí rozestup v poètech palcù mezi aktivními palci z Rz a R
+//vrÃ¡tÃ­ rozestup v poÄtech palcÅ¯ mezi aktivnÃ­mi palci z Rz a R
 double Cmy::Rx2(double Rz,double R)
 {
-	if(R==0) 0;//nebyla definováná rozteè palcù, tudí se nepracuje s palci
+	if(R==0) 0;//nebyla definovÃ¡nÃ¡ rozteÄ palcÅ¯, tudÃ­Å¾ se nepracuje s palci
 	else return Rz/R;
 }
 /////////////////////////////////////////////////////////////////////////////
-//vrátí rozteèe dle rozestupu a poètu palcù
+//vrÃ¡tÃ­ rozteÄe dle rozestupu a poÄtu palcÅ¯
 double Cmy::R(double Rz,double Rx)
 {
 	return Rz/Rx;
 }
 /////////////////////////////////////////////////////////////////////////////
-//vrátí RD dle rozestupu v metrech mezi aktivními palci v souvstanosti s TT
+//vrÃ¡tÃ­ RD dle rozestupu v metrech mezi aktivnÃ­mi palci v souvstaÅ¾nosti s TT
 double Cmy::RD(double Rz)
 {
 	return Rz/Form1->d.v.PP.TT;
 }
 /////////////////////////////////////////////////////////////////////////////
-//vratí RD dle velikosti lakovacího okna a procesního èasu
+//vratÃ­ RD dle velikosti lakovacÃ­ho okna a procesnÃ­ho Äasu
 double Cmy::RD(double LO,double PT)
 {
 	if(PT==0)return 0; else return LO/PT;
 }
 /////////////////////////////////////////////////////////////////////////////
-//vrátí PT dle velikosti lakovacícho okna a aktuální rychlosti pohonu
+//vrÃ¡tÃ­ PT dle velikosti lakovacÃ­cho okna a aktuÃ¡lnÃ­ rychlosti pohonu
 double Cmy::PT(double LO,double RD)
 {
 	if(RD==0)return 0; else return LO/RD;
 }
 ////////////////////////
-//dle aktuálního RD a délky otoè vrátí PTo
+//dle aktuÃ¡lnÃ­ho RD a dÃ©lky otoÄ vrÃ¡tÃ­ PTo
 double Cmy::PTo(double Dotoc,double RD)
 {
 	if(RD==0)return 0; else return Dotoc/RD;
 }
 ////////////////////////
-//dle aktuálního RD a èasu otáèení otoèe vrátí délku otáèení
+//dle aktuÃ¡lnÃ­ho RD a Äasu otÃ¡ÄenÃ­ otoÄe vrÃ¡tÃ­ dÃ©lku otÃ¡ÄenÃ­
 double Cmy::Dotoc(double PTo,double RD)
 {
 	return PTo*RD;
 }
 ////////////////////////
-//vratí hodnotu RT (reserve time), ta mùe bıt i záporná, WT èekání na palac si dopoèítává metoda sama, pokud WT==-1, pokud je dosazena kladná hodnota vìtší ne 0, tak je ta uvaovaná jako WT, 0 hodnota znamena WT èekání na palec neuvaovat
+//vratÃ­ hodnotu RT (reserve time), ta mÅ¯Å¾e bÃ½t i zÃ¡pornÃ¡, WT ÄekÃ¡nÃ­ na palac si dopoÄÃ­tÃ¡vÃ¡ metoda sama, pokud WT==-1, pokud je dosazena kladnÃ¡ hodnota vÄ›tÅ¡Ã­ neÅ¾ 0, tak je ta uvaÅ¾ovanÃ¡ jako WT, 0 hodnota znamena WT ÄekÃ¡nÃ­ na palec neuvaÅ¾ovat
 double Cmy::RT(double PT,double delka_prejezdu,double RD,double R,double WT)
 {
 	if(RD!=0)
@@ -784,13 +804,13 @@ double Cmy::RT(double PT,double delka_prejezdu,double RD,double R,double WT)
 	else return 0;
 }
 /////////////////////////////////////////////////////////////////////////////
-//vratí RD dle délky otoèe a èasu otáèení
+//vratÃ­ RD dle dÃ©lky otoÄe a Äasu otÃ¡ÄenÃ­
 double Cmy::RDo(double Dotoc,double PTo)
 {
 	if(PTo==0)return 0; else return Dotoc/PTo;
 }
 ////////////////////////
-//vrátí doporuèenou nejbliší rychlost pohonu, k rychlosti zadané tak, aby se reflektovala rozteè mezi palci i takt
+//vrÃ¡tÃ­ doporuÄenou nejbliÅ¾Å¡Ã­ rychlost pohonu, k rychlosti zadanÃ© tak, aby se reflektovala rozteÄ mezi palci i takt
 double Cmy::dopRD(double dJ,double sJ,double rotace,double R,double TT, double RD)
 {
 	if(TT==0)return 0;
@@ -801,43 +821,43 @@ double Cmy::dopRD(double dJ,double sJ,double rotace,double R,double TT, double R
 	}
 }
 /////////////////////////////////////////////////////////////////////////////
-//vrací true pokud nová rozteè (R) ovlivní Rz resp RD
+//vracÃ­ true pokud novÃ¡ rozteÄ (R) ovlivnÃ­ Rz resp RD
 bool Cmy::kontrola_zda_zmena_R_ovlivni_RzRD(double R_puvodni,double R_nove)
 {
 	if(fmod(R_puvodni,R_nove))return true;
 	else return false;
 }
 /////////////////////////////////////////////////////////////////////////////
-//vrátí uitnou délku vozíku
+//vrÃ¡tÃ­ uÅ¾itnou dÃ©lku vozÃ­ku
 double Cmy::UDV(double dJ,double sJ,double rotace)
 {
-	//postupnì rozšíøit o vıpoèet dle zadanıch stupòù nejenom 0 vs. 90
+	//postupnÄ› rozÅ¡Ã­Å™it o vÃ½poÄet dle zadanÃ½ch stupÅˆÅ¯ nejenom 0 vs. 90
 	double DV=UDJ(dJ,sJ,rotace);
 	if(DV<F->d.v.PP.delka_podvozek)DV=F->d.v.PP.delka_podvozek;
 	return DV;
 }
 /////////////////////////////////////////////////////////////////////////////
-//vratí uitnou délku vozíku, parametry bere z PP
+//vratÃ­ uÅ¾itnou dÃ©lku vozÃ­ku, parametry bere z PP
 double Cmy::UDV(double rotace)
 {
-	return UDV(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,rotace);//je to takto v poøádku
+	return UDV(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,rotace);//je to takto v poÅ™Ã¡dku
 }
 /////////////////////////////////////////////////////////////////////////////
-//vrátí uitnou délku jigu
+//vrÃ¡tÃ­ uÅ¾itnou dÃ©lku jigu
 double Cmy::UDJ(double dJ,double sJ,double rotace)
 {
-	//postupnì rozšíøit o vıpoèet dle zadanıch stupòù nejenom 0 vs. 90
+	//postupnÄ› rozÅ¡Ã­Å™it o vÃ½poÄet dle zadanÃ½ch stupÅˆÅ¯ nejenom 0 vs. 90
 	if(rotace==0)return dJ;//delka voziku
-	else return sJ;// šíøka vozíku
+	else return sJ;// Å¡Ã­Å™ka vozÃ­ku
 }
 /////////////////////////////////////////////////////////////////////////////
-//vrátí uitnou délku jigu, parametry bere z PP
+//vrÃ¡tÃ­ uÅ¾itnou dÃ©lku jigu, parametry bere z PP
 double Cmy::UDJ(double rotace)
 {
 	return UDJ(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,rotace);
 }
 /////////////////////////////////////////////////////////////////////////////
-//vrátí, zda je moné orotovat jig tak, aby nemìlo vliv na zmìnu Rz, Rx, RD
+//vrÃ¡tÃ­, zda je moÅ¾nÃ© orotovat jig tak, aby nemÄ›lo vliv na zmÄ›nu Rz, Rx, RD
 bool Cmy::lze_rotovat_jig_bez_zmeny_RzRxRD(double mezera,double akt_rotace)
 {
 	bool RET=false;
@@ -852,42 +872,42 @@ bool Cmy::lze_rotovat_jig_bez_zmeny_RzRxRD(double mezera,double akt_rotace)
 	return RET;
 }
 /////////////////////////////////////////////////////////////////////////////
-//vrátí èas pøejezdu vozíku
+//vrÃ¡tÃ­ Äas pÅ™ejezdu vozÃ­ku
 double Cmy::prejezd_voziku(double delka, double rychlost_dopravniku)
 {
-	if(rychlost_dopravniku==0 || delka==0)return 0;//pozor mùe bıt zavadìjící
+	if(rychlost_dopravniku==0 || delka==0)return 0;//pozor mÅ¯Å¾e bÃ½t zavadÄ›jÃ­cÃ­
 	else return delka/rychlost_dopravniku;
 }
 /////////////////////////////////////////////////////////////////////////////
-//vrátí poadovanou rychlost pøejezdu, umí si dopoèítat MT, není-li dodáno, pokud vyjde záporná rychlost tzn. nestíhá
+//vrÃ¡tÃ­ poÅ¾adovanou rychlost pÅ™ejezdu, umÃ­ si dopoÄÃ­tat MT, nenÃ­-li dodÃ¡no, pokud vyjde zÃ¡pornÃ¡ rychlost tzn. nestÃ­hÃ¡
 double Cmy::prejezd_voziku_rychlost(double CT,double MT,double PT,double WT,double DD)
 {
-	if(MT==0)//pokud není MT dodáno je nutné jej spoèítat, pokud nebude vyèísleno PT a WT (co mùe bıt vhodné na objekty v reimu PP), bude MT totoné s CT, bude tedy splnìna alespoò minumální nutná (nikoliv dostatèující) podmínka, kdy DD/CT>=aRD
+	if(MT==0)//pokud nenÃ­ MT dodÃ¡no je nutnÃ© jej spoÄÃ­tat, pokud nebude vyÄÃ­sleno PT a WT (coÅ¾ mÅ¯Å¾e bÃ½t vhodnÃ© na objekty v reÅ¾imu PP), bude MT totoÅ¾nÃ© s CT, bude tedy splnÄ›na alespoÅˆ minumÃ¡lnÃ­ nutnÃ¡ (nikoliv dostatÄujÃ­cÃ­) podmÃ­nka, kdy DD/CT>=aRD
 	{
 		MT=CT-PT-WT;
 	}
-	if(MT==0) return 0;//pouze ošetøení dìlení nulou
+	if(MT==0) return 0;//pouze oÅ¡etÅ™enÃ­ dÄ›lenÃ­ nulou
 	else return DD/MT;
 }
 /////////////////////////////////////////////////////////////////////////////
-//vrátí rozdíl aktuální rychlosti pohonu a potøebné k uskuteèní pøejezdu, pokud je hodnota 0 je v poøádku, je-li záporná, pøejezd se nestíhá o danou hodnotu v m/s, je-li kladná, je aktuální rychlost o danou hodnoutu hodnotu v m/s vyšší
+//vrÃ¡tÃ­ rozdÃ­l aktuÃ¡lnÃ­ rychlosti pohonu a potÅ™ebnÃ© k uskuteÄnÃ­ pÅ™ejezdu, pokud je hodnota 0 je v poÅ™Ã¡dku, je-li zÃ¡pornÃ¡, pÅ™ejezd se nestÃ­hÃ¡ o danou hodnotu v m/s, je-li kladnÃ¡, je aktuÃ¡lnÃ­ rychlost o danou hodnoutu hodnotu v m/s vyÅ¡Å¡Ã­
 double Cmy::kontrola_rychlosti_prejezdu(double CT,double MT,double PT,double WT,double DD,double aRD)
 {
 	return aRD-prejezd_voziku_rychlost(CT,MT,PT,WT,DD);
 }
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
-//zesvìtlí nebo ztmaví barvu
-TColor Cmy::clIntensive(TColor C,short A)//+A - míra zesvìtlení,-A míra ztmavení
+//zesvÄ›tlÃ­ nebo ztmavÃ­ barvu
+TColor Cmy::clIntensive(TColor C,short A)//+A - mÃ­ra zesvÄ›tlenÃ­,-A mÃ­ra ztmavenÃ­
 {
 	BYTE R=GetRValue(C); BYTE G=GetGValue(C); BYTE B=GetBValue(C);
-	if(A>0)//zesvìtlení
+	if(A>0)//zesvÄ›tlenÃ­
 	{
 		if(A>255-R)R=255;else R+=A;
 		if(A>255-G)G=255;else G+=A;
 		if(A>255-B)B=255;else B+=A;
 	}
-	if(A<0)//ztmavení
+	if(A<0)//ztmavenÃ­
 	{
 		if((-1)*A>R)R=0;else R+=A;
 		if((-1)*A>G)G=0;else G+=A;
@@ -896,52 +916,52 @@ TColor Cmy::clIntensive(TColor C,short A)//+A - míra zesvìtlení,-A míra ztmavení
 	return (TColor)RGB(R,G,B);
 }
 /////////////////////////////////////////////////////////////////////////////
-//nastaví horizontální a vertikální pozici tlaèítka a také designové vlasnosti podle tlaèítkek Ano, Uloit, OK, Storno dle MyMessageBox
+//nastavÃ­ horizontÃ¡lnÃ­ a vertikÃ¡lnÃ­ pozici tlaÄÃ­tka a takÃ© designovÃ© vlasnosti podle tlaÄÃ­tkek Ano, UloÅ¾it, OK, Storno dle MyMessageBox
 void Cmy::designButton(TscGPButton *button,TForm *form,short rank,short sum,short horizontal_space,short vertikal_space)
 {
-	//horizontální pozice
+	//horizontÃ¡lnÃ­ pozice
 	switch(sum)
 	{
-		//celkem jedno tlaèítko
-		case 1:button->Left=form->Width/2-button->Width/2;break;//na støed
-		//celkem dvì tlaèítka
+		//celkem jedno tlaÄÃ­tko
+		case 1:button->Left=form->Width/2-button->Width/2;break;//na stÅ™ed
+		//celkem dvÄ› tlaÄÃ­tka
 		case 2:
 		{
-			if(rank==1)button->Left=form->Width/2-button->Width-horizontal_space/2; //první tlaèítko
-			else button->Left=form->Width/2+horizontal_space/2;//druhé tlaèítko
+			if(rank==1)button->Left=form->Width/2-button->Width-horizontal_space/2; //prvnÃ­ tlaÄÃ­tko
+			else button->Left=form->Width/2+horizontal_space/2;//druhÃ© tlaÄÃ­tko
 		}
 		break;
-		//celkem tøi tlaèítka
+		//celkem tÅ™i tlaÄÃ­tka
 		case 3:
 		{
 			switch(rank)
 			{
-				case 1:button->Left=form->Width/2-button->Width/2-horizontal_space-button->Width; break;//první
-				case 2:button->Left=form->Width/2-button->Width/2;break;//druhé na støed
-				case 3:button->Left=form->Width/2+button->Width/2+horizontal_space-button->Width;break;//tøetí
+				case 1:button->Left=form->Width/2-button->Width/2-horizontal_space-button->Width; break;//prvnÃ­
+				case 2:button->Left=form->Width/2-button->Width/2;break;//druhÃ© na stÅ™ed
+				case 3:button->Left=form->Width/2+button->Width/2+horizontal_space-button->Width;break;//tÅ™etÃ­
 			}
 		}
 		break;
 	}
 
-	//vertikální pozice
+	//vertikÃ¡lnÃ­ pozice
 	button->Top=form->Height-button->Height-vertikal_space;
 
-	//pøebírání designu z referenèních tlaèítek v MyMessageBox
+	//pÅ™ebÃ­rÃ¡nÃ­ designu z referenÄnÃ­ch tlaÄÃ­tek v MyMessageBox
 	if(button->ModalResult==mrYes){*button->Options=*myMessageBox->Button_Yes->Options;button->Layout=myMessageBox->Button_Yes->Layout;}
 	if(button->ModalResult==mrOk){*button->Options=*myMessageBox->Button_OK->Options;button->Layout=myMessageBox->Button_OK->Layout;}
 	if(button->ModalResult==mrCancel){*button->Options=*myMessageBox->Button_Cancel->Options;button->Layout=myMessageBox->Button_Cancel->Layout;}
 	if(button->ModalResult==mrNo){*button->Options=*myMessageBox->Button_No->Options;button->Layout=myMessageBox->Button_No->Layout;}
 }
 /////////////////////////////////////////////////////////////////////////////
-//vykreslí danému oknu transparentní (kvùli monému smazání - pøemaskování) dle zadané barvy a šíøky, nutno volat pøi formactive (lépe však pøi formpaint), pøi šíøce 1px (ta je zároveò implicitní) staèí volat, jenom pøi formactive, jinak i pøi formsize, formresize,formclose, pøíklad pouití: frameForm(Form_parametry,clWebOrange,1);
+//vykreslÃ­ danÃ©mu oknu transparentnÃ­ (kvÅ¯li moÅ¾nÃ©mu smazÃ¡nÃ­ - pÅ™emaskovÃ¡nÃ­) dle zadanÃ© barvy a Å¡Ã­Å™ky, nutno volat pÅ™i formactive (lÃ©pe vÅ¡ak pÅ™i formpaint), pÅ™i Å¡Ã­Å™ce 1px (ta je zÃ¡roveÅˆ implicitnÃ­) staÄÃ­ volat, jenom pÅ™i formactive, jinak i pÅ™i formsize, formresize,formclose, pÅ™Ã­klad pouÅ¾itÃ­: frameForm(Form_parametry,clWebOrange,1);
 void Cmy::frameForm(TForm *form,TColor color,short width)
 {
 	short o=floor(width/2.0);
 	frameRect(TRect(form->Left-o,form->Top-o,form->Left+form->Width+o,form->Top+form->Height+o),color,width);
 }
 /////////////////////////////////////////////////////////////////////////////
-//nakresli na libovolném místì na monitoru obdélník dle zadanıch souøadnic ve formátu TRect, je moné nastavit barvu a šíøku èáry tohoto obdélníku
+//nakresli na libovolnÃ©m mÃ­stÄ› na monitoru obdÃ©lnÃ­k dle zadanÃ½ch souÅ™adnic ve formÃ¡tu TRect, je moÅ¾nÃ© nastavit barvu a Å¡Ã­Å™ku ÄÃ¡ry tohoto obdÃ©lnÃ­ku
 void Cmy::frameRect(TRect Rect,TColor color,short width)
 {
 	TCanvas *C=new(TCanvas);
@@ -953,23 +973,23 @@ void Cmy::frameRect(TRect Rect,TColor color,short width)
 	C->Rectangle(Rect);
 }
 /////////////////////////////////////////////////////////////////////////////
-//z rychlosti v m/s vratí èas v milisekundách (proto *1000) potøebnı na pøekreslení jednoho pixelu pøi daném zoomu
-//parametr A=je rychlost animace, kdy implicitní 1 originální rychlost - tedy 100%, pokud je parametr A=0, vrátí se minimální vhodnı èas na pøehrání kontinuální animace, metoda je vhodná na animace a simulace pro timer nehledì na rychlost
-//pokud je (i implicitní) parametr speed_min==0, tzn. pøevezme se hodnota aktuálního poèítaného RD, tzn. všechny animace se promítnou se stejnım afps dle fps, tj. všechny animace se zobrazí kontinuálnì (netrhnanì), v pøípadì nenulové hodnoty je speed_min stanovane jako minimální moná rychlost pro zobrazení kontinuální (netrhnané) simulace,
-//pokud by byl paremetr speed niší ne nenulovı speed_min, nebude se jednat kontinuální (netrhnanou) simulaci
+//z rychlosti v m/s vratÃ­ Äas v milisekundÃ¡ch (proto *1000) potÅ™ebnÃ½ na pÅ™ekreslenÃ­ jednoho pixelu pÅ™i danÃ©m zoomu
+//parametr A=je rychlost animace, kdy implicitnÃ­ 1 originÃ¡lnÃ­ rychlost - tedy 100%, pokud je parametr A=0, vrÃ¡tÃ­ se minimÃ¡lnÃ­ vhodnÃ½ Äas na pÅ™ehrÃ¡nÃ­ kontinuÃ¡lnÃ­ animace, metoda je vhodnÃ¡ na animace a simulace pro timer nehledÄ› na rychlost
+//pokud je (i implicitnÃ­) parametr speed_min==0, tzn. pÅ™evezme se hodnota aktuÃ¡lnÃ­ho poÄÃ­tanÃ©ho RD, tzn. vÅ¡echny animace se promÃ­tnou se stejnÃ½m afps dle fps, tj. vÅ¡echny animace se zobrazÃ­ kontinuÃ¡lnÄ› (netrhnanÄ›), v pÅ™Ã­padÄ› nenulovÃ© hodnoty je speed_min stanovane jako minimÃ¡lnÃ­ moÅ¾nÃ¡ rychlost pro zobrazenÃ­ kontinuÃ¡lnÃ­ (netrhnanÃ©) simulace,
+//pokud by byl paremetr speed niÅ¾Å¡Ã­ neÅ¾ nenulovÃ½ speed_min, nebude se jednat kontinuÃ¡lnÃ­ (netrhnanou) simulaci
 double Cmy::get_timePERpx(double speed,double A,double speed_min)//A je akcelerace
 {
-	double Z=F->Zoom;if(F->antialiasing)Z/=3.0;//pokud je spuštìn antialiasing, staèí 1/3 rychlost (vyplıvá z principu algoritmu AA)
-	if(A==0)//v pøípadì implicitního zrychlení je uvaováno spoèítat zrychlení vhodné k tomu, aby se animace zobrazovala kontinuálnì (netrhnanì)
-	{                           //bacha pokud není speed_min 0, stejnì pøi animaci se nechovalo korektnì
-		if(speed_min==0)speed_min=speed;//pokud je (i implicitní) parametr speed_min==0, tzn. pøevezme se hodnota aktuálního poèítaného RD, tzn. všechny animace se promítnou se stejnım afps dle fps, tj. všechny animace se zobrazí kontinuálnì (netrhnanì), v pøípadì nenulové hodnoty je speed_min stanovane jako minimální moná rychlost pro zobrazení kontinuální (netrhnané) simulace
-		F->afps=F->fps/(1/F->m2px*speed_min);//korekce, nepokrátím vırazy v níe uvedeném vzorci, protoe afps se pouívá na více místech a zásah by byl pøíliš komplikovanı
-		return F->m2px/Z/speed*1000.0/F->afps;//pùvodnì chybná úvaha (proto korekce vıše), (bez korekce) koncipováno pouze pro rychlosti 0,1 m/s (hodnota m2px) a vyšší//vrátí èas, tak aby se jednalo o kontinální animaci
+	double Z=F->Zoom;if(F->antialiasing)Z/=3.0;//pokud je spuÅ¡tÄ›n antialiasing, staÄÃ­ 1/3 rychlost (vyplÃ½vÃ¡ z principu algoritmu AA)
+	if(A==0)//v pÅ™Ã­padÄ› implicitnÃ­ho zrychlenÃ­ je uvaÅ¾ovÃ¡no spoÄÃ­tat zrychlenÃ­ vhodnÃ© k tomu, aby se animace zobrazovala kontinuÃ¡lnÄ› (netrhnanÄ›)
+	{                           //bacha pokud nenÃ­ speed_min 0, stejnÄ› pÅ™i animaci se nechovalo korektnÄ›
+		if(speed_min==0)speed_min=speed;//pokud je (i implicitnÃ­) parametr speed_min==0, tzn. pÅ™evezme se hodnota aktuÃ¡lnÃ­ho poÄÃ­tanÃ©ho RD, tzn. vÅ¡echny animace se promÃ­tnou se stejnÃ½m afps dle fps, tj. vÅ¡echny animace se zobrazÃ­ kontinuÃ¡lnÄ› (netrhnanÄ›), v pÅ™Ã­padÄ› nenulovÃ© hodnoty je speed_min stanovane jako minimÃ¡lnÃ­ moÅ¾nÃ¡ rychlost pro zobrazenÃ­ kontinuÃ¡lnÃ­ (netrhnanÃ©) simulace
+		F->afps=F->fps/(1/F->m2px*speed_min);//korekce, nepokrÃ¡tÃ­m vÃ½razy v nÃ­Å¾e uvedenÃ©m vzorci, protoÅ¾e afps se pouÅ¾Ã­vÃ¡ na vÃ­ce mÃ­stech a zÃ¡sah by byl pÅ™Ã­liÅ¡ komplikovanÃ½
+		return F->m2px/Z/speed*1000.0/F->afps;//pÅ¯vodnÄ› chybnÃ¡ Ãºvaha (proto korekce vÃ½Å¡e), (bez korekce) koncipovÃ¡no pouze pro rychlosti 0,1 m/s (hodnota m2px) a vyÅ¡Å¡Ã­//vrÃ¡tÃ­ Äas, tak aby se jednalo o kontinÃ¡lnÃ­ animaci
 	}
-	else return F->m2px/Z/speed*1000.0/A;//vrátí èas na posun o jeden pixel
+	else return F->m2px/Z/speed*1000.0/A;//vrÃ¡tÃ­ Äas na posun o jeden pixel
 }
 /////////////////////////////////////////////////////////////////////////////
-//vrací true èi false zda se daná hodnota nachází èí nenachází v intervalu, interval mùe bıt uzavøenı (tzn. vèetnì hodnoty hranice intervalu) nebo otevøenı a to i rozdílnì pro obì meze, implicitnì jsou hranice nastaveny na uzavøenı interval z obou stran, tzn. do podmínky se zahrnuje vèetnì obou hodnot
+//vracÃ­ true Äi false zda se danÃ¡ hodnota nachÃ¡zÃ­ ÄÃ­ nenachÃ¡zÃ­ v intervalu, interval mÅ¯Å¾e bÃ½t uzavÅ™enÃ½ (tzn. vÄetnÄ› hodnoty hranice intervalu) nebo otevÅ™enÃ½ a to i rozdÃ­lnÄ› pro obÄ› meze, implicitnÄ› jsou hranice nastaveny na uzavÅ™enÃ½ interval z obou stran, tzn. do podmÃ­nky se zahrnuje vÄetnÄ› obou hodnot
 bool Cmy::between(double value,double from, double to, bool left_closed, bool right_closed)
 {
 	bool RET=false;
@@ -980,7 +1000,7 @@ bool Cmy::between(double value,double from, double to, bool left_closed, bool ri
 	return RET;
 }
 /////////////////////////////////////////////////////////////////////////////
-//zkotroluje èíslo, zda se nejadná o hodnotu okolo nuly dle moné odchylky dle toleration, pøedchází zvláštnímu chování vıpoètù okolo nuly
+//zkotroluje ÄÃ­slo, zda se nejadnÃ¡ o hodnotu okolo nuly dle moÅ¾nÃ© odchylky dle toleration, pÅ™edchÃ¡zÃ­ zvlÃ¡Å¡tnÃ­mu chovÃ¡nÃ­ vÃ½poÄtÅ¯ okolo nuly
 double Cmy::null(double number,double tolerance)
 {
 	if(between(number,(-1)*tolerance,tolerance))return 0.0;
