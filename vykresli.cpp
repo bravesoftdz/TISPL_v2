@@ -1898,7 +1898,7 @@ void Cvykresli::vykresli_kurzor_kabiny (TCanvas *canv, int id, int X, int Y, Cve
 	if((long)id!=F->VyID && (long)id!=pocet_objektu_knihovny+1 && X!=-200)
 	{
 		int rotace=270;//defaultní hodnota,dáno azimutem přímky
-		double azimut,X1,Y1,X2,Y2,Xp,Yp;
+		double X1,Y1,X2,Y2,Xd,Yd,azimut;
 		//nastavení rozměrů objektu
 		TPoint rozmery_kabiny;
   	switch(id)
@@ -1926,64 +1926,94 @@ void Cvykresli::vykresli_kurzor_kabiny (TCanvas *canv, int id, int X, int Y, Cve
 		{
 			if(v.OBJEKTY->predchozi->n<2)//pouze jedna spojnice s předchozím
 			{
-				//ukazatel na předchozí
+        //ukazatel na předchozí
 				if(p==NULL)p=v.OBJEKTY->predchozi;
-				//zjištění rotace
-				azimut=m.azimut(X,Y,m.L2Px(p->elementy->predchozi->geo.X4),m.L2Py(p->elementy->predchozi->geo.Y4));
-				rotace=m.Rt90(azimut);
+				//souřadncie předchozího objektu
+				double Xp=m.L2Px(p->elementy->predchozi->geo.X4),Yp=m.L2Py(p->elementy->predchozi->geo.Y4);
 				//nastavení bodů objektu
-				switch(rotace)
+				//nová koncepce
+				short oblast=v.oblast_objektu(p,X,Y);
+        if(oblast==0)
 				{
-					case 0:X1=X+m.m2px(rozmery_kabiny.y)/2.0;Y1=Y;X2=X-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y-m.m2px(rozmery_kabiny.x);Xp=X;Yp=Y2;break;
-					case 90:X1=X;Y1=Y-m.m2px(rozmery_kabiny.y)/2.0;X2=X-m.m2px(rozmery_kabiny.x);Y2=Y+m.m2px(rozmery_kabiny.y)/2.0;Xp=X2;Yp=Y;break;
-					case 180:X1=X+m.m2px(rozmery_kabiny.y)/2.0;Y1=Y;X2=X-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y+m.m2px(rozmery_kabiny.x);Xp=X;Yp=Y2;break;
-					case 270:X1=X;Y1=Y-m.m2px(rozmery_kabiny.y)/2.0;X2=X+m.m2px(rozmery_kabiny.x);Y2=Y+m.m2px(rozmery_kabiny.y)/2.0;Xp=X2;Yp=Y;break;
+					//zjištění rotace
+					azimut=m.azimut(m.P2Lx(Xp),m.P2Ly(Yp),m.P2Lx(X),m.P2Ly(Y));
+					rotace=m.Rt90(azimut);
+					switch(rotace)
+					{
+						case 0:X1=X+m.m2px(rozmery_kabiny.y)/2.0;Y1=Y;X2=X-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y-m.m2px(rozmery_kabiny.x);Xd=X;Yd=Y2;break;
+						case 270:X1=X;Y1=Y-m.m2px(rozmery_kabiny.y)/2.0;X2=X-m.m2px(rozmery_kabiny.x);Y2=Y+m.m2px(rozmery_kabiny.y)/2.0;Xd=X2;Yd=Y;break;
+						case 180:X1=X+m.m2px(rozmery_kabiny.y)/2.0;Y1=Y;X2=X-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y+m.m2px(rozmery_kabiny.x);Xd=X;Yd=Y2;break;
+						case 90:X1=X;Y1=Y-m.m2px(rozmery_kabiny.y)/2.0;X2=X+m.m2px(rozmery_kabiny.x);Y2=Y+m.m2px(rozmery_kabiny.y)/2.0;Xd=X2;Yd=Y;break;
+					}
+				}
+				if(oblast==1)
+				{
+					//zjištění rotace
+					azimut=m.azimut(m.P2Lx(Xp),m.P2Ly(Yp),m.P2Lx(X),m.P2Ly(Y));
+					rotace=m.Rt90(azimut);
+					switch(rotace)
+					{
+						case 0:if(p->orientace!=180){X1=Xp+m.m2px(rozmery_kabiny.y)/2.0;Y1=Yp;X2=Xp-m.m2px(rozmery_kabiny.y)/2.0;Y2=Yp-m.m2px(rozmery_kabiny.x);}else{X1=Xp+m.m2px(rozmery_kabiny.y)/2.0;Y1=Yp;X2=Xp-m.m2px(rozmery_kabiny.y)/2.0;Y2=Yp+m.m2px(rozmery_kabiny.x);}break;
+						case 90:if(p->orientace==90 || p->orientace==0 || p->orientace==180){X1=Xp;Y1=Yp-m.m2px(rozmery_kabiny.y)/2.0;X2=Xp+m.m2px(rozmery_kabiny.x);Y2=Yp+m.m2px(rozmery_kabiny.y)/2.0;}else{X1=Xp;Y1=Yp-m.m2px(rozmery_kabiny.y)/2.0;X2=Xp-m.m2px(rozmery_kabiny.x);Y2=Yp+m.m2px(rozmery_kabiny.y)/2.0;}break;
+						case 180:if(p->orientace!=0){X1=Xp+m.m2px(rozmery_kabiny.y)/2.0;Y1=Yp;X2=Xp-m.m2px(rozmery_kabiny.y)/2.0;Y2=Yp+m.m2px(rozmery_kabiny.x);}else{X1=Xp+m.m2px(rozmery_kabiny.y)/2.0;Y1=Yp;X2=Xp-m.m2px(rozmery_kabiny.y)/2.0;Y2=Yp-m.m2px(rozmery_kabiny.x);}break;
+						case 270:if(p->orientace==270 || p->orientace==0 || p->orientace==180){X1=Xp;Y1=Yp-m.m2px(rozmery_kabiny.y)/2.0;X2=Xp-m.m2px(rozmery_kabiny.x);Y2=Yp+m.m2px(rozmery_kabiny.y)/2.0;}else{X1=Xp;Y1=Yp-m.m2px(rozmery_kabiny.y)/2.0;X2=Xp+m.m2px(rozmery_kabiny.x);Y2=Yp+m.m2px(rozmery_kabiny.y)/2.0;}break;
+					}
+				}
+				if(oblast==2)
+				{
+					//zjištění rotace
+					azimut=m.azimut(p->elementy->dalsi->geo.X1,p->elementy->dalsi->geo.Y1,m.P2Lx(X),m.P2Ly(Y));
+					rotace=m.Rt90(azimut);
+					switch(rotace)
+					{
+						case 0:if(p->orientace!=0){X1=m.L2Px(p->elementy->dalsi->geo.X1)+m.m2px(rozmery_kabiny.y)/2.0;Y1=m.L2Py(p->elementy->dalsi->geo.Y1);X2=m.L2Px(p->elementy->dalsi->geo.X1)-m.m2px(rozmery_kabiny.y)/2.0;Y2=m.L2Py(p->elementy->dalsi->geo.Y1)-m.m2px(rozmery_kabiny.x);}else{X1=m.L2Px(p->elementy->dalsi->geo.X1)+m.m2px(rozmery_kabiny.y)/2.0;Y1=m.L2Py(p->elementy->dalsi->geo.Y1);X2=m.L2Px(p->elementy->dalsi->geo.X1)-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y1+m.m2px(rozmery_kabiny.x);}break;
+						case 90:if(p->orientace!=90){X1=m.L2Px(p->elementy->dalsi->geo.X1);Y1=m.L2Py(p->elementy->dalsi->geo.Y1)-m.m2px(rozmery_kabiny.y)/2.0;X2=X1+m.m2px(rozmery_kabiny.x);Y2=m.L2Py(p->elementy->dalsi->geo.Y1)+m.m2px(rozmery_kabiny.y)/2.0;}else{X1=m.L2Px(p->elementy->dalsi->geo.X1);Y1=m.L2Py(p->elementy->dalsi->geo.Y1)-m.m2px(rozmery_kabiny.y)/2.0;X2=X1-m.m2px(rozmery_kabiny.x);Y2=m.L2Py(p->elementy->dalsi->geo.Y1)+m.m2px(rozmery_kabiny.y)/2.0;}break;
+						case 180:if(p->orientace!=180){X1=m.L2Px(p->elementy->dalsi->geo.X1)+m.m2px(rozmery_kabiny.y)/2.0;Y1=m.L2Py(p->elementy->dalsi->geo.Y1);X2=m.L2Px(p->elementy->dalsi->geo.X1)-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y1+m.m2px(rozmery_kabiny.x);}else{X1=m.L2Px(p->elementy->dalsi->geo.X1)+m.m2px(rozmery_kabiny.y)/2.0;Y1=m.L2Py(p->elementy->dalsi->geo.Y1);X2=m.L2Px(p->elementy->dalsi->geo.X1)-m.m2px(rozmery_kabiny.y)/2.0;Y2=m.L2Py(p->elementy->dalsi->geo.Y1)-m.m2px(rozmery_kabiny.x);}break;
+						case 270:if(p->orientace==270){X1=m.L2Px(p->elementy->dalsi->geo.X1);Y1=m.L2Py(p->elementy->dalsi->geo.Y1)-m.m2px(rozmery_kabiny.y)/2.0;X2=X1+m.m2px(rozmery_kabiny.x);Y2=m.L2Py(p->elementy->dalsi->geo.Y1)+m.m2px(rozmery_kabiny.y)/2.0;}else{X1=m.L2Px(p->elementy->dalsi->geo.X1);Y1=m.L2Py(p->elementy->dalsi->geo.Y1)-m.m2px(rozmery_kabiny.y)/2.0;X2=X1-m.m2px(rozmery_kabiny.x);Y2=m.L2Py(p->elementy->dalsi->geo.Y1)+m.m2px(rozmery_kabiny.y)/2.0;}break;
+					}
 				}
 				//vykreslení kurzoru
 				canv->Rectangle(X1,Y1,X2,Y2);
 				//vykreslení spojnice k předchozímu
-				canv->MoveTo(m.L2Px(p->elementy->predchozi->geo.X4),m.L2Py(p->elementy->predchozi->geo.Y4));
-				canv->LineTo(X,Y);                                                                                                                                                                                                                                                                                                                                   //azimut musí být násoben -1
-				sipka(canv,(X+m.L2Px(p->elementy->predchozi->geo.X4))/2.0,(Y+m.L2Py(p->elementy->predchozi->geo.Y4))/2.0,azimut*(-1),true,3,clBlack,clWhite,pmNotXor);
+				if(oblast==0)
+				{
+					canv->MoveTo(m.L2Px(p->elementy->predchozi->geo.X4),m.L2Py(p->elementy->predchozi->geo.Y4));
+					canv->LineTo(X,Y);
+					sipka(canv,(X+m.L2Px(p->elementy->predchozi->geo.X4))/2.0,(Y+m.L2Py(p->elementy->predchozi->geo.Y4))/2.0,azimut,true,3,clBlack,clWhite,pmNotXor);
+				}
 			}
 			else//spojnice s předchozím + spojnice s posledním/dalším
 			{
 				//ukazatel na předchozí a poslední/další
-				Cvektory::TObjekt *dalsi;
-				if(p==NULL){p=v.OBJEKTY->predchozi;dalsi=v.OBJEKTY->dalsi;}
-				else dalsi=p->dalsi;
-				//zjištění rotace
-				azimut=m.azimut(X,Y,m.L2Px(p->elementy->predchozi->geo.X4),m.L2Py(p->elementy->predchozi->geo.Y4));
-				rotace=m.Rt90(azimut);
-				//nastavení bodů objektu
-				switch(rotace)
-				{
-					case 0:X1=X+m.m2px(rozmery_kabiny.y)/2.0;Y1=Y;X2=X-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y-m.m2px(rozmery_kabiny.x);Xp=X;Yp=Y2;break;
-					case 90:X1=X;Y1=Y-m.m2px(rozmery_kabiny.y)/2.0;X2=X-m.m2px(rozmery_kabiny.x);Y2=Y+m.m2px(rozmery_kabiny.y)/2.0;Xp=X2;Yp=Y;break;
-					case 180:X1=X+m.m2px(rozmery_kabiny.y)/2.0;Y1=Y;X2=X-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y+m.m2px(rozmery_kabiny.x);Xp=X;Yp=Y2;break;
-					case 270:X1=X;Y1=Y-m.m2px(rozmery_kabiny.y)/2.0;X2=X+m.m2px(rozmery_kabiny.x);Y2=Y+m.m2px(rozmery_kabiny.y)/2.0;Xp=X2;Yp=Y;break;
-				}
-				//vykreslení kurzoru
-				canv->Rectangle(X1,Y1,X2,Y2);
-				//vykreslení spojnice k předchozímu
-				canv->MoveTo(m.L2Px(p->elementy->predchozi->geo.X4),m.L2Py(p->elementy->predchozi->geo.Y4));
-				canv->LineTo(X,Y);
-				//vykreslení spojnice k poslední/další
-				canv->MoveTo(Xp,Yp);
-				canv->LineTo(m.L2Px(dalsi->elementy->dalsi->geo.X1),m.L2Py(dalsi->elementy->dalsi->geo.Y1));
-				//vykreslení šipek                                                                                                                                                                     //azimut musí být násoben -1
-				sipka(canv,(X+m.L2Px(p->elementy->predchozi->geo.X4))/2.0,(Y+m.L2Py(p->elementy->predchozi->geo.Y4))/2.0,azimut*(-1),true,3,clBlack,clWhite,pmNotXor);
-				sipka(canv,(Xp+m.L2Px(dalsi->elementy->dalsi->geo.X1))/2.0,(Yp+m.L2Py(dalsi->elementy->dalsi->geo.Y1))/2.0,m.azimut(m.L2Px(dalsi->body->dalsi->X),m.L2Py(dalsi->body->dalsi->Y)+m.m2px(dalsi->body->dalsi->Y-dalsi->body->predchozi->Y)/2,Xp,Yp)*(-1),true,3,clBlack,clWhite,pmNotXor);
+//				Cvektory::TObjekt *dalsi;
+//				if(p==NULL){p=v.OBJEKTY->predchozi;dalsi=v.OBJEKTY->dalsi;}
+//				else dalsi=p->dalsi;
+//				//zjištění rotace
+//				azimut=m.azimut(X,Y,m.L2Px(p->elementy->predchozi->geo.X4),m.L2Py(p->elementy->predchozi->geo.Y4));
+//				rotace=m.Rt90(azimut);
+//				//nastavení bodů objektu
+//				switch(rotace)
+//				{
+//					case 0:X1=X+m.m2px(rozmery_kabiny.y)/2.0;Y1=Y;X2=X-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y-m.m2px(rozmery_kabiny.x);Xp=X;Yp=Y2;break;
+//					case 90:X1=X;Y1=Y-m.m2px(rozmery_kabiny.y)/2.0;X2=X-m.m2px(rozmery_kabiny.x);Y2=Y+m.m2px(rozmery_kabiny.y)/2.0;Xp=X2;Yp=Y;break;
+//					case 180:X1=X+m.m2px(rozmery_kabiny.y)/2.0;Y1=Y;X2=X-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y+m.m2px(rozmery_kabiny.x);Xp=X;Yp=Y2;break;
+//					case 270:X1=X;Y1=Y-m.m2px(rozmery_kabiny.y)/2.0;X2=X+m.m2px(rozmery_kabiny.x);Y2=Y+m.m2px(rozmery_kabiny.y)/2.0;Xp=X2;Yp=Y;break;
+//				}
+//				//vykreslení kurzoru
+//				canv->Rectangle(X1,Y1,X2,Y2);
+//				//vykreslení spojnice k předchozímu
+//				canv->MoveTo(m.L2Px(p->elementy->predchozi->geo.X4),m.L2Py(p->elementy->predchozi->geo.Y4));
+//				canv->LineTo(X,Y);
+//				//vykreslení spojnice k poslední/další
+//				canv->MoveTo(Xp,Yp);
+//				canv->LineTo(m.L2Px(dalsi->elementy->dalsi->geo.X1),m.L2Py(dalsi->elementy->dalsi->geo.Y1));
+//				//vykreslení šipek                                                                                                                                                                     //azimut musí být násoben -1
+//				sipka(canv,(X+m.L2Px(p->elementy->predchozi->geo.X4))/2.0,(Y+m.L2Py(p->elementy->predchozi->geo.Y4))/2.0,azimut*(-1),true,3,clBlack,clWhite,pmNotXor);
+//				sipka(canv,(Xp+m.L2Px(dalsi->elementy->dalsi->geo.X1))/2.0,(Yp+m.L2Py(dalsi->elementy->dalsi->geo.Y1))/2.0,m.azimut(m.L2Px(dalsi->body->dalsi->X),m.L2Py(dalsi->body->dalsi->Y)+m.m2px(dalsi->body->dalsi->Y-dalsi->body->predchozi->Y)/2,Xp,Yp)*(-1),true,3,clBlack,clWhite,pmNotXor);
 			}
 		}
 		//uložení rotace objektu, využítí při vkládání objektu, přepočet z azimutu přímky na orientaci objektu
-		switch(rotace)
-		{
-			case 0:orientace_objektu=0;break;
-			case 90:orientace_objektu=270;break;
-			case 180:orientace_objektu=180;break;
-			case 270:orientace_objektu=90;break;
-		}
+		orientace_objektu=rotace;
 	}
 	else if(X!=-200)odznac_oznac_vyhybku(canv,X,Y,p);
 }
@@ -4367,6 +4397,133 @@ void Cvykresli::uchop(TCanvas *canv,Cvektory::TBod *B,TColor barva)
 
 	//samotné vykreslení
 	canv->Ellipse(m.L2Px(B->X)-o,m.L2Py(B->Y)-o,m.L2Px(B->X)+o,m.L2Py(B->Y)+o);
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//volání smart kurzoru (přetížená metoda) sloužícího pro výběr geometrického elementu, to dle předchozích parametrů resp. typů geometrických elementu a zadaných vstupních paramerů metody, tj. dle posledního existujícího elementu a jeho přechozího elementu (vyžadováno zadávání druhého parametru min. do změny DM, u výhybek se ukáže..., připadně druhý parametr zrušit), lze zadavat jako oba parametry NULL, pokud nejsou předchozí elementy k dispozici
+void Cvykresli::smart_kurzor(TCanvas *canv,Cvektory::TElement *E,Cvektory::TElement *Ep)
+{
+	//příprava atributů
+	double preXk=0;
+	double preYk=0;
+	double preOR=0;
+	double preRA=0;
+	double prepreRA=0;
+	if(E!=NULL)
+	{
+		preXk=E->geo.X4;
+		preYk=E->geo.Y4;
+		preOR=Ep->geo.orientace;
+		preRA=E->geo.rotacni_uhel;
+	}
+	if(Ep!=NULL)prepreRA=Ep->geo.rotacni_uhel;
+	//samotné volání smart kurzoru
+	smart_kurzor(canv,preXk,preYk,preOR,preRA,prepreRA);
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//volání smart kurzoru sloužícího pro výběr geometrického elementu, to dle předchozích parametrů resp. typů geometrických elementu a zadaných vstupních paramerů metody, viz:
+//preXk,preYk - koncové souřadnice, preOR - orientace, preRA - rotační úhel předchozího tj. posledního již vytvořeného geometrického elementu, prepreRArotační úhel před-předchozího geometrického elementu - neexistují-li tyto pre resp. prepre element(y), zadat nulu
+void Cvykresli::smart_kurzor(TCanvas *canv,double preXk,double preYk,double preOR,double preRA,double prepreRA)
+{
+	////vstupní parametry
+	double R=v.PP.radius;//radius dle katalogu
+	short POLE_RA[]={90,45,30,15};//případně nahradit načítáním ze spojáku vybraného katalogu (ale zatím postrádá význam, všude jsou stejné úhly), pokud bych chtěl násleně break, muselo by být řazeno od nejmenšího RA
+	double RA=-1000;//rotační úhel, výchozí hodnota -1000=nenalezen
+
+	////hledání mezi oblouky
+	for(unsigned short i=0;i<4;i++)
+	{
+		//testování kladných hodnot a ošetření proti stavu 3x 90° oblouky za sebou a pokud je zároveň na základě předchozího geometrického prvku povoleno
+		if(preRA>=0 && !(POLE_RA[i]==90 && prepreRA==preRA && preRA==90) && (preRA==0 || POLE_RA[i]==preRA) && m.LeziVoblouku(preXk,preYk,preOR-preRA,POLE_RA[i],R,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y))RA=POLE_RA[i];
+		//testování záporných hodnot a ošetření proti stavu 3x 90° oblouky za sebou a pokud je zároveň na základě předchozího geometrického prvku povoleno
+		if(preRA<=0 && !(-POLE_RA[i]==-90 && prepreRA==preRA && preRA==-90) && (preRA==0 || -POLE_RA[i]==preRA) && m.LeziVoblouku(preXk,preYk,preOR-preRA,-POLE_RA[i],R,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y))RA=-POLE_RA[i];
+	} //pokud bych chtěl break, musel bych řadit od nejmenšího POLE_RA
+
+	////hledání v citelné oblasti linie ve tvaru "V" (toto rozmezí, rozptyl je hodnota nejmenšího oblouku (částečně logicky by se nabízelo /2, ale vhodnější /3, +- rozptylu nahrazuje fabs), hledá i přes výše nalezené řešní, což je důležíté ("jinak by se v některých případech na lini vůbec nedostalo")
+	double delka_linie=0;
+	double a=m.azimut(preXk,preYk,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);//azimut mezi výchozím bodem a akt. pozicí myši
+	double o=m.a360(preOR-preRA); if(o==0 && a>180)o=360;//orientace, pokud je nula a myš je v levém kvadrantu, je nutné z 0° udělat 360°
+	if(POLE_RA[3]/3>fabs(o-a))RA=0;
+	if(RA==0)delka_linie=ceil(m.delka(preXk,preYk,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y)/3.0)*3;//u linie nabízí delší kresbu, po násobcích 3 metrů
+
+	////samotné vykreslení kurzoru dle hodnoty RA z předchozího algoritmu (aktuální orientace je prozatím z d.Temp.z, kde vypočtena jako je orientace minus rotace předchozího gElementu)
+	vykresli_Gelement_kurzor(canv,m.L2Px(preXk),m.L2Py(preYk),preOR-preRA,RA,R,delka_linie,preRA,prepreRA);
+
+	////uchování v globální proměnné aktuálně vracených hodnot ze smart kurzoru pro možné uložení do geometrického elementu nastává níže
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//obloukový či liniový (dle situace) kurzor g-elementu, X,Y jsou fyzické souřadnice výchozího vykreslování, parametry: orientace oblouku - dle světových stran (umí i jiné než 90° násobky), rotační úhel, pod kterým je oblouk rotován, může být záporný (znaménko určuje směr rotace, + proti směru hodinových ručiček, - po směru), max. hodnota +90 a min. hodnota -90 (je-li nastaven na 0° jedná se o linii), radius - je radius oblouku v metrech nebo pokud je rotační úhel nastaven na 0° tedy se jedná o linii, je radius délkou linie)
+void Cvykresli::vykresli_Gelement_kurzor(TCanvas *canv,int X,int Y,double orientace,double rotacni_uhel,double radius,double delka_linie,double predchozi_rotacni_uhel,double predpredchozi_rotacni_uhel)
+{
+	TColor clPotencial=m.clIntensive(clBlack,245);
+	TColor clAktual=m.clIntensive(clBlack,120);
+
+	//vykreslení potenciální linie         //minimum 3 metry, potenciál je délka aktuální linie + 3 m, aby bylo jasné, že je možné stále prodlužovat
+	vykresli_potencial_Gelement(canv,X,Y,orientace,0,delka_linie+3,clPotencial,false);
+
+	//vykreslení potenciálních oblouků dle katalogu
+	short RA[]={90,45,30,15};//nahradit načítáním ze spojáku
+	short intenzitaK=0,intenzitaZ=0;//intenzita barvy
+	for(unsigned short i=0;i<4;i++)
+	{    //povoluje libovolný uhel po linii, ale pouze stejný po předch. oblouku && zajišťuje selekci nesmyslné varianty á la tangens) && !nesmí být 3x90° za sebou
+		if((predchozi_rotacni_uhel==0 || RA[i]==predchozi_rotacni_uhel) && predchozi_rotacni_uhel>=0 && !(RA[i]==90 && predpredchozi_rotacni_uhel==predchozi_rotacni_uhel && predchozi_rotacni_uhel==90))vykresli_potencial_Gelement(canv,X,Y,orientace,RA[i],radius,m.clIntensive(clPotencial,-20*intenzitaK++),false);
+		if((predchozi_rotacni_uhel==0 || -RA[i]==predchozi_rotacni_uhel) && predchozi_rotacni_uhel<=0 && !(-RA[i]==-90 && predpredchozi_rotacni_uhel==predchozi_rotacni_uhel && predchozi_rotacni_uhel==-90))vykresli_potencial_Gelement(canv,X,Y,orientace,-RA[i],radius,m.clIntensive(clPotencial,-20*intenzitaZ++),false);
+	}
+
+	//vykreslení aktuální vybrané volby
+	if(rotacni_uhel!=-1000)//byl-li uskutečněn výběr,-1000 znamená nebyl výběr
+	{
+		//vykreslení
+		if(rotacni_uhel==0)radius=delka_linie;//pokud se jedná o linii
+		TPointD *PL=vykresli_potencial_Gelement(canv,X,Y,orientace,rotacni_uhel,radius,clAktual,true);
+		//uchování v globální proměnné aktuálně vracených hodnot ze smart kurzoru pro možné uložení do geometrického elementu
+		geoTemp.delka=delka_linie;//pravděpodobně sloučit s radiusem
+		geoTemp.radius=radius;
+		geoTemp.orientace=orientace;
+		geoTemp.rotacni_uhel=rotacni_uhel;
+		geoTemp.X1=PL[0].x;geoTemp.Y1=PL[0].y;
+		geoTemp.X2=PL[1].x;geoTemp.Y2=PL[1].y;
+		geoTemp.X3=PL[2].x;geoTemp.Y3=PL[2].y;
+		geoTemp.X4=PL[3].x;geoTemp.Y4=PL[3].y;
+		delete[] PL;PL=NULL;
+	}
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//zajistí jednorázové vykreslení potenciálního obloukového či liniového (dle situace) g-elementu, X,Y jsou fyzické souřadnice výchozího vykreslování, parametry: orientace oblouku - dle světových stran (umí i jiné než 90° násobky), rotační úhel - pod kterým je oblouk rotován, může být záporný (znaménko určuje směr rotace, + proti směru hodinových ručiček, - po směru), max. hodnota +90 a min. hodnota -90 (je-li nastaven na 0° jedná se o linii), radius - je radius oblouku v metrech nebo pokud je rotační úhel nastaven na 0° tedy se jedná o linii, je radius délkou linie)
+TPointD *Cvykresli::vykresli_potencial_Gelement(TCanvas *canv,int X,int Y,double orientace,double rotacni_uhel,double radius,TColor color,bool popisek)
+{
+	//potenciální Gelement - středová linie
+	TPointD *PL=m.vrat_Gelement(X,Y,orientace,rotacni_uhel,radius);
+	POINT POLE[]={{m.L2Px(PL[0].x),m.L2Py(PL[0].y)},m.L2Px(PL[1].x),m.L2Py(PL[1].y),m.L2Px(PL[2].x),m.L2Py(PL[2].y),m.L2Px(PL[3].x),m.L2Py(PL[3].y)};//převod do fyzických souřadnic
+	set_pen(canv,color,1*F->Zoom,PS_ENDCAP_FLAT);//nastavení geometrického pera
+	canv->PolyBezier((TPoint*)POLE,3);//samotné vykreslení bézierovy křivky
+	//popisek, je-li požadován
+	if(popisek)
+	{
+		canv->Brush->Style=bsClear;
+		canv->Font->Style = TFontStyles();
+		canv->Font->Name=F->aFont->Name;
+		canv->Font->Size=3*F->Zoom;
+		canv->Font->Color=m.clIntensive(color,-10);
+		AnsiString T=AnsiString(rotacni_uhel)+"°, "+AnsiString(radius)+" m";
+		//souřadnice textu
+		int Xt=0,Yt=0;
+		if(rotacni_uhel==0)//jedná se o linii
+		{
+			Xt=m.round((POLE[0].x+POLE[3].x)/2.0-canv->TextWidth(T)/2.0);
+			Yt=m.round((POLE[0].y+POLE[3].y)/2.0-canv->TextHeight(T)/2.0);
+		}
+		else//jedné se o oblouk, najde polovinu oblouku
+		{
+			TPointD *PL1=m.vrat_Gelement(X,Y,orientace,rotacni_uhel/2.0,radius);
+			Xt=m.round(m.L2Px(PL[3].x)-canv->TextWidth(T)/2.0);
+			Yt=m.round(m.L2Py(PL[3].y)-canv->TextHeight(T)/2.0);
+			delete[] PL1;PL1=NULL;
+		}
+		//volání výpisu textu
+		TextFraming(canv,Xt,Yt,T,canv->Font,clWhite,m.round(F->Zoom*0.1));
+	}
+	return PL;
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------

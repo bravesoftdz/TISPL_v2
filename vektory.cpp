@@ -633,7 +633,7 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 	zarazka->geo.X4=konec.x;zarazka->geo.Y4=konec.y;
 	zarazka->geo.X2=pocatek.x+(konec.x-pocatek.x)/2.0;zarazka->geo.Y2=pocatek.y+(konec.y-pocatek.y)/2.0;
 	zarazka->geo.X3=zarazka->geo.X2;zarazka->geo.Y3=zarazka->geo.Y2;
-	zarazka->geo.typ=0;
+	zarazka->geo.rotacni_uhel=0;
 	zarazka->geo.delka=m.delka(zarazka->geo.X1,zarazka->geo.Y1,zarazka->geo.X2,zarazka->geo.Y2);
 	zarazka=NULL;delete zarazka;
 	//definice pozice názvu kabiny
@@ -738,6 +738,7 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 //zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze ukazatel na mGrid originálu zůstané propojený
 void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 {
+	F->log(__func__," začátek");//logování
 	Kopie->n=Original->n;
 	Kopie->id=Original->id;
 	Kopie->short_name=Original->short_name;
@@ -765,7 +766,9 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->koty_elementu_offset=Original->koty_elementu_offset;
 	Kopie->komora=NULL;//POZORO TOTO NENÍ ZCELA SPRÁVNĚ, MĚLO BY SE NEJDŘÍVE SMAZAT PŘIDRUŽENÝ SPOJÁK, ABY NEZŮSTAL V PAMĚTI
 	Kopie->body=NULL;//POZORO TOTO NENÍ ZCELA SPRÁVNĚ, MĚLO BY SE NEJDŘÍVE SMAZAT PŘIDRUŽENÝ SPOJÁK, ABY NEZŮSTAL V PAMĚTI
+	F->log(__func__," před kopiruj komory");//logování
 	if(Kopie->id==3)kopiruj_komory(Original,Kopie);//pokud se jedná o POWash
+  F->log(__func__," za kopiruj komory");//logování
 	Kopie->cekat_na_palce=Original->cekat_na_palce;
 	Kopie->stopka=Original->stopka;
 	Kopie->odchylka=Original->odchylka;
@@ -779,9 +782,10 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->zobrazit_koty=Original->zobrazit_koty;//proměnná určující, zda se budou zobrzovat kóty
 	Kopie->zobrazit_mGrid=Original->zobrazit_mGrid;//proměnná určující, zda budou zobrazeny mGridy
 	Kopie->uzamknout_nahled=Original->uzamknout_nahled;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
+	F->log(__func__," před kopiruj elementy");//logování
 	//obě kopírovací metody musí být ke konci
-	kopiruj_elementy(Original,Kopie);
-	kopiruj_body(Original,Kopie);
+	kopiruj_elementy(Original,Kopie); F->log(__func__," za kopiruj elementy/před kopiruj body");//logování
+	kopiruj_body(Original,Kopie);   F->log(__func__," za kopiruj body/konec");//logování
 }
 //---------------------------------------------------------------------------
 //ověří, zda se na souřadnicích myši nachází nějaký objekt, pokud ano, vrátí na něj ukazatel, jinak vrátí NULL
@@ -818,6 +822,44 @@ Cvektory::TObjekt *Cvektory::najdi_objekt(double X, double Y,double offsetX, dou
 	}
 	tab_pruchodu=NULL;delete tab_pruchodu;
 	return O;
+}
+//---------------------------------------------------------------------------
+//vrátí ret podle toho v jaké jsem oblasti objektu, slouží k přilepování objektu při vkládání, ret = 0 - mimo oblasti, 1 - oblast za objektem, 2 - oblast před objektem
+short Cvektory::oblast_objektu(TObjekt *O,double X, double Y)
+{
+	short ret=0;
+	X=m.P2Lx(X);Y=m.P2Ly(Y);
+	if(O!=NULL)
+	{
+  	switch((int)O->orientace)
+  	{
+  		case 0:
+  		{
+  			double delka_y=O->elementy->predchozi->geo.Y4-O->elementy->dalsi->geo.Y1,polovina_y=O->elementy->dalsi->geo.Y1+delka_y/2.0;
+  			if(O->elementy->predchozi->geo.X4-delka_y<=X && X<=O->elementy->predchozi->geo.X4+delka_y && polovina_y<=Y && Y<polovina_y+3*delka_y/2.0)ret=1;//oblast za objektem
+  			if(O->elementy->dalsi->geo.X1-delka_y<=X && X<=O->elementy->dalsi->geo.X1+delka_y && polovina_y-3*delka_y/2.0<=Y && Y<polovina_y)ret=2;//oblast před objektem
+  		}break;
+  		case 90:
+  		{
+  			double delka_x=O->elementy->predchozi->geo.X4-O->elementy->dalsi->geo.X1,polovina_x=O->elementy->dalsi->geo.X1+delka_x/2.0;
+  			if(polovina_x<=X && X<=polovina_x+3*delka_x/2.0 && O->elementy->predchozi->geo.Y4-delka_x<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_x)ret=1;//oblast za objektem
+  			if(polovina_x-3*delka_x/2.0<=X && X<polovina_x && O->elementy->predchozi->geo.Y4-delka_x<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_x)ret=2;//oblast před objektem
+  		}break;
+  		case 180:
+  		{
+  			double delka_y=O->elementy->dalsi->geo.Y1-O->elementy->predchozi->geo.Y4,polovina_y=O->elementy->dalsi->geo.Y1-delka_y/2.0;
+  			if(O->elementy->predchozi->geo.X4-delka_y<=X && X<=O->elementy->predchozi->geo.X4+delka_y && polovina_y-3*delka_y/2.0<=Y && Y<=polovina_y)ret=1;//oblast za objektem
+  			if(O->elementy->dalsi->geo.X1-delka_y<=X && X<=O->elementy->dalsi->geo.X1+delka_y && polovina_y<Y && Y<=polovina_y+3*delka_y/2.0)ret=2;//oblast před objektem
+  		}break;
+  		case 270:
+  		{
+  			double delka_x=O->elementy->dalsi->geo.X1-O->elementy->predchozi->geo.X4,polovina_x=O->elementy->dalsi->geo.X1-delka_x/2.0;
+  			if(polovina_x-3*delka_x/2.0<=X && X<=polovina_x && O->elementy->predchozi->geo.Y4-delka_x<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_x)ret=1;//oblast před objektem
+  			if(polovina_x<X && X<=polovina_x+3*delka_x/2.0 && O->elementy->predchozi->geo.Y4-delka_x<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_x)ret=2;//oblast za objektem
+  		}break;
+		}
+	}
+	return ret;
 }
 //---------------------------------------------------------------------------
 //vrátí ukazatel na objekt dle n objektu

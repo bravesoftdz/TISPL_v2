@@ -3758,7 +3758,13 @@ void TForm1::add_objekt(int X, int Y)
 			akutalizace_stavu_prichytavani_vSB();
 		}
 		else souradnice=m.P2L(TPoint(X,Y));
-    if(vybrany_objekt==VyID&&Akce!=VYH)d.v.pocet_vyhybek++;//pokud přidávám výhybku je nutné přičíst k počtu vyhybek
+		//připínání objektu na ostatní
+		short oblast=0;
+		if(d.v.OBJEKTY->dalsi!=NULL)oblast=d.v.oblast_objektu(d.v.OBJEKTY->predchozi,X,Y);
+		if(oblast==1){souradnice.x=d.v.OBJEKTY->predchozi->elementy->predchozi->geo.X4;souradnice.y=d.v.OBJEKTY->predchozi->elementy->predchozi->geo.Y4;}//za objekt
+		if(oblast==2 && pom==NULL){souradnice.x=d.v.OBJEKTY->predchozi->elementy->dalsi->geo.X1;souradnice.y=d.v.OBJEKTY->predchozi->elementy->dalsi->geo.Y1;}//před objekt
+		//pokud přidávám výhybku je nutné přičíst k počtu vyhybek
+		if(vybrany_objekt==VyID&&Akce!=VYH)d.v.pocet_vyhybek++;
 		//uložení do paměti
 		bool spojka=false;
 		if(add_posledni&&Akce==ADD)//vloží za poslední prvek
@@ -4477,7 +4483,7 @@ void TForm1::vytvoreni_tab_knihovna()
 	mGrid_knihovna->Columns[0].Width=mGrid_knihovna->Columns[1].Width=84;//polovina šířky left toolbaru
 	/////////nadpisy
 	mGrid_knihovna->Cells[0][0].Text="Hala";
-	mGrid_knihovna->Cells[0][3].Text="Navěšování/svěšování";
+	mGrid_knihovna->Cells[0][3].Text="Nav/svěšování";
 	mGrid_knihovna->Cells[0][5].Text="Předúpravy";
 	mGrid_knihovna->Cells[0][8].Text="Lakovna";
 	mGrid_knihovna->Cells[0][10].Text="Postprocesní";
@@ -4578,15 +4584,6 @@ void TForm1::vytvoreni_tab_knihovna()
 	delete I;I=NULL;
 	//////nastavení popisků pro knihovnu
 	popisky_knihovna_nahled(true);
-	////////////Testy
-//	mGrid_knihovna->Cells[0][9].Valign=mGrid_knihovna->vNO;
-//	mGrid_knihovna->getImage(0,9)->Top+=34;
-//	TscGPButton *B=mGrid_knihovna->getButton(0,1);
-//	B->Options->NormalColor=mGrid_knihovna->DefaultCell.Font->Color;
-//	B->Images=scGPVirtualImageList1; B->ImageIndex=64;
-//	B->Options->HotColor=mGrid_knihovna->DefaultCell.Font->Color;
-//	B->Options->FrameHotColor=mGrid_knihovna->DefaultCell.Font->Color;
-//	B->Caption="Vytvořit";B->Layout=blGlyphLeft;
 }
 //---------------------------------------------------------------------------
 //přepíná popisky mezi knihovnou a editací
@@ -5304,6 +5301,7 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 			case 6:pozice=1;break;
 		}
 		TscGPComboBox *C=E->mGrid->getCombo(1,pozice);
+		C->Clear();
 		C->Font->Color=(TColor)RGB(43,87,154);
 		C->BiDiMode=bdRightToLeft;
 		TscGPListBoxItem *I;
@@ -5327,6 +5325,7 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 	if(E->eID==1||E->eID==3||E->eID==7||E->eID==9||E->eID==11||E->eID==13||E->eID==15||E->eID==17||E->eID==101||E->eID==103||E->eID==105||E->eID==107)
 	{
 		TscGPComboBox *C=E->mGrid->getCombo(1,E->mGrid->RowCount-1);
+		C->Clear();
 		C->Font->Color=(TColor)RGB(43,87,154);
 		C->BiDiMode=bdRightToLeft;
 		TscGPListBoxItem *I;
@@ -6493,51 +6492,51 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 		delete (bmp_out);//velice nutné
 		delete (bmp_in);//velice nutné
 	}
-	if(MOD==SCHEMA)
-	{
-
-		////////////////////neAA verze
-		scListGroupKnihovObjektu->Caption="Technolog.objekty";
-		DrawGrid_knihovna->Left=14;
-    if(pocet_objektu_knihovny%2!=0)DrawGrid_knihovna->RowCount=(pocet_objektu_knihovny+1)/2,0;//pokud je počet objektu lichý
-		else DrawGrid_knihovna->RowCount=m.round2double(pocet_objektu_knihovny/2,0);//sudý počet objektů
-		DrawGrid_knihovna->ColCount=2;
-		TCanvas* C=DrawGrid_knihovna->Canvas;
-		int W=DrawGrid_knihovna->DefaultColWidth;
-		int H=DrawGrid_knihovna->DefaultRowHeight;
-		int P=-1*DrawGrid_knihovna->TopRow*H;//posun při scrollování, drawgridu nebo při zmenšení okna a scrollování
-
-		unsigned short obdelnik_okrajX=10;unsigned short obdelnik_okrajY=5;unsigned short okraj_packy=obdelnik_okrajY;
-		C->Font->Style = TFontStyles()<< fsBold;
-		C->Font->Size=12;
-		C->Font->Name="Arial";
-		C->Pen->Width=1;
-		C->Pen->Color=(TColor)RGB(190,190,190);//(TColor)RGB(19,115,169);
-		C->Brush->Color=(TColor)RGB(190,190,190);//(TColor)RGB(19,115,169);
-		C->Font->Color=clWhite;
-		for(unsigned short n=1;n<=pocet_objektu_knihovny;n++)
-		{
-			UnicodeString text=knihovna_objektu[n-1].short_name;
-			//symbol objektu
-			if(VyID!=n-1)
-			{
-				//obdélník
-				C->Rectangle(((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+obdelnik_okrajY+P,((n+1)%2+1)*W-obdelnik_okrajX,ceil(n/2.0)*H-obdelnik_okrajY+P);
-				//packy
-				C->MoveTo(((n+1)%2)*W+okraj_packy,(ceil(n/2.0)-1)*H+H/2+P);C->LineTo(((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+H/2+P);
-				C->MoveTo(((n+1)%2)*W+W-obdelnik_okrajX,(ceil(n/2.0)-1)*H+H/2+P);C->LineTo(((n+1)%2)*W+W-okraj_packy,(ceil(n/2.0)-1)*H+H/2+P);
-				//písmo
-				C->TextOutW((Rect.Right-Rect.Left-C->TextWidth(text))/2+((n+1)%2)*W,(Rect.Bottom-Rect.Top-C->TextHeight(text))/2+(ceil(n/2.0)-1)*H+P,text);
-			}
-			else//výhybka v bmp
-			{
-				Graphics::TBitmap *bmp=new Graphics::TBitmap();
-				ImageList48->GetBitmap(51,bmp);
-				C->Draw(((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+P,bmp);
-				bmp=NULL;delete bmp;
-			}
-		}
-	}
+//	if(MOD==SCHEMA)
+//	{
+//
+//		////////////////////neAA verze
+//		scListGroupKnihovObjektu->Caption="Technolog.objekty";
+//		DrawGrid_knihovna->Left=14;
+//    if(pocet_objektu_knihovny%2!=0)DrawGrid_knihovna->RowCount=(pocet_objektu_knihovny+1)/2,0;//pokud je počet objektu lichý
+//		else DrawGrid_knihovna->RowCount=m.round2double(pocet_objektu_knihovny/2,0);//sudý počet objektů
+//		DrawGrid_knihovna->ColCount=2;
+//		TCanvas* C=DrawGrid_knihovna->Canvas;
+//		int W=DrawGrid_knihovna->DefaultColWidth;
+//		int H=DrawGrid_knihovna->DefaultRowHeight;
+//		int P=-1*DrawGrid_knihovna->TopRow*H;//posun při scrollování, drawgridu nebo při zmenšení okna a scrollování
+//
+//		unsigned short obdelnik_okrajX=10;unsigned short obdelnik_okrajY=5;unsigned short okraj_packy=obdelnik_okrajY;
+//		C->Font->Style = TFontStyles()<< fsBold;
+//		C->Font->Size=12;
+//		C->Font->Name="Arial";
+//		C->Pen->Width=1;
+//		C->Pen->Color=(TColor)RGB(190,190,190);//(TColor)RGB(19,115,169);
+//		C->Brush->Color=(TColor)RGB(190,190,190);//(TColor)RGB(19,115,169);
+//		C->Font->Color=clWhite;
+//		for(unsigned short n=1;n<=pocet_objektu_knihovny;n++)
+//		{
+//			UnicodeString text=knihovna_objektu[n-1].short_name;
+//			//symbol objektu
+//			if(VyID!=n-1)
+//			{
+//				//obdélník
+//				C->Rectangle(((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+obdelnik_okrajY+P,((n+1)%2+1)*W-obdelnik_okrajX,ceil(n/2.0)*H-obdelnik_okrajY+P);
+//				//packy
+//				C->MoveTo(((n+1)%2)*W+okraj_packy,(ceil(n/2.0)-1)*H+H/2+P);C->LineTo(((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+H/2+P);
+//				C->MoveTo(((n+1)%2)*W+W-obdelnik_okrajX,(ceil(n/2.0)-1)*H+H/2+P);C->LineTo(((n+1)%2)*W+W-okraj_packy,(ceil(n/2.0)-1)*H+H/2+P);
+//				//písmo
+//				C->TextOutW((Rect.Right-Rect.Left-C->TextWidth(text))/2+((n+1)%2)*W,(Rect.Bottom-Rect.Top-C->TextHeight(text))/2+(ceil(n/2.0)-1)*H+P,text);
+//			}
+//			else//výhybka v bmp
+//			{
+//				Graphics::TBitmap *bmp=new Graphics::TBitmap();
+//				ImageList48->GetBitmap(51,bmp);
+//				C->Draw(((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+P,bmp);
+//				bmp=NULL;delete bmp;
+//			}
+//		}
+//	}
 //--------------------------------------------
 
 ////	////////////////////AA verze
@@ -7530,7 +7529,7 @@ void TForm1::NP_input()
 	 element_id=99999;//ošetření pro správné zobrazování mgridů
 	 pom_bod=NULL;pom_bod_temp=NULL;//s těmito ukazateli pracuje jak náhled tak schéma, ošetření
 	 kurzor(standard);
-   //zablokování OnChange tabulek
+	 //zablokování OnChange tabulek
 	 FormX->input_state=FormX->NO;
 	 FormX->vstoupeno_poh=false;
 	 FormX->vstoupeno_elm=false;
@@ -7539,7 +7538,7 @@ void TForm1::NP_input()
 	 pom_temp=new Cvektory::TObjekt; pom_temp->pohon=NULL; pom_temp->pohon=new Cvektory::TPohon; pom_temp->elementy=NULL;
 	 //zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze mGrid je propojen
 	 d.v.kopiruj_objekt(pom,pom_temp);//pokud elementy existují nakopíruje je do pomocného nezávislého spojáku pomocného objektu
-	 posledni_editovany_objekt=pom;    log(__func__," po kopiruj_objekt");//logování
+	 posledni_editovany_objekt=pom;
 	 ////řešení nového zoomu a posunu obrazu pro účely náhldeu
 	 //zazálohování hodnot posunu a zoomu
 	 Posun_predchozi2=Posun_predchozi=Posun;
@@ -7675,7 +7674,6 @@ void TForm1::NP_input()
 //	Synteza->Visible=false;
 //	Simulace->Visible=false;
 //	Nahled->Visible=true;
-	log(__func__," Schema->Down");//logování
 	Schema->Down=false;
 	Nahled->Down=true;
 //	Schema->Options->PressedColor=Layout->Options->NormalColor;
@@ -7683,7 +7681,6 @@ void TForm1::NP_input()
 //	scGPGlyphButton_zpravy_ikona->Left=Nahled->Left-scGPGlyphButton_zpravy_ikona->Width;
 	vytvoreni_tab_pohon();
 	nahled_ulozen=false;//nově otevřen, není uložen
-	log(__func__," DrawGrid_knihovna->Invalidate");//logování
 	DrawGrid_knihovna->Invalidate();
 	PmG->Update();
 	//znovu provedení designu při otevření náhledu, který není prázdný
@@ -7700,7 +7697,6 @@ void TForm1::NP_input()
 	}
 	on_change_zoom_change_scGPTrackBar();//musí být po design_element
 	FormX->input_state=FormX->NOTHING;
-	log(__func__," konec");//logování
 }
 //---------------------------------------------------------------------------
 //zaktualizuje ve formuláři parametry objektů combobox na výpis pohonů včetně jednotek uvedeného rozmezí rychlostí, pokud jsou zanechané implicitní parametry short RDunitD=-1,short RDunitT=-1, je načteno nastevní jednotek z INI aplikace pro form parametry objektu, v případech, kdy uvedené parametry nejsou dané hodnotou -1, tak se uvažují jednotky dle S==0,MIN==1 pro RDunitT, resp. M==0,MM==1 pro RDunitD
@@ -8961,12 +8957,6 @@ void __fastcall TForm1::Timer_neaktivityTimer(TObject *Sender)
 //			Timer_neaktivity->Enabled=false;
 //			setJobIDOnMouseMove(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
 //		}
-	bool prekryti=prekryti_LO(posledni_editovany_element);
-	if(prekryti)
-	{
-		TIP="Lakovací okna se překrývají!";
-		nahled_ulozit(false);
-	}else if(FormX->dopRD==pom_temp->pohon->aRD && pom_temp!=NULL && posledni_editovany_element!=NULL)nahled_ulozit(true);
 	REFRESH(true); //nedocází k refresh tabulek, tabulky jsou v tuto chvíli naplněny aktuálními hodnotami
 	Timer_neaktivity->Enabled=false;
 }
