@@ -50,7 +50,7 @@ class Cvektory
 	{
 		short typ;//0-linie, 1 oblouk - možná nebude třeba nahrazuje rotační úhel
 		double delka; //může být společné s radiusem
-    double radius;
+    double radius;  //nyní jsem pro sloučení, zjednoduší předávání parametrů
 		double orientace;
     double rotacni_uhel;
 		double X1,Y1,X2,Y2,X3,Y3,X4,Y4;//body bézieru
