@@ -628,16 +628,8 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 	else
 		{konec.x=X;konec.y=novy->body->dalsi->dalsi->Y;}
 	TElement *zarazka=vloz_element(novy,MaxInt,konec.x,konec.y,0);
-	//definice bodů geometrie - nahradit celé plněním do vloz_G_element
-	zarazka->geo.X1=pocatek.x;zarazka->geo.Y1=pocatek.y;
-	zarazka->geo.X4=konec.x;zarazka->geo.Y4=konec.y;
-	zarazka->geo.X2=pocatek.x+(konec.x-pocatek.x)/2.0;zarazka->geo.Y2=pocatek.y+(konec.y-pocatek.y)/2.0;
-	zarazka->geo.X3=zarazka->geo.X2;zarazka->geo.Y3=zarazka->geo.Y2;
-	zarazka->geo.typ=0;
-	zarazka->geo.rotacni_uhel=0;
-	zarazka->geo.radius=0;
-	zarazka->geo.orientace=0;
-	zarazka->geo.delka=m.delka(zarazka->geo.X1,zarazka->geo.Y1,zarazka->geo.X2,zarazka->geo.Y2); //tady je podle mého chyba u X2,Y2
+	//definice bodů geometrie
+	vloz_G_element(zarazka,0,pocatek.x,pocatek.y,0,0,0,0,konec.x,konec.y);
 	zarazka=NULL;delete zarazka;
 	//definice pozice názvu kabiny
 	switch((int)novy->orientace)
@@ -2117,7 +2109,7 @@ void Cvektory::vloz_G_element(TElement *Element,short typ,double X1,double Y1,do
 				Element->geo.radius=0;
 				Element->geo.rotacni_uhel=0;
 				Element->geo.X3=Element->geo.X2=(Element->geo.X1+Element->geo.X4)/2.0;//v případě linie dopočítá kontrolní body bézierovy křivky do středu linie
-				Element->geo.X3=Element->geo.Y2=(Element->geo.Y1+Element->geo.Y4)/2.0;//v případě linie dopočítá kontrolní body bézierovy křivky do středu linie
+				Element->geo.Y3=Element->geo.Y2=(Element->geo.Y1+Element->geo.Y4)/2.0;//v případě linie dopočítá kontrolní body bézierovy křivky do středu linie
 			}break;
 			case 1://oblouk
 			{

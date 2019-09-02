@@ -221,6 +221,20 @@ double Cmy::delka(double X1,double Y1,double X2,double Y2)
 	return sqrt(pow(X2-X1,2)+ pow(Y2-Y1,2));
 }
 /////////////////////////////////////////////////////////////////////////////
+//prec=preciznost výpočtu
+//double Cvykresli::bezierDelka(double x1,double y1,double x2,double y2,double x3,double y3,double x4,double y4,double prec)
+//{           DODĚLAT
+//	double delka=0, x_pre=x1,y_pre=y1;
+//	for( double i=0;i<=1;i+=prec)
+//	{
+//		TPointD_3D P=bezierPt(x1,y1,x2,y2,x3,y3,x4,y4,i);double x=P.x;double y=P.y;
+//		//delka_px+=m.delka(x_pre,y_pre,x,y);
+//		delka+=m.delka(m.P2Lx(x_pre),m.P2Ly(y_pre),m.P2Lx(x),m.P2Ly(y));
+//		x_pre=x;y_pre=y;
+//	}
+//	return delka;
+//}
+/////////////////////////////////////////////////////////////////////////////
 double Cmy::azimut(double X1,double Y1,double X2,double Y2)
 {
 	try
