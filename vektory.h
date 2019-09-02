@@ -48,7 +48,6 @@ class Cvektory
 
 	struct TGeometrie//pouze struktura
 	{
-		short typ;//0-linie, 1 oblouk - možná nebude třeba nahrazuje rotační úhel
 		double delka; //může být společné s radiusem
     double radius;  //nyní jsem pro sloučení, zjednoduší předávání parametrů
 		double orientace;

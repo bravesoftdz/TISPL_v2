@@ -633,7 +633,7 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 	zarazka->geo.X4=konec.x;zarazka->geo.Y4=konec.y;
 	zarazka->geo.X2=pocatek.x+(konec.x-pocatek.x)/2.0;zarazka->geo.Y2=pocatek.y+(konec.y-pocatek.y)/2.0;
 	zarazka->geo.X3=zarazka->geo.X2;zarazka->geo.Y3=zarazka->geo.Y2;
-	zarazka->geo.typ=0;
+	zarazka->geo.rotacni_uhel=0;
 	zarazka->geo.delka=m.delka(zarazka->geo.X1,zarazka->geo.Y1,zarazka->geo.X2,zarazka->geo.Y2);
 	zarazka=NULL;delete zarazka;
 	//definice pozice názvu kabiny
