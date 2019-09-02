@@ -628,12 +628,15 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 	else
 		{konec.x=X;konec.y=novy->body->dalsi->dalsi->Y;}
 	TElement *zarazka=vloz_element(novy,MaxInt,konec.x,konec.y,0);
-	//definice bodů geometrie
+	//definice bodů geometrie - nahradit celé plněním do vloz_G_element
 	zarazka->geo.X1=pocatek.x;zarazka->geo.Y1=pocatek.y;
 	zarazka->geo.X4=konec.x;zarazka->geo.Y4=konec.y;
 	zarazka->geo.X2=pocatek.x+(konec.x-pocatek.x)/2.0;zarazka->geo.Y2=pocatek.y+(konec.y-pocatek.y)/2.0;
 	zarazka->geo.X3=zarazka->geo.X2;zarazka->geo.Y3=zarazka->geo.Y2;
+	zarazka->geo.typ=0;
 	zarazka->geo.rotacni_uhel=0;
+	zarazka->geo.radius=0;
+	zarazka->geo.orientace=0;
 	zarazka->geo.delka=m.delka(zarazka->geo.X1,zarazka->geo.Y1,zarazka->geo.X2,zarazka->geo.Y2);
 	zarazka=NULL;delete zarazka;
 	//definice pozice názvu kabiny
@@ -2086,8 +2089,22 @@ Cvektory::TElement *Cvektory::vloz_element_za(TObjekt *Objekt,TElement *Element)
 	return ret;
 }
 ////---------------------------------------------------------------------------
+//danému elementu přiřadí/naplní geometrickou složku
+void Cvektory::vloz_G_element(TElement *Element,short typ,double orientace,double rotacni_uhel,double radius,double delka,double X1,double Y1,double X2,double Y2,double X3,double Y3,double X4,double Y4)
+{
+	Element->geo.typ=typ;//0 - linie, 1 - oblouk, -1 neidentifikovatelný tvar pomocí bézieru
+	Element->geo.delka=delka;
+	Element->geo.radius=radius;
+	Element->geo.orientace=orientace;
+	Element->geo.rotacni_uhel=rotacni_uhel;
+	Element->geo.X1=X1;Element->geo.Y1=Y1;
+	Element->geo.X2=X2;Element->geo.Y2=Y2;
+	Element->geo.X3=X3;Element->geo.Y3=Y3;
+	Element->geo.X4=X4;Element->geo.Y4=Y4;
+}
+////---------------------------------------------------------------------------
 //pokud byl nějaký element vložen mezi ostatní a ne na konec, provede přejměnování,dále pokud bylo stisknuto storno vrátí všechny změny
-void	Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
+void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 {
 	bool rename=false;//proměná sloužící k spouštění přejměnování
 	if(Element!=NULL)//funkčnost při vložení elementu mezi ostatní, pouze název pořadové čísla byly již změněny

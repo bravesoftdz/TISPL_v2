@@ -4474,10 +4474,11 @@ void Cvykresli::vykresli_Gelement_kurzor(TCanvas *canv,int X,int Y,double orient
 	if(rotacni_uhel!=-1000)//byl-li uskutečněn výběr,-1000 znamená nebyl výběr
 	{
 		//vykreslení
-		if(rotacni_uhel==0)radius=delka_linie;//pokud se jedná o linii
+		if(rotacni_uhel==0)radius=delka_linie;//pokud se jedná o linii, používá jeden předávací sloučený parametr
 		TPointD *PL=vykresli_potencial_Gelement(canv,X,Y,orientace,rotacni_uhel,radius,clAktual,true);
 		//uchování v globální proměnné aktuálně vracených hodnot ze smart kurzoru pro možné uložení do geometrického elementu
-		geoTemp.delka=delka_linie;//pravděpodobně sloučit s radiusem
+		geoTemp.typ=1;if(rotacni_uhel==0)geoTemp.typ=0;
+		geoTemp.delka=delka_linie;
 		geoTemp.radius=radius;
 		geoTemp.orientace=orientace;
 		geoTemp.rotacni_uhel=rotacni_uhel;
