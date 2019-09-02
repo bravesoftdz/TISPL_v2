@@ -4447,13 +4447,13 @@ void Cvykresli::smart_kurzor(TCanvas *canv,double preXk,double preYk,double preO
 	if(RA==0)delka_linie=ceil(m.delka(preXk,preYk,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y)/3.0)*3;//u linie nabízí delší kresbu, po násobcích 3 metrů
 
 	////samotné vykreslení kurzoru dle hodnoty RA z předchozího algoritmu (aktuální orientace je prozatím z d.Temp.z, kde vypočtena jako je orientace minus rotace předchozího gElementu)
-	vykresli_Gelement_kurzor(canv,m.L2Px(preXk),m.L2Py(preYk),preOR-preRA,RA,R,delka_linie,preRA,prepreRA);
+	vykresli_Gelement_kurzor(canv,preXk,preYk,preOR-preRA,RA,R,delka_linie,preRA,prepreRA);
 
 	////uchování v globální proměnné aktuálně vracených hodnot ze smart kurzoru pro možné uložení do geometrického elementu nastává níže
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-//obloukový či liniový (dle situace) kurzor g-elementu, X,Y jsou fyzické souřadnice výchozího vykreslování, parametry: orientace oblouku - dle světových stran (umí i jiné než 90° násobky), rotační úhel, pod kterým je oblouk rotován, může být záporný (znaménko určuje směr rotace, + proti směru hodinových ručiček, - po směru), max. hodnota +90 a min. hodnota -90 (je-li nastaven na 0° jedná se o linii), radius - je radius oblouku v metrech nebo pokud je rotační úhel nastaven na 0° tedy se jedná o linii, je radius délkou linie)
-void Cvykresli::vykresli_Gelement_kurzor(TCanvas *canv,int X,int Y,double orientace,double rotacni_uhel,double radius,double delka_linie,double predchozi_rotacni_uhel,double predpredchozi_rotacni_uhel)
+//obloukový či liniový (dle situace) kurzor g-elementu, X,Y jsou logické souřadnice výchozího vykreslování, parametry: orientace oblouku - dle světových stran (umí i jiné než 90° násobky), rotační úhel, pod kterým je oblouk rotován, může být záporný (znaménko určuje směr rotace, + proti směru hodinových ručiček, - po směru), max. hodnota +90 a min. hodnota -90 (je-li nastaven na 0° jedná se o linii), radius - je radius oblouku v metrech nebo pokud je rotační úhel nastaven na 0° tedy se jedná o linii, je radius délkou linie)
+void Cvykresli::vykresli_Gelement_kurzor(TCanvas *canv,double X,double Y,double orientace,double rotacni_uhel,double radius,double delka_linie,double predchozi_rotacni_uhel,double predpredchozi_rotacni_uhel)
 {
 	TColor clPotencial=m.clIntensive(clBlack,245);
 	TColor clAktual=m.clIntensive(clBlack,120);
@@ -4471,7 +4471,7 @@ void Cvykresli::vykresli_Gelement_kurzor(TCanvas *canv,int X,int Y,double orient
 	}
 
 	//vykreslení aktuální vybrané volby
-	if(rotacni_uhel!=-1000)//byl-li uskutečněn výběr,-1000 znamená nebyl výběr
+	if(rotacni_uhel!=-1000)//byl-li uskutečněn výběr, -1000 znamená nebyl výběr
 	{
 		//vykreslení
 		if(rotacni_uhel==0)radius=delka_linie;//pokud se jedná o linii, používá jeden předávací sloučený parametr
@@ -4496,11 +4496,11 @@ void Cvykresli::vykresli_Gelement_kurzor(TCanvas *canv,int X,int Y,double orient
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-//zajistí jednorázové vykreslení potenciálního obloukového či liniového (dle situace) g-elementu, X,Y jsou fyzické souřadnice výchozího vykreslování, parametry: orientace oblouku - dle světových stran (umí i jiné než 90° násobky), rotační úhel - pod kterým je oblouk rotován, může být záporný (znaménko určuje směr rotace, + proti směru hodinových ručiček, - po směru), max. hodnota +90 a min. hodnota -90 (je-li nastaven na 0° jedná se o linii), radius - je radius oblouku v metrech nebo pokud je rotační úhel nastaven na 0° tedy se jedná o linii, je radius délkou linie)
-TPointD *Cvykresli::vykresli_potencial_Gelement(TCanvas *canv,int X,int Y,double orientace,double rotacni_uhel,double radius,TColor color,bool popisek)
+//zajistí jednorázové vykreslení potenciálního obloukového či liniového (dle situace) g-elementu, X,Y jsou logické souřadnice výchozího vykreslování, parametry: orientace oblouku - dle světových stran (umí i jiné než 90° násobky), rotační úhel - pod kterým je oblouk rotován, může být záporný (znaménko určuje směr rotace, + proti směru hodinových ručiček, - po směru), max. hodnota +90 a min. hodnota -90 (je-li nastaven na 0° jedná se o linii), radius - je radius oblouku v metrech nebo pokud je rotační úhel nastaven na 0° tedy se jedná o linii, je radius délkou linie)
+TPointD *Cvykresli::vykresli_potencial_Gelement(TCanvas *canv,double X,double Y,double orientace,double rotacni_uhel,double radius,TColor color,bool popisek)
 {
-	//potenciální Gelement - středová linie
-	TPointD *PL=m.vrat_Gelement(X,Y,orientace,rotacni_uhel,radius);
+	//potenciální Gelement
+	TPointD *PL=m.getArcLine(X,Y,orientace,rotacni_uhel,radius);
 	POINT POLE[]={{m.L2Px(PL[0].x),m.L2Py(PL[0].y)},m.L2Px(PL[1].x),m.L2Py(PL[1].y),m.L2Px(PL[2].x),m.L2Py(PL[2].y),m.L2Px(PL[3].x),m.L2Py(PL[3].y)};//převod do fyzických souřadnic
 	set_pen(canv,color,1*F->Zoom,PS_ENDCAP_FLAT);//nastavení geometrického pera
 	canv->PolyBezier((TPoint*)POLE,3);//samotné vykreslení bézierovy křivky
@@ -4522,7 +4522,7 @@ TPointD *Cvykresli::vykresli_potencial_Gelement(TCanvas *canv,int X,int Y,double
 		}
 		else//jedné se o oblouk, najde polovinu oblouku
 		{
-			TPointD *PL1=m.vrat_Gelement(X,Y,orientace,rotacni_uhel/2.0,radius);
+			TPointD *PL1=m.getArcLine(X,Y,orientace,rotacni_uhel/2.0,radius);
 			Xt=m.round(m.L2Px(PL[3].x)-canv->TextWidth(T)/2.0);
 			Yt=m.round(m.L2Py(PL[3].y)-canv->TextHeight(T)/2.0);
 			delete[] PL1;PL1=NULL;

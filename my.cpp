@@ -183,7 +183,7 @@ double Cmy::getL(double RA,double R)
 {
 	double L=0.55191502449;//L - je vzdálenost od výchozího a koncového bodu vs. řídícího bodu, 0.552284749798297 resp. 0.55191502449 (přesnější), je tato hodnota na oblouku s poloměrem 1, viz http://spencermortensen.com/articles/bezier-circle/
 	switch(round(abs(RA)))
-	{
+	{             //L - hodnoty spočítané pro menší úhly
 		case 15:L=R*0.0873912837529813;break;
 		case 30:L=R*0.175536663479836;break;
 		case 45:L=R*0.26521649;break;
@@ -193,16 +193,16 @@ double Cmy::getL(double RA,double R)
 	return L;
 }
 /////////////////////////////////////////////////////////////////////////////
-//vrátí souřadnice (4 místné pole TPointD tj. 8 hodnot) bézierovy křivky oblouku či linie dle zadaných souřadnic, X,Y jsou fyzické souřadnice výchozího vykreslování, parametry: orientace oblouku - dle světových stran (umí i jiné než 90° násobky), rotační úhel - pod kterým je oblouk rotován, může být záporný (znaménko určuje směr rotace, + proti směru hodinových ručiček, - po směru), max. hodnota +90 a min. hodnota -90 (je-li nastaven na 0° jedná se o linii), radius - je radius oblouku v metrech nebo pokud je rotační úhel nastaven na 0° tedy se jedná o linii, je radius délkou linie
-TPointD *Cmy::vrat_Gelement(int X,int Y,double orientace,double rotacni_uhel,double radius)
+//vrátí souřadnice (4 místné pole TPointD tj. 8 hodnot) bézierovy křivky oblouku či linie dle zadaných souřadnic, X,Y jsou logické souřadnice výchozího vykreslování, parametry: orientace oblouku - dle světových stran (umí i jiné než 90° násobky), rotační úhel - pod kterým je oblouk rotován, může být záporný (znaménko určuje směr rotace, + proti směru hodinových ručiček, - po směru), max. hodnota +90 a min. hodnota -90 (je-li nastaven na 0° jedná se o linii), radius - je radius oblouku v metrech nebo pokud je rotační úhel nastaven na 0° tedy se jedná o linii, je radius délkou linie
+TPointD *Cmy::getArcLine(double X,double Y,double orientace,double rotacni_uhel,double radius)
 {
 	//parametry pro výchozí výpočetní model oblouku s OR 90, ten se následně dle skutečné OR resp. Orientace přerotuje a včetně znaménka přezrcadlí (znaménko určuje směr rotace, + proti směru hodinových ručiček, - po směru)
 	double OR=orientace;//orientace oblouku, dle světových stran
 	double RA=rotacni_uhel;if(RA>90)RA=90;if(RA<-90)RA=-90;//rotační úhel, pod kterým je oblouk rotován, může být záporný (znaménko určuje směr rotace, + proti směru hodinových ručiček, - po směru), max. hodnota +90 a min. hodnota -90
 	double R=radius;//Radius resp. délka u linie v metrech
 	double L=getL(RA,R);//L - je vzdálenost od výchozího a koncového bodu vs. řídícího bodu
-	double X1=P2Lx(X);//výchozí bod oblouku
-	double Y1=P2Ly(Y);//výchozí bod oblouku
+	double X1=X;//výchozí bod oblouku
+	double Y1=Y;//výchozí bod oblouku
 	double a=R*cos(ToRad(90-fabs(RA)));//výpočet polohy koncového bodu na ose X - výpočet dle goniometrické funkce v pravoúhlém trojúhelníku  - JE OK
 	double b=R-sqrt(R*R-a*a);//výpočet polohy koncového bodu na ose Y - odečtení hodnoty dle pythagorovy věty od radiusu - JE OK
 	if(RA==0){a=R;b=0;L=0;}//pokud se jedná o linii nastaví takovéto parametry
@@ -456,10 +456,10 @@ long Cmy::LeziVblizkostiUsecky(double x, double y, double X1, double Y1, double 
 bool Cmy::LeziVoblouku(double X,double Y,double orientace,double RA,double R,double Xmys,double Ymys)
 {
 	bool RET=false;
-	TPointD *PL=vrat_Gelement(L2Px(X),L2Py(Y),orientace,RA,R);
+	TPointD *PL=getArcLine(X,Y,orientace,RA,R);
 	double KorekceX=0,KorekceY=0;//pro případy, kdy počáteční i koncový bod je v jedné linii (vodorovné či svislé)
-	if(round2double(PL[0].x,2)==round2double(PL[3].y,2))KorekceX=vrat_Gelement(L2Px(X),L2Py(Y),orientace,RA/2.0,R)[3].x-PL[3].x;//round2double nasazeno z důvodu divného chování při porovnání dvou totožných čísel, kdy bylo vraceno false, bylo zaznamenáno u korekceY
-	if(round2double(PL[0].y,2)==round2double(PL[3].y,2))KorekceY=vrat_Gelement(L2Px(X),L2Py(Y),orientace,RA/2.0,R)[3].y-PL[3].y;//round2double nasazeno z důvodu divného chování při porovnání dvou totožných čísel, kdy bylo vraceno false, bylo zaznamenáno u korekceY
+	if(round2double(PL[0].x,2)==round2double(PL[3].y,2))KorekceX=getArcLine(L2Px(X),L2Py(Y),orientace,RA/2.0,R)[3].x-PL[3].x;//round2double nasazeno z důvodu divného chování při porovnání dvou totožných čísel, kdy bylo vraceno false, bylo zaznamenáno u korekceY
+	if(round2double(PL[0].y,2)==round2double(PL[3].y,2))KorekceY=getArcLine(L2Px(X),L2Py(Y),orientace,RA/2.0,R)[3].y-PL[3].y;//round2double nasazeno z důvodu divného chování při porovnání dvou totožných čísel, kdy bylo vraceno false, bylo zaznamenáno u korekceY
 	if(PtInRectangle(PL[3].x,PL[3].y,X+KorekceX,Y+KorekceY,Xmys,Ymys))RET=true;
 	delete []PL;PL=NULL;//smazání již nepotřebných ukazatelů
 	return RET;
