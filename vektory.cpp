@@ -1493,54 +1493,53 @@ Cvektory::TObjekt *Cvektory::dalsi_krok(TObjekt *Objekt,TPoint *tab_pruchodu)
 	return Objekt;
 }
 ////---------------------------------------------------------------------------
-//slouží k posunu objektu jako celku o X a Y, posun kabiny, pohonu, elementů, tabulek, nadpisu
-void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt)
+//slouží k posunu objektu jako celku o X a Y, posun kabiny, pohonu, elementů, tabulek, nadpisu, kontrolovat_oblast slouží k nucenému přesunutí
+void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_oblast)
 {
-	////posun kabiny-polygonu
-	posun_body(X,Y,Objekt);
-	////posun nadpisu
-	Objekt->Xt+=X;
-	Objekt->Yt+=Y;
-	////posun tabulky pohonů
-	Objekt->Xp+=X;
-	Objekt->Yp+=Y;
-	////posun elementů
-	TElement *E=Objekt->elementy->dalsi;//objekt má vždy element (zarážka)
-	while(E!=NULL)
+	short oblast=0;
+	if(kontrolovat_oblast && Objekt->predchozi->n>0)oblast=oblast_objektu(Objekt->predchozi,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y);
+	if(oblast==0)
 	{
-		E->X+=X;E->Y+=Y;//souřadnice elementu
-		if(E->Xt!=-100)E->Xt+=X;E->Yt+=Y;//souřadnice tabulky + kontrola zda je vytvořená
-		//geometrie elementu
-		E->geo.X1+=X;E->geo.X2+=X;E->geo.X3+=X;E->geo.X4+=X;
-		E->geo.Y1+=Y;E->geo.Y2+=Y;E->geo.Y3+=Y;E->geo.Y4+=Y;
-		E=E->dalsi;
-	}
-	delete E;E=NULL;
-	////kontrola zda přesouvaný objekt není mezi 2 objetky
-	if(OBJEKTY->predchozi->n>2)
-	{
-		TPoint *tab_pruchodu=new TPoint[pocet_vyhybek+1];
-		TObjekt *O=OBJEKTY->dalsi;
-		while(O!=NULL)
+  	////posun kabiny-polygonu
+  	posun_body(X,Y,Objekt);
+  	////posun nadpisu
+  	Objekt->Xt+=X;
+  	Objekt->Yt+=Y;
+  	////posun tabulky pohonů
+  	Objekt->Xp+=X;
+  	Objekt->Yp+=Y;
+  	////posun elementů
+  	TElement *E=Objekt->elementy->dalsi;//objekt má vždy element (zarážka)
+  	while(E!=NULL)
   	{
-			//mezi objekty
-			if(O->dalsi!=NULL && O->n!=Objekt->n && O->dalsi->n!=Objekt->n)
-				if(m.LeziVblizkostiUsecky(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,O->elementy->predchozi->geo.X4,O->elementy->predchozi->geo.Y4,O->dalsi->elementy->dalsi->geo.X1,O->dalsi->elementy->dalsi->geo.Y1)<=10)break;
-			//mezi posledním a prvním
-			if(O->dalsi==NULL && O->n!=Objekt->n && OBJEKTY->dalsi->n!=Objekt->n)
-				if(m.LeziVblizkostiUsecky(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,O->elementy->predchozi->geo.X4,O->elementy->predchozi->geo.Y4,OBJEKTY->dalsi->elementy->dalsi->geo.X1,OBJEKTY->dalsi->elementy->dalsi->geo.Y1)<=10)break;
-			O=dalsi_krok(O,tab_pruchodu);
-		}
-		//posunovaný objekt se nachází v pásmu mezi 2 objekty
-		if(O!=NULL /*&& mrYes==F->MB("Chcete změnit pořadí objektů?",MB_YESNO)*/)zmen_poradi_objektu(Objekt,O);
-		O=NULL;
-		delete tab_pruchodu;tab_pruchodu=NULL;
+  		E->X+=X;E->Y+=Y;//souřadnice elementu
+  		if(E->Xt!=-100)E->Xt+=X;E->Yt+=Y;//souřadnice tabulky + kontrola zda je vytvořená
+  		//geometrie elementu
+  		E->geo.X1+=X;E->geo.X2+=X;E->geo.X3+=X;E->geo.X4+=X;
+  		E->geo.Y1+=Y;E->geo.Y2+=Y;E->geo.Y3+=Y;E->geo.Y4+=Y;
+  		E=E->dalsi;
+  	}
+  	delete E;E=NULL;
 	}
+	////přilepení objektu na předchozí objekt
+	if(oblast==1 && (Objekt->elementy->dalsi->geo.X1!=Objekt->predchozi->elementy->predchozi->geo.X4 || Objekt->elementy->dalsi->geo.Y1!=Objekt->predchozi->elementy->predchozi->geo.Y4))
+		posun_objekt(Objekt->predchozi->elementy->predchozi->geo.X4-Objekt->elementy->dalsi->geo.X1,Objekt->predchozi->elementy->predchozi->geo.Y4-Objekt->elementy->dalsi->geo.Y1,Objekt,false);
+	////změna pořadí před předchozí
+	if(oblast==2)
+		zmen_poradi_objektu(Objekt,Objekt->predchozi);
+	////přilepení na další objekt
+	oblast=0;
+	if(kontrolovat_oblast && Objekt->dalsi!=NULL)oblast=oblast_objektu(Objekt->dalsi,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y);
+	if(oblast==2 && (Objekt->dalsi->elementy->dalsi->geo.X1!=Objekt->elementy->predchozi->geo.X4 || Objekt->dalsi->elementy->dalsi->geo.Y1!=Objekt->elementy->predchozi->geo.Y4))
+		posun_objekt(Objekt->dalsi->elementy->dalsi->geo.X1-Objekt->elementy->predchozi->geo.X4,Objekt->dalsi->elementy->dalsi->geo.Y1-Objekt->elementy->predchozi->geo.Y4,Objekt,false);
+	////změna pořadí za další
+	if(oblast==1)
+		zmen_poradi_objektu(Objekt,Objekt->dalsi);
 	////změna rotace
 	if(Objekt->n>1)
 	{
 		double azimut=0;
-		azimut=m.Rt90(m.azimut(Objekt->predchozi->elementy->predchozi->geo.X4,Objekt->predchozi->elementy->predchozi->geo.Y4,Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1));
+		azimut=m.Rt90(m.azimut(Objekt->predchozi->elementy->predchozi->geo.X4,Objekt->predchozi->elementy->predchozi->geo.Y4,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y));//Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1));
 		rotuj_objekt(Objekt,Objekt->orientace-azimut);
 	}
 }
