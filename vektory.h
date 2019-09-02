@@ -52,7 +52,7 @@ class Cvektory
 		double delka;
 		double radius;
 		double orientace;
-    double rotacni_uhel;
+		double rotacni_uhel;
 		double X1,Y1,X2,Y2,X3,Y3,X4,Y4;//body bézieru
 	};
 
@@ -457,7 +457,7 @@ class Cvektory
 	TElement *vloz_element(TObjekt *Objekt,unsigned int eID, double X, double Y,short rotace_symbolu);//vloží element do spojového seznamu elementů daného technologického objektu a zároveň na něj vrátí ukazatel
 	void vloz_element(TObjekt *Objekt,TElement *Element);//vloží element do spojového seznamu elementů daného technologického objektu
 	Cvektory::TElement *vloz_element_za(TObjekt *Objekt,TElement *Element);//kontrola zda vkládaný element bude umístěn na konec nebo mezi jiné elementy, pokud bude vkládán na konec return=NULL, pokud mezi elementy return=ukazatel na předchozí element
-	void vloz_G_element(TElement *Element,short typ,double orientace,double rotacni_uhel,double radius,double delka,double X1,double Y1,double X2,double Y2,double X3,double Y3,double X4,double Y4);//danému elementu přiřadí/naplní geometrickou složku
+	void vloz_G_element(TElement *Element,short typ,double X1,double Y1,double X2,double Y2,double X3,double Y3,double X4,double Y4,double orientace=0,double rotacni_uhel=0,double radius=0,double delka=0);//danému elementu přiřadí/naplní geometrickou složku
 	void uprav_popisky_elementu(TObjekt *Objekt, TElement *Element);//upraví indexy a popisky elementů po vloženém elementu (parametr Element), pokud dostane parametrem Element NULL přejmenuje a přeindexuje všechny ovlovněné elementy do původního stavu (tlačítko storno)
 	void kopiruj_element(TElement *Original, TElement *Kopie);//zkopíruje atributy elementu bez ukazatelového propojení, pouze ukazatelové propojení na mGrid je zachováno
 	void kopiruj_elementy(TObjekt *Original, TObjekt  *Kopie);//zkopíruje elementy a jejich atributy bez ukazatelového propojení z objektu do objektu, pouze ukazatelové propojení na mGrid je zachováno spojuje dvě metody vloz_element(TObjekt *Objekt,TElement *Element) a kopiruj_element(TElement *Original, TElement *Kopie);

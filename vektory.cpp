@@ -637,7 +637,7 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 	zarazka->geo.rotacni_uhel=0;
 	zarazka->geo.radius=0;
 	zarazka->geo.orientace=0;
-	zarazka->geo.delka=m.delka(zarazka->geo.X1,zarazka->geo.Y1,zarazka->geo.X2,zarazka->geo.Y2);
+	zarazka->geo.delka=m.delka(zarazka->geo.X1,zarazka->geo.Y1,zarazka->geo.X2,zarazka->geo.Y2); //tady je podle mého chyba u X2,Y2
 	zarazka=NULL;delete zarazka;
 	//definice pozice názvu kabiny
 	switch((int)novy->orientace)
@@ -2090,17 +2090,42 @@ Cvektory::TElement *Cvektory::vloz_element_za(TObjekt *Objekt,TElement *Element)
 }
 ////---------------------------------------------------------------------------
 //danému elementu přiřadí/naplní geometrickou složku
-void Cvektory::vloz_G_element(TElement *Element,short typ,double orientace,double rotacni_uhel,double radius,double delka,double X1,double Y1,double X2,double Y2,double X3,double Y3,double X4,double Y4)
+void Cvektory::vloz_G_element(TElement *Element,short typ,double X1,double Y1,double X2,double Y2,double X3,double Y3,double X4,double Y4,double orientace,double rotacni_uhel,double radius,double delka)
 {
-	Element->geo.typ=typ;//0 - linie, 1 - oblouk, -1 neidentifikovatelný tvar pomocí bézieru
-	Element->geo.delka=delka;
-	Element->geo.radius=radius;
-	Element->geo.orientace=orientace;
-	Element->geo.rotacni_uhel=rotacni_uhel;
-	Element->geo.X1=X1;Element->geo.Y1=Y1;
-	Element->geo.X2=X2;Element->geo.Y2=Y2;
-	Element->geo.X3=X3;Element->geo.Y3=Y3;
-	Element->geo.X4=X4;Element->geo.Y4=Y4;
+	if(Element!=NULL)
+	{
+		Element->geo.typ=typ;//0 - linie, 1 - oblouk, -1 neidentifikovatelný tvar pomocí bézieru
+		Element->geo.delka=delka;
+		Element->geo.radius=radius;
+		Element->geo.orientace=orientace;
+		Element->geo.rotacni_uhel=rotacni_uhel;
+		Element->geo.X1=X1;Element->geo.Y1=Y1;
+		Element->geo.X4=X4;Element->geo.Y4=Y4;
+		Element->geo.X2=X2;Element->geo.Y2=Y2;
+		Element->geo.X3=X3;Element->geo.Y3=Y3;
+		switch(typ)
+		{
+			case -1://obecný bézier
+			{
+				//if(delka==0)Element->geo.delka=m.bezierDelka(X1,Y1,X2,Y2,X3,Y3,X4,Y4);//pokud nebyla délka dodána
+				Element->geo.radius=0;
+				Element->geo.rotacni_uhel=0;
+			}break;
+			case 0://linie
+			{
+				if(delka==0)Element->geo.delka=m.delka(Element->geo.X1,Element->geo.Y1,Element->geo.X4,Element->geo.Y4);//pokud nebyla délka dodána
+				Element->geo.radius=0;
+				Element->geo.rotacni_uhel=0;
+				Element->geo.X3=Element->geo.X2=(Element->geo.X1+Element->geo.X4)/2.0;//v případě linie dopočítá kontrolní body bézierovy křivky do středu linie
+				Element->geo.X3=Element->geo.Y2=(Element->geo.Y1+Element->geo.Y4)/2.0;//v případě linie dopočítá kontrolní body bézierovy křivky do středu linie
+			}break;
+			case 1://oblouk
+			{
+				if(delka==0)Element->geo.delka=m.R2Larc(radius,rotacni_uhel);//pokud nebyla délka dodána
+				Element->geo.radius=radius;
+			}break;
+		}
+	}
 }
 ////---------------------------------------------------------------------------
 //pokud byl nějaký element vložen mezi ostatní a ne na konec, provede přejměnování,dále pokud bylo stisknuto storno vrátí všechny změny

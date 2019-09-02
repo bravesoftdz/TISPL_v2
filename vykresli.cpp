@@ -4477,15 +4477,21 @@ void Cvykresli::vykresli_Gelement_kurzor(TCanvas *canv,int X,int Y,double orient
 		if(rotacni_uhel==0)radius=delka_linie;//pokud se jedná o linii, používá jeden předávací sloučený parametr
 		TPointD *PL=vykresli_potencial_Gelement(canv,X,Y,orientace,rotacni_uhel,radius,clAktual,true);
 		//uchování v globální proměnné aktuálně vracených hodnot ze smart kurzoru pro možné uložení do geometrického elementu
-		geoTemp.typ=1;if(rotacni_uhel==0)geoTemp.typ=0;
-		geoTemp.delka=delka_linie;
-		geoTemp.radius=radius;
+		if(rotacni_uhel==0)//pokud se jedná o linii
+		{
+			geoTemp.typ=0;
+			geoTemp.radius=0;
+			geoTemp.delka=delka_linie;
+		}
+		else
+		{
+			geoTemp.typ=1;
+			geoTemp.radius=radius;
+			geoTemp.delka=m.R2Larc(radius,rotacni_uhel);
+		}
 		geoTemp.orientace=orientace;
 		geoTemp.rotacni_uhel=rotacni_uhel;
-		geoTemp.X1=PL[0].x;geoTemp.Y1=PL[0].y;
-		geoTemp.X2=PL[1].x;geoTemp.Y2=PL[1].y;
-		geoTemp.X3=PL[2].x;geoTemp.Y3=PL[2].y;
-		geoTemp.X4=PL[3].x;geoTemp.Y4=PL[3].y;
+		geoTemp.X1=PL[0].x;geoTemp.Y1=PL[0].y;geoTemp.X2=PL[1].x;geoTemp.Y2=PL[1].y;geoTemp.X3=PL[2].x;geoTemp.Y3=PL[2].y;geoTemp.X4=PL[3].x;geoTemp.Y4=PL[3].y;
 		delete[] PL;PL=NULL;
 	}
 }
