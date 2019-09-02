@@ -1440,7 +1440,7 @@ void TForm1::kurzor(TKurzory typ_kurzor)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormPaint(TObject *Sender)
 {
-	//při změně rozlišení nebo obrazovky dojde k maximalizaci okna programu 	Problém při ruční minimalizaci!
+	////////při změně rozlišení nebo obrazovky dojde k maximalizaci okna programu 	Problém při ruční minimalizaci!
 	if(ClientWidth!=Monitor->Width&&FMaximized)
 	{
 		//maximalizace formuláře jinak to s novým designem nejde
@@ -1449,97 +1449,37 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		FMaximized=false;MaxButtonClick(this);//aby bylo připraveno minimalizační tlačítko
 	}
 
-
-	//vykreslení gridu
+	////////jednoltivé vrstvy
+	////vykreslení gridu
 	if(grid && Zoom>0.5 && !antialiasing && MOD!=LAYOUT && MOD!=NAHLED &&/*MOD!=REZERVY &&*/ MOD!=CASOVAOSA && MOD!=TECHNOPROCESY)d.vykresli_grid(Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí
-
-	//jednoltivé mody
 	Zoom_predchozi_AA=Zoom;//musí být tu, před mody (mohl by být i před kreslením gridu)
-//	switch(MOD)
-//	{
-//		case NAHLED://vykreslení všech vektorových elementů
-//		{
-//			if(!antialiasing)
-//			{
-//				nacti_podklad(Canvas);
-//				d.vykresli_halu(Canvas);
-//				d.vykresli_vektory(Canvas);
-//				d.vykresli_mGridy();//přesunuto do vnitř metody: pom_temp->elementy!=NULL kvůli pohonům
-//				if(zobrazit_meritko)d.meritko(Canvas);//grafické měřítko
-//			}
-//			else
-//			{
-//				Cantialising a;
-//				Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-//				bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu  //zkoušel jsem nastavit plochu antialiasingu bez ovládacích prvků LeftToolbar a menu, ale kopírování do jiné BMP to zpomalovalo více neooptimalizovaná oblast pro 3xbmp
-//				Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
-//				d.vykresli_halu(bmp_in->Canvas);
-//				d.vykresli_vektory(bmp_in->Canvas);
-//				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
-//				//rastr
-//				Graphics::TBitmap *bmp_total=new Graphics::TBitmap;bmp_total->Width=ClientWidth;bmp_total->Height=ClientHeight;
-//				if(d.v.PP.raster.show)nacti_podklad(bmp_total->Canvas);
-//				//vektory
-//				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,d.v.PP.raster.show);delete(bmp_in);//nutné a.antialiasing nahrát výsledek do bmp_out a ne přímo do Canvas->Draw kvůli možnosti uvolnění paměti bmp_out přímo z (v) metody(ě) a.antialiasing
-//				bmp_total->Canvas->Draw(0,0,bmp_out); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
-//				/*//spojnice EmGrid
-//				bmp_in->FreeImage();
-//				Graphics::TBitmap *bmp_out2;
-//				if(Akce==MOVE_TABLE || Akce==MOVE_ELEMENT && pom_temp->zobrazit_mGrid)
-//				{   zatím neužito,nedoladěné
-//					vykresli_spojinici_EmGrid(bmp_in->Canvas,pom_element);
-//					bmp_out2=a.antialiasing(bmp_in);//do samostatné, aby se kreslilo přes tabulky
-//				} */
-//				delete(bmp_out);//velice nutné
-//				//vykreslování mGridu
-//				d.vykresli_mGridy(bmp_total->Canvas); //přesunuto do vnitř metody: pom_temp->elementy!=NULL kvůli pohonům
-//				//if(Akce==MOVE_TABLE || Akce==MOVE_ELEMENT && pom_temp->zobrazit_mGrid)bmp_out->Canvas->Draw(0,0,bmp_out2);delete (bmp_out2);zatím neužito,nedoladěné
-//				//grafické měřítko
-//				if(zobrazit_meritko)d.meritko(bmp_total->Canvas);
-//				//finální předání bmp_out do Canvasu
-//				Canvas->Draw(0,0,bmp_total);//finální vykreslení do Canvasu Formu1
-//				delete (bmp_total);//velice nutné
-//			}
-//			break;
-//		}
-//		case SCHEMA://vykreslování všech vektorů ve schématu
-//		{
-//			if(!antialiasing)
-//			{
-//				nacti_podklad(Canvas);
-//				d.vykresli_halu(Canvas);
-//				d.vykresli_vektory(Canvas);
-//				if(zobrazit_meritko)d.meritko(Canvas);//grafické měřítko
-//			}
-//			else
-//			{
-				//rastr
-				Graphics::TBitmap *bmp_total=new Graphics::TBitmap;bmp_total->Width=ClientWidth;bmp_total->Height=ClientHeight;
-				if(d.v.PP.raster.show)nacti_podklad(bmp_total->Canvas);
-				if(grid && Zoom_predchozi_AA>0.5 && (Akce==MOVE_BOD||Akce==DRAW_HALA) && prichytavat_k_mrizce==1)d.vykresli_grid(bmp_total->Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí//vykreslení gridu
-				//vektory
-				Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-				bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu //zkoušel jsem nastavit plochu antialiasingu bez ovládacích prvků LeftToolbar a menu, ale kopírování do jiné BMP to zpomalovalo více neooptimalizovaná oblast pro 3xbmp
-				Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
-				d.vykresli_halu(bmp_in->Canvas);
-				d.vykresli_vektory(bmp_in->Canvas);
-				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
-				Cantialising a;
-				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
-				bmp_total->Canvas->Draw(0,0,bmp_out);delete (bmp_out);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
-				//mGridy
-				d.vykresli_mGridy(bmp_total->Canvas); //přesunuto do vnitř metody: pom_temp->elementy!=NULL kvůli pohonům
-				//grafické měřítko
-				if(zobrazit_meritko && Akce!=MOVE_HALA)d.meritko(bmp_total->Canvas);
-				//finální předání bmp_out do Canvasu
-				Canvas->Draw(0,0,bmp_total);
-				delete (bmp_total);//velice nutné
-//			}
-//			break;
-//		}
-//	}
-	d.vykresli_tip(Canvas);//vypíše TIP
-	if(mGrid_knihovna!=NULL && pom_temp==NULL)//vykreslování tabulky pro přidávání objektů, temp řešení
+	////rastr
+	Graphics::TBitmap *bmp_total=new Graphics::TBitmap;bmp_total->Width=ClientWidth;bmp_total->Height=ClientHeight;
+	if(d.v.PP.raster.show)nacti_podklad(bmp_total->Canvas);
+	if(grid && Zoom_predchozi_AA>0.5 && (Akce==MOVE_BOD||Akce==DRAW_HALA) && prichytavat_k_mrizce==1)d.vykresli_grid(bmp_total->Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí//vykreslení gridu
+	////vektory
+	Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+	bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu //zkoušel jsem nastavit plochu antialiasingu bez ovládacích prvků LeftToolbar a menu, ale kopírování do jiné BMP to zpomalovalo více neooptimalizovaná oblast pro 3xbmp
+	Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
+	d.vykresli_halu(bmp_in->Canvas);
+	d.vykresli_vektory(bmp_in->Canvas);
+	if(Akce==GEOMETRIE)d.smart_kurzor(bmp_in->Canvas,50,-50,90,0,0);
+	Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
+	Cantialising a;
+	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+	bmp_total->Canvas->Draw(0,0,bmp_out);delete (bmp_out);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+	////mGridy
+	d.vykresli_mGridy(bmp_total->Canvas); //přesunuto do vnitř metody: pom_temp->elementy!=NULL kvůli pohonům
+	////grafické měřítko
+	if(zobrazit_meritko && Akce!=MOVE_HALA)d.meritko(bmp_total->Canvas);
+	//finální předání bmp_out do Canvasu
+	Canvas->Draw(0,0,bmp_total);
+	delete (bmp_total);//velice nutné
+	////TIP
+	d.vykresli_tip(Canvas);
+
+	////////vykreslování tabulky pro přidávání objektů, temp řešení
+	if(mGrid_knihovna!=NULL && pom_temp==NULL)
 	{
 		mGrid_knihovna->Redraw=true;
 		mGrid_knihovna->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak mGrid_knihovna->Buffer(false);
@@ -2572,6 +2512,10 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			{
 				d.vykresli_meridlo(Canvas,X,Y);
 			}
+		}break;
+		case GEOMETRIE:
+		{
+			REFRESH();
 		}break;
 		case NIC://přejíždění po ploše aplikace, bez aktuálně nastavené akce
 		{
@@ -9111,8 +9055,9 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 void __fastcall TForm1::Button14Click(TObject *Sender)
 {
  //log(__func__);
- Form2->ShowModal();
-
+ //Form2->ShowModal();
+                           Sk(d.v.PP.radius);
+ Akce=GEOMETRIE;REFRESH();
 
 }
 //---------------------------------------------------------------------------

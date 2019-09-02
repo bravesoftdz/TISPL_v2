@@ -1,9 +1,9 @@
-//---------------------------------------------------------------------------
+ï»¿//---------------------------------------------------------------------------
 #ifndef myH
 #define myH
 #include <vcl.h>
 #include "CTpointD.h"
-#include "scGPControls.hpp"//knihovna kvùli designování tlaèítek
+#include "scGPControls.hpp"//knihovna kvÅ¯li designovÃ¡nÃ­ tlaÄÃ­tek
 const double DOUBLE_MIN=-1.7*pow(10,-308.0);
 const double DOUBLE_MAX=1.7*pow(10,308.0);
 //---------------------------------------------------------------------------
@@ -12,86 +12,87 @@ class Cmy
   private:
 
   public:
-	long round(double number);//fce pro zaokrouhlení realného èísla na nejblíší celé èíslo
-	double round2double(double number,unsigned short precision);//zaokrouhlí na poèet desetinnıch míst dle precison
-	AnsiString round2double(double number,unsigned short precision,AnsiString mark,bool add_decimal=false);//zaokrouhlí na poèet desetinnıch míst dle precison a vratí hodnotu pomocí øetezce, za èíslem následuje znak, dle posledního parametru (napø dvì teèky .. jakoe èíslo pokraèuje), pokud èíslo obsahuje reálnou èást nezobrazenou v rámci precision, pokud je nastaven poslední parametr add_decimal na true a je-li reálná èást kratší ne poèet reaálnıch míst decimál, jsou do tohototo poètu doplnìny nuly
-	short Rt90(double number);//zaokrouhlí na násobky 90tky, 360° pøevede na 0°, vìtší ne 360° vratí za 0°
-	double a360(double number);//záporné stupnì pøevede do kladnıch v rámci 360°
-	double abs_d(double number);//fce vrátí absolutní hodnotu z double èísla, mono nahradit mocí fabs z math
+	long round(double number);//fce pro zaokrouhlenÃ­ realnÃ©ho ÄÃ­sla na nejblÃ­Å¾Å¡Ã­ celÃ© ÄÃ­slo
+	double round2double(double number,unsigned short precision);//zaokrouhlÃ­ na poÄet desetinnÃ½ch mÃ­st dle precison
+	AnsiString round2double(double number,unsigned short precision,AnsiString mark,bool add_decimal=false);//zaokrouhlÃ­ na poÄet desetinnÃ½ch mÃ­st dle precison a vratÃ­ hodnotu pomocÃ­ Å™etezce, za ÄÃ­slem nÃ¡sleduje znak, dle poslednÃ­ho parametru (napÅ™ dvÄ› teÄky .. jakoÅ¾e ÄÃ­slo pokraÄuje), pokud ÄÃ­slo obsahuje reÃ¡lnou ÄÃ¡st nezobrazenou v rÃ¡mci precision, pokud je nastaven poslednÃ­ parametr add_decimal na true a je-li reÃ¡lnÃ¡ ÄÃ¡st kratÅ¡Ã­ neÅ¾ poÄet reaÃ¡lnÃ½ch mÃ­st decimÃ¡l, jsou do tohototo poÄtu doplnÄ›ny nuly
+	double abs_d(double number);//fce vrÃ¡tÃ­ absolutnÃ­ hodnotu z double ÄÃ­sla, moÅ¾no nahradit mocÃ­ fabs z math
 	double ToRad(double number);
 	double ToDeg(double number);
+	short Rt90(double number);//zaokrouhlÃ­ na nÃ¡sobky 90tky, 360Â° pÅ™evede na 0Â°, vÄ›tÅ¡Ã­ neÅ¾ 360Â° vratÃ­ za 0Â°
+	double a360(double number);//zÃ¡pornÃ© stupnÄ› pÅ™evede do kladnÃ½ch v rÃ¡mci 360Â°
+	double R2Larc(double radius,double angle);//ze zadanÃ©ho radiusu vrÃ¡tÃ­ obvod kruhovÃ© vÃ½seÄe o velikosti definovanÃ© Ãºhlem vÃ½seÄe ve stupnÃ­ch
 	TPointD P2L(TPoint fyzicke);
 	TPointD P2L(long fyzickaX,long fyzickaY);
 	double P2Lx(long fyzicka);
 	double P2Ly(long fyzicka);
-	TPoint L2P(double logickaX, double logickaY);//Pøevede logické souøadnice na fyzické (displej zaøízení) , vraci fyzické souøadnice
+	TPoint L2P(double logickaX, double logickaY);//PÅ™evede logickÃ© souÅ™adnice na fyzickÃ© (displej zaÅ™Ã­zenÃ­) , vraci fyzickÃ© souÅ™adnice
 	TPoint L2P(TPointD logicke);
 	TPoint *L2P(TPointD *POLE,long posledni_prvek);
 	void L2P(TPointD *POLE,TPoint *POLEpx);
 	long L2Px(double logicka);
 	long L2Py(double logicka);
-	long m2px(double meter);//pøevede vzdálenost v metrech na vzdálenost monitoru dle konstanty m2px (metrù na pixel) a aktuální hodnoty promìnné Zoom
-	double px2m(long px);//pøevede logické jednotky (metry) na pixely monitoru dle konstanty m2px (metrù na pixel) a aktuální hodnoty promìnné Zoom
-	long double getResolution(int puvX,int puvY,int aktX,int aktY,double metry);//dle zmìøeného úseku na monitoru pøevede tuto pixelovou vzádlenost a hodnotu v podobì uivatelského vstupu v metrech na hodnotu rozlišení podkladu
-	long px_offset(unsigned int X,unsigned int Y,long Distance);//vráti souøadnice pixelù posunuté o Distance METRù
+	long m2px(double meter);//pÅ™evede vzdÃ¡lenost v metrech na vzdÃ¡lenost monitoru dle konstanty m2px (metrÅ¯ na pixel) a aktuÃ¡lnÃ­ hodnoty promÄ›nnÃ© Zoom
+	double px2m(long px);//pÅ™evede logickÃ© jednotky (metry) na pixely monitoru dle konstanty m2px (metrÅ¯ na pixel) a aktuÃ¡lnÃ­ hodnoty promÄ›nnÃ© Zoom
+	long double getResolution(int puvX,int puvY,int aktX,int aktY,double metry);//dle zmÄ›Å™enÃ©ho Ãºseku na monitoru pÅ™evede tuto pixelovou vzÃ¡dlenost a hodnotu v podobÄ› uÅ¾ivatelskÃ©ho vstupu v metrech na hodnotu rozliÅ¡enÃ­ podkladu
+	long px_offset(unsigned int X,unsigned int Y,long Distance);//vrÃ¡ti souÅ™adnice pixelÅ¯ posunutÃ© o Distance METRÅ¯
 	bool cele_cislo(double number);
-	double mod_d(double number1,double number2);//mono nahradit fci fmod z math.h  - to si u tak nejsem jistı viz paramatry této funkce - ukazatel?
+	double mod_d(double number1,double number2);//moÅ¾no nahradit fci fmod z math.h  - to si uÅ¾ tak nejsem jistÃ½ viz paramatry tÃ©to funkce - ukazatel?
 	bool isFinite(double number1,double number2);
-	TColor clIntensive(TColor C,short A); //A + míra zesvìtlení,  - míra ztmaveni
-	double getL(double RA,double R);//vrátí vzdálenost od vıchozího a koncového bodu k øídícímu bodu oblouku realizovaného bézierovou køivkou, vstupním parametrem je rotaèní úhel a radius, pøipraveno pouze pro nìkteré úhly, vıpoèet není sice zcela exaktní, ale v rámci poadované tolerance vıbornı
-	TPointD *vrat_Gelement(int X,int Y,double orientace,double rotacni_uhel,double radius);//vrátí souøadnice (4 místné pole TPointD tj. 8 hodnot) bézierovy køivky oblouku èi linie dle zadanıch souøadnic, X,Y jsou fyzické souøadnice vıchozího vykreslování, parametry: orientace oblouku - dle svìtovıch stran (umí i jiné ne 90° násobky), rotaèní úhel - pod kterım je oblouk rotován, mùe bıt zápornı (znaménko urèuje smìr rotace, + proti smìru hodinovıch ruèièek, - po smìru), max. hodnota +90 a min. hodnota -90 (je-li nastaven na 0° jedná se o linii), radius - je radius oblouku v metrech nebo pokud je rotaèní úhel nastaven na 0° tedy se jedná o linii, je radius délkou linie
-	double delka(double X1,double Y1,double X2,double Y2);//vrátí délku mezi body v absolutní hodnotì
+	TColor clIntensive(TColor C,short A); //A + mÃ­ra zesvÄ›tlenÃ­,  - mÃ­ra ztmaveni
+	double getL(double RA,double R);//vrÃ¡tÃ­ vzdÃ¡lenost od vÃ½chozÃ­ho a koncovÃ©ho bodu k Å™Ã­dÃ­cÃ­mu bodu oblouku realizovanÃ©ho bÃ©zierovou kÅ™ivkou, vstupnÃ­m parametrem je rotaÄnÃ­ Ãºhel a radius, pÅ™ipraveno pouze pro nÄ›kterÃ© Ãºhly, vÃ½poÄet nenÃ­ sice zcela exaktnÃ­, ale v rÃ¡mci poÅ¾adovanÃ© tolerance vÃ½bornÃ½
+	TPointD *getArcLine(double X,double Y,double orientace,double rotacni_uhel,double radius);//vrÃ¡tÃ­ souÅ™adnice (4 mÃ­stnÃ© pole TPointD tj. 8 hodnot) bÃ©zierovy kÅ™ivky oblouku Äi linie dle zadanÃ½ch souÅ™adnic, X,Y jsou logickÃ© souÅ™adnice vÃ½chozÃ­ho vykreslovÃ¡nÃ­, parametry: orientace oblouku - dle svÄ›tovÃ½ch stran (umÃ­ i jinÃ© neÅ¾ 90Â° nÃ¡sobky), rotaÄnÃ­ Ãºhel - pod kterÃ½m je oblouk rotovÃ¡n, mÅ¯Å¾e bÃ½t zÃ¡pornÃ½ (znamÃ©nko urÄuje smÄ›r rotace, + proti smÄ›ru hodinovÃ½ch ruÄiÄek, - po smÄ›ru), max. hodnota +90 a min. hodnota -90 (je-li nastaven na 0Â° jednÃ¡ se o linii), radius - je radius oblouku v metrech nebo pokud je rotaÄnÃ­ Ãºhel nastaven na 0Â° tedy se jednÃ¡ o linii, je radius dÃ©lkou linie
+	double delka(double X1,double Y1,double X2,double Y2);//vrÃ¡tÃ­ dÃ©lku mezi body v absolutnÃ­ hodnotÄ›
 	double azimut(double X1,double Y1,double X2,double Y2);
 	double uhel(double X1,double Y1,double X2,double Y2);
 	TPointD rotace(double delka, double akt_uhel, double rotace);
-	TPointD rotace(double X1,double Y1,double X2,double Y2,double uhel);//vrátí souøadnice X2,Y2 po daném úhlu rotace, rotuje okolo X1,Y2 proti smìru hodinovıch ruèièek
-	TPoint rotace_px(long X1,long Y1,long X2,long Y2,double uhel);//vrátí souøadnice X2,Y2 po daném úhlu rotace, rotuje okolo X1,Y2 proti smìru hodinovıch ruèièek
-	void rotace_polygon(double X,double Y,TPointD *POLE,long posledni_prvek,double uhel);//orotuje okolo daného bodu polygon
-	void rotace_polygon(double X,double Y,double oX,double oY,TPointD *POLE,TPoint *POLE_px,long posledni_prvek,double uhel);//orotuje okolo daného bodu polygon a vrátí do POLE i do POLE_px
-	void zrcadli_polygon(TPointD *POLE,long posledni_prvek,double uhel);//zajistí pøezrcadlení polygonù zadaného v logickıch souøadnicích pomocí pole dle poadovaného parametru uhel zrcadlení
+	TPointD rotace(double X1,double Y1,double X2,double Y2,double uhel);//vrÃ¡tÃ­ souÅ™adnice X2,Y2 po danÃ©m Ãºhlu rotace, rotuje okolo X1,Y2 proti smÄ›ru hodinovÃ½ch ruÄiÄek
+	TPoint rotace_px(long X1,long Y1,long X2,long Y2,double uhel);//vrÃ¡tÃ­ souÅ™adnice X2,Y2 po danÃ©m Ãºhlu rotace, rotuje okolo X1,Y2 proti smÄ›ru hodinovÃ½ch ruÄiÄek
+	void rotace_polygon(double X,double Y,TPointD *POLE,long posledni_prvek,double uhel);//orotuje okolo danÃ©ho bodu polygon
+	void rotace_polygon(double X,double Y,double oX,double oY,TPointD *POLE,TPoint *POLE_px,long posledni_prvek,double uhel);//orotuje okolo danÃ©ho bodu polygon a vrÃ¡tÃ­ do POLE i do POLE_px
+	void zrcadli_polygon(TPointD *POLE,long posledni_prvek,double uhel);//zajistÃ­ pÅ™ezrcadlenÃ­ polygonÅ¯ zadanÃ©ho v logickÃ½ch souÅ™adnicÃ­ch pomocÃ­ pole dle poÅ¾adovanÃ©ho parametru uhel zrcadlenÃ­
 	TPointDbool zkratit_polygon_na_roztec(double d, double r,double xp, double yp, double x0, double y0, double x1, double y1);//d - delka linky,r - roztec palcuxp, yp - souradnice oznaceneho bodu x0, y0, x1, y1- souradnice sousedu k oznacenemu bodu
-	double cekani_na_palec(double cas, double roztec_palcu, double rychlost_dopravniku,int funkce);//vrátí dobu èekání na palec v sec, zadání je u èas (vıstupu vozíku z objektu) v min, rozteèe je v m resp. v m za z minu u rychlosti dopravniku
-	double mezera_mezi_voziky(double dJ,double sJ,double rotace,double roztec,double mezera=0,unsigned short typ=0);//metoda vratí minimální monou mezeru mezi vozíky (promìnná vozíku prezentuje šíøku èí délku vozíku dle aktuální rotace v objektu), za pøedpokladu, e je parametr mezera roven 0, v pøípadì nenulového parametru mezery vrací vhodnou nejmenší hodnotu této mezery vùèi rozmìrùm rozteè a rozmìr vozíku, lze parametrizovat vracenı vısledek 0 (implicitnì) - kritická mezera, 1 èi 281 - mezera mezi JIG, 2 èi 282 mezera mezi PODVOZKY
-	double mezera(double dJ,double sJ,double rotace,double Rx,double R,short typ=-1);//vrátí mezeru dle rozestupu v palcích a rozteèe a velikosti vozíku dle rotace, typ==-1 vrátí velikost mezery automaticky co je kritištìjší, zda podovzek èi jig, 0 - podvozek, 1 - jig
-	double mezera(double rotace,double Rz,short typ=-1);//vrátí mezeru dle rozestupu a rotace (resp. velikosti vozíku spoèítané dle rotace), typ==-1 vrátí velikost mezery automaticky co je kritištìjší, zda podovzek èi jig, 0 - podvozek, 1 - jig
+	double cekani_na_palec(double cas, double roztec_palcu, double rychlost_dopravniku,int funkce);//vrÃ¡tÃ­ dobu ÄekÃ¡nÃ­ na palec v sec, zadÃ¡nÃ­ je u Äas (vÃ½stupu vozÃ­ku z objektu) v min, rozteÄe je v m resp. v m za z minu u rychlosti dopravniku
+	double mezera_mezi_voziky(double dJ,double sJ,double rotace,double roztec,double mezera=0,unsigned short typ=0);//metoda vratÃ­ minimÃ¡lnÃ­ moÅ¾nou mezeru mezi vozÃ­ky (promÄ›nnÃ¡ vozÃ­ku prezentuje Å¡Ã­Å™ku ÄÃ­ dÃ©lku vozÃ­ku dle aktuÃ¡lnÃ­ rotace v objektu), za pÅ™edpokladu, Å¾e je parametr mezera roven 0, v pÅ™Ã­padÄ› nenulovÃ©ho parametru mezery vracÃ­ vhodnou nejmenÅ¡Ã­ hodnotu tÃ©to mezery vÅ¯Äi rozmÄ›rÅ¯m rozteÄ a rozmÄ›r vozÃ­ku, lze parametrizovat vracenÃ½ vÃ½sledek 0 (implicitnÄ›) - kritickÃ¡ mezera, 1 Äi 281 - mezera mezi JIG, 2 Äi 282 mezera mezi PODVOZKY
+	double mezera(double dJ,double sJ,double rotace,double Rx,double R,short typ=-1);//vrÃ¡tÃ­ mezeru dle rozestupu v palcÃ­ch a rozteÄe a velikosti vozÃ­ku dle rotace, typ==-1 vrÃ¡tÃ­ velikost mezery automaticky co je kritiÅ¡tÄ›jÅ¡Ã­, zda podovzek Äi jig, 0 - podvozek, 1 - jig
+	double mezera(double rotace,double Rz,short typ=-1);//vrÃ¡tÃ­ mezeru dle rozestupu a rotace (resp. velikosti vozÃ­ku spoÄÃ­tanÃ© dle rotace), typ==-1 vrÃ¡tÃ­ velikost mezery automaticky co je kritiÅ¡tÄ›jÅ¡Ã­, zda podovzek Äi jig, 0 - podvozek, 1 - jig
 	double minM(double RD1,double RD2,double R2);//rozpracovano
-	double Rz(double dV,double sV,double rotace,double M);//vrátí rozestup v metrech mezi aktivními palci, byla-li zadáná správnì mezera
-	double Rz(double RD);//vrátí rozestup v metrech mezi aktivními palci v souvstanosti k RD (a resp. TT)
-	double Rz(double Rx,double R);//vrátí rozestup v metrech mezi aktivními palci v souvstanosti k Rx a R
-	double Rx(double dV,double sV,double rotace,double M,double R);//vrátí rozestup v poètech palcù mezi aktivními palci, byla-li zadáná správnì mezera
-	double Rx(double RD,double R);//vrátí rozestup v poètech palcù mezi aktivními palci z RD a R (a resp. TT)
-	double Rx2(double Rz,double R);//vrátí rozestup v poètech palcù mezi aktivními palci z Rz a R
-	double R(double Rz,double Rx);//vrátí rozteèe dle rozestupu a poètu palcù
-	double RD(double Rz);//vrátí RD dle rozestupu v metrech mezi aktivními palci v souvstanosti s TT
-	double RD(double LO,double PT);//vratí RD dle velikosti lakovacího okna a procesního èasu
-	double PT(double LO,double RD);//vrátí PT dle velikosti lakovacícho okna a aktuální rychlosti pohonu
-	double PTo(double Dotoc,double RD);//dle aktuálního RD a délky otoè vrátí PTo
-	double Dotoc(double PTo,double RD);//dle aktuálního RD a èasu otáèení otoèe vrátí délku otáèení
-	double RT(double PT,double delka_prejezdu,double RD,double R,double WT=-1);//vratí hodnotu RT (reserve time), ta mùe bıt i záporná, WT èekání na palac si dopoèítává metoda sama, pokud WT==-1, pokud je dosazena kladná hodnota vìtší ne 0, tak je ta uvaovaná jako WT, 0 hodnota znamena WT èekání na palec neuvaovat
-	double RDo(double Dotoc,double PTo);//vratí RD dle délky otoèe a èasu otáèení
-	double dopRD(double dJ,double sJ,double rotace,double R,double TT,double RD);//vrátí doporuèenou nejbliší rychlost pohonu, k rychlosti zadané tak, aby se reflektovala rozteè mezi palci i takt
-	bool kontrola_zda_zmena_R_ovlivni_RzRD(double R_puvodni,double R_nove);//vrací true pokud nová rozteè (R) ovlivní Rz resp RD
-	double UDV(double dJ,double sJ,double rotace);//vratí uitnou délku vozíku
-	double UDV(double rotace);//vratí uitnou délku vozíku, parametry bere z PP
-	double UDJ(double dJ,double sJ,double rotace);//vrátí uitnou délku jigu
-	double UDJ(double rotace);//vrátí uitnou délku jigu, parametry bere z PP
-	bool lze_rotovat_jig_bez_zmeny_RzRxRD(double mezera,double akt_rotace);//vrátí, zda je moné orotovat jig tak, aby nemìlo vliv na zmìnu Rz, Rx, RD
-	double prejezd_voziku(double delka, double rychlost_dopravniku);//vrátí èas pøejezdu vozíku
-	double prejezd_voziku_rychlost(double CT,double MT,double PT,double WT,double DD);//vrátí poadovanou rychlost pøejezdu, umí si dopoèítat MT, není-li dodáno, pokud vyjde záporná rychlost tzn. nestíhá
-	double kontrola_rychlosti_prejezdu(double CT,double MT,double PT,double WT,double DD,double aRD);//vrátí rozdíl aktuální rychlosti pohonu a potøebné k uskuteèní pøejezdu, pokud je hodnota 0 je v poøádku, je-li záporná, pøejezd se nestíhá o danou hodnotu v m/s, je-li kladná, je aktuální rychlost o danou hodnoutu hodnotu v m/s vyšší
+	double Rz(double dV,double sV,double rotace,double M);//vrÃ¡tÃ­ rozestup v metrech mezi aktivnÃ­mi palci, byla-li zadÃ¡nÃ¡ sprÃ¡vnÄ› mezera
+	double Rz(double RD);//vrÃ¡tÃ­ rozestup v metrech mezi aktivnÃ­mi palci v souvstaÅ¾nosti k RD (a resp. TT)
+	double Rz(double Rx,double R);//vrÃ¡tÃ­ rozestup v metrech mezi aktivnÃ­mi palci v souvstaÅ¾nosti k Rx a R
+	double Rx(double dV,double sV,double rotace,double M,double R);//vrÃ¡tÃ­ rozestup v poÄtech palcÅ¯ mezi aktivnÃ­mi palci, byla-li zadÃ¡nÃ¡ sprÃ¡vnÄ› mezera
+	double Rx(double RD,double R);//vrÃ¡tÃ­ rozestup v poÄtech palcÅ¯ mezi aktivnÃ­mi palci z RD a R (a resp. TT)
+	double Rx2(double Rz,double R);//vrÃ¡tÃ­ rozestup v poÄtech palcÅ¯ mezi aktivnÃ­mi palci z Rz a R
+	double R(double Rz,double Rx);//vrÃ¡tÃ­ rozteÄe dle rozestupu a poÄtu palcÅ¯
+	double RD(double Rz);//vrÃ¡tÃ­ RD dle rozestupu v metrech mezi aktivnÃ­mi palci v souvstaÅ¾nosti s TT
+	double RD(double LO,double PT);//vratÃ­ RD dle velikosti lakovacÃ­ho okna a procesnÃ­ho Äasu
+	double PT(double LO,double RD);//vrÃ¡tÃ­ PT dle velikosti lakovacÃ­cho okna a aktuÃ¡lnÃ­ rychlosti pohonu
+	double PTo(double Dotoc,double RD);//dle aktuÃ¡lnÃ­ho RD a dÃ©lky otoÄ vrÃ¡tÃ­ PTo
+	double Dotoc(double PTo,double RD);//dle aktuÃ¡lnÃ­ho RD a Äasu otÃ¡ÄenÃ­ otoÄe vrÃ¡tÃ­ dÃ©lku otÃ¡ÄenÃ­
+	double RT(double PT,double delka_prejezdu,double RD,double R,double WT=-1);//vratÃ­ hodnotu RT (reserve time), ta mÅ¯Å¾e bÃ½t i zÃ¡pornÃ¡, WT ÄekÃ¡nÃ­ na palac si dopoÄÃ­tÃ¡vÃ¡ metoda sama, pokud WT==-1, pokud je dosazena kladnÃ¡ hodnota vÄ›tÅ¡Ã­ neÅ¾ 0, tak je ta uvaÅ¾ovanÃ¡ jako WT, 0 hodnota znamena WT ÄekÃ¡nÃ­ na palec neuvaÅ¾ovat
+	double RDo(double Dotoc,double PTo);//vratÃ­ RD dle dÃ©lky otoÄe a Äasu otÃ¡ÄenÃ­
+	double dopRD(double dJ,double sJ,double rotace,double R,double TT,double RD);//vrÃ¡tÃ­ doporuÄenou nejbliÅ¾Å¡Ã­ rychlost pohonu, k rychlosti zadanÃ© tak, aby se reflektovala rozteÄ mezi palci i takt
+	bool kontrola_zda_zmena_R_ovlivni_RzRD(double R_puvodni,double R_nove);//vracÃ­ true pokud novÃ¡ rozteÄ (R) ovlivnÃ­ Rz resp RD
+	double UDV(double dJ,double sJ,double rotace);//vratÃ­ uÅ¾itnou dÃ©lku vozÃ­ku
+	double UDV(double rotace);//vratÃ­ uÅ¾itnou dÃ©lku vozÃ­ku, parametry bere z PP
+	double UDJ(double dJ,double sJ,double rotace);//vrÃ¡tÃ­ uÅ¾itnou dÃ©lku jigu
+	double UDJ(double rotace);//vrÃ¡tÃ­ uÅ¾itnou dÃ©lku jigu, parametry bere z PP
+	bool lze_rotovat_jig_bez_zmeny_RzRxRD(double mezera,double akt_rotace);//vrÃ¡tÃ­, zda je moÅ¾nÃ© orotovat jig tak, aby nemÄ›lo vliv na zmÄ›nu Rz, Rx, RD
+	double prejezd_voziku(double delka, double rychlost_dopravniku);//vrÃ¡tÃ­ Äas pÅ™ejezdu vozÃ­ku
+	double prejezd_voziku_rychlost(double CT,double MT,double PT,double WT,double DD);//vrÃ¡tÃ­ poÅ¾adovanou rychlost pÅ™ejezdu, umÃ­ si dopoÄÃ­tat MT, nenÃ­-li dodÃ¡no, pokud vyjde zÃ¡pornÃ¡ rychlost tzn. nestÃ­hÃ¡
+	double kontrola_rychlosti_prejezdu(double CT,double MT,double PT,double WT,double DD,double aRD);//vrÃ¡tÃ­ rozdÃ­l aktuÃ¡lnÃ­ rychlosti pohonu a potÅ™ebnÃ© k uskuteÄnÃ­ pÅ™ejezdu, pokud je hodnota 0 je v poÅ™Ã¡dku, je-li zÃ¡pornÃ¡, pÅ™ejezd se nestÃ­hÃ¡ o danou hodnotu v m/s, je-li kladnÃ¡, je aktuÃ¡lnÃ­ rychlost o danou hodnoutu hodnotu v m/s vyÅ¡Å¡Ã­
 	long LeziVblizkostiUsecky(double x, double y, double X1, double Y1, double X2, double Y2);
-	bool LeziVoblouku(double X,double Y,double orientace,double RA,double R,double Xmys,double Ymys);//funkce ovìøující, zda kurzor myši, leí v obdelníku obsaném danému oblouku, souøadnice kurzoru myši se zadávají v logickıch souøadnicích, ostatní v logickıch
-	bool PtInCircle(double point_X,double point_Y,double center_X,double center_Y,double radius);//metoda ovìøí, zda se bod nachází v zadaném kruhu
-	bool PtInRectangle(double X1,double Y1,double X2,double Y2,double Xmys,double Ymys);//metoda ovìøí, zda se bod nachází v obdelníku
-	bool PtInStopka(double Ex,double Ey,double X,double Y,short uhel);//metoda ovìøí, zda se bod nachází ve stopce
-	bool PtInClovek(double X,double Y,double Xmys,double Ymys,double rotace,short eID);//metoda ovìøí zda je bod ve vnitø obrysu èlovìka, kterı se nachází na danıch souøadnicích
-	bool PtInIon(double X,double Y,double Xmys,double Ymys,double rotace);//metoda ovìøí zda je bod ve vnitø obrysu ION tyèí, kterı se nachází na danıch souøadnicích
-	void designButton(TscGPButton *button,TForm *form, short rank,short sum,short horizontal_space=22,short vertikal_space=11);//nastaví horizontální a vertikální pozici tlaèítka a také designové vlasnosti podle tlaèítkek Ano, Uloit, OK, Storno dle MyMessageBox
-	void frameForm(TForm *form,TColor color,short width=1);//vykreslí danému oknu transparentní (kvùli monému smazání - pøemaskování) dle zadané barvy a šíøky, nutno volat pøi formactive (lépe však pøi formpaint), pøi šíøce 1px (ta je zároveò implicitní) staèí volat, jenom pøi formactive, jinak i pøi formsize, formresize,formclose, pøíklad pouití: frameForm(Form_parametry,clWebOrange,1);
-	void frameRect(TRect Rect,TColor color=clWebOrange,short width=1);//nakresli na libovolném místì na monitoru obdélník dle zadanıch souøadnic ve formátu TRect, je moné nastavit barvu a šíøku èáry tohoto obdélníku
-	double get_timePERpx(double speed,double A=1,double speed_min=0);//z rychlosti v m/s vratí èas milisekundách potøebnı na pøekreslení jednoho pixelu pøi daném zoomu, parametr A=je rychlost animace, kdy implicitní 1 originální rychlost - tedy 100%, pokud je parametr A=0, vrátí se vhodnı èas na pøehrání kontinuální animace, metoda je vhodná na animace a simulace pro timer  nehledì na rychlost, pokud je (i implicitní) parametr speed_min==0, tzn. pøevezme se hodnota aktuálního poèítaného RD, tzn. všechny animace se promítnou se stejnım afps dle fps, tj. všechny animace se zobrazí kontinuálnì (netrhnanì), v pøípadì nenulové hodnoty je speed_min stanovane jako minimální moná rychlost pro zobrazení kontinuální (netrhnané) simulace, pokud by byl paremetr speed niší, nebude se jednat kontinuální (netrhnanou) simulaci
-	bool between(double value,double from, double to, bool left_closed=true, bool right_closed=true);//vrací true èi falce zda se daná hodnota nachází èí nenachází v intervalu, interval mùe bıt uzavøenı (tzn. vèetnì hodnoty hranice intervalu) nebo otevøenı a to i rozdílnì pro obì meze, implicitnì jsou hranice nastaveny na uzavøenı interval z obou stran, tzn. do podmínky se zahrnuje vèetnì obou hodnot
-	double null(double number,double tolerance=0.0000000001);//zkontroluje èíslo, zda se nejadná o hodnout okolo nuly dle moné odchylky dle toleration, pøedchází zvláštnímu chování vıpoètù okolo nuly
+	bool LeziVoblouku(double X,double Y,double orientace,double RA,double R,double Xmys,double Ymys);//funkce ovÄ›Å™ujÃ­cÃ­, zda kurzor myÅ¡i, leÅ¾Ã­ v obdelnÃ­ku obsanÃ©m danÃ©mu oblouku, souÅ™adnice kurzoru myÅ¡i se zadÃ¡vajÃ­ v logickÃ½ch souÅ™adnicÃ­ch, ostatnÃ­ v logickÃ½ch
+	bool PtInCircle(double point_X,double point_Y,double center_X,double center_Y,double radius);//metoda ovÄ›Å™Ã­, zda se bod nachÃ¡zÃ­ v zadanÃ©m kruhu
+	bool PtInRectangle(double X1,double Y1,double X2,double Y2,double Xmys,double Ymys);//metoda ovÄ›Å™Ã­, zda se bod nachÃ¡zÃ­ v obdelnÃ­ku
+	bool PtInStopka(double Ex,double Ey,double X,double Y,short uhel);//metoda ovÄ›Å™Ã­, zda se bod nachÃ¡zÃ­ ve stopce
+	bool PtInClovek(double X,double Y,double Xmys,double Ymys,double rotace,short eID);//metoda ovÄ›Å™Ã­ zda je bod ve vnitÅ™ obrysu ÄlovÄ›ka, kterÃ½ se nachÃ¡zÃ­ na danÃ½ch souÅ™adnicÃ­ch
+	bool PtInIon(double X,double Y,double Xmys,double Ymys,double rotace);//metoda ovÄ›Å™Ã­ zda je bod ve vnitÅ™ obrysu ION tyÄÃ­, kterÃ½ se nachÃ¡zÃ­ na danÃ½ch souÅ™adnicÃ­ch
+	void designButton(TscGPButton *button,TForm *form, short rank,short sum,short horizontal_space=22,short vertikal_space=11);//nastavÃ­ horizontÃ¡lnÃ­ a vertikÃ¡lnÃ­ pozici tlaÄÃ­tka a takÃ© designovÃ© vlasnosti podle tlaÄÃ­tkek Ano, UloÅ¾it, OK, Storno dle MyMessageBox
+	void frameForm(TForm *form,TColor color,short width=1);//vykreslÃ­ danÃ©mu oknu transparentnÃ­ (kvÅ¯li moÅ¾nÃ©mu smazÃ¡nÃ­ - pÅ™emaskovÃ¡nÃ­) dle zadanÃ© barvy a Å¡Ã­Å™ky, nutno volat pÅ™i formactive (lÃ©pe vÅ¡ak pÅ™i formpaint), pÅ™i Å¡Ã­Å™ce 1px (ta je zÃ¡roveÅˆ implicitnÃ­) staÄÃ­ volat, jenom pÅ™i formactive, jinak i pÅ™i formsize, formresize,formclose, pÅ™Ã­klad pouÅ¾itÃ­: frameForm(Form_parametry,clWebOrange,1);
+	void frameRect(TRect Rect,TColor color=clWebOrange,short width=1);//nakresli na libovolnÃ©m mÃ­stÄ› na monitoru obdÃ©lnÃ­k dle zadanÃ½ch souÅ™adnic ve formÃ¡tu TRect, je moÅ¾nÃ© nastavit barvu a Å¡Ã­Å™ku ÄÃ¡ry tohoto obdÃ©lnÃ­ku
+	double get_timePERpx(double speed,double A=1,double speed_min=0);//z rychlosti v m/s vratÃ­ Äas milisekundÃ¡ch potÅ™ebnÃ½ na pÅ™ekreslenÃ­ jednoho pixelu pÅ™i danÃ©m zoomu, parametr A=je rychlost animace, kdy implicitnÃ­ 1 originÃ¡lnÃ­ rychlost - tedy 100%, pokud je parametr A=0, vrÃ¡tÃ­ se vhodnÃ½ Äas na pÅ™ehrÃ¡nÃ­ kontinuÃ¡lnÃ­ animace, metoda je vhodnÃ¡ na animace a simulace pro timer  nehledÄ› na rychlost, pokud je (i implicitnÃ­) parametr speed_min==0, tzn. pÅ™evezme se hodnota aktuÃ¡lnÃ­ho poÄÃ­tanÃ©ho RD, tzn. vÅ¡echny animace se promÃ­tnou se stejnÃ½m afps dle fps, tj. vÅ¡echny animace se zobrazÃ­ kontinuÃ¡lnÄ› (netrhnanÄ›), v pÅ™Ã­padÄ› nenulovÃ© hodnoty je speed_min stanovane jako minimÃ¡lnÃ­ moÅ¾nÃ¡ rychlost pro zobrazenÃ­ kontinuÃ¡lnÃ­ (netrhnanÃ©) simulace, pokud by byl paremetr speed niÅ¾Å¡Ã­, nebude se jednat kontinuÃ¡lnÃ­ (netrhnanou) simulaci
+	bool between(double value,double from, double to, bool left_closed=true, bool right_closed=true);//vracÃ­ true Äi falce zda se danÃ¡ hodnota nachÃ¡zÃ­ ÄÃ­ nenachÃ¡zÃ­ v intervalu, interval mÅ¯Å¾e bÃ½t uzavÅ™enÃ½ (tzn. vÄetnÄ› hodnoty hranice intervalu) nebo otevÅ™enÃ½ a to i rozdÃ­lnÄ› pro obÄ› meze, implicitnÄ› jsou hranice nastaveny na uzavÅ™enÃ½ interval z obou stran, tzn. do podmÃ­nky se zahrnuje vÄetnÄ› obou hodnot
+	double null(double number,double tolerance=0.0000000001);//zkontroluje ÄÃ­slo, zda se nejadnÃ¡ o hodnout okolo nuly dle moÅ¾nÃ© odchylky dle toleration, pÅ™edchÃ¡zÃ­ zvlÃ¡Å¡tnÃ­mu chovÃ¡nÃ­ vÃ½poÄtÅ¯ okolo nuly
 
 	protected:
 };

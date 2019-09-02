@@ -629,12 +629,7 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 		{konec.x=X;konec.y=novy->body->dalsi->dalsi->Y;}
 	TElement *zarazka=vloz_element(novy,MaxInt,konec.x,konec.y,0);
 	//definice bodů geometrie
-	zarazka->geo.X1=pocatek.x;zarazka->geo.Y1=pocatek.y;
-	zarazka->geo.X4=konec.x;zarazka->geo.Y4=konec.y;
-	zarazka->geo.X2=pocatek.x+(konec.x-pocatek.x)/2.0;zarazka->geo.Y2=pocatek.y+(konec.y-pocatek.y)/2.0;
-	zarazka->geo.X3=zarazka->geo.X2;zarazka->geo.Y3=zarazka->geo.Y2;
-	zarazka->geo.rotacni_uhel=0;
-	zarazka->geo.delka=m.delka(zarazka->geo.X1,zarazka->geo.Y1,zarazka->geo.X2,zarazka->geo.Y2);
+	vloz_G_element(zarazka,0,pocatek.x,pocatek.y,0,0,0,0,konec.x,konec.y);
 	zarazka=NULL;delete zarazka;
 	//definice pozice názvu kabiny
 	switch((int)novy->orientace)
@@ -1490,54 +1485,53 @@ Cvektory::TObjekt *Cvektory::dalsi_krok(TObjekt *Objekt,TPoint *tab_pruchodu)
 	return Objekt;
 }
 ////---------------------------------------------------------------------------
-//slouží k posunu objektu jako celku o X a Y, posun kabiny, pohonu, elementů, tabulek, nadpisu
-void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt)
+//slouží k posunu objektu jako celku o X a Y, posun kabiny, pohonu, elementů, tabulek, nadpisu, kontrolovat_oblast slouží k nucenému přesunutí
+void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_oblast)
 {
-	////posun kabiny-polygonu
-	posun_body(X,Y,Objekt);
-	////posun nadpisu
-	Objekt->Xt+=X;
-	Objekt->Yt+=Y;
-	////posun tabulky pohonů
-	Objekt->Xp+=X;
-	Objekt->Yp+=Y;
-	////posun elementů
-	TElement *E=Objekt->elementy->dalsi;//objekt má vždy element (zarážka)
-	while(E!=NULL)
+	short oblast=0;
+	if(kontrolovat_oblast && Objekt->predchozi->n>0)oblast=oblast_objektu(Objekt->predchozi,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y);
+	if(oblast==0)
 	{
-		E->X+=X;E->Y+=Y;//souřadnice elementu
-		if(E->Xt!=-100)E->Xt+=X;E->Yt+=Y;//souřadnice tabulky + kontrola zda je vytvořená
-		//geometrie elementu
-		E->geo.X1+=X;E->geo.X2+=X;E->geo.X3+=X;E->geo.X4+=X;
-		E->geo.Y1+=Y;E->geo.Y2+=Y;E->geo.Y3+=Y;E->geo.Y4+=Y;
-		E=E->dalsi;
-	}
-	delete E;E=NULL;
-	////kontrola zda přesouvaný objekt není mezi 2 objetky
-	if(OBJEKTY->predchozi->n>2)
-	{
-		TPoint *tab_pruchodu=new TPoint[pocet_vyhybek+1];
-		TObjekt *O=OBJEKTY->dalsi;
-		while(O!=NULL)
+  	////posun kabiny-polygonu
+  	posun_body(X,Y,Objekt);
+  	////posun nadpisu
+  	Objekt->Xt+=X;
+  	Objekt->Yt+=Y;
+  	////posun tabulky pohonů
+  	Objekt->Xp+=X;
+  	Objekt->Yp+=Y;
+  	////posun elementů
+  	TElement *E=Objekt->elementy->dalsi;//objekt má vždy element (zarážka)
+  	while(E!=NULL)
   	{
-			//mezi objekty
-			if(O->dalsi!=NULL && O->n!=Objekt->n && O->dalsi->n!=Objekt->n)
-				if(m.LeziVblizkostiUsecky(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,O->elementy->predchozi->geo.X4,O->elementy->predchozi->geo.Y4,O->dalsi->elementy->dalsi->geo.X1,O->dalsi->elementy->dalsi->geo.Y1)<=10)break;
-			//mezi posledním a prvním
-			if(O->dalsi==NULL && O->n!=Objekt->n && OBJEKTY->dalsi->n!=Objekt->n)
-				if(m.LeziVblizkostiUsecky(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,O->elementy->predchozi->geo.X4,O->elementy->predchozi->geo.Y4,OBJEKTY->dalsi->elementy->dalsi->geo.X1,OBJEKTY->dalsi->elementy->dalsi->geo.Y1)<=10)break;
-			O=dalsi_krok(O,tab_pruchodu);
-		}
-		//posunovaný objekt se nachází v pásmu mezi 2 objekty
-		if(O!=NULL /*&& mrYes==F->MB("Chcete změnit pořadí objektů?",MB_YESNO)*/)zmen_poradi_objektu(Objekt,O);
-		O=NULL;
-		delete tab_pruchodu;tab_pruchodu=NULL;
+  		E->X+=X;E->Y+=Y;//souřadnice elementu
+  		if(E->Xt!=-100)E->Xt+=X;E->Yt+=Y;//souřadnice tabulky + kontrola zda je vytvořená
+  		//geometrie elementu
+  		E->geo.X1+=X;E->geo.X2+=X;E->geo.X3+=X;E->geo.X4+=X;
+  		E->geo.Y1+=Y;E->geo.Y2+=Y;E->geo.Y3+=Y;E->geo.Y4+=Y;
+  		E=E->dalsi;
+  	}
+  	delete E;E=NULL;
 	}
+	////přilepení objektu na předchozí objekt
+	if(oblast==1 && (Objekt->elementy->dalsi->geo.X1!=Objekt->predchozi->elementy->predchozi->geo.X4 || Objekt->elementy->dalsi->geo.Y1!=Objekt->predchozi->elementy->predchozi->geo.Y4))
+		posun_objekt(Objekt->predchozi->elementy->predchozi->geo.X4-Objekt->elementy->dalsi->geo.X1,Objekt->predchozi->elementy->predchozi->geo.Y4-Objekt->elementy->dalsi->geo.Y1,Objekt,false);
+	////změna pořadí před předchozí
+	if(oblast==2)
+		zmen_poradi_objektu(Objekt,Objekt->predchozi);
+	////přilepení na další objekt
+	oblast=0;
+	if(kontrolovat_oblast && Objekt->dalsi!=NULL)oblast=oblast_objektu(Objekt->dalsi,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y);
+	if(oblast==2 && (Objekt->dalsi->elementy->dalsi->geo.X1!=Objekt->elementy->predchozi->geo.X4 || Objekt->dalsi->elementy->dalsi->geo.Y1!=Objekt->elementy->predchozi->geo.Y4))
+		posun_objekt(Objekt->dalsi->elementy->dalsi->geo.X1-Objekt->elementy->predchozi->geo.X4,Objekt->dalsi->elementy->dalsi->geo.Y1-Objekt->elementy->predchozi->geo.Y4,Objekt,false);
+	////změna pořadí za další
+	if(oblast==1)
+		zmen_poradi_objektu(Objekt,Objekt->dalsi);
 	////změna rotace
 	if(Objekt->n>1)
 	{
 		double azimut=0;
-		azimut=m.Rt90(m.azimut(Objekt->predchozi->elementy->predchozi->geo.X4,Objekt->predchozi->elementy->predchozi->geo.Y4,Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1));
+		azimut=m.Rt90(m.azimut(Objekt->predchozi->elementy->predchozi->geo.X4,Objekt->predchozi->elementy->predchozi->geo.Y4,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y));//Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1));
 		rotuj_objekt(Objekt,Objekt->orientace-azimut);
 	}
 }
@@ -2086,8 +2080,47 @@ Cvektory::TElement *Cvektory::vloz_element_za(TObjekt *Objekt,TElement *Element)
 	return ret;
 }
 ////---------------------------------------------------------------------------
+//danému elementu přiřadí/naplní geometrickou složku
+void Cvektory::vloz_G_element(TElement *Element,short typ,double X1,double Y1,double X2,double Y2,double X3,double Y3,double X4,double Y4,double orientace,double rotacni_uhel,double radius,double delka)
+{
+	if(Element!=NULL)
+	{
+		Element->geo.typ=typ;//0 - linie, 1 - oblouk, -1 neidentifikovatelný tvar pomocí bézieru
+		Element->geo.delka=delka;
+		Element->geo.radius=radius;
+		Element->geo.orientace=orientace;
+		Element->geo.rotacni_uhel=rotacni_uhel;
+		Element->geo.X1=X1;Element->geo.Y1=Y1;
+		Element->geo.X4=X4;Element->geo.Y4=Y4;
+		Element->geo.X2=X2;Element->geo.Y2=Y2;
+		Element->geo.X3=X3;Element->geo.Y3=Y3;
+		switch(typ)
+		{
+			case -1://obecný bézier
+			{
+				//if(delka==0)Element->geo.delka=m.bezierDelka(X1,Y1,X2,Y2,X3,Y3,X4,Y4);//pokud nebyla délka dodána
+				Element->geo.radius=0;
+				Element->geo.rotacni_uhel=0;
+			}break;
+			case 0://linie
+			{
+				if(delka==0)Element->geo.delka=m.delka(Element->geo.X1,Element->geo.Y1,Element->geo.X4,Element->geo.Y4);//pokud nebyla délka dodána
+				Element->geo.radius=0;
+				Element->geo.rotacni_uhel=0;
+				Element->geo.X3=Element->geo.X2=(Element->geo.X1+Element->geo.X4)/2.0;//v případě linie dopočítá kontrolní body bézierovy křivky do středu linie
+				Element->geo.Y3=Element->geo.Y2=(Element->geo.Y1+Element->geo.Y4)/2.0;//v případě linie dopočítá kontrolní body bézierovy křivky do středu linie
+			}break;
+			case 1://oblouk
+			{
+				if(delka==0)Element->geo.delka=m.R2Larc(radius,rotacni_uhel);//pokud nebyla délka dodána
+				Element->geo.radius=radius;
+			}break;
+		}
+	}
+}
+////---------------------------------------------------------------------------
 //pokud byl nějaký element vložen mezi ostatní a ne na konec, provede přejměnování,dále pokud bylo stisknuto storno vrátí všechny změny
-void	Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
+void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 {
 	bool rename=false;//proměná sloužící k spouštění přejměnování
 	if(Element!=NULL)//funkčnost při vložení elementu mezi ostatní, pouze název pořadové čísla byly již změněny

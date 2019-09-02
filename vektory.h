@@ -48,10 +48,11 @@ class Cvektory
 
 	struct TGeometrie//pouze struktura
 	{
-		double delka; //může být společné s radiusem
-    double radius;  //nyní jsem pro sloučení, zjednoduší předávání parametrů
+    short  typ;//0 - linie, 1 - oblouk, -1 neidentifikovatelný tvar pomocí bézieru
+		double delka;
+		double radius;
 		double orientace;
-    double rotacni_uhel;
+		double rotacni_uhel;
 		double X1,Y1,X2,Y2,X3,Y3,X4,Y4;//body bézieru
 	};
 
@@ -437,7 +438,7 @@ class Cvektory
 	void nove_indexy(bool nasledne_zmena_nazvu=false);//projde všechny objekty a nastavý nové indexy podle aktuálního pořadí objektů
 	void ortogonalizovat();//ortogonalizuje schéma
 	TObjekt *dalsi_krok(TObjekt *Objekt,TPoint *tab_pruchodu);//určuje další krok cyklu při procházení objektů
-	void posun_objekt(double X,double Y,TObjekt *Objekt);//slouží k posunu objektu jako celku o X a Y, posun kabiny, pohonu, elementů, tabulek, nadpisu
+	void posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_oblast=true);//slouží k posunu objektu jako celku o X a Y, posun kabiny, pohonu, elementů, tabulek, nadpisu, kontrolovat_oblast slouží k nucenému přesunutí
 	void rotuj_objekt(TObjekt *Objekt, double rotace);//orotuje objekt o danou rotaci
 	//přidružené metody pro KOMORY
 	void vloz_komoru(TObjekt *Objekt,double velikost,TKomora *ZaKomoru=NULL,short typ=1);//vloží novou komoru na konec seznamu komor, pokud je ZaKomoru=NULL, jinak vloží za tento objekt, nastaví velikost dané komory dle proměnné velikost,short typ;//1-se sprchou, 0 bez jen okap
@@ -456,6 +457,7 @@ class Cvektory
 	TElement *vloz_element(TObjekt *Objekt,unsigned int eID, double X, double Y,short rotace_symbolu);//vloží element do spojového seznamu elementů daného technologického objektu a zároveň na něj vrátí ukazatel
 	void vloz_element(TObjekt *Objekt,TElement *Element);//vloží element do spojového seznamu elementů daného technologického objektu
 	Cvektory::TElement *vloz_element_za(TObjekt *Objekt,TElement *Element);//kontrola zda vkládaný element bude umístěn na konec nebo mezi jiné elementy, pokud bude vkládán na konec return=NULL, pokud mezi elementy return=ukazatel na předchozí element
+	void vloz_G_element(TElement *Element,short typ,double X1,double Y1,double X2,double Y2,double X3,double Y3,double X4,double Y4,double orientace=0,double rotacni_uhel=0,double radius=0,double delka=0);//danému elementu přiřadí/naplní geometrickou složku
 	void uprav_popisky_elementu(TObjekt *Objekt, TElement *Element);//upraví indexy a popisky elementů po vloženém elementu (parametr Element), pokud dostane parametrem Element NULL přejmenuje a přeindexuje všechny ovlovněné elementy do původního stavu (tlačítko storno)
 	void kopiruj_element(TElement *Original, TElement *Kopie);//zkopíruje atributy elementu bez ukazatelového propojení, pouze ukazatelové propojení na mGrid je zachováno
 	void kopiruj_elementy(TObjekt *Original, TObjekt  *Kopie);//zkopíruje elementy a jejich atributy bez ukazatelového propojení z objektu do objektu, pouze ukazatelové propojení na mGrid je zachováno spojuje dvě metody vloz_element(TObjekt *Objekt,TElement *Element) a kopiruj_element(TElement *Original, TElement *Kopie);
