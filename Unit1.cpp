@@ -9990,11 +9990,12 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 
 //	d.v.rotace_elementu(pom_temp,90);
 //	REFRESH();
-double r=d.v.PP.katalog;
-double rad=d.v.PP.radius;
-
-Memo(r);
-Memo(rad);
+//double r=d.v.PP.katalog;
+//double rad=d.v.PP.radius;
+//
+//Memo(r);
+//Memo(rad);
+  Form_definice_zakazek->ShowModal();
 
 
 

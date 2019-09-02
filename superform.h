@@ -21,19 +21,14 @@
 #include <Vcl.ImgList.hpp>
 #include "scGPExtControls.hpp"
 #include <Vcl.Mask.hpp>
+#include "scGPImages.hpp"
+#include "scImageCollection.hpp"
+#include "scColorControls.hpp"
 //---------------------------------------------------------------------------
 class TForm_definice_zakazek : public TForm
 {
 __published:	// IDE-managed Components
-	TButton *Button_OK;
-	TRzStringGrid *RzStringGrid1;
 	TColorDialog *ColorDialog1;
-	TButton *Button1;
-	TButton *Button3;
-	TMemo *Memo1;
-	TButton *Memo_spojak;
-	TMemo *Memo2;
-	TMemo *Memo3;
 	TButton *Button_DEL;
 	TrHTMLLabel *rHTMLLabel_pocet_prac_hod;
 	TrHTMLLabel *rHTMLLabel_pocet_dnu;
@@ -45,14 +40,12 @@ __published:	// IDE-managed Components
 	TrEditNum *rEditNum_pocet_dnu;
 	TscGPButton *scGPButton2;
 	TButton *Button5;
-	TscGPButton *scGPButton4;
+  TscGPButton *scGPButton_plan_vyroby;
 	TscGPGlyphButton *scGPGlyphButton_add_zakazka;
-	TscGPGlyphButton *scGPGlyphButton2;
-	TscGPGlyphButton *scGPGlyphButton4;
 	TscGPPanel *scGPPanel2;
 	TscGPGlyphButton *Konec;
 	TscGPGlyphButton *MinButton;
-	TscLabel *scLabel1;
+  TscLabel *scLabel_header;
 	TscGPGlyphButton *MaxButton;
 	TscGPGlyphButton *scGPGlyphButton15;
 	TImageList *ImageList1;
@@ -60,15 +53,13 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton_Ulozit;
 	TscGPButton *scGPButton_storno;
 	TButton *button_zakazky_temp;
-	TMemo *Memo4;
 	TscEdit *scEdit_zacatek;
 	TButton *zakazky_hlavni_spojak;
-	TButton *smaz_temp;
-	TEdit *Edit_smaz_temp;
-	TEdit *Edit_n_cesty;
 	TscGPGlyphButton *scGPGlyphButton_remove;
 	TrHTMLLabel *rHTMLLabel_zacatek;
 	TrHTMLLabel *rHTMLLabel_eDesigner;
+  TscGPImageCollection *scGPImageCollection_layout;
+  TscColorGrid *scColorGrid1;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RzStringGrid1MouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
@@ -103,6 +94,7 @@ __published:	// IDE-managed Components
 	void __fastcall rStringGridEd1KeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
+  void __fastcall scColorGrid1Click(TObject *Sender);
 
 
 
@@ -120,37 +112,16 @@ private:	// User declarations
 	void nacti_zakazky();
 	void uloz_Defaulttemp_zakazku();
 	void uloz_Default_cestu();
-
-	//ZDM
-//bool OK_status;
-//bool Color_status;
-//bool RowMoved;
-//short Pocet_radku;
-//bool data_nalezena;  //jsou-li data ve spojaku, nastavi se na true
-//	struct TBarva
-//	{
-//		long	id_radek;
-//		TColor barva_voziku;
-//		struct TBarva *predchozi;
-//		struct TBarva *dalsi;
-//	};
-//	TBarva *BARVY;
-//	void hlavicka_barva();
-//	void uloz_barvu();
-//	void uloz_barvu(TColor barva,int i);
-//	void aktualizuj_barvu(TColor barva,int row);
-//	void vymaz_barvu();
-//	void smaz_barvu_radku(TBarva *Barva);
-//	void sniz_indexy(TBarva *Barva);
-//	void nacti_voziky();
-//	void uloz_voziky_a_nastav_zakazky();
-
-
-
-
+  void getmGridWidth();
+  void setGlyphButton(double Row);
 
 public:		// User declarations
 	__fastcall TForm_definice_zakazek(TComponent* Owner);
+
+    	//metody volané z Tmgrid
+	void OnClick(long Tag,long ID,unsigned long Col,unsigned long Row);
+	void OnEnter(long Tag,unsigned long Col,unsigned long Row);
+	void OnChange(long Tag,unsigned long Col,unsigned long Row);
 
 	bool zmena_TT;
 
