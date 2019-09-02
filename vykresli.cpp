@@ -4400,6 +4400,96 @@ void Cvykresli::uchop(TCanvas *canv,Cvektory::TBod *B,TColor barva)
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
+//volání smart kurzoru sloužícího pro výběr geometrického elementu, to dle předchozích parametrů resp. typů geometrických elementu a zadaných vstupních paramerů metody, viz:
+//preXk,preYk - koncové souřadnice, preOR - orientace, preRA - rotační úhel předchozího geometrického elementu, prepreRArotační úhel před-předchozího geometrického elementu - neexistují-li tyto pre resp. prepre element(y), zadat nulu
+void Cvykresli::smart_kurzor(TCanvas *canv,double preXk,double preYk,double preOR,double preRA,double prepreRA)
+{
+	double R=v.PP.radius;//radius dle katalogu
+	short POLE_RA[]={90,45,30,15};//případně nahradit načítáním ze spojáku vybraného katalogu (ale zatím postrádá význam, všude jsou stejné úhly), pokud bych chtěl násleně break, muselo by být řazeno od nejmenšího RA
+	double RA=-1000;//rotační úhel, výchozí hodnota -1000=nenalezen
+	////hledání mezi oblouky
+	for(unsigned short i=0;i<4;i++)
+	{
+		//testování kladných hodnot a ošetření proti stavu 3x 90° oblouky za sebou a pokud je zároveň na základě předchozího geometrického prvku povoleno
+		if(preRA>=0 && !(POLE_RA[i]==90 && prepreRA==preRA && preRA==90) && (preRA==0 || POLE_RA[i]==preRA) && m.LeziVoblouku(preXk,preYk,preOR-preRA,POLE_RA[i],R,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y))RA=POLE_RA[i];
+		//testování záporných hodnot a ošetření proti stavu 3x 90° oblouky za sebou a pokud je zároveň na základě předchozího geometrického prvku povoleno
+		if(preRA<=0 && !(-POLE_RA[i]==-90 && prepreRA==preRA && preRA==-90) && (preRA==0 || -POLE_RA[i]==preRA) && m.LeziVoblouku(preXk,preYk,preOR-preRA,-POLE_RA[i],R,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y))RA=-POLE_RA[i];
+	} //pokud bych chtěl break, musel bych řadit od nejmenšího POLE_RA
+	////hledání v citelné oblasti linie ve tvaru "V" (toto rozmezí, rozptyl je hodnota nejmenšího oblouku (částečně logicky by se nabízelo /2, ale vhodnější /3, +- rozptylu nahrazuje fabs), hledá i přes výše nalezené řešní, což je důležíté ("jinak by se v některých případech na lini vůbec nedostalo")
+	double delka_linie=0;
+	double a=m.azimut(preXk,preYk,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);//azimut mezi výchozím bodem a akt. pozicí myši
+	double o=m.a360(preOR-preRA); if(o==0 && a>180)o=360;//orientace, pokud je nula a myš je v levém kvadrantu, je nutné z 0° udělat 360°
+	if(POLE_RA[3]/3>fabs(o-a))RA=0;
+	if(RA==0)delka_linie=ceil(m.delka(preXk,preYk,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y)/3.0)*3;//u linie nabízí delší kresbu, po násobcích 3 metrů
+
+	//samotné vykreslení kurzoru dle hodnoty RA z předchozího algoritmu (aktuální orientace je prozatím z d.Temp.z, kde vypočtena jako je orientace minus rotace předchozího gElementu)
+	vykresli_Gelement_kurzor(canv,m.L2Px(preXk),m.L2Py(preYk),preOR-preRA,RA,R,delka_linie,preRA,prepreRA);
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//zajistí jednorázové vykreslení potenciálního obloukového či liniového (dle situace) g-elementu, X,Y jsou fyzické souřadnice výchozího vykreslování, parametry: orientace oblouku - dle světových stran (umí i jiné než 90° násobky), rotační úhel - pod kterým je oblouk rotován, může být záporný (znaménko určuje směr rotace, + proti směru hodinových ručiček, - po směru), max. hodnota +90 a min. hodnota -90 (je-li nastaven na 0° jedná se o linii), radius - je radius oblouku v metrech nebo pokud je rotační úhel nastaven na 0° tedy se jedná o linii, je radius délkou linie)
+void Cvykresli::vykresli_Gelement(TCanvas *canv,int X,int Y,double orientace,double rotacni_uhel,double radius,TColor color,bool popisek)
+{
+	//potenciální Gelement - středová linie
+	TPointD *PL=m.vrat_Gelement(X,Y,orientace,rotacni_uhel,radius);
+	POINT POLE[]={{m.L2Px(PL[0].x),m.L2Py(PL[0].y)},m.L2Px(PL[1].x),m.L2Py(PL[1].y),m.L2Px(PL[2].x),m.L2Py(PL[2].y),m.L2Px(PL[3].x),m.L2Py(PL[3].y)};//převod do fyzických souřadnic
+	delete[] PL;PL=NULL;
+	set_pen(canv,color,1*F->Zoom,PS_ENDCAP_FLAT);//nastavení geometrického pera
+	canv->PolyBezier((TPoint*)POLE,3);//samotné vykreslení bézierovy křivky
+	//popisek, je-li požadován
+	if(popisek)
+	{
+		canv->Brush->Style=bsClear;
+		canv->Font->Style = TFontStyles();
+		canv->Font->Name=F->aFont->Name;
+		canv->Font->Size=3*F->Zoom;
+		canv->Font->Color=m.clIntensive(color,-10);
+		AnsiString T=AnsiString(rotacni_uhel)+"°, "+AnsiString(radius)+" m";
+		//souřadnice textu
+		int Xt=0,Yt=0;
+		if(rotacni_uhel==0)//jedná se o linii
+		{
+			Xt=m.round((POLE[0].x+POLE[3].x)/2.0-canv->TextWidth(T)/2.0);
+			Yt=m.round((POLE[0].y+POLE[3].y)/2.0-canv->TextHeight(T)/2.0);
+		}
+		else//jedné se o oblouk, najde polovinu oblouku
+		{
+			PL=m.vrat_Gelement(X,Y,orientace,rotacni_uhel/2.0,radius);
+			Xt=m.round(m.L2Px(PL[3].x)-canv->TextWidth(T)/2.0);
+			Yt=m.round(m.L2Py(PL[3].y)-canv->TextHeight(T)/2.0);
+			delete[] PL;PL=NULL;
+		}
+		//volání výpisu textu
+		TextFraming(canv,Xt,Yt,T,canv->Font,clWhite,m.round(F->Zoom*0.1));
+	}
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//obloukový či liniový (dle situace) kurzor g-elementu, X,Y jsou fyzické souřadnice výchozího vykreslování, parametry: orientace oblouku - dle světových stran (umí i jiné než 90° násobky), rotační úhel, pod kterým je oblouk rotován, může být záporný (znaménko určuje směr rotace, + proti směru hodinových ručiček, - po směru), max. hodnota +90 a min. hodnota -90 (je-li nastaven na 0° jedná se o linii), radius - je radius oblouku v metrech nebo pokud je rotační úhel nastaven na 0° tedy se jedná o linii, je radius délkou linie)
+void Cvykresli::vykresli_Gelement_kurzor(TCanvas *canv,int X,int Y,double orientace,double rotacni_uhel,double radius,double delka_linie,double predchozi_rotacni_uhel,double predpredchozi_rotacni_uhel)
+{
+	TColor clPotencial=m.clIntensive(clBlack,245);
+	TColor clAktual=m.clIntensive(clBlack,120);
+
+	//vykreslení potenciální linie         //minimum 3 metry, potenciál je délka aktuální linie + 3 m, aby bylo jasné, že je možné stále prodlužovat
+	vykresli_Gelement(canv,X,Y,orientace,0,delka_linie+3,clPotencial,false);
+
+	//vykreslení potenciálních oblouků dle katalogu
+	short RA[]={90,45,30,15};//nahradit načítáním ze spojáku
+	short intenzitaK=0,intenzitaZ=0;//intenzita barvy
+	for(unsigned short i=0;i<4;i++)
+	{    //povoluje libovolný uhel po linii, ale pouze stejný po předch. oblouku && zajišťuje selekci nesmyslné varianty á la tangens) && !nesmí být 3x90° za sebou
+		if((predchozi_rotacni_uhel==0 || RA[i]==predchozi_rotacni_uhel) && predchozi_rotacni_uhel>=0 && !(RA[i]==90 && predpredchozi_rotacni_uhel==predchozi_rotacni_uhel && predchozi_rotacni_uhel==90))vykresli_Gelement(canv,X,Y,orientace,RA[i],radius,m.clIntensive(clPotencial,-20*intenzitaK++),false);
+		if((predchozi_rotacni_uhel==0 || -RA[i]==predchozi_rotacni_uhel) && predchozi_rotacni_uhel<=0 && !(-RA[i]==-90 && predpredchozi_rotacni_uhel==predchozi_rotacni_uhel && predchozi_rotacni_uhel==-90))vykresli_Gelement(canv,X,Y,orientace,-RA[i],radius,m.clIntensive(clPotencial,-20*intenzitaZ++),false);
+	}
+
+	//vykreslení aktuální vybrané volby
+	if(rotacni_uhel!=-1000)//byl-li uskutečněn výběr,-1000 znamená nebyl výběr
+	{
+		if(rotacni_uhel==0)radius=delka_linie;//pokud se jedná o linii
+		vykresli_Gelement(canv,X,Y,orientace,rotacni_uhel,radius,clAktual,true);
+	}
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_mGridy(TCanvas *canv)
 {
 	if(F->pom_temp!=NULL && F->Timer_animace->Enabled==false)//pokud není editovaný nějaký objekt nebo při timeru aplikace se tabulky nezobrazí

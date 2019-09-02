@@ -47,6 +47,14 @@ short Cmy::Rt90(double number)
 	return RET;
 }
 /////////////////////////////////////////////////////////////////////////////
+//záporné stupnì pøevede do kladných v rámci 360°
+double Cmy::a360(double number)
+{
+	if(number<0)number+=360;//pro záporné hodnoty
+	if(number<0)number=a360(number);//rekurzce pro pøípady, že se bude jednát o nìkolikanásobnou rotaci
+	return number;
+}
+/////////////////////////////////////////////////////////////////////////////
 //ovìøí, zda dané èíslo je celé èíslo
 bool Cmy::cele_cislo(double number)
 {
@@ -163,6 +171,45 @@ long double Cmy::getResolution(int puvX,int puvY,int aktX,int aktY,double metry)
 	return metry/delka(P2Lx(puvX),P2Ly(puvY),P2Lx(aktX),P2Ly(aktY))*F->m2px;//výpoèet metry dìleno poèet PX, výchozí zobrazení v nativním rozlišení (bez usazení do metrického mìøítka) je 0.1
 }
 /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+//vrátí vzdálenost od výchozího a koncového bodu k øídícímu bodu oblouku realizovaného bézierovou køivkou, vstupním parametrem je rotaèní úhel a radius, pøipraveno pouze pro nìkteré úhly, výpoèet není sice zcela exaktní, ale v rámci požadované tolerance výborný
+double Cmy::getL(double RA,double R)
+{
+	double L=0.55191502449;//L - je vzdálenost od výchozího a koncového bodu vs. øídícího bodu, 0.552284749798297 resp. 0.55191502449 (pøesnìjší), je tato hodnota na oblouku s polomìrem 1, viz http://spencermortensen.com/articles/bezier-circle/
+	switch(round(abs(RA)))
+	{
+		case 15:L=R*0.0873912837529813;break;
+		case 30:L=R*0.175536663479836;break;
+		case 45:L=R*0.26521649;break;
+		case 90:L*=R;break;
+		default: L*=R*RA/90.0;//už se znaènou nepøesností
+	}
+	return L;
+}
+/////////////////////////////////////////////////////////////////////////////
+//vrátí souøadnice (4 místné pole TPointD tj. 8 hodnot) bézierovy køivky oblouku èi linie dle zadaných souøadnic, X,Y jsou fyzické souøadnice výchozího vykreslování, parametry: orientace oblouku - dle svìtových stran (umí i jiné než 90° násobky), rotaèní úhel - pod kterým je oblouk rotován, mùže být záporný (znaménko urèuje smìr rotace, + proti smìru hodinových ruèièek, - po smìru), max. hodnota +90 a min. hodnota -90 (je-li nastaven na 0° jedná se o linii), radius - je radius oblouku v metrech nebo pokud je rotaèní úhel nastaven na 0° tedy se jedná o linii, je radius délkou linie
+TPointD *Cmy::vrat_Gelement(int X,int Y,double orientace,double rotacni_uhel,double radius)
+{
+	//parametry pro výchozí výpoèetní model oblouku s OR 90, ten se následnì dle skuteèné OR resp. Orientace pøerotuje a vèetnì znaménka pøezrcadlí (znaménko urèuje smìr rotace, + proti smìru hodinových ruèièek, - po smìru)
+	double OR=orientace;//orientace oblouku, dle svìtových stran
+	double RA=rotacni_uhel;if(RA>90)RA=90;if(RA<-90)RA=-90;//rotaèní úhel, pod kterým je oblouk rotován, mùže být záporný (znaménko urèuje smìr rotace, + proti smìru hodinových ruèièek, - po smìru), max. hodnota +90 a min. hodnota -90
+	double R=radius;//Radius resp. délka u linie v metrech
+	double L=getL(RA,R);//L - je vzdálenost od výchozího a koncového bodu vs. øídícího bodu
+	double X1=P2Lx(X);//výchozí bod oblouku
+	double Y1=P2Ly(Y);//výchozí bod oblouku
+	double a=R*cos(ToRad(90-fabs(RA)));//výpoèet polohy koncového bodu na ose X - výpoèet dle goniometrické funkce v pravoúhlém trojúhelníku  - JE OK
+	double b=R-sqrt(R*R-a*a);//výpoèet polohy koncového bodu na ose Y - odeètení hodnoty dle pythagorovy vìty od radiusu - JE OK
+	if(RA==0){a=R;b=0;L=0;}//pokud se jedná o linii nastaví takovéto parametry
+	double X2=X1+a;//koncový bod oblouku
+	double Y2=Y1+b;//koncový bod oblouku
+	TPointD K=rotace(X2,Y2,X2,Y2-L,-90+fabs(RA));//nový koncový øídící po rotaci
+	TPointD *PL=new TPointD[4]; PL[0].x=X1;PL[0].y=Y1;PL[1].x=X1+L;PL[1].y=Y1;PL[2].x=K.x;PL[2].y=K.y;PL[3].x=X2;PL[3].y=Y2;
+	if(RA<0)zrcadli_polygon(PL,3,180);//v pøípadì záporné hodnoty pøerotuje
+	rotace_polygon(X1,Y1,PL,3,90-OR);//orotuje se dle skuteèné orientace
+	return PL;//navrácení hodnoty
+}
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 double Cmy::delka(double X1,double Y1,double X2,double Y2)
 {
 	return sqrt(pow(X2-X1,2)+ pow(Y2-Y1,2));
@@ -269,6 +316,39 @@ void Cmy::rotace_polygon(double oX,double oY,double X,double Y,TPointD *POLE,TPo
 	}
 }
 /////////////////////////////////////////////////////////////////////////////
+//zajistí pøezrcadlení polygonù zadaného v logických souøadnicích pomocí pole dle požadovaného parametru uhel zrcadlení
+void Cmy::zrcadli_polygon(TPointD *POLE,long posledni_prvek,double uhel)
+{
+	uhel=Rt90(uhel);
+	switch((int)uhel)
+	{
+		case 0:
+		{
+			double MaxY=POLE[0].y;
+			for(long i=0;i<=posledni_prvek;i++)if(POLE[i].y>MaxY)MaxY=POLE[i].y;//najde co nejvíce vpravo bod a okolo toho probìhne mirroring
+			for(long i=0;i<=posledni_prvek;i++)POLE[i].y=MaxY+MaxY-POLE[i].y;
+		}break;
+		case 90:
+		{
+			double MaxX=POLE[0].x;
+			for(long i=0;i<=posledni_prvek;i++)if(POLE[i].x>MaxX)MaxX=POLE[i].x;//najde co nejvíce vpravo bod a okolo toho probìhne mirroring
+			for(long i=0;i<=posledni_prvek;i++)POLE[i].x=MaxX+MaxX-POLE[i].x;
+		}break;
+		case 180:
+		{
+			double MinY=POLE[0].y;
+			for(long i=0;i<=posledni_prvek;i++)if(POLE[i].y<MinY)MinY=POLE[i].y;//najde co nejvíce vpravo bod a okolo toho probìhne mirroring
+			for(long i=0;i<=posledni_prvek;i++)POLE[i].y=MinY-(POLE[i].y-MinY);
+		}break;
+		case 270:
+		{
+			double MinX=POLE[0].x;
+			for(long i=0;i<=posledni_prvek;i++)if(POLE[i].x<MinX)MinX=POLE[i].x;//najde co nejvíce vpravo bod a okolo toho probìhne mirroring
+			for(long i=0;i<=posledni_prvek;i++)POLE[i].x=MinX-(POLE[i].x-MinX);
+		}break;
+	}
+}
+/////////////////////////////////////////////////////////////////////////////
 //TPointD Cvektory::Get_AreaSize(TPolygon *ukaz)
 //{
 //	unsigned int delka=0;
@@ -350,6 +430,19 @@ long Cmy::LeziVblizkostiUsecky(double x, double y, double X1, double Y1, double 
 		else
 			return 2147483647;//vrací nesmyslnì vysoké èíslo jako neúspìch (zøejmì leží na pøímce ale ne na úseèce)
 	}
+}
+/////////////////////////////////////////////////////////////////////////////
+//funkce ovìøující, zda kurzor myši, leží v obdelníku obsaném danému oblouku, souøadnice kurzoru myši se zadávají v logických souøadnicích, ostatní v logických
+bool Cmy::LeziVoblouku(double X,double Y,double orientace,double RA,double R,double Xmys,double Ymys)
+{
+	bool RET=false;
+	TPointD *PL=vrat_Gelement(L2Px(X),L2Py(Y),orientace,RA,R);
+	double KorekceX=0,KorekceY=0;//pro pøípady, kdy poèáteèní i koncový bod je v jedné linii (vodorovné èi svislé)
+	if(round2double(PL[0].x,2)==round2double(PL[3].y,2))KorekceX=vrat_Gelement(L2Px(X),L2Py(Y),orientace,RA/2.0,R)[3].x-PL[3].x;//round2double nasazeno z dùvodu divného chování pøi porovnání dvou totožných èísel, kdy bylo vraceno false, bylo zaznamenáno u korekceY
+	if(round2double(PL[0].y,2)==round2double(PL[3].y,2))KorekceY=vrat_Gelement(L2Px(X),L2Py(Y),orientace,RA/2.0,R)[3].y-PL[3].y;//round2double nasazeno z dùvodu divného chování pøi porovnání dvou totožných èísel, kdy bylo vraceno false, bylo zaznamenáno u korekceY
+	if(PtInRectangle(PL[3].x,PL[3].y,X+KorekceX,Y+KorekceY,Xmys,Ymys))RET=true;
+	delete []PL;PL=NULL;//smazání již nepotøebných ukazatelù
+	return RET;
 }
 /////////////////////////////////////////////////////////////////////////////
 //funkce ovìøí, zda se bod nachází v zadaném kruhu

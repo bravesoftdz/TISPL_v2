@@ -16,6 +16,7 @@ class Cmy
 	double round2double(double number,unsigned short precision);//zaokrouhlí na poèet desetinných míst dle precison
 	AnsiString round2double(double number,unsigned short precision,AnsiString mark,bool add_decimal=false);//zaokrouhlí na poèet desetinných míst dle precison a vratí hodnotu pomocí øetezce, za èíslem následuje znak, dle posledního parametru (napø dvì teèky .. jakože èíslo pokraèuje), pokud èíslo obsahuje reálnou èást nezobrazenou v rámci precision, pokud je nastaven poslední parametr add_decimal na true a je-li reálná èást kratší než poèet reaálných míst decimál, jsou do tohototo poètu doplnìny nuly
 	short Rt90(double number);//zaokrouhlí na násobky 90tky, 360° pøevede na 0°, vìtší než 360° vratí za 0°
+	double a360(double number);//záporné stupnì pøevede do kladných v rámci 360°
 	double abs_d(double number);//fce vrátí absolutní hodnotu z double èísla, možno nahradit mocí fabs z math
 	double ToRad(double number);
 	double ToDeg(double number);
@@ -37,6 +38,8 @@ class Cmy
 	double mod_d(double number1,double number2);//možno nahradit fci fmod z math.h  - to si už tak nejsem jistý viz paramatry této funkce - ukazatel?
 	bool isFinite(double number1,double number2);
 	TColor clIntensive(TColor C,short A); //A + míra zesvìtlení,  - míra ztmaveni
+	double getL(double RA,double R);//vrátí vzdálenost od výchozího a koncového bodu k øídícímu bodu oblouku realizovaného bézierovou køivkou, vstupním parametrem je rotaèní úhel a radius, pøipraveno pouze pro nìkteré úhly, výpoèet není sice zcela exaktní, ale v rámci požadované tolerance výborný
+	TPointD *vrat_Gelement(int X,int Y,double orientace,double rotacni_uhel,double radius);//vrátí souøadnice (4 místné pole TPointD tj. 8 hodnot) bézierovy køivky oblouku èi linie dle zadaných souøadnic, X,Y jsou fyzické souøadnice výchozího vykreslování, parametry: orientace oblouku - dle svìtových stran (umí i jiné než 90° násobky), rotaèní úhel - pod kterým je oblouk rotován, mùže být záporný (znaménko urèuje smìr rotace, + proti smìru hodinových ruèièek, - po smìru), max. hodnota +90 a min. hodnota -90 (je-li nastaven na 0° jedná se o linii), radius - je radius oblouku v metrech nebo pokud je rotaèní úhel nastaven na 0° tedy se jedná o linii, je radius délkou linie
 	double delka(double X1,double Y1,double X2,double Y2);//vrátí délku mezi body v absolutní hodnotì
 	double azimut(double X1,double Y1,double X2,double Y2);
 	double uhel(double X1,double Y1,double X2,double Y2);
@@ -45,6 +48,7 @@ class Cmy
 	TPoint rotace_px(long X1,long Y1,long X2,long Y2,double uhel);//vrátí souøadnice X2,Y2 po daném úhlu rotace, rotuje okolo X1,Y2 proti smìru hodinových ruèièek
 	void rotace_polygon(double X,double Y,TPointD *POLE,long posledni_prvek,double uhel);//orotuje okolo daného bodu polygon
 	void rotace_polygon(double X,double Y,double oX,double oY,TPointD *POLE,TPoint *POLE_px,long posledni_prvek,double uhel);//orotuje okolo daného bodu polygon a vrátí do POLE i do POLE_px
+	void zrcadli_polygon(TPointD *POLE,long posledni_prvek,double uhel);//zajistí pøezrcadlení polygonù zadaného v logických souøadnicích pomocí pole dle požadovaného parametru uhel zrcadlení
 	TPointDbool zkratit_polygon_na_roztec(double d, double r,double xp, double yp, double x0, double y0, double x1, double y1);//d - delka linky,r - roztec palcuxp, yp - souradnice oznaceneho bodu x0, y0, x1, y1- souradnice sousedu k oznacenemu bodu
 	double cekani_na_palec(double cas, double roztec_palcu, double rychlost_dopravniku,int funkce);//vrátí dobu èekání na palec v sec, zadání je u èas (výstupu vozíku z objektu) v min, rozteèe je v m resp. v m za z minu u rychlosti dopravniku
 	double mezera_mezi_voziky(double dJ,double sJ,double rotace,double roztec,double mezera=0,unsigned short typ=0);//metoda vratí minimální možnou mezeru mezi vozíky (promìnná vozíku prezentuje šíøku èí délku vozíku dle aktuální rotace v objektu), za pøedpokladu, že je parametr mezera roven 0, v pøípadì nenulového parametru mezery vrací vhodnou nejmenší hodnotu této mezery vùèi rozmìrùm rozteè a rozmìr vozíku, lze parametrizovat vracený výsledek 0 (implicitnì) - kritická mezera, 1 èi 281 - mezera mezi JIG, 2 èi 282 mezera mezi PODVOZKY
@@ -76,6 +80,7 @@ class Cmy
 	double prejezd_voziku_rychlost(double CT,double MT,double PT,double WT,double DD);//vrátí požadovanou rychlost pøejezdu, umí si dopoèítat MT, není-li dodáno, pokud vyjde záporná rychlost tzn. nestíhá
 	double kontrola_rychlosti_prejezdu(double CT,double MT,double PT,double WT,double DD,double aRD);//vrátí rozdíl aktuální rychlosti pohonu a potøebné k uskuteèní pøejezdu, pokud je hodnota 0 je v poøádku, je-li záporná, pøejezd se nestíhá o danou hodnotu v m/s, je-li kladná, je aktuální rychlost o danou hodnoutu hodnotu v m/s vyšší
 	long LeziVblizkostiUsecky(double x, double y, double X1, double Y1, double X2, double Y2);
+	bool LeziVoblouku(double X,double Y,double orientace,double RA,double R,double Xmys,double Ymys);//funkce ovìøující, zda kurzor myši, leží v obdelníku obsaném danému oblouku, souøadnice kurzoru myši se zadávají v logických souøadnicích, ostatní v logických
 	bool PtInCircle(double point_X,double point_Y,double center_X,double center_Y,double radius);//metoda ovìøí, zda se bod nachází v zadaném kruhu
 	bool PtInRectangle(double X1,double Y1,double X2,double Y2,double Xmys,double Ymys);//metoda ovìøí, zda se bod nachází v obdelníku
 	bool PtInStopka(double Ex,double Ey,double X,double Y,short uhel);//metoda ovìøí, zda se bod nachází ve stopce
