@@ -4483,6 +4483,10 @@ void Cvykresli::vykresli_Gelement_kurzor(TCanvas *canv,double X,double Y,double 
 		geoTemp.X1=PL[0].x;geoTemp.Y1=PL[0].y;geoTemp.X2=PL[1].x;geoTemp.Y2=PL[1].y;geoTemp.X3=PL[2].x;geoTemp.Y3=PL[2].y;geoTemp.X4=PL[3].x;geoTemp.Y4=PL[3].y;
 		delete[] PL;PL=NULL;
 	}
+	else//neby-li uskutečněn výběr
+	{
+		geoTemp.typ=-1000;
+  }
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //zajistí jednorázové vykreslení potenciálního obloukového či liniového (dle situace) g-elementu, X,Y jsou logické souřadnice výchozího vykreslování, parametry: orientace oblouku - dle světových stran (umí i jiné než 90° násobky), rotační úhel - pod kterým je oblouk rotován, může být záporný (znaménko určuje směr rotace, + proti směru hodinových ručiček, - po směru), max. hodnota +90 a min. hodnota -90 (je-li nastaven na 0° jedná se o linii), radius - je radius oblouku v metrech nebo pokud je rotační úhel nastaven na 0° tedy se jedná o linii, je radius délkou linie)
