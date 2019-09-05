@@ -605,7 +605,7 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 	novy->uzamknout_nahled=false;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 
 	//nově, vkládání bodů + defaultní rozměry různých objektů
-	TPoint rozmery_kabiny,pocatek,konec;
+	TPointD rozmery_kabiny,konec;
 	switch(id)
 	{
 		case 0:case 9://navěšování + svěšování
@@ -621,15 +621,14 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 	//rotace na požadovanou orientaci
 	novy->orientace=F->d.orientace_objektu;
 	rotuj_body(X,Y,90-novy->orientace,novy);
-	//vložení zarážky na konec
-	pocatek.x=X;pocatek.y=Y;
+	//vložení zarážky na konec;
 	if(novy->orientace==90||novy->orientace==270)//vodorovný objekt
 		{konec.x=novy->body->dalsi->dalsi->X;konec.y=Y;}
 	else
 		{konec.x=X;konec.y=novy->body->dalsi->dalsi->Y;}
 	TElement *zarazka=vloz_element(novy,MaxInt,konec.x,konec.y,0);
 	//definice bodů geometrie
-	vloz_G_element(zarazka,0,pocatek.x,pocatek.y,0,0,0,0,konec.x,konec.y);
+	vloz_G_element(zarazka,0,X,Y,0,0,0,0,konec.x,konec.y,novy->orientace);
 	zarazka=NULL;delete zarazka;
 	//definice pozice názvu kabiny
 	switch((int)novy->orientace)
@@ -638,6 +637,11 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 		case 90:novy->Xt=X+rozmery_kabiny.x/2.0;novy->Yt=Y+rozmery_kabiny.y/2.0;break;
 		case 180:novy->Xt=X+rozmery_kabiny.y/2.0;novy->Yt=Y-rozmery_kabiny.x/2.0;break;
 		case 270:novy->Xt=X-rozmery_kabiny.x/2.0;novy->Yt=Y+rozmery_kabiny.y/2.0;break;
+	}
+	if(OBJEKTY->predchozi->n==1 && novy->X==OBJEKTY->predchozi->X && novy->Y==OBJEKTY->predchozi->Y && OBJEKTY->predchozi->orientace==90)//změna trendu linky, pokud nebylo s prvním objektem rotováno
+	{
+		posun_objekt(OBJEKTY->predchozi->elementy->predchozi->geo.X4-OBJEKTY->predchozi->elementy->dalsi->geo.X1,0,OBJEKTY->predchozi);
+		rotuj_objekt(OBJEKTY->predchozi,180);
 	}
 	return novy;
 }
@@ -1551,7 +1555,7 @@ void Cvektory::rotuj_objekt(TObjekt *Objekt, double rotace)
 		TElement *E=Objekt->elementy->dalsi;//objekt má vždy element (zarážka)
 		while(E!=NULL)
 		{
-			E->orientace-=rotace;//zapsání nové orientace do elementu
+			E->orientace=azimut;//zapsání nové orientace do elementu
 			//souřadnice elementu
 			Bod=m.rotace(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,E->X,E->Y,rotace);
 			E->X=Bod.x;E->Y=Bod.y;
@@ -1570,6 +1574,7 @@ void Cvektory::rotuj_objekt(TObjekt *Objekt, double rotace)
 			E->geo.X3=Bod.x;E->geo.Y3=Bod.y;
 			Bod=m.rotace(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,E->geo.X4,E->geo.Y4,rotace);
 			E->geo.X4=Bod.x;E->geo.Y4=Bod.y;
+			if(E->geo.typ==0)E->geo.orientace=azimut;
 			E=E->dalsi;
 		}
 		delete E;E=NULL;
@@ -1841,7 +1846,7 @@ void Cvektory::hlavicka_elementy(TObjekt *Objekt)
 }
 ////---------------------------------------------------------------------------
 //vloží element do spojového seznamu elementů daného technologického objektu a zároveň na něj vrátí ukazatel
-Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, double X, double Y,short orientace)
+Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, double X, double Y,short orientace,TElement *Ep)
 {
 	//pokud by ještě nebyla založena hlavička, tak ji založí
 	if(Objekt->elementy==NULL)hlavicka_elementy(Objekt);
@@ -1859,7 +1864,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->orientace=orientace;//důležité pro volání makra m.Rxy, bez tohoto by makro vracelo chybné hodnoty
 
   //ukazatelové propojení - bylo původně poslední, ale nemohlo fungovat správně
-	vloz_element(Objekt,novy);
+	vloz_element(Objekt,novy,Ep);
 
 	//defaultní data
 	novy->LO1=1.5;
@@ -1905,18 +1910,19 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 
 	//ukazatel na spárovaný element
 	novy->sparovany=vrat_predchozi_stop_element(novy);//metoda již v sobě ošetřuje, že se bude jednat o stopku
-
 	//návrácení ukazatelele na element k dalšímu použití
 	return novy;
 }
 ////---------------------------------------------------------------------------
 //vloží element do spojového seznamu elementů daného technologického objektu
-void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element)
+void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *Ep)
 {
 	if(Objekt->elementy==NULL)hlavicka_elementy(Objekt);//pokud by ještě nebyla založena hlavička, tak ji založí
 
 	Element->n=Objekt->elementy->predchozi->n+1;//navýším počítadlo prvku o jedničku
 
+	if(Ep==NULL)
+	{
 	//kontrola zda je element vkládán za předchozí nebo mezi předchozí
 	Cvektory::TElement *p=vloz_element_za(Objekt,Element);//pokud bude vkládaný elment vložen na konec vrází NULL, pokud mezi vrátí ukazatel na předchozí element
 	if(p==NULL)//vkládám na konec
@@ -1931,9 +1937,9 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element)
     if(F->pom_temp!=NULL) //nutna podminka, pri nacitani z binarky je pom_temp=NULL a nactou se hodnoty OK
     {                     // bez podminky jsou geo body spatne dopocitavany
       Element->geo.X1=Element->predchozi->geo.X4;Element->geo.Y1=Element->predchozi->geo.Y4;
-      Element->geo.X4=F->d.Rxy(Element).x;Element->geo.Y4=F->d.Rxy(Element).y;
-      Element->geo.X2=Element->geo.X1+(Element->geo.X4-Element->geo.X1)/2.0;Element->geo.Y2=Element->geo.Y1+(Element->geo.Y4-Element->geo.Y1)/2.0;
-      Element->geo.X3=Element->geo.X2;Element->geo.Y3=Element->geo.Y2;
+			Element->geo.X4=F->d.Rxy(Element).x;Element->geo.Y4=F->d.Rxy(Element).y;
+			Element->geo.X2=Element->geo.X1+(Element->geo.X4-Element->geo.X1)/2.0;Element->geo.Y2=Element->geo.Y1+(Element->geo.Y4-Element->geo.Y1)/2.0;
+			Element->geo.X3=Element->geo.X2;Element->geo.Y3=Element->geo.Y2;
       //Element->geo.typ=?
       //Element->geo.delka=?
     }
@@ -1972,6 +1978,30 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element)
 		uprav_popisky_elementu(Objekt,Element);
 	}
 	p=NULL; delete p;
+	}
+	else
+	{
+		if(Ep->n==1){Objekt->elementy->dalsi=Element;Element->predchozi=Objekt->elementy;}else {Ep->predchozi->dalsi=Element;Element->predchozi=Ep->predchozi;}
+		Element->dalsi=Ep;
+		Ep->predchozi=Element;
+		//změna indexů
+		int n=1;
+		Cvektory::TElement *E=Objekt->elementy->dalsi;
+		while(E!=NULL)
+		{
+			//indexy
+			E->n=n;
+			n++;
+			E=E->dalsi;
+		}
+		E=NULL;delete E;
+		//změna názvů
+		uprav_popisky_elementu(Objekt,Element);
+		//geometrie Ep
+		Ep->geo.X1=Element->X;Ep->geo.Y1=Element->Y;
+		Ep->geo.X2=Ep->geo.X1+(Ep->geo.X4-Ep->geo.X1)/2.0;Ep->geo.Y2=Ep->geo.Y1+(Ep->geo.Y4-Ep->geo.Y1)/2.0;
+		Ep->geo.X3=Ep->geo.X2;Ep->geo.Y3=Ep->geo.Y2;
+	}
 }
 ////---------------------------------------------------------------------------
 //kontrola zda vkládaný element bude umístěn na konec nebo mezi jiné elementy
@@ -3073,11 +3103,11 @@ void Cvektory::smaz_element(TElement *Element)
 		Element->predchozi->dalsi=Element->dalsi;
 		Element->dalsi->predchozi=Element->predchozi;
 		//aktualizace geometrie
-		if(Element->n!=1){Element->dalsi->geo.X1=Element->predchozi->geo.X4;Element->dalsi->geo.Y1=Element->predchozi->geo.Y4;}
-		else {Element->dalsi->geo.X1=Element->geo.X1;Element->dalsi->geo.Y1=Element->geo.Y1;}
-		Element->dalsi->geo.X4=F->d.Rxy(Element->dalsi).x;Element->dalsi->geo.Y4=F->d.Rxy(Element->dalsi).y;
-		Element->dalsi->geo.X2=Element->dalsi->geo.X1+(Element->dalsi->geo.X4-Element->dalsi->geo.X1)/2.0;Element->dalsi->geo.Y2=Element->dalsi->geo.Y1+(Element->dalsi->geo.Y4-Element->dalsi->geo.Y1)/2.0;
-		Element->dalsi->geo.X3=Element->dalsi->geo.X2;Element->dalsi->geo.Y3=Element->dalsi->geo.Y2;
+//		if(Element->n!=1){Element->dalsi->geo.X1=Element->predchozi->geo.X4;Element->dalsi->geo.Y1=Element->predchozi->geo.Y4;}
+//		else {Element->dalsi->geo.X1=Element->geo.X1;Element->dalsi->geo.Y1=Element->geo.Y1;}
+//		Element->dalsi->geo.X4=F->d.Rxy(Element->dalsi).x;Element->dalsi->geo.Y4=F->d.Rxy(Element->dalsi).y;
+//		Element->dalsi->geo.X2=Element->dalsi->geo.X1+(Element->dalsi->geo.X4-Element->dalsi->geo.X1)/2.0;Element->dalsi->geo.Y2=Element->dalsi->geo.Y1+(Element->dalsi->geo.Y4-Element->dalsi->geo.Y1)/2.0;
+//		Element->dalsi->geo.X3=Element->dalsi->geo.X2;Element->dalsi->geo.Y3=Element->dalsi->geo.Y2;
 	}
 	else//poslední prvek
 	{

@@ -319,7 +319,6 @@ __published:	// IDE-managed Components
 	TscButton *scButton_zamek_layoutu;
 	TscGPImageCollection *scGPImageCollection_Objekty;
 	TImage *Image_knihovna_objektu;
-	TscGPLabel *scGPLabel_ostatni;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);

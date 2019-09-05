@@ -164,7 +164,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 						if(tab_pruchodu[n].y==1)pom=ukaz->predchozi2->predchozi;
 						else pom=ukaz->predchozi->predchozi;
 					}
-          //vykreslení pouze v případě, že nejsou objekty přilepené na sobě
+					//vykreslení pouze v případě, že nejsou objekty přilepené na sobě
 					if(ukaz->elementy->dalsi->geo.X1!=pom->elementy->predchozi->geo.X4 || ukaz->elementy->dalsi->geo.Y1!=pom->elementy->predchozi->geo.Y4)
 					{
 						canv->MoveTo(m.L2Px(pom->elementy->predchozi->geo.X4),m.L2Py(pom->elementy->predchozi->geo.Y4));
@@ -4402,9 +4402,16 @@ void Cvykresli::smart_kurzor(TCanvas *canv,Cvektory::TElement *E,Cvektory::TElem
 	{
 		preXk=E->geo.X4;
 		preYk=E->geo.Y4;
-		preOR=Ep->geo.orientace;
+		preOR=E->geo.orientace;  //preOR=Ep->geo.orientace;
 		preRA=E->geo.rotacni_uhel;
 	}
+	else
+	{
+		preXk=F->pom_temp->elementy->dalsi->geo.X1;
+		preYk=F->pom_temp->elementy->dalsi->geo.Y1;
+		preOR=F->pom_temp->orientace;
+		preRA=F->pom_temp->elementy->dalsi->geo.rotacni_uhel;
+  }
 	if(Ep!=NULL)prepreRA=Ep->geo.rotacni_uhel;
 	//samotné volání smart kurzoru
 	smart_kurzor(canv,preXk,preYk,preOR,preRA,prepreRA);
