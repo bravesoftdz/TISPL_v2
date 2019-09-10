@@ -626,6 +626,7 @@ private:
   void mGrid_mimo_obraz(Cvektory::TElement *E);//kontrola zde je mGrid mimo obraz, pokud ano vypnutí komponent
 	void nacti_podklad(TCanvas *Canv);
 	unsigned short load_language(Tlanguage language);
+	void zmena_editovaneho_objektu();//slouží k pøechodu z editace jednoho objektu do editace druhého objektu
 
 	////promìnné
 	TDateTime TIME;

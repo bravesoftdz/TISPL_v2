@@ -99,6 +99,8 @@ class Cvektory
 
 		TGeometrie geo;
 		TmGrid *mGrid;
+		unsigned long objekt_n;//příslušnost elementu k objektu
+		TPohon *pohon;//přiřazený pohon k elementu
 
 		//UnicodeString poznamka;//uloží poznámku   //DOPRYC
 

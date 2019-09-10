@@ -627,6 +627,8 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 	else
 		{konec.x=X;konec.y=novy->body->dalsi->dalsi->Y;}
 	TElement *zarazka=vloz_element(novy,MaxInt,konec.x,konec.y,0);
+	zarazka->objekt_n=novy->n;
+	zarazka->pohon=NULL;//při vkládání objektu nemůže být přiřazen pohon
 	//definice bodů geometrie
 	vloz_G_element(zarazka,0,X,Y,0,0,0,0,konec.x,konec.y,novy->orientace);
 	zarazka=NULL;delete zarazka;
@@ -737,7 +739,6 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 //zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze ukazatel na mGrid originálu zůstané propojený
 void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 {
-	F->log(__func__," začátek");//logování
 	Kopie->n=Original->n;
 	Kopie->id=Original->id;
 	Kopie->short_name=Original->short_name;
@@ -765,9 +766,7 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->koty_elementu_offset=Original->koty_elementu_offset;
 	Kopie->komora=NULL;//POZORO TOTO NENÍ ZCELA SPRÁVNĚ, MĚLO BY SE NEJDŘÍVE SMAZAT PŘIDRUŽENÝ SPOJÁK, ABY NEZŮSTAL V PAMĚTI
 	Kopie->body=NULL;//POZORO TOTO NENÍ ZCELA SPRÁVNĚ, MĚLO BY SE NEJDŘÍVE SMAZAT PŘIDRUŽENÝ SPOJÁK, ABY NEZŮSTAL V PAMĚTI
-	F->log(__func__," před kopiruj komory");//logování
 	if(Kopie->id==3)kopiruj_komory(Original,Kopie);//pokud se jedná o POWash
-  F->log(__func__," za kopiruj komory");//logování
 	Kopie->cekat_na_palce=Original->cekat_na_palce;
 	Kopie->stopka=Original->stopka;
 	Kopie->odchylka=Original->odchylka;
@@ -781,10 +780,9 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->zobrazit_koty=Original->zobrazit_koty;//proměnná určující, zda se budou zobrzovat kóty
 	Kopie->zobrazit_mGrid=Original->zobrazit_mGrid;//proměnná určující, zda budou zobrazeny mGridy
 	Kopie->uzamknout_nahled=Original->uzamknout_nahled;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
-	F->log(__func__," před kopiruj elementy");//logování
 	//obě kopírovací metody musí být ke konci
-	kopiruj_elementy(Original,Kopie); F->log(__func__," za kopiruj elementy/před kopiruj body");//logování
-	kopiruj_body(Original,Kopie);   F->log(__func__," za kopiruj body/konec");//logování
+	kopiruj_elementy(Original,Kopie);
+	kopiruj_body(Original,Kopie);
 }
 //---------------------------------------------------------------------------
 //ověří, zda se na souřadnicích myši nachází nějaký objekt, pokud ano, vrátí na něj ukazatel, jinak vrátí NULL
@@ -1879,6 +1877,11 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->RT=0;//reserve time
 	novy->stav=1;
 	novy->PD=-1;//defaultní stav pro S&G roboty
+	if(F->pom_temp!=NULL)
+	{
+		novy->objekt_n=F->pom_temp->n;//příslušnost elementu k objektu
+		novy->pohon=F->pom_temp->pohon;//pohon na kterém se nachází element
+	}
 
 	//název
 	AnsiString T="";

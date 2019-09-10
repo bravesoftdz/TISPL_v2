@@ -215,6 +215,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 			if(E->n>0)
 			{
 				vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->LO1,E->OTOC_delka,E->LO2,E->LO_pozice);
+				if(E->eID==MaxInt)vykresli_zarazku(canv,E);
 				E->citelna_oblast.rect3=aktOblast;//uložení citelné oblasti pro další použití
 				//vykreslení kót
 				if(F->pom_temp!=NULL && F->pom_temp->n==O->n && F->pom_temp->zobrazit_koty && E->eID!=MaxInt){vykresli_kotu(canv,E->predchozi,E);}//mezi elementy
@@ -302,6 +303,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	TextFraming(canv,X,Y,Tn);//záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
 	canv->Font->Orientation=0;//vrácení původní hodnoty rotace canvasu
 	//vykreslení uchopovacího kříže u textu
+	canv->Pen->Color=clBlack;canv->Pen->Width=1;
 	if(F->pom_temp!=NULL &&(F->JID==-6 || F->JID==-7))
 	{
 		line(canv,m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0),m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn)+20,m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0)-40,m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn)+20);
@@ -2186,7 +2188,7 @@ void Cvykresli::odznac_oznac_vyhybku(TCanvas *canv, int X, int Y,Cvektory::TObje
 		if(posun)p1=p->predchozi;//pokud se jedná o posun objektu
 		if(posun && p->dalsi==NULL)p2=v.OBJEKTY->dalsi;//pokud se jedná o posun objektu a jedná se o poslední prvek
 
-    //samotný algoritmus
+		//samotný algoritmus
 		if(p1->n>0&&!posun)//pokud už existuje nějaký prvek
 		{
 			if(X!=-200 && Y!=-200 && p2!=NULL)//spojovací linie  //pokud je mimo obraz -200 jen nahodilá hodnota
@@ -2238,7 +2240,7 @@ void Cvykresli::odznac_oznac_vyhybku(TCanvas *canv, int X, int Y,Cvektory::TObje
 			canv->LineTo(CorEx(p2),CorEy(p2));
 			if(p->dalsi2!=NULL&&p->id==(unsigned)F->VyID)
 	  	{
-	  		canv->MoveTo(X,Y);
+				canv->MoveTo(X,Y);
 	  		canv->LineTo(CorEx(p->dalsi2),CorEy(p->dalsi2));
 	  		sipka(canv,(CorEx(p->dalsi2)+X)/2,(CorEy(p->dalsi2)+Y)/2,m.azimut(m.P2Lx(X),m.P2Ly(Y),p->dalsi2->X,p->dalsi2->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
 	  		if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
@@ -2246,10 +2248,10 @@ void Cvykresli::odznac_oznac_vyhybku(TCanvas *canv, int X, int Y,Cvektory::TObje
 	  	}
 			if(p->predchozi2!=NULL&&p->id==pocet_objektu_knihovny+1)
 			{
-	  		canv->MoveTo(X,Y);
-	  		canv->LineTo(CorEx(p->predchozi2),CorEy(p->predchozi2));
-	  		sipka(canv,(CorEx(p->predchozi2)+X)/2,(CorEy(p->predchozi2)+Y)/2,m.azimut(p->predchozi2->X,p->predchozi2->Y,m.P2Lx(X),m.P2Ly(Y)),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
-	  		if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
+				canv->MoveTo(X,Y);
+				canv->LineTo(CorEx(p->predchozi2),CorEy(p->predchozi2));
+				sipka(canv,(CorEx(p->predchozi2)+X)/2,(CorEy(p->predchozi2)+Y)/2,m.azimut(p->predchozi2->X,p->predchozi2->Y,m.P2Lx(X),m.P2Ly(Y)),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
+				if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
 				vykresli_objekt(canv,p->dalsi2); //znovupřekreslení zúčastněných objektů pro lepší vzhled, nyní řešeno v formmousedown viz  d.odznac_oznac_objekt, nevýhodou pouze zůstavá překreslování linie v místě objektu
 			}
 			sipka(canv,(CorEx(p2)+X)/2,(CorEy(p2)+Y)/2,m.azimut(m.P2Lx(X),m.P2Ly(Y),p2->X,p2->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
@@ -3903,6 +3905,27 @@ void Cvykresli::vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiStr
 			canv->TextOutW(X-canv->TextWidth(name)/2,m.round(Y+vzdalenost+polomer-odsazeni),name); //1 pouze korekce
 			canv->TextOutW(X-canv->TextWidth(short_name)/2,m.round(Y+vzdalenost+polomer+1*Z+canv->TextHeight(name)-odsazeni),short_name);
 		}
+	}
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::vykresli_zarazku(TCanvas *canv,Cvektory::TElement *E)
+{
+	if(F->Akce==F->GEOMETRIE)
+	{
+		double X=m.L2Px(E->X),Y=m.L2Py(E->Y);
+		unsigned short W=Form1->Zoom*0.25;
+		canv->Pen->Style=psSolid;
+		canv->Brush->Style=bsSolid;
+		canv->Brush->Color=m.clIntensive(clBlack,180);
+		canv->Pen->Color=m.clIntensive(clBlack,180);
+		canv->Pen->Mode=pmCopy;
+		canv->Pen->Width=m.round(Form1->Zoom);
+		canv->Ellipse(X-W,Y-W,X+W,Y+W);
+//		switch((int)m.Rt90(E->geo.orientace+90))
+//		{
+//			case 0:case 180:line(canv,X-W,Y,X+W,Y);break;
+//			case 90:case 270:line(canv,X,Y-W,X,Y+W);break;
+//		}
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
