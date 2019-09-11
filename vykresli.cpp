@@ -227,6 +227,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)O=v.vrat_objekt(O->n);//pokud byl objekt nahrazen pom_temp, musí dojít k jeho vrácení, pom_temp->dalsi != Objekty->dalsi
 		O=F->d.v.dalsi_krok(O,tab_pruchodu);//přepínání kroků v cyklu (dalsi/dalsi2)
 	}
+	if(F->pom_temp!=NULL)vykresli_objekt(canv,F->pom_temp);//vykreslení obrysu editované kabiny na ostatní, tj. do popředí
 	//povolení zobrazování LAYOUTU a ČASOVÝCH OS, pokud existují objekty, jinak ne
 //	if(v.OBJEKTY->dalsi!=NULL && !Form1->TZF)
 //	{
@@ -4412,9 +4413,10 @@ void Cvykresli::uchop(TCanvas *canv,Cvektory::TBod *B,TColor barva)
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-//volání smart kurzoru (přetížená metoda) sloužícího pro výběr geometrického elementu, to dle předchozích parametrů resp. typů geometrických elementu a zadaných vstupních paramerů metody, tj. dle posledního existujícího elementu a jeho přechozího elementu (vyžadováno zadávání druhého parametru min. do změny DM, u výhybek se ukáže..., připadně druhý parametr zrušit), lze zadavat jako oba parametry NULL, pokud nejsou předchozí elementy k dispozici
-void Cvykresli::smart_kurzor(TCanvas *canv,Cvektory::TElement *E,Cvektory::TElement *Ep)
+//volání smart kurzoru sloužícího pro výběr geometrického elementu, to dle předchozích parametrů resp. typů geometrických elementu a zadaných vstupního paramerů metody, tj. dle posledního existujícího elementu
+void Cvykresli::smart_kurzor(TCanvas *canv,Cvektory::TElement *E)
 {
+	Cvektory::TElement *Ep=NULL;
 	//příprava atributů
 	double preXk=0;
 	double preYk=0;
@@ -4423,9 +4425,10 @@ void Cvykresli::smart_kurzor(TCanvas *canv,Cvektory::TElement *E,Cvektory::TElem
 	double prepreRA=0;
 	if(E!=NULL)
 	{
+		if(E->predchozi!=NULL && E->predchozi->n>=1)Ep=E->predchozi;
 		preXk=E->geo.X4;
 		preYk=E->geo.Y4;
-		preOR=E->geo.orientace;  //preOR=Ep->geo.orientace;
+		preOR=E->geo.orientace;
 		preRA=E->geo.rotacni_uhel;
 	}
 	else
@@ -4434,8 +4437,9 @@ void Cvykresli::smart_kurzor(TCanvas *canv,Cvektory::TElement *E,Cvektory::TElem
 		preYk=F->pom_temp->elementy->dalsi->geo.Y1;
 		preOR=F->pom_temp->orientace;
 		preRA=F->pom_temp->elementy->dalsi->geo.rotacni_uhel;
-  }
+	}
 	if(Ep!=NULL)prepreRA=Ep->geo.rotacni_uhel;
+	Ep=NULL;delete Ep;
 	//samotné volání smart kurzoru
 	smart_kurzor(canv,preXk,preYk,preOR,preRA,prepreRA);
 }
