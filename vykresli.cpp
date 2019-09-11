@@ -4425,20 +4425,21 @@ void Cvykresli::smart_kurzor(TCanvas *canv,Cvektory::TElement *E)
 	double prepreRA=0;
 	if(E!=NULL)
 	{
-		if(E->predchozi!=NULL && E->predchozi->n>=1)Ep=E->predchozi;
 		preXk=E->geo.X4;
 		preYk=E->geo.Y4;
 		preOR=E->geo.orientace;
 		preRA=E->geo.rotacni_uhel;
+		if(E->predchozi!=NULL && E->predchozi->n>=1)Ep=E->predchozi;//nastavení předchozího elementu pokud exituje
 	}
-	else
+	else//pokud neexistuje žádny předchozí element bude smart kurzor umístěn na začátek kabiny
 	{
 		preXk=F->pom_temp->elementy->dalsi->geo.X1;
 		preYk=F->pom_temp->elementy->dalsi->geo.Y1;
 		preOR=F->pom_temp->orientace;
-		preRA=F->pom_temp->elementy->dalsi->geo.rotacni_uhel;
+		if(F->pom->predchozi!=NULL && F->pom->predchozi->n>=1){preRA=F->pom->predchozi->elementy->predchozi->geo.rotacni_uhel;preOR=F->pom->predchozi->elementy->predchozi->geo.orientace;}//nabrání rotačního úhlu a orientace z předchozího objektu
+		//preRA=F->pom_temp->elementy->dalsi->geo.rotacni_uhel;
 	}
-	if(Ep!=NULL)prepreRA=Ep->geo.rotacni_uhel;
+	if(Ep!=NULL && E!=NULL)prepreRA=Ep->geo.rotacni_uhel;
 	Ep=NULL;delete Ep;
 	//samotné volání smart kurzoru
 	smart_kurzor(canv,preXk,preYk,preOR,preRA,prepreRA);

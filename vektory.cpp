@@ -1939,12 +1939,12 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *Ep)
 		//geometrie
     if(F->pom_temp!=NULL) //nutna podminka, pri nacitani z binarky je pom_temp=NULL a nactou se hodnoty OK
     {                     // bez podminky jsou geo body spatne dopocitavany
-      Element->geo.X1=Element->predchozi->geo.X4;Element->geo.Y1=Element->predchozi->geo.Y4;
+			Element->geo.X1=Element->predchozi->geo.X4;Element->geo.Y1=Element->predchozi->geo.Y4;
 			Element->geo.X4=F->d.Rxy(Element).x;Element->geo.Y4=F->d.Rxy(Element).y;
 			Element->geo.X2=Element->geo.X1+(Element->geo.X4-Element->geo.X1)/2.0;Element->geo.Y2=Element->geo.Y1+(Element->geo.Y4-Element->geo.Y1)/2.0;
 			Element->geo.X3=Element->geo.X2;Element->geo.Y3=Element->geo.Y2;
-      //Element->geo.typ=?
-      //Element->geo.delka=?
+			Element->geo.typ=0;
+			Element->geo.delka=F->m.delka(Element->geo.X1,Element->geo.Y1,Element->geo.X2,Element->geo.Y2);
     }
 	}
 	else if(p->n!=Element->n)//vkládám mezi elementy, vpřípadě, že bylo vloženo před prví prvek vrací Element, přesun je již vyřešen
@@ -1959,13 +1959,13 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *Ep)
 		Element->geo.X4=F->d.Rxy(Element).x;Element->geo.Y4=F->d.Rxy(Element).y;
 		Element->geo.X2=Element->geo.X1+(Element->geo.X4-Element->geo.X1)/2.0;Element->geo.Y2=Element->geo.Y1+(Element->geo.Y4-Element->geo.Y1)/2.0;
 		Element->geo.X3=Element->geo.X2;Element->geo.Y3=Element->geo.Y2;
-		//Element->geo.typ=?
-		//Element->geo.delka=?
-		Element->dalsi->geo.X1=Element->geo.X4;Element->dalsi->geo.Y1=Element->geo.Y4;
-		Element->dalsi->geo.X2=p->geo.X1+(p->geo.X4-p->geo.X1)/2.0;Element->dalsi->geo.Y2=p->geo.Y1+(p->geo.Y4-p->geo.Y1)/2.0;
-		Element->dalsi->geo.X3=p->geo.X2;Element->dalsi->geo.Y3=p->geo.Y2;
-		//Element->geo.typ=?
-		//Element->geo.delka=?
+		Element->geo.typ=0;
+		Element->geo.delka=F->m.delka(Element->geo.X1,Element->geo.Y1,Element->geo.X2,Element->geo.Y2);
+		Element->dalsi->geo.X1=F->d.Rxy(Element).x;Element->dalsi->geo.Y1=F->d.Rxy(Element).y;
+		Element->dalsi->geo.X2=Element->dalsi->geo.X1+(Element->dalsi->geo.X4-Element->dalsi->geo.X1)/2.0;Element->dalsi->geo.Y2=Element->geo.Y1+(Element->dalsi->geo.Y4-Element->dalsi->geo.Y1)/2.0;
+		Element->dalsi->geo.X3=Element->dalsi->geo.X2;Element->dalsi->geo.Y3=Element->dalsi->geo.Y2;
+		Element->dalsi->geo.typ=0;
+		Element->dalsi->geo.delka=F->m.delka(Element->dalsi->geo.X1,Element->dalsi->geo.Y1,Element->dalsi->geo.X2,Element->dalsi->geo.Y2);
 		//změna indexů
 		int n=1;
 		Cvektory::TElement *E=Objekt->elementy->dalsi;
@@ -2000,10 +2000,6 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *Ep)
 		E=NULL;delete E;
 		//změna názvů
 		uprav_popisky_elementu(Objekt,Element);
-		//geometrie Ep
-		Ep->geo.X1=Element->X;Ep->geo.Y1=Element->Y;
-		Ep->geo.X2=Ep->geo.X1+(Ep->geo.X4-Ep->geo.X1)/2.0;Ep->geo.Y2=Ep->geo.Y1+(Ep->geo.Y4-Ep->geo.Y1)/2.0;
-		Ep->geo.X3=Ep->geo.X2;Ep->geo.Y3=Ep->geo.Y2;
 	}
 }
 ////---------------------------------------------------------------------------
@@ -2613,6 +2609,11 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 									}
 								}
 						 }
+						 else if(E->eID==MaxInt && F->Akce==F->GEOMETRIE)//zarážka
+						 {
+							if(m.PtInCircle(X,Y,E->X,E->Y,0.3))break;
+							else E=E->dalsi;
+						 }
 						 else E=E->dalsi;//pokud E neodpovídá žádnému odchytávanému elementu, může se ještě  jednat např. o element zarážka
 						}
 					}
@@ -2702,7 +2703,20 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			if(F->pom_temp->orientace==90 && (m.P2Lx(E.left)+vzd_pos<F->pom_temp->elementy->dalsi->geo.X1 || F->pom_temp->elementy->predchozi->geo.X4<m.P2Lx(E.right)+vzd_pos))posun_povolit=false;
 			if(F->pom_temp->orientace==180 && (m.P2Ly(E.top)+vzd_pos>F->pom_temp->elementy->dalsi->geo.Y1 || F->pom_temp->elementy->predchozi->geo.Y4>m.P2Ly(E.bottom)))posun_povolit=false;
 			if(F->pom_temp->orientace==270 && (m.P2Lx(E.right)+vzd_pos>F->pom_temp->elementy->dalsi->geo.X1 || F->pom_temp->elementy->predchozi->geo.X4>m.P2Lx(E.left)+vzd_pos))posun_povolit=false;
-			if(pusun_dalsich_elementu)//kontrola pro poslední prvek pokud je povolen posun dalších elementů
+			//nepovolení posunu před nebo za element který nemá v geo linii
+//			if(Element->dalsi!=NULL && Element->dalsi->geo.typ!=0)
+//			{
+//				TRect Ed=F->souradnice_LO(Element->dalsi); F->Memo(Ed.left);
+//				switch((int)F->pom_temp->orientace)
+//				{
+//					case 0:break;
+//					case 90:if(m.P2Lx(E.right)+vzd_pos>=m.P2Lx(Ed.left))posun_povolit=false;break;
+//					case 180:break;
+//					case 270:break;
+//				}
+//			}
+//			//if(Element->predchozi!=NULL && Element->predchozi->n>=1);
+//			if(pusun_dalsich_elementu)//kontrola pro poslední prvek pokud je povolen posun dalších elementů
 			{
 				TRect E_posledni=F->souradnice_LO(F->pom_temp->elementy->predchozi->predchozi);
 				if(F->pom_temp->orientace==0 && F->pom_temp->elementy->predchozi->geo.Y4<m.P2Ly(E_posledni.top)+vzd_pos)posun_povolit=false;
@@ -2769,8 +2783,8 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			}
 		}RET=posun_povolit;
 	}
-	Cvektory::TElement *E=vloz_element_za(F->pom_temp,Element);
-	if(E!=NULL&&E->n!=Element->n)zmen_poradi_elementu(Element,E);
+	Cvektory::TElement *E=vloz_element_za(F->pom_temp,Element);//vyřeší změnu pořadí pokud se vloží před první, jinak vráti ukazatel na novou pozici
+	if(E!=NULL&&E->n!=Element->n)zmen_poradi_elementu(Element,E);//provede změnu pořadí
 	E=NULL; delete E;
 	return RET;
 }
