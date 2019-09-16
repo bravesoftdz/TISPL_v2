@@ -571,7 +571,6 @@ private:
   void odstraneni_elementu_tab_pohon(int operace);
 	void prirazeni_pohonu_tab_pohon(int index_pohonu);//pøedesignuje tabulku pohonu po pøidání elementu, nebo pohonu
 	void zmena_jednotek_tab_pohon();
-	void design_element(Cvektory::TElement *E,bool prvni_spusteni);//nadesignuje tabulky daného elementu
 	void prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla,AnsiString LO,AnsiString cas,AnsiString delka_otoce);
 	void dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla,AnsiString LO,AnsiString cas,AnsiString delka_otoce);
 	void zmen_poradi_objektu(int X, int Y);//testuje zda se nejedná o zmìnu poøadí (to musí ještì uživatel potvrdit)
@@ -627,8 +626,7 @@ private:
 	void nacti_podklad(TCanvas *Canv);
 	unsigned short load_language(Tlanguage language);
 	void zmena_editovaneho_objektu();//slouží k pøechodu z editace jednoho objektu do editace druhého objektu
-	TPoint bod_vlozeni_elementu();//vrací bod vložení elementu, "pøilepuje" kurzor na geometrii pokud se jedná o pøímku
-	TPoint uprav_bod_vlozeni_elementu(TPoint bod_vlozeni,short rotace_symbolu);//upraví bod kurzoru pro vložení elemntu na bod vykreslení elementu (robot na konci ramena)
+	TPoint uprav_bod_vlozeni_elementu(TPoint bod_vlozeni,short rotace_symbolu,int eID=-1);//upraví bod kurzoru pro vložení elemntu na bod vykreslení elementu (robot na konci ramena)
 
 	////promìnné
 	TDateTime TIME;
@@ -668,6 +666,7 @@ private:
 	bool offset_spolus_rozmerem;//uchovává v sobì, zda má být pøi zmìnì rozmerù kabiny zmìnì i offset kót elementù
 	UnicodeString Jazyk;
 	int count_memo;//counter pro memo
+	bool editace_geometrie_spustena;
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
@@ -782,6 +781,8 @@ public:		// User declarations
 	TRect souradnice_LO(Cvektory::TElement *E);//vrací souøadnice (PX) lakovacího okna elementu pokud nìjaké má,pokud ne vrátí souøadnice elementu
 	bool prekryti_LO(Cvektory::TElement *E);//prozkoumá zda se element nepøekrýva lak. oknem se sousedními
 	double vzdalenost_meziLO(Cvektory::TElement *E,double orientace);//vrati delku v metrech mezi LO elementù
+	void design_element(Cvektory::TElement *E,bool prvni_spusteni);//nadesignuje tabulky daného elementu
+	TPoint bod_vlozeni_elementu(Cvektory::TElement *E_kontrolni=NULL);//vrací bod vložení elementu, "pøilepuje" kurzor na geometrii pokud se jedná o pøímku, parametr E_kontorlní slouží ke kontrole tohoto elementu zda se nachází na pøímce (pøi posunu)
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
