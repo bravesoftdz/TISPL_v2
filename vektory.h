@@ -756,6 +756,7 @@ private:
 
       unsigned int akt_pocet_voziku;
       unsigned int max_pocet_voziku;
+      unsigned long objekt_n;//příslušnost elementu k objektu
 			TGeometrie geo;
 	};
 
