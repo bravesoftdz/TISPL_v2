@@ -5351,6 +5351,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 						cE->RT=E->RT;
 						cE->akt_pocet_voziku=E->akt_pocet_voziku;
 				 		cE->max_pocet_voziku=E->max_pocet_voziku;
+            cE->objekt_n=E->objekt_n;
 						cE->geo=E->geo;
 						//uložení do binárního filu
 						FileStream->Write(cE,sizeof(C_element));//zapiše jeden prvek do souboru
@@ -5649,6 +5650,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
             E->RT=cE.RT;
             E->akt_pocet_voziku=cE.akt_pocet_voziku;
 						E->max_pocet_voziku=cE.max_pocet_voziku;
+            E->objekt_n=cE.objekt_n;
 						E->geo=cE.geo;
 						//shortname
 						wchar_t *short_name=new wchar_t [5];
