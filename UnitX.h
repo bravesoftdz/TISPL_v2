@@ -36,15 +36,18 @@ public:		// User declarations
 	void OnChange(long Tag,long ID,unsigned long Col,unsigned long Row);
 	void OnKeyPress(long Tag,long ID,unsigned long Col,unsigned long Row,System::WideChar &Key);
 	void odstranit_korelaci(bool predat_focus=true);//odstraní veškerou korelaci, nepoviný prametr urèuje zda má být pøedán focus z mGridu, defaultnì focus pøedává
-	void validace();//validace zadávané aktuální rychlosti
+	void validace_aRD();//validace zadávané aktuální rychlosti
+	void validace_max_voziku();//validace maximálního poètu vozíkù na stopce
 	void povolit_zakazat_editaci(bool povolit);//zakazuje èi povolí komponenty v tabulce pohonu a všech tabulkách elementu
 	void naplneni_dopRD();//doplni doporuèenou rychlost do tabulky pohonu
+	bool naplneni_max_voziku(double X,double Y,bool check_for_highlight=false);//doplní doporuèený poèet maximálních vozíku po kliku
 
 	//promìnné pro vyøazení OnChange metody pøi vykreslování tabulek
-  enum Tinput_state{NO,NOTHING,PT,PT2,LO,LO2,WT,DO,PTotoc,COMBO,aRD,R,Rz,Rx};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
+  enum Tinput_state{NO,NOTHING,PT,PT2,LO,LO2,WT,DO,PTotoc,COMBO,aRD,R,Rz,Rx,P_VOZ};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
 	Tinput_state input_state;//stav vstupu PT,LO,DelkaOtoce...
 	bool vstoupeno_poh, vstoupeno_elm,validace_true;
 	double dopRD;
+	Cvektory::TElement *posledni_E;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFormX *FormX;

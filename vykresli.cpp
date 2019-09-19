@@ -394,10 +394,10 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				//vykreslení kót komor
 				switch((int)orientace)
 				{
-					case 0:vykresli_kotu(canv,m.P2Lx(X2),m.P2Ly(Y1)+vzdalenost-K->velikost,m.P2Lx(X2),m.P2Ly(Y1)+vzdalenost,NULL,O->koty_elementu_offset,highlight,0.2,clGray,K);break;
-					case 90:vykresli_kotu(canv,m.P2Lx(X1)+vzdalenost-K->velikost,m.P2Ly(Y2),m.P2Lx(X1)+vzdalenost,m.P2Ly(Y2),NULL,O->koty_elementu_offset,highlight,0.2,clGray,K);break;
-					case 180:vykresli_kotu(canv,m.P2Lx(X2),m.P2Ly(Y1)-vzdalenost+K->velikost,m.P2Lx(X2),m.P2Ly(Y1)-vzdalenost,NULL,O->koty_elementu_offset,highlight,0.2,clGray,K);break;
-					case 270:vykresli_kotu(canv,m.P2Lx(X1)-vzdalenost+K->velikost,m.P2Ly(Y2),m.P2Lx(X1)-vzdalenost,m.P2Ly(Y2),NULL,O->koty_elementu_offset,highlight,0.2,clGray,K);break;
+					case 0:vykresli_kotu(canv,m.P2Lx(X2),m.P2Ly(Y1)+vzdalenost-K->velikost,m.P2Lx(X2),m.P2Ly(Y1)+vzdalenost,NULL,O->koty_elementu_offset,highlight,0.2,clGray,false,K);break;
+					case 90:vykresli_kotu(canv,m.P2Lx(X1)+vzdalenost-K->velikost,m.P2Ly(Y2),m.P2Lx(X1)+vzdalenost,m.P2Ly(Y2),NULL,O->koty_elementu_offset,highlight,0.2,clGray,false,K);break;
+					case 180:vykresli_kotu(canv,m.P2Lx(X2),m.P2Ly(Y1)-vzdalenost+K->velikost,m.P2Lx(X2),m.P2Ly(Y1)-vzdalenost,NULL,O->koty_elementu_offset,highlight,0.2,clGray,false,K);break;
+					case 270:vykresli_kotu(canv,m.P2Lx(X1)-vzdalenost+K->velikost,m.P2Ly(Y2),m.P2Lx(X1)-vzdalenost,m.P2Ly(Y2),NULL,O->koty_elementu_offset,highlight,0.2,clGray,false,K);break;
 				}
 			}
 			K=K->dalsi;//posun ve spojáku na další prvek
@@ -457,10 +457,10 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 			//vykreslení kót komor
 			switch((int)orientace)
 			{
-				case 0:vykresli_kotu(canv,m.P2Lx(X2),m.P2Ly(Y1)+vzdalenost,m.P2Lx(X2),m.P2Ly(Y2),NULL,O->koty_elementu_offset,highlight,0.2,clGray,O->komora->predchozi);break;
-				case 90:vykresli_kotu(canv,m.P2Lx(X1)+vzdalenost,m.P2Ly(Y2),m.P2Lx(X2),m.P2Ly(Y2),NULL,O->koty_elementu_offset,highlight,0.2,clGray,O->komora->predchozi);break;
-				case 180:vykresli_kotu(canv,m.P2Lx(X2),m.P2Ly(Y1)-vzdalenost,m.P2Lx(X2),m.P2Ly(Y2),NULL,O->koty_elementu_offset,highlight,0.2,clGray,O->komora->predchozi);break;
-				case 270:vykresli_kotu(canv,m.P2Lx(X1)-vzdalenost,m.P2Ly(Y2),m.P2Lx(X2),m.P2Ly(Y2),NULL,O->koty_elementu_offset,highlight,0.2,clGray,O->komora->predchozi);break;
+				case 0:vykresli_kotu(canv,m.P2Lx(X2),m.P2Ly(Y1)+vzdalenost,m.P2Lx(X2),m.P2Ly(Y2),NULL,O->koty_elementu_offset,highlight,0.2,clGray,false,O->komora->predchozi);break;
+				case 90:vykresli_kotu(canv,m.P2Lx(X1)+vzdalenost,m.P2Ly(Y2),m.P2Lx(X2),m.P2Ly(Y2),NULL,O->koty_elementu_offset,highlight,0.2,clGray,false,O->komora->predchozi);break;
+				case 180:vykresli_kotu(canv,m.P2Lx(X2),m.P2Ly(Y1)-vzdalenost,m.P2Lx(X2),m.P2Ly(Y2),NULL,O->koty_elementu_offset,highlight,0.2,clGray,false,O->komora->predchozi);break;
+				case 270:vykresli_kotu(canv,m.P2Lx(X1)-vzdalenost,m.P2Ly(Y2),m.P2Lx(X2),m.P2Ly(Y2),NULL,O->koty_elementu_offset,highlight,0.2,clGray,false,O->komora->predchozi);break;
 			}
 			canv->Brush->Style=bsClear;//navrácení na průhledné pero, kvůli následujícím popiskům objektu, kóty jej totiž změnily
 		}
@@ -2893,7 +2893,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,doubl
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O)//sloučit s výše uvedenou metodou
 {
-	if(O!=NULL && O->elementy!=NULL)
+	if(O!=NULL && O->elementy!=NULL )//&& false)
 	{
 		TPoint *POLE=new TPoint[O->elementy->predchozi->n*3+1];
 		Cvektory::TElement *E=O->elementy->dalsi;
@@ -3911,7 +3911,7 @@ void Cvykresli::vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiStr
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_zarazku(TCanvas *canv,Cvektory::TElement *E)
 {
-	if(F->Akce==F->GEOMETRIE)
+	if(F->Akce==F->GEOMETRIE||DEBUG)
 	{
 		double X=m.L2Px(E->X),Y=m.L2Py(E->Y);
 		unsigned short W=Form1->Zoom*0.25;
@@ -4740,21 +4740,21 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 //v metrických jednotkách kromě width, zde v px + automaticky dopočítává délku a dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně, aktElement pokud bude NULL, předpokládá se, že je to kóta kabiny
 void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,Cvektory::TElement *aktElement,double Offset,short highlight,float width,TColor color,bool LO_kota,Cvektory::TKomora *komora)
 {    //Jednotky=" [s]";if(F->DKunit==3)Jednotky=" [min]";
-	double delka=0;
+	double delka=0;      
 	if(F->pom_temp->pohon==NULL && F->DKunit>1)F->DKunit=F->DKunit-2;//ošetření pro případ není pohon a jsou špatně nastaveny jednotky
 	if(F->DKunit>1)//zobrazení kót v čase
-	{
+	{               
 		if(F->pom_temp->pohon!=NULL && F->pom_temp->pohon->aRD>0)
 		delka=m.delka(X1,Y1,X2,Y2)/F->pom_temp->pohon->aRD/(1+59.0*(F->DKunit-2));//výpočet délky a šířky kabiny + případný převod m->mm
 		if(aktElement!=NULL) delka=v.vzdalenost_od_predchoziho_elementu(aktElement)/F->pom_temp->pohon->aRD/(1+59.0*(F->DKunit-2));//výpočet vzdálenosti mezi elementy
 		if(LO_kota)delka=m.round2double(F->vzdalenost_meziLO(aktElement,F->pom_temp->orientace),2)/F->pom_temp->pohon->aRD/(1+59.0*(F->DKunit-2));
 	}
 	else//standardní zobrazení ve vzdálenost
-	{
+	{                       
 		delka=m.delka(X1,Y1,X2,Y2)*(1+999*F->DKunit);//výpočet délky a šířky kabiny + případný převod m->mm
-		if(aktElement!=NULL) delka=v.vzdalenost_od_predchoziho_elementu(aktElement)*(1+999*F->DKunit);//výpočet vzdálenosti mezi elementy
-		if(LO_kota)delka=F->outDK(m.round2double(F->vzdalenost_meziLO(aktElement,F->pom_temp->orientace),2));
-	}
+		if(aktElement!=NULL)delka=v.vzdalenost_od_predchoziho_elementu(aktElement)*(1+999*F->DKunit);//výpočet vzdálenosti mezi elementy
+		if(LO_kota)delka=F->outDK(m.round2double(F->vzdalenost_meziLO(aktElement,F->pom_temp->orientace),2));   
+	}                         
 	//odstaveno zobrazujeme na 3 realná delka=m.round2double(delka,8);//výpočet délky s max zobrazením na 8 míst (z důvodu případů 0.000000001 atp.) pouze v případě metrů, v mm by přetékalo při výpočtu, bylo by třeba long double
 	//if(!F->DKunit)delka=m.round2double(delka,5);//výpočet délky s max zobrazením na 8 míst (z důvodu případů 0.000000001 atp.) pouze v případě metrů, v mm by přetékalo při výpočtu, bylo by třeba long double
 	//else delka=m.round2double(delka,3);//if(AnsiString(delka).Pos("00000000001"))F->ms.MyToDouble(AnsiString(delka).SubString(1,AnsiString(delka).Pos("00000000001")-1));//pro mm ošetření proti 00000000001, protože nelze použít zaokrouhlení na větší počet desitnných míst
@@ -4765,7 +4765,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //v px + dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně, aktElement pokud bude NULL, předpokládá se, že je to kóta kabiny
 void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,AnsiString Text,Cvektory::TElement *aktElement,int Offset,short highlight,float width, TColor color,bool LO_kota,Cvektory::TKomora *komora,Cvektory::TBod *bod)
-{
+{                 
 	////vstupní proměnné
 	if(F->JID==-10 && F->MOD==F->NAHLED)highlight=0;//highlight - pokud se mění pouze jednotky, tak se kóta nehiglightuje
 	if(aktElement==NULL&&komora==NULL&&bod==NULL)highlight=0;//highlight -odstranění highlightu na kótách mezi lak. okny

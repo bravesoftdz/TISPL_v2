@@ -39,8 +39,8 @@ class Cvektory
 		double rychlost_do;//maximální pracovní rychlost dopravníku
 		double aRD;//aktuální rychlost dopravníku m/s
 		double roztec;//rozteč palců v m
-		double Rz;//rozestup aktivních palců v m                        -asi bude možné odstranit
-		double Rx;//rozestup aktivních palců (počet aktivních palců)    -asi bude možné odstranit
+		double Rz;//rozestup aktivních palců v m
+		double Rx;//rozestup aktivních palců (počet aktivních palců)
 		struct TPohon *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 		struct TPohon *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
@@ -457,7 +457,7 @@ class Cvektory
 //metody pro ELEMENTY
 	void hlavicka_elementy(TObjekt *Objekt);//danému objektu vytvoří hlavičku elementů
 	TElement *vloz_element(TObjekt *Objekt,unsigned int eID, double X, double Y,short rotace_symbolu,TElement *Ep=NULL);//vloží element do spojového seznamu elementů daného technologického objektu a zároveň na něj vrátí ukazatel
-	void vloz_element(TObjekt *Objekt,TElement *Element,TElement *Ep=NULL);//vloží element do spojového seznamu elementů daného technologického objektu
+	void vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_razeni=NULL);//vloží element do spojového seznamu elementů daného technologického objektu
 	Cvektory::TElement *vloz_element_za(TObjekt *Objekt,TElement *Element);//kontrola zda vkládaný element bude umístěn na konec nebo mezi jiné elementy, pokud bude vkládán na konec return=NULL, pokud mezi elementy return=ukazatel na předchozí element
 	void vloz_G_element(TElement *Element,short typ,double X1,double Y1,double X2,double Y2,double X3,double Y3,double X4,double Y4,double orientace=0,double rotacni_uhel=0,double radius=0,double delka=0);//danému elementu přiřadí/naplní geometrickou složku
 	void uprav_popisky_elementu(TObjekt *Objekt, TElement *Element);//upraví indexy a popisky elementů po vloženém elementu (parametr Element), pokud dostane parametrem Element NULL přejmenuje a přeindexuje všechny ovlovněné elementy do původního stavu (tlačítko storno)
@@ -483,8 +483,9 @@ class Cvektory
 	void napln_comba_stopek();//obsah všech comboboxu všech stopek nejdříve smaže a následně naplní combobox stopky ostatními elementy, které mohou být s danou stopkou spárované, nevypisuje danou stopku, vybere v combu stop-element spárovaný či předchozí, buď navržený nebo uživatelsky vybraný
 	void napln_combo_stopky(TElement *Stopka);//nejdříve smaže obsah comboboxu a následně naplní combobox stopky ostatními elementy, které mohou být s danou stopkou spárované, nevypisuje danou stopku, vybere v combu stop-element spárovaný či předchozí, buď navržený nebo uživatelsky vybraný
 	void uloz_sparovany_element(TElement *Stopka);//uloží dané stopce ukazatel na sparovaný stop element, který byl vybraný v Combu dané stopky, ošetřuje zda se jedná o stopku
-	TElement *vrat_predchozi_stop_element(TElement *Stopka);//dané stopce najde předchozí stop-element na lince, je možno, že nebude reflektovat danou zakázku
-  TElement *Cvektory::vrat_predchozi_element(TElement *Element);//vrátí předchozí element k Element, který byl do metody poslán jako parametr, přeskočí geometrické zarážky
+	void vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt);//dané stopce najde předchozí stop-element na lince, je možno, že nebude reflektovat danou zakázku//nově se podívá na předchozí stop-element a přiřadí mu ukazatel na Element
+	void aktualizuj_sparovane_ukazatele();//projde všechny stop-elementy a aktualizuje jim ukazatele na spárované elementy
+	TElement *Cvektory::vrat_predchozi_element(TElement *Element);//vrátí předchozí element k Element, který byl do metody poslán jako parametr, přeskočí geometrické zarážky
 	void smaz_element(TObjekt *Objekt, unsigned int n);//smaže element ze seznamu
 	void smaz_element(TElement *Element);//smaže element ze seznamu
 	long vymaz_elementy(TObjekt *Objekt,bool mGridSmazat=true);//vymaže všechny elementy daného objektu včetně hlavičky a vrátí počet smazaných elementů (počítáno bez hlavičky), automaticky, pokud posledním parametreme není nastaveno jinak, smaže přidružený mGrid

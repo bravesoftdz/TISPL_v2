@@ -564,6 +564,7 @@ private:
 	void move_objekt(int X, int Y);
 	void add_element(int X, int Y);
 	void add_komoru();//pøidávání komory kabinì powerwashe, kontrola zda není souèet kabin vìtší ne rozmìr kabiny
+	void vlozit_predavaci_misto();//projde elementy a objekty, pokud je nìkde nutnost vloit pøedávací místo vloí ho tam
 	short rotace_symbol(short trend,int X_bod,int Y_bod);//dle toho, zda je umisovanı element nad osou èi pod osou pohonu je vrácena rotace symbolu, X_bod,.. je bbod vkládání elementu (jedna souøadnice ho váe na pohon)
 	void vytvoreni_tab_knihovna();//vytovoøení tabulky knihovny objektù
 	void popisky_knihovna_nahled(bool knihovna);//pøepíná popisky mezi knihovnou a editací
@@ -663,6 +664,7 @@ private:
 	bool FMaximized;
 	TRect FOldBoundsRect;
 	bool PmGCheckLink;
+	bool StopCheckLink;
 	bool offset_spolus_rozmerem;//uchovává v sobì, zda má bıt pøi zmìnì rozmerù kabiny zmìnì i offset kót elementù
 	UnicodeString Jazyk;
 	int count_memo;//counter pro memo
@@ -782,7 +784,8 @@ public:		// User declarations
 	bool prekryti_LO(Cvektory::TElement *E);//prozkoumá zda se element nepøekrıva lak. oknem se sousedními
 	double vzdalenost_meziLO(Cvektory::TElement *E,double orientace);//vrati delku v metrech mezi LO elementù
 	void design_element(Cvektory::TElement *E,bool prvni_spusteni);//nadesignuje tabulky daného elementu
-	TPoint bod_vlozeni_elementu(Cvektory::TElement *E_kontrolni=NULL);//vrací bod vloení elementu, "pøilepuje" kurzor na geometrii pokud se jedná o pøímku, parametr E_kontorlní slouí ke kontrole tohoto elementu zda se nachází na pøímce (pøi posunu)
+	TPoint bod_vlozeni_elementu(double kontr_x=-1000,double kontr_y=-1000);//vrací bod vloení elementu, "pøilepuje" kurzor na geometrii pokud se jedná o pøímku, parametry kontr_x a y slouí ke kontrole bodu zda se nachází na pøímce (pøi posunu)
+	bool bod_na_geometrii(double X, double Y);//kontroluje zde se bod nachází na geometri, vrací pouze ano/ne
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

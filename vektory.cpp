@@ -1912,19 +1912,20 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	}                  //číslování mGridů zvlášť!!! z důvodu přehazování elementů
 
 	//ukazatel na spárovaný element
-	novy->sparovany=vrat_predchozi_stop_element(novy);//metoda již v sobě ošetřuje, že se bude jednat o stopku
+	novy->sparovany=NULL;
+	vrat_predchozi_stop_element(novy,Objekt);//metoda již v sobě ošetřuje, že se bude jednat o stopku
 	//návrácení ukazatelele na element k dalšímu použití
 	return novy;
 }
 ////---------------------------------------------------------------------------
 //vloží element do spojového seznamu elementů daného technologického objektu
-void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *Ep)
+void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_razeni)
 {
 	if(Objekt->elementy==NULL)hlavicka_elementy(Objekt);//pokud by ještě nebyla založena hlavička, tak ji založí
 
 	Element->n=Objekt->elementy->predchozi->n+1;//navýším počítadlo prvku o jedničku
 
-	if(Ep==NULL)
+	if(force_razeni==NULL)
 	{
 	//kontrola zda je element vkládán za předchozí nebo mezi předchozí
 	Cvektory::TElement *p=vloz_element_za(Objekt,Element);//pokud bude vkládaný elment vložen na konec vrází NULL, pokud mezi vrátí ukazatel na předchozí element
@@ -1936,8 +1937,8 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *Ep)
 		Element->dalsi=NULL;
 		Element->sparovany=NULL;
 		Objekt->elementy->predchozi=Element;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
-		//geometrie
-		if(F->pom_temp!=NULL && Element->n!=1) //nutna podminka, pri nacitani z binarky je pom_temp=NULL a nactou se hodnoty OK
+		//geometrie                              //ošetření proti přiřazování geometrie v metodě kopiruj_elementy
+		if(F->pom_temp!=NULL && Element->n!=1 && Element->Xt==-100)//nutna podminka, pri nacitani z binarky je pom_temp=NULL a nactou se hodnoty OK
 		vloz_G_element(Element,0,Element->predchozi->geo.X4,Element->predchozi->geo.Y4,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,Element->predchozi->geo.orientace);
 	}
 	else if(p->n!=Element->n)//vkládám mezi elementy, vpřípadě, že bylo vloženo před prví prvek vrací Element, přesun je již vyřešen
@@ -1963,14 +1964,19 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *Ep)
 		E=NULL;delete E;
 		//změna názvů
 		uprav_popisky_elementu(Objekt,Element);
+		if(Element->eID%2==0 || p->eID%2==0)aktualizuj_sparovane_ukazatele();//došlo ke změně pořadí přičemž jeden z elementů je stop-element
 	}
 	p=NULL; delete p;
 	}
 	else
 	{
-		if(Ep->n==1){Objekt->elementy->dalsi=Element;Element->predchozi=Objekt->elementy;}else {Ep->predchozi->dalsi=Element;Element->predchozi=Ep->predchozi;}
-		Element->dalsi=Ep;
-		Ep->predchozi=Element;
+		if(force_razeni->n==F->pom_temp->elementy->predchozi->n){Element->dalsi=NULL;F->pom_temp->elementy->predchozi=Element;force_razeni->dalsi=Element;Element->predchozi=force_razeni;}
+		else
+		{
+			if(force_razeni->n==1){Objekt->elementy->dalsi=Element;Element->predchozi=Objekt->elementy;}else {force_razeni->predchozi->dalsi=Element;Element->predchozi=force_razeni->predchozi;}
+			Element->dalsi=force_razeni;
+			force_razeni->predchozi=Element;
+		}
 		//změna indexů
 		int n=1;
 		Cvektory::TElement *E=Objekt->elementy->dalsi;
@@ -2085,6 +2091,7 @@ Cvektory::TElement *Cvektory::vloz_element_za(TObjekt *Objekt,TElement *Element)
 			//změna popisků
 			uprav_popisky_elementu(Objekt,Element);
 			ret=Element;//nastaveno aby v ostatních metodách již nedocházelo k přesunu elementu ve spojáku a přejmenování
+			if(Element->eID%2==0)aktualizuj_sparovane_ukazatele();//došlo ke změně pořadí
 		}
 	}
 	return ret;
@@ -2303,7 +2310,8 @@ void Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->max_pocet_voziku=Original->max_pocet_voziku;
 	Kopie->geo=Original->geo;
 	Kopie->mGrid=new TmGrid(F);//nová strategie, je mgrid, nekopírovat a používat jenom v pom_temp, zde však podmínka zda se jedná o pom_temp nebyla z nějakého důvodu možná
-	//Kopie->poznamka=Original->poznamka;
+	Kopie->objekt_n=Original->objekt_n;
+	Kopie->pohon=Original->pohon;
 	Kopie->sparovany=Original->sparovany;
 }
 ////---------------------------------------------------------------------------
@@ -2685,12 +2693,10 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			if(F->pom_temp->orientace==180 && (m.P2Ly(E.top)+vzd_pos>F->pom_temp->elementy->dalsi->geo.Y1 || F->pom_temp->elementy->predchozi->geo.Y4>m.P2Ly(E.bottom)))posun_povolit=false;
 			if(F->pom_temp->orientace==270 && (m.P2Lx(E.right)+vzd_pos>F->pom_temp->elementy->dalsi->geo.X1 || F->pom_temp->elementy->predchozi->geo.X4>m.P2Lx(E.left)+vzd_pos))posun_povolit=false;
 			//nepovolení posunu před nebo za element který nemá v geo linii
-			TPoint bod;
-			if(Element->orientace==0||Element->orientace==180)Element->X=F->d.Rxy(Element).x+vzd_pos;else Element->Y=F->d.Rxy(Element).y+vzd_pos;//provedení posunu
-			bod=F->bod_vlozeni_elementu(Element);//kontrola zda bude element na pohonu
-			Element->X=F->puv_souradnice.x;Element->Y=F->puv_souradnice.y;//navrácení původních hodnot, tj. před posunem
-			if(bod.x==-1000)posun_povolit=false;//pokud nebude element po posunu na pohonu, zakázat posun
-      //F->Sv();
+			TPoint bod;bod.x=F->d.Rxy(Element).x;bod.y=F->d.Rxy(Element).y;
+			if(Element->orientace==0||Element->orientace==180)bod.x=F->d.Rxy(Element).x+vzd_pos;else bod.y=F->d.Rxy(Element).y+vzd_pos;
+			if(!F->bod_na_geometrii(bod.x,bod.y))posun_povolit=false;
+			if(Element->dalsi!=NULL && Element->dalsi->geo.typ!=0 || Element->geo.typ!=0)posun_povolit=false;//pokud existuje za elementem něco jiného než přímka nelze posunout
 			//kontrola pro poslední prvek pokud je povolen posun dalších elementů
 			if(pusun_dalsich_elementu)
 			{
@@ -2701,11 +2707,9 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				if(F->pom_temp->orientace==180 && E->dalsi->geo.Y4>m.P2Ly(E_posledni.bottom)+vzd_pos)posun_povolit=false;
 				if(F->pom_temp->orientace==270 && E->dalsi->geo.X4>m.P2Lx(E_posledni.left)+vzd_pos)posun_povolit=false;
 				//kontrola zda je na linii
-				TPointD pom_bod;pom_bod.x=E->X;pom_bod.y=E->Y;//pomocný bod pro uchovávání původních souřadnice posledního elementu
-				if(E->orientace==0||E->orientace==180)E->X=F->d.Rxy(E).x+vzd_pos;else E->Y=F->d.Rxy(E).y+vzd_pos;
-				bod=F->bod_vlozeni_elementu(E);
-				E->X=pom_bod.x;E->Y=pom_bod.y;//navrácení původních souřadnic
-				if(bod.x==-1000)posun_povolit=false;
+				TPointD bod;bod.x=F->d.Rxy(E).x;bod.y=F->d.Rxy(E).y;//pomocný bod pro uchovávání původních souřadnice posledního elementu
+				if(E->orientace==0||E->orientace==180)bod.x=F->d.Rxy(E).x+vzd_pos;else bod.y=F->d.Rxy(E).y+vzd_pos;
+        if(!F->bod_na_geometrii(bod.x,bod.y))posun_povolit=false;
 				E=NULL;delete E;
 			}
 			if(vzd.x!=0 && !posun_kurzorem && posun_povolit)//posun z kót
@@ -2815,16 +2819,11 @@ void Cvektory::zmen_poradi_elementu(TElement *aktualni_poradi,TElement *nove_por
 		{
 			ukaz_ap->predchozi->dalsi=ukaz_ap->dalsi;//předchozí bude ukazovat na následující
 			ukaz_ap->dalsi->predchozi=ukaz_ap->predchozi; //následující bude ukazovat na další
-			//aktualizace geometrie
-			ukaz_ap->dalsi->geo.X1=ukaz_ap->predchozi->geo.X4;ukaz_ap->dalsi->geo.Y1=ukaz_ap->predchozi->geo.Y4;
-			ukaz_ap->dalsi->geo.X4=F->d.Rxy(ukaz_ap->dalsi).x;ukaz_ap->dalsi->geo.Y4=F->d.Rxy(ukaz_ap->dalsi).y;
-			ukaz_ap->dalsi->geo.X2=ukaz_ap->dalsi->geo.X1+(ukaz_ap->dalsi->geo.X4-ukaz_ap->dalsi->geo.X1)/2.0;ukaz_ap->dalsi->geo.Y2=ukaz_ap->dalsi->geo.Y1+(ukaz_ap->dalsi->geo.Y4-ukaz_ap->dalsi->geo.Y1)/2.0;
-			ukaz_ap->dalsi->geo.X3=ukaz_ap->dalsi->geo.X2;ukaz_ap->dalsi->geo.Y3=ukaz_ap->dalsi->geo.Y2;
 		}
 		else//pokud se jedná o poslední prvek
 		{
 			F->pom_temp->elementy->predchozi=ukaz_ap->predchozi;
-			ukaz_ap->predchozi->dalsi=NULL;
+			ukaz_ap->predchozi->dalsi=NULL;       //ap = staré pořadní(element co držím kurorem), np = nové pořadí
 		}
 		////////////ukazatelové propojení
 		ukaz_ap->dalsi=ukaz_np->dalsi;
@@ -2832,24 +2831,14 @@ void Cvektory::zmen_poradi_elementu(TElement *aktualni_poradi,TElement *nove_por
 		ukaz_np->dalsi->predchozi=ukaz_ap;
 		ukaz_np->dalsi=ukaz_ap;
 		////////////Aktualizace geometrie
-    //geometrie predchozího elementu pokud předchozím není hlavička
-		if(ukaz_ap->n!=F->pom_temp->elementy->dalsi->n)
-		{
-			if(ukaz_np->n==F->pom_temp->elementy->dalsi->n && ukaz_np->n!=1)//z druhého prvku se stává prvek první, potřeba počátečních souřadnic kabiny
-			ukaz_np->geo.X1=ukaz_ap->geo.X1;ukaz_np->geo.Y1=ukaz_ap->geo.Y1;
-			ukaz_np->geo.X4=F->d.Rxy(ukaz_ap).x;ukaz_np->geo.Y4=F->d.Rxy(ukaz_ap).y;
-			ukaz_np->geo.X2=ukaz_np->geo.X1+(ukaz_np->geo.X4-ukaz_np->geo.X1)/2.0;ukaz_np->geo.Y2=ukaz_np->geo.Y1+(ukaz_np->geo.Y4-ukaz_np->geo.Y1)/2.0;
-			ukaz_np->geo.X3=ukaz_np->geo.X2;ukaz_np->geo.Y3=ukaz_np->geo.Y2;
-		}
+		//geometrie predchozího elementu pokud předchozím není hlavička
+		double x=F->d.Rxy(ukaz_np->predchozi).x,y=F->d.Rxy(ukaz_np->predchozi).y;
+		if(ukaz_np->n==F->pom_temp->elementy->dalsi->n && ukaz_ap->n==1 && ukaz_np->geo.typ==0)vloz_G_element(ukaz_np,0,ukaz_ap->geo.X1,ukaz_ap->geo.Y1,0,0,0,0,F->d.Rxy(ukaz_np).x,F->d.Rxy(ukaz_np).y,ukaz_np->geo.orientace);
+		if(ukaz_np->predchozi->n>0 && ukaz_np->geo.typ==0)vloz_G_element(ukaz_np,0,F->d.Rxy(ukaz_np->predchozi).x,F->d.Rxy(ukaz_np->predchozi).y,0,0,0,0,F->d.Rxy(ukaz_np).x,F->d.Rxy(ukaz_np).y,ukaz_np->geo.orientace);
 		//geometrie vkládaného elementu
-		ukaz_ap->geo.X1=F->d.Rxy(ukaz_np).x;ukaz_ap->geo.Y1=F->d.Rxy(ukaz_np).y;
-		ukaz_ap->geo.X4=F->d.Rxy(ukaz_ap).x;ukaz_ap->geo.Y4=F->d.Rxy(ukaz_ap).y;
-		ukaz_ap->geo.X2=ukaz_ap->geo.X1+(ukaz_ap->geo.X4-ukaz_ap->geo.X1)/2.0;ukaz_ap->geo.Y2=ukaz_ap->geo.Y1+(ukaz_ap->geo.Y4-ukaz_ap->geo.Y1)/2.0;
-		ukaz_ap->geo.X3=ukaz_ap->geo.X2;ukaz_ap->geo.Y3=ukaz_ap->geo.Y2;
+		if(ukaz_ap->geo.typ==0)vloz_G_element(ukaz_ap,0,F->d.Rxy(ukaz_np).x,F->d.Rxy(ukaz_np).y,0,0,0,0,F->d.Rxy(ukaz_ap).x,F->d.Rxy(ukaz_ap).y,ukaz_ap->geo.orientace);
 		//geometrie dalsího elementu
-		ukaz_ap->dalsi->geo.X1=F->d.Rxy(ukaz_ap).x;ukaz_ap->dalsi->geo.Y1=F->d.Rxy(ukaz_ap).y;
-		ukaz_ap->dalsi->geo.X2=ukaz_ap->dalsi->geo.X1+(ukaz_ap->dalsi->geo.X4-ukaz_ap->dalsi->geo.X1)/2.0;ukaz_ap->dalsi->geo.Y2=ukaz_ap->dalsi->geo.Y1+(ukaz_ap->dalsi->geo.Y4-ukaz_ap->dalsi->geo.Y1)/2.0;
-		ukaz_ap->dalsi->geo.X3=ukaz_ap->dalsi->geo.X2;ukaz_ap->dalsi->geo.Y3=ukaz_ap->dalsi->geo.Y2;
+		if(ukaz_ap->dalsi->geo.typ==0)vloz_G_element(ukaz_ap->dalsi,0,F->d.Rxy(ukaz_ap).x,F->d.Rxy(ukaz_ap).y,0,0,0,0,F->d.Rxy(ukaz_ap->dalsi).x,F->d.Rxy(ukaz_ap->dalsi).y,ukaz_ap->dalsi->geo.orientace);
 	}
 	////////////přeindexování (N-hodnoty) v celém seznamu, možno řešit sepáratáně, ale takto to bylo rychleji napsané
 	TElement *E=F->pom_temp->elementy->dalsi;//ukazatel na první element, přeskočí hlavičku, metoda volaná jen v případě, že existují min. 2 elementy
@@ -2861,6 +2850,7 @@ void Cvektory::zmen_poradi_elementu(TElement *aktualni_poradi,TElement *nove_por
 		E=E->dalsi;
 	}
 	E=NULL; delete E;
+	if(ukaz_ap->eID%2==0 || ukaz_np->eID%2==0)aktualizuj_sparovane_ukazatele();//změna pořadí přičemž alespoň jeden element byl stop-element
 	ukaz_ap=NULL; delete ukaz_ap;
 	ukaz_np=NULL; delete ukaz_np;
 	uprav_popisky_elementu(F->pom_temp,aktualni_poradi);//změna názvů
@@ -2873,26 +2863,46 @@ double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element,bool pouze
 	{
 		double celkem=0;
 		//pokud je element první v kabině
-		if(Element->n==1)
-		{
-			if(Element->orientace==0||Element->orientace==180)return m.delka(F->pom_temp->elementy->dalsi->geo.X1,F->pom_temp->elementy->dalsi->geo.Y1,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
-			else return m.delka(F->pom_temp->elementy->dalsi->geo.X1,F->pom_temp->elementy->dalsi->geo.Y1,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
-		}
-		else//pokud je v kabině více elementů
-		{
-	  	//procházení objektu a hledání předchozího SG elementu
-	  	Cvektory::TElement *E=F->pom_temp->elementy->dalsi;//provizorně může být použito pom_temp, volání metody pouze když je pom_temp naplněné
-	  	while(E->n!=Element->n&&E!=NULL)
+//		if(Element->n==1)
+//		{
+//			if(Element->orientace==0||Element->orientace==180)return m.delka(F->pom_temp->elementy->dalsi->geo.X1,F->pom_temp->elementy->dalsi->geo.Y1,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
+//			else return m.delka(F->pom_temp->elementy->dalsi->geo.X1,F->pom_temp->elementy->dalsi->geo.Y1,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
+//		}
+//		else//pokud je v kabině více elementů
+//		{
+//			//procházení objektu a hledání předchozího SG elementu
+//			Cvektory::TElement *E=F->pom_temp->elementy->dalsi;//provizorně může být použito pom_temp, volání metody pouze když je pom_temp naplněné
+//			while(E->n!=Element->n&&E!=NULL)
+//			{
+//				//procházím kabinu od začátku, pokud je element SG uložím jeho vzdálenost k elementu pro kterého hledám vzdálenost k předchozímu
+//				if(E->eID==0||E->eID%2==0)celkem=m.delka(F->d.Rxy(Element).x,F->d.Rxy(Element).y,F->d.Rxy(E).x,F->d.Rxy(E).y);
+//				E=E->dalsi;
+//			}
+//			E=NULL; delete E;
+//			//pokud byla nalezena alespoň jedna vzdálenost
+//			if(celkem!=0)return celkem;
+//			else return m.delka(F->pom_temp->elementy->dalsi->geo.X1,F->pom_temp->elementy->dalsi->geo.Y1,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
+//		}
+			////////nová koncepce
+			bool pokracovat=true;
+			TObjekt *O=F->pom;//musí být použit pom, pom_temp neuchovává ukazatel na předchozí objekt
+			celkem=Element->geo.delka;//defaultně bude délka před Elementem
+			while(O!=NULL && O->n!=0)
 			{
-				//procházím kabinu od začátku, pokud je element SG uložím jeho vzdálenost k elementu pro kterého hledám vzdálenost k předchozímu
-				if(E->eID==0||E->eID%2==0)celkem=m.delka(F->d.Rxy(Element).x,F->d.Rxy(Element).y,F->d.Rxy(E).x,F->d.Rxy(E).y);
-	  		E=E->dalsi;
+				TElement *E=O->elementy->predchozi;//procházení od zadu
+				if(F->pom_temp->n==O->n)E=Element->predchozi;//pokud jsem v pom_temp = začátek, začánám od předchozího elementu Elementu
+				while(E!=NULL && E->n!=0)
+				{
+					if(E->eID%2==0){pokracovat=false;break;}//pokud je předchozi S&G prěruš cyklus
+					celkem+=E->geo.delka;//pokud jdes dál přičti vzdálenost
+					E=E->predchozi;
+				}
+				E=NULL;delete E;
+				if(pokracovat)O=O->predchozi;//ošetření proti přechodu na havičku
+				else break;
 			}
-			E=NULL; delete E;
-			//pokud byla nalezena alespoň jedna vzdálenost
-			if(celkem!=0)return celkem;
-			else return m.delka(F->pom_temp->elementy->dalsi->geo.X1,F->pom_temp->elementy->dalsi->geo.Y1,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
-		}
+			O=NULL;delete O;
+			return celkem;
 	}
 	else//////Původní funkce
 	{
@@ -3050,34 +3060,102 @@ void Cvektory::uloz_sparovany_element(TElement *Stopka)//algoritmus funguje na p
 }
 ////---------------------------------------------------------------------------
 //dané stopce najde předchozí stop-element na lince, je možno, že nebude reflektovat danou zakázku
-Cvektory::TElement *Cvektory::vrat_predchozi_stop_element(TElement *Stopka)
+//nově se podívá na předchozí stop-element a přiřadí mu ukazatel na Element
+void Cvektory::vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt)
 {
-	TElement *RET=NULL;
-	if(Stopka->eID==0)
+//	TElement *RET=NULL;
+//	if(Stopka->eID==0)
+//	{
+//		bool konec=false;
+//		Cvektory::TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
+//		while (O!=NULL)//prochází všechny objekty
+//		{
+//			TElement *E=O->elementy;//nepřeskakovat hlavičku
+//			if(F->pom_temp->n==O->n)E=F->pom_temp->elementy;//pokud se prochází objekt aktuálně editovaný, tak se vezme z pom_temp, kde jsou aktuální hodnoty
+//			while(E!=NULL)//a jejich elementy
+//			{
+//				////pokud je aktuální element stopka či robot se stopkou a nejedná se o hlavičku
+//				if(E->eID!=MaxInt && E->eID%2==0 && E->n!=0)
+//				{                  //toto je otazník
+//					 if(E==Stopka && RET!=NULL){konec=true;break;}//pokud se došlu až k aktuální stopce a již byla stop element nalezen,vyhledávání se ukončí a vrací se to, co je uložené v E resp. RET
+//					 else RET=E;//pokud ne, uloží
+//				}
+//				E=E->dalsi;
+//			}
+//			E=NULL;delete E;
+//			if(konec)break;
+//			O=O->dalsi;//posun na další prvek
+//		}
+//		O=NULL;delete O;
+//	}
+//	return RET;
+
+	//////nová koncepce
+	if(Element->eID%2==0)
 	{
-		bool konec=false;
-		Cvektory::TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
-		while (O!=NULL)//prochází všechny objekty
+		bool pokracovat=true;
+		TElement *E=NULL;
+		TObjekt *O=Objekt;
+		if(F->pom!=NULL)O=F->pom;//pokud existuje pom a rovná se začátečnímu objektu, musí být nahrazen
+		while(O!=NULL && O->n!=0)
 		{
-			TElement *E=O->elementy;//nepřeskakovat hlavičku
-			if(F->pom_temp->n==O->n)E=F->pom_temp->elementy;//pokud se prochází objekt aktuálně editovaný, tak se vezme z pom_temp, kde jsou aktuální hodnoty
-			while(E!=NULL)//a jejich elementy
+  		E=O->elementy->predchozi;//procházení od zadu
+			if(Objekt->n==O->n)E=Element->predchozi;//pokud jsem v prvním objektu = začátek, začánám od předchozího elementu Elementu
+			while(E!=NULL && E->n!=0)
 			{
-				////pokud je aktuální element stopka či robot se stopkou a nejedná se o hlavičku
-				if((E->eID==0 || E->eID==4 || E->eID==6) && E->n!=0)
-				{                  //toto je otazník
-					 if(E==Stopka && RET!=NULL){konec=true;break;}//pokud se došlu až k aktuální stopce a již byla stop element nalezen,vyhledávání se ukončí a vrací se to, co je uložené v E resp. RET
-					 else RET=E;//pokud ne, uloží
+				if(E->eID%2==0){pokracovat=false;break;}//nalezen předchozí S&G
+  			E=E->predchozi;
+			}
+			if(pokracovat)O=O->predchozi;//ošetření proti přechodu na havičku
+			else break;
+		}
+		if(E->n!=0)E->sparovany=Element;
+		if(E->n!=0 && E->eID==0 && F->pom!=NULL && O->n==F->pom->n){E->mGrid->Cells[1][1].Text=Element->name;E->mGrid->Refresh();}//pokud se element (=stopka) nachází ve stejném objektu a tento objekt je právě editovaný, přepiš mu sparovaný element do mgridu
+		O=NULL;delete O;
+		E=NULL;delete E;
+	}
+}
+////---------------------------------------------------------------------------
+//projde všechny stop-elementy a aktualizuje jim ukazatele na spárované elementy
+void Cvektory::aktualizuj_sparovane_ukazatele()
+{
+	if(F->Akce!=F->ADD)//ošetření proti spouštění při akci ADD
+	{
+   	int pocet=0;
+		Cvektory::TObjekt *O=OBJEKTY->predchozi;
+		//smazání původních ukazatelů
+		while(O!=NULL && O->n!=0)
+		{
+    	TElement *E=O->elementy->predchozi;//procházení od zadu
+			if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->predchozi;
+			while(E!=NULL && E->n!=0)
+			{
+				if(E->eID%2==0)
+				{
+					E->sparovany=NULL;
+					if(E->eID==0 && F->pom!=NULL && O->n==F->pom->n)E->mGrid->Cells[1][1].Text="N/A";
 				}
-				E=E->dalsi;
+				E=E->predchozi;
 			}
 			E=NULL;delete E;
-			if(konec)break;
-			O=O->dalsi;//posun na další prvek
+			O=O->predchozi;
 		}
+		O=OBJEKTY->predchozi;
+		//nové přiřazení
+   	while(O!=NULL && O->n!=0)
+   	{
+			TElement *E=O->elementy->predchozi;//procházení od zadu
+			if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->predchozi;
+			while(E!=NULL && E->n!=0)
+			{
+				if(E->eID%2==0)vrat_predchozi_stop_element(E,O);
+				E=E->predchozi;
+			}
+			E=NULL;delete E;
+			O=O->predchozi;
+   	}
 		O=NULL;delete O;
 	}
-	return RET;
 }
 ////---------------------------------------------------------------------------
 //vrátí předchozí element k Element, který byl do metody poslán jako parametr, přeskočí geometrické zarážky
@@ -5273,7 +5351,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 						cE->RT=E->RT;
 						cE->akt_pocet_voziku=E->akt_pocet_voziku;
 				 		cE->max_pocet_voziku=E->max_pocet_voziku;
-            cE->geo=E->geo;
+						cE->geo=E->geo;
 						//uložení do binárního filu
 						FileStream->Write(cE,sizeof(C_element));//zapiše jeden prvek do souboru
 
@@ -5571,7 +5649,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
             E->RT=cE.RT;
             E->akt_pocet_voziku=cE.akt_pocet_voziku;
 						E->max_pocet_voziku=cE.max_pocet_voziku;
-            E->geo=cE.geo;
+						E->geo=cE.geo;
 						//shortname
 						wchar_t *short_name=new wchar_t [5];
 						FileStream->Read(short_name,5*sizeof(wchar_t));//načte popisek umístěný za strukturou bod

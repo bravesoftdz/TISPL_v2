@@ -230,7 +230,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	scSplitView_LEFTTOOLBAR->Visible=true;//zapnuti levého toolbaru
 	ID_tabulky=0;//uchovává ID tabulky, použiváné při mousemove
 	count_memo=0;//jednoduchý counter zobrazovaný v memo3
-	TIP="Kliknutím na objekt v knihovně objektu, tažením a následným usazením přidáte objekt.";//nastavení TIPu defautlně na nápovědu pro vložení objektu
+	TIP="Kliknutím na objekt v knihovně objektu, tažením a následným usazením přidáte objekt.";//nastavení TIPu defautlně na nápovědu pro vložení objektu, později v metode StartUp dojkde k odmazání tipu, jestliže budou xistovat nějaké objekty
 }
 //---------------------------------------------------------------------------
 //záležitost s novým designem
@@ -771,6 +771,7 @@ void TForm1::startUP()
 		Form_parametry_linky->Top=Form1->ClientHeight/2-Form_parametry_linky->Height/2;
 		Form_parametry_linky->ShowModal();//zavolání formáláře pro prvotní vyplnění či potvzení hodnot parametrů linky
 	}
+	if(d.v.OBJEKTY->dalsi!=NULL)TIP="";//v případě, že jsou vložené nějaké objekty tak dojde k odmazání tipu pro vkládání objektů
 }
 //---------------------------------------------------------------------------
 //zajišťuje zápis do INI aplikace, museli jsme dát do výjimky, protože jednou hodilo error
@@ -1684,7 +1685,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//-
 		case 109:ZOOM_OUT();break;
 		//F1 - volání nápovědy
-		case 112:Memo(bod_vlozeni_elementu().x,true);Memo(bod_vlozeni_elementu().y);break;
+		case 112:break;
 		//F2
 		case 113:Memo3->CopyToClipboard();Memo3->Clear();break;
 		//F3 - pohled celé schéma
@@ -2013,7 +2014,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 	if(MOD==NAHLED)if(PmG->CheckLink(X,Y)==TPoint(-2,-2))FormX->naplneni_dopRD();//pokud je mod náhled a bylo kliknuto na dopRD vrátí tuto rychlost do tabulky pohonu
 	if(MOD==NAHLED&&index_kurzoru==9999||index_kurzoru==100)smaz_edit(false);//smaže edit a neprovede refresh
 	if(editace_textu)ESC();
-	if(MOD==NAHLED)FormX->odstranit_korelaci();
+	if(MOD==NAHLED){FormX->odstranit_korelaci();FormX->naplneni_max_voziku(X,Y);}
 	if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)//pokud je oteřeno hamburger menu a klikne se do plochy tak se nejdříve zavře
 	{    //testování skrývání knihoven
 		if(scSplitView_MENU->Opened){DrawGrid_knihovna->Visible=false;DrawGrid_otoce->Visible=false;DrawGrid_ostatni->Visible=false;DrawGrid_geometrie->Visible=false;DrawGrid_poznamky->Visible=false;}
@@ -2160,7 +2161,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 							if(posledni_editovany_element==NULL || posledni_editovany_element->dalsi==NULL)pom_element=pom_temp->elementy->dalsi;else pom_element=posledni_editovany_element->dalsi;
 							if(posledni_editovany_element!=NULL && (posledni_editovany_element->name=="EDIT" || (posledni_editovany_element->n==pom_temp->elementy->predchozi->n && posledni_editovany_element->n!=1)) && pom_element_temp==NULL)pom_element=NULL;
 							if(pom_element==posledni_editovany_element!=NULL)pom_element=NULL;
-							if(pom_element!=NULL && pom_element->n==pom_temp->elementy->predchozi->n==1)
+							if(pom_element!=NULL && pom_element->n==pom_temp->elementy->predchozi->n==1 && pom_element->name!="EDIT")
 							{
 								posledni_editovany_element=pom_temp->elementy->predchozi;
 								posledni_editovany_element->name="EDIT";
@@ -2168,6 +2169,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 							}
 							else
 							{
+								if(posledni_editovany_element->dalsi==NULL && pom_temp->elementy->predchozi->n>1)pom_element=posledni_editovany_element;
 								posledni_editovany_element=d.v.vloz_element(pom_temp,MaxInt,d.geoTemp.X4,d.geoTemp.Y4,orientace,pom_element);
 								design_element(posledni_editovany_element,true);//nutné!!!!!!!!
 								if(posledni_editovany_element->dalsi!=NULL)//posun ostatních elementů
@@ -2183,7 +2185,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 										E=E->dalsi;
 									}
 									delete E;E=NULL;
-                }
+								}
 							}
 							posledni_editovany_element->geo=d.geoTemp;
 							nahled_ulozit(true);
@@ -2426,7 +2428,8 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				{nemazat=d.v.posun_element(pom_element,akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),posun_dalsich_elementu,true);tolerance.y=0.15;}
 			//aktuální souřadnice se po posunu zapíší do minule_souřadnice, z důvodu okamžité změny známénka posuvu
 			minule_souradnice_kurzoru=TPoint(X,Y);
-			if(!nemazat && !posun_dalsich_elementu)Smazat1Click(this);
+			//if(!nemazat && !posun_dalsich_elementu)Smazat1Click(this);
+			if(!nemazat)TIP="Nelze přeunout element!";else TIP="";
 			REFRESH(false);
 			//když nejsou viditelné tabulky elementu, a když se nejedná o element, který nemá tabulku -> nevykresli spojnici mezi elementem a tabulkou
 			if(pom_temp->zobrazit_mGrid&&pom_element->eID!=100&&pom_element->eID!=MaxInt)vykresli_spojinici_EmGrid(Canvas,pom_element);
@@ -3072,6 +3075,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
   		//výchozí nastavení
   		kurzor(standard);//umístít na začátek
 			PmGCheckLink=false;
+			StopCheckLink=false;
 
 			////volání akce dle JID            //toto bez otestovaní
   		if(JID==-1 || pom_element==NULL || pom_element_puv!=pom_element)//není již job ID nebo ukazatel na pohon (může nastat situace přechod tabulka citelná oblast kót či nadpisu kabiny a nic by se bez tohoto nestalo
@@ -3140,8 +3144,9 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 
   	////oblasti poznámek pod čarou - NOTE, nejdou přes JID
   	if(JID==-1)
-  	{                                                       //zajištuje unhighlight odkazu
+		{                                                       //zajištuje unhighlight odkazu
 			if(PmG!=NULL)if(PmG->CheckLink(X,Y)==TPoint(-2,-2) || PmGCheckLink){PmGCheckLink=true;refresh_mGrid=true;REFRESH();}
+			if(FormX->naplneni_max_voziku(X,Y,true) || StopCheckLink){StopCheckLink=true;refresh_mGrid=true;REFRESH();}
 			//pokud budu chtít ještě získat CheckLink z tabulek elementů budu muset rozšířit testování oblasti tabulky a aby vrátila platný ukazatel na element resp. jeho mgrid
 		}
 
@@ -4079,9 +4084,9 @@ void TForm1::add_element (int X, int Y)
 		{
 			//automatické výchozí umístění mGridové tabulky dle rotace elementu a nadesignováné tabulky (jejích rozměrů) - proto musí být až za nastevením designu
 			aut_pozicovani(E,X,Y);
-  	}
+		}
 		//dřívě přítomen Update(), nutné před plněním COMBA, Update() se nyní vyskytuje v metodě design_element;
-		d.v.napln_comba_stopek();
+		//d.v.napln_comba_stopek();
 		//přiřazení režimu kabině
 		switch(E->eID)
 		{
@@ -4172,6 +4177,12 @@ void TForm1::add_komoru()
 	refresh_mGrid=false;
 	REFRESH();
 	refresh_mGrid=true;
+}
+//---------------------------------------------------------------------------
+//projde elementy a objekty, pokud je někde nutnost vložit předávací místo vloží ho tam
+void TForm1::vlozit_predavaci_misto()
+{
+   //
 }
 //---------------------------------------------------------------------------
 //vrací zda se element nachází na pohonu jakéhokoliv sklonu, dvojí způsob použití: zadání parametru X,Y,eID pokud nemám ukazatel na element nebo 0,0,0,ukazatel, vrátí true nebo false
@@ -4389,8 +4400,8 @@ bool TForm1::najdi_nazev_obj(double X,double Y,Cvektory::TObjekt *Objekt,int typ
 	return ret;
 }
 //---------------------------------------------------------------------------
-//vrací bod vložení elementu, "přilepuje" kurzor na geometrii pokud se jedná o přímku, parametr E_kontorlní slouží ke kontrole tohoto elementu zda se nachází na přímce (při posunu)
-TPoint TForm1::bod_vlozeni_elementu(Cvektory::TElement *E_kontrolni)
+//vrací bod vložení elementu, "přilepuje" kurzor na geometrii pokud se jedná o přímku, parametry kontr_x a y slouží ke kontrole bodu zda se nachází na přímce (při posunu)
+TPoint TForm1::bod_vlozeni_elementu(double kontr_x,double kontr_y)
 {
 	log(__func__);//logování
 	//nastavení atributů
@@ -4398,7 +4409,7 @@ TPoint TForm1::bod_vlozeni_elementu(Cvektory::TElement *E_kontrolni)
 	TPoint ret;
 	ret.x=-1000;ret.y=-1000;
 	double oblast=1,X1,Y1,X2,Y2,x,y;
-	if(E_kontrolni!=NULL){x=d.Rxy(E_kontrolni).x;y=d.Rxy(E_kontrolni).y;}
+	if(kontr_x!=-1000){x=kontr_x;y=kontr_y;}
 	else {x=akt_souradnice_kurzoru.x;y=akt_souradnice_kurzoru.y;}
   //průchod elementů objektu
 	Cvektory::TElement *E=pom_temp->elementy->dalsi;
@@ -4453,6 +4464,20 @@ TPoint TForm1::uprav_bod_vlozeni_elementu(TPoint bod_vlozeni,short rotace_symbol
 	else bod_vlozeni.x+=DoSkRB;
 	//vrácení upravených souřadnic
 	return bod_vlozeni;
+}
+//---------------------------------------------------------------------------
+//kontroluje zde se bod nachází na geometri, vrací pouze ano/ne
+bool TForm1::bod_na_geometrii(double X, double Y)
+{
+	bool ret=false;
+	Cvektory::TElement *E=pom_temp->elementy->dalsi;
+	while(E!=NULL)
+	{
+		if(E->geo.typ==0 && m.LeziVblizkostiUsecky(X,Y,E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4)==0){ret=true;break;}
+		E=E->dalsi;
+	}
+	E=NULL;delete E;
+	return ret;
 }
 //---------------------------------------------------------------------------
 //metoda pro sledování zda je nutné náhled uložit
@@ -5006,7 +5031,7 @@ void TForm1::pridani_elementu_tab_pohon(Cvektory::TElement *E)
 		PmG->exBUTTONVisible=true;
 		PmG->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
 		PmG->exBUTTON->ShowHint=true;PmG->exBUTTON->Hint="Rozšířené položky";
-		FormX->validace();//spištění validace po předesignu tabulky pohonu na kontinuální režim
+		FormX->validace_aRD();//spištění validace po předesignu tabulky pohonu na kontinuální režim
 	}
 	//zapnutí/vypnutí posledního řádku a naplnění hodnotami
 	if(pocet_vyskytu_elementu(pom_temp)>0)
@@ -5426,6 +5451,7 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 	E->mGrid->DefaultCell.isActiveLink->Name=aFont->Name;
 	E->mGrid->DefaultCell.isActiveLink->Size=aFont->Size;
 	E->mGrid->Note.Font->Name=aFont->Name;
+	E->mGrid->Note.Font->Size=14;
 
 	//definice jednotek a šířek
 	AnsiString LO,cas,delka_otoce;
@@ -5469,12 +5495,12 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 		E->mGrid->Cells[0][i].Font->Color=clFontLeft;
 		E->mGrid->Cells[0][i].Align=mGrid->RIGHT;
 		E->mGrid->Cells[1][i].Align=mGrid->RIGHT;
-		E->mGrid->Cells[1][i].Text=m.round2double(ms.MyToDouble(E->mGrid->Cells[1][i].Text),3);
+		if (!(E->eID==0 && i==1))E->mGrid->Cells[1][i].Text=m.round2double(ms.MyToDouble(E->mGrid->Cells[1][i].Text),3);//přeskočení prvního řádku v tabulce stopky
 		if (E->mGrid->Cells[1][i].Type!=E->mGrid->EDIT&&E->mGrid->Cells[1][i].Type!=E->mGrid->COMBO)
 		{
-			E->mGrid->Cells[1][i].Font->Color=clFontLeft;
 			E->mGrid->Cells[1][i].Background->Color=clBackgroundHidden;
 			E->mGrid->Cells[1][i].RightMargin=5;
+			E->mGrid->Cells[1][i].Font->Color=clFontLeft;
 		}
 	}
 	//sloučení buněk hlavičky
@@ -5557,21 +5583,23 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 		{
 			//samotné vytvoření matice-tabulky
 			E->mGrid->Create(2,7);
+			//nastavování režimů podle ID objektu
+			unsigned int id=d.v.vrat_objekt(E->objekt_n)->id;
+			if(id>=6 && id<=10){E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;}
 			//definice buněk
-			E->mGrid->Cells[0][1].Text="výběr párové STOP";
-			E->mGrid->Cells[1][1].Type=E->mGrid->COMBO;
-			E->mGrid->Cells[0][3].Text="max. WT stop "+cas;
-			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outPT(E->WTstop);
-			E->mGrid->Cells[0][4].Text="WT palec "+cas;
-			E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;E->mGrid->Cells[1][4].Text=outPT(m.cekani_na_palec(0,F->pom_temp->pohon->roztec,F->pom_temp->pohon->aRD,3));
-			E->WT=inPT(ms.MyToDouble(E->mGrid->Cells[1][4].Text));
-			E->RT=m.RT(0,d.v.vzdalenost_od_predchoziho_elementu(E,true),pom_temp->pohon->aRD,pom_temp->pohon->roztec,E->WT+E->WTstop);
-      E->mGrid->Cells[0][2].Text="RT "+cas;
+			E->mGrid->Cells[0][1].Text="Sparovaná stop";
+			if(E->sparovany!=NULL)E->mGrid->Cells[1][1].Text=E->sparovany->name;else E->mGrid->Cells[1][1].Text="N/A";
+			E->mGrid->Cells[0][2].Text="RT "+cas;E->RT=m.RT(0,d.v.vzdalenost_od_predchoziho_elementu(E,true),pom_temp->pohon->aRD,pom_temp->pohon->roztec,E->WT+E->WTstop);
 			E->mGrid->Cells[1][2].Text=outPT(E->RT);
+			E->mGrid->Cells[0][3].Text="max. WT stop "+cas;
+			E->mGrid->Cells[1][3].Text=outPT(E->WTstop);
+			E->mGrid->Cells[0][4].Text="WT palec "+cas;
+			E->mGrid->Cells[1][4].Text=outPT(m.cekani_na_palec(0,F->pom_temp->pohon->roztec,F->pom_temp->pohon->aRD,3));
+			E->WT=inPT(ms.MyToDouble(E->mGrid->Cells[1][4].Text));
 			E->mGrid->Cells[0][5].Text="akt. počet vozíků";
-			E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Text=0;
+			E->mGrid->Cells[1][5].Text=0;
 			E->mGrid->Cells[0][6].Text="max. počet vozíků";
-			E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Text=0;
+			E->mGrid->Cells[1][6].Text=0;
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_0;
@@ -5810,25 +5838,28 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 		{
 			//samotné vytvoření matice-tabulky
 			E->mGrid->Create(2,7);
+			//nastavování režimů podle ID objektu
+			unsigned int id=d.v.vrat_objekt(E->objekt_n)->id;
+			if(id>=6 && id<=10){E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;}
 			//definice buněk
-			E->mGrid->Cells[0][1].Text="výběr párové STOP";
-			E->mGrid->Cells[1][1].Type=E->mGrid->COMBO;
+			E->mGrid->Cells[0][1].Text="Sparovaná stop";
+			if(E->sparovany!=NULL)E->mGrid->Cells[1][1].Text=AnsiString(E->sparovany->name);else E->mGrid->Cells[1][1].Text="N/A";
 			E->mGrid->Cells[0][2].Text="RT "+cas;
 			E->mGrid->Cells[1][2].Text=outPT(E->RT);
 			E->mGrid->Cells[0][3].Text="max. WT stop "+cas;
-			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outPT(E->WTstop);
+			E->mGrid->Cells[1][3].Text=outPT(E->WTstop);
 			E->mGrid->Cells[0][4].Text="WT palec "+cas;
-			E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;E->mGrid->Cells[1][4].Text=outPT(E->WT);
+			E->mGrid->Cells[1][4].Text=outPT(E->WT);
 			E->mGrid->Cells[0][5].Text="akt. počet vozíků";
-			E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Text=0;
+			E->mGrid->Cells[1][5].Text=0;
 			E->mGrid->Cells[0][6].Text="max. počet vozíků";
-			E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Text=0;
+			E->mGrid->Cells[1][6].Text=0;
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_0;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			//nastavení hintů
-      E->mGrid->Cells[0][2].Hint="časová rezerva";
+			E->mGrid->Cells[0][2].Hint="časová rezerva";
 			E->mGrid->Cells[0][2].ShowHint=true;
 			E->mGrid->Cells[0][3].Hint="čas uzavřené STOP stanice";
 			E->mGrid->Cells[0][3].ShowHint=true;
@@ -6949,7 +6980,7 @@ void __fastcall TForm1::DrawGrid_geometrieMouseDown(TObject *Sender, TMouseButto
 {
 	log(__func__);//logování
 	int Col,Row;
-	Col=DrawGrid_ostatni->Col; Row=DrawGrid_ostatni->Row;
+	Col=DrawGrid_geometrie->Col; Row=DrawGrid_geometrie->Row;
 	knihovna_id=4;
 	if(pom_temp->id==4&&pom_temp->pohon!=NULL)//zatím jen v ionizaci
 	{
@@ -6959,15 +6990,22 @@ void __fastcall TForm1::DrawGrid_geometrieMouseDown(TObject *Sender, TMouseButto
   	SB("Kliknutím na libovolné místo umístíte vybraný element.");
 		Akce=ADD;kurzor(add_o);
 	}
-	else if(Akce!=GEOMETRIE)//zapnutí akce geometrie
+	else
 	{
-		Akce=GEOMETRIE;
-		editace_geometrie_spustena=false;
-		//pokud ještě nebyla editována geometrie a existuje předchozí element, zapíše ho do posledni_editovany_element
-		if(pom->predchozi!=NULL && posledni_editovany_element==NULL)posledni_editovany_element=pom->predchozi->elementy->predchozi;
-		REFRESH(false);
+		if(Akce!=GEOMETRIE && Col==0)//zapnutí akce geometrie
+		{
+	  	Akce=GEOMETRIE;
+	  	editace_geometrie_spustena=false;
+	  	//pokud ještě nebyla editována geometrie a existuje předchozí element, zapíše ho do posledni_editovany_element
+	  	if(pom->predchozi!=NULL && posledni_editovany_element==NULL)posledni_editovany_element=pom->predchozi->elementy->predchozi;
+			REFRESH(false);
+		}
+		else {Akce=NIC;REFRESH(false);}//vypunutí akce geometrie
+		if(Col==1)
+		{
+      Sv("přeávací místo");
+    }
 	}
-	else {Akce=NIC;REFRESH(false);}//vypunutí akce geometrie
 }
 //---------------------------------------------------------------------------
 //přeposílá událost na form
@@ -7263,7 +7301,8 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 					Cvektory::TElement *dalsi_element=NULL;
 		  		if(pom_element_temp->dalsi!=NULL&&pom_temp->rezim==0)dalsi_element=pom_element_temp->dalsi;//pokud je kabina ve S&G režimu a za smazaným elementem se nachází další element, je nutné dalšímu přepočítat RT
 		  		d.v.smaz_element(pom_element_temp);
-		  		Akce=NIC;
+					Akce=NIC;
+					if(eID%2==0)d.v.aktualizuj_sparovane_ukazatele();//odstraněn stop-element, nutná aktualizace
 					REFRESH();
 					DuvodUlozit(true);
 		  		nahled_ulozit(true);
@@ -7934,7 +7973,7 @@ void TForm1::zmena_editovaneho_objektu()
 	d.v.kopiruj_objekt(pom,pom_temp);//pokud elementy existují nakopíruje je do pomocného nezávislého spojáku pomocného objektu
 	posledni_editovany_objekt=pom;
 	//nastavení zoomu na vhodný náhled
-	Zoom=5.0;
+	if(Zoom<=5.0)Zoom=5.0;//ponechání zoomu pokud je vetší jak 5
 	probehl_zoom=true;
 	if(pom_temp->id==4 || pom_temp->id==2 || pom_temp->id==5){scGPPanel_pomocn_proSwitch->Visible=true;scGPSwitch_robot_clovek->Visible=true;}
 	else {scGPPanel_pomocn_proSwitch->Visible=false;scGPSwitch_robot_clovek->Visible=false;}
@@ -9223,6 +9262,7 @@ void __fastcall TForm1::Timer_neaktivityTimer(TObject *Sender)
 //			Timer_neaktivity->Enabled=false;
 //			setJobIDOnMouseMove(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
 //		}
+  FormX->validace_max_voziku();//metoda rozlišuje zda byla editovaná stopka, pokud ano provede validaci, pokud ne neudělá nic
 	REFRESH(true); //nedocází k refresh tabulek, tabulky jsou v tuto chvíli naplněny aktuálními hodnotami
 	Timer_neaktivity->Enabled=false;
 }
@@ -9362,13 +9402,15 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-//	Cvektory::TElement *E=pom_temp->elementy->dalsi;
-//	while(E!=NULL)
-//	{
-//		Memo(E->name);
-//		E=E->dalsi;
-//	} delete E;E=NULL;
-	//Memo(vzdalenost_meziLO(E,pom_temp->orientace));
+//	if(count_memo<pom_temp->elementy->predchozi->n)count_memo++;else count_memo=1;  REFRESH(false);
+	Cvektory::TElement *E=pom_temp->elementy->dalsi; Memo3->Clear();
+	while(E!=NULL)
+	{
+		if(E->sparovany!=NULL)Memo("E->name: "+AnsiString(E->name)+";  sparovany->name: "+AnsiString(E->sparovany->name));
+		//Memo(E->name);
+		E=E->dalsi;
+	} delete E;E=NULL;
+//	Memo(vzdalenost_meziLO(E,pom_temp->orientace));
 //	TRect A=vrat_max_oblast();
 //	d.line(Canvas,(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0,A.top,(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0,A.bottom);
 }

@@ -26,6 +26,7 @@ __fastcall TFormX::TFormX(TComponent* Owner)
  mezera_podvozky=5;
  mezera_jig1=6;
  mezera_jig2=7;
+ posledni_E=NULL;
  //pokud dojde ke zmìnì poøadí øádku, nastavit nové pozice zde, + pøepsání switche pro tabulku pohonu v OnChange + pøepsaní switche v korelace_tab_pohonu()
 }
 //---------------------------------------------------------------------------
@@ -110,24 +111,24 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 		{
 			case 0: //stop
 			{
-				if(Row==1)// editace comba
-				{
-					input_state=COMBO;
-					F->d.v.uloz_sparovany_element(E);
-				}
-				if(Row==3)//zmìna WT stop
+//				if(Row==1)// editace comba
+//				{
+//					input_state=COMBO;
+//					F->d.v.uloz_sparovany_element(E);
+//				}
+				if(Row==3)//zmìna max. WT stop
 				{
 					input_state=WT;//nastaveni stavu
 					E->WTstop=F->inPT(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text));//INPUT
-					E->RT=F->m.RT(0,F->d.v.vzdalenost_od_predchoziho_elementu(E,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,E->WT+E->WTstop);//uložení do pamìti + výpoèet
-					E->mGrid->Cells[Col][2].Text=F->m.round2double(F->outPT(E->RT),3);//OUTPUT
+					E->max_pocet_voziku=E->WTstop/F->d.v.PP.TT;//uložení do pamìti + výpoèet
+					E->mGrid->Cells[Col][6].Text=F->m.round2double(E->max_pocet_voziku,3);//OUTPUT
 				}
-				if(Row==4)//zmìna WT
+				if(Row==6)//max. poèet vozíkù
 				{
-					input_state=WT;//nastaveni stavu
-					E->WT=F->inPT(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text));//INPUT
-					E->RT=F->m.RT(0,F->d.v.vzdalenost_od_predchoziho_elementu(E,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,E->WT+E->WTstop);//uložení do pamìti + výpoèet
-					E->mGrid->Cells[Col][2].Text=F->m.round2double(F->outPT(E->RT),3);//OUTPUT
+					input_state=P_VOZ;//nastaveni stavu
+					E->max_pocet_voziku=F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text);//INPUT
+					E->WTstop=E->max_pocet_voziku*F->d.v.PP.TT;//uložení do pamìti + výpoèet
+					E->mGrid->Cells[Col][3].Text=F->m.round2double(F->outPT(E->WTstop),3);//OUTPUT
 				}
 				//dodìlat plnìní pamìti pøi editaci bunìk
 			} break;
@@ -345,6 +346,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 			} break;
 		}
 		E->mGrid->Refresh();//refresh aktuálnì upravované tabulky
+		posledni_E=E;//uložení posledního editovaného elementu
 		E=NULL;delete E;
 		input_state=NOTHING;F->Timer_neaktivity->Enabled=true;//uvolnìní stavu + zapnuti timeru neaktivity, pokud dokonèí èasování spustí REFRESH
 		F->nahled_ulozit(true);//probìhla zmìna tabulky -> je dùvod uložit náhled
@@ -508,7 +510,7 @@ void TFormX::zmena_aRD (Cvektory::TElement *mimo_element)
 			double uhel=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->pom_temp,F->pom_temp->elementy->dalsi);
 			F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(uhel,F->pom_temp->pohon->Rz,1)),3);
 		}
-		validace();//validace pouze v kontinuálním režimu kabiny
+		validace_aRD();//validace pouze v kontinuálním režimu kabiny
 	}
 	//propoèty v tabulkách elementù
 	aktualizace_tab_elementu(mimo_element);
@@ -866,7 +868,7 @@ void TFormX::odstranit_korelaci(bool predat_focus)
 }
 //---------------------------------------------------------------------------
 //validace rychlosti pøi její zmìnì
-void TFormX::validace()
+void TFormX::validace_aRD()
 {
 	AnsiString jednotky;
 	if(F->aRDunit==0)jednotky="[m/s]";
@@ -913,6 +915,41 @@ void TFormX::validace()
 	Combo=NULL;delete Combo;
 }
 //---------------------------------------------------------------------------
+//validace maximálního poètu vozíkù na stopce
+void TFormX::validace_max_voziku()
+{
+	if(posledni_E!=NULL && posledni_E->eID==0)
+	{
+		////deklarace potøebných atributù
+		bool validace=true;//pøedpoklad, že je vše OK
+		double delka=0;
+		////hledání max vzdálenosti pøed stopkou, která je linie
+		bool pokracovat=true;
+		Cvektory::TObjekt *O=F->pom;
+		while(O!=NULL && O->n!=0)
+		{
+			Cvektory::TElement *E=O->elementy->predchozi;
+			if(O->n==F->pom->n)E=posledni_E;
+			while(E!=NULL && E->n!=0)
+			{
+				if(E->geo.typ==0)delka+=E->geo.delka;
+				else{pokracovat=false;break;}
+				E=E->predchozi;
+			}
+			E=NULL;delete E;
+			if(pokracovat)O=O->predchozi;else break;
+		}
+		O=NULL;delete O;
+		////samotná validace
+		if(delka>0 && delka/F->d.v.PP.sirka_jig<=posledni_E->max_pocet_voziku){posledni_E->mGrid->ShowNote("Max. poèet vozikù musí být menší nebo roven <a>"+AnsiString(floor(delka/F->d.v.PP.sirka_jig))+"</a>");validace=false;}
+		if(delka==0){posledni_E->mGrid->ShowNote("Nelze, pøed Stopstanicí se nachází oblouk");validace=false;}
+		////nemožnost uložit pøi chybných hodnotách
+		if(validace && F->duvod_ulozit_nahled && !F->scGPButton_ulozit->Enabled)F->nahled_ulozit(true);
+		if(!validace)F->nahled_ulozit(false);
+		if(validace && posledni_E->mGrid->Note.Text!="")posledni_E->mGrid->Note.Text="";
+	}
+}
+//---------------------------------------------------------------------------
 //voláno po kliku na link v poznámce, naplní edit aRD doporuèenou rychlostí
 void TFormX::naplneni_dopRD()
 {
@@ -923,6 +960,27 @@ void TFormX::naplneni_dopRD()
 	F->PmG->ShowNote("",clRed,14);
 	povolit_zakazat_editaci(true);
 	F->PmG->Refresh();//došlo ke zmìnì hodnot v tabulce
+}
+//---------------------------------------------------------------------------
+//doplní doporuèený poèet maximálních vozíku po kliku
+bool TFormX::naplneni_max_voziku(double X,double Y,bool check_for_highlight)
+{
+	bool ret=false;
+	if(F->pom_temp->elementy->predchozi->n>1)
+	{
+		//hledání zda má nìkterý element nedokonèenou validaci
+		Cvektory::TElement *E=F->pom_temp->elementy->dalsi;
+		while(E!=NULL)
+		{
+      //hledání elementu, kterému bylo kliknuto na doporuèený poèet vozíkù
+			if(E->eID==0 && E->mGrid->Note.Text!="" && E->mGrid->CheckLink(X,Y)==TPoint(-2,-2)){ret=true;break;}
+			E=E->dalsi;
+		}
+		//naplnìní doporuèeného max. poètu vozíkù
+		if(E!=NULL && !check_for_highlight)E->mGrid->Cells[1][6].Text=F->ms.MyToDouble(E->mGrid->Note.Text.SubString(48,2));
+		E=NULL;delete E;
+	}
+	return ret;
 }
 //---------------------------------------------------------------------------
 //zakazuje èi povolí komponenty v tabulce pohonu a všech tabulkách elementu
