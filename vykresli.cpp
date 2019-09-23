@@ -277,11 +277,11 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		case -3:stav=F->pom_bod->n;break;
 	}
 
+  ////vnější obrys kabiny
+	polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
+
   ////vykreslení prozatimní osy POHONU
 	vykresli_retez(canv,O);
-
-	////vnější obrys kabiny
-	polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
 
 	///název
 	//název objektu - nastavení                 //záměrně nuly, aby se ztučněním nepřepozivávalo - působilo to moc dynamacky

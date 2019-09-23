@@ -4203,6 +4203,7 @@ void TForm1::add_komoru()
 //projde elementy a objekty, pokud je někde nutnost vložit předávací místo vloží ho tam
 void TForm1::vlozit_predavaci_misto()
 {
+	log(__func__);//logování
 	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
 	while(O!=NULL)
 	{
@@ -4210,10 +4211,10 @@ void TForm1::vlozit_predavaci_misto()
 		if(pom_temp!=NULL && O->n==pom_temp->n)E=pom_temp->elementy->dalsi;
 		while(E!=NULL)
 		{
-      //deklarace atributů
+			//deklarace atributů
 			long ID=0;
 			Cvektory::TObjekt *O_pom=O;//pomocný ukazatel uchovává ukazatel na další objekt, pokud nasledující objekt je právě editován je nutné načíst z pom_temp
-			if(O->dalsi!=NULL)O_pom=O->dalsi;
+			if(O->dalsi!=NULL)O_pom=O->dalsi;                                                  Memo(O->name);
 			if(pom_temp!=NULL && O->dalsi!=NULL && O->dalsi->n==pom_temp->n)O_pom=pom_temp;
 			//////////Vkládání předávacího místa
 			if(E->eID!=200 && ((E->dalsi!=NULL && E->dalsi->pohon!=NULL && E->pohon!=NULL && E->dalsi->pohon->n!=E->pohon->n) || (E->dalsi==NULL && O->dalsi!=NULL && O->dalsi->elementy->dalsi->pohon!=NULL && E->pohon!=NULL && O->dalsi->elementy->dalsi->pohon->n!=E->pohon->n) || (E->dalsi!=NULL && (E->dalsi->pohon==NULL && E->pohon!=NULL || E->dalsi->pohon!=NULL && E->pohon==NULL)) || (E->dalsi==NULL && O->dalsi!=NULL && (O_pom->elementy->dalsi->pohon==NULL && E->pohon!=NULL || O_pom->elementy->dalsi->pohon!=NULL && E->pohon==NULL))))
@@ -4242,11 +4243,10 @@ void TForm1::vlozit_predavaci_misto()
 					E->mGrid->Tag=6;//ID formu
 					E->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
 					design_element(E,false);//nutné!
-					//REFRESH();
 				}
 			}
 			//////////Mazání nepotřebného předávacího místa
-			if(E->eID==200 && (E->dalsi!=NULL && E->dalsi->pohon!=NULL && E->dalsi->pohon->n==E->pohon->n || E->dalsi==NULL && O->dalsi!=NULL && E->pohon!=NULL && O_pom->elementy->dalsi->pohon!=NULL && O->dalsi->elementy->dalsi->pohon->n==E->pohon->n || E->dalsi==NULL && O->dalsi!=NULL && O_pom->elementy->dalsi->pohon==NULL && E->pohon==NULL))
+			if(E->eID==200 && (E->dalsi!=NULL && E->dalsi->pohon!=NULL && E->dalsi->pohon->n==E->pohon->n || E->dalsi==NULL && O->dalsi!=NULL && E->pohon!=NULL && O_pom->elementy->dalsi->pohon!=NULL && O_pom->elementy->dalsi->pohon->n==E->pohon->n || E->dalsi==NULL && O->dalsi!=NULL && O_pom->elementy->dalsi->pohon==NULL && E->pohon==NULL))
 			{
 				//vynulování WT
 				E->WT=0;
@@ -4261,7 +4261,6 @@ void TForm1::vlozit_predavaci_misto()
 					E->mGrid->Tag=6;//ID formu
 					E->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
 					design_element(E,false);//nutné!
-					//REFRESH();
 				}
 			}
 			//ukazatelové záležitosti
@@ -9576,7 +9575,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //---------------------------------------------------------------------------
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
-{       Memo(pom_temp->elementy->dalsi->RT);
+{
 //	Cvektory::TElement *E=pom_temp->elementy->dalsi; Memo3->Clear();
 //	while(E!=NULL)
 //	{
