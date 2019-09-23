@@ -1875,12 +1875,16 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->WT=0;//čekání na palec
 	novy->WTstop=0;//čekání na stopce
 	novy->RT=0;//reserve time
+	novy->akt_pocet_voziku=0;
+	novy->max_pocet_voziku=0;
 	novy->stav=1;
 	novy->PD=-1;//defaultní stav pro S&G roboty
+	novy->objekt_n=0;//příslušnost elementu k objektu
+	novy->pohon=NULL;//pohon na kterém se nachází element
 	if(F->pom_temp!=NULL)
 	{
-		novy->objekt_n=F->pom_temp->n;//příslušnost elementu k objektu
-		novy->pohon=F->pom_temp->pohon;//pohon na kterém se nachází element
+		novy->objekt_n=F->pom_temp->n;
+		if(F->pom_temp->pohon!=NULL)novy->pohon=F->pom_temp->pohon;
 	}
 
 	//název
@@ -1894,7 +1898,9 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 		case 4:case 10:case 14:case 18:case 104:case 108: T="Robot";				novy->PT1=60;novy->PTotoc=20;novy->PT2=60;novy->rotace_jig=180; break;//robot s aktivní otočí (tj. s otočí a se stopkou)
 		case 5: T="Otoč"; 																									novy->OTOC_delka=0.450;novy->rotace_jig=90;break;//pasivní otoč
 		case 6: T="Otoč"; 																									novy->PTotoc=20;novy->rotace_jig=90;break;//aktivní otoč
-		case 100: T="ION tyč";
+		case 100: T="ION tyč";break;
+		case 200: T="Předávací místo";break;
+		case MaxInt: T="Zarážka";break;
 	}
 	if(novy->name=="")//přiřazení názvu pouze v případě, že element žádné nemá, při posuvu je novému elementu přiřazeno jméno
 	{
@@ -1964,7 +1970,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 		E=NULL;delete E;
 		//změna názvů
 		uprav_popisky_elementu(Objekt,Element);
-		if(Element->eID%2==0 || p->eID%2==0)aktualizuj_sparovane_ukazatele();//došlo ke změně pořadí přičemž jeden z elementů je stop-element
+		//if(Element->eID%2==0 || p->eID%2==0)aktualizuj_sparovane_ukazatele();//došlo ke změně pořadí přičemž jeden z elementů je stop-element
 	}
 	p=NULL; delete p;
 	}
@@ -2148,9 +2154,9 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 			Cvektory::TElement *E=Objekt->elementy->dalsi;//začíná se od začátku, někdy je potřeba ovlivnit i předchozí elementy
  			while (E!=NULL)
 			{
-				if(1<=E->eID && E->eID<=4 || 7<=E->eID && E->eID<=18 || 101<=E->eID && E->eID<=108)
+				if(1<=E->eID && E->eID<=4 || 7<=E->eID && E->eID<=18 || E->eID==200 ||101<=E->eID && E->eID<=108)
 				{
-					if(E->name.SubString(1,6)=="Robot "/*&&E->name.Length()<=7*/||E->name=="")rename=true;else rename=false;
+					if(E->name.SubString(1,6)=="Robot " || E->name.SubString(1,8)=="ION tyč " || E->name=="")rename=true;else rename=false;
 					//změna názvu
 			  	if(rename)//přejmenování elementu ve spojáku + mGridu
 					{
@@ -2158,13 +2164,23 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 			  		//změna názvu v hlavičce mGridu, jako první z důvodu podmínky prázdného názvu
 			  		if(E->name!=""&&E->mGrid!=NULL)//nutné, přejmenovávám i první element, který nemá vytvořený mGrid
 			  		{
-			  			E->mGrid->Cells[0][0].Text="<a>Robot "+AnsiString(n)+"</a>";
-			  			E->mGrid->Cells[0][0].Font->Color=clBlack;//z důvodu nasazení odkazu, po přejmenování se text vrátil do modré barvy
+							if(E->eID!=200)E->mGrid->Cells[0][0].Text="<a>Robot "+AnsiString(n)+"</a>";
+							else E->mGrid->Cells[0][0].Text="<a>ION tyč "+AnsiString(n)+"</a>";
+							E->mGrid->Cells[0][0].Font->Color=clBlack;//z důvodu nasazení odkazu, po přejmenování se text vrátil do modré barvy
 			  			E->mGrid->MergeCells(0,0,1,0);//nutné kvůli správnému zobrazení hlavičky
 			  			E->mGrid->Update();//musí zde být ošetření proti paměťové chybě
 			  		}
-			  		E->name="Robot "+AnsiString(n);
-			  		E->short_name="Rob"+AnsiString(n);
+						if(E->eID!=200)
+						{
+							E->name="Robot "+AnsiString(n);
+							E->short_name="Rob"+AnsiString(n);
+						}
+						else
+            if(E->eID!=200)
+						{
+							E->name="ION tyč "+AnsiString(n);
+							E->short_name="ION"+AnsiString(n);
+						}
 					}
 				}
 				E=E->dalsi;//posun na další prvek
@@ -2191,6 +2207,7 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 								default :rename=false;break;//musí zde být, jinak nějakým způsobem je pro robot rename nastaveno na true
 								case 5:
 								case 6:if(E->name.SubString(1,5)=="Otoč "&&E->name.Length()<=7||E->name=="")rename=true;else rename=false;break;
+								case 200:if(E->name.SubString(1,16)=="Předávací místo " ||E->name=="")rename=true;else rename=false;break;
 							}
 		 					//nezměněn nebo nemá název -> mohu změnit
 		 					if(rename)
@@ -2200,7 +2217,8 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 								if(E->name!=""&&O->n==Objekt->n&&E->mGrid!=NULL)//nelze přistupovat k mGridu v případech nového elementu (nemá vytvořený), v neaktivní kabině (elementy nemají vytvořene mGridy)
 								{
 									if(E->eID==0)E->mGrid->Cells[0][0].Text="<a>Stop "+AnsiString(n)+"</a>";
-									else E->mGrid->Cells[0][0].Text="<a>Otoč "+AnsiString(n)+"</a>";
+									if(E->eID==5 || E->eID==6)E->mGrid->Cells[0][0].Text="<a>Otoč "+AnsiString(n)+"</a>";
+									if(E->eID==200)E->mGrid->Cells[0][0].Text="<a>Předávací místo "+AnsiString(n)+"</a>";
 									E->mGrid->Cells[0][0].Font->Color=clBlack;//z důvodu nasazení odkazu, po přejmenování se text vrátil do modré barvy
 		 							E->mGrid->MergeCells(0,0,1,0);//nutné kvůli správnému zobrazení hlavičky
 									E->mGrid->Update();//musí zde být ošetření proti paměťové chybě
@@ -2210,8 +2228,9 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 		 						switch(E->eID)
 		 						{
 									case 0:E->name="Stop "+AnsiString(n);E->short_name="Sto"+AnsiString(n);break;
-		 							case 5:
+									case 5:
 									case 6:E->name="Otoč "+AnsiString(n);E->short_name="Oto"+AnsiString(n);break;
+									case 200:E->name="Předávací místo "+AnsiString(n);E->short_name="Pře"+AnsiString(n);break;
 								}
 							}
 						}
@@ -2394,26 +2413,26 @@ unsigned int Cvektory::vrat_poradi_elementu(TObjekt *Objekt,unsigned int eID)
 //vrátí počet stejných elementů před Element, u robotů v jednom objektu, u otočí a stopek vrátí počet i z předchozích objektů
 unsigned int Cvektory::vrat_poradi_elementu_do (TObjekt *Objekt, TElement *Element)
 {
-	unsigned int r_pocet=0,s_pocet=0,o_pocet=0,t_pocet=0,ret=0;//nastavení všech počtů na nulu
-	if(Element->eID!=6&&Element->eID!=5&&Element->eID!=0)//pokud je Element robot projdi roboty v Objektu
+	unsigned int r_pocet=0,s_pocet=0,o_pocet=0,t_pocet=0,pm_pocet=0,z_pocet=0,ret=0;//nastavení všech počtů na nulu
+	if(Element->eID!=0 && Element->eID!=5 && Element->eID!=6 && Element->eID!=200 && Element->eID!=MaxInt)//  Element->eID!=6&&Element->eID!=5&&Element->eID!=0)//pokud je Element robot projdi roboty v Objektu
 	{
 		Cvektory::TElement *E=Objekt->elementy->dalsi;//přeskočí hlavičku
 		while(E->n!=Element->n)
 		{
-			if(1<=E->eID && E->eID<=4 || 7<=E->eID && E->eID<=18 || 101<=E->eID && E->eID<=108)r_pocet++;
+			if(E->eID!=0 && E->eID!=5 && E->eID!=6 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt)//1<=E->eID && E->eID<=4 || 7<=E->eID && E->eID<=18 || 101<=E->eID && E->eID<=108)r_pocet++;
 			if(E->eID==100)t_pocet++;
 			E=E->dalsi;
 		}
 		E=NULL; delete E;
 	}
-	else//když se nejedná o robota projde všechny elementy ve všech objektech
+	else//elementy, které jou číslované globálně
 	{
 		//procházení předchozích objektů
 		Cvektory::TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
 		while(O!=NULL)
 		{
 			Cvektory::TElement *E=O->elementy;//nastaveno na hlavičku, ošetřeno níže
-			if(F->pom_temp->n==O->n)if(F->pom_temp!=NULL)E=F->pom_temp->elementy;//pokud se prochází objekt aktuálně editovaný, tak se vezme z pom_temp, kde jsou aktuální hodnoty
+			if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy;//pokud se prochází objekt aktuálně editovaný, tak se vezme z pom_temp, kde jsou aktuální hodnoty
 			while(E!=NULL)
 			{
 				if(O->n==Objekt->n&&E==Element)break;//ukončení prohledávání když jsem na aktuálním elmentu
@@ -2421,6 +2440,8 @@ unsigned int Cvektory::vrat_poradi_elementu_do (TObjekt *Objekt, TElement *Eleme
 				{
 					if(E->eID==0)s_pocet++;
 					if(E->eID==5||E->eID==6)o_pocet++;
+					if(E->eID==200)pm_pocet++;
+					if(E->eID==MaxInt)z_pocet++;
 				}
 				E=E->dalsi;
 			}
@@ -2436,6 +2457,8 @@ unsigned int Cvektory::vrat_poradi_elementu_do (TObjekt *Objekt, TElement *Eleme
 		case 0: ret=s_pocet;break;
 		case 5: case 6: ret=o_pocet;break;
 		case 100: ret=t_pocet;break;
+		case 200: ret=pm_pocet;break;
+		case MaxInt: ret=z_pocet;break;
 		default: ret=r_pocet;break;
 	}
 	return ret;
@@ -2603,6 +2626,7 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 							if(m.PtInCircle(X,Y,E->X,E->Y,0.3))break;
 							else E=E->dalsi;
 						 }
+						 else if(E->eID==200 && ((E->orientace==0 || E->orientace==180) && m.PtInRectangle(E->X-0.1,E->Y-0.25,E->X+0.1,E->Y+0.25,X,Y) || (E->orientace==90 || E->orientace==270) && m.PtInRectangle(E->X-0.25,E->Y-0.1,E->X+.25,E->Y+0.1,X,Y)))break;
 						 else E=E->dalsi;//pokud E neodpovídá žádnému odchytávanému elementu, může se ještě  jednat např. o element zarážka
 						}
 					}
@@ -2714,15 +2738,27 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			}
 			if(vzd.x!=0 && !posun_kurzorem && posun_povolit)//posun z kót
 			{
+				//realizace posunu
 				if(Element->orientace==0||Element->orientace==180)Element->X=Element->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
 				else Element->Y=Element->Y-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
+        //aktualizace posouvaného elementu
+				vloz_G_element(Element,0,Element->geo.X1,Element->geo.Y1,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,Element->geo.orientace);
+				//aktualizace dalšího elemtnu
+				if(Element->dalsi!=NULL)vloz_G_element(Element->dalsi,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
+				//aktualizace RT
 				if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){posuv_aktualizace_RT(Element);posuv_aktualizace_RT(Element->dalsi);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
 				else posuv_aktualizace_RT(Element);
 			}
 			else if(vzd.x!=0 && posun_kurzorem && posun_povolit)//posun kurozem
 			{
+				//realizace posunu
 				if(Element->orientace==0||Element->orientace==180)Element->X=Element->X+vzdalenost;
 				else Element->Y=Element->Y+vzdalenost;
+        //aktualizace posouvaného elementu
+				vloz_G_element(Element,0,Element->geo.X1,Element->geo.Y1,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,Element->geo.orientace);
+				//aktualizace dalšího elemtnu
+				if(Element->dalsi!=NULL)vloz_G_element(Element->dalsi,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
+				//aktualizace RT
 				if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){posuv_aktualizace_RT(Element);posuv_aktualizace_RT(Element->dalsi);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
 				else posuv_aktualizace_RT(Element);
 			}
@@ -2850,10 +2886,10 @@ void Cvektory::zmen_poradi_elementu(TElement *aktualni_poradi,TElement *nove_por
 		E=E->dalsi;
 	}
 	E=NULL; delete E;
+	uprav_popisky_elementu(F->pom_temp,aktualni_poradi);//změna názvů
 	if(ukaz_ap->eID%2==0 || ukaz_np->eID%2==0)aktualizuj_sparovane_ukazatele();//změna pořadí přičemž alespoň jeden element byl stop-element
 	ukaz_ap=NULL; delete ukaz_ap;
 	ukaz_np=NULL; delete ukaz_np;
-	uprav_popisky_elementu(F->pom_temp,aktualni_poradi);//změna názvů
 }
 ////---------------------------------------------------------------------------
 //vratí vzdálenost od předchozího elementu, pracuje zatím pouze v orotogonalizovaném prostoru (bude nutno vylepšit s příchodem oblouků), pokud se jedná o první element, uvažuje se jako vzdálenost od počátku kabiny (nutno vylepšit ještě pro různé orientace kabiny)
@@ -3110,7 +3146,7 @@ void Cvektory::vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt)
 			else break;
 		}
 		if(E->n!=0)E->sparovany=Element;
-		if(E->n!=0 && E->eID==0 && F->pom!=NULL && O->n==F->pom->n){E->mGrid->Cells[1][1].Text=Element->name;E->mGrid->Refresh();}//pokud se element (=stopka) nachází ve stejném objektu a tento objekt je právě editovaný, přepiš mu sparovaný element do mgridu
+		if(E->n!=0 && E->eID==0 && E->Xt!=-100 && F->pom!=NULL && O->n==F->pom->n){E->mGrid->Cells[1][1].Text=Element->name;E->mGrid->Refresh();}//pokud se element (=stopka) nachází ve stejném objektu a tento objekt je právě editovaný, přepiš mu sparovaný element do mgridu
 		O=NULL;delete O;
 		E=NULL;delete E;
 	}
@@ -3119,43 +3155,40 @@ void Cvektory::vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt)
 //projde všechny stop-elementy a aktualizuje jim ukazatele na spárované elementy
 void Cvektory::aktualizuj_sparovane_ukazatele()
 {
-	if(F->Akce!=F->ADD)//ošetření proti spouštění při akci ADD
+	int pocet=0;
+	Cvektory::TObjekt *O=OBJEKTY->predchozi;
+	//smazání původních ukazatelů
+	while(O!=NULL && O->n!=0)
 	{
-   	int pocet=0;
-		Cvektory::TObjekt *O=OBJEKTY->predchozi;
-		//smazání původních ukazatelů
-		while(O!=NULL && O->n!=0)
+		TElement *E=O->elementy->predchozi;//procházení od zadu
+		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->predchozi;
+		while(E!=NULL && E->n!=0)
 		{
-    	TElement *E=O->elementy->predchozi;//procházení od zadu
-			if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->predchozi;
-			while(E!=NULL && E->n!=0)
+			if(E->eID%2==0)
 			{
-				if(E->eID%2==0)
-				{
-					E->sparovany=NULL;
-					if(E->eID==0 && F->pom!=NULL && O->n==F->pom->n)E->mGrid->Cells[1][1].Text="N/A";
-				}
-				E=E->predchozi;
+				E->sparovany=NULL;
+				if(E->eID==0 && E->Xt!=-100 && F->pom_temp!=NULL && O->n==F->pom->n)E->mGrid->Cells[1][1].Text="N/A";
 			}
-			E=NULL;delete E;
-			O=O->predchozi;
+			E=E->predchozi;
 		}
-		O=OBJEKTY->predchozi;
-		//nové přiřazení
-   	while(O!=NULL && O->n!=0)
-   	{
-			TElement *E=O->elementy->predchozi;//procházení od zadu
-			if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->predchozi;
-			while(E!=NULL && E->n!=0)
-			{
-				if(E->eID%2==0)vrat_predchozi_stop_element(E,O);
-				E=E->predchozi;
-			}
-			E=NULL;delete E;
-			O=O->predchozi;
-   	}
-		O=NULL;delete O;
+		E=NULL;delete E;
+		O=O->predchozi;
 	}
+	O=OBJEKTY->predchozi;
+	//nové přiřazení
+	while(O!=NULL && O->n!=0)
+	{
+		TElement *E=O->elementy->predchozi;//procházení od zadu
+		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->predchozi;
+		while(E!=NULL && E->n!=0)
+		{
+			if(E->eID%2==0)vrat_predchozi_stop_element(E,O);
+			E=E->predchozi;
+		}
+		E=NULL;delete E;
+		O=O->predchozi;
+	}
+	O=NULL;delete O;
 }
 ////---------------------------------------------------------------------------
 //vrátí předchozí element k Element, který byl do metody poslán jako parametr, přeskočí geometrické zarážky
@@ -3167,7 +3200,7 @@ Cvektory::TElement *Cvektory::vrat_predchozi_element(TElement *Element)
 		if(Element->predchozi->eID!=MaxInt){ret=Element->predchozi;break;}
 		else Element=Element->predchozi;
 	}
-  return ret;
+	return ret;
 }
 ////---------------------------------------------------------------------------
 //smaže element ze seznamu
@@ -3183,7 +3216,88 @@ void Cvektory::smaz_element(TElement *Element)
   long ID=Element->mGrid->ID;
 	Element->mGrid->Delete();
 
-	if(Element->eID==MaxInt || Element->geo.typ==0 && Element->dalsi!=NULL && Element->dalsi->geo.typ==0)//pokud se jedná o zarážku, odstranit ze spojáku nebo pokud se jedná o element mezi 2mi liniemi
+	//kontrola při pokusu o smazání předávacího místa
+	bool povolit_smazani=true;
+	if(Element->eID==200)
+	{
+		unsigned int pocet_PM=0;
+		TElement *E=Element->dalsi,*dalsi_PM=NULL,*predchozi_PM=NULL;//procházení daného objektu
+		while(E!=NULL && E->objekt_n==Element->objekt_n)
+		{
+			if(E->eID==200){dalsi_PM=E;break;}
+			E=E->dalsi;
+		}
+		if(E==NULL)
+		{
+			E=Element->predchozi;
+			while(E->n!=0 && E->objekt_n==Element->objekt_n)
+	  	{
+				if(E->eID==200){predchozi_PM=E;break;}
+				E=E->predchozi;
+			}
+		}
+		TObjekt *O=vrat_objekt(Element->objekt_n);//pomocný ukazatel na objekt
+		if(dalsi_PM==NULL && predchozi_PM==NULL && O->dalsi!=NULL)povolit_smazani=false;//jedno PM
+		else//2 nebo více předávacích míst
+		{
+			if(dalsi_PM!=NULL && predchozi_PM!=NULL)//mezané PM má předchozí i další PM
+			{
+				E=predchozi_PM->dalsi;
+				while(E->n<=dalsi_PM->n)
+				{
+					E->pohon=NULL;//nedefinovaný pohon mezi PM
+					E=E->dalsi;
+				}
+			}
+			if(dalsi_PM!=NULL && predchozi_PM==NULL)//existuje pouze dalsi PM
+			{
+				//získání pohonu
+				TPohon *p=dalsi_PM->predchozi->pohon;
+				E=O->elementy->dalsi;
+				if(F->pom_temp!=NULL)E=F->pom_temp->elementy->dalsi;
+				//přiřazení pohonu
+				while(E!=NULL && E->n!=dalsi_PM->n)
+				{
+					E->pohon=p;
+					E=E->dalsi;
+				}
+				p=NULL;delete p;
+      }
+			if(dalsi_PM==NULL && predchozi_PM!=NULL)//existuje pouze predchozi
+			{
+				//získání pohonu
+				TPohon *p=NULL;
+				if(Element->dalsi!=NULL)p=Element->dalsi->pohon;
+				if(Element->dalsi==NULL && O->dalsi!=NULL)p=O->dalsi->elementy->dalsi->pohon;
+				predchozi_PM->dalsi;
+				//přiřazení pohonu
+				while(E!=NULL)
+				{
+					E->pohon=p;
+					E=E->dalsi;
+				}
+				p=NULL;delete p;
+			}
+			if(dalsi_PM==NULL && predchozi_PM==NULL)
+			{
+      	//získání pohonu
+				TPohon *p=Element->pohon;
+        E=Element->dalsi;
+				//přiřazení pohonu
+				while(E!=NULL)
+				{
+					E->pohon=p;
+					E=E->dalsi;
+				}
+				p=NULL;delete p;
+      }
+		}
+		O=NULL;E=NULL;dalsi_PM=NULL;predchozi_PM=NULL;delete O;delete E;delete dalsi_PM;delete predchozi_PM;
+	}
+	//hláška uživateli
+	if(!povolit_smazani && F->pom_temp!=NULL)F->TIP="Nelze odstranit předávací místo";
+  ////////////smaz_element
+	if(povolit_smazani && (Element->eID==MaxInt || Element->geo.typ==0 && Element->dalsi!=NULL && Element->dalsi->geo.typ==0))//pokud se jedná o zarážku, odstranit ze spojáku nebo pokud se jedná o element mezi 2mi liniemi
 	{
 		//vyřazení prvku ze seznamu a napojení prvku dalšího na prvek předchozí prku mazaného
 		if(Element->dalsi!=NULL)//ošetření proti poslednímu prvku
@@ -3227,7 +3341,7 @@ void Cvektory::smaz_element(TElement *Element)
 		//odstranění z pěměti
 		Element=NULL;delete Element;
 	}
-	else//pokud se jedná o element, změnit typ na zarážku, zachování geometrie
+	else if(povolit_smazani)//pokud se jedná o element, změnit typ na zarážku, zachování geometrie
 	{
 		//obnovení původních hodnot
 		Element->LO1=1.5;
@@ -3242,8 +3356,9 @@ void Cvektory::smaz_element(TElement *Element)
 		Element->RT=0;//reserve time
 
 		//názvy výhybek prozatím neřešeny
-		Element->name=" 1";
-		Element->short_name="1";
+		unsigned int nTyp=vrat_poradi_elementu_do(F->pom_temp,Element)+1;//pokud se jedná o roboty
+		Element->name="Zarážka "+AnsiString(nTyp);
+		Element->short_name=Element->name.SubString(1,3)+AnsiString(nTyp);
 
 		//změna elemetnu na zarážku
 		Element->eID=MaxInt;

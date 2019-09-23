@@ -941,7 +941,7 @@ void TFormX::validace_max_voziku()
 		}
 		O=NULL;delete O;
 		////samotná validace
-		if(delka>0 && delka/F->d.v.PP.sirka_jig<=posledni_E->max_pocet_voziku){posledni_E->mGrid->ShowNote("Max. poèet vozikù musí být menší nebo roven <a>"+AnsiString(floor(delka/F->d.v.PP.sirka_jig))+"</a>");validace=false;}
+		if(delka>0 && delka/F->d.v.PP.delka_jig<=posledni_E->max_pocet_voziku){posledni_E->mGrid->ShowNote("Max. poèet vozikù musí být menší nebo roven <a>"+AnsiString(floor(delka/F->d.v.PP.delka_jig))+"</a>");validace=false;}
 		if(delka==0){posledni_E->mGrid->ShowNote("Nelze, pøed Stopstanicí se nachází oblouk");validace=false;}
 		////nemožnost uložit pøi chybných hodnotách
 		if(validace && F->duvod_ulozit_nahled && !F->scGPButton_ulozit->Enabled)F->nahled_ulozit(true);
@@ -966,6 +966,7 @@ void TFormX::naplneni_dopRD()
 bool TFormX::naplneni_max_voziku(double X,double Y,bool check_for_highlight)
 {
 	bool ret=false;
+	double max_p=0;
 	if(F->pom_temp->elementy->predchozi->n>1)
 	{
 		//hledání zda má nìkterý element nedokonèenou validaci
@@ -977,7 +978,7 @@ bool TFormX::naplneni_max_voziku(double X,double Y,bool check_for_highlight)
 			E=E->dalsi;
 		}
 		//naplnìní doporuèeného max. poètu vozíkù
-		if(E!=NULL && !check_for_highlight)E->mGrid->Cells[1][6].Text=F->ms.MyToDouble(E->mGrid->Note.Text.SubString(48,2));
+		if(E!=NULL && !check_for_highlight){max_p=F->ms.MyToDouble(E->mGrid->Note.Text.SubString(48,2));if(max_p==0)max_p=F->ms.MyToDouble(E->mGrid->Note.Text.SubString(48,1));E->mGrid->Cells[1][6].Text=max_p;E->max_pocet_voziku=max_p;}
 		E=NULL;delete E;
 	}
 	return ret;
