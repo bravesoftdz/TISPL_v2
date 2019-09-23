@@ -72,6 +72,8 @@ class Cmy
 	double RDo(double Dotoc,double PTo);//vratí RD dle délky otoče a času otáčení
 	double dopRD(double dJ,double sJ,double rotace,double R,double TT,double RD);//vrátí doporučenou nejbližší rychlost pohonu, k rychlosti zadané tak, aby se reflektovala rozteč mezi palci i takt
 	bool kontrola_zda_zmena_R_ovlivni_RzRD(double R_puvodni,double R_nove);//vrací true pokud nová rozteč (R) ovlivní Rz resp RD
+	double WT2V(double WT,double TT,double Floor=false);//dle požadovaného času čekání a požadovaného taktu vrátí počet vozíku, pokud je druhý parametr true osekne vrácený výsledek na celé číslo zaokrouhlené směrem dolu
+	double V2WT(double V,double TT);//dle počtu vozíků a požadovaného taktu vrátí dobu čekání
 	double UDV(double dJ,double sJ,double rotace);//vratí užitnou délku vozíku
 	double UDV(double rotace);//vratí užitnou délku vozíku, parametry bere z PP
 	double UDJ(double dJ,double sJ,double rotace);//vrátí užitnou délku jigu

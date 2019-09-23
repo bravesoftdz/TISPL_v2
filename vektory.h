@@ -76,7 +76,7 @@ class Cvektory
 		double Xt,Yt;//umístění tabulky, resp. mGridu v logických (metrických) souřadnicích
 		short orientace;//v jaké orientaci je element na obrazovce vykreslen 0,90,180,270 (orientace dle světových stran)
 		double rotace_jig;//úhel o který element orotuje jig vzhledem k jeho aktuální rotaci jigu vůči podvozku, např. rotace_jig=90°, aktuální rotace jigu 90°, výsledek 180° - REVIZE!!!
-		short stav;
+		short stav;//stav elementu: -1 = disabled, nebo nepoužito např. element v knihovně, nebo nepoužitý robot v kabině 0 = stopka otevřeno, v případě elementů bez stopky pouze pasivní element 1 = stopka zavřeno, v případě elementů bez stopky pouze aktivní element 2 = highlight, element zvýrazněn, nikoliv jeho název (předpokladá se při klasickém zobrazení tj. typ==1) 3 = highlight pouze názvu elementu
 
 		short PD;//part detect:  -1 = nic, 0 = začátek jigu, 1 = střed jigu, 2 = celý jig
 		double LO1;
