@@ -458,9 +458,9 @@ bool Cmy::LeziVoblouku(double X,double Y,double orientace,double RA,double R,dou
 	bool RET=false;
 	TPointD *PL=getArcLine(X,Y,orientace,RA,R);
 	double KorekceX=0,KorekceY=0;//pro případy, kdy počáteční i koncový bod je v jedné linii (vodorovné či svislé)
-	if(round2double(PL[0].x,2)==round2double(PL[3].y,2))KorekceX=getArcLine(L2Px(X),L2Py(Y),orientace,RA/2.0,R)[3].x-PL[3].x;//round2double nasazeno z důvodu divného chování při porovnání dvou totožných čísel, kdy bylo vraceno false, bylo zaznamenáno u korekceY
-	if(round2double(PL[0].y,2)==round2double(PL[3].y,2))KorekceY=getArcLine(L2Px(X),L2Py(Y),orientace,RA/2.0,R)[3].y-PL[3].y;//round2double nasazeno z důvodu divného chování při porovnání dvou totožných čísel, kdy bylo vraceno false, bylo zaznamenáno u korekceY
-	if(PtInRectangle(PL[3].x,PL[3].y,X+KorekceX,Y+KorekceY,Xmys,Ymys))RET=true;
+	if(round2double(PL[0].x,2)==round2double(PL[3].x,2))KorekceX=getArcLine(X,Y,orientace,RA/2.0,R)[3].x-PL[3].x;//round2double nasazeno z důvodu divného chování při porovnání dvou totožných čísel, kdy bylo vraceno false, bylo zaznamenáno u korekceY
+	if(round2double(PL[0].y,2)==round2double(PL[3].y,2))KorekceY=getArcLine(X,Y,orientace,RA/2.0,R)[3].y-PL[3].y;//round2double nasazeno z důvodu divného chování při porovnání dvou totožných čísel, kdy bylo vraceno false, bylo zaznamenáno u korekceY
+	if(PtInRectangle(X+KorekceX,Y+KorekceY,PL[3].x,PL[3].y,Xmys,Ymys))RET=true;
 	delete []PL;PL=NULL;//smazání již nepotřebných ukazatelů
 	return RET;
 }
@@ -826,6 +826,19 @@ bool Cmy::kontrola_zda_zmena_R_ovlivni_RzRD(double R_puvodni,double R_nove)
 {
 	if(fmod(R_puvodni,R_nove))return true;
 	else return false;
+}
+/////////////////////////////////////////////////////////////////////////////
+//dle požadovaného času čekání a požadovaného taktu vrátí počet vozíku, pokud je druhý parametr true osekne vrácený výsledek na celé číslo zaokrouhlené směrem dolu
+double Cmy::WT2V(double WT,double TT,double Floor)
+{
+	if(Floor)return floor(WT/TT);
+	else return WT/TT;
+}
+/////////////////////////////////////////////////////////////////////////////
+//dle počtu vozíků a požadovaného taktu vrátí dobu čekání
+double Cmy::V2WT(double V,double TT)
+{
+	return V*TT;
 }
 /////////////////////////////////////////////////////////////////////////////
 //vrátí užitnou délku vozíku
