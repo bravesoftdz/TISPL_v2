@@ -4214,7 +4214,7 @@ void TForm1::vlozit_predavaci_misto()
 			//deklarace atributů
 			long ID=0;
 			Cvektory::TObjekt *O_pom=O;//pomocný ukazatel uchovává ukazatel na další objekt, pokud nasledující objekt je právě editován je nutné načíst z pom_temp
-			if(O->dalsi!=NULL)O_pom=O->dalsi;                                                  Memo(O->name);
+			if(O->dalsi!=NULL)O_pom=O->dalsi;
 			if(pom_temp!=NULL && O->dalsi!=NULL && O->dalsi->n==pom_temp->n)O_pom=pom_temp;
 			//////////Vkládání předávacího místa
 			if(E->eID!=200 && ((E->dalsi!=NULL && E->dalsi->pohon!=NULL && E->pohon!=NULL && E->dalsi->pohon->n!=E->pohon->n) || (E->dalsi==NULL && O->dalsi!=NULL && O->dalsi->elementy->dalsi->pohon!=NULL && E->pohon!=NULL && O->dalsi->elementy->dalsi->pohon->n!=E->pohon->n) || (E->dalsi!=NULL && (E->dalsi->pohon==NULL && E->pohon!=NULL || E->dalsi->pohon!=NULL && E->pohon==NULL)) || (E->dalsi==NULL && O->dalsi!=NULL && (O_pom->elementy->dalsi->pohon==NULL && E->pohon!=NULL || O_pom->elementy->dalsi->pohon!=NULL && E->pohon==NULL))))
