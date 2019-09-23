@@ -368,7 +368,7 @@ void Cvektory::kopiruj_body(TObjekt *Original,TObjekt *Kopie)
 		TBod *B=Original->body->dalsi;//přeskočí hlavičku
 		while(B!=NULL)
 		{
-			vloz_bod(B->X,B->Y,Kopie);
+			vloz_bod(B->X,B->Y,Kopie,NULL,false,false);//nutné vyplnit i nepovinné parametry
 			B=B->dalsi;
 		}
 		B=NULL;delete B;
@@ -1881,11 +1881,9 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->PD=-1;//defaultní stav pro S&G roboty
 	novy->objekt_n=0;//příslušnost elementu k objektu
 	novy->pohon=NULL;//pohon na kterém se nachází element
-	if(F->pom_temp!=NULL)
-	{
-		novy->objekt_n=F->pom_temp->n;
-		if(F->pom_temp->pohon!=NULL)novy->pohon=F->pom_temp->pohon;
-	}
+	if(F->pom_temp!=NULL)novy->objekt_n=F->pom_temp->n;
+	if(novy->predchozi->n!=0 && novy->predchozi->eID!=200)novy->pohon=novy->predchozi->pohon;
+	else if(novy->dalsi!=NULL)novy->pohon=novy->dalsi->pohon;
 
 	//název
 	AnsiString T="";
@@ -2720,6 +2718,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			TPoint bod;bod.x=F->d.Rxy(Element).x;bod.y=F->d.Rxy(Element).y;
 			if(Element->orientace==0||Element->orientace==180)bod.x=F->d.Rxy(Element).x+vzd_pos;else bod.y=F->d.Rxy(Element).y+vzd_pos;
 			if(!F->bod_na_geometrii(bod.x,bod.y))posun_povolit=false;
+			if(F->pom_temp->elementy->predchozi->n==Element->n && !posun_povolit)posun_povolit=true;
 			if(Element->dalsi!=NULL && Element->dalsi->geo.typ!=0 || Element->geo.typ!=0)posun_povolit=false;//pokud existuje za elementem něco jiného než přímka nelze posunout
 			//kontrola pro poslední prvek pokud je povolen posun dalších elementů
 			if(pusun_dalsich_elementu)

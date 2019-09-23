@@ -467,7 +467,7 @@ void TFormX::OnKeyPress(long Tag,long ID,unsigned long Col,unsigned long Row,Sys
    			F->pom_element_temp->name=F->pom_element_temp->name.SubString(1,F->pom_element_temp->name.Length()-1);
    		else//ostatní klávesy
 				F->pom_element_temp->name=F->pom_element_temp->mGrid->Cells[0][0].Text+AnsiString(Key);
-   		//pokud se jendá o stopku, je možné editovat pouze koneèné èíslo
+			//pokud se jendá o stopku, je možné editovat pouze koneèné èíslo
    		if(F->pom_element_temp->eID==0&&F->pom_element_temp->name.Length()<=4)
 			{
 				Key=0;//nutné! OnKeyPress je volána 2x
@@ -581,7 +581,7 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 	Cvektory::TElement *E=F->pom_temp->elementy;
 	while(E!=NULL)
 	{
-		if(E->n>0&&E->n!=n)//pøeskoèí mimo_element a hlavièku
+		if(E->n>0 && E->n!=n )//&& E->pohon==F->pom_temp->pohon)//pøeskoèí mimo_element a hlavièku
 		{
 			switch(E->eID)
 			{
@@ -596,7 +596,8 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 				break;//stop stanice
 				case 1:case 7:case 11:case 15:case 101:case 105://robor kontinuální
 				{
-					E->PT1=F->m.PT(E->LO1,F->pom_temp->pohon->aRD);
+					//E->PT1=F->m.PT(E->LO1,F->pom_temp->pohon->aRD);
+					if(E->pohon!=NULL)E->PT1=F->m.PT(E->LO1,E->pohon->aRD);else E->PT1=0;
 					E->mGrid->Cells[1][1].Text=F->m.round2double(F->outPT(E->PT1),3);
 				}
 				break;
@@ -654,7 +655,7 @@ void TFormX::aktualizace_tab_elementu_pOdebran ()
 	Cvektory::TElement *E=F->pom_temp->elementy;
 	while(E!=NULL)
 	{
-		if(E->n>0)
+		if(E->n>0 && E->pohon==F->pom_temp->pohon)
 		{
 			switch(E->eID)
 			{
@@ -941,7 +942,7 @@ void TFormX::validace_max_voziku()
 		}
 		O=NULL;delete O;
 		////samotná validace
-		if(delka>0 && delka/F->d.v.PP.delka_jig<=posledni_E->max_pocet_voziku){posledni_E->mGrid->ShowNote("Max. poèet vozikù musí být menší nebo roven <a>"+AnsiString(floor(delka/F->d.v.PP.delka_jig))+"</a>");validace=false;}
+		if(delka>0 && delka/F->d.v.PP.delka_podvozek<=posledni_E->max_pocet_voziku){posledni_E->mGrid->ShowNote("Max. poèet vozikù musí být menší nebo roven <a>"+AnsiString(floor(delka/F->d.v.PP.delka_podvozek))+"</a>");validace=false;}
 		if(delka==0){posledni_E->mGrid->ShowNote("Nelze, pøed Stopstanicí se nachází oblouk");validace=false;}
 		////nemožnost uložit pøi chybných hodnotách
 		if(validace && F->duvod_ulozit_nahled && !F->scGPButton_ulozit->Enabled)F->nahled_ulozit(true);

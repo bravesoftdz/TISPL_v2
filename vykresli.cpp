@@ -205,8 +205,17 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	{
 		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)O=F->pom_temp;//slouží pro vykreslení aktuálně editované kabiny
 		vykresli_objekt(canv,O);
-		///////////////Vykreslení elementů
+		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)O=v.vrat_objekt(O->n);//pokud byl objekt nahrazen pom_temp, musí dojít k jeho vrácení, pom_temp->dalsi != Objekty->dalsi
+		O=F->d.v.dalsi_krok(O,tab_pruchodu);//přepínání kroků v cyklu (dalsi/dalsi2)
+	}
+	if(F->pom_temp!=NULL)vykresli_objekt(canv,v.vrat_objekt(F->pom_temp->n));
+	///////////////Vykreslení pohonu a elementů
+	O=v.OBJEKTY->dalsi;//přeskočí hlavičku
+	while(O!=NULL)
+	{
 		short stav=1;
+    //vykreslení prozatimní osy POHONU
+		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)vykresli_retez(canv,F->pom_temp);else vykresli_retez(canv,O);
 		Cvektory::TElement *E=O->elementy;
 		if(F->pom_temp!=NULL&&F->pom_temp->n==O->n){stav=1;E=F->pom_temp->elementy;}//elementy v aktivním objektu
 		else stav=-1;//disabled elementy ostatních objektů
@@ -224,9 +233,8 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 			E=E->dalsi;//posun na další element
 		}
 		E=NULL;delete E;
-		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)O=v.vrat_objekt(O->n);//pokud byl objekt nahrazen pom_temp, musí dojít k jeho vrácení, pom_temp->dalsi != Objekty->dalsi
-		O=F->d.v.dalsi_krok(O,tab_pruchodu);//přepínání kroků v cyklu (dalsi/dalsi2)
-	}
+		O=O->dalsi;
+  }
 	//if(F->pom_temp!=NULL)vykresli_objekt(canv,F->pom_temp);//vykreslení obrysu editované kabiny na ostatní, tj. do popředí
 	//povolení zobrazování LAYOUTU a ČASOVÝCH OS, pokud existují objekty, jinak ne
 //	if(v.OBJEKTY->dalsi!=NULL && !Form1->TZF)
@@ -281,7 +289,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
 
   ////vykreslení prozatimní osy POHONU
-	vykresli_retez(canv,O);
+	//vykresli_retez(canv,O);
 
 	///název
 	//název objektu - nastavení                 //záměrně nuly, aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
