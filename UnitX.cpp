@@ -65,11 +65,13 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 		{
 			E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
 			E->mGrid->VisibleRow(3,false,false);//nepøekreslovat
+			E->mGrid->VisibleRow(5,false,false); E->mGrid->VisibleRow(6,false,false);
 		}
 		else
 		{
 			E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
 			E->mGrid->VisibleRow(3,true,false);//nepøekreslovat
+			E->mGrid->VisibleRow(5,true,false); E->mGrid->VisibleRow(6,true,false);
 		}
 		E->mGrid->exBUTTONLockPosition=true;//uzamkne pozici exButtonu, aby se nepøepozival bìhem updatu tam a zpìt
 		E->mGrid->Update();
@@ -120,14 +122,14 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				{
 					input_state=WT;//nastaveni stavu
 					E->WTstop=F->inPT(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text));//INPUT
-					E->max_pocet_voziku=E->WTstop/F->d.v.PP.TT;//uložení do pamìti + výpoèet
-					E->mGrid->Cells[Col][6].Text=F->m.round2double(E->max_pocet_voziku,3);//OUTPUT
+					E->akt_pocet_voziku=E->WTstop/F->d.v.PP.TT;//uložení do pamìti + výpoèet
+					E->mGrid->Cells[Col][6].Text=F->m.round2double(E->akt_pocet_voziku,3);//OUTPUT
 				}
 				if(Row==6)//max. poèet vozíkù
 				{
 					input_state=P_VOZ;//nastaveni stavu
-					E->max_pocet_voziku=F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text);//INPUT
-					E->WTstop=E->max_pocet_voziku*F->d.v.PP.TT;//uložení do pamìti + výpoèet
+					E->akt_pocet_voziku=F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text);//INPUT
+					E->WTstop=E->akt_pocet_voziku*F->d.v.PP.TT;//uložení do pamìti + výpoèet
 					E->mGrid->Cells[Col][3].Text=F->m.round2double(F->outPT(E->WTstop),3);//OUTPUT
 				}
 				//dodìlat plnìní pamìti pøi editaci bunìk
@@ -588,7 +590,6 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 				case 0:
 				{
 					E->WT=F->m.cekani_na_palec(0,F->pom_temp->pohon->roztec,F->pom_temp->pohon->aRD,3);
-//					E->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(E->WT),3);
 					E->mGrid->Cells[1][4].Text=F->m.round2double(F->outPT(E->WT),3);
 					E->RT=F->m.RT(0,F->d.v.vzdalenost_od_predchoziho_elementu(E,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,E->WT+E->WTstop);
 					E->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(E->RT),3);
@@ -923,27 +924,12 @@ void TFormX::validace_max_voziku()
 	{
 		////deklarace potøebných atributù
 		bool validace=true;//pøedpoklad, že je vše OK
-		double delka=0;
-		////hledání max vzdálenosti pøed stopkou, která je linie
-		bool pokracovat=true;
-		Cvektory::TObjekt *O=F->pom;
-		while(O!=NULL && O->n!=0)
-		{
-			Cvektory::TElement *E=O->elementy->predchozi;
-			if(O->n==F->pom->n)E=posledni_E;
-			while(E!=NULL && E->n!=0)
-			{
-				if(E->geo.typ==0)delka+=E->geo.delka;
-				else{pokracovat=false;break;}
-				E=E->predchozi;
-			}
-			E=NULL;delete E;
-			if(pokracovat)O=O->predchozi;else break;
-		}
-		O=NULL;delete O;
 		////samotná validace
-		if(delka>0 && delka/F->d.v.PP.delka_podvozek<=posledni_E->max_pocet_voziku){posledni_E->mGrid->ShowNote("Max. poèet vozikù musí být menší nebo roven <a>"+AnsiString(floor(delka/F->d.v.PP.delka_podvozek))+"</a>");validace=false;}
-		if(delka==0){posledni_E->mGrid->ShowNote("Nelze, pøed Stopstanicí se nachází oblouk");validace=false;}
+		posledni_E->max_pocet_voziku=F->max_voziku(posledni_E);
+		if(posledni_E->max_pocet_voziku>0 && posledni_E->max_pocet_voziku<posledni_E->akt_pocet_voziku){posledni_E->mGrid->ShowNote("Max. poèet vozikù musí být menší nebo roven <a>"+AnsiString(posledni_E->max_pocet_voziku)+"</a>");validace=false;}
+		if(posledni_E->max_pocet_voziku==0){posledni_E->mGrid->ShowNote("Nelze, pøed Stopstanicí se nachází oblouk");validace=false;}
+		////pøepsání maximálního poèctu vozíku do tabulky elementu, pro jistotu
+		posledni_E->mGrid->Cells[1][5].Text=posledni_E->max_pocet_voziku;
 		////nemožnost uložit pøi chybných hodnotách
 		if(validace && F->duvod_ulozit_nahled && !F->scGPButton_ulozit->Enabled)F->nahled_ulozit(true);
 		if(!validace)F->nahled_ulozit(false);
@@ -979,7 +965,7 @@ bool TFormX::naplneni_max_voziku(double X,double Y,bool check_for_highlight)
 			E=E->dalsi;
 		}
 		//naplnìní doporuèeného max. poètu vozíkù
-		if(E!=NULL && !check_for_highlight){max_p=F->ms.MyToDouble(E->mGrid->Note.Text.SubString(48,2));if(max_p==0)max_p=F->ms.MyToDouble(E->mGrid->Note.Text.SubString(48,1));E->mGrid->Cells[1][6].Text=max_p;E->max_pocet_voziku=max_p;}
+		if(E!=NULL && !check_for_highlight)E->mGrid->Cells[1][6].Text=E->max_pocet_voziku;
 		E=NULL;delete E;
 	}
 	return ret;

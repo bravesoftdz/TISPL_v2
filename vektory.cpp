@@ -1877,6 +1877,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->RT=0;//reserve time
 	novy->akt_pocet_voziku=0;
 	novy->max_pocet_voziku=0;
+	if(eID%2==0 && eID!=200)novy->max_pocet_voziku=1;
 	novy->stav=1;
 	novy->PD=-1;//defaultní stav pro S&G roboty
 	novy->objekt_n=0;//příslušnost elementu k objektu
@@ -2095,7 +2096,7 @@ Cvektory::TElement *Cvektory::vloz_element_za(TObjekt *Objekt,TElement *Element)
 			//změna popisků
 			uprav_popisky_elementu(Objekt,Element);
 			ret=Element;//nastaveno aby v ostatních metodách již nedocházelo k přesunu elementu ve spojáku a přejmenování
-			if(Element->eID%2==0)aktualizuj_sparovane_ukazatele();//došlo ke změně pořadí
+			if(Element->eID%2==0 && Element->eID!=200)aktualizuj_sparovane_ukazatele();//došlo ke změně pořadí
 		}
 	}
 	return ret;
@@ -2886,7 +2887,7 @@ void Cvektory::zmen_poradi_elementu(TElement *aktualni_poradi,TElement *nove_por
 	}
 	E=NULL; delete E;
 	uprav_popisky_elementu(F->pom_temp,aktualni_poradi);//změna názvů
-	if(ukaz_ap->eID%2==0 || ukaz_np->eID%2==0)aktualizuj_sparovane_ukazatele();//změna pořadí přičemž alespoň jeden element byl stop-element
+	if(ukaz_ap->eID%2==0 && ukaz_ap->eID!=200 || ukaz_np->eID%2==0 && ukaz_np->eID!=200)aktualizuj_sparovane_ukazatele();//změna pořadí přičemž alespoň jeden element byl stop-element
 	ukaz_ap=NULL; delete ukaz_ap;
 	ukaz_np=NULL; delete ukaz_np;
 }
@@ -2928,7 +2929,7 @@ double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element,bool pouze
 				if(F->pom_temp->n==O->n)E=Element->predchozi;//pokud jsem v pom_temp = začátek, začánám od předchozího elementu Elementu
 				while(E!=NULL && E->n!=0)
 				{
-					if(E->eID%2==0){pokracovat=false;break;}//pokud je předchozi S&G prěruš cyklus
+					if(E->eID%2==0 && E->eID!=200){pokracovat=false;break;}//pokud je předchozi S&G prěruš cyklus
 					celkem+=E->geo.delka;//pokud jdes dál přičti vzdálenost
 					E=E->predchozi;
 				}
@@ -3021,7 +3022,7 @@ void Cvektory::napln_combo_stopky(TElement *Stopka)
 				while(E!=NULL)//a jejich elementy
 				{
 					////pokud je aktuální element stopka či robot se stopkou a zároveň nejedná se o danou stopku předávanou parametreme metody a nejedná se o hlavičku, naplní se do comba
-					if((E->eID%2==0) && E!=Stopka && E->n!=0)
+					if((E->eID%2==0 && E->eID!=200) && E!=Stopka && E->n!=0)
 					{
 						if(smazat_combo){C->Clear();smazat_combo=false;/*t=C->Items->Add(/*tady nelze parametr*//*);t->Caption="nepřiřazen";v případě odkomentování zvýšit index u přidělování Itemindex u bez spárované situace*/}//nejdříve combo vymaže od popisku nedefinovan
 						if(!hlavicka_vytvorena)//pokud ještě nebyla vytvoří ji formou názvu
@@ -3126,7 +3127,7 @@ void Cvektory::vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt)
 //	return RET;
 
 	//////nová koncepce
-	if(Element->eID%2==0)
+	if(Element->eID%2==0 && Element->eID!=200)
 	{
 		bool pokracovat=true;
 		TElement *E=NULL;
@@ -3138,7 +3139,7 @@ void Cvektory::vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt)
 			if(Objekt->n==O->n)E=Element->predchozi;//pokud jsem v prvním objektu = začátek, začánám od předchozího elementu Elementu
 			while(E!=NULL && E->n!=0)
 			{
-				if(E->eID%2==0){pokracovat=false;break;}//nalezen předchozí S&G
+				if(E->eID%2==0 && E->eID!=200){pokracovat=false;break;}//nalezen předchozí S&G
   			E=E->predchozi;
 			}
 			if(pokracovat)O=O->predchozi;//ošetření proti přechodu na havičku
@@ -3163,7 +3164,7 @@ void Cvektory::aktualizuj_sparovane_ukazatele()
 		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->predchozi;
 		while(E!=NULL && E->n!=0)
 		{
-			if(E->eID%2==0)
+			if(E->eID%2==0 && E->eID!=200)
 			{
 				E->sparovany=NULL;
 				if(E->eID==0 && E->Xt!=-100 && F->pom_temp!=NULL && O->n==F->pom->n)E->mGrid->Cells[1][1].Text="N/A";
@@ -3181,7 +3182,7 @@ void Cvektory::aktualizuj_sparovane_ukazatele()
 		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->predchozi;
 		while(E!=NULL && E->n!=0)
 		{
-			if(E->eID%2==0)vrat_predchozi_stop_element(E,O);
+			if(E->eID%2==0 && E->eID!=200)vrat_predchozi_stop_element(E,O);
 			E=E->predchozi;
 		}
 		E=NULL;delete E;
