@@ -4130,7 +4130,7 @@ void TForm1::add_element (int X, int Y)
   		Cvektory::TElement *A=pom_temp->elementy->dalsi;
   		while(A!=NULL)
 			{
-  			if(A->eID%2==0&&A->n!=E->n){d.v.posuv_aktualizace_RT(A);break;}
+  			if(A->eID%2==0 && A->eID!=200 && A->n!=E->n){d.v.posuv_aktualizace_RT(A);break;}
   			A=A->dalsi;
   		}A=NULL;delete A;
   	}
@@ -4270,7 +4270,7 @@ void TForm1::vlozit_predavaci_misto()
 				if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)E->WT=m.cekani_na_palec(0,E->dalsi->pohon->roztec,E->dalsi->pohon->aRD,3);
 				if(E->dalsi==NULL && O->dalsi!=NULL && O_pom->elementy->dalsi->pohon!=NULL)E->WT=m.cekani_na_palec(0,O_pom->elementy->dalsi->pohon->roztec,O_pom->elementy->dalsi->pohon->aRD,3);
 				if(pom_temp!=NULL && pom_temp->n==O->n)E->mGrid->Refresh();
-      }
+			}
 			//ukazatelové záležitosti
 			O_pom=NULL;delete O_pom;
 			E=E->dalsi;
@@ -4280,6 +4280,23 @@ void TForm1::vlozit_predavaci_misto()
 		O=O->dalsi;
 	}
 	delete O;O=NULL;
+}
+//---------------------------------------------------------------------------
+//vrátí maximální možný počet vozíků na stopce, podle geometrie před ní
+double TForm1::max_voziku(Cvektory::TElement *stopka)
+{
+	double delka=0;
+	Cvektory::TElement *E=stopka;
+	while(E!=NULL && E->n!=0)
+	{
+		if(E->predchozi->n!=0 && E->OTOC_delka>0)delka-=0.5;//odsazení před otočí
+		if(E->geo.typ==0 && (E->eID==MaxInt || E->n==stopka->n))delka+=E->geo.delka;
+		else break;
+		E=E->predchozi;
+	}
+	E=NULL;delete E;
+	if(delka>0)return floor(delka/F->d.v.PP.delka_podvozek);
+	else return 1;
 }
 //---------------------------------------------------------------------------
 //vrací zda se element nachází na pohonu jakéhokoliv sklonu, dvojí způsob použití: zadání parametru X,Y,eID pokud nemám ukazatel na element nebo 0,0,0,ukazatel, vrátí true nebo false
@@ -5753,10 +5770,11 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][4].Text="WT palec "+cas;
 			E->mGrid->Cells[1][4].Text=outPT(m.cekani_na_palec(0,F->pom_temp->pohon->roztec,F->pom_temp->pohon->aRD,3));
 			E->WT=inPT(ms.MyToDouble(E->mGrid->Cells[1][4].Text));
-			E->mGrid->Cells[0][5].Text="akt. počet vozíků";
-			E->mGrid->Cells[1][5].Text=E->akt_pocet_voziku;
-			E->mGrid->Cells[0][6].Text="max. počet vozíků";
-			E->mGrid->Cells[1][6].Text=E->max_pocet_voziku;
+			E->mGrid->Cells[0][5].Text="počet pozic";
+			if(id>=6 && id<=10)E->max_pocet_voziku=max_voziku(E);
+			E->mGrid->Cells[1][5].Text=E->max_pocet_voziku;
+			E->mGrid->Cells[0][6].Text="počet vozíků";
+			E->mGrid->Cells[1][6].Text=E->akt_pocet_voziku;
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_0;
@@ -5768,11 +5786,13 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][3].ShowHint=true;
 			E->mGrid->Cells[0][4].Hint="maximální možná doba čekání na palec";
 			E->mGrid->Cells[0][4].ShowHint=true;
+			E->mGrid->Cells[0][5].Hint="maximální možný počet pozic";
+			E->mGrid->Cells[0][5].ShowHint=true;
 			//nastavení exButtonu, skrývání řádku max.WT Stop
 			E->mGrid->exBUTTONVisible=true;
-			E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
+			E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
 			E->mGrid->exBUTTON->ShowHint=true;E->mGrid->exBUTTON->Hint="Rozšířené položky";
-			E->mGrid->VisibleRow(3,false,false);
+			if(!(id>=6 && id<=10)){E->mGrid->VisibleRow(3,false,false); E->mGrid->VisibleRow(5,false,false); E->mGrid->VisibleRow(6,false,false);E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;}
 			break;
 		}
 		case 7:case 11:case 15:case 101:case 105:
@@ -5998,12 +6018,14 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 //další spuštěńí, pouze načítání hodnot ze spojáku
 void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla,AnsiString LO,AnsiString cas,AnsiString delka_otoce)
 {
-  log(__func__);//logování
+	log(__func__);//logování
 	switch(E->eID)
 	{
 		case 0://stop stanice
 		{
-			bool stav=E->mGrid->Rows[3].Visible;//uchování stavu zda byla tabulka "rozbalená"
+			unsigned int stav=0;
+			if(E->mGrid->RowCount!=0 && E->mGrid->Rows[3].Visible)stav=1;//uchování stavu zda byla tabulka "rozbalená"
+			if(E->mGrid->RowCount!=0 && !E->mGrid->Rows[3].Visible)stav=2;//uchování stavu zda byla tabulka "zabalená"
 			//samotné vytvoření matice-tabulky
 			E->mGrid->Create(2,7);
 			//nastavování režimů podle ID objektu
@@ -6018,10 +6040,11 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[1][3].Text=outPT(E->WTstop);
 			E->mGrid->Cells[0][4].Text="WT palec "+cas;
 			E->mGrid->Cells[1][4].Text=outPT(E->WT);
-			E->mGrid->Cells[0][5].Text="akt. počet vozíků";
-			E->mGrid->Cells[1][5].Text=E->akt_pocet_voziku;
-			E->mGrid->Cells[0][6].Text="max. počet vozíků";
-			E->mGrid->Cells[1][6].Text=E->max_pocet_voziku;
+			E->mGrid->Cells[0][5].Text="počet pozic";
+			if(id>=6 && id<=10)E->max_pocet_voziku=max_voziku(E);
+			E->mGrid->Cells[1][5].Text=E->max_pocet_voziku;
+			E->mGrid->Cells[0][6].Text="počet vozíků";
+			E->mGrid->Cells[1][6].Text=E->akt_pocet_voziku;
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_0;
@@ -6033,12 +6056,24 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][3].ShowHint=true;
 			E->mGrid->Cells[0][4].Hint="maximální možná doba čekání na palec";
 			E->mGrid->Cells[0][4].ShowHint=true;
+			E->mGrid->Cells[0][5].Hint="maximální možný počet pozic";
+			E->mGrid->Cells[0][5].ShowHint=true;
 			//nastavení exButtonu, skrývání řádku max.WT Stop
 			E->mGrid->exBUTTONVisible=true;
-			E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
+			E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
 			E->mGrid->exBUTTON->ShowHint=true;E->mGrid->exBUTTON->Hint="Rozšířené položky";
-			if(stav)E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
-			else E->mGrid->VisibleRow(3,false,false);
+			switch(stav)
+			{
+				//znovuotevření náhledu
+				case 0:if(!(id>=6 && id<=10)){E->mGrid->VisibleRow(3,false,false); E->mGrid->VisibleRow(5,false,false); E->mGrid->VisibleRow(6,false,false);E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;}
+				break;
+				//tabulka byl před posunem rozbalena
+				case 1:break;
+				//tabulka byla před posunem zabalena
+				case 2:{E->mGrid->VisibleRow(3,false,false); E->mGrid->VisibleRow(5,false,false); E->mGrid->VisibleRow(6,false,false);E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;}
+				break;
+      }
+			//if(stav==2 && E->mGrid->Rows[3].Visible){E->mGrid->VisibleRow(3,false,false); E->mGrid->VisibleRow(5,false,false); E->mGrid->VisibleRow(6,false,false);E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;}
 			break;
 		}
 		case 7:case 11:case 15:case 101:case 105:
@@ -7489,12 +7524,12 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 		  		DrawGrid_knihovna->Refresh();
 					DrawGrid_otoce->Refresh();
 		  		pom_element_temp=NULL; delete pom_element_temp;
-					if(eID%2!=0)odstraneni_elementu_tab_pohon(1);//přenastavení tabulky pohonu po odstranění elementu
+					if(eID%2!=0 && eID!=200)odstraneni_elementu_tab_pohon(1);//přenastavení tabulky pohonu po odstranění elementu
 					if(dalsi_element!=NULL && dalsi_element->eID!=MaxInt)//pokud existuje další element za smazaným dojde k přepočítání jeho RT
 						d.v.posuv_aktualizace_RT(dalsi_element);
 		  		if(pom_temp->elementy->dalsi!=NULL)d.v.uprav_popisky_elementu(pom_temp,pom_temp->elementy->dalsi);//pokud jsou v kabině jěště nějaké elementy dojde k přejmenování
 		  		pom_element=NULL;//přidáno nově 13.5.2019 - v režimu testování kvůli setJobID a předání do pom_element_puv
-          if(eID%2==0)d.v.aktualizuj_sparovane_ukazatele();//odstraněn stop-element, nutná aktualizace
+					if(eID%2==0 && eID!=200)d.v.aktualizuj_sparovane_ukazatele();//odstraněn stop-element, nutná aktualizace
 					dalsi_element=NULL;delete dalsi_element;
 				}else {mazani=false;Akce=NIC;}
 			}

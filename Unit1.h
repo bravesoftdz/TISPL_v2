@@ -787,6 +787,7 @@ public:		// User declarations
 	void design_element(Cvektory::TElement *E,bool prvni_spusteni);//nadesignuje tabulky daného elementu
 	TPoint bod_vlozeni_elementu(double kontr_x=-1000,double kontr_y=-1000);//vrací bod vložení elementu, "pøilepuje" kurzor na geometrii pokud se jedná o pøímku, parametry kontr_x a y slouží ke kontrole bodu zda se nachází na pøímce (pøi posunu)
 	bool bod_na_geometrii(double X, double Y);//kontroluje zde se bod nachází na geometri, vrací pouze ano/ne
+	double max_voziku(Cvektory::TElement *stopka);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
