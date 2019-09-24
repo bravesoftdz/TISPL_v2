@@ -520,6 +520,7 @@ void TForm1::Novy_soubor()//samotné vytvoření nového souboru
 			 d.v.PP.sirka_jig=1;
 			 d.v.PP.vyska_jig=1;
 			 d.v.PP.delka_podvozek=1;
+			 d.v.PP.uchyt_pozice=d.v.PP.delka_jig/2.0;//výchozí umístění vozíku je v polovině
 			 d.v.PP.typ_linky=0;
 			 d.v.PP.raster.filename="";
 			 d.v.PP.raster.resolution=m2px;
@@ -528,8 +529,6 @@ void TForm1::Novy_soubor()//samotné vytvoření nového souboru
 			 d.v.PP.raster.show=false;
        d.v.PP.katalog=1;
        d.v.PP.radius=1;
-
-
 
 			 Akce=NIC;Screen->Cursor=crDefault;//změní kurzor na default
 
@@ -9602,8 +9601,8 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 {
  //log(__func__);
  //Form2->ShowModal();
-                           Sk(d.v.PP.radius);
- Akce=GEOMETRIE;REFRESH();
+
+ d.vykresli_pozice(Canvas,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,90,10,8);
 
 }
 //---------------------------------------------------------------------------
@@ -9772,20 +9771,28 @@ void __fastcall TForm1::KonecClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPGlyphButton_ZOOM_MINUSClick(TObject *Sender)
 {
-  log(__func__);//logování
-	vycentrovat=false;
-	akt_souradnice_kurzoru=m.P2L(ClientWidth/2+scSplitView_LEFTTOOLBAR->Width,ClientHeight/2);
-	ZOOM_OUT();
-	zobraz_tip("TIP: Oddálení obrazu lze také vykonat pomocí stisku klávesy - či F8 nebo CTRL a otáčením kolečko myši směrem dolu.");
+	if(Zoom>0.25)//akcelerátor, aby se zbytečně nevolalo
+	{
+		log(__func__);//logování
+		vycentrovat=false;
+		akt_souradnice_kurzoru=m.P2L(ClientWidth/2+scSplitView_LEFTTOOLBAR->Width,ClientHeight/2);
+		ZOOM_OUT();
+		zobraz_tip("TIP: Oddálení obrazu lze také vykonat pomocí stisku klávesy - či F8 nebo CTRL a otáčením kolečko myši směrem dolu.");
+	}
+	else MessageBeep(0);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPGlyphButton_ZOOM_PLUSClick(TObject *Sender)
 {
- log(__func__);//logování
- vycentrovat=false;
- akt_souradnice_kurzoru=m.P2L(ClientWidth/2+scSplitView_LEFTTOOLBAR->Width,ClientHeight/2);
- ZOOM_IN();
- zobraz_tip("TIP: Přiblížení obrazu lze také vykonat pomocí stisku klávesy + či F7 nebo CTRL a otáčením kolečko myši směrem nahoru.");
+	if(Zoom<10)//akcelerátor, aby se zbytečně nevolalo
+	{
+		log(__func__);//logování
+		vycentrovat=false;
+		akt_souradnice_kurzoru=m.P2L(ClientWidth/2+scSplitView_LEFTTOOLBAR->Width,ClientHeight/2);
+		ZOOM_IN();
+		zobraz_tip("TIP: Přiblížení obrazu lze také vykonat pomocí stisku klávesy + či F7 nebo CTRL a otáčením kolečko myši směrem nahoru.");
+	}
+	else MessageBeep(0);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scLabel_titulekDblClick(TObject *Sender)
