@@ -100,6 +100,7 @@ class Cvektory
 		TGeometrie geo;
 		TmGrid *mGrid;
 		unsigned long objekt_n;//příslušnost elementu k objektu
+    unsigned long pohon_n;//příslušnost elementu k pohonu
 		TPohon *pohon;//přiřazený pohon k elementu
 
 		//UnicodeString poznamka;//uloží poznámku   //DOPRYC
@@ -758,6 +759,7 @@ private:
       unsigned int akt_pocet_voziku;
       unsigned int max_pocet_voziku;
       unsigned long objekt_n;//příslušnost elementu k objektu
+      unsigned long pohon_n;//příslušnost elementu k pohonu
 			TGeometrie geo;
 	};
 
