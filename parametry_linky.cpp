@@ -149,7 +149,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 			scGPNumericEdit_delka_podvozek->Value=Form1->d.v.PP.delka_podvozek*(1+999*Delkaunit);
       scGPNumericEdit_vyska_jig->Value=Form1->d.v.PP.vyska_jig*(1+999*Delkaunit);
 
-      scGPTrackBar_uchyceni->MaxValue=Form1->d.v.PP.delka_jig*(1+999*Delkaunit);
+      scGPTrackBar_uchyceni->MaxValue=Form1->d.v.PP.delka_podvozek*(1+999*Delkaunit);
       scGPTrackBar_uchyceni->Value=Form1->d.v.PP.uchyt_pozice*(1+999*Delkaunit);
       scGPTrackBar_uchyceni->Hint=scGPTrackBar_uchyceni->Value;
 
