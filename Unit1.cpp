@@ -9636,12 +9636,12 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //---------------------------------------------------------------------------
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
-{
-	Cvektory::TElement *E=pom_temp->elementy->dalsi; Memo3->Clear();    int i=1;
+{                                  Memo3->Clear();
+	Cvektory::TElement *E=pom_temp->elementy->dalsi;
 	while(E!=NULL)
 	{
 		//if(E->sparovany!=NULL)Memo("E->name: "+AnsiString(E->name)+";  sparovany->name: "+AnsiString(E->sparovany->name));
-		Memo(E->name);    E->mGrid->Cells[0][0].Text=i;i++;
+		Memo(E->name);
 		//if(E->pohon!=NULL)Memo(E->pohon->n); else Memo("NULL");
 		E=E->dalsi;
 	} delete E;E=NULL;
