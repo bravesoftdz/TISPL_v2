@@ -30,6 +30,7 @@
 #pragma link "scGPImages"
 #pragma link "scStyledForm"
 #pragma link "scImageCollection"
+#pragma link "scGPMeters"
 #pragma resource "*.dfm"
 TForm_parametry_linky *Form_parametry_linky;
 //---------------------------------------------------------------------------
@@ -103,7 +104,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		Form_parametry_linky->Color=F->m.clIntensive((TColor)RGB(43,87,154),10);
     //F->scStyledForm1->ShowClientInActiveEffect();
    // scHTMLLabel1->Caption="Ahojky - <bgcolor =clWhite>[mm]</bgcolor>";
-
+     scGPTrackBar_uchyceni->Top=196;
+     scGPTrackBar_uchyceni->Left=614;
 
 
     Cvektory::Ttyp_dopravniku *K=F->d.v.vrat_typ_dopravniku(F->d.v.PP.katalog);
@@ -147,7 +149,11 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 			scGPNumericEdit_delka_podvozek->Value=Form1->d.v.PP.delka_podvozek*(1+999*Delkaunit);
       scGPNumericEdit_vyska_jig->Value=Form1->d.v.PP.vyska_jig*(1+999*Delkaunit);
 
-    //  ShowMessage(scGPNumericEdit_delka_jig->Value);
+      scGPTrackBar_uchyceni->MaxValue=Form1->d.v.PP.delka_podvozek*(1+999*Delkaunit);
+      scGPTrackBar_uchyceni->Value=Form1->d.v.PP.uchyt_pozice*(1+999*Delkaunit);
+      scGPTrackBar_uchyceni->Hint=scGPTrackBar_uchyceni->Value;
+
+     // ShowMessage(Form1->d.v.PP.uchyt_pozice);
 
 
 		clBACKGROUND=(TColor)RGB(240,240,240);//F->m.clIntensive((TColor)RGB(128,128,128),115);//(250,250,250);
@@ -285,6 +291,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
        scGPNumericEdit_sirka_jig->Enabled=true;
        scGPNumericEdit_vyska_jig->Enabled=true;
        scGPNumericEdit_delka_podvozek->Enabled=true;
+       scGPTrackBar_uchyceni->Enabled=true;
 
 		nacti_pohony();
 
@@ -556,6 +563,7 @@ void TForm_parametry_linky::nacti_pohony ()
           scGPNumericEdit_sirka_jig->Enabled=false;
           scGPNumericEdit_vyska_jig->Enabled=false;
           scGPNumericEdit_delka_podvozek->Enabled=false;
+          scGPTrackBar_uchyceni->Enabled=true;//pozdeji zakazat - nyni pro testy povoleno
 
          //pokud je pohon používán, nastavím mu podbarvení bunìk, krome nazvu - ten je možne vždy mìnit
           mGrid->Cells[2][i].Background->Color= Form_parametry_linky->Color;
@@ -903,13 +911,15 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			{
 				F->d.v.PP.delka_jig=F->ms.MyToDouble(scGPNumericEdit_delka_jig->Value)/1000.0;
 				F->d.v.PP.sirka_jig=F->ms.MyToDouble(scGPNumericEdit_sirka_jig->Value)/1000.0;
-				F->d.v.PP.delka_podvozek=scGPNumericEdit_delka_podvozek->Value/1000.0;
+				F->d.v.PP.delka_podvozek=F->ms.MyToDouble(scGPNumericEdit_delka_podvozek->Value)/1000.0;
+        F->d.v.PP.uchyt_pozice=F->ms.MyToDouble(scGPTrackBar_uchyceni->Value)/1000.0;
 			}
 			else  //Metry
 			{
 				F->d.v.PP.delka_jig=F->ms.MyToDouble(scGPNumericEdit_delka_jig->Value);
 				F->d.v.PP.sirka_jig=F->ms.MyToDouble(scGPNumericEdit_sirka_jig->Value);
-				F->d.v.PP.delka_podvozek=scGPNumericEdit_delka_podvozek->Value;
+				F->d.v.PP.delka_podvozek=F->ms.MyToDouble(scGPNumericEdit_delka_podvozek->Value);
+        F->d.v.PP.uchyt_pozice=F->ms.MyToDouble(scGPTrackBar_uchyceni->Value);
 			}
 			int typ;
 			if(scGPSwitch->State==scswOff){typ=0;}
@@ -2664,7 +2674,11 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_katalogClick(TObject *Sen
     {
      Form_parametry_linky->Visible=false;
      Form_parametry_linky->Visible=true;
-    } else {Form_parametry_linky->Visible=false;Form_parametry_linky->Visible=true;}
+      setADD_ButtonPosition();
+      setFormHeight();
+      vykresli_obdelnik_vpravo();
+    }
+    else {Form_parametry_linky->Visible=false;Form_parametry_linky->Visible=true;}
 }
 //---------------------------------------------------------------------------
 
@@ -2700,3 +2714,17 @@ void TForm_parametry_linky::getROtherValues(Tm_mm Runit, int Row)
            }
             I=NULL;delete I;
 }
+void __fastcall TForm_parametry_linky::scGPTrackBar_uchyceniMouseMove(TObject *Sender,
+          TShiftState Shift, int X, int Y)
+{
+ scGPTrackBar_uchyceni->Hint=scGPTrackBar_uchyceni->Value;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::scGPNumericEdit_delka_podvozekChange(TObject *Sender)
+
+{
+  scGPTrackBar_uchyceni->MaxValue=scGPNumericEdit_delka_podvozek->Value;/*/(1+999*Delkaunit);  */
+}
+//---------------------------------------------------------------------------
+

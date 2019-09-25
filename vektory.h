@@ -242,17 +242,18 @@ class Cvektory
 	{
     int katalog;//ID katalogových komponent zvolených pro geometrické elementy linky
     short typ_linky; //0 - podlahový, 1 - podvěsný
-    double radius;
+		double radius;//nastavený radius komponent linky z katalogu
 		TDateTime cas_start;//začátek výroby v SEČ (resp. LSEČ)
 		unsigned long  mnozstvi;//požadované množství
 		double hod_den;//počet hodin za den
 		double dni_rok;//počet hodin za den
 		double efektivita;//přepokládaná výrobní efektivina
-		double TT;//pro návrháře
-		double delka_jig;
-		double sirka_jig;
-		double vyska_jig;
-		double delka_podvozek;
+		double TT;//takt time linky
+		double delka_jig;//přejmenovat na max_...
+		double sirka_jig;//přejmenovat na max_...
+		double vyska_jig;//přejmenovat na max_...
+		double delka_podvozek;//délka podvozku vozíků
+		double uchyt_pozice;//pozice uchycení vozíků k nosnému palci
 		T_raster raster;
 		T_vector vector;
 	};
@@ -374,6 +375,7 @@ class Cvektory
 		double sirka_jig;
 		double vyska_jig;
 		double delka_podvozek;
+    double uchyt_pozice;
     int katalog;
 		short typ_linky;
     double radius;

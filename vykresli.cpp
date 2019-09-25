@@ -222,6 +222,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 		{
 			if(E->n>0)
 			{
+        vykresli_pozice(canv,E->X,E->Y,m.Rt90(E->geo.orientace-180),0,E->max_pocet_voziku,E->akt_pocet_voziku);
 				vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->LO1,E->OTOC_delka,E->LO2,E->LO_pozice);
 				if(E->eID==MaxInt)vykresli_zarazku(canv,E);//prozatimní vykreslení zarážky ODSTRANIT
 				E->citelna_oblast.rect3=aktOblast;//uložení citelné oblasti pro další použití
@@ -1808,6 +1809,24 @@ void Cvykresli::set_pen(TCanvas *canv, TColor color, int width, int style)//PS_E
 	canv->Pen->Handle = ExtCreatePen(pStyle, pWidth, &lBrush, 0, NULL);
 }
 ////---------------------------------------------------------------------------
+////nastaví pero                                                             //http://www.zive.cz/clanky/geometricka-pera/sc-3-a-103079,http://mrxray.on.coocan.jp/Delphi/plSamples/190_LineEdgeStyle.htm
+void Cvykresli::set_pen2(TCanvas *canv, TColor color, int width, int ENDCAP,int JOIN,bool INSIDEFRAME)//PS_ENDCAP_FLAT PS_ENDCAP_ROUND, PS_ENDCAP_SQUARE viz Matoušek III str. 179
+{                                                                         //PS_JOIN_ROUND, PS_JOIN_MITER (lze nastavit přes SetMiterlimit) PS_JOIN_BEVEL,
+	DeleteObject(canv->Pen->Handle);//zruší původní pero
+	DWORD pStyle = 0;
+	if(INSIDEFRAME)pStyle = PS_GEOMETRIC | PS_SOLID |ENDCAP | JOIN | PS_INSIDEFRAME;
+	else pStyle = PS_GEOMETRIC | PS_SOLID | ENDCAP | JOIN;
+	DWORD pWidth = width;
+
+	LOGBRUSH lBrush;
+	lBrush.lbStyle = BS_SOLID;
+	lBrush.lbColor = color;
+	lBrush.lbHatch = 0;
+	//LOGBRUSH lBrush={BS_PATTERN,color,(unsigned)srafura()->Handle};
+
+	canv->Pen->Handle = ExtCreatePen(pStyle, pWidth, &lBrush, NULL, NULL);
+}
+////---------------------------------------------------------------------------
 Graphics::TBitmap *Cvykresli::srafura()
 {
 	Graphics::TBitmap * Vzor=new Graphics::TBitmap;
@@ -2719,6 +2738,7 @@ unsigned int Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,doubl
 	return RET;//vrátí index
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
+//metada brzy možno odstranit !!!!
 //zajišťuje vykreslení pozic v layoutu + příprava konstrukce když nebudu chtít vykreslovat objekt vodorovně, pouze bude nutné zajistit ještě rotaci pozic a podvozků
 unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,int i,TPointD OD, TPointD DO,double delka,double delkaV,double sirkaV,double delkaP,double mezera,double akt_pozice)
 {
@@ -2744,7 +2764,7 @@ unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,int i,TPointD OD, TPointD 
 	while(akt_pozice<=delka)
 	{
 		//volání komplexního vykreslení jednoho vozíku (podvozek včetně jigu)
-		vykresli_vozik(canv,i,S.x,S.y,delkaP,delkaV,sirkaV);
+		vykresli_vozik(canv,i,S.x,S.y,delkaV,sirkaV);
 		//posun o další vozík
 		S.x+=(DO.x-OD.x)*PO;//posun ze začátku objektu nakonec
 		S.y+=(DO.y-OD.y)*PO;//posun ze začátku objektu nakonec
@@ -2758,34 +2778,70 @@ unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,int i,TPointD OD, TPointD 
 	canv->Font->Size=SF_puv;//vrátí původní velikost fontu
 	return i;
 }
+////-----------------------------------------------------------------------------------------------------------------------------------------------------
+//vykresli pozice na stop elementech
+void Cvykresli::vykresli_pozice(TCanvas *canv,double X,double Y,double orientaceP,double rotaceJ,unsigned int pocet_pozic,unsigned int pocet_voziku)
+{
+	 if(pocet_pozic>0 && (orientaceP==0 || orientaceP==90  || orientaceP==180  || orientaceP==270))//druhá část pravděpodobně nadbytečné ošetření
+	 {
+		 double dJ=v.PP.delka_jig;//později nahradit ze zakázky
+		 double sJ=v.PP.sirka_jig;//později nahradit ze zakázky
+		 //určení směru vykreslování pozic
+		 short x=0,y=0;
+		 switch(m.Rt90(orientaceP))
+		 {
+			 case 0:   y=1;  x=0;  break;
+			 case 90:  y=0;  x=1;  break;
+			 case 180: y=-1; x=0;  break;
+			 case 270: y=0;  x=-1; break;
+		 }
+//		 //případne vizuální znázornění špatné rotace jigu
+//		 if(v.PP.delka_podvozek<m.UDJ(rotaceJ))
+//		 {
+//			 canv->Brush->Style=bsSolid;
+//			 canv->Pen->Color=clRed;
+//			 canv->Pen->Width=m.round(3/3.0*F->Zoom);
+//			 //canv->FillRect(TRect(m.L2Px(X),m.L2Py(Y),m.L2Px(X+x*v.PP.delka_podvozek*pocet_pozic),m.L2Py(Y+y*v.PP.delka_podvozek*pocet_pozic)));
+//			 obdelnik(canv,X-dJ/2.0,Y+sJ/2.0,X+dJ/2.0+x*v.PP.delka_podvozek*pocet_pozic-1,Y-sJ/2.0+y*v.PP.delka_podvozek*pocet_pozic-1,orientaceP-90+rotaceJ);
+//		 }
+		 //vykreslení jednoho vozíku či pozice, od zadu, aby byly vykresleny nejdříve pozice
+		 for(unsigned int i=pocet_pozic-1;0<i+1;i--)//nutno zápis 0<i+1, jinak zamrzá
+		 {
+//			 //případne vizuální znázornění špatné rotace jigu
+//			 if(v.PP.delka_podvozek<m.UDJ(rotaceJ))
+//			 {
+//				 canv->Brush->Style=bsSolid;
+//				 canv->Pen->Color=clRed;
+//				 canv->Pen->Width=m.round(4/3.0*F->Zoom);
+//				 obdelnik(canv,X-dJ/2.0,Y+sJ/2.0,X+dJ/2.0+x*v.PP.delka_podvozek*i,Y-sJ/2.0+y*v.PP.delka_podvozek*i,orientaceP-90+rotaceJ);
+//			 }
+
+			 if(i+1>pocet_voziku)vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,RGB(220,220,220),RGB(220,220,220));
+			 else vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ);
+		 }
+	 }
+}
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //vykreslení jednoho komplexního vozíku (podvozek včetně jigu)
-void Cvykresli::vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dP,double dJ,double sJ,double rotaceP,double rotaceJ,TColor clChassis, TColor clJig)
+void Cvykresli::vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dJ,double sJ,double orientaceP,double rotaceJ,TColor clChassis, TColor clJig)
 {
+	//výchozí parametry
 	float sP=0.12;//šířka podvozku, pouze stanovane
+	X=X-v.PP.uchyt_pozice;//posunutí umístění vozíku o nastavení uchycení pozice
 
 	//transparentní pozadí (nejenom textu ale ji podvozku a jigu) ALTERNATIVA pro font:SetBkMode(canv->Handle,TRANSPARENT);
 	canv->Brush->Style=bsClear;
 
-//	////zvýraznění animovaného dle CT - zlobilo při provizorním zobrazování v náhledu, proto provizorně odstaveno, F->MOD!=F->NAHLED nepomohlo, divné
-//	if(ID==ceil(Form_objekt_nahled->pom->pozice) && Form_objekt_nahled->Timer_animace->Enabled && F->MOD!=F->NAHLED)//v případě animace zvýrazní pozici, pro kterou se čítá technologický čas
-//	{
-//		canv->Pen->Width=3/3.0*F->Zoom;canv->Pen->Color=clWebOrange;//nebo lze použít: clYellow;
-//		canv->Rectangle(m.L2Px(X-dP/2),m.L2Py(Y+sP),m.L2Px(X+dP/2),m.L2Py(Y-sP));//podvozek
-//		canv->Rectangle(m.L2Px(X-dJ/2),m.L2Py(Y+sJ/2.0),m.L2Px(X+dJ/2),m.L2Py(Y-sJ/2.0));//jig
-//		canv->Pen->Width=1/3.0*F->Zoom;
-//	}
-
 	////podvozek
-	canv->Pen->Color=clChassis;
-	canv->Pen->Width=m.round(1/3.0*F->Zoom);
-	canv->Rectangle(m.L2Px(X-dP/2.0),m.L2Py(Y+sP),m.L2Px(X+dP/2.0),m.L2Py(Y-sP));//vykreslení pozice podvozku
+	set_pen2(canv,clChassis,m.round(1/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true);
+	obdelnik(canv,X,Y+sP/2.0,X+v.PP.delka_podvozek,Y-sP/2.0,orientaceP-90);
 
 	////jig
-	canv->Pen->Color=clJig;
-	canv->Pen->Width=m.round(2/3.0*F->Zoom);
-	if(rotaceJ==90 || rotaceJ==270) canv->Rectangle(m.L2Px(X-sJ/2.0),m.L2Py(Y+dJ/2.0),m.L2Px(X+sJ/2.0),m.L2Py(Y-dJ/2.0));
-	else canv->Rectangle(m.L2Px(X-dJ/2.0),m.L2Py(Y+sJ/2.0),m.L2Px(X+dJ/2.0),m.L2Py(Y-sJ/2.0));
+	if(dJ!=0 && sJ!=0)//vykreslí, pouze pokud jsou oba parametry nenulové
+	{
+		set_pen2(canv,clJig,m.round(2/3.0*F->Zoom),PS_ENDCAP_ROUND,PS_JOIN_ROUND,true);
+		obdelnik(canv,(X+X+v.PP.delka_podvozek)/2.0-dJ/2.0,Y+sJ/2.0,(X+X+v.PP.delka_podvozek)/2.0+dJ/2.0,Y-sJ/2.0,orientaceP-90+rotaceJ);
+	}
 
 //	////text - ID vozíku
 //	//framing
@@ -2822,8 +2878,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,doubl
 	//vozíková data - v případě nevykreslení vozíku zde monžno odstranit
 	double dJ=m.UDJ(v.PP.delka_jig,v.PP.sirka_jig,O->orientace);//délka jigu
 	double sJ=m.UDJ(v.PP.sirka_jig,v.PP.delka_jig,O->orientace);//šířka jigu a tím pádem i minimální kabiny
-	double dP=v.PP.delka_podvozek;
-	double DV=dJ;if(dP>dJ)DV=dP;
+	double DV=dJ;if(v.PP.delka_podvozek>dJ)DV=v.PP.delka_podvozek;
 																	 //ShowMessage("R="+AnsiString(R)+"Rz="+AnsiString(Rz)+"Rx="+AnsiString(Rx));
 	////obrys objektu
 	//pero+výplň
@@ -2868,7 +2923,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,doubl
 								}
 								E=NULL; delete E;
 								/////////////////////
-								vykresli_vozik(canv,j,X+i,Y,dP,dJ,sJ,0,m.Rt90(rotace));//provizorně
+								vykresli_vozik(canv,j,X+i,Y,dJ,sJ,0,m.Rt90(rotace));//provizorně
 							}
 							else vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,false);//jinak pasivní
 						}
@@ -4292,6 +4347,14 @@ void Cvykresli::line(TCanvas *canv,long X1,long Y1,long X2,long Y2)
 {
 	canv->MoveTo(X1,Y1);
 	canv->LineTo(X2,Y2);
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::obdelnik(TCanvas *canv,double X1,double Y1,double X2,double Y2,double rotace)
+{
+	TPointD body[]={{X1,Y1},{X2,Y1},{X2,Y2},{X1,Y2}};
+	m.rotace_polygon((X1+X2)/2.0,(Y1+Y2)/2.0,body,3,rotace);
+	POINT body_px[]={{m.L2Px(body[0].x),m.L2Py(body[0].y)},{m.L2Px(body[1].x),m.L2Py(body[1].y)},{m.L2Px(body[2].x),m.L2Py(body[2].y)},{m.L2Px(body[3].x),m.L2Py(body[3].y)}};
+	canv->Polygon((TPoint*)body_px,3);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //https://stackoverflow.com/questions/785097/how-do-i-implement-a-b%C3%A9zier-curve-in-c nebo téměř totožné wiki   //http://www.yevol.com/bcb/Lesson12.htm

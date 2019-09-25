@@ -61,12 +61,12 @@ class Cvykresli
 	void zobrazit_label_zamerovac(int X,int Y);//vypiše labal zamìøovaè
 	void vykresli_technologicke_procesy(TCanvas *canv);//ROMA metoda, vykreslí graf technologickıch procesù vùèi jednotlivım t-objektùm v èase
 	void vykresli_layout(TCanvas *canv);//zajišuje vykreslení layout
-	unsigned int  vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y,double Poffset=0,bool animace=false);////metoda pouívaná ve starém náhledu objektu, mono odstranit///zajistí vykreslení náhledu objektu, XY -umístìní L zaèátek (støed dopravníku) objektu v metrech, Poffset - pozièní poloha, vıchozí poloha prvního vozíku/pozice v objektu (a vùèi tomuto objektu),mùe slouit na animaci èi návaznost v pøípadì layoutu, za zmínìní stojí lokální promìnná této metody KR, co je kalibrace øetìzu vùèi podvozku napø. 0 - støed, -DP/2 - zaèátek, DP/2 - konec, èi libovolnı v m od zaèátku podvozku
+	unsigned int vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y,double Poffset=0,bool animace=false);////metoda pouívaná ve starém náhledu objektu, mono odstranit///zajistí vykreslení náhledu objektu, XY -umístìní L zaèátek (støed dopravníku) objektu v metrech, Poffset - pozièní poloha, vıchozí poloha prvního vozíku/pozice v objektu (a vùèi tomuto objektu),mùe slouit na animaci èi návaznost v pøípadì layoutu, za zmínìní stojí lokální promìnná této metody KR, co je kalibrace øetìzu vùèi podvozku napø. 0 - støed, -DP/2 - zaèátek, DP/2 - konec, èi libovolnı v m od zaèátku podvozku
 	unsigned int vykresli_pozice(TCanvas *canv, int i, TPointD OD, TPointD DO,double delka, double delkaV,double sirkaV,double delkaP,double mezera,double akt_pozice=0);//zajišuje vykreslení pozic v layoutu + pøíprava konstrukce kdy nebudu chtít vykreslovat objekt vodorovnì, pouze bude nutné zajistit ještì rotaci pozic a podvozkù
+	void vykresli_pozice(TCanvas *canv,double X,double Y,double orientaceP,double rotaceJ,unsigned int pocet_pozic,unsigned int pocet_voziku);//vykresli pozice na stop elementech
 	void vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y,double Poffset=0,bool animace=false);///zajistí vykreslení øetìzz, XY -umístìní L zaèátek (støed dopravníku) objektu v metrech, Poffset - pozièní poloha, vıchozí poloha prvního vozíku/pozice v objektu (a vùèi tomuto objektu),mùe slouit na animaci èi návaznost v pøípadì layoutu, za zmínìní stojí lokální promìnná této metody KR, co je kalibrace øetìzu vùèi podvozku napø. 0 - støed, -DP/2 - zaèátek, DP/2 - konec, èi libovolnı v m od zaèátku podvozku
 	void vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O);//slouèit s vıše uvedenou metodou
-	void vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dP,double dJ,double sJ,double rotaceP=0,double rotaceJ=0,TColor clChassis=(TColor) RGB(50,50,50), TColor clJig=clPurple);//vykreslení jednoho komplexního vozíku (podvozek vèetnì jigu)
-	void nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv,unsigned short typ);//short typ = zda se jedná o zadavání name==1 nebo short_name==2 nebo nic==0
+	void vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dJ,double sJ,double orientaceP=0,double rotaceJ=0,TColor clChassis=(TColor) RGB(50,50,50), TColor clJig=clPurple);//vykreslení jednoho komplexního vozíku (podvozek vèetnì jigu)
 //	void vykresli_simulaci(TCanvas *canv);//zajišuje vykreslení simulace
 //	void vykresli_linku(TCanvas *canv);//zajišuje vykreslení osy linky
 //	void umisti_vozik(TCanvas *canv,Cvektory::TVozik *ukaz);//zajišuje umístìní vozíku na lince
@@ -88,8 +88,10 @@ class Cvykresli
 	void vykresli_ikonu_textu(TCanvas *canv,int X,int Y,AnsiString Popisek="text",short stav=0);
 	void vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popisek="spojnice",short stav=0);
 	void vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popisek="komora",short typ=0,short stav=0,double orientace=90);//typ: -2 kurzor se sprchy, -1 kurzor bez sprchy, 0 ikona bez sprchy, 1 ikona se sprchou, stav: -1 disabled, 0 normál
+	void nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv,unsigned short typ);//short typ = zda se jedná o zadavání name==1 nebo short_name==2 nebo nic==0
 	void linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,int Width,TColor Color=clBlack,TPenStyle PenStyle=psSolid,TPenMode PenMode=pmCopy);
 	void line(TCanvas *canv,long X1,long Y1,long X2,long Y2);
+	void obdelnik(TCanvas *canv,double X1,double Y1,double X2,double Y2,double rotace);
 	void bezier(TCanvas *canv,TPointD *POLE,long posledni_prvek);
 	void bezier(TCanvas *canv,TPointD *POLE,long X,long Y,double oX,double oY,double rotace,long posledni_prvek);
 	void bezier(TCanvas *canv,TPoint *POLE_px,long posledni_prvek);
@@ -107,6 +109,7 @@ class Cvykresli
 	void vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,AnsiString Text,Cvektory::TElement *aktElement=NULL,int Offset=0,short highlight=0,float width=0.2,TColor color=clGray,bool LO_kota=false,Cvektory::TKomora *komora=NULL,Cvektory::TBod *bod=NULL);//v px + dosazuje aktuálnì nastavené jednotky, highlight: 0-ne,1-ano,2-ano+vystoupení kóty i poziènì, aktElement pokud bude NULL, pøedpokládá se, e je to kóta kabiny, pøidán parametr ukladat_do_elementu a to z dùvodu kóty mezi lak. okny, nesmí bıt ukládána do elementu ani do objektu
 	void rotace_textu(TCanvas *canv, long rotace);//úhel rotace je desetinách stupnì
 	void set_pen(TCanvas *canv, TColor color, int width, int style=PS_ENDCAP_SQUARE);//vrátí HANDLE na nastavení pera,//popø.PS_ENDCAP_FLAT PS_ENDCAP_ROUND, PS_ENDCAP_SQUARE viz Matoušek III str. 179 èi http://www.zive.cz/clanky/geometricka-pera/sc-3-a-103079
+	void set_pen2(TCanvas *canv, TColor color, int width, int ENDCAP=PS_ENDCAP_SQUARE,int JOIN=PS_JOIN_MITER,bool INSIDEFRAME=true);//vrátí HANDLE na nastavení pera,//popø.PS_ENDCAP_FLAT PS_ENDCAP_ROUND, PS_ENDCAP_SQUARE a PS_JOIN_ROUND, PS_JOIN_MITER (lze nastavit pøes SetMiterlimit) PS_JOIN_BEVEL, viz Matoušek III str. 179 èi http://www.zive.cz/clanky/geometricka-pera/sc-3-a-103079
 	TColor set_color(TCanvas *canv, Cvektory::TObjekt *O);
 	void drawRectText(TCanvas *canv,TRect Rect, UnicodeString Text);
 	void TextFraming(TCanvas *canv,int X,int Y,UnicodeString Text,TFont *Font=NULL,TColor clFraming=clWhite,unsigned short FramingSize=4);//zajistí vykreslení daného textu dle nastaveného Fontu (pokud je NULL, pøevezme se akutální font canvasu) vèetnì framingu, kterı je baravnì a velikostnì nastavitelnı
