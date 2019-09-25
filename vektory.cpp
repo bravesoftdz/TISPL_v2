@@ -5457,7 +5457,9 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 						cE->akt_pocet_voziku=E->akt_pocet_voziku;
 				 		cE->max_pocet_voziku=E->max_pocet_voziku;
             cE->objekt_n=E->objekt_n;
-            cE->pohon_n=E->pohon_n;
+          //  ShowMessage("E->pohony->n");
+            cE->pohon_n=E->pohon->n;
+           // ShowMessage("po E->pohony->n");
 						cE->geo=E->geo;
 						//uložení do binárního filu
 						FileStream->Write(cE,sizeof(C_element));//zapiše jeden prvek do souboru
@@ -5472,6 +5474,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 						wchar_t *name=new wchar_t [cE->name_delka];
 						name=E->name.c_str();
 						FileStream->Write(name,cE->name_delka*sizeof(wchar_t));//
+           // ShowMessage(AnsiString(name)+", uloz pohon n:"+AnsiString(E->pohon->n));
 						name=NULL; delete[] name;
 
 						//posun na další segment cesty
@@ -5645,7 +5648,6 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			hlavicka_POHONY();
 			hlavicka_OBJEKTY();
 			//ZDM hlavicka_voziky();
-
 			//pohony - musí být nad objekty
 			for(unsigned int i=1;i<=File_hlavicka.pocet_pohonu;i++)//možno řešit sice while, po strukturách, ale toto je připravené pro případ, kdy budu načítat i objekty jiného typu než objekt
 			{
@@ -5682,7 +5684,6 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 				TObjekt *ukaz=new TObjekt;
 				C_objekt *c_ukaz=new C_objekt;
 				FileStream->Read(c_ukaz,sizeof(C_objekt));//načte jeden prvek ze souboru
-
 				if(c_ukaz->n!=0 && File_hlavicka.pocet_objektu>=c_ukaz->n)//pokud nenačte hlavičku či nějaký shit
 				{
 					//samotná data
@@ -5757,7 +5758,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
             E->akt_pocet_voziku=cE.akt_pocet_voziku;
 						E->max_pocet_voziku=cE.max_pocet_voziku;
             E->objekt_n=cE.objekt_n;
-            E->pohon_n=cE.pohon_n;
+            E->pohon=vrat_pohon(cE.pohon_n);
 						E->geo=cE.geo;
 						//shortname
 						wchar_t *short_name=new wchar_t [5];
@@ -5769,6 +5770,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 						wchar_t *name=new wchar_t[cE.name_delka];
 						FileStream->Read(name,cE.name_delka*sizeof(wchar_t));
 						E->name=name;
+           // ShowMessage(AnsiString(name)+", nacti pohon n:"+AnsiString(cE.pohon_n));
 						delete[] name; name=NULL;
 
 						vloz_element(ukaz,E);
