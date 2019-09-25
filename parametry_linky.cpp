@@ -291,6 +291,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
        scGPNumericEdit_sirka_jig->Enabled=true;
        scGPNumericEdit_vyska_jig->Enabled=true;
        scGPNumericEdit_delka_podvozek->Enabled=true;
+       scGPTrackBar_uchyceni->Enabled=true;
 
 		nacti_pohony();
 
@@ -562,6 +563,7 @@ void TForm_parametry_linky::nacti_pohony ()
           scGPNumericEdit_sirka_jig->Enabled=false;
           scGPNumericEdit_vyska_jig->Enabled=false;
           scGPNumericEdit_delka_podvozek->Enabled=false;
+          scGPTrackBar_uchyceni->Enabled=false;
 
          //pokud je pohon používán, nastavím mu podbarvení bunìk, krome nazvu - ten je možne vždy mìnit
           mGrid->Cells[2][i].Background->Color= Form_parametry_linky->Color;

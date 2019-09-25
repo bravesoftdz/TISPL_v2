@@ -7274,8 +7274,8 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 6998
-    Top = 11034
+    Left = 7007
+    Top = 11049
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -7459,11 +7459,12 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentShowHint = False
     ShowHint = True
     TabOrder = 27
+    TabStop = True
     OnMouseMove = scGPTrackBar_uchyceniMouseMove
     TransparentBackground = False
     ShowFocusRect = True
     JumpWhenClick = True
-    CanFocused = False
+    CanFocused = True
     MouseSupport = True
     MinValue = 0
     MaxValue = 15
