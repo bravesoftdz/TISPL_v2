@@ -223,6 +223,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 		{
 			if(E->n>0)
 			{
+        vykresli_pozice(canv,E->X,E->Y,m.Rt90(E->geo.orientace-180),0,E->max_pocet_voziku,E->akt_pocet_voziku);
 				vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->LO1,E->OTOC_delka,E->LO2,E->LO_pozice);
 				if(E->eID==MaxInt)vykresli_zarazku(canv,E);
 				E->citelna_oblast.rect3=aktOblast;//uložení citelné oblasti pro další použití
@@ -2783,7 +2784,7 @@ unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,int i,TPointD OD, TPointD 
 //vykresli pozice na stop elementech
 void Cvykresli::vykresli_pozice(TCanvas *canv,double X,double Y,double orientaceP,double rotaceJ,unsigned int pocet_pozic,unsigned int pocet_voziku)
 {
-	 if(orientaceP==0 || orientaceP==90  || orientaceP==180  || orientaceP==270)//pravděpodobně nadbytečné ošetření
+	 if(pocet_pozic>0 && (orientaceP==0 || orientaceP==90  || orientaceP==180  || orientaceP==270))//druhá část pravděpodobně nadbytečné ošetření
 	 {
 		 double dJ=v.PP.delka_jig;//později nahradit ze zakázky
 		 double sJ=v.PP.sirka_jig;//později nahradit ze zakázky
@@ -2808,14 +2809,14 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,double X,double Y,double orientace
 		 //vykreslení jednoho vozíku či pozice, od zadu, aby byly vykresleny nejdříve pozice
 		 for(unsigned int i=pocet_pozic-1;0<i+1;i--)//nutno zápis 0<i+1, jinak zamrzá
 		 {
-			 //případne vizuální znázornění špatné rotace jigu
-			 if(v.PP.delka_podvozek<m.UDJ(rotaceJ))
-			 {
-				 canv->Brush->Style=bsSolid;
-				 canv->Pen->Color=clRed;
-				 canv->Pen->Width=m.round(4/3.0*F->Zoom);
-				 obdelnik(canv,X-dJ/2.0,Y+sJ/2.0,X+dJ/2.0+x*v.PP.delka_podvozek*i,Y-sJ/2.0+y*v.PP.delka_podvozek*i,orientaceP-90+rotaceJ);
-			 }
+//			 //případne vizuální znázornění špatné rotace jigu
+//			 if(v.PP.delka_podvozek<m.UDJ(rotaceJ))
+//			 {
+//				 canv->Brush->Style=bsSolid;
+//				 canv->Pen->Color=clRed;
+//				 canv->Pen->Width=m.round(4/3.0*F->Zoom);
+//				 obdelnik(canv,X-dJ/2.0,Y+sJ/2.0,X+dJ/2.0+x*v.PP.delka_podvozek*i,Y-sJ/2.0+y*v.PP.delka_podvozek*i,orientaceP-90+rotaceJ);
+//			 }
 
 			 if(i+1>pocet_voziku)vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,RGB(220,220,220),RGB(220,220,220));
 			 else vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ);

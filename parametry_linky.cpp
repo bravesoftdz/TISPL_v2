@@ -563,7 +563,7 @@ void TForm_parametry_linky::nacti_pohony ()
           scGPNumericEdit_sirka_jig->Enabled=false;
           scGPNumericEdit_vyska_jig->Enabled=false;
           scGPNumericEdit_delka_podvozek->Enabled=false;
-          scGPTrackBar_uchyceni->Enabled=false;
+          scGPTrackBar_uchyceni->Enabled=true;//pozdeji zakazat - nyni pro testy povoleno
 
          //pokud je pohon používán, nastavím mu podbarvení bunìk, krome nazvu - ten je možne vždy mìnit
           mGrid->Cells[2][i].Background->Color= Form_parametry_linky->Color;
