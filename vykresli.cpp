@@ -76,7 +76,7 @@ int Cvykresli::CorEy(Cvektory::TObjekt *O)
 TPointD Cvykresli::Rxy(Cvektory::TElement *Element)
 {
 	TPointD RET; RET.x=Element->X; RET.y=Element->Y;
-	if(1<=Element->eID && Element->eID<=4 || 7<=Element->eID && Element->eID<=18 || 101<=Element->eID && Element->eID<=108)//ovlivní patřičně pouze roboty
+	if(1<=Element->eID && Element->eID<=4 || 7<=Element->eID && Element->eID<=18 /*|| 101<=Element->eID && Element->eID<=108*/)//ovlivní patřičně pouze roboty
 	{
 		switch(Element->orientace)
 		{
@@ -203,12 +203,11 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	Cvektory::TObjekt *O=v.OBJEKTY->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
 	{
-		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)O=F->pom_temp;//slouží pro vykreslení aktuálně editované kabiny
-		vykresli_objekt(canv,O);
-		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)O=v.vrat_objekt(O->n);//pokud byl objekt nahrazen pom_temp, musí dojít k jeho vrácení, pom_temp->dalsi != Objekty->dalsi
-		O=F->d.v.dalsi_krok(O,tab_pruchodu);//přepínání kroků v cyklu (dalsi/dalsi2)
+		//pokud je aktivní editace přeskočí vykreslení kabiny aktuálně editovaného objektu
+		if(F->pom_temp!=NULL && F->pom_temp->n!=O->n || F->pom_temp==NULL)vykresli_objekt(canv,O);
+		O=O->dalsi;
 	}
-	if(F->pom_temp!=NULL)vykresli_objekt(canv,v.vrat_objekt(F->pom_temp->n));
+	if(F->pom_temp!=NULL)vykresli_objekt(canv,F->pom_temp);//vykreslení aktuálně editované kabiny nad všechny ostatní
 	///////////////Vykreslení pohonu a elementů
 	O=v.OBJEKTY->dalsi;//přeskočí hlavičku
 	while(O!=NULL)
@@ -224,7 +223,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 			if(E->n>0)
 			{
 				vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->LO1,E->OTOC_delka,E->LO2,E->LO_pozice);
-				if(E->eID==MaxInt)vykresli_zarazku(canv,E);
+				if(E->eID==MaxInt)vykresli_zarazku(canv,E);//prozatimní vykreslení zarážky ODSTRANIT
 				E->citelna_oblast.rect3=aktOblast;//uložení citelné oblasti pro další použití
 				//vykreslení kót
 				if(F->pom_temp!=NULL && F->pom_temp->n==O->n && F->pom_temp->zobrazit_koty && E->eID!=MaxInt){vykresli_kotu(canv,v.vrat_predchozi_element(E),E);}//mezi elementy
@@ -251,7 +250,6 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	if(F->scHTMLLabel_log_vypis->Caption=="")       //toto budeme rušit
 	F->Z("<b>Linka v pořádku.</b>",false);
 	O=NULL;delete O;
-	tab_pruchodu=NULL;delete tab_pruchodu;
 }
 //---------------------------------------------------------------------------
 //zajišťuje vykreslení pouze obrysu dle typu objektu
@@ -4683,11 +4681,14 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			{
 				if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
 				{
-					E->mGrid->Redraw=false;
-					E->mGrid->SetVisibleComponents(false);
-					E->mGrid->Left=m.L2Px(E->Xt);//kvůli případnému přesouvání tabulky
-					E->mGrid->Top=m.L2Py(E->Yt);//kvůli případnému přesouvání tabulky
-					E->mGrid->Show(canv);
+					if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud nemají být zobrazeny mgridy nemá být zobrazen ani rastr
+					{
+				  	E->mGrid->Redraw=false;
+				  	E->mGrid->SetVisibleComponents(false);
+				  	E->mGrid->Left=m.L2Px(E->Xt);//kvůli případnému přesouvání tabulky
+				  	E->mGrid->Top=m.L2Py(E->Yt);//kvůli případnému přesouvání tabulky
+						E->mGrid->Show(canv);
+					}
 				}
 				else
 				{
@@ -4715,11 +4716,14 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			TRect oblast_kabiny=F->vrat_max_oblast(F->pom_temp);
 			if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
 			{
-				F->PmG->Redraw=false;
-				F->PmG->Left=m.L2Px(F->pom_temp->Xp);
-				F->PmG->Top=m.L2Py(F->pom_temp->Yp);
-				F->PmG->SetVisibleComponents(false);
-				F->PmG->Show(canv);
+				if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud nemají být zobrazeny mgridy nemá být zobrazen ani rastr
+				{
+					F->PmG->Redraw=false;
+			  	F->PmG->Left=m.L2Px(F->pom_temp->Xp);
+			  	F->PmG->Top=m.L2Py(F->pom_temp->Yp);
+			  	F->PmG->SetVisibleComponents(false);
+					F->PmG->Show(canv);
+				}
 			}
 			else
 			{
