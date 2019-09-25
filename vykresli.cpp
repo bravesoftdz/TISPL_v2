@@ -2877,7 +2877,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,doubl
 	//vozíková data - v případě nevykreslení vozíku zde monžno odstranit
 	double dJ=m.UDJ(v.PP.delka_jig,v.PP.sirka_jig,O->orientace);//délka jigu
 	double sJ=m.UDJ(v.PP.sirka_jig,v.PP.delka_jig,O->orientace);//šířka jigu a tím pádem i minimální kabiny
-	double DV=dJ;if(dP>dJ)DV=dP;
+	double DV=dJ;if(v.PP.delka_podvozek>dJ)DV=v.PP.delka_podvozek;
 																	 //ShowMessage("R="+AnsiString(R)+"Rz="+AnsiString(Rz)+"Rx="+AnsiString(Rx));
 	////obrys objektu
 	//pero+výplň
