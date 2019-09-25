@@ -8546,6 +8546,7 @@ unsigned short int TForm1::Otevrit_soubor(UnicodeString soubor)//realizuje samot
 			d.v.PP.sirka_jig=d.v.File_hlavicka.sirka_jig;
 			d.v.PP.vyska_jig=d.v.File_hlavicka.vyska_jig;
 			d.v.PP.delka_podvozek=d.v.File_hlavicka.delka_podvozek;
+      d.v.PP.uchyt_pozice=d.v.File_hlavicka.uchyt_pozice;
 			MOD=d.v.File_hlavicka.Mod;
 			switch(MOD)
 			{
