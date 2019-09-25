@@ -7045,6 +7045,7 @@ object Form_parametry_linky: TForm_parametry_linky
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
+      OnChange = scGPNumericEdit_delka_podvozekChange
       OnKeyDown = FormKeyDown
     end
     object scGPNumericEdit_sirka_jig: TscGPNumericEdit
@@ -7273,8 +7274,8 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 6761
-    Top = 10639
+    Left = 6989
+    Top = 11019
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -7299,9 +7300,6 @@ object Form_parametry_linky: TForm_parametry_linky
     GlyphThickness = 1
     Kind = scgpgkOneGear
     TransparentBackground = True
-    ExplicitLeft = 6758
-    ExplicitTop = 10634
-    ExplicitWidth = 100
   end
   object scGPSwitch: TscGPSwitch
     Left = 762
@@ -7447,6 +7445,44 @@ object Form_parametry_linky: TForm_parametry_linky
     Down = False
     GroupIndex = 0
     AllowAllUp = False
+  end
+  object scGPTrackBar_uchyceni: TscGPTrackBar
+    Left = 608
+    Top = 210
+    Width = 101
+    Height = 20
+    Hint = 'pozice palce '
+    Margins.Left = 1
+    Margins.Right = 1
+    Margins.Bottom = 2
+    Align = alCustom
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 27
+    OnMouseMove = scGPTrackBar_uchyceniMouseMove
+    TransparentBackground = False
+    ShowFocusRect = True
+    JumpWhenClick = True
+    CanFocused = False
+    MouseSupport = True
+    MinValue = 1
+    MaxValue = 15
+    Value = 10
+    Vertical = False
+    ReadOnly = False
+    Color = clBlack
+    TrackColor = clWhite
+    TrackProgressColor = clWhite
+    TrackSize = 1
+    TrackAlpha = 100
+    TrackProgressAlpha = 255
+    ThumbColor = clWhite
+    ThumbHotColor = clWhite
+    ThumbPressedColor = clWhite
+    ThumbDisabledColor = clBtnShadow
+    ThumbShapeStyle = scgptssRoundRect
+    ThumbCursor = crDefault
+    ThumbUseCursor = False
   end
   object rHTMLHint1: TrHTMLHint
     HintFont.Charset = DEFAULT_CHARSET

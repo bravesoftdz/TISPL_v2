@@ -28,6 +28,7 @@
 #include <Vcl.ExtCtrls.hpp>
 #include "scStyledForm.hpp"
 #include "scImageCollection.hpp"
+#include "scGPMeters.hpp"
 #include <sstream>
 #include <iomanip>
 //---------------------------------------------------------------------------
@@ -107,6 +108,7 @@ __published:	// IDE-managed Components
   TscHTMLLabel *scHTMLLabel_jig_info;
   TscGPGlyphButton *scGPGlyphButton_katalog;
   TscStyledForm *scStyledForm2;
+  TscGPTrackBar *scGPTrackBar_uchyceni;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -166,6 +168,9 @@ __published:	// IDE-managed Components
   void __fastcall scGPGlyphButton_katalogClick(TObject *Sender);
   void __fastcall scGPComboEdit12Click(TObject *Sender);
   void __fastcall scGPComboEdit12DropDown(TObject *Sender);
+  void __fastcall scGPTrackBar_uchyceniMouseMove(TObject *Sender, TShiftState Shift,
+          int X, int Y);
+  void __fastcall scGPNumericEdit_delka_podvozekChange(TObject *Sender);
 
 
 

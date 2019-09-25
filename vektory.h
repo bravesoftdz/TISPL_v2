@@ -375,6 +375,7 @@ class Cvektory
 		double sirka_jig;
 		double vyska_jig;
 		double delka_podvozek;
+    double uchyt_pozice;
     int katalog;
 		short typ_linky;
     double radius;
