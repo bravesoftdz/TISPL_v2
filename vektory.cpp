@@ -2777,7 +2777,7 @@ void Cvektory::zmen_poradi_elementu(TElement *E,TElement *Ed)
 	}
 	//////přesun elementu za
 	else
-	{           F->Memo("!!!!!!!");
+	{
 		//ukazatelové záležitosti
 		E->dalsi=Ed;
 		Ed->predchozi->predchozi=E->predchozi;
