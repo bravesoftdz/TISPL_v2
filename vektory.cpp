@@ -2725,6 +2725,14 @@ void Cvektory::posuv_aktualizace_RT(TElement *Element)
 {
 	switch(Element->eID)
 	{
+    case 0://stop stanice
+		{
+			Element->RT=m.RT(0,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT+Element->WTstop);
+			Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->RT),3);
+			Element->mGrid->Cells[1][2].Highlight=true;
+			if(F->pom_temp->id>=6 && F->pom_temp->id<=10)Element->mGrid->Cells[1][5].Text=F->max_voziku(Element);
+			if(F->pom_temp->zobrazit_mGrid)Element->mGrid->Refresh();
+		}break;
 		case 2:case 8:case 12:case 16:case 102:case 106://roboti se stop stanicí
 		{
 			Element->RT=F->m.RT(Element->PT1,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT);
@@ -2744,13 +2752,6 @@ void Cvektory::posuv_aktualizace_RT(TElement *Element)
 			Element->RT=m.RT(Element->PTotoc,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT);
 			Element->mGrid->Cells[1][4].Text=F->m.round2double(F->outPT(Element->RT),3);
 			Element->mGrid->Cells[1][4].Highlight=true;
-			if(F->pom_temp->zobrazit_mGrid)Element->mGrid->Refresh();
-		}break;
-		case 0://stop stanice
-		{
-			Element->RT=m.RT(0,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT+Element->WTstop);
-			Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->RT),3);
-			Element->mGrid->Cells[1][2].Highlight=true;
 			if(F->pom_temp->zobrazit_mGrid)Element->mGrid->Refresh();
 		}break;
 	}
@@ -2791,6 +2792,7 @@ void Cvektory::zmen_poradi_elementu(TElement *E,TElement *Ed)
 		vloz_G_element(Ed,0,F->d.Rxy(E).x,F->d.Rxy(E).y,0,0,0,0,F->d.Rxy(Ed).x,F->d.Rxy(Ed).y);
 		vloz_G_element(E,0,F->d.Rxy(E->predchozi).x,F->d.Rxy(E->predchozi).y,0,0,0,0,F->d.Rxy(E).x,F->d.Rxy(E).y);
 	}
+	E->pohon=E->dalsi->pohon;//přiřazení správného pohonu
 	//////přeindexování (N-hodnoty) v celém seznamu, možno řešit sepáratáně, ale takto to bylo rychleji napsané
 	TElement *E_pom=F->pom_temp->elementy->dalsi;//ukazatel na první element, přeskočí hlavičku, metoda volaná jen v případě, že existují min. 2 elementy
 	int n=1;

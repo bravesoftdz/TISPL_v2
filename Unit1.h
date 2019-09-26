@@ -628,6 +628,7 @@ private:
 	unsigned short load_language(Tlanguage language);
 	void zmena_editovaneho_objektu();//slouží k pøechodu z editace jednoho objektu do editace druhého objektu
 	TPoint uprav_bod_vlozeni_elementu(TPoint bod_vlozeni,short rotace_symbolu,int eID=-1);//upraví bod kurzoru pro vložení elemntu na bod vykreslení elementu (robot na konci ramena)
+  void set_enabled_mGrid(Cvektory::TElement *E);//zapne nebo vypne komponenty megridu v závislosti na tom zda má element pøiøazený pohon
 
 	////promìnné
 	TDateTime TIME;
