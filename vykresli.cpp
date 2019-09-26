@@ -224,7 +224,6 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 			{
         vykresli_pozice(canv,E->X,E->Y,m.Rt90(E->geo.orientace-180),0,E->max_pocet_voziku,E->akt_pocet_voziku);
 				vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->LO1,E->OTOC_delka,E->LO2,E->LO_pozice);
-				if(E->eID==MaxInt)vykresli_zarazku(canv,E);//prozatimní vykreslení zarážky ODSTRANIT
 				E->citelna_oblast.rect3=aktOblast;//uložení citelné oblasti pro další použití
 				//vykreslení kót
 				if(F->pom_temp!=NULL && F->pom_temp->n==O->n && F->pom_temp->zobrazit_koty && E->eID!=MaxInt){vykresli_kotu(canv,v.vrat_predchozi_element(E),E);}//mezi elementy
@@ -3287,7 +3286,7 @@ void Cvykresli::vykresli_palec(TCanvas *canv,double X,double Y,bool NEW,bool ACT
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //celková vykreslovací metoda, vykreslí buď stopku, robota nebo otoč
-void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,double LO1,double OTOC_delka,double LO2,double LO_pozice)
+void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,unsigned int eID,short typ,double rotace,short stav,double LO1,double OTOC_delka,double LO2,double LO_pozice)
 {
 	rotace=m.Rt90(rotace);
 	switch(eID)
@@ -3321,6 +3320,7 @@ void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,Ans
 		case 107:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,OTOC_delka,LO2);break;//lidský robot  ionizace s pasivní otočí
 		case 108:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0);break;//lidský robot  ionizace s aktivní otočí (resp. s otočí a stop stanicí)
 		case 200:vykresli_predavaci_misto(canv,X,Y,name,typ,rotace,stav);break;//vykreslení předávacího místa
+		case MaxInt:vykresli_zarazku(canv,X,Y);break;//vykreslení zarážky
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -3991,11 +3991,10 @@ void Cvykresli::vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiStr
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::vykresli_zarazku(TCanvas *canv,Cvektory::TElement *E)
+void Cvykresli::vykresli_zarazku(TCanvas *canv,long X,long Y)
 {
-	if(F->Akce==F->GEOMETRIE||DEBUG)
+	if(F->Akce==F->GEOMETRIE)
 	{
-		double X=m.L2Px(E->X),Y=m.L2Py(E->Y);
 		unsigned short W=Form1->Zoom*0.25;
 		canv->Pen->Style=psSolid;
 		canv->Brush->Style=bsSolid;
@@ -4742,33 +4741,37 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			Cvektory::TElement *E=F->pom_temp->elementy->dalsi;//přeskočí rovnou hlavičku
 			while(E!=NULL)
 			{
-				if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
+				if(E->pohon==NULL && F->pom_temp->pohon==NULL || E->pohon!=NULL && F->pom_temp->pohon!=NULL && E->pohon->n==F->pom_temp->pohon->n)//vykreslení tabulek elementů, kteří mají stejný pohon jako aktuálně editovaný pohon
 				{
-					if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud nemají být zobrazeny mgridy nemá být zobrazen ani rastr
-					{
-				  	E->mGrid->Redraw=false;
-				  	E->mGrid->SetVisibleComponents(false);
-				  	E->mGrid->Left=m.L2Px(E->Xt);//kvůli případnému přesouvání tabulky
-				  	E->mGrid->Top=m.L2Py(E->Yt);//kvůli případnému přesouvání tabulky
-						E->mGrid->Show(canv);
+			  	if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
+			  	{
+			  		if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud nemají být zobrazeny mgridy nemá být zobrazen ani rastr
+			  		{
+			  			E->mGrid->Redraw=false;
+			  			E->mGrid->SetVisibleComponents(false);
+			  			E->mGrid->Left=m.L2Px(E->Xt);//kvůli případnému přesouvání tabulky
+			  			E->mGrid->Top=m.L2Py(E->Yt);//kvůli případnému přesouvání tabulky
+			  			E->mGrid->Show(canv);
+			  		}
+			  	}
+			  	else
+			  	{
+			  		if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
+			  		{
+			  			E->mGrid->Redraw=true;
+			  			E->mGrid->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak E->mGrid->Buffer(false);
+			  			if(E->mGrid->VisibleComponents>-1)E->mGrid->VisibleComponents=true;//stačí volat toto, protože se pomocí Show (resp. Draw-SetCompontens-Set...) cyklem všechny komponenty na základě tohoto zobrazí pokud je nastaveno na -1 tak se při překreslování zohlední individuální nastavení komponent (z tohoto stavu je však pro další použítí třeba vrátit do stavu 0 nebo 1)
+			  			E->mGrid->Left=m.L2Px(E->Xt);
+			  			E->mGrid->Top=m.L2Py(E->Yt);
+			  			E->mGrid->Show(canv);
+						}
+						else//pokud ne, je třeba skrýt všechny komponenty (posun obrazu PAN MOVE či skryté mGridy)
+						{
+			  			E->mGrid->SetVisibleComponents(false);
+			  		}
 					}
 				}
-				else
-				{
-					if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
-					{
-						E->mGrid->Redraw=true;
-						E->mGrid->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak E->mGrid->Buffer(false);
-						if(E->mGrid->VisibleComponents>-1)E->mGrid->VisibleComponents=true;//stačí volat toto, protože se pomocí Show (resp. Draw-SetCompontens-Set...) cyklem všechny komponenty na základě tohoto zobrazí pokud je nastaveno na -1 tak se při překreslování zohlední individuální nastavení komponent (z tohoto stavu je však pro další použítí třeba vrátit do stavu 0 nebo 1)
-						E->mGrid->Left=m.L2Px(E->Xt);
-						E->mGrid->Top=m.L2Py(E->Yt);
-						E->mGrid->Show(canv);
-					}
-					else//pokud ne, je třeba skrýt všechny komponenty (posun obrazu PAN MOVE či skryté mGridy)
-					{
-						E->mGrid->SetVisibleComponents(false);
-					}
-				}
+				else E->mGrid->SetVisibleComponents(false);//pokud pohon elementu se nerovná aktuálně editovanému pohonu, je třeba skrýt všechny komponenty (posun obrazu PAN MOVE či skryté mGridy)
 				E=E->dalsi;
 			}
 			E=NULL;delete E;

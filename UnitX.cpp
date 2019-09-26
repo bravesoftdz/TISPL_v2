@@ -100,19 +100,19 @@ void TFormX::OnEnter(long Tag,long ID,unsigned long Col,unsigned long Row)
 	if(ID!=9999 && F->pom_temp->pohon!=NULL)//korelace v tabulkách elementù
 	korelace_v_elementech(ID,Row);
 	//pøepínání aktuálnì editovaného pohonu
-	if(ID!=9999 && F->pom_temp!=NULL)
-	{
-		Cvektory::TElement *E=vrat_element_z_tabulky(ID);
-		//kontrola zda se ukazatel na pohon elementu rovná aktuálnì editovanému pohonu
-		if(E->mGrid->Cells[Col][Row].Type==E->mGrid->EDIT && (F->pom_temp->pohon==NULL && E->pohon!=NULL || F->pom_temp->pohon!=NULL && E->pohon==NULL || F->pom_temp->pohon!=NULL && E->pohon!=NULL && F->pom_temp->pohon->n!=E->pohon->n))
-		{
-			//pokud se nerovnají je tøeba zmìnit aktuálnì editovaný pohon
-			F->JID=-201;//nutné pro zablokování pøepsání ukazatelù na pohon všem elementùm v náhledu
-			if(E->pohon!=NULL)F->prirazeni_pohonu_tab_pohon(E->pohon->n);
-			else F->prirazeni_pohonu_tab_pohon(0);
-		}
-		E=NULL;delete E;
-	}
+//	if(ID!=9999 && F->pom_temp!=NULL)
+//	{
+//		Cvektory::TElement *E=vrat_element_z_tabulky(ID);
+//		//kontrola zda se ukazatel na pohon elementu rovná aktuálnì editovanému pohonu
+//		if(E->mGrid->Cells[Col][Row].Type==E->mGrid->EDIT && (F->pom_temp->pohon==NULL && E->pohon!=NULL || F->pom_temp->pohon!=NULL && E->pohon==NULL || F->pom_temp->pohon!=NULL && E->pohon!=NULL && F->pom_temp->pohon->n!=E->pohon->n))
+//		{
+//			//pokud se nerovnají je tøeba zmìnit aktuálnì editovaný pohon
+//			F->JID=-201;//nutné pro zablokování pøepsání ukazatelù na pohon všem elementùm v náhledu
+//			if(E->pohon!=NULL)F->prirazeni_pohonu_tab_pohon(E->pohon->n);
+//			else F->prirazeni_pohonu_tab_pohon(0);
+//		}
+//		E=NULL;delete E;
+//	}
 }
 //---------------------------------------------------------------------------
 //zpracování onchange události - INPUT, výpoèet a OUTPUT zpìt do ovlivnìné buòky
@@ -402,14 +402,15 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 						F->PmG->Cells[1][rychlost].Text=F->m.round2double(F->outaRD(F->pom_temp->pohon->aRD),3);
 						F->PmG->Cells[1][roztec_palce].Text=F->m.round2double(F->outR(F->pom_temp->pohon->roztec),3);
 					}
+					aktualizace_tab_elementu();//došlo ke zmìnám v tabulce pohonu, které ovlivní i ostatní elementy
 				}
 				else//pohon byl odebrán
 				{
 					F->scGPComboBox_prepinacKot->Enabled=false;//vypne zmìnu režimu kót
           F->scGPComboBox_prepinacKot->ItemIndex=0;
 					F->scGPGlyphButton_PLAY->Enabled=false;//vypnutí tlaèítka animace
+					aktualizace_tab_elementu_pOdebran();//aktualizace tabulek elemntù
 				}
-				aktualizace_tab_elementu();//došlo ke zmìnám v tabulce pohonu, které ovlivní i ostatní elementy
 			}break;
 			case 1://aktuální rychlost, aRD
 			{
@@ -591,15 +592,14 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 	Cvektory::TElement *E=F->pom_temp->elementy;
 	while(E!=NULL)
 	{
-		if(E->n>0 && E->n!=n )//&& E->pohon==F->pom_temp->pohon)//pøeskoèí mimo_element a hlavièku
+		if(E->n>0 && E->n!=n && E->pohon!=NULL && F->pom_temp->pohon!=NULL && E->pohon->n==F->pom_temp->pohon->n)//pøeskoèí mimo_element a hlavièku, poze pøepoèet elementùm které mají stejný pohon jako aktuálnì editovaný pohon
 		{
 			switch(E->eID)
 			{
 				case 0:
 				{
-					//naètení hodnot z pohonu + ošetøení proti nepøiøazenému pohonu
-					double aRD=0,roztec=0;
-					if(E->pohon!=NULL){aRD=E->pohon->aRD;roztec=E->pohon->roztec;}
+					//naètení hodnot z pohonu
+					double aRD=F->pom_temp->pohon->aRD,roztec=F->pom_temp->pohon->roztec;
 					//pøepoèty
 					E->WT=F->m.cekani_na_palec(0,roztec,aRD,3);
 					E->mGrid->Cells[1][4].Text=F->m.round2double(F->outPT(E->WT),3);
@@ -609,9 +609,8 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 				break;//stop stanice
 				case 1:case 7:case 11:case 15:case 101:case 105://robor kontinuální
 				{
-          //naètení hodnot z pohonu + ošetøení proti nepøiøazenému pohonu
-					double aRD=0;
-					if(E->pohon!=NULL)aRD=E->pohon->aRD;
+          //naètení hodnot z pohonu
+					double aRD=F->pom_temp->pohon->aRD;
 					//pøepoèty
 					E->PT1=F->m.PT(E->LO1,aRD);
 					E->mGrid->Cells[1][1].Text=F->m.round2double(F->outPT(E->PT1),3);
@@ -619,9 +618,8 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 				break;
 				case 2:case 8:case 12:case 16:case 102:case 106://robot se stop stanicí
 				{
-					//naètení hodnot z pohonu + ošetøení proti nepøiøazenému pohonu
-					double aRD=0,roztec=0;
-					if(E->pohon!=NULL){aRD=E->pohon->aRD;roztec=E->pohon->roztec;}
+					//naètení hodnot z pohonu
+					double aRD=F->pom_temp->pohon->aRD,roztec=F->pom_temp->pohon->roztec;
 					//pøepoèty
 					E->WT=F->m.cekani_na_palec(0,roztec,aRD,3);
 					E->mGrid->Cells[1][3].Text=F->m.round2double(F->outPT(E->WT),3);
@@ -631,9 +629,8 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 				break;
 				case 3:case 9:case 13:case 17:case 103:case 107://robot s pasivní otoèí
 				{
-          //naètení hodnot z pohonu + ošetøení proti nepøiøazenému pohonu
-					double aRD=0,roztec=0;
-					if(E->pohon!=NULL){aRD=E->pohon->aRD;roztec=E->pohon->roztec;}
+          //naètení hodnot z pohonu
+					double aRD=F->pom_temp->pohon->aRD,roztec=F->pom_temp->pohon->roztec;
 					//pøepoèty
 					E->PT1=F->m.PT(E->LO1,aRD);
 					E->mGrid->Cells[1][1].Text=F->m.round2double(F->outPT(E->PT1),3);
@@ -645,9 +642,8 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 				break;
 				case 4:case 10:case 14:case 18:case 104:case 108://robot s aktivní otoèí
  				{
-					//naètení hodnot z pohonu + ošetøení proti nepøiøazenému pohonu
-					double aRD=0,roztec=0;
-					if(E->pohon!=NULL){aRD=E->pohon->aRD;roztec=E->pohon->roztec;}
+					//naètení hodnot z pohonu
+					double aRD=F->pom_temp->pohon->aRD,roztec=F->pom_temp->pohon->roztec;
 					//pøepoèty
 					E->WT=F->m.cekani_na_palec(0,roztec,aRD,3);
 					E->mGrid->Cells[1][6].Text=F->m.round2double(F->outPT(E->WT),3);
@@ -656,18 +652,16 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 				}break;
  				case 5://otoè pasivní
 				{
-          //naètení hodnot z pohonu + ošetøení proti nepøiøazenému pohonu
-					double aRD=0;
-					if(E->pohon!=NULL)aRD=E->pohon->aRD;
+          //naètení hodnot z pohonu
+					double aRD=F->pom_temp->pohon->aRD;
 					//pøepoèty
 					E->PTotoc=F->m.PT(E->OTOC_delka,aRD);
 					E->mGrid->Cells[1][3].Text = F->m.round2double(F->outPT(E->PTotoc),3);
 				}break;
 				case 6://otoè aktivní
 				{
-          //naètení hodnot z pohonu + ošetøení proti nepøiøazenému pohonu
-					double aRD=0,roztec=0;
-					if(E->pohon!=NULL){aRD=E->pohon->aRD;roztec=E->pohon->roztec;}
+          //naètení hodnot z pohonu
+					double aRD=F->pom_temp->pohon->aRD,roztec=F->pom_temp->pohon->roztec;
 					//pøepoèty
 					E->WT=F->m.cekani_na_palec(0,roztec,aRD,3);//dùležité pro výpoèet RT, nezobrazuje se
 					E->PTotoc=F->m.PT(E->OTOC_delka,F->pom_temp->pohon->aRD);
@@ -683,13 +677,13 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 	E=NULL; delete E;
 }
 //---------------------------------------------------------------------------
-//Naplní hodnoty které závisí na pohonu 0!!!!!!!!!!!!!!!!!!!!!!!!!!! možná k odstranìní
+//Naplní hodnoty které závisí na pohonu 0
 void TFormX::aktualizace_tab_elementu_pOdebran ()
 {
 	Cvektory::TElement *E=F->pom_temp->elementy;
 	while(E!=NULL)
 	{
-		if(E->n>0 && E->pohon==F->pom_temp->pohon)
+		if(E->n>0 && E->pohon==NULL)//pøeskoèí hlavièku + pøenastaví pouze elementy s odstranìným pohonem
 		{
 			switch(E->eID)
 			{
@@ -953,6 +947,7 @@ void TFormX::validace_aRD()
 //validace maximálního poètu vozíkù na stopce
 void TFormX::validace_max_voziku()
 {
+	if(posledni_E!=NULL && F->pom_temp!=NULL && posledni_E->objekt_n!=F->pom_temp->n)posledni_E=NULL;//pro pøípad, že se zmìnil náhled
 	if(posledni_E!=NULL && posledni_E->eID==0)
 	{
 		////deklarace potøebných atributù
