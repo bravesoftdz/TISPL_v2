@@ -91,7 +91,7 @@ class Cvykresli
 	void nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv,unsigned short typ);//short typ = zda se jedná o zadavání name==1 nebo short_name==2 nebo nic==0
 	void linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,int Width,TColor Color=clBlack,TPenStyle PenStyle=psSolid,TPenMode PenMode=pmCopy);
 	void line(TCanvas *canv,long X1,long Y1,long X2,long Y2);
-	void obdelnik(TCanvas *canv,double X1,double Y1,double X2,double Y2,double rotace);
+	void obdelnik(TCanvas *canv,double X1,double Y1,double X2,double Y2,double rotace,double Sx=DOUBLE_MIN,double Sy=DOUBLE_MIN);//orototuje obdelník, podle posledních parametrù, pokud jsou tyto parametry neuvedené, rotuje okolo støedu obrazce
 	void bezier(TCanvas *canv,TPointD *POLE,long posledni_prvek);
 	void bezier(TCanvas *canv,TPointD *POLE,long X,long Y,double oX,double oY,double rotace,long posledni_prvek);
 	void bezier(TCanvas *canv,TPoint *POLE_px,long posledni_prvek);

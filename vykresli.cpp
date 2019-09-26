@@ -72,7 +72,7 @@ int Cvykresli::CorEy(Cvektory::TObjekt *O)
 	return m.L2Py(O->Y);
 }
 //---------------------------------------------------------------------------
-//vrátí referenční logické (v metrech) souřadnice  robota (tzn. bod v místě trysky), převede dle aktuální rotace symbolu a uchopovacích (skutečných) souřadnic robota, kontroluje, zda se jedná skutečně o Robota
+//vrátí referenční logické (v metrech) souřadnice robota (tzn. bod v místě trysky), převede dle aktuální rotace symbolu a uchopovacích (skutečných) souřadnic robota, kontroluje, zda se jedná skutečně o Robota
 TPointD Cvykresli::Rxy(Cvektory::TElement *Element)
 {
 	TPointD RET; RET.x=Element->X; RET.y=Element->Y;
@@ -223,7 +223,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 		{
 			if(E->n>0)
 			{
-        vykresli_pozice(canv,E->X,E->Y,m.Rt90(E->geo.orientace-180),0,E->max_pocet_voziku,E->akt_pocet_voziku);
+				vykresli_pozice(canv,Rxy(E).x,Rxy(E).y,m.Rt90(E->geo.orientace-180),0,E->max_pocet_voziku,E->akt_pocet_voziku);
 				vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->LO1,E->OTOC_delka,E->LO2,E->LO_pozice);
 				if(E->eID==MaxInt)vykresli_zarazku(canv,E);
 				E->citelna_oblast.rect3=aktOblast;//uložení citelné oblasti pro další použití
@@ -2829,20 +2829,20 @@ void Cvykresli::vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dJ
 {
 	//výchozí parametry
 	float sP=0.12;//šířka podvozku, pouze stanovane
-	X=X-v.PP.uchyt_pozice;//posunutí umístění vozíku o nastavení uchycení pozice
+	X=X+v.PP.uchyt_pozice;//posunutí umístění vozíku o nastavení uchycení pozice
 
 	//transparentní pozadí (nejenom textu ale ji podvozku a jigu) ALTERNATIVA pro font:SetBkMode(canv->Handle,TRANSPARENT);
 	canv->Brush->Style=bsClear;
 
 	////podvozek
 	set_pen2(canv,clChassis,m.round(1/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true);
-	obdelnik(canv,X,Y+sP/2.0,X+v.PP.delka_podvozek,Y-sP/2.0,orientaceP-90);
+	obdelnik(canv,X,Y+sP/2.0,X+v.PP.delka_podvozek,Y-sP/2.0,orientaceP-90,X,Y);
 
 	////jig
 	if(dJ!=0 && sJ!=0)//vykreslí, pouze pokud jsou oba parametry nenulové
 	{
 		set_pen2(canv,clJig,m.round(2/3.0*F->Zoom),PS_ENDCAP_ROUND,PS_JOIN_ROUND,true);
-		obdelnik(canv,(X+X+v.PP.delka_podvozek)/2.0-dJ/2.0,Y+sJ/2.0,(X+X+v.PP.delka_podvozek)/2.0+dJ/2.0,Y-sJ/2.0,orientaceP-90+rotaceJ);
+		obdelnik(canv,(X+X+v.PP.delka_podvozek)/2.0-dJ/2.0,Y+sJ/2.0,(X+X+v.PP.delka_podvozek)/2.0+dJ/2.0,Y-sJ/2.0,orientaceP-90+rotaceJ,X,Y);
 	}
 
 //	////text - ID vozíku
@@ -4351,10 +4351,12 @@ void Cvykresli::line(TCanvas *canv,long X1,long Y1,long X2,long Y2)
 	canv->LineTo(X2,Y2);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::obdelnik(TCanvas *canv,double X1,double Y1,double X2,double Y2,double rotace)
+//orototuje obdelník, podle posledních parametrů, pokud jsou tyto parametry neuvdené, rotuje okolo středu obrazce)
+void Cvykresli::obdelnik(TCanvas *canv,double X1,double Y1,double X2,double Y2,double rotace,double Sx,double Sy)
 {
 	TPointD body[]={{X1,Y1},{X2,Y1},{X2,Y2},{X1,Y2}};
-	m.rotace_polygon((X1+X2)/2.0,(Y1+Y2)/2.0,body,3,rotace);
+	if(Sx==DOUBLE_MIN && Sx==Sy){Sx=(X1+X2)/2.0;Sy=(Y1+Y2)/2.0;}//pokud je požadováno orotuje okolo středu
+	m.rotace_polygon(Sx,Sy,body,3,rotace);
 	POINT body_px[]={{m.L2Px(body[0].x),m.L2Py(body[0].y)},{m.L2Px(body[1].x),m.L2Py(body[1].y)},{m.L2Px(body[2].x),m.L2Py(body[2].y)},{m.L2Px(body[3].x),m.L2Py(body[3].y)}};
 	canv->Polygon((TPoint*)body_px,3);
 }
