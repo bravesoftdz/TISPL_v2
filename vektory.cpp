@@ -2617,11 +2617,13 @@ short Cvektory::PtInKota_elementu(TObjekt *Objekt,long X,long Y)
 //posune pouze Element z pomocného spojového seznamu pom_temp na parametrem uvedenou vzádlenost (v metrech) od elementu předchozího, pokud je implicitní hodnota pusun_dalsich_elementu false změněna na true, jsou o danou změnu posunu přesunuty i elementy následující Elementu (tudíž jejich vzdálenost od Elementu bude zachována, naopak v případě výchozí hodnoty false je následujícím/dalším elementům poloha zachována)
 bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dalsich_elementu,bool posun_kurzorem)
 { //!!!!!!po nasazení geometrie nutno zdokonalit, nebude se pracovát pouze se vzdálenosti na linii buď vodorvné či svislé, ale i v oblouku
-	bool RET=true;     	Cvektory::TElement *E=NULL;
+	Cvektory::TElement *E=NULL;
+	bool RET=true;
 	if(F->pom_temp!=NULL && F->pom_temp->elementy!=NULL/*&&F->Akce!=F->MOVE_ELEMENT*/)//raději ošetření, ač by se metoda měla volat jen v případě existence pom_temp
 	{
 		bool posun_povolit=true;
-		F->puv_souradnice.x=Element->X;F->puv_souradnice.y=Element->Y;
+		TPointD puv_souradnice;
+		puv_souradnice.x=Element->X;puv_souradnice.y=Element->Y;
 		if(F->pom_temp->elementy->dalsi!=NULL&&vzdalenost!=0)//musí existovat alespoň jeden element&&nesmí být vzdálenost rovna nule
 		{
 			//////Výpočet posunu
@@ -2657,7 +2659,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 					else posuv_aktualizace_RT(Element);
 				}
 				//pokud ne budou mu navráceny původní souřadnice
-				else {Element->X=F->puv_souradnice.x;Element->Y=F->puv_souradnice.y;posun_povolit=false;}
+				else {Element->X=puv_souradnice.x;Element->Y=puv_souradnice.y;posun_povolit=false;}
 			}
 			else if(vzd.x!=0 && posun_kurzorem)//posun kurozem
 			{
@@ -2679,7 +2681,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 					else posuv_aktualizace_RT(Element);
 				}
 				//pokud ne budou mu navráceny původní souřadnice
-				else {Element->X=F->puv_souradnice.x;Element->Y=F->puv_souradnice.y;posun_povolit=false;}
+				else {Element->X=puv_souradnice.x;Element->Y=puv_souradnice.y;posun_povolit=false;}
 			}
 			//////Posun dalsích elementů
 			if(pusun_dalsich_elementu && posun_povolit)
@@ -2687,7 +2689,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				TElement *E=Element->dalsi;
 				while(E!=NULL)
 				{
-					F->puv_souradnice.x=E->X;F->puv_souradnice.y=E->Y;
+					puv_souradnice.x=E->X;puv_souradnice.y=E->Y;
 					if(E->geo.typ!=0)break;//ukončení v případě, že se někde nachází jiná geometrie než linie
 					if(vzd.x!=0 && !posun_kurzorem && E->eID!=MaxInt)//neposunovat zarážku
 					{
@@ -2706,7 +2708,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 						vloz_G_element(E,0,E->predchozi->geo.X4,E->predchozi->geo.Y4,0,0,0,0,F->d.Rxy(E).x,F->d.Rxy(E).y,E->geo.orientace);
 					}
 					//pokud ne budou mu navráceny původní souřadnice
-					else {E->X=F->puv_souradnice.x;E->Y=F->puv_souradnice.y;}
+					else {E->X=puv_souradnice.x;E->Y=puv_souradnice.y;}
 					E=E->dalsi;
 				}
 				E=NULL;delete E;
@@ -2756,7 +2758,7 @@ void Cvektory::posuv_aktualizace_RT(TElement *Element)
 ////---------------------------------------------------------------------------
 //řeší změnu pořadí při posuvu elementů, dojde k novému ukazatelovému propojení, přejmenování a přeindexování elementů
 void Cvektory::zmen_poradi_elementu(TElement *E,TElement *Ed)
-{                                           //E = posouvaný element, Ed = další element
+{               	                          //E = posouvaný element, Ed = další element
 	//////přesun elementu před
 	if(E->n>Ed->n)
 	{
@@ -2775,15 +2777,16 @@ void Cvektory::zmen_poradi_elementu(TElement *E,TElement *Ed)
 	}
 	//////přesun elementu za
 	else
-	{
+	{           F->Memo("!!!!!!!");
 		//ukazatelové záležitosti
 		E->dalsi=Ed;
 		Ed->predchozi->predchozi=E->predchozi;
 		E->predchozi=Ed->predchozi;
-		if(E->n==1)F->pom_temp->elementy->dalsi=Ed->predchozi;
+		Ed->predchozi->predchozi->dalsi=Ed->predchozi;
+		//if(E->n==1)F->pom_temp->elementy->dalsi=Ed->predchozi;
 		Ed->predchozi->dalsi=E;
 		Ed->predchozi=E;
-		//aktualizace geometrie
+		////aktualizace geometrie
 		vloz_G_element(E->predchozi,0,E->geo.X1,E->geo.Y1,0,0,0,0,F->d.Rxy(E->predchozi).x,F->d.Rxy(E->predchozi).y);
 		vloz_G_element(Ed,0,F->d.Rxy(E).x,F->d.Rxy(E).y,0,0,0,0,F->d.Rxy(Ed).x,F->d.Rxy(Ed).y);
 		vloz_G_element(E,0,F->d.Rxy(E->predchozi).x,F->d.Rxy(E->predchozi).y,0,0,0,0,F->d.Rxy(E).x,F->d.Rxy(E).y);
