@@ -1553,7 +1553,7 @@ void Cvektory::rotuj_objekt(TObjekt *Objekt, double rotace)
 		TElement *E=Objekt->elementy->dalsi;//objekt má vždy element (zarážka)
 		while(E!=NULL)
 		{
-			E->orientace=azimut;//zapsání nové orientace do elementu
+			E->orientace=azimut+90;//zapsání nové orientace do elementu
 			//souřadnice elementu
 			Bod=m.rotace(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,E->X,E->Y,rotace);
 			E->X=Bod.x;E->Y=Bod.y;
@@ -1927,52 +1927,58 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_razeni)
 {
 	if(Objekt->elementy==NULL)hlavicka_elementy(Objekt);//pokud by ještě nebyla založena hlavička, tak ji založí
-
 	Element->n=Objekt->elementy->predchozi->n+1;//navýším počítadlo prvku o jedničku
-
+	//////Zařazení elementu do seznamu + kontrola pořadí
 	if(force_razeni==NULL)
 	{
-	//kontrola zda je element vkládán za předchozí nebo mezi předchozí
-	Cvektory::TElement *p=vloz_element_za(Objekt,Element);//pokud bude vkládaný elment vložen na konec vrází NULL, pokud mezi vrátí ukazatel na předchozí element
-	if(p==NULL)//vkládám na konec
-	{
-		//ukazatelové propojení
-		Objekt->elementy->predchozi->dalsi=Element;//poslednímu prvku přiřadím ukazatel na nový prvek
-		Element->predchozi=Objekt->elementy->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
-		Element->dalsi=NULL;
-		Element->sparovany=NULL;
-		Objekt->elementy->predchozi=Element;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
-		//geometrie                              //ošetření proti přiřazování geometrie v metodě kopiruj_elementy
-		if(F->pom_temp!=NULL && Element->n!=1 && Element->Xt==-100)//nutna podminka, pri nacitani z binarky je pom_temp=NULL a nactou se hodnoty OK
-		vloz_G_element(Element,0,Element->predchozi->geo.X4,Element->predchozi->geo.Y4,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,Element->predchozi->geo.orientace);
-	}
-	else if(p->n!=Element->n)//vkládám mezi elementy, vpřípadě, že bylo vloženo před prví prvek vrací Element, přesun je již vyřešen
-	{
-		//ukazatelové propojení
-		Element->dalsi=p->dalsi;
-		Element->predchozi=p;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
-		p->dalsi->predchozi=Element;
-		p->dalsi=Element;
-		//geometrie
-		vloz_G_element(Element,0,p->geo.X4,p->geo.Y4,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,p->geo.orientace);
-		vloz_G_element(Element->dalsi,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
-		//změna indexů
-		int n=1;
-		Cvektory::TElement *E=Objekt->elementy->dalsi;
-		while(E!=NULL)
+  	//kontrola zda je element vkládán za předchozí nebo mezi předchozí
+		Cvektory::TElement *p=vloz_element_za(Objekt,Element);//pokud bude vkládaný elment vložen na konec vrází NULL, pokud mezi vrátí ukazatel na předchozí element
+  	if(p==NULL)//vkládám na konec
+  	{
+  		//ukazatelové propojení
+  		Objekt->elementy->predchozi->dalsi=Element;//poslednímu prvku přiřadím ukazatel na nový prvek
+  		Element->predchozi=Objekt->elementy->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+  		Element->dalsi=NULL;
+  		Element->sparovany=NULL;
+  		Objekt->elementy->predchozi=Element;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+			//geometrie + ošetření proti přiřazování geometrie v metodě kopiruj_elementy
+  		if(F->pom_temp!=NULL && Element->n!=1 && Element->Xt==-100)//nutna podminka, pri nacitani z binarky je pom_temp=NULL a nactou se hodnoty OK
+  		vloz_G_element(Element,0,Element->predchozi->geo.X4,Element->predchozi->geo.Y4,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,Element->predchozi->geo.orientace);
+  	}
+  	else if(p->n!=Element->n)//vkládám mezi elementy, vpřípadě, že bylo vloženo před prví prvek vrací Element, přesun je již vyřešen
 		{
-			//indexy
-			E->n=n;
-			n++;
-			E=E->dalsi;
+			//ukazatelové propojení
+//			Element->dalsi=p->dalsi;
+//			Element->predchozi=p;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+//			p->dalsi->predchozi=Element;
+//			p->dalsi=Element;
+			Element->dalsi=p;
+			Element->predchozi=p->predchozi;
+			if(p->n==1)Objekt->elementy->dalsi=Element;
+			else p->predchozi->dalsi=Element;
+			p->predchozi=Element;
+
+  		//geometrie
+			vloz_G_element(Element,0,p->geo.X1,p->geo.Y1,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,p->geo.orientace);
+			vloz_G_element(p,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,F->d.Rxy(p).x,F->d.Rxy(p).y,p->geo.orientace);
+			//změna indexů
+			int n=1;
+  		Cvektory::TElement *E=Objekt->elementy->dalsi;
+  		while(E!=NULL)
+  		{
+  			//indexy
+  			E->n=n;
+  			n++;
+  			E=E->dalsi;
+			}
+  		E=NULL;delete E;
+  		//změna názvů
+			uprav_popisky_elementu(Objekt,Element);
+  		//if(Element->eID%2==0 || p->eID%2==0)aktualizuj_sparovane_ukazatele();//došlo ke změně pořadí přičemž jeden z elementů je stop-element
 		}
-		E=NULL;delete E;
-		//změna názvů
-		uprav_popisky_elementu(Objekt,Element);
-		//if(Element->eID%2==0 || p->eID%2==0)aktualizuj_sparovane_ukazatele();//došlo ke změně pořadí přičemž jeden z elementů je stop-element
+		p=NULL; delete p;
 	}
-	p=NULL; delete p;
-	}
+	//////Zarazení do seznamu do předm určeného pořadí (používá se při editaci geometrie)
 	else
 	{
 		if(force_razeni->n==F->pom_temp->elementy->predchozi->n){Element->dalsi=NULL;F->pom_temp->elementy->predchozi=Element;force_razeni->dalsi=Element;Element->predchozi=force_razeni;}
@@ -2008,10 +2014,10 @@ Cvektory::TElement *Cvektory::vloz_element_za(TObjekt *Objekt,TElement *Element)
 		Cvektory::TElement *p=Objekt->elementy->dalsi;//přeskočí hlavičku
 		while (p!=NULL)
 		{
-			if(p->dalsi!=NULL&&p->n!=Element->n&&p->dalsi->n!=Element->n)//aby se neřešila situace poslední-prní prvek,řešeno separátně
+			if(p->n!=Element->n)//neřeší se s aktuálním elementem (při posunu)
 			{
 				//kontrola zda vkládaný element neleží mezi prvním a druhým elementem, druhým až n
-				if(m.LeziVblizkostiUsecky(F->d.Rxy(Element).x,F->d.Rxy(Element).y,F->d.Rxy(p).x,F->d.Rxy(p).y,F->d.Rxy(p->dalsi).x,F->d.Rxy(p->dalsi).y)==0)
+				if(p->geo.typ==0 && m.LeziVblizkostiUsecky(F->d.Rxy(Element).x,F->d.Rxy(Element).y,p->geo.X1,p->geo.Y1,p->geo.X4,p->geo.Y4)==0)
 				{
 					ret=p;//uložení elementu, který předcházi vkládanému elementu
 					break;
@@ -2020,84 +2026,6 @@ Cvektory::TElement *Cvektory::vloz_element_za(TObjekt *Objekt,TElement *Element)
 			p=p->dalsi;//posun na další prvek
 		}
 		p=NULL; delete p;
-		//případ přidání+posun před první a posun za poslední budou řešeny tady, metoda vrátí NULL v těchto případech
-		//a to z důvodu rozdílné funkcionality
-		//řešeno přes minimální a maximální souřadnice elementů v kabině, při použití podobného hledání jako u hledání v oblasti problém
-		//s řazením elementů, pokud nejsou v řadě za sebou, což v tuto chvíli nejsou nedává hledání reálné výsledky
-		if(ret==NULL&&(F->pom_temp->orientace==90 || F->pom_temp->orientace==270))//mezi 2 elementy nic nenalezeno = kontrola před prvním a za posledním
-		{
-			if(F->pom_temp->orientace==270)
-				{if(F->d.Rxy(Element).x>=F->d.Rxy(Objekt->elementy->dalsi).x&&Element->n!=1)pred1=true;}
-			else
-				{if(F->d.Rxy(Element).x<=F->d.Rxy(Objekt->elementy->dalsi).x&&Element->n!=1)pred1=true;}
-			//if(F->d.Rxy(Element).x>=F->d.Rxy(Objekt->elementy->predchozi).x&&Element->n!=Objekt->elementy->predchozi->n&&Element->name!="")zaposlednim=true;
-		}
-		else if(ret==NULL)
-    {
-			if(F->pom_temp->orientace==180)
-				{if(F->d.Rxy(Element).y>=F->d.Rxy(Objekt->elementy->dalsi).y&&Element->n!=1)pred1=true;}
-			else
-				{if(F->d.Rxy(Element).y<=F->d.Rxy(Objekt->elementy->dalsi).y&&Element->n!=1)pred1=true;}
-			//if(F->d.Rxy(Element).y<=F->d.Rxy(Objekt->elementy->predchozi).y&&Element->n!=Objekt->elementy->predchozi->n&&Element->name!="")zaposlednim=true;
-		}
-		if(pred1||zaposlednim)//výjmutí ze spojáku, pro oba případy stejné
-		{
-			if(Element->name!="")//nutné výjmout element ze spojáku
-			{
-				if(Element->dalsi!=NULL)//pokud se nejedná o poslední prvek
-				{
-					Element->predchozi->dalsi=Element->dalsi;//předchozí bude ukazovat na následující
-					Element->dalsi->predchozi=Element->predchozi; //následující bude ukazovat na další
-					//geometrie
-					Element->dalsi->geo.X1=Element->predchozi->geo.X4;Element->dalsi->geo.Y1=Element->predchozi->geo.Y4;
-					Element->dalsi->geo.X4=F->d.Rxy(Element->dalsi).x;Element->dalsi->geo.Y4=F->d.Rxy(Element->dalsi).y;
-					Element->dalsi->geo.X2=Element->dalsi->geo.X1+(Element->dalsi->geo.X4-Element->dalsi->geo.X1)/2.0;Element->dalsi->geo.Y2=Element->dalsi->geo.Y1+(Element->dalsi->geo.Y4-Element->dalsi->geo.Y1)/2.0;
-					Element->dalsi->geo.X3=Element->dalsi->geo.X2;Element->dalsi->geo.Y3=Element->dalsi->geo.Y2;
-				}
-				else//pokud se jedná o poslední prvek
-				{
-					Objekt->elementy->predchozi=Element->predchozi;
-					Element->predchozi->dalsi=NULL;
-				}
-			}
-		}
-		if(pred1)//ukazatelové propojení pro případ vložení před první element
-		{
-			Element->dalsi=Objekt->elementy->dalsi;//za elementem první element
-			Objekt->elementy->dalsi->predchozi=Element;//za předchozým prvním prvkem nový Element
-			Objekt->elementy->dalsi=Element;//za hlavičkou nový element
-			Element->predchozi=Objekt->elementy;//před elementem hlavička
-			//geometrie vkládaného elementu
-			vloz_G_element(Element,0,Element->dalsi->geo.X1,Element->dalsi->geo.Y1,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,Element->dalsi->geo.orientace);
-			//geometrie bývalého prvního
-			vloz_G_element(Element->dalsi,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
-		}
-		if(zaposlednim)//ukazatelové propojení pro případ vložení za poseední element
-		{
-			Element->dalsi=NULL;//element na hlavičku
-			Objekt->elementy->predchozi->dalsi=Element;//poslední na element
-			Element->predchozi=Objekt->elementy->predchozi;//element za posledním
-			Objekt->elementy->predchozi=Element;//element poslední
-			//přiřazení geometrie
-			vloz_G_element(Element,0,Element->predchozi->geo.X4,Element->predchozi->geo.Y4,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,Element->predchozi->geo.orientace);
-		}
-		if(pred1||zaposlednim)//přeindexování a přejmenování, pro oba případy stejné
-		{
-			//přeindexování
-			int n=1;
-			Cvektory::TElement *E=Objekt->elementy->dalsi;//možno přeskočit hlavičku
-			while(E!=NULL)
-			{
-				E->n=n;
-				n++;
-				E=E->dalsi;
-			}
-			E=NULL; delete E;
-			//změna popisků
-			uprav_popisky_elementu(Objekt,Element);
-			ret=Element;//nastaveno aby v ostatních metodách již nedocházelo k přesunu elementu ve spojáku a přejmenování
-			if(Element->eID%2==0 && Element->eID!=200)aktualizuj_sparovane_ukazatele();//došlo ke změně pořadí
-		}
 	}
 	return ret;
 }
@@ -2167,7 +2095,7 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 							else E->mGrid->Cells[0][0].Text="<a>ION tyč "+AnsiString(n)+"</a>";
 							E->mGrid->Cells[0][0].Font->Color=clBlack;//z důvodu nasazení odkazu, po přejmenování se text vrátil do modré barvy
 			  			E->mGrid->MergeCells(0,0,1,0);//nutné kvůli správnému zobrazení hlavičky
-			  			E->mGrid->Update();//musí zde být ošetření proti paměťové chybě
+							if(F->zobrazeni_tabulek)E->mGrid->Update();//musí zde být ošetření proti paměťové chybě
 			  		}
 						if(E->eID!=200)
 						{
@@ -2220,7 +2148,7 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 									if(E->eID==200)E->mGrid->Cells[0][0].Text="<a>Předávací místo "+AnsiString(n)+"</a>";
 									E->mGrid->Cells[0][0].Font->Color=clBlack;//z důvodu nasazení odkazu, po přejmenování se text vrátil do modré barvy
 		 							E->mGrid->MergeCells(0,0,1,0);//nutné kvůli správnému zobrazení hlavičky
-									E->mGrid->Update();//musí zde být ošetření proti paměťové chybě
+									if(F->zobrazeni_tabulek)E->mGrid->Update();//musí zde být ošetření proti paměťové chybě
 //	   							if(E->eID==0)napln_combo_stopky(E);//pro budoucí použití
 		 						}
 		   					//změna názvu
@@ -2418,7 +2346,7 @@ unsigned int Cvektory::vrat_poradi_elementu_do (TObjekt *Objekt, TElement *Eleme
 		Cvektory::TElement *E=Objekt->elementy->dalsi;//přeskočí hlavičku
 		while(E->n!=Element->n)
 		{
-			if(E->eID!=0 && E->eID!=5 && E->eID!=6 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt)//1<=E->eID && E->eID<=4 || 7<=E->eID && E->eID<=18 || 101<=E->eID && E->eID<=108)r_pocet++;
+			if(E->eID!=0 && E->eID!=5 && E->eID!=6 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt)r_pocet++;
 			if(E->eID==100)t_pocet++;
 			E=E->dalsi;
 		}
@@ -2689,13 +2617,16 @@ short Cvektory::PtInKota_elementu(TObjekt *Objekt,long X,long Y)
 //posune pouze Element z pomocného spojového seznamu pom_temp na parametrem uvedenou vzádlenost (v metrech) od elementu předchozího, pokud je implicitní hodnota pusun_dalsich_elementu false změněna na true, jsou o danou změnu posunu přesunuty i elementy následující Elementu (tudíž jejich vzdálenost od Elementu bude zachována, naopak v případě výchozí hodnoty false je následujícím/dalším elementům poloha zachována)
 bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dalsich_elementu,bool posun_kurzorem)
 { //!!!!!!po nasazení geometrie nutno zdokonalit, nebude se pracovát pouze se vzdálenosti na linii buď vodorvné či svislé, ale i v oblouku
+	Cvektory::TElement *E=NULL;
 	bool RET=true;
 	if(F->pom_temp!=NULL && F->pom_temp->elementy!=NULL/*&&F->Akce!=F->MOVE_ELEMENT*/)//raději ošetření, ač by se metoda měla volat jen v případě existence pom_temp
 	{
 		bool posun_povolit=true;
-		F->puv_souradnice.x=Element->X;F->puv_souradnice.y=Element->Y;
+		TPointD puv_souradnice;
+		puv_souradnice.x=Element->X;puv_souradnice.y=Element->Y;
 		if(F->pom_temp->elementy->dalsi!=NULL&&vzdalenost!=0)//musí existovat alespoň jeden element&&nesmí být vzdálenost rovna nule
 		{
+			//////Výpočet posunu
 			TPointD vzd;
 			if(Element->n==1)//pro první element, od počátku kabiny
 			{
@@ -2706,82 +2637,59 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			{
 				if(Element->orientace==0||Element->orientace==180)vzd.x=Element->X-Element->predchozi->X;
 				else	vzd.x=Element->Y-Element->predchozi->Y;
-			}//odstavil MaKr F->Sv(vzd.x);
-      //kontrola zda bude posunutý element mimo pohon, pokud ano nedovolí posun, kontrolováno pouze v případě posunu z kót
-			double vzd_pos=-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
-			if(posun_kurzorem)vzd_pos=vzdalenost;//rozdílné výpočty součadnic pro posun z kurzoru a posun z kóty
-			TRect E=F->souradnice_LO(Element);
-			if(F->pom_temp->orientace==0 && (m.P2Ly(E.bottom)+vzd_pos<F->pom_temp->elementy->dalsi->geo.Y1 || F->pom_temp->elementy->predchozi->geo.Y4<m.P2Ly(E.top)+vzd_pos))posun_povolit=false;
-			if(F->pom_temp->orientace==90 && (m.P2Lx(E.left)+vzd_pos<F->pom_temp->elementy->dalsi->geo.X1 || F->pom_temp->elementy->predchozi->geo.X4<m.P2Lx(E.right)+vzd_pos))posun_povolit=false;
-			if(F->pom_temp->orientace==180 && (m.P2Ly(E.top)+vzd_pos>F->pom_temp->elementy->dalsi->geo.Y1 || F->pom_temp->elementy->predchozi->geo.Y4>m.P2Ly(E.bottom)))posun_povolit=false;
-			if(F->pom_temp->orientace==270 && (m.P2Lx(E.right)+vzd_pos>F->pom_temp->elementy->dalsi->geo.X1 || F->pom_temp->elementy->predchozi->geo.X4>m.P2Lx(E.left)+vzd_pos))posun_povolit=false;
-			//nepovolení posunu před nebo za element který nemá v geo linii
-			TPoint bod;bod.x=F->d.Rxy(Element).x;bod.y=F->d.Rxy(Element).y;
-			if(Element->orientace==0||Element->orientace==180)bod.x=F->d.Rxy(Element).x+vzd_pos;else bod.y=F->d.Rxy(Element).y+vzd_pos;
-			if(!F->bod_na_geometrii(bod.x,bod.y))posun_povolit=false;
-			if(F->pom_temp->elementy->predchozi->n==Element->n && !posun_povolit)posun_povolit=true;
-			if(Element->dalsi!=NULL && Element->dalsi->geo.typ!=0 || Element->geo.typ!=0)posun_povolit=false;//pokud existuje za elementem něco jiného než přímka nelze posunout
-			//kontrola pro poslední prvek pokud je povolen posun dalších elementů
-			if(pusun_dalsich_elementu)
-			{
-				Cvektory::TElement *E=F->pom_temp->elementy->predchozi->predchozi;//2x předchozí kvůli totální zarážce
-				TRect E_posledni=F->souradnice_LO(E);
-				if(F->pom_temp->orientace==0 && E->dalsi->geo.Y4<m.P2Ly(E_posledni.top)+vzd_pos)posun_povolit=false;
-				if(F->pom_temp->orientace==90 && E->dalsi->geo.X4<m.P2Lx(E_posledni.right)+vzd_pos)posun_povolit=false;
-				if(F->pom_temp->orientace==180 && E->dalsi->geo.Y4>m.P2Ly(E_posledni.bottom)+vzd_pos)posun_povolit=false;
-				if(F->pom_temp->orientace==270 && E->dalsi->geo.X4>m.P2Lx(E_posledni.left)+vzd_pos)posun_povolit=false;
-				//kontrola zda je na linii
-				TPointD bod;bod.x=F->d.Rxy(E).x;bod.y=F->d.Rxy(E).y;//pomocný bod pro uchovávání původních souřadnice posledního elementu
-				if(E->orientace==0||E->orientace==180)bod.x=F->d.Rxy(E).x+vzd_pos;else bod.y=F->d.Rxy(E).y+vzd_pos;
-        if(!F->bod_na_geometrii(bod.x,bod.y))posun_povolit=false;
-				E=NULL;delete E;
 			}
+			//////Realizace posunu + validace
 			if(vzd.x!=0 && !posun_kurzorem && posun_povolit)//posun z kót
 			{
 				//realizace posunu
 				if(Element->orientace==0||Element->orientace==180)Element->X=Element->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
 				else Element->Y=Element->Y-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
-        //aktualizace posouvaného elementu
-				vloz_G_element(Element,0,Element->geo.X1,Element->geo.Y1,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,Element->geo.orientace);
-				//aktualizace dalšího elemtnu
-				if(Element->dalsi!=NULL)vloz_G_element(Element->dalsi,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
-				//aktualizace RT
-				if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){posuv_aktualizace_RT(Element);posuv_aktualizace_RT(Element->dalsi);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
-				else posuv_aktualizace_RT(Element);
+        //kontrola zda je element stále na linii
+				if(F->bod_na_geometrii(0,0,Element) || Element->n==F->pom_temp->elementy->predchozi->n)//pokud ano
+				{
+					//kontrola + změna pořadí
+					E=vloz_element_za(F->pom_temp,Element);
+					if(E!=NULL && Element->dalsi!=NULL && E->n!=Element->dalsi->n)zmen_poradi_elementu(Element,E);
+					//aktualizace posouvaného elementu
+			  	vloz_G_element(Element,0,Element->geo.X1,Element->geo.Y1,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,Element->geo.orientace);
+			  	//aktualizace dalšího elemtnu
+			  	if(Element->dalsi!=NULL)vloz_G_element(Element->dalsi,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
+			  	//aktualizace RT
+			  	if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){posuv_aktualizace_RT(Element);posuv_aktualizace_RT(Element->dalsi);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
+					else posuv_aktualizace_RT(Element);
+				}
+				//pokud ne budou mu navráceny původní souřadnice
+				else {Element->X=puv_souradnice.x;Element->Y=puv_souradnice.y;posun_povolit=false;}
 			}
-			else if(vzd.x!=0 && posun_kurzorem && posun_povolit)//posun kurozem
+			else if(vzd.x!=0 && posun_kurzorem)//posun kurozem
 			{
 				//realizace posunu
 				if(Element->orientace==0||Element->orientace==180)Element->X=Element->X+vzdalenost;
 				else Element->Y=Element->Y+vzdalenost;
-        //aktualizace posouvaného elementu
-				vloz_G_element(Element,0,Element->geo.X1,Element->geo.Y1,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,Element->geo.orientace);
-				//aktualizace dalšího elemtnu
-				if(Element->dalsi!=NULL)vloz_G_element(Element->dalsi,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
-				//aktualizace RT
-				if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){posuv_aktualizace_RT(Element);posuv_aktualizace_RT(Element->dalsi);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
-				else posuv_aktualizace_RT(Element);
+				//kontrola zda je element stále na linii
+				if(F->bod_na_geometrii(0,0,Element) || Element->n==F->pom_temp->elementy->predchozi->n)//pokud ano
+				{
+          //kontrola + změna pořadí
+					E=vloz_element_za(F->pom_temp,Element);
+					if(E!=NULL && Element->dalsi!=NULL && E->n!=Element->dalsi->n)zmen_poradi_elementu(Element,E);
+					//aktualizace posouvaného elementu
+					vloz_G_element(Element,0,Element->geo.X1,Element->geo.Y1,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,Element->geo.orientace);
+			  	//aktualizace dalšího elemtnu
+					if(Element->dalsi!=NULL)vloz_G_element(Element->dalsi,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
+					//aktualizace RT
+					if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){posuv_aktualizace_RT(Element);posuv_aktualizace_RT(Element->dalsi);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
+					else posuv_aktualizace_RT(Element);
+				}
+				//pokud ne budou mu navráceny původní souřadnice
+				else {Element->X=puv_souradnice.x;Element->Y=puv_souradnice.y;posun_povolit=false;}
 			}
-      //kontrola zda je element v konfliktu LO a dotaz na uživatele zda chce přesun uskutečnit
-			if(F->prekryti_LO(Element) && !posun_kurzorem && mrYes!=F->MB(F->akt_souradnice_kurzoru_PX.x+10,F->akt_souradnice_kurzoru_PX.y+10,"Posunem dojde k překrytí lakovacích oken, chcete element posunout?","",MB_YESNO))
-			{
-				Element->X=F->puv_souradnice.x;Element->Y=F->puv_souradnice.y;
-				posun_povolit=false;
-			}
-			//aktualizace geometrie, pokud byl proveden posun
-			if(posun_povolit)
-			{
-				//aktualizace posouvaného elementu
-				vloz_G_element(Element,0,Element->geo.X1,Element->geo.Y1,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,Element->geo.orientace);
-				//aktualizace dalšího elemtnu
-				if(Element->dalsi!=NULL)vloz_G_element(Element->dalsi,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
-			}
-			//v případě požadavku na posun i následujících elementů
+			//////Posun dalsích elementů
 			if(pusun_dalsich_elementu && posun_povolit)
 			{
 				TElement *E=Element->dalsi;
 				while(E!=NULL)
 				{
+					puv_souradnice.x=E->X;puv_souradnice.y=E->Y;
 					if(E->geo.typ!=0)break;//ukončení v případě, že se někde nachází jiná geometrie než linie
 					if(vzd.x!=0 && !posun_kurzorem && E->eID!=MaxInt)//neposunovat zarážku
 					{
@@ -2793,16 +2701,21 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 						if(Element->orientace==0||Element->orientace==180)E->X=E->X+vzdalenost;//výpočet pro posun kurzorem
 						else E->Y=E->Y+vzdalenost;
 					}
-					//aktualizace geometrie
-					vloz_G_element(E,0,E->predchozi->geo.X4,E->predchozi->geo.Y4,0,0,0,0,F->d.Rxy(E).x,F->d.Rxy(E).y,E->geo.orientace);
+          //kontrola zda je element stále na linii
+					if(F->bod_na_geometrii(0,0,E))//pokud ano
+					{
+						//aktualizace geometrie
+						vloz_G_element(E,0,E->predchozi->geo.X4,E->predchozi->geo.Y4,0,0,0,0,F->d.Rxy(E).x,F->d.Rxy(E).y,E->geo.orientace);
+					}
+					//pokud ne budou mu navráceny původní souřadnice
+					else {E->X=puv_souradnice.x;E->Y=puv_souradnice.y;}
 					E=E->dalsi;
 				}
 				E=NULL;delete E;
 			}
-		}RET=posun_povolit;
+		}
+		RET=posun_povolit;
 	}
-	Cvektory::TElement *E=vloz_element_za(F->pom_temp,Element);//vyřeší změnu pořadí pokud se vloží před první, jinak vráti ukazatel na novou pozici
-	if(E!=NULL&&E->n!=Element->n)zmen_poradi_elementu(Element,E);//provede změnu pořadí
 	E=NULL; delete E;
 	return RET;
 }
@@ -2817,79 +2730,79 @@ void Cvektory::posuv_aktualizace_RT(TElement *Element)
 			Element->RT=F->m.RT(Element->PT1,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT);
 			Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->RT),3);
 			Element->mGrid->Cells[1][2].Highlight=true;
-			Element->mGrid->Refresh();
+			if(F->pom_temp->zobrazit_mGrid)Element->mGrid->Refresh();
 		}break;
 		case 4:case 10:case 14:case 18:case 104:case 108://roboti s aktivní otočí
 		{
 			Element->RT=m.RT(Element->PT1+Element->PT2+Element->PTotoc,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT);
 			Element->mGrid->Cells[1][5].Text=F->m.round2double(F->outPT(Element->RT),3);
 			Element->mGrid->Cells[1][5].Highlight=true;
-			Element->mGrid->Refresh();
+			if(F->pom_temp->zobrazit_mGrid)Element->mGrid->Refresh();
 		}break;
 		case 6://aktivní otoč
 		{
 			Element->RT=m.RT(Element->PTotoc,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT);
 			Element->mGrid->Cells[1][4].Text=F->m.round2double(F->outPT(Element->RT),3);
 			Element->mGrid->Cells[1][4].Highlight=true;
-			Element->mGrid->Refresh();
+			if(F->pom_temp->zobrazit_mGrid)Element->mGrid->Refresh();
 		}break;
 		case 0://stop stanice
 		{
 			Element->RT=m.RT(0,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT+Element->WTstop);
 			Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->RT),3);
 			Element->mGrid->Cells[1][2].Highlight=true;
-			Element->mGrid->Refresh();
+			if(F->pom_temp->zobrazit_mGrid)Element->mGrid->Refresh();
 		}break;
 	}
 }
 ////---------------------------------------------------------------------------
 //řeší změnu pořadí při posuvu elementů, dojde k novému ukazatelovému propojení, přejmenování a přeindexování elementů
-void Cvektory::zmen_poradi_elementu(TElement *aktualni_poradi,TElement *nove_poradi)
-{
-	TElement *ukaz_ap=aktualni_poradi;
-	TElement *ukaz_np=nove_poradi;//musí být tu, aby byl uložen aktuální seznam, ne po vyjmutí
-	if(ukaz_ap!=NULL && ukaz_np!=NULL)
+void Cvektory::zmen_poradi_elementu(TElement *E,TElement *Ed)
+{               	                          //E = posouvaný element, Ed = další element
+	//////přesun elementu před
+	if(E->n>Ed->n)
 	{
-		////////////vyjmutí ze spojáku
-		if(ukaz_ap->dalsi!=NULL)//pokud se nejedná o poslední prvek
-		{
-			ukaz_ap->predchozi->dalsi=ukaz_ap->dalsi;//předchozí bude ukazovat na následující
-			ukaz_ap->dalsi->predchozi=ukaz_ap->predchozi; //následující bude ukazovat na další
-		}
-		else//pokud se jedná o poslední prvek
-		{
-			F->pom_temp->elementy->predchozi=ukaz_ap->predchozi;
-			ukaz_ap->predchozi->dalsi=NULL;       //ap = staré pořadní(element co držím kurorem), np = nové pořadí
-		}
-		////////////ukazatelové propojení
-		ukaz_ap->dalsi=ukaz_np->dalsi;
-		ukaz_ap->predchozi=ukaz_np;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
-		ukaz_np->dalsi->predchozi=ukaz_ap;
-		ukaz_np->dalsi=ukaz_ap;
-		////////////Aktualizace geometrie
-		//geometrie predchozího elementu pokud předchozím není hlavička
-		double x=F->d.Rxy(ukaz_np->predchozi).x,y=F->d.Rxy(ukaz_np->predchozi).y;
-		if(ukaz_np->n==F->pom_temp->elementy->dalsi->n && ukaz_ap->n==1 && ukaz_np->geo.typ==0)vloz_G_element(ukaz_np,0,ukaz_ap->geo.X1,ukaz_ap->geo.Y1,0,0,0,0,F->d.Rxy(ukaz_np).x,F->d.Rxy(ukaz_np).y,ukaz_np->geo.orientace);
-		if(ukaz_np->predchozi->n>0 && ukaz_np->geo.typ==0)vloz_G_element(ukaz_np,0,F->d.Rxy(ukaz_np->predchozi).x,F->d.Rxy(ukaz_np->predchozi).y,0,0,0,0,F->d.Rxy(ukaz_np).x,F->d.Rxy(ukaz_np).y,ukaz_np->geo.orientace);
-		//geometrie vkládaného elementu
-		if(ukaz_ap->geo.typ==0)vloz_G_element(ukaz_ap,0,F->d.Rxy(ukaz_np).x,F->d.Rxy(ukaz_np).y,0,0,0,0,F->d.Rxy(ukaz_ap).x,F->d.Rxy(ukaz_ap).y,ukaz_ap->geo.orientace);
-		//geometrie dalsího elementu
-		if(ukaz_ap->dalsi->geo.typ==0)vloz_G_element(ukaz_ap->dalsi,0,F->d.Rxy(ukaz_ap).x,F->d.Rxy(ukaz_ap).y,0,0,0,0,F->d.Rxy(ukaz_ap->dalsi).x,F->d.Rxy(ukaz_ap->dalsi).y,ukaz_ap->dalsi->geo.orientace);
+		//ukazatelové záležitosti
+		E->dalsi->predchozi=Ed;
+		Ed->dalsi=E->dalsi;
+		if(Ed->n==1)F->pom_temp->elementy->dalsi=E;
+		E->predchozi=Ed->predchozi;
+		Ed->predchozi->dalsi=E;
+		Ed->predchozi=E;
+		E->dalsi=Ed;//musí být na konci!!!!!
+		//aktualizace geometrie
+		vloz_G_element(Ed->dalsi,0,F->d.Rxy(Ed).x,F->d.Rxy(Ed).y,0,0,0,0,F->d.Rxy(Ed->dalsi).x,F->d.Rxy(Ed->dalsi).y);
+		vloz_G_element(E,0,Ed->geo.X1,Ed->geo.Y1,0,0,0,0,F->d.Rxy(E).x,F->d.Rxy(E).y);
+		vloz_G_element(Ed,0,F->d.Rxy(E).x,F->d.Rxy(E).y,0,0,0,0,F->d.Rxy(Ed).x,F->d.Rxy(Ed).y);
 	}
-	////////////přeindexování (N-hodnoty) v celém seznamu, možno řešit sepáratáně, ale takto to bylo rychleji napsané
-	TElement *E=F->pom_temp->elementy->dalsi;//ukazatel na první element, přeskočí hlavičku, metoda volaná jen v případě, že existují min. 2 elementy
+	//////přesun elementu za
+	else
+	{
+		//ukazatelové záležitosti
+		E->dalsi=Ed;
+		Ed->predchozi->predchozi=E->predchozi;
+		E->predchozi=Ed->predchozi;
+		Ed->predchozi->predchozi->dalsi=Ed->predchozi;
+		//if(E->n==1)F->pom_temp->elementy->dalsi=Ed->predchozi;
+		Ed->predchozi->dalsi=E;
+		Ed->predchozi=E;
+		////aktualizace geometrie
+		vloz_G_element(E->predchozi,0,E->geo.X1,E->geo.Y1,0,0,0,0,F->d.Rxy(E->predchozi).x,F->d.Rxy(E->predchozi).y);
+		vloz_G_element(Ed,0,F->d.Rxy(E).x,F->d.Rxy(E).y,0,0,0,0,F->d.Rxy(Ed).x,F->d.Rxy(Ed).y);
+		vloz_G_element(E,0,F->d.Rxy(E->predchozi).x,F->d.Rxy(E->predchozi).y,0,0,0,0,F->d.Rxy(E).x,F->d.Rxy(E).y);
+	}
+	//////přeindexování (N-hodnoty) v celém seznamu, možno řešit sepáratáně, ale takto to bylo rychleji napsané
+	TElement *E_pom=F->pom_temp->elementy->dalsi;//ukazatel na první element, přeskočí hlavičku, metoda volaná jen v případě, že existují min. 2 elementy
 	int n=1;
-	while (E!=NULL)
+	while (E_pom!=NULL)
 	{
-		E->n=n;
+		E_pom->n=n;
 		n++;
-		E=E->dalsi;
+		E_pom=E_pom->dalsi;
 	}
-	E=NULL; delete E;
-	uprav_popisky_elementu(F->pom_temp,aktualni_poradi);//změna názvů
-	if(ukaz_ap->eID%2==0 && ukaz_ap->eID!=200 || ukaz_np->eID%2==0 && ukaz_np->eID!=200)aktualizuj_sparovane_ukazatele();//změna pořadí přičemž alespoň jeden element byl stop-element
-	ukaz_ap=NULL; delete ukaz_ap;
-	ukaz_np=NULL; delete ukaz_np;
+	delete E_pom;E_pom=NULL;
+	uprav_popisky_elementu(F->pom_temp,E);//změna názvů
+	if(E->eID%2==0 && Ed->eID!=200 || E->eID%2==0 && Ed->eID!=200)aktualizuj_sparovane_ukazatele();//změna pořadí přičemž alespoň jeden element byl stop-element
 }
 ////---------------------------------------------------------------------------
 //vratí vzdálenost od předchozího elementu, pracuje zatím pouze v orotogonalizovaném prostoru (bude nutno vylepšit s příchodem oblouků), pokud se jedná o první element, uvažuje se jako vzdálenost od počátku kabiny (nutno vylepšit ještě pro různé orientace kabiny)
@@ -5468,7 +5381,9 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 						cE->akt_pocet_voziku=E->akt_pocet_voziku;
 				 		cE->max_pocet_voziku=E->max_pocet_voziku;
             cE->objekt_n=E->objekt_n;
-            cE->pohon_n=E->pohon_n;
+          //  ShowMessage("E->pohony->n");
+            cE->pohon_n=E->pohon->n;
+           // ShowMessage("po E->pohony->n");
 						cE->geo=E->geo;
 						//uložení do binárního filu
 						FileStream->Write(cE,sizeof(C_element));//zapiše jeden prvek do souboru
@@ -5483,6 +5398,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 						wchar_t *name=new wchar_t [cE->name_delka];
 						name=E->name.c_str();
 						FileStream->Write(name,cE->name_delka*sizeof(wchar_t));//
+           // ShowMessage(AnsiString(name)+", uloz pohon n:"+AnsiString(E->pohon->n));
 						name=NULL; delete[] name;
 
 						//posun na další segment cesty
@@ -5656,7 +5572,6 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			hlavicka_POHONY();
 			hlavicka_OBJEKTY();
 			//ZDM hlavicka_voziky();
-
 			//pohony - musí být nad objekty
 			for(unsigned int i=1;i<=File_hlavicka.pocet_pohonu;i++)//možno řešit sice while, po strukturách, ale toto je připravené pro případ, kdy budu načítat i objekty jiného typu než objekt
 			{
@@ -5693,7 +5608,6 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 				TObjekt *ukaz=new TObjekt;
 				C_objekt *c_ukaz=new C_objekt;
 				FileStream->Read(c_ukaz,sizeof(C_objekt));//načte jeden prvek ze souboru
-
 				if(c_ukaz->n!=0 && File_hlavicka.pocet_objektu>=c_ukaz->n)//pokud nenačte hlavičku či nějaký shit
 				{
 					//samotná data
@@ -5768,7 +5682,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
             E->akt_pocet_voziku=cE.akt_pocet_voziku;
 						E->max_pocet_voziku=cE.max_pocet_voziku;
             E->objekt_n=cE.objekt_n;
-            E->pohon_n=cE.pohon_n;
+            E->pohon=vrat_pohon(cE.pohon_n);
 						E->geo=cE.geo;
 						//shortname
 						wchar_t *short_name=new wchar_t [5];
@@ -5780,6 +5694,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 						wchar_t *name=new wchar_t[cE.name_delka];
 						FileStream->Read(name,cE.name_delka*sizeof(wchar_t));
 						E->name=name;
+           // ShowMessage(AnsiString(name)+", nacti pohon n:"+AnsiString(cE.pohon_n));
 						delete[] name; name=NULL;
 
 						vloz_element(ukaz,E);
