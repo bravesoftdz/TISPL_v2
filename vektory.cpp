@@ -3367,8 +3367,8 @@ void Cvektory::kopiruj_pohon(TPohon *Pohon,TObjekt *Objekt)
 	if(Pohon!=NULL)
 	{
 		if(Objekt->pohon==NULL)Objekt->pohon=new TPohon;
-		*Objekt->pohon=*Pohon;//překopírování hodnot pohonů bez spojového propojení s originálem, ale i přes další a předchozí není zoohledněno propojení se daným spojovým seznamem pohonů, daný pohon je pouze datovou součástí pom_temp, není samostatným objektem či objektem zařazeným ve spojáku pohonů
 		if(Objekt==F->pom)*vrat_pohon(Pohon->n)=*Pohon;//situace překopírování z pomocného do ostrého (ukládání náhledu), aby bylo zachováno spojové propojení seznamu pohonů i pro případ nepřiřazeno
+		else *Objekt->pohon=*Pohon;//překopírování hodnot pohonů bez spojového propojení s originálem, ale i přes další a předchozí není zoohledněno propojení se daným spojovým seznamem pohonů, daný pohon je pouze datovou součástí pom_temp, není samostatným objektem či objektem zařazeným ve spojáku pohonů
 	}
 	else Objekt->pohon=NULL;
 }
