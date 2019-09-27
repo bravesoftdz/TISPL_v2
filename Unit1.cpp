@@ -2058,7 +2058,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						if(JID==-5){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_bod_temp=pom_bod;if(pom_bod_temp->n!=1)editovany_text=m.round2double(m.delka(pom_bod_temp->predchozi->X,pom_bod_temp->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);else editovany_text=m.round2double(m.delka(pom_temp->body->predchozi->X,pom_temp->body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);if(DKunit==2||DKunit==3)editovany_text=editovany_text/pom_temp->pohon->aRD;editovany_text=outDK(ms.MyToDouble(editovany_text));nahled_ulozit(true);}//editace kót kabiny
 						if(JID==-9 || JID==4){Akce=MOVE_TABLE;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//posun tabulky pohonu
 						if(JID==-201){pom_temp->pohon=pom_element_temp->pohon;if(pom_temp->pohon!=NULL)prirazeni_pohonu_tab_pohon(pom_temp->pohon->n);else prirazeni_pohonu_tab_pohon(0);} //kliknutí na jeden z pohonů na předávacím místě
-						if(JID==-202){pom_temp->pohon=pom_element_temp->dalsi->pohon;if(pom_temp->pohon!=NULL)prirazeni_pohonu_tab_pohon(pom_temp->pohon->n);else prirazeni_pohonu_tab_pohon(0);}
+						if(JID==-202){if(pom_element_temp->dalsi!=NULL){pom_temp->pohon=pom_element_temp->dalsi->pohon;if(pom_temp->pohon!=NULL)prirazeni_pohonu_tab_pohon(pom_temp->pohon->n);else prirazeni_pohonu_tab_pohon(0);}else {pom_vyhybka=pom->dalsi;zmena_editovaneho_objektu();}}
 					}
 					else
 					{
@@ -4091,7 +4091,7 @@ void TForm1::add_element (int X, int Y)
 		Cvektory::TElement *E=d.v.vloz_element(pom_temp,element_id,m.P2Lx(bod_vlozeni.x),m.P2Ly(bod_vlozeni.y),rotace_symbolu);
 		//nadesignuje tabulky daného elementu
 		design_element(E,true);
-		if(E->eID!=100 && E->eID!=MaxInt && E->eID!=200)//pokud je alokovaná paměť pro mGrid element bude mít tabulku, pokud není element nebude mít tabulku
+		if(E->eID!=100 && E->eID!=MaxInt)//pokud je alokovaná paměť pro mGrid element bude mít tabulku, pokud není element nebude mít tabulku
 		{
 			//automatické výchozí umístění mGridové tabulky dle rotace elementu a nadesignováné tabulky (jejích rozměrů) - proto musí být až za nastevením designu
 			aut_pozicovani(E,X,Y);
@@ -4148,6 +4148,7 @@ void TForm1::add_element (int X, int Y)
 				set_enabled_mGrid(E);
 				E=E->dalsi;
 			}
+			vlozit_predavaci_misto();//kontrola zda nemá být na konec kabiny vloženo předávací místo
 		}
 		if(E!=NULL)d.v.aktualizuj_sparovane_ukazatele();//aktualizace spárovaných ukazatelů
 		//až na konec:
@@ -4228,14 +4229,14 @@ void TForm1::vlozit_predavaci_misto()
 				//souřadnice tabulky
 				if(O->orientace==90 || O->orientace==270){E->Xt=E->X-1.9;E->Yt=E->Y+1.6;}
 				else{E->Xt=E->X+0.6;E->Yt=E->Y+0.5;}
+        //změna elemetnu na předávací místo
+				E->eID=200;
 				//názvy výhybek prozatím neřešeny
 				if(pom_temp==NULL)pom_vyhybka=O;else pom_vyhybka=pom_temp;
 				unsigned int nTyp=d.v.vrat_poradi_elementu_do(pom_vyhybka,E)+1;
 				E->name="Předávací místo "+AnsiString(nTyp);
 				E->short_name=E->name.SubString(1,3)+AnsiString(nTyp);
 				pom_vyhybka=NULL;
-				//změna elemetnu na předávací místo
-				E->eID=200;
 				//smazání a znovuvytvoření mGridu elementu
 				if(pom_temp!=NULL && O->n==pom_temp->n)
 				{
@@ -4303,7 +4304,7 @@ double TForm1::max_voziku(Cvektory::TElement *stopka)
 		E=E->predchozi;
 	}
 	E=NULL;delete E;
-	if(delka>0)return floor(delka/F->d.v.PP.delka_podvozek);
+	if(delka>0)return floor((delka-d.v.PP.uchyt_pozice)/d.v.PP.delka_podvozek);
 	else return 1;
 }
 //---------------------------------------------------------------------------
@@ -5222,7 +5223,7 @@ void TForm1::pridani_elementu_tab_pohon(Cvektory::TElement *E)
 	if(d.v.pohon_je_pouzivan(pom_temp->pohon->n,pom)!=NULL)//kontrola zda je pohon používán v jiném objektu, nutné posílat pom místo pom_temp do parametru mimo_objetk!!!!!
 	{
 		//Update musí být přítomný před!!!!
-		PmG->SetEnabledComponent(1,4,false);//komponenta do této chvíle ještě neexistovala
+		PmG->SetEnabledComponent(1,3,false);//komponenta do této chvíle ještě neexistovala
 	}
 }
 //volána po přiřazení pohonu
@@ -9661,18 +9662,16 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //---------------------------------------------------------------------------
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
-{
-	Cvektory::TElement *E=pom->dalsi->elementy->predchozi;
-	while(E!=NULL && E->n!=0)
-	{
-		//if(E->sparovany!=NULL)Memo("E->name: "+AnsiString(E->name)+";  sparovany->name: "+AnsiString(E->sparovany->name));
-		Memo(E->n);
-		//if(E->pohon!=NULL)Memo(E->pohon->n); else Memo("NULL");
-		E=E->predchozi;
-	} E=NULL;delete E;   Memo("konec");
+{              Memo3->Clear();
+	Cvektory::TElement *E=pom_temp->elementy->dalsi;
+//	while(E!=NULL && E->n!=0)
+//	{
+//		if(E->pohon==NULL && F->pom_temp->pohon==NULL || E->pohon!=NULL && F->pom_temp->pohon!=NULL && E->pohon->n==F->pom_temp->pohon->n)Memo(E->mGrid->Cells[0][1].Text);
+//		E=E->dalsi;
+//	} E=NULL;delete E;
 //	Memo(vzdalenost_meziLO(E,pom_temp->orientace));
 //	TRect A=vrat_max_oblast();
-//	d.line(Canvas,(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0,A.top,(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0,A.bottom);
+	d.line(Canvas,m.L2Px(E->Xt),m.L2Py(E->Yt),0,0);
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
