@@ -2823,26 +2823,25 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,double X,double Y,double orientace
 	 }
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-//vykreslení jednoho komplexního vozíku (podvozek včetně jigu), X,Y jsou souřadnice uchycení vozíku k palci
+//vykreslení jednoho komplexního vozíku (podvozek včetně jigu), X,Y jsou souřadnice uchycení vozíku k palci, což nemusí být střed vozíku
 void Cvykresli::vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dJ,double sJ,double orientaceP,double rotaceJ,TColor clChassis, TColor clJig)
 {
 	//výchozí parametry
 	float sP=0.12;//šířka podvozku, pouze stanovane
 	double Xp=X-v.PP.uchyt_pozice;//posunutí umístění vozíku o nastavení uchycení pozice
-	short z=1;if(orientaceP==0 || orientaceP==180)z=-1;//převrácení orientace na rotaci
 
 	//transparentní pozadí (nejenom textu ale ji podvozku a jigu) ALTERNATIVA pro font:SetBkMode(canv->Handle,TRANSPARENT);
 	canv->Brush->Style=bsClear;
 
 	////podvozek
 	set_pen2(canv,clChassis,m.round(1/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true);
-	obdelnik(canv,Xp,Y+sP/2.0,Xp+v.PP.delka_podvozek,Y-sP/2.0,orientaceP-90*z,X,Y);
+	TPointD C=obdelnik(canv,Xp,Y+sP/2.0,Xp+v.PP.delka_podvozek,Y-sP/2.0,m.o2r(orientaceP),X,Y);
 
 	////jig
 	if(dJ!=0 && sJ!=0)//vykreslí, pouze pokud jsou oba parametry nenulové
 	{
 		set_pen2(canv,clJig,m.round(2/3.0*F->Zoom),PS_ENDCAP_ROUND,PS_JOIN_ROUND,true);
-		obdelnik(canv,(Xp+Xp+v.PP.delka_podvozek)/2.0-dJ/2.0,Y+sJ/2.0,(Xp+Xp+v.PP.delka_podvozek)/2.0+dJ/2.0,Y-sJ/2.0,orientaceP-90*z+rotaceJ,X,Y);
+		obdelnik(canv,C.x-dJ/2.0,C.y+sJ/2.0,C.x+dJ/2.0,C.y-sJ/2.0,m.o2r(orientaceP)+rotaceJ);
 	}
 
 //	////text - ID vozíku
@@ -4360,14 +4359,16 @@ void Cvykresli::line(TCanvas *canv,long X1,long Y1,long X2,long Y2)
 	canv->LineTo(X2,Y2);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-//orototuje obdelník, podle posledních parametrů, pokud jsou tyto parametry neuvdené, rotuje okolo středu obrazce)
-void Cvykresli::obdelnik(TCanvas *canv,double X1,double Y1,double X2,double Y2,double rotace,double Sx,double Sy)
+//orototuje obdelník, podle posledních parametrů, pokud jsou tyto parametry neuvdené, rotuje okolo středu obrazce, pro případné dalsí potřeby vrátí souřadnice středu orotovaného obdélniku
+TPointD Cvykresli::obdelnik(TCanvas *canv,double X1,double Y1,double X2,double Y2,double rotace,double Sx,double Sy)
 {
 	TPointD body[]={{X1,Y1},{X2,Y1},{X2,Y2},{X1,Y2}};
 	if(Sx==DOUBLE_MIN && Sx==Sy){Sx=(X1+X2)/2.0;Sy=(Y1+Y2)/2.0;}//pokud je požadováno orotuje okolo středu
 	m.rotace_polygon(Sx,Sy,body,3,rotace);
 	POINT body_px[]={{m.L2Px(body[0].x),m.L2Py(body[0].y)},{m.L2Px(body[1].x),m.L2Py(body[1].y)},{m.L2Px(body[2].x),m.L2Py(body[2].y)},{m.L2Px(body[3].x),m.L2Py(body[3].y)}};
 	canv->Polygon((TPoint*)body_px,3);
+	TPointD RET; RET.x=(body[0].x+body[2].x)/2.0;RET.y=(body[0].y+body[2].y)/2.0;//návratová hodnota středu (body do uhlopříčky) určená pro další použití
+	return RET;
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //https://stackoverflow.com/questions/785097/how-do-i-implement-a-b%C3%A9zier-curve-in-c nebo téměř totožné wiki   //http://www.yevol.com/bcb/Lesson12.htm
