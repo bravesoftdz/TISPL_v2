@@ -739,6 +739,7 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 //zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze ukazatel na mGrid originálu zůstané propojený
 void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 {
+  F->log(__func__);//logování
 	Kopie->n=Original->n;
 	Kopie->id=Original->id;
 	Kopie->short_name=Original->short_name;
@@ -1901,6 +1902,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 		case 200: T="Předávací místo";break;
 		case MaxInt: T="Zarážka";break;
 	}
+	if(101<=eID && eID<=108)T="Operátor";
 	if(novy->name=="")//přiřazení názvu pouze v případě, že element žádné nemá, při posuvu je novému elementu přiřazeno jméno
 	{
 		unsigned int nTyp=vrat_poradi_elementu_do(Objekt,novy)+1;//pokud se jedná o roboty
@@ -2081,9 +2083,9 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 			Cvektory::TElement *E=Objekt->elementy->dalsi;//začíná se od začátku, někdy je potřeba ovlivnit i předchozí elementy
  			while (E!=NULL)
 			{
-				if(1<=E->eID && E->eID<=4 || 7<=E->eID && E->eID<=18 || E->eID==200 ||101<=E->eID && E->eID<=108)
+				if(1<=E->eID && E->eID<=4 || 7<=E->eID && E->eID<=18 || E->eID==100 || 101<=E->eID && E->eID<=108)
 				{
-					if(E->name.SubString(1,6)=="Robot " || E->name.SubString(1,8)=="ION tyč " || E->name=="")rename=true;else rename=false;
+					if(E->name.SubString(1,6)=="Robot " || E->name.SubString(1,9)=="Operátor " || E->name.SubString(1,8)=="ION tyč " || E->name=="")rename=true;else rename=false;
 					//změna názvu
 			  	if(rename)//přejmenování elementu ve spojáku + mGridu
 					{
@@ -2091,22 +2093,27 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 			  		//změna názvu v hlavičce mGridu, jako první z důvodu podmínky prázdného názvu
 			  		if(E->name!=""&&E->mGrid!=NULL)//nutné, přejmenovávám i první element, který nemá vytvořený mGrid
 			  		{
-							if(E->eID!=200)E->mGrid->Cells[0][0].Text="<a>Robot "+AnsiString(n)+"</a>";
-							else E->mGrid->Cells[0][0].Text="<a>ION tyč "+AnsiString(n)+"</a>";
+							if(E->eID==100)E->mGrid->Cells[0][0].Text="<a>ION tyč "+AnsiString(n)+"</a>";
+							if(101<=E->eID && E->eID<=108)E->mGrid->Cells[0][0].Text="<a>Operátor "+AnsiString(n)+"</a>";
+							else E->mGrid->Cells[0][0].Text="<a>Robot "+AnsiString(n)+"</a>";
 							E->mGrid->Cells[0][0].Font->Color=clBlack;//z důvodu nasazení odkazu, po přejmenování se text vrátil do modré barvy
 			  			E->mGrid->MergeCells(0,0,1,0);//nutné kvůli správnému zobrazení hlavičky
 							if(F->zobrazeni_tabulek)E->mGrid->Update();//musí zde být ošetření proti paměťové chybě
 			  		}
-						if(E->eID!=200)
-						{
-							E->name="Robot "+AnsiString(n);
-							E->short_name="Rob"+AnsiString(n);
-						}
-						else
-            if(E->eID!=200)
+						if(E->eID==100)
 						{
 							E->name="ION tyč "+AnsiString(n);
 							E->short_name="ION"+AnsiString(n);
+						}
+						if(101<=E->eID && E->eID<=108)
+						{
+							E->name="Operátor "+AnsiString(n);
+							E->short_name="Ope"+AnsiString(n);
+						}
+						else
+						{
+							E->name="Robot "+AnsiString(n);
+							E->short_name="Rob"+AnsiString(n);
 						}
 					}
 				}
@@ -2186,14 +2193,26 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 					{
 						//kontrola zda má element původní název
 	   				switch(E->eID)
-	   				{
-	   					case 0:if(E->name.SubString(1,5)=="Stop "&&E->name.Length()<=6)rename=true;else rename=false;break;
-	   					case 1:
-							case 2:
-	   					case 3:
-	   					case 4:if(E->name.SubString(1,6)=="Robot "&&E->name.Length()<=7)rename=true;else rename=false;break;
-	   					case 5:
-	   					case 6:if(E->name.SubString(1,5)=="Otoč "&&E->name.Length()<=6)rename=true;else rename=false;break;
+						{
+							//stopka
+							case 0:
+							//roboti
+							if(E->name.SubString(1,5)=="Stop "&&E->name.Length()<=6)rename=true;else rename=false;break;
+							case 1:case 7:case 11:case 15:
+							case 2:case 8:case 12:case 16:
+							case 3:case 9:case 13:case 17:
+							case 4:case 10:case 14:case 18:
+							if(E->name.SubString(1,6)=="Robot "&&E->name.Length()<=7)rename=true;else rename=false;break;
+							//otoče
+							case 5:
+							case 6:
+							if(E->name.SubString(1,5)=="Otoč "&&E->name.Length()<=6)rename=true;else rename=false;break;
+							//operátoři
+							case 101:case 105:case 102:case 106:case 103:case 107:case 104:case 108:
+							if(E->name.SubString(1,9)=="Operátor "&&E->name.Length()<=10)rename=true;else rename=false;break;
+							//předávací místo
+							case 200:
+							if(E->name.SubString(1,16)=="Předávací místo " && E->name.Length()<=17)rename=true;else rename=false;break;
 	   				}
 						//pokud má původní název -> přejmenovat
 						if(rename)
@@ -2204,13 +2223,25 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 							//změna názvu
 							switch(E->eID)
 							{
-	   						case 0:E->name="Stop "+AnsiString(n_nazev);break;
-								case 1:
-								case 2:
-								case 3:
-	   						case 4:E->name="Robot "+AnsiString(n_nazev);break;
+								//stopka
+								case 0:
+								E->name="Stop "+AnsiString(n_nazev);break;
+								//roboti
+								case 1:case 7:case 11:case 15:
+								case 2:case 8:case 12:case 16:
+								case 3:case 9:case 13:case 17:
+								case 4:case 10:case 14:case 18:
+								E->name="Robot "+AnsiString(n_nazev);break;
+								//otoče
 								case 5:
-								case 6:E->name="Otoč "+AnsiString(n_nazev);break;
+								case 6:
+								E->name="Otoč "+AnsiString(n_nazev);break;
+								//operátoři
+								case 101:case 105:case 102:case 106:case 103:case 107:case 104:case 108:
+								E->name="Operátor "+AnsiString(n_nazev);break;
+								//předávací místo
+								case 200:
+                E->name="Předávací místo "+AnsiString(n_nazev);break;
 	   					}
 						}
 						//změna n ve spojáku
@@ -2730,7 +2761,7 @@ void Cvektory::posuv_aktualizace_RT(TElement *Element)
 			Element->RT=m.RT(0,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT+Element->WTstop);
 			Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->RT),3);
 			Element->mGrid->Cells[1][2].Highlight=true;
-			if(F->pom_temp->id>=6 && F->pom_temp->id<=10)Element->mGrid->Cells[1][5].Text=F->max_voziku(Element);
+			if(F->pom_temp->id>=6 && F->pom_temp->id<=10)Element->mGrid->Cells[1][5].Text=Element->max_pocet_voziku=F->max_voziku(Element);
 			if(F->pom_temp->zobrazit_mGrid)Element->mGrid->Refresh();
 		}break;
 		case 2:case 8:case 12:case 16:case 102:case 106://roboti se stop stanicí
@@ -3309,6 +3340,7 @@ long Cvektory::vymaz_elementy(TObjekt *Objekt,bool mGridSmazat)
 ////vytvoří novou hlavičku pro pohonů
 void Cvektory::hlavicka_POHONY()
 {
+	//F->log(__func__);//logování  - NELZE
 	TPohon *novy=new TPohon;
 	novy->n=0;
 	novy->name="";
@@ -3327,6 +3359,7 @@ void Cvektory::hlavicka_POHONY()
 //vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
 void Cvektory::vloz_pohon(TPohon *pohon)
 {
+	F->log(__func__);//logování
 	TPohon *novy=new TPohon;
 
 	novy=pohon;//novy bude ukazovat tam kam prvek Objekt
@@ -3340,6 +3373,7 @@ void Cvektory::vloz_pohon(TPohon *pohon)
 //vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
 void Cvektory::vloz_pohon(UnicodeString name,double rychlost_od,double rychlost_do,double aRD,double R,double Rz,double Rx)
 {
+	F->log(__func__);//logování
 	TPohon *novy=new TPohon;
 	novy->name=name;
 	novy->rychlost_od=rychlost_od;
@@ -3354,6 +3388,7 @@ void Cvektory::vloz_pohon(UnicodeString name,double rychlost_od,double rychlost_
 //vrátí ukazatel na pohon dle n pohonu
 Cvektory::TPohon *Cvektory::vrat_pohon(unsigned long n)
 {
+	F->log(__func__);//logování
 	TPohon *p=POHONY->dalsi;//přeskočí hlavičku
 	while (p!=NULL)
 	{
@@ -3366,12 +3401,13 @@ Cvektory::TPohon *Cvektory::vrat_pohon(unsigned long n)
 //bez ukazatelového propojení zkopíruje atributu pohonu do pohonu požadovaného objektu, neobsahuje-li tento objekt alokovanou paměť pro pohon, naalokuje jí
 void Cvektory::kopiruj_pohon(TPohon *Pohon,TObjekt *Objekt)
 {
+	F->log(__func__);//logování
 	if(Pohon!=NULL)
 	{
 		if(Objekt->pohon==NULL)Objekt->pohon=new TPohon;
 		if(Objekt==F->pom)
 		{
-			Objekt->pohon=Pohon;
+			Objekt->pohon=Pohon;//přiřazení zvoleného pohonu k objektu
 			*vrat_pohon(Pohon->n)=*Pohon;//situace překopírování z pomocného do ostrého (ukládání náhledu), aby bylo zachováno spojové propojení seznamu pohonů i pro případ nepřiřazeno
 		}
 		else *Objekt->pohon=*Pohon;//překopírování hodnot pohonů bez spojového propojení s originálem, ale i přes další a předchozí není zoohledněno propojení se daným spojovým seznamem pohonů, daný pohon je pouze datovou součástí pom_temp, není samostatným objektem či objektem zařazeným ve spojáku pohonů
@@ -3382,6 +3418,7 @@ void Cvektory::kopiruj_pohon(TPohon *Pohon,TObjekt *Objekt)
 //dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv
 bool Cvektory::pohon_je_pouzivan(unsigned long n)
 {
+	F->log(__func__);//logování
 	TObjekt *O=OBJEKTY->dalsi;
 	bool nalezen=false;
 	while (O!=NULL)
@@ -3403,7 +3440,8 @@ bool Cvektory::pohon_je_pouzivan(unsigned long n)
 //dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv, ten vrátí formou ukazatale na první nalezený používáný, druhý vstupní parametr metody TObjekt mimo_objekt je ukazatel na objekt, který se bude při vyhledávání ignorovat, nenajde-li vrací NULL, třetí parametr, pokud je náchán na implicitní -1 řeší se pro všechny režimy, pokud je v rozmezí 0 až 2 řeší se pro konkrétní režim
 Cvektory::TObjekt *Cvektory::pohon_je_pouzivan(unsigned long n,TObjekt *mimo_objekt,short rezim)
 {
- 	TObjekt *O=OBJEKTY->dalsi;
+	F->log(__func__);//logování
+	TObjekt *O=OBJEKTY->dalsi;
 	while (O!=NULL)
 	{
 		if(O->pohon!=NULL && O!=mimo_objekt)//byl objekt s pohonem nalezen a nejedná se o vynechávaný objekt

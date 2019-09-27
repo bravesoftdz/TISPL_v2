@@ -197,6 +197,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 		}
 		tab_pruchodu=NULL;delete tab_pruchodu;
 	}
+
 	///////////////Vykreslení objektů
 	//samotné objekty, kreslím až v samostatném následujícím cyklu, aby se nakreslilo do horní vrstvy
 	TPoint *tab_pruchodu=new TPoint[F->d.v.pocet_vyhybek+1];//+1 z důvodu indexace výhybka 1 bude mít index 1, nebude se začínat od indexu 0, tabulka.x = vyhybky, tabulka.y = spojky
@@ -207,7 +208,8 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 		if(F->pom_temp!=NULL && F->pom_temp->n!=O->n || F->pom_temp==NULL)vykresli_objekt(canv,O);
 		O=O->dalsi;
 	}
-	if(F->pom_temp!=NULL)vykresli_objekt(canv,F->pom_temp);//vykreslení aktuálně editované kabiny nad všechny ostatní
+	if(F->pom_temp!=NULL)vykresli_objekt(canv,F->pom_temp);//vykreslení aktuálně editovaného objektu nad všechny ostatní objekty
+
 	///////////////Vykreslení pohonu a elementů
 	O=v.OBJEKTY->dalsi;//přeskočí hlavičku
 	while(O!=NULL)
@@ -216,7 +218,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
     //vykreslení prozatimní osy POHONU
 		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)vykresli_retez(canv,F->pom_temp);else vykresli_retez(canv,O);
 		Cvektory::TElement *E=O->elementy;
-		if(F->pom_temp!=NULL&&F->pom_temp->n==O->n){stav=1;E=F->pom_temp->elementy;}//elementy v aktivním objektu
+		if(F->pom_temp!=NULL && F->pom_temp->n==O->n){stav=1;E=F->pom_temp->elementy;}//elementy v aktivním objektu, zajistí přeskočení vykreslení neaktuálních dat elementů a vykreslí aktuálně data elementů neuloženého objektu
 		else stav=-1;//disabled elementy ostatních objektů
 		while(E!=NULL)//pokud elementy existují
 		{
