@@ -223,7 +223,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 			if(E->n>0)
 			{
 				vykresli_pozice(canv,Rxy(E).x,Rxy(E).y,m.Rt90(E->geo.orientace-180),0,E->max_pocet_voziku,E->akt_pocet_voziku);
-				vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->LO1,E->OTOC_delka,E->LO2,E->LO_pozice);
+				vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->LO1,E->OTOC_delka,E->LO2,E->LO_pozice,E);
 				E->citelna_oblast.rect3=aktOblast;//uložení citelné oblasti pro další použití
 				//vykreslení kót
 				if(F->pom_temp!=NULL && F->pom_temp->n==O->n && F->pom_temp->zobrazit_koty && E->eID!=MaxInt){vykresli_kotu(canv,v.vrat_predchozi_element(E),E);}//mezi elementy
@@ -3286,7 +3286,7 @@ void Cvykresli::vykresli_palec(TCanvas *canv,double X,double Y,bool NEW,bool ACT
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //celková vykreslovací metoda, vykreslí buď stopku, robota nebo otoč
-void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,unsigned int eID,short typ,double rotace,short stav,double LO1,double OTOC_delka,double LO2,double LO_pozice)
+void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,unsigned int eID,short typ,double rotace,short stav,double LO1,double OTOC_delka,double LO2,double LO_pozice,Cvektory::TElement *E)
 {
 	rotace=m.Rt90(rotace);
 	switch(eID)
@@ -3319,7 +3319,7 @@ void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,Ans
 		case 106:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0);break;//lidský robot  ionizace se stop stanicí
 		case 107:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,OTOC_delka,LO2);break;//lidský robot  ionizace s pasivní otočí
 		case 108:vykresli_cloveka(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0);break;//lidský robot  ionizace s aktivní otočí (resp. s otočí a stop stanicí)
-		case 200:vykresli_predavaci_misto(canv,X,Y,name,typ,rotace,stav);break;//vykreslení předávacího místa
+		case 200:vykresli_predavaci_misto(canv,E,X,Y,name,typ,rotace,stav);break;//vykreslení předávacího místa
 		case MaxInt:vykresli_zarazku(canv,X,Y);break;//vykreslení zarážky
 	}
 }
@@ -3995,7 +3995,7 @@ void Cvykresli::vykresli_zarazku(TCanvas *canv,long X,long Y)
 {
 	if(F->Akce==F->GEOMETRIE)
 	{
-		unsigned short W=Form1->Zoom*0.25;
+		unsigned short W=Form1->Zoom*0.5;//0.25;
 		canv->Pen->Style=psSolid;
 		canv->Brush->Style=bsSolid;
 		canv->Brush->Color=m.clIntensive(clBlack,180);
@@ -4011,7 +4011,7 @@ void Cvykresli::vykresli_zarazku(TCanvas *canv,long X,long Y)
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,long X,long Y,AnsiString name,short typ,double rotace,short stav)
+void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,long X,long Y,AnsiString name,short typ,double rotace,short stav)
 {
 	//typ: -1 = kurzor, 0 = ikona, 1 = klasické
 	//stav:
@@ -4070,17 +4070,26 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,long X,long Y,AnsiString 
 		canv->Brush->Color=clWhite;
 		canv->Brush->Style=bsClear;
 
-		if(typ==1)//normální zobrazení typ==1
+		if(typ==1 && E!=NULL)//normální zobrazení typ==1
 		{
 			if(/*stav==2 || */stav==3)canv->Font->Style = TFontStyles()<< fsBold;//došlo k vybrání elementu-tato část odstavena nebo přímo jeho textu
-
-			AnsiString Text="Pohon 1";//odstaveno
-			int w=canv->TextWidth(Text);
-			int h=canv->TextHeight(Text);
+      //nastavení názvů pohonů
+			AnsiString T1="pohon nevybrán",T2="pohon nevybrán";
+			if(E->pohon!=NULL)T1=E->pohon->name;
+			if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)T2=E->dalsi->pohon->name;
+			if(E->dalsi==NULL)
+			{
+				Cvektory::TObjekt *O=v.vrat_objekt(E->objekt_n);
+				if(O->dalsi!=NULL && O->dalsi->elementy->dalsi->pohon!=NULL)T2=O->dalsi->elementy->dalsi->pohon->name;
+				if(F->pom_temp!=NULL && O->dalsi->n==F->pom_temp->n && F->pom_temp->elementy->dalsi->pohon!=NULL)T2=F->pom_temp->elementy->dalsi->pohon->name;
+				O=NULL;delete O;
+			}
+			int w1=canv->TextWidth(T1),w2=canv->TextWidth(T2);
+			int h=canv->TextHeight(T1);
 			long x=0,y=0;short K=0.25*Z;//pouze grafická korekce, text aby se nezohledňovalo zarovnání na diakritiku, vypadá to dinvě
 			if(rotace==90 || rotace==270)x=y=m.m2px(0.1);else y=m.m2px(0.2);
-			canv->TextOutW(X-w-m.m2px(0.2)-x,Y+K+y,"Pohon 1");
-			canv->TextOutW(X+m.m2px(0.2)+x,Y-K-h-y,"Pohon 2");
+			canv->TextOutW(X-w1-m.m2px(0.2)-x,Y+K+y,T1);
+			canv->TextOutW(X+m.m2px(0.2)+x,Y-K-h-y,T2);
 		}
 		else//ikona v knihovně elementů je text pod elementem
 		{

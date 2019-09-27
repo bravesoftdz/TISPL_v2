@@ -3250,7 +3250,7 @@ void Cvektory::smaz_element(TElement *Element)
 		{
 			Element->predchozi->dalsi=Element->dalsi;
 			Element->dalsi->predchozi=Element->predchozi;
-			if(Element->dalsi->geo.typ==0)//upravovat pouze v případě, že se jedná o linii
+			if(Element->dalsi->geo.typ==0 && F->Akce!=F->GEOMETRIE)//upravovat pouze v případě, že se jedná o linii, a kokud needituju geometrii!!! (u geo. se upravuje geometrie ostatních elemntů zvlášť v Unit1)
 			{
 				if(Element->n!=1)vloz_G_element(Element->dalsi,0,Element->predchozi->geo.X4,Element->predchozi->geo.Y4,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->geo.orientace);
 				else vloz_G_element(Element->dalsi,0,Element->geo.X1,Element->geo.Y1,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->geo.orientace);
