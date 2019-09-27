@@ -5269,7 +5269,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 		 {
 			 ////překopírování dat do pomocného objektu uložitelného do bináru
 			 C_pohon *c_ukaz1=new C_pohon;
-
+      // ShowMessage("uloz pohon n"+AnsiString(ukaz1->n));
 			 //samotná data
 			 c_ukaz1->n=ukaz1->n;
 			 c_ukaz1->text_length=ukaz1->name.Length()+1;
@@ -5365,6 +5365,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 				 		C_element *cE=new C_element;
 				 		//plněný - kopírování dat jednotlivých atributů
 				 		cE->n=E->n;
+          //  ShowMessage("uloz element n"+AnsiString(E->n));
 				 		cE->eID=E->eID;
 				 		cE->name_delka=E->name.Length()+1;
 				 		cE->X=E->X;
@@ -5388,8 +5389,8 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 				 		cE->max_pocet_voziku=E->max_pocet_voziku;
             cE->objekt_n=E->objekt_n;
           //  ShowMessage("E->pohony->n");
-            cE->pohon_n=E->pohon->n;
-           // ShowMessage("po E->pohony->n");
+            if(E->pohon==NULL) cE->pohon_n=0;
+            else cE->pohon_n=E->pohon->n;
 						cE->geo=E->geo;
 						//uložení do binárního filu
 						FileStream->Write(cE,sizeof(C_element));//zapiše jeden prvek do souboru
@@ -5404,7 +5405,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 						wchar_t *name=new wchar_t [cE->name_delka];
 						name=E->name.c_str();
 						FileStream->Write(name,cE->name_delka*sizeof(wchar_t));//
-           // ShowMessage(AnsiString(name)+", uloz pohon n:"+AnsiString(E->pohon->n));
+         //   ShowMessage(AnsiString(name)+" uloz pohon n:"+AnsiString(cE->pohon_n));
 						name=NULL; delete[] name;
 
 						//posun na další segment cesty
@@ -5553,6 +5554,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 	{
 			try
 			{
+     // ShowMessage("nacitam data");
 			TFileStream *FileStream=new TFileStream(FileName,fmOpenRead);
 
 			//načte hlavičku ze souboru
@@ -5616,6 +5618,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 				FileStream->Read(c_ukaz,sizeof(C_objekt));//načte jeden prvek ze souboru
 				if(c_ukaz->n!=0 && File_hlavicka.pocet_objektu>=c_ukaz->n)//pokud nenačte hlavičku či nějaký shit
 				{
+      //    ShowMessage("n objektu: "+AnsiString(c_ukaz->n));
 					//samotná data
 					ukaz->n=c_ukaz->n;
 					ukaz->id=c_ukaz->id;
@@ -5659,7 +5662,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 						vloz_bod(B,ukaz);
 					 //delete B; B=NULL; nesmí být
 					}
-
+           // ShowMessage("pred nacitanim elem");
           //přiřazení elementů objektu
 					for(unsigned int j=1;j<=c_ukaz->pocet_elementu;j++)
 					{
@@ -5667,6 +5670,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 					  FileStream->Read(&cE,sizeof(C_element));//načte jeden prvek ze souboru
 						TElement *E=new TElement;
             E->n=cE.n;
+         //   ShowMessage("element n:"+AnsiString(cE.n));
             E->eID=cE.eID;
 						E->X=cE.X;
             E->Y=cE.Y;
@@ -5700,7 +5704,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 						wchar_t *name=new wchar_t[cE.name_delka];
 						FileStream->Read(name,cE.name_delka*sizeof(wchar_t));
 						E->name=name;
-           // ShowMessage(AnsiString(name)+", nacti pohon n:"+AnsiString(cE.pohon_n));
+      //      ShowMessage(AnsiString(name)+", nacti pohon n:"+AnsiString(cE.pohon_n));
 						delete[] name; name=NULL;
 
 						vloz_element(ukaz,E);
