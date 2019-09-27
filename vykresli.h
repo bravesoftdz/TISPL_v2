@@ -74,14 +74,14 @@ class Cvykresli
 //	void priprav_palce();//pøidá novı palec do seznamu PALCE s umístìním pøímo na linku dle stanovené rozteèe
 //	void umisti_palec(TCanvas *canv,Cvektory::TPalec *ukaz);//zajišuje aktuální umístìní vozíku na lince vùèi animaci
 	void vykresli_palec(TCanvas *canv,double X,double Y,bool NEW,bool ACTIVE);//zajišuje samotné vykreslení palce, parametr NEW rozlišuje novı palec a palace starı ji ke smazání (to slouí pro simulaci), poslední parametr znaèí, zda palec oznaèit jako aktivní
-	void vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,unsigned int eID=0,short typ=0,double rotace=0,short stav=1,double LO1=1.5,double OTOC_delka=0,double LO2=0,double LO_pozice=0);//celková vykreslovací metoda, vykreslí buï stopku, robota nebo otoè
+	void vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,unsigned int eID=0,short typ=0,double rotace=0,short stav=1,double LO1=1.5,double OTOC_delka=0,double LO2=0,double LO_pozice=0,Cvektory::TElement *E=NULL);//celková vykreslovací metoda, vykreslí buï stopku, robota nebo otoè
 	void vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID=1,short typ=0,double rotace=0,short stav=1,double LO1=1.5,double OTOC_delka=0,double LO2=0,double aP=0,float TS=0,double LO_pozice=0);
 	void vykresli_cloveka(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,double LO1,double OTOC_delka,double LO2);//vykresli siluetu èlovìk s pøípadnì pøidruenım elememntem, rotuje po smìru hodinovıch ruèièek, pro animaci slouí okolo hranièních stupòu 0,90,180,270, vdy rozsah -45° a +44°, napø. 45-134° je maximální pracovní rozsah pro èlovìka rotovaného na 90° atd.
 	void vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ=0, double rotace=0, short stav=1);
 	void vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID=5,short typ=0,double rotace=0,short stav=1);
 	void vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ,double rotace,short stav,float TS=0);
 	void vykresli_zarazku(TCanvas *canv,long X,long Y);
-	void vykresli_predavaci_misto(TCanvas *canv,long X,long Y,AnsiString name,short typ=0,double rotace=0,short stav=1);
+	void vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,long X,long Y,AnsiString name,short typ=0,double rotace=0,short stav=1);
 	void vykresli_lakovaci_okno(TCanvas *canv,long X,long Y,double LO1,double OTOC_delka,double LO2,double delka_ramena,double rotace=0,double LO_pozice=0);
 	void vykresli_ikonu_linie(TCanvas *canv,int X,int Y,AnsiString Popisek="linie",short stav=0);
 	void vykresli_ikonu_oblouku(TCanvas *canv,int X,int Y,AnsiString Popisek="oblouky",short stav=0);
