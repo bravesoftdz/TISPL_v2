@@ -2823,25 +2823,26 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,double X,double Y,double orientace
 	 }
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-//vykreslení jednoho komplexního vozíku (podvozek včetně jigu)
+//vykreslení jednoho komplexního vozíku (podvozek včetně jigu), X,Y jsou souřadnice uchycení vozíku k palci
 void Cvykresli::vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dJ,double sJ,double orientaceP,double rotaceJ,TColor clChassis, TColor clJig)
 {
 	//výchozí parametry
 	float sP=0.12;//šířka podvozku, pouze stanovane
 	double Xp=X-v.PP.uchyt_pozice;//posunutí umístění vozíku o nastavení uchycení pozice
+	short z=1;if(orientaceP==0 || orientaceP==180)z=-1;//převrácení orientace na rotaci
 
 	//transparentní pozadí (nejenom textu ale ji podvozku a jigu) ALTERNATIVA pro font:SetBkMode(canv->Handle,TRANSPARENT);
 	canv->Brush->Style=bsClear;
 
 	////podvozek
 	set_pen2(canv,clChassis,m.round(1/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true);
-	obdelnik(canv,Xp,Y+sP/2.0,Xp+v.PP.delka_podvozek,Y-sP/2.0,orientaceP-90,X,Y);
+	obdelnik(canv,Xp,Y+sP/2.0,Xp+v.PP.delka_podvozek,Y-sP/2.0,orientaceP-90*z,X,Y);
 
 	////jig
 	if(dJ!=0 && sJ!=0)//vykreslí, pouze pokud jsou oba parametry nenulové
 	{
 		set_pen2(canv,clJig,m.round(2/3.0*F->Zoom),PS_ENDCAP_ROUND,PS_JOIN_ROUND,true);
-		obdelnik(canv,(Xp+Xp+v.PP.delka_podvozek)/2.0-dJ/2.0,Y+sJ/2.0,(Xp+Xp+v.PP.delka_podvozek)/2.0+dJ/2.0,Y-sJ/2.0,orientaceP-90+rotaceJ,X,Y);
+		obdelnik(canv,(Xp+Xp+v.PP.delka_podvozek)/2.0-dJ/2.0,Y+sJ/2.0,(Xp+Xp+v.PP.delka_podvozek)/2.0+dJ/2.0,Y-sJ/2.0,orientaceP-90*z+rotaceJ,X,Y);
 	}
 
 //	////text - ID vozíku
