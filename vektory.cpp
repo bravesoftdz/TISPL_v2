@@ -739,6 +739,7 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 //zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze ukazatel na mGrid originálu zůstané propojený
 void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 {
+  F->log(__func__);//logování
 	Kopie->n=Original->n;
 	Kopie->id=Original->id;
 	Kopie->short_name=Original->short_name;
@@ -3339,6 +3340,7 @@ long Cvektory::vymaz_elementy(TObjekt *Objekt,bool mGridSmazat)
 ////vytvoří novou hlavičku pro pohonů
 void Cvektory::hlavicka_POHONY()
 {
+	//F->log(__func__);//logování  - NELZE
 	TPohon *novy=new TPohon;
 	novy->n=0;
 	novy->name="";
@@ -3357,6 +3359,7 @@ void Cvektory::hlavicka_POHONY()
 //vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
 void Cvektory::vloz_pohon(TPohon *pohon)
 {
+	F->log(__func__);//logování
 	TPohon *novy=new TPohon;
 
 	novy=pohon;//novy bude ukazovat tam kam prvek Objekt
@@ -3370,6 +3373,7 @@ void Cvektory::vloz_pohon(TPohon *pohon)
 //vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
 void Cvektory::vloz_pohon(UnicodeString name,double rychlost_od,double rychlost_do,double aRD,double R,double Rz,double Rx)
 {
+	F->log(__func__);//logování
 	TPohon *novy=new TPohon;
 	novy->name=name;
 	novy->rychlost_od=rychlost_od;
@@ -3384,6 +3388,7 @@ void Cvektory::vloz_pohon(UnicodeString name,double rychlost_od,double rychlost_
 //vrátí ukazatel na pohon dle n pohonu
 Cvektory::TPohon *Cvektory::vrat_pohon(unsigned long n)
 {
+	F->log(__func__);//logování
 	TPohon *p=POHONY->dalsi;//přeskočí hlavičku
 	while (p!=NULL)
 	{
@@ -3396,6 +3401,7 @@ Cvektory::TPohon *Cvektory::vrat_pohon(unsigned long n)
 //bez ukazatelového propojení zkopíruje atributu pohonu do pohonu požadovaného objektu, neobsahuje-li tento objekt alokovanou paměť pro pohon, naalokuje jí
 void Cvektory::kopiruj_pohon(TPohon *Pohon,TObjekt *Objekt)
 {
+	F->log(__func__);//logování
 	if(Pohon!=NULL)
 	{
 		if(Objekt->pohon==NULL)Objekt->pohon=new TPohon;
@@ -3412,6 +3418,7 @@ void Cvektory::kopiruj_pohon(TPohon *Pohon,TObjekt *Objekt)
 //dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv
 bool Cvektory::pohon_je_pouzivan(unsigned long n)
 {
+	F->log(__func__);//logování
 	TObjekt *O=OBJEKTY->dalsi;
 	bool nalezen=false;
 	while (O!=NULL)
@@ -3433,7 +3440,8 @@ bool Cvektory::pohon_je_pouzivan(unsigned long n)
 //dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv, ten vrátí formou ukazatale na první nalezený používáný, druhý vstupní parametr metody TObjekt mimo_objekt je ukazatel na objekt, který se bude při vyhledávání ignorovat, nenajde-li vrací NULL, třetí parametr, pokud je náchán na implicitní -1 řeší se pro všechny režimy, pokud je v rozmezí 0 až 2 řeší se pro konkrétní režim
 Cvektory::TObjekt *Cvektory::pohon_je_pouzivan(unsigned long n,TObjekt *mimo_objekt,short rezim)
 {
- 	TObjekt *O=OBJEKTY->dalsi;
+	F->log(__func__);//logování
+	TObjekt *O=OBJEKTY->dalsi;
 	while (O!=NULL)
 	{
 		if(O->pohon!=NULL && O!=mimo_objekt)//byl objekt s pohonem nalezen a nejedná se o vynechávaný objekt
