@@ -86,6 +86,17 @@ double Cmy::a360(double number)
 	return number;
 }
 /////////////////////////////////////////////////////////////////////////////
+//převede hodnotu rotace (proti směru hodinových ručiček a vpravo naležato jako výchozí pozice) na orientaci dle světových stran
+double Cmy::r2o(double number)
+{
+	return a360(360-number+90);
+}
+//převede hodnotu orientace dle světových stran na hodnotu rotace (proti směru hodinových ručiček a vpravo naležato jako výchozí pozice)
+double Cmy::o2r(double number)
+{
+	return r2o(number);
+}
+/////////////////////////////////////////////////////////////////////////////
 //ze zadaného radiusu vrátí obvod kruhové výseče o velikosti definované úhlem výseče ve stupních
 double Cmy::R2Larc(double radius,double angle)
 {
