@@ -1460,7 +1460,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 	Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
 	d.vykresli_halu(bmp_in->Canvas);
 	d.vykresli_vektory(bmp_in->Canvas);
-	if(Akce==GEOMETRIE)/*d.smart_kurzor(bmp_in->Canvas,50,-50,90,0,0); */ d.smart_kurzor(bmp_in->Canvas,posledni_editovany_element);
+	if(Akce==GEOMETRIE)d.smart_kurzor(bmp_in->Canvas,posledni_editovany_element);
 	Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 	Cantialising a;
 	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
@@ -2217,7 +2217,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 							}
 							nahled_ulozit(true);
 						} 
-						pan_create();//pro případ posunu obrazu bez akce PAN              
+						//pan_create();//pro případ posunu obrazu bez akce PAN
 						REFRESH(false); 
 					}
 					default: break;
@@ -2285,6 +2285,7 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 //			NP();//dřívější volání nastavparametry1click
 		}
 	}
+	else Akce=NIC;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
@@ -9700,12 +9701,12 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {              Memo3->Clear();
-	Cvektory::TElement *E=pom_temp->elementy->dalsi;
-	while(E!=NULL && E->n!=0)
-	{
-		Memo(E->name);
-		E=E->dalsi;
-	} E=NULL;delete E;
+//	Cvektory::TElement *E=pom_temp->elementy->dalsi;
+//	while(E!=NULL && E->n!=0)
+//	{
+//		Memo(E->name);
+//		E=E->dalsi;
+//	} E=NULL;delete E;
 //	Memo(vzdalenost_meziLO(E,pom_temp->orientace));
 //	TRect A=vrat_max_oblast();
  //	Canvas->Pen->Color=clRed;

@@ -3141,9 +3141,10 @@ void Cvektory::aktualizuj_sparovane_ukazatele()
 Cvektory::TElement *Cvektory::vrat_predchozi_element(TElement *Element)
 {
 	TElement *ret=NULL;
-	while(Element->predchozi->n>0 && Element->predchozi!=NULL)
+	unsigned long On=Element->objekt_n;
+	while(Element->predchozi->n>0 && Element->predchozi!=NULL && Element->objekt_n==On)
 	{
-		if(Element->predchozi->eID!=MaxInt){ret=Element->predchozi;break;}
+		if(Element->predchozi->eID!=MaxInt && Element->predchozi->eID!=200){ret=Element->predchozi;break;}
 		else Element=Element->predchozi;
 	}
 	return ret;
@@ -3256,7 +3257,7 @@ void Cvektory::smaz_element(TElement *Element)
 				else vloz_G_element(Element->dalsi,0,Element->geo.X1,Element->geo.Y1,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->geo.orientace);
 			}
 		}
-  	else//poslední prvek
+  	else//poslední prvek                                                                           ¨
 		{
   		if(Element->n==1)//pokud je mazaný prvek hned za hlavičkou
   		{
