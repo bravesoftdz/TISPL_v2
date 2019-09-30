@@ -63,7 +63,7 @@ class Cvykresli
 	void vykresli_layout(TCanvas *canv);//zajišuje vykreslení layout
 	unsigned int vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y,double Poffset=0,bool animace=false);////metoda pouívaná ve starém náhledu objektu, mono odstranit///zajistí vykreslení náhledu objektu, XY -umístìní L zaèátek (støed dopravníku) objektu v metrech, Poffset - pozièní poloha, vıchozí poloha prvního vozíku/pozice v objektu (a vùèi tomuto objektu),mùe slouit na animaci èi návaznost v pøípadì layoutu, za zmínìní stojí lokální promìnná této metody KR, co je kalibrace øetìzu vùèi podvozku napø. 0 - støed, -DP/2 - zaèátek, DP/2 - konec, èi libovolnı v m od zaèátku podvozku
 	unsigned int vykresli_pozice(TCanvas *canv, int i, TPointD OD, TPointD DO,double delka, double delkaV,double sirkaV,double delkaP,double mezera,double akt_pozice=0);//zajišuje vykreslení pozic v layoutu + pøíprava konstrukce kdy nebudu chtít vykreslovat objekt vodorovnì, pouze bude nutné zajistit ještì rotaci pozic a podvozkù
-	void vykresli_pozice(TCanvas *canv,double X,double Y,double orientaceP,double rotaceJ,unsigned int pocet_pozic,unsigned int pocet_voziku);//vykresli pozice na stop elementech
+	void vykresli_pozice(TCanvas *canv,Cvektory::TElement *E);//vykresli pozice na stop elementech
 	void vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y,double Poffset=0,bool animace=false);///zajistí vykreslení øetìzz, XY -umístìní L zaèátek (støed dopravníku) objektu v metrech, Poffset - pozièní poloha, vıchozí poloha prvního vozíku/pozice v objektu (a vùèi tomuto objektu),mùe slouit na animaci èi návaznost v pøípadì layoutu, za zmínìní stojí lokální promìnná této metody KR, co je kalibrace øetìzu vùèi podvozku napø. 0 - støed, -DP/2 - zaèátek, DP/2 - konec, èi libovolnı v m od zaèátku podvozku
 	void vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O);//slouèit s vıše uvedenou metodou
 	void vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dJ,double sJ,double orientaceP=0,double rotaceJ=0,TColor clChassis=(TColor) RGB(50,50,50), TColor clJig=clPurple);//vykreslení jednoho komplexního vozíku (podvozek vèetnì jigu), , X,Y jsou souøadnice uchycení vozíku k palci, co nemusí bıt støed vozíku
@@ -156,6 +156,7 @@ class Cvykresli
 	TRect aktOblast;//aktuální citelná oblast popisku elementu urèená k uloení
 	int orientace_objektu;
 	Cvektory::TGeometrie geoTemp;//pomocná struktura slouicí na uchování (k pozdìjšímu uloení do geometrickıch elementù) aktuálnì vracenıch hodnot ze smart kurzoru
+	short pasivni_elementy_intenzita;//intenzita pasivních elementù pøi editaci objektu
 
 	protected:
 

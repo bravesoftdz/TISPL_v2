@@ -224,7 +224,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 		{
 			if(E->n>0)
 			{
-				vykresli_pozice(canv,Rxy(E).x,Rxy(E).y,m.Rt90(E->geo.orientace-180),0,E->max_pocet_voziku,E->akt_pocet_voziku);
+				vykresli_pozice(canv,E);
 				vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->LO1,E->OTOC_delka,E->LO2,E->LO_pozice,E);
 				E->citelna_oblast.rect3=aktOblast;//uložení citelné oblasti pro další použití
 				//vykreslení kót
@@ -2781,10 +2781,18 @@ unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,int i,TPointD OD, TPointD 
 }
 ////-----------------------------------------------------------------------------------------------------------------------------------------------------
 //vykresli pozice na stop elementech
-void Cvykresli::vykresli_pozice(TCanvas *canv,double X,double Y,double orientaceP,double rotaceJ,unsigned int pocet_pozic,unsigned int pocet_voziku)
+void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 {
+	 double orientaceP=m.Rt90(E->geo.orientace-180);
+	 unsigned int pocet_pozic=E->max_pocet_voziku;
+
 	 if(pocet_pozic>0 && (orientaceP==0 || orientaceP==90  || orientaceP==180  || orientaceP==270))//druhá část pravděpodobně nadbytečné ošetření
 	 {
+		 double X=Rxy(E).x;
+		 double Y=Rxy(E).y;
+		 double rotaceJ=v.vrat_rotaci_jigu_po_predchazejicim_elementu(E);//metodu po přechodu na nový DM zaktulizovat o průchod přes spoják elementů
+     //F->Memo(rotaceJ);
+		 unsigned int pocet_voziku=E->akt_pocet_voziku;
 		 double dJ=v.PP.delka_jig;//později nahradit ze zakázky
 		 double sJ=v.PP.sirka_jig;//později nahradit ze zakázky
 		 //určení směru vykreslování pozic
@@ -4652,7 +4660,8 @@ void Cvykresli::smart_kurzor(TCanvas *canv,double preXk,double preYk,double preO
 	double a=m.azimut(preXk,preYk,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);//azimut mezi výchozím bodem a akt. pozicí myši
 	double o=m.a360(preOR-preRA); if(o==0 && a>180)o=360;//orientace, pokud je nula a myš je v levém kvadrantu, je nutné z 0° udělat 360°
 	if(POLE_RA[3]/3>fabs(o-a))RA=0;
-	if(RA==0)delka_linie=ceil(m.delka(preXk,preYk,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y)/3.0)*3;//u linie nabízí delší kresbu, po násobcích 3 metrů
+	//if(RA==0)delka_linie=ceil(m.delka(preXk,preYk,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y)/3.0)*3;//u linie nabízí delší kresbu, po násobcích 3 metrů
+	if(RA==0)delka_linie=m.round(m.delka(preXk,preYk,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y));//provizorně nastaveno na 1 metr
 
 	////samotné vykreslení kurzoru dle hodnoty RA z předchozího algoritmu (aktuální orientace je prozatím z d.Temp.z, kde vypočtena jako je orientace minus rotace předchozího gElementu)
 	vykresli_Gelement_kurzor(canv,preXk,preYk,preOR-preRA,RA,R,delka_linie,preRA,prepreRA);
@@ -4667,7 +4676,8 @@ void Cvykresli::vykresli_Gelement_kurzor(TCanvas *canv,double X,double Y,double 
 	TColor clAktual=m.clIntensive(clBlack,120);
 
 	//vykreslení potenciální linie         //minimum 3 metry, potenciál je délka aktuální linie + 3 m, aby bylo jasné, že je možné stále prodlužovat
-	vykresli_potencial_Gelement(canv,X,Y,orientace,0,delka_linie+3,clPotencial,false);
+	//vykresli_potencial_Gelement(canv,X,Y,orientace,0,delka_linie+3,clPotencial,false);
+	vykresli_potencial_Gelement(canv,X,Y,orientace,0,delka_linie+1,clPotencial,false);//provizorně nastaveno na 1 metr
 
 	//vykreslení potenciálních oblouků dle katalogu
 	short RA[]={90,45,30,15};//nahradit načítáním ze spojáku

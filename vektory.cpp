@@ -2912,8 +2912,8 @@ double Cvektory::vrat_rotaci_jigu_po_predchazejicim_elementu(TObjekt *Objekt,TEl
 	{
 		TElement *E=Element->dalsi;
 		while(E!=NULL)
-		{
-			if(Element->n==E->n && Objekt->n==O->n)//pozor nelze porovnávat jen ukazatele, může docházet k porování nepřímých kopii (viz pom_temp)
+		{                                        //z důvodu toho že zatím E->n není unikátní (není v jednom spojáku), bude se měnit s DM
+			if(Objekt!=NULL && Element->n==E->n && Objekt->n==O->n)//pozor nelze porovnávat jen ukazatele, může docházet k porování nepřímých kopii (viz pom_temp)
 			{
 				nalezeno=true;break;//akcelerátor, skončí cyklus
 			}
@@ -2934,6 +2934,12 @@ double Cvektory::vrat_rotaci_jigu_po_predchazejicim_elementu(TObjekt *Objekt,TEl
 	if(akt_rotoce_jigu<0){akt_rotoce_jigu+=360;}//pro záporné hodnoty
 
 	return akt_rotoce_jigu;
+}
+////---------------------------------------------------------------------------
+//zadávám aktuální element, je zjištěna rotace před tímto zadávaným elementem
+double Cvektory::vrat_rotaci_jigu_po_predchazejicim_elementu(TElement *Element)
+{
+	return vrat_rotaci_jigu_po_predchazejicim_elementu(vrat_objekt(Element->n),Element);
 }
 ////---------------------------------------------------------------------------
 //obsah všech comboboxu všech stopek nejdříve smaže a následně naplní combobox stopky ostatními elementy, které mohou být s danou stopkou spárované, nevypisuje danou stopku, vybere v combu stop-element spárovaný či předchozí, buď navržený nebo uživatelsky vybraný
