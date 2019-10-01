@@ -629,6 +629,7 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 	TElement *zarazka=vloz_element(novy,MaxInt,konec.x,konec.y,0);
 	zarazka->objekt_n=novy->n;
 	zarazka->pohon=NULL;//při vkládání objektu nemůže být přiřazen pohon
+	zarazka->orientace=m.Rt90(novy->orientace-90);
 	//definice bodů geometrie
 	vloz_G_element(zarazka,0,X,Y,0,0,0,0,konec.x,konec.y,novy->orientace);
 	zarazka=NULL;delete zarazka;
@@ -1879,11 +1880,12 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->akt_pocet_voziku=0;
 	novy->max_pocet_voziku=0;
 	if(eID%2==0 && eID!=200)novy->max_pocet_voziku=1;
+	if(eID==0)novy->max_pocet_voziku=2;
 	novy->stav=1;
 	novy->PD=-1;//defaultní stav pro S&G roboty
 	novy->objekt_n=0;//příslušnost elementu k objektu
-	novy->pohon=NULL;//pohon na kterém se nachází element
 	if(F->pom_temp!=NULL)novy->objekt_n=F->pom_temp->n;
+	novy->pohon=NULL;//pohon na kterém se nachází element
 	if(novy->predchozi->n!=0 && novy->predchozi->eID!=200)novy->pohon=novy->predchozi->pohon;
 	else if(novy->dalsi!=NULL)novy->pohon=novy->dalsi->pohon;
 
@@ -2288,7 +2290,10 @@ void Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->geo=Original->geo;
 	Kopie->mGrid=new TmGrid(F);//nová strategie, je mgrid, nekopírovat a používat jenom v pom_temp, zde však podmínka zda se jedná o pom_temp nebyla z nějakého důvodu možná
 	Kopie->objekt_n=Original->objekt_n;
-	Kopie->pohon=Original->pohon;
+	//if(F->pom_temp!=NULL && F->pom_temp->n==Original->objekt_n){Kopie->pohon=vrat_pohon(Original->pohon->n);F->Sv();}
+	/*else*/
+	if(Original->pohon!=NULL)Kopie->pohon=vrat_pohon(Original->pohon->n);
+	else Kopie->pohon=Original->pohon;
 	Kopie->sparovany=Original->sparovany;
 }
 ////---------------------------------------------------------------------------
@@ -2669,6 +2674,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				if(Element->orientace==0||Element->orientace==180)vzd.x=Element->X-Element->predchozi->X;
 				else	vzd.x=Element->Y-Element->predchozi->Y;
 			}
+			if(Element->dalsi!=NULL && Element->dalsi->geo.typ!=0 || Element->geo.typ!=0)posun_povolit=false;//pokud by element ovlivnil posunem geometrii
 			//////Realizace posunu + validace
 			if(vzd.x!=0 && !posun_kurzorem && posun_povolit)//posun z kót
 			{
@@ -2692,7 +2698,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				//pokud ne budou mu navráceny původní souřadnice
 				else {Element->X=puv_souradnice.x;Element->Y=puv_souradnice.y;posun_povolit=false;}
 			}
-			else if(vzd.x!=0 && posun_kurzorem)//posun kurozem
+			else if(vzd.x!=0 && posun_kurzorem && posun_povolit)//posun kurozem
 			{
 				//realizace posunu
 				if(Element->orientace==0||Element->orientace==180)Element->X=Element->X+vzdalenost;
@@ -3221,7 +3227,7 @@ void Cvektory::smaz_element(TElement *Element)
 				//získání pohonu
 				TPohon *p=NULL;
 				if(Element->dalsi!=NULL)p=Element->dalsi->pohon;
-				if(Element->dalsi==NULL && O->dalsi!=NULL)p=O->dalsi->elementy->dalsi->pohon;
+				if(Element->dalsi==NULL && O->dalsi!=NULL && O->dalsi->elementy->dalsi->pohon!=NULL)p=O->dalsi->elementy->dalsi->pohon;
 				predchozi_PM->dalsi;
 				//přiřazení pohonu
 				while(E!=NULL)
@@ -5737,7 +5743,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
             E->akt_pocet_voziku=cE.akt_pocet_voziku;
 						E->max_pocet_voziku=cE.max_pocet_voziku;
             E->objekt_n=cE.objekt_n;
-            E->pohon=vrat_pohon(cE.pohon_n);
+						E->pohon=vrat_pohon(cE.pohon_n);
 						E->geo=cE.geo;
 						//shortname
 						wchar_t *short_name=new wchar_t [5];
