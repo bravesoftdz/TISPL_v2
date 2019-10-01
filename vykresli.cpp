@@ -220,6 +220,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 		Cvektory::TElement *E=O->elementy;
 		if(F->pom_temp!=NULL && F->pom_temp->n==O->n){stav=1;E=F->pom_temp->elementy;}//elementy v aktivním objektu, zajistí přeskočení vykreslení neaktuálních dat elementů a vykreslí aktuálně data elementů neuloženého objektu
 		else stav=-1;//disabled elementy ostatních objektů
+		if(F->pom_temp==NULL)stav=1;
 		while(E!=NULL)//pokud elementy existují
 		{
 			if(E->n>0)
@@ -4107,7 +4108,7 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,lon
   }
 
   //vykreslení textu
-	if(typ!=-1 && name!="")//v módu kurzor nebo pokud je součástí nadřazeného elementu se název nezobrazuje
+	if(typ!=-1 && name!="" && F->pom_temp!=NULL)//v módu kurzor nebo pokud je součástí nadřazeného elementu se název nezobrazuje, nezobrazují se v layoutu
 	{
 		//nastavení písma  //pokud by tu nebylo ošetření zdisablovaného stavu, tak by se font již vypisoval bílou barvou....
 		if(typ==0 && stav!=-1)canv->Font->Color=m.clIntensive(barva,100);else canv->Font->Color=barva;//ikona vs. normální zobrazení
@@ -4121,7 +4122,7 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,lon
 		{
 			if(/*stav==2 || */stav==3)canv->Font->Style = TFontStyles()<< fsBold;//došlo k vybrání elementu-tato část odstavena nebo přímo jeho textu
       //nastavení názvů pohonů
-			AnsiString T1="pohon nevybrán",T2="pohon nevybrán";
+			AnsiString T1="pohon nevybrán",T2="pohon nevybrán",Tpom="";
 			if(E->pohon!=NULL)T1=E->pohon->name;
 			if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)T2=E->dalsi->pohon->name;
 			if(E->dalsi==NULL)
@@ -4131,12 +4132,34 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,lon
 				if(F->pom_temp!=NULL && O->dalsi->n==F->pom_temp->n && F->pom_temp->elementy->dalsi->pohon!=NULL)T2=F->pom_temp->elementy->dalsi->pohon->name;
 				O=NULL;delete O;
 			}
+      //v případě 270 musí být popisky prohozeny
+			if(v.vrat_objekt(E->objekt_n)->orientace==270){Tpom=T1;T1=T2;T2=Tpom;}
 			int w1=canv->TextWidth(T1),w2=canv->TextWidth(T2);
 			int h=canv->TextHeight(T1);
-			long x=0,y=0;short K=0.25*Z;//pouze grafická korekce, text aby se nezohledňovalo zarovnání na diakritiku, vypadá to dinvě
-			if(rotace==90 || rotace==270)x=y=m.m2px(0.1);else y=m.m2px(0.2);
-			canv->TextOutW(X-w1-m.m2px(0.2)-x,Y+K+y,T1);
-			canv->TextOutW(X+m.m2px(0.2)+x,Y-K-h-y,T2);
+			long x1=0,y1=0,x2=0,y2=0;short K=0.25*Z;//pouze grafická korekce, text aby se nezohledňovalo zarovnání na diakritiku, vypadá to dinvě
+			switch((int)rotace)
+			{
+				case 0:case 180:
+				{
+					x1=X-w1-m.m2px(0.2);y1=Y+K;
+					x2=X+m.m2px(0.2);y2=Y-K-h;
+				}break;
+				case 90:
+				{
+					x1=X-K;y1=Y-w1-m.m2px(0.2);
+					x2=X+K+h;y2=Y+m.m2px(0.2);
+					canv->Font->Orientation=2700;
+				}break;
+				case 270:
+				{
+					x1=X-K;y1=Y+w1+m.m2px(0.2);
+					x2=X-h-K;y2=Y-m.m2px(0.2);
+					canv->Font->Orientation=900;
+				}break;
+			}
+			canv->TextOutW(x1,y1,T1);
+			canv->TextOutW(x2,y2,T2);
+			canv->Font->Orientation=0;
 		}
 		else//ikona v knihovně elementů je text pod elementem
 		{
@@ -4803,11 +4826,11 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			Cvektory::TElement *E=F->pom_temp->elementy->dalsi;//přeskočí rovnou hlavičku
 			while(E!=NULL)
 			{
-				if(E->pohon==NULL && F->pom_temp->pohon==NULL || E->pohon!=NULL && F->pom_temp->pohon!=NULL && E->pohon->n==F->pom_temp->pohon->n)//vykreslení tabulek elementů, kteří mají stejný pohon jako aktuálně editovaný pohon
+				if((E->pohon==NULL && F->pom_temp->pohon==NULL || E->pohon!=NULL && F->pom_temp->pohon!=NULL && E->pohon->n==F->pom_temp->pohon->n) && F->Akce!=F->Takce::GEOMETRIE)//vykreslení tabulek elementů, kteří mají stejný pohon jako aktuálně editovaný pohon
 				{
-			  	if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
+					if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
 			  	{
-			  		if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud nemají být zobrazeny mgridy nemá být zobrazen ani rastr
+						if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud nemají být zobrazeny mgridy nemá být zobrazen ani rastr
 			  		{
 			  			E->mGrid->Redraw=false;
 			  			E->mGrid->SetVisibleComponents(false);
@@ -4818,14 +4841,14 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			  	}
 			  	else
 			  	{
-			  		if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
+						if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
 			  		{
 			  			E->mGrid->Redraw=true;
 			  			E->mGrid->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak E->mGrid->Buffer(false);
 			  			if(E->mGrid->VisibleComponents>-1)E->mGrid->VisibleComponents=true;//stačí volat toto, protože se pomocí Show (resp. Draw-SetCompontens-Set...) cyklem všechny komponenty na základě tohoto zobrazí pokud je nastaveno na -1 tak se při překreslování zohlední individuální nastavení komponent (z tohoto stavu je však pro další použítí třeba vrátit do stavu 0 nebo 1)
 			  			E->mGrid->Left=m.L2Px(E->Xt);
-			  			E->mGrid->Top=m.L2Py(E->Yt);
-			  			E->mGrid->Show(canv);
+							E->mGrid->Top=m.L2Py(E->Yt);
+							E->mGrid->Show(canv);
 						}
 						else//pokud ne, je třeba skrýt všechny komponenty (posun obrazu PAN MOVE či skryté mGridy)
 						{
@@ -4844,7 +4867,7 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			TRect oblast_kabiny=F->vrat_max_oblast(F->pom_temp);
 			if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
 			{
-				if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud nemají být zobrazeny mgridy nemá být zobrazen ani rastr
+				if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE && F->Akce!=F->Takce::GEOMETRIE)//pokud nemají být zobrazeny mgridy nemá být zobrazen ani rastr
 				{
 					F->PmG->Redraw=false;
 			  	F->PmG->Left=m.L2Px(F->pom_temp->Xp);
@@ -4852,10 +4875,14 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			  	F->PmG->SetVisibleComponents(false);
 					F->PmG->Show(canv);
 				}
+				else//pokud ne, je třeba skrýt komponenty
+				{
+					F->PmG->SetVisibleComponents(false);
+				}
 			}
 			else
 			{
-				if(F->pom_temp->zobrazit_mGrid &&  F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
+				if(F->pom_temp->zobrazit_mGrid &&  F->Akce!=F->Takce::PAN_MOVE && F->Akce!=F->Takce::GEOMETRIE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
 				{
 					F->PmG->Redraw=true;
 					F->PmG->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak F->PmG->Buffer(false);
@@ -4933,14 +4960,14 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 	//pouze pro rychlé zobrazení - provizorní řešení pro levopravou vodorovnou kabinu
 	if(povolit_vykresleni)
 	{
-  	double x1,y1,x2,y2;
+		double x1,y1,x2,y2;
 		if(Element_do->orientace==0||Element_do->orientace==180)//vodorovná kabina
 			{if(Element_od!=NULL && Element_od->n==0 || Element_od==NULL){x1=F->pom_temp->elementy->dalsi->geo.X1;y1=F->pom_temp->elementy->dalsi->geo.Y1;}else {x1=Element_od->X;y1=Element_od->geo.Y4;}x2=Element_do->X;y2=y1;}
 		else
 			{if(Element_od!=NULL && Element_od->n==0 || Element_od==NULL){x1=F->pom_temp->elementy->dalsi->geo.X1;y1=F->pom_temp->elementy->dalsi->geo.Y1;}else {x1=Element_od->geo.X4;y1=Element_od->Y;}y2=Element_do->Y;x2=x1;}
-  	if(x2<F->pom_temp->elementy->dalsi->geo.X1)O=(O-0.66)*(-1);//ošetření chybného zobrazení kóty elementu, který je před kabinou
-  	vykresli_kotu(canv,x1,y1,x2,y2,Element_do,O,highlight);
-  	if(Element_od!=NULL && Element_od->n!=0 && Element_do->n>1)//pokud jsou minimálně 2 elementy vložené
+		if(x2<F->pom_temp->elementy->dalsi->geo.X1)O=(O-0.66)*(-1);//ošetření chybného zobrazení kóty elementu, který je před kabinou
+		vykresli_kotu(canv,x1,y1,x2,y2,Element_do,O,highlight);
+		if(Element_od!=NULL && Element_od->n!=0 && Element_do->n>1)//pokud jsou minimálně 2 elementy vložené
   	{
   		//dojde k otestování zda mají tyto 2 elementy nebo alespoň jeden lakovací okna
   		bool test1=false,test2=false;

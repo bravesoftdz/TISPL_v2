@@ -319,6 +319,9 @@ __published:	// IDE-managed Components
 	TscButton *scButton_zamek_layoutu;
 	TscGPImageCollection *scGPImageCollection_Objekty;
 	TImage *Image_knihovna_objektu;
+  TscLabel *scLabel1_intenzita;
+  TscGPTrackBar *scGPTrackBar_intenzita;
+  TscGPButton *scGPButton_zmerit_vzdalenost;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -524,6 +527,7 @@ __published:	// IDE-managed Components
 	void __fastcall NahledClick(TObject *Sender);
 	void __fastcall scGPImage_zamek_posunuClick(TObject *Sender);
 	void __fastcall scButton_zamek_layoutuClick(TObject *Sender);
+  void __fastcall scGPTrackBar_intenzitaChange(TObject *Sender);
 
 
 // User declarations
@@ -629,6 +633,8 @@ private:
 	void zmena_editovaneho_objektu();//slouží k pøechodu z editace jednoho objektu do editace druhého objektu
 	TPoint uprav_bod_vlozeni_elementu(TPoint bod_vlozeni,short rotace_symbolu,int eID=-1);//upraví bod kurzoru pro vložení elemntu na bod vykreslení elementu (robot na konci ramena)
   void set_enabled_mGrid(Cvektory::TElement *E);//zapne nebo vypne komponenty megridu v závislosti na tom zda má element pøiøazený pohon
+  void vlozeni_editace_geometrie();//vkládá novou geometrii nebo edituje již stávající geometrii
+	void ukonceni_geometrie();//ukonèení akce geometrie a pøípadné uzavøení kruhu
 
 	////promìnné
 	TDateTime TIME;
@@ -682,7 +688,7 @@ public:		// User declarations
 	Graphics::TBitmap *Pan_bmp;//kvùli mGridu jinak staèí private
 	//uklazatele
 	Cvektory::TObjekt *pom,*pom_vyhybka,*pom_temp,*copyObjekt,*posledni_editovany_objekt;
-	Cvektory::TElement *pom_element,*pom_element_temp,*posledni_editovany_element;
+	Cvektory::TElement *pom_element,*pom_element_temp,*posledni_editovany_element,*element_temp;//element_temp je nulován pøi každém pøejetí kurzoru používán na vìci kolem PM
 	TmGrid *PmG,*mGrid_knihovna;//ukazatel na mGridovou tabulku pohonu
 	Cvektory::TKomora *pom_komora,*pom_komora_temp;
 	Cvektory::TBod *pom_bod,*pom_bod_temp;

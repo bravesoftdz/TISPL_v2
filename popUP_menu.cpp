@@ -253,7 +253,7 @@ void __fastcall TPopUPmenu::scLabel_kopirovatClick(TObject *Sender)
 {
 	closing=true;
 	Close();
-	Form1->kopirovat_objekt();
+	//Form1->kopirovat_objekt();
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
