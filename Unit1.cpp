@@ -1543,22 +1543,32 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 			if(Akce==DRAW_HALA&&d.v.HALA.body->predchozi->n!=0){d.v.smaz_bod(d.v.HALA.body->predchozi);REFRESH();}
 			else if(Akce==DRAW_HALA){Akce=NIC;kurzor(standard);}
 			////Geometrie
-      if(Akce==GEOMETRIE && posledni_editovany_element!=NULL && posledni_editovany_element->n!=1)
+			if(Akce==GEOMETRIE && posledni_editovany_element!=NULL && posledni_editovany_element->eID==MaxInt)
 			{
-				double posunx=posledni_editovany_element->geo.X1-posledni_editovany_element->geo.X4,posuny=posledni_editovany_element->geo.Y1-posledni_editovany_element->geo.Y4;
-				Cvektory::TElement *E=posledni_editovany_element->predchozi;
-				d.v.smaz_element(posledni_editovany_element);
-				posledni_editovany_element=E;
-				E=posledni_editovany_element->dalsi;
-				while(E!=NULL)
+				if(posledni_editovany_element->n!=1)
 				{
-					E->X+=posunx;E->Y+=posuny;//souřadnice elementu
-					//geometrie elementu
-					E->geo.X1+=posunx;E->geo.X2+=posunx;E->geo.X3+=posunx;E->geo.X4+=posunx;
-					E->geo.Y1+=posuny;E->geo.Y2+=posuny;E->geo.Y3+=posuny;E->geo.Y4+=posuny;
-					E=E->dalsi;
+					double posunx=posledni_editovany_element->geo.X1-posledni_editovany_element->geo.X4,posuny=posledni_editovany_element->geo.Y1-posledni_editovany_element->geo.Y4;
+					Cvektory::TElement *E=posledni_editovany_element->predchozi;
+					d.v.smaz_element(posledni_editovany_element);
+					posledni_editovany_element=E;
+					E=posledni_editovany_element->dalsi;
+					while(E!=NULL)
+					{
+						E->X+=posunx;E->Y+=posuny;//souřadnice elementu
+						//geometrie elementu
+						E->geo.X1+=posunx;E->geo.X2+=posunx;E->geo.X3+=posunx;E->geo.X4+=posunx;
+						E->geo.Y1+=posuny;E->geo.Y2+=posuny;E->geo.Y3+=posuny;E->geo.Y4+=posuny;
+						E=E->dalsi;
+					}
+					delete E;E=NULL;
 				}
-				delete E;E=NULL;
+				//smazání posledního úseku
+				if(posledni_editovany_element->n==1 && posledni_editovany_element->geo.delka!=0)
+				{
+					posledni_editovany_element->X=posledni_editovany_element->geo.X1;
+					posledni_editovany_element->Y=posledni_editovany_element->geo.Y1;
+					d.v.vloz_G_element(posledni_editovany_element,0,posledni_editovany_element->geo.X1,posledni_editovany_element->geo.Y1,posledni_editovany_element->geo.X1,posledni_editovany_element->geo.Y1,posledni_editovany_element->geo.X1,posledni_editovany_element->geo.Y1,posledni_editovany_element->geo.X1,posledni_editovany_element->geo.Y1,pom_temp->orientace);
+				}
 				REFRESH(false);
 			}
 //			if(Akce==GEOMETRIE && posledni_editovany_element!=NULL && posledni_editovany_element->predchozi!=NULL && posledni_editovany_element->predchozi->n>=1/*pom_temp->elementy->predchozi->n>=2*/)//odmazání poslední zarážky při tvorbě geometrie
@@ -1604,22 +1614,32 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//DELETE
 		case 46:
 			////Geometrie stejná funkce jako backspace
-			if(Akce==GEOMETRIE && posledni_editovany_element!=NULL && posledni_editovany_element->n!=1)
+			if(Akce==GEOMETRIE && posledni_editovany_element!=NULL && posledni_editovany_element->eID==MaxInt)
 			{
-				double posunx=posledni_editovany_element->geo.X1-posledni_editovany_element->geo.X4,posuny=posledni_editovany_element->geo.Y1-posledni_editovany_element->geo.Y4;
-				Cvektory::TElement *E=posledni_editovany_element->predchozi;
-				d.v.smaz_element(posledni_editovany_element);
-				posledni_editovany_element=E;
-				E=posledni_editovany_element->dalsi;
-				while(E!=NULL)
+				if(posledni_editovany_element->n!=1)
 				{
-					E->X+=posunx;E->Y+=posuny;//souřadnice elementu
-					//geometrie elementu
-					E->geo.X1+=posunx;E->geo.X2+=posunx;E->geo.X3+=posunx;E->geo.X4+=posunx;
-					E->geo.Y1+=posuny;E->geo.Y2+=posuny;E->geo.Y3+=posuny;E->geo.Y4+=posuny;
-					E=E->dalsi;
+					double posunx=posledni_editovany_element->geo.X1-posledni_editovany_element->geo.X4,posuny=posledni_editovany_element->geo.Y1-posledni_editovany_element->geo.Y4;
+					Cvektory::TElement *E=posledni_editovany_element->predchozi;
+					d.v.smaz_element(posledni_editovany_element);
+					posledni_editovany_element=E;
+					E=posledni_editovany_element->dalsi;
+					while(E!=NULL)
+					{
+						E->X+=posunx;E->Y+=posuny;//souřadnice elementu
+						//geometrie elementu
+						E->geo.X1+=posunx;E->geo.X2+=posunx;E->geo.X3+=posunx;E->geo.X4+=posunx;
+						E->geo.Y1+=posuny;E->geo.Y2+=posuny;E->geo.Y3+=posuny;E->geo.Y4+=posuny;
+						E=E->dalsi;
+					}
+					delete E;E=NULL;
 				}
-				delete E;E=NULL;
+				//smazání posledního úseku
+				if(posledni_editovany_element->n==1 && posledni_editovany_element->geo.delka!=0)
+				{
+					posledni_editovany_element->X=posledni_editovany_element->geo.X1;
+					posledni_editovany_element->Y=posledni_editovany_element->geo.Y1;
+					d.v.vloz_G_element(posledni_editovany_element,0,posledni_editovany_element->geo.X1,posledni_editovany_element->geo.Y1,posledni_editovany_element->geo.X1,posledni_editovany_element->geo.Y1,posledni_editovany_element->geo.X1,posledni_editovany_element->geo.Y1,posledni_editovany_element->geo.X1,posledni_editovany_element->geo.Y1,pom_temp->orientace);
+				}
 				REFRESH(false);
 			}
 		break;
@@ -2201,9 +2221,22 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 							//////přidávání za poslední geometrii
 							else if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi==NULL)
 							{
-								posledni_editovany_element=d.v.vloz_element(pom_temp,MaxInt,d.geoTemp.X4,d.geoTemp.Y4,orientace);
-								posledni_editovany_element->geo=d.geoTemp;
-								design_element(posledni_editovany_element,true);//nutné!!!!!!!!
+								if(posledni_editovany_element->geo.delka!=0)//normální provoz
+								{
+							  	Cvektory::TElement *E=d.v.vloz_element(pom_temp,MaxInt,posledni_editovany_element->geo.X4,posledni_editovany_element->geo.Y4,orientace,posledni_editovany_element);
+							  	E->geo=posledni_editovany_element->geo;
+							  	design_element(E,true);//nutné!!!!!!!!
+							  	posledni_editovany_element->geo=d.geoTemp;
+							  	posledni_editovany_element->X+=posledni_editovany_element->geo.X4-posledni_editovany_element->geo.X1;
+							  	posledni_editovany_element->Y+=posledni_editovany_element->geo.Y4-posledni_editovany_element->geo.Y1;
+									E=NULL;delete E;
+								}
+								else//pokud je veškerá geometrie odstraněna z kabiny
+								{
+									posledni_editovany_element->geo=d.geoTemp;
+									posledni_editovany_element->X=posledni_editovany_element->geo.X4;
+									posledni_editovany_element->Y=posledni_editovany_element->geo.Y4;
+                }
 							}
 							nahled_ulozit(true);
 						} 
@@ -4323,12 +4356,17 @@ void TForm1::ukonceni_geometrie()
 double TForm1::max_voziku(Cvektory::TElement *stopka)
 {
 	log(__func__);//logování
-	double delka=0;
-	Cvektory::TElement *E=stopka;
+	double delka=stopka->geo.delka;
+	Cvektory::TElement *E=stopka->predchozi;
 	while(E!=NULL && E->n!=0)
 	{
-		if(E->predchozi->n!=0 && E->predchozi->OTOC_delka>0)delka-=0.5;//odsazení před otočí
-		if(E->geo.typ==0 && (E->eID==MaxInt || E->n==stopka->n))delka+=E->geo.delka;
+		if(E->OTOC_delka>0)
+		{
+			delka-=E->OTOC_delka/2.0;//odsazení před otočí
+			double rotace_jigu=d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(E);
+			if(rotace_jigu==0 || rotace_jigu==180)delka-=d.v.PP.delka_jig/2.0;else delka-=d.v.PP.sirka_jig/2.0;
+		}
+		if(E->geo.typ==0 && E->eID==MaxInt)delka+=E->geo.delka;
 		else break;
 		E=E->predchozi;
 	}
@@ -9736,11 +9774,11 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //---------------------------------------------------------------------------
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
-{                 Memo3->Clear();
+{                 //Memo3->Clear();
 	Cvektory::TElement *E=pom_temp->elementy->dalsi;
 	while(E!=NULL && E->n!=0)
 	{
-		Memo(E->name); Memo(E->orientace);
+		Memo(E->name); Memo(E->n);
 		//if(E->pohon!=NULL)Memo(E->pohon->name);
 		E=E->dalsi;
 	} E=NULL;delete E;

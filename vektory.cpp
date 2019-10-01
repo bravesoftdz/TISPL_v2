@@ -1880,7 +1880,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->akt_pocet_voziku=0;
 	novy->max_pocet_voziku=0;
 	if(eID%2==0 && eID!=200)novy->max_pocet_voziku=1;
-	if(eID==0)novy->max_pocet_voziku=2;
+	if(eID==0){novy->max_pocet_voziku=2;novy->akt_pocet_voziku=1;}
 	novy->stav=1;
 	novy->PD=-1;//defaultní stav pro S&G roboty
 	novy->objekt_n=0;//příslušnost elementu k objektu
@@ -1985,13 +1985,14 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 	//////Zarazení do seznamu do předm určeného pořadí (používá se při editaci geometrie)
 	else
 	{
-		if(force_razeni->n==F->pom_temp->elementy->predchozi->n){Element->dalsi=NULL;F->pom_temp->elementy->predchozi=Element;force_razeni->dalsi=Element;Element->predchozi=force_razeni;}
-		else
-		{
+//		if(force_razeni->n==F->pom_temp->elementy->predchozi->n)
+//		{Element->dalsi=NULL;F->pom_temp->elementy->predchozi=Element;force_razeni->dalsi=Element;Element->predchozi=force_razeni;}
+//		else
+//		{
 			if(force_razeni->n==1){Objekt->elementy->dalsi=Element;Element->predchozi=Objekt->elementy;}else {force_razeni->predchozi->dalsi=Element;Element->predchozi=force_razeni->predchozi;}
 			Element->dalsi=force_razeni;
 			force_razeni->predchozi=Element;
-		}
+//		}
 		//změna indexů
 		int n=1;
 		Cvektory::TElement *E=Objekt->elementy->dalsi;
