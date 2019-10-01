@@ -150,6 +150,11 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	T=readINI("nastaveni_nahled","Rz"); //rozestup
 	if(T==0)Rzunit=M;else if(T==1) Rzunit=MM; else Rzunit=M;
 
+  T=readINI("nastaveni_editace","intenzita_vektory"); //intenzita vektoru needitovanych objektu
+ 	if(T==0)d.pasivni_vektory_intenzita=50;else d.pasivni_vektory_intenzita=F->ms.MyToDouble(T);
+  //ShowMessage(d.pasivni_vektory_intenzita);
+  scGPTrackBar_intenzita->Value = d.pasivni_vektory_intenzita;
+
 	//povolení Automatická záloha
 	Timer_backup->Enabled=true;
 
@@ -9752,7 +9757,7 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
  //log(__func__);
  //Form2->ShowModal();
 
- d.vykresli_pozice(Canvas,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,90,0,10,8);
+ //d.vykresli_pozice(Canvas,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,90,0,10,8);
 
 }
 //---------------------------------------------------------------------------
@@ -11668,6 +11673,17 @@ void __fastcall TForm1::scButton_zamek_layoutuClick(TObject *Sender)
 		scButton_zamek_layoutu->ImageIndex=68;
 		scButton_zamek_layoutu->Hint="Zamknout layout";
 	}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::scGPTrackBar_intenzitaChange(TObject *Sender)
+{
+log(__func__);//logování
+d.pasivni_vektory_intenzita=scGPTrackBar_intenzita->Value;
+REFRESH();
+//ShowMessage(pasivni_vektory_intenzita);
+Form1->writeINI("nastaveni_editace", "intenzita_vektory",d.pasivni_vektory_intenzita);
+DuvodUlozit(true);
 }
 //---------------------------------------------------------------------------
 
