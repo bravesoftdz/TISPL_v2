@@ -63,10 +63,11 @@ class Cvykresli
 	void vykresli_layout(TCanvas *canv);//zajišuje vykreslení layout
 	unsigned int vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y,double Poffset=0,bool animace=false);////metoda používaná ve starém náhledu objektu, možno odstranit///zajistí vykreslení náhledu objektu, XY -umístìní L zaèátek (støed dopravníku) objektu v metrech, Poffset - pozièní poloha, výchozí poloha prvního vozíku/pozice v objektu (a vùèi tomuto objektu),mùže sloužit na animaci èi návaznost v pøípadì layoutu, za zmínìní stojí lokální promìnná této metody KR, což je kalibrace øetìzu vùèi podvozku napø. 0 - støed, -DP/2 - zaèátek, DP/2 - konec, èi libovolný v m od zaèátku podvozku
 	unsigned int vykresli_pozice(TCanvas *canv, int i, TPointD OD, TPointD DO,double delka, double delkaV,double sirkaV,double delkaP,double mezera,double akt_pozice=0);//zajišuje vykreslení pozic v layoutu + pøíprava konstrukce když nebudu chtít vykreslovat objekt vodorovnì, pouze bude nutné zajistit ještì rotaci pozic a podvozkù
-	void vykresli_pozice(TCanvas *canv,Cvektory::TElement *E);//vykresli pozice na stop elementech
+	void vykresli_pozice(TCanvas *canv,Cvektory::TElement *E);//vykresli pozici na elementech
 	void vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y,double Poffset=0,bool animace=false);///zajistí vykreslení øetìzz, XY -umístìní L zaèátek (støed dopravníku) objektu v metrech, Poffset - pozièní poloha, výchozí poloha prvního vozíku/pozice v objektu (a vùèi tomuto objektu),mùže sloužit na animaci èi návaznost v pøípadì layoutu, za zmínìní stojí lokální promìnná této metody KR, což je kalibrace øetìzu vùèi podvozku napø. 0 - støed, -DP/2 - zaèátek, DP/2 - konec, èi libovolný v m od zaèátku podvozku
 	void vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O);//slouèit s výše uvedenou metodou
 	void vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dJ,double sJ,double orientaceP=0,double rotaceJ=0,TColor clChassis=(TColor) RGB(50,50,50), TColor clJig=clPurple);//vykreslení jednoho komplexního vozíku (podvozek vèetnì jigu), , X,Y jsou souøadnice uchycení vozíku k palci, což nemusí být støed vozíku
+	void vykresli_jig(TCanvas *canv,double X,double Y,double dJ,double sJ,double orientaceP,double rotaceJ,TColor clJig=clPurple,float Width=2);
 //	void vykresli_simulaci(TCanvas *canv);//zajišuje vykreslení simulace
 //	void vykresli_linku(TCanvas *canv);//zajišuje vykreslení osy linky
 //	void umisti_vozik(TCanvas *canv,Cvektory::TVozik *ukaz);//zajišuje umístìní vozíku na lince
@@ -109,7 +110,7 @@ class Cvykresli
 	void vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,AnsiString Text,Cvektory::TElement *aktElement=NULL,int Offset=0,short highlight=0,float width=0.2,TColor color=clGray,bool LO_kota=false,Cvektory::TKomora *komora=NULL,Cvektory::TBod *bod=NULL);//v px + dosazuje aktuálnì nastavené jednotky, highlight: 0-ne,1-ano,2-ano+vystoupení kóty i poziènì, aktElement pokud bude NULL, pøedpokládá se, že je to kóta kabiny, pøidán parametr ukladat_do_elementu a to z dùvodu kóty mezi lak. okny, nesmí být ukládána do elementu ani do objektu
 	void rotace_textu(TCanvas *canv, long rotace);//úhel rotace je desetinách stupnì
 	void set_pen(TCanvas *canv, TColor color, int width, int style=PS_ENDCAP_SQUARE);//vrátí HANDLE na nastavení pera,//popø.PS_ENDCAP_FLAT PS_ENDCAP_ROUND, PS_ENDCAP_SQUARE viz Matoušek III str. 179 èi http://www.zive.cz/clanky/geometricka-pera/sc-3-a-103079
-	void set_pen2(TCanvas *canv, TColor color, int width, int ENDCAP=PS_ENDCAP_SQUARE,int JOIN=PS_JOIN_MITER,bool INSIDEFRAME=true);//vrátí HANDLE na nastavení pera,//popø.PS_ENDCAP_FLAT PS_ENDCAP_ROUND, PS_ENDCAP_SQUARE a PS_JOIN_ROUND, PS_JOIN_MITER (lze nastavit pøes SetMiterlimit) PS_JOIN_BEVEL, viz Matoušek III str. 179 èi http://www.zive.cz/clanky/geometricka-pera/sc-3-a-103079
+	void set_pen2(TCanvas *canv, TColor color, int width, int ENDCAP=PS_ENDCAP_SQUARE,int JOIN=PS_JOIN_MITER,bool INSIDEFRAME=true,DWORD *UserLineArray=NULL,unsigned short LenghtArray=0);//vrátí HANDLE na nastavení pera,//popø.PS_ENDCAP_FLAT PS_ENDCAP_ROUND, PS_ENDCAP_SQUARE a PS_JOIN_ROUND, PS_JOIN_MITER (lze nastavit pøes SetMiterlimit) PS_JOIN_BEVEL, viz Matoušek III str. 179 èi http://www.zive.cz/clanky/geometricka-pera/sc-3-a-103079, dodáním pøedposledního parametru UserLineArray napø. DWORD pole[]={m.round(3/3.0*F->Zoom),m.round(0.5/3.0*F->Zoom),m.round(0.2/3.0*F->Zoom),m.round(0.5/3.0*F->Zoom)} apod.  lze nadefinovat vlastní typ linie, poslední parametr je poèet prvkù onoho pole
 	TColor set_color(TCanvas *canv, Cvektory::TObjekt *O);
 	void drawRectText(TCanvas *canv,TRect Rect, UnicodeString Text);
 	void TextFraming(TCanvas *canv,int X,int Y,UnicodeString Text,TFont *Font=NULL,TColor clFraming=clWhite,unsigned short FramingSize=4);//zajistí vykreslení daného textu dle nastaveného Fontu (pokud je NULL, pøevezme se akutální font canvasu) vèetnì framingu, který je baravnì a velikostnì nastavitelný
@@ -156,7 +157,7 @@ class Cvykresli
 	TRect aktOblast;//aktuální citelná oblast popisku elementu urèená k uložení
 	int orientace_objektu;
 	Cvektory::TGeometrie geoTemp;//pomocná struktura sloužicí na uchování (k pozdìjšímu uložení do geometrických elementù) aktuálnì vracených hodnot ze smart kurzoru
-	short pasivni_elementy_intenzita;//intenzita pasivních elementù pøi editaci objektu
+	short pasivni_vektory_intenzita;//intenzita pasivních vektorù pøi editaci objektu
 
 	protected:
 
