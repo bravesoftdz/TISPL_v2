@@ -319,6 +319,8 @@ __published:	// IDE-managed Components
 	TscButton *scButton_zamek_layoutu;
 	TscGPImageCollection *scGPImageCollection_Objekty;
 	TImage *Image_knihovna_objektu;
+  TscLabel *scLabel1_intenzita;
+  TscGPTrackBar *scGPTrackBar_intenzita;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -524,6 +526,7 @@ __published:	// IDE-managed Components
 	void __fastcall NahledClick(TObject *Sender);
 	void __fastcall scGPImage_zamek_posunuClick(TObject *Sender);
 	void __fastcall scButton_zamek_layoutuClick(TObject *Sender);
+  void __fastcall scGPTrackBar_intenzitaChange(TObject *Sender);
 
 
 // User declarations

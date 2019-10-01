@@ -3967,6 +3967,7 @@ object Form1: TForm1
     Height = 25
     Caption = 'ButtonROSTAtesty'
     TabOrder = 29
+    Visible = False
     OnClick = Button11Click
     OnKeyDown = FormKeyDown
   end
@@ -4339,6 +4340,7 @@ object Form1: TForm1
     Height = 25
     Caption = 'ButtonMaVLtesty'
     TabOrder = 36
+    Visible = False
     OnClick = Button13Click
     OnKeyDown = FormKeyDown
   end
@@ -4464,9 +4466,9 @@ object Form1: TForm1
     end
     object scExPanel_vrstvy: TscExPanel
       Left = 1
-      Top = 569
+      Top = 561
       Width = 249
-      Height = 64
+      Height = 28
       Margins.Left = 5
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -5290,7 +5292,7 @@ object Form1: TForm1
       Left = 1
       Top = 347
       Width = 249
-      Height = 222
+      Height = 214
       Margins.Left = 5
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -5647,6 +5649,72 @@ object Form1: TForm1
         AutoSize = True
         UseFontColorToStyleColor = False
         Caption = 'M'#283#345#237'tko'
+      end
+      object scLabel1_intenzita: TscLabel
+        AlignWithMargins = True
+        Left = 3
+        Top = 170
+        Width = 164
+        Height = 19
+        Margins.Top = 0
+        Margins.Right = 0
+        Margins.Bottom = 0
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -16
+        Font.Name = 'Roboto'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 6
+        DragForm = False
+        DragTopForm = True
+        GlowEffect.Enabled = False
+        GlowEffect.Color = clBtnShadow
+        GlowEffect.AlphaValue = 255
+        GlowEffect.GlowSize = 7
+        GlowEffect.Offset = 0
+        GlowEffect.Intensive = True
+        GlowEffect.StyleColors = True
+        AutoSize = True
+        UseFontColorToStyleColor = False
+        Caption = 'Intenzita pasiv. objekt'#367
+      end
+      object scGPTrackBar_intenzita: TscGPTrackBar
+        AlignWithMargins = True
+        Left = 170
+        Top = 170
+        Width = 73
+        Height = 20
+        Hint = 'Nastaven'#237' intenzity needitovan'#253'ch objekt'#367
+        Margins.Top = 0
+        Margins.Right = 0
+        Margins.Bottom = 0
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 7
+        TransparentBackground = True
+        ShowFocusRect = True
+        JumpWhenClick = False
+        CanFocused = True
+        MouseSupport = True
+        MinValue = 1
+        MaxValue = 100
+        Value = 50
+        Vertical = False
+        ReadOnly = False
+        OnChange = scGPTrackBar_intenzitaChange
+        TrackColor = clBtnShadow
+        TrackProgressColor = clHighlight
+        TrackSize = 2
+        TrackAlpha = 255
+        TrackProgressAlpha = 255
+        ThumbColor = clHighlight
+        ThumbHotColor = clHighlight
+        ThumbPressedColor = clHighlight
+        ThumbDisabledColor = clBtnShadow
+        ThumbShapeStyle = scgptssRoundRect
+        ThumbCursor = crDefault
+        ThumbUseCursor = False
       end
     end
   end
@@ -9142,7 +9210,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118009807540810001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118009807700810001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10265,7 +10333,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C010145000009040A30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010145000009200A30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000006003000001002000000000000020
       0A00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

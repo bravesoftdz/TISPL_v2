@@ -156,7 +156,7 @@ class Cvykresli
 	TRect aktOblast;//aktuální citelná oblast popisku elementu urèená k uložení
 	int orientace_objektu;
 	Cvektory::TGeometrie geoTemp;//pomocná struktura sloužicí na uchování (k pozdìjšímu uložení do geometrických elementù) aktuálnì vracených hodnot ze smart kurzoru
-	short pasivni_elementy_intenzita;//intenzita pasivních elementù pøi editaci objektu
+	short pasivni_vektory_intenzita;//intenzita pasivních elementù pøi editaci objektu
 
 	protected:
 
