@@ -2810,9 +2810,9 @@ void Cvektory::zmen_poradi_elementu(TElement *E,TElement *Ed)
 		Ed->predchozi=E;
 		E->dalsi=Ed;//musí být na konci!!!!!
 		//aktualizace geometrie
-		vloz_G_element(Ed->dalsi,0,F->d.Rxy(Ed).x,F->d.Rxy(Ed).y,0,0,0,0,F->d.Rxy(Ed->dalsi).x,F->d.Rxy(Ed->dalsi).y);
-		vloz_G_element(E,0,Ed->geo.X1,Ed->geo.Y1,0,0,0,0,F->d.Rxy(E).x,F->d.Rxy(E).y);
-		vloz_G_element(Ed,0,F->d.Rxy(E).x,F->d.Rxy(E).y,0,0,0,0,F->d.Rxy(Ed).x,F->d.Rxy(Ed).y);
+		vloz_G_element(Ed->dalsi,0,F->d.Rxy(Ed).x,F->d.Rxy(Ed).y,0,0,0,0,F->d.Rxy(Ed->dalsi).x,F->d.Rxy(Ed->dalsi).y,Ed->dalsi->geo.orientace);
+		vloz_G_element(E,0,Ed->geo.X1,Ed->geo.Y1,0,0,0,0,F->d.Rxy(E).x,F->d.Rxy(E).y,E->geo.orientace);
+		vloz_G_element(Ed,0,F->d.Rxy(E).x,F->d.Rxy(E).y,0,0,0,0,F->d.Rxy(Ed).x,F->d.Rxy(Ed).y,Ed->geo.orientace);
 	}
 	//////přesun elementu za
 	else
@@ -2826,9 +2826,9 @@ void Cvektory::zmen_poradi_elementu(TElement *E,TElement *Ed)
 		Ed->predchozi->dalsi=E;
 		Ed->predchozi=E;
 		////aktualizace geometrie
-		vloz_G_element(E->predchozi,0,E->geo.X1,E->geo.Y1,0,0,0,0,F->d.Rxy(E->predchozi).x,F->d.Rxy(E->predchozi).y);
-		vloz_G_element(Ed,0,F->d.Rxy(E).x,F->d.Rxy(E).y,0,0,0,0,F->d.Rxy(Ed).x,F->d.Rxy(Ed).y);
-		vloz_G_element(E,0,F->d.Rxy(E->predchozi).x,F->d.Rxy(E->predchozi).y,0,0,0,0,F->d.Rxy(E).x,F->d.Rxy(E).y);
+		vloz_G_element(E->predchozi,0,E->geo.X1,E->geo.Y1,0,0,0,0,F->d.Rxy(E->predchozi).x,F->d.Rxy(E->predchozi).y,E->predchozi->geo.orientace);
+		vloz_G_element(Ed,0,F->d.Rxy(E).x,F->d.Rxy(E).y,0,0,0,0,F->d.Rxy(Ed).x,F->d.Rxy(Ed).y,Ed->geo.orientace);
+		vloz_G_element(E,0,F->d.Rxy(E->predchozi).x,F->d.Rxy(E->predchozi).y,0,0,0,0,F->d.Rxy(E).x,F->d.Rxy(E).y,E->geo.orientace);
 	}
 	E->pohon=E->dalsi->pohon;//přiřazení správného pohonu
 	//////přeindexování (N-hodnoty) v celém seznamu, možno řešit sepáratáně, ale takto to bylo rychleji napsané

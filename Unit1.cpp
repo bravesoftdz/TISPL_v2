@@ -4350,7 +4350,7 @@ void TForm1::ukonceni_geometrie()
 	if(pom->dalsi==NULL && pom_temp->n!=1 && posledni_editovany_element!=NULL)
 	{
 		double delka=m.delka(posledni_editovany_element->X,posledni_editovany_element->Y,d.v.OBJEKTY->dalsi->elementy->dalsi->geo.X1,d.v.OBJEKTY->dalsi->elementy->dalsi->geo.Y1);
-		if(delka <=1 && posledni_editovany_element->geo.typ==0 && (posledni_editovany_element->X==d.v.OBJEKTY->dalsi->elementy->dalsi->geo.X1 || posledni_editovany_element->Y==d.v.OBJEKTY->dalsi->elementy->dalsi->geo.Y1))
+		if(delka <=2 && posledni_editovany_element->geo.typ==0 && (posledni_editovany_element->X==d.v.OBJEKTY->dalsi->elementy->dalsi->geo.X1 || posledni_editovany_element->Y==d.v.OBJEKTY->dalsi->elementy->dalsi->geo.Y1))
 		{
 			d.v.vloz_G_element(posledni_editovany_element,0,posledni_editovany_element->geo.X1,posledni_editovany_element->geo.Y1,0,0,0,0,d.v.OBJEKTY->dalsi->elementy->dalsi->geo.X1,d.v.OBJEKTY->dalsi->elementy->dalsi->geo.Y1,posledni_editovany_element->geo.orientace);
 			posledni_editovany_element->X=posledni_editovany_element->geo.X4;
@@ -5099,7 +5099,7 @@ void TForm1::tab_knihovna_click(double X,double Y,long Col,long Row)
 	if(mGrid_knihovna->Cells[Col][Row].Type==mGrid_knihovna->IMAGE)
 	{
 		vybrany_objekt=mGrid_knihovna->Cells[Col][Row].ImageIndex;
-		if(vybrany_objekt!=15)//klik na objekty
+		if(vybrany_objekt<15)//klik na objekty
 		{
    		SB("Kliknutím na libovolné místo umístíte objekt "+knihovna_objektu[vybrany_objekt].name);
 			Akce=ADD;kurzor(add_o);
@@ -5110,7 +5110,7 @@ void TForm1::tab_knihovna_click(double X,double Y,long Col,long Row)
    			Akce=NIC;kurzor(standard);
 			}
 		}
-		else//klik do sekce hala
+		else if(vybrany_objekt==15)//klik do sekce hala
 		{
       scGPButton_nakreslit_haluClick(this);
     }
@@ -9786,14 +9786,16 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //---------------------------------------------------------------------------
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
-{                 //Memo3->Clear();
-	Cvektory::TElement *E=pom_temp->elementy->dalsi;
-	while(E!=NULL && E->n!=0)
-	{
-		Memo(E->name); Memo(E->n);
-		//if(E->pohon!=NULL)Memo(E->pohon->name);
-		E=E->dalsi;
-	} E=NULL;delete E;
+{
+	Akce=GEOMETRIE;
+	editace_geometrie_spustena=false;
+	REFRESH(false);
+//	Cvektory::TElement *E=pom_temp->elementy->dalsi;
+//	while(E!=NULL && E->n!=0)
+//	{
+//		Memo(E->name);
+//		E=E->dalsi;
+//	} E=NULL;delete E;
 //	Memo(vzdalenost_meziLO(E,pom_temp->orientace));
 //	TRect A=vrat_max_oblast();
  //	Canvas->Pen->Color=clRed;
