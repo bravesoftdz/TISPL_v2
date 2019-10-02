@@ -152,8 +152,18 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 
   T=readINI("nastaveni_editace","intenzita_vektory"); //intenzita vektoru needitovanych objektu
  	if(T==0)d.pasivni_vektory_intenzita=50;else d.pasivni_vektory_intenzita=F->ms.MyToDouble(T);
-  //ShowMessage(d.pasivni_vektory_intenzita);
   scGPTrackBar_intenzita->Value = d.pasivni_vektory_intenzita;
+  T=readINI("nastaveni_editace","rotace_jigu"); //zobrazit rotaci jigu
+ 	if(T==0)rotace_jigu=0;else rotace_jigu=1;
+  T=readINI("nastaveni_editace","zobrazeni_pozic"); //zobrazit pozice
+ 	if(T==0)zobrazit_pozice=0;else zobrazit_pozice=1;
+
+  if(rotace_jigu==1) scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
+  else scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=false;
+
+  if(zobrazit_pozice==1)scGPCheckBox_zobrazit_pozice->Checked=true;
+  else   scGPCheckBox_zobrazit_pozice->Checked=false;
+
 
 	//povolení Automatická záloha
 	Timer_backup->Enabled=true;
@@ -1353,7 +1363,7 @@ void TForm1::SB(UnicodeString Text, unsigned short Pane)
 {
 	switch(Pane)
 	{
-		case 1:RzStatusPane1->Caption=Text;break;
+	  //case 1:RzStatusPane1->Caption=Text;break;  //zrušený statuspane
 		//case 2:RzStatusPane2->Caption="Zoom: "+Text+"x";break; už se nepoužívá
 		case 3:RzStatusPane3->Caption="["+Text+"] m";break;
 		case 4:RzStatusPane4->Caption=Text;break;
@@ -10028,7 +10038,6 @@ void __fastcall TForm1::Button_dopravnik_parametryClick(TObject *Sender)
 	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;//zavře případně otevřené menu
 	if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
  //	scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
-	scButton_parmlinky_defzakazek->Down=false;
 	if(scGPButton_header_projekt->ImageIndex==49)
 	{
 		if(MOD!=NAHLED/*||pom_temp->pohon==NULL*/)
@@ -10563,21 +10572,6 @@ void __fastcall TForm1::scExPanel_log_headerMouseActivate(TObject *Sender, TMous
 {
 log(__func__);//logování
 scSplitView_OPTIONS->Opened=false;
-}
-//---------------------------------------------------------------------------
-void __fastcall TForm1::scSplitView_MENUOpened(TObject *Sender)
-{
-	// generování buttonu na PL nebo DF dle přepínače režimu
-	if(STATUS==NAVRH)
-	{
-		scButton_parmlinky_defzakazek->Caption="Parametry linky";
-		scButton_parmlinky_defzakazek->ImageIndex=49;
-	}
-	if (STATUS==OVEROVANI)
-	{
-		scButton_parmlinky_defzakazek->Caption="Definice zakázek";
-		scButton_parmlinky_defzakazek->ImageIndex=48;
-	}
 }
 //---------------------------------------------------------------------------
 //v případě zakliknutí či odkliknutí zohlední změny dle počtu vozíku (buď podle WIP či nikoliv)
@@ -11737,6 +11731,23 @@ REFRESH();
 //ShowMessage(pasivni_vektory_intenzita);
 Form1->writeINI("nastaveni_editace", "intenzita_vektory",d.pasivni_vektory_intenzita);
 DuvodUlozit(true);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::scGPCheckBox_zobrazit_rotace_jigu_na_otocichClick(TObject *Sender)
+
+{
+if(scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked) writeINI("nastaveni_editace","rotace_jigu", 1);
+else  writeINI("nastaveni_editace","rotace_jigu", 0);
+REFRESH();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::scGPCheckBox_zobrazit_poziceClick(TObject *Sender)
+{
+if(scGPCheckBox_zobrazit_pozice->Checked) writeINI("nastaveni_editace","zobrazeni_pozic", 1);
+else  writeINI("nastaveni_editace","zobrazeni_pozic", 0);
+REFRESH();
 }
 //---------------------------------------------------------------------------
 
