@@ -2821,15 +2821,22 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 		 double Y=Rxy(E).y;
 		 double dJ=v.PP.delka_jig;//později nahradit ze zakázky
 		 double sJ=v.PP.sirka_jig;//později nahradit ze zakázky
-		 double rotaceJ=v.vrat_rotaci_jigu_po_predchazejicim_elementu(E);//metodu po přechodu na nový DM zaktulizovat o průchod přes spoják elementů
+		 double rotaceJ=0;//DODELAT!!!! v.vrat_rotaci_jigu_po_predchazejicim_elementu(E);//metodu po přechodu na nový DM zaktulizovat o průchod přes spoják elementů
+		 short rozmezi=60;//pouze empiricky dodaná hodnota barevného rozpětí od první až po poslední pozici rotace
 		 unsigned short clPotRGB=180;//hotnota barevných složek dle RGB potenciálních pozic
-		 TColor clPotencial=RGB(clPotRGB,clPotRGB,clPotRGB);//barva potenciálních pozici
+		 TColor clPotencial=RGB(clPotRGB,clPotRGB,clPotRGB),clChassis=(TColor) RGB(50,50,50),clJig=clPurple;
+		 short I=100-F->scGPTrackBar_intenzita->Value;
+		 if(F->pom_temp!=NULL && E->objekt_n!=F->pom_temp->n)//v případě editace změna intezity barev právě needitovaných objektů
+		 {
+			 clPotencial=m.clIntensive(clPotencial,I);if(I>5){clPotRGB=255-m.round((100-I)/4);rozmezi=0;}
+			 clChassis=m.clIntensive(clChassis,I*2);clJig=m.clIntensive(clJig,I*3);//*2,*3 pouze empiricky dodáno
+		 }
 
 		 ////určení směru vykreslování pozic
 		 short x=0,y=0;
 		 switch(m.Rt90(orientaceP))
 		 {
-		 	 case 0:   y=1;  x=0;  break;
+			 case 0:   y=1;  x=0;  break;
 			 case 90:  y=0;  x=1;  break;
 		 	 case 180: y=-1; x=0;  break;
 		 	 case 270: y=0;  x=-1; break;
@@ -2842,8 +2849,7 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 			 short krok=30;//zobrazení rotace krokem po x stupních (vhodné v násobcích 15,30,45)
 			 double posun=fabs(E->OTOC_delka/(E->rotace_jig/krok));//krok posunu animace rotace dle délky otoče a proměnné krok
 			 short Z=1;if(E->rotace_jig<0)Z=-1;//pro záporné rotace jigu
-			 double Xr=X+E->OTOC_delka/2.0*x;double Yr=Y-E->OTOC_delka/2.0*y;//začátek vykreslování rotace o posun poloviny délky otoče, *-1 kvůli opačné orientaci
-			 short rozmezi=60;//pouze empiricky dodaná hodnota barevného rozpětí od první až po poslední pozici rotace
+			 double Xr=X+E->OTOC_delka/2.0*x;double Yr=Y+E->OTOC_delka/2.0*y;//začátek vykreslování rotace o posun poloviny délky otoče, *-1 kvůli opačné orientaci
 			 short clUroven=m.round(rozmezi/(fabs(E->rotace_jig)/krok));//rozmezí odstínu v RGB resp. (clPotRGB+40-clPotRGB)
 			 DWORD pole[]={m.round(5/3.0*F->Zoom),m.round(2/3.0*F->Zoom),m.round(1/3.0*F->Zoom),m.round(2/3.0*F->Zoom)};//definice uživatelského pera s vlastní definovanou linii
 			 //samotné cyklické vykreslení
@@ -2851,7 +2857,7 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 			 {
 				unsigned short clAkt=clPotRGB+rozmezi-abs(i/krok)*clUroven;
 				set_pen2(canv,RGB(clAkt,clAkt,clAkt),m.round(1/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
-				vykresli_jig(canv,Xr-x*posun*abs(i/krok),Yr-y*posun*abs(i/krok),dJ,sJ,orientaceP,i,NULL,0);
+				vykresli_jig(canv,Xr-x*posun*abs(i/krok),Yr-y*posun*abs(i/krok),dJ,sJ,orientaceP,rotaceJ+i,NULL,0);//pozn. barvu nastavujeme výše
 			 }
 		 }
 
@@ -2882,7 +2888,7 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 	//			 }
 
 				 if(i+1>pocet_voziku)vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,clPotencial,clPotencial);//záměrně šedou jak podvozek tak JIG jako potenicální pozice
-				 else vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ);
+				 else vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,clChassis,clJig);
 			 }
 		 }
 	}
