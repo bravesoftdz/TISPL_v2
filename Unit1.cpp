@@ -776,6 +776,7 @@ void TForm1::startUP()
 		Form_parametry_linky->ShowModal();//zavolání formáláře pro prvotní vyplnění či potvzení hodnot parametrů linky
 	}
 	if(d.v.OBJEKTY->dalsi!=NULL)TIP="";//v případě, že jsou vložené nějaké objekty tak dojde k odmazání tipu pro vkládání objektů
+	DrawGrid_knihovna->SetFocus();//nutné při spouštění dávat focus na knihovnu, ta přesměrovává všechny události (např. KeyDown) na Form
 }
 //---------------------------------------------------------------------------
 //zajišťuje zápis do INI aplikace, museli jsme dát do výjimky, protože jednou hodilo error
@@ -1530,7 +1531,7 @@ void TForm1::REFRESH(bool refreshovat_mGridy)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 {
-  log(__func__);//logování
+	log(__func__);//logování
 	funkcni_klavesa=0;
 	int HG=0; if(scGPGlyphButton_close_grafy->GlyphOptions->Kind==scgpbgkDownArrow)HG=Chart2->Height;//o výšku grafu
 	int PXM=50;int D=Form1->m.round(d.v.PP.delka_jig*PXM);int S=Form1->m.round(d.v.PP.sirka_jig*PXM);short Yofset=D;if(S>D)Yofset=S;//pro posun obrazu v technologických procesech
@@ -1613,6 +1614,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		case 32: if(Akce!=PAN_MOVE){Akce=PAN;kurzor(pan);}break;
 		//DELETE
 		case 46:
+		{
 			////Geometrie stejná funkce jako backspace
 			if(Akce==GEOMETRIE && posledni_editovany_element!=NULL && posledni_editovany_element->eID==MaxInt)
 			{
@@ -1642,7 +1644,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 				}
 				REFRESH(false);
 			}
-		break;
+		}break;
 		//PAGE UP
 		case 33:
 			if(MOD==CASOVAOSA && d.v.VOZIKY->predchozi!=NULL && d.PosunT.y>=(ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height-HG)/(float)d.KrokY*d.KrokY)
@@ -2909,7 +2911,7 @@ void TForm1::getJobID(int X, int Y)
 			//pokud nic nenalezeno snažím se najít PmG i nad komponenty v tabulce
 			if(JID==-1 && ((m.L2Px(pom_temp->Xp)<X+m.L2Px(pom_temp->Xp) && X+m.L2Px(pom_temp->Xp)<=m.L2Px(pom_temp->Xp)+PmG->Width && ID_tabulky==9999)||(m.L2Px(pom_temp->Xp)<X && X<=m.L2Px(pom_temp->Xp)+PmG->Width)) && ((m.L2Py(pom_temp->Yp)<Y+m.L2Py(pom_temp->Yp) && Y+m.L2Py(pom_temp->Yp)<m.L2Py(pom_temp->Yp)+PmG->Height && ID_tabulky==9999) || (m.L2Py(pom_temp->Yp)<Y && Y<m.L2Py(pom_temp->Yp)+PmG->Height)))JID=4;
 			//citelná oblast kříže pro posun
-			if(m.L2Px(F->pom_temp->Xp)-20<X && X<m.L2Px(F->pom_temp->Xp) && m.L2Py(F->pom_temp->Yp)>Y && Y>m.L2Py(F->pom_temp->Yp)-15)JID=-9;
+			if(m.L2Px(F->pom_temp->Xp)-20<X && X<m.L2Px(F->pom_temp->Xp) && m.L2Py(F->pom_temp->Yp)+10>Y && Y>m.L2Py(F->pom_temp->Yp)-25)JID=-9;
 		}
 		if(JID==-1)//pokud nebyla tabulka pohonu nalezena zkouší hledat další aktivní prvky náhledu
 		{
@@ -3088,7 +3090,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
   		if(JID==1000){pom_element->mGrid->CheckLink(X,Y);refresh_mGrid=true;}//pouze pro přechod název hlavička, aby název nezůstal tučně - aktivace dodáním pouze aktuálních souřadnic
   		if(1000<=JID && JID<2000){kurzor(posun_ind);pom_element->mGrid->Highlight=true;pom_element->mGrid->MouseMove(X,Y);refresh_mGrid=true;}//indikace posunutí TABULKY, jeji highlignutí probíhá výše a případné volání HINTu
 			if(100<JID && JID<1000){kurzor(zmena_j);pom_element->mGrid->CheckLink(X,Y);refresh_mGrid=true;}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ  - aktivace dodáním pouze aktuálních souřadnic
-			if((JID==-6||JID==-7||JID<=-11)&&!editace_textu){kurzor(edit_text);refresh_mGrid=false;}//kurzor pro editaci textu
+			if((JID==-6||JID<=-11)&&!editace_textu){kurzor(edit_text);refresh_mGrid=false;}//kurzor pro editaci textu
 			if(JID<=-11&&JID>=-101&&d.v.PtInKota_komory(pom_temp,X,Y)==-1){if(pom_temp->orientace==90||pom_temp->orientace==270)kurzor(zmena_d_x);else kurzor(zmena_d_y);}//změna rozměru komory
   		//použit závěrečný REFRESH if(-9<=JID && JID<=-6){REFRESH();}//refresh při akci s nadpisem či kótou kabiny
 			if(JID==-10){/*REFRESH();*/kurzor(zmena_j);}//indikace možnosti změnit jednotky na kótách
@@ -4101,7 +4103,7 @@ void TForm1::add_element (int X, int Y)
   		Cvektory::TElement *A=pom_temp->elementy->dalsi;
   		while(A!=NULL)
 			{
-  			if(A->eID%2==0 && A->eID!=200 && A->n!=E->n){d.v.posuv_aktualizace_RT(A);break;}
+				if(A->eID%2==0 && A->eID!=100 && A->eID!=200 && A->eID!=MaxInt && A->n!=E->n){d.v.posuv_aktualizace_RT(A);break;}
   			A=A->dalsi;
   		}A=NULL;delete A;
   	}
@@ -4330,6 +4332,7 @@ void TForm1::vlozeni_editace_geometrie()
 			posledni_editovany_element->geo=d.geoTemp;
 			posledni_editovany_element->X+=posledni_editovany_element->geo.X4-posledni_editovany_element->geo.X1;
 			posledni_editovany_element->Y+=posledni_editovany_element->geo.Y4-posledni_editovany_element->geo.Y1;
+			posledni_editovany_element->orientace=m.Rt90(posledni_editovany_element->geo.orientace-90);//změna orientace podle trendu, nefunguje pro oblouky
 			E=NULL;delete E;
 		}
 		else//pokud je veškerá geometrie odstraněna z kabiny
@@ -4603,12 +4606,26 @@ bool TForm1::najdi_nazev_obj(double X,double Y,Cvektory::TObjekt *Objekt,int typ
 	}
 	else// hledání posunovacího kříže
 	{
+		double x1,x2,y1,y2;
 		switch((int)Objekt->orientace)
 		{
-			case 0:break;
-			case 90:case 270:if(m.L2Px(pom_temp->Xt)-m.round(Wn)/2.0>=X && X>=m.L2Px(pom_temp->Xt)-m.round(Wn/2.0)-15 && m.L2Py(pom_temp->Yt)-Canvas->TextHeight(Tn)<=Y && Y<=m.L2Py(pom_temp->Yt)-Canvas->TextHeight(Tn)+13)ret=true;break;
-			case 180:break;
+			case 0:
+			{
+				x1=m.L2Px(pom_temp->Xt)-Canvas->TextHeight(Tn)-3;y1=m.L2Py(pom_temp->Yt)+m.round(Wn/2.0)-2;
+				x2=m.L2Px(pom_temp->Xt)-Canvas->TextHeight(Tn)+16;y2=m.L2Py(pom_temp->Yt)+m.round(Wn/2.0)+20;
+			}break;
+			case 90:case 270:
+			{
+				x1=m.L2Px(pom_temp->Xt)-m.round(Wn/2.0)+2;y1=m.L2Py(pom_temp->Yt)-Canvas->TextHeight(Tn)-3;
+				x2=m.L2Px(pom_temp->Xt)-m.round(Wn/2.0)-20;y2=m.L2Py(pom_temp->Yt)-Canvas->TextHeight(Tn)+16;
+			}break;
+			case 180:
+			{
+				x1=m.L2Px(pom_temp->Xt)+Canvas->TextHeight(Tn)+3;y1=m.L2Py(pom_temp->Yt)-m.round(Wn/2.0)+2;
+				x2=m.L2Px(pom_temp->Xt)+Canvas->TextHeight(Tn)-16;y2=m.L2Py(pom_temp->Yt)-m.round(Wn/2.0)-20;
+			}break;
 		}
+		if(m.PtInRectangle(x1,y1,x2,y2,X,Y))ret=true;
 	}
 	return ret;
 }
@@ -5277,7 +5294,7 @@ void TForm1::vytvoreni_tab_pohon()
 	//naplnění comba hodnotami
 	tab_pohon_COMBO(0);
 	if(pom_temp->pohon!=NULL)
-	if(d.v.pohon_je_pouzivan(pom_temp->pohon->n,pom)!=NULL)//kontrola zda je pohon používán v jiném objektu, nutné posílat pom místo pom_temp do parametru mimo_objetk!!!!!
+	if(d.v.pohon_je_pouzivan(pom_temp->pohon->n))//kontrola zda je pohon používán v jiném objektu, nutné posílat pom místo pom_temp do parametru mimo_objetk!!!!!
 	{
 		PmG->Update();//musí být přítomný !!!!
 		PmG->SetEnabledComponents(false);//nastavení celé tabulky do neaktivního stavu
@@ -5331,7 +5348,7 @@ void TForm1::pridani_elementu_tab_pohon(Cvektory::TElement *E)
 	}
 	PmG->Update();
 	//není nutná kontrola zda je přiřaznný pohon, tato metoda s spouští jedině v případ, že objekt má přiřazený pohon
-	if(d.v.pohon_je_pouzivan(pom_temp->pohon->n,pom)!=NULL)//kontrola zda je pohon používán v jiném objektu, nutné posílat pom místo pom_temp do parametru mimo_objetk!!!!!
+	if(d.v.pohon_je_pouzivan(pom_temp->pohon->n))//kontrola zda je pohon používán v jiném objektu, nutné posílat pom místo pom_temp do parametru mimo_objetk!!!!!
 	{
 		//Update musí být přítomný před!!!!
 		PmG->SetEnabledComponent(1,3,false);//komponenta do této chvíle ještě neexistovala
@@ -5398,7 +5415,7 @@ void TForm1::prirazeni_pohonu_tab_pohon(int index_pohonu)
 	if(pom_temp->pohon!=NULL)
 	{
 		bool temp;//pomocná proměnná, použití u průcohdu elementů, uchovává zda mají být komponenty aktivní či ne
-		if(d.v.pohon_je_pouzivan(pom_temp->pohon->n,pom)!=NULL)//kontrola zda je pohon používán v jiném objektu, nutné posílat pom místo pom_temp do parametru mimo_objetk!!!!!
+		if(d.v.pohon_je_pouzivan(pom_temp->pohon->n))//kontrola zda je pohon používán v jiném objektu, nutné posílat pom místo pom_temp do parametru mimo_objetk!!!!!
 		{
 			//Update musí být přítomný před!!!!
 			PmG->SetEnabledComponents(false);//nastavení celé tabulky do neaktivního stavu
@@ -5610,7 +5627,8 @@ void TForm1::tab_pohon_COMBO (int index)
 	{
 		//deklarace atributů
 		TIP="";
-		Cvektory::TPohon *p_puvodni=pom_temp->pohon;
+		unsigned long p_puvodni=0;
+		if(pom_temp->pohon!=NULL)p_puvodni=pom_temp->pohon->n;
 		int pohon=PCombo->ItemIndex;
 		//zapsání pohonu do aktuálně editovaného
 		if(pohon!=0)d.v.kopiruj_pohon(d.v.vrat_pohon(pohon),pom_temp);
@@ -5619,7 +5637,7 @@ void TForm1::tab_pohon_COMBO (int index)
 		//přiřazení pohonu elementům
 		while(E!=NULL)
 		{
-			if(E->pohon==NULL && p_puvodni==NULL || E->pohon!=NULL && p_puvodni!=NULL && E->pohon->n==p_puvodni->n)E->pohon=pom_temp->pohon;
+			if(E->pohon==NULL && p_puvodni==0 || E->pohon!=NULL && p_puvodni!=0 && E->pohon->n==p_puvodni){E->pohon=pom_temp->pohon; }
 			set_enabled_mGrid(E);
 			E=E->dalsi;
 		}
@@ -5629,7 +5647,6 @@ void TForm1::tab_pohon_COMBO (int index)
 		prirazeni_pohonu_tab_pohon(pohon);
 		vlozit_predavaci_misto();//přidání či odebrání předávacího místa
 		if(PmG->Rows[3].Visible || PmG->Note.Text!="")FormX->validace_aRD();//odstranění validacez jiného pohonu, pouze pokud je pohonová tabulka v režimu KK nebo, Note tabulky je naplněn
-		p_puvodni=NULL;delete p_puvodni;
 		//zajistí překreslení knihoven když je přidán či odebrán pohon
 		DrawGrid_knihovna->Refresh();
 		DrawGrid_otoce->Refresh();
@@ -5656,7 +5673,7 @@ void TForm1::set_enabled_mGrid(Cvektory::TElement *E)
 	//nastavení stavu
 	bool stav=true;
 	if(E->pohon==NULL)stav=false;
-	if(pom_temp->pohon!=NULL && d.v.pohon_je_pouzivan(pom_temp->pohon->n,pom)!=NULL)stav=false;
+	if(pom_temp->pohon!=NULL && d.v.pohon_je_pouzivan(pom_temp->pohon->n))stav=false;
 	//přepnutí buněk
 	switch(E->eID)
 	{
@@ -7684,7 +7701,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 						d.v.posuv_aktualizace_RT(dalsi_element);
 		  		if(pom_temp->elementy->dalsi!=NULL)d.v.uprav_popisky_elementu(pom_temp,pom_temp->elementy->dalsi);//pokud jsou v kabině jěště nějaké elementy dojde k přejmenování
 		  		pom_element=NULL;//přidáno nově 13.5.2019 - v režimu testování kvůli setJobID a předání do pom_element_puv
-					if(eID%2==0 && eID!=200)d.v.aktualizuj_sparovane_ukazatele();//odstraněn stop-element, nutná aktualizace
+					if(eID%2==0 && eID!=100 && eID!=200 && eID!=MaxInt)d.v.aktualizuj_sparovane_ukazatele();//odstraněn stop-element, nutná aktualizace
 					dalsi_element=NULL;delete dalsi_element;
 				}else {mazani=false;Akce=NIC;}
 			}
@@ -9786,14 +9803,14 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //---------------------------------------------------------------------------
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
-{
-	Akce=GEOMETRIE;
-	editace_geometrie_spustena=false;
-	REFRESH(false);
+{      Sv("pom: "+AnsiString(outaRD(pom->pohon->aRD)));  Sv("pom_temp: "+AnsiString(outaRD(pom_temp->pohon->aRD)));  Sv("pohon: "+AnsiString(outaRD(d.v.vrat_pohon(pom_temp->pohon->n)->aRD)));
+//	Akce=GEOMETRIE;
+//	editace_geometrie_spustena=false;
+//	REFRESH(false);
 //	Cvektory::TElement *E=pom_temp->elementy->dalsi;
 //	while(E!=NULL && E->n!=0)
 //	{
-//		Memo(E->name);
+//		Memo(E->name); Memo(E->akt_pocet_voziku);
 //		E=E->dalsi;
 //	} E=NULL;delete E;
 //	Memo(vzdalenost_meziLO(E,pom_temp->orientace));

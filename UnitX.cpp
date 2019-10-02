@@ -1003,7 +1003,7 @@ bool TFormX::naplneni_max_voziku(double X,double Y,bool check_for_highlight)
 void TFormX::povolit_zakazat_editaci(bool povolit)
 {
 	if(povolit)
-		{if(F->duvod_ulozit_nahled)F->scGPButton_ulozit->Enabled=true;}//pokud je dùvod k uložení, ale button uložit je z pøedchozího kroku neaktivní zapne ho
+		{F->scGPButton_ulozit->Enabled=true;}//pokud je dùvod k uložení, ale button uložit je z pøedchozího kroku neaktivní zapne ho
 	else
 		{F->scGPButton_ulozit->Enabled=false;}//pokud je button uložit zapnut vypne ho
 //	F->PmG->Update();//musí být, pøi vložení prvního kontinuálního robota problém v zobrazení

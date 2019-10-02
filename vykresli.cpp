@@ -314,10 +314,26 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	canv->Font->Orientation=0;//vrácení původní hodnoty rotace canvasu
 	//vykreslení uchopovacího kříže u textu
 	canv->Pen->Color=clBlack;canv->Pen->Width=1;
-	if(F->pom_temp!=NULL &&(F->JID==-6 || F->JID==-7))
+	if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID==-6 || F->JID==-7))
 	{
-		line(canv,m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0),m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn)+20,m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0)-40,m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn)+20);
-		line(canv,m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0)-20,m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn),m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0)-20,m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn)+40);
+		switch((int)orientace)
+		{
+			case 0:
+			{
+				line(canv,m.L2Px(F->pom_temp->Xt)-canv->TextHeight(Tn)+20,m.L2Py(F->pom_temp->Yt)+m.round(Wn/2.0),m.L2Px(F->pom_temp->Xt)-canv->TextHeight(Tn)+20,m.L2Py(F->pom_temp->Yt)+m.round(Wn/2.0)+40);
+				line(canv,m.L2Px(F->pom_temp->Xt)-canv->TextHeight(Tn)+40,m.L2Py(F->pom_temp->Yt)+m.round(Wn/2.0)+20,m.L2Px(F->pom_temp->Xt)-canv->TextHeight(Tn),m.L2Py(F->pom_temp->Yt)+m.round(Wn/2.0)+20);
+			}break;
+			case 90:case 270:
+			{
+				line(canv,m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0),m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn)+20,m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0)-40,m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn)+20);
+				line(canv,m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0)-20,m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn),m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0)-20,m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn)+40);
+			}break;
+			case 180:
+			{
+				line(canv,m.L2Px(F->pom_temp->Xt)+canv->TextHeight(Tn)-20,m.L2Py(F->pom_temp->Yt)-m.round(Wn/2.0),m.L2Px(F->pom_temp->Xt)+canv->TextHeight(Tn)-20,m.L2Py(F->pom_temp->Yt)-m.round(Wn/2.0)-40);
+				line(canv,m.L2Px(F->pom_temp->Xt)+canv->TextHeight(Tn)-40,m.L2Py(F->pom_temp->Yt)-m.round(Wn/2.0)-20,m.L2Px(F->pom_temp->Xt)+canv->TextHeight(Tn),m.L2Py(F->pom_temp->Yt)-m.round(Wn/2.0)-20);
+			}break;
+		}
 	}
 	//vykreslení kříže posuvu u tabulky pohonu, natrvalo
 	if(F->pom_temp!=NULL && F->PmG->Highlight)

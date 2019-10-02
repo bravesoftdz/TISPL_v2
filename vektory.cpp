@@ -1863,7 +1863,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->Yt=-100;
 	novy->orientace=orientace;//důležité pro volání makra m.Rxy, bez tohoto by makro vracelo chybné hodnoty
 
-  //ukazatelové propojení - bylo původně poslední, ale nemohlo fungovat správně
+	//ukazatelové propojení - bylo původně poslední, ale nemohlo fungovat správně
 	vloz_element(Objekt,novy,Ep);
 
 	//defaultní data
@@ -1879,7 +1879,8 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->RT=0;//reserve time
 	novy->akt_pocet_voziku=0;
 	novy->max_pocet_voziku=0;
-	if(eID%2==0 && eID!=200)novy->max_pocet_voziku=1;
+	novy->rotace_jig=0;
+	if(eID%2==0 && eID!=100 && eID!=200 && eID!=MaxInt)novy->max_pocet_voziku=1;
 	if(eID==0){novy->max_pocet_voziku=2;novy->akt_pocet_voziku=1;}
 	novy->stav=1;
 	novy->PD=-1;//defaultní stav pro S&G roboty
@@ -2097,7 +2098,7 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 			  		if(E->name!=""&&E->mGrid!=NULL)//nutné, přejmenovávám i první element, který nemá vytvořený mGrid
 			  		{
 							if(E->eID==100)E->mGrid->Cells[0][0].Text="<a>ION tyč "+AnsiString(n)+"</a>";
-							if(101<=E->eID && E->eID<=108)E->mGrid->Cells[0][0].Text="<a>Operátor "+AnsiString(n)+"</a>";
+							else if(101<=E->eID && E->eID<=108)E->mGrid->Cells[0][0].Text="<a>Operátor "+AnsiString(n)+"</a>";
 							else E->mGrid->Cells[0][0].Text="<a>Robot "+AnsiString(n)+"</a>";
 							E->mGrid->Cells[0][0].Font->Color=clBlack;//z důvodu nasazení odkazu, po přejmenování se text vrátil do modré barvy
 			  			E->mGrid->MergeCells(0,0,1,0);//nutné kvůli správnému zobrazení hlavičky
@@ -2108,7 +2109,7 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 							E->name="ION tyč "+AnsiString(n);
 							E->short_name="ION"+AnsiString(n);
 						}
-						if(101<=E->eID && E->eID<=108)
+						else if(101<=E->eID && E->eID<=108)
 						{
 							E->name="Operátor "+AnsiString(n);
 							E->short_name="Ope"+AnsiString(n);
@@ -2842,7 +2843,7 @@ void Cvektory::zmen_poradi_elementu(TElement *E,TElement *Ed)
 	}
 	delete E_pom;E_pom=NULL;
 	uprav_popisky_elementu(F->pom_temp,E);//změna názvů
-	if(E->eID%2==0 && Ed->eID!=200 || E->eID%2==0 && Ed->eID!=200)aktualizuj_sparovane_ukazatele();//změna pořadí přičemž alespoň jeden element byl stop-element
+	if(E->eID%2==0 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt || Ed->eID%2==0 && Ed->eID!=100 && Ed->eID!=200 && Ed->eID!=MaxInt)aktualizuj_sparovane_ukazatele();//změna pořadí přičemž alespoň jeden element byl stop-element
 }
 ////---------------------------------------------------------------------------
 //vratí vzdálenost od předchozího elementu, pracuje zatím pouze v orotogonalizovaném prostoru (bude nutno vylepšit s příchodem oblouků), pokud se jedná o první element, uvažuje se jako vzdálenost od počátku kabiny (nutno vylepšit ještě pro různé orientace kabiny)
@@ -2882,7 +2883,7 @@ double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element,bool pouze
 				if(F->pom_temp->n==O->n)E=Element->predchozi;//pokud jsem v pom_temp = začátek, začánám od předchozího elementu Elementu
 				while(E!=NULL && E->n!=0)
 				{
-					if(E->eID%2==0 && E->eID!=200){pokracovat=false;break;}//pokud je předchozi S&G prěruš cyklus
+					if(E->eID%2==0 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt){pokracovat=false;break;}//pokud je předchozi S&G prěruš cyklus
 					celkem+=E->geo.delka;//pokud jdes dál přičti vzdálenost
 					E=E->predchozi;
 				}
@@ -2981,7 +2982,7 @@ void Cvektory::napln_combo_stopky(TElement *Stopka)
 				while(E!=NULL)//a jejich elementy
 				{
 					////pokud je aktuální element stopka či robot se stopkou a zároveň nejedná se o danou stopku předávanou parametreme metody a nejedná se o hlavičku, naplní se do comba
-					if((E->eID%2==0 && E->eID!=200) && E!=Stopka && E->n!=0)
+					if((E->eID%2==0 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt) && E!=Stopka && E->n!=0)
 					{
 						if(smazat_combo){C->Clear();smazat_combo=false;/*t=C->Items->Add(/*tady nelze parametr*//*);t->Caption="nepřiřazen";v případě odkomentování zvýšit index u přidělování Itemindex u bez spárované situace*/}//nejdříve combo vymaže od popisku nedefinovan
 						if(!hlavicka_vytvorena)//pokud ještě nebyla vytvoří ji formou názvu
@@ -3086,7 +3087,7 @@ void Cvektory::vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt)
 //	return RET;
 
 	//////nová koncepce
-	if(Element->eID%2==0 && Element->eID!=200)
+	if(Element->eID%2==0 && Element->eID!=100 && Element->eID!=200 && Element->eID!=MaxInt)
 	{
 		bool pokracovat=true;
 		TElement *E=NULL;
@@ -3098,7 +3099,7 @@ void Cvektory::vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt)
 			if(Objekt->n==O->n)E=Element->predchozi;//pokud jsem v prvním objektu = začátek, začánám od předchozího elementu Elementu
 			while(E!=NULL && E->n!=0)
 			{
-				if(E->eID%2==0 && E->eID!=200){pokracovat=false;break;}//nalezen předchozí S&G
+				if(E->eID%2==0 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt){pokracovat=false;break;}//nalezen předchozí S&G
   			E=E->predchozi;
 			}
 			if(pokracovat)O=O->predchozi;//ošetření proti přechodu na havičku
@@ -3123,7 +3124,7 @@ void Cvektory::aktualizuj_sparovane_ukazatele()
 		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->predchozi;
 		while(E!=NULL && E->n!=0)
 		{
-			if(E->eID%2==0 && E->eID!=200)
+			if(E->eID%2==0 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt)
 			{
 				E->sparovany=NULL;
 				if(E->eID==0 && E->Xt!=-100 && F->pom_temp!=NULL && O->n==F->pom->n)E->mGrid->Cells[1][1].Text="N/A";
@@ -3141,7 +3142,7 @@ void Cvektory::aktualizuj_sparovane_ukazatele()
 		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->predchozi;
 		while(E!=NULL && E->n!=0)
 		{
-			if(E->eID%2==0 && E->eID!=200)vrat_predchozi_stop_element(E,O);
+			if(E->eID%2==0 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt)vrat_predchozi_stop_element(E,O);
 			E=E->predchozi;
 		}
 		E=NULL;delete E;
@@ -3437,15 +3438,16 @@ bool Cvektory::pohon_je_pouzivan(unsigned long n)
 	bool nalezen=false;
 	while (O!=NULL)
 	{
-		if(O->pohon!=NULL)
+		TElement *E=O->elementy->dalsi;
+		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->dalsi;
+		while(E!=NULL)
 		{
-			if(O->pohon->n==n)
-			{
-				nalezen=true;
-				break;//přeruší další vyhledávání
-			}
+			if(E->eID%2!=0 && E->eID!=5 && E->eID!=MaxInt && E->pohon!=NULL && E->pohon->n==n){nalezen=true;break;}
+			E=E->dalsi;
 		}
-		O=O->dalsi;
+		E-NULL;delete E;
+		if(!nalezen)O=O->dalsi;
+		else break;
 	}
 	O=NULL;delete O;
 	return nalezen;
