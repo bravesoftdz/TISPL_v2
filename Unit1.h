@@ -114,7 +114,6 @@ class TForm1 : public TForm
 {
 __published:	// IDE-managed Components
 	TRzToolbar *RzToolbar1;
-	TRzStatusPane *RzStatusPane1;
 	TRzStatusPane *RzStatusPane3;
 	TRzStatusPane *RzStatusPane4;
 	TButton *Button1;
@@ -263,7 +262,6 @@ __published:	// IDE-managed Components
 	TscLabel *scLabel_mezera;
 	TscGPButton *scGPButton_header_projekt;
 	TscGPButton *scGPButton_header_def_zakazek;
-	TscButton *scButton_parmlinky_defzakazek;
 	TscGPCheckBox *scGPCheckBox_pocet_voziku_dle_WIP;
 	TscGPGlyphButton *scGPGlyphButton_info_cekani;
   TscListGroupPanel *scListGroupPanel_hlavickaOtoce;
@@ -309,9 +307,6 @@ __published:	// IDE-managed Components
 	TscGPPanel *scGPPanel_pomocn_proSwitch;
 	TButton *Button14;
   TscGPButton *scGPButton_mereni_vzdalenost;
-  TscGPButton *scGPButton_posun_haly;
-  TscGPButton *scGPButton_nakreslit_halu;
-  TscExPanel *scExPanel_hala;
   TscExPanel *scExPanel_ostatni;
   TscGPCheckBox *scGPCheckBox_ortogon;
   TscExPanel *scExPanel_nastaveni_starych_modu;
@@ -467,7 +462,6 @@ __published:	// IDE-managed Components
           TShiftState Shift, int X, int Y);
 	void __fastcall scExPanel_log_headerMouseActivate(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y, int HitTest, TMouseActivate &MouseActivate);
-	void __fastcall scSplitView_MENUOpened(TObject *Sender);
 	void __fastcall scGPCheckBox_pocet_voziku_dle_WIPClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_info_cekaniClick(TObject *Sender);
 	void __fastcall FormDblClick(TObject *Sender);
@@ -530,6 +524,9 @@ __published:	// IDE-managed Components
 	void __fastcall scGPImage_zamek_posunuClick(TObject *Sender);
 	void __fastcall scButton_zamek_layoutuClick(TObject *Sender);
   void __fastcall scGPTrackBar_intenzitaChange(TObject *Sender);
+  void __fastcall scGPCheckBox_zobrazit_rotace_jigu_na_otocichClick(TObject *Sender);
+  void __fastcall scGPCheckBox_zobrazit_poziceClick(TObject *Sender);
+
 
 
 // User declarations
@@ -741,6 +738,8 @@ public:		// User declarations
 	bool auto_settings_open;
 	int ID_tabulky;
 	TPointD puv_souradnice;//slouží k ukládání pùvodních souøadnic, napø. pøi posunu elementu
+  short zobrazit_pozice;
+  short rotace_jigu;
 
 	//metody
 	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click

@@ -2809,7 +2809,7 @@ unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,int i,TPointD OD, TPointD 
 //vykresli pozic na elementech
 void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 {
-	 if(E->max_pocet_voziku>0 || (E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180))//pokud se má smysl algoritmem zabývat
+	 if(F->scGPCheckBox_zobrazit_pozice->Checked && E->max_pocet_voziku>0 || (F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180))//pokud se má smysl algoritmem zabývat
 	 {
 		 ////výchozí hodnoty
 		 double orientaceP=m.Rt90(E->geo.orientace-180);
@@ -2819,7 +2819,7 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 		 double dJ=v.PP.delka_jig;//později nahradit ze zakázky
 		 double sJ=v.PP.sirka_jig;//později nahradit ze zakázky
 		 double rotaceJ=v.vrat_rotaci_jigu_po_predchazejicim_elementu(E);//metodu po přechodu na nový DM zaktulizovat o průchod přes spoják elementů
-		 TColor clPotencial=RGB(220,220,220);
+		 TColor clPotencial=RGB(180,180,180);//barva potenciálních pozic
 
 		 ////určení směru vykreslování pozic
 		 short x=0,y=0;
@@ -2831,20 +2831,27 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 		 	 case 270: y=0;  x=-1; break;
 		 }
 
-		 ////vykreslení rotace pozic u otočí a elementů s otočemi
-		 if(E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180)
+		 ////vykreslení ROTACE pozic u otočí a elementů s otočemi
+		 if(F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180)
 		 {
-			 DWORD pole[]={m.round(5/3.0*F->Zoom),m.round(2/3.0*F->Zoom),m.round(1/3.0*F->Zoom),m.round(2/3.0*F->Zoom)};//DWORD pole[]={20,8,4,8};
-			 //DWORD pole[]={m.round(5/3.0*F->Zoom),m.round(2/3.0*F->Zoom)};
-			 set_pen2(canv,clPotencial,m.round(1/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
-			 short k180=0;if(-180==E->rotace_jig || E->rotace_jig==180)k180=1;//aby se zbytečně nevykresloval znouvu 180tková situace která je totožná s 0vou situací
-			 short krok=45;//po 45 stupních
-			 if(E->rotace_jig>0)for(short i=0;i<=E->rotace_jig-k180;i+=krok)vykresli_jig(canv,X/*-x*i/krok*/,Y,dJ,sJ,orientaceP,i,clPotencial,0);
-			 else for(short i=0;i>=E->rotace_jig+k180;i-=krok)vykresli_jig(canv,X/*-x*i/krok*/,Y,dJ,sJ,orientaceP,i,clPotencial,0);
+			 //nastavení parametrů vykreslení různých stupňů rotace
+			 short krok=45;//zobrazení rotace po x stupních
+			 double posun=E->OTOC_delka/(E->rotace_jig/krok+1);//krok posunu animace rotace dle délky otoče a proměnné krok
+			 short Z=1;if(E->rotace_jig<0)Z=-1;//pro záporné rotace jigu
+			 X+=E->OTOC_delka/2.0*x*-1;Y-=E->OTOC_delka/2.0*y*-1;//začátek vykreslování rotace o posun poloviny délky otoče, *-1 kvůli opačné orientaci
+			 short clUroven=10;
+			 TColor clPotencial_vychozi=m.clIntensive(clPotencial,(E->rotace_jig/krok+1)*clUroven);
+			 DWORD pole[]={m.round(5/3.0*F->Zoom),m.round(2/3.0*F->Zoom),m.round(1/3.0*F->Zoom),m.round(2/3.0*F->Zoom)};//definice uživatelského pera s vlastní definovanou linii
+			 //samotné cyklické vykreslení
+			 for(short i=0;abs(i)<=fabs(E->rotace_jig);i+=Z*krok)
+			 {
+				set_pen2(canv,m.clIntensive(clPotencial_vychozi,-abs(i/krok)*clUroven),m.round(1/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
+				vykresli_jig(canv,X+posun*x*abs(i/krok),Y,dJ,sJ,orientaceP,i,NULL,0);
+			 }
 		 }
 
-		 ////vykreslení pozic na elementu + vzniklém buffru
-		 if(pocet_pozic>0/* && (orientaceP==0 || orientaceP==90  || orientaceP==180  || orientaceP==270)*/)//druhá část pravděpodobně nadbytečné ošetření
+		 ////vykreslení POZIC na elementu + vzniklém buffru
+		 if(F->scGPCheckBox_zobrazit_pozice->Checked && pocet_pozic>0)
 		 {
 			 //F->Memo(rotaceJ);
 			 unsigned int pocet_voziku=E->akt_pocet_voziku;
