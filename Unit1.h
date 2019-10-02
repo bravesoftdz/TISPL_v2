@@ -322,6 +322,8 @@ __published:	// IDE-managed Components
   TscLabel *scLabel1_intenzita;
   TscGPTrackBar *scGPTrackBar_intenzita;
   TscGPButton *scGPButton_zmerit_vzdalenost;
+	TscGPCheckBox *scGPCheckBox_zobrazit_pozice;
+	TscGPCheckBox *scGPCheckBox_zobrazit_rotace_jigu_na_otocich;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
