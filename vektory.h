@@ -231,7 +231,7 @@ class Cvektory
 		int dim;//úroveň ztlumení
 	};
 
-	struct T_vector
+	struct T_vector //DOPRYC //zakomentovat
 	{
 		int vector;//úroveň ztlumení vektorů - zatím nebude využito
 		bool transparent;//zda bude vektorová vrstva transparentní - zatím nebude využito
@@ -254,7 +254,7 @@ class Cvektory
 		double delka_podvozek;//délka podvozku vozíků
 		double uchyt_pozice;//pozice uchycení vozíků k nosnému palci
 		T_raster raster;
-		T_vector vector;
+		T_vector vector;//DOPRYC - zakomentovat
 	};
 	T_parametry_projektu PP;
 

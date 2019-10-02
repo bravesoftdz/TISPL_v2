@@ -8123,6 +8123,7 @@ void TForm1::NP_input()
 	 pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp;posledni_editovany_element=NULL;delete posledni_editovany_element;JID=-1;Akce=NIC;
 	 scButton_zamek_layoutu->Visible=false;//vypnutí tlačítka pro zámek layoutu
 	 Image_knihovna_objektu->Visible=false;//vypnutí komponenty s knihovnou
+   scGPButton_zmerit_vzdalenost->Visible=false;//schování měření vzdálenosti
 	 JID=-1;//ošetření, s JID se pracuje i v náhledu
 	 element_id=99999;//ošetření pro správné zobrazování mgridů
 	 pom_bod=NULL;pom_bod_temp=NULL;//s těmito ukazateli pracuje jak náhled tak schéma, ošetření
@@ -8339,6 +8340,7 @@ void TForm1::zmena_editovaneho_objektu()
 	DrawGrid_knihovna->SetFocus();
 	scButton_zamek_layoutu->Visible=false;//vypnutí tlačítka pro zámek layoutu
 	Image_knihovna_objektu->Visible=false;//vypnutí komponenty s knihovnou
+  scGPButton_zmerit_vzdalenost->Visible=false;
 	mGrid_knihovna->SetVisibleComponents(false);//vypnutí komponent v mgridu
 	JID=-1;//ošetření, s JID se pracuje i v náhledu
 	element_id=99999;//ošetření pro správné zobrazování mgridů
@@ -9908,9 +9910,9 @@ void __fastcall TForm1::MaxButtonClick(TObject *Sender)
 			 FMaximized = false;
 			 scLabel_titulek->DragForm = true;
 			 MaxButton->GlyphOptions->Kind = scgpbgkMaximize;
-			 if(pom_temp==NULL)scButton_zamek_layoutu->Visible=false;
+			 if(pom_temp==NULL){scButton_zamek_layoutu->Visible=false;scGPButton_zmerit_vzdalenost->Visible=false;}
 			 scGPSizeBox->Visible = true;
-			 if(pom_temp==NULL)scButton_zamek_layoutu->Visible=true;
+			 if(pom_temp==NULL){scButton_zamek_layoutu->Visible=true; scGPButton_zmerit_vzdalenost->Visible=true;}
 			 Form1->Width=Screen->Width/3*2;//zmenší formulář na 2/3 jeho velikosti
 			 Form1->Height=Screen->Height/3*2;//zmenší formulář na 2/3 jeho velikosti
 			 scSplitView_OPTIONS->Opened=false;
@@ -10775,6 +10777,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		scGPComboBox_prepinacKot->ItemIndex=0;//ošetření pokud bylo při vypínání editace nastaveno na časové kóty
 		scButton_zamek_layoutu->Visible=true;//zapnutí tlačítka zámek layoutu
 		Image_knihovna_objektu->Visible=true;//zapnutí knihovny
+    scGPButton_zmerit_vzdalenost->Visible=true;
 		mGrid_knihovna->SetVisibleComponents(true);//zapnutí komponent v mgridu
 		popisky_knihovna_nahled(true);//nastavení popisků pro knihovnu
 		DrawGrid_knihovna->Top=10000;//musí být zobrazena, odchytává stisk kláves
@@ -10984,7 +10987,7 @@ void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
 void __fastcall TForm1::scGPGlyphButton_OPTIONSMouseEnter(TObject *Sender)
 {
 log(__func__);//logování
-scGPGlyphButton_OPTIONS->GlyphColor=(TColor)RGB(0,120,215);
+scGPGlyphButton_OPTIONS->GlyphColor=clWhite;//(TColor)RGB(0,120,215);
 }
 //---------------------------------------------------------------------------
 
@@ -10992,7 +10995,7 @@ scGPGlyphButton_OPTIONS->GlyphColor=(TColor)RGB(0,120,215);
 void __fastcall TForm1::scGPGlyphButton_OPTIONSMouseLeave(TObject *Sender)
 {
 log(__func__);//logování
-scGPGlyphButton_OPTIONS->GlyphColor=clWhite;
+scGPGlyphButton_OPTIONS->GlyphColor=(TColor)RGB(255,128,0);
 }
 //---------------------------------------------------------------------------
 
