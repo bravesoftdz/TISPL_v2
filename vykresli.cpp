@@ -310,6 +310,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	else canv->Font->Style = TFontStyles();//vypnutí
 	//samotné vypsání názvu
 	nastavit_text_popisu_objektu_v_nahledu(canv,1);
+	if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)canv->Font->Color=m.clIntensive(clStenaKabiny,50);
 	TextFraming(canv,X,Y,Tn);//záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
 	canv->Font->Orientation=0;//vrácení původní hodnoty rotace canvasu
 	//vykreslení uchopovacího kříže u textu
@@ -351,8 +352,9 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		double vzdalenost=0;
 		while(K->dalsi!=NULL)
 		{
-			if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)K->n || F->JID==0 && F->pom_komora->n==K->n))clAkt=m.clIntensive(clStenaKabiny,-50);//highlight
+			if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)K->n || F->JID==0 && F->pom_komora!=NULL && F->pom_komora->n==K->n))clAkt=m.clIntensive(clStenaKabiny,-50);//highlight
 			else clAkt=clStenaKabiny;
+			if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clAkt=m.clIntensive(clStenaKabiny,50);
 			set_pen(canv,clAkt,sirka_steny_px,PS_ENDCAP_SQUARE);
 			vzdalenost+=K->velikost;//dle velikosti předchozích komor uchovává hodnotu součtu/pozice aktuálně vykreslované komory
 			short W1=0;if(K->n==1)W1=W;//pro první komoru odsazeni
@@ -366,7 +368,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				line(canv,X,Y1,X,Y-pmpp);
 				line(canv,X,Y2,X,Y+pmpp);
 				//highlight komory
-				if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)K->n || F->JID==0 && F->pom_komora->n==K->n))
+				if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)K->n || F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==K->n))
 				{
 					double hl_X=0;
 					if(orientace==90)hl_X=X-m.m2px(K->velikost)-W1;else hl_X=X+m.m2px(K->velikost)-W1;
@@ -393,7 +395,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				line(canv,X1,Y,X-pmpp,Y);
 				line(canv,X2,Y,X+pmpp,Y);
 				//highlight komory
-				if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)K->n || F->JID==0 && F->pom_komora->n==K->n))//highlight komory
+				if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)K->n || F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==K->n))//highlight komory
 				{
 					double hl_Y=0;
 					if(orientace==180)hl_Y=Y-m.m2px(K->velikost)-W1;else hl_Y=Y+m.m2px(K->velikost)-W1;
@@ -414,7 +416,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 			if(zobrazit_koty && F->pom_temp->n==O->n)
 			{
 				//nastavení highlight
-				if((F->JID==0&&F->pom_komora->n==K->n) || (F->JID*(-1)-10==(signed)K->n || F->JID*(-1)-10==(signed)K->predchozi->n)&&F->d.v.PtInKota_komory(O,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
+				if((F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==K->n) || (F->JID*(-1)-10==(signed)K->n || F->JID*(-1)-10==(signed)K->predchozi->n)&&F->d.v.PtInKota_komory(O,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
 				else if(F->JID*(-1)-10==(signed)K->n || F->JID>=11 && F->JID<=99)highlight=1;else highlight=0;
 				//vykreslení kót komor
 				switch((int)orientace)
@@ -429,12 +431,13 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		}
 		K=NULL;delete K;
 		////poslední komora
-		if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)F->pom_temp->komora->predchozi->n || (F->JID==0 && F->pom_komora->n==F->pom_temp->komora->predchozi->n)))clAkt=m.clIntensive(clStenaKabiny,-50);//highlight
+		if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)F->pom_temp->komora->predchozi->n || (F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==F->pom_temp->komora->predchozi->n)))clAkt=m.clIntensive(clStenaKabiny,-50);//highlight
 		else clAkt=clStenaKabiny;
+		if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clAkt=m.clIntensive(clStenaKabiny,50);
 		set_pen(canv,clAkt,sirka_steny_px,PS_ENDCAP_SQUARE);
 		if(orientace==90 || orientace==270)
 		{
-			if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)F->pom_temp->komora->predchozi->n || (F->JID==0 && F->pom_komora->n==F->pom_temp->komora->predchozi->n)))//highlight komory
+			if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)F->pom_temp->komora->predchozi->n || (F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==F->pom_temp->komora->predchozi->n)))//highlight komory
 			{
 				//nastavení proměnných podle orientace
 				double hl_X=0;
@@ -454,7 +457,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		else
 		{
 			bool highlight=false;
-			if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)F->pom_temp->komora->predchozi->n || (F->JID==0 && F->pom_komora->n==F->pom_temp->komora->predchozi->n)))//highlight komory
+			if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)F->pom_temp->komora->predchozi->n || (F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==F->pom_temp->komora->predchozi->n)))//highlight komory
 			{
 				//nastavení proměnných podle orientace
 				highlight=true;
@@ -476,7 +479,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		//vykreslení KÓTY od poslení komory k okraji kabiny
 		if(zobrazit_koty && F->pom_temp->n==O->n)
 		{
-			if((F->JID==0 && F->pom_komora->n==O->komora->predchozi->n) || (F->JID*(-1)-10==(signed)O->komora->predchozi->n || F->JID*(-1)-10==(signed)O->komora->predchozi->predchozi->n)&&F->d.v.PtInKota_komory(O,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
+			if((F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==O->komora->predchozi->n) || (F->JID*(-1)-10==(signed)O->komora->predchozi->n || F->JID*(-1)-10==(signed)O->komora->predchozi->predchozi->n)&&F->d.v.PtInKota_komory(O,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
 			else if(F->JID*(-1)-10==(signed)O->komora->predchozi->n || F->JID>=11&&F->JID<=99)highlight=1;
 			else highlight=0;
 			//vykreslení kót komor
@@ -3057,7 +3060,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O)//sloučit s v
 			POLE[2]=TPoint(m.L2Px(E->geo.X3),m.L2Py(E->geo.Y3));
 			POLE[3]=TPoint(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
 			//vykreslení
-			if(E->pohon==NULL || O->pohon==NULL && F->pom_temp==NULL)canv->Pen->Width=1;//pokud není pohon přiřazen, tak jen elementární osa
+			if(E->pohon==NULL/* || F->pom_temp!=NULL && F->pom_temp->n!=O->n || O->pohon==NULL && F->pom_temp==NULL*/)canv->Pen->Width=1;//pokud není pohon přiřazen, tak jen elementární osa
 			else canv->Pen->Width=m.round(F->Zoom*0.5);//pokud není přiřazen
 			canv->Pen->Color=clBlack;
 			canv->PolyBezier(POLE,3);
@@ -4131,7 +4134,7 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,lon
   }
 
   //vykreslení textu
-	if(typ!=-1 && name!="" && F->pom_temp!=NULL)//v módu kurzor nebo pokud je součástí nadřazeného elementu se název nezobrazuje, nezobrazují se v layoutu
+	if(typ!=-1 && name!="" && F->pom_temp!=NULL && F->Akce!=F->GEOMETRIE)//v módu kurzor nebo pokud je součástí nadřazeného elementu se název nezobrazuje, nezobrazují se v layoutu
 	{
 		//nastavení písma  //pokud by tu nebylo ošetření zdisablovaného stavu, tak by se font již vypisoval bílou barvou....
 		if(typ==0 && stav!=-1)canv->Font->Color=m.clIntensive(barva,100);else canv->Font->Color=barva;//ikona vs. normální zobrazení

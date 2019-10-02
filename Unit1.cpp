@@ -2070,7 +2070,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					if(MOD==NAHLED && pom_temp!=NULL)//TABULKA či ELEMENT
 					{
 						if(JID==-1){Akce=PAN;pan_non_locked=true;}//pouze posun obrazu, protože v aktuálním místě pozici myši se nenachází vektor ani interaktivní text
-						if(JID==0&&pom_temp->id!=3){Akce=MOVE_ELEMENT;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;mazani=true;pom_element_temp=pom_element;puv_souradnice.x=pom_element->X;puv_souradnice.y=pom_element->Y;}//ELEMENT posun
+						if(JID==0&&pom_komora==NULL&&pom_element!=NULL){Akce=MOVE_ELEMENT;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;mazani=true;pom_element_temp=pom_element;puv_souradnice.x=pom_element->X;puv_souradnice.y=pom_element->Y;}//ELEMENT posun
 						if(1000<=JID && JID<2000){Akce=MOVE_TABLE;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;pom_element->mGrid->Highlight;refresh_mGrid=false;d.nabuffrovat_mGridy();}//TABULKA posun
 						if(100<JID && JID<900){redesign_element();}//nultý sloupec tabulky, libovolný řádek, přepnutí jednotek
 						if(JID==-6) {DrawGrid_knihovna->SetFocus();stav_kurzoru=false;editace_textu=true;index_kurzoru=-6;nazev_puvodni=pom_temp->name;TimerKurzor->Enabled=true;}//editace názvu
@@ -2082,7 +2082,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						if(JID>=4&&JID<=10)zmena_jednotek_tab_pohon();//změna jednotek v tabulce pohonů
 						if(JID==100)vytvor_edit();//změna názvu elementu
 						if(JID==1){DrawGrid_knihovna->SetFocus();stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;nazev_puvodni=pom_element_temp->name;editace_textu=true;TimerKurzor->Enabled=true;}
-						if(JID==0&&pom_temp->id==3){Akce=MOVE_KOMORA;pom_komora_temp=pom_komora;}//uchopení a přesun komory, sloužící k jejímu odstranění
+						if(JID==0&&pom_komora!=NULL&&pom_element==NULL){Akce=MOVE_KOMORA;pom_komora_temp=pom_komora;}//uchopení a přesun komory, sloužící k jejímu odstranění
             //nové JID pro objekt
 						if(JID==-2){Akce=MOVE_USECKA;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;nahled_ulozit(true);}//posun úsečky
 						if(JID==-3){Akce=MOVE_BOD;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;ortogonalizace_stav=false;nahled_ulozit(true);}//posun jednoho bodu
@@ -2337,7 +2337,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				TPoint souradnice=bod_vlozeni_elementu();//"přilepení" kurzoru na pohon
 				short rotace_symbolu=0;if(pom_temp->orientace==0 || pom_temp->orientace==180)rotace_symbolu=90;
 				if(souradnice.x==-1000)souradnice=akt_souradnice_kurzoru_PX;
-				else if(pom_element_temp!=NULL)rotace_symbolu=rotace_symbol(pom_element_temp->geo.orientace,souradnice.x,souradnice.y);//zjistění rotace symbolu
+				else if(pom_element_temp!=NULL)rotace_symbolu=rotace_symbol(m.Rt90(pom_element_temp->geo.orientace),souradnice.x,souradnice.y);//zjistění rotace symbolu
 				souradnice=uprav_bod_vlozeni_elementu(souradnice,rotace_symbolu);//uprava souřadnic posun robota, bod vkládání na ramenu
 				if(pom->id==3)d.vykresli_ikonu_komory(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,"",element_id);
 				else d.vykresli_element(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,"","",element_id,-1,Rotace_symbolu_minula);
@@ -2430,7 +2430,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			//aktuální souřadnice se po posunu zapíší do minule_souřadnice, z důvodu okamžité změny známénka posuvu
 			minule_souradnice_kurzoru=TPoint(X,Y);
 			//if(!nemazat && !posun_dalsich_elementu)Smazat1Click(this);
-			if(!nemazat)TIP="Nelze přeunout element!";else TIP="";
+			if(!nemazat)TIP="Prvek nelze přeunout!";else TIP="";
 			REFRESH(false);
 			//když nejsou viditelné tabulky elementu, a když se nejedná o element, který nemá tabulku -> nevykresli spojnici mezi elementem a tabulkou
 			if(pom_temp->zobrazit_mGrid&&pom_element->eID!=100&&pom_element->eID!=MaxInt)vykresli_spojinici_EmGrid(Canvas,pom_element);
@@ -2897,8 +2897,8 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 //JID= 2000-rezervováno pro 2 či další sloupce resp. řádky, 2000 - nevyužito,2001 - první řádek (po nultém)
 void TForm1::getJobID(int X, int Y)
 {
+	log(__func__);//logování
 	JID=-1;//výchozí stav, nic nenalezeno
-
 	if(MOD==NAHLED)
 	{
   	//nejdříve se zkouší hledat souřadnice myši v TABULCE POHONů
@@ -3066,6 +3066,7 @@ void TForm1::getJobID(int X, int Y)
 //dle místa kurzoru a vrácené JID (job id) nastaví úlohu
 void TForm1::setJobIDOnMouseMove(int X, int Y)
 {
+	log(__func__);//logování
 	if(MOD==NAHLED)
 	{
 		refresh_mGrid=true;//defaultně se tabulky refreshují, zakázání refreshe se provádí při určitých úkonech, toto zajistí zapnutí refreshe po ukončení úkonu při kterém byl tento refresh potlačen
@@ -3093,7 +3094,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 			}
 			if(JID==0&&pom_temp->id!=3){if(pom_element->orientace==0||pom_element->orientace==180)kurzor(zmena_d_x);else kurzor(zmena_d_y);pom_element->stav=2;refresh_mGrid=false;}//posun ELEMENT
 			if(JID==0&&pom_temp->id==3){kurzor(posun_ind);}//posun komory
-  		if(JID==1){kurzor(edit_text);pom_element->stav=3;refresh_mGrid=false;}//ELEMENT název
+			if(JID==1){kurzor(edit_text);pom_element->stav=3;refresh_mGrid=false;}//ELEMENT název
   		//použit závěrečný REFRESH if(pom_element!=pom_element_puv && (puvJID==0 || JID==0)/* || (puvJID==0 && JID==1) || (puvJID==1 && JID==0)*/){REFRESH();}//důvod k REFRESH, pouze v případě změny elementu či přechodu z názvu na celý element a opačně
   		//použit závěrečný REFRESH if(10<JID && JID<1000){REFRESH();}//hodnota kóty
 			if(JID==100){kurzor(edit_text);pom_element->mGrid->CheckLink(X,Y);refresh_mGrid=true;}//název elementu v hlavičce tabulky - aktivace dodáním pouze aktuálních souřadnic
@@ -4067,7 +4068,7 @@ void TForm1::add_element (int X, int Y)
   	FormX->vstoupeno_poh=false;//blokace událostí při vkládání elementu
   	FormX->vstoupeno_elm=false;
   	short trend=pom_temp->orientace;
-		short rotace_symbolu=rotace_symbol(pom_element_temp->geo.orientace,bod_vlozeni.x,bod_vlozeni.y);
+		short rotace_symbolu=rotace_symbol(m.Rt90(pom_element_temp->geo.orientace),bod_vlozeni.x,bod_vlozeni.y);
 		bod_vlozeni=uprav_bod_vlozeni_elementu(bod_vlozeni,rotace_symbolu);
 		//vložení elementu na dané souřadnice a do patřičného pomocného spojáku, pro případ storna
 		TIP="";//smazání tipu, pro jistotu
@@ -4144,7 +4145,7 @@ void TForm1::add_element (int X, int Y)
 		nahled_ulozit(true);//důvod k uložení náhledu
 		refresh_mGrid=true;//nutné pro správné zobrazení mgridů po přidání elementu
 	}
-	else TIP="Nelze vložit robota mimo kabinu!";//hláška uživateli
+	else TIP="Nelze vložit prvek mimo kabinu!";//hláška uživateli
 	REFRESH();
 }
 //---------------------------------------------------------------------------
@@ -4541,11 +4542,11 @@ bool TForm1::prekryti_LO(Cvektory::TElement *E)
 {
 	log(__func__);//logování
 	bool prekryti=false;
-	if(pom_temp!=NULL && E!=NULL && E->eID!=MaxInt)
+	if(pom_temp!=NULL && E!=NULL && E->eID%2!=0 && E->eID!=5 && E->eID!=MaxInt)
 	{
 		TRect el1=souradnice_LO(E),el2;
 		//kontrola konfliktu s dalším elementem
-		if(E->dalsi!=NULL && E->dalsi->eID!=MaxInt)
+		if(E->dalsi!=NULL && E->dalsi->eID%2!=0 && E->dalsi->eID!=5 && E->dalsi->eID!=MaxInt)
 		{
 			el2=souradnice_LO(E->dalsi);
 			switch((int)pom_temp->orientace)
@@ -4557,7 +4558,7 @@ bool TForm1::prekryti_LO(Cvektory::TElement *E)
 			}
 		}
 		//kontrola konfliktu s přechozím elementem
-		if(E->predchozi!=NULL && E->n!=1 && E->predchozi->eID!=MaxInt)
+		if(E->predchozi!=NULL && E->n!=1 && E->predchozi->eID%2!=0 && E->predchozi->eID!=5 && E->predchozi->eID!=MaxInt)
 		{
 			el2=souradnice_LO(E->predchozi);
 			switch((int)pom_temp->orientace)
@@ -4720,7 +4721,7 @@ TPoint TForm1::bod_vlozeni_elementu(double kontr_x,double kontr_y)
 	Cvektory::TElement *E=pom_temp->elementy->dalsi;
 	while(E!=NULL)
 	{
-		if(E->geo.typ==0 && E->geo.orientace==m.Rt90(E->geo.orientace))//jen pro přímky 0,90,180,270°
+		if(E->geo.typ==0 && (E->geo.orientace==m.Rt90(E->geo.orientace) || E->geo.orientace==360))//jen pro přímky 0,90,180,270°
 		{
 			//nastavení oblasti
 			if(E->geo.orientace==90 || E->geo.orientace==270){X1=E->geo.X1;X2=E->geo.X4;Y1=E->geo.Y1+oblast;Y2=E->geo.Y4-oblast;}
@@ -7781,6 +7782,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 					if((long)pom->id==VyID||(long)pom->id==pocet_objektu_knihovny+1){d.v.nove_indexy(true);d.v.pocet_vyhybek--;d.v.nove_nazvy();}
 					else d.v.nove_indexy();
 					pom=NULL;//delete p; nepoužívat delete je to ukazatel na ostra data
+          if(d.v.OBJEKTY->dalsi==NULL){Nahled->Enabled=false;posledni_editovany_objekt=NULL;}//zakázání záložky editace pokud již neexistuje žádný objekt
 					REFRESH();
 					DuvodUlozit(true);
 				}
@@ -9813,16 +9815,16 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //---------------------------------------------------------------------------
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
-{      Sv("pom: "+AnsiString(outaRD(pom->pohon->aRD)));  Sv("pom_temp: "+AnsiString(outaRD(pom_temp->pohon->aRD)));  Sv("pohon: "+AnsiString(outaRD(d.v.vrat_pohon(pom_temp->pohon->n)->aRD)));
+{
 //	Akce=GEOMETRIE;
 //	editace_geometrie_spustena=false;
 //	REFRESH(false);
-//	Cvektory::TElement *E=pom_temp->elementy->dalsi;
-//	while(E!=NULL && E->n!=0)
-//	{
-//		Memo(E->name); Memo(E->akt_pocet_voziku);
-//		E=E->dalsi;
-//	} E=NULL;delete E;
+	Cvektory::TElement *E=pom_temp->elementy->dalsi;
+	while(E!=NULL && E->n!=0)
+	{
+		Memo(E->name+"; geo.orientace: "+AnsiString(E->geo.orientace)+"; Rt90(orientace): "+AnsiString(m.Rt90(E->geo.orientace)));
+		E=E->dalsi;
+	} E=NULL;delete E;
 //	Memo(vzdalenost_meziLO(E,pom_temp->orientace));
 //	TRect A=vrat_max_oblast();
  //	Canvas->Pen->Color=clRed;

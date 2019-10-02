@@ -3449,7 +3449,7 @@ bool Cvektory::pohon_je_pouzivan(unsigned long n)
 		if(!nalezen)O=O->dalsi;
 		else break;
 	}
-	O=NULL;delete O;
+	O=NULL;delete O; F->log(__func__," KONEC");//logování
 	return nalezen;
 }
 ////---------------------------------------------------------------------------
