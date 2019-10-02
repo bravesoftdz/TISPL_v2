@@ -7976,9 +7976,10 @@ object Form1: TForm1
   object scSplitView_OPTIONS: TscSplitView
     Left = 0
     Top = 34
-    Width = 250
+    Width = 0
     Height = 695
     Anchors = [akLeft, akTop, akBottom]
+    Enabled = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBtnText
     Font.Height = -11
@@ -8011,7 +8012,7 @@ object Form1: TForm1
     CompactWidth = 0
     CompactHeight = 20
     GripSize = 0
-    Opened = True
+    Opened = False
     OpenedWidth = 250
     OpenedHeight = 50
     OpenedMinWidth = 0
@@ -8891,6 +8892,7 @@ object Form1: TForm1
         Down = False
         GroupIndex = 0
         AllowAllUp = False
+        ExplicitTop = 66
       end
     end
     object scExPanel_ostatni: TscExPanel
