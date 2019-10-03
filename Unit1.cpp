@@ -8176,16 +8176,21 @@ void TForm1::NP_input()
 	 Posun_predchozi2=Posun_predchozi=Posun;
 	 Zoom_predchozi2=Zoom_predchozi=Zoom;
 	 //nastavení zoomu na vhodný náhled
-	 Zoom=5.0;
+   bool zmena_zoom=false;  //pomocna promena pro dalsi nastaveni - vycentrovani obrazu
+   if(Zoom<=4)  { Zoom=5.0;zmena_zoom=true; } //pokud je zoom pri prechodu do editace mensi nebo roven 4, dojde k nastaveni zoomu na 5 a vycentrovani obrazu
+	 else { Zoom=Zoom; zmena_zoom=false;} //pokud je v layoutu zoom jiny (vetsi) tak tento zoom ponecham i pro editace a nemenim nijak pozici objektu
 	 probehl_zoom=true;
-	 zneplatnit_minulesouradnice();
+   zneplatnit_minulesouradnice();
 	 //prozatim definice kabiny
 	 TPoint Centr;
 	 Centr.x=(pom_temp->elementy->dalsi->geo.X1+pom_temp->elementy->predchozi->geo.X4)/2.0;
 	 Centr.y=(pom_temp->elementy->dalsi->geo.Y1+pom_temp->elementy->predchozi->geo.Y4)/2.0;
 	 //vycentrování obrazu na střed
+   if(zmena_zoom)
+   {
 	 Posun.x=Centr.x/m2px-ClientWidth/2/Zoom;
 	 Posun.y=-Centr.y/m2px-(ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2/Zoom; //ClientHeight-scGPPanel_bottomtoolbar->Height
+   }
 	 //vycentruje kurzor na střed monitoru - na X nefunguje přesně, problém při vstupu do editace pomocí záložky (uskakování kurzoru)
 	 //if(vycentrovat)Mouse->CursorPos=TPoint(m.L2Px(akt_souradnice_kurzoru.x),m.L2Py(akt_souradnice_kurzoru.y)+vyska_menu);
 	 //vycentrovat=true;
@@ -8321,6 +8326,7 @@ void TForm1::NP_input()
 	pom_element_temp=pom_temp->elementy->dalsi;//pro pořeby editace geometrie
 	on_change_zoom_change_scGPTrackBar();//musí být po design_element
 	FormX->input_state=FormX->NOTHING;
+  REFRESH(); //přidáno kvůli zobrazení tab. pohonů a kót (při shodném zoomu layout->editace)
 }
 //---------------------------------------------------------------------------
 //slouží k přechodu z editace jednoho objektu do editace druhého objektu
