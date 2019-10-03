@@ -2812,7 +2812,7 @@ unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,int i,TPointD OD, TPointD 
 //vykresli pozic na elementech
 void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 {
-	 if(F->scGPCheckBox_zobrazit_pozice->Checked && E->max_pocet_voziku>0 || (F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180))//pokud se má smysl algoritmem zabývat
+	 if(F->scGPTrackBar_intenzita->Value>5 && F->scGPCheckBox_zobrazit_pozice->Checked && E->max_pocet_voziku>0 || (F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180))//pokud se má smysl algoritmem zabývat
 	 {
 		 ////výchozí hodnoty
 		 double orientaceP=m.Rt90(E->geo.orientace-180);
@@ -2821,6 +2821,7 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 		 double Y=Rxy(E).y;
 		 double dJ=v.PP.delka_jig;//později nahradit ze zakázky
 		 double sJ=v.PP.sirka_jig;//později nahradit ze zakázky
+		 //F->Memo(v.vrat_rotaci_jigu_po_predchazejicim_elementu(E));
 		 double rotaceJ=0;//DODELAT!!!! v.vrat_rotaci_jigu_po_predchazejicim_elementu(E);//metodu po přechodu na nový DM zaktulizovat o průchod přes spoják elementů
 		 short rozmezi=60;//pouze empiricky dodaná hodnota barevného rozpětí od první až po poslední pozici rotace
 		 unsigned short clPotRGB=180;//hotnota barevných složek dle RGB potenciálních pozic
@@ -2829,7 +2830,7 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 		 if(F->pom_temp!=NULL && E->objekt_n!=F->pom_temp->n)//v případě editace změna intezity barev právě needitovaných objektů
 		 {
 			 clPotencial=m.clIntensive(clPotencial,I);if(I>5){clPotRGB=255-m.round((100-I)/4);rozmezi=0;}
-			 clChassis=m.clIntensive(clChassis,I*2);clJig=m.clIntensive(clJig,I*3);//*2,*3 pouze empiricky dodáno
+			 clChassis=m.clIntensive(clChassis,I*2);clJig=m.clIntensive(clJig,I*4);//*2,*3 pouze empiricky dodáno
 		 }
 
 		 ////určení směru vykreslování pozic
@@ -4710,14 +4711,14 @@ void Cvykresli::smart_kurzor(TCanvas *canv,Cvektory::TElement *E)
 	double preRA=0;
 	double prepreRA=0;
 	if(E!=NULL)
-	{
+	{        //if(E->eID==0)F->Memo("stop");else F->Memo("");
 		preXk=E->geo.X4;
 		preYk=E->geo.Y4;
 		preOR=E->geo.orientace;
 		preRA=E->geo.rotacni_uhel;
 		if(E->predchozi!=NULL && E->predchozi->n>=1)Ep=E->predchozi;//nastavení předchozího elementu pokud exituje
 	}
-	else//pokud neexistuje žádny předchozí element bude smart kurzor umístěn na začátek kabiny
+	else//pokud neexistuje žádny předchozí element bude smart kurzor umístěn na začátek objektu
 	{
 		//defaultně od prvního bodu aktuální kabiny
 		preXk=F->pom_temp->elementy->dalsi->geo.X1;
@@ -4781,7 +4782,7 @@ void Cvykresli::vykresli_Gelement_kurzor(TCanvas *canv,double X,double Y,double 
 	vykresli_potencial_Gelement(canv,X,Y,orientace,0,delka_linie+1,clPotencial,false);//provizorně nastaveno na 1 metr
 
 	//vykreslení potenciálních oblouků dle katalogu
-	short RA[]={90,45,30,15};//nahradit načítáním ze spojáku
+	short RA[]={90,45,30,15};//nahradit načítáním ze spojáku vybraného katalogu (ale zatím postrádá význam, všude jsou stejné úhly), pokud bych chtěl násleně break, muselo by být řazeno od nejmenšího RA
 	short intenzitaK=0,intenzitaZ=0;//intenzita barvy
 	for(unsigned short i=0;i<4;i++)
 	{    //povoluje libovolný uhel po linii, ale pouze stejný po předch. oblouku && zajišťuje selekci nesmyslné varianty á la tangens) && !nesmí být 3x90° za sebou
