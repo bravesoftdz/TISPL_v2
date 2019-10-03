@@ -3283,7 +3283,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 1193
     end
   end
   object scGPGlyphButton2: TscGPGlyphButton
@@ -4466,7 +4465,7 @@ object Form1: TForm1
     Height = 224
     Lines.Strings = (
       'Memo3')
-    TabOrder = 40
+    TabOrder = 39
     Visible = False
   end
   object scGPPanel_bottomtoolbar: TscGPPanel
@@ -4474,7 +4473,7 @@ object Form1: TForm1
     Top = 687
     Width = 1216
     Height = 45
-    TabOrder = 41
+    TabOrder = 40
     Visible = False
     BlurBackground = False
     BlurBackgroundAmount = 5
@@ -5639,7 +5638,7 @@ object Form1: TForm1
     Width = 116
     Height = 25
     Caption = 'ButtonMaKRtesty'
-    TabOrder = 42
+    TabOrder = 41
     Visible = False
     OnClick = Button14Click
     OnKeyDown = FormKeyDown
@@ -5655,7 +5654,7 @@ object Form1: TForm1
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 43
+    TabOrder = 42
     Visible = False
     BorderWidth = 1
     BackgroundStyle = scexbgsPanel
@@ -7058,7 +7057,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
-      ExplicitTop = 320
     end
     object scButton_zaloha: TscButton
       Left = 0
@@ -7986,7 +7984,6 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  Vrstvy'
-      ExplicitTop = 553
     end
     object scExPanel_podklad: TscExPanel
       Left = 1
@@ -8025,7 +8022,6 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  Podklad'
-      ExplicitTop = 144
       object scGPButton_adjustace: TscGPButton
         AlignWithMargins = True
         Left = 3
@@ -8670,6 +8666,7 @@ object Form1: TForm1
         Top = 65
         Width = 239
         Height = 33
+        Hint = 'Zaji'#353#357'uje zadav'#225'n'#237' obrysu haly '#269'i objektu pravo'#250'hle '
         Margins.Left = 7
         Margins.Top = 0
         Margins.Bottom = 0
@@ -8684,7 +8681,7 @@ object Form1: TForm1
         TabStop = True
         OnClick = scGPCheckBox_ortogonClick
         Animation = False
-        Caption = 'Pravo'#250'hl'#233' zobrazen'#237
+        Caption = 'Pravo'#250'hl'#233' zad'#225'v'#225'n'#237
         CanFocused = True
         Spacing = 1
         Layout = blGlyphLeft
@@ -8856,7 +8853,7 @@ object Form1: TForm1
         Left = 57
         Top = 237
         Width = 59
-        Height = 28
+        Height = 20
         Margins.Left = 6
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWhite
@@ -9045,7 +9042,6 @@ object Form1: TForm1
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
-        ExplicitTop = 164
       end
       object scGPCheckBox_zobrazit_rotace_jigu_na_otocich: TscGPCheckBox
         AlignWithMargins = True
@@ -9148,7 +9144,6 @@ object Form1: TForm1
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
-        ExplicitTop = 158
       end
     end
   end
@@ -9156,7 +9151,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118007C08840810001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118008808880810001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10279,7 +10274,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C010145002C0A340A30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01014500380A380A30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000006003000001002000000000000020
       0A00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
