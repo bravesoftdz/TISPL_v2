@@ -97,6 +97,7 @@ class Cmy
 	double get_timePERpx(double speed,double A=1,double speed_min=0);//z rychlosti v m/s vratí čas milisekundách potřebný na překreslení jednoho pixelu při daném zoomu, parametr A=je rychlost animace, kdy implicitní 1 originální rychlost - tedy 100%, pokud je parametr A=0, vrátí se vhodný čas na přehrání kontinuální animace, metoda je vhodná na animace a simulace pro timer  nehledě na rychlost, pokud je (i implicitní) parametr speed_min==0, tzn. převezme se hodnota aktuálního počítaného RD, tzn. všechny animace se promítnou se stejným afps dle fps, tj. všechny animace se zobrazí kontinuálně (netrhnaně), v případě nenulové hodnoty je speed_min stanovane jako minimální možná rychlost pro zobrazení kontinuální (netrhnané) simulace, pokud by byl paremetr speed nižší, nebude se jednat kontinuální (netrhnanou) simulaci
 	bool between(double value,double from, double to, bool left_closed=true, bool right_closed=true);//vrací true či falce zda se daná hodnota nachází čí nenachází v intervalu, interval může být uzavřený (tzn. včetně hodnoty hranice intervalu) nebo otevřený a to i rozdílně pro obě meze, implicitně jsou hranice nastaveny na uzavřený interval z obou stran, tzn. do podmínky se zahrnuje včetně obou hodnot
 	double null(double number,double tolerance=0.0000000001);//zkontroluje číslo, zda se nejadná o hodnout okolo nuly dle možné odchylky dle toleration, předchází zvláštnímu chování výpočtů okolo nuly
+  short get_intensity();//přepošítá hodnotu posuvníku intenzivity na změnu intenzivity při vykreslění elementů
 
 	protected:
 };

@@ -226,7 +226,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 			if(E->n>0)
 			{
 				vykresli_pozice(canv,E);
-				vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->LO1,E->OTOC_delka,E->LO2,E->LO_pozice,E);
+				if(!(F->pom_temp!=NULL && O->n!=F->pom_temp->n && F->scGPTrackBar_intenzita->Value<5))vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->LO1,E->OTOC_delka,E->LO2,E->LO_pozice,E);
 				E->citelna_oblast.rect3=aktOblast;//uložení citelné oblasti pro další použití
 				//vykreslení kót
 				if(F->pom_temp!=NULL && F->pom_temp->n==O->n && F->pom_temp->zobrazit_koty){vykresli_kotu(canv,v.vrat_predchozi_element(E),E);}//mezi elementy
@@ -260,6 +260,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 {
 	////vstupní proměnné
 	TColor clAkt=clStenaKabiny;
+	short I=100-F->scGPTrackBar_intenzita->Value;
 	double orientace=O->orientace; //něco s tím udělat!!!! short->double
 	long X1=m.L2Px(O->body->dalsi->X);
 	long Y1=m.L2Py(O->body->dalsi->Y);
@@ -287,7 +288,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	}
 
   ////vnější obrys kabiny
-	polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
+	if(!(F->pom_temp!=NULL && F->pom_temp->n!=O->n && F->scGPTrackBar_intenzita->Value<5))polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
 
   ////vykreslení prozatimní osy POHONU
 	//vykresli_retez(canv,O);
@@ -310,8 +311,9 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	else canv->Font->Style = TFontStyles();//vypnutí
 	//samotné vypsání názvu
 	nastavit_text_popisu_objektu_v_nahledu(canv,1);
-	if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)canv->Font->Color=m.clIntensive(clStenaKabiny,50);
-	TextFraming(canv,X,Y,Tn);//záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
+	canv->Font->Color=clStenaKabiny;
+	if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)canv->Font->Color=m.clIntensive(clStenaKabiny,I);
+	if(!(F->pom_temp!=NULL && F->pom_temp->n!=O->n && F->scGPTrackBar_intenzita->Value<5))TextFraming(canv,X,Y,Tn);//záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
 	canv->Font->Orientation=0;//vrácení původní hodnoty rotace canvasu
 	//vykreslení uchopovacího kříže u textu
 	canv->Pen->Color=clBlack;canv->Pen->Width=1;
@@ -501,7 +503,7 @@ void Cvykresli::nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv,unsigned sh
 	canv->Font->Name=F->aFont->Name;
 	canv->Font->Color=clRed;
 	canv->Font->Size=2*3*F->Zoom;
-	canv->Font->Style = TFontStyles();
+	canv->Font->Style = TFontStyles()<< fsBold;
 //	if((F->JID==-6 && typ==1) || (F->JID==-7 && typ==2))canv->Font->Style = TFontStyles()<< fsBold;//zapnutí tučného písma
 //	else canv->Font->Style = TFontStyles();//vypnutí
 }
@@ -3416,7 +3418,12 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 
 	//barva výplně
 	TColor barva=clRed;if(stav==0)barva=(TColor)RGB(60,179,113);//zelená světlejší(TColor)RGB(50,205,50);
-	if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
+	if(stav==-1)
+	{
+		short I=m.get_intensity();
+		if(typ==0)I=180;//pro ikony v knihovně elementů
+		barva=m.clIntensive(barva,I);//pokud je aktivní nebo neaktivní
+	}
 
 	//typ zobrazení
 	if(typ==-1)//kurzor
@@ -3519,9 +3526,11 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	TColor barva=clBlack; TColor clOzeh=(TColor)RGB(255,165,0);TColor clIon=(TColor)RGB(7,107,171);TColor clCO2=(TColor)RGB(135,206,250);
 	if(stav==-1)//pokud je aktivní nebo neaktivní
 	{
-		barva=m.clIntensive(barva,180);
-		clOzeh=m.clIntensive(clOzeh,180);
-		clIon=m.clIntensive(clIon,180);
+		short I=m.get_intensity();
+		if(typ==0)I=180;//pro ikony v knihovně elementů
+		barva=m.clIntensive(barva,I); //180 původní hodnota
+		clOzeh=m.clIntensive(clOzeh,I);
+		clIon=m.clIntensive(clIon,I);
 	}
 
   //rotace základny
@@ -3692,7 +3701,13 @@ void Cvykresli::vykresli_cloveka(TCanvas *canv,long X,long Y,AnsiString name,Ans
 
 	////nastavení barev
 	TColor barva=clBlack;TColor clIon=(TColor)RGB(7,107,171);
-	if(stav==-1){barva=m.clIntensive(barva,180);clIon=m.clIntensive(clIon,180);}//pokud je aktivní nebo neaktivní
+	if(stav==-1)
+	{
+    short I=m.get_intensity();
+		if(typ==0)I=180;//pro ikony v knihovně elementů
+		barva=m.clIntensive(barva,I);
+		clIon=m.clIntensive(clIon,I);
+	}//pokud je aktivní nebo neaktivní
 
 	////nastavení pera
 	float W=0.02;if(F->antialiasing)W*=3;
@@ -3848,7 +3863,13 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 	short size=m.round(3.5*Z);if(stav==2)size=m.round(3.7*Z);//ve skutečnosti poloměr
 	float width=0.8*Z;if(stav==2)width=1*Z;
 
-	TColor barva=clBlack; if(eID==6)barva=clRed;if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
+	TColor barva=clBlack; if(eID==6)barva=clRed;
+	if(stav==-1)//pokud je aktivní nebo neaktivní
+	{
+    short I=m.get_intensity();
+		if(typ==0)I=180;//pro ikony v knihovně elementů
+		barva=m.clIntensive(barva,I);
+	}
 
 	if(typ==-1)//v módu kurzor
 	{
@@ -3978,8 +3999,10 @@ void Cvykresli::vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiStr
 	TColor clIon=(TColor)RGB(7,107,171);
 	if(stav==-1)//pokud je aktivní nebo neaktivní
 	{
-		barva=m.clIntensive(barva,180);
-		clIon=m.clIntensive(clIon,180);
+    short I=m.get_intensity();
+		if(typ==0)I=180;//pro ikony v knihovně elementů
+		barva=m.clIntensive(barva,I);
+		clIon=m.clIntensive(clIon,I);
 	}
 
 	////nastavení pera - dle typu zobrazení
@@ -4562,8 +4585,9 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 	{
 		////výchozí parametry
 		//short W=m.round(sirka/2.0);//posunutí vykreslení orámování nad vnější rozměry kabiny
+		short I=100-F->scGPTrackBar_intenzita->Value;
 		TColor clHighlight=m.clIntensive(barva,-50);
-		TColor clDisabled=m.clIntensive(barva,50);
+		TColor clDisabled=m.clIntensive(barva,I);
 
 		////nastavení pera spojnic
 		canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
@@ -5031,10 +5055,10 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
     		double offset=1;
     		switch((int)F->pom_temp->orientace)
   			{
-    			case 0:y1=m.P2Ly(E_od.top);y2=m.P2Ly(E_do.bottom);x1=x2=F->pom_temp->elementy->dalsi->geo.X1;break;
-    			case 90:x1=m.P2Lx(E_od.right);x2=m.P2Lx(E_do.left);y1=y2=F->pom_temp->elementy->dalsi->geo.Y1;break;
-    			case 180:y1=m.P2Ly(E_od.bottom);y2=m.P2Ly(E_do.top);x1=x2=F->pom_temp->elementy->dalsi->geo.X1;break;
-    			case 270:x1=m.P2Lx(E_od.left);x2=m.P2Lx(E_do.right);y1=y2=F->pom_temp->elementy->dalsi->geo.Y1;offset*=-1;break;
+					case 0:y1=m.P2Ly(E_od.top);y2=m.P2Ly(E_do.bottom);x1=x2=Element_do->geo.X1;break;
+					case 90:x1=m.P2Lx(E_od.right);x2=m.P2Lx(E_do.left);y1=y2=Element_do->geo.Y1;break;
+					case 180:y1=m.P2Ly(E_od.bottom);y2=m.P2Ly(E_do.top);x1=x2=Element_do->geo.X1;break;
+    			case 270:x1=m.P2Lx(E_od.left);x2=m.P2Lx(E_do.right);y1=y2=Element_do->geo.Y1;offset*=-1;break;
     		}
     		if(10<F->JID && F->JID<100)highlight=0;//vypnutí highlightu při naznačení změny offsetu
     		//pokud mají oba elementy lakovací okna je mezi nimi vykreslena needitavatelná kóta
