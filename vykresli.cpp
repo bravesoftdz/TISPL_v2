@@ -310,14 +310,31 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	else canv->Font->Style = TFontStyles();//vypnutí
 	//samotné vypsání názvu
 	nastavit_text_popisu_objektu_v_nahledu(canv,1);
+	if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)canv->Font->Color=m.clIntensive(clStenaKabiny,50);
 	TextFraming(canv,X,Y,Tn);//záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
 	canv->Font->Orientation=0;//vrácení původní hodnoty rotace canvasu
 	//vykreslení uchopovacího kříže u textu
 	canv->Pen->Color=clBlack;canv->Pen->Width=1;
-	if(F->pom_temp!=NULL &&(F->JID==-6 || F->JID==-7))
+	if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID==-6 || F->JID==-7))
 	{
-		line(canv,m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0),m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn)+20,m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0)-40,m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn)+20);
-		line(canv,m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0)-20,m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn),m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0)-20,m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn)+40);
+		switch((int)orientace)
+		{
+			case 0:
+			{
+				line(canv,m.L2Px(F->pom_temp->Xt)-canv->TextHeight(Tn)+20,m.L2Py(F->pom_temp->Yt)+m.round(Wn/2.0),m.L2Px(F->pom_temp->Xt)-canv->TextHeight(Tn)+20,m.L2Py(F->pom_temp->Yt)+m.round(Wn/2.0)+40);
+				line(canv,m.L2Px(F->pom_temp->Xt)-canv->TextHeight(Tn)+40,m.L2Py(F->pom_temp->Yt)+m.round(Wn/2.0)+20,m.L2Px(F->pom_temp->Xt)-canv->TextHeight(Tn),m.L2Py(F->pom_temp->Yt)+m.round(Wn/2.0)+20);
+			}break;
+			case 90:case 270:
+			{
+				line(canv,m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0),m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn)+20,m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0)-40,m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn)+20);
+				line(canv,m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0)-20,m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn),m.L2Px(F->pom_temp->Xt)-m.round(Wn/2.0)-20,m.L2Py(F->pom_temp->Yt)-canv->TextHeight(Tn)+40);
+			}break;
+			case 180:
+			{
+				line(canv,m.L2Px(F->pom_temp->Xt)+canv->TextHeight(Tn)-20,m.L2Py(F->pom_temp->Yt)-m.round(Wn/2.0),m.L2Px(F->pom_temp->Xt)+canv->TextHeight(Tn)-20,m.L2Py(F->pom_temp->Yt)-m.round(Wn/2.0)-40);
+				line(canv,m.L2Px(F->pom_temp->Xt)+canv->TextHeight(Tn)-40,m.L2Py(F->pom_temp->Yt)-m.round(Wn/2.0)-20,m.L2Px(F->pom_temp->Xt)+canv->TextHeight(Tn),m.L2Py(F->pom_temp->Yt)-m.round(Wn/2.0)-20);
+			}break;
+		}
 	}
 	//vykreslení kříže posuvu u tabulky pohonu, natrvalo
 	if(F->pom_temp!=NULL && F->PmG->Highlight)
@@ -335,8 +352,9 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		double vzdalenost=0;
 		while(K->dalsi!=NULL)
 		{
-			if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)K->n || F->JID==0 && F->pom_komora->n==K->n))clAkt=m.clIntensive(clStenaKabiny,-50);//highlight
+			if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)K->n || F->JID==0 && F->pom_komora!=NULL && F->pom_komora->n==K->n))clAkt=m.clIntensive(clStenaKabiny,-50);//highlight
 			else clAkt=clStenaKabiny;
+			if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clAkt=m.clIntensive(clStenaKabiny,50);
 			set_pen(canv,clAkt,sirka_steny_px,PS_ENDCAP_SQUARE);
 			vzdalenost+=K->velikost;//dle velikosti předchozích komor uchovává hodnotu součtu/pozice aktuálně vykreslované komory
 			short W1=0;if(K->n==1)W1=W;//pro první komoru odsazeni
@@ -350,7 +368,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				line(canv,X,Y1,X,Y-pmpp);
 				line(canv,X,Y2,X,Y+pmpp);
 				//highlight komory
-				if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)K->n || F->JID==0 && F->pom_komora->n==K->n))
+				if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)K->n || F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==K->n))
 				{
 					double hl_X=0;
 					if(orientace==90)hl_X=X-m.m2px(K->velikost)-W1;else hl_X=X+m.m2px(K->velikost)-W1;
@@ -377,7 +395,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				line(canv,X1,Y,X-pmpp,Y);
 				line(canv,X2,Y,X+pmpp,Y);
 				//highlight komory
-				if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)K->n || F->JID==0 && F->pom_komora->n==K->n))//highlight komory
+				if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)K->n || F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==K->n))//highlight komory
 				{
 					double hl_Y=0;
 					if(orientace==180)hl_Y=Y-m.m2px(K->velikost)-W1;else hl_Y=Y+m.m2px(K->velikost)-W1;
@@ -398,7 +416,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 			if(zobrazit_koty && F->pom_temp->n==O->n)
 			{
 				//nastavení highlight
-				if((F->JID==0&&F->pom_komora->n==K->n) || (F->JID*(-1)-10==(signed)K->n || F->JID*(-1)-10==(signed)K->predchozi->n)&&F->d.v.PtInKota_komory(O,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
+				if((F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==K->n) || (F->JID*(-1)-10==(signed)K->n || F->JID*(-1)-10==(signed)K->predchozi->n)&&F->d.v.PtInKota_komory(O,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
 				else if(F->JID*(-1)-10==(signed)K->n || F->JID>=11 && F->JID<=99)highlight=1;else highlight=0;
 				//vykreslení kót komor
 				switch((int)orientace)
@@ -413,12 +431,13 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		}
 		K=NULL;delete K;
 		////poslední komora
-		if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)F->pom_temp->komora->predchozi->n || (F->JID==0 && F->pom_komora->n==F->pom_temp->komora->predchozi->n)))clAkt=m.clIntensive(clStenaKabiny,-50);//highlight
+		if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)F->pom_temp->komora->predchozi->n || (F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==F->pom_temp->komora->predchozi->n)))clAkt=m.clIntensive(clStenaKabiny,-50);//highlight
 		else clAkt=clStenaKabiny;
+		if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clAkt=m.clIntensive(clStenaKabiny,50);
 		set_pen(canv,clAkt,sirka_steny_px,PS_ENDCAP_SQUARE);
 		if(orientace==90 || orientace==270)
 		{
-			if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)F->pom_temp->komora->predchozi->n || (F->JID==0 && F->pom_komora->n==F->pom_temp->komora->predchozi->n)))//highlight komory
+			if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)F->pom_temp->komora->predchozi->n || (F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==F->pom_temp->komora->predchozi->n)))//highlight komory
 			{
 				//nastavení proměnných podle orientace
 				double hl_X=0;
@@ -438,7 +457,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		else
 		{
 			bool highlight=false;
-			if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)F->pom_temp->komora->predchozi->n || (F->JID==0 && F->pom_komora->n==F->pom_temp->komora->predchozi->n)))//highlight komory
+			if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)F->pom_temp->komora->predchozi->n || (F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==F->pom_temp->komora->predchozi->n)))//highlight komory
 			{
 				//nastavení proměnných podle orientace
 				highlight=true;
@@ -460,7 +479,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		//vykreslení KÓTY od poslení komory k okraji kabiny
 		if(zobrazit_koty && F->pom_temp->n==O->n)
 		{
-			if((F->JID==0 && F->pom_komora->n==O->komora->predchozi->n) || (F->JID*(-1)-10==(signed)O->komora->predchozi->n || F->JID*(-1)-10==(signed)O->komora->predchozi->predchozi->n)&&F->d.v.PtInKota_komory(O,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
+			if((F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==O->komora->predchozi->n) || (F->JID*(-1)-10==(signed)O->komora->predchozi->n || F->JID*(-1)-10==(signed)O->komora->predchozi->predchozi->n)&&F->d.v.PtInKota_komory(O,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
 			else if(F->JID*(-1)-10==(signed)O->komora->predchozi->n || F->JID>=11&&F->JID<=99)highlight=1;
 			else highlight=0;
 			//vykreslení kót komor
@@ -2793,7 +2812,7 @@ unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,int i,TPointD OD, TPointD 
 //vykresli pozic na elementech
 void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 {
-	 if(E->max_pocet_voziku>0 || (E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180))//pokud se má smysl algoritmem zabývat
+	 if(F->scGPCheckBox_zobrazit_pozice->Checked && E->max_pocet_voziku>0 || (F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180))//pokud se má smysl algoritmem zabývat
 	 {
 		 ////výchozí hodnoty
 		 double orientaceP=m.Rt90(E->geo.orientace-180);
@@ -2802,33 +2821,48 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 		 double Y=Rxy(E).y;
 		 double dJ=v.PP.delka_jig;//později nahradit ze zakázky
 		 double sJ=v.PP.sirka_jig;//později nahradit ze zakázky
-		 double rotaceJ=v.vrat_rotaci_jigu_po_predchazejicim_elementu(E);//metodu po přechodu na nový DM zaktulizovat o průchod přes spoják elementů
-		 TColor clPotencial=RGB(220,220,220);
+		 double rotaceJ=0;//DODELAT!!!! v.vrat_rotaci_jigu_po_predchazejicim_elementu(E);//metodu po přechodu na nový DM zaktulizovat o průchod přes spoják elementů
+		 short rozmezi=60;//pouze empiricky dodaná hodnota barevného rozpětí od první až po poslední pozici rotace
+		 unsigned short clPotRGB=180;//hotnota barevných složek dle RGB potenciálních pozic
+		 TColor clPotencial=RGB(clPotRGB,clPotRGB,clPotRGB),clChassis=(TColor) RGB(50,50,50),clJig=clPurple;
+		 short I=100-F->scGPTrackBar_intenzita->Value;
+		 if(F->pom_temp!=NULL && E->objekt_n!=F->pom_temp->n)//v případě editace změna intezity barev právě needitovaných objektů
+		 {
+			 clPotencial=m.clIntensive(clPotencial,I);if(I>5){clPotRGB=255-m.round((100-I)/4);rozmezi=0;}
+			 clChassis=m.clIntensive(clChassis,I*2);clJig=m.clIntensive(clJig,I*3);//*2,*3 pouze empiricky dodáno
+		 }
 
 		 ////určení směru vykreslování pozic
 		 short x=0,y=0;
 		 switch(m.Rt90(orientaceP))
 		 {
-		 	 case 0:   y=1;  x=0;  break;
-		 	 case 90:  y=0;  x=1;  break;
+			 case 0:   y=1;  x=0;  break;
+			 case 90:  y=0;  x=1;  break;
 		 	 case 180: y=-1; x=0;  break;
 		 	 case 270: y=0;  x=-1; break;
 		 }
 
-		 ////vykreslení rotace pozic u otočí a elementů s otočemi
-		 if(E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180)
+		 ////vykreslení ROTACE pozic u otočí a elementů s otočemi
+		 if(F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180)
 		 {
-			 DWORD pole[]={m.round(5/3.0*F->Zoom),m.round(2/3.0*F->Zoom),m.round(1/3.0*F->Zoom),m.round(2/3.0*F->Zoom)};//DWORD pole[]={20,8,4,8};
-			 //DWORD pole[]={m.round(5/3.0*F->Zoom),m.round(2/3.0*F->Zoom)};
-			 set_pen2(canv,clPotencial,m.round(1/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
-			 short k180=0;if(-180==E->rotace_jig || E->rotace_jig==180)k180=1;//aby se zbytečně nevykresloval znouvu 180tková situace která je totožná s 0vou situací
-			 short krok=45;//po 45 stupních
-			 if(E->rotace_jig>0)for(short i=0;i<=E->rotace_jig-k180;i+=krok)vykresli_jig(canv,X/*-x*i/krok*/,Y,dJ,sJ,orientaceP,i,clPotencial,0);
-			 else for(short i=0;i>=E->rotace_jig+k180;i-=krok)vykresli_jig(canv,X/*-x*i/krok*/,Y,dJ,sJ,orientaceP,i,clPotencial,0);
+			 //nastavení parametrů vykreslení různých stupňů rotace
+			 short krok=30;//zobrazení rotace krokem po x stupních (vhodné v násobcích 15,30,45)
+			 double posun=fabs(E->OTOC_delka/(E->rotace_jig/krok));//krok posunu animace rotace dle délky otoče a proměnné krok
+			 short Z=1;if(E->rotace_jig<0)Z=-1;//pro záporné rotace jigu
+			 double Xr=X+E->OTOC_delka/2.0*x;double Yr=Y+E->OTOC_delka/2.0*y;//začátek vykreslování rotace o posun poloviny délky otoče, *-1 kvůli opačné orientaci
+			 short clUroven=m.round(rozmezi/(fabs(E->rotace_jig)/krok));//rozmezí odstínu v RGB resp. (clPotRGB+40-clPotRGB)
+			 DWORD pole[]={m.round(5/3.0*F->Zoom),m.round(2/3.0*F->Zoom),m.round(1/3.0*F->Zoom),m.round(2/3.0*F->Zoom)};//definice uživatelského pera s vlastní definovanou linii
+			 //samotné cyklické vykreslení
+			 for(short i=0;abs(i)<=fabs(E->rotace_jig);i+=Z*krok)
+			 {
+				unsigned short clAkt=clPotRGB+rozmezi-abs(i/krok)*clUroven;
+				set_pen2(canv,RGB(clAkt,clAkt,clAkt),m.round(1/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
+				vykresli_jig(canv,Xr-x*posun*abs(i/krok),Yr-y*posun*abs(i/krok),dJ,sJ,orientaceP,rotaceJ+i,NULL,0);//pozn. barvu nastavujeme výše
+			 }
 		 }
 
-		 ////vykreslení pozic na elementu + vzniklém buffru
-		 if(pocet_pozic>0/* && (orientaceP==0 || orientaceP==90  || orientaceP==180  || orientaceP==270)*/)//druhá část pravděpodobně nadbytečné ošetření
+		 ////vykreslení POZIC na elementu + vzniklém buffru
+		 if(F->scGPCheckBox_zobrazit_pozice->Checked && pocet_pozic>0)
 		 {
 			 //F->Memo(rotaceJ);
 			 unsigned int pocet_voziku=E->akt_pocet_voziku;
@@ -2854,7 +2888,7 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 	//			 }
 
 				 if(i+1>pocet_voziku)vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,clPotencial,clPotencial);//záměrně šedou jak podvozek tak JIG jako potenicální pozice
-				 else vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ);
+				 else vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,clChassis,clJig);
 			 }
 		 }
 	}
@@ -3034,7 +3068,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O)//sloučit s v
 			POLE[2]=TPoint(m.L2Px(E->geo.X3),m.L2Py(E->geo.Y3));
 			POLE[3]=TPoint(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
 			//vykreslení
-			if(E->pohon==NULL || O->pohon==NULL && F->pom_temp==NULL)canv->Pen->Width=1;//pokud není pohon přiřazen, tak jen elementární osa
+			if(E->pohon==NULL/* || F->pom_temp!=NULL && F->pom_temp->n!=O->n || O->pohon==NULL && F->pom_temp==NULL*/)canv->Pen->Width=1;//pokud není pohon přiřazen, tak jen elementární osa
 			else canv->Pen->Width=m.round(F->Zoom*0.5);//pokud není přiřazen
 			canv->Pen->Color=clBlack;
 			canv->PolyBezier(POLE,3);
@@ -4108,7 +4142,7 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,lon
   }
 
   //vykreslení textu
-	if(typ!=-1 && name!="" && F->pom_temp!=NULL)//v módu kurzor nebo pokud je součástí nadřazeného elementu se název nezobrazuje, nezobrazují se v layoutu
+	if(typ!=-1 && name!="" && F->pom_temp!=NULL && F->Akce!=F->GEOMETRIE)//v módu kurzor nebo pokud je součástí nadřazeného elementu se název nezobrazuje, nezobrazují se v layoutu
 	{
 		//nastavení písma  //pokud by tu nebylo ošetření zdisablovaného stavu, tak by se font již vypisoval bílou barvou....
 		if(typ==0 && stav!=-1)canv->Font->Color=m.clIntensive(barva,100);else canv->Font->Color=barva;//ikona vs. normální zobrazení
