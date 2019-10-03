@@ -9843,9 +9843,6 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 {
  //log(__func__);
  //Form2->ShowModal();
-
- //d.vykresli_pozice(Canvas,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,90,0,10,8);
-
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
