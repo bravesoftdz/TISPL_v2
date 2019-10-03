@@ -2814,86 +2814,82 @@ unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,int i,TPointD OD, TPointD 
 //vykresli pozic na elementech
 void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 {
-	 if(F->scGPTrackBar_intenzita->Value>5 && F->scGPCheckBox_zobrazit_pozice->Checked && E->max_pocet_voziku>0 || (F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180))//pokud se má smysl algoritmem zabývat
-	 {
-		 ////výchozí hodnoty
-		 double orientaceP=m.Rt90(E->geo.orientace-180);
-		 unsigned int pocet_pozic=E->max_pocet_voziku;
-		 double X=Rxy(E).x;
-		 double Y=Rxy(E).y;
-		 double dJ=v.PP.delka_jig;//později nahradit ze zakázky
-		 double sJ=v.PP.sirka_jig;//později nahradit ze zakázky
-		 //F->Memo(v.vrat_rotaci_jigu_po_predchazejicim_elementu(E));
-		 double rotaceJ=0;//DODELAT!!!! v.vrat_rotaci_jigu_po_predchazejicim_elementu(E);//metodu po přechodu na nový DM zaktulizovat o průchod přes spoják elementů
-		 short rozmezi=60;//pouze empiricky dodaná hodnota barevného rozpětí od první až po poslední pozici rotace
-		 unsigned short clPotRGB=180;//hotnota barevných složek dle RGB potenciálních pozic
-		 TColor clPotencial=RGB(clPotRGB,clPotRGB,clPotRGB),clChassis=(TColor) RGB(50,50,50),clJig=clPurple;
-		 short I=100-F->scGPTrackBar_intenzita->Value;
-		 if(F->pom_temp!=NULL && E->objekt_n!=F->pom_temp->n)//v případě editace změna intezity barev právě needitovaných objektů
-		 {
+	if(F->scGPTrackBar_intenzita->Value>5 && F->scGPCheckBox_zobrazit_pozice->Checked && E->max_pocet_voziku>0 || (F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180))//pokud se má smysl algoritmem zabývat
+	{
+		////výchozí hodnoty
+		double orientaceP=m.Rt90(E->geo.orientace-180);
+		unsigned int pocet_pozic=E->max_pocet_voziku;
+		double X=Rxy(E).x;
+		double Y=Rxy(E).y;
+		double dJ=v.PP.delka_jig;//později nahradit ze zakázky
+		double sJ=v.PP.sirka_jig;//později nahradit ze zakázky
+		//F->Memo(v.vrat_rotaci_jigu_po_predchazejicim_elementu(E));
+		double rotaceJ=0;//DODELAT!!!! v.vrat_rotaci_jigu_po_predchazejicim_elementu(E);//metodu po přechodu na nový DM zaktulizovat o průchod přes spoják elementů
+		short rozmezi=60;//pouze empiricky dodaná hodnota barevného rozpětí od první až po poslední pozici rotace
+		unsigned short clPotRGB=180;//hotnota barevných složek dle RGB potenciálních pozic
+		TColor clPotencial=RGB(clPotRGB,clPotRGB,clPotRGB),clChassis=(TColor) RGB(50,50,50),clJig=clPurple;
+		short I=100-F->scGPTrackBar_intenzita->Value;
+		if(F->pom_temp!=NULL && E->objekt_n!=F->pom_temp->n)//v případě editace změna intezity barev právě needitovaných objektů
+		{
 			 clPotencial=m.clIntensive(clPotencial,I);if(I>5){clPotRGB=255-m.round((100-I)/4);rozmezi=0;}
 			 clChassis=m.clIntensive(clChassis,I*2);clJig=m.clIntensive(clJig,I*4);//*2,*3 pouze empiricky dodáno
-		 }
+		}
 
-		 ////určení směru vykreslování pozic
-		 short x=0,y=0;
-		 switch(m.Rt90(orientaceP))
-		 {
-			 case 0:   y=1;  x=0;  break;
-			 case 90:  y=0;  x=1;  break;
-		 	 case 180: y=-1; x=0;  break;
-		 	 case 270: y=0;  x=-1; break;
-		 }
+		////určení směru vykreslování pozic
+		short x=0,y=0;
+		switch(m.Rt90(orientaceP))
+		{
+			case 0:   y=1;  x=0;  break;
+			case 90:  y=0;  x=1;  break;
+			case 180: y=-1; x=0;  break;
+			case 270: y=0;  x=-1; break;
+		}
 
-		 ////vykreslení ROTACE pozic u otočí a elementů s otočemi
-		 if(F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180)
-		 {
-			 //nastavení parametrů vykreslení různých stupňů rotace
-			 short krok=30;//zobrazení rotace krokem po x stupních (vhodné v násobcích 15,30,45)
-			 double posun=fabs(E->OTOC_delka/(E->rotace_jig/krok));//krok posunu animace rotace dle délky otoče a proměnné krok
-			 short Z=1;if(E->rotace_jig<0)Z=-1;//pro záporné rotace jigu
-			 double Xr=X+E->OTOC_delka/2.0*x;double Yr=Y+E->OTOC_delka/2.0*y;//začátek vykreslování rotace o posun poloviny délky otoče, *-1 kvůli opačné orientaci
-			 short clUroven=m.round(rozmezi/(fabs(E->rotace_jig)/krok));//rozmezí odstínu v RGB resp. (clPotRGB+40-clPotRGB)
-			 DWORD pole[]={m.round(5/3.0*F->Zoom),m.round(2/3.0*F->Zoom),m.round(1/3.0*F->Zoom),m.round(2/3.0*F->Zoom)};//definice uživatelského pera s vlastní definovanou linii
-			 //samotné cyklické vykreslení
-			 for(short i=0;abs(i)<=fabs(E->rotace_jig);i+=Z*krok)
-			 {
+		////vykreslení ROTACE pozic u otočí a elementů s otočemi
+		if(F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180)
+		{
+			//nastavení parametrů vykreslení různých stupňů rotace
+			short krok=30;//zobrazení rotace krokem po x stupních (vhodné v násobcích 15,30,45)
+			double posun=fabs(E->OTOC_delka/(E->rotace_jig/krok));//krok posunu animace rotace dle délky otoče a proměnné krok
+			short Z=1;if(E->rotace_jig<0)Z=-1;//pro záporné rotace jigu
+			double Xr=X+E->OTOC_delka/2.0*x;double Yr=Y+E->OTOC_delka/2.0*y;//začátek vykreslování rotace o posun poloviny délky otoče, *-1 kvůli opačné orientaci
+			short clUroven=m.round(rozmezi/(fabs(E->rotace_jig)/krok));//rozmezí odstínu v RGB resp. (clPotRGB+40-clPotRGB)
+			DWORD pole[]={m.round(5/3.0*F->Zoom),m.round(2/3.0*F->Zoom),m.round(1/3.0*F->Zoom),m.round(2/3.0*F->Zoom)};//definice uživatelského pera s vlastní definovanou linii
+			//samotné cyklické vykreslení
+			for(short i=0;abs(i)<=fabs(E->rotace_jig);i+=Z*krok)
+			{
 				unsigned short clAkt=clPotRGB+rozmezi-abs(i/krok)*clUroven;
 				set_pen2(canv,RGB(clAkt,clAkt,clAkt),m.round(1/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
 				vykresli_jig(canv,Xr-x*posun*abs(i/krok),Yr-y*posun*abs(i/krok),dJ,sJ,orientaceP,rotaceJ+i,NULL,0);//pozn. barvu nastavujeme výše
-			 }
-		 }
+			}
+		}
 
-		 ////vykreslení POZIC na elementu + vzniklém buffru
-		 if(F->scGPCheckBox_zobrazit_pozice->Checked && pocet_pozic>0)
-		 {
-			 //F->Memo(rotaceJ);
-			 unsigned int pocet_voziku=E->akt_pocet_voziku;
-	//		 //případne vizuální znázornění špatné rotace jigu
-	//		 if(v.PP.delka_podvozek<m.UDJ(rotaceJ))
-	//		 {
-	//			 canv->Brush->Style=bsSolid;
-	//			 canv->Pen->Color=clRed;
-	//			 canv->Pen->Width=m.round(3/3.0*F->Zoom);
-	//			 //canv->FillRect(TRect(m.L2Px(X),m.L2Py(Y),m.L2Px(X+x*v.PP.delka_podvozek*pocet_pozic),m.L2Py(Y+y*v.PP.delka_podvozek*pocet_pozic)));
-	//			 obdelnik(canv,X-dJ/2.0,Y+sJ/2.0,X+dJ/2.0+x*v.PP.delka_podvozek*pocet_pozic-1,Y-sJ/2.0+y*v.PP.delka_podvozek*pocet_pozic-1,orientaceP-90+rotaceJ);
-	//		 }
-			 //vykreslení jednoho vozíku či pozice, od zadu, aby byly vykresleny nejdříve pozice
-			 for(unsigned int i=pocet_pozic-1;0<i+1;i--)//nutno zápis 0<i+1, jinak zamrzá
-			 {
-	//			 //případne vizuální znázornění špatné rotace jigu
-	//			 if(v.PP.delka_podvozek<m.UDJ(rotaceJ))
-	//			 {
-	//				 canv->Brush->Style=bsSolid;
-	//				 canv->Pen->Color=clRed;
-	//				 canv->Pen->Width=m.round(4/3.0*F->Zoom);
-	//				 obdelnik(canv,X-dJ/2.0,Y+sJ/2.0,X+dJ/2.0+x*v.PP.delka_podvozek*i,Y-sJ/2.0+y*v.PP.delka_podvozek*i,orientaceP-90+rotaceJ);
-	//			 }
-
-				 if(i+1>pocet_voziku)vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,clPotencial,clPotencial);//záměrně šedou jak podvozek tak JIG jako potenicální pozice
-				 else vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,clChassis,clJig);
-			 }
-		 }
+		////vykreslení POZIC na elementu + vzniklém buffru
+		if(F->scGPCheckBox_zobrazit_pozice->Checked && pocet_pozic>0)
+		{
+			unsigned int pocet_voziku=E->akt_pocet_voziku;
+			//vykreslení jednoho vozíku či pozice, od zadu, aby byly vykresleny nejdříve pozice
+			for(unsigned int i=pocet_pozic-1;0<i+1;i--)//nutno zápis 0<i+1, jinak zamrzá
+			{
+				if(i+1>pocet_voziku)vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,clPotencial,clPotencial);//záměrně šedou jak podvozek tak JIG jako potenicální pozice
+				else vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,clChassis,clJig);
+			}
+			//případne výpis špatné rotace jigu
+			if(v.PP.delka_podvozek<m.UDJ(rotaceJ))
+			{
+				canv->Brush->Style=bsClear;
+				canv->Font->Style = TFontStyles();
+				canv->Font->Name=F->aFont->Name;
+				canv->Font->Size=m.round(4*F->Zoom);
+				canv->Font->Color=clRed;
+				AnsiString T="Pozor, překrytí JIGů!";
+				short TW=0; short TH=0;
+				if(y!=0){TW=canv->TextHeight(T);TH=canv->TextWidth(T);}else {TW=canv->TextWidth(T);TH=canv->TextHeight(T);}
+				if(y<0){canv->Font->Orientation=900;TH*=-1;}if(y>0){canv->Font->Orientation=2700;TW*=-1;}
+				TextFraming(canv,m.L2Px(X+x*v.PP.delka_podvozek*(pocet_pozic-1)/2.0)-m.round(TW/2.0),m.L2Py(Y+y*v.PP.delka_podvozek*(pocet_pozic-1)/2.0)-m.round(TH/2.0),T,canv->Font,clWhite,3);
+				canv->Font->Orientation=0;//navrácení do původního stavu
+			}
+		}
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
