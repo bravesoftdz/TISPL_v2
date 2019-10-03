@@ -3438,19 +3438,35 @@ bool Cvektory::pohon_je_pouzivan(unsigned long n)
 	bool nalezen=false;
 	while (O!=NULL)
 	{
-		TElement *E=O->elementy->dalsi;
-		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->dalsi;
-		while(E!=NULL)
+		if(O->pohon!=NULL)
 		{
-			if(E->eID%2!=0 && E->eID!=5 && E->eID!=MaxInt && E->pohon!=NULL && E->pohon->n==n){nalezen=true;break;}
-			E=E->dalsi;
+			if(O->pohon->n==n)
+			{
+				nalezen=true;
+				break;//přeruší další vyhledávání
+			}
 		}
-		E-NULL;delete E;
-		if(!nalezen)O=O->dalsi;
-		else break;
+		O=O->dalsi;
 	}
-	O=NULL;delete O; F->log(__func__," KONEC");//logování
+	O=NULL;delete O;
 	return nalezen;
+//	TObjekt *O=OBJEKTY->dalsi;
+//	bool nalezen=false;
+//	while (O!=NULL)
+//	{
+//		TElement *E=O->elementy->dalsi;
+//		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->dalsi;
+//		while(E!=NULL)
+//		{
+//			if(E->eID%2!=0 && E->eID!=5 && E->eID!=MaxInt && E->pohon!=NULL && E->pohon->n==n){nalezen=true;break;}
+//			E=E->dalsi;
+//		}
+//		E-NULL;delete E;
+//		if(!nalezen)O=O->dalsi;
+//		else break;
+//	}
+//	O=NULL;delete O; F->log(__func__," KONEC");//logování
+//	return nalezen;
 }
 ////---------------------------------------------------------------------------
 //dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv, ten vrátí formou ukazatale na první nalezený používáný, druhý vstupní parametr metody TObjekt mimo_objekt je ukazatel na objekt, který se bude při vyhledávání ignorovat, nenajde-li vrací NULL, třetí parametr, pokud je náchán na implicitní -1 řeší se pro všechny režimy, pokud je v rozmezí 0 až 2 řeší se pro konkrétní režim
