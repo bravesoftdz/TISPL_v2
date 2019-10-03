@@ -5161,56 +5161,56 @@ void Cvykresli::meritko(TCanvas *canv,long X,long Y)
 {
 	if(F->MOD!=F->TECHNOPROCESY)
 	{
-			//proměnné nastavení měřítka
-			int L=Form1->scSplitView_LEFTTOOLBAR->Width+5;//umístění na X - levého výchozího kraje měřítka
-			if(Form1->scSplitView_LEFTTOOLBAR->Visible==false)L=5+168;//pokud je levé menu skryto
-			if(X>-1 && Y>-1)L=X;
-			int T=Form1->scGPPanel_statusbar->Top-22;//umistění na Y - horního výchozího kraje měřítka
-			if(Y>-1 && Y>-1)T=Y;
-			if (F->scGPPanel_bottomtoolbar->Visible) T=T-F->scGPPanel_bottomtoolbar->Height;//posun při zobrazení toolbaru
-			short H=4;//výška měřítka
-			int   K=1;//krok v metrech
-			short To=4;//odsazení textu popisku od měřítka
-			if(Form1->Zoom==0.5)K=2;
-			if(Form1->Zoom==0.25)K=5;
-			int M=10;//MAX políček
-			TColor barva_meritko=m.clIntensive(clRed,150);
+		//proměnné nastavení měřítka
+		int L=Form1->scSplitView_LEFTTOOLBAR->Width+5;//umístění na X - levého výchozího kraje měřítka
+		if(Form1->scSplitView_LEFTTOOLBAR->Visible==false)L=5+168;//pokud je levé menu skryto
+		if(X>-1 && Y>-1)L=X;
+		int T=Form1->scGPPanel_statusbar->Top-22;//umistění na Y - horního výchozího kraje měřítka
+		if(Y>-1 && Y>-1)T=Y;
+		if (F->scGPPanel_bottomtoolbar->Visible) T=T-F->scGPPanel_bottomtoolbar->Height;//posun při zobrazení toolbaru
+		short H=4;//výška měřítka
+		int   K=1;//krok v metrech
+		short To=4;//odsazení textu popisku od měřítka
+		if(Form1->Zoom==0.5)K=2;
+		if(Form1->Zoom==0.25)K=5;
+		int M=10;//MAX políček
+		TColor barva_meritko=m.clIntensive(clRed,150);
 
-			//nastavení pera a fontu canvasu
-			canv->Pen->Color=barva_meritko;
-			canv->Pen->Width=1;
-			canv->Pen->Style=psSolid;
-			canv->Brush->Style=bsSolid;
-			canv->Pen->Mode=pmCopy;
-			canv->Font->Size=11;
-			canv->Font->Name=F->aFont->Name;
-			canv->Font->Color=barva_meritko;
+		//nastavení pera a fontu canvasu
+		canv->Pen->Color=barva_meritko;
+		canv->Pen->Width=1;
+		canv->Pen->Style=psSolid;
+		canv->Brush->Style=bsSolid;
+		canv->Pen->Mode=pmCopy;
+		canv->Font->Size=11;
+		canv->Font->Name=F->aFont->Name;
+		canv->Font->Color=barva_meritko;
 
-			//popisek 0
-			//canv->MoveTo(L,T+5);canv->LineTo(L,T+7);//spojnice
-			SetBkMode(canv->Handle,TRANSPARENT);//musí být zde znovu, nastavení transparentního pozadí
-			canv->TextOutW(L-canv->TextWidth("0")/2+1,T+To,"0");
+		//popisek 0
+		//canv->MoveTo(L,T+5);canv->LineTo(L,T+7);//spojnice
+		SetBkMode(canv->Handle,TRANSPARENT);//musí být zde znovu, nastavení transparentního pozadí
+		canv->TextOutW(L-canv->TextWidth("0")/2+1,T+To,"0");
 
-			//vykreslení políček měřítka
-			int i=0;
-			for(;i<M;i+=K)
-			{
-				if(i%(2*K))canv->Brush->Color=barva_meritko;//výplň barevna
-				else canv->Brush->Color=clWhite;//výplň bílá                 //+1 pouze grafická korekce
-				canv->Rectangle(m.L2Px(m.P2Lx(L)+i),T,m.L2Px(m.P2Lx(L)+(i+K))+1,T+H);
-			}
+		//vykreslení políček měřítka
+		int i=0;
+		for(;i<M;i+=K)
+		{
+			if(i%(2*K))canv->Brush->Color=barva_meritko;//výplň barevna
+			else canv->Brush->Color=clWhite;//výplň bílá                 //+1 pouze grafická korekce
+			canv->Rectangle(m.L2Px(m.P2Lx(L)+i),T,m.L2Px(m.P2Lx(L)+(i+K))+1,T+H);
+		}
 
-			//musí být zde znovu, nastavení transparentního pozadí
-			SetBkMode(canv->Handle,TRANSPARENT);
-			//popisek polovina
-			if(Form1->Zoom>=1)
-			{
-				//canv->MoveTo(m.L2Px(m.P2Lx(L)+i/2),T+5);canv->LineTo(m.L2Px(m.P2Lx(L)+i/2),T+7);//spojnice
-				canv->TextOutW(m.L2Px(m.P2Lx(L)+i/2)-canv->TextWidth(M/2)/2,T+To,AnsiString(M/2));
-			}
-			//popisek MAX
-			//canv->MoveTo(m.L2Px(m.P2Lx(L)+i),T+5);canv->LineTo(m.L2Px(m.P2Lx(L)+i),T+7);//spojnice
-			canv->TextOutW(m.L2Px(m.P2Lx(L)+i)-canv->TextWidth(M)/2,T+To,AnsiString(M)+" m");
+		//musí být zde znovu, nastavení transparentního pozadí
+		SetBkMode(canv->Handle,TRANSPARENT);
+		//popisek polovina
+		if(Form1->Zoom>=1)
+		{
+			//canv->MoveTo(m.L2Px(m.P2Lx(L)+i/2),T+5);canv->LineTo(m.L2Px(m.P2Lx(L)+i/2),T+7);//spojnice
+			canv->TextOutW(m.L2Px(m.P2Lx(L)+i/2)-canv->TextWidth(M/2)/2,T+To,AnsiString(M/2));
+		}
+		//popisek MAX
+		//canv->MoveTo(m.L2Px(m.P2Lx(L)+i),T+5);canv->LineTo(m.L2Px(m.P2Lx(L)+i),T+7);//spojnice
+		canv->TextOutW(m.L2Px(m.P2Lx(L)+i)-canv->TextWidth(M)/2,T+To,AnsiString(M)+" m");
 	}
 //	else //pro mod technologické procesy
 //	{
