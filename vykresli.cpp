@@ -2865,31 +2865,25 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 		 ////vykreslení POZIC na elementu + vzniklém buffru
 		 if(F->scGPCheckBox_zobrazit_pozice->Checked && pocet_pozic>0)
 		 {
-			 //F->Memo(rotaceJ);
 			 unsigned int pocet_voziku=E->akt_pocet_voziku;
-	//		 //případne vizuální znázornění špatné rotace jigu
-	//		 if(v.PP.delka_podvozek<m.UDJ(rotaceJ))
-	//		 {
-	//			 canv->Brush->Style=bsSolid;
-	//			 canv->Pen->Color=clRed;
-	//			 canv->Pen->Width=m.round(3/3.0*F->Zoom);
-	//			 //canv->FillRect(TRect(m.L2Px(X),m.L2Py(Y),m.L2Px(X+x*v.PP.delka_podvozek*pocet_pozic),m.L2Py(Y+y*v.PP.delka_podvozek*pocet_pozic)));
-	//			 obdelnik(canv,X-dJ/2.0,Y+sJ/2.0,X+dJ/2.0+x*v.PP.delka_podvozek*pocet_pozic-1,Y-sJ/2.0+y*v.PP.delka_podvozek*pocet_pozic-1,orientaceP-90+rotaceJ);
-	//		 }
 			 //vykreslení jednoho vozíku či pozice, od zadu, aby byly vykresleny nejdříve pozice
 			 for(unsigned int i=pocet_pozic-1;0<i+1;i--)//nutno zápis 0<i+1, jinak zamrzá
 			 {
-	//			 //případne vizuální znázornění špatné rotace jigu
-	//			 if(v.PP.delka_podvozek<m.UDJ(rotaceJ))
-	//			 {
-	//				 canv->Brush->Style=bsSolid;
-	//				 canv->Pen->Color=clRed;
-	//				 canv->Pen->Width=m.round(4/3.0*F->Zoom);
-	//				 obdelnik(canv,X-dJ/2.0,Y+sJ/2.0,X+dJ/2.0+x*v.PP.delka_podvozek*i,Y-sJ/2.0+y*v.PP.delka_podvozek*i,orientaceP-90+rotaceJ);
-	//			 }
-
 				 if(i+1>pocet_voziku)vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,clPotencial,clPotencial);//záměrně šedou jak podvozek tak JIG jako potenicální pozice
 				 else vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,clChassis,clJig);
+			 }
+			 //případne výpis špatné rotace jigu
+			 if(v.PP.delka_podvozek<m.UDJ(rotaceJ))
+			 {
+				 canv->Brush->Style=bsClear;
+				 canv->Font->Style = TFontStyles();
+				 canv->Font->Name=F->aFont->Name;
+				 canv->Font->Size=m.round(4*F->Zoom);
+				 canv->Font->Color=clRed;
+				 if(y!=0)canv->Font->Orientation=900;
+				 AnsiString T="Pozor, překrytí JIGů!";
+				 TextFraming(canv,m.L2Px(X+x*v.PP.delka_podvozek*(pocet_pozic-1)/2.0)-m.round(canv->TextWidth(T)/2.0),m.L2Py(Y+y*v.PP.delka_podvozek*(pocet_pozic-1)/2.0)-m.round(canv->TextHeight(T)/2.0),T,canv->Font,clWhite,3);
+				 canv->Font->Orientation=0;//navrácení do původního stavu
 			 }
 		 }
 	}
