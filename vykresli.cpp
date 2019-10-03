@@ -102,101 +102,7 @@ TPointD Cvykresli::Rxy(Cvektory::TElement *Element)
 //vykreslí zakázky, cesty, spojnice, kabiny, pohony, elementy
 void Cvykresli::vykresli_vektory(TCanvas *canv)
 {
-	///////////////Vykreslení spojnic mezi objekty
-	F->Z("",false);//smazání přechozích zpráv
-	//cesty ZAKAZeK - jsou li k dispozici
-	if(v.ZAKAZKY!=NULL && v.ZAKAZKY->predchozi->n>0)
-	{
-		 Cvektory::TZakazka *Z=v.ZAKAZKY->dalsi;
-		 while(Z!=NULL)//prochází seznam ZAKÁZEK, který obsahuje jednotlivé cesty
-		 {
-				Cvektory::TCesta *C=Z->cesta->dalsi;
-				while(C!=NULL)//prochází jednotlivé prvky cesty
-				{
-					canv->Pen->Color=Z->barva;
-					canv->Pen->Style=psSolid;
-					canv->Pen->Width=m.round(2*Form1->Zoom);
-					if(Z->barva==clGray)canv->Pen->Mode=pmCopy;else canv->Pen->Mode=pmNotXor;pmMask; //pokud se jedná o defaultní barvu vykopíruje se jina se vytvoří kombinace
-					if(C->objekt->n==1)//pro situaci: z posledního prvku na první
-					{
-						//if(ukaz->n!=ukaz->predchozi->predchozi->n)//pokud jsou minimálně dva prky, ale šipka bude obousměrnná - možná žádoucí
-						if(v.OBJEKTY->predchozi->n>=3)//až budou alespoň tři prvky,tj. poslední prvek bude mít index n větší než 3
-						{
-							canv->MoveTo(m.L2Px(C->predchozi->predchozi->objekt->X)+O_width*Form1->Zoom/2,m.L2Py(C->predchozi->predchozi->objekt->Y)+O_height*Form1->Zoom/2);
-							canv->LineTo(m.L2Px(C->objekt->X)+O_width*Form1->Zoom/2,m.L2Py(C->objekt->Y)+O_height*Form1->Zoom/2);
-							sipka(canv,m.L2Px((C->predchozi->predchozi->objekt->X+C->objekt->X)/2)+O_width*Form1->Zoom/2,m.L2Py((C->predchozi->predchozi->objekt->Y+C->objekt->Y)/2)+O_height*Form1->Zoom/2,m.azimut(C->predchozi->predchozi->objekt->X,C->predchozi->predchozi->objekt->Y,C->objekt->X,C->objekt->Y));//zajistí vykreslení šipky - orientace spojovací linie
-							if(Z->barva!=clGray)prislusnost_cesty(canv,Z->barva,m.L2Px((C->predchozi->predchozi->objekt->X+C->objekt->X)/2)+O_width*Form1->Zoom/2,m.L2Py((C->predchozi->predchozi->objekt->Y+C->objekt->Y)/2)+O_height*Form1->Zoom/2,m.azimut(C->predchozi->predchozi->objekt->X,C->predchozi->predchozi->objekt->Y,C->objekt->X,C->objekt->Y),Z->n);
-						}
-					}
-					else//pro běžné situace
-					{
-						canv->MoveTo(m.L2Px(C->predchozi->objekt->X)+O_width*Form1->Zoom/2,m.L2Py(C->predchozi->objekt->Y)+O_height*Form1->Zoom/2);
-						canv->LineTo(m.L2Px(C->objekt->X)+O_width*Form1->Zoom/2,m.L2Py(C->objekt->Y)+O_height*Form1->Zoom/2);
-						sipka(canv,m.L2Px((C->predchozi->objekt->X+C->objekt->X)/2)+O_width*Form1->Zoom/2,m.L2Py((C->predchozi->objekt->Y+C->objekt->Y)/2)+O_height*Form1->Zoom/2,m.azimut(C->predchozi->objekt->X,C->predchozi->objekt->Y,C->objekt->X,C->objekt->Y));//zajistí vykreslení šipky - orientace spojovací linie
-						if(Z->barva!=clGray)prislusnost_cesty(canv,Z->barva,m.L2Px((C->predchozi->objekt->X+C->objekt->X)/2)+O_width*Form1->Zoom/2,m.L2Py((C->predchozi->objekt->Y+C->objekt->Y)/2)+O_height*Form1->Zoom/2,m.azimut(C->predchozi->objekt->X,C->predchozi->objekt->Y,C->objekt->X,C->objekt->Y),Z->n);
-					}
-					C=C->dalsi;
-				}
-				Z=Z->dalsi;
-		 }
-	}
-	else //pokud nejsou k dispozici nadefinované cesty vykreslí se přímo jen spojovací linie mezi objekty (tj. defaultní cesta)
-	{
-		int n;//číslo vyhybky nebo spojky
-		TPoint *tab_pruchodu=new TPoint[F->d.v.pocet_vyhybek+1];//+1 z důvodu indexace výhybka 1 bude mít index 1, nebude se začínat od indexu 0, tabulka.x = vyhybky, tabulka.y = spojky
-		Cvektory::TObjekt* ukaz=v.OBJEKTY->dalsi;//přeskočí hlavičku
-		while (ukaz!=NULL)
-		{
-			Cvektory::TObjekt *O=F->d.v.dalsi_krok(ukaz,tab_pruchodu);//přepínání kroků v cyklu (dalsi/dalsi2),zde na začátku z důvodu potřeby tab_průchodů při vykreslění
-			canv->Pen->Style=psSolid;
-			canv->Pen->Mode=pmCopy;  //bude tady 2-3
-			canv->Pen->Width=m.round(1*F->Zoom);//musí být tady, jina to přebije nastavení metody sipka
-			canv->Pen->Color=clGray;//bude tady clBlack
-			if(ukaz->n==1)//pro situaci z posledního prvku na první
-			{
-				//if(ukaz->n!=ukaz->predchozi->predchozi->n)//pokud jsou minimálně dva prky, ale šipka bude obousměrnná - možná žádoucí
-				if(v.OBJEKTY->predchozi->n>=3)//až budou alespoň tři prvky,tj. poslední prvek bude mít index n větší než 3
-				{
-					Cvektory::TObjekt *pom=ukaz->predchozi->predchozi;//pomocný ukazatel, který uchovává předchozí objekt
-					if(ukaz->id==pocet_objektu_knihovny+1)//pokud jsem na spojce poprvé musí dojít k vykrelení spojnice k predchozi2 objektu, pokud podruhé dojde k vykreslení spojnice k predchozi objektu
-					{
-						n=F->ms.MyToDouble(ukaz->short_name.SubString(2,1));//extrakce pořadového čísla výhybky;
-						if(tab_pruchodu[n].y==1)pom=ukaz->predchozi2->predchozi;
-						else pom=ukaz->predchozi->predchozi;
-					}
-					//vykreslení pouze v případě, že nejsou objekty přilepené na sobě
-					if(ukaz->elementy->dalsi->geo.X1!=pom->elementy->predchozi->geo.X4 || ukaz->elementy->dalsi->geo.Y1!=pom->elementy->predchozi->geo.Y4)
-					{
-						canv->MoveTo(m.L2Px(pom->elementy->predchozi->geo.X4),m.L2Py(pom->elementy->predchozi->geo.Y4));
-						canv->LineTo(m.L2Px(ukaz->elementy->dalsi->geo.X1),m.L2Py(ukaz->elementy->dalsi->geo.Y1));
-						sipka(canv,(m.L2Px(pom->elementy->predchozi->geo.X4)+m.L2Px(ukaz->elementy->dalsi->geo.X1))/2.0,(m.L2Py(pom->elementy->predchozi->geo.Y4)+m.L2Py(ukaz->elementy->dalsi->geo.Y1))/2.0,m.azimut(m.L2Px(ukaz->elementy->dalsi->geo.X1),m.L2Py(ukaz->elementy->dalsi->geo.Y1),m.L2Px(pom->elementy->predchozi->geo.X4),m.L2Py(pom->elementy->predchozi->geo.Y4))*(-1));//zajistí vykreslení šipky - orientace spojovací linie
-					}
-					pom=NULL;delete pom;
-				}
-			}
-			else
-			{
-				Cvektory::TObjekt *pom=ukaz->predchozi;//pomocný ukazatel, který uchovává předchozí objekt
-				if(ukaz->id==pocet_objektu_knihovny+1)//pokud jsem na spojce poprvé musí dojít k vykrelení spojnice k predchozi2 objektu, pokud podruhé dojde k vykreslení spojnice k predchozi objektu
-				{
-					n=F->ms.MyToDouble(ukaz->short_name.SubString(2,1));//extrakce pořadového čísla spojky
-					if(tab_pruchodu[n].y==1)pom=ukaz->predchozi2;
-					else pom=ukaz->predchozi;
-				}
-				//vykreslení pouze v případě, že nejsou objekty přilepené na sobě
-				if(ukaz->elementy->dalsi->geo.X1!=pom->elementy->predchozi->geo.X4 || ukaz->elementy->dalsi->geo.Y1!=pom->elementy->predchozi->geo.Y4)
-				{
-					canv->MoveTo(m.L2Px(pom->elementy->predchozi->geo.X4),m.L2Py(pom->elementy->predchozi->geo.Y4));
-					canv->LineTo(m.L2Px(ukaz->elementy->dalsi->geo.X1),m.L2Py(ukaz->elementy->dalsi->geo.Y1));
-					sipka(canv,(m.L2Px(pom->elementy->predchozi->geo.X4)+m.L2Px(ukaz->elementy->dalsi->geo.X1))/2.0,(m.L2Py(pom->elementy->predchozi->geo.Y4)+m.L2Py(ukaz->elementy->dalsi->geo.Y1))/2.0,m.azimut(m.L2Px(ukaz->elementy->dalsi->geo.X1),m.L2Py(ukaz->elementy->dalsi->geo.Y1),m.L2Px(pom->elementy->predchozi->geo.X4),m.L2Py(pom->elementy->predchozi->geo.Y4))*(-1));//zajistí vykreslení šipky - orientace spojovací linie
-				}
-				pom=NULL;delete pom;
-			}
-			ukaz=O;
-			O=NULL;delete O;
-		}
-		tab_pruchodu=NULL;delete tab_pruchodu;
-	}
+	//F->Z("",false);//smazání přechozích zpráv
 
 	///////////////Vykreslení objektů
 	//samotné objekty, kreslím až v samostatném následujícím cyklu, aby se nakreslilo do horní vrstvy
@@ -250,8 +156,110 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 //		Form1->Layout->Enabled=false;
 //		Form1->Analyza->Enabled=false;
 //	}
-	if(F->scHTMLLabel_log_vypis->Caption=="")       //toto budeme rušit
-	F->Z("<b>Linka v pořádku.</b>",false);
+
+	///////////////Vykreslení spojnic mezi objekty
+	//cesty ZAKAZeK - jsou li k dispozici
+	if(v.ZAKAZKY!=NULL && v.ZAKAZKY->predchozi->n>0)
+	{
+		 Cvektory::TZakazka *Z=v.ZAKAZKY->dalsi;
+		 while(Z!=NULL)//prochází seznam ZAKÁZEK, který obsahuje jednotlivé cesty
+		 {
+				Cvektory::TCesta *C=Z->cesta->dalsi;
+				while(C!=NULL)//prochází jednotlivé prvky cesty
+				{
+					canv->Pen->Color=Z->barva;
+					canv->Pen->Style=psSolid;
+					canv->Pen->Width=m.round(2*Form1->Zoom);
+					if(Z->barva==clGray)canv->Pen->Mode=pmCopy;else canv->Pen->Mode=pmNotXor;pmMask; //pokud se jedná o defaultní barvu vykopíruje se jina se vytvoří kombinace
+					if(C->objekt->n==1)//pro situaci: z posledního prvku na první
+					{
+						//if(ukaz->n!=ukaz->predchozi->predchozi->n)//pokud jsou minimálně dva prky, ale šipka bude obousměrnná - možná žádoucí
+						if(v.OBJEKTY->predchozi->n>=3)//až budou alespoň tři prvky,tj. poslední prvek bude mít index n větší než 3
+						{
+							canv->MoveTo(m.L2Px(C->predchozi->predchozi->objekt->X)+O_width*Form1->Zoom/2,m.L2Py(C->predchozi->predchozi->objekt->Y)+O_height*Form1->Zoom/2);
+							canv->LineTo(m.L2Px(C->objekt->X)+O_width*Form1->Zoom/2,m.L2Py(C->objekt->Y)+O_height*Form1->Zoom/2);
+							sipka(canv,m.L2Px((C->predchozi->predchozi->objekt->X+C->objekt->X)/2)+O_width*Form1->Zoom/2,m.L2Py((C->predchozi->predchozi->objekt->Y+C->objekt->Y)/2)+O_height*Form1->Zoom/2,m.azimut(C->predchozi->predchozi->objekt->X,C->predchozi->predchozi->objekt->Y,C->objekt->X,C->objekt->Y));//zajistí vykreslení šipky - orientace spojovací linie
+							if(Z->barva!=clGray)prislusnost_cesty(canv,Z->barva,m.L2Px((C->predchozi->predchozi->objekt->X+C->objekt->X)/2)+O_width*Form1->Zoom/2,m.L2Py((C->predchozi->predchozi->objekt->Y+C->objekt->Y)/2)+O_height*Form1->Zoom/2,m.azimut(C->predchozi->predchozi->objekt->X,C->predchozi->predchozi->objekt->Y,C->objekt->X,C->objekt->Y),Z->n);
+						}
+					}
+					else//pro běžné situace
+					{
+						canv->MoveTo(m.L2Px(C->predchozi->objekt->X)+O_width*Form1->Zoom/2,m.L2Py(C->predchozi->objekt->Y)+O_height*Form1->Zoom/2);
+						canv->LineTo(m.L2Px(C->objekt->X)+O_width*Form1->Zoom/2,m.L2Py(C->objekt->Y)+O_height*Form1->Zoom/2);
+						sipka(canv,m.L2Px((C->predchozi->objekt->X+C->objekt->X)/2)+O_width*Form1->Zoom/2,m.L2Py((C->predchozi->objekt->Y+C->objekt->Y)/2)+O_height*Form1->Zoom/2,m.azimut(C->predchozi->objekt->X,C->predchozi->objekt->Y,C->objekt->X,C->objekt->Y));//zajistí vykreslení šipky - orientace spojovací linie
+						if(Z->barva!=clGray)prislusnost_cesty(canv,Z->barva,m.L2Px((C->predchozi->objekt->X+C->objekt->X)/2)+O_width*Form1->Zoom/2,m.L2Py((C->predchozi->objekt->Y+C->objekt->Y)/2)+O_height*Form1->Zoom/2,m.azimut(C->predchozi->objekt->X,C->predchozi->objekt->Y,C->objekt->X,C->objekt->Y),Z->n);
+					}
+					C=C->dalsi;
+				}
+				Z=Z->dalsi;
+		 }
+	}
+	else //pokud nejsou k dispozici nadefinované cesty vykreslí se přímo jen spojovací linie mezi objekty (tj. defaultní cesta)
+	{
+		int n;//číslo vyhybky nebo spojky
+		TPoint *tab_pruchodu=new TPoint[F->d.v.pocet_vyhybek+1];//+1 z důvodu indexace výhybka 1 bude mít index 1, nebude se začínat od indexu 0, tabulka.x = vyhybky, tabulka.y = spojky
+		Cvektory::TObjekt* ukaz=v.OBJEKTY->dalsi;//přeskočí hlavičku
+		while (ukaz!=NULL)
+		{
+			Cvektory::TObjekt *O=F->d.v.dalsi_krok(ukaz,tab_pruchodu);//přepínání kroků v cyklu (dalsi/dalsi2),zde na začátku z důvodu potřeby tab_průchodů při vykreslění
+			canv->Pen->Style=psDash;
+			canv->Pen->Mode=pmCopy;
+			canv->Pen->Width=1;
+			canv->Pen->Color=clRed;
+			canv->Brush->Style=bsClear;
+			if(ukaz->n==1)//pro situaci z posledního prvku na první
+			{
+				//if(ukaz->n!=ukaz->predchozi->predchozi->n)//pokud jsou minimálně dva prky, ale šipka bude obousměrnná - možná žádoucí
+				if(v.OBJEKTY->predchozi->n>=3)//až budou alespoň tři prvky,tj. poslední prvek bude mít index n větší než 3
+				{
+					Cvektory::TObjekt *pom=ukaz->predchozi->predchozi;//pomocný ukazatel, který uchovává předchozí objekt
+					if(ukaz->id==pocet_objektu_knihovny+1)//pokud jsem na spojce poprvé musí dojít k vykrelení spojnice k predchozi2 objektu, pokud podruhé dojde k vykreslení spojnice k predchozi objektu
+					{
+						n=F->ms.MyToDouble(ukaz->short_name.SubString(2,1));//extrakce pořadového čísla výhybky;
+						if(tab_pruchodu[n].y==1)pom=ukaz->predchozi2->predchozi;
+						else pom=ukaz->predchozi->predchozi;
+					}
+					//vykreslení pouze v případě, že nejsou objekty přilepené na sobě
+					if(ukaz->elementy->dalsi->geo.X1!=pom->elementy->predchozi->geo.X4 || ukaz->elementy->dalsi->geo.Y1!=pom->elementy->predchozi->geo.Y4)
+					{
+						canv->MoveTo(m.L2Px(pom->elementy->predchozi->geo.X4),m.L2Py(pom->elementy->predchozi->geo.Y4));
+						canv->LineTo(m.L2Px(ukaz->elementy->dalsi->geo.X1),m.L2Py(ukaz->elementy->dalsi->geo.Y1));
+						sipka(canv,(m.L2Px(pom->elementy->predchozi->geo.X4)+m.L2Px(ukaz->elementy->dalsi->geo.X1))/2.0,(m.L2Py(pom->elementy->predchozi->geo.Y4)+m.L2Py(ukaz->elementy->dalsi->geo.Y1))/2.0,m.azimut(m.L2Px(ukaz->elementy->dalsi->geo.X1),m.L2Py(ukaz->elementy->dalsi->geo.Y1),m.L2Px(pom->elementy->predchozi->geo.X4),m.L2Py(pom->elementy->predchozi->geo.Y4))*(-1),true,0.1*F->Zoom,clRed);//zajistí vykreslení šipky - orientace spojovací linie
+					}
+					pom=NULL;delete pom;
+				}
+			}
+			else
+			{
+				Cvektory::TObjekt *pom=ukaz->predchozi;//pomocný ukazatel, který uchovává předchozí objekt
+				if(ukaz->id==pocet_objektu_knihovny+1)//pokud jsem na spojce poprvé musí dojít k vykrelení spojnice k predchozi2 objektu, pokud podruhé dojde k vykreslení spojnice k predchozi objektu
+				{
+					n=F->ms.MyToDouble(ukaz->short_name.SubString(2,1));//extrakce pořadového čísla spojky
+					if(tab_pruchodu[n].y==1)pom=ukaz->predchozi2;
+					else pom=ukaz->predchozi;
+				}
+				//vykreslení pouze v případě, že nejsou objekty přilepené na sobě
+				if(ukaz->elementy->dalsi->geo.X1!=pom->elementy->predchozi->geo.X4 || ukaz->elementy->dalsi->geo.Y1!=pom->elementy->predchozi->geo.Y4)
+				{
+					canv->Pen->Style=psDash;
+					canv->Pen->Mode=pmCopy;
+					canv->Pen->Width=1;
+					canv->Pen->Color=clRed;
+					canv->Brush->Style=bsClear;
+					canv->MoveTo(m.L2Px(pom->elementy->predchozi->geo.X4),m.L2Py(pom->elementy->predchozi->geo.Y4));
+					canv->LineTo(m.L2Px(ukaz->elementy->dalsi->geo.X1),m.L2Py(ukaz->elementy->dalsi->geo.Y1));
+					sipka(canv,(m.L2Px(pom->elementy->predchozi->geo.X4)+m.L2Px(ukaz->elementy->dalsi->geo.X1))/2.0,(m.L2Py(pom->elementy->predchozi->geo.Y4)+m.L2Py(ukaz->elementy->dalsi->geo.Y1))/2.0,m.azimut(m.L2Px(ukaz->elementy->dalsi->geo.X1),m.L2Py(ukaz->elementy->dalsi->geo.Y1),m.L2Px(pom->elementy->predchozi->geo.X4),m.L2Py(pom->elementy->predchozi->geo.Y4))*(-1),true,0.1*F->Zoom,clRed);//zajistí vykreslení šipky - orientace spojovací linie
+				}
+				pom=NULL;delete pom;
+			}
+			ukaz=O;
+			O=NULL;delete O;
+		}
+		tab_pruchodu=NULL;delete tab_pruchodu;
+	}
+
+	//if(F->scHTMLLabel_log_vypis->Caption=="")F->Z("<b>Linka v pořádku.</b>",false); //toto budeme rušit
+
 	O=NULL;delete O;
 }
 //---------------------------------------------------------------------------
@@ -2749,7 +2757,7 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 			if(v.PP.delka_podvozek<m.UDJ(rotaceJ))
 			{
 				canv->Brush->Style=bsClear;
-				canv->Font->Style = TFontStyles();
+				canv->Font->Style = TFontStyles()<<fsBold;
 				canv->Font->Name=F->aFont->Name;
 				canv->Font->Size=m.round(4*F->Zoom);
 				canv->Font->Color=clRed;
