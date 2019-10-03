@@ -458,7 +458,8 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
 	//novy->rozmer_kabiny.x=0;
 	//novy->rozmer_kabiny.y=0;
-	novy->koty_elementu_offset=0;//odsazení kót elementů v metrech
+	novy->koty_elementu_offset.x=0;//odsazení kót elementů v metrech
+	novy->koty_elementu_offset.y=0;//odsazení kót elementů v metrech
 	novy->komora=NULL;//ukazatel na komory
 	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
 	novy->stopka=0;//zda následuje na konci objektu stopka//0-ne,1-ano,2-automaticky
@@ -587,7 +588,8 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
 	////
-	if(id==3)novy->koty_elementu_offset=1;else novy->koty_elementu_offset=4;//odsazení kót elementů v metrech,v kabině POW se kóty vykroslují od hrany kabiny, ne od pohonu
+	if(id==3)novy->koty_elementu_offset.x=1;else novy->koty_elementu_offset.x=4;//odsazení kót elementů v metrech,v kabině POW se kóty vykroslují od hrany kabiny, ne od pohonu
+	novy->koty_elementu_offset.y=0.4;
 	novy->komora=NULL;//ukazatel na komory
 	if(id==3)for(short i=1;i<=4;i++)vloz_komoru(novy,2.5,NULL,i%2);//pokud se jedná o POWash,nastaví defaultně 4 stejné komory
 	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky

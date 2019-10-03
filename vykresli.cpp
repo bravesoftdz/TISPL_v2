@@ -229,7 +229,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 				vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->LO1,E->OTOC_delka,E->LO2,E->LO_pozice,E);
 				E->citelna_oblast.rect3=aktOblast;//uložení citelné oblasti pro další použití
 				//vykreslení kót
-				if(F->pom_temp!=NULL && F->pom_temp->n==O->n && F->pom_temp->zobrazit_koty && E->eID!=MaxInt){vykresli_kotu(canv,v.vrat_predchozi_element(E),E);}//mezi elementy
+				if(F->pom_temp!=NULL && F->pom_temp->n==O->n && F->pom_temp->zobrazit_koty){vykresli_kotu(canv,v.vrat_predchozi_element(E),E);}//mezi elementy
 			}
 			//zde bude ještě vykreslení g_elementu
 			E=E->dalsi;//posun na další element
@@ -421,10 +421,10 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				//vykreslení kót komor
 				switch((int)orientace)
 				{
-					case 0:vykresli_kotu(canv,m.P2Lx(X2),m.P2Ly(Y1)+vzdalenost-K->velikost,m.P2Lx(X2),m.P2Ly(Y1)+vzdalenost,NULL,O->koty_elementu_offset,highlight,0.2,clGray,false,K);break;
-					case 90:vykresli_kotu(canv,m.P2Lx(X1)+vzdalenost-K->velikost,m.P2Ly(Y2),m.P2Lx(X1)+vzdalenost,m.P2Ly(Y2),NULL,O->koty_elementu_offset,highlight,0.2,clGray,false,K);break;
-					case 180:vykresli_kotu(canv,m.P2Lx(X2),m.P2Ly(Y1)-vzdalenost+K->velikost,m.P2Lx(X2),m.P2Ly(Y1)-vzdalenost,NULL,O->koty_elementu_offset,highlight,0.2,clGray,false,K);break;
-					case 270:vykresli_kotu(canv,m.P2Lx(X1)-vzdalenost+K->velikost,m.P2Ly(Y2),m.P2Lx(X1)-vzdalenost,m.P2Ly(Y2),NULL,O->koty_elementu_offset,highlight,0.2,clGray,false,K);break;
+					case 0:vykresli_kotu(canv,m.P2Lx(X2),m.P2Ly(Y1)+vzdalenost-K->velikost,m.P2Lx(X2),m.P2Ly(Y1)+vzdalenost,NULL,O->koty_elementu_offset.x,highlight,0.2,clGray,false,K);break;
+					case 90:vykresli_kotu(canv,m.P2Lx(X1)+vzdalenost-K->velikost,m.P2Ly(Y2),m.P2Lx(X1)+vzdalenost,m.P2Ly(Y2),NULL,O->koty_elementu_offset.x,highlight,0.2,clGray,false,K);break;
+					case 180:vykresli_kotu(canv,m.P2Lx(X2),m.P2Ly(Y1)-vzdalenost+K->velikost,m.P2Lx(X2),m.P2Ly(Y1)-vzdalenost,NULL,O->koty_elementu_offset.x,highlight,0.2,clGray,false,K);break;
+					case 270:vykresli_kotu(canv,m.P2Lx(X1)-vzdalenost+K->velikost,m.P2Ly(Y2),m.P2Lx(X1)-vzdalenost,m.P2Ly(Y2),NULL,O->koty_elementu_offset.x,highlight,0.2,clGray,false,K);break;
 				}
 			}
 			K=K->dalsi;//posun ve spojáku na další prvek
@@ -485,10 +485,10 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 			//vykreslení kót komor
 			switch((int)orientace)
 			{
-				case 0:vykresli_kotu(canv,m.P2Lx(X2),m.P2Ly(Y1)+vzdalenost,m.P2Lx(X2),m.P2Ly(Y2),NULL,O->koty_elementu_offset,highlight,0.2,clGray,false,O->komora->predchozi);break;
-				case 90:vykresli_kotu(canv,m.P2Lx(X1)+vzdalenost,m.P2Ly(Y2),m.P2Lx(X2),m.P2Ly(Y2),NULL,O->koty_elementu_offset,highlight,0.2,clGray,false,O->komora->predchozi);break;
-				case 180:vykresli_kotu(canv,m.P2Lx(X2),m.P2Ly(Y1)-vzdalenost,m.P2Lx(X2),m.P2Ly(Y2),NULL,O->koty_elementu_offset,highlight,0.2,clGray,false,O->komora->predchozi);break;
-				case 270:vykresli_kotu(canv,m.P2Lx(X1)-vzdalenost,m.P2Ly(Y2),m.P2Lx(X2),m.P2Ly(Y2),NULL,O->koty_elementu_offset,highlight,0.2,clGray,false,O->komora->predchozi);break;
+				case 0:vykresli_kotu(canv,m.P2Lx(X2),m.P2Ly(Y1)+vzdalenost,m.P2Lx(X2),m.P2Ly(Y2),NULL,O->koty_elementu_offset.x,highlight,0.2,clGray,false,O->komora->predchozi);break;
+				case 90:vykresli_kotu(canv,m.P2Lx(X1)+vzdalenost,m.P2Ly(Y2),m.P2Lx(X2),m.P2Ly(Y2),NULL,O->koty_elementu_offset.x,highlight,0.2,clGray,false,O->komora->predchozi);break;
+				case 180:vykresli_kotu(canv,m.P2Lx(X2),m.P2Ly(Y1)-vzdalenost,m.P2Lx(X2),m.P2Ly(Y2),NULL,O->koty_elementu_offset.x,highlight,0.2,clGray,false,O->komora->predchozi);break;
+				case 270:vykresli_kotu(canv,m.P2Lx(X1)-vzdalenost,m.P2Ly(Y2),m.P2Lx(X2),m.P2Ly(Y2),NULL,O->koty_elementu_offset.x,highlight,0.2,clGray,false,O->komora->predchozi);break;
 			}
 			canv->Brush->Style=bsClear;//navrácení na průhledné pero, kvůli následujícím popiskům objektu, kóty jej totiž změnily
 		}
@@ -4966,7 +4966,7 @@ void Cvykresli::nabuffrovat_mGridy(TmGrid *mGrid)
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvektory::TElement *Element_do)
 {
-	double O=F->pom_temp->koty_elementu_offset;
+	double O=F->pom_temp->koty_elementu_offset.x;
 
 	//highlight
 	short highlight=0;
@@ -4976,73 +4976,70 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 		if(!F->posun_dalsich_elementu && ((F->JID+10)*(-1)==(long)Element_do->n || (F->JID==-101 && F->pom_element->n==Element_do->n)))highlight=1;//v případě, že není požadován posun dalších elementů, zvýrazní i kótu následujícího elementu, že se bude také měnit
 		if((F->JID+10)*(-1)==(long)Element_do->n ||  (10<F->JID && F->JID<100))highlight=1;//když se bude editovat hodnota kóty, nebo se bude kóta posouvat, kvůli následnému zaokrouhlování musí bohužel zůstat tady
 	}
-	//testování zda mezi elementy existují pouze linie
-	Cvektory::TElement *E=F->pom_temp->elementy->dalsi;
-	if(Element_od!=NULL)E=Element_od->dalsi;
-	bool povolit_vykresleni=true;
-	while(E!=NULL && E->n!=Element_do->n)
+	//////probíhá editace kót
+	if(F->Akce==F->GEOMETRIE)
 	{
-		if(E->geo.typ!=0){povolit_vykresleni=false;break;}
-		else E=E->dalsi;
+		if(Element_do->geo.typ==0)vykresli_kotu(canv,Element_do->geo.X1,Element_do->geo.Y1,Element_do->geo.X4,Element_do->geo.Y4,Element_do,F->pom_temp->koty_elementu_offset.y,highlight);
 	}
-	E=NULL;delete E; 
-	//samotné vykreslení kóty -nehotové   využít makro d.Rxy
-	//if(Element_od->n==0) vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do->X,Element_do->Y,Element_do,O,highlight);//od kabiny k prvnímu elementu + dodělat
-	//else vykresli_kotu(canv,Element_od->X,Element_od->Y,Element_do->X,Element_do->Y,Element_do,O,highlight);//mezi elementy
-
-	//nový fix    využít makro d.Rxy
-//	double C1=0;if(Element_od!=NULL)if(1<=Element_od->eID && Element_od->eID<=4)C1=DoSkRB;bude to chtít pořešit rotaci a dva offsety od a do
-//	double C2=0;if(Element_do!=NULL)if(1<=Element_do->eID && Element_od->eID<=4)C2=DoSkRB;
-//	if(Element_od->n==0)
-//	vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do->X,Element_do->Y,Element_do,O,highlight);//od kabiny k prvnímu elementu + dodělat
-//	else
-//	vykresli_kotu(canv,Element_od->X,Element_od->Y-C1,Element_do->X,Element_do->Y-C2,Element_do,O-C2,highlight);//mezi elementy
-
-	//pouze pro rychlé zobrazení - provizorní řešení pro levopravou vodorovnou kabinu
-	if(povolit_vykresleni)
+	//////bežná funkcionalita
+	else if(Element_do->eID!=MaxInt)
 	{
-		double x1,y1,x2,y2;
-		if(Element_do->orientace==0||Element_do->orientace==180)//vodorovná kabina
-			{if(Element_od!=NULL && Element_od->n==0 || Element_od==NULL){x1=F->pom_temp->elementy->dalsi->geo.X1;y1=F->pom_temp->elementy->dalsi->geo.Y1;}else {x1=Element_od->X;y1=Element_od->geo.Y4;}x2=Element_do->X;y2=y1;}
-		else
-			{if(Element_od!=NULL && Element_od->n==0 || Element_od==NULL){x1=F->pom_temp->elementy->dalsi->geo.X1;y1=F->pom_temp->elementy->dalsi->geo.Y1;}else {x1=Element_od->geo.X4;y1=Element_od->Y;}y2=Element_do->Y;x2=x1;}
-		if(x2<F->pom_temp->elementy->dalsi->geo.X1)O=(O-0.66)*(-1);//ošetření chybného zobrazení kóty elementu, který je před kabinou
-		vykresli_kotu(canv,x1,y1,x2,y2,Element_do,O,highlight);
-		if(Element_od!=NULL && Element_od->n!=0 && Element_do->n>1)//pokud jsou minimálně 2 elementy vložené
+  	//testování zda mezi elementy existují pouze linie
+  	Cvektory::TElement *E=F->pom_temp->elementy->dalsi;
+  	if(Element_od!=NULL)E=Element_od->dalsi;
+  	bool povolit_vykresleni=true;
+  	while(E!=NULL && E->n!=Element_do->n)
   	{
-  		//dojde k otestování zda mají tyto 2 elementy nebo alespoň jeden lakovací okna
-  		bool test1=false,test2=false;
-  		double x1,x2,y1,y2;
-  		switch(Element_od->eID)
-  		{case 1:case 7:case 11:case 15:case 101:case 105:case 3:case 9:case 13:case 17:case 103:case 107:test1=true;break;}
-  		switch(Element_do->eID)
-  		{case 1:case 7:case 11:case 15:case 101:case 105:case 3:case 9:case 13:case 17:case 103:case 107:test2=true;break;}
-  		//pokud první element nemá lakovací okno projde se objekt a prohlédne všechny elementy před posledním zda nějaky nemá LO
-  		if(!test1)
+  		if(E->geo.typ!=0){povolit_vykresleni=false;break;}
+  		else E=E->dalsi;
+  	}
+  	E=NULL;delete E;
+  	//pouze pro rychlé zobrazení - provizorní řešení pro levopravou vodorovnou kabinu
+  	if(povolit_vykresleni)
+  	{
+  		double x1,y1,x2,y2;
+  		if(Element_do->orientace==0||Element_do->orientace==180)//vodorovná kabina
+  			{if(Element_od!=NULL && Element_od->n==0 || Element_od==NULL){x1=F->pom_temp->elementy->dalsi->geo.X1;y1=F->pom_temp->elementy->dalsi->geo.Y1;}else {x1=Element_od->X;y1=Element_od->geo.Y4;}x2=Element_do->X;y2=y1;}
+  		else
+  			{if(Element_od!=NULL && Element_od->n==0 || Element_od==NULL){x1=F->pom_temp->elementy->dalsi->geo.X1;y1=F->pom_temp->elementy->dalsi->geo.Y1;}else {x1=Element_od->geo.X4;y1=Element_od->Y;}y2=Element_do->Y;x2=x1;}
+  		if(x2<F->pom_temp->elementy->dalsi->geo.X1)O=(O-0.66)*(-1);//ošetření chybného zobrazení kóty elementu, který je před kabinou
+			vykresli_kotu(canv,x1,y1,x2,y2,Element_do,O,highlight);
+  		if(Element_od!=NULL && Element_od->n!=0 && Element_do->n>1)//pokud jsou minimálně 2 elementy vložené
   		{
-  			Cvektory::TElement *E=F->pom_temp->elementy->dalsi;
-  			while(E!=NULL)
+  			//dojde k otestování zda mají tyto 2 elementy nebo alespoň jeden lakovací okna
+  			bool test1=false,test2=false;
+  			double x1,x2,y1,y2;
+  			switch(Element_od->eID)
+  			{case 1:case 7:case 11:case 15:case 101:case 105:case 3:case 9:case 13:case 17:case 103:case 107:test1=true;break;}
+    		switch(Element_do->eID)
+    		{case 1:case 7:case 11:case 15:case 101:case 105:case 3:case 9:case 13:case 17:case 103:case 107:test2=true;break;}
+    		//pokud první element nemá lakovací okno projde se objekt a prohlédne všechny elementy před posledním zda nějaky nemá LO
+  			if(!test1)
+    		{
+    			Cvektory::TElement *E=F->pom_temp->elementy->dalsi;
+    			while(E!=NULL)
+    			{
+    				if(E->n==Element_do->n)break;
+    				switch(E->eID)//pokud nějaký má dojde k uložení jeho ukazatele do prvního elementu
+  					{case 1:case 7:case 11:case 15:case 101:case 105:case 3:case 9:case 13:case 17:case 103:case 107:Element_od=E;test1=true;break;}
+    				E=E->dalsi;
+    			}E=NULL;delete E;
+    		}
+    		//nastavení bodů vykreslení pro jednotlivé rotace
+    		TRect E_od=F->souradnice_LO(Element_od),E_do=F->souradnice_LO(Element_do);
+    		double offset=1;
+    		switch((int)F->pom_temp->orientace)
   			{
-  				if(E->n==Element_do->n)break;
-  				switch(E->eID)//pokud nějaký má dojde k uložení jeho ukazatele do prvního elementu
-  				{case 1:case 7:case 11:case 15:case 101:case 105:case 3:case 9:case 13:case 17:case 103:case 107:Element_od=E;test1=true;break;}
-  				E=E->dalsi;
-  			}E=NULL;delete E;
+    			case 0:y1=m.P2Ly(E_od.top);y2=m.P2Ly(E_do.bottom);x1=x2=F->pom_temp->elementy->dalsi->geo.X1;break;
+    			case 90:x1=m.P2Lx(E_od.right);x2=m.P2Lx(E_do.left);y1=y2=F->pom_temp->elementy->dalsi->geo.Y1;break;
+    			case 180:y1=m.P2Ly(E_od.bottom);y2=m.P2Ly(E_do.top);x1=x2=F->pom_temp->elementy->dalsi->geo.X1;break;
+    			case 270:x1=m.P2Lx(E_od.left);x2=m.P2Lx(E_do.right);y1=y2=F->pom_temp->elementy->dalsi->geo.Y1;offset*=-1;break;
+    		}
+    		if(10<F->JID && F->JID<100)highlight=0;//vypnutí highlightu při naznačení změny offsetu
+    		//pokud mají oba elementy lakovací okna je mezi nimi vykreslena needitavatelná kóta
+  			if(test1&&test2)vykresli_kotu(canv,x1,y1,x2,y2,Element_do,1,highlight,0.2,clGray,true);
   		}
-  		//nastavení bodů vykreslení pro jednotlivé rotace
-  		TRect E_od=F->souradnice_LO(Element_od),E_do=F->souradnice_LO(Element_do);
-  		double offset=1;
-  		switch((int)F->pom_temp->orientace)
-  		{
-  			case 0:y1=m.P2Ly(E_od.top);y2=m.P2Ly(E_do.bottom);x1=x2=F->pom_temp->elementy->dalsi->geo.X1;break;
-  			case 90:x1=m.P2Lx(E_od.right);x2=m.P2Lx(E_do.left);y1=y2=F->pom_temp->elementy->dalsi->geo.Y1;break;
-  			case 180:y1=m.P2Ly(E_od.bottom);y2=m.P2Ly(E_do.top);x1=x2=F->pom_temp->elementy->dalsi->geo.X1;break;
-  			case 270:x1=m.P2Lx(E_od.left);x2=m.P2Lx(E_do.right);y1=y2=F->pom_temp->elementy->dalsi->geo.Y1;offset*=-1;break;
-  		}
-  		if(10<F->JID && F->JID<100)highlight=0;//vypnutí highlightu při naznačení změny offsetu
-  		//pokud mají oba elementy lakovací okna je mezi nimi vykreslena needitavatelná kóta
-  		if(test1&&test2)vykresli_kotu(canv,x1,y1,x2,y2,Element_do,1,highlight,0.2,clGray,true);
-  	}          
+  	}
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
