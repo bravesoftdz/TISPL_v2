@@ -2090,7 +2090,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						if(JID==-5){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_bod_temp=pom_bod;if(pom_bod_temp->n!=1)editovany_text=m.round2double(m.delka(pom_bod_temp->predchozi->X,pom_bod_temp->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);else editovany_text=m.round2double(m.delka(pom_temp->body->predchozi->X,pom_temp->body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);if(DKunit==2||DKunit==3)editovany_text=editovany_text/pom_temp->pohon->aRD;editovany_text=outDK(ms.MyToDouble(editovany_text));nahled_ulozit(true);}//editace kót kabiny
 						if(JID==-9 || JID==4){Akce=MOVE_TABLE;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//posun tabulky pohonu
 						if(JID==-201){pom_temp->pohon=element_temp->pohon;if(pom_temp->pohon!=NULL)prirazeni_pohonu_tab_pohon(pom_temp->pohon->n);else prirazeni_pohonu_tab_pohon(0);} //kliknutí na jeden z pohonů na předávacím místě
-						if(JID==-202){if(element_temp->dalsi!=NULL){pom_temp->pohon=pom_element_temp->dalsi->pohon;if(pom_temp->pohon!=NULL)prirazeni_pohonu_tab_pohon(pom_temp->pohon->n);else prirazeni_pohonu_tab_pohon(0);}else {pom_vyhybka=pom->dalsi;zmena_editovaneho_objektu();}}
+						if(JID==-202){if(element_temp->dalsi!=NULL){pom_temp->pohon=element_temp->dalsi->pohon;if(pom_temp->pohon!=NULL)prirazeni_pohonu_tab_pohon(pom_temp->pohon->n);else prirazeni_pohonu_tab_pohon(0);}else {pom_vyhybka=pom->dalsi;zmena_editovaneho_objektu();}}
 					}
 					else
 					{
@@ -4342,10 +4342,23 @@ void TForm1::vlozeni_editace_geometrie()
 	//////první vložení geometrie
 	if(posledni_editovany_element==NULL)
 	{
-		posunx=d.geoTemp.X4-pom_temp->elementy->dalsi->geo.X4;posuny=d.geoTemp.Y4-pom_temp->elementy->dalsi->geo.Y4;
-		pom_temp->elementy->dalsi->geo=d.geoTemp;
-		pom_temp->elementy->dalsi->X+=posunx;pom_temp->elementy->dalsi->Y+=posuny;
-		posledni_editovany_element=pom_temp->elementy->dalsi;
+		//vložení nového úseku před první element
+		if(posun_dalsich_elementu)
+		{
+    	posunx=d.geoTemp.X4-d.geoTemp.X1;posuny=d.geoTemp.Y4-d.geoTemp.Y1;
+			posledni_editovany_element=d.v.vloz_element(pom_temp,MaxInt,d.geoTemp.X4,d.geoTemp.Y4,orientace,pom_temp->elementy->dalsi);
+			design_element(posledni_editovany_element,true);//nutné!!!!!!!!
+			posledni_editovany_element->geo=d.geoTemp;
+		}
+		//přepsání geometrie prvnímu elementu v kabině
+		else
+		{
+	  	posunx=d.geoTemp.X4-pom_temp->elementy->dalsi->geo.X4;posuny=d.geoTemp.Y4-pom_temp->elementy->dalsi->geo.Y4;
+	  	pom_temp->elementy->dalsi->geo=d.geoTemp;
+	  	pom_temp->elementy->dalsi->X+=posunx;pom_temp->elementy->dalsi->Y+=posuny;
+	  	posledni_editovany_element=pom_temp->elementy->dalsi;
+		}
+		//posun následujících elementů, pokud existují
 		Cvektory::TElement *E=posledni_editovany_element->dalsi;
 		while(E!=NULL)
 		{
@@ -6784,7 +6797,7 @@ void TForm1::zneplatnit_minulesouradnice()
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::DrawGrid_otoceDrawCell(TObject *Sender, int ACol, int ARow,
-          TRect &Rect, TGridDrawState State)
+					TRect &Rect, TGridDrawState State)
 {
   log(__func__);//logování
 	short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu

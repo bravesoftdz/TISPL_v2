@@ -793,14 +793,12 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 Cvektory::TObjekt *Cvektory::PtInObjekt()
 {
 	//dodělat dle potřeby a vyhýbek
-	TPoint *tab_pruchodu=new TPoint[pocet_vyhybek+1];
 	Cvektory::TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
 	{
-		if(O->n!=(unsigned)F->VyID && O->n!=pocet_objektu_knihovny+1 && PtInBody(O))break;
-		O=dalsi_krok(O,tab_pruchodu);
+		if(O->id!=(unsigned)F->VyID && O->id!=pocet_objektu_knihovny+1 && PtInBody(O))break;
+		O=O->dalsi;
 	}
-	tab_pruchodu=NULL;delete tab_pruchodu;
 	return O;
 }
 //---------------------------------------------------------------------------

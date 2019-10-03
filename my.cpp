@@ -1030,4 +1030,9 @@ double Cmy::null(double number,double tolerance)
 	if(between(number,(-1)*tolerance,tolerance))return 0.0;
 	else return number;
 }
-
+/////////////////////////////////////////////////////////////////////////////
+//přepošítá hodnotu posuvníku intenzivity na změnu intenzivity při vykreslění elementů
+short Cmy::get_intensity()
+{
+	return(-3.6*F->scGPTrackBar_intenzita->Value+360);
+}
