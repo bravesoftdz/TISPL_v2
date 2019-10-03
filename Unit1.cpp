@@ -2564,8 +2564,8 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		{
 			if(JID>=11&&JID<=99)//offset kót elementu a komor
 			{
-				if(pom_temp->orientace==90||pom_temp->orientace==270)pom_temp->koty_elementu_offset-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
-				else pom_temp->koty_elementu_offset+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
+				if(pom_temp->orientace==90||pom_temp->orientace==270)pom_temp->koty_elementu_offset.x-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+				else pom_temp->koty_elementu_offset.x+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
 				minule_souradnice_kurzoru=TPoint(X,Y);
 		  	REFRESH(false);
 				nahled_ulozit(true);

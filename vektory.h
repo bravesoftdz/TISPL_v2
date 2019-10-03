@@ -139,7 +139,7 @@ class Cvektory
 		TPointD rozmer_kabiny;//délka a šířka obvodových zdí kabiny   //DOPRYC
 		T2Rect kabinaKotaX_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny -//DOPRYC
 		T2Rect kabinaKotaY_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny -//DOPRYC
-		double koty_elementu_offset;//odsazení kót elementů v metrech  - NEW + dodat do CObjekt!!!!
+		TPointD koty_elementu_offset;//.x=odsazení kót elementů v metrech normální stav, .y=odsazení kót elementův metrech editace geometrie  - NEW + dodat do CObjekt!!!!
 		TKomora *komora;//ukazatel na případné komory objektu - NEW + dodat do CObjekt
 		unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky   //DOPRYC
 		unsigned short stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky   //DOPRYC
@@ -687,7 +687,7 @@ private:
 			double orientace;//orientace objektu
 			unsigned int pohon;//"id" resp. n přidruženého - roletkou vybraného pohonu
 			double delka_dopravniku;//delka dopravníku v rámci objektu
-      double koty_elementu_offset;
+      TPointD koty_elementu_offset;
 			bool zobrazit_koty;//proměnná určující, zda se budou zobrzovat kóty - NEW pridat do binarky
 			bool zobrazit_mGrid;//proměnná určující, zda budou zobrazeny mGridy - NEW pridat do binarky
 			bool uzamknout_nahled;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu - NEW pridat do binarky
