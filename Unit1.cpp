@@ -4094,7 +4094,7 @@ void TForm1::zmen_poradi_objektu(int X, int Y)//testuje zda se nejedná o změnu
 		{
 			if(ukaz==d.v.OBJEKTY->predchozi)//první prvek versus poslední
 			{
-				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete objekt \""+AnsiString(pom->name.UpperCase())+"\" umístit v pořadí mezi objekty \""+AnsiString(ukaz->name.UpperCase())+"\" a \""+AnsiString(d.v.OBJEKTY->dalsi->name.UpperCase())+"\"?","",MB_YESNO,true,false))
+				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete objekt "+AnsiString(pom->name.UpperCase())+" umístit v pořadí mezi objekty "+AnsiString(ukaz->name.UpperCase())+" a "+AnsiString(d.v.OBJEKTY->dalsi->name.UpperCase())+"?","",MB_YESNO,true,false))
 				{
 					d.v.zmen_poradi_objektu(pom,d.v.OBJEKTY->predchozi);//volání realizace samotné záměny
 				}
@@ -4102,7 +4102,7 @@ void TForm1::zmen_poradi_objektu(int X, int Y)//testuje zda se nejedná o změnu
 			else//ostatní situace
 			{
 
-				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete objekt \""+AnsiString(pom->name.UpperCase())+"\" umístit v pořadí mezi objekty \""+AnsiString(ukaz->name.UpperCase())+"\" a \""+AnsiString(ukaz->dalsi->name.UpperCase())+"\"?","",MB_YESNO,true,false))
+				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete objekt "+AnsiString(pom->name.UpperCase())+" umístit v pořadí mezi objekty "+AnsiString(ukaz->name.UpperCase())+" a "+AnsiString(ukaz->dalsi->name.UpperCase())+"?","",MB_YESNO,true,false))
 				{
 					if(pom->n<ukaz->n)//vkládání dozadu
 						d.v.zmen_poradi_objektu(pom,ukaz);//volání realizace samotné záměny
@@ -7775,7 +7775,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 		{
 			if(pom_element!=NULL)//případ mazání elementu
 			{
-				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu smazat \""+pom_element_temp->name.UpperCase()+"\"?","",MB_YESNO))
+				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu smazat "+pom_element_temp->name.UpperCase()+"?","",MB_YESNO))
 				{
 					int eID=pom_element_temp->eID;
 					Cvektory::TElement *dalsi_element=NULL;
@@ -7799,22 +7799,22 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 			}
 			if(pom_bod_temp!=NULL)//mazání bodu v obrysu kabiny
 			{
-      	if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu smazat bod č. \""+AnsiString(pom_bod_temp->n),"",MB_YESNO))
+				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu smazat bod č. "+AnsiString(pom_bod_temp->n),"",MB_YESNO))
 				{
 					//pokud se jedná o druhý bod, smaže automaticky i bod první
 					if(pom_temp->body->predchozi->n==2)d.v.smaz_bod(pom_bod_temp->predchozi,pom_temp);
 					d.v.smaz_bod(pom_bod_temp,pom_temp);
 					pom_bod_temp=NULL;delete pom_bod_temp;
 					refresh_mGrid=false;
-			  	REFRESH();
+					REFRESH();
 					refresh_mGrid=true;
 					DuvodUlozit(true);
 					nahled_ulozit(true);
 				}
-      }
+			}
 			if(pom_komora_temp!=NULL && pom_temp->komora->predchozi->n>2)//případ mazání kabiny
 			{
-				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu smazat sekci číslo \""+AnsiString(pom_komora_temp->n)+"\"?","",MB_YESNO))
+				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu smazat sekci číslo "+AnsiString(pom_komora_temp->n)+"?","",MB_YESNO))
 				{
 					int n=pom_komora_temp->n;
 					d.v.smaz_komoru(pom_temp,pom_komora_temp);
@@ -7843,7 +7843,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 					MB("Nelze smazat objekt, který je součástí technologické cesty zakázky např.: "+UnicodeString(Z->name));
 				else
 				{
-				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu objekt \""+pom->name.UpperCase()+"\" smazat?","",MB_YESNO))
+				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu objekt "+pom->name.UpperCase()+" smazat?","",MB_YESNO))
 				{
 					if(((long)pom->id==VyID||(long)pom->id==pocet_objektu_knihovny+1)&&(pom->dalsi2!=pom->predchozi2))
 					{
@@ -7871,7 +7871,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 			}
 			else if(pom_bod_temp!=NULL)//mazání bodu haly nebo objektu
 			{
-				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu smazat bod č. \""+AnsiString(pom_bod_temp->n),"",MB_YESNO))
+				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu smazat bod č. "+AnsiString(pom_bod_temp->n),"",MB_YESNO))
 				{
 					//pokud se jedná o druhý bod, smaže automaticky i bod první
 					if(d.v.HALA.body!=NULL&&d.v.HALA.body->predchozi->n==2)d.v.smaz_bod(pom_bod_temp->predchozi);
