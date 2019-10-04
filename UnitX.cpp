@@ -345,14 +345,14 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 						case 3:E->rotace_jig=180;break;
 					}
 				}
-				if (Row==3)
+				if (Row==2)
 				{
 					input_state=PTotoc;//nastaveni stavu
 					E->PTotoc=F->inPT(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text));//INPUT
-					E->OTOC_delka=F->pom_temp->pohon->aRD*E->PTotoc;//uložení do pamìti + výpoèet
-					E->mGrid->Cells[Col][Row-1].Text = F->m.round2double(F->outDO(E->OTOC_delka),3);//OUTPUT
+					//E->OTOC_delka=F->pom_temp->pohon->aRD*E->PTotoc;//uložení do pamìti + výpoèet
+					//E->mGrid->Cells[Col][Row-1].Text = F->m.round2double(F->outDO(E->OTOC_delka),3);//OUTPUT
 					E->RT=F->m.RT(E->PTotoc,F->d.v.vzdalenost_od_predchoziho_elementu(E,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,E->WT);
-					E->mGrid->Cells[1][4].Text = F->m.round2double(F->outPT(E->RT),3);
+					E->mGrid->Cells[1][3].Text = F->m.round2double(F->outPT(E->RT),3);
 				}
 			} break;
 		}
@@ -825,8 +825,8 @@ void TFormX::korelace_tab_pohonu_elementy(Cvektory::TElement *mimo_element)
 				}break;
 				case 6://otoè aktivní
 				{
+					//E->mGrid->Cells[1][3].Highlight=true;
 					E->mGrid->Cells[1][3].Highlight=true;
-					E->mGrid->Cells[1][4].Highlight=true;
 				}break;
 			}
 			E->mGrid->Refresh();
@@ -875,7 +875,7 @@ void TFormX::korelace_v_elementech(long ID,long Row)
 		} break;
 		case 6://otoè aktivní (resp. otoè se stop stanicí)
 		{
-			if (Row==3){E->mGrid->Cells[1][Row-1].Highlight=true;E->mGrid->Cells[1][Row+1].Highlight=true;}
+			if (Row==2){/*E->mGrid->Cells[1][Row-1].Highlight=true;*/E->mGrid->Cells[1][Row+1].Highlight=true;}
 		} break;
 	}
 	E->mGrid->Refresh();
