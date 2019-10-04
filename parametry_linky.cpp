@@ -1219,8 +1219,8 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
    if(DEBUG)
 	 {
 
-	 scGPNumericEdit_delka_podvozek->Value=300;
-	 scGPNumericEdit_sirka_jig->Value=400;
+	 scGPNumericEdit_delka_podvozek->Value=400;
+	 scGPNumericEdit_sirka_jig->Value=300;
    scGPNumericEdit_delka_jig->Value=1200;
    scGPNumericEdit_vyska_jig->Value=800;
 

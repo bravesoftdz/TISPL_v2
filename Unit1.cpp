@@ -1724,7 +1724,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//F4
 		case 115:if(!Shift.Contains(ssAlt))Vybratoknem1Click(Sender);break;//pokud se nejedná o ALT+F4
 		//F5
-		case 116:Posouvat1Click(Sender);break;
+		case 116:Invalidate();break;//Posouvat1Click(Sender);break;
 		//F6
 		case 117:Posunout2Click(Sender);break;
 		//F7
@@ -10139,7 +10139,7 @@ void __fastcall TForm1::Button_dopravnik_parametryClick(TObject *Sender)
 			Form_parametry_linky->ShowModal();//návratová hodnota se řeši v knihovně
 			REFRESH();
 		}
-		else {MB("Nelze editovat z náhledu.");Layout->Down=false;Nahled->Down=true;}
+		else {MB("Parametry linky nelze nastavovat při editaci objektu.");Layout->Down=false;Nahled->Down=true;}
 	}
 	else
 	{
@@ -11859,6 +11859,13 @@ void __fastcall TForm1::scGPCheckBox_zobrazit_poziceClick(TObject *Sender)
 if(scGPCheckBox_zobrazit_pozice->Checked) writeINI("nastaveni_editace","zobrazeni_pozic", 1);
 else  writeINI("nastaveni_editace","zobrazeni_pozic", 0);
 REFRESH();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::Memo3KeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+
+{
+	if(Key==116)Invalidate();//při stisku F5 zinvaliduje hlavní form
 }
 //---------------------------------------------------------------------------
 

@@ -527,6 +527,7 @@ __published:	// IDE-managed Components
   void __fastcall scGPTrackBar_intenzitaChange(TObject *Sender);
   void __fastcall scGPCheckBox_zobrazit_rotace_jigu_na_otocichClick(TObject *Sender);
   void __fastcall scGPCheckBox_zobrazit_poziceClick(TObject *Sender);
+	void __fastcall Memo3KeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 
 
 

@@ -854,7 +854,7 @@ short Cvektory::oblast_objektu(TObjekt *O,double X, double Y)
   		{
   			double delka_x=O->elementy->dalsi->geo.X1-O->elementy->predchozi->geo.X4,polovina_x=O->elementy->dalsi->geo.X1-delka_x/2.0;
   			if(polovina_x-3*delka_x/2.0<=X && X<=polovina_x && O->elementy->predchozi->geo.Y4-delka_x<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_x)ret=1;//oblast před objektem
-  			if(polovina_x<X && X<=polovina_x+3*delka_x/2.0 && O->elementy->predchozi->geo.Y4-delka_x<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_x)ret=2;//oblast za objektem
+				if(polovina_x<X && X<=polovina_x+3*delka_x/2.0 && O->elementy->predchozi->geo.Y4-delka_x<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_x)ret=2;//oblast za objektem
   		}break;
 		}
 	}
@@ -2921,7 +2921,7 @@ double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element,bool pouze
   }
 }
 ////---------------------------------------------------------------------------
-//zadávám aktuální element, je zjištěna rotace před tímto zadávaným elementem
+//zadávám aktuální element, je zjištěna rotace před tímto zadávaným elementem, rotace aktuálního elementu se nezohledňuje
 double Cvektory::vrat_rotaci_jigu_po_predchazejicim_elementu(TObjekt *Objekt,TElement *Element)
 {
 	bool nalezeno=false;
@@ -2930,36 +2930,33 @@ double Cvektory::vrat_rotaci_jigu_po_predchazejicim_elementu(TObjekt *Objekt,TEl
 	Cvektory::TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
 	{
-		TElement *E=Element->dalsi;
+		Cvektory::TElement *E=O->elementy->dalsi; if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->dalsi;//v případě editace načte elementy editovaného objektu
 		while(E!=NULL)
-		{                                        //z důvodu toho že zatím E->n není unikátní (není v jednom spojáku), bude se měnit s DM
+		{                                       //toto z důvodu toho že zatím E->n není unikátní (není v jednom spojáku), bude se měnit s DM
 			if(Objekt!=NULL && Element->n==E->n && Objekt->n==O->n)//pozor nelze porovnávat jen ukazatele, může docházet k porování nepřímých kopii (viz pom_temp)
 			{
-				nalezeno=true;break;//akcelerátor, skončí cyklus
+				nalezeno=true;
+				break;//akcelerátor, skončí cyklus
 			}
-			else//stále předcházející elementy, ty mě pro návrátovou hodnotu zajímají, rotace aktuálního elementu se nezohledňuje
+			else
 			{
-				if(3<=E->eID && E->eID<=6)akt_rotoce_jigu+=E->rotace_jig;
-      }
+				if(E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180)akt_rotoce_jigu+=E->rotace_jig;//stále předcházející elementy, ty mě pro návrátovou hodnotu zajímají, rotace aktuálního elementu se nezohledňuje
+			}
 			E=E->dalsi;
 		}
 		E=NULL;delete E;
-		if(nalezeno)break;//akcelerátor, skončí cyklus
+		if(nalezeno)break;//akcelerátor, skončí i hlavní cyklus
 		O=O->dalsi;//posun na další prvek
 	}
 	O=NULL;delete O;
-
-  //ošetření přetečení přes 360°
-	akt_rotoce_jigu=fmod(akt_rotoce_jigu,360.0);// včetně ošetření přetečení přes 360 stupňů
-	if(akt_rotoce_jigu<0){akt_rotoce_jigu+=360;}//pro záporné hodnoty
-
-	return akt_rotoce_jigu;
+	//testovací výpis, časem možno odstranit F->Memo("Pro "+Element->name+" o rotaci: "+Element->rotace_jig+" o celkové"+m.a360(akt_rotoce_jigu));
+	return m.a360(akt_rotoce_jigu);
 }
 ////---------------------------------------------------------------------------
-//zadávám aktuální element, je zjištěna rotace před tímto zadávaným elementem
+//zadávám aktuální element, je zjištěna rotace před tímto zadávaným elementem, rotace aktuálního elementu se nezohledňuje
 double Cvektory::vrat_rotaci_jigu_po_predchazejicim_elementu(TElement *Element)
 {
-	return vrat_rotaci_jigu_po_predchazejicim_elementu(vrat_objekt(Element->n),Element);
+	return vrat_rotaci_jigu_po_predchazejicim_elementu(vrat_objekt(Element->objekt_n),Element);
 }
 ////---------------------------------------------------------------------------
 //obsah všech comboboxu všech stopek nejdříve smaže a následně naplní combobox stopky ostatními elementy, které mohou být s danou stopkou spárované, nevypisuje danou stopku, vybere v combu stop-element spárovaný či předchozí, buď navržený nebo uživatelsky vybraný

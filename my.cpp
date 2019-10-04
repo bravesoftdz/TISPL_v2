@@ -81,8 +81,9 @@ short Cmy::Rt90(double number)
 //záporné stupně převede do kladných v rámci 360°
 double Cmy::a360(double number)
 {
+	number=fmod(number,360.0);//ošetření přetečení přes 360 stupňů
 	if(number<0)number+=360;//pro záporné hodnoty
-	if(number<0)number=a360(number);//rekurzce pro případy, že se bude jednát o několikanásobnou rotaci
+	//if(number<0)number=a360(number);//rekurzce pro případy, že se bude jednát o několikanásobnou rotaci - již není třeba a nahrazuje i pro kladné přetečení přes 360 první řádek
 	return number;
 }
 /////////////////////////////////////////////////////////////////////////////
@@ -921,25 +922,6 @@ double Cmy::kontrola_rychlosti_prejezdu(double CT,double MT,double PT,double WT,
 }
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
-//zesvětlí nebo ztmaví barvu
-TColor Cmy::clIntensive(TColor C,short A)//+A - míra zesvětlení,-A míra ztmavení
-{
-	BYTE R=GetRValue(C); BYTE G=GetGValue(C); BYTE B=GetBValue(C);
-	if(A>0)//zesvětlení
-	{
-		if(A>255-R)R=255;else R+=A;
-		if(A>255-G)G=255;else G+=A;
-		if(A>255-B)B=255;else B+=A;
-	}
-	if(A<0)//ztmavení
-	{
-		if((-1)*A>R)R=0;else R+=A;
-		if((-1)*A>G)G=0;else G+=A;
-		if((-1)*A>B)B=0;else B+=A;
-	}
-	return (TColor)RGB(R,G,B);
-}
-/////////////////////////////////////////////////////////////////////////////
 //nastaví horizontální a vertikální pozici tlačítka a také designové vlasnosti podle tlačítkek Ano, Uložit, OK, Storno dle MyMessageBox
 void Cmy::designButton(TscGPButton *button,TForm *form,short rank,short sum,short horizontal_space,short vertikal_space)
 {
@@ -1031,8 +1013,30 @@ double Cmy::null(double number,double tolerance)
 	else return number;
 }
 /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+//zesvětlí nebo ztmaví barvu
+TColor Cmy::clIntensive(TColor C,short A)//+A  míra zesvětlení,  -A  míra ztmaveni, max hodnota 255, min hodnota -255
+{
+	BYTE R=GetRValue(C); BYTE G=GetGValue(C); BYTE B=GetBValue(C);
+	if(A>0)//zesvětlení
+	{
+		if(A>255-R)R=255;else R+=A;
+		if(A>255-G)G=255;else G+=A;
+		if(A>255-B)B=255;else B+=A;
+	}
+	if(A<0)//ztmavení
+	{
+		if((-1)*A>R)R=0;else R+=A;
+		if((-1)*A>G)G=0;else G+=A;
+		if((-1)*A>B)B=0;else B+=A;
+	}
+	return (TColor)RGB(R,G,B);
+}
+/////////////////////////////////////////////////////////////////////////////
 //přepošítá hodnotu posuvníku intenzivity na změnu intenzivity při vykreslění elementů
 short Cmy::get_intensity()
 {
 	return(-3.6*F->scGPTrackBar_intenzita->Value+360);
 }
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////

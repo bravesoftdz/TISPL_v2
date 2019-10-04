@@ -40,7 +40,6 @@ class Cmy
 	bool cele_cislo(double number);
 	double mod_d(double number1,double number2);//možno nahradit fci fmod z math.h  - to si už tak nejsem jistý viz paramatry této funkce - ukazatel?
 	bool isFinite(double number1,double number2);
-	TColor clIntensive(TColor C,short A); //A + míra zesvětlení,  - míra ztmaveni
 	double getL(double RA,double R);//vrátí vzdálenost od výchozího a koncového bodu k řídícímu bodu oblouku realizovaného bézierovou křivkou, vstupním parametrem je rotační úhel a radius, připraveno pouze pro některé úhly, výpočet není sice zcela exaktní, ale v rámci požadované tolerance výborný
 	TPointD *getArcLine(double X,double Y,double orientace,double rotacni_uhel,double radius);//vrátí souřadnice (4 místné pole TPointD tj. 8 hodnot) bézierovy křivky oblouku či linie dle zadaných souřadnic, X,Y jsou logické souřadnice výchozího vykreslování, parametry: orientace oblouku - dle světových stran (umí i jiné než 90° násobky), rotační úhel - pod kterým je oblouk rotován, může být záporný (znaménko určuje směr rotace, + proti směru hodinových ručiček, - po směru), max. hodnota +90 a min. hodnota -90 (je-li nastaven na 0° jedná se o linii), radius - je radius oblouku v metrech nebo pokud je rotační úhel nastaven na 0° tedy se jedná o linii, je radius délkou linie
 	double delka(double X1,double Y1,double X2,double Y2);//vrátí délku mezi body v absolutní hodnotě
@@ -97,7 +96,8 @@ class Cmy
 	double get_timePERpx(double speed,double A=1,double speed_min=0);//z rychlosti v m/s vratí čas milisekundách potřebný na překreslení jednoho pixelu při daném zoomu, parametr A=je rychlost animace, kdy implicitní 1 originální rychlost - tedy 100%, pokud je parametr A=0, vrátí se vhodný čas na přehrání kontinuální animace, metoda je vhodná na animace a simulace pro timer  nehledě na rychlost, pokud je (i implicitní) parametr speed_min==0, tzn. převezme se hodnota aktuálního počítaného RD, tzn. všechny animace se promítnou se stejným afps dle fps, tj. všechny animace se zobrazí kontinuálně (netrhnaně), v případě nenulové hodnoty je speed_min stanovane jako minimální možná rychlost pro zobrazení kontinuální (netrhnané) simulace, pokud by byl paremetr speed nižší, nebude se jednat kontinuální (netrhnanou) simulaci
 	bool between(double value,double from, double to, bool left_closed=true, bool right_closed=true);//vrací true či falce zda se daná hodnota nachází čí nenachází v intervalu, interval může být uzavřený (tzn. včetně hodnoty hranice intervalu) nebo otevřený a to i rozdílně pro obě meze, implicitně jsou hranice nastaveny na uzavřený interval z obou stran, tzn. do podmínky se zahrnuje včetně obou hodnot
 	double null(double number,double tolerance=0.0000000001);//zkontroluje číslo, zda se nejadná o hodnout okolo nuly dle možné odchylky dle toleration, předchází zvláštnímu chování výpočtů okolo nuly
-  short get_intensity();//přepošítá hodnotu posuvníku intenzivity na změnu intenzivity při vykreslění elementů
+	TColor clIntensive(TColor C,short A);//+A  míra zesvětlení,  -A  míra ztmaveni, max hodnota 255, min hodnota -255
+	short get_intensity();//přepočítá hodnotu posuvníku intenzivity z menu nastavení na změnu barevné intenzivity při vykreslění objektů či elementů
 
 	protected:
 };
