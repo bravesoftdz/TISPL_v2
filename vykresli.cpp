@@ -45,12 +45,15 @@ void Cvykresli::vykresli_halu(TCanvas *canv,int stav)
 		if(F->JID==1&&F->pom_bod->n==1)stav=2*v.HALA.body->predchozi->n;//poslední úsečka
 		if(F->JID==1&&F->pom_bod->n!=1)stav=v.HALA.body->predchozi->n+F->pom_bod->n-1;//ostatní úsečky
 	}
+	if(F->pom_temp!=NULL)stav=-1;
 	//nastavení kót
 	bool zobrazit_koty=true;
 	if(F->MOD==F->NAHLED)zobrazit_koty=false;
 	//vykreslení
 	short sirka_steny_px=m.m2px(0.4);//m->px
-	polygon(canv,v.HALA.body,clStenaHaly,sirka_steny_px,stav,zobrazit_koty);
+	TColor clHala=clStenaHaly;//defaultní barva
+	if(F->pom_temp!=NULL)clHala=m.clIntensive(clHala,100-F->scGPTrackBar_intenzita->Value);//zesvětlení při spuštěné editaci, zesvětlení tady i v metodě polygon (musí být 2x)
+	if(F->pom_temp!=NULL && F->scGPTrackBar_intenzita->Value>5 || F->pom_temp==NULL)polygon(canv,v.HALA.body,clHala,sirka_steny_px,stav,zobrazit_koty);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -365,7 +368,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		{
 			if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)K->n || F->JID==0 && F->pom_komora!=NULL && F->pom_komora->n==K->n))clAkt=m.clIntensive(clStenaKabiny,-50);//highlight
 			else clAkt=clStenaKabiny;
-			if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clAkt=m.clIntensive(clStenaKabiny,50);
+			if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clAkt=m.clIntensive(clStenaKabiny,I);
 			set_pen(canv,clAkt,sirka_steny_px,PS_ENDCAP_SQUARE);
 			vzdalenost+=K->velikost;//dle velikosti předchozích komor uchovává hodnotu součtu/pozice aktuálně vykreslované komory
 			short W1=0;if(K->n==1)W1=W;//pro první komoru odsazeni
@@ -2950,6 +2953,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O)//sloučit s v
 			if(E->pohon==NULL/* || F->pom_temp!=NULL && F->pom_temp->n!=O->n || O->pohon==NULL && F->pom_temp==NULL*/)canv->Pen->Width=1;//pokud není pohon přiřazen, tak jen elementární osa
 			else canv->Pen->Width=m.round(F->Zoom*0.5);//pokud není přiřazen
 			canv->Pen->Color=clBlack;
+			if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)canv->Pen->Color=m.clIntensive(clBlack,m.get_intensity());//zesvětlování neaktivních kabin
 			canv->PolyBezier(POLE,3);
 			//ukazatelové záležitosti
 			E=E->dalsi;//posun na další element
