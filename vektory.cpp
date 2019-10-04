@@ -2930,7 +2930,7 @@ double Cvektory::vrat_rotaci_jigu_po_predchazejicim_elementu(TObjekt *Objekt,TEl
 	Cvektory::TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
 	{
-		Cvektory::TElement *E=O->elementy->dalsi; if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->dalsi;//v případě editace načte elementy editovaného objektu
+		TElement *E=O->elementy->dalsi; if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->dalsi;//v případě editace načte elementy editovaného objektu
 		while(E!=NULL)
 		{                                       //toto z důvodu toho že zatím E->n není unikátní (není v jednom spojáku), bude se měnit s DM
 			if(Objekt!=NULL && Element->n==E->n && Objekt->n==O->n)//pozor nelze porovnávat jen ukazatele, může docházet k porování nepřímých kopii (viz pom_temp)
@@ -2949,7 +2949,7 @@ double Cvektory::vrat_rotaci_jigu_po_predchazejicim_elementu(TObjekt *Objekt,TEl
 		O=O->dalsi;//posun na další prvek
 	}
 	O=NULL;delete O;
-	//testovací výpis, časem možno odstranit F->Memo("Pro "+Element->name+" o rotaci: "+Element->rotace_jig+" o celkové"+m.a360(akt_rotoce_jigu));
+	//F->Memo("Pro "+Element->name+" o rotaci: "+Element->rotace_jig+" o celkové"+m.a360(akt_rotoce_jigu));//testovací výpis, časem možno odstranit
 	return m.a360(akt_rotoce_jigu);
 }
 ////---------------------------------------------------------------------------
@@ -2957,6 +2957,27 @@ double Cvektory::vrat_rotaci_jigu_po_predchazejicim_elementu(TObjekt *Objekt,TEl
 double Cvektory::vrat_rotaci_jigu_po_predchazejicim_elementu(TElement *Element)
 {
 	return vrat_rotaci_jigu_po_predchazejicim_elementu(vrat_objekt(Element->objekt_n),Element);
+}
+////---------------------------------------------------------------------------
+//metoda vrátí ukazatel na poslední rotační element na lince
+Cvektory::TElement *Cvektory::vrat_posledni_rotacni_element()
+{ //NUTNÝ UPDATE PŘI PŘECHODU NA ZÁKÁZKY RESP. VÝHYBKY!!!
+	TElement *RET=NULL;
+	Cvektory::TObjekt *O=OBJEKTY->predchozi;//přeskočí na poslední objekt
+	while(O->n>0)
+	{
+		TElement *E=O->elementy->predchozi; if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->predchozi;//v případě editace načt posledn9 elementy editovaného objektu
+		while(E->n>0)
+		{
+			if(E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180){RET=E;break;}
+			E=E->predchozi;
+		}
+		E=NULL;delete E;
+		if(RET!=NULL)break;
+		O=O->predchozi;
+	}
+	O=NULL;delete O;
+	return RET;
 }
 ////---------------------------------------------------------------------------
 //obsah všech comboboxu všech stopek nejdříve smaže a následně naplní combobox stopky ostatními elementy, které mohou být s danou stopkou spárované, nevypisuje danou stopku, vybere v combu stop-element spárovaný či předchozí, buď navržený nebo uživatelsky vybraný

@@ -481,6 +481,7 @@ class Cvektory
 	double vzdalenost_od_predchoziho_elementu(TElement *Element,bool pouzeSG=false);//vratí vzdálenost od předchozího elementu, pracuje zatím pouze v orotogonalizovaném prostoru (bude nutno vylepšit s příchodem oblouků), pokud se jedná o první element, uvažuje se jako vzdálenost od počátku kabiny (nutno vylepšit ještě pro různé orientace kabiny)
 	double vrat_rotaci_jigu_po_predchazejicim_elementu(TObjekt *Objekt,TElement *Element);//zadávám aktuální element, je zjištěna rotace před tímto zadávaným elementem, rotace aktuálního elementu se nezohledňuje
 	double vrat_rotaci_jigu_po_predchazejicim_elementu(TElement *Element);//zadávám aktuální element, je zjištěna rotace před tímto zadávaným elementem, rotace aktuálního elementu se nezohledňuje
+	TElement *vrat_posledni_rotacni_element();//metoda vrátí ukazatel na poslední rotační element na lince
 	//dodělat void zmen_poradi_Elementu(TObjekt *Objekt, TElement Element,TObjekt *zaElement);
 	//dodělat void zmen_poradi_Elementu(TObjekt *Objekt unsigned long aktualni_poradi,unsigned long nove_poradi);
 	void napln_comba_stopek();//obsah všech comboboxu všech stopek nejdříve smaže a následně naplní combobox stopky ostatními elementy, které mohou být s danou stopkou spárované, nevypisuje danou stopku, vybere v combu stop-element spárovaný či předchozí, buď navržený nebo uživatelsky vybraný

@@ -2706,7 +2706,6 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 		double Y=Rxy(E).y;
 		double dJ=v.PP.delka_jig;//později nahradit ze zakázky
 		double sJ=v.PP.sirka_jig;//později nahradit ze zakázky
-		//F->Memo(E->name+": "+AnsiString(v.vrat_rotaci_jigu_po_predchazejicim_elementu(E)));
 		double rotaceJ=v.vrat_rotaci_jigu_po_predchazejicim_elementu(E);//metodu po přechodu na nový DM zaktulizovat o průchod přes spoják elementů
 		short rozmezi=60;//pouze empiricky dodaná hodnota barevného rozpětí od první až po poslední pozici rotace
 		unsigned short clPotRGB=180;//hotnota barevných složek dle RGB potenciálních pozic
@@ -2728,6 +2727,14 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 			case 270: y=0;  x=-1; break;
 		}
 
+		////nastavení písma
+		canv->Brush->Style=bsClear;
+		canv->Font->Style = TFontStyles()<<fsBold;
+		canv->Font->Name=F->aFont->Name;
+		canv->Font->Size=m.round(4*F->Zoom);
+		canv->Font->Color=clRed;
+		AnsiString T="";
+
 		////vykreslení ROTACE pozic u otočí a elementů s otočemi
 		if(F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180)
 		{
@@ -2745,6 +2752,18 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 				set_pen2(canv,RGB(clAkt,clAkt,clAkt),m.round(1/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
 				vykresli_jig(canv,Xr-x*posun*abs(i/krok),Yr-y*posun*abs(i/krok),dJ,sJ,orientaceP,rotaceJ+i,NULL,0);//pozn. barvu nastavujeme výše
 			}
+			//v případě že poslední rotace nevrací jig orotované, tak jak jsou orotované ve vstupním objektu/první rotačním elementu
+			Cvektory::TElement *Ep=v.vrat_posledni_rotacni_element();
+			if(Ep!=NULL)
+			{
+				double aR=m.a360(rotaceJ+Ep->rotace_jig);//výstupní rotace jigu z posledního rotačního elementu
+				if(Ep->n==E->n &&  Ep->objekt_n==E->objekt_n && aR!=0 && aR!=180)//předposlení podmínka při novém DM zbytečná!
+				{
+					T="Rotace neopovídá orientaci JIGů na začátku linky!";
+					TextFraming(canv,m.L2Px(X)-m.round(canv->TextWidth(T)/2.0),m.L2Py(Y)-m.round(canv->TextHeight(T)/2.0),T,canv->Font,clWhite,3);
+				}
+			}
+			Ep=NULL;delete Ep;
 		}
 
 		////vykreslení POZIC na elementu + vzniklém buffru
@@ -2760,12 +2779,7 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 			//případne výpis špatné rotace jigu
 			if(v.PP.delka_podvozek<m.UDJ(rotaceJ))
 			{
-				canv->Brush->Style=bsClear;
-				canv->Font->Style = TFontStyles()<<fsBold;
-				canv->Font->Name=F->aFont->Name;
-				canv->Font->Size=m.round(4*F->Zoom);
-				canv->Font->Color=clRed;
-				AnsiString T="Pozor, překrytí JIGů!";
+				T="Pozor, překrytí JIGů!";
 				short TW=0; short TH=0;
 				if(y!=0){TW=canv->TextHeight(T);TH=canv->TextWidth(T);}else {TW=canv->TextWidth(T);TH=canv->TextHeight(T);}
 				if(y<0){canv->Font->Orientation=900;TH*=-1;}if(y>0){canv->Font->Orientation=2700;TW*=-1;}
@@ -2793,21 +2807,7 @@ void Cvykresli::vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dJ
 	////jig
 	vykresli_jig(canv,C.x,C.y,dJ,sJ,orientaceP,rotaceJ,clJig);
 
-//	////text - ID vozíku
-//	//framing
-//	if(Form1->Zoom>10)//pokud je více přiblížený objekt, tak se používá pouze framing, jinak bílé pozadí, pro lepší přehlednost
-//	{
-//		canv->Font->Color=clWhite;
-//		canv->Font->Style = TFontStyles()<<fsBold;//vypnutí tučného písma
-//		canv->Font->Size=Form1->Zoom*(4+1); if(Form1->antialiasing)canv->Font->Size=Form1->Zoom*(5+1);
-//		canv->TextOutW(m.L2Px(X)-canv->TextWidth(ID)/2.0,m.L2Py(Y+sJ/2.0)-canv->TextHeight(ID)/2.0,ID);//indexace pozice v rámci objektu
-//	}
-//	//samotný text
-//	if(Form1->Zoom<=10)canv->Brush->Style=bsSolid;//pokud je více přiblížený objekt, tak se používá pouze framing, jinak bílé pozadí, pro lepší přehlednost//bez bílého pozadí toto zrušit/zakomentovat pokud bych chtěl bílý framing, ten jsem dělal pomocí tučného písma a fontu o 1pt větší
-//	canv->Font->Color=clJig;
-//	canv->Font->Style = TFontStyles();//vypnutí tučného písma
-//	canv->Font->Size=Form1->Zoom*4; if(Form1->antialiasing)canv->Font->Size=Form1->Zoom*5;
-//	canv->TextOutW(m.L2Px(X)-canv->TextWidth(ID)/2.0,m.L2Py(Y+sJ/2.0)-canv->TextHeight(ID)/2.0,ID);//indexace pozice v rámci objektu
+	////text - ID vozíku není vypisováno, pokud by se začlo používat, tak pozor u vykreslení pozic by bylo potřeba nastavit separátně písmo u chybových výpisů
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_jig(TCanvas *canv,double X,double Y,double dJ,double sJ,double orientaceP,double rotaceJ,TColor clJig,float Width)
