@@ -535,6 +535,7 @@ void TForm1::Novy_soubor()//samotné vytvoření nového souboru
 			 d.v.PP.sirka_jig=1;
 			 d.v.PP.vyska_jig=1;
 			 d.v.PP.delka_podvozek=1;
+			 d.v.PP.sirka_podvozek=0.12;
 			 d.v.PP.uchyt_pozice=d.v.PP.delka_jig/2.0;//výchozí umístění vozíku je v polovině
 			 d.v.PP.typ_linky=0;
 			 d.v.PP.raster.filename="";

@@ -2797,7 +2797,6 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 void Cvykresli::vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dJ,double sJ,double orientaceP,double rotaceJ,TColor clChassis, TColor clJig)
 {
 	//výchozí parametry
-	float sP=0.12;//šířka podvozku, pouze stanovane
 	double Xp=X-v.PP.uchyt_pozice;//posunutí umístění vozíku o nastavení uchycení pozice
 
 	//transparentní pozadí (nejenom textu ale ji podvozku a jigu) ALTERNATIVA pro font:SetBkMode(canv->Handle,TRANSPARENT);
@@ -2805,7 +2804,7 @@ void Cvykresli::vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dJ
 
 	////podvozek
 	set_pen2(canv,clChassis,m.round(1/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true);
-	TPointD C=obdelnik(canv,Xp,Y+sP/2.0,Xp+v.PP.delka_podvozek,Y-sP/2.0,m.o2r(orientaceP),X,Y);
+	TPointD C=obdelnik(canv,Xp,Y+v.PP.sirka_podvozek/2.0,Xp+v.PP.delka_podvozek,Y-v.PP.sirka_podvozek/2.0,m.o2r(orientaceP),X,Y);
 
 	////jig
 	vykresli_jig(canv,C.x,C.y,dJ,sJ,orientaceP,rotaceJ,clJig);

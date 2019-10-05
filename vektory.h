@@ -251,7 +251,8 @@ class Cvektory
 		double delka_jig;//přejmenovat na max_...
 		double sirka_jig;//přejmenovat na max_...
 		double vyska_jig;//přejmenovat na max_...
-		double delka_podvozek;//délka podvozku vozíků
+		double delka_podvozek;//délka podvozku všech vozíků
+		double sirka_podvozek;//šířka podvozku všech vozíků - zatím není ukládáno do binárky, protože se uživatelsky nenastavuje
 		double uchyt_pozice;//pozice uchycení vozíků k nosnému palci
 		T_raster raster;
 		T_vector vector;//DOPRYC - zakomentovat
@@ -374,7 +375,8 @@ class Cvektory
 		double sirka_jig;
 		double vyska_jig;
 		double delka_podvozek;
-    double uchyt_pozice;
+		double sirka_podvozek;
+		double uchyt_pozice;
     int katalog;
 		short typ_linky;
     double radius;
