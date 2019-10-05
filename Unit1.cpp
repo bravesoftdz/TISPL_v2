@@ -1453,7 +1453,7 @@ void TForm1::kurzor(TKurzory typ_kurzor)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormPaint(TObject *Sender)
 {
-	////////při změně rozlišení nebo obrazovky dojde k maximalizaci okna programu 	Problém při ruční minimalizaci!
+	////////při změně rozlišení nebo obrazovky dojde k MAXIMALIZACI OKNA programu 	Problém při ruční minimalizaci!
 	if(ClientWidth!=Monitor->Width&&FMaximized)
 	{
 		//maximalizace formuláře jinak to s novým designem nejde
@@ -1463,14 +1463,14 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 	}
 
 	////////jednoltivé vrstvy
-	////vykreslení gridu
-	if(grid && Zoom>0.5 && !antialiasing && MOD!=LAYOUT && MOD!=NAHLED &&/*MOD!=REZERVY &&*/ MOD!=CASOVAOSA && MOD!=TECHNOPROCESY)d.vykresli_grid(Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí
+	//asi smazat if(grid && Zoom>0.5 && !antialiasing && MOD!=LAYOUT && MOD!=NAHLED &&/*MOD!=REZERVY &&*/ MOD!=CASOVAOSA && MOD!=TECHNOPROCESY)d.vykresli_grid(Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí
 	Zoom_predchozi_AA=Zoom;//musí být tu, před mody (mohl by být i před kreslením gridu)
-	////rastr
+	////rastrový uživatelský POKDKLAD
 	Graphics::TBitmap *bmp_total=new Graphics::TBitmap;bmp_total->Width=ClientWidth;bmp_total->Height=ClientHeight;
 	if(d.v.PP.raster.show)nacti_podklad(bmp_total->Canvas);
+	////vykreslení GRIDu
 	if(grid && Zoom_predchozi_AA>0.5 && (Akce==MOVE_BOD||Akce==DRAW_HALA) && prichytavat_k_mrizce==1)d.vykresli_grid(bmp_total->Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí//vykreslení gridu
-	////vektory
+	////VEKTORY
 	Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
 	bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu //zkoušel jsem nastavit plochu antialiasingu bez ovládacích prvků LeftToolbar a menu, ale kopírování do jiné BMP to zpomalovalo více neooptimalizovaná oblast pro 3xbmp
 	Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
@@ -1481,9 +1481,9 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 	Cantialising a;
 	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 	bmp_total->Canvas->Draw(0,0,bmp_out);delete (bmp_out);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
-	////mGridy
+	////mGRIDY
 	d.vykresli_mGridy(bmp_total->Canvas); //přesunuto do vnitř metody: pom_temp->elementy!=NULL kvůli pohonům
-	////grafické měřítko
+	////grafické MĚŘÍTKO
 	if(zobrazit_meritko && Akce!=MOVE_HALA)d.meritko(bmp_total->Canvas);
 	//finální předání bmp_out do Canvasu
 	Canvas->Draw(0,0,bmp_total);

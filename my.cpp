@@ -872,7 +872,7 @@ double Cmy::UDV(double rotace)
 double Cmy::UDJ(double dJ,double sJ,double rotace)
 {
 	//postupně rozšířit o výpočet (obsanou oblast) dle zadaných stupňů nejenom 0 vs. 90, např. nutno dořešit např. typickou 45°
-	if(rotace==0)return dJ;//delka voziku
+	if(rotace==0 || rotace==360 || rotace==180  || rotace==-180)return dJ;//delka voziku
 	else return sJ;// šířka vozíku
 }
 /////////////////////////////////////////////////////////////////////////////
