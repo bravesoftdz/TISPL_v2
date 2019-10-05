@@ -134,7 +134,9 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 		{
 			if(E->n>0)
 			{
+				//vykreslení potenciálních pozic vozíků resp. jigů
 				vykresli_pozice(canv,E);
+				//vykreslení elementů
 				if(!(F->pom_temp!=NULL && O->n!=F->pom_temp->n && F->scGPTrackBar_intenzita->Value<5))vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->LO1,E->OTOC_delka,E->LO2,E->LO_pozice,E);
 				E->citelna_oblast.rect3=aktOblast;//uložení citelné oblasti pro další použití
 				//vykreslení kót
@@ -2744,12 +2746,12 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 			short Z=1;if(E->rotace_jig<0)Z=-1;//pro záporné rotace jigu
 			double Xr=X+E->OTOC_delka/2.0*x;double Yr=Y+E->OTOC_delka/2.0*y;//začátek vykreslování rotace o posun poloviny délky otoče, *-1 kvůli opačné orientaci
 			short clUroven=m.round(rozmezi/(fabs(E->rotace_jig)/krok));//rozmezí odstínu v RGB resp. (clPotRGB+40-clPotRGB)
-			DWORD pole[]={m.round(5/3.0*F->Zoom),m.round(2/3.0*F->Zoom),m.round(1/3.0*F->Zoom),m.round(2/3.0*F->Zoom)};//definice uživatelského pera s vlastní definovanou linii
+			DWORD pole[]={m.round(5/3.0*F->Zoom),m.round(3/3.0*F->Zoom),m.round(1/3.0*F->Zoom),m.round(3/3.0*F->Zoom)};//definice uživatelského pera s vlastní definovanou linii
 			//samotné cyklické vykreslení
 			for(short i=0;abs(i)<=fabs(E->rotace_jig);i+=Z*krok)
 			{
 				unsigned short clAkt=clPotRGB+rozmezi-abs(i/krok)*clUroven;
-				set_pen2(canv,RGB(clAkt,clAkt,clAkt),m.round(1/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
+				set_pen2(canv,RGB(clAkt,clAkt,clAkt),m.round(1.5/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
 				vykresli_jig(canv,Xr-x*posun*abs(i/krok),Yr-y*posun*abs(i/krok),dJ,sJ,orientaceP,rotaceJ+i,NULL,0);//pozn. barvu nastavujeme výše
 			}
 			//v případě že poslední rotace nevrací jig orotované, tak jak jsou orotované ve vstupním objektu/první rotačním elementu
@@ -2951,9 +2953,9 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O)//sloučit s v
 			POLE[3]=TPoint(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
 			//vykreslení
 			if(E->pohon==NULL/* || F->pom_temp!=NULL && F->pom_temp->n!=O->n || O->pohon==NULL && F->pom_temp==NULL*/)canv->Pen->Width=1;//pokud není pohon přiřazen, tak jen elementární osa
-			else canv->Pen->Width=m.round(F->Zoom*0.5);//pokud není přiřazen
+			else canv->Pen->Width=m.round(F->Zoom*0.5);//pokud je pohon přiřazen
 			canv->Pen->Color=clBlack;
-			if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)canv->Pen->Color=m.clIntensive(clBlack,m.get_intensity());//zesvětlování neaktivních kabin
+			if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)canv->Pen->Color=m.clIntensive(clBlack,m.get_intensity());//zesvětlování neaktivních pohonů
 			canv->PolyBezier(POLE,3);
 			//ukazatelové záležitosti
 			E=E->dalsi;//posun na další element
@@ -4740,16 +4742,18 @@ TPointD *Cvykresli::vykresli_potencial_Gelement(TCanvas *canv,double X,double Y,
 		canv->Font->Name=F->aFont->Name;
 		canv->Font->Size=3*F->Zoom;
 		canv->Font->Color=m.clIntensive(color,-10);
-		AnsiString T=AnsiString(rotacni_uhel)+"°, "+AnsiString(radius)+" m";
+		AnsiString T="";//původní společný výpis:AnsiString(rotacni_uhel)+"°, "+AnsiString(radius)+" m";
 		//souřadnice textu
 		int Xt=0,Yt=0;
 		if(rotacni_uhel==0)//jedná se o linii
 		{
+			T=AnsiString(radius)+" m";//zde radius je společná proměnnná i pro délku
 			Xt=m.round((POLE[0].x+POLE[3].x)/2.0-canv->TextWidth(T)/2.0);
 			Yt=m.round((POLE[0].y+POLE[3].y)/2.0-canv->TextHeight(T)/2.0);
 		}
 		else//jedné se o oblouk, najde polovinu oblouku
 		{
+      T=AnsiString(fabs(rotacni_uhel))+"°";
 			TPointD *PL1=m.getArcLine(X,Y,orientace,rotacni_uhel/2.0,radius);
 			Xt=m.round(m.L2Px(PL[3].x)-canv->TextWidth(T)/2.0);
 			Yt=m.round(m.L2Py(PL[3].y)-canv->TextHeight(T)/2.0);
