@@ -4747,7 +4747,7 @@ TPointD *Cvykresli::vykresli_potencial_Gelement(TCanvas *canv,double X,double Y,
 		int Xt=0,Yt=0;
 		if(rotacni_uhel==0)//jedná se o linii
 		{
-			T=AnsiString(radius)+" m";//zde radius je společná proměnnná i pro délku
+			T=AnsiString(radius*1000)/*+" mm"*/;//zde radius je společná proměnnná i pro délku
 			Xt=m.round((POLE[0].x+POLE[3].x)/2.0-canv->TextWidth(T)/2.0);
 			Yt=m.round((POLE[0].y+POLE[3].y)/2.0-canv->TextHeight(T)/2.0);
 		}

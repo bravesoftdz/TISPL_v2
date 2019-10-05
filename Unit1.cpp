@@ -1453,7 +1453,7 @@ void TForm1::kurzor(TKurzory typ_kurzor)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormPaint(TObject *Sender)
 {
-	////////při změně rozlišení nebo obrazovky dojde k MAXIMALIZACI OKNA programu 	Problém při ruční minimalizaci!
+	////////při změně rozlišení nebo obrazovky dojde k MAXIMALIZACI OKNA programu  - problém při ruční minimalizaci!
 	if(ClientWidth!=Monitor->Width&&FMaximized)
 	{
 		//maximalizace formuláře jinak to s novým designem nejde
@@ -1462,8 +1462,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		FMaximized=false;MaxButtonClick(this);//aby bylo připraveno minimalizační tlačítko
 	}
 
-	////////jednoltivé vrstvy
-	//asi smazat if(grid && Zoom>0.5 && !antialiasing && MOD!=LAYOUT && MOD!=NAHLED &&/*MOD!=REZERVY &&*/ MOD!=CASOVAOSA && MOD!=TECHNOPROCESY)d.vykresli_grid(Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí
+	////////jednolivé VRSTVY
 	Zoom_predchozi_AA=Zoom;//musí být tu, před mody (mohl by být i před kreslením gridu)
 	////rastrový uživatelský POKDKLAD
 	Graphics::TBitmap *bmp_total=new Graphics::TBitmap;bmp_total->Width=ClientWidth;bmp_total->Height=ClientHeight;
@@ -11880,4 +11879,5 @@ void __fastcall TForm1::Memo3KeyDown(TObject *Sender, WORD &Key, TShiftState Shi
 	if(Key==116)Invalidate();//při stisku F5 zinvaliduje hlavní form
 }
 //---------------------------------------------------------------------------
+
 
