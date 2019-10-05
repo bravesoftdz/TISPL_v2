@@ -2744,7 +2744,7 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 			short krok=30;//zobrazení rotace krokem po x stupních (vhodné v násobcích 15,30,45)
 			double posun=fabs(E->OTOC_delka/(E->rotace_jig/krok));//krok posunu animace rotace dle délky otoče a proměnné krok
 			short Z=1;if(E->rotace_jig<0)Z=-1;//pro záporné rotace jigu
-			double aopo=0;if(E->eID==6)aopo=v.PP.uchyt_pozice-(v.PP.delka_podvozek/2.0);//funkční elementy obsahující aktivní otoč posunutí otáčení o uchyt voziku
+			double aopo=0;if(E->eID==4 || E->eID==6 || E->eID==10 || E->eID==14 || E->eID==18 || E->eID==104 || E->eID==108)aopo=v.PP.uchyt_pozice-(v.PP.delka_podvozek/2.0);//funkční elementy obsahující aktivní otoč posunutí otáčení o uchyt voziku
 			double Xr=X+E->OTOC_delka/2.0*x-aopo*x;double Yr=Y+E->OTOC_delka/2.0*y-aopo*y;//začátek vykreslování rotace o posun poloviny délky otoče, *-1 kvůli opačné orientaci
 			short clUroven=m.round(rozmezi/(fabs(E->rotace_jig)/krok));//rozmezí odstínu v RGB resp. (clPotRGB+40-clPotRGB)
 			DWORD pole[]={m.round(5/3.0*F->Zoom),m.round(2.5/3.0*F->Zoom),m.round(1/3.0*F->Zoom),m.round(2.5/3.0*F->Zoom)};//definice uživatelského pera s vlastní definovanou linii
@@ -2955,7 +2955,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O)//sloučit s v
 			if(E->pohon==NULL/* || F->pom_temp!=NULL && F->pom_temp->n!=O->n || O->pohon==NULL && F->pom_temp==NULL*/)canv->Pen->Width=1;//pokud není pohon přiřazen, tak jen elementární osa
 			else canv->Pen->Width=m.round(F->Zoom*0.5);//pokud je pohon přiřazen
 			canv->Pen->Color=clBlack;
-			if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)canv->Pen->Color=m.clIntensive(clBlack,m.get_intensity());//zesvětlování neaktivních pohonů
+			if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)canv->Pen->Color=m.clIntensive(canv->Pen->Color,m.get_intensity());//zesvětlování neaktivních pohonů
 			canv->PolyBezier(POLE,3);
 			//ukazatelové záležitosti
 			E=E->dalsi;//posun na další element
