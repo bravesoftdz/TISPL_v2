@@ -2744,14 +2744,15 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 			short krok=30;//zobrazení rotace krokem po x stupních (vhodné v násobcích 15,30,45)
 			double posun=fabs(E->OTOC_delka/(E->rotace_jig/krok));//krok posunu animace rotace dle délky otoče a proměnné krok
 			short Z=1;if(E->rotace_jig<0)Z=-1;//pro záporné rotace jigu
-			double Xr=X+E->OTOC_delka/2.0*x;double Yr=Y+E->OTOC_delka/2.0*y;//začátek vykreslování rotace o posun poloviny délky otoče, *-1 kvůli opačné orientaci
+			double aopo=0;if(E->eID==6)aopo=v.PP.uchyt_pozice-(v.PP.delka_podvozek/2.0);//funkční elementy obsahující aktivní otoč posunutí otáčení o uchyt voziku
+			double Xr=X+E->OTOC_delka/2.0*x-aopo*x;double Yr=Y+E->OTOC_delka/2.0*y-aopo*y;//začátek vykreslování rotace o posun poloviny délky otoče, *-1 kvůli opačné orientaci
 			short clUroven=m.round(rozmezi/(fabs(E->rotace_jig)/krok));//rozmezí odstínu v RGB resp. (clPotRGB+40-clPotRGB)
-			DWORD pole[]={m.round(5/3.0*F->Zoom),m.round(3/3.0*F->Zoom),m.round(1/3.0*F->Zoom),m.round(3/3.0*F->Zoom)};//definice uživatelského pera s vlastní definovanou linii
+			DWORD pole[]={m.round(5/3.0*F->Zoom),m.round(2.5/3.0*F->Zoom),m.round(1/3.0*F->Zoom),m.round(2.5/3.0*F->Zoom)};//definice uživatelského pera s vlastní definovanou linii
 			//samotné cyklické vykreslení
 			for(short i=0;abs(i)<=fabs(E->rotace_jig);i+=Z*krok)
 			{
 				unsigned short clAkt=clPotRGB+rozmezi-abs(i/krok)*clUroven;
-				set_pen2(canv,RGB(clAkt,clAkt,clAkt),m.round(1.5/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
+				set_pen2(canv,RGB(clAkt,clAkt,clAkt),m.round(1.3/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
 				vykresli_jig(canv,Xr-x*posun*abs(i/krok),Yr-y*posun*abs(i/krok),dJ,sJ,orientaceP,rotaceJ+i,NULL,0);//pozn. barvu nastavujeme výše
 			}
 			//v případě že poslední rotace nevrací jig orotované, tak jak jsou orotované ve vstupním objektu/první rotačním elementu
@@ -2778,8 +2779,8 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 				if(i+1>pocet_voziku)vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,clPotencial,clPotencial);//záměrně šedou jak podvozek tak JIG jako potenicální pozice
 				else vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,clChassis,clJig);
 			}
-			//případne výpis špatné rotace jigu
-			if(v.PP.delka_podvozek<m.UDJ(rotaceJ))
+			//případne výpis špatné rotace jigu u buffrů
+			if(v.PP.delka_podvozek<m.UDJ(rotaceJ) && E->rotace_jig==0)
 			{
 				T="Pozor, překrytí JIGů!";
 				short TW=0; short TH=0;
