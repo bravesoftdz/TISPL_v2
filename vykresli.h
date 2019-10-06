@@ -95,7 +95,6 @@ class Cvykresli
 	TPointD obdelnik(TCanvas *canv,double X1,double Y1,double X2,double Y2,double rotace,double Sx=DOUBLE_MIN,double Sy=DOUBLE_MIN);//orototuje obdelník, podle posledních parametrù, pokud jsou tyto parametry neuvedené, rotuje okolo støedu obrazce, pro pøípadné dalsí potøeby vrátí souøadnice støedu orotovaného obdélniku
 	void bezier(TCanvas *canv,TPointD *POLE,long posledni_prvek);
 	void bezier(TCanvas *canv,TPointD *POLE,long X,long Y,double oX,double oY,double rotace,long posledni_prvek);
-	void bezier(TCanvas *canv,TPoint *POLE_px,long posledni_prvek);
 	TPoint polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float sirka1, float sirka2, double sklon, double rotace,TPenMode pmMode=pmCopy,TColor clFillOut=clBlack,TColor lFillIn=clWhite);
 	void polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva=clBlack, short sirka=1,int stav=-2,bool zobrazit_koty=true,bool automaticky_spojovat=true);//stav: -3 kurzor, -2 normal (implicitnì), -1-disabled, 0-editace zvýrazní všechny body, 1-až poèet bodù zvýraznìní daného bodu,poèet bodù+1 zvýraznìní dané hrany vèetnì sousedícícíh úchopù (napø. pro polygono o 6 bodech) bude hodnota stavu 7 zvýraznìní první hrany (od bodu 1 do bodu 2)
 	void uchop(TCanvas *canv,Cvektory::TBod *B,TColor barva);//vykreslí jeden uchop/koleèko znázoròující bod na polygonu

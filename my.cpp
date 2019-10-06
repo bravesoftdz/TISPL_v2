@@ -115,26 +115,18 @@ TPoint Cmy::L2P(TPointD logicke)
 }
 long Cmy::L2Px(double logicka)
 {
-	//return round(Form1->Posun.X+logicka*Form1->Zoom);
-	return round(Form1->Zoom*(logicka/Form1->m2px-Form1->Posun.x));
+	return round(F->Zoom*(logicka/F->m2px-F->Posun.x));
 }
 long Cmy::L2Py(double logicka)
 {
-	//return round(Form1->Posun.Y+logicka*Form1->Zoom);
-	return round(Form1->Zoom*(-1*logicka/Form1->m2px-Form1->Posun.y));
+	return round(F->Zoom*(-1*logicka/F->m2px-F->Posun.y));
 }
 TPoint *Cmy::L2P(TPointD *POLE,long posledni_prvek)
 {
 	//long velikost=sizeof(POLE)/sizeof(POLE[0]); nefunguje pro TPointD
-	long velikost=posledni_prvek+1;
-	TPoint *POLE_px=new TPoint [velikost];
-	for(int i=0;i<velikost;i++){POLE_px[i].x=L2Px(POLE[i].x);POLE_px[i].y=L2Py(POLE[i].y);
-	F->Memo1->Visible=true;
-	F->Memo1->Lines->Add(POLE_px[i].x);
-	F->Memo1->Lines->Add(POLE_px[i].y);
-	F->Memo1->Lines->Add("______________");
-
-	}
+	TPoint *POLE_px=new TPoint[posledni_prvek+1];
+	for(int i=0;i<posledni_prvek+1;i++){POLE_px[i].x=L2Px(POLE[i].x);POLE_px[i].y=L2Py(POLE[i].y);}
+	return POLE_px;
 }
 void Cmy::L2P(TPointD *POLE,TPoint *POLEpx)
 {
@@ -277,8 +269,8 @@ double Cmy::uhel(double X1,double Y1,double X2,double Y2)
 	{return 0;}
 }
 /////////////////////////////////////////////////////////////////////////////
-//rotace
-TPointD Cmy::rotace(double delka, double akt_uhel, double rotace)
+//rotace                         //pozor, akt_uhel neni azimut, nutno používat akt_uhel=180-dodaný azimut
+TPointD Cmy::rotace(double delka, double akt_uhel, double rotace)//rotuje proti směru hodinových ručiček
 {
 	double Uhel=fmod(akt_uhel+rotace,360.0);// včetně ošetření přetečení přes 360 stupňů
 	if(Uhel<0){Uhel+=360;}//pro záporné hodnoty
@@ -313,7 +305,7 @@ TPointD Cmy::rotace(double delka, double akt_uhel, double rotace)
 	return ret;
 }
 /////////////////////////////////////////////////////////////////////////////
-//vrátí souřadnice X2,Y2 po daném úhlu rotace, rotuje okolo X1,Y1 proti směru hodinových ručiček
+//vrátí souřadnice X2,Y2 po daném úhlu rotace, rotuje okolo X1,Y1 proti směru hodinových ručiček, úhel zadaván jako azimut asi? (rozdíl proti výše uvedené stejnojmenné metodě)
 TPointD Cmy::rotace(double X1,double Y1,double X2,double Y2,double uhel)
 {
 	TPointD RET=rotace(delka(X1,Y1,X2,Y2),180-azimut(X1,Y1,X2,Y2),uhel);

@@ -376,7 +376,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 			short W1=0;if(K->n==1)W1=W;//pro první komoru odsazeni
 			if(orientace==90 || orientace==270)
 			{
-      	//vykreslení přepážek
+				//vykreslení přepážek
 				long X=X1+m.m2px(vzdalenost);
 				if(orientace==270)X=X1-m.m2px(vzdalenost);
 				if(orientace==270 && pmpp>0)pmpp*=-1;
@@ -2943,21 +2943,45 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O)//sloučit s v
 //		delete[]POLE;POLE=NULL;
 		TPoint *POLE=new TPoint[4];
 		Cvektory::TElement *E=O->elementy->dalsi;
-		long i=-1;//počítadlo aktuálního vkládaného bodu
 		while(E!=NULL)
 		{
-			//plnění do pole
+			////vykreslení paralelních koleji
+			if(E->pohon!=NULL)//pouze pokud je přiřazen pohon
+			{
+				//offset o poloviny nastavené šířky podvozku + tloušťka linie zakresu podvozku
+				double o=v.PP.sirka_podvozek/2.0+m.px2m(1/3.0*F->Zoom);
+				//nastavení pera
+				TColor clKolej=RGB(255,69,0);
+				if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clKolej=m.clIntensive(clKolej,m.get_intensity());//zesvětlování neaktivních pohonů
+				set_pen(canv,clKolej,m.round(F->Zoom*0.5),PS_ENDCAP_SQUARE);
+				//výpočet odsazení
+				TPointD S1=m.rotace(o,180-E->geo.orientace,90);
+				TPointD S2=m.rotace(o,180-E->geo.orientace,-90);
+				short z=1;if(E->geo.rotacni_uhel>0)z*=-1;
+				double DR1=E->geo.delka;if(E->geo.typ==1)DR1=E->geo.radius+o*z;//delka či radius
+				double DR2=E->geo.delka;if(E->geo.typ==1)DR2=E->geo.radius+o*z*-1;//delka či radius
+				//samotné výkreslení obou parelelních kolejí
+				bezier(canv,m.getArcLine(E->geo.X1+S1.x,E->geo.Y1+S1.y,E->geo.orientace,E->geo.rotacni_uhel,DR1),3);
+				bezier(canv,m.getArcLine(E->geo.X1+S2.x,E->geo.Y1+S2.y,E->geo.orientace,E->geo.rotacni_uhel,DR2),3);
+				//konec segmentu
+				line(canv,m.L2Px(E->geo.X1+S1.x),m.L2Py(E->geo.Y1+S1.y),m.L2Px(E->geo.X1+S2.x),m.L2Py(E->geo.Y1+S2.y));
+			}
+
+			////vykreslení segementu pohonu
+			//plnění geo souřadnic do pole
 			POLE[0]=TPoint(m.L2Px(E->geo.X1),m.L2Py(E->geo.Y1));
 			POLE[1]=TPoint(m.L2Px(E->geo.X2),m.L2Py(E->geo.Y2));
 			POLE[2]=TPoint(m.L2Px(E->geo.X3),m.L2Py(E->geo.Y3));
 			POLE[3]=TPoint(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
+			//nastavení pera
+			TColor clRetez=clBlack;
+			short RetezWidth=1;if(E->pohon!=NULL)RetezWidth=m.round(F->Zoom*0.5);//pokud není pohon přiřazen, tak jen elementární osa, jinak skutečná tloušťka
+			if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clRetez=m.clIntensive(clRetez,m.get_intensity());//zesvětlování neaktivních pohonů
+			set_pen(canv,clRetez,RetezWidth,PS_ENDCAP_SQUARE);
 			//vykreslení
-			if(E->pohon==NULL/* || F->pom_temp!=NULL && F->pom_temp->n!=O->n || O->pohon==NULL && F->pom_temp==NULL*/)canv->Pen->Width=1;//pokud není pohon přiřazen, tak jen elementární osa
-			else canv->Pen->Width=m.round(F->Zoom*0.5);//pokud je pohon přiřazen
-			canv->Pen->Color=clBlack;
-			if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)canv->Pen->Color=m.clIntensive(canv->Pen->Color,m.get_intensity());//zesvětlování neaktivních pohonů
 			canv->PolyBezier(POLE,3);
-			//ukazatelové záležitosti
+
+			////ukazatelové záležitosti
 			E=E->dalsi;//posun na další element
 		}
 		delete E;E=NULL;//smazání již nepotřebného ukazatele
@@ -4382,7 +4406,7 @@ TPointD Cvykresli::obdelnik(TCanvas *canv,double X1,double Y1,double X2,double Y
 //https://stackoverflow.com/questions/785097/how-do-i-implement-a-b%C3%A9zier-curve-in-c nebo téměř totožné wiki   //http://www.yevol.com/bcb/Lesson12.htm
 void Cvykresli::bezier(TCanvas *canv,TPointD *POLE,long posledni_prvek)
 {
-	bezier(canv,m.L2P(POLE,posledni_prvek),posledni_prvek);
+	canv->PolyBezier(m.L2P(POLE,posledni_prvek),posledni_prvek);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::bezier(TCanvas *canv,TPointD *POLE,long X,long Y,double oX,double oY,double rotace,long posledni_prvek)
@@ -4392,14 +4416,6 @@ void Cvykresli::bezier(TCanvas *canv,TPointD *POLE,long X,long Y,double oX,doubl
 	for(int i=0;i<=posledni_prvek;i++){PF[i].x=X+m.m2px(POLE[i].x-oX);PF[i].y=Y+m.m2px(oY-POLE[i].y);}
 	canv->PolyBezier(PF,posledni_prvek);
 	PF=NULL;delete[] PF;
-}
-////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::bezier(TCanvas *canv,TPoint *POLE_px,long posledni_prvek)
-{
-	float O=0.02;if(F->antialiasing)O*=3;
-	canv->Pen->Style=psSolid;canv->Pen->Color=clBlack;
-	canv->Pen->Width=m.round(O*F->Zoom);
-	canv->PolyBezier(POLE_px,posledni_prvek);//výsledné vykreslení Bézierovy křivky
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //vykreslí polygon dle osy, umí i kónický tvar, vratí souřadnice konce osy polygonu
@@ -4672,8 +4688,8 @@ void Cvykresli::smart_kurzor(TCanvas *canv,double preXk,double preYk,double preO
 	if(RA==0)delka_linie=m.round(m.delka(preXk,preYk,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y));//provizorně nastaveno na 1 metr
 
 	////samotné vykreslení kurzoru dle hodnoty RA z předchozího algoritmu (aktuální orientace je prozatím z d.Temp.z, kde vypočtena jako je orientace minus rotace předchozího gElementu)
-	vykresli_Gelement_kurzor(canv,preXk,preYk,preOR-preRA,RA,R,delka_linie,preRA,prepreRA);
-
+	vykresli_Gelement_kurzor(canv,preXk,preYk,m.a360(preOR-preRA),RA,R,delka_linie,preRA,prepreRA);
+																						//m.a360 nově doplněno - v test
 	////uchování v globální proměnné aktuálně vracených hodnot ze smart kurzoru pro možné uložení do geometrického elementu nastává níže
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -4709,7 +4725,7 @@ void Cvykresli::vykresli_Gelement_kurzor(TCanvas *canv,double X,double Y,double 
 			geoTemp.radius=0;
 			geoTemp.delka=delka_linie;
 		}
-		else
+		else//oblouk
 		{
 			geoTemp.typ=1;
 			geoTemp.radius=radius;
@@ -4899,7 +4915,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
   	bool povolit_vykresleni=true;
   	while(E!=NULL && E->n!=Element_do->n)
   	{
-  		if(E->geo.typ!=0){povolit_vykresleni=false;break;}
+			if(E->geo.typ!=0){povolit_vykresleni=false;break;}
   		else E=E->dalsi;
   	}
   	E=NULL;delete E;
