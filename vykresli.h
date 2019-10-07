@@ -67,6 +67,7 @@ class Cvykresli
 	void vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y,double Poffset=0,bool animace=false);///zajistí vykreslení øetìzz, XY -umístìní L zaèátek (støed dopravníku) objektu v metrech, Poffset - pozièní poloha, vıchozí poloha prvního vozíku/pozice v objektu (a vùèi tomuto objektu),mùe slouit na animaci èi návaznost v pøípadì layoutu, za zmínìní stojí lokální promìnná této metody KR, co je kalibrace øetìzu vùèi podvozku napø. 0 - støed, -DP/2 - zaèátek, DP/2 - konec, èi libovolnı v m od zaèátku podvozku
 	void vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O);//pøejmenovat
 	void vykresli_koleje(TCanvas *canv,Cvektory::TElement *E,Cvektory::TObjekt *O);//vykreslení jednoho geometrického segmentu dvou párù kolejí
+	void vykresli_koleje(TCanvas *canv,double X,double Y,short typ,double orientace,double rotacni_uhel,double radius,double delka,TColor clKolej=RGB(255,69,0));//vykreslení jednoho geometrického segmentu dvou párù kolejí
 	void vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dJ,double sJ,double orientaceP=0,double rotaceJ=0,TColor clChassis=(TColor) RGB(50,50,50), TColor clJig=clPurple);//vykreslení jednoho komplexního vozíku (podvozek vèetnì jigu), , X,Y jsou souøadnice uchycení vozíku k palci, co nemusí bıt støed vozíku
 	void vykresli_jig(TCanvas *canv,double X,double Y,double dJ,double sJ,double orientaceP,double rotaceJ,TColor clJig=clPurple,float Width=2);
 //	void vykresli_simulaci(TCanvas *canv);//zajišuje vykreslení simulace
