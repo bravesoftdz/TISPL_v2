@@ -157,6 +157,10 @@ __fastcall TForm1::TForm1(TComponent* Owner)
  	if(T==0)rotace_jigu=0;else rotace_jigu=1;
   T=readINI("nastaveni_editace","zobrazeni_pozic"); //zobrazit pozice
  	if(T==0)zobrazit_pozice=0;else zobrazit_pozice=1;
+  T=readINI("nastaveni_editace","zobrazit_popisky"); //zobrazit popisky
+ 	if(T==0)zobrazit_popisky=0;else zobrazit_popisky=1;
+  T=readINI("nastaveni_editace","zobrazit_koleje"); //zobrazit koleje
+ 	if(T==0)zobrazit_popisky=0;else zobrazit_koleje=1;
 
   if(rotace_jigu==1) scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
   else scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=false;
@@ -164,6 +168,11 @@ __fastcall TForm1::TForm1(TComponent* Owner)
   if(zobrazit_pozice==1)scGPCheckBox_zobrazit_pozice->Checked=true;
   else   scGPCheckBox_zobrazit_pozice->Checked=false;
 
+  if(zobrazit_popisky==1) scGPCheckBox1_popisky->Checked=true;
+  else scGPCheckBox1_popisky->Checked=false;
+
+  if(zobrazit_koleje==1) scGPCheckBox_zobrazit_koleje->Checked=true;
+  else scGPCheckBox_zobrazit_koleje->Checked=false;
 
 	//povolení Automatická záloha
 	Timer_backup->Enabled=true;
@@ -11949,4 +11958,20 @@ void __fastcall TForm1::Memo3KeyDown(TObject *Sender, WORD &Key, TShiftState Shi
 }
 //---------------------------------------------------------------------------
 
+
+void __fastcall TForm1::scGPCheckBox1_popiskyClick(TObject *Sender)
+{
+if(scGPCheckBox1_popisky->Checked) writeINI("nastaveni_editace","zobrazit_popisky", 1);
+else  writeINI("nastaveni_editace","zobrazit_popisky", 0);
+REFRESH();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::scGPCheckBox_zobrazit_kolejeClick(TObject *Sender)
+{
+if(scGPCheckBox_zobrazit_koleje->Checked) writeINI("nastaveni_editace","zobrazit_koleje", 1);
+else  writeINI("nastaveni_editace","zobrazit_koleje", 0);
+REFRESH();
+}
+//---------------------------------------------------------------------------
 

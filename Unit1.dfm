@@ -8002,7 +8002,7 @@ object Form1: TForm1
         ParentFont = False
         TabOrder = 0
         TabStop = True
-        OnClick = scGPCheckBox_zobrazit_poziceClick
+        OnClick = scGPCheckBox_zobrazit_kolejeClick
         Animation = False
         Caption = 'Zobrazit koleje dopravn'#237'ku'
         CanFocused = True
@@ -8312,7 +8312,7 @@ object Form1: TForm1
         ParentFont = False
         TabOrder = 3
         TabStop = True
-        OnClick = scGPCheckBox_zobrazit_poziceClick
+        OnClick = scGPCheckBox1_popiskyClick
         Animation = False
         Caption = 'Zobrazit popisky prvk'#367
         CanFocused = True
