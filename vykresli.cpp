@@ -4089,7 +4089,8 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,lon
 		if(typ==1 && E!=NULL)//normální zobrazení typ==1
 		{
 			if(/*stav==2 || */stav==3)canv->Font->Style = TFontStyles()<< fsBold;//došlo k vybrání elementu-tato část odstavena nebo přímo jeho textu
-      //nastavení názvů pohonů
+			if(F->pom_temp!=NULL && F->pom_temp->n!=E->objekt_n)canv->Font->Color=m.clIntensive(clBlack,m.get_intensity());
+			//nastavení názvů pohonů
 			AnsiString T1="pohon nevybrán",T2="pohon nevybrán",Tpom="";
 			if(E->pohon!=NULL)T1=E->pohon->name;
 			if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)T2=E->dalsi->pohon->name;
@@ -4097,7 +4098,9 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,lon
 			{
 				Cvektory::TObjekt *O=v.vrat_objekt(E->objekt_n);
 				if(O->dalsi!=NULL && O->dalsi->elementy->dalsi->pohon!=NULL)T2=O->dalsi->elementy->dalsi->pohon->name;
-				if(F->pom_temp!=NULL && O->dalsi->n==F->pom_temp->n && F->pom_temp->elementy->dalsi->pohon!=NULL)T2=F->pom_temp->elementy->dalsi->pohon->name;
+				if(F->pom_temp!=NULL && O->dalsi!=NULL && O->dalsi->n==F->pom_temp->n && F->pom_temp->elementy->dalsi->pohon!=NULL)T2=F->pom_temp->elementy->dalsi->pohon->name;
+				if(O->dalsi==NULL && O->n>=3 && F->pom_temp->n==1 && F->pom_temp->elementy->dalsi->pohon!=NULL)T2=F->pom_temp->elementy->dalsi->pohon->name;
+				if(O->dalsi==NULL && O->n>=3 && F->pom_temp->n!=1 && v.OBJEKTY->dalsi->elementy->dalsi->pohon!=NULL)T2=v.OBJEKTY->dalsi->elementy->dalsi->pohon->name;
 				O=NULL;delete O;
 			}
       //v případě 270 musí být popisky prohozeny
@@ -4689,11 +4692,11 @@ void Cvykresli::smart_kurzor(TCanvas *canv,double preXk,double preYk,double preO
 	double o=m.a360(preOR-preRA); if(o==0 && a>180)o=360;//orientace, pokud je nula a myš je v levém kvadrantu, je nutné z 0° udělat 360°
 	if(POLE_RA[3]/3>fabs(o-a))RA=0;
 	//if(RA==0)delka_linie=ceil(m.delka(preXk,preYk,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y)/3.0)*3;//u linie nabízí delší kresbu, po násobcích 3 metrů
-	if(RA==0)delka_linie=m.round(m.delka(preXk,preYk,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y));//provizorně nastaveno na 1 metr
+	if(RA==0){delka_linie=m.round(m.delka(preXk,preYk,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y));if(delka_linie<1)delka_linie=1;}//provizorně nastaveno na 1 metr
 
 	////samotné vykreslení kurzoru dle hodnoty RA z předchozího algoritmu (aktuální orientace je prozatím z d.Temp.z, kde vypočtena jako je orientace minus rotace předchozího gElementu)
 	vykresli_Gelement_kurzor(canv,preXk,preYk,m.a360(preOR-preRA),RA,R,delka_linie,preRA,prepreRA);
-																						//m.a360 nově doplněno - v test
+
 	////uchování v globální proměnné aktuálně vracených hodnot ze smart kurzoru pro možné uložení do geometrického elementu nastává níže
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -4920,7 +4923,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
   	while(E!=NULL && E->n!=Element_do->n)
   	{
 			if(E->geo.typ!=0){povolit_vykresleni=false;break;}
-  		else E=E->dalsi;
+			else E=E->dalsi;
   	}
   	E=NULL;delete E;
   	//pouze pro rychlé zobrazení - provizorní řešení pro levopravou vodorovnou kabinu

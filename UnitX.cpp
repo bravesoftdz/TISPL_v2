@@ -99,20 +99,6 @@ void TFormX::OnEnter(long Tag,long ID,unsigned long Col,unsigned long Row)
 	if(ID==9999 && Row>=1)korelace_tab_pohonu_elementy();//pøi S&G režimu je stále nutné zobrazit korelaci v elementech
 	if(ID!=9999 && F->pom_temp->pohon!=NULL)//korelace v tabulkách elementù
 	korelace_v_elementech(ID,Row);
-	//pøepínání aktuálnì editovaného pohonu
-//	if(ID!=9999 && F->pom_temp!=NULL)
-//	{
-//		Cvektory::TElement *E=vrat_element_z_tabulky(ID);
-//		//kontrola zda se ukazatel na pohon elementu rovná aktuálnì editovanému pohonu
-//		if(E->mGrid->Cells[Col][Row].Type==E->mGrid->EDIT && (F->pom_temp->pohon==NULL && E->pohon!=NULL || F->pom_temp->pohon!=NULL && E->pohon==NULL || F->pom_temp->pohon!=NULL && E->pohon!=NULL && F->pom_temp->pohon->n!=E->pohon->n))
-//		{
-//			//pokud se nerovnají je tøeba zmìnit aktuálnì editovaný pohon
-//			F->JID=-201;//nutné pro zablokování pøepsání ukazatelù na pohon všem elementùm v náhledu
-//			if(E->pohon!=NULL)F->prirazeni_pohonu_tab_pohon(E->pohon->n);
-//			else F->prirazeni_pohonu_tab_pohon(0);
-//		}
-//		E=NULL;delete E;
-//	}
 }
 //---------------------------------------------------------------------------
 //zpracování onchange události - INPUT, výpoèet a OUTPUT zpìt do ovlivnìné buòky
