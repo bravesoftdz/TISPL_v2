@@ -217,9 +217,6 @@ Coordinates=333,372,104,36
 [Button4]
 Coordinates=548,144,59,58
 
-[RzStatusPane1]
-Coordinates=219,372,104,36
-
 [RzToolButton6]
 Coordinates=10,372,100,36
 
@@ -248,7 +245,7 @@ Coordinates=319,280,124,36
 Coordinates=10,280,90,36
 
 []
-Coordinates=284,631,66,36
+Coordinates=219,372,104,36
 Visible=True
 
 [scSplitView_OPTIONS]

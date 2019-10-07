@@ -321,6 +321,7 @@ __published:	// IDE-managed Components
 	TscGPCheckBox *scGPCheckBox_zobrazit_rotace_jigu_na_otocich;
   TscExPanel *scExPanel1;
 	TscGPCheckBox *scGPCheckBox_zobrazit_koleje;
+  TscGPCheckBox *scGPCheckBox1_popisky;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
