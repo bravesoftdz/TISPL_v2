@@ -2776,7 +2776,7 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 			//vykreslení jednoho vozíku či pozice, od zadu, aby byly vykresleny nejdříve pozice
 			for(unsigned int i=pocet_pozic-1;0<i+1;i--)//nutno zápis 0<i+1, jinak zamrzá
 			{
-				if(i+1>pocet_voziku)vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,clPotencial,clPotencial);//záměrně šedou jak podvozek tak JIG jako potenicální pozice
+				if(i+1>pocet_voziku)vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,m.clIntensive(clPotencial,-50),clPotencial);//záměrně šedou jak podvozek tak JIG jako potenicální pozice
 				else vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,clChassis,clJig);
 			}
 			//případne výpis špatné rotace jigu u buffrů
@@ -2961,9 +2961,13 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O)//sloučit s v
 				double DR1=E->geo.delka;if(E->geo.typ==1)DR1=E->geo.radius+o*z;//delka či radius
 				double DR2=E->geo.delka;if(E->geo.typ==1)DR2=E->geo.radius+o*z*-1;//delka či radius
 				//samotné výkreslení obou parelelních kolejí
-				bezier(canv,m.getArcLine(E->geo.X1+S1.x,E->geo.Y1+S1.y,E->geo.orientace,E->geo.rotacni_uhel,DR1),3);
-				bezier(canv,m.getArcLine(E->geo.X1+S2.x,E->geo.Y1+S2.y,E->geo.orientace,E->geo.rotacni_uhel,DR2),3);
-				//konec segmentu
+				if(F->scGPCheckBox_zobrazit_koleje->Checked)//pokud je v menu povoleno
+				{
+					bezier(canv,m.getArcLine(E->geo.X1+S1.x,E->geo.Y1+S1.y,E->geo.orientace,E->geo.rotacni_uhel,DR1),3);
+					bezier(canv,m.getArcLine(E->geo.X1+S2.x,E->geo.Y1+S2.y,E->geo.orientace,E->geo.rotacni_uhel,DR2),3);
+				}
+				//konec segmentu - zarážka
+				if(F->scGPCheckBox_zobrazit_koleje->Checked)//provizorně se nyní skrývá dle nastavení, ale změnit zobrazování dle editace geometrie if(Akce==GEOMETRIE)
 				line(canv,m.L2Px(E->geo.X1+S1.x),m.L2Py(E->geo.Y1+S1.y),m.L2Px(E->geo.X1+S2.x),m.L2Py(E->geo.Y1+S2.y));
 			}
 
@@ -4688,11 +4692,11 @@ void Cvykresli::smart_kurzor(TCanvas *canv,double preXk,double preYk,double preO
 	double o=m.a360(preOR-preRA); if(o==0 && a>180)o=360;//orientace, pokud je nula a myš je v levém kvadrantu, je nutné z 0° udělat 360°
 	if(POLE_RA[3]/3>fabs(o-a))RA=0;
 	//if(RA==0)delka_linie=ceil(m.delka(preXk,preYk,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y)/3.0)*3;//u linie nabízí delší kresbu, po násobcích 3 metrů
-	if(RA==0)delka_linie=m.round(m.delka(preXk,preYk,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y));//provizorně nastaveno na 1 metr
+	if(RA==0){delka_linie=m.round(m.delka(preXk,preYk,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y));if(delka_linie<1)delka_linie=1;}//provizorně nastaveno na 1 metr
 
 	////samotné vykreslení kurzoru dle hodnoty RA z předchozího algoritmu (aktuální orientace je prozatím z d.Temp.z, kde vypočtena jako je orientace minus rotace předchozího gElementu)
 	vykresli_Gelement_kurzor(canv,preXk,preYk,m.a360(preOR-preRA),RA,R,delka_linie,preRA,prepreRA);
-																						//m.a360 nově doplněno - v test
+
 	////uchování v globální proměnné aktuálně vracených hodnot ze smart kurzoru pro možné uložení do geometrického elementu nastává níže
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
