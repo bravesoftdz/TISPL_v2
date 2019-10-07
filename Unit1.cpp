@@ -10833,9 +10833,9 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		//vypnutí spodního panelu
 		scGPPanel_bottomtoolbar->Visible=false;
 		//vlevo
-		scLabel_klient->Visible=true;
-		scGPSwitch_rezim->Visible=true;
-		scLabel_architekt->Visible=true;
+		scLabel_klient->Visible=false;
+		scGPSwitch_rezim->Visible=false;
+		scLabel_architekt->Visible=false;
 		scGPGlyphButton_PLAY->Visible=false;
 		//navrácení zoomu a posunu do původních hodnt
 		Zoom=Zoom_predchozi2;
