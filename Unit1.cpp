@@ -1621,7 +1621,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//ESC
 		case 27:ESC();break;
 		//MEZERNÍK
-		case 32: if(Akce!=PAN_MOVE){Akce=PAN;kurzor(pan);}break;
+		case 32: if(Akce!=PAN_MOVE){Akce=PAN;kurzor(pan);pan_non_locked=true;}break;
 		//DELETE
 		case 46:
 		{
