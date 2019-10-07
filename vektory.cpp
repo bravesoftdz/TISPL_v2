@@ -1555,7 +1555,7 @@ void Cvektory::rotuj_objekt(TObjekt *Objekt, double rotace)
 		TElement *E=Objekt->elementy->dalsi;//objekt má vždy element (zarážka)
 		while(E!=NULL)
 		{
-			E->orientace=azimut+90;//zapsání nové orientace do elementu
+			E->orientace=m.Rt90(azimut+90);//zapsání nové orientace do elementu
 			//souřadnice elementu
 			Bod=m.rotace(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,E->X,E->Y,rotace);
 			E->X=Bod.x;E->Y=Bod.y;
@@ -3125,18 +3125,68 @@ void Cvektory::vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt)
 		if(F->pom!=NULL)O=F->pom;//pokud existuje pom a rovná se začátečnímu objektu, musí být nahrazen
 		while(O!=NULL && O->n!=0)
 		{
-  		E=O->elementy->predchozi;//procházení od zadu
+			E=O->elementy->predchozi;//procházení od zadu
 			if(Objekt->n==O->n)E=Element->predchozi;//pokud jsem v prvním objektu = začátek, začánám od předchozího elementu Elementu
 			while(E!=NULL && E->n!=0)
 			{
 				if(E->eID%2==0 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt){pokracovat=false;break;}//nalezen předchozí S&G
-  			E=E->predchozi;
+				E=E->predchozi;
 			}
 			if(pokracovat)O=O->predchozi;//ošetření proti přechodu na havičku
 			else break;
 		}
 		if(E->n!=0)E->sparovany=Element;
 		if(E->n!=0 && E->eID==0 && E->Xt!=-100 && F->pom!=NULL && O->n==F->pom->n){E->mGrid->Cells[1][1].Text=Element->name;E->mGrid->Refresh();}//pokud se element (=stopka) nachází ve stejném objektu a tento objekt je právě editovaný, přepiš mu sparovaný element do mgridu
+		//////první poslední stop element
+		if(OBJEKTY->predchozi->n>=2)
+		{
+			pokracovat=true;
+			O=OBJEKTY->dalsi;
+			while(O!=NULL)
+			{
+				E=O->elementy->dalsi;
+				if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->dalsi;
+				while(E!=NULL)
+				{
+					if(E->eID==0){pokracovat=false;break;}
+					E=E->dalsi;
+				}
+				if(pokracovat)O=O->dalsi;
+				else break;
+			}
+			if(E!=NULL)
+			{
+				Cvektory::TElement *prvni_stopka=E;
+				pokracovat=true;
+				O=OBJEKTY->predchozi;
+				while(O!=NULL && O->n>0)
+	    	{
+	    		E=O->elementy->predchozi;//procházení od zadu
+					if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->predchozi;
+					while(E!=NULL && E->n>0)
+					{
+						if(E->eID%2==0 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt){pokracovat=false;break;}//nalezen předchozí S&G
+						E=E->predchozi;
+					}
+					if(pokracovat)O=O->predchozi;//ošetření proti přechodu na havičku
+	    		else break;
+				}
+				if(E!=NULL && (E->objekt_n!=prvni_stopka->objekt_n || E->objekt_n==prvni_stopka->objekt_n && E->n!=prvni_stopka->n))//pokud existuje poslední stop elemet a nerovná se mrvnímu
+				{
+					prvni_stopka->sparovany=E;
+					if(F->pom_temp!=NULL && F->pom_temp->n==prvni_stopka->objekt_n)//pokud je v aktuálně editovaném objektu
+					{
+				  	try //musí být řešeno takto, nelze rozeznat jestli existuje mgird
+				  	{
+				  		prvni_stopka->mGrid->Cells[1][1].Text=E->name;prvni_stopka->mGrid->Refresh();
+				  	}
+				  	catch(...)
+						{/*MessageBeep(0);*/}
+					}
+				}
+				prvni_stopka=NULL;delete prvni_stopka;
+      }
+		}
 		O=NULL;delete O;
 		E=NULL;delete E;
 	}
@@ -3461,42 +3511,42 @@ void Cvektory::kopiruj_pohon(TPohon *Pohon,TObjekt *Objekt)
 }
 ////---------------------------------------------------------------------------
 //dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv
-bool Cvektory::pohon_je_pouzivan(unsigned long n)
+bool Cvektory::pohon_je_pouzivan(unsigned long n,TElement *mimo_element)
 {
 	F->log(__func__);//logování
-	TObjekt *O=OBJEKTY->dalsi;
-	bool nalezen=false;
-	while (O!=NULL)
-	{
-		if(O->pohon!=NULL)
-		{
-			if(O->pohon->n==n)
-			{
-				nalezen=true;
-				break;//přeruší další vyhledávání
-			}
-		}
-		O=O->dalsi;
-	}
-	O=NULL;delete O;
-	return nalezen;
 //	TObjekt *O=OBJEKTY->dalsi;
 //	bool nalezen=false;
 //	while (O!=NULL)
 //	{
-//		TElement *E=O->elementy->dalsi;
-//		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->dalsi;
-//		while(E!=NULL)
+//		if(O->pohon!=NULL)
 //		{
-//			if(E->eID%2!=0 && E->eID!=5 && E->eID!=MaxInt && E->pohon!=NULL && E->pohon->n==n){nalezen=true;break;}
-//			E=E->dalsi;
+//			if(O->pohon->n==n)
+//			{
+//				nalezen=true;
+//				break;//přeruší další vyhledávání
+//			}
 //		}
-//		E-NULL;delete E;
-//		if(!nalezen)O=O->dalsi;
-//		else break;
+//		O=O->dalsi;
 //	}
-//	O=NULL;delete O; F->log(__func__," KONEC");//logování
+//	O=NULL;delete O;
 //	return nalezen;
+	TObjekt *O=OBJEKTY->dalsi;
+	bool nalezen=false;
+	while (O!=NULL)
+	{
+		TElement *E=O->elementy->dalsi;
+		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->dalsi;
+		while(E!=NULL)
+		{
+			if(E->eID%2!=0 && E->eID!=5 && E->eID!=MaxInt && E->pohon!=NULL && E->pohon->n==n && (mimo_element==NULL || mimo_element!=NULL && mimo_element->objekt_n!=O->n || mimo_element!=NULL && mimo_element->objekt_n==O->n && mimo_element->n!=E->n)){nalezen=true;break;}
+			E=E->dalsi;
+		}
+		E=NULL;delete E;
+		if(!nalezen)O=O->dalsi;
+		else break;
+	}
+	O=NULL;delete O;
+	return nalezen;
 }
 ////---------------------------------------------------------------------------
 //dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv, ten vrátí formou ukazatale na první nalezený používáný, druhý vstupní parametr metody TObjekt mimo_objekt je ukazatel na objekt, který se bude při vyhledávání ignorovat, nenajde-li vrací NULL, třetí parametr, pokud je náchán na implicitní -1 řeší se pro všechny režimy, pokud je v rozmezí 0 až 2 řeší se pro konkrétní režim

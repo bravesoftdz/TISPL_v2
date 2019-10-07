@@ -321,6 +321,7 @@ __published:	// IDE-managed Components
 	TscGPCheckBox *scGPCheckBox_zobrazit_rotace_jigu_na_otocich;
   TscExPanel *scExPanel1;
 	TscGPCheckBox *scGPCheckBox_zobrazit_koleje;
+  TscGPCheckBox *scGPCheckBox1_popisky;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -529,6 +530,8 @@ __published:	// IDE-managed Components
   void __fastcall scGPCheckBox_zobrazit_rotace_jigu_na_otocichClick(TObject *Sender);
   void __fastcall scGPCheckBox_zobrazit_poziceClick(TObject *Sender);
 	void __fastcall Memo3KeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+  void __fastcall scGPCheckBox1_popiskyClick(TObject *Sender);
+  void __fastcall scGPCheckBox_zobrazit_kolejeClick(TObject *Sender);
 
 
 
@@ -743,6 +746,8 @@ public:		// User declarations
 	TPointD puv_souradnice;//slouží k ukládání pùvodních souøadnic, napø. pøi posunu elementu
   short zobrazit_pozice;
   short rotace_jigu;
+  short zobrazit_popisky;
+  short zobrazit_koleje;
 
 	//metody
 	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click
