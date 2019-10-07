@@ -4085,7 +4085,8 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,lon
 		if(typ==1 && E!=NULL)//normální zobrazení typ==1
 		{
 			if(/*stav==2 || */stav==3)canv->Font->Style = TFontStyles()<< fsBold;//došlo k vybrání elementu-tato část odstavena nebo přímo jeho textu
-      //nastavení názvů pohonů
+			if(F->pom_temp!=NULL && F->pom_temp->n!=E->objekt_n)canv->Font->Color=m.clIntensive(clBlack,m.get_intensity());
+			//nastavení názvů pohonů
 			AnsiString T1="pohon nevybrán",T2="pohon nevybrán",Tpom="";
 			if(E->pohon!=NULL)T1=E->pohon->name;
 			if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)T2=E->dalsi->pohon->name;
@@ -4093,7 +4094,9 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,lon
 			{
 				Cvektory::TObjekt *O=v.vrat_objekt(E->objekt_n);
 				if(O->dalsi!=NULL && O->dalsi->elementy->dalsi->pohon!=NULL)T2=O->dalsi->elementy->dalsi->pohon->name;
-				if(F->pom_temp!=NULL && O->dalsi->n==F->pom_temp->n && F->pom_temp->elementy->dalsi->pohon!=NULL)T2=F->pom_temp->elementy->dalsi->pohon->name;
+				if(F->pom_temp!=NULL && O->dalsi!=NULL && O->dalsi->n==F->pom_temp->n && F->pom_temp->elementy->dalsi->pohon!=NULL)T2=F->pom_temp->elementy->dalsi->pohon->name;
+				if(O->dalsi==NULL && O->n>=3 && F->pom_temp->n==1 && F->pom_temp->elementy->dalsi->pohon!=NULL)T2=F->pom_temp->elementy->dalsi->pohon->name;
+				if(O->dalsi==NULL && O->n>=3 && F->pom_temp->n!=1 && v.OBJEKTY->dalsi->elementy->dalsi->pohon!=NULL)T2=v.OBJEKTY->dalsi->elementy->dalsi->pohon->name;
 				O=NULL;delete O;
 			}
       //v případě 270 musí být popisky prohozeny
@@ -4916,7 +4919,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
   	while(E!=NULL && E->n!=Element_do->n)
   	{
 			if(E->geo.typ!=0){povolit_vykresleni=false;break;}
-  		else E=E->dalsi;
+			else E=E->dalsi;
   	}
   	E=NULL;delete E;
   	//pouze pro rychlé zobrazení - provizorní řešení pro levopravou vodorovnou kabinu
