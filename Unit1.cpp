@@ -3007,7 +3007,7 @@ void TForm1::getJobID(int X, int Y)
 				if(pom_temp->uzamknout_nahled==false)pom_element=F->d.v.najdi_element(pom_temp,m.P2Lx(X),m.P2Ly(Y));//pouze pokud je možné měnit rozmístění a rozměry,nutné jako samostatná podmínka
 				if(pom_element!=NULL)//element nalezen, tzn. klik či přejetí myší přes elemement nikoliv tabulku
   			{
-  				if(pom_element->citelna_oblast.rect3.PtInRect(TPoint(X,Y)))JID=1;//byl nalezen název elementu
+  				if(scGPCheckBox1_popisky->Checked && pom_element->citelna_oblast.rect3.PtInRect(TPoint(X,Y)))JID=1;//byl nalezen název elementu
   				else JID=0; //byl nálezen element nikoliv jeho název, určeno k smazání či posunu elementu
   			}
   			else //ani element nenalezen, hledá tedy interaktivní text, obrys a kóty atp.
@@ -4475,7 +4475,7 @@ void TForm1::vlozeni_editace_geometrie()
 			posledni_editovany_element->geo=d.geoTemp;
 			posledni_editovany_element->X+=posledni_editovany_element->geo.X4-posledni_editovany_element->geo.X1;
 			posledni_editovany_element->Y+=posledni_editovany_element->geo.Y4-posledni_editovany_element->geo.Y1;
-			posledni_editovany_element->orientace=m.Rt90(posledni_editovany_element->geo.orientace-90);//změna orientace podle trendu, nefunguje pro oblouky
+			//posledni_editovany_element->orientace=m.Rt90(posledni_editovany_element->geo.orientace-90);//změna orientace podle trendu, nefunguje pro oblouky - ODSTAVENO
 			E=NULL;delete E;
 		}
 		else//pokud je veškerá geometrie odstraněna z kabiny
@@ -4505,6 +4505,7 @@ void TForm1::ukonceni_geometrie()
 	}
 	//////vypnutí akce
 	if(!editace_textu)Akce=NIC;Akce_temp=NIC;//musí být ještě před refresh
+	scGPCheckBox1_popisky->Checked=true;
 	REFRESH(false);
 }
 //---------------------------------------------------------------------------
@@ -7536,7 +7537,8 @@ void __fastcall TForm1::DrawGrid_geometrieMouseDown(TObject *Sender, TMouseButto
 		if(Akce!=GEOMETRIE && Col==0 && pom->id!=3)//zapnutí akce geometrie
 		{
 	  	Akce=GEOMETRIE;
-	  	editace_geometrie_spustena=false;
+			editace_geometrie_spustena=false;
+			scGPCheckBox1_popisky->Checked=false;//vypnutí zobrazení popisků, v budoucnu rozšířit na uložení předchozího stavu
 	  	//pokud ještě nebyla editována geometrie a existuje předchozí element, zapíše ho do posledni_editovany_element
 	  	//if(pom->predchozi!=NULL && posledni_editovany_element==NULL)posledni_editovany_element=pom->predchozi->elementy->predchozi;
 			REFRESH(false);
