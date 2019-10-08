@@ -1219,10 +1219,10 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
    if(DEBUG)
 	 {
 
-	 scGPNumericEdit_delka_podvozek->Value=400;
+	 scGPNumericEdit_delka_podvozek->Value=380;
 	 scGPNumericEdit_sirka_jig->Value=300;
-   scGPNumericEdit_delka_jig->Value=1200;
-   scGPNumericEdit_vyska_jig->Value=800;
+	 scGPNumericEdit_delka_jig->Value=1200;
+	 scGPNumericEdit_vyska_jig->Value=1500;
 
   for (int i = mGrid->RowCount ; i <= 4; i++) {
 
