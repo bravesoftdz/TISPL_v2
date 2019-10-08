@@ -2400,7 +2400,7 @@ unsigned int Cvektory::vrat_poradi_elementu_do (TObjekt *Objekt, TElement *Eleme
 			if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy;//pokud se prochází objekt aktuálně editovaný, tak se vezme z pom_temp, kde jsou aktuální hodnoty
 			while(E!=NULL)
 			{
-				if(O->n==Objekt->n&&E==Element)break;//ukončení prohledávání když jsem na aktuálním elmentu
+				if(/*O->n==Objekt->n&&*/E==Element)break;//ukončení prohledávání když jsem na aktuálním elmentu
 				if(E->n>0)//ošetření pro hlavičku
 				{
 					if(E->eID==0)s_pocet++;

@@ -2106,9 +2106,6 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					{
 						if(MOD==SCHEMA)//OBJEKT
 						{
-//							pom=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.V_width*m2px,d.V_width*m2px/*,VyID*/);//hledá v kruhové oblasti
-//							if(pom==NULL)//akcelerátor,aby se následně nehledalo znovu, pokud byla nalezena výhybka
-//							pom=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width*m2px,d.O_height*m2px);
 							if(JID==3&&scButton_zamek_layoutu->ImageIndex==68){Akce=MOVE;kurzor(posun_l);/*posun_objektu=true;*/minule_souradnice_kurzoru=TPoint(X,Y);}
 							else if(JID==-1&&Akce==NIC){Akce=PAN;pan_non_locked=true;}//přímo dovolení PAN pokud se neposová objekt = Rosťova prosba
 							if(JID==-2){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_bod_temp=pom_bod;if(pom_bod_temp->n!=1)editovany_text=m.round2double(m.delka(pom_bod_temp->predchozi->X,pom_bod_temp->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);else editovany_text=m.round2double(m.delka(d.v.HALA.body->predchozi->X,d.v.HALA.body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);editovany_text=outDK(ms.MyToDouble(editovany_text));}//převod na mm
@@ -2118,17 +2115,10 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						}
 						else {Akce=PAN;pan_non_locked=true;}//přímo dovolení PAN pokud se neposová objekt   = Rosťova prosba
 					}
-				}
-				if(funkcni_klavesa==1&&JID>0&&JID<=100){d.v.smaz_bod(pom_bod);funkcni_klavesa=0;REFRESH();pom_bod=NULL;}//ctrl+klik na bod -> odstranění bodu
+				} 								
+				if(funkcni_klavesa==3 && (MOD==SCHEMA && JID==1 || MOD==NAHLED && JID==-2))vloz_bod_haly_objektu(X,Y);//ctrl+shift+klik na přímku -> přidání bodu
+				if(funkcni_klavesa==1 && (MOD==SCHEMA && JID==0 || MOD==NAHLED && JID==-3))smaz_bod_haly_objektu(pom_bod);//ctrl+klik na bod -> odstranění bodu
 				else if(funkcni_klavesa==1 && Akce!=GEOMETRIE || Akce==ZOOM_W_MENU)Akce=ZOOM_W;
-				//přidávání bodu na úsečku
-				if(funkcni_klavesa==3&&JID>100&&d.v.HALA.body->predchozi->n>2)
-				{
-					if(pom_bod->n!=1)d.v.vloz_bod(m.P2Lx(X),m.P2Ly(Y),pom,pom_bod->predchozi,ortogonalizace_stav);//ukazatel B ukazuje vždy na druhý bod úsečky
-					else d.v.vloz_bod(m.P2Lx(X),m.P2Ly(Y),pom,NULL,ortogonalizace_stav);
-					REFRESH();
-					funkcni_klavesa=0;
-        }
 				switch(Akce)
 				{
 					case PAN:
@@ -2154,35 +2144,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					case ADJUSTACE:minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;break;
 					case DRAW_HALA://kreslení haly
 					{
-            //přichytávání k mřížce
-						TPointD souradnice;
-						//////kostra přichitávání k mřížce
-						if(grid)//pokud je zobrazena mřížka
-	        	{
-							switch(prichytavat_k_mrizce)
-	        		{
-	        			case 0:
-								{
-									if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete přichytit bod k mřížce?","",MB_YESNO,true,true))
-	        				{
-	        					if(myMessageBox->CheckBox_pamatovat->Checked)prichytavat_k_mrizce=1;
-	        					souradnice.x=m.round(m.P2Lx(X)/(size_grid*1.0*m2px))*size_grid*m2px;souradnice.y=m.round(m.P2Ly(Y)/(size_grid*1.0*m2px))*size_grid*m2px;
-	        				}
-									else
-									{
-	        					if(myMessageBox->CheckBox_pamatovat->Checked)prichytavat_k_mrizce=2;
-										souradnice=m.P2L(TPoint(X,Y));
-	        				}
-	        				break;
-	        			}
-	        			case 1:	souradnice.x=m.round(m.P2Lx(X)/(size_grid*1.0*m2px))*size_grid*m2px;souradnice.y=m.round(m.P2Ly(Y)/(size_grid*1.0*m2px))*size_grid*m2px;break;//přichytí automaticky
-								case 2: souradnice=m.P2L(TPoint(X,Y));break;//automaticky nepřichyt
-	        		}
-	        		akutalizace_stavu_prichytavani_vSB();
-						}
-						else souradnice=m.P2L(TPoint(X,Y));
-						//////
-						d.v.vloz_bod(souradnice.x,souradnice.y,pom,NULL,ortogonalizace_stav);
+						vloz_bod_haly_objektu(X,Y);
 						pom_bod=d.v.HALA.body->predchozi;//plnění ukazatele (vložený bod) pro účely vykreslování spojnice v mousemove
 						switch(pom_bod->n)
 						{
@@ -2201,6 +2163,13 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						else//spouštění temp akci nad akcemi
 						{
 							if(funkcni_klavesa==1 && pom_element!=NULL)Smazat1Click(Sender);
+							if(funkcni_klavesa==3&&false)////////////rozpracováno
+							{
+								TPoint bod=bod_vlozeni_elementu();
+								short rotace=rotace_symbol(m.Rt90(pom_element_temp->geo.orientace),bod.x,bod.y);
+								//Memo("["+AnsiString(bod.x)+","+AnsiString(bod.y)+"]; orientace: "+AnsiString(rotace));
+								design_element(d.v.vloz_element(pom_temp,MaxInt,m.P2Lx(bod.x),m.P2Ly(bod.y),rotace),false);
+              }
 							if(JID<=-11&&!editace_textu){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=pom_element->geo.delka;if((DKunit==2||DKunit==3)&&pom_element->pohon!=NULL)editovany_text=editovany_text/pom_element->pohon->aRD;editovany_text=outDK(ms.MyToDouble(editovany_text));}//editace textu
 							if(JID>=11 && JID<=99){Akce_temp=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//offset kót
 						}
@@ -3104,7 +3073,7 @@ void TForm1::getJobID(int X, int Y)
 			if(pom!=NULL)//byl nalezen objekt
 			{
 				pom_bod=d.v.najdi_usecku(pom,2);
-		  	if(pom_bod!=NULL)JID=4;//nalezena hrana objektu
+				if(pom_bod!=NULL)JID=4;//nalezena hrana objektu
 				else JID=3;//nalezen pouze objekt
 			}
 		}
@@ -4415,6 +4384,58 @@ void TForm1::vlozit_predavaci_misto()
 		O_posledni=NULL;delete O_posledni;
 	}
 	O=NULL;delete O;
+}
+//---------------------------------------------------------------------------
+//vloží bod haly na zvolené souřadnice (fyzické), zohlední přichytávání
+void TForm1::vloz_bod_haly_objektu(int X,int Y)
+{         
+	log(__func__);//logování
+	//////Nastavení proměných
+	TPointD souradnice;
+	int vel_gridu=size_grid;//nesmí se pracovat se size_grid ->ovlivnilo by to vykreslování
+	if(pom_temp!=NULL)vel_gridu/=10;//pokud jsem v editaci, grid je jemější
+	//////Kostra přichitávání k mřížce
+	if(grid)//pokud je zobrazena mřížka
+	{
+		switch(prichytavat_k_mrizce)
+		{
+			case 1:	souradnice.x=m.round(m.P2Lx(X)/(vel_gridu*1.0*m2px))*vel_gridu*m2px;souradnice.y=m.round(m.P2Ly(Y)/(vel_gridu*1.0*m2px))*vel_gridu*m2px;break;//přichytí automaticky
+			case 2: souradnice=m.P2L(TPoint(X,Y));break;//automaticky nepřichyt
+		}
+	}
+	else souradnice=m.P2L(TPoint(X,Y));
+	//////Získání bodu před
+	Cvektory::TBod *zabod=NULL;
+	if(funkcni_klavesa==3 && pom_bod!=NULL && pom_bod->n!=1)zabod=pom_bod->predchozi;
+	if(pom_temp==NULL && funkcni_klavesa==3 && pom_bod!=NULL && pom_bod->n==1)zabod=d.v.HALA.body->predchozi;   
+	if(pom_temp!=NULL && funkcni_klavesa==3 && pom_bod!=NULL && pom_bod->n==1)zabod=pom_temp->body->predchozi;  
+	//////Vložení bodu
+	d.v.vloz_bod(souradnice.x,souradnice.y,pom_temp,zabod,ortogonalizace_stav);	
+	//////Důvody k uložení
+	DuvodUlozit(true);
+	if(pom_temp!=NULL)nahled_ulozit(true);
+}
+//---------------------------------------------------------------------------
+//smaže bod haly nebo objektu, pokud existují už jen 2 poslední body smaže oba
+void TForm1::smaz_bod_haly_objektu(Cvektory::TBod *bod)
+{
+	log(__func__);//logování
+	//////Smazání
+	if(pom_temp!=NULL && pom_temp->body->predchozi->n!=2 || pom_temp==NULL)//nedovolit odstranit vše v objektu 2 body musí vždy zůstat!!
+	{
+		d.v.smaz_bod(bod,pom_temp);
+		bod=NULL;        
+	}
+	//////Mazání poslendího bodu
+	if(pom_temp==NULL && d.v.HALA.body->predchozi->n==1)//pokud zbyl v hale pouze poslední bod
+	{
+		d.v.smaz_bod(d.v.HALA.body->predchozi);
+		d.v.smaz_bod(d.v.HALA.body);//mazat a nulovat hlavičku - velmi nutné !!!!
+		d.v.HALA.body=NULL;
+	}	 
+	//////Důvody k uložení
+	DuvodUlozit(true);
+	if(pom_temp!=NULL)nahled_ulozit(true);
 }
 //---------------------------------------------------------------------------
 //vkládá novou geometrii nebo edituje již stávající geometrii
@@ -7929,17 +7950,10 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 			}
 			if(pom_bod_temp!=NULL)//mazání bodu v obrysu kabiny
 			{
-				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu smazat bod č. "+AnsiString(pom_bod_temp->n),"",MB_YESNO))
-				{
-					//pokud se jedná o druhý bod, smaže automaticky i bod první
-					if(pom_temp->body->predchozi->n==2)d.v.smaz_bod(pom_bod_temp->predchozi,pom_temp);
-					d.v.smaz_bod(pom_bod_temp,pom_temp);
+				if(pom_temp->body->predchozi->n>2 && mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu smazat bod č. "+AnsiString(pom_bod_temp->n),"",MB_YESNO))
+				{       
+					smaz_bod_haly_objektu(pom_bod_temp);
 					pom_bod_temp=NULL;delete pom_bod_temp;
-					refresh_mGrid=false;
-					REFRESH();
-					refresh_mGrid=true;
-					DuvodUlozit(true);
-					nahled_ulozit(true);
 				}
 			}
 			if(pom_komora_temp!=NULL && pom_temp->komora->predchozi->n>2)//případ mazání kabiny
@@ -8003,12 +8017,8 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 			{
 				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu smazat bod č. "+AnsiString(pom_bod_temp->n),"",MB_YESNO))
 				{
-					//pokud se jedná o druhý bod, smaže automaticky i bod první
-					if(d.v.HALA.body!=NULL&&d.v.HALA.body->predchozi->n==2)d.v.smaz_bod(pom_bod_temp->predchozi);
-					d.v.smaz_bod(pom_bod_temp);
+					smaz_bod_haly_objektu(pom_bod_temp);
 					pom_bod_temp=NULL;delete pom_bod_temp;
-					REFRESH();
-					DuvodUlozit(true);
 				}
 			}
 			else S("nenalezen");
@@ -8136,12 +8146,7 @@ void __fastcall TForm1::NastavitparametryClick1Click(TObject *Sender)
 	}
 	if(pom_temp!=NULL && pom_bod_temp!=NULL)//přidání bodu objektu
 	{
-		if(pom_bod_temp->n!=1)d.v.vloz_bod(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,pom_temp,pom_bod_temp->predchozi);
-		else d.v.vloz_bod(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,pom_temp);
-		refresh_mGrid=false;
-		REFRESH();
-		refresh_mGrid=true;
-		nahled_ulozit(true);
+		vloz_bod_haly_objektu(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
 	}
 }
 //---------------------------------------------------------------------------
@@ -10035,8 +10040,6 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	TRect oblast=vrat_max_oblast();
-	Canvas->Rectangle(oblast);
 	//if(pom_temp->elementy->dalsi->sparovany!=NULL)Sv(pom_temp->elementy->dalsi->sparovany->name);
 //	Akce=GEOMETRIE;
 //	editace_geometrie_spustena=false;
