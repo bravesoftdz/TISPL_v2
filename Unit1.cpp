@@ -162,6 +162,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
   T=readINI("nastaveni_editace","zobrazit_koleje"); //zobrazit koleje
  	if(T==0)zobrazit_popisky=0;else zobrazit_koleje=1;
 
+
   if(rotace_jigu==1) scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
   else scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=false;
 
@@ -4514,8 +4515,17 @@ void TForm1::ukonceni_geometrie()
 	}
 	//////vypnutí akce
 	if(!editace_textu)Akce=NIC;Akce_temp=NIC;//musí být ještě před refresh
-	scGPCheckBox1_popisky->Checked=true;
-	REFRESH(false);
+
+ if(zobrazit_popisky==1) scGPCheckBox1_popisky->Checked=true;
+ else scGPCheckBox1_popisky->Checked=false;
+ if(zobrazit_pozice==1) scGPCheckBox_zobrazit_pozice->Checked=true;
+ else scGPCheckBox_zobrazit_pozice->Checked=false;
+ if(zobrazit_koleje==1) scGPCheckBox_zobrazit_koleje->Checked=true;
+ else scGPCheckBox_zobrazit_koleje->Checked=false;
+ if(rotace_jigu==1) scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
+ else scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=false;
+
+ REFRESH(false);
 }
 //---------------------------------------------------------------------------
 //vrátí maximální možný počet vozíků na stopce, podle geometrie před ní
@@ -7548,6 +7558,8 @@ void __fastcall TForm1::DrawGrid_geometrieMouseDown(TObject *Sender, TMouseButto
 	  	Akce=GEOMETRIE;
 			editace_geometrie_spustena=false;
 			scGPCheckBox1_popisky->Checked=false;//vypnutí zobrazení popisků, v budoucnu rozšířit na uložení předchozího stavu
+     	scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=false;
+      scGPCheckBox_zobrazit_pozice->Checked=false;
 	  	//pokud ještě nebyla editována geometrie a existuje předchozí element, zapíše ho do posledni_editovany_element
 	  	//if(pom->predchozi!=NULL && posledni_editovany_element==NULL)posledni_editovany_element=pom->predchozi->elementy->predchozi;
 			REFRESH(false);
@@ -11937,19 +11949,24 @@ DuvodUlozit(true);
 //---------------------------------------------------------------------------
 
 void __fastcall TForm1::scGPCheckBox_zobrazit_rotace_jigu_na_otocichClick(TObject *Sender)
-
 {
-if(scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked) writeINI("nastaveni_editace","rotace_jigu", 1);
-else  writeINI("nastaveni_editace","rotace_jigu", 0);
-REFRESH();
+ if(Akce!=GEOMETRIE)
+    {
+      if(scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked) {writeINI("nastaveni_editace","rotace_jigu", 1); rotace_jigu=1;}
+      else {writeINI("nastaveni_editace","rotace_jigu", 0);  rotace_jigu=0;}
+      REFRESH();
+    }
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TForm1::scGPCheckBox_zobrazit_poziceClick(TObject *Sender)
 {
-if(scGPCheckBox_zobrazit_pozice->Checked) writeINI("nastaveni_editace","zobrazeni_pozic", 1);
-else  writeINI("nastaveni_editace","zobrazeni_pozic", 0);
-REFRESH();
+ if(Akce!=GEOMETRIE)
+    {
+    if(scGPCheckBox_zobrazit_pozice->Checked) {writeINI("nastaveni_editace","zobrazeni_pozic", 1); zobrazit_pozice=1;}
+    else {writeINI("nastaveni_editace","zobrazeni_pozic", 0); zobrazit_pozice=0;}
+    REFRESH();
+  }
 }
 //---------------------------------------------------------------------------
 
@@ -11963,16 +11980,19 @@ void __fastcall TForm1::Memo3KeyDown(TObject *Sender, WORD &Key, TShiftState Shi
 
 void __fastcall TForm1::scGPCheckBox1_popiskyClick(TObject *Sender)
 {
-if(scGPCheckBox1_popisky->Checked) writeINI("nastaveni_editace","zobrazit_popisky", 1);
-else  writeINI("nastaveni_editace","zobrazit_popisky", 0);
-REFRESH();
+  if(Akce!=GEOMETRIE)
+  {
+    if(scGPCheckBox1_popisky->Checked) { writeINI("nastaveni_editace","zobrazit_popisky", 1); zobrazit_popisky=1;}
+    else  {writeINI("nastaveni_editace","zobrazit_popisky", 0); zobrazit_popisky=0;}
+    REFRESH();
+  }
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TForm1::scGPCheckBox_zobrazit_kolejeClick(TObject *Sender)
 {
-if(scGPCheckBox_zobrazit_koleje->Checked) writeINI("nastaveni_editace","zobrazit_koleje", 1);
-else  writeINI("nastaveni_editace","zobrazit_koleje", 0);
+if(scGPCheckBox_zobrazit_koleje->Checked) {writeINI("nastaveni_editace","zobrazit_koleje", 1);zobrazit_koleje=1;}
+else  {writeINI("nastaveni_editace","zobrazit_koleje", 0); zobrazit_koleje=0;}
 REFRESH();
 }
 //---------------------------------------------------------------------------

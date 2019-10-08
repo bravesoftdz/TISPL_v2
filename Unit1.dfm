@@ -8086,7 +8086,6 @@ object Form1: TForm1
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
-        ExplicitTop = 129
       end
       object scGPCheckBox_zobrazit_pozice: TscGPCheckBox
         AlignWithMargins = True
@@ -8189,7 +8188,6 @@ object Form1: TForm1
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
-        ExplicitTop = 96
       end
       object scGPCheckBox_zobrazit_rotace_jigu_na_otocich: TscGPCheckBox
         AlignWithMargins = True
@@ -8292,7 +8290,6 @@ object Form1: TForm1
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
-        ExplicitTop = 63
       end
       object scGPCheckBox1_popisky: TscGPCheckBox
         AlignWithMargins = True
@@ -8396,8 +8393,6 @@ object Form1: TForm1
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
-        ExplicitLeft = 10
-        ExplicitTop = 38
       end
     end
     object scExPanel_podklad: TscExPanel
@@ -9287,7 +9282,6 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  N'#225'stroje'
-      ExplicitTop = 470
       object scGPButton_mereni_vzdalenost: TscGPButton
         AlignWithMargins = True
         Left = 3
@@ -9404,7 +9398,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118009808A00810001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118009808A40810001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10527,7 +10521,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01014500480A500A30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01014500480A540A30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000006003000001002000000000000020
       0A00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
