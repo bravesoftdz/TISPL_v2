@@ -4804,7 +4804,7 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			Cvektory::TElement *E=F->pom_temp->elementy->dalsi;//přeskočí rovnou hlavičku
 			while(E!=NULL)
 			{
-				if((E->pohon==NULL && F->pom_temp->pohon==NULL || E->pohon!=NULL && F->pom_temp->pohon!=NULL && E->pohon->n==F->pom_temp->pohon->n) && F->Akce!=F->Takce::GEOMETRIE)//vykreslení tabulek elementů, kteří mají stejný pohon jako aktuálně editovaný pohon
+				if((E->pohon==NULL && F->pom_temp->pohon==NULL || E->pohon!=NULL && F->pom_temp->pohon!=NULL && E->pohon->n==F->pom_temp->pohon->n || E->eID==200) && F->Akce!=F->Takce::GEOMETRIE)//vykreslení tabulek elementů, kteří mají stejný pohon jako aktuálně editovaný pohon
 				{
 					if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
 			  	{
