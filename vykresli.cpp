@@ -2917,7 +2917,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,doubl
 //	return RET;//vrátí index
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O)//sloučit s výše uvedenou metodou
+void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O)//přejmenovat
 {
 	if(O!=NULL && O->elementy!=NULL )//&& false)
 	{
@@ -2946,30 +2946,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O)//sloučit s v
 		while(E!=NULL)
 		{
 			////vykreslení paralelních koleji
-			if(E->pohon!=NULL)//pouze pokud je přiřazen pohon
-			{
-				//offset o poloviny nastavené šířky podvozku + tloušťka linie zakresu podvozku
-				double o=v.PP.sirka_podvozek/2.0+m.px2m(1/3.0*F->Zoom);
-				//nastavení pera
-				TColor clKolej=RGB(255,69,0);
-				if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clKolej=m.clIntensive(clKolej,m.get_intensity());//zesvětlování neaktivních pohonů
-				set_pen(canv,clKolej,m.round(F->Zoom*0.5),PS_ENDCAP_SQUARE);
-				//výpočet odsazení
-				TPointD S1=m.rotace(o,180-E->geo.orientace,90);
-				TPointD S2=m.rotace(o,180-E->geo.orientace,-90);
-				short z=1;if(E->geo.rotacni_uhel>0)z*=-1;
-				double DR1=E->geo.delka;if(E->geo.typ==1)DR1=E->geo.radius+o*z;//delka či radius
-				double DR2=E->geo.delka;if(E->geo.typ==1)DR2=E->geo.radius+o*z*-1;//delka či radius
-				//samotné výkreslení obou parelelních kolejí
-				if(F->scGPCheckBox_zobrazit_koleje->Checked)//pokud je v menu povoleno
-				{
-					bezier(canv,m.getArcLine(E->geo.X1+S1.x,E->geo.Y1+S1.y,E->geo.orientace,E->geo.rotacni_uhel,DR1),3);
-					bezier(canv,m.getArcLine(E->geo.X1+S2.x,E->geo.Y1+S2.y,E->geo.orientace,E->geo.rotacni_uhel,DR2),3);
-				}
-				//konec segmentu - zarážka
-				if(F->scGPCheckBox_zobrazit_koleje->Checked)//provizorně se nyní skrývá dle nastavení, ale změnit zobrazování dle editace geometrie if(Akce==GEOMETRIE)
-				line(canv,m.L2Px(E->geo.X1+S1.x),m.L2Py(E->geo.Y1+S1.y),m.L2Px(E->geo.X1+S2.x),m.L2Py(E->geo.Y1+S2.y));
-			}
+			if(E->pohon!=NULL)vykresli_koleje(canv,E,O);//pouze pokud je přiřazen pohon
 
 			////vykreslení segementu pohonu
 			//plnění geo souřadnic do pole
@@ -2991,6 +2968,62 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O)//sloučit s v
 		delete E;E=NULL;//smazání již nepotřebného ukazatele
 		delete[]POLE;POLE=NULL;
 	}
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//vykreslení jednoho geometrického segmentu dvou párů kolejí
+void Cvykresli::vykresli_koleje(TCanvas *canv,Cvektory::TElement *E,Cvektory::TObjekt *O)
+{
+	if(F->pom_temp==NULL || F->pom_temp!=NULL && F->pom_temp->n==O->n || F->scGPTrackBar_intenzita->Value>25 && F->pom_temp!=NULL && F->pom_temp->n!=O->n)//při editaci zobrazí pasivní jen s intenzitou větší než 25
+	{
+//		//offset o poloviny nastavené šířky podvozku + tloušťka linie zakresu podvozku
+//		double o=v.PP.sirka_podvozek/2.0+m.px2m(1/3.0*F->Zoom);
+//		//nastavení pera
+//		TColor clKolej=RGB(255,69,0);
+//		if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clKolej=m.clIntensive(clKolej,m.round(m.get_intensity()/1.8));//zesvětlování neaktivních pohonů
+//		set_pen(canv,clKolej,m.round(F->Zoom*0.5),PS_ENDCAP_SQUARE);
+//		//výpočet odsazení
+//		TPointD S1=m.rotace(o,180-E->geo.orientace,90);
+//		TPointD S2=m.rotace(o,180-E->geo.orientace,-90);
+//		short z=1;if(E->geo.rotacni_uhel>0)z*=-1;
+//		double DR1=E->geo.delka;if(E->geo.typ==1)DR1=E->geo.radius+o*z;//delka či radius
+//		double DR2=E->geo.delka;if(E->geo.typ==1)DR2=E->geo.radius+o*z*-1;//delka či radius
+//		//samotné výkreslení obou parelelních kolejí
+//		if(F->scGPCheckBox_zobrazit_koleje->Checked)//pokud je v menu povoleno
+//		{
+//			bezier(canv,m.getArcLine(E->geo.X1+S1.x,E->geo.Y1+S1.y,E->geo.orientace,E->geo.rotacni_uhel,DR1),3);
+//			bezier(canv,m.getArcLine(E->geo.X1+S2.x,E->geo.Y1+S2.y,E->geo.orientace,E->geo.rotacni_uhel,DR2),3);
+//		}
+//		//konec segmentu - zarážka
+//		if(F->scGPCheckBox_zobrazit_koleje->Checked)//provizorně se nyní skrývá dle nastavení, ale změnit zobrazování dle editace geometrie if(Akce==GEOMETRIE)
+//		line(canv,m.L2Px(E->geo.X1+S1.x),m.L2Py(E->geo.Y1+S1.y),m.L2Px(E->geo.X1+S2.x),m.L2Py(E->geo.Y1+S2.y));
+		TColor clKolej=RGB(255,69,0);
+		if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clKolej=m.clIntensive(clKolej,m.round(m.get_intensity()/1.8));//zesvětlování neaktivních pohonů
+		vykresli_koleje(canv,E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,clKolej);
+	}
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//vykreslení jednoho geometrického segmentu dvou párů kolejí
+void Cvykresli::vykresli_koleje(TCanvas *canv,double X,double Y,short typ,double orientace,double rotacni_uhel,double radius,double delka,TColor clKolej)
+{
+	//offset o poloviny nastavené šířky podvozku + tloušťka linie zakresu podvozku
+	double o=v.PP.sirka_podvozek/2.0+m.px2m(1/3.0*F->Zoom);
+	//nastavení pera
+	set_pen(canv,clKolej,m.round(F->Zoom*0.5),PS_ENDCAP_SQUARE);
+	//výpočet odsazení
+	TPointD S1=m.rotace(o,180-orientace,90);
+	TPointD S2=m.rotace(o,180-orientace,-90);
+	short z=1;if(rotacni_uhel>0)z*=-1;
+	double DR1=delka;if(typ==1)DR1=radius+o*z;//delka či radius
+	double DR2=delka;if(typ==1)DR2=radius+o*z*-1;//delka či radius
+	//samotné výkreslení obou parelelních kolejí
+	if(F->scGPCheckBox_zobrazit_koleje->Checked)//pokud je v menu povoleno
+	{
+		bezier(canv,m.getArcLine(X+S1.x,Y+S1.y,orientace,rotacni_uhel,DR1),3);
+		bezier(canv,m.getArcLine(X+S2.x,Y+S2.y,orientace,rotacni_uhel,DR2),3);
+	}
+	//konec segmentu - zarážka
+	if(F->scGPCheckBox_zobrazit_koleje->Checked)//provizorně se nyní skrývá dle nastavení, ale změnit zobrazování dle editace geometrie if(Akce==GEOMETRIE)
+	line(canv,m.L2Px(X+S1.x),m.L2Py(Y+S1.y),m.L2Px(X+S2.x),m.L2Py(Y+S2.y));
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -3033,31 +3066,6 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O)//sloučit s v
 //	//ukončení simulace
 //	//Form1->Timer_simulace->Enabled=false;
 //	//sound();
-//}
-////------------------------------------------------------------------------------------------------------------------------------------------------------
-//void Cvykresli::vykresli_linku(TCanvas *canv)//zajišťuje vykreslení osy linky
-//{
-//		//nastavení šířky a barvy linie
-//		canv->Pen->Color=(TColor)RGB(255,0,0);
-//		canv->Pen->Width=1*Form1->Zoom;
-//		canv->Pen->Mode=pmCopy;
-//
-//		//samotné vykreslení
-//		Cvektory::TObjekt *ukaz=v.OBJEKTY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
-//		while (ukaz!=NULL)
-//		{
-//			//počátek úsečky
-//			canv->MoveTo(m.L2Px(ukaz->X)+O_width*Form1->Zoom/2,m.L2Py(ukaz->Y)+O_height*Form1->Zoom/2);
-//
-//			//konec úsečky
-//			if(ukaz->dalsi!=NULL)
-//			canv->LineTo(m.L2Px(ukaz->dalsi->X)+O_width*Form1->Zoom/2,m.L2Py(ukaz->dalsi->Y)+O_height*Form1->Zoom/2);
-//			else//pro spojnici z posledního bodu do prvního
-//			canv->LineTo(m.L2Px(v.OBJEKTY->dalsi->X)+O_width*Form1->Zoom/2,m.L2Py(v.OBJEKTY->dalsi->Y)+O_height*Form1->Zoom/2);
-//
-//			//posun na další prvek v seznamu
-//			ukaz=ukaz->dalsi;
-//		}
 //}
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //void Cvykresli::umisti_vozik(TCanvas *canv,Cvektory::TVozik *ukaz)//zajišťuje umístění vozíku na lince
@@ -4767,11 +4775,23 @@ void Cvykresli::vykresli_Gelement_kurzor(TCanvas *canv,double X,double Y,double 
 //zajistí jednorázové vykreslení potenciálního obloukového či liniového (dle situace) g-elementu, X,Y jsou logické souřadnice výchozího vykreslování, parametry: orientace oblouku - dle světových stran (umí i jiné než 90° násobky), rotační úhel - pod kterým je oblouk rotován, může být záporný (znaménko určuje směr rotace, + proti směru hodinových ručiček, - po směru), max. hodnota +90 a min. hodnota -90 (je-li nastaven na 0° jedná se o linii), radius - je radius oblouku v metrech nebo pokud je rotační úhel nastaven na 0° tedy se jedná o linii, je radius délkou linie)
 TPointD *Cvykresli::vykresli_potencial_Gelement(TCanvas *canv,double X,double Y,double orientace,double rotacni_uhel,double radius,TColor color,bool popisek)
 {
+	if(F->scGPCheckBox_zobrazit_koleje->Checked)
+	//if(popisek)//resp. vybraný gelement
+	{
+		short typ=1;if(rotacni_uhel==0)typ=0;
+		vykresli_koleje(canv,X,Y,typ,orientace,rotacni_uhel,radius,radius,color);
+	}
+
 	//potenciální Gelement
 	TPointD *PL=m.getArcLine(X,Y,orientace,rotacni_uhel,radius);
 	POINT POLE[]={{m.L2Px(PL[0].x),m.L2Py(PL[0].y)},m.L2Px(PL[1].x),m.L2Py(PL[1].y),m.L2Px(PL[2].x),m.L2Py(PL[2].y),m.L2Px(PL[3].x),m.L2Py(PL[3].y)};//převod do fyzických souřadnic
-	set_pen(canv,color,1*F->Zoom,PS_ENDCAP_FLAT);//nastavení geometrického pera
+	//nastavení geometrického pera
+	//if(popisek)
+	set_pen(canv,color,m.round(F->Zoom*0.5),PS_ENDCAP_FLAT);//resp. vybraný gelement
+	//else
+	//set_pen(canv,color,m.round(F->Zoom*1),PS_ENDCAP_FLAT);//nastavení geometrického pera
 	canv->PolyBezier((TPoint*)POLE,3);//samotné vykreslení bézierovy křivky
+
 	//popisek, je-li požadován
 	if(popisek)
 	{
