@@ -122,7 +122,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	while(O!=NULL)
 	{
 		short stav=1;
-    //vykreslení prozatimní osy POHONU
+		//vykreslení prozatimní osy POHONU
 		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)vykresli_retez(canv,F->pom_temp);else vykresli_retez(canv,O);
 		Cvektory::TElement *E=O->elementy;
 		if(F->pom_temp!=NULL && F->pom_temp->n==O->n){stav=1;E=F->pom_temp->elementy;}//elementy v aktivním objektu, zajistí přeskočení vykreslení neaktuálních dat elementů a vykreslí aktuálně data elementů neuloženého objektu
@@ -314,7 +314,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	canv->Font->Orientation=0;//vrácení původní hodnoty rotace canvasu
 	//vykreslení uchopovacího kříže u textu
 	canv->Pen->Color=clBlack;canv->Pen->Width=1;
-	if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID==-6 || F->JID==-7))
+	if(F->pom_temp!=NULL && F->pom_temp->n==O->n && F->Akce==F->Takce::NIC && (F->JID==-6 || F->JID==-7))
 	{
 		switch((int)orientace)
 		{
@@ -336,7 +336,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		}
 	}
 	//vykreslení kříže posuvu u tabulky pohonu, natrvalo
-	if(F->pom_temp!=NULL && F->PmG->Highlight)
+	if(F->pom_temp!=NULL && F->Akce==F->Takce::NIC && F->PmG->Highlight)
 	{
 		line(canv,m.L2Px(F->pom_temp->Xp)-20,m.L2Py(F->pom_temp->Yp)-20,m.L2Px(F->pom_temp->Xp)-60,m.L2Py(F->pom_temp->Yp)-20);
 		line(canv,m.L2Px(F->pom_temp->Xp)-40,m.L2Py(F->pom_temp->Yp),m.L2Px(F->pom_temp->Xp)-40,m.L2Py(F->pom_temp->Yp)-40);
@@ -5017,7 +5017,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	width=m.round(width*F->Zoom);if(highlight)width*=2;//šířka linie
 	short Presah=m.round(1.3*F->Zoom);if(Offset<0)Presah*=-1;//přesah packy u kóty,v případě záporného offsetu je vystoupení kóty nazákladě tohot záporné
   if(F->pom_temp!=NULL)Presah/=2.0;//zmenšení odsazení kót při highlightu v náhledu
-	short V=0;if(highlight==2)V=1;//vystoupení kóty
+	short V=0;//if(highlight==2)V=1;//vystoupení kóty
 	short H=0;if(highlight)H=1;
 	short M=0;if(10<F->JID && F->JID<100 && F->MOD==F->NAHLED)M=1;//při celkovém posunu kót se postranní spojnice nově nezvýrazňují
 

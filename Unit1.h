@@ -749,7 +749,8 @@ public:		// User declarations
   short zobrazit_pozice;
   short rotace_jigu;
   short zobrazit_popisky;
-  short zobrazit_koleje;
+	short zobrazit_koleje;
+	bool zamek_layoutu;
 
 	//metody
 	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click
