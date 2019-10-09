@@ -640,6 +640,8 @@ private:
   void set_enabled_mGrid(Cvektory::TElement *E);//zapne nebo vypne komponenty megridu v závislosti na tom zda má element pøiøazený pohon
   void vlozeni_editace_geometrie();//vkládá novou geometrii nebo edituje již stávající geometrii
 	void ukonceni_geometrie();//ukonèení akce geometrie a pøípadné uzavøení kruhu
+	void vloz_bod_haly_objektu(int X,int Y);//vloží bod haly nebo objektu na zvolené souøadnice (fyzické), zohlední pøichytávání
+	void smaz_bod_haly_objektu(Cvektory::TBod *bod);//smaže bod haly nebo objektu, pokud existují už jen 2 poslední body smaže oba
 
 	////promìnné
 	TDateTime TIME;
