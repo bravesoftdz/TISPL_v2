@@ -2165,12 +2165,20 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						else//spouštění temp akci nad akcemi
 						{
 							if(funkcni_klavesa==1 && pom_element!=NULL)Smazat1Click(Sender);
-							if(funkcni_klavesa==3&&false)////////////rozpracováno
+							if(funkcni_klavesa==3)////////////rozpracováno
 							{
 								TPoint bod=bod_vlozeni_elementu();
-								short rotace=rotace_symbol(m.Rt90(pom_element_temp->geo.orientace),bod.x,bod.y);
-								//Memo("["+AnsiString(bod.x)+","+AnsiString(bod.y)+"]; orientace: "+AnsiString(rotace));
-								design_element(d.v.vloz_element(pom_temp,MaxInt,m.P2Lx(bod.x),m.P2Ly(bod.y),rotace),false);
+								if(bod.x!=-1000&&bod.y!=-1000)
+								{
+									short rotace=rotace_symbol(m.Rt90(pom_element_temp->geo.orientace),bod.x,bod.y);
+									Cvektory::TElement *E=d.v.vloz_element(pom_temp,MaxInt,m.P2Lx(bod.x),m.P2Ly(bod.y),rotace,pom_element_temp);//použito force řazení, tzn. nebude přiřazena geometrie a kontrolováno pořadí
+									design_element(E,false);//nutné!!!
+									//vložení geometrie
+									if(E->predchozi->n>0)d.v.vloz_G_element(E,0,E->predchozi->geo.X4,E->predchozi->geo.Y4,0,0,0,0,E->X,E->Y,E->predchozi->geo.orientace);
+									else d.v.vloz_G_element(E,0,E->dalsi->geo.X1,E->dalsi->geo.Y1,0,0,0,0,E->X,E->Y,E->dalsi->geo.orientace);
+									d.v.vloz_G_element(E->dalsi,0,E->X,E->Y,0,0,0,0,E->dalsi->geo.X4,E->dalsi->geo.Y4,E->dalsi->geo.orientace);
+									E=NULL;delete E;
+								}
               }
 							if(JID<=-11&&!editace_textu){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=pom_element->geo.delka;if((DKunit==2||DKunit==3)&&pom_element->pohon!=NULL)editovany_text=editovany_text/pom_element->pohon->aRD;editovany_text=outDK(ms.MyToDouble(editovany_text));}//editace textu
 							if(JID>=11 && JID<=99){Akce_temp=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//offset kót
@@ -3348,6 +3356,7 @@ void TForm1::onPopUP(int X, int Y)
 				PopUPmenu->scLabel_nastavit_parametry->Caption="  Přidat bod";
 				PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 			}
+			if(Akce==GEOMETRIE && bod_vlozeni_elementu().x!=-1000)PopUPmenu->scLabel_nastavit_parametry->Caption="  Vložit zarážku";
 			if(pom_bod!=NULL || (pom_vyhybka!=NULL && pom_vyhybka->n==pom_temp->n)){PopUPmenu->Item_posun_obrysu->Visible=true;PopUPmenu->Panel_UP->Height+=34;}
 			////
 			//PopUPmenu->Item_posouvat->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
@@ -8150,6 +8159,21 @@ void __fastcall TForm1::NastavitparametryClick1Click(TObject *Sender)
 	{
 		vloz_bod_haly_objektu(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
 	}
+	if(Akce==GEOMETRIE)//přidávání zarážky při editaci geometrie
+	{
+    TPoint bod=bod_vlozeni_elementu();
+		if(bod.x!=-1000&&bod.y!=-1000)
+		{
+			short rotace=rotace_symbol(m.Rt90(pom_element_temp->geo.orientace),bod.x,bod.y);
+			Cvektory::TElement *E=d.v.vloz_element(pom_temp,MaxInt,m.P2Lx(bod.x),m.P2Ly(bod.y),rotace,pom_element_temp);//použito force řazení, tzn. nebude přiřazena geometrie a kontrolováno pořadí
+			design_element(E,false);//nutné!!!
+			//vložení geometrie
+			if(E->predchozi->n>0)d.v.vloz_G_element(E,0,E->predchozi->geo.X4,E->predchozi->geo.Y4,0,0,0,0,E->X,E->Y,E->predchozi->geo.orientace);
+			else d.v.vloz_G_element(E,0,E->dalsi->geo.X1,E->dalsi->geo.Y1,0,0,0,0,E->X,E->Y,E->dalsi->geo.orientace);
+			d.v.vloz_G_element(E->dalsi,0,E->X,E->Y,0,0,0,0,E->dalsi->geo.X4,E->dalsi->geo.Y4,E->dalsi->geo.orientace);
+			E=NULL;delete E;
+		}
+	}
 }
 //---------------------------------------------------------------------------
 //podpůrná metoda řeší vstupní část dat, vyseparováno, z důvodu toho, že z GAPO aktulizauji případně spuštěné PO a nemohu volat NP, protože to v sobě obsahu ShowModal - vedlo k chybě, nutno řešit převody jednotek
@@ -8496,6 +8520,8 @@ void TForm1::NP_input()
 	}
 	if(scGPComboBox_prepinacKot->ItemIndex==0)DKunit=1;
 	else DKunit=2;
+	if(pom_temp->pohon!=NULL)scGPComboBox_prepinacKot->Enabled=true;
+	else scGPComboBox_prepinacKot->Enabled=false;
 	//nastavení tlačítka pro spouštění animace za podmínky přiřazení pohonu
 	if(pom_temp->pohon!=NULL)scGPGlyphButton_PLAY->Enabled=true;
 	else scGPGlyphButton_PLAY->Enabled=false;
@@ -8629,7 +8655,9 @@ void TForm1::zmena_editovaneho_objektu()
   	if(pom_temp->id==4 || pom_temp->id==2 || pom_temp->id==5)scGPLabel_roboti->Caption="Robot           Operátor";//mezery tvoří místo, kde je zobrazen switch
   	else if(pom_temp->id==3)scGPLabel_roboti->Caption="Sekce";
   	else if(pom_temp->id==0 || pom_temp->id==9)scGPLabel_roboti->Caption="Operátoři";
-  	else scGPLabel_roboti->Caption="Roboti";
+		else scGPLabel_roboti->Caption="Roboti";
+		if(pom_temp->pohon!=NULL)scGPComboBox_prepinacKot->Enabled=true;
+		else scGPComboBox_prepinacKot->Enabled=false;
     //nutné při změně typu objektu, pouze tyto 2 knihovny se mění se změnou objektu
   	DrawGrid_geometrie->Refresh();
   	DrawGrid_knihovna->Refresh();
@@ -11825,7 +11853,7 @@ void __fastcall TForm1::scGPComboBox_prepinacKotClick(TObject *Sender)
 	{
   	//není nutno provádět kontrolu, prováděna jinde -> aktivace / deaktivace komponenty
   	refresh_mGrid=false;
-  	switch(scGPComboBox_prepinacKot->ItemIndex)
+		switch(scGPComboBox_prepinacKot->ItemIndex)
   	{
   		case 0://nastavena délka
   		{
