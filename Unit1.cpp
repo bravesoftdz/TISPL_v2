@@ -2248,7 +2248,15 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 		}
 		Akce=NIC;Akce_temp=NIC;
 	}
-	else if(Akce==GEOMETRIE)ukonceni_geometrie();
+	else//jsem v náhledu
+	{
+		if(Akce==GEOMETRIE)ukonceni_geometrie();
+		if(Akce==NIC)
+		{
+			pom_vyhybka=d.v.PtInObjekt();
+			if(pom_vyhybka!=NULL)zmena_editovaneho_objektu();//otevření náhledu
+    }
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
@@ -4576,23 +4584,28 @@ void TForm1::ukonceni_geometrie()
 double TForm1::max_voziku(Cvektory::TElement *stopka)
 {
 	log(__func__);//logování
+	double ret=1;
 	double delka=stopka->geo.delka;
-	Cvektory::TElement *E=stopka->predchozi;
-	while(E!=NULL && E->n!=0)
+	if(delka>0)//musí být něco v délce, pokud nula tak problém
 	{
-		if(E->OTOC_delka>0)
+  	Cvektory::TElement *E=stopka->predchozi;
+  	while(E!=NULL && E->n!=0)
 		{
-			delka-=E->OTOC_delka/2.0;//odsazení před otočí
-			double rotace_jigu=m.Rt90(d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(E)+E->rotace_jig);
-			if(rotace_jigu==0 || rotace_jigu==180)delka-=d.v.PP.delka_jig/2.0;else delka-=d.v.PP.sirka_jig/2.0;
+  		if(E->OTOC_delka>0)
+			{
+				delka-=E->OTOC_delka/2.0;//odsazení před otočí
+				double rotace_jigu=m.Rt90(d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(E)+E->rotace_jig);
+				if(rotace_jigu==0 || rotace_jigu==180)delka-=d.v.PP.delka_jig/2.0;else delka-=d.v.PP.sirka_jig/2.0;
+			}
+  		if(E->geo.typ==0 && E->eID==MaxInt)delka+=E->geo.delka;
+  		else break;
+			E=E->predchozi;
 		}
-		if(E->geo.typ==0 && E->eID==MaxInt)delka+=E->geo.delka;
-		else break;
-		E=E->predchozi;
+		E=NULL;delete E;
+		if(delka>0)ret=floor((delka-d.v.PP.uchyt_pozice)/d.v.PP.delka_podvozek);
+		if(ret<1)ret=1;
 	}
-	E=NULL;delete E;
-	if(delka>0)return floor((delka-d.v.PP.uchyt_pozice)/d.v.PP.delka_podvozek);
-	else return 1;
+	return ret;
 }
 //---------------------------------------------------------------------------
 //vrací zda se element nachází na pohonu jakéhokoliv sklonu, dvojí způsob použití: zadání parametru X,Y,eID pokud nemám ukazatel na element nebo 0,0,0,ukazatel, vrátí true nebo false
@@ -5258,9 +5271,15 @@ void TForm1::vytvoreni_tab_knihovna()
 	mGrid_knihovna->Cells[0][9].ImageIndex=5;
 	//postprocesní
 	mGrid_knihovna->Cells[0][11].Type=mGrid_knihovna->IMAGE;
-	mGrid_knihovna->Cells[0][11].ImageIndex=6;
+	mGrid_knihovna->Cells[0][11].ImageIndex=6; //sušení
 	mGrid_knihovna->Cells[0][11].Align=mGrid_knihovna->LEFT;
 	mGrid_knihovna->Rows[11].Height=39;
+
+	mGrid_knihovna->Cells[1][11].Type=mGrid_knihovna->IMAGE;
+	mGrid_knihovna->Cells[1][11].ImageIndex=13; //sušení
+	mGrid_knihovna->Cells[1][11].Align=mGrid_knihovna->LEFT;
+
+
 	mGrid_knihovna->Cells[0][12].Type=mGrid_knihovna->IMAGE;
 	mGrid_knihovna->Cells[0][12].ImageIndex=7;
 	mGrid_knihovna->Cells[0][12].Align=mGrid_knihovna->LEFT;
@@ -5278,8 +5297,8 @@ void TForm1::vytvoreni_tab_knihovna()
 	mGrid_knihovna->Cells[0][15].ImageIndex=11;
 	mGrid_knihovna->Cells[1][15].Type=mGrid_knihovna->IMAGE;
 	mGrid_knihovna->Cells[1][15].ImageIndex=14;
-	mGrid_knihovna->Cells[0][16].Type=mGrid_knihovna->IMAGE;
-	mGrid_knihovna->Cells[0][16].ImageIndex=13;
+//	mGrid_knihovna->Cells[0][16].Type=mGrid_knihovna->IMAGE;
+//	mGrid_knihovna->Cells[0][16].ImageIndex=13;
 	/////////centrování komponent
 	mGrid_knihovna->Update();
 	TscGPImage *I=NULL;
@@ -5341,7 +5360,7 @@ void TForm1::tab_knihovna_click(double X,double Y,long Col,long Row)
 	if(mGrid_knihovna->Cells[Col][Row].Type==mGrid_knihovna->IMAGE)
 	{
 		vybrany_objekt=mGrid_knihovna->Cells[Col][Row].ImageIndex;
-		if(vybrany_objekt<15)//klik na objekty
+		if(vybrany_objekt<15 && vybrany_objekt!=13)//klik na objekty
 		{
    		SB("Kliknutím na libovolné místo umístíte objekt "+knihovna_objektu[vybrany_objekt].name);
 			Akce=ADD;kurzor(add_o);
@@ -7443,7 +7462,7 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 void __fastcall TForm1::DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y)
 {
-  log(__func__);//logování
+	log(__func__);//logování
 	int Col,Row;
 	//DrawGrid_knihovna->MouseToCell(X,Y,Col,Row);
 	Col=DrawGrid_knihovna->Col; Row=DrawGrid_knihovna->Row;
@@ -7539,7 +7558,7 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton
 		else//pokud bude při již spuštěné akci kliknuto na element, který být přidanný nesmí, je nutné akci vypnout
 		{
 			Akce=NIC;kurzor(standard);
-			TIP="Přidávání prvků je možné až po výběru pohonu";
+			if(pom_temp->pohon!=NULL)TIP="Přidávání prvků je možné až po výběru pohonu";
 			refresh_mGrid=false;REFRESH();refresh_mGrid=true;
     }
 	}
@@ -7584,15 +7603,14 @@ void __fastcall TForm1::DrawGrid_otoceMouseDown(TObject *Sender, TMouseButton Bu
 void __fastcall TForm1::DrawGrid_ostatniMouseDown(TObject *Sender, TMouseButton Button,
 					TShiftState Shift, int X, int Y)
 {
-  log(__func__);//logování
+	log(__func__);//logování
+	int Col=DrawGrid_ostatni->Col;
 	if(editace_textu)	Smaz_kurzor();
 	if(MOD==NAHLED)if(PmG->Rows[3].Visible)FormX->odstranit_korelaci();
-	if(pom_temp->pohon!=NULL && pom_temp->id!=3)
+	if(Col==0 && pom_temp->pohon!=NULL && pom_temp->id!=3)
 	{
-		int Row;
-		Row=DrawGrid_ostatni->Row;
 		knihovna_id=3;
-		if(Row==0)  element_id=0;
+		element_id=0;
 		SB("Kliknutím na libovolné místo umístíte vybraný element.");
 		Akce=ADD;kurzor(add_o);
 	}
@@ -8424,9 +8442,10 @@ void TForm1::NP_input()
 	 probehl_zoom=true;
    zneplatnit_minulesouradnice();
 	 //prozatim definice kabiny
+	 TRect max_oblast=vrat_max_oblast(pom_temp);
 	 TPoint Centr;
-	 Centr.x=(pom_temp->elementy->dalsi->geo.X1+pom_temp->elementy->predchozi->geo.X4)/2.0;
-	 Centr.y=(pom_temp->elementy->dalsi->geo.Y1+pom_temp->elementy->predchozi->geo.Y4)/2.0;
+	 Centr.x=(m.P2Lx(max_oblast.left)+m.P2Lx(max_oblast.right))/2.0;
+	 Centr.y=(m.P2Ly(max_oblast.top)+m.P2Ly(max_oblast.bottom))/2.0;
 	 //vycentrování obrazu na střed
    if(zmena_zoom)
    {
@@ -11150,7 +11169,7 @@ void __fastcall TForm1::DrawGrid_geometrieDrawCell(TObject *Sender, int ACol, in
 		{
 			if(n==1)
 			{
-			 label1= "linie";
+			 label1= "geometrie";
 			 label2="";
 			 if(pom->id!=3)d.vykresli_ikonu_linie(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20-odsazeni,label1);
 			 else d.vykresli_ikonu_linie(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20-odsazeni,label1,-1);
@@ -12104,5 +12123,6 @@ else  {writeINI("nastaveni_editace","zobrazit_koleje", 0); zobrazit_koleje=0;}
 REFRESH();
 }
 //---------------------------------------------------------------------------
+
 
 
