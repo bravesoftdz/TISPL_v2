@@ -184,7 +184,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 				Z=Z->dalsi;
 		 }
 	}
-	else //pokud nejsou k dispozici nadefinované cesty vykreslí se přímo jen spojovací linie mezi objekty (tj. defaultní cesta)
+	else//pokud nejsou k dispozici nadefinované cesty vykreslí se přímo jen spojovací linie mezi objekty (tj. defaultní cesta)
 	{
 		int n;//číslo vyhybky nebo spojky
 		TPoint *tab_pruchodu=new TPoint[F->d.v.pocet_vyhybek+1];//+1 z důvodu indexace výhybka 1 bude mít index 1, nebude se začínat od indexu 0, tabulka.x = vyhybky, tabulka.y = spojky
@@ -284,7 +284,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		case -3:stav=F->pom_bod->n;break;
 	}
 
-  ////vnější obrys kabiny
+	////vnější obrys kabiny
 	if(!(F->pom_temp!=NULL && F->pom_temp->n!=O->n && F->scGPTrackBar_intenzita->Value<5))polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
 
   ////vykreslení prozatimní osy POHONU
@@ -1869,7 +1869,8 @@ void Cvykresli::vykresli_kurzor_kabiny (TCanvas *canv, int id, int X, int Y, Cve
 			double Xp=m.L2Px(p->elementy->predchozi->geo.X4),Yp=m.L2Py(p->elementy->predchozi->geo.Y4);
 			//nastavení bodů objektu
 			//nová koncepce
-			short oblast=v.oblast_objektu(p,X,Y);
+			short oblast=0;
+			if(F->prichytavat_k_mrizce==1)oblast=v.oblast_objektu(p,X,Y);
 			if(oblast==0)//mimo objekt
 			{
 				//zjištění rotace
@@ -3995,7 +3996,7 @@ void Cvykresli::vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiStr
 		}
 		else//ikona v knihovně elementů je text pod elementem
 		{
-			int odsazeni=55;//odsazení z důvodu správného zobrazení v knihovně
+			int odsazeni=58;//odsazení z důvodu správného zobrazení v knihovně
 			canv->Font->Size=F->m.round(sizeP*Z);if(F->aFont->Size==12)canv->Font->Size=F->m.round(3*Z);
 			canv->TextOutW(X-canv->TextWidth(name)/2,m.round(Y+vzdalenost+polomer-odsazeni),name); //1 pouze korekce
 			canv->TextOutW(X-canv->TextWidth(short_name)/2,m.round(Y+vzdalenost+polomer+1*Z+canv->TextHeight(name)-odsazeni),short_name);
@@ -4936,7 +4937,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
   	if(povolit_vykresleni)
   	{
   		double x1,y1,x2,y2;
-  		if(Element_do->orientace==0||Element_do->orientace==180)//vodorovná kabina
+  		if(Element_do->geo.orientace==90||Element_do->geo.orientace==270)//vodorovná kabina
   			{if(Element_od!=NULL && Element_od->n==0 || Element_od==NULL){x1=F->pom_temp->elementy->dalsi->geo.X1;y1=F->pom_temp->elementy->dalsi->geo.Y1;}else {x1=Element_od->X;y1=Element_od->geo.Y4;}x2=Element_do->X;y2=y1;}
   		else
   			{if(Element_od!=NULL && Element_od->n==0 || Element_od==NULL){x1=F->pom_temp->elementy->dalsi->geo.X1;y1=F->pom_temp->elementy->dalsi->geo.Y1;}else {x1=Element_od->geo.X4;y1=Element_od->Y;}y2=Element_do->Y;x2=x1;}
