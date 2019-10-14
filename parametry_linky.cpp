@@ -252,16 +252,16 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
      }
     nastav_edity();//nastaví edity
 
-		if(Form1->d.v.navrhni_POHONY()=="")
-		{
-			scGPButton_doporucene->Visible=false;
-			rHTMLLabel_doporuc_pohony->Caption=""; // neexistují žádné objekty -> neumím spoèítat doporuè. rychlosti
-		}
-		else
-		{
-			scGPButton_doporucene->Visible=false;
-			rHTMLLabel_doporuc_pohony->Caption="Navržené pohony pro objekty bez pøiøazených pohonù:";
-		}
+//		if(Form1->d.v.navrhni_POHONY()=="")
+//		{
+//			scGPButton_doporucene->Visible=false;
+//			rHTMLLabel_doporuc_pohony->Caption=""; // neexistují žádné objekty -> neumím spoèítat doporuè. rychlosti
+//		}
+//		else
+//		{
+//			scGPButton_doporucene->Visible=false;
+//			rHTMLLabel_doporuc_pohony->Caption="Navržené pohony pro objekty bez pøiøazených pohonù:";
+//		}
 
 		if(Form1->STATUS==Form1->NAVRH)    //Architekt
 		{
@@ -1073,23 +1073,23 @@ void __fastcall TForm_parametry_linky::Vypis_pohonyClick(TObject *Sender)
 //zobrazí panel se navrženými pohony
 void __fastcall TForm_parametry_linky::scGPButton_doporuceneClick(TObject *Sender)
 {
-    F->log(__func__); //logování
-		scExPanel_doporuc_pohony->Visible=false;
-		scGPButton_doporucene->Visible=false;
-		if(F->pom==NULL)//pokud je voláno PL pøímo                        //zajistí zobrazení ve stejných jednotkách jako na PO
-		scHTMLLabel_doporuc_pohony->Caption=F->d.v.navrhni_POHONY("</br>",F->ms.a2i(F->readINI("nastaveni_form_parametry", "RDt")));
-		else// pokud je PL voláno z PO                                    //zajistí zobrazení ve stejných jednotkách jako na PO
-		scHTMLLabel_doporuc_pohony->Caption=F->d.v.navrhni_POHONY("</br>",Form_parametry->RDunitT);
-		if(scHTMLLabel_doporuc_pohony->Caption=="")
-		{
-			scHTMLLabel_doporuc_pohony->Caption="Nejsou k dispozici žádné navržené pohony";
-			scGPGlyphButton_add_mezi_pohony;
-			scGPGlyphButton_add_mezi_pohony->Visible=false;
-		}
-		else
-		{
-			scGPGlyphButton_add_mezi_pohony->Visible=true;
-		}
+//		F->log(__func__); //logování
+//		scExPanel_doporuc_pohony->Visible=false;
+//		scGPButton_doporucene->Visible=false;
+//		if(F->pom==NULL)//pokud je voláno PL pøímo                        //zajistí zobrazení ve stejných jednotkách jako na PO
+//		scHTMLLabel_doporuc_pohony->Caption=F->d.v.navrhni_POHONY("</br>",F->ms.a2i(F->readINI("nastaveni_form_parametry", "RDt")));
+//		else// pokud je PL voláno z PO                                    //zajistí zobrazení ve stejných jednotkách jako na PO
+//		scHTMLLabel_doporuc_pohony->Caption=F->d.v.navrhni_POHONY("</br>",Form_parametry->RDunitT);
+//		if(scHTMLLabel_doporuc_pohony->Caption=="")
+//		{
+//			scHTMLLabel_doporuc_pohony->Caption="Nejsou k dispozici žádné navržené pohony";
+//			scGPGlyphButton_add_mezi_pohony;
+//			scGPGlyphButton_add_mezi_pohony->Visible=false;
+//		}
+//		else
+//		{
+//			scGPGlyphButton_add_mezi_pohony->Visible=true;
+//		}
 		//šíøka komponenty dle aktuálnì zobrazeného textu
 		//Canvas->Font=scExPanel_doporuc_pohony->Font;
 		//scExPanel_doporuc_pohony->Width=Canvas->TextWidth(Form1->ms.TrimLeftFrom_UTF(scHTMLLabel_doporuc_pohony->Caption," </br>"));

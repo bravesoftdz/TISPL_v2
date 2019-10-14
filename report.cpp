@@ -193,13 +193,13 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 		//}
 
 			//Pøehled doporuèených pohonù
-			UnicodeString dopP=Form1->d.v.navrhni_POHONY("</tr>");
-			if(dopP!="")
-			{
-				data+="<h4>Pøehled doporuèených pohonù</h4>";
-				data+="<table class=\"table table-striped table-responsive\"><tbody><tr><td>"+dopP+"</td></tr>";
-				data+="</tbody></table></br>";
-			}
+//			UnicodeString dopP=Form1->d.v.navrhni_POHONY("</tr>");
+//			if(dopP!="")
+//			{
+//				data+="<h4>Pøehled doporuèených pohonù</h4>";
+//				data+="<table class=\"table table-striped table-responsive\"><tbody><tr><td>"+dopP+"</td></tr>";
+//				data+="</tbody></table></br>";
+//			}
 
 
 
@@ -404,13 +404,13 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 		data+="\n";
 
       //Pøehled doporuèených pohonù
-			UnicodeString dopP=Form1->d.v.navrhni_POHONY(S);
-			if(dopP!="")
-			{
-				data+="Pøehled doporuèených pohonù"+S+"\n";
-				data+=dopP;
-				data+="\n";
-			}
+//			UnicodeString dopP=Form1->d.v.navrhni_POHONY(S);
+//			if(dopP!="")
+//			{
+//				data+="Pøehled doporuèených pohonù"+S+"\n";
+//				data+=dopP;
+//				data+="\n";
+//			}
       	data+="\n";
 				//KONEC OBECNÉ HLAVIÈKY CSV//
  /////////////////////////////////////////////////////////////////////////////////////////////

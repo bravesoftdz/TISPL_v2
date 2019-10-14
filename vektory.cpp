@@ -3445,6 +3445,7 @@ void Cvektory::hlavicka_POHONY()
 	novy->roztec=0;
 	novy->Rz=0;
 	novy->Rx=0;
+	novy->retez=NULL;
 
 	novy->predchozi=novy;//ukazuje sam na sebe
 	novy->dalsi=NULL;
@@ -3456,6 +3457,7 @@ void Cvektory::vloz_pohon(TPohon *pohon)
 {
 	F->log(__func__);//logování
 	TPohon *novy=new TPohon;
+	novy->retez=NULL;
 
 	novy=pohon;//novy bude ukazovat tam kam prvek Objekt
 	novy->n=POHONY->predchozi->n+1;//navýším počítadlo prvku o jedničku
@@ -3477,6 +3479,7 @@ void Cvektory::vloz_pohon(UnicodeString name,double rychlost_od,double rychlost_
 	novy->roztec=R;
 	novy->Rz=Rz;
 	novy->Rx=Rx;
+	novy->retez=NULL;
 	vloz_pohon(novy);
 }
 ////---------------------------------------------------------------------------
@@ -3505,7 +3508,10 @@ void Cvektory::kopiruj_pohon(TPohon *Pohon,TObjekt *Objekt)
 			Objekt->pohon=Pohon;//přiřazení zvoleného pohonu k objektu
 			*vrat_pohon(Pohon->n)=*Pohon;//situace překopírování z pomocného do ostrého (ukládání náhledu), aby bylo zachováno spojové propojení seznamu pohonů i pro případ nepřiřazeno
 		}
-		else *Objekt->pohon=*Pohon;//překopírování hodnot pohonů bez spojového propojení s originálem, ale i přes další a předchozí není zoohledněno propojení se daným spojovým seznamem pohonů, daný pohon je pouze datovou součástí pom_temp, není samostatným objektem či objektem zařazeným ve spojáku pohonů
+		else
+		{
+			*Objekt->pohon=*Pohon;//překopírování hodnot pohonů bez spojového propojení s originálem, ale i přes další a předchozí není zoohledněno propojení se daným spojovým seznamem pohonů, daný pohon je pouze datovou součástí pom_temp, není samostatným objektem či objektem zařazeným ve spojáku pohonů
+		}
 	}
 	else Objekt->pohon=NULL;
 }
@@ -3760,163 +3766,146 @@ Cvektory::TPohon *Cvektory::najdi_pohon_dle_RD(double RD)
 	return p;
 }
 ////---------------------------------------------------------------------------
-//všem objektům s n pohonem zruší přiřazení k tomuto pohonu a nahradí hodnotu ukazatele na přiřazený pohon za NULL
-void Cvektory::zrusit_prirazeni_pohunu_k_objektum(unsigned long n)
+//danému pohonu vytvoří řetěz dle geometrie všech elementů, co spadají pod daný pohon
+void Cvektory::vytvor_retez(TPohon *Pohon)
 {
-		//průchod všemi objekty, testuje je daný pohon objektu přiřazen a pokud ano, tak mu nastaví přiřazený pohon na NULL
+	smazat_retez(Pohon);
+	//po změně DM chodit přímo po elementech
+	if(OBJEKTY!=NULL)
+	{
 		TObjekt *O=OBJEKTY->dalsi;
 		while(O!=NULL)
 		{
-			if(O->pohon!=NULL && O->pohon->n==n)//pokud má pohon přiřazen a jedná se o stejný pohon
+			if(O->elementy!=NULL)
 			{
-				O->pohon=NULL;//pohon již nepřiřazen
+				TElement *E=O->elementy->dalsi;//přeskočí hlavičku
+				if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy;//pokud se prochází objekt aktuálně editovaný, tak se vezmou objekty z pom_temp, kde jsou aktuální hodnoty
+				while(E!=NULL)//a jejich elementy
+				{
+					if(E->pohon!=NULL && Pohon!=NULL && E->pohon->n==Pohon->n)//řetěz tvořen pouze z geometrie všech elementů, co spadají pod daný pohon
+					{
+						TRetez *R=new TRetez;//segment řetězu
+						vloz_segment_retezu(R,Pohon);
+						////pokud se nejedná o předávací místo, ale o většinu geometrických prvků
+						R->eID=E->eID;
+						R->geo=E->geo;
+						////výpočet souřadnic předávacího místa - ubrání z existujícho segmentu, přepsání výše uvedených souřadnic
+						//vstupní parametry dimenzující geometrii předávacího místa
+						float  D=1;//delká vyosování - 1 metr na každou stranu
+						float RetezWidth=1;//šířka řetezu kvůli vyosení v předávacím místě
+						TPointD V=m.rotace(RetezWidth*F->m2px,180-E->geo.orientace+90,0);//vyosení, mezera mezi pohony v předávacím místě
+						TPointD Z=m.rotace(D,180-E->geo.orientace,0);//začátek vyosování
+						////situace předávacím místem
+						if(E->eID==200)
+						{
+							//segment řetězu před předávacím místem konkrétně před vyosení
+							R->eID=E->eID-1;//eID 199 poslední segment před vysováním tj. před předávacím místem
+							R->geo.X1=E->geo.X1; 							 			 R->geo.Y1=E->geo.Y1;
+							R->geo.X2=(E->geo.X4-Z.x+E->geo.X1)/2.0; R->geo.Y2=(E->geo.Y4-Z.y+E->geo.Y1)/2.0;
+							R->geo.X3=R->geo.X2; 										 R->geo.Y3=R->geo.Y2;
+							R->geo.X4=E->geo.X4-Z.x; 								 R->geo.Y4=E->geo.Y4-Z.y;
+
+							//segment řetězu předávací místo konkrétně od vyosení
+							TRetez *R1=new TRetez;
+							vloz_segment_retezu(R1,Pohon);
+							R1->eID=E->eID;//eID 200
+							R1->geo.X1=R->geo.X4; 							R1->geo.Y1=R->geo.Y4;
+							R1->geo.X2=E->geo.X4-Z.x/2.0;			R1->geo.Y2=E->geo.Y4-Z.y/2.0;
+							R1->geo.X3=E->geo.X4-Z.x/2.0+V.x;	R1->geo.Y3=E->geo.Y4-Z.y/2.0+V.y;
+							R1->geo.X4=E->geo.X4+V.x;					R1->geo.Y4=E->geo.Y4+V.y;
+						}
+						///situace za předávacím místem
+						TElement *Ep=E->predchozi;
+						//if(Ep->n==0 && O->predchozi!=NULL && O->predchozi->elementy->predchozi!=NULL && O->predchozi->elementy->predchozi->eID==200)Ep=O->predchozi->elementy->predchozi;//nahraje předchozí z předchozího objektu toto bude možné po přechodu na nový DM odstranit
+						if(Ep!=NULL && Ep->eID==200)
+						{
+							//segment řetězu za předávacím místem konkrétně v největším místě vyosení za předávacím místem
+							R->eID=E->eID+2;//eID 202 segment řetězu za předávacím místem konkrétně v největším místě vyosení za předávacím místem
+							R->geo.X1=E->geo.X1+Z.x; 							 	 R->geo.Y1=E->geo.Y1+Z.y;
+							R->geo.X2=(R->geo.X1+E->geo.X4)/2.0; 		 R->geo.Y2=(R->geo.Y1+E->geo.Y4)/2.0;
+							R->geo.X3=R->geo.X2; 										 R->geo.Y3=R->geo.Y2;
+							R->geo.X4=E->geo.X4; 								 		 R->geo.Y4=E->geo.Y4;
+
+							//segment řetězu předávací místo konkrétně od vyosení
+							TRetez *R1=new TRetez;
+							vloz_segment_retezu(R1,Pohon);
+							R1->eID=E->eID+1;//eID 201
+							R1->geo.X1=E->geo.X1-V.x;					R1->geo.Y1=E->geo.Y1-V.y;
+							R1->geo.X2=E->geo.X1+Z.x/2.0-V.x;	R1->geo.Y2=E->geo.Y1+Z.y/2.0-V.y;
+							R1->geo.X3=E->geo.X1+Z.x/2.0;			R1->geo.Y3=E->geo.Y1+Z.y/2.0;
+							R1->geo.X4=R->geo.X1; 						R1->geo.Y4=R->geo.Y1;
+						}
+					}
+					E=E->dalsi;
+				}
+				E=NULL;delete E;
+				O=O->dalsi;
 			}
-			O=O->dalsi;
 		}
 		O=NULL;delete O;
+	}
 }
 ////---------------------------------------------------------------------------
-//metodu nepoužíváme, proto je zakomentovaná
-//vygeneruje ve statusu NÁVRH seznam doprvníků dle použitého CT objektu a /zároveň tomuto objektu tento pohon přiřadí - nepoužíváme/, obsahuje ošetření proti duplicitě
-void Cvektory::generuj_POHONY()
+//danému řetězu vloží jeden geometrický segment
+void Cvektory::vloz_segment_retezu(TRetez *Retez,TPohon *Pohon)
 {
-//	TObjekt *O=OBJEKTY->dalsi;
-//	int i=0;//i vygenerovaného pohonu
-//	//prvně najde "i" nejvýššího dříve navrženého pohonu (který se generoval v jiném zobrazení formuláře)
-//	TPohon *P=POHONY->dalsi;
-//	while(P!=NULL)
-//	{
-//		 if(P->name.Pos("Navržený pohon "))
-//		 {
-//			unsigned int i_potencial=Form1->ms.a2i(Form1->ms.TrimLeftFromText(P->name,"ý pohon "));
-//			if(i_potencial>i)i=i_potencial;
-//		 }
-//		 P=P->dalsi;//posun na další prvek
-//	}
-//
-//	while (O!=NULL)
-//	{
-//		if(O->RD>0)//vypisuje pouze pokud je rychlost dopravníku nenulová,nulové pohony (tj. z režimu S&G a post-procesní) nezohledňuje
-//		{
-//			TPohon *P=POHONY->dalsi;
-//			bool pohon_nenalezen=true;
-//			while(P!=NULL)
-//			{
-//				 if(P->rychlost_od==O->RD && P->rychlost_do==O->RD && P->roztec==1620.0)//byl-li pohon se stejnými parametry nalezen
-//				 {
-//						pohon_nenalezen=false;//tzn. že již neplatí, že nebyl nenelezen, byl naopak nalezen se stejnými parametry, takže se nebude přidávat, protože by se jednalo o duplicitu
-//						//již nepoužíváme O->pohon=P;//přiřazení pohonu k danému objektu
-//						break;//nalezen tak se může jít ověřovat další objekt
-//				 }
-//				 P=P->dalsi;//posun na další prvek
-//			}
-//			//byl-li předchozí konstrukcí pohon nenanlezen přidá, musí být až po dokončení while(P
-//			if(pohon_nenalezen)
-//			{
-//				vloz_pohon("Navržený pohon "+AnsiString(++i),O->RD,O->RD,1620.0);
-//				//již nepoužíváme O->pohon=POHONY->predchozi;
-//			}
-//		}
-//		O=O->dalsi;//posun na další prvek
-//	}
+	if(Pohon->retez==NULL)//pokud nebyla vytvořena hlavička, tak vytvoří
+	{
+		Pohon->retez=new TRetez;
+		Pohon->retez->n=0;
+		Pohon->retez->eID=0;
+		Pohon->retez->predchozi=Pohon->retez;
+		Pohon->retez->dalsi=NULL;
+	}
+	Retez->n=Pohon->retez->predchozi->n+1;//navýšení počítadla
+	Retez->predchozi=Pohon->retez->predchozi;//nový prvek ukazuje na poslední prvek ve spojaku jako na prvek předchozí
+	Retez->dalsi=NULL; //nový prvek neukazuje na žádný další prvek, resp. ukazuje na NULL
+	Pohon->retez->predchozi->dalsi=Retez;//za poslední aktuální prvek vloží nový poslední
+	Pohon->retez->predchozi=Retez;//hlavička nově ukazuje již na nový bod jako poslední prvek
 }
 ////---------------------------------------------------------------------------
-//navrhne pohony zobrazené v parametrech linky, vrátí řetězec oddělený seperátorem, pouze jako seznam unikátních použitých rychlostí, lze nastavit jednotky zobrazení rychlosti pohonu, implicintě m/min
-//řeší pouze pro objekty bez přiřazených pohonů
-//umí řešit i pro aktuální PO parametry
-AnsiString Cvektory::navrhni_POHONY(AnsiString separator,short m_min)
-{    //FUNKČNÍ ALE ODSTAVENÁ METODA
-//	AnsiString data="";
-//	TObjekt *O=OBJEKTY->dalsi;
-//	double *pole_rychlosti=new double[OBJEKTY->predchozi->n];//dynamické pole unikátních rychlostí, pole je o max. velikosti počtu objektů
-//	for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)pole_rychlosti[j]=0;//vynulování pole
-//	AnsiString *pole_pohonu=new AnsiString[OBJEKTY->predchozi->n];//dynamické pole unikátních pohonu, pole je o max. velikosti počtu objektů
-//	for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)pole_pohonu[j]="";//vynulování pole
-//	double *pole_rozteci=new double[OBJEKTY->predchozi->n];//dynamické pole unikátních rychlostí, pole je o max. velikosti počtu objektů
-//	for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)pole_rozteci[j]=0;//vynulování pole
-//
-//	TPohon *P=POHONY->dalsi;
-//	//projíždí jedntolivé objekty, které nemají přiřařezen pohon, tak jim doporučí, s tím, že navrhuje sloučit se stejnou rychlostí
-//	while (O!=NULL)
-//	{
-//		//hodnoty z procházeného objektu
-//		double RD=O->RD;
-//		bool pohon_prirazen=false;if(O->pohon!=NULL)pohon_prirazen=true;
-//		AnsiString short_name=O->short_name;
-//
-//		//pokud dochází k volání z PO, tzn. je třeba zohlednti aktulně zadaná data z jednotlivých editů
-//		//tak se převezmetou tyto hodnoty
-//		if(F->pom!=NULL)
-//		{   //a pokud se jedná o stejný objekt, jako právě projížděný cyklemmusí být samostatně
-//				if(O==F->pom && Form_parametry->scComboBox_pohon->ItemIndex==0)//a nemá přiřazen pohon
-//				{
-//					pohon_prirazen=false;
-//					short_name=Form_parametry->scGPEdit_shortname->Text;
-//					RD=Form_parametry->scGPNumericEdit_RD->Value; // RD	od uživatele
-//					if(Form_parametry->RDunitT == Form_parametry->MIN)RD /= 60.0;//převod jednotek
-//				}
-//		}
-//
-//		//řeší pouze pro objekty bez přiřazených pohonů (ty jsou již definovatelné) a zároveň pokud je rychlost dopravníku nenulová
-//    //zvažit zda nepřeskakovat již navržené stažené do správy pohonů, takto se duplikují ve správě pohonu (ve stringridu po přidání)
-//		if(pohon_prirazen==false && RD>0)
-//		{
-//			for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)
-//			{
-//				if(pole_rychlosti[j]==RD)//RD je již v poli, užívá ho jiný objekt
-//				{
-//					pole_pohonu[j]+=", "+short_name;
-//					break;
-//				}
-//				if(pole_rychlosti[j]==0)//neni, přídání nově do všech třech polí
-//				{
-//					if(m_min)pole_pohonu[j]="Navržený pohon s rychlostí "+AnsiString(RD*60)+" [m/min] pro objekt(y): "+short_name;//v m/min
-//					else pole_pohonu[j]="Navržený pohon s rychlostí "+AnsiString(RD)+" [m/s] pro objekt(y): "+short_name;//v m/s
-//					pole_rychlosti[j]=RD;
-//					pole_rozteci[j]=m.Rz(RD);
-//					break;
-//				}
-//			}
-//		}
-//		O=O->dalsi;//posun na další prvek
-//	}
-//
-//	//překopíruje pole_pohonu do dat k navrácení, pokud není záznam prázdný
-//	for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)
-//	{
-//		if(pole_pohonu[j]!="")data+=pole_pohonu[j]+".";
-//		if(pole_rozteci[j]!=0)
-//		{
-//		 AnsiString CH=vypis_retezy_s_pouzitelnou_rozteci(pole_rozteci[j],"",",");
-//		 if(CH!="")data+=" Použ. řetezy s roztečí [m]:"+CH;
-//		}
-//		if(pole_pohonu[j]!="")data+=separator;
-//	}
-//
-//	//odstranění již nepotřebných dat z paměti
-//	delete [] pole_rychlosti;
-//	delete [] pole_pohonu;
-//	delete [] pole_rozteci;
-//	O=NULL;delete O;
-//	P=NULL;delete P;
-//
-//	return data;
+//všem objektům s n pohonem zruší přiřazení k tomuto pohonu a nahradí hodnotu ukazatele na přiřazený pohon za NULL
+void Cvektory::zrusit_prirazeni_pohunu_k_objektum(unsigned long n)
+{
+	//průchod všemi objekty, testuje je daný pohon objektu přiřazen a pokud ano, tak mu nastaví přiřazený pohon na NULL
+	TObjekt *O=OBJEKTY->dalsi;
+	while(O!=NULL)
+	{
+		if(O->pohon!=NULL && O->pohon->n==n)//pokud má pohon přiřazen a jedná se o stejný pohon
+		{
+			O->pohon=NULL;//pohon již nepřiřazen
+		}
+		O=O->dalsi;
+	}
+	O=NULL;delete O;
 }
 ////---------------------------------------------------------------------------
-//smaze body z pameti
+//smaze z pameti
 long Cvektory::vymaz_seznam_POHONY()
 {
 	long pocet_smazanych_pohonu=0;
 	while (POHONY!=NULL)
 	{
 		pocet_smazanych_pohonu++;
+		smazat_retez(POHONY->predchozi);
 		POHONY->predchozi=NULL;
 		delete POHONY->predchozi;
 		POHONY=POHONY->dalsi;
 	};
-
 	return pocet_smazanych_pohonu;
 };
+////---------------------------------------------------------------------------
+//danému pohonu smaže jeho řetěz
+void Cvektory::smazat_retez(TPohon *pohon)
+{
+	if(pohon!=NULL)
+	while (pohon->retez!=NULL)
+	{
+		pohon->retez->predchozi=NULL;
+		delete pohon->retez->predchozi;
+		pohon->retez=pohon->retez->dalsi;
+	};
+}
 ////---------------------------------------------------------------------------
 //zkontroluje aplikovatelnost uvažovaného hodnodty dle VID parametru, resp. čísla sloupce (aRD=4,R=5,Rz=6,Rx=7) na všech objektech, přiřazených k danému pohonu označeným parametrem PID, vratí doporučenou hodnotu dle VID a vrátí text chybouvé hlášku s problémem a doporučenou hodnotou, pokud vrátí prázdné uvozovky, je vše v pořádku
 //vstupy aRD,R,Rz,Rx a výstupní číselná hodnota jsou v SI jednotkách, naopak textový řetězec problému resp. doporučení, obsahuje hodnotu již převedenou dle aRDunit, Runit, Rzunit
@@ -5746,6 +5735,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 					ukaz1->roztec=c_ukaz1->roztec;
 					ukaz1->Rz=c_ukaz1->Rz;
 					ukaz1->Rx=c_ukaz1->Rx;
+					ukaz1->retez=NULL;//prozatím jinak načítat buď z přidruženého spojáku nebo volat metodu po načtení elementů
 
 					//popisek
 					wchar_t *name=new wchar_t[c_ukaz1->text_length];

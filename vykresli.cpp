@@ -30,6 +30,7 @@ Cvykresli::Cvykresli()
 	DkRB=0.8;//délka k referenčnímu bodu od uchopovacího bodu, respektive odsazení člověka od linky
 	clStenaHaly=m.clIntensive(clBlue,100);
 	clStenaKabiny=m.clIntensive(clRed,180);
+	WarningCount=0;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -118,6 +119,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	if(F->pom_temp!=NULL)vykresli_objekt(canv,F->pom_temp);//vykreslení aktuálně editovaného objektu nad všechny ostatní objekty
 
 	///////////////Vykreslení pohonu a elementů
+	WarningCount=0;
 	O=v.OBJEKTY->dalsi;//přeskočí hlavičku
 	while(O!=NULL)
 	{
@@ -248,8 +250,9 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 		}
 		tab_pruchodu=NULL;delete tab_pruchodu;
 	}
-
 	O=NULL;delete O;
+
+	vypis_warningy(canv);//asi spíše provizorní metoda
 }
 //---------------------------------------------------------------------------
 //zajišťuje vykreslení pouze obrysu dle typu objektu
@@ -2712,12 +2715,12 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 			case 270: y=0;  x=-1; break;
 		}
 
-		////nastavení písma
-		canv->Brush->Style=bsClear;
+		////nastavení písma - pokud budou warningy mimo, není třeba vše nastavovat, pouze parametry ovlivňující velikost textu
+//		canv->Brush->Style=bsClear;
+//		canv->Font->Color=clRed;
 		canv->Font->Style = TFontStyles()<<fsBold;
 		canv->Font->Name=F->aFont->Name;
 		canv->Font->Size=m.round(4*F->Zoom);
-		canv->Font->Color=clRed;
 		AnsiString T="";
 
 		////vykreslení ROTACE pozic u otočí a elementů s otočemi
@@ -2746,7 +2749,11 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 				if(Ep->n==E->n &&  Ep->objekt_n==E->objekt_n && aR!=0 && aR!=180)//předposlení podmínka při novém DM zbytečná!
 				{
 					T="Rotace neopovídá orientaci JIGů na začátku linky!";
-					TextFraming(canv,m.L2Px(X)-m.round(canv->TextWidth(T)/2.0),m.L2Py(Y)-m.round(canv->TextHeight(T)/2.0),T,canv->Font,clWhite,3);
+					//TextFraming(canv,m.L2Px(X)-m.round(canv->TextWidth(T)/2.0),m.L2Py(Y)-m.round(canv->TextHeight(T)/2.0),T,canv->Font,clWhite,3);
+					Warning[WarningCount].text=T;
+					Warning[WarningCount].X=m.L2Px(X)-m.round(canv->TextWidth(T)/2.0);
+					Warning[WarningCount].Y=m.L2Py(Y)-m.round(canv->TextHeight(T)/2.0);
+					Warning[WarningCount++].Z=0;
 				}
 			}
 			Ep=NULL;delete Ep;
@@ -2762,14 +2769,18 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 				if(i+1>pocet_voziku)vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,m.clIntensive(clPotencial,-50),clPotencial);//záměrně šedou jak podvozek tak JIG jako potenicální pozice
 				else vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,clChassis,clJig);
 			}
-			//případne výpis špatné rotace jigu u buffrů
-			if(v.PP.delka_podvozek<m.UDJ(rotaceJ) && E->rotace_jig==0)
+			//případne výpis špatné rotace jigu u bufferů
+			if(v.PP.delka_podvozek<m.UDJ(rotaceJ) && E->rotace_jig==0 && pocet_pozic>1)
 			{
 				T="Pozor, překrytí JIGů!";
 				short TW=0; short TH=0;
 				if(y!=0){TW=canv->TextHeight(T);TH=canv->TextWidth(T);}else {TW=canv->TextWidth(T);TH=canv->TextHeight(T);}
 				if(y<0){canv->Font->Orientation=900;TH*=-1;}if(y>0){canv->Font->Orientation=2700;TW*=-1;}
-				TextFraming(canv,m.L2Px(X+x*v.PP.delka_podvozek*(pocet_pozic-1)/2.0)-m.round(TW/2.0),m.L2Py(Y+y*v.PP.delka_podvozek*(pocet_pozic-1)/2.0)-m.round(TH/2.0),T,canv->Font,clWhite,3);
+				//TextFraming(canv,m.L2Px(X+x*v.PP.delka_podvozek*(pocet_pozic-1)/2.0)-m.round(TW/2.0),m.L2Py(Y+y*v.PP.delka_podvozek*(pocet_pozic-1)/2.0)-m.round(TH/2.0),T,canv->Font,clWhite,3);
+				Warning[WarningCount].text=T;
+				Warning[WarningCount].X=m.L2Px(X+x*v.PP.delka_podvozek*(pocet_pozic-1)/2.0)-m.round(TW/2.0);
+				Warning[WarningCount].Y=m.L2Py(Y+y*v.PP.delka_podvozek*(pocet_pozic-1)/2.0)-m.round(TH/2.0);
+				Warning[WarningCount++].Z=canv->Font->Orientation;//navrácení do původního stavu;
 				canv->Font->Orientation=0;//navrácení do původního stavu
 			}
 		}
@@ -2959,6 +2970,124 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O)//přejmenovat
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
+//void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O)//přejmenovat
+//{
+//	if(O!=NULL && O->elementy!=NULL )
+//	{
+//		TPoint *POLE=new TPoint[4];TPoint *POLE_PM=new TPoint[4];
+//		Cvektory::TElement *E=O->elementy->dalsi;
+//		while(E!=NULL)
+//		{
+//			////vstupní proměnné
+//			//musí být uvnitř cyklu pro nové nastavení
+//			TColor clKolej=RGB(255,69,0); if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clKolej=m.clIntensive(clKolej,m.get_intensity()/1.8);//zesvětlování neaktivních pohonů
+//			TColor clRetez=clBlack; if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clRetez=m.clIntensive(clRetez,m.get_intensity());//zesvětlování neaktivních pohonů
+//			float RetezWidth=1;if(E->pohon!=NULL)RetezWidth=F->Zoom*0.5;//pokud není pohon přiřazen, tak jen elementární osa, jinak skutečná tloušťka
+//			POLE[0]=TPoint(m.L2Px(E->geo.X1),m.L2Py(E->geo.Y1));
+//
+//			////vykreslení paralelních koleji
+//			//if(E->predchozi!=NULL && E->predchozi->pohon!=NULL && E->predchozi->eID==200)vykresli_koleje(canv,E->predchozi,O);//pouze grafická korekce předchozího segmentu, pokud byl překryt předávacím místem
+//			if(E->pohon!=NULL)vykresli_koleje(canv,E,O);//pouze pokud je přiřazen pohon
+//
+//			////výpočet souřadnic předávacího místa - ubrání z existujícho segmentu
+//			if(E->eID==200)
+//			{
+//				float  D=1;//delká vyosování - 1 metr na každou stranu
+//				TPointD V=m.rotace(m.px2m(RetezWidth*2),180-E->geo.orientace+90,0);//vyosení, mezera mezi pohony v předávacím místě
+//				TPointD Z=m.rotace(D,180-E->geo.orientace,0);//začátek vyosování
+//				POLE_PM[0]=TPoint(m.L2Px(E->geo.X4-Z.x),m.L2Py(E->geo.Y4-Z.y));
+//				POLE_PM[1]=TPoint(m.L2Px(E->geo.X4-Z.x/2.0),m.L2Py(E->geo.Y4-Z.y/2.0));
+//				POLE_PM[2]=TPoint(m.L2Px(E->geo.X4-Z.x/2.0+V.x),m.L2Py(E->geo.Y4-Z.y/2.0+V.y));
+//				POLE_PM[3]=TPoint(m.L2Px(E->geo.X4+V.x),m.L2Py(E->geo.Y4+V.y));
+//				//pro původní segment
+//				POLE[1].x=m.L2Px((E->geo.X4-Z.x+E->geo.X1)/2.0);//lépe dodat původní nezaorkouhlené logické
+//				POLE[1].y=m.L2Py((E->geo.Y4-Z.y+E->geo.Y1)/2.0);//lépe dodat původní nezaorkouhlené logické
+//				POLE[2]=POLE[1];
+//				POLE[3]=POLE_PM[0];
+//			}
+//
+//			////vykreslení segementu pohonu
+//			//plnění geo souřadnic do pole
+//			if(E->eID!=200)
+//			{
+//				POLE[1]=TPoint(m.L2Px(E->geo.X2),m.L2Py(E->geo.Y2));
+//				POLE[2]=TPoint(m.L2Px(E->geo.X3),m.L2Py(E->geo.Y3));
+//				POLE[3]=TPoint(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
+//      }
+//			//vykreslení pouzdra řetězu
+//			if(E->pohon!=NULL && (F->pom_temp==NULL || F->pom_temp!=NULL && F->pom_temp->n==O->n || F->scGPTrackBar_intenzita->Value>25 && F->pom_temp!=NULL && F->pom_temp->n!=O->n))//při editaci zobrazí pasivní jen s intenzitou větší než 25
+//			{
+//				set_pen(canv,clKolej,m.round(RetezWidth*2),PS_ENDCAP_FLAT);
+//				canv->PolyBezier(POLE,3);
+//			}
+//			//nastavení pera
+//			set_pen(canv,clRetez,m.round(RetezWidth),PS_ENDCAP_SQUARE);
+//			//vykreslení řetězu
+//			canv->PolyBezier(POLE,3);
+//
+//			////vykreslení předávacího místa
+//			if(E->eID==200)
+//			{
+//				//vykreslení pouzdra řetězu
+//				if(E->pohon!=NULL && (F->pom_temp==NULL || F->pom_temp!=NULL && F->pom_temp->n==O->n || F->scGPTrackBar_intenzita->Value>25 && F->pom_temp!=NULL && F->pom_temp->n!=O->n))//při editaci zobrazí pasivní jen s intenzitou větší než 25
+//				{
+//					set_pen(canv,clKolej,m.round(RetezWidth*2),PS_ENDCAP_FLAT);
+//					canv->PolyBezier(POLE_PM,3);
+//				}
+//				set_pen(canv,clRetez,m.round(RetezWidth),PS_ENDCAP_SQUARE);
+//				canv->PolyBezier(POLE_PM,3);
+//			}
+////			if(E->predchozi!=NULL && E->predchozi->eID==200)
+////			{
+////				 set_pen(canv,clGreen,m.round(RetezWidth),PS_ENDCAP_SQUARE);
+////				 TPointD V=m.rotace(m.px2m(RetezWidth),180-E->geo.orientace-90,0);//vyosení, mezera mezi pohony v předávacím místě
+////				 POLE[0]=TPoint(m.L2Px(E->geo.X1+V.x),m.L2Py(E->geo.Y1+V.y));
+////				 POLE[1]=TPoint(m.L2Px(E->geo.X2+V.x),m.L2Py(E->geo.Y2+V.y));
+////				 POLE[2]=TPoint(m.L2Px(E->geo.X3),m.L2Py(E->geo.Y3));
+////				 POLE[3]=TPoint(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
+////				 canv->PolyBezier(POLE,3);
+////			}
+//
+//			////ukazatelové záležitosti
+//			E=E->dalsi;//posun na další element
+//		}
+//		delete E;E=NULL;//smazání již nepotřebného ukazatele
+//		delete[]POLE;POLE=NULL;
+//	}
+//	//test
+//	if(v.POHONY->dalsi!=NULL)
+//	{
+//		v.vytvor_retez(v.POHONY->dalsi);
+//		vykresli_retez(canv,v.POHONY->dalsi->retez);
+//	}
+//}////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TRetez *Retez)
+{
+	if(Retez!=NULL && Retez->predchozi->n>0)
+	{
+		//TColor clRetez=clBlack; if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clRetez=m.clIntensive(clRetez,m.get_intensity());//zesvětlování neaktivních pohonů
+		//float RetezWidth=1;if(E->pohon!=NULL)RetezWidth=F->Zoom*0.5;//pokud není pohon přiřazen, tak jen elementární osa, jinak skutečná tloušťka
+
+		TPoint POLE[4];
+		set_pen(canv,clBlue,5,PS_ENDCAP_SQUARE);//nastavení pera
+		Cvektory::TRetez *R=Retez->dalsi;
+		while(R!=NULL)
+		{
+			//plnění jednoho segmentu do pole
+			POLE[0]=TPoint(m.L2Px(R->geo.X1),m.L2Py(R->geo.Y1));
+			POLE[1]=TPoint(m.L2Px(R->geo.X2),m.L2Py(R->geo.Y2));
+			POLE[2]=TPoint(m.L2Px(R->geo.X3),m.L2Py(R->geo.Y3));
+			POLE[3]=TPoint(m.L2Px(R->geo.X4),m.L2Py(R->geo.Y4));
+			//vykreslení jednoho segmentu - musí se bohužel vykreslovat postupně
+			canv->PolyBezier(POLE,3);
+			//ukazatelové záležitosti
+			R=R->dalsi;//posun na další element
+		}
+		//smazání již nepotřebného ukazatele
+		delete R;R=NULL;
+	}
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
 //vykreslení jednoho geometrického segmentu dvou párů kolejí
 void Cvykresli::vykresli_koleje(TCanvas *canv,Cvektory::TElement *E,Cvektory::TObjekt *O)
 {
@@ -2992,7 +3121,7 @@ void Cvykresli::vykresli_koleje(TCanvas *canv,double X,double Y,short typ,double
 		bezier(canv,PL2,3);
 	}
 	//zarážka
-	if(F->scGPCheckBox_zobrazit_koleje->Checked)//provizorně se nyní skrývá dle nastavení, ale změnit zobrazování dle editace geometrie if(Akce==GEOMETRIE)
+	if(F->Akce==F->GEOMETRIE)
 	{
 		//line(canv,m.L2Px(X+S1.x),m.L2Py(Y+S1.y),m.L2Px(X+S2.x),m.L2Py(Y+S2.y));//na začátku
 		line(canv,m.L2Px(PL1[3].x),m.L2Py(PL1[3].y),m.L2Px(PL2[3].x),m.L2Py(PL2[3].y));//na konci
@@ -4029,45 +4158,48 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,lon
 	canv->Brush->Color=clWhite;//výplň kružnic
 	if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
 
-		////////////////----
-//	////nastavení pera
-//	float tloustka_linie=1.05/3.0;if(stav==2)tloustka_linie*=1.3;//pokud má být zvýrazněn  //vykreslovací linie
-//	TPenMode PenMode=pmCopy;
-//	if(typ==-1)//typ kurzor
-//	{
-//		PenMode=pmNotXor;
-//		canv->Pen->Style=psDot;
-//		canv->Pen->Color=barva;
-//		canv->Pen->Width=1;
-//		canv->Brush->Style=bsClear;
-//	}
-//	else
-//	{
-//		canv->Pen->Style=psSolid;
-//		canv->Pen->Width=F->m.round(tloustka_linie*Z);
-//		canv->Brush->Style=bsSolid;
-//	}
-//	canv->Pen->Mode=PenMode;
-//	canv->Pen->Color=barva;
-//	canv->Brush->Color=clWhite;
-//
-//	////vykreslení elementu
-//	canv->Pen->Color=clWhite;
-//	if(rotace==0 || rotace==180)canv->Rectangle(X-m.m2px(0.1),Y-m.m2px(0.25),X+m.m2px(0.1),Y+m.m2px(0.25));
-//	else canv->Rectangle(X-m.m2px(0.25),Y-m.m2px(0.1),X+m.m2px(0.25),Y+m.m2px(0.1));
-//	canv->Pen->Mode=PenMode;
-//	canv->Pen->Color=barva;
-//	if(rotace==0 || rotace==180)
-//	{
-//		line(canv,X-m.m2px(0.1),Y-m.m2px(0.25),X-m.m2px(0.1),Y+m.m2px(0.25));
-//		line(canv,X+m.m2px(0.1),Y-m.m2px(0.25),X+m.m2px(0.1),Y+m.m2px(0.25));
-//	}
-//	else
-//	{
-//		line(canv,X-m.m2px(0.25),Y-m.m2px(0.1),X+m.m2px(0.25),Y-m.m2px(0.1));
-//		line(canv,X-m.m2px(0.25),Y+m.m2px(0.1),X+m.m2px(0.25),Y+m.m2px(0.1));
-//	}
-//	////////////////----
+	////////////////----
+	if(typ==0)//ikona v knihovně elementů  - PROVIZORNĚ
+	{
+	////nastavení pera
+	float tloustka_linie=1.05/3.0;if(stav==2)tloustka_linie*=1.3;//pokud má být zvýrazněn  //vykreslovací linie
+	TPenMode PenMode=pmCopy;
+	if(typ==-1)//typ kurzor
+	{
+		PenMode=pmNotXor;
+		canv->Pen->Style=psDot;
+		canv->Pen->Color=barva;
+		canv->Pen->Width=1;
+		canv->Brush->Style=bsClear;
+	}
+	else
+	{
+		canv->Pen->Style=psSolid;
+		canv->Pen->Width=F->m.round(tloustka_linie*Z);
+		canv->Brush->Style=bsSolid;
+	}
+	canv->Pen->Mode=PenMode;
+	canv->Pen->Color=barva;
+	canv->Brush->Color=clWhite;
+
+	////vykreslení elementu
+	canv->Pen->Color=clWhite;
+	if(rotace==0 || rotace==180)canv->Rectangle(X-m.m2px(0.1),Y-m.m2px(0.25),X+m.m2px(0.1),Y+m.m2px(0.25));
+	else canv->Rectangle(X-m.m2px(0.25),Y-m.m2px(0.1),X+m.m2px(0.25),Y+m.m2px(0.1));
+	canv->Pen->Mode=PenMode;
+	canv->Pen->Color=barva;
+	if(rotace==0 || rotace==180)
+	{
+		line(canv,X-m.m2px(0.1),Y-m.m2px(0.25),X-m.m2px(0.1),Y+m.m2px(0.25));
+		line(canv,X+m.m2px(0.1),Y-m.m2px(0.25),X+m.m2px(0.1),Y+m.m2px(0.25));
+	}
+	else
+	{
+		line(canv,X-m.m2px(0.25),Y-m.m2px(0.1),X+m.m2px(0.25),Y-m.m2px(0.1));
+		line(canv,X-m.m2px(0.25),Y+m.m2px(0.1),X+m.m2px(0.25),Y+m.m2px(0.1));
+	}
+	}
+	////////////////----
 
 	////vykreslení textu
 	if(typ!=-1 && name!="" && F->pom_temp!=NULL && F->scGPCheckBox1_popisky->Checked)//v módu kurzor nebo pokud je součástí nadřazeného elementu se název nezobrazuje, nezobrazují se v layoutu
@@ -4373,6 +4505,27 @@ void Cvykresli::vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popis
 		canv->Brush->Color=clWhite;
 		canv->Brush->Style=bsClear;
 		canv->TextOutW(X+W/2-canv->TextWidth(Popisek)/2,Y+H+oT,Popisek);
+	}
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//asi spíše provizorní metoda
+void Cvykresli::vypis_warningy(TCanvas *canv)
+{
+	if(WarningCount)
+	{
+		//nastavení písma
+		canv->Brush->Style=bsClear;
+		canv->Font->Style = TFontStyles()<<fsBold;
+		canv->Font->Name=F->aFont->Name;
+		canv->Font->Size=m.round(4*F->Zoom);
+		canv->Font->Color=clRed;
+		//cyklické vypsání všech warningů uložených v poli warningů
+		for(unsigned short i=0;i<WarningCount;i++)
+		{
+			canv->Font->Orientation=Warning[i].Z;
+			TextFraming(canv,Warning[i].X,Warning[i].Y,Warning[i].text,canv->Font,clWhite,3);
+			canv->Font->Orientation=0;//navrácení do původního stavu
+		}
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------

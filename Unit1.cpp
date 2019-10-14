@@ -8551,7 +8551,7 @@ void TForm1::zmena_editovaneho_objektu()
 {
 	log(__func__);//logování
 	/////////Uložení náhledu
-	if(scGPButton_ulozit->Enabled && MB("Chcete uložit změny v náhledu?",MB_YESNO,true)==mrYes)
+	if(scGPButton_ulozit->Enabled && MB("Chcete uložit změny editovaného objektu?",MB_YESNO,true)==mrYes)
 	{
     d.v.vymaz_komory(pom);
 		d.v.vymaz_elementy(pom,true);
@@ -10062,7 +10062,26 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 {
  //log(__func__);
  //Form2->ShowModal();
- }
+	d.v.vytvor_retez(d.v.POHONY->dalsi);
+	d.vykresli_retez(Canvas,d.v.POHONY->dalsi->retez);
+//	d.v.vytvor_retez(d.v.POHONY->predchozi);
+	Memo("____-");
+	Cvektory::TRetez *R=d.v.POHONY->dalsi->retez;
+	while(R!=NULL)
+	{
+		Memo(R->eID);
+		R=R->dalsi;
+	}
+//	delete R;
+//	Memo("____________");
+//	R=d.v.POHONY->predchozi->retez->dalsi;
+//	while(R!=NULL)
+//	{
+//		Memo(R->eID);
+//		R=R->dalsi;
+//	}
+//	delete R;
+}
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
 {

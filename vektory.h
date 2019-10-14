@@ -14,7 +14,7 @@ class Cvektory
 
 	public:
 
-	struct TBod// - NEW + dodat do CObjekt v rámci rodičovských spojáků!!!!
+	struct TBod
 	{
 		unsigned long n; //pořadí objektu ve spoj.seznamu
 		double X, Y;//umístění v logických (metrických) souřadnicích
@@ -24,12 +24,31 @@ class Cvektory
 		struct TBod *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
 
-	struct THala// - NEW + dodat do CObjekt!!!!
+	struct THala
 	{
 		UnicodeString name;//název
 		double X, Y;//umístění názvu v logických (metrických) souřadnicích
 		TBod *body;//definice obrysu haly
 	};THala HALA;
+
+	struct TGeometrie//pouze struktura
+	{
+		short  typ;//0 - linie, 1 - oblouk, -1 neidentifikovatelný tvar pomocí bézieru
+		double delka;
+		double radius;
+		double orientace;
+		double rotacni_uhel;
+		double X1,Y1,X2,Y2,X3,Y3,X4,Y4;//body bézieru
+	};
+
+	struct TRetez
+	{
+		unsigned long n; //pořadí objektu ve spoj.seznamu
+		TGeometrie geo;
+		unsigned int eID; //id typu elementu viz. tabulka elementů https://docs.google.com/spreadsheets/d/1_S7yp1L25tov0mKqP3Rl_0Y2cx-e3UwDXb102hDvRlA/edit?usp=sharing
+		struct TRetez *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+		struct TRetez *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+	};
 
 	struct TPohon
 	{
@@ -41,20 +60,11 @@ class Cvektory
 		double roztec;//rozteč palců v m
 		double Rz;//rozestup aktivních palců v m
 		double Rx;//rozestup aktivních palců (počet aktivních palců)
+		TRetez *retez;//geometrie pohonu, řetězu
 		struct TPohon *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 		struct TPohon *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
 	TPohon *POHONY;//spojový seznam pohonů
-
-	struct TGeometrie//pouze struktura
-	{
-    short  typ;//0 - linie, 1 - oblouk, -1 neidentifikovatelný tvar pomocí bézieru
-		double delka;
-		double radius;
-		double orientace;
-		double rotacni_uhel;
-		double X1,Y1,X2,Y2,X3,Y3,X4,Y4;//body bézieru
-	};
 
 	struct TKomora// - NEW + dodat do CObjekt v rámci rodičovských spojáků!!!!
 	{
@@ -69,7 +79,7 @@ class Cvektory
 	struct TElement
 	{
 		unsigned long n; //pořadí ve spoj.seznamu
-		unsigned int eID; //id typu elementu: 0 - stop stanice, 1 - robot, 2 - robot se stop stanicí, 3 - robot s pasivní otočí, 4 - robot s aktivní otočí (resp. s otočí a stop stanicí), 5 - otoč pasivní, 6 - otoč aktivní (resp. otoč se stop stanicí), 7 - pouze geometrická zarážka
+		unsigned int eID; //id typu elementu viz. tabulka elementů https://docs.google.com/spreadsheets/d/1_S7yp1L25tov0mKqP3Rl_0Y2cx-e3UwDXb102hDvRlA/edit?usp=sharing
 		UnicodeString short_name;//krátký název max. 4 znaky
 		UnicodeString name;//celý název objektu
 		double X, Y;//umístění v logických (metrických) souřadnicích
@@ -134,7 +144,7 @@ class Cvektory
 		double mezera_jig;//mezera mezi jigy //DOPRYC
 		double mezera_podvozek;//mezera mezi podvozky  //DOPRYC
 		TPohon *pohon;//ukazatel na použitý pohon
-		TElement *elementy;
+		TElement *elementy;//ukazatel na hlavičku elementů
 		TPointD min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
 		TPointD rozmer_kabiny;//délka a šířka obvodových zdí kabiny   //DOPRYC
 		T2Rect kabinaKotaX_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny -//DOPRYC
@@ -509,11 +519,13 @@ class Cvektory
 	AnsiString vypis_objekty_nestihajici_prejezd(TPohon *pohon,double testRD,short rezim=-1);//vypíše objekty přiřazené k danému pohonu nestíhající přejezd při navrhovaném testRD, možno nastavit režim, pro S&G + PP hodnota režim 20
 	AnsiString kontrola_rychlosti_prejezdu(TObjekt *O,short rezim,double CT=0,double MT=0,double WT=0,double aRD=0,double DD=0,short aRDunit=-1,unsigned short precision=3,AnsiString mark="..",bool add_decimal=false,AnsiString separator_aRD=" o ");//zkontroluje objekt zda daná rychlost pohonu odpovídá požadované rychlosti pohonu, pokud ne vrátí popis včetně hodnoty, lze poslat externí testovací parametry nebo nechat ověřit dle uložených ve spojáku objekty
 	TPohon *najdi_pohon_dle_RD(double RD);//ověří zda je stejná rychlost pohonu na lince používána, pokud není vratí NULL, jinak ukazatel na daný pohon
+	void vytvor_retez(TPohon *Pohon);//danému pohonu vytvoří řetěz dle geometrie všech elementů, co spadají pod daný pohon
+	void vloz_segment_retezu(TRetez *Retez,TPohon *Pohon);//danému řetězu vloží jeden geometrický segment
 	void zrusit_prirazeni_pohunu_k_objektum(unsigned long n);//všem objektům s n pohonem zruší přiřazení k tomuto pohonu a nahradí hodnotu ukazatele na přiřazený pohon za NULL
-	void generuj_POHONY();//vygeneruje ve statusu NÁVRH seznam doprvníků dle použitého CT objektu a zároveň tomuto objektu tento pohon přiřadí, obsahuje ošetření proti duplicitě
-	AnsiString navrhni_POHONY(AnsiString separator="</br>",short m_min=1);//navrhne pohony zobrazené v parametrech linky, vrátí řetězec oddělený seperátorem, pouze jako seznam unikátních použitých rychlostí, lze nastavit jednotky zobrazení rychlosti pohonu, implicintě m/min
 	long vymaz_seznam_POHONY();//smaže jednotlivé prvky seznamu, včetně hlavičky, pokud následuje další práce se seznamem, je nutné založit nejdříve hlavičku pomocí hlavicka_pohony()
+	void smazat_retez(TPohon *pohon);//danému pohonu smaže jeho řetěz
 	//	double delka_dopravniku(Cvektory::TObjekt *ukaz);
+	//následují 4 možno odstanit:
 	TTextNumber rVALIDACE(short VID,unsigned long PID,double aRD,double R,double Rz,double Rx,short aRDunit,short Runit,short Rzunit);//zkontroluje aplikovatelnost uvažovaného hodnodty dle VID parametru, resp. čísla sloupce (aRD=4,R=5,Rz=6,Rx=7 na všech objektech, přiřazených k danému pohonu označeným parametrem PID, pokud je zadán parametr getValueOrMessage 0 (který je zároveň implicitní), vratí doporučenou hodnotu dle VID, pokud je zvoleno 1, vrátí text chybouvé hlášku s problémem a doporučenou hodnotou, pokud vrátí prázdné uvozovky, je vše v pořádku, //vstupy aRD,R,Rz,Rx a výstupní číselná hodnota jsou v SI jednotkách, naopak textový řetězec problému resp. doporučení, obsahuje hodnotu již převedenou dle aRDunit, Runit, Rzunit
 private:
 	TTextNumber validace_aRD(double aRD,TPohon *p);
