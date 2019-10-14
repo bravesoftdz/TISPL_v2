@@ -5525,6 +5525,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 				 		cE->orientace=E->orientace;
 				 		cE->rotace_jig=E->rotace_jig;
 				 		cE->stav=E->stav;
+            cE->PD=E->PD;
 						cE->LO1=E->LO1;
 						cE->OTOC_delka=E->OTOC_delka;
 						cE->LO2=E->LO2;
@@ -5829,6 +5830,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
             E->orientace=cE.orientace;
             E->rotace_jig=cE.rotace_jig;
 						E->stav=cE.stav;
+            E->PD=cE.PD;
             E->LO1=cE.LO1;
             E->OTOC_delka=cE.OTOC_delka;
 						E->LO2=cE.LO2;
