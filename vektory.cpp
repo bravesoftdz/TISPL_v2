@@ -1881,8 +1881,9 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->akt_pocet_voziku=0;
 	novy->max_pocet_voziku=0;
 	novy->rotace_jig=0;
-	if(eID%2==0 && eID!=100 && eID!=200 && eID!=MaxInt)novy->max_pocet_voziku=1;
-	if(eID==0){novy->max_pocet_voziku=2;novy->akt_pocet_voziku=1;}
+	if(eID%2==0 && eID!=100 && eID!=200 && eID!=MaxInt)novy->max_pocet_voziku=1;//S&G elementy
+	if(eID%2==0 && eID!=100 && eID!=200 && eID!=MaxInt && eID!=6)novy->akt_pocet_voziku=1;//pouze S&G roboti
+	if(eID==0){novy->max_pocet_voziku=2;novy->akt_pocet_voziku=1;}//pouze stopky
 	novy->stav=1;
 	novy->PD=-1;//defaultní stav pro S&G roboty
 	novy->objekt_n=0;//příslušnost elementu k objektu
