@@ -759,6 +759,7 @@ private:
       short orientace;//v jaké orientaci je element na obrazovce vykreslen 0,90,180,270
 			double rotace_jig;//úhel o který element orotuje jig vzhledem k jeho aktuální rotaci jigu vůči podvozku, např. rotace_jig=90°, aktuální rotace jigu 90°, výsledek 180°
       short stav;
+      short PD;//part detect:  -1 = nic, 0 = začátek jigu, 1 = střed jigu, 2 = celý jig
 
       double LO1;
 			double OTOC_delka;

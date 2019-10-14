@@ -124,7 +124,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	while(O!=NULL)
 	{
 		short stav=1;
-    //vykreslení prozatimní osy POHONU
+		//vykreslení prozatimní osy POHONU
 		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)vykresli_retez(canv,F->pom_temp);else vykresli_retez(canv,O);
 		Cvektory::TElement *E=O->elementy;
 		if(F->pom_temp!=NULL && F->pom_temp->n==O->n){stav=1;E=F->pom_temp->elementy;}//elementy v aktivním objektu, zajistí přeskočení vykreslení neaktuálních dat elementů a vykreslí aktuálně data elementů neuloženého objektu
@@ -186,7 +186,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 				Z=Z->dalsi;
 		 }
 	}
-	else //pokud nejsou k dispozici nadefinované cesty vykreslí se přímo jen spojovací linie mezi objekty (tj. defaultní cesta)
+	else//pokud nejsou k dispozici nadefinované cesty vykreslí se přímo jen spojovací linie mezi objekty (tj. defaultní cesta)
 	{
 		int n;//číslo vyhybky nebo spojky
 		TPoint *tab_pruchodu=new TPoint[F->d.v.pocet_vyhybek+1];//+1 z důvodu indexace výhybka 1 bude mít index 1, nebude se začínat od indexu 0, tabulka.x = vyhybky, tabulka.y = spojky
@@ -287,7 +287,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		case -3:stav=F->pom_bod->n;break;
 	}
 
-  ////vnější obrys kabiny
+	////vnější obrys kabiny
 	if(!(F->pom_temp!=NULL && F->pom_temp->n!=O->n && F->scGPTrackBar_intenzita->Value<5))polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
 
   ////vykreslení prozatimní osy POHONU
@@ -317,7 +317,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	canv->Font->Orientation=0;//vrácení původní hodnoty rotace canvasu
 	//vykreslení uchopovacího kříže u textu
 	canv->Pen->Color=clBlack;canv->Pen->Width=1;
-	if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID==-6 || F->JID==-7))
+	if(F->pom_temp!=NULL && F->pom_temp->n==O->n && F->Akce==F->Takce::NIC && (F->JID==-6 || F->JID==-7))
 	{
 		switch((int)orientace)
 		{
@@ -339,7 +339,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		}
 	}
 	//vykreslení kříže posuvu u tabulky pohonu, natrvalo
-	if(F->pom_temp!=NULL && F->PmG->Highlight)
+	if(F->pom_temp!=NULL && F->Akce==F->Takce::NIC && F->PmG->Highlight)
 	{
 		line(canv,m.L2Px(F->pom_temp->Xp)-20,m.L2Py(F->pom_temp->Yp)-20,m.L2Px(F->pom_temp->Xp)-60,m.L2Py(F->pom_temp->Yp)-20);
 		line(canv,m.L2Px(F->pom_temp->Xp)-40,m.L2Py(F->pom_temp->Yp),m.L2Px(F->pom_temp->Xp)-40,m.L2Py(F->pom_temp->Yp)-40);
@@ -1872,7 +1872,8 @@ void Cvykresli::vykresli_kurzor_kabiny (TCanvas *canv, int id, int X, int Y, Cve
 			double Xp=m.L2Px(p->elementy->predchozi->geo.X4),Yp=m.L2Py(p->elementy->predchozi->geo.Y4);
 			//nastavení bodů objektu
 			//nová koncepce
-			short oblast=v.oblast_objektu(p,X,Y);
+			short oblast=0;
+			if(F->prichytavat_k_mrizce==1)oblast=v.oblast_objektu(p,X,Y);
 			if(oblast==0)//mimo objekt
 			{
 				//zjištění rotace
@@ -4124,7 +4125,7 @@ void Cvykresli::vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiStr
 		}
 		else//ikona v knihovně elementů je text pod elementem
 		{
-			int odsazeni=55;//odsazení z důvodu správného zobrazení v knihovně
+			int odsazeni=58;//odsazení z důvodu správného zobrazení v knihovně
 			canv->Font->Size=F->m.round(sizeP*Z);if(F->aFont->Size==12)canv->Font->Size=F->m.round(3*Z);
 			canv->TextOutW(X-canv->TextWidth(name)/2,m.round(Y+vzdalenost+polomer-odsazeni),name); //1 pouze korekce
 			canv->TextOutW(X-canv->TextWidth(short_name)/2,m.round(Y+vzdalenost+polomer+1*Z+canv->TextHeight(name)-odsazeni),short_name);
@@ -4349,12 +4350,17 @@ void Cvykresli::vykresli_ikonu_linie(TCanvas *canv,int X,int Y,AnsiString Popise
 {
 	short o=10*3;
 	int W=F->DrawGrid_geometrie->DefaultColWidth*3/2-o;
-	int odsazeni=6;//vycentrování linie mezi hlavičkou a textem
+	int odsazeni=-35;//vycentrování linie mezi hlavičkou a textem 6px
 	TColor barva=clBlack; if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
 
 	//vykreslení linie
 	set_pen(canv,barva,1*10,PS_ENDCAP_FLAT);
 	line(canv,X-W+8,Y-W/2+odsazeni,X+W-8,Y-W/2+odsazeni);
+
+	short C=W/2;//zajištění vycentrování
+	//vykreslení oblouku
+	set_pen(canv,barva,1*10,PS_ENDCAP_FLAT);   double Xodsaz=35;odsazeni=6;
+	canv->Arc(X-W-C-Xodsaz,Y-W+odsazeni,X+W-C-Xodsaz,Y+W+odsazeni,X+W-C-Xodsaz,Y+odsazeni,X-C-Xodsaz,Y-W+odsazeni);//směr proti hodinovým ručičkám
 
 	//popisek
 	canv->Brush->Style=bsClear;
@@ -4362,10 +4368,6 @@ void Cvykresli::vykresli_ikonu_linie(TCanvas *canv,int X,int Y,AnsiString Popise
 	canv->Font->Name=F->aFont->Name;
 	canv->Font->Size=m.round(o*sizeP/3.0);if(F->aFont->Size==12)canv->Font->Size=o;
 	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+o/2,Popisek);
-
-//	set_pen(canv,clRed,1,PS_ENDCAP_FLAT);
-//	line(canv,X-5,Y-5,X+5,Y+5);
-//	line(canv,X+5,Y+5,X-5,Y-5);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_ikonu_oblouku(TCanvas *canv,int X,int Y,AnsiString Popisek,short stav)
@@ -5088,7 +5090,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
   	if(povolit_vykresleni)
   	{
   		double x1,y1,x2,y2;
-  		if(Element_do->orientace==0||Element_do->orientace==180)//vodorovná kabina
+  		if(Element_do->geo.orientace==90||Element_do->geo.orientace==270)//vodorovná kabina
   			{if(Element_od!=NULL && Element_od->n==0 || Element_od==NULL){x1=F->pom_temp->elementy->dalsi->geo.X1;y1=F->pom_temp->elementy->dalsi->geo.Y1;}else {x1=Element_od->X;y1=Element_od->geo.Y4;}x2=Element_do->X;y2=y1;}
   		else
   			{if(Element_od!=NULL && Element_od->n==0 || Element_od==NULL){x1=F->pom_temp->elementy->dalsi->geo.X1;y1=F->pom_temp->elementy->dalsi->geo.Y1;}else {x1=Element_od->geo.X4;y1=Element_od->Y;}y2=Element_do->Y;x2=x1;}
@@ -5170,7 +5172,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	width=m.round(width*F->Zoom);if(highlight)width*=2;//šířka linie
 	short Presah=m.round(1.3*F->Zoom);if(Offset<0)Presah*=-1;//přesah packy u kóty,v případě záporného offsetu je vystoupení kóty nazákladě tohot záporné
   if(F->pom_temp!=NULL)Presah/=2.0;//zmenšení odsazení kót při highlightu v náhledu
-	short V=0;if(highlight==2)V=1;//vystoupení kóty
+	short V=0;//if(highlight==2)V=1;//vystoupení kóty
 	short H=0;if(highlight)H=1;
 	short M=0;if(10<F->JID && F->JID<100 && F->MOD==F->NAHLED)M=1;//při celkovém posunu kót se postranní spojnice nově nezvýrazňují
 

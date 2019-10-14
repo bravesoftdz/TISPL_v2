@@ -540,7 +540,7 @@ __published:	// IDE-managed Components
 public:
 	enum Tmod{NO=0,SCHEMA,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE,NAHLED};Tmod MOD;
 	enum Tstatus{NAVRH,OVEROVANI};Tstatus STATUS;
-	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE,OFFSET_KOTY,MOVE_KOMORA,ROZMER_KOMORA,DRAW_HALA,MOVE_HALA,MOVE_BOD,MOVE_USECKA,MOVE_TEXT,GEOMETRIE};Takce Akce;Takce Akce_temp;//akce temp slouží ke spuštìní akce pøi akci, pø. Akce=GEOMETRIE a pøi ní je potøeba pøesunout kóty geo. elementù, tudíž Akce_temp=OFFSET_KOTY
+	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE,OFFSET_KOTY,MOVE_KOMORA,ROZMER_KOMORA,DRAW_HALA,MOVE_HALA,MOVE_BOD,MOVE_USECKA,MOVE_TEXT,GEOMETRIE,BLOK};Takce Akce;Takce Akce_temp;//akce temp slouží ke spuštìní akce pøi akci, pø. Akce=GEOMETRIE a pøi ní je potøeba pøesunout kóty geo. elementù, tudíž Akce_temp=OFFSET_KOTY
 	enum Tm_mm{M=0,MM,SEKUNDY,MINUTY};Tm_mm DOtocunit,DKunit,LOunit,Runit,Rzunit;//pøepínaè jednotek vzdálenost,rozšíøen o SEKUNDY,MINUTY (problém pøi použití SEC a MIN) z dùvodu èasových a vzdálenostních kót
 	enum Tminsec{SEC=0,MIN};Tminsec PTunit,aRDunit ;//pøepínaè jednotek èasu
 
@@ -585,7 +585,7 @@ private:
 	void zmen_poradi_objektu(int X, int Y);//testuje zda se nejedná o zmìnu poøadí (to musí ještì uživatel potvrdit)
 	void zobraz_tip(UnicodeString text="", TCanvas* canv=NULL);//prázdným (bez paremetrù) voláním  metody se tip smaže, //pokud není parametr canvas uveden, jedná se o dlouhodobé vykreslování hodnoty TIP//pokud je parametrem pøedán Canvas vykreslí se pøímo a jednorázovì
 	void akutalizace_stavu_prichytavani_vSB();
-	void Novy_soubor();//samotné vytvoøení nového souboru
+	void Novy_soubor(bool invalidate=true);//samotné vytvoøení nového souboru
 	void Ulozit_soubor();//samotné uložení
 	void Otevrit_soubor();//realizuje otevøení opendialogu s následným voláním realizace samotného otevøení souboru
   void Nacist_podklad();//realizuje otevøení opendialogu s následným voláním realizace samotného nacteni podkladu
@@ -749,7 +749,8 @@ public:		// User declarations
   short zobrazit_pozice;
   short rotace_jigu;
   short zobrazit_popisky;
-  short zobrazit_koleje;
+	short zobrazit_koleje;
+	bool zamek_layoutu;
 
 	//metody
 	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click

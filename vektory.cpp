@@ -1493,6 +1493,7 @@ Cvektory::TObjekt *Cvektory::dalsi_krok(TObjekt *Objekt,TPoint *tab_pruchodu)
 void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_oblast)
 {
 	short oblast=0;
+	if(F->prichytavat_k_mrizce!=1)kontrolovat_oblast=false;
 	if(kontrolovat_oblast && Objekt->predchozi->n>0)oblast=oblast_objektu(Objekt->predchozi,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y);
 	if(oblast==0)
 	{
@@ -1518,7 +1519,7 @@ void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_o
   	delete E;E=NULL;
 	}
 	////přilepení objektu na předchozí objekt
-	if(oblast==1 && (Objekt->elementy->dalsi->geo.X1!=Objekt->predchozi->elementy->predchozi->geo.X4 || Objekt->elementy->dalsi->geo.Y1!=Objekt->predchozi->elementy->predchozi->geo.Y4))
+	if(F->prichytavat_k_mrizce==1 && oblast==1 && (Objekt->elementy->dalsi->geo.X1!=Objekt->predchozi->elementy->predchozi->geo.X4 || Objekt->elementy->dalsi->geo.Y1!=Objekt->predchozi->elementy->predchozi->geo.Y4))
 		posun_objekt(Objekt->predchozi->elementy->predchozi->geo.X4-Objekt->elementy->dalsi->geo.X1,Objekt->predchozi->elementy->predchozi->geo.Y4-Objekt->elementy->dalsi->geo.Y1,Objekt,false);
 	////změna pořadí před předchozí
 	if(oblast==2)
@@ -1526,7 +1527,7 @@ void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_o
 	////přilepení na další objekt
 	oblast=0;
 	if(kontrolovat_oblast && Objekt->dalsi!=NULL)oblast=oblast_objektu(Objekt->dalsi,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y);
-	if(oblast==2 && (Objekt->dalsi->elementy->dalsi->geo.X1!=Objekt->elementy->predchozi->geo.X4 || Objekt->dalsi->elementy->dalsi->geo.Y1!=Objekt->elementy->predchozi->geo.Y4))
+	if(F->prichytavat_k_mrizce==1 && oblast==2 && (Objekt->dalsi->elementy->dalsi->geo.X1!=Objekt->elementy->predchozi->geo.X4 || Objekt->dalsi->elementy->dalsi->geo.Y1!=Objekt->elementy->predchozi->geo.Y4))
 		posun_objekt(Objekt->dalsi->elementy->dalsi->geo.X1-Objekt->elementy->predchozi->geo.X4,Objekt->dalsi->elementy->dalsi->geo.Y1-Objekt->elementy->predchozi->geo.Y4,Objekt,false);
 	////změna pořadí za další
 	if(oblast==1)
@@ -1880,8 +1881,9 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->akt_pocet_voziku=0;
 	novy->max_pocet_voziku=0;
 	novy->rotace_jig=0;
-	if(eID%2==0 && eID!=100 && eID!=200 && eID!=MaxInt)novy->max_pocet_voziku=1;
-	if(eID==0){novy->max_pocet_voziku=2;novy->akt_pocet_voziku=1;}
+	if(eID%2==0 && eID!=100 && eID!=200 && eID!=MaxInt)novy->max_pocet_voziku=1;//S&G elementy
+	if(eID%2==0 && eID!=100 && eID!=200 && eID!=MaxInt && eID!=6)novy->akt_pocet_voziku=1;//pouze S&G roboti
+	if(eID==0){novy->max_pocet_voziku=2;novy->akt_pocet_voziku=1;}//pouze stopky
 	novy->stav=1;
 	novy->PD=-1;//defaultní stav pro S&G roboty
 	novy->objekt_n=0;//příslušnost elementu k objektu
@@ -3122,7 +3124,7 @@ void Cvektory::vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt)
 		bool pokracovat=true;
 		TElement *E=NULL;
 		TObjekt *O=Objekt;
-		if(F->pom!=NULL)O=F->pom;//pokud existuje pom a rovná se začátečnímu objektu, musí být nahrazen
+		if(F->pom!=NULL && F->pom->n==O->n)O=F->pom;//pokud existuje pom a rovná se začátečnímu objektu, musí být nahrazen
 		while(O!=NULL && O->n!=0)
 		{
 			E=O->elementy->predchozi;//procházení od zadu
@@ -5514,6 +5516,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 				 		cE->orientace=E->orientace;
 				 		cE->rotace_jig=E->rotace_jig;
 				 		cE->stav=E->stav;
+            cE->PD=E->PD;
 						cE->LO1=E->LO1;
 						cE->OTOC_delka=E->OTOC_delka;
 						cE->LO2=E->LO2;
@@ -5819,6 +5822,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
             E->orientace=cE.orientace;
             E->rotace_jig=cE.rotace_jig;
 						E->stav=cE.stav;
+            E->PD=cE.PD;
             E->LO1=cE.LO1;
             E->OTOC_delka=cE.OTOC_delka;
 						E->LO2=cE.LO2;
