@@ -3,6 +3,8 @@ struct TPointDbool{double x; double y;bool b;};
 struct TMinMax_d{double MaxX;double MaxY;double MinX;double MinY;};
 struct TMinMedAvgMax_d{double Min;double Med;double Avg;double Max;};
 struct TTextNumber{AnsiString text;double number1;int number2;};
+struct TTextXYZ{AnsiString text;long X;long Y;long Z;};
+struct TTextXYZd{AnsiString text;double X;double Y;double Z;};
 struct T2Rect{TRect rect1; TRect rect2;};
 struct T3Rect{TRect rect0; TRect rect1; TRect rect2;};
 struct T4Rect{TRect rect0; TRect rect1; TRect rect2; TRect rect3;};
