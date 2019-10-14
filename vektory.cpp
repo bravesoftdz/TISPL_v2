@@ -3122,7 +3122,7 @@ void Cvektory::vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt)
 		bool pokracovat=true;
 		TElement *E=NULL;
 		TObjekt *O=Objekt;
-		if(F->pom!=NULL)O=F->pom;//pokud existuje pom a rovná se začátečnímu objektu, musí být nahrazen
+		if(F->pom!=NULL && F->pom->n==O->n)O=F->pom;//pokud existuje pom a rovná se začátečnímu objektu, musí být nahrazen
 		while(O!=NULL && O->n!=0)
 		{
 			E=O->elementy->predchozi;//procházení od zadu

@@ -4217,12 +4217,17 @@ void Cvykresli::vykresli_ikonu_linie(TCanvas *canv,int X,int Y,AnsiString Popise
 {
 	short o=10*3;
 	int W=F->DrawGrid_geometrie->DefaultColWidth*3/2-o;
-	int odsazeni=6;//vycentrování linie mezi hlavičkou a textem
+	int odsazeni=-35;//vycentrování linie mezi hlavičkou a textem 6px
 	TColor barva=clBlack; if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
 
 	//vykreslení linie
 	set_pen(canv,barva,1*10,PS_ENDCAP_FLAT);
 	line(canv,X-W+8,Y-W/2+odsazeni,X+W-8,Y-W/2+odsazeni);
+
+	short C=W/2;//zajištění vycentrování
+	//vykreslení oblouku
+	set_pen(canv,barva,1*10,PS_ENDCAP_FLAT);   double Xodsaz=35;odsazeni=6;
+	canv->Arc(X-W-C-Xodsaz,Y-W+odsazeni,X+W-C-Xodsaz,Y+W+odsazeni,X+W-C-Xodsaz,Y+odsazeni,X-C-Xodsaz,Y-W+odsazeni);//směr proti hodinovým ručičkám
 
 	//popisek
 	canv->Brush->Style=bsClear;
@@ -4230,10 +4235,6 @@ void Cvykresli::vykresli_ikonu_linie(TCanvas *canv,int X,int Y,AnsiString Popise
 	canv->Font->Name=F->aFont->Name;
 	canv->Font->Size=m.round(o*sizeP/3.0);if(F->aFont->Size==12)canv->Font->Size=o;
 	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+o/2,Popisek);
-
-//	set_pen(canv,clRed,1,PS_ENDCAP_FLAT);
-//	line(canv,X-5,Y-5,X+5,Y+5);
-//	line(canv,X+5,Y+5,X-5,Y-5);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_ikonu_oblouku(TCanvas *canv,int X,int Y,AnsiString Popisek,short stav)
