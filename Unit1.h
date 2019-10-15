@@ -642,6 +642,7 @@ private:
 	void ukonceni_geometrie();//ukonèení akce geometrie a pøípadné uzavøení kruhu
 	void vloz_bod_haly_objektu(int X,int Y);//vloží bod haly nebo objektu na zvolené souøadnice (fyzické), zohlední pøichytávání
 	void smaz_bod_haly_objektu(Cvektory::TBod *bod);//smaže bod haly nebo objektu, pokud existují už jen 2 poslední body smaže oba
+	void mGrid_on_mGrid();//prohledá zda se pøekrývají mGridy
 
 	////promìnné
 	TDateTime TIME;

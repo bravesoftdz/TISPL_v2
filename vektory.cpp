@@ -2641,7 +2641,7 @@ short Cvektory::PtInKota_elementu(TObjekt *Objekt,long X,long Y)
 	TElement *E=Objekt->elementy;//NEPŘESKAKOVAT hlavičku!!!
 	while(E!=NULL)
 	{
-		if(E->citelna_oblast.rect1.PtInRect(TPoint(X,Y))){RET=1;F->pom_element=E;break;}//hodnoty kóty
+		if(E->citelna_oblast.rect1.PtInRect(TPoint(X,Y)) && (E->pohon!=NULL || E->pohon==NULL && F->DKunit<2)){RET=1;F->pom_element=E;break;}//hodnoty kóty
 		else if(E->citelna_oblast.rect4.left!=E->citelna_oblast.rect4.right!=0 && E->citelna_oblast.rect4.PtInRect(TPoint(X,Y))){RET=3;F->pom_element=E;break;}
 		else
 		{
@@ -2744,12 +2744,12 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				{
 					puv_souradnice.x=E->X;puv_souradnice.y=E->Y;
 					if(E->geo.typ!=0)break;//ukončení v případě, že se někde nachází jiná geometrie než linie
-					if(vzd.x!=0 && !posun_kurzorem && E->eID!=MaxInt)//neposunovat zarážku
+					if(vzd.x!=0 && !posun_kurzorem && E->eID!=MaxInt && E->eID!=200)//neposunovat zarážku
 					{
 						if(Element->orientace==0||Element->orientace==180)E->X=E->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);//výpočet pro posuv z kót
 						else E->Y=E->Y-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
 					}
-					if(vzd.x!=0 && posun_kurzorem && E->eID!=MaxInt)
+					if(vzd.x!=0 && posun_kurzorem && E->eID!=MaxInt && E->eID!=200)
 					{
 						if(Element->orientace==0||Element->orientace==180)E->X=E->X+vzdalenost;//výpočet pro posun kurzorem
 						else E->Y=E->Y+vzdalenost;
@@ -3240,7 +3240,7 @@ Cvektory::TElement *Cvektory::vrat_predchozi_element(TElement *Element)
 	unsigned long On=Element->objekt_n;
 	while(Element->predchozi->n>0 && Element->predchozi!=NULL && Element->objekt_n==On)
 	{
-		if(Element->predchozi->eID!=MaxInt && Element->predchozi->eID!=200){ret=Element->predchozi;break;}
+		if(Element->predchozi->eID!=MaxInt){ret=Element->predchozi;break;}
 		else Element=Element->predchozi;
 	}
 	return ret;

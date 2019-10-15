@@ -393,7 +393,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				else//pohon byl odebrán
 				{
 					F->scGPComboBox_prepinacKot->Enabled=false;//vypne zmìnu režimu kót
-          F->scGPComboBox_prepinacKot->ItemIndex=0;
+					F->scGPComboBox_prepinacKot->ItemIndex=0;
 					F->scGPGlyphButton_PLAY->Enabled=false;//vypnutí tlaèítka animace
 					aktualizace_tab_elementu_pOdebran();//aktualizace tabulek elemntù
 				}
@@ -828,7 +828,11 @@ void TFormX::korelace_v_elementech(long ID,long Row)
 	Cvektory::TElement *E=vrat_element_z_tabulky(ID);
 	switch(E->eID)
 	{
-		case 0:if(Row==3||Row==4)E->mGrid->Cells[1][2].Highlight=true;break;//stopka
+		case 0://stopka
+		{
+			if(Row==3)E->mGrid->Cells[1][6].Highlight=true;
+			if(Row==6)E->mGrid->Cells[1][3].Highlight=true;
+		}
 		case 1:case 7:case 11:case 15:case 101:case 105: //robot (kontinuální)
 		{
 			if(Row==1){F->PmG->Cells[1][rychlost].Highlight=true;korelace_tab_pohonu(rychlost);korelace_tab_pohonu_elementy();}//E->mGrid->Cells[1][Row+1].Highlight=true;

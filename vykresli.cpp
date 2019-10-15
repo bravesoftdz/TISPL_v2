@@ -5139,11 +5139,13 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,Cvektory::TElement *aktElement,double Offset,short highlight,float width,TColor color,bool LO_kota,Cvektory::TKomora *komora)
 {    //Jednotky=" [s]";if(F->DKunit==3)Jednotky=" [min]";
 	double delka=0;
+	AnsiString T="";
 	if(F->pom_temp->pohon==NULL && F->DKunit>1)F->DKunit=F->DKunit-2;//ošetření pro případ není pohon a jsou špatně nastaveny jednotky
 	if(F->DKunit>1)//zobrazení kót v čase
-	{               
-		if(F->pom_temp->pohon!=NULL && F->pom_temp->pohon->aRD>0)
-		delka=m.delka(X1,Y1,X2,Y2)/F->pom_temp->pohon->aRD/(1+59.0*(F->DKunit-2));//výpočet délky a šířky kabiny + případný převod m->mm
+	{
+		if(aktElement!=NULL && aktElement->pohon!=NULL && aktElement->pohon->aRD>0)
+		delka=m.delka(X1,Y1,X2,Y2)/aktElement->pohon->aRD/(1+59.0*(F->DKunit-2));//výpočet délky a šířky kabiny + případný převod m->mm
+		else T="pohon nevybrán";
 		//if(aktElement!=NULL) delka=v.vzdalenost_od_predchoziho_elementu(aktElement)/F->pom_temp->pohon->aRD/(1+59.0*(F->DKunit-2));//výpočet vzdálenosti mezi elementy
 		//if(LO_kota)delka=m.round2double(F->vzdalenost_meziLO(aktElement,F->pom_temp->orientace),2)/F->pom_temp->pohon->aRD/(1+59.0*(F->DKunit-2));
 	}
@@ -5157,7 +5159,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double
 	//odstaveno zobrazujeme na 3 realná delka=m.round2double(delka,8);//výpočet délky s max zobrazením na 8 míst (z důvodu případů 0.000000001 atp.) pouze v případě metrů, v mm by přetékalo při výpočtu, bylo by třeba long double
 	//if(!F->DKunit)delka=m.round2double(delka,5);//výpočet délky s max zobrazením na 8 míst (z důvodu případů 0.000000001 atp.) pouze v případě metrů, v mm by přetékalo při výpočtu, bylo by třeba long double
 	//else delka=m.round2double(delka,3);//if(AnsiString(delka).Pos("00000000001"))F->ms.MyToDouble(AnsiString(delka).SubString(1,AnsiString(delka).Pos("00000000001")-1));//pro mm ošetření proti 00000000001, protože nelze použít zaokrouhlení na větší počet desitnných míst
-	AnsiString T=m.round2double(delka,3/*nefuguje zde správně,".."*/);//standardní zobrazení na 3 reálná místa
+	if(T=="")T=m.round2double(delka,3/*nefuguje zde správně,".."*/);//standardní zobrazení na 3 reálná místa
 	//odstaveno zobrazujeme na 3 realná if(highlight==1 || F->editace_textu)T=delka;//pokud se na kótu najede a předpokládá se editace tak se číslo rozbalí - nezaokrouhluje se, editace textu je možná navíc
 	vykresli_kotu(canv,m.L2Px(X1),m.L2Py(Y1),m.L2Px(X2),m.L2Py(Y2),T,aktElement,m.m2px(Offset),highlight,width,color,LO_kota,komora);
 }
