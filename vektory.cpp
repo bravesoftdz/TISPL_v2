@@ -1317,24 +1317,23 @@ void Cvektory::nove_nazvy()
 void Cvektory::nove_indexy(bool nasledne_zmena_nazvu)
 {
 	TObjekt *O=OBJEKTY->dalsi;
-	TPoint *tab_pruchodu=new TPoint[F->d.v.pocet_vyhybek+1];
-	int i=1,vyhybek=1;//i uchovává na kolikátém objektu se nacházím, vyhybek = počet vyhybek na které jsem narazil (jen jednou)
+	int n=1;
 	while(O!=NULL)
 	{
-		int n=F->ms.MyToDouble(O->short_name.SubString(2,1));//extrakce čísla výhybky / spojky
-		//přiřazení nového n
-		if((long)O->id==pocet_objektu_knihovny+1)if(tab_pruchodu[n].y==0){O->n=i;i++;}
-		if((long)O->id==F->VyID)if(tab_pruchodu[n].x==0){O->n=i;i++;}
-		if((long)O->id!=F->VyID&&(long)O->id!=pocet_objektu_knihovny+1){O->n=i;i++;}
-		//pokud došlo k události kvůli které bude nutné přejmenovat, uloží nová čísla výhybek a spojek do name
-		if(nasledne_zmena_nazvu)
+		//změna indexu objektu
+		O->n=n;
+		n++;
+		//změna objekt_n v elementech, musí být aktuální!!
+		Cvektory::TElement *E=O->elementy->dalsi;
+		while(E!=NULL)
 		{
-    	if((long)O->id==pocet_objektu_knihovny+1)if(tab_pruchodu[n].x==0&&tab_pruchodu[n].y==0){O->name="Spojka "+AnsiString(vyhybek);O->dalsi2->name="Výhybka "+AnsiString(vyhybek);vyhybek++;}
-			if((long)O->id==F->VyID)if(tab_pruchodu[n].x==0&&tab_pruchodu[n].y==0){O->name="Výhybka "+AnsiString(vyhybek);O->predchozi2->name="Spojka "+AnsiString(vyhybek);vyhybek++;}
-    }
-		O=dalsi_krok(O,tab_pruchodu);
+      E->objekt_n=O->n;
+			E=E->dalsi;
+		}
+		delete E;E=NULL;
+		O=O->dalsi;
 	}
-	O=NULL;tab_pruchodu=NULL;delete O;delete tab_pruchodu;
+	delete O;O=NULL;
 }
 //---------------------------------------------------------------------------
 //ortogonalizuje schéma
@@ -1497,26 +1496,26 @@ void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_o
 	if(kontrolovat_oblast && Objekt->predchozi->n>0)oblast=oblast_objektu(Objekt->predchozi,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y);
 	if(oblast==0)
 	{
-  	////posun kabiny-polygonu
-  	posun_body(X,Y,Objekt);
-  	////posun nadpisu
-  	Objekt->Xt+=X;
-  	Objekt->Yt+=Y;
-  	////posun tabulky pohonů
-  	Objekt->Xp+=X;
-  	Objekt->Yp+=Y;
-  	////posun elementů
-  	TElement *E=Objekt->elementy->dalsi;//objekt má vždy element (zarážka)
-  	while(E!=NULL)
-  	{
-  		E->X+=X;E->Y+=Y;//souřadnice elementu
-  		if(E->Xt!=-100)E->Xt+=X;E->Yt+=Y;//souřadnice tabulky + kontrola zda je vytvořená
-  		//geometrie elementu
-  		E->geo.X1+=X;E->geo.X2+=X;E->geo.X3+=X;E->geo.X4+=X;
-  		E->geo.Y1+=Y;E->geo.Y2+=Y;E->geo.Y3+=Y;E->geo.Y4+=Y;
-  		E=E->dalsi;
-  	}
-  	delete E;E=NULL;
+		////posun kabiny-polygonu
+		posun_body(X,Y,Objekt);
+		////posun nadpisu
+		Objekt->Xt+=X;
+		Objekt->Yt+=Y;
+		////posun tabulky pohonů
+		Objekt->Xp+=X;
+		Objekt->Yp+=Y;
+		////posun elementů
+		TElement *E=Objekt->elementy->dalsi;//objekt má vždy element (zarážka)
+		while(E!=NULL)
+		{
+			E->X+=X;E->Y+=Y;//souřadnice elementu
+			if(E->Xt!=-100)E->Xt+=X;E->Yt+=Y;//souřadnice tabulky + kontrola zda je vytvořená
+			//geometrie elementu
+			E->geo.X1+=X;E->geo.X2+=X;E->geo.X3+=X;E->geo.X4+=X;
+			E->geo.Y1+=Y;E->geo.Y2+=Y;E->geo.Y3+=Y;E->geo.Y4+=Y;
+			E=E->dalsi;
+		}
+		delete E;E=NULL;
 	}
 	////přilepení objektu na předchozí objekt
 	if(F->prichytavat_k_mrizce==1 && oblast==1 && (Objekt->elementy->dalsi->geo.X1!=Objekt->predchozi->elementy->predchozi->geo.X4 || Objekt->elementy->dalsi->geo.Y1!=Objekt->predchozi->elementy->predchozi->geo.Y4))
