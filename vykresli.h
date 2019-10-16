@@ -121,7 +121,7 @@ class Cvykresli
 	Graphics::TBitmap *srafura();
 	void editacni_okno(TCanvas *canv, unsigned int X1, unsigned int Y1,unsigned  int X2,unsigned  int Y2, unsigned short int size=1, COLORREF color=clBlack);//nakreslí editacni_okno
 	void editacni_okno(TCanvas *canv, TPoint LH, TPoint PD, unsigned short int size=1, COLORREF color=clBlack);//nakreslí editacni_okno
-	void sipka(TCanvas *canv,int X, int Y,float azimut,bool bez_vyplne=false, float size=3, COLORREF color=clBlack,COLORREF color_brush=clGray,TPenMode PenMode=pmCopy,TPenStyle PenStyle=psSolid,bool teziste_stred=true);//zajistí vykreslení šipky - orientace spojovací linie
+	void sipka(TCanvas *canv,int X, int Y,float azimut,short typ=0, float size=3, COLORREF color=clBlack,COLORREF color_brush=clGray,TPenMode PenMode=pmCopy,TPenStyle PenStyle=psSolid,bool teziste_stred=true);//zajistí vykreslení šipky, typ 0 - barevná výplò, 1 - transparentní výplò (bez výplnì), 2 - transparentní výplò (bez výplnì) a bez znázornìní hrany pøepony trojúhleníku tvoøící šipku, pozor velikost šipky již nenásobit zoomem
 	void vykresli_kurzor_kabiny (TCanvas *canv, int id, int X, int Y, Cvektory::TObjekt *p=NULL);//vykresluje kurzor kabiny + spojnice
 	void odznac_oznac_objekt(TCanvas *canv, Cvektory::TObjekt *p,int posunX=0, int posunY=0, COLORREF color=clBlack);
 	void odznac_oznac_objekt_novy(TCanvas *canv, int X, int Y,Cvektory::TObjekt *p);

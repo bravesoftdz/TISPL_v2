@@ -565,8 +565,8 @@ void Cvykresli::prislusnost_cesty(TCanvas *canv,TColor Color,int X,int Y,float A
 	if(15<=A && A<135 || 250<=A && A<315 )canv->Rectangle(X-S,O+Y-S+S*2*(N-1),X+S,O+Y+S+S*2*(N-1));//svisle pod
 }
 //---------------------------------------------------------------------------
-//zajistí vykreslení šipky - orientace spojovací linie
-void Cvykresli::sipka(TCanvas *canv, int X, int Y, float azimut, bool bez_vyplne, float size,COLORREF color,COLORREF color_brush,TPenMode PenMode,TPenStyle PenStyle,bool teziste_stred)
+//zajistí vykreslení šipky //zajistí vykreslení šipky, typ 0 - barevná výplň, 1 - transparentní výplň (bez výplně), 2 - transparentní výplň (bez výplně) a bez znázornění hrany přepony trojúhleníku tvořící šipku, pozor velikost šipky již nenásobit zoomem
+void Cvykresli::sipka(TCanvas *canv, int X, int Y, float azimut, short typ, float size,COLORREF color,COLORREF color_brush,TPenMode PenMode,TPenStyle PenStyle,bool teziste_stred)
 {
 	azimut=fmod(azimut,360);//ošetření proti přetýkání azimutu
 	canv->Pen->Mode=PenMode;
@@ -584,7 +584,7 @@ void Cvykresli::sipka(TCanvas *canv, int X, int Y, float azimut, bool bez_vyplne
 		Y-=m.round(R.y);
 	}
 
-	if(!bez_vyplne)//barevná výplň trojúhelníku
+	if(typ==0)//barevná výplň trojúhelníku
 	{
 		POINT body[3]={{m.round(X+m.rotace(1,sklon,azimut).x*size),m.round(Y+m.rotace(1,sklon,azimut).y*size)},{m.round(X+m.rotace(1,0,azimut).x*size),m.round(Y+m.rotace(1,0,azimut).y*size)},{m.round(X+m.rotace(1,360-sklon,azimut).x*size),m.round(Y+m.rotace(1,360-sklon,azimut).y*size)}};
 		canv->Polygon((TPoint*)body,2);
@@ -594,7 +594,7 @@ void Cvykresli::sipka(TCanvas *canv, int X, int Y, float azimut, bool bez_vyplne
 		canv->MoveTo(m.round(X+m.rotace(1,sklon,azimut).x*size),m.round(Y+m.rotace(1,sklon,azimut).y*size));
 		canv->LineTo(m.round(X+m.rotace(1,0,azimut).x*size),m.round(Y+m.rotace(1,0,azimut).y*size));
 		canv->LineTo(m.round(X+m.rotace(1,360-sklon,azimut).x*size),m.round(Y+m.rotace(1,360-sklon,azimut).y*size));
-		canv->LineTo(m.round(X+m.rotace(1,sklon,azimut).x*size),m.round(Y+m.rotace(1,sklon,azimut).y*size));
+		if(typ==1)canv->LineTo(m.round(X+m.rotace(1,sklon,azimut).x*size),m.round(Y+m.rotace(1,sklon,azimut).y*size));
 	}
 }
 //---------------------------------------------------------------------------
