@@ -594,7 +594,7 @@ void Cvykresli::sipka(TCanvas *canv, int X, int Y, float azimut, short typ, floa
 		canv->MoveTo(m.round(X+m.rotace(1,sklon,azimut).x*size),m.round(Y+m.rotace(1,sklon,azimut).y*size));
 		canv->LineTo(m.round(X+m.rotace(1,0,azimut).x*size),m.round(Y+m.rotace(1,0,azimut).y*size));
 		canv->LineTo(m.round(X+m.rotace(1,360-sklon,azimut).x*size),m.round(Y+m.rotace(1,360-sklon,azimut).y*size));
-		if(typ==1)canv->LineTo(m.round(X+m.rotace(1,sklon,azimut).x*size),m.round(Y+m.rotace(1,sklon,azimut).y*size));
+		if(typ==1)canv->LineTo(m.round(X+m.rotace(1,sklon,azimut).x*size),m.round(Y+m.rotace(1,sklon,azimut).y*size));//pouze pokud je požadováno vykreslení bez hrany
 	}
 }
 //---------------------------------------------------------------------------
