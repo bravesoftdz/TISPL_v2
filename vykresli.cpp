@@ -1875,7 +1875,9 @@ void Cvykresli::vykresli_kurzor_kabiny (TCanvas *canv, int id, int X, int Y, Cve
 			//nastavení bodů objektu
 			//nová koncepce
 			short oblast=0;
-			if(F->prichytavat_k_mrizce==1)oblast=v.oblast_objektu(p,X,Y);
+			//if(F->prichytavat_k_mrizce==1)
+			oblast=v.oblast_objektu(p,X,Y);
+			if(F->prichytavat_k_mrizce==2 && (p->n!=1 || p->n==1 && oblast==1 || p->n==1 && oblast==2 && v.OBJEKTY->predchozi->n==1))oblast=0;
 			if(oblast==0)//mimo objekt
 			{
 				//zjištění rotace
@@ -1903,10 +1905,11 @@ void Cvykresli::vykresli_kurzor_kabiny (TCanvas *canv, int id, int X, int Y, Cve
 					case 270:if(p->orientace==270 || p->orientace==0 || p->orientace==180){X1=Xp;Y1=Yp-m.m2px(rozmery_kabiny.y)/2.0;X2=Xp-m.m2px(rozmery_kabiny.x);Y2=Yp+m.m2px(rozmery_kabiny.y)/2.0;Xd=X2;Yd=Y;}else{X1=Xp;Y1=Yp-m.m2px(rozmery_kabiny.y)/2.0;X2=Xp+m.m2px(rozmery_kabiny.x);Y2=Yp+m.m2px(rozmery_kabiny.y)/2.0;Xd=X2;Yd=Y;}break;
 				}
 				if(rotace==0 || rotace==180)Xd=Xp;else Yd=Yp;
+				if(!spojnice1 && rotace==m.Rt90(p->orientace-180))rotace=p->orientace;
 			}
 			if(oblast==2 && p->n==1 && v.OBJEKTY->predchozi->n!=1)//vkladání objektu před první, změna pořadí
 			{
-      	//zjištění rotace
+				//zjištění rotace
 				azimut=m.azimut(p->elementy->dalsi->geo.X1,p->elementy->dalsi->geo.Y1,m.P2Lx(X),m.P2Ly(Y));
 				rotace=m.Rt90(azimut);
 				spojnice1=spojnice2=false;
@@ -1919,8 +1922,7 @@ void Cvykresli::vykresli_kurzor_kabiny (TCanvas *canv, int id, int X, int Y, Cve
 					case 90:X1=X;Y1=Y-m.m2px(rozmery_kabiny.y)/2.0;X2=X+m.m2px(rozmery_kabiny.x);Y2=Y+m.m2px(rozmery_kabiny.y)/2.0;Xd=X2;Yd=Y;break;
 				}
       }
-			if(oblast==2 && v.OBJEKTY->predchozi->n!=1)oblast=0;
-			if(oblast==2)//vkládání druhého objektu před první, změna trendu linky
+			if(oblast==2 && v.OBJEKTY->predchozi->n==1)//vkládání druhého objektu před první, změna trendu linky
 			{
 				//zjištění rotace
 				azimut=m.azimut(p->elementy->dalsi->geo.X1,p->elementy->dalsi->geo.Y1,m.P2Lx(X),m.P2Ly(Y));
@@ -1936,14 +1938,14 @@ void Cvykresli::vykresli_kurzor_kabiny (TCanvas *canv, int id, int X, int Y, Cve
 			//vykreslení kurzoru
 			canv->Rectangle(X1,Y1,X2,Y2);
 			//vykreslení spojnice k předchozímu
-			if(spojnice1 && oblast==0)
+			if((spojnice1 || F->prichytavat_k_mrizce==2) && oblast==0)
 			{
 				canv->MoveTo(m.L2Px(p->elementy->predchozi->geo.X4),m.L2Py(p->elementy->predchozi->geo.Y4));
 				canv->LineTo(X,Y);
 				sipka(canv,(X+m.L2Px(p->elementy->predchozi->geo.X4))/2.0,(Y+m.L2Py(p->elementy->predchozi->geo.Y4))/2.0,azimut,true,3,clBlack,clWhite,pmNotXor);
 			}
 			//vykreslení spojnice k poslední/další je-li to nutné
-			if(spojnice2 && v.OBJEKTY->predchozi->n>=2 && oblast!=2)
+			if((spojnice2 || F->prichytavat_k_mrizce==2) && v.OBJEKTY->predchozi->n>=2 && oblast!=2)
 			{
 				canv->Pen->Style=psDot;//nastevení čarkované čáry
 				canv->MoveTo(Xd,Yd);
@@ -1953,8 +1955,11 @@ void Cvykresli::vykresli_kurzor_kabiny (TCanvas *canv, int id, int X, int Y, Cve
 			}
 			if(!spojnice1 || !spojnice2)//vykreslení šipek indikujících posun ostatních objektů
 			{
-				sipka(canv,(Xd+m.L2Px(dalsi->elementy->dalsi->geo.X1))/2.0,(Yd+m.L2Py(dalsi->elementy->dalsi->geo.Y1))/2.0,m.azimut(dalsi->elementy->dalsi->geo.X1,dalsi->elementy->dalsi->geo.Y1,m.P2Lx(Xd),m.P2Ly(Yd)),true,3,clBlack,clWhite,pmNotXor,psSolid,false);
-      	sipka(canv,(Xd+m.L2Px(dalsi->elementy->dalsi->geo.X1))/2.0,(Yd+m.L2Py(dalsi->elementy->dalsi->geo.Y1))/2.0,m.azimut(dalsi->elementy->dalsi->geo.X1,dalsi->elementy->dalsi->geo.Y1,m.P2Lx(Xd),m.P2Ly(Yd)),true,3,clBlack,clWhite,pmNotXor,psSolid,true);
+				if(F->prichytavat_k_mrizce==1){X=Xp;Y=Yp;}
+				if(F->prichytavat_k_mrizce==1 && oblast!=1 && p->n==1){rotace=p->orientace;X=m.L2Px(p->elementy->dalsi->geo.X1);Y=m.L2Py(p->elementy->dalsi->geo.Y1);}
+				if(F->prichytavat_k_mrizce==2 && oblast==2 && p->n==1)rotace=p->orientace;
+				sipka(canv,(X+Xd)/2.0,(Y+Yd)/2.0,rotace,2,3,clBlack,clWhite,pmNotXor,psSolid,false);
+				sipka(canv,(X+Xd)/2.0,(Y+Yd)/2.0,rotace,2,3,clBlack,clWhite,pmNotXor,psSolid,true);
 			}
 		}
 		//uložení rotace objektu, využítí při vkládání objektu, přepočet z azimutu přímky na orientaci objektu

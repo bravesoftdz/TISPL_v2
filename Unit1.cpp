@@ -2164,7 +2164,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					}
 					case GEOMETRIE:
 					{
-						if(d.geoTemp.typ!=-1000 && Screen->Cursor==standard)vlozeni_editace_geometrie();//vložení nebo editace geometrie (obsáhlé přesunuto do metody)
+						if(d.geoTemp.typ!=-1000 && Screen->Cursor==standard && funkcni_klavesa==0)vlozeni_editace_geometrie();//vložení nebo editace geometrie (obsáhlé přesunuto do metody)
 						else//spouštění temp akci nad akcemi
 						{
 							if(funkcni_klavesa==1 && pom_element!=NULL)Smazat1Click(Sender);
@@ -3877,6 +3877,7 @@ void TForm1::ESC()
 			REFRESH();//dojde k překreslení odstraněné výhybky
 		}break;
 		case GEOMETRIE:ukonceni_geometrie();break;
+		case NIC:if(pom_temp!=NULL)KonecClick(this);break;
 	}
 	pom_vyhybka=NULL;
 	proces_pom=NULL;
@@ -3941,7 +3942,8 @@ void TForm1::add_objekt(int X, int Y)
 		else if(d.v.OBJEKTY->predchozi->n>0)oblast=d.v.oblast_objektu(d.v.OBJEKTY->predchozi,X,Y);
 		if(prichytavat_k_mrizce==1 && oblast==1 && pom!=NULL){souradnice.x=pom->elementy->predchozi->geo.X4;souradnice.y=pom->elementy->predchozi->geo.Y4;}//za objekt
 		if(prichytavat_k_mrizce==1 && oblast==1 && pom==NULL){souradnice.x=d.v.OBJEKTY->predchozi->elementy->predchozi->geo.X4;souradnice.y=d.v.OBJEKTY->predchozi->elementy->predchozi->geo.Y4;}//za objekt
-		if(prichytavat_k_mrizce==1 && oblast==2){souradnice.x=d.v.OBJEKTY->predchozi->elementy->dalsi->geo.X1;souradnice.y=d.v.OBJEKTY->predchozi->elementy->dalsi->geo.Y1;}//před první objekt
+		if(prichytavat_k_mrizce==1 && oblast==2 && d.v.OBJEKTY->predchozi->n==1){souradnice.x=d.v.OBJEKTY->predchozi->elementy->dalsi->geo.X1;souradnice.y=d.v.OBJEKTY->predchozi->elementy->dalsi->geo.Y1;}//před první objekt
+		if(oblast==2 && d.v.OBJEKTY->predchozi->n>1){souradnice.x=pom->elementy->dalsi->geo.X1;souradnice.y=pom->elementy->dalsi->geo.Y1;}
 		//vložení objektu
 		if(pom==NULL || pom!=NULL && pom->n==d.v.OBJEKTY->predchozi->n)//vloží za poslední prvek
 		{
@@ -3949,7 +3951,8 @@ void TForm1::add_objekt(int X, int Y)
 		}
 		else//vkládá prvek mezi prvky
 		{
-			pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,pom,pom->dalsi);
+			if(oblast==2 && d.v.OBJEKTY->predchozi->n>1)pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,d.v.OBJEKTY,pom);
+			else pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,pom,pom->dalsi);
 			d.v.nove_indexy();//zvýší indexy nasledujicích bodů
 		}
 		pom=NULL;//odsranění pomocného ukazatele
@@ -5378,14 +5381,16 @@ void TForm1::vytvoreni_tab_knihovna()
 	/////////centrování komponent
 	mGrid_knihovna->Update();
 	TscGPImage *I=NULL;
+	int odsazeni=34;
 	for (int i=1;i<=mGrid_knihovna->RowCount-1; i++)
 	{
+		if(i==15||i==14||i==13||i==12)odsazeni-=5;
 		//pro první sloupec
 		if(mGrid_knihovna->Cells[0][i].Type==mGrid_knihovna->IMAGE)I=mGrid_knihovna->getImage(0,i);
 		if(I!=NULL)
 		{
 			mGrid_knihovna->Cells[0][i].Valign=mGrid_knihovna->vNO;
-			I->Top+=34;
+			I->Top+=odsazeni;
 			I=NULL;//nulování pro další sloupec
 		}
 		//pro druhý sloupec
@@ -5393,7 +5398,7 @@ void TForm1::vytvoreni_tab_knihovna()
 		if(I!=NULL)
 		{
 			mGrid_knihovna->Cells[1][i].Valign=mGrid_knihovna->vNO;
-			I->Top+=34;
+			I->Top+=odsazeni;
 		}
 		I=NULL;//nulování pro další krok
 	}
@@ -5749,6 +5754,7 @@ void TForm1::prirazeni_pohonu_tab_pohon(int index_pohonu)
 		}
 		else {PmG->SetEnabledComponents(true);temp=true;}//pokud není pohon přiřazen aktivace
 	}
+	aktualizace_ComboPohon();//nutné!
 	REFRESH();
 }
 //---------------------------------------------------------------------------
@@ -10210,12 +10216,12 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 {      //mGrid_on_mGrid();
 	//PmG->getCombo(0,0)->DropDown();
 	//if(pom_temp->elementy->dalsi->sparovany!=NULL)Sv(pom_temp->elementy->dalsi->sparovany->name);
-//	Cvektory::TObjekt *E=d.v.OBJEKTY->dalsi;  Memo3->Clear();
-//	while(E!=NULL && E->n!=0)
-//	{
-//		Memo(E->name);
-//		E=E->dalsi;
-//	} E=NULL;delete E;
+	Cvektory::TObjekt *E=d.v.OBJEKTY->dalsi;  Memo3->Clear();
+	while(E!=NULL && E->n!=0)
+	{
+		Memo(E->name);
+		E=E->dalsi;
+	} E=NULL;delete E;
 //	Memo(vzdalenost_meziLO(E,pom_temp->orientace));
 //	TRect A=vrat_max_oblast();
  //	Canvas->Pen->Color=clRed;
