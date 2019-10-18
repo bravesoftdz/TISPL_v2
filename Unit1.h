@@ -570,7 +570,7 @@ private:
 	void pan_move_map();
 	void add_objekt(int X, int Y);
 	Cvektory::TObjekt *add_objekt_za();
-	void move_objekt(int X, int Y);
+	void move_objekt(double X, double Y,Cvektory::TObjekt *Objekt);
 	void add_element(int X, int Y);
 	void add_komoru();//pøidávání komory kabinì powerwashe, kontrola zda není souèet kabin vìtší než rozmìr kabiny
 	void vlozit_predavaci_misto();//projde elementy a objekty, pokud je nìkde nutnost vložit pøedávací místo vloží ho tam
