@@ -239,7 +239,8 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	DesignSettings();
 
 	//příprava na jazyk mutace
-	language=MN;
+  if(readINI("Nastaveni_app","jazyk")=="1"){language=CS;/* scGPSwitch1->State=scswOn;*/} else { language=EN; /*scGPSwitch1->State=scswOff; */}
+
 
   //výhybky
 	d.v.pocet_vyhybek=0;//nastavení při každém spuštění, do budoucna načítání z binárky nebo 0
@@ -268,7 +269,6 @@ void TForm1::DesignSettings()
 	Form1->Width=Screen->WorkAreaWidth;
 	Form1->Height=Screen->WorkAreaHeight;
 	FMaximized=false;MaxButtonClick(this);//aby bylo připraveno minimalizační tlačítko
-
 	//nastavení globálních barev
 	TColor light_gray=(TColor)RGB(240,240,240);
  //	TColor active_blue=(TColor)RGB(0,120,215);
@@ -11517,6 +11517,9 @@ void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
   scGPGlyphButton_OPTIONS->GlyphColor=clWhite;
   scGPGlyphButton_OPTIONS->GlyphThickness=1;
 
+ //jazyk mutace
+  if(readINI("Nastaveni_app","jazyk")=="1"){language=CS; scGPSwitch1->State=scswOn;} else { language=EN; scGPSwitch1->State=scswOff;}
+
  	//nastavení checkboxu na checked pokud je již rastr uložen a má být zobrazen
 	if(d.v.PP.raster.filename!="" &&  d.v.PP.raster.show)
 	{
@@ -12207,7 +12210,6 @@ unsigned short TForm1::load_language(Tlanguage language)
 		if(FileExists(File_language))//znovu kontrola po případném stažení souboru
 	{
 	//načtení jazykového slovníku do string listu
-  ShowMessage(language);
 	ls->LoadFromFile(File_language);
 
 	//vypársování daného jazyka a navrácení do string listu již jen vypársovaného
@@ -12365,7 +12367,7 @@ Form_parametry_linky->scGPGlyphButton_ADD->Hint=ls->Strings[137];
 Form_parametry_linky->scGPButton_obecne->Caption=ls->Strings[138];
 Form_parametry_linky->rHTMLLabel_JIG->Caption=ls->Strings[139];
 Form_parametry_linky->rHTMLLabel_podvozek_zaves->Caption=ls->Strings[140];
-Form_parametry_linky->scHTMLLabel_jig_info->Caption=ls->Strings[141];
+//Form_parametry_linky->scHTMLLabel_jig_info->Caption=ls->Strings[141];
 Form_parametry_linky->scGPGlyphButton_ADD_old->Hint=ls->Strings[142];
 Form_parametry_linky->scGPGlyphButton_OPTIONS->Hint=ls->Strings[143];
 Form_parametry_linky->scGPGlyphButton_katalog->Hint=ls->Strings[144];
@@ -12529,7 +12531,10 @@ REFRESH();
 
 void __fastcall TForm1::scGPSwitch1ChangeState(TObject *Sender)
 {
-if(scGPSwitch1->scswOn)
+if(scGPSwitch1->State==scswOn) {load_language(CS);  	writeINI("Nastaveni_app","jazyk","1");  }
+else  {load_language(EN); writeINI("Nastaveni_app","jazyk","0");  }
 }
 //---------------------------------------------------------------------------
+
+
 
