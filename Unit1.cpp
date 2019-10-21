@@ -713,7 +713,7 @@ void TForm1::startUP()
 {
   log(__func__);//logování
   //načtení jazykové mutace, nemůže být v konstruktoru, protože ještě neexistují všechny dílčí formuláře = nelze k nim přistoupit
-   //load_language(language);   //aktivovani jazyk mutaci
+	load_language(language);   //aktivovani jazyk mutaci
 	//////otevrení posledního souboru
 	log2web("start");
 	nastaveni.posledni_file=true;/////////////////provizorní než budu načítat z ini z filu nastavení zda otevírat či neotevírat poslední sobor
@@ -2800,9 +2800,9 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			{
 				if(pom_element!=NULL)
 				{
-					design_element(pom_element,false);
-					mGrid_mimo_obraz(pom_element);
-					//mGrid_on_mGrid();//kontrola, zda nejsou překryty mGridy elementů a PmG
+					//design_element(pom_element,false);
+					//mGrid_mimo_obraz(pom_element);
+					mGrid_on_mGrid();//kontrola, zda nejsou překryty mGridy elementů a PmG
 					//pom_element->mGrid->Update();//pouze WA, aby se před zobrazením komponenty zobrazily na správné pozici a nedošlo k probliku
 					JID=-1;setJobIDOnMouseMove(X,Y);kurzor(posun_l);//kvůli rychlé aktualizaci po přesunu včetně Highlightu
 				}
@@ -2944,7 +2944,7 @@ void TForm1::getJobID(int X, int Y)
 		if(JID==-1)//pokud nebyla tabulka pohonu nalezena zkouší hledat další aktivní prvky náhledu
 		{
   		//dále TABULKY ELEMENTŮ
-			pom_element=F->d.v.najdi_tabulku(pom_temp,m.P2Lx(X),m.P2Ly(Y));
+			pom_element=d.v.najdi_tabulku(pom_temp,m.P2Lx(X),m.P2Ly(Y));
   		if(pom_element!=NULL && pom_temp->zobrazit_mGrid)//možné měnit rozmístění a rozměry a tabulka nalezena, tzn. klik či přejetí myší přes tabulku
   		{
   			int IdxRow=pom_element->mGrid->GetIdxRow(X,Y);
@@ -4605,6 +4605,7 @@ bool TForm1::el_vkabine(double X,double Y,int element_id,short orientace_el,Cvek
 //kontrola zde je mGrid mimo obraz, pokud ano vypnutí komponent
 void TForm1::mGrid_mimo_obraz(Cvektory::TElement *E)
 {
+	log(__func__);//logování
 	double presah;
 	int pocet_radku;
 	//////kontrola, zda jsou řádky pod spodní lištou
@@ -4657,7 +4658,7 @@ void TForm1::mGrid_on_mGrid()
 		////uvedení do původního stavu + kontrola zda není mGrid mimo obraz
 		while(E!=NULL || E!=NULL && E->objekt_n!=objekt_n)
 		{
-			design_element(E,false);
+			mGrid_puvodni_stav(E);
 			mGrid_mimo_obraz(E);
 			E=E->dalsi;
     }
@@ -4725,9 +4726,11 @@ void TForm1::mGrid_on_mGrid()
 		prekryty=NULL;delete prekryty;
 	}
 }
+//---------------------------------------------------------------------------
 //smazě komponentu v dané buňce a změní typ bunky na DRAW
 void TForm1::mGrid_komponenta_na_draw(TmGrid *mGrid,long Col,long Row)
 {
+	log(__func__);//logování
 	//načtení komponent, v mGridech pouze edity a comba
 	TscGPEdit *E=mGrid->getEdit(Col,Row);
 	TscGPComboBox *C=mGrid->getCombo(Col,Row);
@@ -4762,6 +4765,125 @@ void TForm1::mGrid_komponenta_na_draw(TmGrid *mGrid,long Col,long Row)
 	E=NULL;C=NULL;delete E;delete C;
 	//změna typu buňky
 	mGrid->Cells[Col][Row].Type=mGrid->DRAW;
+}
+//---------------------------------------------------------------------------
+//nadesingnuje tabulky elementů na původní stav, obnový komponenty, naplní comba, provede Update() mGridu
+void TForm1::mGrid_puvodni_stav(Cvektory::TElement *E)
+{
+	log(__func__);//logování
+	////nastavení komponent
+	switch(E->eID)
+	{
+		case 0://stop stanice, nastavování režimů podle ID objektu
+		{
+			unsigned int id=d.v.vrat_objekt(E->objekt_n)->id;
+			if(id>=6 && id<=10){E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;}
+			break;
+		}
+		case 7:case 11:case 15:case 101:case 105:
+		case 1://robot (kontinuální)
+		{
+			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
+			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;
+			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;
+			E->mGrid->Cells[1][4].Type=E->mGrid->COMBO;
+			break;
+		}
+		case 8:case 12:case 16:case 102:case 106:
+		case 2://robot se stop stanicí
+		{
+			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
+			break;
+		}
+		case 9:case 13:case 17:case 103:case 107:
+		case 3://robot s pasivní otočí
+		{
+			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
+			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;
+			E->mGrid->Cells[1][3].Type=E->mGrid->COMBO;
+			E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;
+			E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;
+			E->mGrid->Cells[1][7].Type=E->mGrid->EDIT;
+			E->mGrid->Cells[1][8].Type=E->mGrid->COMBO;
+			break;
+		}
+		case 10:case 14:case 18:case 104:case 108:
+		case 4://robot s aktivní otočí (resp. s otočí a stop stanicí)
+		{
+			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
+			E->mGrid->Cells[1][2].Type=E->mGrid->COMBO;
+			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;
+			E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;
+			E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;
+			break;
+		}
+		case 5://otoč pasivní
+		{
+			E->mGrid->Cells[1][1].Type=E->mGrid->COMBO;
+			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;
+			break;
+		}
+		case 6://otoč aktivní (resp. otoč se stop stanicí)
+		{
+			E->mGrid->Cells[1][1].Type=E->mGrid->COMBO;
+			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;
+			break;
+		}
+		default:break;
+	}
+	E->mGrid->Update();
+
+	////naplnění comb
+	if(E->eID==3||E->eID==4||E->eID==5||E->eID==6||E->eID==9||E->eID==10||E->eID==13||E->eID==14||E->eID==17||E->eID==18||E->eID==103||E->eID==104||E->eID==107||E->eID==108)//elementy s otočí
+	{
+    //combo rotace
+		int pozice;
+		switch(E->eID)//nutnost zjistit pozici komba
+		{
+			case 3:case 9:case 13:case 17:case 103:case 107:pozice=3;break;
+			case 4:case 10:case 14:case 18:case 104:case 108:pozice=2;break;
+			case 5:case 6:pozice=1;break;
+		}
+		TscGPComboBox *C=E->mGrid->getCombo(1,pozice);
+		C->Clear();
+		C->Font->Color=(TColor)RGB(43,87,154);
+		C->BiDiMode=bdRightToLeft;
+		TscGPListBoxItem *I;
+		I=C->Items->Add();
+		I->Caption="180-";//kvůli opačnému zarovnání musí být číslo zapsáno jako řetězec se znaménkem na konci!
+		I=C->Items->Add();
+		I->Caption="90-";
+		I=C->Items->Add();
+		I->Caption=90;
+		I=C->Items->Add();
+		I->Caption=180;
+		I=NULL;delete I;
+		//přiřazení COMBA
+		if(E->rotace_jig==-180)C->ItemIndex=0;
+		if(E->rotace_jig==-90)C->ItemIndex=1;
+		if(E->rotace_jig==90)C->ItemIndex=2;
+		if(E->rotace_jig==180)C->ItemIndex=3;
+		C=NULL;delete C;
+	}
+	//naplnění a přiřazení COMBA PD
+	if(E->eID==1||E->eID==3||E->eID==7||E->eID==9||E->eID==11||E->eID==13||E->eID==15||E->eID==17||E->eID==101||E->eID==103||E->eID==105||E->eID==107)
+	{
+		TscGPComboBox *C=E->mGrid->getCombo(1,E->mGrid->RowCount-1);
+		C->Clear();
+		C->Font->Color=(TColor)RGB(43,87,154);
+		C->BiDiMode=bdRightToLeft;
+		TscGPListBoxItem *I;
+		I=C->Items->Add();
+		I->Caption="začátek";//kvůli opačnému zarovnání musí být číslo zapsáno jako řetězec se znaménkem na konci!
+		I=C->Items->Add();
+		I->Caption="střed";
+		I=C->Items->Add();
+		I->Caption="celý";
+		I=NULL;delete I;
+		//přiřazení COMBA
+		C->ItemIndex=E->PD;
+		C=NULL;delete C;
+	}
 }
 //---------------------------------------------------------------------------
 //vrací max a min hodnoty x a y souřadnic, všecho v layout(elementů, objektů), nebo parametrem Objekt lze hledat max souřadnice v jednom objektu
@@ -6191,7 +6313,8 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 	else {sirka_3=81;sirka_cisla=100;}
 
 	//nadesignování tabulek dle typu elementu
-	if(prvni_spusteni){E->mGrid->Left=-1000;E->mGrid->Top=-1000;}
+	E->mGrid->Left=-1000;
+	E->mGrid->Top=-1000;
 	if(E->eID==2) E->PT1=60;
 	if(prvni_spusteni)prvni_vytvoreni_tab_elementu(E,sirka_0,sirka_1,sirka_2,sirka_3,sirka_4,sirka_56,sirka_cisla,LO,cas,delka_otoce);
 	else dalsi_vytvoreni_tab_elementu(E,sirka_0,sirka_1,sirka_2,sirka_3,sirka_4,sirka_56,sirka_cisla,LO,cas,delka_otoce);
@@ -10236,7 +10359,7 @@ void __fastcall TForm1::Timer_animaceTimer(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 {
-  log(__func__);//logování
+	log(__func__);//logování
 	if(d.v.PROCESY!=NULL && d.v.PROCESY->predchozi->n>0)//pokud je více objektů
 	{
 		d.mod_vytizenost_objektu=!d.mod_vytizenost_objektu;
@@ -10257,19 +10380,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	//PmG->getCombo(0,0)->DropDown();
-	//if(pom_temp->elementy->dalsi->sparovany!=NULL)Sv(pom_temp->elementy->dalsi->sparovany->name);
-//	Cvektory::TObjekt *E=d.v.OBJEKTY->dalsi;  Memo3->Clear();
-//	while(E!=NULL && E->n!=0)
-//	{
-//		Memo(E->name);
-//		E=E->dalsi;
-//	} E=NULL;delete E;
-//	Memo(vzdalenost_meziLO(E,pom_temp->orientace));
-//	TRect A=vrat_max_oblast();
- //	Canvas->Pen->Color=clRed;
- //	d.line(Canvas,m.L2Px(E->X),m.L2Py(E->Y),0,0);
-	//d.line(Canvas,m.L2Px(E->geo.X1),m.L2Py(E->geo.Y1),m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
+Memo(scGPButton_mereni_vzdalenost->Hint);
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -12081,7 +12192,7 @@ void __fastcall TForm1::scGPSwitch_robot_clovekChangeState(TObject *Sender)
 //---------------------------------------------------------------------------
 //načte zvolený jazyk
 unsigned short TForm1::load_language(Tlanguage language)
-{
+{         language=EN;
    log(__func__);//logování
    //nastavení adresáře k místě aplikace
   ChDir(ExtractFilePath(Application->ExeName));    //přesune k EXE
@@ -12095,11 +12206,11 @@ unsigned short TForm1::load_language(Tlanguage language)
 	}
 	catch(...){;}
   }*/
-  ls=new TStringList;
-  for(unsigned short i=0;i<=114;i++)ls->Insert(i,"");//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
+	ls=new TStringList;        //114
+	for(unsigned short i=0;i<=140;i++)ls->Insert(i,"");//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
 
-    if(FileExists(File_language))//znovu kontrola po případném stažení souboru
-  {
+		if(FileExists(File_language))//znovu kontrola po případném stažení souboru
+	{
 	//načtení jazykového slovníku do string listu
   ShowMessage(language);
 	ls->LoadFromFile(File_language);
@@ -12115,30 +12226,171 @@ unsigned short TForm1::load_language(Tlanguage language)
 			default:EN:ls->Strings[i]=ls->Strings[i].SubString(0,ls->Strings[i].Pos(";")-1);Jazyk=EN;/*anglictina1->Checked=true;mongolstina1->Checked=false;cestina1->Checked=false;*/break;
 		}
 	}
-											   //pokud se nejedná o angličtinu
+												 //pokud se nejedná o angličtinu
 	scLabel_titulek->Caption=ls->Strings[0];if(language>1)scLabel_titulek->Caption+=" (Language)";
 	scLabel_titulek->Caption=ls->Strings[3];scLabel_titulek->Caption+=" (EN)";
 	scLabel_titulek->Caption=ls->Strings[2];scLabel_titulek->Caption+=" (MN)";
 	scLabel_titulek->Caption=ls->Strings[1];scLabel_titulek->Caption+=" (CS)";
 	//-----------------------
   //Example
-  Form_parametry_linky->scGPButton_pohon->Caption =  	ls->Strings[8];
-  Layout->Caption =  	ls->Strings[9];
-  //Canvas->TextOutW(500,500,ls->Strings[9]); //OK
+	Label_zamerovac->Caption=ls->Strings[4];
+RzToolButton1->Hint=ls->Strings[5];
+RzToolButton2->Hint=ls->Strings[6];
+RzToolButton3->Hint=ls->Strings[7];
+RzToolButton4->Hint=ls->Strings[8];
+RzToolButton5->Hint=ls->Strings[9];
+RzToolButton6->Hint=ls->Strings[10];
+RzToolButton7->Hint=ls->Strings[11];
+RzToolButton8->Hint=ls->Strings[12];
+RzToolButton9->Hint=ls->Strings[13];
+RzToolButton10->Hint=ls->Strings[14];
+RzToolButton11->Hint=ls->Strings[15];
+RzToolButton12->Hint=ls->Strings[16];
+Button4->Caption=ls->Strings[17];
+ButtonPLAY_O->Caption=ls->Strings[18];
+Konec->Caption=ls->Strings[19];
+Schema->Caption=ls->Strings[20];
+PopupMenuButton->Caption=ls->Strings[21];
+PopupMenuButton->Hint=ls->Strings[22];
+Synteza->Caption=ls->Strings[23];
+Toolbar_Ulozit->Hint=ls->Strings[24];
+Toolbar_NovySoubor->Hint=ls->Strings[25];
+Toolbar_Otevrit->Caption=ls->Strings[26];
+Toolbar_Otevrit->Hint=ls->Strings[27];
+DetailsButton->Hint=ls->Strings[28];
+Layout->Caption=ls->Strings[29];
+Simulace->Caption=ls->Strings[30];
+scGPGlyphButton15->Hint=ls->Strings[31];
+scLabel_titulek->Caption=ls->Strings[32];
+scLabel_klient->Caption=ls->Strings[33];
+scLabel_architekt->Caption=ls->Strings[34];
+scGPButton_header_projekt->Hint=ls->Strings[35];
+scGPGlyphButton_OPTIONS->Hint=ls->Strings[36];
+Nahled->Caption=ls->Strings[37];
+scGPGlyphButton_PLAY->Hint=ls->Strings[38];
+RzStatusPane3->Hint=ls->Strings[39];
+RzStatusPane4->Caption=ls->Strings[40];
+RzStatusPane4->Hint=ls->Strings[41];
+RzStatusPane5->Caption=ls->Strings[42];
+RzStatusPane5->Hint=ls->Strings[43];
+scButton_zamek_layoutu->Hint=ls->Strings[44];
+scGPButton_zmerit_vzdalenost->Hint=ls->Strings[45];
+scListGroupKnihovObjektu->Caption=ls->Strings[46];
+scListGroupPanel_hlavickaOstatni->Caption=ls->Strings[47];
+scListGroupPanel_hlavickaOtoce->Caption=ls->Strings[48];
+scListGroupPanel_geometrie->Caption=ls->Strings[49];
+scListGroupPanel_poznamky->Caption=ls->Strings[50];
+scGPLabel_roboti->Caption=ls->Strings[51];
+scGPLabel_otoce->Caption=ls->Strings[52];
+scGPLabel_stop->Caption=ls->Strings[53];
+scGPLabel_geometrie->Caption=ls->Strings[54];
+scGPLabel_poznamky->Caption=ls->Strings[55];
+scGPGlyphButton_close_grafy->Caption=ls->Strings[56];
+scExPanel_log_header->Caption=ls->Strings[57];
+scExPanel_html->Caption=ls->Strings[58];
+pohonobjekt->Caption=ls->Strings[59];
+scGPGlyphButton_close_legenda_casove_osy->Caption=ls->Strings[60];
+CheckBox_pouzit_zadane_kapacity_OLD->Caption=ls->Strings[61];
+CheckBoxAnimovatSG_OLD->Caption=ls->Strings[62];
+scGPLabel1->Caption=ls->Strings[63];
+scGPButton_ulozit->Caption=ls->Strings[64];
+scGPButton_zahodit->Caption=ls->Strings[65];
+scGPLabel_prepinacKot->Caption=ls->Strings[66];
+scGPImage_mereni_vzdalenost->Hint=ls->Strings[67];
+scGPImage_zamek_posunu->Hint=ls->Strings[68];
+ButtonPLAY->Hint=ls->Strings[69];
+CheckBox_pouzit_zadane_kapacity->Caption=ls->Strings[70];
+CheckBoxAnimovatSG->Caption=ls->Strings[71];
+CheckBoxVymena_barev->Caption=ls->Strings[72];
+CheckBoxVytizenost->Caption=ls->Strings[73];
+scGPCheckBox_pocet_voziku_dle_WIP->Caption=ls->Strings[74];
+scLabel_filtrovat->Caption=ls->Strings[75];
+scLabel_doba_cekani->Caption=ls->Strings[76];
+scGPButton_generuj->Hint=ls->Strings[77];
+scGPButton_header_def_zakazek->Hint=ls->Strings[78];
+scButton_konec->Caption=ls->Strings[79];
+scButton_otevrit->Caption=ls->Strings[80];
+scButton4->Caption=ls->Strings[81];
+scButton_zaloha->Caption=ls->Strings[82];
+scButton_report->Caption=ls->Strings[83];
+scLabel11->Caption=ls->Strings[84];
+scButton_ulozjako->Caption=ls->Strings[85];
+scButton_export->Caption=ls->Strings[86];
+scButton_posledni_otevreny->Caption=ls->Strings[87];
+scButton_novy->Caption=ls->Strings[88];
+scButton_ulozit->Caption=ls->Strings[89];
+scButton_nacist_podklad->Caption=ls->Strings[90];
+pravyoption_nadpis->Caption=ls->Strings[91];
+scExPanel_vrstvy->Caption=ls->Strings[92];
+scGPCheckBox_zobrazit_koleje->Caption=ls->Strings[93];
+scGPCheckBox_zobrazit_pozice->Caption=ls->Strings[94];
+scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Caption=ls->Strings[95];
+scGPCheckBox1_popisky->Caption=ls->Strings[96];
+scExPanel_podklad->Caption=ls->Strings[97];
+scGPButton_adjustace->Caption=ls->Strings[98];
+scGPButton_kalibrace->Caption=ls->Strings[99];
+scGPCheckBox_stupne_sedi->Caption=ls->Strings[100];
+scGPCheckBox_zobraz_podklad->Caption=ls->Strings[101];
+scLabel1_svetelnost->Caption=ls->Strings[102];
+scExPanel_ostatni->Caption=ls->Strings[103];
+scGPCheckBox_ortogon->Caption=ls->Strings[104];
+scGPCheckBox_ortogon->Hint=ls->Strings[105];
+scLabel16->Caption=ls->Strings[106];
+scLabel5->Caption=ls->Strings[107];
+scLabel1_intenzita->Caption=ls->Strings[108];
+scGPTrackBar_intenzita->Hint=ls->Strings[109];
+scExPanel1->Caption=ls->Strings[110];
+scGPButton_mereni_vzdalenost->Caption=ls->Strings[111];
+Form_parametry_linky->rHTMLLabel_eDesigner->Caption=ls->Strings[112];
+Form_parametry_linky->rHTMLLabel_doporuc_pohony->Caption=ls->Strings[113];
+Form_parametry_linky->rHTMLLabel_podlahovy->Caption=ls->Strings[114];
+Form_parametry_linky->rHTMLLabel_podvesny->Caption=ls->Strings[115];
+Form_parametry_linky->Button_save->Caption=ls->Strings[116];
+Form_parametry_linky->Button_storno->Caption=ls->Strings[117];
+Form_parametry_linky->Konec->Caption=ls->Strings[118];
+Form_parametry_linky->scLabel1->Caption=ls->Strings[119];
+Form_parametry_linky->scGPGlyphButton_info->Caption=ls->Strings[120];
+Form_parametry_linky->scGPGlyphButton_refresh->Caption=ls->Strings[121];
+Form_parametry_linky->scGPGlyphButton_refresh->Hint=ls->Strings[122];
+Form_parametry_linky->scGPButton_vozik->Caption=ls->Strings[123];
+Form_parametry_linky->scGPButton_pohon->Caption=ls->Strings[124];
+Form_parametry_linky->scExPanel_doporuc_pohony->Caption=ls->Strings[125];
+Form_parametry_linky->scGPGlyphButton_add_mezi_pohony->Hint=ls->Strings[126];
+Form_parametry_linky->scGPButton_jig->Caption=ls->Strings[127];
+Form_parametry_linky->scLabel_zobrazit_parametry->Caption=ls->Strings[128];
+Form_parametry_linky->scLabel_smazat->Caption=ls->Strings[129];
+Form_parametry_linky->scLabel_smazat_nepouzite->Caption=ls->Strings[130];
+Form_parametry_linky->scLabel_kopirovat->Caption=ls->Strings[131];
+Form_parametry_linky->scLabel_nastavit_parametry->Caption=ls->Strings[132];
+Form_parametry_linky->scGPGlyphButton_DEL_nepouzite->Caption=ls->Strings[133];
+Form_parametry_linky->scGPGlyphButton_DEL_nepouzite->Hint=ls->Strings[134];
+Form_parametry_linky->scGPGlyphButton_TT->Hint=ls->Strings[135];
+Form_parametry_linky->scGPGlyphButton_vozik_edit->Hint=ls->Strings[136];
+Form_parametry_linky->scGPGlyphButton_ADD->Hint=ls->Strings[137];
+Form_parametry_linky->scGPButton_obecne->Caption=ls->Strings[138];
+Form_parametry_linky->rHTMLLabel_JIG->Caption=ls->Strings[139];
+Form_parametry_linky->rHTMLLabel_podvozek_zaves->Caption=ls->Strings[140];
+//Form_parametry_linky->scHTMLLabel_jig_info->Caption=ls->Strings[141];
+//Form_parametry_linky->scGPGlyphButton_ADD_old->Hint=ls->Strings[142];
+//Form_parametry_linky->scGPGlyphButton_OPTIONS->Hint=ls->Strings[143];
+//Form_parametry_linky->scGPGlyphButton_katalog->Hint=ls->Strings[144];
+//Form_parametry_linky->scGPTrackBar_uchyceni->Hint=ls->Strings[145];
+
+
 	return 1;
 	}
-  else //pokud není nalezen jazykový slovník
-  {
+	else //pokud není nalezen jazykový slovník
+	{
 	//defaultní hlášky Form1
 //	unsigned short ui=36;
 //	ls->Insert(ui++,"Repeat or press ENTER or double click when finished | press ESC to cancel");
 	return 0; //načte defaultní jazykové nastavení tzn. AJ
-  }
+	}
 }
 //zapnutí posunu haly
 void __fastcall TForm1::scGPButton_posun_halyClick(TObject *Sender)
 {
-  log(__func__);//logování
+	log(__func__);//logování
 	if(d.v.HALA.body!=NULL && pom_temp==NULL)//pokud existuje hala a není aktivní editace objektu, jinak nemá smysl
 	{
 		scSplitView_OPTIONS->Close();
@@ -12154,24 +12406,24 @@ void __fastcall TForm1::scGPButton_nakreslit_haluClick(TObject *Sender)
 	log(__func__);//logování
 	if(pom_temp==NULL)//ošetření proti spouštění v náhledu
 	{
-  	scSplitView_OPTIONS->Close();
-  	if(d.v.HALA.body==NULL||d.v.HALA.body->dalsi==NULL)//pokud existuje hala, jinak nemá smysl
-  	{
-    	TIP="Klinutím na levé tlačítko myši přidejte bod.";
-  		Akce=DRAW_HALA;
+		scSplitView_OPTIONS->Close();
+		if(d.v.HALA.body==NULL||d.v.HALA.body->dalsi==NULL)//pokud existuje hala, jinak nemá smysl
+		{
+			TIP="Klinutím na levé tlačítko myši přidejte bod.";
+			Akce=DRAW_HALA;
 			kurzor(add_o);
 			REFRESH();//musí být refresh z důvodu vykreslění mřížky hned po kliku na vytvoření haly
-  	}
+		}
   	else if(mrYes==MB("Dojde k odstranění haly, chcete pokračovat?",MB_YESNO))
-  	{
+		{
   		//smaže starou halu
-  		Cvektory::TBod *B=d.v.HALA.body->dalsi;
+			Cvektory::TBod *B=d.v.HALA.body->dalsi;
   		while(B!=NULL)
-  		{
+			{
   			d.v.smaz_bod(B);
-  			B=B->dalsi;
+				B=B->dalsi;
   		}
-  		delete B;B=NULL;
+			delete B;B=NULL;
   		scGPButton_nakreslit_haluClick(this);//znovu spuštění metody
 		}
 	}
