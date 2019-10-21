@@ -12280,3 +12280,9 @@ REFRESH();
 
 
 
+void __fastcall TForm1::scGPSwitch1ChangeState(TObject *Sender)
+{
+if(scGPSwitch1->scswOn)
+}
+//---------------------------------------------------------------------------
+
