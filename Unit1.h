@@ -643,6 +643,7 @@ private:
 	void vloz_bod_haly_objektu(int X,int Y);//vloží bod haly nebo objektu na zvolené souøadnice (fyzické), zohlední pøichytávání
 	void smaz_bod_haly_objektu(Cvektory::TBod *bod);//smaže bod haly nebo objektu, pokud existují už jen 2 poslední body smaže oba
 	void mGrid_on_mGrid();//prohledá zda se pøekrývají mGridy
+	void mGrid_komponenta_na_draw(TmGrid *mGrid,long Col,long Row);//smazì komponentu v dané buòce a zmìní typ bunky na DRAW
 
 	////promìnné
 	TDateTime TIME;
