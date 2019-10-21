@@ -648,6 +648,7 @@ private:
 	void smaz_bod_haly_objektu(Cvektory::TBod *bod);//smaže bod haly nebo objektu, pokud existují už jen 2 poslední body smaže oba
 	void mGrid_on_mGrid();//prohledá zda se pøekrývají mGridy
 	void mGrid_komponenta_na_draw(TmGrid *mGrid,long Col,long Row);//smazì komponentu v dané buòce a zmìní typ bunky na DRAW
+	void mGrid_puvodni_stav(Cvektory::TElement *E);//nadesingnuje tabulky elementù na pùvodní stav, obnový komponenty, naplní comba, provede Update() mGridu
 
 	////promìnné
 	TDateTime TIME;
