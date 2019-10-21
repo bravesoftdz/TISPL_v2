@@ -109,6 +109,7 @@ __published:	// IDE-managed Components
   TscGPGlyphButton *scGPGlyphButton_katalog;
   TscStyledForm *scStyledForm2;
   TscGPTrackBar *scGPTrackBar_uchyceni;
+  TscHTMLLabel *scHTMLLabel1;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
