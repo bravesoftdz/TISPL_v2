@@ -12187,7 +12187,7 @@ void __fastcall TForm1::scGPSwitch_robot_clovekChangeState(TObject *Sender)
 //---------------------------------------------------------------------------
 //načte zvolený jazyk
 unsigned short TForm1::load_language(Tlanguage language)
-{         language=EN;
+{
    log(__func__);//logování
    //nastavení adresáře k místě aplikace
   ChDir(ExtractFilePath(Application->ExeName));    //přesune k EXE
@@ -12202,7 +12202,7 @@ unsigned short TForm1::load_language(Tlanguage language)
 	catch(...){;}
   }*/
 	ls=new TStringList;        //114
-	for(unsigned short i=0;i<=140;i++)ls->Insert(i,"");//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
+	for(unsigned short i=0;i<=145;i++)ls->Insert(i,"");//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
 
 		if(FileExists(File_language))//znovu kontrola po případném stažení souboru
 	{
@@ -12365,11 +12365,11 @@ Form_parametry_linky->scGPGlyphButton_ADD->Hint=ls->Strings[137];
 Form_parametry_linky->scGPButton_obecne->Caption=ls->Strings[138];
 Form_parametry_linky->rHTMLLabel_JIG->Caption=ls->Strings[139];
 Form_parametry_linky->rHTMLLabel_podvozek_zaves->Caption=ls->Strings[140];
-//Form_parametry_linky->scHTMLLabel_jig_info->Caption=ls->Strings[141];
-//Form_parametry_linky->scGPGlyphButton_ADD_old->Hint=ls->Strings[142];
-//Form_parametry_linky->scGPGlyphButton_OPTIONS->Hint=ls->Strings[143];
-//Form_parametry_linky->scGPGlyphButton_katalog->Hint=ls->Strings[144];
-//Form_parametry_linky->scGPTrackBar_uchyceni->Hint=ls->Strings[145];
+Form_parametry_linky->scHTMLLabel_jig_info->Caption=ls->Strings[141];
+Form_parametry_linky->scGPGlyphButton_ADD_old->Hint=ls->Strings[142];
+Form_parametry_linky->scGPGlyphButton_OPTIONS->Hint=ls->Strings[143];
+Form_parametry_linky->scGPGlyphButton_katalog->Hint=ls->Strings[144];
+Form_parametry_linky->scGPTrackBar_uchyceni->Hint=ls->Strings[145];
 
 
 	return 1;
