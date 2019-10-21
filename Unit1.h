@@ -570,7 +570,7 @@ private:
 	void pan_move_map();
 	void add_objekt(int X, int Y);
 	Cvektory::TObjekt *add_objekt_za();
-	void move_objekt(int X, int Y);
+	void move_objekt(double X, double Y,Cvektory::TObjekt *Objekt);
 	void add_element(int X, int Y);
 	void add_komoru();//pøidávání komory kabinì powerwashe, kontrola zda není souèet kabin vìtší než rozmìr kabiny
 	void vlozit_predavaci_misto();//projde elementy a objekty, pokud je nìkde nutnost vložit pøedávací místo vloží ho tam
@@ -643,6 +643,7 @@ private:
 	void vloz_bod_haly_objektu(int X,int Y);//vloží bod haly nebo objektu na zvolené souøadnice (fyzické), zohlední pøichytávání
 	void smaz_bod_haly_objektu(Cvektory::TBod *bod);//smaže bod haly nebo objektu, pokud existují už jen 2 poslední body smaže oba
 	void mGrid_on_mGrid();//prohledá zda se pøekrývají mGridy
+	void mGrid_komponenta_na_draw(TmGrid *mGrid,long Col,long Row);//smazì komponentu v dané buòce a zmìní typ bunky na DRAW
 
 	////promìnné
 	TDateTime TIME;
