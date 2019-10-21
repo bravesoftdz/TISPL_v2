@@ -596,21 +596,20 @@ void __fastcall TForm1::FormActivate(TObject *Sender)
 		if(!DEBUG)
 		{
 			//toto odkomentovat pro spuštění TTR
-//			if(!ttr("start"))
-//			{
-//				Timer_tr->Enabled=false;//ještě je ale z důvodu ochrany enabled=true v object inspectoru, toto je spíše na zmatení
-//				Close();
-//			}
-
-//			else
-			Timer_tr->Enabled=false;// toto zakomentovat pro spuštění TTR
+			if(!ttr("start"))
+			{
+				Timer_tr->Enabled=false;//ještě je ale z důvodu ochrany enabled=true v object inspectoru, toto je spíše na zmatení
+				Close();
+			}
+			else//toto odkomentovat pro spuštění TTR a slouží pro startUP
+			//Timer_tr->Enabled=false;// toto zakomentovat pro spuštění TTR
 			startUP();//toto vždy odkomentované
 		}
 		else
 		{
 			Timer_tr->Enabled=false;
 			startUP();
-	}
+		}
 	}
 
  }
@@ -630,53 +629,56 @@ bool TForm1::ttr(UnicodeString Text)
 
 	try
 	{
-		//zjištění expirace trialverze
-		//Response=IdHTTP1->Get(AnsiString("http://85.255.8.81/tispl/")+LIC_FILE+UnicodeString(".lic"));
-
-		FDQuery1->Active = False;
-		FDQuery1->Open("SELECT  DATE_FORMAT(expiration_date ,'%d.%m.%Y %H:%i:%s') AS expiration_date FROM app_setup WHERE id=\"1\"");  //id nahradit id z ini
-		FDQuery1->Active = True;
-		AnsiString Response = FDQuery1->Fields->Fields[0]->AsAnsiString;
+		////zjištění expirace trialverze
+		////textaková verze
+		Response=IdHTTP1->Get(AnsiString("http://www.lyzarskejihlavsko.cz/tispl/")+LIC_FILE+UnicodeString(".lic"));
+		////DB - řešení, ověřeno bylo funkční
+		//FDQuery1->Active = False;
+		//FDQuery1->Open("SELECT  DATE_FORMAT(expiration_date ,'%d.%m.%Y %H:%i:%s') AS expiration_date FROM app_setup WHERE id=\"1\"");  //id nahradit id z ini
+		//FDQuery1->Active = True;
+		//AnsiString Response = FDQuery1->Fields->Fields[0]->AsAnsiString;
 
 		try
 		{
-					//např. možné alternativy time serveru: 128.138.140.44 129.6.15.28 129.6.15.29 129.6.15.30
-					try
-					{
-						IdTime1->Host="129.6.15.29";//testovací TIME SERVER, který nefunguje: 192.43.244.18
-						TIME=IdTime1->DateTime;
-					}
-					catch(...)//v případě nedostupnosti timeserveru, zkusí ještě jiný
-					{
-						IdTime1->Host="128.138.140.44";//testovací TIMESERVER, který nefunguje: 192.43.244.18
-						TIME=IdTime1->DateTime;
-					}
-					Form_uvod->Label_status->Visible=false;
+			//timeservrové řešení
+			try
+			{
+				IdTime1->Host="128.138.140.44";//testovací TIME SERVER
+				TIME=IdTime1->DateTime;
+			}
+			catch(...)//v případě nedostupnosti timeserveru, zkusí ještě jiný
+			{
+				IdTime1->Host="128.138.140.44";//testovací TIMESERVER
+				TIME=IdTime1->DateTime;
+			}
+			Form_uvod->Label_status->Visible=false;
+			TIME_expirace=TDateTime(Response);
 
-					TIME_expirace	=TDateTime(Response);
 
-					if(TIME_expirace<TIME && TIME!="1.1.1990 0:00:00")
-					{
-						log2web(ms.replace(Response,"_"," ")+"-"+Text+"_EXPIRACE");
-						MB(Text_error);//vypršela licence resp. program expiroval;
-						duvod_k_ulozeni=false;
-						Timer_tr->Enabled=false;
-						Close();
-					}
-					else //VŠE OK
-					{
-							log2web(ms.replace(Response,"_"," ")+"-"+Text+"_OK");
-							SB("Datum expirace licence: "+TIME_expirace);
-							aktualizace();//kontrola dostupnosti aktualizace
-							STATUS=true;
-					}
+			if(TIME_expirace<TIME && TIME!="1.1.1990 0:00:00")
+			//if(Response!="ano")//verze bez timeservru
+			{
+				log2web(ms.replace(Response,"_"," ")+"-"+Text+"_EXPIRACE");
+				MB(Text_error);//vypršela licence resp. program expiroval;
+				duvod_k_ulozeni=false;
+				Timer_tr->Enabled=false;
+				Close();
+			}
+			else //VŠE OK
+			{
+				log2web(ms.replace(Response,"_"," ")+"-"+Text+"_OK");
+				SB("Datum expirace licence: "+TIME_expirace);//pouze výpis do StatusBaru, do kdy je platná verze
+				//aktualizace();//kontrola dostupnosti aktualizace
+				STATUS=true;
+			}
 		}
 		catch(...)//nezdařilo se připojení k time serveru, timeout
 		{
 			log2web(ms.replace(Response,"_"," ")+"-"+Text+"_TIMESERVER_ERR");
 			//todo if(++n_prihlaseni>=3)//až při třetím chybovém stavu
 			{
-				Text_error="Nezdařilo se připojení k time serveru, aplikace nebude spuštěna!";
+				//Text_error="Nezdařilo se připojení k time serveru, aplikace nebude spuštěna!";
+				Text_error="Nezdařilo se připojení k serveru, aplikace nebude spuštěna!";
 				MB(Text_error);
 				duvod_k_ulozeni=false;
 				Timer_tr->Enabled=false;
@@ -687,7 +689,7 @@ bool TForm1::ttr(UnicodeString Text)
 	catch(...)//nezdařilo se připojení k licenčnímu serveru
 	{
 		//tady nemůže být log
-		Text_error="Nezdařilo se připojení k licenčnímu serveru, aplikace nebude spuštěna!"+AnsiString(n_prihlaseni+1);
+		Text_error="Nezdařilo se připojení k licenčnímu serveru, aplikace nebude spuštěna!"/*+AnsiString(n_prihlaseni+1)*/;
 		//todo if(++n_prihlaseni>=3)//až při třetím chybovém stavu
 		{
 			MB(Text_error);
@@ -841,20 +843,22 @@ AnsiString TForm1::readINI(AnsiString Section,AnsiString Ident)
 //automaticky přidá parametry (čas, uživatel, licence)
 void TForm1::log2web(UnicodeString Text)
 {
-//	if(!DEBUG)
-//	{
-//		//log2webOnlyText(ms.DeleteSpace(LICENCE)+"_"+get_computer_name()+"_"+get_user_name()+"_"+TIME.CurrentDate()+"_"+TIME.CurrentTime()+"|"+Text);
-//		try
-//		{
+	if(!DEBUG)
+	{
+		try
+		{
+				//textáková verze
+				log2webOnlyText(ms.DeleteSpace(LICENCE)+"_"+get_computer_name()+"_"+get_user_name()+"_"+TIME.CurrentDate()+"_"+TIME.CurrentTime()+"|"+Text);
+
+				//DB funkční verze
 //			AnsiString relation_id=GetCurrentProcessId();
 //			AnsiString send_log_time= TIME.CurrentDateTime();
 //			AnsiString ID ="1";
 //			AnsiString strSQL = "INSERT INTO log_table (app_id,app_start,username,send_log_time,command,relation_id,verze) VALUES (\""+ID+"\",\""+send_log_time+"\",\""+get_user_name()+"\",\""+send_log_time+"\",\""+Text+"\",\""+relation_id+"\",\""+VERZE+"\")";
-//
 //			FDConnection1->ExecSQL(strSQL);
-//		}
-//		catch(...){;}//např. není připojení k internetu, tak pouze nezaloguje, dořešit uložení logu do doby získání připojení a volání opětovného odeslání logu
-//	}
+		}
+		catch(...){;}//např. není připojení k internetu, tak pouze nezaloguje, dořešit uložení logu do doby získání připojení a volání opětovného odeslání logu
+	}
 }
 //---------------------------------------------------------------------------
 //pouze text
@@ -863,24 +867,17 @@ void TForm1::log2webOnlyText(UnicodeString Text)
 	//   varianta odesílání dat přes GET
 	//IdHTTP1->Get(UnicodeString("http://85.255.8.81/tispl/skript_tispl.php?hash=erDSQgregdvgFEFSDDeporhrfFGOI98886732dfgorvmqwerfdvvcBHDE")+Text);
 
-	/*    varianta odesílání dat přes POST
-		TStringList *request = new TStringList;
-				TStringList *response = new TStringList();
+	//varianta odesílání dat přes POST
+	TStringList *request = new TStringList;
+	TStringList *response = new TStringList();
 
-				request->Clear();
-				//IdHTTP1->IOHandler = IdSSLIOHandlerSocketOpenSSL1;
-				IdHTTP1->Request->ContentType = "application/x-www-form-urlencoded";
-		 //		Idssl
+	request->Clear();
+	//IdHTTP1->IOHandler = IdSSLIOHandlerSocketOpenSSL1;
+	IdHTTP1->Request->ContentType = "application/x-www-form-urlencoded";
+	request->Values["heslo"]    ="erDSQgregdvgFEFSDDeporhrfFGOI98886732dfgorvmqwerfdvvcBHDE";
+	request->Values["data"]     = Text;
 
-	request->Values["app"]      = "tispl";
-	request->Values["key"]     = "";
-	request->Values["pass"]        ="2011_bozp*-";
-	request->Values["log_text"]     = "2011_bozp*-";
-
-	response->Text = IdHTTP1->Post("http://85.255.8.81/tispl/skript_tispl.php", request);
-	 */
-
-	//catch(...){;}//není připojení k internetu
+	response->Text = IdHTTP1->Post("http://www.lyzarskejihlavsko.cz/tispl/skript_tispl.php", request);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -10234,16 +10231,16 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 {
  //log(__func__);
  //Form2->ShowModal();
-	d.v.vytvor_retez(d.v.POHONY->dalsi);
-	d.vykresli_retez(Canvas,d.v.POHONY->dalsi->retez);
-//	d.v.vytvor_retez(d.v.POHONY->predchozi);
-	Memo("____-");
-	Cvektory::TRetez *R=d.v.POHONY->dalsi->retez;
-	while(R!=NULL)
-	{
-		Memo(R->eID);
-		R=R->dalsi;
-	}
+//	d.v.vytvor_retez(d.v.POHONY->dalsi);
+//	d.vykresli_retez(Canvas,d.v.POHONY->dalsi->retez);
+////	d.v.vytvor_retez(d.v.POHONY->predchozi);
+//	Memo("____-");
+//	Cvektory::TRetez *R=d.v.POHONY->dalsi->retez;
+//	while(R!=NULL)
+//	{
+//		Memo(R->eID);
+//		R=R->dalsi;
+//	}
 //	delete R;
 //	Memo("____________");
 //	R=d.v.POHONY->predchozi->retez->dalsi;
@@ -10253,6 +10250,10 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 //		R=R->dalsi;
 //	}
 //	delete R;
+
+//		IdTime1->Host="128.138.140.44";//testovací TIME SERVER
+//		TDateTime TIME=IdTime1->DateTime;
+//		Sk(TIME);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
@@ -10305,7 +10306,6 @@ void __fastcall TForm1::SQL_processIDClick(TObject *Sender)
 	FDQuery1->Open("select * from app_setup where id=\"1\"");  //id nahradit id z ini     a udelat podmínku zda platí lokální údaje o pc s uloženými
 	FDQuery1->Active = True;
 
-
 	//ZDM if(get_computer_name()!=FDQuery1->Fields->Fields[2]->AsAnsiString || get_user_name()!=FDQuery1->Fields->Fields[3]->AsAnsiString) {
 	//ZDM ShowMessage("neplatne udaje v PC a na serveru");
 	//ZDM }
@@ -10320,11 +10320,6 @@ void __fastcall TForm1::SQL_processIDClick(TObject *Sender)
 
 
 		//ZDM FDConnection1->ExecSQL(strSQL);
-
-
-
-
-
 }
 //---------------------------------------------------------------------------
 
