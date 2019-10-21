@@ -7141,8 +7141,8 @@ object Form_parametry_linky: TForm_parametry_linky
     end
     object scHTMLLabel_jig_info: TscHTMLLabel
       Left = 2
-      Top = 165
-      Width = 183
+      Top = 4
+      Width = 153
       Height = 26
       Margins.Left = 0
       Font.Charset = DEFAULT_CHARSET
@@ -7156,7 +7156,7 @@ object Form_parametry_linky: TForm_parametry_linky
       AutoSizeHeight = False
       AutoSizeWidth = False
       AutoExecuteURL = True
-      Caption = '* pohled na Jig p'#345'i nav'#283#353'ov'#225'n'#237' <br> '
+      Caption = 'maxim'#225'ln'#237' rozm'#283'ry voz'#237'ku<br>sm'#283'r pohybu linky'
       LinkFontNormal.Charset = DEFAULT_CHARSET
       LinkFontNormal.Color = clHighlight
       LinkFontNormal.Height = -11
@@ -7171,11 +7171,11 @@ object Form_parametry_linky: TForm_parametry_linky
       TextAlignment = taLeftJustify
     end
     object scGPGlyphButton_ADD_old: TscGPGlyphButton
-      Left = 0
-      Top = 0
-      Width = 33
-      Height = 33
-      Hint = 'P'#345'idat nov'#253' pohon'
+      Left = 93
+      Top = 17
+      Width = 17
+      Height = 18
+      Hint = 'v'#253'choz'#237' sm'#283'r linky, kter'#253' lze v Layoutu m'#283'nit'
       Align = alCustom
       BiDiMode = bdRightToLeftNoAlign
       Font.Charset = DEFAULT_CHARSET
@@ -7189,7 +7189,6 @@ object Form_parametry_linky: TForm_parametry_linky
       ParentShowHint = False
       ShowHint = True
       TabOrder = 5
-      Visible = False
       OnClick = Button_ADD_Click
       ArrowPosition = scapBottom
       Animation = True
@@ -7255,7 +7254,7 @@ object Form_parametry_linky: TForm_parametry_linky
       GlyphOptions.PressedColorAlpha = 255
       GlyphOptions.FocusedColorAlpha = 255
       GlyphOptions.DisabledColorAlpha = 150
-      GlyphOptions.Kind = scgpbgkNaviRight
+      GlyphOptions.Kind = scgpbgkNaviLeft
       GlyphOptions.Thickness = 2
       GlyphOptions.ThicknessScaled = False
       GlyphOptions.Size = 0
@@ -7275,11 +7274,42 @@ object Form_parametry_linky: TForm_parametry_linky
       GroupIndex = 0
       AllowAllUp = False
     end
+    object scHTMLLabel1: TscHTMLLabel
+      Left = 2
+      Top = 178
+      Width = 153
+      Height = 13
+      Margins.Left = 0
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      Font.Quality = fqClearType
+      ParentFont = False
+      TabOrder = 6
+      AutoSizeHeight = False
+      AutoSizeWidth = False
+      AutoExecuteURL = True
+      Caption = 'pohled na jig p'#345'i nav'#283#353'ov'#225'n'#237
+      LinkFontNormal.Charset = DEFAULT_CHARSET
+      LinkFontNormal.Color = clHighlight
+      LinkFontNormal.Height = -11
+      LinkFontNormal.Name = 'Tahoma'
+      LinkFontNormal.Style = []
+      LinkFontHover.Charset = DEFAULT_CHARSET
+      LinkFontHover.Color = clHighlight
+      LinkFontHover.Height = -11
+      LinkFontHover.Name = 'Tahoma'
+      LinkFontHover.Style = [fsUnderline]
+      MaxWidth = 0
+      TextAlignment = taLeftJustify
+    end
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 8882
-    Top = 14174
+    Left = 9149
+    Top = 14619
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -7304,8 +7334,8 @@ object Form_parametry_linky: TForm_parametry_linky
     GlyphThickness = 1
     Kind = scgpgkOneGear
     TransparentBackground = True
-    ExplicitLeft = 7619
-    ExplicitTop = 12069
+    ExplicitLeft = 9140
+    ExplicitTop = 14604
   end
   object scGPSwitch: TscGPSwitch
     Left = 762
@@ -7462,6 +7492,8 @@ object Form_parametry_linky: TForm_parametry_linky
     Margins.Right = 1
     Margins.Bottom = 2
     Align = alCustom
+    BiDiMode = bdLeftToRight
+    ParentBiDiMode = False
     ParentShowHint = False
     ShowHint = True
     TabOrder = 26
@@ -7473,8 +7505,8 @@ object Form_parametry_linky: TForm_parametry_linky
     CanFocused = True
     MouseSupport = True
     MinValue = 0
-    MaxValue = 15
-    Value = 10
+    MaxValue = 0
+    Value = 0
     Vertical = False
     ReadOnly = False
     Color = clBlack
