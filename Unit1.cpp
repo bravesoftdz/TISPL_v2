@@ -2244,7 +2244,7 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 					TIP="";
 		  		REFRESH();
 				}
-				else NP_input();//otevření editace
+				else if(pom!=NULL)NP_input();//otevření editace
 			}break;
 		}
 		Akce=NIC;Akce_temp=NIC;
@@ -3952,9 +3952,9 @@ void TForm1::add_objekt(int X, int Y)
 //---------------------------------------------------------------------------
 Cvektory::TObjekt *TForm1::add_objekt_za()
 {
-//////Nově
+	//////Procházení všech objektů navrácení posledního, u větších objektů může citelná oblast překrývat ty malé, proto se musí prověřit všechny oblasti
 	log(__func__);//logování
-	Cvektory::TObjekt *O=NULL;
+	Cvektory::TObjekt *O=NULL,*ret=NULL;
 	short oblast=0;
 	if(d.v.OBJEKTY->predchozi->n>=2)
 	{
@@ -3962,11 +3962,11 @@ Cvektory::TObjekt *TForm1::add_objekt_za()
 		while(O!=NULL)//nekontrolovat poslední objekt
 		{
 			oblast=d.v.oblast_objektu(O,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
-			if(oblast==1 || O->n==1 && oblast==2)break;//pokud jsem za objektem vrátím ho
+			if(oblast==1 || O->n==1 && oblast==2)ret=O;//pokud jsem za objektem vrátím ho
 			O=O->dalsi;
     }
 	}
-	return O;
+	return ret;
 }
 //---------------------------------------------------------------------------
 void TForm1::move_objekt(double X, double Y,Cvektory::TObjekt *Objekt)
