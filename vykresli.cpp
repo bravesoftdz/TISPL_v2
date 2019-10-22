@@ -118,13 +118,23 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	}
 	if(F->pom_temp!=NULL)vykresli_objekt(canv,F->pom_temp);//vykreslení aktuálně editovaného objektu nad všechny ostatní objekty
 
-	///////////////Vykreslení pohonu a elementů
+	///////////////Vykreslení pohonů
+//	Cvektory::TPohon *P=v.POHONY->dalsi;//přeskočí hlavičku
+//	while (P!=NULL)
+//	{
+//		v.vytvor_retez(P);
+//		vykresli_retez(canv,P->retez);
+//		P=P->dalsi;//posun na další prvek
+//	}
+//	P=NULL;delete P;
+
+	///////////////Vykreslení elementů
 	WarningCount=0;
 	O=v.OBJEKTY->dalsi;//přeskočí hlavičku
 	while(O!=NULL)
 	{
 		short stav=1;
-		//vykreslení prozatimní osy POHONU
+		//vykreslení POHONU
 		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)vykresli_retez(canv,F->pom_temp);else vykresli_retez(canv,O);
 		Cvektory::TElement *E=O->elementy;
 		if(F->pom_temp!=NULL && F->pom_temp->n==O->n){stav=1;E=F->pom_temp->elementy;}//elementy v aktivním objektu, zajistí přeskočení vykreslení neaktuálních dat elementů a vykreslí aktuálně data elementů neuloženého objektu
@@ -1299,14 +1309,14 @@ void Cvykresli::zobrazit_label_zamerovac(int X,int Y)
 	unsigned int V=ceil((Y+PosunT.y-KrokY/2-Form1->scGPPanel_mainmenu->Height)/(KrokY*1.0));//pozn. KrokY/2 kvůli tomu, že střed osy je ve horozintální ose obdelníku
 	if(!mod_vytizenost_objektu && 0<V && V<=v.VOZIKY->predchozi->n) //pokud se nejedná o řežim vytíženost objektu a zároveň se jedná o číslo vozík od min do max vozíků
 	{
-				vykresli_svislici_na_casove_osy(Form1->Canvas,X,Y);//nový přístup v zobrazování svislic, jen v momentu zobrazování labalu_zamerovac
-				Form1->Label_zamerovac->Transparent=false;
-				Form1->Label_zamerovac->Color=clWhite;
-				Form1->Label_zamerovac->Font->Color=(TColor) RGB(100,100,100);
-				Form1->Label_zamerovac->Left=X+5; Form1->Label_zamerovac->Top=Y+20; //+ odsazení
-				Form1->Label_zamerovac->Caption=" vozík: "+AnsiString(V)+" \n min: "+AnsiString((X+PosunT.x)/PX2MIN)+" ";
-				Form1->Label_zamerovac->Visible=true;
-				Form1->RM();//korekce chyby oskakování pravého menu
+		vykresli_svislici_na_casove_osy(Form1->Canvas,X,Y);//nový přístup v zobrazování svislic, jen v momentu zobrazování labalu_zamerovac
+		Form1->Label_zamerovac->Transparent=false;
+		Form1->Label_zamerovac->Color=clWhite;
+		Form1->Label_zamerovac->Font->Color=(TColor) RGB(100,100,100);
+		Form1->Label_zamerovac->Left=X+5; Form1->Label_zamerovac->Top=Y+20; //+ odsazení
+		Form1->Label_zamerovac->Caption=" vozík: "+AnsiString(V)+" \n min: "+AnsiString((X+PosunT.x)/PX2MIN)+" ";
+		Form1->Label_zamerovac->Visible=true;
+		Form1->RM();//korekce chyby oskakování pravého menu
 	}
 	else Form1->Label_zamerovac->Visible=false;
 }
@@ -2341,6 +2351,7 @@ double Cvykresli::trend(Cvektory::TObjekt *Objekt)
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
+//old odstranit
 //zajišťuje vykreslení layoutu
 //void Cvykresli::vykresli_layout(TCanvas *canv)
 //{
@@ -2671,7 +2682,7 @@ unsigned int Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,doubl
 	return RET;//vrátí index
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-//metada brzy možno odstranit !!!!
+//metodu brzy možno odstranit !!!!
 //zajišťuje vykreslení pozic v layoutu + příprava konstrukce když nebudu chtít vykreslovat objekt vodorovně, pouze bude nutné zajistit ještě rotaci pozic a podvozků
 unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,int i,TPointD OD, TPointD DO,double delka,double delkaV,double sirkaV,double delkaP,double mezera,double akt_pozice)
 {
@@ -2851,6 +2862,7 @@ void Cvykresli::vykresli_jig(TCanvas *canv,double X,double Y,double dJ,double sJ
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //zajistí vykreslení řetězz, XY -umístění L začátek (střed dopravníku) objektu v metrech, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu, za zmínění stojí lokální proměnná této metody KR, což je kalibrace řetězu vůči podvozku např. 0 - střed, -DP/2 - začátek, DP/2 - konec, či libovolný v m od začátku podvozku
 //za zmínění stojí lokální proměnná KR, což je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, DV - konec,
+//metoda bude také k odstranění
 void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y,double Poffset,bool animace)
 {
 	////vychozí geometrické proměnné
@@ -3097,9 +3109,16 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TRetez *Retez)
 	{
 		//TColor clRetez=clBlack; if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clRetez=m.clIntensive(clRetez,m.get_intensity());//zesvětlování neaktivních pohonů
 		//float RetezWidth=1;if(E->pohon!=NULL)RetezWidth=F->Zoom*0.5;//pokud není pohon přiřazen, tak jen elementární osa, jinak skutečná tloušťka
+//		//vykreslení pouzdra řetězu
+//		if(E->pohon!=NULL && (F->pom_temp==NULL || F->pom_temp!=NULL && F->pom_temp->n==O->n || F->scGPTrackBar_intenzita->Value>25 && F->pom_temp!=NULL && F->pom_temp->n!=O->n))//při editaci zobrazí pasivní jen s intenzitou větší než 25
+//		{
+//			set_pen(canv,clKolej,m.round(RetezWidth*2),PS_ENDCAP_FLAT);
+//			canv->PolyBezier(POLE,3);
+//		}
+//bude to chtít ukládat stav řetezu dle pom_temp, a potom dořešit elementární osy s geometrii, typicky po zadané geometrii a odebraném pohonu
 
 		TPoint POLE[4];
-		set_pen(canv,clBlue,5,PS_ENDCAP_SQUARE);//nastavení pera
+		set_pen(canv,clBlue,F->Zoom*0.5*4,PS_ENDCAP_SQUARE);//nastavení pera
 		Cvektory::TRetez *R=Retez->dalsi;
 		while(R!=NULL)
 		{
@@ -5548,5 +5567,3 @@ void Cvykresli::sound()
 	Beep(800,500);	// 659 hertz for half a second
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
