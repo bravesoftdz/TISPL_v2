@@ -322,6 +322,9 @@ __published:	// IDE-managed Components
   TscExPanel *scExPanel1;
 	TscGPCheckBox *scGPCheckBox_zobrazit_koleje;
   TscGPCheckBox *scGPCheckBox1_popisky;
+  TscGPSwitch *scGPSwitch1;
+  TscLabel *scLabel_CZ;
+  TscLabel *scLabel_EN;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -532,6 +535,7 @@ __published:	// IDE-managed Components
 	void __fastcall Memo3KeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
   void __fastcall scGPCheckBox1_popiskyClick(TObject *Sender);
   void __fastcall scGPCheckBox_zobrazit_kolejeClick(TObject *Sender);
+  void __fastcall scGPSwitch1ChangeState(TObject *Sender);
 
 
 
@@ -644,6 +648,7 @@ private:
 	void smaz_bod_haly_objektu(Cvektory::TBod *bod);//smaže bod haly nebo objektu, pokud existují už jen 2 poslední body smaže oba
 	void mGrid_on_mGrid();//prohledá zda se pøekrývají mGridy
 	void mGrid_komponenta_na_draw(TmGrid *mGrid,long Col,long Row);//smazì komponentu v dané buòce a zmìní typ bunky na DRAW
+	void mGrid_puvodni_stav(Cvektory::TElement *E);//nadesingnuje tabulky elementù na pùvodní stav, obnový komponenty, naplní comba, provede Update() mGridu
 
 	////promìnné
 	TDateTime TIME;

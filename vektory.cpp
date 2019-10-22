@@ -828,35 +828,43 @@ short Cvektory::oblast_objektu(TObjekt *O,double X, double Y)
 {
 	short ret=0;
 	X=m.P2Lx(X);Y=m.P2Ly(Y);
+	double x1,x2,y1,y2;
 	if(O!=NULL)
 	{
   	switch((int)O->orientace)
   	{
-  		case 0:
-  		{
+			case 0:
+			{
   			double delka_y=O->elementy->predchozi->geo.Y4-O->elementy->dalsi->geo.Y1,polovina_y=O->elementy->dalsi->geo.Y1+delka_y/2.0;
   			if(O->elementy->predchozi->geo.X4-delka_y<=X && X<=O->elementy->predchozi->geo.X4+delka_y && polovina_y<=Y && Y<polovina_y+3*delka_y/2.0)ret=1;//oblast za objektem
-  			if(O->elementy->dalsi->geo.X1-delka_y<=X && X<=O->elementy->dalsi->geo.X1+delka_y && polovina_y-3*delka_y/2.0<=Y && Y<polovina_y)ret=2;//oblast před objektem
-  		}break;
+				if(O->elementy->dalsi->geo.X1-delka_y<=X && X<=O->elementy->dalsi->geo.X1+delka_y && polovina_y-3*delka_y/2.0<=Y && Y<polovina_y)ret=2;//oblast před objektem
+				x1=O->elementy->dalsi->geo.X1-delka_y;x2=O->elementy->dalsi->geo.X1+delka_y;y1=polovina_y-3*delka_y/2.0;y2=polovina_y;
+			}break;
   		case 90:
   		{
-  			double delka_x=O->elementy->predchozi->geo.X4-O->elementy->dalsi->geo.X1,polovina_x=O->elementy->dalsi->geo.X1+delka_x/2.0;
-  			if(polovina_x<=X && X<=polovina_x+3*delka_x/2.0 && O->elementy->predchozi->geo.Y4-delka_x<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_x)ret=1;//oblast za objektem
-  			if(polovina_x-3*delka_x/2.0<=X && X<polovina_x && O->elementy->predchozi->geo.Y4-delka_x<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_x)ret=2;//oblast před objektem
-  		}break;
+				double delka_x=O->elementy->predchozi->geo.X4-O->elementy->dalsi->geo.X1,polovina_x=O->elementy->dalsi->geo.X1+delka_x/2.0;
+				if(polovina_x<=X && X<=polovina_x+3*delka_x/2.0 && O->elementy->predchozi->geo.Y4-delka_x<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_x)ret=1;//oblast za objektem
+				if(polovina_x-3*delka_x/2.0<=X && X<polovina_x && O->elementy->predchozi->geo.Y4-delka_x<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_x)ret=2;//oblast před objektem
+				x1=polovina_x-3*delka_x/2.0;x2=polovina_x;y1=O->elementy->predchozi->geo.Y4-delka_x;y2=O->elementy->predchozi->geo.Y4+delka_x;
+			}break;
   		case 180:
   		{
   			double delka_y=O->elementy->dalsi->geo.Y1-O->elementy->predchozi->geo.Y4,polovina_y=O->elementy->dalsi->geo.Y1-delka_y/2.0;
   			if(O->elementy->predchozi->geo.X4-delka_y<=X && X<=O->elementy->predchozi->geo.X4+delka_y && polovina_y-3*delka_y/2.0<=Y && Y<=polovina_y)ret=1;//oblast za objektem
-  			if(O->elementy->dalsi->geo.X1-delka_y<=X && X<=O->elementy->dalsi->geo.X1+delka_y && polovina_y<Y && Y<=polovina_y+3*delka_y/2.0)ret=2;//oblast před objektem
-  		}break;
+				if(O->elementy->dalsi->geo.X1-delka_y<=X && X<=O->elementy->dalsi->geo.X1+delka_y && polovina_y<Y && Y<=polovina_y+3*delka_y/2.0)ret=2;//oblast před objektem
+				x1=O->elementy->dalsi->geo.X1-delka_y;x2=O->elementy->dalsi->geo.X1+delka_y;y1=polovina_y;y2=polovina_y+3*delka_y/2.0;
+			}break;
   		case 270:
   		{
   			double delka_x=O->elementy->dalsi->geo.X1-O->elementy->predchozi->geo.X4,polovina_x=O->elementy->dalsi->geo.X1-delka_x/2.0;
   			if(polovina_x-3*delka_x/2.0<=X && X<=polovina_x && O->elementy->predchozi->geo.Y4-delka_x<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_x)ret=1;//oblast před objektem
 				if(polovina_x<X && X<=polovina_x+3*delka_x/2.0 && O->elementy->predchozi->geo.Y4-delka_x<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_x)ret=2;//oblast za objektem
-  		}break;
+				x1=polovina_x;x2=polovina_x+3*delka_x/2.0;y1=O->elementy->predchozi->geo.Y4-delka_x;y2=O->elementy->predchozi->geo.Y4+delka_x;
+			}break;
 		}
+		x1=m.L2Px(x1);x2=m.L2Px(x2);
+		y1=m.L2Py(y1);y2=m.L2Py(y2);
+		//F->Canvas->Rectangle(x1,y1,x2,y2);
 	}
 	return ret;
 }
@@ -1954,10 +1962,6 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
   	else if(p->n!=Element->n)//vkládám mezi elementy, vpřípadě, že bylo vloženo před prví prvek vrací Element, přesun je již vyřešen
 		{
 			//ukazatelové propojení
-//			Element->dalsi=p->dalsi;
-//			Element->predchozi=p;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
-//			p->dalsi->predchozi=Element;
-//			p->dalsi=Element;
 			Element->dalsi=p;
 			Element->predchozi=p->predchozi;
 			if(p->n==1)Objekt->elementy->dalsi=Element;
@@ -1987,14 +1991,9 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 	//////Zarazení do seznamu do předm určeného pořadí (používá se při editaci geometrie)
 	else
 	{
-//		if(force_razeni->n==F->pom_temp->elementy->predchozi->n)
-//		{Element->dalsi=NULL;F->pom_temp->elementy->predchozi=Element;force_razeni->dalsi=Element;Element->predchozi=force_razeni;}
-//		else
-//		{
-			if(force_razeni->n==1){Objekt->elementy->dalsi=Element;Element->predchozi=Objekt->elementy;}else {force_razeni->predchozi->dalsi=Element;Element->predchozi=force_razeni->predchozi;}
-			Element->dalsi=force_razeni;
-			force_razeni->predchozi=Element;
-//		}
+		if(force_razeni->n==1){Objekt->elementy->dalsi=Element;Element->predchozi=Objekt->elementy;}else {force_razeni->predchozi->dalsi=Element;Element->predchozi=force_razeni->predchozi;}
+		Element->dalsi=force_razeni;
+		force_razeni->predchozi=Element;
 		//změna indexů
 		int n=1;
 		Cvektory::TElement *E=Objekt->elementy->dalsi;
@@ -2607,17 +2606,15 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 //hledá tabulku elementu pouze pro daný objekt v oblasti definované pomocí šířky a výšky tabulky (která se může nacházet v daném místě kliku), pracuje v logických/metrických souradnicich, vrátí ukazatel na daný element, který tabulku vlastní, pokud se na daných souřadnicích nachází tabulka
 Cvektory::TElement *Cvektory::najdi_tabulku(TObjekt *Objekt, double X, double Y)
 {
-	TElement *E=Objekt->elementy;//NEPŘESKAKOVAT hlavičku!!! kvůli ošetření ohledně existence elementu v objektu
+	TElement *E=Objekt->elementy,*ret=NULL;//NEPŘESKAKOVAT hlavičku!!! kvůli ošetření ohledně existence elementu v objektu
 	while(E!=NULL)
 	{
-		if(E->mGrid!=NULL)//ošetření proti neexistující tabulce
-		{
-			if(E->Xt<=X && X<=E->Xt+E->mGrid->Width*F->m2px/F->Zoom && E->Yt>=Y && Y>=E->Yt-E->mGrid->Height*F->m2px/F->Zoom)break;
-			else E=E->dalsi;
-		}
-		else E=E->dalsi;
+    //pokud mgrid existuje hledá poslední mGrid na pozici X,Y ... nesmí být po nalezení break
+		if(E->mGrid!=NULL && E->Xt<=X && X<=E->Xt+E->mGrid->Width*F->m2px/F->Zoom && E->Yt>=Y && Y>=E->Yt-E->mGrid->Height*F->m2px/F->Zoom)ret=E;
+		E=E->dalsi;
 	}
-	return E;
+	delete E;E=NULL;
+	return ret;
 }
 ////---------------------------------------------------------------------------
 //vraťí ukazatel na element dle n elementu umístěného v daném objektu

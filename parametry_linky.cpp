@@ -643,6 +643,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		Ulozit=true;
 		double delka_jig;
 		double sirka_jig;
+    double vyska_jig;
 		double delka_podvozek;
 		double Takt;
 		bool volat_aktualizaci=false;
@@ -911,6 +912,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			{
 				F->d.v.PP.delka_jig=F->ms.MyToDouble(scGPNumericEdit_delka_jig->Value)/1000.0;
 				F->d.v.PP.sirka_jig=F->ms.MyToDouble(scGPNumericEdit_sirka_jig->Value)/1000.0;
+        F->d.v.PP.vyska_jig=F->ms.MyToDouble(scGPNumericEdit_vyska_jig->Value)/1000.0;
 				F->d.v.PP.delka_podvozek=F->ms.MyToDouble(scGPNumericEdit_delka_podvozek->Value)/1000.0;
         F->d.v.PP.uchyt_pozice=F->ms.MyToDouble(scGPTrackBar_uchyceni->Value)/1000.0;
 			}
@@ -918,6 +920,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			{
 				F->d.v.PP.delka_jig=F->ms.MyToDouble(scGPNumericEdit_delka_jig->Value);
 				F->d.v.PP.sirka_jig=F->ms.MyToDouble(scGPNumericEdit_sirka_jig->Value);
+        F->d.v.PP.vyska_jig=F->ms.MyToDouble(scGPNumericEdit_vyska_jig->Value);
 				F->d.v.PP.delka_podvozek=F->ms.MyToDouble(scGPNumericEdit_delka_podvozek->Value);
         F->d.v.PP.uchyt_pozice=F->ms.MyToDouble(scGPTrackBar_uchyceni->Value);
 			}

@@ -7948,7 +7948,7 @@ object Form1: TForm1
     end
     object scExPanel_vrstvy: TscExPanel
       Left = 1
-      Top = 460
+      Top = 522
       Width = 249
       Height = 199
       Margins.Left = 5
@@ -7984,6 +7984,7 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  Vrstvy'
+      ExplicitTop = 460
       object scGPCheckBox_zobrazit_koleje: TscGPCheckBox
         AlignWithMargins = True
         Left = 7
@@ -8926,7 +8927,7 @@ object Form1: TForm1
       Left = 1
       Top = 243
       Width = 249
-      Height = 149
+      Height = 211
       Margins.Left = 5
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -9066,7 +9067,7 @@ object Form1: TForm1
       object scGPSwitch_grid: TscGPSwitch
         AlignWithMargins = True
         Left = 5
-        Top = 89
+        Top = 97
         Width = 42
         Height = 20
         Enabled = False
@@ -9095,7 +9096,7 @@ object Form1: TForm1
       end
       object scGPSwitch_meritko: TscGPSwitch
         Left = 5
-        Top = 119
+        Top = 127
         Width = 42
         Height = 20
         Align = alCustom
@@ -9125,7 +9126,7 @@ object Form1: TForm1
       object scLabel16: TscLabel
         AlignWithMargins = True
         Left = 57
-        Top = 89
+        Top = 97
         Width = 52
         Height = 20
         Margins.Left = 6
@@ -9152,7 +9153,7 @@ object Form1: TForm1
       object scLabel5: TscLabel
         AlignWithMargins = True
         Left = 57
-        Top = 119
+        Top = 127
         Width = 59
         Height = 20
         Margins.Left = 6
@@ -9242,10 +9243,93 @@ object Form1: TForm1
         ThumbCursor = crDefault
         ThumbUseCursor = False
       end
+      object scGPSwitch1: TscGPSwitch
+        Left = 33
+        Top = 180
+        Width = 42
+        Height = 20
+        Align = alCustom
+        TabOrder = 7
+        Animation = True
+        FrameColor = clWhite
+        FrameOnColor = clWhite
+        FramePressedColor = 5912332
+        ParentColor = True
+        State = scswOn
+        StyleKind = scswsStyled
+        ThumbColor = clWhite
+        ThumbOnColor = 8538404
+        ThumbPressedColor = clWhite
+        FrameColorAlpha = 255
+        FrameOnColorAlpha = 255
+        FramePressedColorAlpha = 255
+        ThumbColorAlpha = 255
+        ThumbOnColorAlpha = 255
+        ThumbPressedColorAlpha = 255
+        ThumbShadow = False
+        FrameSolid = False
+        FrameOnSolid = True
+        FrameInside = False
+        OnChangeState = scGPSwitch1ChangeState
+      end
+      object scLabel_CZ: TscLabel
+        AlignWithMargins = True
+        Left = 85
+        Top = 180
+        Width = 21
+        Height = 20
+        Margins.Left = 6
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -17
+        Font.Name = 'Roboto'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 8
+        DragForm = False
+        DragTopForm = True
+        GlowEffect.Enabled = False
+        GlowEffect.Color = clBtnShadow
+        GlowEffect.AlphaValue = 255
+        GlowEffect.GlowSize = 7
+        GlowEffect.Offset = 0
+        GlowEffect.Intensive = True
+        GlowEffect.StyleColors = True
+        AutoSize = True
+        UseFontColorToStyleColor = False
+        Caption = 'CZ'
+      end
+      object scLabel_EN: TscLabel
+        AlignWithMargins = True
+        Left = 6
+        Top = 180
+        Width = 21
+        Height = 20
+        Margins.Left = 6
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -17
+        Font.Name = 'Roboto'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 9
+        DragForm = False
+        DragTopForm = True
+        GlowEffect.Enabled = False
+        GlowEffect.Color = clBtnShadow
+        GlowEffect.AlphaValue = 255
+        GlowEffect.GlowSize = 7
+        GlowEffect.Offset = 0
+        GlowEffect.Intensive = True
+        GlowEffect.StyleColors = True
+        AutoSize = True
+        UseFontColorToStyleColor = False
+        Caption = 'EN'
+      end
     end
     object scExPanel1: TscExPanel
       Left = 1
-      Top = 392
+      Top = 454
       Width = 249
       Height = 68
       Margins.Left = 5
@@ -9282,6 +9366,7 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  N'#225'stroje'
+      ExplicitTop = 392
       object scGPButton_mereni_vzdalenost: TscGPButton
         AlignWithMargins = True
         Left = 3
@@ -9398,7 +9483,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118009808B00810001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118009808B40810001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10521,7 +10606,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01014500480A600A30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01014500480A640A30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000006003000001002000000000000020
       0A00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -37032,10 +37117,8 @@ object Form1: TForm1
       end
       item
         Bitmap.Data = {
-          02160000424D0216000000000000B6000000280000003E0000001D0000000100
-          1800000000004C15000000000000000000001000000000000000000000000000
-          8000008000000080800080000000800080008080000080808000C0C0C0000000
-          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+          82150000424D821500000000000036000000280000003E0000001D0000000100
+          1800000000004C15000000000000000000000000000000000000FFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
