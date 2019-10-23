@@ -1894,6 +1894,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->pohon=NULL;//pohon na kterém se nachází element
 	if(novy->predchozi->n!=0 && novy->predchozi->eID!=200)novy->pohon=novy->predchozi->pohon;
 	else if(novy->dalsi!=NULL)novy->pohon=novy->dalsi->pohon;
+	if(novy->predchozi->n!=0 && novy->predchozi->eID!=200 && novy->predchozi->pohon!=NULL && F->pom_temp->pohon->n==novy->predchozi->pohon->n || novy->dalsi!=NULL && novy->dalsi->pohon!=NULL && novy->dalsi->pohon->n==F->pom_temp->pohon->n)novy->pohon=F->pom_temp->pohon;
 
 	//název
 	AnsiString T="";
