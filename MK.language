@@ -50,7 +50,7 @@ Rotating elements;X;Otoèe
 Line geometry;X;Geometrie linky
 Notes;X;Poznámky
 Hall;X;Hala
-Hang up/down;X;Nav/Svìšování
+Load/Unload;X;Nav/Svìšování
 Pretreatment;X;Pøedúpravy
 Painting;X;Lakování
 Other;X;Ostatní
@@ -140,7 +140,7 @@ add new drive;X;pøidat nový pohon
  Takt Time;X; Takt Time
 Jig  ;X;Jig
 Undercarriage;X;Podvozek
-* view of the Jig at hanging up <br>;X;* pohled na Jig pøi navìšování <br> 
+maximum dimensions of wagon <br> direction of line movement;X;maximální rozmìry vozíku<br>smìr pohybu linky 
 add new drive;X;Pøidat nový pohon
 Application settings;X;Nastavení aplikace
 Catalog of conveyors;X;Katalog dopravníkù
