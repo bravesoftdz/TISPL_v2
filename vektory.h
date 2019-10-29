@@ -130,7 +130,8 @@ class Cvektory
     double sirka_steny;//šířka stěny kabiny objektu v metrech  - NEW + dodat do CObjekt!!!!
 		double Xk,Yk;//bude ke smazání - umístění levého horního rohu kabiny v layoutu a náhledu kabiny  //DOPRYC
 		double Xt,Yt;// souřadnice popisku objektu pro možnost posouvání dodat!!!   //PRIDAT
-    double Xp,Yp;// souřadnice tab pohonu pro možnost posouvání dodat!!!   //PRIDAT
+    double orientace_text;//orientace textu (názvu objektu) dle světových stran
+		double Xp,Yp;// souřadnice tab pohonu pro možnost posouvání dodat!!!   //PRIDAT
 		short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking)KK,2-Postprocesní (PP), -1 nenastaven, pouzíva tab.pohonu
 		double CT;//pro status návrh   //DOPRYC
 		double RD;//pro status návrh v m/s, jenom pomocná proměnná získaná jako DD/CT, stežejní je většinou aRD (aktuální rychlost), která se váže přímo (i datově) k pohonu  //DOPRYC
@@ -454,7 +455,7 @@ class Cvektory
 	void nove_indexy(bool nasledne_zmena_nazvu=false);//projde všechny objekty a nastavý nové indexy podle aktuálního pořadí objektů
 	void ortogonalizovat();//ortogonalizuje schéma
 	TObjekt *dalsi_krok(TObjekt *Objekt,TPoint *tab_pruchodu);//určuje další krok cyklu při procházení objektů
-	void posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_oblast=true);//slouží k posunu objektu jako celku o X a Y, posun kabiny, pohonu, elementů, tabulek, nadpisu, kontrolovat_oblast slouží k nucenému přesunutí
+	void posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_oblast=true,bool povolit_rotaci=true);//slouží k posunu objektu jako celku o X a Y, posun kabiny, pohonu, elementů, tabulek, nadpisu, kontrolovat_oblast slouží k nucenému přesunutí
 	void rotuj_objekt(TObjekt *Objekt, double rotace);//orotuje objekt o danou rotaci
 	//přidružené metody pro KOMORY
 	void vloz_komoru(TObjekt *Objekt,double velikost,TKomora *ZaKomoru=NULL,short typ=1);//vloží novou komoru na konec seznamu komor, pokud je ZaKomoru=NULL, jinak vloží za tento objekt, nastaví velikost dané komory dle proměnné velikost,short typ;//1-se sprchou, 0 bez jen okap
@@ -693,7 +694,8 @@ private:
 			unsigned int id;
 			unsigned int text_length;
 			double X, Y;
-      double Xt,Yt;
+			double Xt,Yt;
+			double orientace_text;//orientace nadpisu objektu
       unsigned long pocet_bodu;
 			unsigned long pocet_elementu;
       unsigned long pocet_komor;
