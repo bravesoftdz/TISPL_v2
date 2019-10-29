@@ -7189,7 +7189,6 @@ object Form_parametry_linky: TForm_parametry_linky
       ParentShowHint = False
       ShowHint = True
       TabOrder = 5
-      OnClick = Button_ADD_Click
       ArrowPosition = scapBottom
       Animation = True
       CanFocused = False
@@ -7308,8 +7307,8 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 9158
-    Top = 14634
+    Left = 9167
+    Top = 14649
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
