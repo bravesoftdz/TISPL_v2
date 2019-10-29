@@ -196,7 +196,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	Caption="ELTEP - tispl";
 	scLabel_titulek->Caption=Caption+" - [Nový.tispl]";
 	Application->Title="TISPL";
-	LICENCE="TRIAL_GALATEK";
+	LICENCE="TRIAL_ELTEP";
 	EDICE=ARCHITECT;//ARCHITECT,CLIENT,VIEWER,DEMO
 	edice();//zakázání či povolení grafických uživatelských prvků dle úrovně edice
 	n_prihlaseni=0;
