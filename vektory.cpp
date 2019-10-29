@@ -828,43 +828,39 @@ short Cvektory::oblast_objektu(TObjekt *O,double X, double Y)
 {
 	short ret=0;
 	X=m.P2Lx(X);Y=m.P2Ly(Y);
-	double x1,x2,y1,y2;
 	if(O!=NULL)
 	{
-  	switch((int)O->orientace)
+		switch((int)O->orientace)
   	{
 			case 0:
 			{
-  			double delka_y=O->elementy->predchozi->geo.Y4-O->elementy->dalsi->geo.Y1,polovina_y=O->elementy->dalsi->geo.Y1+delka_y/2.0;
-  			if(O->elementy->predchozi->geo.X4-delka_y<=X && X<=O->elementy->predchozi->geo.X4+delka_y && polovina_y<=Y && Y<polovina_y+3*delka_y/2.0)ret=1;//oblast za objektem
-				if(O->elementy->dalsi->geo.X1-delka_y<=X && X<=O->elementy->dalsi->geo.X1+delka_y && polovina_y-3*delka_y/2.0<=Y && Y<polovina_y)ret=2;//oblast před objektem
-				x1=O->elementy->dalsi->geo.X1-delka_y;x2=O->elementy->dalsi->geo.X1+delka_y;y1=polovina_y-3*delka_y/2.0;y2=polovina_y;
+				double delka_y=O->elementy->predchozi->geo.Y4-O->elementy->dalsi->geo.Y1,polovina_y=O->elementy->dalsi->geo.Y1+delka_y/2.0,delka_x=delka_y;
+				if(O->id==8 || O->id==7){delka_y/=2.0;delka_x/=2.0;}//zmenšení oblasti pro dlouhé objekty
+				if(O->elementy->predchozi->geo.X4-delka_x<=X && X<=O->elementy->predchozi->geo.X4+delka_x && polovina_y<=Y && Y<polovina_y+3*delka_y/2.0)ret=1;//oblast za objektem
+				if(O->elementy->dalsi->geo.X1-delka_x<=X && X<=O->elementy->dalsi->geo.X1+delka_x && polovina_y-3*delka_y/2.0<=Y && Y<polovina_y)ret=2;//oblast před objektem
 			}break;
-  		case 90:
-  		{
-				double delka_x=O->elementy->predchozi->geo.X4-O->elementy->dalsi->geo.X1,polovina_x=O->elementy->dalsi->geo.X1+delka_x/2.0;
-				if(polovina_x<=X && X<=polovina_x+3*delka_x/2.0 && O->elementy->predchozi->geo.Y4-delka_x<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_x)ret=1;//oblast za objektem
-				if(polovina_x-3*delka_x/2.0<=X && X<polovina_x && O->elementy->predchozi->geo.Y4-delka_x<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_x)ret=2;//oblast před objektem
-				x1=polovina_x-3*delka_x/2.0;x2=polovina_x;y1=O->elementy->predchozi->geo.Y4-delka_x;y2=O->elementy->predchozi->geo.Y4+delka_x;
+			case 90:
+			{
+				double delka_x=O->elementy->predchozi->geo.X4-O->elementy->dalsi->geo.X1,polovina_x=O->elementy->dalsi->geo.X1+delka_x/2.0,delka_y=delka_x;
+				if(O->id==8 || O->id==7){delka_y/=3.0;delka_x/=2.0;}//zmenšení oblasti pro dlouhé objekty
+				if(polovina_x<=X && X<=polovina_x+3*delka_x/2.0 && O->elementy->predchozi->geo.Y4-delka_y<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_y)ret=1;//oblast za objektem
+				if(polovina_x-3*delka_x/2.0<=X && X<polovina_x && O->elementy->predchozi->geo.Y4-delka_y<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_y)ret=2;//oblast před objektem
 			}break;
   		case 180:
   		{
-  			double delka_y=O->elementy->dalsi->geo.Y1-O->elementy->predchozi->geo.Y4,polovina_y=O->elementy->dalsi->geo.Y1-delka_y/2.0;
-  			if(O->elementy->predchozi->geo.X4-delka_y<=X && X<=O->elementy->predchozi->geo.X4+delka_y && polovina_y-3*delka_y/2.0<=Y && Y<=polovina_y)ret=1;//oblast za objektem
-				if(O->elementy->dalsi->geo.X1-delka_y<=X && X<=O->elementy->dalsi->geo.X1+delka_y && polovina_y<Y && Y<=polovina_y+3*delka_y/2.0)ret=2;//oblast před objektem
-				x1=O->elementy->dalsi->geo.X1-delka_y;x2=O->elementy->dalsi->geo.X1+delka_y;y1=polovina_y;y2=polovina_y+3*delka_y/2.0;
+				double delka_y=O->elementy->dalsi->geo.Y1-O->elementy->predchozi->geo.Y4,polovina_y=O->elementy->dalsi->geo.Y1-delka_y/2.0,delka_x=delka_y;
+				if(O->id==8 || O->id==7){delka_y/=2.0;delka_x/=2.0;}//zmenšení oblasti pro dlouhé objekty
+				if(O->elementy->predchozi->geo.X4-delka_x<=X && X<=O->elementy->predchozi->geo.X4+delka_x && polovina_y-3*delka_y/2.0<=Y && Y<=polovina_y)ret=1;//oblast za objektem
+				if(O->elementy->dalsi->geo.X1-delka_x<=X && X<=O->elementy->dalsi->geo.X1+delka_x && polovina_y<Y && Y<=polovina_y+3*delka_y/2.0)ret=2;//oblast před objektem
 			}break;
-  		case 270:
+			case 270:
   		{
-  			double delka_x=O->elementy->dalsi->geo.X1-O->elementy->predchozi->geo.X4,polovina_x=O->elementy->dalsi->geo.X1-delka_x/2.0;
-  			if(polovina_x-3*delka_x/2.0<=X && X<=polovina_x && O->elementy->predchozi->geo.Y4-delka_x<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_x)ret=1;//oblast před objektem
-				if(polovina_x<X && X<=polovina_x+3*delka_x/2.0 && O->elementy->predchozi->geo.Y4-delka_x<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_x)ret=2;//oblast za objektem
-				x1=polovina_x;x2=polovina_x+3*delka_x/2.0;y1=O->elementy->predchozi->geo.Y4-delka_x;y2=O->elementy->predchozi->geo.Y4+delka_x;
+				double delka_x=O->elementy->dalsi->geo.X1-O->elementy->predchozi->geo.X4,polovina_x=O->elementy->dalsi->geo.X1-delka_x/2.0,delka_y=delka_x;
+				if(O->id==8 || O->id==7){delka_y/=3.0;delka_x/=2.0;}//zmenšení oblasti pro dlouhé objekty
+				if(polovina_x-3*delka_x/2.0<=X && X<=polovina_x && O->elementy->predchozi->geo.Y4-delka_y<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_y)ret=1;//oblast před objektem
+				if(polovina_x<X && X<=polovina_x+3*delka_x/2.0 && O->elementy->predchozi->geo.Y4-delka_y<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_y)ret=2;//oblast za objektem
 			}break;
 		}
-		x1=m.L2Px(x1);x2=m.L2Px(x2);
-		y1=m.L2Py(y1);y2=m.L2Py(y2);
-		//F->Canvas->Rectangle(x1,y1,x2,y2);
 	}
 	return ret;
 }
@@ -1898,6 +1894,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->pohon=NULL;//pohon na kterém se nachází element
 	if(novy->predchozi->n!=0 && novy->predchozi->eID!=200)novy->pohon=novy->predchozi->pohon;
 	else if(novy->dalsi!=NULL)novy->pohon=novy->dalsi->pohon;
+	if(novy->predchozi->n!=0 && novy->predchozi->eID!=200 && novy->predchozi->pohon!=NULL && F->pom_temp->pohon->n==novy->predchozi->pohon->n || novy->dalsi!=NULL && novy->dalsi->pohon!=NULL && novy->dalsi->pohon->n==F->pom_temp->pohon->n)novy->pohon=F->pom_temp->pohon;
 
 	//název
 	AnsiString T="";

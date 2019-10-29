@@ -964,6 +964,7 @@ void TFormX::naplneni_dopRD()
 	//odstranit_korelaci();//pro jistotu zùstavala aktivní po kliku na link
 	F->PmG->ShowNote("",clRed,14);
 	povolit_zakazat_editaci(true);
+	F->Akce=F->BLOK;
 	F->PmG->Refresh();//došlo ke zmìnì hodnot v tabulce
 }
 //---------------------------------------------------------------------------
@@ -983,7 +984,7 @@ bool TFormX::naplneni_max_voziku(double X,double Y,bool check_for_highlight)
 			E=E->dalsi;
 		}
 		//naplnìní doporuèeného max. poètu vozíkù
-		if(E!=NULL && !check_for_highlight)E->mGrid->Cells[1][6].Text=E->max_pocet_voziku;
+		if(E!=NULL && !check_for_highlight){E->mGrid->Cells[1][6].Text=E->max_pocet_voziku;F->Akce=F->BLOK;}
 		E=NULL;delete E;
 	}
 	return ret;

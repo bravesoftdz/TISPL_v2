@@ -269,6 +269,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool zobrazit_koty)
 {
 	////vstupní proměnné
+	bool highlight_pow=false;
 	TColor clAkt=clStenaKabiny;
 	short I=100-F->scGPTrackBar_intenzita->Value;
 	double orientace=O->orientace; //něco s tím udělat!!!! short->double
@@ -299,9 +300,6 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 
 	////vnější obrys kabiny
 	if(!(F->pom_temp!=NULL && F->pom_temp->n!=O->n && F->scGPTrackBar_intenzita->Value<5))polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
-
-  ////vykreslení prozatimní osy POHONU
-	//vykresli_retez(canv,O);
 
 	///název
 	//název objektu - nastavení                 //záměrně nuly, aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
@@ -364,7 +362,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		double vzdalenost=0;
 		while(K->dalsi!=NULL)
 		{
-			if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)K->n || F->JID==0 && F->pom_komora!=NULL && F->pom_komora->n==K->n))clAkt=m.clIntensive(clStenaKabiny,-50);//highlight
+			if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)K->n || F->JID==0 && F->pom_komora!=NULL && F->pom_komora->n==K->n)){clAkt=m.clIntensive(clStenaKabiny,-50);highlight_pow=true;}//highlight
 			else clAkt=clStenaKabiny;
 			if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clAkt=m.clIntensive(clStenaKabiny,I);
 			set_pen(canv,clAkt,sirka_steny_px,PS_ENDCAP_SQUARE);
@@ -409,6 +407,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				//highlight komory
 				if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)K->n || F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==K->n))//highlight komory
 				{
+					highlight_pow=true;
 					double hl_Y=0;
 					if(orientace==180)hl_Y=Y-m.m2px(K->velikost)-W1;else hl_Y=Y+m.m2px(K->velikost)-W1;
 					canv->MoveTo(X1-W,Y);
@@ -424,6 +423,8 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				//symbolika "sprchy"
 				if(K->typ==1)vykresli_pow_sprchu(canv,X1,X2,Y,Y,m.m2px(K->velikost),clAkt,sirka_steny_px/4,pmpp,0,orientace);
 			}
+			////překreslení obrysu, nutné u POW, jinak by komory překryli highlight stěny obrysu
+			if(F->pom_temp!=NULL && F->pom_temp->id==3 && !highlight_pow && !(F->pom_temp!=NULL && F->pom_temp->n!=O->n && F->scGPTrackBar_intenzita->Value<5))polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
 			//KÓTY
 			if(zobrazit_koty && F->pom_temp->n==O->n)
 			{

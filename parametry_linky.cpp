@@ -1852,7 +1852,7 @@ void TForm_parametry_linky::vypis(UnicodeString text,bool red,bool link)
 {
     F->log(__func__); //logování
 		Button_save->Enabled=true;
-		Button_save->Caption = "Uložit";
+		//Button_save->Caption = "Uložit";
  //if(text=="m].</b>")text="";//provizorní WA, pøi zmìnì Rz a byla-li v poøádku to vrací toto  - již není tøeba, ale zatím nechávám
 		if (text != "") // zobrazí a vypíše
 		{
@@ -2585,7 +2585,7 @@ void TForm_parametry_linky::getmGridColors()
    scGPGlyphButton_DEL_nepouzite->Left=mGrid->Columns[8].Left - 5; //minus kvuli oramovani buttonu, které se zobrazí pøi najetí myší
 
   scGPGlyphButton_OPTIONS->Top=mGrid->Top + mGrid->Height ;
-  scGPGlyphButton_OPTIONS->Left=Button_save->Left + Button_save->Width + 350;
+	scGPGlyphButton_OPTIONS->Left=Button_save->Left + Button_save->Width + 350;
 
   }
 

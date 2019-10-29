@@ -246,7 +246,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	d.v.pocet_vyhybek=0;//nastavení při každém spuštění, do budoucna načítání z binárky nebo 0
 	d.v.akt_vetev=true;
 
-  //vytvoření katalogu dopravníků
+	//vytvoření katalogu dopravníků
 	d.v.vytvor_KATALOG();
 
 	//vytvoření knihovny objektů
@@ -261,6 +261,577 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	TIP="Kliknutím na objekt v knihovně objektu, tažením a následným usazením přidáte objekt.";//nastavení TIPu defautlně na nápovědu pro vložení objektu, později v metode StartUp dojkde k odmazání tipu, jestliže budou xistovat nějaké objekty
 }
 //---------------------------------------------------------------------------
+//nastaví komponentám aFont
+void TForm1::set_font()
+{
+  log(__func__);//logování
+	TColor barva;
+	int velikost=13;
+  barva=Label_zamerovac->Font->Color;
+  Label_zamerovac->Font=aFont;
+  Label_zamerovac->Font->Color=barva;
+  Label_zamerovac->Font->Size=velikost;
+  barva=RzToolButton1->Font->Color;
+  RzToolButton1->Font=aFont;
+  RzToolButton1->Font->Color=barva;
+  RzToolButton1->Font->Size=velikost;
+  barva=RzToolButton3->Font->Color;
+  RzToolButton3->Font=aFont;
+  RzToolButton3->Font->Color=barva;
+  RzToolButton3->Font->Size=velikost;
+  barva=RzToolButton4->Font->Color;
+  RzToolButton4->Font=aFont;
+  RzToolButton4->Font->Color=barva;
+  RzToolButton4->Font->Size=velikost;
+  barva=RzToolButton5->Font->Color;
+  RzToolButton5->Font=aFont;
+  RzToolButton5->Font->Color=barva;
+  RzToolButton5->Font->Size=velikost;
+  barva=RzToolButton6->Font->Color;
+  RzToolButton6->Font=aFont;
+  RzToolButton6->Font->Color=barva;
+  RzToolButton6->Font->Size=velikost;
+  barva=RzToolButton7->Font->Color;
+  RzToolButton7->Font=aFont;
+  RzToolButton7->Font->Color=barva;
+  RzToolButton7->Font->Size=velikost;
+  barva=RzToolButton8->Font->Color;
+  RzToolButton8->Font=aFont;
+  RzToolButton8->Font->Color=barva;
+  RzToolButton8->Font->Size=velikost;
+  barva=RzToolButton9->Font->Color;
+  RzToolButton9->Font=aFont;
+  RzToolButton9->Font->Color=barva;
+  RzToolButton9->Font->Size=velikost;
+  barva=RzToolButton10->Font->Color;
+  RzToolButton10->Font=aFont;
+  RzToolButton10->Font->Color=barva;
+  RzToolButton10->Font->Size=velikost;
+  barva=RzToolButton11->Font->Color;
+  RzToolButton11->Font=aFont;
+  RzToolButton11->Font->Color=barva;
+  RzToolButton11->Font->Size=velikost;
+  barva=RzToolButton12->Font->Color;
+  RzToolButton12->Font=aFont;
+  RzToolButton12->Font->Color=barva;
+  RzToolButton12->Font->Size=velikost;
+  barva=Button4->Font->Color;
+  Button4->Font=aFont;
+  Button4->Font->Color=barva;
+  Button4->Font->Size=velikost;
+  barva=ButtonPLAY_O->Font->Color;
+  ButtonPLAY_O->Font=aFont;
+  ButtonPLAY_O->Font->Color=barva;
+  ButtonPLAY_O->Font->Size=velikost;
+  barva=Konec->Font->Color;
+  Konec->Font=aFont;
+  Konec->Font->Color=barva;
+  Konec->Font->Size=velikost;
+  barva=Schema->Font->Color;
+  Schema->Font=aFont;
+  Schema->Font->Color=barva;
+  Schema->Font->Size=velikost;
+  barva=PopupMenuButton->Font->Color;
+  PopupMenuButton->Font=aFont;
+  PopupMenuButton->Font->Color=barva;
+  PopupMenuButton->Font->Size=velikost;
+  barva=Synteza->Font->Color;
+  Synteza->Font=aFont;
+  Synteza->Font->Color=barva;
+  Synteza->Font->Size=velikost;
+  barva=Toolbar_Ulozit->Font->Color;
+  Toolbar_Ulozit->Font=aFont;
+  Toolbar_Ulozit->Font->Color=barva;
+  Toolbar_Ulozit->Font->Size=velikost;
+  barva=Toolbar_NovySoubor->Font->Color;
+  Toolbar_NovySoubor->Font=aFont;
+  Toolbar_NovySoubor->Font->Color=barva;
+  Toolbar_NovySoubor->Font->Size=velikost;
+  barva=Toolbar_Otevrit->Font->Color;
+  Toolbar_Otevrit->Font=aFont;
+  Toolbar_Otevrit->Font->Color=barva;
+  Toolbar_Otevrit->Font->Size=velikost;
+  barva=DetailsButton->Font->Color;
+  DetailsButton->Font=aFont;
+  DetailsButton->Font->Color=barva;
+  DetailsButton->Font->Size=velikost;
+  barva=Layout->Font->Color;
+  Layout->Font=aFont;
+  Layout->Font->Color=barva;
+  Layout->Font->Size=velikost;
+  barva=Simulace->Font->Color;
+  Simulace->Font=aFont;
+  Simulace->Font->Color=barva;
+  Simulace->Font->Size=velikost;
+  barva=scGPGlyphButton15->Font->Color;
+  scGPGlyphButton15->Font=aFont;
+  scGPGlyphButton15->Font->Color=barva;
+  scGPGlyphButton15->Font->Size=velikost;
+  barva=scLabel_titulek->Font->Color;
+  scLabel_titulek->Font=aFont;
+  scLabel_titulek->Font->Color=barva;
+  scLabel_titulek->Font->Size=velikost;
+  barva=scLabel_klient->Font->Color;
+  scLabel_klient->Font=aFont;
+  scLabel_klient->Font->Color=barva;
+  scLabel_klient->Font->Size=velikost;
+  barva=scLabel_architekt->Font->Color;
+  scLabel_architekt->Font=aFont;
+  scLabel_architekt->Font->Color=barva;
+  scLabel_architekt->Font->Size=velikost;
+  barva=scGPButton_header_projekt->Font->Color;
+  scGPButton_header_projekt->Font=aFont;
+  scGPButton_header_projekt->Font->Color=barva;
+  scGPButton_header_projekt->Font->Size=velikost;
+  barva=scGPGlyphButton_OPTIONS->Font->Color;
+  scGPGlyphButton_OPTIONS->Font=aFont;
+  scGPGlyphButton_OPTIONS->Font->Color=barva;
+  scGPGlyphButton_OPTIONS->Font->Size=velikost;
+  barva=Nahled->Font->Color;
+  Nahled->Font=aFont;
+  Nahled->Font->Color=barva;
+  Nahled->Font->Size=velikost;
+  barva=scGPGlyphButton_PLAY->Font->Color;
+  scGPGlyphButton_PLAY->Font=aFont;
+  scGPGlyphButton_PLAY->Font->Color=barva;
+  scGPGlyphButton_PLAY->Font->Size=velikost;
+  barva=RzStatusPane3->Font->Color;
+  RzStatusPane3->Font=aFont;
+  RzStatusPane3->Font->Color=barva;
+  RzStatusPane3->Font->Size=velikost;
+  barva=RzStatusPane4->Font->Color;
+  RzStatusPane4->Font=aFont;
+  RzStatusPane4->Font->Color=barva;
+  RzStatusPane4->Font->Size=velikost;
+  barva=RzStatusPane5->Font->Color;
+  RzStatusPane5->Font=aFont;
+  RzStatusPane5->Font->Color=barva;
+  RzStatusPane5->Font->Size=velikost;
+  barva=scButton_zamek_layoutu->Font->Color;
+  scButton_zamek_layoutu->Font=aFont;
+  scButton_zamek_layoutu->Font->Color=barva;
+  scButton_zamek_layoutu->Font->Size=velikost;
+  barva=scGPButton_zmerit_vzdalenost->Font->Color;
+  scGPButton_zmerit_vzdalenost->Font=aFont;
+  scGPButton_zmerit_vzdalenost->Font->Color=barva;
+  scGPButton_zmerit_vzdalenost->Font->Size=velikost;
+  barva=scListGroupKnihovObjektu->Font->Color;
+  scListGroupKnihovObjektu->Font=aFont;
+  scListGroupKnihovObjektu->Font->Color=barva;
+  scListGroupKnihovObjektu->Font->Size=velikost;
+  barva=scListGroupPanel_hlavickaOstatni->Font->Color;
+  scListGroupPanel_hlavickaOstatni->Font=aFont;
+  scListGroupPanel_hlavickaOstatni->Font->Color=barva;
+  scListGroupPanel_hlavickaOstatni->Font->Size=velikost;
+  barva=scListGroupPanel_hlavickaOtoce->Font->Color;
+  scListGroupPanel_hlavickaOtoce->Font=aFont;
+  scListGroupPanel_hlavickaOtoce->Font->Color=barva;
+  scListGroupPanel_hlavickaOtoce->Font->Size=velikost;
+  barva=scListGroupPanel_geometrie->Font->Color;
+  scListGroupPanel_geometrie->Font=aFont;
+  scListGroupPanel_geometrie->Font->Color=barva;
+  scListGroupPanel_geometrie->Font->Size=velikost;
+  barva=scListGroupPanel_poznamky->Font->Color;
+  scListGroupPanel_poznamky->Font=aFont;
+  scListGroupPanel_poznamky->Font->Color=barva;
+  scListGroupPanel_poznamky->Font->Size=velikost;
+  barva=scGPLabel_roboti->Font->Color;
+  scGPLabel_roboti->Font=aFont;
+  scGPLabel_roboti->Font->Color=barva;
+  scGPLabel_roboti->Font->Size=velikost;
+  barva=scGPLabel_otoce->Font->Color;
+  scGPLabel_otoce->Font=aFont;
+  scGPLabel_otoce->Font->Color=barva;
+  scGPLabel_otoce->Font->Size=velikost;
+  barva=scGPLabel_stop->Font->Color;
+  scGPLabel_stop->Font=aFont;
+  scGPLabel_stop->Font->Color=barva;
+  scGPLabel_stop->Font->Size=velikost;
+  barva=scGPLabel_geometrie->Font->Color;
+  scGPLabel_geometrie->Font=aFont;
+  scGPLabel_geometrie->Font->Color=barva;
+  scGPLabel_geometrie->Font->Size=velikost;
+  barva=scGPLabel_poznamky->Font->Color;
+  scGPLabel_poznamky->Font=aFont;
+  scGPLabel_poznamky->Font->Color=barva;
+  scGPLabel_poznamky->Font->Size=velikost;
+  barva=scGPGlyphButton_close_grafy->Font->Color;
+  scGPGlyphButton_close_grafy->Font=aFont;
+  scGPGlyphButton_close_grafy->Font->Color=barva;
+  scGPGlyphButton_close_grafy->Font->Size=velikost;
+  barva=scExPanel_log_header->Font->Color;
+  scExPanel_log_header->Font=aFont;
+  scExPanel_log_header->Font->Color=barva;
+  scExPanel_log_header->Font->Size=velikost;
+  barva=scExPanel_html->Font->Color;
+  scExPanel_html->Font=aFont;
+  scExPanel_html->Font->Color=barva;
+  scExPanel_html->Font->Size=velikost;
+  barva=pohonobjekt->Font->Color;
+  pohonobjekt->Font=aFont;
+  pohonobjekt->Font->Color=barva;
+  pohonobjekt->Font->Size=velikost;
+  barva=scGPGlyphButton_close_legenda_casove_osy->Font->Color;
+  scGPGlyphButton_close_legenda_casove_osy->Font=aFont;
+  scGPGlyphButton_close_legenda_casove_osy->Font->Color=barva;
+  scGPGlyphButton_close_legenda_casove_osy->Font->Size=velikost;
+  barva=CheckBox_pouzit_zadane_kapacity_OLD->Font->Color;
+  CheckBox_pouzit_zadane_kapacity_OLD->Font=aFont;
+  CheckBox_pouzit_zadane_kapacity_OLD->Font->Color=barva;
+  CheckBox_pouzit_zadane_kapacity_OLD->Font->Size=velikost;
+  barva=CheckBoxAnimovatSG_OLD->Font->Color;
+  CheckBoxAnimovatSG_OLD->Font=aFont;
+  CheckBoxAnimovatSG_OLD->Font->Color=barva;
+  CheckBoxAnimovatSG_OLD->Font->Size=velikost;
+  barva=scGPLabel1->Font->Color;
+  scGPLabel1->Font=aFont;
+  scGPLabel1->Font->Color=barva;
+  scGPLabel1->Font->Size=velikost;
+  barva=scGPButton_ulozit->Font->Color;
+  scGPButton_ulozit->Font=aFont;
+  scGPButton_ulozit->Font->Color=barva;
+  scGPButton_ulozit->Font->Size=velikost;
+  barva=scGPButton_zahodit->Font->Color;
+  scGPButton_zahodit->Font=aFont;
+  scGPButton_zahodit->Font->Color=barva;
+  scGPButton_zahodit->Font->Size=velikost;
+  barva=scGPLabel_prepinacKot->Font->Color;
+  scGPLabel_prepinacKot->Font=aFont;
+  scGPLabel_prepinacKot->Font->Color=barva;
+  scGPLabel_prepinacKot->Font->Size=velikost;
+  barva=scGPImage_mereni_vzdalenost->Font->Color;
+  scGPImage_mereni_vzdalenost->Font=aFont;
+  scGPImage_mereni_vzdalenost->Font->Color=barva;
+  scGPImage_mereni_vzdalenost->Font->Size=velikost;
+  barva=scGPImage_zamek_posunu->Font->Color;
+  scGPImage_zamek_posunu->Font=aFont;
+  scGPImage_zamek_posunu->Font->Color=barva;
+  scGPImage_zamek_posunu->Font->Size=velikost;
+  barva=ButtonPLAY->Font->Color;
+  ButtonPLAY->Font=aFont;
+  ButtonPLAY->Font->Color=barva;
+  ButtonPLAY->Font->Size=velikost;
+  barva=CheckBox_pouzit_zadane_kapacity->Font->Color;
+  CheckBox_pouzit_zadane_kapacity->Font=aFont;
+  CheckBox_pouzit_zadane_kapacity->Font->Color=barva;
+  CheckBox_pouzit_zadane_kapacity->Font->Size=velikost;
+  barva=CheckBoxAnimovatSG->Font->Color;
+  CheckBoxAnimovatSG->Font=aFont;
+  CheckBoxAnimovatSG->Font->Color=barva;
+  CheckBoxAnimovatSG->Font->Size=velikost;
+  barva=CheckBoxVymena_barev->Font->Color;
+  CheckBoxVymena_barev->Font=aFont;
+  CheckBoxVymena_barev->Font->Color=barva;
+  CheckBoxVymena_barev->Font->Size=velikost;
+  barva=CheckBoxVytizenost->Font->Color;
+  CheckBoxVytizenost->Font=aFont;
+  CheckBoxVytizenost->Font->Color=barva;
+  CheckBoxVytizenost->Font->Size=velikost;
+  barva=scGPCheckBox_pocet_voziku_dle_WIP->Font->Color;
+  scGPCheckBox_pocet_voziku_dle_WIP->Font=aFont;
+  scGPCheckBox_pocet_voziku_dle_WIP->Font->Color=barva;
+  scGPCheckBox_pocet_voziku_dle_WIP->Font->Size=velikost;
+  barva=scLabel_filtrovat->Font->Color;
+  scLabel_filtrovat->Font=aFont;
+  scLabel_filtrovat->Font->Color=barva;
+  scLabel_filtrovat->Font->Size=velikost;
+  barva=scLabel_doba_cekani->Font->Color;
+  scLabel_doba_cekani->Font=aFont;
+  scLabel_doba_cekani->Font->Color=barva;
+  scLabel_doba_cekani->Font->Size=velikost;
+  barva=scGPButton_generuj->Font->Color;
+  scGPButton_generuj->Font=aFont;
+  scGPButton_generuj->Font->Color=barva;
+  scGPButton_generuj->Font->Size=velikost;
+  barva=scGPButton_header_def_zakazek->Font->Color;
+  scGPButton_header_def_zakazek->Font=aFont;
+  scGPButton_header_def_zakazek->Font->Color=barva;
+  scGPButton_header_def_zakazek->Font->Size=velikost;
+  barva=scButton_konec->Font->Color;
+  scButton_konec->Font=aFont;
+  scButton_konec->Font->Color=barva;
+  scButton_konec->Font->Size=velikost;
+  barva=scButton_otevrit->Font->Color;
+  scButton_otevrit->Font=aFont;
+  scButton_otevrit->Font->Color=barva;
+  scButton_otevrit->Font->Size=velikost;
+  barva=scButton4->Font->Color;
+  scButton4->Font=aFont;
+  scButton4->Font->Color=barva;
+  scButton4->Font->Size=velikost;
+  barva=scButton_zaloha->Font->Color;
+  scButton_zaloha->Font=aFont;
+  scButton_zaloha->Font->Color=barva;
+  scButton_zaloha->Font->Size=velikost;
+  barva=scButton_report->Font->Color;
+  scButton_report->Font=aFont;
+  scButton_report->Font->Color=barva;
+  scButton_report->Font->Size=velikost;
+  barva=scLabel11->Font->Color;
+  scLabel11->Font=aFont;
+  scLabel11->Font->Color=barva;
+  scLabel11->Font->Size=velikost;
+  barva=scButton_ulozjako->Font->Color;
+  scButton_ulozjako->Font=aFont;
+  scButton_ulozjako->Font->Color=barva;
+  scButton_ulozjako->Font->Size=velikost;
+  barva=scButton_export->Font->Color;
+  scButton_export->Font=aFont;
+  scButton_export->Font->Color=barva;
+  scButton_export->Font->Size=velikost;
+  barva=scButton_posledni_otevreny->Font->Color;
+  scButton_posledni_otevreny->Font=aFont;
+  scButton_posledni_otevreny->Font->Color=barva;
+  scButton_posledni_otevreny->Font->Size=velikost;
+  barva=scButton_novy->Font->Color;
+  scButton_novy->Font=aFont;
+  scButton_novy->Font->Color=barva;
+  scButton_novy->Font->Size=velikost;
+  barva=scButton_ulozit->Font->Color;
+  scButton_ulozit->Font=aFont;
+  scButton_ulozit->Font->Color=barva;
+  scButton_ulozit->Font->Size=velikost;
+  barva=scButton_nacist_podklad->Font->Color;
+  scButton_nacist_podklad->Font=aFont;
+  scButton_nacist_podklad->Font->Color=barva;
+  scButton_nacist_podklad->Font->Size=velikost;
+  barva=pravyoption_nadpis->Font->Color;
+  pravyoption_nadpis->Font=aFont;
+  pravyoption_nadpis->Font->Color=barva;
+  pravyoption_nadpis->Font->Size=velikost;
+  barva=scExPanel_vrstvy->Font->Color;
+  scExPanel_vrstvy->Font=aFont;
+  scExPanel_vrstvy->Font->Color=barva;
+  scExPanel_vrstvy->Font->Size=velikost;
+  barva=scGPCheckBox_zobrazit_koleje->Font->Color;
+  scGPCheckBox_zobrazit_koleje->Font=aFont;
+  scGPCheckBox_zobrazit_koleje->Font->Color=barva;
+  scGPCheckBox_zobrazit_koleje->Font->Size=velikost;
+  barva=scGPCheckBox_zobrazit_pozice->Font->Color;
+  scGPCheckBox_zobrazit_pozice->Font=aFont;
+  scGPCheckBox_zobrazit_pozice->Font->Color=barva;
+  scGPCheckBox_zobrazit_pozice->Font->Size=velikost;
+  barva=scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Font->Color;
+  scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Font=aFont;
+  scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Font->Color=barva;
+  scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Font->Size=velikost;
+  barva=scGPCheckBox1_popisky->Font->Color;
+  scGPCheckBox1_popisky->Font=aFont;
+  scGPCheckBox1_popisky->Font->Color=barva;
+  scGPCheckBox1_popisky->Font->Size=velikost;
+  barva=scExPanel_podklad->Font->Color;
+  scExPanel_podklad->Font=aFont;
+  scExPanel_podklad->Font->Color=barva;
+  scExPanel_podklad->Font->Size=velikost;
+  barva=scGPButton_adjustace->Font->Color;
+  scGPButton_adjustace->Font=aFont;
+  scGPButton_adjustace->Font->Color=barva;
+  scGPButton_adjustace->Font->Size=velikost;
+  barva=scGPButton_kalibrace->Font->Color;
+  scGPButton_kalibrace->Font=aFont;
+  scGPButton_kalibrace->Font->Color=barva;
+  scGPButton_kalibrace->Font->Size=velikost;
+  barva=scGPCheckBox_stupne_sedi->Font->Color;
+  scGPCheckBox_stupne_sedi->Font=aFont;
+  scGPCheckBox_stupne_sedi->Font->Color=barva;
+  scGPCheckBox_stupne_sedi->Font->Size=velikost;
+  barva=scGPCheckBox_zobraz_podklad->Font->Color;
+  scGPCheckBox_zobraz_podklad->Font=aFont;
+  scGPCheckBox_zobraz_podklad->Font->Color=barva;
+  scGPCheckBox_zobraz_podklad->Font->Size=velikost;
+  barva=scLabel1_svetelnost->Font->Color;
+  scLabel1_svetelnost->Font=aFont;
+  scLabel1_svetelnost->Font->Color=barva;
+  scLabel1_svetelnost->Font->Size=velikost;
+  barva=scExPanel_ostatni->Font->Color;
+  scExPanel_ostatni->Font=aFont;
+  scExPanel_ostatni->Font->Color=barva;
+  scExPanel_ostatni->Font->Size=velikost;
+  barva=scGPCheckBox_ortogon->Font->Color;
+  scGPCheckBox_ortogon->Font=aFont;
+  scGPCheckBox_ortogon->Font->Color=barva;
+  scGPCheckBox_ortogon->Font->Size=velikost;
+  barva=scLabel16->Font->Color;
+  scLabel16->Font=aFont;
+  scLabel16->Font->Color=barva;
+  scLabel16->Font->Size=velikost;
+  barva=scLabel5->Font->Color;
+  scLabel5->Font=aFont;
+  scLabel5->Font->Color=barva;
+  scLabel5->Font->Size=velikost;
+  barva=scLabel1_intenzita->Font->Color;
+  scLabel1_intenzita->Font=aFont;
+  scLabel1_intenzita->Font->Color=barva;
+  scLabel1_intenzita->Font->Size=velikost;
+  barva=scGPTrackBar_intenzita->Font->Color;
+  scGPTrackBar_intenzita->Font=aFont;
+  scGPTrackBar_intenzita->Font->Color=barva;
+  scGPTrackBar_intenzita->Font->Size=velikost;
+  barva=scExPanel1->Font->Color;
+  scExPanel1->Font=aFont;
+  scExPanel1->Font->Color=barva;
+  scExPanel1->Font->Size=velikost;
+  barva=scGPButton_mereni_vzdalenost->Font->Color;
+  scGPButton_mereni_vzdalenost->Font=aFont;
+  scGPButton_mereni_vzdalenost->Font->Color=barva;
+  scGPButton_mereni_vzdalenost->Font->Size=velikost;
+  barva=Analyza->Font->Color;
+  Analyza->Font=aFont;
+  Analyza->Font->Color=barva;
+  Analyza->Font->Size=velikost;
+  barva=Form_parametry_linky->rHTMLLabel_eDesigner->Font->Color;
+  Form_parametry_linky->rHTMLLabel_eDesigner->Font=aFont;
+  Form_parametry_linky->rHTMLLabel_eDesigner->Font->Color=barva;
+  Form_parametry_linky->rHTMLLabel_eDesigner->Font->Size=velikost;
+  barva=Form_parametry_linky->rHTMLLabel_doporuc_pohony->Font->Color;
+  Form_parametry_linky->rHTMLLabel_doporuc_pohony->Font=aFont;
+  Form_parametry_linky->rHTMLLabel_doporuc_pohony->Font->Color=barva;
+  Form_parametry_linky->rHTMLLabel_doporuc_pohony->Font->Size=velikost;
+  barva=Form_parametry_linky->rHTMLLabel_podlahovy->Font->Color;
+  Form_parametry_linky->rHTMLLabel_podlahovy->Font=aFont;
+  Form_parametry_linky->rHTMLLabel_podlahovy->Font->Color=barva;
+  Form_parametry_linky->rHTMLLabel_podlahovy->Font->Size=velikost;
+  barva=Form_parametry_linky->rHTMLLabel_podvesny->Font->Color;
+  Form_parametry_linky->rHTMLLabel_podvesny->Font=aFont;
+  Form_parametry_linky->rHTMLLabel_podvesny->Font->Color=barva;
+  Form_parametry_linky->rHTMLLabel_podvesny->Font->Size=velikost;
+  barva=Form_parametry_linky->Button_save->Font->Color;
+  Form_parametry_linky->Button_save->Font=aFont;
+  Form_parametry_linky->Button_save->Font->Color=barva;
+  Form_parametry_linky->Button_save->Font->Size=velikost;
+  barva=Form_parametry_linky->Button_storno->Font->Color;
+  Form_parametry_linky->Button_storno->Font=aFont;
+  Form_parametry_linky->Button_storno->Font->Color=barva;
+  Form_parametry_linky->Button_storno->Font->Size=velikost;
+  barva=Form_parametry_linky->Konec->Font->Color;
+  Form_parametry_linky->Konec->Font=aFont;
+  Form_parametry_linky->Konec->Font->Color=barva;
+  Form_parametry_linky->Konec->Font->Size=velikost;
+  barva=Form_parametry_linky->scLabel1->Font->Color;
+  Form_parametry_linky->scLabel1->Font=aFont;
+  Form_parametry_linky->scLabel1->Font->Color=barva;
+  Form_parametry_linky->scLabel1->Font->Size=velikost;
+  barva=Form_parametry_linky->scGPGlyphButton_info->Font->Color;
+  Form_parametry_linky->scGPGlyphButton_info->Font=aFont;
+  Form_parametry_linky->scGPGlyphButton_info->Font->Color=barva;
+  Form_parametry_linky->scGPGlyphButton_info->Font->Size=velikost;
+  barva=Form_parametry_linky->scGPGlyphButton_refresh->Font->Color;
+  Form_parametry_linky->scGPGlyphButton_refresh->Font=aFont;
+  Form_parametry_linky->scGPGlyphButton_refresh->Font->Color=barva;
+  Form_parametry_linky->scGPGlyphButton_refresh->Font->Size=velikost;
+  barva=Form_parametry_linky->scGPButton_vozik->Font->Color;
+  Form_parametry_linky->scGPButton_vozik->Font=aFont;
+  Form_parametry_linky->scGPButton_vozik->Font->Color=barva;
+  Form_parametry_linky->scGPButton_vozik->Font->Size=velikost;
+  barva=Form_parametry_linky->scGPButton_pohon->Font->Color;
+  Form_parametry_linky->scGPButton_pohon->Font=aFont;
+  Form_parametry_linky->scGPButton_pohon->Font->Color=barva;
+  Form_parametry_linky->scGPButton_pohon->Font->Size=velikost;
+  barva=Form_parametry_linky->scExPanel_doporuc_pohony->Font->Color;
+  Form_parametry_linky->scExPanel_doporuc_pohony->Font=aFont;
+  Form_parametry_linky->scExPanel_doporuc_pohony->Font->Color=barva;
+  Form_parametry_linky->scExPanel_doporuc_pohony->Font->Size=velikost;
+  barva=Form_parametry_linky->scGPGlyphButton_add_mezi_pohony->Font->Color;
+  Form_parametry_linky->scGPGlyphButton_add_mezi_pohony->Font=aFont;
+  Form_parametry_linky->scGPGlyphButton_add_mezi_pohony->Font->Color=barva;
+  Form_parametry_linky->scGPGlyphButton_add_mezi_pohony->Font->Size=velikost;
+  barva=Form_parametry_linky->scGPButton_jig->Font->Color;
+  Form_parametry_linky->scGPButton_jig->Font=aFont;
+  Form_parametry_linky->scGPButton_jig->Font->Color=barva;
+  Form_parametry_linky->scGPButton_jig->Font->Size=velikost;
+  barva=Form_parametry_linky->scLabel_zobrazit_parametry->Font->Color;
+  Form_parametry_linky->scLabel_zobrazit_parametry->Font=aFont;
+  Form_parametry_linky->scLabel_zobrazit_parametry->Font->Color=barva;
+  Form_parametry_linky->scLabel_zobrazit_parametry->Font->Size=velikost;
+  barva=Form_parametry_linky->scLabel_smazat->Font->Color;
+  Form_parametry_linky->scLabel_smazat->Font=aFont;
+  Form_parametry_linky->scLabel_smazat->Font->Color=barva;
+  Form_parametry_linky->scLabel_smazat->Font->Size=velikost;
+  barva=Form_parametry_linky->scLabel_smazat_nepouzite->Font->Color;
+  Form_parametry_linky->scLabel_smazat_nepouzite->Font=aFont;
+  Form_parametry_linky->scLabel_smazat_nepouzite->Font->Color=barva;
+  Form_parametry_linky->scLabel_smazat_nepouzite->Font->Size=velikost;
+  barva=Form_parametry_linky->scLabel_kopirovat->Font->Color;
+  Form_parametry_linky->scLabel_kopirovat->Font=aFont;
+  Form_parametry_linky->scLabel_kopirovat->Font->Color=barva;
+  Form_parametry_linky->scLabel_kopirovat->Font->Size=velikost;
+  barva=Form_parametry_linky->scLabel_nastavit_parametry->Font->Color;
+  Form_parametry_linky->scLabel_nastavit_parametry->Font=aFont;
+  Form_parametry_linky->scLabel_nastavit_parametry->Font->Color=barva;
+  Form_parametry_linky->scLabel_nastavit_parametry->Font->Size=velikost;
+  barva=Form_parametry_linky->scGPGlyphButton_DEL_nepouzite->Font->Color;
+  Form_parametry_linky->scGPGlyphButton_DEL_nepouzite->Font=aFont;
+  Form_parametry_linky->scGPGlyphButton_DEL_nepouzite->Font->Color=barva;
+  Form_parametry_linky->scGPGlyphButton_DEL_nepouzite->Font->Size=velikost;
+  barva=Form_parametry_linky->scGPGlyphButton_TT->Font->Color;
+  Form_parametry_linky->scGPGlyphButton_TT->Font=aFont;
+  Form_parametry_linky->scGPGlyphButton_TT->Font->Color=barva;
+  Form_parametry_linky->scGPGlyphButton_TT->Font->Size=velikost;
+  barva=Form_parametry_linky->scGPGlyphButton_vozik_edit->Font->Color;
+  Form_parametry_linky->scGPGlyphButton_vozik_edit->Font=aFont;
+  Form_parametry_linky->scGPGlyphButton_vozik_edit->Font->Color=barva;
+  Form_parametry_linky->scGPGlyphButton_vozik_edit->Font->Size=velikost;
+  barva=Form_parametry_linky->scGPGlyphButton_ADD->Font->Color;
+  Form_parametry_linky->scGPGlyphButton_ADD->Font=aFont;
+  Form_parametry_linky->scGPGlyphButton_ADD->Font->Color=barva;
+  Form_parametry_linky->scGPGlyphButton_ADD->Font->Size=velikost;
+  barva=Form_parametry_linky->scGPButton_obecne->Font->Color;
+  Form_parametry_linky->scGPButton_obecne->Font=aFont;
+  Form_parametry_linky->scGPButton_obecne->Font->Color=barva;
+  Form_parametry_linky->scGPButton_obecne->Font->Size=velikost;
+  barva=Form_parametry_linky->rHTMLLabel_JIG->Font->Color;
+  Form_parametry_linky->rHTMLLabel_JIG->Font=aFont;
+  Form_parametry_linky->rHTMLLabel_JIG->Font->Color=barva;
+  Form_parametry_linky->rHTMLLabel_JIG->Font->Size=velikost;
+  barva=Form_parametry_linky->rHTMLLabel_podvozek_zaves->Font->Color;
+  Form_parametry_linky->rHTMLLabel_podvozek_zaves->Font=aFont;
+  Form_parametry_linky->rHTMLLabel_podvozek_zaves->Font->Color=barva;
+  Form_parametry_linky->rHTMLLabel_podvozek_zaves->Font->Size=velikost;
+  barva=Form_parametry_linky->scHTMLLabel_jig_info->Font->Color;
+  Form_parametry_linky->scHTMLLabel_jig_info->Font=aFont;
+  Form_parametry_linky->scHTMLLabel_jig_info->Font->Color=barva;
+  Form_parametry_linky->scHTMLLabel_jig_info->Font->Size=velikost;
+  barva=Form_parametry_linky->scGPGlyphButton_ADD_old->Font->Color;
+  Form_parametry_linky->scGPGlyphButton_ADD_old->Font=aFont;
+  Form_parametry_linky->scGPGlyphButton_ADD_old->Font->Color=barva;
+  Form_parametry_linky->scGPGlyphButton_ADD_old->Font->Size=velikost;
+  barva=Form_parametry_linky->scGPGlyphButton_OPTIONS->Font->Color;
+  Form_parametry_linky->scGPGlyphButton_OPTIONS->Font=aFont;
+  Form_parametry_linky->scGPGlyphButton_OPTIONS->Font->Color=barva;
+  Form_parametry_linky->scGPGlyphButton_OPTIONS->Font->Size=velikost;
+  barva=Form_parametry_linky->scGPGlyphButton_katalog->Font->Color;
+  Form_parametry_linky->scGPGlyphButton_katalog->Font=aFont;
+  Form_parametry_linky->scGPGlyphButton_katalog->Font->Color=barva;
+  Form_parametry_linky->scGPGlyphButton_katalog->Font->Size=velikost;
+  barva=Form_parametry_linky->scGPTrackBar_uchyceni->Font->Color;
+  Form_parametry_linky->scGPTrackBar_uchyceni->Font=aFont;
+  Form_parametry_linky->scGPTrackBar_uchyceni->Font->Color=barva;
+  Form_parametry_linky->scGPTrackBar_uchyceni->Font->Size=velikost;
+	barva=Form_parametry_linky->Button_save->Font->Color;
+	Form_parametry_linky->Button_save->Font=aFont;
+	Form_parametry_linky->Button_save->Font->Color=barva;
+	Form_parametry_linky->Button_save->Font->Size=velikost;
+	////
+	barva=scGPButton_viditelnostmGrid->Font->Color;
+	scGPButton_viditelnostmGrid->Font=aFont;
+	scGPButton_viditelnostmGrid->Font->Color=barva;
+	scGPButton_viditelnostmGrid->Font->Size=velikost;
+	barva=scGPButton_viditelnostKoty->Font->Color;
+	scGPButton_viditelnostKoty->Font=aFont;
+	scGPButton_viditelnostKoty->Font->Color=barva;
+	scGPButton_viditelnostKoty->Font->Size=velikost;
+	barva=scButton_zamek->Font->Color;
+	scButton_zamek->Font=aFont;
+	scButton_zamek->Font->Color=barva;
+	scButton_zamek->Font->Size=velikost;
+	barva=scGPButton_posun_dalsich_elementu->Font->Color;
+	scGPButton_posun_dalsich_elementu->Font=aFont;
+	scGPButton_posun_dalsich_elementu->Font->Color=barva;
+	scGPButton_posun_dalsich_elementu->Font->Size=velikost;
+	////
+	scGPComboBox_prepinacKot->Left=scGPLabel_prepinacKot->Left+scGPLabel_prepinacKot->Width;//změna zarovnání
+}
+//---------------------------------------------------------------------------
 //záležitost s novým designem
 void TForm1::DesignSettings()
 {
@@ -272,7 +843,7 @@ void TForm1::DesignSettings()
 	//nastavení globálních barev
 	TColor light_gray=(TColor)RGB(240,240,240);
  //	TColor active_blue=(TColor)RGB(0,120,215);
-  TColor clDrawGridHeaderFont=m.clIntensive((TColor)RGB(43,87,154),30);
+	TColor clDrawGridHeaderFont=m.clIntensive((TColor)RGB(43,87,154),30);
 	PopupMenuButton->Left = 0;
 	PopupMenuButton->Visible = false;
 	DetailsButton->Left = 0;
@@ -803,6 +1374,7 @@ void TForm1::startUP()
 		Form_parametry_linky->ShowModal();//zavolání formáláře pro prvotní vyplnění či potvzení hodnot parametrů linky
 	}
 	if(d.v.OBJEKTY->dalsi!=NULL)TIP="";//v případě, že jsou vložené nějaké objekty tak dojde k odmazání tipu pro vkládání objektů
+	//set_font();//nastavení fontu komponentám
 	DrawGrid_knihovna->SetFocus();//nutné při spouštění dávat focus na knihovnu, ta přesměrovává všechny události (např. KeyDown) na Form
 }
 //---------------------------------------------------------------------------
@@ -1594,32 +2166,6 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 				}
 				REFRESH(false);
 			}
-//			if(Akce==GEOMETRIE && posledni_editovany_element!=NULL && posledni_editovany_element->predchozi!=NULL && posledni_editovany_element->predchozi->n>=1/*pom_temp->elementy->predchozi->n>=2*/)//odmazání poslední zarážky při tvorbě geometrie
-//			{
-//				if(posledni_editovany_element->n!=1){pom_element_temp=posledni_editovany_element->predchozi;if(posledni_editovany_element->name=="EDIT")pom_element_temp->name="EDIT";}else pom_element_temp=NULL;
-//				d.v.smaz_element(posledni_editovany_element);
-//				posledni_editovany_element=pom_element_temp;
-//				pom_element_temp=NULL;
-//				if(posledni_editovany_element!=NULL &&  posledni_editovany_element->dalsi!=NULL)
-//				{
-//					double posunx=posledni_editovany_element->X-posledni_editovany_element->dalsi->geo.X1,posuny=posledni_editovany_element->Y-posledni_editovany_element->dalsi->geo.Y1;
-//					Cvektory::TElement *E=posledni_editovany_element->dalsi;
-//					while(E!=NULL)
-//					{
-//						E->X+=posunx;E->Y+=posuny;//souřadnice elementu
-//						//geometrie elementu
-//						E->geo.X1+=posunx;E->geo.X2+=posunx;E->geo.X3+=posunx;E->geo.X4+=posunx;
-//						E->geo.Y1+=posuny;E->geo.Y2+=posuny;E->geo.Y3+=posuny;E->geo.Y4+=posuny;
-//						E=E->dalsi;
-//					}
-//					delete E;E=NULL;
-//				}
-//				if(pom->predchozi!=NULL && pom->predchozi->n>=1 && pom_temp->elementy->predchozi->n==1)
-//				{
-//					posledni_editovany_element=pom->predchozi->elementy->predchozi;pom_element_temp=pom_temp->elementy->predchozi;
-//				}
-//				REFRESH(false);
-//			}
 		}break;
 		//ENTER
 		case 13:
@@ -1631,7 +2177,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 			else if(Akce==DRAW_HALA){d.v.vymaz_body();Akce=NIC;kurzor(standard);TIP="";REFRESH();}
 		}break;
 		//ESC
-		case 27:ESC();break;
+		case 27:if(Akce==NIC && pom_temp!=NULL && !editace_textu)KonecClick(this);ESC();break;
 		//MEZERNÍK
 		case 32: if(Akce!=PAN_MOVE){Akce=PAN;kurzor(pan);pan_non_locked=true;}break;
 		//DELETE
@@ -2056,7 +2602,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 	log(__func__);//logování
 	if(pom_temp==NULL && mGrid_knihovna!=NULL && mGrid_knihovna->CheckPTinTable(X,Y))tab_knihovna_click(X,Y);
 	if(TIP!="Kliknutím na objekt v knihovně objektu, tažením a následným usazením přidáte objekt.")TIP="";//odstranění zobrazeného tipu
-	if(MOD==NAHLED)if(PmG->CheckLink(X,Y)==TPoint(-2,-2))FormX->naplneni_dopRD();//pokud je mod náhled a bylo kliknuto na dopRD vrátí tuto rychlost do tabulky pohonu
+	if(MOD==NAHLED && PmG->CheckLink(X,Y)==TPoint(-2,-2))FormX->naplneni_dopRD();//pokud je mod náhled a bylo kliknuto na dopRD vrátí tuto rychlost do tabulky pohonu
 	if(MOD==NAHLED&&index_kurzoru==9999||index_kurzoru==100)smaz_edit(false);//smaže edit a neprovede refresh
 	if(editace_textu)ESC();
 	if(MOD==NAHLED){FormX->odstranit_korelaci();FormX->naplneni_max_voziku(X,Y);}
@@ -2330,17 +2876,24 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			}
 			if(MOD==NAHLED)
 			{
-				TPoint souradnice=bod_vlozeni_elementu();//"přilepení" kurzoru na pohon
-				short rotace_symbolu=0;if(pom_temp->orientace==0 || pom_temp->orientace==180)rotace_symbolu=90;
-				if(souradnice.x==-1000)souradnice=akt_souradnice_kurzoru_PX;
-				else if(pom_element_temp!=NULL)rotace_symbolu=rotace_symbol(m.Rt90(pom_element_temp->geo.orientace),souradnice.x,souradnice.y);//zjistění rotace symbolu
-				souradnice=uprav_bod_vlozeni_elementu(souradnice,rotace_symbolu);//uprava souřadnic posun robota, bod vkládání na ramenu
-				if(pom->id==3)d.vykresli_ikonu_komory(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,"",element_id);
-				else d.vykresli_element(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,"","",element_id,-1,Rotace_symbolu_minula);
-				minule_souradnice_kurzoru=souradnice;//TPoint(X,Y);
-				if(pom->id==3)d.vykresli_ikonu_komory(Canvas,X,Y,"",element_id);
-				else d.vykresli_element(Canvas,souradnice.x,souradnice.y,"","",element_id,-1,rotace_symbolu);
-				Rotace_symbolu_minula=rotace_symbolu;
+				if(pom->id==3)//vykreslování ikony komory v POW objektu
+				{
+					d.vykresli_ikonu_komory(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,"",element_id);
+					minule_souradnice_kurzoru=TPoint(X,Y);
+					d.vykresli_ikonu_komory(Canvas,X,Y,"",element_id);
+				}
+				else//vykreslování elementu + přichytávání na pohon
+				{
+        	TPoint souradnice=bod_vlozeni_elementu();//"přilepení" kurzoru na pohon
+					short rotace_symbolu=0;if(pom_temp->orientace==0 || pom_temp->orientace==180)rotace_symbolu=90;
+					if(souradnice.x==-1000)souradnice=akt_souradnice_kurzoru_PX;
+					else if(pom_element_temp!=NULL)rotace_symbolu=rotace_symbol(m.Rt90(pom_element_temp->geo.orientace),souradnice.x,souradnice.y);//zjistění rotace symbolu
+					souradnice=uprav_bod_vlozeni_elementu(souradnice,rotace_symbolu);//uprava souřadnic posun robota, bod vkládání na ramenu
+					d.vykresli_element(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,"","",element_id,-1,Rotace_symbolu_minula);
+					minule_souradnice_kurzoru=souradnice;
+					d.vykresli_element(Canvas,souradnice.x,souradnice.y,"","",element_id,-1,rotace_symbolu);
+					Rotace_symbolu_minula=rotace_symbolu;
+				}
 				pom_element_temp=NULL;//mazání ukazatele, slouží k uchovávání elementu na jehož geometrii budu vkládat element
 			}
 			break;
@@ -2486,13 +3039,66 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				if(m.abs_d(posunx)>m.abs_d(posuny))posuny=0;else posunx=0;//vylepšení "pocitu" z posunu, není nezbytně nutné
 				d.v.posun_hranu(posunx,posuny,A,B);
 			}
-			//u POW při posunu úsečky totožné s hranou poslední kabiny je nutné rozšiřovat zároven poslední komoru!!
-			if(pom_temp!=NULL && pom_temp->id==3 && A->n==2)
+			if(pom->id==3)//speciální uprava objektu POW při posunu jeho přímek, z layoutu + z editace
 			{
-				if(pom_temp->orientace==0)pom_temp->komora->predchozi->velikost+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
-				if(pom_temp->orientace==90)pom_temp->komora->predchozi->velikost+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
-				if(pom_temp->orientace==180)pom_temp->komora->predchozi->velikost-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
-				if(pom_temp->orientace==270)pom_temp->komora->predchozi->velikost-=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
+        Cvektory::TObjekt *O=pom;
+				if(pom_temp!=NULL)O=pom_temp;
+				//////uchopeno za boky .. budu měnit délku pohonu a komor
+				if(A->n==2 || A->n==4)
+				{
+					double posun_x=0,posun_y=0,pom1=1,pom2=1,zmena=0;
+					//vypočet změny
+					if(B->n==1 && A->n==4){pom1=-1;pom2=-1;}
+					if(O->orientace==0)posun_y=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+					if(O->orientace==90)posun_x=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
+					if(O->orientace==180){posun_y=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);pom2*=-1;}
+					if(O->orientace==270){posun_x=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);pom1*=-1;}
+					zmena=pom1*posun_x+pom2*posun_y;
+					//pokud změnu provádím z editace měním rozměry poslendí nebo první komory
+					if(A->n==2 && pom_temp!=NULL)pom_temp->komora->predchozi->velikost+=zmena;
+					if(A->n==4 && pom_temp!=NULL)pom_temp->komora->dalsi->velikost+=zmena;
+					//pokud provádím změnu z layoutu celý objket bude měnit rozměry proporcionálně
+					if(pom_temp==NULL)
+					{
+				  	pom_komora=pom->komora->dalsi;
+				  	while(pom_komora!=NULL)
+				  	{
+				  		pom_komora->velikost+=zmena/(double)pom->komora->predchozi->n;
+				  		pom_komora=pom_komora->dalsi;
+						}
+						delete pom_komora;pom_komora=NULL;
+					}
+			  	//rozšíření pohonu
+			  	if(B->n==1 && A->n==4)
+			  	{
+						O->elementy->dalsi->geo.X1+=posun_x;
+						O->elementy->dalsi->geo.Y1+=posun_y;
+			  	}
+			  	else
+			  	{
+						O->elementy->dalsi->X+=posun_x;
+						O->elementy->dalsi->Y+=posun_y;
+			  	}
+					d.v.vloz_G_element(O->elementy->dalsi,0,O->elementy->dalsi->geo.X1,O->elementy->dalsi->geo.Y1,0,0,0,0,O->elementy->dalsi->X,O->elementy->dalsi->Y,O->elementy->dalsi->geo.orientace);
+				}
+				//////uchopeno za vrh/spodek .. budu posouvat osu pohonu
+				else
+				{
+					double delka_hrany=abs(O->body->dalsi->X-O->body->predchozi->X+O->body->dalsi->Y-O->body->predchozi->Y),posun=0;
+					if(O->orientace==90 || O->orientace==270)
+					{
+						if(O->orientace==90)posun=O->body->dalsi->Y-delka_hrany/2.0;
+						else posun=O->body->predchozi->Y-delka_hrany/2.0;
+						O->elementy->dalsi->Y=O->elementy->dalsi->geo.Y1=O->elementy->dalsi->geo.Y2=O->elementy->dalsi->geo.Y3=O->elementy->dalsi->geo.Y4=posun;
+					}
+					else
+					{
+						if(O->orientace==0)posun=O->body->dalsi->X+delka_hrany/2.0;
+						else posun=O->body->predchozi->X+delka_hrany/2.0;
+						O->elementy->dalsi->X=O->elementy->dalsi->geo.X1=O->elementy->dalsi->geo.X2=O->elementy->dalsi->geo.X3=O->elementy->dalsi->geo.X4=posun;
+          }
+				}
+				O=NULL;delete O;
 			}
 			minule_souradnice_kurzoru=TPoint(X,Y);
 			REFRESH();
@@ -3313,25 +3919,25 @@ void TForm1::onPopUP(int X, int Y)
 				PopUPmenu->scLabel_smazat->Caption="  Smazat sekci č. "+AnsiString(pom_komora->n);
 				PopUPmenu->Item_smazat->FillColor=(TColor)RGB(240,240,240);
 				PopUPmenu->Item_smazat->Visible=true;PopUPmenu->Panel_UP->Height+=34;
-				PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 			}
-			if(pom_vyhybka!=NULL && pom_bod==NULL /*&& pom_vyhybka->n!=pom_temp->n*/){PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;}
+			//if(pom_vyhybka!=NULL && pom_bod==NULL /*&& pom_vyhybka->n!=pom_temp->n*/)
+			{PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;}
 			////mazání a přidávání bodu do polygonu obrysu kabiny
-			if(pom_bod!=NULL && JID==-3)//bod = mazání bodu
+			if(pom_temp->id!=3 && pom_bod!=NULL && JID==-3)//bod = mazání bodu
 			{
 				pom_bod_temp=pom_bod;
 				PopUPmenu->scLabel_smazat->Caption="  Smazat bod č. "+AnsiString(pom_bod->n);
 				PopUPmenu->Item_smazat->FillColor=(TColor)RGB(240,240,240);
 				PopUPmenu->Item_smazat->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 			}
-			if(pom_bod!=NULL && JID==-2)//usečka = přidávání bodu
+			if(pom_temp->id!=3 && pom_bod!=NULL && JID==-2)//usečka = přidávání bodu
 			{
 				pom_bod_temp=pom_bod;
 				PopUPmenu->scLabel_nastavit_parametry->Caption="  Přidat bod";
 				PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 			}
 			if(Akce==GEOMETRIE && bod_vlozeni_elementu().x!=-1000)PopUPmenu->scLabel_nastavit_parametry->Caption="  Vložit zarážku";
-			if(pom_bod!=NULL || (pom_vyhybka!=NULL && pom_vyhybka->n==pom_temp->n)){PopUPmenu->Item_posun_obrysu->Visible=true;PopUPmenu->Panel_UP->Height+=34;}
+			if(pom_temp->id!=3 && (pom_bod!=NULL || (pom_vyhybka!=NULL && pom_vyhybka->n==pom_temp->n))){PopUPmenu->Item_posun_obrysu->Visible=true;PopUPmenu->Panel_UP->Height+=34;}
 			////
 			//PopUPmenu->Item_posouvat->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
 			PopUPmenu->Item_posunout->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
@@ -3840,7 +4446,6 @@ void TForm1::ESC()
 			REFRESH();//dojde k překreslení odstraněné výhybky
 		}break;
 		case GEOMETRIE:ukonceni_geometrie();break;
-		case NIC:if(pom_temp!=NULL)KonecClick(this);break;
 	}
 	pom_vyhybka=NULL;
 	proces_pom=NULL;
@@ -4201,11 +4806,20 @@ void TForm1::add_komoru()
 	}
 	k=NULL;delete k;
 	//změna rozměru kabiny
-	double rozmer_kabiny_x=pom_temp->body->dalsi->dalsi->X-pom_temp->body->dalsi->X,rozmer_kabiny_y=pom_temp->body->dalsi->dalsi->Y-pom_temp->body->dalsi->Y;
-	double posun_x=celkem-rozmer_kabiny_x,posun_y=celkem-rozmer_kabiny_y;
-	if(pom_temp->orientace==270 || pom_temp->orientace==180){posun_x=-celkem-rozmer_kabiny_x;posun_y=-celkem-rozmer_kabiny_y;}
-	if((pom_temp->orientace==90 || pom_temp->orientace==270) && m.abs_d(celkem)>m.abs_d(rozmer_kabiny_x))d.v.posun_hranu(posun_x,0,pom_temp->body->dalsi->dalsi,pom_temp->body->dalsi->dalsi->dalsi);
-	if((pom_temp->orientace==0 || pom_temp->orientace==180) && m.abs_d(celkem)>m.abs_d(rozmer_kabiny_y))d.v.posun_hranu(0,posun_y,pom_temp->body->dalsi->dalsi,pom_temp->body->dalsi->dalsi->dalsi);
+	double rozmer_kabiny=pom_temp->elementy->dalsi->geo.delka,posun_x=0,posun_y=0;
+	switch((int)pom_temp->orientace)
+	{
+		case 0:posun_y=celkem-rozmer_kabiny;break;
+		case 90:posun_x=celkem-rozmer_kabiny;break;
+		case 180:posun_y=-celkem+rozmer_kabiny;break;
+		case 270:posun_x=-celkem+rozmer_kabiny;break;
+	}
+	d.v.posun_hranu(posun_x,posun_y,pom_temp->body->dalsi->dalsi,pom_temp->body->dalsi->dalsi->dalsi);
+	//rozšíření pohonu
+	pom_temp->elementy->dalsi->X+=posun_x;
+	pom_temp->elementy->dalsi->Y+=posun_y;
+	d.v.vloz_G_element(pom_temp->elementy->dalsi,0,pom_temp->elementy->dalsi->geo.X1,pom_temp->elementy->dalsi->geo.Y1,0,0,0,0,pom_temp->elementy->dalsi->X,pom_temp->elementy->dalsi->Y,pom_temp->elementy->dalsi->geo.orientace);
+  //ostatní
 	Akce=NIC;
 	refresh_mGrid=false;
 	REFRESH();
@@ -4382,6 +4996,7 @@ void TForm1::vloz_bod_haly_objektu(int X,int Y)
 	else souradnice=m.P2L(TPoint(X,Y));
 	//////Získání bodu před
 	Cvektory::TBod *zabod=NULL;
+	if(pom_bod_temp!=NULL && pom_bod_temp->predchozi->n>0)zabod=pom_bod_temp->predchozi;
 	if(funkcni_klavesa==3 && pom_bod!=NULL && pom_bod->n!=1)zabod=pom_bod->predchozi;
 	if(pom_temp==NULL && funkcni_klavesa==3 && pom_bod!=NULL && pom_bod->n==1)zabod=d.v.HALA.body->predchozi;   
 	if(pom_temp!=NULL && funkcni_klavesa==3 && pom_bod!=NULL && pom_bod->n==1)zabod=pom_temp->body->predchozi;  
@@ -7371,6 +7986,7 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 	{
 		scListGroupKnihovObjektu->Caption="Roboti";
 		DrawGrid_knihovna->RowCount=2;  //nastaveni poctu radku, aby nedochazelo k posunu gridu pri scrollovani
+		if(pom_temp->id!=3)DrawGrid_knihovna->ColCount=2;//ošetření probliku
 //		DrawGrid_knihovna->Left=3;
 		short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
 		int W=DrawGrid_knihovna->DefaultColWidth  *Z;
@@ -7387,6 +8003,11 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 		Zoom=10;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
 		AnsiString label1;
 		AnsiString label2,label_pom;
+    //překreslení původních
+		C->Pen->Color=clWhite;//nastavení barev pro vykreslení obdelníku
+		C->Brush->Color=clWhite;//musí být těsně před C->Rectangle
+		C->Rectangle(0,0,2*W,2*H);//překreslní původních robotů ("smazání")
+
 		short pocet_elementu=4;
 		int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
 		switch(pom_temp->id)
@@ -7429,9 +8050,6 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 				//změna vykreslení robotů v případě vložení elementu
 				if((EID==101 || EID==103 || EID==5) && pom_temp->pohon!=NULL)
 				{
-					C->Pen->Color=clWhite;//nastavení barev pro vykreslení obdelníku
-					C->Brush->Color=clWhite;//musí být těsně před C->Rectangle
-					C->Rectangle(0,0,2*W,2*H);//překreslní původních robotů ("smazání")
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální",label_pom,101);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G",label_pom,102,0,0,-1);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",103);
@@ -7439,9 +8057,6 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 				}
 				else if ((EID==102 || EID==104 || EID==6) && pom_temp->pohon!=NULL)
 				{
-          C->Pen->Color=clWhite;//nastavení barev pro vykreslení obdelníku
-					C->Brush->Color=clWhite;//musí být těsně před C->Rectangle
-					C->Rectangle(0,0,2*W,2*H);//překreslní původních robotů ("smazání")
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální",label_pom,101,0,0,-1);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G",label_pom,102);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",103,0,0,-1);
@@ -7469,9 +8084,6 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 				//změna vykreslení robotů v případě vložení elementu
 				if((EID==15 || EID==17 || EID==5) && pom_temp->pohon!=NULL)
 				{
-					C->Pen->Color=clWhite;//nastavení barev pro vykreslení obdelníku
-					C->Brush->Color=clWhite;//musí být těsně před C->Rectangle
-					C->Rectangle(0,0,2*W,2*H);//překreslní původních robotů ("smazání")
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální","CO2",15);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G","CO2",16,0,0,-1);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",17);
@@ -7479,9 +8091,6 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 				}
 				else if ((EID==16 || EID==18 || EID==6) && pom_temp->pohon!=NULL)
 				{
-          C->Pen->Color=clWhite;//nastavení barev pro vykreslení obdelníku
-					C->Brush->Color=clWhite;//musí být těsně před C->Rectangle
-					C->Rectangle(0,0,2*W,2*H);//překreslní původních robotů ("smazání")
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální","CO2",15,0,0,-1);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G","CO2",16);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",17,0,0,-1);
@@ -7513,9 +8122,6 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 				//změna vykreslení robotů v případě vložení elementu
 				if((EID==11 || EID==13 || EID==105 || EID==107 || EID==5) && pom_temp->pohon!=NULL)
 				{
-          C->Pen->Color=clWhite;//nastavení barev pro vykreslení obdelníku
-					C->Brush->Color=clWhite;//musí být těsně před C->Rectangle
-					C->Rectangle(0,0,2*W,2*H);//překreslní původních robotů ("smazání")
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální","ožeh",rob1);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G","ožeh",rob2,0,0,-1);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",rob3);
@@ -7523,9 +8129,6 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 				}
 				else if ((EID==12 || EID==14 || EID==106 || EID==108 || EID==6) && pom_temp->pohon!=NULL)
 				{
-          C->Pen->Color=clWhite;//nastavení barev pro vykreslení obdelníku
-					C->Brush->Color=clWhite;//musí být těsně před C->Rectangle
-					C->Rectangle(0,0,2*W,2*H);//překreslní původních robotů ("smazání")
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální","ožeh",rob1,0,0,-1);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G","ožeh",rob2);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",rob3,0,0,-1);
@@ -7556,9 +8159,6 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 				}
 				if((EID==7 || EID==9 || EID==105 || EID==107 || EID==5) && pom_temp->pohon!=NULL)
 				{                                                                                                                            //S&G
-					C->Pen->Color=clWhite;//nastavení barev pro vykreslení obdelníku
-					C->Brush->Color=clWhite;//musí být těsně před C->Rectangle
-					C->Rectangle(0,0,2*W,2*H);//překreslní původních robotů ("smazání")
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální","ionizace",rob1);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G","ionizace",rob2,0,0,-1);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",rob3);
@@ -7566,9 +8166,6 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 				}
 				else if ((EID==8 || EID==10 || EID==106 || EID==108 || EID==6) && pom_temp->pohon!=NULL)
 				{
-          C->Pen->Color=clWhite;//nastavení barev pro vykreslení obdelníku
-					C->Brush->Color=clWhite;//musí být těsně před C->Rectangle
-					C->Rectangle(0,0,2*W,2*H);//překreslní původních robotů ("smazání")
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální","ionizace",rob1,0,0,-1);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G","ionizace",rob2);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",rob3,0,0,-1);
@@ -7599,9 +8196,6 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 				//změna vykreslení robotů v případě vložení elementu
 				if((EID==1 || EID==3 || EID==105 || EID==107 || EID==5) && pom_temp->pohon!=NULL)
 				{
-					C->Pen->Color=clWhite;//nastavení barev pro vykreslení obdelníku
-					C->Brush->Color=clWhite;//musí být těsně před C->Rectangle
-					C->Rectangle(0,0,2*W,2*H);//překreslní původních robotů ("smazání")
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální","lakování",rob1);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G","lakování",rob2,0,0,-1);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",rob3);
@@ -7609,9 +8203,6 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 				}
 				else if ((EID==2 || EID==4 || EID==106 || EID==108 || EID==6) && pom_temp->pohon!=NULL)
 				{
-					C->Pen->Color=clWhite;//nastavení barev pro vykreslení obdelníku
-					C->Brush->Color=clWhite;//musí být těsně před C->Rectangle
-					C->Rectangle(0,0,2*W,2*H);//překreslní původních robotů ("smazání")
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální","lakování",rob1,0,0,-1);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G","lakování",rob2);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",rob3,0,0,-1);
@@ -7913,7 +8504,7 @@ void __fastcall TForm1::DrawGrid_geometrieMouseDown(TObject *Sender, TMouseButto
 		REFRESH(false);
 	}
 	else {Akce=NIC;Akce_temp=NIC;REFRESH(false);}//vypunutí akce geometrie
-	if(Col==1 && pom_temp->pohon!=NULL)
+	if(Col==1 && pom_temp->pohon!=NULL && pom->id!=3)
 	{
 		element_id=200;
 		SB("Kliknutím na libovolné místo umístíte vybraný element.");
@@ -8422,10 +9013,14 @@ void __fastcall TForm1::NastavitparametryClick1Click(TObject *Sender)
 {
 	log(__func__);
 	if(MOD==SCHEMA && pom_bod_temp==NULL){pom=pom_vyhybka;if(pom!=NULL)NP_input();}//předání z pomocného ukazatele objekt do pom, zabrání ztráty pom, pokud uživatel sjede kurzorem mimo objekt při otevřeném popup + ochrana proti prázdnému pom (asi zbytečná)
+  if(pom_temp!=NULL && pom_vyhybka!=NULL && pom_temp->n!=pom_vyhybka->n)//otevírání náhledu z náhledu, přechot na editaci jiného objektu
+	{
+		zmena_editovaneho_objektu();
+	}
 	if(pom_bod_temp!=NULL && pom_temp==NULL && pom==NULL)//přidání bodu haly
 	{
-		if(pom_bod_temp->n!=1)d.v.vloz_bod(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,pom,pom_bod_temp->predchozi);
-		else d.v.vloz_bod(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,pom);
+		if(pom_bod_temp->n!=1)d.v.vloz_bod(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,NULL,pom_bod_temp->predchozi);
+		else d.v.vloz_bod(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y);
 		REFRESH();
 	}
 	if(pom_temp!=NULL && pom_komora_temp!=NULL)//změna typu kabiny
@@ -8436,10 +9031,6 @@ void __fastcall TForm1::NastavitparametryClick1Click(TObject *Sender)
 		REFRESH();
 		refresh_mGrid=true;
 		nahled_ulozit(true);
-	}
-	if(pom_temp!=NULL && pom_vyhybka!=NULL && pom_temp->n!=pom_vyhybka->n)//otevírání náhledu z náhledu, přechot na editaci jiného objektu
-	{
-		zmena_editovaneho_objektu();
 	}
 	if(pom_temp!=NULL && pom_bod_temp!=NULL)//přidání bodu objektu
 	{
@@ -8942,15 +9533,58 @@ void TForm1::zmena_editovaneho_objektu()
   	else if(pom_temp->id==3)scGPLabel_roboti->Caption="Sekce";
   	else if(pom_temp->id==0 || pom_temp->id==9)scGPLabel_roboti->Caption="Operátoři";
 		else scGPLabel_roboti->Caption="Roboti";
-		if(pom_temp->pohon!=NULL)scGPComboBox_prepinacKot->Enabled=true;
-		else scGPComboBox_prepinacKot->Enabled=false;
-    //nutné při změně typu objektu, pouze tyto 2 knihovny se mění se změnou objektu
-  	DrawGrid_geometrie->Refresh();
-  	DrawGrid_knihovna->Refresh();
-  	vytvoreni_tab_pohon();
-  	nahled_ulozen=false;//nově otevřen, není uložen
+		//nastavení tlačítek na výchozí hodnoty
+  	if(pom_temp->uzamknout_nahled)
+  	{
+  		scButton_zamek->ImageIndex=37; //zamčeno
+  		scButton_zamek->Hint="Odemknout editaci";
+  	}
+  	else
+  	{
+  		scButton_zamek->ImageIndex=60;
+  		scButton_zamek->Hint="Zamknout editaci";
+  	}
+  	if(pom_temp->zobrazit_mGrid)
+  	{
+  		scGPButton_viditelnostmGrid->ImageIndex=54;
+  		scGPButton_viditelnostmGrid->Hint="Skrýt tabulky";
+  	}
+  	else
+  	{
+  		scGPButton_viditelnostmGrid->ImageIndex=55;
+  		scGPButton_viditelnostmGrid->Hint="Zobrazit tabulky";
+  	}
+  	if(pom_temp->zobrazit_koty)
+  	{
+  		scGPButton_viditelnostKoty->ImageIndex=56;
+  		scGPButton_viditelnostKoty->Hint="Skrýt kóty";
+  	}
+  	else
+  	{
+  		scGPButton_viditelnostKoty->ImageIndex=57;
+  		scGPButton_viditelnostKoty->Hint="Zobrazit kóty";
+  	}
+  	if(posun_dalsich_elementu)
+  	{
+  		scGPButton_posun_dalsich_elementu->ImageIndex=58;
+  		scGPButton_posun_dalsich_elementu->Hint="Zakázat vázaný posun robotů, stop stanic a otočí v editovaném objektu";
+  	}
+  	else
+  	{
+  		scGPButton_posun_dalsich_elementu->ImageIndex=59;
+  		scGPButton_posun_dalsich_elementu->Hint="Povolit vázaný posun robotů, stop stanic a otočí v editovaném objektu";
+  	}
+  	if(scGPComboBox_prepinacKot->ItemIndex==0)DKunit=1;
+  	else DKunit=2;
+  	if(pom_temp->pohon!=NULL)scGPComboBox_prepinacKot->Enabled=true;
+  	else scGPComboBox_prepinacKot->Enabled=false;
+		//nutné při změně typu objektu, pouze tyto 2 knihovny se mění se změnou objektu
+		DrawGrid_geometrie->Refresh();
+		DrawGrid_knihovna->Refresh();
+		vytvoreni_tab_pohon();
+		nahled_ulozen=false;//nově otevřen, není uložen
   	PmG->Update();
-  	//znovu provedení designu při otevření náhledu, který není prázdný
+		//znovu provedení designu při otevření náhledu, který není prázdný
   	if(pom_temp->elementy!=NULL)
   	{
   		Cvektory::TElement *E=pom_temp->elementy;
@@ -10377,7 +11011,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-Memo(scGPButton_mereni_vzdalenost->Hint);
+	set_font();
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -10688,7 +11322,7 @@ void __fastcall TForm1::scGPGlyphButton_definice_zakazekClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::DetailsButtonClick(TObject *Sender)
 {
-  log(__func__);//logování
+	log(__func__);//logování
 	ESC();//zruší případnou rozdělanou akci
 	DrawGrid_knihovna->Visible=false;DrawGrid_otoce->Visible=false;DrawGrid_ostatni->Visible=false;DrawGrid_geometrie->Visible=false;DrawGrid_poznamky->Visible=false;
 	scSplitView_MENU->Opened = !scSplitView_MENU->Opened;
@@ -11450,11 +12084,7 @@ void __fastcall TForm1::DrawGrid_geometrieDrawCell(TObject *Sender, int ACol, in
 		}
 		if(n==2)
 		{
-		 label1= "oblouky";
-		 label2="";
-//		 if(pom->id!=5) d.vykresli_ikonu_oblouku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20-odsazeni,label1);
-		 /*else*/           //d.vykresli_ikonu_oblouku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20-odsazeni,label1/*,-1*/);
-			if(pom_temp->pohon!=NULL)d.vykresli_predavaci_misto(C,NULL,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P,"před. místo",0);
+			if(pom_temp->pohon!=NULL && pom_temp->id!=3)d.vykresli_predavaci_misto(C,NULL,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P,"před. místo",0);
 			else d.vykresli_predavaci_misto(C,NULL,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P,"před. místo",0,0,-1);
 		}
 
@@ -11835,7 +12465,7 @@ void TForm1::vykresli_kurzor(int index)
 	//vykreslování kurzoru pro psaní textu
 	Canvas->Pen->Style=psSolid;
 	Canvas->Pen->Mode=pmNotXor;
-	Canvas->Pen->Color=clRed;
+	Canvas->Pen->Color=m.clIntensive(clRed,180);
 	Canvas->Pen->Width=2;
 	switch ((index))//index=JID, kde a jaký kurzor vykreslit
 	{
@@ -11999,7 +12629,14 @@ void TForm1::Smaz_kurzor()
 			double posun=ms.MyToDouble(editovany_text)-pom_komora_temp->velikost;if(pom_temp->orientace==270 ||pom_temp->orientace==180)posun*=-1;
 			if(pom_temp->orientace==90 || pom_temp->orientace==270)d.v.posun_hranu(posun,0,pom_temp->body->dalsi->dalsi,pom_temp->body->dalsi->dalsi->dalsi);
 			else d.v.posun_hranu(0,posun,pom_temp->body->dalsi->dalsi,pom_temp->body->dalsi->dalsi->dalsi);
+			double rozdil=-pom_komora_temp->velikost;
 			pom_komora_temp->velikost=ms.MyToDouble(editovany_text);
+			//změna délky pohonu
+			rozdil+=pom_komora_temp->velikost;
+			if(pom_temp->orientace==180 || pom_temp->orientace==270)rozdil*=-1;
+			if(pom_temp->orientace==90 || pom_temp->orientace==270)pom_temp->elementy->dalsi->X+=rozdil;
+			else pom_temp->elementy->dalsi->Y+=rozdil;
+			d.v.vloz_G_element(pom_temp->elementy->dalsi,0,pom_temp->elementy->dalsi->geo.X1,pom_temp->elementy->dalsi->geo.Y1,0,0,0,0,pom_temp->elementy->dalsi->X,pom_temp->elementy->dalsi->Y,pom_temp->elementy->dalsi->geo.orientace);
 		}
 		if(index_kurzoru<=-11&&pom_temp->id!=3&&Akce!=GEOMETRIE&&(pom_element_temp->eID==2||pom_element_temp->eID==4))pom_element_temp->mGrid->Refresh();//musí se refreshovat z důvodu přepočtu RT u S&G
 		if(index_kurzoru<=-11&&Akce==GEOMETRIE)//editace rozměrů přímky v editaci geometrie
@@ -12057,6 +12694,7 @@ void __fastcall TForm1::scButton_zamekClick(TObject *Sender)
 		scButton_zamek->ImageIndex=37;
 		scButton_zamek->Hint="Odemknout editaci";
 	}
+	nahled_ulozit(true);
 	Smaz_kurzor();
 	pom_element=NULL;
 	JID=-1;
@@ -12205,7 +12843,7 @@ unsigned short TForm1::load_language(Tlanguage language)
 	catch(...){;}
   }*/
 	ls=new TStringList;        //114
-	for(unsigned short i=0;i<=145;i++)ls->Insert(i,"");//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
+	for(unsigned short i=0;i<=169;i++)ls->Insert(i,"");//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
 
 		if(FileExists(File_language))//znovu kontrola po případném stažení souboru
 	{
@@ -12229,151 +12867,174 @@ unsigned short TForm1::load_language(Tlanguage language)
 	scLabel_titulek->Caption=ls->Strings[2];scLabel_titulek->Caption+=" (MN)";
 	scLabel_titulek->Caption=ls->Strings[1];scLabel_titulek->Caption+=" (CS)";
 	//-----------------------
-  //Example
+	//Example začít od 4
 	Label_zamerovac->Caption=ls->Strings[4];
-RzToolButton1->Hint=ls->Strings[5];
-RzToolButton2->Hint=ls->Strings[6];
-RzToolButton3->Hint=ls->Strings[7];
-RzToolButton4->Hint=ls->Strings[8];
-RzToolButton5->Hint=ls->Strings[9];
-RzToolButton6->Hint=ls->Strings[10];
-RzToolButton7->Hint=ls->Strings[11];
-RzToolButton8->Hint=ls->Strings[12];
-RzToolButton9->Hint=ls->Strings[13];
-RzToolButton10->Hint=ls->Strings[14];
-RzToolButton11->Hint=ls->Strings[15];
-RzToolButton12->Hint=ls->Strings[16];
-Button4->Caption=ls->Strings[17];
-ButtonPLAY_O->Caption=ls->Strings[18];
-Konec->Caption=ls->Strings[19];
-Schema->Caption=ls->Strings[20];
-PopupMenuButton->Caption=ls->Strings[21];
-PopupMenuButton->Hint=ls->Strings[22];
-Synteza->Caption=ls->Strings[23];
-Toolbar_Ulozit->Hint=ls->Strings[24];
-Toolbar_NovySoubor->Hint=ls->Strings[25];
-Toolbar_Otevrit->Caption=ls->Strings[26];
-Toolbar_Otevrit->Hint=ls->Strings[27];
-DetailsButton->Hint=ls->Strings[28];
-Layout->Caption=ls->Strings[29];
-Simulace->Caption=ls->Strings[30];
-scGPGlyphButton15->Hint=ls->Strings[31];
-scLabel_titulek->Caption=ls->Strings[32];
-scLabel_klient->Caption=ls->Strings[33];
-scLabel_architekt->Caption=ls->Strings[34];
-scGPButton_header_projekt->Hint=ls->Strings[35];
-scGPGlyphButton_OPTIONS->Hint=ls->Strings[36];
-Nahled->Caption=ls->Strings[37];
-scGPGlyphButton_PLAY->Hint=ls->Strings[38];
-RzStatusPane3->Hint=ls->Strings[39];
-RzStatusPane4->Caption=ls->Strings[40];
-RzStatusPane4->Hint=ls->Strings[41];
-RzStatusPane5->Caption=ls->Strings[42];
-RzStatusPane5->Hint=ls->Strings[43];
-scButton_zamek_layoutu->Hint=ls->Strings[44];
-scGPButton_zmerit_vzdalenost->Hint=ls->Strings[45];
-scListGroupKnihovObjektu->Caption=ls->Strings[46];
-scListGroupPanel_hlavickaOstatni->Caption=ls->Strings[47];
-scListGroupPanel_hlavickaOtoce->Caption=ls->Strings[48];
-scListGroupPanel_geometrie->Caption=ls->Strings[49];
-scListGroupPanel_poznamky->Caption=ls->Strings[50];
-scGPLabel_roboti->Caption=ls->Strings[51];
-scGPLabel_otoce->Caption=ls->Strings[52];
-scGPLabel_stop->Caption=ls->Strings[53];
-scGPLabel_geometrie->Caption=ls->Strings[54];
-scGPLabel_poznamky->Caption=ls->Strings[55];
-scGPGlyphButton_close_grafy->Caption=ls->Strings[56];
-scExPanel_log_header->Caption=ls->Strings[57];
-scExPanel_html->Caption=ls->Strings[58];
-pohonobjekt->Caption=ls->Strings[59];
-scGPGlyphButton_close_legenda_casove_osy->Caption=ls->Strings[60];
-CheckBox_pouzit_zadane_kapacity_OLD->Caption=ls->Strings[61];
-CheckBoxAnimovatSG_OLD->Caption=ls->Strings[62];
-scGPLabel1->Caption=ls->Strings[63];
-scGPButton_ulozit->Caption=ls->Strings[64];
-scGPButton_zahodit->Caption=ls->Strings[65];
-scGPLabel_prepinacKot->Caption=ls->Strings[66];
-scGPImage_mereni_vzdalenost->Hint=ls->Strings[67];
-scGPImage_zamek_posunu->Hint=ls->Strings[68];
-ButtonPLAY->Hint=ls->Strings[69];
-CheckBox_pouzit_zadane_kapacity->Caption=ls->Strings[70];
-CheckBoxAnimovatSG->Caption=ls->Strings[71];
-CheckBoxVymena_barev->Caption=ls->Strings[72];
-CheckBoxVytizenost->Caption=ls->Strings[73];
-scGPCheckBox_pocet_voziku_dle_WIP->Caption=ls->Strings[74];
-scLabel_filtrovat->Caption=ls->Strings[75];
-scLabel_doba_cekani->Caption=ls->Strings[76];
-scGPButton_generuj->Hint=ls->Strings[77];
-scGPButton_header_def_zakazek->Hint=ls->Strings[78];
-scButton_konec->Caption=ls->Strings[79];
-scButton_otevrit->Caption=ls->Strings[80];
-scButton4->Caption=ls->Strings[81];
-scButton_zaloha->Caption=ls->Strings[82];
-scButton_report->Caption=ls->Strings[83];
-scLabel11->Caption=ls->Strings[84];
-scButton_ulozjako->Caption=ls->Strings[85];
-scButton_export->Caption=ls->Strings[86];
-scButton_posledni_otevreny->Caption=ls->Strings[87];
-scButton_novy->Caption=ls->Strings[88];
-scButton_ulozit->Caption=ls->Strings[89];
-scButton_nacist_podklad->Caption=ls->Strings[90];
-pravyoption_nadpis->Caption=ls->Strings[91];
-scExPanel_vrstvy->Caption=ls->Strings[92];
-scGPCheckBox_zobrazit_koleje->Caption=ls->Strings[93];
-scGPCheckBox_zobrazit_pozice->Caption=ls->Strings[94];
-scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Caption=ls->Strings[95];
-scGPCheckBox1_popisky->Caption=ls->Strings[96];
-scExPanel_podklad->Caption=ls->Strings[97];
-scGPButton_adjustace->Caption=ls->Strings[98];
-scGPButton_kalibrace->Caption=ls->Strings[99];
-scGPCheckBox_stupne_sedi->Caption=ls->Strings[100];
-scGPCheckBox_zobraz_podklad->Caption=ls->Strings[101];
-scLabel1_svetelnost->Caption=ls->Strings[102];
-scExPanel_ostatni->Caption=ls->Strings[103];
-scGPCheckBox_ortogon->Caption=ls->Strings[104];
-scGPCheckBox_ortogon->Hint=ls->Strings[105];
-scLabel16->Caption=ls->Strings[106];
-scLabel5->Caption=ls->Strings[107];
-scLabel1_intenzita->Caption=ls->Strings[108];
-scGPTrackBar_intenzita->Hint=ls->Strings[109];
-scExPanel1->Caption=ls->Strings[110];
-scGPButton_mereni_vzdalenost->Caption=ls->Strings[111];
-Form_parametry_linky->rHTMLLabel_eDesigner->Caption=ls->Strings[112];
-Form_parametry_linky->rHTMLLabel_doporuc_pohony->Caption=ls->Strings[113];
-Form_parametry_linky->rHTMLLabel_podlahovy->Caption=ls->Strings[114];
-Form_parametry_linky->rHTMLLabel_podvesny->Caption=ls->Strings[115];
-Form_parametry_linky->Button_save->Caption=ls->Strings[116];
-Form_parametry_linky->Button_storno->Caption=ls->Strings[117];
-Form_parametry_linky->Konec->Caption=ls->Strings[118];
-Form_parametry_linky->scLabel1->Caption=ls->Strings[119];
-Form_parametry_linky->scGPGlyphButton_info->Caption=ls->Strings[120];
-Form_parametry_linky->scGPGlyphButton_refresh->Caption=ls->Strings[121];
-Form_parametry_linky->scGPGlyphButton_refresh->Hint=ls->Strings[122];
-Form_parametry_linky->scGPButton_vozik->Caption=ls->Strings[123];
-Form_parametry_linky->scGPButton_pohon->Caption=ls->Strings[124];
-Form_parametry_linky->scExPanel_doporuc_pohony->Caption=ls->Strings[125];
-Form_parametry_linky->scGPGlyphButton_add_mezi_pohony->Hint=ls->Strings[126];
-Form_parametry_linky->scGPButton_jig->Caption=ls->Strings[127];
-Form_parametry_linky->scLabel_zobrazit_parametry->Caption=ls->Strings[128];
-Form_parametry_linky->scLabel_smazat->Caption=ls->Strings[129];
-Form_parametry_linky->scLabel_smazat_nepouzite->Caption=ls->Strings[130];
-Form_parametry_linky->scLabel_kopirovat->Caption=ls->Strings[131];
-Form_parametry_linky->scLabel_nastavit_parametry->Caption=ls->Strings[132];
-Form_parametry_linky->scGPGlyphButton_DEL_nepouzite->Caption=ls->Strings[133];
-Form_parametry_linky->scGPGlyphButton_DEL_nepouzite->Hint=ls->Strings[134];
-Form_parametry_linky->scGPGlyphButton_TT->Hint=ls->Strings[135];
-Form_parametry_linky->scGPGlyphButton_vozik_edit->Hint=ls->Strings[136];
-Form_parametry_linky->scGPGlyphButton_ADD->Hint=ls->Strings[137];
-Form_parametry_linky->scGPButton_obecne->Caption=ls->Strings[138];
-Form_parametry_linky->rHTMLLabel_JIG->Caption=ls->Strings[139];
-Form_parametry_linky->rHTMLLabel_podvozek_zaves->Caption=ls->Strings[140];
-//Form_parametry_linky->scHTMLLabel_jig_info->Caption=ls->Strings[141];
-Form_parametry_linky->scGPGlyphButton_ADD_old->Hint=ls->Strings[142];
-Form_parametry_linky->scGPGlyphButton_OPTIONS->Hint=ls->Strings[143];
-Form_parametry_linky->scGPGlyphButton_katalog->Hint=ls->Strings[144];
-Form_parametry_linky->scGPTrackBar_uchyceni->Hint=ls->Strings[145];
-
-
+	RzToolButton1->Hint=ls->Strings[5];
+	RzToolButton2->Hint=ls->Strings[6];
+	RzToolButton3->Hint=ls->Strings[7];
+	RzToolButton4->Hint=ls->Strings[8];
+	RzToolButton5->Hint=ls->Strings[9];
+	RzToolButton6->Hint=ls->Strings[10];
+	RzToolButton7->Hint=ls->Strings[11];
+	RzToolButton8->Hint=ls->Strings[12];
+	RzToolButton9->Hint=ls->Strings[13];
+	RzToolButton10->Hint=ls->Strings[14];
+	RzToolButton11->Hint=ls->Strings[15];
+	RzToolButton12->Hint=ls->Strings[16];
+	Button4->Caption=ls->Strings[17];
+	ButtonPLAY_O->Caption=ls->Strings[18];
+  Konec->Caption=ls->Strings[19];
+  Schema->Caption=ls->Strings[20];
+  PopupMenuButton->Caption=ls->Strings[21];
+	PopupMenuButton->Hint=ls->Strings[22];
+  Synteza->Caption=ls->Strings[23];
+  Toolbar_Ulozit->Hint=ls->Strings[24];
+  Toolbar_NovySoubor->Hint=ls->Strings[25];
+  Toolbar_Otevrit->Caption=ls->Strings[26];
+  Toolbar_Otevrit->Hint=ls->Strings[27];
+  DetailsButton->Hint=ls->Strings[28];
+	Layout->Caption=ls->Strings[29];
+  Simulace->Caption=ls->Strings[30];
+  scGPGlyphButton15->Hint=ls->Strings[31];
+  scLabel_titulek->Caption=ls->Strings[32];
+  scLabel_klient->Caption=ls->Strings[33];
+  scLabel_architekt->Caption=ls->Strings[34];
+  scGPButton_header_projekt->Hint=ls->Strings[35];
+  scGPGlyphButton_OPTIONS->Hint=ls->Strings[36];
+	Nahled->Caption=ls->Strings[37];
+  scGPGlyphButton_PLAY->Hint=ls->Strings[38];
+  RzStatusPane3->Hint=ls->Strings[39];
+  RzStatusPane4->Caption=ls->Strings[40];
+  RzStatusPane4->Hint=ls->Strings[41];
+  RzStatusPane5->Caption=ls->Strings[42];
+  RzStatusPane5->Hint=ls->Strings[43];
+  scButton_zamek_layoutu->Hint=ls->Strings[44];
+	scGPButton_zmerit_vzdalenost->Hint=ls->Strings[45];
+  scListGroupKnihovObjektu->Caption=ls->Strings[46];
+  scListGroupPanel_hlavickaOstatni->Caption=ls->Strings[47];
+  scListGroupPanel_hlavickaOtoce->Caption=ls->Strings[48];
+  scListGroupPanel_geometrie->Caption=ls->Strings[49];
+  scListGroupPanel_poznamky->Caption=ls->Strings[50];
+  scGPLabel_roboti->Caption=ls->Strings[51];
+  scGPLabel_otoce->Caption=ls->Strings[52];
+	scGPLabel_stop->Caption=ls->Strings[53];
+  scGPLabel_geometrie->Caption=ls->Strings[54];
+  scGPLabel_poznamky->Caption=ls->Strings[55];
+  scGPGlyphButton_close_grafy->Caption=ls->Strings[56];
+  scExPanel_log_header->Caption=ls->Strings[57];
+  scExPanel_html->Caption=ls->Strings[58];
+  pohonobjekt->Caption=ls->Strings[59];
+  scGPGlyphButton_close_legenda_casove_osy->Caption=ls->Strings[60];
+	CheckBox_pouzit_zadane_kapacity_OLD->Caption=ls->Strings[61];
+  CheckBoxAnimovatSG_OLD->Caption=ls->Strings[62];
+  scGPLabel1->Caption=ls->Strings[63];
+  scGPButton_ulozit->Caption=ls->Strings[64];
+  scGPButton_zahodit->Caption=ls->Strings[65];
+  scGPLabel_prepinacKot->Caption=ls->Strings[66];
+  scGPImage_mereni_vzdalenost->Hint=ls->Strings[67];
+  scGPImage_zamek_posunu->Hint=ls->Strings[68];
+	ButtonPLAY->Hint=ls->Strings[69];
+  CheckBox_pouzit_zadane_kapacity->Caption=ls->Strings[70];
+  CheckBoxAnimovatSG->Caption=ls->Strings[71];
+  CheckBoxVymena_barev->Caption=ls->Strings[72];
+  CheckBoxVytizenost->Caption=ls->Strings[73];
+  scGPCheckBox_pocet_voziku_dle_WIP->Caption=ls->Strings[74];
+  scLabel_filtrovat->Caption=ls->Strings[75];
+  scLabel_doba_cekani->Caption=ls->Strings[76];
+	scGPButton_generuj->Hint=ls->Strings[77];
+  scGPButton_header_def_zakazek->Hint=ls->Strings[78];
+  scButton_konec->Caption=ls->Strings[79];
+  scButton_otevrit->Caption=ls->Strings[80];
+  scButton4->Caption=ls->Strings[81];
+  scButton_zaloha->Caption=ls->Strings[82];
+  scButton_report->Caption=ls->Strings[83];
+  scLabel11->Caption=ls->Strings[84];
+	scButton_ulozjako->Caption=ls->Strings[85];
+  scButton_export->Caption=ls->Strings[86];
+  scButton_posledni_otevreny->Caption=ls->Strings[87];
+  scButton_novy->Caption=ls->Strings[88];
+  scButton_ulozit->Caption=ls->Strings[89];
+  scButton_nacist_podklad->Caption=ls->Strings[90];
+  pravyoption_nadpis->Caption=ls->Strings[91];
+  scExPanel_vrstvy->Caption=ls->Strings[92];
+	scGPCheckBox_zobrazit_koleje->Caption=ls->Strings[93];
+  scGPCheckBox_zobrazit_pozice->Caption=ls->Strings[94];
+  scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Caption=ls->Strings[95];
+  scGPCheckBox1_popisky->Caption=ls->Strings[96];
+  scExPanel_podklad->Caption=ls->Strings[97];
+  scGPButton_adjustace->Caption=ls->Strings[98];
+  scGPButton_kalibrace->Caption=ls->Strings[99];
+  scGPCheckBox_stupne_sedi->Caption=ls->Strings[100];
+	scGPCheckBox_zobraz_podklad->Caption=ls->Strings[101];
+  scLabel1_svetelnost->Caption=ls->Strings[102];
+  scExPanel_ostatni->Caption=ls->Strings[103];
+  scGPCheckBox_ortogon->Caption=ls->Strings[104];
+  scGPCheckBox_ortogon->Hint=ls->Strings[105];
+  scLabel16->Caption=ls->Strings[106];
+  scLabel5->Caption=ls->Strings[107];
+  scLabel1_intenzita->Caption=ls->Strings[108];
+	scGPTrackBar_intenzita->Hint=ls->Strings[109];
+  scExPanel1->Caption=ls->Strings[110];
+  scGPButton_mereni_vzdalenost->Caption=ls->Strings[111];
+  Analyza->Caption=ls->Strings[112];
+	Form_parametry_linky->rHTMLLabel_eDesigner->Caption=ls->Strings[113];
+  Form_parametry_linky->rHTMLLabel_doporuc_pohony->Caption=ls->Strings[114];
+  Form_parametry_linky->rHTMLLabel_podlahovy->Caption=ls->Strings[115];
+  Form_parametry_linky->rHTMLLabel_podvesny->Caption=ls->Strings[116];
+	Form_parametry_linky->Button_save->Caption=ls->Strings[117];
+  Form_parametry_linky->Button_storno->Caption=ls->Strings[118];
+  Form_parametry_linky->Konec->Caption=ls->Strings[119];
+  Form_parametry_linky->scLabel1->Caption=ls->Strings[120];
+  Form_parametry_linky->scGPGlyphButton_info->Caption=ls->Strings[121];
+  Form_parametry_linky->scGPGlyphButton_refresh->Caption=ls->Strings[122];
+  Form_parametry_linky->scGPGlyphButton_refresh->Hint=ls->Strings[123];
+  Form_parametry_linky->scGPButton_vozik->Caption=ls->Strings[124];
+	Form_parametry_linky->scGPButton_pohon->Caption=ls->Strings[125];
+  Form_parametry_linky->scExPanel_doporuc_pohony->Caption=ls->Strings[126];
+  Form_parametry_linky->scGPGlyphButton_add_mezi_pohony->Hint=ls->Strings[127];
+  Form_parametry_linky->scGPButton_jig->Caption=ls->Strings[128];
+  Form_parametry_linky->scLabel_zobrazit_parametry->Caption=ls->Strings[129];
+  Form_parametry_linky->scLabel_smazat->Caption=ls->Strings[130];
+  Form_parametry_linky->scLabel_smazat_nepouzite->Caption=ls->Strings[131];
+  Form_parametry_linky->scLabel_kopirovat->Caption=ls->Strings[132];
+	Form_parametry_linky->scLabel_nastavit_parametry->Caption=ls->Strings[133];
+  Form_parametry_linky->scGPGlyphButton_DEL_nepouzite->Caption=ls->Strings[134];
+  Form_parametry_linky->scGPGlyphButton_DEL_nepouzite->Hint=ls->Strings[135];
+  Form_parametry_linky->scGPGlyphButton_TT->Hint=ls->Strings[136];
+  Form_parametry_linky->scGPGlyphButton_vozik_edit->Hint=ls->Strings[137];
+  Form_parametry_linky->scGPGlyphButton_ADD->Hint=ls->Strings[138];
+  Form_parametry_linky->scGPButton_obecne->Caption=ls->Strings[139];
+  Form_parametry_linky->rHTMLLabel_JIG->Caption=ls->Strings[140];
+	Form_parametry_linky->rHTMLLabel_podvozek_zaves->Caption=ls->Strings[141];
+  Form_parametry_linky->scHTMLLabel_jig_info->Caption=ls->Strings[142];
+  Form_parametry_linky->scGPGlyphButton_ADD_old->Hint=ls->Strings[143];
+  Form_parametry_linky->scGPGlyphButton_OPTIONS->Hint=ls->Strings[144];
+  Form_parametry_linky->scGPGlyphButton_katalog->Hint=ls->Strings[145];
+  Form_parametry_linky->scGPTrackBar_uchyceni->Hint=ls->Strings[146];
+	Form_parametry_linky->Button_save->Caption=ls->Strings[147];
+	Form_parametry_linky->scHTMLLabel1->Caption=ls->Strings[148];
+  PopUPmenu->scLabel_nastavit_parametry->Caption=ls->Strings[149];
+  PopUPmenu->scLabel_zobrazit_parametry->Caption=ls->Strings[150];
+  PopUPmenu->scLabel_kopirovat->Caption=ls->Strings[151];
+  PopUPmenu->scLabel_smazat->Caption=ls->Strings[152];
+  PopUPmenu->scLabel_otocit_doleva->Caption=ls->Strings[153];
+  PopUPmenu->scLabel_otocit_doprava->Caption=ls->Strings[154];
+  PopUPmenu->scLabel_posun_obrysu->Caption=ls->Strings[155];
+  PopUPmenu->scLabel_rychly_export->Caption=ls->Strings[156];
+  PopUPmenu->scLabel_posouvat->Caption=ls->Strings[157];
+  PopUPmenu->scLabel_posunout->Caption=ls->Strings[158];
+  PopUPmenu->scLabel_priblizit->Caption=ls->Strings[159];
+	PopUPmenu->scLabel_oddálit->Caption=ls->Strings[160];
+  PopUPmenu->scLabel_vybrat_oknem->Caption=ls->Strings[161];
+  PopUPmenu->scLabel_cely_pohled->Caption=ls->Strings[162];
+  PopUPmenu->scLabel_poznamka->Caption=ls->Strings[163];
+  myMessageBox->scGPGlyphButton_copy->Hint=ls->Strings[164];
+  myMessageBox->Button_Yes->Caption=ls->Strings[165];
+  myMessageBox->Button_OK->Caption=ls->Strings[166];
+	myMessageBox->Button_No->Caption=ls->Strings[167];
+	myMessageBox->Button_Cancel->Caption=ls->Strings[168];
+	myMessageBox->CheckBox_pamatovat->Caption=ls->Strings[169];
+	scGPComboBox_prepinacKot->Left=scGPLabel_prepinacKot->Left+scGPLabel_prepinacKot->Width;//změna zarovnání
 	return 1;
 	}
 	else //pokud není nalezen jazykový slovník
