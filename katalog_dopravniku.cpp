@@ -20,17 +20,21 @@ __fastcall TForm_katalog::TForm_katalog(TComponent* Owner)
 	F->m.designButton(Button_save,Form_katalog,1,2);
 	F->m.designButton(Button_storno,Form_katalog,2,2);
   zmena=false;
-  //načtení hodnot z PP
-  katalog_id=F->d.v.PP.katalog;
-  radius=F->d.v.PP.radius*1000.0;
+	//načtení hodnot z PP
+//	katalog_id=F->d.v.PP.katalog;
+//	radius=F->d.v.PP.radius*1000.0;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_katalog::FormShow(TObject *Sender)
 {
+	//načtení hodnot z PP
+	katalog_id=F->d.v.PP.katalog;
+	radius=F->d.v.PP.radius*1000.0;
+
 	mGrid=new TmGrid(this);//vždy nutno jako první
   mGrid->Tag=8;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
 
-  Form_parametry_linky->scStyledForm2->InActiveClientBlurAmount=1;
+	Form_parametry_linky->scStyledForm2->InActiveClientBlurAmount=1;
   Form_parametry_linky->scStyledForm2->ShowClientInActiveEffect();
 
   F->scStyledForm1->InActiveClientBlurAmount=1;
@@ -63,12 +67,12 @@ void __fastcall TForm_katalog::FormShow(TObject *Sender)
   Left=Form1->ClientWidth/2-Form_katalog->Width/2;
   Top=Form1->ClientHeight/2-Form_katalog->Height/2;
   mGrid->Left=2;
-  Form_katalog->Width=mGrid->Width + 4;
-  Button_save->Top= mGrid->Height + scLabel_header->Height + 30;
-  Button_storno->Top= mGrid->Height + scLabel_header->Height + 30;
-  Form_katalog->Height = scLabel_header->Height +  mGrid->Height + Button_save->Height + 70;
- 
-  vypis("Kliknutím do seznamu rádiusů vyberete katalog dopravníků",false);
+	Form_katalog->Width=mGrid->Width + 4;
+	Button_save->Top= mGrid->Height + scLabel_header->Height + 30;
+	Button_storno->Top= mGrid->Height + scLabel_header->Height + 30;
+	Form_katalog->Height = scLabel_header->Height +  mGrid->Height + Button_save->Height + 70;
+
+	vypis("Kliknutím do seznamu rádiusů vyberete katalog dopravníků",false);
 }
 //---------------------------------------------------------------------------
 
@@ -143,8 +147,8 @@ void TForm_katalog::LoadValues ()
   for(int i=1;i<mGrid->ColCount;i++)
   {
    if(F->ms.MyToDouble(mGrid->Cells[i][katalog_id].Text) == radius)
-   {
-    if(i>=8 && i<=11) mGrid->Cells[i][katalog_id].Font->Color=(TColor)RGB(226,122,21);
+	 {
+		if(i>=8 && i<=11) mGrid->Cells[i][katalog_id].Font->Color=(TColor)RGB(226,122,21);
    }
 
   }

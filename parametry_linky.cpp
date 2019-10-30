@@ -108,15 +108,16 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
      scGPTrackBar_uchyceni->Left=614;
 
 
-    Cvektory::Ttyp_dopravniku *K=F->d.v.vrat_typ_dopravniku(F->d.v.PP.katalog);
-    scGPGlyphButton_katalog->Caption=K->name+", rádius "+F->d.v.PP.radius*1000.0 +" mm";
+		Cvektory::Ttyp_dopravniku *K=F->d.v.vrat_typ_dopravniku(F->d.v.PP.katalog);
+		if(K!=NULL)scGPGlyphButton_katalog->Caption=K->name+", rádius "+F->d.v.PP.radius*1000.0 +" mm";
+		else scGPGlyphButton_katalog->Caption="vybrat dopravník";
 
   	if(Form1->readINI("nastaveni_form_parametry", "RDt") == "1")
     {  //budu pøevádìt na m/min
     aRDunit=MIN;
     F->aRDunit=F->MIN;
     }
-    else F->aRDunit=F->SEC;
+		else F->aRDunit=F->SEC;
 
     if(Form1->readINI("nastaveni_form_parametry", "DM") == "1")
     {  //budu pøevádìt na metry - rozestup, dle nastavených jednotek mezery na PO zobrazím rozestup na PL
@@ -297,11 +298,11 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
 		if(!data_nalezena)
 		{
-      mGrid->RowCount=2; //slouèená hlavièka jsou 2 øádky
+			mGrid->RowCount=2; //slouèená hlavièka jsou 2 øádky
       scGPGlyphButton_DEL_nepouzite->Visible=false;
 
       mGrid->Columns[7].Width=190+30;
-      mGrid->Columns[8].Width=1;
+			mGrid->Columns[8].Width=1;
 
 		}
 
@@ -431,7 +432,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 //zapnutí tlaèítka add, v pøípadì chybné validace (tlaèítko skryto) a následnému stisku storno a znovu otevøení PL, zùstal button skryt
 	 scGPGlyphButton_ADD->Visible=true;
    scGPGlyphButton_katalog->Top=scGPButton_pohon->Top;
-   scGPGlyphButton_katalog->Left=scGPButton_pohon->Left + scGPButton_pohon->Width;
+	 scGPGlyphButton_katalog->Left=scGPButton_pohon->Left + scGPButton_pohon->Width;
 }
 //---------------------------------------------------------------------------
 //
@@ -467,9 +468,9 @@ void TForm_parametry_linky::nacti_pohony ()
 						if(ukaz->aRD==0)  	mGrid->Cells[4][i].Text = "";
 						else mGrid->Cells[4][i].Text = ukaz->aRD*(1+59.0*aRDunit);
 
-            mGrid->Cells[5][i].Type=mGrid->COMBOEDIT;
-            mGrid->Refresh();   //kvùli práci s combem je nutný refresh po nastavení na typ COMBOEDIT
-            TscGPComboEdit *C=mGrid->getComboEdit(5,i);
+            mGrid->Cells[5][i].Type=mGrid->COMBO;
+						mGrid->Refresh();   //kvùli práci s combem je nutný refresh po nastavení na typ COMBO
+            TscGPComboBox *C=mGrid->getCombo(5,i);
             TscGPListBoxItem *I;
 
            //naètení hodnoty rozteèe do roletky + nastavení jako ItemIndex=0
@@ -508,12 +509,12 @@ void TForm_parametry_linky::nacti_pohony ()
           mGrid->Cells[3][i].Type=mGrid->readEDIT;
           mGrid->Cells[4][i].Type=mGrid->readEDIT;
           mGrid->Cells[5][i].Type=mGrid->readEDIT;
-          mGrid->Cells[5][i].Type=mGrid->COMBOEDIT;
-          mGrid->getComboEdit(5,i)->Enabled=false; //nechám typ combo, pouze ho zakážu
-          mGrid->getComboEdit(5,i)->Options->DisabledColorAlpha=250;
-          mGrid->getComboEdit(5,i)->Options->FrameWidth=1;
-          mGrid->getComboEdit(5,i)->Options->FrameDisabledColor=(TColor)RGB(200,200,200);
-          mGrid->getComboEdit(5,i)->Options->FrameDisabledColorAlpha=250;
+					mGrid->Cells[5][i].Type=mGrid->COMBO;
+					mGrid->getCombo(5,i)->Enabled=false; //nechám typ combo, pouze ho zakážu
+					mGrid->getCombo(5,i)->Options->DisabledColorAlpha=250;
+					mGrid->getCombo(5,i)->Options->FrameWidth=1;
+					mGrid->getCombo(5,i)->Options->FrameDisabledColor=(TColor)RGB(200,200,200);
+          mGrid->getCombo(5,i)->Options->FrameDisabledColorAlpha=250;
 					mGrid->Cells[6][i].Type=mGrid->CHECK;
           mGrid->Cells[7][i].Type=mGrid->BUTTON;
           mGrid->Refresh();
@@ -530,7 +531,7 @@ void TForm_parametry_linky::nacti_pohony ()
           mGrid->Cells[2][i].Type=mGrid->EDIT;
           mGrid->Cells[3][i].Type=mGrid->EDIT;
           mGrid->Cells[4][i].Type=mGrid->EDIT;
-          mGrid->Cells[5][i].Type=mGrid->COMBOEDIT;
+          mGrid->Cells[5][i].Type=mGrid->COMBO;
 					/*mGrid->Cells[6][i].Type=mGrid->CHECK;*/mGrid->Cells[6][i].RightBorder->Color=clWhite;
 					mGrid->Cells[7][i].Type=mGrid->BUTTON;
 					mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
@@ -611,7 +612,7 @@ void TForm_parametry_linky::nacti_pohony ()
 void __fastcall TForm_parametry_linky::Button_stornoClick(TObject *Sender)
 {
 	F->log(__func__); //logování
-  mGrid->Delete();
+	mGrid->Delete();
 	//M toto tu nesmí být:Form_parametry_linky->Close();
 	zrusena_prirazeni_PID=NULL;delete zrusena_prirazeni_PID;
 	 F->scStyledForm1->HideClientInActiveEffect();
@@ -652,28 +653,28 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
      //pøed samotným uložením, kontrola zdali jsou podstatné údaje u pohonu nastaveny
      // pokud nìco chybí, zakážu uložení
-     int count=0;
-
-			for (unsigned int i = 2; i < mGrid->RowCount; i++)
-			{
-				if(mGrid->Cells[2][i].Text=="") count++;
-				if(mGrid->Cells[3][i].Text=="") count++;
-				if(mGrid->Cells[4][i].Text=="") count++;
-				//if(mGrid->Cells[5][i].Text=="") count++;
-        if(mGrid->getComboEdit(5,i)->Text=="") count++;
-      }
-
-        if(count>0)
-        {
-
-             scStyledForm2->ShowClientInActiveEffect();
-
-            if(mrOk==Form1->MB("Nelze uložit, vyplòte všechny údaje o pohonu",MB_OK))
-            {
-             Ulozit=false;
-             scStyledForm2->HideClientInActiveEffect();
-             }
-        }
+//     int count=0;
+//
+//			for (unsigned int i = 2; i < mGrid->RowCount; i++)
+//			{
+//				if(mGrid->Cells[2][i].Text=="") count++;
+//				if(mGrid->Cells[3][i].Text=="") count++;
+//				if(mGrid->Cells[4][i].Text=="") count++;
+//				//if(mGrid->Cells[5][i].Text=="") count++;
+//        if(mGrid->getCombo(5,i)->Text=="") count++;
+//      }
+//
+//        if(count>0)
+//        {
+//
+//             scStyledForm2->ShowClientInActiveEffect();
+//
+//            if(mrOk==Form1->MB("Nelze uložit, vyplòte všechny údaje o pohonu",MB_OK))
+//            {
+//             Ulozit=false;
+//             scStyledForm2->HideClientInActiveEffect();
+//             }
+//        }
 
 		//zobrazení formu gapoR - jediné GAPO, které je voláno zde, protože se volá až pøi stisku OK PL formu
 		bool zobrazGAPO_R=false;
@@ -885,10 +886,9 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 				if(mGrid->Cells[4][i].Text=="") {aRD=0; nelze_ulozit=true; }
 				else aRD=Form1->ms.MyToDouble(mGrid->Cells[4][i].Text)/(1+59.0*aRDunit);
 
-      //  ShowMessage(mGrid->getComboEdit(5,i)->Text);
-				if(mGrid->getComboEdit(5,i)->Text=="") {roztec=0; nelze_ulozit=true; }
-				if(Runit==MM) roztec=Form1->ms.MyToDouble(mGrid->getComboEdit(5,i)->Text)/1000.0;
-				else roztec=Form1->ms.MyToDouble(mGrid->getComboEdit(5,i)->Text);
+				//ShowMessage(mGrid->getCombo(5,i)->Items->operator [](mGrid->getCombo(5,i)->ItemIndex)->Caption);
+				roztec=F->ms.MyToDouble(mGrid->getCombo(5,i)->Items->operator [](mGrid->getCombo(5,i)->ItemIndex)->Caption);
+				if(Runit==MM) roztec/=1000.0;
 
 				if(mGrid->getButton(7,i)->Caption==""){Rz=0.0;Rx=0.0;}//pokud není pohon pøiøazen nuluj
 
@@ -959,63 +959,72 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
 {
-  F->log(__func__); //logování
+	F->log(__func__); //logování
 	//navýší poèet øádkù
-  input_state=JOB;
-  mGrid->AddRow(true,false);
+	if(F->d.v.PP.katalog!=0)
+	{
+  	input_state=JOB;
+  	mGrid->AddRow(true,false);
 
-  int i = mGrid->RowCount -1 ;//poøadí øádku o jednièku nižší než poèet øádkù
+  	int i = mGrid->RowCount -1 ;//poøadí øádku o jednièku nižší než poèet øádkù
 
-	mGrid->Cells[0][i].Text = getMaxPID()+1;//mGrid->RowCount - 2;
-	mGrid->Cells[1][i].Text = "nový pohon ";//rStringGridEd_tab_dopravniky->Cells[1][i - 1];
+  	mGrid->Cells[0][i].Text = getMaxPID()+1;//mGrid->RowCount - 2;
+		mGrid->Cells[1][i].Text = "nový pohon ";//rStringGridEd_tab_dopravniky->Cells[1][i - 1];
 
-   getmGridWidth();
+		getmGridWidth();
 
-   mGrid->Cells[1][i].Type=mGrid->EDIT;
-   mGrid->Cells[2][i].Type=mGrid->EDIT;
-   mGrid->Cells[3][i].Type=mGrid->EDIT;
-   mGrid->Cells[4][i].Type=mGrid->EDIT;
-   mGrid->Cells[5][i].Type=mGrid->COMBOEDIT;
+	  mGrid->Cells[1][i].Type=mGrid->EDIT;
+	  mGrid->Cells[2][i].Type=mGrid->EDIT;
+	  mGrid->Cells[3][i].Type=mGrid->EDIT;
+	  mGrid->Cells[4][i].Type=mGrid->EDIT;
+		mGrid->Cells[5][i].Type=mGrid->COMBO;
 
-	 /*mGrid->Cells[6][i].Type=mGrid->CHECK;*/mGrid->Cells[6][i].RightBorder->Color=clWhite;//Check zobrazen pouze v pøípadì, že je pohon pøiøazen
-   mGrid->Cells[7][i].Type=mGrid->BUTTON;
+	  /*mGrid->Cells[6][i].Type=mGrid->CHECK;*/mGrid->Cells[6][i].RightBorder->Color=clWhite;//Check zobrazen pouze v pøípadì, že je pohon pøiøazen
+	  mGrid->Cells[7][i].Type=mGrid->BUTTON;
 
-	 mGrid->Cells[2][i].InputNumbersOnly=2;
-	 mGrid->Cells[3][i].InputNumbersOnly=2;
-	 mGrid->Cells[4][i].InputNumbersOnly=2;
-   mGrid->Cells[5][i].InputNumbersOnly=2;
+	  mGrid->Cells[2][i].InputNumbersOnly=2;
+	  mGrid->Cells[3][i].InputNumbersOnly=2;
+	  mGrid->Cells[4][i].InputNumbersOnly=2;
+		mGrid->Cells[5][i].InputNumbersOnly=2;
 
-  mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
+		mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
 
-   mGrid->Refresh();
+		mGrid->Refresh();
 
-   TscGPComboEdit *C=mGrid->getComboEdit(5,i);
-   TscGPListBoxItem *I;
+		TscGPComboBox *C=mGrid->getCombo(5,i);
+		TscGPListBoxItem *I;
 
-   Cvektory::Ttyp_dopravniku *K=F->d.v.vrat_typ_dopravniku(F->d.v.PP.katalog);
-   Cvektory::TDoubleHodnota *H=K->roztec->dalsi;
+		Cvektory::Ttyp_dopravniku *K=F->d.v.vrat_typ_dopravniku(F->d.v.PP.katalog);
+		Cvektory::TDoubleHodnota *H=K->roztec->dalsi;
     while(H!=NULL)
-   {
-    I=C->Items->Add();
-    if(Runit==MM) I->Caption=H->hodnota;
-    else I->Caption=H->hodnota/1000.0;
-    H=H->dalsi;
-   }
+		{
+	  	I=C->Items->Add();
+	  	if(Runit==MM) I->Caption=H->hodnota;
+	  	else I->Caption=H->hodnota/1000.0;
+			H=H->dalsi;
+		}
 
   	I=NULL;delete I;
-   //defaultní item index pøi klik na + pohonu
-   mGrid->getComboEdit(5,i)->ItemIndex=0;
+		//defaultní item index pøi klik na + pohonu
+		mGrid->getCombo(5,i)->ItemIndex=0;
 
 //  mGrid->getCheck(6,i)->Enabled=false;
 //	mGrid->getCheck(6,i)->ShowHint=true; mGrid->getCheck(6,i)->Hint="Zrušit pøiøazení k objektùm";
-//mGrid->getComboEdit(5,i)->Height=mGrid->getEdit(4,i)->Height;
-	getDeleteButtonSettings(i);
-  getPrirazeneObjDesign(i);
-  setADD_ButtonPosition();
-  setFormHeight();
-  //R - zakoment scGPGlyphButton_DEL_nepouzite->Visible=true;
-	vykresli_obdelnik_vpravo();
-	input_state=NOTHING;
+//mGrid->getCombo(5,i)->Height=mGrid->getEdit(4,i)->Height;
+  	getDeleteButtonSettings(i);
+		getPrirazeneObjDesign(i);
+  	setADD_ButtonPosition();
+  	setFormHeight();
+  	//R - zakoment scGPGlyphButton_DEL_nepouzite->Visible=true;
+  	vykresli_obdelnik_vpravo();
+		input_state=NOTHING;
+	}
+	else
+	{
+		scStyledForm2->ShowClientInActiveEffect();
+		F->MB("Není vybrán žádný dopravník, není možné pøidat pohon");
+		scStyledForm2->HideClientInActiveEffect();
+	}
 }
 //---------------------------------------------------------------------------
 //smaže poslední øádek - již se nepoužívá, ale nechvám
@@ -1229,60 +1238,43 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
 
   for (int i = mGrid->RowCount ; i <= 4; i++) {
 
-  input_state=JOB;
-	mGrid->AddRow(true,false);
+	 input_state=JOB;
+	 //pøiøazení katalogu
+	 if(F->d.v.PP.katalog==0)
+	 {
+		 F->d.v.PP.katalog=1;
+		 F->d.v.PP.radius=1.0;
+		 scGPGlyphButton_katalog->Caption=F->d.v.KATALOG->dalsi->name+", rádius "+F->d.v.PP.radius*1000.0 +" mm";//aktualizace buttonu
+	 }
+	 Button_ADD_Click(this);
 
-	mGrid->Cells[0][i].Text = getMaxPID()+1;//mGrid->RowCount - 2;
-	mGrid->Cells[1][i].Text = "nový pohon " + AnsiString(i-1);
-
-   getmGridWidth();
-   mGrid->Cells[1][i].Type=mGrid->EDIT;
-   mGrid->Cells[2][i].Type=mGrid->EDIT;
-   mGrid->Cells[3][i].Type=mGrid->EDIT;
-   mGrid->Cells[4][i].Type=mGrid->EDIT;
-   mGrid->Cells[5][i].Type=mGrid->COMBOEDIT;
-	 /*mGrid->Cells[6][i].Type=mGrid->CHECK;*/ mGrid->Cells[6][i].RightBorder->Color=clWhite;
-	 mGrid->Cells[7][i].Type=mGrid->BUTTON;
-
-	 mGrid->Cells[2][i].InputNumbersOnly=2;
-	 mGrid->Cells[3][i].InputNumbersOnly=2;
-	 mGrid->Cells[4][i].InputNumbersOnly=2;
-   mGrid->Cells[5][i].InputNumbersOnly=2;
-
-   mGrid->Refresh();   //kvùli práci s combem je nutný refresh po nastavení na typ COMBOEDIT
-   TscGPComboEdit *C=mGrid->getComboEdit(5,i);
+   TscGPComboBox *C=mGrid->getCombo(5,i);
    TscGPListBoxItem *I;
 
    //naètení hodnoty rozteèe do roletky + nastavení jako ItemIndex=0
 
    if(i==2)
    {
-    mGrid->Cells[2][i].Text="0,2";
+		mGrid->Cells[2][i].Text="0,2";
     mGrid->Cells[3][i].Text="5";
-    mGrid->Cells[4][i].Text="0,5";
-    I=C->Items->Add();
-    I->Caption = "250";
-    C->ItemIndex=0;
+		mGrid->Cells[4][i].Text="0,5";
+		C->ItemIndex=0;
     }
 
     if(i==3)
     {
     mGrid->Cells[2][i].Text="1";
     mGrid->Cells[3][i].Text="3";
-    mGrid->Cells[4][i].Text="2,2";
-    I=C->Items->Add();
-    I->Caption = "450";
-    C->ItemIndex=0;
+		mGrid->Cells[4][i].Text="2,2";
+		C->ItemIndex=1;
     }
 
     if(i==4)
     {
     mGrid->Cells[2][i].Text="1,5";
     mGrid->Cells[3][i].Text="5";
-    mGrid->Cells[4][i].Text="4";
-    I=C->Items->Add();
-    I->Caption = "1230";
-    C->ItemIndex=0;
+		mGrid->Cells[4][i].Text="4";
+		C->ItemIndex=2;
     }
 
    mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
@@ -2289,7 +2281,7 @@ ROW=Row;
                  mGrid->Cells[2][Row].Type=mGrid->EDIT;
                  mGrid->Cells[3][Row].Type=mGrid->EDIT;
                  mGrid->Cells[4][Row].Type=mGrid->EDIT;
-								 mGrid->Cells[5][Row].Type=mGrid->COMBOEDIT;
+								 mGrid->Cells[5][Row].Type=mGrid->COMBO;
 								 mGrid->Cells[6][Row].Type=mGrid->DRAW;mGrid->Cells[6][Row].RightBorder->Color=clWhite;
 
                  mGrid->Cells[1][Row].Background->Color=clWhite;
@@ -2419,25 +2411,25 @@ void __fastcall TForm_parametry_linky::FormMouseDown(TObject *Sender, TMouseButt
            {
                for(unsigned int i=2;i<mGrid->RowCount;i++)
                {
-                TscGPComboEdit *C=mGrid->getComboEdit(5,i);
+								TscGPComboBox *C=mGrid->getCombo(5,i);
                 TscGPListBoxItem *I;
-                double value=F->ms.MyToDouble(mGrid->getComboEdit(5,i)->Text);
+								double value=F->ms.MyToDouble(mGrid->getCombo(5,i)->Items->operator [](mGrid->getCombo(5,i)->ItemIndex)->Caption);
                 C->Items->Clear();
                 I=C->Items->Add();
-                I->Caption=value*1000.0;
+								I->Caption=value*1000.0;
                 C->ItemIndex=0;
                 getROtherValues(Runit,i);
-               }
+							 }
 
-           }
+					 }
            else
            {
                for(unsigned int i=2;i<mGrid->RowCount;i++)
                {
-                TscGPComboEdit *C=mGrid->getComboEdit(5,i);
-                TscGPListBoxItem *I;
-                double value=F->ms.MyToDouble(mGrid->getComboEdit(5,i)->Text);
-                C->Items->Clear();
+								TscGPComboBox *C=mGrid->getCombo(5,i);
+								TscGPListBoxItem *I;
+								double value=F->ms.MyToDouble(mGrid->getCombo(5,i)->Items->operator [](mGrid->getCombo(5,i)->ItemIndex)->Caption);
+								C->Items->Clear();
                 I=C->Items->Add();
                 I->Caption=value/1000.0;
                 C->ItemIndex=0;
@@ -2576,13 +2568,13 @@ void TForm_parametry_linky::getmGridColors()
   }
 
 	void TForm_parametry_linky::setFormHeight()
-  {
-   F->log(__func__); //logování
-   Form_parametry_linky->Height=mGrid->Top + mGrid->RowCount*mGrid->DefaultRowHeight + 80;
+	{
+	 F->log(__func__); //logování
+	 Form_parametry_linky->Height=mGrid->Top + mGrid->RowCount*mGrid->DefaultRowHeight + 80;
 	 Button_save->Top=Form_parametry_linky->Height-11-Button_save->Height;//Form_parametry_linky->Height - 40;
 	 Button_storno->Top=Button_save->Top;//Form_parametry_linky->Height - 40;
    scGPGlyphButton_DEL_nepouzite->Top=Button_save->Top;
-   scGPGlyphButton_DEL_nepouzite->Left=mGrid->Columns[8].Left - 5; //minus kvuli oramovani buttonu, které se zobrazí pøi najetí myší
+	 scGPGlyphButton_DEL_nepouzite->Left=mGrid->Columns[8].Left - 5; //minus kvuli oramovani buttonu, které se zobrazí pøi najetí myší
 
   scGPGlyphButton_OPTIONS->Top=mGrid->Top + mGrid->Height ;
 	scGPGlyphButton_OPTIONS->Left=Button_save->Left + Button_save->Width + 350;
@@ -2673,15 +2665,36 @@ void TForm_parametry_linky::vykresli_obdelnik_vpravo()
 
 void __fastcall TForm_parametry_linky::scGPGlyphButton_katalogClick(TObject *Sender)
 {
-    if(Form_katalog->ShowModal()==mrOk)
-    {
-     Form_parametry_linky->Visible=false;
-     Form_parametry_linky->Visible=true;
-      setADD_ButtonPosition();
-      setFormHeight();
-      vykresli_obdelnik_vpravo();
-    }
-    else {Form_parametry_linky->Visible=false;Form_parametry_linky->Visible=true;}
+		if(Form_katalog->ShowModal()==mrOk)
+		{
+			//uložení zadaných hodnot z PL, pro pøípad, že uživatel už zadal napøíklad TT
+			//není tøeba pøevádìt na základní jednotky
+			double delka_jig,sirka_jig,vyska_jig,delka_podvozek,uchyt_pozice,TT;
+			delka_jig=scGPNumericEdit_delka_jig->Value;
+			sirka_jig=scGPNumericEdit_sirka_jig->Value;
+			vyska_jig=scGPNumericEdit_vyska_jig->Value;
+			delka_podvozek=scGPNumericEdit_delka_podvozek->Value;
+			uchyt_pozice=scGPTrackBar_uchyceni->Value;
+			TT=rEditNum_takt->Value;
+			//zavøení a otevøení PL
+			Form_parametry_linky->Visible=false;
+			Form_parametry_linky->Visible=true;
+			setADD_ButtonPosition();
+			setFormHeight();
+			vykresli_obdelnik_vpravo();
+			//vrácení pùvodních hodnot
+			scGPNumericEdit_delka_jig->Value=delka_jig;
+			scGPNumericEdit_sirka_jig->Value=sirka_jig;
+			scGPNumericEdit_vyska_jig->Value=vyska_jig;
+			scGPNumericEdit_delka_podvozek->Value=delka_podvozek;
+			scGPTrackBar_uchyceni->Value=uchyt_pozice;
+			rEditNum_takt->Value=TT;
+		}
+		else
+		{
+			Form_parametry_linky->Visible=false;
+			Form_parametry_linky->Visible=true;
+		}
 }
 //---------------------------------------------------------------------------
 
@@ -2700,11 +2713,11 @@ void TForm_parametry_linky::getROtherValues(Tm_mm Runit, int Row)
 {
 //ShowMessage(Runit);
 
-            TscGPComboEdit *C=mGrid->getComboEdit(5,Row);
+						TscGPComboBox *C=mGrid->getCombo(5,Row);
             TscGPListBoxItem *I;
 
            //naètení ostatních hodnot z katalogu do roletky
-           Cvektory::Ttyp_dopravniku *K=F->d.v.vrat_typ_dopravniku(F->d.v.PP.katalog);
+					 Cvektory::Ttyp_dopravniku *K=F->d.v.vrat_typ_dopravniku(F->d.v.PP.katalog);
            Cvektory::TDoubleHodnota *H=K->roztec->dalsi;
            C->Items->Clear();
             while(H!=NULL)
