@@ -621,7 +621,7 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 	vloz_bod(X,Y+rozmery_kabiny.y/2.0,novy);vloz_bod(X+rozmery_kabiny.x,Y+rozmery_kabiny.y/2.0,novy);
 	vloz_bod(X+rozmery_kabiny.x,Y-rozmery_kabiny.y/2.0,novy);vloz_bod(X,Y-rozmery_kabiny.y/2.0,novy);
 	//rotace na požadovanou orientaci
-	novy->orientace=F->d.orientace_objektu;
+	novy->orientace=novy->orientace_text=F->d.orientace_objektu;
 	rotuj_body(X,Y,90-novy->orientace,novy);
 	//vložení zarážky na konec;
 	if(novy->orientace==90||novy->orientace==270)//vodorovný objekt
@@ -751,6 +751,7 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->Y=Original->Y;
 	Kopie->Xt=Original->Xt;
 	Kopie->Yt=Original->Yt;
+	Kopie->orientace_text=Original->orientace_text;
 	Kopie->sirka_steny=Original->sirka_steny;
 	Kopie->rezim=Original->rezim;
 	Kopie->CT=Original->CT;
@@ -1493,7 +1494,7 @@ Cvektory::TObjekt *Cvektory::dalsi_krok(TObjekt *Objekt,TPoint *tab_pruchodu)
 }
 ////---------------------------------------------------------------------------
 //slouží k posunu objektu jako celku o X a Y, posun kabiny, pohonu, elementů, tabulek, nadpisu, kontrolovat_oblast slouží k nucenému přesunutí
-void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_oblast)
+void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_oblast,bool povolit_rotaci)
 {
 	short oblast=0;
 	if(F->prichytavat_k_mrizce!=1)kontrolovat_oblast=false;
@@ -1525,18 +1526,18 @@ void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_o
 	if(F->prichytavat_k_mrizce==1 && oblast==1 && (Objekt->elementy->dalsi->geo.X1!=Objekt->predchozi->elementy->predchozi->geo.X4 || Objekt->elementy->dalsi->geo.Y1!=Objekt->predchozi->elementy->predchozi->geo.Y4))
 		posun_objekt(Objekt->predchozi->elementy->predchozi->geo.X4-Objekt->elementy->dalsi->geo.X1,Objekt->predchozi->elementy->predchozi->geo.Y4-Objekt->elementy->dalsi->geo.Y1,Objekt,false);
 	////změna pořadí před předchozí
-	if(oblast==2)
-		zmen_poradi_objektu(Objekt,Objekt->predchozi);
+//	if(oblast==2)
+//		zmen_poradi_objektu(Objekt,Objekt->predchozi);
 	////přilepení na další objekt
 	oblast=0;
 	if(kontrolovat_oblast && Objekt->dalsi!=NULL)oblast=oblast_objektu(Objekt->dalsi,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y);
 	if(F->prichytavat_k_mrizce==1 && oblast==2 && (Objekt->dalsi->elementy->dalsi->geo.X1!=Objekt->elementy->predchozi->geo.X4 || Objekt->dalsi->elementy->dalsi->geo.Y1!=Objekt->elementy->predchozi->geo.Y4))
 		posun_objekt(Objekt->dalsi->elementy->dalsi->geo.X1-Objekt->elementy->predchozi->geo.X4,Objekt->dalsi->elementy->dalsi->geo.Y1-Objekt->elementy->predchozi->geo.Y4,Objekt,false);
 	////změna pořadí za další
-	if(oblast==1)
-		zmen_poradi_objektu(Objekt,Objekt->dalsi);
+//	if(oblast==1)
+//		zmen_poradi_objektu(Objekt,Objekt->dalsi);
 	////změna rotace
-	if(Objekt->n>1)
+	if(Objekt->n>1 && povolit_rotaci)
 	{
 		double azimut=0;
 		azimut=m.Rt90(m.azimut(Objekt->predchozi->elementy->predchozi->geo.X4,Objekt->predchozi->elementy->predchozi->geo.Y4,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y));//Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1));
@@ -1589,7 +1590,7 @@ void Cvektory::rotuj_objekt(TObjekt *Objekt, double rotace)
 			case 90:case 270:Objekt->Xt=Objekt->elementy->predchozi->geo.X4-(Objekt->elementy->predchozi->geo.X4-Objekt->elementy->dalsi->geo.X1)/2.0;Objekt->Yt=m.P2Ly(F->vrat_max_oblast(Objekt).top);break;
 			case 180:Objekt->Xt=m.P2Lx(F->vrat_max_oblast(Objekt).right);Objekt->Yt=Objekt->elementy->predchozi->geo.Y4-(Objekt->elementy->predchozi->geo.Y4-Objekt->elementy->dalsi->geo.Y1)/2.0;break;
 		}
-		Objekt->orientace=azimut;
+		Objekt->orientace=Objekt->orientace_text=azimut;
 	}
 }
 ////---------------------------------------------------------------------------
@@ -5441,6 +5442,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 				 c_ukaz->Y=ukaz->Y;
          c_ukaz->Xt=ukaz->Xt;
 				 c_ukaz->Yt=ukaz->Yt;
+				 c_ukaz->orientace_text=ukaz->orientace_text;
 				 c_ukaz->sirka_steny=ukaz->sirka_steny;
          c_ukaz->orientace=ukaz->orientace;
 				 c_ukaz->rezim=ukaz->rezim;
@@ -5762,6 +5764,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 					ukaz->Y=c_ukaz->Y;
           ukaz->Xt=c_ukaz->Xt;
 					ukaz->Yt=c_ukaz->Yt;
+					ukaz->orientace_text=c_ukaz->orientace_text;
           ukaz->sirka_steny=c_ukaz->sirka_steny;
           ukaz->body=NULL;  //NUTNOST PRO AUTO VYTVARENI HLAVICKY
 					ukaz->rezim=c_ukaz->rezim;
@@ -5942,6 +5945,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 				c_ukaz2=NULL; delete c_ukaz2;
 			};
 
+			aktualizuj_sparovane_ukazatele();//prozatimní řešení, aktualizuje spárovné ukazatele po načtení
 			delete FileStream;
 			return 1;
 			}
