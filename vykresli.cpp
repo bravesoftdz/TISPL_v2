@@ -144,6 +144,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 		{
 			if(E->n>0)
 			{
+        if(stav!=-1)stav=E->stav;//předávání stavu v aktivní kabině pro highlightování elementů
 				//vykreslení potenciálních pozic vozíků resp. jigů
 				vykresli_pozice(canv,E);
 				//vykreslení elementů
@@ -299,7 +300,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	}
 
 	////vnější obrys kabiny
-	if(!(F->pom_temp!=NULL && F->pom_temp->n!=O->n && F->scGPTrackBar_intenzita->Value<5))polygon(canv,O->body,clAkt,2*sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
+	if(!(F->pom_temp!=NULL && F->pom_temp->n!=O->n && F->scGPTrackBar_intenzita->Value<5))polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
 
 	///název
 	//název objektu - nastavení                 //záměrně nuly, aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
@@ -5282,8 +5283,8 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	canv->Font->Color=color;
 	canv->Font->Size=m.round(width*F->aFont->Size);//už se nenásobí *Zoom, protože width se již násobí v úvodu metody
 	if(highlight)
-	{                                                                 //v případě, že není požadován posun dalších elementů, zvýrazní i kótu následujícího elementu, že se bude také měnit
-		if(aktElement!=NULL && (F->JID+10)*(-1)==(long)aktElement->n || !F->posun_dalsich_elementu && aktElement!=NULL && (F->JID+10)*(-1)==(long)aktElement->predchozi->n || ((F->JID==-8 || F->JID==-9) && F->MOD==F->NAHLED))canv->Font->Style = TFontStyles()<< fsBold;//pouze když se mění hodnota kóty
+	{                                                               //v případě, že není požadován posun dalších elementů, zvýrazní i kótu následujícího elementu, že se bude také měnit
+		if(aktElement!=NULL && (F->JID+10)*(-1)==(long)aktElement->n || !F->posun_dalsich_elementu && aktElement!=NULL && (F->JID+10)*(-1)==(long)aktElement->predchozi->n || ((F->JID==-8 || F->JID==-9) && F->MOD==F->NAHLED) || F->JID==-5 && F->pom_temp!=NULL || F->JID==-2 && F->pom_temp==NULL)canv->Font->Style = TFontStyles()<< fsBold;//pouze když se mění hodnota kóty
 		canv->Font->Size=m.round(canv->Font->Size/2.0);//při highlighnutí se text se šířkou nezvětštuje (proto /2 návrat na původní hodnotu, pouze ztučňuje a to jen za předpokladu, změny hodnot kót nikoliv linie kóty (její pozice/offsetu)
 	}
 	else canv->Font->Style = TFontStyles();//vypnutí tučného písma
