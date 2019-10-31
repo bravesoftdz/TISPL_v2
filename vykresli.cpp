@@ -326,7 +326,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	canv->Font->Orientation=0;//vrácení původní hodnoty rotace canvasu
 	//vykreslení uchopovacího kříže u textu
 	canv->Pen->Color=clBlack;canv->Pen->Width=1;
-	if(F->pom_temp!=NULL && F->pom_temp->n==O->n && F->Akce==F->Takce::NIC && (F->JID==-6 || F->JID==-7))
+	if(F->pom_temp!=NULL && F->pom_temp->n==O->n && F->Akce==F->Takce::NIC && !F->editace_textu && (F->JID==-6 || F->JID==-7))
 	{
 		switch((int)O->orientace_text)
 		{

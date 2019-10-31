@@ -264,11 +264,10 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 }
 //---------------------------------------------------------------------------
 //nastaví komponentám aFont
-void TForm1::set_font()
+void TForm1::set_font(int velikost)
 {
   log(__func__);//logování
 	TColor barva;
-	int velikost=13;
   barva=Label_zamerovac->Font->Color;
   Label_zamerovac->Font=aFont;
   Label_zamerovac->Font->Color=barva;
@@ -876,12 +875,19 @@ void TForm1::DesignSettings()
  //	scExPanel_ostatni->Color=light_gray;
 
 	//nastaveni barvy prepinacu modu
-	Schema->Options->PressedColor=light_gray;
-	Layout->Options->PressedColor=light_gray;
-	Analyza->Options->PressedColor=light_gray;
-	Synteza->Options->PressedColor=light_gray;
-	Simulace->Options->PressedColor=light_gray;
-	Nahled->Options->PressedColor=light_gray;
+	Schema->Options->PressedColor=DetailsButton->Options->NormalColor;
+	Layout->Options->PressedColor=DetailsButton->Options->NormalColor;
+	Analyza->Options->PressedColor=DetailsButton->Options->NormalColor;
+	Synteza->Options->PressedColor=DetailsButton->Options->NormalColor;
+	Simulace->Options->PressedColor=DetailsButton->Options->NormalColor;
+	Nahled->Options->PressedColor=DetailsButton->Options->NormalColor;
+  //nastavení barvy fontu stisknutému tlačítku
+	Schema->Options->FontPressedColor=clWhite;
+	Layout->Options->FontPressedColor=clWhite;
+	Analyza->Options->FontPressedColor=clWhite;
+	Synteza->Options->FontPressedColor=clWhite;
+	Simulace->Options->FontPressedColor=clWhite;
+	Nahled->Options->FontPressedColor=clWhite;
 
 	//nastavení barvy pro knihovnu
 	scGPLabel_roboti->FillColor=light_gray;
@@ -905,7 +911,7 @@ void TForm1::DesignSettings()
 //		scGPLabel_roboti->Caption="Technolog. objekty";
 //		scGPLabel_roboti->ContentMarginLeft=4;
 	 //	scListGroupKnihovObjektu->Visible=false;
-	 DrawGrid_knihovna->Top=10000;
+	  DrawGrid_knihovna->Top=10000;
 		scListGroupKnihovObjektu->Height=1920; // kvůli odstranění bílé linky, která vznikala pod knihovnou objektů
 	}
 
@@ -1064,9 +1070,7 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 	 //následující slouží pouze při uživatelsky volaném soubor nový
 	 TIP="Kliknutím na objekt v knihovně objektu, tažením a následným usazením přidáte objekt.";
 	 Nahled->Enabled=false;
-	 Form_parametry_linky->Left=Form1->ClientWidth/2-Form_parametry_linky->Width/2;
-	 Form_parametry_linky->Top=Form1->ClientHeight/2-Form_parametry_linky->Height/2;
-	 Form_parametry_linky->ShowModal();//zavolání formáláře pro prvotní vyplnění či potvzení hodnot parametrů linky
+	 Layout->Down=true;//zavolání formáláře pro prvotní vyplnění či potvzení hodnot parametrů linky
 	 REFRESH();
 }
 //---------------------------------------------------------------------------
@@ -1369,12 +1373,7 @@ void TForm1::startUP()
 	if(d.v.OBJEKTY->dalsi!=NULL)Nahled->Enabled=true;
 	else Nahled->Enabled=false;
 	//slouží po startu programu k načtení parametrů linky, nemůže být voláno v tomto okamžiku v souboru nový, protože by jinak vedlo k pádu aplikace - pořadí vytváření formulářů, není voláno v případě startu aplikace po pádu
-	if(volat_parametry_linky)
-	{
-		Form_parametry_linky->Left=Form1->ClientWidth/2-Form_parametry_linky->Width/2;
-		Form_parametry_linky->Top=Form1->ClientHeight/2-Form_parametry_linky->Height/2;
-		Form_parametry_linky->ShowModal();//zavolání formáláře pro prvotní vyplnění či potvzení hodnot parametrů linky
-	}
+	if(volat_parametry_linky)Layout->Down=true;//zavolání formáláře pro prvotní vyplnění či potvzení hodnot parametrů linky
 	if(d.v.OBJEKTY->dalsi!=NULL)TIP="";//v případě, že jsou vložené nějaké objekty tak dojde k odmazání tipu pro vkládání objektů
 	//set_font();//nastavení fontu komponentám
 	DrawGrid_knihovna->SetFocus();//nutné při spouštění dávat focus na knihovnu, ta přesměrovává všechny události (např. KeyDown) na Form
@@ -4604,7 +4603,7 @@ Cvektory::TObjekt *TForm1::add_objekt_za()
 //pokud při uložení editovaného objektu je detekováno, že konec objketu nenavazuje na začátek následujísího objektu je položen dotaz a po potvrzení dojde ke spojení
 void TForm1::pripnuti_dalsich_objektu()
 {
-	if(pom->dalsi!=NULL && pom_temp->elementy->predchozi->geo.X4!=pom->dalsi->elementy->dalsi->geo.X1 && pom_temp->elementy->predchozi->geo.Y4!=pom->dalsi->elementy->dalsi->geo.Y1 && mrYes==MB("Chcete začátek dalšího objektu na konec tohoto?",MB_YESNO,true))
+	if(pom->dalsi!=NULL && !(pom_temp->elementy->predchozi->geo.X4==pom->dalsi->elementy->dalsi->geo.X1 && pom_temp->elementy->predchozi->geo.Y4==pom->dalsi->elementy->dalsi->geo.Y1) && mrYes==MB("Chcete začátek dalšího objektu na konec tohoto?",MB_YESNO,true))
 	{
   	double posun_x,posun_y;
   	posun_x=-pom->dalsi->elementy->dalsi->geo.X1+pom_temp->elementy->predchozi->geo.X4;
@@ -5195,7 +5194,7 @@ void TForm1::ukonceni_geometrie()
 	T=readINI("nastaveni_editace","zobrazit_popisky"); //zobrazit popisky
 	if(T==0)zobrazit_popisky=0;else zobrazit_popisky=1;
 	T=readINI("nastaveni_editace","zobrazit_koleje"); //zobrazit koleje
-	if(T==0)zobrazit_popisky=0;else zobrazit_koleje=1;
+	if(T==0)zobrazit_koleje=0;else zobrazit_koleje=1;
 	if(rotace_jigu==1)scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
 	else scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=false;
 	if(zobrazit_pozice==1)scGPCheckBox_zobrazit_pozice->Checked=true;
@@ -5212,9 +5211,11 @@ double TForm1::max_voziku(Cvektory::TElement *stopka)
 	log(__func__);//logování
 	double ret=1;
 	double delka=stopka->geo.delka;
+	Cvektory::TObjekt *O=d.v.vrat_objekt(stopka->objekt_n);
 	if(delka>0)//musí být něco v délce, pokud nula tak problém
 	{
-  	Cvektory::TElement *E=stopka->predchozi;
+		Cvektory::TElement *E=stopka->predchozi;
+		if(E->n==0 && O!=NULL && O->predchozi->n!=0)E=O->predchozi->elementy->predchozi;
   	while(E!=NULL && E->n!=0)
 		{
   		if(E->OTOC_delka>0)
@@ -5226,11 +5227,13 @@ double TForm1::max_voziku(Cvektory::TElement *stopka)
   		if(E->geo.typ==0 && E->eID==MaxInt)delka+=E->geo.delka;
   		else break;
 			E=E->predchozi;
+			if(E->n==0 && O!=NULL && O->predchozi->n!=0)E=O->predchozi->elementy->predchozi;
 		}
 		E=NULL;delete E;
 		if(delka>0)ret=floor((delka-d.v.PP.uchyt_pozice)/d.v.PP.delka_podvozek);
 		if(ret<1)ret=1;
 	}
+	O=NULL;delete O;
 	return ret;
 }
 //---------------------------------------------------------------------------
@@ -10084,6 +10087,9 @@ unsigned short int TForm1::Otevrit_soubor(UnicodeString soubor)//realizuje samot
 			d.v.PP.vyska_jig=d.v.File_hlavicka.vyska_jig;
 			d.v.PP.delka_podvozek=d.v.File_hlavicka.delka_podvozek;
 			d.v.PP.uchyt_pozice=d.v.File_hlavicka.uchyt_pozice;
+			d.v.PP.katalog=d.v.File_hlavicka.katalog;
+			d.v.PP.typ_linky=d.v.File_hlavicka.typ_linky;
+			d.v.PP.radius=d.v.File_hlavicka.radius;
 			MOD=d.v.File_hlavicka.Mod;
 			switch(MOD)
 			{
@@ -11158,7 +11164,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	//
+	//Image_knihovna_objektu->Visible=!Image_knihovna_objektu->Visible;
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko

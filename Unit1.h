@@ -649,7 +649,7 @@ private:
 	void mGrid_on_mGrid();//prohledá zda se pøekrývají mGridy
 	void mGrid_komponenta_na_draw(TmGrid *mGrid,long Col,long Row);//smazì komponentu v dané buòce a zmìní typ bunky na DRAW
 	void mGrid_puvodni_stav(Cvektory::TElement *E);//nadesingnuje tabulky elementù na pùvodní stav, obnový komponenty, naplní comba, provede Update() mGridu
-	void set_font();//nastaví komponentám aFont
+	void set_font(int velikost=14);//nastaví komponentám aFont
 	void pripnuti_dalsich_objektu();//pokud pøi uložení editovaného objektu je detekováno, že konec objketu nenavazuje na zaèátek následujísího objektu je položen dotaz a po potvrzení dojde ke spojení
 
 	////promìnné

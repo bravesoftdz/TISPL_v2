@@ -20,9 +20,6 @@ __fastcall TForm_katalog::TForm_katalog(TComponent* Owner)
 	F->m.designButton(Button_save,Form_katalog,1,2);
 	F->m.designButton(Button_storno,Form_katalog,2,2);
   zmena=false;
-	//načtení hodnot z PP
-//	katalog_id=F->d.v.PP.katalog;
-//	radius=F->d.v.PP.radius*1000.0;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_katalog::FormShow(TObject *Sender)
@@ -30,9 +27,15 @@ void __fastcall TForm_katalog::FormShow(TObject *Sender)
 	//načtení hodnot z PP
 	katalog_id=F->d.v.PP.katalog;
 	radius=F->d.v.PP.radius*1000.0;
+	//pokud nebyl žádny dopravník ještě uložen vezmě si data z temp dopravníku na PL
+	if(katalog_id==0)
+	{
+		katalog_id=Form_parametry_linky->katalog_id;
+		radius=Form_parametry_linky->radius*1000.0;
+  }
 
-	mGrid=new TmGrid(this);//vždy nutno jako první
-  mGrid->Tag=8;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
+	K_mGrid=new TmGrid(this);//vždy nutno jako první
+  K_mGrid->Tag=8;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
 
 	Form_parametry_linky->scStyledForm2->InActiveClientBlurAmount=1;
   Form_parametry_linky->scStyledForm2->ShowClientInActiveEffect();
@@ -43,34 +46,34 @@ void __fastcall TForm_katalog::FormShow(TObject *Sender)
   ////////vytvoření tabulky s požadovaným počtem sloupců a řádků////////
 	unsigned long ColCount=20;//pevný počet slopců
 	unsigned long RowCount=15;//pevný počet řádků
-  mGrid->Create(ColCount,RowCount);//samotné vytvoření matice-tabulky
-  mGrid->Top=scLabel_header->Height + 10;
+  K_mGrid->Create(ColCount,RowCount);//samotné vytvoření matice-tabulky
+  K_mGrid->Top=scLabel_header->Height + 10;
 
 
-  mGrid->Columns[0].Width=120;
+  K_mGrid->Columns[0].Width=120;
   for(int i=1;i<=ColCount;i++)
   {
-    mGrid->Columns[i].Width=50;
+    K_mGrid->Columns[i].Width=50;
   }
-  mGrid->SetColumnAutoFit(-4);
+  K_mGrid->SetColumnAutoFit(-4);
 
   LoadValues(); //načtení hodnot do tabulky
-  mGrid->Refresh();
+  K_mGrid->Refresh();
   LoadStyles(); // načtení designu tabuly
 
-  	mGrid->MergeCells(1,0,3,0);
-    mGrid->MergeCells(4,0,7,0);
-    mGrid->MergeCells(8,0,11,0);
-    mGrid->MergeCells(12,0,15,0);
-    mGrid->MergeCells(16,0,19,0);
+  	K_mGrid->MergeCells(1,0,3,0);
+    K_mGrid->MergeCells(4,0,7,0);
+    K_mGrid->MergeCells(8,0,11,0);
+    K_mGrid->MergeCells(12,0,15,0);
+    K_mGrid->MergeCells(16,0,19,0);
   //pozice formu - střed obrazovky
   Left=Form1->ClientWidth/2-Form_katalog->Width/2;
   Top=Form1->ClientHeight/2-Form_katalog->Height/2;
-  mGrid->Left=2;
-	Form_katalog->Width=mGrid->Width + 4;
-	Button_save->Top= mGrid->Height + scLabel_header->Height + 30;
-	Button_storno->Top= mGrid->Height + scLabel_header->Height + 30;
-	Form_katalog->Height = scLabel_header->Height +  mGrid->Height + Button_save->Height + 70;
+  K_mGrid->Left=2;
+	Form_katalog->Width=K_mGrid->Width + 4;
+	Button_save->Top= K_mGrid->Height + scLabel_header->Height + 30;
+	Button_storno->Top= K_mGrid->Height + scLabel_header->Height + 30;
+	Form_katalog->Height = scLabel_header->Height +  K_mGrid->Height + Button_save->Height + 70;
 
 	vypis("Kliknutím do seznamu rádiusů vyberete katalog dopravníků",false);
 }
@@ -78,31 +81,31 @@ void __fastcall TForm_katalog::FormShow(TObject *Sender)
 
 void __fastcall TForm_katalog::FormPaint(TObject *Sender)
 {
-  mGrid->Show();//vykreslí tabulku
+  K_mGrid->Show();//vykreslí tabulku
 }
 //---------------------------------------------------------------------------
 
 void TForm_katalog::LoadValues ()
 {
   // vytvoření hlavičky
-  mGrid->Cells[0][0].Text="CALDAN";
-  mGrid->Cells[1][0].Text="Rozteč palců [mm]";
-  mGrid->Cells[4][0].Text="Horizontální oblouky [°]";
-  mGrid->Cells[8][0].Text="Rádius [mm]";
-	mGrid->Cells[12][0].Text="Vertikální oblouky [°]";
-  mGrid->Cells[16][0].Text="Rádius [mm]";
+  K_mGrid->Cells[0][0].Text="CALDAN";
+  K_mGrid->Cells[1][0].Text="Rozteč palců [mm]";
+  K_mGrid->Cells[4][0].Text="Horizontální oblouky [°]";
+  K_mGrid->Cells[8][0].Text="Rádius [mm]";
+	K_mGrid->Cells[12][0].Text="Vertikální oblouky [°]";
+  K_mGrid->Cells[16][0].Text="Rádius [mm]";
 
   Cvektory::Ttyp_dopravniku *K=F->d.v.KATALOG->dalsi;//přeskočí hlavičku
 	while(K!=NULL)
 	{
     //funkční část
-    mGrid->Cells[0][K->n].Text=K->name;
+    K_mGrid->Cells[0][K->n].Text=K->name;
     Cvektory::TDoubleHodnota *H=K->roztec->dalsi;
 
     //pro rozteče
     while(H!=NULL)
 	  {
-      mGrid->Cells[H->n][K->n].Text=H->hodnota;
+      K_mGrid->Cells[H->n][K->n].Text=H->hodnota;
       H=H->dalsi;
     }
 
@@ -110,7 +113,7 @@ void TForm_katalog::LoadValues ()
     H=K->hOblouk->dalsi;
     while(H!=NULL)
 	  {
-      mGrid->Cells[3+H->n][K->n].Text=H->hodnota;
+      K_mGrid->Cells[3+H->n][K->n].Text=H->hodnota;
       H=H->dalsi;
     }
 
@@ -118,7 +121,7 @@ void TForm_katalog::LoadValues ()
     H=K->hRadius->dalsi;
     while(H!=NULL)
 	  {
-      mGrid->Cells[7+H->n][K->n].Text=H->hodnota;
+      K_mGrid->Cells[7+H->n][K->n].Text=H->hodnota;
       H=H->dalsi;
     }
 
@@ -126,7 +129,7 @@ void TForm_katalog::LoadValues ()
     H=K->vOblouk->dalsi;
     while(H!=NULL)
 	  {
-      mGrid->Cells[11+H->n][K->n].Text=H->hodnota;
+      K_mGrid->Cells[11+H->n][K->n].Text=H->hodnota;
       H=H->dalsi;
     }
 
@@ -134,7 +137,7 @@ void TForm_katalog::LoadValues ()
     H=K->vRadius->dalsi;
     while(H!=NULL)
 	  {
-      mGrid->Cells[15+H->n][K->n].Text=H->hodnota;
+      K_mGrid->Cells[15+H->n][K->n].Text=H->hodnota;
       H=H->dalsi;
     }
     //ukazatelová část
@@ -144,22 +147,22 @@ void TForm_katalog::LoadValues ()
   delete K;K=NULL;
 
   //nastaveni barev pro zobrazeni vybrane hodnoty - oranzova
-  for(int i=1;i<mGrid->ColCount;i++)
+  for(int i=1;i<K_mGrid->ColCount;i++)
   {
-   if(F->ms.MyToDouble(mGrid->Cells[i][katalog_id].Text) == radius)
+   if(F->ms.MyToDouble(K_mGrid->Cells[i][katalog_id].Text) == radius)
 	 {
-		if(i>=8 && i<=11) mGrid->Cells[i][katalog_id].Font->Color=(TColor)RGB(226,122,21);
+		if(i>=8 && i<=11) K_mGrid->Cells[i][katalog_id].Font->Color=(TColor)RGB(226,122,21);
    }
 
   }
   //nastaveni barev pro zobrazeni vybrane hodnoty - cerna
-  for(int i=1;i<mGrid->RowCount;i++)
+  for(int i=1;i<K_mGrid->RowCount;i++)
   {
     if(i==katalog_id)
       {
-       for(int j=0;j<mGrid->ColCount;j++)
+       for(int j=0;j<K_mGrid->ColCount;j++)
        {
-        if(F->ms.MyToDouble(mGrid->Cells[j][i].Text) != radius) mGrid->Cells[j][i].Font->Color=clBlack;
+        if(F->ms.MyToDouble(K_mGrid->Cells[j][i].Text) != radius) K_mGrid->Cells[j][i].Font->Color=clBlack;
        }
       }
   }
@@ -171,17 +174,17 @@ void TForm_katalog::LoadStyles ()
  clBACKGROUND_light=Form1->m.clIntensive((TColor)RGB(200,200,200),35);
  clBACKGROUND_dark=clWhite;//Form1->m.clIntensive((TColor)RGB(240,240,240),35);
 
- for (int s = 0; s < mGrid->ColCount-1; s++)
+ for (int s = 0; s < K_mGrid->ColCount-1; s++)
  {  //černý font v hlavičcce
-   mGrid->Cells[s][0].Font->Color=clBlack;
+   K_mGrid->Cells[s][0].Font->Color=clBlack;
  }
 
-  for (int r = 1; r <= mGrid->RowCount-1; r++)
+  for (int r = 1; r <= K_mGrid->RowCount-1; r++)
  {
-   mGrid->Cells[8][r].Type=mGrid->EDIT;
-   mGrid->Cells[9][r].Type=mGrid->EDIT;
-   mGrid->Cells[10][r].Type=mGrid->EDIT;
-   mGrid->Cells[11][r].Type=mGrid->EDIT;
+   K_mGrid->Cells[8][r].Type=K_mGrid->EDIT;
+   K_mGrid->Cells[9][r].Type=K_mGrid->EDIT;
+   K_mGrid->Cells[10][r].Type=K_mGrid->EDIT;
+   K_mGrid->Cells[11][r].Type=K_mGrid->EDIT;
  }
 }
 
@@ -193,13 +196,13 @@ void TForm_katalog::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row
    if(Col>=8 && Col<=11)
    {
     zmena=true;
-      for(int i=1;i<mGrid->RowCount;i++)
+      for(int i=1;i<K_mGrid->RowCount;i++)
       {
          if(i!=Row)
          {
-            for(int j=0;j<mGrid->ColCount;j++)
+            for(int j=0;j<K_mGrid->ColCount;j++)
              {
-             mGrid->Cells[j][i].Font->Color=(TColor)RGB(43,87,154);  //odbarveni  - nevybrano
+             K_mGrid->Cells[j][i].Font->Color=(TColor)RGB(43,87,154);  //odbarveni  - nevybrano
              }
          }
       }
@@ -213,13 +216,13 @@ void TForm_katalog::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row
    if(Col>=8 && Col<=11)
    {
     zmena=true;
-      for(int i=1;i<mGrid->RowCount;i++)
+      for(int i=1;i<K_mGrid->RowCount;i++)
       {
          if(i==Row)
          {
-            for(int j=0;j<mGrid->ColCount;j++)
+            for(int j=0;j<K_mGrid->ColCount;j++)
              {
-             mGrid->Cells[j][i].Font->Color=clBlack;  //nabarveni - vybrano
+             K_mGrid->Cells[j][i].Font->Color=clBlack;  //nabarveni - vybrano
              }
          }
       }
@@ -231,7 +234,7 @@ void TForm_katalog::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row
   if(Col>=8 && Col<=11)
    {
 
-   radius=Form1->ms.MyToDouble(mGrid->Cells[Col][Row].Text);
+   radius=Form1->ms.MyToDouble(K_mGrid->Cells[Col][Row].Text);
    katalog_id=Row;
    }
 
@@ -244,23 +247,23 @@ void __fastcall TForm_katalog::Button_stornoClick(TObject *Sender)
 {
 F->scStyledForm1->HideClientInActiveEffect();
 Form_parametry_linky->scStyledForm2->HideClientInActiveEffect();
-Button_storno->SetFocus();//workaround proti padání mGridu (padalo při odstraňování komponent), Focus se přesune z mazané komponenty na mGridu, na komponentu nemazanou
-mGrid->Delete();
+Button_storno->SetFocus();//workaround proti padání K_mGridu (padalo při odstraňování komponent), Focus se přesune z mazané komponenty na K_mGridu, na komponentu nemazanou
+K_mGrid->Delete();
 
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_katalog::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
           int Y)
 {
-mGrid->HighlightRowOnMouse(X,Y,(TColor)RGB(240,240,240));
+K_mGrid->HighlightRowOnMouse(X,Y,(TColor)RGB(240,240,240));
 }
 //---------------------------------------------------------------------------
 
 
 void __fastcall TForm_katalog::Button_saveClick(TObject *Sender)
 {
-F->d.v.PP.katalog=katalog_id;
-F->d.v.PP.radius=radius/1000.0;
+Form_parametry_linky->katalog_id=katalog_id;
+Form_parametry_linky->radius=radius/1000.0;
 
 F->scStyledForm1->HideClientInActiveEffect();
 Form_parametry_linky->scStyledForm2->HideClientInActiveEffect();
@@ -274,8 +277,8 @@ Button_storno->SetFocus();
 
 void __fastcall TForm_katalog::FormClose(TObject *Sender, TCloseAction &Action)
 {
-Button_storno->SetFocus();//workaround proti padání mGridu (padalo při odstraňování komponent), Focus se přesune z mazané komponenty na mGridu, na komponentu nemazanou
-mGrid->Delete();
+Button_storno->SetFocus();//workaround proti padání K_mGridu (padalo při odstraňování komponent), Focus se přesune z mazané komponenty na K_mGridu, na komponentu nemazanou
+K_mGrid->Delete();
 }
 //---------------------------------------------------------------------------
 
@@ -283,8 +286,9 @@ void __fastcall TForm_katalog::KonecClick(TObject *Sender)
 {
 F->scStyledForm1->HideClientInActiveEffect();
 Form_parametry_linky->scStyledForm2->HideClientInActiveEffect();
-Button_storno->SetFocus();//workaround proti padání mGridu (padalo při odstraňování komponent), Focus se přesune z mazané komponenty na mGridu, na komponentu nemazanou
-mGrid->Delete();
+Button_storno->SetFocus();//workaround proti padání K_mGridu (padalo při odstraňování komponent), Focus se přesune z mazané komponenty na K_mGridu, na komponentu nemazanou
+K_mGrid->Delete();
+K_mGrid=NULL;
 Close();
 }
 //---------------------------------------------------------------------------
@@ -312,7 +316,7 @@ void TForm_katalog::vypis(UnicodeString text,bool red,bool link)
 				{
 						rHTMLLabel_InfoText->Font->Color = (TColor)RGB(0,128,255);
 				}
-        rHTMLLabel_InfoText->Top = mGrid->Height + scLabel_header->Height + 14;
+				rHTMLLabel_InfoText->Top = K_mGrid->Height + scLabel_header->Height + 14;
         rHTMLLabel_InfoText->Left = 4;
 				rHTMLLabel_InfoText->Caption = text;
 				rHTMLLabel_InfoText->Visible = true;

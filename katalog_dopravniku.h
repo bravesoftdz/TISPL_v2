@@ -37,7 +37,10 @@ __published:	// IDE-managed Components
 
 private:	// User declarations
     void LoadValues();
-    void LoadStyles();
+		void LoadStyles();
+
+		TmGrid *K_mGrid;
+
 public:		// User declarations
   __fastcall TForm_katalog(TComponent* Owner);
   	//metody volané z Tmgrid

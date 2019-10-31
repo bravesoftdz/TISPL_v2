@@ -31,6 +31,7 @@
 #include "scGPMeters.hpp"
 #include <sstream>
 #include <iomanip>
+#include "TmGrid.h"
 //---------------------------------------------------------------------------
 class TForm_parametry_linky : public TForm
 {
@@ -198,6 +199,9 @@ private:	// User declarations
 	TColor clBACKGROUND;
 	void nastav_edity ();//metoda vymìní edit pro délku podvozku a délku jigu podle typu vozíku podlahový/podvìsný
 	void vozik_zmena_jednotek();
+
+	TmGrid *PL_mGrid;//mGrid pro PL
+
 public:		// User declarations
 	__fastcall TForm_parametry_linky(TComponent* Owner);
 	int getROW(int PID);//vrátí èíslo øádku dle pohon ID, pokud nenajde vrátí -1
@@ -232,6 +236,8 @@ public:		// User declarations
 	UnicodeString NAZEV;
 	double OD;
 	double DO;
+	int katalog_id;
+	double radius;
 	bool data_nalezena;
 	Tinput_state input_state;//stav vstupu DV,SV,TT...atd
 	Tinput_clicked_edit input_clicked_edit;//zjisteni na ktery edit bylo kliknuto
@@ -251,7 +257,7 @@ public:		// User declarations
 	bool Storno;
 	bool zobrazitFrameForm;
 	bool zobrazOramovani;
-  AnsiString OBJEKTY_POUZIVAJICI_POHON;
+	AnsiString OBJEKTY_POUZIVAJICI_POHON;
   void getROtherValues(Tm_mm Runit,int Row);
 
 	int roletka_data;
