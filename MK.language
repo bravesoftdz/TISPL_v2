@@ -30,7 +30,6 @@ Menu;X;Menu
 Line parameters;X;Parametry linky
 Analysis;X;Analıza
 About aplication;X;O aplikaci
-ELTEP - tispl - [New.tispl];X;ELTEP - tispl - [Novı.tispl]
 Verification;X;Ovìøování
 Design;X;Návrh
 Line parameters;X;parametry linky
@@ -46,17 +45,24 @@ Lock object placement;X;Uzamknout rozmístìní objektù
 Measure the distance;X;Zmìøit vzdálenost
 Technologist. objects;X;Technolog. objekty
 Stop station;X;Stop stanice
-Rotating elements;X;Otoèe
+Turning elements;X;Otoèe
 Line geometry;X;Geometrie linky
 Notes;X;Poznámky
 Hall;X;Hala
 Load/Unload;X;Nav/Svìšování
-Pretreatment;X;Pøedúpravy
-Painting;X;Lakování
+Technology;X;Technologie
 Other;X;Ostatní
+Other;X;Ostatní
+Robot           Operator;X;Robot           Operátor
+Section;X;Sekce
+Oparators;X;Operátoøi
+Robots;X;Roboti
+Turning elements;X;Otoèe
+Stop station;X;Stop stanice
+Line geometry;X;Geometrie linky
 Show graphs;X;Zobrazit grafy
-News;X;Zprávy 
-Report;X;Report 
+News;X;Zprávy
+Report;X;Report
 Object drive;X;Pohon - objektu
 Show legend;X;Zobrazit legendu
 use specified object capacities;X;pouít zadané kapacity objektù
@@ -90,27 +96,35 @@ New…;X;Novı...
 Save;X;Uloit
 Load background ...;X;Naèíst podklad...
 Options;X;Nastavení
-                  Layers;X;                  Vrstvy
+									Layers;X;                  Vrstvy
 View conveyor tracks;X;Zobrazit koleje dopravníku
 Show positions;X;Zobrazit pozice
 View jig rotation;X;Zobrazit rotace jigù
 Show element labels;X;Zobrazit popisky prvkù
-                  Background;X;                  Podklad
+									Background;X;                  Podklad
 Set the scale;X;Nastavit mìøítko
 Place background;X;Umístit podklad
 Grayscale background;X;Podklad ve stupních šedi
 Show background;X;Zobrazit podklad
 Transparency background;X;Prùhlednost podkladu
-                  General;X;                  Obecné
+									General;X;                  Obecné
 Rectangular input;X;Pravoúhlé zadávání
-It ensures entering the contour of the hall or object at right angles;X;Zajišuje zadavání obrysu haly èi objektu pravoúhle 
+It ensures entering the contour of the hall or object at right angles;X;Zajišuje zadavání obrysu haly èi objektu pravoúhle
 Grid;X;Møíka
 Scale;X;Mìøítko
 Intensity of pass. objects;X;Intenzita pasiv. Objektù
 Adjust the intensity of non-edited objects;X;Nastavení intenzity needitovanıch objektù
-                  Tools;X;                  Nástroje
+									Tools;X;                  Nástroje
 Measure the distance;X;Zmìøit vzdálenost
 Contracts;X;Zakázky
+Unlock edit;X;Odemknout editaci
+Lock edit;X;Zamknout editaci
+Hide tables;X;Skrıt tabulky
+Show tables;X;Zobrazit tabulky
+Hide dimensions;X;Skrıt kóty
+Show dimensions;X;Zobrazit kóty
+Disable constrained movement of robots, stop stations and turnings in the edited object;X;Zakázat vázanı posun robotù, stop stanic a otoèí v editovaném objektu
+Enable constrained movement of robots, stop stations and turnings in the edited object;X;Povolit vázanı posun robotù, stop stanic a otoèí v editovaném objektu
 Enter line parameters or choose cancel.;X;Zadejte parametry linky nebo zvolte storno.
 Designed drives for objects without associated drives:;X;Navrené pohony pro objekty bez pøiøazenıch pohonù:
 floor;X;podlahovı
@@ -140,26 +154,32 @@ add new drive;X;pøidat novı pohon
  Takt Time;X; Takt Time
 Jig  ;X;Jig
 Undercarriage;X;Podvozek
-maximum dimensions of wagon <br> direction of line movement;X;maximální rozmìry vozíku<br>smìr pohybu linky 
+maximum dimensions of wagon <br> direction of line movement;X;maximální rozmìry vozíku<br>smìr pohybu linky
 add new drive;X;Pøidat novı pohon
 Application settings;X;Nastavení aplikace
 Catalog of conveyors;X;Katalog dopravníkù
 thumb position;X;pozice palce
 Save;X;Uloit
 view of the Jig at hanging up ;X;pohled na jig pøi navìšování
-  Set parameters;X;  Nastavit parametry
-  View parameters;X;  Zobrazit parametry
-  Copy object;X;  Kopírovat objekt
-  Delete object;X;  Smazat objekt
+  View;X;  Zobrazit
+  Edit;X;  Editovat
+	Change the section type;X;  Zmìnit typ sekce
+  Add point;X;  Pøidat bod
+	Insert a breakpoint;X;  Vloit zaráku
+  View;X;  Zobrazit
+  Copy;X;  Kopírovat
+  Delete;X;  Smazat
+	Delete section no.;X;  Smazat sekci è.
+  Delete point no.;X;  Smazat bod è.
   Rotate left;X;  Otoèit doleva
-  Rotate right;X;  Otoèit doprava
+	Rotate right;X;  Otoèit doprava
   Offset contour;X;  Posun obrysu
   Fast export …;X;  Rychlı export…
-  Pan;X;  Posouvat
+	Pan;X;  Posouvat
   Pan;X;  Posunout
   Zoom in;X;  Pøiblíit
   Zoom out;X;  Oddálit
-  Select by window …;X;  Vybrat oknem…
+	Select by window …;X;  Vybrat oknem…
   Full view;X;  Celı pohled
 Note;X;  Poznámka
 Copy values;X;Kopírovat hodnoty
@@ -168,3 +188,83 @@ OK;X;OK
 No;X;Ne
 Cancel;X;Storno
 Remember the choice;X;Pamatovat si volbu
+Choose a conveyor;X;Vybrat dopravník
+radius;X;rádius
+Catalog of conveyors;X;Katalog dopravníkù
+Click the radius list to select the conveyor catalog;X;Kliknutím do seznamu rádiusù vyberete katalog dopravníkù
+Save;X;Uloit
+Cancel;X;Storno
+Pitch inches [mm];X;Rozteè palcù [mm]
+Horizontal arcs [°];X;Horizontální oblouky [°]
+Radius [mm];X;Rádius [mm]
+Vertical arcs [°];X;Vertikální oblouky [°]
+Name;X;Název
+Range and speed of drive;X;Rozmezí a rychlost pohonu
+Inch pitch;X;Rozteè palce
+Used - on objects;X;Pouíván - na objektech
+form;X;od
+to;X;do
+current;X;aktuální
+Delete this drive;X;Smazat tento pohon
+Speed;X;Rychlost
+Thumb pitch;X;Rozteè palce
+Multiple thumb pitch;X;Násobek rozteèe palcù
+Pitch of jigs;X;Rozteè jigù
+Gap between undercarriages;X;Mezera mezi podvozky
+Gap between jigs 0°;X;Mezera mezi jigy 0°
+Gap between jigs 90°;X;Mezera mezi jigy 90°
+Gap between jigs;X;Mezera mezi jigy
+Advanced items;X;Rozšíøené poloky
+No drive to choose;X;ádnı pohon k vıbìru
+Select the drive;X;Vyberte pohon
+Drive not assigned;X;Pohon nepøiøazen
+Speed not within range!;X;Rychlost neodpovídá rozmezí!
+Enter the recommended drive speed:;X;Zadejte doporuèenou rychlost pohonu:
+Invalid drive speed value!;X;Neplatná hodnota rychlosti pohonu!
+Pair stop;X;Párová stop
+WT thumb;X;WT palec
+number of positions;X;poèet pozic
+number of wagons;X;poèet vozíkù
+reserve time;X;èasová rezerva
+closed stop station time;X;èas uzavøené STOP stanice
+maximum possible waiting time per thumb;X;maximální moná doba èekání na palec
+maximum possible number of positions;X;maximální monı poèet pozic
+Advanced items;X;Rozšíøené poloky
+PW;X;LO
+length of painting window;X;délka lakovácího okna
+WA;X;PO
+length of working area;X;délka pracovní oblasti
+offset;X;vyosení
+total process time, which is composed of subtimes;X;celkovı èas procesu, kterı je sloen z dílèích èasù
+offset of painting window;X;vyosení lakovácího okna
+rotation;X;rotace
+turning;X;otoè
+spining;X;otáèení
+total time of the turning process;X;celkovı èas procesu otoèe
+length of turning;X;délka otoèe
+length of spining;X;délka otáèení
+PTt;X;PTo
+length;X;délka
+beginning;X;zaèátek
+center;X;støed
+whole;X;celı
+Max. number of wagons must be less than or equal to;X;Max. poèet vozikù musí bıt menší nebo roven
+Not possible, there is an arc in front of the Stop station;X;Nelze, pøed Stopstanicí se nachází oblouk
+drip;X;okap
+spraying frame;X;postøikovı rám 
+loading;X;navìšování 
+unloading;X;svìšování
+continuous;X;kontinuální
+continuous with;X;kontinuální s 
+pass. turning;X;pasiv. otoèí
+act. turning;X;akt. otoèí
+flame ;X;oeh
+ionization;X;ionizace
+painting;X;lakování
+passive;X;aktivní
+active;X;pasivní
+ionization bar;X;ionizaèní tyè
+text;X;text 
+arrow;X;šipka
+geometry;X;geometrie  
+trans. point;X;pøed. místo

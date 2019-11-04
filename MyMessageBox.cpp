@@ -60,10 +60,10 @@ int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString capt
 	//caption tlaèítka - pro pøípad, že by v pøedchozím volání MB bylo tlaèítko pøejmenované
 	if(default_button_caption)
 	{
-		Button_OK->Caption="OK";
-		Button_Cancel->Caption="Storno";
-		Button_Yes->Caption="Ano";
-		Button_No->Caption="Ne";
+		Button_OK->Caption=F->ls->Strings[186];//"OK"
+		Button_Cancel->Caption=F->ls->Strings[188];//"Storno"
+		Button_Yes->Caption=F->ls->Strings[185];//"Ano"
+		Button_No->Caption=F->ls->Strings[187];//"Ne"
 	}
   //zobrazení èi skrytí tlaèítka kopíruj do schránky
 	if(copy_zobrazit)scGPGlyphButton_copy->Visible=true;

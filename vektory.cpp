@@ -1874,6 +1874,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	//defaultní data
 	novy->LO1=1.5;
 	novy->OTOC_delka=0;
+	novy->zona_otaceni=0;
 	novy->LO2=0;
 	novy->LO_pozice=0;
 	novy->PT1=0;
@@ -1904,9 +1905,9 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 		case 0: T="Stop"; break;//stop stanice
 		case 1:case 7:case 11:case 15:case 101:case 105:  T="Robot"; 				novy->PD=0;break;//kontinuální robota
 		case 2:case 8:case 12:case 16:case 102:case 106:  T="Robot"; 				novy->PT1=60;break;//robot se stopkou
-		case 3:case 9:case 13:case 17:case 103:case 107:  T="Robot"; 				novy->PD=0;novy->OTOC_delka=0.450;novy->LO1=(1.5-novy->OTOC_delka)/2.0;novy->LO2=novy->LO1;novy->rotace_jig=180;break;//kontinuální robot s pasivní otočí
+		case 3:case 9:case 13:case 17:case 103:case 107:  T="Robot"; 				novy->PD=0;novy->OTOC_delka=0.450;novy->zona_otaceni=0.6;novy->LO1=(1.5-novy->OTOC_delka)/2.0;novy->LO2=novy->LO1;novy->rotace_jig=180;break;//kontinuální robot s pasivní otočí
 		case 4:case 10:case 14:case 18:case 104:case 108: T="Robot";				novy->PT1=60;novy->PTotoc=20;novy->PT2=60;novy->rotace_jig=180; break;//robot s aktivní otočí (tj. s otočí a se stopkou)
-		case 5: T="Otoč"; 																									novy->OTOC_delka=0.450;novy->rotace_jig=90;break;//pasivní otoč
+		case 5: T="Otoč"; 																									novy->OTOC_delka=0.450;novy->zona_otaceni=0.6;novy->rotace_jig=90;break;//pasivní otoč
 		case 6: T="Otoč"; 																									novy->PTotoc=20;novy->rotace_jig=90;break;//aktivní otoč
 		case 100: T="ION tyč";break;
 		case 200: T="Předávací místo";break;
@@ -2130,16 +2131,16 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 			{
 				if(O->n>=Objekt->n)//přeskakování objektů před aktuálním
 				{
-		 			Cvektory::TElement *E=O->elementy;//nepřeskakovat hlavičku
-		 			if(O->n==Objekt->n)E=F->pom_temp->elementy;//při procházení aktuálního objektu nahradit pom_temp
+					Cvektory::TElement *E=O->elementy;//nepřeskakovat hlavičku
+					if(O->n==Objekt->n)E=F->pom_temp->elementy;//při procházení aktuálního objektu nahradit pom_temp
 		 			while(E!=NULL)
 					{
 		 				if(E->n>0)//přeskočí hlavičku
 						{
 		 					//kontrola zda můžu název změnit
 							switch(E->eID)
-		 					{
-		 						case 0:if(E->name.SubString(1,5)=="Stop "&&E->name.Length()<=7||E->name=="")rename=true;else rename=false;break;
+							{
+								case 0:if(E->name.SubString(1,5)=="Stop "&&E->name.Length()<=7||E->name=="")rename=true;else rename=false;break;
 								default :rename=false;break;//musí zde být, jinak nějakým způsobem je pro robot rename nastaveno na true
 								case 5:
 								case 6:if(E->name.SubString(1,5)=="Otoč "&&E->name.Length()<=7||E->name=="")rename=true;else rename=false;break;
@@ -2148,7 +2149,7 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 		 					//nezměněn nebo nemá název -> mohu změnit
 		 					if(rename)
 							{
-								int n=vrat_poradi_elementu_do(Objekt,E)+1;//zjistí pořadové číslo elementu
+								int n=vrat_poradi_elementu_do(O,E)+1;//zjistí pořadové číslo elementu
 								//změna názvu v mGridu
 								if(E->name!=""&&O->n==Objekt->n&&E->mGrid!=NULL)//nelze přistupovat k mGridu v případech nového elementu (nemá vytvořený), v neaktivní kabině (elementy nemají vytvořene mGridy)
 								{
@@ -2277,6 +2278,7 @@ void Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->PD=Original->PD;
 	Kopie->LO1=Original->LO1;
 	Kopie->OTOC_delka=Original->OTOC_delka;
+	Kopie->zona_otaceni=Original->zona_otaceni;
 	Kopie->LO2=Original->LO2;
 	Kopie->LO_pozice=Original->LO_pozice;
 	Kopie->PT1=Original->PT1;
@@ -2398,7 +2400,7 @@ unsigned int Cvektory::vrat_poradi_elementu_do (TObjekt *Objekt, TElement *Eleme
 			if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy;//pokud se prochází objekt aktuálně editovaný, tak se vezme z pom_temp, kde jsou aktuální hodnoty
 			while(E!=NULL)
 			{
-				if(/*O->n==Objekt->n&&*/E==Element)break;//ukončení prohledávání když jsem na aktuálním elmentu
+				if(O->n==Objekt->n && E->n==Element->n)break;//ukončení prohledávání když jsem na aktuálním elmentu
 				if(E->n>0)//ošetření pro hlavičku
 				{
 					if(E->eID==0)s_pocet++;
@@ -2407,7 +2409,7 @@ unsigned int Cvektory::vrat_poradi_elementu_do (TObjekt *Objekt, TElement *Eleme
 					if(E->eID==MaxInt)z_pocet++;
 				}
 				E=E->dalsi;
-			}
+			}  //if(O->n==Objekt->n && E!=NULL)F->Memo(E->name);
 			E=NULL; delete E;
 			if(O->n==Objekt->n)break;
 			O=O->dalsi;
@@ -5514,6 +5516,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
             cE->PD=E->PD;
 						cE->LO1=E->LO1;
 						cE->OTOC_delka=E->OTOC_delka;
+						//cE->zona_otaceni=E->zona_otaceni;
 						cE->LO2=E->LO2;
 						cE->LO_pozice=E->LO_pozice;
 						cE->PT1=E->PT1;
@@ -5820,7 +5823,8 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 						E->stav=cE.stav;
             E->PD=cE.PD;
             E->LO1=cE.LO1;
-            E->OTOC_delka=cE.OTOC_delka;
+						E->OTOC_delka=cE.OTOC_delka;
+						//E->zona_otaceni=cE.zona_otaceni;
 						E->LO2=cE.LO2;
             E->LO_pozice=cE.LO_pozice;
             E->PT1=cE.PT1;

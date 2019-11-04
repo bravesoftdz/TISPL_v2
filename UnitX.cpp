@@ -84,13 +84,11 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 				{
 					E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
 					E->mGrid->VisibleRow(6,false,false);
-					E->mGrid->VisibleRow(7,false,false);
 				}
 				else
 				{
 					E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
 					E->mGrid->VisibleRow(6,true,false);
-					E->mGrid->VisibleRow(7,true,false);
 				}
 			}break;
 			case 5://KK otoè
@@ -99,13 +97,11 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 				{
 					E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
 					E->mGrid->VisibleRow(4,false,false);
-					E->mGrid->VisibleRow(5,false,false);
 				}
 				else
 				{
 					E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
 					E->mGrid->VisibleRow(4,true,false);
-					E->mGrid->VisibleRow(5,true,false);
 				}
 			}break;
 		}
@@ -258,7 +254,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					E->PTotoc=E->OTOC_delka/F->pom_temp->pohon->aRD;//uložení do pamìti + výpoèet
 					E->mGrid->Cells[Col][Row-1].Text = F->m.round2double(F->outPT(E->PTotoc),3);//OUTPUT
 				}
-				if (Row==8)//editace PT2
+				if (Row==7)//editace PT2
 				{
 					input_state=PT;//nastaveni stavu
 					E->PT2=F->inPT(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text)); //INPUT
@@ -277,14 +273,14 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 						F->PmG->Refresh();//došlo ke zmìnì hodnot v PmG
 					}
 				}
-				if (Row==9)//editace LO2
+				if (Row==8)//editace LO2
 				{
 					input_state=LO2;//nastaveni stavu
 					E->LO2=F->inLO(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text)); //INPUT
 					E->PT2=E->LO2/F->pom_temp->pohon->aRD;//uložení do pamìti + výpoèet
 					E->mGrid->Cells[Col][Row-1].Text = F->m.round2double(F->outPT(E->PT2),3);//OUTPUT
 				}
-				if(Row==10)// eidtace COMBO PD
+				if(Row==9)// eidtace COMBO PD
 				{
 					input_state=COMBO; //nastaveni stavu
 					E->PD=E->mGrid->getCombo(1,Row)->ItemIndex;//pouze uložení do dat
@@ -659,7 +655,7 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 					E->PTotoc=F->m.PT(E->OTOC_delka,aRD);
 					E->mGrid->Cells[1][4].Text=F->m.round2double(F->outPT(E->PTotoc),3);
 					E->PT2=F->m.PT(E->LO2,aRD);
-					E->mGrid->Cells[1][8].Text=F->m.round2double(F->outPT(E->PT2),3);
+					E->mGrid->Cells[1][7].Text=F->m.round2double(F->outPT(E->PT2),3);
 				}
 				break;
 				case 4:case 10:case 14:case 18:case 104:case 108://robot s aktivní otoèí
@@ -730,7 +726,7 @@ void TFormX::aktualizace_tab_elementu_pOdebran ()
 				{
 					E->mGrid->Cells[1][1].Text=0;
 					E->mGrid->Cells[1][4].Text=0;
-					E->mGrid->Cells[1][8].Text=0;
+					E->mGrid->Cells[1][7].Text=0;
 				}
 				break;
 				case 4:case 10:case 14:case 18:case 104:case 108://robot s aktivní otoèí
@@ -832,7 +828,7 @@ void TFormX::korelace_tab_pohonu_elementy(Cvektory::TElement *mimo_element)
 				{
 					E->mGrid->Cells[1][1].Highlight=true;
 					E->mGrid->Cells[1][4].Highlight=true;
-					E->mGrid->Cells[1][8].Highlight=true;
+					E->mGrid->Cells[1][7].Highlight=true;
 				}
 				break;
 				case 4:case 10:case 14:case 18:case 104:case 108://robot s aktivní otoèí
@@ -884,8 +880,8 @@ void TFormX::korelace_v_elementech(long ID,long Row)
 			if (Row==1){F->PmG->Cells[1][rychlost].Highlight=true;korelace_tab_pohonu(rychlost);korelace_tab_pohonu_elementy();}//E->mGrid->Cells[1][Row+1].Highlight=true;
 			if (Row==2)E->mGrid->Cells[1][Row-1].Highlight=true;
 			if (Row==5)E->mGrid->Cells[1][Row-1].Highlight=true;
-			if (Row==8){F->PmG->Cells[1][rychlost].Highlight=true;korelace_tab_pohonu(rychlost);korelace_tab_pohonu_elementy();}//E->mGrid->Cells[1][Row+1].Highlight=true;
-			if (Row==9)E->mGrid->Cells[1][Row-1].Highlight=true;
+			if (Row==7){F->PmG->Cells[1][rychlost].Highlight=true;korelace_tab_pohonu(rychlost);korelace_tab_pohonu_elementy();}//E->mGrid->Cells[1][Row+1].Highlight=true;
+			if (Row==8)E->mGrid->Cells[1][Row-1].Highlight=true;
 			F->PmG->Refresh();
 		} break;
 		case 4:case 10:case 14:case 18:case 104:case 108://robot s aktivní otoèí (resp. s otoèí a stop stanicí)
@@ -951,13 +947,13 @@ void TFormX::validace_aRD()
 		if(mimo_rozmezi)
 		{
 			if(F->PmG->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
-			F->PmG->ShowNote("Rychlost neodpovídá rozmezí!",clRed,14);
+			F->PmG->ShowNote(F->ls->Strings[220],clRed,14);//"Rychlost neodpovídá rozmezí!"
 		}
 		//je zvolen pohon, jeho aktuální rychlost se nerovná doporuèené
 		if(Combo->ItemIndex!=0 && F->pom_temp->pohon->roztec>0 && F->ms.MyToDouble(dopRD)!= F->ms.MyToDouble(F->pom_temp->pohon->aRD) && mimo_rozmezi==false)
 		{
 			if(F->PmG->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
-			F->PmG->ShowNote("Zadejte doporuèenou rychlost pohonu: <a>"+AnsiString(F->m.round2double(F->outaRD(dopRD),3))+"</a> "+jednotky,clRed,14);
+			F->PmG->ShowNote(F->ls->Strings[221]+" <a>"+AnsiString(F->m.round2double(F->outaRD(dopRD),3))+"</a> "+jednotky,clRed,14);//"Zadejte doporuèenou rychlost pohonu:"
 		}
 		//vše je vpoøádku
 		if (F->ms.MyToDouble(dopRD)== F->ms.MyToDouble(F->pom_temp->pohon->aRD) && mimo_rozmezi==false)
@@ -966,7 +962,7 @@ void TFormX::validace_aRD()
 			F->PmG->ShowNote("",clRed,14);
 		}
 	}
-	else F->PmG->ShowNote("Neplatná hodnota rychlosti pohonu!",clRed,14);
+	else F->PmG->ShowNote(F->ls->Strings[222],clRed,14);//"Neplatná hodnota rychlosti pohonu!"
 	Combo=NULL;delete Combo;
 }
 //---------------------------------------------------------------------------
@@ -980,8 +976,8 @@ void TFormX::validace_max_voziku()
 		bool validace=true;//pøedpoklad, že je vše OK
 		////samotná validace
 		posledni_E->max_pocet_voziku=F->max_voziku(posledni_E);
-		if(posledni_E->max_pocet_voziku>0 && posledni_E->max_pocet_voziku<posledni_E->akt_pocet_voziku){posledni_E->mGrid->ShowNote("Max. poèet vozikù musí být menší nebo roven <a>"+AnsiString(posledni_E->max_pocet_voziku)+"</a>");validace=false;}
-		if(posledni_E->max_pocet_voziku==0){posledni_E->mGrid->ShowNote("Nelze, pøed Stopstanicí se nachází oblouk");validace=false;}
+		if(posledni_E->max_pocet_voziku>0 && posledni_E->max_pocet_voziku<posledni_E->akt_pocet_voziku){posledni_E->mGrid->ShowNote(F->ls->Strings[250]+" <a>"+AnsiString(posledni_E->max_pocet_voziku)+"</a>");validace=false;}//"Max. poèet vozikù musí být menší nebo roven"
+		if(posledni_E->max_pocet_voziku==0){posledni_E->mGrid->ShowNote(F->ls->Strings[251]);validace=false;}//"Nelze, pøed Stopstanicí se nachází oblouk"
 		if(posledni_E->max_pocet_voziku>0 && posledni_E->max_pocet_voziku<posledni_E->akt_pocet_voziku)F->TIP="Pro aktuální poèet pozinc je tøeba buffer o délce "+AnsiString(F->d.v.PP.delka_podvozek*posledni_E->akt_pocet_voziku*1000)+" mm.";
 		////pøepsání maximálního poèctu vozíku do tabulky elementu, pro jistotu
 		posledni_E->mGrid->Cells[1][5].Text=posledni_E->max_pocet_voziku;

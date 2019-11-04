@@ -112,8 +112,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		 radius=F->d.v.PP.radius;
 
 		Cvektory::Ttyp_dopravniku *K=F->d.v.vrat_typ_dopravniku(katalog_id);
-		if(K!=NULL)scGPGlyphButton_katalog->Caption=K->name+", rádius "+radius*1000.0 +" mm";
-		else scGPGlyphButton_katalog->Caption="vybrat dopravník";
+		if(K!=NULL)scGPGlyphButton_katalog->Caption=K->name+", "+F->ls->Strings[191]+" "+AnsiString(radius*1000.0)+" mm";//"rádius"
+		else scGPGlyphButton_katalog->Caption=F->ls->Strings[190];//"Vybrat dopravník"
 
   	if(Form1->readINI("nastaveni_form_parametry", "RDt") == "1")
     {  //budu pøevádìt na m/min
@@ -186,15 +186,15 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
 	////////plnìní daty - hlavièka////////
 	PL_mGrid->Cells[0][0].Text="ID";
- 	PL_mGrid->Cells[1][0].Text="Název";
- if(aRDunit==MIN)	PL_mGrid->Cells[2][0].Text="Rozmezí a rychlost pohonu <a>[m/min]</a>";
- else             PL_mGrid->Cells[2][0].Text="Rozmezí a rychlost pohonu <a>[m/s]</a>";
+	PL_mGrid->Cells[1][0].Text=F->ls->Strings[200];//"Název"
+ if(aRDunit==MIN)	PL_mGrid->Cells[2][0].Text=F->ls->Strings[201]+" <a>[m/min]</a>";//"Rozmezí a rychlost pohonu"
+ else             PL_mGrid->Cells[2][0].Text=F->ls->Strings[201]+" <a>[m/s]</a>";//"Rozmezí a rychlost pohonu"
   PL_mGrid->Cells[3][0].Text="";
   PL_mGrid->Cells[4][0].Text="";
- PL_mGrid->Cells[5][0].Text="Rozteè palce";
+ PL_mGrid->Cells[5][0].Text=F->ls->Strings[202];//"Rozteè palce"
  if(Runit==MM) PL_mGrid->Cells[5][1].Text="<a>[mm]</a>";
  else          PL_mGrid->Cells[5][1].Text="<a>[m]</a>";
-  PL_mGrid->Cells[6][0].Text="Používán - na objektech";
+  PL_mGrid->Cells[6][0].Text=F->ls->Strings[203];//"Používán - na objektech"
   PL_mGrid->Cells[7][0].Text="";
   PL_mGrid->Cells[8][0].Text="";
 
@@ -202,9 +202,9 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
   PL_mGrid->Cells[0][1].Text="";
 	PL_mGrid->Cells[1][1].Text="";
-	PL_mGrid->Cells[2][1].Text="od";
-  PL_mGrid->Cells[3][1].Text="do";
-  PL_mGrid->Cells[4][1].Text="aktuální";
+	PL_mGrid->Cells[2][1].Text=F->ls->Strings[204];//"od"
+	PL_mGrid->Cells[3][1].Text=F->ls->Strings[205];//"do"
+  PL_mGrid->Cells[4][1].Text=F->ls->Strings[206];//"aktuální"
 //  PL_mGrid->Cells[5][1].Text="";
   PL_mGrid->Cells[6][1].Text="";
 
@@ -1250,7 +1250,7 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
 	 {
 		 katalog_id=1;
 		 radius=1.0;
-		 scGPGlyphButton_katalog->Caption=F->d.v.KATALOG->dalsi->name+", rádius "+radius*1000.0 +" mm";//aktualizace buttonu
+		 scGPGlyphButton_katalog->Caption=F->d.v.KATALOG->dalsi->name+", "+F->ls->Strings[191]+" "+radius*1000.0 +" mm";//aktualizace buttonu
 	 }
 	 Button_ADD_Click(this);
 
@@ -2512,7 +2512,7 @@ void TForm_parametry_linky::getmGridColors()
   void TForm_parametry_linky::getDeleteButtonSettings(int Row)
   {
   F->log(__func__); //logování
-  TscGPGlyphButton *H=PL_mGrid->getGlyphButton(8,Row);
+	TscGPGlyphButton *H=PL_mGrid->getGlyphButton(8,Row);
 
   H->GlyphOptions->Kind=scgpbgkCancel;
   H->GlyphOptions->Thickness=1;
@@ -2524,7 +2524,7 @@ void TForm_parametry_linky::getmGridColors()
   H->Height=scGPGlyphButton_smazat_pohon->Height;
   H->Options->ShapeStyle=scgpRect;
   H->Width=30;
-  H->Hint="Smazat tento pohon";
+	H->Hint=F->ls->Strings[207];//"Smazat tento pohon";
   H->ShowHint=true;
 
   H=NULL;delete H;
@@ -2675,8 +2675,8 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_katalogClick(TObject *Sen
 	Button_storno->SetFocus();//nutné, jinak by byl button_katalog stisknutý i po zavøení katalogu
 	Form_katalog->ShowModal();
 	Cvektory::Ttyp_dopravniku *K=F->d.v.vrat_typ_dopravniku(katalog_id);
-	if(K!=NULL)scGPGlyphButton_katalog->Caption=K->name+", rádius "+radius*1000.0 +" mm";
-	else scGPGlyphButton_katalog->Caption="vybrat dopravník";
+	if(K!=NULL)scGPGlyphButton_katalog->Caption=K->name+", "+F->ls->Strings[191]+" "+radius*1000.0 +" mm";//"rádius"
+	else scGPGlyphButton_katalog->Caption=F->ls->Strings[190];//"Vybrat dopravník"
 	K=NULL;delete K;
 }
 //---------------------------------------------------------------------------

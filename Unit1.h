@@ -547,7 +547,8 @@ public:
 	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE,OFFSET_KOTY,MOVE_KOMORA,ROZMER_KOMORA,DRAW_HALA,MOVE_HALA,MOVE_BOD,MOVE_USECKA,MOVE_TEXT,GEOMETRIE,BLOK};Takce Akce;Takce Akce_temp;//akce temp slouží ke spuštìní akce pøi akci, pø. Akce=GEOMETRIE a pøi ní je potøeba pøesunout kóty geo. elementù, tudíž Akce_temp=OFFSET_KOTY
 	enum Tm_mm{M=0,MM,SEKUNDY,MINUTY};Tm_mm DOtocunit,DKunit,LOunit,Runit,Rzunit;//pøepínaè jednotek vzdálenost,rozšíøen o SEKUNDY,MINUTY (problém pøi použití SEC a MIN) z dùvodu èasových a vzdálenostních kót
 	enum Tminsec{SEC=0,MIN};Tminsec PTunit,aRDunit ;//pøepínaè jednotek èasu
-
+	////instance
+  TStringList *ls;
 
 private:
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
@@ -556,7 +557,6 @@ private:
 	enum Tlanguage{EN,MN,CS};Tlanguage language;
 	////instance
 	Cvektory::TProces *proces_pom;
-	TStringList *ls;
 	TFileStream *LogFileStream;
 
 	////metody
@@ -651,6 +651,7 @@ private:
 	void mGrid_puvodni_stav(Cvektory::TElement *E);//nadesingnuje tabulky elementù na pùvodní stav, obnový komponenty, naplní comba, provede Update() mGridu
 	void set_font(int velikost=14);//nastaví komponentám aFont
 	void pripnuti_dalsich_objektu();//pokud pøi uložení editovaného objektu je detekováno, že konec objketu nenavazuje na zaèátek následujísího objektu je položen dotaz a po potvrzení dojde ke spojení
+  void change_languagein_mGrid();//aktualizace popiskù v tabulkách pøi zmìnì jazyka
 
 	////promìnné
 	TDateTime TIME;
