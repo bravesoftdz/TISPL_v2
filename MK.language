@@ -163,23 +163,23 @@ Save;X;Uložit
 view of the Jig at hanging up ;X;pohled na jig pøi navìšování
   View;X;  Zobrazit
   Edit;X;  Editovat
-	Change the section type;X;  Zmìnit typ sekce
+  Change the section type;X;  Zmìnit typ sekce
   Add point;X;  Pøidat bod
-	Insert a breakpoint;X;  Vložit zarážku
+  Insert a breakpoint;X;  Vložit zarážku
   View;X;  Zobrazit
   Copy;X;  Kopírovat
   Delete;X;  Smazat
-	Delete section no.;X;  Smazat sekci è.
+  Delete section no.;X;  Smazat sekci è.
   Delete point no.;X;  Smazat bod è.
   Rotate left;X;  Otoèit doleva
-	Rotate right;X;  Otoèit doprava
+  Rotate right;X;  Otoèit doprava
   Offset contour;X;  Posun obrysu
   Fast export …;X;  Rychlý export…
-	Pan;X;  Posouvat
+  Pan;X;  Posouvat
   Pan;X;  Posunout
   Zoom in;X;  Pøiblížit
   Zoom out;X;  Oddálit
-	Select by window …;X;  Vybrat oknem…
+  Select by window …;X;  Vybrat oknem…
   Full view;X;  Celý pohled
 Note;X;  Poznámka
 Copy values;X;Kopírovat hodnoty
@@ -268,3 +268,12 @@ text;X;text
 arrow;X;šipka
 geometry;X;geometrie  
 trans. point;X;pøed. místo
+ION bar;X;ION Tyè
+Transfer point;X;Pøedávací místo
+Operator;X;Operátor
+Turning;X;Otoè
+drive not selected;X;pohon nevybrán
+Zone before;X;Zóna pøed
+Zone after;X;Zóna po
+Rotation zone in front of the center;X;Zóna otáèení pøed støedem
+Zone of rotation behind the center;X;Zóna otáèení za støedem

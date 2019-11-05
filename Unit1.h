@@ -638,7 +638,7 @@ private:
 	void vykresli_spojinici_EmGrid(TCanvas *Canv,Cvektory::TElement *E);//vykreslí spojnici mezi tabulkou a elementem z nejbližšího rohu tabulky
   void mGrid_mimo_obraz(Cvektory::TElement *E);//kontrola zde je mGrid mimo obraz, pokud ano vypnutí komponent
 	void nacti_podklad(TCanvas *Canv);
-	unsigned short load_language(Tlanguage language);
+	unsigned short load_language(Tlanguage language,bool akt_mGrid=false);
 	void zmena_editovaneho_objektu();//slouží k pøechodu z editace jednoho objektu do editace druhého objektu
 	TPoint uprav_bod_vlozeni_elementu(TPoint bod_vlozeni,short rotace_symbolu,int eID=-1);//upraví bod kurzoru pro vložení elemntu na bod vykreslení elementu (robot na konci ramena)
   void set_enabled_mGrid(Cvektory::TElement *E);//zapne nebo vypne komponenty megridu v závislosti na tom zda má element pøiøazený pohon

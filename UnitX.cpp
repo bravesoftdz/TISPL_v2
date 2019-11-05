@@ -84,11 +84,13 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 				{
 					E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
 					E->mGrid->VisibleRow(6,false,false);
+					E->mGrid->VisibleRow(7,false,false);
 				}
 				else
 				{
 					E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
 					E->mGrid->VisibleRow(6,true,false);
+					E->mGrid->VisibleRow(7,true,false);
 				}
 			}break;
 			case 5://KK otoè
@@ -97,11 +99,13 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 				{
 					E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
 					E->mGrid->VisibleRow(4,false,false);
+					E->mGrid->VisibleRow(5,false,false);
 				}
 				else
 				{
 					E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
 					E->mGrid->VisibleRow(4,true,false);
+					E->mGrid->VisibleRow(5,true,false);
 				}
 			}break;
 		}
@@ -254,7 +258,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					E->PTotoc=E->OTOC_delka/F->pom_temp->pohon->aRD;//uloení do pamìti + vıpoèet
 					E->mGrid->Cells[Col][Row-1].Text = F->m.round2double(F->outPT(E->PTotoc),3);//OUTPUT
 				}
-				if (Row==7)//editace PT2
+				if (Row==8)//editace PT2
 				{
 					input_state=PT;//nastaveni stavu
 					E->PT2=F->inPT(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text)); //INPUT
@@ -273,14 +277,14 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 						F->PmG->Refresh();//došlo ke zmìnì hodnot v PmG
 					}
 				}
-				if (Row==8)//editace LO2
+				if (Row==9)//editace LO2
 				{
 					input_state=LO2;//nastaveni stavu
 					E->LO2=F->inLO(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text)); //INPUT
 					E->PT2=E->LO2/F->pom_temp->pohon->aRD;//uloení do pamìti + vıpoèet
 					E->mGrid->Cells[Col][Row-1].Text = F->m.round2double(F->outPT(E->PT2),3);//OUTPUT
 				}
-				if(Row==9)// eidtace COMBO PD
+				if(Row==10)// eidtace COMBO PD
 				{
 					input_state=COMBO; //nastaveni stavu
 					E->PD=E->mGrid->getCombo(1,Row)->ItemIndex;//pouze uloení do dat
@@ -655,7 +659,7 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 					E->PTotoc=F->m.PT(E->OTOC_delka,aRD);
 					E->mGrid->Cells[1][4].Text=F->m.round2double(F->outPT(E->PTotoc),3);
 					E->PT2=F->m.PT(E->LO2,aRD);
-					E->mGrid->Cells[1][7].Text=F->m.round2double(F->outPT(E->PT2),3);
+					E->mGrid->Cells[1][8].Text=F->m.round2double(F->outPT(E->PT2),3);
 				}
 				break;
 				case 4:case 10:case 14:case 18:case 104:case 108://robot s aktivní otoèí
@@ -726,7 +730,7 @@ void TFormX::aktualizace_tab_elementu_pOdebran ()
 				{
 					E->mGrid->Cells[1][1].Text=0;
 					E->mGrid->Cells[1][4].Text=0;
-					E->mGrid->Cells[1][7].Text=0;
+					E->mGrid->Cells[1][8].Text=0;
 				}
 				break;
 				case 4:case 10:case 14:case 18:case 104:case 108://robot s aktivní otoèí
@@ -828,7 +832,7 @@ void TFormX::korelace_tab_pohonu_elementy(Cvektory::TElement *mimo_element)
 				{
 					E->mGrid->Cells[1][1].Highlight=true;
 					E->mGrid->Cells[1][4].Highlight=true;
-					E->mGrid->Cells[1][7].Highlight=true;
+					E->mGrid->Cells[1][8].Highlight=true;
 				}
 				break;
 				case 4:case 10:case 14:case 18:case 104:case 108://robot s aktivní otoèí
@@ -880,8 +884,8 @@ void TFormX::korelace_v_elementech(long ID,long Row)
 			if (Row==1){F->PmG->Cells[1][rychlost].Highlight=true;korelace_tab_pohonu(rychlost);korelace_tab_pohonu_elementy();}//E->mGrid->Cells[1][Row+1].Highlight=true;
 			if (Row==2)E->mGrid->Cells[1][Row-1].Highlight=true;
 			if (Row==5)E->mGrid->Cells[1][Row-1].Highlight=true;
-			if (Row==7){F->PmG->Cells[1][rychlost].Highlight=true;korelace_tab_pohonu(rychlost);korelace_tab_pohonu_elementy();}//E->mGrid->Cells[1][Row+1].Highlight=true;
-			if (Row==8)E->mGrid->Cells[1][Row-1].Highlight=true;
+			if (Row==8){F->PmG->Cells[1][rychlost].Highlight=true;korelace_tab_pohonu(rychlost);korelace_tab_pohonu_elementy();}//E->mGrid->Cells[1][Row+1].Highlight=true;
+			if (Row==9)E->mGrid->Cells[1][Row-1].Highlight=true;
 			F->PmG->Refresh();
 		} break;
 		case 4:case 10:case 14:case 18:case 104:case 108://robot s aktivní otoèí (resp. s otoèí a stop stanicí)

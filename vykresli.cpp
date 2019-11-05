@@ -4268,7 +4268,7 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,lon
 			if(/*stav==2 || */stav==3)canv->Font->Style = TFontStyles()<< fsBold;//došlo k vybrání elementu-tato část odstavena nebo přímo jeho textu
 			if(F->pom_temp!=NULL && F->pom_temp->n!=E->objekt_n)canv->Font->Color=m.clIntensive(clBlack,m.get_intensity());
 			//nastavení názvů pohonů
-			AnsiString T1="pohon nevybrán",T2="pohon nevybrán",Tpom="";
+			AnsiString T1=F->ls->Strings[274],T2=F->ls->Strings[274],Tpom="";//"pohon nevybrán"
 			if(E->pohon!=NULL)T1=E->pohon->name;
 			if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)T2=E->dalsi->pohon->name;
 			if(E->dalsi==NULL)
@@ -5193,9 +5193,12 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double
 	if(F->pom_temp->pohon==NULL && F->DKunit>1)F->DKunit=F->DKunit-2;//ošetření pro případ není pohon a jsou špatně nastaveny jednotky
 	if(F->DKunit>1)//zobrazení kót v čase
 	{
-		if(aktElement!=NULL && aktElement->pohon!=NULL && aktElement->pohon->aRD>0)
-		delka=m.delka(X1,Y1,X2,Y2)/aktElement->pohon->aRD/(1+59.0*(F->DKunit-2));//výpočet délky a šířky kabiny + případný převod m->mm
-		else T="pohon nevybrán";
+		if(aktElement!=NULL && aktElement->pohon!=NULL && aktElement->pohon->aRD>0 || komora!=NULL && F->pom_temp->pohon!=NULL && F->pom_temp->pohon->aRD>0)
+		{
+			if(aktElement!=NULL)delka=m.delka(X1,Y1,X2,Y2)/aktElement->pohon->aRD/(1+59.0*(F->DKunit-2));//výpočet délky a šířky kabiny + případný převod m->mm
+			else delka=m.delka(X1,Y1,X2,Y2)/F->pom_temp->pohon->aRD/(1+59.0*(F->DKunit-2));//pro komory v POW
+		}
+		else T=F->ls->Strings[274];//"pohon nevybrán"
 		//if(aktElement!=NULL) delka=v.vzdalenost_od_predchoziho_elementu(aktElement)/F->pom_temp->pohon->aRD/(1+59.0*(F->DKunit-2));//výpočet vzdálenosti mezi elementy
 		//if(LO_kota)delka=m.round2double(F->vzdalenost_meziLO(aktElement,F->pom_temp->orientace),2)/F->pom_temp->pohon->aRD/(1+59.0*(F->DKunit-2));
 	}

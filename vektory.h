@@ -91,7 +91,8 @@ class Cvektory
 		short PD;//part detect:  -1 = nic, 0 = začátek jigu, 1 = střed jigu, 2 = celý jig
 		double LO1;
 		double OTOC_delka;
-		double zona_otaceni;
+		double zona_pred;
+		double zona_za;
 		double LO2;
 		double LO_pozice;
 
@@ -766,7 +767,8 @@ private:
 
       double LO1;
 			double OTOC_delka;
-			//double zona_otaceni;
+//			double zona_pred;
+//			double zona_za;
       double LO2;
 			double LO_pozice;
 
