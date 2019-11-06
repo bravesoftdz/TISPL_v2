@@ -112,8 +112,11 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		 radius=F->d.v.PP.radius;
 
 		Cvektory::Ttyp_dopravniku *K=F->d.v.vrat_typ_dopravniku(katalog_id);
-		if(K!=NULL)scGPGlyphButton_katalog->Caption=K->name+", "+F->ls->Strings[191]+" "+AnsiString(radius*1000.0)+" mm";//"rádius"
-		else scGPGlyphButton_katalog->Caption=F->ls->Strings[190];//"Vybrat dopravník"
+		AnsiString rad="rádius",vybr="Vybrat dopravník";
+		if(F->ls->Strings[191]!="")rad=F->ls->Strings[191];
+		if(F->ls->Strings[190]!="")vybr=F->ls->Strings[190];
+		if(K!=NULL)scGPGlyphButton_katalog->Caption=K->name+", "+rad+" "+AnsiString(radius*1000.0)+" mm";
+		else scGPGlyphButton_katalog->Caption=vybr;
 
   	if(Form1->readINI("nastaveni_form_parametry", "RDt") == "1")
     {  //budu pøevádìt na m/min
@@ -186,15 +189,16 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
 	////////plnìní daty - hlavièka////////
 	PL_mGrid->Cells[0][0].Text="ID";
-	PL_mGrid->Cells[1][0].Text=F->ls->Strings[200];//"Název"
- if(aRDunit==MIN)	PL_mGrid->Cells[2][0].Text=F->ls->Strings[201]+" <a>[m/min]</a>";//"Rozmezí a rychlost pohonu"
- else             PL_mGrid->Cells[2][0].Text=F->ls->Strings[201]+" <a>[m/s]</a>";//"Rozmezí a rychlost pohonu"
+	if(F->ls->Strings[200]!="")PL_mGrid->Cells[1][0].Text=F->ls->Strings[200];else PL_mGrid->Cells[1][0].Text="Název";
+	if(F->ls->Strings[201]!="")PL_mGrid->Cells[2][0].Text=F->ls->Strings[201];else PL_mGrid->Cells[2][0].Text="Rozmezí a rychlost pohonu";
+	if(aRDunit==MIN)PL_mGrid->Cells[2][0].Text+=" <a>[m/min]</a>";
+	else PL_mGrid->Cells[2][0].Text+=" <a>[m/s]</a>";
   PL_mGrid->Cells[3][0].Text="";
   PL_mGrid->Cells[4][0].Text="";
- PL_mGrid->Cells[5][0].Text=F->ls->Strings[202];//"Rozteè palce"
- if(Runit==MM) PL_mGrid->Cells[5][1].Text="<a>[mm]</a>";
- else          PL_mGrid->Cells[5][1].Text="<a>[m]</a>";
-  PL_mGrid->Cells[6][0].Text=F->ls->Strings[203];//"Používán - na objektech"
+	if(F->ls->Strings[202]!="")PL_mGrid->Cells[5][0].Text=F->ls->Strings[202];else PL_mGrid->Cells[5][0].Text="Rozteè palce";
+	if(Runit==MM)PL_mGrid->Cells[5][1].Text="<a>[mm]</a>";
+	else PL_mGrid->Cells[5][1].Text="<a>[m]</a>";
+	if(F->ls->Strings[203]!="")PL_mGrid->Cells[6][0].Text=F->ls->Strings[203];else PL_mGrid->Cells[6][0].Text="Používán - na objektech";
   PL_mGrid->Cells[7][0].Text="";
   PL_mGrid->Cells[8][0].Text="";
 
@@ -202,9 +206,9 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
   PL_mGrid->Cells[0][1].Text="";
 	PL_mGrid->Cells[1][1].Text="";
-	PL_mGrid->Cells[2][1].Text=F->ls->Strings[204];//"od"
-	PL_mGrid->Cells[3][1].Text=F->ls->Strings[205];//"do"
-  PL_mGrid->Cells[4][1].Text=F->ls->Strings[206];//"aktuální"
+	if(F->ls->Strings[204]!="")PL_mGrid->Cells[2][1].Text=F->ls->Strings[204];else PL_mGrid->Cells[2][1].Text="od";
+	if(F->ls->Strings[205]!="")PL_mGrid->Cells[3][1].Text=F->ls->Strings[205];else PL_mGrid->Cells[3][1].Text="do";
+	if(F->ls->Strings[206]!="")PL_mGrid->Cells[4][1].Text=F->ls->Strings[206];else PL_mGrid->Cells[4][1].Text="aktuální";
 //  PL_mGrid->Cells[5][1].Text="";
   PL_mGrid->Cells[6][1].Text="";
 
@@ -508,8 +512,8 @@ void TForm_parametry_linky::nacti_pohony ()
           // pouze povolím zmìnu pøiøazení a smazání pohonu
 					PL_mGrid->Cells[1][i].Type=PL_mGrid->EDIT;
 
-          PL_mGrid->Cells[2][i].Type=PL_mGrid->readEDIT;  //TEST
-          PL_mGrid->Cells[3][i].Type=PL_mGrid->readEDIT;
+					PL_mGrid->Cells[2][i].Type=PL_mGrid->EDIT;  //TEST
+					PL_mGrid->Cells[3][i].Type=PL_mGrid->EDIT;
           PL_mGrid->Cells[4][i].Type=PL_mGrid->readEDIT;
           PL_mGrid->Cells[5][i].Type=PL_mGrid->readEDIT;
 					PL_mGrid->Cells[5][i].Type=PL_mGrid->COMBO;
@@ -570,11 +574,11 @@ void TForm_parametry_linky::nacti_pohony ()
           scGPTrackBar_uchyceni->Enabled=true;//pozdeji zakazat - nyni pro testy povoleno
 
          //pokud je pohon používán, nastavím mu podbarvení bunìk, krome nazvu - ten je možne vždy mìnit
-          PL_mGrid->Cells[2][i].Background->Color= Form_parametry_linky->Color;
-          PL_mGrid->Cells[3][i].Background->Color=  PL_mGrid->Cells[2][i].Background->Color;
-          PL_mGrid->Cells[4][i].Background->Color=  PL_mGrid->Cells[2][i].Background->Color;
-          PL_mGrid->Cells[5][i].Background->Color=  PL_mGrid->Cells[2][i].Background->Color;
-          PL_mGrid->Cells[7][i].Background->Color=  PL_mGrid->Cells[2][i].Background->Color;
+//          PL_mGrid->Cells[2][i].Background->Color= Form_parametry_linky->Color;
+//					PL_mGrid->Cells[3][i].Background->Color=  PL_mGrid->Cells[2][i].Background->Color;
+					PL_mGrid->Cells[4][i].Background->Color=  Form_parametry_linky->Color;
+					PL_mGrid->Cells[5][i].Background->Color=  PL_mGrid->Cells[4][i].Background->Color;
+          PL_mGrid->Cells[7][i].Background->Color=  PL_mGrid->Cells[4][i].Background->Color;
 //          PL_mGrid->getButton(7,i)->Options->FramePressedColor=clWhite;
 //          PL_mGrid->getButton(7,i)->Options->FrameNormalColor=clWhite;
 //          PL_mGrid->getButton(7,i)->Options->FrameFocusedColor=clWhite;
@@ -1250,7 +1254,9 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
 	 {
 		 katalog_id=1;
 		 radius=1.0;
-		 scGPGlyphButton_katalog->Caption=F->d.v.KATALOG->dalsi->name+", "+F->ls->Strings[191]+" "+radius*1000.0 +" mm";//aktualizace buttonu
+		 AnsiString rad="rádius";
+		 if(F->ls->Strings[191]!="")rad=F->ls->Strings[191];
+		 scGPGlyphButton_katalog->Caption=F->d.v.KATALOG->dalsi->name+", "+rad+" "+radius*1000.0 +" mm";//aktualizace buttonu
 	 }
 	 Button_ADD_Click(this);
 
@@ -2523,8 +2529,8 @@ void TForm_parametry_linky::getmGridColors()
   H->Width=scGPGlyphButton_smazat_pohon->Width;
   H->Height=scGPGlyphButton_smazat_pohon->Height;
   H->Options->ShapeStyle=scgpRect;
-  H->Width=30;
-	H->Hint=F->ls->Strings[207];//"Smazat tento pohon";
+	H->Width=30;
+	if(F->ls->Strings[207]!="")H->Hint=F->ls->Strings[207];else H->Hint="Smazat tento pohon";
   H->ShowHint=true;
 
   H=NULL;delete H;
@@ -2675,8 +2681,11 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_katalogClick(TObject *Sen
 	Button_storno->SetFocus();//nutné, jinak by byl button_katalog stisknutý i po zavøení katalogu
 	Form_katalog->ShowModal();
 	Cvektory::Ttyp_dopravniku *K=F->d.v.vrat_typ_dopravniku(katalog_id);
-	if(K!=NULL)scGPGlyphButton_katalog->Caption=K->name+", "+F->ls->Strings[191]+" "+radius*1000.0 +" mm";//"rádius"
-	else scGPGlyphButton_katalog->Caption=F->ls->Strings[190];//"Vybrat dopravník"
+	AnsiString rad="rádius",vybr="Vybrat dopravník";
+	if(F->ls->Strings[191]!="")rad=F->ls->Strings[191];
+	if(F->ls->Strings[190]!="")vybr=F->ls->Strings[190];
+	if(K!=NULL)scGPGlyphButton_katalog->Caption=K->name+", "+rad+" "+AnsiString(radius*1000.0)+" mm";
+	else scGPGlyphButton_katalog->Caption=vybr;
 	K=NULL;delete K;
 }
 //---------------------------------------------------------------------------

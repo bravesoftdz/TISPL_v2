@@ -75,7 +75,7 @@ void __fastcall TForm_katalog::FormShow(TObject *Sender)
 	Button_storno->Top= K_mGrid->Height + scLabel_header->Height + 30;
 	Form_katalog->Height = scLabel_header->Height +  K_mGrid->Height + Button_save->Height + 70;
 
-	vypis(F->ls->Strings[193],false);//"Kliknutím do seznamu rádiusů vyberete katalog dopravníků"
+	if(F->ls->Strings[193]!="")vypis(F->ls->Strings[193],false);else vypis("Kliknutím do seznamu rádiusů vyberete katalog dopravníků",false);
 }
 //---------------------------------------------------------------------------
 
@@ -88,12 +88,12 @@ void __fastcall TForm_katalog::FormPaint(TObject *Sender)
 void TForm_katalog::LoadValues ()
 {
   // vytvoření hlavičky
-  K_mGrid->Cells[0][0].Text="CALDAN";
-	K_mGrid->Cells[1][0].Text=F->ls->Strings[196];//"Rozteč palců [mm]"
-	K_mGrid->Cells[4][0].Text=F->ls->Strings[197];//"Horizontální oblouky [°]"
-	K_mGrid->Cells[8][0].Text=F->ls->Strings[198];//"Rádius [mm]"
-	K_mGrid->Cells[12][0].Text=F->ls->Strings[199];//"Vertikální oblouky [°]"
-  K_mGrid->Cells[16][0].Text=F->ls->Strings[198];//"Rádius [mm]"
+	K_mGrid->Cells[0][0].Text="CALDAN";
+	if(F->ls->Strings[196]!="")K_mGrid->Cells[1][0].Text=F->ls->Strings[196];else K_mGrid->Cells[1][0].Text="Rozteč palců [mm]";
+	if(F->ls->Strings[197]!="")K_mGrid->Cells[4][0].Text=F->ls->Strings[197];else K_mGrid->Cells[4][0].Text="Horizontální oblouky [°]";
+	if(F->ls->Strings[198]!="")K_mGrid->Cells[8][0].Text=F->ls->Strings[198];else K_mGrid->Cells[8][0].Text="Rádius [mm]";
+	if(F->ls->Strings[199]!="")K_mGrid->Cells[12][0].Text=F->ls->Strings[199];else K_mGrid->Cells[12][0].Text="Vertikální oblouky [°]";
+	if(F->ls->Strings[198]!="")K_mGrid->Cells[16][0].Text=F->ls->Strings[198];else K_mGrid->Cells[16][0].Text="Rádius [mm]";
 
   Cvektory::Ttyp_dopravniku *K=F->d.v.KATALOG->dalsi;//přeskočí hlavičku
 	while(K!=NULL)
@@ -296,8 +296,8 @@ void TForm_katalog::vypis(UnicodeString text,bool red,bool link)
 {
     F->log(__func__); //logování
 		Button_save->Enabled=true;
-		Button_save->Caption = F->ls->Strings[194];//"Uložit"
-		Button_storno->Caption = F->ls->Strings[195];//"Storno"
+		if(F->ls->Strings[194]!="")Button_save->Caption = F->ls->Strings[194];else Button_save->Caption = "Uložit";
+		if(F->ls->Strings[195]!="")Button_storno->Caption = F->ls->Strings[195];else Button_storno->Caption = "Storno";
  //if(text=="m].</b>")text="";//provizorní WA, při změně Rz a byla-li v pořádku to vrací toto  - již není třeba, ale zatím nechávám
 		if (text != "") // zobrazí a vypíše
 		{
