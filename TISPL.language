@@ -202,7 +202,7 @@ Name;X;Název
 Range and speed of drive;X;Rozmezí a rychlost pohonu
 Inch pitch;X;Rozteè palce
 Used - on objects;X;Používán - na objektech
-form;X;od
+from;X;od
 to;X;do
 current;X;aktuální
 Delete this drive;X;Smazat tento pohon
@@ -277,3 +277,10 @@ Zone before;X;Zóna pøed
 Zone after;X;Zóna po
 Rotation zone in front of the center;X;Zóna otáèení pøed støedem
 Zone of rotation behind the center;X;Zóna otáèení za støedem
+flashoff;X;vytìkání
+dryer;X;sušení
+cooling;X;chlazení
+lift;X;výtah
+transit;X;pøejezd
+switch;X;výhybka
+undefined;X;nedefinovaný
