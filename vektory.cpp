@@ -769,8 +769,8 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->min_prujezdni_profil=Original->min_prujezdni_profil;
 	//Kopie->rozmer_kabiny=Original->rozmer_kabiny;
 	Kopie->koty_elementu_offset=Original->koty_elementu_offset;
-	Kopie->komora=NULL;//POZORO TOTO NENÍ ZCELA SPRÁVNĚ, MĚLO BY SE NEJDŘÍVE SMAZAT PŘIDRUŽENÝ SPOJÁK, ABY NEZŮSTAL V PAMĚTI
-	Kopie->body=NULL;//POZORO TOTO NENÍ ZCELA SPRÁVNĚ, MĚLO BY SE NEJDŘÍVE SMAZAT PŘIDRUŽENÝ SPOJÁK, ABY NEZŮSTAL V PAMĚTI
+	Kopie->komora=NULL;//POZOR TOTO NENÍ ZCELA SPRÁVNĚ, MĚLO BY SE NEJDŘÍVE SMAZAT PŘIDRUŽENÝ SPOJÁK, ABY NEZŮSTAL V PAMĚTI
+	Kopie->body=NULL;//POZOR TOTO NENÍ ZCELA SPRÁVNĚ, MĚLO BY SE NEJDŘÍVE SMAZAT PŘIDRUŽENÝ SPOJÁK, ABY NEZŮSTAL V PAMĚTI
 	if(Kopie->id==3)kopiruj_komory(Original,Kopie);//pokud se jedná o POWash
 	Kopie->cekat_na_palce=Original->cekat_na_palce;
 	Kopie->stopka=Original->stopka;
@@ -3499,7 +3499,7 @@ void Cvektory::kopiruj_pohon(TPohon *Pohon,TObjekt *Objekt)
 		if(Objekt->pohon==NULL)Objekt->pohon=new TPohon;
 		if(Objekt==F->pom)
 		{
-			Objekt->pohon=Pohon;//přiřazení zvoleného pohonu k objektu
+			Objekt->pohon=vrat_pohon(Pohon->n);//přiřazení zvoleného pohonu k objektu
 			*vrat_pohon(Pohon->n)=*Pohon;//situace překopírování z pomocného do ostrého (ukládání náhledu), aby bylo zachováno spojové propojení seznamu pohonů i pro případ nepřiřazeno
 		}
 		else

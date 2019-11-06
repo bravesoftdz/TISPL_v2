@@ -3943,7 +3943,7 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 	short size=m.round(3.5*Z);if(stav==2)size=m.round(3.7*Z);//ve skutečnosti poloměr
 	float width=0.8*Z;if(stav==2)width=1*Z;
 
-	TColor barva=clBlack; if(eID==6)barva=clRed;
+	TColor barva=clBlack; //odstaveno, vše černě if(eID==6)barva=clRed;
 	if(stav==-1)//pokud je aktivní nebo neaktivní
 	{
     short I=m.get_intensity();
@@ -4027,7 +4027,7 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 	{
 		canv->Brush->Color=clWhite;
 		canv->Brush->Style=bsClear;
-		canv->Font->Color=barva;if(eID==5 && stav!=-1 && typ==0)canv->Font->Color=m.clIntensive(barva,100);
+		canv->Font->Color=barva;if(/*eID==5 && odstaveno obě otoče černé*/stav!=-1 && typ==0)canv->Font->Color=m.clIntensive(barva,100);
 		canv->Font->Size=F->m.round(2.8*Z);if(F->aFont->Size==12)canv->Font->Size=F->m.round(2*Z);
 		canv->Font->Name=F->aFont->Name;
 		canv->Font->Style = TFontStyles();

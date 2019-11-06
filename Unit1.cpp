@@ -11227,6 +11227,8 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 //		IdTime1->Host="128.138.140.44";//testovací TIME SERVER
 //		TDateTime TIME=IdTime1->DateTime;
 //		Sk(TIME);
+
+     Sk(pom->pohon->aRD);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
