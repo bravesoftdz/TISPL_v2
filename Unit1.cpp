@@ -6494,7 +6494,7 @@ void TForm1::vytvoreni_tab_pohon()
 	//naplnění comba hodnotami
 	tab_pohon_COMBO(0);
 	if(pom_temp->pohon!=NULL)
-	if(d.v.pohon_je_pouzivan(pom_temp->pohon->n))//kontrola zda je pohon používán v jiném objektu, nutné posílat pom místo pom_temp do parametru mimo_objetk!!!!!
+	if(d.v.pohon_je_pouzivan(pom_temp->pohon->n,false))//kontrola zda je pohon používán v jiném objektu, nutné posílat pom místo pom_temp do parametru mimo_objetk!!!!!
 	{
 		PmG->Update();//musí být přítomný !!!!
 		PmG->SetEnabledComponents(false);//nastavení celé tabulky do neaktivního stavu
@@ -6549,7 +6549,7 @@ void TForm1::pridani_elementu_tab_pohon(Cvektory::TElement *E)
 	}
 	PmG->Update();
 	//není nutná kontrola zda je přiřaznný pohon, tato metoda s spouští jedině v případ, že objekt má přiřazený pohon
-	if(d.v.pohon_je_pouzivan(pom_temp->pohon->n))//kontrola zda je pohon používán v jiném objektu, nutné posílat pom místo pom_temp do parametru mimo_objetk!!!!!
+	if(d.v.pohon_je_pouzivan(pom_temp->pohon->n,false))//kontrola zda je pohon používán v jiném objektu, nutné posílat pom místo pom_temp do parametru mimo_objetk!!!!!
 	{
 		//Update musí být přítomný před!!!!
 		PmG->SetEnabledComponent(1,3,false);//komponenta do této chvíle ještě neexistovala
@@ -6618,7 +6618,7 @@ void TForm1::prirazeni_pohonu_tab_pohon(int index_pohonu)
 	if(pom_temp->pohon!=NULL)
 	{
 		bool temp;//pomocná proměnná, použití u průcohdu elementů, uchovává zda mají být komponenty aktivní či ne
-		if(d.v.pohon_je_pouzivan(pom_temp->pohon->n))//kontrola zda je pohon používán v jiném objektu, nutné posílat pom místo pom_temp do parametru mimo_objetk!!!!!
+		if(d.v.pohon_je_pouzivan(pom_temp->pohon->n,false))//kontrola zda je pohon používán v jiném objektu, nutné posílat pom místo pom_temp do parametru mimo_objetk!!!!!
 		{
 			//Update musí být přítomný před!!!!
 			PmG->SetEnabledComponents(false);//nastavení celé tabulky do neaktivního stavu
@@ -6888,7 +6888,7 @@ void TForm1::set_enabled_mGrid(Cvektory::TElement *E)
 	//nastavení stavu
 	bool stav=true;
 	if(E->pohon==NULL)stav=false;
-	if(pom_temp->pohon!=NULL && E->pohon!=NULL && pom_temp->pohon->n==E->pohon->n && d.v.pohon_je_pouzivan(pom_temp->pohon->n))stav=false;
+	if(pom_temp->pohon!=NULL && E->pohon!=NULL && pom_temp->pohon->n==E->pohon->n && d.v.pohon_je_pouzivan(pom_temp->pohon->n,false))stav=false;
 	//přepnutí buněk
 	switch(E->eID)
 	{
@@ -7142,7 +7142,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			unsigned int id=d.v.vrat_objekt(E->objekt_n)->id;
 			if(id>=6 && id<=10 || id==12){E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;}
 			//definice buněk
-			E->mGrid->Cells[0][1].Text=ls->Strings[223];//"Sparovaná stop"
+			if(ls->Strings[223]!="")E->mGrid->Cells[0][1].Text=ls->Strings[223];else E->mGrid->Cells[0][1].Text="Párová stop";
 			if(E->sparovany!=NULL)E->mGrid->Cells[1][1].Text=E->sparovany->name;else E->mGrid->Cells[1][1].Text="N/A";
 			E->mGrid->Cells[0][2].Text="RT "+cas;E->RT=m.RT(0,d.v.vzdalenost_od_predchoziho_elementu(E,true),pom_temp->pohon->aRD,pom_temp->pohon->roztec,E->WT+E->WTstop);
 			E->mGrid->Cells[1][2].Text=outPT(E->RT);
@@ -7464,7 +7464,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			unsigned int id=d.v.vrat_objekt(E->objekt_n)->id;
 			if(id>=6 && id<=10 || id==12){E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;}
 			//definice buněk
-			E->mGrid->Cells[0][1].Text=ls->Strings[223];//"Sparovaná stop"
+			if(ls->Strings[223]!="")E->mGrid->Cells[0][1].Text=ls->Strings[223];else E->mGrid->Cells[0][1].Text="Párová stop";
 			if(E->sparovany!=NULL)E->mGrid->Cells[1][1].Text=AnsiString(E->sparovany->name);else E->mGrid->Cells[1][1].Text="N/A";
 			E->mGrid->Cells[0][2].Text="RT "+cas;
 			E->mGrid->Cells[1][2].Text=outPT(E->RT);

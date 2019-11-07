@@ -850,7 +850,7 @@ short Cvektory::oblast_objektu(TObjekt *O,double X, double Y)
 	if(O!=NULL)
 	{
 		switch((int)O->orientace)
-  	{
+		{
 			case 0:
 			{
 				double delka_y=O->elementy->predchozi->geo.Y4-O->elementy->dalsi->geo.Y1,polovina_y=O->elementy->dalsi->geo.Y1+delka_y/2.0,delka_x=delka_y;
@@ -865,21 +865,23 @@ short Cvektory::oblast_objektu(TObjekt *O,double X, double Y)
 				if(polovina_x<=X && X<=polovina_x+3*delka_x/2.0 && O->elementy->predchozi->geo.Y4-delka_y<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_y)ret=1;//oblast za objektem
 				if(polovina_x-3*delka_x/2.0<=X && X<polovina_x && O->elementy->predchozi->geo.Y4-delka_y<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_y)ret=2;//oblast před objektem
 			}break;
-  		case 180:
-  		{
+			case 180:
+			{
 				double delka_y=O->elementy->dalsi->geo.Y1-O->elementy->predchozi->geo.Y4,polovina_y=O->elementy->dalsi->geo.Y1-delka_y/2.0,delka_x=delka_y;
 				if(O->id==8 || O->id==7){delka_y/=2.0;delka_x/=2.0;}//zmenšení oblasti pro dlouhé objekty
 				if(O->elementy->predchozi->geo.X4-delka_x<=X && X<=O->elementy->predchozi->geo.X4+delka_x && polovina_y-3*delka_y/2.0<=Y && Y<=polovina_y)ret=1;//oblast za objektem
 				if(O->elementy->dalsi->geo.X1-delka_x<=X && X<=O->elementy->dalsi->geo.X1+delka_x && polovina_y<Y && Y<=polovina_y+3*delka_y/2.0)ret=2;//oblast před objektem
 			}break;
 			case 270:
-  		{
+			{
 				double delka_x=O->elementy->dalsi->geo.X1-O->elementy->predchozi->geo.X4,polovina_x=O->elementy->dalsi->geo.X1-delka_x/2.0,delka_y=delka_x;
 				if(O->id==8 || O->id==7){delka_y/=3.0;delka_x/=2.0;}//zmenšení oblasti pro dlouhé objekty
 				if(polovina_x-3*delka_x/2.0<=X && X<=polovina_x && O->elementy->predchozi->geo.Y4-delka_y<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_y)ret=1;//oblast před objektem
 				if(polovina_x<X && X<=polovina_x+3*delka_x/2.0 && O->elementy->predchozi->geo.Y4-delka_y<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_y)ret=2;//oblast za objektem
 			}break;
 		}
+//		double delka_x=O->elementy->predchozi->geo.X4-O->elementy->dalsi->geo.X1,polovina_x=O->elementy->dalsi->geo.X1+delka_x/2.0,delka_y=delka_x;
+//		F->Canvas->Rectangle(m.L2Px(polovina_x),m.L2Py(O->elementy->predchozi->geo.Y4-delka_y),m.L2Px(polovina_x+3*delka_x/2.0),m.L2Py(O->elementy->predchozi->geo.Y4+delka_y));
 	}
 	return ret;
 }
@@ -2311,8 +2313,6 @@ void Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->geo=Original->geo;
 	Kopie->mGrid=new TmGrid(F);//nová strategie, je mgrid, nekopírovat a používat jenom v pom_temp, zde však podmínka zda se jedná o pom_temp nebyla z nějakého důvodu možná
 	Kopie->objekt_n=Original->objekt_n;
-	//if(F->pom_temp!=NULL && F->pom_temp->n==Original->objekt_n){Kopie->pohon=vrat_pohon(Original->pohon->n);F->Sv();}
-	/*else*/
 	if(Original->pohon!=NULL)Kopie->pohon=vrat_pohon(Original->pohon->n);
 	else Kopie->pohon=Original->pohon;
 	Kopie->sparovany=Original->sparovany;
@@ -3534,41 +3534,43 @@ void Cvektory::kopiruj_pohon(TPohon *Pohon,TObjekt *Objekt)
 }
 ////---------------------------------------------------------------------------
 //dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv
-bool Cvektory::pohon_je_pouzivan(unsigned long n)
+bool Cvektory::pohon_je_pouzivan(unsigned long n,bool po_obektech)
 {
 	F->log(__func__);//logování
-//	TObjekt *O=OBJEKTY->dalsi;
-//	bool nalezen=false;
-//	while (O!=NULL)
-//	{
-//		if(O->pohon!=NULL)
-//		{
-//			if(O->pohon->n==n)
-//			{
-//				nalezen=true;
-//				break;//přeruší další vyhledávání
-//			}
-//		}
-//		O=O->dalsi;
-//	}
-//	O=NULL;delete O;
-//	return nalezen;
 	TObjekt *O=OBJEKTY->dalsi;
 	bool nalezen=false;
-	while (O!=NULL)
+	if(po_obektech)
 	{
-		if(F->pom_temp==NULL || F->pom_temp!=NULL && F->pom_temp->n!=O->n)
-		{
-      TElement *E=O->elementy->dalsi;
-			while(E!=NULL)
-	  	{
-	  		if(E->eID!=0 && E->eID!=200 && E->eID!=MaxInt && E->pohon!=NULL && E->pohon->n==n){nalezen=true;break;}
-				E=E->dalsi;
-	  	}
-			E=NULL;delete E;
+  	while (O!=NULL)
+  	{
+  		if(O->pohon!=NULL)
+  		{
+  			if(O->pohon->n==n)
+  			{
+					nalezen=true;
+  				break;//přeruší další vyhledávání
+  			}
+  		}
+  		O=O->dalsi;
 		}
-		if(!nalezen)O=O->dalsi;
-		else break;
+	}
+	else
+	{
+  	while (O!=NULL)
+  	{
+  		if(F->pom_temp==NULL || F->pom_temp!=NULL && F->pom_temp->n!=O->n)
+  		{
+  			TElement *E=O->elementy->dalsi;
+  			while(E!=NULL)
+  			{
+  				if(E->eID!=0 && E->eID!=200 && E->eID!=MaxInt && E->pohon!=NULL && E->pohon->n==n){nalezen=true;break;}
+  				E=E->dalsi;
+  			}
+  			E=NULL;delete E;
+  		}
+  		if(!nalezen)O=O->dalsi;
+  		else break;
+		}
 	}
 	O=NULL;delete O;
 	return nalezen;
