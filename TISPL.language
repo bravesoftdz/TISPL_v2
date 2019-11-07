@@ -2,7 +2,7 @@ Language;X;Jazyk
 Czech;X;èeština
 Mongolian;X;mongolština
 English;X;angliètina
-"wagon;min;";X;vozík:min:
+wagon:min:;X;vozík:min:
 Creates a new file;X;Zaloí novı soubor
 Opens an existing file;X;Otevøe existující soubor
 Saves the current file;X;Uloí aktuální soubor
@@ -61,8 +61,8 @@ Turning elements;X;Otoèe
 Stop station;X;Stop stanice
 Line geometry;X;Geometrie linky
 Show graphs;X;Zobrazit grafy
-News;X;Zprávy
-Report;X;Report
+News;X;Zprávy 
+Report;X;Report 
 Object drive;X;Pohon - objektu
 Show legend;X;Zobrazit legendu
 use specified object capacities;X;pouít zadané kapacity objektù
@@ -96,25 +96,25 @@ New…;X;Novı...
 Save;X;Uloit
 Load background ...;X;Naèíst podklad...
 Options;X;Nastavení
-									Layers;X;                  Vrstvy
+                  Layers;X;                  Vrstvy
 View conveyor tracks;X;Zobrazit koleje dopravníku
 Show positions;X;Zobrazit pozice
 View jig rotation;X;Zobrazit rotace jigù
 Show element labels;X;Zobrazit popisky prvkù
-									Background;X;                  Podklad
+                  Background;X;                  Podklad
 Set the scale;X;Nastavit mìøítko
 Place background;X;Umístit podklad
 Grayscale background;X;Podklad ve stupních šedi
 Show background;X;Zobrazit podklad
 Transparency background;X;Prùhlednost podkladu
-									General;X;                  Obecné
+                  General;X;                  Obecné
 Rectangular input;X;Pravoúhlé zadávání
-It ensures entering the contour of the hall or object at right angles;X;Zajišuje zadavání obrysu haly èi objektu pravoúhle
+It ensures entering the contour of the hall or object at right angles;X;Zajišuje zadavání obrysu haly èi objektu pravoúhle 
 Grid;X;Møíka
 Scale;X;Mìøítko
 Intensity of pass. objects;X;Intenzita pasiv. Objektù
 Adjust the intensity of non-edited objects;X;Nastavení intenzity needitovanıch objektù
-									Tools;X;                  Nástroje
+                  Tools;X;                  Nástroje
 Measure the distance;X;Zmìøit vzdálenost
 Contracts;X;Zakázky
 Unlock edit;X;Odemknout editaci
@@ -160,7 +160,7 @@ Application settings;X;Nastavení aplikace
 Catalog of conveyors;X;Katalog dopravníkù
 thumb position;X;pozice palce
 Save;X;Uloit
-view of the Jig at hanging up ;X;pohled na jig pøi navìšování
+view of the Jig at loading up ;X;pohled na jig pøi navìšování
   View;X;  Zobrazit
   Edit;X;  Editovat
   Change the section type;X;  Zmìnit typ sekce
@@ -194,22 +194,22 @@ Catalog of conveyors;X;Katalog dopravníkù
 Click the radius list to select the conveyor catalog;X;Kliknutím do seznamu rádiusù vyberete katalog dopravníkù
 Save;X;Uloit
 Cancel;X;Storno
-Pitch inches [mm];X;Rozteè palcù [mm]
-Horizontal arcs [°];X;Horizontální oblouky [°]
+Chain pitches [mm];X;Rozteè palcù [mm]
+Horizontal curves [°];X;Horizontální oblouky [°]
 Radius [mm];X;Rádius [mm]
-Vertical arcs [°];X;Vertikální oblouky [°]
+Vertical curves [°];X;Vertikální oblouky [°]
 Name;X;Název
 Range and speed of drive;X;Rozmezí a rychlost pohonu
-Inch pitch;X;Rozteè palce
+Chain pitch ;X;Rozteè palce
 Used - on objects;X;Pouíván - na objektech
 from;X;od
 to;X;do
-current;X;aktuální
+current;X;aktuální  
 Delete this drive;X;Smazat tento pohon
 Speed;X;Rychlost
-Thumb pitch;X;Rozteè palce
-Multiple thumb pitch;X;Násobek rozteèe palcù
-Pitch of jigs;X;Rozteè jigù
+Chain pitch ;X;Rozteè palce
+Multiple chain pitch;X;Násobek rozteèe palcù
+Jigs pitch;X;Rozteè jigù
 Gap between undercarriages;X;Mezera mezi podvozky
 Gap between jigs 0°;X;Mezera mezi jigy 0°
 Gap between jigs 90°;X;Mezera mezi jigy 90°
@@ -224,7 +224,7 @@ Invalid drive speed value!;X;Neplatná hodnota rychlosti pohonu!
 Pair stop;X;Párová stop
 WT thumb;X;WT palec
 number of positions;X;poèet pozic
-number of wagons;X;poèet vozíkù
+number of wagons  ;X;poèet vozíkù
 reserve time;X;èasová rezerva
 closed stop station time;X;èas uzavøené STOP stanice
 maximum possible waiting time per thumb;X;maximální moná doba èekání na palec
@@ -245,7 +245,7 @@ length of turning;X;délka otoèe
 length of spining;X;délka otáèení
 PTt;X;PTo
 length;X;délka
-beginning;X;zaèátek
+start;X;zaèátek
 center;X;støed
 whole;X;celı
 Max. number of wagons must be less than or equal to;X;Max. poèet vozikù musí bıt menší nebo roven
@@ -284,3 +284,8 @@ lift;X;vıtah
 transit;X;pøejezd
 switch;X;vıhybka
 undefined;X;nedefinovanı
+Set the correct range and speed of the drive.;X;Nastavte správnı rozsah a rychlost pohonu.
+The lower speed limit must be greater than or equal to;X;Spodní hranice rychlosti musí bıt vìtší nebo rovna
+The upper speed limit must be less than or equal to;X;Horní hranice rychlosti musí bıt menší nebo rovna
+The lower speed limit must be >=;X;Spodní hranice rychlosti musí bıt >=
+The upper speed limit must be <=;X;Nebo horní hranice musí bıt <=

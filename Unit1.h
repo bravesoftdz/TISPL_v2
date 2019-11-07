@@ -572,7 +572,7 @@ private:
 	void pan_create();//vytvoøí výøez pro pan_move
 	void pan_map(TCanvas * canv, int X, int Y);
 	void pan_move_map();
-	void add_objekt(int X, int Y);
+	Cvektory::TObjekt *add_objekt(int X, int Y);
 	Cvektory::TObjekt *add_objekt_za();
 	void move_objekt(double X, double Y,Cvektory::TObjekt *Objekt);
 	void add_element(int X, int Y);

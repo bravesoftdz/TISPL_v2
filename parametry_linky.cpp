@@ -1983,10 +1983,18 @@ double  TForm_parametry_linky::getTT()
 void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 {
     F->log(__func__); //logování
-    //vypis("");
-    VID=-1;
-    Row_validace=0;
-    Col_validace=0;
+    //naètení textù + jazykové mutace
+		AnsiString jednotky;
+		if(aRDunit==0)jednotky="m/s";else jednotky="m/min";
+		AnsiString rozsah="Nastavte správný rozsah a rychlost pohonu. ",dolni1="Spodní hranice rychlosti musí být vìtší nebo rovna ",horni1="Horní hranice rychlosti musí být menší nebo rovna ",dolni2="Spodní hranice rychlosti musí být >= ",horni2=". Nebo horní hranice musí být <= ";
+		if(F->ls->Strings[286]!="")rozsah=F->ls->Strings[286]+" ";
+		if(F->ls->Strings[287]!="")dolni1=F->ls->Strings[287]+" ";
+		if(F->ls->Strings[288]!="")horni1=F->ls->Strings[288]+" ";
+		if(F->ls->Strings[289]!="")dolni2=F->ls->Strings[289]+" ";
+		if(F->ls->Strings[290]!="")horni2=". "+F->ls->Strings[290]+" ";
+		VID=-1;
+		Row_validace=0;
+		Col_validace=0;
 
 
  switch(ACol)
@@ -1997,8 +2005,7 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 				double RD   = F->ms.MyToDouble(PL_mGrid->Cells[4][ARow].Text)/(1+59.0*aRDunit);
 		    double P_od = F->ms.MyToDouble(PL_mGrid->Cells[2][ARow].Text)/(1+59.0*aRDunit);
 				double P_do = F->ms.MyToDouble(PL_mGrid->Cells[3][ARow].Text)/(1+59.0*aRDunit);
-
-					if(Form1->m.between(RD,P_od,P_do))
+					if(Form1->m.between(RD,P_od,P_do) && P_od>=P_do/4)
 						{
 						PL_mGrid->ShowNote("");
 						scGPGlyphButton_ADD->Visible=true;
@@ -2006,34 +2013,15 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 						}
 						else
 						{
-              //vypis("Nastavte správný rozsah a rychlost pohonu.");
-						 PL_mGrid->ShowNote("Nastavte správný rozsah a rychlost pohonu.",clRed,13);
+							PL_mGrid->Note.Text="";
+							if(!Form1->m.between(RD,P_od,P_do))PL_mGrid->ShowNote(rozsah,clRed,13);
+							if(P_od<P_do/4)PL_mGrid->ShowNote(PL_mGrid->Note.Text+dolni1+AnsiString(P_do/4*(1+59.0*aRDunit))+" "+jednotky+".",clRed,13);
 							VID=23;
 							Row_validace=ARow;
 							Col_validace=ACol;
 							scGPGlyphButton_ADD->Visible=false;
 							Button_save->Enabled=false;
 						}
-					if(PL_mGrid->Cells[3][ARow].Text!="")
-					{                        //do = 4 spodní nesmí být menší než 1
-						AnsiString jednotky;
-						if(aRDunit==0)jednotky="m/s";else jednotky="m/min";
-						if(P_od<P_do/4)//chybné zadání
-						{
-							PL_mGrid->ShowNote("Spodní hranice rychlosti musí být vìtší nebo rovna "+AnsiString(P_do/4*(1+59.0*aRDunit))+" "+jednotky+".",clRed,13);
-							VID=23;
-							Row_validace=ARow;
-							Col_validace=ACol;
-							scGPGlyphButton_ADD->Visible=false;
-							Button_save->Enabled=false;
-						}
-						else
-						{
-            	PL_mGrid->ShowNote("");
-							scGPGlyphButton_ADD->Visible=true;
-							Button_save->Enabled=true;
-            }
-					}
 				}
 				break;
 
@@ -2043,7 +2031,7 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 		    double P_od = F->ms.MyToDouble(PL_mGrid->Cells[2][ARow].Text)/(1+59.0*aRDunit);
 				double P_do = F->ms.MyToDouble(PL_mGrid->Cells[3][ARow].Text)/(1+59.0*aRDunit);
 
-					if(Form1->m.between(RD,P_od,P_do))
+					if(Form1->m.between(RD,P_od,P_do) && P_do<=P_od*4)
 						{
              PL_mGrid->ShowNote("");
 						 scGPGlyphButton_ADD->Visible=true;
@@ -2051,34 +2039,15 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 						}
 						else
 						{
-             // vypis("Nastavte správný rozsah a rychlost pohonu.");
-              PL_mGrid->ShowNote("Nastavte správný rozsah a rychlost pohonu.",clRed,13);
-              VID=23;
-              Row_validace=ARow;
-              Col_validace=ACol;
-							scGPGlyphButton_ADD->Visible=false;
-							Button_save->Enabled=false;
-						}
-					if(PL_mGrid->Cells[2][ARow].Text!="")
-					{                        //do = 4 spodní nesmí být menší než 1
-						AnsiString jednotky;
-						if(aRDunit==0)jednotky="m/s";else jednotky="m/min";
-						if(P_do>P_od*4)//chybné zadání
-						{
-							PL_mGrid->ShowNote("Horní hranice rychlosti musí být menší nebo rovna "+AnsiString(P_od*4*(1+59.0*aRDunit))+" "+jednotky+".",clRed,13);
+							PL_mGrid->Note.Text="";
+							if(!Form1->m.between(RD,P_od,P_do))PL_mGrid->ShowNote(rozsah,clRed,13);
+							if(P_do>P_od*4)PL_mGrid->ShowNote(PL_mGrid->Note.Text+horni1+AnsiString(P_od*4*(1+59.0*aRDunit))+" "+jednotky+".",clRed,13);
 							VID=23;
 							Row_validace=ARow;
 							Col_validace=ACol;
 							scGPGlyphButton_ADD->Visible=false;
 							Button_save->Enabled=false;
 						}
-						else
-						{
-            	PL_mGrid->ShowNote("");
-							scGPGlyphButton_ADD->Visible=true;
-							Button_save->Enabled=true;
-            }
-					}
 				}
 				break;
 
@@ -2088,7 +2057,7 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 		    double P_od = F->ms.MyToDouble(PL_mGrid->Cells[2][ARow].Text)/(1+59.0*aRDunit);
 				double P_do = F->ms.MyToDouble(PL_mGrid->Cells[3][ARow].Text)/(1+59.0*aRDunit);
 
-					if(Form1->m.between(RD,P_od,P_do))
+					if(Form1->m.between(RD,P_od,P_do) && P_od>=P_do/4 && P_do<=P_od*4)
 						{
             PL_mGrid->ShowNote("");
 						scGPGlyphButton_ADD->Visible=true;
@@ -2096,10 +2065,12 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 						}
 						else
 						{
-              //vypis("Nastavte správný rozsah a rychlost pohonu.");
-              PL_mGrid->ShowNote("Nastavte správný rozsah a rychlost pohonu.",clRed,13);
-              VID=23;
-              Row_validace=ARow;
+							//vypis("Nastavte správný rozsah a rychlost pohonu.");
+							PL_mGrid->Note.Text="";
+							if(!Form1->m.between(RD,P_od,P_do))PL_mGrid->ShowNote(rozsah,clRed,13);
+							else if(P_od<P_do/4 || P_do>P_od*4)PL_mGrid->ShowNote(dolni2+AnsiString(P_do/4*(1+59.0*aRDunit))+" "+jednotky+horni2+AnsiString(P_od*4*(1+59.0*aRDunit))+" "+jednotky+".",clRed,13);
+							VID=23;
+							Row_validace=ARow;
               Col_validace=ACol;
 							scGPGlyphButton_ADD->Visible=false;
 							Button_save->Enabled=false;

@@ -1376,6 +1376,8 @@ void TForm1::startUP()
 	if(d.v.OBJEKTY->dalsi!=NULL)TIP="";//v případě, že jsou vložené nějaké objekty tak dojde k odmazání tipu pro vkládání objektů
 	//set_font();//nastavení fontu komponentám
 	DrawGrid_knihovna->SetFocus();//nutné při spouštění dávat focus na knihovnu, ta přesměrovává všechny události (např. KeyDown) na Form
+	if(language==CS)scGPSwitch1->State=scswOn;//nastavení switche jazyků do zpávné polohy
+	else scGPSwitch1->State=scswOff;
 	Akce=NIC;
 }
 //---------------------------------------------------------------------------
@@ -3988,13 +3990,13 @@ void TForm1::onPopUP(int X, int Y)
 				if(AnsiString(ls->Strings[164]+" "+pom->name).Length()>19)//pokud je více znaků, tak zalamovat manuálně, lze i automaticky pomocí proporties wordwrap, ale to se nemusí projevit např. u všech různě textově dlouhých položek stejně
 				{
 					PopUPmenu->scLabel_nastavit_parametry->Caption=N+"\n  "+pom->name.UpperCase();
-					PopUPmenu->scLabel_kopirovat->Caption=kopirovat+"\n  "+pom->name.UpperCase();
+					//PopUPmenu->scLabel_kopirovat->Caption=kopirovat+"\n  "+pom->name.UpperCase();
 					PopUPmenu->scLabel_smazat->Caption=smazat+"\n  "+pom->name.UpperCase();
 				}
 				else
 				{
 					PopUPmenu->scLabel_nastavit_parametry->Caption=N+" "+pom->name.UpperCase();
-					PopUPmenu->scLabel_kopirovat->Caption=kopirovat+" "+pom->name.UpperCase();
+					//PopUPmenu->scLabel_kopirovat->Caption=kopirovat+" "+pom->name.UpperCase();
 					PopUPmenu->scLabel_smazat->Caption=smazat+" "+pom->name.UpperCase();
 				}
 				PopUPmenu->Item_otocit_doleva->Visible=true;PopUPmenu->Panel_UP->Height+=34;
@@ -4002,7 +4004,7 @@ void TForm1::onPopUP(int X, int Y)
 				//pozor rozhoduje pořadí
 				PopUPmenu->Item_smazat->FillColor=(TColor)RGB(240,240,240);//workaround, nutnost takto vytáhnout, jinak se položka zvýrazňuje, musí být tady
 				PopUPmenu->Item_smazat->Visible=true;PopUPmenu->Panel_UP->Height+=34;
-				PopUPmenu->Item_kopirovat->Visible=true;PopUPmenu->Panel_UP->Height+=34;
+				//PopUPmenu->Item_kopirovat->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 				if((long)pom->id!=VyID&&(long)pom->id!=pocet_objektu_knihovny+1)
 				{PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;}
 			}
@@ -4519,8 +4521,9 @@ void TForm1::ESC()
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-void TForm1::add_objekt(int X, int Y)
+Cvektory::TObjekt *TForm1::add_objekt(int X, int Y)
 {
+	Cvektory::TObjekt *ret=NULL;
 	if(vybrany_objekt>-1)
 	{
 		TPointD souradnice;
@@ -4545,12 +4548,12 @@ void TForm1::add_objekt(int X, int Y)
 		//vložení objektu
 		if(pom==NULL || pom!=NULL && pom->n==d.v.OBJEKTY->predchozi->n)//vloží za poslední prvek
 		{
-			pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y);
+			ret=pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y);
 		}
 		else//vkládá prvek mezi prvky
 		{
-			if(oblast==2 && d.v.OBJEKTY->predchozi->n>1)pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,d.v.OBJEKTY,pom);
-			else pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,pom,pom->dalsi);
+			if(oblast==2 && d.v.OBJEKTY->predchozi->n>1)ret=pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,d.v.OBJEKTY,pom);
+			else ret=pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,pom,pom->dalsi);
 			d.v.nove_indexy();//zvýší indexy nasledujicích bodů
 		}
 		pom=NULL;//odsranění pomocného ukazatele
@@ -4583,6 +4586,7 @@ void TForm1::add_objekt(int X, int Y)
 		REFRESH();
 		DuvodUlozit(true);
 	}
+	return ret;
 }
 //---------------------------------------------------------------------------
 Cvektory::TObjekt *TForm1::add_objekt_za()
@@ -6135,7 +6139,7 @@ void TForm1::vytvoreni_tab_knihovna()
 	mGrid_knihovna->ID=6666;
 	mGrid_knihovna->Tag=6;//ID formu
 	/////////vytvoření konkrétní tabulky podle režimu kabiny
-	mGrid_knihovna->Create(2,16);//vytvoření celé tabulky najednou
+	mGrid_knihovna->Create(2,14);//vytvoření celé tabulky najednou
 	mGrid_knihovna->Left=-1;
 	mGrid_knihovna->Top=-1;
 	mGrid_knihovna->SetColumnAutoFit(-4);
@@ -6159,7 +6163,7 @@ void TForm1::vytvoreni_tab_knihovna()
 			mGrid_knihovna->Cells[0][i].Font=scGPLabel_roboti->Font;
 		}
 	}
-	mGrid_knihovna->Rows[15].Height=scSplitView_LEFTTOOLBAR->Height-(mGrid_knihovna->Top+mGrid_knihovna->Height);//přesah mimo obrazovku, nezobrazování spodní hranice tabulky
+	mGrid_knihovna->Rows[13].Height=scSplitView_LEFTTOOLBAR->Height-(mGrid_knihovna->Top+mGrid_knihovna->Height);//přesah mimo obrazovku, nezobrazování spodní hranice tabulky
 	/////////sloučení nadpisů
 	mGrid_knihovna->MergeCells(0,0,1,0);
 	mGrid_knihovna->MergeCells(0,3,1,3);
@@ -6186,8 +6190,7 @@ void TForm1::vytvoreni_tab_knihovna()
 	mGrid_knihovna->Cells[0][6].Type=mGrid_knihovna->IMAGE;
 	mGrid_knihovna->Cells[0][6].ImageIndex=1;
 	mGrid_knihovna->Cells[1][6].Type=mGrid_knihovna->IMAGE;
-	if(language==CS)mGrid_knihovna->Cells[1][6].ImageIndex=4;
-	if(language==EN)mGrid_knihovna->Cells[1][6].ImageIndex=18;
+	mGrid_knihovna->Cells[1][6].ImageIndex=4;
 	mGrid_knihovna->Cells[0][7].Type=mGrid_knihovna->IMAGE;
 	if(language==CS)mGrid_knihovna->Cells[0][7].ImageIndex=2;
 	if(language==EN)mGrid_knihovna->Cells[0][7].ImageIndex=17;
@@ -6211,25 +6214,31 @@ void TForm1::vytvoreni_tab_knihovna()
 	mGrid_knihovna->Rows[10].Height=61;
 	//ostatní
 	mGrid_knihovna->Cells[0][12].Type=mGrid_knihovna->IMAGE;
-	mGrid_knihovna->Cells[0][12].ImageIndex=10;
+	if(language==CS)mGrid_knihovna->Cells[0][12].ImageIndex=12;//přejezd
+	if(language==EN)mGrid_knihovna->Cells[0][12].ImageIndex=26;
 	mGrid_knihovna->Cells[1][12].Type=mGrid_knihovna->IMAGE;
-	if(language==CS)mGrid_knihovna->Cells[1][12].ImageIndex=11;
-	if(language==EN)mGrid_knihovna->Cells[1][12].ImageIndex=23;
-	mGrid_knihovna->Cells[0][13].Type=mGrid_knihovna->IMAGE;
-	if(language==CS)mGrid_knihovna->Cells[0][13].ImageIndex=12;
-	if(language==EN)mGrid_knihovna->Cells[0][13].ImageIndex=26;
-	mGrid_knihovna->Cells[1][13].Type=mGrid_knihovna->IMAGE;
-	mGrid_knihovna->Cells[1][13].ImageIndex=14;
-	mGrid_knihovna->Cells[0][14].Type=mGrid_knihovna->IMAGE;
-	mGrid_knihovna->Cells[0][14].ImageIndex=13;
-	mGrid_knihovna->Cells[0][14].Align=mGrid_knihovna->LEFT;
+	mGrid_knihovna->Cells[1][12].ImageIndex=13;//vyhybka
+	mGrid_knihovna->Cells[1][12].Align=mGrid_knihovna->LEFT;
+//	mGrid_knihovna->Cells[0][12].Type=mGrid_knihovna->IMAGE;
+//	mGrid_knihovna->Cells[0][12].ImageIndex=10;//buffer
+//	mGrid_knihovna->Cells[1][12].Type=mGrid_knihovna->IMAGE;
+//	if(language==CS)mGrid_knihovna->Cells[1][12].ImageIndex=11;//vytah
+//	if(language==EN)mGrid_knihovna->Cells[1][12].ImageIndex=23;
+//	mGrid_knihovna->Cells[0][13].Type=mGrid_knihovna->IMAGE;
+//	if(language==CS)mGrid_knihovna->Cells[0][13].ImageIndex=12;//přejezd
+//	if(language==EN)mGrid_knihovna->Cells[0][13].ImageIndex=26;
+//	mGrid_knihovna->Cells[1][13].Type=mGrid_knihovna->IMAGE;
+//	mGrid_knihovna->Cells[1][13].ImageIndex=14;//nedefinovany
+//	mGrid_knihovna->Cells[0][14].Type=mGrid_knihovna->IMAGE;
+//	mGrid_knihovna->Cells[0][14].ImageIndex=13;//vyhybka
+//	mGrid_knihovna->Cells[0][14].Align=mGrid_knihovna->LEFT;
 	/////////centrování komponent
 	mGrid_knihovna->Update();
 	TscGPImage *I=NULL;
 	int odsazeni=34;//změna odsazení
 	for (int i=1;i<=mGrid_knihovna->RowCount-1; i++)
 	{
-		if(i==7||i==8||i==9||i==10||i==13||i==14)odsazeni-=5;
+		if(i==7||i==8||i==9||i==10/*||i==13||i==14*/)odsazeni-=5;
 		//pro první sloupec
 		if(mGrid_knihovna->Cells[0][i].Type==mGrid_knihovna->IMAGE)I=mGrid_knihovna->getImage(0,i);
 		if(I!=NULL)
@@ -6485,7 +6494,7 @@ void TForm1::vytvoreni_tab_pohon()
 	//naplnění comba hodnotami
 	tab_pohon_COMBO(0);
 	if(pom_temp->pohon!=NULL)
-	if(d.v.pohon_je_pouzivan(pom_temp->pohon->n,pom)!=NULL)//kontrola zda je pohon používán v jiném objektu, nutné posílat pom místo pom_temp do parametru mimo_objetk!!!!!
+	if(d.v.pohon_je_pouzivan(pom_temp->pohon->n))//kontrola zda je pohon používán v jiném objektu, nutné posílat pom místo pom_temp do parametru mimo_objetk!!!!!
 	{
 		PmG->Update();//musí být přítomný !!!!
 		PmG->SetEnabledComponents(false);//nastavení celé tabulky do neaktivního stavu
@@ -6540,7 +6549,7 @@ void TForm1::pridani_elementu_tab_pohon(Cvektory::TElement *E)
 	}
 	PmG->Update();
 	//není nutná kontrola zda je přiřaznný pohon, tato metoda s spouští jedině v případ, že objekt má přiřazený pohon
-	if(d.v.pohon_je_pouzivan(pom_temp->pohon->n,pom)!=NULL)//kontrola zda je pohon používán v jiném objektu, nutné posílat pom místo pom_temp do parametru mimo_objetk!!!!!
+	if(d.v.pohon_je_pouzivan(pom_temp->pohon->n))//kontrola zda je pohon používán v jiném objektu, nutné posílat pom místo pom_temp do parametru mimo_objetk!!!!!
 	{
 		//Update musí být přítomný před!!!!
 		PmG->SetEnabledComponent(1,3,false);//komponenta do této chvíle ještě neexistovala
@@ -6609,7 +6618,7 @@ void TForm1::prirazeni_pohonu_tab_pohon(int index_pohonu)
 	if(pom_temp->pohon!=NULL)
 	{
 		bool temp;//pomocná proměnná, použití u průcohdu elementů, uchovává zda mají být komponenty aktivní či ne
-		if(d.v.pohon_je_pouzivan(pom_temp->pohon->n,pom)!=NULL)//kontrola zda je pohon používán v jiném objektu, nutné posílat pom místo pom_temp do parametru mimo_objetk!!!!!
+		if(d.v.pohon_je_pouzivan(pom_temp->pohon->n))//kontrola zda je pohon používán v jiném objektu, nutné posílat pom místo pom_temp do parametru mimo_objetk!!!!!
 		{
 			//Update musí být přítomný před!!!!
 			PmG->SetEnabledComponents(false);//nastavení celé tabulky do neaktivního stavu
@@ -6879,7 +6888,7 @@ void TForm1::set_enabled_mGrid(Cvektory::TElement *E)
 	//nastavení stavu
 	bool stav=true;
 	if(E->pohon==NULL)stav=false;
-	if(pom_temp->pohon!=NULL && E->pohon!=NULL && pom_temp->pohon->n==E->pohon->n && d.v.pohon_je_pouzivan(pom_temp->pohon->n,pom)!=NULL)stav=false;
+	if(pom_temp->pohon!=NULL && E->pohon!=NULL && pom_temp->pohon->n==E->pohon->n && d.v.pohon_je_pouzivan(pom_temp->pohon->n))stav=false;
 	//přepnutí buněk
 	switch(E->eID)
 	{
@@ -9935,22 +9944,39 @@ void TForm1::kopirovat_objekt()
     log(__func__);//logování
 		if(pom!=NULL)//pokud je vybraný objekt
 		{
-				bool remove_pre_index=true;
-				if(pom->short_name=="CO2")remove_pre_index=false;//pokud se jedná CO2, tak aby nedával CO3, CO4 atp
-				if(pom->dalsi!=NULL)//pokud po vybraném následuje další objekt, tak nový vkládá přesně mezi ně
-				{
-					d.v.kopiruj_objekt(pom,(pom->X+pom->dalsi->X)/2-pom->X,(pom->Y+pom->dalsi->Y)/2-pom->Y,ms.a2i(pom->short_name.SubString(pom->short_name.Length(),1))+1,remove_pre_index,pom);
-				}
-				else //jinak odsazeně
-				{
-					if(pom==d.v.OBJEKTY->predchozi && pom->n==1)//pokud je jenom jeden objekt
-					d.v.kopiruj_objekt(pom,6,0,ms.a2i(pom->short_name.SubString(pom->short_name.Length(),1))+1,remove_pre_index);
-					if(pom==d.v.OBJEKTY->predchozi)//pokud se jedná o poslední prvek
-					d.v.kopiruj_objekt(pom,(pom->X+d.v.OBJEKTY->dalsi->X)/2-pom->X,(pom->Y+d.v.OBJEKTY->dalsi->Y)/2-pom->Y,ms.a2i(pom->short_name.SubString(pom->short_name.Length(),1))+1,remove_pre_index);
-				}
-				ortogonalizace();
-				REFRESH();
+				Cvektory::TObjekt *O=pom,*pred=NULL,*po=NULL;//uložení kopírovaného objektu
+				Akce=ADD;vybrany_objekt=pom->id;
+				pom_vyhybka=add_objekt(m.L2Px(pom->elementy->predchozi->geo.X4),m.L2Py(pom->elementy->predchozi->geo.Y4));
+				Akce=NIC;
+				pom=O;O=NULL;delete O;//vrácení kopirovaného objektu do pom, metoda add_objekt smaže pom
+				//uložení atributů které se přepíší
+				double posunx=-pom->elementy->dalsi->geo.X1+pom_vyhybka->elementy->dalsi->geo.X1,posuny=pom->elementy->dalsi->geo.Y1-pom_vyhybka->elementy->dalsi->geo.Y1;
+				pred=pom_vyhybka->predchozi;po=pom_vyhybka->dalsi;
+			  d.v.vymaz_komory(pom_vyhybka);
+				d.v.vymaz_elementy(pom_vyhybka,true);
+				d.v.kopiruj_objekt(pom,pom_vyhybka);
+				move_objekt(posunx,posuny,pom_vyhybka);
+				pom_vyhybka->predchozi=pred;pom_vyhybka->dalsi=po;
+				pom_vyhybka->n+=1;
+				pom_vyhybka=NULL;O=NULL;pred=NULL;po=NULL;
+				delete pom_vyhybka;delete O;delete pred;delete po;
 				DuvodUlozit(true);
+//				bool remove_pre_index=true;
+//				if(pom->short_name=="CO2")remove_pre_index=false;//pokud se jedná CO2, tak aby nedával CO3, CO4 atp
+//				if(pom->dalsi!=NULL)//pokud po vybraném následuje další objekt, tak nový vkládá přesně mezi ně
+//				{
+//					d.v.kopiruj_objekt(pom,(pom->X+pom->dalsi->X)/2-pom->X,(pom->Y+pom->dalsi->Y)/2-pom->Y,ms.a2i(pom->short_name.SubString(pom->short_name.Length(),1))+1,remove_pre_index,pom);
+//				}
+//				else //jinak odsazeně
+//				{
+//					if(pom==d.v.OBJEKTY->predchozi && pom->n==1)//pokud je jenom jeden objekt
+//					d.v.kopiruj_objekt(pom,6,0,ms.a2i(pom->short_name.SubString(pom->short_name.Length(),1))+1,remove_pre_index);
+//					if(pom==d.v.OBJEKTY->predchozi)//pokud se jedná o poslední prvek
+//					d.v.kopiruj_objekt(pom,(pom->X+d.v.OBJEKTY->dalsi->X)/2-pom->X,(pom->Y+d.v.OBJEKTY->dalsi->Y)/2-pom->Y,ms.a2i(pom->short_name.SubString(pom->short_name.Length(),1))+1,remove_pre_index);
+//				}
+//				ortogonalizace();
+//				REFRESH();
+//				DuvodUlozit(true);
 		}
 }
 //---------------------------------------------------------------------------
@@ -11244,21 +11270,9 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //---------------------------------------------------------------------------
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
-{       Memo("");
-	Memo3->Clear();
-//	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
-//	while(O!=NULL)
-//	{
-//		Cvektory::TElement *E=O->elementy->dalsi;
-//		while(E!=NULL)
-//		{
-//			if(E->eID==0)Memo(E->name+"; vypočítané n: "+AnsiString(d.v.vrat_poradi_elementu_do(O,E)+1));
-//			E=E->dalsi;
-//		}
-//		delete E;E=NULL;
-//		O=O->dalsi;
-//	}
-//	delete O;O=NULL;
+{
+//	if(language==EN) {language=CS;load_language(CS,true);  	writeINI("Nastaveni_app","jazyk","1");  }
+//	else  {language=EN;load_language(EN,true); writeINI("Nastaveni_app","jazyk","0");  }
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -13138,8 +13152,6 @@ void TForm1::change_languagein_mGrid()
 	if(language==EN)mGrid_knihovna->Cells[0][4].ImageIndex=24;
 	if(language==CS)mGrid_knihovna->Cells[1][4].ImageIndex=9;
 	if(language==EN)mGrid_knihovna->Cells[1][4].ImageIndex=25;
-	if(language==CS)mGrid_knihovna->Cells[1][6].ImageIndex=4;
-	if(language==EN)mGrid_knihovna->Cells[1][6].ImageIndex=18;
 	if(language==CS)mGrid_knihovna->Cells[0][7].ImageIndex=2;
 	if(language==EN)mGrid_knihovna->Cells[0][7].ImageIndex=17;
 	if(language==CS)mGrid_knihovna->Cells[0][8].ImageIndex=5;
@@ -13150,10 +13162,8 @@ void TForm1::change_languagein_mGrid()
 	if(language==EN)mGrid_knihovna->Cells[0][9].ImageIndex=21;
 	if(language==CS)mGrid_knihovna->Cells[0][10].ImageIndex=8;
 	if(language==EN)mGrid_knihovna->Cells[0][10].ImageIndex=22;
-	if(language==CS)mGrid_knihovna->Cells[1][12].ImageIndex=11;
-	if(language==EN)mGrid_knihovna->Cells[1][12].ImageIndex=23;
-	if(language==CS)mGrid_knihovna->Cells[0][13].ImageIndex=12;
-	if(language==EN)mGrid_knihovna->Cells[0][13].ImageIndex=26;
+	if(language==CS)mGrid_knihovna->Cells[0][12].ImageIndex=12;
+	if(language==EN)mGrid_knihovna->Cells[0][12].ImageIndex=26;
 	if(pom_temp==NULL)mGrid_knihovna->Refresh();
 	//aktualizace popisků knihoven
 	if(pom_temp!=NULL)
@@ -13379,7 +13389,6 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 	else //pokud není nalezen jazykový slovník
 	{
 		language=CS;//nenalezen soubor, jazyk čeština
-		scGPSwitch1->State=scswOn;
 		scGPSwitch1->Enabled=false;
 	}
 	return language;

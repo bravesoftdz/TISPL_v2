@@ -1578,7 +1578,7 @@ void Cvektory::rotuj_objekt(TObjekt *Objekt, double rotace)
 		TElement *E=Objekt->elementy->dalsi;//objekt má vždy element (zarážka)
 		while(E!=NULL)
 		{
-			E->orientace=m.Rt90(azimut+90);//zapsání nové orientace do elementu
+			E->orientace=m.Rt90(azimut-90);//zapsání nové orientace do elementu
 			//souřadnice elementu
 			Bod=m.rotace(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,E->X,E->Y,rotace);
 			E->X=Bod.x;E->Y=Bod.y;
@@ -3534,7 +3534,7 @@ void Cvektory::kopiruj_pohon(TPohon *Pohon,TObjekt *Objekt)
 }
 ////---------------------------------------------------------------------------
 //dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv
-bool Cvektory::pohon_je_pouzivan(unsigned long n,TElement *mimo_element)
+bool Cvektory::pohon_je_pouzivan(unsigned long n)
 {
 	F->log(__func__);//logování
 //	TObjekt *O=OBJEKTY->dalsi;
@@ -3557,14 +3557,16 @@ bool Cvektory::pohon_je_pouzivan(unsigned long n,TElement *mimo_element)
 	bool nalezen=false;
 	while (O!=NULL)
 	{
-		TElement *E=O->elementy->dalsi;
-		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->dalsi;
-		while(E!=NULL)
+		if(F->pom_temp==NULL || F->pom_temp!=NULL && F->pom_temp->n!=O->n)
 		{
-			if(E->eID%2!=0 && E->eID!=5 && E->eID!=MaxInt && E->pohon!=NULL && E->pohon->n==n && (mimo_element==NULL || mimo_element!=NULL && mimo_element->objekt_n!=O->n || mimo_element!=NULL && mimo_element->objekt_n==O->n && mimo_element->n!=E->n)){nalezen=true;break;}
-			E=E->dalsi;
+      TElement *E=O->elementy->dalsi;
+			while(E!=NULL)
+	  	{
+	  		if(E->eID!=0 && E->eID!=200 && E->eID!=MaxInt && E->pohon!=NULL && E->pohon->n==n){nalezen=true;break;}
+				E=E->dalsi;
+	  	}
+			E=NULL;delete E;
 		}
-		E=NULL;delete E;
 		if(!nalezen)O=O->dalsi;
 		else break;
 	}
