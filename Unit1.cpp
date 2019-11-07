@@ -6493,14 +6493,16 @@ void TForm1::vytvoreni_tab_pohon()
 	pom_temp->Yp=m.P2Ly(oblast_kabiny.top-F->PmG->Rows->Height-30);
 	//naplnění comba hodnotami
 	tab_pohon_COMBO(0);
-	if(pom_temp->pohon!=NULL)
-	if(d.v.pohon_je_pouzivan(pom_temp->pohon->n,false))//kontrola zda je pohon používán v jiném objektu, nutné posílat pom místo pom_temp do parametru mimo_objetk!!!!!
+	//PmG->Note.Text="";
+	if(pom_temp->pohon!=NULL && d.v.pohon_je_pouzivan(pom_temp->pohon->n,false))//kontrola zda je pohon používán v jiném objektu, nutné posílat pom místo pom_temp do parametru mimo_objetk!!!!!
 	{
 		PmG->Update();//musí být přítomný !!!!
 		PmG->SetEnabledComponents(false);//nastavení celé tabulky do neaktivního stavu
 		PmG->SetEnabledComponent(0,0,true);//aktivace Comba pro výběr pohonu, bude vždy aktvní
+		if(ls->Strings[291]!="")PmG->Note.Text=ls->Strings[291];else PmG->Note.Text="Pohon je používán na jiném objektu";
 	}
 	PmG->Refresh();
+	if(PmG->Note.Text!="")PmG->ShowNote(PmG->Note.Text,clRed,14);
 }
 //---------------------------------------------------------------------------
 //předesignování tabulky po přidání každého elementu
@@ -6623,9 +6625,10 @@ void TForm1::prirazeni_pohonu_tab_pohon(int index_pohonu)
 			//Update musí být přítomný před!!!!
 			PmG->SetEnabledComponents(false);//nastavení celé tabulky do neaktivního stavu
 			PmG->SetEnabledComponent(0,0,true);//aktivace Comba pro výběr pohonu, bude vždy aktvní
+			if(ls->Strings[291]!="")PmG->ShowNote(ls->Strings[291],clRed,14);else PmG->ShowNote("Pohon je používán na jiném objektu",clRed,14);
 			temp=false;
 		}
-		else {PmG->SetEnabledComponents(true);temp=true;}//pokud není pohon přiřazen aktivace
+		else {PmG->SetEnabledComponents(true);if(PmG->Note.Text!="")PmG->ShowNote("");temp=true;}//pokud není pohon přiřazen aktivace
 	}
 	aktualizace_ComboPohon();//nutné!
 	REFRESH();
@@ -6861,7 +6864,7 @@ void TForm1::tab_pohon_COMBO (int index)
 		nahled_ulozit(true);
 		prirazeni_pohonu_tab_pohon(pohon);
 		vlozit_predavaci_misto();//přidání či odebrání předávacího místa
-		if(PmG->Rows[3].Visible || PmG->Note.Text!="")FormX->validace_aRD();//odstranění validacez jiného pohonu, pouze pokud je pohonová tabulka v režimu KK nebo, Note tabulky je naplněn
+		if(PmG->Rows[3].Visible || PmG->Note.Text!="" && (PmG->Note.Text!=ls->Strings[291] || PmG->Note.Text!="Pohon je používán na jiném objektu"))FormX->validace_aRD();//odstranění validacez jiného pohonu, pouze pokud je pohonová tabulka v režimu KK nebo, Note tabulky je naplněn
 		//zajistí překreslení knihoven když je přidán či odebrán pohon
 		DrawGrid_knihovna->Refresh();
 		DrawGrid_otoce->Refresh();
@@ -7058,10 +7061,11 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 	}
 	//sloučení buněk hlavičky
 	E->mGrid->MergeCells(0,0,1,0);//update na tomto místě působí potíže, přesunout do add element asi a do NP_input;
-	E->mGrid->Update();//musí být přítomen před zakazováním komponent, před Update tabulka ještě neexistuje
+	//E->mGrid->Update();//musí být přítomen před zakazováním komponent, před Update tabulka ještě neexistuje
 	//naplnění a přiřazení COMBA rotace
 	if(E->eID==3||E->eID==4||E->eID==5||E->eID==6||E->eID==9||E->eID==10||E->eID==13||E->eID==14||E->eID==17||E->eID==18||E->eID==103||E->eID==104||E->eID==107||E->eID==108)//elementy s otočí
 	{
+		E->mGrid->Update();//musí být přítomen před zakazováním komponent, před Update tabulka ještě neexistuje
 		int pozice;
 		switch(E->eID)//nutnost zjistit pozici komba
 		{
@@ -7094,6 +7098,7 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 	//naplnění a přiřazení COMBA PD
 	if(E->eID==1||E->eID==3||E->eID==7||E->eID==9||E->eID==11||E->eID==13||E->eID==15||E->eID==17||E->eID==101||E->eID==103||E->eID==105||E->eID==107)
 	{
+		E->mGrid->Update();//musí být přítomen před zakazováním komponent, před Update tabulka ještě neexistuje
 		TscGPComboBox *C=E->mGrid->getCombo(1,E->mGrid->RowCount-1);
 		C->Clear();
 		C->Font->Color=(TColor)RGB(43,87,154);
@@ -11271,6 +11276,8 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
+	Memo(d.v.OBJEKTY->predchozi->elementy->predchozi->geo.orientace);
+	Memo(d.v.OBJEKTY->predchozi->elementy->predchozi->geo.rotacni_uhel);
 //	if(language==EN) {language=CS;load_language(CS,true);  	writeINI("Nastaveni_app","jazyk","1");  }
 //	else  {language=EN;load_language(EN,true); writeINI("Nastaveni_app","jazyk","0");  }
 }

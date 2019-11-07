@@ -1908,16 +1908,18 @@ void Cvykresli::vykresli_kurzor_kabiny (TCanvas *canv, int id, int X, int Y, Cve
 				//zjištění rotace
 				azimut=m.azimut(m.P2Lx(Xp),m.P2Ly(Yp),m.P2Lx(X),m.P2Ly(Y));
 				rotace=m.Rt90(azimut);
+				double p_rotace=m.Rt90(p->elementy->predchozi->geo.orientace-p->elementy->predchozi->geo.rotacni_uhel);
 				if(!spojnice1 && p->dalsi!=NULL && p->orientace!=p->dalsi->orientace && rotace!=p->orientace &&  rotace!=p->dalsi->orientace)rotace=p->orientace;//objekt vkládán mezi ostatní objekty
 				switch(rotace)
 				{
-					case 0:if(p->orientace!=180){X1=Xp+m.m2px(rozmery_kabiny.y)/2.0;Y1=Yp;X2=Xp-m.m2px(rozmery_kabiny.y)/2.0;Y2=Yp-m.m2px(rozmery_kabiny.x);Xd=X;Yd=Y2;}else{X1=Xp+m.m2px(rozmery_kabiny.y)/2.0;Y1=Yp;X2=Xp-m.m2px(rozmery_kabiny.y)/2.0;Y2=Yp+m.m2px(rozmery_kabiny.x);Xd=X;Yd=Y2;}break;
-					case 90:if(p->orientace==90 || p->orientace==0 || p->orientace==180){X1=Xp;Y1=Yp-m.m2px(rozmery_kabiny.y)/2.0;X2=Xp+m.m2px(rozmery_kabiny.x);Y2=Yp+m.m2px(rozmery_kabiny.y)/2.0;Xd=X2;Yd=Y;}else{X1=Xp;Y1=Yp-m.m2px(rozmery_kabiny.y)/2.0;X2=Xp-m.m2px(rozmery_kabiny.x);Y2=Yp+m.m2px(rozmery_kabiny.y)/2.0;Xd=X2;Yd=Y;}break;
-					case 180:if(p->orientace!=0){X1=Xp+m.m2px(rozmery_kabiny.y)/2.0;Y1=Yp;X2=Xp-m.m2px(rozmery_kabiny.y)/2.0;Y2=Yp+m.m2px(rozmery_kabiny.x);Xd=X;Yd=Y2;}else{X1=Xp+m.m2px(rozmery_kabiny.y)/2.0;Y1=Yp;X2=Xp-m.m2px(rozmery_kabiny.y)/2.0;Y2=Yp-m.m2px(rozmery_kabiny.x);Xd=X;Yd=Y2;}break;
-					case 270:if(p->orientace==270 || p->orientace==0 || p->orientace==180){X1=Xp;Y1=Yp-m.m2px(rozmery_kabiny.y)/2.0;X2=Xp-m.m2px(rozmery_kabiny.x);Y2=Yp+m.m2px(rozmery_kabiny.y)/2.0;Xd=X2;Yd=Y;}else{X1=Xp;Y1=Yp-m.m2px(rozmery_kabiny.y)/2.0;X2=Xp+m.m2px(rozmery_kabiny.x);Y2=Yp+m.m2px(rozmery_kabiny.y)/2.0;Xd=X2;Yd=Y;}break;
+					case 0:if(p_rotace!=180){X1=Xp+m.m2px(rozmery_kabiny.y)/2.0;Y1=Yp;X2=Xp-m.m2px(rozmery_kabiny.y)/2.0;Y2=Yp-m.m2px(rozmery_kabiny.x);Xd=X;Yd=Y2;}else{X1=Xp+m.m2px(rozmery_kabiny.y)/2.0;Y1=Yp;X2=Xp-m.m2px(rozmery_kabiny.y)/2.0;Y2=Yp+m.m2px(rozmery_kabiny.x);Xd=X;Yd=Y2;}break;
+					case 90:if(p_rotace==90 || p_rotace==0 || p_rotace==180){X1=Xp;Y1=Yp-m.m2px(rozmery_kabiny.y)/2.0;X2=Xp+m.m2px(rozmery_kabiny.x);Y2=Yp+m.m2px(rozmery_kabiny.y)/2.0;Xd=X2;Yd=Y;}else{X1=Xp;Y1=Yp-m.m2px(rozmery_kabiny.y)/2.0;X2=Xp-m.m2px(rozmery_kabiny.x);Y2=Yp+m.m2px(rozmery_kabiny.y)/2.0;Xd=X2;Yd=Y;}break;
+					case 180:if(p_rotace!=0){X1=Xp+m.m2px(rozmery_kabiny.y)/2.0;Y1=Yp;X2=Xp-m.m2px(rozmery_kabiny.y)/2.0;Y2=Yp+m.m2px(rozmery_kabiny.x);Xd=X;Yd=Y2;}else{X1=Xp+m.m2px(rozmery_kabiny.y)/2.0;Y1=Yp;X2=Xp-m.m2px(rozmery_kabiny.y)/2.0;Y2=Yp-m.m2px(rozmery_kabiny.x);Xd=X;Yd=Y2;}break;
+					case 270:if(p_rotace==270 || p_rotace==0 || p_rotace==180){X1=Xp;Y1=Yp-m.m2px(rozmery_kabiny.y)/2.0;X2=Xp-m.m2px(rozmery_kabiny.x);Y2=Yp+m.m2px(rozmery_kabiny.y)/2.0;Xd=X2;Yd=Y;}else{X1=Xp;Y1=Yp-m.m2px(rozmery_kabiny.y)/2.0;X2=Xp+m.m2px(rozmery_kabiny.x);Y2=Yp+m.m2px(rozmery_kabiny.y)/2.0;Xd=X2;Yd=Y;}break;
 				}
 				if(rotace==0 || rotace==180)Xd=Xp;else Yd=Yp;
-				if(!spojnice1 && rotace==m.Rt90(p->orientace-180))rotace=p->orientace;
+				if(rotace==m.Rt90(p_rotace-180))rotace=p_rotace;
+				//if(!spojnice1 && rotace==m.Rt90(p_rotace-180))rotace=p_rotace;
 			}
 			if(oblast==2 && p->n==1 && v.OBJEKTY->predchozi->n!=1)//vkladání objektu před první, změna pořadí
 			{
@@ -1939,13 +1941,15 @@ void Cvykresli::vykresli_kurzor_kabiny (TCanvas *canv, int id, int X, int Y, Cve
 				//zjištění rotace
 				azimut=m.azimut(p->elementy->dalsi->geo.X1,p->elementy->dalsi->geo.Y1,m.P2Lx(X),m.P2Ly(Y));
 				rotace=m.Rt90(azimut);
+				double p_rotace=m.Rt90(p->elementy->dalsi->geo.orientace-p->elementy->dalsi->geo.rotacni_uhel);
 				switch(rotace)
 				{
-					case 0:if(p->orientace!=0){X1=m.L2Px(p->elementy->dalsi->geo.X1)+m.m2px(rozmery_kabiny.y)/2.0;Y1=m.L2Py(p->elementy->dalsi->geo.Y1);X2=m.L2Px(p->elementy->dalsi->geo.X1)-m.m2px(rozmery_kabiny.y)/2.0;Y2=m.L2Py(p->elementy->dalsi->geo.Y1)-m.m2px(rozmery_kabiny.x);}else{X1=m.L2Px(p->elementy->dalsi->geo.X1)+m.m2px(rozmery_kabiny.y)/2.0;Y1=m.L2Py(p->elementy->dalsi->geo.Y1);X2=m.L2Px(p->elementy->dalsi->geo.X1)-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y1+m.m2px(rozmery_kabiny.x);}break;
-					case 90:if(p->orientace!=90){X1=m.L2Px(p->elementy->dalsi->geo.X1);Y1=m.L2Py(p->elementy->dalsi->geo.Y1)-m.m2px(rozmery_kabiny.y)/2.0;X2=X1+m.m2px(rozmery_kabiny.x);Y2=m.L2Py(p->elementy->dalsi->geo.Y1)+m.m2px(rozmery_kabiny.y)/2.0;}else{X1=m.L2Px(p->elementy->dalsi->geo.X1);Y1=m.L2Py(p->elementy->dalsi->geo.Y1)-m.m2px(rozmery_kabiny.y)/2.0;X2=X1-m.m2px(rozmery_kabiny.x);Y2=m.L2Py(p->elementy->dalsi->geo.Y1)+m.m2px(rozmery_kabiny.y)/2.0;}break;
-					case 180:if(p->orientace!=180){X1=m.L2Px(p->elementy->dalsi->geo.X1)+m.m2px(rozmery_kabiny.y)/2.0;Y1=m.L2Py(p->elementy->dalsi->geo.Y1);X2=m.L2Px(p->elementy->dalsi->geo.X1)-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y1+m.m2px(rozmery_kabiny.x);}else{X1=m.L2Px(p->elementy->dalsi->geo.X1)+m.m2px(rozmery_kabiny.y)/2.0;Y1=m.L2Py(p->elementy->dalsi->geo.Y1);X2=m.L2Px(p->elementy->dalsi->geo.X1)-m.m2px(rozmery_kabiny.y)/2.0;Y2=m.L2Py(p->elementy->dalsi->geo.Y1)-m.m2px(rozmery_kabiny.x);}break;
-					case 270:if(p->orientace==270){X1=m.L2Px(p->elementy->dalsi->geo.X1);Y1=m.L2Py(p->elementy->dalsi->geo.Y1)-m.m2px(rozmery_kabiny.y)/2.0;X2=X1+m.m2px(rozmery_kabiny.x);Y2=m.L2Py(p->elementy->dalsi->geo.Y1)+m.m2px(rozmery_kabiny.y)/2.0;}else{X1=m.L2Px(p->elementy->dalsi->geo.X1);Y1=m.L2Py(p->elementy->dalsi->geo.Y1)-m.m2px(rozmery_kabiny.y)/2.0;X2=X1-m.m2px(rozmery_kabiny.x);Y2=m.L2Py(p->elementy->dalsi->geo.Y1)+m.m2px(rozmery_kabiny.y)/2.0;}break;
+					case 0:if(p_rotace!=0){X1=m.L2Px(p->elementy->dalsi->geo.X1)+m.m2px(rozmery_kabiny.y)/2.0;Y1=m.L2Py(p->elementy->dalsi->geo.Y1);X2=m.L2Px(p->elementy->dalsi->geo.X1)-m.m2px(rozmery_kabiny.y)/2.0;Y2=m.L2Py(p->elementy->dalsi->geo.Y1)-m.m2px(rozmery_kabiny.x);}else{X1=m.L2Px(p->elementy->dalsi->geo.X1)+m.m2px(rozmery_kabiny.y)/2.0;Y1=m.L2Py(p->elementy->dalsi->geo.Y1);X2=m.L2Px(p->elementy->dalsi->geo.X1)-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y1+m.m2px(rozmery_kabiny.x);}break;
+					case 90:if(p_rotace!=90){X1=m.L2Px(p->elementy->dalsi->geo.X1);Y1=m.L2Py(p->elementy->dalsi->geo.Y1)-m.m2px(rozmery_kabiny.y)/2.0;X2=X1+m.m2px(rozmery_kabiny.x);Y2=m.L2Py(p->elementy->dalsi->geo.Y1)+m.m2px(rozmery_kabiny.y)/2.0;}else{X1=m.L2Px(p->elementy->dalsi->geo.X1);Y1=m.L2Py(p->elementy->dalsi->geo.Y1)-m.m2px(rozmery_kabiny.y)/2.0;X2=X1-m.m2px(rozmery_kabiny.x);Y2=m.L2Py(p->elementy->dalsi->geo.Y1)+m.m2px(rozmery_kabiny.y)/2.0;}break;
+					case 180:if(p_rotace!=180){X1=m.L2Px(p->elementy->dalsi->geo.X1)+m.m2px(rozmery_kabiny.y)/2.0;Y1=m.L2Py(p->elementy->dalsi->geo.Y1);X2=m.L2Px(p->elementy->dalsi->geo.X1)-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y1+m.m2px(rozmery_kabiny.x);}else{X1=m.L2Px(p->elementy->dalsi->geo.X1)+m.m2px(rozmery_kabiny.y)/2.0;Y1=m.L2Py(p->elementy->dalsi->geo.Y1);X2=m.L2Px(p->elementy->dalsi->geo.X1)-m.m2px(rozmery_kabiny.y)/2.0;Y2=m.L2Py(p->elementy->dalsi->geo.Y1)-m.m2px(rozmery_kabiny.x);}break;
+					case 270:if(p_rotace==270){X1=m.L2Px(p->elementy->dalsi->geo.X1);Y1=m.L2Py(p->elementy->dalsi->geo.Y1)-m.m2px(rozmery_kabiny.y)/2.0;X2=X1+m.m2px(rozmery_kabiny.x);Y2=m.L2Py(p->elementy->dalsi->geo.Y1)+m.m2px(rozmery_kabiny.y)/2.0;}else{X1=m.L2Px(p->elementy->dalsi->geo.X1);Y1=m.L2Py(p->elementy->dalsi->geo.Y1)-m.m2px(rozmery_kabiny.y)/2.0;X2=X1-m.m2px(rozmery_kabiny.x);Y2=m.L2Py(p->elementy->dalsi->geo.Y1)+m.m2px(rozmery_kabiny.y)/2.0;}break;
 				}
+				if(rotace==m.Rt90(p_rotace-180))rotace=p_rotace;
 			}
 			//vykreslení kurzoru
 			canv->Rectangle(X1,Y1,X2,Y2);

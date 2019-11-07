@@ -543,7 +543,7 @@ void TFormX::zmena_aRD (Cvektory::TElement *mimo_element)
 			double uhel=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->pom_temp,F->pom_temp->elementy->dalsi);
 			F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(uhel,F->pom_temp->pohon->Rz,1)),3);
 		}
-		validace_aRD();//validace pouze v kontinuálním režimu kabiny
+		if(F->Akce==F->NIC)validace_aRD();//validace pouze v kontinuálním režimu kabiny
 	}
 	//propoèty v tabulkách elementù
 	aktualizace_tab_elementu(mimo_element);
@@ -987,7 +987,7 @@ void TFormX::validace_max_voziku()
 		if(F->ls->Strings[251]!="")t2=F->ls->Strings[251];
 		if(posledni_E->max_pocet_voziku>0 && posledni_E->max_pocet_voziku<posledni_E->akt_pocet_voziku){posledni_E->mGrid->ShowNote(t1+" <a>"+AnsiString(posledni_E->max_pocet_voziku)+"</a>");validace=false;}
 		if(posledni_E->max_pocet_voziku==0){posledni_E->mGrid->ShowNote(t2);validace=false;}
-		if(posledni_E->max_pocet_voziku>0 && posledni_E->max_pocet_voziku<posledni_E->akt_pocet_voziku)F->TIP="Pro aktuální poèet pozinc je tøeba buffer o délce "+AnsiString(F->d.v.PP.delka_podvozek*posledni_E->akt_pocet_voziku*1000)+" mm.";
+		if(posledni_E->max_pocet_voziku>0 && posledni_E->max_pocet_voziku<posledni_E->akt_pocet_voziku)F->TIP="Pro aktuální poèet pozic je tøeba buffer o délce "+AnsiString(F->d.v.PP.delka_podvozek*posledni_E->akt_pocet_voziku*1000)+" mm.";
 		////pøepsání maximálního poèctu vozíku do tabulky elementu, pro jistotu
 		posledni_E->mGrid->Cells[1][5].Text=posledni_E->max_pocet_voziku;
 		////nemožnost uložit pøi chybných hodnotách
