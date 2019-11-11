@@ -1580,9 +1580,11 @@ void Cvektory::rotuj_objekt(TObjekt *Objekt, double rotace)
 		rotuj_body(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,rotace,Objekt);
 		////rotace elementů
 		TElement *E=Objekt->elementy->dalsi;//objekt má vždy element (zarážka)
+		//F->Memo(,true);
 		while(E!=NULL)
 		{
-			E->orientace=m.Rt90(azimut-90);//zapsání nové orientace do elementu
+			if(E->orientace==m.Rt90(Objekt->orientace-90))E->orientace=m.Rt90(azimut-90);//zapsání nové orientace do elementu
+			else E->orientace=m.Rt90(azimut+90);
 			//souřadnice elementu
 			Bod=m.rotace(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,E->X,E->Y,rotace);
 			E->X=Bod.x;E->Y=Bod.y;
@@ -2103,9 +2105,9 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 	bool rename=false;//proměná sloužící k spouštění přejměnování
 	AnsiString t_operator="Operátor",t_ion="ION tyč",t_otoc="Otoč",t_PM="Předávací místo";
 	if(F->ls->Strings[272]!="")t_operator=F->ls->Strings[272];
-	if(F->ls->Strings[270]!="")t_ion=F->ls->Strings[272];
-	if(F->ls->Strings[273]!="")t_otoc=F->ls->Strings[272];
-	if(F->ls->Strings[271]!="")t_PM=F->ls->Strings[272];
+	if(F->ls->Strings[270]!="")t_ion=F->ls->Strings[270];
+	if(F->ls->Strings[273]!="")t_otoc=F->ls->Strings[273];
+	if(F->ls->Strings[271]!="")t_PM=F->ls->Strings[271];
 	if(Element!=NULL)//funkčnost při vložení elementu mezi ostatní, pouze název pořadové čísla byly již změněny
 	{
 		//úprava názvu pro roboty

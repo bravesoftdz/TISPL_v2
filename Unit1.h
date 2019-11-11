@@ -325,6 +325,7 @@ __published:	// IDE-managed Components
   TscGPSwitch *scGPSwitch1;
   TscLabel *scLabel_CZ;
   TscLabel *scLabel_EN;
+	TscGPCheckBox *scGPCheckBox_zobrazit_palce;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -536,6 +537,7 @@ __published:	// IDE-managed Components
   void __fastcall scGPCheckBox1_popiskyClick(TObject *Sender);
   void __fastcall scGPCheckBox_zobrazit_kolejeClick(TObject *Sender);
   void __fastcall scGPSwitch1ChangeState(TObject *Sender);
+	void __fastcall scGPCheckBox_zobrazit_palceClick(TObject *Sender);
 
 
 
@@ -760,6 +762,7 @@ public:		// User declarations
   short rotace_jigu;
   short zobrazit_popisky;
 	short zobrazit_koleje;
+	short zobrazit_palce;
 	bool zamek_layoutu;
 
 	//metody
