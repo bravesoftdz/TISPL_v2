@@ -43,8 +43,8 @@ void Cvykresli::vykresli_halu(TCanvas *canv,int stav)
 	{
     if(F->Akce==F->MOVE_HALA)stav=0;
 		if(F->JID==0)stav=F->pom_bod->n;//body
-		if(F->JID==1&&F->pom_bod->n==1)stav=2*v.HALA.body->predchozi->n;//poslední úsečka
-		if(F->JID==1&&F->pom_bod->n!=1)stav=v.HALA.body->predchozi->n+F->pom_bod->n-1;//ostatní úsečky
+		if(F->JID==1 && F->pom_bod->n==1)stav=2*v.HALA.body->predchozi->n;//poslední úsečka
+		if(F->JID==1 && F->pom_bod->n!=1)stav=v.HALA.body->predchozi->n+F->pom_bod->n-1;//ostatní úsečky
 	}
 	if(F->pom_temp!=NULL)stav=-1;
 	//nastavení kót
@@ -2791,7 +2791,7 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 				double aR=m.a360(rotaceJ+Ep->rotace_jig);//výstupní rotace jigu z posledního rotačního elementu
 				if(Ep->n==E->n &&  Ep->objekt_n==E->objekt_n && aR!=0 && aR!=180)//předposlení podmínka při novém DM zbytečná!
 				{
-					T="Rotace neopovídá orientaci JIGů na začátku linky!";
+					T="Rotace neodpovídá orientaci JIGů na začátku linky!";
 					//TextFraming(canv,m.L2Px(X)-m.round(canv->TextWidth(T)/2.0),m.L2Py(Y)-m.round(canv->TextHeight(T)/2.0),T,canv->Font,clWhite,3);
 					Warning[WarningCount].text=T;
 					Warning[WarningCount].X=m.L2Px(X)-m.round(canv->TextWidth(T)/2.0);
@@ -2827,6 +2827,32 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 				canv->Font->Orientation=0;//navrácení do původního stavu
 			}
 		}
+	}
+
+	////vykreslí OBALOVOU zónu oblouků
+	if(F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->geo.typ==1)
+	{
+		double dJ=v.PP.delka_jig;//později nahradit ze zakázky
+		double sJ=v.PP.sirka_jig;//později nahradit ze zakázky
+		double rotaceJ=v.vrat_rotaci_jigu_po_predchazejicim_elementu(E);//metodu po přechodu na nový DM zaktulizovat o průchod přes spoják elementů
+		double orientaceP=m.Rt90(E->geo.orientace-180);
+		unsigned short clPotRGB=180;//hotnota barevných složek dle RGB potenciálních pozic
+		TColor clPotencial=RGB(clPotRGB,clPotRGB,clPotRGB);
+
+	 DWORD pole[]={m.round(5/3.0*F->Zoom),m.round(2.5/3.0*F->Zoom),m.round(1/3.0*F->Zoom),m.round(2.5/3.0*F->Zoom)};//definice uživatelského pera s vlastní definovanou linii
+	 set_pen2(canv,clPotencial,m.round(1.3/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
+	 vykresli_jig(canv,E->geo.X1,E->geo.Y1,dJ,sJ,orientaceP,rotaceJ,NULL,0);//pozn. barvu nastavujeme výše
+
+	 double fRA=fabs(E->geo.rotacni_uhel);
+	 short z=E->geo.rotacni_uhel/fRA;
+	 for(double i=fRA/2.0;i<fRA;i+=fRA/2.0)
+	 {
+		 TPointD *geo=m.getArcLine(E->geo.X1,E->geo.Y1,E->geo.orientace,i*z,E->geo.radius);
+		 vykresli_jig(canv,geo[3].x,geo[3].y,dJ,sJ,orientaceP+i*-z,rotaceJ,NULL,0);//pozn. barvu nastavujeme výše
+		 delete geo;geo=NULL;
+	 }
+
+	 vykresli_jig(canv,E->geo.X4,E->geo.Y4,dJ,sJ,orientaceP-E->geo.rotacni_uhel,rotaceJ,NULL,0);//pozn. barvu nastavujeme výše
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -4690,7 +4716,6 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 	if(body!=NULL && body->predchozi->n>1)
 	{
 		////výchozí parametry
-		//short W=m.round(sirka/2.0);//posunutí vykreslení orámování nad vnější rozměry kabiny
 		short I=100-F->scGPTrackBar_intenzita->Value;
 		TColor clHighlight=m.clIntensive(barva,-50);
 		TColor clDisabled=m.clIntensive(barva,I);
@@ -4769,6 +4794,7 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 			if(kota_od!=NULL)B=kota_od;
 			else B=body->dalsi->dalsi;
 			short highlight=0;
+			float width=0.1;if(m.m2px(0.4)>sirka)width*=2;//u haly kresli menší kóty
 			while(B!=NULL)//vykreslení kót musí být v samostatém cyklu!!!!!(jinak ovlivňuje vykreslení spojnic bodů)
 			{
 				//nastavení highlightu
@@ -4779,22 +4805,22 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 				if(F->DKunit==2 || F->DKunit==3)delka_koty=delka_koty/F->pom_temp->pohon->aRD;
 				//vykreslení kóty
 				if(kota_od==NULL)                                                                                                                                              //převedení na mm
-				vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),F->outDK(delka_koty),NULL,B->kota_offset*F->Zoom/AA,highlight,0.2,clGray,false,NULL,B);
+				vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),F->outDK(delka_koty),NULL,B->kota_offset*F->Zoom/AA,highlight,width,clGray,false,NULL,B);
 				else
 				{
 					//určení nové vzdálenosti
 					delka_koty=m.round2double(m.delka(B->predchozi->X,B->predchozi->Y,B->X,B->Y),3);if(F->DKunit==2 || F->DKunit==3)delka_koty=delka_koty/F->pom_temp->pohon->aRD;
 					//vykreslení jedné kóty pro obdelník/čtverec
-					vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),F->outDK(delka_koty),NULL,B->kota_offset*F->Zoom/AA,highlight,0.2,clGray,false,NULL,B);
+					vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),F->outDK(delka_koty),NULL,B->kota_offset*F->Zoom/AA,highlight,width,clGray,false,NULL,B);
 					if(kota_od->dalsi!=NULL)//ošetření
 					{
 				  	//zjištění highlightu pro druhou kótu obdelníku/čtverce
 				  	if(F->pom_bod!=NULL && F->JID==oblast_koty&&F->pom_bod->n==B->dalsi->n)highlight=2;
-				  	else if(F->pom_bod!=NULL && F->JID==hodnota_koty&&F->pom_bod->n==B->dalsi->n)highlight=1;else highlight=0;
+						else if(F->pom_bod!=NULL && F->JID==hodnota_koty&&F->pom_bod->n==B->dalsi->n)highlight=1;else highlight=0;
 				  	//délka
 				  	delka_koty=m.round2double(m.delka(B->X,B->Y,B->dalsi->X,B->dalsi->Y),3);if(F->DKunit==2 || F->DKunit==3)delka_koty=delka_koty/F->pom_temp->pohon->aRD;
 				  	//vykreslení
-						vykresli_kotu(canv,m.L2Px(B->X),m.L2Py(B->Y),m.L2Px(B->dalsi->X),m.L2Py(B->dalsi->Y),F->outDK(delka_koty),NULL,B->dalsi->kota_offset*F->Zoom/AA,highlight,0.2,clGray,false,NULL,B->dalsi);
+						vykresli_kotu(canv,m.L2Px(B->X),m.L2Py(B->Y),m.L2Px(B->dalsi->X),m.L2Py(B->dalsi->Y),F->outDK(delka_koty),NULL,B->dalsi->kota_offset*F->Zoom/AA,highlight,width,clGray,false,NULL,B->dalsi);
 					}
 					break;
 				}
@@ -4804,7 +4830,7 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 			delka_koty=m.round2double(m.delka(body->predchozi->X,body->predchozi->Y,body->dalsi->X,body->dalsi->Y),0);if(F->DKunit==2 || F->DKunit==3)delka_koty=delka_koty/F->pom_temp->pohon->aRD;
 			if(F->pom_bod!=NULL && F->JID==oblast_koty&&F->pom_bod->n==body->dalsi->n)highlight=2;
 			else if(F->pom_bod!=NULL && F->JID==hodnota_koty&&F->pom_bod->n==body->dalsi->n)highlight=1;else highlight=0;
-			if(kota_od==NULL && body->predchozi->n>2)vykresli_kotu(canv,m.L2Px(body->predchozi->X),m.L2Py(body->predchozi->Y),m.L2Px(body->dalsi->X),m.L2Py(body->dalsi->Y),F->outDK(delka_koty),NULL,body->dalsi->kota_offset*F->Zoom/AA,highlight,0.2,clGray,false,NULL,body->dalsi);
+			if(kota_od==NULL && body->predchozi->n>2)vykresli_kotu(canv,m.L2Px(body->predchozi->X),m.L2Py(body->predchozi->Y),m.L2Px(body->dalsi->X),m.L2Py(body->dalsi->Y),F->outDK(delka_koty),NULL,body->dalsi->kota_offset*F->Zoom/AA,highlight,width,clGray,false,NULL,body->dalsi);
 
 			////odstranění pomocného ukazatele
 			B=NULL; delete B;
@@ -4818,7 +4844,7 @@ void Cvykresli::uchop(TCanvas *canv,Cvektory::TBod *B,TColor barva)
 {
 	//nastavení pera a velikosti
 	float z=1;if(F->Zoom<=1+2*(short)F->antialiasing)z=1.5/F->Zoom*(1+2*(short)F->antialiasing);//pokud bude hodnota zoomu menší nebo rovno 1, bude uchop stejně velký jako při zoomu 1,5x
-  if(F->pom_temp!=NULL)z=z/2.5;//pokud je úchop vykreslován pro obrys kabiny = náhled, musí být zmenšen
+	if(F->pom_temp!=NULL)z=z/2.5;//pokud je úchop vykreslován pro obrys kabiny = náhled, musí být zmenšen
 	short o=m.m2px(0.4*z);//citelná oblast uchopovací kružnice, pokud by se zde hodnota měnila, nutno změnit i v v.najdi_bod!!!
 	canv->Pen->Color=clWhite;//orámování uchopu
 	canv->Pen->Width=m.round(0.5*F->Zoom);

@@ -76,7 +76,7 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod,bool orto
 
 	////data
 	//nastavení defaultních hodnot
-	Bod->kota_offset=-70;if(Objekt!=NULL)Bod->kota_offset/=5;
+	Bod->kota_offset=-55;if(Objekt!=NULL)Bod->kota_offset/=5.0*5.5/7.0;
 	//souřadnice připadně ortogonalizované
 	if(ortogonalizovat)//pokud je požadavek na ortogonalizaci, tak ověření zda je možný
 	{
