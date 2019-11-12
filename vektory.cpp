@@ -849,39 +849,41 @@ short Cvektory::oblast_objektu(TObjekt *O,double X, double Y)
 	X=m.P2Lx(X);Y=m.P2Ly(Y);
 	if(O!=NULL)
 	{
-		switch((int)O->orientace)
-		{
-			case 0:
-			{
-				double delka_y=O->elementy->predchozi->geo.Y4-O->elementy->dalsi->geo.Y1,polovina_y=O->elementy->dalsi->geo.Y1+delka_y/2.0,delka_x=delka_y;
-				if(O->id==8 || O->id==7){delka_y/=2.0;delka_x/=2.0;}//zmenšení oblasti pro dlouhé objekty
-				if(O->elementy->predchozi->geo.X4-delka_x<=X && X<=O->elementy->predchozi->geo.X4+delka_x && polovina_y<=Y && Y<polovina_y+3*delka_y/2.0)ret=1;//oblast za objektem
-				if(O->elementy->dalsi->geo.X1-delka_x<=X && X<=O->elementy->dalsi->geo.X1+delka_x && polovina_y-3*delka_y/2.0<=Y && Y<polovina_y)ret=2;//oblast před objektem
-			}break;
-			case 90:
-			{
-				double delka_x=O->elementy->predchozi->geo.X4-O->elementy->dalsi->geo.X1,polovina_x=O->elementy->dalsi->geo.X1+delka_x/2.0,delka_y=delka_x;
-				if(O->id==8 || O->id==7){delka_y/=3.0;delka_x/=2.0;}//zmenšení oblasti pro dlouhé objekty
-				if(polovina_x<=X && X<=polovina_x+3*delka_x/2.0 && O->elementy->predchozi->geo.Y4-delka_y<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_y)ret=1;//oblast za objektem
-				if(polovina_x-3*delka_x/2.0<=X && X<polovina_x && O->elementy->predchozi->geo.Y4-delka_y<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_y)ret=2;//oblast před objektem
-			}break;
-			case 180:
-			{
-				double delka_y=O->elementy->dalsi->geo.Y1-O->elementy->predchozi->geo.Y4,polovina_y=O->elementy->dalsi->geo.Y1-delka_y/2.0,delka_x=delka_y;
-				if(O->id==8 || O->id==7){delka_y/=2.0;delka_x/=2.0;}//zmenšení oblasti pro dlouhé objekty
-				if(O->elementy->predchozi->geo.X4-delka_x<=X && X<=O->elementy->predchozi->geo.X4+delka_x && polovina_y-3*delka_y/2.0<=Y && Y<=polovina_y)ret=1;//oblast za objektem
-				if(O->elementy->dalsi->geo.X1-delka_x<=X && X<=O->elementy->dalsi->geo.X1+delka_x && polovina_y<Y && Y<=polovina_y+3*delka_y/2.0)ret=2;//oblast před objektem
-			}break;
-			case 270:
-			{
-				double delka_x=O->elementy->dalsi->geo.X1-O->elementy->predchozi->geo.X4,polovina_x=O->elementy->dalsi->geo.X1-delka_x/2.0,delka_y=delka_x;
-				if(O->id==8 || O->id==7){delka_y/=3.0;delka_x/=2.0;}//zmenšení oblasti pro dlouhé objekty
-				if(polovina_x-3*delka_x/2.0<=X && X<=polovina_x && O->elementy->predchozi->geo.Y4-delka_y<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_y)ret=1;//oblast před objektem
-				if(polovina_x<X && X<=polovina_x+3*delka_x/2.0 && O->elementy->predchozi->geo.Y4-delka_y<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_y)ret=2;//oblast za objektem
-			}break;
-		}
-//		double delka_x=O->elementy->predchozi->geo.X4-O->elementy->dalsi->geo.X1,polovina_x=O->elementy->dalsi->geo.X1+delka_x/2.0,delka_y=delka_x;
-//		F->Canvas->Rectangle(m.L2Px(polovina_x),m.L2Py(O->elementy->predchozi->geo.Y4-delka_y),m.L2Px(polovina_x+3*delka_x/2.0),m.L2Py(O->elementy->predchozi->geo.Y4+delka_y));
+//		switch((int)O->orientace)
+//		{
+//			case 0:
+//			{
+//				double delka_y=O->elementy->predchozi->geo.Y4-O->elementy->dalsi->geo.Y1,polovina_y=O->elementy->dalsi->geo.Y1+delka_y/2.0,delka_x=delka_y;
+//				if(O->id==8 || O->id==7){delka_y/=2.0;delka_x/=2.0;}//zmenšení oblasti pro dlouhé objekty
+//				if(O->elementy->predchozi->geo.X4-delka_x<=X && X<=O->elementy->predchozi->geo.X4+delka_x && polovina_y<=Y && Y<polovina_y+3*delka_y/2.0)ret=1;//oblast za objektem
+//				if(O->elementy->dalsi->geo.X1-delka_x<=X && X<=O->elementy->dalsi->geo.X1+delka_x && polovina_y-3*delka_y/2.0<=Y && Y<polovina_y)ret=2;//oblast před objektem
+//			}break;
+//			case 90:
+//			{
+//				double delka_x=O->elementy->predchozi->geo.X4-O->elementy->dalsi->geo.X1,polovina_x=O->elementy->dalsi->geo.X1+delka_x/2.0,delka_y=delka_x;
+//				if(O->id==8 || O->id==7){delka_y/=3.0;delka_x/=2.0;}//zmenšení oblasti pro dlouhé objekty
+//				if(polovina_x<=X && X<=polovina_x+3*delka_x/2.0 && O->elementy->predchozi->geo.Y4-delka_y<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_y)ret=1;//oblast za objektem
+//				if(polovina_x-3*delka_x/2.0<=X && X<polovina_x && O->elementy->predchozi->geo.Y4-delka_y<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_y)ret=2;//oblast před objektem
+//			}break;
+//			case 180:
+//			{
+//				double delka_y=O->elementy->dalsi->geo.Y1-O->elementy->predchozi->geo.Y4,polovina_y=O->elementy->dalsi->geo.Y1-delka_y/2.0,delka_x=delka_y;
+//				if(O->id==8 || O->id==7){delka_y/=2.0;delka_x/=2.0;}//zmenšení oblasti pro dlouhé objekty
+//				if(O->elementy->predchozi->geo.X4-delka_x<=X && X<=O->elementy->predchozi->geo.X4+delka_x && polovina_y-3*delka_y/2.0<=Y && Y<=polovina_y)ret=1;//oblast za objektem
+//				if(O->elementy->dalsi->geo.X1-delka_x<=X && X<=O->elementy->dalsi->geo.X1+delka_x && polovina_y<Y && Y<=polovina_y+3*delka_y/2.0)ret=2;//oblast před objektem
+//			}break;
+//			case 270:
+//			{
+//				double delka_x=O->elementy->dalsi->geo.X1-O->elementy->predchozi->geo.X4,polovina_x=O->elementy->dalsi->geo.X1-delka_x/2.0,delka_y=delka_x;
+//				if(O->id==8 || O->id==7){delka_y/=3.0;delka_x/=2.0;}//zmenšení oblasti pro dlouhé objekty
+//				if(polovina_x-3*delka_x/2.0<=X && X<=polovina_x && O->elementy->predchozi->geo.Y4-delka_y<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_y)ret=1;//oblast před objektem
+//				if(polovina_x<X && X<=polovina_x+3*delka_x/2.0 && O->elementy->predchozi->geo.Y4-delka_y<=Y && Y<=O->elementy->predchozi->geo.Y4+delka_y)ret=2;//oblast za objektem
+//			}break;
+//		}
+		double delka_x=5,delka_y=delka_x;
+		if(O->id==0 || O->id==9 || O->body->predchozi->n>4)delka_x=delka_y=2.5;
+		if(O->elementy->predchozi->geo.X4-delka_x<X && X<O->elementy->predchozi->geo.X4+delka_x && O->elementy->predchozi->geo.Y4-delka_y<Y && Y<O->elementy->predchozi->geo.Y4+delka_y)ret=1;//oblast před objektem
+		if(O->elementy->dalsi->geo.X1-delka_x<X && X<O->elementy->dalsi->geo.X1+delka_x && O->elementy->dalsi->geo.Y1-delka_y<Y && Y<O->elementy->dalsi->geo.Y1+delka_y)ret=2;//oblast za objektem
 	}
 	return ret;
 }
@@ -1580,7 +1582,8 @@ void Cvektory::rotuj_objekt(TObjekt *Objekt, double rotace)
 		TElement *E=Objekt->elementy->dalsi;//objekt má vždy element (zarážka)
 		while(E!=NULL)
 		{
-			E->orientace=m.Rt90(azimut-90);//zapsání nové orientace do elementu
+			if(E->orientace==m.Rt90(Objekt->orientace-90))E->orientace=m.Rt90(azimut-90);//zapsání nové orientace do elementu
+			else E->orientace=m.Rt90(azimut+90);
 			//souřadnice elementu
 			Bod=m.rotace(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,E->X,E->Y,rotace);
 			E->X=Bod.x;E->Y=Bod.y;
@@ -1599,7 +1602,7 @@ void Cvektory::rotuj_objekt(TObjekt *Objekt, double rotace)
 			E->geo.X3=Bod.x;E->geo.Y3=Bod.y;
 			Bod=m.rotace(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,E->geo.X4,E->geo.Y4,rotace);
 			E->geo.X4=Bod.x;E->geo.Y4=Bod.y;
-			if(E->geo.typ==0)E->geo.orientace=azimut;
+			E->geo.orientace=m.Rt90(E->geo.orientace-rotace);
 			E=E->dalsi;
 		}
 		delete E;E=NULL;
@@ -2101,9 +2104,9 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 	bool rename=false;//proměná sloužící k spouštění přejměnování
 	AnsiString t_operator="Operátor",t_ion="ION tyč",t_otoc="Otoč",t_PM="Předávací místo";
 	if(F->ls->Strings[272]!="")t_operator=F->ls->Strings[272];
-	if(F->ls->Strings[270]!="")t_ion=F->ls->Strings[272];
-	if(F->ls->Strings[273]!="")t_otoc=F->ls->Strings[272];
-	if(F->ls->Strings[271]!="")t_PM=F->ls->Strings[272];
+	if(F->ls->Strings[270]!="")t_ion=F->ls->Strings[270];
+	if(F->ls->Strings[273]!="")t_otoc=F->ls->Strings[273];
+	if(F->ls->Strings[271]!="")t_PM=F->ls->Strings[271];
 	if(Element!=NULL)//funkčnost při vložení elementu mezi ostatní, pouze název pořadové čísla byly již změněny
 	{
 		//úprava názvu pro roboty
