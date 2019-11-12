@@ -2729,10 +2729,10 @@ unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,int i,TPointD OD, TPointD 
 	return i;
 }
 ////-----------------------------------------------------------------------------------------------------------------------------------------------------
-//vykresli pozic na elementech
+//vykresli pozic a obalových zón - doporučení přejmenovat metodu
 void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 {
-	if(F->scGPTrackBar_intenzita->Value>5 && F->scGPCheckBox_zobrazit_pozice->Checked && E->max_pocet_voziku>0 || (F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180))//pokud se má smysl algoritmem zabývat
+	if(F->scGPTrackBar_intenzita->Value>5 && F->scGPCheckBox_zobrazit_pozice->Checked && E->max_pocet_voziku>0 || (F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180) || F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->geo.typ==1)//pokud se má smysl algoritmem zabývat
 	{
 		////výchozí hodnoty
 		double orientaceP=m.Rt90(E->geo.orientace-180);
@@ -2742,7 +2742,7 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 		double dJ=v.PP.delka_jig;//později nahradit ze zakázky
 		double sJ=v.PP.sirka_jig;//později nahradit ze zakázky
 		double rotaceJ=v.vrat_rotaci_jigu_po_predchazejicim_elementu(E);//metodu po přechodu na nový DM zaktulizovat o průchod přes spoják elementů
-		short rozmezi=40;//pouze empiricky dodaná hodnota barevného rozpětí od první až po poslední pozici rotace
+		short rozmezi=60;//pouze empiricky dodaná hodnota barevného rozpětí od první až po poslední pozici rotace, bylo 40
 		unsigned short clPotRGB=180;//hotnota barevných složek dle RGB potenciálních pozic
 		TColor clPotencial=RGB(clPotRGB,clPotRGB,clPotRGB),clChassis=(TColor) RGB(50,50,50),clJig=clPurple;
 		short I=100-F->scGPTrackBar_intenzita->Value;
@@ -2774,7 +2774,7 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 		if(F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180)
 		{
 			//nastavení parametrů vykreslení různých stupňů rotace
-			short krok=45;//zobrazení rotace krokem po x stupních (vhodné v násobcích 15,30,45)
+			short krok=30;/*if(fabs(E->rotace_jig)==180)krok=45;*///zobrazení rotace krokem po x stupních (vhodné v násobcích 15,30,45)
 			double posun=fabs(E->OTOC_delka/(E->rotace_jig/krok));//krok posunu animace rotace dle délky otoče a proměnné krok
 			short Z=1;if(E->rotace_jig<0)Z=-1;//pro záporné rotace jigu
 			double aopo=0;if(E->eID==4 || E->eID==6 || E->eID==10 || E->eID==14 || E->eID==18 || E->eID==104 || E->eID==108)aopo=v.PP.uchyt_pozice-(v.PP.delka_podvozek/2.0);//funkční elementy obsahující aktivní otoč posunutí otáčení o uchyt voziku
@@ -2831,32 +2831,32 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 				canv->Font->Orientation=0;//navrácení do původního stavu
 			}
 		}
-	}
 
-	////vykreslí OBALOVOU zónu oblouků
-	if(F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->geo.typ==1)
-	{
-		double dJ=v.PP.delka_jig;//později nahradit ze zakázky
-		double sJ=v.PP.sirka_jig;//později nahradit ze zakázky
-		double rotaceJ=v.vrat_rotaci_jigu_po_predchazejicim_elementu(E);//metodu po přechodu na nový DM zaktulizovat o průchod přes spoják elementů
-		double orientaceP=m.Rt90(E->geo.orientace-180);
-		unsigned short clPotRGB=180;//hotnota barevných složek dle RGB potenciálních pozic
-		TColor clPotencial=RGB(clPotRGB,clPotRGB,clPotRGB);
-
-	 DWORD pole[]={m.round(5/3.0*F->Zoom),m.round(2.5/3.0*F->Zoom),m.round(1/3.0*F->Zoom),m.round(2.5/3.0*F->Zoom)};//definice uživatelského pera s vlastní definovanou linii
-	 set_pen2(canv,clPotencial,m.round(1.3/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
-	 vykresli_jig(canv,E->geo.X1,E->geo.Y1,dJ,sJ,orientaceP,rotaceJ,NULL,0);//pozn. barvu nastavujeme výše
-
-	 double fRA=fabs(E->geo.rotacni_uhel);
-	 short z=E->geo.rotacni_uhel/fRA;
-	 for(double i=fRA/2.0;i<fRA;i+=fRA/2.0)
-	 {
-		 TPointD *geo=m.getArcLine(E->geo.X1,E->geo.Y1,E->geo.orientace,i*z,E->geo.radius);
-		 vykresli_jig(canv,geo[3].x,geo[3].y,dJ,sJ,orientaceP+i*-z,rotaceJ,NULL,0);//pozn. barvu nastavujeme výše
-		 delete geo;geo=NULL;
-	 }
-
-	 vykresli_jig(canv,E->geo.X4,E->geo.Y4,dJ,sJ,orientaceP-E->geo.rotacni_uhel,rotaceJ,NULL,0);//pozn. barvu nastavujeme výše
+		////vykreslí OBALOVOU zónu oblouků
+		if(F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->geo.typ==1)
+		{
+		 double fRA=fabs(E->geo.rotacni_uhel);
+		 short z=E->geo.rotacni_uhel/fRA;
+		 short pocet=fRA/15.0-1;if(pocet<2)pocet=2;//počet vykreslených vozíků automaticky volen dle velikosti rotačního úhlu
+		 short clUroven=m.round(rozmezi*pocet+1);//rozmezí odstínu v RGB
+		 DWORD pole[]={m.round(5/3.0*F->Zoom),m.round(2.5/3.0*F->Zoom),m.round(1/3.0*F->Zoom),m.round(2.5/3.0*F->Zoom)};//definice uživatelského pera s vlastní definovanou linii
+		 unsigned short clAkt=clPotRGB+rozmezi;
+		 set_pen2(canv,RGB(clAkt,clAkt,clAkt),m.round(1.3/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
+		 //vstupní jig - vykresluji separé, kvůli ušetření výpočtu
+		 vykresli_jig(canv,E->geo.X1,E->geo.Y1,dJ,sJ,orientaceP,rotaceJ,NULL,0);//pozn. barvu nastavujeme výše
+		 //následující jig(y)
+		 for(double i=fRA/pocet;i<fRA;i+=fRA/pocet)
+		 {
+			 clAkt=clPotRGB+rozmezi-abs(i/fRA/pocet)*clUroven;
+			 set_pen2(canv,RGB(clAkt,clAkt,clAkt),m.round(1.3/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
+			 TPointD *geo=m.getArcLine(E->geo.X1,E->geo.Y1,E->geo.orientace,i*z,E->geo.radius);
+			 vykresli_jig(canv,geo[3].x,geo[3].y,dJ,sJ,orientaceP+i*-z,rotaceJ,NULL,0);//pozn. barvu nastavujeme výše
+			 delete geo;geo=NULL;
+		 }
+		 //poslední jig - vykresluji separé, kvůli ušetření výpočtu
+		 set_pen2(canv,RGB(clPotRGB,clPotRGB,clPotRGB),m.round(1.3/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
+		 vykresli_jig(canv,E->geo.X4,E->geo.Y4,dJ,sJ,orientaceP-E->geo.rotacni_uhel,rotaceJ,NULL,0);//pozn. barvu nastavujeme výše
+		}
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
