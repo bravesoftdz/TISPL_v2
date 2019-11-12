@@ -638,7 +638,7 @@ private:
 	void vytvor_edit();//vytvoøí edit na místì hlavièky tabulky, slouží ke zmìnì názvu elementu
 	void smaz_edit(bool refresh=true);//smaže edit, který sloužil pro zmìnu názvu elementu a nový název zapíše do elementu, defaultnì provede refresh, pokud není pøedáno parametrem jinak
 	void vykresli_spojinici_EmGrid(TCanvas *Canv,Cvektory::TElement *E);//vykreslí spojnici mezi tabulkou a elementem z nejbližšího rohu tabulky
-  void mGrid_mimo_obraz(Cvektory::TElement *E);//kontrola zde je mGrid mimo obraz, pokud ano vypnutí komponent
+  void mGrid_mimo_obraz(Cvektory::TElement *E=NULL);//kontrola zde je mGrid mimo obraz, pokud ano vypnutí komponent
 	void nacti_podklad(TCanvas *Canv);
 	unsigned short load_language(Tlanguage language,bool akt_mGrid=false);
 	void zmena_editovaneho_objektu();//slouží k pøechodu z editace jednoho objektu do editace druhého objektu
@@ -650,7 +650,7 @@ private:
 	void smaz_bod_haly_objektu(Cvektory::TBod *bod);//smaže bod haly nebo objektu, pokud existují už jen 2 poslední body smaže oba
 	void mGrid_on_mGrid();//prohledá zda se pøekrývají mGridy
 	void mGrid_komponenta_na_draw(TmGrid *mGrid,long Col,long Row);//smazì komponentu v dané buòce a zmìní typ bunky na DRAW
-	void mGrid_puvodni_stav(Cvektory::TElement *E);//nadesingnuje tabulky elementù na pùvodní stav, obnový komponenty, naplní comba, provede Update() mGridu
+	void mGrid_puvodni_stav(Cvektory::TElement *E=NULL);//nadesingnuje tabulky elementù nebo tabulku pohonu na pùvodní stav, obnový komponenty, naplní comba, provede Update() mGridu
 	void set_font(int velikost=14);//nastaví komponentám aFont
 	void pripnuti_dalsich_objektu();//pokud pøi uložení editovaného objektu je detekováno, že konec objketu nenavazuje na zaèátek následujísího objektu je položen dotaz a po potvrzení dojde ke spojení
   void change_languagein_mGrid();//aktualizace popiskù v tabulkách pøi zmìnì jazyka
@@ -820,6 +820,7 @@ public:		// User declarations
 	bool bod_na_geometrii(double X, double Y,Cvektory::TElement *Element=NULL);//kontroluje zde se bod nachází na geometri, vrací pouze ano/ne, pokud je do metody poslán ukazatel na element provìøí zda se tento element nachází na geometrii
 	double max_voziku(Cvektory::TElement *stopka);//vrátí maximální možný poèet vozíkù na stopce, podle geometrie pøed ní
 	void prirazeni_pohonu_tab_pohon(int index_pohonu);//pøedesignuje tabulku pohonu po pøidání elementu, nebo pohonu
+	void aktualizace_RT();//projde všechny elementy v aktuálnì editovaném objektu a upravím jim RT
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

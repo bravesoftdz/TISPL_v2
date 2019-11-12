@@ -504,7 +504,7 @@ class Cvektory
 	void uloz_sparovany_element(TElement *Stopka);//uloží dané stopce ukazatel na sparovaný stop element, který byl vybraný v Combu dané stopky, ošetřuje zda se jedná o stopku
 	void vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt);//dané stopce najde předchozí stop-element na lince, je možno, že nebude reflektovat danou zakázku//nově se podívá na předchozí stop-element a přiřadí mu ukazatel na Element
 	void aktualizuj_sparovane_ukazatele();//projde všechny stop-elementy a aktualizuje jim ukazatele na spárované elementy
-	TElement *Cvektory::vrat_predchozi_element(TElement *Element);//vrátí předchozí element k Element, který byl do metody poslán jako parametr, přeskočí geometrické zarážky
+	TElement *Cvektory::vrat_dalsi_element(TElement *Element);//vrátí další element k Element, který byl do metody poslán jako parametr, přeskočí geometrické zarážky
 	void smaz_element(TObjekt *Objekt, unsigned int n);//smaže element ze seznamu
 	void smaz_element(TElement *Element);//smaže element ze seznamu
 	long vymaz_elementy(TObjekt *Objekt,bool mGridSmazat=true);//vymaže všechny elementy daného objektu včetně hlavičky a vrátí počet smazaných elementů (počítáno bez hlavičky), automaticky, pokud posledním parametreme není nastaveno jinak, smaže přidružený mGrid
@@ -697,6 +697,7 @@ private:
 			unsigned int text_length;
 			double X, Y;
 			double Xt,Yt;
+			double Xp,Yp;
 			double orientace_text;//orientace nadpisu objektu
       unsigned long pocet_bodu;
 			unsigned long pocet_elementu;
@@ -767,8 +768,8 @@ private:
 
       double LO1;
 			double OTOC_delka;
-//			double zona_pred;
-//			double zona_za;
+			double zona_pred;
+			double zona_za;
       double LO2;
 			double LO_pozice;
 
