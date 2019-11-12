@@ -97,9 +97,9 @@ Save;X;Uloit
 Load background ...;X;Naèíst podklad...
 Options;X;Nastavení
                   Layers;X;                  Vrstvy
-View conveyor tracks;X;Zobrazit koleje dopravníku
+Show conveyor tracks;X;Zobrazit koleje dopravníku
 Show positions;X;Zobrazit pozice
-View jig rotation;X;Zobrazit rotace jigù
+Show jig rotation;X;Zobrazit rotace jigù
 Show element labels;X;Zobrazit popisky prvkù
                   Background;X;                  Podklad
 Set the scale;X;Nastavit mìøítko
@@ -290,3 +290,4 @@ The upper speed limit must be less than or equal to;X;Horní hranice rychlosti mu
 The lower speed limit must be >=;X;Spodní hranice rychlosti musí bıt >=
 The upper speed limit must be <=;X;Nebo horní hranice musí bıt <=
 The drive parameters can no longer be changed as it is also used on other objects;X;Parametry pohonu ji nelze mìnit, nebo je pouíván i na jinıch objektech
+Show thumbs;X;Zobrazit palce

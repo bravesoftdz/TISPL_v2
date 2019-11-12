@@ -1580,7 +1580,6 @@ void Cvektory::rotuj_objekt(TObjekt *Objekt, double rotace)
 		rotuj_body(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,rotace,Objekt);
 		////rotace elementů
 		TElement *E=Objekt->elementy->dalsi;//objekt má vždy element (zarážka)
-		//F->Memo(,true);
 		while(E!=NULL)
 		{
 			if(E->orientace==m.Rt90(Objekt->orientace-90))E->orientace=m.Rt90(azimut-90);//zapsání nové orientace do elementu
@@ -1603,7 +1602,7 @@ void Cvektory::rotuj_objekt(TObjekt *Objekt, double rotace)
 			E->geo.X3=Bod.x;E->geo.Y3=Bod.y;
 			Bod=m.rotace(Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1,E->geo.X4,E->geo.Y4,rotace);
 			E->geo.X4=Bod.x;E->geo.Y4=Bod.y;
-			if(E->geo.typ==0)E->geo.orientace=azimut;
+			E->geo.orientace=m.Rt90(E->geo.orientace-rotace);
 			E=E->dalsi;
 		}
 		delete E;E=NULL;

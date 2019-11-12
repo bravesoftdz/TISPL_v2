@@ -5166,7 +5166,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
     			Cvektory::TElement *E=F->pom_temp->elementy->dalsi;
     			while(E!=NULL)
     			{
-    				if(E->n==Element_do->n)break;
+    				if(E->n==Element_do->n || E->geo.typ!=0)break;
     				switch(E->eID)//pokud nějaký má dojde k uložení jeho ukazatele do prvního elementu
   					{case 1:case 7:case 11:case 15:case 101:case 105:case 3:case 9:case 13:case 17:case 103:case 107:Element_od=E;test1=true;break;}
     				E=E->dalsi;
