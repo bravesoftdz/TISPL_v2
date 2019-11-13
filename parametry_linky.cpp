@@ -772,7 +772,9 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		if(T!="")//byly nalezeny objekty mimo rozmezí + výpis
 		{
 			Changes=false;Ulozit=false;//zakáže uložení
-			Form1->MB("Pozor, nelze uložit hodnoty rozmezí pohonù, protože následující objekty mají rychlost mimo novì nastavený rozsah: "+T);
+			UnicodeString text="Pozor, nelze uložit hodnoty rozmezí pohonù, protože následující objekty mají rychlost mimo novì nastavený rozsah: ";
+			if(F->ls->Strings[369]!="")text=F->ls->Strings[369]+" ";
+			Form1->MB(text+T);
 		}
 
 
@@ -1032,7 +1034,9 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
 	else
 	{
 		scStyledForm2->ShowClientInActiveEffect();
-		F->MB("Není vybrán žádný dopravník, není možné pøidat pohon");
+		UnicodeString text="Není vybrán žádný dopravník, není možné pøidat pohon";
+		if(F->ls->Strings[370]!="")text=F->ls->Strings[370];
+		F->MB(text);
 		scStyledForm2->HideClientInActiveEffect();
 	}
 }
@@ -1703,8 +1707,10 @@ void __fastcall TForm_parametry_linky::GlyphButton_smazatMouseLeave(TObject *Sen
 //prochází všechny pohany a pokud je pohon nepoužíván, smaže ho
 void __fastcall TForm_parametry_linky::scLabel_smazat_nepouziteClick(TObject *Sender)
 {
-  F->log(__func__); //logování
-	if(mrYes==F->MB("Opravdu chcete smazat nepoužívané pohony?",MB_YESNO))
+	F->log(__func__); //logování
+	UnicodeString text="Opravdu chcete smazat nepoužívané pohony?";
+	if(F->ls->Strings[371]!="")text=F->ls->Strings[371];
+	if(mrYes==F->MB(text,MB_YESNO))
 	{
 		for(unsigned int j=2;j<PL_mGrid->RowCount;j++)//prochází všechny pohony a pokud je pohon nepoužíván, smažeho
 		{
@@ -2247,6 +2253,10 @@ void TForm_parametry_linky::OnClick(long Tag,long ID,unsigned long Col,unsigned 
 //	//toto problikává PL_mGrid->Refresh();
 COL=Col;
 ROW=Row;
+UnicodeString text="Pohon je používáný, opravdu má být zrušeno pøiøazení?",text_1="Pohon je používán objekty: <b>",text_2="</b>. Opravdu má být pohon smazán?";
+if(F->ls->Strings[372]!="")text=F->ls->Strings[372];
+if(F->ls->Strings[373]!="")text_1=F->ls->Strings[373]+" <b>";
+if(F->ls->Strings[374]!="")text_2="</b>. "+F->ls->Strings[374];
 		 bool smazat=false;
 		 if(input_state==NOTHING)
 		 {
@@ -2254,7 +2264,7 @@ ROW=Row;
 				{   input_state=JOB;
 						if(PL_mGrid->getCheck(6,Row)->Checked==false)
             {
-								if(mrOk==Form1->MB("Pohon je používáný, opravdu má být zrušeno pøiøazení?",MB_OKCANCEL))
+								if(mrOk==Form1->MB(text,MB_OKCANCEL))
 								{
 								 Button_save->SetFocus();
 								 TscGPCheckBox *CH=PL_mGrid->getCheck(6,Row);CH->Free();CH=NULL;delete CH;
@@ -2283,10 +2293,12 @@ ROW=Row;
         }
 
         if(Col==2 && Row==0)
-        {
-         if(aRDunit==MIN)	PL_mGrid->Cells[2][0].Text="Rozmezí a rychlost pohonu <a>[m/min]</a>";
-         else             PL_mGrid->Cells[2][0].Text="Rozmezí a rychlost pohonu <a>[m/s]</a>";
-        }
+				{
+				 UnicodeString text="Rozmezí a rychlost pohonu ";
+				 if(F->ls->Strings[201]!="")text=F->ls->Strings[201]+" ";
+				 if(aRDunit==MIN)	PL_mGrid->Cells[2][0].Text=text+"<a>[m/min]</a>";
+				 else             PL_mGrid->Cells[2][0].Text=text+"<a>[m/s]</a>";
+				}
 
 				if(Col==5 && Row==1)
         {
@@ -2305,8 +2317,8 @@ ROW=Row;
           {
               AnsiString objekty=Form1->d.v.vypis_objekty_vyuzivajici_pohon(getPID(ROW),true);
               myMessageBox->zobrazitFrameForm=true;//zajistí orámování MB
-              if(mrYes==Form1->MB("Pohon je používán objekty: <b>"+objekty+"</b>. Opravdu má být pohon smazán?",MB_YESNO))
-              {
+							if(mrYes==Form1->MB(text_1+objekty+text_2,MB_YESNO))
+							{
                 //Form1->d.v.zrusit_prirazeni_pohunu_k_objektum(getPID(ROW)); pùvodní pøímé smazání, ale nereflektovalo by pøípadné storno
                 //pozor není pøipraveno na situaci, pokud by bylo možné pøímo v PL pøiøazovan pohony a potom zase odpøiøazovat (muselo by se navýšit pole zrusena_prirazeni_PID)
 								zrusena_prirazeni_PID[getPID(ROW-1)]=true;//nahrazeno novou filozofii, z dùvodu možného storna formu

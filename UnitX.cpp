@@ -987,7 +987,9 @@ void TFormX::validace_max_voziku()
 		if(F->ls->Strings[251]!="")t2=F->ls->Strings[251];
 		if(posledni_E->max_pocet_voziku>0 && posledni_E->max_pocet_voziku<posledni_E->akt_pocet_voziku){posledni_E->mGrid->ShowNote(t1+" <a>"+AnsiString(posledni_E->max_pocet_voziku)+"</a>");validace=false;}
 		if(posledni_E->max_pocet_voziku==0){posledni_E->mGrid->ShowNote(t2);validace=false;}
-		if(posledni_E->max_pocet_voziku>0 && posledni_E->max_pocet_voziku<posledni_E->akt_pocet_voziku)F->TIP="Pro aktuální poèet pozic je tøeba buffer o délce "+AnsiString(F->d.v.PP.delka_podvozek*posledni_E->akt_pocet_voziku*1000)+" mm.";
+		AnsiString tip="Pro aktuální poèet pozic je tøeba buffer o délce ";
+		if(F->ls->Strings[314]!="")tip=F->ls->Strings[314]+" ";
+		if(posledni_E->max_pocet_voziku>0 && posledni_E->max_pocet_voziku<posledni_E->akt_pocet_voziku)F->TIP=tip+AnsiString(F->d.v.PP.delka_podvozek*posledni_E->akt_pocet_voziku*1000)+" mm.";
 		////pøepsání maximálního poèctu vozíku do tabulky elementu, pro jistotu
 		posledni_E->mGrid->Cells[1][5].Text=posledni_E->max_pocet_voziku;
 		////nemožnost uložit pøi chybných hodnotách

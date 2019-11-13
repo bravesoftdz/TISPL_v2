@@ -3367,7 +3367,7 @@ void Cvektory::smaz_element(TElement *Element)
 		O=NULL;E=NULL;dalsi_PM=NULL;predchozi_PM=NULL;delete O;delete E;delete dalsi_PM;delete predchozi_PM;
 	}
 	//hláška uživateli
-	if(!povolit_smazani && F->pom_temp!=NULL)F->TIP="Nelze odstranit předávací místo";
+	if(!povolit_smazani && F->pom_temp!=NULL){F->TIP="Nelze odstranit předávací místo";if(F->ls->Strings[315]!="")F->TIP=F->ls->Strings[315];}
   ////////////smaz_element
 	if(povolit_smazani && (Element->eID==MaxInt || Element->geo.typ==0 && Element->dalsi!=NULL && Element->dalsi->geo.typ==0))//pokud se jedná o zarážku, odstranit ze spojáku nebo pokud se jedná o element mezi 2mi liniemi
 	{

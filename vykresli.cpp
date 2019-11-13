@@ -1299,7 +1299,9 @@ void Cvykresli::vykresli_svislici_na_casove_osy(TCanvas *canv,int X,int Y)
 			canv->LineTo(Form1->ClientWidth,Y);
 			canv->Brush->Style=bsSolid;//vracím raději do původního stavu
 			unsigned int V=ceil((Y+PosunT.y-KrokY/2-Form1->scGPPanel_mainmenu->Height)/(KrokY*1.0));//pozn. KrokY/2 kvůli tomu, že střed osy je ve horozintální ose obdelníku
-			if(V<=v.VOZIKY->predchozi->n)Form1->SB("Vozík: "+AnsiString(V));
+			UnicodeString text="Vozík: ";
+			if(F->ls->Strings[400]!="")text=F->ls->Strings[400]+" ";
+			if(V<=v.VOZIKY->predchozi->n)Form1->SB(text+AnsiString(V));
 			else Form1->SB("");//pokud je už mimo oblast
 		}
 	}
