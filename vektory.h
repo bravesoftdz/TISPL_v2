@@ -365,6 +365,21 @@ class Cvektory
 	};
 	struct TSpojnice *SPOJNICE;//seznam linií sloužicích pro účely poznámek
 
+	struct TZprava
+	{
+		unsigned long n; //pořadí objektu ve spoj.seznamu
+		double X,Y;//pozice zprávy ve fyzických souřadnicích
+		double orientace;//orientace textu
+		TElement *Element;//ukazatel na element, ke kterému se zpráva váže
+		UnicodeString Popisek;//případný popisek daného místa, kde se problém vyskytuje
+		long VID;//typ validačního výpisu
+		double VIDvalue;//případná doporučená hodnota
+		TRect citelna_oblast;//pouze pomocná proměnná ve fyzických souřadnicích (px) uchovávájící oblast textu zprávy
+		struct TZprava *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+		struct TZprava *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+	};
+	struct TZprava *ZPRAVY;//seznam ZPRÁV
+
 	struct TFile_hlavicka
 	{
 		unsigned short int Verze;
@@ -625,6 +640,13 @@ public:
 	void smaz_spojnici(TSpojnice *Spojnice=NULL);//vymaže spojnici včetně všech bodů a hlavičky dané spojnice, pokud je ukazatel Spojnice=NULL, jedná se bod poslední spojnice (je praktické např. při ESC editované spojnice) - využívá výše uvedenou metodu
  	void vymaz_SPOJNICE();//vymaže celý spojový seznam SPOJNICE včetně všech bodů a hlaviček - využívá výše uvedenou metodu, použít do vse_odstranit!!!
 
+//metody pro zprávy
+	void hlavicka_ZPRAVY();//vytvoří hlavičku zprav
+	void vloz_zpravu(TZprava *zprava);//vloží jeden prvek na konec seznamu, přiřadí automaticky poslední N (id).
+	void vloz_zpravu(double X, double Y, double orientace, TElement *Element=NULL, UnicodeString Popisek="",int VID=0, double VIDvalue=-1);//vloží jeden prvek na konec seznamu, přiřadí automaticky poslední N (id).
+	TZprava *vrat_zpravu(unsigned long n);//dle N (id) zprávy vrátí ukazatel na danou zprávu
+	void vymazat_ZPRAVY();//vše odstraní včetně hlavičky
+
 //odstraní všechny vektory (všechny globální spojáky)
 	void vse_odstranit();
 
@@ -662,7 +684,7 @@ public:
 	TMinMedAvgMax_d vrat_statisticke_doby_cekani_na_palec(TCesta *segment_cesty);//vrátí minimální, střední, průměrnou a maximální dobu čekání na palec v sec pro daný objekt (segment cesty) tak, jak bylo vypočteno v analýze/na časových osách, musí být tedy zde zvolena nějaká (libovolná) volba čekání na palec, mimo "žádná", Struktura TMinMedAvgMax_d vrací 4 hodnoty, min, med, agv, max datového typu double, volání výsledků probíhá přes “tečkový selektor”
 
 //SQL
-	AnsiString QUERY(AnsiString query);//vratí AnsiString hodnod dle zadaného dotazu v syntaxi SQL, zatím umí jen základní úroveň
+	AnsiString QUERY(AnsiString query);//vratí AnsiString hodnod dle zadaného dotazu v syntaxi SQL, zatím umí jen základní úroveň - asi odstranit
 
 //pomocné metody
 	void Text2CSV(AnsiString text,AnsiString FileName="",AnsiString Title="",AnsiString DefaultExt="",AnsiString Filter="",bool openDialog=true,bool open=true);//vytovoří a otevře CSV, je-li požadováno
