@@ -5431,6 +5431,8 @@ void Cvektory::vloz_zpravu(double X, double Y, double orientace, TElement *Eleme
 //dle N (id) zprávy vrátí ukazatel na danou zprávu
 Cvektory::TZprava *Cvektory::vrat_zpravu(unsigned long n)
 {
+	F->log(__func__);//logování
+
 	if(n==0 || ZPRAVY==NULL)return NULL;
 	else
 	{
@@ -5447,6 +5449,7 @@ Cvektory::TZprava *Cvektory::vrat_zpravu(unsigned long n)
 //vše odstraní včetně hlavičky
 void Cvektory::vymazat_ZPRAVY()
 {
+	F->log(__func__);//logování
 	while (ZPRAVY!=NULL)
 	{
 		delete ZPRAVY->predchozi;

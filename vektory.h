@@ -645,6 +645,7 @@ public:
 	void vloz_zpravu(TZprava *zprava);//vloží jeden prvek na konec seznamu, přiřadí automaticky poslední N (id).
 	void vloz_zpravu(double X, double Y, double orientace, TElement *Element=NULL, UnicodeString Popisek="",int VID=0, double VIDvalue=-1);//vloží jeden prvek na konec seznamu, přiřadí automaticky poslední N (id).
 	TZprava *vrat_zpravu(unsigned long n);//dle N (id) zprávy vrátí ukazatel na danou zprávu
+	//PtInZprava()//ověří, zda se na daných souřadních nachází zpráva
 	void vymazat_ZPRAVY();//vše odstraní včetně hlavičky
 
 //odstraní všechny vektory (všechny globální spojáky)

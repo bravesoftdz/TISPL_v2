@@ -11484,16 +11484,19 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 //		TDateTime TIME=IdTime1->DateTime;
 //		Sk(TIME);
 
-	 d.v.vloz_zpravu(0,0,0,NULL,"P1");
-	 d.v.vloz_zpravu(0,0,0,NULL,"P2");
-	 d.v.vloz_zpravu(0,0,0,NULL,"P3");
-	 Cvektory::TZprava *Z=d.v.ZPRAVY->dalsi;
-	 while(Z!=NULL)
+	 d.v.vloz_zpravu(0,0,0,NULL,ls->Strings[401]);
+	 d.v.vloz_zpravu(0,0,0,NULL,ls->Strings[402]);
+	 d.v.vloz_zpravu(0,0,0,NULL,"test");
+	 if(d.v.ZPRAVY!=NULL)
 	 {
-			Memo(Z->Popisek);
-			Z=Z->dalsi;
+		 Cvektory::TZprava *Z=d.v.ZPRAVY->dalsi;
+		 while(Z!=NULL)
+		 {
+			 Memo(Z->Popisek);
+			 Z=Z->dalsi;
+		 }
+		 delete Z;
 	 }
-	 delete Z;
 	 Sk(d.v.vrat_zpravu(2)->Popisek);
 	 d.v.vymazat_ZPRAVY();
 }
