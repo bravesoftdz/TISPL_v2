@@ -93,11 +93,11 @@ void TForm_katalog::LoadValues ()
   // vytvoření hlavičky
 	K_mGrid->Cells[0][0].Text="CALDAN";
 	if(F->ls->Strings[196]!="")K_mGrid->Cells[1][0].Text=F->ls->Strings[196];else K_mGrid->Cells[1][0].Text="Rozteč palců [mm]";
-	if(F->ls->Strings[197]!="")K_mGrid->Cells[4][0].Text=F->ls->Strings[197];else K_mGrid->Cells[4][0].Text="Horizontální oblouky [°]";
-	K_mGrid->Cells[4][1].Text="[°]";
+	if(F->ls->Strings[197]!="")K_mGrid->Cells[4][0].Text=F->ls->Strings[197];else K_mGrid->Cells[4][0].Text="Horizontální oblouky";
+	if(F->ls->Strings[293]!="")K_mGrid->Cells[4][1].Text=F->ls->Strings[293];else K_mGrid->Cells[4][1].Text="Oblouk [°]";
 	if(F->ls->Strings[198]!="")K_mGrid->Cells[8][1].Text=F->ls->Strings[198];else K_mGrid->Cells[8][1].Text="Rádius [mm]";
-	if(F->ls->Strings[199]!="")K_mGrid->Cells[12][0].Text=F->ls->Strings[199];else K_mGrid->Cells[12][0].Text="Vertikální oblouky [°]";
-	K_mGrid->Cells[12][1].Text="[°]";
+	if(F->ls->Strings[199]!="")K_mGrid->Cells[12][0].Text=F->ls->Strings[199];else K_mGrid->Cells[12][0].Text="Vertikální oblouky";
+	if(F->ls->Strings[293]!="")K_mGrid->Cells[12][1].Text=F->ls->Strings[293];else K_mGrid->Cells[12][1].Text="Oblouk [°]";
 	if(F->ls->Strings[198]!="")K_mGrid->Cells[16][1].Text=F->ls->Strings[198];else K_mGrid->Cells[16][1].Text="Rádius [mm]";
 
   Cvektory::Ttyp_dopravniku *K=F->d.v.KATALOG->dalsi;//přeskočí hlavičku
