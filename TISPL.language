@@ -195,9 +195,9 @@ Click the radius list to select the conveyor catalog;X;Kliknutím do seznamu rádi
 Save;X;Uložit
 Cancel;X;Storno
 Chain pitches [mm];X;Rozteè palcù [mm]
-Horizontal curves [°];X;Horizontální oblouky [°]
+Horizontal curves;X;Horizontální oblouky
 Radius [mm];X;Rádius [mm]
-Vertical curves [°];X;Vertikální oblouky [°]
+Vertical curves;X;Vertikální oblouky
 Name;X;Název
 Range and speed of drive;X;Rozmezí a rychlost pohonu
 Chain pitch ;X;Rozteè palce
@@ -291,3 +291,113 @@ The lower speed limit must be >=;X;Spodní hranice rychlosti musí být >=
 The upper speed limit must be <=;X;Nebo horní hranice musí být <=
 The drive parameters can no longer be changed as it is also used on other objects;X;Parametry pohonu již nelze mìnit, nebo je používán i na jiných objektech
 Show thumbs;X;Zobrazit palce
+Curve [°];X;Oblouk [°]
+Downloading update, do not close the application !!! When the download is complete, the program will close.;X;Probíhá stahování aktualizace, neukonèujte aplikaci!!! Po dokonèení stahování bude program ukonèen.
+Drag the mouse from the selected point to the destination point to see the distance between these points.;X;Tažením myši z vybraného bodu do cílového bodu zobrazíte vzdálenost mezi tìmito body.
+Drag the mouse from the selected point on the substrate to point to the selected technologist. object, after releasing the mouse the image is calibrated.;X;Tažením myši z vybraného bodu na podkladu smìøujte do vybraného technolog. objektu, po puštìní myši dojde ke kalibraci obrazu.
+Drag the mouse from the starting point to the target point of the substrate, after releasing the mouse, enter the actual distance between points in meters or millimeters.;X;Tažením myši z výchozího bodu smìøujte do cílového bodu podkladu, po puštìní myši zadejte skuteènou vzdálenost mezi body v metrech èi milimetrech.
+TIP: You can also zoom in by pressing + or F7 or CTRL and turning the mouse wheel up.;X;TIP: Pøiblížení obrazu lze také vykonat pomocí stisku klávesy + èi F7 nebo CTRL a otáèením koleèko myši smìrem nahoru.
+TIP: You can also zoom out by pressing the - or F8 or CTRL key and turning the mouse wheel down.;X;TIP: Oddálení obrazu lze také vykonat pomocí stisku klávesy - èi F8 nebo CTRL a otáèením koleèko myši smìrem dolu.
+TIP: You can also move the image by holding down the left mouse button and moving the mouse in the desired direction.;X;TIP: Posun obrazu lze také vykonat pomocí stisknutého levého tlaèítka myší a posunem myši požadovaným smìrem.
+TIP: You can also zoom in by pressing the CTRL key and selecting the desired area with the mouse while holding down the left mouse button.;X;TIP: Pøiblížení oknem je možné také realizovat pomocí stisknuté klávesy CTRL a výbìrem požadované oblasti pomocí myši pøi stisknutém levém tlaèítku.
+Downloading template ...;X;Probíhá stahování šablony...
+For correct positioning and scaling of the substrate, use the option in the top right menu.;X;Pro správné umístìní a nastavení mìøítka podkladu, využijte volbu v pravém horním menu.
+Click an object in the object library, drag, and then settle to add the object.;X;Kliknutím na objekt v knihovnì objektu, tažením a následným usazením pøidáte objekt.
+To draw the hall it is necessary to enter at least 3 points.;X;Pro zakreslení haly je nutné zadat minimálnì 3 body.
+Press ENTER or double-click to close the hall.;X;Pro uzavøení haly stisknìte ENTER nebo dvakrát kliknìte.
+Element cannot be moved!;X;Prvek nelze pøesunout!
+Click to specify the offset point, drag to move the object outline.;X;Kliknutím urèíte bod posunu, táhnutím posunete obrys objektu.
+Can only be inserted on lines.;X;Lze vkládat pouze na linie.
+Adding elements is only possible after selecting the drive.;X;Pøidávání prvkù je možné až po výbìru pohonu.
+Unable to delete.;X;Nelze smazat.
+Click the left mouse button to add a point.;X;Klinutím na levé tlaèítko myši pøidejte bod.
+Click and drag the mouse to move the entire object.;X;Kliknutím a tažením myši posunujete celý objekt.
+A length buffer is required for the current number of positions;X;Pro aktuální poèet pozic je tøeba buffer o délce
+Cannot delete transfer point.;X;Nelze odstranit pøedávací místo.
+An update to TISPL is available. Do you want to download it?;X;Je k dispozici aktualizace TISPLu. Chcete ji stáhnout?
+After the download is complete, overwrite the current EXE file.;X;Po dokonèení staženým souborem pøepište souèasný EXE soubor.
+has been changed.\nDo you want to save it before exiting?;X;byl zmìnìn.\nChcete ho pøed ukonèením uložit?
+No internet connection or license expired, application will not start!;X;Není k dispozici pøípojení k internetu nebo vypršela licence, aplikace nebude spuštìna!
+Failed to connect to server, application will not start!;X;Nezdaøilo se pøipojení k serveru, aplikace nebude spuštìna!
+Failed to connect to license server, application will not start!;X;Nezdaøilo se pøipojení k licenènímu serveru, aplikace nebude spuštìna!
+The application did not close properly. The last file you saved was restored.;X;Aplikace nebyla øádnì ukonèena. Byl obnoven poslední Vámi uložený soubor.
+The application did not close properly. Do you want to restore the last unsaved file from backup?;X;Aplikace nebyla øádnì ukonèena. Chcete ze zálohy obnovit poslední neuložený soubor?
+The painting will overlap the painting windows, do you want to move the element?;X;Pøesunem dojde k pøekrytí lakovacích oken, chcete element pøesunout?
+Moving will affect the rotation zone, do you want to move the element?;X;Pøesunem dojde k zásahu do zóny otáèení, chcete element pøesunout?
+Length;X;Vzdálenost
+time;X;èas
+Objects do not follow, automatically move the following object to maintain continuity?;X;Objekty nenavazují, automaticky posunout následující objekt pro zachování návaznosti?
+You want object;X;Chcete objekt
+place them in order between objects;X;umístit v poøadí mezi objekty
+and;X;a
+Inserting overlaps the painting windows, do you want to insert the element?;X;Vložením dojde k pøekrytí lakovacích oken, chcete element vložit?
+Inserting will violate the rotation zone, do you want to insert the element?;X;Vložením dojde k narušení zóny otáèení, chcete element vložit?
+The switch can be adjusted if at least 3 technological objects are available!;X;Výhybku lze nastavit, pokud jsou k dispozici minimálnì 3 technologické objekty!
+You really want to delete;X;Chcete opravdu smazat
+Are you sure you want to delete point no.;X;Chcete opravdu smazat bod è.
+Are you sure you want to delete section number;X;Chcete opravdu smazat sekci èíslo
+Cannot delete a section, there must be at least two sections in the object!;X;Nelze smazat sekci, v objektu musí být nejménì dvì sekce!
+It is not possible to delete an object that is part of the technological path of the order eg:;X;Nelze smazat objekt, který je souèástí technologické cesty zakázky napø.:
+You really want object;X;Chcete opravdu objekt
+delete?;X;smazat?
+Invalid value!;X;Neplatná hodnota!
+Do you want to save changes to the edited object?;X;Chcete uložit zmìny editovaného objektu?
+The data entered is not valid and will not be saved. Really go to another object?;X;Zadaná data nejsou validní a nebudou uložena. Opravdu pøejít do jiného objektu?
+File;X;Soubor
+was not found!;X;nebyl nalezen!
+Invalid version of * .tispl!;X;Neplatná verze souboru formátu *.tispl!
+No report data!;X;Žádná data k reportu!
+Version;X;Verze
+Location:;X;Umístìní:
+Application information;X;Informace o aplikaci
+First, it is necessary to draw a line diagram!;X;Nejdøíve je nutné zakreslit schéma linky!
+Could not find or download template. The wizard will not run!;X;Nepodaøilo se najít nebo stáhnout šablonu. Prùvodce nebude spuštìn!
+Attention, for the object;X;Pozor, pro objekt
+no drive assigned. The waiting time for inches is not considered for these objects!;X;nebyl pøiøazen pohon. Doba èekání na palce není u tìchto objektù zohlednìna!
+Do you want to assign drives to objects now?;X;Chcete pohony objektùm pøiøadit nyní?
+Note that the following drives do not have the indicated pitch of the chain:;X;Pozor, následující pohony nemají uvedenou rozteè palcù øetezu:
+The waiting time for inches is not taken into account for these objects!;X;Doba èekání na palce není tedy u uvedených objektù zohlednìna!
+Do you want to enter the missing drive pitches now?;X;Chcete chybìjící rozteèe pohonù nyní zadat?
+Waiting for inches occurs</b> according to the settings in the object's parameters (unless user-disabled):;X;Èekání na palce nastane</b> dle nastavení v parametrech objektu (není-li uživatelsky zakázáno):
+after leaving the building in S&G mode;X;po odchodu z objektu v S&G režimu
+between continuous objects if they have a different drive;X;mezi kontinuálními objekty, mají-li jiný pohon
+between post-process objects if they have a different drive;X;mezi postprocesními objekty, mají-li jiný pohon
+between a continuous object and a post-process object if they have a different drive;X;mezi kontinuálním a postprocesním objektem, mají-li jiný pohon
+between the postprocess and the continuous object;X;mezi postprocesním a kontinuálním objektem
+whenever a stopwatch is defined behind the object;X;vždy, když je za objektem definovaná stopka
+whenever waiting is user-specified;X;vždy, když je èekání uživatelsky naøízeno
+Will the hall be removed, do you want to continue?;X;Dojde k odstranìní haly, chcete pokraèovat?
+Note that the drive range values cannot be saved because the following objects have speeds outside the newly set range:;X;Pozor, nelze uložit hodnoty rozmezí pohonù, protože následující objekty mají rychlost mimo novì nastavený rozsah:
+No conveyor is selected, no drive can be added;X;Není vybrán žádný dopravník, není možné pøidat pohon
+Are you sure you want to delete unused drives?;X;Opravdu chcete smazat nepoužívané pohony?
+Drive in use, should assignment really be canceled?;X;Pohon je používáný, opravdu má být zrušeno pøiøazení?
+The drive is used by objects:;X;Pohon je používán objekty:
+Is the drive really to be deleted?;X;Opravdu má být pohon smazán?
+snap on;X;pøichytávat
+Click anywhere to add an object from the library;X;Kliknutím na libovolné místo pøidáte objekt z knihovny
+License expiration date:;X;Datum expirace licence:
+Click anywhere to add an object from the library or edit an existing schema;X;Kliknutím na libovolné místo pøidáte objekt z knihovny nebo lze upravit stávájící schéma
+Displays the proposed layout;X;Zobrazení navrženého layoutu
+Presentation of technological processes in time in the form of timelines.;X;Zobrazení technologických procesù v èase formou èasových os.
+Displaying technological processes in time in individual objects.;X;Zobrazení technologických procesù v èase v jednotlivých objektech.
+grid hidden;X;møížka skryta
+Scheme orthogonalization completed.;X;Ortogonalizace schématu dokonèena.
+Click anywhere to place the object;X;Kliknutím na libovolné místo umístíte objekt
+Orthogonalization off.;X;Ortogonalizace vypnuta.
+Orthogonalization on.;X;Ortogonalizace zapnuta.
+Click anywhere to place the selected element.;X;Kliknutím na libovolné místo umístíte vybraný element.
+snap off;X;nepøichytávat
+File already saved ...;X;Soubor byl již uložen...
+File saved ...;X;Soubor uložen...
+backed up to;X;zálohován do
+Export to;X;Export do
+completed.;X;dokonèen.
+Quick export complete.;X;Rychlý export dokonèen.
+VERIFICATION;X;OVÌØOVÁNÍ
+DESIGN;X;NÁVRH
+The template will then open. Enter the name of the project under which it will be saved.;X;Následnì bude otevøena šablona. Zadejte název projektu, pod kterým bude uložena.
+Enter line parameters or choose cancel.;X;Zadejte parametry linky nebo zvolte storno.
+Create a schema and set the object parameters using the right mouse button.;X;Vytvoøte schéma a pomocí pravého tlaèítka nastavte parametry objektù.
+Wagon: ;X;Vozík:
+The rotation does not correspond to the JIGs orientation at the beginning of the line!;X;Rotace neodpovídá orientaci JIGù na zaèátku linky!
+Attention, JIGs overlap!;X;Pozor, pøekrytí JIGù!

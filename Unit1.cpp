@@ -2736,7 +2736,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 									E=NULL;delete E;
 								}
               }
-							if(JID<=-11&&!editace_textu){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=pom_element->geo.delka;if((DKunit==2||DKunit==3)&&pom_element->pohon!=NULL)editovany_text=editovany_text/pom_element->pohon->aRD;editovany_text=outDK(ms.MyToDouble(editovany_text));}//editace textu
+							if(JID<=-11&&!editace_textu){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=pom_element->geo.delka;if((DKunit==2||DKunit==3)&&pom_element->pohon!=NULL)editovany_text=editovany_text/pom_element->pohon->aRD;editovany_text=outDK(m.round2double(ms.MyToDouble(editovany_text),3));}//editace textu
 							if(JID>=11 && JID<=99){Akce_temp=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//offset kót
 						}
 						pan_create();//pro případ posunu obrazu bez akce PAN
@@ -11639,7 +11639,7 @@ void __fastcall TForm1::KonecClick(TObject *Sender)
 	{
 		if (scGPButton_ulozit->Enabled)
 		{
-			vysledek=MB("Chcete uložit změny v editovaném objektu?",MB_YESNO,true);
+			vysledek=MB("Chcete uložit změny editovaného objektu?",MB_YESNO,true);
 			switch (vysledek)
 			{
 				case mrYes:scGPButton_OKClick(Sender);break;
@@ -13394,7 +13394,7 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 	catch(...){;}
   }*/
 	ls=new TStringList;
-	for(unsigned short i=0;i<=300;i++)ls->Insert(i,"");//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
+	for(unsigned short i=0;i<=450;i++)ls->Insert(i,"");//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
 
 	if(FileExists(File_language))//znovu kontrola po případném stažení souboru
 	{
@@ -13613,7 +13613,7 @@ void __fastcall TForm1::scGPButton_nakreslit_haluClick(TObject *Sender)
 			kurzor(add_o);
 			REFRESH();//musí být refresh z důvodu vykreslění mřížky hned po kliku na vytvoření haly
 		}
-  	else if(mrYes==MB("Dojde k odstranění haly, chcete pokračovat?",MB_YESNO))
+		else if(mrYes==MB("Dojde k odstranění haly, chcete pokračovat?",MB_YESNO))
 		{
   		//smaže starou halu
 			Cvektory::TBod *B=d.v.HALA.body->dalsi;
