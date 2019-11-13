@@ -70,8 +70,8 @@ class Cvykresli
 	void vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O);
 	void vykresli_retez(TCanvas *canv,Cvektory::TRetez *Retez);
 	void vykresli_koleje(TCanvas *canv,Cvektory::TElement *E,Cvektory::TObjekt *O);//vykreslení jednoho geometrického segmentu dvou párù kolejí
-	void vykresli_koleje(TCanvas *canv,double X,double Y,short typ,double orientace,double rotacni_uhel,double radius,double delka,TColor clKolej=RGB(255,69,0));//vykreslení jednoho geometrického segmentu dvou párù kolejí
-	void vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dJ,double sJ,double orientaceP=0,double rotaceJ=0,TColor clChassis=(TColor) RGB(50,50,50), TColor clJig=clPurple);//vykreslení jednoho komplexního vozíku (podvozek vèetnì jigu), , X,Y jsou souøadnice uchycení vozíku k palci, co nemusí bıt støed vozíku
+	void vykresli_koleje(TCanvas *canv,double X,double Y,short typ,double orientace,double rotacni_uhel,double radius,double delka,TColor clKolej=(TColor)RGB(255,69,0));//vykreslení jednoho geometrického segmentu dvou párù kolejí
+	void vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dJ,double sJ,double orientaceP=0,double rotaceJ=0,TColor clChassis=(TColor)RGB(50,50,50), TColor clJig=clPurple);//vykreslení jednoho komplexního vozíku (podvozek vèetnì jigu), , X,Y jsou souøadnice uchycení vozíku k palci, co nemusí bıt støed vozíku
 	void vykresli_jig(TCanvas *canv,double X,double Y,double dJ,double sJ,double orientaceP,double rotaceJ,TColor clJig=clPurple,float Width=2);
 //	void vykresli_simulaci(TCanvas *canv);//zajišuje vykreslení simulace
 //	void umisti_vozik(TCanvas *canv,Cvektory::TVozik *ukaz);//zajišuje umístìní vozíku na lince

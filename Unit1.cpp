@@ -11621,7 +11621,21 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 //		TDateTime TIME=IdTime1->DateTime;
 //		Sk(TIME);
 
-     Sk(pom->pohon->aRD);
+	 d.v.vloz_zpravu(0,0,0,NULL,ls->Strings[401]);
+	 d.v.vloz_zpravu(0,0,0,NULL,ls->Strings[402]);
+	 d.v.vloz_zpravu(0,0,0,NULL,"test");
+	 if(d.v.ZPRAVY!=NULL)
+	 {
+		 Cvektory::TZprava *Z=d.v.ZPRAVY->dalsi;
+		 while(Z!=NULL)
+		 {
+			 Memo(Z->Popisek);
+			 Z=Z->dalsi;
+		 }
+		 delete Z;
+	 }
+	 Sk(d.v.vrat_zpravu(2)->Popisek);
+	 d.v.vymazat_ZPRAVY();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
@@ -13908,4 +13922,7 @@ void __fastcall TForm1::scGPCheckBox_zobrazit_palceClick(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
+
+
+
 

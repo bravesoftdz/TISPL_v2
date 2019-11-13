@@ -5371,6 +5371,93 @@ void Cvektory::vymaz_seznam_KATALOG()
 	}
 }
 //---------------------------------------------------------------------------
+//metody pro zprávy
+//---------------------------------------------------------------------------
+//vytvoří hlavičku zprav
+void Cvektory::hlavicka_ZPRAVY()
+{
+	//F->log(__func__);//logování  - NELZE
+	TZprava *nova=new TZprava;
+	nova->n=0;
+
+	nova->predchozi=nova;//ukazuje sam na sebe
+	nova->dalsi=NULL;
+	nova->X=0;
+	nova->Y=0;
+	nova->VID=0;
+	nova->VIDvalue=-1;
+	nova->Popisek="";
+	nova->citelna_oblast=TRect(0,0,0,0);
+	ZPRAVY=nova;
+}
+//---------------------------------------------------------------------------
+//vloží jeden prvek na konec seznamu, přiřadí automaticky poslední N (id).
+void Cvektory::vloz_zpravu(TZprava *zprava)
+{
+	F->log(__func__);//logování
+
+	//pokud ještě neexistuje hlavička
+	if(ZPRAVY==NULL)hlavicka_ZPRAVY();
+
+	//vložení nového bodu na konec seznamu bodů
+	zprava->n=ZPRAVY->predchozi->n+1;//navýšení počítadla
+	zprava->predchozi=ZPRAVY->predchozi;//nový bod ukazuje na poslední prvek ve spojaku jako na prvek předchozí
+	zprava->dalsi=NULL;//nový bod neukazuje na žádný další prvek, resp. ukazuje na NULL
+	ZPRAVY->predchozi->dalsi=zprava;//za poslední aktuální prvek vloží nový poslední
+	ZPRAVY->predchozi=zprava;//hlavička ukazuje již na nový bod jako poslední prvek
+}
+//---------------------------------------------------------------------------
+//vloží jeden prvek na konec seznamu, přiřadí automaticky poslední N (id).
+void Cvektory::vloz_zpravu(double X, double Y, double orientace, TElement *Element,UnicodeString Popisek,int VID, double VIDvalue)
+{
+	F->log(__func__);//logování
+
+	//alokace paměti
+	TZprava *Z=new TZprava;
+
+	//atributy
+	Z->X=X;
+	Z->Y=Y;
+  Z->orientace;
+	Z->Element=Element;
+	Z->Popisek=Popisek;
+	Z->VID=VID;
+	Z->VIDvalue=VIDvalue;
+	//Z->citelna_oblast=dopočítat tady; možná zvážit rovnou dvě oblasti pro celou a pro zástupný znak, také by se dalo počítat až při vyhledávání setjob, ale to by bylo strojově zbytečné náročné, založit přepínací proměnnou na stav zobrazení zpráv a potom se domluvit jestli ji někam zapisovat (ini či binárka)...
+
+	//samotné vložení do spojového seznamu ZPRAVY
+	vloz_zpravu(Z);
+}//---------------------------------------------------------------------------
+//dle N (id) zprávy vrátí ukazatel na danou zprávu
+Cvektory::TZprava *Cvektory::vrat_zpravu(unsigned long n)
+{
+	F->log(__func__);//logování
+
+	if(n==0 || ZPRAVY==NULL)return NULL;
+	else
+	{
+		Cvektory::TZprava *Z=ZPRAVY->dalsi;
+		while(Z!=NULL)
+		{
+			if(Z->n==n)break;
+			Z=Z->dalsi;
+		}
+		return Z;
+	}
+}
+//---------------------------------------------------------------------------
+//vše odstraní včetně hlavičky
+void Cvektory::vymazat_ZPRAVY()
+{
+	F->log(__func__);//logování
+	while (ZPRAVY!=NULL)
+	{
+		delete ZPRAVY->predchozi;
+		ZPRAVY->predchozi=NULL;
+		ZPRAVY=ZPRAVY->dalsi;
+	};
+}
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //PRÁCE ZE SOUBORY
@@ -5379,34 +5466,34 @@ void Cvektory::vymaz_seznam_KATALOG()
 //zapis hlavičky souboru
 void Cvektory::vytvor_hlavicku_souboru()
 {
-		File_hlavicka.Verze=Form1->ms.MyToDouble(Form1->VERZE);
-		File_hlavicka.Mod=Form1->MOD;
-		File_hlavicka.Zoom=Form1->Zoom;
-		File_hlavicka.PosunutiX=Form1->Posun.x;
-		File_hlavicka.PosunutiY=Form1->Posun.y;
-		File_hlavicka.cas_start=PP.cas_start;
-		File_hlavicka.mnozstvi=PP.mnozstvi;
-		File_hlavicka.hod_den=PP.hod_den;
-		File_hlavicka.dni_rok=PP.dni_rok;
-		File_hlavicka.efektivita=PP.efektivita;
-		File_hlavicka.TT=PP.TT;
-		File_hlavicka.typ_linky=PP.typ_linky;
-		File_hlavicka.delka_jig=PP.delka_jig;
-		File_hlavicka.sirka_jig=PP.sirka_jig;
-		File_hlavicka.vyska_jig=PP.vyska_jig;
-		File_hlavicka.delka_podvozek=PP.delka_podvozek;
-    File_hlavicka.uchyt_pozice=PP.uchyt_pozice;
-		//objektové záležitosti
-		File_hlavicka.pocet_pohonu=POHONY->predchozi->n;
-		File_hlavicka.pocet_objektu=OBJEKTY->predchozi->n;
-		File_hlavicka.pocet_zakazek=ZAKAZKY->predchozi->n;
-		File_hlavicka.pocet_voziku=VOZIKY->predchozi->n;
-    //katalogové záležitosti
-    File_hlavicka.katalog=PP.katalog;
-		File_hlavicka.typ_linky=PP.typ_linky;
-    File_hlavicka.radius=PP.radius;
-    //stav ikony  TODO ROSTA dodelat
-    //File_hlavicka.objekt_posunout_vse
+	File_hlavicka.Verze=Form1->ms.MyToDouble(Form1->VERZE);
+	File_hlavicka.Mod=Form1->MOD;
+	File_hlavicka.Zoom=Form1->Zoom;
+	File_hlavicka.PosunutiX=Form1->Posun.x;
+	File_hlavicka.PosunutiY=Form1->Posun.y;
+	File_hlavicka.cas_start=PP.cas_start;
+	File_hlavicka.mnozstvi=PP.mnozstvi;
+	File_hlavicka.hod_den=PP.hod_den;
+	File_hlavicka.dni_rok=PP.dni_rok;
+	File_hlavicka.efektivita=PP.efektivita;
+	File_hlavicka.TT=PP.TT;
+	File_hlavicka.typ_linky=PP.typ_linky;
+	File_hlavicka.delka_jig=PP.delka_jig;
+	File_hlavicka.sirka_jig=PP.sirka_jig;
+	File_hlavicka.vyska_jig=PP.vyska_jig;
+	File_hlavicka.delka_podvozek=PP.delka_podvozek;
+	File_hlavicka.uchyt_pozice=PP.uchyt_pozice;
+	//objektové záležitosti
+	File_hlavicka.pocet_pohonu=POHONY->predchozi->n;
+	File_hlavicka.pocet_objektu=OBJEKTY->predchozi->n;
+	File_hlavicka.pocet_zakazek=ZAKAZKY->predchozi->n;
+	File_hlavicka.pocet_voziku=VOZIKY->predchozi->n;
+	//katalogové záležitosti
+	File_hlavicka.katalog=PP.katalog;
+	File_hlavicka.typ_linky=PP.typ_linky;
+	File_hlavicka.radius=PP.radius;
+	//stav ikony  TODO ROSTA dodelat
+	//File_hlavicka.objekt_posunout_vse
 }
 //---------------------------------------------------------------------------
 //Uloží vektorová data do souboru
@@ -6644,40 +6731,43 @@ void Cvektory::Text2CSV(AnsiString text,AnsiString FileName,AnsiString Title,Ans
 //---------------------------------------------------------------------------
 void Cvektory::vse_odstranit()
 {
-		//HALA
-		vymaz_body();
+ 	//HALA
+ 	vymaz_body();
 
-		//VOZÍKY
-		if(VOZIKY!=NULL && VOZIKY->predchozi->n>0)//pokud je více objektů
-		{
-			vymaz_seznam_VOZIKY();//vymaze vozíky z paměti
-			VOZIKY=NULL; delete VOZIKY;
-		}
-		hlavicka_VOZIKY();//nutnost
+ 	//VOZÍKY
+ 	if(VOZIKY!=NULL && VOZIKY->predchozi->n>0)//pokud je více objektů
+ 	{
+ 		vymaz_seznam_VOZIKY();//vymaze vozíky z paměti
+ 		VOZIKY=NULL; delete VOZIKY;
+ 	}
+ 	hlavicka_VOZIKY();//nutnost
 
-		//ZAKÁZKY
-		if(ZAKAZKY!=NULL && ZAKAZKY->predchozi->n>0)//pokud je více objektů
-		{
-			vymaz_seznam_ZAKAZKY();//byla zde poznámka, že před zdm padalo
-			delete ZAKAZKY; ZAKAZKY=NULL;
-		}
-		hlavicka_ZAKAZKY();//nutnost
+ 	//ZAKÁZKY
+ 	if(ZAKAZKY!=NULL && ZAKAZKY->predchozi->n>0)//pokud je více objektů
+ 	{
+ 		vymaz_seznam_ZAKAZKY();//byla zde poznámka, že před zdm padalo
+ 		delete ZAKAZKY; ZAKAZKY=NULL;
+ 	}
+ 	hlavicka_ZAKAZKY();//nutnost
 
-		//OBJEKTY včetně elementů
-		if(OBJEKTY!=NULL && OBJEKTY->predchozi->n>0)//pokud je více objektů
-		{
-			vymaz_seznam_OBJEKTY();//vymaze objekty z paměti
-			delete OBJEKTY; OBJEKTY=NULL;
-		}
-		hlavicka_OBJEKTY();//nutnost
+ 	//OBJEKTY včetně elementů
+ 	if(OBJEKTY!=NULL && OBJEKTY->predchozi->n>0)//pokud je více objektů
+ 	{
+ 		vymaz_seznam_OBJEKTY();//vymaze objekty z paměti
+ 		delete OBJEKTY; OBJEKTY=NULL;
+ 	}
+ 	hlavicka_OBJEKTY();//nutnost
 
-		//POHONY
-		if(POHONY!=NULL && POHONY->predchozi->n>0)//pokud je více objektů
-		{
-			vymaz_seznam_POHONY();//vymaze pohony z paměti
-			delete POHONY; POHONY=NULL;
-		}
-		hlavicka_POHONY();//nutnost
+ 	//POHONY
+ 	if(POHONY!=NULL && POHONY->predchozi->n>0)//pokud je více objektů
+ 	{
+ 		vymaz_seznam_POHONY();//vymaze pohony z paměti
+ 		delete POHONY; POHONY=NULL;
+	}
+	hlavicka_POHONY();//nutnost
+
+	//ZPRÁVY
+	vymazat_ZPRAVY();
 
 //		//palce
 //		if(PALCE->predchozi->n>0)//pokud je více objektů
@@ -6686,26 +6776,25 @@ void Cvektory::vse_odstranit()
 //			delete PALCE; PALCE=NULL;
 //		}
 
-		//procesy
-		if(PROCESY!=NULL && PROCESY->predchozi->n>0)//pokud je více objektů
-		{
-			//vymaz_seznam_procesu();
-			delete PROCESY; PROCESY=NULL;
-		}
-		hlavicka_PROCESY();
+//	//procesy
+//	if(PROCESY!=NULL && PROCESY->predchozi->n>0)//pokud je více objektů
+//	{
+//		//vymaz_seznam_procesu();
+//		delete PROCESY; PROCESY=NULL;
+//	}
+//	hlavicka_PROCESY();
 
+	/*  až budu pracovat s UNDO a REDO
+	v.vymaz_seznam(v.p_redo);
+	v.vymaz_seznam(v.p_undo);
+	v.vymaz_seznam(v.l_redo);
+	v.vymaz_seznam(v.l_undo);
 
-		/*  až budu pracovat s UNDO a REDO
-		v.vymaz_seznam(v.p_redo);
-		v.vymaz_seznam(v.p_undo);
-		v.vymaz_seznam(v.l_redo);
-		v.vymaz_seznam(v.l_undo);
-
-		delete v.p_redo;v.p_redo=NULL;
-		delete v.p_undo;v.p_undo=NULL;
-		delete v.l_redo;v.l_redo=NULL;
-		delete v.l_undo;v.l_undo=NULL;
-		*/
+	delete v.p_redo;v.p_redo=NULL;
+	delete v.p_undo;v.p_undo=NULL;
+	delete v.l_redo;v.l_redo=NULL;
+	delete v.l_undo;v.l_undo=NULL;
+	*/
 }
 ////---------------------------------------------------------------------------
 
