@@ -663,7 +663,7 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 		case 180:novy->Xt=X+rozmery_kabiny.y/2.0;novy->Yt=Y-rozmery_kabiny.x/2.0;break;
 		case 270:novy->Xt=X-rozmery_kabiny.x/2.0;novy->Yt=Y+rozmery_kabiny.y/2.0;break;
 	}
-	if(OBJEKTY->predchozi->n==1 && novy->X==OBJEKTY->predchozi->X && novy->Y==OBJEKTY->predchozi->Y && OBJEKTY->predchozi->orientace==90)//změna trendu linky, pokud nebylo s prvním objektem rotováno
+	if(OBJEKTY->predchozi->n==1 && novy->X==OBJEKTY->predchozi->X && novy->Y==OBJEKTY->predchozi->Y && OBJEKTY->predchozi->orientace==90 || F->d.predchozi_oblast==2 && OBJEKTY->predchozi->n==1)//změna trendu linky, pokud nebylo s prvním objektem rotováno
 	{
 		posun_objekt(OBJEKTY->predchozi->elementy->predchozi->geo.X4-OBJEKTY->predchozi->elementy->dalsi->geo.X1,0,OBJEKTY->predchozi);
 		rotuj_objekt(OBJEKTY->predchozi,180);
@@ -3367,7 +3367,7 @@ void Cvektory::smaz_element(TElement *Element)
 		O=NULL;E=NULL;dalsi_PM=NULL;predchozi_PM=NULL;delete O;delete E;delete dalsi_PM;delete predchozi_PM;
 	}
 	//hláška uživateli
-	if(!povolit_smazani && F->pom_temp!=NULL)F->TIP="Nelze odstranit předávací místo";
+	if(!povolit_smazani && F->pom_temp!=NULL){F->TIP="Nelze odstranit předávací místo";if(F->ls->Strings[315]!="")F->TIP=F->ls->Strings[315];}
   ////////////smaz_element
 	if(povolit_smazani && (Element->eID==MaxInt || Element->geo.typ==0 && Element->dalsi!=NULL && Element->dalsi->geo.typ==0))//pokud se jedná o zarážku, odstranit ze spojáku nebo pokud se jedná o element mezi 2mi liniemi
 	{

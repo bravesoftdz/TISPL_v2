@@ -160,6 +160,7 @@ class Cvykresli
 	short precision;//poèet desetinných míst èísel na èasové ose
 	TRect aktOblast;//aktuální citelná oblast popisku elementu urèená k uložení
 	int orientace_objektu;
+	short predchozi_oblast;
 	Cvektory::TGeometrie geoTemp;//pomocná struktura sloužicí na uchování (k pozdìjšímu uložení do geometrických elementù) aktuálnì vracených hodnot ze smart kurzoru
 	short pasivni_vektory_intenzita;//intenzita pasivních vektorù pøi editaci objektu
 
