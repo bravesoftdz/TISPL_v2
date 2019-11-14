@@ -29,6 +29,7 @@
 #include "Z_rozliseni.h"
 #include "TmGrid.h"
 #include "katalog_dopravniku.h"
+#include "miniform_zpravy.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "RzPanel"
@@ -11487,16 +11488,9 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 	 d.v.vloz_zpravu(0,0,0,NULL,ls->Strings[401]);
 	 d.v.vloz_zpravu(0,0,0,NULL,ls->Strings[402]);
 	 d.v.vloz_zpravu(0,0,0,NULL,"test");
-	 if(d.v.ZPRAVY!=NULL)
-	 {
-		 Cvektory::TZprava *Z=d.v.ZPRAVY->dalsi;
-		 while(Z!=NULL)
-		 {
-			 Memo(Z->Popisek);
-			 Z=Z->dalsi;
-		 }
-		 delete Z;
-	 }
+
+
+   Form_zpravy->ShowModal();
 	 Sk(d.v.vrat_zpravu(2)->Popisek);
 	 d.v.vymazat_ZPRAVY();
 }
