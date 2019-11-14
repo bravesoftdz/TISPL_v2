@@ -5149,7 +5149,7 @@ void TForm1::vloz_bod_haly_objektu(int X,int Y)
 	else souradnice=m.P2L(TPoint(X,Y));
 	//////Získání bodu před
 	Cvektory::TBod *zabod=NULL;
-	pom_bod_temp=pom_bod;//plnění temp bodu pro jistotu
+	if(pom_temp!=NULL)pom_bod_temp=pom_bod;//plnění temp bodu pro jistotu
 	if(pom_bod_temp!=NULL && pom_bod_temp->predchozi->n>0)zabod=pom_bod_temp->predchozi;
 	if(funkcni_klavesa==3 && pom_bod!=NULL && pom_bod->n!=1)zabod=pom_bod->predchozi;
 	if(pom_temp==NULL && funkcni_klavesa==3 && pom_bod!=NULL && pom_bod->n==1)zabod=d.v.HALA.body->predchozi;   
