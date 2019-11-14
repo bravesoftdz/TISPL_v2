@@ -11594,9 +11594,9 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	scGPGlyphButton_info_cekaniClick(this);
-//	if(language==EN) {language=CS;load_language(CS,true);  	writeINI("Nastaveni_app","jazyk","1");  }
-//	else  {language=EN;load_language(EN,true); writeINI("Nastaveni_app","jazyk","0");  }
+	TPointD a=m.zona_otaceni(0,90,0.45);
+	Memo("Min:"+AnsiString(a.x));
+	Memo("Max:"+AnsiString(a.y));
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
