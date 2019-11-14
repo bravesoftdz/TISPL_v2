@@ -1892,6 +1892,9 @@ void Cvykresli::vykresli_kurzor_kabiny (TCanvas *canv, int id, int X, int Y, Cve
 			//if(F->prichytavat_k_mrizce==1)
 			oblast=v.oblast_objektu(p,X,Y);
 			if(F->prichytavat_k_mrizce==2 && (p->n!=1 || p->n==1 && oblast==1 || p->n==1 && oblast==2 && v.OBJEKTY->predchozi->n==1))oblast=0;
+			if(oblast>1 && p->n>1)oblast=0;
+			if(predchozi_oblast!=oblast && oblast!=0 && v.OBJEKTY->predchozi->n==1)predchozi_oblast=oblast;
+			if(predchozi_oblast==2){Xp=m.L2Px(p->elementy->dalsi->geo.X1),Yp=m.L2Py(p->elementy->dalsi->geo.Y1);}
 			if(oblast==0)//mimo objekt
 			{
 				//zjištění rotace
@@ -1951,16 +1954,16 @@ void Cvykresli::vykresli_kurzor_kabiny (TCanvas *canv, int id, int X, int Y, Cve
 					case 180:if(p_rotace!=180){X1=m.L2Px(p->elementy->dalsi->geo.X1)+m.m2px(rozmery_kabiny.y)/2.0;Y1=m.L2Py(p->elementy->dalsi->geo.Y1);X2=m.L2Px(p->elementy->dalsi->geo.X1)-m.m2px(rozmery_kabiny.y)/2.0;Y2=Y1+m.m2px(rozmery_kabiny.x);}else{X1=m.L2Px(p->elementy->dalsi->geo.X1)+m.m2px(rozmery_kabiny.y)/2.0;Y1=m.L2Py(p->elementy->dalsi->geo.Y1);X2=m.L2Px(p->elementy->dalsi->geo.X1)-m.m2px(rozmery_kabiny.y)/2.0;Y2=m.L2Py(p->elementy->dalsi->geo.Y1)-m.m2px(rozmery_kabiny.x);}break;
 					case 270:if(p_rotace==270){X1=m.L2Px(p->elementy->dalsi->geo.X1);Y1=m.L2Py(p->elementy->dalsi->geo.Y1)-m.m2px(rozmery_kabiny.y)/2.0;X2=X1+m.m2px(rozmery_kabiny.x);Y2=m.L2Py(p->elementy->dalsi->geo.Y1)+m.m2px(rozmery_kabiny.y)/2.0;}else{X1=m.L2Px(p->elementy->dalsi->geo.X1);Y1=m.L2Py(p->elementy->dalsi->geo.Y1)-m.m2px(rozmery_kabiny.y)/2.0;X2=X1-m.m2px(rozmery_kabiny.x);Y2=m.L2Py(p->elementy->dalsi->geo.Y1)+m.m2px(rozmery_kabiny.y)/2.0;}break;
 				}
-				if(rotace==m.Rt90(p_rotace-180))rotace=p_rotace;
+				if(rotace==p_rotace)rotace=m.Rt90(p_rotace-180);
 			}
 			//vykreslení kurzoru
 			canv->Rectangle(X1,Y1,X2,Y2);
 			//vykreslení spojnice k předchozímu
 			if((spojnice1 || F->prichytavat_k_mrizce==2) && oblast==0)
 			{
-				canv->MoveTo(m.L2Px(p->elementy->predchozi->geo.X4),m.L2Py(p->elementy->predchozi->geo.Y4));
+				canv->MoveTo(Xp,Yp);
 				canv->LineTo(X,Y);
-				sipka(canv,(X+m.L2Px(p->elementy->predchozi->geo.X4))/2.0,(Y+m.L2Py(p->elementy->predchozi->geo.Y4))/2.0,azimut,true,3,clBlack,clWhite,pmNotXor);
+				sipka(canv,(X+Xp)/2.0,(Y+Yp)/2.0,azimut,true,3,clBlack,clWhite,pmNotXor);
 			}
 			//vykreslení spojnice k poslední/další je-li to nutné
 			if((spojnice2 || F->prichytavat_k_mrizce==2) && v.OBJEKTY->predchozi->n>=2 && oblast!=2)
