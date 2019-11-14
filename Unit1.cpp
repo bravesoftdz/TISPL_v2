@@ -3142,19 +3142,19 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				//////uchopeno za vrh/spodek .. budu posouvat osu pohonu
 				else
 				{
-					double delka_hrany=abs(O->body->dalsi->X-O->body->predchozi->X+O->body->dalsi->Y-O->body->predchozi->Y),posun=0;
-					if(O->orientace==90 || O->orientace==270)
-					{
-						if(O->orientace==90)posun=O->body->dalsi->Y-delka_hrany/2.0;
-						else posun=O->body->predchozi->Y-delka_hrany/2.0;
-						O->elementy->dalsi->Y=O->elementy->dalsi->geo.Y1=O->elementy->dalsi->geo.Y2=O->elementy->dalsi->geo.Y3=O->elementy->dalsi->geo.Y4=posun;
-					}
-					else
-					{
-						if(O->orientace==0)posun=O->body->dalsi->X+delka_hrany/2.0;
-						else posun=O->body->predchozi->X+delka_hrany/2.0;
-						O->elementy->dalsi->X=O->elementy->dalsi->geo.X1=O->elementy->dalsi->geo.X2=O->elementy->dalsi->geo.X3=O->elementy->dalsi->geo.X4=posun;
-          }
+//					double delka_hrany=abs(O->body->dalsi->X-O->body->predchozi->X+O->body->dalsi->Y-O->body->predchozi->Y),posun=0;
+//					if(O->orientace==90 || O->orientace==270)
+//					{
+//						if(O->orientace==90)posun=O->body->dalsi->Y-delka_hrany/2.0;
+//						else posun=O->body->predchozi->Y-delka_hrany/2.0;
+//						O->elementy->dalsi->Y=O->elementy->dalsi->geo.Y1=O->elementy->dalsi->geo.Y2=O->elementy->dalsi->geo.Y3=O->elementy->dalsi->geo.Y4=posun;
+//					}
+//					else
+//					{
+//						if(O->orientace==0)posun=O->body->dalsi->X+delka_hrany/2.0;
+//						else posun=O->body->predchozi->X+delka_hrany/2.0;
+//						O->elementy->dalsi->X=O->elementy->dalsi->geo.X1=O->elementy->dalsi->geo.X2=O->elementy->dalsi->geo.X3=O->elementy->dalsi->geo.X4=posun;
+//          }
 				}
 				O=NULL;delete O;
 			}
@@ -3835,7 +3835,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 				//smazání pomocných ukazatelů
 				A=NULL;B=NULL;delete A;delete B;
 			}
-			if(JID==-3){kurzor(posun_ind);refresh_mGrid=false;}//kurzor bodo objektu
+			if(JID==-3){kurzor(posun_ind);refresh_mGrid=false;}//kurzor bodu objektu
 			if(JID==-4)//oblast kóty objektu
 			{
 				refresh_mGrid=false;
@@ -3895,8 +3895,8 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 				else if(pom!=NULL&&pom->body!=NULL)A=pom->body->predchozi;
 				else A=d.v.HALA.body->predchozi;
 				//zjištění azimutu úsečky + nastavení kurzoru
-				if(A->X==B->X)kurzor(zmena_d_x);
-				else if(A->Y==B->Y)kurzor(zmena_d_y);
+				if(m.round2double(A->X,2)==m.round2double(B->X,2))kurzor(zmena_d_x);
+				else if(m.round2double(A->Y,2)==m.round2double(B->Y,2))kurzor(zmena_d_y);
 				//úsečka a kóta se posouvají rozdílně, proto jiné kurzory
 				else kurzor(posun_ind);
 				//smazání pomocných ukazatelů
