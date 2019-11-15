@@ -791,6 +791,55 @@ double Cmy::PTo(double Dotoc,double RD)
 	if(RD==0)return 0; else return Dotoc/RD;
 }
 ////////////////////////
+//vypočítá velikost zóny otáčení před a za otočí
+TPointD Cmy::zona_otaceni(double rotace_pred,double rotace_otoce,double delka_otoc)
+{
+	TPointD ret;ret.x=0;ret.y=0;
+	//////inputs JIG
+	double sirka=F->d.v.PP.sirka_jig,delka=F->d.v.PP.delka_jig;
+
+	//////konstanty pro výpočet
+	double diam=sqrt(pow(delka/2.0,2)+pow(sirka/2.0,2));//poloměr kružnic
+	double c1=RadToDeg(ArcTan(sirka/delka));
+	double alpha[4];alpha[0]=c1+rotace_pred,alpha[1]=180-alpha[0],alpha[2]=180+alpha[0],alpha[3]=360-alpha[0];
+	double max=MaxInt*(-1),min=MaxInt;
+
+	//////virtuální pole
+	double mezi_vypocet=0;
+	for(int col=0;col<=3;col++)
+	{
+		//přiřazení alpha podle sloupce
+		double a=alpha[col];
+		int c2=0;
+		for(int row=0;row<=7;row++)
+		{
+			//výpočet prvního pole
+			if(row==2)c2=1;if(row==4)c2=-1;
+			if(row%2==0 && row!=6)mezi_vypocet=-delka_otoc/DegToRad(rotace_otoce)*(DegToRad(a)+ArcSin(delka_otoc/(DegToRad(rotace_otoce)*diam))-2*M_PI*c2-M_PI);
+			if(row%2!=0 && row!=7)mezi_vypocet=delka_otoc/DegToRad(rotace_otoce)*(-DegToRad(a)+ArcSin(delka_otoc/(DegToRad(rotace_otoce)*diam))-2*M_PI*c2);
+			if(row==6)mezi_vypocet=0;
+			if(row==7)mezi_vypocet=delka_otoc;
+			//výpočet druhého pole
+			if(row<=5)
+			{
+				if(mezi_vypocet>0 && mezi_vypocet<delka_otoc)mezi_vypocet=diam*cos(DegToRad(a)+DegToRad(rotace_otoce)*mezi_vypocet/delka_otoc)+mezi_vypocet;
+				else mezi_vypocet=delka_otoc/2.0;
+			}
+			else
+			{
+				mezi_vypocet=diam*cos(DegToRad(a)+DegToRad(rotace_otoce)*mezi_vypocet/delka_otoc)+mezi_vypocet;
+			}    // F->Sv(mezi_vypocet);
+			//hledání extrémů
+			if(mezi_vypocet>max)max=mezi_vypocet;
+			if(mezi_vypocet<min)min=mezi_vypocet;
+		}
+	}
+	//////výsledek
+	ret.x=min*(-1);
+	ret.y=max-delka_otoc;
+	return ret;
+}
+////////////////////////
 //dle aktuálního RD a času otáčení otoče vrátí délku otáčení
 double Cmy::Dotoc(double PTo,double RD)
 {

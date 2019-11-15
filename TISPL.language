@@ -258,7 +258,7 @@ continuous;X;kontinuální
 continuous with;X;kontinuální s 
 pass. turning;X;pasiv. otoèí
 act. turning;X;akt. otoèí
-flame ;X;ožeh
+flame;X;ožeh
 ionization;X;ionizace
 painting;X;lakování
 passive;X;aktivní
@@ -316,7 +316,7 @@ A length buffer is required for the current number of positions;X;Pro aktuální p
 Cannot delete transfer point.;X;Nelze odstranit pøedávací místo.
 An update to TISPL is available. Do you want to download it?;X;Je k dispozici aktualizace TISPLu. Chcete ji stáhnout?
 After the download is complete, overwrite the current EXE file.;X;Po dokonèení staženým souborem pøepište souèasný EXE soubor.
-has been changed.\nDo you want to save it before exiting?;X;byl zmìnìn.\nChcete ho pøed ukonèením uložit?
+has been changed.<br>Do you want to save it before exiting?;X;byl zmìnìn.<br>Chcete ho pøed ukonèením uložit?
 No internet connection or license expired, application will not start!;X;Není k dispozici pøípojení k internetu nebo vypršela licence, aplikace nebude spuštìna!
 Failed to connect to server, application will not start!;X;Nezdaøilo se pøipojení k serveru, aplikace nebude spuštìna!
 Failed to connect to license server, application will not start!;X;Nezdaøilo se pøipojení k licenènímu serveru, aplikace nebude spuštìna!
@@ -401,3 +401,4 @@ Create a schema and set the object parameters using the right mouse button.;X;Vy
 Wagon: ;X;Vozík:
 The rotation does not correspond to the JIGs orientation at the beginning of the line!;X;Rotace neodpovídá orientaci JIGù na zaèátku linky!
 Attention, JIGs overlap!;X;Pozor, pøekrytí JIGù!
+Enter order parameters or choose cancellation.;X;Zadejte parametry zakázek nebo zvolte storno.
