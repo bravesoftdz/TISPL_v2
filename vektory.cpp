@@ -592,7 +592,7 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 	novy->Xp=-500;
 	novy->Yp=-500;
 	novy->body=NULL;//spojový seznam definičních bodů obrysu objektu
-	novy->sirka_steny=0.2;//0.12;//šířka stěny kabiny objektu v metrech
+	novy->sirka_steny=0.15;//0.12;//šířka stěny kabiny objektu v metrech
 	novy->CT=PP.TT;//pro status návrh
 	novy->RD=m.UDV(0)/novy->CT;//pro status návrh
 	novy->delka_dopravniku=m.UDV(0);//delka dopravníku v rámci objektu
@@ -5923,7 +5923,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 					ukaz->Xp=c_ukaz->Xp;
 					ukaz->Yp=c_ukaz->Yp;
 					ukaz->orientace_text=c_ukaz->orientace_text;
-          ukaz->sirka_steny=c_ukaz->sirka_steny;
+					ukaz->sirka_steny=c_ukaz->sirka_steny;
           ukaz->body=NULL;  //NUTNOST PRO AUTO VYTVARENI HLAVICKY
 					ukaz->rezim=c_ukaz->rezim;
 					ukaz->orientace=c_ukaz->orientace;

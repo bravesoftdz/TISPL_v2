@@ -25,7 +25,6 @@ class Cvykresli
 	Cvektory::TProces *Pom_proces;//pomocný ukazatel na proces, využívá se v pøi naèítání pùvodnì vytvoøených náhodných hodnot èekání na palec
 	short oY;//ofset na ose Y, 5 pouze grafická korekce
 	float sizeP;//velikost textù popiskù elementù v knihovnì
-	TColor clStenaKabiny,clStenaHaly;
 
 	public:
 	Cvykresli();//konstruktor
@@ -138,6 +137,7 @@ class Cvykresli
 	TPointD Rxy(Cvektory::TElement *Element);//vrátí referenèní logické (v metrech) souøadnice  robota (tzn. bod v místì trysky, tj. bod v místì umístìní ve schématu), pøevede dle aktuální rotace symbolu a uchopovacích (skuteèných) souøadnic robota, kontroluje, zda se jedná skuteènì o Robota
 
 	//globální public promìnné
+	TColor clStenaKabiny,clStenaHaly,clError,clWarning;
 	short O_width,O_height,V_width;//logické parametry, nezoomovat
 	float Robot_sirka_zakladny;
 	float Robot_delka_zakladny;

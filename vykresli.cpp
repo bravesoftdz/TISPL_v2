@@ -28,8 +28,10 @@ Cvykresli::Cvykresli()
 	Robot_delka_zakladny=1.2;
 	DoSkRB=(1.2+Robot_sirka_zakladny/2.0);//delka od středu (X,Y bodu) robota k referenčnímu bodu robota (tj. k trysce) v metrech
 	DkRB=0.8;//délka k referenčnímu bodu od uchopovacího bodu, respektive odsazení člověka od linky
-	clStenaHaly=m.clIntensive(clBlue,100);
-	clStenaKabiny=m.clIntensive(clRed,180);
+	clStenaHaly=TColor RGB(147,166,182);//původně m.clIntensive(clBlue,100);
+	clStenaKabiny=m.clIntensive(clStenaHaly,40);//původně m.clIntensive(clRed,180);
+	clError=clRed;
+	clWarning=TColor RGB(255,165,0);
 	zobrazit_cele_zpravy=false;
 }
 //---------------------------------------------------------------------------
@@ -4296,7 +4298,7 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,lon
 				if(O->dalsi==NULL && O->n>=3 && F->pom_temp->n!=1 && v.OBJEKTY->dalsi->elementy->dalsi->pohon!=NULL)T2=v.OBJEKTY->dalsi->elementy->dalsi->pohon->name;
 				O=NULL;delete O;
 			}
-      //v případě 270 musí být popisky prohozeny
+			//v případě 270 musí být popisky prohozeny
 			if(v.vrat_objekt(E->objekt_n)->orientace==270){Tpom=T1;T1=T2;T2=Tpom;}
 			int w1=canv->TextWidth(T1),w2=canv->TextWidth(T2);
 			int h=canv->TextHeight(T1);
@@ -4601,8 +4603,8 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 			 AnsiString Tico="";
 			 switch(Z->zID)
 			 {
-				 case -1: Tico="E";clCircle=clRed;break;//barva errory
-				 case 1:  Tico="W";clCircle=TColor RGB(255,165,0);break;//barva warningy
+				 case -1: Tico="E";clCircle=clError;break;//barva errory
+				 case 1:  Tico="W";clCircle=clWarning;break;//barva warningy
 			 }
 			 //kruhový podklad ikony
 			 canv->Brush->Style=bsSolid;
@@ -4797,7 +4799,7 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 		}
 
 		////uchopy - pokud je považována editace, nutno vykreslit v samostatném cyklu až nad spojnice
-		if(stav>=0)
+		if(stav>=0 && (F->pom_temp!=NULL || F->pom_temp==NULL && F->pom==NULL))//ošetření podmínkou oproti vykreslování činek místo hran objektů
 		{
 			B=body->dalsi;//přeskakuje hlavičku
 			while(B!=NULL)
