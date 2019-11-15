@@ -26,8 +26,6 @@ class Cvykresli
 	short oY;//ofset na ose Y, 5 pouze grafická korekce
 	float sizeP;//velikost textù popiskù elementù v knihovnì
 	TColor clStenaKabiny,clStenaHaly;
-	TTextXYZ Warning[100];
-  unsigned short WarningCount;
 
 	public:
 	Cvykresli();//konstruktor
@@ -93,7 +91,7 @@ class Cvykresli
 	void vykresli_ikonu_textu(TCanvas *canv,int X,int Y,AnsiString Popisek="text",short stav=0);
 	void vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popisek="spojnice",short stav=0);
 	void vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popisek="komora",short typ=0,short stav=0,double orientace=90);//typ: -2 kurzor se sprchy, -1 kurzor bez sprchy, 0 ikona bez sprchy, 1 ikona se sprchou, stav: -1 disabled, 0 normál
-	void vypis_warningy(TCanvas *canv);//asi spíše provizorní metoda
+	void vypis_zpravy(TCanvas *canv);//metoda vypíše zprávy ze seznamu zpráv a zároveò uloží jejich citelné oblasti
 	void nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv,unsigned short typ);//short typ = zda se jedná o zadavání name==1 nebo short_name==2 nebo nic==0
 	void linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,int Width,TColor Color=clBlack,TPenStyle PenStyle=psSolid,TPenMode PenMode=pmCopy);
 	void line(TCanvas *canv,long X1,long Y1,long X2,long Y2);
@@ -162,6 +160,7 @@ class Cvykresli
 	int orientace_objektu;
 	Cvektory::TGeometrie geoTemp;//pomocná struktura sloužicí na uchování (k pozdìjšímu uložení do geometrických elementù) aktuálnì vracených hodnot ze smart kurzoru
 	short pasivni_vektory_intenzita;//intenzita pasivních vektorù pøi editaci objektu
+  bool zobrazit_cele_zpravy;
 
 	protected:
 

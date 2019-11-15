@@ -5377,17 +5377,22 @@ void Cvektory::vymaz_seznam_KATALOG()
 void Cvektory::hlavicka_ZPRAVY()
 {
 	//F->log(__func__);//logování  - NELZE
-	TZprava *nova=new TZprava;
-	nova->n=0;
 
-	nova->predchozi=nova;//ukazuje sam na sebe
-	nova->dalsi=NULL;
+	//alokace paměti
+	TZprava *nova=new TZprava;
+
+	//atributy
+	nova->n=0;
 	nova->X=0;
 	nova->Y=0;
+	nova->zID=0;
 	nova->VID=0;
 	nova->VIDvalue=-1;
-	nova->Popisek="";
 	nova->citelna_oblast=TRect(0,0,0,0);
+
+	//ukazatelové záležitosti
+	nova->predchozi=nova;//ukazuje sam na sebe
+	nova->dalsi=NULL;
 	ZPRAVY=nova;
 }
 //---------------------------------------------------------------------------
@@ -5408,7 +5413,7 @@ void Cvektory::vloz_zpravu(TZprava *zprava)
 }
 //---------------------------------------------------------------------------
 //vloží jeden prvek na konec seznamu, přiřadí automaticky poslední N (id).
-void Cvektory::vloz_zpravu(double X, double Y, double orientace, TElement *Element,UnicodeString Popisek,int VID, double VIDvalue)
+void Cvektory::vloz_zpravu(double X, double Y, double orientace,short zID, int VID, TElement *Element,double VIDvalue)
 {
 	F->log(__func__);//logování
 
@@ -5420,10 +5425,9 @@ void Cvektory::vloz_zpravu(double X, double Y, double orientace, TElement *Eleme
 	Z->Y=Y;
   Z->orientace;
 	Z->Element=Element;
-	Z->Popisek=Popisek;
+	Z->zID=zID;
 	Z->VID=VID;
 	Z->VIDvalue=VIDvalue;
-	//Z->citelna_oblast=dopočítat tady; možná zvážit rovnou dvě oblasti pro celou a pro zástupný znak, také by se dalo počítat až při vyhledávání setjob, ale to by bylo strojově zbytečné náročné, založit přepínací proměnnou na stav zobrazení zpráv a potom se domluvit jestli ji někam zapisovat (ini či binárka)...
 
 	//samotné vložení do spojového seznamu ZPRAVY
 	vloz_zpravu(Z);
@@ -5444,6 +5448,23 @@ Cvektory::TZprava *Cvektory::vrat_zpravu(unsigned long n)
 		}
 		return Z;
 	}
+}
+//---------------------------------------------------------------------------
+//ověří, zda se na daných souřadních myši nachází nějaká (libovolná) ze zpráv
+bool Cvektory::PtInZpravy()
+{
+	bool RET=false;
+	if(ZPRAVY!=NULL)
+	{
+		Cvektory::TZprava *Z=ZPRAVY->dalsi;
+		while(Z!=NULL)
+		{
+			if(Z->citelna_oblast.PtInRect(F->akt_souradnice_kurzoru_PX)){RET=true;break;}
+			Z=Z->dalsi;
+		}
+		Z=NULL;delete Z;
+	}
+	return RET;
 }
 //---------------------------------------------------------------------------
 //vše odstraní včetně hlavičky
