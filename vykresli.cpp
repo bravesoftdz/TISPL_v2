@@ -28,8 +28,10 @@ Cvykresli::Cvykresli()
 	Robot_delka_zakladny=1.2;
 	DoSkRB=(1.2+Robot_sirka_zakladny/2.0);//delka od středu (X,Y bodu) robota k referenčnímu bodu robota (tj. k trysce) v metrech
 	DkRB=0.8;//délka k referenčnímu bodu od uchopovacího bodu, respektive odsazení člověka od linky
-	clStenaHaly=m.clIntensive(clBlue,100);
-	clStenaKabiny=m.clIntensive(clRed,180);
+	clStenaHaly=TColor RGB(147,166,182);//původně m.clIntensive(clBlue,100);
+	clStenaKabiny=m.clIntensive(clStenaHaly,40);//původně m.clIntensive(clRed,180);
+	clError=clRed;
+	clWarning=TColor RGB(255,165,0);
 	zobrazit_cele_zpravy=false;
 }
 //---------------------------------------------------------------------------
@@ -4601,8 +4603,8 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 			 AnsiString Tico="";
 			 switch(Z->zID)
 			 {
-				 case -1: Tico="E";clCircle=clRed;break;//barva errory
-				 case 1:  Tico="W";clCircle=TColor RGB(255,165,0);break;//barva warningy
+				 case -1: Tico="E";clCircle=clError;break;//barva errory
+				 case 1:  Tico="W";clCircle=clWarning;break;//barva warningy
 			 }
 			 //kruhový podklad ikony
 			 canv->Brush->Style=bsSolid;
