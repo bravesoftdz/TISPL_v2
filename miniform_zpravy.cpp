@@ -24,17 +24,17 @@ void __fastcall TForm_zpravy::FormShow(TObject *Sender)
   Top=F->scLabel_titulek->Height + 1;
   Left=F->ClientWidth - scGPListBox_zpravy->Width;
 
-
-   TscGPListBox *C= scGPListBox_zpravy;
-   TscGPListBoxItem *I;
+  TscGPListBox *C= scGPListBox_zpravy;
+  TscGPListBoxItem *I;
    int pocet=0;
   	 if(F->d.v.ZPRAVY!=NULL)
 	 {
 		 Cvektory::TZprava *Z=F->d.v.ZPRAVY->dalsi;
 		 while(Z!=NULL)
 		 {
+      //F->d.v.ZPRAVY->
       I=C->Items->Add();
-      I->Caption =AnsiString(Z->Popisek);
+      I->Caption =AnsiString(Z->VID);
       if(Z->VID==0) I->ImageIndex=69;
       else I->ImageIndex=70;
       Z=Z->dalsi;
@@ -50,8 +50,8 @@ void __fastcall TForm_zpravy::FormShow(TObject *Sender)
 void __fastcall TForm_zpravy::scGPListBox_zpravyMouseMove(TObject *Sender, TShiftState Shift,
           int X, int Y)
 {
-F->Memo(floor(Y/(scGPListBox_zpravy->ItemHeight*1.0)));
-int radek= floor(Y/(scGPListBox_zpravy->ItemHeight*1.0));
+//F->Memo(floor(Y/(scGPListBox_zpravy->ItemHeight*1.0)));
+//int radek= floor(Y/(scGPListBox_zpravy->ItemHeight*1.0));
 
 //if(scGPListBox_zpravy->Items->Items[radek]->ImageIndex==70) scGPListBox_zpravy->Items->Items[radek]->ImageIndex=69;
 //else scGPListBox_zpravy->Items->Items[radek]->ImageIndex=70;
@@ -70,6 +70,14 @@ void __fastcall TForm_zpravy::scGPGlyphButton_infoClick(TObject *Sender)
  }
 
 
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_zpravy::scGPListBox_zpravyClick(TObject *Sender)
+{
+//ShowMessage(scGPListBox_zpravy->ItemIndex +1);
+//Close();
+F->posun_na_element(scGPListBox_zpravy->ItemIndex +1);
 }
 //---------------------------------------------------------------------------
 

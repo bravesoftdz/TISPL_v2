@@ -10171,7 +10171,7 @@ void TForm1::zmena_editovaneho_objektu()
 void TForm1::posun_na_element(unsigned long n_zpravy)
 {
 	//////získání elementu na který má být proveden posun
-	Cvektory::TZprava *Z=d.v.vrat_zpravu(n_zpravy+1);
+	Cvektory::TZprava *Z=d.v.vrat_zpravu(n_zpravy);
 	if(/*Z!=NULL && Z->Element!=NULL*/true)
 	{
 		Cvektory::TElement *E;//=Z->Element;
@@ -12609,15 +12609,17 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //Memo(r);
 //Memo(rad);
 
-	 d.v.vloz_zpravu(0,0,0,NULL,ls->Strings[401]);
-	 d.v.vloz_zpravu(0,0,0,NULL,ls->Strings[402]);
-	 d.v.vloz_zpravu(0,0,0,NULL,"test");
+//	 d.v.vloz_zpravu(0,0,0,NULL,ls->Strings[401]);
+//	 d.v.vloz_zpravu(0,0,0,NULL,ls->Strings[402]);
+//	 d.v.vloz_zpravu(0,0,0,NULL,"test");
 
+//
+//   Form_zpravy->ShowModal();
+//
+//   Sk(d.v.vrat_zpravu(2)->Popisek);
+//	 d.v.vymazat_ZPRAVY();
 
-   Form_zpravy->ShowModal();
-
-   Sk(d.v.vrat_zpravu(2)->Popisek);
-	 d.v.vymazat_ZPRAVY();
+//F->posun_na_element(1);
 
 
 

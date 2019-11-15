@@ -28,6 +28,7 @@ __published:	// IDE-managed Components
   void __fastcall scGPListBox_zpravyMouseMove(TObject *Sender, TShiftState Shift,
           int X, int Y);
   void __fastcall scGPGlyphButton_infoClick(TObject *Sender);
+  void __fastcall scGPListBox_zpravyClick(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
   __fastcall TForm_zpravy(TComponent* Owner);

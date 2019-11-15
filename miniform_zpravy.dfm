@@ -54,7 +54,6 @@ object Form_zpravy: TForm_zpravy
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
-    ExplicitWidth = 410
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 311
@@ -151,7 +150,6 @@ object Form_zpravy: TForm_zpravy
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 360
     end
     object scLabel1: TscLabel
       Left = 50
@@ -185,7 +183,6 @@ object Form_zpravy: TForm_zpravy
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Zpr'#225'vy'
-      ExplicitWidth = 273
     end
     object scGPGlyphButton_info: TscGPGlyphButton
       Left = 274
@@ -287,7 +284,6 @@ object Form_zpravy: TForm_zpravy
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 323
     end
     object scGPGlyphButton1: TscGPGlyphButton
       AlignWithMargins = True
@@ -403,6 +399,7 @@ object Form_zpravy: TForm_zpravy
     TabStop = True
     Touch.InteractiveGestures = [igPan, igPressAndTap]
     Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoParentPassthrough]
+    OnClick = scGPListBox_zpravyClick
     OnMouseMove = scGPListBox_zpravyMouseMove
     CustomImageIndex = -1
     Options.FillColor = clWindow
@@ -494,7 +491,6 @@ object Form_zpravy: TForm_zpravy
     HeaderOptions.GradientAngle = 90
     HeaderOptions.Margin = 5
     HeaderHeight = 20
-    ExplicitWidth = 410
   end
   object scGPPanel_statusbar: TscGPPanel
     Left = 0
@@ -533,7 +529,6 @@ object Form_zpravy: TForm_zpravy
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
-    ExplicitWidth = 410
     object RzStatusPane3: TRzStatusPane
       Left = 0
       Top = 0
@@ -567,7 +562,6 @@ object Form_zpravy: TForm_zpravy
       GlyphColor = clWhite
       GlyphColorAlpha = 200
       GlyphThickness = 1
-      ExplicitLeft = 384
     end
   end
 end
