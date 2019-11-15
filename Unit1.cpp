@@ -2692,6 +2692,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						if(JID==-4){Akce=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;nahled_ulozit(true);}//změna offsetu kóty
 						if(JID==-5){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_bod_temp=pom_bod;if(pom_bod_temp->n!=1)editovany_text=m.round2double(m.delka(pom_bod_temp->predchozi->X,pom_bod_temp->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);else editovany_text=m.round2double(m.delka(pom_temp->body->predchozi->X,pom_temp->body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);if(DKunit==2||DKunit==3)editovany_text=editovany_text/pom_temp->pohon->aRD;editovany_text=outDK(ms.MyToDouble(editovany_text));nahled_ulozit(true);}//editace kót kabiny
 						if(JID==-9 || JID==4){Akce=MOVE_TABLE;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//posun tabulky pohonu
+            if(JID==-102)d.zobrazit_cele_zpravy=!d.zobrazit_cele_zpravy;//rozbalení nebo skrytí zpráv
 						if(JID==-201){pom_temp->pohon=element_temp->pohon;if(pom_temp->pohon!=NULL)prirazeni_pohonu_tab_pohon(pom_temp->pohon->n);else {prirazeni_pohonu_tab_pohon(0);PmG->getCombo(0,0)->DropDown();}if(!pom_temp->zobrazit_mGrid)scGPButton_viditelnostmGridClick(Sender);} //kliknutí na jeden z pohonů na předávacím místě
 						if(JID==-202){if(element_temp->dalsi!=NULL){pom_temp->pohon=element_temp->dalsi->pohon;if(pom_temp->pohon!=NULL)prirazeni_pohonu_tab_pohon(pom_temp->pohon->n);else {prirazeni_pohonu_tab_pohon(0);PmG->getCombo(0,0)->DropDown();}if(!pom_temp->zobrazit_mGrid)scGPButton_viditelnostmGridClick(Sender);}else {pom_vyhybka=pom->dalsi;zmena_editovaneho_objektu();}}
 					}
@@ -2957,8 +2958,8 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
       //zapnutí kurzoru
 			if(pom_temp!=NULL&&stisknute_leve_tlacitko_mysi&&Screen->Cursor!=pan_move)kurzor(pan_move);
 			//posun
-			if(pom_temp!=NULL&&stisknute_leve_tlacitko_mysi)d.v.posun_objekt(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),pom_temp);
-			if(pom_temp==NULL)d.v.posun_objekt(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),pom);
+			if(pom_temp!=NULL&&stisknute_leve_tlacitko_mysi)d.v.posun_objekt(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),pom_temp,false,false);
+			if(pom_temp==NULL)d.v.posun_objekt(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),pom,false,false);
 			minule_souradnice_kurzoru=TPoint(X,Y);
 			REFRESH(false);
 			break;
@@ -3597,6 +3598,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 //JID=-10;//jednotky kóty
 //JID=-11 až -100;//hodnota kóty konkrétně a n elementu (10+pom_element->n)*(-1);hodnota kóty konkrétně a n komory (10+pom_komora->n)*(-1)
 //JID=-101;//hodnota LO kóty elementu
+//JID=-102;//citelná oblast zprávy
 //JID=-201;//pohon1 na předávacím místě
 //JID=-202;//pohon2 na předávacím místě
 //JID=-1 žádná
@@ -3613,7 +3615,7 @@ void TForm1::getJobID(int X, int Y)
 	JID=-1;//výchozí stav, nic nenalezeno
 	if(MOD==NAHLED)
 	{
-  	//nejdříve se zkouší hledat souřadnice myši v TABULCE POHONů
+		//nejdříve se zkouší hledat souřadnice myši v TABULCE POHONů
   	if(PmG!=NULL && pom_temp->uzamknout_nahled==false && pom_temp->zobrazit_mGrid)
 		{
 			pom_element=NULL;
@@ -3660,53 +3662,57 @@ void TForm1::getJobID(int X, int Y)
   		}
   		else//tabulka nenalezena, takže zkouší najít ELEMENT
 			{
-				pom_element=NULL;
-				if(pom_temp->uzamknout_nahled==false)pom_element=F->d.v.najdi_element(pom_temp,m.P2Lx(X),m.P2Ly(Y));//pouze pokud je možné měnit rozmístění a rozměry,nutné jako samostatná podmínka
-				if(pom_element!=NULL)//element nalezen, tzn. klik či přejetí myší přes elemement nikoliv tabulku
-  			{
-  				if(scGPCheckBox1_popisky->Checked && pom_element->citelna_oblast.rect3.PtInRect(TPoint(X,Y)))JID=1;//byl nalezen název elementu
-					else JID=0; //byl nálezen element nikoliv jeho název, určeno k smazání či posunu elementu
-  			}
-  			else //ani element nenalezen, hledá tedy interaktivní text, obrys a kóty atp.
+				if(d.v.PtInZpravy())JID=-102;//hledání citelné oblasti zprávy
+				else
 				{
-					pom_bod=d.v.najdi_bod(pom_temp);//pokouším se najít bod v obrysu kabiny
-					if(pom_bod!=NULL)JID=-3;//bod nalezen
-					else //bod nenalezen, pokouším se najít hranu kabiny
-					{
-						pom_bod=d.v.najdi_usecku(pom_temp);
-						if(pom_bod!=NULL)JID=-2;//hrana nalezena
-						else
-				  	{ //testování zda se nejedná o NÁZEV či ZKRATKA objektu, ZATÍM NEREFLEKTUJE ORIENTACI NÁHLEDU
-							d.nastavit_text_popisu_objektu_v_nahledu(Canvas,1);AnsiString Tn=F->pom_temp->name.UpperCase();short Wn=Canvas->TextWidth(Tn);//název objektu - nastavení
-							if(najdi_nazev_obj(X,Y,pom_temp))JID=-6;//název objektu
-							if(najdi_nazev_obj(X,Y,pom_temp,1))JID=-7;
-							if(JID==-1)//hledání předávacího místa, pohon 1 nebo pohon 2
-							{
-								short pohon=najdi_popisky_PM(X,Y,pom_temp);
-								if(pohon>0)JID=-200-pohon;
-              }
-							if(JID==-1)//nejedná tj. testují se KÓTY
-							{
-								if(pom_temp->zobrazit_koty)//pouze pokud je náhled povolen a jsou kóty zobrazeny
-								{
-									short PtInKota_elementu=d.v.PtInKota_elementu(pom_temp,X,Y);
-									//jednotky kóty buď kabiny nebo kót elementů JID=-10
-									if(PtInKota_elementu==3)JID=-101;//hodnota LO kóty
-									else if(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || PtInKota_elementu==2)JID=-10;
-									else if(pom_temp->uzamknout_nahled==false)//hledám kóty kabiny
-									{
-										short PtInKota_bod=d.v.PtInKota_bod(pom_temp);//metoda vrací zda jsem v oblasti kóty nebo v její hodnotě + ukládá ukazatel na bod do pom_bod
-										if(PtInKota_bod==0 && pom_bod!=NULL)JID=-4;//oblast kóty - posun kóty
-										else if(PtInKota_bod==1 && pom_bod!=NULL)JID=-5;//hodnota kóty
-										else//kóty elementů RET=11-99
-										{
-											if(PtInKota_elementu==0 && pom_element!=NULL)JID=10+pom_element->n;//oblast kóty - posun kóty
-											if(PtInKota_elementu==1 && pom_element!=NULL)JID=(10+pom_element->n)*(-1);//hodnota kóty
-										}
-									}
-								}
-							}
-						}
+			  	pom_element=NULL;
+			  	if(pom_temp->uzamknout_nahled==false)pom_element=F->d.v.najdi_element(pom_temp,m.P2Lx(X),m.P2Ly(Y));//pouze pokud je možné měnit rozmístění a rozměry,nutné jako samostatná podmínka
+			  	if(pom_element!=NULL)//element nalezen, tzn. klik či přejetí myší přes elemement nikoliv tabulku
+			  	{
+			  		if(scGPCheckBox1_popisky->Checked && pom_element->citelna_oblast.rect3.PtInRect(TPoint(X,Y)))JID=1;//byl nalezen název elementu
+			  		else JID=0; //byl nálezen element nikoliv jeho název, určeno k smazání či posunu elementu
+			  	}
+			  	else //ani element nenalezen, hledá tedy interaktivní text, obrys a kóty atp.
+			  	{
+			  		pom_bod=d.v.najdi_bod(pom_temp);//pokouším se najít bod v obrysu kabiny
+			  		if(pom_bod!=NULL)JID=-3;//bod nalezen
+			  		else //bod nenalezen, pokouším se najít hranu kabiny
+			  		{
+			  			pom_bod=d.v.najdi_usecku(pom_temp);
+			  			if(pom_bod!=NULL)JID=-2;//hrana nalezena
+			  			else
+			  			{ //testování zda se nejedná o NÁZEV či ZKRATKA objektu, ZATÍM NEREFLEKTUJE ORIENTACI NÁHLEDU
+			  				d.nastavit_text_popisu_objektu_v_nahledu(Canvas,1);AnsiString Tn=F->pom_temp->name.UpperCase();short Wn=Canvas->TextWidth(Tn);//název objektu - nastavení
+			  				if(najdi_nazev_obj(X,Y,pom_temp))JID=-6;//název objektu
+			  				if(najdi_nazev_obj(X,Y,pom_temp,1))JID=-7;
+			  				if(JID==-1)//hledání předávacího místa, pohon 1 nebo pohon 2
+			  				{
+			  					short pohon=najdi_popisky_PM(X,Y,pom_temp);
+			  					if(pohon>0)JID=-200-pohon;
+			  				}
+			  				if(JID==-1)//nejedná tj. testují se KÓTY
+			  				{
+			  					if(pom_temp->zobrazit_koty)//pouze pokud je náhled povolen a jsou kóty zobrazeny
+			  					{
+			  						short PtInKota_elementu=d.v.PtInKota_elementu(pom_temp,X,Y);
+			  						//jednotky kóty buď kabiny nebo kót elementů JID=-10
+			  						if(PtInKota_elementu==3)JID=-101;//hodnota LO kóty
+			  						else if(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || PtInKota_elementu==2)JID=-10;
+			  						else if(pom_temp->uzamknout_nahled==false)//hledám kóty kabiny
+			  						{
+			  							short PtInKota_bod=d.v.PtInKota_bod(pom_temp);//metoda vrací zda jsem v oblasti kóty nebo v její hodnotě + ukládá ukazatel na bod do pom_bod
+			  							if(PtInKota_bod==0 && pom_bod!=NULL)JID=-4;//oblast kóty - posun kóty
+			  							else if(PtInKota_bod==1 && pom_bod!=NULL)JID=-5;//hodnota kóty
+			  							else//kóty elementů RET=11-99
+			  							{
+			  								if(PtInKota_elementu==0 && pom_element!=NULL)JID=10+pom_element->n;//oblast kóty - posun kóty
+			  								if(PtInKota_elementu==1 && pom_element!=NULL)JID=(10+pom_element->n)*(-1);//hodnota kóty
+			  							}
+			  						}
+			  					}
+			  				}
+			  			}
+			  		}
 					}
 				}
 			}
@@ -3737,6 +3743,7 @@ void TForm1::getJobID(int X, int Y)
 	else if(!zamek_layoutu)//pro schéma, zjišťování jidů pro body a úsečky
 	{
     /////////////JID udává pouze akci, není třeba aby se k němu přičítalo i číslo bodu, bod je držen jako ukazatel pom_bod/////////////
+    //-102; citelná oblast zprávy
 		//-2; hodnota kóty bodu (přímka [A,B] uložena v bodě B)
     //-1=NIC!!!!!!!!!!!!!!!
 		//0; bod haly nebo objektu
@@ -3744,13 +3751,14 @@ void TForm1::getJobID(int X, int Y)
 		//2; oblast kóty bodu (přímka [A,B] uložena v bodě B)
 		//3; oblas objektu
 		//4; hrana objektu
-		if(d.v.OBJEKTY->dalsi!=NULL&&Akce==NIC)
+		if(d.v.PtInZpravy())JID=-102;//hledání citelné oblasti zprávy
+		else if(d.v.OBJEKTY->dalsi!=NULL&&Akce==NIC)
 		{
 			pom=NULL;pom_bod=NULL;
 			pom=d.v.PtInObjekt();
 			if(pom!=NULL)//byl nalezen objekt
 			{
-				pom_bod=d.v.najdi_usecku(pom,2);
+				pom_bod=d.v.najdi_usecku(pom,5);
 				if(pom_bod!=NULL)JID=4;//nalezena hrana objektu
 				else JID=3;//nalezen pouze objekt
 			}
@@ -3761,7 +3769,7 @@ void TForm1::getJobID(int X, int Y)
 			if(pom_bod!=NULL)JID=0;//bod nalezen
 			else//bod nenalezen, pokusí se najít úsečku
 	  	{
-				pom_bod=d.v.najdi_usecku(pom);//druhý parametr udává přesnost s jakou hledám, popřípadě velikost oblasti kolem úsečky
+				pom_bod=d.v.najdi_usecku(pom,5);//druhý parametr udává přesnost s jakou hledám, popřípadě velikost oblasti kolem úsečky
 				if(pom_bod!=NULL)JID=1;//usečka nalezena
 				else//usečka nenalezena, pokusí se najít kótu
 				{
@@ -7522,6 +7530,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 		{
       //načtení hodnot z pohonu + ošetření proti nepřiřazenému pohonu
 			if(E->pohon!=NULL)aRD=E->pohon->aRD;
+			TPointD zony_otaceni=m.zona_otaceni(d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(E),E->rotace_jig,E->OTOC_delka);
 			//načtení popisků
 			AnsiString t="LO",t_hint="délka lakovácího okna";
 			if(ls->Strings[232]!="")t=ls->Strings[232];
@@ -7549,9 +7558,9 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			if(ls->Strings[240]!="")E->mGrid->Cells[0][5].Text=ls->Strings[240]+" "+delka_otoce;else E->mGrid->Cells[0][5].Text="otoč "+delka_otoce;
 			E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Text=outDO(E->OTOC_delka);
 			if(ls->Strings[275]!="")E->mGrid->Cells[0][6].Text=ls->Strings[275]+" "+delka_otoce;else E->mGrid->Cells[0][6].Text="Zóna před "+delka_otoce;
-			E->mGrid->Cells[1][6].Text=outDO(E->zona_pred);
+			E->mGrid->Cells[1][6].Text=outDO(m.round2double(zony_otaceni.x,3));
 			if(ls->Strings[276]!="")E->mGrid->Cells[0][7].Text=ls->Strings[276]+" "+delka_otoce;else E->mGrid->Cells[0][7].Text="Zóna za "+delka_otoce;
-			E->mGrid->Cells[1][7].Text=outDO(E->zona_za);
+			E->mGrid->Cells[1][7].Text=outDO(m.round2double(zony_otaceni.x,3));
 			E->mGrid->Cells[0][7].BottomBorder->Width=2;
 			E->mGrid->Cells[1][7].BottomBorder->Width=2;
 			E->mGrid->Cells[0][8].Text="PT2 "+cas;
@@ -7572,7 +7581,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][1].ShowHint=true;
 			E->mGrid->Cells[0][2].Hint=t_hint;
 			E->mGrid->Cells[0][2].ShowHint=true;
-			if(ls->Strings[242]!="")E->mGrid->Cells[0][4].Hint=ls->Strings[242];E->mGrid->Cells[0][4].Hint="celkový čas procesu otoče";
+			if(ls->Strings[242]!="")E->mGrid->Cells[0][4].Hint=ls->Strings[242];else E->mGrid->Cells[0][4].Hint="celkový čas procesu otoče";
 			E->mGrid->Cells[0][4].ShowHint=true;
 			if(ls->Strings[243]!="")E->mGrid->Cells[0][5].Hint=ls->Strings[243];else E->mGrid->Cells[0][5].Hint="délka otoče";
 			E->mGrid->Cells[0][5].ShowHint=true;
@@ -7633,8 +7642,9 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 		}
 		case 5://otoč pasivní
 		{
-      //načtení hodnot z pohonu + ošetření proti nepřiřazenému pohonu
+			//načtení hodnot z pohonu + ošetření proti nepřiřazenému pohonu
 			if(E->pohon!=NULL)aRD=E->pohon->aRD;
+			TPointD zony_otaceni=m.zona_otaceni(d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(E),E->rotace_jig,E->OTOC_delka);
 			//samotné vytvoření matice-tabulky
 			E->mGrid->Create(2,6);
 			//definice buněk
@@ -7645,9 +7655,9 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][3].Text="PT "+cas;//PT u pasivní nelze zadat
 			E->mGrid->Cells[1][3].Text=outPT(m.PTo(E->OTOC_delka,aRD));
 			if(ls->Strings[275]!="")E->mGrid->Cells[0][4].Text=ls->Strings[275]+" "+delka_otoce;else E->mGrid->Cells[0][4].Text="Zona před "+delka_otoce;
-			E->mGrid->Cells[1][4].Text=outDO(E->zona_pred);
+			E->mGrid->Cells[1][4].Text=outDO(m.round2double(zony_otaceni.x,3));
 			if(ls->Strings[276]!="")E->mGrid->Cells[0][5].Text=ls->Strings[276]+" "+delka_otoce;else E->mGrid->Cells[0][5].Text="Zona za "+delka_otoce;
-			E->mGrid->Cells[1][5].Text=outDO(E->zona_za);
+			E->mGrid->Cells[1][5].Text=outDO(m.round2double(zony_otaceni.y,3));
 			E->PTotoc=inPT(ms.MyToDouble(E->mGrid->Cells[1][3].Text));
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
@@ -7867,9 +7877,9 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			if(ls->Strings[240]!="")E->mGrid->Cells[0][5].Text=ls->Strings[240]+" "+delka_otoce;else E->mGrid->Cells[0][5].Text="otoč "+delka_otoce;
 			E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Text=outDO(E->OTOC_delka);
 			if(ls->Strings[275]!="")E->mGrid->Cells[0][6].Text=ls->Strings[275]+" "+delka_otoce;else E->mGrid->Cells[0][6].Text="Zóna před "+delka_otoce;
-			E->mGrid->Cells[1][6].Text=outDO(E->zona_pred);
+			E->mGrid->Cells[1][6].Text=outDO(m.round2double(E->zona_pred,3));
 			if(ls->Strings[276]!="")E->mGrid->Cells[0][7].Text=ls->Strings[276]+" "+delka_otoce;else E->mGrid->Cells[0][7].Text="Zóna za "+delka_otoce;
-			E->mGrid->Cells[1][7].Text=outDO(E->zona_za);
+			E->mGrid->Cells[1][7].Text=outDO(m.round2double(E->zona_za,3));
 			E->mGrid->Cells[0][7].BottomBorder->Width=2;
 			E->mGrid->Cells[1][7].BottomBorder->Width=2;
 			E->mGrid->Cells[0][8].Text="PT2 "+cas;
@@ -7889,7 +7899,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][1].ShowHint=true;
 			E->mGrid->Cells[0][2].Hint=t_hint;
 			E->mGrid->Cells[0][2].ShowHint=true;
-			if(ls->Strings[242]!="")E->mGrid->Cells[0][4].Hint=ls->Strings[242];E->mGrid->Cells[0][4].Hint="celkový čas procesu otoče";
+			if(ls->Strings[242]!="")E->mGrid->Cells[0][4].Hint=ls->Strings[242];else E->mGrid->Cells[0][4].Hint="celkový čas procesu otoče";
 			E->mGrid->Cells[0][4].ShowHint=true;
 			if(ls->Strings[243]!="")E->mGrid->Cells[0][5].Hint=ls->Strings[243];else E->mGrid->Cells[0][5].Hint="délka otoče";
 			E->mGrid->Cells[0][5].ShowHint=true;
@@ -7966,9 +7976,9 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][3].Text="PT "+cas;//PT u pasivní nelze zadat
 			E->mGrid->Cells[1][3].Text=outPT(E->PTotoc);
 			if(ls->Strings[275]!="")E->mGrid->Cells[0][4].Text=ls->Strings[275]+" "+delka_otoce;else E->mGrid->Cells[0][4].Text="Zona před "+delka_otoce;
-			E->mGrid->Cells[1][4].Text=outDO(E->zona_pred);
+			E->mGrid->Cells[1][4].Text=outDO(m.round2double(E->zona_pred,3));
 			if(ls->Strings[276]!="")E->mGrid->Cells[0][5].Text=ls->Strings[276]+" "+delka_otoce;else E->mGrid->Cells[0][5].Text="Zona za "+delka_otoce;
-			E->mGrid->Cells[1][5].Text=outDO(E->zona_za);
+			E->mGrid->Cells[1][5].Text=outDO(m.round2double(E->zona_za,3));
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_56+30;//Delší text
@@ -11594,9 +11604,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	TPointD a=m.zona_otaceni(0,90,0.45);
-	Memo("Min:"+AnsiString(a.x));
-	Memo("Max:"+AnsiString(a.y));
+	pom_temp->Xp=pom_temp->X;    pom_temp->Yp=pom_temp->Y; PmG->Refresh();
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
