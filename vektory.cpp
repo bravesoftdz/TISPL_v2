@@ -5413,7 +5413,7 @@ void Cvektory::vloz_zpravu(TZprava *zprava)
 }
 //---------------------------------------------------------------------------
 //vloží jeden prvek na konec seznamu, přiřadí automaticky poslední N (id).
-void Cvektory::vloz_zpravu(double X, double Y, double orientace,short zID, int VID, TElement *Element,double VIDvalue)
+void Cvektory::vloz_zpravu(double X, double Y, short zID, int VID, TElement *Element,double VIDvalue)
 {
 	F->log(__func__);//logování
 
@@ -5423,7 +5423,6 @@ void Cvektory::vloz_zpravu(double X, double Y, double orientace,short zID, int V
 	//atributy
 	Z->X=X;
 	Z->Y=Y;
-  Z->orientace;
 	Z->Element=Element;
 	Z->zID=zID;
 	Z->VID=VID;
@@ -5459,7 +5458,7 @@ bool Cvektory::PtInZpravy()
 		Cvektory::TZprava *Z=ZPRAVY->dalsi;
 		while(Z!=NULL)
 		{
-			if(Z->citelna_oblast.PtInRect(F->akt_souradnice_kurzoru_PX)){RET=true;break;}
+			if(Z->citelna_oblast.PtInRect(F->akt_souradnice_kurzoru_PX) || m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,Z->X,Z->Y,m.px2m(m.round(3*F->Zoom)))){RET=true;break;}
 			Z=Z->dalsi;
 		}
 		Z=NULL;delete Z;
