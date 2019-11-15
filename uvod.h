@@ -10,16 +10,18 @@
 #include <ExtCtrls.hpp>
 #include <jpeg.hpp>
 #include <Vcl.Imaging.pngimage.hpp>
+#include <Vcl.Graphics.hpp>
+#include "scControls.hpp"
+#include "scGPControls.hpp"
 //---------------------------------------------------------------------------
 class TForm_uvod : public TForm
 {
 __published:	// IDE-managed Components
   TTimer *Timer1;
-  TLabel *Label2;
-	TLabel *Label_copyright;
 	TImage *Image1;
-	TImage *Image2;
 	TLabel *Label_status;
+	TscGPLabel *scGPLabel_copyright;
+	TscGPLabel *scGPLabel_TISPL;
   void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
   void __fastcall Timer1Timer(TObject *Sender);
 private:	// User declarations

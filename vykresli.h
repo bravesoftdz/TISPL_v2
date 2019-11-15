@@ -162,7 +162,8 @@ class Cvykresli
 	short predchozi_oblast;
 	Cvektory::TGeometrie geoTemp;//pomocná struktura sloužicí na uchování (k pozdìjšímu uložení do geometrických elementù) aktuálnì vracených hodnot ze smart kurzoru
 	short pasivni_vektory_intenzita;//intenzita pasivních vektorù pøi editaci objektu
-  bool zobrazit_cele_zpravy;
+	bool zobrazit_cele_zpravy;
+	long zprava_highlight;//ztuèní danou zpravou
 
 	protected:
 

@@ -788,7 +788,7 @@ double Cmy::PTo(double Dotoc,double RD)
 }
 ////////////////////////
 //vypočítá velikost zóny otáčení před a za otočí
-TPointD Cmy::zona_otaceni(double rotace_pred,double rotace_otoce,double delka_otoc)
+TPointD Cmy::zona_otaceni(double orientace_jig_vstup,double rotace_otoce,double delka_otoc)
 {
 	TPointD ret;ret.x=0;ret.y=0;
 	//////inputs JIG
@@ -797,7 +797,7 @@ TPointD Cmy::zona_otaceni(double rotace_pred,double rotace_otoce,double delka_ot
 	//////konstanty pro výpočet
 	double diam=sqrt(pow(delka/2.0,2)+pow(sirka/2.0,2));//poloměr kružnic
 	double c1=RadToDeg(ArcTan(sirka/delka));
-	double alpha[4];alpha[0]=c1+rotace_pred,alpha[1]=180-alpha[0],alpha[2]=180+alpha[0],alpha[3]=360-alpha[0];
+	double alpha[4];alpha[0]=c1+orientace_jig_vstup,alpha[1]=180-alpha[0],alpha[2]=180+alpha[0],alpha[3]=360-alpha[0];
 	double max=MaxInt*(-1),min=MaxInt;
 
 	//////virtuální pole

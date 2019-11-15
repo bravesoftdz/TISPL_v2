@@ -33,6 +33,7 @@ Cvykresli::Cvykresli()
 	clError=clRed;
 	clWarning=TColor RGB(255,165,0);
 	zobrazit_cele_zpravy=false;
+	zprava_highlight=0;//ztuční danou zpravou
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -4583,12 +4584,6 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 {
 	if(v.ZPRAVY!=NULL)
 	{
-		//nastavení písma
-		canv->Brush->Style=bsClear;
-		if(F->JID==-102)canv->Font->Style = TFontStyles()<<fsBold;else canv->Font->Style = TFontStyles();
-		canv->Font->Name=F->aFont->Name;
-		canv->Font->Size=m.round(4.3*F->Zoom);
-
 		//cyklické vypsání všech zpráv ze spojáku ZPRAVY
 		Cvektory::TZprava *Z=v.ZPRAVY->dalsi;
 		while(Z!=NULL)
@@ -4596,6 +4591,9 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 			 ////fyzické souřadnice zprávy
 			 long X=m.L2Px(Z->X);
 			 long Y=m.L2Py(Z->Y);
+
+			 ////nastavení písma
+			 if(F->JID==-102 || zprava_highlight==Z->n)canv->Font->Style = TFontStyles()<<fsBold;else canv->Font->Style = TFontStyles();//highlight, buď všechny nebo konkréktní
 
 			 ////IKONA
 			 short size=m.round(3*F->Zoom);//POZOR, v případě změny nutno ještě změnit i v v.PtInZpravy()
@@ -4614,7 +4612,10 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 			 canv->Pen->Width=m.round(0.1*F->Zoom);//framing ikony
 			 canv->Ellipse(X-size,Y-size,X+size,Y+size);
 			 //text ikony
+			 //if(FileExists(F->get_Windows_dir()+"\\Fonts\\Roboto.ttf"))
+			 canv->Font->Name=="Arial";
 			 canv->Font->Color=clWhite;
+			 canv->Font->Size=m.round(4.0*F->Zoom);
 			 canv->Brush->Style=bsClear;
 			 canv->TextOutW(X-m.round(canv->TextWidth(Tico)/2.0),Y-m.round(canv->TextHeight(Tico)/2.0),Tico);
 
@@ -4623,8 +4624,9 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 			 if(zobrazit_cele_zpravy)//celý výpis
 			 {
 				 UnicodeString Text=getVID(Z->VID);
+				 canv->Font->Name=F->aFont->Name;
 				 canv->Font->Color=clRed;
-				 canv->Font->Size=m.round(4.3*F->Zoom*0.6);
+				 canv->Font->Size=m.round(4*F->Zoom);
 				 TW=canv->TextWidth(Text);TH=canv->TextHeight(Text);
 				 Y-=m.round(2.8*F->Zoom)+TH;//odsazení textu
 				 X-=m.round(TW/2.0);
