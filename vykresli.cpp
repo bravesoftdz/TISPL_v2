@@ -4581,18 +4581,18 @@ void Cvykresli::vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popis
 //metoda vypíše zprávy ze seznamu zpráv a zároveň uloží jejich citelné oblasti
 void Cvykresli::vypis_zpravy(TCanvas *canv)
 {
-	 if(v.ZPRAVY!=NULL)
-	 {
-		 //nastavení písma
-		 canv->Brush->Style=bsClear;
-		 if(F->JID==-102)canv->Font->Style = TFontStyles()<<fsBold;else canv->Font->Style = TFontStyles();
-		 canv->Font->Name=F->aFont->Name;
-		 canv->Font->Size=m.round(4.3*F->Zoom);
+	if(v.ZPRAVY!=NULL)
+	{
+		//nastavení písma
+		canv->Brush->Style=bsClear;
+		if(F->JID==-102)canv->Font->Style = TFontStyles()<<fsBold;else canv->Font->Style = TFontStyles();
+		canv->Font->Name=F->aFont->Name;
+		canv->Font->Size=m.round(4.3*F->Zoom);
 
-		 //cyklické vypsání všech zpráv ze spojáku ZPRAVY
-		 Cvektory::TZprava *Z=v.ZPRAVY->dalsi;
-		 while(Z!=NULL)
-		 {
+		//cyklické vypsání všech zpráv ze spojáku ZPRAVY
+		Cvektory::TZprava *Z=v.ZPRAVY->dalsi;
+		while(Z!=NULL)
+		{
 			 ////fyzické souřadnice zprávy
 			 long X=m.L2Px(Z->X);
 			 long Y=m.L2Py(Z->Y);
@@ -4622,12 +4622,7 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 			 int TW=0,TH=0;
 			 if(zobrazit_cele_zpravy)//celý výpis
 			 {
-				 UnicodeString Text="";
-				 switch(Z->VID)
-				 {
-					 case 401: Text=F->ls->Strings[401];break;//Rotace neodpovídá orientaci JIGů na začátku linky
-					 case 402: Text=F->ls->Strings[402];break;//Pozor, překrytí JIGů!
-				 }
+				 UnicodeString Text=getVID(Z->VID);
 				 canv->Font->Color=clRed;
 				 canv->Font->Size=m.round(4.3*F->Zoom*0.6);
 				 TW=canv->TextWidth(Text);TH=canv->TextHeight(Text);
@@ -4642,10 +4637,22 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 
 			 //posun na další zprvu
 			 Z=Z->dalsi;
-		 }
-		 delete Z;
-		 canv->Font->Orientation=0;//navrácení do původního stavu
-	 }
+		}
+		delete Z;
+		canv->Font->Orientation=0;//navrácení do původního stavu
+	}
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//z čísla VIDu vrátí jeho textový popis
+UnicodeString Cvykresli::getVID(long VID)
+{
+	UnicodeString Text="";
+	switch(VID)
+	{
+		case 401: Text=F->ls->Strings[401];break;//Rotace neodpovídá orientaci JIGů na začátku linky
+		case 402: Text=F->ls->Strings[402];break;//Pozor, překrytí JIGů!
+	}
+	return Text;
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
