@@ -371,7 +371,7 @@ class Cvektory
 		double X,Y;//pozice zprávy ve fyzických souřadnicích
 		double orientace;//orientace textu
 		TElement *Element;//ukazatel na element, ke kterému se zpráva váže
-		UnicodeString Popisek;//případný popisek daného místa, kde se problém vyskytuje
+		short zID;//typ zprávy -1 - error, 1 - warning
 		long VID;//typ validačního výpisu
 		double VIDvalue;//případná doporučená hodnota
 		TRect citelna_oblast;//pouze pomocná proměnná ve fyzických souřadnicích (px) uchovávájící oblast textu zprávy
@@ -643,9 +643,9 @@ public:
 //metody pro zprávy
 	void hlavicka_ZPRAVY();//vytvoří hlavičku zprav
 	void vloz_zpravu(TZprava *zprava);//vloží jeden prvek na konec seznamu, přiřadí automaticky poslední N (id).
-	void vloz_zpravu(double X, double Y, double orientace, TElement *Element=NULL, UnicodeString Popisek="",int VID=0, double VIDvalue=-1);//vloží jeden prvek na konec seznamu, přiřadí automaticky poslední N (id).
+	void vloz_zpravu(double X, double Y, double orientace, short zID, int VID, TElement *Element=NULL,double VIDvalue=-1);//vloží jeden prvek na konec seznamu, přiřadí automaticky poslední N (id).
 	TZprava *vrat_zpravu(unsigned long n);//dle N (id) zprávy vrátí ukazatel na danou zprávu
-	//PtInZprava()//ověří, zda se na daných souřadních nachází zpráva
+	bool PtInZpravy();//ověří, zda se na daných souřadních myši nachází nějaká (libovolná) ze zpráv
 	void vymazat_ZPRAVY();//vše odstraní včetně hlavičky
 
 //odstraní všechny vektory (všechny globální spojáky)
