@@ -3825,7 +3825,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
   		if(JID==1000){pom_element->mGrid->CheckLink(X,Y);refresh_mGrid=true;}//pouze pro přechod název hlavička, aby název nezůstal tučně - aktivace dodáním pouze aktuálních souřadnic
   		if(1000<=JID && JID<2000){kurzor(posun_ind);pom_element->mGrid->Highlight=true;pom_element->mGrid->MouseMove(X,Y);refresh_mGrid=true;}//indikace posunutí TABULKY, jeji highlignutí probíhá výše a případné volání HINTu
 			if(100<JID && JID<1000){kurzor(zmena_j);pom_element->mGrid->CheckLink(X,Y);refresh_mGrid=true;}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ  - aktivace dodáním pouze aktuálních souřadnic
-			if((JID==-6||JID<=-11)&&!editace_textu){kurzor(edit_text);refresh_mGrid=false;}//kurzor pro editaci textu
+			if((JID==-6||JID<=-11&&JID>=-101)&&!editace_textu){kurzor(edit_text);refresh_mGrid=false;}//kurzor pro editaci textu
 			if(JID<=-11&&JID>=-101&&d.v.PtInKota_komory(pom_temp,X,Y)==-1){if(pom_temp->orientace==90||pom_temp->orientace==270)kurzor(zmena_d_x);else kurzor(zmena_d_y);}//změna rozměru komory
 			//použit závěrečný REFRESH if(-9<=JID && JID<=-6){REFRESH();}//refresh při akci s nadpisem či kótou kabiny
 			if(JID==-10){/*REFRESH();*/kurzor(zmena_j);}//indikace možnosti změnit jednotky na kótách
@@ -10172,10 +10172,10 @@ void TForm1::posun_na_element(unsigned long n_zpravy)
 {
 	//////získání elementu na který má být proveden posun
 	Cvektory::TZprava *Z=d.v.vrat_zpravu(n_zpravy+1);
-	if(/*Z!=NULL && Z->Element!=NULL*/true)
+	if(Z!=NULL && Z->Element!=NULL)
 	{
-		Cvektory::TElement *E;//=Z->Element;
-		E=d.v.OBJEKTY->dalsi->elementy->dalsi;
+    //////deklarace + nastavení vykreslení zpráv
+		Cvektory::TElement *E=Z->Element;
 		if(!d.zobrazit_cele_zpravy)d.zobrazit_cele_zpravy=!d.zobrazit_cele_zpravy;//zobrazení celé zprávy, před refresh
 
 		//////posun na element + zoom
