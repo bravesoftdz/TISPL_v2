@@ -1533,8 +1533,11 @@ void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_o
 		Objekt->Xt+=X;
 		Objekt->Yt+=Y;
 		////posun tabulky pohonů
-		Objekt->Xp+=X;
-		Objekt->Yp+=Y;
+		if(Objekt->Xp!=-500 && Objekt->Yp!=-500)
+		{
+			Objekt->Xp+=X;
+			Objekt->Yp+=Y;
+		}
 		////posun elementů
 		TElement *E=Objekt->elementy->dalsi;//objekt má vždy element (zarážka)
 		while(E!=NULL)
@@ -2160,7 +2163,7 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 			if(O->n>=Objekt->n)//přeskakování objektů před aktuálním
 			{
 				Cvektory::TElement *E=O->elementy;//nepřeskakovat hlavičku
-				if(O->n==Objekt->n)E=F->pom_temp->elementy;//při procházení aktuálního objektu nahradit pom_temp
+				if(F->pom_temp!=NULL && O->n==F->pom_temp->n)E=F->pom_temp->elementy;//při procházení aktuálního objektu nahradit pom_temp
 				while(E!=NULL)
 				{
 					if(E->n>0)//přeskočí hlavičku
@@ -2181,12 +2184,15 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 							//změna názvu v mGridu
 							if(E->name!=""&&O->n==Objekt->n&&E->mGrid!=NULL)//nelze přistupovat k mGridu v případech nového elementu (nemá vytvořený), v neaktivní kabině (elementy nemají vytvořene mGridy)
 							{
-								if(E->eID==0)E->mGrid->Cells[0][0].Text="<a>Stop "+AnsiString(n)+"</a>";
-								if(E->eID==5 || E->eID==6)E->mGrid->Cells[0][0].Text="<a>"+t_otoc+" "+AnsiString(n)+"</a>";
-								if(E->eID==200)E->mGrid->Cells[0][0].Text="<a>"+t_PM+" "+AnsiString(n)+"</a>";
-								E->mGrid->Cells[0][0].Font->Color=clBlack;//z důvodu nasazení odkazu, po přejmenování se text vrátil do modré barvy
-								E->mGrid->MergeCells(0,0,1,0);//nutné kvůli správnému zobrazení hlavičky
-								if(F->zobrazeni_tabulek)E->mGrid->Update();//musí zde být ošetření proti paměťové chybě
+								try//dodatečné ošetření
+								{
+							  	if(E->eID==0)E->mGrid->Cells[0][0].Text="<a>Stop "+AnsiString(n)+"</a>";
+							  	if(E->eID==5 || E->eID==6)E->mGrid->Cells[0][0].Text="<a>"+t_otoc+" "+AnsiString(n)+"</a>";
+							  	if(E->eID==200)E->mGrid->Cells[0][0].Text="<a>"+t_PM+" "+AnsiString(n)+"</a>";
+							  	E->mGrid->Cells[0][0].Font->Color=clBlack;//z důvodu nasazení odkazu, po přejmenování se text vrátil do modré barvy
+							  	E->mGrid->MergeCells(0,0,1,0);//nutné kvůli správnému zobrazení hlavičky
+									if(F->zobrazeni_tabulek)E->mGrid->Update();//musí zde být ošetření proti paměťové chybě
+								}catch(...){}
 //	 							if(E->eID==0)napln_combo_stopky(E);//pro budoucí použití
 							}
 		 					//změna názvu

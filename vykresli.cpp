@@ -4298,7 +4298,7 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,lon
 				if(O->dalsi==NULL && O->n>=3 && F->pom_temp->n!=1 && v.OBJEKTY->dalsi->elementy->dalsi->pohon!=NULL)T2=v.OBJEKTY->dalsi->elementy->dalsi->pohon->name;
 				O=NULL;delete O;
 			}
-      //v případě 270 musí být popisky prohozeny
+			//v případě 270 musí být popisky prohozeny
 			if(v.vrat_objekt(E->objekt_n)->orientace==270){Tpom=T1;T1=T2;T2=Tpom;}
 			int w1=canv->TextWidth(T1),w2=canv->TextWidth(T2);
 			int h=canv->TextHeight(T1);
@@ -4799,7 +4799,7 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 		}
 
 		////uchopy - pokud je považována editace, nutno vykreslit v samostatném cyklu až nad spojnice
-		if(stav>=0)
+		if(stav>=0 && (F->pom_temp!=NULL || F->pom_temp==NULL && F->pom==NULL))//ošetření podmínkou oproti vykreslování činek místo hran objektů
 		{
 			B=body->dalsi;//přeskakuje hlavičku
 			while(B!=NULL)

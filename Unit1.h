@@ -821,6 +821,7 @@ public:		// User declarations
 	double max_voziku(Cvektory::TElement *stopka);//vrátí maximální možný poèet vozíkù na stopce, podle geometrie pøed ní
 	void prirazeni_pohonu_tab_pohon(int index_pohonu);//pøedesignuje tabulku pohonu po pøidání elementu, nebo pohonu
 	void aktualizace_RT();//projde všechny elementy v aktuálnì editovaném objektu a upravím jim RT
+	void posun_na_element(unsigned long n_zpravy);//podle zprávy provede posun na daný elment
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
