@@ -5457,8 +5457,8 @@ bool Cvektory::PtInZpravy()
 	{
 		Cvektory::TZprava *Z=ZPRAVY->dalsi;
 		while(Z!=NULL)
-		{
-			if(Z->citelna_oblast.PtInRect(F->akt_souradnice_kurzoru_PX) || m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,Z->X,Z->Y,m.px2m(m.round(3*F->Zoom)))){RET=true;break;}
+		{                                                                    //*3 kvůli AA
+			if(Z->citelna_oblast.PtInRect(TPoint(F->akt_souradnice_kurzoru_PX.x*3,F->akt_souradnice_kurzoru_PX.y*3)) || m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,Z->X,Z->Y,m.px2m(m.round(3*F->Zoom)))){RET=true;break;}
 			Z=Z->dalsi;
 		}
 		Z=NULL;delete Z;

@@ -4629,7 +4629,7 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 				 canv->Font->Color=clRed;
 				 canv->Font->Size=m.round(4.3*F->Zoom*0.6);
 				 TW=canv->TextWidth(Text);TH=canv->TextHeight(Text);
-				 Y+=m.round(2.8*F->Zoom);//odsazení textu
+				 Y-=m.round(2.8*F->Zoom)+TH;//odsazení textu
 				 X-=m.round(TW/2.0);
 				 //samotné vykreslení výpisu
 				 TextFraming(canv,X,Y,Text,canv->Font,clWhite,3);
