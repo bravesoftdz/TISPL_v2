@@ -478,10 +478,6 @@ bool Cmy::PtInCircle(double point_X,double point_Y,double center_X,double center
 //funkce ověří, zda se bod nachází v obdelníku, zadání je v logických souřadnicích
 bool Cmy::PtInRectangle(double X1,double Y1,double X2,double Y2,double Xmys,double Ymys)
 {
-//podle mého chybný algoritmus:
-//	X1=abs_d(X1);Y1=abs_d(Y1);X2=abs_d(X2);Y2=abs_d(Y2);Xmys=abs_d(Xmys);Ymys=abs_d(Ymys);
-//	return (X1<=Xmys&&Xmys<=X2&&Y1<=Ymys&&Ymys<=Y2);
-//oprava:
 	if(X1>X2){double Xt=X1;X1=X2;X2=Xt;}//v případě opačného pořadí, záměna pořadí
 	if(Y1>Y2){double Yt=Y1;Y1=Y2;Y2=Yt;}//v případě opačného pořadí, záměna pořadí
 	return (X1<=Xmys && Xmys<=X2 && Y1<=Ymys && Ymys<=Y2);

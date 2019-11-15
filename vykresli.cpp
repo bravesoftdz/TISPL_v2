@@ -2794,7 +2794,7 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 				double aR=m.a360(rotaceJ+Ep->rotace_jig);//výstupní rotace jigu z posledního rotačního elementu
 				if(Ep->n==E->n &&  Ep->objekt_n==E->objekt_n && aR!=0 && aR!=180)//předposlení podmínka při novém DM zbytečná!
 				{
-					v.vloz_zpravu(X,Y,0,-1,401,Ep);//"Rotace neodpovídá orientaci JIGů na začátku linky!"
+					v.vloz_zpravu(X,Y,-1,401,Ep);//"Rotace neodpovídá orientaci JIGů na začátku linky!"
 				}
 			}
 			Ep=NULL;delete Ep;
@@ -2813,8 +2813,7 @@ void Cvykresli::vykresli_pozice(TCanvas *canv,Cvektory::TElement *E)
 			//případne výpis špatné rotace jigu u bufferů - bude extra separé ve VALIDACI
 			if(v.PP.delka_podvozek<m.UDJ(rotaceJ) && E->rotace_jig==0 && pocet_pozic>1)
 			{
-				int Orientace=0;if(y<0)Orientace=900;if(y>0)Orientace=2700;
-				v.vloz_zpravu(X+x*v.PP.delka_podvozek*(pocet_pozic-1)/2.0,Y+y*v.PP.delka_podvozek*(pocet_pozic-1)/2.0,Orientace,-1,402,E);//"Pozor, překrytí JIGů!"
+				v.vloz_zpravu(X+x*v.PP.delka_podvozek*(pocet_pozic-1)/2.0,Y+y*v.PP.delka_podvozek*(pocet_pozic-1)/2.0,-1,402,E);//"Pozor, překrytí JIGů!"
 			}
 		}
 
@@ -3505,7 +3504,7 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	rotace=m.Rt90(rotace+180);//kvůli převrácenému symbolu
 
 	//barva výplně
-	TColor barva=clRed;if(stav==0)barva=(TColor)RGB(60,179,113);//zelená světlejší(TColor)RGB(50,205,50);
+	TColor barva=TColor RGB(218,36,44);if(stav==0)barva=(TColor)RGB(60,179,113);//zelená světlejší(TColor)RGB(50,205,50);
 	if(stav==-1)
 	{
 		short I=m.get_intensity();
@@ -4584,51 +4583,61 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 	 {
 		 //nastavení písma
 		 canv->Brush->Style=bsClear;
-		 /*if(JID=XX)canv->Font->Style = TFontStyles()<<fsBold;else*/ canv->Font->Style = TFontStyles();
+		 if(F->JID==-102)canv->Font->Style = TFontStyles()<<fsBold;else canv->Font->Style = TFontStyles();
 		 canv->Font->Name=F->aFont->Name;
-		 canv->Font->Size=m.round(4*F->Zoom);
-		 canv->Font->Color=clRed;
-		 UnicodeString Text="";
-		 short oTx=0,oTy=0;//offset text
+		 canv->Font->Size=m.round(4.3*F->Zoom);
+
 		 //cyklické vypsání všech zpráv ze spojáku ZPRAVY
 		 Cvektory::TZprava *Z=v.ZPRAVY->dalsi;
 		 while(Z!=NULL)
 		 {
-			 //přepínání textu
+			 ////fyzické souřadnice zprávy
+			 long X=m.L2Px(Z->X);
+			 long Y=m.L2Py(Z->Y);
+
+			 ////IKONA
+			 short size=m.round(3*F->Zoom);//POZOR, v případě změny nutno ještě změnit i v v.PtInZpravy()
+			 TColor clCircle=clRed;
+			 AnsiString Tico="";
+			 switch(Z->zID)
+			 {
+				 case -1: Tico="E";clCircle=clRed;break;//barva errory
+				 case 1:  Tico="W";clCircle=TColor RGB(255,165,0);break;//barva warningy
+			 }
+			 //kruhový podklad ikony
+			 canv->Brush->Style=bsSolid;
+			 canv->Brush->Color=clCircle;
+			 canv->Pen->Style=psSolid;
+			 canv->Pen->Color=clWhite;
+			 canv->Pen->Width=m.round(0.1*F->Zoom);//framing ikony
+			 canv->Ellipse(X-size,Y-size,X+size,Y+size);
+			 //text ikony
+			 canv->Font->Color=clWhite;
+			 canv->Brush->Style=bsClear;
+			 canv->TextOutW(X-m.round(canv->TextWidth(Tico)/2.0),Y-m.round(canv->TextHeight(Tico)/2.0),Tico);
+
+			 ////zobrazování popisného TEXTU
+			 int TW=0,TH=0;
 			 if(zobrazit_cele_zpravy)//celý výpis
 			 {
+				 UnicodeString Text="";
 				 switch(Z->VID)
 				 {
 					 case 401: Text=F->ls->Strings[401];break;//Rotace neodpovídá orientaci JIGů na začátku linky
 					 case 402: Text=F->ls->Strings[402];break;//Pozor, překrytí JIGů!
 				 }
+				 canv->Font->Color=clRed;
+				 canv->Font->Size=m.round(4.3*F->Zoom*0.6);
+				 TW=canv->TextWidth(Text);TH=canv->TextHeight(Text);
+				 Y-=m.round(2.8*F->Zoom)+TH;//odsazení textu
+				 X-=m.round(TW/2.0);
+				 //samotné vykreslení výpisu
+				 TextFraming(canv,X,Y,Text,canv->Font,clWhite,3);
 			 }
-			 else//zkrácený-zástupný výpis
-			 {
-				 switch(Z->zID)
-				 {
-					 case -1: Text="E";break;
-					 case 1:  Text="W";break;
-				 }
-			 }
-			 //stanovení odsazení písma
-			 switch(Z->VID)
-			 {
-				 case 401: oTx=m.round(canv->TextWidth(Text)/2.0);oTy=m.round(canv->TextHeight(Text)/2.0);break;//Rotace neodpovídá orientaci JIGů na začátku linky
-				 case 402://Pozor, překrytí JIGů!
-				 {
-//					 short TW=0; short TH=0;
-//					 if(Z->orientace!=0){TW=canv->TextHeight(Text);TH=canv->TextWidth(Text);}else {TW=canv->TextWidth(Text);TH=canv->TextHeight(Text);}
-//					 if(Z->orientace==900)TH*=-1;if(Z->orientace==2700)TW*=-1;
-//					 oTx=m.round(TW/2.0);oTy=m.round(TH/2.0);
-				 }
-				 break;
-			 }
-			 //sejmutí citelných oblastí
-			 Z->citelna_oblast=TRect(m.L2Px(Z->X)-oTx,m.L2Py(Z->Y)-oTy,m.L2Px(Z->X)+oTx,m.L2Py(Z->Y)+oTy);
-			 //orientace a samotné vykreslení výpisu
-			 canv->Font->Orientation=Z->orientace;
-			 TextFraming(canv,m.L2Px(Z->X)-oTx,m.L2Py(Z->Y)-oTy,Text,canv->Font,clWhite,3);
+
+			 ////uložení CITELNÉ OBLASTI textu (oblast ikony se počítá ve vektorové metodě PtInZpravy())
+			 Z->citelna_oblast=TRect(X,Y,X+TW,Y+TH);
+
 			 //posun na další zprvu
 			 Z=Z->dalsi;
 		 }
