@@ -1229,7 +1229,7 @@ object Form_uvod: TForm_uvod
     Caption = 'TISPL'
   end
   object Timer1: TTimer
-    Interval = 100
+    Interval = 200
     OnTimer = Timer1Timer
     Left = 8
     Top = 8
