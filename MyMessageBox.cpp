@@ -26,7 +26,8 @@ void __fastcall TmyMessageBox::FormShow(TObject *Sender)
 	if(myMessageBox->Left>=Form1->Left+Form1->ClientWidth-myMessageBox->Width)//nastala situace že je mimo obraz (nebo èásteènì)
 	myMessageBox->Left=Form1->Left+Form1->ClientWidth-myMessageBox->Width-5;
 	if(myMessageBox->Top>=Form1->Top+Form1->ClientHeight-myMessageBox->Height)
-	myMessageBox->Top=Form1->Top+Form1->ClientHeight-myMessageBox->Height-5;     scGPEdit1->SetFocus();
+	myMessageBox->Top=Form1->Top+Form1->ClientHeight-myMessageBox->Height-5;
+	scGPEdit1->SetFocus();//použito kvùli odchytávání stisku kláves
 }
 //---------------------------------------------------------------------------
 //pøetížená metoda
@@ -44,7 +45,6 @@ int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString capt
 	Label_text->Caption=text;
 	if(centrovat_text)Label_text->Alignment=taCenter;else Label_text->Alignment=taLeftJustify;
 	if(text.Length()>=46)Label_text->AutoSize=true;else Label_text->AutoSize=false;
-
 	//výška myMessageBoxu dle zadaného textu
 	myMessageBox->ClientHeight=139-O+Label_text->Height-19;//poèítáno oproti výchozí pozici
 

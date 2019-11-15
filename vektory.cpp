@@ -1533,8 +1533,11 @@ void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_o
 		Objekt->Xt+=X;
 		Objekt->Yt+=Y;
 		////posun tabulky pohonů
-		Objekt->Xp+=X;
-		Objekt->Yp+=Y;
+		if(Objekt->Xp!=-500 && Objekt->Yp!=-500)
+		{
+			Objekt->Xp+=X;
+			Objekt->Yp+=Y;
+		}
 		////posun elementů
 		TElement *E=Objekt->elementy->dalsi;//objekt má vždy element (zarážka)
 		while(E!=NULL)
@@ -2160,7 +2163,7 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 			if(O->n>=Objekt->n)//přeskakování objektů před aktuálním
 			{
 				Cvektory::TElement *E=O->elementy;//nepřeskakovat hlavičku
-				if(O->n==Objekt->n)E=F->pom_temp->elementy;//při procházení aktuálního objektu nahradit pom_temp
+				if(F->pom_temp!=NULL && O->n==F->pom_temp->n)E=F->pom_temp->elementy;//při procházení aktuálního objektu nahradit pom_temp
 				while(E!=NULL)
 				{
 					if(E->n>0)//přeskočí hlavičku
@@ -2181,12 +2184,15 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 							//změna názvu v mGridu
 							if(E->name!=""&&O->n==Objekt->n&&E->mGrid!=NULL)//nelze přistupovat k mGridu v případech nového elementu (nemá vytvořený), v neaktivní kabině (elementy nemají vytvořene mGridy)
 							{
-								if(E->eID==0)E->mGrid->Cells[0][0].Text="<a>Stop "+AnsiString(n)+"</a>";
-								if(E->eID==5 || E->eID==6)E->mGrid->Cells[0][0].Text="<a>"+t_otoc+" "+AnsiString(n)+"</a>";
-								if(E->eID==200)E->mGrid->Cells[0][0].Text="<a>"+t_PM+" "+AnsiString(n)+"</a>";
-								E->mGrid->Cells[0][0].Font->Color=clBlack;//z důvodu nasazení odkazu, po přejmenování se text vrátil do modré barvy
-								E->mGrid->MergeCells(0,0,1,0);//nutné kvůli správnému zobrazení hlavičky
-								if(F->zobrazeni_tabulek)E->mGrid->Update();//musí zde být ošetření proti paměťové chybě
+								try//dodatečné ošetření
+								{
+							  	if(E->eID==0)E->mGrid->Cells[0][0].Text="<a>Stop "+AnsiString(n)+"</a>";
+							  	if(E->eID==5 || E->eID==6)E->mGrid->Cells[0][0].Text="<a>"+t_otoc+" "+AnsiString(n)+"</a>";
+							  	if(E->eID==200)E->mGrid->Cells[0][0].Text="<a>"+t_PM+" "+AnsiString(n)+"</a>";
+							  	E->mGrid->Cells[0][0].Font->Color=clBlack;//z důvodu nasazení odkazu, po přejmenování se text vrátil do modré barvy
+							  	E->mGrid->MergeCells(0,0,1,0);//nutné kvůli správnému zobrazení hlavičky
+									if(F->zobrazeni_tabulek)E->mGrid->Update();//musí zde být ošetření proti paměťové chybě
+								}catch(...){}
 //	 							if(E->eID==0)napln_combo_stopky(E);//pro budoucí použití
 							}
 		 					//změna názvu
@@ -5377,17 +5383,22 @@ void Cvektory::vymaz_seznam_KATALOG()
 void Cvektory::hlavicka_ZPRAVY()
 {
 	//F->log(__func__);//logování  - NELZE
-	TZprava *nova=new TZprava;
-	nova->n=0;
 
-	nova->predchozi=nova;//ukazuje sam na sebe
-	nova->dalsi=NULL;
+	//alokace paměti
+	TZprava *nova=new TZprava;
+
+	//atributy
+	nova->n=0;
 	nova->X=0;
 	nova->Y=0;
+	nova->zID=0;
 	nova->VID=0;
 	nova->VIDvalue=-1;
-	nova->Popisek="";
 	nova->citelna_oblast=TRect(0,0,0,0);
+
+	//ukazatelové záležitosti
+	nova->predchozi=nova;//ukazuje sam na sebe
+	nova->dalsi=NULL;
 	ZPRAVY=nova;
 }
 //---------------------------------------------------------------------------
@@ -5408,7 +5419,7 @@ void Cvektory::vloz_zpravu(TZprava *zprava)
 }
 //---------------------------------------------------------------------------
 //vloží jeden prvek na konec seznamu, přiřadí automaticky poslední N (id).
-void Cvektory::vloz_zpravu(double X, double Y, double orientace, TElement *Element,UnicodeString Popisek,int VID, double VIDvalue)
+void Cvektory::vloz_zpravu(double X, double Y, short zID, int VID, TElement *Element,double VIDvalue)
 {
 	F->log(__func__);//logování
 
@@ -5418,12 +5429,10 @@ void Cvektory::vloz_zpravu(double X, double Y, double orientace, TElement *Eleme
 	//atributy
 	Z->X=X;
 	Z->Y=Y;
-  Z->orientace;
 	Z->Element=Element;
-	Z->Popisek=Popisek;
+	Z->zID=zID;
 	Z->VID=VID;
 	Z->VIDvalue=VIDvalue;
-	//Z->citelna_oblast=dopočítat tady; možná zvážit rovnou dvě oblasti pro celou a pro zástupný znak, také by se dalo počítat až při vyhledávání setjob, ale to by bylo strojově zbytečné náročné, založit přepínací proměnnou na stav zobrazení zpráv a potom se domluvit jestli ji někam zapisovat (ini či binárka)...
 
 	//samotné vložení do spojového seznamu ZPRAVY
 	vloz_zpravu(Z);
@@ -5444,6 +5453,23 @@ Cvektory::TZprava *Cvektory::vrat_zpravu(unsigned long n)
 		}
 		return Z;
 	}
+}
+//---------------------------------------------------------------------------
+//ověří, zda se na daných souřadních myši nachází nějaká (libovolná) ze zpráv
+bool Cvektory::PtInZpravy()
+{
+	bool RET=false;
+	if(ZPRAVY!=NULL)
+	{
+		Cvektory::TZprava *Z=ZPRAVY->dalsi;
+		while(Z!=NULL)
+		{                                                                    //*3 kvůli AA
+			if(Z->citelna_oblast.PtInRect(TPoint(F->akt_souradnice_kurzoru_PX.x*3,F->akt_souradnice_kurzoru_PX.y*3)) || m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,Z->X,Z->Y,m.px2m(m.round(3*F->Zoom)))){RET=true;break;}
+			Z=Z->dalsi;
+		}
+		Z=NULL;delete Z;
+	}
+	return RET;
 }
 //---------------------------------------------------------------------------
 //vše odstraní včetně hlavičky

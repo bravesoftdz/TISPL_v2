@@ -69,6 +69,7 @@ class Cmy
 	double PT(double LO,double RD);//vrátí PT dle velikosti lakovacícho okna a aktuální rychlosti pohonu
 	double PTo(double Dotoc,double RD);//dle aktuálního RD a délky otoč vrátí PTo
 	double Dotoc(double PTo,double RD);//dle aktuálního RD a času otáčení otoče vrátí délku otáčení
+	TPointD zona_otaceni(double rotace_pred,double rotace_otoce,double delka_otoc);//vypočítá velikost zóny otáčení před a za otočí
 	double RT(double PT,double delka_prejezdu,double RD,double R,double WT=-1);//vratí hodnotu RT (reserve time), ta může být i záporná, WT čekání na palac si dopočítává metoda sama, pokud WT==-1, pokud je dosazena kladná hodnota větší než 0, tak je ta uvažovaná jako WT, 0 hodnota znamena WT čekání na palec neuvažovat
 	double RDo(double Dotoc,double PTo);//vratí RD dle délky otoče a času otáčení
 	double dopRD(double dJ,double sJ,double rotace,double R,double TT,double RD);//vrátí doporučenou nejbližší rychlost pohonu, k rychlosti zadané tak, aby se reflektovala rozteč mezi palci i takt
