@@ -9997,6 +9997,7 @@ void TForm1::NP_input()
 void TForm1::zmena_editovaneho_objektu()
 {
 	log(__func__);//logování
+	Konec->SetFocus();
 	/////////Uložení náhledu
 	bool prepnout=true,validace=false;
 	bool kontrola_PM=false;//při neuložení minulého náhledmu musí dojík k separátní kontrole
@@ -10170,6 +10171,7 @@ void TForm1::zmena_editovaneho_objektu()
 //podle zprávy provede posun na daný elment
 void TForm1::posun_na_element(unsigned long n_zpravy)
 {
+  log(__func__);//logování
 	//////získání elementu na který má být proveden posun
 	Cvektory::TZprava *Z=d.v.vrat_zpravu(n_zpravy+1);
 	if(Z!=NULL && Z->Element!=NULL)
