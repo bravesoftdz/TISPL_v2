@@ -1765,7 +1765,7 @@ void __fastcall TForm1::AnalyzaClick(TObject *Sender)
 			d.JIZPOCITANO=false;d.RANDOM=true;
 			scExPanel_log_header->Visible=true;
 			ComboBoxCekani->Width=scSplitView_OPTIONS->OpenedWidth-7;
-		 //	scGPGlyphButton_zpravy_ikona->Visible=true;
+		 	scGPGlyphButton_zpravy_ikona->Visible=true;
 			if(Form1->ComboBoxCekani->ItemIndex==2)
 			{
 				scGPButton_generuj->Visible=true;
@@ -2056,7 +2056,7 @@ void TForm1::Z(UnicodeString Text,bool add,TColor color)
 	else
 	{
 		//není možné: scExPanel_log_header->Visible=true; //expanel s obsahem zprávy
-		//scGPGlyphButton_zpravy_ikona->Visible=true;//ikona
+		scGPGlyphButton_zpravy_ikona->Visible=true;//ikona
 		scGPGlyphButton_zpravy_ikona->GlyphOptions->NormalColor=color;//barva ikony
 	}
 
@@ -12355,7 +12355,7 @@ void __fastcall TForm1::scExPanel_log_headerClose(TObject *Sender)
 {
   log(__func__);//logování
 //	scExPanel_log_header->Visible=false;
-	//scGPGlyphButton_zpravy_ikona->Visible=true;
+	scGPGlyphButton_zpravy_ikona->Visible=true;
 	scExPanel_log_header->Visible=false;
 	scSplitView_OPTIONS->Opened=false;
 
@@ -12367,13 +12367,15 @@ void __fastcall TForm1::scGPGlyphButton_zpravy_ikonaClick(TObject *Sender)
   log(__func__);//logování
 	if(scExPanel_log_header->Visible==false)
 	{
-		scExPanel_log_header->Visible=true;
+//		scExPanel_log_header->Visible=true;
+//
+//  //pozice  zprav
+//	scExPanel_log_header->Left	 = Form1->Width/2-scExPanel_log_header->Width/2;
+//	scExPanel_log_header->Top 	 = Form1->Height/2-scExPanel_log_header->Height/2;
+//	scExPanel_log_header->Height = 300;
+//	scExPanel_log_header->Width	 = 715;
 
-  //pozice  zprav
-	scExPanel_log_header->Left	 = Form1->Width/2-scExPanel_log_header->Width/2;
-	scExPanel_log_header->Top 	 = Form1->Height/2-scExPanel_log_header->Height/2;
-	scExPanel_log_header->Height = 300;
-	scExPanel_log_header->Width	 = 715;
+Form_zpravy->ShowModal();
 	}
 }
 //---------------------------------------------------------------------------
@@ -12606,7 +12608,16 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //
 //Memo(r);
 //Memo(rad);
-  Form_definice_zakazek->ShowModal();
+
+	 d.v.vloz_zpravu(0,0,0,NULL,ls->Strings[401]);
+	 d.v.vloz_zpravu(0,0,0,NULL,ls->Strings[402]);
+	 d.v.vloz_zpravu(0,0,0,NULL,"test");
+
+
+   Form_zpravy->ShowModal();
+
+   Sk(d.v.vrat_zpravu(2)->Popisek);
+	 d.v.vymazat_ZPRAVY();
 
 
 

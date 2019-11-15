@@ -5,7 +5,7 @@ object Form_zpravy: TForm_zpravy
   BorderStyle = bsNone
   Caption = 'Form_zpravy'
   ClientHeight = 338
-  ClientWidth = 395
+  ClientWidth = 361
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,7 +19,7 @@ object Form_zpravy: TForm_zpravy
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
-    Width = 395
+    Width = 361
     Height = 34
     Align = alTop
     TabOrder = 0
@@ -54,9 +54,10 @@ object Form_zpravy: TForm_zpravy
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
+    ExplicitWidth = 410
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 345
+      Left = 311
       Top = 0
       Width = 50
       Height = 33
@@ -130,7 +131,7 @@ object Form_zpravy: TForm_zpravy
       GlyphOptions.PressedColorAlpha = 255
       GlyphOptions.FocusedColorAlpha = 255
       GlyphOptions.DisabledColorAlpha = 100
-      GlyphOptions.Kind = scgpbgkClose
+      GlyphOptions.Kind = scgpbgkUpArrow
       GlyphOptions.Thickness = 1
       GlyphOptions.ThicknessScaled = False
       GlyphOptions.Size = 0
@@ -150,11 +151,12 @@ object Form_zpravy: TForm_zpravy
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 360
     end
     object scLabel1: TscLabel
-      Left = 0
+      Left = 50
       Top = 0
-      Width = 308
+      Width = 224
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -183,13 +185,14 @@ object Form_zpravy: TForm_zpravy
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Zpr'#225'vy'
+      ExplicitWidth = 273
     end
     object scGPGlyphButton_info: TscGPGlyphButton
-      Left = 308
+      Left = 274
       Top = 0
       Width = 37
       Height = 34
-      Hint = 'P'#345'ipnout na doln'#237' li'#353'tu'
+      Hint = 'P'#345'ipnout k prav'#233' '#269#225'sti '
       Align = alRight
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clNone
@@ -201,8 +204,9 @@ object Form_zpravy: TForm_zpravy
       ParentShowHint = False
       ShowHint = True
       TabOrder = 2
+      OnClick = scGPGlyphButton_infoClick
       Animation = True
-      Caption = 'Info'
+      Caption = 'P'#345'ipnout / Odepnout'
       CanFocused = False
       CustomDropDown = False
       Layout = blGlyphLeft
@@ -283,13 +287,111 @@ object Form_zpravy: TForm_zpravy
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 323
+    end
+    object scGPGlyphButton1: TscGPGlyphButton
+      AlignWithMargins = True
+      Left = 0
+      Top = 0
+      Width = 50
+      Height = 33
+      Margins.Left = 0
+      Margins.Top = 0
+      Margins.Right = 0
+      Margins.Bottom = 1
+      Align = alLeft
+      TabOrder = 3
+      Animation = True
+      Caption = 'Konec'
+      CanFocused = False
+      CustomDropDown = False
+      Layout = blGlyphLeft
+      TransparentBackground = True
+      ColorValue = clRed
+      Options.NormalColor = clNone
+      Options.HotColor = clRed
+      Options.PressedColor = clRed
+      Options.FocusedColor = clBtnFace
+      Options.DisabledColor = clBtnText
+      Options.NormalColor2 = clNone
+      Options.HotColor2 = clNone
+      Options.PressedColor2 = clNone
+      Options.FocusedColor2 = clNone
+      Options.DisabledColor2 = clNone
+      Options.NormalColorAlpha = 0
+      Options.HotColorAlpha = 220
+      Options.PressedColorAlpha = 180
+      Options.FocusedColorAlpha = 255
+      Options.DisabledColorAlpha = 5
+      Options.NormalColor2Alpha = 255
+      Options.HotColor2Alpha = 255
+      Options.PressedColor2Alpha = 255
+      Options.FocusedColor2Alpha = 255
+      Options.DisabledColor2Alpha = 255
+      Options.FrameNormalColor = clNone
+      Options.FrameHotColor = clNone
+      Options.FramePressedColor = clNone
+      Options.FrameFocusedColor = clNone
+      Options.FrameDisabledColor = clNone
+      Options.FrameWidth = 2
+      Options.FrameNormalColorAlpha = 70
+      Options.FrameHotColorAlpha = 100
+      Options.FramePressedColorAlpha = 150
+      Options.FrameFocusedColorAlpha = 255
+      Options.FrameDisabledColorAlpha = 30
+      Options.FontNormalColor = clBtnText
+      Options.FontHotColor = clBtnText
+      Options.FontPressedColor = clBtnText
+      Options.FontFocusedColor = clBtnText
+      Options.FontDisabledColor = clBtnShadow
+      Options.ShapeFillGradientAngle = 90
+      Options.ShapeFillGradientPressedAngle = -90
+      Options.ShapeFillGradientColorOffset = 25
+      Options.ShapeCornerRadius = 10
+      Options.ShapeStyle = scgpRect
+      Options.ArrowSize = 9
+      Options.ArrowAreaSize = 0
+      Options.ArrowType = scgpatDefault
+      Options.ArrowThickness = 2
+      Options.ArrowThicknessScaled = False
+      Options.StyleColors = True
+      GlyphOptions.NormalColor = clWhite
+      GlyphOptions.HotColor = clWhite
+      GlyphOptions.PressedColor = clWhite
+      GlyphOptions.FocusedColor = clWhite
+      GlyphOptions.DisabledColor = clWhite
+      GlyphOptions.NormalColorAlpha = 255
+      GlyphOptions.HotColorAlpha = 255
+      GlyphOptions.PressedColorAlpha = 255
+      GlyphOptions.FocusedColorAlpha = 255
+      GlyphOptions.DisabledColorAlpha = 100
+      GlyphOptions.Kind = scgpbgkMessage
+      GlyphOptions.Thickness = 1
+      GlyphOptions.ThicknessScaled = False
+      GlyphOptions.Size = 0
+      GlyphOptions.StyleColors = True
+      ModalResult = 8
+      ModalSetting = True
+      TextMargin = -1
+      WidthWithCaption = 0
+      WidthWithoutCaption = 0
+      SplitButton = False
+      RepeatClick = False
+      RepeatClickInterval = 100
+      ShowGalleryMenuFromTop = False
+      ShowGalleryMenuFromRight = False
+      ShowMenuArrow = True
+      ShowFocusRect = True
+      Down = False
+      GroupIndex = 0
+      AllowAllUp = False
     end
   end
   object scGPListBox_zpravy: TscGPListBox
     Left = 0
     Top = 34
-    Width = 395
-    Height = 304
+    Width = 361
+    Height = 276
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -301,6 +403,7 @@ object Form_zpravy: TForm_zpravy
     TabStop = True
     Touch.InteractiveGestures = [igPan, igPressAndTap]
     Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoParentPassthrough]
+    OnMouseMove = scGPListBox_zpravyMouseMove
     CustomImageIndex = -1
     Options.FillColor = clWindow
     Options.FillColor2 = clWindow
@@ -391,5 +494,80 @@ object Form_zpravy: TForm_zpravy
     HeaderOptions.GradientAngle = 90
     HeaderOptions.Margin = 5
     HeaderHeight = 20
+    ExplicitWidth = 410
+  end
+  object scGPPanel_statusbar: TscGPPanel
+    Left = 0
+    Top = 310
+    Width = 361
+    Height = 28
+    Align = alBottom
+    TabOrder = 2
+    BlurBackground = False
+    BlurBackgroundAmount = 5
+    CustomImageIndex = -1
+    DragForm = False
+    DragTopForm = True
+    FillGradientAngle = 90
+    FillGradientBeginAlpha = 255
+    FillGradientEndAlpha = 255
+    FillGradientBeginColorOffset = 25
+    FillGradientEndColorOffset = 25
+    FrameWidth = 0
+    FillColor = 10114859
+    FillColorAlpha = 255
+    FillColor2 = clNone
+    FrameColor = clBtnShadow
+    FrameColorAlpha = 255
+    FrameRadius = 0
+    ShowCaption = False
+    CaptionGlowEffect.Enabled = False
+    CaptionGlowEffect.Color = clBtnShadow
+    CaptionGlowEffect.AlphaValue = 255
+    CaptionGlowEffect.GlowSize = 7
+    CaptionGlowEffect.Offset = 0
+    CaptionGlowEffect.Intensive = True
+    CaptionGlowEffect.StyleColors = True
+    Color = clBtnFace
+    TransparentBackground = False
+    StorePaintBuffer = True
+    Sizeable = False
+    WallpaperIndex = -1
+    ExplicitWidth = 410
+    object RzStatusPane3: TRzStatusPane
+      Left = 0
+      Top = 0
+      Height = 28
+      Hint = 'Aktu'#225'ln'#237' polohu kurzoru v sou'#345'adnic'#237'ch aplikace'
+      BorderWidth = 0
+      FlatColor = 10114859
+      Align = alLeft
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      Alignment = taCenter
+      BlinkColor = 10114859
+      Caption = ''
+      ExplicitLeft = 338
+      ExplicitTop = 6
+    end
+    object scGPSizeBox: TscGPSizeBox
+      Left = 335
+      Top = 0
+      Width = 26
+      Height = 28
+      Cursor = crSizeNWSE
+      Align = alRight
+      TabOrder = 0
+      GlyphColor = clWhite
+      GlyphColorAlpha = 200
+      GlyphThickness = 1
+      ExplicitLeft = 384
+    end
   end
 end
