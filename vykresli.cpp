@@ -293,11 +293,13 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	if(F->pom_temp!=NULL && F->pom_temp->n==O->n && F->pom_bod!=NULL)
 	switch(F->JID)
 	{
-		//highlight úsečky
+		//highlight hrany
 		case -2:if(F->pom_bod->n==1)stav=O->body->predchozi->n*2;else stav=O->body->predchozi->n+F->pom_bod->n-1;break;
-    //highlight bodu
+		//highlight bodu
 		case -3:stav=F->pom_bod->n;break;
 	}
+	//highlight hrany objektu mimo editaci
+	if(F->pom_temp==NULL && F->pom!=NULL && F->pom->n==O->n && F->JID==4){if(F->pom_bod->n==1)stav=O->body->predchozi->n*2;else stav=O->body->predchozi->n+F->pom_bod->n-1;}
 
 	////vnější obrys kabiny
 	if(!(F->pom_temp!=NULL && F->pom_temp->n!=O->n && F->scGPTrackBar_intenzita->Value<5))polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava

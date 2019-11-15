@@ -2957,8 +2957,8 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
       //zapnutí kurzoru
 			if(pom_temp!=NULL&&stisknute_leve_tlacitko_mysi&&Screen->Cursor!=pan_move)kurzor(pan_move);
 			//posun
-			if(pom_temp!=NULL&&stisknute_leve_tlacitko_mysi)d.v.posun_objekt(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),pom_temp);
-			if(pom_temp==NULL)d.v.posun_objekt(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),pom);
+			if(pom_temp!=NULL&&stisknute_leve_tlacitko_mysi)d.v.posun_objekt(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),pom_temp,false,false);
+			if(pom_temp==NULL)d.v.posun_objekt(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),pom,false,false);
 			minule_souradnice_kurzoru=TPoint(X,Y);
 			REFRESH(false);
 			break;
@@ -3750,7 +3750,7 @@ void TForm1::getJobID(int X, int Y)
 			pom=d.v.PtInObjekt();
 			if(pom!=NULL)//byl nalezen objekt
 			{
-				pom_bod=d.v.najdi_usecku(pom,2);
+				pom_bod=d.v.najdi_usecku(pom,5);
 				if(pom_bod!=NULL)JID=4;//nalezena hrana objektu
 				else JID=3;//nalezen pouze objekt
 			}
@@ -3761,7 +3761,7 @@ void TForm1::getJobID(int X, int Y)
 			if(pom_bod!=NULL)JID=0;//bod nalezen
 			else//bod nenalezen, pokusí se najít úsečku
 	  	{
-				pom_bod=d.v.najdi_usecku(pom);//druhý parametr udává přesnost s jakou hledám, popřípadě velikost oblasti kolem úsečky
+				pom_bod=d.v.najdi_usecku(pom,5);//druhý parametr udává přesnost s jakou hledám, popřípadě velikost oblasti kolem úsečky
 				if(pom_bod!=NULL)JID=1;//usečka nalezena
 				else//usečka nenalezena, pokusí se najít kótu
 				{
@@ -7522,6 +7522,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 		{
       //načtení hodnot z pohonu + ošetření proti nepřiřazenému pohonu
 			if(E->pohon!=NULL)aRD=E->pohon->aRD;
+			TPointD zony_otaceni=m.zona_otaceni(d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(E),E->rotace_jig,E->OTOC_delka);
 			//načtení popisků
 			AnsiString t="LO",t_hint="délka lakovácího okna";
 			if(ls->Strings[232]!="")t=ls->Strings[232];
@@ -7549,9 +7550,9 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			if(ls->Strings[240]!="")E->mGrid->Cells[0][5].Text=ls->Strings[240]+" "+delka_otoce;else E->mGrid->Cells[0][5].Text="otoč "+delka_otoce;
 			E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Text=outDO(E->OTOC_delka);
 			if(ls->Strings[275]!="")E->mGrid->Cells[0][6].Text=ls->Strings[275]+" "+delka_otoce;else E->mGrid->Cells[0][6].Text="Zóna před "+delka_otoce;
-			E->mGrid->Cells[1][6].Text=outDO(E->zona_pred);
+			E->mGrid->Cells[1][6].Text=outDO(m.round2double(zony_otaceni.x,3));
 			if(ls->Strings[276]!="")E->mGrid->Cells[0][7].Text=ls->Strings[276]+" "+delka_otoce;else E->mGrid->Cells[0][7].Text="Zóna za "+delka_otoce;
-			E->mGrid->Cells[1][7].Text=outDO(E->zona_za);
+			E->mGrid->Cells[1][7].Text=outDO(m.round2double(zony_otaceni.x,3));
 			E->mGrid->Cells[0][7].BottomBorder->Width=2;
 			E->mGrid->Cells[1][7].BottomBorder->Width=2;
 			E->mGrid->Cells[0][8].Text="PT2 "+cas;
@@ -7572,7 +7573,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][1].ShowHint=true;
 			E->mGrid->Cells[0][2].Hint=t_hint;
 			E->mGrid->Cells[0][2].ShowHint=true;
-			if(ls->Strings[242]!="")E->mGrid->Cells[0][4].Hint=ls->Strings[242];E->mGrid->Cells[0][4].Hint="celkový čas procesu otoče";
+			if(ls->Strings[242]!="")E->mGrid->Cells[0][4].Hint=ls->Strings[242];else E->mGrid->Cells[0][4].Hint="celkový čas procesu otoče";
 			E->mGrid->Cells[0][4].ShowHint=true;
 			if(ls->Strings[243]!="")E->mGrid->Cells[0][5].Hint=ls->Strings[243];else E->mGrid->Cells[0][5].Hint="délka otoče";
 			E->mGrid->Cells[0][5].ShowHint=true;
@@ -7633,8 +7634,9 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 		}
 		case 5://otoč pasivní
 		{
-      //načtení hodnot z pohonu + ošetření proti nepřiřazenému pohonu
+			//načtení hodnot z pohonu + ošetření proti nepřiřazenému pohonu
 			if(E->pohon!=NULL)aRD=E->pohon->aRD;
+			TPointD zony_otaceni=m.zona_otaceni(d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(E),E->rotace_jig,E->OTOC_delka);
 			//samotné vytvoření matice-tabulky
 			E->mGrid->Create(2,6);
 			//definice buněk
@@ -7645,9 +7647,9 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][3].Text="PT "+cas;//PT u pasivní nelze zadat
 			E->mGrid->Cells[1][3].Text=outPT(m.PTo(E->OTOC_delka,aRD));
 			if(ls->Strings[275]!="")E->mGrid->Cells[0][4].Text=ls->Strings[275]+" "+delka_otoce;else E->mGrid->Cells[0][4].Text="Zona před "+delka_otoce;
-			E->mGrid->Cells[1][4].Text=outDO(E->zona_pred);
+			E->mGrid->Cells[1][4].Text=outDO(m.round2double(zony_otaceni.x,3));
 			if(ls->Strings[276]!="")E->mGrid->Cells[0][5].Text=ls->Strings[276]+" "+delka_otoce;else E->mGrid->Cells[0][5].Text="Zona za "+delka_otoce;
-			E->mGrid->Cells[1][5].Text=outDO(E->zona_za);
+			E->mGrid->Cells[1][5].Text=outDO(m.round2double(zony_otaceni.y,3));
 			E->PTotoc=inPT(ms.MyToDouble(E->mGrid->Cells[1][3].Text));
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
@@ -7867,9 +7869,9 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			if(ls->Strings[240]!="")E->mGrid->Cells[0][5].Text=ls->Strings[240]+" "+delka_otoce;else E->mGrid->Cells[0][5].Text="otoč "+delka_otoce;
 			E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Text=outDO(E->OTOC_delka);
 			if(ls->Strings[275]!="")E->mGrid->Cells[0][6].Text=ls->Strings[275]+" "+delka_otoce;else E->mGrid->Cells[0][6].Text="Zóna před "+delka_otoce;
-			E->mGrid->Cells[1][6].Text=outDO(E->zona_pred);
+			E->mGrid->Cells[1][6].Text=outDO(m.round2double(E->zona_pred,3));
 			if(ls->Strings[276]!="")E->mGrid->Cells[0][7].Text=ls->Strings[276]+" "+delka_otoce;else E->mGrid->Cells[0][7].Text="Zóna za "+delka_otoce;
-			E->mGrid->Cells[1][7].Text=outDO(E->zona_za);
+			E->mGrid->Cells[1][7].Text=outDO(m.round2double(E->zona_za,3));
 			E->mGrid->Cells[0][7].BottomBorder->Width=2;
 			E->mGrid->Cells[1][7].BottomBorder->Width=2;
 			E->mGrid->Cells[0][8].Text="PT2 "+cas;
@@ -7889,7 +7891,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][1].ShowHint=true;
 			E->mGrid->Cells[0][2].Hint=t_hint;
 			E->mGrid->Cells[0][2].ShowHint=true;
-			if(ls->Strings[242]!="")E->mGrid->Cells[0][4].Hint=ls->Strings[242];E->mGrid->Cells[0][4].Hint="celkový čas procesu otoče";
+			if(ls->Strings[242]!="")E->mGrid->Cells[0][4].Hint=ls->Strings[242];else E->mGrid->Cells[0][4].Hint="celkový čas procesu otoče";
 			E->mGrid->Cells[0][4].ShowHint=true;
 			if(ls->Strings[243]!="")E->mGrid->Cells[0][5].Hint=ls->Strings[243];else E->mGrid->Cells[0][5].Hint="délka otoče";
 			E->mGrid->Cells[0][5].ShowHint=true;
@@ -7966,9 +7968,9 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][3].Text="PT "+cas;//PT u pasivní nelze zadat
 			E->mGrid->Cells[1][3].Text=outPT(E->PTotoc);
 			if(ls->Strings[275]!="")E->mGrid->Cells[0][4].Text=ls->Strings[275]+" "+delka_otoce;else E->mGrid->Cells[0][4].Text="Zona před "+delka_otoce;
-			E->mGrid->Cells[1][4].Text=outDO(E->zona_pred);
+			E->mGrid->Cells[1][4].Text=outDO(m.round2double(E->zona_pred,3));
 			if(ls->Strings[276]!="")E->mGrid->Cells[0][5].Text=ls->Strings[276]+" "+delka_otoce;else E->mGrid->Cells[0][5].Text="Zona za "+delka_otoce;
-			E->mGrid->Cells[1][5].Text=outDO(E->zona_za);
+			E->mGrid->Cells[1][5].Text=outDO(m.round2double(E->zona_za,3));
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_56+30;//Delší text
@@ -11594,9 +11596,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	TPointD a=m.zona_otaceni(0,90,0.45);
-	Memo("Min:"+AnsiString(a.x));
-	Memo("Max:"+AnsiString(a.y));
+	pom_temp->Xp=pom_temp->X;    pom_temp->Yp=pom_temp->Y; PmG->Refresh();
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
