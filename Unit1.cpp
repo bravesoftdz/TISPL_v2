@@ -2692,6 +2692,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						if(JID==-4){Akce=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;nahled_ulozit(true);}//změna offsetu kóty
 						if(JID==-5){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_bod_temp=pom_bod;if(pom_bod_temp->n!=1)editovany_text=m.round2double(m.delka(pom_bod_temp->predchozi->X,pom_bod_temp->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);else editovany_text=m.round2double(m.delka(pom_temp->body->predchozi->X,pom_temp->body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);if(DKunit==2||DKunit==3)editovany_text=editovany_text/pom_temp->pohon->aRD;editovany_text=outDK(ms.MyToDouble(editovany_text));nahled_ulozit(true);}//editace kót kabiny
 						if(JID==-9 || JID==4){Akce=MOVE_TABLE;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//posun tabulky pohonu
+            if(JID==-102)d.zobrazit_cele_zpravy=!d.zobrazit_cele_zpravy;//rozbalení nebo skrytí zpráv
 						if(JID==-201){pom_temp->pohon=element_temp->pohon;if(pom_temp->pohon!=NULL)prirazeni_pohonu_tab_pohon(pom_temp->pohon->n);else {prirazeni_pohonu_tab_pohon(0);PmG->getCombo(0,0)->DropDown();}if(!pom_temp->zobrazit_mGrid)scGPButton_viditelnostmGridClick(Sender);} //kliknutí na jeden z pohonů na předávacím místě
 						if(JID==-202){if(element_temp->dalsi!=NULL){pom_temp->pohon=element_temp->dalsi->pohon;if(pom_temp->pohon!=NULL)prirazeni_pohonu_tab_pohon(pom_temp->pohon->n);else {prirazeni_pohonu_tab_pohon(0);PmG->getCombo(0,0)->DropDown();}if(!pom_temp->zobrazit_mGrid)scGPButton_viditelnostmGridClick(Sender);}else {pom_vyhybka=pom->dalsi;zmena_editovaneho_objektu();}}
 					}
@@ -3597,6 +3598,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 //JID=-10;//jednotky kóty
 //JID=-11 až -100;//hodnota kóty konkrétně a n elementu (10+pom_element->n)*(-1);hodnota kóty konkrétně a n komory (10+pom_komora->n)*(-1)
 //JID=-101;//hodnota LO kóty elementu
+//JID=-102;//citelná oblast zprávy
 //JID=-201;//pohon1 na předávacím místě
 //JID=-202;//pohon2 na předávacím místě
 //JID=-1 žádná
@@ -3613,7 +3615,7 @@ void TForm1::getJobID(int X, int Y)
 	JID=-1;//výchozí stav, nic nenalezeno
 	if(MOD==NAHLED)
 	{
-  	//nejdříve se zkouší hledat souřadnice myši v TABULCE POHONů
+		//nejdříve se zkouší hledat souřadnice myši v TABULCE POHONů
   	if(PmG!=NULL && pom_temp->uzamknout_nahled==false && pom_temp->zobrazit_mGrid)
 		{
 			pom_element=NULL;
@@ -3660,53 +3662,57 @@ void TForm1::getJobID(int X, int Y)
   		}
   		else//tabulka nenalezena, takže zkouší najít ELEMENT
 			{
-				pom_element=NULL;
-				if(pom_temp->uzamknout_nahled==false)pom_element=F->d.v.najdi_element(pom_temp,m.P2Lx(X),m.P2Ly(Y));//pouze pokud je možné měnit rozmístění a rozměry,nutné jako samostatná podmínka
-				if(pom_element!=NULL)//element nalezen, tzn. klik či přejetí myší přes elemement nikoliv tabulku
-  			{
-  				if(scGPCheckBox1_popisky->Checked && pom_element->citelna_oblast.rect3.PtInRect(TPoint(X,Y)))JID=1;//byl nalezen název elementu
-					else JID=0; //byl nálezen element nikoliv jeho název, určeno k smazání či posunu elementu
-  			}
-  			else //ani element nenalezen, hledá tedy interaktivní text, obrys a kóty atp.
+				if(d.v.PtInZpravy())JID=-102;//hledání citelné oblasti zprávy
+				else
 				{
-					pom_bod=d.v.najdi_bod(pom_temp);//pokouším se najít bod v obrysu kabiny
-					if(pom_bod!=NULL)JID=-3;//bod nalezen
-					else //bod nenalezen, pokouším se najít hranu kabiny
-					{
-						pom_bod=d.v.najdi_usecku(pom_temp);
-						if(pom_bod!=NULL)JID=-2;//hrana nalezena
-						else
-				  	{ //testování zda se nejedná o NÁZEV či ZKRATKA objektu, ZATÍM NEREFLEKTUJE ORIENTACI NÁHLEDU
-							d.nastavit_text_popisu_objektu_v_nahledu(Canvas,1);AnsiString Tn=F->pom_temp->name.UpperCase();short Wn=Canvas->TextWidth(Tn);//název objektu - nastavení
-							if(najdi_nazev_obj(X,Y,pom_temp))JID=-6;//název objektu
-							if(najdi_nazev_obj(X,Y,pom_temp,1))JID=-7;
-							if(JID==-1)//hledání předávacího místa, pohon 1 nebo pohon 2
-							{
-								short pohon=najdi_popisky_PM(X,Y,pom_temp);
-								if(pohon>0)JID=-200-pohon;
-              }
-							if(JID==-1)//nejedná tj. testují se KÓTY
-							{
-								if(pom_temp->zobrazit_koty)//pouze pokud je náhled povolen a jsou kóty zobrazeny
-								{
-									short PtInKota_elementu=d.v.PtInKota_elementu(pom_temp,X,Y);
-									//jednotky kóty buď kabiny nebo kót elementů JID=-10
-									if(PtInKota_elementu==3)JID=-101;//hodnota LO kóty
-									else if(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || PtInKota_elementu==2)JID=-10;
-									else if(pom_temp->uzamknout_nahled==false)//hledám kóty kabiny
-									{
-										short PtInKota_bod=d.v.PtInKota_bod(pom_temp);//metoda vrací zda jsem v oblasti kóty nebo v její hodnotě + ukládá ukazatel na bod do pom_bod
-										if(PtInKota_bod==0 && pom_bod!=NULL)JID=-4;//oblast kóty - posun kóty
-										else if(PtInKota_bod==1 && pom_bod!=NULL)JID=-5;//hodnota kóty
-										else//kóty elementů RET=11-99
-										{
-											if(PtInKota_elementu==0 && pom_element!=NULL)JID=10+pom_element->n;//oblast kóty - posun kóty
-											if(PtInKota_elementu==1 && pom_element!=NULL)JID=(10+pom_element->n)*(-1);//hodnota kóty
-										}
-									}
-								}
-							}
-						}
+			  	pom_element=NULL;
+			  	if(pom_temp->uzamknout_nahled==false)pom_element=F->d.v.najdi_element(pom_temp,m.P2Lx(X),m.P2Ly(Y));//pouze pokud je možné měnit rozmístění a rozměry,nutné jako samostatná podmínka
+			  	if(pom_element!=NULL)//element nalezen, tzn. klik či přejetí myší přes elemement nikoliv tabulku
+			  	{
+			  		if(scGPCheckBox1_popisky->Checked && pom_element->citelna_oblast.rect3.PtInRect(TPoint(X,Y)))JID=1;//byl nalezen název elementu
+			  		else JID=0; //byl nálezen element nikoliv jeho název, určeno k smazání či posunu elementu
+			  	}
+			  	else //ani element nenalezen, hledá tedy interaktivní text, obrys a kóty atp.
+			  	{
+			  		pom_bod=d.v.najdi_bod(pom_temp);//pokouším se najít bod v obrysu kabiny
+			  		if(pom_bod!=NULL)JID=-3;//bod nalezen
+			  		else //bod nenalezen, pokouším se najít hranu kabiny
+			  		{
+			  			pom_bod=d.v.najdi_usecku(pom_temp);
+			  			if(pom_bod!=NULL)JID=-2;//hrana nalezena
+			  			else
+			  			{ //testování zda se nejedná o NÁZEV či ZKRATKA objektu, ZATÍM NEREFLEKTUJE ORIENTACI NÁHLEDU
+			  				d.nastavit_text_popisu_objektu_v_nahledu(Canvas,1);AnsiString Tn=F->pom_temp->name.UpperCase();short Wn=Canvas->TextWidth(Tn);//název objektu - nastavení
+			  				if(najdi_nazev_obj(X,Y,pom_temp))JID=-6;//název objektu
+			  				if(najdi_nazev_obj(X,Y,pom_temp,1))JID=-7;
+			  				if(JID==-1)//hledání předávacího místa, pohon 1 nebo pohon 2
+			  				{
+			  					short pohon=najdi_popisky_PM(X,Y,pom_temp);
+			  					if(pohon>0)JID=-200-pohon;
+			  				}
+			  				if(JID==-1)//nejedná tj. testují se KÓTY
+			  				{
+			  					if(pom_temp->zobrazit_koty)//pouze pokud je náhled povolen a jsou kóty zobrazeny
+			  					{
+			  						short PtInKota_elementu=d.v.PtInKota_elementu(pom_temp,X,Y);
+			  						//jednotky kóty buď kabiny nebo kót elementů JID=-10
+			  						if(PtInKota_elementu==3)JID=-101;//hodnota LO kóty
+			  						else if(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || PtInKota_elementu==2)JID=-10;
+			  						else if(pom_temp->uzamknout_nahled==false)//hledám kóty kabiny
+			  						{
+			  							short PtInKota_bod=d.v.PtInKota_bod(pom_temp);//metoda vrací zda jsem v oblasti kóty nebo v její hodnotě + ukládá ukazatel na bod do pom_bod
+			  							if(PtInKota_bod==0 && pom_bod!=NULL)JID=-4;//oblast kóty - posun kóty
+			  							else if(PtInKota_bod==1 && pom_bod!=NULL)JID=-5;//hodnota kóty
+			  							else//kóty elementů RET=11-99
+			  							{
+			  								if(PtInKota_elementu==0 && pom_element!=NULL)JID=10+pom_element->n;//oblast kóty - posun kóty
+			  								if(PtInKota_elementu==1 && pom_element!=NULL)JID=(10+pom_element->n)*(-1);//hodnota kóty
+			  							}
+			  						}
+			  					}
+			  				}
+			  			}
+			  		}
 					}
 				}
 			}
@@ -3737,6 +3743,7 @@ void TForm1::getJobID(int X, int Y)
 	else if(!zamek_layoutu)//pro schéma, zjišťování jidů pro body a úsečky
 	{
     /////////////JID udává pouze akci, není třeba aby se k němu přičítalo i číslo bodu, bod je držen jako ukazatel pom_bod/////////////
+    //-102; citelná oblast zprávy
 		//-2; hodnota kóty bodu (přímka [A,B] uložena v bodě B)
     //-1=NIC!!!!!!!!!!!!!!!
 		//0; bod haly nebo objektu
@@ -3744,7 +3751,8 @@ void TForm1::getJobID(int X, int Y)
 		//2; oblast kóty bodu (přímka [A,B] uložena v bodě B)
 		//3; oblas objektu
 		//4; hrana objektu
-		if(d.v.OBJEKTY->dalsi!=NULL&&Akce==NIC)
+		if(d.v.PtInZpravy())JID=-102;//hledání citelné oblasti zprávy
+		else if(d.v.OBJEKTY->dalsi!=NULL&&Akce==NIC)
 		{
 			pom=NULL;pom_bod=NULL;
 			pom=d.v.PtInObjekt();
