@@ -273,8 +273,9 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool zobrazit_koty)
 {
 	////vstupní proměnné
-	bool highlight_pow=false;
-	TColor clAkt=clStenaKabiny;if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clAkt=m.clIntensive(clBlack,180);//v případě editace jsou pasivní objekty šedé
+	bool highlight_pow=false;  //tato podmínka tu původně nebývala před změnou červena - šedomodrá
+	TColor clPasiv=m.clIntensive(clBlack,190);
+	TColor clAkt/*clAktulální*/=clStenaKabiny;if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clAkt=clPasiv;//v případě editace jsou pasivní objekty šedé
 	short I=100-F->scGPTrackBar_intenzita->Value;
 	double orientace=O->orientace; //něco s tím udělat!!!! short->double
 	long X1=m.L2Px(O->body->dalsi->X);
@@ -325,7 +326,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	else canv->Font->Style = TFontStyles();//vypnutí
 	//samotné vypsání názvu
 	nastavit_text_popisu_objektu_v_nahledu(canv,1);
-	canv->Font->Color=clStenaKabiny;
+	canv->Font->Color=clStenaKabiny;                                            //tady před změnou červená -> šedomodrá bývala clStenaKabiny
 	if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)canv->Font->Color=m.clIntensive(clAkt,I);
 	if(!(F->pom_temp!=NULL && F->pom_temp->n!=O->n && F->scGPTrackBar_intenzita->Value<5))TextFraming(canv,X,Y,Tn);//záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
 	canv->Font->Orientation=0;//vrácení původní hodnoty rotace canvasu
@@ -369,8 +370,8 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		while(K->dalsi!=NULL)
 		{
 			if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)K->n || F->JID==0 && F->pom_komora!=NULL && F->pom_komora->n==K->n)){clAkt=m.clIntensive(clStenaKabiny,-50);highlight_pow=true;}//highlight
-			else clAkt=clStenaKabiny;
-			if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clAkt=m.clIntensive(clStenaKabiny,I);
+			else clAkt/*clAktualni*/=clStenaKabiny;if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clAkt=clPasiv;//v případě editace jsou pasivní objekty šedé, tato podmínka nebyla před změnou červená -> šedomodrá
+			if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clAkt=m.clIntensive(clAkt,I);//tady před změnou červená -> šedomodrá bývala clStenaKabiny
 			set_pen(canv,clAkt,sirka_steny_px,PS_ENDCAP_SQUARE);
 			vzdalenost+=K->velikost;//dle velikosti předchozích komor uchovává hodnotu součtu/pozice aktuálně vykreslované komory
 			short W1=0;if(K->n==1)W1=W;//pro první komoru odsazeni
@@ -451,8 +452,10 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		K=NULL;delete K;
 		////poslední komora
 		if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)F->pom_temp->komora->predchozi->n || (F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==F->pom_temp->komora->predchozi->n)))clAkt=m.clIntensive(clStenaKabiny,-50);//highlight
-		else clAkt=clStenaKabiny;
-		if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clAkt=m.clIntensive(clStenaKabiny,50);
+		//else clAkt=clStenaKabiny;
+		//if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clAkt=m.clIntensive(clStenaKabiny,50);
+		else clAkt/*clAktualni*/=clStenaKabiny;if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clAkt=clPasiv;//v případě editace jsou pasivní objekty šedé, tato podmínka nebyla před změnou červená -> šedomodrá
+		if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clAkt=m.clIntensive(clAkt,I);//tady před změnou červená -> šedomodrá bývala clStenaKabiny
 		set_pen(canv,clAkt,sirka_steny_px,PS_ENDCAP_SQUARE);
 		if(orientace==90 || orientace==270)
 		{
