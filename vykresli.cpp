@@ -274,7 +274,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 {
 	////vstupní proměnné
 	bool highlight_pow=false;
-	TColor clAkt=clStenaKabiny;
+	TColor clAkt=clStenaKabiny;if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clAkt=m.clIntensive(clBlack,180);//v případě editace jsou pasivní objekty šedé
 	short I=100-F->scGPTrackBar_intenzita->Value;
 	double orientace=O->orientace; //něco s tím udělat!!!! short->double
 	long X1=m.L2Px(O->body->dalsi->X);
@@ -292,7 +292,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	//nastavení zobrazení, rozdíl mezi Layoutem a editaci, editovaným objektem a ostatnímy
 	if(F->pom_temp!=NULL){if(F->pom_temp->n==O->n){stav=-2;if(F->pom_temp->zobrazit_koty)zobrazit_koty=true;else zobrazit_koty=false;}else {stav=-1;zobrazit_koty=false;}}
 	else {stav=-2;zobrazit_koty=false;}
-  //highlight polygonu (editace rozmerů, bodů)
+	//highlight polygonu (editace rozmerů, bodů)
 	if(F->pom_temp!=NULL && F->pom_temp->n==O->n && F->pom_bod!=NULL)
 	switch(F->JID)
 	{
@@ -326,7 +326,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	//samotné vypsání názvu
 	nastavit_text_popisu_objektu_v_nahledu(canv,1);
 	canv->Font->Color=clStenaKabiny;
-	if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)canv->Font->Color=m.clIntensive(clStenaKabiny,I);
+	if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)canv->Font->Color=m.clIntensive(clAkt,I);
 	if(!(F->pom_temp!=NULL && F->pom_temp->n!=O->n && F->scGPTrackBar_intenzita->Value<5))TextFraming(canv,X,Y,Tn);//záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
 	canv->Font->Orientation=0;//vrácení původní hodnoty rotace canvasu
 	//vykreslení uchopovacího kříže u textu

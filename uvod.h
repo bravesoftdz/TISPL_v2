@@ -18,10 +18,10 @@ class TForm_uvod : public TForm
 {
 __published:	// IDE-managed Components
   TTimer *Timer1;
-	TImage *Image1;
-	TLabel *Label_status;
 	TscGPLabel *scGPLabel_copyright;
 	TscGPLabel *scGPLabel_TISPL;
+	TImage *Image1;
+	TLabel *Label_status;
   void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
   void __fastcall Timer1Timer(TObject *Sender);
 private:	// User declarations
