@@ -2697,7 +2697,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						if(JID==-4){Akce=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;nahled_ulozit(true);}//změna offsetu kóty
 						if(JID==-5){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_bod_temp=pom_bod;if(pom_bod_temp->n!=1)editovany_text=m.round2double(m.delka(pom_bod_temp->predchozi->X,pom_bod_temp->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);else editovany_text=m.round2double(m.delka(pom_temp->body->predchozi->X,pom_temp->body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);if(DKunit==2||DKunit==3)editovany_text=editovany_text/pom_temp->pohon->aRD;editovany_text=outDK(ms.MyToDouble(editovany_text));nahled_ulozit(true);}//editace kót kabiny
 						if(JID==-9 || JID==4){Akce=MOVE_TABLE;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//posun tabulky pohonu
-						if(JID==-102){d.zobrazit_cele_zpravy=!d.zobrazit_cele_zpravy;REFRESH(false);}//rozbalení nebo skrytí zpráv
+						if(JID==-102){if(d.zprava_highlight!=d.zobrazit_celou_zpravu)d.zobrazit_celou_zpravu=d.zprava_highlight;else d.zobrazit_celou_zpravu=0;REFRESH(false);}//rozbalení nebo skrytí zpráv
 						if(JID==-201){pom_temp->pohon=element_temp->pohon;if(pom_temp->pohon!=NULL)prirazeni_pohonu_tab_pohon(pom_temp->pohon->n);else {prirazeni_pohonu_tab_pohon(0);PmG->getCombo(0,0)->DropDown();}if(!pom_temp->zobrazit_mGrid)scGPButton_viditelnostmGridClick(Sender);} //kliknutí na jeden z pohonů na předávacím místě
 						if(JID==-202){if(element_temp->dalsi!=NULL){pom_temp->pohon=element_temp->dalsi->pohon;if(pom_temp->pohon!=NULL)prirazeni_pohonu_tab_pohon(pom_temp->pohon->n);else {prirazeni_pohonu_tab_pohon(0);PmG->getCombo(0,0)->DropDown();}if(!pom_temp->zobrazit_mGrid)scGPButton_viditelnostmGridClick(Sender);}else {pom_vyhybka=pom->dalsi;zmena_editovaneho_objektu();}}
 					}
@@ -2707,7 +2707,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						{
 							if(JID==3&&!zamek_layoutu){Akce=MOVE;kurzor(posun_l);/*posun_objektu=true;*/minule_souradnice_kurzoru=TPoint(X,Y);}
 							else if(JID==-1&&Akce==NIC){Akce=PAN;pan_non_locked=true;}//přímo dovolení PAN pokud se neposová objekt = Rosťova prosba
-              if(JID==-102){d.zobrazit_cele_zpravy=!d.zobrazit_cele_zpravy;REFRESH(false);}//rozbalení nebo skrytí zpráv
+							if(JID==-102){if(d.zprava_highlight!=d.zobrazit_celou_zpravu)d.zobrazit_celou_zpravu=d.zprava_highlight;else d.zobrazit_celou_zpravu=0;REFRESH(false);}//rozbalení nebo skrytí zpráv
 							if(JID==-2){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_bod_temp=pom_bod;if(pom_bod_temp->n!=1)editovany_text=m.round2double(m.delka(pom_bod_temp->predchozi->X,pom_bod_temp->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);else editovany_text=m.round2double(m.delka(d.v.HALA.body->predchozi->X,d.v.HALA.body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);editovany_text=outDK(ms.MyToDouble(editovany_text));}//převod na mm
 							if(JID==0){Akce=MOVE_BOD;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;ortogonalizace_stav=false;}//posun jednoho bodu
 							if(JID==1||JID==4){Akce=MOVE_USECKA;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//posun úsečky
@@ -2799,12 +2799,13 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 			}
 			else//posun obrazu stiskem kolečka
 			{
+				if(PmG!=NULL && pom_temp!=NULL && pom_temp->zobrazit_mGrid)PmG->getCombo(0,0)->CloseUp(false);//v editaci je nutné zavírat combo.. nelze rozlišit zda je otevřené
 				vychozi_souradnice_kurzoru=TPoint(X,Y);
 				pan_non_locked=true;
 				kurzor(pan_move);Akce=PAN_MOVE;//přepne z PAN na PAN_MOVE
 				pan_create();//vytvoří výřez pro pan_move
 			}
-			if(Button==mbLeft)DrawGrid_knihovna->SetFocus();//předávání událostí na form
+			DrawGrid_knihovna->SetFocus();//předávání událostí na form
 		}
 		else
 		{
@@ -3619,13 +3620,15 @@ void TForm1::getJobID(int X, int Y)
 {
 	log(__func__);//logování
 	JID=-1;//výchozí stav, nic nenalezeno
+	pom_element=NULL;
+	pom_komora=NULL;
+	pom_bod=NULL;
+	d.zprava_highlight=0;
 	if(MOD==NAHLED && !pom_temp->uzamknout_nahled)
 	{
 		//nejdříve se zkouší hledat souřadnice myši v TABULCE POHONů
 		if(PmG!=NULL && pom_temp->zobrazit_mGrid)
 		{
-			pom_element=NULL;
-			pom_komora=NULL;
   		int IdxRow=PmG->GetIdxRow(X,Y);
 			//if(IdxRow==0)JID=4;//hlavička NEVYUŽITO, je tam COMBO, zachováno jako rezerva
 			if(IdxRow>0)//nějaký z řádků mimo nultého tj. hlavičky, nelze použít else, protože IdxRow -1 bude také možný výsledek
@@ -3668,7 +3671,8 @@ void TForm1::getJobID(int X, int Y)
   		}
   		else//tabulka nenalezena, takže zkouší najít ELEMENT
 			{
-				if(d.v.PtInZpravy())JID=-102;//hledání citelné oblasti zprávy
+				d.zprava_highlight=d.v.PtInZpravy();
+				if(d.zprava_highlight>0)JID=-102;//hledání citelné oblasti zprávy
 				else
 				{
 			  	pom_element=NULL;
@@ -3756,7 +3760,8 @@ void TForm1::getJobID(int X, int Y)
 		//2; oblast kóty bodu (přímka [A,B] uložena v bodě B)
 		//3; oblas objektu
 		//4; hrana objektu
-		if(d.v.PtInZpravy())JID=-102;//hledání citelné oblasti zprávy
+		d.zprava_highlight=d.v.PtInZpravy();
+		if(d.zprava_highlight>0)JID=-102;//hledání citelné oblasti zprávy
 		else if(d.v.OBJEKTY->dalsi!=NULL&&Akce==NIC)
 		{
 			pom=NULL;pom_bod=NULL;
@@ -3785,7 +3790,11 @@ void TForm1::getJobID(int X, int Y)
 			}
 		}
 	}
-	if((zamek_layoutu || pom_temp!=NULL && pom_temp->uzamknout_nahled) && d.v.PtInZpravy())JID=-102;//hledání citelné oblasti zprávy, vždy vyhledávat(i při zamčeném layoutu či editaci)!!
+	if((zamek_layoutu || pom_temp!=NULL && pom_temp->uzamknout_nahled))//hledání citelné oblasti zprávy, vždy vyhledávat(i při zamčeném layoutu či editaci)!!
+	{
+		d.zprava_highlight=d.v.PtInZpravy();
+		if(d.zprava_highlight>0)JID=-102;
+  }
 	//pouze na test zatížení Memo3->Visible=true;Memo3->Lines->Add(s_mazat++);
 }
 //---------------------------------------------------------------------------
@@ -6765,7 +6774,7 @@ void TForm1::vytvoreni_tab_pohon()
 	}
 	//umístění tabulky
 	TRect oblast_kabiny=vrat_max_oblast(pom_temp);
-	if(pom_temp->Xp==-500)//definice pozice při prvním otevření objektu
+	if(pom_temp->Xp<0 && pom_temp->Yp<0)//definice pozice při prvním otevření objektu
 	{
 		pom_temp->Xp=m.P2Lx(oblast_kabiny.right+30);
 		pom_temp->Yp=m.P2Ly(oblast_kabiny.top-F->PmG->Rows->Height-30);
@@ -9261,7 +9270,7 @@ void TForm1::akutalizace_stavu_prichytavani_vSB()
 		log(__func__);//logování
 		UnicodeString text="přichytávat",text_1="nepřichytávat";
 		if(ls->Strings[375]!="")text=ls->Strings[375];
-		if(ls->Strings[388]!="")text=ls->Strings[388];
+		if(ls->Strings[388]!="")text_1=ls->Strings[388];
 		switch(prichytavat_k_mrizce)
 		{
 			//case 0:SB("přichytávat?",5);grid=true;myMessageBox->CheckBox_pamatovat->Checked=false;break;
@@ -10203,7 +10212,7 @@ void TForm1::posun_na_element(unsigned long n_zpravy)
 	{
     //////deklarace + nastavení vykreslení zpráv
 		Cvektory::TElement *E=Z->Element;
-		if(!d.zobrazit_cele_zpravy)d.zobrazit_cele_zpravy=!d.zobrazit_cele_zpravy;//zobrazení celé zprávy, před refresh
+		if(Z->n!=d.zobrazit_celou_zpravu)d.zobrazit_celou_zpravu=Z->n;//zobrazení celé zprávy, před refresh
 
 		//////posun na element + zoom
 		//nastavení zoomu na vhodný náhled
@@ -11680,8 +11689,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Canvas->Brush->Color=d.clWarning;
-	Canvas->Rectangle(100,100,1000,1000);
+//
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -11729,7 +11737,7 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 	 //Sk(d.v.vrat_zpravu(2)->Popisek);
 	 //d.v.vymazat_ZPRAVY();
 
-	 d.zobrazit_cele_zpravy=!d.zobrazit_cele_zpravy;
+	 //d.zobrazit_cele_zpravy=!d.zobrazit_cele_zpravy;
 	 REFRESH();
 }
 //---------------------------------------------------------------------------
@@ -14033,6 +14041,7 @@ void __fastcall TForm1::scGPCheckBox_zobrazit_palceClick(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
+
 
 
 
