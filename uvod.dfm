@@ -18689,11 +18689,11 @@ object Form_uvod: TForm_uvod
   object scGPLabel_copyright: TscGPLabel
     Left = -2
     Top = 302
-    Width = 163
-    Height = 25
+    Width = 154
+    Height = 24
     Font.Charset = EASTEUROPE_CHARSET
     Font.Color = clWhite
-    Font.Height = -16
+    Font.Height = -15
     Font.Name = 'Roboto'
     Font.Style = [fsBold]
     ParentFont = False
@@ -18707,7 +18707,7 @@ object Form_uvod: TForm_uvod
     DisabledFontColor = clNone
     FrameWidth = 0
     FillColor = clBtnText
-    FillColorAlpha = 80
+    FillColorAlpha = 0
     FillColor2 = clNone
     FillColor2Alpha = 255
     FillGradientAngle = 0
