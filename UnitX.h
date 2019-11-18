@@ -36,7 +36,7 @@ public:		// User declarations
 	void OnChange(long Tag,long ID,unsigned long Col,unsigned long Row);
 	void OnKeyPress(long Tag,long ID,unsigned long Col,unsigned long Row,System::WideChar &Key);
 	void odstranit_korelaci(bool predat_focus=true);//odstraní veškerou korelaci, nepoviný prametr urèuje zda má být pøedán focus z mGridu, defaultnì focus pøedává
-	void validace_aRD();//validace zadávané aktuální rychlosti
+	void validace_aRD(bool pouze_rozmezi=false);//validace zadávané aktuální rychlosti
 	void validace_max_voziku();//validace maximálního poètu vozíkù na stopce
 	void povolit_zakazat_editaci(bool povolit);//zakazuje èi povolí komponenty v tabulce pohonu a všech tabulkách elementu
 	void naplneni_dopRD();//doplni doporuèenou rychlost do tabulky pohonu

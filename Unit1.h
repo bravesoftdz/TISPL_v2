@@ -554,7 +554,7 @@ public:
 
 private:
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
-	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o,neco,posun_ind,zmena_j,edit_text,zmena_d_x,zmena_d_y,posun_ind_ld,posun_ind_pd};
+	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o,neco,posun_ind,zmena_j,edit_text,zmena_d_x,zmena_d_y,posun_ind_ld,posun_ind_pd,editace_posun};
 	struct Tnastaveni{bool autosave;unsigned short int minut;bool posledni_file;};Tnastaveni nastaveni;
 	enum Tlanguage{EN,MN,CS};Tlanguage language;
 	////instance
@@ -610,7 +610,7 @@ private:
 	void ulozit_nastaveni();
 	void zavrit_uvod();//zavøe úvodní dialog
 	int vrat_max_vysku_grafu();//vratí maximální oblast
-	bool najdi_nazev_obj(double X,double Y,Cvektory::TObjekt *Objekt,int typ=0);//vratí zda jsem v oblasti textu, typ 0 citelná oblast textu, typ 1 citelná oblast posun. køíže
+	bool najdi_nazev_obj(double X,double Y,Cvektory::TObjekt *Objekt);//vratí zda jsem v oblasti textu
   short najdi_popisky_PM(double X,double Y,Cvektory::TObjekt *Objekt);//najde na jakém popisku u PM se nachází kurzor, vrací 0: nenalezeno, 1: pohon 1, 2: pohon 2
 	void getJobID(int X, int Y);//vrátí do globální promìnné JID ID úlohy/funkcionality v místì kurzoru, zároveò pokud v místì tabulky èi elementu nahraje ukazatel do globální promìnné pom_element, význam jednotlivých JID hodnot v komentáøi definici metody
 	void setJobIDOnMouseMove(int X, int Y);//dle místa kurzoru a vrácené JID (job id) nastaví úlohu
