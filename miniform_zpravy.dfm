@@ -16,7 +16,7 @@ object Form_zpravy: TForm_zpravy
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object scGPPanel2: TscGPPanel
+  object scGPPanel_header: TscGPPanel
     Left = 0
     Top = 0
     Width = 361
@@ -48,13 +48,13 @@ object Form_zpravy: TForm_zpravy
     CaptionGlowEffect.Offset = 0
     CaptionGlowEffect.Intensive = True
     CaptionGlowEffect.StyleColors = True
-    Color = clBtnFace
+    Color = 10114859
     Caption = 'scGPPanel_header'
     TransparentBackground = True
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
-    object Konec: TscGPGlyphButton
+    object Skryt: TscGPGlyphButton
       AlignWithMargins = True
       Left = 311
       Top = 0
@@ -66,8 +66,9 @@ object Form_zpravy: TForm_zpravy
       Margins.Bottom = 1
       Align = alRight
       TabOrder = 0
+      OnClick = SkrytClick
       Animation = True
-      Caption = 'Konec'
+      Caption = 'Skryt'
       CanFocused = False
       CustomDropDown = False
       Layout = blGlyphLeft
@@ -449,6 +450,7 @@ object Form_zpravy: TForm_zpravy
     DetailFont.Height = -16
     DetailFont.Name = 'Tahoma'
     DetailFont.Style = []
+    OnItemClick = scGPListBox_zpravyItemClick
     Items = <>
     ItemIndex = -1
     ItemMargin = 5

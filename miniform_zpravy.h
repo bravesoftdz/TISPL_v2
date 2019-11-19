@@ -15,8 +15,8 @@
 class TForm_zpravy : public TForm
 {
 __published:	// IDE-managed Components
-  TscGPPanel *scGPPanel2;
-  TscGPGlyphButton *Konec;
+  TscGPPanel *scGPPanel_header;
+  TscGPGlyphButton *Skryt;
   TscLabel *scLabel1;
   TscGPGlyphButton *scGPGlyphButton_info;
   TscGPListBox *scGPListBox_zpravy;
@@ -29,7 +29,10 @@ __published:	// IDE-managed Components
           int X, int Y);
   void __fastcall scGPGlyphButton_infoClick(TObject *Sender);
   void __fastcall scGPListBox_zpravyClick(TObject *Sender);
+  void __fastcall SkrytClick(TObject *Sender);
+  void __fastcall scGPListBox_zpravyItemClick(TObject *Sender);
 private:	// User declarations
+  int radek_temp;
 public:		// User declarations
   __fastcall TForm_zpravy(TComponent* Owner);
 };
