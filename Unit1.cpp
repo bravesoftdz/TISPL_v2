@@ -1196,7 +1196,7 @@ void __fastcall TForm1::FormActivate(TObject *Sender)
 		else
 		{
 			Timer_tr->Enabled=false;
-			startUP();
+      if(!Form_zpravy->closing) startUP();
 		}
 	}
 
@@ -12414,7 +12414,7 @@ void __fastcall TForm1::scGPGlyphButton_zpravy_ikonaClick(TObject *Sender)
 //	scExPanel_log_header->Height = 300;
 //	scExPanel_log_header->Width	 = 715;
 
-Form_zpravy->ShowModal();
+Form_zpravy->Show();
 	}
 }
 //---------------------------------------------------------------------------
