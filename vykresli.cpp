@@ -4571,7 +4571,7 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 			 long Y=m.L2Py(Z->Y);
 
 			 ////nastavení písma
-			 if(F->JID==-102 || zprava_highlight==Z->n)canv->Font->Style = TFontStyles()<<fsBold;else canv->Font->Style = TFontStyles();//highlight, buď všechny nebo konkréktní
+			 if(zprava_highlight==Z->n)canv->Font->Style = TFontStyles()<<fsBold;else canv->Font->Style = TFontStyles();//highlight, buď všechny nebo konkréktní
 
 			 ////IKONA
 			 short size=m.round(3*F->Zoom);//POZOR, v případě změny nutno ještě změnit i v v.PtInZpravy()
@@ -4606,7 +4606,7 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 				 canv->Font->Color=clRed;
 				 canv->Font->Size=m.round(3.5*F->Zoom);
 				 TW=canv->TextWidth(Text);TH=canv->TextHeight(Text);
-				 Y-=m.round(2.8*F->Zoom)+TH;//odsazení textu
+				 Y-=(m.round(3*F->Zoom)+TH);//odsazení textu
 				 X-=m.round(TW/2.0);
 				 //samotné vykreslení výpisu
 				 TextFraming(canv,X,Y,Text,canv->Font,clWhite,3);
