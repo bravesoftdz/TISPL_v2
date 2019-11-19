@@ -1285,9 +1285,7 @@ void Cvykresli::vykresli_svislici_na_casove_osy(TCanvas *canv,int X,int Y)
 			canv->LineTo(Form1->ClientWidth,Y);
 			canv->Brush->Style=bsSolid;//vracím raději do původního stavu
 			unsigned int V=ceil((Y+PosunT.y-KrokY/2-Form1->scGPPanel_mainmenu->Height)/(KrokY*1.0));//pozn. KrokY/2 kvůli tomu, že střed osy je ve horozintální ose obdelníku
-			UnicodeString text="Vozík: ";
-			if(F->ls->Strings[400]!="")text=F->ls->Strings[400]+" ";
-			if(V<=v.VOZIKY->predchozi->n)Form1->SB(text+AnsiString(V));
+			if(V<=v.VOZIKY->predchozi->n)Form1->SB(F->ls->Strings[400]+" "+AnsiString(V));//"Vozík: "
 			else Form1->SB("");//pokud je už mimo oblast
 		}
 	}
@@ -4267,8 +4265,7 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,lon
 			if(/*stav==2 || */stav==3)canv->Font->Style = TFontStyles()<< fsBold;//došlo k vybrání elementu-tato část odstavena nebo přímo jeho textu
 			if(F->pom_temp!=NULL && F->pom_temp->n!=E->objekt_n)canv->Font->Color=m.clIntensive(clBlack,m.get_intensity());
 			//nastavení názvů pohonů
-			AnsiString T1="pohon nevybrán",T2="pohon nevybrán",Tpom="";
-			if(F->ls->Strings[274]!="")T1=T2=F->ls->Strings[274];
+			AnsiString Tpom="",T1=F->ls->Strings[274],T2=F->ls->Strings[274];//"pohon nevybrán"
 			if(E->pohon!=NULL)T1=E->pohon->name;
 			if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)T2=E->dalsi->pohon->name;
 			if(E->dalsi==NULL)
@@ -5237,7 +5234,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double
 			if(aktElement!=NULL)delka=m.delka(X1,Y1,X2,Y2)/aktElement->pohon->aRD/(1+59.0*(F->DKunit-2));//výpočet délky a šířky kabiny + případný převod m->mm
 			else delka=m.delka(X1,Y1,X2,Y2)/F->pom_temp->pohon->aRD/(1+59.0*(F->DKunit-2));//pro komory v POW
 		}
-		else {T="pohon nevybrán";if(F->ls->Strings[274]!="")T=F->ls->Strings[274];}
+		else T=F->ls->Strings[274];//"pohon nevybrán"
 		//if(aktElement!=NULL) delka=v.vzdalenost_od_predchoziho_elementu(aktElement)/F->pom_temp->pohon->aRD/(1+59.0*(F->DKunit-2));//výpočet vzdálenosti mezi elementy
 		//if(LO_kota)delka=m.round2double(F->vzdalenost_meziLO(aktElement,F->pom_temp->orientace),2)/F->pom_temp->pohon->aRD/(1+59.0*(F->DKunit-2));
 	}
