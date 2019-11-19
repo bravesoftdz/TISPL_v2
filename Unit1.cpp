@@ -2805,7 +2805,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 				kurzor(pan_move);Akce=PAN_MOVE;//přepne z PAN na PAN_MOVE
 				pan_create();//vytvoří výřez pro pan_move
 			}
-			DrawGrid_knihovna->SetFocus();//předávání událostí na form
+			if(Button!=mbRight)DrawGrid_knihovna->SetFocus();//předávání událostí na form
 		}
 		else
 		{
@@ -11689,7 +11689,10 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-//
+	Cvektory::TElement *E=pom_temp->elementy->predchozi;
+	Memo("E.: "+AnsiString(m.Rt90(E->geo.orientace+E->geo.rotacni_uhel)));
+	Memo("O1: "+AnsiString(d.v.OBJEKTY->dalsi->orientace));
+	Memo("O1 + 180: "+AnsiString(m.Rt90(d.v.OBJEKTY->dalsi->orientace+180)));
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -13671,17 +13674,16 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
   ChDir(ExtractFilePath(Application->ExeName));    //přesune k EXE
 	UnicodeString File_language= "TISPL.language"; //cache_dir+"MK.language" už nenačítám v tempu aplikace
 
-  /*if(!FileExists(File_language)) //pokud bych chtěl jazyk stahovat
-  {
-	try
-	{
-		URLDownloadToFile(0,AnsiString("http://www.omapy.cz/files/CSIS/"+File_language).c_str(),File_language.c_str(),0,0);//pokud nebyl nalezen jazykový slovník, zkusí stáhnout
-	}
-	catch(...){;}
-  }*/
+	////default plnění ls
 	ls=new TStringList;
-	for(unsigned short i=0;i<=450;i++)ls->Insert(i,"");//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
+	UnicodeString text="";
+	for(unsigned short i=0;i<=450;i++)
+	{
 
+		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
+	}
+
+  ////naplnění pro konkrétní jazykovou mutaci
 	if(FileExists(File_language))//znovu kontrola po případném stažení souboru
 	{
 		//načtení jazykového slovníku do string listu
@@ -13838,9 +13840,7 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
     Form_parametry_linky->scGPGlyphButton_katalog->Hint=ls->Strings[159];
     Form_parametry_linky->scGPTrackBar_uchyceni->Hint=ls->Strings[160];
     Form_parametry_linky->Button_save->Caption=ls->Strings[161];
-  	Form_parametry_linky->scHTMLLabel1->Caption=ls->Strings[162];
-//		PopUPmenu->scLabel_otocit_doleva->Caption=ls->Strings[173];
-//		PopUPmenu->scLabel_otocit_doprava->Caption=ls->Strings[174];
+		Form_parametry_linky->scHTMLLabel1->Caption=ls->Strings[162];
     PopUPmenu->scLabel_posun_obrysu->Caption=ls->Strings[175];
     PopUPmenu->scLabel_rychly_export->Caption=ls->Strings[176];
     PopUPmenu->scLabel_posouvat->Caption=ls->Strings[177];
