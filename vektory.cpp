@@ -561,7 +561,7 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 	AnsiString name,short_name;//dočasná konstrukce pro přiřazování spráných názvů objektům
 //	if(id==(unsigned)F->VyID){name=knihovna_objektu[id].name+" "+AnsiString(pocet_vyhybek);short_name=knihovna_objektu[id].short_name+AnsiString(pocet_vyhybek);}
 //	else if(id<=pocet_objektu_knihovny) {name=knihovna_objektu[id].name;short_name=knihovna_objektu[id].short_name;}else {name="Spojka "+AnsiString(pocet_vyhybek);short_name="S"+AnsiString(pocet_vyhybek);}
-	//name=knihovna_objektu[id].name;
+	name=knihovna_objektu[id].name;
 	switch(id)
 	{
 		case 0:name=F->ls->Strings[254];break;//"navěšování"
@@ -1524,7 +1524,12 @@ void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_o
 {
 	short oblast=0;
 	if(F->prichytavat_k_mrizce!=1)kontrolovat_oblast=false;
-	if(kontrolovat_oblast && Objekt->predchozi->n>0)oblast=oblast_objektu(Objekt->predchozi,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y);
+	if(kontrolovat_oblast && Objekt->predchozi->n>0)
+	{
+		oblast=oblast_objektu(Objekt->predchozi,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y);
+		if(oblast==2)oblast==0;//vyřezení oblasti za
+		X=F->akt_souradnice_kurzoru.x-Objekt->elementy->dalsi->geo.X1; Y=F->akt_souradnice_kurzoru.y-Objekt->elementy->dalsi->geo.Y1;
+	}
 	if(oblast==0)
 	{
 		////posun kabiny-polygonu
@@ -1533,7 +1538,7 @@ void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_o
 		Objekt->Xt+=X;
 		Objekt->Yt+=Y;
 		////posun tabulky pohonů
-		if(Objekt->Xp!=-500 && Objekt->Yp!=-500)
+		if(Objekt->Xp>0 && Objekt->Yp>0)
 		{
 			Objekt->Xp+=X;
 			Objekt->Yp+=Y;
@@ -1553,24 +1558,26 @@ void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_o
 	}
 	////přilepení objektu na předchozí objekt
 	if(F->prichytavat_k_mrizce==1 && oblast==1 && (Objekt->elementy->dalsi->geo.X1!=Objekt->predchozi->elementy->predchozi->geo.X4 || Objekt->elementy->dalsi->geo.Y1!=Objekt->predchozi->elementy->predchozi->geo.Y4))
+	{
 		posun_objekt(Objekt->predchozi->elementy->predchozi->geo.X4-Objekt->elementy->dalsi->geo.X1,Objekt->predchozi->elementy->predchozi->geo.Y4-Objekt->elementy->dalsi->geo.Y1,Objekt,false);
+	}
 	////změna pořadí před předchozí
 //	if(oblast==2)
 //		zmen_poradi_objektu(Objekt,Objekt->predchozi);
 	////přilepení na další objekt
-	oblast=0;
-	if(kontrolovat_oblast && Objekt->dalsi!=NULL)oblast=oblast_objektu(Objekt->dalsi,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y);
-	if(F->prichytavat_k_mrizce==1 && oblast==2 && (Objekt->dalsi->elementy->dalsi->geo.X1!=Objekt->elementy->predchozi->geo.X4 || Objekt->dalsi->elementy->dalsi->geo.Y1!=Objekt->elementy->predchozi->geo.Y4))
-		posun_objekt(Objekt->dalsi->elementy->dalsi->geo.X1-Objekt->elementy->predchozi->geo.X4,Objekt->dalsi->elementy->dalsi->geo.Y1-Objekt->elementy->predchozi->geo.Y4,Objekt,false);
+//	oblast=0;
+//	if(kontrolovat_oblast && Objekt->dalsi!=NULL)oblast=oblast_objektu(Objekt->dalsi,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y);
+//	if(F->prichytavat_k_mrizce==1 && (oblast==2 || oblast1==2) && (Objekt->dalsi->elementy->dalsi->geo.X1!=Objekt->elementy->predchozi->geo.X4 || Objekt->dalsi->elementy->dalsi->geo.Y1!=Objekt->elementy->predchozi->geo.Y4))
+//		posun_objekt(Objekt->dalsi->elementy->dalsi->geo.X1-Objekt->elementy->predchozi->geo.X4,Objekt->dalsi->elementy->dalsi->geo.Y1-Objekt->elementy->predchozi->geo.Y4,Objekt,false);
 	////změna pořadí za další
 //	if(oblast==1)
 //		zmen_poradi_objektu(Objekt,Objekt->dalsi);
 	////změna rotace
 	if(Objekt->n>1 && povolit_rotaci)
 	{
-		double azimut=0;
-		azimut=m.Rt90(m.azimut(Objekt->predchozi->elementy->predchozi->geo.X4,Objekt->predchozi->elementy->predchozi->geo.Y4,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y));//Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1));
-		rotuj_objekt(Objekt,Objekt->orientace-azimut);
+		double azimut=0,x=F->akt_souradnice_kurzoru.x,y=F->akt_souradnice_kurzoru.y;
+		azimut=m.Rt90(m.azimut(Objekt->predchozi->elementy->predchozi->geo.X4,Objekt->predchozi->elementy->predchozi->geo.Y4,x,y));//Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1));
+		if(m.Rt90(azimut+180)!=Objekt->predchozi->orientace)rotuj_objekt(Objekt,Objekt->orientace-azimut);
 	}
 }
 ////---------------------------------------------------------------------------

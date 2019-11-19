@@ -511,41 +511,44 @@ void Cvykresli::vykresli_pow_sprchu(TCanvas *canv,long X1,long X2,long Y1,long Y
 {
 	if(typ!=-2)set_pen(canv,color,sirka,PS_ENDCAP_SQUARE);//pokud se jedná o typ kurzor, tak se nezobrazuje
 	short krok=sirka*8;//pouze zneužití sirka
-	if(X1==X2)//pro vodorovnou situaci
+	if(krok>0)//ošetření pro malý zoom
 	{
-		long Xp=X1-velikost_komory_px;//Xp - X předchozí
-		if(orientace==270)Xp=X1+velikost_komory_px;
-		for(unsigned int i=krok;i<velikost_komory_px;i+=krok)
-		{				     //pouze zneužití krok                     //pouze zneužití krok a pmpp
-			if(orientace==90 || orientace==-90)//ošetření při nezadání parametru orientace
-			{
-				line(canv,Xp+krok,Y1,Xp+i,m.round((Y1+Y2)/2.0-pmpp));
-				line(canv,Xp+krok,Y2,Xp+i,m.round((Y1+Y2)/2.0+pmpp));
-			}
-			else
-			{
-				line(canv,Xp-krok,Y1,Xp-i,m.round((Y1+Y2)/2.0-pmpp));
-				line(canv,Xp-krok,Y2,Xp-i,m.round((Y1+Y2)/2.0+pmpp));
-      }
-		}
-	}
-	else//pro svislou
-	{
-		long Yp=Y1-velikost_komory_px;//Xp - X předchozí
-		if(orientace==0)Yp=Y1+velikost_komory_px;
-		for(unsigned int i=krok;i<velikost_komory_px;i+=krok)
-		{				       //pouze zneužití krok                //pouze zneužití krok a pmpp
-			if(orientace==0 || orientace==-90)//ošetření při nezadání parametru orientace
-			{
-				line(canv,X1,Yp-krok,m.round((X1+X2)/2.0-pmpp),Yp-i);
-				line(canv,X2,Yp-krok,m.round((X1+X2)/2.0+pmpp),Yp-i);
-			}
-			else
-			{
-				line(canv,X1,Yp+krok,m.round((X1+X2)/2.0-pmpp),Yp+i);
-				line(canv,X2,Yp+krok,m.round((X1+X2)/2.0+pmpp),Yp+i);
-      }
-		}
+  	if(X1==X2)//pro vodorovnou situaci
+  	{
+  		long Xp=X1-velikost_komory_px;//Xp - X předchozí
+  		if(orientace==270)Xp=X1+velikost_komory_px;
+  		for(unsigned int i=krok;i<velikost_komory_px;i+=krok)
+  		{				     //pouze zneužití krok                     //pouze zneužití krok a pmpp
+  			if(orientace==90 || orientace==-90)//ošetření při nezadání parametru orientace
+  			{
+  				line(canv,Xp+krok,Y1,Xp+i,m.round((Y1+Y2)/2.0-pmpp));
+  				line(canv,Xp+krok,Y2,Xp+i,m.round((Y1+Y2)/2.0+pmpp));
+  			}
+  			else
+  			{
+  				line(canv,Xp-krok,Y1,Xp-i,m.round((Y1+Y2)/2.0-pmpp));
+  				line(canv,Xp-krok,Y2,Xp-i,m.round((Y1+Y2)/2.0+pmpp));
+  			}
+  		}
+  	}
+  	else//pro svislou
+  	{
+  		long Yp=Y1-velikost_komory_px;//Xp - X předchozí
+  		if(orientace==0)Yp=Y1+velikost_komory_px;
+  		for(unsigned int i=krok;i<velikost_komory_px;i+=krok)
+  		{				       //pouze zneužití krok                //pouze zneužití krok a pmpp
+  			if(orientace==0 || orientace==-90)//ošetření při nezadání parametru orientace
+  			{
+  				line(canv,X1,Yp-krok,m.round((X1+X2)/2.0-pmpp),Yp-i);
+  				line(canv,X2,Yp-krok,m.round((X1+X2)/2.0+pmpp),Yp-i);
+  			}
+  			else
+  			{
+  				line(canv,X1,Yp+krok,m.round((X1+X2)/2.0-pmpp),Yp+i);
+  				line(canv,X2,Yp+krok,m.round((X1+X2)/2.0+pmpp),Yp+i);
+  			}
+  		}
+  	}
 	}
 }
 //---------------------------------------------------------------------------

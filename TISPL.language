@@ -312,7 +312,7 @@ Adding elements is only possible after selecting the drive.;X;Pøidávání prvkù je
 Unable to delete.;X;Nelze smazat.
 Click the left mouse button to add a point.;X;Klinutím na levé tlaèítko myši pøidejte bod.
 Click and drag the mouse to move the entire object.;X;Kliknutím a tažením myši posunujete celý objekt.
-A length buffer is required for the current number of positions;X;Pro aktuální poèet pozic je tøeba buffer o délce
+A length buffer is required for the set up wagon;X;Pro nastavovaný vozík je potøeba buffer o délce
 Cannot delete transfer point.;X;Nelze odstranit pøedávací místo.
 An update to TISPL is available. Do you want to download it?;X;Je k dispozici aktualizace TISPLu. Chcete ji stáhnout?
 After the download is complete, overwrite the current EXE file.;X;Po dokonèení staženým souborem pøepište souèasný EXE soubor.
