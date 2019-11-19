@@ -5441,9 +5441,9 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 			////////////RT
 			if(vrat_druh_elementu(E)==0)//pouze pro S&G
 			{
-				if(E->RT<0)vloz_zpravu(X,Y,-1,406,E);//včetně stopky
-				if(E->RT==0 && E->eID!=0)vloz_zpravu(X,Y,1,407,E);//mimo stopky
-      }
+				if(E->RT<0)vloz_zpravu(X,Y,-1,406,E);
+				if(E->RT==0)vloz_zpravu(X,Y,1,407,E);
+			}
 
 			////posun na další elementy
 			E=E->dalsi;
