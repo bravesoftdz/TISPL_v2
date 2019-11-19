@@ -171,8 +171,8 @@ view of the Jig at loading up ;X;pohled na jig pøi navìšování
   Delete;X;  Smazat
   Delete section no.;X;  Smazat sekci è.
   Delete point no.;X;  Smazat bod è.
-  Rotate left;X;  Otoèit doleva
-  Rotate right;X;  Otoèit doprava
+  Rotate object left;X;  Otoèit objekt doleva
+  Rotate object right;X;  Otoèit objekt doprava
   Offset contour;X;  Posun obrysu
   Fast export …;X;  Rychlý export…
   Pan;X;  Posouvat
@@ -402,3 +402,8 @@ Wagon: ;X;Vozík:
 The rotation does not correspond to the JIGs orientation at the beginning of the line!;X;Rotace neodpovídá orientaci JIGù na zaèátku linky!
 Attention, JIGs overlap!;X;Pozor, pøekrytí JIGù!
 Enter order parameters or choose cancellation.;X;Zadejte parametry zakázek nebo zvolte storno.
+  Rotate name left;X;  Otoèit název doleva
+  Rotate name right;X;  Otoèit název doprava
+There is not enough time to cross, negative reserve time!;X;Nestíhá se pøejezd, záporná èasové rezerva!
+Zero reserve time.;X;Nulová èasová rezerva.
+Insert as new section? No - change to another section type.;X;Vložit jako novou sekci? Ne - zmìnit na jiný typ sekce.

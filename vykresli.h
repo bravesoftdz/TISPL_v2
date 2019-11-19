@@ -62,7 +62,7 @@ class Cvykresli
 	void vykresli_layout(TCanvas *canv);//zajišuje vykreslení layout
 	unsigned int vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y,double Poffset=0,bool animace=false);////metoda pouívaná ve starém náhledu objektu, mono odstranit///zajistí vykreslení náhledu objektu, XY -umístìní L zaèátek (støed dopravníku) objektu v metrech, Poffset - pozièní poloha, vıchozí poloha prvního vozíku/pozice v objektu (a vùèi tomuto objektu),mùe slouit na animaci èi návaznost v pøípadì layoutu, za zmínìní stojí lokální promìnná této metody KR, co je kalibrace øetìzu vùèi podvozku napø. 0 - støed, -DP/2 - zaèátek, DP/2 - konec, èi libovolnı v m od zaèátku podvozku
 	unsigned int vykresli_pozice(TCanvas *canv, int i, TPointD OD, TPointD DO,double delka, double delkaV,double sirkaV,double delkaP,double mezera,double akt_pozice=0);//zajišuje vykreslení pozic v layoutu + pøíprava konstrukce kdy nebudu chtít vykreslovat objekt vodorovnì, pouze bude nutné zajistit ještì rotaci pozic a podvozkù
-	void vykresli_pozice(TCanvas *canv,Cvektory::TElement *E);//vykresli pozici na elementech
+	void vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E);//vykresli pozic a obalovıch zón
 	void vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y,double Poffset=0,bool animace=false);///zajistí vykreslení øetìzz, XY -umístìní L zaèátek (støed dopravníku) objektu v metrech, Poffset - pozièní poloha, vıchozí poloha prvního vozíku/pozice v objektu (a vùèi tomuto objektu),mùe slouit na animaci èi návaznost v pøípadì layoutu, za zmínìní stojí lokální promìnná této metody KR, co je kalibrace øetìzu vùèi podvozku napø. 0 - støed, -DP/2 - zaèátek, DP/2 - konec, èi libovolnı v m od zaèátku podvozku
 	void vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O);
 	void vykresli_retez(TCanvas *canv,Cvektory::TRetez *Retez);
@@ -91,7 +91,6 @@ class Cvykresli
 	void vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popisek="spojnice",short stav=0);
 	void vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popisek="komora",short typ=0,short stav=0,double orientace=90);//typ: -2 kurzor se sprchy, -1 kurzor bez sprchy, 0 ikona bez sprchy, 1 ikona se sprchou, stav: -1 disabled, 0 normál
 	void vypis_zpravy(TCanvas *canv);//metoda vypíše zprávy ze seznamu zpráv a zároveò uloí jejich citelné oblasti
-	UnicodeString getVID(long VID);//z èísla VIDu vrátí jeho textovı popis
 	void nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv,unsigned short typ);//short typ = zda se jedná o zadavání name==1 nebo short_name==2 nebo nic==0
 	void linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,int Width,TColor Color=clBlack,TPenStyle PenStyle=psSolid,TPenMode PenMode=pmCopy);
 	void line(TCanvas *canv,long X1,long Y1,long X2,long Y2);
@@ -138,7 +137,7 @@ class Cvykresli
 	TPointD Rxy(Cvektory::TElement *Element);//vrátí referenèní logické (v metrech) souøadnice  robota (tzn. bod v místì trysky, tj. bod v místì umístìní ve schématu), pøevede dle aktuální rotace symbolu a uchopovacích (skuteènıch) souøadnic robota, kontroluje, zda se jedná skuteènì o Robota
 
 	//globální public promìnné
-	TColor clStenaKabiny,clStenaHaly,clError,clWarning;
+	TColor clStenaKabiny,clStenaHaly,clPasiv,clError,clWarning;
 	short O_width,O_height,V_width;//logické parametry, nezoomovat
 	float Robot_sirka_zakladny;
 	float Robot_delka_zakladny;
@@ -162,8 +161,8 @@ class Cvykresli
 	short predchozi_oblast;
 	Cvektory::TGeometrie geoTemp;//pomocná struktura slouicí na uchování (k pozdìjšímu uloení do geometrickıch elementù) aktuálnì vracenıch hodnot ze smart kurzoru
 	short pasivni_vektory_intenzita;//intenzita pasivních vektorù pøi editaci objektu
-	bool zobrazit_cele_zpravy;
-	long zprava_highlight;//ztuèní danou zpravou
+	long zobrazit_celou_zpravu;//promìnná urèující, která zpráva bude zobrazena
+	long zprava_highlight;//pomocná promìnná slouící na ztuènìní dané zpravy
 
 	protected:
 

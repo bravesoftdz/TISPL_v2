@@ -567,6 +567,7 @@ void TFormX::zmena_aRD (Cvektory::TElement *mimo_element)
 		}
 		if(F->Akce==F->NIC)validace_aRD();//validace pouze v kontinuálním režimu kabiny
 	}
+	else if(F->Akce==F->NIC)validace_aRD(true);//kontrola pouze zda se rychlost nachází v rozmezí
 	//propoèty v tabulkách elementù
 	aktualizace_tab_elementu(mimo_element);
 }
@@ -945,7 +946,7 @@ void TFormX::odstranit_korelaci(bool predat_focus)
 }
 //---------------------------------------------------------------------------
 //validace rychlosti pøi její zmìnì
-void TFormX::validace_aRD()
+void TFormX::validace_aRD(bool pouze_rozmezi)
 {
 	AnsiString jednotky;
 	if(F->aRDunit==0)jednotky="[m/s]";
@@ -956,8 +957,16 @@ void TFormX::validace_aRD()
 	//kontrola zda je zadaná hodnota v rozmezí
 	if(F->m.between(F->pom_temp->pohon->aRD,F->pom_temp->pohon->rychlost_od,F->pom_temp->pohon->rychlost_do)) mimo_rozmezi=false;
 	else mimo_rozmezi=true;
+	//zadaná rychlost je mimo rozsah
+	if(mimo_rozmezi && F->pom_temp->pohon->aRD > 0)
+	{
+		if(F->PmG->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
+		if(F->ls->Strings[220]!="")F->PmG->ShowNote(F->ls->Strings[220],F->d.clError,14);else F->PmG->ShowNote("Rychlost neodpovídá rozmezí!",F->d.clError,14);
+		povolit_zakazat_editaci(false);
+	}
+	if(!mimo_rozmezi && F->PmG->Note.Text!=""){F->PmG->ShowNote("",F->d.clError,14);povolit_zakazat_editaci(true);}
 	// nutné ošetøení pro období zadávání/psaní
-	if (F->pom_temp->pohon->aRD > 0)
+	if (F->pom_temp->pohon->aRD > 0 && !pouze_rozmezi)
 	{
 		//výpoèet doporuèené rychosti
 		if(F->PmG->Rows[7].Visible)//v kabinì jsou 2 rùzné rotace
@@ -969,28 +978,22 @@ void TFormX::validace_aRD()
 		}
 		else
 			dopRD=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,F->pom_temp->rotace,F->pom_temp->pohon->roztec,F->d.v.PP.TT,F->pom_temp->pohon->aRD);
-		//zadaná rychlost je mimo rozsah
-		if(mimo_rozmezi)
-		{
-			if(F->PmG->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
-			if(F->ls->Strings[220]!="")F->PmG->ShowNote(F->ls->Strings[220],clRed,14);else F->PmG->ShowNote("Rychlost neodpovídá rozmezí!",clRed,14);
-		}
 		//je zvolen pohon, jeho aktuální rychlost se nerovná doporuèené
 		if(Combo->ItemIndex!=0 && F->pom_temp->pohon->roztec>0 && F->ms.MyToDouble(dopRD)!= F->ms.MyToDouble(F->pom_temp->pohon->aRD) && mimo_rozmezi==false)
 		{
 			if(F->PmG->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
 			AnsiString t="Zadejte doporuèenou rychlost pohonu:";
 			if(F->ls->Strings[221]!="")t=F->ls->Strings[221];
-			F->PmG->ShowNote(t+" <a>"+AnsiString(F->m.round2double(F->outaRD(dopRD),3))+"</a> "+jednotky,clRed,14);
+			F->PmG->ShowNote(t+" <a>"+AnsiString(F->m.round2double(F->outaRD(dopRD),3))+"</a> "+jednotky,F->d.clError,14);
 		}
 		//vše je vpoøádku
 		if (F->ms.MyToDouble(dopRD)== F->ms.MyToDouble(F->pom_temp->pohon->aRD) && mimo_rozmezi==false)
 		{
-      povolit_zakazat_editaci(true);
-			F->PmG->ShowNote("",clRed,14);
+			povolit_zakazat_editaci(true);
+			F->PmG->ShowNote("",F->d.clError,14);
 		}
 	}
-	else {if(F->ls->Strings[222]!="")F->PmG->ShowNote(F->ls->Strings[222],clRed,14);else F->PmG->ShowNote("Neplatná hodnota rychlosti pohonu!",clRed,14);}
+	else if(!pouze_rozmezi){if(F->ls->Strings[222]!="")F->PmG->ShowNote(F->ls->Strings[222],F->d.clError,14);else F->PmG->ShowNote("Neplatná hodnota rychlosti pohonu!",F->d.clError,14);}
 	Combo=NULL;delete Combo;
 }
 //---------------------------------------------------------------------------
@@ -1028,7 +1031,7 @@ void TFormX::naplneni_dopRD()
 	F->PmG->Cells[1][rychlost].Text=F->outaRD(dopRD);
 	zmena_aRD();
 	//odstranit_korelaci();//pro jistotu zùstavala aktivní po kliku na link
-	F->PmG->ShowNote("",clRed,14);
+	F->PmG->ShowNote("",F->d.clError,14);
 	povolit_zakazat_editaci(true);
 	F->Akce=F->BLOK;
 	F->PmG->Refresh();//došlo ke zmìnì hodnot v tabulce

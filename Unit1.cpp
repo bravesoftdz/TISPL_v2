@@ -133,6 +133,8 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	Screen->Cursors[17]=HC;
 	HC=LoadCursor(HInstance,L"POSUN_IND_PD");
 	Screen->Cursors[18]=HC;
+	HC=LoadCursor(HInstance,L"EDITACE_POSUN");
+	Screen->Cursors[19]=HC;
 
 	//Načtení z INI
 	AnsiString T=readINI("nastaveni_nahled", "cas");
@@ -2679,8 +2681,8 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						if(JID==0&&pom_komora==NULL&&pom_element!=NULL){Akce=MOVE_ELEMENT;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;mazani=true;pom_element_temp=pom_element;puv_souradnice.x=pom_element->X;puv_souradnice.y=pom_element->Y;}//ELEMENT posun
 						if(1000<=JID && JID<2000){Akce=MOVE_TABLE;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;pom_element->mGrid->Highlight;refresh_mGrid=false;d.nabuffrovat_mGridy();}//TABULKA posun
 						if(100<JID && JID<900){redesign_element();}//nultý sloupec tabulky, libovolný řádek, přepnutí jednotek
-						if(JID==-6) {DrawGrid_knihovna->SetFocus();stav_kurzoru=false;editace_textu=true;index_kurzoru=-6;nazev_puvodni=pom_temp->name;TimerKurzor->Enabled=true;}//editace názvu
-						if(JID==-7) {Akce=MOVE_TEXT;;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;nahled_ulozit(true);}//posun názvu
+						//if(JID==-6) {DrawGrid_knihovna->SetFocus();stav_kurzoru=false;editace_textu=true;index_kurzoru=-6;nazev_puvodni=pom_temp->name;TimerKurzor->Enabled=true;}//editace názvu
+						if(JID==-7 || JID==-6) {Akce=MOVE_TEXT;;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;nahled_ulozit(true);}//posun názvu
 						if(JID==-10)zmenJednotekKot();//přepnutí jednotek všech kót
 						if(JID<=-11&&JID>=-101&&pom_temp->id!=3){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;if(JID!=-101)editovany_text=m.round2double(d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp),2);else editovany_text=m.round2double(vzdalenost_meziLO(pom_element,pom_temp->orientace),2);if(DKunit==2||DKunit==3)editovany_text=editovany_text/pom_temp->pohon->aRD;editovany_text=outDK(ms.MyToDouble(editovany_text));}//editace kót elementu
 						if(JID<=-11&&JID>=-101&&pom_temp->id==3){if(d.v.PtInKota_komory(pom_temp,X,Y)==-1){Akce=ROZMER_KOMORA;pom_komora_temp=pom_komora;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}else {DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_komora_temp=pom_komora;editovany_text=m.round2double(outDK(pom_komora->velikost),2);}}
@@ -2695,7 +2697,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						if(JID==-4){Akce=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;nahled_ulozit(true);}//změna offsetu kóty
 						if(JID==-5){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_bod_temp=pom_bod;if(pom_bod_temp->n!=1)editovany_text=m.round2double(m.delka(pom_bod_temp->predchozi->X,pom_bod_temp->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);else editovany_text=m.round2double(m.delka(pom_temp->body->predchozi->X,pom_temp->body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);if(DKunit==2||DKunit==3)editovany_text=editovany_text/pom_temp->pohon->aRD;editovany_text=outDK(ms.MyToDouble(editovany_text));nahled_ulozit(true);}//editace kót kabiny
 						if(JID==-9 || JID==4){Akce=MOVE_TABLE;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//posun tabulky pohonu
-						if(JID==-102){d.zobrazit_cele_zpravy=!d.zobrazit_cele_zpravy;REFRESH(false);}//rozbalení nebo skrytí zpráv
+						if(JID==-102){if(d.zprava_highlight!=d.zobrazit_celou_zpravu)d.zobrazit_celou_zpravu=d.zprava_highlight;else d.zobrazit_celou_zpravu=0;REFRESH(false);}//rozbalení nebo skrytí zpráv
 						if(JID==-201){pom_temp->pohon=element_temp->pohon;if(pom_temp->pohon!=NULL)prirazeni_pohonu_tab_pohon(pom_temp->pohon->n);else {prirazeni_pohonu_tab_pohon(0);PmG->getCombo(0,0)->DropDown();}if(!pom_temp->zobrazit_mGrid)scGPButton_viditelnostmGridClick(Sender);} //kliknutí na jeden z pohonů na předávacím místě
 						if(JID==-202){if(element_temp->dalsi!=NULL){pom_temp->pohon=element_temp->dalsi->pohon;if(pom_temp->pohon!=NULL)prirazeni_pohonu_tab_pohon(pom_temp->pohon->n);else {prirazeni_pohonu_tab_pohon(0);PmG->getCombo(0,0)->DropDown();}if(!pom_temp->zobrazit_mGrid)scGPButton_viditelnostmGridClick(Sender);}else {pom_vyhybka=pom->dalsi;zmena_editovaneho_objektu();}}
 					}
@@ -2705,7 +2707,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						{
 							if(JID==3&&!zamek_layoutu){Akce=MOVE;kurzor(posun_l);/*posun_objektu=true;*/minule_souradnice_kurzoru=TPoint(X,Y);}
 							else if(JID==-1&&Akce==NIC){Akce=PAN;pan_non_locked=true;}//přímo dovolení PAN pokud se neposová objekt = Rosťova prosba
-              if(JID==-102){d.zobrazit_cele_zpravy=!d.zobrazit_cele_zpravy;REFRESH(false);}//rozbalení nebo skrytí zpráv
+							if(JID==-102){if(d.zprava_highlight!=d.zobrazit_celou_zpravu)d.zobrazit_celou_zpravu=d.zprava_highlight;else d.zobrazit_celou_zpravu=0;REFRESH(false);}//rozbalení nebo skrytí zpráv
 							if(JID==-2){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_bod_temp=pom_bod;if(pom_bod_temp->n!=1)editovany_text=m.round2double(m.delka(pom_bod_temp->predchozi->X,pom_bod_temp->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);else editovany_text=m.round2double(m.delka(d.v.HALA.body->predchozi->X,d.v.HALA.body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);editovany_text=outDK(ms.MyToDouble(editovany_text));}//převod na mm
 							if(JID==0){Akce=MOVE_BOD;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;ortogonalizace_stav=false;}//posun jednoho bodu
 							if(JID==1||JID==4){Akce=MOVE_USECKA;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//posun úsečky
@@ -2797,12 +2799,13 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 			}
 			else//posun obrazu stiskem kolečka
 			{
+				if(PmG!=NULL && pom_temp!=NULL && pom_temp->zobrazit_mGrid)PmG->getCombo(0,0)->CloseUp(false);//v editaci je nutné zavírat combo.. nelze rozlišit zda je otevřené
 				vychozi_souradnice_kurzoru=TPoint(X,Y);
 				pan_non_locked=true;
 				kurzor(pan_move);Akce=PAN_MOVE;//přepne z PAN na PAN_MOVE
 				pan_create();//vytvoří výřez pro pan_move
 			}
-			if(Button==mbLeft)DrawGrid_knihovna->SetFocus();//předávání událostí na form
+			if(Button!=mbRight)DrawGrid_knihovna->SetFocus();//předávání událostí na form
 		}
 		else
 		{
@@ -3521,7 +3524,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				refresh_mGrid=true;
 				break;
 			}
-			case MOVE_TEXT:
+			case MOVE_TEXT:if(vychozi_souradnice_kurzoru.x==minule_souradnice_kurzoru.x && vychozi_souradnice_kurzoru.y==minule_souradnice_kurzoru.y){DrawGrid_knihovna->SetFocus();stav_kurzoru=false;editace_textu=true;index_kurzoru=-6;nazev_puvodni=pom_temp->name;TimerKurzor->Enabled=true;}Akce=NIC;kurzor(standard);break;
 			case MOVE_BOD:
 			case MOVE_USECKA:Akce=NIC;kurzor(standard);break;
 			case MOVE_HALA:Akce=NIC;kurzor(standard);REFRESH();break;//refresh z důvodu znovu zapnutí měřítka a gridu
@@ -3596,7 +3599,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 //JID=-4;//oblast kót objektu									Původní: svislá pravá hrana objektu
 //JID=-5;//hodnoty kót objektu								Původní: vodorovná dolní hrana objektu
 //JID=-6;//název objektu
-//JID=-7;//posunovací kříž nadpisu						Původní: zkratka objektu
+//JID=-7; NIC!!
 //JID=-8;//prázdné														Původní: vodorovná kóta kabiny
 //JID=-9;uchop tabulky pohonu									Původní: svislá kóta kabiny
 //JID=-10;//jednotky kóty
@@ -3617,13 +3620,15 @@ void TForm1::getJobID(int X, int Y)
 {
 	log(__func__);//logování
 	JID=-1;//výchozí stav, nic nenalezeno
-	if(MOD==NAHLED)
+	pom_element=NULL;
+	pom_komora=NULL;
+	pom_bod=NULL;
+	d.zprava_highlight=0;
+	if(MOD==NAHLED && !pom_temp->uzamknout_nahled)
 	{
 		//nejdříve se zkouší hledat souřadnice myši v TABULCE POHONů
-  	if(PmG!=NULL && pom_temp->uzamknout_nahled==false && pom_temp->zobrazit_mGrid)
+		if(PmG!=NULL && pom_temp->zobrazit_mGrid)
 		{
-			pom_element=NULL;
-			pom_komora=NULL;
   		int IdxRow=PmG->GetIdxRow(X,Y);
 			//if(IdxRow==0)JID=4;//hlavička NEVYUŽITO, je tam COMBO, zachováno jako rezerva
 			if(IdxRow>0)//nějaký z řádků mimo nultého tj. hlavičky, nelze použít else, protože IdxRow -1 bude také možný výsledek
@@ -3666,7 +3671,8 @@ void TForm1::getJobID(int X, int Y)
   		}
   		else//tabulka nenalezena, takže zkouší najít ELEMENT
 			{
-				if(d.v.PtInZpravy())JID=-102;//hledání citelné oblasti zprávy
+				d.zprava_highlight=d.v.PtInZpravy();
+				if(d.zprava_highlight>0)JID=-102;//hledání citelné oblasti zprávy
 				else
 				{
 			  	pom_element=NULL;
@@ -3687,8 +3693,7 @@ void TForm1::getJobID(int X, int Y)
 			  			else
 			  			{ //testování zda se nejedná o NÁZEV či ZKRATKA objektu, ZATÍM NEREFLEKTUJE ORIENTACI NÁHLEDU
 			  				d.nastavit_text_popisu_objektu_v_nahledu(Canvas,1);AnsiString Tn=F->pom_temp->name.UpperCase();short Wn=Canvas->TextWidth(Tn);//název objektu - nastavení
-			  				if(najdi_nazev_obj(X,Y,pom_temp))JID=-6;//název objektu
-			  				if(najdi_nazev_obj(X,Y,pom_temp,1))JID=-7;
+								if(najdi_nazev_obj(X,Y,pom_temp))JID=-6;//název objektu
 			  				if(JID==-1)//hledání předávacího místa, pohon 1 nebo pohon 2
 			  				{
 			  					short pohon=najdi_popisky_PM(X,Y,pom_temp);
@@ -3755,7 +3760,8 @@ void TForm1::getJobID(int X, int Y)
 		//2; oblast kóty bodu (přímka [A,B] uložena v bodě B)
 		//3; oblas objektu
 		//4; hrana objektu
-		if(d.v.PtInZpravy())JID=-102;//hledání citelné oblasti zprávy
+		d.zprava_highlight=d.v.PtInZpravy();
+		if(d.zprava_highlight>0)JID=-102;//hledání citelné oblasti zprávy
 		else if(d.v.OBJEKTY->dalsi!=NULL&&Akce==NIC)
 		{
 			pom=NULL;pom_bod=NULL;
@@ -3784,6 +3790,11 @@ void TForm1::getJobID(int X, int Y)
 			}
 		}
 	}
+	if((zamek_layoutu || pom_temp!=NULL && pom_temp->uzamknout_nahled))//hledání citelné oblasti zprávy, vždy vyhledávat(i při zamčeném layoutu či editaci)!!
+	{
+		d.zprava_highlight=d.v.PtInZpravy();
+		if(d.zprava_highlight>0)JID=-102;
+  }
 	//pouze na test zatížení Memo3->Visible=true;Memo3->Lines->Add(s_mazat++);
 }
 //---------------------------------------------------------------------------
@@ -3825,7 +3836,8 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
   		if(JID==1000){pom_element->mGrid->CheckLink(X,Y);refresh_mGrid=true;}//pouze pro přechod název hlavička, aby název nezůstal tučně - aktivace dodáním pouze aktuálních souřadnic
   		if(1000<=JID && JID<2000){kurzor(posun_ind);pom_element->mGrid->Highlight=true;pom_element->mGrid->MouseMove(X,Y);refresh_mGrid=true;}//indikace posunutí TABULKY, jeji highlignutí probíhá výše a případné volání HINTu
 			if(100<JID && JID<1000){kurzor(zmena_j);pom_element->mGrid->CheckLink(X,Y);refresh_mGrid=true;}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ  - aktivace dodáním pouze aktuálních souřadnic
-			if((JID==-6||JID<=-11&&JID>=-101)&&!editace_textu){kurzor(edit_text);refresh_mGrid=false;}//kurzor pro editaci textu
+      if(JID==-6)kurzor(editace_posun);
+			if((JID<=-11&&JID>=-101)&&!editace_textu){kurzor(edit_text);refresh_mGrid=false;}//kurzor pro editaci textu
 			if(JID<=-11&&JID>=-101&&d.v.PtInKota_komory(pom_temp,X,Y)==-1){if(pom_temp->orientace==90||pom_temp->orientace==270)kurzor(zmena_d_x);else kurzor(zmena_d_y);}//změna rozměru komory
 			//použit závěrečný REFRESH if(-9<=JID && JID<=-6){REFRESH();}//refresh při akci s nadpisem či kótou kabiny
 			if(JID==-10){/*REFRESH();*/kurzor(zmena_j);}//indikace možnosti změnit jednotky na kótách
@@ -3957,11 +3969,21 @@ void TForm1::onPopUP(int X, int Y)
 	close_all_items_popUPmenu();
 	PopUPmenu->Item_zobrazit_parametry->FillColor=(TColor)RGB(240,240,240);//workaround, nutnost takto vytáhnout, jinak se položka zvýrazňuje, musí být tady
 	//dle statusu Architek x Klient resp. Návrh x Ověrování
-	AnsiString N="  Editovat";if(STATUS==OVEROVANI)N="  Zobrazit";
+	AnsiString N="  Editovat",otocit_doleva="  Otočit objekt doleva",otocit_doprava="  Otočit objekt doprava";
+	if(STATUS==OVEROVANI)N="  Zobrazit";
 	if(ls->Strings[164]!="")N=ls->Strings[164];if(STATUS==OVEROVANI && ls->Strings[163]!="")N=ls->Strings[163];
 	AnsiString smazat="  Smazat",kopirovat="  Kopirovat";
 	if(ls->Strings[170]!="")smazat=ls->Strings[170];
 	if(ls->Strings[169]!="")kopirovat=ls->Strings[169];
+	//rotace názvu
+	if(ls->Strings[404]!="" && pom_temp!=NULL)otocit_doleva=ls->Strings[404];
+	if(ls->Strings[405]!="" && pom_temp!=NULL)otocit_doprava=ls->Strings[405];
+  //rotace názvu
+	if(ls->Strings[173]!="" && pom_temp==NULL)otocit_doleva=ls->Strings[173];
+	if(ls->Strings[174]!="" && pom_temp==NULL)otocit_doprava=ls->Strings[174];  PopUPmenu->Item_otocit_doleva->FillColor=(TColor)RGB(240,240,240);	PopUPmenu->Item_otocit_doleva->Caption=otocit_doleva;
+  //caption se musí přepsat takto !!
+	PopUPmenu->scLabel_otocit_doleva->Caption=otocit_doleva;
+	PopUPmenu->scLabel_otocit_doprava->Caption=otocit_doprava;
 	//dle modu zobrazí položky, pozor záleží zvláštně!!! na pořadí položek
 	switch(MOD)
 	{
@@ -4050,7 +4072,11 @@ void TForm1::onPopUP(int X, int Y)
 			//posun obrysu
 			if(pom_temp->id!=3 && (pom_bod!=NULL || (pom_vyhybka!=NULL && pom_vyhybka->n==pom_temp->n))){PopUPmenu->Item_posun_obrysu->Visible=true;PopUPmenu->Panel_UP->Height+=34;}
 			//rotace textu kabiny
-			if(JID==-6){PopUPmenu->Item_otocit_doleva->Visible=true;PopUPmenu->Panel_UP->Height+=34;PopUPmenu->Item_otocit_doprava->Visible=true;PopUPmenu->Panel_UP->Height+=34;}
+			if(JID==-6)
+			{
+				PopUPmenu->Item_otocit_doleva->Visible=true;PopUPmenu->Panel_UP->Height+=34;
+				PopUPmenu->Item_otocit_doprava->Visible=true;PopUPmenu->Panel_UP->Height+=34;
+			}
       //pokud není zobrazeno tlačítko editace náhledu zobrazí se
 			if(!PopUPmenu->Item_nastavit_parametry->Visible){PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;}
 			////
@@ -4946,42 +4972,53 @@ void TForm1::add_element (int X, int Y)
 void TForm1::add_komoru()
 {                 //stejné komory přidat jejich šířku jinak 2.5
 	log(__func__);//logování
-	if(element_id==-1)element_id=0;else element_id=1;//změna typu (předtím typ pro kurzory, nově typ do dat)
-	//určení velikosti komory
-	Cvektory::TKomora *k=pom_temp->komora->dalsi;
-	double velikost=k->velikost;
-	while(k!=NULL)//procházení přes všechny komory, suma jejich velikostí
+	AnsiString text="Vložit jako novou sekci? Ne - změnit na jiný typ sekce.";
+	if(ls->Strings[408]!="")text=ls->Strings[408];
+	Cvektory::TKomora *pred=d.v.najdi_komoru(pom_temp);
+	if(element_id==-1)element_id=0;else element_id=1;//převedení eid na typ kabiny (1=spracha, 0=okap)
+	if(pred!=NULL && pred->typ!=element_id && mrNo==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text,"",MB_YESNO))//dotaz na změnu typu komory
 	{
-		if(velikost!=k->velikost){velikost=-100;break;}
-		k=k->dalsi;
+		if(pred->typ==0)pred->typ=1;
+		else pred->typ=0;
 	}
-	k=NULL;
-	if(velikost==-100)velikost=2.5;//pokud nejsou stejné vložím defaul rozměr
-	//vložení komory
-	d.v.vloz_komoru(pom_temp,velikost,d.v.najdi_komoru(pom_temp),element_id);//vloží novou komoru, mezi ostatní či jako poslední
-	//změna rozmerů kabiny
-	k=pom_temp->komora->dalsi;
-	double celkem=0;
-	while(k!=NULL)//procházení přes všechny komory, suma jejich velikostí
+	else//přidání nové komory
 	{
-		celkem+=k->velikost;
-		k=k->dalsi;
+  	//určení velikosti komory
+  	Cvektory::TKomora *k=pom_temp->komora->dalsi;
+  	double velikost=k->velikost;
+  	while(k!=NULL)//procházení přes všechny komory, suma jejich velikostí
+  	{
+  		if(velikost!=k->velikost){velikost=-100;break;}
+  		k=k->dalsi;
+  	}
+  	k=NULL;
+  	if(velikost==-100)velikost=2.5;//pokud nejsou stejné vložím defaul rozměr
+  	//vložení komory
+  	d.v.vloz_komoru(pom_temp,velikost,d.v.najdi_komoru(pom_temp),element_id);//vloží novou komoru, mezi ostatní či jako poslední
+  	//změna rozmerů kabiny
+  	k=pom_temp->komora->dalsi;
+  	double celkem=0;
+  	while(k!=NULL)//procházení přes všechny komory, suma jejich velikostí
+  	{
+  		celkem+=k->velikost;
+  		k=k->dalsi;
+  	}
+  	k=NULL;delete k;
+  	//změna rozměru kabiny
+  	double rozmer_kabiny=pom_temp->elementy->dalsi->geo.delka,posun_x=0,posun_y=0;
+  	switch((int)pom_temp->orientace)
+  	{
+  		case 0:posun_y=celkem-rozmer_kabiny;break;
+  		case 90:posun_x=celkem-rozmer_kabiny;break;
+  		case 180:posun_y=-celkem+rozmer_kabiny;break;
+  		case 270:posun_x=-celkem+rozmer_kabiny;break;
+  	}
+  	d.v.posun_hranu(posun_x,posun_y,pom_temp->body->dalsi->dalsi,pom_temp->body->dalsi->dalsi->dalsi);
+  	//rozšíření pohonu
+  	pom_temp->elementy->dalsi->X+=posun_x;
+  	pom_temp->elementy->dalsi->Y+=posun_y;
+  	d.v.vloz_G_element(pom_temp->elementy->dalsi,0,pom_temp->elementy->dalsi->geo.X1,pom_temp->elementy->dalsi->geo.Y1,0,0,0,0,pom_temp->elementy->dalsi->X,pom_temp->elementy->dalsi->Y,pom_temp->elementy->dalsi->geo.orientace);
 	}
-	k=NULL;delete k;
-	//změna rozměru kabiny
-	double rozmer_kabiny=pom_temp->elementy->dalsi->geo.delka,posun_x=0,posun_y=0;
-	switch((int)pom_temp->orientace)
-	{
-		case 0:posun_y=celkem-rozmer_kabiny;break;
-		case 90:posun_x=celkem-rozmer_kabiny;break;
-		case 180:posun_y=-celkem+rozmer_kabiny;break;
-		case 270:posun_x=-celkem+rozmer_kabiny;break;
-	}
-	d.v.posun_hranu(posun_x,posun_y,pom_temp->body->dalsi->dalsi,pom_temp->body->dalsi->dalsi->dalsi);
-	//rozšíření pohonu
-	pom_temp->elementy->dalsi->X+=posun_x;
-	pom_temp->elementy->dalsi->Y+=posun_y;
-	d.v.vloz_G_element(pom_temp->elementy->dalsi,0,pom_temp->elementy->dalsi->geo.X1,pom_temp->elementy->dalsi->geo.Y1,0,0,0,0,pom_temp->elementy->dalsi->X,pom_temp->elementy->dalsi->Y,pom_temp->elementy->dalsi->geo.orientace);
   //ostatní
 	Akce=NIC;
 	refresh_mGrid=false;
@@ -6007,44 +6044,19 @@ void TForm1::aktualizace_RT()
 		delete E;E=NULL;
 	}
 }
-//vratí zda jsem v oblasti textu, typ 0 citelná oblast textu, typ 1 citelná oblast posun. kříže
-bool TForm1::najdi_nazev_obj(double X,double Y,Cvektory::TObjekt *Objekt,int typ)
+//vratí zda jsem v oblasti textu
+bool TForm1::najdi_nazev_obj(double X,double Y,Cvektory::TObjekt *Objekt)
 {
 	log(__func__);//logování
 	bool ret=false;
 	//nastavení canvasu
 	d.nastavit_text_popisu_objektu_v_nahledu(Canvas,1);AnsiString Tn=F->pom_temp->name.UpperCase();short Wn=Canvas->TextWidth(Tn);//název objektu - nastavení
-	if(typ==0)//hledání textu
+	//hledání textu
+	switch((int)Objekt->orientace_text)
 	{
-		switch((int)Objekt->orientace_text)
-		{
-			case 0:if(m.L2Px(pom_temp->Xt)>X && X>m.L2Px(pom_temp->Xt)-Canvas->TextHeight(Tn) && m.L2Py(pom_temp->Yt)-m.round(Wn)/2.0<Y && Y<m.L2Py(pom_temp->Yt)+m.round(Wn)/2.0)ret=true;break;
-			case 90:case 270:if(m.L2Px(pom_temp->Xt)-m.round(Wn)/2.0<=X && X<=m.L2Px(pom_temp->Xt)+m.round(Wn/2.0) && m.L2Py(pom_temp->Yt)>=Y && Y>=m.L2Py(pom_temp->Yt)-Canvas->TextHeight(Tn))ret=true;break;
-			case 180:if(m.L2Px(pom_temp->Xt)<X && X<m.L2Px(pom_temp->Xt)+Canvas->TextHeight(Tn) && m.L2Py(pom_temp->Yt)-m.round(Wn)/2.0<Y && Y<m.L2Py(pom_temp->Yt)+m.round(Wn)/2.0)ret=true;break;
-		}
-	}
-	else// hledání posunovacího kříže
-	{
-		double x1,x2,y1,y2;
-		switch((int)Objekt->orientace_text)
-		{
-			case 0:
-			{
-				x1=m.L2Px(pom_temp->Xt)-Canvas->TextHeight(Tn)-3;y1=m.L2Py(pom_temp->Yt)+m.round(Wn/2.0)-2;
-				x2=m.L2Px(pom_temp->Xt)-Canvas->TextHeight(Tn)+16;y2=m.L2Py(pom_temp->Yt)+m.round(Wn/2.0)+20;
-			}break;
-			case 90:case 270:
-			{
-				x1=m.L2Px(pom_temp->Xt)-m.round(Wn/2.0)+2;y1=m.L2Py(pom_temp->Yt)-Canvas->TextHeight(Tn)-3;
-				x2=m.L2Px(pom_temp->Xt)-m.round(Wn/2.0)-20;y2=m.L2Py(pom_temp->Yt)-Canvas->TextHeight(Tn)+16;
-			}break;
-			case 180:
-			{
-				x1=m.L2Px(pom_temp->Xt)+Canvas->TextHeight(Tn)+3;y1=m.L2Py(pom_temp->Yt)-m.round(Wn/2.0)+2;
-				x2=m.L2Px(pom_temp->Xt)+Canvas->TextHeight(Tn)-16;y2=m.L2Py(pom_temp->Yt)-m.round(Wn/2.0)-20;
-			}break;
-		}
-		if(m.PtInRectangle(x1,y1,x2,y2,X,Y))ret=true;
+		case 0:if(m.L2Px(pom_temp->Xt)>X && X>m.L2Px(pom_temp->Xt)-Canvas->TextHeight(Tn) && m.L2Py(pom_temp->Yt)-m.round(Wn)/2.0<Y && Y<m.L2Py(pom_temp->Yt)+m.round(Wn)/2.0)ret=true;break;
+		case 90:case 270:if(m.L2Px(pom_temp->Xt)-m.round(Wn)/2.0<=X && X<=m.L2Px(pom_temp->Xt)+m.round(Wn/2.0) && m.L2Py(pom_temp->Yt)>=Y && Y>=m.L2Py(pom_temp->Yt)-Canvas->TextHeight(Tn))ret=true;break;
+		case 180:if(m.L2Px(pom_temp->Xt)<X && X<m.L2Px(pom_temp->Xt)+Canvas->TextHeight(Tn) && m.L2Py(pom_temp->Yt)-m.round(Wn)/2.0<Y && Y<m.L2Py(pom_temp->Yt)+m.round(Wn)/2.0)ret=true;break;
 	}
 	return ret;
 }
@@ -6631,6 +6643,7 @@ void TForm1::vytvoreni_tab_pohon()
 	PmG->DefaultCell.isActiveLink->Size=aFont->Size;
 	PmG->Note.Font->Name=aFont->Name;
 	PmG->Note.Font->Size=14;
+	PmG->Note.Font->Color=d.clWarning;//musí být defaultní
 	PmG->AntiAliasing_text=true;
 	PmG->Border.Width=2;
 	PmG->ID=9999;
@@ -6761,7 +6774,7 @@ void TForm1::vytvoreni_tab_pohon()
 	}
 	//umístění tabulky
 	TRect oblast_kabiny=vrat_max_oblast(pom_temp);
-	if(pom_temp->Xp==-500)//definice pozice při prvním otevření objektu
+	if(pom_temp->Xp<0 && pom_temp->Yp<0)//definice pozice při prvním otevření objektu
 	{
 		pom_temp->Xp=m.P2Lx(oblast_kabiny.right+30);
 		pom_temp->Yp=m.P2Ly(oblast_kabiny.top-F->PmG->Rows->Height-30);
@@ -6777,7 +6790,7 @@ void TForm1::vytvoreni_tab_pohon()
 		if(ls->Strings[291]!="")PmG->Note.Text=ls->Strings[291];else PmG->Note.Text="Parametry pohonu již nelze měnit, neboť je používán i na jiných objektech";
 	}
 	PmG->Refresh();
-	if(PmG->Note.Text!="")PmG->ShowNote(PmG->Note.Text,clRed,14);
+	if(PmG->Note.Text!="")PmG->ShowNote(PmG->Note.Text,d.clWarning,14);
 }
 //---------------------------------------------------------------------------
 //předesignování tabulky po přidání každého elementu
@@ -6900,10 +6913,10 @@ void TForm1::prirazeni_pohonu_tab_pohon(int index_pohonu)
 			//Update musí být přítomný před!!!!
 			PmG->SetEnabledComponents(false);//nastavení celé tabulky do neaktivního stavu
 			PmG->SetEnabledComponent(0,0,true);//aktivace Comba pro výběr pohonu, bude vždy aktvní
-			if(ls->Strings[291]!="")PmG->ShowNote(ls->Strings[291],clRed,14);else PmG->ShowNote("Parametry pohonu již nelze měnit, neboť je používán i na jiných objektech",clRed,14);
+			if(ls->Strings[291]!="")PmG->ShowNote(ls->Strings[291],d.clWarning,14);else PmG->ShowNote("Parametry pohonu již nelze měnit, neboť je používán i na jiných objektech",d.clWarning,14);
 			temp=false;
 		}
-		else {PmG->SetEnabledComponents(true);if(PmG->Note.Text!="")PmG->ShowNote("");temp=true;}//pokud není pohon přiřazen aktivace
+		else {PmG->SetEnabledComponents(true);if(PmG->Note.Text!="")PmG->ShowNote("",d.clWarning);temp=true;}//pokud není pohon přiřazen aktivace
 	}
 	aktualizace_ComboPohon();//nutné!
 	REFRESH();
@@ -6928,7 +6941,7 @@ void TForm1::odstraneni_elementu_tab_pohon(int operace)
 			PmG->VisibleRow(6,false,false);
 			PmG->VisibleRow(7,false,false);
 			PmG->exBUTTONVisible=false;
-			PmG->ShowNote("",clRed,14);
+			PmG->ShowNote("",d.clWarning,14);
 		}break;
 		case 1://smazání elementu
 		{
@@ -6940,7 +6953,7 @@ void TForm1::odstraneni_elementu_tab_pohon(int operace)
 				PmG->VisibleRow(6,false,false);
 				PmG->VisibleRow(7,false,false);
 				PmG->exBUTTONVisible=false;
-				PmG->ShowNote("",clRed,14);
+				PmG->ShowNote("",d.clWarning,14);
 			}
 			else
 			{
@@ -8336,85 +8349,91 @@ void TForm1::zneplatnit_minulesouradnice()
 void __fastcall TForm1::DrawGrid_otoceDrawCell(TObject *Sender, int ACol, int ARow,
 					TRect &Rect, TGridDrawState State)
 {
-  log(__func__);//logování
-	short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
-	int W=DrawGrid_otoce->DefaultColWidth  *Z;
-	int H=DrawGrid_otoce->DefaultRowHeight  *Z;
-	int P=-1*DrawGrid_otoce->TopRow*H;//posun při scrollování, drawgridu nebo při zmenšení okna a scrollování
-	int odsazeni=10,odsazeniX=10;
-
-	Cantialising a;
-	Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-	bmp_in->Width=DrawGrid_otoce->Width*Z;bmp_in->Height=DrawGrid_otoce->Height *Z;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
-	TCanvas* C=bmp_in->Canvas;//pouze zkrácení ukazatelového zápisu/cesty
-
-	//unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
-	double Zoom_back=Zoom;//záloha zoomu
-	Zoom=10;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
-	short pocet_elementu=2;
-  AnsiString label1;
-	AnsiString label2;
-
- 	for(unsigned short n=1;n<=pocet_elementu;n++)
+	log(__func__);//logování
+	if(pom->id!=3)//nevykreslovat nic v POW
 	{
-		if(n==1){if(ls->Strings[264]!="")label1=ls->Strings[264];else label1="pasivní";label2="";}
-		if(n==2){if(ls->Strings[263]!="")label1=ls->Strings[263];else label1="aktivní";label2="";}
-		if(pom_temp->id!=3 && pom_temp->pohon!=NULL)
-		{
-		  d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P - 15-odsazeni,label1,label2,n+4,0,180,1);
-		}
-		else d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P - 15-odsazeni,label1,label2,n+4,0,180,-1);
-	}
+  	short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
+  	int W=DrawGrid_otoce->DefaultColWidth  *Z;
+  	int H=DrawGrid_otoce->DefaultRowHeight  *Z;
+  	int P=-1*DrawGrid_otoce->TopRow*H;//posun při scrollování, drawgridu nebo při zmenšení okna a scrollování
+  	int odsazeni=10,odsazeniX=10;
 
-	Zoom=Zoom_back;//návrácení původního zoomu
-	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
-	DrawGrid_otoce->Canvas->Draw(0,0,bmp_out);
-	delete (bmp_out);//velice nutné
-	delete (bmp_in);//velice nutné
+  	Cantialising a;
+  	Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+  	bmp_in->Width=DrawGrid_otoce->Width*Z;bmp_in->Height=DrawGrid_otoce->Height *Z;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+  	TCanvas* C=bmp_in->Canvas;//pouze zkrácení ukazatelového zápisu/cesty
+
+  	//unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
+  	double Zoom_back=Zoom;//záloha zoomu
+  	Zoom=10;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
+  	short pocet_elementu=2;
+  	AnsiString label1;
+  	AnsiString label2;
+
+  	for(unsigned short n=1;n<=pocet_elementu;n++)
+  	{
+  		if(n==1){if(ls->Strings[264]!="")label1=ls->Strings[264];else label1="pasivní";label2="";}
+  		if(n==2){if(ls->Strings[263]!="")label1=ls->Strings[263];else label1="aktivní";label2="";}
+  		if(pom_temp->id!=3 && pom_temp->pohon!=NULL)
+  		{
+  			d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P - 15-odsazeni,label1,label2,n+4,0,180,1);
+  		}
+  		else d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P - 15-odsazeni,label1,label2,n+4,0,180,-1);
+  	}
+
+  	Zoom=Zoom_back;//návrácení původního zoomu
+  	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+  	DrawGrid_otoce->Canvas->Draw(0,0,bmp_out);
+  	delete (bmp_out);//velice nutné
+  	delete (bmp_in);//velice nutné
+	}
 }
 //------------------------------------------------------------------------------
 void __fastcall TForm1::DrawGrid_ostatniDrawCell(TObject *Sender, int ACol, int ARow,
 					TRect &Rect, TGridDrawState State)
 {
-  log(__func__);//logování
-	short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
-	int W=DrawGrid_ostatni->DefaultColWidth  *Z;
-	int H=DrawGrid_ostatni->DefaultRowHeight  *Z;
-	int P=-1*DrawGrid_ostatni->TopRow*H;//posun při scrollování, drawgridu nebo při zmenšení okna a scrollování
-	int odsazeni=10;
-	if(ls->Strings[60]!="")scGPLabel_stop->Caption=ls->Strings[60];else scGPLabel_stop->Caption="Stop stanice";
-
-	Cantialising a;
-	Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-	bmp_in->Width=DrawGrid_ostatni->Width*Z;bmp_in->Height=DrawGrid_ostatni->Height *Z;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
-	TCanvas* C=bmp_in->Canvas;//pouze zkrácení ukazatelového zápisu/cesty
-
-	double Zoom_back=Zoom;//záloha zoomu
-	Zoom=10;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
-	short pocet_elementu=1;
-	for(unsigned short n=1;n<=pocet_elementu;n++)
+	log(__func__);//logování
+	if(pom->id!=3)//nevykreslovat nic v POW
 	{
-		if(pom_temp->id!=3 && pom_temp->pohon!=NULL)
-		{
-			d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W-3,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 2-odsazeni,"STOP","",0,180);
-		}
-		else d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W-3,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 2-odsazeni,"STOP","",0,180,-1);
-		//ion. tyč
-		if(pom_temp->id==4)//pouze pro ionizaci
-		{
-      odsazeni=25;
-			if(ls->Strings[53]!="")scGPLabel_stop->Caption=ls->Strings[53];else scGPLabel_stop->Caption="Ostatní";
-			AnsiString label1="ionizační tyč",label2="";
-			if(ls->Strings[265]!="")label1=ls->Strings[265];
-			if(pom_temp->pohon!=NULL)d.vykresli_ion(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W+6,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P-odsazeni,label1,label2,0,90,1);
-			else d.vykresli_ion(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W+6,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P-odsazeni,label1,label2,0,90,-1);
-		}
+  	short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
+  	int W=DrawGrid_ostatni->DefaultColWidth  *Z;
+  	int H=DrawGrid_ostatni->DefaultRowHeight  *Z;
+  	int P=-1*DrawGrid_ostatni->TopRow*H;//posun při scrollování, drawgridu nebo při zmenšení okna a scrollování
+  	int odsazeni=10;
+  	if(ls->Strings[60]!="")scGPLabel_stop->Caption=ls->Strings[60];else scGPLabel_stop->Caption="Stop stanice";
+
+  	Cantialising a;
+  	Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+  	bmp_in->Width=DrawGrid_ostatni->Width*Z;bmp_in->Height=DrawGrid_ostatni->Height *Z;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+  	TCanvas* C=bmp_in->Canvas;//pouze zkrácení ukazatelového zápisu/cesty
+
+  	double Zoom_back=Zoom;//záloha zoomu
+  	Zoom=10;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
+  	short pocet_elementu=1;
+  	for(unsigned short n=1;n<=pocet_elementu;n++)
+  	{
+  		if(pom_temp->id!=3 && pom_temp->pohon!=NULL)
+  		{
+  			d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W-3,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 2-odsazeni,"STOP","",0,180);
+  		}
+  		else d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W-3,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 2-odsazeni,"STOP","",0,180,-1);
+  		//ion. tyč
+  		if(pom_temp->id==4)//pouze pro ionizaci
+  		{
+  			odsazeni=25;
+  			if(ls->Strings[53]!="")scGPLabel_stop->Caption=ls->Strings[53];else scGPLabel_stop->Caption="Ostatní";
+  			AnsiString label1="ionizační tyč",label2="";
+  			if(ls->Strings[265]!="")label1=ls->Strings[265];
+  			if(pom_temp->pohon!=NULL)d.vykresli_ion(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W+6,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P-odsazeni,label1,label2,0,90,1);
+  			else d.vykresli_ion(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W+6,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P-odsazeni,label1,label2,0,90,-1);
+  		}
+  	}
+  	Zoom=Zoom_back;//návrácení původního zoomu
+  	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+  	DrawGrid_ostatni->Canvas->Draw(0,0,bmp_out);
+  	delete (bmp_out);//velice nutné
+  	delete (bmp_in);//velice nutné
 	}
-	Zoom=Zoom_back;//návrácení původního zoomu
-	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
-	DrawGrid_ostatni->Canvas->Draw(0,0,bmp_out);
-	delete (bmp_out);//velice nutné
-	delete (bmp_in);//velice nutné
 }
 
 //------------------------------------------------------------------------------------------------
@@ -8422,46 +8441,49 @@ void __fastcall TForm1::DrawGrid_ostatniDrawCell(TObject *Sender, int ACol, int 
 void __fastcall TForm1::DrawGrid_poznamkyDrawCell(TObject *Sender, int ACol, int ARow,
           TRect &Rect, TGridDrawState State)
 {
-  log(__func__);//logování
-	short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
-	int odsazeni=8;
-	int W=DrawGrid_poznamky->DefaultColWidth  *Z;
-	int H=DrawGrid_poznamky->DefaultRowHeight  *Z;
-	int P=-1*DrawGrid_poznamky->TopRow*H;//posun při scrollování, drawgridu nebo při zmenšení okna a scrollování
-
-	Cantialising a;
-	Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-	bmp_in->Width=DrawGrid_poznamky->Width*Z;bmp_in->Height=DrawGrid_poznamky->Height *Z;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
-	TCanvas* C=bmp_in->Canvas;//pouze zkrácení ukazatelového zápisu/cesty
-
- //	unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
-	double Zoom_back=Zoom;//záloha zoomu
-	Zoom=10;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
-	short pocet_elementu=2;
-  AnsiString label1;
-  AnsiString label2;
-	for(unsigned short n=1;n<=pocet_elementu;n++)
+	log(__func__);//logování
+	if(pom->id!=3)//nevykreslovat nic v POW
 	{
-    if(n==1)
-    {
-		 if(ls->Strings[266]!="")label1=ls->Strings[266];else label1="text";
-     label2="";
-		 d.vykresli_ikonu_textu(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W+odsazeni,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
-   //	d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 30,label1,label2,n);
-     }
-    if(n==2)
-		{
-		 if(ls->Strings[267]!="")label1=ls->Strings[267];else label1="šipka";
-     label2="";
-		 d.vykresli_ikonu_sipky(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W+odsazeni,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
-     }
+  	short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
+  	int odsazeni=8;
+  	int W=DrawGrid_poznamky->DefaultColWidth  *Z;
+  	int H=DrawGrid_poznamky->DefaultRowHeight  *Z;
+  	int P=-1*DrawGrid_poznamky->TopRow*H;//posun při scrollování, drawgridu nebo při zmenšení okna a scrollování
 
+  	Cantialising a;
+  	Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+  	bmp_in->Width=DrawGrid_poznamky->Width*Z;bmp_in->Height=DrawGrid_poznamky->Height *Z;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+  	TCanvas* C=bmp_in->Canvas;//pouze zkrácení ukazatelového zápisu/cesty
+
+   //	unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
+  	double Zoom_back=Zoom;//záloha zoomu
+  	Zoom=10;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
+  	short pocet_elementu=2;
+  	AnsiString label1;
+  	AnsiString label2;
+  	for(unsigned short n=1;n<=pocet_elementu;n++)
+  	{
+  		if(n==1)
+  		{
+  		 if(ls->Strings[266]!="")label1=ls->Strings[266];else label1="text";
+  		 label2="";
+  		 d.vykresli_ikonu_textu(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W+odsazeni,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
+     //	d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 30,label1,label2,n);
+  		 }
+      if(n==2)
+  		{
+  		 if(ls->Strings[267]!="")label1=ls->Strings[267];else label1="šipka";
+  		 label2="";
+  		 d.vykresli_ikonu_sipky(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W+odsazeni,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
+  		 }
+
+  	}
+  	Zoom=Zoom_back;//návrácení původního zoomu
+  	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+  	DrawGrid_poznamky->Canvas->Draw(0,0,bmp_out);
+  	delete (bmp_out);//velice nutné
+  	delete (bmp_in);//velice nutné
 	}
-	Zoom=Zoom_back;//návrácení původního zoomu
-	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
-	DrawGrid_poznamky->Canvas->Draw(0,0,bmp_out);
-	delete (bmp_out);//velice nutné
-	delete (bmp_in);//velice nutné
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int ARow, TRect &Rect,
@@ -8472,14 +8494,14 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 	{
 		scListGroupKnihovObjektu->Caption="Roboti";
 		DrawGrid_knihovna->RowCount=2;  //nastaveni poctu radku, aby nedochazelo k posunu gridu pri scrollovani
-		if(pom_temp->id!=3)DrawGrid_knihovna->ColCount=2;//ošetření probliku
+		if(pom->id!=3 && (DrawGrid_knihovna->ColCount!=2 || DrawGrid_knihovna->DefaultColWidth!=80)){DrawGrid_knihovna->ColCount=2;DrawGrid_knihovna->DefaultColWidth=80;}//ošetření probliku
+		if(pom->id==3 && (DrawGrid_knihovna->ColCount!=1 || DrawGrid_knihovna->DefaultColWidth!=160)) {DrawGrid_knihovna->ColCount=1;DrawGrid_knihovna->DefaultColWidth=160;}
 //		DrawGrid_knihovna->Left=3;
 		short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
 		int W=DrawGrid_knihovna->DefaultColWidth  *Z;
 		int H=DrawGrid_knihovna->DefaultRowHeight  *Z;
 		int P=-1*DrawGrid_knihovna->TopRow*H;//posun při scrollování, drawgridu nebo při zmenšení okna a scrollování
 		int odsazeni=19;
-
 		Cantialising a;
 		Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
 		bmp_in->Width=DrawGrid_knihovna->Width*Z;bmp_in->Height=DrawGrid_knihovna->Height *Z;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
@@ -8502,9 +8524,8 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 		int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
 		switch(pom_temp->id)
 		{
-			case 3:
+			case 3://POW
 			{
-				DrawGrid_knihovna->ColCount=1;
 				label1="okap";label2="postřikový rám";
 				if(ls->Strings[252]!="")label1=ls->Strings[252];if(ls->Strings[253]!="")label2=ls->Strings[253];
 				if(pom_temp->pohon!=NULL)
@@ -8516,6 +8537,19 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 				{
 					d.vykresli_ikonu_komory(C,140,60,label1,0,-1);//"okap"
 					d.vykresli_ikonu_komory(C,140,480,label2,1,-1);//"postřikový rám"
+				}
+				if(scListGroupPanel_hlavickaOtoce->Top==314)//spouštět pouze při prvním refreshi
+				{
+					double odsazeni=10000;//
+					scListGroupPanel_hlavickaOtoce->Top+=odsazeni;
+					scListGroupPanel_hlavickaOstatni->Top+=odsazeni;
+					scListGroupPanel_geometrie->Top+=odsazeni;
+					scListGroupPanel_poznamky->Top+=odsazeni;
+					DrawGrid_poznamky->Height=1000;//rozšíření, zabránění zobrazení linky pod knihovnou
+					scGPLabel_otoce->Top+=odsazeni;
+					scGPLabel_stop->Top+=odsazeni;
+					scGPLabel_geometrie->Top+=odsazeni;
+					scGPLabel_poznamky->Top+=odsazeni;
 				}
 			}break;
 			case 0:case 9://objekt navěšování + svěšování
@@ -9236,7 +9270,7 @@ void TForm1::akutalizace_stavu_prichytavani_vSB()
 		log(__func__);//logování
 		UnicodeString text="přichytávat",text_1="nepřichytávat";
 		if(ls->Strings[375]!="")text=ls->Strings[375];
-		if(ls->Strings[388]!="")text=ls->Strings[388];
+		if(ls->Strings[388]!="")text_1=ls->Strings[388];
 		switch(prichytavat_k_mrizce)
 		{
 			//case 0:SB("přichytávat?",5);grid=true;myMessageBox->CheckBox_pamatovat->Checked=false;break;
@@ -10026,7 +10060,7 @@ void TForm1::zmena_editovaneho_objektu()
 	if(prepnout)
 	{
     /////////Vrácení knihoven a jejich popisků na default pozice
-		if(pom->id>5 && pom->id!=9 && (pom_vyhybka->id>=0 && pom_vyhybka->id<=5 || pom_vyhybka->id==9))//pokud jdu z objektu, který nemá roboty do objektu, který je má
+		if(pom->id==3 ||pom->id>5 && pom->id!=9 && (pom_vyhybka->id>=0 && pom_vyhybka->id<=5 || pom_vyhybka->id==3 || pom_vyhybka->id==9))//pokud jdu z objektu, který nemá roboty do objektu, který je má
 		{
 			scListGroupPanel_hlavickaOtoce->Top=314;
 			scListGroupPanel_hlavickaOstatni->Top=404;
@@ -10178,7 +10212,7 @@ void TForm1::posun_na_element(unsigned long n_zpravy)
 	{
     //////deklarace + nastavení vykreslení zpráv
 		Cvektory::TElement *E=Z->Element;
-		if(!d.zobrazit_cele_zpravy)d.zobrazit_cele_zpravy=!d.zobrazit_cele_zpravy;//zobrazení celé zprávy, před refresh
+		if(Z->n!=d.zobrazit_celou_zpravu)d.zobrazit_celou_zpravu=Z->n;//zobrazení celé zprávy, před refresh
 
 		//////posun na element + zoom
 		//nastavení zoomu na vhodný náhled
@@ -11655,7 +11689,10 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	posun_na_element(0);
+	Cvektory::TElement *E=pom_temp->elementy->predchozi;
+	Memo("E.: "+AnsiString(m.Rt90(E->geo.orientace+E->geo.rotacni_uhel)));
+	Memo("O1: "+AnsiString(d.v.OBJEKTY->dalsi->orientace));
+	Memo("O1 + 180: "+AnsiString(m.Rt90(d.v.OBJEKTY->dalsi->orientace+180)));
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -11703,7 +11740,7 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 	 //Sk(d.v.vrat_zpravu(2)->Popisek);
 	 //d.v.vymazat_ZPRAVY();
 
-	 d.zobrazit_cele_zpravy=!d.zobrazit_cele_zpravy;
+	 //d.zobrazit_cele_zpravy=!d.zobrazit_cele_zpravy;
 	 REFRESH();
 }
 //---------------------------------------------------------------------------
@@ -12765,46 +12802,49 @@ void __fastcall TForm1::DrawGrid_geometrieDrawCell(TObject *Sender, int ACol, in
           TRect &Rect, TGridDrawState State)
 {
 	log(__func__);//logování
-	short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
-	int W=DrawGrid_geometrie->DefaultColWidth  *Z;
-	int H=DrawGrid_geometrie->DefaultRowHeight  *Z;
-	int P=-1*DrawGrid_geometrie->TopRow*H;//posun při scrollování, drawgridu nebo při zmenšení okna a scrollování
-	int odsazeni=5;
-
-	Cantialising a;
-	Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-	bmp_in->Width=DrawGrid_geometrie->Width*Z;bmp_in->Height=DrawGrid_geometrie->Height *Z;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
-	TCanvas* C=bmp_in->Canvas;//pouze zkrácení ukazatelového zápisu/cesty
-
-	//unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
-	double Zoom_back=Zoom;//záloha zoomu
-	Zoom=10;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
-	short pocet_elementu=2;
-  AnsiString label1;
-	AnsiString label2;
-	if(ls->Strings[61]!="")scGPLabel_geometrie->Caption=ls->Strings[61];else scGPLabel_geometrie->Caption="Geometrie linky";
-	for(unsigned short n=1;n<=pocet_elementu;n++)
+	if(pom->id!=3)//nevykreslovat nic v POW
 	{
-		if(n==1)
-		{
-		 if(ls->Strings[268]!="")label1=ls->Strings[268];else label1="geometrie";
-		 label2="";
-		 if(pom->id!=3)d.vykresli_ikonu_linie(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20-odsazeni,label1);
-		 else d.vykresli_ikonu_linie(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20-odsazeni,label1,-1);
-		}
-		if(n==2)
-		{
-			if(ls->Strings[269]!="")label1=ls->Strings[269];else label1="před. místo";
-			if(pom_temp->pohon!=NULL && pom_temp->id!=3)d.vykresli_predavaci_misto(C,NULL,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P,label1,0);
-			else d.vykresli_predavaci_misto(C,NULL,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P,label1,0,0,-1);
-		}
+  	short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
+  	int W=DrawGrid_geometrie->DefaultColWidth  *Z;
+  	int H=DrawGrid_geometrie->DefaultRowHeight  *Z;
+  	int P=-1*DrawGrid_geometrie->TopRow*H;//posun při scrollování, drawgridu nebo při zmenšení okna a scrollování
+  	int odsazeni=5;
 
+  	Cantialising a;
+  	Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+  	bmp_in->Width=DrawGrid_geometrie->Width*Z;bmp_in->Height=DrawGrid_geometrie->Height *Z;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+  	TCanvas* C=bmp_in->Canvas;//pouze zkrácení ukazatelového zápisu/cesty
+
+  	//unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
+  	double Zoom_back=Zoom;//záloha zoomu
+  	Zoom=10;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
+  	short pocet_elementu=2;
+  	AnsiString label1;
+  	AnsiString label2;
+  	if(ls->Strings[61]!="")scGPLabel_geometrie->Caption=ls->Strings[61];else scGPLabel_geometrie->Caption="Geometrie linky";
+  	for(unsigned short n=1;n<=pocet_elementu;n++)
+  	{
+  		if(n==1)
+  		{
+  		 if(ls->Strings[268]!="")label1=ls->Strings[268];else label1="geometrie";
+  		 label2="";
+  		 if(pom->id!=3)d.vykresli_ikonu_linie(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20-odsazeni,label1);
+  		 else d.vykresli_ikonu_linie(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20-odsazeni,label1,-1);
+  		}
+  		if(n==2)
+  		{
+  			if(ls->Strings[269]!="")label1=ls->Strings[269];else label1="před. místo";
+  			if(pom_temp->pohon!=NULL && pom_temp->id!=3)d.vykresli_predavaci_misto(C,NULL,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P,label1,0);
+  			else d.vykresli_predavaci_misto(C,NULL,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P,label1,0,0,-1);
+  		}
+
+  	}
+  	Zoom=Zoom_back;//návrácení původního zoomu
+  	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+  	DrawGrid_geometrie->Canvas->Draw(0,0,bmp_out);
+  	delete (bmp_out);//velice nutné
+		delete (bmp_in);//velice nutné
 	}
-	Zoom=Zoom_back;//návrácení původního zoomu
-	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
-	DrawGrid_geometrie->Canvas->Draw(0,0,bmp_out);
-	delete (bmp_out);//velice nutné
-	delete (bmp_in);//velice nutné
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPCheckBox_zobraz_podkladClick(TObject *Sender)
@@ -13177,7 +13217,7 @@ void TForm1::vykresli_kurzor(int index)
 	//vykreslování kurzoru pro psaní textu
 	Canvas->Pen->Style=psSolid;
 	Canvas->Pen->Mode=pmNotXor;
-	Canvas->Pen->Color=m.clIntensive(clRed,180);
+	Canvas->Pen->Color=d.clStenaKabiny;//m.clIntensive(clRed,180);
 	Canvas->Pen->Width=2;
 	switch ((index))//index=JID, kde a jaký kurzor vykreslit
 	{
@@ -13634,17 +13674,16 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
   ChDir(ExtractFilePath(Application->ExeName));    //přesune k EXE
 	UnicodeString File_language= "TISPL.language"; //cache_dir+"MK.language" už nenačítám v tempu aplikace
 
-  /*if(!FileExists(File_language)) //pokud bych chtěl jazyk stahovat
-  {
-	try
-	{
-		URLDownloadToFile(0,AnsiString("http://www.omapy.cz/files/CSIS/"+File_language).c_str(),File_language.c_str(),0,0);//pokud nebyl nalezen jazykový slovník, zkusí stáhnout
-	}
-	catch(...){;}
-  }*/
+	////default plnění ls
 	ls=new TStringList;
-	for(unsigned short i=0;i<=450;i++)ls->Insert(i,"");//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
+	UnicodeString text="";
+	for(unsigned short i=0;i<=450;i++)
+	{
 
+		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
+	}
+
+  ////naplnění pro konkrétní jazykovou mutaci
 	if(FileExists(File_language))//znovu kontrola po případném stažení souboru
 	{
 		//načtení jazykového slovníku do string listu
@@ -13801,9 +13840,7 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
     Form_parametry_linky->scGPGlyphButton_katalog->Hint=ls->Strings[159];
     Form_parametry_linky->scGPTrackBar_uchyceni->Hint=ls->Strings[160];
     Form_parametry_linky->Button_save->Caption=ls->Strings[161];
-  	Form_parametry_linky->scHTMLLabel1->Caption=ls->Strings[162];
-    PopUPmenu->scLabel_otocit_doleva->Caption=ls->Strings[173];
-    PopUPmenu->scLabel_otocit_doprava->Caption=ls->Strings[174];
+		Form_parametry_linky->scHTMLLabel1->Caption=ls->Strings[162];
     PopUPmenu->scLabel_posun_obrysu->Caption=ls->Strings[175];
     PopUPmenu->scLabel_rychly_export->Caption=ls->Strings[176];
     PopUPmenu->scLabel_posouvat->Caption=ls->Strings[177];
@@ -14004,6 +14041,7 @@ void __fastcall TForm1::scGPCheckBox_zobrazit_palceClick(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
+
 
 
 
