@@ -1196,7 +1196,7 @@ void __fastcall TForm1::FormActivate(TObject *Sender)
 		else
 		{
 			Timer_tr->Enabled=false;
-			startUP();
+      if(!Form_zpravy->closing) startUP();
 		}
 	}
 

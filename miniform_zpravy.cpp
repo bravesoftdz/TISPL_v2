@@ -21,8 +21,9 @@ __fastcall TForm_zpravy::TForm_zpravy(TComponent* Owner)
 //---------------------------------------------------------------------------
 void __fastcall TForm_zpravy::FormShow(TObject *Sender)
 {
-   F->d.zobrazit_cele_zpravy=true;
+
    radek_temp=999;
+   closing=false;
 
   scGPPanel_header->FillColor=(TColor)RGB(60,100,162);
   Top=F->scLabel_titulek->Height + 0;
@@ -38,7 +39,7 @@ void __fastcall TForm_zpravy::FormShow(TObject *Sender)
 		 while(Z!=NULL)
 		 {
       I=C->Items->Add();
-      I->Caption =AnsiString(F->d.getVID(Z->VID));
+      I->Caption =AnsiString(F->d.v.getVID(Z->VID));
       if(Z->VID==0) I->ImageIndex=71;
       else I->ImageIndex=71;
       Z=Z->dalsi;
@@ -92,9 +93,8 @@ void __fastcall TForm_zpravy::scGPListBox_zpravyClick(TObject *Sender)
 
 void __fastcall TForm_zpravy::SkrytClick(TObject *Sender)
 {
-ShowMessage("zde");
-Form_zpravy->Visible=false;
-ShowMessage("po");
+  closing=true;
+	Close();
 }
 //---------------------------------------------------------------------------
 

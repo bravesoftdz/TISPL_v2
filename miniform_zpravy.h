@@ -35,6 +35,7 @@ private:	// User declarations
   int radek_temp;
 public:		// User declarations
   __fastcall TForm_zpravy(TComponent* Owner);
+  	bool closing;//detekce kvùli hlavnímu formuláøi jinak volá tìlo formactivate hlavního formu
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm_zpravy *Form_zpravy;
