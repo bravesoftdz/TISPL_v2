@@ -241,9 +241,6 @@ __published:	// IDE-managed Components
 	TButton *Button11;
 	TscGPGlyphButton *scGPGlyphButton_close_grafy;
 	TscButton *scButton_ulozit;
-	TscExPanel *scExPanel_log_header;
-	TscHTMLLabel *scHTMLLabel_log_vypis;
-	TscGPGlyphButton *scGPGlyphButton_zpravy_ikona;
 	TscGPSwitch *scGPSwitch_rezim;
 	TscLabel *scLabel_klient;
 	TscLabel *scLabel_architekt;
@@ -326,6 +323,8 @@ __published:	// IDE-managed Components
   TscLabel *scLabel_CZ;
   TscLabel *scLabel_EN;
 	TscGPCheckBox *scGPCheckBox_zobrazit_palce;
+  TscGPButton *scGPButton_error;
+  TscGPButton *scGPButton_warning;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -454,7 +453,6 @@ __published:	// IDE-managed Components
 	void __fastcall scGPGlyphButton_definice_zakazekClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_close_grafyClick(TObject *Sender);
 	void __fastcall ComboBoxCekaniChange(TObject *Sender);
-	void __fastcall scExPanel_log_headerClose(TObject *Sender);
 	void __fastcall scGPGlyphButton_zpravy_ikonaClick(TObject *Sender);
 	void __fastcall scSplitView_OPTIONSOpened(TObject *Sender);
 	void __fastcall LayoutClick(TObject *Sender);
@@ -538,6 +536,8 @@ __published:	// IDE-managed Components
   void __fastcall scGPCheckBox_zobrazit_kolejeClick(TObject *Sender);
   void __fastcall scGPSwitch1ChangeState(TObject *Sender);
 	void __fastcall scGPCheckBox_zobrazit_palceClick(TObject *Sender);
+  void __fastcall scGPButton_errorClick(TObject *Sender);
+  void __fastcall scGPButton_warningClick(TObject *Sender);
 
 
 
@@ -764,6 +764,8 @@ public:		// User declarations
 	short zobrazit_koleje;
 	short zobrazit_palce;
 	bool zamek_layoutu;
+  int Top_backup;  //pomocne promenne pro pozici zprav
+  int Left_backup; //pomocne promenne pro pozici zprav
 
 	//metody
 	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click

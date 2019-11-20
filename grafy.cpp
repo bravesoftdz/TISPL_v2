@@ -353,49 +353,49 @@ void Cgrafy::graf2() {
 
 void Cgrafy::graf6() { // Kapacity
 
-		if (Form1->scHTMLLabel_log_vypis->Visible) {
-				Form1->Chart6->Top = Form1->ClientHeight -
-						Form1->scGPPanel_statusbar->Height - Form1->Chart2->Height;
-		}
-		else {
-				Form1->Chart6->Top = Form1->ClientHeight -
-						Form1->scGPPanel_statusbar->Height - Form1->Chart6->Height;
-		}
-
-		Form1->Chart6->Left = Form1->Chart2->Width;
-		Form1->Chart6->Width = Form1->ClientWidth / 2; // 5 * 1, 5; ;
-		Form1->Chart6->Height = Form1->ClientHeight / 3 * 1;
-
-		Form1->Chart6->AxisVisible = true;
-
-		Form1->Chart6->Title->Caption = "Nastavené vs. doporuèené kapacity";
-		Form1->Chart6->LeftAxis->Title->Caption = "kapacity";
-		Form1->Chart6->BottomAxis->Title->Caption = "objekty";
-
-		// Form1->Memo1->Font->Color=clBlack;
-
-		Form1->Series9->Clear();
-		Form1->Series10->Clear();
-
-		Cvektory::TObjekt *ukaz = Form1->d.v.OBJEKTY->dalsi;
-		// Cvektory::TVozik *ukaz1 = Form1->d.v.VOZIKY->dalsi;
-		while (ukaz != NULL) {
-
-				if (ukaz->kapacita != ukaz->kapacita_dop) {
-						Form1->Series9->Add(ukaz->kapacita, ukaz->short_name,
-								(TColor) RGB(0, 128, 255));
-
-						Form1->Series10->Add(ukaz->kapacita_dop, "",
-								Form1->m.clIntensive((TColor)RGB(0, 128, 255), 80));
-				}
-				if (ukaz->kapacita != ukaz->kapacita_dop) {
-
-						// Form1->Memo1->Lines->Add(AnsiString("Varování - nastavená kapacita: ") + ukaz->kapacita_objektu + AnsiString(". Doporuèená kapacita: ") + ukaz->dop_kapacita_objektu + AnsiString(" - pro objekt: ") + ukaz->short_name);
-						// zpravy+="Objekt:"+ukaz->short_name+"- nastavená kapacita:"+ukaz->kapacita+" - doporuèená kapacita"+ ukaz->dop_kapacita_objektu +;
-				}
-
-				ukaz = ukaz->dalsi;
-		}
+//		if (Form1->scHTMLLabel_log_vypis->Visible) {
+//				Form1->Chart6->Top = Form1->ClientHeight -
+//						Form1->scGPPanel_statusbar->Height - Form1->Chart2->Height;
+//		}
+//		else {
+//				Form1->Chart6->Top = Form1->ClientHeight -
+//						Form1->scGPPanel_statusbar->Height - Form1->Chart6->Height;
+//		}
+//
+//		Form1->Chart6->Left = Form1->Chart2->Width;
+//		Form1->Chart6->Width = Form1->ClientWidth / 2; // 5 * 1, 5; ;
+//		Form1->Chart6->Height = Form1->ClientHeight / 3 * 1;
+//
+//		Form1->Chart6->AxisVisible = true;
+//
+//		Form1->Chart6->Title->Caption = "Nastavené vs. doporuèené kapacity";
+//		Form1->Chart6->LeftAxis->Title->Caption = "kapacity";
+//		Form1->Chart6->BottomAxis->Title->Caption = "objekty";
+//
+//		// Form1->Memo1->Font->Color=clBlack;
+//
+//		Form1->Series9->Clear();
+//		Form1->Series10->Clear();
+//
+//		Cvektory::TObjekt *ukaz = Form1->d.v.OBJEKTY->dalsi;
+//		// Cvektory::TVozik *ukaz1 = Form1->d.v.VOZIKY->dalsi;
+//		while (ukaz != NULL) {
+//
+//				if (ukaz->kapacita != ukaz->kapacita_dop) {
+//						Form1->Series9->Add(ukaz->kapacita, ukaz->short_name,
+//								(TColor) RGB(0, 128, 255));
+//
+//						Form1->Series10->Add(ukaz->kapacita_dop, "",
+//								Form1->m.clIntensive((TColor)RGB(0, 128, 255), 80));
+//				}
+//				if (ukaz->kapacita != ukaz->kapacita_dop) {
+//
+//						// Form1->Memo1->Lines->Add(AnsiString("Varování - nastavená kapacita: ") + ukaz->kapacita_objektu + AnsiString(". Doporuèená kapacita: ") + ukaz->dop_kapacita_objektu + AnsiString(" - pro objekt: ") + ukaz->short_name);
+//						// zpravy+="Objekt:"+ukaz->short_name+"- nastavená kapacita:"+ukaz->kapacita+" - doporuèená kapacita"+ ukaz->dop_kapacita_objektu +;
+//				}
+//
+//				ukaz = ukaz->dalsi;
+//		}
 
 }
 
@@ -569,9 +569,9 @@ void Cgrafy::graf1() {
 	 //	if (!Form1->d.JIZPOCITANO) { // pro první zobrazení nastavím default rozmìry - podmínka realizována nyní ve vykresli
 
 
-				Form1->scExPanel_log_header->Left = Form1->Schema->Left-100;
-				Form1->scExPanel_log_header->Top = Form1->Schema->Height + 10;
-				Form1->scExPanel_log_header->Height = 300;
+//				Form1->scExPanel_log_header->Left = Form1->Schema->Left-100;
+//				Form1->scExPanel_log_header->Top = Form1->Schema->Height + 10;
+//				Form1->scExPanel_log_header->Height = 300;
 	 //	}
 
 
@@ -642,7 +642,7 @@ void Cgrafy::zpravy() {
 }
 
 	if(takt_splnen){ sirka_boxu=450;} else sirka_boxu=715;
-			Form1->scExPanel_log_header->Width = sirka_boxu;//sirka_boxu;
+		//	Form1->scExPanel_log_header->Width = sirka_boxu;//sirka_boxu;
 
 
 		zpravy += "<br><b>Zobrazení rozdílných kapacit:</b></br>";
@@ -676,7 +676,7 @@ while (ukaz != NULL) {
 
 
 
-   Form1->scHTMLLabel_log_vypis->Caption = zpravy;
+ //  Form1->scHTMLLabel_log_vypis->Caption = zpravy;
 
 
 

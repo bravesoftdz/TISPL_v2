@@ -17,55 +17,41 @@ TForm_zpravy *Form_zpravy;
 __fastcall TForm_zpravy::TForm_zpravy(TComponent* Owner)
   : TForm(Owner)
 {
+  Top=F->scLabel_titulek->Height;
+  Left=F->ClientWidth - scGPListBox_zpravy->Width;
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_zpravy::FormShow(TObject *Sender)
 {
-
-   radek_temp=999;
    closing=false;
 
   scGPPanel_header->FillColor=(TColor)RGB(60,100,162);
-  Top=F->scLabel_titulek->Height + 0;
-  Left=F->ClientWidth - scGPListBox_zpravy->Width;
-
-
-  TscGPListBox *C= scGPListBox_zpravy;
-  TscGPListBoxItem *I;
-  int pocet=0;
-  	 if(F->d.v.ZPRAVY!=NULL)
-	 {
-		 Cvektory::TZprava *Z=F->d.v.ZPRAVY->dalsi;
-		 while(Z!=NULL)
-		 {
-      I=C->Items->Add();
-      I->Caption =AnsiString(F->d.v.getVID(Z->VID));
-      if(Z->VID==0) I->ImageIndex=71;
-      else I->ImageIndex=71;
-      Z=Z->dalsi;
-      pocet++;
-		 }
-		 delete Z;
-     Form_zpravy->Height = pocet *  scGPListBox_zpravy->ItemHeight + scLabel1->Height + scGPPanel_statusbar->Height + 5;   //5px rezervnich
-	 }
-   F->REFRESH();
+  if(Top!=F->scLabel_titulek->Height)
+  {
+  Top = F->Top_backup;
+  Left = F->Left_backup;
+  }
+  update_zpravy(1);
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TForm_zpravy::scGPListBox_zpravyMouseMove(TObject *Sender, TShiftState Shift,
           int X, int Y)
 {
-//F->Memo(floor(Y/(scGPListBox_zpravy->ItemHeight*1.0)));
    int radek= floor(Y/(scGPListBox_zpravy->ItemHeight*1.0));
-   scGPListBox_zpravy->Items->Items[radek]->ImageIndex=72;
-   radek_temp=radek;
 
-   if(radek!=radek_temp) { scGPListBox_zpravy->Items->Items[radek_temp]->ImageIndex=71;   radek_temp = radek;  }
-
-
-
-
-
+     for(int i=0; i<scGPListBox_zpravy->Items->Count;i++)
+     {
+     if(i==radek)
+     {  //bold
+      if(scGPListBox_zpravy->Items->Items[radek]->ImageIndex==69)  { scGPListBox_zpravy->Items->Items[radek]->ImageIndex=70; }
+      if(scGPListBox_zpravy->Items->Items[radek]->ImageIndex==71)  { scGPListBox_zpravy->Items->Items[radek]->ImageIndex=72; }
+      F->d.zprava_highlight=radek+1;  F->REFRESH();
+     }    //ostatní nastav jako thin
+     else if  (scGPListBox_zpravy->Items->Items[i]->ImageIndex==70) scGPListBox_zpravy->Items->Items[i]->ImageIndex=69;  //error thin
+     else if  (scGPListBox_zpravy->Items->Items[i]->ImageIndex==72) scGPListBox_zpravy->Items->Items[i]->ImageIndex=71;  //warning thin
+     }
 }
 //---------------------------------------------------------------------------
 
@@ -79,17 +65,9 @@ void __fastcall TForm_zpravy::scGPGlyphButton_infoClick(TObject *Sender)
   Left=F->ClientWidth - scGPListBox_zpravy->Width;
  }
 
-
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm_zpravy::scGPListBox_zpravyClick(TObject *Sender)
-{
-//ShowMessage(scGPListBox_zpravy->ItemIndex +1);
-//Close();
-
-}
-//---------------------------------------------------------------------------
 
 void __fastcall TForm_zpravy::SkrytClick(TObject *Sender)
 {
@@ -100,10 +78,40 @@ void __fastcall TForm_zpravy::SkrytClick(TObject *Sender)
 
 void __fastcall TForm_zpravy::scGPListBox_zpravyItemClick(TObject *Sender)
 {
-F->posun_na_element(scGPListBox_zpravy->ItemIndex +1);
-}
+  F->Top_backup=Form_zpravy->Top;
+  F->Left_backup=Form_zpravy->Left;
+  closing=true;
+  F->posun_na_element(scGPListBox_zpravy->ItemIndex +1);
+
+}                                                  
 //---------------------------------------------------------------------------
 
+void  TForm_zpravy::update_zpravy(double rezim) 
+{
+  if(rezim==1) 
+  {
+  
+  TscGPListBox *C= scGPListBox_zpravy;
+  TscGPListBoxItem *I;
+  int pocet=0;
 
+  if(F->d.v.ZPRAVY!=NULL)
+	 {
+     C->Items->Clear();
+		 Cvektory::TZprava *Z=F->d.v.ZPRAVY->dalsi;
+		 while(Z!=NULL)
+		 {
+      I=C->Items->Add();
+      I->Caption =AnsiString(F->d.v.getVID(Z->VID));
+      if(Z->zID==-1) I->ImageIndex=69; //error
+      else I->ImageIndex=71;  //warning
+      Z=Z->dalsi;
+      pocet++;
+		 }
+		 delete Z;
+     Form_zpravy->Height = pocet *  scGPListBox_zpravy->ItemHeight + scLabel1->Height + scGPPanel_statusbar->Height + 5;   //5px rezervnich
+	 }
+   F->REFRESH();
+}
 
-
+}

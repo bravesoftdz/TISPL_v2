@@ -400,7 +400,6 @@ object Form_zpravy: TForm_zpravy
     TabStop = True
     Touch.InteractiveGestures = [igPan, igPressAndTap]
     Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoParentPassthrough]
-    OnClick = scGPListBox_zpravyClick
     OnMouseMove = scGPListBox_zpravyMouseMove
     CustomImageIndex = -1
     Options.FillColor = clWindow
