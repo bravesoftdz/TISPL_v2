@@ -2769,7 +2769,7 @@ object Form1: TForm1
     object RzStatusPane4: TRzStatusPane
       Left = 383
       Top = 0
-      Width = 813
+      Width = 782
       Height = 28
       Hint = 'Rychl'#225' n'#225'pov'#283'da aplikace'
       BorderWidth = 0
@@ -3284,6 +3284,118 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+    end
+    object scGPButton_prichytavat: TscGPButton
+      Left = 1165
+      Top = 0
+      Width = 31
+      Height = 28
+      Hint = 'Zm'#283#345'it vzd'#225'lenost'
+      Margins.Top = 0
+      Margins.Bottom = 0
+      Align = alRight
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -16
+      Font.Name = 'Roboto'
+      Font.Style = []
+      Font.Quality = fqClearType
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 7
+      TabStop = True
+      OnClick = scGPButton_prichytavatClick
+      Animation = False
+      CanFocused = True
+      CustomDropDown = False
+      Margin = -1
+      Spacing = 1
+      Layout = blGlyphLeft
+      Images = scGPVirtualImageList1
+      ImageIndex = 2
+      ImageMargin = 30
+      TransparentBackground = False
+      Options.NormalColor = 10114859
+      Options.HotColor = 10114859
+      Options.PressedColor = clBtnShadow
+      Options.FocusedColor = 10114859
+      Options.DisabledColor = 10114859
+      Options.NormalColor2 = clNone
+      Options.HotColor2 = clNone
+      Options.PressedColor2 = clNone
+      Options.FocusedColor2 = clNone
+      Options.DisabledColor2 = clNone
+      Options.NormalColorAlpha = 255
+      Options.HotColorAlpha = 200
+      Options.PressedColorAlpha = 255
+      Options.FocusedColorAlpha = 255
+      Options.DisabledColorAlpha = 255
+      Options.NormalColor2Alpha = 255
+      Options.HotColor2Alpha = 255
+      Options.PressedColor2Alpha = 255
+      Options.FocusedColor2Alpha = 230
+      Options.DisabledColor2Alpha = 255
+      Options.FrameNormalColor = 10114859
+      Options.FrameHotColor = 10114859
+      Options.FramePressedColor = clHighlight
+      Options.FrameFocusedColor = 10114859
+      Options.FrameDisabledColor = 10114859
+      Options.FrameWidth = 1
+      Options.FrameNormalColorAlpha = 255
+      Options.FrameHotColorAlpha = 200
+      Options.FramePressedColorAlpha = 255
+      Options.FrameFocusedColorAlpha = 200
+      Options.FrameDisabledColorAlpha = 255
+      Options.FontNormalColor = clWhite
+      Options.FontHotColor = clWhite
+      Options.FontPressedColor = clWhite
+      Options.FontFocusedColor = clWhite
+      Options.FontDisabledColor = clGray
+      Options.ShapeFillGradientAngle = 90
+      Options.ShapeFillGradientPressedAngle = -90
+      Options.ShapeFillGradientColorOffset = 25
+      Options.ShapeCornerRadius = 10
+      Options.ShapeStyle = scgpRect
+      Options.ArrowSize = 9
+      Options.ArrowAreaSize = 0
+      Options.ArrowType = scgpatDefault
+      Options.ArrowThickness = 2
+      Options.ArrowThicknessScaled = False
+      Options.StyleColors = True
+      HotImageIndex = -1
+      FocusedImageIndex = -1
+      PressedImageIndex = -1
+      UseGalleryMenuImage = False
+      UseGalleryMenuCaption = False
+      ScaleMarginAndSpacing = False
+      WidthWithCaption = 0
+      WidthWithoutCaption = 0
+      SplitButton = False
+      RepeatClick = False
+      RepeatClickInterval = 100
+      GlowEffect.Enabled = False
+      GlowEffect.Color = clHighlight
+      GlowEffect.AlphaValue = 95
+      GlowEffect.GlowSize = 7
+      GlowEffect.Offset = 0
+      GlowEffect.Intensive = True
+      GlowEffect.StyleColors = True
+      GlowEffect.HotColor = clNone
+      GlowEffect.PressedColor = clNone
+      GlowEffect.FocusedColor = clNone
+      GlowEffect.PressedGlowSize = 7
+      GlowEffect.PressedAlphaValue = 255
+      GlowEffect.States = [scsHot, scsPressed, scsFocused]
+      ImageGlow = True
+      ShowGalleryMenuFromTop = False
+      ShowGalleryMenuFromRight = False
+      ShowMenuArrow = True
+      ShowFocusRect = True
+      Down = False
+      GroupIndex = 0
+      AllowAllUp = False
+      ExplicitLeft = 1196
     end
   end
   object scGPGlyphButton2: TscGPGlyphButton
@@ -9582,7 +9694,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118009808E80810001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118009808EC0810001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10705,7 +10817,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01014900480AC80A30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01014900480ACC0A30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C000000090030000010020000000000000B0
       0A0000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF

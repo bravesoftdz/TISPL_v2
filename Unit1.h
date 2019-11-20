@@ -326,6 +326,7 @@ __published:	// IDE-managed Components
   TscLabel *scLabel_CZ;
   TscLabel *scLabel_EN;
 	TscGPCheckBox *scGPCheckBox_zobrazit_palce;
+	TscGPButton *scGPButton_prichytavat;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -538,6 +539,7 @@ __published:	// IDE-managed Components
   void __fastcall scGPCheckBox_zobrazit_kolejeClick(TObject *Sender);
   void __fastcall scGPSwitch1ChangeState(TObject *Sender);
 	void __fastcall scGPCheckBox_zobrazit_palceClick(TObject *Sender);
+	void __fastcall scGPButton_prichytavatClick(TObject *Sender);
 
 
 

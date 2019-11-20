@@ -9729,6 +9729,7 @@ void TForm1::NP_input()
 	 TIP="";
 	 //mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
 	 pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp;posledni_editovany_element=NULL;delete posledni_editovany_element;JID=-1;Akce=NIC;
+	 scGPButton_prichytavat->Visible=false;//vypnutí tlačítka přichytávat
 	 scButton_zamek_layoutu->Visible=false;//vypnutí tlačítka pro zámek layoutu
 	 Image_knihovna_objektu->Visible=false;//vypnutí komponenty s knihovnou
    scGPButton_zmerit_vzdalenost->Visible=false;//schování měření vzdálenosti
@@ -9983,8 +9984,9 @@ void TForm1::zmena_editovaneho_objektu()
 		TIP="";
   	//mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
   	pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp;posledni_editovany_element=NULL;delete posledni_editovany_element;JID=-1;Akce=NIC;
-  	DrawGrid_knihovna->SetFocus();
-  	scButton_zamek_layoutu->Visible=false;//vypnutí tlačítka pro zámek layoutu
+		DrawGrid_knihovna->SetFocus();
+		scGPButton_prichytavat->Visible=false;//vypnutí tlačítka přichytávat
+		scButton_zamek_layoutu->Visible=false;//vypnutí tlačítka pro zámek layoutu
   	Image_knihovna_objektu->Visible=false;//vypnutí komponenty s knihovnou
     scGPButton_zmerit_vzdalenost->Visible=false;
   	mGrid_knihovna->SetVisibleComponents(false);//vypnutí komponent v mgridu
@@ -10337,15 +10339,7 @@ AnsiString TForm1::FileName_short(AnsiString FileName)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::UlozitClick(TObject *Sender)
 {
-  log(__func__);//logování
-	if(MOD==NAHLED && duvod_ulozit_nahled)//uložení z editace = uložím editovaný objekt + celý projekt
-	{
-		d.v.vymaz_elementy(pom,true);
-		d.v.kopiruj_objekt(pom_temp,pom);
-		Ulozit_soubor();
-		nahled_ulozit(false);
-		if(editace_textu)Smaz_kurzor();
-	}
+	log(__func__);//logování
 	if(FileName=="")FileName="Nový.tispl";
 	if(FileName=="Nový.tispl" || FileName.Pos(".tisplTemp"))UlozitjakoClick(this);
 	else
@@ -10353,6 +10347,15 @@ void __fastcall TForm1::UlozitClick(TObject *Sender)
 		scSplitView_MENU->Opened=false;
 		if(duvod_k_ulozeni)Ulozit_soubor();
 		else SB(ls->Strings[389]);//"Soubor byl již uložen..."
+	}
+	if(MOD==NAHLED && !duvod_k_ulozeni && duvod_ulozit_nahled)//uložení z editace = uložím editovaný objekt + celý projekt
+	{
+		d.v.vymaz_elementy(pom,true);
+		d.v.kopiruj_objekt(pom_temp,pom);
+		Ulozit_soubor();
+		nahled_ulozit(false);
+		if(editace_textu)Smaz_kurzor();
+		Ulozit_soubor();
 	}
 	scButton_ulozit->Down=false;
 }
@@ -11553,10 +11556,12 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Cvektory::TElement *E=pom_temp->elementy->predchozi;
-	Memo("E.: "+AnsiString(m.Rt90(E->geo.orientace+E->geo.rotacni_uhel)));
-	Memo("O1: "+AnsiString(d.v.OBJEKTY->dalsi->orientace));
-	Memo("O1 + 180: "+AnsiString(m.Rt90(d.v.OBJEKTY->dalsi->orientace+180)));
+	TColor c=scGPButton_zahodit->Options->NormalColor;//RGB(255,69,0);//RzStatusPane4->BlinkColor;
+	scGPLabel_roboti->Font->Color=c;
+	scGPLabel_otoce->Font->Color=c;
+	scGPLabel_stop->Font->Color=c;
+	scGPLabel_geometrie->Font->Color=c;
+	REFRESH();
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -11699,9 +11704,9 @@ void __fastcall TForm1::MaxButtonClick(TObject *Sender)
 			 FMaximized = false;
 			 scLabel_titulek->DragForm = true;
 			 MaxButton->GlyphOptions->Kind = scgpbgkMaximize;
-			 if(pom_temp==NULL){scButton_zamek_layoutu->Visible=false;scGPButton_zmerit_vzdalenost->Visible=false;}
+			 if(pom_temp==NULL){scGPButton_prichytavat->Visible=false;scButton_zamek_layoutu->Visible=false;scGPButton_zmerit_vzdalenost->Visible=false;}
 			 scGPSizeBox->Visible = true;
-			 if(pom_temp==NULL){scButton_zamek_layoutu->Visible=true; scGPButton_zmerit_vzdalenost->Visible=true;}
+			 if(pom_temp==NULL){scGPButton_prichytavat->Visible=true;scButton_zamek_layoutu->Visible=true; scGPButton_zmerit_vzdalenost->Visible=true;}
 			 Form1->Width=Screen->Width/3*2;//zmenší formulář na 2/3 jeho velikosti
 			 Form1->Height=Screen->Height/3*2;//zmenší formulář na 2/3 jeho velikosti
 			 scSplitView_OPTIONS->Opened=false;
@@ -12591,7 +12596,8 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		scGPComboBox_prepinacKot->ItemIndex=0;//ošetření pokud bylo při vypínání editace nastaveno na časové kóty
 		scButton_zamek_layoutu->Visible=true;//zapnutí tlačítka zámek layoutu
 		Image_knihovna_objektu->Visible=true;//zapnutí knihovny
-    scGPButton_zmerit_vzdalenost->Visible=true;
+		scGPButton_zmerit_vzdalenost->Visible=true;
+		scGPButton_prichytavat->Visible=true;//zapnutí tlačítka přichytávat
 		mGrid_knihovna->SetVisibleComponents(true);//zapnutí komponent v mgridu
 		popisky_knihovna_nahled(true);//nastavení popisků pro knihovnu
 		DrawGrid_knihovna->Top=10000;//musí být zobrazena, odchytává stisk kláves
@@ -13522,7 +13528,7 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=408;i++)
+	for(unsigned short i=0;i<=411;i++)
 	{
 		switch(i)
 		{
@@ -13842,10 +13848,10 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
       case 313:text="Kliknutím a tažením myši posunujete celý objekt.";break;
       case 314:text="Pro aktuální počet pozic je třeba buffer o délce";break;
       case 315:text="Nelze odstranit předávací místo.";break;
-      case 316:text="Je k dispozici aktualizace TISPLu. Chcete ji stáhnout?";break;
-      case 317:text="Po dokončení staženým souborem přepište současný EXE soubor.";break;
-      case 318:text="byl změněn.<br>Chcete ho před ukončením uložit?";break;
-      case 319:text="Není k dispozici přípojení k internetu nebo vypršela licence, aplikace nebude spuštěna!";break;
+			case 316:text="Je k dispozici aktualizace TISPLu. Chcete ji stáhnout?";break;
+			case 317:text="Po dokončení staženým souborem přepište současný EXE soubor.";break;
+			case 318:text="byl změněn. Chcete ho před ukončením uložit?";break;
+			case 319:text="Není k dispozici přípojení k internetu nebo vypršela licence, aplikace nebude spuštěna!";break;
       case 320:text="Nezdařilo se připojení k serveru, aplikace nebude spuštěna!";break;
       case 321:text="Nezdařilo se připojení k licenčnímu serveru, aplikace nebude spuštěna!";break;
       case 322:text="Aplikace nebyla řádně ukončena. Byl obnoven poslední Vámi uložený soubor.";break;
@@ -13935,6 +13941,9 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
       case 406:text="Nestíhá se přejezd, záporná časové rezerva!";break;
       case 407:text="Nulová časová rezerva.";break;
 			case 408:text="Vložit jako novou sekci? Ne - změnit na jiný typ sekce.";break;
+			case 409:text="Odemknout rozmístění objektů";break;
+			case 410:text="Zapnout přichytávání";break;
+			case 411:text="Vypnout přichytávání";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -13995,14 +14004,17 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
     RzStatusPane3->Hint=ls->Strings[38];
     RzStatusPane4->Caption=ls->Strings[39];
     RzStatusPane4->Hint=ls->Strings[40];
-    RzStatusPane5->Caption=ls->Strings[41];
-    RzStatusPane5->Hint=ls->Strings[42];
-    scButton_zamek_layoutu->Hint=ls->Strings[43];
+		if(prichytavat_k_mrizce==1)RzStatusPane5->Caption=ls->Strings[375];
+		else RzStatusPane5->Caption=ls->Strings[388];
+		RzStatusPane5->Hint=ls->Strings[42];
+		if(prichytavat_k_mrizce==1)scGPButton_prichytavat->Hint=ls->Strings[411];
+		else scGPButton_prichytavat->Hint=ls->Strings[410];
+		scButton_zamek_layoutu->Hint=ls->Strings[43];
     scGPButton_zmerit_vzdalenost->Hint=ls->Strings[44];
     scListGroupKnihovObjektu->Caption=ls->Strings[45];
     scListGroupPanel_hlavickaOstatni->Caption=ls->Strings[46];
     scListGroupPanel_hlavickaOtoce->Caption=ls->Strings[47];
-    scListGroupPanel_geometrie->Caption=ls->Strings[48];
+		scListGroupPanel_geometrie->Caption=ls->Strings[48];
   	scListGroupPanel_poznamky->Caption=ls->Strings[49];
   	scGPLabel_poznamky->Caption=ls->Strings[54];
     scGPGlyphButton_close_grafy->Caption=ls->Strings[62];
@@ -14199,13 +14211,13 @@ void __fastcall TForm1::scButton_zamek_layoutuClick(TObject *Sender)
 	if(scButton_zamek_layoutu->ImageIndex==68)//odemčeno budu zamykat
 	{
 		scButton_zamek_layoutu->ImageIndex=67;
-		scButton_zamek_layoutu->Hint="Odemknout layout";
+		scButton_zamek_layoutu->Hint=ls->Strings[409];//"Odemknout layout";
 		zamek_layoutu=true;
   }
 	else
 	{
 		scButton_zamek_layoutu->ImageIndex=68;
-		scButton_zamek_layoutu->Hint="Zamknout layout";
+		scButton_zamek_layoutu->Hint=ls->Strings[43];//"Zamknout layout";
 		zamek_layoutu=false;
 	}
 }
@@ -14294,8 +14306,12 @@ void __fastcall TForm1::scGPCheckBox_zobrazit_palceClick(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
-
-
-
-
+//přepínání přichytávání
+void __fastcall TForm1::scGPButton_prichytavatClick(TObject *Sender)
+{
+	RzStatusPane5Click(this);
+	if(prichytavat_k_mrizce==1)scGPButton_prichytavat->Hint=ls->Strings[411];//"Vypnout přichytávání";
+	else scGPButton_prichytavat->Hint=ls->Strings[410];//"Zapnout přichytávání";
+}
+//---------------------------------------------------------------------------
 
