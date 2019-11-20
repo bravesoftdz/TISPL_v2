@@ -378,7 +378,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 					canv->LineTo(X,Y2+W);
 				}
 				//symbolika "sprchy"
-				if(K->typ==1)vykresli_pow_sprchu(canv,X,X,Y1,Y2,m.m2px(K->velikost),clAkt,sirka_steny_px/4,pmpp,0,orientace);
+				if(K->typ==1)vykresli_pow_sprchu(canv,X,X,Y1,Y2,m.m2px(K->velikost),clAkt,sirka_steny_px/4.0,pmpp,0,orientace);
 			}
 			else
 			{
@@ -406,7 +406,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 					canv->LineTo(X2+W,Y);
 				}
 				//symbolika "sprchy"
-				if(K->typ==1)vykresli_pow_sprchu(canv,X1,X2,Y,Y,m.m2px(K->velikost),clAkt,sirka_steny_px/4,pmpp,0,orientace);
+				if(K->typ==1)vykresli_pow_sprchu(canv,X1,X2,Y,Y,m.m2px(K->velikost),clAkt,sirka_steny_px/4.0,pmpp,0,orientace);
 			}
 			////překreslení obrysu, nutné u POW, jinak by komory překryli highlight stěny obrysu
 			if(F->pom_temp!=NULL && F->pom_temp->id==3 && !highlight_pow && !(F->pom_temp!=NULL && F->pom_temp->n!=O->n && F->scGPTrackBar_intenzita->Value<5))polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
@@ -452,7 +452,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				canv->LineTo(X2,Y1-W);
 			}
 			//symbolika tekoucí kapaliny u POW //dodělat po změně souřadnicového modelu
-			if(O->komora->predchozi->typ==1)vykresli_pow_sprchu(canv,m.L2Px(O->elementy->dalsi->geo.X4),m.L2Px(O->elementy->predchozi->geo.X4),m.L2Py(O->body->dalsi->Y),m.L2Py(O->body->predchozi->Y),m.m2px(O->komora->predchozi->velikost),clAkt,sirka_steny_px/4,pmpp,0,orientace);
+			if(O->komora->predchozi->typ==1)vykresli_pow_sprchu(canv,m.L2Px(O->elementy->dalsi->geo.X4),m.L2Px(O->elementy->predchozi->geo.X4),m.L2Py(O->body->dalsi->Y),m.L2Py(O->body->predchozi->Y),m.m2px(O->komora->predchozi->velikost),clAkt,sirka_steny_px/4.0,pmpp,0,orientace);
 		}
 		else
 		{
@@ -473,8 +473,8 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				canv->LineTo(X1-W,Y2);
 			}
 			//symbolika tekoucí kapaliny u POW //dodělat po změně souřadnicového modelu
-			if(O->komora->predchozi->typ==1 && (O->orientace==0 || O->orientace==180 && !highlight))vykresli_pow_sprchu(canv,m.L2Px(O->body->dalsi->X),m.L2Px(O->body->predchozi->X),m.L2Py(O->elementy->predchozi->geo.Y4),m.L2Py(O->elementy->predchozi->geo.Y4),m.m2px(O->komora->predchozi->velikost),clAkt,sirka_steny_px/4,pmpp,0,orientace);
-			if(O->komora->predchozi->typ==1 && O->orientace==180 && highlight)vykresli_pow_sprchu(canv,m.L2Px(O->body->predchozi->X),m.L2Px(O->body->dalsi->X),m.L2Py(O->elementy->predchozi->geo.Y4),m.L2Py(O->elementy->predchozi->geo.Y4),m.m2px(O->komora->predchozi->velikost),clAkt,sirka_steny_px/4,pmpp,0,orientace);//z důvodu špatného vykreslení při highlightu
+			if(O->komora->predchozi->typ==1 && (O->orientace==0 || O->orientace==180 && !highlight))vykresli_pow_sprchu(canv,m.L2Px(O->body->dalsi->X),m.L2Px(O->body->predchozi->X),m.L2Py(O->elementy->predchozi->geo.Y4),m.L2Py(O->elementy->predchozi->geo.Y4),m.m2px(O->komora->predchozi->velikost),clAkt,sirka_steny_px/4.0,pmpp,0,orientace);
+			if(O->komora->predchozi->typ==1 && O->orientace==180 && highlight)vykresli_pow_sprchu(canv,m.L2Px(O->body->predchozi->X),m.L2Px(O->body->dalsi->X),m.L2Py(O->elementy->predchozi->geo.Y4),m.L2Py(O->elementy->predchozi->geo.Y4),m.m2px(O->komora->predchozi->velikost),clAkt,sirka_steny_px/4.0,pmpp,0,orientace);//z důvodu špatného vykreslení při highlightu
 		}
 		//vykreslení KÓTY od poslení komory k okraji kabiny
 		if(zobrazit_koty && F->pom_temp->n==O->n)
@@ -526,7 +526,7 @@ void Cvykresli::vykresli_pow_sprchu(TCanvas *canv,long X1,long X2,long Y1,long Y
 			{
 				line(canv,Xp-krok,Y1,Xp-i,m.round((Y1+Y2)/2.0-pmpp));
 				line(canv,Xp-krok,Y2,Xp-i,m.round((Y1+Y2)/2.0+pmpp));
-      }
+			}
 		}
 	}
 	else//pro svislou
@@ -537,14 +537,14 @@ void Cvykresli::vykresli_pow_sprchu(TCanvas *canv,long X1,long X2,long Y1,long Y
 		{				       //pouze zneužití krok                //pouze zneužití krok a pmpp
 			if(orientace==0 || orientace==-90)//ošetření při nezadání parametru orientace
 			{
-				line(canv,X1,Yp-krok,m.round((X1+X2)/2.0-pmpp),Yp-i);
+  			line(canv,X1,Yp-krok,m.round((X1+X2)/2.0-pmpp),Yp-i);
 				line(canv,X2,Yp-krok,m.round((X1+X2)/2.0+pmpp),Yp-i);
 			}
 			else
 			{
-				line(canv,X1,Yp+krok,m.round((X1+X2)/2.0-pmpp),Yp+i);
+  			line(canv,X1,Yp+krok,m.round((X1+X2)/2.0-pmpp),Yp+i);
 				line(canv,X2,Yp+krok,m.round((X1+X2)/2.0+pmpp),Yp+i);
-      }
+			}
 		}
 	}
 }
@@ -1285,9 +1285,7 @@ void Cvykresli::vykresli_svislici_na_casove_osy(TCanvas *canv,int X,int Y)
 			canv->LineTo(Form1->ClientWidth,Y);
 			canv->Brush->Style=bsSolid;//vracím raději do původního stavu
 			unsigned int V=ceil((Y+PosunT.y-KrokY/2-Form1->scGPPanel_mainmenu->Height)/(KrokY*1.0));//pozn. KrokY/2 kvůli tomu, že střed osy je ve horozintální ose obdelníku
-			UnicodeString text="Vozík: ";
-			if(F->ls->Strings[400]!="")text=F->ls->Strings[400]+" ";
-			if(V<=v.VOZIKY->predchozi->n)Form1->SB(text+AnsiString(V));
+			if(V<=v.VOZIKY->predchozi->n)Form1->SB(F->ls->Strings[400]+" "+AnsiString(V));//"Vozík: "
 			else Form1->SB("");//pokud je už mimo oblast
 		}
 	}
@@ -4267,8 +4265,7 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,lon
 			if(/*stav==2 || */stav==3)canv->Font->Style = TFontStyles()<< fsBold;//došlo k vybrání elementu-tato část odstavena nebo přímo jeho textu
 			if(F->pom_temp!=NULL && F->pom_temp->n!=E->objekt_n)canv->Font->Color=m.clIntensive(clBlack,m.get_intensity());
 			//nastavení názvů pohonů
-			AnsiString T1="pohon nevybrán",T2="pohon nevybrán",Tpom="";
-			if(F->ls->Strings[274]!="")T1=T2=F->ls->Strings[274];
+			AnsiString Tpom="",T1=F->ls->Strings[274],T2=F->ls->Strings[274];//"pohon nevybrán"
 			if(E->pohon!=NULL)T1=E->pohon->name;
 			if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)T2=E->dalsi->pohon->name;
 			if(E->dalsi==NULL)
@@ -5237,7 +5234,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double
 			if(aktElement!=NULL)delka=m.delka(X1,Y1,X2,Y2)/aktElement->pohon->aRD/(1+59.0*(F->DKunit-2));//výpočet délky a šířky kabiny + případný převod m->mm
 			else delka=m.delka(X1,Y1,X2,Y2)/F->pom_temp->pohon->aRD/(1+59.0*(F->DKunit-2));//pro komory v POW
 		}
-		else {T="pohon nevybrán";if(F->ls->Strings[274]!="")T=F->ls->Strings[274];}
+		else T=F->ls->Strings[274];//"pohon nevybrán"
 		//if(aktElement!=NULL) delka=v.vzdalenost_od_predchoziho_elementu(aktElement)/F->pom_temp->pohon->aRD/(1+59.0*(F->DKunit-2));//výpočet vzdálenosti mezi elementy
 		//if(LO_kota)delka=m.round2double(F->vzdalenost_meziLO(aktElement,F->pom_temp->orientace),2)/F->pom_temp->pohon->aRD/(1+59.0*(F->DKunit-2));
 	}

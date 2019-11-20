@@ -312,11 +312,11 @@ Adding elements is only possible after selecting the drive.;X;Pøidávání prvkù je
 Unable to delete.;X;Nelze smazat.
 Click the left mouse button to add a point.;X;Klinutím na levé tlaèítko myši pøidejte bod.
 Click and drag the mouse to move the entire object.;X;Kliknutím a tažením myši posunujete celý objekt.
-A length buffer is required for the current number of positions;X;Pro aktuální poèet pozic je tøeba buffer o délce
+A length buffer is required for the set up wagon;X;Pro nastavovaný vozík je potøeba buffer o délce
 Cannot delete transfer point.;X;Nelze odstranit pøedávací místo.
 An update to TISPL is available. Do you want to download it?;X;Je k dispozici aktualizace TISPLu. Chcete ji stáhnout?
 After the download is complete, overwrite the current EXE file.;X;Po dokonèení staženým souborem pøepište souèasný EXE soubor.
-has been changed.<br>Do you want to save it before exiting?;X;byl zmìnìn.<br>Chcete ho pøed ukonèením uložit?
+has been changed. Do you want to save it before exiting?;X;byl zmìnìn. Chcete ho pøed ukonèením uložit?
 No internet connection or license expired, application will not start!;X;Není k dispozici pøípojení k internetu nebo vypršela licence, aplikace nebude spuštìna!
 Failed to connect to server, application will not start!;X;Nezdaøilo se pøipojení k serveru, aplikace nebude spuštìna!
 Failed to connect to license server, application will not start!;X;Nezdaøilo se pøipojení k licenènímu serveru, aplikace nebude spuštìna!
@@ -407,3 +407,6 @@ Enter order parameters or choose cancellation.;X;Zadejte parametry zakázek nebo 
 There is not enough time to cross, negative reserve time!;X;Nestíhá se pøejezd, záporná èasové rezerva!
 Zero reserve time.;X;Nulová èasová rezerva.
 Insert as new section? No - change to another section type.;X;Vložit jako novou sekci? Ne - zmìnit na jiný typ sekce.
+Unlock object placement;X;Odemknout rozmístìní objektù
+Turn snap on;X;Zapnout pøichytávání
+Turn snap off;X;Vypnout pøichytávání

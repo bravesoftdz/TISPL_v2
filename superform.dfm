@@ -15,6 +15,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
   Font.Style = []
   OldCreateOrder = False
   Position = poDesigned
+  OnClose = FormClose
   OnKeyDown = FormKeyDown
   OnMouseMove = FormMouseMove
   OnPaint = FormPaint
@@ -1641,35 +1642,14 @@ object Form_definice_zakazek: TForm_definice_zakazek
     GroupIndex = 0
     AllowAllUp = False
   end
-  object scColorGrid1: TscColorGrid
-    Left = 430
-    Top = 256
-    Width = 255
-    Height = 99
+  object Button1: TButton
+    Left = 712
+    Top = 490
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
     TabOrder = 17
-    OnClick = scColorGrid1Click
-    CustomImageIndex = -1
-    DragForm = False
-    DragTopForm = True
-    StyleKind = scpsTransparent
-    ShowCaption = False
-    BorderStyle = scpbsNone
-    WallpaperIndex = -1
-    LightBorderColor = clBtnHighlight
-    ShadowBorderColor = clBtnShadow
-    CaptionGlowEffect.Enabled = False
-    CaptionGlowEffect.Color = clBtnShadow
-    CaptionGlowEffect.AlphaValue = 255
-    CaptionGlowEffect.GlowSize = 7
-    CaptionGlowEffect.Offset = 0
-    CaptionGlowEffect.Intensive = True
-    CaptionGlowEffect.StyleColors = True
-    Color = clBtnFace
-    Caption = 'scColorGrid1'
-    StorePaintBuffer = False
-    RowCount = 4
-    ColCount = 12
-    ColorValue = clSkyBlue
+    OnClick = Button1Click
   end
   object ColorDialog1: TColorDialog
     Left = 648

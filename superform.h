@@ -24,6 +24,7 @@
 #include "scGPImages.hpp"
 #include "scImageCollection.hpp"
 #include "scColorControls.hpp"
+#include "scExtControls.hpp"
 //---------------------------------------------------------------------------
 class TForm_definice_zakazek : public TForm
 {
@@ -59,15 +60,10 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_zacatek;
 	TrHTMLLabel *rHTMLLabel_eDesigner;
   TscGPImageCollection *scGPImageCollection_layout;
-  TscColorGrid *scColorGrid1;
+  TButton *Button1;
 	void __fastcall FormShow(TObject *Sender);
-	void __fastcall RzStringGrid1MouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
-          int X, int Y);
-	void __fastcall RzStringGrid1DrawCell(TObject *Sender, int ACol, int ARow, TRect &Rect,
-          TGridDrawState State);
 	void __fastcall Button1Click(TObject *Sender);
 	void __fastcall Button2Click(TObject *Sender);
-	void __fastcall Button3Click(TObject *Sender);
 	void __fastcall RzStringGrid1RowMoved(TObject *Sender, int FromIndex, int ToIndex);
 	void __fastcall Memo_spojakClick(TObject *Sender);
 	void __fastcall RzStringGrid1GetEditMask(TObject *Sender, int ACol, int ARow, UnicodeString &Value);
@@ -94,7 +90,7 @@ __published:	// IDE-managed Components
 	void __fastcall rStringGridEd1KeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
-  void __fastcall scColorGrid1Click(TObject *Sender);
+  void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 
 
 
@@ -122,8 +118,13 @@ public:		// User declarations
 	void OnClick(long Tag,long ID,unsigned long Col,unsigned long Row);
 	void OnEnter(long Tag,unsigned long Col,unsigned long Row);
 	void OnChange(long Tag,unsigned long Col,unsigned long Row);
+  void setButtonColor(int Row);
+  void loadHeader(int Row,bool novy=true);
 
+  bool add_zakazka;
 	bool zmena_TT;
+  bool nacitam_zakazky;
+  TColor barva;//barva zakáky
 
 };
 //---------------------------------------------------------------------------

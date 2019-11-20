@@ -275,7 +275,7 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 
        data+="<h4>Zprávy o lince</h4>";
        data+="<table class=\"table table-striped table-responsive\"><thead></thead>";
-       data+="<tbody><tr><td>"+F->scHTMLLabel_log_vypis->Caption;
+       data+="<tbody><tr><td>";
 			 data+="</form></div></br>";  //celkové ukonèení celého divu
 
 

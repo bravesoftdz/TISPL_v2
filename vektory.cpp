@@ -564,18 +564,18 @@ Cvektory::TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, 
 	name=knihovna_objektu[id].name;
 	switch(id)
 	{
-		case 0:if(F->ls->Strings[254]!="")name=F->ls->Strings[254];break;//"navěšování"
-		case 2:if(F->ls->Strings[260]!="")name=F->ls->Strings[260];break;//"ožeh"
-		case 4:if(F->ls->Strings[261]!="")name=F->ls->Strings[261];break;//"ionizace"
-		case 5:if(F->ls->Strings[262]!="")name=F->ls->Strings[262];break;//"lakování"
-		case 6:if(F->ls->Strings[279]!="")name=F->ls->Strings[279];break;//"vytěkání"
-		case 7:if(F->ls->Strings[280]!="")name=F->ls->Strings[280];break;//"sušení"
-		case 8:if(F->ls->Strings[281]!="")name=F->ls->Strings[281];break;//"chlazení"
-		case 9:if(F->ls->Strings[255]!="")name=F->ls->Strings[255];break;//"svěšování"
-		case 11:if(F->ls->Strings[282]!="")name=F->ls->Strings[282];break;//"výtah"
-		case 12:if(F->ls->Strings[283]!="")name=F->ls->Strings[283];break;//"přejezd"
-		case 13:if(F->ls->Strings[284]!="")name=F->ls->Strings[284];break;//"výhybka"
-		case 14:if(F->ls->Strings[285]!="")name=F->ls->Strings[285];break;//"nedefinovaný"
+		case 0:name=F->ls->Strings[254];break;//"navěšování"
+		case 2:name=F->ls->Strings[260];break;//"ožeh"
+		case 4:name=F->ls->Strings[261];break;//"ionizace"
+		case 5:name=F->ls->Strings[262];break;//"lakování"
+		case 6:name=F->ls->Strings[279];break;//"vytěkání"
+		case 7:name=F->ls->Strings[280];break;//"sušení"
+		case 8:name=F->ls->Strings[281];break;//"chlazení"
+		case 9:name=F->ls->Strings[255];break;//"svěšování"
+		case 11:name=F->ls->Strings[282];break;//"výtah"
+		case 12:name=F->ls->Strings[283];break;//"přejezd"
+		case 13:name=F->ls->Strings[284];break;//"výhybka"
+		case 14:name=F->ls->Strings[285];break;//"nedefinovaný"
 	}
 	if(id!=13 && id!=14){short_name=name.UpperCase();short_name=short_name.SubString(1,3);}else {short_name=name.UpperCase();short_name=short_name.SubString(1,1);}
 	if(id==14)short_name=knihovna_objektu[id].short_name;
@@ -1524,7 +1524,12 @@ void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_o
 {
 	short oblast=0;
 	if(F->prichytavat_k_mrizce!=1)kontrolovat_oblast=false;
-	if(kontrolovat_oblast && Objekt->predchozi->n>0)oblast=oblast_objektu(Objekt->predchozi,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y);
+	if(kontrolovat_oblast && Objekt->predchozi->n>0)
+	{
+		oblast=oblast_objektu(Objekt->predchozi,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y);
+		if(oblast==2)oblast==0;//vyřezení oblasti za
+		X=F->akt_souradnice_kurzoru.x-Objekt->elementy->dalsi->geo.X1; Y=F->akt_souradnice_kurzoru.y-Objekt->elementy->dalsi->geo.Y1;
+	}
 	if(oblast==0)
 	{
 		////posun kabiny-polygonu
@@ -1533,7 +1538,7 @@ void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_o
 		Objekt->Xt+=X;
 		Objekt->Yt+=Y;
 		////posun tabulky pohonů
-		if(Objekt->Xp!=-500 && Objekt->Yp!=-500)
+		if(Objekt->Xp>0 && Objekt->Yp>0)
 		{
 			Objekt->Xp+=X;
 			Objekt->Yp+=Y;
@@ -1553,24 +1558,26 @@ void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_o
 	}
 	////přilepení objektu na předchozí objekt
 	if(F->prichytavat_k_mrizce==1 && oblast==1 && (Objekt->elementy->dalsi->geo.X1!=Objekt->predchozi->elementy->predchozi->geo.X4 || Objekt->elementy->dalsi->geo.Y1!=Objekt->predchozi->elementy->predchozi->geo.Y4))
+	{
 		posun_objekt(Objekt->predchozi->elementy->predchozi->geo.X4-Objekt->elementy->dalsi->geo.X1,Objekt->predchozi->elementy->predchozi->geo.Y4-Objekt->elementy->dalsi->geo.Y1,Objekt,false);
+	}
 	////změna pořadí před předchozí
 //	if(oblast==2)
 //		zmen_poradi_objektu(Objekt,Objekt->predchozi);
 	////přilepení na další objekt
-	oblast=0;
-	if(kontrolovat_oblast && Objekt->dalsi!=NULL)oblast=oblast_objektu(Objekt->dalsi,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y);
-	if(F->prichytavat_k_mrizce==1 && oblast==2 && (Objekt->dalsi->elementy->dalsi->geo.X1!=Objekt->elementy->predchozi->geo.X4 || Objekt->dalsi->elementy->dalsi->geo.Y1!=Objekt->elementy->predchozi->geo.Y4))
-		posun_objekt(Objekt->dalsi->elementy->dalsi->geo.X1-Objekt->elementy->predchozi->geo.X4,Objekt->dalsi->elementy->dalsi->geo.Y1-Objekt->elementy->predchozi->geo.Y4,Objekt,false);
+//	oblast=0;
+//	if(kontrolovat_oblast && Objekt->dalsi!=NULL)oblast=oblast_objektu(Objekt->dalsi,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y);
+//	if(F->prichytavat_k_mrizce==1 && (oblast==2 || oblast1==2) && (Objekt->dalsi->elementy->dalsi->geo.X1!=Objekt->elementy->predchozi->geo.X4 || Objekt->dalsi->elementy->dalsi->geo.Y1!=Objekt->elementy->predchozi->geo.Y4))
+//		posun_objekt(Objekt->dalsi->elementy->dalsi->geo.X1-Objekt->elementy->predchozi->geo.X4,Objekt->dalsi->elementy->dalsi->geo.Y1-Objekt->elementy->predchozi->geo.Y4,Objekt,false);
 	////změna pořadí za další
 //	if(oblast==1)
 //		zmen_poradi_objektu(Objekt,Objekt->dalsi);
 	////změna rotace
 	if(Objekt->n>1 && povolit_rotaci)
 	{
-		double azimut=0;
-		azimut=m.Rt90(m.azimut(Objekt->predchozi->elementy->predchozi->geo.X4,Objekt->predchozi->elementy->predchozi->geo.Y4,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y));//Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1));
-		rotuj_objekt(Objekt,Objekt->orientace-azimut);
+		double azimut=0,x=F->akt_souradnice_kurzoru.x,y=F->akt_souradnice_kurzoru.y;
+		azimut=m.Rt90(m.azimut(Objekt->predchozi->elementy->predchozi->geo.X4,Objekt->predchozi->elementy->predchozi->geo.Y4,x,y));//Objekt->elementy->dalsi->geo.X1,Objekt->elementy->dalsi->geo.Y1));
+		if(m.Rt90(azimut+180)!=Objekt->predchozi->orientace)rotuj_objekt(Objekt,Objekt->orientace-azimut);
 	}
 }
 ////---------------------------------------------------------------------------
@@ -1934,17 +1941,17 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	switch(eID)
 	{
 		case 0: T="Stop"; break;//stop stanice
-		case 1:case 7:case 11:case 15:case 101:case 105:  T="Robot"; 			                           novy->PD=0;break;//kontinuální robota
-		case 2:case 8:case 12:case 16:case 102:case 106:  T="Robot"; 			                           novy->PT1=60;break;//robot se stopkou
-		case 3:case 9:case 13:case 17:case 103:case 107:  T="Robot"; 			                           novy->PD=0;novy->OTOC_delka=0.450;novy->zona_pred=0.3;novy->zona_za=0.3;novy->LO1=(1.5-novy->OTOC_delka)/2.0;novy->LO2=novy->LO1;novy->rotace_jig=180;break;//kontinuální robot s pasivní otočí
-		case 4:case 10:case 14:case 18:case 104:case 108: T="Robot";																 novy->PT1=60;novy->PTotoc=20;novy->PT2=60;novy->rotace_jig=180; break;//robot s aktivní otočí (tj. s otočí a se stopkou)
-		case 5: if(F->ls->Strings[273]!="")T=F->ls->Strings[273];else T="Otoč"; 										 novy->OTOC_delka=0.450;novy->zona_pred=0.3;novy->zona_za=0.3;novy->rotace_jig=90;break;//pasivní otoč
-		case 6: if(F->ls->Strings[273]!="")T=F->ls->Strings[273];else T="Otoč"; 										 novy->PTotoc=20;novy->rotace_jig=90;break;//aktivní otoč
-		case 100: if(F->ls->Strings[270]!="")T=F->ls->Strings[270];else T="ION tyč";break;
-		case 200: if(F->ls->Strings[271]!="")T=F->ls->Strings[271];else T="Předávací místo";break;
+		case 1:case 7:case 11:case 15:case 101:case 105:  T="Robot"; 			          novy->PD=0;break;//kontinuální robota
+		case 2:case 8:case 12:case 16:case 102:case 106:  T="Robot"; 			          novy->PT1=60;break;//robot se stopkou
+		case 3:case 9:case 13:case 17:case 103:case 107:  T="Robot"; 			          novy->PD=0;novy->OTOC_delka=0.450;novy->zona_pred=0.3;novy->zona_za=0.3;novy->LO1=(1.5-novy->OTOC_delka)/2.0;novy->LO2=novy->LO1;novy->rotace_jig=180;break;//kontinuální robot s pasivní otočí
+		case 4:case 10:case 14:case 18:case 104:case 108: T="Robot";								novy->PT1=60;novy->PTotoc=20;novy->PT2=60;novy->rotace_jig=180; break;//robot s aktivní otočí (tj. s otočí a se stopkou)
+		case 5: T=F->ls->Strings[273]; 										 													novy->OTOC_delka=0.450;novy->zona_pred=0.3;novy->zona_za=0.3;novy->rotace_jig=90;break;//pasivní otoč
+		case 6: T=F->ls->Strings[273]; 										 													novy->PTotoc=20;novy->rotace_jig=90;break;//aktivní otoč
+		case 100: T=F->ls->Strings[270];break;
+		case 200: T=F->ls->Strings[271];break;
 		case MaxInt: T="Zarážka";break;
 	}
-	if(101<=eID && eID<=108){if(F->ls->Strings[272]!="")T=F->ls->Strings[272];else T="Operátor";}
+	if(101<=eID && eID<=108)T=F->ls->Strings[272];//"Operátor";
 	if(novy->name=="")//přiřazení názvu pouze v případě, že element žádné nemá, při posuvu je novému elementu přiřazeno jméno
 	{
 		unsigned int nTyp=vrat_poradi_elementu_do(Objekt,novy)+1;//pokud se jedná o roboty
@@ -2109,11 +2116,7 @@ void Cvektory::vloz_G_element(TElement *Element,short typ,double X1,double Y1,do
 void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 {
 	bool rename=false;//proměná sloužící k spouštění přejměnování
-	AnsiString t_operator="Operátor",t_ion="ION tyč",t_otoc="Otoč",t_PM="Předávací místo";
-	if(F->ls->Strings[272]!="")t_operator=F->ls->Strings[272];
-	if(F->ls->Strings[270]!="")t_ion=F->ls->Strings[270];
-	if(F->ls->Strings[273]!="")t_otoc=F->ls->Strings[273];
-	if(F->ls->Strings[271]!="")t_PM=F->ls->Strings[271];
+	AnsiString t_operator=F->ls->Strings[272],t_ion=F->ls->Strings[270],t_otoc=F->ls->Strings[273],t_PM=F->ls->Strings[271];
 	if(Element!=NULL)//funkčnost při vložení elementu mezi ostatní, pouze název pořadové čísla byly již změněny
 	{
 		//úprava názvu pro roboty
@@ -3385,8 +3388,8 @@ void Cvektory::smaz_element(TElement *Element)
 		O=NULL;E=NULL;dalsi_PM=NULL;predchozi_PM=NULL;delete O;delete E;delete dalsi_PM;delete predchozi_PM;
 	}
 	//hláška uživateli
-	if(!povolit_smazani && F->pom_temp!=NULL){F->TIP="Nelze odstranit předávací místo";if(F->ls->Strings[315]!="")F->TIP=F->ls->Strings[315];}
-  ////////////smaz_element
+	if(!povolit_smazani && F->pom_temp!=NULL)F->TIP=F->ls->Strings[315];//"Nelze odstranit předávací místo"
+	////////////smaz_element
 	if(povolit_smazani && (Element->eID==MaxInt || Element->geo.typ==0 && Element->dalsi!=NULL && Element->dalsi->geo.typ==0))//pokud se jedná o zarážku, odstranit ze spojáku nebo pokud se jedná o element mezi 2mi liniemi
 	{
 		//vyřazení prvku ze seznamu a napojení prvku dalšího na prvek předchozí prku mazaného
