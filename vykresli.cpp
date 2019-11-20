@@ -29,7 +29,7 @@ Cvykresli::Cvykresli()
 	DoSkRB=(1.2+Robot_sirka_zakladny/2.0);//delka od středu (X,Y bodu) robota k referenčnímu bodu robota (tj. k trysce) v metrech
 	DkRB=0.8;//délka k referenčnímu bodu od uchopovacího bodu, respektive odsazení člověka od linky
 	clStenaHaly=TColor RGB(147,166,182);//původně m.clIntensive(clBlue,100);
-	clStenaKabiny=m.clIntensive(clStenaHaly,40);//původně m.clIntensive(clRed,180);
+	clStenaKabiny=m.clIntensive(clStenaHaly,40);//původně m.clIntensive(clRed,180); //pěkná modrá: 79,122,186
 	clPasiv=m.clIntensive(clBlack,180);
 	clError=clRed;
 	clWarning=TColor RGB(255,165,0);
