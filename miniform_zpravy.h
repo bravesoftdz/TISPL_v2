@@ -35,7 +35,7 @@ private:	// User declarations
 public:		// User declarations
   __fastcall TForm_zpravy(TComponent* Owner);
   	bool closing;//detekce kvùli hlavnímu formuláøi jinak volá tìlo formactivate hlavního formu
-    void update_zpravy(double rezim); // 1 - celkový update zpráv, - 0 - update pouze horní lišty Warningù a Errorù
+    void update_zpravy(double rezim=1); // 1 - celkový update zpráv, - 0 - update pouze horní lišty Warningù a Errorù
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm_zpravy *Form_zpravy;
