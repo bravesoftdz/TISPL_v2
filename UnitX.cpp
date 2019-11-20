@@ -961,7 +961,7 @@ void TFormX::validace_aRD(bool pouze_rozmezi)
 	if(mimo_rozmezi && F->pom_temp->pohon->aRD > 0)
 	{
 		if(F->PmG->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
-		if(F->ls->Strings[220]!="")F->PmG->ShowNote(F->ls->Strings[220],F->d.clError,14);else F->PmG->ShowNote("Rychlost neodpovídá rozmezí!",F->d.clError,14);
+		F->PmG->ShowNote(F->ls->Strings[220],F->d.clError,14);//"Rychlost neodpovídá rozmezí!"
 		povolit_zakazat_editaci(false);
 	}
 	if(!mimo_rozmezi && F->PmG->Note.Text!=""){F->PmG->ShowNote("",F->d.clError,14);povolit_zakazat_editaci(true);}
@@ -982,9 +982,7 @@ void TFormX::validace_aRD(bool pouze_rozmezi)
 		if(Combo->ItemIndex!=0 && F->pom_temp->pohon->roztec>0 && F->ms.MyToDouble(dopRD)!= F->ms.MyToDouble(F->pom_temp->pohon->aRD) && mimo_rozmezi==false)
 		{
 			if(F->PmG->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
-			AnsiString t="Zadejte doporuèenou rychlost pohonu:";
-			if(F->ls->Strings[221]!="")t=F->ls->Strings[221];
-			F->PmG->ShowNote(t+" <a>"+AnsiString(F->m.round2double(F->outaRD(dopRD),3))+"</a> "+jednotky,F->d.clError,14);
+			F->PmG->ShowNote(F->ls->Strings[221]+" <a>"+AnsiString(F->m.round2double(F->outaRD(dopRD),3))+"</a> "+jednotky,F->d.clError,14);//"Zadejte doporuèenou rychlost pohonu:"
 		}
 		//vše je vpoøádku
 		if (F->ms.MyToDouble(dopRD)== F->ms.MyToDouble(F->pom_temp->pohon->aRD) && mimo_rozmezi==false)
@@ -993,7 +991,7 @@ void TFormX::validace_aRD(bool pouze_rozmezi)
 			F->PmG->ShowNote("",F->d.clError,14);
 		}
 	}
-	else if(!pouze_rozmezi){if(F->ls->Strings[222]!="")F->PmG->ShowNote(F->ls->Strings[222],F->d.clError,14);else F->PmG->ShowNote("Neplatná hodnota rychlosti pohonu!",F->d.clError,14);}
+	else if(!pouze_rozmezi)F->PmG->ShowNote(F->ls->Strings[222],F->d.clError,14);//"Neplatná hodnota rychlosti pohonu!"
 	Combo=NULL;delete Combo;
 }
 //---------------------------------------------------------------------------
@@ -1007,13 +1005,9 @@ void TFormX::validace_max_voziku()
 		bool validace=true;//pøedpoklad, že je vše OK
 		////samotná validace
 		posledni_E->max_pocet_voziku=F->max_voziku(posledni_E);
-		AnsiString t1="Max. poèet vozikù musí být menší nebo roven",t2="Nelze, pøed Stopstanicí se nachází oblouk";
-		if(F->ls->Strings[250]!="")t1=F->ls->Strings[250];
-		if(F->ls->Strings[251]!="")t2=F->ls->Strings[251];
+		AnsiString t1=F->ls->Strings[250],t2=F->ls->Strings[251],tip=F->ls->Strings[314]+" ";//"Max. poèet vozikù musí být menší nebo roven","Nelze, pøed Stopstanicí se nachází oblouk","Pro nastavovaný vozík je potøeba buffer o délce "
 		if(posledni_E->max_pocet_voziku>0 && posledni_E->max_pocet_voziku<posledni_E->akt_pocet_voziku){posledni_E->mGrid->ShowNote(t1+" <a>"+AnsiString(posledni_E->max_pocet_voziku)+"</a>");validace=false;}
 		if(posledni_E->max_pocet_voziku==0){posledni_E->mGrid->ShowNote(t2);validace=false;}
-		AnsiString tip="Pro aktuální poèet pozic je tøeba buffer o délce ";
-		if(F->ls->Strings[314]!="")tip=F->ls->Strings[314]+" ";
 		if(posledni_E->max_pocet_voziku>0 && posledni_E->max_pocet_voziku<posledni_E->akt_pocet_voziku)F->TIP=tip+AnsiString(F->d.v.PP.delka_podvozek*posledni_E->akt_pocet_voziku*1000)+" mm.";
 		////pøepsání maximálního poèctu vozíku do tabulky elementu, pro jistotu
 		posledni_E->mGrid->Cells[1][5].Text=posledni_E->max_pocet_voziku;
