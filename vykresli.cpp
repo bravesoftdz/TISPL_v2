@@ -378,7 +378,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 					canv->LineTo(X,Y2+W);
 				}
 				//symbolika "sprchy"
-				if(K->typ==1)vykresli_pow_sprchu(canv,X,X,Y1,Y2,m.m2px(K->velikost),clAkt,sirka_steny_px/4,pmpp,0,orientace);
+				if(K->typ==1)vykresli_pow_sprchu(canv,X,X,Y1,Y2,m.m2px(K->velikost),clAkt,sirka_steny_px/4.0,pmpp,0,orientace);
 			}
 			else
 			{
@@ -406,7 +406,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 					canv->LineTo(X2+W,Y);
 				}
 				//symbolika "sprchy"
-				if(K->typ==1)vykresli_pow_sprchu(canv,X1,X2,Y,Y,m.m2px(K->velikost),clAkt,sirka_steny_px/4,pmpp,0,orientace);
+				if(K->typ==1)vykresli_pow_sprchu(canv,X1,X2,Y,Y,m.m2px(K->velikost),clAkt,sirka_steny_px/4.0,pmpp,0,orientace);
 			}
 			////překreslení obrysu, nutné u POW, jinak by komory překryli highlight stěny obrysu
 			if(F->pom_temp!=NULL && F->pom_temp->id==3 && !highlight_pow && !(F->pom_temp!=NULL && F->pom_temp->n!=O->n && F->scGPTrackBar_intenzita->Value<5))polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
@@ -452,7 +452,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				canv->LineTo(X2,Y1-W);
 			}
 			//symbolika tekoucí kapaliny u POW //dodělat po změně souřadnicového modelu
-			if(O->komora->predchozi->typ==1)vykresli_pow_sprchu(canv,m.L2Px(O->elementy->dalsi->geo.X4),m.L2Px(O->elementy->predchozi->geo.X4),m.L2Py(O->body->dalsi->Y),m.L2Py(O->body->predchozi->Y),m.m2px(O->komora->predchozi->velikost),clAkt,sirka_steny_px/4,pmpp,0,orientace);
+			if(O->komora->predchozi->typ==1)vykresli_pow_sprchu(canv,m.L2Px(O->elementy->dalsi->geo.X4),m.L2Px(O->elementy->predchozi->geo.X4),m.L2Py(O->body->dalsi->Y),m.L2Py(O->body->predchozi->Y),m.m2px(O->komora->predchozi->velikost),clAkt,sirka_steny_px/4.0,pmpp,0,orientace);
 		}
 		else
 		{
@@ -473,8 +473,8 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				canv->LineTo(X1-W,Y2);
 			}
 			//symbolika tekoucí kapaliny u POW //dodělat po změně souřadnicového modelu
-			if(O->komora->predchozi->typ==1 && (O->orientace==0 || O->orientace==180 && !highlight))vykresli_pow_sprchu(canv,m.L2Px(O->body->dalsi->X),m.L2Px(O->body->predchozi->X),m.L2Py(O->elementy->predchozi->geo.Y4),m.L2Py(O->elementy->predchozi->geo.Y4),m.m2px(O->komora->predchozi->velikost),clAkt,sirka_steny_px/4,pmpp,0,orientace);
-			if(O->komora->predchozi->typ==1 && O->orientace==180 && highlight)vykresli_pow_sprchu(canv,m.L2Px(O->body->predchozi->X),m.L2Px(O->body->dalsi->X),m.L2Py(O->elementy->predchozi->geo.Y4),m.L2Py(O->elementy->predchozi->geo.Y4),m.m2px(O->komora->predchozi->velikost),clAkt,sirka_steny_px/4,pmpp,0,orientace);//z důvodu špatného vykreslení při highlightu
+			if(O->komora->predchozi->typ==1 && (O->orientace==0 || O->orientace==180 && !highlight))vykresli_pow_sprchu(canv,m.L2Px(O->body->dalsi->X),m.L2Px(O->body->predchozi->X),m.L2Py(O->elementy->predchozi->geo.Y4),m.L2Py(O->elementy->predchozi->geo.Y4),m.m2px(O->komora->predchozi->velikost),clAkt,sirka_steny_px/4.0,pmpp,0,orientace);
+			if(O->komora->predchozi->typ==1 && O->orientace==180 && highlight)vykresli_pow_sprchu(canv,m.L2Px(O->body->predchozi->X),m.L2Px(O->body->dalsi->X),m.L2Py(O->elementy->predchozi->geo.Y4),m.L2Py(O->elementy->predchozi->geo.Y4),m.m2px(O->komora->predchozi->velikost),clAkt,sirka_steny_px/4.0,pmpp,0,orientace);//z důvodu špatného vykreslení při highlightu
 		}
 		//vykreslení KÓTY od poslení komory k okraji kabiny
 		if(zobrazit_koty && F->pom_temp->n==O->n)
@@ -511,44 +511,41 @@ void Cvykresli::vykresli_pow_sprchu(TCanvas *canv,long X1,long X2,long Y1,long Y
 {
 	if(typ!=-2)set_pen(canv,color,sirka,PS_ENDCAP_SQUARE);//pokud se jedná o typ kurzor, tak se nezobrazuje
 	short krok=sirka*8;//pouze zneužití sirka
-	if(krok>0)//ošetření pro malý zoom
+	if(X1==X2)//pro vodorovnou situaci
 	{
-  	if(X1==X2)//pro vodorovnou situaci
-  	{
-  		long Xp=X1-velikost_komory_px;//Xp - X předchozí
-  		if(orientace==270)Xp=X1+velikost_komory_px;
-  		for(unsigned int i=krok;i<velikost_komory_px;i+=krok)
-  		{				     //pouze zneužití krok                     //pouze zneužití krok a pmpp
-  			if(orientace==90 || orientace==-90)//ošetření při nezadání parametru orientace
-  			{
-  				line(canv,Xp+krok,Y1,Xp+i,m.round((Y1+Y2)/2.0-pmpp));
-  				line(canv,Xp+krok,Y2,Xp+i,m.round((Y1+Y2)/2.0+pmpp));
-  			}
-  			else
-  			{
-  				line(canv,Xp-krok,Y1,Xp-i,m.round((Y1+Y2)/2.0-pmpp));
-  				line(canv,Xp-krok,Y2,Xp-i,m.round((Y1+Y2)/2.0+pmpp));
-  			}
-  		}
-  	}
-  	else//pro svislou
-  	{
-  		long Yp=Y1-velikost_komory_px;//Xp - X předchozí
-  		if(orientace==0)Yp=Y1+velikost_komory_px;
-  		for(unsigned int i=krok;i<velikost_komory_px;i+=krok)
-  		{				       //pouze zneužití krok                //pouze zneužití krok a pmpp
-  			if(orientace==0 || orientace==-90)//ošetření při nezadání parametru orientace
-  			{
-  				line(canv,X1,Yp-krok,m.round((X1+X2)/2.0-pmpp),Yp-i);
-  				line(canv,X2,Yp-krok,m.round((X1+X2)/2.0+pmpp),Yp-i);
-  			}
-  			else
-  			{
-  				line(canv,X1,Yp+krok,m.round((X1+X2)/2.0-pmpp),Yp+i);
-  				line(canv,X2,Yp+krok,m.round((X1+X2)/2.0+pmpp),Yp+i);
-  			}
-  		}
-  	}
+		long Xp=X1-velikost_komory_px;//Xp - X předchozí
+		if(orientace==270)Xp=X1+velikost_komory_px;
+		for(unsigned int i=krok;i<velikost_komory_px;i+=krok)
+		{				     //pouze zneužití krok                     //pouze zneužití krok a pmpp
+			if(orientace==90 || orientace==-90)//ošetření při nezadání parametru orientace
+			{
+				line(canv,Xp+krok,Y1,Xp+i,m.round((Y1+Y2)/2.0-pmpp));
+				line(canv,Xp+krok,Y2,Xp+i,m.round((Y1+Y2)/2.0+pmpp));
+			}
+			else
+			{
+				line(canv,Xp-krok,Y1,Xp-i,m.round((Y1+Y2)/2.0-pmpp));
+				line(canv,Xp-krok,Y2,Xp-i,m.round((Y1+Y2)/2.0+pmpp));
+			}
+		}
+	}
+	else//pro svislou
+	{
+		long Yp=Y1-velikost_komory_px;//Xp - X předchozí
+		if(orientace==0)Yp=Y1+velikost_komory_px;
+		for(unsigned int i=krok;i<velikost_komory_px;i+=krok)
+		{				       //pouze zneužití krok                //pouze zneužití krok a pmpp
+			if(orientace==0 || orientace==-90)//ošetření při nezadání parametru orientace
+			{
+  			line(canv,X1,Yp-krok,m.round((X1+X2)/2.0-pmpp),Yp-i);
+				line(canv,X2,Yp-krok,m.round((X1+X2)/2.0+pmpp),Yp-i);
+			}
+			else
+			{
+  			line(canv,X1,Yp+krok,m.round((X1+X2)/2.0-pmpp),Yp+i);
+				line(canv,X2,Yp+krok,m.round((X1+X2)/2.0+pmpp),Yp+i);
+			}
+		}
 	}
 }
 //---------------------------------------------------------------------------
