@@ -507,10 +507,10 @@ void Cvykresli::nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv,unsigned sh
 }
 //---------------------------------------------------------------------------
 //symbolika tekoucí kapaliny u POW
-void Cvykresli::vykresli_pow_sprchu(TCanvas *canv,long X1,long X2,long Y1,long Y2,unsigned int velikost_komory_px,TColor color,short sirka,short pmpp,short typ,double orientace)
+void Cvykresli::vykresli_pow_sprchu(TCanvas *canv,long X1,long X2,long Y1,long Y2,unsigned int velikost_komory_px,TColor color,double sirka,short pmpp,short typ,double orientace)
 {
 	if(typ!=-2)set_pen(canv,color,sirka,PS_ENDCAP_SQUARE);//pokud se jedná o typ kurzor, tak se nezobrazuje
-	short krok=sirka*8;//pouze zneužití sirka
+	double krok=sirka*8;//pouze zneužití sirka
 	if(X1==X2)//pro vodorovnou situaci
 	{
 		long Xp=X1-velikost_komory_px;//Xp - X předchozí
