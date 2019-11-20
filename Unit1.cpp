@@ -463,10 +463,6 @@ void TForm1::set_font(int velikost)
   scGPGlyphButton_close_grafy->Font=aFont;
   scGPGlyphButton_close_grafy->Font->Color=barva;
   scGPGlyphButton_close_grafy->Font->Size=velikost;
-  barva=scExPanel_log_header->Font->Color;
-  scExPanel_log_header->Font=aFont;
-  scExPanel_log_header->Font->Color=barva;
-  scExPanel_log_header->Font->Size=velikost;
   barva=scExPanel_html->Font->Color;
   scExPanel_html->Font=aFont;
   scExPanel_html->Font->Color=barva;
@@ -1536,8 +1532,8 @@ void __fastcall TForm1::FormResize(TObject *Sender)
 	scGPButton_viditelnostKoty->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_viditelnostKoty->Height)/2;
 	scGPButton_viditelnostmGrid->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_viditelnostmGrid->Height)/2;
 	//horní lišta
-	if(MOD==NAHLED)scGPGlyphButton_zpravy_ikona->Left=Nahled->Left-scGPGlyphButton_zpravy_ikona->Width;
-	else scGPGlyphButton_zpravy_ikona->Left=Schema->Left-scGPGlyphButton_zpravy_ikona->Width;
+//	if(MOD==NAHLED)scGPGlyphButton_zpravy_ikona->Left=Nahled->Left-scGPGlyphButton_zpravy_ikona->Width;
+//	else scGPGlyphButton_zpravy_ikona->Left=Schema->Left-scGPGlyphButton_zpravy_ikona->Width;
 	if(/*MOD==REZERVY ||*/ MOD==CASOVAOSA)Invalidate();
 	else REFRESH();
 }
@@ -1568,8 +1564,6 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
 	scLabel_doba_cekani->Visible=false;
 	scGPGlyphButton_info_cekani->Visible=false;
 	scGPGlyphButton_close_grafy->Visible=false;
-	scExPanel_log_header->Visible=false;
-
 	CheckBoxVymena_barev->Visible=false;
 	Label_zamerovac->Visible=false;
 	ComboBoxODmin->Visible=false;
@@ -1749,9 +1743,7 @@ void __fastcall TForm1::AnalyzaClick(TObject *Sender)
 			CheckBox_pouzit_zadane_kapacity->Visible=false;
 			ComboBoxCekani->Visible=true;
 			d.JIZPOCITANO=false;d.RANDOM=true;
-			scExPanel_log_header->Visible=true;
 			ComboBoxCekani->Width=scSplitView_OPTIONS->OpenedWidth-7;
-		 	scGPGlyphButton_zpravy_ikona->Visible=true;
 			if(Form1->ComboBoxCekani->ItemIndex==2)
 			{
 				scGPButton_generuj->Visible=true;
@@ -2023,21 +2015,21 @@ void TForm1::Z(UnicodeString Text,bool add,TColor color)
 {
   log(__func__);//logování
 	//plnění zprávy textem
-	if(add)scHTMLLabel_log_vypis->Caption = scHTMLLabel_log_vypis->Caption+Text;//text má být přidán k předchozímu textu
-	else scHTMLLabel_log_vypis->Caption = Text;//text má být přidán samostatně
+//	if(add)scHTMLLabel_log_vypis->Caption = scHTMLLabel_log_vypis->Caption+Text;//text má být přidán k předchozímu textu
+//	else scHTMLLabel_log_vypis->Caption = Text;//text má být přidán samostatně
 
 	//zobrazení či skrývání
 	if(Text=="" && add==false)//vše OK
 	{
-		scGPGlyphButton_zpravy_ikona->GlyphOptions->NormalColor=clWhite;
-		scHTMLLabel_log_vypis->Caption="";
+//		scGPGlyphButton_zpravy_ikona->GlyphOptions->NormalColor=clWhite;
+//		scHTMLLabel_log_vypis->Caption="";
 		//Memo2->Lines->Clear();
 	}
 	else
 	{
 		//není možné: scExPanel_log_header->Visible=true; //expanel s obsahem zprávy
-		scGPGlyphButton_zpravy_ikona->Visible=true;//ikona
-		scGPGlyphButton_zpravy_ikona->GlyphOptions->NormalColor=color;//barva ikony
+//		scGPGlyphButton_zpravy_ikona->Visible=true;//ikona
+//		scGPGlyphButton_zpravy_ikona->GlyphOptions->NormalColor=color;//barva ikony
 	}
 
   //Memo2->Visible=true;
@@ -12243,33 +12235,10 @@ void __fastcall TForm1::ComboBoxCekaniChange(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-
-void __fastcall TForm1::scExPanel_log_headerClose(TObject *Sender)
-{
-  log(__func__);//logování
-//	scExPanel_log_header->Visible=false;
-	scGPGlyphButton_zpravy_ikona->Visible=true;
-	scExPanel_log_header->Visible=false;
-	scSplitView_OPTIONS->Opened=false;
-
-}
-//---------------------------------------------------------------------------
-
 void __fastcall TForm1::scGPGlyphButton_zpravy_ikonaClick(TObject *Sender)
 {
   log(__func__);//logování
-	if(scExPanel_log_header->Visible==false)
-	{
-//		scExPanel_log_header->Visible=true;
-//
-//  //pozice  zprav
-//	scExPanel_log_header->Left	 = Form1->Width/2-scExPanel_log_header->Width/2;
-//	scExPanel_log_header->Top 	 = Form1->Height/2-scExPanel_log_header->Height/2;
-//	scExPanel_log_header->Height = 300;
-//	scExPanel_log_header->Width	 = 715;
-
-Form_zpravy->Show();
-	}
+  Form_zpravy->Show();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scSplitView_OPTIONSOpened(TObject *Sender)
@@ -12510,7 +12479,7 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //   Sk(d.v.vrat_zpravu(2)->Popisek);
 //	 d.v.vymazat_ZPRAVY();
 
-//F->posun_na_element(1);
+F->posun_na_element(1);
 
 
 
@@ -14018,7 +13987,7 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
   	scListGroupPanel_poznamky->Caption=ls->Strings[49];
   	scGPLabel_poznamky->Caption=ls->Strings[54];
     scGPGlyphButton_close_grafy->Caption=ls->Strings[62];
-    scExPanel_log_header->Caption=ls->Strings[63];
+   // scExPanel_log_header->Caption=ls->Strings[63];
     scExPanel_html->Caption=ls->Strings[64];
     pohonobjekt->Caption=ls->Strings[65];
     scGPGlyphButton_close_legenda_casove_osy->Caption=ls->Strings[66];
@@ -14312,6 +14281,16 @@ void __fastcall TForm1::scGPButton_prichytavatClick(TObject *Sender)
 	RzStatusPane5Click(this);
 	if(prichytavat_k_mrizce==1)scGPButton_prichytavat->Hint=ls->Strings[411];//"Vypnout přichytávání";
 	else scGPButton_prichytavat->Hint=ls->Strings[410];//"Zapnout přichytávání";
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::scGPButton_errorClick(TObject *Sender)
+{
+Form_zpravy->Show();
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::scGPButton_warningClick(TObject *Sender)
+{
+Form_zpravy->Show();
 }
 //---------------------------------------------------------------------------
 
