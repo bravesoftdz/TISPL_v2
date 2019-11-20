@@ -32,7 +32,7 @@ void __fastcall TForm_zpravy::FormShow(TObject *Sender)
   Top = F->Top_backup;
   Left = F->Left_backup;
   }
-  update_zpravy(1);
+  update_zpravy();
 }
 //---------------------------------------------------------------------------
 
@@ -48,6 +48,7 @@ void __fastcall TForm_zpravy::scGPListBox_zpravyMouseMove(TObject *Sender, TShif
       if(scGPListBox_zpravy->Items->Items[radek]->ImageIndex==69)  { scGPListBox_zpravy->Items->Items[radek]->ImageIndex=70; }
       if(scGPListBox_zpravy->Items->Items[radek]->ImageIndex==71)  { scGPListBox_zpravy->Items->Items[radek]->ImageIndex=72; }
       F->d.zprava_highlight=radek+1;  F->REFRESH();
+      radek_temp = radek;
      }    //ostatní nastav jako thin
      else if  (scGPListBox_zpravy->Items->Items[i]->ImageIndex==70) scGPListBox_zpravy->Items->Items[i]->ImageIndex=69;  //error thin
      else if  (scGPListBox_zpravy->Items->Items[i]->ImageIndex==72) scGPListBox_zpravy->Items->Items[i]->ImageIndex=71;  //warning thin
@@ -115,3 +116,12 @@ void  TForm_zpravy::update_zpravy(double rezim)
 }
 
 }
+
+void __fastcall TForm_zpravy::scGPListBox_zpravyMouseLeave(TObject *Sender)
+{ //pri opusteni zprav navratim posledni warning nebo error na pùvodní ikonu
+ if(scGPListBox_zpravy->Items->Items[radek_temp]->ImageIndex==70) scGPListBox_zpravy->Items->Items[radek_temp]->ImageIndex=69;  //error thin
+ if(scGPListBox_zpravy->Items->Items[radek_temp]->ImageIndex==72) scGPListBox_zpravy->Items->Items[radek_temp]->ImageIndex=71;  //warning thin
+}
+
+//---------------------------------------------------------------------------
+
