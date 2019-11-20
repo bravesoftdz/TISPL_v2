@@ -10599,24 +10599,24 @@ void __fastcall TForm1::Timer_backupTimer(TObject *Sender)
 //vše smaže z paměti
 void TForm1::vse_odstranit()
 {
-    log(__func__);//logování
-		d.v.vse_odstranit();
-		if(PmG!=NULL){PmG->Delete();PmG=NULL;}
-		if(pom_temp!=NULL)scGPButton_stornoClick(this);
-		if(pom!=NULL){pom->pohon=NULL;delete pom->pohon;}pom=NULL;delete pom;
-		if(pom_temp!=NULL){pom_temp->pohon=NULL;delete pom_temp->pohon;}pom_temp=NULL;delete pom_temp;
-		pom_element=NULL;delete pom_element;
-		proces_pom=NULL;delete proces_pom;
-		pom_element_temp=NULL; delete pom_element_temp;
-		pom_komora=NULL;delete pom_komora;
-		pom_komora_temp=NULL;delete pom_komora_temp;
-		pom_bod=NULL;delete pom_bod;
-		pom_bod_temp=NULL;delete pom_bod_temp;
-		posledni_editovany_objekt=NULL;delete posledni_editovany_objekt;
-		posledni_editovany_element=NULL;delete posledni_editovany_element;
-		copyObjekt=NULL;delete copyObjekt;
-		copyObjektRzRx.x=0;copyObjektRzRx.y=0;
-	 //	delete LogFileStream; //zde nesmí být kvůli logování
+	log(__func__);//logování
+	d.v.vse_odstranit();
+	if(PmG!=NULL){PmG->Delete();PmG=NULL;}
+	if(pom_temp!=NULL)scGPButton_stornoClick(this);
+	if(pom!=NULL){pom->pohon=NULL;delete pom->pohon;}pom=NULL;delete pom;
+	if(pom_temp!=NULL){pom_temp->pohon=NULL;delete pom_temp->pohon;}pom_temp=NULL;delete pom_temp;
+	pom_element=NULL;delete pom_element;
+	proces_pom=NULL;delete proces_pom;
+	pom_element_temp=NULL; delete pom_element_temp;
+	pom_komora=NULL;delete pom_komora;
+	pom_komora_temp=NULL;delete pom_komora_temp;
+	pom_bod=NULL;delete pom_bod;
+	pom_bod_temp=NULL;delete pom_bod_temp;
+	posledni_editovany_objekt=NULL;delete posledni_editovany_objekt;
+	posledni_editovany_element=NULL;delete posledni_editovany_element;
+	copyObjekt=NULL;delete copyObjekt;
+	copyObjektRzRx.x=0;copyObjektRzRx.y=0;
+	//delete LogFileStream; //zde nesmí být kvůli logování
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
