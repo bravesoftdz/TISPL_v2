@@ -5398,6 +5398,7 @@ void Cvektory::vymaz_seznam_KATALOG()
 //zkontroluje buď všechny elementy (je-li vstupní parametr NULL), smaže všechny zprávy, a kde najde problém, uloží do zpráv, v případě, že není NULL
 void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s parametrem!!!
 {
+	bool byly_zpravy=0;if(ZPRAVY!=NULL && ZPRAVY->predchozi->n)byly_zpravy=true;
 	if(Element==NULL)vymazat_ZPRAVY();//pokud se budou testovat všechny elementy, je nutné vymazat všechny zprávy
 
 	//předělat s novým datovým modelem
@@ -5457,7 +5458,8 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 	}
 	delete O;
 
-  Form_zpravy->update_zpravy();//zakutalizuje zprávy v miniformu zpráv
+	//zakutalizuje zprávy v miniformu zpráv, pouze pokud je potřeba aktualizovat
+	if(byly_zpravy || ZPRAVY!=NULL && ZPRAVY->predchozi->n)Form_zpravy->update_zpravy();
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //z čísla VIDu vrátí jeho textový popis
@@ -6888,7 +6890,8 @@ void Cvektory::vse_odstranit()
 	hlavicka_POHONY();//nutnost
 
 	//ZPRÁVY
-	vymazat_ZPRAVY();
+	bool byly_zpravy=false;if(ZPRAVY!=NULL && ZPRAVY->predchozi->n)byly_zpravy=true;
+	vymazat_ZPRAVY();if(byly_zpravy)Form_zpravy->update_zpravy();
 
 //		//palce
 //		if(PALCE->predchozi->n>0)//pokud je více objektů
