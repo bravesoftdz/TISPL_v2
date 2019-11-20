@@ -2125,7 +2125,6 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'TISPL'
-      ExplicitWidth = 42
     end
     object scGPSwitch_rezim: TscGPSwitch
       AlignWithMargins = True
@@ -2717,9 +2716,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 644
-      ExplicitTop = 3
-      ExplicitHeight = 25
     end
     object scGPButton_warning: TscGPButton
       Left = 555
@@ -2828,9 +2824,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 644
-      ExplicitTop = 3
-      ExplicitHeight = 25
     end
   end
   object scGPPanel_statusbar: TscGPPanel
@@ -3521,7 +3514,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 1196
     end
   end
   object scGPGlyphButton2: TscGPGlyphButton
@@ -9748,7 +9740,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118009808F00810001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118009808F40810001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10871,7 +10863,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01014B00480AF40A30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01014B00480AF80A30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C000000090030000010020000000000000B0
       0A00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

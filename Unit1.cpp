@@ -1169,29 +1169,24 @@ void TForm1::Novy_soubor(bool invalidate)//samotné vytvoření nového souboru
 void __fastcall TForm1::FormActivate(TObject *Sender)
 {
   log(__func__);//logování
-	if(PopUPmenu->Showing || PopUPmenu->closing)PopUPmenu->Close();//pokud je spuštěné pop-up menu, tak ho vypne
-	else
+	if(!DEBUG)
 	{
-		if(!DEBUG)
+		//toto odkomentovat pro spuštění TTR
+		if(!ttr("start"))
 		{
-			//toto odkomentovat pro spuštění TTR
-			if(!ttr("start"))
-			{
-				Timer_tr->Enabled=false;//ještě je ale z důvodu ochrany enabled=true v object inspectoru, toto je spíše na zmatení
-				Close();
-			}
-			else//toto odkomentovat pro spuštění TTR a slouží pro startUP
-			//Timer_tr->Enabled=false;// toto zakomentovat pro spuštění TTR
-			{Sv();startUP();}//toto vždy odkomentované
+			Timer_tr->Enabled=false;//ještě je ale z důvodu ochrany enabled=true v object inspectoru, toto je spíše na zmatení
+			Close();
 		}
-		else
-		{
-			Timer_tr->Enabled=false;
-      if(!Form_zpravy->closing) startUP();
-		}
+		else//toto odkomentovat pro spuštění TTR a slouží pro startUP
+		//Timer_tr->Enabled=false;// toto zakomentovat pro spuštění TTR
+		{Sv();startUP();}//toto vždy odkomentované
 	}
-
- }
+	else//RELEASE
+	{
+		Timer_tr->Enabled=false;
+    startUP();
+	}
+}
 //---------------------------------------------------------------------------
 //Metoda pro trial verzi
 bool TForm1::ttr(UnicodeString Text)
@@ -1294,103 +1289,107 @@ bool TForm1::ttr(UnicodeString Text)
 void TForm1::startUP()
 {
 	log(__func__);//logování
-	//načtení jazykové mutace, nemůže být v konstruktoru, protože ještě neexistují všechny dílčí formuláře = nelze k nim přistoupit
-	language=load_language(language,false);//aktivovani jazyk mutaci, problém s přepnutím jazyka při nenalezení souboru, proto metoda varací zvolený jazyk
-	//////otevrení posledního souboru
-	log2web("start");
-	nastaveni.posledni_file=true;/////////////////provizorní než budu načítat z ini z filu nastavení zda otevírat či neotevírat poslední sobor
-  volat_parametry_linky=true;//následně je případně znegováno
-	UnicodeString user_file=ms.delete_repeat(ms.delete_repeat(Parametry,"\"",2),"\"").Trim();
-	if(user_file!="")//pokud zkouší uživatel otevřít přímo soubor kliknutím na něj mimo aplikaci
-	Otevrit_soubor(user_file);
-	else
-	{
-		//načtení posledního otevřeného souboru
-		if(nastaveni.posledni_file)
-		{
-			FileName=readINI("otevrene_soubory","posledni_soubor");
-			if(FileName!="Nový.tispl" && FileName!=""){Otevrit_soubor(FileName);volat_parametry_linky=false;}
-		}
-	}
+  if(!Form_zpravy->closing && !Form_zpravy->Showing && !PopUPmenu->Showing && !PopUPmenu->closing)//pozn. dole ještě větev else if(PopUPmenu->Showing || PopUPmenu->closing)PopUPmenu->Close();//pokud je spuštěné pop-up menu, tak ho vypne
+  {
+    //načtení jazykové mutace, nemůže být v konstruktoru, protože ještě neexistují všechny dílčí formuláře = nelze k nim přistoupit
+    language=load_language(language,false);//aktivovani jazyk mutaci, problém s přepnutím jazyka při nenalezení souboru, proto metoda varací zvolený jazyk
+    //////otevrení posledního souboru
+    log2web("start");
+    nastaveni.posledni_file=true;/////////////////provizorní než budu načítat z ini z filu nastavení zda otevírat či neotevírat poslední sobor
+    volat_parametry_linky=true;//následně je případně znegováno
+    UnicodeString user_file=ms.delete_repeat(ms.delete_repeat(Parametry,"\"",2),"\"").Trim();
+    if(user_file!="")//pokud zkouší uživatel otevřít přímo soubor kliknutím na něj mimo aplikaci
+    Otevrit_soubor(user_file);
+    else
+    {
+      //načtení posledního otevřeného souboru
+      if(nastaveni.posledni_file)
+      {
+        FileName=readINI("otevrene_soubory","posledni_soubor");
+        if(FileName!="Nový.tispl" && FileName!=""){Otevrit_soubor(FileName);volat_parametry_linky=false;}
+      }
+    }
 
-	//////automatický BACKUP
-	//volá obnovu dat ze zálohy, pokud poslední ukončení programu neproběhlo standardně
-	AnsiString status=readINI("Konec","status");
-	if(status=="KO")//pokud došlo k pádu programu
-	{
-		//v případě spuštění aplikace po pádu se již znovu nevolá form parametry linky
-		volat_parametry_linky=false;
+    //////automatický BACKUP
+    //volá obnovu dat ze zálohy, pokud poslední ukončení programu neproběhlo standardně
+    AnsiString status=readINI("Konec","status");
+    if(status=="KO")//pokud došlo k pádu programu
+    {
+      //v případě spuštění aplikace po pádu se již znovu nevolá form parametry linky
+      volat_parametry_linky=false;
 
-		//zavře úvodní dialog
-		zavrit_uvod();
+      //zavře úvodní dialog
+      zavrit_uvod();
 
-		//načte název posledního souboru
-		FileName=readINI("otevrene_soubory","posledni_soubor");
+      //načte název posledního souboru
+      FileName=readINI("otevrene_soubory","posledni_soubor");
 
-		//prvně porovná jestli otevřený soubor není náhoudou mladší než stejnomený BAC soubor
-		FILETIME ftCreate, ftAccess, ftWrite,ftWrite_bac;
-		HANDLE hFile=CreateFile(FileName.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL,OPEN_EXISTING, 0, NULL);
-		GetFileTime(hFile, &ftCreate, &ftAccess, &ftWrite);
-		CloseHandle(hFile);
-		hFile=CreateFile((FileName+".bac_"+get_user_name()+"_"+get_computer_name()).c_str(), GENERIC_READ, FILE_SHARE_READ, NULL,OPEN_EXISTING, 0, NULL);
-		GetFileTime(hFile, &ftCreate, &ftAccess, &ftWrite_bac);
-		CloseHandle(hFile);
-		UnicodeString text=ls->Strings[322],text_1=ls->Strings[323];
-		if(ftWrite.dwHighDateTime>=ftWrite_bac.dwHighDateTime)MB(text);//pokud je uložený soubor mladší nebo stejně starý jako jeho BAC
-		else
-		{
-			if(mrYes==MB(text_1,MB_YESNO))
-			{
-				if(Otevrit_soubor(FileName+".bac_"+get_user_name()+"_"+get_computer_name())==1)
-				{
-					//ješti donutí stávajicí soubor uložit pod novým jménem
-					//odstraniní koncovky
-					//AnsiString jen_nazev=FileName;
-					//while(jen_nazev.Pos(".bac")>0)//dokud bude ".bac" obsahovat
-					//jen_nazev.Delete(jen_nazev.Pos(".bac"),jen_nazev.Length());
-					FileName=ms.TrimRightFrom(FileName,".bac_"+get_user_name()+"_"+get_computer_name());
-					UlozitjakoClick(this);
-				}
-				else
-				{
-					Obnovitzezlohy1Click(this);//zazálohovaný soubor se nezadařilo najít, proto jej vyhledá uživatel manuálně pomocí nabídnutého dialogu
-				}
-			}
-		}
-	}
-	//zapíše status pro předčasné ukončení programu pro případ pádu programu
-	writeINI("Konec","status","KO");
+      //prvně porovná jestli otevřený soubor není náhoudou mladší než stejnomený BAC soubor
+      FILETIME ftCreate, ftAccess, ftWrite,ftWrite_bac;
+      HANDLE hFile=CreateFile(FileName.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL,OPEN_EXISTING, 0, NULL);
+      GetFileTime(hFile, &ftCreate, &ftAccess, &ftWrite);
+      CloseHandle(hFile);
+      hFile=CreateFile((FileName+".bac_"+get_user_name()+"_"+get_computer_name()).c_str(), GENERIC_READ, FILE_SHARE_READ, NULL,OPEN_EXISTING, 0, NULL);
+      GetFileTime(hFile, &ftCreate, &ftAccess, &ftWrite_bac);
+      CloseHandle(hFile);
+      UnicodeString text=ls->Strings[322],text_1=ls->Strings[323];
+      if(ftWrite.dwHighDateTime>=ftWrite_bac.dwHighDateTime)MB(text);//pokud je uložený soubor mladší nebo stejně starý jako jeho BAC
+      else
+      {
+        if(mrYes==MB(text_1,MB_YESNO))
+        {
+          if(Otevrit_soubor(FileName+".bac_"+get_user_name()+"_"+get_computer_name())==1)
+          {
+            //ješti donutí stávajicí soubor uložit pod novým jménem
+            //odstraniní koncovky
+            //AnsiString jen_nazev=FileName;
+            //while(jen_nazev.Pos(".bac")>0)//dokud bude ".bac" obsahovat
+            //jen_nazev.Delete(jen_nazev.Pos(".bac"),jen_nazev.Length());
+            FileName=ms.TrimRightFrom(FileName,".bac_"+get_user_name()+"_"+get_computer_name());
+            UlozitjakoClick(this);
+          }
+          else
+          {
+            Obnovitzezlohy1Click(this);//zazálohovaný soubor se nezadařilo najít, proto jej vyhledá uživatel manuálně pomocí nabídnutého dialogu
+          }
+        }
+      }
+    }
+    //zapíše status pro předčasné ukončení programu pro případ pádu programu
+    writeINI("Konec","status","KO");
 
-	//načte dílčí nastavení aplikace
-	AnsiString T=readINI("Nastaveni_app","ortogonalizace"); //o_stav musí být až na druhém místě po scGPCheckbox
-	start_ortogonalizace=true;//pouze ošetření, aby se nevolalo scGPCheckBox_ortogon_onclick
-	if(T=="0" || T==""){scGPCheckBox_ortogon->Checked=false;ortogonalizace_stav=false;}else{scGPCheckBox_ortogon->Checked=true;ortogonalizace_stav=true;}
-	start_ortogonalizace=false;
-	T=readINI("Nastaveni_app","prichytavat");
-	if(T=="0" || T==""){prichytavat_k_mrizce=1;}else{prichytavat_k_mrizce=ms.MyToDouble(T);}
-	//zatím nepoužíváme, bude spíše souviset přímo se souborem, v případě použití nutno vyhodit implicitní volbu návrhář v sobuor novy
-	//T=readINI("Nastaveni_app","status");
-	//if(T=="0" || T=="")STATUS=NAVRH;else STATUS=OVEROVANI;
+    //načte dílčí nastavení aplikace
+    AnsiString T=readINI("Nastaveni_app","ortogonalizace"); //o_stav musí být až na druhém místě po scGPCheckbox
+    start_ortogonalizace=true;//pouze ošetření, aby se nevolalo scGPCheckBox_ortogon_onclick
+    if(T=="0" || T==""){scGPCheckBox_ortogon->Checked=false;ortogonalizace_stav=false;}else{scGPCheckBox_ortogon->Checked=true;ortogonalizace_stav=true;}
+    start_ortogonalizace=false;
+    T=readINI("Nastaveni_app","prichytavat");
+    if(T=="0" || T==""){prichytavat_k_mrizce=1;}else{prichytavat_k_mrizce=ms.MyToDouble(T);}
+    //zatím nepoužíváme, bude spíše souviset přímo se souborem, v případě použití nutno vyhodit implicitní volbu návrhář v sobuor novy
+    //T=readINI("Nastaveni_app","status");
+    //if(T=="0" || T=="")STATUS=NAVRH;else STATUS=OVEROVANI;
 
-  //vytvoření knihovny objektů
-	vytvoreni_tab_knihovna();
-	//aktivace tlačítka editace
-	if(d.v.OBJEKTY->dalsi!=NULL)Nahled->Enabled=true;
-	else Nahled->Enabled=false;
-	//slouží po startu programu k načtení parametrů linky, nemůže být voláno v tomto okamžiku v souboru nový, protože by jinak vedlo k pádu aplikace - pořadí vytváření formulářů, není voláno v případě startu aplikace po pádu
-	if(volat_parametry_linky)Layout->Down=true;//zavolání formáláře pro prvotní vyplnění či potvzení hodnot parametrů linky
-	if(d.v.OBJEKTY->dalsi!=NULL)TIP="";//v případě, že jsou vložené nějaké objekty tak dojde k odmazání tipu pro vkládání objektů
-	//set_font();//nastavení fontu komponentám
-	DrawGrid_knihovna->SetFocus();//nutné při spouštění dávat focus na knihovnu, ta přesměrovává všechny události (např. KeyDown) na Form
-	if(language==CS)scGPSwitch1->State=scswOn;//nastavení switche jazyků do zpávné polohy
-	else scGPSwitch1->State=scswOff;
-	Akce=NIC;
-	if(d.v.OBJEKTY->dalsi!=NULL)
-	{
-		TIP=ls->Strings[304];
-		SB(ls->Strings[378]+" ");
-		akutalizace_stavu_prichytavani_vSB();
-	}
+    //vytvoření knihovny objektů
+    vytvoreni_tab_knihovna();
+    //aktivace tlačítka editace
+    if(d.v.OBJEKTY->dalsi!=NULL)Nahled->Enabled=true;
+    else Nahled->Enabled=false;
+    //slouží po startu programu k načtení parametrů linky, nemůže být voláno v tomto okamžiku v souboru nový, protože by jinak vedlo k pádu aplikace - pořadí vytváření formulářů, není voláno v případě startu aplikace po pádu
+    if(volat_parametry_linky)Layout->Down=true;//zavolání formáláře pro prvotní vyplnění či potvzení hodnot parametrů linky
+    if(d.v.OBJEKTY->dalsi!=NULL)TIP="";//v případě, že jsou vložené nějaké objekty tak dojde k odmazání tipu pro vkládání objektů
+    //set_font();//nastavení fontu komponentám
+    DrawGrid_knihovna->SetFocus();//nutné při spouštění dávat focus na knihovnu, ta přesměrovává všechny události (např. KeyDown) na Form
+    if(language==CS)scGPSwitch1->State=scswOn;//nastavení switche jazyků do zpávné polohy
+    else scGPSwitch1->State=scswOff;
+    Akce=NIC;
+    if(d.v.OBJEKTY->dalsi!=NULL)
+    {
+      TIP=ls->Strings[304];
+      SB(ls->Strings[378]+" ");
+      akutalizace_stavu_prichytavani_vSB();
+    }
+  }
+  else if(PopUPmenu->Showing || PopUPmenu->closing)PopUPmenu->Close();//pokud je spuštěné pop-up menu, tak ho vypne
 }
 //---------------------------------------------------------------------------
 //zajišťuje zápis do INI aplikace, museli jsme dát do výjimky, protože jednou hodilo error

@@ -30,12 +30,14 @@ __published:	// IDE-managed Components
   void __fastcall scGPGlyphButton_infoClick(TObject *Sender);
   void __fastcall SkrytClick(TObject *Sender);
   void __fastcall scGPListBox_zpravyItemClick(TObject *Sender);
+  void __fastcall scGPListBox_zpravyMouseLeave(TObject *Sender);
 private:	// User declarations
 
 public:		// User declarations
   __fastcall TForm_zpravy(TComponent* Owner);
   	bool closing;//detekce kvùli hlavnímu formuláøi jinak volá tìlo formactivate hlavního formu
     void update_zpravy(double rezim=1); // 1 - celkový update zpráv, - 0 - update pouze horní lišty Warningù a Errorù
+    int radek_temp;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm_zpravy *Form_zpravy;
