@@ -2,7 +2,8 @@
 #pragma hdrstop
 #include "vektory.h"
 #include "unit1.h"
-#include "parametry.h"
+#include "parametry.h"//ODSTRANIT
+#include "miniform_zpravy.h"
 ////---------------------------------------------------------------------------
 #pragma package(smart_init)
 ////---------------------------------------------------------------------------
@@ -5455,6 +5456,8 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 		O=O->dalsi;
 	}
 	delete O;
+
+  Form_zpravy->update_zpravy();//zakutalizuje zprávy v miniformu zpráv
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //z čísla VIDu vrátí jeho textový popis
