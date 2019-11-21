@@ -14,6 +14,7 @@ __fastcall TForm_uvod::TForm_uvod(TComponent* Owner)
   : TForm(Owner)
 {
 	Form_uvod->Color=(TColor)RGB(26,87,178);//(TColor)RGB(17,58,150);//(TColor)RGB(43,87,154);//pùvodní eltep barvy:(TColor)RGB(44,82,157);
+	scGPLabel_TISPL->Font->Color=(TColor)RGB(220,220,220);
 	n=0;
 }
 //---------------------------------------------------------------------------

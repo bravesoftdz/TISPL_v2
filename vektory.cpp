@@ -5398,8 +5398,11 @@ void Cvektory::vymaz_seznam_KATALOG()
 //zkontroluje buď všechny elementy (je-li vstupní parametr NULL), smaže všechny zprávy, a kde najde problém, uloží do zpráv, v případě, že není NULL
 void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s parametrem!!!
 {
-	bool byly_zpravy=0;if(ZPRAVY!=NULL && ZPRAVY->predchozi->n)byly_zpravy=true;
-	if(Element==NULL)vymazat_ZPRAVY();//pokud se budou testovat všechny elementy, je nutné vymazat všechny zprávy
+	bool puvodni_zpravy=0,nove_zpravy=0;
+	if(ZPRAVY!=NULL && ZPRAVY->predchozi->n)puvodni_zpravy=true;
+
+	//pokud se budou testovat všechny elementy, je nutné vymazat všechny zprávy
+	if(Element==NULL)vymazat_ZPRAVY();
 
 	//předělat s novým datovým modelem
 	TObjekt *O=OBJEKTY->dalsi;
@@ -5436,18 +5439,18 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 				{
 					double aR=m.a360(rotaceJ+Ep->rotace_jig);//výstupní rotace jigu z posledního rotačního elementu
 					if(Ep->n==E->n &&  Ep->objekt_n==E->objekt_n && aR!=0 && aR!=180)//předposlení podmínka při novém DM zbytečná!
-					vloz_zpravu(X,Y,-1,401,Ep);
+					{vloz_zpravu(X,Y,-1,401,Ep);nove_zpravy++;}
 				}
 				Ep=NULL;delete Ep;
 			}
 			////////////Pozor, překrytí JIGů!
 			if(PP.delka_podvozek<m.UDJ(rotaceJ) && E->rotace_jig==0 && pocet_pozic>1)
-			vloz_zpravu(X+x*PP.delka_podvozek*(pocet_pozic-1)/2.0,Y+y*PP.delka_podvozek*(pocet_pozic-1)/2.0,-1,402,E);
+			{vloz_zpravu(X+x*PP.delka_podvozek*(pocet_pozic-1)/2.0,Y+y*PP.delka_podvozek*(pocet_pozic-1)/2.0,-1,402,E);nove_zpravy++;}
 			////////////RT
 			if(vrat_druh_elementu(E)==0)//pouze pro S&G
 			{
-				if(E->RT<0)vloz_zpravu(X,Y,-1,406,E);
-				if(E->RT==0)vloz_zpravu(X,Y,1,407,E);
+				if(E->RT<0){vloz_zpravu(X,Y,-1,406,E);nove_zpravy++;}
+				if(E->RT==0){vloz_zpravu(X,Y,1,407,E);nove_zpravy++;}
 			}
 
 			////posun na další elementy
@@ -5459,7 +5462,7 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 	delete O;
 
 	//zakutalizuje zprávy v miniformu zpráv, pouze pokud je potřeba aktualizovat
-	if(byly_zpravy || ZPRAVY!=NULL && ZPRAVY->predchozi->n)Form_zpravy->update_zpravy();
+	if(F->pom_temp!=NULL && (puvodni_zpravy || nove_zpravy))Form_zpravy->update_zpravy();
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //z čísla VIDu vrátí jeho textový popis
@@ -6890,8 +6893,8 @@ void Cvektory::vse_odstranit()
 	hlavicka_POHONY();//nutnost
 
 	//ZPRÁVY
-	bool byly_zpravy=false;if(ZPRAVY!=NULL && ZPRAVY->predchozi->n)byly_zpravy=true;
-	vymazat_ZPRAVY();if(byly_zpravy)Form_zpravy->update_zpravy();
+	bool puvodni_zpravy=false;if(ZPRAVY!=NULL && ZPRAVY->predchozi->n)puvodni_zpravy=true;
+	vymazat_ZPRAVY();if(puvodni_zpravy)Form_zpravy->update_zpravy();
 
 //		//palce
 //		if(PALCE->predchozi->n>0)//pokud je více objektů

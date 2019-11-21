@@ -18682,6 +18682,7 @@ object Form_uvod: TForm_uvod
     Font.Height = -13
     Font.Name = 'Arial'
     Font.Style = []
+    Font.Quality = fqClearType
     ParentFont = False
     Transparent = True
     Visible = False
@@ -18696,6 +18697,7 @@ object Form_uvod: TForm_uvod
     Font.Height = -15
     Font.Name = 'Roboto'
     Font.Style = [fsBold]
+    Font.Quality = fqClearTypeNatural
     ParentFont = False
     TabOrder = 0
     DragForm = False
@@ -18735,6 +18737,7 @@ object Form_uvod: TForm_uvod
     Font.Height = -48
     Font.Name = 'Impact'
     Font.Style = []
+    Font.Quality = fqAntialiased
     ParentFont = False
     TabOrder = 1
     DragForm = False
