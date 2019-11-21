@@ -11,6 +11,7 @@
 #pragma link "scGPControls"
 #pragma link "scGPExtControls"
 #pragma link "RzStatus"
+#pragma link "scGPImages"
 #pragma resource "*.dfm"
 TForm_zpravy *Form_zpravy;
 //---------------------------------------------------------------------------
@@ -25,6 +26,8 @@ __fastcall TForm_zpravy::TForm_zpravy(TComponent* Owner)
 void __fastcall TForm_zpravy::FormShow(TObject *Sender)
 {
    closing=false;
+   F->scGPButton_warning->Visible=false;
+   F->scGPButton_error->Visible=false;
 
   scGPPanel_header->FillColor=(TColor)RGB(60,100,162);
   if(Top!=F->scLabel_titulek->Height)
@@ -74,6 +77,8 @@ void __fastcall TForm_zpravy::scGPGlyphButton_infoClick(TObject *Sender)
 void __fastcall TForm_zpravy::SkrytClick(TObject *Sender)
 {
   closing=true;
+  F->scGPButton_warning->Visible=true;
+  F->scGPButton_error->Visible=true;
 	Close();
 }
 //---------------------------------------------------------------------------
@@ -88,12 +93,12 @@ void __fastcall TForm_zpravy::scGPListBox_zpravyItemClick(TObject *Sender)
 }                                                  
 //---------------------------------------------------------------------------
 
-void  TForm_zpravy::update_zpravy(short rezim)
+void  TForm_zpravy::update_zpravy(long pocet_erroru, long pocet_warningu)
 {
-  if(rezim==1) 
-  {
-    TscGPListBox *C= scGPListBox_zpravy;
-    TscGPListBoxItem *I;
+//  if(rezim==1)
+//  {
+  TscGPListBox *C= scGPListBox_zpravy;
+  TscGPListBoxItem *I;
 	int pocet_chyb=0;
   int pocet_varovani=0;
 	C->Items->Clear();
@@ -115,7 +120,9 @@ void  TForm_zpravy::update_zpravy(short rezim)
        RzStatusPane_pocet_var_value->Caption=pocet_varovani;
        Form_zpravy->Height = (pocet_chyb+pocet_varovani) *  scGPListBox_zpravy->ItemHeight + scLabel_header->Height + scGPPanel_statusbar->Height + 5;   //5px rezervnich
      }
-	}
+       if(pocet_chyb==0) scGPImage_error->Visible=false; else    scGPImage_error->Visible=true;
+       if(pocet_varovani==0) scGPImage_warning->Visible=false;   else   scGPImage_warning->Visible=true;
+	//}
 	//else zavøít miniform + skrýt ikony w E
 }
 //---------------------------------------------------------------------------
@@ -133,7 +140,8 @@ void __fastcall TForm_zpravy::scGPListBox_zpravyMouseLeave(TObject *Sender)
 void TForm_zpravy::highlight(int radek)  {
 
  //highlight z layoutu
-
+  if(Form_zpravy->Visible)
+  {
   for(int i=0; i<scGPListBox_zpravy->Items->Count;i++)
      {
      if(i==radek)
@@ -141,10 +149,12 @@ void TForm_zpravy::highlight(int radek)  {
       if(scGPListBox_zpravy->Items->Items[radek]->ImageIndex==69)  { scGPListBox_zpravy->Items->Items[radek]->ImageIndex=70; }
       if(scGPListBox_zpravy->Items->Items[radek]->ImageIndex==71)  { scGPListBox_zpravy->Items->Items[radek]->ImageIndex=72; }
       F->d.zprava_highlight=radek+1;  F->REFRESH();
-      //radek_temp = radek;
      }    //ostatní nastav jako thin
      else if  (scGPListBox_zpravy->Items->Items[i]->ImageIndex==70) scGPListBox_zpravy->Items->Items[i]->ImageIndex=69;  //error thin
      else if  (scGPListBox_zpravy->Items->Items[i]->ImageIndex==72) scGPListBox_zpravy->Items->Items[i]->ImageIndex=71;  //warning thin
      }
+
+  }
+
 }
 

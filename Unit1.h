@@ -324,6 +324,7 @@ __published:	// IDE-managed Components
   TscLabel *scLabel_EN;
 	TscGPCheckBox *scGPCheckBox_zobrazit_palce;
 	TscGPButton *scGPButton_prichytavat;
+  TscGPButton *scGPButton_error;
   TscGPButton *scGPButton_warning;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
