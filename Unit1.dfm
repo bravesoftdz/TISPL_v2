@@ -2610,7 +2610,7 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object scGPButton_error: TscGPButton
-      Left = 580
+      Left = 555
       Top = 0
       Width = 25
       Height = 34
@@ -2716,9 +2716,10 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 544
     end
     object scGPButton_warning: TscGPButton
-      Left = 555
+      Left = 580
       Top = 0
       Width = 25
       Height = 34
@@ -2824,6 +2825,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 555
     end
   end
   object scGPPanel_statusbar: TscGPPanel
@@ -3514,7 +3516,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitHeight = 74
     end
   end
   object scGPGlyphButton2: TscGPGlyphButton
@@ -9741,7 +9742,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118009808F80810001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118009808FC0810001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10864,7 +10865,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01014C00480A380B30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01014C00480A3C0B30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000C003000001002000000000000040
       0B00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

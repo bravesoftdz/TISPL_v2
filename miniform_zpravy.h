@@ -11,6 +11,7 @@
 #include "scGPControls.hpp"
 #include "scGPExtControls.hpp"
 #include "RzStatus.hpp"
+#include "scGPImages.hpp"
 //---------------------------------------------------------------------------
 class TForm_zpravy : public TForm
 {
@@ -26,8 +27,8 @@ __published:	// IDE-managed Components
   TRzStatusPane *RzStatusPane__chyby_caption;
   TRzStatusPane *RzStatusPane_var_header;
   TRzStatusPane *RzStatusPane_pocet_var_value;
-  TscGPButton *scGPButton_error;
-  TscGPButton *scGPButton_warning;
+  TscGPImage *scGPImage_warning;
+  TscGPImage *scGPImage_error;
   void __fastcall FormShow(TObject *Sender);
   void __fastcall scGPListBox_zpravyMouseMove(TObject *Sender, TShiftState Shift,
           int X, int Y);
@@ -40,7 +41,7 @@ private:	// User declarations
 public:		// User declarations
   __fastcall TForm_zpravy(TComponent* Owner);
   	bool closing;//detekce kvùli hlavnímu formuláøi jinak volá tìlo formactivate hlavního formu
-    void update_zpravy(short rezim=1); // 1 - celkový update zpráv, - 0 - update pouze horní lišty Warningù a Errorù
+    void update_zpravy(long pocet_erroru, long pocet_warningu); // 1 - celkový update zpráv, - 0 - update pouze horní lišty Warningù a Errorù
     void highlight(int radek=0);
     int radek_temp;
 };
