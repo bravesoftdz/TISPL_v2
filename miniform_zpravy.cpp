@@ -39,6 +39,7 @@ void __fastcall TForm_zpravy::FormShow(TObject *Sender)
 void __fastcall TForm_zpravy::scGPListBox_zpravyMouseMove(TObject *Sender, TShiftState Shift,
           int X, int Y)
 {
+   //highlight pri posunu mysi
    int radek= floor(Y/(scGPListBox_zpravy->ItemHeight*1.0));
 
      for(int i=0; i<scGPListBox_zpravy->Items->Count;i++)
@@ -93,7 +94,8 @@ void  TForm_zpravy::update_zpravy(short rezim)
   {
     TscGPListBox *C= scGPListBox_zpravy;
     TscGPListBoxItem *I;
-	int pocet=0;
+	int pocet_chyb=0;
+  int pocet_varovani=0;
 	C->Items->Clear();
 
 	if(F->d.v.ZPRAVY!=NULL)
@@ -104,13 +106,14 @@ void  TForm_zpravy::update_zpravy(short rezim)
        {
         I=C->Items->Add();
         I->Caption =AnsiString(F->d.v.getVID(Z->VID));
-        if(Z->zID==-1) I->ImageIndex=69; //error
-        else I->ImageIndex=71;  //warning
+        if(Z->zID==-1)  {I->ImageIndex=69;  pocet_chyb++; } //error
+        else {I->ImageIndex=71; pocet_varovani++; } //warning
         Z=Z->dalsi;
-        pocet++;
        }
        delete Z;
-       Form_zpravy->Height = pocet *  scGPListBox_zpravy->ItemHeight + scLabel1->Height + scGPPanel_statusbar->Height + 5;   //5px rezervnich
+       RzStatusPane_pocet_chyb_value->Caption=pocet_chyb;
+       RzStatusPane_pocet_var_value->Caption=pocet_varovani;
+       Form_zpravy->Height = (pocet_chyb+pocet_varovani) *  scGPListBox_zpravy->ItemHeight + scLabel_header->Height + scGPPanel_statusbar->Height + 5;   //5px rezervnich
      }
 	}
 	//else zavøít miniform + skrýt ikony w E
@@ -126,4 +129,22 @@ void __fastcall TForm_zpravy::scGPListBox_zpravyMouseLeave(TObject *Sender)
 }
 
 //---------------------------------------------------------------------------
+
+void TForm_zpravy::highlight(int radek)  {
+
+ //highlight z layoutu
+
+  for(int i=0; i<scGPListBox_zpravy->Items->Count;i++)
+     {
+     if(i==radek)
+     {  //bold
+      if(scGPListBox_zpravy->Items->Items[radek]->ImageIndex==69)  { scGPListBox_zpravy->Items->Items[radek]->ImageIndex=70; }
+      if(scGPListBox_zpravy->Items->Items[radek]->ImageIndex==71)  { scGPListBox_zpravy->Items->Items[radek]->ImageIndex=72; }
+      F->d.zprava_highlight=radek+1;  F->REFRESH();
+      //radek_temp = radek;
+     }    //ostatní nastav jako thin
+     else if  (scGPListBox_zpravy->Items->Items[i]->ImageIndex==70) scGPListBox_zpravy->Items->Items[i]->ImageIndex=69;  //error thin
+     else if  (scGPListBox_zpravy->Items->Items[i]->ImageIndex==72) scGPListBox_zpravy->Items->Items[i]->ImageIndex=71;  //warning thin
+     }
+}
 
