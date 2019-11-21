@@ -87,33 +87,32 @@ void __fastcall TForm_zpravy::scGPListBox_zpravyItemClick(TObject *Sender)
 }                                                  
 //---------------------------------------------------------------------------
 
-void  TForm_zpravy::update_zpravy(double rezim) 
+void  TForm_zpravy::update_zpravy(short rezim)
 {
   if(rezim==1) 
   {
-  
-  TscGPListBox *C= scGPListBox_zpravy;
-  TscGPListBoxItem *I;
-  int pocet=0;
+    TscGPListBox *C= scGPListBox_zpravy;
+    TscGPListBoxItem *I;
+    int pocet=0;
 
-  if(F->d.v.ZPRAVY!=NULL)
-	 {
-     C->Items->Clear();
-		 Cvektory::TZprava *Z=F->d.v.ZPRAVY->dalsi;
-		 while(Z!=NULL)
-		 {
-      I=C->Items->Add();
-      I->Caption =AnsiString(F->d.v.getVID(Z->VID));
-      if(Z->zID==-1) I->ImageIndex=69; //error
-      else I->ImageIndex=71;  //warning
-      Z=Z->dalsi;
-      pocet++;
-		 }
-		 delete Z;
-     Form_zpravy->Height = pocet *  scGPListBox_zpravy->ItemHeight + scLabel1->Height + scGPPanel_statusbar->Height + 5;   //5px rezervnich
-	 }
-   F->REFRESH();
-}
+    if(F->d.v.ZPRAVY!=NULL)
+     {
+       C->Items->Clear();
+       Cvektory::TZprava *Z=F->d.v.ZPRAVY->dalsi;
+       while(Z!=NULL)
+       {
+        I=C->Items->Add();
+        I->Caption =AnsiString(F->d.v.getVID(Z->VID));
+        if(Z->zID==-1) I->ImageIndex=69; //error
+        else I->ImageIndex=71;  //warning
+        Z=Z->dalsi;
+        pocet++;
+       }
+       delete Z;
+       Form_zpravy->Height = pocet *  scGPListBox_zpravy->ItemHeight + scLabel1->Height + scGPPanel_statusbar->Height + 5;   //5px rezervnich
+     }
+     F->REFRESH();
+  }
 
 }
 
