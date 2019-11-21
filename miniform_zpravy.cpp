@@ -93,11 +93,12 @@ void  TForm_zpravy::update_zpravy(short rezim)
   {
     TscGPListBox *C= scGPListBox_zpravy;
     TscGPListBoxItem *I;
-    int pocet=0;
+	int pocet=0;
+	C->Items->Clear();
 
-    if(F->d.v.ZPRAVY!=NULL)
+	if(F->d.v.ZPRAVY!=NULL)
      {
-       C->Items->Clear();
+
        Cvektory::TZprava *Z=F->d.v.ZPRAVY->dalsi;
        while(Z!=NULL)
        {
@@ -111,15 +112,17 @@ void  TForm_zpravy::update_zpravy(short rezim)
        delete Z;
        Form_zpravy->Height = pocet *  scGPListBox_zpravy->ItemHeight + scLabel1->Height + scGPPanel_statusbar->Height + 5;   //5px rezervnich
      }
-     F->REFRESH();
-  }
-
+	}
+	//else zavøít miniform + skrýt ikony w E
 }
-
+//---------------------------------------------------------------------------
 void __fastcall TForm_zpravy::scGPListBox_zpravyMouseLeave(TObject *Sender)
 { //pri opusteni zprav navratim posledni warning nebo error na pùvodní ikonu
+  if(F->d.v.ZPRAVY!=NULL)
+	 {
  if(scGPListBox_zpravy->Items->Items[radek_temp]->ImageIndex==70) scGPListBox_zpravy->Items->Items[radek_temp]->ImageIndex=69;  //error thin
  if(scGPListBox_zpravy->Items->Items[radek_temp]->ImageIndex==72) scGPListBox_zpravy->Items->Items[radek_temp]->ImageIndex=71;  //warning thin
+	 }
 }
 
 //---------------------------------------------------------------------------
