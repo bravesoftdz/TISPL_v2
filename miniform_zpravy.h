@@ -17,13 +17,17 @@ class TForm_zpravy : public TForm
 __published:	// IDE-managed Components
   TscGPPanel *scGPPanel_header;
   TscGPGlyphButton *Skryt;
-  TscLabel *scLabel1;
+  TscLabel *scLabel_header;
   TscGPGlyphButton *scGPGlyphButton_info;
   TscGPListBox *scGPListBox_zpravy;
   TscGPPanel *scGPPanel_statusbar;
-  TRzStatusPane *RzStatusPane3;
+  TRzStatusPane *RzStatusPane_pocet_chyb_value;
   TscGPSizeBox *scGPSizeBox;
-  TscGPGlyphButton *scGPGlyphButton1;
+  TRzStatusPane *RzStatusPane__chyby_caption;
+  TRzStatusPane *RzStatusPane_var_header;
+  TRzStatusPane *RzStatusPane_pocet_var_value;
+  TscGPButton *scGPButton_error;
+  TscGPButton *scGPButton_warning;
   void __fastcall FormShow(TObject *Sender);
   void __fastcall scGPListBox_zpravyMouseMove(TObject *Sender, TShiftState Shift,
           int X, int Y);
@@ -37,6 +41,7 @@ public:		// User declarations
   __fastcall TForm_zpravy(TComponent* Owner);
   	bool closing;//detekce kvùli hlavnímu formuláøi jinak volá tìlo formactivate hlavního formu
     void update_zpravy(short rezim=1); // 1 - celkový update zpráv, - 0 - update pouze horní lišty Warningù a Errorù
+    void highlight(int radek=0);
     int radek_temp;
 };
 //---------------------------------------------------------------------------
