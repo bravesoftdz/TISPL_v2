@@ -5398,7 +5398,10 @@ void Cvektory::vymaz_seznam_KATALOG()
 //zkontroluje buď všechny elementy (je-li vstupní parametr NULL), smaže všechny zprávy, a kde najde problém, uloží do zpráv, v případě, že není NULL
 void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s parametrem!!!
 {
-	bool puvodni_zpravy=0,nove_zpravy=0;
+	bool puvodni_zpravy=0;
+	long nove_zpravy=0;
+	long pocet_erroru=0,pocet_ warningu=0;
+
 	if(ZPRAVY!=NULL && ZPRAVY->predchozi->n)puvodni_zpravy=true;
 
 	//pokud se budou testovat všechny elementy, je nutné vymazat všechny zprávy
