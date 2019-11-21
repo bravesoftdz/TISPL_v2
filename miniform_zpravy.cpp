@@ -35,7 +35,7 @@ void __fastcall TForm_zpravy::FormShow(TObject *Sender)
   Top = F->Top_backup;
   Left = F->Left_backup;
   }
-  //update_zpravy();
+  //update_zpravy();  // vola si pri VALIDACI, neni nutne volat znovu pri formshow
 }
 //---------------------------------------------------------------------------
 
@@ -95,12 +95,13 @@ void __fastcall TForm_zpravy::scGPListBox_zpravyItemClick(TObject *Sender)
 
 void  TForm_zpravy::update_zpravy(long pocet_erroru, long pocet_warningu)
 {
-//  if(rezim==1)
-//  {
+  if(pocet_erroru>0 || pocet_warningu>0)
+  {
+   //pokud je form zpravy zobrazen tak schovej vzdy ikony v horni liste
+  if(Form_zpravy->Visible) {   F->scGPButton_error->Visible=false; F->scGPButton_warning->Visible=false; }
   TscGPListBox *C= scGPListBox_zpravy;
   TscGPListBoxItem *I;
-	int pocet_chyb=0;
-  int pocet_varovani=0;
+
 	C->Items->Clear();
 
 	if(F->d.v.ZPRAVY!=NULL)
@@ -111,18 +112,29 @@ void  TForm_zpravy::update_zpravy(long pocet_erroru, long pocet_warningu)
        {
         I=C->Items->Add();
         I->Caption =AnsiString(F->d.v.getVID(Z->VID));
-        if(Z->zID==-1)  {I->ImageIndex=69;  pocet_chyb++; } //error
-        else {I->ImageIndex=71; pocet_varovani++; } //warning
+        if(Z->zID==-1)  {I->ImageIndex=69;} //error
+        else {I->ImageIndex=71;} //warning
         Z=Z->dalsi;
        }
        delete Z;
-       RzStatusPane_pocet_chyb_value->Caption=pocet_chyb;
-       RzStatusPane_pocet_var_value->Caption=pocet_varovani;
-       Form_zpravy->Height = (pocet_chyb+pocet_varovani) *  scGPListBox_zpravy->ItemHeight + scLabel_header->Height + scGPPanel_statusbar->Height + 5;   //5px rezervnich
+       RzStatusPane_pocet_chyb_value->Caption=pocet_erroru;
+       RzStatusPane_pocet_var_value->Caption=pocet_warningu;
+       Form_zpravy->Height = (pocet_erroru+pocet_warningu) *  scGPListBox_zpravy->ItemHeight + scLabel_header->Height + scGPPanel_statusbar->Height + 5;   //5px rezervnich
+
+       if(Form_zpravy->Visible==false && pocet_erroru>0) F->scGPButton_error->Visible=true;  //pokud jsou zpravy zavreny a mám E tak v lištì zobraz ikonu E
+       if(Form_zpravy->Visible==false && pocet_warningu>0) F->scGPButton_warning->Visible=true; //pokud jsou zpravy zavreny a mám W tak v lištì zobraz ikonu W
      }
-       if(pocet_chyb==0) scGPImage_error->Visible=false; else    scGPImage_error->Visible=true;
-       if(pocet_varovani==0) scGPImage_warning->Visible=false;   else   scGPImage_warning->Visible=true;
-	//}
+
+	}
+  if(pocet_erroru==0)
+  {
+   if(Form_zpravy->Visible==false) F->scGPButton_error->Visible=false; //pokud nejsou zadne E tak v liste nezobrazuj ikonu Erroru
+  }
+  if(pocet_warningu==0)
+  {
+   if(Form_zpravy->Visible==false) F->scGPButton_warning->Visible=false; //pokud nejsou zadne W tak v liste nezobrazuj ikonu Warningu
+  }
+
 	//else zavøít miniform + skrýt ikony w E
 }
 //---------------------------------------------------------------------------

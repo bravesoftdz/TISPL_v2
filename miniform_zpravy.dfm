@@ -184,8 +184,6 @@ object Form_zpravy: TForm_zpravy
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Zpr'#225'vy'
-      ExplicitLeft = 25
-      ExplicitWidth = 249
     end
     object scGPGlyphButton_info: TscGPGlyphButton
       Left = 274
@@ -572,7 +570,6 @@ object Form_zpravy: TForm_zpravy
     HeaderOptions.GradientAngle = 90
     HeaderOptions.Margin = 5
     HeaderHeight = 20
-    ExplicitTop = 0
   end
   object scGPPanel_statusbar: TscGPPanel
     Left = 0
