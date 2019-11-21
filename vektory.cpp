@@ -5400,7 +5400,7 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 {
 	bool puvodni_zpravy=0;
 	long nove_zpravy=0;
-	long pocet_erroru=0,pocet_ warningu=0;
+	long pocet_erroru=0,pocet_warningu=0;
 
 	if(ZPRAVY!=NULL && ZPRAVY->predchozi->n)puvodni_zpravy=true;
 
@@ -5465,7 +5465,7 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 	delete O;
 
 	//zakutalizuje zprávy v miniformu zpráv, pouze pokud je potřeba aktualizovat
-	if(F->pom_temp!=NULL && (puvodni_zpravy || nove_zpravy))Form_zpravy->update_zpravy();
+	if(F->pom_temp!=NULL && (puvodni_zpravy || nove_zpravy))Form_zpravy->update_zpravy(pocet_erroru,pocet_warningu);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //z čísla VIDu vrátí jeho textový popis
@@ -6897,7 +6897,7 @@ void Cvektory::vse_odstranit()
 
 	//ZPRÁVY
 	bool puvodni_zpravy=false;if(ZPRAVY!=NULL && ZPRAVY->predchozi->n)puvodni_zpravy=true;
-	vymazat_ZPRAVY();if(puvodni_zpravy)Form_zpravy->update_zpravy();
+	vymazat_ZPRAVY();if(puvodni_zpravy)Form_zpravy->update_zpravy(0,0);
 
 //		//palce
 //		if(PALCE->predchozi->n>0)//pokud je více objektů

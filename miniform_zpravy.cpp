@@ -35,7 +35,7 @@ void __fastcall TForm_zpravy::FormShow(TObject *Sender)
   Top = F->Top_backup;
   Left = F->Left_backup;
   }
-  update_zpravy();
+  //update_zpravy();
 }
 //---------------------------------------------------------------------------
 
