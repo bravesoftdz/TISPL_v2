@@ -5442,18 +5442,18 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 				{
 					double aR=m.a360(rotaceJ+Ep->rotace_jig);//výstupní rotace jigu z posledního rotačního elementu
 					if(Ep->n==E->n &&  Ep->objekt_n==E->objekt_n && aR!=0 && aR!=180)//předposlení podmínka při novém DM zbytečná!
-					{vloz_zpravu(X,Y,-1,401,Ep);nove_zpravy++;}
+					{vloz_zpravu(X,Y,-1,401,Ep);pocet_erroru++;nove_zpravy++;}
 				}
 				Ep=NULL;delete Ep;
 			}
 			////////////Pozor, překrytí JIGů!
 			if(PP.delka_podvozek<m.UDJ(rotaceJ) && E->rotace_jig==0 && pocet_pozic>1)
-			{vloz_zpravu(X+x*PP.delka_podvozek*(pocet_pozic-1)/2.0,Y+y*PP.delka_podvozek*(pocet_pozic-1)/2.0,-1,402,E);nove_zpravy++;}
+			{vloz_zpravu(X+x*PP.delka_podvozek*(pocet_pozic-1)/2.0,Y+y*PP.delka_podvozek*(pocet_pozic-1)/2.0,-1,402,E);pocet_erroru++;nove_zpravy++;}
 			////////////RT
 			if(vrat_druh_elementu(E)==0)//pouze pro S&G
 			{
-				if(E->RT<0){vloz_zpravu(X,Y,-1,406,E);nove_zpravy++;}
-				if(E->RT==0){vloz_zpravu(X,Y,1,407,E);nove_zpravy++;}
+				if(E->RT<0){vloz_zpravu(X,Y,-1,406,E);pocet_erroru++;nove_zpravy++;}
+				if(E->RT==0){vloz_zpravu(X,Y,1,407,E);pocet_warningu++;nove_zpravy++;}
 			}
 
 			////posun na další elementy
