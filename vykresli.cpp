@@ -57,7 +57,7 @@ void Cvykresli::vykresli_halu(TCanvas *canv,int stav)
 	//vykreslení
 	short sirka_steny_px=m.m2px(0.4);//m->px
 	TColor clHala=clStenaHaly;//defaultní barva
-	if(F->pom_temp!=NULL)clHala=m.clIntensive(clHala,100-F->scGPTrackBar_intenzita->Value);//zesvětlení při spuštěné editaci, zesvětlení tady i v metodě polygon (musí být 2x)
+	if(F->pom_temp!=NULL)clHala=m.clIntensive(m.clIntensive(clBlack,110)/*clHala*/,100-F->scGPTrackBar_intenzita->Value);//zesvětlení při spuštěné editaci, zesvětlení tady i v metodě polygon (musí být 2x)
 	if(F->pom_temp!=NULL && F->scGPTrackBar_intenzita->Value>5 || F->pom_temp==NULL)polygon(canv,v.HALA.body,clHala,sirka_steny_px,stav,zobrazit_koty);
 }
 //---------------------------------------------------------------------------
