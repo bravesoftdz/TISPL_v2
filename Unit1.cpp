@@ -57,6 +57,7 @@
 #pragma link "rHintWindow"
 #pragma link "rHTMLLabel"
 #pragma link "scImageCollection"
+#pragma link "trayicon"
 #pragma resource "*.dfm"
 TForm1 *Form1;
 TForm1 *F;//pouze zkrácený zapis
@@ -383,14 +384,6 @@ void TForm1::set_font(int velikost)
   scLabel_architekt->Font=aFont;
   scLabel_architekt->Font->Color=barva;
   scLabel_architekt->Font->Size=velikost;
-  barva=scGPButton_header_projekt->Font->Color;
-  scGPButton_header_projekt->Font=aFont;
-  scGPButton_header_projekt->Font->Color=barva;
-  scGPButton_header_projekt->Font->Size=velikost;
-  barva=scGPGlyphButton_OPTIONS->Font->Color;
-  scGPGlyphButton_OPTIONS->Font=aFont;
-  scGPGlyphButton_OPTIONS->Font->Color=barva;
-  scGPGlyphButton_OPTIONS->Font->Size=velikost;
   barva=Nahled->Font->Color;
   Nahled->Font=aFont;
   Nahled->Font->Color=barva;
@@ -875,6 +868,7 @@ void TForm1::DesignSettings()
 
 	//nastaveni barvy prepinacu modu
 	Schema->Options->PressedColor=DetailsButton->Options->NormalColor;
+  scGPButton_zamek->Options->PressedColor=DetailsButton->Options->NormalColor;
 	Layout->Options->PressedColor=DetailsButton->Options->NormalColor;
 	Analyza->Options->PressedColor=DetailsButton->Options->NormalColor;
 	Synteza->Options->PressedColor=DetailsButton->Options->NormalColor;
@@ -882,6 +876,7 @@ void TForm1::DesignSettings()
 	Nahled->Options->PressedColor=DetailsButton->Options->NormalColor;
   //nastavení barvy fontu stisknutému tlačítku
 	Schema->Options->FontPressedColor=clWhite;
+  scGPButton_zamek->Options->FontPressedColor=clWhite;
 	Layout->Options->FontPressedColor=clWhite;
 	Analyza->Options->FontPressedColor=clWhite;
 	Synteza->Options->FontPressedColor=clWhite;
@@ -12247,8 +12242,8 @@ void __fastcall TForm1::Button_dopravnik_parametryClick(TObject *Sender)
 	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;//zavře případně otevřené menu
 	if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
  //	scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
-	if(scGPButton_header_projekt->ImageIndex==49)
-	{
+ //	if(scGPButton_header_projekt->ImageIndex==49)   již nepoužívaná konstrukce
+	//{
 		if(MOD!=NAHLED/*||pom_temp->pohon==NULL*/)
 		{
 			ESC();//zruší případnou rozdělanou akci
@@ -12269,26 +12264,26 @@ void __fastcall TForm1::Button_dopravnik_parametryClick(TObject *Sender)
 			}
 			else Nahled->Down=true;//nepotvrzen přechod, návrat horní lišty do původního stavu
     }
-	}
-	else
-	{
-		ESC();//zruší případnou rozdělanou akci
-		if(d.v.OBJEKTY->dalsi==NULL)
-		{
-			MB(ls->Strings[352]);//"Nejdříve je nutné zakreslit schéma linky!"
-		}
-		else
-		{
-			{
-				Form_definice_zakazek->Left=Form1->ClientWidth/2-Form_definice_zakazek->Width/2;
-				Form_definice_zakazek->Top=Form1->ClientHeight/2-Form_definice_zakazek->Height/2;
-				Form_definice_zakazek->ShowModal();
-				//if(!TZF)Analyza->Enabled=true;//stačí takto pokud první zakázka nepůjde smazat nebo se v případě neexistence bude vytvářet nová, což se momentálně děje při příchodu do časových os
-				DuvodUlozit(true);//požaduje se vždy, protože i storno při prvním zobrazení ukládá default zakázku s default cestou
-				REFRESH();//požaduje se vždy, protože i storno při prvním zobrazení ukládá default zakázku s default cestou a je tedy potřeba překreslit
-			}
-		}
-	}
+ //	}
+//	else
+//	{
+//		ESC();//zruší případnou rozdělanou akci
+//		if(d.v.OBJEKTY->dalsi==NULL)
+//		{
+//			MB(ls->Strings[352]);//"Nejdříve je nutné zakreslit schéma linky!"
+//		}
+//		else
+//		{
+//			{
+//				Form_definice_zakazek->Left=Form1->ClientWidth/2-Form_definice_zakazek->Width/2;
+//				Form_definice_zakazek->Top=Form1->ClientHeight/2-Form_definice_zakazek->Height/2;
+//				Form_definice_zakazek->ShowModal();
+//				//if(!TZF)Analyza->Enabled=true;//stačí takto pokud první zakázka nepůjde smazat nebo se v případě neexistence bude vytvářet nová, což se momentálně děje při příchodu do časových os
+//				DuvodUlozit(true);//požaduje se vždy, protože i storno při prvním zobrazení ukládá default zakázku s default cestou
+//				REFRESH();//požaduje se vždy, protože i storno při prvním zobrazení ukládá default zakázku s default cestou a je tedy potřeba překreslit
+//			}
+//		}
+//	}
 }
 //---------------------------------------------------------------------------
 //volání superformuláře (definice zakázek)
@@ -12395,8 +12390,8 @@ void __fastcall TForm1::scGPSwitch_rezimChangeState(TObject *Sender)
 
 			// scGPButton_header_def_zakazek->Visible=true;
 			// scGPButton_header_param_linky->Visible=false;
-			scGPButton_header_projekt->ImageIndex=48;
-			scGPButton_header_projekt->Hint="Definice zakázek";
+		 //	scGPButton_header_projekt->ImageIndex=48;
+			//scGPButton_header_projekt->Hint="Definice zakázek";
 
 
 	}
@@ -12413,8 +12408,8 @@ void __fastcall TForm1::scGPSwitch_rezimChangeState(TObject *Sender)
 	 //	 scGPButton_header_def_zakazek->Visible=false;
 	 //	 scGPButton_header_param_linky->Visible=true;
 
-		scGPButton_header_projekt->ImageIndex=49;
-		scGPButton_header_projekt->Hint="Parametry linky";
+//		scGPButton_header_projekt->ImageIndex=49;
+//		scGPButton_header_projekt->Hint="Parametry linky";
 
 
 		SB(ls->Strings[396],1);//"NÁVRH"
@@ -13147,9 +13142,9 @@ void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
   ESC();//zruší případnou rozdělanou akci  - způsobuje problém při zavírání splitview
   scSplitView_OPTIONS->Opened = !scSplitView_OPTIONS->Opened;
 
-  scGPGlyphButton_OPTIONS->Active=false;
-  scGPGlyphButton_OPTIONS->GlyphColor=clWhite;
-  scGPGlyphButton_OPTIONS->GlyphThickness=1;
+//  scGPGlyphButton_OPTIONS->Active=false;
+//  scGPGlyphButton_OPTIONS->GlyphColor=clWhite;
+//  scGPGlyphButton_OPTIONS->GlyphThickness=1;
 
  //jazyk mutace
   //if(readINI("Nastaveni_app","jazyk")=="1"){language=CS; scGPSwitch1->State=scswOn;} else { language=EN; scGPSwitch1->State=scswOff;}
@@ -13195,7 +13190,7 @@ void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
 void __fastcall TForm1::scGPGlyphButton_OPTIONSMouseEnter(TObject *Sender)
 {
 log(__func__);//logování
-scGPGlyphButton_OPTIONS->GlyphColor=clWhite;//(TColor)RGB(0,120,215);
+
 }
 //---------------------------------------------------------------------------
 
@@ -13203,7 +13198,6 @@ scGPGlyphButton_OPTIONS->GlyphColor=clWhite;//(TColor)RGB(0,120,215);
 void __fastcall TForm1::scGPGlyphButton_OPTIONSMouseLeave(TObject *Sender)
 {
 log(__func__);//logování
-scGPGlyphButton_OPTIONS->GlyphColor=(TColor)RGB(255,128,0);
 }
 //---------------------------------------------------------------------------
 
@@ -13975,8 +13969,8 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
     scGPGlyphButton15->Hint=ls->Strings[31];
     scLabel_klient->Caption=ls->Strings[32];
     scLabel_architekt->Caption=ls->Strings[33];
-    scGPButton_header_projekt->Hint=ls->Strings[34];
-    scGPGlyphButton_OPTIONS->Hint=ls->Strings[35];
+   // scGPButton_header_projekt->Hint=ls->Strings[34];
+   // scGPGlyphButton_OPTIONS->Hint=ls->Strings[35];
     Nahled->Caption=ls->Strings[36];
     scGPGlyphButton_PLAY->Hint=ls->Strings[37];
     RzStatusPane3->Hint=ls->Strings[38];
@@ -14109,8 +14103,8 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
     //aktualizace mGridu
 		if(akt_mGrid)change_languagein_mGrid();
 		//ostatní
-		if(language==EN)Layout->Width=120;
-		if(language==CS)Layout->Width=99;
+		if(language==EN)Layout->Width=130;
+		if(language==CS)Layout->Width=130;
 	}
 	else //pokud není nalezen jazykový slovník
 	{
@@ -14186,15 +14180,20 @@ void __fastcall TForm1::scGPImage_zamek_posunuClick(TObject *Sender)
 
 void __fastcall TForm1::scButton_zamek_layoutuClick(TObject *Sender)
 {
+  ShowMessage("klik");
 	if(scButton_zamek_layoutu->ImageIndex==68)//odemčeno budu zamykat
 	{
+    //ShowMessage("zamknout");
 		scButton_zamek_layoutu->ImageIndex=67;
+    scGPButton_zamek->ImageIndex=79;
 		scButton_zamek_layoutu->Hint=ls->Strings[409];//"Odemknout layout";
 		zamek_layoutu=true;
   }
 	else
 	{
+    // ShowMessage("odemknout");
 		scButton_zamek_layoutu->ImageIndex=68;
+    scGPButton_zamek->ImageIndex=78;
 		scButton_zamek_layoutu->Hint=ls->Strings[43];//"Zamknout layout";
 		zamek_layoutu=false;
 	}

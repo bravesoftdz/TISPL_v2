@@ -100,6 +100,7 @@
 #include "UnitX.h"
 #include <Vcl.Imaging.pngimage.hpp>
 #include "scImageCollection.hpp"
+#include "trayicon.h"
 //#include "vektory.h" //už vkládám pøes vykresli.h
 //#include "knihovna_objektu.h" //už vkládám pøes vykresli.h resp. vektory.h
 
@@ -257,7 +258,6 @@ __published:	// IDE-managed Components
 	TscGPCheckBox *CheckBox_pouzit_zadane_kapacity;
 	TscGPGlyphButton *ButtonPLAY;
 	TscLabel *scLabel_mezera;
-	TscGPButton *scGPButton_header_projekt;
 	TscGPButton *scGPButton_header_def_zakazek;
 	TscGPCheckBox *scGPCheckBox_pocet_voziku_dle_WIP;
 	TscGPGlyphButton *scGPGlyphButton_info_cekani;
@@ -281,7 +281,6 @@ __published:	// IDE-managed Components
   TscGPLabel *scGPLabel_poznamky;
   TscGPLabel *scGPLabel_roboti;
   TscGPButton *scGPButton_adjustace;
-  TscGPGearActivityIndicator *scGPGlyphButton_OPTIONS;
   TscExPanel *scExPanel_podklad;
 	TMemo *Memo3;
   TTimer *Timer2;
@@ -326,6 +325,7 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton_prichytavat;
   TscGPButton *scGPButton_error;
   TscGPButton *scGPButton_warning;
+  TscGPButton *scGPButton_zamek;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
