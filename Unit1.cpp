@@ -57,7 +57,6 @@
 #pragma link "rHintWindow"
 #pragma link "rHTMLLabel"
 #pragma link "scImageCollection"
-#pragma link "trayicon"
 #pragma resource "*.dfm"
 TForm1 *Form1;
 TForm1 *F;//pouze zkrácený zapis
@@ -4077,7 +4076,7 @@ void TForm1::getJobID(int X, int Y)
 			  			if(pom_bod!=NULL)JID=-2;//hrana nalezena
 			  			else
 			  			{ //testování zda se nejedná o NÁZEV či ZKRATKA objektu, ZATÍM NEREFLEKTUJE ORIENTACI NÁHLEDU
-			  				d.nastavit_text_popisu_objektu_v_nahledu(Canvas,1);AnsiString Tn=F->pom_temp->name.UpperCase();short Wn=Canvas->TextWidth(Tn);//název objektu - nastavení
+								d.nastavit_text_popisu_objektu_v_nahledu(Canvas);AnsiString Tn=F->pom_temp->name.UpperCase();short Wn=Canvas->TextWidth(Tn);//název objektu - nastavení
 								if(najdi_nazev_obj(X,Y,pom_temp))JID=-6;//název objektu
 			  				if(JID==-1)//hledání předávacího místa, pohon 1 nebo pohon 2
 			  				{
@@ -6185,7 +6184,7 @@ TRect TForm1::vrat_max_oblast(Cvektory::TObjekt *Objekt)
 				}
 				delete E;E=NULL;
 				//kontrola názvu
-				d.nastavit_text_popisu_objektu_v_nahledu(Canvas,0);
+				d.nastavit_text_popisu_objektu_v_nahledu(Canvas);
 				AnsiString Tn=O->name.UpperCase();
 				short Wn=Canvas->TextWidth(Tn)/2.0;
 				short Hn=Canvas->TextHeight(Tn);
@@ -6402,7 +6401,7 @@ bool TForm1::najdi_nazev_obj(double X,double Y,Cvektory::TObjekt *Objekt)
 	log(__func__);//logování
 	bool ret=false;
 	//nastavení canvasu
-	d.nastavit_text_popisu_objektu_v_nahledu(Canvas,1);AnsiString Tn=F->pom_temp->name.UpperCase();short Wn=Canvas->TextWidth(Tn);//název objektu - nastavení
+	d.nastavit_text_popisu_objektu_v_nahledu(Canvas);AnsiString Tn=F->pom_temp->name.UpperCase();short Wn=Canvas->TextWidth(Tn);//název objektu - nastavení
 	//hledání textu
 	switch((int)Objekt->orientace_text)
 	{
@@ -13443,7 +13442,7 @@ void __fastcall TForm1::Timer2Timer(TObject *Sender)
 //volá metodu vykresli_kurzor při editaci textu
 void __fastcall TForm1::TimerKurzorTimer(TObject *Sender)
 {
-  log(__func__);//logování
+	log(__func__);//logování
 	vykresli_kurzor(index_kurzoru);
 }
 //---------------------------------------------------------------------------
@@ -13457,14 +13456,13 @@ void TForm1::vykresli_kurzor(int index)
 	double Xt=0,Yt=0;
 	if(pom_temp!=NULL)
 	{
-		d.nastavit_text_popisu_objektu_v_nahledu(Canvas,1);Tn=F->pom_temp->name.UpperCase();Wn=Canvas->TextWidth(Tn);//název objektu - nastavení
-		d.nastavit_text_popisu_objektu_v_nahledu(Canvas,0);Tl=+" / ";Wl=Canvas->TextWidth(Tl);//lomítko objektu - nastavení
-		d.nastavit_text_popisu_objektu_v_nahledu(Canvas,2);Tz=F->pom_temp->short_name.UpperCase();Wz=Canvas->TextWidth(Tz);//zkratka objektu - nastavení
+		d.nastavit_text_popisu_objektu_v_nahledu(Canvas);Tn=F->pom_temp->name.UpperCase();Wn=Canvas->TextWidth(Tn);//název objektu - nastavení
+		d.nastavit_text_popisu_objektu_v_nahledu(Canvas);Tl=+" / ";Wl=Canvas->TextWidth(Tl);//lomítko objektu - nastavení
+		d.nastavit_text_popisu_objektu_v_nahledu(Canvas);Tz=F->pom_temp->short_name.UpperCase();Wz=Canvas->TextWidth(Tz);//zkratka objektu - nastavení
 	}
 	//vykreslování kurzoru pro psaní textu
 	Canvas->Pen->Style=psSolid;
 	Canvas->Pen->Mode=pmNotXor;
-	Canvas->Pen->Color=d.clStenaKabiny;//m.clIntensive(clRed,180);
 	Canvas->Pen->Width=2;
 	switch ((index))//index=JID, kde a jaký kurzor vykreslit
 	{
@@ -13524,6 +13522,7 @@ void TForm1::vykresli_kurzor(int index)
 		}break;
 		case -6://název objektu
 		{
+			Canvas->Pen->Color=d.clStenaHaly;
 			if(Tn=="")Tn="b";//při prázdném textu nemůžu zjistit TextHeight -> to zapříčiní čpatné vykreslení kurzoru, když uživatel odmaže veškerý text
 			Xt=m.L2Px(F->pom_temp->Xt);Yt=m.L2Py(F->pom_temp->Yt);
 			switch((int)pom_temp->orientace)

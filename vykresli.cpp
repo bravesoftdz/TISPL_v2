@@ -309,8 +309,8 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	if(!(F->pom_temp!=NULL && F->pom_temp->n!=O->n && F->scGPTrackBar_intenzita->Value<5))polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
 
 	///název
-	//název objektu - nastavení                 //záměrně nuly, aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
-	nastavit_text_popisu_objektu_v_nahledu(canv,0);AnsiString Tn=O->name.UpperCase();AnsiString Tl=+" / ";short Wn=canv->TextWidth(Tn);
+	//název objektu - nastavení
+	nastavit_text_popisu_objektu_v_nahledu(canv);AnsiString Tn=O->name.UpperCase();AnsiString Tl=+" / ";short Wn=canv->TextWidth(Tn);
   ////poloha nadpisu
 	double X=O->Xt;
 	double Y=O->Yt;
@@ -321,16 +321,15 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		case 180:X=m.L2Px(X)+canv->TextHeight(Tl);Y=m.L2Py(Y)-m.round((Wn)/2.0);canv->Font->Orientation=(O->orientace_text+90)*10;break;//nastavení rotace canvasu
 		case 270:X=m.L2Px(X)-m.round((Wn)/2.0);Y=m.L2Py(Y)-canv->TextHeight(Tl);break;
 	}
-	//nastavení highlight textu
-	if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID==-6 || F->JID==-7))canv->Font->Style = TFontStyles()<< fsBold;//zapnutí tučného písma
-	else canv->Font->Style = TFontStyles();//vypnutí
+	//nastavení normálního, disabled nebo highlight textu
+	nastavit_text_popisu_objektu_v_nahledu(canv);
+	if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)canv->Font->Color=m.clIntensive(clAkt,I);//pro neaktivní objekty při editaci
 	//samotné vypsání názvu
-	nastavit_text_popisu_objektu_v_nahledu(canv,1);
-	canv->Font->Color=clStenaKabiny;                                            //tady před změnou červená -> šedomodrá bývala clStenaKabiny
-	if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)canv->Font->Color=m.clIntensive(clAkt,I);
 	if(!(F->pom_temp!=NULL && F->pom_temp->n!=O->n && F->scGPTrackBar_intenzita->Value<5))TextFraming(canv,X,Y,Tn);//záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
-	canv->Font->Orientation=0;//vrácení původní hodnoty rotace canvasu
-	//vykreslení kříže posuvu u tabulky pohonu, natrvalo
+	//vrácení původní hodnoty rotace canvasu
+	canv->Font->Orientation=0;
+
+	////vykreslení kříže posunu u tabulky pohonu, natrvalo
 	canv->Pen->Color=clBlack;canv->Pen->Width=1;
 	if(F->pom_temp!=NULL && F->Akce==F->Takce::NIC && F->PmG->Highlight)
 	{
@@ -496,14 +495,12 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 }
 //---------------------------------------------------------------------------
 //bool name, zda se jedná o zadavání name nebo short_name
-void Cvykresli::nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv,unsigned short typ)
+void Cvykresli::nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv)
 {
 	canv->Font->Name=F->aFont->Name;
-	canv->Font->Color=clRed;
+	if(F->JID==-6 || F->editace_textu && F->index_kurzoru==-6)canv->Font->Color=clStenaHaly; else canv->Font->Color=clStenaKabiny;
 	canv->Font->Size=2*3*F->Zoom;
 	canv->Font->Style = TFontStyles()<< fsBold;
-//	if((F->JID==-6 && typ==1) || (F->JID==-7 && typ==2))canv->Font->Style = TFontStyles()<< fsBold;//zapnutí tučného písma
-//	else canv->Font->Style = TFontStyles();//vypnutí
 }
 //---------------------------------------------------------------------------
 //symbolika tekoucí kapaliny u POW
