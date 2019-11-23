@@ -3971,6 +3971,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 		if(pom_temp!=NULL)mGrid_on_mGrid();//kontrola, zda nejsou překryty mGridy elementů a PmG
 	}
 	stisknute_leve_tlacitko_mysi=false;
+	if(duvod_validovat==1){duvod_validovat=2;d.v.VALIDACE();}//pokud je důvod validovat, tak až po dokonečení akce, nešlo monitorovat dle Akce==NIC, volání VALIDACE přímo zde je odvozeno z důvodu, že někdy není odchytnut REFRESH po dokončení akce
 
 	//vrat_puvodni_akci();
 	/*if(X<=RzSizePanel_knihovna_objektu->Width) DrawGrid_knihovna->Enabled=true;
@@ -6566,7 +6567,7 @@ void TForm1::nahled_ulozit (bool duvod_ulozit)
 	//aby mohlo být tlačítko aktivované musí k tomu vzniknout důvod (přidání robota, editace hodnot, ...), ale zároveň nesmí být chybná hodnota rychlosti (validace)
 	if(duvod_ulozit&&(PmG->Note.Text=="" || PmG->Note.Text=="Parametry pohonu již nelze měnit, neboť je používán i na jiných objektech" || PmG->Note.Text==ls->Strings[291])) {scGPButton_ulozit->Enabled=true;duvod_ulozit_nahled=true;DuvodUlozit(true);}
 	if(!duvod_ulozit) {scGPButton_ulozit->Enabled=false;duvod_ulozit_nahled=false;}
-
+	if(duvod_ulozit_nahled)duvod_validovat=1;//pokud je důvod validovat, tj. až po dokončení operace, aby neustále neproblikávalo i během posunu elementů
 }
 //---------------------------------------------------------------------------
 //automatické nekonfliktní pozicování tabulek podle tabulek ostatních elementů
@@ -10826,7 +10827,7 @@ void TForm1::Ulozit_soubor()
 //otevře soubor
 void __fastcall TForm1::Toolbar_OtevritClick(TObject *Sender)
 {
-  log(__func__);//logování
+	log(__func__);//logování
 	scSplitView_MENU->Opened=false;
 	scButton_otevrit->Down=false;
 	if(duvod_k_ulozeni)//pokud existuje předcházejicí soubor, který je nutný uložit
@@ -10915,6 +10916,7 @@ unsigned short int TForm1::Otevrit_soubor(UnicodeString soubor)//realizuje samot
 					default: schemaClick(this);break;
 			}
 			DuvodUlozit(false);
+			duvod_validovat=2;//soubor se zvaliduje při prvním refresh
 			//aktualizace statusbaru
 			on_change_zoom_change_scGPTrackBar();
 
@@ -12014,22 +12016,26 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 
 	 //d.v.vloz_zpravu(0,0,0,NULL,ls->Strings[401]);
 	 //d.v.vloz_zpravu(0,0,0,NULL,ls->Strings[402]);
-//	 if(d.v.ZPRAVY!=NULL)
-//	 {
-//		 Cvektory::TZprava *Z=d.v.ZPRAVY->dalsi;
-//		 while(Z!=NULL)
-//		 {
-//       Memo(Z->n);
-//			 Memo(Z->Popisek);
-//			 Z=Z->dalsi;
-//		 }
-//		 delete Z;
-//	 }
+	 if(d.v.ZPRAVY!=NULL)
+	 {
+		 Cvektory::TZprava *Z=d.v.ZPRAVY->dalsi;
+		 while(Z!=NULL)
+		 {
+			 Memo(Z->n);Memo(d.v.getVID(Z->VID));if(Z->Element!=NULL){if(Z->Element->name=="")Memo(Z->Element->name);else {Memo(Z->Element->n);Memo(Z->Element->eID);}}else Memo("není");
+			 Memo("______________________");
+			 Z=Z->dalsi;
+		 }
+		 delete Z;
+	 }
 	 //Sk(d.v.vrat_zpravu(2)->Popisek);
 	 //d.v.vymazat_ZPRAVY();
 
-	 //d.zobrazit_cele_zpravy=!d.zobrazit_cele_zpravy;
-	 REFRESH();
+
+//		Form_zpravy->scGPListBox_zpravy->Items->Clear();
+//		Memo((short)Akce);
+//		Memo((short) duvod_validovat);
+//		Memo("_____________");
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)

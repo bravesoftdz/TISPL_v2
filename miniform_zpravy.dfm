@@ -203,6 +203,7 @@ object Form_zpravy: TForm_zpravy
       ShowHint = True
       TabOrder = 2
       OnClick = scGPGlyphButton_infoClick
+      OnResize = scGPGlyphButton_infoResize
       Animation = True
       Caption = 'P'#345'ipnout / Odepnout'
       CanFocused = False

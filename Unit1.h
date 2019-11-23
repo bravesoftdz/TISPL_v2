@@ -756,6 +756,7 @@ public:		// User declarations
 	bool refresh_mGrid;//nevykresluje se z buffru ale pøímo
 	bool nabuffrovano;//udržuje, zda je buffer mgridových rastrù aktuální
 	bool duvod_ulozit_nahled;//uchovává v sobì dùvod k uložení náhledu
+	short duvod_validovat;//uchovává v sobì podnìt na prùbìh validaèního algoritmu 0-ne, 1-po dokoneèení operace validovat, 2 - validovat nyní
 	bool auto_settings_open;
 	int ID_tabulky;
 	TPointD puv_souradnice;//slouží k ukládání pùvodních souøadnic, napø. pøi posunu elementu
