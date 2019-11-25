@@ -46,6 +46,7 @@ object Form1: TForm1
     Font.Height = -16
     Font.Name = 'Arial'
     Font.Style = [fsBold]
+    Font.Quality = fqClearTypeNatural
     ParentFont = False
     Visible = False
   end
@@ -65,6 +66,7 @@ object Form1: TForm1
     Font.Height = -11
     Font.Name = 'Arial'
     Font.Style = [fsBold]
+    Font.Quality = fqClearTypeNatural
     ParentColor = False
     ParentFont = False
     Visible = False
@@ -248,6 +250,7 @@ object Form1: TForm1
     Font.Height = -11
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
+    Font.Quality = fqClearTypeNatural
     Lines.Strings = (
       '')
     ParentFont = False
@@ -975,6 +978,7 @@ object Form1: TForm1
       Font.Height = -13
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
@@ -1178,7 +1182,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 860
     end
     object Synteza: TscGPButton
       Left = 914
@@ -1289,7 +1292,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 938
     end
     object Toolbar_Ulozit: TscGPGlyphButton
       AlignWithMargins = True
@@ -1890,7 +1892,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 605
     end
     object Simulace: TscGPButton
       Left = 1004
@@ -2001,7 +2002,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 1016
     end
     object scGPGlyphButton15: TscGPGlyphButton
       Left = 1094
@@ -2015,6 +2015,7 @@ object Form1: TForm1
       Font.Height = -11
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
@@ -2136,8 +2137,6 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'TISPL'
-      ExplicitLeft = 526
-      ExplicitWidth = 29
     end
     object scGPSwitch_rezim: TscGPSwitch
       AlignWithMargins = True
@@ -2173,7 +2172,6 @@ object Form1: TForm1
       FrameOnSolid = True
       FrameInside = False
       OnChangeState = scGPSwitch_rezimChangeState
-      ExplicitLeft = 380
     end
     object scLabel_klient: TscLabel
       Left = 381
@@ -2190,6 +2188,7 @@ object Form1: TForm1
       Font.Height = -13
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       TabOrder = 16
       Visible = False
@@ -2208,7 +2207,6 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Ov'#283#345'ov'#225'n'#237
-      ExplicitLeft = 428
     end
     object scLabel_architekt: TscLabel
       Left = 294
@@ -2225,6 +2223,7 @@ object Form1: TForm1
       Font.Height = -13
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       TabOrder = 17
       Visible = False
@@ -2243,7 +2242,6 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'N'#225'vrh'
-      ExplicitLeft = 341
     end
     object scLabel_mezera: TscLabel
       Left = 279
@@ -2260,6 +2258,7 @@ object Form1: TForm1
       Font.Height = -13
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       TabOrder = 18
       OnDblClick = scLabel_titulekDblClick
@@ -2276,7 +2275,6 @@ object Form1: TForm1
       Alignment = taCenter
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
-      ExplicitLeft = 326
     end
     object Nahled: TscGPButton
       Left = 734
@@ -2386,7 +2384,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 782
     end
     object scGPGlyphButton_PLAY: TscGPGlyphButton
       Left = 242
@@ -2400,6 +2397,7 @@ object Form1: TForm1
       Font.Height = -11
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
@@ -2596,7 +2594,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 555
     end
     object scGPButton_warning: TscGPButton
       Left = 508
@@ -2705,7 +2702,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 580
     end
     object scGPButton_zamek: TscGPButton
       Left = 710
@@ -2816,7 +2812,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 726
     end
   end
   object scGPPanel_statusbar: TscGPPanel
@@ -2869,6 +2864,7 @@ object Form1: TForm1
       Font.Height = -12
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
@@ -2892,6 +2888,7 @@ object Form1: TForm1
       Font.Height = -12
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
@@ -2915,6 +2912,7 @@ object Form1: TForm1
       Font.Height = -12
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
@@ -3177,6 +3175,7 @@ object Form1: TForm1
       Font.Height = -12
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       TabOrder = 4
       DragForm = False
@@ -3611,6 +3610,7 @@ object Form1: TForm1
     Font.Height = -11
     Font.Name = 'Tahoma'
     Font.Style = []
+    Font.Quality = fqClearTypeNatural
     ParentFont = False
     TabOrder = 25
     CustomImageIndex = -1
@@ -3670,6 +3670,7 @@ object Form1: TForm1
       Font.Height = -11
       Font.Name = 'Tahoma'
       Font.Style = [fsBold]
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       TabOrder = 0
       AutoSize = True
@@ -3733,6 +3734,7 @@ object Form1: TForm1
       Font.Height = -11
       Font.Name = 'Tahoma'
       Font.Style = [fsBold]
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       TabOrder = 1
       Visible = False
@@ -3797,6 +3799,7 @@ object Form1: TForm1
       Font.Height = -11
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       TabOrder = 2
       Visible = False
@@ -3860,6 +3863,7 @@ object Form1: TForm1
       Font.Height = -11
       Font.Name = 'Tahoma'
       Font.Style = [fsBold]
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       TabOrder = 3
       Visible = False
@@ -3923,6 +3927,7 @@ object Form1: TForm1
       Font.Height = -11
       Font.Name = 'Tahoma'
       Font.Style = [fsBold]
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       TabOrder = 4
       Visible = False
@@ -4299,6 +4304,7 @@ object Form1: TForm1
     Font.Height = -11
     Font.Name = 'Tahoma'
     Font.Style = []
+    Font.Quality = fqClearTypeNatural
     ParentFont = False
     TabOrder = 30
     Visible = False
@@ -4481,6 +4487,7 @@ object Form1: TForm1
     Font.Height = -11
     Font.Name = 'Tahoma'
     Font.Style = []
+    Font.Quality = fqClearTypeNatural
     ParentBiDiMode = False
     ParentFont = False
     TabOrder = 34
@@ -4708,6 +4715,7 @@ object Form1: TForm1
       Font.Height = -17
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       TabOrder = 1
       Visible = False
@@ -4835,6 +4843,7 @@ object Form1: TForm1
       Font.Height = -17
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       TabOrder = 2
       TabStop = True
@@ -4939,6 +4948,7 @@ object Form1: TForm1
       Font.Height = -17
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       TabOrder = 3
       TabStop = True
@@ -5445,6 +5455,7 @@ object Form1: TForm1
       Font.Height = -17
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       TabOrder = 8
       OnClick = scGPComboBox_prepinacKotClick
@@ -5719,6 +5730,7 @@ object Form1: TForm1
       Font.Height = -11
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
@@ -6942,6 +6954,7 @@ object Form1: TForm1
       Font.Height = -16
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       TabOrder = 0
       OnClick = KonecClick
@@ -7035,6 +7048,7 @@ object Form1: TForm1
       Font.Height = -16
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       TabOrder = 1
       OnClick = Toolbar_OtevritClick
@@ -7127,6 +7141,7 @@ object Form1: TForm1
       Font.Height = -16
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       TabOrder = 2
       OnClick = scGPGlyphButton_OPTIONSClick
@@ -7220,6 +7235,7 @@ object Form1: TForm1
       Font.Height = -16
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       TabOrder = 3
       OnClick = Obnovitzezlohy1Click
@@ -7312,6 +7328,7 @@ object Form1: TForm1
       Font.Height = -16
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       TabOrder = 4
       OnClick = html1Click
@@ -7432,6 +7449,7 @@ object Form1: TForm1
       Font.Height = -13
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       TabOrder = 6
       Visible = False
@@ -7459,6 +7477,7 @@ object Form1: TForm1
       Font.Height = -16
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       TabOrder = 7
       OnClick = UlozitjakoClick
@@ -7551,6 +7570,7 @@ object Form1: TForm1
       Font.Height = -16
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       TabOrder = 8
       OnClick = Export1Click
@@ -7643,6 +7663,7 @@ object Form1: TForm1
       Font.Height = -16
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       TabOrder = 9
       OnClick = MagnaClick
@@ -7735,6 +7756,7 @@ object Form1: TForm1
       Font.Height = -16
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       TabOrder = 10
       OnClick = NovySouborClick
@@ -7828,6 +7850,7 @@ object Form1: TForm1
       Font.Height = -16
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       TabOrder = 11
       OnClick = UlozitClick
@@ -7920,6 +7943,7 @@ object Form1: TForm1
       Font.Height = -16
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       TabOrder = 12
       OnClick = scButton_nacist_podkladClick
@@ -8013,6 +8037,7 @@ object Form1: TForm1
     Font.Height = -11
     Font.Name = 'Tahoma'
     Font.Style = []
+    Font.Quality = fqClearTypeNatural
     ParentFont = False
     TabOrder = 21
     OnMouseLeave = scSplitView_OPTIONSMouseLeave
@@ -9733,7 +9758,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118009808000910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118009808080910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10856,7 +10881,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01015000480A880B30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01015000480A900B30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000F0030000010020000000000000D0
       0B00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

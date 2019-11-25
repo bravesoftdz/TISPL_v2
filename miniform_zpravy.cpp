@@ -26,14 +26,24 @@ __fastcall TForm_zpravy::TForm_zpravy(TComponent* Owner)
 void __fastcall TForm_zpravy::FormShow(TObject *Sender)
 {
 	closing=false;
+  mouse_move=0;
 	F->scGPButton_warning->Visible=false;
 	F->scGPButton_error->Visible=false;
+  scGPGlyphButton_pripnout->Visible=false;
+  scGPSizeBox->Visible=false;
 
   scGPPanel_header->FillColor=(TColor)RGB(60,100,162);
+ // scGPPanel_header->FillColor=(TColor)RGB(221,221,221);
+ // scGPPanel_statusbar->FillColor=(TColor)RGB(221,221,221);
+//  scLabel_header->Font->Color=(TColor)RGB(73,117,184);
+//  RzStatusPane__chyby_caption->Font->Color=(TColor)RGB(73,117,184);
+ // RzStatusPane_var_header->Font->Color=(TColor)RGB(73,117,184);
   if(Top!=F->scLabel_titulek->Height)
   {
 		Top = F->Top_backup;
 		Left = F->Left_backup;
+    scGPGlyphButton_pripnout->Visible=true;
+    scGPSizeBox->Visible=true;
 	}
 	TPoint pocet_zprav=F->d.v.vrat_pocet_zprav();
 	update_zpravy(pocet_zprav.x,pocet_zprav.y);
@@ -59,9 +69,11 @@ void __fastcall TForm_zpravy::scGPListBox_zpravyMouseMove(TObject *Sender, TShif
      }
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm_zpravy::scGPGlyphButton_infoClick(TObject *Sender)
+void __fastcall TForm_zpravy::scGPGlyphButton_pripnoutClick(TObject *Sender)
 {
-	scGPGlyphButton_info->Visible=false;//pøidal MAKR
+	scGPGlyphButton_pripnout->Visible=false;//pøidal MAKR
+  scGPGlyphButton_pripnout->Visible=false;
+  scGPSizeBox->Visible=false;
 	if(Top==F->scLabel_titulek->Height + 10) {Top=F->scLabel_titulek->Height + 10;   Left=F->ClientWidth - scGPListBox_zpravy->Width - 10;    }
 	else
 	{
@@ -84,6 +96,7 @@ void __fastcall TForm_zpravy::scGPListBox_zpravyItemClick(TObject *Sender)
   F->Left_backup=Form_zpravy->Left;
   closing=true;
   F->posun_na_element(scGPListBox_zpravy->ItemIndex +1);
+ // scGPListBox_zpravy->Items->Items[scGPListBox_zpravy->ItemIndex]->Active=false;
 }
 //---------------------------------------------------------------------------
 //update MaKr
@@ -124,9 +137,12 @@ void  TForm_zpravy::update_zpravy(long pocet_erroru, long pocet_warningu)
 				}
 				delete Z;
 				//naplnìní do statusbaru miniformu
-				RzStatusPane_pocet_chyb_value->Caption=pocet_erroru;
-				RzStatusPane_pocet_var_value->Caption=pocet_warningu;
+				//RzStatusPane_pocet_chyb_value->Caption=pocet_erroru;
+        RzStatusPane__chyby_caption->Caption="Poèet chyb "+AnsiString(pocet_erroru);
+			 //	RzStatusPane_pocet_var_value->Caption=pocet_warningu;
+        RzStatusPane_var_header->Caption= "Poèet varování "+AnsiString(pocet_warningu);
 				Form_zpravy->Height = (pocet_erroru+pocet_warningu) *  scGPListBox_zpravy->ItemHeight + scLabel_header->Height + scGPPanel_statusbar->Height + 5;   //5px rezervnich
+        if(Form_zpravy->Height > F->ClientHeight)   Form_zpravy->Height =  F->ClientHeight  -  scGPPanel_statusbar->Height - scLabel_header->Height - F->scLabel_titulek->Height;
 			}
 		}
 		else//pokud je form skrytý, zobrazí ikonu errorù nebo warningù (pøípadnì obì ikony) v horní lištì
@@ -166,9 +182,28 @@ void TForm_zpravy::highlight(int radek)
 	}
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm_zpravy::scGPGlyphButton_infoResize(TObject *Sender)
+void __fastcall TForm_zpravy::scGPGlyphButton_pripnoutResize(TObject *Sender)
 {
-	scGPGlyphButton_info->Visible=true;//pøidal MAKR
+	scGPGlyphButton_pripnout->Visible=true;//pøidal MAKR
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm_zpravy::scLabel_headerMouseDown(TObject *Sender, TMouseButton Button,
+          TShiftState Shift, int X, int Y)
+{
+if(mouse_move==1)
+  {
+  scGPSizeBox->Visible=true;
+  scGPGlyphButton_pripnout->Visible=true;
+  }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_zpravy::scLabel_headerMouseMove(TObject *Sender, TShiftState Shift,
+          int X, int Y)
+{
+mouse_move=1;
 }
 //---------------------------------------------------------------------------
 

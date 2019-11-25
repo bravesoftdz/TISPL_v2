@@ -14178,7 +14178,7 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 		Form_katalog->Button_storno->Caption=ls->Strings[195];
 		scGPCheckBox_zobrazit_palce->Caption=ls->Strings[292];
 		Form_zpravy->scLabel_header->Caption=ls->Strings[412];
-		Form_zpravy->scGPGlyphButton_info->Hint=ls->Strings[413];
+		Form_zpravy->scGPGlyphButton_pripnout->Hint=ls->Strings[413];
 		Form_zpravy->RzStatusPane__chyby_caption->Caption=ls->Strings[414];
 		Form_zpravy->RzStatusPane_var_header->Caption=ls->Strings[415];
 
