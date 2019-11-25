@@ -2497,6 +2497,13 @@ short Cvektory::vrat_druh_elementu(TElement *Element)
 	return RET;
 }
 ////---------------------------------------------------------------------------
+//vrátí true, pokud se jedná o funční element
+bool Cvektory::funkcni_element(TElement *Element)
+{                                                 //nutné přeskakovat elementarní hlavičku!
+	if(Element->eID!=MaxInt && Element->eID!=200 && Element->n>0)return true;
+	else return false;
+}
+////---------------------------------------------------------------------------
 //orotuje všechny elementy daného objektu o danou hodnotu
 void Cvektory::rotace_elementu(TObjekt *Objekt,short rotace)
 {
@@ -5448,7 +5455,12 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 					case 270: y=0;  x=-1; break;
 				}
 
-				////testování jednotlivých problémů
+				////testování jednotlivých problémů na elementech
+				////////////Pohon nepřiřazen!
+				if(funkcni_element(E) && E->pohon==NULL)
+				{
+					vloz_zpravu(X,Y,-1,219,E);pocet_erroru++;
+				}
 				////////////Rotace neodpovídá orientaci JIGů na začátku linky!
 				if(E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180)
 				{
@@ -5464,7 +5476,7 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 				////////////Pozor, překrytí JIGů!
 				if(PP.delka_podvozek<m.UDJ(rotaceJ) && E->rotace_jig==0 && pocet_pozic>1)
 				{vloz_zpravu(X+x*PP.delka_podvozek*(pocet_pozic-1)/2.0,Y+y*PP.delka_podvozek*(pocet_pozic-1)/2.0,-1,402,E);pocet_erroru++;}
-				////////////RT
+				////////////RT záporné nebo bez rezervy
 				if(vrat_druh_elementu(E)==0)//pouze pro S&G
 				{
 					if(E->RT<0){vloz_zpravu(X,Y,-1,406,E);pocet_erroru++;}
@@ -5490,7 +5502,8 @@ UnicodeString Cvektory::getVID(long VID)
 	UnicodeString Text="";
 	switch(VID)
 	{
-		case 401: Text=F->ls->Strings[401];break;//Rotace neodpovídá orientaci JIGů na začátku linky
+		case 219: Text=F->ls->Strings[219]+"!";break;//Pohon nepřiřazen!
+		case 401: Text=F->ls->Strings[401];break;//Rotace neodpovídá orientaci JIGů na začátku linky!
 		case 402: Text=F->ls->Strings[402];break;//Pozor, překrytí JIGů!
 		case 406: Text=F->ls->Strings[406];break;//Nestíhá se přejezd, záporná časová rezerva!
 		case 407: Text=F->ls->Strings[407];break;//Nulová časová rezerva.

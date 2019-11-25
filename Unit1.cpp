@@ -13016,7 +13016,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
     //mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
 		pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp;posledni_editovany_element=NULL;delete posledni_editovany_element;JID=-1;Akce=NIC;
     vlozit_predavaci_misto();//zkontroluje, zda nemusí být přidáno nebo odstraněno předávací místo
-		duvod_validovat=2;//vyvolá validaci, zajistí aktualizaci zpráv a výpisu v miniformu zpráv
+		duvod_validovat=2;//vyvolá validaci, zajistí aktualizaci zpráv a výpisu v miniformu zpráv, NECHAT AŽ ZA FUNKČNÍMI ZÁLEŽITOSTMI
 		//v případě animace vypnutí a nastavení do výchozího stavu
 		Timer_animace->Enabled=false;
 		ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
