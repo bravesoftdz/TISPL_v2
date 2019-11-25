@@ -410,3 +410,7 @@ Insert as new section? No - change to another section type.;X;Vložit jako novou 
 Unlock object placement;X;Odemknout rozmístìní objektù
 Turn snap on;X;Zapnout pøichytávání
 Turn snap off;X;Vypnout pøichytávání
+Messages;X;Zprávy 
+Pin to right;X;Pøipnout k pravé èásti
+Number of errors;X;Poèet chyb
+Number of warnings;X;Poèet varování

@@ -3295,7 +3295,23 @@ Cvektory::TElement *Cvektory::vrat_dalsi_element(TElement *Element)
 	Element=NULL;delete Element;
 	return ret;
 }
-
+//vrátí poslední element v objektu
+Cvektory::TElement *Cvektory::vrat_posledni_element_objektu(TObjekt *Objekt)
+{
+	if(Objekt!=NULL && OBJEKTY->dalsi!=NULL)
+	{
+		TElement *ret=NULL,*E=Objekt->elementy->dalsi;
+		while(E!=NULL && Objekt->n==E->objekt_n)
+		{
+			ret=E;
+			E=E->dalsi;
+		}
+		E=NULL;delete E;
+		return ret;
+	}
+	else return NULL;
+}
+////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 //smaže element ze seznamu
 void Cvektory::smaz_element(TObjekt *Objekt, unsigned int n)
