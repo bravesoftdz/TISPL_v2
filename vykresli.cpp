@@ -227,18 +227,21 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 						else pom=ukaz->predchozi->predchozi;
 					}
 					//vykreslení pouze v případě, že nejsou objekty přilepené na sobě
-					if(ukaz->elementy->dalsi->geo.X1!=pom->elementy->predchozi->geo.X4 || ukaz->elementy->dalsi->geo.Y1!=pom->elementy->predchozi->geo.Y4)
+					Cvektory::TElement *e_posledni=F->d.v.vrat_posledni_element_objektu(pom);
+					if(ukaz->elementy->dalsi->geo.X1!=e_posledni->geo.X4 || ukaz->elementy->dalsi->geo.Y1!=e_posledni->geo.Y4)
 					{
-						canv->MoveTo(m.L2Px(pom->elementy->predchozi->geo.X4),m.L2Py(pom->elementy->predchozi->geo.Y4));
+						canv->MoveTo(m.L2Px(e_posledni->geo.X4),m.L2Py(e_posledni->geo.Y4));
 						canv->LineTo(m.L2Px(ukaz->elementy->dalsi->geo.X1),m.L2Py(ukaz->elementy->dalsi->geo.Y1));
-						sipka(canv,(m.L2Px(pom->elementy->predchozi->geo.X4)+m.L2Px(ukaz->elementy->dalsi->geo.X1))/2.0,(m.L2Py(pom->elementy->predchozi->geo.Y4)+m.L2Py(ukaz->elementy->dalsi->geo.Y1))/2.0,m.azimut(m.L2Px(ukaz->elementy->dalsi->geo.X1),m.L2Py(ukaz->elementy->dalsi->geo.Y1),m.L2Px(pom->elementy->predchozi->geo.X4),m.L2Py(pom->elementy->predchozi->geo.Y4))*(-1),true,sipka_velikost,clRed);//zajistí vykreslení šipky - orientace spojovací linie
+						sipka(canv,(m.L2Px(e_posledni->geo.X4)+m.L2Px(ukaz->elementy->dalsi->geo.X1))/2.0,(m.L2Py(e_posledni->geo.Y4)+m.L2Py(ukaz->elementy->dalsi->geo.Y1))/2.0,m.azimut(m.L2Px(ukaz->elementy->dalsi->geo.X1),m.L2Py(ukaz->elementy->dalsi->geo.Y1),m.L2Px(e_posledni->geo.X4),m.L2Py(e_posledni->geo.Y4))*(-1),true,sipka_velikost,clRed);//zajistí vykreslení šipky - orientace spojovací linie
 					}
+					e_posledni=NULL;delete e_posledni;
 					pom=NULL;delete pom;
 				}
 			}
 			else
 			{
 				Cvektory::TObjekt *pom=ukaz->predchozi;//pomocný ukazatel, který uchovává předchozí objekt
+				Cvektory::TElement *e_posledni=F->d.v.vrat_posledni_element_objektu(pom);
 				if(ukaz->id==pocet_objektu_knihovny+1)//pokud jsem na spojce poprvé musí dojít k vykrelení spojnice k predchozi2 objektu, pokud podruhé dojde k vykreslení spojnice k predchozi objektu
 				{
 					n=F->ms.MyToDouble(ukaz->short_name.SubString(2,1));//extrakce pořadového čísla spojky
@@ -246,17 +249,18 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 					else pom=ukaz->predchozi;
 				}
 				//vykreslení pouze v případě, že nejsou objekty přilepené na sobě
-				if(ukaz->elementy->dalsi->geo.X1!=pom->elementy->predchozi->geo.X4 || ukaz->elementy->dalsi->geo.Y1!=pom->elementy->predchozi->geo.Y4)
+				if(ukaz->elementy->dalsi->geo.X1!=e_posledni->geo.X4 || ukaz->elementy->dalsi->geo.Y1!=e_posledni->geo.Y4)
 				{
 					canv->Pen->Style=psDash;
 					canv->Pen->Mode=pmCopy;
 					canv->Pen->Width=1;
 					canv->Pen->Color=clRed;
 					canv->Brush->Style=bsClear;
-					canv->MoveTo(m.L2Px(pom->elementy->predchozi->geo.X4),m.L2Py(pom->elementy->predchozi->geo.Y4));
+					canv->MoveTo(m.L2Px(e_posledni->geo.X4),m.L2Py(e_posledni->geo.Y4));
 					canv->LineTo(m.L2Px(ukaz->elementy->dalsi->geo.X1),m.L2Py(ukaz->elementy->dalsi->geo.Y1));
-					sipka(canv,(m.L2Px(pom->elementy->predchozi->geo.X4)+m.L2Px(ukaz->elementy->dalsi->geo.X1))/2.0,(m.L2Py(pom->elementy->predchozi->geo.Y4)+m.L2Py(ukaz->elementy->dalsi->geo.Y1))/2.0,m.azimut(m.L2Px(ukaz->elementy->dalsi->geo.X1),m.L2Py(ukaz->elementy->dalsi->geo.Y1),m.L2Px(pom->elementy->predchozi->geo.X4),m.L2Py(pom->elementy->predchozi->geo.Y4))*(-1),true,sipka_velikost,clRed);//zajistí vykreslení šipky - orientace spojovací linie
+					sipka(canv,(m.L2Px(e_posledni->geo.X4)+m.L2Px(ukaz->elementy->dalsi->geo.X1))/2.0,(m.L2Py(e_posledni->geo.Y4)+m.L2Py(ukaz->elementy->dalsi->geo.Y1))/2.0,m.azimut(m.L2Px(ukaz->elementy->dalsi->geo.X1),m.L2Py(ukaz->elementy->dalsi->geo.Y1),m.L2Px(e_posledni->geo.X4),m.L2Py(e_posledni->geo.Y4))*(-1),true,sipka_velikost,clRed);//zajistí vykreslení šipky - orientace spojovací linie
 				}
+				e_posledni=NULL;delete e_posledni;
 				pom=NULL;delete pom;
 			}
 			ukaz=O;
@@ -309,8 +313,8 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	if(!(F->pom_temp!=NULL && F->pom_temp->n!=O->n && F->scGPTrackBar_intenzita->Value<5))polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
 
 	///název
-	//název objektu - nastavení                 //záměrně nuly, aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
-	nastavit_text_popisu_objektu_v_nahledu(canv,0);AnsiString Tn=O->name.UpperCase();AnsiString Tl=+" / ";short Wn=canv->TextWidth(Tn);
+	//název objektu - nastavení
+	nastavit_text_popisu_objektu_v_nahledu(canv);AnsiString Tn=O->name.UpperCase();AnsiString Tl=+" / ";short Wn=canv->TextWidth(Tn);
   ////poloha nadpisu
 	double X=O->Xt;
 	double Y=O->Yt;
@@ -321,16 +325,15 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		case 180:X=m.L2Px(X)+canv->TextHeight(Tl);Y=m.L2Py(Y)-m.round((Wn)/2.0);canv->Font->Orientation=(O->orientace_text+90)*10;break;//nastavení rotace canvasu
 		case 270:X=m.L2Px(X)-m.round((Wn)/2.0);Y=m.L2Py(Y)-canv->TextHeight(Tl);break;
 	}
-	//nastavení highlight textu
-	if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID==-6 || F->JID==-7))canv->Font->Style = TFontStyles()<< fsBold;//zapnutí tučného písma
-	else canv->Font->Style = TFontStyles();//vypnutí
+	//nastavení normálního, disabled nebo highlight textu
+	nastavit_text_popisu_objektu_v_nahledu(canv);
+	if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)canv->Font->Color=m.clIntensive(clAkt,I);//pro neaktivní objekty při editaci
 	//samotné vypsání názvu
-	nastavit_text_popisu_objektu_v_nahledu(canv,1);
-	canv->Font->Color=clStenaKabiny;                                            //tady před změnou červená -> šedomodrá bývala clStenaKabiny
-	if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)canv->Font->Color=m.clIntensive(clAkt,I);
 	if(!(F->pom_temp!=NULL && F->pom_temp->n!=O->n && F->scGPTrackBar_intenzita->Value<5))TextFraming(canv,X,Y,Tn);//záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
-	canv->Font->Orientation=0;//vrácení původní hodnoty rotace canvasu
-	//vykreslení kříže posuvu u tabulky pohonu, natrvalo
+	//vrácení původní hodnoty rotace canvasu
+	canv->Font->Orientation=0;
+
+	////vykreslení kříže posunu u tabulky pohonu, natrvalo
 	canv->Pen->Color=clBlack;canv->Pen->Width=1;
 	if(F->pom_temp!=NULL && F->Akce==F->Takce::NIC && F->PmG->Highlight)
 	{
@@ -452,7 +455,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				canv->LineTo(X2,Y1-W);
 			}
 			//symbolika tekoucí kapaliny u POW //dodělat po změně souřadnicového modelu
-			if(O->komora->predchozi->typ==1)vykresli_pow_sprchu(canv,m.L2Px(O->elementy->dalsi->geo.X4),m.L2Px(O->elementy->predchozi->geo.X4),m.L2Py(O->body->dalsi->Y),m.L2Py(O->body->predchozi->Y),m.m2px(O->komora->predchozi->velikost),clAkt,sirka_steny_px/4.0,pmpp,0,orientace);
+			if(O->komora->predchozi->typ==1)vykresli_pow_sprchu(canv,m.L2Px(O->elementy->dalsi->geo.X4),m.L2Px(F->d.v.vrat_posledni_element_objektu(O)->geo.X4),m.L2Py(O->body->dalsi->Y),m.L2Py(O->body->predchozi->Y),m.m2px(O->komora->predchozi->velikost),clAkt,sirka_steny_px/4.0,pmpp,0,orientace);
 		}
 		else
 		{
@@ -473,8 +476,10 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				canv->LineTo(X1-W,Y2);
 			}
 			//symbolika tekoucí kapaliny u POW //dodělat po změně souřadnicového modelu
-			if(O->komora->predchozi->typ==1 && (O->orientace==0 || O->orientace==180 && !highlight))vykresli_pow_sprchu(canv,m.L2Px(O->body->dalsi->X),m.L2Px(O->body->predchozi->X),m.L2Py(O->elementy->predchozi->geo.Y4),m.L2Py(O->elementy->predchozi->geo.Y4),m.m2px(O->komora->predchozi->velikost),clAkt,sirka_steny_px/4.0,pmpp,0,orientace);
-			if(O->komora->predchozi->typ==1 && O->orientace==180 && highlight)vykresli_pow_sprchu(canv,m.L2Px(O->body->predchozi->X),m.L2Px(O->body->dalsi->X),m.L2Py(O->elementy->predchozi->geo.Y4),m.L2Py(O->elementy->predchozi->geo.Y4),m.m2px(O->komora->predchozi->velikost),clAkt,sirka_steny_px/4.0,pmpp,0,orientace);//z důvodu špatného vykreslení při highlightu
+			Cvektory::TElement *e_posledni=F->d.v.vrat_posledni_element_objektu(O);
+			if(O->komora->predchozi->typ==1 && (O->orientace==0 || O->orientace==180 && !highlight))vykresli_pow_sprchu(canv,m.L2Px(O->body->dalsi->X),m.L2Px(O->body->predchozi->X),m.L2Py(e_posledni->geo.Y4),m.L2Py(e_posledni->geo.Y4),m.m2px(O->komora->predchozi->velikost),clAkt,sirka_steny_px/4.0,pmpp,0,orientace);
+			if(O->komora->predchozi->typ==1 && O->orientace==180 && highlight)vykresli_pow_sprchu(canv,m.L2Px(O->body->predchozi->X),m.L2Px(O->body->dalsi->X),m.L2Py(e_posledni->geo.Y4),m.L2Py(e_posledni->geo.Y4),m.m2px(O->komora->predchozi->velikost),clAkt,sirka_steny_px/4.0,pmpp,0,orientace);//z důvodu špatného vykreslení při highlightu
+    	e_posledni=NULL;delete e_posledni;
 		}
 		//vykreslení KÓTY od poslení komory k okraji kabiny
 		if(zobrazit_koty && F->pom_temp->n==O->n)
@@ -496,14 +501,12 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 }
 //---------------------------------------------------------------------------
 //bool name, zda se jedná o zadavání name nebo short_name
-void Cvykresli::nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv,unsigned short typ)
+void Cvykresli::nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv)
 {
 	canv->Font->Name=F->aFont->Name;
-	canv->Font->Color=clRed;
+	if(F->JID==-6 || F->editace_textu && F->index_kurzoru==-6)canv->Font->Color=clStenaHaly; else canv->Font->Color=clStenaKabiny;
 	canv->Font->Size=2*3*F->Zoom;
 	canv->Font->Style = TFontStyles()<< fsBold;
-//	if((F->JID==-6 && typ==1) || (F->JID==-7 && typ==2))canv->Font->Style = TFontStyles()<< fsBold;//zapnutí tučného písma
-//	else canv->Font->Style = TFontStyles();//vypnutí
 }
 //---------------------------------------------------------------------------
 //symbolika tekoucí kapaliny u POW
@@ -1869,7 +1872,8 @@ void Cvykresli::vykresli_kurzor_kabiny (TCanvas *canv, int id, int X, int Y, Cve
 			if(p==NULL){p=v.OBJEKTY->predchozi;dalsi=v.OBJEKTY->dalsi;}
 			else {if(p->dalsi!=NULL)dalsi=p->dalsi;else dalsi=dalsi=v.OBJEKTY->dalsi;}
 			//souřadncie předchozího objektu
-			double Xp=m.L2Px(p->elementy->predchozi->geo.X4),Yp=m.L2Py(p->elementy->predchozi->geo.Y4);
+			Cvektory::TElement *e_posledni=F->d.v.vrat_posledni_element_objektu(p);
+			double Xp=m.L2Px(e_posledni->geo.X4),Yp=m.L2Py(e_posledni->geo.Y4);
 			//nastavení bodů objektu
 			//nová koncepce
 			short oblast=0;
@@ -1897,7 +1901,7 @@ void Cvykresli::vykresli_kurzor_kabiny (TCanvas *canv, int id, int X, int Y, Cve
 				//zjištění rotace
 				azimut=m.azimut(m.P2Lx(Xp),m.P2Ly(Yp),m.P2Lx(X),m.P2Ly(Y));
 				rotace=m.Rt90(azimut);
-				double p_rotace=m.Rt90(p->elementy->predchozi->geo.orientace-p->elementy->predchozi->geo.rotacni_uhel);
+				double p_rotace=m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel);
 				if(!spojnice1 && p->dalsi!=NULL && p->orientace!=p->dalsi->orientace && rotace!=p->orientace &&  rotace!=p->dalsi->orientace)rotace=p->orientace;//objekt vkládán mezi ostatní objekty
 				switch(rotace)
 				{
@@ -1966,6 +1970,7 @@ void Cvykresli::vykresli_kurzor_kabiny (TCanvas *canv, int id, int X, int Y, Cve
 				sipka(canv,(X+Xd)/2.0,(Y+Yd)/2.0,rotace,2,3,clBlack,clWhite,pmNotXor,psSolid,false);
 				sipka(canv,(X+Xd)/2.0,(Y+Yd)/2.0,rotace,2,3,clBlack,clWhite,pmNotXor,psSolid,true);
 			}
+			e_posledni=NULL;delete e_posledni;
 		}
 		//uložení rotace objektu, využítí při vkládání objektu, přepočet z azimutu přímky na orientaci objektu
 		orientace_objektu=rotace;
@@ -4891,18 +4896,20 @@ void Cvykresli::smart_kurzor(TCanvas *canv,Cvektory::TElement *E)
 	}
 	else//pokud neexistuje žádny předchozí element bude smart kurzor umístěn na začátek objektu
 	{
+		Cvektory::TElement *e_posledni=F->d.v.vrat_posledni_element_objektu(F->pom->predchozi);
 		//defaultně od prvního bodu aktuální kabiny
 		preXk=F->pom_temp->elementy->dalsi->geo.X1;
 		preYk=F->pom_temp->elementy->dalsi->geo.Y1;
 		//pokud existuje předchozí kabina tak od jejího posledního bodu
 		if(F->pom->predchozi->n!=0)
 		{
-			preXk=F->pom->predchozi->elementy->predchozi->geo.X4;
-			preYk=F->pom->predchozi->elementy->predchozi->geo.Y4;
+			preXk=e_posledni->geo.X4;
+			preYk=e_posledni->geo.Y4;
 		}
 		preOR=F->pom_temp->orientace;
-		if(F->pom->predchozi!=NULL && F->pom->predchozi->n>=1){preRA=F->pom->predchozi->elementy->predchozi->geo.rotacni_uhel;preOR=F->pom->predchozi->elementy->predchozi->geo.orientace;}//nabrání rotačního úhlu a orientace z předchozího objektu
+		if(F->pom->predchozi!=NULL && F->pom->predchozi->n>=1){preRA=e_posledni->geo.rotacni_uhel;preOR=e_posledni->geo.orientace;}//nabrání rotačního úhlu a orientace z předchozího objektu
 		//preRA=F->pom_temp->elementy->dalsi->geo.rotacni_uhel;
+  	e_posledni=NULL;delete e_posledni;
 	}
 	if(Ep!=NULL && E!=NULL)prepreRA=Ep->geo.rotacni_uhel;
 	Ep=NULL;delete Ep;

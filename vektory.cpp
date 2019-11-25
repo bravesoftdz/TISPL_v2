@@ -2488,8 +2488,8 @@ unsigned int Cvektory::vrat_nejvetsi_ID_tabulek (TObjekt *Objekt)
 //vrátí typ elementu -1 nenastaven nebo zarážka či předávací místo, 0 - S&G( včetně stopky), 1 - kontinuál
 short Cvektory::vrat_druh_elementu(TElement *Element)
 {
-	short RET=-1;
-	if(Element->eID!=MaxInt && Element->eID!=200)
+	short RET=-1;                                   //nutné přeskakovat elementarní hlavičku!
+	if(Element->eID!=MaxInt && Element->eID!=200 && Element->n>0)
 	{
 		if(Element->eID%2==0 && Element->eID!=100)RET=0;//S&G elementy
 		else RET=1;//kontinuální elementy
@@ -3295,7 +3295,23 @@ Cvektory::TElement *Cvektory::vrat_dalsi_element(TElement *Element)
 	Element=NULL;delete Element;
 	return ret;
 }
-
+//vrátí poslední element v objektu
+Cvektory::TElement *Cvektory::vrat_posledni_element_objektu(TObjekt *Objekt)
+{
+	if(Objekt!=NULL)
+	{
+		TElement *ret=NULL,*E=Objekt->elementy->dalsi;
+		while(E!=NULL && Objekt->n==E->objekt_n)
+		{
+			ret=E;
+			E=E->dalsi;
+		}
+		E=NULL;delete E;
+		return ret;
+	}
+	else return NULL;
+}
+////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 //smaže element ze seznamu
 void Cvektory::smaz_element(TObjekt *Objekt, unsigned int n)
@@ -5398,74 +5414,74 @@ void Cvektory::vymaz_seznam_KATALOG()
 //zkontroluje buď všechny elementy (je-li vstupní parametr NULL), smaže všechny zprávy, a kde najde problém, uloží do zpráv, v případě, že není NULL
 void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s parametrem!!!
 {
-	bool puvodni_zpravy=0;
-	long nove_zpravy=0;
-	long pocet_erroru=0,pocet_warningu=0;
-
-	if(ZPRAVY!=NULL && ZPRAVY->predchozi->n)puvodni_zpravy=true;
-
-	//pokud se budou testovat všechny elementy, je nutné vymazat všechny zprávy
-	if(Element==NULL)vymazat_ZPRAVY();
-
-	//předělat s novým datovým modelem
-	TObjekt *O=OBJEKTY->dalsi;
-	while(O!=NULL)
+	if(F->duvod_validovat==2)//validace probíhá jenom při editaci (pokud je důvod a až byla dokončena editační akce), nebo když nejsou zprávy po spuštění aplikace
 	{
-		TElement *E=O->elementy;//nepřeskakovat hlavičku
-		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy;//pokud se jedná o editovaný objekt
-		while(E!=NULL)
+		F->duvod_validovat=0;//již bude zvalidováno a dále by se zbytečně volalo
+		long pocet_erroru=0,pocet_warningu=0;
+
+		//pokud se budou testovat všechny elementy, je nutné vymazat všechny zprávy
+		if(Element==NULL)vymazat_ZPRAVY();
+
+		//předělat s novým datovým modelem
+		TObjekt *O=OBJEKTY->dalsi;
+		while(O!=NULL)
 		{
-			////výchozí hodnoty
-			unsigned int pocet_pozic=E->max_pocet_voziku;   //doporučení rovnou to sbírat zde
-			double rotaceJ=vrat_rotaci_jigu_po_predchazejicim_elementu(E);//metodu po přechodu na nový DM zaktulizovat o průchod přes spoják elementů
-			double orientaceP=m.Rt90(E->geo.orientace-180);
-			double X=F->d.Rxy(E).x;
-			double Y=F->d.Rxy(E).y;
-			double dJ=PP.delka_jig;//později nahradit ze zakázky
-			double sJ=PP.sirka_jig;//později nahradit ze zakázky
-			////určení směru vykreslování pozic
-			short x=0,y=0;
-			switch(m.Rt90(orientaceP))
+			TElement *E=O->elementy;//nepřeskakovat hlavičku
+			if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy;//pokud se jedná o editovaný objekt
+			while(E!=NULL)
 			{
-				case 0:   y=1;  x=0;  break;
-				case 90:  y=0;  x=1;  break;
-				case 180: y=-1; x=0;  break;
-				case 270: y=0;  x=-1; break;
-			}
-
-			////testování jednotlivých problémů
-			////////////Rotace neodpovídá orientaci JIGů na začátku linky!
-			if(E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180)
-			{
-				Cvektory::TElement *Ep=vrat_posledni_rotacni_element();
-				if(Ep!=NULL)
+				////výchozí hodnoty
+				unsigned int pocet_pozic=E->max_pocet_voziku;   //doporučení rovnou to sbírat zde
+				double rotaceJ=vrat_rotaci_jigu_po_predchazejicim_elementu(E);//metodu po přechodu na nový DM zaktulizovat o průchod přes spoják elementů
+				double orientaceP=m.Rt90(E->geo.orientace-180);
+				double X=F->d.Rxy(E).x;
+				double Y=F->d.Rxy(E).y;
+				double dJ=PP.delka_jig;//později nahradit ze zakázky
+				double sJ=PP.sirka_jig;//později nahradit ze zakázky
+				////určení směru vykreslování pozic
+				short x=0,y=0;
+				switch(m.Rt90(orientaceP))
 				{
-					double aR=m.a360(rotaceJ+Ep->rotace_jig);//výstupní rotace jigu z posledního rotačního elementu
-					if(Ep->n==E->n &&  Ep->objekt_n==E->objekt_n && aR!=0 && aR!=180)//předposlení podmínka při novém DM zbytečná!
-					{vloz_zpravu(X,Y,-1,401,Ep);pocet_erroru++;nove_zpravy++;}
+					case 0:   y=1;  x=0;  break;
+					case 90:  y=0;  x=1;  break;
+					case 180: y=-1; x=0;  break;
+					case 270: y=0;  x=-1; break;
 				}
-				Ep=NULL;delete Ep;
-			}
-			////////////Pozor, překrytí JIGů!
-			if(PP.delka_podvozek<m.UDJ(rotaceJ) && E->rotace_jig==0 && pocet_pozic>1)
-			{vloz_zpravu(X+x*PP.delka_podvozek*(pocet_pozic-1)/2.0,Y+y*PP.delka_podvozek*(pocet_pozic-1)/2.0,-1,402,E);pocet_erroru++;nove_zpravy++;}
-			////////////RT
-			if(vrat_druh_elementu(E)==0)//pouze pro S&G
-			{
-				if(E->RT<0){vloz_zpravu(X,Y,-1,406,E);pocet_erroru++;nove_zpravy++;}
-				if(E->RT==0){vloz_zpravu(X,Y,1,407,E);pocet_warningu++;nove_zpravy++;}
-			}
 
-			////posun na další elementy
-			E=E->dalsi;
+				////testování jednotlivých problémů
+				////////////Rotace neodpovídá orientaci JIGů na začátku linky!
+				if(E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180)
+				{
+					Cvektory::TElement *Ep=vrat_posledni_rotacni_element();
+					if(Ep!=NULL)
+					{
+						double aR=m.a360(rotaceJ+Ep->rotace_jig);//výstupní rotace jigu z posledního rotačního elementu
+						if(Ep->n==E->n &&  Ep->objekt_n==E->objekt_n && aR!=0 && aR!=180)//předposlení podmínka při novém DM zbytečná!
+						{vloz_zpravu(X,Y,-1,401,Ep);pocet_erroru++;}
+					}
+					Ep=NULL;delete Ep;
+				}
+				////////////Pozor, překrytí JIGů!
+				if(PP.delka_podvozek<m.UDJ(rotaceJ) && E->rotace_jig==0 && pocet_pozic>1)
+				{vloz_zpravu(X+x*PP.delka_podvozek*(pocet_pozic-1)/2.0,Y+y*PP.delka_podvozek*(pocet_pozic-1)/2.0,-1,402,E);pocet_erroru++;}
+				////////////RT
+				if(vrat_druh_elementu(E)==0)//pouze pro S&G
+				{
+					if(E->RT<0){vloz_zpravu(X,Y,-1,406,E);pocet_erroru++;}
+					if(E->RT==0){vloz_zpravu(X,Y,1,407,E);pocet_warningu++;}
+				}
+
+				////posun na další elementy
+				E=E->dalsi;
+			}
+			delete E;
+			O=O->dalsi;
 		}
-		delete E;
-		O=O->dalsi;
-	}
-	delete O;
+		delete O;
 
-	//zakutalizuje zprávy v miniformu zpráv, pouze pokud je potřeba aktualizovat
-	if(F->pom_temp!=NULL && (puvodni_zpravy || nove_zpravy))Form_zpravy->update_zpravy(pocet_erroru,pocet_warningu);
+		//zakutalizuje zprávy v miniformu zpráv
+		Form_zpravy->update_zpravy(pocet_erroru,pocet_warningu);
+	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //z čísla VIDu vrátí jeho textový popis
@@ -6897,7 +6913,7 @@ void Cvektory::vse_odstranit()
 
 	//ZPRÁVY
 	bool puvodni_zpravy=false;if(ZPRAVY!=NULL && ZPRAVY->predchozi->n)puvodni_zpravy=true;
-	vymazat_ZPRAVY();if(puvodni_zpravy)Form_zpravy->update_zpravy(0,0);
+	vymazat_ZPRAVY();if(puvodni_zpravy){Form_zpravy->update_zpravy(0,0);}
 
 //		//palce
 //		if(PALCE->predchozi->n>0)//pokud je více objektů

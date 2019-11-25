@@ -91,7 +91,7 @@ class Cvykresli
 	void vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popisek="spojnice",short stav=0);
 	void vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popisek="komora",short typ=0,short stav=0,double orientace=90);//typ: -2 kurzor se sprchy, -1 kurzor bez sprchy, 0 ikona bez sprchy, 1 ikona se sprchou, stav: -1 disabled, 0 normál
 	void vypis_zpravy(TCanvas *canv);//metoda vypíše zprávy ze seznamu zpráv a zároveò uloží jejich citelné oblasti
-	void nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv,unsigned short typ);//short typ = zda se jedná o zadavání name==1 nebo short_name==2 nebo nic==0
+	void nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv);
 	void linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,int Width,TColor Color=clBlack,TPenStyle PenStyle=psSolid,TPenMode PenMode=pmCopy);
 	void line(TCanvas *canv,long X1,long Y1,long X2,long Y2);
 	TPointD obdelnik(TCanvas *canv,double X1,double Y1,double X2,double Y2,double rotace,double Sx=DOUBLE_MIN,double Sy=DOUBLE_MIN);//orototuje obdelník, podle posledních parametrù, pokud jsou tyto parametry neuvedené, rotuje okolo støedu obrazce, pro pøípadné dalsí potøeby vrátí souøadnice støedu orotovaného obdélniku

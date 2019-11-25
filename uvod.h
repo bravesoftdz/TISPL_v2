@@ -22,6 +22,7 @@ __published:	// IDE-managed Components
 	TscGPLabel *scGPLabel_TISPL;
 	TImage *Image1;
 	TLabel *Label_status;
+	TImage *Image2;
   void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
   void __fastcall Timer1Timer(TObject *Sender);
 private:	// User declarations
