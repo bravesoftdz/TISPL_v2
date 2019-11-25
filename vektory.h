@@ -520,6 +520,7 @@ class Cvektory
 	void vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt);//dané stopce najde předchozí stop-element na lince, je možno, že nebude reflektovat danou zakázku//nově se podívá na předchozí stop-element a přiřadí mu ukazatel na Element
 	void aktualizuj_sparovane_ukazatele();//projde všechny stop-elementy a aktualizuje jim ukazatele na spárované elementy
 	TElement *Cvektory::vrat_dalsi_element(TElement *Element);//vrátí další element k Element, který byl do metody poslán jako parametr, přeskočí geometrické zarážky
+	TElement *Cvektory::vrat_posledni_element_objektu(TObjekt *Objekt);//vrátí poslední element v objektu
 	void smaz_element(TObjekt *Objekt, unsigned int n);//smaže element ze seznamu
 	void smaz_element(TElement *Element);//smaže element ze seznamu
 	long vymaz_elementy(TObjekt *Objekt,bool mGridSmazat=true);//vymaže všechny elementy daného objektu včetně hlavičky a vrátí počet smazaných elementů (počítáno bez hlavičky), automaticky, pokud posledním parametreme není nastaveno jinak, smaže přidružený mGrid

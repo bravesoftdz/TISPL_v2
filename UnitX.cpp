@@ -1036,7 +1036,7 @@ bool TFormX::naplneni_max_voziku(double X,double Y,bool check_for_highlight)
 {
 	bool ret=false;
 	double max_p=0;
-	if(F->pom_temp->elementy->predchozi->n>1)
+	if(F->d.v.vrat_posledni_element_objektu(F->pom_temp)->n>1)
 	{
 		//hledání zda má nìkterý element nedokonèenou validaci
 		Cvektory::TElement *E=F->pom_temp->elementy->dalsi;
