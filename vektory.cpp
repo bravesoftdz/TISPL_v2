@@ -3298,7 +3298,7 @@ Cvektory::TElement *Cvektory::vrat_dalsi_element(TElement *Element)
 //vrátí poslední element v objektu
 Cvektory::TElement *Cvektory::vrat_posledni_element_objektu(TObjekt *Objekt)
 {
-	if(Objekt!=NULL)
+	if(Objekt!=NULL && OBJEKTY->dalsi!=NULL)
 	{
 		TElement *ret=NULL,*E=Objekt->elementy->dalsi;
 		while(E!=NULL && Objekt->n==E->objekt_n)
