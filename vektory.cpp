@@ -5558,6 +5558,29 @@ Cvektory::TZprava *Cvektory::vrat_zpravu(unsigned long n)
 	}
 }
 //---------------------------------------------------------------------------
+//vrátí počet errorů a warningů
+TPoint Cvektory::vrat_pocet_zprav()
+{
+	F->log(__func__);//logování
+
+	TPoint RET=TPoint(0,0);
+	if(ZPRAVY==NULL)return RET;
+	else
+	{
+		Cvektory::TZprava *Z=ZPRAVY->dalsi;
+		while(Z!=NULL)
+		{
+			switch(Z->zID)
+			{
+				case -1:RET.x++;break;//zvýšit počet errorů
+				case 1: RET.y++;break;//zvýšit počet warningů
+			}
+			Z=Z->dalsi;
+		}
+		return RET;
+	}
+}
+//---------------------------------------------------------------------------
 //ověří, zda se na daných souřadních myši nachází nějaká (libovolná) ze zpráv
 long Cvektory::PtInZpravy()
 {

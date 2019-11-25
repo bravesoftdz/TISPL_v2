@@ -19,8 +19,8 @@ __fastcall TForm_zpravy::TForm_zpravy(TComponent* Owner)
   : TForm(Owner)
 {
   Top=F->scLabel_titulek->Height;
-  Left=F->ClientWidth - scGPListBox_zpravy->Width;
-
+	Left=F->ClientWidth - scGPListBox_zpravy->Width;
+	pocet_erroru=0;pocet_warningu=0;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_zpravy::FormShow(TObject *Sender)
@@ -34,15 +34,16 @@ void __fastcall TForm_zpravy::FormShow(TObject *Sender)
   {
 		Top = F->Top_backup;
 		Left = F->Left_backup;
-  }
-	//update_zpravy();  //vola si pri VALIDACI, neni nutne volat znovu pri formshow, ovšem na zvážení kvùli efektivitì
+	}
+	TPoint pocet_zprav=F->d.v.vrat_pocet_zprav();
+	update_zpravy(pocet_zprav.x,pocet_zprav.y);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_zpravy::scGPListBox_zpravyMouseMove(TObject *Sender, TShiftState Shift,
           int X, int Y)
 {
    //highlight pri posunu mysi
-   int radek= floor(Y/(scGPListBox_zpravy->ItemHeight*1.0));
+	 int radek= floor(Y/(scGPListBox_zpravy->ItemHeight*1.0));
 
      for(int i=0; i<scGPListBox_zpravy->Items->Count;i++)
      {
@@ -72,9 +73,8 @@ void __fastcall TForm_zpravy::scGPGlyphButton_infoClick(TObject *Sender)
 void __fastcall TForm_zpravy::SkrytClick(TObject *Sender)
 {
 	closing=true;
-	//dle poètu zobrazovat - doplnit
-	F->scGPButton_warning->Visible=true;
-	F->scGPButton_error->Visible=true;
+	if(pocet_erroru)F->scGPButton_error->Visible=true;
+	if(pocet_warningu)F->scGPButton_warning->Visible=true;
 	Close();
 }
 //---------------------------------------------------------------------------
@@ -89,6 +89,8 @@ void __fastcall TForm_zpravy::scGPListBox_zpravyItemClick(TObject *Sender)
 //update MaKr
 void  TForm_zpravy::update_zpravy(long pocet_erroru, long pocet_warningu)
 {
+	TForm_zpravy::pocet_erroru=pocet_erroru;TForm_zpravy::pocet_warningu=pocet_warningu;//pøevzetí do globálních promìnných k dalšímu použítí a úspoøe strojového èasu
+
 	if(pocet_erroru==0 && pocet_warningu==0)//POKUD NEJSOU žádné ZPRÁVY
 	{
 		scGPListBox_zpravy->Items->Clear();//vymazat pøípadné pùvodní
@@ -97,39 +99,40 @@ void  TForm_zpravy::update_zpravy(long pocet_erroru, long pocet_warningu)
 	}
 	else//POKUD EXISTUJÍ nìjaké ZPRÁVY
 	{
-		//IKONY NA HORNÍ LIŠTÌ
 		if(Form_zpravy->Visible)//pokud je form zpravy zobrazen,
-		{F->scGPButton_error->Visible=false;F->scGPButton_warning->Visible=false;}//tak schovej vzdy ikony v horni liste
-		else//pokud je form skrytý, zobrazí ikonu errorù nebo warningù (pøípadnì oboje) v horní lištì
+		{
+			//schovaní ikony v horni liste
+			F->scGPButton_error->Visible=false;F->scGPButton_warning->Visible=false;
+
+			//smazání a naplnìní novými zprávami, pokud existuji, to i ve spojaku (nemìlo by být sice v rozkolu, ale lépe ošetøit)
+			if(F->d.v.ZPRAVY!=NULL)
+			{
+				//smazání pøípadných pùvodních zpráv
+				scGPListBox_zpravy->Items->Clear();
+
+				//naplnìní do listboxu
+				Cvektory::TZprava *Z=F->d.v.ZPRAVY->dalsi;
+				while(Z!=NULL)
+				{
+					TscGPListBoxItem *I=scGPListBox_zpravy->Items->Add();
+					AnsiString Element="";if(Z!=NULL && Z->Element->name!="")Element=Z->Element->name+": ";//získá název elementu u daného problému
+					I->Caption=Element+F->d.v.getVID(Z->VID);
+					if(Z->zID==-1)I->ImageIndex=69;//error
+					else I->ImageIndex=71;//warning
+					I=NULL;delete I;
+					Z=Z->dalsi;
+				}
+				delete Z;
+				//naplnìní do statusbaru miniformu
+				RzStatusPane_pocet_chyb_value->Caption=pocet_erroru;
+				RzStatusPane_pocet_var_value->Caption=pocet_warningu;
+				Form_zpravy->Height = (pocet_erroru+pocet_warningu) *  scGPListBox_zpravy->ItemHeight + scLabel_header->Height + scGPPanel_statusbar->Height + 5;   //5px rezervnich
+			}
+		}
+		else//pokud je form skrytý, zobrazí ikonu errorù nebo warningù (pøípadnì obì ikony) v horní lištì
 		{
 			if(pocet_erroru>0)	 F->scGPButton_error->Visible=true;  else F->scGPButton_error->Visible=false;  //pokud (ne)jsou zadne E tak v liste (ne)zobrazuj ikonu Erroru
 			if(pocet_warningu>0) F->scGPButton_warning->Visible=true;else F->scGPButton_warning->Visible=false;//pokud (ne)jsou zadne W tak v liste (ne)zobrazuj ikonu Warningu
-		}
-
-		//smazání a naplnìní novými zprávami, pokud existuji, to i ve spojaku (nemìlo by být sice v rozkolu, ale lépe ošetøit)
-		//plní se èásteènì zbyteènì dopøedu i pokud se form nezobrazuje (nutnost plnit) nebo by se musel volat update pøi zobrazení miniformu + dodat poèty
-		if(F->d.v.ZPRAVY!=NULL)
-		{
-			//smazání pøípadných pùvodních zpráv
-			scGPListBox_zpravy->Items->Clear();
-
-			//naplnìní do listboxu
-			Cvektory::TZprava *Z=F->d.v.ZPRAVY->dalsi;
-			while(Z!=NULL)
-			{
-				TscGPListBoxItem *I=scGPListBox_zpravy->Items->Add();
-				AnsiString Element="";if(Z!=NULL && Z->Element->name!="")Element=Z->Element->name+": ";//získá název elementu u daného problému
-				I->Caption=Element+F->d.v.getVID(Z->VID);
-				if(Z->zID==-1)I->ImageIndex=69;//error
-				else I->ImageIndex=71;//warning
-				I=NULL;delete I;
-				Z=Z->dalsi;
-			}
-			delete Z;
-			//naplnìní do statusbaru miniformu
-			RzStatusPane_pocet_chyb_value->Caption=pocet_erroru;
-			RzStatusPane_pocet_var_value->Caption=pocet_warningu;
-			Form_zpravy->Height = (pocet_erroru+pocet_warningu) *  scGPListBox_zpravy->ItemHeight + scLabel_header->Height + scGPPanel_statusbar->Height + 5;   //5px rezervnich
 		}
 	}
 }
@@ -141,7 +144,7 @@ void __fastcall TForm_zpravy::scGPListBox_zpravyMouseLeave(TObject *Sender)
 		if(scGPListBox_zpravy->Items->Items[radek_temp]->ImageIndex==70) scGPListBox_zpravy->Items->Items[radek_temp]->ImageIndex=69;  //error thin
 		if(scGPListBox_zpravy->Items->Items[radek_temp]->ImageIndex==72) scGPListBox_zpravy->Items->Items[radek_temp]->ImageIndex=71;  //warning thin
 	 }
-	 //ASI DOØEŠIT VÌTEV ELSE...unhigliht makr
+	 //možná DOØEŠIT VÌTEV ELSE pro unhigliht
 }
 //---------------------------------------------------------------------------
 void TForm_zpravy::highlight(int radek)

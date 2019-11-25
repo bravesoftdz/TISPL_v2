@@ -12993,7 +12993,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 			Schema->Down=false;//musí zde být, zavírání přes tlačítko layout by jinak nebylo plně funkční!!
 			Schema->Down=true;
 		}
-		//REFRESH(); //- asi netřeba  asi vyvolává výše uvedený on_change_zoom_change_scGPTrackBar()
+		//REFRESH(); //- asi netřeba  asi vyvolává níže uvedený on_change_zoom_change_scGPTrackBar()
 		//scListGroupKnihovObjektu->Visible=false;
 		scGPComboBox_prepinacKot->ItemIndex=0;//ošetření pokud bylo při vypínání editace nastaveno na časové kóty
 		scButton_zamek_layoutu->Visible=true;//zapnutí tlačítka zámek layoutu
@@ -13004,6 +13004,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		popisky_knihovna_nahled(true);//nastavení popisků pro knihovnu
 		DrawGrid_knihovna->Top=10000;//musí být zobrazena, odchytává stisk kláves
 		vlozit_predavaci_misto();//skontroluje zda nemusí být přidáno nebo odstraněno předávací místo
+		duvod_validovat=2;//vyvolá validaci, zajistí aktualizaci zpráv a výpisu v miniformu zpráv
 		on_change_zoom_change_scGPTrackBar();//pozor asi volá refresh, změna pořadí
 	}
 }

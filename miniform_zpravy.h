@@ -38,6 +38,7 @@ __published:	// IDE-managed Components
   void __fastcall scGPListBox_zpravyMouseLeave(TObject *Sender);
 	void __fastcall scGPGlyphButton_infoResize(TObject *Sender);
 private:	// User declarations
+	long pocet_erroru,pocet_warningu;
 
 public:		// User declarations
   __fastcall TForm_zpravy(TComponent* Owner);
