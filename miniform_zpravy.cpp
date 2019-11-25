@@ -128,7 +128,7 @@ void  TForm_zpravy::update_zpravy(long pocet_erroru, long pocet_warningu)
 				while(Z!=NULL)
 				{
 					TscGPListBoxItem *I=scGPListBox_zpravy->Items->Add();
-					AnsiString Element="";if(Z!=NULL && Z->Element->name!="")Element=Z->Element->name+": ";//získá název elementu u daného problému
+					AnsiString Element="";if(Z!=NULL && Z->Element->name!="")Element=Z->Element->name.UpperCase()+": ";//získá název elementu u daného problému
 					I->Caption=Element+F->d.v.getVID(Z->VID);
 					if(Z->zID==-1)I->ImageIndex=69;//error
 					else I->ImageIndex=71;//warning

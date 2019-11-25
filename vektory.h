@@ -500,6 +500,7 @@ class Cvektory
 	unsigned int vrat_poradi_elementu_do (TObjekt *Objekt, TElement *Element);//vrátí pořadí robotů v objektu, stopek a otočí ve všech předchozích objektech, to všd do Elementu
 	unsigned int vrat_nejvetsi_ID_tabulek (TObjekt *Objekt);//vrátí největší ID napříč mGridy v objektu, používáno pro přiřazování ID novým tabulkám, řešeno takto z důvodu chyby při odmazávání a následném přidávání elementu (v kabině jsou 3 elementy druhý se odmaže, tabulky v kabině mají nyní ID 1 a 3, po přidání dalšího elementu bylo dříve přidano ID=pocet elementů, což by se v tomto případě rovnalo 3)
 	short vrat_druh_elementu(TElement *Element);//vrátí typ elementu -1 nenastaven nebo zarážka či předávací místo, 0 - S&G (včetně stopky), 1 - kontinuál
+	bool funkcni_element(TElement *Element);//vrátí true, pokud se jedná o funční element
 	void rotace_elementu(TObjekt *Objekt,short rotace);//orotuje všechny elementy daného objektu o danou hodnotu
 	TElement *najdi_element(TObjekt *Objekt, double X, double Y);//hledá element v místě kurzoru pracuje v logických/metrických souradnicích
 	TElement *najdi_tabulku(TObjekt *Objekt, double X, double Y);//hledá tabulku elementu pouze pro daný objekt v oblasti definované pomocí šířky a výšky tabulky (která se může nacházet v daném místě kliku), pracuje v logických/metrických souradnicich, vrátí ukazatel na daný element, který tabulku vlastní, pokud se na daných souřadnicích nachází tabulka
