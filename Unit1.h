@@ -324,7 +324,6 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton_prichytavat;
   TscGPButton *scGPButton_error;
   TscGPButton *scGPButton_warning;
-  TscGPButton *scGPButton_zamek;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -707,7 +706,7 @@ public:		// User declarations
 	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
 	Graphics::TBitmap *Pan_bmp;//kvùli mGridu jinak staèí private
 	//uklazatele
-	Cvektory::TObjekt *pom,*pom_vyhybka,*pom_temp,*copyObjekt,*posledni_editovany_objekt;
+	Cvektory::TObjekt *pom,*pom_vyhybka,*pom_temp,*copyObjekt;
 	Cvektory::TElement *pom_element,*pom_element_temp,*posledni_editovany_element,*element_temp;//element_temp je nulován pøi každém pøejetí kurzoru používán na vìci kolem PM
 	TmGrid *PmG,*mGrid_knihovna;//ukazatel na mGridovou tabulku pohonu
 	Cvektory::TKomora *pom_komora,*pom_komora_temp;
@@ -768,6 +767,8 @@ public:		// User declarations
 	bool zamek_layoutu;
   int Top_backup;  //pomocne promenne pro pozici zprav
   int Left_backup; //pomocne promenne pro pozici zprav
+  int zpravy_backup_width;
+  int zpravy_backup_height;
 
 	//metody
 	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click

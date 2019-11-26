@@ -5,7 +5,7 @@ object Form_zpravy: TForm_zpravy
   BorderStyle = bsNone
   Caption = 'Form_zpravy'
   ClientHeight = 338
-  ClientWidth = 361
+  ClientWidth = 360
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,7 +19,7 @@ object Form_zpravy: TForm_zpravy
   object scGPPanel_header: TscGPPanel
     Left = 0
     Top = 0
-    Width = 361
+    Width = 360
     Height = 34
     Align = alTop
     TabOrder = 0
@@ -54,17 +54,21 @@ object Form_zpravy: TForm_zpravy
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
+    ExplicitWidth = 361
     object Skryt: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 311
+      Left = 310
       Top = 0
       Width = 50
       Height = 33
+      Hint = 'Skr'#253't'
       Margins.Left = 0
       Margins.Top = 0
       Margins.Right = 0
       Margins.Bottom = 1
       Align = alRight
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
       OnClick = SkrytClick
       Animation = True
@@ -151,11 +155,12 @@ object Form_zpravy: TForm_zpravy
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 311
     end
     object scLabel_header: TscLabel
       Left = 0
       Top = 0
-      Width = 274
+      Width = 273
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -163,13 +168,15 @@ object Form_zpravy: TForm_zpravy
       Margins.Bottom = 1
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
+      Font.Color = 33023
       Font.Height = -19
       Font.Name = 'Roboto'
       Font.Style = []
       Font.Quality = fqClearType
       ParentFont = False
       TabOrder = 1
+      OnMouseDown = scLabel_headerMouseDown
+      OnMouseMove = scLabel_headerMouseMove
       DragForm = True
       DragTopForm = True
       GlowEffect.Enabled = False
@@ -184,9 +191,10 @@ object Form_zpravy: TForm_zpravy
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Zpr'#225'vy'
+      ExplicitWidth = 274
     end
-    object scGPGlyphButton_info: TscGPGlyphButton
-      Left = 274
+    object scGPGlyphButton_pripnout: TscGPGlyphButton
+      Left = 273
       Top = 0
       Width = 37
       Height = 34
@@ -202,8 +210,9 @@ object Form_zpravy: TForm_zpravy
       ParentShowHint = False
       ShowHint = True
       TabOrder = 2
-      OnClick = scGPGlyphButton_infoClick
-      OnResize = scGPGlyphButton_infoResize
+      Visible = False
+      OnClick = scGPGlyphButton_pripnoutClick
+      OnResize = scGPGlyphButton_pripnoutResize
       Animation = True
       Caption = 'P'#345'ipnout / Odepnout'
       CanFocused = False
@@ -286,6 +295,7 @@ object Form_zpravy: TForm_zpravy
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 274
     end
     object scGPImage_warning: TscGPImage
       Left = 23
@@ -465,7 +475,7 @@ object Form_zpravy: TForm_zpravy
   object scGPListBox_zpravy: TscGPListBox
     Left = 0
     Top = 34
-    Width = 361
+    Width = 360
     Height = 276
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
@@ -504,16 +514,16 @@ object Form_zpravy: TForm_zpravy
     TransparentBackground = True
     WallpaperIndex = -1
     AutoComplete = True
-    SelectionOptions.Color = clHighlight
+    SelectionOptions.Color = clScrollBar
     SelectionOptions.ColorAlpha = 220
     SelectionOptions.FillStyle = scgpsfColor
     SelectionOptions.GradientAngle = 90
-    SelectionOptions.FocusedColor = clHighlight
+    SelectionOptions.FocusedColor = clScrollBar
     SelectionOptions.FocusedColorAlpha = 255
     SelectionOptions.FocusedFillStyle = scgpsfColor
     SelectionOptions.FocusedGradientAngle = 90
     SelectionOptions.FontColor = clHighlightText
-    SelectionOptions.FocusedFontColor = clHighlightText
+    SelectionOptions.FocusedFontColor = clSkyBlue
     ShowLines = False
     LineColor = clWindowText
     LineColorAlpha = 20
@@ -564,18 +574,19 @@ object Form_zpravy: TForm_zpravy
     Images = Form1.scGPVirtualImageList1
     ShowItemDetails = False
     ItemSpacing = 5
-    ItemHeight = 30
+    ItemHeight = 38
     HeaderOptions.Color = clBtnFace
     HeaderOptions.ColorAlpha = 220
     HeaderOptions.FillStyle = scgpsfColor
     HeaderOptions.GradientAngle = 90
     HeaderOptions.Margin = 5
     HeaderHeight = 20
+    ExplicitWidth = 362
   end
   object scGPPanel_statusbar: TscGPPanel
     Left = 0
     Top = 310
-    Width = 361
+    Width = 360
     Height = 28
     Align = alBottom
     TabOrder = 2
@@ -609,101 +620,71 @@ object Form_zpravy: TForm_zpravy
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
-    object RzStatusPane_pocet_chyb_value: TRzStatusPane
-      Left = 73
-      Top = 0
-      Width = 26
-      Height = 28
-      Hint = 'Aktu'#225'ln'#237' polohu kurzoru v sou'#345'adnic'#237'ch aplikace'
-      BorderWidth = 0
-      FlatColor = 10114859
-      Align = alLeft
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      ParentShowHint = False
-      ShowHint = True
-      BlinkColor = 10114859
-      Caption = '0'
-      ExplicitLeft = 81
-    end
+    ExplicitWidth = 361
     object RzStatusPane__chyby_caption: TRzStatusPane
       Left = 0
       Top = 0
-      Width = 73
+      Width = 86
       Height = 28
-      Hint = 'Aktu'#225'ln'#237' polohu kurzoru v sou'#345'adnic'#237'ch aplikace'
       BorderWidth = 0
       FlatColor = 10114859
       Align = alLeft
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
+      Font.Color = 33023
       Font.Height = -12
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
-      Alignment = taCenter
       BlinkColor = 10114859
       Caption = 'Po'#269'et chyb'
+      CaptionOffset = 0
     end
     object RzStatusPane_var_header: TRzStatusPane
-      Left = 99
+      Left = 86
       Top = 0
-      Width = 88
+      Width = 105
       Height = 28
-      Hint = 'Aktu'#225'ln'#237' polohu kurzoru v sou'#345'adnic'#237'ch aplikace'
       BorderWidth = 0
       FlatColor = 10114859
+      FrameStyle = fsNone
       Align = alLeft
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
+      Font.Color = 33023
       Font.Height = -12
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearTypeNatural
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
-      Alignment = taCenter
       BlinkColor = 10114859
       Caption = 'Po'#269'et varov'#225'n'#237
-      ExplicitLeft = 113
-    end
-    object RzStatusPane_pocet_var_value: TRzStatusPane
-      Left = 187
-      Top = 0
-      Width = 26
-      Height = 28
-      Hint = 'Aktu'#225'ln'#237' polohu kurzoru v sou'#345'adnic'#237'ch aplikace'
-      BorderWidth = 0
-      FlatColor = 10114859
-      Align = alLeft
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      ParentShowHint = False
-      ShowHint = True
-      BlinkColor = 10114859
-      Caption = '0'
+      ExplicitLeft = 80
     end
     object scGPSizeBox: TscGPSizeBox
-      Left = 335
+      Left = 334
       Top = 0
       Width = 26
       Height = 28
       Cursor = crSizeNWSE
       Align = alRight
+      BiDiMode = bdLeftToRight
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentBiDiMode = False
+      ParentFont = False
       TabOrder = 0
+      Visible = False
       GlyphColor = clWhite
       GlyphColorAlpha = 200
       GlyphThickness = 1
+      ExplicitLeft = 335
     end
   end
 end

@@ -4427,8 +4427,12 @@ void Cvykresli::vykresli_ikonu_linie(TCanvas *canv,int X,int Y,AnsiString Popise
 
 	short C=W/2;//zajištění vycentrování
 	//vykreslení oblouku
-	set_pen(canv,barva,1*10,PS_ENDCAP_FLAT);   double Xodsaz=35;odsazeni=6;
+	set_pen(canv,barva,1*10,PS_ENDCAP_FLAT);   double Xodsaz=35;odsazeni=30;//6;
 	canv->Arc(X-W-C-Xodsaz,Y-W+odsazeni,X+W-C-Xodsaz,Y+W+odsazeni,X+W-C-Xodsaz,Y+odsazeni,X-C-Xodsaz,Y-W+odsazeni);//směr proti hodinovým ručičkám
+
+  //seříznutí oblouku
+	canv->Pen->Color=clWhite;
+	canv->Rectangle(X-30,Y+12,X+30,Y+50);
 
 	//popisek
 	canv->Brush->Style=bsClear;
