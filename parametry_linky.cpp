@@ -625,8 +625,10 @@ void __fastcall TForm_parametry_linky::Button_stornoClick(TObject *Sender)
 	 F->scStyledForm1->HideClientInActiveEffect();
 	Storno=true;
 	//zmìna záložek
-	F->Layout->Down=false;
-	F->Schema->Down=true;
+	F->Layout->Options->NormalColor=F->scGPPanel_mainmenu->FillColor;
+	F->Layout->Options->FrameNormalColor=F->scGPPanel_mainmenu->FillColor;
+	F->Schema->Options->NormalColor=F->DetailsButton->Options->NormalColor;
+	F->Schema->Options->FrameNormalColor=F->DetailsButton->Options->NormalColor;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::KonecClick(TObject *Sender)
@@ -637,7 +639,7 @@ void __fastcall TForm_parametry_linky::KonecClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 {
-    F->log(__func__); //logování
+		F->log(__func__); //logování
 		Changes=false;  //obecna zmena = zmena PP ci TT
 		Changes_TT=false;    // konkretni zmena TT
 		Changes_PP=false;   // konkretni zmena PP
@@ -965,8 +967,10 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		Close();//v testu, mùže padat
 	 }
 	 //zmìna záložek
-	 F->Layout->Down=false;
-	 F->Schema->Down=true;
+	 F->Layout->Options->NormalColor=F->scGPPanel_mainmenu->FillColor;
+	 F->Layout->Options->FrameNormalColor=F->scGPPanel_mainmenu->FillColor;
+	 F->Schema->Options->NormalColor=F->DetailsButton->Options->NormalColor;
+	 F->Schema->Options->FrameNormalColor=F->DetailsButton->Options->NormalColor;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
