@@ -852,7 +852,7 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object Schema: TscGPButton
-      Left = 632
+      Left = 656
       Top = 0
       Width = 78
       Height = 34
@@ -960,6 +960,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
+      ExplicitLeft = 632
     end
     object PopupMenuButton: TscGPButton
       AlignWithMargins = True
@@ -1785,7 +1786,7 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object Layout: TscGPButton
-      Left = 502
+      Left = 526
       Top = 0
       Width = 130
       Height = 34
@@ -1892,6 +1893,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
+      ExplicitLeft = 502
     end
     object Simulace: TscGPButton
       Left = 1004
@@ -2107,7 +2109,7 @@ object Form1: TForm1
     object scLabel_titulek: TscLabel
       Left = 449
       Top = 0
-      Width = 3
+      Width = 27
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -2137,6 +2139,7 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'TISPL'
+      ExplicitWidth = 3
     end
     object scGPSwitch_rezim: TscGPSwitch
       AlignWithMargins = True
@@ -2488,7 +2491,7 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object scGPButton_error: TscGPButton
-      Left = 452
+      Left = 476
       Top = 0
       Width = 25
       Height = 34
@@ -2594,9 +2597,10 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 452
     end
     object scGPButton_warning: TscGPButton
-      Left = 477
+      Left = 501
       Top = 0
       Width = 25
       Height = 34
@@ -2702,116 +2706,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-    end
-    object scGPButton_zamek: TscGPButton
-      Left = 710
-      Top = 0
-      Width = 24
-      Height = 34
-      Margins.Left = 0
-      Margins.Top = 0
-      Margins.Right = 0
-      Margins.Bottom = 1
-      Align = alRight
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -15
-      Font.Name = 'Roboto'
-      Font.Style = []
-      Font.Quality = fqClearTypeNatural
-      ParentFont = False
-      TabOrder = 23
-      OnClick = scButton_zamek_layoutuClick
-      Animation = True
-      Caption = 'Layout'
-      CanFocused = False
-      CustomDropDown = False
-      Margin = -1
-      Spacing = 1
-      Layout = blGlyphLeft
-      Images = scGPVirtualImageList1
-      ImageIndex = 78
-      ImageMargin = 15
-      TransparentBackground = True
-      Options.NormalColor = clWhite
-      Options.HotColor = clWhite
-      Options.PressedColor = clBtnFace
-      Options.FocusedColor = clBtnFace
-      Options.DisabledColor = 16250613
-      Options.NormalColor2 = clNone
-      Options.HotColor2 = clNone
-      Options.PressedColor2 = clNone
-      Options.FocusedColor2 = clNone
-      Options.DisabledColor2 = clNone
-      Options.NormalColorAlpha = 0
-      Options.HotColorAlpha = 30
-      Options.PressedColorAlpha = 255
-      Options.FocusedColorAlpha = 30
-      Options.DisabledColorAlpha = 0
-      Options.NormalColor2Alpha = 255
-      Options.HotColor2Alpha = 255
-      Options.PressedColor2Alpha = 255
-      Options.FocusedColor2Alpha = 255
-      Options.DisabledColor2Alpha = 255
-      Options.FrameNormalColor = clNone
-      Options.FrameHotColor = clNone
-      Options.FramePressedColor = clNone
-      Options.FrameFocusedColor = clNone
-      Options.FrameDisabledColor = clNone
-      Options.FrameWidth = 1
-      Options.FrameNormalColorAlpha = 255
-      Options.FrameHotColorAlpha = 255
-      Options.FramePressedColorAlpha = 255
-      Options.FrameFocusedColorAlpha = 255
-      Options.FrameDisabledColorAlpha = 255
-      Options.FontNormalColor = clWhite
-      Options.FontHotColor = clWhite
-      Options.FontPressedColor = clBtnText
-      Options.FontFocusedColor = clWhite
-      Options.FontDisabledColor = clGray
-      Options.ShapeFillGradientAngle = 90
-      Options.ShapeFillGradientPressedAngle = -90
-      Options.ShapeFillGradientColorOffset = 25
-      Options.ShapeCornerRadius = 10
-      Options.ShapeStyle = scgpRect
-      Options.ArrowSize = 9
-      Options.ArrowAreaSize = 0
-      Options.ArrowType = scgpatDefault
-      Options.ArrowThickness = 2
-      Options.ArrowThicknessScaled = False
-      Options.StyleColors = True
-      HotImageIndex = -1
-      FocusedImageIndex = 76
-      PressedImageIndex = -1
-      UseGalleryMenuImage = False
-      UseGalleryMenuCaption = False
-      ScaleMarginAndSpacing = False
-      WidthWithCaption = 0
-      WidthWithoutCaption = 0
-      SplitButton = False
-      RepeatClick = False
-      RepeatClickInterval = 100
-      GlowEffect.Enabled = False
-      GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 95
-      GlowEffect.GlowSize = 7
-      GlowEffect.Offset = 0
-      GlowEffect.Intensive = True
-      GlowEffect.StyleColors = True
-      GlowEffect.HotColor = clNone
-      GlowEffect.PressedColor = clBtnFace
-      GlowEffect.FocusedColor = clNone
-      GlowEffect.PressedGlowSize = 7
-      GlowEffect.PressedAlphaValue = 255
-      GlowEffect.States = [scsHot, scsPressed, scsFocused]
-      ImageGlow = True
-      ShowGalleryMenuFromTop = False
-      ShowGalleryMenuFromRight = False
-      ShowMenuArrow = False
-      ShowFocusRect = True
-      Down = False
-      GroupIndex = 1
-      AllowAllUp = False
+      ExplicitLeft = 477
     end
   end
   object scGPPanel_statusbar: TscGPPanel
@@ -9758,7 +9653,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118009808080910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101180098080C0910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10881,7 +10776,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01015000480A9C0B30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01015000480AA00B30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000F0030000010020000000000000D0
       0B00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

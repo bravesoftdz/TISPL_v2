@@ -867,7 +867,6 @@ void TForm1::DesignSettings()
 
 	//nastaveni barvy prepinacu modu
 	//Schema->Options->PressedColor=DetailsButton->Options->NormalColor;
-	scGPButton_zamek->Options->PressedColor=DetailsButton->Options->NormalColor;
 	//Layout->Options->PressedColor=DetailsButton->Options->NormalColor;
 	Analyza->Options->PressedColor=DetailsButton->Options->NormalColor;
 	Synteza->Options->PressedColor=DetailsButton->Options->NormalColor;
@@ -875,7 +874,6 @@ void TForm1::DesignSettings()
 	Nahled->Options->PressedColor=DetailsButton->Options->NormalColor;
   //nastavení barvy fontu stisknutému tlačítku
 	//Schema->Options->FontPressedColor=clWhite;
-  scGPButton_zamek->Options->FontPressedColor=clWhite;
 	//Layout->Options->FontPressedColor=clWhite;
 	Analyza->Options->FontPressedColor=clWhite;
 	Synteza->Options->FontPressedColor=clWhite;
@@ -10203,13 +10201,11 @@ void TForm1::NP_input()
 	 TIP="";
 	 //předesignované tlačítko layout - editace
 	 Schema->Caption=ls->Strings[36];
-	 scGPButton_zamek->Align=alNone;
 	 Schema->Align=alNone;
 	 scGPButton_error->Align=alNone;
 	 scGPButton_warning->Align=alNone;
 	 Layout->Align=alNone;
 	 Schema->Width=190;
-	 scGPButton_zamek->Align=alRight;
 	 Schema->Align=alRight;
 	 Layout->Align=alRight;
 	 scGPButton_warning->Align=alRight;
@@ -13046,12 +13042,10 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		//předesignované tlačítko layout - editace
 		Schema->Caption=ls->Strings[20];
 		Schema->Width=78;
-		scGPButton_zamek->Align=alNone;
 		Schema->Align=alNone;
 		scGPButton_error->Align=alNone;
 		scGPButton_warning->Align=alNone;
 		Layout->Align=alNone;
-		scGPButton_zamek->Align=alRight;
 		Schema->Align=alRight;
 		Layout->Align=alRight;
 		scGPButton_warning->Align=alRight;
@@ -14295,19 +14289,15 @@ void __fastcall TForm1::scButton_zamek_layoutuClick(TObject *Sender)
 	log(__func__);//logování
 	if(scButton_zamek_layoutu->ImageIndex==68)//odemčeno budu zamykat
 	{
-    //ShowMessage("zamknout");
 		scButton_zamek_layoutu->ImageIndex=67;
 		Schema->ImageIndex=79;
-		scGPButton_zamek->ImageIndex=79;
 		scButton_zamek_layoutu->Hint=ls->Strings[409];//"Odemknout layout";
 		zamek_layoutu=true;
   }
 	else
 	{
-    // ShowMessage("odemknout");
 		scButton_zamek_layoutu->ImageIndex=68;
 		Schema->ImageIndex=78;
-    scGPButton_zamek->ImageIndex=78;
 		scButton_zamek_layoutu->Hint=ls->Strings[43];//"Zamknout layout";
 		zamek_layoutu=false;
 	}
