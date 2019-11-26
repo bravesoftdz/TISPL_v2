@@ -50,6 +50,10 @@ public:		// User declarations
 		void highlight(int radek=0);
     int radek_temp;
     short mouse_move;
+    bool custom_size;
+    int POCET_ERRORU;
+    int POCET_WARNINGU;
+    double default_width;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm_zpravy *Form_zpravy;

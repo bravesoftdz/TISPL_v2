@@ -5,7 +5,7 @@ object Form_zpravy: TForm_zpravy
   BorderStyle = bsNone
   Caption = 'Form_zpravy'
   ClientHeight = 338
-  ClientWidth = 361
+  ClientWidth = 360
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,7 +19,7 @@ object Form_zpravy: TForm_zpravy
   object scGPPanel_header: TscGPPanel
     Left = 0
     Top = 0
-    Width = 361
+    Width = 360
     Height = 34
     Align = alTop
     TabOrder = 0
@@ -54,9 +54,10 @@ object Form_zpravy: TForm_zpravy
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
+    ExplicitWidth = 361
     object Skryt: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 311
+      Left = 310
       Top = 0
       Width = 50
       Height = 33
@@ -154,11 +155,12 @@ object Form_zpravy: TForm_zpravy
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 311
     end
     object scLabel_header: TscLabel
       Left = 0
       Top = 0
-      Width = 274
+      Width = 273
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -166,7 +168,7 @@ object Form_zpravy: TForm_zpravy
       Margins.Bottom = 1
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
+      Font.Color = 33023
       Font.Height = -19
       Font.Name = 'Roboto'
       Font.Style = []
@@ -189,9 +191,10 @@ object Form_zpravy: TForm_zpravy
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Zpr'#225'vy'
+      ExplicitWidth = 274
     end
     object scGPGlyphButton_pripnout: TscGPGlyphButton
-      Left = 274
+      Left = 273
       Top = 0
       Width = 37
       Height = 34
@@ -292,6 +295,7 @@ object Form_zpravy: TForm_zpravy
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 274
     end
     object scGPImage_warning: TscGPImage
       Left = 23
@@ -471,7 +475,7 @@ object Form_zpravy: TForm_zpravy
   object scGPListBox_zpravy: TscGPListBox
     Left = 0
     Top = 34
-    Width = 361
+    Width = 360
     Height = 276
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
@@ -577,11 +581,12 @@ object Form_zpravy: TForm_zpravy
     HeaderOptions.GradientAngle = 90
     HeaderOptions.Margin = 5
     HeaderHeight = 20
+    ExplicitWidth = 362
   end
   object scGPPanel_statusbar: TscGPPanel
     Left = 0
     Top = 310
-    Width = 361
+    Width = 360
     Height = 28
     Align = alBottom
     TabOrder = 2
@@ -615,18 +620,17 @@ object Form_zpravy: TForm_zpravy
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
+    ExplicitWidth = 361
     object RzStatusPane__chyby_caption: TRzStatusPane
       Left = 0
       Top = 0
-      Width = 80
+      Width = 86
       Height = 28
-      Hint = 'Aktu'#225'ln'#237' polohu kurzoru v sou'#345'adnic'#237'ch aplikace'
       BorderWidth = 0
       FlatColor = 10114859
-      FrameStyle = fsNone
       Align = alLeft
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
+      Font.Color = 33023
       Font.Height = -12
       Font.Name = 'Tahoma'
       Font.Style = []
@@ -639,17 +643,16 @@ object Form_zpravy: TForm_zpravy
       CaptionOffset = 0
     end
     object RzStatusPane_var_header: TRzStatusPane
-      Left = 80
+      Left = 86
       Top = 0
       Width = 105
       Height = 28
-      Hint = 'Aktu'#225'ln'#237' polohu kurzoru v sou'#345'adnic'#237'ch aplikace'
       BorderWidth = 0
       FlatColor = 10114859
       FrameStyle = fsNone
       Align = alLeft
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
+      Font.Color = 33023
       Font.Height = -12
       Font.Name = 'Tahoma'
       Font.Style = []
@@ -659,9 +662,10 @@ object Form_zpravy: TForm_zpravy
       ShowHint = True
       BlinkColor = 10114859
       Caption = 'Po'#269'et varov'#225'n'#237
+      ExplicitLeft = 80
     end
     object scGPSizeBox: TscGPSizeBox
-      Left = 335
+      Left = 334
       Top = 0
       Width = 26
       Height = 28
@@ -680,6 +684,7 @@ object Form_zpravy: TForm_zpravy
       GlyphColor = clWhite
       GlyphColorAlpha = 200
       GlyphThickness = 1
+      ExplicitLeft = 335
     end
   end
 end

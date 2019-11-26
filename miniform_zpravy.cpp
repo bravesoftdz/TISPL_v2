@@ -31,6 +31,7 @@ void __fastcall TForm_zpravy::FormShow(TObject *Sender)
 	F->scGPButton_error->Visible=false;
   scGPGlyphButton_pripnout->Visible=false;
   scGPSizeBox->Visible=false;
+  custom_size=false;
 
   scGPPanel_header->FillColor=(TColor)RGB(60,100,162);
  // scGPPanel_header->FillColor=(TColor)RGB(221,221,221);
@@ -38,15 +39,21 @@ void __fastcall TForm_zpravy::FormShow(TObject *Sender)
 //  scLabel_header->Font->Color=(TColor)RGB(73,117,184);
 //  RzStatusPane__chyby_caption->Font->Color=(TColor)RGB(73,117,184);
  // RzStatusPane_var_header->Font->Color=(TColor)RGB(73,117,184);
+  default_width=360;  //defaultní šíøka formuláøe - použita pøi pøipnutí ke stranì
   if(Top!=F->scLabel_titulek->Height)
   {
 		Top = F->Top_backup;
 		Left = F->Left_backup;
+    scGPListBox_zpravy->Width = F->zpravy_backup_width;
+    scGPListBox_zpravy->Height= F->zpravy_backup_height;
     scGPGlyphButton_pripnout->Visible=true;
     scGPSizeBox->Visible=true;
+    custom_size=true;
 	}
 	TPoint pocet_zprav=F->d.v.vrat_pocet_zprav();
 	update_zpravy(pocet_zprav.x,pocet_zprav.y);
+  POCET_ERRORU = pocet_zprav.x;
+  POCET_WARNINGU= pocet_zprav.y;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_zpravy::scGPListBox_zpravyMouseMove(TObject *Sender, TShiftState Shift,
@@ -73,17 +80,29 @@ void __fastcall TForm_zpravy::scGPGlyphButton_pripnoutClick(TObject *Sender)
 {
 	scGPGlyphButton_pripnout->Visible=false;//pøidal MAKR
   scGPGlyphButton_pripnout->Visible=false;
+  Form_zpravy->Width=default_width;
+  //musí být vypoèítaná "Form_height" ale nelze to vzít pøímo z této promìnné protože mùže být custom, èili do podmínky musí být novì vypoèítána
+  double vyska_temp = (POCET_ERRORU+POCET_WARNINGU) *  scGPListBox_zpravy->ItemHeight + scLabel_header->Height + scGPPanel_statusbar->Height + 5;   //5px rezervnich
   scGPSizeBox->Visible=false;
+  if(vyska_temp > F->ClientHeight)   Form_zpravy->Height =  F->ClientHeight  -  scGPPanel_statusbar->Height - scLabel_header->Height - F->scLabel_titulek->Height;
+  else Form_zpravy->Height = (POCET_ERRORU+POCET_WARNINGU) *  scGPListBox_zpravy->ItemHeight + scLabel_header->Height + scGPPanel_statusbar->Height + 5;   //5px rezervnich
+
 	if(Top==F->scLabel_titulek->Height + 10) {Top=F->scLabel_titulek->Height + 10;   Left=F->ClientWidth - scGPListBox_zpravy->Width - 10;    }
 	else
 	{
 		Top=F->scLabel_titulek->Height + 0;
 		Left=F->ClientWidth - scGPListBox_zpravy->Width;
+
 	}
+   F->Memo(Form_zpravy->Height);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_zpravy::SkrytClick(TObject *Sender)
 {
+  F->Top_backup=Form_zpravy->Top;
+  F->Left_backup=Form_zpravy->Left;
+  F->zpravy_backup_width = scGPListBox_zpravy->Width;
+  F->zpravy_backup_height = scGPListBox_zpravy->Height;
 	closing=true;
 	if(pocet_erroru)F->scGPButton_error->Visible=true;
 	if(pocet_warningu)F->scGPButton_warning->Visible=true;
@@ -141,8 +160,9 @@ void  TForm_zpravy::update_zpravy(long pocet_erroru, long pocet_warningu)
         RzStatusPane__chyby_caption->Caption="Poèet chyb "+AnsiString(pocet_erroru);
 			 //	RzStatusPane_pocet_var_value->Caption=pocet_warningu;
         RzStatusPane_var_header->Caption= "Poèet varování "+AnsiString(pocet_warningu);
-				Form_zpravy->Height = (pocet_erroru+pocet_warningu) *  scGPListBox_zpravy->ItemHeight + scLabel_header->Height + scGPPanel_statusbar->Height + 5;   //5px rezervnich
+			  if(custom_size==false)	Form_zpravy->Height = (pocet_erroru+pocet_warningu) *  scGPListBox_zpravy->ItemHeight + scLabel_header->Height + scGPPanel_statusbar->Height + 5;   //5px rezervnich
         if(Form_zpravy->Height > F->ClientHeight)   Form_zpravy->Height =  F->ClientHeight  -  scGPPanel_statusbar->Height - scLabel_header->Height - F->scLabel_titulek->Height;
+       F->Memo(Form_zpravy->Height);
 			}
 		}
 		else//pokud je form skrytý, zobrazí ikonu errorù nebo warningù (pøípadnì obì ikony) v horní lištì

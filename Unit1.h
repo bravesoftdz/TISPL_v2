@@ -768,6 +768,8 @@ public:		// User declarations
 	bool zamek_layoutu;
   int Top_backup;  //pomocne promenne pro pozici zprav
   int Left_backup; //pomocne promenne pro pozici zprav
+  int zpravy_backup_width;
+  int zpravy_backup_height;
 
 	//metody
 	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click
