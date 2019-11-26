@@ -1496,7 +1496,7 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 		 TIP=ls->Strings[304];
 		 SB(ls->Strings[304],4);
    	 Nahled->Enabled=false;
-   	 Button_dopravnik_parametryClick(this);//zavolání formáláře pro prvotní vyplnění či potvzení hodnot parametrů linky
+		 Button_dopravnik_parametryClick(this);//zavolání formáláře pro prvotní vyplnění či potvzení hodnot parametrů linky
    	 REFRESH();
 	 }
 }
@@ -1532,7 +1532,7 @@ void TForm1::Novy_soubor(bool invalidate)//samotné vytvoření nového souboru
 			 d.v.hlavicka_VOZIKY();// nemusí tu být pokud nebudu ukládat vozíky do filuzaložení spojového seznamu pro vozíky
 
 			 //tady bude přepnutí založek dodělat
-			 schemaClick(this);//volání MODu SCHEMA
+			 if(MOD!=SCHEMA)schemaClick(this);//volání MODu SCHEMA
 			 scGPSwitch_rezim->State=scswOff;
 			 //SB("NÁVRH",1);
 
@@ -10199,17 +10199,25 @@ void TForm1::NP_input()
 {
 	 log(__func__);//logování
 	 TIP="";
+	 if(!scSplitView_LEFTTOOLBAR->Opened)scSplitView_LEFTTOOLBAR->Opened=true;
+	 DrawGrid_knihovna->SetFocus();
+	 mGrid_knihovna->Delete();
+	 delete mGrid_knihovna;mGrid_knihovna=NULL;
 	 //předesignované tlačítko layout - editace
 	 Schema->Caption=ls->Strings[36];
+	 Layout->Align=alNone;
+	 //Analyza->Align=alNone;
 	 Schema->Align=alNone;
 	 scGPButton_error->Align=alNone;
 	 scGPButton_warning->Align=alNone;
-	 Layout->Align=alNone;
+	 //Schema->Width=190;
+	 Analyza->Align=alRight;//Zakázky
 	 Schema->Width=190;
-	 Schema->Align=alRight;
-	 Layout->Align=alRight;
+	 Schema->Align=alRight;//Layout
+	 Layout->Align=alRight;//Parametry linky
 	 scGPButton_warning->Align=alRight;
 	 scGPButton_error->Align=alRight;
+
 	 //zobrazení knihovny pokud je skrytá
 	 //mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
 	 pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp;posledni_editovany_element=NULL;delete posledni_editovany_element;JID=-1;Akce=NIC;
@@ -10229,8 +10237,7 @@ void TForm1::NP_input()
 	 pom_temp=new Cvektory::TObjekt; pom_temp->pohon=NULL; pom_temp->pohon=new Cvektory::TPohon; pom_temp->elementy=NULL;
 	 //zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze mGrid je propojen
 	 d.v.kopiruj_objekt(pom,pom_temp);//pokud elementy existují nakopíruje je do pomocného nezávislého spojáku pomocného objektu
-	 if(scSplitView_LEFTTOOLBAR->Visible && scSplitView_LEFTTOOLBAR->Opened)DrawGrid_knihovna->SetFocus();
-	 mGrid_knihovna->SetVisibleComponents(false);//vypnutí komponent v mgridu
+	 DrawGrid_knihovna->SetFocus();
 	 popisky_knihovna_nahled(false);//nastavní popisků pro editaci
 	 DrawGrid_knihovna->Top=33;
 	 kurzor(standard);
@@ -10470,13 +10477,8 @@ void TForm1::zmena_editovaneho_objektu()
 	  if(!scSplitView_LEFTTOOLBAR->Opened)scSplitView_LEFTTOOLBAR->Opened=true;
   	//mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
   	pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp;posledni_editovany_element=NULL;delete posledni_editovany_element;JID=-1;Akce=NIC;
-		if(scSplitView_LEFTTOOLBAR->Visible && scSplitView_LEFTTOOLBAR->Opened)DrawGrid_knihovna->SetFocus();
-		scGPButton_prichytavat->Visible=false;//vypnutí tlačítka přichytávat
-		scButton_zamek_layoutu->Visible=false;//vypnutí tlačítka pro zámek layoutu
-  	Image_knihovna_objektu->Visible=false;//vypnutí komponenty s knihovnou
-    scGPButton_zmerit_vzdalenost->Visible=false;
-  	mGrid_knihovna->SetVisibleComponents(false);//vypnutí komponent v mgridu
-  	JID=-1;//ošetření, s JID se pracuje i v náhledu
+		DrawGrid_knihovna->SetFocus();
+		JID=-1;//ošetření, s JID se pracuje i v náhledu
   	element_id=99999;//ošetření pro správné zobrazování mgridů
   	pom_bod=NULL;pom_bod_temp=NULL;//s těmito ukazateli pracuje jak náhled tak schéma, ošetření
   	kurzor(standard);
@@ -12056,19 +12058,18 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	if(mGrid_knihovna!=NULL)
-	{
-		Konec->SetFocus();
-		mGrid_knihovna->Delete();
-		delete mGrid_knihovna;mGrid_knihovna=NULL;
-		scSplitView_LEFTTOOLBAR->Opened=false;
-	}
-	else
-	{
-		scSplitView_LEFTTOOLBAR->Opened=true;
-		vytvoreni_tab_knihovna();
-	}
-	REFRESH();
+	Layout->Align=alNone;
+	 Analyza->Align=alNone;
+	 Schema->Align=alNone;
+	 scGPButton_error->Align=alNone;
+	 scGPButton_warning->Align=alNone;
+
+	 Analyza->Align=alRight;//Zakázky
+
+	 Layout->Align=alRight;//Parametry linky
+	 Schema->Align=alRight;//Layout
+	 scGPButton_warning->Align=alRight;
+	 scGPButton_error->Align=alRight;
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -12892,7 +12893,6 @@ void TForm1::db_connection()
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button11Click(TObject *Sender)
 {
-	log(__func__);//logování
 //	TscGPGlyphButton *B = new TscGPGlyphButton(this);
 //	B->Left=ClientWidth/2;
 //	B->Top=ClientHeight/2;
@@ -13042,10 +13042,12 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		//předesignované tlačítko layout - editace
 		Schema->Caption=ls->Strings[20];
 		Schema->Width=78;
+		Analyza->Align=alNone;
 		Schema->Align=alNone;
 		scGPButton_error->Align=alNone;
 		scGPButton_warning->Align=alNone;
 		Layout->Align=alNone;
+		Analyza->Align=alRight;
 		Schema->Align=alRight;
 		Layout->Align=alRight;
 		scGPButton_warning->Align=alRight;
@@ -13087,8 +13089,9 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		Image_knihovna_objektu->Visible=true;//zapnutí knihovny
 		scGPButton_zmerit_vzdalenost->Visible=true;
 		scGPButton_prichytavat->Visible=true;//zapnutí tlačítka přichytávat
-		mGrid_knihovna->SetVisibleComponents(true);//zapnutí komponent v mgridu
-		popisky_knihovna_nahled(true);//nastavení popisků pro knihovnu
+		//opětovné vytvoření tabulky objektů nebo skrytí panelu
+		if(!zamek_layoutu)vytvoreni_tab_knihovna();
+		else scSplitView_LEFTTOOLBAR->Opened=false;
 		DrawGrid_knihovna->Top=10000;//musí být zobrazena, odchytává stisk kláves
 		on_change_zoom_change_scGPTrackBar();//pozor asi volá refresh, změna pořadí
 	}
@@ -14293,6 +14296,11 @@ void __fastcall TForm1::scButton_zamek_layoutuClick(TObject *Sender)
 		Schema->ImageIndex=79;
 		scButton_zamek_layoutu->Hint=ls->Strings[409];//"Odemknout layout";
 		zamek_layoutu=true;
+		//vypnutí knihovny objektů
+		DrawGrid_knihovna->SetFocus();
+		mGrid_knihovna->Delete();
+		delete mGrid_knihovna;mGrid_knihovna=NULL;
+		scSplitView_LEFTTOOLBAR->Opened=false;
   }
 	else
 	{
@@ -14300,7 +14308,11 @@ void __fastcall TForm1::scButton_zamek_layoutuClick(TObject *Sender)
 		Schema->ImageIndex=78;
 		scButton_zamek_layoutu->Hint=ls->Strings[43];//"Zamknout layout";
 		zamek_layoutu=false;
+		//zapnutí knihovny objektů
+		scSplitView_LEFTTOOLBAR->Opened=true;
+		vytvoreni_tab_knihovna();
 	}
+	REFRESH(false);//kvůli překreslení měřítka
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPTrackBar_intenzitaChange(TObject *Sender)
