@@ -12084,17 +12084,17 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 
 	 //d.v.vloz_zpravu(0,0,0,NULL,ls->Strings[401]);
 	 //d.v.vloz_zpravu(0,0,0,NULL,ls->Strings[402]);
-	 if(d.v.ZPRAVY!=NULL)
-	 {
-		 Cvektory::TZprava *Z=d.v.ZPRAVY->dalsi;
-		 while(Z!=NULL)
-		 {
-			 Memo(Z->n);Memo(d.v.getVID(Z->VID));if(Z->Element!=NULL){if(Z->Element->name=="")Memo(Z->Element->name);else {Memo(Z->Element->n);Memo(Z->Element->eID);}}else Memo("není");
-			 Memo("______________________");
-			 Z=Z->dalsi;
-		 }
-		 delete Z;
-	 }
+//	 if(d.v.ZPRAVY!=NULL)
+//	 {
+//		 Cvektory::TZprava *Z=d.v.ZPRAVY->dalsi;
+//		 while(Z!=NULL)
+//		 {
+//			 Memo(Z->n);Memo(d.v.getVID(Z->VID));if(Z->Element!=NULL){if(Z->Element->name=="")Memo(Z->Element->name);else {Memo(Z->Element->n);Memo(Z->Element->eID);}}else Memo("není");
+//			 Memo("______________________");
+//			 Z=Z->dalsi;
+//		 }
+//		 delete Z;
+//	 }
 	 //Sk(d.v.vrat_zpravu(2)->Popisek);
 	 //d.v.vymazat_ZPRAVY();
 
@@ -12103,6 +12103,7 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 //		Memo((short)Akce);
 //		Memo((short) duvod_validovat);
 //		Memo("_____________");
+
 
 }
 //---------------------------------------------------------------------------

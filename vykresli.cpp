@@ -28,13 +28,14 @@ Cvykresli::Cvykresli()
 	Robot_delka_zakladny=1.2;
 	DoSkRB=(1.2+Robot_sirka_zakladny/2.0);//delka od středu (X,Y bodu) robota k referenčnímu bodu robota (tj. k trysce) v metrech
 	DkRB=0.8;//délka k referenčnímu bodu od uchopovacího bodu, respektive odsazení člověka od linky
-	clStenaHaly=TColor RGB(147,166,182);//původně m.clIntensive(clBlue,100);
-	clStenaKabiny=m.clIntensive(clStenaHaly,40);//původně m.clIntensive(clRed,180); //pěkná modrá: 79,122,186
+	clStenaHaly=TColor RGB(147,166,182);
+	clStenaKabiny=m.clIntensive(clStenaHaly,40);
 	clPasiv=m.clIntensive(clBlack,180);
 	clError=clRed;
 	clWarning=TColor RGB(255,165,0);
 	zobrazit_celou_zpravu=0;//proměnná určující, která zpráva bude zobrazena
 	zprava_highlight=0;//pomocná proměnná sloužící na ztučnění dané zpravy či na její zobrazení
+	 //pěkná modrá 79,122,186   další pěkná modrá světle (YR.NO): 0,185,241   ico tispl: 33,209,255
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -270,7 +271,8 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	}
 	O=NULL;delete O;
 
-  v.VALIDACE();//zatím provizorně
+  //VALIDACE a její výpis formou zpráv
+	v.VALIDACE();
 	vypis_zpravy(canv);
 }
 //---------------------------------------------------------------------------
@@ -644,6 +646,14 @@ void Cvykresli::drawRectText(TCanvas *canv,TRect Rect,UnicodeString Text)
 //zajistí vykreslení daného textu dle nastaveného Fontu (pokud je NULL, převezme se akutální font canvasu) včetně framingu, který je baravně a velikostně nastavitelný
 void Cvykresli::TextFraming(TCanvas *canv,int X,int Y,UnicodeString Text,TFont *Font,TColor clFraming,unsigned short FramingSize)
 {
+	int CR=Text.Pos("\n");//pozice odřádkování
+	UnicodeString Text_dalsi="";
+	if(CR>0)
+	{
+		Text_dalsi=Text.SubString(CR+1,Text.Length()-CR+2);
+		Text=Text.SubString(1,CR-1);
+	}
+
 	//pokud není font nastaven, převezme se akutální font, převezme se akutální font canvasu
 	if(Font==NULL)Font=canv->Font;else canv->Font=Font;
 
@@ -666,6 +676,12 @@ void Cvykresli::TextFraming(TCanvas *canv,int X,int Y,UnicodeString Text,TFont *
 	//samotný text
 	canv->Font->Color=clText;
 	canv->TextOutW(X,Y,Text);
+
+	//rekurzivní volání případného dalšího řádku
+	if(CR)
+	{
+		TextFraming(canv,X,Y+canv->TextHeight(Text_dalsi),Text_dalsi,Font,clFraming,FramingSize);
+	}
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
@@ -4567,64 +4583,87 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 {
 	if(v.ZPRAVY!=NULL)
 	{
+		//vstupní proměnné
+		UnicodeString Text="";//vypisovaný rozšířený popis zprávy
+		double Xr=0,Yr=0;//referenční souřadnice zpráv, které jsou přes sebe (od daného elementu)
+		long X,Y;//fyzické souřadnice zprávy
+		Cvektory::TZprava *Zt=NULL;//Zpráva
+
 		//cyklické vypsání všech zpráv ze spojáku ZPRAVY
 		Cvektory::TZprava *Z=v.ZPRAVY->dalsi;
 		while(Z!=NULL)
 		{
-			 ////fyzické souřadnice zprávy
-			 long X=m.L2Px(Z->X);
-			 long Y=m.L2Py(Z->Y);
+			////fyzické souřadnice zprávy
+			long X=m.L2Px(Z->X);
+			long Y=m.L2Py(Z->Y);
 
-			 ////nastavení písma
-			 if(zprava_highlight==Z->n)canv->Font->Style = TFontStyles()<<fsBold;else canv->Font->Style = TFontStyles();//highlight, buď všechny nebo konkréktní
+			////nastavení písma
+			if(zprava_highlight==Z->n)canv->Font->Style = TFontStyles()<<fsBold;else canv->Font->Style = TFontStyles();//highlight, buď všechny nebo konkréktní
 
-			 ////IKONA
-			 short size=m.round(3*F->Zoom);//POZOR, v případě změny nutno ještě změnit i v v.PtInZpravy()
-			 TColor clCircle=clRed;
-			 AnsiString Tico="";
-			 switch(Z->zID)
-			 {
-				 case -1: Tico="E";clCircle=clError;break;//barva errory
-				 case 1:  Tico="W";clCircle=clWarning;break;//barva warningy
-			 }
-			 //kruhový podklad ikony
-			 canv->Brush->Style=bsSolid;
-			 canv->Brush->Color=clCircle;
-			 canv->Pen->Style=psSolid;
-			 canv->Pen->Color=clWhite;
-			 canv->Pen->Width=m.round(0.1*F->Zoom);//framing ikony
-			 canv->Ellipse(X-size,Y-size,X+size,Y+size);
-			 //text ikony
-			 //if(FileExists(F->get_Windows_dir()+"\\Fonts\\Roboto.ttf"))
-			 canv->Font->Name=="Arial";
-			 canv->Font->Color=clWhite;
-			 canv->Font->Size=m.round(3.8*F->Zoom);
-			 canv->Brush->Style=bsClear;
-			 canv->TextOutW(X-m.round(canv->TextWidth(Tico)/2.0),Y-m.round(canv->TextHeight(Tico)/2.0),Tico);
+			////IKONA
+			if(Z->n==1 || Z->Element!=NULL && Z->predchozi->Element!=NULL && Z->Element->n!=Z->predchozi->Element->n)//pokud jsou ikony přes sebe tak nezobrazuje ty další
+			{
+				short size=m.round(3*F->Zoom);//POZOR, v případě změny nutno ještě změnit i v v.PtInZpravy()
+				TColor clCircle=clRed;
+				AnsiString Tico="";
+				switch(Z->zID)
+				{
+					 case -1: Tico="E";clCircle=clError;break;//barva errory
+					 case 1:  Tico="W";clCircle=clWarning;break;//barva warningy
+				}
+				//kruhový podklad ikony
+				canv->Brush->Style=bsSolid;
+				canv->Brush->Color=clCircle;
+				canv->Pen->Style=psSolid;
+				canv->Pen->Color=clWhite;
+				canv->Pen->Width=m.round(0.1*F->Zoom);//framing ikony
+				canv->Ellipse(X-size,Y-size,X+size,Y+size);
+				//text ikony
+				canv->Font->Name=="Arial";
+				canv->Font->Color=clWhite;
+				canv->Font->Size=m.round(3.8*F->Zoom);
+				canv->Brush->Style=bsClear;
+				canv->TextOutW(X-m.round(canv->TextWidth(Tico)/2.0),Y-m.round(canv->TextHeight(Tico)/2.0),Tico);
+			}
 
-			 ////zobrazování popisného TEXTU
-			 int TW=0,TH=0;
-			 if(zobrazit_celou_zpravu==Z->n)//celý výpis
-			 {
-				 UnicodeString Text=v.getVID(Z->VID);
-				 canv->Font->Name=F->aFont->Name;
-				 canv->Font->Color=clRed;
-				 canv->Font->Size=m.round(3.5*F->Zoom);
-				 TW=canv->TextWidth(Text);TH=canv->TextHeight(Text);
-				 Y-=(m.round(3*F->Zoom)+TH);//odsazení textu
-				 X-=m.round(TW/2.0);
-				 //samotné vykreslení výpisu
-				 TextFraming(canv,X,Y,Text,canv->Font,clWhite,3);
-			 }
+			////tvorba popisného TEXTU
+			if(zobrazit_celou_zpravu==Z->n){Xr=Z->X;Yr=Z->Y;Zt=Z;}//získání souřadnic referenční zprávy a ukazatele na ni
+			if(zobrazit_celou_zpravu && Z->X==Xr && Z->Y==Yr)//zobrazí všechny textové zprávy, co jsou v daném místě (na daném elementu a byly by přes sebe)
+			{
+				AnsiString S="";if(Text!="")S="\n";//případný separátor
+				Text+=S+v.getVID(Z->VID);
+			}
 
-			 ////uložení CITELNÉ OBLASTI textu (oblast ikony se počítá ve vektorové metodě PtInZpravy())
-			 Z->citelna_oblast=TRect(X,Y,X+TW,Y+TH);
+			//pouze "VYNULOVÁNÍ" CITELNÉ OBLASTI textu, plnění níže
+			Z->citelna_oblast=TRect(X,Y,X,Y);
 
-			 //posun na další zprvu
-			 Z=Z->dalsi;
+			//posun na další zpravu
+			Z=Z->dalsi;
 		}
 		delete Z;
-		canv->Font->Orientation=0;//navrácení do původního stavu
+
+		////zobrazování popisného TEXTU
+		if(zobrazit_celou_zpravu)
+		{
+			//nastavení
+			X=m.L2Px(Zt->X);
+			Y=m.L2Py(Zt->Y);
+			canv->Font->Name=F->aFont->Name;
+			canv->Font->Size=m.round(3.5*F->Zoom);
+			switch(Zt->zID)
+			{
+				case -1: canv->Font->Color=clError;break;//barva errory
+				case 1:  canv->Font->Color=clWarning;break;//barva warningy
+			}
+			int TW=canv->TextWidth(Text);int TH=canv->TextHeight(Text);
+			Y-=(m.round(3*F->Zoom)+TH);//odsazení textu
+			X-=m.round(TW/2.0);
+			//samotné vykreslení výpisu
+			TextFraming(canv,X,Y,Text,canv->Font,clWhite,3);
+			//uložení CITELNÉ OBLASTI zobrazeného textu (oblast ikony se počítá ve vektorové metodě PtInZpravy())
+			if(Zt!=NULL)Zt->citelna_oblast=TRect(X,Y,X+TW,Y+TH);
+		}
+		Zt=NULL;delete Zt;
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -5002,7 +5041,7 @@ void Cvykresli::vykresli_Gelement_kurzor(TCanvas *canv,double X,double Y,double 
 TPointD *Cvykresli::vykresli_potencial_Gelement(TCanvas *canv,double X,double Y,double orientace,double rotacni_uhel,double radius,TColor color,bool popisek)
 {
 	////vykreslení kolejí ve vybraném gelemntu       //resp. v tomto případě vybraný gelement
-	if(F->scGPCheckBox_zobrazit_koleje->Checked && popisek)
+	if(F->pom_temp!=NULL && F->pom_temp->pohon!=NULL && F->scGPCheckBox_zobrazit_koleje->Checked && popisek)
 	{
 		short typ=1;if(rotacni_uhel==0)typ=0;
 		vykresli_koleje(canv,X,Y,typ,orientace,rotacni_uhel,radius,radius,color);
