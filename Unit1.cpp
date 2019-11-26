@@ -13023,6 +13023,8 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		PmG->Delete();PmG=NULL;delete PmG;
     //mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
 		pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp;posledni_editovany_element=NULL;delete posledni_editovany_element;JID=-1;Akce=NIC;
+    vlozit_predavaci_misto();//zkontroluje, zda nemusí být přidáno nebo odstraněno předávací místo
+		duvod_validovat=2;//vyvolá validaci, zajistí aktualizaci zpráv a výpisu v miniformu zpráv, NECHAT AŽ ZA FUNKČNÍMI ZÁLEŽITOSTMI
 		//v případě animace vypnutí a nastavení do výchozího stavu
 		Timer_animace->Enabled=false;
 		ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
@@ -13084,7 +13086,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		//scGPLabel_roboti->ContentMarginLeft=4;
 		scGPSwitch_robot_clovek->Visible=false;
 		scGPPanel_pomocn_proSwitch->Visible=false;
-		//REFRESH(); //- asi netřeba  asi vyvolává výše uvedený on_change_zoom_change_scGPTrackBar()
+		//REFRESH(); //- asi netřeba  asi vyvolává níže uvedený on_change_zoom_change_scGPTrackBar()
 		//scListGroupKnihovObjektu->Visible=false;
 		scGPComboBox_prepinacKot->ItemIndex=0;//ošetření pokud bylo při vypínání editace nastaveno na časové kóty
 		scButton_zamek_layoutu->Visible=true;//zapnutí tlačítka zámek layoutu
@@ -13094,7 +13096,6 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		mGrid_knihovna->SetVisibleComponents(true);//zapnutí komponent v mgridu
 		popisky_knihovna_nahled(true);//nastavení popisků pro knihovnu
 		DrawGrid_knihovna->Top=10000;//musí být zobrazena, odchytává stisk kláves
-		vlozit_predavaci_misto();//skontroluje zda nemusí být přidáno nebo odstraněno předávací místo
 		on_change_zoom_change_scGPTrackBar();//pozor asi volá refresh, změna pořadí
 	}
 }
@@ -14209,7 +14210,7 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 		Form_katalog->Button_storno->Caption=ls->Strings[195];
 		scGPCheckBox_zobrazit_palce->Caption=ls->Strings[292];
 		Form_zpravy->scLabel_header->Caption=ls->Strings[412];
-		Form_zpravy->scGPGlyphButton_info->Hint=ls->Strings[413];
+		Form_zpravy->scGPGlyphButton_pripnout->Hint=ls->Strings[413];
 		Form_zpravy->RzStatusPane__chyby_caption->Caption=ls->Strings[414];
 		Form_zpravy->RzStatusPane_var_header->Caption=ls->Strings[415];
 
