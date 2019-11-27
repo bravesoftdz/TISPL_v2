@@ -5455,7 +5455,7 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 					case 270: y=0;  x=-1; break;
 				}
 
-				////testování jednotlivých problémů na elementech
+				////testování jednotlivých problémů na elementech - řadit od nejdůležitějšího
 				////////////Pohon nepřiřazen!
 				if(funkcni_element(E) && E->pohon==NULL)
 				{
@@ -5500,13 +5500,14 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 UnicodeString Cvektory::getVID(long VID)
 {
 	UnicodeString Text="";
-	switch(VID)
+	switch(VID) //řadit od nejdůležitějšího
 	{
 		case 219: Text=F->ls->Strings[219]+"!";break;//Pohon nepřiřazen!
 		case 401: Text=F->ls->Strings[401];break;//Rotace neodpovídá orientaci JIGů na začátku linky!
 		case 402: Text=F->ls->Strings[402];break;//Pozor, překrytí JIGů!
 		case 406: Text=F->ls->Strings[406];break;//Nestíhá se přejezd, záporná časová rezerva!
 		case 407: Text=F->ls->Strings[407];break;//Nulová časová rezerva.
+		default: Text="Error or warning!";break;//obecná chyba či varování
 	}
 	return Text;
 }
@@ -5664,6 +5665,7 @@ void Cvektory::vytvor_hlavicku_souboru()
 	File_hlavicka.vyska_jig=PP.vyska_jig;
 	File_hlavicka.delka_podvozek=PP.delka_podvozek;
 	File_hlavicka.uchyt_pozice=PP.uchyt_pozice;
+	File_hlavicka.zamek_layoutu=PP.zamek_layoutu;
 	//objektové záležitosti
 	File_hlavicka.pocet_pohonu=POHONY->predchozi->n;
 	File_hlavicka.pocet_objektu=OBJEKTY->predchozi->n;

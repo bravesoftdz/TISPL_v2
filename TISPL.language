@@ -34,7 +34,7 @@ Verification;X;Ovìøování
 Design;X;Návrh
 Line parameters;X;parametry linky
 Options;X;Nastavení
-Layout editing object;X;Layout editace objektu
+Editing;X;Editace
 run the animation;X;spustit animaci
 The current cursor position in the application coordinates;X;Aktuální polohu kurzoru v souøadnicích aplikace
 Click anywhere to add an object from the library or edit an existing schema;X;Kliknutím na libovolné místo pøidáte objekt z knihovny nebo lze upravit stávájící schéma
@@ -404,7 +404,7 @@ Attention, JIGs overlap!;X;Pozor, pøekrytí JIGù!
 Enter order parameters or choose cancellation.;X;Zadejte parametry zakázek nebo zvolte storno.
   Rotate name left;X;  Otoèit název doleva
   Rotate name right;X;  Otoèit název doprava
-There is not enough time to cross, negative reserve time!;X;Nestíhá se pøejezd, záporná èasové rezerva!
+There is not enough time to cross, negative reserve time!;X;Nestíhá se pøejezd, záporná èasová rezerva!
 Zero reserve time.;X;Nulová èasová rezerva.
 Insert as new section? No - change to another section type.;X;Vložit jako novou sekci? Ne - zmìnit na jiný typ sekce.
 Unlock object placement;X;Odemknout rozmístìní objektù
@@ -414,3 +414,4 @@ Messages;X;Zprávy
 Pin to right;X;Pøipnout k pravé èásti
 Number of errors;X;Poèet chyb
 Number of warnings;X;Poèet varování
+Object moved, do you agree with the current location?;X;Objekt byl pøesunut, souhlasíte s aktuálním umístìním?

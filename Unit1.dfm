@@ -852,10 +852,9 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object Schema: TscGPButton
-      AlignWithMargins = True
-      Left = 656
+      Left = 554
       Top = 0
-      Width = 78
+      Width = 180
       Height = 33
       Margins.Left = 0
       Margins.Top = 0
@@ -961,7 +960,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitHeight = 34
+      ExplicitLeft = 656
     end
     object PopupMenuButton: TscGPButton
       AlignWithMargins = True
@@ -1076,9 +1075,9 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object Analyza: TscGPButton
-      Left = 824
+      Left = 734
       Top = 0
-      Width = 90
+      Width = 180
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -1184,6 +1183,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
+      ExplicitLeft = 824
     end
     object Synteza: TscGPButton
       Left = 914
@@ -1787,9 +1787,9 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object Layout: TscGPButton
-      Left = 526
+      Left = 284
       Top = 0
-      Width = 130
+      Width = 180
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -1894,6 +1894,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
+      ExplicitLeft = 526
     end
     object Simulace: TscGPButton
       Left = 1004
@@ -2279,7 +2280,7 @@ object Form1: TForm1
       UseFontColorToStyleColor = True
     end
     object Nahled: TscGPButton
-      Left = 734
+      Left = 464
       Top = 0
       Width = 90
       Height = 34
@@ -2386,6 +2387,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
+      ExplicitLeft = 734
     end
     object scGPGlyphButton_PLAY: TscGPGlyphButton
       Left = 242
@@ -2490,7 +2492,7 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object scGPButton_error: TscGPButton
-      Left = 476
+      Left = 234
       Top = 0
       Width = 25
       Height = 34
@@ -2596,9 +2598,10 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 476
     end
     object scGPButton_warning: TscGPButton
-      Left = 501
+      Left = 259
       Top = 0
       Width = 25
       Height = 34
@@ -2704,6 +2707,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 501
     end
   end
   object scGPPanel_statusbar: TscGPPanel
