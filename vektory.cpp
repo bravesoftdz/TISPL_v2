@@ -5665,6 +5665,7 @@ void Cvektory::vytvor_hlavicku_souboru()
 	File_hlavicka.vyska_jig=PP.vyska_jig;
 	File_hlavicka.delka_podvozek=PP.delka_podvozek;
 	File_hlavicka.uchyt_pozice=PP.uchyt_pozice;
+	File_hlavicka.zamek_layoutu=PP.zamek_layoutu;
 	//objektové záležitosti
 	File_hlavicka.pocet_pohonu=POHONY->predchozi->n;
 	File_hlavicka.pocet_objektu=OBJEKTY->predchozi->n;

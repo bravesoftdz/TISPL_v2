@@ -329,7 +329,9 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	}
 	//nastavení normálního, disabled nebo highlight textu
 	nastavit_text_popisu_objektu_v_nahledu(canv);
-	if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)canv->Font->Color=m.clIntensive(clAkt,I);//pro neaktivní objekty při editaci
+  //highlight názvu
+	if((F->JID==-6 || F->editace_textu && F->index_kurzoru==-6) && (F->pom!=NULL && F->pom->n==O->n || F->pom_temp!=NULL && F->pom_temp->n==O->n))canv->Font->Color=clStenaHaly; else canv->Font->Color=clStenaKabiny;
+  if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)canv->Font->Color=m.clIntensive(clAkt,I);//pro neaktivní objekty při editaci
 	//samotné vypsání názvu
 	if(!(F->pom_temp!=NULL && F->pom_temp->n!=O->n && F->scGPTrackBar_intenzita->Value<5))TextFraming(canv,X,Y,Tn);//záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
 	//vrácení původní hodnoty rotace canvasu
@@ -506,7 +508,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 void Cvykresli::nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv)
 {
 	canv->Font->Name=F->aFont->Name;
-	if(F->JID==-6 || F->editace_textu && F->index_kurzoru==-6)canv->Font->Color=clStenaHaly; else canv->Font->Color=clStenaKabiny;
+	//if(F->JID==-6 || F->editace_textu && F->index_kurzoru==-6)canv->Font->Color=clStenaHaly; else canv->Font->Color=clStenaKabiny;
 	canv->Font->Size=2*3*F->Zoom;
 	canv->Font->Style = TFontStyles()<< fsBold;
 }
@@ -4417,24 +4419,28 @@ void Cvykresli::vykresli_lakovaci_okno(TCanvas *canv,long X,long Y,double LO1,do
 void Cvykresli::vykresli_ikonu_linie(TCanvas *canv,int X,int Y,AnsiString Popisek,short stav)
 {
 	short o=10*3;
-	int W=F->DrawGrid_geometrie->DefaultColWidth*3/2-o;
+	int W=60;//F->DrawGrid_geometrie->DefaultColWidth*3/2-o;
 	int odsazeni=-35;//vycentrování linie mezi hlavičkou a textem 6px
 	TColor barva=clBlack; if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
 
+	//centrování pro vykreslení
+	Y+=4*3;X-=11*3;
+
 	//vykreslení linie
 	set_pen(canv,barva,1*10,PS_ENDCAP_FLAT);
-	line(canv,X-W+8,Y-W/2+odsazeni,X+W-8,Y-W/2+odsazeni);
+	line(canv,X,Y-W-15,X+W,Y-W-15);//line(canv,X-W+8,Y-W/2+odsazeni,X+W-8,Y-W/2+odsazeni);
 
-	short C=W/2;//zajištění vycentrování
+	//short C=W/2;//zajištění vycentrování
 	//vykreslení oblouku
-	set_pen(canv,barva,1*10,PS_ENDCAP_FLAT);   double Xodsaz=35;odsazeni=30;//6;
-	canv->Arc(X-W-C-Xodsaz,Y-W+odsazeni,X+W-C-Xodsaz,Y+W+odsazeni,X+W-C-Xodsaz,Y+odsazeni,X-C-Xodsaz,Y-W+odsazeni);//směr proti hodinovým ručičkám
+	set_pen(canv,barva,1*10,PS_ENDCAP_FLAT);   //double Xodsaz=35;odsazeni=30;//6;
+	canv->Arc(X-W,Y-W,X+W,Y+W,X+W,Y,X,Y-W);//canv->Arc(X-W-C-Xodsaz,Y-W+odsazeni,X+W-C-Xodsaz,Y+W+odsazeni,X+W-C-Xodsaz,Y+odsazeni,X-C-Xodsaz,Y-W+odsazeni);//směr proti hodinovým ručičkám
 
-  //seříznutí oblouku
+	//seříznutí oblouku
 	canv->Pen->Color=clWhite;
 	canv->Rectangle(X-30,Y+12,X+30,Y+50);
 
 	//popisek
+	Y-=4*3;X+=11*3;//centrování pro popise
 	canv->Brush->Style=bsClear;
 	if(stav!=-1)canv->Font->Color=m.clIntensive(barva,100);else canv->Font->Color=barva;//ikona vs. normální zobrazení
 	canv->Font->Name=F->aFont->Name;
@@ -4864,17 +4870,17 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 				if(F->pom_bod!=NULL && F->JID==oblast_koty&&F->pom_bod->n==B->n)highlight=2;
 				else if(F->pom_bod!=NULL && F->JID==hodnota_koty&&F->pom_bod->n==B->n)highlight=1;else highlight=0;
 				//výpočet délky kóty
-				delka_koty=m.round2double(m.delka(B->predchozi->X,B->predchozi->Y,B->X,B->Y),3);
+				delka_koty=m.delka(B->predchozi->X,B->predchozi->Y,B->X,B->Y);
 				if(F->DKunit==2 || F->DKunit==3)delka_koty=delka_koty/F->pom_temp->pohon->aRD;
 				//vykreslení kóty
 				if(kota_od==NULL)                                                                                                                                              //převedení na mm
-				vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),F->outDK(delka_koty),NULL,B->kota_offset*F->Zoom/AA,highlight,width,clGray,false,NULL,B);
+				vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),m.round2double(F->outDK(delka_koty),3),NULL,B->kota_offset*F->Zoom/AA,highlight,width,clGray,false,NULL,B);
 				else
 				{
 					//určení nové vzdálenosti
 					delka_koty=m.round2double(m.delka(B->predchozi->X,B->predchozi->Y,B->X,B->Y),3);if(F->DKunit==2 || F->DKunit==3)delka_koty=delka_koty/F->pom_temp->pohon->aRD;
 					//vykreslení jedné kóty pro obdelník/čtverec
-					vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),F->outDK(delka_koty),NULL,B->kota_offset*F->Zoom/AA,highlight,width,clGray,false,NULL,B);
+					vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),m.round2double(F->outDK(delka_koty),3),NULL,B->kota_offset*F->Zoom/AA,highlight,width,clGray,false,NULL,B);
 					if(kota_od->dalsi!=NULL)//ošetření
 					{
 				  	//zjištění highlightu pro druhou kótu obdelníku/čtverce
@@ -4883,17 +4889,17 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 				  	//délka
 				  	delka_koty=m.round2double(m.delka(B->X,B->Y,B->dalsi->X,B->dalsi->Y),3);if(F->DKunit==2 || F->DKunit==3)delka_koty=delka_koty/F->pom_temp->pohon->aRD;
 				  	//vykreslení
-						vykresli_kotu(canv,m.L2Px(B->X),m.L2Py(B->Y),m.L2Px(B->dalsi->X),m.L2Py(B->dalsi->Y),F->outDK(delka_koty),NULL,B->dalsi->kota_offset*F->Zoom/AA,highlight,width,clGray,false,NULL,B->dalsi);
+						vykresli_kotu(canv,m.L2Px(B->X),m.L2Py(B->Y),m.L2Px(B->dalsi->X),m.L2Py(B->dalsi->Y),m.round2double(F->outDK(delka_koty),3),NULL,B->dalsi->kota_offset*F->Zoom/AA,highlight,width,clGray,false,NULL,B->dalsi);
 					}
 					break;
 				}
 				B=B->dalsi;
 			}
 			//vykreslení poslední kóty
-			delka_koty=m.round2double(m.delka(body->predchozi->X,body->predchozi->Y,body->dalsi->X,body->dalsi->Y),0);if(F->DKunit==2 || F->DKunit==3)delka_koty=delka_koty/F->pom_temp->pohon->aRD;
+			delka_koty=m.delka(body->predchozi->X,body->predchozi->Y,body->dalsi->X,body->dalsi->Y);if(F->DKunit==2 || F->DKunit==3)delka_koty=delka_koty/F->pom_temp->pohon->aRD;
 			if(F->pom_bod!=NULL && F->JID==oblast_koty&&F->pom_bod->n==body->dalsi->n)highlight=2;
 			else if(F->pom_bod!=NULL && F->JID==hodnota_koty&&F->pom_bod->n==body->dalsi->n)highlight=1;else highlight=0;
-			if(kota_od==NULL && body->predchozi->n>2)vykresli_kotu(canv,m.L2Px(body->predchozi->X),m.L2Py(body->predchozi->Y),m.L2Px(body->dalsi->X),m.L2Py(body->dalsi->Y),F->outDK(delka_koty),NULL,body->dalsi->kota_offset*F->Zoom/AA,highlight,width,clGray,false,NULL,body->dalsi);
+			if(kota_od==NULL && body->predchozi->n>2)vykresli_kotu(canv,m.L2Px(body->predchozi->X),m.L2Py(body->predchozi->Y),m.L2Px(body->dalsi->X),m.L2Py(body->dalsi->Y),m.round2double(F->outDK(delka_koty),3),NULL,body->dalsi->kota_offset*F->Zoom/AA,highlight,width,clGray,false,NULL,body->dalsi);
 
 			////odstranění pomocného ukazatele
 			B=NULL; delete B;
@@ -4939,20 +4945,20 @@ void Cvykresli::smart_kurzor(TCanvas *canv,Cvektory::TElement *E)
 	}
 	else//pokud neexistuje žádny předchozí element bude smart kurzor umístěn na začátek objektu
 	{
-		Cvektory::TElement *e_posledni=F->d.v.vrat_posledni_element_objektu(F->pom->predchozi);
+		Cvektory::TElement *e_posledni=NULL;
 		//defaultně od prvního bodu aktuální kabiny
 		preXk=F->pom_temp->elementy->dalsi->geo.X1;
 		preYk=F->pom_temp->elementy->dalsi->geo.Y1;
 		//pokud existuje předchozí kabina tak od jejího posledního bodu
 		if(F->pom->predchozi->n!=0)
 		{
-			preXk=e_posledni->geo.X4;
-			preYk=e_posledni->geo.Y4;
+			e_posledni=v.vrat_posledni_element_objektu(F->pom->predchozi);
+			preXk=F->pom->predchozi->elementy->predchozi->geo.X4;
+			preYk=F->pom->predchozi->elementy->predchozi->geo.Y4;
 		}
 		preOR=F->pom_temp->orientace;
-		if(F->pom->predchozi!=NULL && F->pom->predchozi->n>=1){preRA=e_posledni->geo.rotacni_uhel;preOR=e_posledni->geo.orientace;}//nabrání rotačního úhlu a orientace z předchozího objektu
+		if(e_posledni!=NULL && F->pom->predchozi!=NULL && F->pom->predchozi->n>=1){preRA=F->pom->predchozi->elementy->predchozi->geo.rotacni_uhel;preOR=F->pom->predchozi->elementy->predchozi->geo.orientace;}//nabrání rotačního úhlu a orientace z předchozího objektu
 		//preRA=F->pom_temp->elementy->dalsi->geo.rotacni_uhel;
-  	e_posledni=NULL;delete e_posledni;
 	}
 	if(Ep!=NULL && E!=NULL)prepreRA=Ep->geo.rotacni_uhel;
 	Ep=NULL;delete Ep;

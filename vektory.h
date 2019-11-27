@@ -267,6 +267,7 @@ class Cvektory
 		double delka_podvozek;//délka podvozku všech vozíků
 		double sirka_podvozek;//šířka podvozku všech vozíků - zatím není ukládáno do binárky, protože se uživatelsky nenastavuje
 		double uchyt_pozice;//pozice uchycení vozíků k nosnému palci
+		bool zamek_layoutu;//zámek editace layoutu
 		T_raster raster;
 		T_vector vector;//DOPRYC - zakomentovat
 	};
@@ -404,6 +405,7 @@ class Cvektory
 		double delka_podvozek;
 		double sirka_podvozek;
 		double uchyt_pozice;
+		bool zamek_layoutu;//zámek editace layoutu
     int katalog;
 		short typ_linky;
     double radius;
