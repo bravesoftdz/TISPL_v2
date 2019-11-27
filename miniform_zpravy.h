@@ -27,6 +27,8 @@ __published:	// IDE-managed Components
   TRzStatusPane *RzStatusPane_var_header;
   TscGPImage *scGPImage_warning;
   TscGPImage *scGPImage_error;
+  TscGPGlyphButton *scGPGlyphButton1;
+  TscGPGlyphButton *scGPGlyphButton2;
   void __fastcall FormShow(TObject *Sender);
   void __fastcall scGPListBox_zpravyMouseMove(TObject *Sender, TShiftState Shift,
           int X, int Y);

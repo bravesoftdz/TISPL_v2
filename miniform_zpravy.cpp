@@ -32,12 +32,16 @@ void __fastcall TForm_zpravy::FormShow(TObject *Sender)
   scGPGlyphButton_pripnout->Visible=false;
   scGPSizeBox->Visible=false;
   custom_size=false;
-
-  scGPPanel_header->FillColor=(TColor)RGB(60,100,162);
+ // RzStatusPane__chyby_caption->Font->Color=(TColor)RGB(79,122,186);
+ // RzStatusPane_var_header->Font->Color=(TColor)RGB(79,122,186);
+// scGPPanel_statusbar->FillColor=(TColor)RGB(255,217,58);
+ //RzStatusPane__chyby_caption->Font->Color=(TColor)RGB(95,99,104);
+ //RzStatusPane_var_header->Font->Color=(TColor)RGB(95,99,104);
+//  scGPPanel_header->FillColor=(TColor)RGB(255,217,58);//(TColor)RGB(60,100,162);
  // scGPPanel_header->FillColor=(TColor)RGB(221,221,221);
- // scGPPanel_statusbar->FillColor=(TColor)RGB(221,221,221);
+//  scGPPanel_statusbar->FillColor=(TColor)RGB(221,221,221);
 //  scLabel_header->Font->Color=(TColor)RGB(73,117,184);
-//  RzStatusPane__chyby_caption->Font->Color=(TColor)RGB(73,117,184);
+ // RzStatusPane__chyby_caption->Font->Color=(TColor)RGB(73,117,184);
  // RzStatusPane_var_header->Font->Color=(TColor)RGB(73,117,184);
   default_width=360;  //defaultní šíøka formuláøe - použita pøi pøipnutí ke stranì
   if(Top!=F->scLabel_titulek->Height)
@@ -226,4 +230,5 @@ void __fastcall TForm_zpravy::scLabel_headerMouseMove(TObject *Sender, TShiftSta
 mouse_move=1;
 }
 //---------------------------------------------------------------------------
+
 
