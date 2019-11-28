@@ -133,6 +133,8 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	Screen->Cursors[18]=HC;
 	HC=LoadCursor(HInstance,L"EDITACE_POSUN");
 	Screen->Cursors[19]=HC;
+	HC=LoadCursor(HInstance,L"INFO");
+	Screen->Cursors[20]=HC;
 
 	//Načtení z INI
 	AnsiString T=readINI("nastaveni_nahled", "cas");
@@ -2643,7 +2645,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
       ////Geometrie
 			if(Akce==GEOMETRIE && !editace_textu)ukonceni_geometrie();
 			////Hala
-			if(editace_textu)Smaz_kurzor();if(Akce==DRAW_HALA&&d.v.HALA.body!=NULL&&d.v.HALA.body->predchozi->n>2){d.v.vloz_bod(d.v.HALA.body->dalsi->X,d.v.HALA.body->dalsi->Y,pom,NULL,ortogonalizace_stav,true);Akce=NIC;kurzor(standard);TIP="";REFRESH();}
+			if(editace_textu)smaz_kurzor();if(Akce==DRAW_HALA&&d.v.HALA.body!=NULL&&d.v.HALA.body->predchozi->n>2){d.v.vloz_bod(d.v.HALA.body->dalsi->X,d.v.HALA.body->dalsi->Y,pom,NULL,ortogonalizace_stav,true);Akce=NIC;kurzor(standard);TIP="";REFRESH();}
 			else if(Akce==DRAW_HALA){d.v.vymaz_body();Akce=NIC;kurzor(standard);TIP="";REFRESH();}
 		}break;
 		//ESC
@@ -3083,7 +3085,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 	if(TIP!="Kliknutím na objekt v knihovně objektu, tažením a následným usazením přidáte objekt." || ls->Strings[304]!="" && TIP!=ls->Strings[304])TIP="";//odstranění zobrazeného tipu
 	if(MOD==NAHLED && PmG->CheckLink(X,Y)==TPoint(-2,-2))FormX->naplneni_dopRD();//pokud je mod náhled a bylo kliknuto na dopRD vrátí tuto rychlost do tabulky pohonu
 	if(MOD==NAHLED&&index_kurzoru==9999||index_kurzoru==100)smaz_edit(false);//smaže edit a neprovede refresh
-	if(editace_textu)ESC();
+	if(editace_textu)smaz_kurzor();
 	if(MOD==NAHLED){FormX->odstranit_korelaci();FormX->naplneni_max_voziku(X,Y);}
 	if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)//pokud je oteřeno hamburger menu a klikne se do plochy tak se nejdříve zavře
 	{    //testování skrývání knihoven
@@ -3657,8 +3659,8 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			}
 			else
 			{
-				pom_vyhybka->Xt+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
-				pom_vyhybka->Yt+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+				pom->Xt+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
+				pom->Yt+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
       }
 			minule_souradnice_kurzoru=TPoint(X,Y);
 			REFRESH(false);
@@ -4307,6 +4309,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
   			if(pom_element_puv!=NULL)pom_element_puv->mGrid->MouseMove(X,Y);//najistotu zrušení hintů a highlignutí odkazu normálních tabulek dodáním pouze aktuálních souřadnic
   			if(puvJID>=4 && puvJID<=10)PmG->MouseMove(X,Y);//najistotu hintů a zrušení highlignutí tabulky pohonu dodáním pouze aktuálních souřadnic
 			}
+      if(JID==-102)kurzor(info);//zprávy
 			if(JID==0&&pom_temp->id!=3){if(pom_element->orientace==0||pom_element->orientace==180)kurzor(zmena_d_x);else kurzor(zmena_d_y);pom_element->stav=2;refresh_mGrid=false;}//posun ELEMENT
 			if(JID==0&&pom_temp->id==3){kurzor(posun_ind);}//posun komory
 			if(JID==1){kurzor(edit_text);pom_element->stav=3;refresh_mGrid=false;}//ELEMENT název
@@ -4391,6 +4394,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 		{
 			//kurzory (provizorně), ...
 			kurzor(standard);
+			if(JID==-102)kurzor(info);//zprávy
 			if(JID==-2)kurzor(edit_text);//hodnota kóty
 			if(JID==0||(JID==3&&!d.v.PP.zamek_layoutu))kurzor(posun_ind);//posun bodu
 			if(JID==1||JID==4)//posun úsečky
@@ -5135,7 +5139,7 @@ void TForm1::ESC()
 			editovany_text=outDK(ms.MyToDouble(editovany_text));//převede na aktuálně používané jednotky
 		}
 		if(index_kurzoru<=-11&&pom_temp->id==3)editovany_text=outDK(pom_komora_temp->velikost);
-		Smaz_kurzor();//uložení změn editace a odstranění kurzoru
+		smaz_kurzor();//uložení změn editace a odstranění kurzoru
 	}
 }
 //---------------------------------------------------------------------------
@@ -6500,7 +6504,7 @@ void TForm1::aktualizace_RT()
 		Cvektory::TElement *E=pom_temp->elementy->dalsi;
 		while(E!=NULL)
 		{
-			if(E->eID%2==0 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt)d.v.posuv_aktualizace_RT(E);
+			if(E->eID%2==0 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt)d.v.reserve_time(E);
 			E=E->dalsi;
 		}
 		delete E;E=NULL;
@@ -7698,7 +7702,7 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 	TColor clHeaderFont=clBlack;
 	TColor clBackgroundHidden=(TColor)RGB(240,240,240);//m.clIntensive((TColor)RGB(128,128,128),115);
 	TColor clFontLeft = (TColor)RGB(128,128,128);
-	TColor clFontRight = (TColor)RGB(43,87,154);
+	//TColor clFontRight = (TColor)RGB(43,87,154);
 	//definice fontu a velikosti písma
 	E->mGrid->DefaultCell.Font->Name=aFont->Name;
 	E->mGrid->DefaultCell.Font->Size=aFont->Size;
@@ -7857,8 +7861,6 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			//definice buněk
 			E->mGrid->Cells[0][1].Text=ls->Strings[223];//"Párová stop";
 			if(E->sparovany!=NULL)E->mGrid->Cells[1][1].Text=E->sparovany->name;else E->mGrid->Cells[1][1].Text="N/A";
-			E->mGrid->Cells[0][2].Text="RT "+cas;E->RT=m.RT(0,d.v.vzdalenost_od_predchoziho_elementu(E,true),pom_temp->pohon->aRD,pom_temp->pohon->roztec,E->WT+E->WTstop);
-			E->mGrid->Cells[1][2].Text=outPT(E->RT);
 			E->mGrid->Cells[0][3].Text="max. WT stop "+cas;
 			E->WTstop=m.V2WT(E->akt_pocet_voziku,d.v.PP.TT);
 			E->mGrid->Cells[1][3].Text=outPT(E->WTstop);
@@ -7870,6 +7872,8 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[1][5].Text=E->max_pocet_voziku;
 			E->mGrid->Cells[0][6].Text=ls->Strings[226];//"počet vozíků";
 			E->mGrid->Cells[1][6].Text=E->akt_pocet_voziku;
+			E->mGrid->Cells[0][2].Text="RT "+cas;
+			d.v.reserve_time(E);//výpočet a vypsání
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_0;
@@ -7946,8 +7950,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[1][3].Text=outPT(m.cekani_na_palec(0,roztec,aRD,3));
 			E->WT=inPT(ms.MyToDouble(E->mGrid->Cells[1][3].Text));
 			E->mGrid->Cells[0][2].Text="RT "+cas;
-			E->mGrid->Cells[1][2].Text=outPT(m.RT(E->PT1,d.v.vzdalenost_od_predchoziho_elementu(E,true),aRD,roztec,E->WT));
-			E->RT=inPT(ms.MyToDouble(E->mGrid->Cells[1][2].Text));
+			d.v.reserve_time(E);//výpočet a vypsání
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_2;
@@ -8055,8 +8058,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Text=outPT(m.cekani_na_palec(0,roztec,aRD,3));
 			E->WT=inPT(ms.MyToDouble(E->mGrid->Cells[1][6].Text));
 			E->mGrid->Cells[0][5].Text="RT "+cas;
-			E->mGrid->Cells[1][5].Text=outPT(m.RT(E->PT1+E->PT2+E->PTotoc,d.v.vzdalenost_od_predchoziho_elementu(E,true),aRD,roztec,E->WT));
-			E->RT=inPT(ms.MyToDouble(E->mGrid->Cells[1][5].Text));
+			d.v.reserve_time(E);//výpočet a vypsání
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=78;
@@ -8126,8 +8128,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);
 			E->mGrid->Cells[0][3].Text="RT "+cas;
 			E->WT=m.cekani_na_palec(0,roztec,aRD,3);
-			E->RT=m.RT(E->PTotoc,d.v.vzdalenost_od_predchoziho_elementu(E,true),aRD,roztec,E->WT);
-			E->mGrid->Cells[1][3].Text=outPT(E->RT);
+			d.v.reserve_time(E);//výpočet a vypsání
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_56;
@@ -8162,6 +8163,10 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla,AnsiString LO,AnsiString cas,AnsiString delka_otoce)
 {
 	log(__func__);//logování
+	double puv_RT=E->RT;//RT, obsahující validaci
+	//extrakce pouze RT
+	if(E->RT>1000000)E->RT-=1000000;
+	if(E->RT<-1000000)E->RT+=1000000;
 	switch(E->eID)
 	{
 		case 0://stop stanice
@@ -8477,6 +8482,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 	//vytvořené nové tabulky, musím přidat znova tag a id, lze předávat n do id, elementy jsou seřazené nehrozí, že 2 elementy budou mít stejné n
 	E->mGrid->Tag=6;
 	if(E->mGrid->ID==0)E->mGrid->ID=E->n;//zajistí přeindexování pouze v případě otevírání náhledu
+	E->RT=puv_RT;//navrácení validace k RT hodnotě
 }
 //---------------------------------------------------------------------------
 //slouží k vyčtení stávajícího nastavení jednotek, k jejich úpravě a zanesení do INI
@@ -8580,7 +8586,11 @@ void TForm1::redesign_element()
 //přepisuje jednotky a upravuje šířku sloupců
 void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_otoce,AnsiString cas,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla)
 {
-  log(__func__);//logování
+	log(__func__);//logování
+	double puv_RT=E->RT;//RT, obsahující validaci
+	//extrakce pouze RT
+	if(E->RT>1000000)E->RT-=1000000;
+	if(E->RT<-1000000)E->RT+=1000000;
 	switch(E->eID)
 	{
 		case 0://stop stanice
@@ -8694,6 +8704,7 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 			break;
     }
 	}
+	E->RT=puv_RT;//navrácení validace k RT hodnotě
 }
 //---------------------------------------------------------------------------
 //přepnutí jednotek v kótách, zapíše do globální proměnné a do INI
@@ -9276,7 +9287,7 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton
 	if(MOD==NAHLED)
   {
 		bool pridani=false;
-		if(editace_textu)	Smaz_kurzor();//pokud se vykresluje kurzor a je kluknuto do knihovny ... smazat kurzor
+		if(editace_textu)smaz_kurzor();//pokud se vykresluje kurzor a je kluknuto do knihovny ... smazat kurzor
 		if(MOD==NAHLED)if(PmG->Rows[3].Visible)FormX->odstranit_korelaci();//pokud je tabulka pohonu v režimu KK je možnost, že je Highlightovaná ... odstranit highlight (korelaci)
 		knihovna_id=1;
 		int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);//kontrola v jakém je kabina režimu (stop&go, kontinuální), podle toho dovolí vkládat roboty pouze stejného režimu
@@ -9394,7 +9405,7 @@ void __fastcall TForm1::DrawGrid_otoceMouseDown(TObject *Sender, TMouseButton Bu
 					TShiftState Shift, int X, int Y)
 {
   log(__func__);//logování
-	if(editace_textu)	Smaz_kurzor();
+	if(editace_textu)smaz_kurzor();
 	if(MOD==NAHLED)if(PmG->Rows[3].Visible)FormX->odstranit_korelaci();
 	int Col,Row;
 	Col=DrawGrid_otoce->Col; Row=DrawGrid_otoce->Row;
@@ -9412,7 +9423,7 @@ void __fastcall TForm1::DrawGrid_ostatniMouseDown(TObject *Sender, TMouseButton 
 {
 	log(__func__);//logování
 	int Col=DrawGrid_ostatni->Col;
-	if(editace_textu)	Smaz_kurzor();
+	if(editace_textu)smaz_kurzor();
 	if(MOD==NAHLED)if(PmG->Rows[3].Visible)FormX->odstranit_korelaci();
 	if(Col==0 && pom_temp->pohon!=NULL && pom_temp->id!=3)
 	{
@@ -10459,7 +10470,7 @@ void TForm1::zmena_editovaneho_objektu()
 		}
 		/////////Uzavření starého náhledu
 		if(MOD==NAHLED&&index_kurzoru==9999||index_kurzoru==100)smaz_edit(false);//smaže edit a neprovede refresh
-		if(editace_textu)Smaz_kurzor();//také volá Refresh//smaz_kurzor se zavolá, pouze pokud je to třeba odstraňuje zbytečný problik, dodělal MaKr
+		if(editace_textu)smaz_kurzor();//také volá Refresh//smaz_kurzor se zavolá, pouze pokud je to třeba odstraňuje zbytečný problik, dodělal MaKr
 		MOD=SCHEMA;//nutné před zoom, ale za smaz kurzor
 		//smazání případných komor
   	d.v.vymaz_komory(pom_temp);
@@ -10860,7 +10871,7 @@ void __fastcall TForm1::UlozitClick(TObject *Sender)
 		d.v.kopiruj_objekt(pom_temp,pom);
 		Ulozit_soubor();
 		nahled_ulozit(false);
-		if(editace_textu)Smaz_kurzor();
+		if(editace_textu)smaz_kurzor();
 		Ulozit_soubor();
 	}
 	scButton_ulozit->Down=false;
@@ -10934,7 +10945,8 @@ void __fastcall TForm1::Toolbar_OtevritClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void TForm1::Otevrit_soubor()//realizuje otevření opendialogu s následným voláním realizace samotného otevření souboru
 {
-  log(__func__);//logování
+	log(__func__);//logování
+
 	OpenDialog1->Title="Otevřít soubor";
 	OpenDialog1->DefaultExt="*.tispl";
 	OpenDialog1->Filter="Soubory formátu TISPL (*.tispl)|*.tispl";
@@ -10953,7 +10965,7 @@ void TForm1::Otevrit_soubor()//realizuje otevření opendialogu s následným vo
 //-------------------------------------------------------------------------
 unsigned short int TForm1::Otevrit_soubor(UnicodeString soubor)//realizuje samotné otevření souboru
 {
-  log(__func__);//logování
+	log(__func__);//logování
 	//načte data ze souboru a reaguje na návratovou hodnotu
 	UnicodeString text=ls->Strings[345]+" ",text_1=" "+ls->Strings[346],text_2=ls->Strings[347];//"Soubor "," nebyl nalezen!","Neplatná verze souboru formátu *.tispl!"
 	switch(d.v.nacti_ze_souboru(soubor))
@@ -10990,18 +11002,19 @@ unsigned short int TForm1::Otevrit_soubor(UnicodeString soubor)//realizuje samot
 			d.v.PP.katalog=d.v.File_hlavicka.katalog;
 			d.v.PP.typ_linky=d.v.File_hlavicka.typ_linky;
 			d.v.PP.radius=d.v.File_hlavicka.radius;
-			MOD=d.v.File_hlavicka.Mod;
-			switch(MOD)
-			{
-					case NO:REFRESH();break; //překreslí obraz pro ostatní případy
-					case SCHEMA: 	/*schemaClick(this);*/break;   //????????????? při modu schéma zapínat schéma ??? odstaveno
-					//ZDM case TESTOVANI:	testovnkapacity1Click(this);break;
-					//ZDM case REZERVY:		casoverezervy1Click(this);break;
-					//ZDM case CASOVAOSA:	editacelinky1Click(this);MOD=SCHEMA;/*casovosa1Click(this);*/break;
-					//ZDM case TECHNOPROCESY:editacelinky1Click(this);MOD=SCHEMA;break;
-					//ZDM case SIMULACE:	editacelinky1Click(this);MOD=SCHEMA;/*simulace1Click(this);*/break;
-					default: schemaClick(this);break;
-			}
+			//MOD=d.v.File_hlavicka.Mod;
+			MOD=SCHEMA;//defaultně se bude vždy otvírat v layoutu
+//			switch(MOD)
+//			{
+//					case NO:REFRESH();break; //překreslí obraz pro ostatní případy
+//					case SCHEMA: 	/*schemaClick(this);*/break;   //????????????? při modu schéma zapínat schéma ??? odstaveno
+//					//ZDM case TESTOVANI:	testovnkapacity1Click(this);break;
+//					//ZDM case REZERVY:		casoverezervy1Click(this);break;
+//					//ZDM case CASOVAOSA:	editacelinky1Click(this);MOD=SCHEMA;/*casovosa1Click(this);*/break;
+//					//ZDM case TECHNOPROCESY:editacelinky1Click(this);MOD=SCHEMA;break;
+//					//ZDM case SIMULACE:	editacelinky1Click(this);MOD=SCHEMA;/*simulace1Click(this);*/break;
+//					default: schemaClick(this);break;
+//			}
 			DuvodUlozit(false);
 			duvod_validovat=2;//soubor se zvaliduje při prvním refresh
 			//aktualizace statusbaru
@@ -12070,8 +12083,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Akce=GEOMETRIE;
-	editace_geometrie_spustena=false;
+	smaz_kurzor();
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -13009,12 +13021,12 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		if(MOD==NAHLED&&index_kurzoru==9999||index_kurzoru==100)
 		smaz_edit(false);//smaže edit a neprovede refresh
 		if(scSplitView_LEFTTOOLBAR->Visible && scSplitView_LEFTTOOLBAR->Opened)DrawGrid_knihovna->SetFocus();
-		if(editace_textu)Smaz_kurzor();//také volá Refresh//smaz_kurzor se zavolá, pouze pokud je to třeba odstraňuje zbytečný problik, dodělal MaKr
+		if(editace_textu)smaz_kurzor();//také volá Refresh//smaz_kurzor se zavolá, pouze pokud je to třeba odstraňuje zbytečný problik, dodělal MaKr
 		MOD=SCHEMA;//nutné před zoom, ale za smaz kurzor
 		//smazání případných komor
 		d.v.vymaz_komory(pom_temp);
 		//smazání elementů - musí být napočátku, aby nebyl problik
-		d.v.vymaz_elementy(pom_temp,true);  //&&pom_temp->elementy->dalsi!=NULL)
+		d.v.vymaz_elementy(pom_temp,true);//&&pom_temp->elementy->dalsi!=NULL)
 		if(!mazani&&scGPButton_ulozit->Enabled)d.v.uprav_popisky_elementu(d.v.OBJEKTY->dalsi,d.v.OBJEKTY->dalsi->elementy->dalsi);//volání přejmenování elementů, pouze v případě kdy je něco v kabině a bylo stisknuto pouze storno, při ulož je stisk strona volán taky
 		pom=NULL;//pom->pohon=NULL;delete pom->pohon;pom=NULL; toto nelze, odpřiřadilo by to pohon i na ostrém
 //		d.v.vymaz_elementy(pom_temp,true);
@@ -13374,6 +13386,7 @@ void __fastcall TForm1::Button_testClick(TObject *Sender)
 void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
 {
 	log(__func__);//logování
+	if(editace_textu)smaz_kurzor();//uložení změn při zapnuté editaci textu
 	pripnuti_dalsich_objektu();
 	d.v.vymaz_komory(pom);
 	d.v.vymaz_elementy(pom,true);
@@ -13664,7 +13677,7 @@ void TForm1::vykresli_kurzor(int index)
   }
 }
 //smaže kurzor pokud je stále vykreslený i po vypnutí editace textu
-void TForm1::Smaz_kurzor()
+void TForm1::smaz_kurzor()
 {
   log(__func__);//logování
 	TIP="";
@@ -13787,7 +13800,7 @@ void __fastcall TForm1::scButton_zamekClick(TObject *Sender)
 		scButton_zamek->Hint=ls->Strings[119];//"Odemknout editaci";
 	}
 	nahled_ulozit(true);
-	if(editace_textu)Smaz_kurzor();
+	if(editace_textu)smaz_kurzor();
 	pom_element=NULL;
 	JID=-1;
 	if(scSplitView_LEFTTOOLBAR->Visible && scSplitView_LEFTTOOLBAR->Opened)DrawGrid_knihovna->SetFocus();//vrací focus na knihovnu - důležité z důvodu keydown

@@ -204,7 +204,6 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	else//pokud nejsou k dispozici nadefinované cesty vykreslí se přímo jen spojovací linie mezi objekty (tj. defaultní cesta)
 	{
 		int n;//číslo vyhybky nebo spojky
-		TPoint *tab_pruchodu=new TPoint[F->d.v.pocet_vyhybek+1];//+1 z důvodu indexace výhybka 1 bude mít index 1, nebude se začínat od indexu 0, tabulka.x = vyhybky, tabulka.y = spojky
 		Cvektory::TObjekt* ukaz=v.OBJEKTY->dalsi;//přeskočí hlavičku
     float sipka_velikost=0.1*F->Zoom; if(sipka_velikost<1*3)sipka_velikost=1*3;
 		while (ukaz!=NULL)
@@ -267,7 +266,6 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 			ukaz=O;
 			O=NULL;delete O;
 		}
-		tab_pruchodu=NULL;delete tab_pruchodu;
 	}
 	O=NULL;delete O;
 
@@ -4302,7 +4300,7 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,lon
 			}
 			//v případě 270 musí být popisky prohozeny
 			if(v.vrat_objekt(E->objekt_n)->orientace==270){Tpom=T1;T1=T2;T2=Tpom;}
-			int w1=canv->TextWidth(T1),w2=canv->TextWidth(T2);
+			int w1=canv->TextWidth(T1);//,w2=canv->TextWidth(T2);
 			int h=canv->TextHeight(T1);
 			long x1=0,y1=0,x2=0,y2=0;short K=0.25*Z;//pouze grafická korekce, text aby se nezohledňovalo zarovnání na diakritiku, vypadá to dinvě
 			switch((int)rotace)
@@ -4420,7 +4418,7 @@ void Cvykresli::vykresli_ikonu_linie(TCanvas *canv,int X,int Y,AnsiString Popise
 {
 	short o=10*3;
 	int W=60;//F->DrawGrid_geometrie->DefaultColWidth*3/2-o;
-	int odsazeni=-35;//vycentrování linie mezi hlavičkou a textem 6px
+	//int odsazeni=-35;//vycentrování linie mezi hlavičkou a textem 6px
 	TColor barva=clBlack; if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
 
 	//centrování pro vykreslení
@@ -5282,7 +5280,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double
 {    //Jednotky=" [s]";if(F->DKunit==3)Jednotky=" [min]";
 	double delka=0;
 	AnsiString T="";
-	if(F->pom_temp->pohon==NULL && F->DKunit>1)F->DKunit=F->DKunit-2;//ošetření pro případ není pohon a jsou špatně nastaveny jednotky
+	if(F->pom_temp->pohon==NULL && F->DKunit>1)F->DKunit=(TForm1::Tm_mm)(F->DKunit-2);//ošetření pro případ není pohon a jsou špatně nastaveny jednotky
 	if(F->DKunit>1)//zobrazení kót v čase
 	{
 		if(aktElement!=NULL && aktElement->pohon!=NULL && aktElement->pohon->aRD>0 || komora!=NULL && F->pom_temp->pohon!=NULL && F->pom_temp->pohon->aRD>0)

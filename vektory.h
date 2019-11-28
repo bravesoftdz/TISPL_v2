@@ -120,6 +120,7 @@ class Cvektory
 		struct TElement *predchozi;//ukazatel na předchozí element ve spojovém seznamu
 		struct TElement *dalsi;//ukazatel na  další element ve spojovém seznamu
 	};
+	TElement *ELEMENTY;//seznam elementů
 
 	struct TObjekt
 	{
@@ -527,6 +528,7 @@ class Cvektory
 	void smaz_element(TObjekt *Objekt, unsigned int n);//smaže element ze seznamu
 	void smaz_element(TElement *Element);//smaže element ze seznamu
 	long vymaz_elementy(TObjekt *Objekt,bool mGridSmazat=true);//vymaže všechny elementy daného objektu včetně hlavičky a vrátí počet smazaných elementů (počítáno bez hlavičky), automaticky, pokud posledním parametreme není nastaveno jinak, smaže přidružený mGrid
+	void Cvektory::reserve_time(TElement *Element,bool highlight_bunek=false,bool refresh_mGrid=false);//temp umístění
 
 //metody pro POHONY
 	void hlavicka_POHONY();

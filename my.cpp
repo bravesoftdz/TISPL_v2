@@ -753,7 +753,7 @@ double Cmy::Rx(double RD,double R)
 //vrátí rozestup v počtech palců mezi aktivními palci z Rz a R
 double Cmy::Rx2(double Rz,double R)
 {
-	if(R==0) 0;//nebyla definováná rozteč palců, tudíž se nepracuje s palci
+	if(R==0) return 0;//nebyla definováná rozteč palců, tudíž se nepracuje s palci
 	else return Rz/R;
 }
 /////////////////////////////////////////////////////////////////////////////
@@ -851,6 +851,12 @@ double Cmy::RT(double PT,double delka_prejezdu,double RD,double R,double WT)
 		return F->d.v.PP.TT-(delka_prejezdu/RD+PT+WT);
 	}
 	else return 0;
+}
+/////////////////////////////////////////////////////////////////////////////
+//Přetížená metoda
+double Cmy::RT(double PT,double doba_prejezdu,double WT,unsigned int pocet_voziku)
+{
+	return pocet_voziku*F->d.v.PP.TT-(doba_prejezdu+PT+WT);
 }
 /////////////////////////////////////////////////////////////////////////////
 //vratí RD dle délky otoče a času otáčení
