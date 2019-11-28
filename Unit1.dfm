@@ -855,7 +855,7 @@ object Form1: TForm1
       Left = 554
       Top = 0
       Width = 180
-      Height = 33
+      Height = 34
       Margins.Left = 0
       Margins.Top = 0
       Margins.Right = 0
@@ -960,7 +960,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 656
     end
     object PopupMenuButton: TscGPButton
       AlignWithMargins = True
@@ -1183,7 +1182,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 824
     end
     object Synteza: TscGPButton
       Left = 914
@@ -1894,7 +1892,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 526
     end
     object Simulace: TscGPButton
       Left = 1004
@@ -2032,9 +2029,9 @@ object Form1: TForm1
       TransparentBackground = True
       ColorValue = clRed
       Options.NormalColor = clBtnText
-      Options.HotColor = clBtnText
+      Options.HotColor = 10906436
       Options.PressedColor = clBtnText
-      Options.FocusedColor = clBtnFace
+      Options.FocusedColor = 10906436
       Options.DisabledColor = clBtnText
       Options.NormalColor2 = clNone
       Options.HotColor2 = clNone
@@ -2042,7 +2039,7 @@ object Form1: TForm1
       Options.FocusedColor2 = clNone
       Options.DisabledColor2 = clNone
       Options.NormalColorAlpha = 0
-      Options.HotColorAlpha = 20
+      Options.HotColorAlpha = 255
       Options.PressedColorAlpha = 30
       Options.FocusedColorAlpha = 255
       Options.DisabledColorAlpha = 5
@@ -2052,9 +2049,9 @@ object Form1: TForm1
       Options.FocusedColor2Alpha = 255
       Options.DisabledColor2Alpha = 255
       Options.FrameNormalColor = clBtnText
-      Options.FrameHotColor = clBtnText
+      Options.FrameHotColor = 10906436
       Options.FramePressedColor = clBtnText
-      Options.FrameFocusedColor = clHighlight
+      Options.FrameFocusedColor = 10906436
       Options.FrameDisabledColor = clBtnText
       Options.FrameWidth = 2
       Options.FrameNormalColorAlpha = 0
@@ -2079,7 +2076,7 @@ object Form1: TForm1
       Options.ArrowThicknessScaled = False
       Options.StyleColors = True
       GlyphOptions.NormalColor = 16744448
-      GlyphOptions.HotColor = 16744448
+      GlyphOptions.HotColor = 10906436
       GlyphOptions.PressedColor = clBtnText
       GlyphOptions.FocusedColor = 16744448
       GlyphOptions.DisabledColor = 16744448
@@ -2387,7 +2384,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 734
     end
     object scGPGlyphButton_PLAY: TscGPGlyphButton
       Left = 242
@@ -2496,6 +2492,7 @@ object Form1: TForm1
       Top = 0
       Width = 25
       Height = 34
+      Hint = 'Zpr'#225'vy o lince'
       Align = alRight
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -2520,9 +2517,9 @@ object Form1: TForm1
       ImageMargin = 0
       TransparentBackground = True
       Options.NormalColor = clNone
-      Options.HotColor = clNone
+      Options.HotColor = 10906436
       Options.PressedColor = clNone
-      Options.FocusedColor = clNone
+      Options.FocusedColor = 10906436
       Options.DisabledColor = clNone
       Options.NormalColor2 = clNone
       Options.HotColor2 = clNone
@@ -2542,9 +2539,9 @@ object Form1: TForm1
       Options.FrameNormalColor = clNone
       Options.FrameHotColor = clNone
       Options.FramePressedColor = clNone
-      Options.FrameFocusedColor = clNone
+      Options.FrameFocusedColor = 10906436
       Options.FrameDisabledColor = clNone
-      Options.FrameWidth = 1
+      Options.FrameWidth = 3
       Options.FrameNormalColorAlpha = 255
       Options.FrameHotColorAlpha = 255
       Options.FramePressedColorAlpha = 255
@@ -2566,8 +2563,8 @@ object Form1: TForm1
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
       Options.StyleColors = True
-      HotImageIndex = -1
-      FocusedImageIndex = -1
+      HotImageIndex = 73
+      FocusedImageIndex = 80
       PressedImageIndex = -1
       UseGalleryMenuImage = False
       UseGalleryMenuCaption = False
@@ -2577,16 +2574,16 @@ object Form1: TForm1
       SplitButton = False
       RepeatClick = False
       RepeatClickInterval = 100
-      GlowEffect.Enabled = False
+      GlowEffect.Enabled = True
       GlowEffect.Color = clHighlight
       GlowEffect.AlphaValue = 95
-      GlowEffect.GlowSize = 7
+      GlowEffect.GlowSize = 255
       GlowEffect.Offset = 0
       GlowEffect.Intensive = True
       GlowEffect.StyleColors = True
-      GlowEffect.HotColor = clNone
+      GlowEffect.HotColor = 10906436
       GlowEffect.PressedColor = clNone
-      GlowEffect.FocusedColor = clNone
+      GlowEffect.FocusedColor = 10906436
       GlowEffect.PressedGlowSize = 7
       GlowEffect.PressedAlphaValue = 255
       GlowEffect.States = [scsHot, scsPressed, scsFocused]
@@ -2598,7 +2595,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 476
     end
     object scGPButton_warning: TscGPButton
       Left = 259
@@ -2629,9 +2625,9 @@ object Form1: TForm1
       ImageMargin = 0
       TransparentBackground = True
       Options.NormalColor = clNone
-      Options.HotColor = clNone
+      Options.HotColor = 10906436
       Options.PressedColor = clNone
-      Options.FocusedColor = clNone
+      Options.FocusedColor = 10906436
       Options.DisabledColor = clNone
       Options.NormalColor2 = clNone
       Options.HotColor2 = clNone
@@ -2649,9 +2645,9 @@ object Form1: TForm1
       Options.FocusedColor2Alpha = 255
       Options.DisabledColor2Alpha = 255
       Options.FrameNormalColor = clNone
-      Options.FrameHotColor = clNone
+      Options.FrameHotColor = 10906436
       Options.FramePressedColor = clNone
-      Options.FrameFocusedColor = clNone
+      Options.FrameFocusedColor = 10906436
       Options.FrameDisabledColor = clNone
       Options.FrameWidth = 1
       Options.FrameNormalColorAlpha = 255
@@ -2707,7 +2703,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 501
     end
   end
   object scGPPanel_statusbar: TscGPPanel
@@ -9654,7 +9649,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118009808100910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118009808180910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10777,7 +10772,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01015200480AB00B30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01015200480A000C30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000F0030000010020000000000000D0
       0B0000000000000000000000000000000000A3653C00A3653C00A3653C00A365
       3C00A3653C00A3653C00A3653C00A3653C00A3653C00A3653C00A3653C00A365
