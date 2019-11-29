@@ -879,7 +879,7 @@ object Form1: TForm1
       Layout = blGlyphRight
       Images = scGPVirtualImageList1
       ImageIndex = 78
-      ImageMargin = 25
+      ImageMargin = 80
       TransparentBackground = True
       Options.NormalColor = 10114859
       Options.HotColor = 33023
@@ -960,6 +960,8 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
+      ExplicitLeft = 521
+      ExplicitHeight = 33
     end
     object PopupMenuButton: TscGPButton
       AlignWithMargins = True
