@@ -415,3 +415,7 @@ Pin to right;X;Pøipnout k pravé èásti
 Number of errors;X;Poèet chyb
 Number of warnings;X;Poèet varování
 Object moved, do you agree with the current location?;X;Objekt byl pøesunut, souhlasíte s aktuálním umístìním?
+maximum time ;X;maximální èas
+including max. WT thumb;X;vèetnì max. WT palec
+waiting;X;èekání
+buffer wait time;X;doba èekání v bufferu

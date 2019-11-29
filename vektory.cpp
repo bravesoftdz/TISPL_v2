@@ -2228,7 +2228,6 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 			if(O->n>=Objekt->n)//přeskakování objektů před aktuálním
 			{
 				Cvektory::TElement *E=O->elementy;//nepřeskakovat hlavičku
-				if(O->n==Objekt->n)E=F->pom->elementy;//když se jedná o aktuální objekt sáhnout do ostrého spojáku
 	   		int n_spojak=1;//hodnota n pro seznam (element)
 	   		while(E!=NULL)
 	   		{
@@ -2261,8 +2260,7 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 						if(rename)
 						{
 							int n_nazev=0;//n sloužící pro název, kolikáty element
-							if(O->n==Objekt->n)n_nazev=vrat_poradi_elementu_do(Objekt,E)+1;
-							else n_nazev=vrat_poradi_elementu_do(O,E)+1;//předávání ukazatele na plný objekt
+							n_nazev=vrat_poradi_elementu_do(O,E)+1;//předávání ukazatele na plný objekt
 							//změna názvu
 							switch(E->eID)
 							{
@@ -2755,7 +2753,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				  	//aktualizace dalšího elemtnu
 				  	if(Element->dalsi!=NULL)vloz_G_element(Element->dalsi,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
 				  	//aktualizace RT
-						if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){reserve_time(Element,true,true);reserve_time(vrat_dalsi_element(Element),true,true);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
+						if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){reserve_time(Element,true,true);reserve_time(Element->sparovany,true,true);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
 						else reserve_time(Element,true,true);
 					}
 				}
@@ -2783,7 +2781,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				  	//aktualizace dalšího elemtnu
 				  	if(Element->dalsi!=NULL)vloz_G_element(Element->dalsi,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
 				  	//aktualizace RT
-						if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){reserve_time(Element,true,true);reserve_time(vrat_dalsi_element(Element),true,true);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
+						if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){reserve_time(Element,true,true);reserve_time(Element->sparovany,true,true);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
 						else reserve_time(Element,true,true);
 					}
 				}
@@ -2982,7 +2980,7 @@ double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element,bool pouze
 ////---------------------------------------------------------------------------
 void Cvektory::reserve_time(TElement *Element,bool highlight_bunek,bool refresh_mGrid)
 {
-	if(Element!=NULL)
+	if(Element!=NULL && Element->eID%2==0 && Element->eID!=100 && Element->eID!=200 && Element->eID!=MaxInt)
 	{
   	//deklarace
   	double cas=0;
@@ -3041,7 +3039,9 @@ void Cvektory::reserve_time(TElement *Element,bool highlight_bunek,bool refresh_
 						Element->RT=RT;
 					}
 				}
-				Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->RT),3);
+				//vypsání OK pokud je RT kladné a zároveň má stopka více akt_vozíku
+				if(Element->RT>0 && Element->akt_pocet_voziku>1){Element->mGrid->Cells[1][2].Text="OK";Element->mGrid->Cells[1][2].Hint=Element->RT;Element->mGrid->Cells[1][2].ShowHint=true;}
+				else {Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->RT),3);Element->mGrid->Cells[1][2].Hint="";Element->mGrid->Cells[1][2].ShowHint=false;}
 			}break;
   		case 2:case 8:case 12:case 16:case 102:case 106://roboti se stop stanicí
   		{

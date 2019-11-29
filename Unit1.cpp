@@ -955,7 +955,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=416;i++)
+	for(unsigned short i=0;i<=420;i++)
 	{
 		switch(i)
 		{
@@ -1376,6 +1376,11 @@ void TForm1::DesignSettings()
 			case 414:text="Počet chyb";break;
 			case 415:text="Počet varování";break;
 			case 416:text="Objekt byl přesunut, souhlasíte s aktuálním umístěním?";break;
+			case 417:text="maximální čas";break;
+      case 418:text="včetně max. WT palec";break;
+      case 419:text="čekání";break;
+      case 420:text="doba čekání v bufferu";break;
+
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -3110,7 +3115,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					{
 						if(JID==-1){Akce=PAN;pan_non_locked=true;}//pouze posun obrazu, protože v aktuálním místě pozici myši se nenachází vektor ani interaktivní text
 						if(JID==0&&pom_komora==NULL&&pom_element!=NULL){Akce=MOVE_ELEMENT;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;mazani=true;pom_element_temp=pom_element;puv_souradnice.x=pom_element->X;puv_souradnice.y=pom_element->Y;}//ELEMENT posun
-						if(1000<=JID && JID<2000){Akce=MOVE_TABLE;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;pom_element->mGrid->Highlight;refresh_mGrid=false;d.nabuffrovat_mGridy();}//TABULKA posun
+						if(1000<=JID && JID<2000 || JID>2000 && JID<3000){Akce=MOVE_TABLE;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;pom_element->mGrid->Highlight;refresh_mGrid=false;d.nabuffrovat_mGridy();}//TABULKA posun
 						if(100<JID && JID<900){redesign_element();}//nultý sloupec tabulky, libovolný řádek, přepnutí jednotek
 						//if(JID==-6) {if(scSplitView_LEFTTOOLBAR->Visible && scSplitView_LEFTTOOLBAR->Opened)DrawGrid_knihovna->SetFocus();stav_kurzoru=false;editace_textu=true;index_kurzoru=-6;nazev_puvodni=pom_temp->name;TimerKurzor->Enabled=true;}//editace názvu
 						if(JID==-7 || JID==-6) {Akce=MOVE_TEXT;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;nahled_ulozit(true);}//posun názvu
@@ -4306,7 +4311,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 			////volání akce dle JID            //toto bez otestovaní
   		if(JID==-1 || pom_element==NULL || pom_element_puv!=pom_element)//není již job ID nebo ukazatel na pohon (může nastat situace přechod tabulka citelná oblast kót či nadpisu kabiny a nic by se bez tohoto nestalo
   		{
-  			if(pom_element_puv!=NULL)pom_element_puv->mGrid->MouseMove(X,Y);//najistotu zrušení hintů a highlignutí odkazu normálních tabulek dodáním pouze aktuálních souřadnic
+				if(pom_element_puv!=NULL)pom_element_puv->mGrid->MouseMove(X,Y);//najistotu zrušení hintů a highlignutí odkazu normálních tabulek dodáním pouze aktuálních souřadnic
   			if(puvJID>=4 && puvJID<=10)PmG->MouseMove(X,Y);//najistotu hintů a zrušení highlignutí tabulky pohonu dodáním pouze aktuálních souřadnic
 			}
       if(JID==-102)kurzor(info);//zprávy
@@ -4317,7 +4322,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
   		//použit závěrečný REFRESH if(10<JID && JID<1000){REFRESH();}//hodnota kóty
 			if(JID==100){kurzor(edit_text);pom_element->mGrid->CheckLink(X,Y);refresh_mGrid=true;}//název elementu v hlavičce tabulky - aktivace dodáním pouze aktuálních souřadnic
   		if(JID==1000){pom_element->mGrid->CheckLink(X,Y);refresh_mGrid=true;}//pouze pro přechod název hlavička, aby název nezůstal tučně - aktivace dodáním pouze aktuálních souřadnic
-  		if(1000<=JID && JID<2000){kurzor(posun_ind);pom_element->mGrid->Highlight=true;pom_element->mGrid->MouseMove(X,Y);refresh_mGrid=true;}//indikace posunutí TABULKY, jeji highlignutí probíhá výše a případné volání HINTu
+			if(1000<=JID && JID<2000 || JID>2000 && JID<3000){kurzor(posun_ind);pom_element->mGrid->Highlight=true;pom_element->mGrid->MouseMove(X,Y);refresh_mGrid=true;}//indikace posunutí TABULKY, jeji highlignutí probíhá výše a případné volání HINTu
 			if(100<JID && JID<1000){kurzor(zmena_j);pom_element->mGrid->CheckLink(X,Y);refresh_mGrid=true;}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ  - aktivace dodáním pouze aktuálních souřadnic
       if(JID==-6)kurzor(editace_posun);
 			if((JID<=-11&&JID>=-101)&&!editace_textu){kurzor(edit_text);refresh_mGrid=false;}//kurzor pro editaci textu
@@ -7858,10 +7863,12 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			//nastavování režimů podle ID objektu
 			unsigned int id=d.v.vrat_objekt(E->objekt_n)->id;
 			/*if(id>=6 && id<=10 || id==12)*/{E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;}
+			UnicodeString popisek=ls->Strings[419],hint=ls->Strings[420];//čekání,doba čekání v bufferu
+			if(id>=6 && id<=10){popisek=ls->Strings[327]+" "+pom_temp->name.LowerCase();hint=ls->Strings[417]+" "+pom_temp->name.LowerCase()+" "+ls->Strings[418];}//čas "název objektu",maximální čas "název objektu" včetně max. WT palec
 			//definice buněk
 			E->mGrid->Cells[0][1].Text=ls->Strings[223];//"Párová stop";
 			if(E->sparovany!=NULL)E->mGrid->Cells[1][1].Text=E->sparovany->name;else E->mGrid->Cells[1][1].Text="N/A";
-			E->mGrid->Cells[0][3].Text="max. WT stop "+cas;
+			E->mGrid->Cells[0][3].Text=popisek+" "+cas;
 			E->WTstop=m.V2WT(E->akt_pocet_voziku,d.v.PP.TT);
 			E->mGrid->Cells[1][3].Text=outPT(E->WTstop);
 			E->mGrid->Cells[0][4].Text=ls->Strings[224]+" "+cas;//"WT palec "
@@ -7881,7 +7888,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			//nastavení hintů
 			E->mGrid->Cells[0][2].Hint=ls->Strings[227];//"časová rezerva";
 			E->mGrid->Cells[0][2].ShowHint=true;
-			E->mGrid->Cells[0][3].Hint=ls->Strings[228];//"čas uzavřené STOP stanice";
+			E->mGrid->Cells[0][3].Hint=hint;
 			E->mGrid->Cells[0][3].ShowHint=true;
 			E->mGrid->Cells[0][4].Hint=ls->Strings[229];//"maximální možná doba čekání na palec";
 			E->mGrid->Cells[0][4].ShowHint=true;
@@ -8179,12 +8186,14 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			//nastavování režimů podle ID objektu
 			unsigned int id=d.v.vrat_objekt(E->objekt_n)->id;
 			/*if(id>=6 && id<=10 || id==12)*/{E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;}
+			UnicodeString popisek=ls->Strings[419],hint=ls->Strings[420];//čekání,doba čekání v bufferu
+			if(id>=6 && id<=10){popisek=ls->Strings[327]+" "+pom_temp->name.LowerCase();hint=ls->Strings[417]+" "+pom_temp->name.LowerCase()+" "+ls->Strings[418];}//čas "název objektu",maximální čas "název objektu" včetně max. WT palec
 			//definice buněk
 			E->mGrid->Cells[0][1].Text=ls->Strings[223];//"Párová stop";
 			if(E->sparovany!=NULL)E->mGrid->Cells[1][1].Text=AnsiString(E->sparovany->name);else E->mGrid->Cells[1][1].Text="N/A";
 			E->mGrid->Cells[0][2].Text="RT "+cas;
 			E->mGrid->Cells[1][2].Text=outPT(E->RT);
-			E->mGrid->Cells[0][3].Text="max. WT stop "+cas;
+			E->mGrid->Cells[0][3].Text=popisek+" "+cas;
 			E->mGrid->Cells[1][3].Text=outPT(E->WTstop);
 			E->mGrid->Cells[0][4].Text=ls->Strings[224]+" "+cas;//"WT palec "
 			E->mGrid->Cells[1][4].Text=outPT(E->WT);
@@ -8200,7 +8209,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			//nastavení hintů
 			E->mGrid->Cells[0][2].Hint=ls->Strings[227];//"časová rezerva";
 			E->mGrid->Cells[0][2].ShowHint=true;
-			E->mGrid->Cells[0][3].Hint=ls->Strings[228];//"čas uzavřené STOP stanice";
+			E->mGrid->Cells[0][3].Hint=hint;
 			E->mGrid->Cells[0][3].ShowHint=true;
 			E->mGrid->Cells[0][4].Hint=ls->Strings[229];//"maximální možná doba čekání na palec";
 			E->mGrid->Cells[0][4].ShowHint=true;
@@ -8595,9 +8604,11 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 	{
 		case 0://stop stanice
 		{
+			UnicodeString popisek=ls->Strings[419];//čekání
+			if(pom_temp->id>=6 && pom_temp->id<=10)popisek=ls->Strings[327]+" "+pom_temp->name.LowerCase();//čas "název objektu"
 			E->mGrid->Cells[0][2].Text="RT "+cas;
 			E->mGrid->Cells[1][2].Text=m.round2double(outPT(E->RT),3);
-			E->mGrid->Cells[0][3].Text="max. WT stop "+cas;
+			E->mGrid->Cells[0][3].Text=popisek+" "+cas;
 			E->mGrid->Cells[1][3].Text=m.round2double(outPT(E->WTstop),3);
 			E->mGrid->Cells[0][4].Text=ls->Strings[224]+" "+cas;//"WT palec "
 			E->mGrid->Cells[1][4].Text=m.round2double(outPT(E->WT),3);
@@ -9781,7 +9792,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 					pom_element_temp=NULL; delete pom_element_temp;
 					if(eID%2!=0 && eID!=200)odstraneni_elementu_tab_pohon(1);//přenastavení tabulky pohonu po odstranění elementu
 					if(pom_temp->elementy->dalsi!=NULL)d.v.uprav_popisky_elementu(pom_temp,pom_temp->elementy->dalsi);//pokud jsou v kabině jěště nějaké elementy dojde k přejmenování
-		  		pom_element=NULL;//přidáno nově 13.5.2019 - v režimu testování kvůli setJobID a předání do pom_element_puv
+					pom_element=NULL;//přidáno nově 13.5.2019 - v režimu testování kvůli setJobID a předání do pom_element_puv
 					if(eID%2==0 && eID!=100 && eID!=200 && eID!=MaxInt)d.v.aktualizuj_sparovane_ukazatele();//odstraněn stop-element, nutná aktualizace
 					dalsi_element=NULL;delete dalsi_element;
 				}else {mazani=false;Akce=NIC;}
@@ -11943,8 +11954,11 @@ void __fastcall TForm1::Timer_neaktivityTimer(TObject *Sender)
 //			Timer_neaktivity->Enabled=false;
 //			setJobIDOnMouseMove(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
 //		}
-	FormX->validace_max_voziku();//metoda rozlišuje zda byla editovaná stopka, pokud ano provede validaci, pokud ne neudělá nic
-	REFRESH(true); //nedocází k refresh tabulek, tabulky jsou v tuto chvíli naplněny aktuálními hodnotami
+	if(pom_temp!=NULL)//pro případ, že uživatel změní hodnotu v tabulce a než se stihne provést validace ukončí editaci
+	{
+		FormX->validace_max_voziku();//metoda rozlišuje zda byla editovaná stopka, pokud ano provede validaci, pokud ne neudělá nic
+		REFRESH(true); //nedocází k refresh tabulek, tabulky jsou v tuto chvíli naplněny aktuálními hodnotami
+	}
 	Timer_neaktivity->Enabled=false;
 }
 //---------------------------------------------------------------------------
@@ -12083,7 +12097,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	smaz_kurzor();
+	Memo(ls->Strings[419]+"1");
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -13027,7 +13041,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		d.v.vymaz_komory(pom_temp);
 		//smazání elementů - musí být napočátku, aby nebyl problik
 		d.v.vymaz_elementy(pom_temp,true);//&&pom_temp->elementy->dalsi!=NULL)
-		if(!mazani&&scGPButton_ulozit->Enabled)d.v.uprav_popisky_elementu(d.v.OBJEKTY->dalsi,d.v.OBJEKTY->dalsi->elementy->dalsi);//volání přejmenování elementů, pouze v případě kdy je něco v kabině a bylo stisknuto pouze storno, při ulož je stisk strona volán taky
+		if(!mazani&&scGPButton_ulozit->Enabled)d.v.uprav_popisky_elementu(pom,NULL);//volání přejmenování elementů, pouze v případě kdy je něco v kabině a bylo stisknuto pouze storno, při ulož je stisk strona volán taky
 		pom=NULL;//pom->pohon=NULL;delete pom->pohon;pom=NULL; toto nelze, odpřiřadilo by to pohon i na ostrém
 //		d.v.vymaz_elementy(pom_temp,true);
 		if(pom_temp!=NULL){pom_temp->pohon=NULL;delete pom_temp->pohon;}pom_temp=NULL;delete pom_temp;
