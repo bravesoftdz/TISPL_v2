@@ -4643,7 +4643,7 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 		long X,Y;//fyzické souřadnice zprávy
 		Cvektory::TZprava *Zt=NULL;//Zpráva
 		short size=m.round(3*F->Zoom);//POZOR, v případě změny nutno ještě změnit i v v.PtInZpravy()
-
+ F->Memo("",true);
 		//cyklické vypsání všech zpráv ze spojáku ZPRAVY
 		Cvektory::TZprava *Z=v.ZPRAVY->dalsi;
 		while(Z!=NULL)
@@ -4653,7 +4653,8 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 			long Y=m.L2Py(Z->Y);
 
 			////IKONA
-			if(Z->n==1 || Z->Element!=NULL && Z->predchozi->Element!=NULL && Z->Element->n!=Z->predchozi->Element->n)//pokud jsou ikony přes sebe tak nezobrazuje ty další
+			//test: F->Memo(AnsiString(Z->n)+"|"+AnsiString(Z->Element->n)+"|"+v.getVID(Z->VID)+"|"+AnsiString(m.round(Z->X))+"|"+AnsiString(m.round(Z->Y))+"||"+AnsiString(m.round(Z->predchozi->X))+"|"+AnsiString(m.round(Z->predchozi->Y)));
+			if(Z->n==1 || Z->X!=Z->predchozi->X || Z->Y!=Z->predchozi->Y)//pokud jsou ikony přes sebe tak nezobrazuje ty další, první propouští vždy
 			{
 				TColor clCircle=clRed;
 				AnsiString Tico="";
@@ -4664,11 +4665,14 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 				}
 				//kruhový podklad ikony
 				canv->Brush->Style=bsSolid;
+				//SetBkMode(canv->Handle,TRANSPARENT/*OPAQUE*/);//nastvení netransparentního pozadí
 				canv->Brush->Color=clCircle;
 				canv->Pen->Style=psSolid;
+				canv->Pen->Mode=pmMask;if(F->Zoom<5*3)canv->Pen->Mode=pmCopy;//transparentní ikona od určitého zoomu
 				canv->Pen->Color=clWhite;
 				canv->Pen->Width=m.round(0.1*F->Zoom);//framing ikony
 				canv->Ellipse(X-size,Y-size,X+size,Y+size);
+				canv->Pen->Mode=pmCopy;//vrácení do původního stavu
 				//text ikony
 				canv->Font->Name=="Arial";
 				canv->Font->Color=clWhite;
@@ -4695,7 +4699,7 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 		delete Z;
 
 		////zobrazování popisného TEXTU
-		if(zobrazit_celou_zpravu)
+		if(zobrazit_celou_zpravu && Zt!=NULL)
 		{
 			//nastavení
 			X=m.L2Px(Zt->X);
@@ -4709,7 +4713,7 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 				case 1:  canv->Font->Color=clWarning;break;//barva warningy
 			}
 			//samotné vykreslení výpisu + uložení CITELNÉ OBLASTI zobrazeného textu (oblast ikony se počítá ve vektorové metodě PtInZpravy())
-			if(Zt!=NULL)Zt->citelna_oblast=TextOut(canv,X,Y-size,Text,CENTER,BOTTOM,-0.8,clWhite,3);
+			Zt->citelna_oblast=TextOut(canv,X,Y-size,Text,CENTER,BOTTOM,-0.8,clWhite,3);
 		}
 		Zt=NULL;delete Zt;
 	}
@@ -4974,7 +4978,7 @@ void Cvykresli::smart_kurzor(TCanvas *canv,Cvektory::TElement *E)
 	double preRA=0;
 	double prepreRA=0;
 	if(E!=NULL)
-	{        //if(E->eID==0)F->Memo("stop");else F->Memo("");
+	{
 		preXk=E->geo.X4;
 		preYk=E->geo.Y4;
 		preOR=E->geo.orientace;
