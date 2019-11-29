@@ -5142,6 +5142,7 @@ void TForm1::ESC()
 		}
 		if(index_kurzoru<=-11&&pom_temp->id==3)editovany_text=outDK(pom_komora_temp->velikost);
 		smaz_kurzor();//uložení změn editace a odstranění kurzoru
+		if(scGPImage_zamek_posunu->ImageIndex!=28)scGPImage_zamek_posunu->ImageIndex=28;//zamčen posun
 	}
 }
 //---------------------------------------------------------------------------
