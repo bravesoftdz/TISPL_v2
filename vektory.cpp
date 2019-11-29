@@ -3019,10 +3019,10 @@ void Cvektory::reserve_time(TElement *Element,bool highlight_bunek,bool refresh_
   	//vypsání RT do tabulky elementu
 		if(F->pom_temp!=NULL && Element->objekt_n==F->pom_temp->n)
 		{
-	  	switch(Element->eID)
+			switch(Element->eID)
 	  	{
 	  		case 0://stop stanice
-	  		{
+				{
 	  			if(highlight_bunek)
 	  			{
 	  				Element->mGrid->Cells[1][2].Highlight=true;//slouži pro higlightování buňky s RT při posunu elementu
@@ -3056,19 +3056,16 @@ void Cvektory::reserve_time(TElement *Element,bool highlight_bunek,bool refresh_
 	  			if(highlight_bunek)Element->mGrid->Cells[1][5].Highlight=true;//slouži pro higlightování buňky s RT při posunu elementu
 	  		}break;
 	  		case 6://aktivní otoč
-    		{
-	  			Element->mGrid->Cells[1][3].Text=F->m.round2double(F->outPT(Element->RT),3);
+				{
+					Element->mGrid->Cells[1][3].Text=F->m.round2double(F->outPT(Element->RT),3);
 					if(highlight_bunek)Element->mGrid->Cells[1][3].Highlight=true;//slouži pro higlightování buňky s RT při posunu elementu
 	  		}break;
-	  	}
-	  	//pokud některý z geometrických úseků neměl přiřazený pohon RT nebude správné, vypsat error
-	  	if(error)
-	  	{
-	  		Element->mGrid->ShowNote("Neplatná hodnota RT!",F->d.clError,14);
-	  		if(RT>0)RT+=1000000;else RT-=1000000;
-	  	}
+			}
+			//pokud některý z geometrických úseků neměl přiřazený pohon RT nebude správné, vypsat error
+			if(error)Element->mGrid->ShowNote("Neplatná hodnota RT!",F->d.clError,14);
 			if(F->pom_temp->zobrazit_mGrid && refresh_mGrid)Element->mGrid->Refresh();
 		}
+		if(error)if(RT>0)RT+=1000000;else RT-=1000000;
 	}
 }
 //zadávám aktuální element, je zjištěna rotace před tímto zadávaným elementem, rotace aktuálního elementu se nezohledňuje

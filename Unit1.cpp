@@ -10417,6 +10417,7 @@ void TForm1::NP_input()
 					p=NULL;delete p;
         }
 				design_element(E,false);//znovuvytvoření tabulek
+				if(E->sparovany!=NULL && E->sparovany->objekt_n==pom_temp->n)E->sparovany=d.v.vrat_element(pom_temp,E->sparovany->n);//atualizace ukazatelů
 			}
 			E=E->dalsi;
 		}
@@ -10587,7 +10588,10 @@ void TForm1::zmena_editovaneho_objektu()
 			while (E!=NULL)
 			{
 				if(E->n>0)
-  				design_element(E,false);
+				{
+					design_element(E,false);
+        	if(E->sparovany!=NULL && E->sparovany->objekt_n==pom_temp->n)E->sparovany=d.v.vrat_element(pom_temp,E->sparovany->n);//atualizace ukazatelů
+				}
   			E=E->dalsi;
   		}
   		E=NULL; delete E;
@@ -12093,7 +12097,8 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Memo(ls->Strings[419]+"1");
+	Memo(pom_temp->elementy->dalsi->mGrid->Cells[1][3].Text);
+	Memo(d.v.vrat_element(pom_temp,pom_temp->elementy->dalsi->dalsi->sparovany->n)->mGrid->Cells[1][3].Text);
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
