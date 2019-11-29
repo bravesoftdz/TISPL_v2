@@ -366,10 +366,10 @@ void TForm1::set_font(int velikost)
   Simulace->Font=aFont;
   Simulace->Font->Color=barva;
   Simulace->Font->Size=velikost;
-  barva=scGPGlyphButton15->Font->Color;
-  scGPGlyphButton15->Font=aFont;
-  scGPGlyphButton15->Font->Color=barva;
-  scGPGlyphButton15->Font->Size=velikost;
+  barva=scGPGlyphButton_napoveda->Font->Color;
+  scGPGlyphButton_napoveda->Font=aFont;
+  scGPGlyphButton_napoveda->Font->Color=barva;
+  scGPGlyphButton_napoveda->Font->Size=velikost;
   barva=scLabel_titulek->Font->Color;
   scLabel_titulek->Font=aFont;
   scLabel_titulek->Font->Color=barva;
@@ -14098,7 +14098,7 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
     DetailsButton->Hint=ls->Strings[28];
 		Layout->Caption=ls->Strings[29];
     Simulace->Caption=ls->Strings[30];
-    scGPGlyphButton15->Hint=ls->Strings[31];
+    scGPGlyphButton_napoveda->Hint=ls->Strings[31];
     scLabel_klient->Caption=ls->Strings[32];
     scLabel_architekt->Caption=ls->Strings[33];
    // scGPButton_header_projekt->Hint=ls->Strings[34];
@@ -14448,4 +14448,5 @@ void __fastcall TForm1::scGPButton_warningClick(TObject *Sender)
 	Form_zpravy->Show();
 }
 //---------------------------------------------------------------------------
+
 
