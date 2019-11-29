@@ -120,6 +120,7 @@ class Cvektory
 		struct TElement *predchozi;//ukazatel na předchozí element ve spojovém seznamu
 		struct TElement *dalsi;//ukazatel na  další element ve spojovém seznamu
 	};
+	TElement *ELEMENTY;//seznam elementů
 
 	struct TObjekt
 	{
@@ -267,6 +268,7 @@ class Cvektory
 		double delka_podvozek;//délka podvozku všech vozíků
 		double sirka_podvozek;//šířka podvozku všech vozíků - zatím není ukládáno do binárky, protože se uživatelsky nenastavuje
 		double uchyt_pozice;//pozice uchycení vozíků k nosnému palci
+		bool zamek_layoutu;//zámek editace layoutu
 		T_raster raster;
 		T_vector vector;//DOPRYC - zakomentovat
 	};
@@ -404,6 +406,7 @@ class Cvektory
 		double delka_podvozek;
 		double sirka_podvozek;
 		double uchyt_pozice;
+		bool zamek_layoutu;//zámek editace layoutu
     int katalog;
 		short typ_linky;
     double radius;
@@ -525,6 +528,7 @@ class Cvektory
 	void smaz_element(TObjekt *Objekt, unsigned int n);//smaže element ze seznamu
 	void smaz_element(TElement *Element);//smaže element ze seznamu
 	long vymaz_elementy(TObjekt *Objekt,bool mGridSmazat=true);//vymaže všechny elementy daného objektu včetně hlavičky a vrátí počet smazaných elementů (počítáno bez hlavičky), automaticky, pokud posledním parametreme není nastaveno jinak, smaže přidružený mGrid
+	void Cvektory::reserve_time(TElement *Element,bool highlight_bunek=false,bool refresh_mGrid=false);//temp umístění
 
 //metody pro POHONY
 	void hlavicka_POHONY();

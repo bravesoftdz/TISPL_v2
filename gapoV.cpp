@@ -664,7 +664,7 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 			// podívám se, zda pohon, který je na řádku, kde došlo ke kliku má více objektů v KK režimu, pokud ano, musím projít všechny
 			 if(objekty[Row].pohon!=NULL)
 			 {
-					int pohon_n=objekty[Row].pohon->n;
+					unsigned int pohon_n=objekty[Row].pohon->n;
           indikator_skupin[pohon_n]=1;
 					if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) > 1)
 					{
@@ -709,7 +709,7 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 		// podívám se, zda pohon, který je na řádku, kde došlo ke kliku má více objektů v KK režimu, pokud ano, musím projít všechny
 				if(objekty[Row].pohon!=NULL)
 				{
-					int pohon_n=objekty[Row].pohon->n;
+					unsigned int pohon_n=objekty[Row].pohon->n;
           indikator_skupin[pohon_n]=2;
 					if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) > 1)
 					{
@@ -763,7 +763,7 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 		// podívám se, zda pohon, který je na řádku, kde došlo ke kliku má více objektů v KK režimu, pokud ano, musím projít všechny
 				if(objekty[Row].pohon!=NULL)
 				{
-					int pohon_n=objekty[Row].pohon->n;
+					unsigned int pohon_n=objekty[Row].pohon->n;
           indikator_skupin[pohon_n]=3;
 					if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) > 1)
 					{
@@ -868,7 +868,7 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
              {
 							if(objekty[i].pohon!=NULL)
 							{
-								if(pohon_n==objekty[i].pohon->n)
+								if((unsigned)pohon_n==objekty[i].pohon->n)
 								 {
                    slouceny_radek=i;
                  } //slouží k odlišení v calculate pro výpočet, abych věděl na který sloučený řádek mám vrátit data

@@ -2052,7 +2052,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 Cvektory::TElement *Cvektory::vloz_element_za(TObjekt *Objekt,TElement *Element)
 {
 	Cvektory::TElement *ret=NULL;//návratová proměnná, defaultně prázdn
-	bool pred1=false,zaposlednim=false;//proměnné pro 2 speciální případy které budou řešeny kompletně v této metodě
+	//bool pred1=false;zaposlednim=false;//proměnné pro 2 speciální případy které budou řešeny kompletně v této metodě
 	if((F->Akce==F->ADD||F->Akce==F->MOVE_ELEMENT)&&Objekt->elementy->dalsi!=NULL)//ošetření proti spouštění při zavírání a otvírání náhledu
 	{
 		Cvektory::TElement *p=Objekt->elementy->dalsi;//přeskočí hlavičku
@@ -2119,7 +2119,7 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 	bool rename=false;//proměná sloužící k spouštění přejměnování
 	AnsiString t_operator=F->ls->Strings[272],t_ion=F->ls->Strings[270],t_otoc=F->ls->Strings[273],t_PM=F->ls->Strings[271];
 	if(Element!=NULL)//funkčnost při vložení elementu mezi ostatní, pouze název pořadové čísla byly již změněny
-	{
+	{     F->log(__func__," ZAČÁTEK");
 		//úprava názvu pro roboty
 		Cvektory::TElement *E=Objekt->elementy->dalsi;//začíná se od začátku, někdy je potřeba ovlivnit i předchozí elementy
 		while (E!=NULL)
@@ -2134,12 +2134,15 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 					//změna názvu v hlavičce mGridu, jako první z důvodu podmínky prázdného názvu
 					if(E->name!=""&&E->mGrid!=NULL)//nutné, přejmenovávám i první element, který nemá vytvořený mGrid
 		  		{
-						if(E->eID==100)E->mGrid->Cells[0][0].Text="<a>"+t_ion+" "+AnsiString(n)+"</a>";
-						else if(101<=E->eID && E->eID<=108)E->mGrid->Cells[0][0].Text="<a>"+t_operator+" "+AnsiString(n)+"</a>";
-						else E->mGrid->Cells[0][0].Text="<a>Robot "+AnsiString(n)+"</a>";
-						E->mGrid->Cells[0][0].Font->Color=clBlack;//z důvodu nasazení odkazu, po přejmenování se text vrátil do modré barvy
-		  			E->mGrid->MergeCells(0,0,1,0);//nutné kvůli správnému zobrazení hlavičky
-						if(F->zobrazeni_tabulek)E->mGrid->Update();//musí zde být ošetření proti paměťové chybě
+						try
+						{
+					  	if(E->eID==100)E->mGrid->Cells[0][0].Text="<a>"+t_ion+" "+AnsiString(n)+"</a>";
+					  	else if(101<=E->eID && E->eID<=108)E->mGrid->Cells[0][0].Text="<a>"+t_operator+" "+AnsiString(n)+"</a>";
+					  	else E->mGrid->Cells[0][0].Text="<a>Robot "+AnsiString(n)+"</a>";
+					  	E->mGrid->Cells[0][0].Font->Color=clBlack;//z důvodu nasazení odkazu, po přejmenování se text vrátil do modré barvy
+					  	E->mGrid->MergeCells(0,0,1,0);//nutné kvůli správnému zobrazení hlavičky
+							if(F->zobrazeni_tabulek)E->mGrid->Update();//musí zde být ošetření proti paměťové chybě
+						}catch(...){}
 		  		}
 					if(E->eID==100)
 					{
@@ -2160,7 +2163,7 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 			}
 			E=E->dalsi;//posun na další prvek
 		}
-		E=NULL; delete E;
+		E=NULL; delete E;    F->log(__func__," KONEC");
 		Cvektory::TObjekt *O=OBJEKTY->dalsi;//prěskočí hlavičku
 		while(O!=NULL)//!!!!!!!!!!!!!dochází k zacyklení při přidání druhé stopky před první v druhé kabině!!!!!!!!!!!!!
 		{
@@ -2225,7 +2228,6 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 			if(O->n>=Objekt->n)//přeskakování objektů před aktuálním
 			{
 				Cvektory::TElement *E=O->elementy;//nepřeskakovat hlavičku
-				if(O->n==Objekt->n)E=F->pom->elementy;//když se jedná o aktuální objekt sáhnout do ostrého spojáku
 	   		int n_spojak=1;//hodnota n pro seznam (element)
 	   		while(E!=NULL)
 	   		{
@@ -2258,8 +2260,7 @@ void Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 						if(rename)
 						{
 							int n_nazev=0;//n sloužící pro název, kolikáty element
-							if(O->n==Objekt->n)n_nazev=vrat_poradi_elementu_do(Objekt,E)+1;
-							else n_nazev=vrat_poradi_elementu_do(O,E)+1;//předávání ukazatele na plný objekt
+							n_nazev=vrat_poradi_elementu_do(O,E)+1;//předávání ukazatele na plný objekt
 							//změna názvu
 							switch(E->eID)
 							{
@@ -2752,8 +2753,8 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				  	//aktualizace dalšího elemtnu
 				  	if(Element->dalsi!=NULL)vloz_G_element(Element->dalsi,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
 				  	//aktualizace RT
-						if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){posuv_aktualizace_RT(Element);posuv_aktualizace_RT(vrat_dalsi_element(Element));}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
-				  	else posuv_aktualizace_RT(Element);
+						if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){reserve_time(Element,true,true);reserve_time(Element->sparovany,true,true);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
+						else reserve_time(Element,true,true);
 					}
 				}
 				//pokud ne budou mu navráceny původní souřadnice
@@ -2780,8 +2781,8 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				  	//aktualizace dalšího elemtnu
 				  	if(Element->dalsi!=NULL)vloz_G_element(Element->dalsi,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
 				  	//aktualizace RT
-						if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){posuv_aktualizace_RT(Element);posuv_aktualizace_RT(vrat_dalsi_element(Element));}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
-						else posuv_aktualizace_RT(Element);
+						if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){reserve_time(Element,true,true);reserve_time(Element->sparovany,true,true);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
+						else reserve_time(Element,true,true);
 					}
 				}
 				//pokud ne budou mu navráceny původní souřadnice
@@ -2833,29 +2834,29 @@ void Cvektory::posuv_aktualizace_RT(TElement *Element)
   	{
   		case 0://stop stanice
   		{
-  			Element->RT=m.RT(0,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT+Element->WTstop);
-  			Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->RT),3);
+				Element->RT=m.RT(0,vzdalenost_od_predchoziho_elementu(Element,true),Element->pohon->aRD,Element->pohon->roztec,Element->WT+Element->WTstop);
+				Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->RT),3);
   			Element->mGrid->Cells[1][2].Highlight=true;
 				/*if(F->pom_temp->id>=6 && F->pom_temp->id<=10)*/Element->mGrid->Cells[1][5].Text=Element->max_pocet_voziku=F->max_voziku(Element);
   			if(F->pom_temp->zobrazit_mGrid)Element->mGrid->Refresh();
   		}break;
   		case 2:case 8:case 12:case 16:case 102:case 106://roboti se stop stanicí
   		{
-  			Element->RT=F->m.RT(Element->PT1,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT);
+				Element->RT=F->m.RT(Element->PT1,vzdalenost_od_predchoziho_elementu(Element,true),Element->pohon->aRD,Element->pohon->roztec,Element->WT);
   			Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->RT),3);
   			Element->mGrid->Cells[1][2].Highlight=true;
   			if(F->pom_temp->zobrazit_mGrid)Element->mGrid->Refresh();
   		}break;
   		case 4:case 10:case 14:case 18:case 104:case 108://roboti s aktivní otočí
   		{
-  			Element->RT=m.RT(Element->PT1+Element->PT2+Element->PTotoc,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT);
+				Element->RT=m.RT(Element->PT1+Element->PT2+Element->PTotoc,vzdalenost_od_predchoziho_elementu(Element,true),Element->pohon->aRD,Element->pohon->roztec,Element->WT);
   			Element->mGrid->Cells[1][5].Text=F->m.round2double(F->outPT(Element->RT),3);
   			Element->mGrid->Cells[1][5].Highlight=true;
   			if(F->pom_temp->zobrazit_mGrid)Element->mGrid->Refresh();
   		}break;
   		case 6://aktivní otoč
   		{
-  			Element->RT=m.RT(Element->PTotoc,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT);
+				Element->RT=m.RT(Element->PTotoc,vzdalenost_od_predchoziho_elementu(Element,true),Element->pohon->aRD,Element->pohon->roztec,Element->WT);
 				Element->mGrid->Cells[1][3].Text=F->m.round2double(F->outPT(Element->RT),3);
 				Element->mGrid->Cells[1][3].Highlight=true;
   			if(F->pom_temp->zobrazit_mGrid)Element->mGrid->Refresh();
@@ -2969,14 +2970,104 @@ double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element,bool pouze
   	{                ///ještě vylepšít, provizorně jen pro vodorovnou levopravou kabinu
 			return m.delka(F->pom_temp->elementy->dalsi->geo.X1,F->pom_temp->elementy->dalsi->geo.Y1,E.x,E.y);//(bude nutno ještě vylepšit s příchodem oblouků)!!!
 		}
-  	else//mezi elementy
-  	{
-  		TPointD Ep=F->d.Rxy(Element->predchozi);
-  		return m.delka(E.x,E.y,Ep.x,Ep.y); //(bude nutno vylepšit s příchodem oblouků)!!!
+		else//mezi elementy
+		{
+			TPointD Ep=F->d.Rxy(Element->predchozi);
+			return m.delka(E.x,E.y,Ep.x,Ep.y); //(bude nutno vylepšit s příchodem oblouků)!!!
 		}
-  }
+	}
 }
 ////---------------------------------------------------------------------------
+void Cvektory::reserve_time(TElement *Element,bool highlight_bunek,bool refresh_mGrid)
+{
+	if(Element!=NULL && Element->eID%2==0 && Element->eID!=100 && Element->eID!=200 && Element->eID!=MaxInt)
+	{
+  	//deklarace
+  	double cas=0;
+  	bool pokracovat=true,error=false;
+		unsigned int i=0;//počet průchodu skrze objekt Elementu
+		TObjekt *O=vrat_objekt(Element->objekt_n);
+		if(Element->pohon!=NULL)cas+=Element->geo.delka/Element->pohon->aRD;//pokud má element pohon výpočet času přejezdu jeho úseku
+  	else error=true;//nemá pohon = error
+  	//průchod od Element k předchozím
+  	while(O!=NULL)
+  	{
+  		if(O->n==0)O=O->predchozi;
+  		TElement *E=O->elementy->predchozi;//procházení od zadu
+  		if(F->pom_temp!=NULL && O->n==F->pom_temp->n)E=F->pom_temp->elementy->predchozi;//pokud jsem v editovaném objektu
+  		if(Element->objekt_n==O->n && i==0){E=Element->predchozi;i++;}//pokud jsem v pom_temp = začátek, začánám od předchozího elementu Elementu, platí pouze při prvním průchodu
+  		while(E!=NULL && E->n!=0)
+  		{
+        if(E->eID==200)cas+=E->WT;//wt na předávacím místě
+				if((E->eID%2==0 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt) || (E->n==Element->n && E->objekt_n==Element->objekt_n)){pokracovat=false;break;}//pokud je předchozi S&G prěruš cyklus
+  			if(E->pohon!=NULL)cas+=E->geo.delka/E->pohon->aRD;//pokud existuje úsek a má pohon
+  			else error=true;//jinak error
+  			E=E->predchozi;
+  		}
+  		E=NULL;delete E;
+  		if(pokracovat)O=O->predchozi;//ošetření proti přechodu na havičku
+  		else break;
+  	}
+  	O=NULL;delete O;
+
+		//výpočet RT a zapsání do dat elemetnu
+		double RT=0,WT=Element->WT;
+		if(Element->eID==0 && Element->akt_pocet_voziku>1 && cas+Element->WT<PP.TT)WT*=Element->akt_pocet_voziku;
+		RT=m.RT(Element->PT1+Element->PT2+Element->PTotoc,cas,WT,Element->akt_pocet_voziku);
+		if(Element->eID== 0 && Element->akt_pocet_voziku==1 || Element->eID==6)RT=fmod(RT,PP.TT);
+		Element->RT=RT;//zapsání nového RT do dat elemetu
+  	//vypsání RT do tabulky elementu
+		if(F->pom_temp!=NULL && Element->objekt_n==F->pom_temp->n)
+		{
+			switch(Element->eID)
+	  	{
+	  		case 0://stop stanice
+				{
+	  			if(highlight_bunek)
+	  			{
+	  				Element->mGrid->Cells[1][2].Highlight=true;//slouži pro higlightování buňky s RT při posunu elementu
+	  				Element->max_pocet_voziku=F->max_voziku(Element);
+	  				Element->mGrid->Cells[1][5].Text=Element->max_pocet_voziku=Element->max_pocet_voziku;
+	  				if(Element->max_pocet_voziku<Element->akt_pocet_voziku)//pokud při posunu akt. počet vozíků přesáhne maximální
+	  				{
+	  					Element->akt_pocet_voziku=Element->max_pocet_voziku;
+	  					Element->WTstop=F->m.V2WT(Element->akt_pocet_voziku,PP.TT);//uložení do paměti + výpočet
+	  					Element->mGrid->Cells[1][3].Text=F->m.round2double(F->outPT(Element->WTstop),3);//OUTPUT
+	  					//nové RT, protože se změnilo WTstop
+	  					WT=Element->WT;
+	  					if(Element->eID==0 && Element->akt_pocet_voziku>1 && cas+Element->WT<PP.TT)WT*=Element->akt_pocet_voziku;
+	  					RT=m.RT(Element->PT1+Element->PT2+Element->PTotoc,cas,WT,Element->akt_pocet_voziku);
+	  					if(Element->akt_pocet_voziku==1)RT==fmod(RT,PP.TT);
+	  					Element->RT=RT;
+	  				}
+	  			}
+	  			//vypsání OK pokud je RT kladné a zároveň má stopka více akt_vozíku
+	  			if(Element->RT>0 && Element->akt_pocet_voziku>1){Element->mGrid->Cells[1][2].Text="OK";Element->mGrid->Cells[1][2].Hint=Element->RT;Element->mGrid->Cells[1][2].ShowHint=true;}
+	  			else {Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->RT),3);Element->mGrid->Cells[1][2].Hint="";Element->mGrid->Cells[1][2].ShowHint=false;}
+	  		}break;
+	  		case 2:case 8:case 12:case 16:case 102:case 106://roboti se stop stanicí
+    		{
+	  			Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->RT),3);
+	  			if(highlight_bunek)Element->mGrid->Cells[1][2].Highlight=true;//slouži pro higlightování buňky s RT při posunu elementu
+	  		}break;
+    		case 4:case 10:case 14:case 18:case 104:case 108://roboti s aktivní otočí
+	  		{
+	  			Element->mGrid->Cells[1][5].Text=F->m.round2double(F->outPT(Element->RT),3);
+	  			if(highlight_bunek)Element->mGrid->Cells[1][5].Highlight=true;//slouži pro higlightování buňky s RT při posunu elementu
+	  		}break;
+	  		case 6://aktivní otoč
+				{
+					Element->mGrid->Cells[1][3].Text=F->m.round2double(F->outPT(Element->RT),3);
+					if(highlight_bunek)Element->mGrid->Cells[1][3].Highlight=true;//slouži pro higlightování buňky s RT při posunu elementu
+	  		}break;
+			}
+			//pokud některý z geometrických úseků neměl přiřazený pohon RT nebude správné, vypsat error
+			if(error)Element->mGrid->ShowNote("Neplatná hodnota RT!",F->d.clError,14);
+			if(F->pom_temp->zobrazit_mGrid && refresh_mGrid)Element->mGrid->Refresh();
+		}
+		if(error)if(RT>0)RT+=1000000;else RT-=1000000;
+	}
+}
 //zadávám aktuální element, je zjištěna rotace před tímto zadávaným elementem, rotace aktuálního elementu se nezohledňuje
 double Cvektory::vrat_rotaci_jigu_po_predchazejicim_elementu(TObjekt *Objekt,TElement *Element)
 {
@@ -3191,10 +3282,15 @@ void Cvektory::vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt)
 			if(pokracovat)O=O->predchozi;//ošetření proti přechodu na havičku
 			else break;
 		}
-		if(E->n!=0)E->sparovany=Element;
-		if(E->n!=0 && E->eID==0 && E->Xt!=-100 && F->pom!=NULL && O->n==F->pom->n){E->mGrid->Cells[1][1].Text=Element->name;E->mGrid->Refresh();}//pokud se element (=stopka) nachází ve stejném objektu a tento objekt je právě editovaný, přepiš mu sparovaný element do mgridu
+		if(E->n!=0)
+		{
+			E->sparovany=Element;
+			try
+			{E->mGrid->Cells[1][1].Text=Element->name;E->mGrid->Refresh();}//pokud se element (=stopka) nachází ve stejném objektu a tento objekt je právě editovaný, přepiš mu sparovaný element do mgridu
+			catch(...){}
+		}
 		//////první poslední stop element
-		if(OBJEKTY->predchozi->n>=2)
+		if(OBJEKTY->predchozi->n>=2||true)
 		{
 			pokracovat=true;
 			O=OBJEKTY->dalsi;
@@ -3204,7 +3300,7 @@ void Cvektory::vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt)
 				if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->dalsi;
 				while(E!=NULL)
 				{
-					if(E->eID==0){pokracovat=false;break;}
+					if(E->eID%2==0 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt){pokracovat=false;break;}
 					E=E->dalsi;
 				}
 				if(pokracovat)O=O->dalsi;
@@ -3226,19 +3322,20 @@ void Cvektory::vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt)
 					}
 					if(pokracovat)O=O->predchozi;//ošetření proti přechodu na havičku
 	    		else break;
-				}
+				}           //E = poslední stopka, prvni_stopka = první stopka
+				//if(E!=NULL)F->Memo("první : "+prvni_stopka->name+"; posledni: "+E->name);
 				if(E!=NULL && (E->objekt_n!=prvni_stopka->objekt_n || E->objekt_n==prvni_stopka->objekt_n && E->n!=prvni_stopka->n))//pokud existuje poslední stop elemet a nerovná se mrvnímu
 				{
-					prvni_stopka->sparovany=E;
-					if(F->pom_temp!=NULL && F->pom_temp->n==prvni_stopka->objekt_n)//pokud je v aktuálně editovaném objektu
+					bool prvni=false,posledni=false;
+					if(prvni_stopka->sparovany==NULL){prvni_stopka->sparovany=E;prvni=true;}
+					if(E->sparovany==NULL){E->sparovany=prvni_stopka;posledni=true;}
+					try //musí být řešeno takto, nelze rozeznat jestli existuje mgird
 					{
-				  	try //musí být řešeno takto, nelze rozeznat jestli existuje mgird
-				  	{
-				  		prvni_stopka->mGrid->Cells[1][1].Text=E->name;prvni_stopka->mGrid->Refresh();
-				  	}
-				  	catch(...)
-						{/*MessageBeep(0);*/}
+						if(prvni && prvni_stopka->eID==0){prvni_stopka->mGrid->Cells[1][1].Text=E->name;prvni_stopka->mGrid->Refresh();}
+						if(posledni && E->eID==0){E->mGrid->Cells[1][1].Text=prvni_stopka->name;E->mGrid->Refresh();}
 					}
+					catch(...)
+					{/*MessageBeep(0);*/}
 				}
 				prvni_stopka=NULL;delete prvni_stopka;
       }
@@ -3251,7 +3348,6 @@ void Cvektory::vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt)
 //projde všechny stop-elementy a aktualizuje jim ukazatele na spárované elementy
 void Cvektory::aktualizuj_sparovane_ukazatele()
 {
-	int pocet=0;
 	F->aktualizace_RT();//aktualizace RT v tabulkách
 	Cvektory::TObjekt *O=OBJEKTY->predchozi;
 	//smazání původních ukazatelů
@@ -3337,7 +3433,7 @@ void Cvektory::smaz_element(TElement *Element)
 	bool povolit_smazani=true;
 	if(Element->eID==200)
 	{
-		unsigned int pocet_PM=0;
+		//unsigned int pocet_PM=0;
 		TElement *E=Element->dalsi,*dalsi_PM=NULL,*predchozi_PM=NULL;//procházení daného objektu
 		while(E!=NULL && E->objekt_n==Element->objekt_n)
 		{
@@ -5665,6 +5761,7 @@ void Cvektory::vytvor_hlavicku_souboru()
 	File_hlavicka.vyska_jig=PP.vyska_jig;
 	File_hlavicka.delka_podvozek=PP.delka_podvozek;
 	File_hlavicka.uchyt_pozice=PP.uchyt_pozice;
+	File_hlavicka.zamek_layoutu=PP.zamek_layoutu;
 	//objektové záležitosti
 	File_hlavicka.pocet_pohonu=POHONY->predchozi->n;
 	File_hlavicka.pocet_objektu=OBJEKTY->predchozi->n;

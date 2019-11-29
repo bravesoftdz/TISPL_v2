@@ -3145,7 +3145,7 @@ void TForm_parametry::Pohon_pouzivan()
 {
 		if (scComboBox_rezim->ItemIndex == 1)
 		{ // pro KK režim - nastavení
-				Cvektory::TPohon *pohon = Form1->d.v.POHONY->dalsi;
+				//Cvektory::TPohon *pohon = Form1->d.v.POHONY->dalsi;
 				if(scComboBox_pohon->ItemIndex==0)
 				{
 					 // pokud je pohon nedefinován nebo nepøiøazen, vždy povolím rotaci a nastavit délku nebo šíøku

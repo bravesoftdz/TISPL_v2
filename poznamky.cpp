@@ -250,7 +250,7 @@ void TForm_poznamky::table_head()
 	mGrid->Cells[6][R].Background->Color=clBACKGROUND;
 
 	////Výpočet hodnot
-	calculate(0);
+	calculate((TForm_poznamky::Tinput_state)0);
 
 	//vymazání nepoužívaných buněk
 	mGrid->Cells[0][0].Background->Color=(TColor)RGB(240,240,240);mGrid->Cells[0][0].TopBorder->Color=(TColor)RGB(240,240,240);mGrid->Cells[0][0].LeftBorder->Color=(TColor)RGB(240,240,240);mGrid->Cells[0][0].BottomBorder->Width=2;mGrid->Cells[0][0].RightBorder->Width=2;
