@@ -214,7 +214,7 @@ __published:	// IDE-managed Components
 	TscLabel *scLabel11;
 	TscLabel *scLabel16;
 	TscGPSwitch *scGPSwitch_grid;
-	TscGPGlyphButton *scGPGlyphButton15;
+  TscGPGlyphButton *scGPGlyphButton_napoveda;
 	TImageList *ImageList48;
 	TscGPVirtualImageList *scGPVirtualImageList1;
 	TscButton *scButton_report;

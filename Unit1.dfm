@@ -879,7 +879,7 @@ object Form1: TForm1
       Layout = blGlyphRight
       Images = scGPVirtualImageList1
       ImageIndex = 78
-      ImageMargin = 25
+      ImageMargin = 80
       TransparentBackground = True
       Options.NormalColor = 10114859
       Options.HotColor = 33023
@@ -960,6 +960,8 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
+      ExplicitLeft = 521
+      ExplicitHeight = 33
     end
     object PopupMenuButton: TscGPButton
       AlignWithMargins = True
@@ -2003,12 +2005,12 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
     end
-    object scGPGlyphButton15: TscGPGlyphButton
+    object scGPGlyphButton_napoveda: TscGPGlyphButton
       Left = 1094
       Top = 0
       Width = 37
       Height = 34
-      Hint = 'O aplikaci'
+      Hint = 'N'#225'pov'#283'da'
       Align = alRight
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clNone
@@ -2076,9 +2078,9 @@ object Form1: TForm1
       Options.ArrowThicknessScaled = False
       Options.StyleColors = True
       GlyphOptions.NormalColor = 16744448
-      GlyphOptions.HotColor = 10906436
+      GlyphOptions.HotColor = clWhite
       GlyphOptions.PressedColor = clBtnText
-      GlyphOptions.FocusedColor = 16744448
+      GlyphOptions.FocusedColor = clWhite
       GlyphOptions.DisabledColor = 16744448
       GlyphOptions.NormalColorAlpha = 200
       GlyphOptions.HotColorAlpha = 255
@@ -2505,6 +2507,7 @@ object Form1: TForm1
       ShowHint = True
       TabOrder = 21
       TabStop = True
+      Visible = False
       OnClick = scGPButton_errorClick
       Animation = False
       CanFocused = True
@@ -2555,8 +2558,8 @@ object Form1: TForm1
       Options.ShapeFillGradientAngle = 90
       Options.ShapeFillGradientPressedAngle = -90
       Options.ShapeFillGradientColorOffset = 25
-      Options.ShapeCornerRadius = 10
-      Options.ShapeStyle = scgpRect
+      Options.ShapeCornerRadius = 3
+      Options.ShapeStyle = scgpRoundedRect
       Options.ArrowSize = 9
       Options.ArrowAreaSize = 0
       Options.ArrowType = scgpatDefault
@@ -2601,6 +2604,7 @@ object Form1: TForm1
       Top = 0
       Width = 25
       Height = 34
+      Hint = 'Zpr'#225'vy o lince'
       Align = alRight
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -2613,6 +2617,7 @@ object Form1: TForm1
       ShowHint = True
       TabOrder = 22
       TabStop = True
+      Visible = False
       OnClick = scGPButton_warningClick
       Animation = False
       CanFocused = True
@@ -2663,8 +2668,8 @@ object Form1: TForm1
       Options.ShapeFillGradientAngle = 90
       Options.ShapeFillGradientPressedAngle = -90
       Options.ShapeFillGradientColorOffset = 25
-      Options.ShapeCornerRadius = 10
-      Options.ShapeStyle = scgpRect
+      Options.ShapeCornerRadius = 3
+      Options.ShapeStyle = scgpRoundedRect
       Options.ArrowSize = 9
       Options.ArrowAreaSize = 0
       Options.ArrowType = scgpatDefault
