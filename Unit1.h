@@ -823,7 +823,7 @@ public:		// User declarations
 	TPoint bod_vlozeni_elementu(double kontr_x=-1000,double kontr_y=-1000);//vrací bod vložení elementu, "pøilepuje" kurzor na geometrii pokud se jedná o pøímku, parametry kontr_x a y slouží ke kontrole bodu zda se nachází na pøímce (pøi posunu)
 	bool bod_na_geometrii(double X, double Y,Cvektory::TElement *Element=NULL);//kontroluje zde se bod nachází na geometri, vrací pouze ano/ne, pokud je do metody poslán ukazatel na element provìøí zda se tento element nachází na geometrii
 	double max_voziku(Cvektory::TElement *stopka);//vrátí maximální možný poèet vozíkù na stopce, podle geometrie pøed ní
-	void prirazeni_pohonu_tab_pohon(int index_pohonu);//pøedesignuje tabulku pohonu po pøidání elementu, nebo pohonu
+	void prirazeni_pohonu_tab_pohon(unsigned int index_pohonu);//pøedesignuje tabulku pohonu po pøidání elementu, nebo pohonu
 	void aktualizace_RT();//projde všechny elementy v aktuálnì editovaném objektu a upravím jim RT
 	void posun_na_element(unsigned long n_zpravy);//podle zprávy provede posun na daný elment
 	void smaz_kurzor();

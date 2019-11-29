@@ -288,7 +288,7 @@ void TPO_math::gapoVALIDACE(Cvektory::TObjekt *objekty,long Row,long RowCount,sh
 			 }
 			 else//situace 2 - testování, zda zmìna u daného KK objektu nezpùsobí problém u jiného PP èi SG objektu (objekty[i].pohon), projede všechny dotèené pp a sg z dané skupiny, kde se kliklo
 			 {
-				 for (unsigned long i=1;i<RowCount;i++)//projde všechny zobrazené objekty
+				 for (unsigned long i=1;i<(unsigned)RowCount;i++)//projde všechny zobrazené objekty
 				 {
 					 if(objekty[i].pohon!=NULL)//testovaný objekt musí mít pohon
 					 {                           //odfiltrování situace 1 tzn. objekty[Row]!=objekty[i] tj. stejný objekt - to nyní probíhá automaticky, protože se porovnávají režimy KK a proti tomu S&G èi PP, tj. nemùže se porovnávat totožný objekt

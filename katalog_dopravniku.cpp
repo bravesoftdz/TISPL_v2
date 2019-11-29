@@ -51,7 +51,7 @@ void __fastcall TForm_katalog::FormShow(TObject *Sender)
 
 
   K_mGrid->Columns[0].Width=120;
-  for(int i=1;i<=ColCount;i++)
+	for(unsigned int i=1;i<=ColCount;i++)
   {
     K_mGrid->Columns[i].Width=50;
   }
@@ -152,7 +152,7 @@ void TForm_katalog::LoadValues ()
   delete K;K=NULL;
 
   //nastaveni barev pro zobrazeni vybrane hodnoty - oranzova
-	for(int i=1;i<K_mGrid->ColCount;i++)
+	for(unsigned int i=1;i<K_mGrid->ColCount;i++)
   {
 	 if(F->ms.MyToDouble(K_mGrid->Cells[i][katalog_id+1].Text) == radius)
 	 {
@@ -161,11 +161,11 @@ void TForm_katalog::LoadValues ()
 
   }
   //nastaveni barev pro zobrazeni vybrane hodnoty - cerna
-	for(int i=2;i<K_mGrid->RowCount;i++)
+	for(unsigned int i=2;i<K_mGrid->RowCount;i++)
   {
-		if(i==katalog_id+1)
+		if(i==(unsigned)katalog_id+1)
       {
-       for(int j=0;j<K_mGrid->ColCount;j++)
+			 for(unsigned int j=0;j<K_mGrid->ColCount;j++)
        {
         if(F->ms.MyToDouble(K_mGrid->Cells[j][i].Text) != radius) K_mGrid->Cells[j][i].Font->Color=clBlack;
        }
@@ -176,16 +176,16 @@ void TForm_katalog::LoadValues ()
 void TForm_katalog::LoadStyles ()
 {
  TColor clBACKGROUND_light,clBACKGROUND_dark;
- clBACKGROUND_light=Form1->m.clIntensive((TColor)RGB(200,200,200),35);
- clBACKGROUND_dark=clWhite;//Form1->m.clIntensive((TColor)RGB(240,240,240),35);
+ //clBACKGROUND_light=Form1->m.clIntensive((TColor)RGB(200,200,200),35);
+ //clBACKGROUND_dark=clWhite;//Form1->m.clIntensive((TColor)RGB(240,240,240),35);
 
- for (int s = 0; s < K_mGrid->ColCount-1; s++)
+ for (unsigned int s = 0; s < K_mGrid->ColCount-1; s++)
  {  //černý font v hlavičcce
 	 K_mGrid->Cells[s][0].Font->Color=clBlack;
 	 K_mGrid->Cells[s][1].Font->Color=clBlack;
  }
 
-	for (int r = 2; r <= K_mGrid->RowCount-1; r++)
+	for (unsigned int r = 2; r <= K_mGrid->RowCount-1; r++)
  {
    K_mGrid->Cells[8][r].Type=K_mGrid->EDIT;
    K_mGrid->Cells[9][r].Type=K_mGrid->EDIT;
@@ -202,11 +202,11 @@ void TForm_katalog::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row
    if(Col>=8 && Col<=11)
    {
     zmena=true;
-      for(int i=1;i<K_mGrid->RowCount;i++)
+			for(unsigned int i=1;i<K_mGrid->RowCount;i++)
       {
-         if(i!=Row)
+				 if(i!=Row)
          {
-            for(int j=0;j<K_mGrid->ColCount;j++)
+						for(unsigned int j=0;j<K_mGrid->ColCount;j++)
              {
              K_mGrid->Cells[j][i].Font->Color=(TColor)RGB(43,87,154);  //odbarveni  - nevybrano
              }
@@ -222,11 +222,11 @@ void TForm_katalog::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row
    if(Col>=8 && Col<=11)
    {
     zmena=true;
-      for(int i=1;i<K_mGrid->RowCount;i++)
+			for(unsigned int i=1;i<K_mGrid->RowCount;i++)
       {
-         if(i==Row)
+				 if(i==Row)
          {
-            for(int j=0;j<K_mGrid->ColCount;j++)
+            for(unsigned int j=0;j<K_mGrid->ColCount;j++)
              {
              K_mGrid->Cells[j][i].Font->Color=clBlack;  //nabarveni - vybrano
              }

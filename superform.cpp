@@ -495,7 +495,7 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 				Form1->d.v.PP.cas_start=TDateTime(scEdit_zacatek->Text);
 
 				//uložení editovaných zakázek
-				for (int i = 1; i< mGrid->RowCount; i++)  //dole ještì zvyšuji poèítadlo!!!
+				for (unsigned int i = 1; i< mGrid->RowCount; i++)  //dole ještì zvyšuji poèítadlo!!!
 				{
 
 					 double pomer;
@@ -1199,13 +1199,13 @@ void TForm_definice_zakazek::OnClick(long Tag,long ID,unsigned long Col,unsigned
    F->Memo("R3");
    mGrid->Refresh();
    // if(!add_zakazka) // mGrid->getImage(0,Row)->AutoSize=true;    //opodminkované prozatím - pamìt chyba
-    mGrid->Cells[0][Row].Align=Left;
+		mGrid->Cells[0][Row].Align=mGrid->LEFT;
     F->Memo("R4");
-    mGrid->Cells[0][Row].Valign=Top;
+		mGrid->Cells[0][Row].Valign=mGrid->TOP;
    // mGrid->getImage(0,Row)->Width=mGrid->Columns[0].Width;
    // mGrid->getImage(0,Row)->Height=mGrid->DefaultRowHeight *2 ;
     mGrid->Cells[1][Row].Type=mGrid->EDIT;
-    mGrid->Cells[1][Row].Align=Left;
+		mGrid->Cells[1][Row].Align=mGrid->LEFT;
      F->Memo("R5");
     mGrid->Cells[2][Row].Text="";
     mGrid->Cells[2][Row+1].Type=mGrid->BUTTON;
@@ -1236,7 +1236,7 @@ void TForm_definice_zakazek::OnClick(long Tag,long ID,unsigned long Col,unsigned
     mGrid->Cells[5][Row].Text="";
     mGrid->Cells[6][Row].Text="";
     mGrid->Cells[7][Row].Text="";
-    mGrid->Cells[7][Row].Align=Left;
+    mGrid->Cells[7][Row].Align=mGrid->LEFT;
     mGrid->Cells[8][Row].Text="";
     mGrid->Cells[9][Row].Text="";
     mGrid->Cells[10][Row].Text="";
