@@ -3017,55 +3017,58 @@ void Cvektory::reserve_time(TElement *Element,bool highlight_bunek,bool refresh_
 		if(Element->eID== 0 && Element->akt_pocet_voziku==1 || Element->eID==6)RT=fmod(RT,PP.TT);
 		Element->RT=RT;//zapsání nového RT do dat elemetu
   	//vypsání RT do tabulky elementu
-  	switch(Element->eID)
-  	{
-  		case 0://stop stanice
-			{
-				if(highlight_bunek)
-				{
-					Element->mGrid->Cells[1][2].Highlight=true;//slouži pro higlightování buňky s RT při posunu elementu
-					Element->max_pocet_voziku=F->max_voziku(Element);
-					Element->mGrid->Cells[1][5].Text=Element->max_pocet_voziku=Element->max_pocet_voziku;
-					if(Element->max_pocet_voziku<Element->akt_pocet_voziku)//pokud při posunu akt. počet vozíků přesáhne maximální
-					{
-						Element->akt_pocet_voziku=Element->max_pocet_voziku;
-						Element->WTstop=F->m.V2WT(Element->akt_pocet_voziku,PP.TT);//uložení do paměti + výpočet
-						Element->mGrid->Cells[1][3].Text=F->m.round2double(F->outPT(Element->WTstop),3);//OUTPUT
-						//nové RT, protože se změnilo WTstop
-            WT=Element->WT;
-						if(Element->eID==0 && Element->akt_pocet_voziku>1 && cas+Element->WT<PP.TT)WT*=Element->akt_pocet_voziku;
-						RT=m.RT(Element->PT1+Element->PT2+Element->PTotoc,cas,WT,Element->akt_pocet_voziku);
-						if(Element->akt_pocet_voziku==1)RT==fmod(RT,PP.TT);
-						Element->RT=RT;
-					}
-				}
-				//vypsání OK pokud je RT kladné a zároveň má stopka více akt_vozíku
-				if(Element->RT>0 && Element->akt_pocet_voziku>1){Element->mGrid->Cells[1][2].Text="OK";Element->mGrid->Cells[1][2].Hint=Element->RT;Element->mGrid->Cells[1][2].ShowHint=true;}
-				else {Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->RT),3);Element->mGrid->Cells[1][2].Hint="";Element->mGrid->Cells[1][2].ShowHint=false;}
-			}break;
-  		case 2:case 8:case 12:case 16:case 102:case 106://roboti se stop stanicí
-  		{
-  			Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->RT),3);
-  			if(highlight_bunek)Element->mGrid->Cells[1][2].Highlight=true;//slouži pro higlightování buňky s RT při posunu elementu
-  		}break;
-  		case 4:case 10:case 14:case 18:case 104:case 108://roboti s aktivní otočí
-  		{
-  			Element->mGrid->Cells[1][5].Text=F->m.round2double(F->outPT(Element->RT),3);
-  			if(highlight_bunek)Element->mGrid->Cells[1][5].Highlight=true;//slouži pro higlightování buňky s RT při posunu elementu
-  		}break;
-  		case 6://aktivní otoč
-  		{
-  			Element->mGrid->Cells[1][3].Text=F->m.round2double(F->outPT(Element->RT),3);
-  			if(highlight_bunek)Element->mGrid->Cells[1][3].Highlight=true;//slouži pro higlightování buňky s RT při posunu elementu
-  		}break;
-  	}
-  	//pokud některý z geometrických úseků neměl přiřazený pohon RT nebude správné, vypsat error
-		if(error)
+		if(F->pom_temp!=NULL && Element->objekt_n==F->pom_temp->n)
 		{
-			Element->mGrid->ShowNote("Neplatná hodnota RT!",F->d.clError,14);
-			if(RT>0)RT+=1000000;else RT-=1000000;
+	  	switch(Element->eID)
+	  	{
+	  		case 0://stop stanice
+	  		{
+	  			if(highlight_bunek)
+	  			{
+	  				Element->mGrid->Cells[1][2].Highlight=true;//slouži pro higlightování buňky s RT při posunu elementu
+	  				Element->max_pocet_voziku=F->max_voziku(Element);
+	  				Element->mGrid->Cells[1][5].Text=Element->max_pocet_voziku=Element->max_pocet_voziku;
+	  				if(Element->max_pocet_voziku<Element->akt_pocet_voziku)//pokud při posunu akt. počet vozíků přesáhne maximální
+	  				{
+	  					Element->akt_pocet_voziku=Element->max_pocet_voziku;
+	  					Element->WTstop=F->m.V2WT(Element->akt_pocet_voziku,PP.TT);//uložení do paměti + výpočet
+	  					Element->mGrid->Cells[1][3].Text=F->m.round2double(F->outPT(Element->WTstop),3);//OUTPUT
+	  					//nové RT, protože se změnilo WTstop
+	  					WT=Element->WT;
+	  					if(Element->eID==0 && Element->akt_pocet_voziku>1 && cas+Element->WT<PP.TT)WT*=Element->akt_pocet_voziku;
+	  					RT=m.RT(Element->PT1+Element->PT2+Element->PTotoc,cas,WT,Element->akt_pocet_voziku);
+	  					if(Element->akt_pocet_voziku==1)RT==fmod(RT,PP.TT);
+	  					Element->RT=RT;
+	  				}
+	  			}
+	  			//vypsání OK pokud je RT kladné a zároveň má stopka více akt_vozíku
+	  			if(Element->RT>0 && Element->akt_pocet_voziku>1){Element->mGrid->Cells[1][2].Text="OK";Element->mGrid->Cells[1][2].Hint=Element->RT;Element->mGrid->Cells[1][2].ShowHint=true;}
+	  			else {Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->RT),3);Element->mGrid->Cells[1][2].Hint="";Element->mGrid->Cells[1][2].ShowHint=false;}
+	  		}break;
+	  		case 2:case 8:case 12:case 16:case 102:case 106://roboti se stop stanicí
+    		{
+	  			Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->RT),3);
+	  			if(highlight_bunek)Element->mGrid->Cells[1][2].Highlight=true;//slouži pro higlightování buňky s RT při posunu elementu
+	  		}break;
+    		case 4:case 10:case 14:case 18:case 104:case 108://roboti s aktivní otočí
+	  		{
+	  			Element->mGrid->Cells[1][5].Text=F->m.round2double(F->outPT(Element->RT),3);
+	  			if(highlight_bunek)Element->mGrid->Cells[1][5].Highlight=true;//slouži pro higlightování buňky s RT při posunu elementu
+	  		}break;
+	  		case 6://aktivní otoč
+    		{
+	  			Element->mGrid->Cells[1][3].Text=F->m.round2double(F->outPT(Element->RT),3);
+					if(highlight_bunek)Element->mGrid->Cells[1][3].Highlight=true;//slouži pro higlightování buňky s RT při posunu elementu
+	  		}break;
+	  	}
+	  	//pokud některý z geometrických úseků neměl přiřazený pohon RT nebude správné, vypsat error
+	  	if(error)
+	  	{
+	  		Element->mGrid->ShowNote("Neplatná hodnota RT!",F->d.clError,14);
+	  		if(RT>0)RT+=1000000;else RT-=1000000;
+	  	}
+			if(F->pom_temp->zobrazit_mGrid && refresh_mGrid)Element->mGrid->Refresh();
 		}
-  	if(F->pom_temp->zobrazit_mGrid && refresh_mGrid)Element->mGrid->Refresh();
 	}
 }
 //zadávám aktuální element, je zjištěna rotace před tímto zadávaným elementem, rotace aktuálního elementu se nezohledňuje
@@ -3300,7 +3303,7 @@ void Cvektory::vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt)
 				if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->dalsi;
 				while(E!=NULL)
 				{
-					if(E->eID==0){pokracovat=false;break;}
+					if(E->eID%2==0 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt){pokracovat=false;break;}
 					E=E->dalsi;
 				}
 				if(pokracovat)O=O->dalsi;
@@ -3331,8 +3334,8 @@ void Cvektory::vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt)
 					if(E->sparovany==NULL){E->sparovany=prvni_stopka;posledni=true;}
 					try //musí být řešeno takto, nelze rozeznat jestli existuje mgird
 					{
-						if(prvni){prvni_stopka->mGrid->Cells[1][1].Text=E->name;prvni_stopka->mGrid->Refresh();}
-						if(posledni){E->mGrid->Cells[1][1].Text=prvni_stopka->name;E->mGrid->Refresh();}
+						if(prvni && prvni_stopka->eID==0){prvni_stopka->mGrid->Cells[1][1].Text=E->name;prvni_stopka->mGrid->Refresh();}
+						if(posledni && E->eID==0){E->mGrid->Cells[1][1].Text=prvni_stopka->name;E->mGrid->Refresh();}
 					}
 					catch(...)
 					{/*MessageBeep(0);*/}

@@ -1077,9 +1077,9 @@ void TForm1::DesignSettings()
       case 115:text="Nastavení intenzity needitovaných objektů";break;
       case 116:text="                  Nástroje";break;
       case 117:text="Změřit vzdálenost";break;
-      case 118:text="Zakázky";break;
-      case 119:text="Odemknout editaci";break;
-      case 120:text="Zamknout editaci";break;
+			case 118:text="Zakázky";break;
+			case 119:text="Odemknout editaci";break;
+			case 120:text="Zamknout editaci mimo hodnot tabulek";break;
       case 121:text="Skrýt tabulky";break;
       case 122:text="Zobrazit tabulky";break;
       case 123:text="Skrýt kóty";break;
@@ -3551,9 +3551,9 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				else {A=d.v.HALA.body->predchozi;B=d.v.HALA.body->dalsi;}//posun úsečky haly
 			}
 			else {A=pom_bod->predchozi;B=pom_bod;}//ostatní úsečky
-			if(A->X==B->X)//posun po x
+			if(m.round2double(A->X,2)==m.round2double(B->X,2))//posun po x
 				d.v.posun_hranu(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),0,A,B);
-			else if(A->Y==B->Y)//posun po y
+			else if(m.round2double(A->Y,2)==m.round2double(B->Y,2))//posun po y
 				d.v.posun_hranu(0,akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),A,B);
 			else//skosená úsečka
 			{
@@ -3961,7 +3961,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				//pokud byl objekt posunut a obsahuje už pohon a geometrii, zobrazen dotaz zda souhlasím z posunem
 				if(pom_temp==NULL && pom->elementy->dalsi->pohon!=NULL && predchozi_souradnice_kurzoru.x!=m.L2Px(pom->elementy->dalsi->geo.X1) && predchozi_souradnice_kurzoru.y!=m.L2Px(pom->elementy->dalsi->geo.Y1) && mrNo==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,ls->Strings[416],"",MB_YESNO,true,false))//"Objekt byl přesunut, souhlasíte s aktuálním umístěním?"
 				d.v.posun_objekt(m.P2Lx(predchozi_souradnice_kurzoru.x)-pom->elementy->dalsi->geo.X1,m.P2Ly(predchozi_souradnice_kurzoru.y)-pom->elementy->dalsi->geo.Y1,pom,false,false);
-				Akce=NIC;kurzor(standard);if(pom_temp!=NULL)scGPImage_zamek_posunu->ClipFrameFillColor=clWhite;
+				Akce=NIC;kurzor(standard);if(pom_temp!=NULL){scGPImage_zamek_posunu->ClipFrameFillColor=clWhite;scGPImage_zamek_posunu->ImageIndex=28;}//zamčen posun
 			}break;//posun objektu
 			case MOVE_TABLE:
 			{
@@ -5081,7 +5081,7 @@ void TForm1::ESC()
 	//vymaže, překreslí, odznačí provizorní lini
 	switch(Akce)
 	{
-		case MOVE:d.odznac_oznac_objekt(Canvas,pom,akt_souradnice_kurzoru_PX.x-vychozi_souradnice_kurzoru.x,akt_souradnice_kurzoru_PX.y-vychozi_souradnice_kurzoru.y);break;
+		//case MOVE:d.odznac_oznac_objekt(Canvas,pom,akt_souradnice_kurzoru_PX.x-vychozi_souradnice_kurzoru.x,akt_souradnice_kurzoru_PX.y-vychozi_souradnice_kurzoru.y);break;
 		case ADD:
 		{
 			if(MOD!=NAHLED)
@@ -7755,13 +7755,13 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 	//formátování buněk tabulky (vždy stejn=)
 	for(int i=1;i<=ms.MyToDouble(E->mGrid->RowCount-1);i++)
 	{
-		if (E->mGrid->Cells[1][i].Type==E->mGrid->EDIT)E->mGrid->Cells[1][i].InputNumbersOnly=2;
+		if(E->mGrid->Cells[1][i].Type==E->mGrid->EDIT && E->mGrid->Cells[1][i].Text!="OK")E->mGrid->Cells[1][i].InputNumbersOnly=2;
 		E->mGrid->Cells[0][i].RightMargin = 3;
 		E->mGrid->Cells[1][i].RightMargin = 3;
 		E->mGrid->Cells[0][i].Font->Color=clFontLeft;
 		E->mGrid->Cells[0][i].Align=mGrid->RIGHT;
 		E->mGrid->Cells[1][i].Align=mGrid->RIGHT;
-		if (!(E->eID==0 && i==1))E->mGrid->Cells[1][i].Text=m.round2double(ms.MyToDouble(E->mGrid->Cells[1][i].Text),3);//přeskočení prvního řádku v tabulce stopky
+		if (!(E->eID==0 && i==1) && E->mGrid->Cells[1][i].Text!="OK")E->mGrid->Cells[1][i].Text=m.round2double(ms.MyToDouble(E->mGrid->Cells[1][i].Text),3);//přeskočení prvního řádku v tabulce stopky
 		if (E->mGrid->Cells[1][i].Type!=E->mGrid->EDIT&&E->mGrid->Cells[1][i].Type!=E->mGrid->COMBO)
 		{
 			E->mGrid->Cells[1][i].Background->Color=clBackgroundHidden;
@@ -8185,7 +8185,8 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][1].Text=ls->Strings[223];//"Párová stop";
 			if(E->sparovany!=NULL)E->mGrid->Cells[1][1].Text=AnsiString(E->sparovany->name);else E->mGrid->Cells[1][1].Text="N/A";
 			E->mGrid->Cells[0][2].Text="RT "+cas;
-			E->mGrid->Cells[1][2].Text=outPT(E->RT);
+			if(E->RT>0 && E->akt_pocet_voziku>1){E->mGrid->Cells[1][2].Text="OK";E->mGrid->Cells[1][2].Hint=outPT(E->RT);E->mGrid->Cells[1][2].ShowHint=true;}
+			else {E->mGrid->Cells[1][2].Text=outPT(E->RT);E->mGrid->Cells[1][2].Hint="";E->mGrid->Cells[1][2].ShowHint=false;}
 			E->mGrid->Cells[0][3].Text=popisek+" "+cas;
 			E->mGrid->Cells[1][3].Text=outPT(E->WTstop);
 			E->mGrid->Cells[0][4].Text=ls->Strings[224]+" "+cas;//"WT palec "
@@ -10471,6 +10472,7 @@ void TForm1::zmena_editovaneho_objektu()
 			scGPLabel_poznamky->Top=583;
 		}
 		/////////Uzavření starého náhledu
+		Timer_neaktivity->Enabled=false;//vypnutí timeru pro jistotu
 		if(MOD==NAHLED&&index_kurzoru==9999||index_kurzoru==100)smaz_edit(false);//smaže edit a neprovede refresh
 		if(editace_textu)smaz_kurzor();//také volá Refresh//smaz_kurzor se zavolá, pouze pokud je to třeba odstraňuje zbytečný problik, dodělal MaKr
 		MOD=SCHEMA;//nutné před zoom, ale za smaz kurzor
@@ -13023,6 +13025,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 	log(__func__);//logování
 	if(MOD==NAHLED)  //navrácení do módu schéma
 	{
+    Timer_neaktivity->Enabled=false;//vypnutí timeru pro jistotu
 		if(Akce!=NIC)ESC();
 		//////
 		if(MOD==NAHLED&&index_kurzoru==9999||index_kurzoru==100)
@@ -14303,6 +14306,7 @@ void __fastcall TForm1::NahledClick(TObject *Sender)
 void __fastcall TForm1::scGPImage_zamek_posunuClick(TObject *Sender)
 {
 	log(__func__);//logování
+	scGPImage_zamek_posunu->ImageIndex=29;//odemčen posun
 	scGPImage_zamek_posunu->ClipFrameFillColor=(TColor)RGB(225,225,225);
 	Akce=MOVE;
 	kurzor(pan);

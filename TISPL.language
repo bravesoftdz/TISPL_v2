@@ -117,8 +117,8 @@ Adjust the intensity of non-edited objects;X;Nastavení intenzity needitovaných o
                   Tools;X;                  Nástroje
 Measure the distance;X;Zmìøit vzdálenost
 Contracts;X;Zakázky
-Unlock edit;X;Odemknout editaci
-Lock edit;X;Zamknout editaci
+Unlock editing;X;Odemknout editaci
+Lock editing without table values;X;Zamknout editaci mimo hodnot tabulek
 Hide tables;X;Skrýt tabulky
 Show tables;X;Zobrazit tabulky
 Hide dimensions;X;Skrýt kóty
