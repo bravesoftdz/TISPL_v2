@@ -373,7 +373,7 @@ class Cvektory
 		short zID;//typ zprávy -1 - error, 1 - warning
 		long VID;//typ validačního výpisu
 		double VIDvalue;//případná doporučená hodnota
-		TRect citelna_oblast;//pouze pomocná proměnná ve fyzických souřadnicích (px) uchovávájící oblast textu zprávy
+		HRGN citelna_oblast;//pouze pomocná proměnná ve fyzických souřadnicích (px) uchovávájící oblast textu zprávy
 		struct TZprava *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 		struct TZprava *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};

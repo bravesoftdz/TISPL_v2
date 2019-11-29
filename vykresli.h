@@ -43,6 +43,9 @@ class Cvykresli
 		bool A;//animace true nebo false
 	};TTP TP;//nastavení modu technologické procesy
 
+	enum Talign{LEFT,CENTER,RIGHT};
+	enum Tvalign{TOP,MIDDLE,BOTTOM};
+
 	void vykresli_halu(TCanvas *canv,int typ=-2);//stav: -3 kurzor, -2 normal (implicitnì), -1-highlight bez editace, 0-editace zvýrazní všechny body, 1-až poèet bodù zvýraznìní daného bodu,poèet bodù+1 zvýraznìní dané hrany vèetnì sousedícícíh úchopù (napø. pro polygono o 6 bodech) bude hodnota stavu 7 zvýraznìní první hrany (od bodu 1 do bodu 2)
 	void vykresli_vektory(TCanvas *canv);//vykreslí zakázky, cesty, spojnice, kabiny, pohony, elementy
 	void vykresli_objekt(TCanvas *canv, Cvektory::TObjekt *ukaz);
@@ -115,6 +118,7 @@ class Cvykresli
 	TColor set_color(TCanvas *canv, Cvektory::TObjekt *O);
 	void drawRectText(TCanvas *canv,TRect Rect, UnicodeString Text);
 	void TextFraming(TCanvas *canv,int X,int Y,UnicodeString Text,TFont *Font=NULL,TColor clFraming=clWhite,unsigned short FramingSize=4);//zajistí vykreslení daného textu dle nastaveného Fontu (pokud je NULL, pøevezme se akutální font canvasu) vèetnì framingu, který je baravnì a velikostnì nastavitelný
+	HRGN TextOut(TCanvas *canv,int X,int Y,UnicodeString Text,Talign align=CENTER,Tvalign valign=MIDDLE,float FaktorLineSpacing=1,TColor clFraming=clWhite,unsigned short FramingSize=4,TFont *Font=NULL);//zajistí vykreslení daného textu dle nastaveného Fontu (pokud je NULL, pøevezme se akutální font canvasu), možno vertikálnì i horizontálnì pozicovat, umí zalamovat øádky v pøípadì výskytu \n, velikost odøádkování dle velikosti písma 1=100%, v pøípadì záporné hodnoty øazení textu od prvního øádku dalším smìrem nahoru, umí také framing, který je baravnì a velikostnì nastavitelný, neumí zatím rotaci textu!!!
 	Graphics::TBitmap *srafura();
 	void editacni_okno(TCanvas *canv, unsigned int X1, unsigned int Y1,unsigned  int X2,unsigned  int Y2, unsigned short int size=1, COLORREF color=clBlack);//nakreslí editacni_okno
 	void editacni_okno(TCanvas *canv, TPoint LH, TPoint PD, unsigned short int size=1, COLORREF color=clBlack);//nakreslí editacni_okno
@@ -161,8 +165,8 @@ class Cvykresli
 	short predchozi_oblast;
 	Cvektory::TGeometrie geoTemp;//pomocná struktura sloužicí na uchování (k pozdìjšímu uložení do geometrických elementù) aktuálnì vracených hodnot ze smart kurzoru
 	short pasivni_vektory_intenzita;//intenzita pasivních vektorù pøi editaci objektu
-	long zobrazit_celou_zpravu;//promìnná urèující, která zpráva bude zobrazena
-	long zprava_highlight;//pomocná promìnná sloužící na ztuènìní dané zpravy
+	unsigned long zobrazit_celou_zpravu;//promìnná urèující, která zpráva bude zobrazena
+	unsigned long zprava_highlight;//pomocná promìnná sloužící na ztuènìní dané zpravy
 
 	protected:
 

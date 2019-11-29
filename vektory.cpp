@@ -5527,7 +5527,7 @@ void Cvektory::hlavicka_ZPRAVY()
 	nova->zID=0;
 	nova->VID=0;
 	nova->VIDvalue=-1;
-	nova->citelna_oblast=TRect(0,0,0,0);
+	nova->citelna_oblast=NULL;
 
 	//ukazatelové záležitosti
 	nova->predchozi=nova;//ukazuje sam na sebe
@@ -5620,7 +5620,7 @@ long Cvektory::PtInZpravy()
 		Cvektory::TZprava *Z=ZPRAVY->dalsi;
 		while(Z!=NULL)
 		{                                                                    //*3 kvůli AA
-			if(Z->citelna_oblast.PtInRect(TPoint(F->akt_souradnice_kurzoru_PX.x*3,F->akt_souradnice_kurzoru_PX.y*3)) || m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,Z->X,Z->Y,m.px2m(m.round(3*F->Zoom)))){RET=Z->n;break;}
+			if(PtInRegion(Z->citelna_oblast,F->akt_souradnice_kurzoru_PX.x*3,F->akt_souradnice_kurzoru_PX.y*3)  || m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,Z->X,Z->Y,m.px2m(m.round(3*F->Zoom)))){RET=Z->n;break;}
 			Z=Z->dalsi;
 		}
 		Z=NULL;delete Z;
