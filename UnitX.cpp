@@ -229,7 +229,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 			  		E->PTotoc=F->m.PT(E->OTOC_delka,F->pom_temp->pohon->aRD);
 			  		E->mGrid->Cells[1][4].Text=F->m.round2double(F->outPT(E->PTotoc),3);
 			  		E->PT2=F->m.PT(E->LO2,F->pom_temp->pohon->aRD);
-						E->mGrid->Cells[1][6].Text=F->m.round2double(F->outPT(E->PT2),3);
+						E->mGrid->Cells[1][8].Text=F->m.round2double(F->outPT(E->PT2),3);
 			  		//zmìna v ostatních elementech
 			  		if(E->mGrid->Cells[Col][Row].Text!="")zmena_aRD(E);
 						F->PmG->Refresh();//došlo ke zmìnì hodnot v PmG
