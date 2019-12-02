@@ -915,7 +915,8 @@ void TForm1::DesignSettings()
 	scGPButton_zahodit->Left=scGPPanel_bottomtoolbar->Width/2+11-68;
 	scGPButton_ulozit->Left=scGPButton_zahodit->Left-scGPButton_zahodit->Width-22;
 	scGPImage_zamek_posunu->Left=22-4;//okraj komponenty != okraji obrázku
-	scGPImage_mereni_vzdalenost->Left=scGPImage_zamek_posunu->Left+scGPImage_zamek_posunu->Width+22-13;
+	//scGPImage_mereni_vzdalenost->Left=scGPImage_zamek_posunu->Left+scGPImage_zamek_posunu->Width+22-13;
+	scGPImage_mereni_vzdalenost->Left=22-4;
 	scGPLabel1->Left=scGPImage_mereni_vzdalenost->Left+scGPImage_mereni_vzdalenost->Width+22-8;
 	scGPLabel_prepinacKot->Left=scGPLabel1->Left;//label k přepínači kót
 	scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
@@ -1962,7 +1963,8 @@ void __fastcall TForm1::FormResize(TObject *Sender)
 	scGPButton_zahodit->Left=scGPPanel_bottomtoolbar->Width/2+11-68;
 	scGPButton_ulozit->Left=scGPButton_zahodit->Left-scGPButton_zahodit->Width-22;
 	scGPImage_zamek_posunu->Left=22-4;//okraj komponenty != okraji obrázku
-	scGPImage_mereni_vzdalenost->Left=scGPImage_zamek_posunu->Left+scGPImage_zamek_posunu->Width+22-13;
+	//scGPImage_mereni_vzdalenost->Left=scGPImage_zamek_posunu->Left+scGPImage_zamek_posunu->Width+22-13;
+	scGPImage_mereni_vzdalenost->Left=22-4;
 	scGPLabel1->Left=scGPImage_mereni_vzdalenost->Left+scGPImage_mereni_vzdalenost->Width+22-8;
 	scGPLabel_prepinacKot->Left=scGPLabel1->Left;//label k přepínači kót
 	scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
@@ -4307,9 +4309,9 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 
 			////volání akce dle JID            //toto bez otestovaní
   		if(JID==-1 || pom_element==NULL || pom_element_puv!=pom_element)//není již job ID nebo ukazatel na pohon (může nastat situace přechod tabulka citelná oblast kót či nadpisu kabiny a nic by se bez tohoto nestalo
-  		{
-				if(pom_element_puv!=NULL)pom_element_puv->mGrid->MouseMove(X,Y);//najistotu zrušení hintů a highlignutí odkazu normálních tabulek dodáním pouze aktuálních souřadnic
-  			if(puvJID>=4 && puvJID<=10)PmG->MouseMove(X,Y);//najistotu hintů a zrušení highlignutí tabulky pohonu dodáním pouze aktuálních souřadnic
+			{
+				if(pom_element_puv!=NULL && pom_temp->zobrazit_mGrid)pom_element_puv->mGrid->MouseMove(X,Y);//najistotu zrušení hintů a highlignutí odkazu normálních tabulek dodáním pouze aktuálních souřadnic
+  			if(puvJID>=4 && puvJID<=10 && pom_temp->zobrazit_mGrid)PmG->MouseMove(X,Y);//najistotu hintů a zrušení highlignutí tabulky pohonu dodáním pouze aktuálních souřadnic
 			}
       if(JID==-102)kurzor(info);//zprávy
 			if(JID==0&&pom_temp->id!=3){if(pom_element->orientace==0||pom_element->orientace==180)kurzor(zmena_d_x);else kurzor(zmena_d_y);pom_element->stav=2;refresh_mGrid=false;}//posun ELEMENT
@@ -10436,6 +10438,7 @@ void TForm1::NP_input()
 void TForm1::zmena_editovaneho_objektu()
 {
 	log(__func__);//logování
+	Timer_neaktivity->Enabled=false;//vypnutí timeru pro jistotu
 	Konec->SetFocus();
 	/////////Uložení náhledu
 	bool prepnout=true,validace=false;
@@ -10474,7 +10477,6 @@ void TForm1::zmena_editovaneho_objektu()
 			scGPLabel_poznamky->Top=583;
 		}
 		/////////Uzavření starého náhledu
-		Timer_neaktivity->Enabled=false;//vypnutí timeru pro jistotu
 		if(MOD==NAHLED&&index_kurzoru==9999||index_kurzoru==100)smaz_edit(false);//smaže edit a neprovede refresh
 		if(editace_textu)smaz_kurzor();//také volá Refresh//smaz_kurzor se zavolá, pouze pokud je to třeba odstraňuje zbytečný problik, dodělal MaKr
 		MOD=SCHEMA;//nutné před zoom, ale za smaz kurzor
