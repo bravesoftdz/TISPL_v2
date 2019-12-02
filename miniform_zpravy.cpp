@@ -70,10 +70,10 @@ void __fastcall TForm_zpravy::scGPListBox_zpravyMouseMove(TObject *Sender, TShif
      {
      if(i==radek)
      {  //bold
-      if(scGPListBox_zpravy->Items->Items[radek]->ImageIndex==69)  { scGPListBox_zpravy->Items->Items[radek]->ImageIndex=70; }
-      if(scGPListBox_zpravy->Items->Items[radek]->ImageIndex==71)  { scGPListBox_zpravy->Items->Items[radek]->ImageIndex=72; }
-      F->d.zprava_highlight=radek+1;  F->REFRESH();
-      radek_temp = radek;
+			if(scGPListBox_zpravy->Items->Items[radek]->ImageIndex==69)  { scGPListBox_zpravy->Items->Items[radek]->ImageIndex=70; }
+			if(scGPListBox_zpravy->Items->Items[radek]->ImageIndex==71)  { scGPListBox_zpravy->Items->Items[radek]->ImageIndex=72; }
+			F->d.zprava_highlight=radek+1;  F->REFRESH();
+			radek_temp = radek;
      }    //ostatní nastav jako thin
      else if  (scGPListBox_zpravy->Items->Items[i]->ImageIndex==70) scGPListBox_zpravy->Items->Items[i]->ImageIndex=69;  //error thin
      else if  (scGPListBox_zpravy->Items->Items[i]->ImageIndex==72) scGPListBox_zpravy->Items->Items[i]->ImageIndex=71;  //warning thin
@@ -98,7 +98,6 @@ void __fastcall TForm_zpravy::scGPGlyphButton_pripnoutClick(TObject *Sender)
 		Left=F->ClientWidth - scGPListBox_zpravy->Width;
 
 	}
-   F->Memo(Form_zpravy->Height);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_zpravy::SkrytClick(TObject *Sender)
@@ -130,12 +129,13 @@ void  TForm_zpravy::update_zpravy(long pocet_erroru, long pocet_warningu)
 	if(pocet_erroru==0 && pocet_warningu==0)//POKUD NEJSOU žádné ZPRÁVY
 	{
 		scGPListBox_zpravy->Items->Clear();//vymazat pøípadné pùvodní
+		closing=true;
 		Form_zpravy->Visible=false;//skrýt form
 		F->scGPButton_error->Visible=false;F->scGPButton_warning->Visible=false;//skrýt ikony
 	}
 	else//POKUD EXISTUJÍ nìjaké ZPRÁVY
 	{
-		if(Form_zpravy->Visible)//pokud je form zpravy zobrazen,
+		if(Form_zpravy->Visible)//pokud je form zpravy zobrazen
 		{
 			//schovaní ikony v horni liste
 			F->scGPButton_error->Visible=false;F->scGPButton_warning->Visible=false;
@@ -166,7 +166,6 @@ void  TForm_zpravy::update_zpravy(long pocet_erroru, long pocet_warningu)
         RzStatusPane_var_header->Caption= "Poèet varování "+AnsiString(pocet_warningu);
 			  if(custom_size==false)	Form_zpravy->Height = (pocet_erroru+pocet_warningu) *  scGPListBox_zpravy->ItemHeight + scLabel_header->Height + scGPPanel_statusbar->Height + 5;   //5px rezervnich
         if(Form_zpravy->Height > F->ClientHeight)   Form_zpravy->Height =  F->ClientHeight  -  scGPPanel_statusbar->Height - scLabel_header->Height - F->scLabel_titulek->Height;
-       F->Memo(Form_zpravy->Height);
 			}
 		}
 		else//pokud je form skrytý, zobrazí ikonu errorù nebo warningù (pøípadnì obì ikony) v horní lištì
@@ -180,11 +179,18 @@ void  TForm_zpravy::update_zpravy(long pocet_erroru, long pocet_warningu)
 void __fastcall TForm_zpravy::scGPListBox_zpravyMouseLeave(TObject *Sender)
 { //pri opusteni zprav navratim posledni warning nebo error na pùvodní ikonu
 	if(F->d.v.ZPRAVY!=NULL && 0<radek_temp && radek_temp<scGPListBox_zpravy->Items->Count)//DODAL MAKR
-	 {
+	{
 		if(scGPListBox_zpravy->Items->Items[radek_temp]->ImageIndex==70) scGPListBox_zpravy->Items->Items[radek_temp]->ImageIndex=69;  //error thin
 		if(scGPListBox_zpravy->Items->Items[radek_temp]->ImageIndex==72) scGPListBox_zpravy->Items->Items[radek_temp]->ImageIndex=71;  //warning thin
-	 }
-	 //možná DOØEŠIT VÌTEV ELSE pro unhigliht
+	}
+	else//unhigliht po odjetí myší ze zpráv pokud je nìjaká zhighlitovaná
+	{
+		if(F->d.zprava_highlight>0)
+		{
+			F->d.zprava_highlight=0;
+			F->REFRESH();
+		}
+	}
 }
 //---------------------------------------------------------------------------
 void TForm_zpravy::highlight(int radek)
@@ -192,17 +198,16 @@ void TForm_zpravy::highlight(int radek)
  //highlight z layoutu
   if(Form_zpravy->Visible)
   {
-		 for(int i=0; i<scGPListBox_zpravy->Items->Count;i++)
-     {
-     if(i==radek)
-     {  //bold
-      if(scGPListBox_zpravy->Items->Items[radek]->ImageIndex==69)  { scGPListBox_zpravy->Items->Items[radek]->ImageIndex=70; }
-      if(scGPListBox_zpravy->Items->Items[radek]->ImageIndex==71)  { scGPListBox_zpravy->Items->Items[radek]->ImageIndex=72; }
-      F->d.zprava_highlight=radek+1;  F->REFRESH();
-     }    //ostatní nastav jako thin
-     else if  (scGPListBox_zpravy->Items->Items[i]->ImageIndex==70) scGPListBox_zpravy->Items->Items[i]->ImageIndex=69;  //error thin
-     else if  (scGPListBox_zpravy->Items->Items[i]->ImageIndex==72) scGPListBox_zpravy->Items->Items[i]->ImageIndex=71;  //warning thin
-     }
+		for(int i=0; i<scGPListBox_zpravy->Items->Count;i++)
+    {
+			if(i==radek)
+			{  //bold
+				if(scGPListBox_zpravy->Items->Items[radek]->ImageIndex==69)  { scGPListBox_zpravy->Items->Items[radek]->ImageIndex=70; }
+				if(scGPListBox_zpravy->Items->Items[radek]->ImageIndex==71)  { scGPListBox_zpravy->Items->Items[radek]->ImageIndex=72; }
+			}    //ostatní nastav jako thin
+			else if  (scGPListBox_zpravy->Items->Items[i]->ImageIndex==70) scGPListBox_zpravy->Items->Items[i]->ImageIndex=69;  //error thin
+		  else if  (scGPListBox_zpravy->Items->Items[i]->ImageIndex==72) scGPListBox_zpravy->Items->Items[i]->ImageIndex=71;  //warning thin
+		}
 	}
 }
 //---------------------------------------------------------------------------
@@ -211,21 +216,16 @@ void __fastcall TForm_zpravy::scGPGlyphButton_pripnoutResize(TObject *Sender)
 	scGPGlyphButton_pripnout->Visible=true;//pøidal MAKR
 }
 //---------------------------------------------------------------------------
-
-
-void __fastcall TForm_zpravy::scLabel_headerMouseDown(TObject *Sender, TMouseButton Button,
-          TShiftState Shift, int X, int Y)
+void __fastcall TForm_zpravy::scLabel_headerMouseDown(TObject *Sender, TMouseButton Button,	TShiftState Shift, int X, int Y)
 {
-if(mouse_move==1)
+	if(mouse_move==1)
   {
-  scGPSizeBox->Visible=true;
-  scGPGlyphButton_pripnout->Visible=true;
+		scGPSizeBox->Visible=true;
+		scGPGlyphButton_pripnout->Visible=true;
   }
 }
 //---------------------------------------------------------------------------
-
-void __fastcall TForm_zpravy::scLabel_headerMouseMove(TObject *Sender, TShiftState Shift,
-          int X, int Y)
+void __fastcall TForm_zpravy::scLabel_headerMouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
 {
 mouse_move=1;
 }

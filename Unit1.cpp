@@ -4059,8 +4059,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 		if(pom_temp!=NULL)mGrid_on_mGrid();//kontrola, zda nejsou překryty mGridy elementů a PmG
 	}
 	stisknute_leve_tlacitko_mysi=false;
-	if(duvod_validovat==1){duvod_validovat=2;d.v.VALIDACE();}//pokud je důvod validovat, tak až po dokonečení akce, nešlo monitorovat dle Akce==NIC, volání VALIDACE přímo zde je odvozeno z důvodu, že někdy není odchytnut REFRESH po dokončení akce
-
+	if(duvod_validovat==1){duvod_validovat=2;REFRESH();/*d.v.VALIDACE();*/}//pokud je důvod validovat, tak až po dokonečení akce, nešlo monitorovat dle Akce==NIC, volání VALIDACE pomocí REFRESH (aplikace zde takto, někdy není odchytnut REFRESH po dokončení akce)
 	//vrat_puvodni_akci();
 	/*if(X<=RzSizePanel_knihovna_objektu->Width) DrawGrid_knihovna->Enabled=true;
 	else DrawGrid_knihovna->Enabled=false;*/

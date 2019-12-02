@@ -2787,8 +2787,8 @@ unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,int i,TPointD OD, TPointD 
 ////-----------------------------------------------------------------------------------------------------------------------------------------------------
 //vykresli pozic a obalových zón - doporučení přejmenovat metodu
 void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
-{
-	if(F->scGPTrackBar_intenzita->Value>5 && F->scGPCheckBox_zobrazit_pozice->Checked && E->max_pocet_voziku>0 || (F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180) || F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->geo.typ==1)//pokud se má smysl algoritmem zabývat
+{                                                                                                                                                                                                                                                                                                          //oblouk
+	if(F->scGPTrackBar_intenzita->Value>5 && F->scGPCheckBox_zobrazit_pozice->Checked && E->max_pocet_voziku>0 || (F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180) || F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->geo.typ==1)//pokud se má smysl algoritmem zabývat, pouze optimalizační podmínky
 	{
 		////výchozí hodnoty
 		double orientaceP=m.Rt90(E->geo.orientace-180);
@@ -2836,17 +2836,6 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 				set_pen2(canv,(TColor)RGB(clAkt,clAkt,clAkt),m.round(1.3/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
 				vykresli_jig(canv,Xr-x*posun*abs(i/krok),Yr-y*posun*abs(i/krok),dJ,sJ,orientaceP,rotaceJ+i,clRed,0);//pozn. barvu nastavujeme výše
 			}
-//			//v případě že poslední rotace nevrací jig orotované, tak jak jsou orotované ve vstupním objektu/první rotačním elementu  - bude extra separé ve VALIDACI
-//			Cvektory::TElement *Ep=v.vrat_posledni_rotacni_element();
-//			if(Ep!=NULL)
-//			{
-//				double aR=m.a360(rotaceJ+Ep->rotace_jig);//výstupní rotace jigu z posledního rotačního elementu
-//				if(Ep->n==E->n &&  Ep->objekt_n==E->objekt_n && aR!=0 && aR!=180)//předposlení podmínka při novém DM zbytečná!
-//				{
-//					v.vloz_zpravu(X,Y,-1,401,Ep);//"Rotace neodpovídá orientaci JIGů na začátku linky!"
-//				}
-//			}
-//			Ep=NULL;delete Ep;
 		}
 
 		////vykreslení POZIC na elementu + vzniklém buffru
@@ -2859,11 +2848,6 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 				if(i+1>pocet_voziku)vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,m.clIntensive(clPotencial,-50),clPotencial);//záměrně šedou jak podvozek tak JIG jako potenicální pozice
 				else vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,clChassis,clJig);
 			}
-//			//případne výpis špatné rotace jigu u bufferů - bude extra separé ve VALIDACI
-//			if(v.PP.delka_podvozek<m.UDJ(rotaceJ) && E->rotace_jig==0 && pocet_pozic>1)
-//			{
-//				v.vloz_zpravu(X+x*v.PP.delka_podvozek*(pocet_pozic-1)/2.0,Y+y*v.PP.delka_podvozek*(pocet_pozic-1)/2.0,-1,402,E);//"Pozor, překrytí JIGů!"
-//			}
 		}
 
 		////vykreslí OBALOVOU zónu oblouků
@@ -4640,10 +4624,12 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 		//vstupní proměnné
 		UnicodeString Text="";//vypisovaný rozšířený popis zprávy
 		double Xr=0,Yr=0;//referenční souřadnice zpráv, které jsou přes sebe (od daného elementu)
+		double Xh=0,Yh=0;//referenční souřadnice zpráv, které jsou přes sebe (od daného elementu) a mají být highlightované
 		long X,Y;//fyzické souřadnice zprávy
-		Cvektory::TZprava *Zt=NULL;//Zpráva
+		Cvektory::TZprava *Zt=NULL;//Zpráva s textem
+		Cvektory::TZprava *Zh=v.vrat_zpravu(zprava_highlight);//highligtovaná zpráva, pomocný ukazatel
 		short size=m.round(3*F->Zoom);//POZOR, v případě změny nutno ještě změnit i v v.PtInZpravy()
- F->Memo("",true);
+
 		//cyklické vypsání všech zpráv ze spojáku ZPRAVY
 		Cvektory::TZprava *Z=v.ZPRAVY->dalsi;
 		while(Z!=NULL)
@@ -4651,6 +4637,9 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 			////fyzické souřadnice zprávy
 			long X=m.L2Px(Z->X);
 			long Y=m.L2Py(Z->Y);
+
+			////sebrání souřadnicové reference pro highlight pro případ překrytých zpráv
+			if(zprava_highlight && Zh!=NULL && Zh->Element->n==Z->Element->n && Zh->X==Z->X && Zh->Y==Z->Y){Xh=Z->X;Yh=Z->Y;}
 
 			////IKONA
 			//test: F->Memo(AnsiString(Z->n)+"|"+AnsiString(Z->Element->n)+"|"+v.getVID(Z->VID)+"|"+AnsiString(m.round(Z->X))+"|"+AnsiString(m.round(Z->Y))+"||"+AnsiString(m.round(Z->predchozi->X))+"|"+AnsiString(m.round(Z->predchozi->Y)));
@@ -4677,7 +4666,7 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 				canv->Font->Name=="Arial";
 				canv->Font->Color=clWhite;
 				canv->Font->Size=m.round(3.8*F->Zoom);
-				if(zprava_highlight==Z->n)canv->Font->Style = TFontStyles()<<fsBold;else canv->Font->Style = TFontStyles();//highlight, buď všechny nebo konkréktní
+				if(/*zprava_highlight==Z->n || */zprava_highlight && Z->X==Xh && Z->Y==Yh){canv->Font->Style = TFontStyles()<<fsBold;}else canv->Font->Style = TFontStyles();//highlight zprávy připadně pokud jsou přes sebe tak i dalších
 				canv->Brush->Style=bsClear;
 				canv->TextOutW(X-m.round(canv->TextWidth(Tico)/2.0),Y-m.round(canv->TextHeight(Tico)/2.0),Tico);
 			}
@@ -4706,7 +4695,7 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 			Y=m.L2Py(Zt->Y);
 			canv->Font->Name=F->aFont->Name;
 			canv->Font->Size=m.round(3.5*F->Zoom);
-			if(zprava_highlight==Zt->n)canv->Font->Style = TFontStyles()<<fsBold;else canv->Font->Style = TFontStyles();//highlight, buď všechny nebo konkréktní
+			if(/*zprava_highlight==Zt->n || */zprava_highlight && Zt->X==Xh && Zt->Y==Yh)canv->Font->Style = TFontStyles()<<fsBold;else canv->Font->Style = TFontStyles();
 			switch(Zt->zID)
 			{
 				case -1: canv->Font->Color=clError;break;//barva errory
@@ -4716,6 +4705,7 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 			Zt->citelna_oblast=TextOut(canv,X,Y-size,Text,CENTER,BOTTOM,-0.8,clWhite,3);
 		}
 		Zt=NULL;delete Zt;
+		Zh=NULL;delete Zh;
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
