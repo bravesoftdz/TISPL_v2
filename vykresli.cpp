@@ -4261,42 +4261,42 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,lon
 	if(typ==0)//ikona v knihovně elementů  - PROVIZORNĚ
 	{
 	////nastavení pera
-	float tloustka_linie=1.05/3.0;if(stav==2)tloustka_linie*=1.3;//pokud má být zvýrazněn  //vykreslovací linie
-	TPenMode PenMode=pmCopy;
-	if(typ==-1)//typ kurzor
-	{
-		PenMode=pmNotXor;
-		canv->Pen->Style=psDot;
-		canv->Pen->Color=barva;
-		canv->Pen->Width=1;
-		canv->Brush->Style=bsClear;
-	}
-	else
-	{
-		canv->Pen->Style=psSolid;
-		canv->Pen->Width=F->m.round(tloustka_linie*Z);
-		canv->Brush->Style=bsSolid;
-	}
-	canv->Pen->Mode=PenMode;
-	canv->Pen->Color=barva;
-	canv->Brush->Color=clWhite;
+  	float tloustka_linie=1.05/3.0;if(stav==2)tloustka_linie*=1.3;//pokud má být zvýrazněn  //vykreslovací linie
+  	TPenMode PenMode=pmCopy;
+  	if(typ==-1)//typ kurzor
+  	{
+  		PenMode=pmNotXor;
+  		canv->Pen->Style=psDot;
+  		canv->Pen->Color=barva;
+			canv->Pen->Width=1;
+			canv->Brush->Style=bsClear;
+		}
+  	else
+  	{
+  		canv->Pen->Style=psSolid;
+  		canv->Pen->Width=F->m.round(tloustka_linie*Z);
+  		canv->Brush->Style=bsSolid;
+  	}
+  	canv->Pen->Mode=PenMode;
+  	canv->Pen->Color=barva;
+  	canv->Brush->Color=clWhite;
 
-	////vykreslení elementu
-	canv->Pen->Color=clWhite;
-	if(rotace==0 || rotace==180)canv->Rectangle(X-m.m2px(0.1),Y-m.m2px(0.25),X+m.m2px(0.1),Y+m.m2px(0.25));
-	else canv->Rectangle(X-m.m2px(0.25),Y-m.m2px(0.1),X+m.m2px(0.25),Y+m.m2px(0.1));
-	canv->Pen->Mode=PenMode;
-	canv->Pen->Color=barva;
-	if(rotace==0 || rotace==180)
-	{
-		line(canv,X-m.m2px(0.1),Y-m.m2px(0.25),X-m.m2px(0.1),Y+m.m2px(0.25));
-		line(canv,X+m.m2px(0.1),Y-m.m2px(0.25),X+m.m2px(0.1),Y+m.m2px(0.25));
-	}
-	else
-	{
-		line(canv,X-m.m2px(0.25),Y-m.m2px(0.1),X+m.m2px(0.25),Y-m.m2px(0.1));
-		line(canv,X-m.m2px(0.25),Y+m.m2px(0.1),X+m.m2px(0.25),Y+m.m2px(0.1));
-	}
+  	////vykreslení elementu
+  	canv->Pen->Color=clWhite;
+  	if(rotace==0 || rotace==180)canv->Rectangle(X-m.m2px(0.1),Y-m.m2px(0.25),X+m.m2px(0.1),Y+m.m2px(0.25));
+  	else canv->Rectangle(X-m.m2px(0.25),Y-m.m2px(0.1),X+m.m2px(0.25),Y+m.m2px(0.1));
+  	canv->Pen->Mode=PenMode;
+  	canv->Pen->Color=barva;
+  	if(rotace==0 || rotace==180)
+  	{
+			line(canv,X-m.m2px(0.1),Y-m.m2px(0.25)-15,X-m.m2px(0.1),Y+m.m2px(0.25)-15);
+			line(canv,X+m.m2px(0.1),Y-m.m2px(0.25)-15,X+m.m2px(0.1),Y+m.m2px(0.25)-15);
+		}
+  	else
+  	{
+  		line(canv,X-m.m2px(0.25),Y-m.m2px(0.1),X+m.m2px(0.25),Y-m.m2px(0.1));
+  		line(canv,X-m.m2px(0.25),Y+m.m2px(0.1),X+m.m2px(0.25),Y+m.m2px(0.1));
+		}
 	}
 	////////////////----
 
@@ -4452,11 +4452,12 @@ void Cvykresli::vykresli_ikonu_linie(TCanvas *canv,int X,int Y,AnsiString Popise
 	TColor barva=clBlack; if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
 
 	//centrování pro vykreslení
-	Y+=4*3;X-=11*3;
+	Y+=4*3;X-=5*3;  //X-=11*3;
 
 	//vykreslení linie
 	set_pen(canv,barva,1*10,PS_ENDCAP_FLAT);
-	line(canv,X,Y-W-15,X+W,Y-W-15);//line(canv,X-W+8,Y-W/2+odsazeni,X+W-8,Y-W/2+odsazeni);
+	line(canv,X-36,Y-W-15,X+W,Y-W-15);//line(canv,X-W+8,Y-W/2+odsazeni,X+W-8,Y-W/2+odsazeni);
+	line(canv,X-36,Y-W+6,X,Y-W+6);//linie před obloukem
 
 	//short C=W/2;//zajištění vycentrování
 	//vykreslení oblouku

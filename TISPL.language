@@ -419,3 +419,5 @@ maximum time ;X;maximální èas
 including max. WT thumb;X;vèetnì max. WT palec
 waiting;X;èekání
 buffer wait time;X;doba èekání v bufferu
+RT is not relevant, some of the objects have no drive!;X;RT není relevantní, nìkterý z objektù nemá pohon!
+Irrelevant time reserve value (RT), drive is not assigned to some object!;X;Nerelevantní hodnota èasové rezervy (RT), na nìkterém objektu není pøiøazen pohon!
