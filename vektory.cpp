@@ -5544,11 +5544,11 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 					////////////RT záporné nebo bez rezervy
 					if(vrat_druh_elementu(E)==0)//pouze pro S&G
 					{
-						if(fabs(E->RT.x)>=1000000){vloz_zpravu(X,Y,-1,450,E);pocet_erroru++;}
+						if(fabs(E->RT.y)>=1000000){vloz_zpravu(X,Y,-1,450,E);pocet_erroru++;}
 						else
 						{
-							if(E->RT.x<0){vloz_zpravu(X,Y,-1,406,E);pocet_erroru++;}
-							if(E->RT.x==0){vloz_zpravu(X,Y,1,407,E);pocet_warningu++;}
+							if(E->RT.y<0){vloz_zpravu(X,Y,-1,406,E);pocet_erroru++;}
+							if(E->RT.y==0){vloz_zpravu(X,Y,1,407,E);pocet_warningu++;}
 						}
 					}
 					////////////Pozor, překrytí JIGů! - musí být umístěno na konci (popř. na začátku)
