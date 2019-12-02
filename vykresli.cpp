@@ -640,20 +640,72 @@ void Cvykresli::vykresli_kruh(TCanvas *canv, Cvektory::TObjekt *O)
 ////---------------------------------------------------------------------------
 void Cvykresli::drawRectText(TCanvas *canv,TRect Rect,UnicodeString Text)
 {
-		canv->TextOutW(Rect.Left+Rect.Width()/2-canv->TextWidth(Text)/2,Rect.Top+Rect.Height()/2-canv->TextHeight(Text)/2,Text);
+	canv->TextOutW(Rect.Left+Rect.Width()/2-canv->TextWidth(Text)/2,Rect.Top+Rect.Height()/2-canv->TextHeight(Text)/2,Text);
+}
+////---------------------------------------------------------------------------
+//zajistí vykreslení daného textu dle nastaveného Fontu (pokud je NULL, převezme se akutální font canvasu), možno vertikálně i horizontálně pozicovat, umí zalamovat řádky v případě výskytu \n, velikost odřádkování dle velikosti písma 1=100%, v případě záporné hodnoty řazení textu od prvního řádku dalším směrem nahoru, umí také framing, který je baravně a velikostně nastavitelný, neumí zatím rotaci textu!!!
+HRGN Cvykresli::TextOut(TCanvas *canv,int X,int Y,UnicodeString Text,Talign align,Tvalign valign,float FaktorLineSpacing,TColor clFraming,unsigned short FramingSize,TFont *Font)
+{
+	//pokud není font nastaven, převezme se akutální font, převezme se akutální font canvasu
+	if(Font==NULL)Font=canv->Font;else canv->Font=Font;
+
+	//výchozí proměnné
+	unsigned int count=F->ms.count(Text,"\n")+1;//počet řádků
+	TTextWNumber *Texty=new TTextWNumber[count];
+	unsigned short TW=0; unsigned short TH=canv->TextHeight(Text);
+	HRGN RET=NULL;
+
+	//rozseparování textu + zjištění největší šířky a délky
+	for(unsigned int i=0;i<count;i++)
+	{
+		//rozseparování textu
+		int CR=Text.Pos("\n");//pozice odřádkování
+		Texty[i].text=Text.SubString(1,CR-1);if(Texty[i].text=="")Texty[i].text=Text;//uloží část před odřádkováním nebo poslední část
+		Text=Text.SubString(CR+1,Text.Length()-CR+2);//zbytek textu pro další dělení
+
+		//zjištění největší délky + uložení délky jednotlivých řádků k dalšímu použití
+		Texty[i].number1=canv->TextWidth(Texty[i].text);
+		TW = (TW > Texty[i].number1) ? TW : Texty[i].number1;
+	}
+
+	//vypisování jednotlivých řádků
+	for(unsigned int i=0;i<count;i++)
+	{
+		//zarovnání horizontální a veritální
+		int oX=0;
+		switch(align)
+		{
+			case LEFT:	 oX=0;break;
+			case CENTER: oX=m.round(-Texty[i].number1/2.0);break;
+			case RIGHT:  oX=-Texty[i].number1;break;
+		}
+		double oY=0;
+		switch(valign)
+		{
+			case TOP:	   oY=0;if(FaktorLineSpacing<0)oY-=TH*(count-1)*FaktorLineSpacing;break;
+			case MIDDLE: oY=(0-(TH*(count-1)*FaktorLineSpacing+TH))/2.0;break;
+			case BOTTOM: oY-=TH*(count-1)*FaktorLineSpacing+TH;if(FaktorLineSpacing<0)oY=-TH;break;
+		}
+		//výsledné souřadnice
+		int Xl=X+oX;
+		int Yl=Y+m.round(TH*i*FaktorLineSpacing+oY);
+		//samotný výpis
+		TextFraming(canv,Xl,Yl,Texty[i].text,Font,clFraming,FramingSize);
+		//uložení do celkového regionu
+		if(i>0)CombineRgn(RET,RET,CreateRectRgn(Xl,Yl,Xl+Texty[i].number1,Yl+TH),RGN_OR);
+		else RET=CreateRectRgn(Xl,Yl,Xl+Texty[i].number1,Yl+TH);//nefungovalo, pokud region byl NULL
+	}
+
+	//smazání již nepotřebného textu
+	delete[]Texty;
+
+	//vrácení oblasti textu pro případné další použití
+	return RET;
 }
 ////---------------------------------------------------------------------------
 //zajistí vykreslení daného textu dle nastaveného Fontu (pokud je NULL, převezme se akutální font canvasu) včetně framingu, který je baravně a velikostně nastavitelný
 void Cvykresli::TextFraming(TCanvas *canv,int X,int Y,UnicodeString Text,TFont *Font,TColor clFraming,unsigned short FramingSize)
 {
-	int CR=Text.Pos("\n");//pozice odřádkování
-	UnicodeString Text_dalsi="";
-	if(CR>0)
-	{
-		Text_dalsi=Text.SubString(CR+1,Text.Length()-CR+2);
-		Text=Text.SubString(1,CR-1);
-	}
-
 	//pokud není font nastaven, převezme se akutální font, převezme se akutální font canvasu
 	if(Font==NULL)Font=canv->Font;else canv->Font=Font;
 
@@ -676,12 +728,6 @@ void Cvykresli::TextFraming(TCanvas *canv,int X,int Y,UnicodeString Text,TFont *
 	//samotný text
 	canv->Font->Color=clText;
 	canv->TextOutW(X,Y,Text);
-
-	//rekurzivní volání případného dalšího řádku
-	if(CR)
-	{
-		TextFraming(canv,X,Y+canv->TextHeight(Text_dalsi),Text_dalsi,Font,clFraming,FramingSize);
-	}
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
@@ -2754,7 +2800,7 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 		double rotaceJ=v.vrat_rotaci_jigu_po_predchazejicim_elementu(E);//metodu po přechodu na nový DM zaktulizovat o průchod přes spoják elementů
 		short rozmezi=55;//pouze empiricky dodaná hodnota barevného rozpětí od první až po poslední pozici rotace, bylo 40
 		unsigned short clPotRGB=180;//hotnota barevných složek dle RGB potenciálních pozic
-		TColor clPotencial=RGB(clPotRGB,clPotRGB,clPotRGB),clChassis=(TColor) RGB(50,50,50),clJig=clPurple;
+		TColor clPotencial=(TColor) RGB(clPotRGB,clPotRGB,clPotRGB),clChassis=(TColor) RGB(50,50,50),clJig=clPurple;
 		short I=100-F->scGPTrackBar_intenzita->Value;
 		if(F->pom_temp!=NULL && E->objekt_n!=F->pom_temp->n)//v případě editace změna intezity barev právě needitovaných objektů
 		{
@@ -2787,8 +2833,8 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 			for(short i=0;abs(i)<=fabs(E->rotace_jig);i+=Z*krok)
 			{
 				unsigned short clAkt=clPotRGB+rozmezi-abs(i/krok)*clUroven;
-				set_pen2(canv,RGB(clAkt,clAkt,clAkt),m.round(1.3/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
-				vykresli_jig(canv,Xr-x*posun*abs(i/krok),Yr-y*posun*abs(i/krok),dJ,sJ,orientaceP,rotaceJ+i,NULL,0);//pozn. barvu nastavujeme výše
+				set_pen2(canv,(TColor)RGB(clAkt,clAkt,clAkt),m.round(1.3/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
+				vykresli_jig(canv,Xr-x*posun*abs(i/krok),Yr-y*posun*abs(i/krok),dJ,sJ,orientaceP,rotaceJ+i,clRed,0);//pozn. barvu nastavujeme výše
 			}
 //			//v případě že poslední rotace nevrací jig orotované, tak jak jsou orotované ve vstupním objektu/první rotačním elementu  - bude extra separé ve VALIDACI
 //			Cvektory::TElement *Ep=v.vrat_posledni_rotacni_element();
@@ -2829,21 +2875,21 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 			short clUroven=m.round(rozmezi*pocet+1);//rozmezí odstínu v RGB
 			DWORD pole[]={m.round(5/3.0*F->Zoom),m.round(2.5/3.0*F->Zoom),m.round(1/3.0*F->Zoom),m.round(2.5/3.0*F->Zoom)};//definice uživatelského pera s vlastní definovanou linii
 			unsigned short clAkt=clPotRGB+rozmezi;
-			set_pen2(canv,RGB(clAkt,clAkt,clAkt),m.round(1.3/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
+			set_pen2(canv,(TColor)RGB(clAkt,clAkt,clAkt),m.round(1.3/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
 			//vstupní jig - vykresluji separé, kvůli ušetření výpočtu
-			vykresli_jig(canv,E->geo.X1,E->geo.Y1,dJ,sJ,orientaceP,rotaceJ,NULL,0);//pozn. barvu nastavujeme výše
+			vykresli_jig(canv,E->geo.X1,E->geo.Y1,dJ,sJ,orientaceP,rotaceJ,clRed,0);//pozn. barvu nastavujeme výše
 			//následující jig(y)
 			for(double i=fRA/pocet;i<fRA;i+=fRA/pocet)
 			{
 				clAkt=clPotRGB+rozmezi-abs(i/fRA/pocet)*clUroven;
-				set_pen2(canv,RGB(clAkt,clAkt,clAkt),m.round(1.3/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
+				set_pen2(canv,(TColor)RGB(clAkt,clAkt,clAkt),m.round(1.3/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
 				TPointD *geo=m.getArcLine(E->geo.X1,E->geo.Y1,E->geo.orientace,i*z,E->geo.radius);
-				vykresli_jig(canv,geo[3].x,geo[3].y,dJ,sJ,orientaceP+i*-z,rotaceJ,NULL,0);//pozn. barvu nastavujeme výše
+				vykresli_jig(canv,geo[3].x,geo[3].y,dJ,sJ,orientaceP+i*-z,rotaceJ,clRed,0);//pozn. barvu nastavujeme výše
 				delete geo;geo=NULL;
 			}
 			//poslední jig - vykresluji separé, kvůli ušetření výpočtu
-			set_pen2(canv,RGB(clPotRGB,clPotRGB,clPotRGB),m.round(1.3/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
-			vykresli_jig(canv,E->geo.X4,E->geo.Y4,dJ,sJ,orientaceP-E->geo.rotacni_uhel,rotaceJ,NULL,0);//pozn. barvu nastavujeme výše
+			set_pen2(canv,(TColor)RGB(clPotRGB,clPotRGB,clPotRGB),m.round(1.3/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
+			vykresli_jig(canv,E->geo.X4,E->geo.Y4,dJ,sJ,orientaceP-E->geo.rotacni_uhel,rotaceJ,clRed,0);//pozn. barvu nastavujeme výše
 		}
 	}
 }
@@ -2983,7 +3029,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O)//přejmenovat
 		{
 			////vstupní proměnné
 			//musí být uvnitř cyklu pro nové nastavení
-			TColor clKolej=RGB(255,69,0); if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clKolej=m.clIntensive(clKolej,m.get_intensity()/1.8);//zesvětlování neaktivních pohonů
+			TColor clKolej=(TColor) RGB(255,69,0); if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clKolej=m.clIntensive(clKolej,m.get_intensity()/1.8);//zesvětlování neaktivních pohonů
 			TColor clRetez=clBlack; if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clRetez=m.clIntensive(clRetez,m.get_intensity());//zesvětlování neaktivních pohonů
 			float RetezWidth=1;if(E->pohon!=NULL)RetezWidth=F->Zoom*0.5;//pokud není pohon přiřazen, tak jen elementární osa, jinak skutečná tloušťka
 
@@ -3162,7 +3208,7 @@ void Cvykresli::vykresli_koleje(TCanvas *canv,Cvektory::TElement *E,Cvektory::TO
 {
 	if(F->pom_temp==NULL || F->pom_temp!=NULL && F->pom_temp->n==O->n || F->scGPTrackBar_intenzita->Value>25 && F->pom_temp!=NULL && F->pom_temp->n!=O->n)//při editaci zobrazí pasivní jen s intenzitou větší než 25
 	{
-		TColor clKolej=RGB(255,69,0);
+		TColor clKolej=(TColor) RGB(255,69,0);
 		if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clKolej=m.clIntensive(clKolej,m.round(m.get_intensity()/1.8));//zesvětlování neaktivních pohonů
 		vykresli_koleje(canv,E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,clKolej);
 	}
@@ -4300,7 +4346,7 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,lon
 			}
 			//v případě 270 musí být popisky prohozeny
 			if(v.vrat_objekt(E->objekt_n)->orientace==270){Tpom=T1;T1=T2;T2=Tpom;}
-			int w1=canv->TextWidth(T1);//,w2=canv->TextWidth(T2);
+			int w1=canv->TextWidth(T1)/*,w2=canv->TextWidth(T2)*/;
 			int h=canv->TextHeight(T1);
 			long x1=0,y1=0,x2=0,y2=0;short K=0.25*Z;//pouze grafická korekce, text aby se nezohledňovalo zarovnání na diakritiku, vypadá to dinvě
 			switch((int)rotace)
@@ -4596,7 +4642,8 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 		double Xr=0,Yr=0;//referenční souřadnice zpráv, které jsou přes sebe (od daného elementu)
 		long X,Y;//fyzické souřadnice zprávy
 		Cvektory::TZprava *Zt=NULL;//Zpráva
-
+		short size=m.round(3*F->Zoom);//POZOR, v případě změny nutno ještě změnit i v v.PtInZpravy()
+ F->Memo("",true);
 		//cyklické vypsání všech zpráv ze spojáku ZPRAVY
 		Cvektory::TZprava *Z=v.ZPRAVY->dalsi;
 		while(Z!=NULL)
@@ -4605,13 +4652,10 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 			long X=m.L2Px(Z->X);
 			long Y=m.L2Py(Z->Y);
 
-			////nastavení písma
-			if(zprava_highlight==Z->n)canv->Font->Style = TFontStyles()<<fsBold;else canv->Font->Style = TFontStyles();//highlight, buď všechny nebo konkréktní
-
 			////IKONA
-			if(Z->n==1 || Z->Element!=NULL && Z->predchozi->Element!=NULL && Z->Element->n!=Z->predchozi->Element->n)//pokud jsou ikony přes sebe tak nezobrazuje ty další
+			//test: F->Memo(AnsiString(Z->n)+"|"+AnsiString(Z->Element->n)+"|"+v.getVID(Z->VID)+"|"+AnsiString(m.round(Z->X))+"|"+AnsiString(m.round(Z->Y))+"||"+AnsiString(m.round(Z->predchozi->X))+"|"+AnsiString(m.round(Z->predchozi->Y)));
+			if(Z->n==1 || Z->X!=Z->predchozi->X || Z->Y!=Z->predchozi->Y)//pokud jsou ikony přes sebe tak nezobrazuje ty další, první propouští vždy
 			{
-				short size=m.round(3*F->Zoom);//POZOR, v případě změny nutno ještě změnit i v v.PtInZpravy()
 				TColor clCircle=clRed;
 				AnsiString Tico="";
 				switch(Z->zID)
@@ -4621,15 +4665,19 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 				}
 				//kruhový podklad ikony
 				canv->Brush->Style=bsSolid;
+				//SetBkMode(canv->Handle,TRANSPARENT/*OPAQUE*/);//nastvení netransparentního pozadí
 				canv->Brush->Color=clCircle;
 				canv->Pen->Style=psSolid;
+				canv->Pen->Mode=pmMask;if(F->Zoom<5*3)canv->Pen->Mode=pmCopy;//transparentní ikona od určitého zoomu
 				canv->Pen->Color=clWhite;
 				canv->Pen->Width=m.round(0.1*F->Zoom);//framing ikony
 				canv->Ellipse(X-size,Y-size,X+size,Y+size);
+				canv->Pen->Mode=pmCopy;//vrácení do původního stavu
 				//text ikony
 				canv->Font->Name=="Arial";
 				canv->Font->Color=clWhite;
 				canv->Font->Size=m.round(3.8*F->Zoom);
+				if(zprava_highlight==Z->n)canv->Font->Style = TFontStyles()<<fsBold;else canv->Font->Style = TFontStyles();//highlight, buď všechny nebo konkréktní
 				canv->Brush->Style=bsClear;
 				canv->TextOutW(X-m.round(canv->TextWidth(Tico)/2.0),Y-m.round(canv->TextHeight(Tico)/2.0),Tico);
 			}
@@ -4643,7 +4691,7 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 			}
 
 			//pouze "VYNULOVÁNÍ" CITELNÉ OBLASTI textu, plnění níže
-			Z->citelna_oblast=TRect(X,Y,X,Y);
+			Z->citelna_oblast=NULL;
 
 			//posun na další zpravu
 			Z=Z->dalsi;
@@ -4651,25 +4699,21 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 		delete Z;
 
 		////zobrazování popisného TEXTU
-		if(zobrazit_celou_zpravu)
+		if(zobrazit_celou_zpravu && Zt!=NULL)
 		{
 			//nastavení
 			X=m.L2Px(Zt->X);
 			Y=m.L2Py(Zt->Y);
 			canv->Font->Name=F->aFont->Name;
 			canv->Font->Size=m.round(3.5*F->Zoom);
+			if(zprava_highlight==Zt->n)canv->Font->Style = TFontStyles()<<fsBold;else canv->Font->Style = TFontStyles();//highlight, buď všechny nebo konkréktní
 			switch(Zt->zID)
 			{
 				case -1: canv->Font->Color=clError;break;//barva errory
 				case 1:  canv->Font->Color=clWarning;break;//barva warningy
 			}
-			int TW=canv->TextWidth(Text);int TH=canv->TextHeight(Text);
-			Y-=(m.round(3*F->Zoom)+TH);//odsazení textu
-			X-=m.round(TW/2.0);
-			//samotné vykreslení výpisu
-			TextFraming(canv,X,Y,Text,canv->Font,clWhite,3);
-			//uložení CITELNÉ OBLASTI zobrazeného textu (oblast ikony se počítá ve vektorové metodě PtInZpravy())
-			if(Zt!=NULL)Zt->citelna_oblast=TRect(X,Y,X+TW,Y+TH);
+			//samotné vykreslení výpisu + uložení CITELNÉ OBLASTI zobrazeného textu (oblast ikony se počítá ve vektorové metodě PtInZpravy())
+			Zt->citelna_oblast=TextOut(canv,X,Y-size,Text,CENTER,BOTTOM,-0.8,clWhite,3);
 		}
 		Zt=NULL;delete Zt;
 	}
@@ -4934,7 +4978,7 @@ void Cvykresli::smart_kurzor(TCanvas *canv,Cvektory::TElement *E)
 	double preRA=0;
 	double prepreRA=0;
 	if(E!=NULL)
-	{        //if(E->eID==0)F->Memo("stop");else F->Memo("");
+	{
 		preXk=E->geo.X4;
 		preYk=E->geo.Y4;
 		preOR=E->geo.orientace;

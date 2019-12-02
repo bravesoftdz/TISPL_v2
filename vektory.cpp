@@ -5529,56 +5529,62 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 		TObjekt *O=OBJEKTY->dalsi;
 		while(O!=NULL)
 		{
-			TElement *E=O->elementy;//nepřeskakovat hlavičku
+			TElement *E=O->elementy;//nepřeskakovat raději hlavičku
 			if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy;//pokud se jedná o editovaný objekt
 			while(E!=NULL)
 			{
-				////výchozí hodnoty
-				unsigned int pocet_pozic=E->max_pocet_voziku;   //doporučení rovnou to sbírat zde
-				double rotaceJ=vrat_rotaci_jigu_po_predchazejicim_elementu(E);//metodu po přechodu na nový DM zaktulizovat o průchod přes spoják elementů
-				double orientaceP=m.Rt90(E->geo.orientace-180);
-				double X=F->d.Rxy(E).x;
-				double Y=F->d.Rxy(E).y;
-				double dJ=PP.delka_jig;//později nahradit ze zakázky
-				double sJ=PP.sirka_jig;//později nahradit ze zakázky
-				////určení směru vykreslování pozic
-				short x=0,y=0;
-				switch(m.Rt90(orientaceP))
+				if(E->n!=0)//přeskočení hlavičky až zde
 				{
-					case 0:   y=1;  x=0;  break;
-					case 90:  y=0;  x=1;  break;
-					case 180: y=-1; x=0;  break;
-					case 270: y=0;  x=-1; break;
-				}
-
-				////testování jednotlivých problémů na elementech - řadit od nejdůležitějšího
-				////////////Pohon nepřiřazen!
-				if(funkcni_element(E) && E->pohon==NULL)
-				{
-					vloz_zpravu(X,Y,-1,219,E);pocet_erroru++;
-				}
-				////////////Rotace neodpovídá orientaci JIGů na začátku linky!
-				if(E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180)
-				{
-					Cvektory::TElement *Ep=vrat_posledni_rotacni_element();
-					if(Ep!=NULL)
+					////výchozí hodnoty
+					unsigned int pocet_pozic=E->max_pocet_voziku;   //doporučení rovnou to sbírat zde
+					double rotaceJ=vrat_rotaci_jigu_po_predchazejicim_elementu(E);//metodu po přechodu na nový DM zaktulizovat o průchod přes spoják elementů
+					double orientaceP=m.Rt90(E->geo.orientace-180);
+					double X=F->d.Rxy(E).x;
+					double Y=F->d.Rxy(E).y;
+					double dJ=PP.delka_jig;//později nahradit ze zakázky
+					double sJ=PP.sirka_jig;//později nahradit ze zakázky
+					////určení směru vykreslování pozic
+					short x=0,y=0;
+					switch(m.Rt90(orientaceP))
 					{
-						double aR=m.a360(rotaceJ+Ep->rotace_jig);//výstupní rotace jigu z posledního rotačního elementu
-						if(Ep->n==E->n &&  Ep->objekt_n==E->objekt_n && aR!=0 && aR!=180)//předposlení podmínka při novém DM zbytečná!
-						{vloz_zpravu(X,Y,-1,401,Ep);pocet_erroru++;}
+						case 0:   y=1;  x=0;  break;
+						case 90:  y=0;  x=1;  break;
+						case 180: y=-1; x=0;  break;
+						case 270: y=0;  x=-1; break;
 					}
-					Ep=NULL;delete Ep;
-				}
-				////////////Pozor, překrytí JIGů!
-				if(PP.delka_podvozek<m.UDJ(rotaceJ) && E->rotace_jig==0 && pocet_pozic>1)
-				{vloz_zpravu(X+x*PP.delka_podvozek*(pocet_pozic-1)/2.0,Y+y*PP.delka_podvozek*(pocet_pozic-1)/2.0,-1,402,E);pocet_erroru++;}
-				////////////RT záporné nebo bez rezervy
-				if(vrat_druh_elementu(E)==0)//pouze pro S&G
-				{
-					if(E->RT<0){vloz_zpravu(X,Y,-1,406,E);pocet_erroru++;}
-					if(E->RT==0){vloz_zpravu(X,Y,1,407,E);pocet_warningu++;}
-				}
 
+					////testování jednotlivých problémů na elementech - řadit od nejdůležitějšího
+					////////////Pohon nepřiřazen!
+					if(funkcni_element(E) && E->pohon==NULL)
+					{
+						vloz_zpravu(X,Y,-1,219,E);pocet_erroru++;
+					}
+					////////////Rotace neodpovídá orientaci JIGů na začátku linky!
+					if(E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180)
+					{
+						Cvektory::TElement *Ep=vrat_posledni_rotacni_element();
+						if(Ep!=NULL)
+						{
+							double aR=m.a360(rotaceJ+Ep->rotace_jig);//výstupní rotace jigu z posledního rotačního elementu
+							if(Ep->n==E->n &&  Ep->objekt_n==E->objekt_n && aR!=0 && aR!=180)//předposlení podmínka při novém DM zbytečná!
+							{vloz_zpravu(X,Y,-1,401,Ep);pocet_erroru++;}
+						}
+						Ep=NULL;delete Ep;
+					}
+					////////////RT záporné nebo bez rezervy
+					if(vrat_druh_elementu(E)==0)//pouze pro S&G
+					{
+						if(fabs(E->RT)>=1000000){vloz_zpravu(X,Y,-1,450,E);pocet_erroru++;}
+						else
+						{
+							if(E->RT<0){vloz_zpravu(X,Y,-1,406,E);pocet_erroru++;}
+							if(E->RT==0){vloz_zpravu(X,Y,1,407,E);pocet_warningu++;}
+						}
+					}
+					////////////Pozor, překrytí JIGů! - musí být umístěno na konci (popř. na začátku)
+					if(PP.delka_podvozek<m.UDJ(rotaceJ) && E->rotace_jig==0 && pocet_pozic>1)
+					{vloz_zpravu(X+x*PP.delka_podvozek*(pocet_pozic-1)/2.0,Y+y*PP.delka_podvozek*(pocet_pozic-1)/2.0,-1,402,E);pocet_erroru++;}
+				}
 				////posun na další elementy
 				E=E->dalsi;
 			}
@@ -5603,6 +5609,7 @@ UnicodeString Cvektory::getVID(long VID)
 		case 402: Text=F->ls->Strings[402];break;//Pozor, překrytí JIGů!
 		case 406: Text=F->ls->Strings[406];break;//Nestíhá se přejezd, záporná časová rezerva!
 		case 407: Text=F->ls->Strings[407];break;//Nulová časová rezerva.
+		case 450: Text="Nerelevantní hodnota časové rezervy, na některém objektu není přiřazen pohon!";break;//Nulová časová rezerva.
 		default: Text="Error or warning!";break;//obecná chyba či varování
 	}
 	return Text;
@@ -5623,7 +5630,7 @@ void Cvektory::hlavicka_ZPRAVY()
 	nova->zID=0;
 	nova->VID=0;
 	nova->VIDvalue=-1;
-	nova->citelna_oblast=TRect(0,0,0,0);
+	nova->citelna_oblast=NULL;
 
 	//ukazatelové záležitosti
 	nova->predchozi=nova;//ukazuje sam na sebe
@@ -5716,7 +5723,7 @@ long Cvektory::PtInZpravy()
 		Cvektory::TZprava *Z=ZPRAVY->dalsi;
 		while(Z!=NULL)
 		{                                                                    //*3 kvůli AA
-			if(Z->citelna_oblast.PtInRect(TPoint(F->akt_souradnice_kurzoru_PX.x*3,F->akt_souradnice_kurzoru_PX.y*3)) || m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,Z->X,Z->Y,m.px2m(m.round(3*F->Zoom)))){RET=Z->n;break;}
+			if(PtInRegion(Z->citelna_oblast,F->akt_souradnice_kurzoru_PX.x*3,F->akt_souradnice_kurzoru_PX.y*3)  || m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,Z->X,Z->Y,m.px2m(m.round(3*F->Zoom)))){RET=Z->n;break;}
 			Z=Z->dalsi;
 		}
 		Z=NULL;delete Z;
