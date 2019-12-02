@@ -3255,9 +3255,12 @@ void Cvektory::vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt)
 		if(E->n!=0)
 		{
 			E->sparovany=Element;
-			try
-			{E->mGrid->Cells[1][1].Text=Element->name;E->mGrid->Refresh();}//pokud se element (=stopka) nachází ve stejném objektu a tento objekt je právě editovaný, přepiš mu sparovaný element do mgridu
-			catch(...){}
+			if(E->eID==0)
+			{
+		  	try
+				{E->mGrid->Cells[1][1].Text=Element->name;E->mGrid->Refresh();}//pokud se element (=stopka) nachází ve stejném objektu a tento objekt je právě editovaný, přepiš mu sparovaný element do mgridu
+				catch(...){/*MessageBeep(0);*/}
+			}
 		}
 		//////první poslední stop element
 		if(OBJEKTY->predchozi->n>=2||true)
