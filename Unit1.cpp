@@ -5731,11 +5731,13 @@ void TForm1::vlozeni_editace_geometrie()
 		//přepsání geometrie prvnímu elementu v kabině
 		else
 		{
-	  	posunx=d.geoTemp.X4-pom_temp->elementy->dalsi->geo.X4;posuny=d.geoTemp.Y4-pom_temp->elementy->dalsi->geo.Y4;
-	  	pom_temp->elementy->dalsi->geo=d.geoTemp;
-	  	pom_temp->elementy->dalsi->X+=posunx;pom_temp->elementy->dalsi->Y+=posuny;
+//			short rot=m.Rt90(pom_temp->elementy->dalsi->orientace-pom_temp->elementy->dalsi->geo.orientace-pom_temp->elementy->dalsi->geo.rotacni_uhel);
+//			rot=m.Rt90(d.geoTemp.orientace+d.geoTemp.rotacni_uhel+rot);  //element se nerotuje okolo konečného bodu ramena
+			posunx=d.geoTemp.X4-pom_temp->elementy->dalsi->geo.X4;posuny=d.geoTemp.Y4-pom_temp->elementy->dalsi->geo.Y4;
+			pom_temp->elementy->dalsi->geo=d.geoTemp;
+			pom_temp->elementy->dalsi->X+=posunx;pom_temp->elementy->dalsi->Y+=posuny;
 			posledni_editovany_element=pom_temp->elementy->dalsi;
-			if(abs(posledni_editovany_element->geo.rotacni_uhel)==90)posledni_editovany_element->orientace=m.Rt90(posledni_editovany_element->geo.orientace-posledni_editovany_element->geo.rotacni_uhel-90);//změna orientace podle trendu, nefunguje pro oblouky
+			if(abs(posledni_editovany_element->geo.rotacni_uhel)==90 && posledni_editovany_element->eID==200)posledni_editovany_element->orientace=m.Rt90(posledni_editovany_element->geo.orientace-posledni_editovany_element->geo.rotacni_uhel-90);//změna orientace podle trendu, nefunguje pro oblouky
 		}
 		//posun následujících elementů, pokud existují
 		Cvektory::TElement *E=posledni_editovany_element->dalsi;
@@ -5791,7 +5793,7 @@ void TForm1::vlozeni_editace_geometrie()
 			posledni_editovany_element->geo=d.geoTemp;
 			posledni_editovany_element->X+=posledni_editovany_element->geo.X4-posledni_editovany_element->geo.X1;
 			posledni_editovany_element->Y+=posledni_editovany_element->geo.Y4-posledni_editovany_element->geo.Y1;
-			if(abs(posledni_editovany_element->geo.rotacni_uhel)==90)posledni_editovany_element->orientace=m.Rt90(posledni_editovany_element->geo.orientace-posledni_editovany_element->geo.rotacni_uhel-90);//změna orientace podle trendu, nefunguje pro oblouky
+			if(abs(posledni_editovany_element->geo.rotacni_uhel)==90 && posledni_editovany_element->eID==200)posledni_editovany_element->orientace=m.Rt90(posledni_editovany_element->geo.orientace-posledni_editovany_element->geo.rotacni_uhel-90);//změna orientace podle trendu, nefunguje pro oblouky
 			E=NULL;delete E;
 		}
 		else//pokud je veškerá geometrie odstraněna z kabiny
@@ -6441,7 +6443,7 @@ short TForm1::prekryti_LO(Cvektory::TElement *E)
 	short ret=0;
 	TRect el1=souradnice_LO(E),el2;
 	//////Kontrola překryvu lakovacích oken
-	if(pom_temp!=NULL && E!=NULL && E->eID!=MaxInt)
+	if(pom_temp!=NULL && E!=NULL && d.v.vrat_druh_elementu(E)!=-1)
 	{
 		//kontrola konfliktu s dalším elementem
 		if(E->dalsi!=NULL && E->dalsi->eID!=MaxInt)
@@ -6484,8 +6486,8 @@ short TForm1::prekryti_LO(Cvektory::TElement *E)
 				case 270:if(dalsi && el1.right>m.L2Px(pom_temp->elementy->dalsi->geo.X1) || predchozi && m.L2Px(e_posledni->geo.X4)>el1.left)prekryti=true;break;
 			}
 			e_posledni=NULL;delete e_posledni;
+			if(prekryti && ret==0)ret=1;
 		}
-		if(prekryti && ret==0)ret=1;
 		if(prekryti && (E->eID==5 || E->eID==6))ret=2;
 	}
 	return ret;
@@ -12109,10 +12111,13 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-//	double dopRD=m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,F->pom_temp->rotace,F->pom_temp->pohon->roztec,F->d.v.PP.TT,F->pom_temp->pohon->aRD)
-//	dopRD=m.round2double(outaRD(dopRD),3)
-//	Memo();
-//	Memo(pom_temp->pohon->aRD);
+	Cvektory::TElement *E=pom_temp->elementy->dalsi;
+	while(E!=NULL)
+	{
+    Memo(E->name);
+		E=E->dalsi;
+	}
+	delete E;E=NULL;
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko

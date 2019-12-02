@@ -1986,8 +1986,8 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 	{
   	//kontrola zda je element vkládán za předchozí nebo mezi předchozí
 		Cvektory::TElement *p=vloz_element_za(Objekt,Element);//pokud bude vkládaný elment vložen na konec vrází NULL, pokud mezi vrátí ukazatel na předchozí element
-  	if(p==NULL)//vkládám na konec
-  	{
+		if(p==NULL)//vkládám na konec
+		{
   		//ukazatelové propojení
   		Objekt->elementy->predchozi->dalsi=Element;//poslednímu prvku přiřadím ukazatel na nový prvek
   		Element->predchozi=Objekt->elementy->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
@@ -2062,7 +2062,7 @@ Cvektory::TElement *Cvektory::vloz_element_za(TObjekt *Objekt,TElement *Element)
 			if(p->n!=Element->n)//neřeší se s aktuálním elementem (při posunu)
 			{
 				//kontrola zda vkládaný element neleží mezi prvním a druhým elementem, druhým až n
-				if(p->geo.typ==0 && m.LeziVblizkostiUsecky(F->d.Rxy(Element).x,F->d.Rxy(Element).y,p->geo.X1,p->geo.Y1,p->geo.X4,p->geo.Y4)==0)
+				if(p->geo.typ==0 && m.LeziVblizkostiUsecky(F->d.Rxy(Element).x,F->d.Rxy(Element).y,p->geo.X1,m.round2double(p->geo.Y1,2),p->geo.X4,m.round2double(p->geo.Y4,2))==0)
 				{
 					ret=p;//uložení elementu, který předcházi vkládanému elementu
 					break;
@@ -2969,15 +2969,16 @@ void Cvektory::reserve_time(TElement *Element,bool highlight_bunek,bool refresh_
   		if(pokracovat)O=O->predchozi;//ošetření proti přechodu na havičku
   		else break;
   	}
-  	O=NULL;delete O;
+		O=NULL;delete O;
 
 		//výpočet RT a zapsání do dat elemetnu
 		double RT=0,WT=Element->WT;
 		if(Element->eID==0 && Element->akt_pocet_voziku>1 && cas+Element->WT<PP.TT)WT*=Element->akt_pocet_voziku;
 		RT=m.RT(Element->PT1+Element->PT2+Element->PTotoc,cas,WT,Element->akt_pocet_voziku);
 		Element->RT.x=RT;//ryzí RT
-		if(Element->eID== 0 && Element->akt_pocet_voziku==1 || Element->eID==6)RT=fmod(RT,PP.TT);
+		if(Element->eID==0 && Element->akt_pocet_voziku>1 || Element->eID==6)RT=fmod(RT,PP.TT);
 		Element->RT.y=RT;//přepočítané RT, nebo totožné s ryzím
+
 		//vypsání RT do tabulky elementu
 		if(F->pom_temp!=NULL && Element->objekt_n==F->pom_temp->n)
 		{
