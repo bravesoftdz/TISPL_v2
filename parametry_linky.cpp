@@ -106,6 +106,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
    // scHTMLLabel1->Caption="Ahojky - <bgcolor =clWhite>[mm]</bgcolor>";
      scGPTrackBar_uchyceni->Top=196;
      scGPTrackBar_uchyceni->Left=614;
+     scGPSwitch->Enabled=false;
 
 		 //naètení parametrù katalogu
 		 katalog_id=F->d.v.PP.katalog;
