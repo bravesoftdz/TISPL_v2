@@ -5511,6 +5511,7 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 				{
 					////výchozí hodnoty
 					unsigned int pocet_pozic=E->max_pocet_voziku;   //doporučení rovnou to sbírat zde
+					unsigned int pocet_voziku=E->akt_pocet_voziku;
 					double rotaceJ=vrat_rotaci_jigu_po_predchazejicim_elementu(E);//metodu po přechodu na nový DM zaktulizovat o průchod přes spoják elementů
 					double orientaceP=m.Rt90(E->geo.orientace-180);
 					double X=F->d.Rxy(E).x;
@@ -5556,7 +5557,7 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 						}
 					}
 					////////////Pozor, překrytí JIGů! - musí být umístěno na konci (popř. na začátku)
-					if(PP.delka_podvozek<m.UDJ(rotaceJ) && E->rotace_jig==0 && pocet_pozic>1)
+					if(PP.delka_podvozek<m.UDJ(rotaceJ) && E->rotace_jig==0 && pocet_voziku>1)
 					{vloz_zpravu(X+x*PP.delka_podvozek*(pocet_pozic-1)/2.0,Y+y*PP.delka_podvozek*(pocet_pozic-1)/2.0,-1,402,E);pocet_erroru++;}
 				}
 				////posun na další elementy
