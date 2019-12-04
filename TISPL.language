@@ -289,7 +289,7 @@ The lower speed limit must be greater than or equal to;X;Spodní hranice rychlost
 The upper speed limit must be less than or equal to;X;Horní hranice rychlosti musí bıt menší nebo rovna
 The lower speed limit must be >=;X;Spodní hranice rychlosti musí bıt >=
 The upper speed limit must be <=;X;Nebo horní hranice musí bıt <=
-The drive parameters can no longer be changed as it is also used on other objects;X;Parametry pohonu ji nelze mìnit, nebo je pouíván i na jinıch objektech
+The drive parameters can no longer be changed because the drive is used on other objects;X;Parametry pohonu ji nelze mìnit, protoe pohon je pouíván na jinıch objektech
 Show thumbs;X;Zobrazit palce
 Curve [°];X;Oblouk [°]
 Downloading update, do not close the application !!! When the download is complete, the program will close.;X;Probíhá stahování aktualizace, neukonèujte aplikaci!!! Po dokonèení stahování bude program ukonèen.
