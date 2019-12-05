@@ -4,33 +4,31 @@
 #pragma hdrstop
 #include <tchar.h>
 //---------------------------------------------------------------------------
-USEFORM("poznamky.cpp", Form_poznamky);
-USEFORM("popUP_menu.cpp", PopUPmenu);
-USEFORM("superform.cpp", Form_definice_zakazek);
 USEFORM("report.cpp", Form_report);
-USEFORM("parametry_linky.cpp", Form_parametry_linky);
-USEFORM("parametry.cpp", Form_parametry);
+USEFORM("superform.cpp", Form_definice_zakazek);
+USEFORM("poznamky.cpp", Form_poznamky);
 USEFORM("parametry_vozik.cpp", Form_parametry_vozik);
+USEFORM("popUP_menu.cpp", PopUPmenu);
 USEFORM("pl_priority.cpp", Form_PL_priority);
 USEFORM("uvod.cpp", Form_uvod);
-USEFORM("UnitX.cpp", FormX);
 USEFORM("Z_rozliseni.cpp", Form_Z_rozliseni);
+USEFORM("UnitX.cpp", FormX);
 USEFORM("TT_kalkulator.cpp", Form_TT_kalkulator);
 USEFORM("Unit2.cpp", Form2);
 USEFORM("Unit1.cpp", Form1);
+USEFORM("parametry_linky.cpp", Form_parametry_linky);
 USEFORM("gapoR.cpp", F_gapoR);
 USEFORM("eDesigner.cpp", Form_eDesigner);
-USEFORM("gapoTT.cpp", F_gapoTT);
 USEFORM("gapoV.cpp", F_gapoV);
+USEFORM("gapoTT.cpp", F_gapoTT);
 USEFORM("adjustace.cpp", Form_adjustace);
-USEFORM("casovaOsa_info.cpp", Form_osa_info);
 USEFORM("cesty.cpp", Form_cesty);
-USEFORM("jig.cpp", Form_jig);
-USEFORM("miniform_zpravy.cpp", Form_zpravy);
-USEFORM("minicolordialog.cpp", Form_color_dialog);
+USEFORM("casovaOsa_info.cpp", Form_osa_info);
 USEFORM("MyMessageBox.cpp", myMessageBox);
-USEFORM("kalendar.cpp", Form_kalendar);
+USEFORM("parametry.cpp", Form_parametry);
 USEFORM("kabina_schema.cpp", Form_objekt_nahled);
+USEFORM("jig.cpp", Form_jig);
+USEFORM("kalendar.cpp", Form_kalendar);
 USEFORM("katalog_dopravniku.cpp", Form_katalog);
 //---------------------------------------------------------------------------
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
@@ -66,8 +64,6 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
      Application->CreateForm(__classid(TFormX), &FormX);
      Application->CreateForm(__classid(TFormX), &FormX);
      Application->CreateForm(__classid(TForm_katalog), &Form_katalog);
-     Application->CreateForm(__classid(TForm_color_dialog), &Form_color_dialog);
-     Application->CreateForm(__classid(TForm_zpravy), &Form_zpravy);
      Application->ShowMainForm=false;//zabránìní zobrazení hlavního formu
 		Application->Run();
 	}

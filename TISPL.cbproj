@@ -108,7 +108,7 @@
         <LinkPackageImports>rtl.bpi;vcl.bpi;RaizeComponentsVcl.bpi;vclx.bpi;vclimg.bpi;Tee.bpi;IndySystem.bpi;IndyProtocols.bpi;IndyCore.bpi;dbrtl.bpi;vclFireDAC.bpi;FireDAC.bpi;FireDACSqliteDriver.bpi;FireDACCommonDriver.bpi;FireDACCommon.bpi;xmlrtl.bpi;vcldb.bpi;FireDACMySQLDriver.bpi;dbexpress.bpi;DbxCommonDriver.bpi;DBXMySQLDriver.bpi;vclactnband.bpi;vclie.bpi;vclwinx.bpi</LinkPackageImports>
         <VerInfo_Build>15</VerInfo_Build>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
-        <Icon_MainIcon>TISPL_Icon13.ico</Icon_MainIcon>
+        <Icon_MainIcon>TISPL_Icon1.ico</Icon_MainIcon>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=Eltep s.r.o.;FileDescription=;FileVersion=0.1.0.15;InternalName=TISPL;LegalCopyright=© ELTEP, s.r.o., 2017;LegalTrademarks=© ELTEP, s.r.o., 2017;OriginalFilename=Eltep - TISPL;ProductName=TISPL;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
@@ -185,7 +185,7 @@
         </CppCompile>
         <CppCompile Include="grafy.cpp">
             <DependentOn>grafy.h</DependentOn>
-            <BuildOrder>41</BuildOrder>
+            <BuildOrder>21</BuildOrder>
         </CppCompile>
         <CppCompile Include="jig.cpp">
             <Form>Form_jig</Form>
@@ -205,30 +205,12 @@
             <DependentOn>kalendar.h</DependentOn>
             <BuildOrder>20</BuildOrder>
         </CppCompile>
-        <CppCompile Include="katalog_dopravniku.cpp">
-            <Form>Form_katalog</Form>
-            <FormType>dfm</FormType>
-            <DependentOn>katalog_dopravniku.h</DependentOn>
-            <BuildOrder>39</BuildOrder>
-        </CppCompile>
         <None Include="knihovna_objektu.h">
             <BuildOrder>3</BuildOrder>
         </None>
         <ResFiles Include="kurzory.res">
             <BuildOrder>8</BuildOrder>
         </ResFiles>
-        <CppCompile Include="minicolordialog.cpp">
-            <Form>Form_color_dialog</Form>
-            <FormType>dfm</FormType>
-            <DependentOn>minicolordialog.h</DependentOn>
-            <BuildOrder>40</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="miniform_zpravy.cpp">
-            <Form>Form_zpravy</Form>
-            <FormType>dfm</FormType>
-            <DependentOn>miniform_zpravy.h</DependentOn>
-            <BuildOrder>41</BuildOrder>
-        </CppCompile>
         <CppCompile Include="my.cpp">
             <DependentOn>my.h</DependentOn>
             <BuildOrder>4</BuildOrder>
@@ -354,34 +336,31 @@
             <DependentOn>Z_rozliseni.h</DependentOn>
             <BuildOrder>37</BuildOrder>
         </CppCompile>
-        <FormResources Include="poznamky.dfm"/>
-        <FormResources Include="popUP_menu.dfm"/>
-        <FormResources Include="superform.dfm"/>
         <FormResources Include="report.dfm"/>
-        <FormResources Include="parametry_linky.dfm"/>
-        <FormResources Include="parametry.dfm"/>
+        <FormResources Include="superform.dfm"/>
+        <FormResources Include="poznamky.dfm"/>
         <FormResources Include="parametry_vozik.dfm"/>
+        <FormResources Include="popUP_menu.dfm"/>
         <FormResources Include="pl_priority.dfm"/>
         <FormResources Include="uvod.dfm"/>
-        <FormResources Include="UnitX.dfm"/>
         <FormResources Include="Z_rozliseni.dfm"/>
+        <FormResources Include="UnitX.dfm"/>
         <FormResources Include="TT_kalkulator.dfm"/>
         <FormResources Include="Unit2.dfm"/>
         <FormResources Include="Unit1.dfm"/>
+        <FormResources Include="parametry_linky.dfm"/>
         <FormResources Include="gapoR.dfm"/>
         <FormResources Include="eDesigner.dfm"/>
-        <FormResources Include="gapoTT.dfm"/>
         <FormResources Include="gapoV.dfm"/>
+        <FormResources Include="gapoTT.dfm"/>
         <FormResources Include="adjustace.dfm"/>
-        <FormResources Include="casovaOsa_info.dfm"/>
         <FormResources Include="cesty.dfm"/>
-        <FormResources Include="jig.dfm"/>
-        <FormResources Include="miniform_zpravy.dfm"/>
-        <FormResources Include="minicolordialog.dfm"/>
+        <FormResources Include="casovaOsa_info.dfm"/>
         <FormResources Include="MyMessageBox.dfm"/>
-        <FormResources Include="kalendar.dfm"/>
+        <FormResources Include="parametry.dfm"/>
         <FormResources Include="kabina_schema.dfm"/>
-        <FormResources Include="katalog_dopravniku.dfm"/>
+        <FormResources Include="jig.dfm"/>
+        <FormResources Include="kalendar.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
