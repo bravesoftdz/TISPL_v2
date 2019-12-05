@@ -13184,6 +13184,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		Image_knihovna_objektu->Visible=true;//zapnutí knihovny
 		scGPButton_zmerit_vzdalenost->Visible=true;
 		scGPButton_prichytavat->Visible=true;//zapnutí tlačítka přichytávat
+		FormX->posledni_E=NULL;//nutné!! slouží k ukládání posledního editovaného elementu (validace, atd.)
 		//opětovné vytvoření tabulky objektů nebo skrytí panelu
 		vytvoreni_tab_knihovna();
 		DrawGrid_knihovna->Top=10000;//musí být zobrazena, odchytává stisk kláves
