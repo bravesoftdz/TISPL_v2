@@ -5564,7 +5564,7 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 						}
 					}
 					////////////Pozor, překrytí JIGů! - musí být umístěno na konci (popř. na začátku)
-					if(PP.delka_podvozek<m.UDJ(rotaceJ) && E->rotace_jig==0 && pocet_voziku>1)
+					if(PP.delka_podvozek<m.UDJ(rotaceJ) && (E->rotace_jig==0 || E->rotace_jig==180) && pocet_voziku>1)
 					{vloz_zpravu(X+x*PP.delka_podvozek*(pocet_pozic-1)/2.0,Y+y*PP.delka_podvozek*(pocet_pozic-1)/2.0,-1,402,E);pocet_erroru++;}
 				}
 				////posun na další elementy

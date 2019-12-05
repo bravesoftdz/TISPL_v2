@@ -2838,18 +2838,6 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 			}
 		}
 
-		////vykreslení POZIC na elementu + vzniklém buffru
-		if(F->scGPCheckBox_zobrazit_pozice->Checked && pocet_pozic>0)
-		{
-			unsigned int pocet_voziku=E->akt_pocet_voziku;
-			//vykreslení jednoho vozíku či pozice, od zadu, aby byly vykresleny nejdříve pozice
-			for(unsigned int i=pocet_pozic-1;0<i+1;i--)//nutno zápis 0<i+1, jinak zamrzá
-			{
-				if(i+1>pocet_voziku)vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,m.clIntensive(clPotencial,-50),clPotencial);//záměrně šedou jak podvozek tak JIG jako potenicální pozice
-				else vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,clChassis,clJig);
-			}
-		}
-
 		////vykreslí OBALOVOU zónu oblouků
 		if(F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->geo.typ==1)
 		{
@@ -2875,6 +2863,27 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 			set_pen2(canv,(TColor)RGB(clPotRGB,clPotRGB,clPotRGB),m.round(1.3/3.0*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
 			vykresli_jig(canv,E->geo.X4,E->geo.Y4,dJ,sJ,orientaceP-E->geo.rotacni_uhel,rotaceJ,clRed,0);//pozn. barvu nastavujeme výše
 		}
+
+		////vykreslení POZIC na elementu + vzniklém buffru
+		if(F->scGPCheckBox_zobrazit_pozice->Checked && pocet_pozic>0)
+		{
+			unsigned int pocet_voziku=E->akt_pocet_voziku;
+			//vykreslení jednoho vozíku či pozice, od zadu, aby byly vykresleny nejdříve pozice
+			if(pocet_voziku==1 && (m.Rt90(rotaceJ)==0 || m.Rt90(rotaceJ)==180) && v.PP.delka_podvozek<m.UDJ(rotaceJ))vykresli_vozik(canv,0,X,Y,dJ,sJ,orientaceP,rotaceJ,clChassis,clJig);//když je na stopce jenom jeden vozík a stejně se překrývají jigy
+			else
+			{
+				for(unsigned int i=pocet_pozic-1;0<i+1;i--)//nutno zápis 0<i+1, jinak zamrzá!!!
+				{
+					if(i+1>pocet_voziku)vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,m.clIntensive(clPotencial,-50),clPotencial);//záměrně šedou jak podvozek tak JIG jako potenicální pozice
+					else vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,clChassis,clJig);
+				}
+			}
+		}
+
+//		if(F->scGPCheckBox_zobrazit_pozice->Checked && v.vrat_druh_elementu(E)==1 && v.funkcni_element(E))//pro kontinuály
+//		{
+//			//canv->TextOutW(m.L2Px(E->X),m.L2Py(E->Y),"konti");
+//    }
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -4115,14 +4124,14 @@ void Cvykresli::vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiStr
 
 	////konstanty
 	int polomer=m.m2px(0.2);if(stav==2)polomer=m.m2px(0.22);//poloměr kružnic zadaná v metrech
-	int vzdalenost=m.m2px(1.3/2.0);//vzdálenost kružnice od středu v metrech (vzádlenost kružnic podělená dvěmi)
 	float tloustka_linie=1.05/3.0;if(stav==2)tloustka_linie*=1.3;//pokud má být zvýrazněn  //vykreslovací linie
 	float DT=m.m2px(0.35);//delka trysky v metrech
 	float TW=m.m2px(0.2);//tryska šířka před zúžením, nastavení dle fobota sirka_ramena v metrech
 	float TZ=TW/2.0;//tryska ve zúžení //sirka2
 	//TS;//sklon trysky, slouží pro animaci simulace (pohyb trysky), přebíráno již z parametru metody
-	float TO=polomer/2;//odsazeni trysky od okraje tyče
+	float TO=polomer/2.0;//odsazeni trysky od okraje tyče
 	short o=1*Z;//odsazení textu
+	int vzdalenost=m.m2px(v.PP.sirka_podvozek/2.0)+polomer+DT;if(typ==0)vzdalenost=m.m2px(1.3/2.0);//vzdálenost kružnice od středu v metrech (vzádlenost kružnic podělená dvěmi), pro kurzor a normální zobrazení dle šířky kolejí linky (šířky vozíku), jinak fixní šířka pro ikonu v galerii
 
 	////nastavení barev
 	TColor barva=clBlack;
