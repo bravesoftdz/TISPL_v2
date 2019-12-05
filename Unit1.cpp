@@ -6740,7 +6740,7 @@ void TForm1::nahled_ulozit (bool duvod_ulozit)
 	//aby mohlo být tlačítko aktivované musí k tomu vzniknout důvod (přidání robota, editace hodnot, ...), ale zároveň nesmí být chybná hodnota rychlosti (validace)
 	if(duvod_ulozit&&(PmG->Note.Text=="" || PmG->Note.Text=="Parametry pohonu již nelze měnit, neboť je používán i na jiných objektech" || PmG->Note.Text==ls->Strings[291])) {scGPButton_ulozit->Enabled=true;duvod_ulozit_nahled=true;DuvodUlozit(true);}
 	if(!duvod_ulozit) {scGPButton_ulozit->Enabled=false;duvod_ulozit_nahled=false;}
-	if(duvod_ulozit_nahled){if(stisknute_leve_tlacitko_mysi)duvod_validovat=1;else duvod_validovat=2;}//pokud je důvod validovat, tj. až po dokončení operace=1, aby neustále neproblikávalo i během posunu elementů
+	if(duvod_ulozit_nahled && !F->editace_textu){if(stisknute_leve_tlacitko_mysi)duvod_validovat=1;else duvod_validovat=2;}//pokud je důvod validovat, tj. až po dokončení operace=1, aby neustále neproblikávalo i během posunu elementů
 }
 //---------------------------------------------------------------------------
 //automatické nekonfliktní pozicování tabulek podle tabulek ostatních elementů
