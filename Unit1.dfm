@@ -2488,11 +2488,13 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object scGPButton_error: TscGPButton
-      Left = 234
+      Left = 210
       Top = 0
-      Width = 25
+      Width = 37
       Height = 34
       Hint = 'Zpr'#225'vy o lince'
+      Margins.Left = 10
+      Margins.Right = 10
       Align = alRight
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -2556,7 +2558,7 @@ object Form1: TForm1
       Options.ShapeFillGradientAngle = 90
       Options.ShapeFillGradientPressedAngle = -90
       Options.ShapeFillGradientColorOffset = 25
-      Options.ShapeCornerRadius = 3
+      Options.ShapeCornerRadius = 5
       Options.ShapeStyle = scgpRoundedRect
       Options.ArrowSize = 9
       Options.ArrowAreaSize = 0
@@ -2596,11 +2598,12 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 229
     end
     object scGPButton_warning: TscGPButton
-      Left = 259
+      Left = 247
       Top = 0
-      Width = 25
+      Width = 37
       Height = 34
       Hint = 'Zpr'#225'vy o lince'
       Align = alRight
@@ -2666,7 +2669,7 @@ object Form1: TForm1
       Options.ShapeFillGradientAngle = 90
       Options.ShapeFillGradientPressedAngle = -90
       Options.ShapeFillGradientColorOffset = 25
-      Options.ShapeCornerRadius = 3
+      Options.ShapeCornerRadius = 5
       Options.ShapeStyle = scgpRoundedRect
       Options.ArrowSize = 9
       Options.ArrowAreaSize = 0
@@ -2706,6 +2709,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 259
     end
   end
   object scGPPanel_statusbar: TscGPPanel
@@ -9628,7 +9632,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118009808280910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118009808300910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10751,7 +10755,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01015200480A100C30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01015200480A180C30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000F0030000010020000000000000D0
       0B0000000000000000000000000000000000A3653C00A3653C00A3653C00A365
       3C00A3653C00A3653C00A3653C00A3653C00A3653C00A3653C00A3653C00A365

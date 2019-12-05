@@ -1,33 +1,9 @@
-﻿[Button_OK]
-Coordinates=79,10,77,58
-
-[ColorDialog1]
+﻿[ColorDialog1]
 Coordinates=307,1,89,36
 
-[RzStringGrid1]
+[]
 Coordinates=79,78,95,58
 Visible=True
-
-[Button3]
-Coordinates=235,10,59,58
-
-[Button1]
-Coordinates=10,78,59,58
-
-[]
-Coordinates=10,10,59,58
-
-[Memo2]
-Coordinates=235,87,64,58
-
-[Memo3]
-Coordinates=235,1,64,58
-
-[Memo1]
-Coordinates=0,0,64,58
-
-[Memo_spojak]
-Coordinates=434,1,94,58
 
 [Button_DEL]
 Coordinates=337,56,84,58

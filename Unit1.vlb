@@ -226,9 +226,6 @@ Coordinates=455,326,73,36
 [scButton4]
 Coordinates=272,326,72,36
 
-[scGPGlyphButton15]
-Coordinates=863,280,131,36
-
 [scGPVirtualImageList1]
 Coordinates=1619,606,146,36
 
@@ -245,7 +242,7 @@ Coordinates=319,280,124,36
 Coordinates=10,280,90,36
 
 []
-Coordinates=219,372,104,36
+Coordinates=1110,331,147,36
 Visible=True
 
 [scSplitView_OPTIONS]
@@ -338,17 +335,8 @@ Coordinates=538,323,66,58
 [scGPSwitch_rezim]
 Coordinates=632,335,122,36
 
-[scExPanel_log_header]
-Coordinates=1110,331,147,36
-
-[scHTMLLabel_log_vypis]
-Coordinates=1681,1,154,36
-
 [scButton_ulozit]
 Coordinates=402,631,102,36
-
-[scGPGlyphButton_zpravy_ikona]
-Coordinates=1492,221,199,36
 
 [scButton_report]
 Coordinates=1204,551,72,36
@@ -415,4 +403,7 @@ Coordinates=73,249,65,36
 
 [scExPanel_ostatni]
 Coordinates=1322,496,120,36
+
+[scGPGlyphButton_napoveda]
+Coordinates=863,280,131,36
 
