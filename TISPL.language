@@ -258,7 +258,7 @@ continuous;X;kontinuální
 continuous with;X;kontinuální s 
 pass. turning;X;pasiv. otoèí
 act. turning;X;akt. otoèí
-flame;X;oeh
+flame ;X;oeh
 ionization;X;ionizace
 painting;X;lakování
 passive;X;aktivní
@@ -289,9 +289,9 @@ The lower speed limit must be greater than or equal to;X;Spodní hranice rychlost
 The upper speed limit must be less than or equal to;X;Horní hranice rychlosti musí bıt menší nebo rovna
 The lower speed limit must be >=;X;Spodní hranice rychlosti musí bıt >=
 The upper speed limit must be <=;X;Nebo horní hranice musí bıt <=
-The drive parameters can no longer be changed as it is also used on other objects;X;Parametry pohonu ji nelze mìnit, nebo je pouíván i na jinıch objektech
+The drive parameters can no longer be changed because the drive is used on other objects;X;Parametry pohonu ji nelze mìnit, protoe pohon je pouíván na jinıch objektech
 Show thumbs;X;Zobrazit palce
-Curve [°];X;Oblouk [°]
+Angle;X;Úhel [°]
 Downloading update, do not close the application !!! When the download is complete, the program will close.;X;Probíhá stahování aktualizace, neukonèujte aplikaci!!! Po dokonèení stahování bude program ukonèen.
 Drag the mouse from the selected point to the destination point to see the distance between these points.;X;Taením myši z vybraného bodu do cílového bodu zobrazíte vzdálenost mezi tìmito body.
 Drag the mouse from the selected point on the substrate to point to the selected technologist. object, after releasing the mouse the image is calibrated.;X;Taením myši z vybraného bodu na podkladu smìøujte do vybraného technolog. objektu, po puštìní myši dojde ke kalibraci obrazu.
@@ -421,3 +421,6 @@ waiting;X;èekání
 buffer wait time;X;doba èekání v bufferu
 RT is not relevant, some of the objects have no drive!;X;RT není relevantní, nìkterı z objektù nemá pohon!
 Irrelevant time reserve value (RT), drive is not assigned to some object!;X;Nerelevantní hodnota èasové rezervy (RT), na nìkterém objektu není pøiøazen pohon!
+Cannot edit, layout is locked.;X;Nelze editovat, layout je zamèenı
+Failed to load background, check its existence or reload.;X;Nepodaøilo se naèíst podklad, zkontrolujte jeho existenci, nebo proveïte nové naètení.
+Due to the overlap of jigs, no more carts can be set than;X;Kvùli pøekryvu jigù nelze nastavit vìtší poèet vozíkù ne

@@ -1934,9 +1934,9 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->objekt_n=0;//příslušnost elementu k objektu
 	if(F->pom_temp!=NULL)novy->objekt_n=F->pom_temp->n;
 	novy->pohon=NULL;//pohon na kterém se nachází element
-	if(novy->predchozi->n!=0 && novy->predchozi->eID!=200)novy->pohon=novy->predchozi->pohon;
+	if(novy->predchozi->n!=0)novy->pohon=novy->predchozi->pohon;
 	else if(novy->dalsi!=NULL)novy->pohon=novy->dalsi->pohon;
-	if(novy->predchozi->n!=0 && novy->predchozi->eID!=200 && novy->predchozi->pohon!=NULL && F->pom_temp->pohon->n==novy->predchozi->pohon->n || novy->dalsi!=NULL && novy->dalsi->pohon!=NULL && novy->dalsi->pohon->n==F->pom_temp->pohon->n)novy->pohon=F->pom_temp->pohon;
+	if(novy->predchozi->n!=0 && novy->predchozi->pohon!=NULL && F->pom_temp->pohon->n==novy->predchozi->pohon->n || novy->dalsi!=NULL && novy->dalsi->pohon!=NULL && novy->dalsi->pohon->n==F->pom_temp->pohon->n)novy->pohon=F->pom_temp->pohon;
 
 	//název
 	AnsiString T="";
@@ -2062,7 +2062,7 @@ Cvektory::TElement *Cvektory::vloz_element_za(TObjekt *Objekt,TElement *Element)
 			if(p->n!=Element->n)//neřeší se s aktuálním elementem (při posunu)
 			{
 				//kontrola zda vkládaný element neleží mezi prvním a druhým elementem, druhým až n
-				if(p->geo.typ==0 && m.LeziVblizkostiUsecky(F->d.Rxy(Element).x,F->d.Rxy(Element).y,p->geo.X1,m.round2double(p->geo.Y1,2),p->geo.X4,m.round2double(p->geo.Y4,2))==0)
+				if(p->geo.typ==0 && m.LeziVblizkostiUsecky(m.round2double(F->d.Rxy(Element).x,2),m.round2double(F->d.Rxy(Element).y,2),m.round2double(p->geo.X1,2),m.round2double(p->geo.Y1,2),m.round2double(p->geo.X4,2),m.round2double(p->geo.Y4,2))==0)
 				{
 					ret=p;//uložení elementu, který předcházi vkládanému elementu
 					break;
@@ -2353,6 +2353,28 @@ void Cvektory::kopiruj_elementy(TObjekt *Original, TObjekt  *Kopie)//zkopíruje 
 		}
 	}
 	E=NULL;delete E;
+}
+////---------------------------------------------------------------------------
+//všem elementům, které měly přiřazen pohon s oldN(oldID), přiřadí pohon s newN(newID), podle toho, jak jsou ukládány nově do spojáku, důležité, pokud dojde k narušení pořadí ID resp n pohonů a pořadí jednotlivých řádků ve stringridu, např. kopirováním, smazáním, změnou pořadí řádků atp.
+void Cvektory::aktualizace_prirazeni_pohonu_k_elementum(unsigned int oldN,unsigned int newN)
+{
+	TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
+	while (O!=NULL)
+	{
+		TElement *E=O->elementy->dalsi;
+		while(E!=NULL)
+		{
+			if(E->pohon!=NULL && oldN==E->pohon->n)// && E->probehla_aktualizace_prirazeni_pohonu==false)//objekt měl přiřazen pohon a ještě nebyl nově přepřiřazen
+	  	{
+				E->pohon=vrat_pohon(newN);//danému objektu přiřadíme nové ID resp. n původního pohonu
+				//O->probehla_aktualizace_prirazeni_pohonu=true;//již se s tímto objektem nebude pracovat v dalších přiřazování dané aktualizace, důležitné např. pro situaci 2->3,3->4 (aby prvně nebyl přiřezn pohon s id 2 na 3 a potom všechny pohony s id 3 na pohon 4, protože měly být přiřazený jen některé...)
+			}
+			E=E->dalsi;//posun na další element
+		}
+		delete E;E=NULL;//odstranění již nepotřebného ukazatele
+		O=O->dalsi;//posun na další objekt
+	}
+	delete O;O=NULL;//odstranění již nepotřebného ukazatele
 }
 ////---------------------------------------------------------------------------
 //připraví vektor provizorní osy pohonu
@@ -3254,11 +3276,18 @@ void Cvektory::vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt)
 		}
 		if(E->n!=0)
 		{
+		 	Element->sparovany=E->sparovany;//nahrazení, vložení za E, takže Element přebere jeho spárovaný
 			E->sparovany=Element;
 			if(E->eID==0)
 			{
-		  	try
-				{E->mGrid->Cells[1][1].Text=Element->name;E->mGrid->Refresh();}//pokud se element (=stopka) nachází ve stejném objektu a tento objekt je právě editovaný, přepiš mu sparovaný element do mgridu
+				try
+				{E->mGrid->Cells[1][1].Text=E->sparovany->name;E->mGrid->Refresh();}//pokud se element (=stopka) nachází ve stejném objektu a tento objekt je právě editovaný, přepiš mu sparovaný element do mgridu
+				catch(...){/*MessageBeep(0);*/}
+			}
+			if(Element->eID==0)
+			{
+				try
+				{Element->mGrid->Cells[1][1].Text=Element->sparovany->name;Element->mGrid->Refresh();}//pokud se element (=stopka) nachází ve stejném objektu a tento objekt je právě editovaný, přepiš mu sparovaný element do mgridu
 				catch(...){/*MessageBeep(0);*/}
 			}
 		}
@@ -4014,17 +4043,29 @@ void Cvektory::vloz_segment_retezu(TRetez *Retez,TPohon *Pohon)
 	Pohon->retez->predchozi=Retez;//hlavička nově ukazuje již na nový bod jako poslední prvek
 }
 ////---------------------------------------------------------------------------
-//všem objektům s n pohonem zruší přiřazení k tomuto pohonu a nahradí hodnotu ukazatele na přiřazený pohon za NULL
-void Cvektory::zrusit_prirazeni_pohunu_k_objektum(unsigned long n)
+//všem objektům s n pohonem zruší přiřazení k tomuto pohonu a nahradí hodnotu ukazatele na přiřazený pohon za NULL, nově i všem elementům
+void Cvektory::zrusit_prirazeni_pohunu_k_objektum_elementum(unsigned long n)
 {
 	//průchod všemi objekty, testuje je daný pohon objektu přiřazen a pokud ano, tak mu nastaví přiřazený pohon na NULL
 	TObjekt *O=OBJEKTY->dalsi;
 	while(O!=NULL)
 	{
+    //kontrola objektu
 		if(O->pohon!=NULL && O->pohon->n==n)//pokud má pohon přiřazen a jedná se o stejný pohon
 		{
 			O->pohon=NULL;//pohon již nepřiřazen
 		}
+		//procházení elementů v objektu
+		TElement *E=O->elementy->dalsi;
+		while(E!=NULL)
+		{
+			if(E->pohon!=NULL && E->pohon->n==n)//pokud má element pohon přiřazen a jedná se o stejný pohon
+			{
+				E->pohon=NULL;//pohon již není přiřazen
+      }
+			E=E->dalsi;
+		}
+		delete E;E=NULL;
 		O=O->dalsi;
 	}
 	O=NULL;delete O;
@@ -5557,7 +5598,7 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 						}
 					}
 					////////////Pozor, překrytí JIGů! - musí být umístěno na konci (popř. na začátku)
-					if(PP.delka_podvozek<m.UDJ(rotaceJ) && E->rotace_jig==0 && pocet_voziku>1)
+					if(PP.delka_podvozek<m.UDJ(rotaceJ) && (E->rotace_jig==0 || E->rotace_jig==180) && pocet_voziku>1)
 					{vloz_zpravu(X+x*PP.delka_podvozek*(pocet_pozic-1)/2.0,Y+y*PP.delka_podvozek*(pocet_pozic-1)/2.0,-1,402,E);pocet_erroru++;}
 				}
 				////posun na další elementy
