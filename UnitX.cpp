@@ -1004,6 +1004,16 @@ void TFormX::validace_max_voziku()
 		if(posledni_E->max_pocet_voziku>0 && posledni_E->max_pocet_voziku<posledni_E->akt_pocet_voziku){posledni_E->mGrid->ShowNote(t1+" <a>"+AnsiString(posledni_E->max_pocet_voziku)+"</a>");validace=false;}
 		if(posledni_E->max_pocet_voziku==0){posledni_E->mGrid->ShowNote(t2);validace=false;}
 		if(posledni_E->max_pocet_voziku>0 && posledni_E->max_pocet_voziku<posledni_E->akt_pocet_voziku)F->TIP=tip+AnsiString(F->d.v.PP.delka_podvozek*posledni_E->akt_pocet_voziku*1000)+" mm.";
+		//validace pøekrytí jigù
+		if(posledni_E->akt_pocet_voziku>1)
+		{
+			double rotace=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(posledni_E);
+			if(rotace==0 || rotace==180)
+			{
+				validace=false;
+				posledni_E->mGrid->ShowNote(F->ls->Strings[425]+" <a>"+AnsiString(1)+"</a>");//"Kvùli pøekryvu jigù nelze nastavit vìtší poèet vozíkù než"
+			}
+		}
 		////pøepsání maximálního poèctu vozíku do tabulky elementu, pro jistotu
 		posledni_E->mGrid->Cells[1][5].Text=posledni_E->max_pocet_voziku;
 		////nemožnost uložit pøi chybných hodnotách
@@ -1041,7 +1051,24 @@ bool TFormX::naplneni_max_voziku(double X,double Y,bool check_for_highlight)
 			E=E->dalsi;
 		}
 		//naplnìní doporuèeného max. poètu vozíkù
-		if(E!=NULL && !check_for_highlight){E->mGrid->Cells[1][6].Text=E->max_pocet_voziku;F->Akce=F->BLOK;}
+		if(E!=NULL && !check_for_highlight)
+		{
+			//extrakce poètu z hintu
+			AnsiString t=E->mGrid->Note.Text;
+			int i=1,zacatek=1,pocet=-1;
+			while(i<=t.Length())
+			{
+				if(pocet>=0)pocet++;
+				if(t.SubString(i,1)==">"){zacatek=i+1;pocet=0;}
+				if(pocet>0 && t.SubString(i,1)=="<")break;
+				i++;
+			}
+			//naplnìní dat + tabulka
+			E->akt_pocet_voziku=F->ms.MyToDouble(t.SubString(zacatek,pocet-1));
+			E->mGrid->Cells[1][6].Text=E->akt_pocet_voziku;
+			E->mGrid->ShowNote("");
+			F->Akce=F->BLOK;
+		}
 		E=NULL;delete E;
 	}
 	return ret;

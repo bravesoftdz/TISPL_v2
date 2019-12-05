@@ -157,18 +157,18 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	if(T==0)Rzunit=M;else if(T==1) Rzunit=MM; else Rzunit=M;
 
   T=readINI("nastaveni_editace","intenzita_vektory"); //intenzita vektoru needitovanych objektu
- 	if(T==0 || T=="")d.pasivni_vektory_intenzita=50;else d.pasivni_vektory_intenzita=F->ms.MyToDouble(T);
+	if(T==0 || T=="")d.pasivni_vektory_intenzita=50;else d.pasivni_vektory_intenzita=F->ms.MyToDouble(T);
 	scGPTrackBar_intenzita->Value = d.pasivni_vektory_intenzita;
 	T=readINI("nastaveni_editace","rotace_jigu"); //zobrazit rotaci jigu
-	if(T==0 || T=="")rotace_jigu=0;else rotace_jigu=1;
+	if(T==1 || T=="")rotace_jigu=1;else rotace_jigu=0;
 	T=readINI("nastaveni_editace","zobrazeni_pozic"); //zobrazit pozice
-	if(T==0 || T=="")zobrazit_pozice=0;else zobrazit_pozice=1;
+	if(T==1 || T=="")zobrazit_pozice=1;else zobrazit_pozice=0;
 	T=readINI("nastaveni_editace","zobrazit_popisky"); //zobrazit popisky
-	if(T==0 || T=="")zobrazit_popisky=0;else zobrazit_popisky=1;
+	if(T==1 || T=="")zobrazit_popisky=1;else zobrazit_popisky=0;
 	T=readINI("nastaveni_editace","zobrazit_koleje"); //zobrazit koleje
-	if(T==0 || T=="")zobrazit_koleje=0;else zobrazit_koleje=1;
+	if(T==1 || T=="")zobrazit_koleje=1;else zobrazit_koleje=0;
 	T=readINI("nastaveni_editace","zobrazit_palce"); //zobrazit palce
-	if(T==0 || T=="")zobrazit_palce=0;else zobrazit_palce=1;
+	if(T==1 || T=="")zobrazit_palce=1;else zobrazit_palce=0;
 
 
 	if(rotace_jigu==1) scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
@@ -956,7 +956,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=423;i++)
+	for(unsigned short i=0;i<=425;i++)
 	{
 		switch(i)
 		{
@@ -1384,6 +1384,8 @@ void TForm1::DesignSettings()
 			case 421:text="RT není relevantní, některý z objektů nemá pohon!";break;
 			case 422:text="Nerelevantní hodnota časové rezervy (RT), na některém objektu není přiřazen pohon!";break;
 			case 423:text="Nelze editovat, layout je zamčený";break;
+			case 424:text="Nepodařilo se načíst podklad, zkontrolujte jeho existenci, nebo proveďte nové načtení.";break;
+			case 425:text="Kvůli překryvu jigů nelze nastavit větší počet vozíků než";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -1728,7 +1730,7 @@ void TForm1::startUP()
 {
 	log(__func__);//logování
   if(!Form_zpravy->closing && !Form_zpravy->Showing && !PopUPmenu->Showing && !PopUPmenu->closing)//pozn. dole ještě větev else if(PopUPmenu->Showing || PopUPmenu->closing)PopUPmenu->Close();//pokud je spuštěné pop-up menu, tak ho vypne
-  {
+	{
     //načtení jazykové mutace, nemůže být v konstruktoru, protože ještě neexistují všechny dílčí formuláře = nelze k nim přistoupit
 		language=(TForm1::Tlanguage)load_language(language,false);//aktivovani jazyk mutaci, problém s přepnutím jazyka při nenalezení souboru, proto metoda varací zvolený jazyk
     //////otevrení posledního souboru
@@ -1834,14 +1836,16 @@ void TForm1::startUP()
   		Schema->ImageIndex=78;
   		scButton_zamek_layoutu->Hint=ls->Strings[43];//"Zamknout layout";
   	}
-    if(d.v.OBJEKTY->dalsi!=NULL)
+		if(d.v.OBJEKTY->dalsi==NULL)
     {
 			TIP=ls->Strings[304];
 			SB(ls->Strings[304],4);
-      SB(ls->Strings[378]+" ");
-      akutalizace_stavu_prichytavani_vSB();
-    }
-  }
+		}
+		SB(ls->Strings[378]+" ");
+		akutalizace_stavu_prichytavani_vSB();
+		//pokud je v PP raster, ale nelze ho najít vypíše se hláška
+		if(d.v.PP.raster.filename!="" && !FileExists(d.v.PP.raster.filename) && mrYes==MB(ls->Strings[424],MB_YESNO))scButton_nacist_podkladClick(this);//"Nepodařilo se načíst podklad, zkontrolujte jeho existenci, nebo proveďte nové načtení."
+	}
 	else if(PopUPmenu->Showing || PopUPmenu->closing)PopUPmenu->Close();//pokud je spuštěné pop-up menu, tak ho vypne
 	Akce=NIC;
 }
@@ -2583,7 +2587,10 @@ void TForm1::nacti_podklad(TCanvas *Canv)
 			Canv->StretchDraw(TRect(m.L2Px(d.v.PP.raster.X),m.L2Py(d.v.PP.raster.Y),m.round(m.L2Px(d.v.PP.raster.X)+bmp->Width*Zoom*d.v.PP.raster.resolution/m2px),m.round(m.L2Py(d.v.PP.raster.Y)+bmp->Height*Zoom*d.v.PP.raster.resolution/m2px)),bmp);
 			delete(bmp);
 		}
-		else d.v.PP.raster.show=false;
+		else
+		{
+			d.v.PP.raster.show=false;
+		}
 	}
 }
 //---------------------------------------------------------------------------
@@ -3437,15 +3444,18 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			}
 			break;
 		}
-		case MOVE://posun objektu
+		case MOVE://posun objektu, v editaci funkce posunu objektu odstavena
 		{
       //zapnutí kurzoru
-			if(pom_temp!=NULL&&stisknute_leve_tlacitko_mysi&&Screen->Cursor!=pan_move)kurzor(pan_move);
+			//if(pom_temp!=NULL&&stisknute_leve_tlacitko_mysi&&Screen->Cursor!=pan_move)kurzor(pan_move);
 			//posun
-			if(pom_temp!=NULL&&stisknute_leve_tlacitko_mysi)d.v.posun_objekt(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),pom_temp,false,false);
-			if(pom_temp==NULL)d.v.posun_objekt(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),pom);
-			minule_souradnice_kurzoru=TPoint(X,Y);
-			REFRESH(false);
+			//if(pom_temp!=NULL&&stisknute_leve_tlacitko_mysi)d.v.posun_objekt(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),pom_temp,false,false);
+			if(pom_temp==NULL)
+			{
+				/*if(pom_temp==NULL)*/d.v.posun_objekt(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),pom);
+				minule_souradnice_kurzoru=TPoint(X,Y);
+				REFRESH(false);
+			}else Akce=NIC;
 			break;
 		}
 		case DRAW_HALA:
@@ -5427,6 +5437,7 @@ void TForm1::add_element (int X, int Y)
 			{d.v.smaz_element(E);E=NULL;}
 		if(E!=NULL)d.v.aktualizuj_sparovane_ukazatele();//aktualizace spárovaných ukazatelů
 		if(E!=NULL && E->dalsi!=NULL && E->eID==0 && E->dalsi->eID==0)design_element(E->dalsi,false);//aktualizace počtů pozic, pokud je stopka vložena do oblasti jiné stopky
+    if(E!=NULL && (E->eID==5 || E->eID==6))FormX->validace_max_voziku();//přidána otoč do kabiny, aktualizace validace
 		//vložení předávacího místa
 		if(E!=NULL && E->eID==200)
 		{
@@ -12146,16 +12157,21 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Cvektory::TElement *E=pom_temp->elementy->dalsi;
-	while(E!=NULL)
-	{
-		if(E->pohon==NULL)Memo(E->name+"->pohon=NULL");else Memo(E->name+"->pohon="+E->pohon->n);
-		E=E->dalsi;
-	}
-	delete E;E=NULL;
-	//if(E->mGrid->Rows[0].Visible)Memo("viditelný");else Memo("neviditelný");
-	//E->mGrid->Left=500;E->mGrid->Top=500;E->mGrid->Refresh();
- //	d.line(Canvas,E->mGrid->LEFT,E->mGrid->Top,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
+//	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
+//	while(O!=NULL)
+//	{
+		Cvektory::TElement *E=pom_temp->elementy->predchozi->predchozi; Memo3->Clear();
+//  	while(E!=NULL)
+//  	{
+//  		if(E->pohon==NULL)Memo(E->name+"->pohon=NULL");else Memo(E->name+"->pohon="+E->pohon->n);
+//  		//Memo(E->name+" od:"+AnsiString(E->geo.X1)+"; do:"+AnsiString(E->geo.X4));
+//  		E=E->dalsi;
+//  	}
+//		delete E;E=NULL;
+//		O=O->dalsi;
+//	}
+//	delete O;O=NULL;
+	Memo(d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(E));
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -13177,7 +13193,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
 {
-  log(__func__);//logování
+	log(__func__);//logování
 	scSplitView_MENU->Opened=false;
 	OpenDialog1->Title="Načíst podklad";
 	OpenDialog1->DefaultExt="*.bmp";
@@ -13965,7 +13981,7 @@ void __fastcall TForm1::scGPComboBox_prepinacKotClick(TObject *Sender)
   	}
   	writeINI("nastaveni_nahled","koty_delka", DKunit);
   	REFRESH(false);
-  	refresh_mGrid=true;//navrácení stavu
+		refresh_mGrid=true;//navrácení stavu
 	}
 }
 //---------------------------------------------------------------------------
@@ -13974,7 +13990,7 @@ void TForm1::Memo(AnsiString Text, bool clear,bool count)
 {
   log(__func__);//logování
 	if(clear)Memo3->Clear();
-	if(count){count_memo++;Text+=" "+count_memo;}
+	if(count){count_memo++;Text=Text+" "+AnsiString(count_memo);}
 	Memo3->Visible=true;
 	Memo3->Lines->Add(Text);
 	Memo3->CopyToClipboard();
@@ -14511,13 +14527,16 @@ void __fastcall TForm1::scGPButton_errorClick(TObject *Sender)
 {
 	log(__func__);//logování
 	Form_zpravy->Show();
+	if(pom_temp!=NULL)DrawGrid_knihovna->SetFocus();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPButton_warningClick(TObject *Sender)
 {
   log(__func__);//logování
 	Form_zpravy->Show();
+	if(pom_temp!=NULL)DrawGrid_knihovna->SetFocus();
 }
 //---------------------------------------------------------------------------
+
 
 

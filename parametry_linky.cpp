@@ -873,7 +873,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		// ukladej
 		if (Ulozit)
 		{
-			zrusit_prirazeni_smazanych_ci_odrazenych_pohunu_k_objektum();
+			zrusit_prirazeni_smazanych_ci_odrazenych_pohunu_k_objektum();//i elementùm
 			Form1->d.v.vymaz_seznam_POHONY();
 			Form1->d.v.hlavicka_POHONY();
 
@@ -912,6 +912,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
 				//všem objektùm, které mìly pøiøazen pohon s oldN(oldID), pøiøadí pohon s newN(newID), podle toho, jak jsou ukládány novì do spojáku, dùležité, pokud dojde k narušení poøadí ID resp n pohonù a poøadí jednotlivých øádkù ve stringridu, napø. kopirováním, smazáním, zmìnou poøadí øádkù atp., øeší i pro pøípad napø. 2->3,3->4 pomocí atributu objektu probehla_aktualizace_prirazeni_pohonu (aby prvnì nebyl pøiøezn pohon s id 2 na 3 a potom všechny pohony s id 3 na pohon 4, protože mìly být pøiøazený jen nìkteré...)
 			 Form1->d.v.aktualizace_prirazeni_pohonu_k_objektum(getPID(i),i-1);
+			 Form1->d.v.aktualizace_prirazeni_pohonu_k_elementum(getPID(i),i-1);
 			}
 			//po dokonèení aktualizace pøiøazení pohonu (pøi ukládání pohonu na PL) vrátí atribut probehla_aktualizace_prirazeni_pohonu všech objektù na false, aby bylo pøipraveno k dalšímu opìtovnému užítí, nepøímo spolupracuje s metodou výše uvedenou aktualizace_prirazeni_pohonu_k_objektum
  	   Form1->d.v.aktualizace_prirazeni_pohonu_dokoncena();
@@ -1538,7 +1539,7 @@ void TForm_parametry_linky::zrusit_prirazeni_smazanych_ci_odrazenych_pohunu_k_ob
 	for(unsigned PID=0;PID<zrusena_prirazeni_PID_size;PID++)
 	{
 		if(zrusena_prirazeni_PID[PID])
-		Form1->d.v.zrusit_prirazeni_pohunu_k_objektum(PID+1);
+		Form1->d.v.zrusit_prirazeni_pohunu_k_objektum_elementum(PID+1);
 	}
 	zrusena_prirazeni_PID=NULL;delete zrusena_prirazeni_PID;
 }
@@ -2258,10 +2259,10 @@ void TForm_parametry_linky::OnClick(long Tag,long ID,unsigned long Col,unsigned 
 //	//toto problikává PL_mGrid->Refresh();
 COL=Col;
 ROW=Row;
-UnicodeString text="Pohon je používáný, opravdu má být zrušeno pøiøazení?",text_1="Pohon je používán objekty: <b>",text_2="</b>. Opravdu má být pohon smazán?";
-if(F->ls->Strings[372]!="")text=F->ls->Strings[372];
-if(F->ls->Strings[373]!="")text_1=F->ls->Strings[373]+" <b>";
-if(F->ls->Strings[374]!="")text_2="</b>. "+F->ls->Strings[374];
+UnicodeString text,text_1,text_2;
+text=F->ls->Strings[372];//"Pohon je používáný, opravdu má být zrušeno pøiøazení?"
+text_1=F->ls->Strings[373]+" <b>";//"Pohon je používán objekty: <b>"
+text_2="</b>. "+F->ls->Strings[374];//"</b>. Opravdu má být pohon smazán?"
 		 bool smazat=false;
 		 if(input_state==NOTHING)
 		 {
