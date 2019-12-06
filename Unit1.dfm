@@ -852,9 +852,9 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object Schema: TscGPButton
-      Left = 554
+      Left = 654
       Top = 0
-      Width = 180
+      Width = 130
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -960,6 +960,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
+      ExplicitLeft = 644
     end
     object PopupMenuButton: TscGPButton
       AlignWithMargins = True
@@ -1074,9 +1075,9 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object Analyza: TscGPButton
-      Left = 734
+      Left = 784
       Top = 0
-      Width = 180
+      Width = 130
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -1182,6 +1183,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
+      ExplicitLeft = 824
     end
     object Synteza: TscGPButton
       Left = 914
@@ -1785,9 +1787,9 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object Layout: TscGPButton
-      Left = 284
+      Left = 434
       Top = 0
-      Width = 180
+      Width = 130
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -1892,6 +1894,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
+      ExplicitLeft = 404
     end
     object Simulace: TscGPButton
       Left = 1004
@@ -2277,7 +2280,7 @@ object Form1: TForm1
       UseFontColorToStyleColor = True
     end
     object Nahled: TscGPButton
-      Left = 464
+      Left = 564
       Top = 0
       Width = 90
       Height = 34
@@ -2384,6 +2387,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
+      ExplicitLeft = 464
     end
     object scGPGlyphButton_PLAY: TscGPGlyphButton
       Left = 242
@@ -2488,7 +2492,7 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object scGPButton_error: TscGPButton
-      Left = 234
+      Left = 384
       Top = 0
       Width = 25
       Height = 34
@@ -2596,9 +2600,10 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 234
     end
     object scGPButton_warning: TscGPButton
-      Left = 259
+      Left = 409
       Top = 0
       Width = 25
       Height = 34
@@ -2706,6 +2711,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 259
     end
   end
   object scGPPanel_statusbar: TscGPPanel
@@ -9628,7 +9634,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118009808280910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101180098082C0910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10751,7 +10757,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01015200480A100C30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01015200480A140C30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000F0030000010020000000000000D0
       0B0000000000000000000000000000000000A3653C00A3653C00A3653C00A365
       3C00A3653C00A3653C00A3653C00A3653C00A3653C00A3653C00A3653C00A365
