@@ -1629,6 +1629,7 @@ void Cvektory::rotuj_objekt(TObjekt *Objekt, double rotace)
 			case 180:Objekt->Xt=m.P2Lx(F->vrat_max_oblast(Objekt).right);Objekt->Yt=Objekt->elementy->predchozi->geo.Y4-(Objekt->elementy->predchozi->geo.Y4-Objekt->elementy->dalsi->geo.Y1)/2.0;break;
 		}
 		Objekt->orientace=Objekt->orientace_text=azimut;
+		F->duvod_validovat=2;//je přímý důvod k validaci
 	}
 }
 ////---------------------------------------------------------------------------
