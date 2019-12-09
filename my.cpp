@@ -603,7 +603,7 @@ TPointDbool Cmy::zkratit_polygon_na_roztec(double d, double r,double xp, double 
 			double dist1=sqrt(pow((xn1-xp),2)+pow((yn1-yp),2)); // nalezeni blizsiho bodu
 			double dist2=sqrt(pow((xn2-xp),2)+pow((yn2-yp),2));
 
-      double xn,yn;
+			double xn,yn;
 
 			if (dist1<dist2)
 			{
@@ -614,12 +614,78 @@ TPointDbool Cmy::zkratit_polygon_na_roztec(double d, double r,double xp, double 
 			{
 				xn=xn2;
 				yn=yn2;
-      }
+			}
 
 			RET.b=true; RET.x=xn; RET.y=yn;
 		}
 
 		return RET;
+}
+///------------------------------------------------------------------------------------------------------------------------------------------------------
+//vratí bod včetně akutálního azimutu bodu z bézierovy křivky dle zadaných procent z její délky, perc jsou procenta/100 pozice na křivce v intervalu <0,1>
+TPointD_3D Cmy::bezierPt(double x1,double y1,double x2,double y2,double x3,double y3,double x4,double y4,double perc)
+{
+		//kvadratický bézier - p = (1-t)^2 *P0 + 2*(1-t)*t*P1 + t*t*P2 t is usually on 0-1 but that's not an essential - in fact the curves extend to infinity. P0, P1, etc are the control points. The curve goes through the two end points but not usually through the other points.
+//	int x1=100,y1=100,x2=500,y2=100,x3=500,y3=500;
+//	line(canv,x1,y1,x2,y2); line(canv,x2,y2,x3,y3);
+//	for( float i = 0 ; i < 1 ; i += 0.01 )
+//	{
+//		// The Green Line
+//		int xa = getPt( x1 , x2 , i );
+//		int ya = getPt( y1 , y2 , i );
+//		int xb = getPt( x2 , x3 , i );
+//		int yb = getPt( y2 , y3 , i );
+//
+//		// The Black Dot
+//		int x = getPt( xa , xb , i );
+//		int y = getPt( ya , yb , i );
+//
+//		canv->Pixels[x][y]=clRed;
+//	}
+
+	//kubický bézier  //p = (1-t)^3 *P0 + 3*t*(1-t)^2*P1 + 3*t^2*(1-t)*P2 + t^3*P3 t is usually on 0-1 but that's not an essential - in fact the curves extend to infinity. P0, P1, etc are the control points. The curve goes through the two end points but not usually through the other points.
+	//The Green Lines
+	double xa=getPt(x1,x2,perc);
+	double ya=getPt(y1,y2,perc);
+	double xb=getPt(x2,x3,perc);
+	double yb=getPt(y2,y3,perc);
+	double xc=getPt(x3,x4,perc);
+	double yc=getPt(y3,y4,perc);
+
+	//The Blue Line
+	double xm=getPt(xa,xb,perc);
+	double ym=getPt(ya,yb,perc);
+	double xn=getPt(xb,xc,perc);
+	double yn=getPt(yb,yc,perc);
+
+	//return
+	TPointD_3D RET;
+	RET.x=getPt(xm,xn,perc);
+	RET.y=getPt(ym,yn,perc);
+
+	RET.z=azimut(xm,ym,xn,yn);//P2L kvůli tomu, že m.uhel počítá v kartezské soustavě
+	return RET;
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//podpůrná metoda výše uvedené
+double Cmy::getPt(double n1,double n2,double perc)
+{
+	double diff=n2-n1;
+	return n1+(diff*perc);
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//vrátí délku bézierovy křivky, prec=preciznost výpočtu
+double Cmy::bezierDelka(int x1,int y1,int x2,int y2,int x3,int y3,int x4,int y4,double prec)
+{       //domnívám se, že by to chtělo převést do fyzických souřadnic kvůli přesnosti
+	double /*delka_px=0,*/delka_RET=0, x_pre=x1,y_pre=y2;
+	for( double i=0;i<=1;i+=prec)
+	{
+		TPointD_3D P=bezierPt(x1,y1,x2,y2,x3,y3,x4,y4,i);double x=P.x;double y=P.y;
+		//delka_px+=m.delka(x_pre,y_pre,x,y);
+		delka_RET+=delka(P2Lx(x_pre),P2Ly(y_pre),P2Lx(x),P2Ly(y));
+		x_pre=x;y_pre=y;
+	}
+	return delka_RET;
 }
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////

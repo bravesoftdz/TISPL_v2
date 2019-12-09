@@ -1,5 +1,6 @@
-struct TPointD{double x; double y;};
-struct TPointDbool{double x; double y;bool b;};
+struct TPointD{double x;double y;};
+struct TPointD_3D{double x;double y;double z;};
+struct TPointDbool{double x;double y;bool b;};
 struct TMinMax_d{double MaxX;double MaxY;double MinX;double MinY;};
 struct TMinMedAvgMax_d{double Min;double Med;double Avg;double Max;};
 struct TTextNumber{AnsiString text;double number1;int number2;};
