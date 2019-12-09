@@ -2791,10 +2791,10 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 	if(F->scGPTrackBar_intenzita->Value>5 && F->scGPCheckBox_zobrazit_pozice->Checked && E->max_pocet_voziku>0 || (F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180) || F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->geo.typ==1)//pokud se má smysl algoritmem zabývat, pouze optimalizační podmínky
 	{
 		////výchozí hodnoty
-		double orientaceP=m.Rt90(E->geo.orientace-180);
+		double orientaceP=(E->geo.orientace-180);//bylo tady Rt90, proč?
 		unsigned int pocet_pozic=E->max_pocet_voziku;
-		double X=Rxy(E).x;
-		double Y=Rxy(E).y;
+		double X=E->geo.X4;//Rxy(E).x;
+		double Y=E->geo.Y4;//Rxy(E).y;
 		double dJ=v.PP.delka_jig;//později nahradit ze zakázky
 		double sJ=v.PP.sirka_jig;//později nahradit ze zakázky
 		double rotaceJ=v.vrat_rotaci_jigu_po_predchazejicim_elementu(E);//metodu po přechodu na nový DM zaktulizovat o průchod přes spoják elementů
@@ -2879,11 +2879,38 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 				}
 			}
 		}
-
-//		if(F->scGPCheckBox_zobrazit_pozice->Checked && v.vrat_druh_elementu(E)==1 && v.funkcni_element(E))//pro kontinuály
+//-----------------------------------------------------------------------
+//tady vývoj:
+//		//F->Memo("///////////");
+//		if(/*F->smazat && */v.vrat_druh_elementu(E)==0 && E->sparovany!=NULL/* && E->objekt_n==1  && E->n==1*/)//pro S&G který má spárovaný objekt
 //		{
-//			//canv->TextOutW(m.L2Px(E->X),m.L2Py(E->Y),"konti");
-//    }
+//			//provizoriní algoritmus do změny DM
+//			Cvektory::TObjekt *O=NULL;                   //další objekt                 			//další kolo                  //v případě editovaného objektu
+//			Cvektory::TElement *Et=E->dalsi;if(Et==NULL){O=v.vrat_objekt(E->objekt_n)->dalsi;if(O==NULL)O=v.OBJEKTY->dalsi;if(F->pom_temp!=NULL && O->n==F->pom_temp->n)O=F->pom_temp;if(O!=NULL && Et==NULL)Et=O->elementy->dalsi;}//tempový Element
+//			Cvektory::TElement *Esd=E->sparovany->dalsi;if(Esd==NULL){O=v.vrat_objekt(E->sparovany->objekt_n)->dalsi;if(O==NULL)O=v.OBJEKTY->dalsi;if(F->pom_temp!=NULL && O->n==F->pom_temp->n)O=F->pom_temp;if(O!=NULL && Esd==NULL)Esd=O->elementy->dalsi;}//Element za spárovaným, kvůli tomu, aby algoritmus došel až ke spárovanému bylo tu toto (nyní s tím nesouhlasím):pokud je na konci vždy zarážka, tak je zbytečné
+//			//F->Memo("pro "+E->name+": "+Esd->name);
+//			//F->Memo(AnsiString(Esd->name)+" "+AnsiString(Et->name));
+//			while(Esd!=Et /*&& Et!=E && Et!=NULL*/)//procházení cyklem od stopk elementu až po jeho spárovaný
+//			{
+//				//výpočetní a vykreslovací záležítosti
+//				TPointD_3D Pt=m.bezierPt(Et->geo.X1,Et->geo.Y1,Et->geo.X2,Et->geo.Y2,Et->geo.X3,Et->geo.Y3,Et->geo.X4,Et->geo.Y4,0.5);
+//				canv->Font->Size=1*F->Zoom;
+//				canv->TextOutW(m.L2Px(Pt.x),m.L2Py(Pt.y),Et->name);
+//				//F->Memo(AnsiString(Pt.x)+";"+AnsiString(Pt.y)+";"+AnsiString(Pt.z));
+//				F->Memo(Pt.y);
+//				vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z/*orientaceP*/,rotaceJ,clChassis,m.clIntensive(clJig,100));
+//	//			F->Memo("pro "+E->name+": "+Et->name);
+//	//			F->Memo("-----------");
+//				//ukazatelové záležitosti          //další objekt         //další kolo                 //v případě editovaného objektu
+//				if(Et->dalsi==NULL){O=v.vrat_objekt(Et->objekt_n)->dalsi;if(O==NULL)O=v.OBJEKTY->dalsi;if(F->pom_temp!=NULL && O->n==F->pom_temp->n)O=F->pom_temp;if(O!=NULL)Et=O->elementy->dalsi;}
+//				else Et=Et->dalsi;
+//			}
+//			Et=NULL;delete Et;
+//			O=NULL;delete O;
+//			//canv->TextOutW(m.L2Px(E->geo.X1),m.L2Py(E->geo.Y1),"Z ");
+//			//canv->TextOutW(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4),"K ");
+//		}
+//		//canv->TextOutW(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4),E->name);
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
