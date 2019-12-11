@@ -111,6 +111,7 @@ __published:	// IDE-managed Components
   TscStyledForm *scStyledForm2;
   TscGPTrackBar *scGPTrackBar_uchyceni;
   TscHTMLLabel *scHTMLLabel1;
+	TscHTMLLabel *scHTMLLabel_posuvnik;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);

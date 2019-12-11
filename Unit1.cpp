@@ -962,7 +962,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=426;i++)
+	for(unsigned short i=0;i<=427;i++)
 	{
 		switch(i)
 		{
@@ -1393,6 +1393,7 @@ void TForm1::DesignSettings()
 			case 424:text="Nepodařilo se načíst podklad";break;
       case 425:text=", zkontrolujte jeho existenci, nebo proveďte nové načtení.";break;
 			case 426:text="Kvůli překryvu jigů nelze nastavit větší počet vozíků než";break;
+			case 427:text="Uchopení jigu palcem";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -1626,7 +1627,7 @@ void __fastcall TForm1::FormActivate(TObject *Sender)
 		}
 		else//toto odkomentovat pro spuštění TTR a slouží pro startUP
 		//Timer_tr->Enabled=false;// toto zakomentovat pro spuštění TTR
-		{Sv();startUP();}//toto vždy odkomentované
+		{startUP();}//toto vždy odkomentované
 	}
 	else//RELEASE
 	{
@@ -1739,8 +1740,13 @@ void TForm1::startUP()
   if(!Form_zpravy->closing && !Form_zpravy->Showing && !PopUPmenu->Showing && !PopUPmenu->closing)//pozn. dole ještě větev else if(PopUPmenu->Showing || PopUPmenu->closing)PopUPmenu->Close();//pokud je spuštěné pop-up menu, tak ho vypne
 	{
     //načtení jazykové mutace, nemůže být v konstruktoru, protože ještě neexistují všechny dílčí formuláře = nelze k nim přistoupit
-		language=(TForm1::Tlanguage)load_language(language,false);//aktivovani jazyk mutaci, problém s přepnutím jazyka při nenalezení souboru, proto metoda varací zvolený jazyk
-    //////otevrení posledního souboru
+		//language=(TForm1::Tlanguage)load_language(language,false);//aktivovani jazyk mutaci, problém s přepnutím jazyka při nenalezení souboru, proto metoda varací zvolený jazyk
+		//změna stavu vyvolává load_language!!!!!!
+		unsigned int old_state=scGPSwitch1->State;
+		if(language==CS)scGPSwitch1->State=scswOn;//nastavení switche jazyků do zpávné polohy
+		else scGPSwitch1->State=scswOff;
+		if(old_state==scGPSwitch1->State)language=(TForm1::Tlanguage)load_language(language,false);//neproběhla změna stavu potřeba udělat ručně
+		//////otevrení posledního souboru
     log2web("start");
     nastaveni.posledni_file=true;/////////////////provizorní než budu načítat z ini z filu nastavení zda otevírat či neotevírat poslední sobor
     volat_parametry_linky=true;//následně je případně znegováno
@@ -1824,8 +1830,6 @@ void TForm1::startUP()
     if(d.v.OBJEKTY->dalsi!=NULL)TIP="";//v případě, že jsou vložené nějaké objekty tak dojde k odmazání tipu pro vkládání objektů
     //set_font();//nastavení fontu komponentám
 		if(scSplitView_LEFTTOOLBAR->Visible && scSplitView_LEFTTOOLBAR->Opened)DrawGrid_knihovna->SetFocus();//nutné při spouštění dávat focus na knihovnu, ta přesměrovává všechny události (např. KeyDown) na Form
-		if(language==CS)scGPSwitch1->State=scswOn;//nastavení switche jazyků do zpávné polohy
-		else scGPSwitch1->State=scswOff;
 		//načtení zámku layoutu
 		if(d.v.PP.zamek_layoutu)//zamčen
   	{
@@ -4320,7 +4324,7 @@ void TForm1::getJobID(int X, int Y)
 			}
 			O=NULL;delete O;
 		}
-//		if(JID==-1)//hledání citelných oblastí elementů pro otevírání náhledu (element mimo kabinu), asi způsobí zamrzání
+//		if(JID==-1)//hledání citelných oblastí elementů pro otevírání náhledu (element mimo kabinu), způsobí zamrzání (na magně)
 //		{
 //			pom_element=NULL;
 //			Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
@@ -11233,7 +11237,7 @@ void TForm1::zavrit_uvod()
 //zajišťuje průběžné zálohování aplikace
 void __fastcall TForm1::Timer_backupTimer(TObject *Sender)
 {
-   log(__func__);//logování
+	 log(__func__);//logování
 	 //zapis hlavičky do souboru
 	//test vytvor_hlavicku_souboru();
 
@@ -12214,24 +12218,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-//	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
-//	while(O!=NULL)
-//	{     //Memo(O->name);
-//		if(O->body->predchozi->n==4||true)
-//		{
-			Cvektory::TBod *B=pom_temp->body->dalsi;
-	  	while(B!=NULL)
-	  	{
-				if(B->n==2)B->X=B->dalsi->X;
-				if(B->n==4)B->X=B->dalsi->X;
-				B=B->dalsi;
-	  	}
-			delete B;B=NULL;
-//		}
-//		O=O->dalsi;
-//	}
-//	delete O;O=NULL;
-	REFRESH(false);
+	Form_Z_rozliseni->Show();
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -14213,6 +14200,10 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 					default:EN:ls->Strings[i]=ls->Strings[i].SubString(0,ls->Strings[i].Pos(";")-1);Jazyk=EN;/*anglictina1->Checked=true;mongolstina1->Checked=false;cestina1->Checked=false;*/break;
 				}
 			}
+		}else
+		{
+			if(language==CS)MB("Jazykový soubor chybí, nebo není kompletní!");//vypsáno ručně pro různé jazykové verze
+			else MB("Language file missing or incomplete!");
 		}
 		delete ls_temp;ls_temp=NULL;
 		//začít od 4
@@ -14358,7 +14349,7 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
     Form_parametry_linky->scGPGlyphButton_OPTIONS->Hint=ls->Strings[158];
     Form_parametry_linky->scGPGlyphButton_katalog->Hint=ls->Strings[159];
     Form_parametry_linky->scGPTrackBar_uchyceni->Hint=ls->Strings[160];
-    Form_parametry_linky->Button_save->Caption=ls->Strings[161];
+		Form_parametry_linky->Button_save->Caption=ls->Strings[161];
 		Form_parametry_linky->scHTMLLabel1->Caption=ls->Strings[162];
     PopUPmenu->scLabel_posun_obrysu->Caption=ls->Strings[175];
     PopUPmenu->scLabel_rychly_export->Caption=ls->Strings[176];
@@ -14379,10 +14370,22 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 		Form_zpravy->scGPGlyphButton_pripnout->Hint=ls->Strings[413];
 		Form_zpravy->RzStatusPane__chyby_caption->Caption=ls->Strings[414];
 		Form_zpravy->RzStatusPane_var_header->Caption=ls->Strings[415];
+		Form_parametry_linky->scHTMLLabel_posuvnik->Caption=ls->Strings[427];
 
     //změna zarovnání
 		scGPComboBox_prepinacKot->Left=scGPLabel_prepinacKot->Left+scGPLabel_prepinacKot->Width;//nutné!!
-    //aktualizace mGridu
+		switch((int)language)
+		{
+			case CS:
+			{
+				Form_parametry_linky->scGPGlyphButton_ADD_old->Left=98;
+			}break;
+			case EN:
+			{
+				Form_parametry_linky->scGPGlyphButton_ADD_old->Left=147;
+			}break;
+		}
+		//aktualizace mGridu
 		if(akt_mGrid)change_languagein_mGrid();
 	}
 	else //pokud není nalezen jazykový slovník
@@ -14559,8 +14562,11 @@ void __fastcall TForm1::scGPCheckBox_zobrazit_kolejeClick(TObject *Sender)
 void __fastcall TForm1::scGPSwitch1ChangeState(TObject *Sender)
 {
 	log(__func__);//logování
+	if(Akce==NIC)
+	{
 	if(scGPSwitch1->State==scswOn) {language=CS;load_language(CS,true);  	writeINI("Nastaveni_app","jazyk","1");  }
 	else  {language=EN;load_language(EN,true); writeINI("Nastaveni_app","jazyk","0");  }
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPCheckBox_zobrazit_palceClick(TObject *Sender)

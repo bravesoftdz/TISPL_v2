@@ -7171,7 +7171,7 @@ object Form_parametry_linky: TForm_parametry_linky
       TextAlignment = taLeftJustify
     end
     object scGPGlyphButton_ADD_old: TscGPGlyphButton
-      Left = 93
+      Left = 98
       Top = 17
       Width = 17
       Height = 18
@@ -7304,11 +7304,42 @@ object Form_parametry_linky: TForm_parametry_linky
       MaxWidth = 0
       TextAlignment = taLeftJustify
     end
+    object scHTMLLabel_posuvnik: TscHTMLLabel
+      Left = 276
+      Top = 136
+      Width = 153
+      Height = 13
+      Margins.Left = 0
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      Font.Quality = fqClearType
+      ParentFont = False
+      TabOrder = 7
+      AutoSizeHeight = False
+      AutoSizeWidth = False
+      AutoExecuteURL = True
+      Caption = 'uchopov'#225'n'#237' palce'
+      LinkFontNormal.Charset = DEFAULT_CHARSET
+      LinkFontNormal.Color = clHighlight
+      LinkFontNormal.Height = -11
+      LinkFontNormal.Name = 'Tahoma'
+      LinkFontNormal.Style = []
+      LinkFontHover.Charset = DEFAULT_CHARSET
+      LinkFontHover.Color = clHighlight
+      LinkFontHover.Height = -11
+      LinkFontHover.Name = 'Tahoma'
+      LinkFontHover.Style = [fsUnderline]
+      MaxWidth = 0
+      TextAlignment = taLeftJustify
+    end
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 9167
-    Top = 14649
+    Left = 9197
+    Top = 14699
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -7333,6 +7364,8 @@ object Form_parametry_linky: TForm_parametry_linky
     GlyphThickness = 1
     Kind = scgpgkOneGear
     TransparentBackground = True
+    ExplicitLeft = 9176
+    ExplicitTop = 14664
   end
   object scGPSwitch: TscGPSwitch
     Left = 762
