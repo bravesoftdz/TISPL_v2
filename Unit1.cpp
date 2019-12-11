@@ -962,7 +962,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=425;i++)
+	for(unsigned short i=0;i<=426;i++)
 	{
 		switch(i)
 		{
@@ -1309,7 +1309,7 @@ void TForm1::DesignSettings()
       case 340:text="Chcete opravdu objekt";break;
       case 341:text="smazat?";break;
       case 342:text="Neplatná hodnota!";break;
-      case 343:text="Chcete uložit změny editovaného objektu?";break;
+      case 343:text="Chcete uložit změny objektu";break;
       case 344:text="Zadaná data nejsou validní a nebudou uložena. Opravdu přejít do jiného objektu?";break;
       case 345:text="Soubor";break;
       case 346:text="nebyl nalezen!";break;
@@ -5328,13 +5328,13 @@ void TForm1::pripnuti_dalsich_objektu()
   	double posun_x,posun_y;
 		posun_x=-pom->dalsi->elementy->dalsi->geo.X1+e_posledni->geo.X4;
 		posun_y=-pom->dalsi->elementy->dalsi->geo.Y1+e_posledni->geo.Y4;
-  	Cvektory::TObjekt *O=pom->dalsi;
-  	while(O!=NULL)
-  	{
+		Cvektory::TObjekt *O=pom->dalsi;
+		while(O!=NULL)
+		{
 			move_objekt(posun_x,posun_y,O);
-  		O=O->dalsi;
-  	}
-  	delete O;O=NULL;
+			O=O->dalsi;
+		}
+		delete O;O=NULL;
 	}
 	e_posledni=NULL;delete e_posledni;
 }
@@ -10556,7 +10556,7 @@ void TForm1::zmena_editovaneho_objektu()
 	bool prepnout=true,validace=false;
 	bool kontrola_PM=false;//při neuložení minulého náhledmu musí dojík k separátní kontrole
 	int result=mrNo;
-	if(scGPButton_ulozit->Enabled)result=MB(ls->Strings[343],MB_YESNO,true);//"Chcete uložit změny editovaného objektu?"                                                     //"Zadaná data nejsou validní a nebudou uložena. Opravdu přejít do jiného objektu?"
+	if(scGPButton_ulozit->Enabled)result=MB(ls->Strings[343]+" "+pom_temp->name+"?",MB_YESNO,true);//"Chcete uložit změny objektu"                                                     //"Zadaná data nejsou validní a nebudou uložena. Opravdu přejít do jiného objektu?"
 	else if(PmG->Note.Text!="" && PmG->Note.Text!="Parametry pohonu již nelze měnit, neboť je používán i na jiných objektech" && PmG->Note.Text!=ls->Strings[291]){result=MB(ls->Strings[344],MB_YESNO,true);validace=true;}
 	if(validace && result==mrNo)result=33;if(validace && result==mrYes)result=mrNo;
 	switch(result)
@@ -12216,18 +12216,22 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 {
 //	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
 //	while(O!=NULL)
-//	{
-//		Cvektory::TElement *E=pom_temp->elementy->predchozi->predchozi;
-//  	while(E!=NULL)
-//  	{
-//  		if(E->pohon==NULL)Memo(E->name+"->pohon=NULL");else Memo(E->name+"->pohon="+E->pohon->n);
-//  		//Memo(E->name+" od:"+AnsiString(E->geo.X1)+"; do:"+AnsiString(E->geo.X4));
-//  		E=E->dalsi;
-//  	}
-//		delete E;E=NULL;
+//	{     //Memo(O->name);
+//		if(O->body->predchozi->n==4||true)
+//		{
+			Cvektory::TBod *B=pom_temp->body->dalsi;
+	  	while(B!=NULL)
+	  	{
+				if(B->n==2)B->X=B->dalsi->X;
+				if(B->n==4)B->X=B->dalsi->X;
+				B=B->dalsi;
+	  	}
+			delete B;B=NULL;
+//		}
 //		O=O->dalsi;
 //	}
 //	delete O;O=NULL;
+	REFRESH(false);
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -12430,7 +12434,7 @@ void __fastcall TForm1::KonecClick(TObject *Sender)
 	{
 		if (scGPButton_ulozit->Enabled)
 		{
-			vysledek=MB(ls->Strings[343],MB_YESNO,true);//"Chcete uložit změny editovaného objektu?"
+			vysledek=MB(ls->Strings[343]+" "+pom_temp->name+"?",MB_YESNO,true);//"Chcete uložit změny objektu"
 			switch (vysledek)
 			{
 				case mrYes:scGPButton_OKClick(Sender);break;
@@ -13780,7 +13784,7 @@ void TForm1::vykresli_kurzor(int index)
 			Canvas->Pen->Color=d.clStenaHaly;
 			if(Tn=="")Tn="b";//při prázdném textu nemůžu zjistit TextHeight -> to zapříčiní čpatné vykreslení kurzoru, když uživatel odmaže veškerý text
 			Xt=m.L2Px(F->pom_temp->Xt);Yt=m.L2Py(F->pom_temp->Yt);
-			switch((int)pom_temp->orientace)
+			switch((int)pom_temp->orientace_text)
 			{
 				case 0:
 				{

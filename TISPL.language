@@ -341,7 +341,7 @@ It is not possible to delete an object that is part of the technological path of
 You really want object;X;Chcete opravdu objekt
 delete?;X;smazat?
 Invalid value!;X;Neplatná hodnota!
-Do you want to save changes to the edited object?;X;Chcete uložit zmìny editovaného objektu?
+Do you want to save changes to the object;X;Chcete uložit zmìny objektu
 The data entered is not valid and will not be saved. Really go to another object?;X;Zadaná data nejsou validní a nebudou uložena. Opravdu pøejít do jiného objektu?
 File;X;Soubor
 was not found!;X;nebyl nalezen!
