@@ -768,7 +768,8 @@ public:		// User declarations
   int Top_backup;  //pomocne promenne pro pozici zprav
   int Left_backup; //pomocne promenne pro pozici zprav
   int zpravy_backup_width;
-  int zpravy_backup_height;
+	int zpravy_backup_height;
+	short smazat;
 
 	//metody
 	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click
