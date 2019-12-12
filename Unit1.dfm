@@ -6902,7 +6902,6 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  Vrstvy'
-      ExplicitTop = 522
       object scGPCheckBox_zobrazit_koleje: TscGPCheckBox
         AlignWithMargins = True
         Left = 7
@@ -7562,7 +7561,6 @@ object Form1: TForm1
         Down = False
         GroupIndex = 0
         AllowAllUp = False
-        ExplicitTop = 59
       end
       object scGPButton_kalibrace: TscGPButton
         AlignWithMargins = True
@@ -7776,7 +7774,6 @@ object Form1: TForm1
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
-        ExplicitTop = 130
       end
       object scGPCheckBox_zobraz_podklad: TscGPCheckBox
         AlignWithMargins = True
@@ -7880,7 +7877,6 @@ object Form1: TForm1
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
-        ExplicitTop = 94
       end
       object scGPTrackBar_svetelnost_posuvka: TscGPTrackBar
         AlignWithMargins = True
@@ -8094,7 +8090,6 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  Obecn'#233
-      ExplicitTop = 243
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
         Left = 7
@@ -8500,7 +8495,6 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  N'#225'stroje'
-      ExplicitTop = 454
       object scGPButton_mereni_vzdalenost: TscGPButton
         AlignWithMargins = True
         Left = 3
@@ -9747,7 +9741,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118009808300910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118009808340910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10870,7 +10864,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01015200480A180C30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01015200480A1C0C30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000F0030000010020000000000000D0
       0B0000000000000000000000000000000000A3653C00A3653C00A3653C00A365
       3C00A3653C00A3653C00A3653C00A3653C00A3653C00A3653C00A3653C00A365
