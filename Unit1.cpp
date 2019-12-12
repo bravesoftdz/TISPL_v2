@@ -962,7 +962,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=427;i++)
+	for(unsigned short i=0;i<=428;i++)
 	{
 		switch(i)
 		{
@@ -1393,7 +1393,8 @@ void TForm1::DesignSettings()
 			case 424:text="Nepodařilo se načíst podklad";break;
       case 425:text=", zkontrolujte jeho existenci, nebo proveďte nové načtení.";break;
 			case 426:text="Kvůli překryvu jigů nelze nastavit větší počet vozíků než";break;
-			case 427:text="Uchopení jigu palcem";break;
+			case 427:text="místo pro úchyt palce";break;
+			case 428:text="Smazat podklad";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -2057,10 +2058,12 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
 	//scLabel1_svetelnost->Top=scGPCheckBox_stupne_sedi->Top +  44;  //pár px navíc kvůli vzdušnosti
   scGPTrackBar_svetelnost_posuvka->Top=scLabel1_svetelnost->Top;
 
-	scGPButton_kalibrace->Left = 3;
-  scGPButton_adjustace->Left=  scGPButton_kalibrace->Left;
+	scGPButton_kalibrace->Left=3;
+	scGPButton_adjustace->Left=scGPButton_kalibrace->Left;
+	scGPButton_smazat->Left=scGPButton_kalibrace->Left;
 	scGPButton_kalibrace->Top=scGPTrackBar_svetelnost_posuvka->Top + scLabel1_svetelnost->Height + 9;  //pár px navíc kvůli vzdušnosti
 	scGPButton_adjustace->Top=scGPButton_kalibrace->Top +  scGPButton_kalibrace->Height ;
+	scGPButton_smazat->Top=scGPButton_adjustace->Top+scGPButton_adjustace->Height;
 
 	//scGPCheckBox_stupne_sedi->Top=scGPCheckBox_zobraz_podklad->Top+scGPCheckBox_zobraz_podklad->Height;
 	//scLabel1_svetelnost->Top= scGPCheckBox_stupne_sedi->Top + scGPCheckBox_stupne_sedi->Height;
@@ -13248,6 +13251,7 @@ void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
   scLabel1_svetelnost->Enabled=false;        // prozatim zakazano
   scGPButton_kalibrace->Enabled=true;
 	scGPButton_adjustace->Enabled=true;
+	scGPButton_smazat->Enabled=true;
 	return 0;
   //scGPGlyphButton_OPTIONS->ShowHint=true;
  // }
@@ -13347,7 +13351,7 @@ void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
 {
   log(__func__);//logování
   ESC();//zruší případnou rozdělanou akci  - způsobuje problém při zavírání splitview
-  scSplitView_OPTIONS->Opened = !scSplitView_OPTIONS->Opened;
+	//scSplitView_OPTIONS->Opened = !scSplitView_OPTIONS->Opened;
 
 //  scGPGlyphButton_OPTIONS->Active=false;
 //  scGPGlyphButton_OPTIONS->GlyphColor=clWhite;
@@ -13374,8 +13378,9 @@ void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
   	scGPCheckBox_stupne_sedi->Enabled=false;
   	scGPTrackBar_svetelnost_posuvka->Enabled=false;
   	scLabel1_svetelnost->Enabled=false;
-  	scGPButton_adjustace->Enabled=false;
-  	scGPButton_kalibrace->Enabled=false;
+		scGPButton_adjustace->Enabled=false;
+		scGPButton_kalibrace->Enabled=false;
+		scGPButton_smazat->Enabled=false;
 		scLabel1_svetelnost->Font->Color=clGray;
   }
   else
@@ -13384,11 +13389,13 @@ void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
   	scGPCheckBox_stupne_sedi->Enabled=true;
   	scGPTrackBar_svetelnost_posuvka->Enabled=false;   //zatím zakázáno
   	scLabel1_svetelnost->Enabled=false; // zatím zakázáno
-  	scGPButton_adjustace->Enabled=true;
+		scGPButton_adjustace->Enabled=true;
 		scGPButton_kalibrace->Enabled=true;
+		scGPButton_smazat->Enabled=true;
  // scLabel1_svetelnost->Font->Color=clWhite;  // odkomentovat, pokud bude povoleno
   }
-  edice();
+	edice();
+	scSplitView_OPTIONS->Opened = !scSplitView_OPTIONS->Opened;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPGlyphButton_OPTIONSMouseEnter(TObject *Sender)
@@ -14286,7 +14293,7 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
     scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Caption=ls->Strings[101];
     scGPCheckBox1_popisky->Caption=ls->Strings[102];
     scExPanel_podklad->Caption=ls->Strings[103];
-    scGPButton_adjustace->Caption=ls->Strings[104];
+		scGPButton_adjustace->Caption=ls->Strings[104];
     scGPButton_kalibrace->Caption=ls->Strings[105];
     scGPCheckBox_stupne_sedi->Caption=ls->Strings[106];
     scGPCheckBox_zobraz_podklad->Caption=ls->Strings[107];
@@ -14357,6 +14364,7 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 		Form_zpravy->RzStatusPane__chyby_caption->Caption=ls->Strings[414];
 		Form_zpravy->RzStatusPane_var_header->Caption=ls->Strings[415];
 		Form_parametry_linky->scHTMLLabel_posuvnik->Caption=ls->Strings[427];
+		scGPButton_smazat->Caption=ls->Strings[428];
 
     //změna zarovnání
 		scGPComboBox_prepinacKot->Left=scGPLabel_prepinacKot->Left+scGPLabel_prepinacKot->Width;//nutné!!
@@ -14552,7 +14560,7 @@ void __fastcall TForm1::scGPSwitch1ChangeState(TObject *Sender)
 	log(__func__);//logování
 	if(scGPSwitch1->State==scswOn) {language=CS;writeINI("Nastaveni_app","jazyk","1");}
 	else{language=EN;writeINI("Nastaveni_app","jazyk","0");}
-	load_language(EN,true);
+	load_language(language,true);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPCheckBox_zobrazit_palceClick(TObject *Sender)
@@ -14590,6 +14598,17 @@ void __fastcall TForm1::scGPButton_warningClick(TObject *Sender)
 	if(pom_temp!=NULL)DrawGrid_knihovna->SetFocus();
 }
 //---------------------------------------------------------------------------
-
-
+void __fastcall TForm1::scGPButton_smazatClick(TObject *Sender)
+{
+	d.v.PP.raster.filename="";
+	d.v.PP.raster.resolution=0;
+	d.v.PP.raster.X=0;
+	d.v.PP.raster.Y=0;
+	d.v.PP.raster.show=false;
+	d.v.PP.raster.grayscale=false;
+	d.v.PP.raster.dim=0;
+	REFRESH(false);
+	scSplitView_OPTIONS->Opened=false;
+}
+//---------------------------------------------------------------------------
 
