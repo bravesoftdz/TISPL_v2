@@ -1942,7 +1942,7 @@ void TForm1::log2webOnlyText(UnicodeString Text)
 //zapíše log do textového souboru a přidá datum
 void TForm1::log(AnsiString Text,AnsiString Text2)
 {
-	if(DEBUG && logovat && LogFileStream!=NULL)//pouze pro DEBUG
+	if(/*DEBUG && */logovat && LogFileStream!=NULL)//pouze pro DEBUG
 	{
 		//přídání datumu k textu
 		Text=TIME.CurrentDate().DateString()+"_"+TIME.CurrentTime().TimeString()+"_"+Text+"_"+Text2+"\r\n";
@@ -4003,7 +4003,10 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			{
 				//pokud byl objekt posunut a obsahuje už pohon a geometrii, zobrazen dotaz zda souhlasím z posunem
 				if(pom_temp==NULL && pom->elementy->dalsi->pohon!=NULL && predchozi_souradnice_kurzoru.x!=m.L2Px(pom->elementy->dalsi->geo.X1) && predchozi_souradnice_kurzoru.y!=m.L2Px(pom->elementy->dalsi->geo.Y1) && mrNo==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,ls->Strings[416],"",MB_YESNO,true,false))//"Objekt byl přesunut, souhlasíte s aktuálním umístěním?"
-				d.v.posun_objekt(m.P2Lx(predchozi_souradnice_kurzoru.x)-pom->elementy->dalsi->geo.X1,m.P2Ly(predchozi_souradnice_kurzoru.y)-pom->elementy->dalsi->geo.Y1,pom,false,false);
+				{
+					d.v.posun_objekt(m.P2Lx(predchozi_souradnice_kurzoru.x)-pom->elementy->dalsi->geo.X1,m.P2Ly(predchozi_souradnice_kurzoru.y)-pom->elementy->dalsi->geo.Y1,pom,false,false);
+					duvod_validovat=2;
+				}
 				Akce=NIC;kurzor(standard);if(pom_temp!=NULL){scGPImage_zamek_posunu->ClipFrameFillColor=clWhite;scGPImage_zamek_posunu->ImageIndex=28;}//zamčen posun
 			}break;//posun objektu
 			case MOVE_TABLE:
