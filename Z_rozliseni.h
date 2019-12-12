@@ -13,11 +13,13 @@
 #include <Vcl.Graphics.hpp>
 #include <Vcl.Imaging.pngimage.hpp>
 #include "rHTMLLabel.hpp"
+#include <Vcl.Imaging.jpeg.hpp>
+#include "scModernControls.hpp"
 //---------------------------------------------------------------------------
 class TForm_Z_rozliseni : public TForm
 {
 __published:	// IDE-managed Components
-	TscGPPanel *scGPPanel2;
+	TscGPPanel *scGPPanel;
 	TscGPGlyphButton *Konec;
 	TscLabel *scLabel1;
 	TscGPButton *scGPButton_storno;
@@ -30,10 +32,20 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_Text3;
 	TrHTMLLabel *rHTMLLabel_upozorneni;
 	TscGPGlyphButton *MinButton;
+	TImage *Image4;
+	TImage *Image5;
+	TImage *Image6;
+	TscGPSwitch *scGPSwitch_language;
+	TscLabel *scLabel_CZ;
+	TscLabel *scLabel_EN;
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall scGPButton_stornoClick(TObject *Sender);
 	void __fastcall MinButtonClick(TObject *Sender);
+	void __fastcall FormShow(TObject *Sender);
+	void __fastcall scGPSwitch_languageChangeState(TObject *Sender);
 private:	// User declarations
+	void zmena_jazyka();
+	TStringList *ls,*ls_temp;
 public:		// User declarations
 	__fastcall TForm_Z_rozliseni(TComponent* Owner);
 };

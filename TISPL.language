@@ -50,9 +50,9 @@ Line geometry;X;Geometrie linky
 Notes;X;Poznámky
 Hall;X;Hala
 Load/Unload;X;Nav/Svìšování
-Technology;X;Technologie
-Other;X;Ostatní
-Other;X;Ostatní
+Technologies;X;Technologie
+Others;X;Ostatní
+Others;X;Ostatní
 Robot           Operator;X;Robot           Operátor
 Section;X;Sekce
 Oparators;X;Operátoøi
@@ -341,7 +341,7 @@ It is not possible to delete an object that is part of the technological path of
 You really want object;X;Chcete opravdu objekt
 delete?;X;smazat?
 Invalid value!;X;Neplatná hodnota!
-Do you want to save changes to the edited object?;X;Chcete uložit zmìny editovaného objektu?
+Do you want to save changes to the object;X;Chcete uložit zmìny objektu
 The data entered is not valid and will not be saved. Really go to another object?;X;Zadaná data nejsou validní a nebudou uložena. Opravdu pøejít do jiného objektu?
 File;X;Soubor
 was not found!;X;nebyl nalezen!
@@ -422,5 +422,7 @@ buffer wait time;X;doba èekání v bufferu
 RT is not relevant, some of the objects have no drive!;X;RT není relevantní, nìkterý z objektù nemá pohon!
 Irrelevant time reserve value (RT), drive is not assigned to some object!;X;Nerelevantní hodnota èasové rezervy (RT), na nìkterém objektu není pøiøazen pohon!
 Cannot edit, layout is locked.;X;Nelze editovat, layout je zamèený
-Failed to load background, check its existence or reload.;X;Nepodaøilo se naèíst podklad, zkontrolujte jeho existenci, nebo proveïte nové naètení.
+Failed to load background;X;Nepodaøilo se naèíst podklad
+, check its existence or reload.;X;, zkontrolujte jeho existenci, nebo proveïte nové naètení.
 Due to the overlap of jigs, no more carts can be set than;X;Kvùli pøekryvu jigù nelze nastavit vìtší poèet vozíkù než
+Grabing jig with thumb;X;Uchopení jigu palcem

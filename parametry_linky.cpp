@@ -92,7 +92,7 @@ void TForm_parametry_linky::pasiveColor()//nastaví všechny položky pop-up na pas
   //scGPSwitch->ThumbColor= scGPGlyphButton_ADD->Options->NormalColor;
 //  scGPSwitch->ThumbOnColor=scGPSwitch->ThumbColor;
   scGPSwitch->ThumbColorAlpha= 200;//scGPGlyphButton_ADD->Options->NormalColorAlpha;
-  scGPSwitch->ThumbOnColorAlpha=200;//scGPSwitch->ThumbColorAlpha;
+	scGPSwitch->ThumbOnColorAlpha=200;//scGPSwitch->ThumbColorAlpha;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -104,8 +104,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		Form_parametry_linky->Color=F->m.clIntensive((TColor)RGB(43,87,154),10);
     //F->scStyledForm1->ShowClientInActiveEffect();
    // scHTMLLabel1->Caption="Ahojky - <bgcolor =clWhite>[mm]</bgcolor>";
-     scGPTrackBar_uchyceni->Top=196;
-     scGPTrackBar_uchyceni->Left=614;
+		 scGPTrackBar_uchyceni->Top=196;
+		 scGPTrackBar_uchyceni->Left=614;
      scGPSwitch->Enabled=false;
 
 		 //naètení parametrù katalogu
@@ -441,6 +441,9 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 scGPGlyphButton_ADD->Visible=true;
    scGPGlyphButton_katalog->Top=scGPButton_pohon->Top;
 	 scGPGlyphButton_katalog->Left=scGPButton_pohon->Left + scGPButton_pohon->Width;
+	 //pozicování popisku posuvníku pro úchop palce
+	 scHTMLLabel_posuvnik->Top=(scGPTrackBar_uchyceni->Top+scGPTrackBar_uchyceni->Height/2.0-scHTMLLabel_posuvnik->Height/2.0)-scPanel_vozik->Top;
+	 scHTMLLabel_posuvnik->Left=(scGPTrackBar_uchyceni->Left+scGPTrackBar_uchyceni->Width+10)-scPanel_vozik->Left;
 }
 //---------------------------------------------------------------------------
 //
@@ -2721,7 +2724,7 @@ void __fastcall TForm_parametry_linky::scGPTrackBar_uchyceniMouseMove(TObject *S
 void __fastcall TForm_parametry_linky::scGPNumericEdit_delka_podvozekChange(TObject *Sender)
 
 {
-  scGPTrackBar_uchyceni->MaxValue=scGPNumericEdit_delka_podvozek->Value;/*/(1+999*Delkaunit);  */
+	scGPTrackBar_uchyceni->MaxValue=scGPNumericEdit_delka_podvozek->Value;/*/(1+999*Delkaunit);  */
 }
 //---------------------------------------------------------------------------
 

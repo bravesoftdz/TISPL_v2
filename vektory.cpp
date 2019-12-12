@@ -2756,12 +2756,12 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			}
 			if((Element->dalsi!=NULL && Element->dalsi->geo.typ!=0 || Element->geo.typ!=0) && kontrola_zmeny_poradi)posun_povolit=false;//pokud by element ovlivnil posunem geometrii
 			//////Realizace posunu + validace
-			if(vzd.x!=0 && !posun_kurzorem && posun_povolit)//posun z kót
+			if(vzd.x!=0 && !posun_kurzorem && posun_povolit)//posun z kót!!!!!!!!!!!!!!!!!!!!!
 			{
 				//realizace posunu
 				if(Element->orientace==0||Element->orientace==180)Element->X=Element->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
 				else Element->Y=Element->Y-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
-        //kontrola zda je element stále na linii
+				//kontrola zda je element stále na linii
 				if(F->bod_na_geometrii(0,0,Element) || Element->n==F->pom_temp->elementy->predchozi->n || !kontrola_zmeny_poradi)//pokud ano
 				{
 					//kontrola + změna pořadí
@@ -2784,7 +2784,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				//pokud ne budou mu navráceny původní souřadnice
 				else {Element->X=puv_souradnice.x;Element->Y=puv_souradnice.y;posun_povolit=false;}
 			}
-			else if(vzd.x!=0 && posun_kurzorem && posun_povolit)//posun kurozem
+			else if(vzd.x!=0 && posun_kurzorem && posun_povolit)//posun kurozem!!!!!!!!!!!!!!!!!!!!!
 			{
 				//realizace posunu
 				if(Element->orientace==0||Element->orientace==180)Element->X=Element->X+vzdalenost;
@@ -3257,7 +3257,7 @@ void Cvektory::vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt)
 //	return RET;
 
 	//////nová koncepce
-	if(Element->eID%2==0 && Element->eID!=100 && Element->eID!=200 && Element->eID!=MaxInt)
+	if(vrat_druh_elementu(Element)==0)
 	{
 		bool pokracovat=true;
 		TElement *E=NULL;
@@ -3269,7 +3269,7 @@ void Cvektory::vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt)
 			if(Objekt->n==O->n)E=Element->predchozi;//pokud jsem v prvním objektu = začátek, začánám od předchozího elementu Elementu
 			while(E!=NULL && E->n!=0)
 			{
-				if(E->eID%2==0 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt){pokracovat=false;break;}//nalezen předchozí S&G
+				if(vrat_druh_elementu(E)==0){pokracovat=false;break;}//nalezen předchozí S&G
 				E=E->predchozi;
 			}
 			if(pokracovat)O=O->predchozi;//ošetření proti přechodu na havičku
@@ -3279,21 +3279,17 @@ void Cvektory::vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt)
 		{
 		 	Element->sparovany=E->sparovany;//nahrazení, vložení za E, takže Element přebere jeho spárovaný
 			E->sparovany=Element;
-			if(E->eID==0)
+      //vypsání ukazatelů do mgridu
+			try
 			{
-				try
-				{E->mGrid->Cells[1][1].Text=E->sparovany->name;E->mGrid->Refresh();}//pokud se element (=stopka) nachází ve stejném objektu a tento objekt je právě editovaný, přepiš mu sparovaný element do mgridu
-				catch(...){/*MessageBeep(0);*/}
-			}
-			if(Element->eID==0)
-			{
-				try
-				{Element->mGrid->Cells[1][1].Text=Element->sparovany->name;Element->mGrid->Refresh();}//pokud se element (=stopka) nachází ve stejném objektu a tento objekt je právě editovaný, přepiš mu sparovaný element do mgridu
-				catch(...){/*MessageBeep(0);*/}
-			}
+				if(E->eID==0){E->mGrid->Cells[1][1].Text=E->sparovany->name;E->mGrid->Refresh();}
+				else if(vrat_druh_elementu(E)==0){E->mGrid->Cells[1][E->mGrid->RowCount-1].Text=E->sparovany->name;E->mGrid->Refresh();}
+				if(Element->eID==0){Element->mGrid->Cells[1][1].Text=Element->sparovany->name;Element->mGrid->Refresh();}
+				else if(vrat_druh_elementu(Element)==0){Element->mGrid->Cells[1][Element->mGrid->RowCount-1].Text=Element->sparovany->name;Element->mGrid->Refresh();}
+			}catch(...){}
 		}
 		//////první poslední stop element
-		if(OBJEKTY->predchozi->n>=2||true)
+		if(OBJEKTY->predchozi->n>=2)
 		{
 			pokracovat=true;
 			O=OBJEKTY->dalsi;
@@ -3303,7 +3299,7 @@ void Cvektory::vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt)
 				if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->dalsi;
 				while(E!=NULL)
 				{
-					if(E->eID%2==0 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt){pokracovat=false;break;}
+					if(vrat_druh_elementu(E)==0){pokracovat=false;break;}
 					E=E->dalsi;
 				}
 				if(pokracovat)O=O->dalsi;
@@ -3320,7 +3316,7 @@ void Cvektory::vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt)
 					if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->predchozi;
 					while(E!=NULL && E->n>0)
 					{
-						if(E->eID%2==0 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt){pokracovat=false;break;}//nalezen předchozí S&G
+						if(vrat_druh_elementu(E)==0){pokracovat=false;break;}//nalezen předchozí S&G
 						E=E->predchozi;
 					}
 					if(pokracovat)O=O->predchozi;//ošetření proti přechodu na havičku
@@ -3334,8 +3330,12 @@ void Cvektory::vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt)
 					if(E->sparovany==NULL){E->sparovany=prvni_stopka;posledni=true;}
 					try //musí být řešeno takto, nelze rozeznat jestli existuje mgird
 					{
-						if(prvni && prvni_stopka->eID==0){prvni_stopka->mGrid->Cells[1][1].Text=E->name;prvni_stopka->mGrid->Refresh();}
-						if(posledni && E->eID==0){E->mGrid->Cells[1][1].Text=prvni_stopka->name;E->mGrid->Refresh();}
+						if(prvni_stopka->eID==0){prvni_stopka->mGrid->Cells[1][1].Text=E->name;prvni_stopka->mGrid->Refresh();}
+						else if(vrat_druh_elementu(prvni_stopka)==0){prvni_stopka->mGrid->Cells[1][prvni_stopka->mGrid->RowCount-1].Text=E->name;prvni_stopka->mGrid->Refresh();}
+						if(E->eID==0){E->mGrid->Cells[1][1].Text=prvni_stopka->name;E->mGrid->Refresh();}
+						else if(vrat_druh_elementu(E)==0){E->mGrid->Cells[1][E->mGrid->RowCount-1].Text=prvni_stopka->name;E->mGrid->Refresh();}
+//						if(prvni && prvni_stopka->eID==0){prvni_stopka->mGrid->Cells[1][1].Text=E->name;prvni_stopka->mGrid->Refresh();}
+//						if(posledni && E->eID==0){E->mGrid->Cells[1][1].Text=prvni_stopka->name;E->mGrid->Refresh();}
 					}
 					catch(...)
 					{/*MessageBeep(0);*/}
@@ -3352,55 +3352,86 @@ void Cvektory::vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt)
 void Cvektory::aktualizuj_sparovane_ukazatele()
 {
 	F->aktualizace_RT();//aktualizace RT v tabulkách
-	Cvektory::TObjekt *O=OBJEKTY->predchozi;
-	//smazání původních ukazatelů
-	while(O!=NULL && O->n!=0)
+	TObjekt *O=OBJEKTY->dalsi,*O1=NULL;
+	TElement *prvni=NULL,*posledni=NULL;
+	//////procházení od prvního objektu a hledání prvního S&G elementu, po nalezení hledání dalšího S&G elementu
+	while(O!=NULL)
 	{
-		TElement *E=O->elementy->predchozi;//procházení od zadu
-		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->predchozi;
-		while(E!=NULL && E->n!=0)
+		TElement *E=O->elementy->dalsi,*E1=NULL;
+		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->dalsi;//pokud je editován stejný objekt vezmu elementy z pom_temp
+		while(E!=NULL)
 		{
-			if(E->eID%2==0 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt)
+			//hledám první S&G element
+			if(vrat_druh_elementu(E)==0)//nalezen první element, nyní musím hledat další S&G element
 			{
-				E->sparovany=NULL;
-				if(E->eID==0 && E->Xt!=-100 && F->pom_temp!=NULL && O->n==F->pom->n)E->mGrid->Cells[1][1].Text="N/A";
+				if(prvni==NULL)prvni=E;//zapsaní prvního S&G elementu na lince, pouze prvního
+				posledni=E;//zapisování každého S&G elementu do ukazatele poslední, na konci zbyde poslední S&G element
+				O1=O;E1=E->dalsi;//začínám na dalším elementu od prvního S&G
+				if(E1==NULL)//pokud je další nulovy tz., že se musím přesunout do dalšího objektu
+				{
+					O1=O1->dalsi;
+					E1=O1->elementy->dalsi;
+					if(F->pom_temp!=NULL && F->pom_temp->n==O1->n)E1=F->pom_temp->elementy->dalsi;//pokud je editován stejný objekt vezmu elementy z pom_temp
+				}
+
+				//////hledání dalšího S&G elementu
+				while(O1!=NULL)
+				{
+					if(E1==NULL)//pokud nedostanu další element po prvním S&G, automaticky vezmu první v objektu
+					{
+						E1=O1->elementy->dalsi;
+						if(F->pom_temp!=NULL && F->pom_temp->n==O1->n)E1=F->pom_temp->elementy->dalsi;//pokud je editován stejný objekt vezmu elementy z pom_temp
+					}
+					while(E1!=NULL)
+					{
+						//nalezen další S&G element
+						if(vrat_druh_elementu(E1)==0)break;
+						E1=E1->dalsi;
+					}
+					if(E1==NULL)O1=O1->dalsi;//pokud nebyl nalezen další S&G, pokračuj na další objekt
+					else break;
+				}
+
+				//////zapsání sparovaného ukazatele
+				E->sparovany=E1;
+        //uprava tabulek je-li potřeba
+				try
+				{
+					if(F->pom_temp!=NULL && O->n==F->pom->n && E->sparovany!=NULL)
+					{
+						if(E->eID==0)E->mGrid->Cells[1][1].Text=E->sparovany->name;
+						else if(vrat_druh_elementu(E)==0)E->mGrid->Cells[1][E->mGrid->RowCount-1].Text=E->sparovany->name;
+					}
+				}catch(...){}
+				//vymazání pomocných ukazatelů
+				O1=NULL;delete O1;
+				E1=NULL;delete E1;
 			}
-			E=E->predchozi;
+			E=E->dalsi;
 		}
-		E=NULL;delete E;
-		O=O->predchozi;
+    //ukazatelové záležitosti
+		delete E;E=NULL;
+		O=O->dalsi;
 	}
-	O=OBJEKTY->predchozi;
-	//nové přiřazení
-	while(O!=NULL && O->n!=0)
+	//ukazatelové záležitosti
+	delete O;O=NULL;
+
+	//////spárovaný ukazatel z posledního elementu na první
+	if(posledni!=NULL)posledni->sparovany=prvni;//nutné opodmínkovat!!, aktualizace probíhá i při načítání ze souboru, v souboru může existouvat pouze jeden objekt se zarážkou, tudíž první i poslední ==NULL
+	//zapsání do mGridu
+	try
 	{
-		TElement *E=O->elementy->predchozi;//procházení od zadu
-		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)E=F->pom_temp->elementy->predchozi;
-		while(E!=NULL && E->n!=0)
+		if(F->pom_temp!=NULL && posledni->objekt_n==F->pom->n)
 		{
-			if(E->eID%2==0 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt)vrat_predchozi_stop_element(E,O);
-			E=E->predchozi;
+			if(posledni->eID==0)posledni->mGrid->Cells[1][1].Text=posledni->sparovany->name;
+			else posledni->mGrid->Cells[1][posledni->mGrid->RowCount-1].Text=posledni->sparovany->name;
 		}
-		E=NULL;delete E;
-		O=O->predchozi;
-	}
-	O=NULL;delete O;
+	}catch(...){}
+	//ukazatelové záležitosti
+	prvni=NULL;delete prvni;
+	posledni=NULL;delete posledni;
 }
 ////---------------------------------------------------------------------------
-//vrátí předchozí element k Element, který byl do metody poslán jako parametr, přeskočí geometrické zarážky
-Cvektory::TElement *Cvektory::vrat_dalsi_element(TElement *Element)
-{
-	TElement *ret=NULL;
-	unsigned long O_n=Element->objekt_n;
-	Element=Element->dalsi;
-	while(Element!=NULL && Element->objekt_n==O_n)
-	{
-		if(Element->eID%2==0 && Element->eID!=100 && Element->eID!=200 && Element->eID!=MaxInt){ret=Element;break;}
-		Element=Element->dalsi;
-	}
-	Element=NULL;delete Element;
-	return ret;
-}
 //vrátí poslední element v objektu
 Cvektory::TElement *Cvektory::vrat_posledni_element_objektu(TObjekt *Objekt)
 {

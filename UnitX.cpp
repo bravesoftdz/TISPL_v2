@@ -1011,7 +1011,7 @@ void TFormX::validace_max_voziku()
 			if(rotace==0 || rotace==180)
 			{
 				validace=false;
-				posledni_E->mGrid->ShowNote(F->ls->Strings[425]+" <a>"+AnsiString(1)+"</a>");//"Kvùli pøekryvu jigù nelze nastavit vìtší poèet vozíkù než"
+				posledni_E->mGrid->ShowNote(F->ls->Strings[426]+" <a>"+AnsiString(1)+"</a>");//"Kvùli pøekryvu jigù nelze nastavit vìtší poèet vozíkù než"
 			}
 		}
 		////pøepsání maximálního poèctu vozíku do tabulky elementu, pro jistotu

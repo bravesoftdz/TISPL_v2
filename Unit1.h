@@ -554,7 +554,7 @@ public:
 
 private:
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
-	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o,neco,posun_ind,zmena_j,edit_text,zmena_d_x,zmena_d_y,posun_ind_ld,posun_ind_pd,editace_posun,info};
+	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o,neco,posun_ind,zmena_j,edit_text,zmena_d_x,zmena_d_y,posun_ind_ld,posun_ind_pd,editace_posun,info,close,posun_editace_obj,editace_obj};
 	struct Tnastaveni{bool autosave;unsigned short int minut;bool posledni_file;};Tnastaveni nastaveni;
 	enum Tlanguage{EN,MN,CS};Tlanguage language;
 	////instance
@@ -629,7 +629,6 @@ private:
 	void ortogonalizovat();//ortogonalizuje schéma
 	void db_connection();  // pøipojení k DB serveru
 	void akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_otoce,AnsiString cas,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla);
-	bool el_vkabine(double X,double Y,int element_id,short orientace_el,Cvektory::TElement *E=NULL,double tolerance_x=0,double tolerance_y=0);//vrací zda se element nachází na pohonu jakéhokoliv sklonu, dvojí zpùsob použití: zadání parametru X,Y,eID pokud nemám ukazatel na element nebo 0,0,0,ukazatel, vrátí true nebo false
 	bool nahled_ulozen;
 	void vykresli_kurzor(int index);
 	void zmenJednotekKot();
