@@ -100,6 +100,9 @@ void TForm_Z_rozliseni::zmena_jazyka()
 	rHTMLLabel_Text3->Caption=ls_temp->Strings[6];
 	scGPButton_OK->Caption=ls_temp->Strings[0];//"Ukonèit";
 	scGPButton_storno->Caption=ls_temp->Strings[1];//"Storno";
+	//zmìna zarovnání, jeden obrázek je vetší než druhý
+	if(Image1->Visible)rHTMLLabel_Text1->Top = Image1->Top + Image1->Height + scGPPanel->Height/2.0;
+	else rHTMLLabel_Text1->Top = Image4->Top + Image4->Height + scGPPanel->Height/2.0;
 }
 void __fastcall TForm_Z_rozliseni::KonecClick(TObject *Sender)
 {

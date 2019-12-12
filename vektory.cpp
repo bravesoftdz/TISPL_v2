@@ -2756,12 +2756,12 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			}
 			if((Element->dalsi!=NULL && Element->dalsi->geo.typ!=0 || Element->geo.typ!=0) && kontrola_zmeny_poradi)posun_povolit=false;//pokud by element ovlivnil posunem geometrii
 			//////Realizace posunu + validace
-			if(vzd.x!=0 && !posun_kurzorem && posun_povolit)//posun z kót
+			if(vzd.x!=0 && !posun_kurzorem && posun_povolit)//posun z kót!!!!!!!!!!!!!!!!!!!!!
 			{
 				//realizace posunu
 				if(Element->orientace==0||Element->orientace==180)Element->X=Element->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
 				else Element->Y=Element->Y-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
-        //kontrola zda je element stále na linii
+				//kontrola zda je element stále na linii
 				if(F->bod_na_geometrii(0,0,Element) || Element->n==F->pom_temp->elementy->predchozi->n || !kontrola_zmeny_poradi)//pokud ano
 				{
 					//kontrola + změna pořadí
@@ -2784,7 +2784,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				//pokud ne budou mu navráceny původní souřadnice
 				else {Element->X=puv_souradnice.x;Element->Y=puv_souradnice.y;posun_povolit=false;}
 			}
-			else if(vzd.x!=0 && posun_kurzorem && posun_povolit)//posun kurozem
+			else if(vzd.x!=0 && posun_kurzorem && posun_povolit)//posun kurozem!!!!!!!!!!!!!!!!!!!!!
 			{
 				//realizace posunu
 				if(Element->orientace==0||Element->orientace==180)Element->X=Element->X+vzdalenost;
@@ -3417,7 +3417,7 @@ void Cvektory::aktualizuj_sparovane_ukazatele()
 	delete O;O=NULL;
 
 	//////spárovaný ukazatel z posledního elementu na první
-	posledni->sparovany=prvni;
+	if(posledni!=NULL)posledni->sparovany=prvni;//nutné opodmínkovat!!, aktualizace probíhá i při načítání ze souboru, v souboru může existouvat pouze jeden objekt se zarážkou, tudíž první i poslední ==NULL
 	//zapsání do mGridu
 	try
 	{
@@ -3432,20 +3432,6 @@ void Cvektory::aktualizuj_sparovane_ukazatele()
 	posledni=NULL;delete posledni;
 }
 ////---------------------------------------------------------------------------
-//vrátí předchozí element k Element, který byl do metody poslán jako parametr, přeskočí geometrické zarážky
-Cvektory::TElement *Cvektory::vrat_dalsi_element(TElement *Element)
-{
-	TElement *ret=NULL;
-	unsigned long O_n=Element->objekt_n;
-	Element=Element->dalsi;
-	while(Element!=NULL && Element->objekt_n==O_n)
-	{
-		if(Element->eID%2==0 && Element->eID!=100 && Element->eID!=200 && Element->eID!=MaxInt){ret=Element;break;}
-		Element=Element->dalsi;
-	}
-	Element=NULL;delete Element;
-	return ret;
-}
 //vrátí poslední element v objektu
 Cvektory::TElement *Cvektory::vrat_posledni_element_objektu(TObjekt *Objekt)
 {
