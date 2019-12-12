@@ -324,6 +324,7 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton_prichytavat;
   TscGPButton *scGPButton_error;
   TscGPButton *scGPButton_warning;
+	TscGPButton *scGPButton_smazat;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -538,6 +539,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPButton_prichytavatClick(TObject *Sender);
   void __fastcall scGPButton_errorClick(TObject *Sender);
   void __fastcall scGPButton_warningClick(TObject *Sender);
+	void __fastcall scGPButton_smazatClick(TObject *Sender);
 
 
 

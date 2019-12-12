@@ -960,7 +960,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 644
     end
     object PopupMenuButton: TscGPButton
       AlignWithMargins = True
@@ -1183,7 +1182,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 824
     end
     object Synteza: TscGPButton
       Left = 914
@@ -1894,7 +1892,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 404
     end
     object Simulace: TscGPButton
       Left = 1004
@@ -2387,7 +2384,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 464
     end
     object scGPGlyphButton_PLAY: TscGPGlyphButton
       Left = 242
@@ -2600,7 +2596,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 234
     end
     object scGPButton_warning: TscGPButton
       Left = 409
@@ -2711,7 +2706,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 259
     end
   end
   object scGPPanel_statusbar: TscGPPanel
@@ -4185,6 +4179,7 @@ object Form1: TForm1
     Height = 25
     Caption = 'ButtonROSTAtesty'
     TabOrder = 29
+    Visible = False
     OnClick = Button11Click
     OnKeyDown = FormKeyDown
   end
@@ -4487,6 +4482,7 @@ object Form1: TForm1
     Height = 25
     Caption = 'ButtonMaVLtesty'
     TabOrder = 35
+    Visible = False
     OnClick = Button13Click
     OnKeyDown = FormKeyDown
   end
@@ -5679,6 +5675,7 @@ object Form1: TForm1
     Height = 25
     Caption = 'ButtonMaKRtesty'
     TabOrder = 40
+    Visible = False
     OnClick = Button14Click
     OnKeyDown = FormKeyDown
   end
@@ -6869,7 +6866,7 @@ object Form1: TForm1
     end
     object scExPanel_vrstvy: TscExPanel
       Left = 1
-      Top = 522
+      Top = 557
       Width = 249
       Height = 199
       Margins.Left = 5
@@ -6905,6 +6902,7 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  Vrstvy'
+      ExplicitTop = 522
       object scGPCheckBox_zobrazit_koleje: TscGPCheckBox
         AlignWithMargins = True
         Left = 7
@@ -7422,7 +7420,7 @@ object Form1: TForm1
       Left = 1
       Top = 40
       Width = 249
-      Height = 203
+      Height = 238
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWhite
@@ -7458,7 +7456,7 @@ object Form1: TForm1
       object scGPButton_adjustace: TscGPButton
         AlignWithMargins = True
         Left = 3
-        Top = 59
+        Top = 94
         Width = 246
         Height = 35
         Margins.Top = 0
@@ -7564,6 +7562,7 @@ object Form1: TForm1
         Down = False
         GroupIndex = 0
         AllowAllUp = False
+        ExplicitTop = 59
       end
       object scGPButton_kalibrace: TscGPButton
         AlignWithMargins = True
@@ -7678,7 +7677,7 @@ object Form1: TForm1
       object scGPCheckBox_stupne_sedi: TscGPCheckBox
         AlignWithMargins = True
         Left = 7
-        Top = 130
+        Top = 165
         Width = 242
         Height = 33
         Margins.Left = 7
@@ -7777,11 +7776,12 @@ object Form1: TForm1
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
+        ExplicitTop = 130
       end
       object scGPCheckBox_zobraz_podklad: TscGPCheckBox
         AlignWithMargins = True
         Left = 7
-        Top = 94
+        Top = 129
         Width = 242
         Height = 36
         Margins.Left = 7
@@ -7880,11 +7880,12 @@ object Form1: TForm1
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
+        ExplicitTop = 94
       end
       object scGPTrackBar_svetelnost_posuvka: TscGPTrackBar
         AlignWithMargins = True
         Left = 170
-        Top = 170
+        Top = 205
         Width = 73
         Height = 20
         Margins.Top = 0
@@ -7918,7 +7919,7 @@ object Form1: TForm1
       object scLabel1_svetelnost: TscLabel
         AlignWithMargins = True
         Left = 6
-        Top = 170
+        Top = 205
         Width = 156
         Height = 19
         Margins.Top = 0
@@ -7944,10 +7945,120 @@ object Form1: TForm1
         UseFontColorToStyleColor = False
         Caption = 'Pr'#367'hlednost podkladu'
       end
+      object scGPButton_smazat: TscGPButton
+        AlignWithMargins = True
+        Left = 3
+        Top = 59
+        Width = 246
+        Height = 35
+        Margins.Top = 0
+        Margins.Right = 0
+        Margins.Bottom = 0
+        Align = alTop
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -16
+        Font.Name = 'Roboto'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 6
+        TabStop = True
+        OnClick = scGPButton_smazatClick
+        Animation = False
+        Caption = 'Smazat podklad'
+        CanFocused = True
+        CustomDropDown = False
+        Margin = -1
+        Spacing = 1
+        Layout = blGlyphLeft
+        Images = scGPVirtualImageList1
+        ImageIndex = 17
+        ImageMargin = 30
+        TransparentBackground = False
+        Options.NormalColor = 10114859
+        Options.HotColor = 10114859
+        Options.PressedColor = clBtnShadow
+        Options.FocusedColor = 10114859
+        Options.DisabledColor = 10114859
+        Options.NormalColor2 = clNone
+        Options.HotColor2 = clNone
+        Options.PressedColor2 = clNone
+        Options.FocusedColor2 = clNone
+        Options.DisabledColor2 = clNone
+        Options.NormalColorAlpha = 255
+        Options.HotColorAlpha = 200
+        Options.PressedColorAlpha = 255
+        Options.FocusedColorAlpha = 255
+        Options.DisabledColorAlpha = 255
+        Options.NormalColor2Alpha = 255
+        Options.HotColor2Alpha = 255
+        Options.PressedColor2Alpha = 255
+        Options.FocusedColor2Alpha = 230
+        Options.DisabledColor2Alpha = 255
+        Options.FrameNormalColor = 10114859
+        Options.FrameHotColor = 10114859
+        Options.FramePressedColor = clHighlight
+        Options.FrameFocusedColor = 10114859
+        Options.FrameDisabledColor = 10114859
+        Options.FrameWidth = 1
+        Options.FrameNormalColorAlpha = 255
+        Options.FrameHotColorAlpha = 200
+        Options.FramePressedColorAlpha = 255
+        Options.FrameFocusedColorAlpha = 200
+        Options.FrameDisabledColorAlpha = 255
+        Options.FontNormalColor = clWhite
+        Options.FontHotColor = clWhite
+        Options.FontPressedColor = clWhite
+        Options.FontFocusedColor = clWhite
+        Options.FontDisabledColor = clGray
+        Options.ShapeFillGradientAngle = 90
+        Options.ShapeFillGradientPressedAngle = -90
+        Options.ShapeFillGradientColorOffset = 25
+        Options.ShapeCornerRadius = 10
+        Options.ShapeStyle = scgpRect
+        Options.ArrowSize = 9
+        Options.ArrowAreaSize = 0
+        Options.ArrowType = scgpatDefault
+        Options.ArrowThickness = 2
+        Options.ArrowThicknessScaled = False
+        Options.StyleColors = True
+        HotImageIndex = -1
+        FocusedImageIndex = -1
+        PressedImageIndex = -1
+        UseGalleryMenuImage = False
+        UseGalleryMenuCaption = False
+        ScaleMarginAndSpacing = False
+        WidthWithCaption = 0
+        WidthWithoutCaption = 0
+        SplitButton = False
+        RepeatClick = False
+        RepeatClickInterval = 100
+        GlowEffect.Enabled = False
+        GlowEffect.Color = clHighlight
+        GlowEffect.AlphaValue = 95
+        GlowEffect.GlowSize = 7
+        GlowEffect.Offset = 0
+        GlowEffect.Intensive = True
+        GlowEffect.StyleColors = True
+        GlowEffect.HotColor = clNone
+        GlowEffect.PressedColor = clNone
+        GlowEffect.FocusedColor = clNone
+        GlowEffect.PressedGlowSize = 7
+        GlowEffect.PressedAlphaValue = 255
+        GlowEffect.States = [scsHot, scsPressed, scsFocused]
+        ImageGlow = True
+        ShowGalleryMenuFromTop = False
+        ShowGalleryMenuFromRight = False
+        ShowMenuArrow = True
+        ShowFocusRect = True
+        Down = False
+        GroupIndex = 0
+        AllowAllUp = True
+      end
     end
     object scExPanel_ostatni: TscExPanel
       Left = 1
-      Top = 243
+      Top = 278
       Width = 249
       Height = 211
       Margins.Left = 5
@@ -7983,6 +8094,7 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  Obecn'#233
+      ExplicitTop = 243
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
         Left = 7
@@ -8351,7 +8463,7 @@ object Form1: TForm1
     end
     object scExPanel1: TscExPanel
       Left = 1
-      Top = 454
+      Top = 489
       Width = 249
       Height = 68
       Margins.Left = 5
@@ -8388,6 +8500,7 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  N'#225'stroje'
+      ExplicitTop = 454
       object scGPButton_mereni_vzdalenost: TscGPButton
         AlignWithMargins = True
         Left = 3
@@ -9634,7 +9747,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C0101180098082C0910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118009808300910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10757,7 +10870,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01015200480A140C30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01015200480A180C30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000F0030000010020000000000000D0
       0B0000000000000000000000000000000000A3653C00A3653C00A3653C00A365
       3C00A3653C00A3653C00A3653C00A3653C00A3653C00A3653C00A3653C00A365
