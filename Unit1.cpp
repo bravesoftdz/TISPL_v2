@@ -263,6 +263,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	scSplitView_LEFTTOOLBAR->Visible=true;//zapnuti levého toolbaru
 	ID_tabulky=0;//uchovává ID tabulky, použiváné při mousemove
 	count_memo=0;//jednoduchý counter zobrazovaný v memo3
+	smazat=0;
 }
 //---------------------------------------------------------------------------
 //nastaví komponentám aFont
@@ -9917,12 +9918,13 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 			  			}
 			  			smaz=NULL;delete smaz;
 			  		}
-			  		d.v.smaz_objekt(pom);//nalezeny můžeme odstranit odstranit
+						d.v.smaz_objekt(pom);//nalezeny můžeme odstranit
 			  		//pokud byla mazána výhybka nebo spojka je nutné přejmenovat zbylé výhybky
 			  		if((long)pom->id==VyID||(long)pom->id==pocet_objektu_knihovny+1){d.v.nove_indexy(true);d.v.pocet_vyhybek--;d.v.nove_nazvy();}
 			  		else d.v.nove_indexy();
-			  		pom=NULL;//delete p; nepoužívat delete je to ukazatel na ostra data
-			  		REFRESH();
+						pom=NULL;//delete p; nepoužívat delete je to ukazatel na ostra data
+						duvod_validovat=2;
+						REFRESH();
 			  		DuvodUlozit(true);
 			  	}
 				}
@@ -12226,8 +12228,9 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 //		Memo("_____________");
 
 
-d.TextOut(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,"Ahoj\ntoto je nějaký text řádku1\ntoto je nějaký text řádku 22\nhaf",Cvykresli::CENTER,Cvykresli::MIDDLE,-1);
-
+//d.TextOut(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,"Ahoj\ntoto je nějaký text řádku1\ntoto je nějaký text řádku 22\nhaf",Cvykresli::CENTER,Cvykresli::MIDDLE,-1);
+if(smazat<100)smazat+=10;else smazat=0;REFRESH();
+Memo(smazat);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)

@@ -52,7 +52,7 @@ class Cmy
 	void rotace_polygon(double X,double Y,double oX,double oY,TPointD *POLE,TPoint *POLE_px,long posledni_prvek,double uhel);//orotuje okolo daného bodu polygon a vrátí do POLE i do POLE_px
 	void zrcadli_polygon(TPointD *POLE,long posledni_prvek,double uhel);//zajistí přezrcadlení polygonů zadaného v logických souřadnicích pomocí pole dle požadovaného parametru uhel zrcadlení
 	TPointDbool zkratit_polygon_na_roztec(double d, double r,double xp, double yp, double x0, double y0, double x1, double y1);//d - delka linky,r - roztec palcuxp, yp - souradnice oznaceneho bodu x0, y0, x1, y1- souradnice sousedu k oznacenemu bodu
-	TPointD_3D bezierPt(double x1,double y1,double x2,double y2,double x3,double y3,double x4,double y4,double perc);//vratí bod včetně akutálního azimutu bodu z bézierovy křivky dle zadaných procent z její délky, perc jsou procenta/100 pozice na křivce v intervalu <0,1>
+	TPointD_3D bezierPt(double orientace,double rotacni_uhel,double x1,double y1,double x2,double y2,double x3,double y3,double x4,double y4,double perc);//vratí bod včetně akutálního azimutu bodu z bézierovy křivky dle zadaných procent z její délky, perc jsou procenta/100 pozice na křivce v intervalu <0,1>
 	double getPt(double n1,double n2,double perc);//podpůrná metoda výše uvedené
 	double bezierDelka(int x1,int y1,int x2,int y2,int x3,int y3,int x4,int y4,double prec=0.001);//vrátí délku bézierovy křivky, prec=preciznost výpočtu
 	double cekani_na_palec(double cas, double roztec_palcu, double rychlost_dopravniku,int funkce);//vrátí dobu čekání na palec v sec, zadání je u čas (výstupu vozíku z objektu) v min, rozteče je v m resp. v m za z minu u rychlosti dopravniku

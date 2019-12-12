@@ -2880,37 +2880,39 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 			}
 		}
 //-----------------------------------------------------------------------
-//tady vývoj:
-//		//F->Memo("///////////");
-//		if(/*F->smazat && */v.vrat_druh_elementu(E)==0 && E->sparovany!=NULL/* && E->objekt_n==1  && E->n==1*/)//pro S&G který má spárovaný objekt
+//tady vývoj:   //toto provizorn2
+//		if(F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && F->pom_temp==NULL && v.vrat_druh_elementu(E)==0 && E->sparovany!=NULL && E->name=="Stop 1"/*&& E->n==1*/)//pro S&G který má spárovaný objekt
 //		{
 //			//provizoriní algoritmus do změny DM
 //			Cvektory::TObjekt *O=NULL;                   //další objekt                 			//další kolo                  //v případě editovaného objektu
 //			Cvektory::TElement *Et=E->dalsi;if(Et==NULL){O=v.vrat_objekt(E->objekt_n)->dalsi;if(O==NULL)O=v.OBJEKTY->dalsi;if(F->pom_temp!=NULL && O->n==F->pom_temp->n)O=F->pom_temp;if(O!=NULL && Et==NULL)Et=O->elementy->dalsi;}//tempový Element
 //			Cvektory::TElement *Esd=E->sparovany->dalsi;if(Esd==NULL){O=v.vrat_objekt(E->sparovany->objekt_n)->dalsi;if(O==NULL)O=v.OBJEKTY->dalsi;if(F->pom_temp!=NULL && O->n==F->pom_temp->n)O=F->pom_temp;if(O!=NULL && Esd==NULL)Esd=O->elementy->dalsi;}//Element za spárovaným, kvůli tomu, aby algoritmus došel až ke spárovanému bylo tu toto (nyní s tím nesouhlasím):pokud je na konci vždy zarážka, tak je zbytečné
-//			//F->Memo("pro "+E->name+": "+Esd->name);
-//			//F->Memo(AnsiString(Esd->name)+" "+AnsiString(Et->name));
-//			while(Esd!=Et /*&& Et!=E && Et!=NULL*/)//procházení cyklem od stopk elementu až po jeho spárovaný
+//			double umisteni=0;
+//			while(Esd!=Et /*&& Et!=E && Et!=NULL*/)//procházení cyklem od daného stop elementů až po jeho spárovaný stop element
 //			{
-//				//výpočetní a vykreslovací záležítosti
-//				TPointD_3D Pt=m.bezierPt(Et->geo.X1,Et->geo.Y1,Et->geo.X2,Et->geo.Y2,Et->geo.X3,Et->geo.Y3,Et->geo.X4,Et->geo.Y4,0.5);
-//				canv->Font->Size=1*F->Zoom;
-//				canv->TextOutW(m.L2Px(Pt.x),m.L2Py(Pt.y),Et->name);
-//				//F->Memo(AnsiString(Pt.x)+";"+AnsiString(Pt.y)+";"+AnsiString(Pt.z));
-//				F->Memo(Pt.y);
-//				vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z/*orientaceP*/,rotaceJ,clChassis,m.clIntensive(clJig,100));
-//	//			F->Memo("pro "+E->name+": "+Et->name);
-//	//			F->Memo("-----------");
-//				//ukazatelové záležitosti          //další objekt         //další kolo                 //v případě editovaného objektu
+//				////výpočetní a vykreslovací záležítosti
+//				if(Et->pohon)//pokud má element přiřazen pohon
+//				{
+//					double Rz=2;//m.Rz(4.5/60.0/*Et->pohon->aRD*/);
+//					do
+//					{
+//						TPointD_3D Pt=m.bezierPt(Et->geo.orientace,Et->geo.rotacni_uhel,Et->geo.X1,Et->geo.Y1,Et->geo.X2,Et->geo.Y2,Et->geo.X3,Et->geo.Y3,Et->geo.X4,Et->geo.Y4,umisteni/Et->geo.delka);
+//						if(E->name=="Stop 1")vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,rotaceJ,clChassis,clJig);//provizorně
+//						else vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,rotaceJ,clChassis,m.clIntensive(clJig,100));
+//						umisteni+=Rz;
+//						F->Memo(umisteni);
+//					}
+//					while(umisteni<Et->geo.delka);
+//					umisteni=Et->geo.delka-umisteni;//zbytek při přechodu na další element = výchozí umístění v dalším elementu
+//				}
+//
+//				////ukazatelové záležitosti          //další objekt         //další kolo                 //v případě editovaného objektu
 //				if(Et->dalsi==NULL){O=v.vrat_objekt(Et->objekt_n)->dalsi;if(O==NULL)O=v.OBJEKTY->dalsi;if(F->pom_temp!=NULL && O->n==F->pom_temp->n)O=F->pom_temp;if(O!=NULL)Et=O->elementy->dalsi;}
 //				else Et=Et->dalsi;
 //			}
 //			Et=NULL;delete Et;
 //			O=NULL;delete O;
-//			//canv->TextOutW(m.L2Px(E->geo.X1),m.L2Py(E->geo.Y1),"Z ");
-//			//canv->TextOutW(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4),"K ");
 //		}
-//		//canv->TextOutW(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4),E->name);
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
