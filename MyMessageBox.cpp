@@ -47,6 +47,7 @@ int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString capt
 	if(text.Length()>=46)Label_text->AutoSize=true;else Label_text->AutoSize=false;
 	//výška myMessageBoxu dle zadaného textu
 	myMessageBox->ClientHeight=139-O+Label_text->Height-19;//poèítáno oproti výchozí pozici
+	if(Label_text->Width+16>myMessageBox->ClientWidth)myMessageBox->Width=Label_text->Width+16;//automatické rozžiøování MB podle textu
 
 	//Caption naplnìní daty
 	if(caption_text!="")scLabel_caption->Caption=caption_text;else scLabel_caption->Caption=Application->Title; //hlídání zda nepøijde prázdný øetezec

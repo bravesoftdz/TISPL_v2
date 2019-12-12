@@ -269,7 +269,6 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	scSplitView_LEFTTOOLBAR->Visible=true;//zapnuti levého toolbaru
 	ID_tabulky=0;//uchovává ID tabulky, použiváné při mousemove
 	count_memo=0;//jednoduchý counter zobrazovaný v memo3
-	smazat=0;
 }
 //---------------------------------------------------------------------------
 //nastaví komponentám aFont
@@ -1943,7 +1942,7 @@ void TForm1::log2webOnlyText(UnicodeString Text)
 //zapíše log do textového souboru a přidá datum
 void TForm1::log(AnsiString Text,AnsiString Text2)
 {
-	if(/*DEBUG && */logovat && LogFileStream!=NULL)//pouze pro DEBUG
+	if(DEBUG && logovat && LogFileStream!=NULL)//pouze pro DEBUG
 	{
 		//přídání datumu k textu
 		Text=TIME.CurrentDate().DateString()+"_"+TIME.CurrentTime().TimeString()+"_"+Text+"_"+Text2+"\r\n";
@@ -4006,10 +4005,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			{
 				//pokud byl objekt posunut a obsahuje už pohon a geometrii, zobrazen dotaz zda souhlasím z posunem
 				if(pom_temp==NULL && pom->elementy->dalsi->pohon!=NULL && predchozi_souradnice_kurzoru.x!=m.L2Px(pom->elementy->dalsi->geo.X1) && predchozi_souradnice_kurzoru.y!=m.L2Px(pom->elementy->dalsi->geo.Y1) && mrNo==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,ls->Strings[416],"",MB_YESNO,true,false))//"Objekt byl přesunut, souhlasíte s aktuálním umístěním?"
-				{
-					d.v.posun_objekt(m.P2Lx(predchozi_souradnice_kurzoru.x)-pom->elementy->dalsi->geo.X1,m.P2Ly(predchozi_souradnice_kurzoru.y)-pom->elementy->dalsi->geo.Y1,pom,false,false);
-					duvod_validovat=2;
-				}
+				d.v.posun_objekt(m.P2Lx(predchozi_souradnice_kurzoru.x)-pom->elementy->dalsi->geo.X1,m.P2Ly(predchozi_souradnice_kurzoru.y)-pom->elementy->dalsi->geo.Y1,pom,false,false);
 				Akce=NIC;kurzor(standard);if(pom_temp!=NULL){scGPImage_zamek_posunu->ClipFrameFillColor=clWhite;scGPImage_zamek_posunu->ImageIndex=28;}//zamčen posun
 			}break;//posun objektu
 			case MOVE_TABLE:
@@ -4034,7 +4030,9 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 					double posunx=puv_souradnice.x-pom_element_temp->X,posuny=puv_souradnice.y-pom_element_temp->Y,delka=0;
 					pom_element_temp->X=puv_souradnice.x;pom_element_temp->Y=puv_souradnice.y;
 					d.v.vloz_G_element(pom_element_temp,0,pom_element_temp->geo.X1,pom_element_temp->geo.Y1,0,0,0,0,pom_element_temp->geo.X4+posunx,pom_element_temp->geo.Y4+posuny,pom_element_temp->geo.orientace,pom_element_temp->geo.rotacni_uhel);
-        }
+					if(pom_element_temp->dalsi!=NULL)
+						d.v.vloz_G_element(pom_element_temp->dalsi,0,pom_element_temp->geo.X1,pom_element_temp->geo.Y1,0,0,0,0,pom_element_temp->dalsi->geo.X4,pom_element_temp->dalsi->geo.Y4,pom_element_temp->dalsi->geo.orientace,pom_element_temp->dalsi->geo.rotacni_uhel);
+				}
 				pom_element_temp=NULL; delete pom_element_temp;
 				//nejednalo se o posun ale o editaci textu
 				if(pom_temp!=NULL && vychozi_souradnice_kurzoru.x==minule_souradnice_kurzoru.x && vychozi_souradnice_kurzoru.y==minule_souradnice_kurzoru.y){DrawGrid_knihovna->SetFocus();stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;nazev_puvodni=pom_element_temp->name;editace_textu=true;TimerKurzor->Enabled=true;}
@@ -9955,13 +9953,12 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 			  			}
 			  			smaz=NULL;delete smaz;
 			  		}
-						d.v.smaz_objekt(pom);//nalezeny můžeme odstranit
+			  		d.v.smaz_objekt(pom);//nalezeny můžeme odstranit odstranit
 			  		//pokud byla mazána výhybka nebo spojka je nutné přejmenovat zbylé výhybky
 			  		if((long)pom->id==VyID||(long)pom->id==pocet_objektu_knihovny+1){d.v.nove_indexy(true);d.v.pocet_vyhybek--;d.v.nove_nazvy();}
 			  		else d.v.nove_indexy();
-						pom=NULL;//delete p; nepoužívat delete je to ukazatel na ostra data
-						duvod_validovat=2;
-						REFRESH();
+			  		pom=NULL;//delete p; nepoužívat delete je to ukazatel na ostra data
+			  		REFRESH();
 			  		DuvodUlozit(true);
 			  	}
 				}
@@ -12252,9 +12249,8 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 //		Memo("_____________");
 
 
-//d.TextOut(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,"Ahoj\ntoto je nějaký text řádku1\ntoto je nějaký text řádku 22\nhaf",Cvykresli::CENTER,Cvykresli::MIDDLE,-1);
-if(smazat<100)smazat+=10;else smazat=0;REFRESH();
-Memo(smazat);
+d.TextOut(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,"Ahoj\ntoto je nějaký text řádku1\ntoto je nějaký text řádku 22\nhaf",Cvykresli::CENTER,Cvykresli::MIDDLE,-1);
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
@@ -13858,6 +13854,8 @@ void TForm1::smaz_kurzor()
 				double posunx=puv_souradnice.x-pom_element_temp->X,posuny=puv_souradnice.y-pom_element_temp->Y,delka=0;
 				pom_element_temp->X=puv_souradnice.x;pom_element_temp->Y=puv_souradnice.y;
 				d.v.vloz_G_element(pom_element_temp,0,pom_element_temp->geo.X1,pom_element_temp->geo.Y1,0,0,0,0,pom_element_temp->geo.X4+posunx,pom_element_temp->geo.Y4+posuny,pom_element_temp->geo.orientace,pom_element_temp->geo.rotacni_uhel);
+      	if(pom_element_temp->dalsi!=NULL)
+					d.v.vloz_G_element(pom_element_temp->dalsi,0,pom_element_temp->geo.X1,pom_element_temp->geo.Y1,0,0,0,0,pom_element_temp->dalsi->geo.X4,pom_element_temp->dalsi->geo.Y4,pom_element_temp->dalsi->geo.orientace,pom_element_temp->dalsi->geo.rotacni_uhel);
 			}
 		}
 		if(index_kurzoru<=-11&&pom_temp->id==3&&Akce!=GEOMETRIE)//editace rozmeru komor v POW
