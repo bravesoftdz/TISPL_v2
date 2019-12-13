@@ -4576,7 +4576,7 @@ void Cvykresli::vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popise
 	line(canv,X-W+8,Y,X+W-8,Y-W+8);
 
 	//vykreslení šipky                      //pozor musí být invertované souřadnice Y (log. vs. fyz. souřadnice), metoda je stavěna na kartéské (logické souřadnice), nikoliv soužadnice monitoru (fyzické)
-	sipka(canv,X+W-8,Y-W+8,m.azimut(X-W+8,Y,X+W-8,Y+W-8),false,1,clBlack,clBlack);//děleno Z na negaci *Zoom v metodě šipka
+	sipka(canv,X+W-8,Y-W+8,m.azimut(X-W+8,Y,X+W-8,Y+W-8),false,1,barva,barva);//děleno Z na negaci *Zoom v metodě šipka
 
 	//popisek
 	canv->Font->Size=m.round(o*sizeP/3.0);if(F->aFont->Size==12)canv->Font->Size=o;

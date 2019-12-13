@@ -920,9 +920,9 @@ void TForm1::DesignSettings()
 	//vodorovné zarovnání prvků
 	scGPButton_zahodit->Left=scGPPanel_bottomtoolbar->Width/2+11-68;
 	scGPButton_ulozit->Left=scGPButton_zahodit->Left-scGPButton_zahodit->Width-22;
-	scGPImage_zamek_posunu->Left=22-4;//okraj komponenty != okraji obrázku
-	//scGPImage_mereni_vzdalenost->Left=scGPImage_zamek_posunu->Left+scGPImage_zamek_posunu->Width+22-13;
-	scGPLabel1->Left=22-4;//scGPImage_mereni_vzdalenost->Left+scGPImage_mereni_vzdalenost->Width+22-8;
+	//scGPImage_zamek_posunu->Left=22-4;//okraj komponenty != okraji obrázku
+	scGPImage_mereni_vzdalenost->Left=22-4;//scGPImage_zamek_posunu->Left+scGPImage_zamek_posunu->Width+22-13;
+	scGPLabel1->Left=scGPImage_mereni_vzdalenost->Left+scGPImage_mereni_vzdalenost->Width+22-8;
 	scGPLabel_prepinacKot->Left=scGPLabel1->Left;//label k přepínači kót
 	scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
 	scGPComboBox_prepinacKot->Left=scGPLabel_prepinacKot->Left+scGPLabel_prepinacKot->Width;//combobox na přepínání mezi kotami čas -- delka
@@ -961,7 +961,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=429;i++)
+	for(unsigned short i=0;i<=430;i++)
 	{
 		switch(i)
 		{
@@ -1395,6 +1395,7 @@ void TForm1::DesignSettings()
 			case 427:text="místo pro úchyt palce";break;
 			case 428:text="Smazat podklad";break;
 			case 429:text="S&G s";break;
+			case 430:text="Geometrie následujícího objektu nenavazuje, po uložení bude možné geometrii navázat";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -1982,8 +1983,8 @@ void __fastcall TForm1::FormResize(TObject *Sender)
 	scGPButton_ulozit->Left=scGPButton_zahodit->Left-scGPButton_zahodit->Width-22;
 	scGPImage_zamek_posunu->Left=22-4;//okraj komponenty != okraji obrázku
 	//scGPImage_mereni_vzdalenost->Left=scGPImage_zamek_posunu->Left+scGPImage_zamek_posunu->Width+22-13;
-	//scGPImage_mereni_vzdalenost->Left=22-4;
-	scGPLabel1->Left=22-4;//scGPImage_mereni_vzdalenost->Left+scGPImage_mereni_vzdalenost->Width+22-8;
+	scGPImage_mereni_vzdalenost->Left=22-4;
+	scGPLabel1->Left=scGPImage_mereni_vzdalenost->Left+scGPImage_mereni_vzdalenost->Width+22-8;
 	scGPLabel_prepinacKot->Left=scGPLabel1->Left;//label k přepínači kót
 	scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
 	scGPComboBox_prepinacKot->Left=scGPLabel_prepinacKot->Left+scGPLabel_prepinacKot->Width;//combobox na přepínání mezi kotami čas -- delka
@@ -3347,7 +3348,6 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 	}
 	else//jsem v náhledu
 	{
-		if(Akce==GEOMETRIE)ukonceni_geometrie();
 		if(Akce==NIC)
 		{
 			pom_vyhybka=d.v.PtInObjekt();//hledání zda jsem nad polygonem objektu
@@ -3365,6 +3365,7 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 			if(JID==-2 && pom_temp->id!=3)vloz_bod_haly_objektu(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);//přidání bodu objektu
 			if(pom_vyhybka==NULL && pom_temp!=NULL){KonecClick(this);Akce=BLOK;}//blokace spuštění akce pan
 		}
+		if(Akce==GEOMETRIE)ukonceni_geometrie();
 	}     
 }
 //---------------------------------------------------------------------------
@@ -5928,6 +5929,15 @@ void TForm1::ukonceni_geometrie()
 	else scGPCheckBox_zobrazit_palce->Checked=false;
 	if(rotace_jigu==1) scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
 	else scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=false;
+	//kontrola zda následující geometrie navazuje na editovanou
+	if(pom_temp!=NULL && pom->dalsi!=NULL)
+	{
+		Cvektory::TElement *E1=d.v.vrat_posledni_element_objektu(pom_temp),*E2=pom->dalsi->elementy->dalsi;
+		if(!(m.round2double(E1->geo.X4,2)==m.round2double(E2->geo.X1,2) && m.round2double(E1->geo.Y4,2)==m.round2double(E2->geo.Y1,2)))
+			zobraz_tip(ls->Strings[430]);//"Geometrie následujícího objektu nenavazuje, po uložení bude možné geometrii navázat"
+		E1=NULL;delete E1;
+		E2=NULL;delete E2;
+  }
 }
 //---------------------------------------------------------------------------
 //vrátí maximální možný počet vozíků na stopce, podle geometrie před ní
@@ -8978,14 +8988,14 @@ void __fastcall TForm1::DrawGrid_poznamkyDrawCell(TObject *Sender, int ACol, int
   		{
 			 label1=ls->Strings[266];//"text";
   		 label2="";
-  		 d.vykresli_ikonu_textu(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W+odsazeni,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
+			 d.vykresli_ikonu_textu(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W+odsazeni,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1,-1);
      //	d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 30,label1,label2,n);
   		 }
       if(n==2)
   		{
   		 label1=ls->Strings[267];//"šipka";
   		 label2="";
-  		 d.vykresli_ikonu_sipky(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W+odsazeni,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
+  		 d.vykresli_ikonu_sipky(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W+odsazeni,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1,-1);
   		 }
 
   	}
@@ -14343,7 +14353,7 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
     scGPButton_ulozit->Caption=ls->Strings[70];
     scGPButton_zahodit->Caption=ls->Strings[71];
     scGPLabel_prepinacKot->Caption=ls->Strings[72];
-    scGPImage_mereni_vzdalenost->Hint=ls->Strings[73];
+		scGPImage_mereni_vzdalenost->Hint=ls->Strings[73];
     scGPImage_zamek_posunu->Hint=ls->Strings[74];
     ButtonPLAY->Hint=ls->Strings[75];
     CheckBox_pouzit_zadane_kapacity->Caption=ls->Strings[76];
