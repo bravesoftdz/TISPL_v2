@@ -13266,6 +13266,7 @@ void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
 		Nacist_podklad(OpenDialog1->FileName);
     edice();
 	}
+  scButton_nacist_podklad->Down=false;
 }
 //---------------------------------------------------------------------------
  unsigned short int  TForm1::Nacist_podklad(UnicodeString soubor)
