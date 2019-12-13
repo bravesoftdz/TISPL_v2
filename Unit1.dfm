@@ -2769,9 +2769,9 @@ object Form1: TForm1
       ExplicitTop = 6
     end
     object RzStatusPane4: TRzStatusPane
-      Left = 383
+      Left = 397
       Top = 0
-      Width = 782
+      Width = 768
       Height = 28
       Hint = 'Rychl'#225' n'#225'pov'#283'da aplikace'
       BorderWidth = 0
@@ -2795,7 +2795,7 @@ object Form1: TForm1
     object RzStatusPane5: TRzStatusPane
       Left = 307
       Top = 0
-      Width = 76
+      Width = 90
       Height = 28
       Hint = 'Kliknut'#237'm zm'#283'n'#237'te re'#382'im p'#345'ichyt'#225'v'#225'n'#237' objektu ke m'#345#237#382'ce'
       BorderWidth = 0
@@ -2814,9 +2814,6 @@ object Form1: TForm1
       Alignment = taCenter
       BlinkColor = 10114859
       Caption = ''
-      ExplicitLeft = 874
-      ExplicitTop = -3
-      ExplicitHeight = 24
     end
     object scGPTrackBar1: TscGPTrackBar
       AlignWithMargins = True
@@ -5518,6 +5515,7 @@ object Form1: TForm1
       ParentShowHint = False
       ShowHint = True
       TabOrder = 10
+      Visible = False
       OnClick = scGPImage_mereni_vzdalenostClick
       CustomImageIndex = -1
       DragForm = False
@@ -8684,7 +8682,7 @@ object Form1: TForm1
       ColorOptions.HotColor = clRed
       ColorOptions.PressedColor = 191
       ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 8538404
+      ColorOptions.DisabledColor = 10114859
       ColorOptions.FrameNormalColor = clNone
       ColorOptions.FrameHotColor = clNone
       ColorOptions.FramePressedColor = clNone
@@ -8777,7 +8775,7 @@ object Form1: TForm1
       ColorOptions.HotColor = 7159583
       ColorOptions.PressedColor = 5648664
       ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 8538404
+      ColorOptions.DisabledColor = 10114859
       ColorOptions.FrameNormalColor = clNone
       ColorOptions.FrameHotColor = clNone
       ColorOptions.FramePressedColor = clNone
@@ -8871,7 +8869,7 @@ object Form1: TForm1
       ColorOptions.HotColor = 7159583
       ColorOptions.PressedColor = 5648664
       ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 8538404
+      ColorOptions.DisabledColor = 10114859
       ColorOptions.FrameNormalColor = clNone
       ColorOptions.FrameHotColor = clNone
       ColorOptions.FramePressedColor = clNone
@@ -8964,7 +8962,7 @@ object Form1: TForm1
       ColorOptions.HotColor = clGreen
       ColorOptions.PressedColor = 5648664
       ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 8538404
+      ColorOptions.DisabledColor = 10114859
       ColorOptions.FrameNormalColor = clNone
       ColorOptions.FrameHotColor = clNone
       ColorOptions.FramePressedColor = clNone
@@ -9034,6 +9032,7 @@ object Form1: TForm1
       Width = 0
       Height = 40
       Align = alTop
+      Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -16
@@ -9057,7 +9056,7 @@ object Form1: TForm1
       ColorOptions.HotColor = 7159583
       ColorOptions.PressedColor = 5648664
       ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 8538404
+      ColorOptions.DisabledColor = 10114859
       ColorOptions.FrameNormalColor = clNone
       ColorOptions.FrameHotColor = clNone
       ColorOptions.FramePressedColor = clNone
@@ -9206,7 +9205,7 @@ object Form1: TForm1
       ColorOptions.HotColor = 7159583
       ColorOptions.PressedColor = 5648664
       ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 8538404
+      ColorOptions.DisabledColor = 10114859
       ColorOptions.FrameNormalColor = clNone
       ColorOptions.FrameHotColor = clNone
       ColorOptions.FramePressedColor = clNone
@@ -9299,7 +9298,7 @@ object Form1: TForm1
       ColorOptions.HotColor = 7159583
       ColorOptions.PressedColor = 5648664
       ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 8538404
+      ColorOptions.DisabledColor = 10114859
       ColorOptions.FrameNormalColor = clNone
       ColorOptions.FrameHotColor = clNone
       ColorOptions.FramePressedColor = clNone
@@ -9392,7 +9391,7 @@ object Form1: TForm1
       ColorOptions.HotColor = 7159583
       ColorOptions.PressedColor = 5648664
       ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 8538404
+      ColorOptions.DisabledColor = 10114859
       ColorOptions.FrameNormalColor = clNone
       ColorOptions.FrameHotColor = clNone
       ColorOptions.FramePressedColor = clNone
@@ -9485,7 +9484,7 @@ object Form1: TForm1
       ColorOptions.HotColor = 7159583
       ColorOptions.PressedColor = 5648664
       ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 8538404
+      ColorOptions.DisabledColor = 10114859
       ColorOptions.FrameNormalColor = clNone
       ColorOptions.FrameHotColor = clNone
       ColorOptions.FramePressedColor = clNone
@@ -9579,7 +9578,7 @@ object Form1: TForm1
       ColorOptions.HotColor = 7159583
       ColorOptions.PressedColor = 8538404
       ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 8538404
+      ColorOptions.DisabledColor = 10114859
       ColorOptions.FrameNormalColor = clNone
       ColorOptions.FrameHotColor = clNone
       ColorOptions.FramePressedColor = clNone
@@ -9672,7 +9671,7 @@ object Form1: TForm1
       ColorOptions.HotColor = 7159583
       ColorOptions.PressedColor = 5648664
       ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 8538404
+      ColorOptions.DisabledColor = 10114859
       ColorOptions.FrameNormalColor = clNone
       ColorOptions.FrameHotColor = clNone
       ColorOptions.FramePressedColor = clNone
@@ -9741,7 +9740,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118009808340910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118009808380910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10864,7 +10863,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01015200480A1C0C30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01015200480A200C30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000F0030000010020000000000000D0
       0B0000000000000000000000000000000000A3653C00A3653C00A3653C00A365
       3C00A3653C00A3653C00A3653C00A3653C00A3653C00A3653C00A3653C00A365

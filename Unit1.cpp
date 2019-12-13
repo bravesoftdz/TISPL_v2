@@ -922,8 +922,7 @@ void TForm1::DesignSettings()
 	scGPButton_ulozit->Left=scGPButton_zahodit->Left-scGPButton_zahodit->Width-22;
 	scGPImage_zamek_posunu->Left=22-4;//okraj komponenty != okraji obrázku
 	//scGPImage_mereni_vzdalenost->Left=scGPImage_zamek_posunu->Left+scGPImage_zamek_posunu->Width+22-13;
-	scGPImage_mereni_vzdalenost->Left=22-4;
-	scGPLabel1->Left=scGPImage_mereni_vzdalenost->Left+scGPImage_mereni_vzdalenost->Width+22-8;
+	scGPLabel1->Left=22-4;//scGPImage_mereni_vzdalenost->Left+scGPImage_mereni_vzdalenost->Width+22-8;
 	scGPLabel_prepinacKot->Left=scGPLabel1->Left;//label k přepínači kót
 	scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
 	scGPComboBox_prepinacKot->Left=scGPLabel_prepinacKot->Left+scGPLabel_prepinacKot->Width;//combobox na přepínání mezi kotami čas -- delka
@@ -962,7 +961,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=428;i++)
+	for(unsigned short i=0;i<=429;i++)
 	{
 		switch(i)
 		{
@@ -1225,7 +1224,7 @@ void TForm1::DesignSettings()
       case 256:text="kontinuální";break;
       case 257:text="kontinuální s ";break;
       case 258:text="pasiv. otočí";break;
-      case 259:text="akt. otočí";break;
+			case 259:text="akt. otočí";break;
       case 260:text="ožeh";break;
       case 261:text="ionizace";break;
       case 262:text="lakování";break;
@@ -1395,6 +1394,7 @@ void TForm1::DesignSettings()
 			case 426:text="Kvůli překryvu jigů nelze nastavit větší počet vozíků než";break;
 			case 427:text="místo pro úchyt palce";break;
 			case 428:text="Smazat podklad";break;
+			case 429:text="S&G s";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -1982,8 +1982,8 @@ void __fastcall TForm1::FormResize(TObject *Sender)
 	scGPButton_ulozit->Left=scGPButton_zahodit->Left-scGPButton_zahodit->Width-22;
 	scGPImage_zamek_posunu->Left=22-4;//okraj komponenty != okraji obrázku
 	//scGPImage_mereni_vzdalenost->Left=scGPImage_zamek_posunu->Left+scGPImage_zamek_posunu->Width+22-13;
-	scGPImage_mereni_vzdalenost->Left=22-4;
-	scGPLabel1->Left=scGPImage_mereni_vzdalenost->Left+scGPImage_mereni_vzdalenost->Width+22-8;
+	//scGPImage_mereni_vzdalenost->Left=22-4;
+	scGPLabel1->Left=22-4;//scGPImage_mereni_vzdalenost->Left+scGPImage_mereni_vzdalenost->Width+22-8;
 	scGPLabel_prepinacKot->Left=scGPLabel1->Left;//label k přepínači kót
 	scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
 	scGPComboBox_prepinacKot->Left=scGPLabel_prepinacKot->Left+scGPLabel_prepinacKot->Width;//combobox na přepínání mezi kotami čas -- delka
@@ -3126,12 +3126,12 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 	if(MOD==NAHLED&&index_kurzoru==9999||index_kurzoru==100)smaz_edit(false);//smaže edit a neprovede refresh
 	if(editace_textu)smaz_kurzor();
 	if(MOD==NAHLED){FormX->odstranit_korelaci();FormX->naplneni_max_voziku(X,Y);}
-	if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)//pokud je oteřeno hamburger menu a klikne se do plochy tak se nejdříve zavře
-	{    //testování skrývání knihoven
-		if(scSplitView_MENU->Opened){DrawGrid_knihovna->Visible=false;DrawGrid_otoce->Visible=false;DrawGrid_ostatni->Visible=false;DrawGrid_geometrie->Visible=false;DrawGrid_poznamky->Visible=false;}
-		scSplitView_MENU->Opened=false;
-		if(!DrawGrid_knihovna->Visible){DrawGrid_knihovna->Visible=true;DrawGrid_otoce->Visible=true;DrawGrid_ostatni->Visible=true;DrawGrid_geometrie->Visible=true;DrawGrid_poznamky->Visible=true;}
-		scSplitView_OPTIONS->Opened=false;
+	if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)
+	{
+		if(pom_temp!=NULL)DrawGrid_knihovna->Visible=false;DrawGrid_otoce->Visible=false;DrawGrid_ostatni->Visible=false;DrawGrid_geometrie->Visible=false;DrawGrid_poznamky->Visible=false;
+		if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
+		if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
+		if(pom_temp!=NULL)DrawGrid_knihovna->Visible=true;DrawGrid_otoce->Visible=true;DrawGrid_ostatni->Visible=true;DrawGrid_geometrie->Visible=true;DrawGrid_poznamky->Visible=true;
 	}
 	else
 	{
@@ -3270,7 +3270,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 			}
 			else//posun obrazu stiskem kolečka
 			{
-				if(PmG!=NULL && pom_temp!=NULL && pom_temp->zobrazit_mGrid)PmG->getCombo(0,0)->CloseUp(false);//v editaci je nutné zavírat combo.. nelze rozlišit zda je otevřené
+				//if(PmG!=NULL && pom_temp!=NULL && pom_temp->zobrazit_mGrid)PmG->getCombo(0,0)->CloseUp(false);//v editaci je nutné zavírat combo.. nelze rozlišit zda je otevřené
 				vychozi_souradnice_kurzoru=TPoint(X,Y);
 				pan_non_locked=true;
 				kurzor(pan_move);Akce=PAN_MOVE;//přepne z PAN na PAN_MOVE
@@ -9075,7 +9075,7 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 					if(n==101){label1=KK;label2=label_pom;}
 					if(n==102){label1="S&G";label2=label_pom;}
 					if(n==103){label1=KKs;label2=pas_otoc;}
-					if(n==104){label1="S&G s";label2=akt_otoc;}
+					if(n==104){label1=ls->Strings[429];label2=akt_otoc;}
 					if(pom_temp->pohon!=NULL&&EID==-1)
 					{
 						d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((i+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(i/2.0)-1)*H+P+30-odsazeni,label1,label2,n);
@@ -9089,14 +9089,14 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,KK,label_pom,101);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G",label_pom,102,0,0,-1);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,KKs,pas_otoc,103);
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s",akt_otoc,104,0,0,-1);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,ls->Strings[429],akt_otoc,104,0,0,-1);
 				}
 				else if ((EID==102 || EID==104 || EID==6) && pom_temp->pohon!=NULL)
 				{
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,KK,label_pom,101,0,0,-1);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G",label_pom,102);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,KKs,pas_otoc,103,0,0,-1);
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s",akt_otoc,104);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,ls->Strings[429],akt_otoc,104);
 				}
 			}break;
 			case 1://objekt CO2
@@ -9109,7 +9109,7 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 					if(n==15){label1=KK;label2="CO2";}
 					if(n==16){label1="S&G";label2="CO2";}
 					if(n==17){label1=KKs;label2=pas_otoc;}
-					if(n==18){label1="S&G s";label2=akt_otoc;}
+					if(n==18){label1=ls->Strings[429];label2=akt_otoc;}
 					if(pom_temp->pohon!=NULL&&EID==-1)
 					{
 						d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((i+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(i/2.0)-1)*H+P+30-odsazeni,label1,label2,n);
@@ -9123,14 +9123,14 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,KK,"CO2",15);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G","CO2",16,0,0,-1);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,KKs,pas_otoc,17);
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s",akt_otoc,18,0,0,-1);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,ls->Strings[429],akt_otoc,18,0,0,-1);
 				}
 				else if ((EID==16 || EID==18 || EID==6) && pom_temp->pohon!=NULL)
 				{
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,KK,"CO2",15,0,0,-1);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G","CO2",16);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,KKs,pas_otoc,17,0,0,-1);
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s",akt_otoc,18);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,ls->Strings[429],akt_otoc,18);
 				}
 			}break;
 			case 2://objekt ožeh
@@ -9148,7 +9148,7 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 					if(n==rob1){label1=KK;label2=label_pom;}//"ožeh"
 					if(n==rob2){label1="S&G";label2=label_pom;}//"ožeh"
 					if(n==rob3){label1=KKs;label2=pas_otoc;}//"pasiv. otočí"
-					if(n==rob4){label1="S&G s";label2=akt_otoc;}//"akt. otočí"
+					if(n==rob4){label1=ls->Strings[429];label2=akt_otoc;}//"akt. otočí"
 					if(pom_temp->pohon!=NULL&&EID==-1)
 					{
 						d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((i+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(i/2.0)-1)*H+P+30-odsazeni,label1,label2,n);
@@ -9162,14 +9162,14 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,KK,label_pom,rob1);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G",label_pom,rob2,0,0,-1);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,KKs,pas_otoc,rob3);
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s",akt_otoc,rob4,0,0,-1);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,ls->Strings[429],akt_otoc,rob4,0,0,-1);
 				}
 				else if ((EID==12 || EID==14 || EID==106 || EID==108 || EID==6) && pom_temp->pohon!=NULL)
 				{
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,KK,label_pom,rob1,0,0,-1);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G",label_pom,rob2);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,KKs,pas_otoc,rob3,0,0,-1);
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s",akt_otoc,rob4);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,ls->Strings[429],akt_otoc,rob4);
 				}
 			}break;
 			case 4://objekt ionizace
@@ -9187,7 +9187,7 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 					if(n==7||n==105){label1=KK;label2=label_pom;}//"ionizace"
 					if(n==8||n==106){label1="S&G";label2=label_pom;}//"ionizace"
 					if(n==9||n==107){label1=KKs;label2=pas_otoc;}
-					if(n==10||n==108){label1="S&G s";label2=akt_otoc;}
+					if(n==10||n==108){label1=ls->Strings[429];label2=akt_otoc;}
 					if(pom_temp->pohon!=NULL&&EID==-1)
 					{
 						d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((i+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(i/2.0)-1)*H+P+30-odsazeni,label1,label2,n,0,0);
@@ -9200,14 +9200,14 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,KK,label_pom,rob1);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G",label_pom,rob2,0,0,-1);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,KKs,pas_otoc,rob3);
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s",akt_otoc,rob4,0,0,-1);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,ls->Strings[429],akt_otoc,rob4,0,0,-1);
 				}
 				else if ((EID==8 || EID==10 || EID==106 || EID==108 || EID==6) && pom_temp->pohon!=NULL)
 				{
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,KK,label_pom,rob1,0,0,-1);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G",label_pom,rob2);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,KKs,pas_otoc,rob3,0,0,-1);
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s",akt_otoc,rob4);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,ls->Strings[429],akt_otoc,rob4);
 				}
 			}break;
 			case 5://objekt lakování
@@ -9224,7 +9224,7 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 					if(n==rob1){label1=KK;label2=label_pom;}//"lakování"
 					if(n==rob2){label1="S&G";label2=label_pom;}//"lakování"
 					if(n==rob3){label1=KKs;label2=pas_otoc; }
-					if(n==rob4){label1="S&G s";label2=akt_otoc;}
+					if(n==rob4){label1=ls->Strings[429];label2=akt_otoc;}
 					if(pom_temp->pohon!=NULL&&EID==-1)
 					{
 						d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((i+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(i/2.0)-1)*H+P+30-odsazeni,label1,label2,n,0,0);
@@ -9238,14 +9238,14 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,KK,label_pom,rob1);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G",label_pom,rob2,0,0,-1);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,KKs,pas_otoc,rob3);
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s",akt_otoc,rob4,0,0,-1);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,ls->Strings[429],akt_otoc,rob4,0,0,-1);
 				}
 				else if ((EID==2 || EID==4 || EID==106 || EID==108 || EID==6) && pom_temp->pohon!=NULL)
 				{
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,KK,label_pom,rob1,0,0,-1);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G",label_pom,rob2);
 					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,KKs,pas_otoc,rob3,0,0,-1);
-					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s",akt_otoc,rob4);
+					d.vykresli_element(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,ls->Strings[429],akt_otoc,rob4);
 				}
 			}break;
 			default://pro objekty které nemají žádné elementy, přepozicovat zbývající knihovny
@@ -9776,6 +9776,9 @@ void TForm1::akutalizace_stavu_prichytavani_vSB()
 void __fastcall TForm1::RzStatusPane5Click(TObject *Sender)
 {
 	log(__func__);//logování
+	//pokud je otevřené menu nebo options zavře je
+	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
+	if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
 	if(grid)//aby se po zobrazení mřížky zachoval stavající stav,tedy nebude zohledněn další if
 	if(++prichytavat_k_mrizce==3)prichytavat_k_mrizce=1;
 
@@ -10344,7 +10347,6 @@ void TForm1::NP_input()
 	 scGPButton_prichytavat->Visible=false;//vypnutí tlačítka přichytávat
 	 scButton_zamek_layoutu->Visible=false;//vypnutí tlačítka pro zámek layoutu
 	 Image_knihovna_objektu->Visible=false;//vypnutí komponenty s knihovnou
-   scGPButton_zmerit_vzdalenost->Visible=false;//schování měření vzdálenosti
 	 JID=-1;//ošetření, s JID se pracuje i v náhledu
 	 element_id=99999;//ošetření pro správné zobrazování mgridů
 	 pom_bod=NULL;pom_bod_temp=NULL;//s těmito ukazateli pracuje jak náhled tak schéma, ošetření
@@ -10623,42 +10625,42 @@ void TForm1::zmena_editovaneho_objektu()
 		else scGPLabel_roboti->Caption=ls->Strings[58];//"Roboti";
 		//nastavení tlačítek na výchozí hodnoty
 		if(pom_temp->uzamknout_nahled)
-  	{
+		{
 			scButton_zamek->ImageIndex=37; //zamčeno
-  		scButton_zamek->Hint=ls->Strings[119];//"Odemknout editaci";
-  	}
-  	else
-  	{
-			scButton_zamek->ImageIndex=60;
-  		scButton_zamek->Hint=ls->Strings[120];//"Zamknout editaci";
+			scButton_zamek->Hint=ls->Strings[119];//"Odemknout editaci";
 		}
-  	if(pom_temp->zobrazit_mGrid)
-  	{
-  		scGPButton_viditelnostmGrid->ImageIndex=54;
+		else
+		{
+			scButton_zamek->ImageIndex=60;
+			scButton_zamek->Hint=ls->Strings[120];//"Zamknout editaci";
+		}
+		if(pom_temp->zobrazit_mGrid)
+		{
+			scGPButton_viditelnostmGrid->ImageIndex=54;
 			scGPButton_viditelnostmGrid->Hint=ls->Strings[121];//"Skrýt tabulky";
 		}
-  	else
-  	{
-  		scGPButton_viditelnostmGrid->ImageIndex=55;
+		else
+		{
+			scGPButton_viditelnostmGrid->ImageIndex=55;
 			scGPButton_viditelnostmGrid->Hint=ls->Strings[122];//"Zobrazit tabulky";
-  	}
-  	if(pom_temp->zobrazit_koty)
-  	{
+		}
+		if(pom_temp->zobrazit_koty)
+		{
 			scGPButton_viditelnostKoty->ImageIndex=56;
 			scGPButton_viditelnostKoty->Hint=ls->Strings[123];//"Skrýt kóty";
-  	}
-  	else
-  	{
-  		scGPButton_viditelnostKoty->ImageIndex=57;
+		}
+		else
+		{
+			scGPButton_viditelnostKoty->ImageIndex=57;
 			scGPButton_viditelnostKoty->Hint=ls->Strings[124];//"Zobrazit kóty";
-  	}
-  	if(posun_dalsich_elementu)
-  	{
+		}
+		if(posun_dalsich_elementu)
+		{
 			scGPButton_posun_dalsich_elementu->ImageIndex=58;
 			scGPButton_posun_dalsich_elementu->Hint=ls->Strings[125];//"Zakázat vázaný posun robotů, stop stanic a otočí v editovaném objektu";
-  	}
-  	else
-  	{
+		}
+		else
+		{
 			scGPButton_posun_dalsich_elementu->ImageIndex=59;
 			scGPButton_posun_dalsich_elementu->Hint=ls->Strings[126];//"Povolit vázaný posun robotů, stop stanic a otočí v editovaném objektu";
 		}
@@ -12396,6 +12398,13 @@ void __fastcall TForm1::KonecClick(TObject *Sender)
 	int vysledek;
 	if (MOD==NAHLED)
 	{
+		if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)
+		{
+			if(pom_temp!=NULL)DrawGrid_knihovna->Visible=false;DrawGrid_otoce->Visible=false;DrawGrid_ostatni->Visible=false;DrawGrid_geometrie->Visible=false;DrawGrid_poznamky->Visible=false;
+			if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
+			if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
+			if(pom_temp!=NULL)DrawGrid_knihovna->Visible=true;DrawGrid_otoce->Visible=true;DrawGrid_ostatni->Visible=true;DrawGrid_geometrie->Visible=true;DrawGrid_poznamky->Visible=true;
+		}
 		if (scGPButton_ulozit->Enabled)
 		{
 			vysledek=MB(ls->Strings[343]+" "+pom_temp->name+"?",MB_YESNO,true);//"Chcete uložit změny objektu"
@@ -12417,6 +12426,9 @@ void __fastcall TForm1::KonecClick(TObject *Sender)
 void __fastcall TForm1::scGPGlyphButton_ZOOM_MINUSClick(TObject *Sender)
 {
 	log(__func__);//logování
+	//pokud je otevřené menu nebo options zavře je
+	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
+	if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
 	if(Zoom>0.25)//akcelerátor, aby se zbytečně nevolalo
 	{
 		log(__func__);//logování
@@ -12431,6 +12443,9 @@ void __fastcall TForm1::scGPGlyphButton_ZOOM_MINUSClick(TObject *Sender)
 void __fastcall TForm1::scGPGlyphButton_ZOOM_PLUSClick(TObject *Sender)
 {
 	log(__func__);//logování
+	//pokud je otevřené menu nebo options zavře je
+	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
+	if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
 	if(Zoom<10)//akcelerátor, aby se zbytečně nevolalo
 	{
 		log(__func__);//logování
@@ -12534,6 +12549,9 @@ void __fastcall TForm1::DetailsButtonClick(TObject *Sender)
 void __fastcall TForm1::scGPTrackBar1Change(TObject *Sender)
 {
 	log(__func__);//logování
+	//pokud je otevřené menu nebo options zavře je
+	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
+	if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
 	switch(scGPTrackBar1->Value)
 	{
 		case 0:Zoom=0.25;break;
@@ -13128,6 +13146,14 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 {
 	log(__func__);//logování
+	//pokud je otevřené menu nebo options zavře je
+	if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)
+	{
+		if(pom_temp!=NULL)DrawGrid_knihovna->Visible=false;DrawGrid_otoce->Visible=false;DrawGrid_ostatni->Visible=false;DrawGrid_geometrie->Visible=false;DrawGrid_poznamky->Visible=false;
+		if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
+		if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
+		if(pom_temp!=NULL)DrawGrid_knihovna->Visible=true;DrawGrid_otoce->Visible=true;DrawGrid_ostatni->Visible=true;DrawGrid_geometrie->Visible=true;DrawGrid_poznamky->Visible=true;
+	}
 	if(MOD==NAHLED)  //navrácení do módu schéma
 	{
     Timer_neaktivity->Enabled=false;//vypnutí timeru pro jistotu
@@ -13204,6 +13230,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		scGPPanel_pomocn_proSwitch->Visible=false;
 		//REFRESH(); //- asi netřeba  asi vyvolává níže uvedený on_change_zoom_change_scGPTrackBar()
 		//scListGroupKnihovObjektu->Visible=false;
+		scGPButton_zmerit_vzdalenost->Visible=false;//schování měření vzdálenosti, pro správné řazení
 		scGPComboBox_prepinacKot->ItemIndex=0;//ošetření pokud bylo při vypínání editace nastaveno na časové kóty
 		scButton_zamek_layoutu->Visible=true;//zapnutí tlačítka zámek layoutu
 		Image_knihovna_objektu->Visible=true;//zapnutí knihovny
@@ -13352,7 +13379,13 @@ void __fastcall TForm1::scGPButton_adjustaceClick(TObject *Sender)
 
 void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
 {
-  log(__func__);//logování
+	log(__func__);//logování
+	if(pom_temp!=NULL)//pokud je v náhledu kliknuto, musí být menu zavřeno takto, zabraňuje probliku zbytků menu v knihovnách
+	{
+		DrawGrid_knihovna->Visible=false;DrawGrid_otoce->Visible=false;DrawGrid_ostatni->Visible=false;DrawGrid_geometrie->Visible=false;DrawGrid_poznamky->Visible=false;
+		if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
+		DrawGrid_knihovna->Visible=true;DrawGrid_otoce->Visible=true;DrawGrid_ostatni->Visible=true;DrawGrid_geometrie->Visible=true;DrawGrid_poznamky->Visible=true;
+	}
   ESC();//zruší případnou rozdělanou akci  - způsobuje problém při zavírání splitview
 	//scSplitView_OPTIONS->Opened = !scSplitView_OPTIONS->Opened;
 
@@ -13922,6 +13955,14 @@ void TForm1::smaz_kurzor()
 void __fastcall TForm1::scButton_zamekClick(TObject *Sender)
 {
 	log(__func__);//logování
+	//pokud je otevřené menu nebo options zavře je
+	if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)
+	{
+		if(pom_temp!=NULL)DrawGrid_knihovna->Visible=false;DrawGrid_otoce->Visible=false;DrawGrid_ostatni->Visible=false;DrawGrid_geometrie->Visible=false;DrawGrid_poznamky->Visible=false;
+		if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
+		if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
+		if(pom_temp!=NULL)DrawGrid_knihovna->Visible=true;DrawGrid_otoce->Visible=true;DrawGrid_ostatni->Visible=true;DrawGrid_geometrie->Visible=true;DrawGrid_poznamky->Visible=true;
+	}
 	if(scButton_zamek->ImageIndex==37)//zamčeno budu odemykat
 	{
 		pom_temp->uzamknout_nahled=false;
@@ -13947,7 +13988,15 @@ void __fastcall TForm1::scButton_zamekClick(TObject *Sender)
 //přepíná viditelnost mGridů
 void __fastcall TForm1::scGPButton_viditelnostmGridClick(TObject *Sender)
 {
-  log(__func__);//logování
+	log(__func__);//logování
+	//pokud je otevřené menu nebo options zavře je
+	if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)
+	{
+		if(pom_temp!=NULL)DrawGrid_knihovna->Visible=false;DrawGrid_otoce->Visible=false;DrawGrid_ostatni->Visible=false;DrawGrid_geometrie->Visible=false;DrawGrid_poznamky->Visible=false;
+		if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
+		if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
+		if(pom_temp!=NULL)DrawGrid_knihovna->Visible=true;DrawGrid_otoce->Visible=true;DrawGrid_ostatni->Visible=true;DrawGrid_geometrie->Visible=true;DrawGrid_poznamky->Visible=true;
+	}
 	if(scGPButton_viditelnostmGrid->ImageIndex==55)//vypnuto budu zapínat
 	{
 		scGPButton_viditelnostmGrid->ImageIndex=54;//zapnuto
@@ -13968,7 +14017,15 @@ void __fastcall TForm1::scGPButton_viditelnostmGridClick(TObject *Sender)
 //přepíná viditelnost kót
 void __fastcall TForm1::scGPButton_viditelnostKotyClick(TObject *Sender)
 {
-  log(__func__);//logování
+	log(__func__);//logování
+	//pokud je otevřené menu nebo options zavře je
+	if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)
+	{
+		if(pom_temp!=NULL)DrawGrid_knihovna->Visible=false;DrawGrid_otoce->Visible=false;DrawGrid_ostatni->Visible=false;DrawGrid_geometrie->Visible=false;DrawGrid_poznamky->Visible=false;
+		if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
+		if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
+		if(pom_temp!=NULL)DrawGrid_knihovna->Visible=true;DrawGrid_otoce->Visible=true;DrawGrid_ostatni->Visible=true;DrawGrid_geometrie->Visible=true;DrawGrid_poznamky->Visible=true;
+	}
 	if(scGPButton_viditelnostKoty->ImageIndex==57)//vypnuto budu zapínat
 	{
 		scGPButton_viditelnostKoty->ImageIndex=56;//zapnuto
@@ -13989,7 +14046,15 @@ void __fastcall TForm1::scGPButton_viditelnostKotyClick(TObject *Sender)
 //přepínání posunu dalších elementů
 void __fastcall TForm1::scGPButton_posun_dalsich_elementuClick(TObject *Sender)
 {
-  log(__func__);//logování
+	log(__func__);//logování
+	//pokud je otevřené menu nebo options zavře je
+	if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)
+	{
+		if(pom_temp!=NULL)DrawGrid_knihovna->Visible=false;DrawGrid_otoce->Visible=false;DrawGrid_ostatni->Visible=false;DrawGrid_geometrie->Visible=false;DrawGrid_poznamky->Visible=false;
+		if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
+		if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
+		if(pom_temp!=NULL)DrawGrid_knihovna->Visible=true;DrawGrid_otoce->Visible=true;DrawGrid_ostatni->Visible=true;DrawGrid_geometrie->Visible=true;DrawGrid_poznamky->Visible=true;
+	}
 	if(scGPButton_posun_dalsich_elementu->ImageIndex==59)//vypnuto budu zapínat
 	{
 		scGPButton_posun_dalsich_elementu->ImageIndex=58;
@@ -14009,6 +14074,14 @@ void __fastcall TForm1::scGPButton_posun_dalsich_elementuClick(TObject *Sender)
 void __fastcall TForm1::scGPComboBox_prepinacKotClick(TObject *Sender)
 {
 	log(__func__);//logování
+	//pokud je otevřené menu nebo options zavře je
+	if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)
+	{
+		if(pom_temp!=NULL)DrawGrid_knihovna->Visible=false;DrawGrid_otoce->Visible=false;DrawGrid_ostatni->Visible=false;DrawGrid_geometrie->Visible=false;DrawGrid_poznamky->Visible=false;
+		if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
+		if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
+		if(pom_temp!=NULL)DrawGrid_knihovna->Visible=true;DrawGrid_otoce->Visible=true;DrawGrid_ostatni->Visible=true;DrawGrid_geometrie->Visible=true;DrawGrid_poznamky->Visible=true;
+	}
 	if(FormX->input_state==FormX->NOTHING)//ošetření proti spouštění 2x při změně COMBA v tabulce pohonu
 	{
   	//není nutno provádět kontrolu, prováděna jinde -> aktivace / deaktivace komponenty
@@ -14045,6 +14118,9 @@ void TForm1::Memo(AnsiString Text, bool clear,bool count)
 void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 {
 	log(__func__);//logování
+	//pokud je otevřené menu nebo options zavře je
+	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
+	if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
 	if(Akce==NIC)
 	{
 		scSplitView_OPTIONS->Close();
@@ -14249,7 +14325,7 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 		if(prichytavat_k_mrizce==1)scGPButton_prichytavat->Hint=ls->Strings[411];
 		else scGPButton_prichytavat->Hint=ls->Strings[410];
 		scButton_zamek_layoutu->Hint=ls->Strings[43];
-    scGPButton_zmerit_vzdalenost->Hint=ls->Strings[44];
+		scGPButton_zmerit_vzdalenost->Hint=ls->Strings[44];
     scListGroupKnihovObjektu->Caption=ls->Strings[45];
     scListGroupPanel_hlavickaOstatni->Caption=ls->Strings[46];
     scListGroupPanel_hlavickaOtoce->Caption=ls->Strings[47];
@@ -14386,6 +14462,53 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 		}
 		//aktualizace mGridu
 		if(akt_mGrid)change_languagein_mGrid();
+		//aktualizace hintů tlačítek v editaci
+		if(pom_temp!=NULL)//stačí pouze při otevřeném náhledu, při otevýrání nového se aktualizace provede v NP_input
+		{
+      if(pom_temp->uzamknout_nahled)
+   		{
+   			scButton_zamek->ImageIndex=37; //zamčeno
+   			scButton_zamek->Hint=ls->Strings[119];//"Odemknout editaci";
+   		}
+   		else
+   		{
+   			scButton_zamek->ImageIndex=60;
+   			scButton_zamek->Hint=ls->Strings[120];//"Zamknout editaci";
+   		}
+   		if(pom_temp->zobrazit_mGrid)
+   		{
+   			scGPButton_viditelnostmGrid->ImageIndex=54;
+   			scGPButton_viditelnostmGrid->Hint=ls->Strings[121];//"Skrýt tabulky";
+   		}
+   		else
+   		{
+   			scGPButton_viditelnostmGrid->ImageIndex=55;
+   			scGPButton_viditelnostmGrid->Hint=ls->Strings[122];//"Zobrazit tabulky";
+   		}
+   		if(pom_temp->zobrazit_koty)
+   		{
+   			scGPButton_viditelnostKoty->ImageIndex=56;
+   			scGPButton_viditelnostKoty->Hint=ls->Strings[123];//"Skrýt kóty";
+   		}
+   		else
+   		{
+   			scGPButton_viditelnostKoty->ImageIndex=57;
+   			scGPButton_viditelnostKoty->Hint=ls->Strings[124];//"Zobrazit kóty";
+   		}
+   		if(posun_dalsich_elementu)
+   		{
+   			scGPButton_posun_dalsich_elementu->ImageIndex=58;
+   			scGPButton_posun_dalsich_elementu->Hint=ls->Strings[125];//"Zakázat vázaný posun robotů, stop stanic a otočí v editovaném objektu";
+   		}
+   		else
+   		{
+   			scGPButton_posun_dalsich_elementu->ImageIndex=59;
+   			scGPButton_posun_dalsich_elementu->Hint=ls->Strings[126];//"Povolit vázaný posun robotů, stop stanic a otočí v editovaném objektu";
+			}
+		}
+		//aktualizace SB
+		if(d.v.OBJEKTY->dalsi==NULL)SB(ls->Strings[376],4);
+		else SB(ls->Strings[378],4);
 	}
 	else //pokud není nalezen jazykový slovník
 	{
@@ -14464,6 +14587,9 @@ void __fastcall TForm1::scGPImage_zamek_posunuClick(TObject *Sender)
 void __fastcall TForm1::scButton_zamek_layoutuClick(TObject *Sender)
 {
 	log(__func__);//logování
+	//pokud je otevřené menu nebo options zavře je
+	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
+	if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
 	if(scButton_zamek_layoutu->ImageIndex==68)//odemčeno budu zamykat
 	{
 		scButton_zamek_layoutu->ImageIndex=67;
@@ -14584,6 +14710,9 @@ void __fastcall TForm1::scGPCheckBox_zobrazit_palceClick(TObject *Sender)
 void __fastcall TForm1::scGPButton_prichytavatClick(TObject *Sender)
 {
 	log(__func__);//logování
+	//pokud je otevřené menu nebo options zavře je
+	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
+	if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
 	RzStatusPane5Click(this);
 	if(prichytavat_k_mrizce==1)scGPButton_prichytavat->Hint=ls->Strings[411];//"Vypnout přichytávání";
 	else scGPButton_prichytavat->Hint=ls->Strings[410];//"Zapnout přichytávání";
@@ -14592,13 +14721,19 @@ void __fastcall TForm1::scGPButton_prichytavatClick(TObject *Sender)
 void __fastcall TForm1::scGPButton_errorClick(TObject *Sender)
 {
 	log(__func__);//logování
+	//pokud je otevřené menu nebo options zavře je
+	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
+	if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
 	Form_zpravy->Show();
 	if(pom_temp!=NULL)DrawGrid_knihovna->SetFocus();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPButton_warningClick(TObject *Sender)
 {
-  log(__func__);//logování
+	log(__func__);//logování
+	//pokud je otevřené menu nebo options zavře je
+	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
+	if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
 	Form_zpravy->Show();
 	if(pom_temp!=NULL)DrawGrid_knihovna->SetFocus();
 }
@@ -14616,4 +14751,6 @@ void __fastcall TForm1::scGPButton_smazatClick(TObject *Sender)
 	scSplitView_OPTIONS->Opened=false;
 }
 //---------------------------------------------------------------------------
+
+
 

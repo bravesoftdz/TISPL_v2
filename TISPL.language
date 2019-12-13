@@ -254,8 +254,8 @@ drip;X;okap
 spraying frame;X;postøikový rám 
 loading;X;navìšování 
 unloading;X;svìšování
-continuous;X;kontinuální
-continuous with;X;kontinuální s 
+cont.;X;kontinuální
+cont. with;X;kontinuální s  
 pass. turning;X;pasiv. otoèí
 act. turning;X;akt. otoèí
 flame ;X;ožeh
@@ -427,3 +427,4 @@ Failed to load background;X;Nepodaøilo se naèíst podklad
 Due to the overlap of jigs, no more carts can be set than;X;Kvùli pøekryvu jigù nelze nastavit vìtší poèet vozíkù než
 place for grip thumb;X;místo pro úchyt palce
 Delete background;X;Smazat podklad
+S&G with;X;S&G s
