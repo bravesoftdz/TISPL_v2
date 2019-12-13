@@ -2504,11 +2504,10 @@ object Form1: TForm1
       ParentShowHint = False
       ShowHint = True
       TabOrder = 21
-      TabStop = True
       Visible = False
       OnClick = scGPButton_errorClick
       Animation = False
-      CanFocused = True
+      CanFocused = False
       CustomDropDown = False
       Margin = -1
       Spacing = 1
@@ -2614,11 +2613,10 @@ object Form1: TForm1
       ParentShowHint = False
       ShowHint = True
       TabOrder = 22
-      TabStop = True
       Visible = False
       OnClick = scGPButton_warningClick
       Animation = False
-      CanFocused = True
+      CanFocused = False
       CustomDropDown = False
       Margin = -1
       Spacing = 1
@@ -4176,7 +4174,6 @@ object Form1: TForm1
     Height = 25
     Caption = 'ButtonROSTAtesty'
     TabOrder = 29
-    Visible = False
     OnClick = Button11Click
     OnKeyDown = FormKeyDown
   end
