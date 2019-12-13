@@ -108,7 +108,7 @@
         <LinkPackageImports>rtl.bpi;vcl.bpi;RaizeComponentsVcl.bpi;vclx.bpi;vclimg.bpi;Tee.bpi;IndySystem.bpi;IndyProtocols.bpi;IndyCore.bpi;dbrtl.bpi;vclFireDAC.bpi;FireDAC.bpi;FireDACSqliteDriver.bpi;FireDACCommonDriver.bpi;FireDACCommon.bpi;xmlrtl.bpi;vcldb.bpi;FireDACMySQLDriver.bpi;dbexpress.bpi;DbxCommonDriver.bpi;DBXMySQLDriver.bpi;vclactnband.bpi;vclie.bpi;vclwinx.bpi</LinkPackageImports>
         <VerInfo_Build>15</VerInfo_Build>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
-        <Icon_MainIcon>TISPL_Icon1.ico</Icon_MainIcon>
+        <Icon_MainIcon>TISPL_Icon.ico</Icon_MainIcon>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=Eltep s.r.o.;FileDescription=;FileVersion=0.1.0.15;InternalName=TISPL;LegalCopyright=© ELTEP, s.r.o., 2017;LegalTrademarks=© ELTEP, s.r.o., 2017;OriginalFilename=Eltep - TISPL;ProductName=TISPL;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
@@ -122,7 +122,7 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
         <DynamicRTL>false</DynamicRTL>
-        <Icon_MainIcon>TISPL_Icon2.ico</Icon_MainIcon>
+        <Icon_MainIcon>TISPL_Icon1.ico</Icon_MainIcon>
         <LinkPackageStatics>rtl.lib;vcl.lib;RaizeComponentsVcl.lib;vclx.lib;vclimg.lib;Tee.lib;IndySystem.lib;IndyProtocols.lib;IndyCore.lib;dbrtl.lib;vclFireDAC.lib;FireDAC.lib;FireDACSqliteDriver.lib;FireDACCommonDriver.lib;FireDACCommon.lib;xmlrtl.lib;vcldb.lib;FireDACMySQLDriver.lib;dbexpress.lib;DbxCommonDriver.lib;DBXMySQLDriver.lib;RosiComp_CX100.lib;stylecontrols_cbx10Seattle.lib;vclactnband.lib;vclie.lib;vclwinx.lib</LinkPackageStatics>
         <UsePackages>false</UsePackages>
         <VerInfo_Keys>CompanyName=Eltep s.r.o.;FileDescription=;FileVersion=0.1.0.0;InternalName=TISPL;LegalCopyright=© ELTEP, s.r.o. 2016 - 2017;LegalTrademarks=© ELTEP, s.r.o. 2016 - 2017;OriginalFilename=;ProductName=Eltep - TISPL;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
@@ -205,12 +205,30 @@
             <DependentOn>kalendar.h</DependentOn>
             <BuildOrder>20</BuildOrder>
         </CppCompile>
+        <CppCompile Include="katalog_dopravniku.cpp">
+            <Form>Form_katalog</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>katalog_dopravniku.h</DependentOn>
+            <BuildOrder>41</BuildOrder>
+        </CppCompile>
         <None Include="knihovna_objektu.h">
             <BuildOrder>3</BuildOrder>
         </None>
         <ResFiles Include="kurzory.res">
             <BuildOrder>8</BuildOrder>
         </ResFiles>
+        <CppCompile Include="minicolordialog.cpp">
+            <Form>Form_color_dialog</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>minicolordialog.h</DependentOn>
+            <BuildOrder>40</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="miniform_zpravy.cpp">
+            <Form>Form_zpravy</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>miniform_zpravy.h</DependentOn>
+            <BuildOrder>39</BuildOrder>
+        </CppCompile>
         <CppCompile Include="my.cpp">
             <DependentOn>my.h</DependentOn>
             <BuildOrder>4</BuildOrder>
@@ -361,6 +379,9 @@
         <FormResources Include="kabina_schema.dfm"/>
         <FormResources Include="jig.dfm"/>
         <FormResources Include="kalendar.dfm"/>
+        <FormResources Include="miniform_zpravy.dfm"/>
+        <FormResources Include="minicolordialog.dfm"/>
+        <FormResources Include="katalog_dopravniku.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -451,12 +472,27 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployClass Name="ProjectiOSDeviceResourceRules">
+                <DeployClass Name="DependencyModule">
+                    <Platform Name="Win32">
+                        <Operation>0</Operation>
+                        <Extensions>.dll;.bpl</Extensions>
+                    </Platform>
                     <Platform Name="iOSDevice64">
                         <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
+                    <Platform Name="OSX32">
+                        <RemoteDir>Contents\MacOS</RemoteDir>
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
                     </Platform>
                     <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
                     </Platform>
                 </DeployClass>
                 <DeployClass Name="ProjectOSXResource">
@@ -810,27 +846,12 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <DeployClass Name="DependencyModule">
-                    <Platform Name="Win32">
-                        <Operation>0</Operation>
-                        <Extensions>.dll;.bpl</Extensions>
-                    </Platform>
+                <DeployClass Name="ProjectiOSDeviceResourceRules">
                     <Platform Name="iOSDevice64">
                         <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
-                    </Platform>
-                    <Platform Name="OSX32">
-                        <RemoteDir>Contents\MacOS</RemoteDir>
-                        <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
                     </Platform>
                     <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
-                    </Platform>
-                    <Platform Name="iOSSimulator">
-                        <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
                     </Platform>
                 </DeployClass>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>

@@ -29,6 +29,8 @@ USEFORM("parametry.cpp", Form_parametry);
 USEFORM("kabina_schema.cpp", Form_objekt_nahled);
 USEFORM("jig.cpp", Form_jig);
 USEFORM("kalendar.cpp", Form_kalendar);
+USEFORM("miniform_zpravy.cpp", Form_zpravy);
+USEFORM("minicolordialog.cpp", Form_color_dialog);
 USEFORM("katalog_dopravniku.cpp", Form_katalog);
 //---------------------------------------------------------------------------
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
@@ -63,6 +65,9 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
      Application->CreateForm(__classid(TForm_Z_rozliseni), &Form_Z_rozliseni);
      Application->CreateForm(__classid(TFormX), &FormX);
      Application->CreateForm(__classid(TFormX), &FormX);
+     Application->CreateForm(__classid(TForm_katalog), &Form_katalog);
+     Application->CreateForm(__classid(TForm_zpravy), &Form_zpravy);
+     Application->CreateForm(__classid(TForm_color_dialog), &Form_color_dialog);
      Application->CreateForm(__classid(TForm_katalog), &Form_katalog);
      Application->ShowMainForm=false;//zabránìní zobrazení hlavního formu
 		Application->Run();
