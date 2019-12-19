@@ -76,49 +76,55 @@ class Cvektory
 		struct TKomora *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
 
+	struct TData//data elementu, která se mění v závislosti na zakázce
+	{
+		short PD;//part detect:  -1 = nic, 0 = začátek jigu, 1 = střed jigu, 2 = celý jig
+		short orientace_jig_pred;//v jaké orientaci je JIG před elementem na obrazovce vykreslen 0,90,180,270 (orientace dle světových stran)
+		double LO1;//lakovací okno - pracovní oblast
+		double LO2;
+		double LO_pozice;//vyosení lakovacího okna - pracovní oblasti
+		double PT1;//procesní čas
+		double PT2;
+		double WTstop;//čekání na stopce
+		TPointD RT;//reserve time (ryzí,pokrácený)
+		unsigned int pocet_pozic;//daný geometrií před stopstanicí (maximální možný počet vozíků, které lze nabufrovat)
+		unsigned int pocet_voziku;//počet vozíků v buffru
+	};
+
 	struct TElement
 	{
 		unsigned long n; //pořadí ve spoj.seznamu
 		unsigned int eID; //id typu elementu viz. tabulka elementů https://docs.google.com/spreadsheets/d/1_S7yp1L25tov0mKqP3Rl_0Y2cx-e3UwDXb102hDvRlA/edit?usp=sharing
 		UnicodeString short_name;//krátký název max. 4 znaky
 		UnicodeString name;//celý název objektu
-		double X, Y;//umístění v logických (metrických) souřadnicích
-		double Xt,Yt;//umístění tabulky, resp. mGridu v logických (metrických) souřadnicích
 		short orientace;//v jaké orientaci je element na obrazovce vykreslen 0,90,180,270 (orientace dle světových stran)
 		double rotace_jig;//úhel o který element orotuje jig vzhledem k jeho aktuální rotaci jigu vůči podvozku, např. rotace_jig=90°, aktuální rotace jigu 90°, výsledek 180° - REVIZE!!!
 		short stav;//stav elementu: -1 = disabled, nebo nepoužito např. element v knihovně, nebo nepoužitý robot v kabině 0 = stopka otevřeno, v případě elementů bez stopky pouze pasivní element 1 = stopka zavřeno, v případě elementů bez stopky pouze aktivní element 2 = highlight, element zvýrazněn, nikoliv jeho název (předpokladá se při klasickém zobrazení tj. typ==1) 3 = highlight pouze názvu elementu
 
-		short PD;//part detect:  -1 = nic, 0 = začátek jigu, 1 = střed jigu, 2 = celý jig
-		double LO1;
-		double OTOC_delka;
-		double zona_pred;
-		double zona_za;
-		double LO2;
-		double LO_pozice;
+		double X, Y, Z;//umístění v logických (metrických) souřadnicích
+		double Xt,Yt;//umístění tabulky, resp. mGridu v logických (metrických) souřadnicích
 
-		double PT1;
-		double PTotoc;
-		double PT2;
+		double PTotoc;//čas otáčení na otoči
+		double OTOC_delka;//fyzycká délka otoče
+		double zona_pred;//zóna od počátku otáčení do středu otoče
+		double zona_za;//zona od středu otoče do konce otáčení
 
 		double WT;//čekání na palec
-		double WTstop;//čekání na stopce
-		TPointD RT;//reserve time (ryzí,pokrácený)
 
 		T5Rect citelna_oblast;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast celé kóty(rect0), popisku kóty (rect1), jednotek kóty (rect2) a samotného názvu např. Robot 3 (rect3) elementu, hodnota koty mezi LO (rect4) - nedovávat  do CObjekt
 
-		unsigned int akt_pocet_voziku;
-		unsigned int max_pocet_voziku;
-
-		TGeometrie geo;
+		TGeometrie geo;//geometrie elementu
 		TmGrid *mGrid;
+    TData data;//data elementu, která se mění v závislosti na zakázce
+
 		unsigned long objekt_n;//příslušnost elementu k objektu
 		TPohon *pohon;//přiřazený pohon k elementu
 
-		//UnicodeString poznamka;//uloží poznámku   //DOPRYC
-
 		struct TElement *sparovany;//ukazatel na následující spárovaný element ve spojovém seznamu (nemusí být totožný s dalším)
 		struct TElement *predchozi;//ukazatel na předchozí element ve spojovém seznamu
+		struct TElement *predchozi2;//ukazatel na předchozí element ve spojovém seznamu
 		struct TElement *dalsi;//ukazatel na  další element ve spojovém seznamu
+		struct TElement *dalsi2;//ukazatel na  další element ve spojovém seznamu
 	};
 	TElement *ELEMENTY;//seznam elementů
 
@@ -186,6 +192,14 @@ class Cvektory
 	struct TCesta//pouze přidružený spoják, který je součástí zakázky, jeden objekt spojáku je jeden segment cesty
 	{
 		unsigned long n;
+		TData data;//data elementu pro konkrétní zakázku
+		struct TElement *Element;//element v segmentu cesty
+		struct TElement *sparovany;//spárovaný element k elementu, opšt unikátní pro zakázku
+
+		struct TCesta *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+		struct TCesta *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+
+		//stará konstrukce, zachována pro funkčnost
 		TObjekt *objekt;
 		double CT; //cycle time
 		double Tc;//čaš čištění v rámci zakázky resp. stejné barvy, vztahuje se na konkrétní objekt a a zároveň zakázku, musí být tady, pokud není použito, tak 0
@@ -193,8 +207,6 @@ class Cvektory
 		unsigned int Opak;//počet opakování jak často se čištění opakuje
 		double RD;//rychlost dopravníku
 		double Rotace;// úhel natočení jigu v objektu pro danou zakázku   - odstranit
-		struct TCesta *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-		struct TCesta *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
 
 	struct TZakazka
@@ -489,6 +501,7 @@ class Cvektory
 	long vymaz_seznam_OBJEKTY();//vymaže spojový seznam technologických objektů včetně přidružených elementů a případných komor z paměti
 
 //metody pro ELEMENTY
+	void hlavicka_ELEMENTY();//vytvoří hlavičku seznamu elementů
 	void hlavicka_elementy(TObjekt *Objekt);//danému objektu vytvoří hlavičku elementů
 	TElement *vloz_element(TObjekt *Objekt,unsigned int eID, double X, double Y,short rotace_symbolu,TElement *Ep=NULL);//vloží element do spojového seznamu elementů daného technologického objektu a zároveň na něj vrátí ukazatel
 	void vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_razeni=NULL);//vloží element do spojového seznamu elementů daného technologického objektu
@@ -497,11 +510,11 @@ class Cvektory
 	void uprav_popisky_elementu(TObjekt *Objekt, TElement *Element);//upraví indexy a popisky elementů po vloženém elementu (parametr Element), pokud dostane parametrem Element NULL přejmenuje a přeindexuje všechny ovlovněné elementy do původního stavu (tlačítko storno)
 	void kopiruj_element(TElement *Original, TElement *Kopie);//zkopíruje atributy elementu bez ukazatelového propojení, pouze ukazatelové propojení na mGrid je zachováno
 	void kopiruj_elementy(TObjekt *Original, TObjekt  *Kopie);//zkopíruje elementy a jejich atributy bez ukazatelového propojení z objektu do objektu, pouze ukazatelové propojení na mGrid je zachováno spojuje dvě metody vloz_element(TObjekt *Objekt,TElement *Element) a kopiruj_element(TElement *Original, TElement *Kopie);
-  void aktualizace_prirazeni_pohonu_k_elementum(unsigned int oldN,unsigned int newN);//všem elementům, které měly přiřazen pohon s oldN(oldID), přiřadí pohon s newN(newID), podle toho, jak jsou ukládány nově do spojáku, důležité, pokud dojde k narušení pořadí ID resp n pohonů a pořadí jednotlivých řádků ve stringridu, např. kopirováním, smazáním, změnou pořadí řádků atp.
+	void aktualizace_prirazeni_pohonu_k_elementum(unsigned int oldN,unsigned int newN);//všem elementům, které měly přiřazen pohon s oldN(oldID), přiřadí pohon s newN(newID), podle toho, jak jsou ukládány nově do spojáku, důležité, pokud dojde k narušení pořadí ID resp n pohonů a pořadí jednotlivých řádků ve stringridu, např. kopirováním, smazáním, změnou pořadí řádků atp.
 	void vytvor_elementarni_osu(TObjekt *Original, TObjekt  *Kopie);//připraví vektor provizorní osy pohonu
 	int vrat_eID_prvniho_pouziteho_robota(TObjekt *Objekt);//vratí eID prvního použitého robota, slouží na filtrování, jaké roboty v knihovně robotů zakazazovat, pokud není nic nalezeno vrátí -1
 	unsigned int vrat_poradi_elementu(TObjekt *Objekt,unsigned int eID);//vratí pořádí stopek, robotů a otočí zatím pouze v elementu, bude na zvážení rozšíření na všechny objekty
-	unsigned int vrat_poradi_elementu_do (TObjekt *Objekt, TElement *Element);//vrátí pořadí robotů v objektu, stopek a otočí ve všech předchozích objektech, to všd do Elementu
+	unsigned int vrat_poradi_elementu_do (TObjekt *Objekt=NULL, TElement *Element=NULL);//vrátí pořadí robotů v objektu, stopek a otočí ve všech předchozích objektech, to všd do Elementu
 	unsigned int vrat_nejvetsi_ID_tabulek (TObjekt *Objekt);//vrátí největší ID napříč mGridy v objektu, používáno pro přiřazování ID novým tabulkám, řešeno takto z důvodu chyby při odmazávání a následném přidávání elementu (v kabině jsou 3 elementy druhý se odmaže, tabulky v kabině mají nyní ID 1 a 3, po přidání dalšího elementu bylo dříve přidano ID=pocet elementů, což by se v tomto případě rovnalo 3)
 	short vrat_druh_elementu(TElement *Element);//vrátí typ elementu -1 nenastaven nebo zarážka či předávací místo, 0 - S&G (včetně stopky), 1 - kontinuál
 	bool funkcni_element(TElement *Element);//vrátí true, pokud se jedná o funční element
@@ -523,11 +536,16 @@ class Cvektory
 	void uloz_sparovany_element(TElement *Stopka);//uloží dané stopce ukazatel na sparovaný stop element, který byl vybraný v Combu dané stopky, ošetřuje zda se jedná o stopku
 	void vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt);//dané stopce najde předchozí stop-element na lince, je možno, že nebude reflektovat danou zakázku//nově se podívá na předchozí stop-element a přiřadí mu ukazatel na Element
 	void aktualizuj_sparovane_ukazatele();//projde všechny stop-elementy a aktualizuje jim ukazatele na spárované elementy
+	void reserve_time(TElement *Element,TCesta *Cesta=NULL,bool highlight_bunek=false,bool refresh_mGrid=false);//vypočítá a uloží RT do elementu
 	TElement *Cvektory::vrat_posledni_element_objektu(TObjekt *Objekt);//vrátí poslední element v objektu
 	void smaz_element(TObjekt *Objekt, unsigned int n);//smaže element ze seznamu
 	void smaz_element(TElement *Element);//smaže element ze seznamu
 	long vymaz_elementy(TObjekt *Objekt,bool mGridSmazat=true);//vymaže všechny elementy daného objektu včetně hlavičky a vrátí počet smazaných elementů (počítáno bez hlavičky), automaticky, pokud posledním parametreme není nastaveno jinak, smaže přidružený mGrid
-	void Cvektory::reserve_time(TElement *Element,bool highlight_bunek=false,bool refresh_mGrid=false);//temp umístění
+	long vymaz_seznam_ELEMENTY();//vymaže spojový seznam elementů z paměti
+  //temp umístění testovacích metod
+	void vloz_element_NEW(TElement *vkladany,TElement *predchozi=NULL);//vkládání do nového spojáku
+	void smaz_element_NEW(TElement *Element);
+	void uprav_popisky_elementu_NEW(TElement *Element);
 
 //metody pro POHONY
 	void hlavicka_POHONY();
@@ -583,6 +601,7 @@ public:
 	void aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky(TZakazka *zakazka);//dle TT zakázky nastaví všem segmentům cesty od dané zakázky odpovídající CT (a line-tracking objektů i RD) dle fixní délky a kapacity, vhodné pro volání před zobrazením cest
 	void aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky();//to samé co výše ale uskuteční pro všechny zakázky, vhodné pro volání v tlačítku uložit
 	void aktualizace_KaCTaRD_segmentu_cesty_dleJIG(TZakazka *zakazka);//dle parametrů JIG přepočítá K (u S&G zanechá 1) a z toho vyplývající změnu CT a RD (u linetracking objektů) jednolivých segmentů cesty dané zakázky
+	TCesta *vrat_segment_cesty(TZakazka *zakazka,TElement *element);//vrátí konkrétí segment cesty v zakázce, který obsahuje element
 private:
 	void hlavicka_cesta_zakazky(TZakazka *zakazka);//vytvoří novou hlavičku pro spojový seznam konkrétní cesty dané zakázky
 	void vymaz_cestu_zakazky(TZakazka *zakazka);//vymaže celou cestu dané zakázky
@@ -855,5 +874,4 @@ private:
 };
 //---------------------------------------------------------------------------
 #endif
-
 

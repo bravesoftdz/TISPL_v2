@@ -48,10 +48,10 @@ public:		// User declarations
 	Tinput_state input_state;//stav vstupu PT,LO,DelkaOtoce...
 	bool vstoupeno_poh, vstoupeno_elm,validace_true;
 	double dopRD;
-	Cvektory::TElement *posledni_E;
+	Cvektory::TElement *posledni_E;//slouží pro uložení editovaného elementu, nemusím pøi každém stisku klávesy vracet E
+	Cvektory::TCesta *posledni_c;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFormX *FormX;
 //---------------------------------------------------------------------------
 #endif
-

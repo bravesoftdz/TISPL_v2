@@ -631,16 +631,15 @@ private:
 	void ortogonalizovat();//ortogonalizuje schéma
 	void db_connection();  // pøipojení k DB serveru
 	void akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_otoce,AnsiString cas,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla);
-	bool nahled_ulozen;
 	void vykresli_kurzor(int index);
 	void zmenJednotekKot();
-	int pocet_vyskytu_elementu(Cvektory::TObjekt *Objekt);//prohledá elementy v objektu, vrátí 0 pokud je rotace v objektu všude stejná, vrátí 1 pokud je pøítomno více rotací
+	int pocet_vyskytu_elementu_s_otoci(Cvektory::TObjekt *Objekt);//prohledá elementy v objektu, vrátí 0 pokud je rotace v objektu všude stejná, vrátí 1 pokud je pøítomno více rotací
 	void vytvor_edit();//vytvoøí edit na místì hlavièky tabulky, slouží ke zmìnì názvu elementu
 	void smaz_edit(bool refresh=true);//smaže edit, který sloužil pro zmìnu názvu elementu a nový název zapíše do elementu, defaultnì provede refresh, pokud není pøedáno parametrem jinak
 	void vykresli_spojinici_EmGrid(TCanvas *Canv,Cvektory::TElement *E);//vykreslí spojnici mezi tabulkou a elementem z nejbližšího rohu tabulky
-  void mGrid_mimo_obraz(Cvektory::TElement *E=NULL);//kontrola zde je mGrid mimo obraz, pokud ano vypnutí komponent
 	void nacti_podklad(TCanvas *Canv);
 	unsigned short load_language(Tlanguage language,bool akt_mGrid=false);
+	void change_languagein_mGrid();//aktualizace popiskù v tabulkách pøi zmìnì jazyka
 	void zmena_editovaneho_objektu();//slouží k pøechodu z editace jednoho objektu do editace druhého objektu
 	TPoint uprav_bod_vlozeni_elementu(TPoint bod_vlozeni,short rotace_symbolu,int eID=-1);//upraví bod kurzoru pro vložení elemntu na bod vykreslení elementu (robot na konci ramena)
   void set_enabled_mGrid(Cvektory::TElement *E);//zapne nebo vypne komponenty megridu v závislosti na tom zda má element pøiøazený pohon
@@ -649,11 +648,11 @@ private:
 	void vloz_bod_haly_objektu(int X,int Y);//vloží bod haly nebo objektu na zvolené souøadnice (fyzické), zohlední pøichytávání
 	void smaz_bod_haly_objektu(Cvektory::TBod *bod);//smaže bod haly nebo objektu, pokud existují už jen 2 poslední body smaže oba
 	void mGrid_on_mGrid();//prohledá zda se pøekrývají mGridy
+  void mGrid_mimo_obraz(Cvektory::TElement *E=NULL);//kontrola zde je mGrid mimo obraz, pokud ano vypnutí komponent
 	void mGrid_komponenta_na_draw(TmGrid *mGrid,long Col,long Row);//smazì komponentu v dané buòce a zmìní typ bunky na DRAW
 	void mGrid_puvodni_stav(Cvektory::TElement *E=NULL);//nadesingnuje tabulky elementù nebo tabulku pohonu na pùvodní stav, obnový komponenty, naplní comba, provede Update() mGridu
 	void set_font(int velikost=14);//nastaví komponentám aFont
 	void pripnuti_dalsich_objektu();//pokud pøi uložení editovaného objektu je detekováno, že konec objketu nenavazuje na zaèátek následujísího objektu je položen dotaz a po potvrzení dojde ke spojení
-  void change_languagein_mGrid();//aktualizace popiskù v tabulkách pøi zmìnì jazyka
 
 	////promìnné
 	TDateTime TIME;
@@ -679,6 +678,7 @@ private:
 	bool scSplitViews_closing_on_AA;
 	bool SplitViewOpen;
 	bool duvod_k_ulozeni;
+	bool nahled_ulozen;
 	bool stisknuto_storno;
 	bool volat_parametry_linky;//použito pøi soubor nový
 	bool start_ortogonalizace;
@@ -706,6 +706,7 @@ public:		// User declarations
 	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
 	Graphics::TBitmap *Pan_bmp;//kvùli mGridu jinak staèí private
 	//uklazatele
+	Cvektory::TZakazka *zakazka_akt;//aktuálnì zvolená zakázka
 	Cvektory::TObjekt *pom,*pom_vyhybka,*pom_temp,*copyObjekt;
 	Cvektory::TElement *pom_element,*pom_element_temp,*posledni_editovany_element,*element_temp;//element_temp je nulován pøi každém pøejetí kurzoru používán na vìci kolem PM
 	TmGrid *PmG,*mGrid_knihovna;//ukazatel na mGridovou tabulku pohonu
