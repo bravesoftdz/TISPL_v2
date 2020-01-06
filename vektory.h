@@ -154,7 +154,7 @@ class Cvektory
 		double mezera_jig;//mezera mezi jigy //DOPRYC
 		double mezera_podvozek;//mezera mezi podvozky  //DOPRYC
 		TPohon *pohon;//ukazatel na použitý pohon
-		TElement *elementy;//ukazatel na hlavičku elementů
+		TElement *element;//ukazatel na první element objektu
 		TPointD min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
 		TPointD rozmer_kabiny;//délka a šířka obvodových zdí kabiny   //DOPRYC
 		T2Rect kabinaKotaX_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny -//DOPRYC
@@ -455,7 +455,7 @@ class Cvektory
 	TObjekt *vloz_objekt(unsigned int id, double X, double Y,TObjekt *pred,TObjekt *po);//přetížená fce vkládá objekt za objekt p + vrátí ukazatel na vložený prvek
 	TObjekt *vloz_objekt(unsigned int id, double X, double Y,TObjekt *vyhybka,TObjekt *pred,TObjekt *po);//přetížená fce vkládá spojku + vrátí ukazatel na vložený prvek
 	void vloz_objekt(TObjekt *Objekt);//přetížená fce
-	TObjekt *Cvektory::nastav_atributy_objektu(unsigned int id, double X, double Y);//alokuje paměť pro objekt, nastavý atriuty objektu, vrátí ukazatel na nově vytvořený prvek
+	void nastav_atributy_objektu(TObjekt *novy,unsigned int id, double X, double Y);//alokuje paměť pro objekt, nastavý atriuty objektu, vrátí ukazatel na nově vytvořený prvek
 	TObjekt *kopiruj_objekt(TObjekt *Objekt,short offsetX=0,short offsetY=0,AnsiString index_name="",bool remove_pre_index=false,TObjekt *p=NULL);//zkopíruje objekt Objekt na konec spojového seznamu Objektů, za předpokladu že p==NULL, pokud p není NULL je objekt za tento objekt p ve spojovém seznamů objektů zařazen, hodnota offsetu je hodnota odsazení zkopírovoaného objektu od objektu vzorového,index_name slouží pro rozlišení např. LAK, LAK1, LAK2...,zároveň vrací ukazatel na právě zkopírovaný objekt např. pro další použití
 	void kopiruj_objekt(TObjekt *Original,TObjekt *Kopie);//zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze ukazatel na mGrid originálu zůstané propojený
 	TObjekt *PtInObjekt();//ověří, zda se na souřadnicích myši nachází nějaký objekt, pokud ano, vrátí na něj ukazatel, jinak vrátí NULL
@@ -463,7 +463,7 @@ class Cvektory
 	short oblast_objektu(TObjekt *O,double X, double Y);//vrátí ret podle toho v jaké jsem oblasti objektu, slouží k přilepování objektu při vkládání, ret = 0 - mimo oblasti, 1 - oblast za objektem, 2 - oblast před objektem
 	TObjekt *vrat_objekt(unsigned int n);//dle zadaného n vrátí ukazatel na hledaný objekt
 	TObjekt *vrat_objekt_z_roma(int X);//dle X kurzoru myši vrátí z modu procesy (ROMA) ukazatel na aktuální objekt - MOŽNO ODSTRANIT
-	TObjekt *vrat_objekt(TElement *Element,bool In_pom_temp=false);//vrátí rodičovský Objekt daného elementu, In_pom_temp - zda bude hledat místo daného ostrého objektu v něm - PO ZMĚNĚ DM BUDE TŘEBA?
+	TObjekt *vrat_objekt(TElement *Element,bool In_pom_temp=false);//DOPRYČ????    vrátí rodičovský Objekt daného elementu, In_pom_temp - zda bude hledat místo daného ostrého objektu v něm - PO ZMĚNĚ DM BUDE TŘEBA?
 	void aktualizace_objektu(short typ);//dle zadaného TT  či případně dalších hodnot zaktualizuje paramametry všech objektů//typ -2://zaktualizuje přiřazení pohonu k objektu, nutné pokud proběhla změna v pohonech, protože původní jsou smazané //typ -1://dle zamčených a odemčených hodnot při změně TT//typ 0://dle zamčených a odemčených hodnot při změně parametrů vozíku//typ 1://při změně TT změna CT a RD, K a DD zůstává//typ 2://při změně TT změna K,DD,RD zůstává CT//typ 3://při změně parametrů vozíku změna DD, RD zůstává K, CT//typ 4://při změně parametrů vozíku změna u DD, CT zůstává K,RD//typ 5://při změně parametrů vozíku změna u K,CT,RD zůstává DD
 	void aktualizace_prirazeni_pohonu_k_objektum(unsigned int oldN,unsigned int newN);//všem objektům, které měly přiřazen pohon s oldN(oldID), přiřadí pohon s newN(newID), podle toho, jak jsou ukládány nově do spojáku, důležité, pokud dojde k narušení pořadí ID resp n pohonů a pořadí jednotlivých řádků ve stringridu, např. kopirováním, smazáním, změnou pořadí řádků atp.
 	void aktualizace_prirazeni_pohonu_dokoncena();//po dokončení aktualizace přiřazení pohonu (při ukládání pohonu na PL) vrátí atribut probehla_aktualizace_prirazeni_pohonu všech objektů na false, aby bylo připraveno k dalšímu opětovnému užítí, nepřímo spolupracuje s metodou výše uvedenou aktualizace_prirazeni_pohonu_k_objektum
@@ -502,19 +502,19 @@ class Cvektory
 
 //metody pro ELEMENTY
 	void hlavicka_ELEMENTY();//vytvoří hlavičku seznamu elementů
-	void hlavicka_elementy(TObjekt *Objekt);//danému objektu vytvoří hlavičku elementů
+	void hlavicka_elementy(TObjekt *Objekt);//DOPRYČ!!!!    danému objektu vytvoří hlavičku elementů
 	TElement *vloz_element(TObjekt *Objekt,unsigned int eID, double X, double Y,short rotace_symbolu,TElement *Ep=NULL);//vloží element do spojového seznamu elementů daného technologického objektu a zároveň na něj vrátí ukazatel
 	void vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_razeni=NULL);//vloží element do spojového seznamu elementů daného technologického objektu
-	Cvektory::TElement *vloz_element_za(TObjekt *Objekt,TElement *Element);//kontrola zda vkládaný element bude umístěn na konec nebo mezi jiné elementy, pokud bude vkládán na konec return=NULL, pokud mezi elementy return=ukazatel na předchozí element
+	Cvektory::TElement *vloz_element_pred(TObjekt *Objekt,TElement *Element);//kontrola zda vkládaný element bude umístěn na konec nebo mezi jiné elementy, pokud bude vkládán na konec return=NULL, pokud mezi elementy return=ukazatel na předchozí element
 	void vloz_G_element(TElement *Element,short typ,double X1,double Y1,double X2,double Y2,double X3,double Y3,double X4,double Y4,double orientace=0,double rotacni_uhel=0,double radius=0,double delka=0);//danému elementu přiřadí/naplní geometrickou složku
-	void uprav_popisky_elementu(TObjekt *Objekt, TElement *Element);//upraví indexy a popisky elementů po vloženém elementu (parametr Element), pokud dostane parametrem Element NULL přejmenuje a přeindexuje všechny ovlovněné elementy do původního stavu (tlačítko storno)
+	void uprav_popisky_elementu(TElement *Element);//upraví indexy a popisky elementů po vloženém elementu (parametr Element), pokud dostane parametrem Element NULL přejmenuje a přeindexuje všechny ovlovněné elementy do původního stavu (tlačítko storno)
 	void kopiruj_element(TElement *Original, TElement *Kopie);//zkopíruje atributy elementu bez ukazatelového propojení, pouze ukazatelové propojení na mGrid je zachováno
-	void kopiruj_elementy(TObjekt *Original, TObjekt  *Kopie);//zkopíruje elementy a jejich atributy bez ukazatelového propojení z objektu do objektu, pouze ukazatelové propojení na mGrid je zachováno spojuje dvě metody vloz_element(TObjekt *Objekt,TElement *Element) a kopiruj_element(TElement *Original, TElement *Kopie);
+	void kopiruj_elementy(TObjekt *Original, TObjekt  *Kopie);//DOPRYČ!!!  zkopíruje elementy a jejich atributy bez ukazatelového propojení z objektu do objektu, pouze ukazatelové propojení na mGrid je zachováno spojuje dvě metody vloz_element(TObjekt *Objekt,TElement *Element) a kopiruj_element(TElement *Original, TElement *Kopie);
 	void aktualizace_prirazeni_pohonu_k_elementum(unsigned int oldN,unsigned int newN);//všem elementům, které měly přiřazen pohon s oldN(oldID), přiřadí pohon s newN(newID), podle toho, jak jsou ukládány nově do spojáku, důležité, pokud dojde k narušení pořadí ID resp n pohonů a pořadí jednotlivých řádků ve stringridu, např. kopirováním, smazáním, změnou pořadí řádků atp.
 	void vytvor_elementarni_osu(TObjekt *Original, TObjekt  *Kopie);//připraví vektor provizorní osy pohonu
 	int vrat_eID_prvniho_pouziteho_robota(TObjekt *Objekt);//vratí eID prvního použitého robota, slouží na filtrování, jaké roboty v knihovně robotů zakazazovat, pokud není nic nalezeno vrátí -1
-	unsigned int vrat_poradi_elementu(TObjekt *Objekt,unsigned int eID);//vratí pořádí stopek, robotů a otočí zatím pouze v elementu, bude na zvážení rozšíření na všechny objekty
-	unsigned int vrat_poradi_elementu_do (TObjekt *Objekt=NULL, TElement *Element=NULL);//vrátí pořadí robotů v objektu, stopek a otočí ve všech předchozích objektech, to všd do Elementu
+	unsigned int vrat_poradi_elementu(TObjekt *Objekt,unsigned int eID);//SMAZAT!!!!vratí pořádí stopek, robotů a otočí zatím pouze v elementu, bude na zvážení rozšíření na všechny objekty
+	unsigned int vrat_poradi_elementu_do (TElement *Element=NULL);//vrátí pořadí robotů v objektu, stopek a otočí ve všech předchozích objektech, to všd do Elementu
 	unsigned int vrat_nejvetsi_ID_tabulek (TObjekt *Objekt);//vrátí největší ID napříč mGridy v objektu, používáno pro přiřazování ID novým tabulkám, řešeno takto z důvodu chyby při odmazávání a následném přidávání elementu (v kabině jsou 3 elementy druhý se odmaže, tabulky v kabině mají nyní ID 1 a 3, po přidání dalšího elementu bylo dříve přidano ID=pocet elementů, což by se v tomto případě rovnalo 3)
 	short vrat_druh_elementu(TElement *Element);//vrátí typ elementu -1 nenastaven nebo zarážka či předávací místo, 0 - S&G (včetně stopky), 1 - kontinuál
 	bool funkcni_element(TElement *Element);//vrátí true, pokud se jedná o funční element
@@ -526,26 +526,24 @@ class Cvektory
 	bool posun_element(TElement *Element,double vzdalenost,bool pusun_dalsich_elementu=false,bool posun_kurzorem=false,bool kontrola_zmeny_poradi=true);//posune pouze Element z pomocného spojového seznamu pom_temp na parametrem uvedenou vzádlenost (v metrech) od elementu předchozího, pokud je implicitní hodnota pusun_dalsich_elementu false změněna na true, jsou o danou změnu posunu přesunuty i elementy následující Elementu (tudíž jejich vzdálenost od Elementu bude zachována, naopak v případě výchozí hodnoty false je následujícím/dalším elementům poloha zachována). Nutá rozdílná funkce při posunu z kót a při posunu korzorem, proto parametr posun_kurzorem
 	void zmen_poradi_elementu(TElement *E,TElement *Ed);//řeší změnu pořadí při posuvu elementů, dojde k novému ukazatelovému propojení, přejmenování a přeindexování elementů
 	double vzdalenost_od_predchoziho_elementu(TElement *Element,bool pouzeSG=false);//vratí vzdálenost od předchozího elementu, pracuje zatím pouze v orotogonalizovaném prostoru (bude nutno vylepšit s příchodem oblouků), pokud se jedná o první element, uvažuje se jako vzdálenost od počátku kabiny (nutno vylepšit ještě pro různé orientace kabiny)
-	double vrat_rotaci_jigu_po_predchazejicim_elementu(TObjekt *Objekt,TElement *Element);//zadávám aktuální element, je zjištěna rotace před tímto zadávaným elementem, rotace aktuálního elementu se nezohledňuje
 	double vrat_rotaci_jigu_po_predchazejicim_elementu(TElement *Element);//zadávám aktuální element, je zjištěna rotace před tímto zadávaným elementem, rotace aktuálního elementu se nezohledňuje
 	TElement *vrat_posledni_rotacni_element();//metoda vrátí ukazatel na poslední rotační element na lince
 	//dodělat void zmen_poradi_Elementu(TObjekt *Objekt, TElement Element,TObjekt *zaElement);
 	//dodělat void zmen_poradi_Elementu(TObjekt *Objekt unsigned long aktualni_poradi,unsigned long nove_poradi);
-	void napln_comba_stopek();//obsah všech comboboxu všech stopek nejdříve smaže a následně naplní combobox stopky ostatními elementy, které mohou být s danou stopkou spárované, nevypisuje danou stopku, vybere v combu stop-element spárovaný či předchozí, buď navržený nebo uživatelsky vybraný
-	void napln_combo_stopky(TElement *Stopka);//nejdříve smaže obsah comboboxu a následně naplní combobox stopky ostatními elementy, které mohou být s danou stopkou spárované, nevypisuje danou stopku, vybere v combu stop-element spárovaný či předchozí, buď navržený nebo uživatelsky vybraný
-	void uloz_sparovany_element(TElement *Stopka);//uloží dané stopce ukazatel na sparovaný stop element, který byl vybraný v Combu dané stopky, ošetřuje zda se jedná o stopku
-	void vrat_predchozi_stop_element(TElement *Element,TObjekt *Objekt);//dané stopce najde předchozí stop-element na lince, je možno, že nebude reflektovat danou zakázku//nově se podívá na předchozí stop-element a přiřadí mu ukazatel na Element
+	void napln_comba_stopek();//SMAZAT!!!!obsah všech comboboxu všech stopek nejdříve smaže a následně naplní combobox stopky ostatními elementy, které mohou být s danou stopkou spárované, nevypisuje danou stopku, vybere v combu stop-element spárovaný či předchozí, buď navržený nebo uživatelsky vybraný
+	void napln_combo_stopky(TElement *Stopka);//SMAZAT!!!!!nejdříve smaže obsah comboboxu a následně naplní combobox stopky ostatními elementy, které mohou být s danou stopkou spárované, nevypisuje danou stopku, vybere v combu stop-element spárovaný či předchozí, buď navržený nebo uživatelsky vybraný
+	void uloz_sparovany_element(TElement *Stopka);//SMAZAT!!!!uloží dané stopce ukazatel na sparovaný stop element, který byl vybraný v Combu dané stopky, ošetřuje zda se jedná o stopku
+	void prirad_sparovany_element(TElement *Element);//přiřadí Elementu ukazatel na jeho spárovaný element, zároveň aktualizuje tomuto spárovanému elementu spárovaný element + aktualizace první - poslední S&G element
 	void aktualizuj_sparovane_ukazatele();//projde všechny stop-elementy a aktualizuje jim ukazatele na spárované elementy
 	void reserve_time(TElement *Element,TCesta *Cesta=NULL,bool highlight_bunek=false,bool refresh_mGrid=false);//vypočítá a uloží RT do elementu
 	TElement *Cvektory::vrat_posledni_element_objektu(TObjekt *Objekt);//vrátí poslední element v objektu
 	void smaz_element(TObjekt *Objekt, unsigned int n);//smaže element ze seznamu
 	void smaz_element(TElement *Element);//smaže element ze seznamu
-	long vymaz_elementy(TObjekt *Objekt,bool mGridSmazat=true);//vymaže všechny elementy daného objektu včetně hlavičky a vrátí počet smazaných elementů (počítáno bez hlavičky), automaticky, pokud posledním parametreme není nastaveno jinak, smaže přidružený mGrid
+	long vymaz_elementy(TObjekt *Objekt,bool mGridSmazat=true);//SMAZAT!!!!!vymaže všechny elementy daného objektu včetně hlavičky a vrátí počet smazaných elementů (počítáno bez hlavičky), automaticky, pokud posledním parametreme není nastaveno jinak, smaže přidružený mGrid
 	long vymaz_seznam_ELEMENTY();//vymaže spojový seznam elementů z paměti
   //temp umístění testovacích metod
 	void vloz_element_NEW(TElement *vkladany,TElement *predchozi=NULL);//vkládání do nového spojáku
 	void smaz_element_NEW(TElement *Element);
-	void uprav_popisky_elementu_NEW(TElement *Element);
 
 //metody pro POHONY
 	void hlavicka_POHONY();
@@ -750,7 +748,7 @@ private:
 			double Xp,Yp;
 			double orientace_text;//orientace nadpisu objektu
       unsigned long pocet_bodu;
-			unsigned long pocet_elementu;
+			unsigned long element_n;
       unsigned long pocet_komor;
 			unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
       double sirka_steny;//šířka stěny kabiny objektu v metrech

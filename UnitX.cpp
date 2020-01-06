@@ -453,7 +453,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 						}
 						else if(F->PmG->Rows[mezera_jig1].Visible)//pouze jedna mezera mezi jig, nutná další kontrola, padaly by sem všechny varianty
 						{
-							double uhel=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->pom_temp,F->pom_temp->elementy->dalsi);
+							double uhel=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->pom_temp->element);
 							F->PmG->Cells[1][mezera_jig1].Text=F->outRz(F->m.mezera(uhel,F->pom_temp->pohon->Rz,1));
 						}
 					}
@@ -578,7 +578,7 @@ void TFormX::zmena_aRD (Cvektory::TElement *mimo_element)
 		}
 		else if(F->PmG->Rows[6].Visible)//pouze jedna mezera mezi jig, nutná další kontrola, padaly by sem všechny varianty
 		{
-			double uhel=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->pom_temp,F->pom_temp->elementy->dalsi);
+			double uhel=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->pom_temp->element);
 			F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(uhel,F->pom_temp->pohon->Rz,1)),3);
 		}
 		if(F->Akce==F->NIC)validace_aRD();//validace pouze v kontinuálním režimu kabiny
@@ -606,7 +606,7 @@ void TFormX::zmena_R ()
 		}
 		else if(F->PmG->Rows[6].Visible)//pouze jedna mezera mezi jig, nutná další kontrola, padaly by sem všechny varianty
 		{
-			double uhel=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->pom_temp,F->pom_temp->elementy->dalsi);
+			double uhel=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->pom_temp->element);
 			F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(uhel,F->pom_temp->pohon->Rz,1)),3);
 		}
 	}
@@ -636,7 +636,7 @@ void TFormX::zmena_Rx ()
 		}
 		else if(F->PmG->Rows[6].Visible)//pouze jedna mezera mezi jig, nutná další kontrola, padaly by sem všechny varianty
 		{
-			double uhel=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->pom_temp,F->pom_temp->elementy->dalsi);
+			double uhel=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->pom_temp->element);
 			F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(uhel,F->pom_temp->pohon->Rz,1)),3);
 		}
 	}
@@ -650,8 +650,8 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 {
 	unsigned int n=999999999;
 	if(mimo_element!=NULL)n=mimo_element->n;
-	Cvektory::TElement *E=F->pom_temp->elementy;
-	while(E!=NULL)
+	Cvektory::TElement *E=F->pom_temp->element;
+	while(E!=NULL && E->objekt_n==F->pom_temp->n)
 	{
 		if(E->n>0 && E->n!=n && E->pohon!=NULL && F->pom_temp->pohon!=NULL && E->pohon->n==F->pom_temp->pohon->n)//pøeskoèí mimo_element a hlavièku, poze pøepoèet elementùm které mají stejný pohon jako aktuálnì editovaný pohon
 		{
@@ -737,8 +737,8 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 //Naplní hodnoty které závisí na pohonu 0
 void TFormX::aktualizace_tab_elementu_pOdebran ()
 {
-	Cvektory::TElement *E=F->pom_temp->elementy;
-	while(E!=NULL)
+	Cvektory::TElement *E=F->pom_temp->element;
+	while(E!=NULL && E->objekt_n==F->pom_temp->n)
 	{
 		if(E->n>0 && E->pohon==NULL)//pøeskoèí hlavièku + pøenastaví pouze elementy s odstranìným pohonem
 		{
@@ -837,8 +837,8 @@ void TFormX::korelace_tab_pohonu_elementy(Cvektory::TElement *mimo_element)
 {
 	unsigned int n=999999999;
 	if(mimo_element!=NULL)n=mimo_element->n;
-	Cvektory::TElement *E=F->pom_temp->elementy;
-	while(E!=NULL)
+	Cvektory::TElement *E=F->pom_temp->element;
+	while(E!=NULL && E->objekt_n==F->pom_temp->n)
 	{
 		if(E->n>0 && E->n!=n && E->pohon!=NULL && F->pom_temp->pohon->n==E->pohon->n)
 		{
@@ -948,13 +948,14 @@ void TFormX::odstranit_korelaci(bool predat_focus)
 	if(predat_focus)
 		F->DrawGrid_knihovna->SetFocus();//po kliku mimo zùstával focus poøád na editu
 	F->PmG->unHighlightAll();
-	Cvektory::TElement *E=F->pom_temp->elementy;
-	while(E!=NULL)
+	Cvektory::TElement *E=F->pom_temp->element;
+	while(E!=NULL && E->objekt_n==F->pom_temp->n)
 	{
 		if(E->n>0)
 			E->mGrid->unHighlightAll();
 		E=E->dalsi;
 	}
+	E=NULL;delete E;
 }
 //---------------------------------------------------------------------------
 //validace rychlosti pøi její zmìnì
@@ -1060,8 +1061,8 @@ bool TFormX::naplneni_max_voziku(double X,double Y,bool check_for_highlight)
 	if(F->d.v.vrat_posledni_element_objektu(F->pom_temp)->n>1)
 	{
 		//hledání zda má nìkterý element nedokonèenou validaci
-		Cvektory::TElement *E=F->pom_temp->elementy->dalsi;
-		while(E!=NULL)
+		Cvektory::TElement *E=F->pom_temp->element->dalsi;
+		while(E!=NULL && E->objekt_n==F->pom_temp->n)
 		{
       //hledání elementu, kterému bylo kliknuto na doporuèený poèet vozíkù
 			if(E->eID==0 && E->mGrid->Note.Text!="" && E->mGrid->CheckLink(X,Y)==TPoint(-2,-2)){ret=true;break;}
@@ -1117,8 +1118,8 @@ void TFormX::povolit_zakazat_editaci(bool povolit)
 Cvektory::TElement *TFormX::vrat_element_z_tabulky(long ID)
 {
 	Cvektory::TElement *ret=NULL;
-	Cvektory::TElement *E=F->pom_temp->elementy->dalsi;//mùžu pøeskoèit hlavièku, metoda voláná po kliku do tabulky elementu
-	while(E!=NULL)
+	Cvektory::TElement *E=F->pom_temp->element->dalsi;//mùžu pøeskoèit element, metoda voláná po kliku do tabulky elementu
+	while(E!=NULL && E->objekt_n==F->pom_temp->n)
 	{
 		if(E->mGrid->ID==ID)
 		{
@@ -1139,8 +1140,8 @@ void TFormX::aktualizace_zon_otaceni(Cvektory::TElement *E)
 	E=E->dalsi;
 	while(O!=NULL)
 	{
-		if(O->n!=F->pom->n)E=O->elementy->dalsi;
-		while(E!=NULL)
+		if(O->n!=F->pom->n)E=O->element->dalsi;
+		while(E!=NULL && E->objekt_n==O->n)
 		{
 			if(E->eID%2!=0 && E->OTOC_delka>0)//aktualizace zón otáèení
 			{
@@ -1155,7 +1156,7 @@ void TFormX::aktualizace_zon_otaceni(Cvektory::TElement *E)
 			}
 			E=E->dalsi;
 		}
-		delete E;E=NULL;
+		E=NULL;delete E;
 		O=O->dalsi;
 	}
 	delete O;O=NULL;
