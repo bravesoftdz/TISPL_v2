@@ -1061,15 +1061,15 @@ bool TFormX::naplneni_max_voziku(double X,double Y,bool check_for_highlight)
 	if(F->d.v.vrat_posledni_element_objektu(F->pom_temp)->n>1)
 	{
 		//hledání zda má nìkterý element nedokonèenou validaci
-		Cvektory::TElement *E=F->pom_temp->element->dalsi;
+		Cvektory::TElement *E=F->pom_temp->element;
 		while(E!=NULL && E->objekt_n==F->pom_temp->n)
 		{
-      //hledání elementu, kterému bylo kliknuto na doporuèený poèet vozíkù
-			if(E->eID==0 && E->mGrid->Note.Text!="" && E->mGrid->CheckLink(X,Y)==TPoint(-2,-2)){ret=true;break;}
+			//hledání elementu, kterému bylo kliknuto na doporuèený poèet vozíkù
+			if(E->eID==0 && E->mGrid!=NULL && E->mGrid->Note.Text!="" && E->mGrid->CheckLink(X,Y)==TPoint(-2,-2)){ret=true;break;}
 			E=E->dalsi;
 		}
 		//naplnìní doporuèeného max. poètu vozíkù
-		if(E!=NULL && !check_for_highlight)
+		if(ret && E!=NULL && !check_for_highlight)
 		{
 			//extrakce poètu z hintu
 			AnsiString t=E->mGrid->Note.Text;
