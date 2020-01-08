@@ -4372,15 +4372,7 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,lon
 			AnsiString Tpom="",T1=F->ls->Strings[274],T2=F->ls->Strings[274];//"pohon nevybrán"
 			if(E->pohon!=NULL)T1=E->pohon->name;
 			if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)T2=E->dalsi->pohon->name;
-			if(E->dalsi==NULL)
-			{
-				Cvektory::TObjekt *O=v.vrat_objekt(E->objekt_n);
-				if(O->dalsi!=NULL && O->dalsi->element->pohon!=NULL)T2=O->dalsi->element->pohon->name;
-				if(F->pom_temp!=NULL && O->dalsi!=NULL && O->dalsi->n==F->pom_temp->n && F->pom_temp->element->pohon!=NULL)T2=F->pom_temp->element->pohon->name;
-				if(O->dalsi==NULL && O->n>=3 && F->pom_temp->n==1 && F->pom_temp->element->pohon!=NULL)T2=F->pom_temp->element->pohon->name;
-				if(O->dalsi==NULL && O->n>=3 && F->pom_temp->n!=1 && v.OBJEKTY->dalsi->element->pohon!=NULL)T2=v.OBJEKTY->dalsi->element->pohon->name;
-				O=NULL;delete O;
-			}
+			if(E->dalsi==NULL && v.ELEMENTY->dalsi->pohon!=NULL)T2=v.ELEMENTY->dalsi->pohon->name;
 			//v případě 270 musí být popisky prohozeny
 			if(v.vrat_objekt(E->objekt_n)->orientace==270){Tpom=T1;T1=T2;T2=Tpom;}
 			int w1=canv->TextWidth(T1)/*,w2=canv->TextWidth(T2)*/;
@@ -5315,7 +5307,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_do)
 		double x1,y1,x2,y2;          //////////////////////////kota mezi kabinou a prvním elementem !!!!!
 		bool vykreslit=false;
 		Cvektory::TElement *Element_od=Element_do->predchozi;
-		while(Element_od!=NULL && Element_od->n>0)
+		while(Element_od!=NULL && Element_od->n>0 && Element_od->objekt_n==Element_do->objekt_n)
 		{
 			if(Element_od->dalsi->geo.typ!=0)break;
 			if(Element_od->eID!=MaxInt){vykreslit=true;break;}
@@ -5340,7 +5332,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_do)
 		if(el_do && !el_od)//dodatečné hledání předchozího elementu s LO
 		{
 			Element_od=Element_do->predchozi;
-			while(Element_od!=NULL && Element_od->n>0)
+			while(Element_od!=NULL && Element_od->n>0 && Element_od->objekt_n==Element_do->objekt_n)
 			{
 				if(Element_od->dalsi->geo.typ!=0)break;
 				if(Element_od->eID==1 || Element_od->eID==7 || Element_od->eID==11 || Element_od->eID==15 || Element_od->eID==101 || Element_od->eID==105 || Element_od->eID==3 || Element_od->eID==9 || Element_od->eID==13 || Element_od->eID==17 || Element_od->eID==103 || Element_od->eID==107)

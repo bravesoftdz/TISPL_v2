@@ -1947,7 +1947,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->pohon=NULL;//pohon na kterém se nachází element
 	if(novy->predchozi->n!=0)novy->pohon=novy->predchozi->pohon;
 	else if(novy->dalsi!=NULL)novy->pohon=novy->dalsi->pohon;
-	if(novy->predchozi->n!=0 && novy->predchozi->pohon!=NULL && F->pom_temp->pohon->n==novy->predchozi->pohon->n || novy->dalsi!=NULL && novy->dalsi->pohon!=NULL && novy->dalsi->pohon->n==F->pom_temp->pohon->n)novy->pohon=F->pom_temp->pohon;
+	if(novy->predchozi->n!=0 && novy->predchozi->pohon!=NULL && F->pom_temp!=NULL && F->pom_temp->pohon->n==novy->predchozi->pohon->n || novy->dalsi!=NULL && novy->dalsi->pohon!=NULL && F->pom_temp!=NULL && novy->dalsi->pohon->n==F->pom_temp->pohon->n)novy->pohon=F->pom_temp->pohon;
 
 	//název
 	AnsiString T="";
@@ -2119,7 +2119,7 @@ Cvektory::TElement *Cvektory::vloz_element_pred(TObjekt *Objekt,TElement *Elemen
 		Cvektory::TElement *p=Objekt->element;//začnu od prvního elementu v objektu
 		while(p!=NULL && p->objekt_n==Objekt->n)
 		{
-			//if(p->n!=Element->n)//neřeší se s aktuálním elementem (při posunu)
+			if(p!=Element)//neřeší se s aktuálním elementem (při posunu)
 			{
 				//kontrola zda vkládaný element neleží mezi prvním a druhým elementem, druhým až n
 				if(p->geo.typ==0 && m.LeziVblizkostiUsecky(m.round2double(F->d.Rxy(Element).x,2),m.round2double(F->d.Rxy(Element).y,2),m.round2double(p->geo.X1,2),m.round2double(p->geo.Y1,2),m.round2double(p->geo.X4,2),m.round2double(p->geo.Y4,2))==0)
@@ -2651,7 +2651,7 @@ short Cvektory::PtInKota_elementu(TObjekt *Objekt,long X,long Y)
 //posune pouze Element z pomocného spojového seznamu pom_temp na parametrem uvedenou vzádlenost (v metrech) od elementu předchozího, pokud je implicitní hodnota pusun_dalsich_elementu false změněna na true, jsou o danou změnu posunu přesunuty i elementy následující Elementu (tudíž jejich vzdálenost od Elementu bude zachována, naopak v případě výchozí hodnoty false je následujícím/dalším elementům poloha zachována)
 bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dalsich_elementu,bool posun_kurzorem,bool kontrola_zmeny_poradi)
 { //!!!!!!po nasazení geometrie nutno zdokonalit, nebude se pracovát pouze se vzdálenosti na linii buď vodorvné či svislé, ale i v oblouku
-	Cvektory::TElement *E=NULL;
+	Cvektory::TElement *E=NULL;    F->log(__func__);
 	bool RET=true;
 	if(F->pom_temp!=NULL && F->pom_temp->element!=NULL/*&&F->Akce!=F->MOVE_ELEMENT*/)//raději ošetření, ač by se metoda měla volat jen v případě existence pom_temp
 	{
@@ -2774,13 +2774,17 @@ void Cvektory::zmen_poradi_elementu(TElement *E,TElement *Ed)
 	if(E->n>Ed->n)
 	{
 		//ukazatelové záležitosti
-		E->dalsi->predchozi=Ed;
 		Ed->dalsi=E->dalsi;
-		if(Ed->n==1)F->pom_temp->element=E;
 		E->predchozi=Ed->predchozi;
 		Ed->predchozi->dalsi=E;
 		Ed->predchozi=E;
-		E->dalsi=Ed;//musí být na konci!!!!!
+		E->dalsi->predchozi=Ed;
+		E->dalsi=Ed;
+		if(E->n==ELEMENTY->predchozi->n)ELEMENTY->predchozi=Ed;
+		//nahrazení prvního elementu v objektu
+		TObjekt *O=vrat_objekt(Ed->objekt_n);
+		if(Ed->n==O->element->n)O->element=E;
+		O=NULL;delete O;
 		//aktualizace geometrie
 		vloz_G_element(Ed->dalsi,0,F->d.Rxy(Ed).x,F->d.Rxy(Ed).y,0,0,0,0,F->d.Rxy(Ed->dalsi).x,F->d.Rxy(Ed->dalsi).y,Ed->dalsi->geo.orientace);
 		vloz_G_element(E,0,Ed->geo.X1,Ed->geo.Y1,0,0,0,0,F->d.Rxy(E).x,F->d.Rxy(E).y,E->geo.orientace);
@@ -2790,13 +2794,16 @@ void Cvektory::zmen_poradi_elementu(TElement *E,TElement *Ed)
 	else
 	{
 		//ukazatelové záležitosti
-		E->dalsi=Ed;
-		Ed->predchozi->predchozi=E->predchozi;
-		E->predchozi=Ed->predchozi;
-		Ed->predchozi->predchozi->dalsi=Ed->predchozi;
-		//if(E->n==1)F->pom_temp->element=Ed->predchozi;
+		E->dalsi->predchozi=E->predchozi;
+		E->predchozi->dalsi=E->dalsi;
 		Ed->predchozi->dalsi=E;
+		E->predchozi=Ed->predchozi;
+		E->dalsi=Ed;
 		Ed->predchozi=E;
+		//nahrazení prvního elementu v objektu
+		TObjekt *O=vrat_objekt(E->objekt_n);
+		if(E->n==O->element->n)O->element=E->predchozi;
+		O=NULL;delete O;
 		////aktualizace geometrie
 		vloz_G_element(E->predchozi,0,E->geo.X1,E->geo.Y1,0,0,0,0,F->d.Rxy(E->predchozi).x,F->d.Rxy(E->predchozi).y,E->predchozi->geo.orientace);
 		vloz_G_element(Ed,0,F->d.Rxy(E).x,F->d.Rxy(E).y,0,0,0,0,F->d.Rxy(Ed).x,F->d.Rxy(Ed).y,Ed->geo.orientace);
@@ -3269,174 +3276,175 @@ void Cvektory::smaz_element(TObjekt *Objekt, unsigned int n)
 //smaže element ze seznamu
 void Cvektory::smaz_element(TElement *Element)
 {
+	smaz_element_NEW(Element);
 	//nejdříve smazání tabulky Elelementu
-	long ID=Element->mGrid->ID;
-	Element->mGrid->Delete();
-
-	//kontrola při pokusu o smazání předávacího místa
-	bool povolit_smazani=true;
-	if(Element->eID==200)
-	{
-		//unsigned int pocet_PM=0;
-		TElement *E=Element->dalsi,*dalsi_PM=NULL,*predchozi_PM=NULL;//procházení daného objektu
-		while(E!=NULL && E->objekt_n==Element->objekt_n)
-		{
-			if(E->eID==200){dalsi_PM=E;break;}
-			E=E->dalsi;
-		}
-		if(E==NULL)
-		{
-			E=Element->predchozi;
-			while(E->n!=0 && E->objekt_n==Element->objekt_n)
-			{
-				if(E->eID==200){predchozi_PM=E;break;}
-				E=E->predchozi;
-			}
-		}
-		TObjekt *O=vrat_objekt(Element->objekt_n);//pomocný ukazatel na objekt
-		if(dalsi_PM==NULL && predchozi_PM==NULL && O->dalsi!=NULL)povolit_smazani=false;//jedno PM
-		else//2 nebo více předávacích míst
-		{
-			if(dalsi_PM!=NULL && predchozi_PM!=NULL)//mezané PM má předchozí i další PM
-			{
-				E=predchozi_PM->dalsi;
-				while(E->n<=dalsi_PM->n)
-				{
-					E->pohon=NULL;//nedefinovaný pohon mezi PM
-					E=E->dalsi;
-				}
-			}
-			if(dalsi_PM!=NULL && predchozi_PM==NULL)//existuje pouze dalsi PM
-			{
-				//získání pohonu
-				TPohon *p=dalsi_PM->predchozi->pohon;
-				E=O->element;
-				if(F->pom_temp!=NULL)E=F->pom_temp->element;
-				//přiřazení pohonu
-				while(E!=NULL && E->n!=dalsi_PM->n && E->objekt_n==O->n)
-				{
-					E->pohon=p;
-					E=E->dalsi;
-				}
-				p=NULL;delete p;
-			}
-			if(dalsi_PM==NULL && predchozi_PM!=NULL)//existuje pouze predchozi
-			{
-				//získání pohonu
-				TPohon *p=NULL;
-				if(Element->dalsi!=NULL)p=Element->dalsi->pohon;
-				if(Element->dalsi==NULL && O->dalsi!=NULL && O->dalsi->element->pohon!=NULL)p=O->dalsi->element->pohon;
-				predchozi_PM->dalsi;
-				//přiřazení pohonu
-				while(E!=NULL)
-				{
-					E->pohon=p;
-					E=E->dalsi;
-				}
-				p=NULL;delete p;
-			}
-			if(dalsi_PM==NULL && predchozi_PM==NULL)
-			{
-      	//získání pohonu
-				TPohon *p=Element->pohon;
-				E=Element->dalsi;
-				//přiřazení pohonu
-				while(E!=NULL)
-				{
-					E->pohon=p;
-					E=E->dalsi;
-				}
-				p=NULL;delete p;
-			}
-		}
-		O=NULL;E=NULL;dalsi_PM=NULL;predchozi_PM=NULL;delete O;delete E;delete dalsi_PM;delete predchozi_PM;
-	}
-	//hláška uživateli
-	if(!povolit_smazani && F->pom_temp!=NULL)F->TIP=F->ls->Strings[315];//"Nelze odstranit předávací místo"
-	////////////smaz_element
-	if(povolit_smazani && (Element->eID==MaxInt || Element->geo.typ==0 && Element->dalsi!=NULL && Element->dalsi->geo.typ==0))//pokud se jedná o zarážku, odstranit ze spojáku nebo pokud se jedná o element mezi 2mi liniemi
-	{
-		////mazání z testovacího spojáku ELEMENTY
-//		TElement *EL=ELEMENTY->dalsi;
-//		while(EL!=NULL)
+//	long ID=Element->mGrid->ID;
+//	Element->mGrid->Delete();
+//
+//	//kontrola při pokusu o smazání předávacího místa
+//	bool povolit_smazani=true;
+//	if(Element->eID==200)
+//	{
+//		//unsigned int pocet_PM=0;
+//		TElement *E=Element->dalsi,*dalsi_PM=NULL,*predchozi_PM=NULL;//procházení daného objektu
+//		while(E!=NULL && E->objekt_n==Element->objekt_n)
 //		{
-//			if(EL->objekt_n==Element->objekt_n && EL->n==Element->n)break;
-//			else EL=EL->dalsi;
+//			if(E->eID==200){dalsi_PM=E;break;}
+//			E=E->dalsi;
 //		}
-//		if(EL!=NULL)smaz_element_NEW(EL);
-//		delete EL;EL=NULL;
-		////
-		//vyřazení prvku ze seznamu a napojení prvku dalšího na prvek předchozí prku mazaného
-		if(Element->dalsi!=NULL)//ošetření proti poslednímu prvku
-		{
-			Element->predchozi->dalsi=Element->dalsi;
-			Element->dalsi->predchozi=Element->predchozi;
-			if(Element->dalsi->geo.typ==0 && F->Akce!=F->GEOMETRIE)//upravovat pouze v případě, že se jedná o linii, a kokud needituju geometrii!!! (u geo. se upravuje geometrie ostatních elemntů zvlášť v Unit1)
-			{
-				if(Element->n!=1)vloz_G_element(Element->dalsi,0,Element->predchozi->geo.X4,Element->predchozi->geo.Y4,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
-				else vloz_G_element(Element->dalsi,0,Element->geo.X1,Element->geo.Y1,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
-			}
-		}
-  	else//poslední prvek                                                                           ¨
-		{
-  		if(Element->n==1)//pokud je mazaný prvek hned za hlavičkou
-			{
-				Element->predchozi->predchozi=Element->predchozi; //popř hlavička bude ukazovat sama na sebe
-				Element->predchozi->dalsi=NULL;
-			}
-			else
-			{
-				Element->predchozi->dalsi=NULL;
-				TElement *Eh=Element;//Element hlavička
-				while(Eh->n!=0)//postup k hlavičce, jinak by se musel parametrem metody předávat ukazatal na Objekt, který element vlastní
-				{
-					Eh=Eh->predchozi;
-				}
-				Eh->predchozi=Element->predchozi;//zapis do hlavičky poslední prvek seznamu
-				Eh=NULL;delete Eh;
-			}
-		}
-
-		//přeindexování (n/ID) původního následujícího objektu a prvků všech za nim následujících
-		TElement *E=Element->dalsi;
-		while(E!=NULL)
-		{
-			E->n--;
-			E=E->dalsi;//posun na další
-		}
-
-		//odstranění z pěměti
-		Element=NULL;delete Element;
-	}
-	else if(povolit_smazani)//pokud se jedná o element, změnit typ na zarážku, zachování geometrie
-	{
-		//obnovení původních hodnot
-		Element->data.LO1=1.5;
-		Element->OTOC_delka=0;
-		Element->data.LO2=0;
-		Element->data.LO_pozice=0;
-		Element->data.PT1=0;
-		Element->PTotoc=0;
-		Element->data.PT2=0;
-		Element->WT=0;//čekání na palec
-		Element->data.WTstop=0;//čekání na stopce
-		Element->data.RT.x=0;//reserve time
-		Element->data.RT.y=0;//reserve time
-
-		//názvy výhybek prozatím neřešeny
-		unsigned int nTyp=vrat_poradi_elementu_do(Element)+1;//pokud se jedná o roboty
-		Element->name="Zarážka "+AnsiString(nTyp);
-		Element->short_name=Element->name.SubString(1,3)+AnsiString(nTyp);
-
-		//změna elemetnu na zarážku
-		Element->eID=MaxInt;
-
-		//znovuvytvoření mGridu elementu
-		Element->mGrid=new TmGrid(F);
-		Element->mGrid->Tag=6;//ID formu
-		Element->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
-		F->design_element(Element,false);//nutné!
-	}
+//		if(E==NULL)
+//		{
+//			E=Element->predchozi;
+//			while(E->n!=0 && E->objekt_n==Element->objekt_n)
+//			{
+//				if(E->eID==200){predchozi_PM=E;break;}
+//				E=E->predchozi;
+//			}
+//		}
+//		TObjekt *O=vrat_objekt(Element->objekt_n);//pomocný ukazatel na objekt
+//		if(dalsi_PM==NULL && predchozi_PM==NULL && O->dalsi!=NULL)povolit_smazani=false;//jedno PM
+//		else//2 nebo více předávacích míst
+//		{
+//			if(dalsi_PM!=NULL && predchozi_PM!=NULL)//mezané PM má předchozí i další PM
+//			{
+//				E=predchozi_PM->dalsi;
+//				while(E->n<=dalsi_PM->n)
+//				{
+//					E->pohon=NULL;//nedefinovaný pohon mezi PM
+//					E=E->dalsi;
+//				}
+//			}
+//			if(dalsi_PM!=NULL && predchozi_PM==NULL)//existuje pouze dalsi PM
+//			{
+//				//získání pohonu
+//				TPohon *p=dalsi_PM->predchozi->pohon;
+//				E=O->element;
+//				if(F->pom_temp!=NULL)E=F->pom_temp->element;
+//				//přiřazení pohonu
+//				while(E!=NULL && E->n!=dalsi_PM->n && E->objekt_n==O->n)
+//				{
+//					E->pohon=p;
+//					E=E->dalsi;
+//				}
+//				p=NULL;delete p;
+//			}
+//			if(dalsi_PM==NULL && predchozi_PM!=NULL)//existuje pouze predchozi
+//			{
+//				//získání pohonu
+//				TPohon *p=NULL;
+//				if(Element->dalsi!=NULL)p=Element->dalsi->pohon;
+//				if(Element->dalsi==NULL && O->dalsi!=NULL && O->dalsi->element->pohon!=NULL)p=O->dalsi->element->pohon;
+//				predchozi_PM->dalsi;
+//				//přiřazení pohonu
+//				while(E!=NULL)
+//				{
+//					E->pohon=p;
+//					E=E->dalsi;
+//				}
+//				p=NULL;delete p;
+//			}
+//			if(dalsi_PM==NULL && predchozi_PM==NULL)
+//			{
+//      	//získání pohonu
+//				TPohon *p=Element->pohon;
+//				E=Element->dalsi;
+//				//přiřazení pohonu
+//				while(E!=NULL)
+//				{
+//					E->pohon=p;
+//					E=E->dalsi;
+//				}
+//				p=NULL;delete p;
+//			}
+//		}
+//		O=NULL;E=NULL;dalsi_PM=NULL;predchozi_PM=NULL;delete O;delete E;delete dalsi_PM;delete predchozi_PM;
+//	}
+//	//hláška uživateli
+//	if(!povolit_smazani && F->pom_temp!=NULL)F->TIP=F->ls->Strings[315];//"Nelze odstranit předávací místo"
+//	////////////smaz_element
+//	if(povolit_smazani && (Element->eID==MaxInt || Element->geo.typ==0 && Element->dalsi!=NULL && Element->dalsi->geo.typ==0))//pokud se jedná o zarážku, odstranit ze spojáku nebo pokud se jedná o element mezi 2mi liniemi
+//	{
+//		////mazání z testovacího spojáku ELEMENTY
+////		TElement *EL=ELEMENTY->dalsi;
+////		while(EL!=NULL)
+////		{
+////			if(EL->objekt_n==Element->objekt_n && EL->n==Element->n)break;
+////			else EL=EL->dalsi;
+////		}
+////		if(EL!=NULL)smaz_element_NEW(EL);
+////		delete EL;EL=NULL;
+//		////
+//		//vyřazení prvku ze seznamu a napojení prvku dalšího na prvek předchozí prku mazaného
+//		if(Element->dalsi!=NULL)//ošetření proti poslednímu prvku
+//		{
+//			Element->predchozi->dalsi=Element->dalsi;
+//			Element->dalsi->predchozi=Element->predchozi;
+//			if(Element->dalsi->geo.typ==0 && F->Akce!=F->GEOMETRIE)//upravovat pouze v případě, že se jedná o linii, a kokud needituju geometrii!!! (u geo. se upravuje geometrie ostatních elemntů zvlášť v Unit1)
+//			{
+//				if(Element->n!=1)vloz_G_element(Element->dalsi,0,Element->predchozi->geo.X4,Element->predchozi->geo.Y4,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
+//				else vloz_G_element(Element->dalsi,0,Element->geo.X1,Element->geo.Y1,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
+//			}
+//		}
+//		else//poslední prvek                                                                           ¨
+//		{
+//			if(Element->n==1)//pokud je mazaný prvek hned za hlavičkou
+//			{
+//				Element->predchozi->predchozi=Element->predchozi; //popř hlavička bude ukazovat sama na sebe
+//				Element->predchozi->dalsi=NULL;
+//			}
+//			else
+//			{
+//				Element->predchozi->dalsi=NULL;
+//				TElement *Eh=Element;//Element hlavička
+//				while(Eh->n!=0)//postup k hlavičce, jinak by se musel parametrem metody předávat ukazatal na Objekt, který element vlastní
+//				{
+//					Eh=Eh->predchozi;
+//				}
+//				Eh->predchozi=Element->predchozi;//zapis do hlavičky poslední prvek seznamu
+//				Eh=NULL;delete Eh;
+//			}
+//		}
+//
+//		//přeindexování (n/ID) původního následujícího objektu a prvků všech za nim následujících
+//		TElement *E=Element->dalsi;
+//		while(E!=NULL)
+//		{
+//			E->n--;
+//			E=E->dalsi;//posun na další
+//		}
+//
+//		//odstranění z pěměti
+//		Element=NULL;delete Element;
+//	}
+//	else if(povolit_smazani)//pokud se jedná o element, změnit typ na zarážku, zachování geometrie
+//	{
+//		//obnovení původních hodnot
+//		Element->data.LO1=1.5;
+//		Element->OTOC_delka=0;
+//		Element->data.LO2=0;
+//		Element->data.LO_pozice=0;
+//		Element->data.PT1=0;
+//		Element->PTotoc=0;
+//		Element->data.PT2=0;
+//		Element->WT=0;//čekání na palec
+//		Element->data.WTstop=0;//čekání na stopce
+//		Element->data.RT.x=0;//reserve time
+//		Element->data.RT.y=0;//reserve time
+//
+//		//názvy výhybek prozatím neřešeny
+//		unsigned int nTyp=vrat_poradi_elementu_do(Element)+1;//pokud se jedná o roboty
+//		Element->name="Zarážka "+AnsiString(nTyp);
+//		Element->short_name=Element->name.SubString(1,3)+AnsiString(nTyp);
+//
+//		//změna elemetnu na zarážku
+//		Element->eID=MaxInt;
+//
+//		//znovuvytvoření mGridu elementu
+//		Element->mGrid=new TmGrid(F);
+//		Element->mGrid->Tag=6;//ID formu
+//		Element->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
+//		F->design_element(Element,false);//nutné!
+//	}
 }
 ////---------------------------------------------------------------------------
 //vymaže všechny elementy daného objektu včetně hlavičky a vrátí počet smazaných elementů (počítáno bez hlavičky), automaticky, pokud posledním parametreme není nastaveno jinak, smaže přidružený mGrid
@@ -3470,95 +3478,44 @@ long Cvektory::vymaz_seznam_ELEMENTY()
 	return pocet_smazanych_objektu;
 }
 ////////////TESTOVACÍ METODY PRO NOVÝ SPOJÁK ELEMENTŮ
-//vkládání kopie elementu do spojáku ELEMENTY
-void Cvektory::vloz_element_NEW(TElement *vkladany,TElement *predchozi)
-{
-	TElement *novy=new TElement;
-	kopiruj_element(vkladany,novy);
-	if(predchozi==NULL)//bez nuceného řazení
-	{
-		if((F->Akce==F->ADD||F->Akce==F->MOVE_ELEMENT)&&ELEMENTY->dalsi!=NULL)//ošetření proti spouštění při zavírání a otvírání náhledu
-  	{
-			predchozi=ELEMENTY->dalsi;//přeskočí hlavičku
-			while (predchozi!=NULL)
-			{
-				//kontrola zda vkládaný element neleží mezi prvním a druhým elementem, druhým až n
-				if(predchozi->geo.typ==0 && m.LeziVblizkostiUsecky(m.round2double(F->d.Rxy(vkladany).x,2),m.round2double(F->d.Rxy(vkladany).y,2),m.round2double(predchozi->geo.X1,2),m.round2double(predchozi->geo.Y1,2),m.round2double(predchozi->geo.X4,2),m.round2double(predchozi->geo.Y4,2))==0)
-				{
-					break;
-				}
-				predchozi=predchozi->dalsi;//posun na další prvek
-			}
-		}
-		novy->n=ELEMENTY->predchozi->n+1;
-		if(predchozi!=NULL)
-		{
-			novy->dalsi=predchozi;
-			novy->predchozi=predchozi->predchozi;
-			predchozi->predchozi->dalsi=novy;
-			predchozi->predchozi=novy;
-			vloz_G_element(novy,0,predchozi->geo.X1,predchozi->geo.Y1,0,0,0,0,F->d.Rxy(novy).x,F->d.Rxy(novy).y,predchozi->geo.orientace);
-			vloz_G_element(predchozi,0,F->d.Rxy(novy).x,F->d.Rxy(novy).y,0,0,0,0,F->d.Rxy(predchozi).x,F->d.Rxy(predchozi).y,predchozi->geo.orientace);
-			//přeindexování
-			TElement *E=ELEMENTY->dalsi;
-			int n=1;
-			while(E!=NULL)
-			{
-				E->n=n;n++;
-				E=E->dalsi;
-			}
-			delete E;E=NULL;
-		}
-		else
-		{
-			novy->dalsi=NULL;
-			novy->predchozi=ELEMENTY->predchozi;
-			ELEMENTY->predchozi->dalsi=novy;
-			ELEMENTY->predchozi=novy;
-			if(F->pom_temp!=NULL && vkladany->n!=1 && vkladany->Xt==-100)//nutna podminka, pri nacitani z binarky je pom_temp=NULL a nactou se hodnoty z binírky ne takto dopočítané
-			vloz_G_element(novy,0,novy->predchozi->geo.X4,novy->predchozi->geo.Y4,0,0,0,0,F->d.Rxy(novy).x,F->d.Rxy(novy).y,novy->predchozi->geo.orientace);
-    }
-	}
-	else//s nuceným řazením
-	{
-		TElement *E=ELEMENTY->dalsi;
-		while(E!=NULL)
-		{
-			if(E->objekt_n==predchozi->objekt_n && E->n==predchozi->n)break;
-			E=E->dalsi;
-		}
-		predchozi=E;
-		E=NULL;delete E;
-		novy->dalsi=predchozi->dalsi;
-		novy->predchozi=predchozi;
-		if(predchozi->n==ELEMENTY->predchozi->n && predchozi->objekt_n==ELEMENTY->predchozi->objekt_n)ELEMENTY->predchozi=novy;
-		predchozi->dalsi=novy;
-    //přeindexování
-		TElement *El=ELEMENTY->dalsi;
-		int n=1;
-		while(El!=NULL)
-		{
-			El->n=n;n++;
-			El=El->dalsi;
-		}
-		delete El;El=NULL;
-  }
-}
-////---------------------------------------------------------------------------
 //smazání elementu
 void Cvektory::smaz_element_NEW(TElement *Element)
-{
-	//nejdříve smazání tabulky Elelementu
-	Element->mGrid->Delete();
-
-	////////////smaz_element
+{           F->log(__func__);
+	bool povolit=true;
+	if(Element->eID==200)//mazání PM
 	{
+		//pokud se jedná o PM na konci objektu .. nelze smazat
+		if(Element->dalsi==NULL || Element->dalsi!=NULL && Element->dalsi->objekt_n!=Element->objekt_n)povolit=false;
+		if(povolit)//budu matet PM ve středu objektu .. tz. budou min. 2 PM v objektu
+		{
+			//před mazáním PM je potřeba sjednotit pohon za mazaným PM do dalsího PM
+			TElement *dalsi_PM=Element->dalsi;
+			while(dalsi_PM!=NULL && dalsi_PM->objekt_n==Element->objekt_n)
+			{
+				if(Element->pohon!=NULL)dalsi_PM->pohon=Element->pohon;else dalsi_PM->pohon=NULL;
+				if(dalsi_PM->eID==200)break;
+				dalsi_PM=dalsi_PM->dalsi;
+			}
+			dalsi_PM=NULL;delete dalsi_PM;
+		}
+	}
+	//hláška uživateli
+  if(!povolit && F->pom_temp!=NULL)F->TIP=F->ls->Strings[315];//"Nelze odstranit předávací místo"
+	if(povolit && (Element->dalsi==NULL || Element->dalsi!=NULL && Element->geo.typ==0 && Element->dalsi->geo.typ==0))
+	{
+		TObjekt *O=vrat_objekt(Element->objekt_n);
+		if(O->element->n==Element->n && Element->predchozi->n>0 && Element->predchozi->objekt_n==O->n)O->element=Element->predchozi;
+		if(O->element->n==Element->n && Element->dalsi!=NULL && Element->dalsi->objekt_n==O->n)O->element=Element->dalsi;
+		O=NULL;delete O;
+		//nejdříve smazání tabulky Elelementu
+		Element->mGrid->Delete();
+		Element->mGrid=NULL;
 		//vyřazení prvku ze seznamu a napojení prvku dalšího na prvek předchozí prku mazaného
 		if(Element->dalsi!=NULL)//ošetření proti poslednímu prvku
 		{
 			Element->predchozi->dalsi=Element->dalsi;
 			Element->dalsi->predchozi=Element->predchozi;
-			if(Element->dalsi->geo.typ==0 && F->Akce!=F->GEOMETRIE)//upravovat pouze v případě, že se jedná o linii, a kokud needituju geometrii!!! (u geo. se upravuje geometrie ostatních elemntů zvlášť v Unit1)
+			if(F->Akce!=F->GEOMETRIE)//u geo. se upravuje geometrie ostatních elemntů zvlášť v Unit1
 			{
 				if(Element->n!=1)vloz_G_element(Element->dalsi,0,Element->predchozi->geo.X4,Element->predchozi->geo.Y4,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
 				else vloz_G_element(Element->dalsi,0,Element->geo.X1,Element->geo.Y1,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
@@ -3566,10 +3523,10 @@ void Cvektory::smaz_element_NEW(TElement *Element)
 		}
   	else//poslední prvek                                                                           ¨
 		{
-  		if(Element->n==1)//pokud je mazaný prvek hned za hlavičkou
+			if(Element->n==1)//pokud je mazaný prvek hned za hlavičkou, tj. jedne prvek ve spojáku
 			{
-				Element->predchozi->predchozi=Element->predchozi; //popř hlavička bude ukazovat sama na sebe
-				Element->predchozi->dalsi=NULL;
+				ELEMENTY->dalsi=NULL;
+				ELEMENTY->predchozi=ELEMENTY;
 			}
 			else
 			{
@@ -3577,10 +3534,46 @@ void Cvektory::smaz_element_NEW(TElement *Element)
 				ELEMENTY->predchozi=Element->predchozi;//zapis do hlavičky poslední prvek seznamu
 			}
 		}
-
+		//přeindexování a změna názvů
+		TElement *E=Element->dalsi;
+		int n=Element->predchozi->n;
+		while(E!=NULL)
+		{
+			n++;
+			E->n=n;
+			E=E->dalsi;
+		}
+		delete E;E=NULL;
+		if(ELEMENTY->dalsi!=NULL && Element->predchozi->n>0)uprav_popisky_elementu(Element->predchozi);else uprav_popisky_elementu(NULL);
 		//odstranění z pěměti
 		delete Element;Element=NULL;
 	}
+	else if(povolit)//změna na zarážku, v případě že mažu element který obsahuje složitejsí geometrii
+	{
+    //změna na zarážku
+		Element->eID=MaxInt;
+		//změna názvu a úprava číslování, pouze v debug
+		if(DEBUG)
+		{
+			Element->name="Zarážka";
+			uprav_popisky_elementu(Element);
+		}
+		else Element->name="";
+		//vynulování WT
+		Element->WT=0;
+		//smazání a znovuvytvoření mGridu elementu
+		if(F->pom_temp!=NULL && Element->objekt_n==F->pom_temp->n)
+		{
+			long ID=Element->mGrid->ID;
+			Element->mGrid->Delete();
+			Element->mGrid=NULL;
+			Element->mGrid=new TmGrid(F);
+			Element->mGrid->Tag=6;//ID formu
+			Element->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
+			F->design_element(Element,false);//nutné!
+		}
+	}
+		F->log(__func__,"   KONEC");
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------

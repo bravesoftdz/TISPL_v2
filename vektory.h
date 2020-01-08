@@ -537,12 +537,11 @@ class Cvektory
 	void aktualizuj_sparovane_ukazatele();//projde všechny stop-elementy a aktualizuje jim ukazatele na spárované elementy
 	void reserve_time(TElement *Element,TCesta *Cesta=NULL,bool highlight_bunek=false,bool refresh_mGrid=false);//vypočítá a uloží RT do elementu
 	TElement *Cvektory::vrat_posledni_element_objektu(TObjekt *Objekt);//vrátí poslední element v objektu
-	void smaz_element(TObjekt *Objekt, unsigned int n);//smaže element ze seznamu
+	void smaz_element(TObjekt *Objekt, unsigned int n);//SMAZAT!!!!smaže element ze seznamu
 	void smaz_element(TElement *Element);//smaže element ze seznamu
 	long vymaz_elementy(TObjekt *Objekt,bool mGridSmazat=true);//SMAZAT!!!!!vymaže všechny elementy daného objektu včetně hlavičky a vrátí počet smazaných elementů (počítáno bez hlavičky), automaticky, pokud posledním parametreme není nastaveno jinak, smaže přidružený mGrid
 	long vymaz_seznam_ELEMENTY();//vymaže spojový seznam elementů z paměti
   //temp umístění testovacích metod
-	void vloz_element_NEW(TElement *vkladany,TElement *predchozi=NULL);//vkládání do nového spojáku
 	void smaz_element_NEW(TElement *Element);
 
 //metody pro POHONY

@@ -4605,7 +4605,7 @@ void TForm1::onPopUP(int X, int Y)
 			if(AnsiString(N+" "+pom->name).Length()>19)PopUPmenu->scLabel_nastavit_parametry->Caption=N+"\n  "+pom_vyhybka->name.UpperCase();
 			else PopUPmenu->scLabel_nastavit_parametry->Caption=N+" "+pom_vyhybka->name.UpperCase();
 			//smazání elementu
-			if(pom_element!=NULL && pom_element->eID!=200)//Pokud bylo kliknuto na element + ošetření pom_element je používan i při tvorbě geometrie + nejedná se o předávací místo
+			if(pom_element!=NULL /*&& pom_element->eID!=200*/)//Pokud bylo kliknuto na element + ošetření pom_element je používan i při tvorbě geometrie + nejedná se o předávací místo
 			{
 				if(AnsiString(N+" "+pom_element->name).Length()>19) PopUPmenu->scLabel_smazat->Caption=smazat+"\n  "+pom_element->name.UpperCase();
 				else PopUPmenu->scLabel_smazat->Caption=smazat+" "+pom_element->name.UpperCase();
@@ -5528,8 +5528,8 @@ void TForm1::add_element (int X, int Y)
 	else
 	{
 		TIP=ls->Strings[309];//"Lze vkládat pouze na linie."
-	}
-	REFRESH();
+	}       log(__func__,"   KONEC před");
+	REFRESH();   log(__func__,"    KONEC po REFRESH");
 }
 //---------------------------------------------------------------------------
 //přidávání komory kabině powerwashe, kontrola zda není součet kabin větší než rozměr kabiny
@@ -6672,15 +6672,8 @@ short TForm1::najdi_popisky_PM(double X,double Y,Cvektory::TObjekt *Objekt)
 			{
 				AnsiString T1=ls->Strings[271],T2=ls->Strings[271];//"pohon nevybrán"
 	    	if(E->pohon!=NULL)T1=E->pohon->name;
-	    	if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)T2=E->dalsi->pohon->name;
-	    	if(E->dalsi==NULL)
-	    	{
-					Cvektory::TObjekt *O=d.v.vrat_objekt(E->objekt_n);
-					if(O->dalsi!=NULL && O->dalsi->element->pohon!=NULL)T2=O->dalsi->element->pohon->name;
-					if(F->pom_temp!=NULL && O->dalsi!=NULL && O->dalsi->n==F->pom_temp->n && F->pom_temp->element->pohon!=NULL)T2=F->pom_temp->element->pohon->name;
-					if(O->dalsi==NULL && d.v.OBJEKTY->dalsi->element->pohon!=NULL)T2=d.v.OBJEKTY->dalsi->element->pohon->name;
-					O=NULL;delete O;
-				}
+				if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)T2=E->dalsi->pohon->name;
+				if(E->dalsi==NULL && d.v.ELEMENTY->dalsi->pohon!=NULL)T2=d.v.ELEMENTY->dalsi->pohon->name;
 				if(pom_temp->orientace==270){AnsiString pom=T1;T1=T2;T2=T1;}//prohození popisků
 				w1=Canvas->TextWidth(T1);w2=Canvas->TextWidth(T2);h=Canvas->TextHeight(T1);
 				//definice výchozích bodů popisků + zjištění oblasti
@@ -6789,7 +6782,7 @@ bool TForm1::bod_na_geometrii(double X, double Y,Cvektory::TElement *Element)
 	bool ret=false;
 	if(Element!=NULL){X=d.Rxy(Element).x;Y=d.Rxy(Element).y;}
 	Cvektory::TElement *E=pom_temp->element;
-	while(E!=NULL)
+	while(E!=NULL && E->objekt_n==pom_temp->n)
 	{
 		if(E->geo.typ==0 && E->geo.orientace==m.Rt90(E->geo.orientace) && m.LeziVblizkostiUsecky(X,Y,E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4)==0){ret=true;break;}
 		E=E->dalsi;
@@ -6824,22 +6817,22 @@ void TForm1::aut_pozicovani(Cvektory::TElement *E, int X, int Y)
 		case 270:x=X-O-E->mGrid->Width;x1=X+O;y=Y-E->mGrid->Height/2.0;ver=true;break;
 	}
 	//Pro horizontální překlápění
-	if (E->predchozi->n>=1 && hor)//Kontrola zda je už vložený nějaký element
+	if(E->predchozi->n>=1 && hor)//Kontrola zda je už vložený nějaký element
 	{
 		Cvektory::TElement *O=E->predchozi;
-		while(O->n >= 1)//kontrola překrytí napříč všemi dosut přidanými elementy
+		while(O->n>=1 && O->objekt_n==E->objekt_n)//kontrola překrytí napříč všemi dosut přidanými elementy
 		{
 			if(O->eID!=100)//ošetření z důvodu, že některý element nemá mGrid
 			{
 	   		if ((x<=m.L2Px(O->Xt)+O->mGrid->Width && x>=m.L2Px(O->Xt)) ||//Překrývají se v X souřadnici
 	   		(x+E->mGrid->Width<=m.L2Px(O->Xt)+O->mGrid->Width&&x+E->mGrid->Width>=m.L2Px(O->Xt)))
-	   		{
+				{
 	   			if ((y>=m.L2Py(O->Yt)&&y<=m.L2Py(O->Yt)+O->mGrid->Height) || (y+E->mGrid->Height>=m.L2Py(O->Yt)&&y+E->mGrid->Height<=m.L2Py(O->Yt)+O->mGrid->Height))
 					{
 	   				y=y1;
 	   				Cvektory::TElement *O1=E->predchozi;
-	   				while(O1->n>= 1)
-	   				{
+						while(O1->n>=1 && O1->objekt_n==E->objekt_n)
+						{
 	   					if ((x<=m.L2Px(O1->Xt)+O->mGrid->Width && x>=m.L2Px(O1->Xt))||(x+E->mGrid->Width<=m.L2Px(O1->Xt)+O1->mGrid->Width&&x+E->mGrid->Width>=m.L2Px(O1->Xt)))
 	   					if ((y>=m.L2Py(O1->Yt)&&y<=m.L2Py(O1->Yt)+O1->mGrid->Height) || (y+E->mGrid->Height>=m.L2Py(O1->Yt)&&y+E->mGrid->Height<=m.L2Py(O1->Yt)+O1->mGrid->Height))
 	   					{
@@ -6858,10 +6851,10 @@ void TForm1::aut_pozicovani(Cvektory::TElement *E, int X, int Y)
 		O=NULL;delete O;
 	}
 	//Pro vertikální překlápění
-	if (E->predchozi->n>=1 && ver)//Kontrola zda je už vložený nějaký element
+	if(E->predchozi->n>=1 && ver)//Kontrola zda je už vložený nějaký element
 	{
 		Cvektory::TElement *O=E->predchozi;
-		while(O->n >= 1)//kontrola překrytí napříč všemi dosut přidanými elementy
+		while(O->n>=1 && O->objekt_n==E->objekt_n)//kontrola překrytí napříč všemi dosut přidanými elementy
 		{
 			if(O->eID!=100)//ošetření z důvodu, že některý element nemá mGrid
 			{
@@ -6872,7 +6865,7 @@ void TForm1::aut_pozicovani(Cvektory::TElement *E, int X, int Y)
 		  		{
 		  			x=x1;
 		  			Cvektory::TElement *O1=E->predchozi;
-		  			while(O1->n>= 1)
+		  			while(O1->n>=1 && O1->objekt_n==E->objekt_n)
 		  			{
 		  				if ((y<=m.L2Py(O1->Yt)+O->mGrid->Height && y>=m.L2Py(O1->Yt)) || (y+E->mGrid->Height<=m.L2Py(O1->Yt)+O1->mGrid->Height&&y+E->mGrid->Height>=m.L2Py(O1->Yt)))
 		  				if ((x>=m.L2Px(O1->Xt)&&x<=m.L2Px(O1->Xt)+O1->mGrid->Width) || (x+E->mGrid->Width>=m.L2Px(O1->Xt)&&x+E->mGrid->Width<=m.L2Px(O1->Xt)+O1->mGrid->Width))
@@ -12277,14 +12270,19 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Cvektory::TElement *E=pom_temp->element;//d.v.ELEMENTY->dalsi;Memo3->Clear();
-	while(E!=NULL && E->n>0 && E->objekt_n==pom_temp->n)
+	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;Memo3->Clear();
+//	while(E!=NULL && E->n>0)
+//	{
+//		Memo(E->name);//+"->objekt_n="+AnsiString(E->objekt_n));
+//		E=E->dalsi;
+//	}
+//	E=NULL;delete E;
+	E=d.v.ELEMENTY->predchozi;      Memo("");
+	while(E!=NULL && E->n>0)
 	{
-		//Memo(E->name+"->objekt_n="+AnsiString(E->objekt_n));
-		E->mGrid->Cells[0][0].Text=E->name;E->mGrid->Refresh();
-		E=E->dalsi;
-	}
-	E=NULL;delete E;
+		Memo(E->name);
+		E=E->predchozi;
+	}  E=NULL;delete E;
 	//if(pom_temp!=NULL)Memo("Objekt->element="+pom_temp->element->name);
 //	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
 //	while(O!=NULL)
