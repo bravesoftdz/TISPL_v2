@@ -5852,7 +5852,7 @@ void TForm1::vlozeni_editace_geometrie()
 		}
 		//posun následujících elementů, pokud existují
 		Cvektory::TElement *E=posledni_editovany_element->dalsi;
-		while(E!=NULL)
+		while(E!=NULL && E->objekt_n==posledni_editovany_element->objekt_n)
 		{
 			E->X+=posunx;E->Y+=posuny;//souřadnice elementu
 			//geometrie elementu
@@ -5860,10 +5860,10 @@ void TForm1::vlozeni_editace_geometrie()
 			E->geo.Y1+=posuny;E->geo.Y2+=posuny;E->geo.Y3+=posuny;E->geo.Y4+=posuny;
 			E=E->dalsi;
 		}
-		delete E;E=NULL;
+		E=NULL;delete E;
 	}
 	//////editace pohonu ve středu
-	else if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL)
+	else if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->objekt_n==posledni_editovany_element->objekt_n)
 	{
 		//vložení úseku
 		if(posun_dalsich_elementu)
@@ -5883,7 +5883,7 @@ void TForm1::vlozeni_editace_geometrie()
 		}
 		//posun ostatních úseků geometrie
 		Cvektory::TElement *E=posledni_editovany_element->dalsi;
-		while(E!=NULL)
+		while(E!=NULL && E->objekt_n==posledni_editovany_element->objekt_n)
 		{
 			E->X+=posunx;E->Y+=posuny;//souřadnice elementu
 			//geometrie elementu
@@ -5891,10 +5891,10 @@ void TForm1::vlozeni_editace_geometrie()
 			E->geo.Y1+=posuny;E->geo.Y2+=posuny;E->geo.Y3+=posuny;E->geo.Y4+=posuny;
 			E=E->dalsi;
 		}
-		delete E;E=NULL;
+		E=NULL;delete E;
 	}
 	//////přidávání za poslední geometrii
-	else if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi==NULL)
+	else if(posledni_editovany_element!=NULL && (posledni_editovany_element->dalsi==NULL || (posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->objekt_n!=posledni_editovany_element->objekt_n)))
 	{
     //vložím nový prvek, který převezme geometrii posledniho a zařadí se před nej, poslední pak převezme novou geometrii - tz. posouvám poslední prvek stále před sebou
 		if(posledni_editovany_element->geo.delka!=0)//normální provoz
