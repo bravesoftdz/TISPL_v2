@@ -530,6 +530,7 @@ class Cvektory
 	void reserve_time(TElement *Element,TCesta *Cesta=NULL,bool highlight_bunek=false,bool refresh_mGrid=false);//vypočítá a uloží RT do elementu
 	TElement *Cvektory::vrat_posledni_element_objektu(TObjekt *Objekt);//vrátí poslední element v objektu
 	void smaz_element(TElement *Element,bool preskocit_kontolu=false);//smaže element ze seznamu
+	void vymaz_elementy(TObjekt *Objekt);//smaže všechny elementy v daném objektu
 	long vymaz_seznam_ELEMENTY();//vymaže spojový seznam elementů z paměti
 
 //metody pro POHONY

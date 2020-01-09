@@ -3974,7 +3974,7 @@ void TForm1::vykresli_spojinici_EmGrid(TCanvas *Canv,Cvektory::TElement *E)
 		if(delka==pravyhorni&&!vykresleno){d.linie(Canv,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt)+pom_element->mGrid->Width,m.L2Py(pom_element->Yt),2,(TColor)RGB(200,200,200));vykresleno=true;}
 		if(delka==levydolni&&!vykresleno){d.linie(Canv,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt)+pom_element->mGrid->Height,2,(TColor)RGB(200,200,200));vykresleno=true;}
 		if(delka==pravydolni&&!vykresleno){d.linie(Canv,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt)+pom_element->mGrid->Width,m.L2Py(pom_element->Yt)+pom_element->mGrid->Height,2,(TColor)RGB(200,200,200));vykresleno=true;}
-	}
+	}     log(__func__,"   KONEC");//logování
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
@@ -5528,8 +5528,8 @@ void TForm1::add_element (int X, int Y)
 	else
 	{
 		TIP=ls->Strings[309];//"Lze vkládat pouze na linie."
-	}       log(__func__,"   KONEC před");
-	REFRESH();   log(__func__,"    KONEC po REFRESH");
+	}
+	REFRESH();
 }
 //---------------------------------------------------------------------------
 //přidávání komory kabině powerwashe, kontrola zda není součet kabin větší než rozměr kabiny
@@ -5713,7 +5713,7 @@ void TForm1::vlozit_predavaci_misto()
 			Cvektory::TElement *E=e_posledni;
 			//WT přiřazení
 			E->WT=0;//čekání na palec
-			E->WT=m.cekani_na_palec(0,e_prvni->pohon->roztec,e_prvni->pohon->aRD,3);
+			if(e_prvni->pohon!=NULL)E->WT=m.cekani_na_palec(0,e_prvni->pohon->roztec,e_prvni->pohon->aRD,3);
 			//souřadnice tabulky
 			if(e_posledni->orientace==0 || e_posledni->orientace==180){E->Xt=E->X-1.9;E->Yt=E->Y+1.6;}
 			else{E->Xt=E->X+0.6;E->Yt=E->Y+0.5;}
@@ -5762,7 +5762,7 @@ void TForm1::vlozit_predavaci_misto()
 		//////////Mazání pomocných ukazatelů
 		e_prvni=NULL;delete e_prvni;
 		e_posledni=NULL;delete e_posledni;
-	}
+	} log(__func__,"   KONEC");//logování
 }
 //---------------------------------------------------------------------------
 //vloží bod haly na zvolené souřadnice (fyzické), zohlední přichytávání
@@ -6630,7 +6630,7 @@ void TForm1::aktualizace_RT()
 			if(d.v.vrat_druh_elementu(E)==0 && E->eID!=0)d.v.reserve_time(E);
 			E=E->dalsi;
 		}
-		delete E;E=NULL;
+		E=NULL;delete E;
 		C=NULL;delete C;
 	}
 }
@@ -7663,7 +7663,7 @@ void TForm1::tab_pohon_COMBO (int index)
 		if(pom_temp->pohon!=NULL)p_puvodni=pom_temp->pohon->n;
 		int pohon=PCombo->ItemIndex;
 		//zapsání pohonu do aktuálně editovaného
-		if(pohon!=0)d.v.kopiruj_pohon(d.v.vrat_pohon(pohon),pom_temp);
+		if(pohon!=0)pom_temp->pohon=d.v.vrat_pohon(pohon);//d.v.kopiruj_pohon(d.v.vrat_pohon(pohon),pom_temp);
 		else pom_temp->pohon=NULL;
 		Cvektory::TElement *E=pom_temp->element;
 		//přiřazení pohonu elementům
@@ -10636,7 +10636,7 @@ void TForm1::zmena_editovaneho_objektu()
 		if(editace_textu)smaz_kurzor();//také volá Refresh//smaz_kurzor se zavolá, pouze pokud je to třeba odstraňuje zbytečný problik, dodělal MaKr
 		MOD=SCHEMA;//nutné před zoom, ale za smaz kurzor
 		//smazání případných komor
-  	d.v.vymaz_komory(pom_temp);
+  	//d.v.vymaz_komory(pom_temp);
   	//smazání elementů - musí být napočátku, aby nebyl problik
 		//d.v.vymaz_elementy(pom_temp,true);   //&&pom_temp->element!=NULL)
 		//mazání mGridů
@@ -12270,18 +12270,19 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
 	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;Memo3->Clear();
-//	while(E!=NULL && E->n>0)
-//	{
-//		Memo(E->name);//+"->objekt_n="+AnsiString(E->objekt_n));
-//		E=E->dalsi;
-//	}
-//	E=NULL;delete E;
-//	E=d.v.ELEMENTY->predchozi;      //Memo("");
-//	while(E!=NULL && E->n>0)
-//	{
-//		if(E->predchozi->n>0 && E->predchozi->objekt_n==pom_temp->n && E->predchozi->geo.typ!=0)Memo(E->name);
-//		E=E->predchozi;
-//	}  E=NULL;delete E;
+	while(E!=NULL)
+	{
+		Memo(E->name+"->objekt_n="+AnsiString(E->objekt_n));
+		//if(E->sparovany!=NULL)Memo(E->name+"->sparovany="+E->sparovany->name);else Memo(E->name+"->sparovany=NULL");
+		E=E->dalsi;
+	}
+	E=NULL;delete E;
+	E=d.v.ELEMENTY->predchozi;      Memo("");
+	while(E!=NULL && E->n>0)
+	{
+		Memo(E->name+"->objekt_n="+AnsiString(E->objekt_n));
+		E=E->predchozi;
+	}  E=NULL;delete E;
 	//if(pom_temp!=NULL)Memo("Objekt->element="+pom_temp->element->name);
 //	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
 //	while(O!=NULL)
@@ -12291,9 +12292,6 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //	}
 //	delete O;O=NULL;
 	//d.line(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,m.L2Px(pom_temp->element->Xt),m.L2Py(pom_temp->element->Yt));
-	double x1,x2,y1,y2;
-	x1=E->geo.X1;y1=E->geo.Y1;x2=E->X;y2=y1;
-	d.line(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,m.L2Px(x1),m.L2Py(y1));
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko

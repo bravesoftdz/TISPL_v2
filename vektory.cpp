@@ -929,7 +929,7 @@ short int Cvektory::smaz_objekt(TObjekt *Objekt,bool opakovani)
 			if(Objekt->predchozi->dalsi2==Objekt)Objekt->predchozi->dalsi2=NULL; //možná jen zbytečně navíc
 		}
 	}
-
+	vymaz_elementy(Objekt);
 	vymaz_body(Objekt);
 	vymaz_komory(Objekt);
 	//vymaz_elementy(Objekt);
@@ -2981,12 +2981,12 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
     }
 		//TObjekt *O=vrat_objekt(Element->objekt_n);
 		if(Element->pohon!=NULL)cas+=Element->geo.delka/Element->pohon->aRD;//pokud má element pohon výpočet času přejezdu jeho úseku
-  	else error=true;//nemá pohon = error
+		else error=true;//nemá pohon = error
 		//průchod od Element k předchozím
-		TElement *E=Element->predchozi;     //F->Memo("Element->name="+Element->name); F->Memo(Element->n);
+		TElement *E=Element->predchozi;
 		while(E!=NULL)
 		{
-			if(E->n>0)
+			if(E->n>0)//kontrola za nejsem na hlavičce až na tomto místě, to dovolí překlopění cyklu na konec pokud dojde na hlaviču (žádoucí)
 			{
 		  	if(E->eID==200)cas+=E->WT;//wt na předávacím místě
 				if((vrat_druh_elementu(E)==0) || (E->n==Element->n && E->objekt_n==Element->objekt_n))break;//pokud je předchozi S&G prěruš cyklus
@@ -2994,8 +2994,7 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 				else error=true;//jinak error
 			}
 			E=E->predchozi;
-			//if(E!=NULL && E->n==0 || E==NULL)E=ELEMENTY->predchozi;//pokud jsem na začátku a nenašel jsem předchozí S&G element musím od konce a hledat v kruhu
-		}  // F->Memo("konec");
+		}
 		//výpočet RT a zapsání do dat elemetnu
 		double RT=0,WT=Element->WT;
 		if(Element->eID==0 && Element->data.pocet_voziku>1 && cas+Element->WT<PP.TT)WT*=Element->data.pocet_voziku;
@@ -3110,19 +3109,21 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 	if(povolit && (preskocit_kontolu || (Element->dalsi==NULL || Element->dalsi!=NULL && Element->geo.typ==0 && Element->dalsi->geo.typ==0)))
 	{
 		TObjekt *O=vrat_objekt(Element->objekt_n);
-		if(O->element->n==Element->n && Element->predchozi->n>0 && Element->predchozi->objekt_n==O->n)O->element=Element->predchozi;
-		if(O->element->n==Element->n && Element->dalsi!=NULL && Element->dalsi->objekt_n==O->n)O->element=Element->dalsi;
-		O=NULL;delete O;
+		if(O!=NULL && O->element->n==Element->n && Element->predchozi->n>0 && Element->predchozi->objekt_n==O->n)O->element=Element->predchozi;
+		if(O!=NULL && O->element->n==Element->n && Element->dalsi!=NULL && Element->dalsi->objekt_n==O->n)O->element=Element->dalsi;
 		//nejdříve smazání tabulky Elelementu
-		Element->mGrid->Delete();
-		Element->mGrid=NULL;
+		if(Element->mGrid!=NULL)
+		{
+			Element->mGrid->Delete();
+			Element->mGrid=NULL;
+		}
 		//vyřazení prvku ze seznamu a napojení prvku dalšího na prvek předchozí prku mazaného
 		if(Element->dalsi!=NULL)//ošetření proti poslednímu prvku
 		{
 			Element->predchozi->dalsi=Element->dalsi;
 			Element->dalsi->predchozi=Element->predchozi;
-			if(F->Akce!=F->GEOMETRIE)//u geo. se upravuje geometrie ostatních elemntů zvlášť v Unit1
-			{
+			if(F->Akce!=F->GEOMETRIE && O!=NULL)//u geo. se upravuje geometrie ostatních elemntů zvlášť v Unit1, pokud je O==NULL mažu elementy smazaného objektu = neupravovat geo. dalších elementů
+			{         F->Memo("!!!!");
 				if(Element->n!=1)vloz_G_element(Element->dalsi,0,Element->predchozi->geo.X4,Element->predchozi->geo.Y4,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
 				else vloz_G_element(Element->dalsi,0,Element->geo.X1,Element->geo.Y1,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
 			}
@@ -3150,6 +3151,7 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 			E=E->dalsi;
 		}
 		delete E;E=NULL;
+		O=NULL;delete O;
 		if(ELEMENTY->dalsi!=NULL && Element->predchozi->n>0)uprav_popisky_elementu(Element->predchozi);else uprav_popisky_elementu(NULL);
 		//odstranění z pěměti
 		delete Element;Element=NULL;
@@ -3181,6 +3183,22 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 	}
 }
 ////---------------------------------------------------------------------------
+//smaže všechny elementy v daném objektu
+void Cvektory::vymaz_elementy(TObjekt *Objekt)
+{
+	TElement *E=Objekt->element,*smaz=NULL;
+	while(E!=NULL && E->objekt_n==Objekt->n)
+	{
+		smaz=E;
+		E=E->dalsi;
+		smaz_element(smaz,true);
+	}
+	Objekt->element=NULL;
+	E=NULL;delete E;
+	smaz=NULL;delete smaz;
+}
+////---------------------------------------------------------------------------
+//vymaže spojový seznam elementů z paměti
 long Cvektory::vymaz_seznam_ELEMENTY()
 {
 	long pocet_smazanych_objektu=0;
