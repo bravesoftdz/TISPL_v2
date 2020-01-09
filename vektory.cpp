@@ -170,7 +170,7 @@ void Cvektory::vloz_bod(double X, double Y,TObjekt *Objekt,TBod *ZaBod,bool orto
 		if(ZaBod==NULL || ZaBod!=NULL && ZaBod==HALA.body->predchozi)//pokud se má vkládat nakonec
 		{                               //situace aktuální (budoucí poslední) první         						//situace  aktuální (budoucí poslední) a poslední aktuální (budoucí předposlední)
 			if(HALA.body->dalsi==NULL || (Bod->X!=HALA.body->dalsi->X || Bod->Y!=HALA.body->dalsi->Y) && (Bod->X!=HALA.body->predchozi->X || Bod->Y!=HALA.body->predchozi->Y))//pokud se vkládá první prvek, ale pokud je poslední vkládaný totožný jako první nebo totožný jako předchozí (např. u ukočování kresby, nebo u chybného kliku), tak ho ignoruje a neuložího do spojáku)
-			{    //F->Memo("ano",true,true);                           //zkontrolovat či doplnit duplcitu vůči předchozímu
+			{                             //zkontrolovat či doplnit duplcitu vůči předchozímu
 				Bod->n=HALA.body->predchozi->n+1;//navýšení počítadla
 				Bod->predchozi=HALA.body->predchozi;//nový bod ukazuje na poslední prvek ve spojaku jako na prvek předchozí
 				Bod->dalsi=NULL;//nový bod neukazuje na žádný další prvek, resp. ukazuje na NULL
@@ -2990,7 +2990,7 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 			{
 		  	if(E->eID==200)cas+=E->WT;//wt na předávacím místě
 				if((vrat_druh_elementu(E)==0) || (E->n==Element->n && E->objekt_n==Element->objekt_n))break;//pokud je předchozi S&G prěruš cyklus
-				if(E->pohon!=NULL){cas+=E->geo.delka/E->pohon->aRD;F->Memo(E->n);}//pokud existuje úsek a má pohon
+				if(E->pohon!=NULL)cas+=E->geo.delka/E->pohon->aRD;//pokud existuje úsek a má pohon
 				else error=true;//jinak error
 			}
 			E=E->predchozi;
@@ -3123,7 +3123,7 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 			Element->predchozi->dalsi=Element->dalsi;
 			Element->dalsi->predchozi=Element->predchozi;
 			if(F->Akce!=F->GEOMETRIE && O!=NULL)//u geo. se upravuje geometrie ostatních elemntů zvlášť v Unit1, pokud je O==NULL mažu elementy smazaného objektu = neupravovat geo. dalších elementů
-			{         F->Memo("!!!!");
+			{
 				if(Element->n!=1)vloz_G_element(Element->dalsi,0,Element->predchozi->geo.X4,Element->predchozi->geo.Y4,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
 				else vloz_G_element(Element->dalsi,0,Element->geo.X1,Element->geo.Y1,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
 			}

@@ -32,6 +32,7 @@ __fastcall TFormX::TFormX(TComponent* Owner)
 //---------------------------------------------------------------------------
 void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 {
+	F->log(__func__);
 // pøi kliku do nìjaké buòky nastavím input_state=NOTHING, pokud udìlám zmìnu buòky je v OnChange události switch, který zajistí
 // výpoèet konkrétní buòky dle pøedávaných parametrù v události
 	input_state=NO;
@@ -123,7 +124,8 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 //---------------------------------------------------------------------------
 void TFormX::OnEnter(long Tag,long ID,unsigned long Col,unsigned long Row)
 {
-  if(ID==9999&&Row==1)validace_true=true;//spuštìní validace až po kliku
+	F->log(__func__);
+	if(ID==9999&&Row==1)validace_true=true;//spuštìní validace až po kliku
 	//po kliku do vykreslené tabulky lze obnovit událost OnChange
 	if(ID==9999)vstoupeno_poh=true;
 	else vstoupeno_elm=true;
@@ -141,6 +143,7 @@ void TFormX::OnEnter(long Tag,long ID,unsigned long Col,unsigned long Row)
 //zpracování onchange události - INPUT, výpoèet a OUTPUT zpìt do ovlivnìné buòky
 void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 {
+	F->log(__func__);
 	if(input_state==NOTHING&&ID!=9999&&vstoupeno_elm&&!editace_pohonu)
 	{
 		F->Timer_neaktivity->Enabled=false;//vypnutí timeru neaktivity, pokud dochází k OnChange rychle za sebou nestpustí timer refresh
@@ -515,6 +518,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 		F->PmG->Refresh();input_state=NOTHING;F->Timer_neaktivity->Enabled=true;
 		F->nahled_ulozit(true);
 	}
+	F->log(__func__,"   KONEC");
 }
 //---------------------------------------------------------------------------
 void TFormX::OnKeyPress(long Tag,long ID,unsigned long Col,unsigned long Row,System::WideChar &Key)
@@ -1118,7 +1122,7 @@ void TFormX::povolit_zakazat_editaci(bool povolit)
 Cvektory::TElement *TFormX::vrat_element_z_tabulky(long ID)
 {
 	Cvektory::TElement *ret=NULL;
-	Cvektory::TElement *E=F->pom_temp->element->dalsi;//mùžu pøeskoèit element, metoda voláná po kliku do tabulky elementu
+	Cvektory::TElement *E=F->pom_temp->element;//mùžu pøeskoèit element, metoda voláná po kliku do tabulky elementu
 	while(E!=NULL && E->objekt_n==F->pom_temp->n)
 	{
 		if(E->mGrid->ID==ID)
