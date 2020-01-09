@@ -5305,26 +5305,23 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_do)
 	{
 		////kota mezi elementy
 		double x1,y1,x2,y2;          //////////////////////////kota mezi kabinou a prvním elementem !!!!!
-		bool vykreslit=false;
 		Cvektory::TElement *Element_od=Element_do->predchozi;
 		while(Element_od!=NULL && Element_od->n>0 && Element_od->objekt_n==Element_do->objekt_n)
 		{
-			if(Element_od->dalsi->geo.typ!=0)break;
-			if(Element_od->eID!=MaxInt){vykreslit=true;break;}
+			if(Element_od->geo.typ!=0){Element_od=NULL;break;}
+			if(Element_od->eID!=MaxInt)break;//kota element - element
 			Element_od=Element_od->predchozi;
 		}
-		if(!vykreslit && Element_do->n==1){Element_od=NULL;vykreslit=true;}
-		if(vykreslit)
-		{
-			if(Element_do->geo.orientace==90||Element_do->geo.orientace==270)//vodorovná kabina
-				{if(Element_od!=NULL && Element_od->n==0 || Element_od==NULL){x1=F->pom_temp->element->geo.X1;y1=F->pom_temp->element->geo.Y1;}else {x1=Element_od->X;y1=Element_od->geo.Y4;}x2=Element_do->X;y2=y1;}
-			else
-				{if(Element_od!=NULL && Element_od->n==0 || Element_od==NULL){x1=F->pom_temp->element->geo.X1;y1=F->pom_temp->element->geo.Y1;}else {x1=Element_od->geo.X4;y1=Element_od->Y;}y2=Element_do->Y;x2=x1;}
-			if(x2<F->pom_temp->element->geo.X1)O=(O-0.66)*(-1);//ošetření chybného zobrazení kóty elementu, který je před kabinou
-			vykresli_kotu(canv,x1,y1,x2,y2,Element_do,O,highlight);
-    }
+		//určení bodů kóty
+		if(Element_do->geo.orientace==90||Element_do->geo.orientace==270)//vodorovná kabina
+			{if(Element_od!=NULL && Element_od->n==0 || Element_od==NULL){x1=Element_do->geo.X1;y1=Element_do->geo.Y1;}else {x1=Element_od->X;y1=Element_od->geo.Y4;}x2=Element_do->X;y2=y1;}
+		else
+			{if(Element_od!=NULL && Element_od->n==0 || Element_od==NULL){x1=Element_do->geo.X1;y1=Element_do->geo.Y1;}else {x1=Element_od->geo.X4;y1=Element_od->Y;}y2=Element_do->Y;x2=x1;}
+		if(x2<F->pom_temp->element->geo.X1)O=(O-0.66)*(-1);//ošetření chybného zobrazení kóty elementu, který je před kabinou
+    //vykreslení kóty
+		vykresli_kotu(canv,x1,y1,x2,y2,Element_do,O,highlight);
 		////kota mezi LO
-		vykreslit=false;
+		bool vykreslit=false;
 		bool el_od=false,el_do=false;
 		if(Element_od!=NULL && (Element_od->eID==1 || Element_od->eID==7 || Element_od->eID==11 || Element_od->eID==15 || Element_od->eID==101 || Element_od->eID==105 || Element_od->eID==3 || Element_od->eID==9 || Element_od->eID==13 || Element_od->eID==17 || Element_od->eID==103 || Element_od->eID==107))el_od=true;
 		if(Element_do->eID==1 || Element_do->eID==7 || Element_do->eID==11 || Element_do->eID==15 || Element_do->eID==101 || Element_do->eID==105 || Element_do->eID==3 || Element_do->eID==9 || Element_do->eID==13 || Element_do->eID==17 || Element_do->eID==103 || Element_do->eID==107)el_do=true;

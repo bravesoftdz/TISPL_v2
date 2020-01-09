@@ -2643,12 +2643,12 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 			////Geometrie
 			if(Akce==GEOMETRIE && !editace_textu && posledni_editovany_element!=NULL && posledni_editovany_element->eID==MaxInt)
 			{
-				if(posledni_editovany_element->n>1 || posledni_editovany_element->dalsi!=NULL)
+				if(posledni_editovany_element->n>pom_temp->element->n || posledni_editovany_element->dalsi!=NULL)
 				{
 					double posunx=posledni_editovany_element->geo.X1-posledni_editovany_element->geo.X4,posuny=posledni_editovany_element->geo.Y1-posledni_editovany_element->geo.Y4;
 					Cvektory::TElement *E=NULL;
 					if(posledni_editovany_element->predchozi->n!=0)E=posledni_editovany_element->predchozi;
-					d.v.smaz_element(posledni_editovany_element);
+					d.v.smaz_element(posledni_editovany_element,true);
 					posledni_editovany_element=E;
 					E=pom_temp->element;
 					if(posledni_editovany_element!=NULL)E=posledni_editovany_element->dalsi;
@@ -2690,12 +2690,12 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 			////Geometrie stejná funkce jako backspace
 			if(Akce==GEOMETRIE && !editace_textu && posledni_editovany_element!=NULL && posledni_editovany_element->eID==MaxInt)
 			{
-				if(posledni_editovany_element->n>1 || posledni_editovany_element->dalsi!=NULL)
+				if(posledni_editovany_element->n>pom_temp->element->n || posledni_editovany_element->dalsi!=NULL)
 				{
 					double posunx=posledni_editovany_element->geo.X1-posledni_editovany_element->geo.X4,posuny=posledni_editovany_element->geo.Y1-posledni_editovany_element->geo.Y4;
 					Cvektory::TElement *E=NULL;
 					if(posledni_editovany_element->predchozi->n!=0)E=posledni_editovany_element->predchozi;
-					d.v.smaz_element(posledni_editovany_element);
+					d.v.smaz_element(posledni_editovany_element,true);
 					posledni_editovany_element=E;
 					E=pom_temp->element;
 					if(posledni_editovany_element!=NULL)E=posledni_editovany_element->dalsi;
@@ -3853,7 +3853,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				//pan_move při stisknutém levém tlačítku
 		  	if(stisknute_leve_tlacitko_mysi){pan_map(Canvas,X,Y);kurzor(pan_move);}else if(Screen->Cursor==pan_move)kurzor(standard);
 				//vykreslení spojnice mezi posledním editovaným elementem a dalším elementem v objektu (pokud existuje)
-				if(pom->dalsi!=NULL && e_poslendi->geo.X4!=pom->dalsi->element->geo.X1 && e_poslendi->geo.X4!=pom->dalsi->element->geo.X1)
+				if(e_poslendi->dalsi!=NULL && e_poslendi->geo.X4!=e_poslendi->dalsi->geo.X1 && e_poslendi->geo.X4!=e_poslendi->dalsi->geo.X1)
 		  	{
 		  		//nastavení pera
 		  		Canvas->Pen->Color=clBlack;
@@ -3874,8 +3874,8 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 						Y=e_poslendi->Y;
 		  		}
 		  		X=m.L2Px(X);Y=m.L2Py(Y);
-		  		Canvas->MoveTo(X,Y);
-		  		Canvas->LineTo(m.L2Px(pom->dalsi->element->geo.X1),m.L2Py(pom->dalsi->element->geo.Y1));
+					Canvas->MoveTo(X,Y);
+					Canvas->LineTo(m.L2Px(e_poslendi->dalsi->geo.X1),m.L2Py(e_poslendi->dalsi->geo.Y1));
 				}
 				pom_element=d.v.najdi_element(pom_temp,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y);
 				if((pom_element!=NULL && posledni_editovany_element!=NULL && pom_element->n!=posledni_editovany_element->n) || (pom_element!=NULL && posledni_editovany_element==NULL)){posledni_editovany_element=pom_element;editace_geometrie_spustena=true;}
@@ -5896,6 +5896,7 @@ void TForm1::vlozeni_editace_geometrie()
 	//////přidávání za poslední geometrii
 	else if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi==NULL)
 	{
+    //vložím nový prvek, který převezme geometrii posledniho a zařadí se před nej, poslední pak převezme novou geometrii - tz. posouvám poslední prvek stále před sebou
 		if(posledni_editovany_element->geo.delka!=0)//normální provoz
 		{
 			Cvektory::TElement *E=d.v.vloz_element(pom_temp,MaxInt,posledni_editovany_element->geo.X4,posledni_editovany_element->geo.Y4,orientace,posledni_editovany_element);
@@ -6611,7 +6612,7 @@ void TForm1::aktualizace_RT()
 	{
 		Cvektory::TElement *E=pom_temp->element;
 		Cvektory::TCesta *C=NULL;
-		while(E!=NULL)
+		while(E!=NULL && E->objekt_n==pom_temp->n)
 		{
 			//aktualizace max počtu vozíků
 			if(E->eID==0)
@@ -10930,7 +10931,6 @@ void TForm1::kopirovat_objekt()
 		double posunx=-pom->element->geo.X1+pom_vyhybka->element->geo.X1,posuny=pom->element->geo.Y1-pom_vyhybka->element->geo.Y1;
 		pred=pom_vyhybka->predchozi;po=pom_vyhybka->dalsi;
 		d.v.vymaz_komory(pom_vyhybka);
-		d.v.vymaz_elementy(pom_vyhybka,true);
 		d.v.kopiruj_objekt(pom,pom_vyhybka);
 		move_objekt(posunx,posuny,pom_vyhybka);
 		pom_vyhybka->predchozi=pred;pom_vyhybka->dalsi=po;
@@ -11048,7 +11048,6 @@ void __fastcall TForm1::UlozitClick(TObject *Sender)
 	}
 	if(MOD==NAHLED && !duvod_k_ulozeni && duvod_ulozit_nahled)//uložení z editace = uložím editovaný objekt + celý projekt
 	{
-		d.v.vymaz_elementy(pom,true);
 		d.v.kopiruj_objekt(pom_temp,pom);
 		Ulozit_soubor();
 		nahled_ulozit(false);
@@ -12277,12 +12276,12 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //		E=E->dalsi;
 //	}
 //	E=NULL;delete E;
-	E=d.v.ELEMENTY->predchozi;      Memo("");
-	while(E!=NULL && E->n>0)
-	{
-		Memo(E->name);
-		E=E->predchozi;
-	}  E=NULL;delete E;
+//	E=d.v.ELEMENTY->predchozi;      //Memo("");
+//	while(E!=NULL && E->n>0)
+//	{
+//		if(E->predchozi->n>0 && E->predchozi->objekt_n==pom_temp->n && E->predchozi->geo.typ!=0)Memo(E->name);
+//		E=E->predchozi;
+//	}  E=NULL;delete E;
 	//if(pom_temp!=NULL)Memo("Objekt->element="+pom_temp->element->name);
 //	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
 //	while(O!=NULL)
@@ -12292,6 +12291,9 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //	}
 //	delete O;O=NULL;
 	//d.line(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,m.L2Px(pom_temp->element->Xt),m.L2Py(pom_temp->element->Yt));
+	double x1,x2,y1,y2;
+	x1=E->geo.X1;y1=E->geo.Y1;x2=E->X;y2=y1;
+	d.line(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,m.L2Px(x1),m.L2Py(y1));
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko

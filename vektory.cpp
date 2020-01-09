@@ -11,12 +11,13 @@
 Cvektory::Cvektory()
 {
 	hlavicka_OBJEKTY();//vytvoří novou hlavičku pro objekty
+	hlavicka_ELEMENTY();//vytvoří novou hlavičku pro elementy
 	hlavicka_POHONY();//vytvoří novou hlavičku pro pohony
 	hlavicka_ZAKAZKY();//vytvoří novou hlavičku pro zakazky
 	hlavicka_VOZIKY();//vytvoří novou hlavičku pro vozíky
 	//hlavicka_RETEZY();//vytvoří novou hlavičku pro řetězy - nepoužíváno
 	//hlavicka_palce();//vytvoří novou hlavičku pro palce - zatím nepoužíváno
-	HALA.body=NULL;           hlavicka_ELEMENTY();
+	HALA.body=NULL;
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
@@ -731,7 +732,7 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		novy->mezera_jig=Objekt->mezera_jig;//mezera mezi jigy
 		novy->mezera_podvozek=Objekt->mezera_podvozek;//mezera mezi podvozky
 		novy->pohon=Objekt->pohon;
-		kopiruj_elementy(Objekt,novy);
+		novy->element=Objekt->element;
 		novy->min_prujezdni_profil=Objekt->min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
 		//novy->rozmer_kabiny=Objekt->rozmer_kabiny;//výchozí rozměr kabiny
 		novy->koty_elementu_offset=Objekt->koty_elementu_offset;//odsazení kót elementů v metrech
@@ -812,7 +813,6 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->zobrazit_mGrid=Original->zobrazit_mGrid;//proměnná určující, zda budou zobrazeny mGridy
 	Kopie->uzamknout_nahled=Original->uzamknout_nahled;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 	//obě kopírovací metody musí být ke konci
-	//kopiruj_elementy(Original,Kopie);
 	Kopie->element=Original->element;
 	kopiruj_body(Original,Kopie);
 }
@@ -1863,43 +1863,6 @@ void Cvektory::hlavicka_ELEMENTY()
 	ELEMENTY=novy;
 }
 ////---------------------------------------------------------------------------
-//danému objektu vytvoří hlavičku elementů
-void Cvektory::hlavicka_elementy(TObjekt *Objekt)
-{
-	Objekt->element=new TElement;
-	Objekt->element->n=0;
-	Objekt->element->eID=0;
-	Objekt->element->short_name="";
-	Objekt->element->name="";
-	Objekt->element->X=0;
-	Objekt->element->Y=0;
-	Objekt->element->Xt=0;
-	Objekt->element->Yt=0;
-	Objekt->element->orientace=0;
-	Objekt->element->rotace_jig=0;
-	Objekt->element->stav=true;
-
-	Objekt->element->data.LO1=0;
-	Objekt->element->OTOC_delka=0;
-	Objekt->element->data.LO2=0;
-	Objekt->element->data.LO_pozice=0;
-
-	Objekt->element->data.PT1=0;
-	Objekt->element->PTotoc=0;
-	Objekt->element->data.PT2=0;
-
-	Objekt->element->WT=0;
-	Objekt->element->data.WTstop=0;
-	Objekt->element->data.RT.x=0;
-	Objekt->element->data.RT.y=0;
-
-	Objekt->element->mGrid=NULL;
-
-	Objekt->element->sparovany=NULL;
-	Objekt->element->predchozi=Objekt->element;//ukazuje sam na sebe
-	Objekt->element=NULL;
-}
-////---------------------------------------------------------------------------
 //vloží element do spojového seznamu elementů daného technologického objektu a zároveň na něj vrátí ukazatel
 Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, double X, double Y,short orientace,TElement *Ep)
 {
@@ -2084,14 +2047,13 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 		p=NULL; delete p;
 	}
 	//////Zarazení do seznamu do předm určeného pořadí (používá se při editaci geometrie)
-	else
+	else//zařazení před element force_razeni
 	{
-		//stav první, poslední
-		if(force_razeni->n==1)ELEMENTY->dalsi=Element;
-		if(force_razeni->n==ELEMENTY->predchozi->n)ELEMENTY->predchozi=Element;
-    //ukazatelové propojení
-		if(force_razeni->n==Objekt->element->n){Element->predchozi=Objekt->element;Objekt->element=Element;}else {force_razeni->predchozi->dalsi=Element;Element->predchozi=force_razeni->predchozi;}
+		//ukazatelové propojení
+		if(force_razeni->n==Objekt->element->n)Objekt->element=Element;
 		Element->dalsi=force_razeni;
+		Element->predchozi=force_razeni->predchozi;
+		force_razeni->predchozi->dalsi=Element;
 		force_razeni->predchozi=Element;
 		//změna indexů
 		Cvektory::TElement *E=Objekt->element;
@@ -2272,24 +2234,6 @@ void Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->sparovany=Original->sparovany;
 }
 ////---------------------------------------------------------------------------
-void Cvektory::kopiruj_elementy(TObjekt *Original, TObjekt  *Kopie)//zkopíruje elementy a jejich atributy bez ukazatelového propojení z objektu do objektu, pouze ukazatelové propojení na mGrid je zachováno spojuje dvě metody vloz_element(TObjekt *Objekt,TElement *Element) a kopiruj_element(TElement *Original, TElement *Kopie)
-{
-	TElement *E=Original->element;//nepřeskakuje se hlavička, protože v ní jsou uloženy výchozí souřadnice
-	//vytvor_elementarni_osu(Original,Kopie);//smazat
-//	if(E!=NULL)//pokud elementy existují nakopíruje je do pomocného spojáku pomocného objektu
-//	{
-//		E=E->dalsi;//přeskočí hlavičku //smazat
-//		while(E!=NULL)
-//		{
-			TElement *Et=new TElement;
-			vloz_element(Kopie,Et);//pokus zaměna pořadí
-			kopiruj_element(E,Et);//pokus zaměna pořadí - kvůli dodatečnému vložení geometrie
-//			E=E->dalsi;//posun na další element
-//		}
-//	}
-	E=NULL;delete E;
-}
-////---------------------------------------------------------------------------
 //všem elementům, které měly přiřazen pohon s oldN(oldID), přiřadí pohon s newN(newID), podle toho, jak jsou ukládány nově do spojáku, důležité, pokud dojde k narušení pořadí ID resp n pohonů a pořadí jednotlivých řádků ve stringridu, např. kopirováním, smazáním, změnou pořadí řádků atp.
 void Cvektory::aktualizace_prirazeni_pohonu_k_elementum(unsigned int oldN,unsigned int newN)
 {
@@ -2311,7 +2255,7 @@ void Cvektory::vytvor_elementarni_osu(TObjekt *Original, TObjekt  *Kopie)
 {                 //smazat
 	if(Original==F->pom && Kopie==F->pom_temp)
 	{
-		hlavicka_elementy(Kopie);
+		//hlavicka_elementy(Kopie);
 	//	Kopie->elementy->geo.rotace=m.Rt90(F->d.trend(F->pom));
 	//	Kopie->elementy->geo.typ=0;Kopie->elementy->X=0;Kopie->elementy->Y=0;Kopie->elementy->geo.delka=0;
 	//	if(Kopie->elementy->geo.rotace==90 || Kopie->elementy->geo.rotace==270)Kopie->elementy->Y=Kopie->Y-Kopie->rozmer_kabiny.y/2.0;//vodorovná kabina
@@ -2335,32 +2279,6 @@ int Cvektory::vrat_eID_prvniho_pouziteho_robota(TObjekt *Objekt)
 		E=NULL;delete E;
 	}
 	if(RET==-1)Objekt->rezim=-1;else{if(RET>0 && RET%2==0)Objekt->rezim=0;else Objekt->rezim=1;}//rovnou nastaví režim objektu
-	return RET;
-}
-////---------------------------------------------------------------------------
-//vratí pořádí stopek, robotů a otočí, zatím pouze v elementu, bude na zvážení rozšíření na všechny objekty
-unsigned int Cvektory::vrat_poradi_elementu(TObjekt *Objekt,unsigned int eID)
-{
-	unsigned int RET=0;
-	if(Objekt->element!=NULL)
-	{
-		TElement *E=Objekt->element;//přeskočí rovnou hlavičku
-		while(E!=NULL && E->objekt_n==Objekt->n)
-		{
-			switch(eID)
-			{
-				case 0:if(E->eID==0)RET++;break;
-				case 1:case 7:case 11:case 15:case 101:case 105:
-				case 2:case 8:case 12:case 16:case 102:case 106:
-				case 3:case 9:case 13:case 17:case 103:case 107:
-				case 4:case 10:case 14:case 18:case 104:case 108:if(1<=E->eID && E->eID<=4 || 7<=E->eID && E->eID<=18 || 101<=E->eID && E->eID<=108)RET++;break;
-				case 5:
-				case 6:if(5<=E->eID && E->eID<=6)RET++;break;
-			}
-			E=E->dalsi;
-		}
-		E=NULL;delete E;
-	}
 	return RET;
 }
 ////---------------------------------------------------------------------------
@@ -2925,111 +2843,6 @@ Cvektory::TElement *Cvektory::vrat_posledni_rotacni_element()
 	return RET;
 }
 ////---------------------------------------------------------------------------
-//obsah všech comboboxu všech stopek nejdříve smaže a následně naplní combobox stopky ostatními elementy, které mohou být s danou stopkou spárované, nevypisuje danou stopku, vybere v combu stop-element spárovaný či předchozí, buď navržený nebo uživatelsky vybraný
-void Cvektory::napln_comba_stopek()
-{
-	TElement *E=F->pom_temp->element;//nepřeskakovat hlavičku
-	while(E!=NULL && E->objekt_n==F->pom_temp->n)//a jejich elementy
-	{
-		if(E->eID==0 && E->n!=0)napln_combo_stopky(E);
-		E=E->dalsi;
-	}
-	E=NULL;delete E;
-}
-////---------------------------------------------------------------------------
-//nejdříve smaže obsah comboboxu a následně naplní combobox stopky ostatními elementy, které mohou být s danou stopkou spárované, nevypisuje danou stopku, vybere v combu stop-element spárovaný či předchozí, buď navržený nebo uživatelsky vybraný
-void Cvektory::napln_combo_stopky(TElement *Stopka)
-{
-//	if(Stopka->eID==0)//záložní ošetření, aby se opravdu jednalo o stopku
-//	{
-//		bool smazat_combo=true;
-//		TscGPComboBox *C=Stopka->mGrid->getCombo(1,1);//ukazatel na combobox dané stopky
-//		if(C!=NULL)
-//		{
-//			C->Clear();//nejdříve combo vymaže
-//			TscGPListBoxItem *t=NULL;t=C->Items->Add(/*tady nelze parametr*/);t->Caption="nedefinován";//předvyplní, pro případ, že nebude existovat patřičný element
-//			Cvektory::TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
-//			while (O!=NULL)//prochází všechny objekty
-//			{
-//				bool hlavicka_vytvorena=false;
-//				TElement *E=O->element;//nepřeskakovat hlavičku
-//				if(F->pom_temp->n==O->n)E=F->pom_temp->elementy;//pokud se prochází objekt aktuálně editovaný, tak se vezme z pom_temp, kde jsou aktuální hodnoty
-//				while(E!=NULL)//a jejich elementy
-//				{
-//					////pokud je aktuální element stopka či robot se stopkou a zároveň nejedná se o danou stopku předávanou parametreme metody a nejedná se o hlavičku, naplní se do comba
-//					if((E->eID%2==0 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt) && E!=Stopka && E->n!=0)
-//					{
-//						if(smazat_combo){C->Clear();smazat_combo=false;/*t=C->Items->Add(/*tady nelze parametr*//*);t->Caption="nepřiřazen";v případě odkomentování zvýšit index u přidělování Itemindex u bez spárované situace*/}//nejdříve combo vymaže od popisku nedefinovan
-//						if(!hlavicka_vytvorena)//pokud ještě nebyla vytvoří ji formou názvu
-//						{
-//							hlavicka_vytvorena=true;
-//							t=C->Items->Add(/*tady nelze parametr*/);
-//							if(F->pom_temp->n==O->n)t->Caption=F->pom_temp->name.UpperCase();else t->Caption=O->name.UpperCase();
-//							C->Items->operator[](C->Items->Count-1)->Header=true;
-//						}
-//						t=C->Items->Add(/*tady nelze parametr*/);
-//						t->Caption=E->name;
-//					}
-//					if(Stopka->sparovany!=NULL)//lépe jako samostatný if
-//					{
-//						if(Stopka->sparovany->n==E->n && vrat_objekt(Stopka->sparovany,true)->n==O->n)C->ItemIndex=C->Items->Count-1;//pokud již existuje spárovaný, vrátí jeho itemindex   //samotné označí předchozí stop-element
-//					}
-//					E=E->dalsi;
-//				}
-//				E=NULL;delete E;
-//				O=O->dalsi;//posun na další prvek
-//			}
-//			O=NULL;delete O;
-//		}
-//		C=NULL;delete C;
-//	}
-}
-////---------------------------------------------------------------------------
-//uloží dané stopce ukazatel na sparovaný stop element, který byl vybraný v Combu dané stopky, ošetřuje zda se jedná o stopku
-void Cvektory::uloz_sparovany_element(TElement *Stopka)//algoritmus funguje na principu simualce tvorby comboboxu (viz výše)
-{
-//	if(Stopka->eID==0)
-//	{
-//		TscGPComboBox *C=Stopka->mGrid->getCombo(1,1);
-//		if(C!=NULL)
-//		{
-//			Stopka->sparovany=NULL;
-//			short selEl=-1;//aktuální zpracovávána položka virtuálního - comboboxu
-//			Cvektory::TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
-//			while (O!=NULL)//prochází všechny objekty
-//			{
-//				bool hlavicka_vytvorena=false;
-//				TElement *E=O->elementy;//nepřeskakovat hlavičku
-//				if(F->pom_temp->n==O->n)E=F->pom_temp->elementy;//pokud se prochází objekt aktuálně editovaný, tak se vezme z pom_temp, kde jsou aktuální hodnoty
-//				while(E!=NULL)//a jejich elementy
-//				{
-//					////pokud je aktuální element stopka či robot se stopkou a zároveň nejedná se o danou stopku předávanou parametreme metody a nejedná se o hlavičku, naplní se do comba
-//					if((E->eID==0 || E->eID==4 || E->eID==6) && E!=Stopka && E->n!=0)
-//					{
-//						if(!hlavicka_vytvorena)//pokud ještě nebyla, vytvoří ji formou názvu
-//						{
-//							hlavicka_vytvorena=true;
-//							selEl++;
-//						}
-//						selEl++;
-//						if(selEl==C->ItemIndex)
-//						{
-//							Stopka->sparovany=E;
-//							break;//ukončí předčasně další vyhledávání
-//						}
-//					}
-//					E=E->dalsi;
-//				}
-//				E=NULL;delete E;
-//				if(Stopka->sparovany!=NULL)break;//pokud byl nalezen, ukončí předčasně vyhledávání
-//				O=O->dalsi;//posun na další prvek
-//			}
-//			O=NULL;delete O;
-//		}
-//		C=NULL;delete C;
-//	}
-}
-////---------------------------------------------------------------------------
 //přiřadí Elementu ukazatel na jeho spárovaný element, zároveň aktualizuje tomuto spárovanému elementu spárovaný element + aktualizace první - poslední S&G element
 void Cvektory::prirad_sparovany_element(TElement *Element)
 {
@@ -3170,15 +2983,19 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 		if(Element->pohon!=NULL)cas+=Element->geo.delka/Element->pohon->aRD;//pokud má element pohon výpočet času přejezdu jeho úseku
   	else error=true;//nemá pohon = error
 		//průchod od Element k předchozím
-		TElement *E=Element->predchozi;
-		while(E!=NULL && E->n>0)
+		TElement *E=Element->predchozi;     //F->Memo("Element->name="+Element->name); F->Memo(Element->n);
+		while(E!=NULL)
 		{
-			if(E->eID==200)cas+=E->WT;//wt na předávacím místě
-			if((E->eID%2==0 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt) || (E->n==Element->n && E->objekt_n==Element->objekt_n))break;//pokud je předchozi S&G prěruš cyklus
-			if(E->pohon!=NULL)cas+=E->geo.delka/E->pohon->aRD;//pokud existuje úsek a má pohon
-			else error=true;//jinak error
+			if(E->n>0)
+			{
+		  	if(E->eID==200)cas+=E->WT;//wt na předávacím místě
+				if((vrat_druh_elementu(E)==0) || (E->n==Element->n && E->objekt_n==Element->objekt_n))break;//pokud je předchozi S&G prěruš cyklus
+				if(E->pohon!=NULL){cas+=E->geo.delka/E->pohon->aRD;F->Memo(E->n);}//pokud existuje úsek a má pohon
+				else error=true;//jinak error
+			}
 			E=E->predchozi;
-		}
+			//if(E!=NULL && E->n==0 || E==NULL)E=ELEMENTY->predchozi;//pokud jsem na začátku a nenašel jsem předchozí S&G element musím od konce a hledat v kruhu
+		}  // F->Memo("konec");
 		//výpočet RT a zapsání do dat elemetnu
 		double RT=0,WT=Element->WT;
 		if(Element->eID==0 && Element->data.pocet_voziku>1 && cas+Element->WT<PP.TT)WT*=Element->data.pocet_voziku;
@@ -3268,219 +3085,8 @@ Cvektory::TElement *Cvektory::vrat_posledni_element_objektu(TObjekt *Objekt)
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 //smaže element ze seznamu
-void Cvektory::smaz_element(TObjekt *Objekt, unsigned int n)
+void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 {
-	smaz_element(vrat_element(Objekt,n));
-}
-////---------------------------------------------------------------------------
-//smaže element ze seznamu
-void Cvektory::smaz_element(TElement *Element)
-{
-	smaz_element_NEW(Element);
-	//nejdříve smazání tabulky Elelementu
-//	long ID=Element->mGrid->ID;
-//	Element->mGrid->Delete();
-//
-//	//kontrola při pokusu o smazání předávacího místa
-//	bool povolit_smazani=true;
-//	if(Element->eID==200)
-//	{
-//		//unsigned int pocet_PM=0;
-//		TElement *E=Element->dalsi,*dalsi_PM=NULL,*predchozi_PM=NULL;//procházení daného objektu
-//		while(E!=NULL && E->objekt_n==Element->objekt_n)
-//		{
-//			if(E->eID==200){dalsi_PM=E;break;}
-//			E=E->dalsi;
-//		}
-//		if(E==NULL)
-//		{
-//			E=Element->predchozi;
-//			while(E->n!=0 && E->objekt_n==Element->objekt_n)
-//			{
-//				if(E->eID==200){predchozi_PM=E;break;}
-//				E=E->predchozi;
-//			}
-//		}
-//		TObjekt *O=vrat_objekt(Element->objekt_n);//pomocný ukazatel na objekt
-//		if(dalsi_PM==NULL && predchozi_PM==NULL && O->dalsi!=NULL)povolit_smazani=false;//jedno PM
-//		else//2 nebo více předávacích míst
-//		{
-//			if(dalsi_PM!=NULL && predchozi_PM!=NULL)//mezané PM má předchozí i další PM
-//			{
-//				E=predchozi_PM->dalsi;
-//				while(E->n<=dalsi_PM->n)
-//				{
-//					E->pohon=NULL;//nedefinovaný pohon mezi PM
-//					E=E->dalsi;
-//				}
-//			}
-//			if(dalsi_PM!=NULL && predchozi_PM==NULL)//existuje pouze dalsi PM
-//			{
-//				//získání pohonu
-//				TPohon *p=dalsi_PM->predchozi->pohon;
-//				E=O->element;
-//				if(F->pom_temp!=NULL)E=F->pom_temp->element;
-//				//přiřazení pohonu
-//				while(E!=NULL && E->n!=dalsi_PM->n && E->objekt_n==O->n)
-//				{
-//					E->pohon=p;
-//					E=E->dalsi;
-//				}
-//				p=NULL;delete p;
-//			}
-//			if(dalsi_PM==NULL && predchozi_PM!=NULL)//existuje pouze predchozi
-//			{
-//				//získání pohonu
-//				TPohon *p=NULL;
-//				if(Element->dalsi!=NULL)p=Element->dalsi->pohon;
-//				if(Element->dalsi==NULL && O->dalsi!=NULL && O->dalsi->element->pohon!=NULL)p=O->dalsi->element->pohon;
-//				predchozi_PM->dalsi;
-//				//přiřazení pohonu
-//				while(E!=NULL)
-//				{
-//					E->pohon=p;
-//					E=E->dalsi;
-//				}
-//				p=NULL;delete p;
-//			}
-//			if(dalsi_PM==NULL && predchozi_PM==NULL)
-//			{
-//      	//získání pohonu
-//				TPohon *p=Element->pohon;
-//				E=Element->dalsi;
-//				//přiřazení pohonu
-//				while(E!=NULL)
-//				{
-//					E->pohon=p;
-//					E=E->dalsi;
-//				}
-//				p=NULL;delete p;
-//			}
-//		}
-//		O=NULL;E=NULL;dalsi_PM=NULL;predchozi_PM=NULL;delete O;delete E;delete dalsi_PM;delete predchozi_PM;
-//	}
-//	//hláška uživateli
-//	if(!povolit_smazani && F->pom_temp!=NULL)F->TIP=F->ls->Strings[315];//"Nelze odstranit předávací místo"
-//	////////////smaz_element
-//	if(povolit_smazani && (Element->eID==MaxInt || Element->geo.typ==0 && Element->dalsi!=NULL && Element->dalsi->geo.typ==0))//pokud se jedná o zarážku, odstranit ze spojáku nebo pokud se jedná o element mezi 2mi liniemi
-//	{
-//		////mazání z testovacího spojáku ELEMENTY
-////		TElement *EL=ELEMENTY->dalsi;
-////		while(EL!=NULL)
-////		{
-////			if(EL->objekt_n==Element->objekt_n && EL->n==Element->n)break;
-////			else EL=EL->dalsi;
-////		}
-////		if(EL!=NULL)smaz_element_NEW(EL);
-////		delete EL;EL=NULL;
-//		////
-//		//vyřazení prvku ze seznamu a napojení prvku dalšího na prvek předchozí prku mazaného
-//		if(Element->dalsi!=NULL)//ošetření proti poslednímu prvku
-//		{
-//			Element->predchozi->dalsi=Element->dalsi;
-//			Element->dalsi->predchozi=Element->predchozi;
-//			if(Element->dalsi->geo.typ==0 && F->Akce!=F->GEOMETRIE)//upravovat pouze v případě, že se jedná o linii, a kokud needituju geometrii!!! (u geo. se upravuje geometrie ostatních elemntů zvlášť v Unit1)
-//			{
-//				if(Element->n!=1)vloz_G_element(Element->dalsi,0,Element->predchozi->geo.X4,Element->predchozi->geo.Y4,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
-//				else vloz_G_element(Element->dalsi,0,Element->geo.X1,Element->geo.Y1,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
-//			}
-//		}
-//		else//poslední prvek                                                                           ¨
-//		{
-//			if(Element->n==1)//pokud je mazaný prvek hned za hlavičkou
-//			{
-//				Element->predchozi->predchozi=Element->predchozi; //popř hlavička bude ukazovat sama na sebe
-//				Element->predchozi->dalsi=NULL;
-//			}
-//			else
-//			{
-//				Element->predchozi->dalsi=NULL;
-//				TElement *Eh=Element;//Element hlavička
-//				while(Eh->n!=0)//postup k hlavičce, jinak by se musel parametrem metody předávat ukazatal na Objekt, který element vlastní
-//				{
-//					Eh=Eh->predchozi;
-//				}
-//				Eh->predchozi=Element->predchozi;//zapis do hlavičky poslední prvek seznamu
-//				Eh=NULL;delete Eh;
-//			}
-//		}
-//
-//		//přeindexování (n/ID) původního následujícího objektu a prvků všech za nim následujících
-//		TElement *E=Element->dalsi;
-//		while(E!=NULL)
-//		{
-//			E->n--;
-//			E=E->dalsi;//posun na další
-//		}
-//
-//		//odstranění z pěměti
-//		Element=NULL;delete Element;
-//	}
-//	else if(povolit_smazani)//pokud se jedná o element, změnit typ na zarážku, zachování geometrie
-//	{
-//		//obnovení původních hodnot
-//		Element->data.LO1=1.5;
-//		Element->OTOC_delka=0;
-//		Element->data.LO2=0;
-//		Element->data.LO_pozice=0;
-//		Element->data.PT1=0;
-//		Element->PTotoc=0;
-//		Element->data.PT2=0;
-//		Element->WT=0;//čekání na palec
-//		Element->data.WTstop=0;//čekání na stopce
-//		Element->data.RT.x=0;//reserve time
-//		Element->data.RT.y=0;//reserve time
-//
-//		//názvy výhybek prozatím neřešeny
-//		unsigned int nTyp=vrat_poradi_elementu_do(Element)+1;//pokud se jedná o roboty
-//		Element->name="Zarážka "+AnsiString(nTyp);
-//		Element->short_name=Element->name.SubString(1,3)+AnsiString(nTyp);
-//
-//		//změna elemetnu na zarážku
-//		Element->eID=MaxInt;
-//
-//		//znovuvytvoření mGridu elementu
-//		Element->mGrid=new TmGrid(F);
-//		Element->mGrid->Tag=6;//ID formu
-//		Element->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
-//		F->design_element(Element,false);//nutné!
-//	}
-}
-////---------------------------------------------------------------------------
-//vymaže všechny elementy daného objektu včetně hlavičky a vrátí počet smazaných elementů (počítáno bez hlavičky), automaticky, pokud posledním parametreme není nastaveno jinak, smaže přidružený mGrid
-long Cvektory::vymaz_elementy(TObjekt *Objekt,bool mGridSmazat)
-{
-	long pocet_smazanych_objektu=0;
-//	while (Objekt->elementy!=NULL)
-//	{
-//		//vymaz_gObjekty(Objekt->elementy->predchozi);
-//		if(mGridSmazat)Objekt->elementy->predchozi->mGrid->Delete();
-//		Objekt->elementy->predchozi->mGrid==NULL;
-//		Objekt->elementy->predchozi=NULL;
-//		delete Objekt->elementy->predchozi;
-//		Objekt->elementy=Objekt->element;
-//		pocet_smazanych_objektu++;
-//	};
-	return pocet_smazanych_objektu;
-}
-////---------------------------------------------------------------------------
-long Cvektory::vymaz_seznam_ELEMENTY()
-{
-	long pocet_smazanych_objektu=0;
-	while (ELEMENTY!=NULL)
-	{
-		pocet_smazanych_objektu++;
-		ELEMENTY->predchozi=NULL;
-		delete ELEMENTY->predchozi;
-		ELEMENTY=ELEMENTY->dalsi;
-	};
-
-	return pocet_smazanych_objektu;
-}
-////////////TESTOVACÍ METODY PRO NOVÝ SPOJÁK ELEMENTŮ
-//smazání elementu
-void Cvektory::smaz_element_NEW(TElement *Element)
-{           F->log(__func__);
 	bool povolit=true;
 	if(Element->eID==200)//mazání PM
 	{
@@ -3501,7 +3107,7 @@ void Cvektory::smaz_element_NEW(TElement *Element)
 	}
 	//hláška uživateli
   if(!povolit && F->pom_temp!=NULL)F->TIP=F->ls->Strings[315];//"Nelze odstranit předávací místo"
-	if(povolit && (Element->dalsi==NULL || Element->dalsi!=NULL && Element->geo.typ==0 && Element->dalsi->geo.typ==0))
+	if(povolit && (preskocit_kontolu || (Element->dalsi==NULL || Element->dalsi!=NULL && Element->geo.typ==0 && Element->dalsi->geo.typ==0)))
 	{
 		TObjekt *O=vrat_objekt(Element->objekt_n);
 		if(O->element->n==Element->n && Element->predchozi->n>0 && Element->predchozi->objekt_n==O->n)O->element=Element->predchozi;
@@ -3573,7 +3179,20 @@ void Cvektory::smaz_element_NEW(TElement *Element)
 			F->design_element(Element,false);//nutné!
 		}
 	}
-		F->log(__func__,"   KONEC");
+}
+////---------------------------------------------------------------------------
+long Cvektory::vymaz_seznam_ELEMENTY()
+{
+	long pocet_smazanych_objektu=0;
+	while (ELEMENTY!=NULL)
+	{
+		pocet_smazanych_objektu++;
+		ELEMENTY->predchozi=NULL;
+		delete ELEMENTY->predchozi;
+		ELEMENTY=ELEMENTY->dalsi;
+	};
+
+	return pocet_smazanych_objektu;
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
