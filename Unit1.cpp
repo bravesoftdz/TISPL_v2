@@ -10593,7 +10593,7 @@ void TForm1::zmena_editovaneho_objektu()
 {
 	log(__func__);//logování
 	Timer_neaktivity->Enabled=false;//vypnutí timeru pro jistotu
-	Konec->SetFocus();
+	Konec->SetFocus();//konec
 	/////////Uložení náhledu
 	bool prepnout=true,validace=false;
 	bool kontrola_PM=false;//při neuložení minulého náhledmu musí dojík k separátní kontrole
