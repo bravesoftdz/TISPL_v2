@@ -999,7 +999,7 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
 	  PL_mGrid->Cells[3][i].Type=PL_mGrid->EDIT;
 	  PL_mGrid->Cells[4][i].Type=PL_mGrid->EDIT;
 		PL_mGrid->Cells[5][i].Type=PL_mGrid->COMBO;
-
+    PL_mGrid->Cells[6][i].Type=PL_mGrid->DRAW;
 	  /*PL_mGrid->Cells[6][i].Type=PL_mGrid->CHECK;*/PL_mGrid->Cells[6][i].RightBorder->Color=clWhite;//Check zobrazen pouze v pøípadì, že je pohon pøiøazen
 	  PL_mGrid->Cells[7][i].Type=PL_mGrid->BUTTON;
 
