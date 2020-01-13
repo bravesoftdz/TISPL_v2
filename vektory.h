@@ -401,6 +401,7 @@ class Cvektory
 		long PosunutiX;//proměnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souřadnicích zařízení
 		long PosunutiY;//proměnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souřadnicích zařízení
 		unsigned int pocet_objektu;
+		unsigned int pocet_elementu;
 		unsigned int pocet_vyhybek;
 		unsigned int pocet_pohonu;
 		unsigned int pocet_zakazek;
@@ -504,6 +505,7 @@ class Cvektory
 	void hlavicka_ELEMENTY();//vytvoří hlavičku seznamu elementů
 	TElement *vloz_element(TObjekt *Objekt,unsigned int eID, double X, double Y,short rotace_symbolu,TElement *Ep=NULL);//vloží element do spojového seznamu elementů daného technologického objektu a zároveň na něj vrátí ukazatel
 	void vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_razeni=NULL);//vloží element do spojového seznamu elementů daného technologického objektu
+	void vloz_element(TElement *Element);//vkládá elementy za sebe do spojáku ELEMENTY, souží pro načítání ze souboru
 	Cvektory::TElement *vloz_element_pred(TObjekt *Objekt,TElement *Element);//kontrola zda vkládaný element bude umístěn na konec nebo mezi jiné elementy, pokud bude vkládán na konec return=NULL, pokud mezi elementy return=ukazatel na předchozí element
 	void vloz_G_element(TElement *Element,short typ,double X1,double Y1,double X2,double Y2,double X3,double Y3,double X4,double Y4,double orientace=0,double rotacni_uhel=0,double radius=0,double delka=0);//danému elementu přiřadí/naplní geometrickou složku
 	void uprav_popisky_elementu(TElement *Element);//upraví indexy a popisky elementů po vloženém elementu (parametr Element), pokud dostane parametrem Element NULL přejmenuje a přeindexuje všechny ovlovněné elementy do původního stavu (tlačítko storno)

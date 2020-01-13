@@ -51,15 +51,15 @@ void Cvykresli::vykresli_halu(TCanvas *canv,int stav)
 		if(F->JID==1 && F->pom_bod->n==1)stav=2*v.HALA.body->predchozi->n;//poslední úsečka
 		if(F->JID==1 && F->pom_bod->n!=1)stav=v.HALA.body->predchozi->n+F->pom_bod->n-1;//ostatní úsečky
 	}
-	if(F->pom_temp!=NULL)stav=-1;
+	if(F->akt_Objekt!=NULL)stav=-1;
 	//nastavení kót
 	bool zobrazit_koty=true;
-	if(F->MOD==F->NAHLED)zobrazit_koty=false;
+	if(F->MOD==F->EDITACE)zobrazit_koty=false;
 	//vykreslení
 	short sirka_steny_px=m.m2px(0.4);//m->px
 	TColor clHala=clStenaHaly;//defaultní barva
-	if(F->pom_temp!=NULL)clHala=m.clIntensive(m.clIntensive(clBlack,110)/*clHala*/,100-F->scGPTrackBar_intenzita->Value);//zesvětlení při spuštěné editaci, zesvětlení tady i v metodě polygon (musí být 2x)
-	if(F->pom_temp!=NULL && F->scGPTrackBar_intenzita->Value>5 || F->pom_temp==NULL)polygon(canv,v.HALA.body,clHala,sirka_steny_px,stav,zobrazit_koty);
+	if(F->akt_Objekt!=NULL)clHala=m.clIntensive(m.clIntensive(clBlack,110)/*clHala*/,100-F->scGPTrackBar_intenzita->Value);//zesvětlení při spuštěné editaci, zesvětlení tady i v metodě polygon (musí být 2x)
+	if(F->akt_Objekt!=NULL && F->scGPTrackBar_intenzita->Value>5 || F->akt_Objekt==NULL)polygon(canv,v.HALA.body,clHala,sirka_steny_px,stav,zobrazit_koty);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -117,10 +117,10 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	while (O!=NULL)
 	{
 		//pokud je aktivní editace přeskočí vykreslení kabiny aktuálně editovaného objektu
-		if(F->pom_temp!=NULL && F->pom_temp->n!=O->n || F->pom_temp==NULL)vykresli_objekt(canv,O);
+		if(F->akt_Objekt!=NULL && F->akt_Objekt->n!=O->n || F->akt_Objekt==NULL)vykresli_objekt(canv,O);
 		O=O->dalsi;
 	}
-	if(F->pom_temp!=NULL)vykresli_objekt(canv,F->pom_temp);//vykreslení aktuálně editovaného objektu nad všechny ostatní objekty
+	if(F->akt_Objekt!=NULL)vykresli_objekt(canv,F->akt_Objekt);//vykreslení aktuálně editovaného objektu nad všechny ostatní objekty
 	vykresli_retez(canv);
 	///////////////Vykreslení pohonů
 //	Cvektory::TPohon *P=v.POHONY->dalsi;//přeskočí hlavičku
@@ -140,16 +140,16 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	{
 		//nastavování stavu
 		stav=1;
-		if(F->pom_temp!=NULL && F->pom_temp->n==E->objekt_n)stav=1;//elementy v aktivním objektu
+		if(F->akt_Objekt!=NULL && F->akt_Objekt->n==E->objekt_n)stav=1;//elementy v aktivním objektu
 		else stav=-1;//disabled elementy ostatních objektů
 		if(stav!=-1)stav=E->stav;//předávání stavu v aktivní kabině pro highlightování elementů
 		//vykreslení elementu a pozic
 		vykresli_pozice_a_zony(canv,E);
-		if(!(F->pom_temp!=NULL && E->objekt_n!=F->pom_temp->n && F->scGPTrackBar_intenzita->Value<5))vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->data.LO1,E->OTOC_delka,E->data.LO2,E->data.LO_pozice,E);
+		if(!(F->akt_Objekt!=NULL && E->objekt_n!=F->akt_Objekt->n && F->scGPTrackBar_intenzita->Value<5))vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->data.LO1,E->OTOC_delka,E->data.LO2,E->data.LO_pozice,E);
 		//uložení citelné oblasti pro další použití
 		E->citelna_oblast.rect3=aktOblast;
 		//vykreslení kót
-		if(F->pom_temp!=NULL && F->pom_temp->n==E->objekt_n && F->pom_temp->zobrazit_koty)vykresli_kotu(canv,E);//mezi elementy
+		if(F->akt_Objekt!=NULL && F->akt_Objekt->n==E->objekt_n && F->akt_Objekt->zobrazit_koty)vykresli_kotu(canv,E);//mezi elementy
 		E=E->dalsi;
 	}
 	delete E;E=NULL;
@@ -159,11 +159,11 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 //	{
 //		short stav=1;
 //		//vykreslení POHONU
-//		if(F->pom_temp!=NULL && F->pom_temp->n==O->n)vykresli_retez(canv,F->pom_temp);else vykresli_retez(canv,O);
+//		if(F->akt_Objekt!=NULL && F->akt_Objekt->n==O->n)vykresli_retez(canv,F->akt_Objekt);else vykresli_retez(canv,O);
 //		Cvektory::TElement *E=O->elementy;
-//		if(F->pom_temp!=NULL && F->pom_temp->n==O->n){stav=1;E=F->pom_temp->elementy;}//elementy v aktivním objektu, zajistí přeskočení vykreslení neaktuálních dat elementů a vykreslí aktuálně data elementů neuloženého objektu
+//		if(F->akt_Objekt!=NULL && F->akt_Objekt->n==O->n){stav=1;E=F->akt_Objekt->elementy;}//elementy v aktivním objektu, zajistí přeskočení vykreslení neaktuálních dat elementů a vykreslí aktuálně data elementů neuloženého objektu
 //		else stav=-1;//disabled elementy ostatních objektů
-//		if(F->pom_temp==NULL)stav=1;
+//		if(F->akt_Objekt==NULL)stav=1;
 //		while(E!=NULL)//pokud elementy existují
 //		{
 //			if(E->n>0)
@@ -172,10 +172,10 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 //				//vykreslení potenciálních pozic vozíků resp. jigů
 //				vykresli_pozice_a_zony(canv,E);
 //				//vykreslení elementů
-//				if(!(F->pom_temp!=NULL && O->n!=F->pom_temp->n && F->scGPTrackBar_intenzita->Value<5))vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->data.LO1,E->OTOC_delka,E->data.LO2,E->data.LO_pozice,E);
+//				if(!(F->akt_Objekt!=NULL && O->n!=F->akt_Objekt->n && F->scGPTrackBar_intenzita->Value<5))vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->data.LO1,E->OTOC_delka,E->data.LO2,E->data.LO_pozice,E);
 //				E->citelna_oblast.rect3=aktOblast;//uložení citelné oblasti pro další použití
 //				//vykreslení kót
-//				if(F->pom_temp!=NULL && F->pom_temp->n==O->n && F->pom_temp->zobrazit_koty){vykresli_kotu(canv,E);}//mezi elementy
+//				if(F->akt_Objekt!=NULL && F->akt_Objekt->n==O->n && F->akt_Objekt->zobrazit_koty){vykresli_kotu(canv,E);}//mezi elementy
 //			}
 //			//zde bude ještě vykreslení g_elementu
 //			E=E->dalsi;//posun na další element
@@ -297,7 +297,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 {
 	////vstupní proměnné
 	bool highlight_pow=false;  //tato podmínka tu původně nebývala před změnou červena - šedomodrá
-	TColor clAkt/*clAktulální*/=clStenaKabiny;if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clAkt=clPasiv;//v případě editace jsou pasivní objekty šedé
+	TColor clAkt/*clAktulální*/=clStenaKabiny;if(F->akt_Objekt!=NULL && F->akt_Objekt->n!=O->n)clAkt=clPasiv;//v případě editace jsou pasivní objekty šedé
 	short I=100-F->scGPTrackBar_intenzita->Value;
 	double orientace=O->orientace; //něco s tím udělat!!!! short->double
 	long X1=m.L2Px(O->body->dalsi->X);
@@ -313,10 +313,10 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	short W=0;//smazat m.round(sirka_steny_px/2.0);//posunutí vykreslení orámování nad vnější rozměry kabiny
 	short pmpp=m.m2px(v.PP.delka_jig); if(v.PP.delka_jig<v.PP.sirka_jig)pmpp=m.m2px(v.PP.sirka_jig);pmpp=m.round(pmpp/2.0);if(pmpp>m.m2px(1))pmpp=m.m2px(1);/*ošetření*///polovina max. průjezdního profilu
 	//nastavení zobrazení, rozdíl mezi Layoutem a editaci, editovaným objektem a ostatnímy
-	if(F->pom_temp!=NULL){if(F->pom_temp->n==O->n){stav=-2;if(F->pom_temp->zobrazit_koty)zobrazit_koty=true;else zobrazit_koty=false;}else {stav=-1;zobrazit_koty=false;}}
+	if(F->akt_Objekt!=NULL){if(F->akt_Objekt->n==O->n){stav=-2;if(F->akt_Objekt->zobrazit_koty)zobrazit_koty=true;else zobrazit_koty=false;}else {stav=-1;zobrazit_koty=false;}}
 	else {stav=-2;zobrazit_koty=false;}
 	//highlight polygonu (editace rozmerů, bodů)
-	if(F->pom_temp!=NULL && F->pom_temp->n==O->n && F->pom_bod!=NULL)
+	if(F->akt_Objekt!=NULL && F->akt_Objekt->n==O->n && F->pom_bod!=NULL)
 	switch(F->JID)
 	{
 		//highlight hrany
@@ -325,10 +325,10 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		case -3:stav=F->pom_bod->n;break;
 	}
 	//highlight hrany objektu mimo editaci
-	if(F->pom_temp==NULL && F->pom!=NULL && F->pom->n==O->n && F->JID==4){if(F->pom_bod->n==1)stav=O->body->predchozi->n*2;else stav=O->body->predchozi->n+F->pom_bod->n-1;}
+	if(F->akt_Objekt==NULL && F->pom!=NULL && F->pom->n==O->n && F->JID==4){if(F->pom_bod->n==1)stav=O->body->predchozi->n*2;else stav=O->body->predchozi->n+F->pom_bod->n-1;}
 
 	////vnější obrys kabiny
-	if(!(F->pom_temp!=NULL && F->pom_temp->n!=O->n && F->scGPTrackBar_intenzita->Value<5))polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
+	if(!(F->akt_Objekt!=NULL && F->akt_Objekt->n!=O->n && F->scGPTrackBar_intenzita->Value<5))polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
 
 	///název
 	//název objektu - nastavení
@@ -346,19 +346,19 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	//nastavení normálního, disabled nebo highlight textu
 	nastavit_text_popisu_objektu_v_nahledu(canv);
   //highlight názvu
-	if((F->JID==-6 || F->editace_textu && F->index_kurzoru==-6) && (F->pom!=NULL && F->pom->n==O->n || F->pom_temp!=NULL && F->pom_temp->n==O->n))canv->Font->Color=clStenaHaly; else canv->Font->Color=clStenaKabiny;
-  if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)canv->Font->Color=m.clIntensive(clAkt,I);//pro neaktivní objekty při editaci
+	if((F->JID==-6 || F->editace_textu && F->index_kurzoru==-6) && (F->pom!=NULL && F->pom->n==O->n || F->akt_Objekt!=NULL && F->akt_Objekt->n==O->n))canv->Font->Color=clStenaHaly; else canv->Font->Color=clStenaKabiny;
+  if(F->akt_Objekt!=NULL && F->akt_Objekt->n!=O->n)canv->Font->Color=m.clIntensive(clAkt,I);//pro neaktivní objekty při editaci
 	//samotné vypsání názvu
-	if(!(F->pom_temp!=NULL && F->pom_temp->n!=O->n && F->scGPTrackBar_intenzita->Value<5))TextFraming(canv,X,Y,Tn);//záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
+	if(!(F->akt_Objekt!=NULL && F->akt_Objekt->n!=O->n && F->scGPTrackBar_intenzita->Value<5))TextFraming(canv,X,Y,Tn);//záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
 	//vrácení původní hodnoty rotace canvasu
 	canv->Font->Orientation=0;
 
 	////vykreslení kříže posunu u tabulky pohonu, natrvalo
 	canv->Pen->Color=clBlack;canv->Pen->Width=1;
-	if(F->pom_temp!=NULL && F->Akce==F->Takce::NIC && F->PmG->Highlight)
+	if(F->akt_Objekt!=NULL && F->Akce==F->Takce::NIC && F->PmG->Highlight)
 	{
-		line(canv,m.L2Px(F->pom_temp->Xp)-20,m.L2Py(F->pom_temp->Yp)-20,m.L2Px(F->pom_temp->Xp)-60,m.L2Py(F->pom_temp->Yp)-20);
-		line(canv,m.L2Px(F->pom_temp->Xp)-40,m.L2Py(F->pom_temp->Yp),m.L2Px(F->pom_temp->Xp)-40,m.L2Py(F->pom_temp->Yp)-40);
+		line(canv,m.L2Px(F->akt_Objekt->Xp)-20,m.L2Py(F->akt_Objekt->Yp)-20,m.L2Px(F->akt_Objekt->Xp)-60,m.L2Py(F->akt_Objekt->Yp)-20);
+		line(canv,m.L2Px(F->akt_Objekt->Xp)-40,m.L2Py(F->akt_Objekt->Yp),m.L2Px(F->akt_Objekt->Xp)-40,m.L2Py(F->akt_Objekt->Yp)-40);
 	}
 
 	short highlight=0;//nastavování zda mají být koty highlightovány
@@ -370,9 +370,9 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		double vzdalenost=0;
 		while(K->dalsi!=NULL)
 		{
-			if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)K->n || F->JID==0 && F->pom_komora!=NULL && F->pom_komora->n==K->n)){clAkt=m.clIntensive(clStenaKabiny,-50);highlight_pow=true;}//highlight
-			else clAkt/*clAktualni*/=clStenaKabiny;if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clAkt=clPasiv;//v případě editace jsou pasivní objekty šedé, tato podmínka nebyla před změnou červená -> šedomodrá
-			if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clAkt=m.clIntensive(clAkt,I);//tady před změnou červená -> šedomodrá bývala clStenaKabiny
+			if(F->akt_Objekt!=NULL && F->akt_Objekt->n==O->n && (F->JID*(-1)-10==(signed)K->n || F->JID==0 && F->pom_komora!=NULL && F->pom_komora->n==K->n)){clAkt=m.clIntensive(clStenaKabiny,-50);highlight_pow=true;}//highlight
+			else clAkt/*clAktualni*/=clStenaKabiny;if(F->akt_Objekt!=NULL && F->akt_Objekt->n!=O->n)clAkt=clPasiv;//v případě editace jsou pasivní objekty šedé, tato podmínka nebyla před změnou červená -> šedomodrá
+			if(F->akt_Objekt!=NULL && F->akt_Objekt->n!=O->n)clAkt=m.clIntensive(clAkt,I);//tady před změnou červená -> šedomodrá bývala clStenaKabiny
 			set_pen(canv,clAkt,sirka_steny_px,PS_ENDCAP_SQUARE);
 			vzdalenost+=K->velikost;//dle velikosti předchozích komor uchovává hodnotu součtu/pozice aktuálně vykreslované komory
 			short W1=0;if(K->n==1)W1=W;//pro první komoru odsazeni
@@ -386,7 +386,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				line(canv,X,Y1,X,Y-pmpp);
 				line(canv,X,Y2,X,Y+pmpp);
 				//highlight komory
-				if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)K->n || F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==K->n))
+				if(F->akt_Objekt!=NULL && F->akt_Objekt->n==O->n && (F->JID*(-1)-10==(signed)K->n || F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==K->n))
 				{
 					double hl_X=0;
 					if(orientace==90)hl_X=X-m.m2px(K->velikost)-W1;else hl_X=X+m.m2px(K->velikost)-W1;
@@ -413,7 +413,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				line(canv,X1,Y,X-pmpp,Y);
 				line(canv,X2,Y,X+pmpp,Y);
 				//highlight komory
-				if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)K->n || F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==K->n))//highlight komory
+				if(F->akt_Objekt!=NULL && F->akt_Objekt->n==O->n && (F->JID*(-1)-10==(signed)K->n || F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==K->n))//highlight komory
 				{
 					highlight_pow=true;
 					double hl_Y=0;
@@ -432,9 +432,9 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				if(K->typ==1)vykresli_pow_sprchu(canv,X1,X2,Y,Y,m.m2px(K->velikost),clAkt,sirka_steny_px/4.0,pmpp,0,orientace);
 			}
 			////překreslení obrysu, nutné u POW, jinak by komory překryli highlight stěny obrysu
-			if(F->pom_temp!=NULL && F->pom_temp->id==3 && !highlight_pow && !(F->pom_temp!=NULL && F->pom_temp->n!=O->n && F->scGPTrackBar_intenzita->Value<5))polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
+			if(F->akt_Objekt!=NULL && F->akt_Objekt->id==3 && !highlight_pow && !(F->akt_Objekt!=NULL && F->akt_Objekt->n!=O->n && F->scGPTrackBar_intenzita->Value<5))polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
 			//KÓTY
-			if(zobrazit_koty && F->pom_temp->n==O->n)
+			if(zobrazit_koty && F->akt_Objekt->n==O->n)
 			{
 				//nastavení highlight
 				if((F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==K->n) || (F->JID*(-1)-10==(signed)K->n || F->JID*(-1)-10==(signed)K->predchozi->n)&&F->d.v.PtInKota_komory(O,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
@@ -452,19 +452,19 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		}
 		K=NULL;delete K;
 		////poslední komora
-		if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)F->pom_temp->komora->predchozi->n || (F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==F->pom_temp->komora->predchozi->n)))clAkt=m.clIntensive(clStenaKabiny,-50);//highlight
+		if(F->akt_Objekt!=NULL && F->akt_Objekt->n==O->n && (F->JID*(-1)-10==(signed)F->akt_Objekt->komora->predchozi->n || (F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==F->akt_Objekt->komora->predchozi->n)))clAkt=m.clIntensive(clStenaKabiny,-50);//highlight
 		//else clAkt=clStenaKabiny;
-		//if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clAkt=m.clIntensive(clStenaKabiny,50);
-		else clAkt/*clAktualni*/=clStenaKabiny;if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clAkt=clPasiv;//v případě editace jsou pasivní objekty šedé, tato podmínka nebyla před změnou červená -> šedomodrá
-		if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clAkt=m.clIntensive(clAkt,I);//tady před změnou červená -> šedomodrá bývala clStenaKabiny
+		//if(F->akt_Objekt!=NULL && F->akt_Objekt->n!=O->n)clAkt=m.clIntensive(clStenaKabiny,50);
+		else clAkt/*clAktualni*/=clStenaKabiny;if(F->akt_Objekt!=NULL && F->akt_Objekt->n!=O->n)clAkt=clPasiv;//v případě editace jsou pasivní objekty šedé, tato podmínka nebyla před změnou červená -> šedomodrá
+		if(F->akt_Objekt!=NULL && F->akt_Objekt->n!=O->n)clAkt=m.clIntensive(clAkt,I);//tady před změnou červená -> šedomodrá bývala clStenaKabiny
 		set_pen(canv,clAkt,sirka_steny_px,PS_ENDCAP_SQUARE);
 		if(orientace==90 || orientace==270)
 		{
-			if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)F->pom_temp->komora->predchozi->n || (F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==F->pom_temp->komora->predchozi->n)))//highlight komory
+			if(F->akt_Objekt!=NULL && F->akt_Objekt->n==O->n && (F->JID*(-1)-10==(signed)F->akt_Objekt->komora->predchozi->n || (F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==F->akt_Objekt->komora->predchozi->n)))//highlight komory
 			{
 				//nastavení proměnných podle orientace
 				double hl_X=0;
-				if(orientace==90)hl_X=X2-m.m2px(F->pom_temp->komora->predchozi->velikost);else hl_X=X2+m.m2px(F->pom_temp->komora->predchozi->velikost);
+				if(orientace==90)hl_X=X2-m.m2px(F->akt_Objekt->komora->predchozi->velikost);else hl_X=X2+m.m2px(F->akt_Objekt->komora->predchozi->velikost);
 				//vykreslení
 				canv->MoveTo(X2,Y1-W);
 				canv->LineTo(hl_X,Y1-W);
@@ -480,12 +480,12 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		else
 		{
 			bool highlight=false;
-			if(F->pom_temp!=NULL && F->pom_temp->n==O->n && (F->JID*(-1)-10==(signed)F->pom_temp->komora->predchozi->n || (F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==F->pom_temp->komora->predchozi->n)))//highlight komory
+			if(F->akt_Objekt!=NULL && F->akt_Objekt->n==O->n && (F->JID*(-1)-10==(signed)F->akt_Objekt->komora->predchozi->n || (F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==F->akt_Objekt->komora->predchozi->n)))//highlight komory
 			{
 				//nastavení proměnných podle orientace
 				highlight=true;
 				double hl_Y=0;
-				if(orientace==180){hl_Y=Y2-m.m2px(F->pom_temp->komora->predchozi->velikost);pmpp*=-1;}else hl_Y=Y2+m.m2px(F->pom_temp->komora->predchozi->velikost);
+				if(orientace==180){hl_Y=Y2-m.m2px(F->akt_Objekt->komora->predchozi->velikost);pmpp*=-1;}else hl_Y=Y2+m.m2px(F->akt_Objekt->komora->predchozi->velikost);
 				//vykreslení
 				canv->MoveTo(X1-W,Y2);
 				canv->LineTo(X1-W,hl_Y);
@@ -502,7 +502,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
     	e_posledni=NULL;delete e_posledni;
 		}
 		//vykreslení KÓTY od poslení komory k okraji kabiny
-		if(zobrazit_koty && F->pom_temp->n==O->n)
+		if(zobrazit_koty && F->akt_Objekt->n==O->n)
 		{
 			if((F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==O->komora->predchozi->n) || (F->JID*(-1)-10==(signed)O->komora->predchozi->n || F->JID*(-1)-10==(signed)O->komora->predchozi->predchozi->n)&&F->d.v.PtInKota_komory(O,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
 			else if(F->JID*(-1)-10==(signed)O->komora->predchozi->n || F->JID>=11&&F->JID<=99)highlight=1;
@@ -751,7 +751,7 @@ void Cvykresli::TextFraming(TCanvas *canv,int X,int Y,UnicodeString Text,TFont *
 ////---------------------------------------------------------------------------
 void Cvykresli::vykresli_grid(TCanvas *canv, int size_grid)
 {
-    if(F->pom_temp!=NULL)size_grid/=10;//zjemnění gridu v případě náhledu, grid po 0,1 m místo po 1m
+    if(F->akt_Objekt!=NULL)size_grid/=10;//zjemnění gridu v případě náhledu, grid po 0,1 m místo po 1m
 		//if(Form1->Zoom==1.75 || Form1->Zoom==0.75)bacha u těchto hodnot dochází ke špatnému vykreslování asi zaokrouhlouvaním
 		for(int x=m.round((m.round(-1*Form1->Posun.x)%size_grid)*Form1->Zoom);x<=Form1->ClientWidth;x+=m.round(size_grid*Form1->Zoom))
 		for(int y=m.round((m.round(-1*Form1->Posun.y)%size_grid)*Form1->Zoom);y<=Form1->ClientHeight;y+=m.round(size_grid*Form1->Zoom))
@@ -2820,7 +2820,7 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 //		unsigned short clPotRGB=180;//hotnota barevných složek dle RGB potenciálních pozic
 //		TColor clPotencial=(TColor) RGB(clPotRGB,clPotRGB,clPotRGB),clChassis=(TColor) RGB(50,50,50),clJig=clPurple;
 //		short I=100-F->scGPTrackBar_intenzita->Value;
-//		if(F->pom_temp!=NULL && E->objekt_n!=F->pom_temp->n)//v případě editace změna intezity barev právě needitovaných objektů
+//		if(F->akt_Objekt!=NULL && E->objekt_n!=F->akt_Objekt->n)//v případě editace změna intezity barev právě needitovaných objektů
 //		{
 //			clPotencial=m.clIntensive(clPotencial,I);if(I>5){clPotRGB=255-m.round((100-I)/4);rozmezi=0;}
 //			clChassis=m.clIntensive(clChassis,I*2);clJig=m.clIntensive(clJig,I*4);//*2,*4 pouze empiricky dodáno
@@ -2899,12 +2899,12 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 //		}
 //-----------------------------------------------------------------------
 //tady vývoj:   //toto provizorn2
-//		if(F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && F->pom_temp==NULL && v.vrat_druh_elementu(E)==0 && E->sparovany!=NULL && E->name=="Stop 1"/*&& E->n==1*/)//pro S&G který má spárovaný objekt
+//		if(F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && F->akt_Objekt==NULL && v.vrat_druh_elementu(E)==0 && E->sparovany!=NULL && E->name=="Stop 1"/*&& E->n==1*/)//pro S&G který má spárovaný objekt
 //		{
 //			//provizoriní algoritmus do změny DM
 //			Cvektory::TObjekt *O=NULL;                   //další objekt                 			//další kolo                  //v případě editovaného objektu
-//			Cvektory::TElement *Et=E->dalsi;if(Et==NULL){O=v.vrat_objekt(E->objekt_n)->dalsi;if(O==NULL)O=v.OBJEKTY->dalsi;if(F->pom_temp!=NULL && O->n==F->pom_temp->n)O=F->pom_temp;if(O!=NULL && Et==NULL)Et=O->element;}//tempový Element
-//			Cvektory::TElement *Esd=E->sparovany->dalsi;if(Esd==NULL){O=v.vrat_objekt(E->sparovany->objekt_n)->dalsi;if(O==NULL)O=v.OBJEKTY->dalsi;if(F->pom_temp!=NULL && O->n==F->pom_temp->n)O=F->pom_temp;if(O!=NULL && Esd==NULL)Esd=O->element;}//Element za spárovaným, kvůli tomu, aby algoritmus došel až ke spárovanému bylo tu toto (nyní s tím nesouhlasím):pokud je na konci vždy zarážka, tak je zbytečné
+//			Cvektory::TElement *Et=E->dalsi;if(Et==NULL){O=v.vrat_objekt(E->objekt_n)->dalsi;if(O==NULL)O=v.OBJEKTY->dalsi;if(F->akt_Objekt!=NULL && O->n==F->akt_Objekt->n)O=F->akt_Objekt;if(O!=NULL && Et==NULL)Et=O->element;}//tempový Element
+//			Cvektory::TElement *Esd=E->sparovany->dalsi;if(Esd==NULL){O=v.vrat_objekt(E->sparovany->objekt_n)->dalsi;if(O==NULL)O=v.OBJEKTY->dalsi;if(F->akt_Objekt!=NULL && O->n==F->akt_Objekt->n)O=F->akt_Objekt;if(O!=NULL && Esd==NULL)Esd=O->element;}//Element za spárovaným, kvůli tomu, aby algoritmus došel až ke spárovanému bylo tu toto (nyní s tím nesouhlasím):pokud je na konci vždy zarážka, tak je zbytečné
 //			double umisteni=0;
 //			while(Esd!=Et /*&& Et!=E && Et!=NULL*/)//procházení cyklem od daného stop elementů až po jeho spárovaný stop element
 //			{
@@ -2925,7 +2925,7 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 //				}
 //
 //				////ukazatelové záležitosti          //další objekt         //další kolo                 //v případě editovaného objektu
-//				if(Et->dalsi==NULL){O=v.vrat_objekt(Et->objekt_n)->dalsi;if(O==NULL)O=v.OBJEKTY->dalsi;if(F->pom_temp!=NULL && O->n==F->pom_temp->n)O=F->pom_temp;if(O!=NULL)Et=O->element;}
+//				if(Et->dalsi==NULL){O=v.vrat_objekt(Et->objekt_n)->dalsi;if(O==NULL)O=v.OBJEKTY->dalsi;if(F->akt_Objekt!=NULL && O->n==F->akt_Objekt->n)O=F->akt_Objekt;if(O!=NULL)Et=O->element;}
 //				else Et=Et->dalsi;
 //			}
 //			Et=NULL;delete Et;
@@ -3067,13 +3067,13 @@ void Cvykresli::vykresli_retez(TCanvas *canv)//přejmenovat
 	{
 		////vstupní proměnné
 		//musí být uvnitř cyklu pro nové nastavení
-		TColor clKolej=(TColor) RGB(255,69,0); if(F->pom_temp!=NULL && F->pom_temp->n!=E->objekt_n)clKolej=m.clIntensive(clKolej,m.get_intensity()/1.8);//zesvětlování neaktivních pohonů
-		TColor clRetez=clBlack; if(F->pom_temp!=NULL && F->pom_temp->n!=E->objekt_n)clRetez=m.clIntensive(clRetez,m.get_intensity());//zesvětlování neaktivních pohonů
+		TColor clKolej=(TColor) RGB(255,69,0); if(F->akt_Objekt!=NULL && F->akt_Objekt->n!=E->objekt_n)clKolej=m.clIntensive(clKolej,m.get_intensity()/1.8);//zesvětlování neaktivních pohonů
+		TColor clRetez=clBlack; if(F->akt_Objekt!=NULL && F->akt_Objekt->n!=E->objekt_n)clRetez=m.clIntensive(clRetez,m.get_intensity());//zesvětlování neaktivních pohonů
 		float RetezWidth=1;if(E->pohon!=NULL)RetezWidth=F->Zoom*0.5;//pokud není pohon přiřazen, tak jen elementární osa, jinak skutečná tloušťka
 
 		////vykreslení paralelních koleji
-//		if(E->predchozi!=NULL && E->predchozi->pohon!=NULL && E->predchozi->eID==200)vykresli_koleje(canv,E->predchozi,O);//pouze grafická korekce předchozího segmentu, pokud byl překryt předávacím místem
-//		if(E->pohon!=NULL)vykresli_koleje(canv,E,O);//pouze pokud je přiřazen pohon
+		if(E->predchozi!=NULL && E->predchozi->pohon!=NULL && E->predchozi->eID==200)vykresli_koleje(canv,E->predchozi);//pouze grafická korekce předchozího segmentu, pokud byl překryt předávacím místem
+		if(E->pohon!=NULL)vykresli_koleje(canv,E);//pouze pokud je přiřazen pohon
 
 		////vykreslení segementu pohonu
 		//plnění geo souřadnic do pole
@@ -3082,7 +3082,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv)//přejmenovat
 		POLE[2]=TPoint(m.L2Px(E->geo.X3),m.L2Py(E->geo.Y3));
 		POLE[3]=TPoint(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
 		//vykreslení pouzdra řetězu
-		if(E->pohon!=NULL && (F->pom_temp==NULL || F->pom_temp!=NULL && F->pom_temp->n==E->objekt_n || F->scGPTrackBar_intenzita->Value>25 && F->pom_temp!=NULL && F->pom_temp->n!=E->objekt_n))//při editaci zobrazí pasivní jen s intenzitou větší než 25
+		if(E->pohon!=NULL && (F->akt_Objekt==NULL || F->akt_Objekt!=NULL && F->akt_Objekt->n==E->objekt_n || F->scGPTrackBar_intenzita->Value>25 && F->akt_Objekt!=NULL && F->akt_Objekt->n!=E->objekt_n))//při editaci zobrazí pasivní jen s intenzitou větší než 25
 		{
 			set_pen(canv,clKolej,m.round(RetezWidth*2),PS_ENDCAP_FLAT);
 			canv->PolyBezier(POLE,3);
@@ -3125,8 +3125,8 @@ void Cvykresli::vykresli_retez(TCanvas *canv)//přejmenovat
 //		{
 //			////vstupní proměnné
 //			//musí být uvnitř cyklu pro nové nastavení
-//			TColor clKolej=RGB(255,69,0); if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clKolej=m.clIntensive(clKolej,m.get_intensity()/1.8);//zesvětlování neaktivních pohonů
-//			TColor clRetez=clBlack; if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clRetez=m.clIntensive(clRetez,m.get_intensity());//zesvětlování neaktivních pohonů
+//			TColor clKolej=RGB(255,69,0); if(F->akt_Objekt!=NULL && F->akt_Objekt->n!=O->n)clKolej=m.clIntensive(clKolej,m.get_intensity()/1.8);//zesvětlování neaktivních pohonů
+//			TColor clRetez=clBlack; if(F->akt_Objekt!=NULL && F->akt_Objekt->n!=O->n)clRetez=m.clIntensive(clRetez,m.get_intensity());//zesvětlování neaktivních pohonů
 //			float RetezWidth=1;if(E->pohon!=NULL)RetezWidth=F->Zoom*0.5;//pokud není pohon přiřazen, tak jen elementární osa, jinak skutečná tloušťka
 //			POLE[0]=TPoint(m.L2Px(E->geo.X1),m.L2Py(E->geo.Y1));
 //
@@ -3160,7 +3160,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv)//přejmenovat
 //				POLE[3]=TPoint(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
 //      }
 //			//vykreslení pouzdra řetězu
-//			if(E->pohon!=NULL && (F->pom_temp==NULL || F->pom_temp!=NULL && F->pom_temp->n==O->n || F->scGPTrackBar_intenzita->Value>25 && F->pom_temp!=NULL && F->pom_temp->n!=O->n))//při editaci zobrazí pasivní jen s intenzitou větší než 25
+//			if(E->pohon!=NULL && (F->akt_Objekt==NULL || F->akt_Objekt!=NULL && F->akt_Objekt->n==O->n || F->scGPTrackBar_intenzita->Value>25 && F->akt_Objekt!=NULL && F->akt_Objekt->n!=O->n))//při editaci zobrazí pasivní jen s intenzitou větší než 25
 //			{
 //				set_pen(canv,clKolej,m.round(RetezWidth*2),PS_ENDCAP_FLAT);
 //				canv->PolyBezier(POLE,3);
@@ -3174,7 +3174,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv)//přejmenovat
 //			if(E->eID==200)
 //			{
 //				//vykreslení pouzdra řetězu
-//				if(E->pohon!=NULL && (F->pom_temp==NULL || F->pom_temp!=NULL && F->pom_temp->n==O->n || F->scGPTrackBar_intenzita->Value>25 && F->pom_temp!=NULL && F->pom_temp->n!=O->n))//při editaci zobrazí pasivní jen s intenzitou větší než 25
+//				if(E->pohon!=NULL && (F->akt_Objekt==NULL || F->akt_Objekt!=NULL && F->akt_Objekt->n==O->n || F->scGPTrackBar_intenzita->Value>25 && F->akt_Objekt!=NULL && F->akt_Objekt->n!=O->n))//při editaci zobrazí pasivní jen s intenzitou větší než 25
 //				{
 //					set_pen(canv,clKolej,m.round(RetezWidth*2),PS_ENDCAP_FLAT);
 //					canv->PolyBezier(POLE_PM,3);
@@ -3210,15 +3210,15 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TRetez *Retez)
 {
 	if(Retez!=NULL && Retez->predchozi->n>0)
 	{
-		//TColor clRetez=clBlack; if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clRetez=m.clIntensive(clRetez,m.get_intensity());//zesvětlování neaktivních pohonů
+		//TColor clRetez=clBlack; if(F->akt_Objekt!=NULL && F->akt_Objekt->n!=O->n)clRetez=m.clIntensive(clRetez,m.get_intensity());//zesvětlování neaktivních pohonů
 		//float RetezWidth=1;if(E->pohon!=NULL)RetezWidth=F->Zoom*0.5;//pokud není pohon přiřazen, tak jen elementární osa, jinak skutečná tloušťka
 //		//vykreslení pouzdra řetězu
-//		if(E->pohon!=NULL && (F->pom_temp==NULL || F->pom_temp!=NULL && F->pom_temp->n==O->n || F->scGPTrackBar_intenzita->Value>25 && F->pom_temp!=NULL && F->pom_temp->n!=O->n))//při editaci zobrazí pasivní jen s intenzitou větší než 25
+//		if(E->pohon!=NULL && (F->akt_Objekt==NULL || F->akt_Objekt!=NULL && F->akt_Objekt->n==O->n || F->scGPTrackBar_intenzita->Value>25 && F->akt_Objekt!=NULL && F->akt_Objekt->n!=O->n))//při editaci zobrazí pasivní jen s intenzitou větší než 25
 //		{
 //			set_pen(canv,clKolej,m.round(RetezWidth*2),PS_ENDCAP_FLAT);
 //			canv->PolyBezier(POLE,3);
 //		}
-//bude to chtít ukládat stav řetezu dle pom_temp, a potom dořešit elementární osy s geometrii, typicky po zadané geometrii a odebraném pohonu
+//bude to chtít ukládat stav řetezu dle akt_Objekt, a potom dořešit elementární osy s geometrii, typicky po zadané geometrii a odebraném pohonu
 
 		TPoint POLE[4];
 		set_pen(canv,clBlue,F->Zoom*0.5*4,PS_ENDCAP_SQUARE);//nastavení pera
@@ -3241,12 +3241,12 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TRetez *Retez)
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //vykreslení jednoho geometrického segmentu dvou párů kolejí
-void Cvykresli::vykresli_koleje(TCanvas *canv,Cvektory::TElement *E,Cvektory::TObjekt *O)
+void Cvykresli::vykresli_koleje(TCanvas *canv,Cvektory::TElement *E)
 {
-	if(F->pom_temp==NULL || F->pom_temp!=NULL && F->pom_temp->n==O->n || F->scGPTrackBar_intenzita->Value>25 && F->pom_temp!=NULL && F->pom_temp->n!=O->n)//při editaci zobrazí pasivní jen s intenzitou větší než 25
+	if(F->akt_Objekt==NULL || F->akt_Objekt!=NULL && F->akt_Objekt->n==E->objekt_n || F->scGPTrackBar_intenzita->Value>25 && F->akt_Objekt!=NULL && F->akt_Objekt->n!=E->objekt_n)//při editaci zobrazí pasivní jen s intenzitou větší než 25
 	{
 		TColor clKolej=(TColor) RGB(255,69,0);
-		if(F->pom_temp!=NULL && F->pom_temp->n!=O->n)clKolej=m.clIntensive(clKolej,m.round(m.get_intensity()/1.8));//zesvětlování neaktivních pohonů
+		if(F->akt_Objekt!=NULL && F->akt_Objekt->n!=E->objekt_n)clKolej=m.clIntensive(clKolej,m.round(m.get_intensity()/1.8));//zesvětlování neaktivních pohonů
 		vykresli_koleje(canv,E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,clKolej);
 	}
 }
@@ -4354,7 +4354,7 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,lon
 	////////////////----
 
 	////vykreslení textu
-	if(typ!=-1 && name!="" && F->pom_temp!=NULL && F->scGPCheckBox1_popisky->Checked)//v módu kurzor nebo pokud je součástí nadřazeného elementu se název nezobrazuje, nezobrazují se v layoutu
+	if(typ!=-1 && name!="" && F->akt_Objekt!=NULL && F->scGPCheckBox1_popisky->Checked)//v módu kurzor nebo pokud je součástí nadřazeného elementu se název nezobrazuje, nezobrazují se v layoutu
 	{
 		//nastavení písma  //pokud by tu nebylo ošetření zdisablovaného stavu, tak by se font již vypisoval bílou barvou....
 		if(typ==0 && stav!=-1)canv->Font->Color=m.clIntensive(barva,100);else canv->Font->Color=barva;//ikona vs. normální zobrazení
@@ -4367,7 +4367,7 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,lon
 		if(typ==1 && E!=NULL)//normální zobrazení typ==1
 		{
 			if(/*stav==2 || */stav==3)canv->Font->Style = TFontStyles()<< fsBold;//došlo k vybrání elementu-tato část odstavena nebo přímo jeho textu
-			if(F->pom_temp!=NULL && F->pom_temp->n!=E->objekt_n)canv->Font->Color=m.clIntensive(clBlack,m.get_intensity());
+			if(F->akt_Objekt!=NULL && F->akt_Objekt->n!=E->objekt_n)canv->Font->Color=m.clIntensive(clBlack,m.get_intensity());
 			//nastavení názvů pohonů
 			AnsiString Tpom="",T1=F->ls->Strings[274],T2=F->ls->Strings[274];//"pohon nevybrán"
 			if(E->pohon!=NULL)T1=E->pohon->name;
@@ -4626,7 +4626,7 @@ void Cvykresli::vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popis
 	}
 
 	////vykreslení obrysu
-	if(F->pom_temp!=NULL && (F->pom_temp->orientace==90 || F->pom_temp->orientace==270) || typ>=0)
+	if(F->akt_Objekt!=NULL && (F->akt_Objekt->orientace==90 || F->akt_Objekt->orientace==270) || typ>=0)
 	{
   	line(canv,X,Y,X+W,Y);//horní vodorovná
   	line(canv,X+W,Y,X+W,Y+H);//pravá svislá
@@ -4636,7 +4636,7 @@ void Cvykresli::vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popis
 		////symbolika tekoucí kapaliny
 		if(typ==1 || typ==-2)vykresli_pow_sprchu(canv,X+W,X+W,Y,Y+H,W-o,canv->Pen->Color,ceil(canv->Pen->Width/4.0),m.round(o/2.0),typ);
 	}
-	if(F->pom_temp!=NULL && (F->pom_temp->orientace==0 || F->pom_temp->orientace==180) && typ<0)
+	if(F->akt_Objekt!=NULL && (F->akt_Objekt->orientace==0 || F->akt_Objekt->orientace==180) && typ<0)
 	{
 		line(canv,X,Y,X,Y-W);//horní vodorovná
 		line(canv,X,Y-W,X+H,Y-W);//pravá svislá
@@ -4906,7 +4906,7 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 		}
 
 		////uchopy - pokud je považována editace, nutno vykreslit v samostatném cyklu až nad spojnice
-		if(stav>=0 && (F->pom_temp!=NULL || F->pom_temp==NULL && F->pom==NULL))//ošetření podmínkou oproti vykreslování činek místo hran objektů
+		if(stav>=0 && (F->akt_Objekt!=NULL || F->akt_Objekt==NULL && F->pom==NULL))//ošetření podmínkou oproti vykreslování činek místo hran objektů
 		{
 			B=body->dalsi;//přeskakuje hlavičku
 			while(B!=NULL)
@@ -4924,12 +4924,12 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 		{
 			//nastavení hodnot pro highlight, jiné hodnoty pro highlighty na hale a kabině
       int hodnota_koty=-2,oblast_koty=2;//defaultní hodnoty pro halu
-			if(F->pom_temp!=NULL)//highlight pro objekt
+			if(F->akt_Objekt!=NULL)//highlight pro objekt
 			{hodnota_koty=-5,oblast_koty=-4;}
 			//kontrola zda se jedná o čtverec či odelník (vykreslení pouze dvou kót)
 			Cvektory::TBod *kota_od=NULL;
 			double delka_koty=0;//zavedeno pro přepočet mezi časovou a délkovou kótou
-			if(F->pom_temp!=NULL && body->predchozi->n==4)//pokud má objekt jen 4 body je otestován zda se jedná o obdelník nebo čtverec
+			if(F->akt_Objekt!=NULL && body->predchozi->n==4)//pokud má objekt jen 4 body je otestován zda se jedná o obdelník nebo čtverec
 			{
 				double a=m.delka(body->dalsi->X,body->dalsi->Y,body->dalsi->dalsi->X,body->dalsi->dalsi->Y),b=m.delka(body->dalsi->dalsi->X,body->dalsi->dalsi->Y,body->predchozi->predchozi->X,body->predchozi->predchozi->Y),c=m.delka(body->predchozi->predchozi->X,body->predchozi->predchozi->Y,body->predchozi->X,body->predchozi->Y),d=m.delka(body->dalsi->X,body->dalsi->Y,body->predchozi->X,body->predchozi->Y);
 				if(a==c && b==d)kota_od=body->dalsi->dalsi->dalsi;//jedná se o obdelník nebo čtverec
@@ -4949,14 +4949,14 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 				else if(F->pom_bod!=NULL && F->JID==hodnota_koty&&F->pom_bod->n==B->n)highlight=1;else highlight=0;
 				//výpočet délky kóty
 				delka_koty=m.delka(B->predchozi->X,B->predchozi->Y,B->X,B->Y);
-				if(F->DKunit==2 || F->DKunit==3)delka_koty=delka_koty/F->pom_temp->pohon->aRD;
+				if(F->DKunit==2 || F->DKunit==3)delka_koty=delka_koty/F->akt_Objekt->pohon->aRD;
 				//vykreslení kóty
 				if(kota_od==NULL)                                                                                                                                              //převedení na mm
 				vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),m.round2double(F->outDK(delka_koty),3),NULL,B->kota_offset*F->Zoom/AA,highlight,width,clGray,false,NULL,B);
 				else
 				{
 					//určení nové vzdálenosti
-					delka_koty=m.round2double(m.delka(B->predchozi->X,B->predchozi->Y,B->X,B->Y),3);if(F->DKunit==2 || F->DKunit==3)delka_koty=delka_koty/F->pom_temp->pohon->aRD;
+					delka_koty=m.round2double(m.delka(B->predchozi->X,B->predchozi->Y,B->X,B->Y),3);if(F->DKunit==2 || F->DKunit==3)delka_koty=delka_koty/F->akt_Objekt->pohon->aRD;
 					//vykreslení jedné kóty pro obdelník/čtverec
 					vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),m.round2double(F->outDK(delka_koty),3),NULL,B->kota_offset*F->Zoom/AA,highlight,width,clGray,false,NULL,B);
 					if(kota_od->dalsi!=NULL)//ošetření
@@ -4965,7 +4965,7 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 				  	if(F->pom_bod!=NULL && F->JID==oblast_koty&&F->pom_bod->n==B->dalsi->n)highlight=2;
 						else if(F->pom_bod!=NULL && F->JID==hodnota_koty&&F->pom_bod->n==B->dalsi->n)highlight=1;else highlight=0;
 				  	//délka
-				  	delka_koty=m.round2double(m.delka(B->X,B->Y,B->dalsi->X,B->dalsi->Y),3);if(F->DKunit==2 || F->DKunit==3)delka_koty=delka_koty/F->pom_temp->pohon->aRD;
+				  	delka_koty=m.round2double(m.delka(B->X,B->Y,B->dalsi->X,B->dalsi->Y),3);if(F->DKunit==2 || F->DKunit==3)delka_koty=delka_koty/F->akt_Objekt->pohon->aRD;
 				  	//vykreslení
 						vykresli_kotu(canv,m.L2Px(B->X),m.L2Py(B->Y),m.L2Px(B->dalsi->X),m.L2Py(B->dalsi->Y),m.round2double(F->outDK(delka_koty),3),NULL,B->dalsi->kota_offset*F->Zoom/AA,highlight,width,clGray,false,NULL,B->dalsi);
 					}
@@ -4974,7 +4974,7 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 				B=B->dalsi;
 			}
 			//vykreslení poslední kóty
-			delka_koty=m.delka(body->predchozi->X,body->predchozi->Y,body->dalsi->X,body->dalsi->Y);if(F->DKunit==2 || F->DKunit==3)delka_koty=delka_koty/F->pom_temp->pohon->aRD;
+			delka_koty=m.delka(body->predchozi->X,body->predchozi->Y,body->dalsi->X,body->dalsi->Y);if(F->DKunit==2 || F->DKunit==3)delka_koty=delka_koty/F->akt_Objekt->pohon->aRD;
 			if(F->pom_bod!=NULL && F->JID==oblast_koty&&F->pom_bod->n==body->dalsi->n)highlight=2;
 			else if(F->pom_bod!=NULL && F->JID==hodnota_koty&&F->pom_bod->n==body->dalsi->n)highlight=1;else highlight=0;
 			if(kota_od==NULL && body->predchozi->n>2)vykresli_kotu(canv,m.L2Px(body->predchozi->X),m.L2Py(body->predchozi->Y),m.L2Px(body->dalsi->X),m.L2Py(body->dalsi->Y),m.round2double(F->outDK(delka_koty),3),NULL,body->dalsi->kota_offset*F->Zoom/AA,highlight,width,clGray,false,NULL,body->dalsi);
@@ -4991,7 +4991,7 @@ void Cvykresli::uchop(TCanvas *canv,Cvektory::TBod *B,TColor barva)
 {
 	//nastavení pera a velikosti
 	float z=1;if(F->Zoom<=1+2*(short)F->antialiasing)z=1.5/F->Zoom*(1+2*(short)F->antialiasing);//pokud bude hodnota zoomu menší nebo rovno 1, bude uchop stejně velký jako při zoomu 1,5x
-	if(F->pom_temp!=NULL)z=z/2.5;//pokud je úchop vykreslován pro obrys kabiny = náhled, musí být zmenšen
+	if(F->akt_Objekt!=NULL)z=z/2.5;//pokud je úchop vykreslován pro obrys kabiny = náhled, musí být zmenšen
 	short o=m.m2px(0.4*z);//citelná oblast uchopovací kružnice, pokud by se zde hodnota měnila, nutno změnit i v v.najdi_bod!!!
 	canv->Pen->Color=clWhite;//orámování uchopu
 	canv->Pen->Width=m.round(0.5*F->Zoom);
@@ -5025,8 +5025,8 @@ void Cvykresli::smart_kurzor(TCanvas *canv,Cvektory::TElement *E)
 	{
 		Cvektory::TElement *e_posledni=NULL;
 		//defaultně od prvního bodu aktuální kabiny
-		preXk=F->pom_temp->element->geo.X1;
-		preYk=F->pom_temp->element->geo.Y1;
+		preXk=F->akt_Objekt->element->geo.X1;
+		preYk=F->akt_Objekt->element->geo.Y1;
 		//pokud existuje předchozí kabina tak od jejího posledního bodu
 		if(F->pom->predchozi->n!=0)
 		{
@@ -5034,10 +5034,10 @@ void Cvykresli::smart_kurzor(TCanvas *canv,Cvektory::TElement *E)
 			preXk=e_posledni->geo.X4;
 			preYk=e_posledni->geo.Y4;
 		}
-		preOR=F->pom_temp->orientace;
+		preOR=F->akt_Objekt->orientace;
 		if(e_posledni!=NULL && F->pom->predchozi!=NULL && F->pom->predchozi->n>=1){preRA=e_posledni->geo.rotacni_uhel;preOR=e_posledni->geo.orientace;}//nabrání rotačního úhlu a orientace z předchozího objektu
 		e_posledni=NULL;delete e_posledni;
-		//preRA=F->pom_temp->element->geo.rotacni_uhel;
+		//preRA=F->akt_Objekt->element->geo.rotacni_uhel;
 	}
 	if(Ep!=NULL && E!=NULL)prepreRA=Ep->geo.rotacni_uhel;
 	Ep=NULL;delete Ep;
@@ -5130,7 +5130,7 @@ void Cvykresli::vykresli_Gelement_kurzor(TCanvas *canv,double X,double Y,double 
 TPointD *Cvykresli::vykresli_potencial_Gelement(TCanvas *canv,double X,double Y,double orientace,double rotacni_uhel,double radius,TColor color,bool popisek)
 {
 	////vykreslení kolejí ve vybraném gelemntu       //resp. v tomto případě vybraný gelement
-	if(F->pom_temp!=NULL && F->pom_temp->pohon!=NULL && F->scGPCheckBox_zobrazit_koleje->Checked && popisek)
+	if(F->akt_Objekt!=NULL && F->akt_Objekt->pohon!=NULL && F->scGPCheckBox_zobrazit_koleje->Checked && popisek)
 	{
 		short typ=1;if(rotacni_uhel==0)typ=0;
 		vykresli_koleje(canv,X,Y,typ,orientace,rotacni_uhel,radius,radius,color);
@@ -5178,19 +5178,19 @@ TPointD *Cvykresli::vykresli_potencial_Gelement(TCanvas *canv,double X,double Y,
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_mGridy(TCanvas *canv)
 {
-	if(F->pom_temp!=NULL && F->Timer_animace->Enabled==false)//pokud není editovaný nějaký objekt nebo při timeru aplikace se tabulky nezobrazí
+	if(F->akt_Objekt!=NULL && F->Timer_animace->Enabled==false)//pokud není editovaný nějaký objekt nebo při timeru aplikace se tabulky nezobrazí
 	{
 		////tabulky elementů
-		if(F->pom_temp->element!=NULL)
+		if(F->akt_Objekt->element!=NULL)
 		{
-			Cvektory::TElement *E=F->pom_temp->element;//přeskočí rovnou hlavičku
-			while(E!=NULL && E->objekt_n==F->pom_temp->n)
+			Cvektory::TElement *E=F->akt_Objekt->element;//přeskočí rovnou hlavičku
+			while(E!=NULL && E->objekt_n==F->akt_Objekt->n)
 			{
-				if((E->pohon==NULL && F->pom_temp->pohon==NULL || E->pohon!=NULL && F->pom_temp->pohon!=NULL && E->pohon->n==F->pom_temp->pohon->n || E->eID==200) && F->Akce!=F->Takce::GEOMETRIE)//vykreslení tabulek elementů, kteří mají stejný pohon jako aktuálně editovaný pohon
+				if((E->pohon==NULL && F->akt_Objekt->pohon==NULL || E->pohon!=NULL && F->akt_Objekt->pohon!=NULL && E->pohon->n==F->akt_Objekt->pohon->n || E->eID==200) && F->Akce!=F->Takce::GEOMETRIE)//vykreslení tabulek elementů, kteří mají stejný pohon jako aktuálně editovaný pohon
 				{
 					if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
 			  	{
-						if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud nemají být zobrazeny mgridy nemá být zobrazen ani rastr
+						if(F->akt_Objekt->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud nemají být zobrazeny mgridy nemá být zobrazen ani rastr
 			  		{
 			  			E->mGrid->Redraw=false;
 			  			E->mGrid->SetVisibleComponents(false);
@@ -5201,7 +5201,7 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			  	}
 			  	else
 			  	{
-						if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
+						if(F->akt_Objekt->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
 			  		{
 			  			E->mGrid->Redraw=true;
 			  			E->mGrid->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak E->mGrid->Buffer(false);
@@ -5224,14 +5224,14 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 		////tabulka pohonu
 		if(F->PmG!=NULL)
 		{
-			TRect oblast_kabiny=F->vrat_max_oblast(F->pom_temp);
+			TRect oblast_kabiny=F->vrat_max_oblast(F->akt_Objekt);
 			if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
 			{
-				if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE && F->Akce!=F->Takce::GEOMETRIE)//pokud nemají být zobrazeny mgridy nemá být zobrazen ani rastr
+				if(F->akt_Objekt->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE && F->Akce!=F->Takce::GEOMETRIE)//pokud nemají být zobrazeny mgridy nemá být zobrazen ani rastr
 				{
 					F->PmG->Redraw=false;
-			  	F->PmG->Left=m.L2Px(F->pom_temp->Xp);
-			  	F->PmG->Top=m.L2Py(F->pom_temp->Yp);
+			  	F->PmG->Left=m.L2Px(F->akt_Objekt->Xp);
+			  	F->PmG->Top=m.L2Py(F->akt_Objekt->Yp);
 			  	F->PmG->SetVisibleComponents(false);
 					F->PmG->Show(canv);
 				}
@@ -5242,13 +5242,13 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			}
 			else
 			{
-				if(F->pom_temp->zobrazit_mGrid &&  F->Akce!=F->Takce::PAN_MOVE && F->Akce!=F->Takce::GEOMETRIE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
+				if(F->akt_Objekt->zobrazit_mGrid &&  F->Akce!=F->Takce::PAN_MOVE && F->Akce!=F->Takce::GEOMETRIE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
 				{
 					F->PmG->Redraw=true;
 					F->PmG->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak F->PmG->Buffer(false);
 					if(F->PmG->VisibleComponents>-1)F->PmG->VisibleComponents=true;//stačí volat toto, protože se pomocí Show (resp. Draw-SetCompontens-Set...) cyklem všechny komponenty, pokud je nastaveno na -1 tak se při překreslování zohlední individuální nastavení komponent (z tohoto stavu je však pro další použítí třeba vrátit do stavu 0 nebo 1)
-					F->PmG->Left=m.L2Px(F->pom_temp->Xp);
-					F->PmG->Top=m.L2Py(F->pom_temp->Yp);
+					F->PmG->Left=m.L2Px(F->akt_Objekt->Xp);
+					F->PmG->Top=m.L2Py(F->akt_Objekt->Yp);
 					F->PmG->Show(canv);
 				}
 				else//pokud ne, je třeba skrýt komponenty
@@ -5265,10 +5265,10 @@ void Cvykresli::nabuffrovat_mGridy(TmGrid *mGrid)
 {
 	if(mGrid==NULL)
 	{
-		if(F->pom_temp->element!=NULL)
+		if(F->akt_Objekt->element!=NULL)
 		{
-			Cvektory::TElement *E=F->pom_temp->element;//přeskočí rovnou hlavičku
-			while(E!=NULL && E->objekt_n==F->pom_temp->n)
+			Cvektory::TElement *E=F->akt_Objekt->element;//přeskočí rovnou hlavičku
+			while(E!=NULL && E->objekt_n==F->akt_Objekt->n)
 			{
 				E->mGrid->Buffer(true);
 				E=E->dalsi;
@@ -5285,12 +5285,12 @@ void Cvykresli::nabuffrovat_mGridy(TmGrid *mGrid)
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_do)
 {
-	double O=F->pom_temp->koty_elementu_offset.x;
+	double O=F->akt_Objekt->koty_elementu_offset.x;
 
 	//highlight
 	short highlight=0;
 	if(Element_do->stav==2)highlight=2;//pokud bude jeden ze zúčastněných elementů vybrán, zvýrazní se a vystoupí daná kóta
-	if(Element_do!=NULL && F->MOD==F->NAHLED)
+	if(Element_do!=NULL && F->MOD==F->EDITACE)
 	{
 		if(!F->posun_dalsich_elementu && ((F->JID+10)*(-1)==(long)Element_do->n || (F->JID==-101 && F->pom_element->n==Element_do->n)))highlight=1;//v případě, že není požadován posun dalších elementů, zvýrazní i kótu následujícího elementu, že se bude také měnit
 		if((F->JID+10)*(-1)==(long)Element_do->n ||  (10<F->JID && F->JID<100))highlight=1;//když se bude editovat hodnota kóty, nebo se bude kóta posouvat, kvůli následnému zaokrouhlování musí bohužel zůstat tady
@@ -5298,7 +5298,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_do)
 	//////probíhá editace kót
 	if(F->Akce==F->GEOMETRIE)
 	{
-		if(Element_do->geo.typ==0)vykresli_kotu(canv,Element_do->geo.X1,Element_do->geo.Y1,Element_do->geo.X4,Element_do->geo.Y4,Element_do,F->pom_temp->koty_elementu_offset.y,highlight);
+		if(Element_do->geo.typ==0)vykresli_kotu(canv,Element_do->geo.X1,Element_do->geo.Y1,Element_do->geo.X4,Element_do->geo.Y4,Element_do,F->akt_Objekt->koty_elementu_offset.y,highlight);
 	}
 	//////bežná funkcionalita
 	else if(Element_do->eID!=MaxInt)
@@ -5317,7 +5317,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_do)
 			{if(Element_od!=NULL && Element_od->n==0 || Element_od==NULL){x1=Element_do->geo.X1;y1=Element_do->geo.Y1;}else {x1=Element_od->X;y1=Element_od->geo.Y4;}x2=Element_do->X;y2=y1;}
 		else
 			{if(Element_od!=NULL && Element_od->n==0 || Element_od==NULL){x1=Element_do->geo.X1;y1=Element_do->geo.Y1;}else {x1=Element_od->geo.X4;y1=Element_od->Y;}y2=Element_do->Y;x2=x1;}
-		if(x2<F->pom_temp->element->geo.X1)O=(O-0.66)*(-1);//ošetření chybného zobrazení kóty elementu, který je před kabinou
+		if(x2<F->akt_Objekt->element->geo.X1)O=(O-0.66)*(-1);//ošetření chybného zobrazení kóty elementu, který je před kabinou
     //vykreslení kóty
 		vykresli_kotu(canv,x1,y1,x2,y2,Element_do,O,highlight);
 		////kota mezi LO
@@ -5358,24 +5358,24 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double
 {    //Jednotky=" [s]";if(F->DKunit==3)Jednotky=" [min]";
 	double delka=0;
 	AnsiString T="";
-	if(F->pom_temp->pohon==NULL && F->DKunit>1)F->DKunit=(TForm1::Tm_mm)(F->DKunit-2);//ošetření pro případ není pohon a jsou špatně nastaveny jednotky
+	if(F->akt_Objekt->pohon==NULL && F->DKunit>1)F->DKunit=(TForm1::Tm_mm)(F->DKunit-2);//ošetření pro případ není pohon a jsou špatně nastaveny jednotky
 	if(F->DKunit>1)//zobrazení kót v čase
 	{
-		if(aktElement!=NULL && aktElement->pohon!=NULL && aktElement->pohon->aRD>0 || komora!=NULL && F->pom_temp->pohon!=NULL && F->pom_temp->pohon->aRD>0)
+		if(aktElement!=NULL && aktElement->pohon!=NULL && aktElement->pohon->aRD>0 || komora!=NULL && F->akt_Objekt->pohon!=NULL && F->akt_Objekt->pohon->aRD>0)
 		{
 			if(aktElement!=NULL)delka=m.delka(X1,Y1,X2,Y2)/aktElement->pohon->aRD/(1+59.0*(F->DKunit-2));//výpočet délky a šířky kabiny + případný převod m->mm
-			else delka=m.delka(X1,Y1,X2,Y2)/F->pom_temp->pohon->aRD/(1+59.0*(F->DKunit-2));//pro komory v POW
+			else delka=m.delka(X1,Y1,X2,Y2)/F->akt_Objekt->pohon->aRD/(1+59.0*(F->DKunit-2));//pro komory v POW
 		}
 		else T=F->ls->Strings[274];//"pohon nevybrán"
-		//if(aktElement!=NULL) delka=v.vzdalenost_od_predchoziho_elementu(aktElement)/F->pom_temp->pohon->aRD/(1+59.0*(F->DKunit-2));//výpočet vzdálenosti mezi elementy
-		//if(LO_kota)delka=m.round2double(F->vzdalenost_meziLO(aktElement,F->pom_temp->orientace),2)/F->pom_temp->pohon->aRD/(1+59.0*(F->DKunit-2));
+		//if(aktElement!=NULL) delka=v.vzdalenost_od_predchoziho_elementu(aktElement)/F->akt_Objekt->pohon->aRD/(1+59.0*(F->DKunit-2));//výpočet vzdálenosti mezi elementy
+		//if(LO_kota)delka=m.round2double(F->vzdalenost_meziLO(aktElement,F->akt_Objekt->orientace),2)/F->akt_Objekt->pohon->aRD/(1+59.0*(F->DKunit-2));
 	}
 	else//standardní zobrazení ve vzdálenost
 	{
 		delka=m.delka(X1,Y1,X2,Y2)*(1+999*F->DKunit);//výpočet délky a šířky kabiny + případný převod m->mm
 		if(LO_kota)delka=m.round2double(delka,0);//problém v zaokrouhlování u LO kót
 		//if(aktElement!=NULL)delka=v.vzdalenost_od_predchoziho_elementu(aktElement)*(1+999*F->DKunit);//výpočet vzdálenosti mezi elementy
-		//if(LO_kota)delka=F->outDK(m.round2double(F->vzdalenost_meziLO(aktElement,F->pom_temp->orientace),2));
+		//if(LO_kota)delka=F->outDK(m.round2double(F->vzdalenost_meziLO(aktElement,F->akt_Objekt->orientace),2));
 	}
 	//odstaveno zobrazujeme na 3 realná delka=m.round2double(delka,8);//výpočet délky s max zobrazením na 8 míst (z důvodu případů 0.000000001 atp.) pouze v případě metrů, v mm by přetékalo při výpočtu, bylo by třeba long double
 	//if(!F->DKunit)delka=m.round2double(delka,5);//výpočet délky s max zobrazením na 8 míst (z důvodu případů 0.000000001 atp.) pouze v případě metrů, v mm by přetékalo při výpočtu, bylo by třeba long double
@@ -5389,15 +5389,15 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double
 void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,AnsiString Text,Cvektory::TElement *aktElement,int Offset,short highlight,float width, TColor color,bool LO_kota,Cvektory::TKomora *komora,Cvektory::TBod *bod)
 {                 
 	////vstupní proměnné
-	if(F->JID==-10 && F->MOD==F->NAHLED)highlight=0;//highlight - pokud se mění pouze jednotky, tak se kóta nehiglightuje
+	if(F->JID==-10 && F->MOD==F->EDITACE)highlight=0;//highlight - pokud se mění pouze jednotky, tak se kóta nehiglightuje
 	if(aktElement==NULL&&komora==NULL&&bod==NULL)highlight=0;//highlight -odstranění highlightu na kótách mezi lak. okny
 	short meritko=1;if(F->MOD==F->SCHEMA){width*=5;meritko=5;}//měřítko (náhled vs. schéma)
 	width=m.round(width*F->Zoom);if(highlight)width*=2;//šířka linie
 	short Presah=m.round(1.3*F->Zoom);if(Offset<0)Presah*=-1;//přesah packy u kóty,v případě záporného offsetu je vystoupení kóty nazákladě tohot záporné
-  if(F->pom_temp!=NULL)Presah/=2.0;//zmenšení odsazení kót při highlightu v náhledu
+  if(F->akt_Objekt!=NULL)Presah/=2.0;//zmenšení odsazení kót při highlightu v náhledu
 	short V=0;//if(highlight==2)V=1;//vystoupení kóty
 	short H=0;if(highlight)H=1;
-	short M=0;if(10<F->JID && F->JID<100 && F->MOD==F->NAHLED)M=1;//při celkovém posunu kót se postranní spojnice nově nezvýrazňují
+	short M=0;if(10<F->JID && F->JID<100 && F->MOD==F->EDITACE)M=1;//při celkovém posunu kót se postranní spojnice nově nezvýrazňují
 
 	////samotné vykreslení kót
 	//nastaveni pera
@@ -5455,7 +5455,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	canv->Font->Size=m.round(width*F->aFont->Size);//už se nenásobí *Zoom, protože width se již násobí v úvodu metody
 	if(highlight)
 	{                                                               //v případě, že není požadován posun dalších elementů, zvýrazní i kótu následujícího elementu, že se bude také měnit
-		if(aktElement!=NULL && (F->JID+10)*(-1)==(long)aktElement->n || !F->posun_dalsich_elementu && aktElement!=NULL && (F->JID+10)*(-1)==(long)aktElement->predchozi->n || ((F->JID==-8 || F->JID==-9) && F->MOD==F->NAHLED) || F->JID==-5 && F->pom_temp!=NULL || F->JID==-2 && F->pom_temp==NULL)canv->Font->Style = TFontStyles()<< fsBold;//pouze když se mění hodnota kóty
+		if(aktElement!=NULL && (F->JID+10)*(-1)==(long)aktElement->n || !F->posun_dalsich_elementu && aktElement!=NULL && (F->JID+10)*(-1)==(long)aktElement->predchozi->n || ((F->JID==-8 || F->JID==-9) && F->MOD==F->EDITACE) || F->JID==-5 && F->akt_Objekt!=NULL || F->JID==-2 && F->akt_Objekt==NULL)canv->Font->Style = TFontStyles()<< fsBold;//pouze když se mění hodnota kóty
 		canv->Font->Size=m.round(canv->Font->Size/2.0);//při highlighnutí se text se šířkou nezvětštuje (proto /2 návrat na původní hodnotu, pouze ztučňuje a to jen za předpokladu, změny hodnot kót nikoliv linie kóty (její pozice/offsetu)
 	}
 	else canv->Font->Style = TFontStyles();//vypnutí tučného písma
@@ -5466,11 +5466,11 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	long Y=(y1+y2)/2-canv->TextHeight(/*Jednotky*/Text/*nahrazeno*/)/2; //pozn. záměrně je zde TextHeight(Jednotky) z důvodu, že při smazání hodnoty by byl text prázdný a následně by to špatně pozicovalo jednotky
 	canv->TextOutW(X,Y,Text);//číselná hodnota kóty
 	canv->Font->Color=(TColor)RGB(43,87,154);
-	if(F->JID==-10 && F->MOD==F->NAHLED)canv->Font->Style = TFontStyles()<< fsBold;else canv->Font->Style = TFontStyles();//pokud se editují jednotky, jinak (ani při highlightu se neztučňují)
+	if(F->JID==-10 && F->MOD==F->EDITACE)canv->Font->Style = TFontStyles()<< fsBold;else canv->Font->Style = TFontStyles();//pokud se editují jednotky, jinak (ani při highlightu se neztučňují)
 //	canv->TextOutW(X+canv->TextWidth(Text),Y,Jednotky);//jednotky
 
 	////navrácení citelné oblasti popisku a jednotek kóty pro další použití a šetření strojového času
-//	if(F->MOD==F->NAHLED && F->pom_temp!=NULL)//pouze pokud se jedná o náhled a existuje ukazatel na pom_temp (což by mělo být při náhledu sice vždy...)
+//	if(F->MOD==F->EDITACE && F->akt_Objekt!=NULL)//pouze pokud se jedná o náhled a existuje ukazatel na akt_Objekt (což by mělo být při náhledu sice vždy...)
 //	{
 		T3Rect R;float AA=3.0;if(!F->antialiasing)AA=1;
 		//oblast kóty (pro kótu kabiny se zatím nevyužívá, protože kóta kabiny nelze odsadit)
@@ -5486,13 +5486,13 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 //		{
 //			if(Y1==Y2)//pro vodorovnou kótu
 //			{
-//				F->pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect1=R.rect1;//hodnoty
-//				F->pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect2=R.rect2;//jednotky
+//				F->akt_Objekt->kabinaKotaX_oblastHodnotaAJednotky.rect1=R.rect1;//hodnoty
+//				F->akt_Objekt->kabinaKotaX_oblastHodnotaAJednotky.rect2=R.rect2;//jednotky
 //			}
 //			else//pro svislou kótu
 //			{
-//				F->pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect1=R.rect1;//hodnoty
-//				F->pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect2=R.rect2;//jednotky
+//				F->akt_Objekt->kabinaKotaY_oblastHodnotaAJednotky.rect1=R.rect1;//hodnoty
+//				F->akt_Objekt->kabinaKotaY_oblastHodnotaAJednotky.rect2=R.rect2;//jednotky
 //			}
 //		}
 		if(aktElement!=NULL && !LO_kota)//kóty mezi elementy
