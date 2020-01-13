@@ -41,6 +41,7 @@ public:		// User declarations
 	void povolit_zakazat_editaci(bool povolit);//zakazuje èi povolí komponenty v tabulce pohonu a všech tabulkách elementu
 	void naplneni_dopRD();//doplni doporuèenou rychlost do tabulky pohonu
 	bool naplneni_max_voziku(double X,double Y,bool check_for_highlight=false);//doplní doporuèený poèet maximálních vozíku po kliku
+	void aktualizace_PmG(bool Refresh=false);//aktualizuje hodnoty v PmG
 	void aktualizace_zon_otaceni(Cvektory::TElement *E);//po zmìnì rotace na elementu E, projde všechny elementy za a pøepoèítá jim zóny otáèení
 
 	//promìnné pro vyøazení OnChange metody pøi vykreslování tabulek

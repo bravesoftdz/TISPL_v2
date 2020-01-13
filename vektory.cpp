@@ -18,6 +18,7 @@ Cvektory::Cvektory()
 	//hlavicka_RETEZY();//vytvoří novou hlavičku pro řetězy - nepoužíváno
 	//hlavicka_palce();//vytvoří novou hlavičku pro palce - zatím nepoužíváno
 	HALA.body=NULL;
+	hlavicka_DATA();
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
@@ -550,9 +551,9 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 //---------------------------------------------------------------------------
 //uloží objekt a jeho parametry do seznamu - přetížená fce
 void Cvektory::vloz_objekt(TObjekt *Objekt)
-{
+{                    
 	TObjekt *novy=new TObjekt;
-
+													
 	*novy=*Objekt;//novy bude ukazovat tam kam prvek Objekt
 	novy->n=OBJEKTY->predchozi->n+1;//navýším počítadlo prvku o jedničku
 	OBJEKTY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
@@ -792,7 +793,8 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->mezera=Original->mezera;
 	Kopie->mezera_jig=Original->mezera_jig;
 	Kopie->mezera_podvozek=Original->mezera_podvozek;
-	kopiruj_pohon(Original->pohon,Kopie);//POHON
+	Kopie->pohon=Original->pohon;
+	//kopiruj_pohon(Original->pohon,Kopie);//POHON
 	Kopie->min_prujezdni_profil=Original->min_prujezdni_profil;
 	//Kopie->rozmer_kabiny=Original->rozmer_kabiny;
 	Kopie->koty_elementu_offset=Original->koty_elementu_offset;
@@ -1880,10 +1882,10 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->orientace=orientace;//důležité pro volání makra m.Rxy, bez tohoto by makro vracelo chybné hodnoty
 	novy->dalsi=NULL;
 	novy->predchozi=NULL;
-
+							 
 	//ukazatelové propojení + řazení
 	vloz_element(Objekt,novy,Ep);
-
+													
 	//defaultní data
 	novy->data.LO1=1.5;
 	novy->OTOC_delka=0;
@@ -1934,7 +1936,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 		if(novy->eID!=MaxInt || novy->eID==MaxInt && DEBUG)novy->name=T+" "+AnsiString(nTyp);else novy->name=T;//číslování a pojmenovávání zarážek pouze v debug
 		novy->short_name=T.SubString(1,3)+AnsiString(nTyp);
 	}
-
+						
 	//mGrid elementu
 	if(F->akt_Objekt!=NULL&&Objekt->n==F->akt_Objekt->n||novy->eID==MaxInt)//stačí nastavovat pouze v náhledu při vloz_element, nová strategie, je mgrid, nekopírovat a používat jenom v akt_Objekt, zde však podmínka zda se jedná o akt_Objekt nebyla z nějakého důvodu možná
 	{
@@ -1954,13 +1956,13 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 ////---------------------------------------------------------------------------
 //vloží element do spojového seznamu elementů daného technologického objektu
 void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_razeni)
-{
+{            
 	TElement *posledni=vrat_posledni_element_objektu(Objekt);
 	if(posledni!=NULL)Element->n=posledni->n+1;else Element->n=ELEMENTY->predchozi->n+1;//zjištění a uložení n vkládaného elementu
 	Element->objekt_n=Objekt->n;//element ještě nemá tento atribut přiřazený, pro přejmenování ho však potřebuje
 	//////Zařazení elementu do seznamu + kontrola pořadí
 	if(force_razeni==NULL)
-	{
+	{       
 		//kontrola zda je element vkládán za předchozí nebo mezi předchozí
 		Cvektory::TElement *p=vloz_element_pred(Objekt,Element);//pokud bude vkládaný elment vložen na konec vrází NULL, pokud mezi vrátí ukazatel na další element
 		if(p==NULL)//vkládám na konec
@@ -2007,30 +2009,30 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 				}
 			}
 			else//vkládáné elementů do objektu
-			{
-      	Element->dalsi=NULL;
+			{    
+				Element->dalsi=NULL;
 				Element->predchozi=posledni;
 				posledni->dalsi=Element;
 				if(ELEMENTY->predchozi->n==posledni->n)ELEMENTY->predchozi=Element;
-			}
+			}      
 			//geometrie + ošetření proti přiřazování geometrie v metodě kopiruj_elementy
 			if(F->akt_Objekt!=NULL && Element->n!=1 && Element->Xt==-100)//nutna podminka, pri nacitani z binarky je akt_Objekt=NULL a nactou se hodnoty OK
 			vloz_G_element(Element,0,Element->predchozi->geo.X4,Element->predchozi->geo.Y4,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,Element->predchozi->geo.orientace);
   	}
 		else /*if(p->n!=Element->n)*///vkládám mezi elementy, vpřípadě, že bylo vloženo před prví prvek vrací Element, přesun je již vyřešen
-		{
+		{   
 			//ukazatelové propojení
 			Element->dalsi=p;
-			Element->predchozi=p->predchozi;
+			Element->predchozi=p->predchozi;   
 			if(Objekt->element!=NULL && p->n==Objekt->element->n)Objekt->element=Element;//nový první element objetku
-			p->predchozi->dalsi=Element;
-			p->predchozi=Element;
-
+			p->predchozi->dalsi=Element;   
+			p->predchozi=Element;      
+							
   		//geometrie
 			vloz_G_element(Element,0,p->geo.X1,p->geo.Y1,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,p->geo.orientace);
 			vloz_G_element(p,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,F->d.Rxy(p).x,F->d.Rxy(p).y,p->geo.orientace);
 			//změna indexů
-			Cvektory::TElement *E=Element;
+			Cvektory::TElement *E=Element;  
 			//E->n=vrat_poradi_elementu_do(E)+1;
 			int n=E->predchozi->n+1;
 			while(E!=NULL)//projetí od aktuálního objektu až do konce
@@ -2040,9 +2042,9 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 				n++;
 				E=E->dalsi;
 			}
-			E=NULL;delete E;
+			E=NULL;delete E;    
 			//změna názvů
-			uprav_popisky_elementu(Element);
+			uprav_popisky_elementu(Element);  
 		}
 		p=NULL; delete p;
 	}
@@ -2255,8 +2257,9 @@ void Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->geo=Original->geo;
 	Kopie->mGrid=new TmGrid(F);//nová strategie, je mgrid, nekopírovat a používat jenom v akt_Objekt, zde však podmínka zda se jedná o akt_Objekt nebyla z nějakého důvodu možná
 	Kopie->objekt_n=Original->objekt_n;
-	if(Original->pohon!=NULL)Kopie->pohon=vrat_pohon(Original->pohon->n);
-	else Kopie->pohon=Original->pohon;
+	//if(Original->pohon!=NULL)Kopie->pohon=vrat_pohon(Original->pohon->n);
+	//else
+	Kopie->pohon=Original->pohon;
 	Kopie->sparovany=Original->sparovany;
 }
 ////---------------------------------------------------------------------------
@@ -3366,12 +3369,12 @@ bool Cvektory::pohon_je_pouzivan(unsigned long n,bool po_obektech)
 		while(E!=NULL)
 		{
 			if(F->akt_Objekt!=NULL && F->akt_Objekt->n!=E->objekt_n || F->akt_Objekt==NULL)//kontrolovat pouze mimo aktuálně editované elementy
-			{if(E->eID!=0 && E->eID!=200 && E->eID!=MaxInt && E->pohon!=NULL && E->pohon->n==n)break;}
+			{if(E->eID!=0 && E->eID!=200 && E->eID!=MaxInt && E->pohon!=NULL && E->pohon->n==n){nalezen=true;break;}}
 			E=E->dalsi;
 		}
 		E=NULL;delete E;
 	}
-	O=NULL;delete O;
+	O=NULL;delete O;  
 	return nalezen;
 }
 ////---------------------------------------------------------------------------
@@ -6832,6 +6835,14 @@ void Cvektory::vse_odstranit()
 	bool puvodni_zpravy=false;if(ZPRAVY!=NULL && ZPRAVY->predchozi->n)puvodni_zpravy=true;
 	vymazat_ZPRAVY();if(puvodni_zpravy){Form_zpravy->update_zpravy(0,0);}
 
+	//DATA
+	if(DATA!=NULL && DATA->predchozi->n>0)//pokud je více objektů
+ 	{
+		vymaz_seznam_DATA();//vymaze pohony z paměti
+		delete DATA; DATA=NULL;
+	}
+	hlavicka_DATA();//nutnost
+
 //		//palce
 //		if(PALCE->predchozi->n>0)//pokud je více objektů
 //		{
@@ -6860,4 +6871,277 @@ void Cvektory::vse_odstranit()
 	*/
 }
 ////---------------------------------------------------------------------------
+////---------------------------------------------------------------------------
+////---------------------------------------------------------------------------
+//práce s DATA, obrazem projektu
+void Cvektory::hlavicka_DATA()
+{
+	////alokace paměti
+	DATA=new TDATA;
+	DATA->n=0;
+	
+	////hlavička objektů
+	TObjekt *novy=new TObjekt;
+	novy->n=0;
+	novy->id=0;
+	novy->X=0;
+	novy->Y=0;
+	novy->body=NULL;
+	novy->sirka_steny=0;
+	novy->short_name="";//krátký název
+	novy->name="";//celý název objektu
+	novy->rezim=0;
+	novy->CT=0;//pro status návrh
+	novy->RD=0;//pro status návrh
+	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
+	novy->kapacita=0;
+	novy->kapacita_dop=0;
+	novy->pozice=0;
+	novy->mezera=0;//velikost mezery mezi vozíky
+	novy->pohon=NULL;//ukazatel na použitý pohon
+	novy->element=NULL;//ukazatel na přidružené elementy
+	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
+	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
+	novy->koty_elementu_offset.x=0;//odsazení kót elementů v metrech
+	novy->koty_elementu_offset.y=0;//odsazení kót elementů v metrech
+	novy->komora=NULL;//ukazatel na komory
+	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
+	novy->stopka=0;//zda následuje na konci objektu stopka//0-ne,1-ano,2-automaticky
+	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
+	novy->obsazenost=0;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
+	novy->CT_zamek=0;
+	novy->RD_zamek=0;
+	novy->DD_zamek=0;
+	novy->K_zamek=0;
+	novy->poznamka="";
+	novy->probehla_aktualizace_prirazeni_pohonu=false;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
+	novy->zobrazit_koty=true;//proměnná určující, zda se budou zobrzovat kóty
+	novy->zobrazit_mGrid=true;//proměnná určující, zda budou zobrazeny mGridy
+	novy->uzamknout_nahled=false;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
+	novy->predchozi=novy;//ukazuje sam na sebe
+	novy->predchozi2=NULL;
+	novy->dalsi=NULL;
+	novy->dalsi2=NULL;
+	DATA->Objekty=novy;
+	novy=NULL;delete novy;
+	
+	////hlavička elementy
+	TElement *element=new TElement;
+	element->n=0;
+	element->eID=0;
+	element->short_name="";
+	element->name="";
+	element->orientace=0;
+	element->rotace_jig=0;
+	element->stav=-1;
+	element->X=0;
+	element->Y=0;
+	element->Z=0;
+	element->Xt=0;
+	element->Yt=0;
+	element->PTotoc=0;
+	element->OTOC_delka=0;
+	element->zona_pred=0;
+	element->zona_za=0;
+	element->WT=0;
+	element->citelna_oblast.rect0=TRect(0,0,0,0);
+	element->citelna_oblast.rect1=TRect(0,0,0,0);
+	element->citelna_oblast.rect2=TRect(0,0,0,0);
+	element->citelna_oblast.rect3=TRect(0,0,0,0);
+	element->citelna_oblast.rect4=TRect(0,0,0,0);
+	vloz_G_element(element,0,0,0,0,0,0,0,0,0,0,0,0,0);
+	element->mGrid=NULL;
+	element->data.PD=0;
+	element->data.orientace_jig_pred=0;
+	element->data.LO1=0;
+	element->data.LO2=0;
+	element->data.LO_pozice=0;
+	element->data.PT1=0;
+	element->data.PT2=0;
+	element->data.WTstop=0;
+	element->data.RT.x=0;
+	element->data.RT.y=0;
+	element->data.pocet_pozic=0;
+	element->data.pocet_voziku=0;
+	element->objekt_n=0;
+	element->pohon=NULL;
+	element->sparovany=NULL;
+	element->predchozi=element;
+	element->predchozi2=NULL;
+	element->dalsi=NULL;
+	element->dalsi2=NULL;
+	DATA->Elementy=element;
+	element=NULL;delete element;
 
+	////hlavička Pohony
+	TPohon *p=new TPohon;
+	p->n=0;
+	p->name="";
+	p->rychlost_od=0;
+	p->rychlost_do=0;
+	p->aRD=0;
+	p->roztec=0;
+	p->Rz=0;
+	p->Rx=0;
+	p->retez=NULL;
+	p->dalsi=NULL;
+	p->predchozi=p;
+	DATA->Pohony=p;
+	p=NULL;delete p;
+	
+	////ukazatelové zalezitosti DAT
+	DATA->dalsi=NULL;
+	DATA->predchozi=DATA;
+}
+void Cvektory::vytvor_obraz_DATA()
+{
+	////Objekty
+	TObjekt *O=OBJEKTY->dalsi,*o_kop=NULL;
+	while(O!=NULL)
+	{
+		//vytvoření kopie
+		o_kop=new TObjekt;
+		kopiruj_objekt(O,o_kop);
+		//ukazatelové propojení kopie s DATA->Objekty
+		if(DATA->Objekty->dalsi==NULL)DATA->Objekty->dalsi=o_kop;
+		else DATA->Objekty->predchozi->dalsi=o_kop;
+		o_kop->predchozi=DATA->Objekty->predchozi;
+		DATA->Objekty->predchozi=o_kop;
+		o_kop->dalsi=NULL;
+		//ukazatelové záleřitosti
+		o_kop=NULL;delete o_kop;
+		O=O->dalsi;
+	}
+	delete O;O=NULL;
+
+	////Elementy
+	TElement *E=ELEMENTY->dalsi,*e_kop=NULL;
+	while(E!=NULL)
+	{
+		//vytvoření kopie
+		e_kop=new TElement;
+		kopiruj_element(E,e_kop);
+		//ukazatelové propojení kopie s DATA->Elementy
+		if(DATA->Elementy->dalsi==NULL)DATA->Elementy->dalsi=e_kop;
+		else DATA->Elementy->predchozi->dalsi=e_kop;
+		e_kop->predchozi=DATA->Elementy->predchozi;
+		DATA->Elementy->predchozi=e_kop;
+		e_kop->dalsi=NULL;
+		//ukazatelové záležitosti
+		e_kop=NULL;delete e_kop;
+		E=E->dalsi;
+	}
+	delete E;E=NULL;
+
+	////Pohony, pouze záloha parametrů v editai nelze odstranit nebo přidat pohon
+	TPohon *p=POHONY->dalsi,*p_kop=NULL;
+	while(p!=NULL)
+	{
+    //vytvoření kopie
+		p_kop=new TPohon;
+		p_kop->n=p->n; 
+		p_kop->name=p->name;
+		p_kop->rychlost_od=p->rychlost_od;
+		p_kop->rychlost_do=p->rychlost_do;
+		p_kop->aRD=p->aRD;
+		p_kop->roztec=p->roztec;
+		p_kop->Rz=p->Rz;
+		p_kop->Rx=p->Rx;
+		p_kop->retez=p->retez;
+		//ukazatelové propojení kopie s DATA->Pohony
+		if(DATA->Pohony->dalsi==NULL)DATA->Pohony->dalsi=p_kop;
+		else DATA->Pohony->predchozi->dalsi=p_kop;
+		p_kop->predchozi=DATA->Pohony->predchozi;
+		DATA->Pohony->predchozi=p_kop;
+		p_kop->dalsi=NULL;
+		//ukazatelové záležitosti
+		p_kop=NULL;delete p_kop;
+		p=p->dalsi;
+	}
+	delete p;p=NULL;
+}
+////---------------------------------------------------------------------------
+void Cvektory::nacti_z_obrazu_DATA()
+{	
+	////mazání dat starého projektu
+	vymaz_seznam_OBJEKTY();            
+	hlavicka_OBJEKTY();//nutné po mazání!!!
+	vymaz_seznam_ELEMENTY();
+	hlavicka_ELEMENTY();//nutné po mazání!!!
+	
+	////načtení Objektů
+	TObjekt *dO=DATA->Objekty->dalsi,*O=NULL;
+	while(dO!=NULL)
+	{
+		//vytvoření nového objektu
+		O=new TObjekt;
+		kopiruj_objekt(dO,O);
+		O->element=NULL;//slouží pro následnou aktualizaci v metodě vloz_element();
+		//vložení nového objektu do spojáku
+		vloz_objekt(O);
+		//ukazatelové záležitosti
+		O=NULL;delete O;
+		dO=dO->dalsi;
+	}
+	delete dO;dO=NULL;
+	
+	////načtení Elementů
+	TElement *dE=DATA->Elementy->dalsi,*E=NULL;  
+	while(dE!=NULL)
+	{	
+		//kopírování atributů
+		E=new TElement;
+		kopiruj_element(dE,E);
+		//vložení do seznamu ELEMENTY
+		vloz_element(E);
+		//ukazatelové záležitosi
+		E=NULL;delete E;
+		dE=dE->dalsi;
+	}                      
+	delete dE;dE=NULL;
+
+	////aktualizace pohonů
+	TPohon *p=POHONY->dalsi,*dp=DATA->Pohony->dalsi;
+	while(p!=NULL && dp!=NULL)
+	{
+		//načtení atributů
+		p->n=dp->n; 
+		p->name=dp->name;
+		p->rychlost_od=dp->rychlost_od;
+		p->rychlost_do=dp->rychlost_do;
+		p->aRD=dp->aRD;
+		p->roztec=dp->roztec;
+		p->Rz=dp->Rz;
+		p->Rx=dp->Rx;
+		p->retez=dp->retez;
+		//ukazatelové záležitosti
+		p=p->dalsi;
+		dp=dp->dalsi;
+	}
+	delete p;p=NULL;
+	delete dp;dp=NULL;  
+
+	//vymazání nepotřebného obrazu
+	smaz_obraz_DATA();
+}
+////---------------------------------------------------------------------------
+void Cvektory::smaz_obraz_DATA()
+{
+	delete DATA;DATA=NULL;
+	hlavicka_DATA();
+}
+////---------------------------------------------------------------------------
+long Cvektory::vymaz_seznam_DATA()
+{
+	long pocet_smazanych_DAT=0;
+	while (DATA!=NULL)
+	{
+		pocet_smazanych_DAT++;
+		DATA->predchozi=NULL;
+		delete DATA->predchozi;
+		DATA=DATA->dalsi;
+	};
+
+	return pocet_smazanych_DAT;
+}
+////---------------------------------------------------------------------------

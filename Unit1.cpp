@@ -3170,8 +3170,8 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						if(JID==-5){if(scSplitView_LEFTTOOLBAR->Visible && scSplitView_LEFTTOOLBAR->Opened)DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_bod_temp=pom_bod;if(pom_bod_temp->n!=1)editovany_text=m.round2double(m.delka(pom_bod_temp->predchozi->X,pom_bod_temp->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);else editovany_text=m.round2double(m.delka(akt_Objekt->body->predchozi->X,akt_Objekt->body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);if(DKunit==2||DKunit==3)editovany_text=m.round2double(editovany_text/akt_Objekt->pohon->aRD,3);editovany_text=outDK(ms.MyToDouble(editovany_text));nahled_ulozit(true);}//editace kót kabiny
 						if(JID==-9 || JID==4){Akce=MOVE_TABLE;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//posun tabulky pohonu
 						if(JID==-102){if(d.zprava_highlight!=d.zobrazit_celou_zpravu){d.zobrazit_celou_zpravu=d.zprava_highlight;kurzor(close);}else {d.zobrazit_celou_zpravu=0;kurzor(info);}REFRESH(false);}//rozbalení nebo skrytí zpráv
-						if(JID==-201){akt_Objekt->pohon=element_temp->pohon;if(akt_Objekt->pohon!=NULL)prirazeni_pohonu_tab_pohon(akt_Objekt->pohon->n);else {prirazeni_pohonu_tab_pohon(0);PmG->getCombo(0,0)->DropDown();}if(!akt_Objekt->zobrazit_mGrid)scGPButton_viditelnostmGridClick(Sender);} //kliknutí na jeden z pohonů na předávacím místě
-						if(JID==-202){if(element_temp->dalsi!=NULL && element_temp->dalsi->n==element_temp->n){akt_Objekt->pohon=element_temp->dalsi->pohon;if(akt_Objekt->pohon!=NULL)prirazeni_pohonu_tab_pohon(akt_Objekt->pohon->n);else {prirazeni_pohonu_tab_pohon(0);PmG->getCombo(0,0)->DropDown();}if(!akt_Objekt->zobrazit_mGrid)scGPButton_viditelnostmGridClick(Sender);}else {pom_vyhybka=pom->dalsi;zmena_editovaneho_objektu();}}
+						if(JID==-201){akt_Objekt->pohon=element_temp->pohon;if(akt_Objekt->pohon!=NULL){prirazeni_pohonu_tab_pohon(akt_Objekt->pohon->n);FormX->aktualizace_PmG(true);}else {prirazeni_pohonu_tab_pohon(0);PmG->getCombo(0,0)->DropDown();}if(!akt_Objekt->zobrazit_mGrid)scGPButton_viditelnostmGridClick(Sender);} //kliknutí na jeden z pohonů na předávacím místě
+						if(JID==-202){if(element_temp->dalsi!=NULL && element_temp->dalsi->objekt_n==element_temp->objekt_n){akt_Objekt->pohon=element_temp->dalsi->pohon;if(akt_Objekt->pohon!=NULL){prirazeni_pohonu_tab_pohon(akt_Objekt->pohon->n);FormX->aktualizace_PmG(true);}else {prirazeni_pohonu_tab_pohon(0);PmG->getCombo(0,0)->DropDown();}if(!akt_Objekt->zobrazit_mGrid)scGPButton_viditelnostmGridClick(Sender);}else {pom_vyhybka=pom->dalsi;zmena_editovaneho_objektu();}}
 					}
 					else
 					{
@@ -5702,7 +5702,7 @@ void TForm1::vlozit_predavaci_misto()
 		E=E->dalsi;
 	}
 	//////Předávací místo mezi posledním a prvním
-	if(d.v.ELEMENTY->dalsi!=NULL && d.v.ELEMENTY->predchozi->n>=3)
+	if(d.v.ELEMENTY->dalsi!=NULL && d.v.ELEMENTY->predchozi->objekt_n!=d.v.ELEMENTY->dalsi->objekt_n)
 	{
 		long ID;
 		Cvektory::TElement *e_prvni=d.v.ELEMENTY->dalsi,*e_posledni=d.v.ELEMENTY->predchozi;
@@ -5977,11 +5977,11 @@ double TForm1::max_voziku(Cvektory::TElement *stopka)
 	log(__func__);//logování
 	double ret=1;
 	double delka=stopka->geo.delka;
-	Cvektory::TObjekt *O=d.v.vrat_objekt(stopka->objekt_n);
 	if(delka>0)//musí být něco v délce, pokud nula tak problém
 	{
+//		if(d.v.PP.uchyt_pozice<d.v.PP.delka_podvozek/2.0)delka+=d.v.PP.delka_podvozek/2.0-d.v.PP.uchyt_pozice;
+//		if(d.v.PP.uchyt_pozice>d.v.PP.delka_podvozek/2.0)delka-=d.v.PP.uchyt_pozice-d.v.PP.delka_podvozek/2.0;
 		Cvektory::TElement *E=stopka->predchozi;
-		//if(E->n==0 && O!=NULL && O->predchozi->n!=0)E=d.v.vrat_posledni_element_objektu(O->predchozi);
 		while(E!=NULL && E->n!=0)
 		{
 			if(E->n>0)
@@ -5996,13 +5996,11 @@ double TForm1::max_voziku(Cvektory::TElement *stopka)
 		  	else break;
 		  	E=E->predchozi;
 			}
-			//else if(O!=NULL && O->predchozi->n!=0){E=d.v.vrat_posledni_element_objektu(O->predchozi);O=O->predchozi;}
 		}
 		E=NULL;delete E;
-		if(delka>0)ret=floor((delka-d.v.PP.uchyt_pozice)/d.v.PP.delka_podvozek);
+		if(delka>0)ret=floor((delka+d.v.PP.uchyt_pozice)/d.v.PP.delka_podvozek);
 		if(ret<1)ret=1;
 	}
-	O=NULL;delete O;
 	return ret;
 }
 //---------------------------------------------------------------------------
@@ -10384,6 +10382,7 @@ void TForm1::NP()
 void TForm1::NP_input()
 {
 	 log(__func__);//logování
+	 d.v.vytvor_obraz_DATA();//vytovoření obrazu projektu pro funkci storno
 	 TIP="";
 	 if(!scSplitView_LEFTTOOLBAR->Opened)scSplitView_LEFTTOOLBAR->Opened=true;
 	 DrawGrid_knihovna->SetFocus();
@@ -10586,7 +10585,7 @@ void TForm1::NP_input()
 	on_change_zoom_change_scGPTrackBar();//musí být po design_element
 	FormX->input_state=FormX->NOTHING;
 	REFRESH(); //přidáno kvůli zobrazení tab. pohonů a kót (při shodném zoomu layout->editace)
-	if(akt_Objekt->pohon==NULL && d.v.POHONY->dalsi!=NULL){PmG->getCombo(0,0)->DropDown();FormX->vstoupeno_poh=true;}//otevření COMBA pokud objekt nemá žádný pohon a pokud existují nějaké pohony
+	if(akt_Objekt->pohon==NULL && d.v.POHONY->dalsi!=NULL && !(PmG->Top+PmG->Height<34 || PmG->Top>ClientHeight-73 || PmG->Left+PmG->Width<168 || PmG->Left>ClientWidth)){PmG->getCombo(0,0)->DropDown();FormX->vstoupeno_poh=true;}//otevření COMBA pokud objekt nemá žádný pohon a pokud existují nějaké pohony
 }
 //---------------------------------------------------------------------------
 //slouží k přechodu z editace jednoho objektu do editace druhého objektu
@@ -10606,14 +10605,12 @@ void TForm1::zmena_editovaneho_objektu()
 	{
 		case mrYes://nově se při ukládání nic neděje
 		{
-//    	d.v.vymaz_komory(pom);
-//	  	d.v.vymaz_elementy(pom,true);
-//	  	d.v.kopiruj_objekt(akt_Objekt,pom);
+			d.v.smaz_obraz_DATA();//smazání nepotřebného obrazu pro funcki storno
 	  	DuvodUlozit(true);
 			nahled_ulozit(false);
 			pripnuti_dalsich_objektu();
 		}break;
-		case mrNo:kontrola_PM=true;break;//při storno bude načten poslední obraz projektu
+		case mrNo:/*kontrola_PM=true;*/d.v.nacti_z_obrazu_DATA();break;//při storno bude načten poslední obraz projektu
 		default:prepnout=false;Akce=BLOK;break;
 	}
 	////////Můžu pokračovat?
@@ -10663,7 +10660,8 @@ void TForm1::zmena_editovaneho_objektu()
   	/////////Přenastavení editovaného objektu
   	pom=pom_vyhybka;//pom_vyhybka slouží k uložení ukazatele na pro další náhled
 
-  	/////////Otevření nového náhledu
+		/////////Otevření nového náhledu
+		d.v.vytvor_obraz_DATA();//vytovoření obrazu projektu pro funkci storno
 		TIP="";
 		//zobrazení knihovny pokud je skrytá, spíš pro jistotu
 	  if(!scSplitView_LEFTTOOLBAR->Opened)scSplitView_LEFTTOOLBAR->Opened=true;
@@ -12272,23 +12270,22 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;Memo3->Clear();
 	while(E!=NULL)
 	{
-		double rotace=d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(E)+E->rotace_jig;
-		Memo(E->name+" rotace jig: "+AnsiString(rotace));
+		Memo(E->name+"->n="+AnsiString(E->n));
 		//if(E->sparovany!=NULL)Memo(E->name+"->sparovany="+E->sparovany->name);else Memo(E->name+"->sparovany=NULL");
 		E=E->dalsi;
 	}
 //	E=d.v.ELEMENTY->predchozi;
-//	Memo("");
+//	//Memo("");
 //	while(E!=NULL && E->n>0)
 //	{
-//		Memo(E->name+"->objekt_n="+AnsiString(E->objekt_n));
+//		Memo(E->name+"->n="+AnsiString(E->n));
 //		E=E->predchozi;
 //	}
 	E=NULL;delete E;
 //	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
 //	while(O!=NULL)
 //	{
-//		Memo(O->element->name);
+//		Memo(O->name+"->pos_element"+d.v.vrat_posledni_element_objektu(O)->name);
 //		O=O->dalsi;
 //	}
 //	delete O;O=NULL;
@@ -13282,7 +13279,8 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
     //mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
 		pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp;posledni_editovany_element=NULL;delete posledni_editovany_element;JID=-1;Akce=NIC;
     FormX->posledni_E=NULL;//nutné!! slouží k ukládání posledního editovaného elementu (validace, atd.)
-		vlozit_predavaci_misto();//zkontroluje, zda nemusí být přidáno nebo odstraněno předávací místo
+		if(d.v.DATA->Objekty->dalsi!=NULL)d.v.nacti_z_obrazu_DATA();//načtení projektu před editací, pokud nedošlo k uložení, pokud ano byl obraz smazán
+		//vlozit_predavaci_misto();//zkontroluje, zda nemusí být přidáno nebo odstraněno předávací místo
 		duvod_validovat=2;//vyvolá validaci, zajistí aktualizaci zpráv a výpisu v miniformu zpráv, NECHAT AŽ ZA FUNKČNÍMI ZÁLEŽITOSTMI
 		//v případě animace vypnutí a nastavení do výchozího stavu
 		Timer_animace->Enabled=false;
@@ -13649,6 +13647,7 @@ void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
 	log(__func__);//logování
 	if(editace_textu)smaz_kurzor();//uložení změn při zapnuté editaci textu
 	pripnuti_dalsich_objektu();
+	d.v.smaz_obraz_DATA();//smazání nepotřebného obrazu pro funcki storno
 	//d.v.vymaz_komory(pom);
 	//d.v.vymaz_elementy(pom,true);
 	//d.v.kopiruj_objekt(akt_Objekt,pom);

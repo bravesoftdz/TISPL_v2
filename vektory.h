@@ -76,7 +76,7 @@ class Cvektory
 		struct TKomora *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
 
-	struct TData//data elementu, která se mění v závislosti na zakázce
+	struct Tdata//data elementu, která se mění v závislosti na zakázce
 	{
 		short PD;//part detect:  -1 = nic, 0 = začátek jigu, 1 = střed jigu, 2 = celý jig
 		short orientace_jig_pred;//v jaké orientaci je JIG před elementem na obrazovce vykreslen 0,90,180,270 (orientace dle světových stran)
@@ -115,7 +115,7 @@ class Cvektory
 
 		TGeometrie geo;//geometrie elementu
 		TmGrid *mGrid;
-    TData data;//data elementu, která se mění v závislosti na zakázce
+    Tdata data;//data elementu, která se mění v závislosti na zakázce
 
 		unsigned long objekt_n;//příslušnost elementu k objektu
 		TPohon *pohon;//přiřazený pohon k elementu
@@ -192,7 +192,7 @@ class Cvektory
 	struct TCesta//pouze přidružený spoják, který je součástí zakázky, jeden objekt spojáku je jeden segment cesty
 	{
 		unsigned long n;
-		TData data;//data elementu pro konkrétní zakázku
+		Tdata data;//data elementu pro konkrétní zakázku
 		struct TElement *Element;//element v segmentu cesty
 		struct TElement *sparovany;//spárovaný element k elementu, opšt unikátní pro zakázku
 
@@ -426,6 +426,18 @@ class Cvektory
     short objekt_posunout_vse;
 	};
 	TFile_hlavicka File_hlavicka;
+
+	struct TDATA//obraz datového modelu projektu
+	{
+		unsigned long n;
+		TObjekt *Objekty;
+		TElement *Elementy;
+		TPohon *Pohony;
+
+		TDATA *dalsi;
+		TDATA *predchozi;
+	};
+	TDATA *DATA;
 
 //konstruktor
 	Cvektory();
@@ -665,6 +677,13 @@ public:
 
 //odstraní všechny vektory (všechny globální spojáky)
 	void vse_odstranit();
+
+//práce s DATA, obrazem projektu
+	void hlavicka_DATA();
+	void vytvor_obraz_DATA();
+	void nacti_z_obrazu_DATA();
+	void smaz_obraz_DATA();
+	long vymaz_seznam_DATA();
 
 //souborové operace
 	void vytvor_hlavicku_souboru();

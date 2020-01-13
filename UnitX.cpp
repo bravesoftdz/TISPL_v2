@@ -436,32 +436,8 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				{
 					F->scGPComboBox_prepinacKot->Enabled=true;//zapnutí zmìny typu kót, rychlost v tomto kroku bude vždy vìtší než 0
 					F->scGPGlyphButton_PLAY->Enabled=true;//zapnutí tlaèítka animace
-					//aktualizace tabulky
-					if(F->PmG->Rows[3].Visible)//pro tabulku v kontinuálním režimu
-					{
-						F->PmG->Cells[1][rychlost].Text=F->m.round2double(F->outaRD(F->akt_Objekt->pohon->aRD),3);
-						F->PmG->Cells[1][roztec_palce].Text=F->m.round2double(F->outR(F->akt_Objekt->pohon->roztec),3);
-						F->akt_Objekt->pohon->Rx=F->m.Rx(F->akt_Objekt->pohon->aRD,F->akt_Objekt->pohon->roztec);
-						F->PmG->Cells[1][nasobek_roztece].Text=F->m.round2double(F->akt_Objekt->pohon->Rx,0);
-						F->akt_Objekt->pohon->Rz=F->m.Rz(F->akt_Objekt->pohon->aRD);
-						F->PmG->Cells[1][roztec_jigu].Text=F->m.round2double(F->outRz(F->akt_Objekt->pohon->Rz),3);
-						//místo pro mezeru mezi podvozky
-						if(F->PmG->Rows[mezera_jig2].Visible)//budou zde obì mezeri mezi jigy
-						{
-							F->PmG->Cells[1][mezera_jig1].Text=F->outRz(F->m.mezera(0,F->akt_Objekt->pohon->Rz,1));
-							F->PmG->Cells[1][mezera_jig2].Text=F->outRz(F->m.mezera(90,F->akt_Objekt->pohon->Rz,1));
-						}
-						else if(F->PmG->Rows[mezera_jig1].Visible)//pouze jedna mezera mezi jig, nutná další kontrola, padaly by sem všechny varianty
-						{
-							double uhel=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->akt_Objekt->element);
-							F->PmG->Cells[1][mezera_jig1].Text=F->outRz(F->m.mezera(uhel,F->akt_Objekt->pohon->Rz,1));
-						}
-					}
-					else
-					{
-						F->PmG->Cells[1][rychlost].Text=F->m.round2double(F->outaRD(F->akt_Objekt->pohon->aRD),3);
-						F->PmG->Cells[1][roztec_palce].Text=F->m.round2double(F->outR(F->akt_Objekt->pohon->roztec),3);
-					}
+					//aktualizace tabulek
+					aktualizace_PmG();
 					aktualizace_tab_elementu();//došlo ke zmìnám v tabulce pohonu, které ovlivní i ostatní elementy
 				}
 				else//pohon byl odebrán
@@ -643,6 +619,37 @@ void TFormX::zmena_Rx ()
 	//pøepoèet hodnot v elementech
   F->aktualizace_ComboPohon();//zmìna rychlosti, rychlost je zobrazená v Combo pohonù
 	aktualizace_tab_elementu();
+}
+//---------------------------------------------------------------------------
+//aktualizuje hodnoty v PmG
+void TFormX::aktualizace_PmG(bool Refresh)
+{
+  if(F->PmG->Rows[3].Visible)//pro tabulku v kontinuálním režimu
+	{
+		F->PmG->Cells[1][rychlost].Text=F->m.round2double(F->outaRD(F->akt_Objekt->pohon->aRD),3);
+		F->PmG->Cells[1][roztec_palce].Text=F->m.round2double(F->outR(F->akt_Objekt->pohon->roztec),3);
+		F->akt_Objekt->pohon->Rx=F->m.Rx(F->akt_Objekt->pohon->aRD,F->akt_Objekt->pohon->roztec);
+		F->PmG->Cells[1][nasobek_roztece].Text=F->m.round2double(F->akt_Objekt->pohon->Rx,0);
+		F->akt_Objekt->pohon->Rz=F->m.Rz(F->akt_Objekt->pohon->aRD);
+		F->PmG->Cells[1][roztec_jigu].Text=F->m.round2double(F->outRz(F->akt_Objekt->pohon->Rz),3);
+		//místo pro mezeru mezi podvozky
+		if(F->PmG->Rows[mezera_jig2].Visible)//budou zde obì mezeri mezi jigy
+		{
+			F->PmG->Cells[1][mezera_jig1].Text=F->outRz(F->m.mezera(0,F->akt_Objekt->pohon->Rz,1));
+			F->PmG->Cells[1][mezera_jig2].Text=F->outRz(F->m.mezera(90,F->akt_Objekt->pohon->Rz,1));
+		}
+		else if(F->PmG->Rows[mezera_jig1].Visible)//pouze jedna mezera mezi jig, nutná další kontrola, padaly by sem všechny varianty
+		{
+			double uhel=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->akt_Objekt->element);
+			F->PmG->Cells[1][mezera_jig1].Text=F->outRz(F->m.mezera(uhel,F->akt_Objekt->pohon->Rz,1));
+		}
+	}
+	else
+	{
+		F->PmG->Cells[1][rychlost].Text=F->m.round2double(F->outaRD(F->akt_Objekt->pohon->aRD),3);
+		F->PmG->Cells[1][roztec_palce].Text=F->m.round2double(F->outR(F->akt_Objekt->pohon->roztec),3);
+	}
+	if(Refresh)F->PmG->Refresh();
 }
 //---------------------------------------------------------------------------
 //pøepoèet v tabulkách elementù po zmìnì parametrù v tabulce pohonu
