@@ -120,8 +120,10 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 		if(F->akt_Objekt!=NULL && F->akt_Objekt->n!=O->n || F->akt_Objekt==NULL)vykresli_objekt(canv,O);
 		O=O->dalsi;
 	}
+	delete O;O=NULL;
 	if(F->akt_Objekt!=NULL)vykresli_objekt(canv,F->akt_Objekt);//vykreslení aktuálně editovaného objektu nad všechny ostatní objekty
 	vykresli_retez(canv);
+
 	///////////////Vykreslení pohonů
 //	Cvektory::TPohon *P=v.POHONY->dalsi;//přeskočí hlavičku
 //	while (P!=NULL)
@@ -330,29 +332,6 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	////vnější obrys kabiny
 	if(!(F->akt_Objekt!=NULL && F->akt_Objekt->n!=O->n && F->scGPTrackBar_intenzita->Value<5))polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
 
-	///název
-	//název objektu - nastavení
-	nastavit_text_popisu_objektu_v_nahledu(canv);AnsiString Tn=O->name.UpperCase();AnsiString Tl=+" / ";short Wn=canv->TextWidth(Tn);
-  ////poloha nadpisu
-	double X=O->Xt;
-	double Y=O->Yt;
-	switch((int)O->orientace_text)
-	{
-		case 0:X=m.L2Px(X)-canv->TextHeight(Tl);Y=m.L2Py(Y)+m.round((Wn)/2.0);canv->Font->Orientation=(O->orientace_text+90)*10;break;//nastavení rotace canvasu
-		case 90:X=m.L2Px(X)-m.round((Wn)/2.0);Y=m.L2Py(Y)-canv->TextHeight(Tl);break;
-		case 180:X=m.L2Px(X)+canv->TextHeight(Tl);Y=m.L2Py(Y)-m.round((Wn)/2.0);canv->Font->Orientation=(O->orientace_text+90)*10;break;//nastavení rotace canvasu
-		case 270:X=m.L2Px(X)-m.round((Wn)/2.0);Y=m.L2Py(Y)-canv->TextHeight(Tl);break;
-	}
-	//nastavení normálního, disabled nebo highlight textu
-	nastavit_text_popisu_objektu_v_nahledu(canv);
-  //highlight názvu
-	if((F->JID==-6 || F->editace_textu && F->index_kurzoru==-6) && (F->pom!=NULL && F->pom->n==O->n || F->akt_Objekt!=NULL && F->akt_Objekt->n==O->n))canv->Font->Color=clStenaHaly; else canv->Font->Color=clStenaKabiny;
-  if(F->akt_Objekt!=NULL && F->akt_Objekt->n!=O->n)canv->Font->Color=m.clIntensive(clAkt,I);//pro neaktivní objekty při editaci
-	//samotné vypsání názvu
-	if(!(F->akt_Objekt!=NULL && F->akt_Objekt->n!=O->n && F->scGPTrackBar_intenzita->Value<5))TextFraming(canv,X,Y,Tn);//záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
-	//vrácení původní hodnoty rotace canvasu
-	canv->Font->Orientation=0;
-
 	////vykreslení kříže posunu u tabulky pohonu, natrvalo
 	canv->Pen->Color=clBlack;canv->Pen->Width=1;
 	if(F->akt_Objekt!=NULL && F->Akce==F->Takce::NIC && F->PmG->Highlight)
@@ -518,6 +497,29 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 			canv->Brush->Style=bsClear;//navrácení na průhledné pero, kvůli následujícím popiskům objektu, kóty jej totiž změnily
 		}
 	}
+
+	///název - na konec, vykreslení jako poslední vrstva
+	//název objektu - nastavení
+	nastavit_text_popisu_objektu_v_nahledu(canv);AnsiString Tn=O->name.UpperCase();AnsiString Tl=+" / ";short Wn=canv->TextWidth(Tn);
+  ////poloha nadpisu
+	double X=O->Xt;
+	double Y=O->Yt;
+	switch((int)O->orientace_text)
+	{
+		case 0:X=m.L2Px(X)-canv->TextHeight(Tl);Y=m.L2Py(Y)+m.round((Wn)/2.0);canv->Font->Orientation=(O->orientace_text+90)*10;break;//nastavení rotace canvasu
+		case 90:X=m.L2Px(X)-m.round((Wn)/2.0);Y=m.L2Py(Y)-canv->TextHeight(Tl);break;
+		case 180:X=m.L2Px(X)+canv->TextHeight(Tl);Y=m.L2Py(Y)-m.round((Wn)/2.0);canv->Font->Orientation=(O->orientace_text+90)*10;break;//nastavení rotace canvasu
+		case 270:X=m.L2Px(X)-m.round((Wn)/2.0);Y=m.L2Py(Y)-canv->TextHeight(Tl);break;
+	}
+	//nastavení normálního, disabled nebo highlight textu
+	nastavit_text_popisu_objektu_v_nahledu(canv);
+  //highlight názvu
+	if((F->JID==-6 || F->editace_textu && F->index_kurzoru==-6) && (F->pom!=NULL && F->pom->n==O->n || F->akt_Objekt!=NULL && F->akt_Objekt->n==O->n))canv->Font->Color=clStenaHaly; else canv->Font->Color=clStenaKabiny;
+  if(F->akt_Objekt!=NULL && F->akt_Objekt->n!=O->n)canv->Font->Color=m.clIntensive(clAkt,I);//pro neaktivní objekty při editaci
+	//samotné vypsání názvu
+	if(!(F->akt_Objekt!=NULL && F->akt_Objekt->n!=O->n && F->scGPTrackBar_intenzita->Value<5))TextFraming(canv,X,Y,Tn);//záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
+	//vrácení původní hodnoty rotace canvasu
+	canv->Font->Orientation=0;
 }
 //---------------------------------------------------------------------------
 //bool name, zda se jedná o zadavání name nebo short_name

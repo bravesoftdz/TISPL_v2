@@ -680,10 +680,11 @@ public:
 
 //práce s DATA, obrazem projektu
 	void hlavicka_DATA();
-	void vytvor_obraz_DATA();
-	void nacti_z_obrazu_DATA();
-	void smaz_obraz_DATA();
+	void vytvor_obraz_DATA(bool storno=false);
+	void nacti_z_obrazu_DATA(bool storno);
+	void smaz_obraz_DATA(unsigned long n);
 	long vymaz_seznam_DATA();
+	Cvektory::TDATA *vytvor_prazdny_obraz();//atributy pro tvorbu hlaviček elementů, objektů a pohonů
 
 //souborové operace
 	void vytvor_hlavicku_souboru();
