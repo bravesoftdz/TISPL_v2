@@ -3156,7 +3156,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						//if(JID==-6) {if(scSplitView_LEFTTOOLBAR->Visible && scSplitView_LEFTTOOLBAR->Opened)DrawGrid_knihovna->SetFocus();stav_kurzoru=false;editace_textu=true;index_kurzoru=-6;nazev_puvodni=akt_Objekt->name;TimerKurzor->Enabled=true;}//editace názvu
 						if(JID==-7 || JID==-6) {Akce=MOVE_TEXT;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;nahled_ulozit(true);}//posun názvu
 						if(JID==-10)zmenJednotekKot();//přepnutí jednotek všech kót
-						if(JID<=-11&&JID>=-101&&akt_Objekt->id!=3){if(scSplitView_LEFTTOOLBAR->Visible && scSplitView_LEFTTOOLBAR->Opened)DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;if(JID!=-101)editovany_text=m.round2double(d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp),2);else editovany_text=m.round2double(vzdalenost_meziLO(pom_element,akt_Objekt->orientace),2);if(DKunit==2||DKunit==3)editovany_text=m.round2double(editovany_text/akt_Objekt->pohon->aRD,3);editovany_text=outDK(ms.MyToDouble(editovany_text));puv_souradnice.x=pom_element->X;puv_souradnice.y=pom_element->Y;}//editace kót elementu
+						if(JID<=-11&&JID>=-101&&akt_Objekt->id!=3){if(scSplitView_LEFTTOOLBAR->Visible && scSplitView_LEFTTOOLBAR->Opened)DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;if(JID!=-101)editovany_text=m.round2double(/*d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp)*/pom_element_temp->geo.delka,2);else editovany_text=m.round2double(vzdalenost_meziLO(pom_element,akt_Objekt->orientace),2);if(DKunit==2||DKunit==3)editovany_text=m.round2double(editovany_text/pom_element->pohon->aRD,3);editovany_text=outDK(ms.MyToDouble(editovany_text));puv_souradnice.x=pom_element->X;puv_souradnice.y=pom_element->Y;}//editace kót elementu
 						if(JID<=-11&&JID>=-101&&akt_Objekt->id==3){if(d.v.PtInKota_komory(akt_Objekt,X,Y)==-1){Akce=ROZMER_KOMORA;pom_komora_temp=pom_komora;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}else {if(scSplitView_LEFTTOOLBAR->Visible && scSplitView_LEFTTOOLBAR->Opened)DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_komora_temp=pom_komora;editovany_text=m.round2double(outDK(pom_komora->velikost),2);}}
 						if(JID>=11&&JID<=99){Akce=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//změna offsetu kót elementů, nebo změna rozměru jednotlivých kabin
 						if(JID>=4&&JID<=10)zmena_jednotek_tab_pohon();//změna jednotek v tabulce pohonů
@@ -3970,10 +3970,10 @@ void TForm1::vykresli_spojinici_EmGrid(TCanvas *Canv,Cvektory::TElement *E)
 		//stanovení nejmenší vzdálenosti
 		double delka=Min(Min(levyhorni,pravyhorni),Min(levydolni,pravydolni));
 		//vykreslí spojinici v nejmenší délce
-		if(delka==levyhorni&&!vykresleno){d.linie(Canv,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt),2,(TColor)RGB(200,200,200));vykresleno=true;}
-		if(delka==pravyhorni&&!vykresleno){d.linie(Canv,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt)+pom_element->mGrid->Width,m.L2Py(pom_element->Yt),2,(TColor)RGB(200,200,200));vykresleno=true;}
-		if(delka==levydolni&&!vykresleno){d.linie(Canv,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt)+pom_element->mGrid->Height,2,(TColor)RGB(200,200,200));vykresleno=true;}
-		if(delka==pravydolni&&!vykresleno){d.linie(Canv,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt)+pom_element->mGrid->Width,m.L2Py(pom_element->Yt)+pom_element->mGrid->Height,2,(TColor)RGB(200,200,200));vykresleno=true;}
+		if(delka==levyhorni&&!vykresleno){d.linie(Canv,m.L2Px(E->X),m.L2Py(E->Y),m.L2Px(E->Xt),m.L2Py(E->Yt),2,(TColor)RGB(200,200,200));vykresleno=true;}
+		if(delka==pravyhorni&&!vykresleno){d.linie(Canv,m.L2Px(E->X),m.L2Py(E->Y),m.L2Px(E->Xt)+E->mGrid->Width,m.L2Py(E->Yt),2,(TColor)RGB(200,200,200));vykresleno=true;}
+		if(delka==levydolni&&!vykresleno){d.linie(Canv,m.L2Px(E->X),m.L2Py(E->Y),m.L2Px(E->Xt),m.L2Py(E->Yt)+E->mGrid->Height,2,(TColor)RGB(200,200,200));vykresleno=true;}
+		if(delka==pravydolni&&!vykresleno){d.linie(Canv,m.L2Px(E->X),m.L2Py(E->Y),m.L2Px(E->Xt)+E->mGrid->Width,m.L2Py(E->Yt)+E->mGrid->Height,2,(TColor)RGB(200,200,200));vykresleno=true;}
 	}
 }
 //---------------------------------------------------------------------------
@@ -4040,6 +4040,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				vlozit_predavaci_misto();//kontrola zda nebyly přesunuty 2 PM na sebe
 				//nejednalo se o posun ale o editaci textu
 				if(akt_Objekt!=NULL && vychozi_souradnice_kurzoru.x==minule_souradnice_kurzoru.x && vychozi_souradnice_kurzoru.y==minule_souradnice_kurzoru.y){DrawGrid_knihovna->SetFocus();stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;nazev_puvodni=pom_element_temp->name;editace_textu=true;TimerKurzor->Enabled=true;}
+				else duvod_validovat=2;//vyvolá validaci, zajistí aktualizaci zpráv a výpisu v miniformu zpráv, NECHAT AŽ ZA FUNKČNÍMI ZÁLEŽITOSTMI
 				break;//posun elementu
 			}
 			case MOVE_KOMORA:
@@ -5702,7 +5703,7 @@ void TForm1::vlozit_predavaci_misto()
 		E=E->dalsi;
 	}
 	//////Předávací místo mezi posledním a prvním
-	if(d.v.ELEMENTY->dalsi!=NULL && d.v.ELEMENTY->predchozi->objekt_n!=d.v.ELEMENTY->dalsi->objekt_n)
+	if(d.v.ELEMENTY->dalsi!=NULL && d.v.ELEMENTY->predchozi->n>0)// && d.v.ELEMENTY->predchozi->objekt_n!=d.v.ELEMENTY->dalsi->objekt_n)
 	{
 		long ID;
 		Cvektory::TElement *e_prvni=d.v.ELEMENTY->dalsi,*e_posledni=d.v.ELEMENTY->predchozi;
@@ -10595,7 +10596,7 @@ void TForm1::zmena_editovaneho_objektu()
 	Timer_neaktivity->Enabled=false;//vypnutí timeru pro jistotu
 	Konec->SetFocus();
 	/////////Uložení náhledu
-	bool prepnout=true,validace=false;
+	bool prepnout=true,validace=false,storno=false;
 	bool kontrola_PM=false;//při neuložení minulého náhledmu musí dojík k separátní kontrole
 	int result=mrNo;
 	if(scGPButton_ulozit->Enabled)result=MB(ls->Strings[343]+" "+akt_Objekt->name+"?",MB_YESNO,true);//"Chcete uložit změny objektu"                                                     //"Zadaná data nejsou validní a nebudou uložena. Opravdu přejít do jiného objektu?"
@@ -10610,7 +10611,7 @@ void TForm1::zmena_editovaneho_objektu()
 			nahled_ulozit(false);
 			pripnuti_dalsich_objektu();
 		}break;
-		case mrNo:/*kontrola_PM=true;*/d.v.nacti_z_obrazu_DATA();break;//při storno bude načten poslední obraz projektu
+		case mrNo:/*kontrola_PM=true;*/storno=true;break;//při storno bude načten poslední obraz projektu
 		default:prepnout=false;Akce=BLOK;break;
 	}
 	////////Můžu pokračovat?
@@ -10656,9 +10657,15 @@ void TForm1::zmena_editovaneho_objektu()
   	ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
   	ButtonPLAY->Hint="spustit animaci";
   	zobrazit_meritko=scGPSwitch_meritko->State;//navrácení do původního stavu
-
-  	/////////Přenastavení editovaného objektu
-  	pom=pom_vyhybka;//pom_vyhybka slouží k uložení ukazatele na pro další náhled
+    //storno funkcionalita
+		unsigned long objekt_n=pom_vyhybka->n;//uchovávání, pokud bude stisknuto storno dojde ke smazání objektu
+		if(storno)
+		{
+			d.v.nacti_z_obrazu_DATA();//až po uzavření staré editace
+			duvod_validovat=2;//vyvolá validaci, zajistí aktualizaci zpráv a výpisu v miniformu zpráv, NECHAT AŽ ZA FUNKČNÍMI ZÁLEŽITOSTMI
+    }
+		/////////Přenastavení editovaného objektu
+		pom=d.v.vrat_objekt(objekt_n);//pom_vyhybka slouží k uložení ukazatele na pro další náhled
 
 		/////////Otevření nového náhledu
 		d.v.vytvor_obraz_DATA();//vytovoření obrazu projektu pro funkci storno
@@ -14004,6 +14011,7 @@ void TForm1::smaz_kurzor()
 					d.v.vloz_G_element(pom_element_temp->dalsi,0,pom_element_temp->geo.X1,pom_element_temp->geo.Y1,0,0,0,0,pom_element_temp->dalsi->geo.X4,pom_element_temp->dalsi->geo.Y4,pom_element_temp->dalsi->geo.orientace,pom_element_temp->dalsi->geo.rotacni_uhel);
 			}
 			vlozit_predavaci_misto();//kontrola zda nedošlo k překryvu PM
+			duvod_validovat=2;//vyvolá validaci, zajistí aktualizaci zpráv a výpisu v miniformu zpráv, NECHAT AŽ ZA FUNKČNÍMI ZÁLEŽITOSTMI
 		}
 		if(index_kurzoru<=-11&&akt_Objekt->id==3&&Akce!=GEOMETRIE)//editace rozmeru komor v POW
 		{
