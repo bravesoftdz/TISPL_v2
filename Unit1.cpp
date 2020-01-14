@@ -10593,7 +10593,7 @@ void TForm1::zmena_editovaneho_objektu()
 {
 	log(__func__);//logování
 	Timer_neaktivity->Enabled=false;//vypnutí timeru pro jistotu
-	Konec->SetFocus();//konec
+	Konec->SetFocus();
 	/////////Uložení náhledu
 	bool prepnout=true,validace=false;
 	bool kontrola_PM=false;//při neuložení minulého náhledmu musí dojík k separátní kontrole
@@ -13947,7 +13947,6 @@ void TForm1::smaz_kurzor()
     //pokud je kurzor vykreslen překresli ho
 		if (stav_kurzoru) vykresli_kurzor(index_kurzoru);
 		TimerKurzor->Enabled=false;
-		editace_textu=false;
 		//pokud bylo zadáno nic přepíše nic původními hodnotamy
 		if((editovany_text==""||ms.MyToDouble(editovany_text)==0)&&index_kurzoru==-5){if(pom_bod_temp->n!=1)editovany_text=m.round2double(m.delka(pom_bod_temp->predchozi->X,pom_bod_temp->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);else editovany_text=m.round2double(m.delka(akt_Objekt->body->predchozi->X,akt_Objekt->body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);if(DKunit==2||DKunit==3)editovany_text=editovany_text/akt_Objekt->pohon->aRD;editovany_text=outDK(ms.MyToDouble(editovany_text));}
 		if((editovany_text==""||ms.MyToDouble(editovany_text)==0)&&index_kurzoru<=-11&&akt_Objekt->id!=3&&Akce!=GEOMETRIE){if(index_kurzoru!=-101)editovany_text=d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp);else editovany_text=outDK(vzdalenost_meziLO(pom_element_temp,akt_Objekt->orientace));if(DKunit==2||DKunit==3)editovany_text=editovany_text/akt_Objekt->pohon->aRD;}
@@ -13982,6 +13981,7 @@ void TForm1::smaz_kurzor()
 		}
 		if(index_kurzoru<=-11&&akt_Objekt->id!=3&&Akce!=GEOMETRIE)//editace hodnot kót elementů
 		{
+			double vzdalenost=m.round2double(pom_element_temp->geo.delka,2);
 			editovany_text=inDK(ms.MyToDouble(editovany_text));//převedení na základní jednotky
 			if(DKunit==2||DKunit==3)editovany_text=editovany_text*akt_Objekt->pohon->aRD;//pokud jsou kóty v časovém režimu nutno přepočítat na vzdálenost
 			if(index_kurzoru==-101)editovany_text=ms.MyToDouble(editovany_text)-vzdalenost_meziLO(pom_element_temp,akt_Objekt->orientace)+d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp);
@@ -13991,10 +13991,16 @@ void TForm1::smaz_kurzor()
 			UnicodeString text=ls->Strings[324],text_1=ls->Strings[325];//"Přesunem dojde k překrytí lakovacích oken, chcete element přesunout?","Přesunem dojde k zásahu do zóny otáčení, chcete element přesunout?"
 			if(chybne==1 && mrYes!=MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text,"",MB_YESNO) || chybne>1 && mrYes!=MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text_1,"",MB_YESNO))
 			{
+        //posun elementu (bez geo.)
 				double posunx=puv_souradnice.x-pom_element_temp->X,posuny=puv_souradnice.y-pom_element_temp->Y;
 				pom_element_temp->X=puv_souradnice.x;pom_element_temp->Y=puv_souradnice.y;
+				//nutná kontrola změny pořadí!!!
+				Cvektory::TElement *E=d.v.vloz_element_pred(akt_Objekt,pom_element_temp);
+				if(E!=NULL && pom_element_temp->dalsi!=NULL && E->n!=pom_element_temp->dalsi->n)d.v.zmen_poradi_elementu(pom_element_temp,E);
+				E=NULL;delete E;
+				//uprava geometrie
 				d.v.vloz_G_element(pom_element_temp,0,pom_element_temp->geo.X1,pom_element_temp->geo.Y1,0,0,0,0,pom_element_temp->geo.X4+posunx,pom_element_temp->geo.Y4+posuny,pom_element_temp->geo.orientace,pom_element_temp->geo.rotacni_uhel);
-      	if(pom_element_temp->dalsi!=NULL)
+				if(pom_element_temp->dalsi!=NULL)
 					d.v.vloz_G_element(pom_element_temp->dalsi,0,pom_element_temp->geo.X1,pom_element_temp->geo.Y1,0,0,0,0,pom_element_temp->dalsi->geo.X4,pom_element_temp->dalsi->geo.Y4,pom_element_temp->dalsi->geo.orientace,pom_element_temp->dalsi->geo.rotacni_uhel);
 			}
 			vlozit_predavaci_misto();//kontrola zda nedošlo k překryvu PM
@@ -14038,6 +14044,7 @@ void TForm1::smaz_kurzor()
 				pom_element_temp=pom_element_temp->dalsi;
 			}
 		}
+		editace_textu=false;//musí být na konci!
 	}
 	else if(editace_textu && editovany_text!="")//pokud neexistuje otevřený objekt + očetření proti zapsání prázdné hodnoty
 	{
