@@ -1885,7 +1885,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 							 
 	//ukazatelové propojení + řazení
 	vloz_element(Objekt,novy,Ep);
-													
+
 	//defaultní data
 	novy->data.LO1=1.5;
 	novy->OTOC_delka=0;
@@ -2059,7 +2059,8 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 		force_razeni->predchozi=Element;
 		//změna indexů
 		Cvektory::TElement *E=Objekt->element;
-		E->n=vrat_poradi_elementu_do(E)+1;
+		if(E->predchozi==NULL || E->predchozi->n==0)E->n=1;
+		else E->n=E->predchozi->n+1;
 		int n=E->n;
 		while(E!=NULL)
 		{
@@ -3115,7 +3116,6 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 	if(!povolit && F->akt_Objekt!=NULL)F->TIP=F->ls->Strings[315];//"Nelze odstranit předávací místo"
 	if(povolit && (Element->dalsi==NULL || Element->dalsi!=NULL && Element->geo.typ==0 && Element->dalsi->geo.typ==0 || preskocit_kontolu))
 	{
-		if(O!=NULL && O->element->n==Element->n && Element->predchozi->n>0 && Element->predchozi->objekt_n==O->n)O->element=Element->predchozi;
 		if(O!=NULL && O->element->n==Element->n && Element->dalsi!=NULL && Element->dalsi->objekt_n==O->n)O->element=Element->dalsi;
 		//nejdříve smazání tabulky Elelementu
 		if(Element->mGrid!=NULL)
@@ -6052,7 +6052,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			wchar_t *nameH=new wchar_t[cH->name_delka];
 			FileStream->Read(nameH,cH->name_delka*sizeof(wchar_t));
 			HALA.name=nameH;
-			delete[] nameH; nameH=NULL;  F->log(HALA.name+" p.b. ["+AnsiString(HALA.X)+","+AnsiString(HALA.Y)+"]");
+			delete[] nameH; nameH=NULL;
 			//načtení bodu haly
 			for(unsigned int j=1;j<=cH->pocet_bodu;j++)
 			{

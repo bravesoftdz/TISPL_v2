@@ -970,7 +970,7 @@ void TForm1::DesignSettings()
 			case 2:text="mongolština";break;
 			case 3:text="angličtina";break;
 			case 4:text="vozík:min:";break;
-			case 5:text="Založí nový soubor";break;
+      case 5:text="Založí nový soubor";break;
       case 6:text="Otevře existující soubor";break;
       case 7:text="Uloží aktuální soubor";break;
       case 8:text="Zpět";break;
@@ -1004,7 +1004,7 @@ void TForm1::DesignSettings()
       case 36:text="Editace";break;
       case 37:text="spustit animaci";break;
       case 38:text="Aktuální polohu kurzoru v souřadnicích aplikace";break;
-      case 39:text="Kliknutím na libovolné místo přidáte objekt z knihovny nebo lze upravit stávájící schéma";break;
+      case 39:text="Kliknutím na libovolné místo přidáte objekt z knihovny nebo lze upravit stávájící layout";break;
       case 40:text="Rychlá nápověda aplikace";break;
       case 41:text="přichytávat";break;
       case 42:text="Kliknutím změníte režim přichytávání objektu ke mřížce";break;
@@ -1083,9 +1083,9 @@ void TForm1::DesignSettings()
       case 115:text="Nastavení intenzity needitovaných objektů";break;
       case 116:text="                  Nástroje";break;
       case 117:text="Změřit vzdálenost";break;
-			case 118:text="Zakázky";break;
-			case 119:text="Odemknout editaci";break;
-			case 120:text="Zamknout editaci mimo hodnot tabulek";break;
+      case 118:text="Zakázky";break;
+      case 119:text="Odemknout editaci";break;
+      case 120:text="Zamknout editaci mimo hodnot tabulek";break;
       case 121:text="Skrýt tabulky";break;
       case 122:text="Zobrazit tabulky";break;
       case 123:text="Skrýt kóty";break;
@@ -1190,12 +1190,12 @@ void TForm1::DesignSettings()
       case 222:text="Neplatná hodnota rychlosti pohonu!";break;
       case 223:text="Párová stop";break;
       case 224:text="WT palec";break;
-      case 225:text="počet pozic";break;
-      case 226:text="počet vozíků";break;
+      case 225:text="potencionální počet pozic";break;
+      case 226:text="nastavený počet pozic";break;
       case 227:text="časová rezerva";break;
       case 228:text="čas uzavřené STOP stanice";break;
       case 229:text="maximální možná doba čekání na palec";break;
-      case 230:text="maximální možný počet pozic";break;
+      case 230:text="maximální možný počet pozic v bufferu";break;
       case 231:text="Rozšířené položky";break;
       case 232:text="LO";break;
       case 233:text="délka lakovácího okna";break;
@@ -1224,7 +1224,7 @@ void TForm1::DesignSettings()
       case 256:text="kontinuální";break;
       case 257:text="kontinuální s ";break;
       case 258:text="pasiv. otočí";break;
-			case 259:text="akt. otočí";break;
+      case 259:text="akt. otočí";break;
       case 260:text="ožeh";break;
       case 261:text="ionizace";break;
       case 262:text="lakování";break;
@@ -1256,7 +1256,7 @@ void TForm1::DesignSettings()
       case 288:text="Horní hranice rychlosti musí být menší nebo rovna";break;
       case 289:text="Spodní hranice rychlosti musí být >=";break;
       case 290:text="Nebo horní hranice musí být <=";break;
-			case 291:text="Parametry pohonu již nelze měnit, protože pohon je používán na jiných objektech";break;
+      case 291:text="Parametry pohonu již nelze měnit, protože pohon je používán na jiných objektech";break;
       case 292:text="Zobrazit palce";break;
       case 293:text="Úhel [°]";break;
       case 294:text="Probíhá stahování aktualizace, neukončujte aplikaci!!! Po dokončení stahování bude program ukončen.";break;
@@ -1279,12 +1279,12 @@ void TForm1::DesignSettings()
       case 311:text="Nelze smazat.";break;
       case 312:text="Klinutím na levé tlačítko myši přidejte bod.";break;
       case 313:text="Kliknutím a tažením myši posunujete celý objekt.";break;
-      case 314:text="Pro aktuální počet pozic je třeba buffer o délce";break;
+      case 314:text="Pro nastavovaný vozík je potřeba buffer o délce";break;
       case 315:text="Nelze odstranit předávací místo.";break;
-			case 316:text="Je k dispozici aktualizace TISPLu. Chcete ji stáhnout?";break;
-			case 317:text="Po dokončení staženým souborem přepište současný EXE soubor.";break;
-			case 318:text="byl změněn. Chcete ho před ukončením uložit?";break;
-			case 319:text="Není k dispozici přípojení k internetu nebo vypršela licence, aplikace nebude spuštěna!";break;
+      case 316:text="Je k dispozici aktualizace TISPLu. Chcete ji stáhnout?";break;
+      case 317:text="Po dokončení staženým souborem přepište současný EXE soubor.";break;
+      case 318:text="byl změněn. Chcete ho před ukončením uložit?";break;
+      case 319:text="Není k dispozici přípojení k internetu nebo vypršela licence, aplikace nebude spuštěna!";break;
       case 320:text="Nezdařilo se připojení k serveru, aplikace nebude spuštěna!";break;
       case 321:text="Nezdařilo se připojení k licenčnímu serveru, aplikace nebude spuštěna!";break;
       case 322:text="Aplikace nebyla řádně ukončena. Byl obnoven poslední Vámi uložený soubor.";break;
@@ -1373,28 +1373,28 @@ void TForm1::DesignSettings()
       case 405:text="  Otočit název doprava";break;
       case 406:text="Nestíhá se přejezd, záporná časová rezerva!";break;
       case 407:text="Nulová časová rezerva.";break;
-			case 408:text="Vložit jako novou sekci? Ne - změnit na jiný typ sekce.";break;
-			case 409:text="Odemknout rozmístění objektů";break;
-			case 410:text="Zapnout přichytávání";break;
-			case 411:text="Vypnout přichytávání";break;
-			case 412:text="Zprávy ";break;
-			case 413:text="Připnout k pravé části";break;
-			case 414:text="Počet chyb";break;
-			case 415:text="Počet varování";break;
-			case 416:text="Objekt byl přesunut, souhlasíte s aktuálním umístěním?";break;
-			case 417:text="maximální čas";break;
+      case 408:text="Vložit jako novou sekci? Ne - změnit na jiný typ sekce.";break;
+      case 409:text="Odemknout rozmístění objektů";break;
+      case 410:text="Zapnout přichytávání";break;
+      case 411:text="Vypnout přichytávání";break;
+      case 412:text="Zprávy ";break;
+      case 413:text="Připnout k pravé části";break;
+      case 414:text="Počet chyb";break;
+      case 415:text="Počet varování";break;
+      case 416:text="Objekt byl přesunut, souhlasíte s aktuálním umístěním?";break;
+      case 417:text="maximální čas";break;
       case 418:text="včetně max. WT palec";break;
       case 419:text="čekání";break;
-			case 420:text="doba čekání v bufferu";break;
-			case 421:text="RT není relevantní, některý z objektů nemá pohon!";break;
-			case 422:text="Nerelevantní hodnota časové rezervy (RT), na některém objektu není přiřazen pohon!";break;
-			case 423:text="Nelze editovat, layout je zamčený";break;
-			case 424:text="Nepodařilo se načíst podklad";break;
-      case 425:text=", zkontrolujte jeho existenci, nebo proveďte nové načtení.";break;
-			case 426:text="Kvůli překryvu jigů nelze nastavit větší počet vozíků než";break;
-			case 427:text="místo pro úchyt palce";break;
-			case 428:text="Smazat podklad";break;
-			case 429:text="S&G s";break;
+      case 420:text="doba čekání v bufferu";break;
+      case 421:text="RT není relevantní, některý z objektů nemá pohon!";break;
+      case 422:text="Nerelevantní hodnota časové rezervy (RT), na některém objektu není přiřazen pohon!";break;
+      case 423:text="Nelze editovat, layout je zamčený";break;
+      case 424:text="Nepodařilo se načíst podklad";break;
+      case 425:text="Kvůli překryvu jigů nelze nastavit větší počet vozíků než";break;
+      case 426:text="místo pro úchyt palce";break;
+      case 427:text="místo pro úchyt palce";break;
+      case 428:text="Smazat podklad";break;
+      case 429:text="S&G s";break;
 			case 430:text="Geometrie následujícího objektu nenavazuje, po uložení bude možné geometrii navázat";break;
 			default:text="";break;
 		}
@@ -2641,18 +2641,18 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 			if(Akce==DRAW_HALA&&d.v.HALA.body->predchozi->n!=0){d.v.smaz_bod(d.v.HALA.body->predchozi);REFRESH();}
 			else if(Akce==DRAW_HALA){Akce=NIC;kurzor(standard);}
 			////Geometrie
-			if(Akce==GEOMETRIE && !editace_textu && posledni_editovany_element!=NULL && posledni_editovany_element->eID==MaxInt)
+			if(Akce==GEOMETRIE && !editace_textu && posledni_editovany_element!=NULL && posledni_editovany_element->eID==MaxInt && posledni_editovany_element->objekt_n==akt_Objekt->n)
 			{
-				if(posledni_editovany_element->n>akt_Objekt->element->n || posledni_editovany_element->dalsi!=NULL)
+				if(posledni_editovany_element->n!=akt_Objekt->element->n || posledni_editovany_element->n==akt_Objekt->element->n && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->objekt_n==akt_Objekt->n)
 				{
 					double posunx=posledni_editovany_element->geo.X1-posledni_editovany_element->geo.X4,posuny=posledni_editovany_element->geo.Y1-posledni_editovany_element->geo.Y4;
 					Cvektory::TElement *E=NULL;
-					if(posledni_editovany_element->predchozi->n!=0)E=posledni_editovany_element->predchozi;
+					if(posledni_editovany_element->predchozi->n>0 && posledni_editovany_element->predchozi->objekt_n==akt_Objekt->n)E=posledni_editovany_element->predchozi;
 					d.v.smaz_element(posledni_editovany_element,true);
 					posledni_editovany_element=E;
 					E=akt_Objekt->element;
-					if(posledni_editovany_element!=NULL)E=posledni_editovany_element->dalsi;
-					while(E!=NULL)
+					if(posledni_editovany_element!=NULL && akt_Objekt->element!=NULL)E=posledni_editovany_element->dalsi;
+					while(E!=NULL && E->objekt_n==akt_Objekt->n)
 					{
 						E->X+=posunx;E->Y+=posuny;//souřadnice elementu
 						//geometrie elementu
@@ -2660,13 +2660,14 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 						E->geo.Y1+=posuny;E->geo.Y2+=posuny;E->geo.Y3+=posuny;E->geo.Y4+=posuny;
 						E=E->dalsi;
 					}
-					delete E;E=NULL;
+					E=NULL;delete E;
 				}
 				else
 				{
 					posledni_editovany_element->X=posledni_editovany_element->geo.X1;
 					posledni_editovany_element->Y=posledni_editovany_element->geo.Y1;
 					d.v.vloz_G_element(posledni_editovany_element,0,posledni_editovany_element->geo.X1,posledni_editovany_element->geo.Y1,posledni_editovany_element->geo.X1,posledni_editovany_element->geo.Y1,posledni_editovany_element->geo.X1,posledni_editovany_element->geo.Y1,posledni_editovany_element->geo.X1,posledni_editovany_element->geo.Y1,akt_Objekt->orientace);
+					posledni_editovany_element=NULL;
 				}
 				REFRESH(false);
 			}
@@ -2688,18 +2689,18 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		case 46:
 		{
 			////Geometrie stejná funkce jako backspace
-			if(Akce==GEOMETRIE && !editace_textu && posledni_editovany_element!=NULL && posledni_editovany_element->eID==MaxInt)
+			if(Akce==GEOMETRIE && !editace_textu && posledni_editovany_element!=NULL && posledni_editovany_element->eID==MaxInt && posledni_editovany_element->objekt_n==akt_Objekt->n)
 			{
-				if(posledni_editovany_element->n>akt_Objekt->element->n || posledni_editovany_element->dalsi!=NULL)
+				if(posledni_editovany_element->n!=akt_Objekt->element->n || posledni_editovany_element->n==akt_Objekt->element->n && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->objekt_n==akt_Objekt->n)
 				{
 					double posunx=posledni_editovany_element->geo.X1-posledni_editovany_element->geo.X4,posuny=posledni_editovany_element->geo.Y1-posledni_editovany_element->geo.Y4;
 					Cvektory::TElement *E=NULL;
-					if(posledni_editovany_element->predchozi->n!=0)E=posledni_editovany_element->predchozi;
+					if(posledni_editovany_element->predchozi->n>0 && posledni_editovany_element->predchozi->objekt_n==akt_Objekt->n)E=posledni_editovany_element->predchozi;
 					d.v.smaz_element(posledni_editovany_element,true);
 					posledni_editovany_element=E;
 					E=akt_Objekt->element;
-					if(posledni_editovany_element!=NULL)E=posledni_editovany_element->dalsi;
-					while(E!=NULL)
+					if(posledni_editovany_element!=NULL && akt_Objekt->element!=NULL)E=posledni_editovany_element->dalsi;
+					while(E!=NULL && E->objekt_n==akt_Objekt->n)
 					{
 						E->X+=posunx;E->Y+=posuny;//souřadnice elementu
 						//geometrie elementu
@@ -2707,13 +2708,14 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 						E->geo.Y1+=posuny;E->geo.Y2+=posuny;E->geo.Y3+=posuny;E->geo.Y4+=posuny;
 						E=E->dalsi;
 					}
-					delete E;E=NULL;
+					E=NULL;delete E;
 				}
 				else
 				{
 					posledni_editovany_element->X=posledni_editovany_element->geo.X1;
 					posledni_editovany_element->Y=posledni_editovany_element->geo.Y1;
 					d.v.vloz_G_element(posledni_editovany_element,0,posledni_editovany_element->geo.X1,posledni_editovany_element->geo.Y1,posledni_editovany_element->geo.X1,posledni_editovany_element->geo.Y1,posledni_editovany_element->geo.X1,posledni_editovany_element->geo.Y1,posledni_editovany_element->geo.X1,posledni_editovany_element->geo.Y1,akt_Objekt->orientace);
+					posledni_editovany_element=NULL;
 				}
 				REFRESH(false);
 			}
@@ -5276,7 +5278,7 @@ Cvektory::TObjekt *TForm1::add_objekt(int X, int Y)
 		}
 		pom=NULL;//odsranění pomocného ukazatele
 		//posun ostatních objektů
-		if(pom_vyhybka->n<d.v.OBJEKTY->predchozi->n)
+		if(pom_vyhybka->dalsi!=NULL && pom_vyhybka->element->geo.X1==pom_vyhybka->dalsi->element->geo.X1 && pom_vyhybka->element->geo.Y1==pom_vyhybka->dalsi->element->geo.Y1)
 		{
 			Cvektory::TElement *e=d.v.vrat_posledni_element_objektu(pom_vyhybka);
 			double x=0,y=0,delka=e->geo.delka;
@@ -5893,7 +5895,7 @@ void TForm1::vlozeni_editace_geometrie()
 	}
 	//////přidávání za poslední geometrii
 	else if(posledni_editovany_element!=NULL && (posledni_editovany_element->dalsi==NULL || (posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->objekt_n!=posledni_editovany_element->objekt_n)))
-	{   log("    Začátek");
+	{
     //vložím nový prvek, který převezme geometrii posledniho a zařadí se před nej, poslední pak převezme novou geometrii - tz. posouvám poslední prvek stále před sebou
 		if(posledni_editovany_element->geo.delka!=0)//normální provoz
 		{
@@ -6121,7 +6123,7 @@ void TForm1::mGrid_on_mGrid()
 				tab1.right=m.L2Px(E->Xt)+E->mGrid->Width;
 				tab1.bottom=m.L2Py(E->Yt)+E->mGrid->Height;
 				//průchod všemi ostatními elementy, hledání zda se nepřekrývají s tab1
-				Cvektory::TElement *E_temp=E;
+				Cvektory::TElement *E_temp=akt_Objekt->element;
 				while(E_temp!=NULL && E_temp->objekt_n==objekt_n)
 				{
 					if(E_temp->eID!=100 && E_temp->eID!=MaxInt)//přeskakovat element s tab1, pouze pro elementy, které mají tabulku
@@ -6226,7 +6228,7 @@ void TForm1::mGrid_puvodni_stav(Cvektory::TElement *E)
   		case 0://stop stanice, nastavování režimů podle ID objektu
   		{
   			unsigned int id=d.v.vrat_objekt(E->objekt_n)->id;
-  			if(id>=6 && id<=10){E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;}
+  			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;
 				E->mGrid->exBUTTONVisible=true;
 				E->mGrid->Update();
   			break;
@@ -8334,6 +8336,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][6].Text=ls->Strings[226];//"počet vozíků";
 			E->mGrid->Cells[1][6].Text=E->data.pocet_voziku;
 			//automatické nastavení sířky sloupců podle použitých jednotek
+			if(stav==0){if(!(id>=6 && id<=10 || id==12))sirka_0=120;else sirka_0=200;}
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_0;
 			E->mGrid->Columns[1].Width=sirka_cisla;
@@ -12273,13 +12276,14 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
+	int i=0;
 	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;Memo3->Clear();
 	while(E!=NULL)
-	{
-		Memo(E->name+"->objekt_n="+AnsiString(E->objekt_n));
+	{   i++;
+		Memo(E->name+"->n="+AnsiString(E->n));
 		//if(E->sparovany!=NULL)Memo(E->name+"->sparovany="+E->sparovany->name);else Memo(E->name+"->sparovany=NULL");
 		E=E->dalsi;
-	}
+	}    Memo("Počet elementů="+AnsiString(i));
 //	E=d.v.ELEMENTY->predchozi;
 //	Memo("");
 //	while(E!=NULL && E->n>0)
@@ -12291,10 +12295,17 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
 //	while(O!=NULL)
 //	{
-//		Memo(O->name+"->pos_element"+d.v.vrat_posledni_element_objektu(O)->name);
+//		Memo(O->name);
 //		O=O->dalsi;
 //	}
-//	delete O;O=NULL;
+	//delete O;O=NULL;
+//	O=d.v.OBJEKTY->predchozi;      Memo("");
+//	while(O!=NULL && O->n>0)
+//	{
+//		Memo(O->name);
+//		O=O->predchozi;
+//	}
+//	O=NULL;delete O;
 	//d.line(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,m.L2Px(akt_Objekt->element->Xt),m.L2Py(akt_Objekt->element->Yt));
 }
 //---------------------------------------------------------------------------
