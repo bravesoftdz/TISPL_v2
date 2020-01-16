@@ -37,7 +37,7 @@ Options;X;Nastavení
 Editing;X;Editace
 run the animation;X;spustit animaci
 The current cursor position in the application coordinates;X;Aktuální polohu kurzoru v souøadnicích aplikace
-Click anywhere to add an object from the library or edit an existing schema;X;Kliknutím na libovolné místo pøidáte objekt z knihovny nebo lze upravit stávájící schéma
+Click anywhere to add an object from the library or edit an existing layout;X;Kliknutím na libovolné místo pøidáte objekt z knihovny nebo lze upravit stávájící layout
 Application quick help;X;Rychlá nápovìda aplikace
 snap;X;pøichytávat
 Click to change the snap mode of the object to the grid;X;Kliknutím zmìníte režim pøichytávání objektu ke møížce
@@ -223,12 +223,12 @@ Enter the recommended drive speed:;X;Zadejte doporuèenou rychlost pohonu:
 Invalid drive speed value!;X;Neplatná hodnota rychlosti pohonu!
 Pair stop;X;Párová stop
 WT thumb;X;WT palec
-number of positions;X;poèet pozic
-number of wagons  ;X;poèet vozíkù
+potential number of positions;X;potencionální poèet pozic
+set number of positions;X;nastavený poèet pozic
 reserve time;X;èasová rezerva
 closed stop station time;X;èas uzavøené STOP stanice
 maximum possible waiting time per thumb;X;maximální možná doba èekání na palec
-maximum possible number of positions;X;maximální možný poèet pozic
+maximum possible number of positions in buffer;X;maximální možný poèet pozic v bufferu
 Advanced items;X;Rozšíøené položky
 PW;X;LO
 length of painting window;X;délka lakovácího okna

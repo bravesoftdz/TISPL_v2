@@ -69,7 +69,7 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 	    	{
 	    		E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
 	    		E->mGrid->VisibleRow(3,false,false);//nepøekreslovat
-	    		E->mGrid->VisibleRow(5,false,false); E->mGrid->VisibleRow(6,false,false);
+					E->mGrid->VisibleRow(5,false,false); E->mGrid->VisibleRow(6,false,false);
 	    	}
 	    	else
 	    	{
@@ -77,6 +77,7 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 	    		E->mGrid->VisibleRow(3,true,false);//nepøekreslovat
 	    		E->mGrid->VisibleRow(5,true,false); E->mGrid->VisibleRow(6,true,false);
 				}
+				F->design_element(E,false);
 			}break;
 			case 3:case 9:case 13:case 17:case 103:case 107:
 			{

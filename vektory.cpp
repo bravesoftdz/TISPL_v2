@@ -3094,7 +3094,7 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 {
 	bool povolit=true;
 	TObjekt *O=vrat_objekt(Element->objekt_n);
-	if(Element->eID==200)//mazání PM
+	if(Element->eID==200 && !preskocit_kontolu)//mazání PM
 	{
 		//pokud se jedná o PM na konci objektu .. nelze smazat
 		if(Element->dalsi==NULL || Element->dalsi!=NULL && Element->dalsi->objekt_n!=Element->objekt_n)povolit=false;
@@ -3112,8 +3112,8 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 		}
 	}
 	//hláška uživateli
-  if(!povolit && F->akt_Objekt!=NULL)F->TIP=F->ls->Strings[315];//"Nelze odstranit předávací místo"
-	if(povolit && (preskocit_kontolu || (Element->dalsi==NULL || Element->dalsi!=NULL && Element->geo.typ==0 && Element->dalsi->geo.typ==0)))
+	if(!povolit && F->akt_Objekt!=NULL)F->TIP=F->ls->Strings[315];//"Nelze odstranit předávací místo"
+	if(povolit && (Element->dalsi==NULL || Element->dalsi!=NULL && Element->geo.typ==0 && Element->dalsi->geo.typ==0 || preskocit_kontolu))
 	{
 		if(O!=NULL && O->element->n==Element->n && Element->predchozi->n>0 && Element->predchozi->objekt_n==O->n)O->element=Element->predchozi;
 		if(O!=NULL && O->element->n==Element->n && Element->dalsi!=NULL && Element->dalsi->objekt_n==O->n)O->element=Element->dalsi;

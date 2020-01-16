@@ -3156,7 +3156,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						//if(JID==-6) {if(scSplitView_LEFTTOOLBAR->Visible && scSplitView_LEFTTOOLBAR->Opened)DrawGrid_knihovna->SetFocus();stav_kurzoru=false;editace_textu=true;index_kurzoru=-6;nazev_puvodni=akt_Objekt->name;TimerKurzor->Enabled=true;}//editace názvu
 						if(JID==-7 || JID==-6) {Akce=MOVE_TEXT;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;nahled_ulozit(true);}//posun názvu
 						if(JID==-10)zmenJednotekKot();//přepnutí jednotek všech kót
-						if(JID<=-11&&JID>=-101&&akt_Objekt->id!=3){if(scSplitView_LEFTTOOLBAR->Visible && scSplitView_LEFTTOOLBAR->Opened)DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;if(JID!=-101)editovany_text=m.round2double(/*d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp)*/pom_element_temp->geo.delka,2);else editovany_text=m.round2double(vzdalenost_meziLO(pom_element,akt_Objekt->orientace),2);if(DKunit==2||DKunit==3)editovany_text=m.round2double(editovany_text/pom_element->pohon->aRD,3);editovany_text=outDK(ms.MyToDouble(editovany_text));puv_souradnice.x=pom_element->X;puv_souradnice.y=pom_element->Y;}//editace kót elementu
+						if(JID<=-11&&JID>=-101&&akt_Objekt->id!=3){if(scSplitView_LEFTTOOLBAR->Visible && scSplitView_LEFTTOOLBAR->Opened)DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;if(JID!=-101)editovany_text=m.round2double(d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp),2);else editovany_text=m.round2double(vzdalenost_meziLO(pom_element,akt_Objekt->orientace),2);if(DKunit==2||DKunit==3)editovany_text=m.round2double(editovany_text/akt_Objekt->pohon->aRD,3);editovany_text=outDK(ms.MyToDouble(editovany_text));puv_souradnice.x=pom_element->X;puv_souradnice.y=pom_element->Y;}//editace kót elementu
 						if(JID<=-11&&JID>=-101&&akt_Objekt->id==3){if(d.v.PtInKota_komory(akt_Objekt,X,Y)==-1){Akce=ROZMER_KOMORA;pom_komora_temp=pom_komora;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}else {if(scSplitView_LEFTTOOLBAR->Visible && scSplitView_LEFTTOOLBAR->Opened)DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_komora_temp=pom_komora;editovany_text=m.round2double(outDK(pom_komora->velikost),2);}}
 						if(JID>=11&&JID<=99){Akce=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//změna offsetu kót elementů, nebo změna rozměru jednotlivých kabin
 						if(JID>=4&&JID<=10)zmena_jednotek_tab_pohon();//změna jednotek v tabulce pohonů
@@ -5265,11 +5265,11 @@ Cvektory::TObjekt *TForm1::add_objekt(int X, int Y)
 		if(oblast==2 && d.v.OBJEKTY->predchozi->n>1){souradnice.x=pom->element->geo.X1;souradnice.y=pom->element->geo.Y1;}
 		//vložení objektu na konec
 		if(pom==NULL || pom!=NULL && pom->n==d.v.OBJEKTY->predchozi->n)//vloží za poslední prvek
-		{           log("  Vkladaní na konec");
+		{
 			ret=pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y);
 		}
 		else//vkládá prvek mezi objekty
-		{          log("  Vkladaní mezi objekty");
+		{
 			if(oblast==2 && d.v.OBJEKTY->predchozi->n>1)ret=pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,d.v.OBJEKTY,pom);
 			else ret=pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,pom,pom->dalsi);
 			d.v.nove_indexy();//zvýší indexy nasledujicích bodů
@@ -7845,11 +7845,12 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 	//nastavení šířek
 	if(PTunit==SEC && LOunit==M)sirka_1=90;
 	else sirka_1=105;
-	if(PTunit==0){sirka_0=160;sirka_2=95;}
-	else {sirka_0=160;sirka_2=107;}
+	if(PTunit==0)sirka_2=95;
+	else sirka_2=107;
 	if(PTunit==SEC && LOunit==M && DOtocunit==M)sirka_3=120;
 	else sirka_3=135;
 	sirka_cisla=90;
+	sirka_0=120;//default hodnota nastavuje se později
 	sirka_4=95;
 	sirka_56=96;
 
@@ -8001,6 +8002,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			d.v.reserve_time(E);//výpočet a vypsání
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
+			if(!(id>=6 && id<=10 || id==12))sirka_0=120;else sirka_0=200;
 			E->mGrid->Columns[0].Width=sirka_0;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			//nastavení hintů
@@ -8307,8 +8309,8 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 		case 0://stop stanice
 		{
 			unsigned int stav=0;
-			if(E->mGrid->RowCount!=0 && E->mGrid->Rows[3].Visible)stav=1;//uchování stavu zda byla tabulka "rozbalená"
-			if(E->mGrid->RowCount!=0 && !E->mGrid->Rows[3].Visible)stav=2;//uchování stavu zda byla tabulka "zabalená"
+			if(E->mGrid->RowCount!=0 && E->mGrid->Rows[3].Visible){stav=1;sirka_0=200;}//uchování stavu zda byla tabulka "rozbalená"
+			if(E->mGrid->RowCount!=0 && !E->mGrid->Rows[3].Visible){stav=2;sirka_0=120;}//uchování stavu zda byla tabulka "zabalená"
 			//samotné vytvoření matice-tabulky
 			E->mGrid->Create(2,7);
 			//nastavování režimů podle ID objektu
@@ -8705,10 +8707,11 @@ void TForm1::redesign_element()
 	//nastavení šířek
 	if(PTunit==SEC && LOunit==M)sirka_1=90;
 	else sirka_1=105;
-	if(PTunit==0){sirka_0=160;sirka_2=95;}
-	else {sirka_0=160;sirka_2=107;}
+	if(PTunit==0)sirka_2=95;
+	else sirka_2=107;
 	if(PTunit==SEC && LOunit==M && DOtocunit==M)sirka_3=120;
 	else sirka_3=135;
+	sirka_0=120;//default hodnota nastavuje se později
 	sirka_cisla=90;
 	sirka_4=95;
 	sirka_56=96;
@@ -8741,6 +8744,7 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 	{
 		case 0://stop stanice
 		{
+      if(E->mGrid->Rows[6].Visible)sirka_0=200;else sirka_0=120;
 			UnicodeString popisek=ls->Strings[419];//čekání
 			if(akt_Objekt->id>=6 && akt_Objekt->id<=10)popisek=ls->Strings[327]+" "+akt_Objekt->name.LowerCase();//čas "název objektu"
 			E->mGrid->Cells[0][2].Text="RT "+cas;
@@ -9433,6 +9437,7 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton
 	if(MOD==EDITACE)
   {
 		bool pridani=false;
+		if(Akce==GEOMETRIE)ukonceni_geometrie();
 		if(editace_textu)smaz_kurzor();//pokud se vykresluje kurzor a je kluknuto do knihovny ... smazat kurzor
 		if(MOD==EDITACE)if(PmG->Rows[3].Visible)FormX->odstranit_korelaci();//pokud je tabulka pohonu v režimu KK je možnost, že je Highlightovaná ... odstranit highlight (korelaci)
 		knihovna_id=1;
@@ -9553,6 +9558,7 @@ void __fastcall TForm1::DrawGrid_otoceMouseDown(TObject *Sender, TMouseButton Bu
   log(__func__);//logování
 	if(editace_textu)smaz_kurzor();
 	if(MOD==EDITACE)if(PmG->Rows[3].Visible)FormX->odstranit_korelaci();
+	if(Akce==GEOMETRIE)ukonceni_geometrie();
 	int Col,Row;
 	Col=DrawGrid_otoce->Col; Row=DrawGrid_otoce->Row;
 	knihovna_id=2;
@@ -9568,6 +9574,7 @@ void __fastcall TForm1::DrawGrid_ostatniMouseDown(TObject *Sender, TMouseButton 
 					TShiftState Shift, int X, int Y)
 {
 	log(__func__);//logování
+	if(Akce==GEOMETRIE)ukonceni_geometrie();
 	int Col=DrawGrid_ostatni->Col;
 	if(editace_textu)smaz_kurzor();
 	if(MOD==EDITACE)if(PmG->Rows[3].Visible)FormX->odstranit_korelaci();
@@ -12266,10 +12273,10 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;//Memo3->Clear();
+	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;Memo3->Clear();
 	while(E!=NULL)
 	{
-		if(E->n==12)Memo(E->name+"->PT="+AnsiString(E->data.PT1));
+		Memo(E->name+"->objekt_n="+AnsiString(E->objekt_n));
 		//if(E->sparovany!=NULL)Memo(E->name+"->sparovany="+E->sparovany->name);else Memo(E->name+"->sparovany=NULL");
 		E=E->dalsi;
 	}
