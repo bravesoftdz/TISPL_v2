@@ -1507,7 +1507,8 @@ void __fastcall TForm1::FormShow(TObject *Sender)
 //volání založení nový soubor z menu = nové nastavení souboru, nastevení aplikace je v konstruktoru
 void __fastcall TForm1::NovySouborClick(TObject *Sender)
 {
-   log(__func__);//logování
+	 log(__func__);//logování
+	 ESC();//ukončení případné akce
 	 //if(duvod_k_ulozeni) UlozitClick(this);
 	 Novy_soubor();//samotné vytvoření nového souboru
 	 if(!duvod_k_ulozeni)//pouze pokud byl založen nový soubor
@@ -5720,9 +5721,8 @@ void TForm1::vlozit_predavaci_misto()
 			//změna elemetnu na předávací místo
 			E->eID=200;
 			//názvy výhybek prozatím neřešeny
-			unsigned int nTyp=d.v.vrat_poradi_elementu_do(E)+1;
-			E->name="Předávací místo "+AnsiString(nTyp);
-			E->short_name=E->name.SubString(1,3)+AnsiString(nTyp);
+			E->name=name+" X";
+			d.v.uprav_popisky_elementu(E);
 			//smazání a znovuvytvoření mGridu elementu
 			if(akt_Objekt!=NULL && e_posledni->objekt_n==akt_Objekt->n)
 			{
@@ -9440,8 +9440,7 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton
 	if(MOD==EDITACE)
   {
 		bool pridani=false;
-		if(Akce==GEOMETRIE)ukonceni_geometrie();
-		if(editace_textu)smaz_kurzor();//pokud se vykresluje kurzor a je kluknuto do knihovny ... smazat kurzor
+		ESC();//ukončení případné akce
 		if(MOD==EDITACE)if(PmG->Rows[3].Visible)FormX->odstranit_korelaci();//pokud je tabulka pohonu v režimu KK je možnost, že je Highlightovaná ... odstranit highlight (korelaci)
 		knihovna_id=1;
 		int EID=d.v.vrat_eID_prvniho_pouziteho_robota(akt_Objekt);//kontrola v jakém je kabina režimu (stop&go, kontinuální), podle toho dovolí vkládat roboty pouze stejného režimu
@@ -9558,10 +9557,9 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton
 void __fastcall TForm1::DrawGrid_otoceMouseDown(TObject *Sender, TMouseButton Button,
 					TShiftState Shift, int X, int Y)
 {
-  log(__func__);//logování
-	if(editace_textu)smaz_kurzor();
+	log(__func__);//logování
+	ESC();//ukončení případné akce
 	if(MOD==EDITACE)if(PmG->Rows[3].Visible)FormX->odstranit_korelaci();
-	if(Akce==GEOMETRIE)ukonceni_geometrie();
 	int Col,Row;
 	Col=DrawGrid_otoce->Col; Row=DrawGrid_otoce->Row;
 	knihovna_id=2;
@@ -9577,9 +9575,8 @@ void __fastcall TForm1::DrawGrid_ostatniMouseDown(TObject *Sender, TMouseButton 
 					TShiftState Shift, int X, int Y)
 {
 	log(__func__);//logování
-	if(Akce==GEOMETRIE)ukonceni_geometrie();
+	ESC();//ukončení případné akce
 	int Col=DrawGrid_ostatni->Col;
-	if(editace_textu)smaz_kurzor();
 	if(MOD==EDITACE)if(PmG->Rows[3].Visible)FormX->odstranit_korelaci();
 	if(Col==0 && akt_Objekt->pohon!=NULL && akt_Objekt->id!=3)
 	{
@@ -9601,6 +9598,7 @@ void __fastcall TForm1::DrawGrid_geometrieMouseDown(TObject *Sender, TMouseButto
 					TShiftState Shift, int X, int Y)
 {
 	log(__func__);//logování
+	if(Akce!=GEOMETRIE)ESC();//ukončení případné akce
 	int Col;
 	Col=DrawGrid_geometrie->Col;
 	knihovna_id=4;
@@ -11045,6 +11043,7 @@ AnsiString TForm1::FileName_short(AnsiString FileName)
 void __fastcall TForm1::UlozitClick(TObject *Sender)
 {
 	log(__func__);//logování
+	ESC();//ukončení případné akce
 	if(FileName=="")FileName="Nový.tispl";
 	if(FileName=="Nový.tispl" || FileName.Pos(".tisplTemp"))UlozitjakoClick(this);
 	else
@@ -11112,6 +11111,7 @@ void TForm1::Ulozit_soubor()
 void __fastcall TForm1::Toolbar_OtevritClick(TObject *Sender)
 {
 	log(__func__);//logování
+	ESC();//ukončení případné akce
 	scSplitView_MENU->Opened=false;
 	scButton_otevrit->Down=false;
 	if(duvod_k_ulozeni)//pokud existuje předcházejicí soubor, který je nutný uložit
@@ -12276,14 +12276,12 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	int i=0;
-	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;Memo3->Clear();
-	while(E!=NULL)
-	{   i++;
-		Memo(E->name+"->n="+AnsiString(E->n));
-		//if(E->sparovany!=NULL)Memo(E->name+"->sparovany="+E->sparovany->name);else Memo(E->name+"->sparovany=NULL");
-		E=E->dalsi;
-	}    Memo("Počet elementů="+AnsiString(i));
+//	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;Memo3->Clear();
+//	while(E!=NULL)
+//	{
+//		Memo(E->name+"->n="+AnsiString(E->n));
+//		E=E->dalsi;
+//	}
 //	E=d.v.ELEMENTY->predchozi;
 //	Memo("");
 //	while(E!=NULL && E->n>0)
@@ -12291,7 +12289,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //		Memo(E->name+"->n="+AnsiString(E->n));
 //		E=E->predchozi;
 //	}
-	E=NULL;delete E;
+//	E=NULL;delete E;
 //	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
 //	while(O!=NULL)
 //	{
@@ -14086,6 +14084,7 @@ void TForm1::smaz_kurzor()
 void __fastcall TForm1::scButton_zamekClick(TObject *Sender)
 {
 	log(__func__);//logování
+	if(Akce==GEOMETRIE)ukonceni_geometrie();//ukončení pouze geometrie, ESC zde zlobí
 	//pokud je otevřené menu nebo options zavře je
 	if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)
 	{
@@ -14120,6 +14119,7 @@ void __fastcall TForm1::scButton_zamekClick(TObject *Sender)
 void __fastcall TForm1::scGPButton_viditelnostmGridClick(TObject *Sender)
 {
 	log(__func__);//logování
+	if(Akce==GEOMETRIE)ukonceni_geometrie();//ukončení pouze geometrie, ESC zde zlobí
 	//pokud je otevřené menu nebo options zavře je
 	if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)
 	{
@@ -14149,6 +14149,7 @@ void __fastcall TForm1::scGPButton_viditelnostmGridClick(TObject *Sender)
 void __fastcall TForm1::scGPButton_viditelnostKotyClick(TObject *Sender)
 {
 	log(__func__);//logování
+	if(Akce==GEOMETRIE)ukonceni_geometrie();//ukončení pouze geometrie, ESC zde zlobí
 	//pokud je otevřené menu nebo options zavře je
 	if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)
 	{
@@ -14178,6 +14179,7 @@ void __fastcall TForm1::scGPButton_viditelnostKotyClick(TObject *Sender)
 void __fastcall TForm1::scGPButton_posun_dalsich_elementuClick(TObject *Sender)
 {
 	log(__func__);//logování
+	if(Akce==GEOMETRIE)ukonceni_geometrie();//ukončení pouze geometrie, ESC zde zlobí
 	//pokud je otevřené menu nebo options zavře je
 	if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)
 	{
@@ -14205,6 +14207,7 @@ void __fastcall TForm1::scGPButton_posun_dalsich_elementuClick(TObject *Sender)
 void __fastcall TForm1::scGPComboBox_prepinacKotClick(TObject *Sender)
 {
 	log(__func__);//logování
+	if(Akce==GEOMETRIE)ukonceni_geometrie();//ukončení pouze geometrie, ESC zde zlobí
 	//pokud je otevřené menu nebo options zavře je
 	if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)
 	{
@@ -14249,6 +14252,7 @@ void TForm1::Memo(AnsiString Text, bool clear,bool count)
 void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 {
 	log(__func__);//logování
+	if(Akce==GEOMETRIE)ukonceni_geometrie();//ukončení pouze geometrie, ESC zde zlobí
 	//pokud je otevřené menu nebo options zavře je
 	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
 	if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
@@ -14852,6 +14856,7 @@ void __fastcall TForm1::scGPButton_prichytavatClick(TObject *Sender)
 void __fastcall TForm1::scGPButton_errorClick(TObject *Sender)
 {
 	log(__func__);//logování
+	ESC();//ukončení případné akce
 	//pokud je otevřené menu nebo options zavře je
 	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
 	if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
@@ -14862,6 +14867,7 @@ void __fastcall TForm1::scGPButton_errorClick(TObject *Sender)
 void __fastcall TForm1::scGPButton_warningClick(TObject *Sender)
 {
 	log(__func__);//logování
+	ESC();//ukončení případné akce
 	//pokud je otevřené menu nebo options zavře je
 	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
 	if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
@@ -14882,5 +14888,6 @@ void __fastcall TForm1::scGPButton_smazatClick(TObject *Sender)
 	scSplitView_OPTIONS->Opened=false;
 }
 //---------------------------------------------------------------------------
+
 
 
