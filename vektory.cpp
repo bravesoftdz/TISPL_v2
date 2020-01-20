@@ -2574,7 +2574,7 @@ short Cvektory::PtInKota_elementu(TObjekt *Objekt,long X,long Y)
 //posune pouze Element z pomocného spojového seznamu akt_Objekt na parametrem uvedenou vzádlenost (v metrech) od elementu předchozího, pokud je implicitní hodnota pusun_dalsich_elementu false změněna na true, jsou o danou změnu posunu přesunuty i elementy následující Elementu (tudíž jejich vzdálenost od Elementu bude zachována, naopak v případě výchozí hodnoty false je následujícím/dalším elementům poloha zachována)
 bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dalsich_elementu,bool posun_kurzorem,bool kontrola_zmeny_poradi)
 { //!!!!!!po nasazení geometrie nutno zdokonalit, nebude se pracovát pouze se vzdálenosti na linii buď vodorvné či svislé, ale i v oblouku
-	Cvektory::TElement *E=NULL;    F->log(__func__);
+	Cvektory::TElement *E=NULL;
 	bool RET=true;
 	if(F->akt_Objekt!=NULL && F->akt_Objekt->element!=NULL/*&&F->Akce!=F->MOVE_ELEMENT*/)//raději ošetření, ač by se metoda měla volat jen v případě existence akt_Objekt
 	{
@@ -2583,25 +2583,15 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 		puv_souradnice.x=Element->X;puv_souradnice.y=Element->Y;
 		if(F->akt_Objekt->element!=NULL&&vzdalenost!=0)//musí existovat alespoň jeden element&&nesmí být vzdálenost rovna nule
 		{
-			//////Výpočet posunu
-			TPointD vzd;
-			if(Element->n==1)//pro první element, od počátku kabiny
-			{
-				if(Element->orientace==0||Element->orientace==180)vzd.x=Element->X-F->akt_Objekt->element->geo.X1;
-				else vzd.x=Element->Y-F->akt_Objekt->element->geo.Y1;
-			}
-			else//více elementů
-			{
-				if(Element->orientace==0||Element->orientace==180)vzd.x=Element->X-Element->predchozi->X;
-				else	vzd.x=Element->Y-Element->predchozi->Y;
-			}
+			//////Načtení délky před posunem
+			double vzd=vzdalenost_od_predchoziho_elementu(Element,false);
 			if((Element->dalsi!=NULL && Element->dalsi->geo.typ!=0 || Element->geo.typ!=0) && kontrola_zmeny_poradi)posun_povolit=false;//pokud by element ovlivnil posunem geometrii
 			//////Realizace posunu + validace
-			if(vzd.x!=0 && !posun_kurzorem && posun_povolit)//posun z kót!!!!!!!!!!!!!!!!!!!!!
+			if(vzd!=0 && !posun_kurzorem && posun_povolit)//posun z kót!!!!!!!!!!!!!!!!!!!!!
 			{
 				//realizace posunu
-				if(Element->orientace==0||Element->orientace==180)Element->X=Element->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
-				else Element->Y=Element->Y-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
+				if(Element->orientace==0||Element->orientace==180)Element->X=Element->X-(vzd/m.abs_d(vzd))*(m.abs_d(vzd)-vzdalenost);
+				else Element->Y=Element->Y-(vzd/m.abs_d(vzd))*(m.abs_d(vzd)-vzdalenost);
 				//kontrola zda je element stále na linii
 				if(F->bod_na_geometrii(0,0,Element) || Element->n==vrat_posledni_element_objektu(F->akt_Objekt)->n || !kontrola_zmeny_poradi)
 				{
@@ -2616,18 +2606,18 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 					vloz_G_element(Element,0,Element->geo.X1,Element->geo.Y1,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,Element->geo.orientace);
 					if(kontrola_zmeny_poradi)
 					{
-				  	//aktualizace dalšího elemtnu
+						//aktualizace dalšího elemtnu
 				  	if(Element->dalsi!=NULL)vloz_G_element(Element->dalsi,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
-				  	//aktualizace RT
+						//aktualizace RT
 						if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){reserve_time(Element,NULL,true,true);reserve_time(Element->sparovany,NULL,true,true);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
 						else reserve_time(Element,NULL,true,true);
 					}
 				}
 				//pokud ne budou mu navráceny původní souřadnice
 				else
-				{Element->X=puv_souradnice.x;Element->Y=puv_souradnice.y;posun_povolit=false;}
+				{Element->X=puv_souradnice.x;Element->Y=puv_souradnice.y;posun_povolit=false;F->TIP=F->ls->Strings[307];}//"Prvek nelze přesunout"
 			}
-			else if(vzd.x!=0 && posun_kurzorem && posun_povolit)//posun kurozem!!!!!!!!!!!!!!!!!!!!!
+			else if(vzd!=0 && posun_kurzorem && posun_povolit)//posun kurozem!!!!!!!!!!!!!!!!!!!!!
 			{
 				//realizace posunu
 				if(Element->orientace==0||Element->orientace==180)Element->X=Element->X+vzdalenost;
@@ -2645,9 +2635,9 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 					vloz_G_element(Element,0,Element->geo.X1,Element->geo.Y1,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,Element->geo.orientace);
 					if(kontrola_zmeny_poradi)
 					{
-				  	//aktualizace dalšího elemtnu
-				  	if(Element->dalsi!=NULL)vloz_G_element(Element->dalsi,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
-				  	//aktualizace RT
+						//aktualizace dalšího elemtnu
+						if(Element->dalsi!=NULL)vloz_G_element(Element->dalsi,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
+						//aktualizace RT
 						if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){reserve_time(Element,NULL,true,true);reserve_time(Element->sparovany,NULL,true,true);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
 						else reserve_time(Element,NULL,true,true);
 					}
@@ -2663,12 +2653,12 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				{
 					puv_souradnice.x=E->X;puv_souradnice.y=E->Y;
 					if(E->geo.typ!=0)break;//ukončení v případě, že se někde nachází jiná geometrie než linie
-					if(vzd.x!=0 && !posun_kurzorem && E->eID!=MaxInt && E->eID!=200)//neposunovat zarážku
+					if(vzd!=0 && !posun_kurzorem && E->eID!=MaxInt && E->eID!=200)//neposunovat zarážku
 					{
-						if(Element->orientace==0||Element->orientace==180)E->X=E->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);//výpočet pro posuv z kót
-						else E->Y=E->Y-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
+						if(Element->orientace==0||Element->orientace==180)E->X=E->X-(vzd/m.abs_d(vzd))*(m.abs_d(vzd)-vzdalenost);//výpočet pro posuv z kót
+						else E->Y=E->Y-(vzd/m.abs_d(vzd))*(m.abs_d(vzd)-vzdalenost);
 					}
-					if(vzd.x!=0 && posun_kurzorem && E->eID!=MaxInt && E->eID!=200)
+					if(vzd!=0 && posun_kurzorem && E->eID!=MaxInt && E->eID!=200)
 					{
 						if(Element->orientace==0||Element->orientace==180)E->X=E->X+vzdalenost;//výpočet pro posun kurzorem
 						else E->Y=E->Y+vzdalenost;
@@ -2751,65 +2741,43 @@ void Cvektory::zmen_poradi_elementu(TElement *E,TElement *Ed)
 ////---------------------------------------------------------------------------
 //vratí vzdálenost od předchozího elementu, pracuje zatím pouze v orotogonalizovaném prostoru (bude nutno vylepšit s příchodem oblouků), pokud se jedná o první element, uvažuje se jako vzdálenost od počátku kabiny (nutno vylepšit ještě pro různé orientace kabiny)
 double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element,bool pouzeSG)
-{                  //dodělat MaVl
-	if(pouzeSG)//vzdálenost od předchozího SG elementu, slouží k výpočtům RT, zatím provizorně, v budoucnu nutno rozšířit na předchozí kabiny + vyhybky!!!!
+{
+  //deklarace proměnných
+	double delka=Element->geo.delka;//délka úseku Elementu, stejná pro oba druhy výpočtů
+	TElement *E=Element->predchozi;
+
+	//vzdálenost od předchozího SG elementu, slouží k výpočtům RT, zatím provizorně
+	if(pouzeSG)
 	{
-		double celkem=0;
-		//pokud je element první v kabině
-//		if(Element->n==1)
-//		{
-//			if(Element->orientace==0||Element->orientace==180)return m.delka(F->akt_Objekt->element->geo.X1,F->akt_Objekt->element->geo.Y1,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
-//			else return m.delka(F->akt_Objekt->element->geo.X1,F->akt_Objekt->element->geo.Y1,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
-//		}
-//		else//pokud je v kabině více elementů
-//		{
-//			//procházení objektu a hledání předchozího SG elementu
-//			Cvektory::TElement *E=F->akt_Objekt->element;//provizorně může být použito akt_Objekt, volání metody pouze když je akt_Objekt naplněné
-//			while(E->n!=Element->n&&E!=NULL)
-//			{
-//				//procházím kabinu od začátku, pokud je element SG uložím jeho vzdálenost k elementu pro kterého hledám vzdálenost k předchozímu
-//				if(E->eID==0||E->eID%2==0)celkem=m.delka(F->d.Rxy(Element).x,F->d.Rxy(Element).y,F->d.Rxy(E).x,F->d.Rxy(E).y);
-//				E=E->dalsi;
-//			}
-//			E=NULL; delete E;
-//			//pokud byla nalezena alespoň jedna vzdálenost
-//			if(celkem!=0)return celkem;
-//			else return m.delka(F->akt_Objekt->element->geo.X1,F->akt_Objekt->element->geo.Y1,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
-//		}
-			////////nová koncepce
-			bool pokracovat=true;
-			TObjekt *O=F->pom;//musí být použit pom, akt_Objekt neuchovává ukazatel na předchozí objekt
-			celkem=Element->geo.delka;//defaultně bude délka před Elementem
-			while(O!=NULL && O->n!=0)
-			{
-				TElement *E=vrat_posledni_element_objektu(O);//procházení od zadu
-				if(F->akt_Objekt->n==O->n)E=Element->predchozi;//pokud jsem v akt_Objekt = začátek, začánám od předchozího elementu Elementu
-				while(E!=NULL && E->n>0)
-				{
-					if(E->eID%2==0 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt){pokracovat=false;break;}//pokud je předchozi S&G prěruš cyklus
-					celkem+=E->geo.delka;//pokud jdes dál přičti vzdálenost
-					E=E->predchozi;
-				}
-				E=NULL;delete E;
-				if(pokracovat)O=O->predchozi;//ošetření proti přechodu na havičku
-				else break;
-			}
-			O=NULL;delete O;
-			return celkem;
-	}
-	else//////Původní funkce
-	{
-  	TPointD E=F->d.Rxy(Element);
-  	if(Element->n==1)//pro první element od hrany kabiny
-  	{                ///ještě vylepšít, provizorně jen pro vodorovnou levopravou kabinu
-			return m.delka(F->akt_Objekt->element->geo.X1,F->akt_Objekt->element->geo.Y1,E.x,E.y);//(bude nutno ještě vylepšit s příchodem oblouků)!!!
-		}
-		else//mezi elementy
+		while(E!=NULL && E->n>0)//procházení napříč objekty
 		{
-			TPointD Ep=F->d.Rxy(Element->predchozi);
-			return m.delka(E.x,E.y,Ep.x,Ep.y); //(bude nutno vylepšit s příchodem oblouků)!!!
+			if(vrat_druh_elementu(E)==0)break;//pokud je předchozi S&G prěruš cyklus
+			else delka+=E->geo.delka;//pokud jdes dál přičti vzdálenost
+			E=E->predchozi;
+		}
+		E=NULL;delete E;
+	}
+
+	//vzdálenost k předchozímu funkčnímu elementu
+	else
+	{
+		//pokud se nejedná o první element v kabině hledá vzdálenost k předchozímu funkčnímu elementu, není třeba řešit geometrii - kóty se vykreslují pouze na liniových úsecích
+		if(Element->predchozi->n>0 && Element->predchozi->objekt_n==Element->objekt_n)
+		{
+			while(E!=NULL && E->n>0 && E->objekt_n==Element->objekt_n)//pouze předchozí elementy v objektu
+	  	{
+				if(E->eID!=MaxInt)break;//pokud se jedná o funkční element zastavit průchod
+				else delka+=E->geo.delka;//jedná se o zarážku - přičti délku úseku zarážky
+	  		E=E->predchozi;
+			}
 		}
 	}
+
+	//ukazatelové záležitosti
+	E=NULL;delete E;
+
+	//vrat délku k předchozímu elementu
+	return delka;
 }
 ////---------------------------------------------------------------------------
 //zadávám aktuální element, je zjištěna rotace před tímto zadávaným elementem, rotace aktuálního elementu se nezohledňuje
@@ -7050,6 +7018,8 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 ////---------------------------------------------------------------------------
 void Cvektory::nacti_z_obrazu_DATA(bool storno)
 {
+	F->Timer_backup->Enabled=false;//vypnutí timeru pro backup, nesmí spustit během této metody!!
+
 	////mazání dat starého projektu
 	vymaz_seznam_OBJEKTY();
 	hlavicka_OBJEKTY();//nutné po mazání!!!
@@ -7110,6 +7080,8 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 
 	//vymazání nepotřebného obrazu
 	smaz_obraz_DATA(0);
+
+	F->Timer_backup->Enabled=true;//obnovení timeru pro backup
 }
 ////---------------------------------------------------------------------------
 void Cvektory::smaz_obraz_DATA(unsigned long n)
