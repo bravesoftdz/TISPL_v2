@@ -223,7 +223,7 @@ Enter the recommended drive speed:;X;Zadejte doporuèenou rychlost pohonu:
 Invalid drive speed value!;X;Neplatná hodnota rychlosti pohonu!
 Pair stop;X;Párová stop
 WT thumb;X;WT palec
-potential number of positions;X;potencionální poèet pozic
+possible count of positions;X;potencionální poèet pozic
 set number of positions;X;nastavený poèet pozic
 reserve time;X;èasová rezerva
 closed stop station time;X;èas uzavøené STOP stanice
