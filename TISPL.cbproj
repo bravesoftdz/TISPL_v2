@@ -144,12 +144,14 @@
             <DependentOn>antialiasing.h</DependentOn>
             <BuildOrder>17</BuildOrder>
         </CppCompile>
-        <CppCompile Include="casovaOsa_info.cpp">
+        <None Include="casovaOsa_info.cpp">
+            <Exclude>True</Exclude>
+            <CreateIndex>17</CreateIndex>
             <Form>Form_osa_info</Form>
             <FormType>dfm</FormType>
             <DependentOn>casovaOsa_info.h</DependentOn>
-            <BuildOrder>22</BuildOrder>
-        </CppCompile>
+            <BuildOrder>28</BuildOrder>
+        </None>
         <CppCompile Include="cesty.cpp">
             <Form>Form_cesty</Form>
             <FormType>dfm</FormType>
@@ -159,52 +161,67 @@
         <None Include="CTpointD.h">
             <BuildOrder>7</BuildOrder>
         </None>
-        <CppCompile Include="eDesigner.cpp">
+        <None Include="eDesigner.cpp">
+            <Exclude>True</Exclude>
+            <CreateIndex>17</CreateIndex>
             <Form>Form_eDesigner</Form>
             <FormType>dfm</FormType>
             <DependentOn>eDesigner.h</DependentOn>
-            <BuildOrder>19</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="gapoR.cpp">
+            <BuildOrder>29</BuildOrder>
+        </None>
+        <None Include="gapoR.cpp">
+            <Exclude>True</Exclude>
+            <CreateIndex>17</CreateIndex>
             <Form>F_gapoR</Form>
             <FormType>dfm</FormType>
             <DependentOn>gapoR.h</DependentOn>
-            <BuildOrder>31</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="gapoTT.cpp">
+            <BuildOrder>30</BuildOrder>
+        </None>
+        <None Include="gapoTT.cpp">
+            <Exclude>True</Exclude>
+            <CreateIndex>17</CreateIndex>
             <Form>F_gapoTT</Form>
             <FormType>dfm</FormType>
             <DependentOn>gapoTT.h</DependentOn>
-            <BuildOrder>35</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="gapoV.cpp">
+            <BuildOrder>31</BuildOrder>
+        </None>
+        <None Include="gapoV.cpp">
+            <Exclude>True</Exclude>
+            <CreateIndex>17</CreateIndex>
             <Form>F_gapoV</Form>
             <FormType>dfm</FormType>
             <DependentOn>gapoV.h</DependentOn>
-            <BuildOrder>35</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="grafy.cpp">
+            <BuildOrder>32</BuildOrder>
+        </None>
+        <None Include="grafy.cpp">
+            <Exclude>True</Exclude>
             <DependentOn>grafy.h</DependentOn>
-            <BuildOrder>21</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="jig.cpp">
+            <BuildOrder>33</BuildOrder>
+        </None>
+        <None Include="jig.cpp">
+            <Exclude>True</Exclude>
+            <CreateIndex>17</CreateIndex>
             <Form>Form_jig</Form>
             <FormType>dfm</FormType>
             <DependentOn>jig.h</DependentOn>
-            <BuildOrder>16</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="kabina_schema.cpp">
+            <BuildOrder>34</BuildOrder>
+        </None>
+        <None Include="kabina_schema.cpp">
+            <Exclude>True</Exclude>
+            <CreateIndex>17</CreateIndex>
             <Form>Form_objekt_nahled</Form>
             <FormType>dfm</FormType>
             <DependentOn>kabina_schema.h</DependentOn>
-            <BuildOrder>27</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="kalendar.cpp">
+            <BuildOrder>35</BuildOrder>
+        </None>
+        <None Include="kalendar.cpp">
+            <Exclude>True</Exclude>
+            <CreateIndex>17</CreateIndex>
             <Form>Form_kalendar</Form>
             <FormType>dfm</FormType>
             <DependentOn>kalendar.h</DependentOn>
-            <BuildOrder>20</BuildOrder>
-        </CppCompile>
+            <BuildOrder>36</BuildOrder>
+        </None>
         <CppCompile Include="katalog_dopravniku.cpp">
             <Form>Form_katalog</Form>
             <FormType>dfm</FormType>
@@ -243,46 +260,54 @@
             <DependentOn>MyString.h</DependentOn>
             <BuildOrder>12</BuildOrder>
         </CppCompile>
-        <CppCompile Include="parametry.cpp">
+        <None Include="parametry.cpp">
+            <Exclude>True</Exclude>
+            <CreateIndex>17</CreateIndex>
             <Form>Form_parametry</Form>
             <FormType>dfm</FormType>
             <DependentOn>parametry.h</DependentOn>
-            <BuildOrder>13</BuildOrder>
-        </CppCompile>
+            <BuildOrder>37</BuildOrder>
+        </None>
         <CppCompile Include="parametry_linky.cpp">
             <Form>Form_parametry_linky</Form>
             <FormType>dfm</FormType>
             <DependentOn>parametry_linky.h</DependentOn>
             <BuildOrder>17</BuildOrder>
         </CppCompile>
-        <CppCompile Include="parametry_vozik.cpp">
+        <None Include="parametry_vozik.cpp">
+            <Exclude>True</Exclude>
+            <CreateIndex>17</CreateIndex>
             <Form>Form_parametry_vozik</Form>
             <FormType>dfm</FormType>
             <DependentOn>parametry_vozik.h</DependentOn>
-            <BuildOrder>32</BuildOrder>
-        </CppCompile>
+            <BuildOrder>38</BuildOrder>
+        </None>
         <CppCompile Include="PL_math.cpp">
             <DependentOn>PL_math.h</DependentOn>
             <BuildOrder>28</BuildOrder>
         </CppCompile>
-        <CppCompile Include="pl_priority.cpp">
+        <None Include="pl_priority.cpp">
+            <Exclude>True</Exclude>
+            <CreateIndex>17</CreateIndex>
             <Form>Form_PL_priority</Form>
             <FormType>dfm</FormType>
             <DependentOn>pl_priority.h</DependentOn>
-            <BuildOrder>24</BuildOrder>
-        </CppCompile>
+            <BuildOrder>39</BuildOrder>
+        </None>
         <CppCompile Include="popUP_menu.cpp">
             <Form>PopUPmenu</Form>
             <FormType>dfm</FormType>
             <DependentOn>popUP_menu.h</DependentOn>
             <BuildOrder>18</BuildOrder>
         </CppCompile>
-        <CppCompile Include="poznamky.cpp">
+        <None Include="poznamky.cpp">
+            <Exclude>True</Exclude>
+            <CreateIndex>17</CreateIndex>
             <Form>Form_poznamky</Form>
             <FormType>dfm</FormType>
             <DependentOn>poznamky.h</DependentOn>
-            <BuildOrder>26</BuildOrder>
-        </CppCompile>
+            <BuildOrder>40</BuildOrder>
+        </None>
         <CppCompile Include="PO_math.cpp">
             <DependentOn>PO_math.h</DependentOn>
             <BuildOrder>25</BuildOrder>
@@ -310,12 +335,14 @@
             <DependentOn>TmGrid.h</DependentOn>
             <BuildOrder>29</BuildOrder>
         </CppCompile>
-        <CppCompile Include="TT_kalkulator.cpp">
+        <None Include="TT_kalkulator.cpp">
+            <Exclude>True</Exclude>
+            <CreateIndex>17</CreateIndex>
             <Form>Form_TT_kalkulator</Form>
             <FormType>dfm</FormType>
             <DependentOn>TT_kalkulator.h</DependentOn>
-            <BuildOrder>31</BuildOrder>
-        </CppCompile>
+            <BuildOrder>41</BuildOrder>
+        </None>
         <CppCompile Include="Unit1.cpp">
             <Form>Form1</Form>
             <FormType>dfm</FormType>
@@ -354,33 +381,33 @@
             <DependentOn>Z_rozliseni.h</DependentOn>
             <BuildOrder>37</BuildOrder>
         </CppCompile>
-        <FormResources Include="report.dfm"/>
-        <FormResources Include="superform.dfm"/>
         <FormResources Include="poznamky.dfm"/>
-        <FormResources Include="parametry_vozik.dfm"/>
         <FormResources Include="popUP_menu.dfm"/>
+        <FormResources Include="superform.dfm"/>
+        <FormResources Include="report.dfm"/>
+        <FormResources Include="parametry_linky.dfm"/>
+        <FormResources Include="parametry.dfm"/>
+        <FormResources Include="parametry_vozik.dfm"/>
         <FormResources Include="pl_priority.dfm"/>
         <FormResources Include="uvod.dfm"/>
-        <FormResources Include="Z_rozliseni.dfm"/>
         <FormResources Include="UnitX.dfm"/>
+        <FormResources Include="Z_rozliseni.dfm"/>
         <FormResources Include="TT_kalkulator.dfm"/>
         <FormResources Include="Unit2.dfm"/>
         <FormResources Include="Unit1.dfm"/>
-        <FormResources Include="parametry_linky.dfm"/>
         <FormResources Include="gapoR.dfm"/>
         <FormResources Include="eDesigner.dfm"/>
-        <FormResources Include="gapoV.dfm"/>
         <FormResources Include="gapoTT.dfm"/>
+        <FormResources Include="gapoV.dfm"/>
         <FormResources Include="adjustace.dfm"/>
-        <FormResources Include="cesty.dfm"/>
         <FormResources Include="casovaOsa_info.dfm"/>
-        <FormResources Include="MyMessageBox.dfm"/>
-        <FormResources Include="parametry.dfm"/>
-        <FormResources Include="kabina_schema.dfm"/>
+        <FormResources Include="cesty.dfm"/>
         <FormResources Include="jig.dfm"/>
-        <FormResources Include="kalendar.dfm"/>
         <FormResources Include="miniform_zpravy.dfm"/>
         <FormResources Include="minicolordialog.dfm"/>
+        <FormResources Include="MyMessageBox.dfm"/>
+        <FormResources Include="kalendar.dfm"/>
+        <FormResources Include="kabina_schema.dfm"/>
         <FormResources Include="katalog_dopravniku.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
@@ -472,27 +499,12 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployClass Name="DependencyModule">
-                    <Platform Name="Win32">
-                        <Operation>0</Operation>
-                        <Extensions>.dll;.bpl</Extensions>
-                    </Platform>
+                <DeployClass Name="ProjectiOSDeviceResourceRules">
                     <Platform Name="iOSDevice64">
                         <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
-                    </Platform>
-                    <Platform Name="OSX32">
-                        <RemoteDir>Contents\MacOS</RemoteDir>
-                        <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
                     </Platform>
                     <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
-                    </Platform>
-                    <Platform Name="iOSSimulator">
-                        <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
                     </Platform>
                 </DeployClass>
                 <DeployClass Name="ProjectOSXResource">
@@ -846,12 +858,27 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <DeployClass Name="ProjectiOSDeviceResourceRules">
+                <DeployClass Name="DependencyModule">
+                    <Platform Name="Win32">
+                        <Operation>0</Operation>
+                        <Extensions>.dll;.bpl</Extensions>
+                    </Platform>
                     <Platform Name="iOSDevice64">
                         <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
+                    <Platform Name="OSX32">
+                        <RemoteDir>Contents\MacOS</RemoteDir>
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
                     </Platform>
                     <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
                     </Platform>
                 </DeployClass>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>

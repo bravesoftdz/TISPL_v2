@@ -3426,8 +3426,8 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		//hazí stejné souřadnice if(abs((int)minule_souradnice_kurzoru.x-(int)akt_souradnice_kurzoru_PX.x)>1 && abs((int)minule_souradnice_kurzoru.y-(int)akt_souradnice_kurzoru_PX.y)>1)//pokud je změna větší než jeden pixel, pouze ošetření proti divnému chování myši (možná mi docházela baterka, s myší jsem nehýbal, ale přesto docházele k rušení labelu resp. volání metody FormMouseMove)
 		Label_zamerovac->Visible=false;pocitadlo_doby_neaktivity=0;//deaktivace_zamerovace();nelze
 		Timer_neaktivity->Enabled=false;
-		Timer_neaktivity->Interval=1000;
-		if(scSplitView_OPTIONS->Opened==false && scSplitView_MENU->Opened==false && PopUPmenu->Showing==false && Form_parametry_linky->Showing==false && Form_definice_zakazek->Showing==false && Form_osa_info->Showing==false)Timer_neaktivity->Enabled=true;//spoustí pouze pokud nejsou zobrazeny formuláře z podmínky
+		Timer_neaktivity->Interval=1000;                                                                                                                                                             //R 21.1.2020 - odebrání časové osy z projektu
+		if(scSplitView_OPTIONS->Opened==false && scSplitView_MENU->Opened==false && PopUPmenu->Showing==false && Form_parametry_linky->Showing==false && Form_definice_zakazek->Showing==false /*&& Form_osa_info->Showing==false*/)Timer_neaktivity->Enabled=true;//spoustí pouze pokud nejsou zobrazeny formuláře z podmínky
 	}
 	else //výpis metrických souřadnic
 	{
@@ -10117,30 +10117,30 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 				delka_dop=proces_pom->segment_cesty->objekt->kapacita_dop*prozatim_delka_voziku;
 			break;
 	}
+       //R zakomentováno - odebrání časové osy z projektu
+//	Form_osa_info->rHTMLLabel_nazev_vypis->Caption=proces_pom->segment_cesty->objekt->name;
+//	Form_osa_info->rHTMLLabel_ct_vypis->Caption=proces_pom->segment_cesty->CT;
+//	Form_osa_info->rHTMLLabel_cislo_voziku_vypis->Caption=proces_pom->n_v_zakazce;
+//	Form_osa_info->rHTMLLabel_rezim_vypis->Caption=rezim;
+//	Form_osa_info->rHTMLLabel_dop_kap_vypis->Caption=proces_pom->segment_cesty->objekt->kapacita_dop;
+//	Form_osa_info->rHTMLLabel_pozad_kap_vypis->Caption=proces_pom->segment_cesty->objekt->kapacita;
+//	Form_osa_info->rHTMLLabel_rd_vypis->Caption=proces_pom->segment_cesty->RD*60.0;
+//	Form_osa_info->rHTMLLabel_zkratka_vypis->Caption=proces_pom->segment_cesty->objekt->short_name;
 
-	Form_osa_info->rHTMLLabel_nazev_vypis->Caption=proces_pom->segment_cesty->objekt->name;
-	Form_osa_info->rHTMLLabel_ct_vypis->Caption=proces_pom->segment_cesty->CT;
-	Form_osa_info->rHTMLLabel_cislo_voziku_vypis->Caption=proces_pom->n_v_zakazce;
-	Form_osa_info->rHTMLLabel_rezim_vypis->Caption=rezim;
-	Form_osa_info->rHTMLLabel_dop_kap_vypis->Caption=proces_pom->segment_cesty->objekt->kapacita_dop;
-	Form_osa_info->rHTMLLabel_pozad_kap_vypis->Caption=proces_pom->segment_cesty->objekt->kapacita;
-	Form_osa_info->rHTMLLabel_rd_vypis->Caption=proces_pom->segment_cesty->RD*60.0;
-	Form_osa_info->rHTMLLabel_zkratka_vypis->Caption=proces_pom->segment_cesty->objekt->short_name;
-
-	if(proces_pom->segment_cesty->objekt->pohon)
-	{
-		Form_osa_info->rHTMLLabel_str_doba_cekani_vypis->Caption=AnsiString(m.cekani_na_palec(0,proces_pom->segment_cesty->objekt->pohon->roztec,proces_pom->segment_cesty->RD,1))+" [sec]";
-		Form_osa_info->rHTMLLabel_nahodna_doba_cekani_vypis->Caption=AnsiString(proces_pom->Trand)+" [sec] - abs. čas na časové ose";
-		Form_osa_info->rHTMLLabel_max_doba_cekani_vypis->Caption=AnsiString(m.cekani_na_palec(0,proces_pom->segment_cesty->objekt->pohon->roztec,proces_pom->segment_cesty->RD,3))+" [sec]";
-		Form_osa_info->rHTMLLabel_palce_vypis->Caption=AnsiString(proces_pom->segment_cesty->objekt->pohon->roztec) +" [m]";
-	}
-	else
-	{
-		Form_osa_info->rHTMLLabel_str_doba_cekani_vypis->Caption="neznámá - nepřiřazen pohon";
-		Form_osa_info->rHTMLLabel_nahodna_doba_cekani_vypis->Caption=Form_osa_info->rHTMLLabel_str_doba_cekani_vypis->Caption;
-		Form_osa_info->rHTMLLabel_max_doba_cekani_vypis->Caption=Form_osa_info->rHTMLLabel_str_doba_cekani_vypis->Caption;
-		Form_osa_info->rHTMLLabel_palce_vypis->Caption=Form_osa_info->rHTMLLabel_max_doba_cekani_vypis->Caption;
-	}
+//	if(proces_pom->segment_cesty->objekt->pohon)
+//	{
+//		Form_osa_info->rHTMLLabel_str_doba_cekani_vypis->Caption=AnsiString(m.cekani_na_palec(0,proces_pom->segment_cesty->objekt->pohon->roztec,proces_pom->segment_cesty->RD,1))+" [sec]";
+//		Form_osa_info->rHTMLLabel_nahodna_doba_cekani_vypis->Caption=AnsiString(proces_pom->Trand)+" [sec] - abs. čas na časové ose";
+//		Form_osa_info->rHTMLLabel_max_doba_cekani_vypis->Caption=AnsiString(m.cekani_na_palec(0,proces_pom->segment_cesty->objekt->pohon->roztec,proces_pom->segment_cesty->RD,3))+" [sec]";
+//		Form_osa_info->rHTMLLabel_palce_vypis->Caption=AnsiString(proces_pom->segment_cesty->objekt->pohon->roztec) +" [m]";
+//	}
+//	else
+//	{
+//		Form_osa_info->rHTMLLabel_str_doba_cekani_vypis->Caption="neznámá - nepřiřazen pohon";
+//		Form_osa_info->rHTMLLabel_nahodna_doba_cekani_vypis->Caption=Form_osa_info->rHTMLLabel_str_doba_cekani_vypis->Caption;
+//		Form_osa_info->rHTMLLabel_max_doba_cekani_vypis->Caption=Form_osa_info->rHTMLLabel_str_doba_cekani_vypis->Caption;
+//		Form_osa_info->rHTMLLabel_palce_vypis->Caption=Form_osa_info->rHTMLLabel_max_doba_cekani_vypis->Caption;
+//	}
 
 	UnicodeString Tpoc=proces_pom->Tpoc;
 	UnicodeString Tkon=proces_pom->Tkon;
@@ -10155,22 +10155,22 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 	Tpre=Tpre.SubString(1,5);
 	Tcek=Tcek.SubString(1,5);
 
-	Form_osa_info->rHTMLLabel_tpoc_vypis->Caption=Tpoc;
-	Form_osa_info->rHTMLLabel_tkon_vypis->Caption=Tkon;
-	Form_osa_info->rHTMLLabel_tdor_vypis->Caption=Tdor;
-	Form_osa_info->rHTMLLabel_tpre_vypis->Caption=Tpre;
-	Form_osa_info->rHTMLLabel_tcek_vypis->Caption=Tcek;
-
-	Form_osa_info->rHTMLLabel_pt_vypis->Caption=proces_pom->Tkon-proces_pom->Tpoc;
-	Form_osa_info->rHTMLLabel_mt_vypis->Caption=proces_pom->Tpre-proces_pom->Tkon;
-	Form_osa_info->rHTMLLabel_wt_vypis->Caption=proces_pom->Tcek-proces_pom->Tpre;
-	Form_osa_info->rHTMLLabel_CT_n_vypis->Caption=proces_pom->Tcek-proces_pom->Tpoc;
+//	Form_osa_info->rHTMLLabel_tpoc_vypis->Caption=Tpoc;
+//	Form_osa_info->rHTMLLabel_tkon_vypis->Caption=Tkon;
+//	Form_osa_info->rHTMLLabel_tdor_vypis->Caption=Tdor;
+//	Form_osa_info->rHTMLLabel_tpre_vypis->Caption=Tpre;
+//	Form_osa_info->rHTMLLabel_tcek_vypis->Caption=Tcek;
+//
+//	Form_osa_info->rHTMLLabel_pt_vypis->Caption=proces_pom->Tkon-proces_pom->Tpoc;
+//	Form_osa_info->rHTMLLabel_mt_vypis->Caption=proces_pom->Tpre-proces_pom->Tkon;
+//	Form_osa_info->rHTMLLabel_wt_vypis->Caption=proces_pom->Tcek-proces_pom->Tpre;
+//	Form_osa_info->rHTMLLabel_CT_n_vypis->Caption=proces_pom->Tcek-proces_pom->Tpoc;
 
 	//pozice
-	Form_osa_info->Left=ClientWidth/2-Form_osa_info->Width/2;
-	Form_osa_info->Top=ClientHeight/2-Form_osa_info->Height/2;
+//	Form_osa_info->Left=ClientWidth/2-Form_osa_info->Width/2;
+//	Form_osa_info->Top=ClientHeight/2-Form_osa_info->Height/2;
 	//samotné volání modálního okna
-	Form_osa_info->ShowModal();
+//	Form_osa_info->ShowModal();
 
 //
 //	S(/*"n_procesu: "+AnsiString(proces_pom->n)+*/
