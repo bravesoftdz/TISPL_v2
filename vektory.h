@@ -132,11 +132,11 @@ class Cvektory
 	{
 		unsigned long n; //pořadí objektu ve spoj.seznamu
 		unsigned int id; //id typu objektu
-	 	UnicodeString short_name;//krátký název max. 4 znaky         //DOPRYC
+		UnicodeString short_name;//krátký název max. 4 znaky         //DOPRYC
 		UnicodeString name;//celý název objektu
 		double X,Y;//umístění objektu ve schématu - prozatím, bude ale sloužit na umístění popisku objektu!!!
 		TBod *body;//definice obrysu haly - NEW + dodat do CObjekt!!!!
-    double sirka_steny;//šířka stěny kabiny objektu v metrech  - NEW + dodat do CObjekt!!!!
+		double sirka_steny;//šířka stěny kabiny objektu v metrech  - NEW + dodat do CObjekt!!!!
 		double Xk,Yk;//bude ke smazání - umístění levého horního rohu kabiny v layoutu a náhledu kabiny  //DOPRYC
 		double Xt,Yt;// souřadnice popisku objektu pro možnost posouvání dodat!!!   //PRIDAT
     double orientace_text;//orientace textu (názvu objektu) dle světových stran
@@ -156,7 +156,7 @@ class Cvektory
 		TPohon *pohon;//ukazatel na použitý pohon
 		TElement *element;//ukazatel na první element objektu
 		TPointD min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
-		TPointD rozmer_kabiny;//délka a šířka obvodových zdí kabiny   //DOPRYC
+//		TPointD rozmer_kabiny;//délka a šířka obvodových zdí kabiny   //DOPRYC
 		T2Rect kabinaKotaX_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny -//DOPRYC
 		T2Rect kabinaKotaY_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny -//DOPRYC
 		TPointD koty_elementu_offset;//.x=odsazení kót elementů v metrech normální stav, .y=odsazení kót elementův metrech editace geometrie  - NEW + dodat do CObjekt!!!!
@@ -175,9 +175,9 @@ class Cvektory
 		bool zobrazit_mGrid;//proměnná určující, zda budou zobrazeny mGridy
 		bool uzamknout_nahled;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 		struct TObjekt *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-		struct TObjekt *predchozi2;//ukazatel na předchozí2 objekt ve spojovém seznamu
+		//struct TObjekt *predchozi2;//ukazatel na předchozí2 objekt ve spojovém seznamu
 		struct TObjekt *dalsi;//ukazatel na  další objekt ve spojovém seznamu
-		struct TObjekt *dalsi2;//ukazatel na další2 objekt ve spojovém seznamu
+		//struct TObjekt *dalsi2;//ukazatel na další2 objekt ve spojovém seznamu
 	};
 	TObjekt *OBJEKTY;//seznam objektů
 
@@ -466,7 +466,6 @@ class Cvektory
 	void hlavicka_OBJEKTY();
 	TObjekt *vloz_objekt(unsigned int id, double X, double Y);//vloží prvek do seznamu + vrátí ukazatel na vložený prvek
 	TObjekt *vloz_objekt(unsigned int id, double X, double Y,TObjekt *pred,TObjekt *po);//přetížená fce vkládá objekt za objekt p + vrátí ukazatel na vložený prvek
-	TObjekt *vloz_objekt(unsigned int id, double X, double Y,TObjekt *vyhybka,TObjekt *pred,TObjekt *po);//přetížená fce vkládá spojku + vrátí ukazatel na vložený prvek
 	void vloz_objekt(TObjekt *Objekt);//přetížená fce
 	void nastav_atributy_objektu(TObjekt *novy,unsigned int id, double X, double Y);//alokuje paměť pro objekt, nastavý atriuty objektu, vrátí ukazatel na nově vytvořený prvek
 	TObjekt *kopiruj_objekt(TObjekt *Objekt,short offsetX=0,short offsetY=0,AnsiString index_name="",bool remove_pre_index=false,TObjekt *p=NULL);//zkopíruje objekt Objekt na konec spojového seznamu Objektů, za předpokladu že p==NULL, pokud p není NULL je objekt za tento objekt p ve spojovém seznamů objektů zařazen, hodnota offsetu je hodnota odsazení zkopírovoaného objektu od objektu vzorového,index_name slouží pro rozlišení např. LAK, LAK1, LAK2...,zároveň vrací ukazatel na právě zkopírovaný objekt např. pro další použití
@@ -475,12 +474,12 @@ class Cvektory
 	TObjekt *najdi_objekt(double X, double Y,double offsetX, double offsetY,short typ=-1);//hledá bod v dané oblasti
 	short oblast_objektu(TObjekt *O,double X, double Y);//vrátí ret podle toho v jaké jsem oblasti objektu, slouží k přilepování objektu při vkládání, ret = 0 - mimo oblasti, 1 - oblast za objektem, 2 - oblast před objektem
 	TObjekt *vrat_objekt(unsigned int n);//dle zadaného n vrátí ukazatel na hledaný objekt
-	TObjekt *vrat_objekt_z_roma(int X);//dle X kurzoru myši vrátí z modu procesy (ROMA) ukazatel na aktuální objekt - MOŽNO ODSTRANIT
+	TObjekt *vrat_objekt_z_roma(int X);//SMAZAT??dle X kurzoru myši vrátí z modu procesy (ROMA) ukazatel na aktuální objekt - MOŽNO ODSTRANIT
 	TObjekt *vrat_objekt(TElement *Element,bool In_pom_temp=false);//DOPRYČ????    vrátí rodičovský Objekt daného elementu, In_pom_temp - zda bude hledat místo daného ostrého objektu v něm - PO ZMĚNĚ DM BUDE TŘEBA?
-	void aktualizace_objektu(short typ);//dle zadaného TT  či případně dalších hodnot zaktualizuje paramametry všech objektů//typ -2://zaktualizuje přiřazení pohonu k objektu, nutné pokud proběhla změna v pohonech, protože původní jsou smazané //typ -1://dle zamčených a odemčených hodnot při změně TT//typ 0://dle zamčených a odemčených hodnot při změně parametrů vozíku//typ 1://při změně TT změna CT a RD, K a DD zůstává//typ 2://při změně TT změna K,DD,RD zůstává CT//typ 3://při změně parametrů vozíku změna DD, RD zůstává K, CT//typ 4://při změně parametrů vozíku změna u DD, CT zůstává K,RD//typ 5://při změně parametrů vozíku změna u K,CT,RD zůstává DD
+	void aktualizace_objektu(short typ);//SMAZAT??dle zadaného TT  či případně dalších hodnot zaktualizuje paramametry všech objektů//typ -2://zaktualizuje přiřazení pohonu k objektu, nutné pokud proběhla změna v pohonech, protože původní jsou smazané //typ -1://dle zamčených a odemčených hodnot při změně TT//typ 0://dle zamčených a odemčených hodnot při změně parametrů vozíku//typ 1://při změně TT změna CT a RD, K a DD zůstává//typ 2://při změně TT změna K,DD,RD zůstává CT//typ 3://při změně parametrů vozíku změna DD, RD zůstává K, CT//typ 4://při změně parametrů vozíku změna u DD, CT zůstává K,RD//typ 5://při změně parametrů vozíku změna u K,CT,RD zůstává DD
 	void aktualizace_prirazeni_pohonu_k_objektum(unsigned int oldN,unsigned int newN);//všem objektům, které měly přiřazen pohon s oldN(oldID), přiřadí pohon s newN(newID), podle toho, jak jsou ukládány nově do spojáku, důležité, pokud dojde k narušení pořadí ID resp n pohonů a pořadí jednotlivých řádků ve stringridu, např. kopirováním, smazáním, změnou pořadí řádků atp.
 	void aktualizace_prirazeni_pohonu_dokoncena();//po dokončení aktualizace přiřazení pohonu (při ukládání pohonu na PL) vrátí atribut probehla_aktualizace_prirazeni_pohonu všech objektů na false, aby bylo připraveno k dalšímu opětovnému užítí, nepřímo spolupracuje s metodou výše uvedenou aktualizace_prirazeni_pohonu_k_objektum
-	double vrat_soucet_delek_vsech_objektu();//sečte délky jednotlivých objektů
+	double vrat_soucet_delek_vsech_objektu();//SMAZAT??sečte délky jednotlivých objektů
 	unsigned int pocet_objektu(short typ=-1);//vrátí počet objektů v požadovaném režimu, nebo v případě implicitního parametru -1 objekty ve všech režimech
 	unsigned int pocet_objektu_zakazky(TZakazka *Zakazka,short typ=-1);//vrátí počet objektů v požadovaném režimu pro danou zakázku, nebo v případě implicitního parametru -1 objekty ve všech režimech pro danou zakázku
 	AnsiString vypsat_objekty_bez_prirazenych_pohonu(bool shortname=true,AnsiString separator=", ");//vrátí AnsiString řetezec shortname či name (dle prvního parametru, který je implicitně na shortname=true) seznam objektů, které nemají přiřazený pohon, jednotlivé názvy objektů oddělí dle paramaterů seperátor, implicitně ", " tj. čárka a mezera,, v případě že žádný objekt nenajde, vrátí prázdný řetězec
@@ -491,14 +490,12 @@ class Cvektory
 	TObjekt *vrat_objekty_bez_pohonu();//vratí formou ukazatele na pole objekty bez pohonů
 	AnsiString vypis_objekty_s_pohony_bez_roztece(bool shortname=true);//vrátí AnsiString řetezec shortname či name (dle parametru, který je implicitně na shortname=true) seznam objektů, které mají přiřazený pohon bez uvedené rozteče jednotlivé názvy objektů oddělí  ", " tj. čárkou a mezerou, v případě že žádný objekt nenajde, vrátí prázdný řetězec, pozor pohony bez přiřazení k objektům nevypisuje
 	AnsiString vypis_objekty_mimo_100vytizeni(bool shortname=true, bool vypsat_procetna=true, AnsiString separator=", ");//vrátí AnsiString řetezec shortname či name (dle parametru, který je implicitně na shortname=true) seznam objektů podle zakázek, které nemají 100% vytížení
-	double vrat_min_rychlost_prejezdu();//najde ze všech objektů nejnižší rychlost přejezdu (tj. totál min RD), neřeší přiřazení k pohonům, pomůcka pro stanovení referenční rychlosti animace
+	double vrat_min_rychlost_prejezdu();//SMAZAT??najde ze všech objektů nejnižší rychlost přejezdu (tj. totál min RD), neřeší přiřazení k pohonům, pomůcka pro stanovení referenční rychlosti animace
 	short smaz_objekt(TObjekt *Objekt,bool opakovani=false);//smaže prvek ze seznamu, opakování určuje zda se smazání provedlou jednou či 2x, v případě odstranění vyhybky je potřeba odstranit i její spojku
 	void zmen_poradi_objektu(TObjekt *aktualni_poradi,TObjekt *nove_poradi);
 	void zmen_poradi_objektu(unsigned long aktualni_poradi,unsigned long nove_poradi);
-	void nove_nazvy();//projde všechny objekty, výhybkám a spojkám upravý návez podle jejich n
 	void nove_indexy(bool nasledne_zmena_nazvu=false);//projde všechny objekty a nastavý nové indexy podle aktuálního pořadí objektů
 	void ortogonalizovat();//ortogonalizuje schéma
-	TObjekt *dalsi_krok(TObjekt *Objekt,TPoint *tab_pruchodu);//určuje další krok cyklu při procházení objektů
 	void posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_oblast=true,bool povolit_rotaci=true);//slouží k posunu objektu jako celku o X a Y, posun kabiny, pohonu, elementů, tabulek, nadpisu, kontrolovat_oblast slouží k nucenému přesunutí
 	void rotuj_objekt(TObjekt *Objekt, double rotace);//orotuje objekt o danou rotaci
 	//přidružené metody pro KOMORY
@@ -556,9 +553,9 @@ class Cvektory
 	bool pohon_je_pouzivan(unsigned long n,bool po_obektech=true);//dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv
 	TObjekt *pohon_je_pouzivan(unsigned long n,TObjekt *mimo_objekt,short rezim=-1);//dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv, ten vrátí formou ukazatale na první nalezený používáný, druhý vstupní parametr metody TObjekt mimo_objekt je ukazatel na objekt, který se bude při vyhledávání ignorovat, nenajde-li vrací NULL, třetí parametr, pokud je náchán na implicitní -1 řeší se pro všechny režim, pokud je v rozmezí 0 až 2 řeší se pro konkrétní režim
 	unsigned long vrat_pocet_nepouzivanych_pohonu();//vrátí počet nepoužívaných pohonů
-	double minRD(TPohon *pohon);//vrátí nejnižší možnou rychlost ze všech objektů, které jsou přiřazené k danému pohonu (využívá se pro S&G a PP, u KK musí být RD v souladu s TT)//pokud vrátí 0, znamená, že pohon není využíván
+	double minRD(TPohon *pohon);//SMAZAT??vrátí nejnižší možnou rychlost ze všech objektů, které jsou přiřazené k danému pohonu (využívá se pro S&G a PP, u KK musí být RD v souladu s TT)//pokud vrátí 0, znamená, že pohon není využíván
 	AnsiString vypis_objekty_nestihajici_prejezd(TPohon *pohon,double testRD,short rezim=-1);//vypíše objekty přiřazené k danému pohonu nestíhající přejezd při navrhovaném testRD, možno nastavit režim, pro S&G + PP hodnota režim 20
-	AnsiString kontrola_rychlosti_prejezdu(TObjekt *O,short rezim,double CT=0,double MT=0,double WT=0,double aRD=0,double DD=0,short aRDunit=-1,unsigned short precision=3,AnsiString mark="..",bool add_decimal=false,AnsiString separator_aRD=" o ");//zkontroluje objekt zda daná rychlost pohonu odpovídá požadované rychlosti pohonu, pokud ne vrátí popis včetně hodnoty, lze poslat externí testovací parametry nebo nechat ověřit dle uložených ve spojáku objekty
+	AnsiString kontrola_rychlosti_prejezdu(TObjekt *O,short rezim,double CT=0,double MT=0,double WT=0,double aRD=0,double DD=0,short aRDunit=-1,unsigned short precision=3,AnsiString mark="..",bool add_decimal=false,AnsiString separator_aRD=" o ");//SMAZAT??zkontroluje objekt zda daná rychlost pohonu odpovídá požadované rychlosti pohonu, pokud ne vrátí popis včetně hodnoty, lze poslat externí testovací parametry nebo nechat ověřit dle uložených ve spojáku objekty
 	TPohon *najdi_pohon_dle_RD(double RD);//ověří zda je stejná rychlost pohonu na lince používána, pokud není vratí NULL, jinak ukazatel na daný pohon
 	void vytvor_retez(TPohon *Pohon);//danému pohonu vytvoří řetěz dle geometrie všech elementů, co spadají pod daný pohon
 	void vloz_segment_retezu(TRetez *Retez,TPohon *Pohon);//danému řetězu vloží jeden geometrický segment
@@ -597,7 +594,7 @@ public:
 	void vloz_segment_cesty(TZakazka *zakazka,TObjekt *vybrany_objekt,double CT,double Tc,double Tv,double RD,unsigned int opak);//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
 	TCesta *obsahuje_segment_cesty_objekt(TObjekt *objekt,TZakazka *zakazka);//ověří zda daný objekt je součástí cesty dané zakázky či nikoliv, pokud ano vrací ukazatel na daný segment cesty
 	TZakazka *obsahuje_segment_cesty_objekt(TObjekt *objekt);//ověří zda daný objekt je součástí cesty nějaké zakázky či nikoliv, pokud ano vrací ukazatel na danou zakázku
-	void aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky(TZakazka *zakazka,double TT);//dle TT z parametru nastaví všem segmentům cesty od dané zakázky odpovídající CT (a line-tracking objektů i RD) dle fixní délky a kapacity, vhodné pro volání před zobrazením cest
+	void aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky(TZakazka *zakazka,double TT);//SMAZAT??dle TT z parametru nastaví všem segmentům cesty od dané zakázky odpovídající CT (a line-tracking objektů i RD) dle fixní délky a kapacity, vhodné pro volání před zobrazením cest
 	void aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky(TZakazka *zakazka);//dle TT zakázky nastaví všem segmentům cesty od dané zakázky odpovídající CT (a line-tracking objektů i RD) dle fixní délky a kapacity, vhodné pro volání před zobrazením cest
 	void aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky();//to samé co výše ale uskuteční pro všechny zakázky, vhodné pro volání v tlačítku uložit
 	void aktualizace_KaCTaRD_segmentu_cesty_dleJIG(TZakazka *zakazka);//dle parametrů JIG přepočítá K (u S&G zanechá 1) a z toho vyplývající změnu CT a RD (u linetracking objektů) jednolivých segmentů cesty dané zakázky

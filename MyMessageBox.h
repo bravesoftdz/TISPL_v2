@@ -38,6 +38,7 @@ __published:	// IDE-managed Components
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall scGPGlyphButton_copyClick(TObject *Sender);
 	void __fastcall scGPEdit1KeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall Button_YesClick(TObject *Sender);
 
 private:	// User declarations
 	enum T_mbTYPE{OK=0,OKCANCEL=1,YESNO=4,YESNOCANCEL=3};
@@ -46,6 +47,7 @@ public:		// User declarations
 	int Show(long left,long top,UnicodeString text,UnicodeString caption_text="",int mbTYPE=OK,bool centrovat_text=true,bool checkbox_zobrazit=false,int width=366,bool default_button_caption=true,bool copy_zobrazit=false);
 	int Show(UnicodeString text,int mbTYPE=OK,bool centrovat_text=true,int width=366,bool default_button_caption=true,bool copy_zobrazit=false);
 	bool zobrazitFrameForm;
+	bool closing;//detekce kvùli hlavnímu formuláøi jinak volá tìlo formactivate hlavního formu
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TmyMessageBox *myMessageBox;

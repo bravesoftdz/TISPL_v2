@@ -440,47 +440,24 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->id=0;
 	novy->X=0;
 	novy->Y=0;
-	//novy->Xk=0;
-	//novy->Yk=0;
 	novy->body=NULL;
 	novy->sirka_steny=0;
 	novy->short_name="";//krátký název
 	novy->name="";//celý název objektu
 	novy->rezim=0;
-	novy->CT=0;//pro status návrh
-	novy->RD=0;//pro status návrh
-	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
-	novy->kapacita=0;
-	novy->kapacita_dop=0;
-	novy->pozice=0;
-	//novy->rotace=0;//rotace jigu v objektu
-	novy->mezera=0;//velikost mezery mezi vozíky
 	novy->pohon=NULL;//ukazatel na použitý pohon
 	novy->element=NULL;//ukazatel na přidružené elementy
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
-	//novy->rozmer_kabiny.x=0;
-	//novy->rozmer_kabiny.y=0;
 	novy->koty_elementu_offset.x=0;//odsazení kót elementů v metrech
 	novy->koty_elementu_offset.y=0;//odsazení kót elementů v metrech
 	novy->komora=NULL;//ukazatel na komory
-	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
-	novy->stopka=0;//zda následuje na konci objektu stopka//0-ne,1-ano,2-automaticky
-	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
-	novy->obsazenost=0;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
-	novy->CT_zamek=0;
-	novy->RD_zamek=0;
-	novy->DD_zamek=0;
-	novy->K_zamek=0;
-	novy->poznamka="";
 	novy->probehla_aktualizace_prirazeni_pohonu=false;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
 	novy->zobrazit_koty=true;//proměnná určující, zda se budou zobrzovat kóty
 	novy->zobrazit_mGrid=true;//proměnná určující, zda budou zobrazeny mGridy
 	novy->uzamknout_nahled=false;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 	novy->predchozi=novy;//ukazuje sam na sebe
-	novy->predchozi2=NULL;
 	novy->dalsi=NULL;
-	novy->dalsi2=NULL;
 	OBJEKTY=novy;//OBJEKTY
 }
 ////---------------------------------------------------------------------------
@@ -493,9 +470,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->n=OBJEKTY->predchozi->n+1;
 	OBJEKTY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
 	novy->predchozi=OBJEKTY->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
-	novy->predchozi2=NULL;
 	novy->dalsi=NULL;
-	novy->dalsi2=NULL;
 	OBJEKTY->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
 	//atributy
 	nastav_atributy_objektu(novy,id,X,Y);
@@ -508,42 +483,11 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	TObjekt *novy=new TObjekt;
 	//ukazatele
 	novy->predchozi=pred;
-	novy->predchozi2=NULL;
-	if(po->predchozi==pred)po->predchozi=novy;
-	if(po->predchozi2==pred)po->predchozi2=novy;
+	po->predchozi=novy;
 	novy->dalsi=po;
-	novy->dalsi2=NULL;
-	if(pred->dalsi==po)pred->dalsi=novy;
-	if(pred->dalsi2==po)pred->dalsi2=novy;
+	pred->dalsi=novy;
 	novy->n=pred->n;//přiřadím počítadlo prvku ze současného prvku, v dalším kroku se totiž navýší
 	//indexy zvýšit separátně
-	//atributy
-	nastav_atributy_objektu(novy,id,X,Y);
-	return novy;
-}
-//---------------------------------------------------------------------------
-Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *vyhybka,TObjekt *pred,TObjekt *po)
-{
-
-	TObjekt *novy=new TObjekt;
-	//spojkové ukazatele
-	novy->predchozi2=vyhybka;//pohled zpět na sekundární větev, v momentě vložení totožná s vyhybkou
-	novy->predchozi=pred;//pohled na hlavní větev
-	novy->dalsi=po;
-	novy->dalsi2=vyhybka;//propojení s vyhybkou
-	if(po!=NULL)//spojka vkládaná mezi 2 ojekty
-	{
-		if(po->predchozi==pred)po->predchozi=novy;
-		if(po->predchozi2==pred)po->predchozi2=novy;
-	}
-	else OBJEKTY->predchozi=novy;//spojka vkládaná za poslední objekt
-	if(pred->dalsi==po)pred->dalsi=novy;
-	if(pred->dalsi2==po) pred->dalsi2=novy;
-	//výhybkové ukazatele
-	vyhybka->dalsi2=novy;//propojení sekundární větve
-	vyhybka->predchozi2=novy;//propojení výhybky a spojky
-	//indexy zvýšit separátně
-	novy->n=pred->n;//přiřadím počítadlo prvku ze současného prvku, v dalším kroku se totiž navýší
 	//atributy
 	nastav_atributy_objektu(novy,id,X,Y);
 	return novy;
@@ -558,9 +502,7 @@ void Cvektory::vloz_objekt(TObjekt *Objekt)
 	novy->n=OBJEKTY->predchozi->n+1;//navýším počítadlo prvku o jedničku
 	OBJEKTY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
 	novy->predchozi=OBJEKTY->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
-	novy->predchozi2=NULL;
 	novy->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje
-	novy->dalsi2=NULL;
 	OBJEKTY->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
 }
 //---------------------------------------------------------------------------
@@ -599,16 +541,6 @@ void Cvektory::nastav_atributy_objektu(TObjekt *novy,unsigned int id, double X, 
 	novy->Yp=-500;
 	novy->body=NULL;//spojový seznam definičních bodů obrysu objektu
 	novy->sirka_steny=0.15;//0.12;//šířka stěny kabiny objektu v metrech
-	novy->CT=PP.TT;//pro status návrh
-	novy->RD=m.UDV(0)/novy->CT;//pro status návrh
-	novy->delka_dopravniku=m.UDV(0);//delka dopravníku v rámci objektu
-	novy->kapacita=1;
-	novy->kapacita_dop=0;
-	novy->pozice=1;
-	//novy->rotace=0;//rotace jigu v objektu
-	novy->mezera=0;//mezera mezi vozíky (kritická mezera)
-	novy->mezera_jig=0;//mezera mezi jigy
-	novy->mezera_podvozek=0;//mezera mezi podvozky
 	novy->pohon=NULL;//při vložení nemá vložen žádný pohon
 	novy->element=NULL;//ukazatel na přidružené elementy
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
@@ -618,15 +550,6 @@ void Cvektory::nastav_atributy_objektu(TObjekt *novy,unsigned int id, double X, 
 	novy->koty_elementu_offset.y=0.4;
 	novy->komora=NULL;//ukazatel na komory
 	if(id==3)for(short i=1;i<=4;i++)vloz_komoru(novy,2.5,NULL,i%2);//pokud se jedná o POWash,nastaví defaultně 4 stejné komory
-	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
-	novy->stopka=2;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
-	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
-	novy->obsazenost=0;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
-	novy->CT_zamek=0;
-	novy->RD_zamek=1;//defautlně zamčeno
-	novy->DD_zamek=0;
-	novy->K_zamek=0;
-	novy->poznamka="";
 	novy->probehla_aktualizace_prirazeni_pohonu=false;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
 	novy->zobrazit_koty=true;//proměnná určující, zda se budou zobrzovat kóty
 	novy->zobrazit_mGrid=true;//proměnná určující, zda budou zobrazeny mGridy
@@ -722,16 +645,6 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 	{                                //dodělat!!!
 		novy->rezim=Objekt->rezim;
 		novy->sirka_steny=Objekt->sirka_steny;//šířka stěny kabiny objektu v metrech
-		novy->CT=Objekt->CT;//pro status návrh převezme původní hodnoty
-		novy->RD=Objekt->RD;//pro status návrh převezme původní hodnoty
-		novy->delka_dopravniku=Objekt->delka_dopravniku;
-		novy->kapacita=Objekt->kapacita;
-		novy->kapacita_dop=Objekt->kapacita_dop;
-		novy->pozice=Objekt->pozice;
-		//novy->rotace=Objekt->rotace;
-		novy->mezera=Objekt->mezera;//velikost mezery mezi vozíky (kritická mezera)
-		novy->mezera_jig=Objekt->mezera_jig;//mezera mezi jigy
-		novy->mezera_podvozek=Objekt->mezera_podvozek;//mezera mezi podvozky
 		novy->pohon=Objekt->pohon;
 		novy->element=Objekt->element;
 		novy->min_prujezdni_profil=Objekt->min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
@@ -739,26 +652,15 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		novy->koty_elementu_offset=Objekt->koty_elementu_offset;//odsazení kót elementů v metrech
 		novy->komora=NULL;
 		if(novy->id==3)kopiruj_komory(Objekt,novy);//pokud se jedná o POWash
-		novy->cekat_na_palce=Objekt->cekat_na_palce;//0-ne,1-ano,2-automaticky
-		novy->stopka=Objekt->stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
-		novy->odchylka=Objekt->odchylka;//odchylka z CT, využíváno hlavně u objektů v PP režimu
-		novy->obsazenost=0;//Objekt->obsazenost;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
-		novy->CT_zamek=Objekt->CT_zamek;
-		novy->RD_zamek=Objekt->RD_zamek;
-		novy->DD_zamek=Objekt->DD_zamek;
-		novy->K_zamek=Objekt->K_zamek;
-		novy->poznamka=Objekt->poznamka;
 		novy->probehla_aktualizace_prirazeni_pohonu=Objekt->probehla_aktualizace_prirazeni_pohonu;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
 		novy->zobrazit_koty=Objekt->zobrazit_koty;//proměnná určující, zda se budou zobrzovat kóty
 		novy->zobrazit_mGrid=Objekt->zobrazit_mGrid;//proměnná určující, zda budou zobrazeny mGridy
 		novy->uzamknout_nahled=Objekt->uzamknout_nahled;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 
 		novy->predchozi=p;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
-		novy->predchozi2=NULL;
 		novy->dalsi=p->dalsi;
 		p->dalsi->predchozi=novy;
 		p->dalsi=novy;
-		p->dalsi2=NULL;
 		novy->n=p->n;//přiřadím počítadlo prvku ze současného prvku, v dalším kroku se totiž navýší
 		nove_indexy();//indexy zvýšit separátně se tady psalo
 		return novy;//vrátí ukazatel na posledně kopírovaný objekt
@@ -782,17 +684,6 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->orientace_text=Original->orientace_text;
 	Kopie->sirka_steny=Original->sirka_steny;
 	Kopie->rezim=Original->rezim;
-	Kopie->CT=Original->CT;
-	Kopie->RD=Original->RD;
-	Kopie->delka_dopravniku=Original->delka_dopravniku;
-	Kopie->kapacita=Original->kapacita;
-	Kopie->kapacita_dop=Original->kapacita_dop;
-	Kopie->pozice=Original->pozice;
-	//Kopie->rotace=Original->rotace;
-	Kopie->orientace=Original->orientace;
-	Kopie->mezera=Original->mezera;
-	Kopie->mezera_jig=Original->mezera_jig;
-	Kopie->mezera_podvozek=Original->mezera_podvozek;
 	Kopie->pohon=Original->pohon;
 	//kopiruj_pohon(Original->pohon,Kopie);//POHON
 	Kopie->min_prujezdni_profil=Original->min_prujezdni_profil;
@@ -801,15 +692,6 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->komora=NULL;//POZOR TOTO NENÍ ZCELA SPRÁVNĚ, MĚLO BY SE NEJDŘÍVE SMAZAT PŘIDRUŽENÝ SPOJÁK, ABY NEZŮSTAL V PAMĚTI
 	Kopie->body=NULL;//POZOR TOTO NENÍ ZCELA SPRÁVNĚ, MĚLO BY SE NEJDŘÍVE SMAZAT PŘIDRUŽENÝ SPOJÁK, ABY NEZŮSTAL V PAMĚTI
 	if(Kopie->id==3)kopiruj_komory(Original,Kopie);//pokud se jedná o POWash
-	Kopie->cekat_na_palce=Original->cekat_na_palce;
-	Kopie->stopka=Original->stopka;
-	Kopie->odchylka=Original->odchylka;
-	Kopie->obsazenost=Original->obsazenost;
-	Kopie->CT_zamek=Original->CT_zamek;
-	Kopie->RD_zamek=Original->RD_zamek;
-	Kopie->DD_zamek=Original->DD_zamek;
-	Kopie->K_zamek=Original->K_zamek;
-	Kopie->poznamka=Original->poznamka;
 	Kopie->probehla_aktualizace_prirazeni_pohonu=Original->probehla_aktualizace_prirazeni_pohonu;
 	Kopie->zobrazit_koty=Original->zobrazit_koty;//proměnná určující, zda se budou zobrzovat kóty
 	Kopie->zobrazit_mGrid=Original->zobrazit_mGrid;//proměnná určující, zda budou zobrazeny mGridy
@@ -835,7 +717,6 @@ Cvektory::TObjekt *Cvektory::PtInObjekt()
 //hledá objekt v dané oblasti                                       //pracuje v logic souradnicich tzn. již nepouživat *Zoom  použít pouze m2px
 Cvektory::TObjekt *Cvektory::najdi_objekt(double X, double Y,double offsetX, double offsetY,short typ)//hledá bod v dané oblasti
 {
-	TPoint *tab_pruchodu=new TPoint[pocet_vyhybek+1];//+1 z důvodu indexace výhybka 1 bude mít index 1, nebude se začínat od indexu 0, tabulka.x = vyhybky, tabulka.y = spojky
 	Cvektory::TObjekt *O=OBJEKTY;//->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
 	{
@@ -847,9 +728,8 @@ Cvektory::TObjekt *Cvektory::najdi_objekt(double X, double Y,double offsetX, dou
 		{
 			if(m.PtInCircle(X,Y,O->X,O->Y,offsetX)){return O;}//nalezeno !
 		}
-		O=dalsi_krok(O,tab_pruchodu);
+		O=O->dalsi;
 	}
-	tab_pruchodu=NULL;delete tab_pruchodu;
 	return O;
 }
 //---------------------------------------------------------------------------
@@ -885,15 +765,17 @@ Cvektory::TObjekt *Cvektory::vrat_objekt(unsigned int n)
 //dle X kurzoru myši vrátí z modu procesy (ROMA) ukazatel na aktuální objekt
 Cvektory::TObjekt *Cvektory::vrat_objekt_z_roma(int X)
 {
-	TObjekt *O=OBJEKTY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
-	while (O!=NULL)
-	{
-		if(O->predchozi->obsazenost<X && X<=O->obsazenost)//akce s ukazatelem
-		break;//zastaví další hledání výsledek je O
-		O=O->dalsi;//posun na další prvek v seznamu
-	}
-	return O;
+//	TObjekt *O=OBJEKTY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
+//	while (O!=NULL)
+//	{
+//		if(O->predchozi->obsazenost<X && X<=O->obsazenost)//akce s ukazatelem
+//		break;//zastaví další hledání výsledek je O
+//		O=O->dalsi;//posun na další prvek v seznamu
+//	}
+//	return O;
+	return NULL;
 }
+
 //---------------------------------------------------------------------------
 //vrátí rodičovský Objekt daného elementu, In_akt_Objekt - zda bude hledat místo daného ostrého objektu v něm
 Cvektory::TObjekt *Cvektory::vrat_objekt(TElement *Element,bool In_akt_Objekt)
@@ -906,16 +788,11 @@ Cvektory::TObjekt *Cvektory::vrat_objekt(TElement *Element,bool In_akt_Objekt)
 //smaze objekt ze seznamu
 short int Cvektory::smaz_objekt(TObjekt *Objekt,bool opakovani)
 {
-	TObjekt *spojka_vyh=NULL;
-	if(Objekt->id==(unsigned)F->VyID&&!opakovani)spojka_vyh=Objekt->predchozi2;
-	if(Objekt->id==pocet_objektu_knihovny+1&&!opakovani)spojka_vyh=Objekt->dalsi2;
 	//vyřazení prvku ze seznamu a napojení prvku dalšího na prvek předchozí prku mazaného
 	if(Objekt->dalsi!=NULL)//ošetření proti poslednímu prvku
 	{
-		if(Objekt->predchozi->dalsi==Objekt)Objekt->predchozi->dalsi=Objekt->dalsi;
-		if(Objekt->predchozi->dalsi2==Objekt)Objekt->predchozi->dalsi2=Objekt->dalsi;
-		if(Objekt->dalsi->predchozi==Objekt)Objekt->dalsi->predchozi=Objekt->predchozi;
-		if(Objekt->dalsi->predchozi2==Objekt)Objekt->dalsi->predchozi2=Objekt->predchozi;
+		Objekt->predchozi->dalsi=Objekt->dalsi;
+		Objekt->dalsi->predchozi=Objekt->predchozi;
 	}
 	else//poslední prvek
 	{
@@ -927,16 +804,13 @@ short int Cvektory::smaz_objekt(TObjekt *Objekt,bool opakovani)
 		else
 		{
 			OBJEKTY->predchozi=Objekt->predchozi;//zapis do hlavičky poslední prvek seznamu
-			if(Objekt->predchozi->dalsi==Objekt)Objekt->predchozi->dalsi=NULL;
-			if(Objekt->predchozi->dalsi2==Objekt)Objekt->predchozi->dalsi2=NULL; //možná jen zbytečně navíc
+			Objekt->predchozi->dalsi=NULL;
 		}
 	}
 	vymaz_elementy(Objekt);
 	vymaz_body(Objekt);
 	vymaz_komory(Objekt);
-	//vymaz_elementy(Objekt);
-	if(spojka_vyh!=NULL)smaz_objekt(spojka_vyh,true);
-	Objekt=NULL;spojka_vyh=NULL;delete Objekt;delete spojka_vyh;//smaže mazaný prvek
+	delete Objekt;Objekt=NULL;//smaže mazaný prvek
 
 	return 0;
 
@@ -953,113 +827,113 @@ short int Cvektory::smaz_objekt(TObjekt *Objekt,bool opakovani)
 //typ 5://při změně parametrů vozíku změna u K,CT,RD zůstává DD
 void Cvektory::aktualizace_objektu(short typ)
 {
-	TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
-	while (O!=NULL)
-	{
-		//testovací MB: ShowMessage("Vstup CT:"+AnsiString(O->CT)+" RD:"+AnsiString(O->RD)+" DD:"+AnsiString(O->delka_dopravniku)+" K:"+AnsiString(O->kapacita)+" dV:"+AnsiString(dV)+" mV:"+AnsiString(O->mV));
-    //HELP: DLE ZAMČENÝCH ODEMČENÝCH HODNOT (INDIVIDUÁLNÍ NASTAVENÍ) NUTNÁ ZMĚNA DATOVÉHO MODELU - NUTNO ULOŽIT Z FORMULÁŘE PO, KTERÁ POLOŽKA JE ZAMČENÁ, KTERÁ ODEMČENÁ
-		if(typ==-1)//dle zamčených a odemčených hodnot při změně TT
-		{
-			////při zamčeném CT
-			//doplnit podmínku
-			typ=2;//přesměrování na daný typ
-			////při zamčené K a DD
-			//doplnit podmínku
-			typ=1;//přesměrování na daný typ
-			////při zamčeném RD
-			//doplnit podmínku
-			//doplnit počítání mezer
-		}
-		if(typ==0)//dle zamčených a odemčených hodnot při změně parametrů vozíku
-		{
-			//při zamčeném K či CT
-			typ=3;
-			//při zamčeném K,RD
-			typ=4;
-			//při zamčeném DD
-			typ=5;
-		}
-
-		switch(typ)
-		{
-//asi se již nepoužívá
-//			case -2://zaktualizuje přiřazení pohonu k objektu, nutné pokud proběhla změna v pohonech, protože původní jsou smazané
+//	TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
+//	while (O!=NULL)
+//	{
+//		//testovací MB: ShowMessage("Vstup CT:"+AnsiString(O->CT)+" RD:"+AnsiString(O->RD)+" DD:"+AnsiString(O->delka_dopravniku)+" K:"+AnsiString(O->kapacita)+" dV:"+AnsiString(dV)+" mV:"+AnsiString(O->mV));
+//    //HELP: DLE ZAMČENÝCH ODEMČENÝCH HODNOT (INDIVIDUÁLNÍ NASTAVENÍ) NUTNÁ ZMĚNA DATOVÉHO MODELU - NUTNO ULOŽIT Z FORMULÁŘE PO, KTERÁ POLOŽKA JE ZAMČENÁ, KTERÁ ODEMČENÁ
+//		if(typ==-1)//dle zamčených a odemčených hodnot při změně TT
+//		{
+//			////při zamčeném CT
+//			//doplnit podmínku
+//			typ=2;//přesměrování na daný typ
+//			////při zamčené K a DD
+//			//doplnit podmínku
+//			typ=1;//přesměrování na daný typ
+//			////při zamčeném RD
+//			//doplnit podmínku
+//			//doplnit počítání mezer
+//		}
+//		if(typ==0)//dle zamčených a odemčených hodnot při změně parametrů vozíku
+//		{
+//			//při zamčeném K či CT
+//			typ=3;
+//			//při zamčeném K,RD
+//			typ=4;
+//			//při zamčeném DD
+//			typ=5;
+//		}
+//
+//		switch(typ)
+//		{
+////asi se již nepoužívá
+////			case -2://zaktualizuje přiřazení pohonu k objektu, nutné pokud proběhla změna v pohonech, protože původní jsou smazané
+////			{
+////				if(O->pohon!=NULL)//přiřazuje pouze pokud byl pohon již přiřazen
+////				O->pohon=vrat_pohon(O->pohon->n);
+////			}
+////      break;
+//			case 1://při změně TT změna CT a RD, K a DD zůstává
 //			{
-//				if(O->pohon!=NULL)//přiřazuje pouze pokud byl pohon již přiřazen
-//				O->pohon=vrat_pohon(O->pohon->n);
+//				O->CT=PP.TT*O->kapacita;
+//				if(O->rezim==1)O->RD=O->delka_dopravniku/O->CT;//u kontinuálního
 //			}
-//      break;
-			case 1://při změně TT změna CT a RD, K a DD zůstává
-			{
-				O->CT=PP.TT*O->kapacita;
-				if(O->rezim==1)O->RD=O->delka_dopravniku/O->CT;//u kontinuálního
-			}
-			break;
-			case 2://při změně TT změna K,DD,RD zůstává CT mimo S&G
-			{
-				if(O->rezim==0)O->CT=PP.TT;//pro S&G
-				else //pro kontinuál a PP
-				{
-					//K
-					O->kapacita=O->CT/PP.TT;
-					//DD
-					O->delka_dopravniku=O->kapacita*m.UDV(O->orientace)*O->mezera;//ošetřeno i pro stav kdy je stejný počet mezer jako vozíku
-					//RD
-					if(O->rezim==1)O->RD=O->delka_dopravniku/O->CT;//u kontinuálního
-				}
-			}
-			break;
-			case 3://při změně parametrů vozíku změna DD, RD zůstává K, CT
-			{
-				if(O->rezim!=0)//pro kontinuál a PP
-				{
-					//DD
-					O->delka_dopravniku=O->kapacita*m.UDV(O->orientace)*O->mezera;//ošetřeno i pro stav kdy je stejný počet mezer jako vozíku
-					//RD
-					if(O->rezim==1)O->RD=O->delka_dopravniku/O->CT;//u kontinuálního
-				}
-			}
-			break;
-			case 4://při změně parametrů vozíku změna u DD, CT zůstává K,RD
-			{
-				if(O->rezim!=0)//pro kontinuál a PP
-				{
-					//DD
-					O->delka_dopravniku=O->kapacita*m.UDV(O->orientace)*O->mezera;//DD
-					//CT
-					if(O->rezim==1)O->CT=O->delka_dopravniku/O->RD;//pro kontinual
-					else//pro PP
-					{
-						O->kapacita=O->delka_dopravniku/(m.UDV(O->orientace)+O->mezera);
-					}
-				}
-			}
-			break;
-			case 5://při změně parametrů vozíku změna u K,CT,RD zůstává DD
-			{
-				if(O->rezim!=0)//pro kontinuál a PP
-				{
-					//K
-					O->kapacita=O->delka_dopravniku/(m.UDV(O->orientace)+O->mezera);//K
-					//CT
-					O->CT=PP.TT*O->kapacita;
-					//RD
-					if(O->rezim==1)O->RD=O->delka_dopravniku/O->CT;//u kontinuálního
-				}
-			}
-			break;
-		}
-		//prozatím zde a takto výpočte počet pozic
-		double P=floor(O->kapacita);//celočíselná kapacita
-		double DV=m.UDV(O->orientace);
-		double DVM=(DV+O->mezera)*(O->kapacita-P);//délka části poslední vozíko-mezery v kabině
-		if(DVM>=DV)P++;//navýší o celý vozík, protože je minimálně celý vozík v kabině
-		else P+=DVM/DV;//navýší o část vozíku, protože je jenom část vozíku v kabině
-		O->pozice=P;
-		//testovací MB:ShowMessage("Výstup CT:"+AnsiString(O->CT)+" RD:"+AnsiString(O->RD)+" DD:"+AnsiString(O->delka_dopravniku)+" K:"+AnsiString(O->kapacita)+" dV:"+AnsiString(dV));
-		O=O->dalsi;//posun na další prvek
-	}
-	O=NULL;delete O;
+//			break;
+//			case 2://při změně TT změna K,DD,RD zůstává CT mimo S&G
+//			{
+//				if(O->rezim==0)O->CT=PP.TT;//pro S&G
+//				else //pro kontinuál a PP
+//				{
+//					//K
+//					O->kapacita=O->CT/PP.TT;
+//					//DD
+//					O->delka_dopravniku=O->kapacita*m.UDV(O->orientace)*O->mezera;//ošetřeno i pro stav kdy je stejný počet mezer jako vozíku
+//					//RD
+//					if(O->rezim==1)O->RD=O->delka_dopravniku/O->CT;//u kontinuálního
+//				}
+//			}
+//			break;
+//			case 3://při změně parametrů vozíku změna DD, RD zůstává K, CT
+//			{
+//				if(O->rezim!=0)//pro kontinuál a PP
+//				{
+//					//DD
+//					O->delka_dopravniku=O->kapacita*m.UDV(O->orientace)*O->mezera;//ošetřeno i pro stav kdy je stejný počet mezer jako vozíku
+//					//RD
+//					if(O->rezim==1)O->RD=O->delka_dopravniku/O->CT;//u kontinuálního
+//				}
+//			}
+//			break;
+//			case 4://při změně parametrů vozíku změna u DD, CT zůstává K,RD
+//			{
+//				if(O->rezim!=0)//pro kontinuál a PP
+//				{
+//					//DD
+//					O->delka_dopravniku=O->kapacita*m.UDV(O->orientace)*O->mezera;//DD
+//					//CT
+//					if(O->rezim==1)O->CT=O->delka_dopravniku/O->RD;//pro kontinual
+//					else//pro PP
+//					{
+//						O->kapacita=O->delka_dopravniku/(m.UDV(O->orientace)+O->mezera);
+//					}
+//				}
+//			}
+//			break;
+//			case 5://při změně parametrů vozíku změna u K,CT,RD zůstává DD
+//			{
+//				if(O->rezim!=0)//pro kontinuál a PP
+//				{
+//					//K
+//					O->kapacita=O->delka_dopravniku/(m.UDV(O->orientace)+O->mezera);//K
+//					//CT
+//					O->CT=PP.TT*O->kapacita;
+//					//RD
+//					if(O->rezim==1)O->RD=O->delka_dopravniku/O->CT;//u kontinuálního
+//				}
+//			}
+//			break;
+//		}
+//		//prozatím zde a takto výpočte počet pozic
+//		double P=floor(O->kapacita);//celočíselná kapacita
+//		double DV=m.UDV(O->orientace);
+//		double DVM=(DV+O->mezera)*(O->kapacita-P);//délka části poslední vozíko-mezery v kabině
+//		if(DVM>=DV)P++;//navýší o celý vozík, protože je minimálně celý vozík v kabině
+//		else P+=DVM/DV;//navýší o část vozíku, protože je jenom část vozíku v kabině
+//		O->pozice=P;
+//		//testovací MB:ShowMessage("Výstup CT:"+AnsiString(O->CT)+" RD:"+AnsiString(O->RD)+" DD:"+AnsiString(O->delka_dopravniku)+" K:"+AnsiString(O->kapacita)+" dV:"+AnsiString(dV));
+//		O=O->dalsi;//posun na další prvek
+//	}
+//	O=NULL;delete O;
 }
 //---------------------------------------------------------------------------
 //všem objektům, které měly přiřazen pohon s oldN(oldID), přiřadí pohon s newN(newID), podle toho, jak jsou ukládány nově do spojáku, důležité, pokud dojde k narušení pořadí ID resp n pohonů a pořadí jednotlivých řádků ve stringridu, např. kopirováním, smazáním, změnou pořadí řádků atp.
@@ -1093,13 +967,13 @@ void Cvektory::aktualizace_prirazeni_pohonu_dokoncena()
 //sečte délky jednotlivých objektů
 double Cvektory::vrat_soucet_delek_vsech_objektu()
 {
-	TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
+//	TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
 	double SUM=0.0;
-	while (O!=NULL)
-	{
-		SUM+=O->delka_dopravniku;
-		O=O->dalsi;//posun na další prvek
-	}
+//	while (O!=NULL)
+//	{
+//		SUM+=O->delka_dopravniku;
+//		O=O->dalsi;//posun na další prvek
+//	}
 	return SUM;
 }
 //---------------------------------------------------------------------------
@@ -1219,14 +1093,14 @@ AnsiString Cvektory::vypis_objekty_mimo_100vytizeni(bool shortname, bool vypsat_
 double Cvektory::vrat_min_rychlost_prejezdu()
 {
 	double minRD=0.0;
-	if(OBJEKTY->dalsi!=NULL)minRD=OBJEKTY->dalsi->RD;
-	TObjekt *O=OBJEKTY->dalsi->dalsi;//přeskočí hlavičku a výše uvedený
-	while (O!=NULL)
-	{
-		if(O->RD<minRD)minRD=O->RD;
-		O=O->dalsi;//posun na další prvek
-	}
-	O=NULL;delete O;
+//	if(OBJEKTY->dalsi!=NULL)minRD=OBJEKTY->dalsi->RD;
+//	TObjekt *O=OBJEKTY->dalsi->dalsi;//přeskočí hlavičku a výše uvedený
+//	while (O!=NULL)
+//	{
+//		if(O->RD<minRD)minRD=O->RD;
+//		O=O->dalsi;//posun na další prvek
+//	}
+//	O=NULL;delete O;
 	return minRD;
 }
 //---------------------------------------------------------------------------
@@ -1289,22 +1163,6 @@ void Cvektory::zmen_poradi_objektu(TObjekt *aktualni_poradi,TObjekt *nove_poradi
 			ukaz=ukaz->dalsi;
 		}
 	}
-}
-//---------------------------------------------------------------------------
-//projde všechny objekty, výhybkám a spojkám upravý návez podle jejich n
-void Cvektory::nove_nazvy()
-{
-	TObjekt *O=OBJEKTY->dalsi;
-	TPoint *tab_pruchodu=new TPoint[F->d.v.pocet_vyhybek+1];
-	int n;
-	while(O!=NULL)//přejmutí čísla výhybek či spojek z jejich názvu, nutné před tímto spustit nove_indexy(true)!!!
-	{
-		if((long)O->id==F->VyID)n=F->ms.MyToDouble(O->name.SubString(9,1));else n=F->ms.MyToDouble(O->name.SubString(8,1));
-		if((long)O->id==pocet_objektu_knihovny+1)if(tab_pruchodu[n].y==0)O->short_name="S"+AnsiString(n);
-		if((long)O->id==F->VyID)if(tab_pruchodu[n].x==0)O->short_name="V"+AnsiString(n);
-		O=dalsi_krok(O,tab_pruchodu);
-	}
-	O=NULL;tab_pruchodu=NULL;delete O;delete tab_pruchodu;
 }
 //---------------------------------------------------------------------------
 //projde všechny objekty a nastavý nové indexy podle aktuálního pořadí objektů, použití např. po kopírování objektu
@@ -1457,31 +1315,6 @@ long Cvektory::vymaz_seznam_OBJEKTY()
 
 	return pocet_smazanych_objektu;
 };
-////---------------------------------------------------------------------------
-//určuje další krok cyklu při procházení objektů
-Cvektory::TObjekt *Cvektory::dalsi_krok(TObjekt *Objekt,TPoint *tab_pruchodu)
-{
-  int krok=1;//rozdílné kroky v procházení objekty, defaultně krok = 1
-	if(Objekt->id==(unsigned)F->VyID)//výhybka
-	{
-		int n=F->ms.MyToDouble(Objekt->short_name.SubString(2,1));//extrakce pořadového čísla výhybky
-		tab_pruchodu[n].x++;if(tab_pruchodu[n].x==1)krok=2;else krok=1;//navýšení "buňky", která udržuje počet průchodu přes vyhybky
-		if(Objekt->predchozi2==NULL)krok=1;//v případě přidávání výhybky není plně nadefinovaná, nutno pokračovat defaultním krokem
-		//pokud se jedná o první průchod je krok nastaven na průchod sekundární větví, pokud druhý = průchod primární vetví
-	}else//nejedná se o výhybku
-	if(Objekt->id==pocet_objektu_knihovny+1)//spojka, neni přítomná v knihovně objektů, nelze ji z ní vkládat
-	{
-		int n=F->ms.MyToDouble(Objekt->short_name.SubString(2,1));//extrakce pořadového čísla spojky
-		tab_pruchodu[n].y++;if(tab_pruchodu[n].y==1)krok=2;else krok=1;//navýšení "buňky", která udržuje počet průchodu přes spojku
-		//při prvním průchodu je krok nastaven tak, aby došlo ke skoku na spárovanou výhybku, při dalším průchodu základní krok (dalsi)
-	}else krok=1;//nejdená se o výhybku ani o spojku, krok nastavit na defaultní hodnotu
-	switch(krok)//rozdělení přistupů na další element popřípadě skok na spárovanou výhybku
-	{
-		case 1:Objekt=Objekt->dalsi;break;//defaultně
-		case 2:Objekt=Objekt->dalsi2;break;//pri průchodu sekundární vetví, skoku na spárovanou výhybku
-	}
-	return Objekt;
-}
 ////---------------------------------------------------------------------------
 //slouží k posunu objektu jako celku o X a Y, posun kabiny, pohonu, elementů, tabulek, nadpisu, kontrolovat_oblast slouží k nucenému přesunutí
 void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_oblast,bool povolit_rotaci)
@@ -1908,7 +1741,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->stav=1;
 	novy->data.PD=-1;//defaultní stav pro S&G roboty
 	novy->objekt_n=Objekt->n;//příslušnost elementu k objektu
-	if(F->akt_Objekt!=NULL)novy->objekt_n=F->akt_Objekt->n;
+	//if(F->akt_Objekt!=NULL)novy->objekt_n=F->akt_Objekt->n;
 	novy->pohon=NULL;//pohon na kterém se nachází element
 	if(novy->predchozi->n!=0 && novy->predchozi->objekt_n==Objekt->n)novy->pohon=novy->predchozi->pohon;
 	else if(novy->dalsi!=NULL && novy->dalsi->objekt_n==Objekt->n)novy->pohon=novy->dalsi->pohon;
@@ -1956,13 +1789,13 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 ////---------------------------------------------------------------------------
 //vloží element do spojového seznamu elementů daného technologického objektu
 void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_razeni)
-{            
+{
 	TElement *posledni=vrat_posledni_element_objektu(Objekt);
 	if(posledni!=NULL)Element->n=posledni->n+1;else Element->n=ELEMENTY->predchozi->n+1;//zjištění a uložení n vkládaného elementu
 	Element->objekt_n=Objekt->n;//element ještě nemá tento atribut přiřazený, pro přejmenování ho však potřebuje
 	//////Zařazení elementu do seznamu + kontrola pořadí
 	if(force_razeni==NULL)
-	{       
+	{
 		//kontrola zda je element vkládán za předchozí nebo mezi předchozí
 		Cvektory::TElement *p=vloz_element_pred(Objekt,Element);//pokud bude vkládaný elment vložen na konec vrází NULL, pokud mezi vrátí ukazatel na další element
 		if(p==NULL)//vkládám na konec
@@ -2020,7 +1853,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 			vloz_G_element(Element,0,Element->predchozi->geo.X4,Element->predchozi->geo.Y4,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,Element->predchozi->geo.orientace);
   	}
 		else /*if(p->n!=Element->n)*///vkládám mezi elementy, vpřípadě, že bylo vloženo před prví prvek vrací Element, přesun je již vyřešen
-		{   
+		{
 			//ukazatelové propojení
 			Element->dalsi=p;
 			Element->predchozi=p->predchozi;   
@@ -2361,7 +2194,7 @@ unsigned int Cvektory::vrat_nejvetsi_ID_tabulek (TObjekt *Objekt)
 		TElement *E=Objekt->element;
 		while(E!=NULL && E->objekt_n==Objekt->n)
 		{
-			if(E->n>0&&E->eID!=100)//přeskočení hlavičky a elementu bez tabulky
+			if(E->n>0&&E->eID!=100 && E->mGrid!=NULL)//přeskočení hlavičky a elementu bez tabulky
 			{
 				if(ret<(unsigned)E->mGrid->ID)ret=E->mGrid->ID;
       }
@@ -3442,17 +3275,17 @@ unsigned long Cvektory::vrat_pocet_nepouzivanych_pohonu()
 //pokud vrátí 0, znamená, že pohon není využíván
 double Cvektory::minRD(TPohon *pohon)
 {
-	TObjekt *O=OBJEKTY->dalsi;
+//	TObjekt *O=OBJEKTY->dalsi;
 	double min=123567.0;//jen náhodně velké číslo
-	while (O!=NULL)
-	{                                    //mohl bych ještě odfiltrovávat, zda se nejedná o KK, ale je to víceméně zbytečné
-		if(O->pohon!=NULL && O->pohon==pohon)//pokud má pohon přiřazen a jedná se o stejný pohon
-		{
-			if(O->delka_dopravniku/O->CT<min)min=O->delka_dopravniku/O->CT;//tak z těchto objektů najde nejmenší možné RD
-		}
-		O=O->dalsi;
-	}
-	O=NULL;delete O;
+//	while (O!=NULL)
+//	{                                    //mohl bych ještě odfiltrovávat, zda se nejedná o KK, ale je to víceméně zbytečné
+//		if(O->pohon!=NULL && O->pohon==pohon)//pokud má pohon přiřazen a jedná se o stejný pohon
+//		{
+//			if(O->delka_dopravniku/O->CT<min)min=O->delka_dopravniku/O->CT;//tak z těchto objektů najde nejmenší možné RD
+//		}
+//		O=O->dalsi;
+//	}
+//	O=NULL;delete O;
 	if(min==123567.0)min=0;//pokud vrátí 0, znamená, že pohon není využíván
 	return min;
 }
@@ -3494,8 +3327,8 @@ AnsiString Cvektory::kontrola_rychlosti_prejezdu(TObjekt *O,short rezim,double C
 	//pokud jsou dodané parametry objektu dodané v nulových hodnotách,tzn. použíjí se hodnoty přímo daného objektu ze spojového seznamu, nikoliv externě dodané parametry funkce (ty slouží např. v případě testování na GAPO, kde se počítají parametry potenciálně nové)
 	if(CT==0 || aRD==0 || DD==0)
 	{
-		CT=O->CT;
-		DD=O->delka_dopravniku;
+//		CT=O->CT;
+//		DD=O->delka_dopravniku;
 		if(O->pohon!=NULL)
 		{
 			aRD=O->pohon->aRD;
@@ -4144,7 +3977,9 @@ void Cvektory::prvni_zakazka_dle_schematu()
 	while(O!=NULL)
 	{
 		TCesta *S=new TCesta;
-		S->objekt=O;S->CT=O->CT;S->RD=O->RD;S->Rotace=O->orientace;S->Tc=0;S->Tv=0;S->Opak=0;
+		S->objekt=O;
+		//S->CT=O->CT;S->RD=O->RD;
+		S->Rotace=O->orientace;S->Tc=0;S->Tv=0;S->Opak=0;
 		vloz_segment_cesty(Z,S);//do konkrétní zakázky vloží segmenty cesty
 		O=O->dalsi;
 		//S=NULL;delete S;
@@ -4267,14 +4102,14 @@ Cvektory::TZakazka *Cvektory::obsahuje_segment_cesty_objekt(TObjekt *objekt)
 //dle TT z parametru nastaví všem segmentům cesty od dané zakázky odpovídající CT (a line-tracking objektů i RD) dle fixní délky a kapacity, vhodné pro volání před zobrazením cest
 void Cvektory::aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky(TZakazka *zakazka,double TT)
 {
-	TCesta *C=zakazka->cesta->dalsi;
-	while(C!=NULL)
-	{
-		 C->CT=TT*C->objekt->kapacita;
-		 if(C->objekt->rezim==1)C->RD=C->objekt->delka_dopravniku/C->CT;///u kontinuálního
-		 C=C->dalsi;
-	}
-	C=NULL;delete C;
+//	TCesta *C=zakazka->cesta->dalsi;
+//	while(C!=NULL)
+//	{
+//		 C->CT=TT*C->objekt->kapacita;
+//		 if(C->objekt->rezim==1)C->RD=C->objekt->delka_dopravniku/C->CT;///u kontinuálního
+//		 C=C->dalsi;
+//	}
+//	C=NULL;delete C;
 }
 //---------------------------------------------------------------------------
 //dle TT zakázky nastaví všem segmentům cesty od dané zakázky odpovídající CT (a line-tracking objektů i RD) dle fixní délky a kapacity, vhodné pro volání před zobrazením cest
@@ -4417,13 +4252,13 @@ void Cvektory::vymazat_casovou_obsazenost_objektu_a_pozice_voziku(TObjekt *Objek
 	TObjekt *ukaz=Objekt->dalsi;
 	while (ukaz!=NULL)
 	{
-		ukaz->obsazenost=0;
+		//ukaz->obsazenost=0;
 		ukaz=ukaz->dalsi;
 	};
 	TVozik *ukaz1=Vozik->dalsi;
 	while (ukaz1!=NULL)
 	{
-		ukaz1->pozice=-1.0;
+		//ukaz1->pozice=-1.0;
 		ukaz1=ukaz1->dalsi;
 	};
 }
@@ -6318,7 +6153,7 @@ double Cvektory::vrat_LT()
 		TObjekt *ukaz=OBJEKTY->dalsi;//přeskočí hlavičku
 		while (ukaz!=NULL)
 		{
-			LT+=ukaz->CT;
+			//LT+=ukaz->CT;
 			ukaz=ukaz->dalsi;//posun na další prvek
 		}
 		return LT;
@@ -6587,7 +6422,7 @@ double Cvektory::WIP(short typ_vypoctu)
 			Cvektory::TObjekt *ukaz=OBJEKTY->dalsi;//přeskočí hlavičku
 			while (ukaz!=NULL)
 			{
-				pocet_final+=ukaz->pozice;
+				//pocet_final+=ukaz->pozice;
 				ukaz=ukaz->dalsi;//posun na další prvek
 			}
 		}break;
@@ -6846,13 +6681,6 @@ Cvektory::TDATA *Cvektory::vytvor_prazdny_obraz()
 	obraz->Objekty->short_name="";
 	obraz->Objekty->name="";
 	obraz->Objekty->rezim=0;
-	obraz->Objekty->CT=0;
-	obraz->Objekty->RD=0;
-	obraz->Objekty->delka_dopravniku=0;
-	obraz->Objekty->kapacita=0;
-	obraz->Objekty->kapacita_dop=0;
-	obraz->Objekty->pozice=0;
-	obraz->Objekty->mezera=0;
 	obraz->Objekty->pohon=NULL;
 	obraz->Objekty->element=NULL;
 	obraz->Objekty->min_prujezdni_profil.x=0;
@@ -6860,15 +6688,6 @@ Cvektory::TDATA *Cvektory::vytvor_prazdny_obraz()
 	obraz->Objekty->koty_elementu_offset.x=0;
 	obraz->Objekty->koty_elementu_offset.y=0;
 	obraz->Objekty->komora=NULL;
-	obraz->Objekty->cekat_na_palce=0;
-	obraz->Objekty->stopka=0;
-	obraz->Objekty->odchylka=0;
-	obraz->Objekty->obsazenost=0;
-	obraz->Objekty->CT_zamek=0;
-	obraz->Objekty->RD_zamek=0;
-	obraz->Objekty->DD_zamek=0;
-	obraz->Objekty->K_zamek=0;
-	obraz->Objekty->poznamka="";
 	obraz->Objekty->probehla_aktualizace_prirazeni_pohonu=false;
 	obraz->Objekty->zobrazit_koty=true;
 	obraz->Objekty->zobrazit_mGrid=true;

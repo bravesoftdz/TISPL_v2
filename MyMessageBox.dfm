@@ -309,6 +309,7 @@ object myMessageBox: TmyMessageBox
     ParentFont = False
     TabOrder = 1
     TabStop = True
+    OnClick = Button_YesClick
     Animation = False
     Caption = 'Ano'
     CanFocused = True
@@ -415,6 +416,7 @@ object myMessageBox: TmyMessageBox
     ParentFont = False
     TabOrder = 2
     TabStop = True
+    OnClick = Button_YesClick
     Animation = False
     Caption = 'Ne'
     CanFocused = True
@@ -510,7 +512,7 @@ object myMessageBox: TmyMessageBox
   end
   object Button_OK: TscGPButton
     Left = 121
-    Top = 93
+    Top = 92
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -521,6 +523,7 @@ object myMessageBox: TmyMessageBox
     ParentFont = False
     TabOrder = 3
     TabStop = True
+    OnClick = Button_YesClick
     Animation = False
     Caption = 'OK'
     CanFocused = True
@@ -627,6 +630,7 @@ object myMessageBox: TmyMessageBox
     ParentFont = False
     TabOrder = 4
     TabStop = True
+    OnClick = Button_YesClick
     Animation = False
     Caption = 'Storno'
     CanFocused = True
@@ -915,8 +919,8 @@ object myMessageBox: TmyMessageBox
     AllowAllUp = False
   end
   object scGPEdit1: TscGPEdit
-    Left = 32767
-    Top = 32767
+    Left = 32528
+    Top = 32629
     Width = 121
     Height = 23
     Options.NormalColor = clWindow

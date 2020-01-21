@@ -28,6 +28,7 @@ void __fastcall TmyMessageBox::FormShow(TObject *Sender)
 	if(myMessageBox->Top>=Form1->Top+Form1->ClientHeight-myMessageBox->Height)
 	myMessageBox->Top=Form1->Top+Form1->ClientHeight-myMessageBox->Height-5;
 	scGPEdit1->SetFocus();//použito kvùli odchytávání stisku kláves
+	closing=false;
 }
 //---------------------------------------------------------------------------
 //pøetížená metoda
@@ -139,6 +140,7 @@ int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString capt
 //Køížek
 void __fastcall TmyMessageBox::KonecClick(TObject *Sender)
 {
+	closing=true;
 	Close();
 }
 //---------------------------------------------------------------------------
@@ -152,7 +154,7 @@ void __fastcall TmyMessageBox::FormKeyDown(TObject *Sender, WORD &Key, TShiftSta
 		//ENTER
 		case 13:if(Button_OK->Visible)Button_OK->Down=true;else Button_Yes->Down=true;break;
 		//ESC
-		case 27:Close();break;
+		case 27:closing=true;Close();break;
 		//MEZERNÍK
 		case 32:break;
 	}
@@ -174,6 +176,12 @@ void __fastcall TmyMessageBox::scGPGlyphButton_copyClick(TObject *Sender)
 void __fastcall TmyMessageBox::scGPEdit1KeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 {
 	FormKeyDown(this,Key,Shift);
+}
+//---------------------------------------------------------------------------
+//po klikutí pøepnì glob. promìnou na true, slouží k blokaci formactivate na Unit1
+void __fastcall TmyMessageBox::Button_YesClick(TObject *Sender)
+{
+  closing=true;
 }
 //---------------------------------------------------------------------------
 
