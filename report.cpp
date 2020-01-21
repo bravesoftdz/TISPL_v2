@@ -41,6 +41,90 @@ void __fastcall TForm_report::KonecClick(TObject *Sender)
 //---------------------------------------------------------------------------
 short int TForm_report::ulozit_report(UnicodeString FileName)
 {
+	//////Objekty
+	Cvektory::TObjekt *O=F->d.v.OBJEKTY->dalsi;
+	while(O!=NULL)
+	{
+		UnicodeString n=O->n;
+		UnicodeString id=O->id;
+		UnicodeString name=O->name;
+		UnicodeString X=O->X;
+		UnicodeString Y=O->Y;
+		UnicodeString pocet_bodu="0";
+		if(O->body!=NULL && O->body->predchozi->n>0)pocet_bodu=O->body->predchozi->n;
+		UnicodeString sirka_steny=O->sirka_steny;
+		UnicodeString Xt=O->Xt;
+		UnicodeString Yt=O->Yt;
+		UnicodeString orientace_text=O->orientace_text;
+		UnicodeString Xp=O->Xp;
+		UnicodeString Yp=O->Yp;
+		UnicodeString rezim=O->rezim;
+		UnicodeString orientace=O->orientace;
+		UnicodeString pohon="Nepøiøazen/needitován";
+		if(O->pohon!=NULL)pohon=O->pohon->name;
+		UnicodeString prvni_element=O->element->name;
+		UnicodeString min_prujezdni_profil_x=O->min_prujezdni_profil.x;
+		UnicodeString min_prujezdni_profil_y=O->min_prujezdni_profil.y;
+		UnicodeString koty_elementu_offset_x=O->koty_elementu_offset.x;
+		UnicodeString koty_elementu_offset_y=O->koty_elementu_offset.y;
+		UnicodeString pocet_komor=0;
+		if(O->komora!=NULL && O->predchozi->n>0)pocet_komor=O->komora->predchozi->n;
+		UnicodeString zobrazit_koty="Ne";
+		if(O->zobrazit_koty)zobrazit_koty="Ano";
+		UnicodeString zobrazit_mGrid="Ne";
+		if(O->zobrazit_mGrid)zobrazit_mGrid="Ano";
+		UnicodeString uzamknout_nahled="Ne";
+		if(O->uzamknout_nahled)uzamknout_nahled="Ano";
+		//vypsaní - uložení
+
+
+		O=O->dalsi;
+	}
+	delete O;O=NULL;
+
+	//////Elementy
+	Cvektory::TElement *E=F->d.v.ELEMENTY->dalsi;
+	while(E!=NULL)
+	{
+		UnicodeString n=E->n;
+		UnicodeString eID=E->eID;
+		UnicodeString short_name=E->short_name;
+		UnicodeString name=E->name;
+		UnicodeString orientace=E->orientace;
+		UnicodeString rotace_jig=E->rotace_jig;
+		UnicodeString stav=E->stav;
+		UnicodeString X=E->X;
+		UnicodeString Y=E->Y;
+		UnicodeString Z=E->Z;
+		UnicodeString Xt=E->Xt;
+		UnicodeString Yt=E->Yt;
+		UnicodeString PTotoc=E->PTotoc;
+		UnicodeString OTOC_delka=E->OTOC_delka;
+		UnicodeString zona_pred=E->zona_pred;
+		UnicodeString zona_za=E->zona_za;
+		UnicodeString WT=E->WT;
+		UnicodeString PD=E->data.PD;
+		UnicodeString orientace_jig_pred=E->data.orientace_jig_pred;
+		UnicodeString LO1=E->data.LO1;
+		UnicodeString LO2=E->data.LO2;
+		UnicodeString LO_pozice=E->data.LO_pozice;
+		UnicodeString PT1=E->data.PT1;
+		UnicodeString PT2=E->data.PT2;
+		UnicodeString WTstop=E->data.WTstop;
+		UnicodeString RT_x=E->data.RT.x;
+		UnicodeString RT_y=E->data.RT.y;
+		UnicodeString pocet_pozic=E->data.pocet_pozic;
+		UnicodeString pocet_voziku=E->data.pocet_voziku;
+		UnicodeString objekt_n=E->objekt_n;
+		UnicodeString pohon="Nepøiøazen";
+		if(E->pohon!=NULL)pohon=E->pohon->name;
+		//vypsani - uloženi
+
+
+		E=E->dalsi;
+	}
+	delete E;E=NULL;
+
 		//ZDM get_LT_a_max_min_TT();//zajistí hodnoty
 
 		//generuj_POHONY(); už nepoužíváme, ale možná èasem budeme
