@@ -3354,13 +3354,13 @@ AnsiString Cvektory::vypis_objekty_vyuzivajici_pohon(unsigned long n,bool short_
 	while (O!=NULL)
 	{
 		if(O==F->pom && F->pom!=NULL)//pokud je voláno z editovaného PO
-		{
+		{   //R  21.1.2020 - ZAKOMENTOVANA CAST - VAZBA NA STARE PO
 			 //a pokud se jedná o stejný objekt, jako právě projížděný cyklemmusí být samostatně
-				if(Form_parametry->scComboBox_pohon->ItemIndex>0  && Form_parametry->scComboBox_pohon->ItemIndex==(long)n)//pokud má pohon přiřazen a jedná se o stejný pohon
-				{
-					if(short_name)nalezen+=O->short_name+", ";
-					else nalezen+=O->name+", ";
-				}
+//				if(Form_parametry->scComboBox_pohon->ItemIndex>0  && Form_parametry->scComboBox_pohon->ItemIndex==(long)n)//pokud má pohon přiřazen a jedná se o stejný pohon
+//				{
+//					if(short_name)nalezen+=O->short_name+", ";
+//					else nalezen+=O->name+", ";
+//				}
 		}
 		else//pro ostatní objekty mimo editaci na PO
 		{

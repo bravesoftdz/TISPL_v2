@@ -1753,11 +1753,11 @@ void __fastcall TmGrid::getTagOnClick(TObject *Sender)
 			break;
 		}
 																					 //pozor metody musí mít i znamenkové longové Col, Row , kvůli -2 exBUTTON
-		if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnClick(Tag,Col,Row);
-		if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnClick(Tag,Col,Row);
-		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnClick(Tag,Col,Row);
+//		if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnClick(Tag,Col,Row); R 21.1.2020 - ODEBRÁNO Z PROJEKTU
+//		if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnClick(Tag,Col,Row);  R 21.1.2020 - ODEBRÁNO Z PROJEKTU
+//		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnClick(Tag,Col,Row);  R 21.1.2020 - ODEBRÁNO Z PROJEKTU
 		if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnClick(Tag,ID,Col,Row);
-		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnClick(Tag,Col,Row);
+		//if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnClick(Tag,Col,Row); R 21.1.2020 - ODEBRÁNO Z PROJEKTU
     if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnClick(Tag,ID,Col,Row);   //z unit1 do unitX
 		if(AnsiString(Tag).SubString(1,1)=="7")Form_parametry_linky->OnClick(Tag,ID,Col,Row);
     if(AnsiString(Tag).SubString(1,1)=="8")Form_katalog->OnClick(Tag,ID,Col,Row);
@@ -1774,11 +1774,11 @@ void __fastcall TmGrid::getTagOnEnter(TObject *Sender)
 		Col=getColFromTag(((TComponent*)(Sender))->Tag);
 		Row=getRowFromTag(((TComponent*)(Sender))->Tag);
 		bufText=Cells[Col][Row].Text;//ukládá výchozí hodnotu editboxu před psaním, pro případ stisku ESC
-		if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnEnter(Tag,Col,Row);
-		if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnEnter(Tag,Col,Row);
-		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnEnter(Tag,Col,Row);
+//		if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnEnter(Tag,Col,Row);   R 21.1.2020 - ODEBRÁNO Z PROJEKTU
+//		if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnEnter(Tag,Col,Row);    R 21.1.2020 - ODEBRÁNO Z PROJEKTU
+//		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnEnter(Tag,Col,Row);    R 21.1.2020 - ODEBRÁNO Z PROJEKTU
 		if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnEnter(Tag,Col,Row);
-		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnEnter(Tag,Col,Row);
+		//if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnEnter(Tag,Col,Row); R 21.1.2020 - ODEBRÁNO Z PROJEKTU
     if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnEnter(Tag,ID,Col,Row);//z unit1 do unitX
     if(AnsiString(Tag).SubString(1,1)=="7")Form_parametry_linky->OnEnter(Tag,Col,Row);
 	}
@@ -1792,11 +1792,11 @@ void __fastcall TmGrid::getTagOnChange(TObject *Sender)
 		Col=getColFromTag(((TComponent*)(Sender))->Tag);
 		Row=getRowFromTag(((TComponent*)(Sender))->Tag);
 		getTextFromComponentToMemoryCell(Col,Row);//dle zadaného čísla sloupce a čísla řádku vrátí z dané komponenty text do paměťové buňky, slouží např. při události onchange popř. dálších
-		if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnChange(Tag,Col,Row);
-		if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnChange(Tag,Col,Row);
-		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnChange(Tag,Col,Row);
+//		if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnChange(Tag,Col,Row);   R 21.1.2020 - ODEBRÁNO Z PROJEKTU
+//		if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnChange(Tag,Col,Row);    R 21.1.2020 - ODEBRÁNO Z PROJEKTU
+//		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnChange(Tag,Col,Row);    R 21.1.2020 - ODEBRÁNO Z PROJEKTU
 		if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnChange(Tag,Col,Row);
-		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnChange(Tag,Col,Row);
+	 //	if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnChange(Tag,Col,Row); R 21.1.2020 - ODEBRÁNO Z PROJEKTU
     if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnChange(Tag,ID,Col,Row);//z unit1 do unitX
 		if(AnsiString(Tag).SubString(1,1)=="7")Form_parametry_linky->OnChange(Tag,Col,Row);
 	}

@@ -139,7 +139,6 @@ __published:	// IDE-managed Components
 	void __fastcall rStringGridEd_tab_dopravnikyEnter(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
-	void __fastcall scGPGlyphButton_infoClick(TObject *Sender);
 	void __fastcall GlyphButton_closeClick(TObject *Sender);
 	void __fastcall scLabel_kopirovatClick(TObject *Sender);
 	void __fastcall scLabel_smazatClick(TObject *Sender);
@@ -160,9 +159,6 @@ __published:	// IDE-managed Components
 	void __fastcall scGPSwitchChangeState(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 	void __fastcall rEditNum_taktClick(TObject *Sender);
-	void __fastcall scGPGlyphButton_TTClick(TObject *Sender);
-	void __fastcall sc(TObject *Sender);
-	void __fastcall Button2Click(TObject *Sender);
 	void __fastcall rHTMLLabel_InfoTextClick(TObject *Sender);
 	void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
   void __fastcall FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,

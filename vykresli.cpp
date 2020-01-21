@@ -1113,11 +1113,11 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 		{
 			Form1->scGPGlyphButton_close_grafy->Left=Form1->ClientWidth-Form1->scGPGlyphButton_close_grafy->Width;
 			Form1->scGPGlyphButton_close_grafy->Top=Form1->Chart2->Top/*-Form1->GlyphButton_close_grafy->Height*/;
-			Form1->g.ShowGrafy(true);
+		//	Form1->g.ShowGrafy(true); //GRAFY - ODEBRÁNY Z BUILDU  21.1.2020 - ZAKOMENTOVÁNO, ODEBRÁNO Z PROJEKTU
 		}
-		//nastavení a zobrazení zpráv
-		if(JIZPOCITANO)Form1->g.zpravy();
-		else Form1->g.nastav_zpravy();//nastavují jen v momentu nového výpočtu, tj. zadání nových parametrů nebo nového načtení
+		//nastavení a zobrazení zpráv  //R. G.ZPRAVY - 21.1.2020 - ZAKOMENTOVÁNO, ODEBRÁNO Z PROJEKTU
+//		if(JIZPOCITANO)Form1->g.zpravy();
+//		else Form1->g.nastav_zpravy();//nastavují jen v momentu nového výpočtu, tj. zadání nových parametrů nebo nového načtení
 		//zobrazení legendy časových os
 		vykresli_legendu_casovych_os(canv);
 		//už se nebude ukladat proces znovu, protože byl vypočten a už není třeba zatěžovat znovu systémové prostředky (nehledě na to, že to bylo dost znát)

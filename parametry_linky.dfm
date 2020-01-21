@@ -527,7 +527,6 @@ object Form_parametry_linky: TForm_parametry_linky
       ParentFont = False
       TabOrder = 2
       Visible = False
-      OnClick = scGPGlyphButton_infoClick
       Animation = True
       Caption = 'Info'
       CanFocused = False
@@ -2571,7 +2570,6 @@ object Form_parametry_linky: TForm_parametry_linky
     ShowHint = True
     TabOrder = 14
     Visible = False
-    OnClick = scGPGlyphButton_TTClick
     Animation = False
     Caption = 'GlyphButton_zobrazit_parametry'
     CanFocused = False
@@ -2672,7 +2670,6 @@ object Form_parametry_linky: TForm_parametry_linky
     ShowHint = True
     TabOrder = 15
     Visible = False
-    OnClick = sc
     Animation = False
     Caption = 'GlyphButton_zobrazit_parametry'
     CanFocused = False
@@ -7338,8 +7335,8 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 9206
-    Top = 14714
+    Left = 9209
+    Top = 14719
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -7364,6 +7361,9 @@ object Form_parametry_linky: TForm_parametry_linky
     GlyphThickness = 1
     Kind = scgpgkOneGear
     TransparentBackground = True
+    ExplicitLeft = 9206
+    ExplicitTop = 14714
+    ExplicitWidth = 100
   end
   object scGPSwitch: TscGPSwitch
     Left = 762

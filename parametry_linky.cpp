@@ -603,9 +603,9 @@ void TForm_parametry_linky::nacti_pohony ()
 
              getDeleteButtonSettings(i);
              getPrirazeneObjDesign(i);
-				 }
-				 F_gapoR->pohony_zmena=new TPoint[F->d.v.POHONY->predchozi->n+1]; //alokace o jednièku vyšší, nultý index není totiž využíván
-				 for(unsigned int i=0; i<=F->d.v.POHONY->predchozi->n;i++){F_gapoR->pohony_zmena[i].X=false;F_gapoR->pohony_zmena[i].Y=false;}
+				 } // R -  21.1.2020
+//				 F_gapoR->pohony_zmena=new TPoint[F->d.v.POHONY->predchozi->n+1]; //alokace o jednièku vyšší, nultý index není totiž využíván
+//				 for(unsigned int i=0; i<=F->d.v.POHONY->predchozi->n;i++){F_gapoR->pohony_zmena[i].X=false;F_gapoR->pohony_zmena[i].Y=false;}
 
 
          PL_mGrid->Refresh();
@@ -693,87 +693,11 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		F->d.v.PP.radius=radius;
 
 		//zobrazení formu gapoR - jediné GAPO, které je voláno zde, protože se volá až pøi stisku OK PL formu
-		bool zobrazGAPO_R=false;
-		for(unsigned int i=1; i<=F->d.v.POHONY->predchozi->n;i++)
-		{
-			if(F_gapoR->pohony_zmena[i].X) zobrazGAPO_R=true;
-			//	ShowMessage(AnsiString(i)+" "+AnsiString((short)(F_gapoR->pohony_zmena[i])));
-		}
-
-    //osetreni natvrdo aby se nezobrazovalo GAPO R
-     zobrazGAPO_R=false;
-
-                      // pokud chci budu zobrazovat gapo R, ještì si zkontroluji celý obsah tabulky, zda nejsou náhodou vráceny všude výchozí hodnoty
-//      if(zobrazGAPO_R)//pokud se hodnoty shodují, ruším zobrazení gapoR
-//     {
-//     for(int j=1;j<=rStringGridEd_tab_dopravniky->RowCount-1;j++)
-//      {
-//      Memo3->Lines->Add(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][j]));
-//      Memo3->Lines->Add(F->d.v.vrat_pohon(j)->aRD*60.0);
-//      if((rStringGridEd_tab_dopravniky->Cells[4][j]*(1+59.0*aRDunit))==F->d.v.vrat_pohon(j)->aRD &&
-//      F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][j])*(1+999.0*Runit)==F->ms.MyToDouble(F->d.v.vrat_pohon(j)->roztec) /*&&
-//      F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][j])*(1+999.0*Rzunit)==F->ms.MyToDouble(F->d.v.vrat_pohon(j)->Rz) &&
-//     /* F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][j])==F->d.v.vrat_pohon(j)->Rx*/)
-//      {
-//       nezobrazuj++;
-//       }
-//       else nezobrazuj=0;
-//      } //pokud poèet øádkù beze zmìny sedí s celkovým poètem øádkù = žádná zmìna, nebudu nakonec gapo R zobrazovat, jinak zobrazím gapoR
-//      if(nezobrazuj==rStringGridEd_tab_dopravniky->RowCount-1)    zobrazGAPO_R=false;  else zobrazGAPO_R=true;
-//      }
-
-		if(zobrazGAPO_R)//pokud byl nìjaký používaný pohon zmìnìn
-		{
-			//scGPPanel2->FillColor = (TColor)RGB(200,200,200);//F->m.clIntensive((TColor)RGB(43,87,154),40);
-			Button_save->Enabled=false;Button_storno->Enabled=false;
-			if(F_gapoR->ShowModal()!=mrOk)
-			{
-				Ulozit=false;//pokud bude stisknuto èi køížek na gapo_R storno, ukládání PL formu se pøeruší, resp. neprovede
-				//scGPPanel2->FillColor = (TColor)RGB(43,87,154);
-				Button_save->Enabled=true;Button_storno->Enabled=true;
-				Storno=false; //nejedna se o storno PL formu, ale gapoR formu, proto storno false, jinak by doslo k ukonèení PL formu
-			}else
-			{
-				Storno=false;
-				Ulozit=true;
-			}
-			PL_mGrid->Delete();
-		}
-
+		bool zobrazGAPO_R=false; //R 21.1.2020 - gapo_r ODEBRÁNO Z PROJEKTU
 
 		//NEW
 		//kontrola rozmezí jednotlivých pohonù   - je to spravne, cekovat vzdy vuci RD?
 		AnsiString T="";
-//		for(short i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
-//
-//		{
-//			//prùchod jednotlivými objekty, zda je daný pohon objektu pøiøazen a pokud ano, tak zda je mimo rozsah
-//			Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
-//			while(O!=NULL)
-//			{
-//      double grid_od = 0;
-//      double grid_do = 0;   //zde není nutný nic pøevádìt, pøevádí se levá èást v podmínce IF dle akt. jednotek
-//       grid_od =  Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]);
-//       grid_do =  Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]);
-//
-//				if(
-//					O->pohon!=NULL && //když má objekt pøiøazen pohon a zároveò
-//					O->rezim==1 && //je v režimu kontinuál a zároveò
-//					O->pohon->n==Form1->ms.a2i(rStringGridEd_tab_dopravniky->Cells[0][i]) &&//pokud objekt má pohon pøiøazen a zároveò
-//					(Form1->ms.MyToDouble(O->RD)*(1+59.0*aRDunit) < grid_od ||//je mimo rozsah (pod) nebo
-//					 Form1->ms.MyToDouble(O->RD)*(1+59.0*aRDunit) > grid_do)//je mimo rozsah (nad)
-//				)
-//				{
-//          Memo3->Lines->Add(grid_od);
-//          Memo3->Lines->Add(grid_do);
-//          Memo3->Lines->Add(aRDunit);
-//					T+="Objekt: "+O->name+" Rychlost:"+O->RD*(1+59.0*aRDunit)+" vs. Pohon: "+rStringGridEd_tab_dopravniky->Cells[1][i];
-//					if(O->predchozi!=O)T+=",";//u posledního prvku nepøidá èárku
-//				}
-//				O=O->dalsi;
-//			}
-//			O=NULL;delete O;
-//		}
 
 		if(T!="")//byly nalezeny objekty mimo rozmezí + výpis
 		{
@@ -782,96 +706,6 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			if(F->ls->Strings[369]!="")text=F->ls->Strings[369]+" ";
 			Form1->MB(text+T);
 		}
-
-
-     if(F_gapoV->UlozitGAPOV)
-     {
-    	if(Delkaunit==MM)
-			{
-				F->d.v.PP.delka_jig=F->ms.MyToDouble(scGPNumericEdit_delka_jig->Value)/1000.0;
-				F->d.v.PP.sirka_jig=F->ms.MyToDouble(scGPNumericEdit_sirka_jig->Value)/1000.0;
-				F->d.v.PP.delka_podvozek=scGPNumericEdit_delka_podvozek->Value/1000.0;
-			}
-			else  //Metry
-			{
-				F->d.v.PP.delka_jig=F->ms.MyToDouble(scGPNumericEdit_delka_jig->Value);
-				F->d.v.PP.sirka_jig=F->ms.MyToDouble(scGPNumericEdit_sirka_jig->Value);
-				F->d.v.PP.delka_podvozek=scGPNumericEdit_delka_podvozek->Value;
-			}
-    }
-
-      if(F_gapoTT->UlozitGAPOTT)
-      {
-			double Takt=0;
-			if(Taktunit==MIN)  Takt=rEditNum_takt->Value*60.0; else Takt=rEditNum_takt->Value;
-			Form1->d.v.PP.TT=Takt;
-      }
-
-
-
-
-
-
-   if(F_gapoTT->UlozitGAPOTT==false && F_gapoV->UlozitGAPOV==false)  //pokud nedojde k volání GAPOTT nebo GAPOV, uložím data na PL normálním prùchodem
-  {
-		//////////////////////////////////////////////////////////////////////
-	//	Pri zmene roztece  - volani zmìny rozteèe - pokud dojde ke zmìnì rozteèe u používaného pohonu - pøedám status pro zobrazení PL_priority
-//			Cvektory::TPohon *P=Form1->d.v.POHONY->dalsi;
-//			while(P!=NULL)
-//			{
-//			     double roztec;
-//					// if(Runit==M) roztec = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][P->n]);
-//				 //	 else 				roztec = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][P->n])/1000.0;
-//         ShowMessage(P->n+1);
-//					if(PL_mGrid->getCheck(6,P->n + 1)->Checked==true && roztec!=P->roztec)
-//					{
-//					if(PL_mGrid->Cells[5][P->n + 1].Text!="")  //osetreni situace kdyz odmazu pohon a N je prazdne
-//					{
-//							Changes_roztec=true;
-//						}
-//					}
-//					P=P->dalsi;
-//				 }
-//			P=NULL;delete P;
-
-
-			//////////////////////////////////////////////////
-
-			// Hlídaní následujících zmìn, pokud je pohon používaný
-
-//				Cvektory::TPohon *p_prirazen=Form1->d.v.POHONY->dalsi;
-//			while(p_prirazen!=NULL)
-//			{
-//						bool pohon_pouzivan=false;
-//						AnsiString pohon_prirazen=Form1->d.v.vypis_objekty_vyuzivajici_pohon(p_prirazen->n);
-//						if(pohon_prirazen!="")pohon_pouzivan=true;
-//						else   pohon_pouzivan=false;
-//
-//				 //zmìna odpøiøazení
-//
-//					if(PL_mGrid->Cells[5][p_prirazen->n].Text==""  && pohon_pouzivan)
-//					{
-//           ShowMessage(pohon_prirazen);
-//							Changes_prirazen=true;
-//							zrusena_prirazeni_PID[getPID(p_prirazen->n)-1]=true;
-//
-//					}
-//				 //zmìna aRD
-////						if(PL_mGrid->getCheck(6,p_prirazen->n + 1)->Checked==false  && F->ms.MyToDouble(PL_mGrid->Cells[4][p_prirazen->n + 1].Text)/(1+59.0*aRDunit)!=p_prirazen->aRD)
-////					{
-////							Changes_aRD=true;
-////
-////					}
-//
-//					p_prirazen=p_prirazen->dalsi;
-//				 }
-//
-//			p_prirazen=NULL;delete p_prirazen;
-
-
-	 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	 //	if(Form1->d.v.OBJEKTY->dalsi==NULL)Ulozit=true;   // pokud neexistuje zadny objekt, vzdy dovolim delat zmeny a moznost ulozit
 
 		// ukladej
 		if (Ulozit)
@@ -963,7 +797,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			Form1->DuvodUlozit(true);
 		}
 
-   } 	Form1->DuvodUlozit(true);
+ //  } 	Form1->DuvodUlozit(true);
 
    if(Ulozit)
    {
@@ -1476,24 +1310,6 @@ void TForm_parametry_linky::show_min_Rz()
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //zavolá náhled kabiny, pøípadnì v budoucnu info a o požadovaných parametrech
-void __fastcall TForm_parametry_linky::scGPGlyphButton_infoClick(TObject *Sender)
-{
-    F->log(__func__); //logování
-		bool zFFtemp=false;if(zobrazitFrameForm){zFFtemp=true;zobrazitFrameForm=false;Invalidate();}//pokud je orámování, tak zruší, aby mohlo mít orámování jen na formu kabina_schema, ale zapamatuje si stav pro následné navrácení
-		// formuláø na støed
-		if(!Form_objekt_nahled->Visible)
-		{
-			Form_objekt_nahled->Left = Form1->ClientWidth / 2 - Form_objekt_nahled->Width / 2;
-			Form_objekt_nahled->Top = Form1->ClientHeight / 2 - Form_objekt_nahled->Height / 2;
-			// zobrazeni formuláøe
-			Form_objekt_nahled->scLabel_titulek->Visible=false;
-			Form_objekt_nahled->zobrazitFrameForm=true;
-			Form_objekt_nahled->ShowModal();
-			if(zFFtemp)zobrazitFrameForm=true;//pokud bylo orámování, tak vrátí
-		}
-		else  Form_objekt_nahled->Show();
-}
-//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //vrátí ID pohonu na daném øádku
@@ -1912,8 +1728,8 @@ void __fastcall TForm_parametry_linky::rEditNum_taktClick(TObject *Sender)
 		 input_clicked_icon=empty_klik_ico;
 		// Nastav_zamky(empty_klik_ico,TT_klik);
 
-		 Form_TT_kalkulator->Left=Form1->ClientWidth/2-Form_TT_kalkulator->Width/2;
-		 Form_TT_kalkulator->Top=Form1->ClientHeight/2-Form_TT_kalkulator->Height/2;
+//		 Form_TT_kalkulator->Left=Form1->ClientWidth/2-Form_TT_kalkulator->Width/2;
+//		 Form_TT_kalkulator->Top=Form1->ClientHeight/2-Form_TT_kalkulator->Height/2;
 
 		 //pøekreslení podbarvení sloupcù
 //		 rStringGridEd_tab_dopravniky->Visible=false;
@@ -2096,137 +1912,7 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 }
 
 
-void __fastcall TForm_parametry_linky::scGPGlyphButton_TTClick(TObject *Sender)
-{
 
-  F->log(__func__); //logování
-	bool Changes_TT=false;
-	Form_TT_kalkulator->Left=Form1->ClientWidth/2-Form_TT_kalkulator->Width/2;
-	Form_TT_kalkulator->Top=Form1->ClientHeight/2-Form_TT_kalkulator->Height/2;
-  scGPButton_vozik->Options->FramePressedColor=F->m.clIntensive(this->Color,8);
-  scGPButton_vozik->Options->PressedColor=F->m.clIntensive(this->Color,8);
-  scGPButton_obecne->Options->FramePressedColor=F->m.clIntensive(this->Color,8);
-  scGPButton_obecne->Options->PressedColor=F->m.clIntensive(this->Color,8);
-  scGPButton_pohon->Options->FramePressedColor=F->m.clIntensive(this->Color,8);
-  scGPButton_pohon->Options->PressedColor=F->m.clIntensive(this->Color,8);
-
-  this->Color=F->m.clIntensive(this->Color,8);//zesvìtlení spodního formu
-
-
-	 if(Form1->d.v.OBJEKTY->dalsi!=NULL || Form1->d.v.POHONY->dalsi!=NULL)
-	 {
-
-				if(mrOk==Form_TT_kalkulator->ShowModal())
-				{
-				 //
-					 if(Form_TT_kalkulator->rEditNum_takt->Value!=F->d.v.PP.TT)
-					 {
-
-					// ShowMessage("Došlo ke zmìne TT - volání GAPO");
-					 Changes_TT=true;
-					 rEditNum_takt->Value=Form_TT_kalkulator->rEditNum_takt->Value;
-					 }
-				}
-
-		}
-
-       // stav pøi nastavení TT a nemám pøitom pohon ani objekty
-    	 if(Form1->d.v.OBJEKTY->dalsi==NULL && Form1->d.v.POHONY->dalsi==NULL)
-	 {
-
-				if(mrOk==Form_TT_kalkulator->ShowModal())
-				{
-				 //
-					 if(Form_TT_kalkulator->rEditNum_takt->Value!=F->d.v.PP.TT)
-					 {
-
-					// ShowMessage("Došlo ke zmìne TT - volání GAPO");
-					 Changes_TT=false;
-					 rEditNum_takt->Value=Form_TT_kalkulator->rEditNum_takt->Value;
-           Form_parametry_linky->Button_save->Enabled=true;
-           Form_parametry_linky->Button_storno->Enabled=true;
-					 }
-				}
-		}
-
-		if(Changes_TT)//pri zmene TT + jiz existuje nejaky objekt nebo pohon
-		{
-	 		F_gapoTT->ShowModal();
-      if(F_gapoTT->myModalResult==mrOk)
-      {
-       Ulozit=true;
-       Close();
-      }
-		}
-      scGPButton_vozik->Options->FramePressedColor=F->m.clIntensive(Form_parametry_linky->Color,-8);
-      scGPButton_vozik->Options->PressedColor=F->m.clIntensive(Form_parametry_linky->Color,-8);
-      scGPButton_obecne->Options->FramePressedColor=F->m.clIntensive(this->Color,-8);
-      scGPButton_obecne->Options->PressedColor=F->m.clIntensive(this->Color,-8);
-      scGPButton_pohon->Options->FramePressedColor=F->m.clIntensive(this->Color,-8);
-      scGPButton_pohon->Options->PressedColor=F->m.clIntensive(this->Color,-8);
-    	this->Color=F->m.clIntensive(this->Color,-8);//navrácení do pùvodní hodnoty
-     // scGPButton_vozik->Options->PressedColor=F->m.clIntensive(this->Color,-8);
-      }
-//---------------------------------------------------------------------------
-
-void __fastcall TForm_parametry_linky::sc(TObject *Sender)
-
-{
-    F->log(__func__); //logování
-		bool Changes_vozik=false;
-		Form_parametry_vozik->Left=Form1->ClientWidth/2-Form_parametry_vozik->Width/2;
-		Form_parametry_vozik->Top=Form1->ClientHeight/2-Form_parametry_vozik->Height/2;
-
-      scGPButton_vozik->Options->FramePressedColor=F->m.clIntensive(this->Color,8);
-      scGPButton_vozik->Options->PressedColor=F->m.clIntensive(this->Color,8);
-      scGPButton_obecne->Options->FramePressedColor=F->m.clIntensive(this->Color,8);
-      scGPButton_obecne->Options->PressedColor=F->m.clIntensive(this->Color,8);
-      scGPButton_pohon->Options->FramePressedColor=F->m.clIntensive(this->Color,8);
-      scGPButton_pohon->Options->PressedColor=F->m.clIntensive(this->Color,8);
-
-    this->Color=F->m.clIntensive(this->Color,8);//zesvìtlení spodního formu
-
-	  if(mrOk==Form_parametry_vozik->ShowModal())
-	  {
-      if(F->d.v.PP.delka_jig!=Form_parametry_vozik->scGPNumericEdit_delka_jig->Value) Changes_vozik=true;
-	    if(F->d.v.PP.sirka_jig!=Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value) Changes_vozik=true;
-	    if(F->d.v.PP.vyska_jig!=Form_parametry_vozik->scGPNumericEdit_vyska_jig->Value) Changes_vozik=true;
-	    if(F->d.v.PP.delka_podvozek!=Form_parametry_vozik->scGPNumericEdit_delka_podvozek->Value)  Changes_vozik=true;
-
-			scGPNumericEdit_delka_jig->Value=Form_parametry_vozik->scGPNumericEdit_delka_jig->Value;
-	    scGPNumericEdit_sirka_jig->Value=Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value;
-	    scGPNumericEdit_vyska_jig->Value=Form_parametry_vozik->scGPNumericEdit_vyska_jig->Value;
-	    scGPNumericEdit_delka_podvozek->Value=Form_parametry_vozik->scGPNumericEdit_delka_podvozek->Value;
-
-      Form_parametry_linky->Button_save->Enabled=true;
-      Form_parametry_linky->Button_storno->Enabled=true;
-	  }
-
-		if(Changes_vozik && Form1->d.v.OBJEKTY->dalsi!=NULL /*&& Form1->d.v.POHONY->dalsi!=NULL*/)//pri zmene voziku
-		{
-			F_gapoV->ShowModal();
-      if(F_gapoV->myModalResult==mrOk)
-      {
-       Ulozit=true;
-       Close();
-      }
-		}
-
-      scGPButton_vozik->Options->FramePressedColor=F->m.clIntensive(Form_parametry_linky->Color,-8);
-      scGPButton_vozik->Options->PressedColor=F->m.clIntensive(Form_parametry_linky->Color,-8);
-      scGPButton_obecne->Options->FramePressedColor=F->m.clIntensive(this->Color,-8);
-      scGPButton_obecne->Options->PressedColor=F->m.clIntensive(this->Color,-8);
-      scGPButton_pohon->Options->FramePressedColor=F->m.clIntensive(this->Color,-8);
-      scGPButton_pohon->Options->PressedColor=F->m.clIntensive(this->Color,-8);
-
-    this->Color=F->m.clIntensive(this->Color,-8);//zesvìtlení spodního formu
-}
-//---------------------------------------------------------------------------
-void __fastcall TForm_parametry_linky::Button2Click(TObject *Sender)
-{
-//rStringGridEd_tab_dopravniky->Visible=true;
-}
-//---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::rHTMLLabel_InfoTextClick(TObject *Sender)
 {
 //		if(VID==4 || VID==5 || VID==6 || VID==7)
