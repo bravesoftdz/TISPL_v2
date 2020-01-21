@@ -219,54 +219,52 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 		if(Form1->STATUS==Form1->NAVRH)
 		{
 			//data+="<h4>Architekt: Pøehled objektù a jejich parametrù</h4></br>";
-			data+="<h4>Pøehled objektù a jejich parametrù</h4>";
-			data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Zkratka</th><th scope=\"col\">Režim</th><th scope=\"col\">Název pohonu</th><th scope=\"col\">Technolog. èas "+jednotky_CT+"</th><th scope=\"col\">Rychlost pohonu "+jednotky_RD+"</th><th scope=\"col\">Délka kabiny "+jednotky_kabiny+"</th><th scope=\"col\">Kapacita [vozíku a mezer]</th><th scope=\"col\">Pozice [vozíkù]</th><th scope=\"col\">Orientace[°]</th><th scope=\"col\">Mezera mezi jigy "+jednotky_kabiny+"</th><th scope=\"col\">Mezera mezi podvozky "+jednotky_kabiny+"</th></tr></thead>";
+			data+="<h4>Pøehled elementù a jejich parametrù</h4>";
+			data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">eID</th><th scope=\"col\">Název</th><th scope=\"col\">Objekt</th><th scope=\"col\">Pohon</th><th scope=\"col\">PT1 [s]</th><th scope=\"col\">LO1 [m]</th><th scope=\"col\">PT2 [s]</th><th scope=\"col\">LO2 [m]</th><th scope=\"col\">LO vyosení [m]</th><th scope=\"col\">PT otoè [s]</th><th scope=\"col\">Delka otoè [m]</th><th scope=\"col\">Zóna pøed [m]</th><th scope=\"col\">Zóna za [m]</th><th scope=\"col\">RT [s]</th><th scope=\"col\">WT palec [s]</th><th scope=\"col\">Èekání [s]</th><th scope=\"col\">Sparovaný</th><th scope=\"col\">Potencionální<br> poèet pozic</th><th scope=\"col\">Nastavený<br> poèet pozic</th></tr></thead>";
 			Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
 			//////Elementy
 	Cvektory::TElement *E=F->d.v.ELEMENTY->dalsi;
 	while(E!=NULL)
 	{
-		UnicodeString n=E->n;
 		UnicodeString eID=E->eID;
-		UnicodeString short_name=E->short_name;
 		UnicodeString name=E->name;
-		UnicodeString orientace=E->orientace;
-		UnicodeString rotace_jig=E->rotace_jig;
-		UnicodeString stav=E->stav;
-		UnicodeString X=E->X;
-		UnicodeString Y=E->Y;
-		UnicodeString Z=E->Z;
-		UnicodeString Xt=E->Xt;
-		UnicodeString Yt=E->Yt;
-		UnicodeString PTotoc=E->PTotoc;
-		UnicodeString OTOC_delka=E->OTOC_delka;
-		UnicodeString zona_pred=E->zona_pred;
-		UnicodeString zona_za=E->zona_za;
-		UnicodeString WT=E->WT;
-		UnicodeString PD=E->data.PD;
+
+		UnicodeString PTotoc=F->m.round2double(E->PTotoc,3);
+		UnicodeString OTOC_delka=F->m.round2double(E->OTOC_delka,3);
+		UnicodeString zona_pred=F->m.round2double(E->zona_pred,3);
+		UnicodeString zona_za=F->m.round2double(E->zona_za,3);
+		UnicodeString WT=F->m.round2double(E->WT,3);
+		UnicodeString PD=F->m.round2double(E->data.PD,3);
 		UnicodeString orientace_jig_pred=E->data.orientace_jig_pred;
-		UnicodeString LO1=E->data.LO1;
-		UnicodeString LO2=E->data.LO2;
-		UnicodeString LO_pozice=E->data.LO_pozice;
-		UnicodeString PT1=E->data.PT1;
-		UnicodeString PT2=E->data.PT2;
-		UnicodeString WTstop=E->data.WTstop;
-		UnicodeString RT_x=E->data.RT.x;
-		UnicodeString RT_y=E->data.RT.y;
+		UnicodeString LO1=F->m.round2double(E->data.LO1,3);
+		UnicodeString LO2=F->m.round2double(E->data.LO2,3);
+		UnicodeString LO_pozice=F->m.round2double(E->data.LO_pozice,3);
+		UnicodeString PT1=F->m.round2double(E->data.PT1,3);
+		UnicodeString PT2=F->m.round2double(E->data.PT2,3);
+		UnicodeString WTstop=F->m.round2double(E->data.WTstop,3);
+		UnicodeString RT_x=F->m.round2double(E->data.RT.x,3);
+		UnicodeString RT_y=F->m.round2double(E->data.RT.y,3);
 		UnicodeString pocet_pozic=E->data.pocet_pozic;
 		UnicodeString pocet_voziku=E->data.pocet_voziku;
+		if(F->d.v.vrat_druh_elementu(E)!=0)pocet_pozic=pocet_voziku="-";
 		UnicodeString objekt_n=E->objekt_n;
-    AnsiString nazev_objektu = F->d.v.vrat_objekt(E->objekt_n)->name;
-		UnicodeString pohon="Nepøiøazen";
+		AnsiString nazev_objektu = F->d.v.vrat_objekt(E->objekt_n)->name;
+		nazev_objektu=nazev_objektu.UpperCase();
+		UnicodeString pohon="-";
 		if(E->pohon!=NULL)pohon=E->pohon->name;
+		UnicodeString sparovany="-";
+		if(E->sparovany!=NULL)sparovany=E->sparovany->name;
+		if(PT1=="0")PT1="-";if(PT2=="0")PT2="-";if(PTotoc=="0")PTotoc="-";
+		if(LO1=="0")LO1="-";if(LO2=="0")LO2="-";if(OTOC_delka=="0")OTOC_delka="-";if(LO_pozice=="0")LO_pozice="-";
+		if(zona_pred=="0")zona_pred="-";if(zona_za=="0")zona_za="-";if(RT_x=="0")RT_x="-";if(WT=="0")WT="-";if(WTstop=="0")WTstop="-";
 
   if(eID!=MaxInt)
          {
-					data+="<tr><th scope=\"row\">"+eID+"</th><td>"+nazev_objektu+"</td><td>"+short_name+"</td><td>"+pohon+"</td><td>"+LO1+"</td><td>"+LO2+"</td>"+/*<td>"+kapacita_dop+"</td>*/"<td>"+PT1+"</td><td>"+PT2+"</td></tr>";
+					data+="<tr><th scope=\"row\">"+eID+"</th><td>"+name+"</td><td>"+nazev_objektu+"</td><td>"+pohon+"</td><td>"+PT1+"</td><td>"+LO1+"</td><td>"+PT2+"</td><td>"+LO2+"</td><td>"+LO_pozice+"</td><td>"+PTotoc+"</td><td>"+OTOC_delka+"</td><td>"+zona_pred+"</td><td>"+zona_za+"</td><td>"+RT_x+"</td><td>"+WT+"</td><td>"+WTstop+"</td><td>"+sparovany+"</td><td>"+pocet_pozic+"</td><td>"+pocet_voziku+"</td></tr>";
           }
 					E=E->dalsi;
-	    }
-	    delete E;E=NULL;
+			}
+			delete E;E=NULL;
 			data+="</tbody></table></br>";
 
        data+="<h4>Zprávy o lince</h4>";
