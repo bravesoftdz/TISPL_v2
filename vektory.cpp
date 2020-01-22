@@ -1790,6 +1790,8 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 //vloží element do spojového seznamu elementů daného technologického objektu
 void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_razeni)
 {
+	Element->predchozi2=NULL;
+	Element->dalsi2=NULL;
 	TElement *posledni=vrat_posledni_element_objektu(Objekt);
 	if(posledni!=NULL)Element->n=posledni->n+1;else Element->n=ELEMENTY->predchozi->n+1;//zjištění a uložení n vkládaného elementu
 	Element->objekt_n=Objekt->n;//element ještě nemá tento atribut přiřazený, pro přejmenování ho však potřebuje
@@ -1912,6 +1914,8 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 void Cvektory::vloz_element(TElement *Element)
 {
 	if(ELEMENTY==NULL)hlavicka_ELEMENTY();
+	Element->dalsi2=NULL;
+	Element->predchozi2=NULL;
 	//ukazatelové propojení
 	if(ELEMENTY->dalsi==NULL)//první element za hlavičku
 	{
