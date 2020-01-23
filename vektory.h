@@ -458,10 +458,6 @@ class Cvektory
 	void smaz_bod(TBod* Bod,TObjekt* Objekt=NULL);//smaže konkrétní bod, pokud je ukazatel na Objekt NULL, jedná se o metodu pro HALU
 	void vymaz_body(TObjekt* Objekt=NULL);//vymaže všechny body včetně hlavičky, pokud je ukazatel na Objekt NULL, jedná se o metodu pro HALU
 
-//výhybky
-	unsigned int pocet_vyhybek;//uchovává počet přidaných vyhybek, - NEW + dodat do CObjekt a do souborové hlavičky včetně souvisejícího!!!
-	bool akt_vetev;//nese informaci o jakou větev ve schématu se jedná, true = primární (dalsi) false = sekundarní (dalsi2)
-
 //metody pro OBJEKTY
 	void hlavicka_OBJEKTY();
 	TObjekt *vloz_objekt(unsigned int id, double X, double Y);//vloží prvek do seznamu + vrátí ukazatel na vložený prvek
@@ -678,10 +674,13 @@ public:
 //práce s DATA, obrazem projektu
 	void hlavicka_DATA();
 	void vytvor_obraz_DATA(bool storno=false);
-	void nacti_z_obrazu_DATA(bool storno);
-	void smaz_obraz_DATA(unsigned long n);
+	void nacti_z_obrazu_DATA(bool storno=false);
+	Cvektory::TDATA *vrat_obraz_DATA(unsigned long n);
+	void smaz_obraz_DATA(unsigned long n=0);
 	long vymaz_seznam_DATA();
 	Cvektory::TDATA *vytvor_prazdny_obraz();//atributy pro tvorbu hlaviček elementů, objektů a pohonů
+
+	unsigned long pozice_data;//uchovává pozici ve spojáku dat, pro posunování při ctrl+z funkcionalitě
 
 //souborové operace
 	void vytvor_hlavicku_souboru();

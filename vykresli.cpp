@@ -288,7 +288,8 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	}
 	//highlight hrany objektu mimo editaci
 	if(F->akt_Objekt==NULL && F->pom!=NULL && F->pom->n==O->n && F->JID==4){if(F->pom_bod->n==1)stav=O->body->predchozi->n*2;else stav=O->body->predchozi->n+F->pom_bod->n-1;}
-
+  //highilightování kabiny při přejetí kurzorem přes název objektu, řešeno zde metoda polygon() neumí zvýraznit všechny hrany
+	if(F->akt_Objekt==NULL && F->pom!=NULL && F->pom->n==O->n && F->JID==-6)clAkt=m.clIntensive(clStenaKabiny,-50);
 	////vnější obrys kabiny
 	if(!(F->akt_Objekt!=NULL && F->akt_Objekt->n!=O->n && F->scGPTrackBar_intenzita->Value<5))polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
 
