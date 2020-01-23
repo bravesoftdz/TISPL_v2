@@ -42,45 +42,45 @@ void __fastcall TForm_report::KonecClick(TObject *Sender)
 short int TForm_report::ulozit_report(UnicodeString FileName)
 {
 	//////Objekty
-	Cvektory::TObjekt *O=F->d.v.OBJEKTY->dalsi;
-	while(O!=NULL)
-	{
-		UnicodeString n=O->n;
-		UnicodeString id=O->id;
-		UnicodeString name=O->name;
-		UnicodeString X=O->X;
-		UnicodeString Y=O->Y;
-		UnicodeString pocet_bodu="0";
-		if(O->body!=NULL && O->body->predchozi->n>0)pocet_bodu=O->body->predchozi->n;
-		UnicodeString sirka_steny=O->sirka_steny;
-		UnicodeString Xt=O->Xt;
-		UnicodeString Yt=O->Yt;
-		UnicodeString orientace_text=O->orientace_text;
-		UnicodeString Xp=O->Xp;
-		UnicodeString Yp=O->Yp;
-		UnicodeString rezim=O->rezim;
-		UnicodeString orientace=O->orientace;
-		UnicodeString pohon="Nep¯i¯azen/needitov·n";
-		if(O->pohon!=NULL)pohon=O->pohon->name;
-		UnicodeString prvni_element=O->element->name;
-		UnicodeString min_prujezdni_profil_x=O->min_prujezdni_profil.x;
-		UnicodeString min_prujezdni_profil_y=O->min_prujezdni_profil.y;
-		UnicodeString koty_elementu_offset_x=O->koty_elementu_offset.x;
-		UnicodeString koty_elementu_offset_y=O->koty_elementu_offset.y;
-		UnicodeString pocet_komor=0;
-		if(O->komora!=NULL && O->predchozi->n>0)pocet_komor=O->komora->predchozi->n;
-		UnicodeString zobrazit_koty="Ne";
-		if(O->zobrazit_koty)zobrazit_koty="Ano";
-		UnicodeString zobrazit_mGrid="Ne";
-		if(O->zobrazit_mGrid)zobrazit_mGrid="Ano";
-		UnicodeString uzamknout_nahled="Ne";
-		if(O->uzamknout_nahled)uzamknout_nahled="Ano";
-		//vypsanÌ - uloûenÌ
-
-
-		O=O->dalsi;
-	}
-	delete O;O=NULL;
+//	Cvektory::TObjekt *O=F->d.v.OBJEKTY->dalsi;
+//	while(O!=NULL)
+//	{
+//		UnicodeString n=O->n;
+//		UnicodeString id=O->id;
+//		UnicodeString name=O->name;
+//		UnicodeString X=O->X;
+//		UnicodeString Y=O->Y;
+//		UnicodeString pocet_bodu="0";
+//		if(O->body!=NULL && O->body->predchozi->n>0)pocet_bodu=O->body->predchozi->n;
+//		UnicodeString sirka_steny=O->sirka_steny;
+//		UnicodeString Xt=O->Xt;
+//		UnicodeString Yt=O->Yt;
+//		UnicodeString orientace_text=O->orientace_text;
+//		UnicodeString Xp=O->Xp;
+//		UnicodeString Yp=O->Yp;
+//		UnicodeString rezim=O->rezim;
+//		UnicodeString orientace=O->orientace;
+//		UnicodeString pohon="Nep¯i¯azen/needitov·n";
+//		if(O->pohon!=NULL)pohon=O->pohon->name;
+//		UnicodeString prvni_element=O->element->name;
+//		UnicodeString min_prujezdni_profil_x=O->min_prujezdni_profil.x;
+//		UnicodeString min_prujezdni_profil_y=O->min_prujezdni_profil.y;
+//		UnicodeString koty_elementu_offset_x=O->koty_elementu_offset.x;
+//		UnicodeString koty_elementu_offset_y=O->koty_elementu_offset.y;
+//		UnicodeString pocet_komor=0;
+//		if(O->komora!=NULL && O->predchozi->n>0)pocet_komor=O->komora->predchozi->n;
+//		UnicodeString zobrazit_koty="Ne";
+//		if(O->zobrazit_koty)zobrazit_koty="Ano";
+//		UnicodeString zobrazit_mGrid="Ne";
+//		if(O->zobrazit_mGrid)zobrazit_mGrid="Ano";
+//		UnicodeString uzamknout_nahled="Ne";
+//		if(O->uzamknout_nahled)uzamknout_nahled="Ano";
+//		//vypsanÌ - uloûenÌ
+//
+//
+//		O=O->dalsi;
+//	}
+//	delete O;O=NULL;
 
 
 
@@ -318,16 +318,19 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 				////CSV Ë·st
 				data_CSV+="Zpr·vy o lince\n";
 				data_CSV+="n"+S+"Typ"+S+"Popis"+S+"Element"+S+"Objekt"+S+"\n";
-			  Cvektory::TZprava *Z=F->d.v.ZPRAVY->dalsi;
+				Cvektory::TZprava *Z=F->d.v.ZPRAVY;//nep¯eskakovat hlaviËku
 			  while(Z!=NULL)
 			  {
 					////naËtenÌ dat
-					UnicodeString typ="Eror";
-				  if(Z->zID==1)typ="Warning";
-					////HTML Ë·st
-					data_HTML+="<tr><th scope=\"row\">"+UnicodeString(Z->n)+"</th><td>"+typ+"</td><td>"+F->d.v.getVID(Z->VID)+"</td><td>"+Z->Element->name+"</td><td>"+F->d.v.vrat_objekt(Z->Element->objekt_n)->name.UpperCase()+"</td></tr>";
-					////CSV Ë·st
-					data_CSV+=UnicodeString(Z->n)+S+typ+S+F->d.v.getVID(Z->VID)+S+Z->Element->name+S+F->d.v.vrat_objekt(Z->Element->objekt_n)->name.UpperCase()+"\n";
+					if(Z->n>0)
+					{
+				  	UnicodeString typ="Eror";
+				  	if(Z->zID==1)typ="Warning";
+				  	////HTML Ë·st
+				  	data_HTML+="<tr><th scope=\"row\">"+UnicodeString(Z->n)+"</th><td>"+typ+"</td><td>"+F->d.v.getVID(Z->VID)+"</td><td>"+Z->Element->name+"</td><td>"+F->d.v.vrat_objekt(Z->Element->objekt_n)->name.UpperCase()+"</td></tr>";
+				  	////CSV Ë·st
+						data_CSV+=UnicodeString(Z->n)+S+typ+S+F->d.v.getVID(Z->VID)+S+Z->Element->name+S+F->d.v.vrat_objekt(Z->Element->objekt_n)->name.UpperCase()+"\n";
+					}
 					//ukazatelovÈ z·leûitosti
 					Z=Z->dalsi;
 			  }
