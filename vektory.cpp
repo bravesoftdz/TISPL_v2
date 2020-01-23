@@ -15,10 +15,12 @@ Cvektory::Cvektory()
 	hlavicka_POHONY();//vytvoří novou hlavičku pro pohony
 	hlavicka_ZAKAZKY();//vytvoří novou hlavičku pro zakazky
 	hlavicka_VOZIKY();//vytvoří novou hlavičku pro vozíky
+	hlavicka_DATA();//vytvoří novou hlavičku pro DATA
 	//hlavicka_RETEZY();//vytvoří novou hlavičku pro řetězy - nepoužíváno
 	//hlavicka_palce();//vytvoří novou hlavičku pro palce - zatím nepoužíváno
 	HALA.body=NULL;
-	hlavicka_DATA();
+
+  pozice_data=0;//nastavení na defaultní hodnotu
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
@@ -681,6 +683,7 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->Yt=Original->Yt;
 	Kopie->Xp=Original->Xp;
 	Kopie->Yp=Original->Yp;
+	Kopie->orientace=Original->orientace;
 	Kopie->orientace_text=Original->orientace_text;
 	Kopie->sirka_steny=Original->sirka_steny;
 	Kopie->rezim=Original->rezim;
@@ -6767,10 +6770,13 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 	{
 		//vytvoření dalšího obrazu (hlavičky objektu, elementů a pohonů)
 		obraz=vytvor_prazdny_obraz();
+		//kontrola zda je místo v bufferu, případné smazání nejstaršího obrazu
+		if(DATA->predchozi->n>=5)smaz_obraz_DATA(1);
 		//zařazení do spojáku DATA
 		obraz->n=DATA->predchozi->n+1;
 		obraz->predchozi=DATA->predchozi;
 		DATA->predchozi->dalsi=obraz;
+		DATA->predchozi=obraz;
 		obraz->dalsi=NULL;
 	}
 	////Objekty
@@ -6841,101 +6847,141 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 ////---------------------------------------------------------------------------
 void Cvektory::nacti_z_obrazu_DATA(bool storno)
 {
-	F->Timer_backup->Enabled=false;//vypnutí timeru pro backup, nesmí spustit během této metody!!
+	////načtení obrazu z kterého budou data načítány
+	TDATA *obraz=DATA;
+	if(!storno)obraz=vrat_obraz_DATA(pozice_data);
 
-	////pokud je zapnutá editace
-	unsigned long akt_Objekt=0;
-	if(F->akt_Objekt!=NULL && !storno)
+	////načzení dat z obrazu
+	if(obraz!=NULL && (obraz->n==0 && storno || obraz->n!=0 && !storno))//kontrola zda sen nenarazil na poslední obraz
 	{
-		akt_Objekt=F->akt_Objekt->n;
-		F->vypni_editaci();
-  }
-	////mazání dat starého projektu
-	vymaz_seznam_OBJEKTY();
-	hlavicka_OBJEKTY();//nutné po mazání!!!
-	vymaz_seznam_ELEMENTY();
-	hlavicka_ELEMENTY();//nutné po mazání!!!
+  	F->Timer_backup->Enabled=false;//vypnutí timeru pro backup, nesmí spustit během této metody!!
 
-	////načtení Objektů
-	TObjekt *dO=DATA->Objekty->dalsi,*O=NULL;
-	while(dO!=NULL)
-	{
-		//vytvoření nového objektu
-		O=new TObjekt;
-		kopiruj_objekt(dO,O);
-		O->element=NULL;//slouží pro následnou aktualizaci v metodě vloz_element();
-		//vložení nového objektu do spojáku
-		vloz_objekt(O);
-		//ukazatelové záležitosti
-		O=NULL;delete O;
-		dO=dO->dalsi;
+  	////pokud je zapnutá editace
+  	unsigned long akt_Objekt=0;
+  	if(F->akt_Objekt!=NULL && !storno)
+  	{
+  		akt_Objekt=F->akt_Objekt->n;
+  		F->vypni_editaci();
+  	}
+  	////mazání dat starého projektu
+  	vymaz_seznam_OBJEKTY();
+  	hlavicka_OBJEKTY();//nutné po mazání!!!
+  	vymaz_seznam_ELEMENTY();
+  	hlavicka_ELEMENTY();//nutné po mazání!!!
+
+  	////načtení Objektů
+		TObjekt *dO=obraz->Objekty->dalsi,*O=NULL;
+  	while(dO!=NULL)
+  	{
+  		//vytvoření nového objektu
+  		O=new TObjekt;
+  		kopiruj_objekt(dO,O);
+  		O->element=NULL;//slouží pro následnou aktualizaci v metodě vloz_element();
+  		//vložení nového objektu do spojáku
+  		vloz_objekt(O);
+  		//ukazatelové záležitosti
+  		O=NULL;delete O;
+  		dO=dO->dalsi;
+  	}
+  	delete dO;dO=NULL;
+
+  	////načtení Elementů
+		TElement *dE=obraz->Elementy->dalsi,*E=NULL;
+  	while(dE!=NULL)
+  	{
+  		//kopírování atributů
+  		E=new TElement;
+  		kopiruj_element(dE,E);
+  		//vložení do seznamu ELEMENTY
+  		vloz_element(E);
+  		//ukazatelové záležitosi
+  		E=NULL;delete E;
+  		dE=dE->dalsi;
+  	}
+  	delete dE;dE=NULL;
+
+  	////aktualizace pohonů
+		TPohon *p=POHONY->dalsi,*dp=obraz->Pohony->dalsi;
+  	while(p!=NULL && dp!=NULL)
+  	{
+  		//načtení atributů
+  		p->n=dp->n;
+  		p->name=dp->name;
+  		p->rychlost_od=dp->rychlost_od;
+  		p->rychlost_do=dp->rychlost_do;
+  		p->aRD=dp->aRD;
+  		p->roztec=dp->roztec;
+  		p->Rz=dp->Rz;
+  		p->Rx=dp->Rx;
+  		p->retez=dp->retez;
+  		//ukazatelové záležitosti
+  		p=p->dalsi;
+  		dp=dp->dalsi;
+  	}
+  	delete p;p=NULL;
+  	delete dp;dp=NULL;
+
+  	//vymazání nepotřebného obrazu
+  	if(storno)smaz_obraz_DATA(0);
+
+  	//navrácení editace
+		if(akt_Objekt>0 && !storno)
+  	{
+  		F->pom=vrat_objekt(akt_Objekt);
+  		F->NP_input();
+  	}
+
+  	F->Timer_backup->Enabled=true;//obnovení timeru pro backup
 	}
-	delete dO;dO=NULL;
-	
-	////načtení Elementů
-	TElement *dE=DATA->Elementy->dalsi,*E=NULL;  
-	while(dE!=NULL)
+}
+////---------------------------------------------------------------------------
+//vrátí obraz podle jeho n
+Cvektory::TDATA *Cvektory::vrat_obraz_DATA(unsigned long n)
+{
+	TDATA *D=DATA;
+	while(D!=NULL)
 	{
-		//kopírování atributů
-		E=new TElement;
-		kopiruj_element(dE,E);
-		//vložení do seznamu ELEMENTY
-		vloz_element(E);
-		//ukazatelové záležitosi
-		E=NULL;delete E;
-		dE=dE->dalsi;
-	}                      
-	delete dE;dE=NULL;
-
-	////aktualizace pohonů
-	TPohon *p=POHONY->dalsi,*dp=DATA->Pohony->dalsi;
-	while(p!=NULL && dp!=NULL)
-	{
-		//načtení atributů
-		p->n=dp->n; 
-		p->name=dp->name;
-		p->rychlost_od=dp->rychlost_od;
-		p->rychlost_do=dp->rychlost_do;
-		p->aRD=dp->aRD;
-		p->roztec=dp->roztec;
-		p->Rz=dp->Rz;
-		p->Rx=dp->Rx;
-		p->retez=dp->retez;
-		//ukazatelové záležitosti
-		p=p->dalsi;
-		dp=dp->dalsi;
+		if(D->n==n)break;
+		D=D->dalsi;
 	}
-	delete p;p=NULL;
-	delete dp;dp=NULL;  
-
-	//vymazání nepotřebného obrazu
-	smaz_obraz_DATA(0);
-
-	//navrácení editace
-	if(akt_Objekt>0 && !storno)
-	{
-		F->pom=vrat_objekt(akt_Objekt);
-		F->NP_input();
-	}
-
-	F->Timer_backup->Enabled=true;//obnovení timeru pro backup
+	return D;
 }
 ////---------------------------------------------------------------------------
 void Cvektory::smaz_obraz_DATA(unsigned long n)
 {
-//	delete DATA;DATA=NULL;
-//	hlavicka_DATA();
 	////vyhledání obrazu odpovídajícímu n
-	TDATA *obraz=DATA;
+	TDATA *obraz=vrat_obraz_DATA(n);
 
-	//vytovoření prázdného na místo
-	TDATA *prazdny=vytvor_prazdny_obraz();
-	prazdny->n=0;
-	prazdny->dalsi=NULL;
-	prazdny->predchozi=prazdny;
-	DATA=prazdny;
+	//vytovoření prázdného na místo hlavičky
+	if(n==0)
+	{
+		TDATA *prazdny=vytvor_prazdny_obraz();
+		prazdny->n=0;
+		prazdny->dalsi=DATA->dalsi;
+		if(DATA->predchozi->n>0)prazdny->predchozi=DATA->predchozi;
+		else prazdny->predchozi=prazdny;
+		DATA=prazdny;
+		//smazání ukazatele
+		prazdny=NULL;delete prazdny;
+	}
+	if(n==1)//mazání nejstaršího
+	{
+		DATA->dalsi=obraz->dalsi;
+		obraz->dalsi->predchozi=DATA;
+		//aktualizace indexů
+		unsigned long index=1;
+		TDATA *D=DATA->dalsi;
+		while(D!=NULL)
+		{
+			D->n=index;
+			index++;
+			D=D->dalsi;
+		}
+		delete D;D=NULL;
+  }
+
+	////smazání
 	delete obraz;obraz=NULL;
-	prazdny=NULL;delete prazdny;
 }
 ////---------------------------------------------------------------------------
 long Cvektory::vymaz_seznam_DATA()

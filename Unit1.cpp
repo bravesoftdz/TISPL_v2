@@ -259,10 +259,6 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	//příprava na jazyk mutace
 	if(readINI("Nastaveni_app","jazyk")=="1"){language=CS;/* scGPSwitch1->State=scswOn;*/} else { language=EN; /*scGPSwitch1->State=scswOff; */}
 
-  //výhybky
-	d.v.pocet_vyhybek=0;//nastavení při každém spuštění, do budoucna načítání z binárky nebo 0
-	d.v.akt_vetev=true;
-
 	//vytvoření katalogu dopravníků
 	d.v.vytvor_KATALOG();
 
@@ -1862,6 +1858,7 @@ void TForm1::startUP()
 		if(volat_parametry_linky)Button_dopravnik_parametryClick(this);//zavolání formáláře pro prvotní vyplnění či potvzení hodnot parametrů linky, testovací pozice
 		//pokud je v PP raster, ale nelze ho najít vypíše se hláška
 		if(d.v.PP.raster.filename!="" && !FileExists(d.v.PP.raster.filename) && mrYes==MB(ls->Strings[424]+" "+d.v.PP.raster.filename+ls->Strings[425],MB_YESNO))scButton_nacist_podkladClick(this);//"Nepodařilo se načíst podklad filename, zkontrolujte jeho existenci, nebo proveďte nové načtení."
+  	d.v.vytvor_obraz_DATA();//vytvoření prvotního obrazu
 	}
 	else if(PopUPmenu->Showing || PopUPmenu->closing)PopUPmenu->Close();//pokud je spuštěné pop-up menu, tak ho vypne
 	Akce=NIC;
@@ -2865,8 +2862,27 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 			break;
 		}
 	}
+	//Y, musí být až po nastavení funkční klávesy
+	if(Key==89 && funkcni_klavesa==1)
+	{
+		if(d.v.pozice_data!=5 && d.v.pozice_data!=0)//pokud nejsem na konci
+		{
+			d.v.pozice_data+=1;
+			d.v.nacti_z_obrazu_DATA();
+			if(akt_Objekt==NULL)REFRESH();//pouze pokud není aktivní editace
+		}
+	}
 	//Z, musí být až po nastavení funkční klávesy
-	if(Key==90){if(funkcni_klavesa==1)d.v.nacti_z_obrazu_DATA(false);}//REFRESH není třeba
+	if(Key==90 && funkcni_klavesa==1)
+	{
+		if(d.v.pozice_data!=1)//pokud nejsem na konci
+		{
+			if(d.v.pozice_data==0)d.v.pozice_data=d.v.DATA->predchozi->predchozi->n;
+			else d.v.pozice_data-=1;
+			d.v.nacti_z_obrazu_DATA();
+			if(akt_Objekt==NULL)REFRESH();//pouze pokud není aktivní editace
+		}
+	}
 /*ascii
   78 - n
 86 - v
@@ -5316,6 +5332,7 @@ Cvektory::TObjekt *TForm1::add_objekt(int X, int Y)
 		if(d.v.OBJEKTY->dalsi!=NULL && d.v.OBJEKTY->predchozi->n==1)Nahled->Enabled=true;
 		TIP="";//odstranění původní nápovědy pro přidávání objektu
 		REFRESH();
+		d.v.vytvor_obraz_DATA();
 		DuvodUlozit(true);
     e_posledni_pom=NULL;delete e_posledni_pom;
 		e_posledni=NULL;delete e_posledni;
@@ -5593,6 +5610,7 @@ void TForm1::add_element (int X, int Y)
 		//Zde vložit podmínku pro kontrolu jaký element byl vložen, na základě toho znemožnit klik na roboty opačné funkcionality
 		nahled_ulozit(true);//důvod k uložení náhledu
 		refresh_mGrid=true;//nutné pro správné zobrazení mgridů po přidání elementu
+		d.v.vytvor_obraz_DATA();
 	}
 	else
 	{
@@ -5661,7 +5679,6 @@ void TForm1::add_komoru()
 void TForm1::vlozit_predavaci_misto()
 {
 	log(__func__);//logování
-	spojeni_prvni_posledni();//kontrola zda mám dostatečný počet objektů a zda je možno spojit je automaticky
 	UnicodeString name=ls->Strings[271];//"Předávací místo"
 	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
 	while(E!=NULL)
@@ -10260,6 +10277,7 @@ void TForm1::NP()
 void TForm1::NP_input()
 {
 	 log(__func__);//logování
+	 spojeni_prvni_posledni();//kontrola zda mám dostatečný počet objektů a zda je možno spojit je automaticky
 	 d.v.vytvor_obraz_DATA(true);//vytovoření obrazu projektu pro funkci storno
 	 TIP="";
 	 if(!scSplitView_LEFTTOOLBAR->Opened)scSplitView_LEFTTOOLBAR->Opened=true;
@@ -10470,6 +10488,7 @@ void TForm1::NP_input()
 void TForm1::zmena_editovaneho_objektu()
 {
 	log(__func__);//logování
+	spojeni_prvni_posledni();//kontrola zda mám dostatečný počet objektů a zda je možno spojit je automaticky
 	Timer_neaktivity->Enabled=false;//vypnutí timeru pro jistotu
 	Konec->SetFocus();
 	/////////Uložení náhledu
@@ -12152,7 +12171,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	d.v.nacti_z_obrazu_DATA(true);
+	//
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -13207,7 +13226,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		vytvoreni_tab_knihovna();
 		DrawGrid_knihovna->Top=10000;//musí být zobrazena, odchytává stisk kláves
 		on_change_zoom_change_scGPTrackBar();//pozor asi volá refresh, změna pořadí
-	}
+	}  log(__func__,"   konec");
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
