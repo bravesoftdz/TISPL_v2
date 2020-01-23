@@ -30,6 +30,7 @@
 #include "TmGrid.h"
 #include "katalog_dopravniku.h"
 #include "miniform_zpravy.h"
+#include "help.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "RzPanel"
@@ -11615,8 +11616,10 @@ void __fastcall TForm1::Button3Click(TObject *Sender)
 void __fastcall TForm1::Vypicestuktempu1Click(TObject *Sender)
 {
 	log(__func__);//logování
-	UnicodeString text="<b>"+ls->Strings[349]+" </b>",text_1="<br><br><b>"+ls->Strings[350]+" </b>",text_2=ls->Strings[351];//"<b>Verze: </b>","<br><br><b>Umístění: </b>","Informace o aplikaci"
-	MB(-1,-1,text+VERZE+text_1+Application->ExeName+"<br><br><b>Temp : </b>"+get_temp_dir(),text_2);
+ //	UnicodeString text="<b>"+ls->Strings[349]+" </b>",text_1="<br><br><b>"+ls->Strings[350]+" </b>",text_2=ls->Strings[351];//"<b>Verze: </b>","<br><br><b>Umístění: </b>","Informace o aplikaci"
+ //	MB(-1,-1,text+VERZE+text_1+Application->ExeName+"<br><br><b>Temp : </b>"+get_temp_dir(),text_2);
+ Form_help->ShowModal();
+
 }
 //---------------------------------------------------------------------------
 
@@ -13090,7 +13093,7 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //   Sk(d.v.vrat_zpravu(2)->Popisek);
 //	 d.v.vymazat_ZPRAVY();
 
-	F->posun_na_element(1);
+//	F->posun_na_element(1);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)

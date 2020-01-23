@@ -198,6 +198,12 @@
             <DependentOn>grafy.h</DependentOn>
             <BuildOrder>33</BuildOrder>
         </None>
+        <CppCompile Include="help.cpp">
+            <Form>Form_help</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>help.h</DependentOn>
+            <BuildOrder>42</BuildOrder>
+        </CppCompile>
         <None Include="jig.cpp">
             <Exclude>True</Exclude>
             <CreateIndex>17</CreateIndex>
@@ -409,6 +415,7 @@
         <FormResources Include="kalendar.dfm"/>
         <FormResources Include="kabina_schema.dfm"/>
         <FormResources Include="katalog_dopravniku.dfm"/>
+        <FormResources Include="help.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
