@@ -6779,7 +6779,7 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 		DATA->predchozi=obraz;
 		obraz->dalsi=NULL;
 	}
-	else if(DATA->Objekty->predchozi->n==0)obraz=NULL;//pokud se spouští otevírání náhledu znova v průběhu manipulace z daty nepřepisovat hlavičku
+	else if(DATA->Objekty->predchozi->n!=0)obraz=NULL;//pokud se spouští otevírání náhledu znova v průběhu manipulace z daty nepřepisovat hlavičku
 
 	if(obraz!=NULL)
 	{
