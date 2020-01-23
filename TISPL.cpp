@@ -32,6 +32,7 @@ USEFORM("MyMessageBox.cpp", myMessageBox);
 USEFORM("kalendar.cpp", Form_kalendar);
 USEFORM("kabina_schema.cpp", Form_objekt_nahled);
 USEFORM("katalog_dopravniku.cpp", Form_katalog);
+USEFORM("help.cpp", Form_help);
 //---------------------------------------------------------------------------
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {
@@ -56,6 +57,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
      Application->CreateForm(__classid(TForm_zpravy), &Form_zpravy);
      Application->CreateForm(__classid(TForm_color_dialog), &Form_color_dialog);
      Application->CreateForm(__classid(TForm_katalog), &Form_katalog);
+     Application->CreateForm(__classid(TForm_help), &Form_help);
      Application->ShowMainForm=false;//zabránìní zobrazení hlavního formu
 		Application->Run();
 	}
