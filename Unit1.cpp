@@ -58,6 +58,7 @@
 #pragma link "rHintWindow"
 #pragma link "rHTMLLabel"
 #pragma link "scImageCollection"
+#pragma link "perfgrap"
 #pragma resource "*.dfm"
 TForm1 *Form1;
 TForm1 *F;//pouze zkrácený zapis

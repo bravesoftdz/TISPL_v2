@@ -100,6 +100,7 @@
 #include "UnitX.h"
 #include <Vcl.Imaging.pngimage.hpp>
 #include "scImageCollection.hpp"
+#include "perfgrap.h"
 //#include "vektory.h" //už vkládám pøes vykresli.h
 //#include "knihovna_objektu.h" //už vkládám pøes vykresli.h resp. vektory.h
 
@@ -603,7 +604,6 @@ private:
 	void vse_odstranit();
 	UnicodeString get_computer_name();
 	UnicodeString get_user_name();
-	UnicodeString get_temp_dir();
 	UnicodeString get_Windows_dir();
 	int get_DPI();
 	void redesign_element();
@@ -832,6 +832,7 @@ public:		// User declarations
 	void aktualizace_RT();//projde všechny elementy v aktuálnì editovaném objektu a upravím jim RT
 	void posun_na_element(unsigned long n_zpravy);//podle zprávy provede posun na daný elment
 	void smaz_kurzor();
+  UnicodeString get_temp_dir();
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
