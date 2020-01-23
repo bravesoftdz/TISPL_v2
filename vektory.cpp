@@ -6779,70 +6779,75 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 		DATA->predchozi=obraz;
 		obraz->dalsi=NULL;
 	}
-	////Objekty
-	TObjekt *O=OBJEKTY->dalsi,*o_kop=NULL;
-	while(O!=NULL)
-	{
-		//vytvoření kopie
-		o_kop=new TObjekt;
-		kopiruj_objekt(O,o_kop);
-		//ukazatelové propojení kopie s obraz->Objekty
-		if(obraz->Objekty->dalsi==NULL)obraz->Objekty->dalsi=o_kop;
-		else obraz->Objekty->predchozi->dalsi=o_kop;
-		o_kop->predchozi=obraz->Objekty->predchozi;
-		obraz->Objekty->predchozi=o_kop;
-		o_kop->dalsi=NULL;
-		//ukazatelové záleřitosti
-		o_kop=NULL;delete o_kop;
-		O=O->dalsi;
-	}
-	delete O;O=NULL;
+	else if(DATA->Objekty->predchozi->n==0)obraz=NULL;//pokud se spouští otevírání náhledu znova v průběhu manipulace z daty nepřepisovat hlavičku
 
-	////Elementy
-	TElement *E=ELEMENTY->dalsi,*e_kop=NULL;
-	while(E!=NULL)
+	if(obraz!=NULL)
 	{
-		//vytvoření kopie
-		e_kop=new TElement;
-		kopiruj_element(E,e_kop);
-		//ukazatelové propojení kopie s obraz->Elementy
-		if(obraz->Elementy->dalsi==NULL)obraz->Elementy->dalsi=e_kop;
-		else obraz->Elementy->predchozi->dalsi=e_kop;
-		e_kop->predchozi=obraz->Elementy->predchozi;
-		obraz->Elementy->predchozi=e_kop;
-		e_kop->dalsi=NULL;
-		//ukazatelové záležitosti
-		e_kop=NULL;delete e_kop;
-		E=E->dalsi;
-	}
-	delete E;E=NULL;
+  	////Objekty
+  	TObjekt *O=OBJEKTY->dalsi,*o_kop=NULL;
+  	while(O!=NULL)
+  	{
+  		//vytvoření kopie
+  		o_kop=new TObjekt;
+  		kopiruj_objekt(O,o_kop);
+  		//ukazatelové propojení kopie s obraz->Objekty
+  		if(obraz->Objekty->dalsi==NULL)obraz->Objekty->dalsi=o_kop;
+  		else obraz->Objekty->predchozi->dalsi=o_kop;
+  		o_kop->predchozi=obraz->Objekty->predchozi;
+  		obraz->Objekty->predchozi=o_kop;
+  		o_kop->dalsi=NULL;
+  		//ukazatelové záleřitosti
+  		o_kop=NULL;delete o_kop;
+  		O=O->dalsi;
+  	}
+  	delete O;O=NULL;
 
-	////Pohony, pouze záloha parametrů v editai nelze odstranit nebo přidat pohon
-	TPohon *p=POHONY->dalsi,*p_kop=NULL;
-	while(p!=NULL)
-	{
-    //vytvoření kopie
-		p_kop=new TPohon;
-		p_kop->n=p->n; 
-		p_kop->name=p->name;
-		p_kop->rychlost_od=p->rychlost_od;
-		p_kop->rychlost_do=p->rychlost_do;
-		p_kop->aRD=p->aRD;
-		p_kop->roztec=p->roztec;
-		p_kop->Rz=p->Rz;
-		p_kop->Rx=p->Rx;
-		p_kop->retez=p->retez;
-		//ukazatelové propojení kopie s obraz->Pohony
-		if(obraz->Pohony->dalsi==NULL)obraz->Pohony->dalsi=p_kop;
-		else obraz->Pohony->predchozi->dalsi=p_kop;
-		p_kop->predchozi=obraz->Pohony->predchozi;
-		obraz->Pohony->predchozi=p_kop;
-		p_kop->dalsi=NULL;
-		//ukazatelové záležitosti
-		p_kop=NULL;delete p_kop;
-		p=p->dalsi;
+  	////Elementy
+  	TElement *E=ELEMENTY->dalsi,*e_kop=NULL;
+  	while(E!=NULL)
+  	{
+  		//vytvoření kopie
+  		e_kop=new TElement;
+  		kopiruj_element(E,e_kop);
+  		//ukazatelové propojení kopie s obraz->Elementy
+  		if(obraz->Elementy->dalsi==NULL)obraz->Elementy->dalsi=e_kop;
+  		else obraz->Elementy->predchozi->dalsi=e_kop;
+  		e_kop->predchozi=obraz->Elementy->predchozi;
+  		obraz->Elementy->predchozi=e_kop;
+  		e_kop->dalsi=NULL;
+  		//ukazatelové záležitosti
+  		e_kop=NULL;delete e_kop;
+  		E=E->dalsi;
+  	}
+  	delete E;E=NULL;
+
+  	////Pohony, pouze záloha parametrů v editai nelze odstranit nebo přidat pohon
+  	TPohon *p=POHONY->dalsi,*p_kop=NULL;
+  	while(p!=NULL)
+  	{
+      //vytvoření kopie
+  		p_kop=new TPohon;
+  		p_kop->n=p->n;
+  		p_kop->name=p->name;
+  		p_kop->rychlost_od=p->rychlost_od;
+  		p_kop->rychlost_do=p->rychlost_do;
+  		p_kop->aRD=p->aRD;
+  		p_kop->roztec=p->roztec;
+  		p_kop->Rz=p->Rz;
+  		p_kop->Rx=p->Rx;
+  		p_kop->retez=p->retez;
+  		//ukazatelové propojení kopie s obraz->Pohony
+  		if(obraz->Pohony->dalsi==NULL)obraz->Pohony->dalsi=p_kop;
+  		else obraz->Pohony->predchozi->dalsi=p_kop;
+  		p_kop->predchozi=obraz->Pohony->predchozi;
+  		obraz->Pohony->predchozi=p_kop;
+  		p_kop->dalsi=NULL;
+  		//ukazatelové záležitosti
+  		p_kop=NULL;delete p_kop;
+  		p=p->dalsi;
+  	}
+  	delete p;p=NULL;
 	}
-	delete p;p=NULL;
 }
 ////---------------------------------------------------------------------------
 void Cvektory::nacti_z_obrazu_DATA(bool storno)
@@ -6862,30 +6867,30 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
   	{
   		akt_Objekt=F->akt_Objekt->n;
   		F->vypni_editaci();
-  	}
-  	////mazání dat starého projektu
-  	vymaz_seznam_OBJEKTY();
+		}
+		////mazání dat starého projektu
+		vymaz_seznam_OBJEKTY();
   	hlavicka_OBJEKTY();//nutné po mazání!!!
   	vymaz_seznam_ELEMENTY();
   	hlavicka_ELEMENTY();//nutné po mazání!!!
 
-  	////načtení Objektů
+		////načtení Objektů
 		TObjekt *dO=obraz->Objekty->dalsi,*O=NULL;
   	while(dO!=NULL)
-  	{
+		{
   		//vytvoření nového objektu
-  		O=new TObjekt;
-  		kopiruj_objekt(dO,O);
+			O=new TObjekt;
+			kopiruj_objekt(dO,O);
   		O->element=NULL;//slouží pro následnou aktualizaci v metodě vloz_element();
   		//vložení nového objektu do spojáku
-  		vloz_objekt(O);
+			vloz_objekt(O);
   		//ukazatelové záležitosti
   		O=NULL;delete O;
   		dO=dO->dalsi;
   	}
   	delete dO;dO=NULL;
 
-  	////načtení Elementů
+		////načtení Elementů
 		TElement *dE=obraz->Elementy->dalsi,*E=NULL;
   	while(dE!=NULL)
   	{
@@ -6898,9 +6903,9 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
   		E=NULL;delete E;
   		dE=dE->dalsi;
   	}
-  	delete dE;dE=NULL;
+		delete dE;dE=NULL;
 
-  	////aktualizace pohonů
+		////aktualizace pohonů
 		TPohon *p=POHONY->dalsi,*dp=obraz->Pohony->dalsi;
   	while(p!=NULL && dp!=NULL)
   	{
