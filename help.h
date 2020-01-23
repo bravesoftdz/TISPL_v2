@@ -44,7 +44,7 @@ __published:	// IDE-managed Components
   TscGPToolPagerPage *scGPToolPagerPage_PL;
   TscStyledForm *scStyledForm1;
   TscStyleManager *scStyleManager1;
-  TscLabel *scLabel3;
+  TscLabel *scLabel_PL;
   TscGPToolPagerPage *scGPToolPagerPage4;
   TscLabel *scLabel4;
   TscGPToolPagerPage *scGPToolPagerPage_about;
