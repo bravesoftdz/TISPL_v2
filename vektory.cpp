@@ -6843,6 +6843,13 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 {
 	F->Timer_backup->Enabled=false;//vypnutí timeru pro backup, nesmí spustit během této metody!!
 
+	////pokud je zapnutá editace
+	unsigned long akt_Objekt=0;
+	if(F->akt_Objekt!=NULL && !storno)
+	{
+		akt_Objekt=F->akt_Objekt->n;
+		F->vypni_editaci();
+  }
 	////mazání dat starého projektu
 	vymaz_seznam_OBJEKTY();
 	hlavicka_OBJEKTY();//nutné po mazání!!!
@@ -6868,7 +6875,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 	////načtení Elementů
 	TElement *dE=DATA->Elementy->dalsi,*E=NULL;  
 	while(dE!=NULL)
-	{	
+	{
 		//kopírování atributů
 		E=new TElement;
 		kopiruj_element(dE,E);
@@ -6903,6 +6910,13 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 
 	//vymazání nepotřebného obrazu
 	smaz_obraz_DATA(0);
+
+	//navrácení editace
+	if(akt_Objekt>0 && !storno)
+	{
+		F->pom=vrat_objekt(akt_Objekt);
+		F->NP_input();
+	}
 
 	F->Timer_backup->Enabled=true;//obnovení timeru pro backup
 }

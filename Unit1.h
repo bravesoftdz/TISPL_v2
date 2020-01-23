@@ -774,6 +774,7 @@ public:		// User declarations
 	short smazat;
 
 	//metody
+	void vypni_editaci();
 	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click
 	void NPin();//podpùrná metoda NP(), øeší vstupní èást dat, vyseparováno, z dùvodu toho, že z GAPO aktulizauji pøípadnì spuštìné PO a nemohu volat NP, protože to v sobì obsahu ShowModal - vedlo k chybì
   void NP_input(); // volá zobrazení PO - nahrazuje NP a NPin

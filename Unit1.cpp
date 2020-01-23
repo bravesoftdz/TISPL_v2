@@ -2863,6 +2863,8 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 			break;
 		}
 	}
+	//Z, musí být až po nastavení funkční klávesy
+	if(Key==90){if(funkcni_klavesa==1)d.v.nacti_z_obrazu_DATA(false);}//REFRESH není třeba
 /*ascii
   78 - n
 86 - v
@@ -10490,46 +10492,7 @@ void TForm1::zmena_editovaneho_objektu()
 	////////Můžu pokračovat?
 	if(prepnout)
 	{
-    /////////Vrácení knihoven a jejich popisků na default pozice
-		if(pom->id==3 ||pom->id>5 && pom->id!=9 && (pom_vyhybka->id>=0 && pom_vyhybka->id<=5 || pom_vyhybka->id==3 || pom_vyhybka->id==9))//pokud jdu z objektu, který nemá roboty do objektu, který je má
-		{
-			scListGroupPanel_hlavickaOtoce->Top=314;
-			scListGroupPanel_hlavickaOstatni->Top=404;
-			scListGroupPanel_geometrie->Top=494;
-			scListGroupPanel_poznamky->Top=584;
-			scGPLabel_otoce->Top=314;
-			scGPLabel_stop->Top=403;
-			scGPLabel_geometrie->Top=493;
-			scGPLabel_poznamky->Top=583;
-		}
-		/////////Uzavření starého náhledu
-		if(MOD==EDITACE&&index_kurzoru==9999||index_kurzoru==100)smaz_edit(false);//smaže edit a neprovede refresh
-		if(editace_textu)smaz_kurzor();//také volá Refresh//smaz_kurzor se zavolá, pouze pokud je to třeba odstraňuje zbytečný problik, dodělal MaKr
-		MOD=SCHEMA;//nutné před zoom, ale za smaz kurzor
-		//smazání případných komor
-  	//d.v.vymaz_komory(akt_Objekt);
-  	//smazání elementů - musí být napočátku, aby nebyl problik
-		//d.v.vymaz_elementy(akt_Objekt,true);   //&&akt_Objekt->element!=NULL)
-		//mazání mGridů
-		Cvektory::TElement *E=akt_Objekt->element;
-		while(E!=NULL && E->objekt_n==akt_Objekt->n)
-		{
-			E->mGrid->Delete();
-			E->mGrid=NULL;
-			E=E->dalsi;
-		}
-		E=NULL;delete E;
-  	if(!mazani&&scGPButton_ulozit->Enabled)d.v.uprav_popisky_elementu(NULL);//volání přejmenování elementů, pouze v případě kdy je něco v kabině a bylo stisknuto pouze storno, při ulož je stisk strona volán taky
-  	pom=NULL;//pom->pohon=NULL;delete pom->pohon;pom=NULL; toto nelze, odpřiřadilo by to pohon i na ostrém
-  	akt_Objekt=NULL;delete akt_Objekt;
-  	PmG->Delete(); PmG=NULL; delete PmG;
-  	//mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
-  	pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp;posledni_editovany_element=NULL;delete posledni_editovany_element;JID=-1;Akce=NIC;
-  	//v případě animace vypnutí a nastavení do výchozího stavu
-  	Timer_animace->Enabled=false;
-  	ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
-  	ButtonPLAY->Hint="spustit animaci";
-  	zobrazit_meritko=scGPSwitch_meritko->State;//navrácení do původního stavu
+    vypni_editaci();
     //storno funkcionalita
 		unsigned long objekt_n=pom_vyhybka->n;//uchovávání, pokud bude stisknuto storno dojde ke smazání objektu
 		if(storno)d.v.nacti_z_obrazu_DATA(true);//až po uzavření staré editace
@@ -10655,15 +10618,54 @@ void TForm1::zmena_editovaneho_objektu()
 	}
 }
 //---------------------------------------------------------------------------
+void TForm1::vypni_editaci()
+{
+  /////////Vrácení knihoven a jejich popisků na default pozice
+	if(pom->id==3 ||pom->id>5 && pom->id!=9 && (pom_vyhybka->id>=0 && pom_vyhybka->id<=5 || pom_vyhybka->id==3 || pom_vyhybka->id==9))//pokud jdu z objektu, který nemá roboty do objektu, který je má
+	{
+		scListGroupPanel_hlavickaOtoce->Top=314;
+		scListGroupPanel_hlavickaOstatni->Top=404;
+		scListGroupPanel_geometrie->Top=494;
+		scListGroupPanel_poznamky->Top=584;
+		scGPLabel_otoce->Top=314;
+		scGPLabel_stop->Top=403;
+		scGPLabel_geometrie->Top=493;
+		scGPLabel_poznamky->Top=583;
+	}
+	/////////Uzavření starého náhledu
+	if(MOD==EDITACE&&index_kurzoru==9999||index_kurzoru==100)smaz_edit(false);//smaže edit a neprovede refresh
+	if(editace_textu)smaz_kurzor();//také volá Refresh//smaz_kurzor se zavolá, pouze pokud je to třeba odstraňuje zbytečný problik, dodělal MaKr
+	MOD=SCHEMA;//nutné před zoom, ale za smaz kurzor
+	//mazání mGridů
+	Cvektory::TElement *E=akt_Objekt->element;
+	while(E!=NULL && E->objekt_n==akt_Objekt->n)
+	{
+		E->mGrid->Delete();
+		E->mGrid=NULL;
+		E=E->dalsi;
+	}
+	E=NULL;delete E;
+	if(!mazani&&scGPButton_ulozit->Enabled)d.v.uprav_popisky_elementu(NULL);//volání přejmenování elementů, pouze v případě kdy je něco v kabině a bylo stisknuto pouze storno, při ulož je stisk strona volán taky
+  pom=NULL;//pom->pohon=NULL;delete pom->pohon;pom=NULL; toto nelze, odpřiřadilo by to pohon i na ostrém
+  akt_Objekt=NULL;delete akt_Objekt;
+  PmG->Delete(); PmG=NULL; delete PmG;
+  //mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
+  pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp;posledni_editovany_element=NULL;delete posledni_editovany_element;JID=-1;Akce=NIC;
+	//v případě animace vypnutí a nastavení do výchozího stavu
+	Timer_animace->Enabled=false;
+	ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
+	ButtonPLAY->Hint="spustit animaci";
+	zobrazit_meritko=scGPSwitch_meritko->State;//navrácení do původního stavu
+}
 //podle zprávy provede posun na daný elment
 void TForm1::posun_na_element(unsigned long n_zpravy)
 {
-  log(__func__);//logování
+	log(__func__);//logování
 	//////získání elementu na který má být proveden posun
 	Cvektory::TZprava *Z=d.v.vrat_zpravu(n_zpravy);
 	if(Z!=NULL && Z->Element!=NULL)
 	{
-    //////deklarace + nastavení vykreslení zpráv
+		//////deklarace + nastavení vykreslení zpráv
 		Cvektory::TElement *E=Z->Element;
 		if(Z->n!=(unsigned)d.zobrazit_celou_zpravu)d.zobrazit_celou_zpravu=Z->n;//zobrazení celé zprávy, před refresh
 
@@ -12146,8 +12148,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	spojeni_prvni_posledni();
-	REFRESH();
+	d.v.nacti_z_obrazu_DATA(true);
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
