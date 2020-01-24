@@ -100,7 +100,6 @@
 #include "UnitX.h"
 #include <Vcl.Imaging.pngimage.hpp>
 #include "scImageCollection.hpp"
-#include "perfgrap.h"
 //#include "vektory.h" //už vkládám pøes vykresli.h
 //#include "knihovna_objektu.h" //už vkládám pøes vykresli.h resp. vektory.h
 
@@ -772,6 +771,7 @@ public:		// User declarations
   int zpravy_backup_width;
 	int zpravy_backup_height;
 	short smazat;
+	double predchozi_orientace;//uchováváa rotaci objektu pøed posunem
 
 	//metody
 	void vypni_editaci();

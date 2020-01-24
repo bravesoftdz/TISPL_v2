@@ -58,7 +58,6 @@
 #pragma link "rHintWindow"
 #pragma link "rHTMLLabel"
 #pragma link "scImageCollection"
-#pragma link "perfgrap"
 #pragma resource "*.dfm"
 TForm1 *Form1;
 TForm1 *F;//pouze zkrácený zapis
@@ -3239,7 +3238,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					{
 						if(MOD==SCHEMA)//OBJEKT
 						{
-							if(JID==3&&!d.v.PP.zamek_layoutu){Akce=MOVE;kurzor(posun_l);minule_souradnice_kurzoru=TPoint(X,Y);predchozi_souradnice_kurzoru=m.L2P(pom->element->geo.X1,pom->element->geo.Y1);}
+							if(JID==3&&!d.v.PP.zamek_layoutu){Akce=MOVE;kurzor(posun_l);minule_souradnice_kurzoru=TPoint(X,Y);predchozi_souradnice_kurzoru=m.L2P(pom->element->geo.X1,pom->element->geo.Y1);predchozi_orientace=pom->orientace;}
 							else if(JID==-1&&Akce==NIC){Akce=PAN;pan_non_locked=true;}//přímo dovolení PAN pokud se neposová objekt = Rosťova prosba
 							if(JID==-102){if(d.zprava_highlight!=d.zobrazit_celou_zpravu){d.zobrazit_celou_zpravu=d.zprava_highlight;kurzor(close);}else {d.zobrazit_celou_zpravu=0;kurzor(info);}REFRESH(false);}//rozbalení nebo skrytí zpráv
 							if(JID==-2){if(scSplitView_LEFTTOOLBAR->Visible && scSplitView_LEFTTOOLBAR->Opened)DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_bod_temp=pom_bod;if(pom_bod_temp->n!=1)editovany_text=m.round2double(m.delka(pom_bod_temp->predchozi->X,pom_bod_temp->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);else editovany_text=m.round2double(m.delka(d.v.HALA.body->predchozi->X,d.v.HALA.body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);editovany_text=outDK(ms.MyToDouble(editovany_text));}//převod na mm
@@ -4066,7 +4065,10 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			{
 				//pokud byl objekt posunut a obsahuje už pohon a geometrii, zobrazen dotaz zda souhlasím z posunem
 				if(akt_Objekt==NULL && pom->element->pohon!=NULL && predchozi_souradnice_kurzoru.x!=m.L2Px(pom->element->geo.X1) && predchozi_souradnice_kurzoru.y!=m.L2Px(pom->element->geo.Y1) && mrNo==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,ls->Strings[416],"",MB_YESNO,true,false))//"Objekt byl přesunut, souhlasíte s aktuálním umístěním?"
-				d.v.posun_objekt(m.P2Lx(predchozi_souradnice_kurzoru.x)-pom->element->geo.X1,m.P2Ly(predchozi_souradnice_kurzoru.y)-pom->element->geo.Y1,pom,false,false);
+				{
+					d.v.posun_objekt(m.P2Lx(predchozi_souradnice_kurzoru.x)-pom->element->geo.X1,m.P2Ly(predchozi_souradnice_kurzoru.y)-pom->element->geo.Y1,pom,false,false);
+					if(pom->orientace!=predchozi_orientace)d.v.rotuj_objekt(pom,pom->orientace-predchozi_orientace);
+				}
 				duvod_validovat=1;//pozor vyvolává na závěr metody ještě REFRESH(); ale docela byl přínosný
 				Akce=NIC;kurzor(standard);if(akt_Objekt!=NULL){scGPImage_zamek_posunu->ClipFrameFillColor=clWhite;scGPImage_zamek_posunu->ImageIndex=28;}//zamčen posun
 			}break;//posun objektu
@@ -6651,20 +6653,23 @@ short TForm1::prekryti_LO(Cvektory::TElement *E)
 			else if(prekryti)ret=1;
 		}
 		//kontrola konflikru s prvním a posledním bodem objektu, pokud už nebylo odhaleno překrytí
-		if(!prekryti)
+		if(!prekryti && (E->n==1 || E->dalsi->n==d.v.ELEMENTY->predchozi->n))
 		{
-			bool dalsi=false,predchozi=false;
-			Cvektory::TElement *e_posledni=d.v.vrat_posledni_element_objektu(akt_Objekt);
-			if(akt_Objekt->element->geo.orientace==E->geo.orientace)dalsi=true;
-			if(e_posledni->geo.orientace==E->geo.orientace)predchozi=true;
-			switch((int)E->geo.orientace)
+			double e_LO=0,e2_LO=0;
+			if(E->eID==1 || E->eID==3 || E->eID==7 || E->eID==9 || E->eID==11 || E->eID==13 || E->eID==15 || E->eID==17 || E->eID==101 || E->eID==103 || E->eID==105 || E->eID==107)
 			{
-				case 0:if(dalsi && el1.bottom>m.L2Py(akt_Objekt->element->geo.Y1) || predchozi && m.L2Py(e_posledni->geo.Y4)>el1.top)prekryti=true;break;
-				case 90:if(dalsi && el1.left<m.L2Px(akt_Objekt->element->geo.X1) || predchozi && m.L2Px(e_posledni->geo.X4)<el1.right)prekryti=true;break;
-				case 180:if(dalsi && el1.top<m.L2Py(akt_Objekt->element->geo.Y1) || predchozi && m.L2Py(e_posledni->geo.Y4)<el1.bottom)prekryti=true;break;
-				case 270:if(dalsi && el1.right>m.L2Px(akt_Objekt->element->geo.X1) || predchozi && m.L2Px(e_posledni->geo.X4)>el1.left)prekryti=true;break;
+				if(E->data.LO2>0)e_LO=E->data.LO1+(E->OTOC_delka)/2.0+E->data.LO_pozice;
+				else e_LO=(E->data.LO1+E->data.LO2)/2.0+E->data.LO_pozice;
 			}
-			e_posledni=NULL;delete e_posledni;
+			if(E->n+1==d.v.ELEMENTY->predchozi->n)
+			{
+				if(E->dalsi->eID==1 || E->dalsi->eID==3 || E->dalsi->eID==7 || E->dalsi->eID==9 || E->dalsi->eID==11 || E->dalsi->eID==13 || E->dalsi->eID==15 || E->dalsi->eID==17 || E->dalsi->eID==101 || E->dalsi->eID==103 || E->dalsi->eID==105 || E->dalsi->eID==107)
+				{
+					if(E->dalsi->data.LO2>0)e2_LO=E->dalsi->data.LO1+(E->dalsi->OTOC_delka)/2.0+E->dalsi->data.LO_pozice;
+					else e2_LO=(E->dalsi->data.LO1+E->dalsi->data.LO2)/2.0+E->dalsi->data.LO_pozice;
+				}
+			}
+			if(e_LO>E->geo.delka || e_LO+e2_LO>E->dalsi->geo.delka)prekryti=true;
 			if(prekryti && (E->eID==5 || E->eID==6))ret=2;
 			if(prekryti && ret==0)ret=1;
 		}
@@ -6807,7 +6812,7 @@ TPoint TForm1::bod_vlozeni_elementu(double kontr_x,double kontr_y)
 	else {x=akt_souradnice_kurzoru.x;y=akt_souradnice_kurzoru.y;}
   //průchod elementů objektu
 	Cvektory::TElement *E=akt_Objekt->element;
-	while(E!=NULL)
+	while(E!=NULL && E->objekt_n==akt_Objekt->n)
 	{
 		if(E->geo.typ==0 && (E->geo.orientace==m.Rt90(E->geo.orientace) || E->geo.orientace==360))//jen pro přímky 0,90,180,270°
 		{
@@ -12171,7 +12176,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	//
+	Memo(d.v.DATA->n);  Memo(d.v.DATA->Objekty->predchozi->n);
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -13160,7 +13165,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		PmG->Delete();PmG=NULL;delete PmG;
     //mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
 		pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp;posledni_editovany_element=NULL;delete posledni_editovany_element;JID=-1;Akce=NIC;
-    FormX->posledni_E=NULL;//nutné!! slouží k ukládání posledního editovaného elementu (validace, atd.)
+		FormX->posledni_E=NULL;//nutné!! slouží k ukládání posledního editovaného elementu (validace, atd.)
 		if(d.v.DATA->Objekty->dalsi!=NULL)d.v.nacti_z_obrazu_DATA(true);//načtení projektu před editací, pokud nedošlo k uložení, pokud ano byl obraz smazán
 		//vlozit_predavaci_misto();//zkontroluje, zda nemusí být přidáno nebo odstraněno předávací místo
 		duvod_validovat=2;//vyvolá validaci, zajistí aktualizaci zpráv a výpisu v miniformu zpráv, NECHAT AŽ ZA FUNKČNÍMI ZÁLEŽITOSTMI
@@ -13226,7 +13231,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		vytvoreni_tab_knihovna();
 		DrawGrid_knihovna->Top=10000;//musí být zobrazena, odchytává stisk kláves
 		on_change_zoom_change_scGPTrackBar();//pozor asi volá refresh, změna pořadí
-	}  log(__func__,"   konec");
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)

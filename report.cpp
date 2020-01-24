@@ -253,20 +253,29 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 			////////Objekty
       ////HTML èást
 			data_HTML+="<h4>Pøehled objektù a jejich parametrù</h4>";
-			data_HTML+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">n</th><th scope=\"col\">ID</th><th scope=\"col\">Název</th></tr></thead>";
+			data_HTML+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Pohon</th><th scope=\"col\">Délka pohonu [m]</th></tr></thead>";
 			////CSV èást
 			data_CSV+="Pøehled elementù a jejich parametrù\n";
-			data_CSV+="n"+S+"ID"+S+"Název"+S+"Pohon\n";
+			data_CSV+="ID"+S+"Název"+S+"Pohon"+S+"Délka pohonu [m]\n";
 			Cvektory::TObjekt *O=F->d.v.OBJEKTY->dalsi;
 			while(O!=NULL)
 			{
 				////naètení dat
 				UnicodeString pohon="-";
 				if(O->pohon)pohon=O->pohon->name;
+				double delka=O->element->geo.delka;
+				Cvektory::TElement *E=O->element->dalsi;
+				while(E!=NULL && E->objekt_n==O->n)
+				{
+          delka+=E->geo.delka;
+					E=E->dalsi;
+				}
+				E=NULL;delete E;
+				delka=F->m.round2double(delka,3);
 				////HTML èást
-				data_HTML+="<tr><th scope=\"row\">"+UnicodeString(O->n)+"</th><td>"+O->id+"</td><td>"+O->name.UpperCase()+"</td><td>"+pohon+"</td></tr>";
-	   		////CSV èást
-				data_CSV+=UnicodeString(O->n)+S+O->id+S+O->name.UpperCase()+S+pohon+"\n";
+				data_HTML+="<tr><th scope=\"row\">"+UnicodeString(O->n)+"</th><td>"+O->name.UpperCase()+"</td><td>"+pohon+"</td><td>"+delka+"</td></tr>";
+				////CSV èást
+				data_CSV+=UnicodeString(O->n)+S+O->id+S+O->name.UpperCase()+S+pohon+delka+"\n";
 				////ukazatelové záležitosti
 				O=O->dalsi;
 			}
@@ -282,16 +291,16 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
         ////////Elementy
 				//data_HTML+="<h4>Architekt: Pøehled objektù a jejich parametrù</h4></br>";
 				////HTML èást
-				data_HTML+="<h4>Pøehled elementù a jejich parametrù</h4>";
-				data_HTML+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">eID</th><th scope=\"col\">Název</th><th scope=\"col\">Objekt</th><th scope=\"col\">Pohon</th><th scope=\"col\">PT1 [s]</th><th scope=\"col\">LO1 [m]</th><th scope=\"col\">PT2 [s]</th><th scope=\"col\">LO2 [m]</th><th scope=\"col\">LO vyosení [m]</th><th scope=\"col\">PT otoè [s]</th><th scope=\"col\">Delka otoè [m]</th><th scope=\"col\">Zóna pøed [m]</th><th scope=\"col\">Zóna za [m]</th><th scope=\"col\">RT [s]</th><th scope=\"col\">WT palec [s]</th><th scope=\"col\">Èekání [s]</th><th scope=\"col\">Sparovaný</th><th scope=\"col\">Potencionální<br> poèet pozic</th><th scope=\"col\">Nastavený<br> poèet pozic</th></tr></thead>";
+				data_HTML+="<h4>Pøehled prvkù a jejich parametrù</h4>";
+				data_HTML+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Objekt</th><th scope=\"col\">Pohon</th><th scope=\"col\">PT1 [s]</th><th scope=\"col\">LO1 [m]</th><th scope=\"col\">PT2 [s]</th><th scope=\"col\">LO2 [m]</th><th scope=\"col\">LO vyosení [m]</th><th scope=\"col\">PT otoè [s]</th><th scope=\"col\">Delka otoè [m]</th><th scope=\"col\">Zóna pøed [m]</th><th scope=\"col\">Zóna za [m]</th><th scope=\"col\">RT [s]</th><th scope=\"col\">WT palec [s]</th><th scope=\"col\">Èekání [s]</th><th scope=\"col\">Sparovaný</th><th scope=\"col\">Potencionální<br> poèet pozic</th><th scope=\"col\">Nastavený<br> poèet pozic</th></tr></thead>";
 				////CSV èást
-				data_CSV+="Pøehled elementù a jejich parametrù\n";
-				data_CSV+="eID"+S+"Nazev"+S+"Objekt"+S+"Pohon"+S+"PT1 [s]"+S+"LO1 [m]"+S+"PT2 [s]"+S+"LO2 [m]"+S+"LO vyosení [m]"+S+"PT otoè [s]"+S+"Delka otoè [m]"+S+"Zóna pøed [m]"+S+"Zóna za [m]"+S+"RT [s]"+S+"WT palec [s]"+S+"Èekání [s]"+S+"Spárovaný"+S+"Potencionální poèet pozic"+S+"Nastavený poèet pozic\n";
+				data_CSV+="Pøehled prvkù a jejich parametrù\n";
+				data_CSV+="ID"+S+"Nazev"+S+"Objekt"+S+"Pohon"+S+"PT1 [s]"+S+"LO1 [m]"+S+"PT2 [s]"+S+"LO2 [m]"+S+"LO vyosení [m]"+S+"PT otoè [s]"+S+"Delka otoè [m]"+S+"Zóna pøed [m]"+S+"Zóna za [m]"+S+"RT [s]"+S+"WT palec [s]"+S+"Èekání [s]"+S+"Spárovaný"+S+"Potencionální poèet pozic"+S+"Nastavený poèet pozic\n";
 				Cvektory::TElement *E=F->d.v.ELEMENTY->dalsi;
+				unsigned long n=1;
       	while(E!=NULL)
       	{
-          ////naètení dat
-					UnicodeString eID=E->eID;
+					////naètení dat
 					UnicodeString name=E->name;
       		UnicodeString PTotoc=F->m.round2double(E->PTotoc,3);
       		UnicodeString OTOC_delka=F->m.round2double(E->OTOC_delka,3);
@@ -300,7 +309,8 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
       		UnicodeString WT=F->m.round2double(E->WT,3);
       		UnicodeString PD=F->m.round2double(E->data.PD,3);
       		UnicodeString orientace_jig_pred=E->data.orientace_jig_pred;
-      		UnicodeString LO1=F->m.round2double(E->data.LO1,3);
+					UnicodeString LO1=F->m.round2double(E->data.LO1,3);
+					if(!(F->d.v.vrat_druh_elementu(E)==1 && E->eID!=5))LO1="-";
       		UnicodeString LO2=F->m.round2double(E->data.LO2,3);
       		UnicodeString LO_pozice=F->m.round2double(E->data.LO_pozice,3);
       		UnicodeString PT1=F->m.round2double(E->data.PT1,3);
@@ -322,17 +332,27 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
       		if(LO1=="0")LO1="-";if(LO2=="0")LO2="-";if(OTOC_delka=="0")OTOC_delka="-";if(LO_pozice=="0")LO_pozice="-";
 					if(zona_pred=="0")zona_pred="-";if(zona_za=="0")zona_za="-";if(RT_x=="0")RT_x="-";if(WT=="0")WT="-";if(WTstop=="0")WTstop="-";
 					////zapsání do dat
-					if(eID!=MaxInt)
+					if(E->eID!=MaxInt)
 					{
 						////HTML èást
-						data_HTML+="<tr><th scope=\"row\">"+eID+"</th><td>"+name+"</td><td>"+nazev_objektu+"</td><td>"+pohon+"</td><td>"+PT1+"</td><td>"+LO1+"</td><td>"+PT2+"</td><td>"+LO2+"</td><td>"+LO_pozice+"</td><td>"+PTotoc+"</td><td>"+OTOC_delka+"</td><td>"+zona_pred+"</td><td>"+zona_za+"</td><td>"+RT_x+"</td><td>"+WT+"</td><td>"+WTstop+"</td><td>"+sparovany+"</td><td>"+pocet_pozic+"</td><td>"+pocet_voziku+"</td></tr>";
+						data_HTML+="<tr><th scope=\"row\">"+UnicodeString(n)+"</th><td>"+name+"</td><td>"+nazev_objektu+"</td><td>"+pohon+"</td><td>"+PT1+"</td><td>"+LO1+"</td><td>"+PT2+"</td><td>"+LO2+"</td><td>"+LO_pozice+"</td><td>"+PTotoc+"</td><td>"+OTOC_delka+"</td><td>"+zona_pred+"</td><td>"+zona_za+"</td><td>"+RT_x+"</td><td>"+WT+"</td><td>"+WTstop+"</td><td>"+sparovany+"</td><td>"+pocet_pozic+"</td><td>"+pocet_voziku+"</td></tr>";
 						////CSV èást
-						data_CSV+=eID+S+name+S+nazev_objektu+S+pohon+S+PT1+S+LO1+S+PT2+S+LO2+S+LO_pozice+S+PTotoc+S+OTOC_delka+S+zona_pred+S+zona_za+S+RT_x+S+WT+S+WTstop+S+sparovany+S+pocet_pozic+S+pocet_voziku+"\n";
+						data_CSV+=UnicodeString(n)+S+name+S+nazev_objektu+S+pohon+S+PT1+S+LO1+S+PT2+S+LO2+S+LO_pozice+S+PTotoc+S+OTOC_delka+S+zona_pred+S+zona_za+S+RT_x+S+WT+S+WTstop+S+sparovany+S+pocet_pozic+S+pocet_voziku+"\n";
+						////navýšení poèítadla elementù
+						n++;
 					}
 					//ukazatelové záležitosti
 					E=E->dalsi;
 				}
 				delete E;E=NULL;
+				//neexistují žádné elementy
+				if(n==1)
+				{
+        	////HTML èást
+					data_HTML+="<tr><th scope=\"row\">1</th><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>";
+					////CSV èást
+					data_CSV+="1"+S+"-"+S+"-"+S+"-"+S+"-"+S+"-"+S+"-"+S+"-"+S+"-"+S+"-"+S+"-"+S+"-"+S+"-"+S+"-"+S+"-"+S+"-"+S+"-"+S+"-"+S+"-\n";
+				}
 				////HTML èást
 				data_HTML+="</tbody></table></br>";
 				////CSV èást
@@ -346,22 +366,30 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 				data_CSV+="Zprávy o lince\n";
 				data_CSV+="n"+S+"Typ"+S+"Popis"+S+"Element"+S+"Objekt"+S+"\n";
 				Cvektory::TZprava *Z=F->d.v.ZPRAVY;//nepøeskakovat hlavièku
-			  while(Z!=NULL)
-			  {
+				while(Z!=NULL)
+				{
 					////naètení dat
 					if(Z->n>0)
 					{
-				  	UnicodeString typ="Eror";
-				  	if(Z->zID==1)typ="Warning";
-				  	////HTML èást
-				  	data_HTML+="<tr><th scope=\"row\">"+UnicodeString(Z->n)+"</th><td>"+typ+"</td><td>"+F->d.v.getVID(Z->VID)+"</td><td>"+Z->Element->name+"</td><td>"+F->d.v.vrat_objekt(Z->Element->objekt_n)->name.UpperCase()+"</td></tr>";
-				  	////CSV èást
+						UnicodeString typ="Eror";
+						if(Z->zID==1)typ="Warning";
+						////HTML èást
+						data_HTML+="<tr><th scope=\"row\">"+UnicodeString(Z->n)+"</th><td>"+typ+"</td><td>"+F->d.v.getVID(Z->VID)+"</td><td>"+Z->Element->name+"</td><td>"+F->d.v.vrat_objekt(Z->Element->objekt_n)->name.UpperCase()+"</td></tr>";
+						////CSV èást
 						data_CSV+=UnicodeString(Z->n)+S+typ+S+F->d.v.getVID(Z->VID)+S+Z->Element->name+S+F->d.v.vrat_objekt(Z->Element->objekt_n)->name.UpperCase()+"\n";
 					}
 					//ukazatelové záležitosti
 					Z=Z->dalsi;
-			  }
-			  delete Z;Z=NULL;
+				}
+				delete Z;Z=NULL;
+				//neexistují zprávy pøidat prázdný øádek
+				if(F->d.v.ZPRAVY==NULL || F->d.v.ZPRAVY!=NULL && F->d.v.ZPRAVY->dalsi==NULL)
+				{
+					////HTML èást
+					data_HTML+="<tr><th scope=\"row\">1</th><td>-</td><td>-</td><td>-</td><td>-</td></tr>";
+					////CSV èást
+					data_CSV+="1"+S+"-"+S+"-"+S+"-"+S+"-\n";
+				}
 				//data_HTML+="<tbody><tr><td>";
 				////HTML èást
 				data_HTML+="</form></div></br>";  //celkové ukonèení celého divu
