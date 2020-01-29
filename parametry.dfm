@@ -4048,7 +4048,6 @@ object Form_parametry: TForm_parametry
     LeftBarColor = clRed
     RightBarColor = clRed
     HintSkipEnter = True
-    UseAsGlobalHint = True
     Left = 25
     Top = 624
   end

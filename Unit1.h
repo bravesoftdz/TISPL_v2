@@ -20,7 +20,6 @@
 #include "RzBorder.hpp"
 #include <Vcl.Dialogs.hpp>
 #include <Vcl.ExtDlgs.hpp>
-#include "RzBHints.hpp"
 #include "RzGrids.hpp"
 #include <VCLTee.GanttCh.hpp>
 #include <VCLTee.Chart.hpp>
@@ -94,12 +93,12 @@
 #include "vykresli.h"
 #include "grafy.h"
 #include "PO_math.h"
-#include "scHint.hpp"
 #include "scGPExtControls.hpp"
 #include "rHintWindow.hpp"
 #include "UnitX.h"
 #include <Vcl.Imaging.pngimage.hpp>
 #include "scImageCollection.hpp"
+#include "rHintWindow.hpp"
 //#include "vektory.h" //už vkládám pøes vykresli.h
 //#include "knihovna_objektu.h" //už vkládám pøes vykresli.h resp. vektory.h
 
@@ -325,6 +324,7 @@ __published:	// IDE-managed Components
   TscGPButton *scGPButton_error;
   TscGPButton *scGPButton_warning;
 	TscGPButton *scGPButton_smazat;
+  TrHTMLHint *rHTMLHint1;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);

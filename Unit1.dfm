@@ -2009,6 +2009,7 @@ object Form1: TForm1
       Width = 37
       Height = 34
       Hint = 'N'#225'pov'#283'da'
+      ParentCustomHint = False
       Align = alRight
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clNone
@@ -9028,7 +9029,6 @@ object Form1: TForm1
       Width = 0
       Height = 40
       Align = alTop
-      Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -16
@@ -9736,7 +9736,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118009808400910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118009808640910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10859,7 +10859,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01015200480A280C30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01015200480A4C0C30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000F0030000010020000000000000D0
       0B0000000000000000000000000000000000A3653C00A3653C00A3653C00A365
       3C00A3653C00A3653C00A3653C00A3653C00A3653C00A3653C00A3653C00A365
@@ -47611,5 +47611,24 @@ object Form1: TForm1
       end>
     Left = 800
     Top = 480
+  end
+  object rHTMLHint1: TrHTMLHint
+    HintFont.Charset = DEFAULT_CHARSET
+    HintFont.Color = clWindowText
+    HintFont.Height = -15
+    HintFont.Name = 'Tahoma'
+    HintFont.Style = []
+    HintFont.Quality = fqClearTypeNatural
+    BorderLeft = 1
+    BorderRight = 1
+    BorderTop = 1
+    BorderBottom = 1
+    LeftBarWidth = 0
+    LeftBarColor = clRed
+    RightBarColor = clRed
+    HintSkipEnter = True
+    UseAsGlobalHint = True
+    Left = 25
+    Top = 624
   end
 end

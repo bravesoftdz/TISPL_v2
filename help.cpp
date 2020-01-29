@@ -60,9 +60,16 @@ void __fastcall TForm_help::scGPToolPagerClick(TObject *Sender)
 
   if(scGPToolPager->ActivePage==scGPToolPagerPage_PL)
      {
-     scLabel_PL->Caption="PL info";
-     }
+     UnicodeString PL_text;
 
+     PL_text+="Hlavní formuláø aplikace, umožòuje zadat a spravovat následující parametry.</br>";
+     PL_text+="<br><b>Takt Time</b> - zadání požadovaného taktu linky. Veškeré matematické výpoèty pøi následné tvorbì layoutu<br>jsou stavìny na dodržení taktu linky. Pøi tvorbì layoutu nelze Takt time již mìnit.<br>";
+     PL_text+="<b>Rozmìry vozíku</b> - nastavení rozmìrù podvozku a jigu. Posuvníkem lze nastavit místo pro uchytávání palcù. <br>";
+     PL_text+="<b>Dopravník</b> - pøed samotným vznikem pohonù je nutné vybrat z katalogu vhodný dopravník.<br>Po výbìru je možné vstoupit do tvorby pohonù.<b>";
+     PL_text+="<br>Pohony</b> - tabulka pro správu pohonù. Pøi zadávání je kontrolováno rozmezí pohonu,<br>rozteè je nabízena dle vybraného dopravníku.<br>V pøípadì kdy je pohon používán, nelze na pohonu již mìnit jeho pracovní rozmezí.";
+
+     scHTMLLabel_PL->Caption=PL_text;
+     }
 }
 //---------------------------------------------------------------------------
 

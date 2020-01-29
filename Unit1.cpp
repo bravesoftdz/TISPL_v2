@@ -38,7 +38,6 @@
 #pragma link "RzStatus"
 #pragma link "RzButton"
 #pragma link "RzBorder"
-#pragma link "RzBHints"
 #pragma link "RzGrids"
 #pragma link "RzLabel"
 #pragma link "rStringGridEd"
@@ -53,11 +52,13 @@
 #pragma link "scGPImages"
 #pragma link "scHtmlControls"
 #pragma link "scWebBrowser"
-#pragma link "scHint"
 #pragma link "scGPExtControls"
 #pragma link "rHintWindow"
 #pragma link "rHTMLLabel"
 #pragma link "scImageCollection"
+#pragma link "scHint"
+#pragma link "scHint"
+#pragma link "rHintWindow"
 #pragma resource "*.dfm"
 TForm1 *Form1;
 TForm1 *F;//pouze zkrácený zapis
