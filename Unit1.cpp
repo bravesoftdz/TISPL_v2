@@ -12181,17 +12181,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Memo3->Clear();
-	Cvektory::TDATA *D=d.v.DATA;
-	while(D!=NULL)
-	{
-		Memo("Obraz "+AnsiString(D->n));
-		Memo("Editovaný objekt = "+AnsiString(D->edit_Objekt));
-		Memo("Počet objektů = "+AnsiString(D->Objekty->predchozi->n));
-		Memo("Počet elementů = "+AnsiString(D->Elementy->predchozi->n));
-		D=D->dalsi;
-	}
-	delete D;D=NULL;
+	d.v.vytvor_obraz_DATA();
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -13181,7 +13171,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
     //mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
 		pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp;posledni_editovany_element=NULL;delete posledni_editovany_element;JID=-1;Akce=NIC;
 		FormX->posledni_E=NULL;//nutné!! slouží k ukládání posledního editovaného elementu (validace, atd.)
-		d.v.nacti_z_obrazu_DATA(true);//načtení projektu před editací a smazání obrazů
+		if(d.v.DATA->dalsi!=NULL)d.v.nacti_z_obrazu_DATA(true);//načtení projektu před editací a smazání obrazů, pokud DATA->dalsi neexistují znamená to, že bylo uloženo, nebude se nic načítat
 		d.v.vytvor_obraz_DATA();//vytvoření nového obrazu pro layout
 		//vlozit_predavaci_misto();//zkontroluje, zda nemusí být přidáno nebo odstraněno předávací místo
 		duvod_validovat=2;//vyvolá validaci, zajistí aktualizaci zpráv a výpisu v miniformu zpráv, NECHAT AŽ ZA FUNKČNÍMI ZÁLEŽITOSTMI
@@ -13550,7 +13540,9 @@ void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
 	log(__func__);//logování
 	if(editace_textu)smaz_kurzor();//uložení změn při zapnuté editaci textu
 	pripnuti_dalsich_objektu();
-	d.v.smaz_obraz_DATA(0);//smazání nepotřebného obrazu pro funcki storno
+	//vymazání nepotřebných obrazů
+	d.v.vymaz_seznam_DATA();
+	d.v.hlavicka_DATA();
 	//d.v.vymaz_komory(pom);
 	//d.v.vymaz_elementy(pom,true);
 	//d.v.kopiruj_objekt(akt_Objekt,pom);

@@ -6944,10 +6944,6 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 	  		dE=dE->dalsi;
     	}
 			delete dE;dE=NULL;
-
-	  	//vymazání nepotřebných obrazů
-			vymaz_seznam_DATA();
-			hlavicka_DATA();
 		}
 		else//pohyb v editaci
 		{
@@ -6970,7 +6966,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 			obraz->Objekty->dalsi->element=F->akt_Objekt->element;//uchování ukazatele na první element při kopírování objektu
 			kopiruj_objekt(obraz->Objekty->dalsi,F->akt_Objekt);
 			//pokud došlo ke změně počtu elementů (=mazání, přidání elementu) budou předchozí elementy smazány a vloženy nové
-			//if(vrat_posledni_element_objektu(F->akt_Objekt)->n!=obraz->Elementy->predchozi->n)
+			if(vrat_posledni_element_objektu(F->akt_Objekt)->n!=obraz->Elementy->predchozi->n)
 			{
 		  	vymaz_elementy(F->akt_Objekt);
 				E=obraz->Elementy->dalsi;
@@ -7007,10 +7003,10 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 				}
 				if(za->dalsi!=NULL)za->dalsi->geo=geo;//navrácení původní geometrie, pri smaz_elementy() byla upravena
 			}
-//			else
-//			{
-//				F->Memo("Stejný počet elementů");
-//			}
+			else
+			{
+				F->Memo("Stejný počet elementů");
+			}
 			//aktualizace n
 			E=F->akt_Objekt->element;
 			unsigned long n=E->n;
