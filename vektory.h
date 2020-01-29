@@ -430,6 +430,7 @@ class Cvektory
 	struct TDATA//obraz datového modelu projektu
 	{
 		unsigned long n;
+		unsigned long edit_Objekt;//uchovává informaci zda je otevřena editace a jakého objektu
 		TObjekt *Objekty;
 		TElement *Elementy;
 		TPohon *Pohony;

@@ -35,6 +35,7 @@ public:		// User declarations
 	void OnEnter(long Tag,long ID,unsigned long Col,unsigned long Row);
 	void OnChange(long Tag,long ID,unsigned long Col,unsigned long Row);
 	void OnKeyPress(long Tag,long ID,unsigned long Col,unsigned long Row,System::WideChar &Key);
+	void OnKeyDown(long Tag,unsigned long Col,unsigned long Row,WORD &Key,TShiftState Shift);//slouží pro spuštìní funkcionality ctrl+z a ctrl+y pokud je focus na mGridu
 	void odstranit_korelaci(bool predat_focus=true);//odstraní veškerou korelaci, nepoviný prametr urèuje zda má být pøedán focus z mGridu, defaultnì focus pøedává
 	void validace_aRD(bool pouze_rozmezi=false);//validace zadávané aktuální rychlosti
 	void validace_max_voziku();//validace maximálního poètu vozíkù na stopce

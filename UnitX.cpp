@@ -536,6 +536,30 @@ void TFormX::OnKeyPress(long Tag,long ID,unsigned long Col,unsigned long Row,Sys
 	}
 }
 //---------------------------------------------------------------------------
+//slouží pro spuštìní funkcionality ctrl+z a ctrl+y pokud je focus na mGridu
+void TFormX::OnKeyDown(long Tag,unsigned long Col,unsigned long Row,WORD &Key,TShiftState Shift)
+{
+	if(Shift.Contains(ssCtrl) && Key==89)//ctrl+y
+	{
+		if(F->d.v.pozice_data!=5 && F->d.v.pozice_data!=0)//pokud nejsem na konci
+		{
+			F->d.v.pozice_data+=1;
+			F->d.v.nacti_z_obrazu_DATA();
+			if(F->akt_Objekt==NULL)F->REFRESH();//pouze pokud není aktivní editace
+		}
+	}
+	if(Shift.Contains(ssCtrl) && Key==90)//ctrl+z
+	{
+		if(F->d.v.pozice_data!=1)//pokud nejsem na konci
+		{
+			if(F->d.v.pozice_data==0)F->d.v.pozice_data=F->d.v.DATA->predchozi->predchozi->n;
+			else F->d.v.pozice_data-=1;
+			F->d.v.nacti_z_obrazu_DATA();
+			if(F->akt_Objekt==NULL)F->REFRESH();//pouze pokud není aktivní editace
+		}
+	}
+}
+//---------------------------------------------------------------------------
 //pøepoèty tabulek elementù a pohonu vyvolané zmìnou rychlosti
 void TFormX::zmena_aRD (Cvektory::TElement *mimo_element)
 {

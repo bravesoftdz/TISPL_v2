@@ -10283,7 +10283,6 @@ void TForm1::NP_input()
 {
 	 log(__func__);//logování
 	 spojeni_prvni_posledni();//kontrola zda mám dostatečný počet objektů a zda je možno spojit je automaticky
-	 d.v.vytvor_obraz_DATA(true);//vytovoření obrazu projektu pro funkci storno
 	 TIP="";
 	 if(!scSplitView_LEFTTOOLBAR->Opened)scSplitView_LEFTTOOLBAR->Opened=true;
 	 DrawGrid_knihovna->SetFocus();
@@ -10317,6 +10316,8 @@ void TForm1::NP_input()
 	 popisky_knihovna_nahled(false);//nastavní popisků pro editaci
 	 DrawGrid_knihovna->Top=33;
 	 kurzor(standard);
+	 d.v.vytvor_obraz_DATA(true);//vytovoření obrazu projektu pro funkci storno
+	 d.v.vytvor_obraz_DATA();//obraz pro vracení se v náhledu
 	 ////řešení nového zoomu a posunu obrazu pro účely náhldeu
 	 //zazálohování hodnot posunu a zoomu
 	 Posun_predchozi2=Posun_predchozi=Posun;
@@ -10526,7 +10527,6 @@ void TForm1::zmena_editovaneho_objektu()
 		pom=d.v.vrat_objekt(objekt_n);//pom_vyhybka slouží k uložení ukazatele na pro další náhled
 
 		/////////Otevření nového náhledu
-		d.v.vytvor_obraz_DATA(true);//vytovoření obrazu projektu pro funkci storno
 		TIP="";
 		//zobrazení knihovny pokud je skrytá, spíš pro jistotu
 	  if(!scSplitView_LEFTTOOLBAR->Opened)scSplitView_LEFTTOOLBAR->Opened=true;
@@ -10546,7 +10546,10 @@ void TForm1::zmena_editovaneho_objektu()
 		//akt_Objekt=new Cvektory::TObjekt; akt_Objekt->pohon=NULL; akt_Objekt->pohon=new Cvektory::TPohon; akt_Objekt->element=NULL;
   	//zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze mGrid je propojen
 		//d.v.kopiruj_objekt(pom,akt_Objekt);//pokud elementy existují nakopíruje je do pomocného nezávislého spojáku pomocného objektu
-    akt_Objekt=pom;//ostrý ukazatel, nové pojetí po změně DM
+		akt_Objekt=pom;//ostrý ukazatel, nové pojetí po změně DM
+		//vymazání kroků z layoutu, musí být po nastavení akt_Objektu!!!!!!!!!!!!!
+		d.v.vytvor_obraz_DATA(true);//vytovoření obrazu projektu pro funkci storno
+	 	d.v.vytvor_obraz_DATA();//obraz pro vracení se v náhledu
 		//nastavení zoomu na vhodný náhled
   	if(Zoom<=5.0)Zoom=5.0;//ponechání zoomu pokud je vetší jak 5
   	probehl_zoom=true;
@@ -12035,6 +12038,7 @@ void __fastcall TForm1::Timer_neaktivityTimer(TObject *Sender)
 //		}
 	if(akt_Objekt!=NULL)//pro případ, že uživatel změní hodnotu v tabulce a než se stihne provést validace ukončí editaci
 	{
+    d.v.vytvor_obraz_DATA();//obraz pro ctrl+z
 		FormX->validace_max_voziku();//metoda rozlišuje zda byla editovaná stopka, pokud ano provede validaci, pokud ne neudělá nic
 		REFRESH(true); //nedocází k refresh tabulek, tabulky jsou v tuto chvíli naplněny aktuálními hodnotami
 	}
@@ -12176,7 +12180,17 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Memo(d.v.DATA->n);  Memo(d.v.DATA->Objekty->predchozi->n);
+	Memo3->Clear();
+	Cvektory::TDATA *D=d.v.DATA;
+	while(D!=NULL)
+	{
+		Memo("Obraz "+AnsiString(D->n));
+		Memo("Editovaný objekt = "+AnsiString(D->edit_Objekt));
+		Memo("Počet objektů = "+AnsiString(D->Objekty->predchozi->n));
+		Memo("Počet elementů = "+AnsiString(D->Elementy->predchozi->n));
+		D=D->dalsi;
+	}
+	delete D;D=NULL;
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -13135,7 +13149,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 	}
 	if(MOD==EDITACE)  //navrácení do módu schéma
 	{
-    Timer_neaktivity->Enabled=false;//vypnutí timeru pro jistotu
+		Timer_neaktivity->Enabled=false;//vypnutí timeru pro jistotu
 		if(Akce!=NIC)ESC();
 		//////
 		if(MOD==EDITACE&&index_kurzoru==9999||index_kurzoru==100)
@@ -13166,7 +13180,8 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
     //mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
 		pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp;posledni_editovany_element=NULL;delete posledni_editovany_element;JID=-1;Akce=NIC;
 		FormX->posledni_E=NULL;//nutné!! slouží k ukládání posledního editovaného elementu (validace, atd.)
-		if(d.v.DATA->Objekty->dalsi!=NULL)d.v.nacti_z_obrazu_DATA(true);//načtení projektu před editací, pokud nedošlo k uložení, pokud ano byl obraz smazán
+		d.v.nacti_z_obrazu_DATA(true);//načtení projektu před editací a smazání obrazů
+		d.v.vytvor_obraz_DATA();//vytvoření nového obrazu pro layout
 		//vlozit_predavaci_misto();//zkontroluje, zda nemusí být přidáno nebo odstraněno předávací místo
 		duvod_validovat=2;//vyvolá validaci, zajistí aktualizaci zpráv a výpisu v miniformu zpráv, NECHAT AŽ ZA FUNKČNÍMI ZÁLEŽITOSTMI
 		//v případě animace vypnutí a nastavení do výchozího stavu
