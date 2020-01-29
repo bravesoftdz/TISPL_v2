@@ -2869,7 +2869,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		{
 			d.v.pozice_data+=1;
 			d.v.nacti_z_obrazu_DATA();
-			if(akt_Objekt==NULL)REFRESH();//pouze pokud není aktivní editace
+			REFRESH();
 		}
 	}
 	//Z, musí být až po nastavení funkční klávesy
@@ -2880,7 +2880,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 			if(d.v.pozice_data==0)d.v.pozice_data=d.v.DATA->predchozi->predchozi->n;
 			else d.v.pozice_data-=1;
 			d.v.nacti_z_obrazu_DATA();
-			if(akt_Objekt==NULL)REFRESH();//pouze pokud není aktivní editace
+			REFRESH();
 		}
 	}
 /*ascii
@@ -5384,10 +5384,10 @@ void TForm1::pripnuti_dalsich_objektu()
 }
 //---------------------------------------------------------------------------
 //kontrola zda na sebe první a polední objekt navazují, pokud jsou blízko u sebe, ale nenavazují - naváže je
-void TForm1::spojeni_prvni_posledni()
+void TForm1::spojeni_prvni_posledni(double citlivost)
 {
 	log(__func__);//logování
-	if(d.v.OBJEKTY->predchozi->n>=4 && d.v.ELEMENTY->dalsi->geo.typ==0 && m.delka(d.v.ELEMENTY->dalsi->geo.X1,d.v.ELEMENTY->dalsi->geo.Y1,d.v.ELEMENTY->predchozi->geo.X4,d.v.ELEMENTY->predchozi->geo.Y4)<=1 && m.delka(d.v.ELEMENTY->dalsi->geo.X1,d.v.ELEMENTY->dalsi->geo.Y1,d.v.ELEMENTY->predchozi->geo.X4,d.v.ELEMENTY->predchozi->geo.Y4)!=0)
+	if(prichytavat_k_mrizce==1 && d.v.OBJEKTY->predchozi->n>=4 && d.v.ELEMENTY->dalsi->geo.typ==0 && m.delka(d.v.ELEMENTY->dalsi->geo.X1,d.v.ELEMENTY->dalsi->geo.Y1,d.v.ELEMENTY->predchozi->geo.X4,d.v.ELEMENTY->predchozi->geo.Y4)<=citlivost && m.delka(d.v.ELEMENTY->dalsi->geo.X1,d.v.ELEMENTY->dalsi->geo.Y1,d.v.ELEMENTY->predchozi->geo.X4,d.v.ELEMENTY->predchozi->geo.Y4)!=0)
 	{
 		//pokud poslední element neni linie a první ano
 		if(d.v.ELEMENTY->dalsi->geo.typ==0 && d.v.ELEMENTY->predchozi->geo.typ!=0)
@@ -5411,12 +5411,14 @@ void TForm1::spojeni_prvni_posledni()
 		else
 			{d.v.vloz_G_element(d.v.ELEMENTY->predchozi,0,d.v.ELEMENTY->predchozi->geo.X1,d.v.ELEMENTY->predchozi->geo.Y1,0,0,0,0,d.v.ELEMENTY->predchozi->geo.X4,d.v.ELEMENTY->predchozi->geo.Y4+rozdil.y,d.v.ELEMENTY->predchozi->geo.orientace);ver=true;}
 		//uprava druhé souřadnice
-		Cvektory::TElement *E=d.v.ELEMENTY->predchozi->predchozi;
+		Cvektory::TElement *E=d.v.ELEMENTY->predchozi->predchozi,*upraven=NULL;
 		while(E!=NULL && E->n>0)
 		{
 			if(hor && E->geo.typ==0 && (E->eID==MaxInt || E->eID==200) && (E->geo.orientace==0 || E->geo.orientace==180))
 			{
+				E->Y+=rozdil.y;
 				d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1,0,0,0,0,E->geo.X4,E->geo.Y4+rozdil.y,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius);//prodloužení prvního
+				upraven=E;
 				//posun dalších
 				E=E->dalsi;
 				while(E!=NULL)
@@ -5428,7 +5430,9 @@ void TForm1::spojeni_prvni_posledni()
 			}
 			if(ver && E->geo.typ==0 && (E->eID==MaxInt || E->eID==200) && (E->geo.orientace==90 || E->geo.orientace==270))
 			{
+				E->X+=rozdil.x;
 				d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1,0,0,0,0,E->geo.X4+rozdil.x,E->geo.Y4,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius);//prodloužení prvního
+        upraven=E;
 				//posun dalších
 				E=E->dalsi;
 				while(E!=NULL)
@@ -5441,6 +5445,7 @@ void TForm1::spojeni_prvni_posledni()
 			E=E->predchozi;
 		}
 		E=NULL;delete E;
+		if(upraven!=NULL)d.v.vloz_zpravu(d.Rxy(upraven).x,d.Rxy(upraven).y,1,111,upraven);
 	}
 }
 //---------------------------------------------------------------------------
@@ -10283,7 +10288,6 @@ void TForm1::NP()
 void TForm1::NP_input()
 {
 	 log(__func__);//logování
-	 spojeni_prvni_posledni();//kontrola zda mám dostatečný počet objektů a zda je možno spojit je automaticky
 	 TIP="";
 	 if(!scSplitView_LEFTTOOLBAR->Opened)scSplitView_LEFTTOOLBAR->Opened=true;
 	 DrawGrid_knihovna->SetFocus();
@@ -10954,13 +10958,10 @@ void __fastcall TForm1::UlozitClick(TObject *Sender)
 		if(duvod_k_ulozeni)Ulozit_soubor();
 		else SB(ls->Strings[389]);//"Soubor byl již uložen..."
 	}
-	if(MOD==EDITACE && !duvod_k_ulozeni && duvod_ulozit_nahled)//uložení z editace = uložím editovaný objekt + celý projekt
+	if(MOD==EDITACE && duvod_ulozit_nahled)//uložení z editace = uložím editovaný objekt + celý projekt
 	{
-		d.v.kopiruj_objekt(akt_Objekt,pom);
 		Ulozit_soubor();
 		nahled_ulozit(false);
-		if(editace_textu)smaz_kurzor();
-		Ulozit_soubor();
 	}
 	scButton_ulozit->Down=false;
 }
@@ -12181,7 +12182,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	d.v.vytvor_obraz_DATA();
+	spojeni_prvni_posledni();
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -13540,6 +13541,7 @@ void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
 	log(__func__);//logování
 	if(editace_textu)smaz_kurzor();//uložení změn při zapnuté editaci textu
 	pripnuti_dalsich_objektu();
+	spojeni_prvni_posledni();//kontrola zda mám dostatečný počet objektů a zda je možno spojit je automaticky
 	//vymazání nepotřebných obrazů
 	d.v.vymaz_seznam_DATA();
 	d.v.hlavicka_DATA();
@@ -13551,7 +13553,7 @@ void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
 	mazani=true;//použití proměnné, která se v tomto čase nevyužívá, slouží k rozpoznání zda bylo stisknuto dříve storno či uližit
 	//a to z důvodu volání uprav_popisky_elementu(přejmenování změn po stisku storno)
 	scGPButton_stornoClick(Sender);//další funkcionalita je již stejná jako ve stornu, včetně vymazání ukazatele akt_Objekt včetně jeho elementů popř. komor
-  mazani=false;
+	mazani=false;
 }
 //---------------------------------------------------------------------------
 //input metoda na převod jednotek LO do Si

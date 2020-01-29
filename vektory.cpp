@@ -5046,6 +5046,7 @@ UnicodeString Cvektory::getVID(long VID)
 	UnicodeString Text="";
 	switch(VID) //řadit od nejdůležitějšího
 	{
+    case 111: Text="Z důvodu uzavření kruhu byla geometrie elementu upravena.";break;
 		case 219: Text=F->ls->Strings[219]+"!";break;//Pohon nepřiřazen!
 		case 401: Text=F->ls->Strings[401];break;//Rotace neodpovídá orientaci JIGů na začátku linky!
 		case 402: Text=F->ls->Strings[402];break;//Pozor, překrytí JIGů!
@@ -6776,7 +6777,8 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 			{
 				smaz_obraz_DATA(DATA->predchozi->n);
 			}
-    }
+			pozice_data=0;//vrácení pozice na default hodnotu
+		}
 		//vytvoření dalšího obrazu (hlavičky objektu, elementů a pohonů)
 		obraz=vytvor_prazdny_obraz();
 		//kontrola zda je místo v bufferu, případné smazání nejstaršího obrazu
@@ -6975,7 +6977,11 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 		  	{
 		  		//kopírování atributů
 		  		novy=new TElement;
-		  		kopiruj_element(E,novy);
+					kopiruj_element(E,novy);
+					//znovuvytvoření tabulky, alokace paměti pro tabulku je v kopiruj_element();
+					E->mGrid->Tag=6;//ID formu
+					E->mGrid->ID=E->n;
+					F->design_element(E,false);
 		  		//vložení do seznamu ELEMENTY
 		  		if(za!=NULL && za->n>0)
 		  		{
@@ -7005,7 +7011,20 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 			}
 			else
 			{
-				F->Memo("Stejný počet elementů");
+				TElement *or=F->akt_Objekt->element;E=obraz->Elementy->dalsi;
+				while(E!=NULL && E->objekt_n==F->akt_Objekt->n)
+				{
+          //přepsaní parametry z obrazu
+					kopiruj_element(E,or);
+					//vytvoření nové tabulky
+					or->mGrid->Tag=6;//ID formu
+					or->mGrid->ID=or->n;
+					F->design_element(or,false);
+					or=or->dalsi;
+					E=E->dalsi;
+				}
+				or=NULL;delete or;
+				E=NULL;delete E;
 			}
 			//aktualizace n
 			E=F->akt_Objekt->element;
@@ -7014,14 +7033,6 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 			{
 				E->n=n;
 				n++;
-				//zonovuvytvoření mGridů
-				if(E->objekt_n==F->akt_Objekt->n)
-				{
-					E->mGrid=new TmGrid(F);
-					E->mGrid->Tag=6;//ID formu
-					E->mGrid->ID=E->n;
-					F->design_element(E,false);
-				}
 				E=E->dalsi;
 			}
 			delete E;E=NULL;
@@ -7051,6 +7062,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 		delete dp;dp=NULL;
 
 		F->Timer_backup->Enabled=true;//obnovení timeru pro backup
+		if(storno)pozice_data=0;//vrácení pozice na default hodnotu
 	}
 	F->log(__func__,"    KONEC");
 }
