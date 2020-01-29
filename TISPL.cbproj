@@ -214,11 +214,11 @@
         </None>
         <None Include="kabina_schema.cpp">
             <Exclude>True</Exclude>
-            <CreateIndex>17</CreateIndex>
+            <CreateIndex>19</CreateIndex>
             <Form>Form_objekt_nahled</Form>
             <FormType>dfm</FormType>
             <DependentOn>kabina_schema.h</DependentOn>
-            <BuildOrder>35</BuildOrder>
+            <BuildOrder>42</BuildOrder>
         </None>
         <None Include="kalendar.cpp">
             <Exclude>True</Exclude>
@@ -268,11 +268,11 @@
         </CppCompile>
         <None Include="parametry.cpp">
             <Exclude>True</Exclude>
-            <CreateIndex>17</CreateIndex>
+            <CreateIndex>18</CreateIndex>
             <Form>Form_parametry</Form>
             <FormType>dfm</FormType>
             <DependentOn>parametry.h</DependentOn>
-            <BuildOrder>37</BuildOrder>
+            <BuildOrder>42</BuildOrder>
         </None>
         <CppCompile Include="parametry_linky.cpp">
             <Form>Form_parametry_linky</Form>
@@ -308,11 +308,11 @@
         </CppCompile>
         <None Include="poznamky.cpp">
             <Exclude>True</Exclude>
-            <CreateIndex>17</CreateIndex>
+            <CreateIndex>18</CreateIndex>
             <Form>Form_poznamky</Form>
             <FormType>dfm</FormType>
             <DependentOn>poznamky.h</DependentOn>
-            <BuildOrder>40</BuildOrder>
+            <BuildOrder>42</BuildOrder>
         </None>
         <CppCompile Include="PO_math.cpp">
             <DependentOn>PO_math.h</DependentOn>
@@ -408,14 +408,14 @@
         <FormResources Include="adjustace.dfm"/>
         <FormResources Include="casovaOsa_info.dfm"/>
         <FormResources Include="cesty.dfm"/>
-        <FormResources Include="jig.dfm"/>
-        <FormResources Include="miniform_zpravy.dfm"/>
-        <FormResources Include="minicolordialog.dfm"/>
-        <FormResources Include="MyMessageBox.dfm"/>
-        <FormResources Include="kalendar.dfm"/>
-        <FormResources Include="kabina_schema.dfm"/>
-        <FormResources Include="katalog_dopravniku.dfm"/>
         <FormResources Include="help.dfm"/>
+        <FormResources Include="minicolordialog.dfm"/>
+        <FormResources Include="miniform_zpravy.dfm"/>
+        <FormResources Include="MyMessageBox.dfm"/>
+        <FormResources Include="kabina_schema.dfm"/>
+        <FormResources Include="jig.dfm"/>
+        <FormResources Include="kalendar.dfm"/>
+        <FormResources Include="katalog_dopravniku.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

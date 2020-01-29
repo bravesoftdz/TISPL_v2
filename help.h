@@ -44,11 +44,11 @@ __published:	// IDE-managed Components
   TscGPToolPagerPage *scGPToolPagerPage_PL;
   TscStyledForm *scStyledForm1;
   TscStyleManager *scStyleManager1;
-  TscLabel *scLabel_PL;
   TscGPToolPagerPage *scGPToolPagerPage4;
   TscLabel *scLabel4;
   TscGPToolPagerPage *scGPToolPagerPage_about;
   TscHTMLLabel *scHTMLLabel_about;
+  TscHTMLLabel *scHTMLLabel_PL;
   void __fastcall CloseButtonClick(TObject *Sender);
   void __fastcall FormShow(TObject *Sender);
   void __fastcall scGPToolPagerClick(TObject *Sender);

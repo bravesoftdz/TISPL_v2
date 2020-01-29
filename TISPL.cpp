@@ -25,14 +25,14 @@ USEFORM("gapoV.cpp", F_gapoV);
 USEFORM("adjustace.cpp", Form_adjustace);
 USEFORM("casovaOsa_info.cpp", Form_osa_info);
 USEFORM("cesty.cpp", Form_cesty);
-USEFORM("jig.cpp", Form_jig);
-USEFORM("miniform_zpravy.cpp", Form_zpravy);
-USEFORM("minicolordialog.cpp", Form_color_dialog);
-USEFORM("MyMessageBox.cpp", myMessageBox);
-USEFORM("kalendar.cpp", Form_kalendar);
-USEFORM("kabina_schema.cpp", Form_objekt_nahled);
-USEFORM("katalog_dopravniku.cpp", Form_katalog);
 USEFORM("help.cpp", Form_help);
+USEFORM("minicolordialog.cpp", Form_color_dialog);
+USEFORM("miniform_zpravy.cpp", Form_zpravy);
+USEFORM("MyMessageBox.cpp", myMessageBox);
+USEFORM("kabina_schema.cpp", Form_objekt_nahled);
+USEFORM("jig.cpp", Form_jig);
+USEFORM("kalendar.cpp", Form_kalendar);
+USEFORM("katalog_dopravniku.cpp", Form_katalog);
 //---------------------------------------------------------------------------
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {
