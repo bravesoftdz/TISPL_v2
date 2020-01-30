@@ -70,6 +70,19 @@ void __fastcall TForm_help::scGPToolPagerClick(TObject *Sender)
 
      scHTMLLabel_PL->Caption=PL_text;
      }
+
+    if(scGPToolPager->ActivePage==scGPToolPagerPage_layout)
+     {
+     UnicodeString layout_text;
+
+     layout_text+="Prostøedí na tvorbu layoutu je výchozím zobrazením pøi spuštìní aplikace.</br>";
+     layout_text+="Skládá se z pracovní plochy, nabídky technologických objektù v levém panelu a nástrojové lišty v dolní èásti.<br>Postupným vkládáním technologických objektù z levého panelu vzniká layout s výchozími rozmìry objektù.<br>";
+     layout_text+="Pøi dvojkliku na vložený objekt se zobrazí editace objektu.</br>Editaci je možné vyvolat i pøes pravý klik a v pop up menu vybrat editovat objekt.<br>";
+     layout_text+="Volbou editovat se zmìní nabídka levého panelu a rozšíøí se panel nástrojù v dolní èásti pracovní plochy.</br>Levý panel je dynamicky zobrazován vždy dle aktuálnì nastavovaného objektu, nabídka pro objekty se tedy rùzní.";
+     layout_text+="";
+
+     scHTMLLabel_layout->Caption=layout_text;
+     }
 }
 //---------------------------------------------------------------------------
 

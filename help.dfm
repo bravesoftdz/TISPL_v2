@@ -359,7 +359,7 @@ object Form_help: TForm_help
           Top = 34
           Width = 878
           Height = 423
-          Align = alTop
+          Align = alClient
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -16
@@ -479,7 +479,7 @@ object Form_help: TForm_help
               UseCustomOptions = False
             end
             item
-              Page = scGPToolPagerPage2
+              Page = scGPToolPagerPage_layout
               Visible = True
               Enabled = True
               ImageIndex = -1
@@ -678,10 +678,12 @@ object Form_help: TForm_help
               ShowCloseButton = True
               UseCustomOptions = False
             end>
-          TabIndex = 0
-          ActivePage = scGPToolPagerPage_PL
+          TabIndex = 1
+          ActivePage = scGPToolPagerPage_layout
           FreeOnClose = False
           StorePaintBuffer = False
+          ExplicitLeft = -3
+          ExplicitTop = 37
           object scGPToolPagerPage3: TscGPToolPagerPage
             Left = 0
             Top = 35
@@ -694,7 +696,6 @@ object Form_help: TForm_help
             Font.Style = []
             ParentFont = False
             TabOrder = 2
-            Visible = False
             CanScroll = True
             FillGradientAngle = 90
             FillGradientBeginAlpha = 255
@@ -742,60 +743,6 @@ object Form_help: TForm_help
               AutoSize = True
               UseFontColorToStyleColor = False
               Caption = 'Geometrie text'
-            end
-          end
-          object scGPToolPagerPage2: TscGPToolPagerPage
-            Left = 0
-            Top = 35
-            Width = 878
-            Height = 388
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -11
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-            TabOrder = 1
-            CanScroll = True
-            FillGradientAngle = 90
-            FillGradientBeginAlpha = 255
-            FillGradientEndAlpha = 255
-            FillGradientBeginColorOffset = 25
-            FillGradientEndColorOffset = 25
-            FillColor = clNone
-            FillColorAlpha = 255
-            FillColor2 = clNone
-            Color = clWhite
-            BGStyleKind = scgspbPanel
-            ScrollButtonWidth = 17
-            CustomImageIndex = -1
-            WallpaperIndex = -1
-            HotScroll = False
-            AutoSize = False
-            ScrollType = scstHorizontal
-            ScrollOffset = 0
-            ScrollTimerInterval = 50
-            ScrollButtonArrowWidth = 1
-            TouchScroll = False
-            StorePaintBuffer = False
-            object scLabel2: TscLabel
-              Left = 22
-              Top = 22
-              Width = 84
-              Height = 13
-              TabOrder = 0
-              DragForm = False
-              DragTopForm = True
-              GlowEffect.Enabled = False
-              GlowEffect.Color = clBtnShadow
-              GlowEffect.AlphaValue = 255
-              GlowEffect.GlowSize = 7
-              GlowEffect.Offset = 0
-              GlowEffect.Intensive = True
-              GlowEffect.StyleColors = True
-              AutoSize = True
-              UseFontColorToStyleColor = False
-              Caption = 'Layout - info text'
             end
           end
           object scGPToolPagerPage4: TscGPToolPagerPage
@@ -864,6 +811,7 @@ object Form_help: TForm_help
             Top = 35
             Width = 878
             Height = 388
+            Align = alTop
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -11
@@ -871,7 +819,6 @@ object Form_help: TForm_help
             Font.Style = []
             ParentFont = False
             TabOrder = 4
-            Visible = False
             CanScroll = True
             FillGradientAngle = 90
             FillGradientBeginAlpha = 255
@@ -937,6 +884,7 @@ object Form_help: TForm_help
             Font.Style = []
             ParentFont = False
             TabOrder = 0
+            Visible = False
             CanScroll = True
             FillGradientAngle = 90
             FillGradientBeginAlpha = 255
@@ -963,7 +911,7 @@ object Form_help: TForm_help
               Left = 14
               Top = 18
               Width = 525
-              Height = 111
+              Height = 36
               Font.Charset = DEFAULT_CHARSET
               Font.Color = clWindowText
               Font.Height = -15
@@ -978,6 +926,71 @@ object Form_help: TForm_help
               Caption = 
                 'Hlavn'#237' formul'#225#345' aplikace, umo'#382#328'uje zadat a spravovat n'#225'sleduj'#237'c'#237 +
                 ' parametry.</br>'
+              LinkFontNormal.Charset = DEFAULT_CHARSET
+              LinkFontNormal.Color = clHighlight
+              LinkFontNormal.Height = -11
+              LinkFontNormal.Name = 'Tahoma'
+              LinkFontNormal.Style = []
+              LinkFontHover.Charset = DEFAULT_CHARSET
+              LinkFontHover.Color = clHighlight
+              LinkFontHover.Height = -11
+              LinkFontHover.Name = 'Tahoma'
+              LinkFontHover.Style = [fsUnderline]
+              MaxWidth = 0
+              TextAlignment = taLeftJustify
+            end
+          end
+          object scGPToolPagerPage_layout: TscGPToolPagerPage
+            Left = 0
+            Top = 35
+            Width = 878
+            Height = 388
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -11
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+            TabOrder = 1
+            CanScroll = True
+            FillGradientAngle = 90
+            FillGradientBeginAlpha = 255
+            FillGradientEndAlpha = 255
+            FillGradientBeginColorOffset = 25
+            FillGradientEndColorOffset = 25
+            FillColor = clNone
+            FillColorAlpha = 255
+            FillColor2 = clNone
+            Color = clWhite
+            BGStyleKind = scgspbPanel
+            ScrollButtonWidth = 17
+            CustomImageIndex = -1
+            WallpaperIndex = -1
+            HotScroll = False
+            AutoSize = False
+            ScrollType = scstHorizontal
+            ScrollOffset = 0
+            ScrollTimerInterval = 50
+            ScrollButtonArrowWidth = 1
+            TouchScroll = False
+            StorePaintBuffer = False
+            object scHTMLLabel_layout: TscHTMLLabel
+              Left = 22
+              Top = 24
+              Width = 144
+              Height = 18
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -15
+              Font.Name = 'Roboto'
+              Font.Style = []
+              Font.Quality = fqAntialiased
+              ParentFont = False
+              TabOrder = 0
+              AutoSizeHeight = True
+              AutoSizeWidth = True
+              AutoExecuteURL = True
+              Caption = 'scHTMLLabel_layout'
               LinkFontNormal.Charset = DEFAULT_CHARSET
               LinkFontNormal.Color = clHighlight
               LinkFontNormal.Height = -11
@@ -1040,8 +1053,8 @@ object Form_help: TForm_help
     CaptionWallpaperTopMargin = 1
     CaptionWallpaperRightMargin = 1
     CaptionWallpaperBottomMargin = 1
-    Left = 640
-    Top = 432
+    Left = 648
+    Top = 400
   end
   object scStyleManager1: TscStyleManager
     ArrowsType = scsatModern
@@ -1056,7 +1069,7 @@ object Form_help: TForm_help
     ScaleThemes = False
     ScaleResources = True
     ScaleFormBorder = True
-    Left = 712
-    Top = 424
+    Left = 728
+    Top = 400
   end
 end

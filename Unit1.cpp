@@ -13121,6 +13121,7 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //	 d.v.vymazat_ZPRAVY();
 
 //	F->posun_na_element(1);
+  Form_definice_zakazek->ShowModal();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)

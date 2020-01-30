@@ -79,7 +79,7 @@ void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender)
 
    	////////definice tabulky////////
 	mGrid=new TmGrid(this);//vždy nutno jako první
-  mGrid->Create(12,2);
+  mGrid->Create(12,3);
   //vypis(""); // prozmanuti vypisu - pro sicher
 	mGrid->Tag=9;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
   mGrid->ID=0;
@@ -191,7 +191,7 @@ void TForm_definice_zakazek::uloz_Defaulttemp_zakazku()
 
     mGrid->Refresh();
     TscGPComboBox *C=mGrid->getCombo(1,1);
-
+     PØEINDEXOVAT
   	Form1->d.v.vloz_temp_zakazku
 	(
 		UnicodeString(mGrid->Cells[11][1].Text),
@@ -1123,20 +1123,14 @@ void __fastcall TForm_definice_zakazek::FormMouseMove(TObject *Sender, TShiftSta
 void TForm_definice_zakazek::getmGridWidth()
 {
   F->log(__func__);//logování
-  mGrid->Columns[0].Width=100;
-  mGrid->Columns[1].Width=150;
-  mGrid->Columns[2].Width=70;
-  mGrid->Columns[3].Width=75;
+  mGrid->Columns[0].Width=30;
+  mGrid->Columns[1].Width=50;
+  mGrid->Columns[2].Width=100;
+  mGrid->Columns[3].Width=50;
   mGrid->Columns[4].Width=60;
   mGrid->Columns[5].Width=90;
   mGrid->Columns[6].Width=30;
   mGrid->Columns[7].Width=30;
-  mGrid->Columns[8].Width=100;
-  mGrid->Columns[9].Width=30;
-  mGrid->Columns[10].Width=100;
-  mGrid->Columns[11].Width=20;
-
-
 }
 
 void TForm_definice_zakazek::setGlyphButton(double Row)
@@ -1186,123 +1180,168 @@ void TForm_definice_zakazek::OnClick(long Tag,long ID,unsigned long Col,unsigned
 
  void TForm_definice_zakazek::loadHeader(int Row,bool novy)
  {
-    F->log(__func__);//logování
-    mGrid->Top=scLabel_header->Height + scGPButton_plan_vyroby->Height +  10;
-    mGrid->Left=5;
-   if(add_zakazka) Row=Row-1;
-   else  Row=Row;
-    mGrid->scGPImageCollection=scGPImageCollection_layout;
-    mGrid->SetColumnAutoFit(-4);
-    getmGridWidth();
-    mGrid->Cells[0][Row].Type=mGrid->IMAGE;
-    mGrid->Cells[0][Row].ImageIndex=0;   //dynamicky plnit
-   F->Memo("R3");
-   mGrid->Refresh();
-   // if(!add_zakazka) // mGrid->getImage(0,Row)->AutoSize=true;    //opodminkované prozatím - pamìt chyba
-		mGrid->Cells[0][Row].Align=mGrid->LEFT;
-    F->Memo("R4");
-		mGrid->Cells[0][Row].Valign=mGrid->TOP;
-   // mGrid->getImage(0,Row)->Width=mGrid->Columns[0].Width;
-   // mGrid->getImage(0,Row)->Height=mGrid->DefaultRowHeight *2 ;
-    mGrid->Cells[1][Row].Type=mGrid->EDIT;
-		mGrid->Cells[1][Row].Align=mGrid->LEFT;
-     F->Memo("R5");
-    mGrid->Cells[2][Row].Text="";
-    mGrid->Cells[2][Row+1].Type=mGrid->BUTTON;
+//    F->log(__func__);//logování
+//    mGrid->Top=scLabel_header->Height + scGPButton_plan_vyroby->Height +  10;
+//    mGrid->Left=5;
+//   if(add_zakazka) Row=Row-1;
+//   else  Row=Row;
+//    mGrid->scGPImageCollection=scGPImageCollection_layout;
+//    mGrid->SetColumnAutoFit(-4);
+//    getmGridWidth();
+//    mGrid->Cells[0][Row].Type=mGrid->IMAGE;
+//    mGrid->Cells[0][Row].ImageIndex=0;   //dynamicky plnit
+//   F->Memo("R3");
+//   mGrid->Refresh();
+//   // if(!add_zakazka) // mGrid->getImage(0,Row)->AutoSize=true;    //opodminkované prozatím - pamìt chyba
+//		mGrid->Cells[0][Row].Align=mGrid->LEFT;
+//    F->Memo("R4");
+//		mGrid->Cells[0][Row].Valign=mGrid->TOP;
+//   // mGrid->getImage(0,Row)->Width=mGrid->Columns[0].Width;
+//   // mGrid->getImage(0,Row)->Height=mGrid->DefaultRowHeight *2 ;
+//    mGrid->Cells[1][Row].Type=mGrid->EDIT;
+//		mGrid->Cells[1][Row].Align=mGrid->LEFT;
+//     F->Memo("R5");
+//    mGrid->Cells[2][Row].Text="";
+//    mGrid->Cells[2][Row+1].Type=mGrid->BUTTON;
+//
+//     mGrid->Refresh();
+//    F->Memo(Row);
+//    if(novy || add_zakazka)
+//    {
+//
+//    mGrid->getButton(2,Row+1)->Options->NormalColor=clRed;//Form_color_dialog->scColorGrid1->ColorValue;
+//
+//    } else  mGrid->getButton(2,Row+1)->Options->NormalColor=barva; //pøiøazení barvy ze spojáku zakázek
+//   F->Memo("R6");
+//    mGrid->getButton(2,Row+1)->Options->NormalColorAlpha=250;
+//    mGrid->getButton(2,Row+1)->Options->FrameWidth=1;
+//    mGrid->getButton(2,Row+1)->Options->FrameNormalColor=mGrid->getButton(2,Row+1)->Options->NormalColor;
+//    mGrid->getButton(2,Row+1)->Options->FrameNormalColorAlpha=250;
+//    mGrid->getButton(2,Row+1)->Options->HotColor=mGrid->getButton(2,Row+1)->Options->NormalColor;
+//    mGrid->getButton(2,Row+1)->Options->HotColorAlpha=255;
+//    mGrid->getButton(2,Row+1)->Options->FocusedColor=mGrid->getButton(2,Row+1)->Options->NormalColor;
+//    mGrid->getButton(2,Row+1)->Options->FocusedColorAlpha=225;
+//    mGrid->Cells[2][Row+1].Background->Color=mGrid->getButton(2,Row+1)->Options->NormalColor;
+//
+//  F->Memo("R7");
+//    mGrid->Cells[3][Row].Text="";
+//    mGrid->Cells[4][Row].Type=mGrid->glyphBUTTON;
+//    setGlyphButton(Row);
+//    mGrid->Cells[5][Row].Text="";
+//    mGrid->Cells[6][Row].Text="";
+//    mGrid->Cells[7][Row].Text="";
+//    mGrid->Cells[7][Row].Align=mGrid->LEFT;
+//    mGrid->Cells[8][Row].Text="";
+//    mGrid->Cells[9][Row].Text="";
+//    mGrid->Cells[10][Row].Text="";
+//    mGrid->Cells[11][Row].Text="Id";
+//    mGrid->Cells[1][Row+1].Type=mGrid->COMBO;
+//    mGrid->Cells[4][Row].Align=mGrid->LEFT;
+//    mGrid->Cells[3][Row+1].Text="";
+//    mGrid->Cells[4][Row+1].Type=mGrid->EDIT;
+//    mGrid->Cells[4][Row+1].Align=mGrid->LEFT;
+//    mGrid->Cells[5][Row+1].Text="";
+//    mGrid->Cells[6][Row+1].Type=mGrid->EDIT;
+//    mGrid->Cells[6][Row+1].Align=mGrid->LEFT;
+//    mGrid->Cells[7][Row+1].Text="";
+//    mGrid->Cells[8][Row+1].Text="";
+//    mGrid->Cells[9][Row+1].Type=mGrid->EDIT;
+//    mGrid->Cells[10][Row+1].Type=mGrid->EDIT;
+//   F->Memo("R8");
+//
+//    mGrid->Cells[0][Row].RightBorder->Color=clWhite;
+//    mGrid->Cells[1][Row+1].RightBorder->Color=clWhite;
+//    mGrid->Cells[3][Row].RightBorder->Color=clWhite;
+//    mGrid->Cells[3][Row+1].RightBorder->Color=clWhite;
+//    mGrid->Cells[5][Row+1].RightBorder->Color=clWhite;
+//    mGrid->Cells[6][Row+1].RightBorder->Color=clWhite;
+//    mGrid->Cells[7][Row].RightBorder->Color=clWhite;
+//    mGrid->Cells[7][Row+1].RightBorder->Color=clWhite;
+//    mGrid->Cells[8][Row+1].RightBorder->Color=clWhite;
+//    mGrid->Cells[1][Row].BottomBorder->Color=clWhite;
+//    mGrid->Cells[1][Row+1].BottomBorder->Color=clWhite;
+//    mGrid->Cells[2][Row].BottomBorder->Color=clWhite;
+//    mGrid->Cells[3][Row].BottomBorder->Color=clWhite;
+//    mGrid->Cells[4][Row].BottomBorder->Color=clWhite;
+//    mGrid->Cells[5][Row].BottomBorder->Color=clWhite;
+//    mGrid->Cells[6][Row].BottomBorder->Color=clWhite;
+//    mGrid->Cells[7][Row].BottomBorder->Color=clWhite;
+//    mGrid->Cells[8][Row].BottomBorder->Color=clWhite;
+//    mGrid->Cells[9][Row].BottomBorder->Color=clWhite;
+//
+//    mGrid->MergeCells(0,Row,0,Row+1);
+//    mGrid->MergeCells(1,Row,2,Row);
+//    mGrid->MergeCells(5,Row,9,Row);
+//
+//  	////default hodnoty pokud nejsou žádné zakázky
+//	if(Form1->d.v.ZAKAZKY->dalsi==NULL)//kdyz je spojak prazdny
+//	{
+//     mGrid->Cells[1][Row].Text="Název zakázky";
+//     mGrid->Cells[4][Row+1].Text="100";
+//     mGrid->Cells[6][Row+1].Text="0";
+//     mGrid->Cells[9][Row+1].Text="0";
+//     mGrid->Cells[10][Row+1].Text="";
+//     mGrid->Cells[11][Row+1].Text="1";
+//
+//    //kvùli práci s combem je nutný refresh po nastavení na typ COMBOEDIT
+//    mGrid->Refresh();
+//    TscGPComboBox *C=mGrid->getCombo(1,Row+1);
+//    TscGPListBoxItem *I;
+//    //naètení hodnoty rozteèe do roletky + nastavení jako ItemIndex=0
+//    I=C->Items->Add();
+//    I->Caption = "Servisní"; C->ItemIndex=0;
+//    I=C->Items->Add();
+//    I->Caption = "Bìžná"; C->ItemIndex=1;
+//    I=NULL;delete I;
+//  }
 
-     mGrid->Refresh();
-    F->Memo(Row);
     if(novy || add_zakazka)
     {
 
-    mGrid->getButton(2,Row+1)->Options->NormalColor=clRed;//Form_color_dialog->scColorGrid1->ColorValue;
+    F->log(__func__);//logování
+    mGrid->Top=scLabel_header->Height + scGPButton_plan_vyroby->Height +  10;
+    mGrid->Left=5;
 
-    } else  mGrid->getButton(2,Row+1)->Options->NormalColor=barva; //pøiøazení barvy ze spojáku zakázek
-   F->Memo("R6");
-    mGrid->getButton(2,Row+1)->Options->NormalColorAlpha=250;
-    mGrid->getButton(2,Row+1)->Options->FrameWidth=1;
-    mGrid->getButton(2,Row+1)->Options->FrameNormalColor=mGrid->getButton(2,Row+1)->Options->NormalColor;
-    mGrid->getButton(2,Row+1)->Options->FrameNormalColorAlpha=250;
-    mGrid->getButton(2,Row+1)->Options->HotColor=mGrid->getButton(2,Row+1)->Options->NormalColor;
-    mGrid->getButton(2,Row+1)->Options->HotColorAlpha=255;
-    mGrid->getButton(2,Row+1)->Options->FocusedColor=mGrid->getButton(2,Row+1)->Options->NormalColor;
-    mGrid->getButton(2,Row+1)->Options->FocusedColorAlpha=225;
-    mGrid->Cells[2][Row+1].Background->Color=mGrid->getButton(2,Row+1)->Options->NormalColor;
 
-  F->Memo("R7");
-    mGrid->Cells[3][Row].Text="";
-    mGrid->Cells[4][Row].Type=mGrid->glyphBUTTON;
-    setGlyphButton(Row);
-    mGrid->Cells[5][Row].Text="";
-    mGrid->Cells[6][Row].Text="";
-    mGrid->Cells[7][Row].Text="";
-    mGrid->Cells[7][Row].Align=mGrid->LEFT;
-    mGrid->Cells[8][Row].Text="";
-    mGrid->Cells[9][Row].Text="";
-    mGrid->Cells[10][Row].Text="";
-    mGrid->Cells[11][Row].Text="Id";
-    mGrid->Cells[1][Row+1].Type=mGrid->COMBO;
-    mGrid->Cells[4][Row].Align=mGrid->LEFT;
-    mGrid->Cells[3][Row+1].Text="";
-    mGrid->Cells[4][Row+1].Type=mGrid->EDIT;
-    mGrid->Cells[4][Row+1].Align=mGrid->LEFT;
-    mGrid->Cells[5][Row+1].Text="";
-    mGrid->Cells[6][Row+1].Type=mGrid->EDIT;
-    mGrid->Cells[6][Row+1].Align=mGrid->LEFT;
-    mGrid->Cells[7][Row+1].Text="";
-    mGrid->Cells[8][Row+1].Text="";
-    mGrid->Cells[9][Row+1].Type=mGrid->EDIT;
-    mGrid->Cells[10][Row+1].Type=mGrid->EDIT;
-   F->Memo("R8");
 
-    mGrid->Cells[0][Row].RightBorder->Color=clWhite;
-    mGrid->Cells[1][Row+1].RightBorder->Color=clWhite;
-    mGrid->Cells[3][Row].RightBorder->Color=clWhite;
-    mGrid->Cells[3][Row+1].RightBorder->Color=clWhite;
-    mGrid->Cells[5][Row+1].RightBorder->Color=clWhite;
-    mGrid->Cells[6][Row+1].RightBorder->Color=clWhite;
-    mGrid->Cells[7][Row].RightBorder->Color=clWhite;
-    mGrid->Cells[7][Row+1].RightBorder->Color=clWhite;
-    mGrid->Cells[8][Row+1].RightBorder->Color=clWhite;
-    mGrid->Cells[1][Row].BottomBorder->Color=clWhite;
-    mGrid->Cells[1][Row+1].BottomBorder->Color=clWhite;
-    mGrid->Cells[2][Row].BottomBorder->Color=clWhite;
-    mGrid->Cells[3][Row].BottomBorder->Color=clWhite;
-    mGrid->Cells[4][Row].BottomBorder->Color=clWhite;
-    mGrid->Cells[5][Row].BottomBorder->Color=clWhite;
-    mGrid->Cells[6][Row].BottomBorder->Color=clWhite;
-    mGrid->Cells[7][Row].BottomBorder->Color=clWhite;
-    mGrid->Cells[8][Row].BottomBorder->Color=clWhite;
-    mGrid->Cells[9][Row].BottomBorder->Color=clWhite;
+     mGrid->Cells[0][0].Type=mGrid->DRAW;   //pic
+     mGrid->Cells[0][1].Type=mGrid->DRAW;   //pic slouèit
+     mGrid->Cells[0][2].Type=mGrid->DRAW;   //pic slouèit svisle
 
-    mGrid->MergeCells(0,Row,0,Row+1);
-    mGrid->MergeCells(1,Row,2,Row);
-    mGrid->MergeCells(5,Row,9,Row);
+     mGrid->Cells[0][1].Type=mGrid->EDIT;  //nazev  text  - slouèit podélnì
+     mGrid->Cells[1][1].Type=mGrid->EDIT; //jig text
+     mGrid->Cells[1][2].Type=mGrid->EDIT; //jig text  slouèit   svisle
 
-  	////default hodnoty pokud nejsou žádné zakázky
-	if(Form1->d.v.ZAKAZKY->dalsi==NULL)//kdyz je spojak prazdny
-	{
-     mGrid->Cells[1][Row].Text="Nová zakázka";
-     mGrid->Cells[4][Row+1].Text="100";
-     mGrid->Cells[6][Row+1].Text="0";
-     mGrid->Cells[9][Row+1].Text="0";
-     mGrid->Cells[10][Row+1].Text="";
-     mGrid->Cells[11][Row+1].Text="1";
+     mGrid->Cells[3][1].Type=mGrid->EDIT; //jig celkem
+     mGrid->Cells[3][2].Type=mGrid->EDIT; //jig servis
 
-    //kvùli práci s combem je nutný refresh po nastavení na typ COMBOEDIT
-    mGrid->Refresh();
-    TscGPComboBox *C=mGrid->getCombo(1,Row+1);
-    TscGPListBoxItem *I;
-    //naètení hodnoty rozteèe do roletky + nastavení jako ItemIndex=0
-    I=C->Items->Add();
-    I->Caption = "Servisní"; C->ItemIndex=0;
-    I=C->Items->Add();
-    I->Caption = "Bìžná"; C->ItemIndex=1;
-    I=NULL;delete I;
-  }
+     mGrid->Cells[4][1].Type=mGrid->glyphBUTTON; //roletka
+     mGrid->Cells[5][1].Type=mGrid->EDIT; //text dávky (asi i count)
+     mGrid->Cells[6][1].Type=mGrid->EDIT; //text dávky (asi i count)
+
+     mGrid->Cells[7][0].Type=mGrid->glyphBUTTON; //X
+     mGrid->Cells[7][1].Type=mGrid->EDIT; //color
+
+     mGrid->Cells[1][0].Text="Název zakázky";
+     mGrid->Cells[1][1].Text="Jig";
+
+     mGrid->Cells[2][1].Text="poèet celkem";
+     mGrid->Cells[2][2].Text="z toho prázdných";
+
+
+
+     mGrid->Cells[3][1].Text="100";  //  value
+     mGrid->Cells[3][2].Text="3";  //  value
+
+
+    mGrid->MergeCells(1,0,6,0);
+    mGrid->MergeCells(1,1,1,2);
+
+
+   }
+
 
  }
-
 
 
 void __fastcall TForm_definice_zakazek::FormClose(TObject *Sender, TCloseAction &Action)

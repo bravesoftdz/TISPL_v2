@@ -39,8 +39,7 @@ __published:	// IDE-managed Components
   TscGPToolPager *scGPToolPager;
   TscGPToolPagerPage *scGPToolPagerPage3;
   TscLabel *scLabel28;
-  TscGPToolPagerPage *scGPToolPagerPage2;
-  TscLabel *scLabel2;
+  TscGPToolPagerPage *scGPToolPagerPage_layout;
   TscGPToolPagerPage *scGPToolPagerPage_PL;
   TscStyledForm *scStyledForm1;
   TscStyleManager *scStyleManager1;
@@ -49,6 +48,7 @@ __published:	// IDE-managed Components
   TscGPToolPagerPage *scGPToolPagerPage_about;
   TscHTMLLabel *scHTMLLabel_about;
   TscHTMLLabel *scHTMLLabel_PL;
+  TscHTMLLabel *scHTMLLabel_layout;
   void __fastcall CloseButtonClick(TObject *Sender);
   void __fastcall FormShow(TObject *Sender);
   void __fastcall scGPToolPagerClick(TObject *Sender);
