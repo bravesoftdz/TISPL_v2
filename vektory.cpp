@@ -6974,14 +6974,10 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 				E=obraz->Elementy->dalsi;
 				TElement *novy=NULL;
 		  	while(E!=NULL)
-		  	{
+				{
 		  		//kopírování atributů
 		  		novy=new TElement;
 					kopiruj_element(E,novy);
-					//znovuvytvoření tabulky, alokace paměti pro tabulku je v kopiruj_element();
-					E->mGrid->Tag=6;//ID formu
-					E->mGrid->ID=E->n;
-					F->design_element(E,false);
 		  		//vložení do seznamu ELEMENTY
 		  		if(za!=NULL && za->n>0)
 		  		{
@@ -7008,6 +7004,17 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 		  		E=E->dalsi;
 				}
 				if(za->dalsi!=NULL)za->dalsi->geo=geo;//navrácení původní geometrie, pri smaz_elementy() byla upravena
+				//znovuvytvoření tabulky, v tomto případě musí být ve zvláštním cyklu!!!!!
+				E=F->akt_Objekt->element;
+				while(E!=NULL && E->objekt_n==F->akt_Objekt->n)
+				{
+					//znovuvytvoření tabulky, alokace paměti pro tabulku je v kopiruj_element();
+					E->mGrid->Tag=6;//ID formu
+					E->mGrid->ID=E->n;
+					F->design_element(E,false);
+					E=E->dalsi;
+				}
+				E=NULL;delete E;
 			}
 			else
 			{
@@ -7016,7 +7023,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 				{
           //přepsaní parametry z obrazu
 					kopiruj_element(E,or);
-					//vytvoření nové tabulky
+					//vytvoření nové tabulky, musí být rovnou za kopírováním elementu !!!
 					or->mGrid->Tag=6;//ID formu
 					or->mGrid->ID=or->n;
 					F->design_element(or,false);
@@ -7065,6 +7072,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 		if(storno)pozice_data=0;//vrácení pozice na default hodnotu
 	}
 	F->log(__func__,"    KONEC");
+	F->REFRESH();    F->log(__func__,"    KONEC");
 }
 ////---------------------------------------------------------------------------
 //vrátí obraz podle jeho n
