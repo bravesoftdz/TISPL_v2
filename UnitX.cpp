@@ -149,7 +149,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 		Cvektory::TElement *E=posledni_E;//pokud edituji stejný element znova není potøeba si jej znova vracet
 		Cvektory::TCesta *c=posledni_c;
 		//pokud se jedná o jiný element, znova naplnit E
-		if(posledni_E==NULL || posledni_E!=NULL && posledni_E->mGrid->ID!=ID)
+		if(posledni_E==NULL || posledni_E!=NULL && posledni_E->mGrid!=NULL && posledni_E->mGrid->ID!=ID || posledni_E!=NULL && posledni_E->mGrid==NULL)
 		{
 			E=vrat_element_z_tabulky(ID);//ne vždy je ID tabulky stejné jako n robota, proto nutné hledat ID=ID ne ID=n
 	  	//nahrání aktuálních dat do ukazatele
@@ -532,6 +532,30 @@ void TFormX::OnKeyPress(long Tag,long ID,unsigned long Col,unsigned long Row,Sys
 		{
 			Key=0;
 			MessageBeep(0);
+		}
+	}
+}
+//---------------------------------------------------------------------------
+//slouží pro spuštìní funkcionality ctrl+z a ctrl+y pokud je focus na mGridu
+void TFormX::OnKeyDown(long Tag,unsigned long Col,unsigned long Row,WORD &Key,TShiftState Shift)
+{
+	if(Shift.Contains(ssCtrl) && Key==89)//ctrl+y
+	{
+		if(F->d.v.pozice_data!=5 && F->d.v.pozice_data!=0)//pokud nejsem na konci
+		{
+			F->d.v.pozice_data+=1;
+			F->d.v.nacti_z_obrazu_DATA();
+			F->REFRESH();
+		}
+	}
+	if(Shift.Contains(ssCtrl) && Key==90)//ctrl+z
+	{
+		if(F->d.v.pozice_data!=1)//pokud nejsem na konci
+		{
+			if(F->d.v.pozice_data==0)F->d.v.pozice_data=F->d.v.DATA->predchozi->predchozi->n;
+			else F->d.v.pozice_data-=1;
+			F->d.v.nacti_z_obrazu_DATA();
+			F->REFRESH();
 		}
 	}
 }

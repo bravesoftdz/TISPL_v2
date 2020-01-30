@@ -179,6 +179,7 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 		{
 			////HTML èást
 			data_HTML+="<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css\" integrity=\"sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh\" crossorigin=\"anonymous\">"; // href=\"\../linky_layouts/styly/css/bootstrap.min.css\">";
+			//data_HTML+="<style>table{min-width: 500px;border-collapse: collapse;font-size: 20px;border-radius: 5px 5px 0 0;overflow: hidden;box-shadow: 0 0 20px grey;}th{background-color: blue;color: white;text-align: left;}th,tr,td{padding: 10px;}tr:nth-child(even){background-color: #f2f2f2;}tr:hover{color: blue;}tr:last-of-type{border-bottom: 2px solid blue;}</style>";
 			//data_HTML+="<link rel=\"stylesheet\"  href=\"\../linky_layouts/styly/css/bootstrap.min.css\">"; // href=\"\../linky_layouts/styly/css/bootstrap.min.css\">";
 			//data_HTML+="<script src=\"\../linky_layouts/styly/js/bootstrap.min.js\"></script>";
 			data_HTML+="<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">";
@@ -254,6 +255,7 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
       ////HTML èást
 			data_HTML+="<h4>Pøehled objektù a jejich parametrù</h4>";
 			data_HTML+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Pohon</th><th scope=\"col\">Délka pohonu [m]</th></tr></thead>";
+			//data_HTML+="<table><tr><th>ID</th><th>Název</th><th>Pohon</th><th>Délka pohon [m]</th></tr>";
 			////CSV èást
 			data_CSV+="Pøehled elementù a jejich parametrù\n";
 			data_CSV+="ID"+S+"Název"+S+"Pohon"+S+"Délka pohonu [m]\n";
@@ -273,7 +275,8 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 				E=NULL;delete E;
 				delka=F->m.round2double(delka,3);
 				////HTML èást
-				data_HTML+="<tr><th scope=\"row\">"+UnicodeString(O->n)+"</th><td>"+O->name.UpperCase()+"</td><td>"+pohon+"</td><td>"+delka+"</td></tr>";
+				//data_HTML+="<tr><th scope=\"row\">"+UnicodeString(O->n)+"</th><td>"+O->name.UpperCase()+"</td><td>"+pohon+"</td><td>"+delka+"</td></tr>";
+				data_HTML+="<tr><td>"+UnicodeString(O->n)+"</td><td>"+O->name.UpperCase()+"</td><td>"+pohon+"</td><td>"+delka+"</td></tr>";
 				////CSV èást
 				data_CSV+=UnicodeString(O->n)+S+O->id+S+O->name.UpperCase()+S+pohon+delka+"\n";
 				////ukazatelové záležitosti
