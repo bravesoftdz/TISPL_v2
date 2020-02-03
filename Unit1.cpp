@@ -10559,7 +10559,7 @@ void TForm1::zmena_editovaneho_objektu()
 {
 	log(__func__);//logování
 	Timer_neaktivity->Enabled=false;//vypnutí timeru pro jistotu
-	Konec->SetFocus();
+	DrawGrid_knihovna->SetFocus();
 	/////////Uložení náhledu
 	bool prepnout=true,validace=false,storno=false;
 	bool kontrola_PM=false;//při neuložení minulého náhledmu musí dojík k separátní kontrole
