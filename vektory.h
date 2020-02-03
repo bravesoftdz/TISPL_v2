@@ -682,6 +682,7 @@ public:
 	Cvektory::TDATA *vytvor_prazdny_obraz();//atributy pro tvorbu hlaviček elementů, objektů a pohonů
 
 	unsigned long pozice_data;//uchovává pozici ve spojáku dat, pro posunování při ctrl+z funkcionalitě
+	unsigned long pocet_kroku;//určuje počet uchovávaných obrazů projektu
 
 //souborové operace
 	void vytvor_hlavicku_souboru();

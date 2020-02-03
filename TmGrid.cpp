@@ -1808,8 +1808,18 @@ void __fastcall TmGrid::getTagOnKeyDown(TObject *Sender,WORD &Key, TShiftState S
 	{
 		Col=getColFromTag(((TComponent*)(Sender))->Tag);
 		Row=getRowFromTag(((TComponent*)(Sender))->Tag);
+
+		if(Shift.Contains(ssCtrl) && Key==86 && Cells[Col][Row].Type==Ttype::EDIT)//ctrl+v
+		{
+			getEdit(Col,Row)->Text=Clipboard()->AsText;
+		}
+
 		getTextFromComponentToMemoryCell(Col,Row);//dle zadaného čísla sloupce a čísla řádku vrátí z dané komponenty text do paměťové buňky, slouží např. při události onchange popř. dálších
 //    POZOR!!!, V PŘIPADĚ UŽITÍ NĚKTERÝCH NÍŽE UVEDENÝCH VOLÁNÍ, PŘÍPADNĚ DALŠÍCH PŘIDANÝCH NUTNO ODKOMENTOVAT PRVNÍ TŘI VÝŠE UVEDENÉ ŘÁDKY
+		if(Shift.Contains(ssCtrl) && Key==67 && Cells[Col][Row].Type==Ttype::EDIT)//ctrl+c
+		{
+			Clipboard()->AsText=Cells[Col][Row].Text;
+		}
 //		if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnKeyDown(Tag,Col,Row,Key);
 //		if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnKeyDown(Tag,Col,Row,Key);
 //		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnKeyDown(Tag,Col,Row,Key);

@@ -541,8 +541,10 @@ void TFormX::OnKeyDown(long Tag,unsigned long Col,unsigned long Row,WORD &Key,TS
 {
 	if(Shift.Contains(ssCtrl) && Key==89)//ctrl+y
 	{
-		if(F->d.v.pozice_data!=5 && F->d.v.pozice_data!=0)//pokud nejsem na konci
+		if(F->d.v.pozice_data!=F->d.v.pocet_kroku && F->d.v.pozice_data!=0)//pokud nejsem na konci
 		{
+			vstoupeno_elm=false;vstoupeno_poh=false;
+			F->DrawGrid_knihovna->SetFocus();
 			F->d.v.pozice_data+=1;
 			F->d.v.nacti_z_obrazu_DATA();
 			F->REFRESH();
@@ -552,6 +554,8 @@ void TFormX::OnKeyDown(long Tag,unsigned long Col,unsigned long Row,WORD &Key,TS
 	{
 		if(F->d.v.pozice_data!=1)//pokud nejsem na konci
 		{
+			vstoupeno_elm=false;vstoupeno_poh=false;
+			F->DrawGrid_knihovna->SetFocus();
 			if(F->d.v.pozice_data==0)F->d.v.pozice_data=F->d.v.DATA->predchozi->predchozi->n;
 			else F->d.v.pozice_data-=1;
 			F->d.v.nacti_z_obrazu_DATA();

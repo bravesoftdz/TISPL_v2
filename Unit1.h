@@ -790,7 +790,7 @@ public:		// User declarations
 	void Sv(UnicodeString Text="",AnsiString umisteni="neuvedeno");//usnadòuje pøístup k ShowMessage - MaVl
 	void Sr(UnicodeString Text="",AnsiString umisteni="neuvedeno");//usnadòuje pøístup k ShowMessage - Rostovi
 	void Z(UnicodeString Text="",bool add=false,TColor color=clRed);//usnadòuje pøístup ke zprávám, pokud jsou jen prázdné uvozovky (a druhı paremetry na false - co je implicitnì), vymae zpravu, parametr add rozhoduje, zda bude novı text pøeden k pøedešlému textu èi nikoliv, pokud zpráva obsahuje nìjakı text, je zobrazena ikona zprávy, poslední parametr je barva ikony zprávy
-	int MB(long left,long top,UnicodeString text,UnicodeString caption_text="",int mbTYPE=MB_OK,bool centrovat_text=true,bool checkbox_zobrazit=false,int width=366,bool default_button_caption=true);
+	int MB(long left,long top,UnicodeString text,UnicodeString caption_text="",int mbTYPE=MB_OK,bool centrovat_text=true,bool checkbox_zobrazit=false,int width=366,bool default_button_caption=true,bool copy_zobrazit=false);
 	int MB(UnicodeString text,int mbTYPE=MB_OK,bool centrovat_text=true,int width=366,bool default_button_caption=true,bool blurForm1=true,bool copy_zobrazit=false);//pokud je blurForm1 na true - Form1 v dobì zobrazení MB rozmlí/udìlá bluer efekt
 	void writeINI(AnsiString Section,AnsiString Ident,AnsiString Value);//zajišuje zápis do INI aplikace
 	AnsiString readINI(AnsiString Section,AnsiString Ident);//zajišuje ètení z INI aplikace
