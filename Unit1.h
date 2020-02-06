@@ -325,6 +325,7 @@ __published:	// IDE-managed Components
   TscGPButton *scGPButton_warning;
 	TscGPButton *scGPButton_smazat;
   TrHTMLHint *rHTMLHint1;
+	TscGPButton *scGPButton_geometrie;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -540,6 +541,7 @@ __published:	// IDE-managed Components
   void __fastcall scGPButton_errorClick(TObject *Sender);
   void __fastcall scGPButton_warningClick(TObject *Sender);
 	void __fastcall scGPButton_smazatClick(TObject *Sender);
+	void __fastcall scGPButton_geometrieClick(TObject *Sender);
 
 
 
@@ -548,7 +550,7 @@ __published:	// IDE-managed Components
 public:
 	enum Tmod{NO=0,SCHEMA,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE,EDITACE};Tmod MOD;
 	enum Tstatus{NAVRH,OVEROVANI};Tstatus STATUS;
-	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE,OFFSET_KOTY,MOVE_KOMORA,ROZMER_KOMORA,DRAW_HALA,MOVE_HALA,MOVE_BOD,MOVE_USECKA,MOVE_TEXT,GEOMETRIE,BLOK};Takce Akce;Takce Akce_temp;//akce temp slouí ke spuštìní akce pøi akci, pø. Akce=GEOMETRIE a pøi ní je potøeba pøesunout kóty geo. elementù, tudí Akce_temp=OFFSET_KOTY
+	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE,OFFSET_KOTY,MOVE_KOMORA,ROZMER_KOMORA,DRAW_HALA,MOVE_HALA,MOVE_BOD,MOVE_USECKA,MOVE_TEXT,GEOMETRIE,BLOK,GEOMETRIE_LIGHT};Takce Akce;Takce Akce_temp;//akce temp slouí ke spuštìní akce pøi akci, pø. Akce=GEOMETRIE a pøi ní je potøeba pøesunout kóty geo. elementù, tudí Akce_temp=OFFSET_KOTY
 	enum Tm_mm{M=0,MM,SEKUNDY,MINUTY};Tm_mm DOtocunit,DKunit,LOunit,Runit,Rzunit;//pøepínaè jednotek vzdálenost,rozšíøen o SEKUNDY,MINUTY (problém pøi pouití SEC a MIN) z dùvodu èasovıch a vzdálenostních kót
 	enum Tminsec{SEC=0,MIN};Tminsec PTunit,aRDunit ;//pøepínaè jednotek èasu
 	////instance
@@ -585,7 +587,6 @@ private:
 	short rotace_symbol(short trend,int X_bod,int Y_bod);//dle toho, zda je umisovanı element nad osou èi pod osou pohonu je vrácena rotace symbolu, X_bod,.. je bbod vkládání elementu (jedna souøadnice ho váe na pohon)
 	void vytvoreni_tab_knihovna();//vytovoøení tabulky knihovny objektù
 	void popisky_knihovna_nahled(bool knihovna);//pøepíná popisky mezi knihovnou a editací
-	void vytvoreni_tab_pohon();//vytvoøení tabulky pohonu
 	void odstraneni_elementu_tab_pohon(int operace);
 	void zmena_jednotek_tab_pohon();
 	void prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla,AnsiString LO,AnsiString cas,AnsiString delka_otoce);
@@ -651,7 +652,7 @@ private:
 	void mGrid_komponenta_na_draw(TmGrid *mGrid,long Col,long Row);//smazì komponentu v dané buòce a zmìní typ bunky na DRAW
 	void mGrid_puvodni_stav(Cvektory::TElement *E=NULL);//nadesingnuje tabulky elementù nebo tabulku pohonu na pùvodní stav, obnovı komponenty, naplní comba, provede Update() mGridu
 	void set_font(int velikost=14);//nastaví komponentám aFont
-	void pripnuti_dalsich_objektu();//pokud pøi uloení editovaného objektu je detekováno, e konec objketu nenavazuje na zaèátek následujísího objektu je poloen dotaz a po potvrzení dojde ke spojení
+	bool pripnuti_dalsich_objektu();//pokud pøi uloení editovaného objektu je detekováno, e konec objketu nenavazuje na zaèátek následujísího objektu je poloen dotaz a po potvrzení dojde ke spojení
 	void spojeni_prvni_posledni(double citlivost=0.5);//kontrola zda na sebe první a polední objekt navazují, pokud jsou blízko u sebe, ale nenavazují - naváe je
 
 	////promìnné
@@ -832,7 +833,8 @@ public:		// User declarations
 	void aktualizace_RT();//projde všechny elementy v aktuálnì editovaném objektu a upravím jim RT
 	void posun_na_element(unsigned long n_zpravy);//podle zprávy provede posun na danı elment
 	void smaz_kurzor();
-  UnicodeString get_temp_dir();
+	UnicodeString get_temp_dir();
+	void vytvoreni_tab_pohon();//vytvoøení tabulky pohonu
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

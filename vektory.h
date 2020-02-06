@@ -128,6 +128,15 @@ class Cvektory
 	};
 	TElement *ELEMENTY;//seznam elementů
 
+	struct TVyhybka
+	{
+		unsigned long n;
+		TElement *vyhybka;
+		TVyhybka *dalsi;
+		TVyhybka *predchozi;
+	};
+	TVyhybka *VYHYBKY;
+
 	struct TObjekt
 	{
 		unsigned long n; //pořadí objektu ve spoj.seznamu
@@ -431,6 +440,7 @@ class Cvektory
 	{
 		unsigned long n;
 		unsigned long edit_Objekt;//uchovává informaci zda je otevřena editace a jakého objektu
+		unsigned long posledni_element_n;//uchovává n posledního elementu v editovaném objektu, pro porovnání zda se změnil počet v projektu vs. obraz
 		TObjekt *Objekty;
 		TElement *Elementy;
 		TPohon *Pohony;
@@ -536,10 +546,20 @@ class Cvektory
 	void prirad_sparovany_element(TElement *Element);//přiřadí Elementu ukazatel na jeho spárovaný element, zároveň aktualizuje tomuto spárovanému elementu spárovaný element + aktualizace první - poslední S&G element
 	void aktualizuj_sparovane_ukazatele();//projde všechny stop-elementy a aktualizuje jim ukazatele na spárované elementy
 	void reserve_time(TElement *Element,TCesta *Cesta=NULL,bool highlight_bunek=false,bool refresh_mGrid=false);//vypočítá a uloží RT do elementu
-	TElement *Cvektory::vrat_posledni_element_objektu(TObjekt *Objekt);//vrátí poslední element v objektu
+	TElement *vrat_posledni_element_objektu(TObjekt *Objekt);//vrátí poslední element v objektu
+	void hlavicka_seznam_VYHYBKY();
+	void uloz_vyhybku_do_seznamu(TElement *vyhybka);
+	void smaz_vyhybku_ze_seznamu();
+	long vymaz_seznam_VYHYBKY();
+	TElement *dalsi_krok(TElement *E,TObjekt *O=NULL);//určí další krok průchodového algorytmu ve spojáku elementů, 2 možností průchod kompletního spojáku ELEMENTY, druhá průchod pouze elementů jednoho objektu
+	TElement *predchozi_krok(TElement *E,TObjekt *O=NULL);
+	void vloz_vyhybu_spojku(TElement *novy,TElement *dalsi);
 	void smaz_element(TElement *Element,bool preskocit_kontolu=false);//smaže element ze seznamu
 	void vymaz_elementy(TObjekt *Objekt);//smaže všechny elementy v daném objektu
 	long vymaz_seznam_ELEMENTY();//vymaže spojový seznam elementů z paměti
+
+	//proměnné pro elementy
+	TElement *vyhybka_pom;
 
 //metody pro POHONY
 	void hlavicka_POHONY();
@@ -673,13 +693,13 @@ public:
 	void vse_odstranit();
 
 //práce s DATA, obrazem projektu
-	void hlavicka_DATA();
-	void vytvor_obraz_DATA(bool storno=false);
-	void nacti_z_obrazu_DATA(bool storno=false);
-	Cvektory::TDATA *vrat_obraz_DATA(unsigned long n);
-	void smaz_obraz_DATA(unsigned long n=0);
-	long vymaz_seznam_DATA();
-	Cvektory::TDATA *vytvor_prazdny_obraz();//atributy pro tvorbu hlaviček elementů, objektů a pohonů
+	void hlavicka_DATA();//vytvoření hlavičky DATA
+	Cvektory::TDATA *vytvor_prazdny_obraz();//vytvoří prázdný obraz projektu, souží pro vytváření hlavičky nebo pro nový obraz (první prázdný obraz, poté se plní)
+	void vytvor_obraz_DATA(bool storno=false);//vytvoří obraz projektu v závislosti zda se jedná o storno funkcionalitu, layout nebo editaci objektu
+	void nacti_z_obrazu_DATA(bool storno=false);//načtení z obrazu projektu v závislosti zda se jedná o storno funkcionalitu, layout nebo editaci objektu
+	Cvektory::TDATA *vrat_obraz_DATA(unsigned long n);//vrátí obraz podle jeho n
+	void smaz_obraz_DATA(unsigned long n=0);//smaže konkrétní obraz
+	long vymaz_seznam_DATA();//smaže kompletní seznam DATA
 
 	unsigned long pozice_data;//uchovává pozici ve spojáku dat, pro posunování při ctrl+z funkcionalitě
 	unsigned long pocet_kroku;//určuje počet uchovávaných obrazů projektu

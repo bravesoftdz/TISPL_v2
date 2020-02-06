@@ -3227,7 +3227,7 @@ void Cvykresli::vykresli_koleje(TCanvas *canv,double X,double Y,short typ,double
 		bezier(canv,PL2,3);
 	}
 	//zarážka
-	if(F->Akce==F->GEOMETRIE)
+	if(F->Akce==F->GEOMETRIE || F->Akce==F->GEOMETRIE_LIGHT)
 	{
 		//line(canv,m.L2Px(X+S1.x),m.L2Py(Y+S1.y),m.L2Px(X+S2.x),m.L2Py(Y+S2.y));//na začátku
 		line(canv,m.L2Px(PL1[3].x),m.L2Py(PL1[3].y),m.L2Px(PL2[3].x),m.L2Py(PL2[3].y));//na konci
@@ -4240,7 +4240,7 @@ void Cvykresli::vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiStr
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_zarazku(TCanvas *canv,long X,long Y)
 {
-	if(F->Akce==F->GEOMETRIE)
+	if(F->Akce==F->GEOMETRIE || F->Akce==F->GEOMETRIE_LIGHT)
 	{
 		unsigned short W=Form1->Zoom*0.5;//0.25;
 		canv->Pen->Style=psSolid;
@@ -5140,7 +5140,7 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			Cvektory::TElement *E=F->akt_Objekt->element;//přeskočí rovnou hlavičku
 			while(E!=NULL && E->objekt_n==F->akt_Objekt->n)
 			{
-				if((E->pohon==NULL && F->akt_Objekt->pohon==NULL || E->pohon!=NULL && F->akt_Objekt->pohon!=NULL && E->pohon->n==F->akt_Objekt->pohon->n || E->eID==200) && F->Akce!=F->Takce::GEOMETRIE)//vykreslení tabulek elementů, kteří mají stejný pohon jako aktuálně editovaný pohon
+				if((E->pohon==NULL && F->akt_Objekt->pohon==NULL || E->pohon!=NULL && F->akt_Objekt->pohon!=NULL && E->pohon->n==F->akt_Objekt->pohon->n || E->eID==200) && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT)//vykreslení tabulek elementů, kteří mají stejný pohon jako aktuálně editovaný pohon
 				{
 					if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
 			  	{
@@ -5181,7 +5181,7 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			TRect oblast_kabiny=F->vrat_max_oblast(F->akt_Objekt);
 			if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
 			{
-				if(F->akt_Objekt->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE && F->Akce!=F->Takce::GEOMETRIE)//pokud nemají být zobrazeny mgridy nemá být zobrazen ani rastr
+				if(F->akt_Objekt->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT)//pokud nemají být zobrazeny mgridy nemá být zobrazen ani rastr
 				{
 					F->PmG->Redraw=false;
 			  	F->PmG->Left=m.L2Px(F->akt_Objekt->Xp);
@@ -5196,7 +5196,7 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			}
 			else
 			{
-				if(F->akt_Objekt->zobrazit_mGrid &&  F->Akce!=F->Takce::PAN_MOVE && F->Akce!=F->Takce::GEOMETRIE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
+				if(F->akt_Objekt->zobrazit_mGrid &&  F->Akce!=F->Takce::PAN_MOVE && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT)//pokud je mGrid zobrazen a nejedná se o posun obrazu
 				{
 					F->PmG->Redraw=true;
 					F->PmG->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak F->PmG->Buffer(false);
@@ -5250,7 +5250,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_do)
 		if((F->JID+10)*(-1)==(long)Element_do->n ||  (10<F->JID && F->JID<100))highlight=1;//když se bude editovat hodnota kóty, nebo se bude kóta posouvat, kvůli následnému zaokrouhlování musí bohužel zůstat tady
 	}
 	//////probíhá editace kót
-	if(F->Akce==F->GEOMETRIE)
+	if(F->Akce==F->GEOMETRIE || F->Akce==F->GEOMETRIE_LIGHT)
 	{
 		if(Element_do->geo.typ==0)vykresli_kotu(canv,Element_do->geo.X1,Element_do->geo.Y1,Element_do->geo.X4,Element_do->geo.Y4,Element_do,F->akt_Objekt->koty_elementu_offset.y,highlight);
 	}

@@ -559,6 +559,7 @@ System::WideChar TMyString::numericFilter(AnsiString aktText,System::WideChar &K
 	AnsiString Separator=get_locale_decimal();//zjištění oddělovače v aktuálním systému
 	AnsiString Mark;
 	if(typ==1)Mark="-";else Mark=Separator;
+	if(ErrorMessageBeep && ((long)Key==26 || Key==0x19 || Key==0x16 || Key==0x3))ErrorMessageBeep=false;//vypnutí zvuku pro špatnou klávesu v případě klácesových zkratek
 	if(Key!=VK_BACK)//pokud není stisknuta klávesa backspace, nelze vepsat jinou hodnotu než číselnou (to včetně reálného čísla)
 	{
 	 if(!((Key>=L'0') && (Key<=L'9') || (AnsiString(Key) == Separator) || (AnsiString(Key) == Mark)))Key=0;//pokud se nejedná o číslo nebo oddělovač
@@ -572,5 +573,4 @@ System::WideChar TMyString::numericFilter(AnsiString aktText,System::WideChar &K
 	return Key;
 }
 //---------------------------------------------------------------------------
-
 
