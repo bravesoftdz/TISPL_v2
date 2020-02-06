@@ -20,7 +20,8 @@ Cvektory::Cvektory()
 	//hlavicka_palce();//vytvoří novou hlavičku pro palce - zatím nepoužíváno
 	HALA.body=NULL;
 
-  pozice_data=0;//nastavení na defaultní hodnotu
+	pozice_data=0;//nastavení na defaultní hodnotu
+	pocet_kroku=5;//nastavení pevného počtu obrazů
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
@@ -6779,10 +6780,18 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 			}
 			pozice_data=0;//vrácení pozice na default hodnotu
 		}
+		if(pozice_data!=0)//posunutí na začátek
+		{
+			for(unsigned long i=DATA->predchozi->n;i>pozice_data;i--)
+			{
+				smaz_obraz_DATA(i);
+			}
+			pozice_data=0;
+		}
 		//vytvoření dalšího obrazu (hlavičky objektu, elementů a pohonů)
 		obraz=vytvor_prazdny_obraz();
 		//kontrola zda je místo v bufferu, případné smazání nejstaršího obrazu
-		if(DATA->predchozi->n>=5)smaz_obraz_DATA(1);
+		if(DATA->predchozi->n>=pocet_kroku)smaz_obraz_DATA(1);
 		//zařazení do spojáku DATA
 		obraz->n=DATA->predchozi->n+1;
 		obraz->predchozi=DATA->predchozi;
@@ -6843,7 +6852,7 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 			TObjekt *o_kop=NULL;
 			o_kop=new TObjekt;
 			kopiruj_objekt(F->akt_Objekt,o_kop);
-      obraz->Objekty->predchozi=o_kop;
+			obraz->Objekty->predchozi=o_kop;
 			obraz->Objekty->dalsi=o_kop;
 			o_kop->predchozi=obraz->Objekty;
 			o_kop->dalsi=NULL;
@@ -6859,7 +6868,7 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 				if(obraz->Elementy->dalsi==NULL)obraz->Elementy->dalsi=e_kop;
 				else obraz->Elementy->predchozi->dalsi=e_kop;
 				e_kop->predchozi=obraz->Elementy->predchozi;
-	  		obraz->Elementy->predchozi=e_kop;
+				obraz->Elementy->predchozi=e_kop;
 				e_kop->dalsi=NULL;
 				//ukazatelové záležitosti
 				e_kop=NULL;delete e_kop;
@@ -6868,14 +6877,14 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 			E=NULL;delete E;
 		}
 
-  	////Pohony, pouze záloha parametrů v editai nelze odstranit nebo přidat pohon
-  	TPohon *p=POHONY->dalsi,*p_kop=NULL;
-  	while(p!=NULL)
-  	{
-      //vytvoření kopie
-  		p_kop=new TPohon;
-  		p_kop->n=p->n;
-  		p_kop->name=p->name;
+		////Pohony, pouze záloha parametrů v editai nelze odstranit nebo přidat pohon
+		TPohon *p=POHONY->dalsi,*p_kop=NULL;
+		while(p!=NULL)
+		{
+			//vytvoření kopie
+			p_kop=new TPohon;
+			p_kop->n=p->n;
+			p_kop->name=p->name;
   		p_kop->rychlost_od=p->rychlost_od;
   		p_kop->rychlost_do=p->rychlost_do;
   		p_kop->aRD=p->aRD;
@@ -6898,7 +6907,7 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 }
 ////---------------------------------------------------------------------------
 void Cvektory::nacti_z_obrazu_DATA(bool storno)
-{       F->log(__func__);
+{
 	////načtení obrazu z kterého budou data načítány
 	TDATA *obraz=DATA;
 	if(!storno)obraz=vrat_obraz_DATA(pozice_data);
@@ -6910,7 +6919,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 
 		if(obraz->edit_Objekt==0)//pohyb v layoutu
 		{
-	  	////mazání dat starého projektu
+			////mazání dat starého projektu
 	  	vymaz_seznam_OBJEKTY();
 	  	hlavicka_OBJEKTY();//nutné po mazání!!!
 	  	vymaz_seznam_ELEMENTY();
@@ -6952,7 +6961,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 			//deklatace ukazatelů
 			TElement *za=F->akt_Objekt->element->predchozi,*E=NULL,*prvni_dalsiO=vrat_posledni_element_objektu(F->akt_Objekt)->dalsi;
 			TGeometrie geo;if(prvni_dalsiO!=NULL)geo=prvni_dalsiO->geo;//uložení geometrie prvního elementu následujícího objektu, při mazání elementů v akt_Objektu dojde k ovlivnění jeho geometrie
-      prvni_dalsiO=NULL;delete prvni_dalsiO;
+			prvni_dalsiO=NULL;delete prvni_dalsiO;
 			//smazání starých mGridů
 			E=F->akt_Objekt->element;
 			while(E!=NULL && E->n==F->akt_Objekt->n)
@@ -6962,7 +6971,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 				E=E->dalsi;
 			}
 			E=NULL;delete E;
-      //aktualizace dat v aktuálně editovaném objektu
+			//aktualizace dat v aktuálně editovaném objektu
 			vymaz_komory(F->akt_Objekt);
 			vymaz_body(F->akt_Objekt);
 			obraz->Objekty->dalsi->element=F->akt_Objekt->element;//uchování ukazatele na první element při kopírování objektu
@@ -6975,33 +6984,33 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 				TElement *novy=NULL;
 		  	while(E!=NULL)
 				{
-		  		//kopírování atributů
+					//kopírování atributů
 		  		novy=new TElement;
 					kopiruj_element(E,novy);
 		  		//vložení do seznamu ELEMENTY
-		  		if(za!=NULL && za->n>0)
+					if(za!=NULL && za->n>0)
 		  		{
 		  			novy->n=za->n+1;
 		  			if(za->dalsi==NULL)ELEMENTY->predchozi=novy;
-		  			else za->dalsi->predchozi=novy;
+						else za->dalsi->predchozi=novy;
 		  			novy->predchozi=za;
 		  			novy->dalsi=za->dalsi;
 		  			za->dalsi=novy;
-		  		}
+					}
 		  		else
 		  		{
 		  			novy->n=1;
-		  			novy->dalsi=ELEMENTY->dalsi;
+						novy->dalsi=ELEMENTY->dalsi;
 		  			if(ELEMENTY->dalsi!=NULL)ELEMENTY->dalsi->predchozi=novy;
 		  			else ELEMENTY->predchozi=novy;
 		  			ELEMENTY->dalsi=novy;
-		  			novy->predchozi=ELEMENTY;
+						novy->predchozi=ELEMENTY;
 		  		}
 		  		if(F->akt_Objekt->element==NULL)F->akt_Objekt->element=novy;
 					za=novy;
 		  		//ukazatelové záležitosi
-		  		novy=NULL;delete novy;
-		  		E=E->dalsi;
+					novy=NULL;delete novy;
+					E=E->dalsi;
 				}
 				if(za->dalsi!=NULL)za->dalsi->geo=geo;//navrácení původní geometrie, pri smaz_elementy() byla upravena
 				//znovuvytvoření tabulky, v tomto případě musí být ve zvláštním cyklu!!!!!
@@ -7021,7 +7030,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 				TElement *or=F->akt_Objekt->element;E=obraz->Elementy->dalsi;
 				while(E!=NULL && E->objekt_n==F->akt_Objekt->n)
 				{
-          //přepsaní parametry z obrazu
+					//přepsaní parametry z obrazu
 					kopiruj_element(E,or);
 					//vytvoření nové tabulky, musí být rovnou za kopírováním elementu !!!
 					or->mGrid->Tag=6;//ID formu
@@ -7071,8 +7080,6 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 		F->Timer_backup->Enabled=true;//obnovení timeru pro backup
 		if(storno)pozice_data=0;//vrácení pozice na default hodnotu
 	}
-	F->log(__func__,"    KONEC");
-	F->REFRESH();    F->log(__func__,"    KONEC");
 }
 ////---------------------------------------------------------------------------
 //vrátí obraz podle jeho n
