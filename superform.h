@@ -109,7 +109,7 @@ private:	// User declarations
 	void uloz_Defaulttemp_zakazku();
 	void uloz_Default_cestu();
   void getmGridWidth();
-  void setGlyphButton(double Row);
+
 
 public:		// User declarations
 	__fastcall TForm_definice_zakazek(TComponent* Owner);
@@ -120,11 +120,16 @@ public:		// User declarations
 	void OnChange(long Tag,unsigned long Col,unsigned long Row);
   void setButtonColor(int Row);
   void loadHeader(int Row,bool novy=true);
+  enum Typ_buttonu {krizek_davky, krizek};
 
+  Typ_buttonu button_type;//zjisteni ktery button ma byt designovan
+
+  void setGlyphButton(double Row, Typ_buttonu typ);
   bool add_zakazka;
 	bool zmena_TT;
   bool nacitam_zakazky;
   TColor barva;//barva zakáky
+  TColor light_gray; //barva formu
 
 };
 //---------------------------------------------------------------------------

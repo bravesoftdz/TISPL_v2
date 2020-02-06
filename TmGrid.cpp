@@ -1134,8 +1134,8 @@ void TmGrid::SetGlyphButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell
 	if(Cell.ShowHint){gB->ShowHint=true;gB->Hint=Cell.Hint;}
 
 	//text
-	gB->Font=Cell.Font;
-	gB->Caption=Cell.Text;
+ //	gB->Font=Cell.Font;
+ //	gB->Caption=Cell.Text;
 
 	//vlastník
 	gB->Parent=Form;//musí být až na konci
