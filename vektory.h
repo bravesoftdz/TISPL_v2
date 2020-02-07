@@ -114,6 +114,7 @@ class Cvektory
 		T5Rect citelna_oblast;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast celé kóty(rect0), popisku kóty (rect1), jednotek kóty (rect2) a samotného názvu např. Robot 3 (rect3) elementu, hodnota koty mezi LO (rect4) - nedovávat  do CObjekt
 
 		TGeometrie geo;//geometrie elementu
+		TGeometrie geoH;//3D geometrie, v případě spojky geometrie vedlejší větve
 		TmGrid *mGrid;
     Tdata data;//data elementu, která se mění v závislosti na zakázce
 
@@ -415,6 +416,7 @@ class Cvektory
 		unsigned int pocet_pohonu;
 		unsigned int pocet_zakazek;
 		unsigned int pocet_voziku;
+		//unsigned int pocet_vyhybek_spojek;//uchovává počet výhybek a spojek pro tvoření pole průchodu při rekonstrukci elementů
 		//parametry projektu (PP):
 		TDateTime cas_start;//začátek výroby v SEČ (resp. LSEČ)
 		unsigned long  mnozstvi;//požadované množství

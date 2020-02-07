@@ -4154,9 +4154,8 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 					JID=-1;setJobIDOnMouseMove(X,Y);kurzor(posun_l);//kvůli rychlé aktualizaci po přesunu včetně Highlightu
 				}
 				Akce=NIC;kurzor(standard);//REFRESH();znovu zakomentován, protože je volán v setJobIDOnMouseMove
-				break;//posun tabulky elementu  - REFRESH() byl 10.5.19 odkomentován, nevím proč byl zakomentovaný (asi z důvodu špatné domněnky, že se i refreshuje průběžně při přesouvání,což je sice pravda, ale není to dostatečné), zposobilo nepřekreslení spojnice mezi tabulkou a elementem po uvolnění myši
-      	d.v.vytvor_obraz_DATA();
-			}
+				d.v.vytvor_obraz_DATA();
+			}break;
 			case MOVE_ELEMENT:
 			{
 				short chybne=prekryti_LO(pom_element);//kontrola zda se element nepřekrývá lak. oknem s jiným elementem
@@ -10625,8 +10624,10 @@ void TForm1::zmena_editovaneho_objektu()
 	{
 		case mrYes://nově se při ukládání nic neděje
 		{
-			d.v.smaz_obraz_DATA(0);//smazání nepotřebného obrazu pro funcki storno
-	  	DuvodUlozit(true);
+			//vymazání nepotřebných obrazů
+			d.v.vymaz_seznam_DATA();
+			d.v.hlavicka_DATA();
+			DuvodUlozit(true);
 			nahled_ulozit(false);
 			pripnuti_dalsich_objektu();
 		}break;
@@ -10636,7 +10637,7 @@ void TForm1::zmena_editovaneho_objektu()
 	////////Můžu pokračovat?
 	if(prepnout)
 	{
-    vypni_editaci();
+		vypni_editaci();
     //storno funkcionalita
 		unsigned long objekt_n=pom_vyhybka->n;//uchovávání, pokud bude stisknuto storno dojde ke smazání objektu
 		if(storno)d.v.nacti_z_obrazu_DATA(true);//až po uzavření staré editace
@@ -10666,7 +10667,7 @@ void TForm1::zmena_editovaneho_objektu()
 		akt_Objekt=pom;//ostrý ukazatel, nové pojetí po změně DM
 		//vymazání kroků z layoutu, musí být po nastavení akt_Objektu!!!!!!!!!!!!!
 		d.v.vytvor_obraz_DATA(true);//vytovoření obrazu projektu pro funkci storno
-	 	d.v.vytvor_obraz_DATA();//obraz pro vracení se v náhledu
+		d.v.vytvor_obraz_DATA();//logování//obraz pro vracení se v náhledu
 		//nastavení zoomu na vhodný náhled
   	if(Zoom<=5.0)Zoom=5.0;//ponechání zoomu pokud je vetší jak 5
   	probehl_zoom=true;
@@ -10739,13 +10740,14 @@ void TForm1::zmena_editovaneho_objektu()
 			{
 				if(E->n>0)
 				{
-          //znovuvytvoření mGridů, podle nového DM nutné!!!
+					//znovuvytvoření mGridů, podle nového DM nutné!!!
 					E->mGrid=new TmGrid(F);
 					E->mGrid->Tag=6;//ID formu
 					E->mGrid->ID=E->n;
 					design_element(E,false);
 					if(E->sparovany!=NULL && E->sparovany->objekt_n==akt_Objekt->n)E->sparovany=d.v.vrat_element(akt_Objekt,E->sparovany->n);//atualizace ukazatelů
 					if(d.v.vrat_druh_elementu(E)==0)d.v.reserve_time(E);//aktualizace RT, v případě, že došlo ke změně přejezdu
+
 				}
   			E=E->dalsi;
   		}
@@ -10760,7 +10762,7 @@ void TForm1::zmena_editovaneho_objektu()
 		if(kontrola_PM)vlozit_predavaci_misto();
 		Akce=BLOK;//blokace spouštění mousedown po této metodě, bez blokace dojde k spuštění akce pan
 		REFRESH();//musí být z důvodu změny vykreslení
-		if(akt_Objekt->pohon==NULL && d.v.POHONY->dalsi!=NULL){PmG->getCombo(0,0)->DropDown();FormX->vstoupeno_poh=true;}//otevření COMBA pokud objekt nemá žádný pohon a pokud existují nějaké pohony
+		if(akt_Objekt->pohon==NULL && d.v.POHONY->dalsi!=NULL && !(PmG->Top+PmG->Height<34 || PmG->Top>ClientHeight-73 || PmG->Left+PmG->Width<168 || PmG->Left>ClientWidth)){PmG->getCombo(0,0)->DropDown();FormX->vstoupeno_poh=true;}//otevření COMBA pokud objekt nemá žádný pohon a pokud existují nějaké pohony
 	}
 }
 //---------------------------------------------------------------------------
@@ -12298,50 +12300,30 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 	Cvektory::TElement *E=NULL;
 	for(unsigned int i=1;i<=3;i++)
 	{
-		switch(i)
-		{
-//			case 1:E=d.v.vloz_element(O,300,0.0,0.0,180);break;
-//			case 4:E=d.v.vloz_element(O,301,0.0,0.0,180);E->name="Spojka 1";break;
-			default:E=d.v.vloz_element(O,0,0.0,0.0,180);break;
-		}
-		E->dalsi2;E->predchozi2;
+		E=new Cvektory::TElement;E->eID=0;E->n=i+1;E->name="Stop "+AnsiString(i);
+		E->dalsi=NULL;E->dalsi2=NULL;E->predchozi2=NULL;
+		E->predchozi=d.v.ELEMENTY->predchozi;d.v.ELEMENTY->predchozi->dalsi=E;d.v.ELEMENTY->predchozi=E;
 	}
-	E=new Cvektory::TElement;E->eID=300;E->n=2;E->name="Výhybka 1";d.v.vloz_vyhybu_spojku(E,d.v.ELEMENTY->dalsi->dalsi);
-	E=new Cvektory::TElement;E->eID=301;E->n=8;E->name="Spojka 1";d.v.vloz_vyhybu_spojku(E,d.v.ELEMENTY->predchozi);
+	Cvektory::TElement *vyh=new Cvektory::TElement;vyh->eID=300;vyh->n=35;vyh->name="Výhybka 1";d.v.vloz_vyhybu_spojku(vyh,d.v.ELEMENTY->predchozi);
+	Cvektory::TElement *spoj=new Cvektory::TElement;spoj->eID=301;spoj->n=36;spoj->name="Spojka 1";d.v.vloz_vyhybu_spojku(spoj,d.v.ELEMENTY->dalsi->dalsi);
 //
-	E=new Cvektory::TElement;E->eID=0;E->n=10;E->name="TEST 1";
-	E->dalsi=d.v.ELEMENTY->dalsi->dalsi->dalsi2;     E->dalsi2=NULL;
-	d.v.ELEMENTY->dalsi->dalsi->dalsi2->predchozi2=E;
-	d.v.ELEMENTY->dalsi->dalsi->dalsi2=E;
-	E->predchozi=d.v.ELEMENTY->dalsi->dalsi;
-//	E=new Cvektory::TElement;
-//	E->eID=0;E->n=10;E->name="TEST";E->predchozi=d.v.ELEMENTY->dalsi->dalsi;d.v.ELEMENTY->dalsi->dalsi->dalsi2=E;
-//	E->dalsi=d.v.ELEMENTY->predchozi->predchozi;d.v.ELEMENTY->predchozi->predchozi->predchozi2=E;    E->dalsi2=NULL;  E->predchozi2=NULL;
+	E=new Cvektory::TElement;E->eID=0;E->n=10;E->name="TEST 1";E->dalsi2=NULL;E->predchozi2=NULL;
+	vyh->dalsi2=E;E->predchozi=vyh;
+	spoj->predchozi2=E;E->dalsi=spoj;
 
-//	E=new Cvektory::TElement;E->predchozi2=NULL;
-//	E->eID=0;E->name="TEST";E->predchozi=d.v.ELEMENTY->dalsi->dalsi;d.v.ELEMENTY->dalsi->dalsi->dalsi2=E;
-//	E->dalsi=d.v.ELEMENTY->predchozi->predchozi;d.v.ELEMENTY->predchozi->predchozi->predchozi2=E;    E->dalsi2=NULL;
-//
-//	E=new Cvektory::TElement;E->predchozi2=NULL;E->eID=301;E->name="Spojka 2";E->dalsi=NULL;E->predchozi=d.v.ELEMENTY->predchozi;d.v.ELEMENTY->predchozi->dalsi=E;d.v.ELEMENTY->predchozi=E;
-//
-//	E=new Cvektory::TElement;E->predchozi2=NULL;E->eID=300;E->name="Výhybka 2";E->predchozi=d.v.ELEMENTY->dalsi->dalsi->dalsi2;d.v.ELEMENTY->dalsi->dalsi->dalsi2->dalsi=E;
-//	E->dalsi=d.v.ELEMENTY->predchozi->predchozi->predchozi;d.v.ELEMENTY->predchozi->predchozi->predchozi->predchozi2=E;E->dalsi2=new Cvektory::TElement;E->dalsi2->predchozi=E;E->dalsi2->predchozi2=NULL;
-//
-//	E=E->dalsi2;E->eID=0;E->name="TEST 2";E->dalsi=d.v.ELEMENTY->predchozi;d.v.ELEMENTY->predchozi->predchozi2=E;
-																					 d.v.ELEMENTY->predchozi->dalsi2=NULL;//d.v.ELEMENTY->dalsi->dalsi2->dalsi;
-	E=d.v.ELEMENTY->dalsi;
-	while(E!=NULL)
+	E=d.v.ELEMENTY->dalsi;   unsigned int i=0;if(E->dalsi2!=NULL)Sv();
+	while(E!=NULL && E->n>0)
 	{
 		Memo(E->name);
-//		if(E->dalsi2!=NULL)E=E->dalsi2;else
+		//if(E->dalsi2!=NULL && i==0){E=E->dalsi2;i++;}else
 		//E=E->dalsi;
 		E=d.v.dalsi_krok(E);
 	}
-//	E=NULL;delete E;
-//	d.v.smaz_objekt(O);
-//	O=NULL;delete O;
-//	d.v.vymaz_seznam_ELEMENTY();
-//	d.v.hlavicka_ELEMENTY();
+	E=NULL;delete E;
+	d.v.smaz_objekt(O);
+	O=NULL;delete O;
+	d.v.vymaz_seznam_ELEMENTY();
+	d.v.hlavicka_ELEMENTY();
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
