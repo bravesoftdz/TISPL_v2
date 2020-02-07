@@ -7191,7 +7191,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 			}
 			//nebyl změněn počet elementů, nebudu mazat pouze přepisovat parametry (aktualizace)
 			else
-			{   F->Memo("");
+			{
 				TElement *or=F->akt_Objekt->element;E=obraz->Elementy->dalsi;
 				while(E!=NULL)
 				{
