@@ -2886,6 +2886,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 			d.v.pozice_data+=1;
 			d.v.nacti_z_obrazu_DATA();
 			REFRESH();
+			if(akt_Objekt!=NULL)mGrid_on_mGrid();//naplní comba tabulek a zkontroluje překrytí
 		}
 	}
 	//Z, musí být až po nastavení funkční klávesy
@@ -2897,6 +2898,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 			else d.v.pozice_data-=1;
 			d.v.nacti_z_obrazu_DATA();
 			REFRESH();
+			if(akt_Objekt!=NULL)mGrid_on_mGrid();//naplní comba tabulek a zkontroluje překrytí
 		}
 	}
 	if(Shift.Contains(ssCtrl) && Key==67 && editace_textu)//ctrl+c
@@ -8023,7 +8025,7 @@ void TForm1::aktualizace_ComboPohon ()
 }
 //---------------------------------------------------------------------------
 //nadesignuje tabulky daného elementu
-void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
+void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni,bool plnit_comba)
 {
 	log(__func__);//logování
 	//definice barev
@@ -8113,7 +8115,15 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 	}
 	//sloučení buněk hlavičky
 	E->mGrid->MergeCells(0,0,1,0);//update na tomto místě působí potíže, přesunout do add element asi a do NP_input;
-	//E->mGrid->Update();//musí být přítomen před zakazováním komponent, před Update tabulka ještě neexistuje
+	if(plnit_comba)napln_comba_mGridu(E);
+	set_enabled_mGrid(E);
+
+	//////dočasně
+	if(E->eID==1||E->eID==7||E->eID==11||E->eID==15||E->eID==101||E->eID==105)E->mGrid->Cells[1][3].InputNumbersOnly=1;
+}
+//---------------------------------------------------------------------------
+void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
+{
 	//naplnění a přiřazení COMBA rotace
 	if(E->eID==3||E->eID==4||E->eID==5||E->eID==6||E->eID==9||E->eID==10||E->eID==13||E->eID==14||E->eID==17||E->eID==18||E->eID==103||E->eID==104||E->eID==107||E->eID==108)//elementy s otočí
 	{
@@ -8168,20 +8178,6 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 		C=NULL;delete C;
 		if(E->mGrid->Columns[1].Width<100)E->mGrid->Columns[1].Width+=15;//rozčíření skrze combo
 	}
-	set_enabled_mGrid(E);
-//	if(akt_Objekt->pohon!=NULL)//pokud má objekt přiřazený pohon
-//	{
-//		if(d.v.pohon_je_pouzivan(akt_Objekt->pohon->n))//pokud je tento pohon používán mimo objekt, jako parametr mimo_objekt musí být pom!!!!!
-//		{
-//			switch(E->eID)
-//			{
-//				case 1:case 7:case 11:case 15:case 101:case 105:E->mGrid->SetEnabledComponent(1,1,false);break;
-//				case 3:case 9:case 13:case 17:case 103:case 107:{E->mGrid->SetEnabledComponent(1,1,false);E->mGrid->SetEnabledComponent(1,6,false);}break;
-//			}
-//		}
-//	}
-	//////dočasně
-	if(E->eID==1||E->eID==7||E->eID==11||E->eID==15||E->eID==101||E->eID==105)E->mGrid->Cells[1][3].InputNumbersOnly=1;
 }
 //---------------------------------------------------------------------------
 //vytvoření tabulek, první výpočty a zapsání do spojáku
@@ -12298,32 +12294,26 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Cvektory::TObjekt *O=d.v.DATA->Objekty->dalsi;
-	while(O!=NULL)
+	Cvektory::TObjekt *O=d.v.vloz_objekt(3,0.0,0.0);
+	Cvektory::TElement *E=NULL;
+	for(unsigned int i=1;i<=3;i++)
 	{
-		Memo(O->name);
-		O=O->dalsi;
+		switch(i)
+		{
+//			case 1:E=d.v.vloz_element(O,300,0.0,0.0,180);break;
+//			case 4:E=d.v.vloz_element(O,301,0.0,0.0,180);E->name="Spojka 1";break;
+			default:E=d.v.vloz_element(O,0,0.0,0.0,180);break;
+		}
+		E->dalsi2;E->predchozi2;
 	}
-//	Cvektory::TObjekt *O=d.v.vloz_objekt(3,0.0,0.0);
-//	Cvektory::TElement *E=NULL;
-//	for(unsigned int i=1;i<=3;i++)
-//	{
-//		switch(i)
-//		{
-////			case 1:E=d.v.vloz_element(O,300,0.0,0.0,180);break;
-////			case 4:E=d.v.vloz_element(O,301,0.0,0.0,180);E->name="Spojka 1";break;
-//			default:E=d.v.vloz_element(O,0,0.0,0.0,180);break;
-//		}
-//		E->dalsi2;E->predchozi2;
-//	}
-//	E=new Cvektory::TElement;E->eID=300;E->n=2;E->name="Výhybka 1";d.v.vloz_vyhybu_spojku(E,d.v.ELEMENTY->dalsi->dalsi);
-//	E=new Cvektory::TElement;E->eID=301;E->n=8;E->name="Spojka 1";d.v.vloz_vyhybu_spojku(E,d.v.ELEMENTY->predchozi);
+	E=new Cvektory::TElement;E->eID=300;E->n=2;E->name="Výhybka 1";d.v.vloz_vyhybu_spojku(E,d.v.ELEMENTY->dalsi->dalsi);
+	E=new Cvektory::TElement;E->eID=301;E->n=8;E->name="Spojka 1";d.v.vloz_vyhybu_spojku(E,d.v.ELEMENTY->predchozi);
 //
-//	E=new Cvektory::TElement;E->eID=0;E->n=10;E->name="TEST 1";
-//	E->dalsi=d.v.ELEMENTY->dalsi->dalsi->dalsi2;     E->dalsi2=NULL;
-//	d.v.ELEMENTY->dalsi->dalsi->dalsi2->predchozi2=E;
-//	d.v.ELEMENTY->dalsi->dalsi->dalsi2=E;
-//	E->predchozi=d.v.ELEMENTY->dalsi->dalsi;
+	E=new Cvektory::TElement;E->eID=0;E->n=10;E->name="TEST 1";
+	E->dalsi=d.v.ELEMENTY->dalsi->dalsi->dalsi2;     E->dalsi2=NULL;
+	d.v.ELEMENTY->dalsi->dalsi->dalsi2->predchozi2=E;
+	d.v.ELEMENTY->dalsi->dalsi->dalsi2=E;
+	E->predchozi=d.v.ELEMENTY->dalsi->dalsi;
 //	E=new Cvektory::TElement;
 //	E->eID=0;E->n=10;E->name="TEST";E->predchozi=d.v.ELEMENTY->dalsi->dalsi;d.v.ELEMENTY->dalsi->dalsi->dalsi2=E;
 //	E->dalsi=d.v.ELEMENTY->predchozi->predchozi;d.v.ELEMENTY->predchozi->predchozi->predchozi2=E;    E->dalsi2=NULL;  E->predchozi2=NULL;
@@ -12338,15 +12328,15 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //	E->dalsi=d.v.ELEMENTY->predchozi->predchozi->predchozi;d.v.ELEMENTY->predchozi->predchozi->predchozi->predchozi2=E;E->dalsi2=new Cvektory::TElement;E->dalsi2->predchozi=E;E->dalsi2->predchozi2=NULL;
 //
 //	E=E->dalsi2;E->eID=0;E->name="TEST 2";E->dalsi=d.v.ELEMENTY->predchozi;d.v.ELEMENTY->predchozi->predchozi2=E;
-//																					 d.v.ELEMENTY->predchozi->dalsi2=NULL;//d.v.ELEMENTY->dalsi->dalsi2->dalsi;
-//	E=d.v.ELEMENTY->dalsi;
-//	while(E!=NULL)
-//	{
-//		Memo(E->name);
-////		if(E->dalsi2!=NULL)E=E->dalsi2;else
-//		E=E->dalsi;
-//		//E=d.v.dalsi_krok(E);
-//	}
+																					 d.v.ELEMENTY->predchozi->dalsi2=NULL;//d.v.ELEMENTY->dalsi->dalsi2->dalsi;
+	E=d.v.ELEMENTY->dalsi;
+	while(E!=NULL)
+	{
+		Memo(E->name);
+//		if(E->dalsi2!=NULL)E=E->dalsi2;else
+		//E=E->dalsi;
+		E=d.v.dalsi_krok(E);
+	}
 //	E=NULL;delete E;
 //	d.v.smaz_objekt(O);
 //	O=NULL;delete O;

@@ -649,8 +649,8 @@ private:
 	void smaz_bod_haly_objektu(Cvektory::TBod *bod);//smaže bod haly nebo objektu, pokud existují už jen 2 poslední body smaže oba
 	void mGrid_on_mGrid();//prohledá zda se pøekrývají mGridy
   void mGrid_mimo_obraz(Cvektory::TElement *E=NULL);//kontrola zde je mGrid mimo obraz, pokud ano vypnutí komponent
+  void mGrid_puvodni_stav(Cvektory::TElement *E=NULL);//nadesingnuje tabulky elementù nebo tabulku pohonu na pùvodní stav, obnový komponenty, naplní comba, provede Update() mGridu
 	void mGrid_komponenta_na_draw(TmGrid *mGrid,long Col,long Row);//smazì komponentu v dané buòce a zmìní typ bunky na DRAW
-	void mGrid_puvodni_stav(Cvektory::TElement *E=NULL);//nadesingnuje tabulky elementù nebo tabulku pohonu na pùvodní stav, obnový komponenty, naplní comba, provede Update() mGridu
 	void set_font(int velikost=14);//nastaví komponentám aFont
 	bool pripnuti_dalsich_objektu();//pokud pøi uložení editovaného objektu je detekováno, že konec objketu nenavazuje na zaèátek následujísího objektu je položen dotaz a po potvrzení dojde ke spojení
 	void spojeni_prvni_posledni(double citlivost=0.5);//kontrola zda na sebe první a polední objekt navazují, pokud jsou blízko u sebe, ale nenavazují - naváže je
@@ -825,7 +825,7 @@ public:		// User declarations
 	TRect souradnice_LO(Cvektory::TElement *E);//vrací souøadnice (PX) lakovacího okna elementu pokud nìjaké má,pokud ne vrátí souøadnice elementu
 	short prekryti_LO(Cvektory::TElement *E);//prozkoumá zda se element nepøekrýva lak. oknem se sousedními,  0=nepøkrývá se, 1=pøekrývá se LO, 2=pøekrývá se zóna
 	double vzdalenost_meziLO(Cvektory::TElement *E,double orientace);//vrati delku v metrech mezi LO elementù
-	void design_element(Cvektory::TElement *E,bool prvni_spusteni);//nadesignuje tabulky daného elementu
+	void design_element(Cvektory::TElement *E,bool prvni_spusteni,bool plnit_comba=true);//nadesignuje tabulky daného elementu
 	TPoint bod_vlozeni_elementu(double kontr_x=-1000,double kontr_y=-1000);//vrací bod vložení elementu, "pøilepuje" kurzor na geometrii pokud se jedná o pøímku, parametry kontr_x a y slouží ke kontrole bodu zda se nachází na pøímce (pøi posunu)
 	bool bod_na_geometrii(double X, double Y,Cvektory::TElement *Element=NULL);//kontroluje zde se bod nachází na geometri, vrací pouze ano/ne, pokud je do metody poslán ukazatel na element provìøí zda se tento element nachází na geometrii
 	double max_voziku(Cvektory::TElement *stopka);//vrátí maximální možný poèet vozíkù na stopce, podle geometrie pøed ní
@@ -835,6 +835,7 @@ public:		// User declarations
 	void smaz_kurzor();
 	UnicodeString get_temp_dir();
 	void vytvoreni_tab_pohon();//vytvoøení tabulky pohonu
+	void napln_comba_mGridu(Cvektory::TElement *E);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

@@ -2930,54 +2930,54 @@ void Cvektory::smaz_vyhybku_ze_seznamu()
 }
 long Cvektory::vymaz_seznam_VYHYBKY()
 {
-  //
+	//
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 //určí další krok průchodového algorytmu ve spojáku elementů, 2 možností průchod kompletního spojáku ELEMENTY, druhá průchod pouze elementů jednoho objektu
 Cvektory::TElement *Cvektory::dalsi_krok(TElement *E,TObjekt *O)
 {
-	if(E->eID==300)
-	{
-		uloz_vyhybku_do_seznamu(E);//uloži ji do seznamu, abych věděl kam se mám vrátit
-		E=E->dalsi;//další krok bude na sekundární větev
-	}
-	//jsem v sekundární vetvi na posledním elementu před spojkou
-	else if(E->eID==301 && VYHYBKY->predchozi->n!=0)
-	{
-		E=VYHYBKY->predchozi->vyhybka->dalsi2;//navrácení zpět na výhybku
-		smaz_vyhybku_ze_seznamu();//smazání výhybky kterou jsem již prošel
-		//kontrola zda za vyhybkou není hned spojka (výhybka v sekundární větvi)
-		if(E->eID==301)
-		{
-			E=VYHYBKY->predchozi->vyhybka->dalsi2;//pokud ano vrat se na predchozi vyhybku
-			smaz_vyhybku_ze_seznamu();//smazání výhybky kterou jsem již prošel
-		}
-	}
-	//else if(E->dalsi!=NULL && E->dalsi->eID==301 && E->dalsi->predchozi2==E)E=E->dalsi->dalsi;
-	else
-		E=E->dalsi;
-
-/////funkční procházení, preference sekundární větve, nedojde až na spojku, před spojkou se vrátí na vyhybku a jde po hlavní vetvi, kde projde přes spojku
-	//jsem na výhybce
 //	if(E->eID==300)
 //	{
 //		uloz_vyhybku_do_seznamu(E);//uloži ji do seznamu, abych věděl kam se mám vrátit
-//		E=E->dalsi2;//další krok bude na sekundární větev
+//		E=E->dalsi;//další krok bude na sekundární větev
 //	}
 //	//jsem v sekundární vetvi na posledním elementu před spojkou
-//	else if(E->dalsi!=NULL && E->dalsi->eID==301 && VYHYBKY->predchozi->n!=0)
+//	else if(E->eID==301 && VYHYBKY->predchozi->n!=0)
 //	{
-//		E=VYHYBKY->predchozi->vyhybka->dalsi;//navrácení zpět na výhybku
+//		E=VYHYBKY->predchozi->vyhybka->dalsi2;//navrácení zpět na výhybku
 //		smaz_vyhybku_ze_seznamu();//smazání výhybky kterou jsem již prošel
 //		//kontrola zda za vyhybkou není hned spojka (výhybka v sekundární větvi)
 //		if(E->eID==301)
 //		{
-//			E=VYHYBKY->predchozi->vyhybka->dalsi;//pokud ano vrat se na predchozi vyhybku
+//			E=VYHYBKY->predchozi->vyhybka->dalsi2;//pokud ano vrat se na predchozi vyhybku
 //			smaz_vyhybku_ze_seznamu();//smazání výhybky kterou jsem již prošel
 //		}
 //	}
-//	else E=E->dalsi;
+//	//else if(E->dalsi!=NULL && E->dalsi->eID==301 && E->dalsi->predchozi2==E)E=E->dalsi->dalsi;
+//	else
+//		E=E->dalsi;
+
+/////funkční procházení, preference sekundární větve, nedojde až na spojku, před spojkou se vrátí na vyhybku a jde po hlavní vetvi, kde projde přes spojku
+	//jsem na výhybce
+	if(E->eID==300)
+	{
+		uloz_vyhybku_do_seznamu(E);//uloži ji do seznamu, abych věděl kam se mám vrátit
+		E=E->dalsi2;//další krok bude na sekundární větev
+	}
+	//jsem v sekundární vetvi na posledním elementu před spojkou
+	else if(E->dalsi!=NULL && E->dalsi->eID==301 && VYHYBKY->predchozi->n!=0)
+	{
+		E=VYHYBKY->predchozi->vyhybka->dalsi;//navrácení zpět na výhybku
+		smaz_vyhybku_ze_seznamu();//smazání výhybky kterou jsem již prošel
+		//kontrola zda za vyhybkou není hned spojka (výhybka v sekundární větvi)
+		if(E->eID==301)
+		{
+			E=VYHYBKY->predchozi->vyhybka->dalsi;//pokud ano vrat se na predchozi vyhybku
+			smaz_vyhybku_ze_seznamu();//smazání výhybky kterou jsem již prošel
+		}
+	}
+	else E=E->dalsi;
 	//vrat další krok
 	return E;
 }
@@ -7061,7 +7061,7 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 //---------------------------------------------------------------------------
 //načtení z obrazu projektu v závislosti zda se jedná o storno funkcionalitu, layout nebo editaci objektu
 void Cvektory::nacti_z_obrazu_DATA(bool storno)
-{
+{             F->log(__func__);
 	////určení obrazu z kterého budou data načítány
 	TDATA *obraz=DATA;
 	if(!storno)obraz=vrat_obraz_DATA(pozice_data);
@@ -7117,6 +7117,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 			TElement *za=F->akt_Objekt->element->predchozi,*E=NULL,*prvni_dalsiO=vrat_posledni_element_objektu(F->akt_Objekt)->dalsi;
 			prvni_dalsiO=NULL;delete prvni_dalsiO;
 			//smazání starých mGridů
+			F->DrawGrid_knihovna->SetFocus();
 			E=F->akt_Objekt->element;
 			while(E!=NULL && E->objekt_n==F->akt_Objekt->n)
 			{
@@ -7184,7 +7185,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 					//znovuvytvoření tabulky, alokace paměti pro tabulku je v kopiruj_element();
 					E->mGrid->Tag=6;//ID formu
 					E->mGrid->ID=E->n;
-					F->design_element(E,false);
+					F->design_element(E,false,false);
 					E=E->dalsi;
 				}
 				E=NULL;delete E;
@@ -7202,7 +7203,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 					{
 						or->mGrid->Tag=6;//ID formu
 						or->mGrid->ID=or->n;
-						F->design_element(or,false);
+						F->design_element(or,false,false);
 					}
 					or=or->dalsi;
 					E=E->dalsi;
@@ -7221,7 +7222,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 				E=E->dalsi;
 			}
 			delete E;E=NULL;
-			//aktualizace sparovaných ukazatelu a RT
+      //aktualizace sparovaných ukazatelu a RT
 			aktualizuj_sparovane_ukazatele();
 		}
 
@@ -7251,7 +7252,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 
 		F->Timer_backup->Enabled=true;//obnovení timeru pro backup, nespouští se!
 		if(storno)pozice_data=0;//vrácení pozice na default hodnotu
-	}
+	}     F->log(__func__,"      KONEC");
 }
 //---------------------------------------------------------------------------
 //vrátí obraz podle jeho n
