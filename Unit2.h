@@ -28,6 +28,8 @@ __published:	// IDE-managed Components
 	TMemo *Memo1;
 	TButton *Button7;
 	TscGPImageCollection *scGPImageCollection1;
+	TButton *Button8;
+	TButton *Button9;
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall Button1Click(TObject *Sender);
 	void __fastcall Button2Click(TObject *Sender);
@@ -44,6 +46,8 @@ __published:	// IDE-managed Components
 	void __fastcall FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
 	void __fastcall Button7Click(TObject *Sender);
+	void __fastcall Button8Click(TObject *Sender);
+	void __fastcall Button9Click(TObject *Sender);
 
 
 private:	// User declarations
