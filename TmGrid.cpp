@@ -2186,7 +2186,7 @@ void TmGrid::CopyCells2Clipboard(unsigned long ColCell_1,unsigned long RowCell_1
 	UnicodeString T="";
 	for(unsigned long Y=RowCell_1;Y<=RowCell_2;Y++)
 	{
-    for(unsigned long X=ColCell_1;X<=ColCell_2;X++)
+		for(unsigned long X=ColCell_1;X<=ColCell_2;X++)
 		{
 			T+=mGrid->Cells[X][Y].Text+Separator;
 		}
@@ -2263,22 +2263,22 @@ void TmGrid::Clear()
 //---------------------------------------------------------------------------
 //přidá sloupec za poslední sloupec, pokud copyComponentFromPreviousRow je na true, zkopiruje kompomenty z předchozího sloupce, pokud je invalidate na true, automaticky po přidání překreslí tabulku, někdy pokud nechci problikávat tabulku lépe nastavit na false a zavolat formpaint přímo za voláním metody AddRow přimo v užitém formuláři
 void TmGrid::AddColumn(bool copyComponentFromPreviousRow,bool invalidate)
-{ //při realock asi neudrží výšku řádků
-	//zvýšení celkového počtu řádků
+{ //při realock asi neudrží šířku sloupců
+	//zvýšení celkového počtu sloupců
 	ColCount++;
 
 	//kopie komponent z nadřízeného řádku, jeli-požadováno
 	if(copyComponentFromPreviousRow)
 	{
 		realock();//musí proběhnout před následujícím kodem, jinak řeší Show
-		for(unsigned long Y=0;Y<RowCount;Y++)
+		for(unsigned long Y=0;Y<RowCount;Y++)//překopíruje typ buňky z původně posledního, nyní předposledního sloupce do nového posledního
 		{
-			Cells[ColCount-1][Y].Type=Cells[ColCount-2][Y].Type;//createComponent není třeba
+			Cells[ColCount-1][Y].Type=Cells[ColCount-2][Y].Type;//createComponent není třeba, je voláno později
 		}
 	}
 
 	//pokud je požadováno překreslení
-	if(invalidate)Show();//překreslení s problikem, jinak použít přímo ve formu formpaint a toto zakomentovat
+	if(invalidate)Show();//překreslení s problikem, jinak použít přímo ve formu formpaint a toto přes parametr invalidate odstavit
 }
 //---------------------------------------------------------------------------
 //smaže text v celém sloupci
@@ -2295,20 +2295,29 @@ void TmGrid::DeleteColumn(unsigned long Column,bool invalidate)
 {
 	if(Column<=ColCount-1 && ColCount-1>0)//nelze smazat nultý sloupec
 	{
-		DeleteComponents(Column,0,Column,RowCount-1);//odmazání komponent na aktuálním sloupci (je opravdu třeba kvůli uvolnění), pozor, je nutné odevzdat focus mimo mazané komponenty, jinak nastane paměťová chyba
-		//překopíruje sloupec resp. buňky z sloupce následujícího a ubere poslední sloupec, pokud se nejedná o jediný sloupec
-		for(unsigned long X=Column;X<ColCount-1;X++)
+		for(unsigned long X=Column;X<ColCount;X++)//průchod po jednotlivých sloupcích
 		{
-			for(unsigned long Y=0;Y<RowCount;Y++)
+			for(unsigned long Y=0;Y<RowCount;Y++)//průchod po jednotlivých řádcích
 			{
-				CopyCell(Cells[X+1][Y],Cells[X][Y],true);
-				MoveComponent(X,Y,1,0);
+				//smazání aktuálního sloupce
+				if(X==Column)//použito pouze pro mazaný sloupec
+				{
+					DeleteComponents(Column,Y,Column,Y);//odmazání komponent na aktuálním sloupci (je opravdu třeba kvůli uvolnění), pozor, je nutné odevzdat focus mimo mazané komponenty, jinak nastane paměťová chyba, pro zjednodušení, aby neprocházelo dalším cyklem mazání po jedné komponentě
+					Cells[Column][Y].Type=DRAW; Cells[Column][Y].Text="";//odmazání typu a dat na aktuálním sloupci
+				}
+				//přesun z následujícíh sloupců a jejich následné smazání
+				if(X+1<ColCount)//mimo situace mazání posledního sloupce (nelze kvůli výše uvedené podmínce použít v úvodním forcyklu)
+				{
+					CopyCell(Cells[X+1][Y],Cells[X][Y],true);//zkopírování komponent, typu a dat z následujícího slopuce //nefunguje dobře MoveComponent(X,Y,1,0)
+					DeleteComponents(X+1,Y,X+1,Y);//odmazání z následujícího sloupce
+					Cells[X+1][Y].Type=DRAW;Cells[X+1][Y].Text=""; //odmazání typu a dat z následujícího sloupce, kde již není třeba a uvolňuje se pro další přesun
+				}
 			}
-			Columns[Y]=Columns[Y+1];
+			if(X+1<ColCount)Columns[X]=Columns[X+1];//zkopírování nastavení celého sloupce mimo situace mazání posledního sloupce //DeleteComponents(X+1,0,X+1,RowCount-1);//odmazání z následujícího sloupce  - tady nelze
 		}
-		ColCount--;
+		ColCount--;//snížení počtu sloupců
 	}
-	if(invalidate)Show();//pokud je požadováno překreslení //překreslení s problikem, jinak použít přímo ve formu formpaint a toto zakomentovat
+	if(invalidate)Show();
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -2536,6 +2545,7 @@ void TmGrid::MoveComponent(unsigned long Col,unsigned long Row,long ColOffset,lo
 		case EDIT:
 		{
 			TscGPEdit *E=getEdit(Col+ColOffset,Row+RowOffset);
+			//E->Text=getTag(Col,Row);///////tewst
 			E->Tag=getTag(Col,Row);//přeindexování na řádek níže
 			E->Name="mGrid_EDIT_"+AnsiString(ID)+"_"+AnsiString(E->Tag);//přeindexování na řádek níže
 			E=NULL;delete E;
