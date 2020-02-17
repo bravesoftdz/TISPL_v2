@@ -13106,15 +13106,12 @@ void __fastcall TForm1::scButton2Click(TObject *Sender)
 		Button_dopravnik_parametryClick(Sender);//volání parametrů linky
 
 		//MB(T3);
-		Form_definice_zakazek->rHTMLLabel_eDesigner->Visible=true;
-		Form_definice_zakazek->rHTMLLabel_eDesigner->Caption=T3;
 		SB(T3);//zobraz_tip(T3);
 		scGPGlyphButton_definice_zakazekClick(Sender);//volání superformuláře (definice zakázek)
 
 		SB(T4);zobraz_tip(T4);MB(T4,MB_OK,false);
 
 		Form_parametry_linky->rHTMLLabel_eDesigner->Visible=false;
-		Form_definice_zakazek->rHTMLLabel_eDesigner->Visible=false;
 		DuvodUlozit(true);
 	}
 	else//nebyla nalezena šablona
@@ -13435,6 +13432,7 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 
 //	F->posun_na_element(1);
   Form_definice_zakazek->ShowModal();
+//  Form2->ShowModal();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
