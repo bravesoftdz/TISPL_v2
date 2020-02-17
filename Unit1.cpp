@@ -12497,7 +12497,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 void __fastcall TForm1::Button14Click(TObject *Sender)
 {
  //log(__func__);
- //Form2->ShowModal();
+ Form2->ShowModal();
 //	d.v.vytvor_retez(d.v.POHONY->dalsi);
 //	d.vykresli_retez(Canvas,d.v.POHONY->dalsi->retez);
 ////	d.v.vytvor_retez(d.v.POHONY->predchozi);
@@ -12544,8 +12544,8 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 //		Memo((short) duvod_validovat);
 //		Memo("_____________");
 
+//d.TextOut(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,"Ahoj\ntoto je nějaký text řádku1\ntoto je nějaký text řádku 22\nhaf",Cvykresli::CENTER,Cvykresli::MIDDLE,-1);
 
-d.TextOut(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,"Ahoj\ntoto je nějaký text řádku1\ntoto je nějaký text řádku 22\nhaf",Cvykresli::CENTER,Cvykresli::MIDDLE,-1);
 
 }
 //---------------------------------------------------------------------------
