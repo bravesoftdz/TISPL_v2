@@ -35,38 +35,45 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		E->mG->Left=100;E->mG->Top=50;//hodné jako druhé (popø. by bylo nutné pøekreslovat)
 		E->mG->AntiAliasing_text=true;
 		E->mG->Border.Width=2;
-		E->mG->exBUTTONVisible=true;
-		E->mG->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
-		E->mG->scGPImageCollection=scGPImageCollection1;
+		//E->mG->scGPImageCollection=scGPImageCollection1;
+		//test exBUTTONU
+		//E->mG->exBUTTONVisible=true;
+		//E->mG->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
 
-		unsigned long ColCount=3;//pevný poèet slopcù
+		//velikost tabulky
+		unsigned long ColCount=1;//pevný poèet slopcù
 		unsigned long RowCount=6;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
-		E->mG->DefaultCell.isZero->Color=clGreen;
-		E->mG->DefaultCell.isEmpty->Color=F->m.clIntensive(clRed,230);
+
+		//podmínìné formátování
+		//E->mG->DefaultCell.isZero->Color=clGreen;
+		//E->mG->DefaultCell.isEmpty->Color=F->m.clIntensive(clRed,230);
 
 		E->mG->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
-		E->mG->Cells[0][0].Text="0";E->mG->Cells[0][0].Type=E->mG->EDIT;
-		E->mG->Cells[1][0].Text="5,555";E->mG->Cells[1][0].Type=E->mG->EDIT;
-		E->mG->Cells[0][1].Type=E->mG->DRAW;
-		E->mG->Cells[0][1].Text="zaèátek <a>[m]</a>"; E->mG->Cells[0][1].Hint="test hintu";E->mG->Cells[0][1].ShowHint=true;
-		E->mG->Cells[0][1].isLink->Color=clRed;
-		E->mG->Cells[1][1].Type=E->mG->EDIT;
-		E->mG->Cells[1][1].InputNumbersOnly=true;
-		E->mG->Cells[1][2].Type=E->mG->EDIT;
+//		E->mG->Cells[0][0].Text="0";E->mG->Cells[0][0].Type=E->mG->EDIT;
+//		E->mG->Cells[1][0].Text="5,555";E->mG->Cells[1][0].Type=E->mG->EDIT;
+//		E->mG->Cells[0][1].Type=E->mG->DRAW;
+//		E->mG->Cells[0][1].Text="zaèátek <a>[m]</a>"; E->mG->Cells[0][1].Hint="test hintu";E->mG->Cells[0][1].ShowHint=true;
+//		E->mG->Cells[0][1].isLink->Color=clRed;
+//		E->mG->Cells[1][1].Type=E->mG->EDIT;
+//		E->mG->Cells[1][1].InputNumbersOnly=true;
+//		E->mG->Cells[1][2].Type=E->mG->EDIT;
+		//E->mG->Cells[0][0].Text="0";E->mG->Cells[0][0].Type=E->mG->EDIT;
+		E->mG->Cells[0][0].Type=E->mG->glyphBUTTON;
+		E->mG->Cells[0][1].Text="1";E->mG->Cells[0][1].Type=E->mG->EDIT;
 		E->mG->Cells[0][2].Text="2";E->mG->Cells[0][2].Type=E->mG->EDIT;
 		E->mG->Cells[0][3].Text="3";E->mG->Cells[0][3].Type=E->mG->EDIT;
 		E->mG->Cells[0][4].Text="4";E->mG->Cells[0][4].Type=E->mG->EDIT;
 		E->mG->Cells[0][5].Text="5";E->mG->Cells[0][5].Type=E->mG->EDIT;
 
 		//test obrázku
-		E->mG->Cells[1][2].Type=E->mG->IMAGE;E->mG->Cells[1][2].ImageIndex=0;
-		E->mG->Cells[2][2].Type=E->mG->IMAGE;E->mG->Cells[2][2].ImageIndex=1;
+		//E->mG->Cells[1][2].Type=E->mG->IMAGE;E->mG->Cells[1][2].ImageIndex=0;
+		//E->mG->Cells[2][2].Type=E->mG->IMAGE;E->mG->Cells[2][2].ImageIndex=1;
 
 		//E->mG->Columns[0].Width=800;
 		//E->mG->SetColumnAutoFit(0);
 
 		//E->mG->Note.Text="Text výpisu poznámky pod èi nad èarou a <a>link</a> nìjaký další abcdefgeijasdfads dafs";
-		E->mG->ShowNote("Text výpisu poznámky pod èi nad èarou a <a>link</a> nìjaký další abcdefgeijasdfads dafs");
+		//E->mG->ShowNote("Text výpisu poznámky pod èi nad èarou a <a>link</a> nìjaký další abcdefgeijasdfads dafs");
 
 		E->predchozi=NULL;
 		E->dalsi=NULL;
@@ -394,7 +401,7 @@ void __fastcall TForm2::Button2Click(TObject *Sender)
 	//zmìna posunu tabulky
 	// ELEMENTY->mG->unHighlightAll();
 
-	ELEMENTY->mG->Cells[1][2].Text="Vzor.bmp";
+	//ELEMENTY->mG->Cells[1][2].Text="Vzor.bmp";
 
 	Invalidate();
 	FormPaint(this);//volání po Invalidate zajistí, že nedochází k probliku komponent, nemùže být samotné
@@ -442,8 +449,8 @@ void TForm2::OnEnter(long Tag,unsigned long Col,unsigned long Row)
 //---------------------------------------------------------------------------
 void TForm2::OnChange(long Tag,unsigned long Col,unsigned long Row)
 {
-	ELEMENTY->mG->Cells[1][2].Text=F->ms.MyToDouble(ELEMENTY->mG->Cells[1][1].Text)*2.0;
-	ELEMENTY->mG->Refresh();
+	//ELEMENTY->mG->Cells[1][2].Text=F->ms.MyToDouble(ELEMENTY->mG->Cells[1][1].Text)*2.0;
+	//ELEMENTY->mG->Refresh();
 }
 //---------------------------------------------------------------------------
 void TForm2::OnKeyPress(long Tag,unsigned long Col,unsigned long Row,System::WideChar &Key)
@@ -543,11 +550,6 @@ void __fastcall TForm2::Button4Click(TObject *Sender)
 void __fastcall TForm2::Button3Click(TObject *Sender)
 {
 	ELEMENTY->mG->DeleteRow(3);
-	//ELEMENTY->dalsi->mG->getEdit(0,3)->Text=ELEMENTY->dalsi->mG->Cells[0][3].Text;
-	//ShowMessage(ELEMENTY->dalsi->mG->Cells[0][3].Text);
-	//ShowMessage(ELEMENTY->dalsi->mG->getEdit(0,3)->Text);
-	//ELEMENTY->dalsi->mG->DeleteRow(ELEMENTY->dalsi->mG->RowCount-1);
-	//mGrid->DeleteRow(mGrid->RowCount-1);//s problikem zpùsobuje show() v DeleteRow
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm2::FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
@@ -638,6 +640,18 @@ void __fastcall TForm2::Button6Click(TObject *Sender)
 void __fastcall TForm2::Button7Click(TObject *Sender)
 {
   ELEMENTY->mG->SetEnabledComponents(true);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm2::Button8Click(TObject *Sender)
+{
+	ELEMENTY->mG->AddColumn();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm2::Button9Click(TObject *Sender)
+{
+ELEMENTY->mG->DeleteColumn(3);
 }
 //---------------------------------------------------------------------------
 
