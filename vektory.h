@@ -95,6 +95,7 @@ class Cvektory
 	{
 		unsigned long n; //pořadí ve spoj.seznamu
 		unsigned int eID; //id typu elementu viz. tabulka elementů https://docs.google.com/spreadsheets/d/1_S7yp1L25tov0mKqP3Rl_0Y2cx-e3UwDXb102hDvRlA/edit?usp=sharing
+		unsigned int idetifikator_vyhybka_spojka;
 		UnicodeString short_name;//krátký název max. 4 znaky
 		UnicodeString name;//celý název objektu
 		short orientace;//v jaké orientaci je element na obrazovce vykreslen 0,90,180,270 (orientace dle světových stran)
@@ -129,14 +130,15 @@ class Cvektory
 	};
 	TElement *ELEMENTY;//seznam elementů
 
-	struct TVyhybka
+	struct T2Element
 	{
 		unsigned long n;
 		TElement *vyhybka;
-		TVyhybka *dalsi;
-		TVyhybka *predchozi;
+		TElement *spojka;
+		T2Element *dalsi;
+		T2Element *predchozi;
 	};
-	TVyhybka *VYHYBKY;
+	T2Element *VYHYBKY;
 
 	struct TObjekt
 	{
@@ -412,11 +414,10 @@ class Cvektory
 		long PosunutiY;//proměnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souřadnicích zařízení
 		unsigned int pocet_objektu;
 		unsigned int pocet_elementu;
-		unsigned int pocet_vyhybek;
+		unsigned int pocet_vyhybek;//uchovává počet výhybek a spojek pro tvoření pole průchodu při rekonstrukci elementů
 		unsigned int pocet_pohonu;
 		unsigned int pocet_zakazek;
 		unsigned int pocet_voziku;
-		//unsigned int pocet_vyhybek_spojek;//uchovává počet výhybek a spojek pro tvoření pole průchodu při rekonstrukci elementů
 		//parametry projektu (PP):
 		TDateTime cas_start;//začátek výroby v SEČ (resp. LSEČ)
 		unsigned long  mnozstvi;//požadované množství
@@ -443,6 +444,7 @@ class Cvektory
 		unsigned long n;
 		unsigned long edit_Objekt;//uchovává informaci zda je otevřena editace a jakého objektu
 		unsigned long posledni_element_n;//uchovává n posledního elementu v editovaném objektu, pro porovnání zda se změnil počet v projektu vs. obraz
+		unsigned int pocet_vyhybek;
 		TObjekt *Objekty;
 		TElement *Elementy;
 		TPohon *Pohony;
@@ -555,13 +557,15 @@ class Cvektory
 	long vymaz_seznam_VYHYBKY();
 	TElement *dalsi_krok(TElement *E,TObjekt *O=NULL);//určí další krok průchodového algorytmu ve spojáku elementů, 2 možností průchod kompletního spojáku ELEMENTY, druhá průchod pouze elementů jednoho objektu
 	TElement *predchozi_krok(TElement *E,TObjekt *O=NULL);
-	void vloz_vyhybu_spojku(TElement *novy,TElement *dalsi);
+	TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruchodu_TP,T2Element *tab_pruchodu_T2E);
+  void smaz_vyhybku_spojku(TElement *Element);
 	void smaz_element(TElement *Element,bool preskocit_kontolu=false);//smaže element ze seznamu
 	void vymaz_elementy(TObjekt *Objekt);//smaže všechny elementy v daném objektu
 	long vymaz_seznam_ELEMENTY();//vymaže spojový seznam elementů z paměti
 
 	//proměnné pro elementy
 	TElement *vyhybka_pom;
+	unsigned int pocet_vyhybek;
 
 //metody pro POHONY
 	void hlavicka_POHONY();
@@ -833,7 +837,8 @@ private:
 		struct C_element//pouze pridruzeny spojak
 	{
 			unsigned long n; //pořadí ve spoj.seznamu
-      unsigned int eID; //id typu elementu: 0 - stop stanice, 1 - robot, 2 - robot se stop stanicí, 3 - robot s pasivní otočí, 4 - robot s aktivní otočí (resp. s otočí a stop stanicí), 5 - otoč pasivní, 6 - otoč aktivní (resp. otoč se stop stanicí), 7 - pouze geometrická zarážka
+			unsigned int eID; //id typu elementu: 0 - stop stanice, 1 - robot, 2 - robot se stop stanicí, 3 - robot s pasivní otočí, 4 - robot s aktivní otočí (resp. s otočí a stop stanicí), 5 - otoč pasivní, 6 - otoč aktivní (resp. otoč se stop stanicí), 7 - pouze geometrická zarážka
+			unsigned int idetifikator_vyhybka_spojka;//uchovává identifikátor spojky a výhybky
 		 //	UnicodeString short_name;//krátký název max. 4 znaky
      //	UnicodeString name;//celý název objektu
 			double name_delka;  // celý název objektu
