@@ -230,6 +230,7 @@ class Cvektory
 		TColor barva;//barva zakáky
 		double pomer;//poměr z celkového množství výrobků
 		double TT;
+		TmGrid *mGrid;
 		TJig jig;//šířka délka, výška, rotace a  ks připadajících na jig/rám vozzíku
 		unsigned long pocet_voziku;//počet vozíků v zakázce
 		unsigned long serv_vozik_pocet;//počet servisních vozíků v zakázce

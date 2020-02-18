@@ -589,9 +589,22 @@ void __fastcall TForm_definice_zakazek::scGPGlyphButton4Click(TObject *Sender) {
 // ---------------------------------------------------------------------------
 void __fastcall TForm_definice_zakazek::KonecClick(TObject *Sender) {
   for (int i = 1; i <= rStringGridEd1->RowCount; i++) {
-    rStringGridEd1->Rows[i]->Clear(); // promaznuti radku, ktere nebudou ulozeny
-  }
-  Form1->d.v.vymaz_seznam_ZAKAZKY_temp();
+		rStringGridEd1->Rows[i]->Clear(); // promaznuti radku, ktere nebudou ulozeny
+	}
+	//mazání mgridù zakázek
+	if(F->d.v.ZAKAZKY_temp!=NULL)
+	{
+   	Cvektory::TZakazka *Z=F->d.v.ZAKAZKY_temp->dalsi;
+   	while(Z!=NULL)
+   	{
+   		Z->mGrid->Delete();
+   		Z->mGrid=NULL;
+   		Z=Z->dalsi;
+   	}
+   	delete Z;Z=NULL;
+	}
+
+	Form1->d.v.vymaz_seznam_ZAKAZKY_temp();
   Close();
 }
 
@@ -809,18 +822,38 @@ void __fastcall TForm_definice_zakazek::scGPGlyphButton_add_zakazkaClick
 //
 //  }
 //  add_zakazka = false;
-ShowMessage("add_zakazka");
-  add_zakazka=true;
-  for(int i=0;i<=5;i++)
-  {
-	mGrid->AddRow(true,false); //vytvoøím si prázdné øádky
-  }
-  loadHeader(mGrid->RowCount-6,false);  //nadesignuji øádky(-6) zámìrnì, abych šel od prvního nového øádku
+//ShowMessage("add_zakazka");
+//	add_zakazka=true;
+//	for(int i=0;i<=5;i++)
+//	{
+//	mGrid->AddRow(true,false); //vytvoøím si prázdné øádky
+//	}
+//	loadHeader(mGrid->RowCount-6,false);  //nadesignuji øádky(-6) zámìrnì, abych šel od prvního nového øádku
+//
+//	add_zakazka=false;
+//	//mGrid->Refresh();
+//	FormPaint(this);
 
-  add_zakazka=false;
-  //mGrid->Refresh();
-  FormPaint(this);
+	////vytvoøení nové temp zakázky, nutné nese si ukazatel na svùj mGrid
+	Cvektory::TZakazka *Z=NULL; Cvektory::TJig J;
+	unsigned int n=1;
+	if(F->d.v.ZAKAZKY_temp!=NULL && F->d.v.ZAKAZKY_temp->predchozi->n>0)n=F->d.v.ZAKAZKY_temp->predchozi->n+1;
+	F->d.v.vloz_temp_zakazku("id",0,"Zakazka "+AnsiString(n),clBlack,0,0,J,0,0,0);
+	Z=F->d.v.ZAKAZKY_temp->predchozi;
+	////vytvoøení mgridu nové zakázce
+	Z->mGrid=new TmGrid(this);
+	Z->mGrid->Tag=9;
+	Z->mGrid->ID=Z->n;
+	Z->mGrid->Create(3,3);
+	////parametry mgridu
+	Z->mGrid->Left=5;
+	if(Z->predchozi->n>0)Z->mGrid->Top=Z->predchozi->mGrid->Top+Z->predchozi->mGrid->Height+Z->mGrid->Rows[0].Height;
+	else Z->mGrid->Top=mGrid->Top+mGrid->Height+Z->mGrid->Rows[0].Height;
 
+	////ukazatelové záležitosti
+	Z=NULL;delete Z;
+	////vykreslení mGridù
+	FormPaint(this);
 }
 
 // ---------------------------------------------------------------------------
@@ -874,8 +907,18 @@ void __fastcall TForm_definice_zakazek::scGPGlyphButton_removeClick
 // ---------------------------------------------------------------------------
 
 void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender) {
-  mGrid->Show(); // vykreslí tabulku
-
+	mGrid->Show(); // vykreslí tabulku
+	//vykreslování mGridù zakázek
+	if(F->d.v.ZAKAZKY_temp!=NULL)
+	{
+  	Cvektory::TZakazka *Z=F->d.v.ZAKAZKY_temp->dalsi;
+  	while(Z!=NULL)
+  	{
+  		Z->mGrid->Show();
+  		Z=Z->dalsi;
+  	}
+  	delete Z;Z=NULL;
+	}
 }
 // ---------------------------------------------------------------------------
 
@@ -1265,7 +1308,7 @@ void TForm_definice_zakazek::loadHeader(unsigned long Row, bool novy) {
   {
     F->log(__func__); // logování
     mGrid->Top = scLabel_header->Height + scGPButton_plan_vyroby->Height + 10;
-    mGrid->Left = 5;
+		mGrid->Left = 5;
     int i=0;
     if(novy) i=0;
     if(add_zakazka) i=Row;
@@ -1288,7 +1331,7 @@ void TForm_definice_zakazek::loadHeader(unsigned long Row, bool novy) {
 
     mGrid->Cells[1][i+2].Align = mGrid->LEFT;
     mGrid->Cells[1][i+3].Align = mGrid->LEFT;
-    mGrid->Cells[1][i+4].Align = mGrid->LEFT;
+		mGrid->Cells[1][i+4].Align = mGrid->LEFT;
 
     mGrid->Cells[2][i+2].Align = mGrid->CENTER;
     mGrid->Cells[2][i+3].Align = mGrid->CENTER;
