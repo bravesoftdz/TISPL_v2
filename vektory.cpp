@@ -2289,7 +2289,7 @@ unsigned int Cvektory::vrat_poradi_elementu_do(TElement *Element)
 			case MaxInt:z_pocet++;break;
 			default:
 			{
-				if(E->eID!=0 && E->eID!=5 && E->eID!=6 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt)r_pocet++;
+				if(E->eID!=0 && E->eID!=5 && E->eID!=6 && E->eID!=100 && E->eID!=200 && vrat_druh_elementu(E)!=-1)r_pocet++;
 				if(E->eID==100)t_pocet++;
 				if(Element->objekt_n!=E->objekt_n){r_pocet=0;t_pocet=0;}//pokud se stále nenacházím v cílovém objektu, jsem pořad s číslováním na 0, až v stejnem objektu začnu počítat výskyty robotů, atd.
 			}break;
@@ -3421,13 +3421,13 @@ void Cvektory::smaz_vyhybku_spojku(TElement *Element)
 	pom=NULL;delete pom;
 
 	////samotné mazání
-	unsigned long objekt_n=0;
+	unsigned long objekt_n=0,O1_n=Element->objekt_n,O2_n=Element->predchozi2->objekt_n;//uchovávání n objektů, kde se nachází výhybka a spojka
   do
 	{
 		pom=smazat->predchozi;//od konce
 		E=pom->vyhybka;//uložení mazaného elementu do pomocného ukazatele
-		//if(objekt_n!=0 && objekt_n!=E->objekt_n && objekt_n!=Element->objekt_n && objekt_n!=Element->predchozi2->objekt_n)smaz_objekt(vrat_objekt(objekt_n));//mazání prázdného objektu
-		//objekt_n=E->objekt_n;
+		if(objekt_n!=0 && objekt_n!=E->objekt_n && objekt_n!=O1_n && objekt_n!=O2_n)smaz_objekt(vrat_objekt(objekt_n));//mazání prázdného objektu
+		objekt_n=E->objekt_n;
 		//pokud mažu výhybku nebo spojku je důležité upravit ukazatele na hlavní větvi a geometrii
 		if(E->eID==300 || E->eID==301)smaz_element(E,true);
 		else//mazání ostatních elementů
@@ -3493,8 +3493,10 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 		//vyřazení prvku ze seznamu a napojení prvku dalšího na prvek předchozí prku mazaného
 		if(Element->dalsi!=NULL)//ošetření proti poslednímu prvku
 		{
-			Element->predchozi->dalsi=Element->dalsi;
-			Element->dalsi->predchozi=Element->predchozi;
+			if(Element->predchozi->eID==300 && Element->predchozi->dalsi2==Element)Element->predchozi->dalsi2=Element->dalsi;
+			else Element->predchozi->dalsi=Element->dalsi;
+			if(Element->dalsi->eID==301 && Element->dalsi->predchozi2==Element)Element->dalsi->predchozi2=Element->predchozi;
+			else Element->dalsi->predchozi=Element->predchozi;
 			if(F->Akce!=F->GEOMETRIE && O!=NULL)//u geo. se upravuje geometrie ostatních elemntů zvlášť v Unit1, pokud je O==NULL mažu elementy smazaného objektu = neupravovat geo. dalších elementů
 			{
 				if(Element->n!=1)vloz_G_element(Element->dalsi,0,Element->predchozi->geo.X4,Element->predchozi->geo.Y4,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
@@ -3577,7 +3579,7 @@ void Cvektory::vymaz_elementy(TObjekt *Objekt)
 	{
 		smaz=E;
 		E=dalsi_krok(E,Objekt);
-		if(smaz->eID==300 || smaz->eID==301)smaz_element(smaz,false);
+		if(smaz->eID==300 || smaz->eID==301)smaz_element(smaz,false);//velice nutné kontrola u výhybek a spojek nesmí být přeskočena
 		else smaz_element(smaz,true);
 	}
 	Objekt->element=NULL;
@@ -7285,7 +7287,7 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 	if(obraz!=NULL)
 	{
 		//pro Layout a Storno
-		if(F->akt_Objekt==NULL || storno)
+		//if(F->akt_Objekt==NULL || storno)
 		{
 	  	//kopírování všech objektů
 	  	TObjekt *O=OBJEKTY->dalsi,*o_kop=NULL;
@@ -7328,39 +7330,39 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 			delete []tab_pruchodu;
 		}
 		//pro Editaci
-		if(F->akt_Objekt!=NULL && !storno)
-		{
-			//kopie aktuálně editovaného objektu
-			TObjekt *o_kop=NULL;
-			o_kop=new TObjekt;
-			kopiruj_objekt(F->akt_Objekt,o_kop);
-			obraz->Objekty->predchozi=o_kop;
-			obraz->Objekty->dalsi=o_kop;
-			o_kop->predchozi=obraz->Objekty;
-			o_kop->dalsi=NULL;
-			o_kop=NULL;delete o_kop;
-			//kopie všech elementů od prvního elementu editovaného objektu (například vázaná uprava geometrie posune celou linku)
-			TElement *E=F->akt_Objekt->element,*e_kop=NULL;
-			while(E!=NULL)
-			{
-				//vytvoření kopie
-				e_kop=new TElement;
-				kopiruj_element(E,e_kop);
-				//ukazatelové propojení kopie s obraz->Elementy
-				if(obraz->Elementy->dalsi==NULL)obraz->Elementy->dalsi=e_kop;
-				else obraz->Elementy->predchozi->dalsi=e_kop;
-				e_kop->predchozi=obraz->Elementy->predchozi;
-				obraz->Elementy->predchozi=e_kop;
-				e_kop->dalsi=NULL;
-				if((E->dalsi!=NULL && E->dalsi->objekt_n!=F->akt_Objekt->n || E->dalsi==NULL) && obraz->posledni_element_n==0)obraz->posledni_element_n=E->n;//slouží k uchováni počtu elementů v editovaném objektu, pro účely více druhů načtení z obrazu
-				//ukazatelové záležitosti
-				e_kop=NULL;delete e_kop;
-				E=E->dalsi;
-			}
-			E=NULL;delete E;
-		}
+//		if(F->akt_Objekt!=NULL && !storno)
+//		{
+//			//kopie aktuálně editovaného objektu
+//			TObjekt *o_kop=NULL;
+//			o_kop=new TObjekt;
+//			kopiruj_objekt(F->akt_Objekt,o_kop);
+//			obraz->Objekty->predchozi=o_kop;
+//			obraz->Objekty->dalsi=o_kop;
+//			o_kop->predchozi=obraz->Objekty;
+//			o_kop->dalsi=NULL;
+//			o_kop=NULL;delete o_kop;
+//			//kopie všech elementů od prvního elementu editovaného objektu (například vázaná uprava geometrie posune celou linku)
+//			TElement *E=F->akt_Objekt->element,*e_kop=NULL;
+//			while(E!=NULL)
+//			{
+//				//vytvoření kopie
+//				e_kop=new TElement;
+//				kopiruj_element(E,e_kop);
+//				//ukazatelové propojení kopie s obraz->Elementy
+//				if(obraz->Elementy->dalsi==NULL)obraz->Elementy->dalsi=e_kop;
+//				else obraz->Elementy->predchozi->dalsi=e_kop;
+//				e_kop->predchozi=obraz->Elementy->predchozi;
+//				obraz->Elementy->predchozi=e_kop;
+//				e_kop->dalsi=NULL;
+//				if((E->dalsi!=NULL && E->dalsi->objekt_n!=F->akt_Objekt->n || E->dalsi==NULL) && obraz->posledni_element_n==0)obraz->posledni_element_n=E->n;//slouží k uchováni počtu elementů v editovaném objektu, pro účely více druhů načtení z obrazu
+//				//ukazatelové záležitosti
+//				e_kop=NULL;delete e_kop;
+//				E=E->dalsi;
+//			}
+//			E=NULL;delete E;
+//		}
 
-    //uložení počtu výhybek
+		//uložení počtu výhybek
 		obraz->pocet_vyhybek=pocet_vyhybek;
 
 		//kopie všech pohonů
@@ -7404,15 +7406,28 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 	{
 		F->Timer_backup->Enabled=false;//vypnutí timeru pro backup, nesmí spustit během této metody!! (uložení nesmyslů do backup)
 		////Layout nebo Storno
-		if(obraz->edit_Objekt==0)
+		//if(obraz->edit_Objekt==0)
 		{
+			if(F->akt_Objekt!=NULL && !storno)
+			{
+				F->DrawGrid_knihovna->SetFocus();
+				TElement *E=F->akt_Objekt->element;
+				while(E!=NULL && E->objekt_n==F->akt_Objekt->n)
+				{
+					E->mGrid->Delete();
+					E->mGrid=NULL;
+					E=dalsi_krok(E,F->akt_Objekt);
+				}
+				E=NULL;delete E;
+				F->PmG->Delete();F->PmG=NULL;
+      }
 			////mazání dat starého projektu
 	  	vymaz_seznam_OBJEKTY();
 	  	hlavicka_OBJEKTY();//nutné po mazání!!!
 	  	vymaz_seznam_ELEMENTY();
-	  	hlavicka_ELEMENTY();//nutné po mazání!!!
+			hlavicka_ELEMENTY();//nutné po mazání!!!
 
-	  	////načtení Objektů
+			////načtení Objektů
 	  	TObjekt *dO=obraz->Objekty->dalsi,*O=NULL;
 			while(dO!=NULL)
 	  	{
@@ -7426,7 +7441,8 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 	  		O=NULL;delete O;
 	  		dO=dO->dalsi;
     	}
-    	delete dO;dO=NULL;
+			delete dO;dO=NULL;
+			if(obraz->edit_Objekt!=0 && !storno)F->akt_Objekt=vrat_objekt(obraz->edit_Objekt);
 
 	  	////načtení Elementů
 			TElement *dE=obraz->Elementy->dalsi,*E=NULL;
@@ -7438,6 +7454,12 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 				kopiruj_element(dE,E);
 				//vložení do seznamu ELEMENTY
 				sekvencni_zapis_cteni(E,NULL,tab_pruchodu);
+				if(F->akt_Objekt !=NULL && E->objekt_n==F->akt_Objekt->n && !storno)
+				{
+					E->mGrid->Tag=6;//ID formu
+					E->mGrid->ID=E->n;
+					F->design_element(E,false,false);
+				}
 				//vloz_element(E);
 				//ukazatelové záležitosi
 				E=NULL;delete E;
@@ -7445,122 +7467,128 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
     	}
 			delete dE;dE=NULL;
 			delete []tab_pruchodu;tab_pruchodu=NULL;vyhybka_pom=NULL;
+			//aktualizace sparovaných ukazatelu a RT
+			if(F->akt_Objekt!=NULL && !storno)
+			{
+				//F->vytvoreni_tab_pohon();
+				aktualizuj_sparovane_ukazatele();
+			}
 		}
 		//pro Editaci
-		else
-		{
-			//deklatace ukazatelů
-			TElement *za=F->akt_Objekt->element->predchozi,*E=NULL,*prvni_dalsiO=vrat_posledni_element_objektu(F->akt_Objekt)->dalsi;
-			prvni_dalsiO=NULL;delete prvni_dalsiO;
-			//smazání starých mGridů
-			F->DrawGrid_knihovna->SetFocus();
-			E=F->akt_Objekt->element;
-			while(E!=NULL && E->objekt_n==F->akt_Objekt->n)
-			{
-				E->mGrid->Delete();
-				E->mGrid=NULL;
-				E=E->dalsi;
-			}
-			E=NULL;delete E;
-			//mazání mGridu pohonů
-			F->PmG->Delete();F->PmG=NULL;
-			//aktualizace dat v aktuálně editovaném objektu
-			vymaz_komory(F->akt_Objekt);
-			vymaz_body(F->akt_Objekt);
-			obraz->Objekty->dalsi->element=F->akt_Objekt->element;//uchování ukazatele na první element při kopírování objektu
-			kopiruj_objekt(obraz->Objekty->dalsi,F->akt_Objekt);
-			//pokud došlo ke změně počtu elementů (=mazání, přidání elementu) budou předchozí elementy smazány a vloženy nové
-			if(vrat_posledni_element_objektu(F->akt_Objekt)->n!=obraz->posledni_element_n)
-			{
-				vymaz_elementy(F->akt_Objekt);//smaže všechny elementy v objektu
-				E=obraz->Elementy->dalsi;
-				TElement *novy=NULL;
-				while(E!=NULL)
-				{
-					if(E->objekt_n==F->akt_Objekt->n)//znovuvložení elementů
-					{
-				  	//kopírování atributů
-				  	novy=new TElement;
-						kopiruj_element(E,novy);
-						//vložení do seznamu ELEMENTY, ručně s příchodem výhybek update!!
-				  	if(za!=NULL && za->n>0)
-				  	{
-				  		novy->n=za->n+1;
-				  		if(za->dalsi==NULL)ELEMENTY->predchozi=novy;
-				  		else za->dalsi->predchozi=novy;
-				  		novy->predchozi=za;
-				  		novy->dalsi=za->dalsi;
-				  		za->dalsi=novy;
-				  	}
-				  	else
-				  	{
-				  		novy->n=1;
-				  		novy->dalsi=ELEMENTY->dalsi;
-				  		if(ELEMENTY->dalsi!=NULL)ELEMENTY->dalsi->predchozi=novy;
-				  		else ELEMENTY->predchozi=novy;
-				  		ELEMENTY->dalsi=novy;
-				  		novy->predchozi=ELEMENTY;
-				  	}
-				  	if(F->akt_Objekt->element==NULL)F->akt_Objekt->element=novy;
-				  	za=novy;
-				  	//ukazatelové záležitosi
-						novy=NULL;delete novy;
-					}
-					else//aktualizace parametrů elementů nasledujících za editovaným objektem
-					{
-						if(novy==NULL)novy=vrat_posledni_element_objektu(F->akt_Objekt)->dalsi;
-						else novy=novy->dalsi;
-						kopiruj_element(E,novy);
-          }
-					E=E->dalsi;
-				}
-				//znovuvytvoření tabulky, v tomto případě musí být ve zvláštním cyklu!!!!!
-				E=F->akt_Objekt->element;
-				while(E!=NULL && E->objekt_n==F->akt_Objekt->n)
-				{
-					//znovuvytvoření tabulky, alokace paměti pro tabulku je v kopiruj_element();
-					E->mGrid->Tag=6;//ID formu
-					E->mGrid->ID=E->n;
-					F->design_element(E,false,false);
-					E=E->dalsi;
-				}
-				E=NULL;delete E;
-			}
-			//nebyl změněn počet elementů, nebudu mazat pouze přepisovat parametry (aktualizace)
-			else
-			{
-				TElement *or=F->akt_Objekt->element;E=obraz->Elementy->dalsi;
-				while(E!=NULL)
-				{
-					//přepsaní parametry z obrazu
-					kopiruj_element(E,or);
-					//vytvoření nové tabulky, musí být rovnou za kopírováním elementu!!!!, pouze pro elementy v aktuálně editovaném objektu, průchod elementu i v následujícíh objektech, mohlo dojít ke změně například úpravením geometrie .. posun celé linky
-					if(E->objekt_n==F->akt_Objekt->n)
-					{
-						or->mGrid->Tag=6;//ID formu
-						or->mGrid->ID=or->n;
-						F->design_element(or,false,false);
-					}
-					or=or->dalsi;
-					E=E->dalsi;
-				}
-				or=NULL;delete or;
-				E=NULL;delete E;
-			}
-			//aktualizace n
-			E=vrat_posledni_element_objektu(F->akt_Objekt);
-			unsigned long n=E->n;
-			E=E->dalsi;
-			while(E!=NULL)
-			{
-				E->n=n;
-				n++;
-				E=E->dalsi;
-			}
-			delete E;E=NULL;
-      //aktualizace sparovaných ukazatelu a RT
-			aktualizuj_sparovane_ukazatele();
-		}
+//		else
+//		{
+//			//deklatace ukazatelů
+//			TElement *za=F->akt_Objekt->element->predchozi,*E=NULL,*prvni_dalsiO=vrat_posledni_element_objektu(F->akt_Objekt)->dalsi;
+//			prvni_dalsiO=NULL;delete prvni_dalsiO;
+//			//smazání starých mGridů
+//			F->DrawGrid_knihovna->SetFocus();
+//			E=F->akt_Objekt->element;
+//			while(E!=NULL && E->objekt_n==F->akt_Objekt->n)
+//			{
+//				E->mGrid->Delete();
+//				E->mGrid=NULL;
+//				E=E->dalsi;
+//			}
+//			E=NULL;delete E;
+//			//mazání mGridu pohonů
+//			F->PmG->Delete();F->PmG=NULL;
+//			//aktualizace dat v aktuálně editovaném objektu
+//			vymaz_komory(F->akt_Objekt);
+//			vymaz_body(F->akt_Objekt);
+//			obraz->Objekty->dalsi->element=F->akt_Objekt->element;//uchování ukazatele na první element při kopírování objektu
+//			kopiruj_objekt(obraz->Objekty->dalsi,F->akt_Objekt);
+//			//pokud došlo ke změně počtu elementů (=mazání, přidání elementu) budou předchozí elementy smazány a vloženy nové
+//			if(vrat_posledni_element_objektu(F->akt_Objekt)->n!=obraz->posledni_element_n)
+//			{
+//				vymaz_elementy(F->akt_Objekt);//smaže všechny elementy v objektu
+//				E=obraz->Elementy->dalsi;
+//				TElement *novy=NULL;
+//				while(E!=NULL)
+//				{
+//					if(E->objekt_n==F->akt_Objekt->n)//znovuvložení elementů
+//					{
+//						//kopírování atributů
+//						novy=new TElement;
+//						kopiruj_element(E,novy);
+//						//vložení do seznamu ELEMENTY, ručně s příchodem výhybek update!!
+//						if(za!=NULL && za->n>0)
+//				  	{
+//							novy->n=za->n+1;
+//							if(za->dalsi==NULL)ELEMENTY->predchozi=novy;
+//							else za->dalsi->predchozi=novy;
+//							novy->predchozi=za;
+//							novy->dalsi=za->dalsi;
+//							za->dalsi=novy;
+//						}
+//						else
+//						{
+//							novy->n=1;
+//							novy->dalsi=ELEMENTY->dalsi;
+//							if(ELEMENTY->dalsi!=NULL)ELEMENTY->dalsi->predchozi=novy;
+//							else ELEMENTY->predchozi=novy;
+//							ELEMENTY->dalsi=novy;
+//							novy->predchozi=ELEMENTY;
+//						}
+//						if(F->akt_Objekt->element==NULL)F->akt_Objekt->element=novy;
+//						za=novy;
+//						//ukazatelové záležitosi
+//						novy=NULL;delete novy;
+//					}
+//					else//aktualizace parametrů elementů nasledujících za editovaným objektem
+//					{
+//						if(novy==NULL)novy=vrat_posledni_element_objektu(F->akt_Objekt)->dalsi;
+//						else novy=novy->dalsi;
+//						kopiruj_element(E,novy);
+//					}
+//					E=E->dalsi;
+//				}
+//				//znovuvytvoření tabulky, v tomto případě musí být ve zvláštním cyklu!!!!!
+//				E=F->akt_Objekt->element;
+//				while(E!=NULL && E->objekt_n==F->akt_Objekt->n)
+//				{
+//					//znovuvytvoření tabulky, alokace paměti pro tabulku je v kopiruj_element();
+//					E->mGrid->Tag=6;//ID formu
+//					E->mGrid->ID=E->n;
+//					F->design_element(E,false,false);
+//					E=E->dalsi;
+//				}
+//				E=NULL;delete E;
+//			}
+//			//nebyl změněn počet elementů, nebudu mazat pouze přepisovat parametry (aktualizace)
+//			else
+//			{
+//				TElement *or=F->akt_Objekt->element;E=obraz->Elementy->dalsi;
+//				while(E!=NULL)
+//				{
+//					//přepsaní parametry z obrazu
+//					kopiruj_element(E,or);
+//					//vytvoření nové tabulky, musí být rovnou za kopírováním elementu!!!!, pouze pro elementy v aktuálně editovaném objektu, průchod elementu i v následujícíh objektech, mohlo dojít ke změně například úpravením geometrie .. posun celé linky
+//					if(E->objekt_n==F->akt_Objekt->n)
+//					{
+//						or->mGrid->Tag=6;//ID formu
+//						or->mGrid->ID=or->n;
+//						F->design_element(or,false,false);
+//					}
+//					or=or->dalsi;
+//					E=E->dalsi;
+//				}
+//				or=NULL;delete or;
+//				E=NULL;delete E;
+//			}
+//			//aktualizace n
+//			E=vrat_posledni_element_objektu(F->akt_Objekt);
+//			unsigned long n=E->n;
+//			E=E->dalsi;
+//			while(E!=NULL)
+//			{
+//				E->n=n;
+//				n++;
+//				E=E->dalsi;
+//			}
+//			delete E;E=NULL;
+//			//aktualizace sparovaných ukazatelu a RT
+//			aktualizuj_sparovane_ukazatele();
+//		}
 
 		////aktualizace pohonů
 		TPohon *p=POHONY->dalsi,*dp=obraz->Pohony->dalsi;

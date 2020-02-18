@@ -2882,7 +2882,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 	//Y, musí být až po nastavení funkční klávesy
 	if(Key==89 && funkcni_klavesa==1)
 	{
-		if(d.v.pozice_data!=d.v.pocet_kroku && d.v.pozice_data!=0)//pokud nejsem na konci
+		if(d.v.pozice_data<d.v.DATA->predchozi->n && d.v.pozice_data!=0)//pokud nejsem na konci
 		{
 			d.v.pozice_data+=1;
 			d.v.nacti_z_obrazu_DATA();
@@ -4199,7 +4199,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 					pom_element_temp->X=puv_souradnice.x;pom_element_temp->Y=puv_souradnice.y;
 					d.v.vloz_G_element(pom_element_temp,0,pom_element_temp->geo.X1,pom_element_temp->geo.Y1,0,0,0,0,pom_element_temp->geo.X4+posunx,pom_element_temp->geo.Y4+posuny,pom_element_temp->geo.orientace,pom_element_temp->geo.rotacni_uhel);
 					if(pom_element_temp->dalsi!=NULL)
-						d.v.vloz_G_element(pom_element_temp->dalsi,0,pom_element_temp->geo.X1,pom_element_temp->geo.Y1,0,0,0,0,pom_element_temp->dalsi->geo.X4,pom_element_temp->dalsi->geo.Y4,pom_element_temp->dalsi->geo.orientace,pom_element_temp->dalsi->geo.rotacni_uhel);
+						d.v.vloz_G_element(pom_element_temp->dalsi,0,pom_element_temp->geo.X4,pom_element_temp->geo.Y4,0,0,0,0,pom_element_temp->dalsi->geo.X4,pom_element_temp->dalsi->geo.Y4,pom_element_temp->dalsi->geo.orientace,pom_element_temp->dalsi->geo.rotacni_uhel);
 				}
 				pom_element_temp=NULL; delete pom_element_temp;
 				vlozit_predavaci_misto();//kontrola zda nebyly přesunuty 2 PM na sebe
@@ -4534,10 +4534,12 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 		if(pom_element!=NULL)//ODSTRANĚNÍ předchozí případného highlightnutí elementu či tabulky
 		{
 			if(JID==0 || JID==1){pom_element->stav=1;refresh_mGrid=true;}//ELEMENT
-  		pom_element->mGrid->Highlight=false;//tabulka zrušení highlightnutí
-  	}
+			try//může se stát, že k tomuto dojde v době načítání z datového obrazu ... proto ošetření
+			{pom_element->mGrid->Highlight=false;}//tabulka zrušení highlightnutí
+			catch(...){;}
+		}
   	int puvJID=JID;//záloha původního JID
-  	Cvektory::TElement *pom_element_puv=pom_element;//pouze ošetření, aby neproblikával mGrid elementu, při přejíždění přes element
+		Cvektory::TElement *pom_element_puv=pom_element;//pouze ošetření, aby neproblikával mGrid elementu, při přejíždění přes element
 		Cvektory::TKomora *pom_komora_puv=pom_komora;
 		getJobID(X,Y);//zjištění aktuálního JID
   	if(puvJID!=JID || pom_element_puv!=pom_element || pom_komora_puv!=pom_komora)//pokud došlo ke změně JID, nebo změně elementu bez změny JID (např. situace dva roboti vedle sebe nebo rychlý přesun), jinak nemá smysl řešit
@@ -4550,8 +4552,11 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 			////volání akce dle JID            //toto bez otestovaní
   		if(JID==-1 || pom_element==NULL || pom_element_puv!=pom_element)//není již job ID nebo ukazatel na pohon (může nastat situace přechod tabulka citelná oblast kót či nadpisu kabiny a nic by se bez tohoto nestalo
 			{
-				if(pom_element_puv!=NULL && akt_Objekt->zobrazit_mGrid)pom_element_puv->mGrid->MouseMove(X,Y);//najistotu zrušení hintů a highlignutí odkazu normálních tabulek dodáním pouze aktuálních souřadnic
-  			if(puvJID>=4 && puvJID<=10 && akt_Objekt->zobrazit_mGrid)PmG->MouseMove(X,Y);//najistotu hintů a zrušení highlignutí tabulky pohonu dodáním pouze aktuálních souřadnic
+				try//může se stát, že k tomuto dojde v době načítání z datového obrazu ... proto ošetření
+				{
+					if(pom_element_puv!=NULL && akt_Objekt->zobrazit_mGrid)pom_element_puv->mGrid->MouseMove(X,Y);//najistotu zrušení hintů a highlignutí odkazu normálních tabulek dodáním pouze aktuálních souřadnic
+					if(puvJID>=4 && puvJID<=10 && akt_Objekt->zobrazit_mGrid)PmG->MouseMove(X,Y);//najistotu hintů a zrušení highlignutí tabulky pohonu dodáním pouze aktuálních souřadnic
+      	}catch(...){;}
 			}
 			if(JID==-102){if(d.zprava_highlight==d.zobrazit_celou_zpravu)kurzor(close);else kurzor(info);}//zprávy
 			if(JID==0&&akt_Objekt->id!=3){if(pom_element->orientace==0||pom_element->orientace==180)kurzor(zmena_d_x);else kurzor(zmena_d_y);pom_element->stav=2;refresh_mGrid=false;}//posun ELEMENT
@@ -6752,7 +6757,7 @@ TRect TForm1::vrat_max_oblast(Cvektory::TObjekt *Objekt)
 			if(m.L2Px(E->X)>ret.right)ret.right=m.L2Px(E->X);
 			if(m.L2Py(E->Y)<ret.top)ret.top=m.L2Py(E->Y);
 			if(m.L2Py(E->Y)>ret.bottom)ret.bottom=m.L2Py(E->Y);
-			E=E->dalsi;
+			E=d.v.dalsi_krok(E);
 		}
 		delete E;E=NULL;
 		//kontrola haly
@@ -7065,9 +7070,8 @@ TPoint TForm1::bod_vlozeni_elementu(double kontr_x,double kontr_y)
 	else {x=akt_souradnice_kurzoru.x;y=akt_souradnice_kurzoru.y;}
 	//průchod elementů objektu
 	Cvektory::TElement *E=d.v.ELEMENTY->dalsi,*E_pom=NULL;
-	unsigned long objekt_n=E->objekt_n;
-	if(akt_Objekt!=NULL){E=akt_Objekt->element;objekt_n=akt_Objekt->n;}
-	while(E!=NULL && E->objekt_n==objekt_n)
+	if(akt_Objekt!=NULL)E=akt_Objekt->element;
+	while(E!=NULL)
 	{
 		if(E->geo.typ==0 && (E->geo.orientace==m.Rt90(E->geo.orientace) || E->geo.orientace==360))//jen pro přímky 0,90,180,270°
 		{
@@ -7084,9 +7088,8 @@ TPoint TForm1::bod_vlozeni_elementu(double kontr_x,double kontr_y)
 				break;//zastavení cyklu
 			}
 		}
-		E=d.v.dalsi_krok(E);
-		//E=E->dalsi;
-		if(E!=NULL && akt_Objekt==NULL)objekt_n=E->objekt_n;//workaround podmínky pro průchod pouze v objektu, pokud neexistuje aktuálně editovaný objektu
+		if(akt_Objekt!=NULL)E=d.v.dalsi_krok(E,akt_Objekt);
+		else E=d.v.dalsi_krok(E);
 	}
 	//mazání ukazatele
 	E=NULL;delete E;
@@ -12469,20 +12472,20 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //	pom->predchozi2=E;E->dalsi2=pom;
 //	pom->dalsi=d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi;d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi->predchozi=pom;
 //	pom->predchozi=d.v.ELEMENTY->dalsi->dalsi->dalsi;d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi=pom;
-               Memo("");
-//	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;         unsigned long n=1;
-//	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
-//	while(E!=NULL && E->n>0)
-//	{
-//		Memo(E->name+"->objek_n = "+AnsiString(E->objekt_n));
-////		if(E->dalsi2!=NULL)Memo("->dalsi2: "+E->dalsi2->name);
-////		if(E->predchozi2!=NULL)Memo("->predchozi2: "+E->predchozi2->name);
-//		//E=E->dalsi;
-//		E=d.v.dalsi_krok(E);
-//		//E=d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);
-//	}
-//	E=NULL;delete E;
-//	delete []tab_pruchodu;
+														 Memo3->Clear();
+	Cvektory::TElement *E=akt_Objekt->element;//d.v.ELEMENTY->dalsi;
+	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
+	while(E!=NULL && E->n>0 && E->objekt_n==akt_Objekt->n)
+	{
+		Memo(E->name);
+		Memo(AnsiString(E->geo.X4)+" != "+AnsiString(E->dalsi->geo.X1));
+		Memo(AnsiString(E->geo.Y4)+" != "+AnsiString(E->dalsi->geo.Y1));
+		E=E->dalsi;
+		//E=d.v.dalsi_krok(E);//,d.v.OBJEKTY->dalsi);
+		//E=d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);
+	}
+	E=NULL;delete E;
+	delete []tab_pruchodu;
 
 //	E=d.v.ELEMENTY->dalsi->dalsi->dalsi2->dalsi;
 //	Memo(E->name);
@@ -14210,7 +14213,7 @@ void TForm1::smaz_kurzor()
 			UnicodeString text=ls->Strings[324],text_1=ls->Strings[325];//"Přesunem dojde k překrytí lakovacích oken, chcete element přesunout?","Přesunem dojde k zásahu do zóny otáčení, chcete element přesunout?"
 			if(chybne==1 && mrYes!=MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text,"",MB_YESNO) || chybne>1 && mrYes!=MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text_1,"",MB_YESNO))
 			{
-        //posun elementu (bez geo.)
+				//posun elementu (bez geo.)
 				double posunx=puv_souradnice.x-pom_element_temp->X,posuny=puv_souradnice.y-pom_element_temp->Y;
 				pom_element_temp->X=puv_souradnice.x;pom_element_temp->Y=puv_souradnice.y;
 				//nutná kontrola změny pořadí!!!
@@ -14220,7 +14223,7 @@ void TForm1::smaz_kurzor()
 				//uprava geometrie
 				d.v.vloz_G_element(pom_element_temp,0,pom_element_temp->geo.X1,pom_element_temp->geo.Y1,0,0,0,0,pom_element_temp->geo.X4+posunx,pom_element_temp->geo.Y4+posuny,pom_element_temp->geo.orientace,pom_element_temp->geo.rotacni_uhel);
 				if(pom_element_temp->dalsi!=NULL)
-					d.v.vloz_G_element(pom_element_temp->dalsi,0,pom_element_temp->geo.X1,pom_element_temp->geo.Y1,0,0,0,0,pom_element_temp->dalsi->geo.X4,pom_element_temp->dalsi->geo.Y4,pom_element_temp->dalsi->geo.orientace,pom_element_temp->dalsi->geo.rotacni_uhel);
+					d.v.vloz_G_element(pom_element_temp->dalsi,0,pom_element_temp->geo.X4,pom_element_temp->geo.Y4,0,0,0,0,pom_element_temp->dalsi->geo.X4,pom_element_temp->dalsi->geo.Y4,pom_element_temp->dalsi->geo.orientace,pom_element_temp->dalsi->geo.rotacni_uhel);
 			}
 			vlozit_predavaci_misto();//kontrola zda nedošlo k překryvu PM
 		}
