@@ -12511,7 +12511,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 void __fastcall TForm1::Button14Click(TObject *Sender)
 {
  //log(__func__);
- //Form2->ShowModal();
+ Form2->ShowModal();
 //	d.v.vytvor_retez(d.v.POHONY->dalsi);
 //	d.vykresli_retez(Canvas,d.v.POHONY->dalsi->retez);
 ////	d.v.vytvor_retez(d.v.POHONY->predchozi);
@@ -12558,8 +12558,8 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 //		Memo((short) duvod_validovat);
 //		Memo("_____________");
 
+//d.TextOut(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,"Ahoj\ntoto je nějaký text řádku1\ntoto je nějaký text řádku 22\nhaf",Cvykresli::CENTER,Cvykresli::MIDDLE,-1);
 
-d.TextOut(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,"Ahoj\ntoto je nějaký text řádku1\ntoto je nějaký text řádku 22\nhaf",Cvykresli::CENTER,Cvykresli::MIDDLE,-1);
 
 }
 //---------------------------------------------------------------------------
@@ -13120,15 +13120,12 @@ void __fastcall TForm1::scButton2Click(TObject *Sender)
 		Button_dopravnik_parametryClick(Sender);//volání parametrů linky
 
 		//MB(T3);
-		Form_definice_zakazek->rHTMLLabel_eDesigner->Visible=true;
-		Form_definice_zakazek->rHTMLLabel_eDesigner->Caption=T3;
 		SB(T3);//zobraz_tip(T3);
 		scGPGlyphButton_definice_zakazekClick(Sender);//volání superformuláře (definice zakázek)
 
 		SB(T4);zobraz_tip(T4);MB(T4,MB_OK,false);
 
 		Form_parametry_linky->rHTMLLabel_eDesigner->Visible=false;
-		Form_definice_zakazek->rHTMLLabel_eDesigner->Visible=false;
 		DuvodUlozit(true);
 	}
 	else//nebyla nalezena šablona
@@ -13449,6 +13446,7 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 
 //	F->posun_na_element(1);
   Form_definice_zakazek->ShowModal();
+//  Form2->ShowModal();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)

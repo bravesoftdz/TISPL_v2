@@ -503,6 +503,7 @@ void TForm_parametry_linky::nacti_pohony ()
             I=C->Items->Add();
             if(Runit==M) I->Caption=H->hodnota/(1+999.0*Runit); //obrácenì, jelikož v katalogu jsou vždy mm
             else I->Caption=H->hodnota;
+            C->ItemIndex=ukaz->Rx; //RX se využívá jako ITEMINDEX položky
             H=H->dalsi;
            }
             I=NULL;delete I;
@@ -744,6 +745,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
 				if(PL_mGrid->getButton(7,i)->Caption==""){Rz=0.0;Rx=0.0;}//pokud není pohon pøiøazen nuluj
 
+        Rx=PL_mGrid->getCombo(5,i)->ItemIndex;  //využití RX pro ItemIndex položky
 				//uložení pohonu do spojáku
 				Form1->d.v.vloz_pohon (nazev,rychlost_od,rychlost_do,aRD,roztec,Rz,Rx);
 
@@ -842,7 +844,8 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
 	  PL_mGrid->Cells[4][i].InputNumbersOnly=2;
 		PL_mGrid->Cells[5][i].InputNumbersOnly=2;
 
-		PL_mGrid->Cells[8][i].Type=PL_mGrid->glyphBUTTON;
+		//
+    if(i==2)PL_mGrid->Cells[8][i].Type=PL_mGrid->glyphBUTTON;
 
 		PL_mGrid->Refresh();
 
@@ -2029,7 +2032,9 @@ text_2="</b>. "+F->ls->Strings[374];//"</b>. Opravdu má být pohon smazán?"
       //samotné smazání øádku + zajistí snížení poètu øádkù + nesmí se pøeindexovávat!!! kvùli metodám, které sahají do spojáku POHONY
          if(smazat)
           {
-					Button_save->SetFocus(); //EXTREMNE DULEZITE, JINAK PAMETOVA CHYBA PRI ODSTRANOVANI ROW
+          if(Button_save->Enabled==true)Button_save->SetFocus(); //EXTREMNE DULEZITE, JINAK PAMETOVA CHYBA PRI ODSTRANOVANI ROW
+          else Button_storno->SetFocus();  //pokud by bylo zakázané tlaèítko uložit, musím dát focus na storno
+
 					PL_mGrid->DeleteRow(ROW);
           //nastaveni rozmeru formu - dle poctu pohonu a nove pozice Add buttonu
           setADD_ButtonPosition();
