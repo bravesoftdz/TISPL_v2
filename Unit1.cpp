@@ -2577,7 +2577,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 	bmp_total->Canvas->Draw(0,0,bmp_out);delete (bmp_out);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 	////mGRIDY
-	d.vykresli_mGridy(bmp_total->Canvas); //přesunuto do vnitř metody: akt_Objekt->elementy!=NULL kvůli pohonům
+	d.vykresli_mGridy(bmp_total->Canvas);//přesunuto do vnitř metody: akt_Objekt->elementy!=NULL kvůli pohonům
 	////grafické MĚŘÍTKO
 	if(zobrazit_meritko && Akce!=MOVE_HALA)d.meritko(bmp_total->Canvas);
 	//finální předání bmp_out do Canvasu
@@ -2671,7 +2671,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 						//geometrie elementu
 						E->geo.X1+=posunx;E->geo.X2+=posunx;E->geo.X3+=posunx;E->geo.X4+=posunx;
 						E->geo.Y1+=posuny;E->geo.Y2+=posuny;E->geo.Y3+=posuny;E->geo.Y4+=posuny;
-						E=E->dalsi;
+						E=d.v.dalsi_krok(E,akt_Objekt);
 					}
 					E=NULL;delete E;
 				}
@@ -2761,7 +2761,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 						//geometrie elementu
 						E->geo.X1+=posunx;E->geo.X2+=posunx;E->geo.X3+=posunx;E->geo.X4+=posunx;
 						E->geo.Y1+=posuny;E->geo.Y2+=posuny;E->geo.Y3+=posuny;E->geo.Y4+=posuny;
-						E=E->dalsi;
+						E=d.v.dalsi_krok(E,akt_Objekt);
 					}
 					E=NULL;delete E;
 				}
@@ -4462,7 +4462,23 @@ void TForm1::getJobID(int X, int Y)
 		//5; element v objektu
 		d.zprava_highlight=d.v.PtInZpravy();
 		if(d.zprava_highlight>0)JID=-102;//hledání citelné oblasti zprávy
-		else if(d.v.OBJEKTY->dalsi!=NULL&&Akce==NIC)
+		if(JID==-1)//hledání citelných oblastí elementů pro otevírání náhledu (element mimo kabinu), způsobí zamrzání (na magně)
+		{
+			pom_element=NULL;
+			Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
+			while(O!=NULL)
+			{
+				pom_element=d.v.najdi_element(O,m.P2Lx(X),m.P2Ly(Y));
+				if(pom_element!=NULL)
+				{
+					JID=5;
+					break;
+				}
+				O=O->dalsi;
+			}
+			O=NULL;delete O;
+		}
+		if(JID==-1&&d.v.OBJEKTY->dalsi!=NULL&&Akce==NIC)
 		{
 			pom=NULL;pom_bod=NULL;
 			pom=d.v.PtInObjekt();
@@ -4499,22 +4515,6 @@ void TForm1::getJobID(int X, int Y)
 			}
 			O=NULL;delete O;
 		}
-//		if(JID==-1)//hledání citelných oblastí elementů pro otevírání náhledu (element mimo kabinu), způsobí zamrzání (na magně)
-//		{
-//			pom_element=NULL;
-//			Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
-//			while(O!=NULL)
-//			{
-//				pom_element=d.v.najdi_element(O,m.P2Lx(X),m.P2Ly(Y));
-//				if(pom_element!=NULL)
-//				{
-//					JID=5;
-//					break;
-//				}
-//				O=O->dalsi;
-//			}
-//			O=NULL;delete O;
-//		}
 	}
 	if(JID==-1 && (d.v.PP.zamek_layoutu || akt_Objekt!=NULL && akt_Objekt->uzamknout_nahled))//hledání citelné oblasti zprávy, vždy vyhledávat(i při zamčeném layoutu či editaci)!!
 	{
@@ -4871,6 +4871,12 @@ void TForm1::onPopUP(int X, int Y)
 				PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 			}
 			if(pom_bod!=NULL || d.v.PtInBody()!=NULL || pom!=NULL){PopUPmenu->Item_posun_obrysu->Visible=true;PopUPmenu->Panel_UP->Height+=34;}
+			if(JID==5 && pom_element!=NULL && (pom_element->eID==300 || pom_element->eID==301))//nabízení možnosti odstranění výhybky nebo spojky
+			{
+        pom_element_temp=pom_element;//uložení pro případ ztráty ukazatele při pohybu kurzorem
+				if(AnsiString(N+" "+pom_element->name).Length()>19) PopUPmenu->scLabel_smazat->Caption=smazat+"\n  "+pom_element->name.UpperCase();
+				else PopUPmenu->scLabel_smazat->Caption=smazat+" "+pom_element->name.UpperCase();
+			}
 			//rotace textu kabiny
 			if(JID==-6)
 			{
@@ -5536,11 +5542,11 @@ bool TForm1::pripnuti_dalsich_objektu()
 	log(__func__);//logování
 	bool ret=false;
 	Cvektory::TElement *e_posledni=d.v.vrat_posledni_element_objektu(akt_Objekt);
-	if(pom->dalsi!=NULL && !(e_posledni->geo.X4==pom->dalsi->element->geo.X1 && e_posledni->geo.Y4==pom->dalsi->element->geo.Y1) && mrYes==MB(ls->Strings[328],MB_YESNO,true))
+	if(e_posledni->dalsi!=NULL && !(e_posledni->geo.X4==e_posledni->dalsi->geo.X1 && e_posledni->geo.Y4==e_posledni->dalsi->geo.Y1) && mrYes==MB(ls->Strings[328],MB_YESNO,true))
 	{
 		double posun_x,posun_y;
-		posun_x=-pom->dalsi->element->geo.X1+e_posledni->geo.X4;
-		posun_y=-pom->dalsi->element->geo.Y1+e_posledni->geo.Y4;
+		posun_x=-e_posledni->dalsi->geo.X1+e_posledni->geo.X4;
+		posun_y=-e_posledni->dalsi->geo.Y1+e_posledni->geo.Y4;
 		Cvektory::TObjekt *O=pom->dalsi;
 		while(O!=NULL)
 		{
@@ -6442,10 +6448,11 @@ void TForm1::mGrid_on_mGrid()
 		{
 			mGrid_puvodni_stav(E);
 			mGrid_mimo_obraz(E);//kontrola + ošetření mGridů, ktěré se nacházejí mimo obraz
-			E=E->dalsi;
+			E=d.v.dalsi_krok(E,akt_Objekt);
 		}
 		////kontrola překrytí
 		E=akt_Objekt->element;
+		//TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
 		while(E!=NULL && E->objekt_n==objekt_n)
 		{
 			if(E->eID!=100 && E->eID!=MaxInt)//pouze pro elementy, které mají tabulku
@@ -6485,14 +6492,15 @@ void TForm1::mGrid_on_mGrid()
 							break;
 						}
 					}
-					E_temp=E_temp->dalsi;
+					E_temp=d.v.dalsi_krok(E_temp,akt_Objekt);
 				}
 				E_temp=NULL;delete E_temp;
 			}
-			if(pokracovat)E=E->dalsi;
+			if(pokracovat)E=E->dalsi;//d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);//musí být procházeno takto, alg. prochází 2x přes vyhybky a spojky ty nejsou přejmenovávány, tudíž nevadí jeho použití, použit z důvodu, že během tohoto cyklu dochází k dalšímu pruchodu pomocí cyklu dalsi_krok, kdyby byl použit v alg. dalsi_krok vnořený dalsi_krok došlo by k chybnému průchodu
 			else break;
 		}
 		E=NULL;delete E;
+		//delete []tab_pruchodu;tab_pruchodu=NULL;
 
 		////řešení překrytí
 		if(prekryty!=NULL)
@@ -7126,7 +7134,7 @@ bool TForm1::bod_na_geometrii(double X, double Y,Cvektory::TElement *Element)
 	while(E!=NULL && E->objekt_n==akt_Objekt->n)
 	{
 		if(E->geo.typ==0 && E->geo.orientace==m.Rt90(E->geo.orientace) && m.LeziVblizkostiUsecky(X,Y,E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4)==0){ret=true;break;}
-		E=E->dalsi;
+		E=d.v.dalsi_krok(E,akt_Objekt);
 	}
 	E=NULL;delete E;
 	return ret;
@@ -7475,7 +7483,7 @@ void TForm1::tab_knihovna_click(double X,double Y,long Col,long Row)
 			Akce=ADD;kurzor(add_o);
 			d.predchozi_oblast=0;
 			add_posledni=true;pom=NULL;
-			pom_element=NULL;pom_element_temp=NULL;//ukládání výhybek při vkládání na vedlejší větev
+			pom_element=NULL;pom_element_temp=NULL;//důležité ukazatele pro vkládání výhybky a objektů
 		}
 		if(vybrany_objekt==13 && d.v.OBJEKTY->predchozi->n<3)//pokud je vybraná vyhýbka nejsou alespoň 3 objekty
 		{
@@ -7484,8 +7492,9 @@ void TForm1::tab_knihovna_click(double X,double Y,long Col,long Row)
 		}
 		else if(vybrany_objekt==13)
 		{
-			Akce=VYH;    
+			Akce=VYH;
 			element_id=300;//při prvním kliku budu vždy vkládat výhybku
+			pom_element=NULL;pom_element_temp=NULL;//důležité ukazatele pro vkládání výhybky a objektů
 		}
 		if(vybrany_objekt==15)//vytvoř halu
 		{
@@ -8017,7 +8026,7 @@ void TForm1::tab_pohon_COMBO (int index)
 		{
 			if(E->pohon==NULL && p_puvodni==0 || E->pohon!=NULL && p_puvodni!=0 && E->pohon->n==p_puvodni){E->pohon=akt_Objekt->pohon;}
 			set_enabled_mGrid(E);
-			E=E->dalsi;
+			E=d.v.dalsi_krok(E,akt_Objekt);
 		}
 		//aktualizae WT v tabulkách PM
 		E=akt_Objekt->element;
@@ -10333,7 +10342,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 		default://SCHEMA
 		{
 			//ať to nemusí znovu hledat beru z pom Cvektory::TObjekt *p=d.v.najdi_bod(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width,d.O_height);
-			if(pom!=NULL)//pokud byl prvek nalezen
+			if(pom!=NULL && pom_element_temp==NULL && pom_bod_temp==NULL)//pokud byl prvek nalezen
 			{
 				Cvektory::TZakazka *Z=d.v.obsahuje_segment_cesty_objekt(pom);
 				if(Z!=NULL)
@@ -10363,7 +10372,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 			  	}
 				}
 			}
-			else if(pom_bod_temp!=NULL)//mazání bodu haly nebo objektu
+			if(pom_bod_temp!=NULL)//mazání bodu haly nebo objektu
 			{
 				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text_1+AnsiString(pom_bod_temp->n),"",MB_YESNO))
 				{
@@ -10371,6 +10380,11 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 					pom_bod_temp=NULL;delete pom_bod_temp;
 				}
 			}
+			if(pom_element_temp!=NULL)
+			{
+				d.v.smaz_element(pom_element_temp);
+				pom_element_temp=NULL;pom_element=NULL;
+      }
 			break;
 		}
 	}
@@ -10727,7 +10741,7 @@ void TForm1::NP_input()
 				if(E->sparovany!=NULL && E->sparovany->objekt_n==akt_Objekt->n)E->sparovany=d.v.vrat_element(akt_Objekt,E->sparovany->n);//atualizace ukazatelů
 				if(d.v.vrat_druh_elementu(E)==0)d.v.reserve_time(E);//aktualizace RT, v případě, že došlo ke změně přejezdu
 			}
-			E=E->dalsi;
+			E=d.v.dalsi_krok(E,akt_Objekt);
 		}
 		E=NULL;delete E;
 		if(odmazan_pohon)vlozit_predavaci_misto();
@@ -10737,7 +10751,7 @@ void TForm1::NP_input()
 	pom_element_temp=akt_Objekt->element;//pro pořeby editace geometrie
 	on_change_zoom_change_scGPTrackBar();//musí být po design_element
 	FormX->input_state=FormX->NOTHING;
-	REFRESH(); //přidáno kvůli zobrazení tab. pohonů a kót (při shodném zoomu layout->editace)
+	REFRESH();//přidáno kvůli zobrazení tab. pohonů a kót (při shodném zoomu layout->editace)
 	if(akt_Objekt->pohon==NULL && d.v.POHONY->dalsi!=NULL && !(PmG->Top+PmG->Height<34 || PmG->Top>ClientHeight-73 || PmG->Left+PmG->Width<168 || PmG->Left>ClientWidth)){PmG->getCombo(0,0)->DropDown();FormX->vstoupeno_poh=true;}//otevření COMBA pokud objekt nemá žádný pohon a pokud existují nějaké pohony
 }
 //---------------------------------------------------------------------------
@@ -10883,7 +10897,7 @@ void TForm1::zmena_editovaneho_objektu()
 					if(d.v.vrat_druh_elementu(E)==0)d.v.reserve_time(E);//aktualizace RT, v případě, že došlo ke změně přejezdu
 
 				}
-  			E=E->dalsi;
+				E=d.v.dalsi_krok(E,akt_Objekt);
   		}
   		E=NULL;delete E;
 		}
@@ -10924,7 +10938,7 @@ void TForm1::vypni_editaci()
 	{
 		E->mGrid->Delete();
 		E->mGrid=NULL;
-		E=E->dalsi;
+		E=d.v.dalsi_krok(E,akt_Objekt);
 	}
 	E=NULL;delete E;
 	if(!mazani&&scGPButton_ulozit->Enabled)d.v.uprav_popisky_elementu(NULL);//volání přejmenování elementů, pouze v případě kdy je něco v kabině a bylo stisknuto pouze storno, při ulož je stisk strona volán taky
@@ -12455,22 +12469,22 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //	pom->predchozi2=E;E->dalsi2=pom;
 //	pom->dalsi=d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi;d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi->predchozi=pom;
 //	pom->predchozi=d.v.ELEMENTY->dalsi->dalsi->dalsi;d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi=pom;
-
-	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;         unsigned long objekt_n=0;
+               Memo("");
+//	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;         unsigned long n=1;
 //	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
 //	while(E!=NULL && E->n>0)
 //	{
-//		Memo(E->name+"->n="+AnsiString(E->n));
+//		Memo(E->name+"->objek_n = "+AnsiString(E->objekt_n));
 ////		if(E->dalsi2!=NULL)Memo("->dalsi2: "+E->dalsi2->name);
 ////		if(E->predchozi2!=NULL)Memo("->predchozi2: "+E->predchozi2->name);
-//		E=E->dalsi;
-//		//E=d.v.dalsi_krok(E);
+//		//E=E->dalsi;
+//		E=d.v.dalsi_krok(E);
 //		//E=d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);
 //	}
 //	E=NULL;delete E;
 //	delete []tab_pruchodu;
 
-	E=d.v.ELEMENTY->dalsi->dalsi->dalsi2->dalsi;    while(E->n>0){Memo(E->name);E=E->predchozi;}
+//	E=d.v.ELEMENTY->dalsi->dalsi->dalsi2->dalsi;
 //	Memo(E->name);
 //	Memo("->dalsi = "+E->dalsi->name);
 //	Memo("->predchozi = "+E->predchozi->name);
@@ -12487,7 +12501,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
 //	while(O!=NULL)
 //	{
-//		Memo(O->element->name);
+//		Memo(O->element->name);//+"->n = "+AnsiString(O->n));
 //		O=O->dalsi;
 //	}
 //	O=NULL;delete O;
@@ -13468,7 +13482,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		{
 			E->mGrid->Delete();
 			E->mGrid=NULL;
-			E=E->dalsi;
+			E=d.v.dalsi_krok(E,akt_Objekt);
 		}
 		E=NULL;delete E;
 		////
@@ -14248,7 +14262,7 @@ void TForm1::smaz_kurzor()
 				//geometrie elementu
 				pom_element_temp->geo.X1+=posunx;pom_element_temp->geo.X2+=posunx;pom_element_temp->geo.X3+=posunx;pom_element_temp->geo.X4+=posunx;
 				pom_element_temp->geo.Y1+=posuny;pom_element_temp->geo.Y2+=posuny;pom_element_temp->geo.Y3+=posuny;pom_element_temp->geo.Y4+=posuny;
-				pom_element_temp=pom_element_temp->dalsi;
+				pom_element_temp=d.v.dalsi_krok(pom_element_temp,akt_Objekt);
 			}
 		}
 		editace_textu=false;//musí být na konci!
