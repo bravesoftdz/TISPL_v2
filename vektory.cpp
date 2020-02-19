@@ -1978,10 +1978,15 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 					Element->predchozi=ELEMENTY;
 					ELEMENTY->dalsi=Element;
 				}
+				//normální vkládání za objekt případně mezi objekty
 				else
 				{
 			  	Element->dalsi=force_razeni->dalsi;
-					if(force_razeni->dalsi!=NULL)force_razeni->dalsi->predchozi=Element;
+					if(force_razeni->dalsi!=NULL)
+					{
+						if(force_razeni->dalsi->eID==301 && force_razeni->dalsi->predchozi2==force_razeni)force_razeni->dalsi->predchozi2=Element;
+						else force_razeni->dalsi->predchozi=Element;
+					}
 			  	else ELEMENTY->predchozi=Element;
 			  	Element->predchozi=force_razeni;
 					force_razeni->dalsi=Element;
@@ -2004,12 +2009,13 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 		//vkládání geometrie
 		else
 		{
-	  	//ukazatelové propojení
-	  	if(force_razeni->n==Objekt->element->n)Objekt->element=Element;
-	  	Element->dalsi=force_razeni;
-	  	Element->predchozi=force_razeni->predchozi;
-	  	force_razeni->predchozi->dalsi=Element;
-	  	force_razeni->predchozi=Element;
+			//ukazatelové propojení
+			if(force_razeni->n==Objekt->element->n)Objekt->element=Element;
+			Element->dalsi=force_razeni;
+			Element->predchozi=force_razeni->predchozi;
+			if(force_razeni->predchozi->eID==300 && force_razeni->predchozi->dalsi2==force_razeni)force_razeni->predchozi->dalsi2=Element;
+			else force_razeni->predchozi->dalsi=Element;
+			force_razeni->predchozi=Element;
 	  	//změna indexů
 	  	Cvektory::TElement *E=Objekt->element;
 	  	if(E->predchozi==NULL || E->predchozi->n==0)E->n=1;

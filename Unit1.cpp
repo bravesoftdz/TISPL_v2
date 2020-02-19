@@ -3992,7 +3992,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		  		Canvas->Pen->Mode=pmNotXor;
 		  		Canvas->Brush->Style=bsClear;
 		  		//nastavení souřadnic
-		  		double X=0,Y=0;
+					double X=0,Y=0,X2=0,Y2=0;
 		  		if(d.geoTemp.typ!=-1000)
 		  		{
 		  			X=d.geoTemp.X4;
@@ -4003,9 +4003,11 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 						X=e_poslendi->X;
 						Y=e_poslendi->Y;
 		  		}
-		  		X=m.L2Px(X);Y=m.L2Py(Y);
+					X=m.L2Px(X);Y=m.L2Py(Y);
+					X2=m.L2Px(e_poslendi->dalsi->geo.X1);Y2=m.L2Py(e_poslendi->dalsi->geo.Y1);
+					if(e_poslendi->dalsi->eID==301 && e_poslendi->dalsi->predchozi2==e_poslendi){X2=m.L2Px(e_poslendi->dalsi->geo.X4);Y2=m.L2Py(e_poslendi->dalsi->geo.Y4);}
 					Canvas->MoveTo(X,Y);
-					Canvas->LineTo(m.L2Px(e_poslendi->dalsi->geo.X1),m.L2Py(e_poslendi->dalsi->geo.Y1));
+					Canvas->LineTo(X2,Y2);
 				}
 				pom_element=d.v.najdi_element(akt_Objekt,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y);
 				if((pom_element!=NULL && posledni_editovany_element!=NULL && pom_element->n!=posledni_editovany_element->n) || (pom_element!=NULL && posledni_editovany_element==NULL)){posledni_editovany_element=pom_element;editace_geometrie_spustena=true;}
@@ -5565,6 +5567,8 @@ bool TForm1::pripnuti_dalsich_objektu()
 		delete O;O=NULL;
 		ret=true;
 	}
+//	if(e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && (e_posledni->geo.X4!=e_posledni->dalsi->geo.X1 || e_posledni->geo.Y4!=e_posledni->dalsi->geo.Y1))
+//  Memo("konec vedlejší větve nesedí na spojce");
 	e_posledni=NULL;delete e_posledni;
 	return ret;
 }
@@ -12440,8 +12444,8 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //---------------------------------------------------------------------------
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
-{
-	Memo3->Clear();
+{          Memo("");
+//	Memo3->Clear();
 //	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
 //	if(akt_Objekt!=NULL)E=akt_Objekt->element;
 //	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
@@ -12471,13 +12475,13 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //	if(E->dalsi2!=NULL)Memo("->dalsi2 = "+E->dalsi2->name);
 //	if(E->predchozi2!=NULL)Memo("->predchozi2 = "+E->predchozi2->name);
 
-	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
-	while(O!=NULL)
-	{
-		Memo(O->name+"->n = "+AnsiString(O->n));
-		O=O->dalsi;
-	}
-	O=NULL;delete O;
+//	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
+//	while(O!=NULL)
+//	{
+//		Memo(O->name+"->n = "+AnsiString(O->n));
+//		O=O->dalsi;
+//	}
+//	O=NULL;delete O;
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
