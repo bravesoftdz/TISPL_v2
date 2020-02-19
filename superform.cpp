@@ -1240,10 +1240,11 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col,unsign
            //setGlyphButtonDavka_Remove(Row,Col);   //vytvoøí glyph na smazání dávky
            //setGlyphButtonDavka_Add(Row,mGrid->ColCount);   //vytvoøí glyph na pøidání dávky
            mGrid->Update();
-           mGrid->Cells[mGrid->ColCount-1][1].Type =mGrid->EDIT;// mGrid->glyphBUTTON; // add  davka
-           mGrid->Cells[mGrid->ColCount-1][1].Text="+";
+           mGrid->Cells[Col+1][1].Type =mGrid->EDIT;// mGrid->glyphBUTTON; // add  davka
+           mGrid->Cells[Col+1][1].Text="+";
            mGrid->Columns[Col].Width = 90;
-           mGrid->Columns[mGrid->ColCount].Width = 25; //šíøka musí být nastavena až tady
+           mGrid->Columns[Col+1].Width = 25; //šíøka musí být nastavena až tady
+
            //novì vytvoøené buòky pro ADD button nastavím na šedou barvu
            mGrid->Cells[mGrid->ColCount-1][4].Background->Color = light_gray;  mGrid->Cells[mGrid->ColCount-1][4].Text=" ";  mGrid->Cells[mGrid->ColCount-1][4].RightBorder->Color = light_gray;   mGrid->Cells[mGrid->ColCount-1][4].BottomBorder->Color = light_gray;
            mGrid->Cells[mGrid->ColCount-1][3].Background->Color = light_gray;  mGrid->Cells[mGrid->ColCount-1][3].Text=" ";  mGrid->Cells[mGrid->ColCount-1][3].RightBorder->Color = light_gray;   mGrid->Cells[mGrid->ColCount-1][3].BottomBorder->Color = light_gray;
@@ -1254,7 +1255,7 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col,unsign
          //  delete J;
 
          //mGrid->Refresh(); // refresh nestaci?
-          // Invalidate();
+           Invalidate();
            volno=true;
     //  }
 //      else if(J->GlyphOptions->Kind==scgpbgkClose && volno == true)  //VÌTEV NA MAZÁNÍ DÁVEK ZE ZAKÁZKY
