@@ -3305,7 +3305,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						predchozi_souradnice_kurzoru=vychozi_souradnice_kurzoru;
 						break;
 					}
-//					case MOVE: d.odznac_oznac_objekt(Canvas,pom,X-vychozi_souradnice_kurzoru.x,Y-vychozi_souradnice_kurzoru.y); break;
+					//case MOVE:d.v.vytvor_obraz_DATA();break;//uložení stavu před posunem //d.odznac_oznac_objekt(Canvas,pom,X-vychozi_souradnice_kurzoru.x,Y-vychozi_souradnice_kurzoru.y); break;
 					case MEASURE:minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;break;
 					case KALIBRACE:
 					{
@@ -4173,6 +4173,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 					d.v.posun_objekt(m.P2Lx(predchozi_souradnice_kurzoru.x)-pom->element->geo.X1,m.P2Ly(predchozi_souradnice_kurzoru.y)-pom->element->geo.Y1,pom,false,false);
 					if(pom->orientace!=predchozi_orientace)d.v.rotuj_objekt(pom,pom->orientace-predchozi_orientace);
 				}
+				else d.v.vytvor_obraz_DATA();
 				duvod_validovat=1;//pozor vyvolává na závěr metody ještě REFRESH(); ale docela byl přínosný
 				Akce=NIC;kurzor(standard);if(akt_Objekt!=NULL){scGPImage_zamek_posunu->ClipFrameFillColor=clWhite;scGPImage_zamek_posunu->ImageIndex=28;}//zamčen posun
 			}break;//posun objektu
@@ -5413,7 +5414,7 @@ Cvektory::TObjekt *TForm1::add_objekt(int X, int Y)
 		if(prichytavat_k_mrizce==1 && oblast==2 && d.v.OBJEKTY->predchozi->n==1){souradnice.x=d.v.OBJEKTY->predchozi->element->geo.X1;souradnice.y=d.v.OBJEKTY->predchozi->element->geo.Y1;}//před první objekt
 		if(oblast==2 && d.v.OBJEKTY->predchozi->n>1){souradnice.x=pom->element->geo.X1;souradnice.y=pom->element->geo.Y1;}     //Memo(pom->name);
 		//vložení objektu na konec
-		if(pom_element==NULL || pom_element!=NULL && pom_element==d.v.ELEMENTY->predchozi)//vloží za poslední prvek
+		if(pom_element==NULL || pom_element!=NULL && (pom_element==d.v.ELEMENTY->predchozi || pom_element->eID==300))//vloží za poslední prvek nebo za spojku
 		{
 			ret=pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y);
 		}
@@ -5422,7 +5423,7 @@ Cvektory::TObjekt *TForm1::add_objekt(int X, int Y)
 //			if(oblast==2 && d.v.OBJEKTY->predchozi->n>1)ret=pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,d.v.OBJEKTY,pom);
 //			else ret=pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,pom,pom->dalsi);
 			ret=pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,NULL,pom);
-			d.v.nove_indexy();//zvýší indexy nasledujicích bodů
+			//d.v.nove_indexy();//zvýší indexy nasledujicích bodů
 		}
 		pom=NULL;//odsranění pomocného ukazatele
 		//posun ostatních objektů
@@ -5868,6 +5869,7 @@ void TForm1::add_vyhybka_spojka()
 			pom=d.v.vrat_objekt(pom_element_temp->objekt_n);
 			d.v.vloz_element(pom,element_id,m.P2Lx(bod_vlozeni.x),m.P2Ly(bod_vlozeni.y),rotace_symbolu);
 			Akce=NIC;//vložena výhybka i spojka ukončení vkládání
+			d.v.vytvor_obraz_DATA();
     }
 	}
 	else TIP=ls->Strings[309];//"Lze vkládat pouze na linie."
@@ -12472,16 +12474,14 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //	pom->predchozi2=E;E->dalsi2=pom;
 //	pom->dalsi=d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi;d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi->predchozi=pom;
 //	pom->predchozi=d.v.ELEMENTY->dalsi->dalsi->dalsi;d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi=pom;
-														 Memo3->Clear();
+															Memo(akt_Objekt->n,true);
 	Cvektory::TElement *E=akt_Objekt->element;//d.v.ELEMENTY->dalsi;
 	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
-	while(E!=NULL && E->n>0 && E->objekt_n==akt_Objekt->n)
+	while(E!=NULL && E->n>0)
 	{
-		Memo(E->name);
-		Memo(AnsiString(E->geo.X4)+" != "+AnsiString(E->dalsi->geo.X1));
-		Memo(AnsiString(E->geo.Y4)+" != "+AnsiString(E->dalsi->geo.Y1));
-		E=E->dalsi;
-		//E=d.v.dalsi_krok(E);//,d.v.OBJEKTY->dalsi);
+		Memo(E->name+"->objek_n = "+AnsiString(E->objekt_n));
+		//E=E->dalsi;
+		E=d.v.dalsi_krok(E,akt_Objekt);
 		//E=d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);
 	}
 	E=NULL;delete E;
@@ -12504,7 +12504,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
 //	while(O!=NULL)
 //	{
-//		Memo(O->element->name);//+"->n = "+AnsiString(O->n));
+//		Memo(O->name+"->element = "+O->element->name+" "+AnsiString(O->element->eID));//+"->n = "+AnsiString(O->n));
 //		O=O->dalsi;
 //	}
 //	O=NULL;delete O;

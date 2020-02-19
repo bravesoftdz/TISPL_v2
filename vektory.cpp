@@ -489,7 +489,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	TObjekt *novy=new TObjekt;
 	//ukazatele
 	//novy->predchozi=pred;
-	novy->n=po->predchozi->n;
+	novy->n=OBJEKTY->predchozi->n+1;
 	novy->predchozi=po->predchozi;
 	po->predchozi->dalsi=novy;
 	po->predchozi=novy;
@@ -1359,7 +1359,7 @@ void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_o
 			//geometrie elementu
 			E->geo.X1+=X;E->geo.X2+=X;E->geo.X3+=X;E->geo.X4+=X;
 			E->geo.Y1+=Y;E->geo.Y2+=Y;E->geo.Y3+=Y;E->geo.Y4+=Y;
-			E=E->dalsi;
+			E=dalsi_krok(E,Objekt);
 		}
 		E=NULL;delete E;
 	}

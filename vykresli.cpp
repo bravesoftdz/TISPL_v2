@@ -5328,20 +5328,20 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_do)
 		////kota mezi elementy
 		double x1,y1,x2,y2;          //////////////////////////kota mezi kabinou a prvním elementem !!!!!
 		Cvektory::TElement *Element_od=Element_do->predchozi;
-		if(Element_od->objekt_n!=Element_do->objekt_n)Element_od=NULL;//ošetření proti tomu je-li hned první element mimo kabinu
 		while(Element_od!=NULL && Element_od->n>0 && Element_od->objekt_n==Element_do->objekt_n)
 		{
 			if(Element_od->geo.typ!=0){Element_od=NULL;break;}
 			if(Element_od->eID!=MaxInt)break;//kota element - element
 			Element_od=Element_od->predchozi;
 		}
+		if(Element_od!=NULL && Element_od->objekt_n!=Element_do->objekt_n)Element_od=NULL;//ošetření proti tomu je-li hned první element mimo kabinu
 		//určení bodů kóty
 		if(Element_do->geo.orientace==90||Element_do->geo.orientace==270)//vodorovná kabina
 			{if(Element_od!=NULL && Element_od->n==0 || Element_od==NULL){x1=Element_do->geo.X1;y1=Element_do->geo.Y1;}else {x1=Element_od->X;y1=Element_od->geo.Y4;}x2=Element_do->X;y2=y1;}
 		else
 			{if(Element_od!=NULL && Element_od->n==0 || Element_od==NULL){x1=Element_do->geo.X1;y1=Element_do->geo.Y1;}else {x1=Element_od->geo.X4;y1=Element_od->Y;}y2=Element_do->Y;x2=x1;}
 		if(x2<F->akt_Objekt->element->geo.X1)O=(O-0.66)*(-1);//ošetření chybného zobrazení kóty elementu, který je před kabinou
-    //vykreslení kóty
+		//vykreslení kóty
 		vykresli_kotu(canv,x1,y1,x2,y2,Element_do,O,highlight);
 		////kota mezi LO
 		bool vykreslit=false;
