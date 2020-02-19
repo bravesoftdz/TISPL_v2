@@ -157,7 +157,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 		{
 			if(pom->eID==301 && pom->predchozi2==E){bod.x=pom->X;bod.y=pom->Y;}
 			else {bod.x=pom->geo.X1;bod.y=pom->geo.Y1;}
-			if(E->geo.X4!=bod.x || E->geo.Y4!=bod.y)
+			if(m.round2double(E->geo.X4,2)!=m.round2double(bod.x,2) || m.round2double(E->geo.Y4,2)!=m.round2double(bod.y,2))
 			{
 				canv->MoveTo(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
 				canv->LineTo(m.L2Px(bod.x),m.L2Py(bod.y));
@@ -166,7 +166,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 		}
 		else if(v.OBJEKTY->predchozi->n>2)//vykreslení pouze v případě pokdud existjují více jak 2
 		{
-			if(E->geo.X4!=v.ELEMENTY->dalsi->geo.X1 || E->geo.Y4!=v.ELEMENTY->dalsi->geo.Y1)
+			if(m.round2double(E->geo.X4,2)!=m.round2double(v.ELEMENTY->dalsi->geo.X1,2) || m.round2double(E->geo.Y4,2)!=m.round2double(v.ELEMENTY->dalsi->geo.Y1,2))
 			{
 				canv->MoveTo(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
 				canv->LineTo(m.L2Px(v.ELEMENTY->dalsi->geo.X1),m.L2Py(v.ELEMENTY->dalsi->geo.Y1));
@@ -179,7 +179,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 		{
 			if(pom->eID==301 && pom->predchozi2==E){bod.x=pom->X;bod.y=pom->Y;}
 			else {bod.x=pom->geo.X1;bod.y=pom->geo.Y1;}
-			if(E->geo.X4!=bod.x || E->geo.Y4!=bod.y)
+			if(m.round2double(E->geo.X4,2)!=m.round2double(bod.x,2) || m.round2double(E->geo.Y4,2)!=m.round2double(bod.y,2))
 			{
 				canv->MoveTo(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
 				canv->LineTo(m.L2Px(bod.x),m.L2Py(bod.y));
@@ -5050,9 +5050,9 @@ void Cvykresli::smart_kurzor(TCanvas *canv,Cvektory::TElement *E)
 		preXk=F->akt_Objekt->element->geo.X1;
 		preYk=F->akt_Objekt->element->geo.Y1;
 		//pokud existuje předchozí kabina tak od jejího posledního bodu
-		if(F->pom->predchozi->n!=0)
+		if(F->akt_Objekt->element->predchozi->n!=0)
 		{
-			e_posledni=v.vrat_posledni_element_objektu(F->pom->predchozi);
+			e_posledni=F->akt_Objekt->element->predchozi;
 			preXk=e_posledni->geo.X4;
 			preYk=e_posledni->geo.Y4;
 		}

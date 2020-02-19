@@ -4839,9 +4839,10 @@ void TForm1::onPopUP(int X, int Y)
 //			pom_bod=d.v.najdi_bod(pom);
 			//element mimo kabinu
 			if(pom==NULL && JID==5 && pom_element!=NULL)pom=d.v.vrat_objekt(pom_element->objekt_n);
+			pom_vyhybka=pom;//uchovávání ukazatele pro případ, že uživatel po zobrazení popup menu sjede kurzorem z objektu
+			pom_element_temp=NULL;
 			if(pom!=NULL && JID!=-6)// nelze volat přímo metodu najdi objekt, protože pom se používá dále
 			{
-        pom_vyhybka=pom;//uchovávání ukazatele pro případ, že uživatel po zobrazení popup menu sjede kurzorem z objektu
 				if(AnsiString(ls->Strings[164]+" "+pom->name).Length()>19)//pokud je více znaků, tak zalamovat manuálně, lze i automaticky pomocí proporties wordwrap, ale to se nemusí projevit např. u všech různě textově dlouhých položek stejně
 				{
 					PopUPmenu->scLabel_nastavit_parametry->Caption=N+"\n  "+pom->name.UpperCase();
@@ -4880,6 +4881,7 @@ void TForm1::onPopUP(int X, int Y)
 			if(JID==5 && pom_element!=NULL && (pom_element->eID==300 || pom_element->eID==301))//nabízení možnosti odstranění výhybky nebo spojky
 			{
         pom_element_temp=pom_element;//uložení pro případ ztráty ukazatele při pohybu kurzorem
+        //pom_vyhybka=NULL;//odstrannění uloženého ukazatele, usnadnění pro metodu Smazat1Click
 				if(AnsiString(N+" "+pom_element->name).Length()>19) PopUPmenu->scLabel_smazat->Caption=smazat+"\n  "+pom_element->name.UpperCase();
 				else PopUPmenu->scLabel_smazat->Caption=smazat+" "+pom_element->name.UpperCase();
 			}
@@ -5414,7 +5416,7 @@ Cvektory::TObjekt *TForm1::add_objekt(int X, int Y)
 		if(prichytavat_k_mrizce==1 && oblast==2 && d.v.OBJEKTY->predchozi->n==1){souradnice.x=d.v.OBJEKTY->predchozi->element->geo.X1;souradnice.y=d.v.OBJEKTY->predchozi->element->geo.Y1;}//před první objekt
 		if(oblast==2 && d.v.OBJEKTY->predchozi->n>1){souradnice.x=pom->element->geo.X1;souradnice.y=pom->element->geo.Y1;}     //Memo(pom->name);
 		//vložení objektu na konec
-		if(pom_element==NULL || pom_element!=NULL && (pom_element==d.v.ELEMENTY->predchozi || pom_element->eID==300))//vloží za poslední prvek nebo za spojku
+		if(pom_element==NULL || pom_element!=NULL && (pom_element==d.v.ELEMENTY->predchozi || (pom_element->eID==300 && pom_element->dalsi2!=NULL && pom_element->dalsi2->eID==301 && pom_element->dalsi2->predchozi2==pom_element) || (pom_element->dalsi!=NULL && pom_element->dalsi->eID==301 && pom_element->dalsi->predchozi2==pom_element)))//vloží za poslední prvek, vyhybku nebo za poslední element v sekundární větvi před výhybkou
 		{
 			ret=pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y);
 		}
@@ -5422,8 +5424,9 @@ Cvektory::TObjekt *TForm1::add_objekt(int X, int Y)
 		{
 //			if(oblast==2 && d.v.OBJEKTY->predchozi->n>1)ret=pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,d.v.OBJEKTY,pom);
 //			else ret=pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,pom,pom->dalsi);
+			if(pom_element!=NULL && pom_element->eID==300)pom=d.v.vrat_objekt(pom_element->dalsi2->objekt_n);//pokudvkládám na vedlejší větev před existující objekty
 			ret=pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,NULL,pom);
-			//d.v.nove_indexy();//zvýší indexy nasledujicích bodů
+			d.v.nove_indexy();//zvýší indexy nasledujicích bodů
 		}
 		pom=NULL;//odsranění pomocného ukazatele
 		//posun ostatních objektů
@@ -5548,7 +5551,7 @@ bool TForm1::pripnuti_dalsich_objektu()
 	log(__func__);//logování
 	bool ret=false;
 	Cvektory::TElement *e_posledni=d.v.vrat_posledni_element_objektu(akt_Objekt);
-	if(e_posledni->dalsi!=NULL && !(e_posledni->geo.X4==e_posledni->dalsi->geo.X1 && e_posledni->geo.Y4==e_posledni->dalsi->geo.Y1) && mrYes==MB(ls->Strings[328],MB_YESNO,true))
+	if(e_posledni->dalsi!=NULL && !(e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni) && !(e_posledni->geo.X4==e_posledni->dalsi->geo.X1 && e_posledni->geo.Y4==e_posledni->dalsi->geo.Y1) && mrYes==MB(ls->Strings[328],MB_YESNO,true))
 	{
 		double posun_x,posun_y;
 		posun_x=-e_posledni->dalsi->geo.X1+e_posledni->geo.X4;
@@ -10347,31 +10350,17 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 		default://SCHEMA
 		{
 			//ať to nemusí znovu hledat beru z pom Cvektory::TObjekt *p=d.v.najdi_bod(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width,d.O_height);
-			if(pom!=NULL && pom_element_temp==NULL && pom_bod_temp==NULL)//pokud byl prvek nalezen
+			if(pom_vyhybka!=NULL && pom_element_temp==NULL && pom_bod_temp==NULL)//pokud byl prvek nalezen
 			{
-				Cvektory::TZakazka *Z=d.v.obsahuje_segment_cesty_objekt(pom);
+				Cvektory::TZakazka *Z=d.v.obsahuje_segment_cesty_objekt(pom_vyhybka);
 				if(Z!=NULL)
 					MB(text_4+UnicodeString(Z->name));
 				else
 				{
-			  	if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text_5+pom->name.UpperCase()+text_6,"",MB_YESNO))
+					if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text_5+pom_vyhybka->name.UpperCase()+text_6,"",MB_YESNO))
 			  	{
-//			  		if(((long)pom->id==VyID||(long)pom->id==pocet_objektu_knihovny+1)&&(pom->dalsi2!=pom->predchozi2))
-//			  		{
-//			  			//pokud není sekundární větev prázdná, musím smazat vše co je v ní
-//			  			Cvektory::TObjekt *smaz=NULL;
-//			  			if((long)pom->id==VyID)smaz=pom->dalsi2;//rozlišení pokud mažu z výhybky nebo spojky
-//			  			else smaz=pom->dalsi2->dalsi2;
-//			  			while(pom->dalsi2!=pom->predchozi2)
-//			  			{
-//			  				d.v.smaz_objekt(smaz);
-//			  				smaz=smaz->dalsi;
-//			  			}
-//			  			smaz=NULL;delete smaz;
-//			  		}
-						d.v.smaz_objekt(pom);//nalezeny můžeme odstranit odstranit
-						d.v.nove_indexy();
-						pom=NULL;//delete p; nepoužívat delete je to ukazatel na ostra data
+						d.v.smaz_objekt(pom_vyhybka);//nalezeny můžeme odstranit odstranit
+						pom_vyhybka=NULL;//delete p; nepoužívat delete je to ukazatel na ostra data
 			  		REFRESH();
 			  		DuvodUlozit(true);
 			  	}
@@ -10389,6 +10378,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 			{
 				d.v.smaz_element(pom_element_temp);
 				pom_element_temp=NULL;pom_element=NULL;
+				REFRESH();
       }
 			break;
 		}
@@ -12451,41 +12441,21 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-//	Cvektory::TElement *E=NULL,*pom=NULL;
-  ///////první výhybka
-//	E=new Cvektory::TElement;E->eID=300;E->name="Vyhybka 2";E->n=100;E->idetifikator_vyhybka_spojka=2;d.v.pocet_vyhybek=2; E->X=0;E->Y=0;
-//	E->dalsi=d.v.ELEMENTY->predchozi->predchozi;d.v.ELEMENTY->predchozi->predchozi->predchozi2=E;
-//	E->predchozi=d.v.ELEMENTY->dalsi->dalsi;d.v.ELEMENTY->dalsi->dalsi->dalsi2=E;
-//	E->dalsi2=NULL;E->predchozi2=NULL;
-//	pom=new Cvektory::TElement;pom->eID=301;pom->name="Spojka 2";pom->n=101;pom->idetifikator_vyhybka_spojka=2;pom->X=0;pom->Y=0;
-//	pom->dalsi2=E;E->predchozi2=pom;
-//	pom->predchozi2=pom;E->dalsi2=pom;
-//	pom->dalsi=d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi;d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi->predchozi=pom;
-//	pom->predchozi=d.v.ELEMENTY->dalsi->dalsi->dalsi;d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi=pom;
-//	E=d.v.ELEMENTY->dalsi;
-
-	///////první spojka
-//	E=new Cvektory::TElement;d.v.kopiruj_element(d.v.ELEMENTY->predchozi->predchozi,E);E->eID=300;E->name="Vyhybka 2";E->n=100;E->idetifikator_vyhybka_spojka=2;d.v.pocet_vyhybek=2; E->X=0;E->Y=0;
-//	E->dalsi=d.v.ELEMENTY->dalsi->dalsi;d.v.ELEMENTY->dalsi->dalsi->predchozi2=E;
-//	E->predchozi=d.v.ELEMENTY->predchozi->predchozi;d.v.ELEMENTY->predchozi->predchozi->dalsi2=E;
-//	E->dalsi2=NULL;E->predchozi2=NULL;
-//	pom=new Cvektory::TElement;d.v.kopiruj_element(d.v.ELEMENTY->dalsi->dalsi,pom);pom->eID=301;pom->name="Spojka 2";pom->n=101;pom->idetifikator_vyhybka_spojka=2;pom->X=0;pom->Y=0;
-//	pom->dalsi2=E;E->predchozi2=pom;
-//	pom->predchozi2=E;E->dalsi2=pom;
-//	pom->dalsi=d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi;d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi->predchozi=pom;
-//	pom->predchozi=d.v.ELEMENTY->dalsi->dalsi->dalsi;d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi=pom;
-															Memo(akt_Objekt->n,true);
-	Cvektory::TElement *E=akt_Objekt->element;//d.v.ELEMENTY->dalsi;
-	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
-	while(E!=NULL && E->n>0)
-	{
-		Memo(E->name+"->objek_n = "+AnsiString(E->objekt_n));
-		//E=E->dalsi;
-		E=d.v.dalsi_krok(E,akt_Objekt);
-		//E=d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);
-	}
-	E=NULL;delete E;
-	delete []tab_pruchodu;
+	Memo3->Clear();
+//	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+//	if(akt_Objekt!=NULL)E=akt_Objekt->element;
+//	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
+//	while(E!=NULL && E->n>0)
+//	{
+//		Memo(E->name+"->objekt_n = "+AnsiString(E->objekt_n));
+//		//Memo(d.v.vrat_objekt(E->objekt_n)->name);
+//		if(E->dalsi2!=NULL && E->eID==300)E=E->dalsi2;
+//		else E=E->dalsi;
+//		//E=d.v.dalsi_krok(E,akt_Objekt);
+//		//E=d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);
+//	}
+//	E=NULL;delete E;
+//	delete []tab_pruchodu;
 
 //	E=d.v.ELEMENTY->dalsi->dalsi->dalsi2->dalsi;
 //	Memo(E->name);
@@ -12501,13 +12471,13 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //	if(E->dalsi2!=NULL)Memo("->dalsi2 = "+E->dalsi2->name);
 //	if(E->predchozi2!=NULL)Memo("->predchozi2 = "+E->predchozi2->name);
 
-//	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
-//	while(O!=NULL)
-//	{
-//		Memo(O->name+"->element = "+O->element->name+" "+AnsiString(O->element->eID));//+"->n = "+AnsiString(O->n));
-//		O=O->dalsi;
-//	}
-//	O=NULL;delete O;
+	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
+	while(O!=NULL)
+	{
+		Memo(O->name+"->n = "+AnsiString(O->n));
+		O=O->dalsi;
+	}
+	O=NULL;delete O;
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko

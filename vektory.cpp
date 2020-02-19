@@ -602,10 +602,12 @@ void Cvektory::nastav_atributy_objektu(TObjekt *novy,unsigned int id, double X, 
 		case 270:novy->Xt=X-rozmery_kabiny.x/2.0;novy->Yt=Y+rozmery_kabiny.y/2.0;break;
 	}
 	//////nově je vše seřazeno ještě před touto metodou
-	if(OBJEKTY->predchozi->n==2 && novy->X==OBJEKTY->dalsi->X && novy->Y==OBJEKTY->dalsi->Y && OBJEKTY->dalsi->orientace==90 || F->d.predchozi_oblast==2 && OBJEKTY->predchozi->n==2)//změna trendu linky, pokud nebylo s prvním objektem rotováno
+	if(OBJEKTY->predchozi->n==2 && novy->X==OBJEKTY->dalsi->X && novy->Y==OBJEKTY->dalsi->Y)// && OBJEKTY->dalsi->orientace==90 || F->d.predchozi_oblast==2 && OBJEKTY->predchozi->n==2)//změna trendu linky, pokud nebylo s prvním objektem rotováno
 	{
-		posun_objekt(vrat_posledni_element_objektu(OBJEKTY->dalsi)->geo.X4-OBJEKTY->dalsi->element->geo.X1,0,OBJEKTY->dalsi);
-		rotuj_objekt(OBJEKTY->dalsi,180);
+		double rotace=-180;
+		if(OBJEKTY->dalsi->orientace==270)rotace=180;
+		rotuj_objekt(OBJEKTY->dalsi,rotace);
+		posun_objekt(OBJEKTY->dalsi->element->geo.X1-OBJEKTY->dalsi->element->geo.X4,OBJEKTY->dalsi->element->geo.Y1-OBJEKTY->dalsi->element->geo.Y4,OBJEKTY->dalsi,false,false);
 	}
 }
 //---------------------------------------------------------------------------
@@ -2139,6 +2141,8 @@ void Cvektory::uprav_popisky_elementu(TElement *Element)
 			case 6:if(E->name.SubString(1,4)==t_otoc || E->name.SubString(1,7)==t_otoc/*"Otoč" || "Turning"*/ || E->name=="")rename=true;else rename=false;break;
 			//předavací místo
 			case 200:if(E->name.SubString(1,15)==t_PM || E->name.SubString(1,14)==t_PM/*"Předávací místo" || "Transfer point"*/ || E->name=="")rename=true;else rename=false;break;
+			//výhybka a spojka
+			case 300:case 301:break;//nepřejmenovává se
 			//zarážka
 			case MaxInt:if(DEBUG)rename=true;else rename=false;break;
 			//roboti, operátoři a ION
@@ -2158,6 +2162,8 @@ void Cvektory::uprav_popisky_elementu(TElement *Element)
 				case 6:E->name=t_otoc+" "+AnsiString(n);break;
 				//předávací místo
 				case 200:E->name=t_PM+" "+AnsiString(n);break;
+        //výhybka a spojka
+				case 300:case 301:break;//nepřejmenovává se
 				//zarážka
 				case MaxInt:E->name="Zarážka "+AnsiString(n);break;
 				//roboti, operátoři a ION
@@ -3276,7 +3282,7 @@ Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruc
 				else//vkládání elementu na vedlejší větev
 				{
 					novy->predchozi=vyhybka_pom;
-					if(vyhybka_pom->eID==300 && ELEMENTY->predchozi->dalsi2==NULL)vyhybka_pom->dalsi2=novy;//předchozí je běžný element
+					if(vyhybka_pom->eID==300 && vyhybka_pom->dalsi2==NULL)vyhybka_pom->dalsi2=novy;//předchozí je běžný element
 					else vyhybka_pom->dalsi=novy;//předchozí výhybka
 					vyhybka_pom=novy;//uložení pro průchod vedlejší větve
 				}
@@ -7615,7 +7621,12 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 		if(F->akt_Objekt!=NULL && !storno)F->vytvoreni_tab_pohon();
 
 		F->Timer_backup->Enabled=true;//obnovení timeru pro backup, nespouští se!
-		if(storno)pozice_data=0;//vrácení pozice na default hodnotu
+		if(storno)
+		{
+			pozice_data=0;//vrácení pozice na default hodnotu
+			vymaz_seznam_DATA();//smazání nepotřebných dat
+			hlavicka_DATA();
+		}
 	}
 }
 //---------------------------------------------------------------------------
@@ -7646,6 +7657,15 @@ void Cvektory::smaz_obraz_DATA(unsigned long n)
 		if(DATA->predchozi->n>0)prazdny->predchozi=DATA->predchozi;
 		else prazdny->predchozi=prazdny;
 		DATA=prazdny;
+		//aktualizace n
+		prazdny=DATA->dalsi;
+		unsigned int n=1;
+		while(prazdny!=NULL)
+		{
+			prazdny->n=n;
+			n++;
+			prazdny=prazdny->dalsi;
+    }
 		//smazání ukazatele
 		prazdny=NULL;delete prazdny;
 	}
