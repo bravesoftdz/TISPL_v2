@@ -76,15 +76,15 @@ void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender) {
   Top = Form1->ClientHeight / 2 - Height / 2;
   volno=true;
   ////////definice tabulky////////
-  mGrid = new TmGrid(this); // vždy nutno jako první
-  mGrid->Create(4, 6);
-  // vypis(""); // prozmanuti vypisu - pro sicher
-  mGrid->Tag = 9;
-  // ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
-  mGrid->ID = 0;
-  mGrid->AntiAliasing_text = true;
-  mGrid->Border.Width = 1;
-  mGrid->DefaultRowHeight = 28;
+//  mGrid = new TmGrid(this); // vždy nutno jako první
+//  mGrid->Create(4, 6);
+//  // vypis(""); // prozmanuti vypisu - pro sicher
+//  mGrid->Tag = 9;
+//  // ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
+//  mGrid->ID = 0;
+//  mGrid->AntiAliasing_text = true;
+//  mGrid->Border.Width = 1;
+//  mGrid->DefaultRowHeight = 28;
   // vìtší výška øádku, kvùli velikosti comba - aby se vešlo celé
 
   ////nastaveni PP, defaultní jsou již od souboru novy, který se volá vždy, takže není defaultní nutné volat znovu
@@ -835,25 +835,26 @@ void __fastcall TForm_definice_zakazek::scGPGlyphButton_add_zakazkaClick
 //	FormPaint(this);
 
 	////vytvoøení nové temp zakázky, nutné nese si ukazatel na svùj mGrid
-	Cvektory::TZakazka *Z=NULL; Cvektory::TJig J;
-	unsigned int n=1;
-	if(F->d.v.ZAKAZKY_temp!=NULL && F->d.v.ZAKAZKY_temp->predchozi->n>0)n=F->d.v.ZAKAZKY_temp->predchozi->n+1;
-	F->d.v.vloz_temp_zakazku("id",0,"Zakazka "+AnsiString(n),clBlack,0,0,J,0,0,0);
-	Z=F->d.v.ZAKAZKY_temp->predchozi;
-	////vytvoøení mgridu nové zakázce
-	Z->mGrid=new TmGrid(this);
-	Z->mGrid->Tag=9;
-	Z->mGrid->ID=Z->n;
-	Z->mGrid->Create(3,3);
-	////parametry mgridu
-	Z->mGrid->Left=5;
-	if(Z->predchozi->n>0)Z->mGrid->Top=Z->predchozi->mGrid->Top+Z->predchozi->mGrid->Height+Z->mGrid->Rows[0].Height;
-	else Z->mGrid->Top=mGrid->Top+mGrid->Height+Z->mGrid->Rows[0].Height;
-
-	////ukazatelové záležitosti
-	Z=NULL;delete Z;
-	////vykreslení mGridù
-	FormPaint(this);
+//	Cvektory::TZakazka *Z=NULL; Cvektory::TJig J;
+//	unsigned int n=1;
+//	if(F->d.v.ZAKAZKY_temp!=NULL && F->d.v.ZAKAZKY_temp->predchozi->n>0)n=F->d.v.ZAKAZKY_temp->predchozi->n+1;
+//	F->d.v.vloz_temp_zakazku("id",0,"Zakazka "+AnsiString(n),clBlack,0,0,J,0,0,0);
+//	Z=F->d.v.ZAKAZKY_temp->predchozi;
+//	////vytvoøení mgridu nové zakázce
+//	Z->mGrid=new TmGrid(this);
+//	Z->mGrid->Tag=9;
+//	Z->mGrid->ID=Z->n;
+//	Z->mGrid->Create(3,3);
+//	////parametry mgridu
+//	Z->mGrid->Left=5;
+//	if(Z->predchozi->n>0)Z->mGrid->Top=Z->predchozi->mGrid->Top+Z->predchozi->mGrid->Height+Z->mGrid->Rows[0].Height;
+//	else Z->mGrid->Top=mGrid->Top+mGrid->Height+Z->mGrid->Rows[0].Height;
+//
+//	////ukazatelové záležitosti
+//	Z=NULL;delete Z;
+//	////vykreslení mGridù
+//	FormPaint(this);
+loadHeader(0,true);
 }
 
 // ---------------------------------------------------------------------------
@@ -907,10 +908,11 @@ void __fastcall TForm_definice_zakazek::scGPGlyphButton_removeClick
 // ---------------------------------------------------------------------------
 
 void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender) {
-	mGrid->Show(); // vykreslí tabulku
+	//mGrid->Show(); // vykreslí tabulku
 	//vykreslování mGridù zakázek
 	if(F->d.v.ZAKAZKY_temp!=NULL)
 	{
+    ShowMessage("vykresli");
   	Cvektory::TZakazka *Z=F->d.v.ZAKAZKY_temp->dalsi;
   	while(Z!=NULL)
   	{
@@ -1113,10 +1115,7 @@ void __fastcall TForm_definice_zakazek::FormMouseMove(TObject *Sender,
 // ---------------------------------------------------------------------------
 void TForm_definice_zakazek::getmGridWidth() {
   F->log(__func__); // logování
-  mGrid->Columns[0].Width = 30;
-  mGrid->Columns[1].Width = 80;
-  mGrid->Columns[2].Width = 55;
-  mGrid->Columns[3].Width = 25;
+
  // mGrid->Columns[4].Width = 25;
 
 }
@@ -1302,67 +1301,98 @@ void TForm_definice_zakazek::loadHeader(unsigned long Row, bool novy) {
 
    ShowMessage("loadHeader");
 
-  mGrid->SetColumnAutoFit(-4);
-  if(novy)getmGridWidth();
 
   if (novy || add_zakazka)
   {
     F->log(__func__); // logování
-    mGrid->Top = scLabel_header->Height + scGPButton_plan_vyroby->Height + 10;
-		mGrid->Left = 5;
+
+  Cvektory::TZakazka *Z=NULL; Cvektory::TJig J;
+	unsigned int n=1;
+	if(F->d.v.ZAKAZKY_temp!=NULL && F->d.v.ZAKAZKY_temp->predchozi->n>0)n=F->d.v.ZAKAZKY_temp->predchozi->n+1;
+	F->d.v.vloz_temp_zakazku("id",0,"Zakazka "+AnsiString(n),clBlack,0,0,J,0,0,0);
+	Z=F->d.v.ZAKAZKY_temp->predchozi;
+	////vytvoøení mgridu nové zakázce
+	Z->mGrid=new TmGrid(this);
+	Z->mGrid->Tag=9;
+	Z->mGrid->ID=Z->n;
+	Z->mGrid->Create(4,6);
+  Z->mGrid->SetColumnAutoFit(-4);
+   ShowMessage("1");
+  if(novy)
+  {
+  Z->mGrid->Columns[0].Width = 30;
+  Z->mGrid->Columns[1].Width = 80;
+  Z->mGrid->Columns[2].Width = 55;
+  Z->mGrid->Columns[3].Width = 25;
+  }
+	////parametry mgridu
+	Z->mGrid->Left=5;
+  Z->mGrid->Top = 50;
+//	if(Z->predchozi->n>0)Z->mGrid->Top=Z->predchozi->mGrid->Top+Z->predchozi->mGrid->Height+Z->mGrid->Rows[0].Height;
+//	else Z->mGrid->Top=mGrid->Top+mGrid->Height+Z->mGrid->Rows[0].Height;
+
+   ShowMessage("2");
+
+
     int i=0;
     if(novy) i=0;
     if(add_zakazka) i=Row;
 
-    mGrid->Cells[1][i+0].Type = mGrid->EDIT; // nazev  text  - slouèit podélnì
-    mGrid->Cells[0][i+0].Type = mGrid->glyphBUTTON; // X  zakazka
-    mGrid->Cells[3][i+1].Type = mGrid->EDIT;//mGrid->glyphBUTTON; // X  davka
+    	Z->mGrid->Cells[1][i+0].Type = 	Z->mGrid->EDIT; // nazev  text  - slouèit podélnì
+    	Z->mGrid->Cells[0][i+0].Type = 	Z->mGrid->glyphBUTTON; // X  zakazka
+    	Z->mGrid->Cells[3][i+1].Type = 	Z->mGrid->EDIT;//mGrid->glyphBUTTON; // X  davka
  //   mGrid->Cells[4][i+1].Type = mGrid->EDIT;//mGrid->glyphBUTTON; // add  davka
-    mGrid->Cells[3][i+1].Text="+";
+    	Z->mGrid->Cells[3][i+1].Text="+";
 
 
-    mGrid->Cells[0][i+1].Text = "1"; // id zakázky
-    mGrid->Cells[1][i+0].Text = "Název zakázky";
-    mGrid->Cells[1][i+0].Font->Size=15;
+    	Z->mGrid->Cells[0][i+1].Text = "1"; // id zakázky
+    	Z->mGrid->Cells[1][i+0].Text = "Název zakázky";
+    	Z->mGrid->Cells[1][i+0].Font->Size=15;
 
-    mGrid->Cells[1][i+1].Font->Size=14;
-    mGrid->Cells[1][i+2].Text = " poèet";   mGrid->Cells[1][2].RightBorder->Color = clWhite;
-    mGrid->Cells[1][i+3].Text = " prázdných";   mGrid->Cells[1][3].RightBorder->Color = clWhite;
-    mGrid->Cells[1][i+4].Text = " celkem";       mGrid->Cells[1][4].RightBorder->Color = clWhite;
+    	Z->mGrid->Cells[1][i+1].Font->Size=14;
+    	Z->mGrid->Cells[1][i+2].Text = " poèet";   	Z->mGrid->Cells[1][2].RightBorder->Color = clWhite;
+    	Z->mGrid->Cells[1][i+3].Text = " prázdných";   	Z->mGrid->Cells[1][3].RightBorder->Color = clWhite;
+    	Z->mGrid->Cells[1][i+4].Text = " celkem";       	Z->mGrid->Cells[1][4].RightBorder->Color = clWhite;
 
-    mGrid->Cells[1][i+2].Align = mGrid->LEFT;
-    mGrid->Cells[1][i+3].Align = mGrid->LEFT;
-		mGrid->Cells[1][i+4].Align = mGrid->LEFT;
+    	Z->mGrid->Cells[1][i+2].Align = 	Z->mGrid->LEFT;
+    	Z->mGrid->Cells[1][i+3].Align = 	Z->mGrid->LEFT;
+			Z->mGrid->Cells[1][i+4].Align = 	Z->mGrid->LEFT;
 
-    mGrid->Cells[2][i+2].Align = mGrid->CENTER;
-    mGrid->Cells[2][i+3].Align = mGrid->CENTER;
-    mGrid->Cells[2][i+4].Align = mGrid->CENTER;
+    	Z->mGrid->Cells[2][i+2].Align = 	Z->mGrid->CENTER;
+    	Z->mGrid->Cells[2][i+3].Align = 	Z->mGrid->CENTER;
+    	Z->mGrid->Cells[2][i+4].Align = 	Z->mGrid->CENTER;
 
-    mGrid->Cells[2][i+2].Type = mGrid->EDIT; //
-    mGrid->Cells[2][i+3].Type = mGrid->EDIT;
-    mGrid->Cells[2][i+4].Type = mGrid->EDIT;
-    mGrid->Cells[2][i+2].Text = "100"; // value
-    mGrid->Cells[2][i+3].Text = "3"; // value
-    mGrid->Cells[2][i+4].Text = "103"; // value
+    	Z->mGrid->Cells[2][i+2].Type = 	Z->mGrid->EDIT; //
+    	Z->mGrid->Cells[2][i+3].Type = 	Z->mGrid->EDIT;
+    	Z->mGrid->Cells[2][i+4].Type = 	Z->mGrid->EDIT;
+    	Z->mGrid->Cells[2][i+2].Text = "100"; // value
+    	Z->mGrid->Cells[2][i+3].Text = "3"; // value
+    	Z->mGrid->Cells[2][i+4].Text = "103"; // value
+   ShowMessage("3");
 
-
-    mGrid->Cells[1][i+1].RightBorder->Color = clWhite;
+    	Z->mGrid->Cells[1][i+1].RightBorder->Color = clWhite;
     //mGrid->Cells[4][4].Background->Color = light_gray;
-    mGrid->Cells[0][i+2].LeftBorder->Color = light_gray;
+    	Z->mGrid->Cells[0][i+2].LeftBorder->Color = light_gray;
 
    //ØEŠIT DYNAMICKY
-   mGrid->Cells[3][i+4].Background->Color = light_gray;  mGrid->Cells[3][i+4].Text=" ";  mGrid->Cells[3][i+4].RightBorder->Color = light_gray;   mGrid->Cells[3][i+4].BottomBorder->Color = light_gray;
-   mGrid->Cells[3][i+3].Background->Color = light_gray;  mGrid->Cells[3][i+3].Text=" ";  mGrid->Cells[3][i+3].RightBorder->Color = light_gray;   mGrid->Cells[3][i+3].BottomBorder->Color = light_gray;
-   mGrid->Cells[3][i+2].Background->Color = light_gray;  mGrid->Cells[3][i+2].Text=" ";  mGrid->Cells[3][i+2].RightBorder->Color = light_gray;   mGrid->Cells[3][i+2].BottomBorder->Color = light_gray;
+   	Z->mGrid->Cells[3][i+4].Background->Color = light_gray;  	Z->mGrid->Cells[3][i+4].Text=" ";  	Z->mGrid->Cells[3][i+4].RightBorder->Color = light_gray;   	Z->mGrid->Cells[3][i+4].BottomBorder->Color = light_gray;
+   	Z->mGrid->Cells[3][i+3].Background->Color = light_gray;  	Z->mGrid->Cells[3][i+3].Text=" ";  	Z->mGrid->Cells[3][i+3].RightBorder->Color = light_gray;   	Z->mGrid->Cells[3][i+3].BottomBorder->Color = light_gray;
+   	Z->mGrid->Cells[3][i+2].Background->Color = light_gray;  	Z->mGrid->Cells[3][i+2].Text=" ";  	Z->mGrid->Cells[3][i+2].RightBorder->Color = light_gray;   	Z->mGrid->Cells[3][i+2].BottomBorder->Color = light_gray;
  //  mGrid->Cells[3][i+0].Background->Color = light_gray;  mGrid->Cells[3][i+0].Text=" ";  mGrid->Cells[3][i+0].RightBorder->Color = light_gray;
 
-    mGrid->MergeCells(1, i+0, 3, i+0); // název     - vodorovne
-    mGrid->MergeCells(0, i+1, 0, i+4); // merge ID èi obrázek
+    	Z->mGrid->MergeCells(1, i+0, 3, i+0); // název     - vodorovne
+    	Z->mGrid->MergeCells(0, i+1, 0, i+4); // merge ID èi obrázek
    // if(add_zakazka)
-    // mGrid->Refresh();
+    // 	Z->mGrid->Update();
     //default rozmístìní glyphbuttonù
   //setGlyphButtonDefault(i+0,0, krizek); // pøedávat Row
   //  setGlyphButtonDefault(i+1,3, krizek_davky); // pøedávat Row
+   ShowMessage("4");
+  	////ukazatelové záležitosti
+	Z=NULL;delete Z;
+	////vykreslení mGridù
+	FormPaint(this);
+
   }
 
 }
@@ -1372,13 +1402,13 @@ void __fastcall TForm_definice_zakazek::FormClose(TObject *Sender,
 
 {
   F->log(__func__); // logování
-  mGrid->Delete();
+  //Z->mGrid->Delete();
 }
 // ---------------------------------------------------------------------------
 
 void TForm_definice_zakazek::setGlyphButtonDavka_Add(unsigned long Row,unsigned long Col)    //pøedávám Col+1!!
 {
-    mGrid->Columns[Col].Width = 25; //nastavení šíøky pro ADD dávka button
+    //Z->mGrid->Columns[Col].Width = 25; //nastavení šíøky pro ADD dávka button
     TscGPGlyphButton *J = mGrid->getGlyphButton(Col, Row);
     J->GlyphOptions->Kind = scgpbgkPlus;
     J->GlyphOptions->Thickness = 1;
