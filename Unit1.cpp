@@ -5552,23 +5552,86 @@ bool TForm1::pripnuti_dalsich_objektu()
 {																																																																								 																									//"Objekty nenavazují, automaticky posunout následující objekt pro zachování návaznosti?"
 	log(__func__);//logování
 	bool ret=false;
+	double posun_x,posun_y;
 	Cvektory::TElement *e_posledni=d.v.vrat_posledni_element_objektu(akt_Objekt);
+
+	////připnutí dalších objektů na hlavní větvi
 	if(e_posledni->dalsi!=NULL && !(e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni) && !(e_posledni->geo.X4==e_posledni->dalsi->geo.X1 && e_posledni->geo.Y4==e_posledni->dalsi->geo.Y1) && mrYes==MB(ls->Strings[328],MB_YESNO,true))
 	{
-		double posun_x,posun_y;
+		//zjištění jednotlivých délek posunů
 		posun_x=-e_posledni->dalsi->geo.X1+e_posledni->geo.X4;
 		posun_y=-e_posledni->dalsi->geo.Y1+e_posledni->geo.Y4;
-		Cvektory::TObjekt *O=pom->dalsi;
-		while(O!=NULL)
+		//posun dalších elementů a objektů, pouze po hlavní větvi
+		unsigned long objekt_n=e_posledni->objekt_n;
+		e_posledni=e_posledni->dalsi;
+		while(e_posledni!=NULL)
 		{
-			move_objekt(posun_x,posun_y,O);
-			O=O->dalsi;
+			//posun elementu
+			d.v.vloz_G_element(e_posledni,e_posledni->geo.typ,e_posledni->geo.X1+posun_x,e_posledni->geo.Y1+posun_y,e_posledni->geo.X2+posun_x,e_posledni->geo.Y2+posun_y,e_posledni->geo.X3+posun_x,e_posledni->geo.Y3+posun_y,e_posledni->geo.X4+posun_x,e_posledni->geo.Y4+posun_y,e_posledni->geo.orientace,e_posledni->geo.rotacni_uhel,e_posledni->geo.radius,e_posledni->geo.delka);
+			e_posledni->X+=posun_x;
+			e_posledni->Y+=posun_y;
+			//posun souřadnic tabulky, jestliže je vytvořená
+			if(e_posledni->Xt!=-100)
+			{
+				e_posledni->Xt+=posun_x;
+				e_posledni->Yt+=posun_y;
+			}
+			//posun objektu, pokud sem na jeho posledním elementu
+			if(objekt_n!=e_posledni->objekt_n)
+			{
+				Cvektory::TObjekt *O=d.v.vrat_objekt(e_posledni->objekt_n);
+				d.v.posun_body(posun_x,posun_y,O);
+				O->Xt+=posun_x;
+				O->Yt+=posun_y;
+				O->Xp+=posun_x;
+				O->Yp+=posun_y;
+				O=NULL;delete O;
+			}
+			objekt_n=e_posledni->objekt_n;
+			//posun na další
+			if(e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni)e_posledni=NULL;//posouvám objekty ve vedlejší větvi, neovlivní hlavní větev
+			else e_posledni=e_posledni->dalsi;//další, jdu pouze po hlavní větvi projektu
 		}
-		delete O;O=NULL;
+		delete e_posledni;e_posledni=NULL;
 		ret=true;
 	}
-//	if(e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && (e_posledni->geo.X4!=e_posledni->dalsi->geo.X1 || e_posledni->geo.Y4!=e_posledni->dalsi->geo.Y1))
-//  Memo("konec vedlejší větve nesedí na spojce");
+
+	////připnutí vedlejší větve na hlavní
+	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && (e_posledni->geo.X4!=e_posledni->dalsi->geo.X4 || e_posledni->geo.Y4!=e_posledni->dalsi->geo.Y4))
+	{
+		if(e_posledni->geo.typ==0 && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=0.5)
+		{
+			//zjištění jednotlivých délek posunů
+			posun_x=-e_posledni->dalsi->geo.X4+e_posledni->geo.X4;
+			posun_y=-e_posledni->dalsi->geo.Y4+e_posledni->geo.Y4;
+			//zajištěni spojení
+			if(e_posledni->geo.orientace==90 || e_posledni->geo.orientace==270)//horizontální linie
+			{
+				//prodloužení linie vedlejší větve
+				d.v.vloz_G_element(e_posledni,0,e_posledni->geo.X1,e_posledni->geo.Y1,0,0,0,0,e_posledni->geo.X4-posun_x,e_posledni->geo.Y4,e_posledni->geo.orientace);
+				e_posledni->X-=posun_x;
+				//posun spojky, je-li to možné
+				e_posledni=e_posledni->dalsi;
+				if(e_posledni->geo.typ==0 && e_posledni->geo.delka>=0.5 && e_posledni->dalsi->geo.typ==0 && e_posledni->dalsi->geo.delka>=0.5)//pokud je vyhybka na liniovém úseku a je ji kam posunout
+				{
+					d.v.posun_element(e_posledni,posun_y,false,true);
+				}
+			}
+			else//vertikální  linie
+			{
+        //prodloužení linie vedlejší větve
+				d.v.vloz_G_element(e_posledni,0,e_posledni->geo.X1,e_posledni->geo.Y1,0,0,0,0,e_posledni->geo.X4,e_posledni->geo.Y4-posun_y,e_posledni->geo.orientace);
+				e_posledni->Y-=posun_y;
+				//posun spojky, je-li to možné
+				e_posledni=e_posledni->dalsi;
+				if(e_posledni->geo.typ==0 && e_posledni->geo.delka>=0.5 && e_posledni->dalsi->geo.typ==0 && e_posledni->dalsi->geo.delka>=0.5)//pokud je vyhybka na liniovém úseku a je ji kam posunout
+				{
+					d.v.posun_element(e_posledni,posun_x,false,true);
+        }
+      }
+		}
+		else TIP="Vedlejší větev není spojená se spojkou!";//vypsat do tipu
+	}
 	e_posledni=NULL;delete e_posledni;
 	return ret;
 }
@@ -5691,7 +5754,7 @@ void TForm1::move_objekt(double X, double Y,Cvektory::TObjekt *Objekt)
 	while(E!=NULL && E->objekt_n==Objekt->n)
 	{
 		E->X+=X;E->Y+=Y;//souřadnice elementu
-		if(E->Xt!=-100)E->Xt+=X;E->Yt+=Y;//souřadnice tabulky + kontrola zda je vytvořená
+		if(E->Xt!=-100){E->Xt+=X;E->Yt+=Y;}//souřadnice tabulky + kontrola zda je vytvořená
 		//geometrie elementu
 		E->geo.X1+=X;E->geo.X2+=X;E->geo.X3+=X;E->geo.X4+=X;
 		E->geo.Y1+=Y;E->geo.Y2+=Y;E->geo.Y3+=Y;E->geo.Y4+=Y;
@@ -12444,8 +12507,8 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //---------------------------------------------------------------------------
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
-{          Memo("");
-//	Memo3->Clear();
+{
+	Memo3->Clear();
 //	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
 //	if(akt_Objekt!=NULL)E=akt_Objekt->element;
 //	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
@@ -12453,9 +12516,8 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //	{
 //		Memo(E->name+"->objekt_n = "+AnsiString(E->objekt_n));
 //		//Memo(d.v.vrat_objekt(E->objekt_n)->name);
-//		if(E->dalsi2!=NULL && E->eID==300)E=E->dalsi2;
-//		else E=E->dalsi;
-//		//E=d.v.dalsi_krok(E,akt_Objekt);
+//		//E=E->dalsi;
+//		E=d.v.dalsi_krok(E,akt_Objekt);
 //		//E=d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);
 //	}
 //	E=NULL;delete E;
@@ -12474,14 +12536,20 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //	Memo("->predchozi = "+E->predchozi->name);
 //	if(E->dalsi2!=NULL)Memo("->dalsi2 = "+E->dalsi2->name);
 //	if(E->predchozi2!=NULL)Memo("->predchozi2 = "+E->predchozi2->name);
+//  Memo("");
+	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
+	while(O!=NULL)
+	{
+		Memo(O->name+":");
+		Cvektory::TElement *E=O->element;
+		while(E!=NULL)
+		{
 
-//	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
-//	while(O!=NULL)
-//	{
-//		Memo(O->name+"->n = "+AnsiString(O->n));
-//		O=O->dalsi;
-//	}
-//	O=NULL;delete O;
+			E=d.v.dalsi_krok(E,O);
+    }
+		O=O->dalsi;
+	}
+	O=NULL;delete O;
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -14231,7 +14299,7 @@ void TForm1::smaz_kurzor()
       pom_element_temp->X+=posunx;pom_element_temp->Y+=posuny;//souřadnice elementu
 			pom_element_temp=pom_element_temp->dalsi;
 			////posun ostatních elementů a jejich geometrie
-			while(pom_element_temp!=NULL)
+			while(pom_element_temp!=NULL && pom_element_temp->objekt_n==akt_Objekt->n)
 			{
 				pom_element_temp->X+=posunx;pom_element_temp->Y+=posuny;//souřadnice elementu
 				//geometrie elementu

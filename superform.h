@@ -25,6 +25,7 @@
 #include "scImageCollection.hpp"
 #include "scColorControls.hpp"
 #include "scExtControls.hpp"
+#include "Unit1.h"
 //---------------------------------------------------------------------------
 class TForm_definice_zakazek : public TForm
 {
@@ -107,7 +108,7 @@ public:		// User declarations
 
   Typ_buttonu button_type;//zjisteni ktery button ma byt designovan
 
-  void setGlyphButtonDefault(unsigned long Row,unsigned long Col, Typ_buttonu typ);
+	void setGlyphButtonDefault(unsigned long Row,unsigned long Col, Typ_buttonu typ, Cvektory::TZakazka *Z);
   void setGlyphButtonDavka_Add(unsigned long Row,unsigned long Col);
   void setGlyphButtonDavka_Remove(unsigned long Row,unsigned long Col);
   bool add_zakazka;

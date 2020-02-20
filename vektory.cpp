@@ -1184,17 +1184,41 @@ void Cvektory::nove_indexy(bool nasledne_zmena_nazvu)
 	unsigned long n=1,stare_n=0;
 	while(O!=NULL)
 	{
-		//změna indexu objektu
-		stare_n=O->n;//uchováváno kvuli průchodu elementů tohoto objektu
-		O->n=n;
-		n++;
-		//změna objekt_n v elementech, musí být aktuální!!
-		Cvektory::TElement *E=O->element;
-		while(E!=NULL && E->objekt_n==stare_n)
+		//načtení všech elementů objektu do pomocného spojáku, pro účely změny objekt_n
+		TElement *E=O->element;
+		T2Element *zmena=new T2Element,*novy=NULL;;zmena->n=0;zmena->vyhybka=NULL;zmena->dalsi=NULL;zmena->predchozi=zmena;
+		while(E!=NULL)
 		{
-			E->objekt_n=O->n;
+			novy=new T2Element;
+			novy->n=zmena->predchozi->n+1;
+			novy->vyhybka=E;
+			novy->predchozi=zmena->predchozi;
+			zmena->predchozi->dalsi=novy;
+			zmena->predchozi=novy;
+			novy->dalsi=NULL;
 			E=dalsi_krok(E,O);//E->dalsi;
 		}
+		//změna n objektu
+		O->n=n;
+		n++;
+		//změna objekt_n u elementů objektu, musí být řešeno na 2x, pri realizaci první změna n objektu a pak průchod skrze jeho elementy (metoda průchodu nefunguje správně), realizace změna objekt_n u elementů a následná změna n objektu ... pam. chyba
+		do
+		{
+	  	novy=zmena->predchozi;
+			novy->vyhybka->objekt_n=O->n;//přepsání objekt_n
+	  	//vyřazení záznamu se seznamu smazat
+	  	zmena->predchozi=novy->predchozi;
+	  	zmena->predchozi->dalsi=NULL;
+	  	//smazání záznamu
+	  	delete novy;novy=NULL;
+	  	//pokud jsem na hlavičce seznamu smazat, smažu hlavičku a cyklus se ukončí
+	  	if(zmena->predchozi->n==0)
+			{
+	  		delete zmena;
+	  		zmena=NULL;
+			}
+		}while(zmena!=NULL);
+		//ukazatelové záležitosti
 		E=NULL;delete E;
 		O=O->dalsi;
 	}
@@ -4415,7 +4439,7 @@ void Cvektory::smaz_temp_zakazku(unsigned long n)
 			{
 				if(ukaz->n==1)//pokud je mazaný prvek hned za hlavičkou
 				{
-					ZAKAZKY_temp->predchozi=ZAKAZKY_temp->predchozi; //popř hlavička bude ukazovat sama na sebe
+					ZAKAZKY_temp->predchozi=ZAKAZKY_temp; //popř hlavička bude ukazovat sama na sebe
 					ZAKAZKY_temp->dalsi=NULL;
 				}
 				else
@@ -4425,7 +4449,7 @@ void Cvektory::smaz_temp_zakazku(unsigned long n)
 				}
 			}
 
-			ukaz=NULL;delete ukaz;//smaže mazaný prvek
+			delete ukaz;ukaz=NULL;//smaže mazaný prvek
 	}
 }
 //---------------------------------------------------------------------------
