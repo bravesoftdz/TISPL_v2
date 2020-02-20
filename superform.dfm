@@ -17,7 +17,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
   Position = poDesigned
   OnClose = FormClose
   OnKeyDown = FormKeyDown
-  OnMouseMove = FormMouseMove
   OnPaint = FormPaint
   OnShow = FormShow
   PixelsPerInch = 96
