@@ -2309,7 +2309,7 @@ void TmGrid::InsertColumn(unsigned long Column,bool copyComponentFromPreviousCol
 					//DeleteCell(X-1,Y); //vyprázní vkládanou buňku a smaže komponentu - odstaveno, stačí níže uvedené na základě DeleteComponents volané v realocku
 					Cells[X-1][Y].Type=DRAW;Cells[X-1][Y].Text="";Cells[X-1][Y].Background->Color=clWhite;//přenastaví typy a odstranění barvy pozadí, musí být až po smazání komponenty, jinak nebude komponenta nalezena
 				}
-				else if(Column>0 && copyComponentFromPreviousColumn)Cells[Column][Y].Type=Cells[Column-1][Y].Type;//u vkládaného sloupce jenom typ komponent, pokud je požadováno
+				else if(Column>0 && copyComponentFromPreviousColumn){CopyCell(Cells[Column-1][Y],Cells[Column][Y],true);Cells[Column][Y].Text="";}//u vkládaného sloupce jenom typ (založí komponentu při naslédném udpate či refresh a vlastnosti komponent, pokud je požadováno, je nutné smazat duplicitně zkopírovaný text
 			}
 			Columns[X]=Columns[X-1];//zkopíruje vlastnosti z předhozího slupce
 		}
