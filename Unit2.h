@@ -30,6 +30,10 @@ __published:	// IDE-managed Components
 	TscGPImageCollection *scGPImageCollection1;
 	TButton *Button8;
 	TButton *Button9;
+	TButton *Button10;
+	TButton *Button11;
+	TEdit *Edit1;
+	TButton *Button12;
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall Button1Click(TObject *Sender);
 	void __fastcall Button2Click(TObject *Sender);
@@ -48,6 +52,9 @@ __published:	// IDE-managed Components
 	void __fastcall Button7Click(TObject *Sender);
 	void __fastcall Button8Click(TObject *Sender);
 	void __fastcall Button9Click(TObject *Sender);
+	void __fastcall Button10Click(TObject *Sender);
+	void __fastcall Button11Click(TObject *Sender);
+	void __fastcall Button12Click(TObject *Sender);
 
 
 private:	// User declarations

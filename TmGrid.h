@@ -93,7 +93,8 @@ class TmGrid
 	int  GetRecommendedColumnWidth(long ColIdx);//vratí doporučenou šířku sloupce dle jeho obsahu
 	int  GetRecommendedColumnWidth(AnsiString Text);//vratí doporučenou šířku sloupce dle dodaného textu a aktuálního nastavení canvasu
 	void Clear();//smaže text celé tabulky
-	void AddColumn(bool copyComponentFromPreviousRow=true,bool invalidate=true);//přidá sloupec za poslední sloupec, pokud copyComponentFromPreviousRow je na true, zkopiruje kompomenty z předchozího sloupce, pokud je invalidate na true, automaticky po přidání překreslí tabulku, někdy pokud nechci problikávat tabulku lépe nastavit na false a zavolat formpaint přímo za voláním metody AddColumn přimo v užitém formuláři
+	void AddColumn(bool copyComponentFromPreviousColumn=true,bool invalidate=true);//přidá sloupec za poslední sloupec, pokud copyComponentFromPreviousRow je na true, zkopiruje kompomenty z předchozího sloupce, pokud je invalidate na true, automaticky po přidání překreslí tabulku, někdy pokud nechci problikávat tabulku lépe nastavit na false a zavolat formpaint přímo za voláním metody AddColumn přimo v užitém formuláři
+	void InsertColumn(unsigned long Column,bool copyComponentFromPreviousColumn=true,bool invalidate=true);//přídá sloupec za sloupec uvedený dle parametru Column, pokud copyComponentFromPreviouscolumn je na true, zkopiruje kompomenty z předchozího sloupce, pokud je invalidate na true, automaticky po přidání překreslí tabulku, někdy pokud nechci problikávat tabulku lépe nastavit na false a zavolat formpaint přímo za voláním metody InsertColumn přimo v užitém formuláři
 	void ClearColumn(unsigned long ColIdx);//smaže text v celém sloupci
 	void DeleteColumn(unsigned long Column,bool invalidate=true);//smaže celý sloupec, pokud je invalidate na true, automaticky po přidání překreslí tabulku, někdy pokud nechci problikávat tabulku lépe nastavit na false a zavolat formpaint přímo za voláním metody DeleteColumn přimo v užitém formuláři, pokud obsahuje tabulka nějaké komponenty, není vždy nutné požadovat překreslení parametrem
 	void AddRow(bool copyComponentFromPreviousRow=true,bool invalidate=true);//přidá řádek za poslední řádek, pokud copyComponentFromPreviousRow je na true, zkopiruje kompomenty z předchozího řádku, pokud je invalidate na true, automaticky po přidání překreslí tabulku, někdy pokud nechci problikávat tabulku lépe nastavit na false a zavolat formpaint přímo za voláním metody AddRow přimo v užitém formuláři
@@ -108,6 +109,7 @@ class TmGrid
 	void CopyCells2Clipboard(unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2,UnicodeString Separator="\t");//zkopíruje danou oblast do schránky, buňky oddělí separátorem
 	void CopyAreaCell(TCells &RefCell,TCells &CopyCell,bool copyComponent=false);//zkopíruje obsah, formát (bez orámování) z buňky na buňku (bez ukazatelového propojení)
 	void CopyBordesCell(TCells &RefCell,TCells &CopyCell);//zkopíruje orámování z buňky na buňku (bez ukazatelového propojení)
+	void DeleteCell(unsigned long ColIdx,unsigned long RowIdx);//smaže totálně obasah buňky tzn. obsah včetně dané komponety, paměťovou alokaci buňky však zanechá
 	void HighlightTable(TCanvas *Canvas,TColor Color=(TColor)RGB(0,120,215),unsigned short Size=2,unsigned short Offset=0,TPenMode PenMode=pmCopy);//zajistí zvýraznění orámování tabulky
 	void HighlightTableOnMouse(int X,int Y,TCanvas *Canvas=NULL);//zajistí zvýraznění orámování tabulky, pokud se do ni vstoupí myší
 	void HighlightRow(long Row,TColor Color=clYellow,bool SelFirstRow=false,bool unHighlightPrevRow=true);//zajistí trvalé (jedná se spíše o nastavení) řádků dle čísla řádku Row
@@ -138,7 +140,7 @@ class TmGrid
 	TscGPButton *createButton(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
 	TscGPGlyphButton *createGlyphButton(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
 	TscGPComboBox *createCombo(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
-  TscGPComboEdit *createComboEdit(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
+	TscGPComboEdit *createComboEdit(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
 	TscGPCheckBox *createCheck(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
 	TscGPRadioButton *createRadio(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
 	TscHTMLLabel *createLabel(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
@@ -151,8 +153,6 @@ class TmGrid
 	void ShowNote(UnicodeString Text,TColor Color=clRed,short FontSize=0);//zajistí přímé vykreslení poznámky bez refreshe popř. smázání doszením prázdných uvozovek, nově poznámka má také možnost nastavování margin pomocí Note.margin_left,margin_right,margin_bootom,margin_top;
 	void Buffer(bool status=false);//zda se bude tabulka ukladat do rastrového bufferu, pro urychlení vykreslování
 	bool buffer;//zda se bude tabulka ukladat do rastrového bufferu při Show, resp. Refresh, pro urychlení vykreslování
-		void MoveComponent(unsigned long Col,unsigned long Row,long ColOffset,long RowOffset);//posunu komponentu o sloupec či řádek, použává se nově na mazání sloupců či řádků
-		void RenameComponent(unsigned long aktCol,unsigned long aktRow,long newCol,long newRow);//přejmenuje komponentu
 
 	//proměnné a ukazatele
 	long Tag;//ID formuláře, v kterém je tabulka či tabuky daného formuláře volány
@@ -234,7 +234,8 @@ class TmGrid
 	void DeleteTable();//odstraní pouze tabulku z paměti
 	void DeleteComponents();//odstraní dynamicky vytořené komponenty, nutno volat před Delete() // pozor odstraňovaná komponenta nesmí mít focus (jinak paměťová chyba), focus je potřeba při odstraňování komponent odevzdat nějaké komponentě, která zůstává ve formu
 	void DeleteComponents(unsigned long sCol,unsigned long sRow,unsigned long fCol,unsigned long fRow);//odstraní dynamicky vytořené komponenty do počtu sloupců a řádků, nutno volat před Delete() // pozor odstraňovaná komponenta nesmí mít focus (jinak paměťová chyba), focus je potřeba při odstraňování komponent odevzdat nějaké komponentě, která zůstává ve formu
-//	void MoveComponent(unsigned long Col,unsigned long Row,long ColOffset,long RowOffset);//posunu komponentu o sloupec či řádek, použává se nově na mazání sloupců či řádků
+	void MoveComponent(unsigned long Col,unsigned long Row,long ColOffset,long RowOffset);//posunu komponentu o sloupec či řádek, použává se nově na mazání sloupců či řádků
+	void RenameComponent(unsigned long aktCol,unsigned long aktRow,long newCol,long newRow);//přejmenuje komponentu
 	void executeColumnsAutoFit(TCanvas *Canv);//nastaví šířku buněk sloupců dle šířky textu dle zvoleného parametru
 	void executeColumnAutoFit(TCanvas *Canv,long ColIdx);//nastaví šířku buněk daného sloupce dle šířky textu v daném sloupci
 	void realock();//zajistí realokaci pole Cells dle nové velikosti

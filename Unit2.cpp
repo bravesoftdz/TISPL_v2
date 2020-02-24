@@ -35,20 +35,48 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		E->mG->Left=100;E->mG->Top=50;//hodné jako druhé (popø. by bylo nutné pøekreslovat)
 		E->mG->AntiAliasing_text=true;
 		E->mG->Border.Width=2;
+///////////////////
+//rosta
+   E->mG->Create(5, 6);
+		int i=0;
+		E->mG->Cells[1][i+2].Text = " poèet";
+		E->mG->Cells[1][i+3].Text = " prázdných";
+		E->mG->Cells[1][i+4].Text = " celkem";
+		E->mG->Cells[2][i+2].Type = mGrid->EDIT; //
+		E->mG->Cells[2][i+3].Type = mGrid->EDIT;
+		E->mG->Cells[2][i+4].Type = mGrid->EDIT;
+		E->mG->Cells[2][i+2].Text = "100"; // value
+		E->mG->Cells[2][i+3].Text = "3"; // value
+		E->mG->Cells[2][i+4].Text = "103"; // value
+
+		E->mG->Cells[3][i+2].Type = mGrid->EDIT; //
+		E->mG->Cells[3][i+3].Type = mGrid->EDIT;
+		E->mG->Cells[3][i+4].Type = mGrid->EDIT;
+		E->mG->Cells[3][i+2].Text = "100"; // value
+		E->mG->Cells[3][i+3].Text = "3"; // value
+		E->mG->Cells[3][i+4].Text = "103"; // value
+
+		E->mG->Cells[4][i+3].Type = mGrid->glyphBUTTON; //
+//		E->mG->Cells[4][i+3].Type = mGrid->BUTTON;
+//		E->mG->Cells[4][i+4].Type = mGrid->BUTTON;
+		//E->mG->MergeCells(4,2,4,4);E->mG->Cells[4][2].Valign=E->mG->MIDDLE;
+
+////////////////////
+
 		//E->mG->scGPImageCollection=scGPImageCollection1;
 		//test exBUTTONU
 		//E->mG->exBUTTONVisible=true;
 		//E->mG->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
 
 		//velikost tabulky
-		unsigned long ColCount=1;//pevný poèet slopcù
-		unsigned long RowCount=6;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
-
-		//podmínìné formátování
-		//E->mG->DefaultCell.isZero->Color=clGreen;
-		//E->mG->DefaultCell.isEmpty->Color=F->m.clIntensive(clRed,230);
-
-		E->mG->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
+//		unsigned long ColCount=3;//pevný poèet slopcù
+//		unsigned long RowCount=3;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
+//
+//		podmínìné formátování
+//		E->mG->DefaultCell.isZero->Color=clGreen;
+//		E->mG->DefaultCell.isEmpty->Color=F->m.clIntensive(clRed,230);
+//
+//		E->mG->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
 //		E->mG->Cells[0][0].Text="0";E->mG->Cells[0][0].Type=E->mG->EDIT;
 //		E->mG->Cells[1][0].Text="5,555";E->mG->Cells[1][0].Type=E->mG->EDIT;
 //		E->mG->Cells[0][1].Type=E->mG->DRAW;
@@ -57,13 +85,30 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 //		E->mG->Cells[1][1].Type=E->mG->EDIT;
 //		E->mG->Cells[1][1].InputNumbersOnly=true;
 //		E->mG->Cells[1][2].Type=E->mG->EDIT;
-		//E->mG->Cells[0][0].Text="0";E->mG->Cells[0][0].Type=E->mG->EDIT;
-		E->mG->Cells[0][0].Type=E->mG->glyphBUTTON;
-		E->mG->Cells[0][1].Text="1";E->mG->Cells[0][1].Type=E->mG->EDIT;
-		E->mG->Cells[0][2].Text="2";E->mG->Cells[0][2].Type=E->mG->EDIT;
-		E->mG->Cells[0][3].Text="3";E->mG->Cells[0][3].Type=E->mG->EDIT;
-		E->mG->Cells[0][4].Text="4";E->mG->Cells[0][4].Type=E->mG->EDIT;
-		E->mG->Cells[0][5].Text="5";E->mG->Cells[0][5].Type=E->mG->EDIT;
+		//E->mG->Cells[0][0].Text="0";
+		//E->mG->Cells[0][0].Type=E->mG->EDIT;
+//		E->mG->Cells[0][0].Type=E->mG->glyphBUTTON;
+//		E->mG->Cells[0][0].Text="1";
+//		E->mG->Cells[0][1].Text="2";
+//		E->mG->Cells[0][2].Text="3";
+//		E->mG->Cells[0][4].Text="4";
+//		E->mG->Cells[0][5].Text="5";
+
+//		//E->mG->Cells[0][0].Type=E->mG->EDIT;
+//		E->mG->Cells[0][1].Type=E->mG->EDIT;
+//		E->mG->Cells[0][2].Type=E->mG->EDIT;
+//
+//		//E->mG->Cells[1][0].Type=E->mG->EDIT;
+//		E->mG->Cells[1][1].Type=E->mG->EDIT;
+//		E->mG->Cells[1][2].Type=E->mG->EDIT;
+//
+//	 ///	E->mG->Cells[2][0].Type=E->mG->EDIT;
+//		E->mG->Cells[2][1].Type=E->mG->EDIT;
+//		E->mG->Cells[2][2].Type=E->mG->EDIT;
+
+//		E->mG->Cells[0][4].Type=E->mG->EDIT;
+//		E->mG->Cells[0][5].Type=E->mG->EDIT;
+
 
 		//test obrázku
 		//E->mG->Cells[1][2].Type=E->mG->IMAGE;E->mG->Cells[1][2].ImageIndex=0;
@@ -403,6 +448,9 @@ void __fastcall TForm2::Button2Click(TObject *Sender)
 
 	//ELEMENTY->mG->Cells[1][2].Text="Vzor.bmp";
 
+	TscGPGlyphButton *H = ELEMENTY->mG->getGlyphButton(0,0);
+	H->GlyphOptions->Kind = scgpbgkClose;
+
 	Invalidate();
 	FormPaint(this);//volání po Invalidate zajistí, že nedochází k probliku komponent, nemùže být samotné
 }
@@ -633,25 +681,101 @@ void __fastcall TForm2::Button6Click(TObject *Sender)
 	ELEMENTY->mG->SetEnabledComponents(false);
 }
 //---------------------------------------------------------------------------
-
-
-
-
 void __fastcall TForm2::Button7Click(TObject *Sender)
 {
-  ELEMENTY->mG->SetEnabledComponents(true);
+	ELEMENTY->mG->SetEnabledComponents(true);
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm2::Button8Click(TObject *Sender)
 {
 	ELEMENTY->mG->AddColumn();
 }
 //---------------------------------------------------------------------------
+void __fastcall TForm2::Button12Click(TObject *Sender)
+{
+	//ELEMENTY->mG->InsertColumn(4);
+
+	if(Edit1->Text=="")ELEMENTY->mG->InsertColumn(ELEMENTY->mG->ColCount-1,true);
+	else ELEMENTY->mG->InsertColumn(Edit1->Text.ToInt(),true);
+}
+//---------------------------------------------------------------------------
 
 void __fastcall TForm2::Button9Click(TObject *Sender)
 {
-ELEMENTY->mG->DeleteColumn(3);
+//F->Memo("",true);
+if(Edit1->Text=="")ELEMENTY->mG->DeleteColumn(ELEMENTY->mG->ColCount-1,true);
+else ELEMENTY->mG->DeleteColumn(Edit1->Text.ToInt(),true);
+
 }
 //---------------------------------------------------------------------------
+
+void __fastcall TForm2::Button10Click(TObject *Sender)
+{
+//	for(unsigned long Y=0;Y<ELEMENTY->mG->RowCount;Y++)//prùchod po jednotlivých øádcích
+//	{
+//		AnsiString R="";
+//		for(unsigned long X=0;X<ELEMENTY->mG->ColCount;X++)//prùchod po jednotlivých sloupcích
+//		{
+//			 R+=ELEMENTY->mG->Cells[X][Y].Text+" ";
+//		}
+//		Memo1->Lines->Add(R);
+//	}
+//		ELEMENTY->mG->ColCount--;
+//		ELEMENTY->mG->Refresh();
+
+
+
+//	for(unsigned long Y=0;Y<ELEMENTY->mG->RowCount;Y++)//prùchod po jednotlivých øádcích
+//	{
+//		for(unsigned long X=0;X<ELEMENTY->mG->ColCount;X++)//prùchod po jednotlivých sloupcích
+//		{
+//			//ELEMENTY->mG->RenameComponent(X,Y,X,Y);
+//			//ShowMessage(ELEMENTY->mG->getEdit(X,Y)->Tag);
+//			ShowMessage(ELEMENTY->mG->getEdit(X,Y)->Name);
+//		}
+//	}
+
+	//if(Form2->FindComponent("mGrid_EDIT_"+AnsiString(0)+"_"+AnsiString(7))==NULL)ShowMessage("NULL");else  ShowMessage(Form2->FindComponent("mGrid_EDIT_"+AnsiString(0)+"_"+AnsiString(7))->Tag);
+	TscGPEdit * E=(TscGPEdit*)Form2->FindComponent("mGrid_EDIT_"+AnsiString(0)+"_"+AnsiString(7));
+	E->Top+=50;
+
+	E=(TscGPEdit*)Form2->FindComponent("mGrid_EDIT_"+AnsiString(0)+"_"+AnsiString(8));
+	E->Top+=50;
+
+
+
+
+
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm2::Button11Click(TObject *Sender)
+{
+	//rozdíl prvkù pùvodní matice a nová matice a pùvodní pr
+//	unsigned long akt_pocet=ELEMENTY->mG->RowCount*ELEMENTY->mG->ColCount;
+//	for(unsigned long i=akt_pocet+1;i<9;i++)
+//	{
+//		TComponent *C=Form2->FindComponent("mGrid_EDIT_"+AnsiString(0)+"_"+AnsiString(i));
+//		if(C!=NULL){C->Free();C=NULL;delete C;}
+//	}
+//	for(unsigned long X=0;X<ELEMENTY->mG->ColCount;X++)
+//	{
+//		for(unsigned long Y=0;Y<ELEMENTY->mG->RowCount;Y++)
+//		{
+//			TComponent *C=Form2->FindComponent("mGrid_EDIT_"+AnsiString(0)+"_"+AnsiString((X+1)+Y*ELEMENTY->mG->ColCount));
+//			if(C!=NULL)ELEMENTY->mG->Cells[X][Y].Text=C->Tag;
+//		}
+//	}
+//	Invalidate();
+
+	//ShowMessage(ELEMENTY->mG->Cells[2][2].Text);
+	 //ELEMENTY->mG->DeleteCell(4,3);
+	 Invalidate();
+	 TscGPEdit * E=(TscGPEdit*)Form2->FindComponent("mGrid_BUTTON_"+AnsiString(0)+"_"+AnsiString(20));
+	E->Top+=50;
+}
+//---------------------------------------------------------------------------
+
+
 
