@@ -114,8 +114,9 @@ TmGrid::TmGrid(TForm *Owner)
 	//pozadí
 	DefaultCell.Background->Color=clWhite;
 	DefaultCell.Background->Style=bsSolid;
-	DefaultCell.isEmpty->Color=clWhite;
-	DefaultCell.isEmpty->Style=bsSolid;
+	DefaultCell.isEmtyConditionalFormattingState=false;//podmíněné formátování
+	DefaultCell.isEmpty->Color=clWhite;//podmíněné formátování
+	DefaultCell.isEmpty->Style=bsSolid;//podmíněné formátování
 	//orámování
 	*DefaultCell.TopBorder=defBorder;
 	*DefaultCell.BottomBorder=defBorder;
@@ -527,7 +528,7 @@ void TmGrid::Draw(TCanvas *C)
 				Rc.Bottom	=	Top+(Rows[Y].Top+Rows[Y].Height);
 
 				////barva pozadí buňky                 //neplatí pro margované položky - zatím nedokonalé
-				if(Cells[X][Y].Text=="" && Cells[X][Y].MergeState==false)C->Brush->Color=Cells[X][Y].isEmpty->Color;//podmíněné formátování
+				if(Cells[X][Y].Text=="" && Cells[X][Y].MergeState==false && Cells[X][Y].isEmtyConditionalFormattingState==true)C->Brush->Color=Cells[X][Y].isEmpty->Color;//podmíněné formátování
 				else C->Brush->Color=Cells[X][Y].Background->Color;//vyplněná buňka
 				C->Brush->Style=Cells[X][Y].Background->Style;
 				C->FillRect(Rb);
@@ -879,7 +880,7 @@ void TmGrid::SetDraw(TCanvas *Canv,TRect Rt,unsigned long X,unsigned long Y,TCel
 	Canv->Font->Pitch = TFontPitch::fpFixed;//každé písmeno fontu stejně široké - TEST
 	Canv->Font->Pitch = System::Uitypes::TFontPitch::fpFixed;//asi nepřináší zcela přínos - TEST
 	//SetBkMode(canv->Handle,OPAQUE);//nastavení netransparentního pozadí
-	if(Cell.Text=="")Canv->Brush->Color=Cell.isEmpty->Color;//podmíněné formátování//zde se asi nezohledňuje, spíše v drawgrid, ale otázka je jak bez AA
+	if(Cell.Text=="" && Cell.isEmtyConditionalFormattingState==true)Canv->Brush->Color=Cell.isEmpty->Color;//podmíněné formátování//zde se asi nezohledňuje, spíše v drawgrid, ale otázka je jak bez AA
 	else Canv->Brush->Color=Cell.Background->Color;//vyplněná buňka
 	Canv->Brush->Style=bsClear;//nastvení netransparentního pozadí
 	//zarovnání
@@ -939,7 +940,7 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	if(VisibleComponents>-1)E->Visible=VisibleComponents;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
 	//E->ShowHint=false;//toto by bylo vždy u editu na false, pokus automatizace pro dlouhý textif(Cell.Text.Length()>E->Width/(Cell.Font->Size-2))E->ShowHint=true;else //asi nepřesné
 	if(Cell.ShowHint){E->ShowHint=true;E->Hint=Cell.Hint;}
-	if(Cell.Text=="")E->Options->NormalColor=Cell.isEmpty->Color;else E->Options->NormalColor=Cell.Background->Color;
+	if(Cell.Text=="" && Cell.isEmtyConditionalFormattingState==true)E->Options->NormalColor=Cell.isEmpty->Color;else E->Options->NormalColor=Cell.Background->Color;
 	E->Options->NormalColorAlpha=255;
 	//zrušeno if(Cell.Highlight)E->Options->FrameNormalColor=clHighlight;else//rámeček musí být stejnou barvou jakou buňka, protože mřížka je o 1px na všechny strany roztažená
 	E->Options->FrameNormalColor=Cell.Background->Color;
@@ -1009,7 +1010,7 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	N->DisplayType=scedtNumeric;
 	N->ValueType=scvtFloat;
 	if(Cell.ShowHint){N->ShowHint=true;N->Hint=Cell.Hint;}
-	//28.2.provizorní fix if(Cell.Text=="")N->Options->NormalColor=Cell.isEmpty->Color;else //podmíněné formátování
+	//28.2.provizorní fix if(Cell.Text=="" && Cell.isEmtyConditionalFormattingState==true)N->Options->NormalColor=Cell.isEmpty->Color;else //podmíněné formátování
 	N->Options->NormalColor=Cell.Background->Color;
 	N->Options->NormalColorAlpha=255;
 	if(!Cell.Highlight)N->Options->FrameNormalColor=Cell.Background->Color;//rámeček musí být stejnou barvou jakou buňka, protože mřížka je o 1px na všechny strany roztažená
@@ -1062,7 +1063,7 @@ void TmGrid::SetLabel(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	if(Cell.MergeState==false)L->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);	 //pokud neplatí nastavuje se přímo v mergovaní, ubere pouze velikost komponenty podle šířky orámování//pokud neplatí nastavuje se přímo v mergovaní
 	/*if(Cell.MergeState==false)*/L->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodělat ubere velikost komponenty podle šířky orámování//dodělat//ubere velikost komponenty podle šířky orámování
 	if(Cell.ShowHint){L->ShowHint=true;L->Hint=Cell.Hint;}
-	if(Cell.Text=="")L->Color=Cell.isEmpty->Color;else L->Color=Cell.Background->Color;
+	if(Cell.Text=="" && Cell.isEmtyConditionalFormattingState==true)L->Color=Cell.isEmpty->Color;else L->Color=Cell.Background->Color;
 	L->Margins->Left=0;L->Margins->Right=0;L->Margins->Top=0;L->Margins->Bottom=0;
 	switch(Cell.Align)
 	{
@@ -2202,7 +2203,7 @@ void TmGrid::CopyCells2Clipboard(unsigned long ColCell_1,unsigned long RowCell_1
 void TmGrid::CopyAreaCell(TCells &RefCell,TCells &CopyCell,bool copyComponent)
 {
 	////typ
-	if(copyComponent){CopyCell.Type=RefCell.Type;/*createComponent(RefCell.Type,)*/}
+	if(copyComponent)CopyCell.Type=RefCell.Type;//createComponent zajistí pozdější show, zde nemůže být přímo
 	else CopyCell.Type=DRAW;
 	////text + font
 	//*CopyCell.Font=*RefCell.Font; - asi nejede
@@ -2236,6 +2237,7 @@ void TmGrid::CopyAreaCell(TCells &RefCell,TCells &CopyCell,bool copyComponent)
 	CopyCell.Highlight=RefCell.Highlight;
 	////pozadí
 	//*CopyCell.Background=*RefCell.Background;  - asi nejede
+	CopyCell.isEmtyConditionalFormattingState=RefCell.isEmtyConditionalFormattingState;
 	CopyCell.Background->Color=RefCell.Background->Color;
 	CopyCell.Background->Style=RefCell.Background->Style;
 	CopyCell.isEmpty->Color=RefCell.isEmpty->Color;
@@ -2271,28 +2273,27 @@ void TmGrid::Clear()
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-//přidá sloupec za poslední sloupec, pokud copyComponentFromPreviousRow je na true, zkopiruje kompomenty z předchozího sloupce, pokud je invalidate na true, automaticky po přidání překreslí tabulku, někdy pokud nechci problikávat tabulku lépe nastavit na false a zavolat formpaint přímo za voláním metody AddRow přimo v užitém formuláři
-void TmGrid::AddColumn(bool copyComponentFromPreviousColumn,bool invalidate)
+//přidá sloupec za poslední sloupec, pokud copyPropertiesFromPreviousRow je na true, zkopiruje kompomenty  a vlasnostiz předchozího sloupce, pokud je invalidate na true, automaticky po přidání překreslí tabulku, někdy pokud nechci problikávat tabulku lépe nastavit na false a zavolat formpaint přímo za voláním metody AddRow přimo v užitém formuláři
+void TmGrid::AddColumn(bool copyPropertiesFromPreviousColumn,bool invalidate)
 { //při realock asi neudrží šířku sloupců
-	//zvýšení celkového počtu sloupců
-	ColCount++;
+	ColCount++;realock();//zvýšení celkového počtu sloupců
 
 	//kopie komponent z nadřízeného řádku, jeli-požadováno
-	if(copyComponentFromPreviousColumn)
+	if(copyPropertiesFromPreviousColumn)
 	{
-		realock();//musí proběhnout před následujícím kodem, jinak řeší Show
 		for(unsigned long Y=0;Y<RowCount;Y++)//překopíruje typ buňky z původně posledního, nyní předposledního sloupce do nového posledního
 		{
-			Cells[ColCount-1][Y].Type=Cells[ColCount-2][Y].Type;//createComponent není třeba, je voláno později při show dle type
+			CopyCell(Cells[ColCount-2][Y],Cells[ColCount-1][Y],true);Cells[ColCount-1][Y].Text="";//u vkládaného sloupce jenom typ (což zároveň založí komponentu při naslédném udpate či refresh) a vlastnosti buňky, pokud je požadováno, je nutné smazat duplicitně zkopírovaný text
 		}
+		Columns[ColCount-2]=Columns[ColCount-1];//zkopíruje vlastnosti z předhozího slupce
 	}
 
 	//pokud je požadováno překreslení
 	if(invalidate)Show();//překreslení s problikem, jinak použít přímo ve formu formpaint a toto přes parametr invalidate odstavit
 }
 //---------------------------------------------------------------------------
-//přídá sloupec za sloupec uvedený dle parametru Column, pokud copyComponentFromPreviouscolumn je na true, zkopiruje kompomenty z předchozího sloupce, pokud je invalidate na true, automaticky po přidání překreslí tabulku, někdy pokud nechci problikávat tabulku lépe nastavit na false a zavolat formpaint přímo za voláním metody InsertColumn přimo v užitém formuláři
-void TmGrid::InsertColumn(unsigned long Column,bool copyComponentFromPreviousColumn,bool invalidate)
+//přídá sloupec za sloupec uvedený dle parametru Column, pokud copyPropertiesFromPreviouscolumn je na true, zkopiruje kompomenty a vlasnosti z předchozího sloupce, pokud je invalidate na true, automaticky po přidání překreslí tabulku, někdy pokud nechci problikávat tabulku lépe nastavit na false a zavolat formpaint přímo za voláním metody InsertColumn přimo v užitém formuláři
+void TmGrid::InsertColumn(unsigned long Column,bool copyPropertiesFromPreviousColumn,bool invalidate)
 {
 	if(Column<ColCount)//pokud se nejedná o poslední sloupec, tam je to zbytečné a řeší else větev přímo funkce AddColumn
 	{
@@ -2309,13 +2310,13 @@ void TmGrid::InsertColumn(unsigned long Column,bool copyComponentFromPreviousCol
 					//DeleteCell(X-1,Y); //vyprázní vkládanou buňku a smaže komponentu - odstaveno, stačí níže uvedené na základě DeleteComponents volané v realocku
 					Cells[X-1][Y].Type=DRAW;Cells[X-1][Y].Text="";Cells[X-1][Y].Background->Color=clWhite;//přenastaví typy a odstranění barvy pozadí, musí být až po smazání komponenty, jinak nebude komponenta nalezena
 				}
-				else if(Column>0 && copyComponentFromPreviousColumn){CopyCell(Cells[Column-1][Y],Cells[Column][Y],true);Cells[Column][Y].Text="";}//u vkládaného sloupce jenom typ (založí komponentu při naslédném udpate či refresh a vlastnosti komponent, pokud je požadováno, je nutné smazat duplicitně zkopírovaný text
+				else if(Column>0 && copyPropertiesFromPreviousColumn){CopyCell(Cells[Column-1][Y],Cells[Column][Y],true);Cells[Column][Y].Text="";}//u vkládaného sloupce jenom typ (což zároveň založí komponentu při naslédném udpate či refresh) a vlastnosti buňky, pokud je požadováno, je nutné smazat duplicitně zkopírovaný text
 			}
-			Columns[X]=Columns[X-1];//zkopíruje vlastnosti z předhozího slupce
+			if(Column>0 && copyPropertiesFromPreviousColumn)Columns[X]=Columns[X-1];//zkopíruje vlastnosti z předhozího slupce
 		}
 		if(invalidate)Show();//pokud je požadováno překreslení, zde je nutné celou oblast překreslit
 	}
-	else AddColumn(copyComponentFromPreviousColumn,invalidate);
+	else AddColumn(copyPropertiesFromPreviousColumn,invalidate);
 }
 //---------------------------------------------------------------------------
 //smaže text v celém sloupci
