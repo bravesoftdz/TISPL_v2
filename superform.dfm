@@ -16,7 +16,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
   OldCreateOrder = False
   Position = poDesigned
   OnClose = FormClose
-  OnKeyDown = FormKeyDown
   OnPaint = FormPaint
   OnShow = FormShow
   PixelsPerInch = 96
@@ -71,7 +70,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
     TabOrder = 0
     StyleElements = [seFont, seClient]
     OnClick = rStringGridEd1Click
-    OnKeyDown = rStringGridEd1KeyDown
     Columns = <
       item
         Alignment = taCenter
@@ -1115,7 +1113,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 6
-    OnKeyDown = rEditNum_effektivitaKeyDown
     Value = 90.000000000000000000
   end
   object scGPButton_Ulozit: TscGPButton
@@ -1385,7 +1382,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
     FrameActiveColor = clHighlight
     Text = ''
     TabOrder = 9
-    OnKeyDown = scEdit_zacatekKeyDown
   end
   object scGPGlyphButton_remove: TscGPGlyphButton
     Left = 210
@@ -1397,7 +1393,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
     ShowHint = True
     TabOrder = 10
     TabStop = True
-    OnClick = scGPGlyphButton_removeClick
     Animation = False
     Caption = 'scGPGlyphButton_remove_zakazka'
     CanFocused = True

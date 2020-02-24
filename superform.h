@@ -51,29 +51,13 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_zacatek;
   TscGPImageCollection *scGPImageCollection_layout;
 	void __fastcall FormShow(TObject *Sender);
-	void __fastcall Button1Click(TObject *Sender);
-	void __fastcall Button2Click(TObject *Sender);
-	void __fastcall RzStringGrid1RowMoved(TObject *Sender, int FromIndex, int ToIndex);
-	void __fastcall Memo_spojakClick(TObject *Sender);
-	void __fastcall Button_DELClick(TObject *Sender);
-	void __fastcall Button_OKKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall rStringGridEd1Click(TObject *Sender);
 	void __fastcall scGPGlyphButton4Click(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall scGPButton_UlozitClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_add_zakazkaClick(TObject *Sender);
-	void __fastcall button_zakazky_tempClick(TObject *Sender);
-	void __fastcall zakazky_hlavni_spojakClick(TObject *Sender);
-	void __fastcall smaz_tempClick(TObject *Sender);
-	void __fastcall scGPGlyphButton_removeClick(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall rEditNum_pocet_dnuKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
-	void __fastcall rEditNum_pocet_prac_hodKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
-	void __fastcall rEditNum_pozad_mnozstviKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
-	void __fastcall rEditNum_effektivitaKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
-	void __fastcall scEdit_zacatekKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
-	void __fastcall rStringGridEd1KeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
-	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
   void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 
 
@@ -109,14 +93,15 @@ public:		// User declarations
   Typ_buttonu button_type;//zjisteni ktery button ma byt designovan
 
 	void setGlyphButtonDefault(unsigned long Row,unsigned long Col, Typ_buttonu typ, Cvektory::TZakazka *Z);
-  void setGlyphButtonDavka_Add(unsigned long Row,unsigned long Col);
-  void setGlyphButtonDavka_Remove(unsigned long Row,unsigned long Col);
+  void setGlyphButtonDavka_Add(unsigned long ID,unsigned long Col);
+  void setGlyphButtonDavka_Remove(unsigned long ID,unsigned long Col);
   bool add_zakazka;
   bool add_davka;
 	bool zmena_TT;
   bool nacitam_zakazky;
   bool volno;
   bool novy;
+  int pocet_davek;
   TColor barva;//barva zakáky
   TColor light_gray; //barva formu
   TColor def_gray; //vychozí barva oddìlující bunky
