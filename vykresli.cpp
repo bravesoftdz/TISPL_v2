@@ -146,7 +146,8 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 		if(F->akt_Objekt!=NULL && F->akt_Objekt->n==E->objekt_n && F->akt_Objekt->zobrazit_koty)vykresli_kotu(canv,E);//mezi elementy
 		//E=E->dalsi;
 		pom=E->dalsi;
-		//vykreslení spojnic pokud geometrie nenavazuje
+
+		////vykreslení spojnic pokud geometrie nenavazuje
 		canv->Pen->Style=psDash;
 		canv->Pen->Mode=pmCopy;
 		canv->Pen->Width=1;
@@ -156,16 +157,16 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 		{
 			if(pom->eID==301 && pom->predchozi2==E){bod.x=pom->X;bod.y=pom->Y;}
 			else {bod.x=pom->geo.X1;bod.y=pom->geo.Y1;}
-			if(E->geo.X4!=bod.x || E->geo.Y4!=bod.y)
+			if(m.round2double(E->geo.X4,2)!=m.round2double(bod.x,2) || m.round2double(E->geo.Y4,2)!=m.round2double(bod.y,2))
 			{
 				canv->MoveTo(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
 				canv->LineTo(m.L2Px(bod.x),m.L2Py(bod.y));
 				sipka(canv,(m.L2Px(E->geo.X4)+m.L2Px(bod.x))/2.0,(m.L2Py(E->geo.Y4)+m.L2Py(bod.y))/2.0,m.azimut(m.L2Px(bod.x),m.L2Py(bod.y),m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4))*(-1),true,sipka_velikost,clRed);//zajistí vykreslení šipky - orientace spojovací linie
 			}
 		}
-		else
+		else if(v.OBJEKTY->predchozi->n>2)//vykreslení pouze v případě pokdud existjují více jak 2
 		{
-			if(E->geo.X4!=v.ELEMENTY->dalsi->geo.X1 || E->geo.Y4!=v.ELEMENTY->dalsi->geo.Y1)
+			if(m.round2double(E->geo.X4,2)!=m.round2double(v.ELEMENTY->dalsi->geo.X1,2) || m.round2double(E->geo.Y4,2)!=m.round2double(v.ELEMENTY->dalsi->geo.Y1,2))
 			{
 				canv->MoveTo(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
 				canv->LineTo(m.L2Px(v.ELEMENTY->dalsi->geo.X1),m.L2Py(v.ELEMENTY->dalsi->geo.Y1));
@@ -176,14 +177,14 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 		if(E->eID==301)pom=NULL;//spojka si v tomto ukazateli uchovává svoji párovou výhybku
 		if(pom!=NULL)
 		{
-	  	if(pom->eID==301 && pom->predchozi2==E){bod.x=pom->X;bod.y=pom->Y;}
+			if(pom->eID==301 && pom->predchozi2==E){bod.x=pom->X;bod.y=pom->Y;}
 			else {bod.x=pom->geo.X1;bod.y=pom->geo.Y1;}
-			if(E->geo.X4!=bod.x || E->geo.Y4!=bod.y)
+			if(m.round2double(E->geo.X4,2)!=m.round2double(bod.x,2) || m.round2double(E->geo.Y4,2)!=m.round2double(bod.y,2))
 			{
 				canv->MoveTo(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
 				canv->LineTo(m.L2Px(bod.x),m.L2Py(bod.y));
 				sipka(canv,(m.L2Px(E->geo.X4)+m.L2Px(bod.x))/2.0,(m.L2Py(E->geo.Y4)+m.L2Py(bod.y))/2.0,m.azimut(m.L2Px(bod.x),m.L2Py(bod.y),m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4))*(-1),true,sipka_velikost,clRed);//zajistí vykreslení šipky - orientace spojovací linie
-			}
+	  	}
 		}
 		//posun na další element
 		E=v.dalsi_krok(E);
@@ -5049,9 +5050,9 @@ void Cvykresli::smart_kurzor(TCanvas *canv,Cvektory::TElement *E)
 		preXk=F->akt_Objekt->element->geo.X1;
 		preYk=F->akt_Objekt->element->geo.Y1;
 		//pokud existuje předchozí kabina tak od jejího posledního bodu
-		if(F->pom->predchozi->n!=0)
+		if(F->akt_Objekt->element->predchozi->n!=0)
 		{
-			e_posledni=v.vrat_posledni_element_objektu(F->pom->predchozi);
+			e_posledni=F->akt_Objekt->element->predchozi;
 			preXk=e_posledni->geo.X4;
 			preYk=e_posledni->geo.Y4;
 		}
@@ -5333,13 +5334,14 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_do)
 			if(Element_od->eID!=MaxInt)break;//kota element - element
 			Element_od=Element_od->predchozi;
 		}
+		if(Element_od!=NULL && Element_od->objekt_n!=Element_do->objekt_n)Element_od=NULL;//ošetření proti tomu je-li hned první element mimo kabinu
 		//určení bodů kóty
 		if(Element_do->geo.orientace==90||Element_do->geo.orientace==270)//vodorovná kabina
 			{if(Element_od!=NULL && Element_od->n==0 || Element_od==NULL){x1=Element_do->geo.X1;y1=Element_do->geo.Y1;}else {x1=Element_od->X;y1=Element_od->geo.Y4;}x2=Element_do->X;y2=y1;}
 		else
 			{if(Element_od!=NULL && Element_od->n==0 || Element_od==NULL){x1=Element_do->geo.X1;y1=Element_do->geo.Y1;}else {x1=Element_od->geo.X4;y1=Element_od->Y;}y2=Element_do->Y;x2=x1;}
 		if(x2<F->akt_Objekt->element->geo.X1)O=(O-0.66)*(-1);//ošetření chybného zobrazení kóty elementu, který je před kabinou
-    //vykreslení kóty
+		//vykreslení kóty
 		vykresli_kotu(canv,x1,y1,x2,y2,Element_do,O,highlight);
 		////kota mezi LO
 		bool vykreslit=false;

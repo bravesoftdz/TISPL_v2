@@ -5,8 +5,8 @@ object Form_definice_zakazek: TForm_definice_zakazek
   BorderStyle = bsNone
   BorderWidth = 1
   Caption = 'Definice zak'#225'zek'
-  ClientHeight = 544
-  ClientWidth = 1001
+  ClientHeight = 861
+  ClientWidth = 1020
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clDefault
@@ -17,67 +17,10 @@ object Form_definice_zakazek: TForm_definice_zakazek
   Position = poDesigned
   OnClose = FormClose
   OnKeyDown = FormKeyDown
-  OnMouseMove = FormMouseMove
   OnPaint = FormPaint
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 20
-  object rHTMLLabel_pocet_prac_hod: TrHTMLLabel
-    Left = 784
-    Top = 686
-    Width = 161
-    Height = 19
-    Caption = 'Po'#269'et prac.hodin [den]'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clGray
-    Font.Height = 19
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-  end
-  object rHTMLLabel_pocet_dnu: TrHTMLLabel
-    Left = 784
-    Top = 618
-    Width = 145
-    Height = 19
-    Caption = 'Po'#269'et prac.dn'#367' [rok]'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clGray
-    Font.Height = 19
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-  end
-  object rHTMLLabel_effektivita: TrHTMLLabel
-    Left = 978
-    Top = 686
-    Width = 97
-    Height = 19
-    Caption = 'Efektivita [%]'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clGray
-    Font.Height = 19
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-  end
-  object rHTMLLabel_pozad_mnozstvi: TrHTMLLabel
-    Left = 978
-    Top = 618
-    Width = 294
-    Height = 19
-    Caption = 'Po'#382'adovan'#233' mno'#382'stv'#237' ks [celkov'#225' v'#253'roba]'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clGray
-    Font.Height = 19
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-  end
   object rHTMLLabel_zacatek: TrHTMLLabel
     Left = 1093
     Top = 597
@@ -92,43 +35,9 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Quality = fqClearType
     ParentFont = False
   end
-  object rHTMLLabel_eDesigner: TrHTMLLabel
-    Left = 718
-    Top = 508
-    Width = 329
-    Height = 19
-    Caption = 'Zadejte parametry zak'#225'zek nebo zvolte storno.'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clGray
-    Font.Height = 19
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-    Visible = False
-  end
-  object Button_DEL: TButton
-    Left = 957
-    Top = 727
-    Width = 15
-    Height = 15
-    Hint = 'Sma'#382'e '#345#225'dek'
-    Caption = 'X'
-    Font.Charset = EASTEUROPE_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Verdana'
-    Font.Style = []
-    ParentFont = False
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 0
-    Visible = False
-    OnClick = Button_DELClick
-  end
   object rStringGridEd1: TrStringGridEd
-    Left = -4
-    Top = 416
+    Left = 5
+    Top = 744
     Width = 1000
     Height = 73
     Margins.Left = 0
@@ -159,7 +68,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goTabs, goAlwaysShowEditor]
     ParentCtl3D = False
     ParentFont = False
-    TabOrder = 1
+    TabOrder = 0
     StyleElements = [seFont, seClient]
     OnClick = rStringGridEd1Click
     OnKeyDown = rStringGridEd1KeyDown
@@ -432,8 +341,8 @@ object Form_definice_zakazek: TForm_definice_zakazek
       30)
   end
   object scGPButton2: TscGPButton
-    Left = 784
-    Top = 581
+    Left = 1098
+    Top = 724
     Width = 209
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -442,7 +351,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 2
+    TabOrder = 1
     Animation = False
     Caption = '   Parametry v'#253'roby'
     CanFocused = False
@@ -535,14 +444,13 @@ object Form_definice_zakazek: TForm_definice_zakazek
     AllowAllUp = False
   end
   object Button5: TButton
-    Left = 734
-    Top = 372
+    Left = 743
+    Top = 700
     Width = 225
     Height = 25
     Caption = 'Vypi'#353' cestu aktualni zakazky'
-    TabOrder = 3
+    TabOrder = 2
     Visible = False
-    OnClick = Button5Click
   end
   object scGPButton_plan_vyroby: TscGPButton
     Left = 0
@@ -555,7 +463,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 4
+    TabOrder = 3
     Animation = False
     Caption = '   Pl'#225'n v'#253'roby'
     CanFocused = False
@@ -655,7 +563,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Hint = 'P'#345'idat novou zak'#225'zku'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 5
+    TabOrder = 4
     TabStop = True
     OnClick = scGPGlyphButton_add_zakazkaClick
     Animation = False
@@ -744,10 +652,10 @@ object Form_definice_zakazek: TForm_definice_zakazek
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
-    Width = 1001
+    Width = 1020
     Height = 34
     Align = alTop
-    TabOrder = 6
+    TabOrder = 5
     BlurBackground = False
     BlurBackgroundAmount = 5
     CustomImageIndex = -1
@@ -781,7 +689,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     WallpaperIndex = -1
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 951
+      Left = 970
       Top = 0
       Width = 50
       Height = 33
@@ -877,7 +785,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 851
+      Left = 870
       Top = 0
       Width = 50
       Height = 33
@@ -973,7 +881,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     object scLabel_header: TscLabel
       Left = 0
       Top = 0
-      Width = 814
+      Width = 833
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -1004,7 +912,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 901
+      Left = 920
       Top = 0
       Width = 50
       Height = 33
@@ -1098,7 +1006,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
       AllowAllUp = False
     end
     object scGPGlyphButton15: TscGPGlyphButton
-      Left = 814
+      Left = 833
       Top = 0
       Width = 37
       Height = 34
@@ -1194,41 +1102,9 @@ object Form_definice_zakazek: TForm_definice_zakazek
       AllowAllUp = False
     end
   end
-  object rEditNum_pozad_mnozstvi: TrEditNum
-    Left = 978
-    Top = 643
-    Width = 157
-    Height = 28
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = 20
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-    TabOrder = 7
-    OnKeyDown = rEditNum_pozad_mnozstviKeyDown
-    Value = 200.000000000000000000
-  end
-  object rEditNum_pocet_prac_hod: TrEditNum
-    Left = 784
-    Top = 711
-    Width = 156
-    Height = 28
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = 20
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-    TabOrder = 8
-    OnKeyDown = rEditNum_pocet_prac_hodKeyDown
-    Value = 8.000000000000000000
-  end
   object rEditNum_effektivita: TrEditNum
-    Left = 978
-    Top = 711
+    Left = 1204
+    Top = 724
     Width = 97
     Height = 28
     Font.Charset = DEFAULT_CHARSET
@@ -1238,30 +1114,13 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 9
+    TabOrder = 6
     OnKeyDown = rEditNum_effektivitaKeyDown
     Value = 90.000000000000000000
   end
-  object rEditNum_pocet_dnu: TrEditNum
-    Left = 784
-    Top = 643
-    Width = 156
-    Height = 28
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = 20
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-    TabOrder = 10
-    OnKeyDown = rEditNum_pocet_dnuKeyDown
-    Style = enFloat
-    Value = 5.000000000000000000
-  end
   object scGPButton_Ulozit: TscGPButton
-    Left = 380
-    Top = 490
+    Left = 389
+    Top = 818
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -1270,7 +1129,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 11
+    TabOrder = 7
     TabStop = True
     OnClick = scGPButton_UlozitClick
     Animation = False
@@ -1366,8 +1225,8 @@ object Form_definice_zakazek: TForm_definice_zakazek
     AllowAllUp = False
   end
   object scGPButton_storno: TscGPButton
-    Left = 520
-    Top = 490
+    Left = 529
+    Top = 818
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -1376,7 +1235,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 12
+    TabOrder = 8
     TabStop = True
     OnClick = scGPGlyphButton4Click
     Animation = False
@@ -1472,16 +1331,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
     GroupIndex = 0
     AllowAllUp = False
   end
-  object button_zakazky_temp: TButton
-    Left = 931
-    Top = 664
-    Width = 185
-    Height = 25
-    Caption = 'button_zakazky_temp'
-    TabOrder = 13
-    Visible = False
-    OnClick = button_zakazky_tempClick
-  end
   object scEdit_zacatek: TscEdit
     Left = 1093
     Top = 622
@@ -1535,18 +1384,8 @@ object Form_definice_zakazek: TForm_definice_zakazek
     FrameColor = clBtnShadow
     FrameActiveColor = clHighlight
     Text = ''
-    TabOrder = 14
+    TabOrder = 9
     OnKeyDown = scEdit_zacatekKeyDown
-  end
-  object zakazky_hlavni_spojak: TButton
-    Left = 931
-    Top = 695
-    Width = 185
-    Height = 25
-    Caption = 'zakazky_hlavni_spojak'
-    TabOrder = 15
-    Visible = False
-    OnClick = zakazky_hlavni_spojakClick
   end
   object scGPGlyphButton_remove: TscGPGlyphButton
     Left = 210
@@ -1556,7 +1395,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Hint = 'Odebrat posledn'#237' vlo'#382'enou zak'#225'zku'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 16
+    TabOrder = 10
     TabStop = True
     OnClick = scGPGlyphButton_removeClick
     Animation = False
@@ -1642,22 +1481,13 @@ object Form_definice_zakazek: TForm_definice_zakazek
     GroupIndex = 0
     AllowAllUp = False
   end
-  object Button1: TButton
-    Left = 712
-    Top = 490
-    Width = 75
-    Height = 25
-    Caption = 'Button1'
-    TabOrder = 17
-    OnClick = Button1Click
-  end
   object ColorDialog1: TColorDialog
-    Left = 648
-    Top = 494
+    Left = 657
+    Top = 822
   end
   object ImageList1: TImageList
-    Left = 960
-    Top = 368
+    Left = 969
+    Top = 696
   end
   object scGPImageCollection_layout: TscGPImageCollection
     Images = <
@@ -2202,7 +2032,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         Description = 'layout'
         Scaled = True
       end>
-    Left = 912
-    Top = 312
+    Left = 921
+    Top = 640
   end
 end
