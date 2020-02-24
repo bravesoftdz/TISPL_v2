@@ -2257,6 +2257,7 @@ void TmGrid::DeleteCell(unsigned long ColIdx,unsigned long RowIdx)
 {
 	DeleteComponents(ColIdx,RowIdx,ColIdx,RowIdx);//smaže komponentu
 	Cells[ColIdx][RowIdx].Type=DRAW;Cells[ColIdx][RowIdx].Text="";//přenastaví typy, musí být až po smazání komponenty, jinak nebude komponenta nalezena
+	Cells[ColIdx][RowIdx].Background->Color=clWhite;//odstranění barvy pozadí
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -2306,7 +2307,7 @@ void TmGrid::InsertColumn(unsigned long Column,bool copyComponentFromPreviousCol
 				{
 					CopyCell(Cells[X-1][Y],Cells[X][Y],true);//zkopíruje (přesune) buňky z předchozího sloupce
 					//DeleteCell(X-1,Y); //vyprázní vkládanou buňku a smaže komponentu - odstaveno, stačí níže uvedené na základě DeleteComponents volané v realocku
-					Cells[X-1][Y].Type=DRAW;Cells[X-1][Y].Text="";//přenastaví typy, musí být až po smazání komponenty, jinak nebude komponenta nalezena
+					Cells[X-1][Y].Type=DRAW;Cells[X-1][Y].Text="";Cells[X-1][Y].Background->Color=clWhite;//přenastaví typy a odstranění barvy pozadí, musí být až po smazání komponenty, jinak nebude komponenta nalezena
 				}
 				else if(Column>0 && copyComponentFromPreviousColumn)Cells[Column][Y].Type=Cells[Column-1][Y].Type;//u vkládaného sloupce jenom typ komponent, pokud je požadováno
 			}
@@ -2477,7 +2478,7 @@ void TmGrid::realock()
 
 	//smazání původních hodnot
 	//při realokaci kvůli změně počtu sloupců nutné smazat vše, u řádků původní komponenty zachovám,  smažu jen ty, které nejsou již potřeba (při zmenšování tabulky), ale údajně nefunguje zcela správně
-	if(ColCount!=bufColCount2)DeleteComponents();	else DeleteComponents(bufColCount2,bufRowCount2,ColCount-1,RowCount-1);//nová oblast až stará oblast, není potřeba ošetřovat IFem pro případ přidávání (pohlídají si cykly ve vnitř algoritmu)
+	if(ColCount!=bufColCount2)DeleteComponents();else DeleteComponents(bufColCount2,bufRowCount2,ColCount-1,RowCount-1);//nová oblast až stará oblast, není potřeba ošetřovat IFem pro případ přidávání (pohlídají si cykly ve vnitř algoritmu)
 	ColCount=bufColCount2;RowCount=bufRowCount2;
 	//toto proč ne DeleteTable(); asi nahrazuje Create, otázka však zůstává zda něco nezůstává v paměti
 
