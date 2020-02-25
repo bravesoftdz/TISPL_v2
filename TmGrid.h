@@ -236,7 +236,7 @@ class TmGrid
 	void DeleteComponents();//odstraní dynamicky vytořené komponenty, nutno volat před Delete() // pozor odstraňovaná komponenta nesmí mít focus (jinak paměťová chyba), focus je potřeba při odstraňování komponent odevzdat nějaké komponentě, která zůstává ve formu
 	void DeleteComponents(unsigned long sCol,unsigned long sRow,unsigned long fCol,unsigned long fRow);//odstraní dynamicky vytořené komponenty do počtu sloupců a řádků, nutno volat před Delete() // pozor odstraňovaná komponenta nesmí mít focus (jinak paměťová chyba), focus je potřeba při odstraňování komponent odevzdat nějaké komponentě, která zůstává ve formu
 	void MoveComponent(unsigned long Col,unsigned long Row,long ColOffset,long RowOffset);//posunu komponentu o sloupec či řádek, použává se nově na mazání sloupců či řádků
-	void RenameComponent(unsigned long aktCol,unsigned long aktRow,long newCol,long newRow);//přejmenuje komponentu
+	void UpdateNameTagComponents(unsigned long toCol,unsigned long toRow,unsigned long ColCount);//přejmenuje komponenty do zadaného počtu sloupců a řádků
 	void executeColumnsAutoFit(TCanvas *Canv);//nastaví šířku buněk sloupců dle šířky textu dle zvoleného parametru
 	void executeColumnAutoFit(TCanvas *Canv,long ColIdx);//nastaví šířku buněk daného sloupce dle šířky textu v daném sloupci
 	void realock();//zajistí realokaci pole Cells dle nové velikosti
@@ -248,6 +248,7 @@ class TmGrid
 	unsigned long getHeight();//vrátí celkovou výšku tabulky
 	TPoint getWidthHeightText(TCells &Cell);//vrátí šířku a výšku textu buňky v pixelech
 	unsigned long getTag(unsigned long Col,unsigned long Row);//vratí ID tag komponenty,absolutní pořadí v paměti
+	unsigned long getTag(unsigned long Col,unsigned long Row,unsigned long ColCount);//vratí ID tag komponenty,absolutní pořadí v paměti
 	unsigned long getColFromTag(unsigned long Tag);//z tagu vratí číslo sloupce
 	unsigned long getRowFromTag(unsigned long Tag);//z tagu vratí číslo řádku
 

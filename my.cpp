@@ -101,7 +101,7 @@ double Cmy::o2r(double number)
 //ze zadaného radiusu vrátí obvod kruhové výseče o velikosti definované úhlem výseče ve stupních
 double Cmy::R2Larc(double radius,double angle)
 {
-	return radius*2*M_PI*a360(angle)/360.0;
+	return radius*2*M_PI*a360(fabs(angle))/360.0;
 }
 //////////////////////////////////////////////////////////////////////////////
 //Převede logické souřadnice na fyzické (displej zařízení) , vraci fyzické souřadnice
@@ -1155,6 +1155,13 @@ TColor Cmy::clIntensive(TColor C,short A)//+A  míra zesvětlení,  -A  míra zt
 short Cmy::get_intensity()
 {
 	return(-3.6*F->scGPTrackBar_intenzita->Value+360);
+}
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+//vrátí černou pro světlé barvy a bílou pro tmavé barvy, používá se např. na volbu barvy textu s barevným pozadím
+TColor Cmy::getBlackOrWhiteInvert(TColor color)
+{
+	if(color>(TColor)RGB(128,128,128))return clBlack; else return clWhite; //ShowMessage("černá");else ShowMessage("bílá");
 }
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////

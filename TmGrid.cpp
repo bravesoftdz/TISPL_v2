@@ -940,7 +940,7 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	if(VisibleComponents>-1)E->Visible=VisibleComponents;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
 	//E->ShowHint=false;//toto by bylo vždy u editu na false, pokus automatizace pro dlouhý textif(Cell.Text.Length()>E->Width/(Cell.Font->Size-2))E->ShowHint=true;else //asi nepřesné
 	if(Cell.ShowHint){E->ShowHint=true;E->Hint=Cell.Hint;}
-	if(Cell.Text=="" && Cell.isEmtyConditionalFormattingState==true)E->Options->NormalColor=Cell.isEmpty->Color;else E->Options->NormalColor=Cell.Background->Color;
+/*tady testovat zakomentováním zachování nastavení komponent při sloupcových operacích*/	if(Cell.Text=="" && Cell.isEmtyConditionalFormattingState==true)E->Options->NormalColor=Cell.isEmpty->Color;else E->Options->NormalColor=Cell.Background->Color;
 	E->Options->NormalColorAlpha=255;
 	//zrušeno if(Cell.Highlight)E->Options->FrameNormalColor=clHighlight;else//rámeček musí být stejnou barvou jakou buňka, protože mřížka je o 1px na všechny strany roztažená
 	E->Options->FrameNormalColor=Cell.Background->Color;
@@ -1569,6 +1569,10 @@ TscGPImage *TmGrid::createImage(unsigned long Col,unsigned long Row)
 //---------------------------------------------------------------------------
 //vratí ID tag komponenty,absolutní pořadí v paměti
 unsigned long TmGrid::getTag(unsigned long Col,unsigned long Row)
+{
+	return getTag(Col,Row,ColCount);
+}
+unsigned long TmGrid::getTag(unsigned long Col,unsigned long Row,unsigned long ColCount)
 {
 	return (Col+1)+Row*ColCount;
 }
@@ -2297,7 +2301,6 @@ void TmGrid::InsertColumn(unsigned long Column,bool copyPropertiesFromPreviousCo
 {
 	if(Column<ColCount)//pokud se nejedná o poslední sloupec, tam je to zbytečné a řeší else větev přímo funkce AddColumn
 	{
-		DeleteComponents(); ///zahrnout do realoku !!!
 		ColCount++;realock();//přidá poslední sloupec
 		//překopíruje sloupec resp. buňky z sloupce předcházejícího, tím zajistí prostor pro nově vložený sloupec
 		for(unsigned long X=ColCount-1;X>=Column;X--)//důležité přesouvat od zadu
@@ -2306,9 +2309,14 @@ void TmGrid::InsertColumn(unsigned long Column,bool copyPropertiesFromPreviousCo
 			{
 				if(X>Column)//pro průchod sloupci předcházejícím přidávanému
 				{
-					CopyCell(Cells[X-1][Y],Cells[X][Y],true);//zkopíruje (přesune) buňky z předchozího sloupce
-					//DeleteCell(X-1,Y); //vyprázní vkládanou buňku a smaže komponentu - odstaveno, stačí níže uvedené na základě DeleteComponents volané v realocku
-					Cells[X-1][Y].Type=DRAW;Cells[X-1][Y].Text="";Cells[X-1][Y].Background->Color=clWhite;//přenastaví typy a odstranění barvy pozadí, musí být až po smazání komponenty, jinak nebude komponenta nalezena
+					CopyCell(Cells[X-1][Y],Cells[X][Y],true);//je potřeba zkopírovat nastavení buňky včetně typu komponenty (parametr true)
+					MoveComponent(X,Y,-1,0);//je třeba přesunout případnou komponentu o jednu buňku dál (-1 jedna je nelogické, jedná se o +1)
+					//Cells[X-1][Y].Type=DRAW;Cells[X-1][Y].Text="";Cells[X-1][Y].Background->Color=clWhite; - asi není třeba pořeší copycell při dalším průchodu
+
+					//původní bez kopírování vlastností a probliku (konstruovali se nově komponenty) konstrukce: brzy snad smazat
+					//CopyCell(Cells[X-1][Y],Cells[X][Y],true);//zkopíruje (přesune) buňky z předchozího sloupce
+					////DeleteCell(X-1,Y); //vyprázní vkládanou buňku a smaže komponentu - odstaveno, stačí níže uvedené na základě DeleteComponents volané v realocku
+					//Cells[X-1][Y].Type=DRAW;Cells[X-1][Y].Text="";Cells[X-1][Y].Background->Color=clWhite;//přenastaví typy a odstranění barvy pozadí, musí být až po smazání komponenty, jinak nebude komponenta nalezena
 				}
 				else if(Column>0 && copyPropertiesFromPreviousColumn){CopyCell(Cells[Column-1][Y],Cells[Column][Y],true);Cells[Column][Y].Text="";}//u vkládaného sloupce jenom typ (což zároveň založí komponentu při naslédném udpate či refresh) a vlastnosti buňky, pokud je požadováno, je nutné smazat duplicitně zkopírovaný text
 			}
@@ -2363,7 +2371,7 @@ void TmGrid::AddRow(bool copyComponentFromPreviousRow,bool invalidate)
 	RowCount++;
 
 	//kopie komponent z nadřízeného řádku, jeli-požadováno
-	if(copyComponentFromPreviousRow)
+	if(copyComponentFromPreviousRow)   //!!!bylo by vhodné předělat na kopírování včetně vlastností jako u sloupců
 	{
 		realock();//musí proběhnout před následujícím kodem, jinak řeší Show
 		for(unsigned long X=0;X<ColCount;X++)
@@ -2379,7 +2387,8 @@ void TmGrid::AddRow(bool copyComponentFromPreviousRow,bool invalidate)
 //---------------------------------------------------------------------------
 //přídá řádek za řádek uvedený dle parametru Row,, pokud copyComponentFromPreviousRow je na true, zkopiruje kompomenty z předchozího řádku, pokud je invalidate na true, automaticky po přidání překreslí tabulku, někdy pokud nechci problikávat tabulku lépe nastavit na false a zavolat formpaint přímo za voláním metody InsertRow přimo v užitém formuláři
 void TmGrid::InsertRow(unsigned long Row,bool copyComponentFromPreviousRow, bool invalidate)
-{
+{         //!!!bylo by vhodné předělat na kopírování včetně vlastností jako u sloupců
+					//podle mého nebude metoda zcela funkční a otestováná, očekával bych problém s přesouváním komponent, motivaci bych viděl v deleterow (movecomponent) či sloupcových metodách upravou přímo v realock
 	if(Row<RowCount-1)//pokud se nejedná o poslední řádek, tam je to zbytečné a řeší else větev AddRow
 	{
 		RowCount++;realock();//přidá poslední řádek
@@ -2474,12 +2483,27 @@ void TmGrid::realock()
 	for(unsigned long Y=0;Y<bufRowCount;Y++)bufRows[Y].Height=Rows[Y].Height;
 
 	//počty řádků a sloupců
-	unsigned long bufColCount2=ColCount;unsigned long bufRowCount2=RowCount;
-	ColCount=bufColCount;RowCount=bufRowCount;
+	unsigned long bufColCount2=ColCount;unsigned long bufRowCount2=RowCount;//pozor, nový požadovaný počet (před realock se volalo navýšení)
+	ColCount=bufColCount;RowCount=bufRowCount;//původní alokovaný
 
 	//smazání původních hodnot
 	//při realokaci kvůli změně počtu sloupců nutné smazat vše, u řádků původní komponenty zachovám,  smažu jen ty, které nejsou již potřeba (při zmenšování tabulky), ale údajně nefunguje zcela správně
-	if(ColCount!=bufColCount2)DeleteComponents();else DeleteComponents(bufColCount2,bufRowCount2,ColCount-1,RowCount-1);//nová oblast až stará oblast, není potřeba ošetřovat IFem pro případ přidávání (pohlídají si cykly ve vnitř algoritmu)
+	if(ColCount!=bufColCount2)
+	{
+		if(bufColCount2>ColCount)//při add a insert, tzn. požadovaný je větší než aktuální
+		{
+			//UpdateNameTagComponents(ColCount,RowCount,bufColCount2,true);//přejmenuje všechny komponenty do max čísla sloupce a řádku o do již existujícího, ale již podle číslování s novým sloupcem
+			//ShowMessage(ColCount);ShowMessage(RowCount);ShowMessage(bufColCount2);
+			UpdateNameTagComponents(ColCount,RowCount,bufColCount2);//přejmenuje všechny komponenty do max čísla sloupce a řádku o do již existujícího, ale již podle číslování s novým sloupcem
+		}
+//		else//pře delete
+//		{
+//			//UpdateNameTagComponents(bufColCount2,bufRowCount2);//přejmenuje komponenty v buňkách s kterými se nehýbe (názvy komponent jsou odvozené dle pořadí v matici sloupce x řádky)
+//			//DeleteComponents(bufColCount2,bufRowCount2,ColCount-1,RowCount-1);//odstraní při odebírání sloupce nepoužité komponenty či komponenty za sloupem navazující //pokud by se ujalo nemusel by být níže uvedený else
+//		}
+//		DeleteComponents();//nahrazuje vše výše uvedné, ale probíhá i s problikem komponent, které není nutné smazat pouze nutné přejmenovat
+	}
+	else DeleteComponents(bufColCount2,bufRowCount2,ColCount-1,RowCount-1);//nová oblast až stará oblast, není potřeba ošetřovat IFem pro případ přidávání (pohlídají si cykly ve vnitř algoritmu)
 	ColCount=bufColCount2;RowCount=bufRowCount2;
 	//toto proč ne DeleteTable(); asi nahrazuje Create, otázka však zůstává zda něco nezůstává v paměti
 
@@ -2496,7 +2520,7 @@ void TmGrid::realock()
 		for(unsigned long X=0;X<bufColCount;X++)
 		{
 			//nelze celý ukazatel
-			Cells[X][Y] = bufCells[X][Y];//popř. CopyCell(bufCells[X][Y],Cells[X][Y],true);//nová verze
+			Cells[X][Y] = bufCells[X][Y];//popř.CopyCell(bufCells[X][Y],Cells[X][Y],true);//nová verze
 			if(Y==0)Columns[X].Width=bufColumns[X].Width;//navrácení původní šířky slopců, protože voláním Create se nastavuje šířka výchozí
 		}
 	}
@@ -2572,7 +2596,7 @@ void TmGrid::DeleteComponents(unsigned long sCol,unsigned long sRow,unsigned lon
 //---------------------------------------------------------------------------
 //posunu komponentu o sloupec či řádek, použává se nově na mazání sloupců či řádků
 void TmGrid::MoveComponent(unsigned long Col,unsigned long Row,long ColOffset,long RowOffset)
-{
+{   //ShowMessage("Z původního sloupce "+AnsiString(Col+ColOffset)+" na nový sloupec včetně indexu"+AnsiString(Col));
 	switch(Cells[Col+ColOffset][Row+RowOffset].Type)
 	{
 		case readEDIT:
@@ -2580,8 +2604,10 @@ void TmGrid::MoveComponent(unsigned long Col,unsigned long Row,long ColOffset,lo
 		{
 			TscGPEdit *E=getEdit(Col+ColOffset,Row+RowOffset);
 			//E->Text=getTag(Col,Row);///////tewst
-			E->Tag=getTag(Col,Row);//přeindexování na řádek níže
+			//ShowMessage(E->Name);
+			E->Tag=getTag(Col,Row,ColCount);//přeindexování na řádek níže
 			E->Name="mGrid_EDIT_"+AnsiString(ID)+"_"+AnsiString(E->Tag);//přeindexování na řádek níže
+			//ShowMessage(E->Name);
 			E=NULL;delete E;
 		}
 		break;
@@ -2597,7 +2623,7 @@ void TmGrid::MoveComponent(unsigned long Col,unsigned long Row,long ColOffset,lo
 		case BUTTON:
 		{
 			TscGPButton *B=getButton(Col+ColOffset,Row+RowOffset);
-			B->Tag=getTag(Col,Row);//přeindexování na řádek níže
+			B->Tag=getTag(Col,Row,ColCount);//přeindexování na řádek níže
 			B->Name="mGrid_BUTTON_"+AnsiString(ID)+"_"+AnsiString(B->Tag);//přeindexování na řádek níže
 			B=NULL;delete B;
 		}
@@ -2664,93 +2690,132 @@ void TmGrid::MoveComponent(unsigned long Col,unsigned long Row,long ColOffset,lo
 	//if(Cells[Col][Row+1].Type!=DRAW)SetComponents(NULL,R,R,Col,Row,Cells[Col][Row]);//nastaví komponenty, mimo DRAW, protože se nejedná o komponentu
 }
 //---------------------------------------------------------------------------
-//přejmenuje komponentu
-void TmGrid::RenameComponent(unsigned long aktCol,unsigned long aktRow,long newCol,long newRow)
+//přejmenuje komponenty zadaného počtu sloupců a řádků, pokud není parametr uveden, použije hodnoty z globální proměnných
+void TmGrid::UpdateNameTagComponents(unsigned long toCol,unsigned long toRow,unsigned long ColCount)
 {
-	switch(Cells[aktCol][aktRow].Type)
+	for(unsigned long X=toCol-1;X+1>0;X--)//po sloupcích
+	//for(unsigned long X=0;X<toCol;X++)//po sloupcích
 	{
-		case readEDIT:
-		case EDIT:
+		for(unsigned long Y=toRow-1;Y+1>0;Y--)//po řádcích
+		//for(unsigned long Y=0;Y<toRow;Y++)//po řádcích
 		{
-			TscGPEdit *E=getEdit(aktCol,aktRow);
-			E->Tag=getTag(newCol,newRow);//přeindexování
-			E->Name="mGrid_EDIT_"+AnsiString(ID)+"_"+AnsiString(E->Tag);//přeindexování na řádek níže
-			E=NULL;delete E;
+			switch(Cells[X][Y].Type)
+			{
+				case readEDIT:
+				case EDIT:
+				{
+					TscGPEdit *E=getEdit(X,Y);
+					if(E!=NULL)
+					{
+						E->Tag=getTag(X,Y,ColCount);
+						E->Name="mGrid_EDIT_"+AnsiString(ID)+"_"+AnsiString(E->Tag);
+						E=NULL;delete E;
+					}
+				}
+				break;
+				case readNUMERIC:
+				case NUMERIC:
+				{
+					TscGPNumericEdit *N=getNumeric(X,Y);
+					if(N!=NULL)
+					{
+						N->Tag=getTag(X,Y,ColCount);//přeindexování
+						N->Name="mGrid_NUMERIC_"+AnsiString(ID)+"_"+AnsiString(N->Tag);
+						N=NULL;delete N;
+					}
+				}
+				break;
+				case BUTTON:
+				{
+					TscGPButton *B=getButton(X,Y);
+					if(B!=NULL)
+					{
+						B->Tag=getTag(X,Y,ColCount);//přeindexování
+						B->Name="mGrid_BUTTON_"+AnsiString(ID)+"_"+AnsiString(B->Tag);
+						B=NULL;delete B;
+					}
+				}
+				break;
+				case LABEL:
+				{
+					TscHTMLLabel *L=getLabel(X,Y);
+					if(L!=NULL)
+					{
+						L->Tag=getTag(X,Y,ColCount);//přeindexování
+						L->Name="mGrid_LABEL_"+AnsiString(ID)+"_"+AnsiString(L->Tag);
+						L=NULL;delete L;
+					}
+				}
+				break;
+				case glyphBUTTON:
+				{
+					TscGPGlyphButton *gB=getGlyphButton(X,Y);
+					if(gB!=NULL)
+					{
+						gB->Tag=getTag(X,Y,ColCount);//přeindexování
+						gB->Name="mGrid_glyphBUTTON_"+AnsiString(ID)+"_"+AnsiString(gB->Tag);
+						gB=NULL;delete gB;
+					}
+				}
+				break;
+				case COMBO:
+				{
+					TscGPComboBox *C=getCombo(X,Y);
+					if(C!=NULL)
+					{
+						C->Tag=getTag(X,Y,ColCount);//přeindexování
+						C->Name="mGrid_COMBO_"+AnsiString(ID)+"_"+AnsiString(C->Tag);
+						C=NULL;delete C;
+					}
+				}
+				break;
+				case COMBOEDIT:
+				{
+					TscGPComboEdit *C=getComboEdit(X,Y);
+					if(C!=NULL)
+					{
+						C->Tag=getTag(X,Y,ColCount);//přeindexování
+						C->Name="mGrid_COMBOEDIT_"+AnsiString(ID)+"_"+AnsiString(C->Tag);
+						C=NULL;delete C;
+					}
+				}
+				break;
+				case CHECK:
+				{
+					TscGPCheckBox *Ch=getCheck(X,Y);
+					if(Ch!=NULL)
+					{
+						Ch->Tag=getTag(X,Y,ColCount);//přeindexování
+						Ch->Name="mGrid_CHECK_"+AnsiString(ID)+"_"+AnsiString(Ch->Tag);
+						Ch=NULL;delete Ch;
+					}
+				}
+				break;
+				case RADIO:
+				{
+					TscGPRadioButton *R=getRadio(X,Y);
+					if(R!=NULL)
+					{
+						R->Tag=getTag(X,Y,ColCount);//přeindexování
+						R->Name="mGrid_RADIO_"+AnsiString(ID)+"_"+AnsiString(R->Tag);
+						R=NULL;delete R;
+					}
+				}
+				break;
+				case IMAGE:
+				{
+					TscGPImage *I=getImage(X,Y);
+					if(I!=NULL)
+					{
+						I->Tag=getTag(X,Y,ColCount);//přeindexování
+						I->Name="mGrid_IMAGE_"+AnsiString(ID)+"_"+AnsiString(I->Tag);
+						I=NULL;delete I;
+					}
+				}
+				break;
+			}
+//F->Memo(AnsiString(X)+" "+AnsiString(Y));
 		}
-		break;
-		case readNUMERIC:
-		case NUMERIC:
-		{
-			TscGPNumericEdit *N=getNumeric(aktCol,aktRow);
-			N->Tag=getTag(newCol,newRow);//přeindexování
-			N->Name="mGrid_NUMERIC_"+AnsiString(ID)+"_"+AnsiString(N->Tag);//přeindexování na řádek níže
-			N=NULL;delete N;
-		}
-		break;
-		case BUTTON:
-		{
-			TscGPButton *B=getButton(aktCol,aktRow);
-			B->Tag=getTag(newCol,newRow);//přeindexování
-			B->Name="mGrid_BUTTON_"+AnsiString(ID)+"_"+AnsiString(B->Tag);//přeindexování na řádek níže
-			B=NULL;delete B;
-		}
-		break;
-		case LABEL:
-		{
-			TscHTMLLabel *L=getLabel(aktCol,aktRow);
-			L->Tag=getTag(newCol,newRow);//přeindexování
-			L->Name="mGrid_LABEL_"+AnsiString(ID)+"_"+AnsiString(L->Tag);//přeindexování na řádek níže
-			L=NULL;delete L;
-		}
-		break;
-		case glyphBUTTON:
-		{
-			TscGPGlyphButton *gB=getGlyphButton(aktCol,aktRow);
-			gB->Tag=getTag(newCol,newRow);//přeindexování
-			gB->Name="mGrid_glyphBUTTON_"+AnsiString(ID)+"_"+AnsiString(gB->Tag);//přeindexování na řádek níže
-			gB=NULL;delete gB;
-		}
-		break;
-		case COMBO:
-		{
-			TscGPComboBox *C=getCombo(aktCol,aktRow);
-			C->Tag=getTag(newCol,newRow);//přeindexování
-			C->Name="mGrid_COMBO_"+AnsiString(ID)+"_"+AnsiString(C->Tag);//přeindexování na řádek níže
-			C=NULL;delete C;
-		}
-		break;
-		case COMBOEDIT:
-		{
-			TscGPComboEdit *C=getComboEdit(aktCol,aktRow);
-			C->Tag=getTag(newCol,newRow);//přeindexování
-			C->Name="mGrid_COMBOEDIT_"+AnsiString(ID)+"_"+AnsiString(C->Tag);//přeindexování na řádek níže
-			C=NULL;delete C;
-		}
-		break;
-		case CHECK:
-		{
-			TscGPCheckBox *Ch=getCheck(aktCol,aktRow);
-			Ch->Tag=getTag(newCol,newRow);//přeindexování
-			Ch->Name="mGrid_CHECK_"+AnsiString(ID)+"_"+AnsiString(Ch->Tag);//přeindexování na řádek níže
-			Ch=NULL;delete Ch;
-		}
-		break;
-		case RADIO:
-		{
-			TscGPRadioButton *R=getRadio(aktCol,aktRow);
-			R->Tag=getTag(newCol,newRow);//přeindexování
-			R->Name="mGrid_RADIO_"+AnsiString(ID)+"_"+AnsiString(R->Tag);//přeindexování na řádek níže
-			R=NULL;delete R;
-		}
-		break;
-		case IMAGE:
-		{
-			TscGPImage *I=getImage(aktCol,aktRow);
-			I->Tag=getTag(newCol,newRow);//přeindexování
-			I->Name="mGrid_IMAGE_"+AnsiString(ID)+"_"+AnsiString(I->Tag);//přeindexování na řádek níže
-			I=NULL;delete I;
-		}
-		break;
 	}
 }
 //---------------------------------------------------------------------------

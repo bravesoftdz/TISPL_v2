@@ -103,6 +103,7 @@ class Cmy
 	double null(double number,double tolerance=0.0000000001);//zkontroluje číslo, zda se nejadná o hodnout okolo nuly dle možné odchylky dle toleration, předchází zvláštnímu chování výpočtů okolo nuly
 	TColor clIntensive(TColor C,short A);//+A  míra zesvětlení,  -A  míra ztmaveni, max hodnota 255, min hodnota -255
 	short get_intensity();//přepočítá hodnotu posuvníku intenzivity z menu nastavení na změnu barevné intenzivity při vykreslění objektů či elementů
+	TColor getBlackOrWhiteInvert(TColor color);//vrátí černou pro světlé barvy a bílou pro tmavé barvy, používá se např. na volbu barvy textu s barevným pozadím
 
 	protected:
 };
