@@ -910,7 +910,7 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy)
     Z->mGrid->Cells[3][1].Type = Z->mGrid->glyphBUTTON; //
 
     Z->mGrid->Cells[0][1].Text = Z->n; // id zakázky
-			if(novy)Z->mGrid->Cells[1][i+0].Text = F->ls->Strings[434];//"Název zakázky"
+			if(novy)Z->mGrid->Cells[1][0].Text = F->ls->Strings[434];//"Název zakázky"
 			else Z->mGrid->Cells[1][i+0].Text = Z->name;
     Z->mGrid->Cells[1][0].Text = "Název zakázky";
     Z->mGrid->Cells[1][1].Type = Z->mGrid->glyphBUTTON; // color zakazka
