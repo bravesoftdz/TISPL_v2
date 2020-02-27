@@ -77,7 +77,8 @@ private:	// User declarations
 	void nacti_zakazky();
 	void uloz_Defaulttemp_zakazku();
 	void uloz_Default_cestu();
-  void getmGridWidth();
+	void getmGridWidth();
+	void vloz_davku(Cvektory::TZakazka *Z,Cvektory::TDavka *davka=NULL);
 
 public:		// User declarations
 	__fastcall TForm_definice_zakazek(TComponent* Owner);
@@ -94,7 +95,7 @@ public:		// User declarations
 
 	void setGlyphButtonDefault(unsigned long Row,unsigned long Col, Typ_buttonu typ, Cvektory::TZakazka *Z);
   void setGlyphButtonDavka_Add(unsigned long ID,unsigned long Col);
-  void setGlyphButtonDavka_Remove(unsigned long ID,unsigned long Col,Cvektory::TZakazka *Z);
+	void setGlyphButtonDavka_Remove(unsigned long Col,Cvektory::TZakazka *Z,Cvektory::TDavka *davka);
   void setGlyphButtonColor(unsigned long Row,unsigned long Col, Typ_buttonu typ, Cvektory::TZakazka *Z);
   bool add_zakazka;
   bool add_davka;
