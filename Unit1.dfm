@@ -1083,7 +1083,6 @@ object Form1: TForm1
       Margins.Right = 0
       Margins.Bottom = 1
       Align = alRight
-      Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -15
@@ -1103,7 +1102,7 @@ object Form1: TForm1
       ImageIndex = -1
       ImageMargin = 0
       TransparentBackground = True
-      Options.NormalColor = clWhite
+      Options.NormalColor = 10114859
       Options.HotColor = clWhite
       Options.PressedColor = clBtnFace
       Options.FocusedColor = clBtnFace
@@ -1113,7 +1112,7 @@ object Form1: TForm1
       Options.PressedColor2 = clNone
       Options.FocusedColor2 = clNone
       Options.DisabledColor2 = clNone
-      Options.NormalColorAlpha = 0
+      Options.NormalColorAlpha = 255
       Options.HotColorAlpha = 30
       Options.PressedColorAlpha = 255
       Options.FocusedColorAlpha = 30
@@ -9843,7 +9842,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118009808800910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118009808840910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10966,7 +10965,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01015400480AA40C30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01015400480AA80C30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000002004000001002000000000000060
       0C00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

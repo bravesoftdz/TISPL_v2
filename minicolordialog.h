@@ -10,6 +10,7 @@
 #include "scColorControls.hpp"
 #include "scControls.hpp"
 #include "scExtControls.hpp"
+#include <Vcl.ExtCtrls.hpp>
 //---------------------------------------------------------------------------
 class TForm_color_dialog : public TForm
 {
@@ -22,8 +23,9 @@ __published:	// IDE-managed Components
 private:	// User declarations
 public:		// User declarations
   __fastcall TForm_color_dialog(TComponent* Owner);
-  void            SetDialogPosition(double Row);
+  void            SetDialogPosition(double Row,double Id);
   double ROW;
+  double ID;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm_color_dialog *Form_color_dialog;

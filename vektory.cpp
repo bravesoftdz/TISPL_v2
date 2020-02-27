@@ -1005,16 +1005,16 @@ unsigned int Cvektory::pocet_objektu(short typ)
 //---------------------------------------------------------------------------
 //vrátí počet objektů v požadovaném režimu pro danou zakázku, nebo v případě implicitního parametru -1 objekty ve všech režimech pro danou zakázku
 unsigned int Cvektory::pocet_objektu_zakazky(TZakazka *Zakazka,short typ)
-{
-	unsigned int pocet=0;
-	TCesta *C=Zakazka->cesta->dalsi;//přeskočí hlavičku
-	while (C!=NULL)
-	{                     //celkový počet
-		if(C->objekt->rezim==typ || typ==-1)pocet++;
-		C=C->dalsi;//posun na další prvek
-	}
-	C=NULL;delete C;
-	return pocet;
+{                    /////////////SMAZAT
+//	unsigned int pocet=0;
+//	TCesta *C=Zakazka->cesta->dalsi;//přeskočí hlavičku
+//	while (C!=NULL)
+//	{                     //celkový počet
+//		if(C->objekt->rezim==typ || typ==-1)pocet++;
+//		C=C->dalsi;//posun na další prvek
+//	}
+//	C=NULL;delete C;
+//	return pocet;
 }
 //---------------------------------------------------------------------------
 //vrátí AnsiString řetezec shortname či name (dle prvního parametru, který je implicitně na shortname=true) seznam objektů, které nemají přiřazený pohon, jednotlivé názvy objektů oddělí dle paramaterů seperátor, implicitně ", " tj. čárka a mezera, v případě že žádný objekt nenajde, vrátí prázdný řetězec
@@ -1076,28 +1076,28 @@ AnsiString Cvektory::vypis_objekty_s_pohony_bez_roztece(bool shortname)
 //---------------------------------------------------------------------------
 //vrátí AnsiString řetezec shortname či name (dle parametru, který je implicitně na shortname=true) seznam objektů podle zakázek, které nemají 100% vytížení
 AnsiString Cvektory::vypis_objekty_mimo_100vytizeni(bool shortname, bool vypsat_procetna, AnsiString separator)
-{
-	 TZakazka *Z=ZAKAZKY->dalsi;
+{                    //////////////SMAZAT?
+//	 TZakazka *Z=ZAKAZKY->dalsi;
 	 AnsiString T="";
-	 while (Z!=NULL)
-	 {
-		TCesta *C=ZAKAZKY->cesta->dalsi;
-		while (C!=NULL)
-		{
-			double vytizeni=C->CT/C->objekt->kapacita/Z->TT*100.0;
-			if(vytizeni!=100)
-			{
-				AnsiString N=C->objekt->name;if(shortname)C->objekt->short_name;
-				AnsiString V=""; if(vypsat_procetna)"- "+AnsiString(vytizeni)+" %";
-				T=Z->name+"/"+N+V+separator;
-			}
-			C=C->dalsi;
-		}
-		delete C;
-		Z=Z->dalsi;
-	 }
-	 delete Z;
-	 T=T.SubString(1,T.Length()-separator.Length());//odebere ještě poslední separátor
+//	 while (Z!=NULL)
+//	 {
+//		TCesta *C=ZAKAZKY->cesta->dalsi;
+//		while (C!=NULL)
+//		{
+//			double vytizeni=C->CT/C->objekt->kapacita/Z->TT*100.0;
+//			if(vytizeni!=100)
+//			{
+//				AnsiString N=C->objekt->name;if(shortname)C->objekt->short_name;
+//				AnsiString V=""; if(vypsat_procetna)"- "+AnsiString(vytizeni)+" %";
+//				T=Z->name+"/"+N+V+separator;
+//			}
+//			C=C->dalsi;
+//		}
+//		delete C;
+//		Z=Z->dalsi;
+//	 }
+//	 delete Z;
+//	 T=T.SubString(1,T.Length()-separator.Length());//odebere ještě poslední separátor
 	 return T;
 }
 //---------------------------------------------------------------------------
@@ -1359,7 +1359,7 @@ void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_o
 	if(F->prichytavat_k_mrizce!=1)kontrolovat_oblast=false;
 	if(kontrolovat_oblast)
 	{
-		if(Objekt->predchozi->n>0)oblast=oblast_objektu(Objekt->predchozi,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y);
+		if(Objekt->element->predchozi->n>0 && (Objekt->element->predchozi->eID!=300 || (Objekt->element->predchozi->eID==300 && Objekt->element->predchozi->dalsi==Objekt->element)))oblast=oblast_objektu(vrat_objekt(Objekt->element->predchozi->objekt_n),F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y);
 		if(oblast==2)oblast==0;//vyřezení oblasti za
 		X=F->akt_souradnice_kurzoru.x-Objekt->element->geo.X1; Y=F->akt_souradnice_kurzoru.y-Objekt->element->geo.Y1;
 	}
@@ -1390,17 +1390,18 @@ void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_o
 		E=NULL;delete E;
 	}
 	////přilepení objektu na předchozí objekt
-	TElement *E_pom=vrat_posledni_element_objektu(Objekt->predchozi);
-	if(F->prichytavat_k_mrizce==1 && oblast==1 && (Objekt->element->geo.X1!=E_pom->geo.X4 || Objekt->element->geo.Y1!=E_pom->predchozi->geo.Y4))
+	TElement *E_pom=NULL;
+	if(Objekt->element->predchozi->n>0)E_pom=Objekt->element->predchozi;
+	if(E_pom!=NULL && F->prichytavat_k_mrizce==1 && oblast==1 && (Objekt->element->geo.X1!=E_pom->geo.X4 || Objekt->element->geo.Y1!=E_pom->geo.Y4))
 	{
 		posun_objekt(E_pom->geo.X4-Objekt->element->geo.X1,E_pom->geo.Y4-Objekt->element->geo.Y1,Objekt,false);
 	}
 	////změna rotace
-	if(Objekt->n>1 && povolit_rotaci)
+	if(E_pom!=NULL && Objekt->n>1 && povolit_rotaci)
 	{
 		double azimut=0,x=F->akt_souradnice_kurzoru.x,y=F->akt_souradnice_kurzoru.y;
 		azimut=m.Rt90(m.azimut(E_pom->geo.X4,E_pom->geo.Y4,x,y));
-		if(m.Rt90(azimut+180)!=Objekt->predchozi->orientace)rotuj_objekt(Objekt,Objekt->orientace-azimut);
+		if(m.Rt90(azimut+180)!=Objekt->predchozi->orientace || E_pom->eID==300)rotuj_objekt(Objekt,Objekt->orientace-azimut);
 	}
 	E_pom=NULL;delete E_pom;
 }
@@ -2258,6 +2259,23 @@ void Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->sparovany=Original->sparovany;
 }
 ////---------------------------------------------------------------------------
+//zkopíruje atributy dat, slouží pro zakládání cesty v zakázce
+void Cvektory::kopiruj_data_elementu(Tdata Original,Tdata Kopie)
+{
+	Kopie.PD=Original.PD;
+	Kopie.orientace_jig_pred=Original.orientace_jig_pred;
+	Kopie.LO1=Original.LO1;
+	Kopie.LO2=Original.LO2;
+	Kopie.LO_pozice=Original.LO_pozice;
+	Kopie.PT1=Original.PT1;
+	Kopie.PT2=Original.PT2;
+	Kopie.WTstop=Original.WTstop;
+	Kopie.RT.x=Original.RT.x;
+	Kopie.RT.y=Original.RT.y;
+	Kopie.pocet_pozic=Original.pocet_pozic;
+	Kopie.pocet_voziku=Original.pocet_voziku;
+}
+////---------------------------------------------------------------------------
 //všem elementům, které měly přiřazen pohon s oldN(oldID), přiřadí pohon s newN(newID), podle toho, jak jsou ukládány nově do spojáku, důležité, pokud dojde k narušení pořadí ID resp n pohonů a pořadí jednotlivých řádků ve stringridu, např. kopirováním, smazáním, změnou pořadí řádků atp.
 void Cvektory::aktualizace_prirazeni_pohonu_k_elementum(unsigned int oldN,unsigned int newN)
 {
@@ -2548,6 +2566,18 @@ Cvektory::TElement *Cvektory::vrat_element(TObjekt *Objekt, unsigned int n)
 	return E;
 }
 ////---------------------------------------------------------------------------
+//vraťí ukazatel na element dle n elementu
+Cvektory::TElement *Cvektory::vrat_element(unsigned int n)
+{
+	TElement *E=ELEMENTY->dalsi;
+	while(E!=NULL)
+	{
+		if(E->n==n)break;
+		else E=dalsi_krok(E);
+	}
+	return E;
+}
+////---------------------------------------------------------------------------
 //ověří zda se na daných fyzických souřadnicích nachází kóta elementu, pokud ne vrací -1, pokud ano 0 v celé kótě, 1 - na hodnotě kóty, 2 - na jednotkách kóty, pozn. oblast kóty se testuje až jako poslední
 short Cvektory::PtInKota_elementu(TObjekt *Objekt,long X,long Y)
 {
@@ -2588,8 +2618,14 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			if(vzd!=0 && !posun_kurzorem && posun_povolit)//posun z kót!!!!!!!!!!!!!!!!!!!!!
 			{
 				//realizace posunu
-				if(Element->orientace==0||Element->orientace==180)Element->X=Element->X-(vzd/m.abs_d(vzd))*(m.abs_d(vzd)-vzdalenost);
-				else Element->Y=Element->Y-(vzd/m.abs_d(vzd))*(m.abs_d(vzd)-vzdalenost);
+				vzdalenost=(vzd/m.abs_d(vzd))*(m.abs_d(vzd)-vzdalenost);
+				switch((int)Element->geo.orientace)
+				{
+					case   0:Element->Y=Element->Y-vzdalenost;break;
+					case  90:Element->X=Element->X-vzdalenost;break;
+					case 180:Element->Y=Element->Y+vzdalenost;break;
+					case 270:Element->X=Element->X+vzdalenost;break;
+				}
 				//kontrola zda je element stále na linii
 				if(F->bod_na_geometrii(0,0,Element) || Element->n==vrat_posledni_element_objektu(F->akt_Objekt)->n || !kontrola_zmeny_poradi)
 				{
@@ -2791,7 +2827,7 @@ double Cvektory::vrat_rotaci_jigu_po_predchazejicim_elementu(TElement *Element)
 	TElement *E=ELEMENTY->dalsi;
 	while(E!=NULL)
 	{
-		if(Element->n==E->n)//pozor nelze porovnávat jen ukazatele, může docházet k porování nepřímých kopii (viz akt_Objekt)
+		if(Element==E)//pozor nelze porovnávat jen ukazatele, může docházet k porování nepřímých kopii (viz akt_Objekt)
 		{
 			nalezeno=true;
 			break;//akcelerátor, skončí cyklus
@@ -2800,7 +2836,8 @@ double Cvektory::vrat_rotaci_jigu_po_predchazejicim_elementu(TElement *Element)
 		{
 			if(E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180)akt_rotoce_jigu+=E->rotace_jig;//stále předcházející elementy, ty mě pro návrátovou hodnotu zajímají, rotace aktuálního elementu se nezohledňuje
 		}
-		E=E->dalsi;
+		E=dalsi_krok(E);
+		//E=E->dalsi;
 	}
 	E=NULL;delete E;
 	//F->Memo("Pro "+Element->name+" o rotaci: "+Element->rotace_jig+" o celkové"+m.a360(akt_rotoce_jigu));//testovací výpis, časem možno odstranit
@@ -3627,13 +3664,44 @@ void Cvektory::vymaz_elementy(TObjekt *Objekt)
 long Cvektory::vymaz_seznam_ELEMENTY()
 {
 	long pocet_smazanych_objektu=0;
-	while (ELEMENTY!=NULL)
+	//načtení všech elementu do pomocného spojáku, kvůli výhybkám je nutné mazat nejen po hlavní větvi
+	T2Element *smazat=new T2Element,*pom=NULL;
+	smazat->dalsi=NULL;smazat->predchozi=smazat;
+	TElement *E=ELEMENTY->dalsi;
+	while(E!=NULL)
 	{
-		pocet_smazanych_objektu++;
-		ELEMENTY->predchozi=NULL;
-		delete ELEMENTY->predchozi;
-		ELEMENTY=ELEMENTY->dalsi;
-	};
+		pom=new T2Element;
+		pom->vyhybka=E;
+		pom->dalsi=NULL;
+		pom->predchozi=smazat->predchozi;
+		smazat->predchozi->dalsi=pom;
+		smazat->predchozi=pom;
+		pom=NULL;delete pom;
+		E=dalsi_krok(E);
+	}
+	delete E;E=NULL;
+	//mazání elementů a pomocných spojáků
+	while(smazat!=NULL)
+	{
+    pocet_smazanych_objektu++;
+		delete smazat->predchozi->vyhybka;
+		smazat->predchozi->vyhybka=NULL;
+
+		delete smazat->predchozi;
+		smazat->predchozi=NULL;
+		smazat=smazat->dalsi;
+	}
+	delete smazat;smazat=NULL;
+	delete pom;pom=NULL;
+	delete ELEMENTY;ELEMENTY=NULL;
+	
+//	while (ELEMENTY!=NULL)
+//	{       
+//		pocet_smazanych_objektu++;
+//		ELEMENTY->predchozi=NULL;
+//		delete ELEMENTY->predchozi;
+//		ELEMENTY=ELEMENTY->dalsi;
+//	};
 
 	return pocet_smazanych_objektu;
 }
@@ -4284,6 +4352,101 @@ TTextNumber Cvektory::validace_Rx(double Rx)
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
+//DÁVKY
+//vytvoří novou hlavičku pro spojový seznam dávky v zakázce
+void Cvektory::hlavicka_davky_zakazky(TZakazka *zakazka)
+{
+	TDavka *nova=new TDavka;
+
+	nova->n=0;
+	nova->pocet_voziku=0;
+	nova->pocet_prazdnych=0;
+	nova->pocet_voziku=0;
+
+	nova->dalsi=NULL;
+	nova->predchozi=nova;
+	zakazka->davky=nova;
+
+	nova=NULL;delete nova;
+}
+//---------------------------------------------------------------------------
+//vymaže předchozí dávky a vytvoří novou hlavičku, použito pro opakovanou tvorbu default zakázky
+void Cvektory::inicializace_davek(TZakazka *zakazka)
+{
+	vymaz_davky_zakazky(zakazka);
+	hlavicka_davky_zakazky(zakazka);
+}
+//---------------------------------------------------------------------------
+//vytvoří novou dávku a vloží ji do zakázky
+void Cvektory::vloz_davku(TZakazka *zakazka,unsigned long pocet_voziku,unsigned long pocet_prazdnych,unsigned long pocet_celkem)
+{
+	TDavka *nova=new TDavka;
+
+	nova->pocet_voziku=pocet_voziku;
+	nova->pocet_prazdnych=pocet_prazdnych;
+	nova->pocet_celkem=pocet_celkem;
+
+	vloz_davku(zakazka,nova);
+
+	nova=NULL;delete nova;
+}
+//---------------------------------------------------------------------------
+//vloží vytvořenou dávku do zakázky
+void Cvektory::vloz_davku(TZakazka *zakazka,TDavka *davka)
+{
+	davka->n=zakazka->davky->predchozi->n+1;
+	zakazka->davky->predchozi->dalsi=davka;
+	davka->predchozi=zakazka->davky->predchozi;
+	zakazka->davky->predchozi=davka;
+	davka->dalsi=NULL;
+}
+//---------------------------------------------------------------------------
+//vrátí ukazatel na dávku podle její zakázky a n
+Cvektory::TDavka *Cvektory::vrat_davku(TZakazka *zakazka,unsigned long n)
+{
+	TDavka *ret=zakazka->davky->dalsi;
+	while(ret!=NULL)
+	{
+		if(ret->n==n)break;
+		else ret=ret->dalsi;
+	}
+	return ret;
+}
+//---------------------------------------------------------------------------
+//smaže konkrétní dávku
+void Cvektory::smaz_davku(TZakazka *zakazka,unsigned long n)
+{
+	TDavka *smaz=vrat_davku(zakazka,n),*pom=smaz->dalsi;
+  //úprava indexů 
+	unsigned long index=smaz->n;
+	while(pom!=NULL)
+	{
+		pom->n=index;
+		index++;
+		pom=pom->dalsi;
+	}
+	delete pom;pom=NULL;
+	//vyřezení ze spojáku
+	if(smaz->dalsi!=NULL)smaz->dalsi->predchozi=smaz->predchozi;
+	else zakazka->davky->predchozi=smaz->predchozi;
+	smaz->predchozi->dalsi=smaz->dalsi;
+	//samotné mazání
+	delete smaz;smaz=NULL;
+}
+//---------------------------------------------------------------------------
+//smaze všechny dávky v zakázce
+void Cvektory::vymaz_davky_zakazky(TZakazka *zakazka)
+{
+	while(zakazka!=NULL && zakazka->davky!=NULL)
+	{
+		zakazka->davky->predchozi=NULL;
+		delete zakazka->davky->predchozi;
+		zakazka->davky=zakazka->davky->dalsi;
+	};
+}
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 //ZAKÁZKY
 //vytvoří novou hlavičku pro spojový seznam ZAKAZKY
 void Cvektory::hlavicka_ZAKAZKY()
@@ -4301,11 +4464,13 @@ void Cvektory::hlavicka_ZAKAZKY()
 	nova->serv_vozik_pocet=0;
 	nova->opakov_servis=0;
 	nova->cesta=NULL;//new TCesta;
+	nova->davky=NULL;
 
 	nova->predchozi=nova;//ukazuje sam na sebe
 	nova->dalsi=NULL;//další prvek zatím není ukazuje na nul
 	ZAKAZKY=nova;//nahraje ukazatel na hlavičku spojového seznamu na ukazatel CESTY
 }
+//---------------------------------------------------------------------------
 //vytvoří novou hlavičku pro spojový seznam ZAKAZKY_temp
 void Cvektory::hlavicka_ZAKAZKY_temp()
 {
@@ -4322,6 +4487,7 @@ void Cvektory::hlavicka_ZAKAZKY_temp()
 	nova->serv_vozik_pocet=0;
 	nova->opakov_servis=0;
 	nova->cesta=NULL;//new TCesta;
+	nova->davky=NULL;
 
 	nova->predchozi=nova;//ukazuje sam na sebe
 	nova->dalsi=NULL;//další prvek zatím není ukazuje na nul
@@ -4343,6 +4509,7 @@ void Cvektory::vloz_temp_zakazku(UnicodeString id,unsigned short typ, UnicodeStr
 	nova->serv_vozik_pocet=serv_vozik_pocet;
 	nova->opakov_servis=opakov_servis;
 	nova->cesta=NULL;//new TCesta;
+	hlavicka_davky_zakazky(nova);
 
 	vloz_temp_zakazku(nova);
 }
@@ -4377,7 +4544,8 @@ void Cvektory::vloz_zakazku(TZakazka *Zakazka)
 // vrátí ukazatel (resp. data) na temp zakázku, nejčastěji editovanou
 Cvektory::TZakazka *Cvektory::vrat_temp_zakazku(unsigned long n_zakazky)
 {
-	 TZakazka *ukaz=ZAKAZKY_temp->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
+	 TZakazka *ukaz=NULL;
+	 if(ZAKAZKY_temp!=NULL)ukaz=ZAKAZKY_temp->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
 	 while (ukaz!=NULL)
 	 {
 		//akce s ukazatelem
@@ -4418,9 +4586,9 @@ void Cvektory::edituj_temp_zakazku(unsigned long n,UnicodeString id, unsigned sh
 //smaže zakázku s uvedeným “n” ze spojového seznamu ZAKAZKY_temp včetně přidružených cest
 void Cvektory::smaz_temp_zakazku(unsigned long n)
 {
-	if(ZAKAZKY_temp->dalsi!=NULL && n>0)
+	if(ZAKAZKY_temp!=NULL)
 	{
-			TZakazka *ukaz=ZAKAZKY_temp->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
+			TZakazka *ukaz=ZAKAZKY_temp;//ukazatel na hlavičku
 			while (ukaz!=NULL)
 			{
 				//akce s ukazatelem
@@ -4448,7 +4616,8 @@ void Cvektory::smaz_temp_zakazku(unsigned long n)
 					ZAKAZKY_temp->predchozi=ukaz->predchozi;//zapis do hlavičky poslední prvek seznamu
 				}
 			}
-
+			vymaz_cestu_zakazky(ukaz);
+			vymaz_davky_zakazky(ukaz);
 			delete ukaz;ukaz=NULL;//smaže mazaný prvek
 	}
 }
@@ -4549,25 +4718,32 @@ void Cvektory::kopirujZAKAZKY2ZAKAZKY_temp()
 		 TCesta *C=Z->cesta->dalsi;
 		 while(C!=NULL)//projíždí cestu dané zakázky
 		 {
-			 vloz_segment_cesty(T,C->objekt,C->CT,C->Tc,C->Tv,C->RD,C->Opak);
+			 vloz_segment_cesty(T,C->Element,C->sparovany,C->data);
 			 C=C->dalsi;//posun na další segment cesty dané zakázky
 		 }
 		 C=NULL;delete C;
+		 //kopirování dávek
+		 hlavicka_davky_zakazky(T);
+		 TDavka *D=Z->davky->dalsi;
+		 while(D!=NULL)//projíždí cestu dané zakázky
+		 {
+			 vloz_davku(T,D->pocet_voziku,D->pocet_prazdnych,D->pocet_celkem);
+			 D=D->dalsi;//posun na další segment cesty dané zakázky
+		 }
+		 D=NULL;delete D;
 		 //posun na další zakázku
 		 Z=Z->dalsi;
 	}
 	Z=NULL;delete Z;
 }
 //---------------------------------------------------------------------------
-//pokud první zakázka neexistuje, založí ji a přiřadí ji cestu dle schématu, pokud existuje, tak ji pouze přiřadí cestu dle schématu
-void Cvektory::prvni_zakazka_dle_schematu()
+//pokud první zakázka neexistuje, založí ji a přiřadí ji cestu dle schématu, pokud existuje, tak ji smaže a nahradí novou
+void Cvektory::vytvor_default_zakazku()
 {
-
 	////ZAKAZKA
-	TZakazka *Z=ZAKAZKY->dalsi;
+	TZakazka *Z=ZAKAZKY;
 	if(ZAKAZKY->dalsi==NULL)//pokud první zakázka neexistuje, založí ji
-	{
-		Z=new TZakazka;                                                                         //počet vozíků vygeneruje dle hodnoty WIP+jeden navíc kvůli přehlednosti, kdy začíná náběh
+	{																																				//počet vozíků vygeneruje dle hodnoty WIP+jeden navíc kvůli přehlednosti, kdy začíná náběh
 		Z->id=1;Z->typ=1;Z->name="Nová zakázka";Z->barva=clRed;Z->pomer=100;Z->TT=PP.TT;Z->pocet_voziku=WIP(1)+1;Z->serv_vozik_pocet=0;Z->opakov_servis=0;
 		Z->cesta=NULL;
 		Cvektory::TJig j;
@@ -4575,21 +4751,22 @@ void Cvektory::prvni_zakazka_dle_schematu()
 		Z->jig=j;
 		vloz_zakazku(Z);//vloží hotovou zakázku do spojového seznamu ZAKÁZKY
 	}//jinak přepíše novou cestou (zajištění aktualizace parametrů z objektu) stávající první zakázku
+
 	////CESTA
 	inicializace_cesty(Z);//vymaže předchozí cestu a zavolá hlavičku cesty nové
-	//procházení všech objektů ve schématu a přiřaření do cesty
-	TObjekt *O=OBJEKTY->dalsi;
-	while(O!=NULL)
+	//procházení elementů po hlavní větvi schématu a vytovoření cesty pro default zakázku
+	TElement *E=ELEMENTY->dalsi;
+	while(E!=NULL)
 	{
-		TCesta *S=new TCesta;
-		S->objekt=O;
-		//S->CT=O->CT;S->RD=O->RD;
-		S->Rotace=O->orientace;S->Tc=0;S->Tv=0;S->Opak=0;
-		vloz_segment_cesty(Z,S);//do konkrétní zakázky vloží segmenty cesty
-		O=O->dalsi;
-		//S=NULL;delete S;
+		vloz_segment_cesty(Z,E);
+		E=E->dalsi;
 	}
-	//delete O;Z=NULL;delete Z;
+	//uakazatelové záležitosti
+	delete E;E=NULL;
+
+	////Dávky
+	inicializace_davek(Z);//vymaže předchozí dávky a zavolá hlavičku cesty nové
+	Z=NULL;delete Z;
 }
 //---------------------------------------------------------------------------
 //smaze seznam ZAKAZKY z paměti v četně přidružených cest
@@ -4599,6 +4776,7 @@ long Cvektory::vymaz_seznam_ZAKAZKY()
 	while (ZAKAZKY!=NULL)
 	{
 		vymaz_cestu_zakazky(ZAKAZKY);//mazání jednotlivých cest
+		vymaz_davky_zakazky(ZAKAZKY);
 		ZAKAZKY->predchozi=NULL;
 		delete ZAKAZKY->predchozi;
 		ZAKAZKY=ZAKAZKY->dalsi;
@@ -4629,13 +4807,10 @@ void Cvektory::hlavicka_cesta_zakazky(TZakazka *zakazka)
 {
 	zakazka->cesta=new TCesta;
 	TCesta *nova=zakazka->cesta;
+
 	nova->n=0;
-	nova->objekt=NULL;
-	nova->CT=0;
-	nova->Tc=0;
-	nova->Tv=0;
-	nova->RD=0;
-	nova->Opak=0;
+	nova->Element=NULL;
+	nova->sparovany=NULL;
 
 	nova->predchozi=nova;//ukazuje sam na sebe
 	nova->dalsi=NULL;
@@ -4644,29 +4819,32 @@ void Cvektory::hlavicka_cesta_zakazky(TZakazka *zakazka)
 //vymaže předchozí cestu a zavolá hlavičku cesty nové
 void Cvektory::inicializace_cesty(TZakazka *zakazka)
 {
-		vymaz_cestu_zakazky(zakazka);
-		hlavicka_cesta_zakazky(zakazka);
+	vymaz_cestu_zakazky(zakazka);
+	hlavicka_cesta_zakazky(zakazka);
 }
 //---------------------------------------------------------------------------
-//do konkrétní zakázky vloží segmenty cesty
-void Cvektory::vloz_segment_cesty(TZakazka *zakazka,unsigned int n_vybraneho_objektu,double CT,double Tc,double Tv,double RD,unsigned int Opak)//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
-{
-	vloz_segment_cesty(zakazka,vrat_objekt(n_vybraneho_objektu),CT,Tc,Tv,RD,Opak);
-}
-//přetížená funkce
-void Cvektory::vloz_segment_cesty(TZakazka *zakazka,TObjekt *vybrany_objekt,double CT,double Tc,double Tv,double RD,unsigned int Opak)//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
+//do konkrétní zakázky vloží segment cesty
+void Cvektory::vloz_segment_cesty(TZakazka *zakazka,TElement *element)
 {
 	TCesta *segment=new TCesta;
-
-	segment->objekt=vybrany_objekt;
-	segment->CT=CT;
-	segment->Tc=Tc;
-	segment->Tv=Tv;
-	segment->RD=RD;
-	segment->Opak=Opak;
+	kopiruj_data_elementu(element->data,segment->data);//kopiruj data
+	segment->Element=element;
+	segment->sparovany=element->sparovany;
 
 	vloz_segment_cesty(zakazka,segment);
 }
+//---------------------------------------------------------------------------
+//do konkrétní zakázky vloží segment cesty, slouží pro kopírování zakázek
+void Cvektory::vloz_segment_cesty(TZakazka *zakazka,TElement *element,TElement *sparovany,Tdata data)
+{
+	TCesta *segment=new TCesta;
+	kopiruj_data_elementu(data,segment->data);//kopiruj data
+	segment->Element=element;
+	segment->sparovany=sparovany;
+
+	vloz_segment_cesty(zakazka,segment);
+}
+//---------------------------------------------------------------------------
 //přetížená funkce, zajišťuje samotné uložení
 void Cvektory::vloz_segment_cesty(TZakazka *zakazka,TCesta *segment_cesty)
 {
@@ -4677,81 +4855,33 @@ void Cvektory::vloz_segment_cesty(TZakazka *zakazka,TCesta *segment_cesty)
 	segment->predchozi=zakazka->cesta->predchozi;//nova prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 	segment->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje
 	zakazka->cesta->predchozi=segment;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
-}//---------------------------------------------------------------------------
-//ověří zda daný objekt je součástí cesty dané zakázky či nikoliv, pokud ano vrací ukazatel na daný segment
-Cvektory::TCesta *Cvektory::obsahuje_segment_cesty_objekt(TObjekt *objekt,TZakazka *zakazka)
+}
+//---------------------------------------------------------------------------
+//ověří zda daný element je součástí cesty dané zakázky či nikoliv, pokud ano vrací ukazatel na daný segment
+Cvektory::TCesta *Cvektory::obsahuje_segment_cesty_element(TElement *element,TZakazka *zakazka)
 {
 	 TCesta *RET=NULL;
 	 TCesta *C=zakazka->cesta->dalsi;
 	 while(C!=NULL)
 	 {
-			 if(C->objekt==objekt){RET=C;break;}
-			 C=C->dalsi;
+		 if(C->Element==element){RET=C;break;}
+		 C=C->dalsi;
 	 }
 	 return RET;
 }
-//ověří zda daný objekt je součástí cesty nějaké zakázky či nikoliv, pokud ano vrací ukazatel
-Cvektory::TZakazka *Cvektory::obsahuje_segment_cesty_objekt(TObjekt *objekt)
+//---------------------------------------------------------------------------
+//ověří zda daný element je součástí cesty nějaké zakázky či nikoliv, pokud ano vrací ukazatel
+Cvektory::TZakazka *Cvektory::obsahuje_segment_cesty_element(TElement *element)
 {
 	 TZakazka *Z=ZAKAZKY->dalsi;
 	 while(Z!=NULL)//prochází jednotlivé zakázky
 	 {
-			 if(obsahuje_segment_cesty_objekt(objekt,Z)!=NULL)
-			 {return Z;}//nalezen
-			 else
-			 Z=Z->dalsi;
+		 if(obsahuje_segment_cesty_element(element,Z)!=NULL)
+		 {return Z;}//nalezen
+		 else
+		 Z=Z->dalsi;
 	 }
 	 return NULL;
-}
-//---------------------------------------------------------------------------
-//dle TT z parametru nastaví všem segmentům cesty od dané zakázky odpovídající CT (a line-tracking objektů i RD) dle fixní délky a kapacity, vhodné pro volání před zobrazením cest
-void Cvektory::aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky(TZakazka *zakazka,double TT)
-{
-//	TCesta *C=zakazka->cesta->dalsi;
-//	while(C!=NULL)
-//	{
-//		 C->CT=TT*C->objekt->kapacita;
-//		 if(C->objekt->rezim==1)C->RD=C->objekt->delka_dopravniku/C->CT;///u kontinuálního
-//		 C=C->dalsi;
-//	}
-//	C=NULL;delete C;
-}
-//---------------------------------------------------------------------------
-//dle TT zakázky nastaví všem segmentům cesty od dané zakázky odpovídající CT (a line-tracking objektů i RD) dle fixní délky a kapacity, vhodné pro volání před zobrazením cest
-void Cvektory::aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky(TZakazka *zakazka)
-{
-	aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky(zakazka,zakazka->TT);
-}
-//---------------------------------------------------------------------------
-//to samé co výše ale uskuteční plošně pro všechny zakázky, vhodné pro volání v tlačítku uložit
-void Cvektory::aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky()
-{
-	TZakazka *Z=ZAKAZKY->dalsi;
-	while(Z!=NULL)//prochází jednotlivé zakázky
-	{
-		aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky(Z);
-		Z=Z->dalsi;
-	}
-	Z=NULL;delete Z;
-}
-//---------------------------------------------------------------------------
-//dle parametrů JIG přepočítá K (u S&G zanechá 1) a z toho vyplývající změnu CT a RD (u linetracking objektů) jednolivých segmentů cesty dané zakázky
-void Cvektory::aktualizace_KaCTaRD_segmentu_cesty_dleJIG(TZakazka *zakazka)
-{
-  //zatim nepoužíváme rozlišení jig a vozík
-	/*TCesta *C=zakazka->cesta->dalsi;
-	while(C!=NULL)
-	{
-		 if(C->objekt->rezim!=0)//u S&G neřeší
-		 {
-			C->objekt
-			C->CT=PP.TT*C->objekt->kapacita;
-			if(C->objekt->rezim==1)C->RD=C->objekt->delka_dopravniku/C->CT;///u kontinuálního
-			C=C->dalsi;
-		 }
-	}
-	C=NULL;delete C;
-	*/
 }
 //---------------------------------------------------------------------------
 //vrátí konkrétí segment cesty v zakázce, který obsahuje element
@@ -4760,7 +4890,7 @@ Cvektory::TCesta *Cvektory::vrat_segment_cesty(TZakazka *zakazka,TElement *eleme
 	TCesta *c=zakazka->cesta->dalsi;
 	while(c!=NULL)
 	{
-		if(c->Element->n==element->n)break;
+		if(c->Element==element)break;
 		else c=c->dalsi;
 	}
 	return c;
@@ -4946,15 +5076,15 @@ Cvektory::TProces *Cvektory::najdi_proces(double cas, double vozik)
 //vratí následující proces na stejném objektu jako proces zadaný
 Cvektory::TProces *Cvektory::vrat_nasledujici_proces_objektu(TProces *Proces)
 {
-		TProces *P=Proces->dalsi;
-		while (P!=NULL)
-		{
-			if(P->segment_cesty->objekt==Proces->segment_cesty->objekt)
-			{
-				break;
-			}
-			P=P->dalsi;
-		};
+		TProces *P=NULL;//Proces->dalsi;
+//		while (P!=NULL)
+//		{
+//			if(P->segment_cesty->objekt==Proces->segment_cesty->objekt)
+//			{
+//				break;
+//			}
+//			P=P->dalsi;
+//		};
 		return P;
 }
 //---------------------------------------------------------------------------
@@ -6106,6 +6236,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 			 c_ukaz2->pocet_segmentu_cesty=0;
 			 if(ukaz2->cesta!=NULL) if(ukaz2->cesta->predchozi->n>=0) //raději na dva if
 			 c_ukaz2->pocet_segmentu_cesty=ukaz2->cesta->predchozi->n;
+			 c_ukaz2->pocet_davek=ukaz2->davky->predchozi->n;
 			 //ShowMessage("Cvectory 1014: "+AnsiString(c_ukaz2->pocet_segmentu_cesty));
 			 c_ukaz2->pocet_voziku=ukaz2->pocet_voziku;
 			 c_ukaz2->serv_vozik_pocet=ukaz2->serv_vozik_pocet;
@@ -6131,17 +6262,35 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 					 C_cesta *c_c=new C_cesta;
 					 //plněný - kopírování dat
 					 c_c->n=c->n;
-					 c_c->n_objekt=c->objekt->n;
-					 c_c->CT=c->CT;
-					 c_c->Tc=c->Tc;
-					 c_c->Tv=c->Tv;
-					 c_c->RD=c->RD;
-					 c_c->Opak=c->Opak;
+					 c_c->n_element=c->Element->n;
+					 c_c->n_sparovany=0;
+					 if(c->sparovany!=NULL)c_c->n_sparovany=c->sparovany->n;
+					 c_c->data=c->data;
 					 //uložení do binárního filu
 					 FileStream->Write(c_c,sizeof(C_cesta));//zapiše jeden prvek do souboru
 					 //posun na další segment cesty
 					 c=c->dalsi;
 					 c_c=NULL; delete c_c;
+				 }
+			 }
+			 //zápis dávek
+			 if(c_ukaz2->pocet_davek>0)
+			 {
+				 TDavka *d=ukaz2->davky->dalsi;//ukazatel na cestu dané zakázky, přeskočí hlavičku
+				 while(d!=NULL)
+				 {
+					 //překopírování dat do pomocného objektu uložitelného do bináru
+					 C_davka *c_d=new C_davka;
+					 //plněný - kopírování dat
+					 c_d->n=d->n;
+					 c_d->pocet_voziku=d->pocet_voziku;
+					 c_d->pocet_prazdnych=d->pocet_prazdnych;
+					 c_d->pocet_celkem=d->pocet_celkem;
+					 //uložení do binárního filu
+					 FileStream->Write(c_d,sizeof(C_davka));//zapiše jeden prvek do souboru
+					 //posun na další segment cesty
+					 d=d->dalsi;
+					 c_d=NULL; delete c_d;
 				 }
 			 }
 			 //c=NULL; delete c;
@@ -6419,7 +6568,16 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 					{
 						C_cesta c_c;//=new C_cesta;
 						FileStream->Read(&c_c,sizeof(C_cesta));//načte jeden prvek ze souboru
-						vloz_segment_cesty(ukaz2,c_c.n_objekt,c_c.CT,c_c.Tc,c_c.Tv,c_c.RD,c_c.Opak);
+						vloz_segment_cesty(ukaz2,vrat_element(c_c.n_element),vrat_element(c_c.n_sparovany),c_c.data);
+					}
+
+					//načítání dávek zakázky
+					hlavicka_davky_zakazky(ukaz2);
+					for(unsigned int k=1;k<=c_ukaz2->pocet_davek;k++)
+					{
+						C_davka c_d;
+						FileStream->Read(&c_d,sizeof(C_davka));//načte jeden prvek ze souboru
+						vloz_davku(ukaz2,c_d.pocet_voziku,c_d.pocet_prazdnych,c_d.pocet_celkem);
 					}
 
 					//vloží zakazku do spojového seznamu ZAKAZKY
@@ -6695,12 +6853,12 @@ double Cvektory::vrat_LT_voziku(unsigned int n_voziku)//vrátí celkový čas, k
 double Cvektory::vrat_sumPT_voziku(TVozik *jaky)//vrátí čistý čas, který strávil vozík ve výrobě bez čekání
 {
 	double SUM=0;
-	Cvektory::TCesta *C=jaky->zakazka->cesta->dalsi;
-	while(C!=NULL)//jde po konkrétní cestě
-	{
-		SUM+=C->CT;
-		C=C->dalsi;
-	}
+//	Cvektory::TCesta *C=jaky->zakazka->cesta->dalsi;
+//	while(C!=NULL)//jde po konkrétní cestě
+//	{
+//		SUM+=C->CT;
+//		C=C->dalsi;
+//	}
 	return SUM;
 }
 double Cvektory::vrat_sumPT_voziku(unsigned int n_voziku)//vrátí čistý čas, který strávil vozík ve výrobě bez čekání
@@ -6946,27 +7104,27 @@ double Cvektory::WIP(short typ_vypoctu)
 unsigned int Cvektory::vrat_kapacitu_objektu(TObjekt *O)
 {
 	 unsigned int pocet_final=0;
-	 if(O->rezim!=0)//pokud se nejedná o S&G, ten má kapacitu vždy 1, pokud ano algoritmus se přeskočí
-	 {
-			 TProces *P=PROCESY->dalsi;
-			 while (P!=NULL)
-			 {
-				 unsigned int pocet=1;
-				 if(P->segment_cesty->objekt->n==O->n)//pokud se jedná o hledaný objekt
-				 {
-						TProces *P2=P->dalsi;
-						while (P2!=NULL)
-						{
-							if(P2->segment_cesty->objekt->n==O->n && P->Tcek>P2->Tpoc)//pokud se jedná o spoluhledaný objekt a objekty se v čase zároveň překrývají (tudíž se navyšuje jejich kapacita)
-							pocet++;
-							P2=P2->dalsi;
-						}
-				 }
-				 if(pocet_final<pocet)pocet_final=pocet;
-				 P=P->dalsi;
-			 };
-	 }
-	 else pocet_final=1;
+//	 if(O->rezim!=0)//pokud se nejedná o S&G, ten má kapacitu vždy 1, pokud ano algoritmus se přeskočí
+//	 {
+//			 TProces *P=PROCESY->dalsi;
+//			 while (P!=NULL)
+//			 {
+//				 unsigned int pocet=1;
+//				 if(P->segment_cesty->objekt->n==O->n)//pokud se jedná o hledaný objekt
+//				 {
+//						TProces *P2=P->dalsi;
+//						while (P2!=NULL)
+//						{
+//							if(P2->segment_cesty->objekt->n==O->n && P->Tcek>P2->Tpoc)//pokud se jedná o spoluhledaný objekt a objekty se v čase zároveň překrývají (tudíž se navyšuje jejich kapacita)
+//							pocet++;
+//							P2=P2->dalsi;
+//						}
+//				 }
+//				 if(pocet_final<pocet)pocet_final=pocet;
+//				 P=P->dalsi;
+//			 };
+//	 }
+//	 else pocet_final=1;
 	 if(O!=NULL && PROCESY!=NULL && PROCESY->predchozi->n>0) return pocet_final/*+1*/;
 	 else return 0;
 }

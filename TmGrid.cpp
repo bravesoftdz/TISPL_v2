@@ -1807,6 +1807,7 @@ void __fastcall TmGrid::getTagOnChange(TObject *Sender)
 	 //	if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnChange(Tag,Col,Row); R 21.1.2020 - ODEBRÁNO Z PROJEKTU
     if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnChange(Tag,ID,Col,Row);//z unit1 do unitX
 		if(AnsiString(Tag).SubString(1,1)=="7")Form_parametry_linky->OnChange(Tag,Col,Row);
+    if(AnsiString(Tag).SubString(1,1)=="9")Form_definice_zakazek->OnChange(Tag,ID,Col,Row);
 	}
 }
 //---------------------------------------------------------------------------

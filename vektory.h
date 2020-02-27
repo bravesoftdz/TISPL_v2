@@ -206,19 +206,20 @@ class Cvektory
 		unsigned long n;
 		Tdata data;//data elementu pro konkrétní zakázku
 		struct TElement *Element;//element v segmentu cesty
-		struct TElement *sparovany;//spárovaný element k elementu, opšt unikátní pro zakázku
+		struct TElement *sparovany;//spárovaný element k elementu, opět unikátní pro zakázku
 
 		struct TCesta *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 		struct TCesta *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+	};
 
-		//stará konstrukce, zachována pro funkčnost
-		TObjekt *objekt;
-		double CT; //cycle time
-		double Tc;//čaš čištění v rámci zakázky resp. stejné barvy, vztahuje se na konkrétní objekt a a zároveň zakázku, musí být tady, pokud není použito, tak 0
-		double Tv;//čas čištění a výměny barev, vztahuje se na konkrétní objekt a a zároveň zakázku, musí být tady, pokud není použito, tak 0
-		unsigned int Opak;//počet opakování jak často se čištění opakuje
-		double RD;//rychlost dopravníku
-		double Rotace;// úhel natočení jigu v objektu pro danou zakázku   - odstranit
+	struct TDavka
+	{
+		unsigned long n;
+		unsigned long pocet_voziku;
+		unsigned long pocet_prazdnych;
+		unsigned long pocet_celkem;
+		TDavka *dalsi;
+		TDavka *predchozi;
 	};
 
 	struct TZakazka
@@ -231,6 +232,7 @@ class Cvektory
 		double pomer;//poměr z celkového množství výrobků
 		double TT;
 		TmGrid *mGrid;
+		TDavka *davky;
 		TJig jig;//šířka délka, výška, rotace a  ks připadajících na jig/rám vozzíku
 		unsigned long pocet_voziku;//počet vozíků v zakázce
 		unsigned long serv_vozik_pocet;//počet servisních vozíků v zakázce
@@ -501,7 +503,7 @@ class Cvektory
 	TObjekt *vrat_objekty_vyuzivajici_pohon(unsigned long n, short rezim=-1);//vratí formou ukazatele na pole objekty přiřazené k danému pohonu, parametr režim, ve všech režimech -1, 0 - S&G, 1-KK, 2 - PP
 	TObjekt *vrat_objekty_bez_pohonu();//vratí formou ukazatele na pole objekty bez pohonů
 	AnsiString vypis_objekty_s_pohony_bez_roztece(bool shortname=true);//vrátí AnsiString řetezec shortname či name (dle parametru, který je implicitně na shortname=true) seznam objektů, které mají přiřazený pohon bez uvedené rozteče jednotlivé názvy objektů oddělí  ", " tj. čárkou a mezerou, v případě že žádný objekt nenajde, vrátí prázdný řetězec, pozor pohony bez přiřazení k objektům nevypisuje
-	AnsiString vypis_objekty_mimo_100vytizeni(bool shortname=true, bool vypsat_procetna=true, AnsiString separator=", ");//vrátí AnsiString řetezec shortname či name (dle parametru, který je implicitně na shortname=true) seznam objektů podle zakázek, které nemají 100% vytížení
+	AnsiString vypis_objekty_mimo_100vytizeni(bool shortname=true, bool vypsat_procetna=true, AnsiString separator=", ");//vrátí AnsiString řetezec shortname či name (dle parametru, který je implicitně na shortname=true) seznam objektů podle zakázek, které nemají 100% vytížení/// SMAZAT??
 	double vrat_min_rychlost_prejezdu();//SMAZAT??najde ze všech objektů nejnižší rychlost přejezdu (tj. totál min RD), neřeší přiřazení k pohonům, pomůcka pro stanovení referenční rychlosti animace
 	short smaz_objekt(TObjekt *Objekt);//smaže objekt ze seznamu
 	void zmen_poradi_objektu(TObjekt *aktualni_poradi,TObjekt *nove_poradi);
@@ -531,6 +533,7 @@ class Cvektory
 	void vloz_G_element(TElement *Element,short typ,double X1,double Y1,double X2,double Y2,double X3,double Y3,double X4,double Y4,double orientace=0,double rotacni_uhel=0,double radius=0,double delka=0);//danému elementu přiřadí/naplní geometrickou složku
 	void uprav_popisky_elementu(TElement *Element);//upraví indexy a popisky elementů po vloženém elementu (parametr Element), pokud dostane parametrem Element NULL přejmenuje a přeindexuje všechny ovlovněné elementy do původního stavu (tlačítko storno)
 	void kopiruj_element(TElement *Original, TElement *Kopie);//zkopíruje atributy elementu bez ukazatelového propojení, pouze ukazatelové propojení na mGrid je zachováno
+	void kopiruj_data_elementu(Tdata Original,Tdata Kopie);//zkopíruje atributy dat, slouží pro zakládání cesty v zakázce
 	void aktualizace_prirazeni_pohonu_k_elementum(unsigned int oldN,unsigned int newN);//všem elementům, které měly přiřazen pohon s oldN(oldID), přiřadí pohon s newN(newID), podle toho, jak jsou ukládány nově do spojáku, důležité, pokud dojde k narušení pořadí ID resp n pohonů a pořadí jednotlivých řádků ve stringridu, např. kopirováním, smazáním, změnou pořadí řádků atp.
 	void vytvor_elementarni_osu(TObjekt *Original, TObjekt  *Kopie);//SMAZAT??připraví vektor provizorní osy pohonu
 	int vrat_eID_prvniho_pouziteho_robota(TObjekt *Objekt);//vratí eID prvního použitého robota, slouží na filtrování, jaké roboty v knihovně robotů zakazazovat, pokud není nic nalezeno vrátí -1
@@ -542,6 +545,7 @@ class Cvektory
 	TElement *najdi_element(TObjekt *Objekt, double X, double Y);//hledá element v místě kurzoru pracuje v logických/metrických souradnicích
 	TElement *najdi_tabulku(TObjekt *Objekt, double X, double Y);//hledá tabulku elementu pouze pro daný objekt v oblasti definované pomocí šířky a výšky tabulky (která se může nacházet v daném místě kliku), pracuje v logických/metrických souradnicich, vrátí ukazatel na daný element, který tabulku vlastní, pokud se na daných souřadnicích nachází tabulka
 	TElement *vrat_element(TObjekt *Objekt, unsigned int n);//vraťí ukazatel na element dle n elementu umístěného v daném objektu
+	TElement *vrat_element(unsigned int n);//vraťí ukazatel na element dle n elementu
 	short PtInKota_elementu(TObjekt *Objekt,long X,long Y);//ověří zda se na daných fyzických souřadnicích nachází kóta elementu, pokud ne vrací -1, pokud ano 0 v celé kótě, 1 - na hodnotě kóty, 2 - na jednotkách kóty , 3 - na hodnotě LO kóty , pozn. oblast kóty se testuje až jako poslední
 	bool posun_element(TElement *Element,double vzdalenost,bool pusun_dalsich_elementu=false,bool posun_kurzorem=false,bool kontrola_zmeny_poradi=true);//posune pouze Element z pomocného spojového seznamu pom_temp na parametrem uvedenou vzádlenost (v metrech) od elementu předchozího, pokud je implicitní hodnota pusun_dalsich_elementu false změněna na true, jsou o danou změnu posunu přesunuty i elementy následující Elementu (tudíž jejich vzdálenost od Elementu bude zachována, naopak v případě výchozí hodnoty false je následujícím/dalším elementům poloha zachována). Nutá rozdílná funkce při posunu z kót a při posunu korzorem, proto parametr posun_kurzorem
 	void zmen_poradi_elementu(TElement *E,TElement *Ed);//řeší změnu pořadí při posuvu elementů, dojde k novému ukazatelovému propojení, přejmenování a přeindexování elementů
@@ -594,6 +598,16 @@ private:
 	TTextNumber validace_Rz(double Rz,unsigned long PID);
 	TTextNumber validace_Rx(double Rx);
 
+//metody pro DÁVKY
+public:
+	void hlavicka_davky_zakazky(TZakazka *zakazka);//vytvoří novou hlavičku pro spojový seznam dávky v zakázce
+	void inicializace_davek(TZakazka *zakazka);//vymaže předchozí dávky a vytvoří novou hlavičku, použito pro opakovanou tvorbu default zakázky
+	void vloz_davku(TZakazka *zakazka,unsigned long pocet_voziku,unsigned long pocet_prazdnych,unsigned long pocet_celkem);//vytvoří novou dávku a vloží ji do zakázky
+	void vloz_davku(TZakazka *zakazka,TDavka *davka);//vloží vytvořenou dávku do zakázky
+	TDavka *vrat_davku(TZakazka *zakazka,unsigned long n);//vrátí ukazatel na dávku podle její zakázky a n
+	void smaz_davku(TZakazka *zakazka,unsigned long n);//smaže konkrétní dávku
+	void vymaz_davky_zakazky(TZakazka *zakazka);//smaze všechny dávky v zakázce
+
 //metody pro ZAKAZKY
 public:
 	void hlavicka_ZAKAZKY();//vytvoří novou hlavičku pro spojový seznam ZAKAZKY
@@ -604,7 +618,7 @@ public:
 	TZakazka *vrat_temp_zakazku(unsigned long n_zakazky);// vrátí ukazatel (resp. data) na editovanou zakázku
 	void kopirujZAKAZKY_temp2ZAKAZKY(bool mazat_ZAKAZKY_temp=true);//po stisku OK v superformu zkopíruje data z ZAKAZKY_temp do ZAKAZKY, implicitně následně smaže ZAKAZKY_temp
 	void kopirujZAKAZKY2ZAKAZKY_temp();//zkopíruje ukazatel na ZAKAZEK do ZAKAZKY_temp, slouží v momentu načítání SF
-	void prvni_zakazka_dle_schematu();//pokud první zakázka neexistuje, založí ji a přiřadí ji cestu dle schématu, pokud existuje, tak ji pouze přiřadí cestu dle schématu
+	void vytvor_default_zakazku();//pokud první zakázka neexistuje, založí ji a přiřadí ji cestu dle schématu, pokud existuje, tak ji smaže a nahradí novou
 	long vymaz_seznam_ZAKAZKY_temp();//smaze seznam ZAKAZKY_temp z paměti včetně přidružených cest, nutno implementovat při close() superformu (ať už při OK, storna, či křížku formu)
 private:
 	void hlavicka_ZAKAZKY_temp();//vytvoří novou hlavičku pro spojový seznam ZAKAZKY_temp, nutná volat při on_show superformuláře
@@ -614,14 +628,10 @@ private:
 //metody pro cesta konkrétní zakázky
 public:
 	void inicializace_cesty(TZakazka *zakazka);//vymaže předchozí cestu a zavolá hlavičku cesty nové
-	void vloz_segment_cesty(TZakazka *zakazka,unsigned int n_vybraneho_objektu/*z comboboxu*/,double CT,double Tc,double Tv,double RD,unsigned int opak);//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
-	void vloz_segment_cesty(TZakazka *zakazka,TObjekt *vybrany_objekt,double CT,double Tc,double Tv,double RD,unsigned int opak);//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
-	TCesta *obsahuje_segment_cesty_objekt(TObjekt *objekt,TZakazka *zakazka);//ověří zda daný objekt je součástí cesty dané zakázky či nikoliv, pokud ano vrací ukazatel na daný segment cesty
-	TZakazka *obsahuje_segment_cesty_objekt(TObjekt *objekt);//ověří zda daný objekt je součástí cesty nějaké zakázky či nikoliv, pokud ano vrací ukazatel na danou zakázku
-	void aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky(TZakazka *zakazka,double TT);//SMAZAT??dle TT z parametru nastaví všem segmentům cesty od dané zakázky odpovídající CT (a line-tracking objektů i RD) dle fixní délky a kapacity, vhodné pro volání před zobrazením cest
-	void aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky(TZakazka *zakazka);//dle TT zakázky nastaví všem segmentům cesty od dané zakázky odpovídající CT (a line-tracking objektů i RD) dle fixní délky a kapacity, vhodné pro volání před zobrazením cest
-	void aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky();//to samé co výše ale uskuteční pro všechny zakázky, vhodné pro volání v tlačítku uložit
-	void aktualizace_KaCTaRD_segmentu_cesty_dleJIG(TZakazka *zakazka);//dle parametrů JIG přepočítá K (u S&G zanechá 1) a z toho vyplývající změnu CT a RD (u linetracking objektů) jednolivých segmentů cesty dané zakázky
+	void vloz_segment_cesty(TZakazka *zakazka,TElement *element);//do konkrétní cesty vloží segmenty cesty
+	void vloz_segment_cesty(TZakazka *zakazka,TElement *element,TElement *sparovany,Tdata data);//do konkrétní zakázky vloží segment cesty, slouží pro kopírování zakázek
+	TCesta *obsahuje_segment_cesty_element(TElement *element,TZakazka *zakazka);//ověří zda daný element je součástí cesty dané zakázky či nikoliv, pokud ano vrací ukazatel na daný segment cesty
+	TZakazka *obsahuje_segment_cesty_element(TElement *element);//ověří zda daný element je součástí cesty nějaké zakázky či nikoliv, pokud ano vrací ukazatel na danou zakázku
 	TCesta *vrat_segment_cesty(TZakazka *zakazka,TElement *element);//vrátí konkrétí segment cesty v zakázce, který obsahuje element
 private:
 	void hlavicka_cesta_zakazky(TZakazka *zakazka);//vytvoří novou hlavičku pro spojový seznam konkrétní cesty dané zakázky
@@ -638,7 +648,7 @@ private:
 	void vloz_vozik(TZakazka *zakazka,short typ);//0-normální, 1-servisní
 	long vymaz_seznam_VOZIKY();
 
-//metody pro PROCESY
+//metody pro PROCESY, konrola metody obsahují již neexistující atributy
 public:
 	void hlavicka_PROCESY();
 	void vloz_proces(TProces *Proces);
@@ -720,7 +730,7 @@ public:
 	AnsiString ReadFromTextFile(AnsiString FileName);
 	void SaveText2File(AnsiString Text,AnsiString FileName);
 
-//technické, statistické a ekonomické ukazatele
+//technické, statistické a ekonomické ukazatele, kontrola některé motody obsahují již neexistující atributy
 	TPointD vrat_zacatek_a_konec_zakazky(TZakazka *jaka);//ukazatel na cestu resp, zakázku
 	TPointD vrat_zacatek_a_konec_zakazky(unsigned int n_zakazky);//n resp. ID cestu resp, zakázku
 	double vrat_nejpozdejsi_konec_zakazek();//nemusí se vždy jednat o poslední zakázku
@@ -817,6 +827,14 @@ private:
     short typ;//1-se sprchou, 0 bez jen okap
 	};
 
+	struct C_davka
+	{
+		unsigned long n;
+		unsigned long pocet_voziku;
+		unsigned long pocet_prazdnych;
+		unsigned long pocet_celkem;
+	};
+
 	struct C_zakazka
 	{
 			unsigned long n;//pořadí objektu ve spoj.seznamu
@@ -830,6 +848,7 @@ private:
 			double TT;
 			TJig jig;//šířka délka, výška, rotace a  ks připadajících na jig/rám vozíku
 			unsigned long pocet_segmentu_cesty;//udržuje počet jednotlivých segmentů cesty, slouží kvůli tomu, aby se vědělo, kolikrát cyklem načítat strukturu která načítá jednotlivé segmenty konkrétně objekty typu TCesta dané zakázky
+      unsigned long pocet_davek;
 			unsigned long pocet_voziku;//počet vozíků v zakázce
 			unsigned long serv_vozik_pocet;//počet servisních vozíků v zakázce
 			unsigned long opakov_servis;//cyklus opakování servisních vozíku
@@ -875,12 +894,9 @@ private:
 	struct C_cesta//pouze přidružený spoják, který je součástí zakázky, jeden objekt spojáku je jeden segment cesty
 	{
 			unsigned long n;//n segmentu cesty
-			unsigned long n_objekt;//n na vybraný objekt
-	  	double CT; //cycle time
-			double Tc;//čaš čištění v rámci zakázky resp. stejné barvy, vztahuje se na konkrétní objekt a a zároveň zakázku, musí být tady, pokud není použito, tak 0
-			double Tv;//čas čištění a výměny barev, vztahuje se na konkrétní objekt a a zároveň zakázku, musí být tady, pokud není použito, tak 0
-			double RD;//rychlost dopravníku
-			unsigned int Opak;//počet opakování jak často se čištění opakuje
+			unsigned long n_element;
+			unsigned long n_sparovany;
+			Tdata data;
 	};
 
 //	struct C_vozik//pro konverzi do bináru
@@ -902,7 +918,7 @@ private:
 //	};
 //
 
-	unsigned int vrat_kapacitu_objektu(TObjekt *O);//stačí v sekci private, protože ukládám přímo přímo do atributů objektu pomocí uloz_doporucene_kapacity_objetku();
+	unsigned int vrat_kapacitu_objektu(TObjekt *O);//SMAZAT????stačí v sekci private, protože ukládám přímo přímo do atributů objektu pomocí uloz_doporucene_kapacity_objetku();
 //
 //protected:
 };

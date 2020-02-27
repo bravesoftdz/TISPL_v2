@@ -430,3 +430,13 @@ Delete background;X;Smazat podklad
 S&G with;X;S&G s
 The geometry of the following object does not follow, after saving it will be possible to link the geometry;X;Geometrie následujícího objektu nenavazuje, po uložení bude možné geometrii navázat
 The line is not connected, do you want to finish automatically?;X;Linka nenavazuje, pøejete si automaticky dokonèit?
+Definition of contracts;X;Definice zakázek
+Add new contract;X;Pøidat novou zakázku
+Name of the contract;X;Název zakázky
+quantity;X;poèet
+empty;X;prázdných
+total;X;celkem
+Create a new batch;X;Vytvoøit novou dávku
+Delete contract;X;Smazat zakázku
+Batch;X;Dávka
+Delete batch;X;Smazat dávku

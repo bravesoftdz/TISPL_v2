@@ -962,7 +962,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=431;i++)
+	for(unsigned short i=0;i<=441;i++)
 	{
 		switch(i)
 		{
@@ -1398,6 +1398,16 @@ void TForm1::DesignSettings()
       case 429:text="S&G s";break;
 			case 430:text="Geometrie následujícího objektu nenavazuje, po uložení bude možné geometrii navázat";break;
 			case 431:text="Linka nenavazuje, přejete si automaticky dokončit?";break;
+			case 432:text="Definice zakázek";break;
+			case 433:text="Přidat novou zakázku";break;
+			case 434:text="Název zakázky";break;
+			case 435:text="počet";break;
+			case 436:text="prázdných";break;
+			case 437:text="celkem";break;
+			case 438:text="Vytvořit novou dávku";break;
+			case 439:text="Smazat zakázku";break;
+			case 440:text="Dávka";break;
+			case 441:text="Smazat dávku";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -2196,69 +2206,94 @@ void __fastcall TForm1::casoverezervy1Click(TObject *Sender)
 void __fastcall TForm1::AnalyzaClick(TObject *Sender)
 {
 	log(__func__);//logování
-	d.v.prvni_zakazka_dle_schematu();//pokud první zakázka neexistuje, založí ji a přiřadí ji cestu dle schématu, pokud existuje, tak ji pouze přiřadí cestu dle schématu
-//	if(d.v.ZAKAZKY->dalsi==NULL)//pokud nebyla zakazka definovaná - nyní řeší příkaz nad
+//	d.v.vytvor_default_zakazku();//pokud první zakázka neexistuje, založí ji a přiřadí ji cestu dle schématu, pokud existuje, tak ji pouze přiřadí cestu dle schématu
+////	if(d.v.ZAKAZKY->dalsi==NULL)//pokud nebyla zakazka definovaná - nyní řeší příkaz nad
+////	{
+////		MB("Pro zobrazení je nutné ve formuláři definice zakázek zadat plán výroby!");
+////	}
+////	else
 //	{
-//		MB("Pro zobrazení je nutné ve formuláři definice zakázek zadat plán výroby!");
+//		if(d.v.VOZIKY->dalsi==NULL)d.v.generuj_VOZIKY();//situace kdy nejsou načtené vozíky ale existuje zakázka s cestou (situace např. po načtení nového souboru), tak se vygeneruji dle zadané zakazky/cesty vozíky
+//
+//		if(MOD!=CASOVAOSA)//aby se nevolalo zbytečně znovu, pokud už v daném modu je, ale může být dvousečné ve významu uživatelské užitečnosti
+//		{
+//			MOD=CASOVAOSA;
+//			ESC();//zruší případně rozdělanou akci
+//			if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
+//			d.mod_vytizenost_objektu=false;
+//			Timer_simulace->Enabled=false;
+//			d.PosunT.x=0;//výchozí posunutí obrazu Posunu na časových osách, kvůli možnosti posouvání obrazu
+//			d.PosunT.y=0;
+//			//zneplatnit_minulesouradnice();//zrušeno test
+//			DuvodUlozit(true);
+//			scSplitView_MENU->Opened=false;//zavře případně otevřené menu
+//			scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
+//	 //		scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
+//			//scSplitView_LEFTTOOLBAR->Visible=false;
+//			//scListGroupKnihovObjektu->Visible=false;
+//			Button3->Visible=false;
+//			Timer_neaktivity->Enabled=true;
+//			pocitadlo_doby_neaktivity=0;//implicitní hodnota
+//			Timer_animace->Enabled=false;
+//			ButtonPLAY->Visible=false;
+//			CheckBoxVymena_barev->Visible=true;
+//			CheckBoxVytizenost->Visible=true;
+//			CheckBoxVytizenost->Checked=false;
+//			CheckBoxVytizenost->Top=135;
+//			scLabel_doba_cekani->Visible=true;
+//			scGPGlyphButton_info_cekani->Visible=true;
+//			scGPGlyphButton_close_grafy->Visible=true;
+//			CheckBoxAnimovatSG->Visible=false;
+//			ComboBoxODmin->Visible=false;
+//			ComboBoxDOmin->Visible=false;
+//			rComboBoxKrok->Visible=false;
+//			LabelRoletka->Visible=false;
+//			CheckBox_pouzit_zadane_kapacity->Visible=false;
+//			ComboBoxCekani->Visible=true;
+//			d.JIZPOCITANO=false;d.RANDOM=true;
+//			ComboBoxCekani->Width=scSplitView_OPTIONS->OpenedWidth-7;
+//			if(Form1->ComboBoxCekani->ItemIndex==2)
+//			{
+//				scGPButton_generuj->Visible=true;
+//				ComboBoxCekani->Width=196;
+//			}
+//
+//			Label_zamerovac->Visible=false;
+//			scGPCheckBox_ortogon->Visible=false;
+//			if(STATUS==NAVRH)scGPCheckBox_pocet_voziku_dle_WIP->Visible=true;
+//			scGPGlyphButton_close_legenda_casove_osy->Left=0;
+//			scGPGlyphButton_close_legenda_casove_osy->Top=ClientHeight-scGPPanel_statusbar->Height-ClientHeight/3;
+//			scGPGlyphButton_close_legenda_casove_osy->Visible=true;
+//			SB(ls->Strings[380]);
+//			Invalidate();
+//		}
 //	}
-//	else
+//	RM();//korekce chyby oskakování pravého menu
+	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;//zavře případně otevřené menu
+	if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
+	Analyza->Down=false;//musí se uvlonit po stisku
+	if(MOD!=EDITACE)
 	{
-		if(d.v.VOZIKY->dalsi==NULL)d.v.generuj_VOZIKY();//situace kdy nejsou načtené vozíky ale existuje zakázka s cestou (situace např. po načtení nového souboru), tak se vygeneruji dle zadané zakazky/cesty vozíky
-
-		if(MOD!=CASOVAOSA)//aby se nevolalo zbytečně znovu, pokud už v daném modu je, ale může být dvousečné ve významu uživatelské užitečnosti
+		ESC();//zruší případnou rozdělanou akci
+		Analyza->Options->NormalColor=DetailsButton->Options->NormalColor;
+		Analyza->Options->FrameNormalColor=DetailsButton->Options->NormalColor;
+		Schema->Options->NormalColor=scGPPanel_mainmenu->FillColor;
+		Schema->Options->FrameNormalColor=scGPPanel_mainmenu->FillColor;
+		Form_definice_zakazek->ShowModal();
+		REFRESH();
+	}
+	else
+	{
+		KonecClick(this);
+		if(akt_Objekt==NULL)//došlo k ukončení náhledu
 		{
-			MOD=CASOVAOSA;
-			ESC();//zruší případně rozdělanou akci
-			if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
-			d.mod_vytizenost_objektu=false;
-			Timer_simulace->Enabled=false;
-			d.PosunT.x=0;//výchozí posunutí obrazu Posunu na časových osách, kvůli možnosti posouvání obrazu
-			d.PosunT.y=0;
-			//zneplatnit_minulesouradnice();//zrušeno test
-			DuvodUlozit(true);
-			scSplitView_MENU->Opened=false;//zavře případně otevřené menu
-			scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
-	 //		scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
-			//scSplitView_LEFTTOOLBAR->Visible=false;
-			//scListGroupKnihovObjektu->Visible=false;
-			Button3->Visible=false;
-			Timer_neaktivity->Enabled=true;
-			pocitadlo_doby_neaktivity=0;//implicitní hodnota
-			Timer_animace->Enabled=false;
-			ButtonPLAY->Visible=false;
-			CheckBoxVymena_barev->Visible=true;
-			CheckBoxVytizenost->Visible=true;
-			CheckBoxVytizenost->Checked=false;
-			CheckBoxVytizenost->Top=135;
-			scLabel_doba_cekani->Visible=true;
-			scGPGlyphButton_info_cekani->Visible=true;
-			scGPGlyphButton_close_grafy->Visible=true;
-			CheckBoxAnimovatSG->Visible=false;
-			ComboBoxODmin->Visible=false;
-			ComboBoxDOmin->Visible=false;
-			rComboBoxKrok->Visible=false;
-			LabelRoletka->Visible=false;
-			CheckBox_pouzit_zadane_kapacity->Visible=false;
-			ComboBoxCekani->Visible=true;
-			d.JIZPOCITANO=false;d.RANDOM=true;
-			ComboBoxCekani->Width=scSplitView_OPTIONS->OpenedWidth-7;
-			if(Form1->ComboBoxCekani->ItemIndex==2)
-			{
-				scGPButton_generuj->Visible=true;
-				ComboBoxCekani->Width=196;
-			}
-
-			Label_zamerovac->Visible=false;
-			scGPCheckBox_ortogon->Visible=false;
-			if(STATUS==NAVRH)scGPCheckBox_pocet_voziku_dle_WIP->Visible=true;
-			scGPGlyphButton_close_legenda_casove_osy->Left=0;
-			scGPGlyphButton_close_legenda_casove_osy->Top=ClientHeight-scGPPanel_statusbar->Height-ClientHeight/3;
-			scGPGlyphButton_close_legenda_casove_osy->Visible=true;
-			SB(ls->Strings[380]);
-			Invalidate();
+			Analyza->Options->NormalColor=DetailsButton->Options->NormalColor;
+			Analyza->Options->FrameNormalColor=DetailsButton->Options->NormalColor;
+			Schema->Options->NormalColor=scGPPanel_mainmenu->FillColor;
+			Schema->Options->FrameNormalColor=scGPPanel_mainmenu->FillColor;
+			Form_definice_zakazek->ShowModal();//návratová hodnota se řeši v knihovně
 		}
 	}
-	RM();//korekce chyby oskakování pravého menu
 }
 //---------------------------------------------------------------------------
 //zavře nebo otevře grafy v časových osách
@@ -3408,7 +3443,7 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 				{
 					if(STATUS==NAVRH)//měnit parametry na časových osách je možné pouze v návrháři/architektovi
 					{
-						pom=proces_pom->segment_cesty->objekt;
+						//pom=proces_pom->segment_cesty->objekt;
 					}
 				}
 			}break;
@@ -3475,7 +3510,7 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
-{
+{                        
 	vyska_menu=Mouse->CursorPos.y-Y;//uchová rozdíl myšího kurzoru a Y-pixelu v pracovní oblasti
 	akt_souradnice_kurzoru_PX=TPoint(X,Y);
 	akt_souradnice_kurzoru=m.P2L(akt_souradnice_kurzoru_PX);
@@ -4108,7 +4143,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			nahled_ulozit(true);
 		}break;
 		default:break;
-  }
+	} 
     //fix na pridani 1 obj pro demo
 //    if(EDICE==DEMO && MOD==SCHEMA)
 //    {
@@ -4364,7 +4399,7 @@ void TForm1::getJobID(int X, int Y)
   				else if(akt_Objekt->uzamknout_nahled==false)JID=2000+IdxRow;//řádky v druhém a dalších sloupcích
 				}
   		}
-  		else//tabulka nenalezena, takže zkouší najít ELEMENT
+			else//tabulka nenalezena, takže zkouší najít ELEMENT
 			{
 				d.zprava_highlight=d.v.PtInZpravy();
 				if(d.zprava_highlight>0)JID=-102;//hledání citelné oblasti zprávy
@@ -4373,7 +4408,7 @@ void TForm1::getJobID(int X, int Y)
 					pom_element=NULL;
 					if(akt_Objekt->uzamknout_nahled==false)pom_element=F->d.v.najdi_element(akt_Objekt,m.P2Lx(X),m.P2Ly(Y));//pouze pokud je možné měnit rozmístění a rozměry,nutné jako samostatná podmínka
 					if(pom_element!=NULL)//element nalezen, tzn. klik či přejetí myší přes elemement nikoliv tabulku
-					{        ;
+					{        
 						if(scGPCheckBox1_popisky->Checked && pom_element->citelna_oblast.rect3.PtInRect(TPoint(X,Y)))JID=1;//byl nalezen název elementu
 						else JID=0; //byl nálezen element nikoliv jeho název, určeno k smazání či posunu elementu
 					}
@@ -4406,11 +4441,11 @@ void TForm1::getJobID(int X, int Y)
 			  						{
 			  							short PtInKota_bod=d.v.PtInKota_bod(akt_Objekt);//metoda vrací zda jsem v oblasti kóty nebo v její hodnotě + ukládá ukazatel na bod do pom_bod
 			  							if(PtInKota_bod==0 && pom_bod!=NULL)JID=-4;//oblast kóty - posun kóty
-			  							else if(PtInKota_bod==1 && pom_bod!=NULL)JID=-5;//hodnota kóty
-			  							else//kóty elementů RET=11-99
-			  							{
+											else if(PtInKota_bod==1 && pom_bod!=NULL)JID=-5;//hodnota kóty
+											else//kóty elementů RET=11-99
+											{
 			  								if(PtInKota_elementu==0 && pom_element!=NULL)JID=10+pom_element->n;//oblast kóty - posun kóty
-			  								if(PtInKota_elementu==1 && pom_element!=NULL)JID=(10+pom_element->n)*(-1);//hodnota kóty
+												if(PtInKota_elementu==1 && pom_element!=NULL)JID=(10+pom_element->n)*(-1);//hodnota kóty
 			  							}
 			  						}
 			  					}
@@ -4462,25 +4497,25 @@ void TForm1::getJobID(int X, int Y)
 		//2; oblast kóty bodu (přímka [A,B] uložena v bodě B)
 		//3; oblas objektu
 		//4; hrana objektu
-		//5; element v objektu
+		//5; element v objektu - působí problémy 
 		d.zprava_highlight=d.v.PtInZpravy();
 		if(d.zprava_highlight>0)JID=-102;//hledání citelné oblasti zprávy
-		if(JID==-1)//hledání citelných oblastí elementů pro otevírání náhledu (element mimo kabinu), způsobí zamrzání (na magně)
-		{
-			pom_element=NULL;
-			Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
-			while(O!=NULL)
-			{
-				pom_element=d.v.najdi_element(O,m.P2Lx(X),m.P2Ly(Y));
-				if(pom_element!=NULL)
-				{
-					JID=5;
-					break;
-				}
-				O=O->dalsi;
-			}
-			O=NULL;delete O;
-		}
+//		if(JID==-1)//hledání citelných oblastí elementů pro otevírání náhledu (element mimo kabinu),!!!!!!!!!!!!!!!!!!!!!!způsobí zamrzání!!!!!!!!!!!!!!!!!!!
+//		{
+//			pom_element=NULL;
+//			Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
+//			while(O!=NULL)
+//			{
+//				pom_element=d.v.najdi_element(O,m.P2Lx(X),m.P2Ly(Y));
+//				if(pom_element!=NULL)
+//				{
+//					JID=5;
+//					break;
+//				}
+//				O=O->dalsi;
+//			}
+//			O=NULL;delete O;
+//		}
 		if(JID==-1&&d.v.OBJEKTY->dalsi!=NULL&&Akce==NIC)
 		{
 			pom=NULL;pom_bod=NULL;
@@ -4740,7 +4775,7 @@ void TForm1::onPopUP(int X, int Y)
 				PopUPmenu->Item_rychly_export->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 				if(STATUS==NAVRH)//měnit parametry na časových osách je možné pouze v návrháři/architektovi
 				{
-					pom=proces_pom->segment_cesty->objekt;
+					//pom=proces_pom->segment_cesty->objekt;
 					if(AnsiString(N+" "+pom->name).Length()>19)//pokud je více znaků, tak zalamovat manuálně, lze i automaticky pomocí proporties wordwrap, ale to se nemusí projevit např. u všech různě textově dlouhých položek stejně
 					PopUPmenu->scLabel_nastavit_parametry->Caption="  "+N+"\n  "+pom->name.UpperCase();
 					else
@@ -5372,9 +5407,24 @@ void TForm1::ESC()
 		}break;
 		case VYH:
 		{
+			//pokud už je vložená výhybka a dojde k ukončení, odstranit výhybku, řešeno zde, metoda d.v.smaz_element neumí smazat nedokončenou výhybku - spojku
+			if(d.v.vyhybka_pom!=NULL)
+			{
+		  	Cvektory::TElement *smaz=d.v.vyhybka_pom;
+				d.v.vyhybka_pom=NULL;
+				//odebrání výhybky ze spojáku
+				smaz->dalsi->predchozi=smaz->predchozi;
+				smaz->predchozi->dalsi=smaz->dalsi;
+				//úprava geometrie dalšímu elementu
+				d.v.vloz_G_element(smaz->dalsi,0,smaz->geo.X1,smaz->geo.Y1,0,0,0,0,smaz->dalsi->geo.X4,smaz->dalsi->geo.Y4,smaz->dalsi->geo.orientace);
+				//vlastní mazání
+				delete smaz;smaz=NULL;
+				//překreslení
+		  	REFRESH();
+			}
 			//d.odznac_oznac_vetev(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,pom_vyhybka);
 			//d.v.smaz_objekt(pom_vyhybka);
-			//REFRESH();//dojde k překreslení odstraněné výhybky
+//			REFRESH();//dojde k překreslení odstraněné výhybky
 		}break;
 		case GEOMETRIE:
 		case GEOMETRIE_LIGHT:ukonceni_geometrie();break;
@@ -5554,9 +5604,8 @@ bool TForm1::pripnuti_dalsich_objektu()
 	bool ret=false;
 	double posun_x,posun_y;
 	Cvektory::TElement *e_posledni=d.v.vrat_posledni_element_objektu(akt_Objekt);
-
 	////připnutí dalších objektů na hlavní větvi
-	if(e_posledni->dalsi!=NULL && !(e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni) && !(e_posledni->geo.X4==e_posledni->dalsi->geo.X1 && e_posledni->geo.Y4==e_posledni->dalsi->geo.Y1) && mrYes==MB(ls->Strings[328],MB_YESNO,true))
+	if(e_posledni->dalsi!=NULL && !(e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni) && !(m.round2double(e_posledni->geo.X4,2)==m.round2double(e_posledni->dalsi->geo.X1,2) && m.round2double(e_posledni->geo.Y4,2)==m.round2double(e_posledni->dalsi->geo.Y1,2)) && mrYes==MB(ls->Strings[328],MB_YESNO,true))
 	{
 		//zjištění jednotlivých délek posunů
 		posun_x=-e_posledni->dalsi->geo.X1+e_posledni->geo.X4;
@@ -5597,7 +5646,7 @@ bool TForm1::pripnuti_dalsich_objektu()
 	}
 
 	////připnutí vedlejší větve na hlavní
-	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && (e_posledni->geo.X4!=e_posledni->dalsi->geo.X4 || e_posledni->geo.Y4!=e_posledni->dalsi->geo.Y4))
+	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && (m.round2double(e_posledni->geo.X4,2)==m.round2double(e_posledni->dalsi->geo.X4,2) && m.round2double(e_posledni->geo.Y4,2)==m.round2double(e_posledni->dalsi->geo.Y4,2)))
 	{
 		if(e_posledni->geo.typ==0 && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=0.5)
 		{
@@ -10419,7 +10468,15 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 			//ať to nemusí znovu hledat beru z pom Cvektory::TObjekt *p=d.v.najdi_bod(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width,d.O_height);
 			if(pom_vyhybka!=NULL && pom_element_temp==NULL && pom_bod_temp==NULL)//pokud byl prvek nalezen
 			{
-				Cvektory::TZakazka *Z=d.v.obsahuje_segment_cesty_objekt(pom_vyhybka);
+				Cvektory::TZakazka *Z=NULL;//d.v.obsahuje_segment_cesty_objekt(pom_vyhybka);
+				Cvektory::TElement *E=pom_vyhybka->element;
+				while(E!=NULL)
+				{
+					Z=d.v.obsahuje_segment_cesty_element(E);
+					if(Z!=NULL)break;
+					else E=d.v.dalsi_krok(E,pom_vyhybka);
+				}
+				E=NULL;delete E;
 				if(Z!=NULL)
 					MB(text_4+UnicodeString(Z->name));
 				else
@@ -10461,16 +10518,16 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 	AnsiString rezim="";
 	AnsiString delka="v tuto chvíli neznamá";
 	AnsiString delka_dop=delka;
-	switch(proces_pom->segment_cesty->objekt->rezim)
-	{
-			case 0:rezim="stop & go";break;
-			case 1:rezim="kontinuální";delka=proces_pom->segment_cesty->RD*proces_pom->segment_cesty->CT;delka_dop=delka;break;
-			case 2:
-				rezim="postprocesní";
-				delka=proces_pom->segment_cesty->objekt->kapacita*prozatim_delka_voziku;
-				delka_dop=proces_pom->segment_cesty->objekt->kapacita_dop*prozatim_delka_voziku;
-			break;
-	}
+//	switch(proces_pom->segment_cesty->objekt->rezim)
+//	{
+//			case 0:rezim="stop & go";break;
+//			case 1:rezim="kontinuální";delka=proces_pom->segment_cesty->RD*proces_pom->segment_cesty->CT;delka_dop=delka;break;
+//			case 2:
+//				rezim="postprocesní";
+//				delka=proces_pom->segment_cesty->objekt->kapacita*prozatim_delka_voziku;
+//				delka_dop=proces_pom->segment_cesty->objekt->kapacita_dop*prozatim_delka_voziku;
+//			break;
+//	}
        //R zakomentováno - odebrání časové osy z projektu
 //	Form_osa_info->rHTMLLabel_nazev_vypis->Caption=proces_pom->segment_cesty->objekt->name;
 //	Form_osa_info->rHTMLLabel_ct_vypis->Caption=proces_pom->segment_cesty->CT;
@@ -11130,7 +11187,7 @@ void TForm1::aktualizace_maro_a_roma()
 {
   log(__func__);//logování
   //toto je v testování - prvni_zakazka.....
-	d.v.prvni_zakazka_dle_schematu();//pokud první zakázka neexistuje, založí ji a přiřadí ji cestu dle schématu, pokud existuje, tak ji pouze přiřadí cestu dle schématu
+	d.v.vytvor_default_zakazku();//pokud první zakázka neexistuje, založí ji a přiřadí ji cestu dle schématu, pokud existuje, tak ji pouze přiřadí cestu dle schématu
 	if(scGPCheckBox_pocet_voziku_dle_WIP->Checked)//pokud je aktulizace dle hodnoty WIP+1 povolena
 	{
 		short WIP=d.v.WIP(1);
@@ -12508,20 +12565,19 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Memo3->Clear();
-//	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-//	if(akt_Objekt!=NULL)E=akt_Objekt->element;
-//	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
-//	while(E!=NULL && E->n>0)
-//	{
-//		Memo(E->name+"->objekt_n = "+AnsiString(E->objekt_n));
-//		//Memo(d.v.vrat_objekt(E->objekt_n)->name);
-//		//E=E->dalsi;
-//		E=d.v.dalsi_krok(E,akt_Objekt);
-//		//E=d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);
-//	}
-//	E=NULL;delete E;
-//	delete []tab_pruchodu;
+	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+	if(akt_Objekt!=NULL)E=akt_Objekt->element;
+	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
+	while(E!=NULL && E->n>0)
+	{
+		Memo(E->name);
+		//Memo(d.v.vrat_objekt(E->objekt_n)->name);
+		//E=E->dalsi;
+		E=d.v.dalsi_krok(E);
+		//E=d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);
+	}
+	E=NULL;delete E;
+	delete []tab_pruchodu;
 
 //	E=d.v.ELEMENTY->dalsi->dalsi->dalsi2->dalsi;
 //	Memo(E->name);
@@ -12537,19 +12593,19 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //	if(E->dalsi2!=NULL)Memo("->dalsi2 = "+E->dalsi2->name);
 //	if(E->predchozi2!=NULL)Memo("->predchozi2 = "+E->predchozi2->name);
 //  Memo("");
-	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
-	while(O!=NULL)
-	{
-		Memo(O->name+":");
-		Cvektory::TElement *E=O->element;
-		while(E!=NULL)
-		{
-
-			E=d.v.dalsi_krok(E,O);
-    }
-		O=O->dalsi;
-	}
-	O=NULL;delete O;
+//	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
+//	while(O!=NULL)
+//	{
+//		Memo(O->name);
+////		Cvektory::TElement *E=O->element;
+////		while(E!=NULL)
+////		{
+////
+////			E=d.v.dalsi_krok(E,O);
+////    }
+//		O=O->dalsi;
+//	}
+//	O=NULL;delete O;
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -13490,7 +13546,7 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //	 d.v.vymazat_ZPRAVY();
 
 //	F->posun_na_element(1);
-  Form_definice_zakazek->ShowModal();
+	Form_definice_zakazek->ShowModal();
 //  Form2->ShowModal();
 }
 //---------------------------------------------------------------------------
@@ -14669,6 +14725,7 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 		{
 			if(language==CS)MB("Jazykový soubor chybí, nebo není kompletní!");//vypsáno ručně pro různé jazykové verze
 			else MB("Language file missing or incomplete!");
+			language=CS;//nastavení na default jazyk
 		}
 		delete ls_temp;ls_temp=NULL;
 		//začít od 4
@@ -15082,7 +15139,7 @@ void __fastcall TForm1::scGPSwitch1ChangeState(TObject *Sender)
 	log(__func__);//logování
 	if(scGPSwitch1->State==scswOn) {language=CS;writeINI("Nastaveni_app","jazyk","1");}
 	else{language=EN;writeINI("Nastaveni_app","jazyk","0");}
-	load_language(language,true);
+	language=(TForm1::Tlanguage)load_language(language,true);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPCheckBox_zobrazit_palceClick(TObject *Sender)
