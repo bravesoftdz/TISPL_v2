@@ -60,14 +60,6 @@ __published:	// IDE-managed Components
 	void __fastcall rEditNum_pocet_dnuKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
   void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 
-
-
-
-
-
-
-
-
 private:	// User declarations
 	void nastav_form();
 	void nacti_PP();
@@ -78,7 +70,6 @@ private:	// User declarations
 	void uloz_Default_cestu();
   void getmGridWidth();
 
-
 public:		// User declarations
 	__fastcall TForm_definice_zakazek(TComponent* Owner);
 
@@ -86,15 +77,16 @@ public:		// User declarations
 	void OnClick(long Tag,long ID,unsigned long Col,unsigned long Row);
 	void OnEnter(long Tag,unsigned long Col,unsigned long Row);
 	void OnChange(long Tag,unsigned long Col,unsigned long Row);
-  void setButtonColor(int Row);
+  void setButtonColor(long ID);
   void loadHeader(unsigned long Row,bool novy=true);
-  enum Typ_buttonu {krizek_davky, krizek};
+  enum Typ_buttonu {krizek_davky, krizek,color};
 
   Typ_buttonu button_type;//zjisteni ktery button ma byt designovan
 
 	void setGlyphButtonDefault(unsigned long Row,unsigned long Col, Typ_buttonu typ, Cvektory::TZakazka *Z);
   void setGlyphButtonDavka_Add(unsigned long ID,unsigned long Col);
-  void setGlyphButtonDavka_Remove(unsigned long ID,unsigned long Col);
+  void setGlyphButtonDavka_Remove(unsigned long ID,unsigned long Col,Cvektory::TZakazka *Z);
+  void setGlyphButtonColor(unsigned long Row,unsigned long Col, Typ_buttonu typ, Cvektory::TZakazka *Z);
   bool add_zakazka;
   bool add_davka;
 	bool zmena_TT;
