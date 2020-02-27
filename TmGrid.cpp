@@ -931,7 +931,7 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	if(Cell.MergeState==false)E->Width=Columns[X].Width-floor(Cells[X+o][Y].RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);//pokud neplatí nastavuje se přímo v mergovaní, ubere pouze velikost komponenty podle šířky orámování
 	//výška
 	if(Y+1<=RowCount-1 && Rows[Y].Visible==true && Rows[Y+1].Visible==false)o=getCountNextVisibleRow(Y);else o=0;//pokud bude následující řádek skrytý a nejedná se o poslední řádek aktuální také nebude skrytý, převezme jeho spodní orámování předposlední, u jiné situace netřeba
-	/*if(Cell.MergeState==false)*/E->Height=Rows[Y].Height-floor(Cells[X][Y+o].BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodělat ubere velikost komponenty podle šířky orámování//ubere velikost komponenty podle šířky orámování
+	if(Cell.MergeState==false)E->Height=Rows[Y].Height-floor(Cells[X][Y+o].BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodělat ubere velikost komponenty podle šířky orámování//ubere velikost komponenty podle šířky orámování
 
 	//atributy
 	if(Cell.Type==readEDIT)E->Enabled=false;
@@ -1101,8 +1101,8 @@ void TmGrid::SetButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	//atributy
 	B->Top=R.Top+ceil(Cell.TopBorder->Width/2.0)+1;
 	B->Left=R.Left+ceil(Cell.LeftBorder->Width/2.0)+1;
-	B->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0)-1;
-	B->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0)-1;
+	if(Cell.MergeState==false)B->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0)-1;
+	if(Cell.MergeState==false)B->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0)-1;
 	if(VisibleComponents>-1)B->Visible=VisibleComponents;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
 	if(Cell.ShowHint){B->ShowHint=true;B->Hint=Cell.Hint;}
 	//B->Options->NormalColor=Cell.Background->Color; zde nenastavovat!
@@ -1128,8 +1128,8 @@ void TmGrid::SetGlyphButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell
 	//atributy
 	gB->Top=R.Top+floor(Cell.TopBorder->Width/2.0)+1;
 	gB->Left=R.Left+floor(Cell.LeftBorder->Width/2.0)+1;
-	gB->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0)-1;
-	gB->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-floor(Cell.TopBorder->Width/2.0)-1;
+	if(Cell.MergeState==false)gB->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0)-1;
+	if(Cell.MergeState==false)gB->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-floor(Cell.TopBorder->Width/2.0)-1;
 	if(VisibleComponents>-1)gB->Visible=VisibleComponents;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
 	//gB->Options->NormalColor=Cell.Background->Color; zde nenastavovat!
 	if(Cell.ShowHint){gB->ShowHint=true;gB->Hint=Cell.Hint;}
@@ -1352,6 +1352,7 @@ TscGPEdit *TmGrid::createEdit(unsigned long Col,unsigned long Row)
 		E->Options->FrameNormalColor=clHighlight;
 		E->Options->FrameNormalColorAlpha=255;
 		E->Options->FrameWidth=2;
+		E->AutoSize=false;//nutné
 
 		//události
 		E->OnClick=&getTagOnClick;
@@ -1487,18 +1488,18 @@ TscGPComboEdit *TmGrid::createComboEdit(unsigned long Col,unsigned long Row)
 		C->Tag=getTag(Col,Row);//vratí ID tag komponenty,absolutní pořadí v paměti
 		C->Name="mGrid_COMBOEDIT_"+AnsiString(ID)+"_"+AnsiString(C->Tag);
 
+		//výchozí nastavení
+		C->Options->NormalColorAlpha=255;
+		C->Options->FocusedColorAlpha=255;
+		C->Options->FrameFocusedColorAlpha=255;
+		C->Options->HotColorAlpha=255;
+
 		//události
 		C->OnClick=&getTagOnClick;
 		C->OnEnter=&getTagOnEnter;
 		C->OnChange=&getTagOnChange;
 		C->OnMouseEnter=&getTagOnMouseEnter;
 		C->OnMouseMove=&getTagMouseMove;
-
-		//výchozí nastavení
-		C->Options->NormalColorAlpha=255;
-		C->Options->FocusedColorAlpha=255;
-		C->Options->FrameFocusedColorAlpha=255;
-		C->Options->HotColorAlpha=255;
 	}
 	return C;
 }
@@ -1895,8 +1896,13 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 		SetColRow();
 
 		////kopie referenční buňky //TCells RefCell=Cells[ColCell_1][RowCell_1];// - nelze však použít takto na předávání borders, proto metoda níže, předávalo by i ukazatel
+		AnsiString backupText=Cells[ColCell_2][RowCell_2].Text;//v případě že v první výchozí buňce není text, zkusí vzít text z poslední buňky
 		TCells RefCell;CreateCell(RefCell);
 		CopyCell(Cells[ColCell_1][RowCell_1],RefCell,true);
+		if(RefCell.Text=="")RefCell.Text=backupText;//záloha textu, z první buňky, pokud je
+
+		////smaže všechny komponenty, tj. pokud se slučuje více, vezme se typ komponent v první buňce - NEW 27.2.2020
+		DeleteCells(ColCell_1,RowCell_1,ColCell_2,RowCell_2);
 
 		////nastavení referenční buňky kvůli orámování všech buněk oblasti na totožnou barvu
 		TBorder B;B.Width=0;B.Style=psSolid;B.Color=Cells[ColCell_1][RowCell_1].Background->Color;
@@ -1909,172 +1915,206 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 		////typ první buňky
 		Cells[ColCell_1][RowCell_1].Type=RefCell.Type;
 
-		////vytvoří resp. předá orámování oblasti dle referenční buňky, šlo by řešit v ve výše volaném průchodu, bylo by sice systomově méně náročné, ale více komplikované na realizaci
+		////vytvoří resp. předá orámování oblasti dle referenční buňky, šlo by řešit v ve výše volaném průchodu, bylo by sice systemově méně náročné, ale více komplikované na realizaci
 		SetRegion(RefCell,ColCell_1,RowCell_1,ColCell_2,RowCell_2);
 
 		////text
 		int W=0;int H=0;
-		Cells[ColCell_2][RowCell_2].Text=RefCell.Text;//navrácení ze zálohy do poslední buňky, protože ta se vykresluje jako poslední
+
+		Cells[ColCell_2][RowCell_2].Text=RefCell.Text;//navrácení textu ze zálohy do poslední buňky, protože ta se vykresluje jako poslední, pokud v první buňce text není obsažen, vrátí se text z poslední buňky
 		W=getWidthHeightText(RefCell).X;
 		H=getWidthHeightText(RefCell).Y;
 		if(RefCell.Font->Orientation==900){H=0;if(RefCell.Valign==MIDDLE)H=-getWidthHeightText(RefCell).X;}
 		if(RefCell.Font->Orientation==2700){W=0;if(RefCell.Align==LEFT || RefCell.Align==CENTER)W=-H;H=0;if(RefCell.Valign==MIDDLE)H=getWidthHeightText(RefCell).X;}
 		//if(Cell.Font->Orientation==2700)L-=H;
 
+		////zarovnání
 		//nastaví velikost sloupců a řádků dle aktuálního nastavení a potřeby - DŮLEŽITE pro text!!!
 		Cells[ColCell_2][RowCell_2].Align=aNO;
 		Cells[ColCell_2][RowCell_2].Valign=vNO;
 		//zarovnání (zarovnává dle první buňky, ale pracuje s poslední, protože ta se vykresluje zcela poslední)
 		switch(Cells[ColCell_1][RowCell_1].Align)//HORIZONTÁLNÍ ZAROVNÁNÍ
 		{
-			 case LEFT:
-			 {
-				 Cells[ColCell_2][RowCell_2].TextPositon.X=Columns[ColCell_1].Left-Columns[ColCell_2].Left;//řeším v setcomponents +RefCell.LeftMargin+RefCell.LeftBorder->Width/2;
-			 }
-			 break;
-			 case CENTER:
-			 {
-				 switch(RefCell.Type)
-				 {
-						case CHECK:
-						{
-							Cells[ColCell_1][RowCell_1].Align=aNO;
-							TscGPCheckBox *Ch=createCheck(ColCell_1,RowCell_1);
-							Ch->Width=Ch->OptionsChecked->ShapeSize;
-							Ch->Left=Left+(Columns[ColCell_1].Left+Columns[ColCell_2].Left+Columns[ColCell_2].Width)/2-(Ch->Width-Ch->Options->FrameWidth)/2;
-							Ch=NULL;delete Ch;
-						}break;
-						case RADIO:
-						{
-							Cells[ColCell_1][RowCell_1].Align=aNO;
-							TscGPRadioButton *Ra=createRadio(ColCell_1,RowCell_1);
-							Ra->Width=Ra->OptionsChecked->ShapeSize;
-							Ra->Left=Left+(Columns[ColCell_1].Left+Columns[ColCell_2].Left+Columns[ColCell_2].Width)/2-Ra->Width/2;
-							Ra=NULL;delete Ra;
-						}break;
-						case COMBO:
-						{
-							Cells[ColCell_1][RowCell_1].Align=CENTER;
-							TscGPComboBox *C=createCombo(ColCell_1,RowCell_1);
-							C->Width=Columns[ColCell_2].Left+Columns[ColCell_2].Width-Columns[ColCell_1].Left;
-							C->Width-=ceil(Cells[ColCell_1][RowCell_1].LeftBorder->Width/2.0);if(ColCell_2==ColCount-1)C->Width-=floor(Border.Width/2.0);else C->Width-=floor(Cells[ColCell_2][RowCell_2].RightBorder->Width/2.0);//ještě orámování
-							C=NULL;delete C;
-						}break;
-            case COMBOEDIT:
-						{
-							Cells[ColCell_1][RowCell_1].Align=CENTER;
-							TscGPComboEdit *C=createComboEdit(ColCell_1,RowCell_1);
-							C->Width=Columns[ColCell_2].Left+Columns[ColCell_2].Width-Columns[ColCell_1].Left;
-							C->Width-=ceil(Cells[ColCell_1][RowCell_1].LeftBorder->Width/2.0);if(ColCell_2==ColCount-1)C->Width-=floor(Border.Width/2.0);else C->Width-=floor(Cells[ColCell_2][RowCell_2].RightBorder->Width/2.0);//ještě orámování
-							C=NULL;delete C;
-						}break;
-						case EDIT:
-						{
-							Cells[ColCell_1][RowCell_1].Align=CENTER;
-							TscGPEdit *E=createEdit(ColCell_1,RowCell_1);
-							E->Width=Columns[ColCell_2].Left+Columns[ColCell_2].Width-Columns[ColCell_1].Left;
-							E->Width-=ceil(Cells[ColCell_1][RowCell_1].LeftBorder->Width/2.0);if(ColCell_2==ColCount-1)E->Width-=floor(Border.Width/2.0);else E->Width-=floor(Cells[ColCell_2][RowCell_2].RightBorder->Width/2.0);//ještě orámování
-							E->Text=RefCell.Text;
-							E=NULL;delete E;
-						}break;
-						case NUMERIC:
-						{
-							Cells[ColCell_1][RowCell_1].Align=CENTER;
-							TscGPNumericEdit *N=createNumeric(ColCell_1,RowCell_1);
-							N->Width=Columns[ColCell_2].Left+Columns[ColCell_2].Width-Columns[ColCell_1].Left;
-							N->Width-=ceil(Cells[ColCell_1][RowCell_1].LeftBorder->Width/2.0);if(ColCell_2==ColCount-1)N->Width-=floor(Border.Width/2.0);else N->Width-=floor(Cells[ColCell_2][RowCell_2].RightBorder->Width/2.0);//ještě orámování
-							N->Value=ms.MyToDouble(RefCell.Text);//bere až z poslední buňky slučované oblasti
-							N=NULL;delete N;
-						}break;
-						case LABEL:
-						{
-							Cells[ColCell_1][RowCell_1].Align=CENTER;
-							TscHTMLLabel *L=createLabel(ColCell_1,RowCell_1);
-							L->Width=Columns[ColCell_2].Left+Columns[ColCell_2].Width-Columns[ColCell_1].Left;
-							L->Width-=ceil(Cells[ColCell_1][RowCell_1].LeftBorder->Width/2.0);if(ColCell_2==ColCount-1)L->Width-=floor(Border.Width/2.0);else L->Width-=floor(Cells[ColCell_2][RowCell_2].RightBorder->Width/2.0);//ještě orámování
-							L->Caption=RefCell.Text;//bere až z poslední buňky slučované oblasti
-							L=NULL;delete L;
-						}break;
-						default: Cells[ColCell_2][RowCell_2].TextPositon.X=m.round((Columns[ColCell_1].Left-Columns[ColCell_2].Left+Columns[ColCell_2].Width+Cells[ColCell_1][RowCell_1].LeftBorder->Width-Cells[ColCell_2][RowCell_2].RightBorder->Width)/2.0-W/2.0);break;
-				 }
-			 }break;
-			 case RIGHT:
-			 {
+			case LEFT:
+			{
+				Cells[ColCell_2][RowCell_2].TextPositon.X=Columns[ColCell_1].Left-Columns[ColCell_2].Left;//řeším v setcomponents +RefCell.LeftMargin+RefCell.LeftBorder->Width/2;
+			}
+			break;
+			case CENTER:
+			{
+				switch(RefCell.Type)
+				{
+					case CHECK:
+					{
+						Cells[ColCell_1][RowCell_1].Align=aNO;
+						TscGPCheckBox *Ch=createCheck(ColCell_1,RowCell_1);
+						Ch->Width=Ch->OptionsChecked->ShapeSize;
+						Ch->Left=Left+(Columns[ColCell_1].Left+Columns[ColCell_2].Left+Columns[ColCell_2].Width)/2-(Ch->Width-Ch->Options->FrameWidth)/2;
+						Ch=NULL;delete Ch;
+					}break;
+					case RADIO:
+					{
+						Cells[ColCell_1][RowCell_1].Align=aNO;
+						TscGPRadioButton *Ra=createRadio(ColCell_1,RowCell_1);
+						Ra->Width=Ra->OptionsChecked->ShapeSize;
+						Ra->Left=Left+(Columns[ColCell_1].Left+Columns[ColCell_2].Left+Columns[ColCell_2].Width)/2-Ra->Width/2;
+						Ra=NULL;delete Ra;
+					}break;
+					case COMBO:
+					{
+						Cells[ColCell_1][RowCell_1].Align=CENTER;
+						TscGPComboBox *C=createCombo(ColCell_1,RowCell_1);
+						C->Width=Columns[ColCell_2].Left+Columns[ColCell_2].Width-Columns[ColCell_1].Left;
+						C->Width-=ceil(Cells[ColCell_1][RowCell_1].LeftBorder->Width/2.0);if(ColCell_2==ColCount-1)C->Width-=floor(Border.Width/2.0);else C->Width-=floor(Cells[ColCell_2][RowCell_2].RightBorder->Width/2.0);//ještě orámování
+						C=NULL;delete C;
+					}break;
+					case COMBOEDIT:
+					{
+						Cells[ColCell_1][RowCell_1].Align=CENTER;
+						TscGPComboEdit *C=createComboEdit(ColCell_1,RowCell_1);
+						C->Width=Columns[ColCell_2].Left+Columns[ColCell_2].Width-Columns[ColCell_1].Left;
+						C->Width-=ceil(Cells[ColCell_1][RowCell_1].LeftBorder->Width/2.0);if(ColCell_2==ColCount-1)C->Width-=floor(Border.Width/2.0);else C->Width-=floor(Cells[ColCell_2][RowCell_2].RightBorder->Width/2.0);//ještě orámování
+						C=NULL;delete C;
+					}break;
+					case EDIT:
+					{
+						Cells[ColCell_1][RowCell_1].Align=CENTER;
+						TscGPEdit *E=createEdit(ColCell_1,RowCell_1);
+						E->Width=Columns[ColCell_2].Left+Columns[ColCell_2].Width-Columns[ColCell_1].Left;
+						E->Width-=ceil(Cells[ColCell_1][RowCell_1].LeftBorder->Width/2.0);if(ColCell_2==ColCount-1)E->Width-=floor(Border.Width/2.0);else E->Width-=floor(Cells[ColCell_2][RowCell_2].RightBorder->Width/2.0);//ještě orámování
+						E->Text=RefCell.Text;
+						E=NULL;delete E;
+					}break;
+					case NUMERIC:
+					{
+						Cells[ColCell_1][RowCell_1].Align=CENTER;
+						TscGPNumericEdit *N=createNumeric(ColCell_1,RowCell_1);
+						N->Width=Columns[ColCell_2].Left+Columns[ColCell_2].Width-Columns[ColCell_1].Left;
+						N->Width-=ceil(Cells[ColCell_1][RowCell_1].LeftBorder->Width/2.0);if(ColCell_2==ColCount-1)N->Width-=floor(Border.Width/2.0);else N->Width-=floor(Cells[ColCell_2][RowCell_2].RightBorder->Width/2.0);//ještě orámování
+						N->Value=ms.MyToDouble(RefCell.Text);
+						N=NULL;delete N;
+					}break;
+					case BUTTON:
+					{
+						Cells[ColCell_1][RowCell_1].Align=CENTER;
+						TscGPButton *B=createButton(ColCell_1,RowCell_1);
+						B->Width=Columns[ColCell_2].Left+Columns[ColCell_2].Width-Columns[ColCell_1].Left;
+						B->Width-=ceil(Cells[ColCell_1][RowCell_1].LeftBorder->Width/2.0);if(ColCell_2==ColCount-1)B->Width-=floor(Border.Width/2.0);else B->Width-=floor(Cells[ColCell_2][RowCell_2].RightBorder->Width/2.0);//ještě orámování
+						B->Caption=RefCell.Text;
+						B=NULL;delete B;
+					}break;
+					case glyphBUTTON:
+					{
+						Cells[ColCell_1][RowCell_1].Align=CENTER;
+						TscGPGlyphButton *gB=createGlyphButton(ColCell_1,RowCell_1);
+						gB->Width=Columns[ColCell_2].Left+Columns[ColCell_2].Width-Columns[ColCell_1].Left;
+						gB->Width-=ceil(Cells[ColCell_1][RowCell_1].LeftBorder->Width/2.0);if(ColCell_2==ColCount-1)gB->Width-=floor(Border.Width/2.0);else gB->Width-=floor(Cells[ColCell_2][RowCell_2].RightBorder->Width/2.0);//ještě orámování
+						gB->Caption=RefCell.Text;
+						gB=NULL;delete gB;
+					}break;
+					case LABEL:
+					{
+						Cells[ColCell_1][RowCell_1].Align=CENTER;
+						TscHTMLLabel *L=createLabel(ColCell_1,RowCell_1);
+						L->Width=Columns[ColCell_2].Left+Columns[ColCell_2].Width-Columns[ColCell_1].Left;
+						L->Width-=ceil(Cells[ColCell_1][RowCell_1].LeftBorder->Width/2.0);if(ColCell_2==ColCount-1)L->Width-=floor(Border.Width/2.0);else L->Width-=floor(Cells[ColCell_2][RowCell_2].RightBorder->Width/2.0);//ještě orámování
+						L->Caption=RefCell.Text;//bere až z poslední buňky slučované oblasti
+						L=NULL;delete L;
+					}break;
+					default: Cells[ColCell_2][RowCell_2].TextPositon.X=m.round((Columns[ColCell_1].Left-Columns[ColCell_2].Left+Columns[ColCell_2].Width+Cells[ColCell_1][RowCell_1].LeftBorder->Width-Cells[ColCell_2][RowCell_2].RightBorder->Width)/2.0-W/2.0);break;
+				}
+			}break;
+			case RIGHT:
+			{
 				 Cells[ColCell_2][RowCell_2].TextPositon.X=Columns[ColCell_2].Width-W;//řeším v setcomponents -RefCell.RightMargin-RefCell.RightBorder->Width/2;
-			 }break;
+			}break;
 		}
 		switch(Cells[ColCell_1][RowCell_1].Valign)//VERTIKÁLNÍ ZAROVNÁNÍ
 		{
-			 case TOP:
-			 {
+			case TOP:
+			{
 				 Cells[ColCell_2][RowCell_2].TextPositon.Y=Rows[RowCell_1].Top-Rows[RowCell_2].Top;//řeším v setcomponents +RefCell.TopMargin+RefCell.TopBorder->Width/2;
-			 }break;
-			 case MIDDLE:
-			 {
-				 switch(RefCell.Type)
-				 {
-						case CHECK:
-						{
-							Cells[ColCell_1][RowCell_1].Valign=vNO;
-							TscGPCheckBox *Ch=createCheck(ColCell_1,RowCell_1);
-							Ch->Height=Ch->OptionsChecked->ShapeSize;
-							Ch->Top=Top+(Rows[RowCell_1].Top+Rows[RowCell_2].Top+Rows[RowCell_2].Height)/2-(Ch->Height-Ch->Options->FrameWidth)/2;
-							Ch=NULL;delete Ch;
-						}break;
-						case RADIO:
-						{
-							Cells[ColCell_1][RowCell_1].Valign=vNO;
-							TscGPRadioButton *Ra=createRadio(ColCell_1,RowCell_1);
-							Ra->Height=Ra->OptionsChecked->ShapeSize;
-							Ra->Top=Top+(Rows[RowCell_1].Top+Rows[RowCell_2].Top+Rows[RowCell_2].Height)/2-Ra->Height/2;
-							Ra=NULL;delete Ra;
-						}break;
-						case COMBO:
-						{
-							Cells[ColCell_1][RowCell_1].Valign=MIDDLE;
-							TscGPComboBox *C=createCombo(ColCell_1,RowCell_1);
-							C->Height=Rows[ColCell_2].Top+Rows[ColCell_2].Height-Rows[ColCell_1].Top-Cells[ColCell_2][RowCell_2].BottomBorder->Width;
-							C=NULL;delete C;
-						}break;
-            case COMBOEDIT:
-						{
-							Cells[ColCell_1][RowCell_1].Valign=MIDDLE;
-							TscGPComboEdit *C=createComboEdit(ColCell_1,RowCell_1);
-							C->Height=Rows[ColCell_2].Top+Rows[ColCell_2].Height-Rows[ColCell_1].Top-Cells[ColCell_2][RowCell_2].BottomBorder->Width;
-							C=NULL;delete C;
-						}break;
-						case EDIT:
-						{
-							Cells[ColCell_1][RowCell_1].Valign=MIDDLE;
-							TscGPEdit *E=createEdit(ColCell_1,RowCell_1);
-							E->Height=Rows[ColCell_2].Top+Rows[ColCell_2].Height-Rows[ColCell_1].Top-Cells[ColCell_2][RowCell_2].BottomBorder->Width;
-							E=NULL;delete E;
-						}break;
-						case NUMERIC:
-						{
-							Cells[ColCell_1][RowCell_1].Valign=MIDDLE;
-							TscGPNumericEdit *N=createNumeric(ColCell_1,RowCell_1);
-							N->Height=Rows[ColCell_2].Top+Rows[ColCell_2].Height-Rows[ColCell_1].Top-Cells[ColCell_2][RowCell_2].BottomBorder->Width;
-							N=NULL;delete N;
-						}break;
-						case LABEL:
-						{
-							Cells[ColCell_1][RowCell_1].Valign=MIDDLE;
-							TscHTMLLabel *L=createLabel(ColCell_1,RowCell_1);
-							L->Height=Rows[ColCell_2].Top+Rows[ColCell_2].Height-Rows[ColCell_1].Top-Cells[ColCell_2][RowCell_2].BottomBorder->Width;
-							L=NULL;delete L;
-						}break;
-						default:
-						short o=0;//if(RefCell.Font->Size==14 && RefCell.Font->Name=="Roboto Cn")o=1;/*+(1-RefCell.Font->Size%2)/2.0*/// pouze grafická korekce pro fonty se sudou velikostí
-						Cells[ColCell_2][RowCell_2].TextPositon.Y=m.round((Rows[RowCell_1].Top-Rows[RowCell_2].Top+Rows[RowCell_2].Height-Cells[ColCell_1][RowCell_1].TopBorder->Width-Cells[ColCell_2][RowCell_2].BottomBorder->Width)/2.0-H/2.0+o/2.0);break;
-				 }
-			 }
-			 break;
-			 case BOTTOM:
-			 {
-				 Cells[ColCell_2][RowCell_2].TextPositon.Y=Rows[RowCell_2].Height-H;//řeším v setcomponents -RefCell.BottomMargin-RefCell.BottomBorder->Width/2;
-			 }
-			 break;
+			}break;
+			case MIDDLE:
+			{
+				switch(RefCell.Type)
+				{
+					case CHECK:
+					{
+						Cells[ColCell_1][RowCell_1].Valign=vNO;
+						TscGPCheckBox *Ch=createCheck(ColCell_1,RowCell_1);
+						Ch->Height=Ch->OptionsChecked->ShapeSize;
+						Ch->Top=Top+(Rows[RowCell_1].Top+Rows[RowCell_2].Top+Rows[RowCell_2].Height)/2-(Ch->Height-Ch->Options->FrameWidth)/2;
+						Ch=NULL;delete Ch;
+					}break;
+					case RADIO:
+					{
+						Cells[ColCell_1][RowCell_1].Valign=vNO;
+						TscGPRadioButton *Ra=createRadio(ColCell_1,RowCell_1);
+						Ra->Height=Ra->OptionsChecked->ShapeSize;
+						Ra->Top=Top+(Rows[RowCell_1].Top+Rows[RowCell_2].Top+Rows[RowCell_2].Height)/2-Ra->Height/2;
+						Ra=NULL;delete Ra;
+					}break;
+					case COMBO:
+					{
+						Cells[ColCell_1][RowCell_1].Valign=MIDDLE;
+						TscGPComboBox *C=createCombo(ColCell_1,RowCell_1);
+						C->Height=Rows[RowCell_2].Top+Rows[RowCell_2].Height-Rows[RowCell_1].Top-Cells[ColCell_2][RowCell_2].BottomBorder->Width;
+						C=NULL;delete C;
+					}break;
+						case COMBOEDIT:
+					{
+						Cells[ColCell_1][RowCell_1].Valign=MIDDLE;
+						TscGPComboEdit *C=createComboEdit(ColCell_1,RowCell_1);
+						C->Height=Rows[RowCell_2].Top+Rows[RowCell_2].Height-Rows[RowCell_1].Top-Cells[ColCell_2][RowCell_2].BottomBorder->Width;
+						C=NULL;delete C;
+					}break;
+					case EDIT:
+					{
+						Cells[ColCell_1][RowCell_1].Valign=MIDDLE;
+						TscGPEdit *E=createEdit(ColCell_1,RowCell_1);
+						E->Height=Rows[RowCell_2].Top+Rows[RowCell_2].Height-Rows[RowCell_1].Top-Cells[ColCell_2][RowCell_2].BottomBorder->Width;
+						E=NULL;delete E;
+					}break;
+					case NUMERIC:
+					{
+						Cells[ColCell_1][RowCell_1].Valign=MIDDLE;
+						TscGPNumericEdit *N=createNumeric(ColCell_1,RowCell_1);
+						N->Height=Rows[RowCell_2].Top+Rows[RowCell_2].Height-Rows[RowCell_1].Top-Cells[ColCell_2][RowCell_2].BottomBorder->Width;
+						N=NULL;delete N;
+					}break;
+					case BUTTON:
+					{
+						Cells[ColCell_1][RowCell_1].Valign=MIDDLE;
+						TscGPButton *B=createButton(ColCell_1,RowCell_1);
+						B->Height=Rows[RowCell_2].Top+Rows[RowCell_2].Height-Rows[RowCell_1].Top-Cells[ColCell_2][RowCell_2].BottomBorder->Width;
+						B=NULL;delete B;
+					}break;
+					case glyphBUTTON:
+					{
+						Cells[ColCell_1][RowCell_1].Valign=MIDDLE;
+						TscGPGlyphButton *gB=createGlyphButton(ColCell_1,RowCell_1);
+						gB->Height=Rows[RowCell_2].Top+Rows[RowCell_2].Height-Rows[RowCell_1].Top-Cells[ColCell_2][RowCell_2].BottomBorder->Width;
+						gB=NULL;delete gB;
+					}break;
+					case LABEL:
+					{
+						Cells[ColCell_1][RowCell_1].Valign=MIDDLE;
+						TscHTMLLabel *L=createLabel(ColCell_1,RowCell_1);
+						L->Height=Rows[RowCell_2].Top+Rows[RowCell_2].Height-Rows[RowCell_1].Top-Cells[ColCell_2][RowCell_2].BottomBorder->Width;
+						L=NULL;delete L;
+					}break;
+					default:
+					short o=0;//if(RefCell.Font->Size==14 && RefCell.Font->Name=="Roboto Cn")o=1;/*+(1-RefCell.Font->Size%2)/2.0*/// pouze grafická korekce pro fonty se sudou velikostí
+					Cells[ColCell_2][RowCell_2].TextPositon.Y=m.round((Rows[RowCell_1].Top-Rows[RowCell_2].Top+Rows[RowCell_2].Height-Cells[ColCell_1][RowCell_1].TopBorder->Width-Cells[ColCell_2][RowCell_2].BottomBorder->Width)/2.0-H/2.0+o/2.0);break;
+				}
+			}
+			break;
+			case BOTTOM:
+			{
+				Cells[ColCell_2][RowCell_2].TextPositon.Y=Rows[RowCell_2].Height-H;//řeším v setcomponents -RefCell.BottomMargin-RefCell.BottomBorder->Width/2;
+			}
+			break;
 		}
 	}
 }
@@ -2258,6 +2298,18 @@ void TmGrid::CopyBordesCell(TCells &RefCell,TCells &CopyCell)
 	*CopyCell.RightBorder=*RefCell.RightBorder;
 }
 //---------------------------------------------------------------------------
+//smaže totálně obasah buněk v daném rozsahu tzn. obsah včetně dané komponety, paměťovou alokaci buňky však zanechá
+void TmGrid::DeleteCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2)
+{
+	for(unsigned long Y=RowCell_1;Y<=RowCell_2;Y++)//po řádcích
+	{
+		for(unsigned long X=ColCell_1;X<=ColCell_2;X++)//po sloupcích
+		{
+			DeleteCell(X,Y);
+		}
+	}
+}
+//---------------------------------------------------------------------------
 //smaže totálně obasah buňky tzn. obsah včetně dané komponety, paměťovou alokaci buňky zanechá
 void TmGrid::DeleteCell(unsigned long ColIdx,unsigned long RowIdx)
 {
@@ -2312,11 +2364,6 @@ void TmGrid::InsertColumn(unsigned long Column,bool copyPropertiesFromPreviousCo
 					CopyCell(Cells[X-1][Y],Cells[X][Y],true);//je potřeba zkopírovat nastavení buňky včetně typu komponenty (parametr true)
 					MoveComponent(X,Y,1,0);//je třeba přesunout případnou komponentu o jednu buňku dál (-1 jedna je nelogické, jedná se o +1)
 					//Cells[X-1][Y].Type=DRAW;Cells[X-1][Y].Text="";Cells[X-1][Y].Background->Color=clWhite; - asi není třeba pořeší copycell při dalším průchodu
-						 // přesunout se na deletecolum
-					//původní bez kopírování vlastností a probliku (konstruovali se nově komponenty) konstrukce: brzy snad smazat
-					//CopyCell(Cells[X-1][Y],Cells[X][Y],true);//zkopíruje (přesune) buňky z předchozího sloupce
-					////DeleteCell(X-1,Y); //vyprázní vkládanou buňku a smaže komponentu - odstaveno, stačí níže uvedené na základě DeleteComponents volané v realocku
-					//Cells[X-1][Y].Type=DRAW;Cells[X-1][Y].Text="";Cells[X-1][Y].Background->Color=clWhite;//přenastaví typy a odstranění barvy pozadí, musí být až po smazání komponenty, jinak nebude komponenta nalezena
 				}
 				else if(Column>0 && copyPropertiesFromPreviousColumn){CopyCell(Cells[Column-1][Y],Cells[Column][Y],true);Cells[Column][Y].Text="";}//u vkládaného sloupce jenom typ (což zároveň založí komponentu při naslédném udpate či refresh) a vlastnosti buňky, pokud je požadováno, je nutné smazat duplicitně zkopírovaný text
 			}
@@ -2404,11 +2451,7 @@ void TmGrid::InsertRow(unsigned long Row,bool copyComponentFromPreviousRow, bool
 		}
 		ClearRow(Row);//vyprázní vkládaný řádek
 
-		if(invalidate)//pokud je požadováno překreslení, zde je nutné celou oblast překreslit
-		{
-			//Show();netřeba //Form->Invalidate();//třeba
-			Show();
-		}
+		if(invalidate)Show();//pokud je požadováno překreslení, zde je nutné celou oblast překreslit
 	}
 	else AddRow(copyComponentFromPreviousRow,invalidate);
 }

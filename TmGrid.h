@@ -110,6 +110,7 @@ class TmGrid
 	void CopyCells2Clipboard(unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2,UnicodeString Separator="\t");//zkopíruje danou oblast do schránky, buňky oddělí separátorem
 	void CopyAreaCell(TCells &RefCell,TCells &CopyCell,bool copyComponent=false);//zkopíruje obsah, formát (bez orámování) z buňky na buňku (bez ukazatelového propojení)
 	void CopyBordesCell(TCells &RefCell,TCells &CopyCell);//zkopíruje orámování z buňky na buňku (bez ukazatelového propojení)
+	void DeleteCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2);//smaže totálně obasah buněk v daném rozsahu tzn. obsah včetně dané komponety, paměťovou alokaci buňky však zanechá
 	void DeleteCell(unsigned long ColIdx,unsigned long RowIdx);//smaže totálně obasah buňky tzn. obsah včetně dané komponety, paměťovou alokaci buňky však zanechá
 	void HighlightTable(TCanvas *Canvas,TColor Color=(TColor)RGB(0,120,215),unsigned short Size=2,unsigned short Offset=0,TPenMode PenMode=pmCopy);//zajistí zvýraznění orámování tabulky
 	void HighlightTableOnMouse(int X,int Y,TCanvas *Canvas=NULL);//zajistí zvýraznění orámování tabulky, pokud se do ni vstoupí myší
