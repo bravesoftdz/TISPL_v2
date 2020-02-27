@@ -86,7 +86,7 @@ public:		// User declarations
     	//metody volané z Tmgrid
 	void OnClick(long Tag,long ID,unsigned long Col,unsigned long Row);
 	void OnEnter(long Tag,unsigned long Col,unsigned long Row);
-	void OnChange(long Tag,unsigned long Col,unsigned long Row);
+	void OnChange(long Tag,long ID,unsigned long Col,unsigned long Row);
   void setButtonColor(long ID);
   void loadHeader(unsigned long zakazka_n=0,bool novy=true);
   enum Typ_buttonu {krizek_davky, krizek,color};
