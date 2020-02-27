@@ -81,7 +81,7 @@ void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender) {
 	nastav_jazyk();
 	F->d.v.vytvor_default_zakazku();//vytvoøí nebo aktualizuje defaultní zakázku
 
-  ////naètení zakázek a cest
+	////naètení zakázek a cest
   if (Form1->d.v.ZAKAZKY->dalsi == NULL) // kdyz je spojak prazdny
   {
     // vytvoøí defaultní øadek se zakázkou a její cestou
@@ -106,6 +106,7 @@ void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender) {
 //provede pøepnutí jazyka na komponentách, mGridy se zmìní automaticky pøi vytváøení
 void TForm_definice_zakazek::nastav_jazyk()
 {
+  F->log(__func__); // logování
 	scLabel_header->Caption=F->ls->Strings[432];
 	scGPGlyphButton_add_zakazka->Hint=F->ls->Strings[433];
 	scGPButton_Ulozit->Caption=F->ls->Strings[24];
@@ -114,7 +115,7 @@ void TForm_definice_zakazek::nastav_jazyk()
 // ---------------------------------------------------------------------------
 // nastaveni PP, defaultní jsou již od souboru novy, který se volá vždy, takže není defaultní nutné volat znovu
 void TForm_definice_zakazek::nacti_PP() {
-  F->log(__func__); // logování
+	F->log(__func__); // logování
 }
 
 // ---------------------------------------------------------------------------
@@ -551,7 +552,9 @@ void __fastcall TForm_definice_zakazek::KonecClick(TObject *Sender) {
     rStringGridEd1->Rows[i]->Clear(); // promaznuti radku, ktere nebudou ulozeny
   }
   // mazání mgridù zakázek
-  if (F->d.v.ZAKAZKY_temp != NULL) {
+	if (F->d.v.ZAKAZKY_temp != NULL)
+	{
+    Konec->SetFocus();
 		Cvektory::TZakazka *Z=F->d.v.ZAKAZKY_temp->dalsi;
 		while(Z!=NULL)
 		{
@@ -658,23 +661,18 @@ void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender) {
 	bmp_total->Canvas->Brush->Color=light_gray;
 	bmp_total->Canvas->FillRect(TRect(0,0,bmp_total->Width,bmp_total->Height));
   //vykreslìní mGridù
-    Cvektory::TZakazka *Z = F->d.v.ZAKAZKY_temp->dalsi;
-    while (Z != NULL) {
-		{
-      // dynamické pozicování tabulek
-      if (Z->predchozi->n == 0)
-        Z->mGrid->Top = scGPButton_plan_vyroby->Height +
-            scLabel_header->Height + Z->mGrid->Rows[0].Height;
-      else
-        Z->mGrid->Top = Z->predchozi->mGrid->Top + Z->predchozi->mGrid->Height +
-            Z->mGrid->Rows[0].Height;
-			//vykreslení tabulky
-			Z->mGrid->Show(bmp_total->Canvas);
-      Z = Z->dalsi;
-    }
-		delete Z;Z=NULL;
-    Z = NULL;
-  }
+	Cvektory::TZakazka *Z = F->d.v.ZAKAZKY_temp->dalsi;
+	while (Z != NULL)
+	{
+		// dynamické pozicování tabulek
+		if(Z->predchozi->n == 0)Z->mGrid->Top=scGPButton_plan_vyroby->Height+scLabel_header->Height + Z->mGrid->Rows[0].Height;
+		else Z->mGrid->Top=Z->predchozi->mGrid->Top+Z->predchozi->mGrid->Height+Z->mGrid->Rows[0].Height;
+		//vykreslení tabulky
+		Z->mGrid->Show(bmp_total->Canvas);
+		Z = Z->dalsi;
+	}
+	delete Z;Z=NULL;
+	Z = NULL;
 	//finální pøedání bmp_out do Canvasu
 	Canvas->Draw(0,0,bmp_total);
 	delete (bmp_total);//velice nutné
@@ -899,8 +897,9 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy)
     ////parametry mgridu
     Z->mGrid->Left = 5;
 
-    if (Z->predchozi->n > 0) Z->mGrid->Top = Z->predchozi->mGrid->Top + Z->predchozi->mGrid->Height + Z->mGrid->Rows[0].Height;
-    else Z->mGrid->Top = Z->mGrid->Rows[0].Height + scGPButton_plan_vyroby->Height + scLabel_header->Height;
+		Z->mGrid->Top=-500;
+//		if (Z->predchozi->n > 0) Z->mGrid->Top = Z->predchozi->mGrid->Top + Z->predchozi->mGrid->Height + Z->mGrid->Rows[0].Height;
+//		else Z->mGrid->Top = Z->mGrid->Rows[0].Height + scGPButton_plan_vyroby->Height + scLabel_header->Height;
 
     Z->mGrid->Cells[1][0].Type = Z->mGrid->EDIT;
     // nazev  text  - slouèit podélnì
@@ -911,16 +910,16 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy)
 
     Z->mGrid->Cells[0][1].Text = Z->n; // id zakázky
 			if(novy)Z->mGrid->Cells[1][0].Text = F->ls->Strings[434];//"Název zakázky"
-			else Z->mGrid->Cells[1][i+0].Text = Z->name;
+			else Z->mGrid->Cells[1][0].Text = Z->name;
     Z->mGrid->Cells[1][0].Text = "Název zakázky";
     Z->mGrid->Cells[1][1].Type = Z->mGrid->glyphBUTTON; // color zakazka
     //Z->mGrid->Cells[2][1].Type = Z->mGrid->glyphBUTTON;
     Z->mGrid->Cells[1][0].Font->Size = 15;
 
     Z->mGrid->Cells[1][1].Font->Size = 14;
-			Z->mGrid->Cells[1][i+2].Text = " "+F->ls->Strings[435];//" poèet"   	//Z->mGrid->Cells[1][2].RightBorder->Color = clWhite;
-			Z->mGrid->Cells[1][i+3].Text = " "+F->ls->Strings[436];//" prázdných"   //	Z->mGrid->Cells[1][3].RightBorder->Color = clWhite;
-			Z->mGrid->Cells[1][i+4].Text = " "+F->ls->Strings[437];//" celkem"       //	Z->mGrid->Cells[1][4].RightBorder->Color = clWhite;
+			Z->mGrid->Cells[1][2].Text = " "+F->ls->Strings[435];//" poèet"   	//Z->mGrid->Cells[1][2].RightBorder->Color = clWhite;
+			Z->mGrid->Cells[1][3].Text = " "+F->ls->Strings[436];//" prázdných"   //	Z->mGrid->Cells[1][3].RightBorder->Color = clWhite;
+			Z->mGrid->Cells[1][4].Text = " "+F->ls->Strings[437];//" celkem"       //	Z->mGrid->Cells[1][4].RightBorder->Color = clWhite;
     // Z->mGrid->Cells[1][3].RightBorder->Color = clWhite;
     Z->mGrid->Cells[1][4].Text = " celkem";
     // Z->mGrid->Cells[1][4].RightBorder->Color = clWhite;
@@ -971,7 +970,7 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy)
     Z = NULL;
     delete Z;
     ////vykreslení mGridù
-	if(novy)FormPaint(this);//pouze v pøípadì, že vytváøím novou zakázku s mGridem, pøi naèítání již vytvoøených zakázek musé dojít k vykreslìní až budou všehny naèteny, volaní vykreslení v metodì nacti_zakazky()
+		if(novy)FormPaint(this);//pouze v pøípadì, že vytváøím novou zakázku s mGridem, pøi naèítání již vytvoøených zakázek musé dojít k vykreslìní až budou všehny naèteny, volaní vykreslení v metodì nacti_zakazky()
   }
 
 }
