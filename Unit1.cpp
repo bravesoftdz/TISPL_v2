@@ -962,7 +962,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=431;i++)
+	for(unsigned short i=0;i<=441;i++)
 	{
 		switch(i)
 		{
@@ -1398,6 +1398,16 @@ void TForm1::DesignSettings()
       case 429:text="S&G s";break;
 			case 430:text="Geometrie následujícího objektu nenavazuje, po uložení bude možné geometrii navázat";break;
 			case 431:text="Linka nenavazuje, přejete si automaticky dokončit?";break;
+			case 432:text="Definice zakázek";break;
+			case 433:text="Přidat novou zakázku";break;
+			case 434:text="Název zakázky";break;
+			case 435:text="počet";break;
+			case 436:text="prázdných";break;
+			case 437:text="celkem";break;
+			case 438:text="Vytvořit novou dávku";break;
+			case 439:text="Smazat zakázku";break;
+			case 440:text="Dávka";break;
+			case 441:text="Smazat dávku";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -2196,7 +2206,7 @@ void __fastcall TForm1::casoverezervy1Click(TObject *Sender)
 void __fastcall TForm1::AnalyzaClick(TObject *Sender)
 {
 	log(__func__);//logování
-	d.v.prvni_zakazka_dle_schematu();//pokud první zakázka neexistuje, založí ji a přiřadí ji cestu dle schématu, pokud existuje, tak ji pouze přiřadí cestu dle schématu
+	d.v.vytvor_default_zakazku();//pokud první zakázka neexistuje, založí ji a přiřadí ji cestu dle schématu, pokud existuje, tak ji pouze přiřadí cestu dle schématu
 //	if(d.v.ZAKAZKY->dalsi==NULL)//pokud nebyla zakazka definovaná - nyní řeší příkaz nad
 //	{
 //		MB("Pro zobrazení je nutné ve formuláři definice zakázek zadat plán výroby!");
@@ -3408,7 +3418,7 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 				{
 					if(STATUS==NAVRH)//měnit parametry na časových osách je možné pouze v návrháři/architektovi
 					{
-						pom=proces_pom->segment_cesty->objekt;
+						//pom=proces_pom->segment_cesty->objekt;
 					}
 				}
 			}break;
@@ -3475,7 +3485,7 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
-{
+{                        
 	vyska_menu=Mouse->CursorPos.y-Y;//uchová rozdíl myšího kurzoru a Y-pixelu v pracovní oblasti
 	akt_souradnice_kurzoru_PX=TPoint(X,Y);
 	akt_souradnice_kurzoru=m.P2L(akt_souradnice_kurzoru_PX);
@@ -4108,7 +4118,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			nahled_ulozit(true);
 		}break;
 		default:break;
-  }
+	} 
     //fix na pridani 1 obj pro demo
 //    if(EDICE==DEMO && MOD==SCHEMA)
 //    {
@@ -4364,7 +4374,7 @@ void TForm1::getJobID(int X, int Y)
   				else if(akt_Objekt->uzamknout_nahled==false)JID=2000+IdxRow;//řádky v druhém a dalších sloupcích
 				}
   		}
-  		else//tabulka nenalezena, takže zkouší najít ELEMENT
+			else//tabulka nenalezena, takže zkouší najít ELEMENT
 			{
 				d.zprava_highlight=d.v.PtInZpravy();
 				if(d.zprava_highlight>0)JID=-102;//hledání citelné oblasti zprávy
@@ -4373,7 +4383,7 @@ void TForm1::getJobID(int X, int Y)
 					pom_element=NULL;
 					if(akt_Objekt->uzamknout_nahled==false)pom_element=F->d.v.najdi_element(akt_Objekt,m.P2Lx(X),m.P2Ly(Y));//pouze pokud je možné měnit rozmístění a rozměry,nutné jako samostatná podmínka
 					if(pom_element!=NULL)//element nalezen, tzn. klik či přejetí myší přes elemement nikoliv tabulku
-					{        ;
+					{        
 						if(scGPCheckBox1_popisky->Checked && pom_element->citelna_oblast.rect3.PtInRect(TPoint(X,Y)))JID=1;//byl nalezen název elementu
 						else JID=0; //byl nálezen element nikoliv jeho název, určeno k smazání či posunu elementu
 					}
@@ -4406,11 +4416,11 @@ void TForm1::getJobID(int X, int Y)
 			  						{
 			  							short PtInKota_bod=d.v.PtInKota_bod(akt_Objekt);//metoda vrací zda jsem v oblasti kóty nebo v její hodnotě + ukládá ukazatel na bod do pom_bod
 			  							if(PtInKota_bod==0 && pom_bod!=NULL)JID=-4;//oblast kóty - posun kóty
-			  							else if(PtInKota_bod==1 && pom_bod!=NULL)JID=-5;//hodnota kóty
-			  							else//kóty elementů RET=11-99
-			  							{
+											else if(PtInKota_bod==1 && pom_bod!=NULL)JID=-5;//hodnota kóty
+											else//kóty elementů RET=11-99
+											{
 			  								if(PtInKota_elementu==0 && pom_element!=NULL)JID=10+pom_element->n;//oblast kóty - posun kóty
-			  								if(PtInKota_elementu==1 && pom_element!=NULL)JID=(10+pom_element->n)*(-1);//hodnota kóty
+												if(PtInKota_elementu==1 && pom_element!=NULL)JID=(10+pom_element->n)*(-1);//hodnota kóty
 			  							}
 			  						}
 			  					}
@@ -4462,25 +4472,25 @@ void TForm1::getJobID(int X, int Y)
 		//2; oblast kóty bodu (přímka [A,B] uložena v bodě B)
 		//3; oblas objektu
 		//4; hrana objektu
-		//5; element v objektu
+		//5; element v objektu - působí problémy 
 		d.zprava_highlight=d.v.PtInZpravy();
 		if(d.zprava_highlight>0)JID=-102;//hledání citelné oblasti zprávy
-		if(JID==-1)//hledání citelných oblastí elementů pro otevírání náhledu (element mimo kabinu), způsobí zamrzání (na magně)
-		{
-			pom_element=NULL;
-			Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
-			while(O!=NULL)
-			{
-				pom_element=d.v.najdi_element(O,m.P2Lx(X),m.P2Ly(Y));
-				if(pom_element!=NULL)
-				{
-					JID=5;
-					break;
-				}
-				O=O->dalsi;
-			}
-			O=NULL;delete O;
-		}
+//		if(JID==-1)//hledání citelných oblastí elementů pro otevírání náhledu (element mimo kabinu),!!!!!!!!!!!!!!!!!!!!!!způsobí zamrzání!!!!!!!!!!!!!!!!!!!
+//		{
+//			pom_element=NULL;
+//			Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
+//			while(O!=NULL)
+//			{
+//				pom_element=d.v.najdi_element(O,m.P2Lx(X),m.P2Ly(Y));
+//				if(pom_element!=NULL)
+//				{
+//					JID=5;
+//					break;
+//				}
+//				O=O->dalsi;
+//			}
+//			O=NULL;delete O;
+//		}
 		if(JID==-1&&d.v.OBJEKTY->dalsi!=NULL&&Akce==NIC)
 		{
 			pom=NULL;pom_bod=NULL;
@@ -4740,7 +4750,7 @@ void TForm1::onPopUP(int X, int Y)
 				PopUPmenu->Item_rychly_export->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 				if(STATUS==NAVRH)//měnit parametry na časových osách je možné pouze v návrháři/architektovi
 				{
-					pom=proces_pom->segment_cesty->objekt;
+					//pom=proces_pom->segment_cesty->objekt;
 					if(AnsiString(N+" "+pom->name).Length()>19)//pokud je více znaků, tak zalamovat manuálně, lze i automaticky pomocí proporties wordwrap, ale to se nemusí projevit např. u všech různě textově dlouhých položek stejně
 					PopUPmenu->scLabel_nastavit_parametry->Caption="  "+N+"\n  "+pom->name.UpperCase();
 					else
@@ -5554,9 +5564,8 @@ bool TForm1::pripnuti_dalsich_objektu()
 	bool ret=false;
 	double posun_x,posun_y;
 	Cvektory::TElement *e_posledni=d.v.vrat_posledni_element_objektu(akt_Objekt);
-
 	////připnutí dalších objektů na hlavní větvi
-	if(e_posledni->dalsi!=NULL && !(e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni) && !(e_posledni->geo.X4==e_posledni->dalsi->geo.X1 && e_posledni->geo.Y4==e_posledni->dalsi->geo.Y1) && mrYes==MB(ls->Strings[328],MB_YESNO,true))
+	if(e_posledni->dalsi!=NULL && !(e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni) && !(m.round2double(e_posledni->geo.X4,2)==m.round2double(e_posledni->dalsi->geo.X1,2) && m.round2double(e_posledni->geo.Y4,2)==m.round2double(e_posledni->dalsi->geo.Y1,2)) && mrYes==MB(ls->Strings[328],MB_YESNO,true))
 	{
 		//zjištění jednotlivých délek posunů
 		posun_x=-e_posledni->dalsi->geo.X1+e_posledni->geo.X4;
@@ -5597,7 +5606,7 @@ bool TForm1::pripnuti_dalsich_objektu()
 	}
 
 	////připnutí vedlejší větve na hlavní
-	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && (e_posledni->geo.X4!=e_posledni->dalsi->geo.X4 || e_posledni->geo.Y4!=e_posledni->dalsi->geo.Y4))
+	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && (m.round2double(e_posledni->geo.X4,2)==m.round2double(e_posledni->dalsi->geo.X4,2) && m.round2double(e_posledni->geo.Y4,2)==m.round2double(e_posledni->dalsi->geo.Y4,2)))
 	{
 		if(e_posledni->geo.typ==0 && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=0.5)
 		{
@@ -10419,7 +10428,15 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 			//ať to nemusí znovu hledat beru z pom Cvektory::TObjekt *p=d.v.najdi_bod(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width,d.O_height);
 			if(pom_vyhybka!=NULL && pom_element_temp==NULL && pom_bod_temp==NULL)//pokud byl prvek nalezen
 			{
-				Cvektory::TZakazka *Z=d.v.obsahuje_segment_cesty_objekt(pom_vyhybka);
+				Cvektory::TZakazka *Z=NULL;//d.v.obsahuje_segment_cesty_objekt(pom_vyhybka);
+				Cvektory::TElement *E=pom_vyhybka->element;
+				while(E!=NULL)
+				{
+					Z=d.v.obsahuje_segment_cesty_element(E);
+					if(Z!=NULL)break;
+					else E=d.v.dalsi_krok(E,pom_vyhybka);
+				}
+				E=NULL;delete E;
 				if(Z!=NULL)
 					MB(text_4+UnicodeString(Z->name));
 				else
@@ -10461,16 +10478,16 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 	AnsiString rezim="";
 	AnsiString delka="v tuto chvíli neznamá";
 	AnsiString delka_dop=delka;
-	switch(proces_pom->segment_cesty->objekt->rezim)
-	{
-			case 0:rezim="stop & go";break;
-			case 1:rezim="kontinuální";delka=proces_pom->segment_cesty->RD*proces_pom->segment_cesty->CT;delka_dop=delka;break;
-			case 2:
-				rezim="postprocesní";
-				delka=proces_pom->segment_cesty->objekt->kapacita*prozatim_delka_voziku;
-				delka_dop=proces_pom->segment_cesty->objekt->kapacita_dop*prozatim_delka_voziku;
-			break;
-	}
+//	switch(proces_pom->segment_cesty->objekt->rezim)
+//	{
+//			case 0:rezim="stop & go";break;
+//			case 1:rezim="kontinuální";delka=proces_pom->segment_cesty->RD*proces_pom->segment_cesty->CT;delka_dop=delka;break;
+//			case 2:
+//				rezim="postprocesní";
+//				delka=proces_pom->segment_cesty->objekt->kapacita*prozatim_delka_voziku;
+//				delka_dop=proces_pom->segment_cesty->objekt->kapacita_dop*prozatim_delka_voziku;
+//			break;
+//	}
        //R zakomentováno - odebrání časové osy z projektu
 //	Form_osa_info->rHTMLLabel_nazev_vypis->Caption=proces_pom->segment_cesty->objekt->name;
 //	Form_osa_info->rHTMLLabel_ct_vypis->Caption=proces_pom->segment_cesty->CT;
@@ -11130,7 +11147,7 @@ void TForm1::aktualizace_maro_a_roma()
 {
   log(__func__);//logování
   //toto je v testování - prvni_zakazka.....
-	d.v.prvni_zakazka_dle_schematu();//pokud první zakázka neexistuje, založí ji a přiřadí ji cestu dle schématu, pokud existuje, tak ji pouze přiřadí cestu dle schématu
+	d.v.vytvor_default_zakazku();//pokud první zakázka neexistuje, založí ji a přiřadí ji cestu dle schématu, pokud existuje, tak ji pouze přiřadí cestu dle schématu
 	if(scGPCheckBox_pocet_voziku_dle_WIP->Checked)//pokud je aktulizace dle hodnoty WIP+1 povolena
 	{
 		short WIP=d.v.WIP(1);
@@ -12508,13 +12525,13 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Memo3->Clear();
 //	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
 //	if(akt_Objekt!=NULL)E=akt_Objekt->element;
 //	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
 //	while(E!=NULL && E->n>0)
 //	{
-//		Memo(E->name+"->objekt_n = "+AnsiString(E->objekt_n));
+//		Memo(E->name+":");
+//		Memo(d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(E));
 //		//Memo(d.v.vrat_objekt(E->objekt_n)->name);
 //		//E=E->dalsi;
 //		E=d.v.dalsi_krok(E,akt_Objekt);
@@ -12537,19 +12554,26 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //	if(E->dalsi2!=NULL)Memo("->dalsi2 = "+E->dalsi2->name);
 //	if(E->predchozi2!=NULL)Memo("->predchozi2 = "+E->predchozi2->name);
 //  Memo("");
-	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
-	while(O!=NULL)
+//	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
+//	while(O!=NULL)
+//	{
+//		Memo(O->name);
+////		Cvektory::TElement *E=O->element;
+////		while(E!=NULL)
+////		{
+////
+////			E=d.v.dalsi_krok(E,O);
+////    }
+//		O=O->dalsi;
+//	}
+//	O=NULL;delete O;
+	while(d.v.ZAKAZKY!=NULL)
 	{
-		Memo(O->name+":");
-		Cvektory::TElement *E=O->element;
-		while(E!=NULL)
-		{
-
-			E=d.v.dalsi_krok(E,O);
-    }
-		O=O->dalsi;
+		d.v.ZAKAZKY->predchozi=NULL;
+		delete d.v.ZAKAZKY->predchozi;
+		d.v.ZAKAZKY=d.v.ZAKAZKY->dalsi;
 	}
-	O=NULL;delete O;
+	d.v.hlavicka_ZAKAZKY();
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko

@@ -78,12 +78,12 @@ void __fastcall TForm_cesty::vypis_objektyClick(TObject *Sender)
 		{
 			Memo1->Lines->Add
 			(
-					AnsiString(ukaz->n)+","+
-					AnsiString(ukaz->objekt->short_name)+","+
-					AnsiString(ukaz->CT)+","+
-					AnsiString(ukaz->RD)+","+
-					AnsiString(ukaz->Tc)+","
-			);
+					AnsiString(ukaz->n)+",");//+
+//					AnsiString(ukaz->objekt->short_name)+","+
+//					AnsiString(ukaz->CT)+","+
+//					AnsiString(ukaz->RD)+","+
+//					AnsiString(ukaz->Tc)+","
+//			);
 			ukaz=ukaz->dalsi;
 		}
 }
