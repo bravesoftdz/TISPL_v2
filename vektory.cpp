@@ -3664,13 +3664,44 @@ void Cvektory::vymaz_elementy(TObjekt *Objekt)
 long Cvektory::vymaz_seznam_ELEMENTY()
 {
 	long pocet_smazanych_objektu=0;
-	while (ELEMENTY!=NULL)
+	//načtení všech elementu do pomocného spojáku, kvůli výhybkám je nutné mazat nejen po hlavní větvi
+	T2Element *smazat=new T2Element,*pom=NULL;
+	smazat->dalsi=NULL;smazat->predchozi=smazat;
+	TElement *E=ELEMENTY->dalsi;
+	while(E!=NULL)
 	{
-		pocet_smazanych_objektu++;
-		ELEMENTY->predchozi=NULL;
-		delete ELEMENTY->predchozi;
-		ELEMENTY=ELEMENTY->dalsi;
-	};
+		pom=new T2Element;
+		pom->vyhybka=E;
+		pom->dalsi=NULL;
+		pom->predchozi=smazat->predchozi;
+		smazat->predchozi->dalsi=pom;
+		smazat->predchozi=pom;
+		pom=NULL;delete pom;
+		E=dalsi_krok(E);
+	}
+	delete E;E=NULL;
+	//mazání elementů a pomocných spojáků
+	while(smazat!=NULL)
+	{
+    pocet_smazanych_objektu++;
+		delete smazat->predchozi->vyhybka;
+		smazat->predchozi->vyhybka=NULL;
+
+		delete smazat->predchozi;
+		smazat->predchozi=NULL;
+		smazat=smazat->dalsi;
+	}
+	delete smazat;smazat=NULL;
+	delete pom;pom=NULL;
+	delete ELEMENTY;ELEMENTY=NULL;
+	
+//	while (ELEMENTY!=NULL)
+//	{       
+//		pocet_smazanych_objektu++;
+//		ELEMENTY->predchozi=NULL;
+//		delete ELEMENTY->predchozi;
+//		ELEMENTY=ELEMENTY->dalsi;
+//	};
 
 	return pocet_smazanych_objektu;
 }
@@ -4385,7 +4416,16 @@ Cvektory::TDavka *Cvektory::vrat_davku(TZakazka *zakazka,unsigned long n)
 //smaže konkrétní dávku
 void Cvektory::smaz_davku(TZakazka *zakazka,unsigned long n)
 {
-	TDavka *smaz=vrat_davku(zakazka,n);
+	TDavka *smaz=vrat_davku(zakazka,n),*pom=smaz->dalsi;
+  //úprava indexů 
+	unsigned long index=smaz->n;
+	while(pom!=NULL)
+	{
+		pom->n=index;
+		index++;
+		pom=pom->dalsi;
+	}
+	delete pom;pom=NULL;
 	//vyřezení ze spojáku
 	if(smaz->dalsi!=NULL)smaz->dalsi->predchozi=smaz->predchozi;
 	else zakazka->davky->predchozi=smaz->predchozi;
@@ -4397,7 +4437,7 @@ void Cvektory::smaz_davku(TZakazka *zakazka,unsigned long n)
 //smaze všechny dávky v zakázce
 void Cvektory::vymaz_davky_zakazky(TZakazka *zakazka)
 {
-	while(zakazka->davky!=NULL)
+	while(zakazka!=NULL && zakazka->davky!=NULL)
 	{
 		zakazka->davky->predchozi=NULL;
 		delete zakazka->davky->predchozi;
@@ -4424,6 +4464,7 @@ void Cvektory::hlavicka_ZAKAZKY()
 	nova->serv_vozik_pocet=0;
 	nova->opakov_servis=0;
 	nova->cesta=NULL;//new TCesta;
+	nova->davky=NULL;
 
 	nova->predchozi=nova;//ukazuje sam na sebe
 	nova->dalsi=NULL;//další prvek zatím není ukazuje na nul
@@ -4446,6 +4487,7 @@ void Cvektory::hlavicka_ZAKAZKY_temp()
 	nova->serv_vozik_pocet=0;
 	nova->opakov_servis=0;
 	nova->cesta=NULL;//new TCesta;
+	nova->davky=NULL;
 
 	nova->predchozi=nova;//ukazuje sam na sebe
 	nova->dalsi=NULL;//další prvek zatím není ukazuje na nul
@@ -6194,6 +6236,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 			 c_ukaz2->pocet_segmentu_cesty=0;
 			 if(ukaz2->cesta!=NULL) if(ukaz2->cesta->predchozi->n>=0) //raději na dva if
 			 c_ukaz2->pocet_segmentu_cesty=ukaz2->cesta->predchozi->n;
+			 c_ukaz2->pocet_davek=ukaz2->davky->predchozi->n;
 			 //ShowMessage("Cvectory 1014: "+AnsiString(c_ukaz2->pocet_segmentu_cesty));
 			 c_ukaz2->pocet_voziku=ukaz2->pocet_voziku;
 			 c_ukaz2->serv_vozik_pocet=ukaz2->serv_vozik_pocet;
@@ -6228,6 +6271,26 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 					 //posun na další segment cesty
 					 c=c->dalsi;
 					 c_c=NULL; delete c_c;
+				 }
+			 }
+			 //zápis dávek
+			 if(c_ukaz2->pocet_davek>0)
+			 {
+				 TDavka *d=ukaz2->davky->dalsi;//ukazatel na cestu dané zakázky, přeskočí hlavičku
+				 while(d!=NULL)
+				 {
+					 //překopírování dat do pomocného objektu uložitelného do bináru
+					 C_davka *c_d=new C_davka;
+					 //plněný - kopírování dat
+					 c_d->n=d->n;
+					 c_d->pocet_voziku=d->pocet_voziku;
+					 c_d->pocet_prazdnych=d->pocet_prazdnych;
+					 c_d->pocet_celkem=d->pocet_celkem;
+					 //uložení do binárního filu
+					 FileStream->Write(c_d,sizeof(C_davka));//zapiše jeden prvek do souboru
+					 //posun na další segment cesty
+					 d=d->dalsi;
+					 c_d=NULL; delete c_d;
 				 }
 			 }
 			 //c=NULL; delete c;
@@ -6510,6 +6573,12 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 
 					//načítání dávek zakázky
 					hlavicka_davky_zakazky(ukaz2);
+					for(unsigned int k=1;k<=c_ukaz2->pocet_davek;k++)
+					{
+						C_davka c_d;
+						FileStream->Read(&c_d,sizeof(C_davka));//načte jeden prvek ze souboru
+						vloz_davku(ukaz2,c_d.pocet_voziku,c_d.pocet_prazdnych,c_d.pocet_celkem);
+					}
 
 					//vloží zakazku do spojového seznamu ZAKAZKY
 					vloz_zakazku(ukaz2);

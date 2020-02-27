@@ -2206,69 +2206,94 @@ void __fastcall TForm1::casoverezervy1Click(TObject *Sender)
 void __fastcall TForm1::AnalyzaClick(TObject *Sender)
 {
 	log(__func__);//logování
-	d.v.vytvor_default_zakazku();//pokud první zakázka neexistuje, založí ji a přiřadí ji cestu dle schématu, pokud existuje, tak ji pouze přiřadí cestu dle schématu
-//	if(d.v.ZAKAZKY->dalsi==NULL)//pokud nebyla zakazka definovaná - nyní řeší příkaz nad
+//	d.v.vytvor_default_zakazku();//pokud první zakázka neexistuje, založí ji a přiřadí ji cestu dle schématu, pokud existuje, tak ji pouze přiřadí cestu dle schématu
+////	if(d.v.ZAKAZKY->dalsi==NULL)//pokud nebyla zakazka definovaná - nyní řeší příkaz nad
+////	{
+////		MB("Pro zobrazení je nutné ve formuláři definice zakázek zadat plán výroby!");
+////	}
+////	else
 //	{
-//		MB("Pro zobrazení je nutné ve formuláři definice zakázek zadat plán výroby!");
+//		if(d.v.VOZIKY->dalsi==NULL)d.v.generuj_VOZIKY();//situace kdy nejsou načtené vozíky ale existuje zakázka s cestou (situace např. po načtení nového souboru), tak se vygeneruji dle zadané zakazky/cesty vozíky
+//
+//		if(MOD!=CASOVAOSA)//aby se nevolalo zbytečně znovu, pokud už v daném modu je, ale může být dvousečné ve významu uživatelské užitečnosti
+//		{
+//			MOD=CASOVAOSA;
+//			ESC();//zruší případně rozdělanou akci
+//			if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
+//			d.mod_vytizenost_objektu=false;
+//			Timer_simulace->Enabled=false;
+//			d.PosunT.x=0;//výchozí posunutí obrazu Posunu na časových osách, kvůli možnosti posouvání obrazu
+//			d.PosunT.y=0;
+//			//zneplatnit_minulesouradnice();//zrušeno test
+//			DuvodUlozit(true);
+//			scSplitView_MENU->Opened=false;//zavře případně otevřené menu
+//			scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
+//	 //		scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
+//			//scSplitView_LEFTTOOLBAR->Visible=false;
+//			//scListGroupKnihovObjektu->Visible=false;
+//			Button3->Visible=false;
+//			Timer_neaktivity->Enabled=true;
+//			pocitadlo_doby_neaktivity=0;//implicitní hodnota
+//			Timer_animace->Enabled=false;
+//			ButtonPLAY->Visible=false;
+//			CheckBoxVymena_barev->Visible=true;
+//			CheckBoxVytizenost->Visible=true;
+//			CheckBoxVytizenost->Checked=false;
+//			CheckBoxVytizenost->Top=135;
+//			scLabel_doba_cekani->Visible=true;
+//			scGPGlyphButton_info_cekani->Visible=true;
+//			scGPGlyphButton_close_grafy->Visible=true;
+//			CheckBoxAnimovatSG->Visible=false;
+//			ComboBoxODmin->Visible=false;
+//			ComboBoxDOmin->Visible=false;
+//			rComboBoxKrok->Visible=false;
+//			LabelRoletka->Visible=false;
+//			CheckBox_pouzit_zadane_kapacity->Visible=false;
+//			ComboBoxCekani->Visible=true;
+//			d.JIZPOCITANO=false;d.RANDOM=true;
+//			ComboBoxCekani->Width=scSplitView_OPTIONS->OpenedWidth-7;
+//			if(Form1->ComboBoxCekani->ItemIndex==2)
+//			{
+//				scGPButton_generuj->Visible=true;
+//				ComboBoxCekani->Width=196;
+//			}
+//
+//			Label_zamerovac->Visible=false;
+//			scGPCheckBox_ortogon->Visible=false;
+//			if(STATUS==NAVRH)scGPCheckBox_pocet_voziku_dle_WIP->Visible=true;
+//			scGPGlyphButton_close_legenda_casove_osy->Left=0;
+//			scGPGlyphButton_close_legenda_casove_osy->Top=ClientHeight-scGPPanel_statusbar->Height-ClientHeight/3;
+//			scGPGlyphButton_close_legenda_casove_osy->Visible=true;
+//			SB(ls->Strings[380]);
+//			Invalidate();
+//		}
 //	}
-//	else
+//	RM();//korekce chyby oskakování pravého menu
+	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;//zavře případně otevřené menu
+	if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
+	Analyza->Down=false;//musí se uvlonit po stisku
+	if(MOD!=EDITACE)
 	{
-		if(d.v.VOZIKY->dalsi==NULL)d.v.generuj_VOZIKY();//situace kdy nejsou načtené vozíky ale existuje zakázka s cestou (situace např. po načtení nového souboru), tak se vygeneruji dle zadané zakazky/cesty vozíky
-
-		if(MOD!=CASOVAOSA)//aby se nevolalo zbytečně znovu, pokud už v daném modu je, ale může být dvousečné ve významu uživatelské užitečnosti
+		ESC();//zruší případnou rozdělanou akci
+		Analyza->Options->NormalColor=DetailsButton->Options->NormalColor;
+		Analyza->Options->FrameNormalColor=DetailsButton->Options->NormalColor;
+		Schema->Options->NormalColor=scGPPanel_mainmenu->FillColor;
+		Schema->Options->FrameNormalColor=scGPPanel_mainmenu->FillColor;
+		Form_definice_zakazek->ShowModal();
+		REFRESH();
+	}
+	else
+	{
+		KonecClick(this);
+		if(akt_Objekt==NULL)//došlo k ukončení náhledu
 		{
-			MOD=CASOVAOSA;
-			ESC();//zruší případně rozdělanou akci
-			if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
-			d.mod_vytizenost_objektu=false;
-			Timer_simulace->Enabled=false;
-			d.PosunT.x=0;//výchozí posunutí obrazu Posunu na časových osách, kvůli možnosti posouvání obrazu
-			d.PosunT.y=0;
-			//zneplatnit_minulesouradnice();//zrušeno test
-			DuvodUlozit(true);
-			scSplitView_MENU->Opened=false;//zavře případně otevřené menu
-			scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
-	 //		scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
-			//scSplitView_LEFTTOOLBAR->Visible=false;
-			//scListGroupKnihovObjektu->Visible=false;
-			Button3->Visible=false;
-			Timer_neaktivity->Enabled=true;
-			pocitadlo_doby_neaktivity=0;//implicitní hodnota
-			Timer_animace->Enabled=false;
-			ButtonPLAY->Visible=false;
-			CheckBoxVymena_barev->Visible=true;
-			CheckBoxVytizenost->Visible=true;
-			CheckBoxVytizenost->Checked=false;
-			CheckBoxVytizenost->Top=135;
-			scLabel_doba_cekani->Visible=true;
-			scGPGlyphButton_info_cekani->Visible=true;
-			scGPGlyphButton_close_grafy->Visible=true;
-			CheckBoxAnimovatSG->Visible=false;
-			ComboBoxODmin->Visible=false;
-			ComboBoxDOmin->Visible=false;
-			rComboBoxKrok->Visible=false;
-			LabelRoletka->Visible=false;
-			CheckBox_pouzit_zadane_kapacity->Visible=false;
-			ComboBoxCekani->Visible=true;
-			d.JIZPOCITANO=false;d.RANDOM=true;
-			ComboBoxCekani->Width=scSplitView_OPTIONS->OpenedWidth-7;
-			if(Form1->ComboBoxCekani->ItemIndex==2)
-			{
-				scGPButton_generuj->Visible=true;
-				ComboBoxCekani->Width=196;
-			}
-
-			Label_zamerovac->Visible=false;
-			scGPCheckBox_ortogon->Visible=false;
-			if(STATUS==NAVRH)scGPCheckBox_pocet_voziku_dle_WIP->Visible=true;
-			scGPGlyphButton_close_legenda_casove_osy->Left=0;
-			scGPGlyphButton_close_legenda_casove_osy->Top=ClientHeight-scGPPanel_statusbar->Height-ClientHeight/3;
-			scGPGlyphButton_close_legenda_casove_osy->Visible=true;
-			SB(ls->Strings[380]);
-			Invalidate();
+			Analyza->Options->NormalColor=DetailsButton->Options->NormalColor;
+			Analyza->Options->FrameNormalColor=DetailsButton->Options->NormalColor;
+			Schema->Options->NormalColor=scGPPanel_mainmenu->FillColor;
+			Schema->Options->FrameNormalColor=scGPPanel_mainmenu->FillColor;
+			Form_definice_zakazek->ShowModal();//návratová hodnota se řeši v knihovně
 		}
 	}
-	RM();//korekce chyby oskakování pravého menu
 }
 //---------------------------------------------------------------------------
 //zavře nebo otevře grafy v časových osách
@@ -5382,9 +5407,24 @@ void TForm1::ESC()
 		}break;
 		case VYH:
 		{
+			//pokud už je vložená výhybka a dojde k ukončení, odstranit výhybku, řešeno zde, metoda d.v.smaz_element neumí smazat nedokončenou výhybku - spojku
+			if(d.v.vyhybka_pom!=NULL)
+			{
+		  	Cvektory::TElement *smaz=d.v.vyhybka_pom;
+				d.v.vyhybka_pom=NULL;
+				//odebrání výhybky ze spojáku
+				smaz->dalsi->predchozi=smaz->predchozi;
+				smaz->predchozi->dalsi=smaz->dalsi;
+				//úprava geometrie dalšímu elementu
+				d.v.vloz_G_element(smaz->dalsi,0,smaz->geo.X1,smaz->geo.Y1,0,0,0,0,smaz->dalsi->geo.X4,smaz->dalsi->geo.Y4,smaz->dalsi->geo.orientace);
+				//vlastní mazání
+				delete smaz;smaz=NULL;
+				//překreslení
+		  	REFRESH();
+			}
 			//d.odznac_oznac_vetev(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,pom_vyhybka);
 			//d.v.smaz_objekt(pom_vyhybka);
-			//REFRESH();//dojde k překreslení odstraněné výhybky
+//			REFRESH();//dojde k překreslení odstraněné výhybky
 		}break;
 		case GEOMETRIE:
 		case GEOMETRIE_LIGHT:ukonceni_geometrie();break;
@@ -12525,20 +12565,19 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-//	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-//	if(akt_Objekt!=NULL)E=akt_Objekt->element;
-//	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
-//	while(E!=NULL && E->n>0)
-//	{
-//		Memo(E->name+":");
-//		Memo(d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(E));
-//		//Memo(d.v.vrat_objekt(E->objekt_n)->name);
-//		//E=E->dalsi;
-//		E=d.v.dalsi_krok(E,akt_Objekt);
-//		//E=d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);
-//	}
-//	E=NULL;delete E;
-//	delete []tab_pruchodu;
+	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+	if(akt_Objekt!=NULL)E=akt_Objekt->element;
+	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
+	while(E!=NULL && E->n>0)
+	{
+		Memo(E->name);
+		//Memo(d.v.vrat_objekt(E->objekt_n)->name);
+		//E=E->dalsi;
+		E=d.v.dalsi_krok(E);
+		//E=d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);
+	}
+	E=NULL;delete E;
+	delete []tab_pruchodu;
 
 //	E=d.v.ELEMENTY->dalsi->dalsi->dalsi2->dalsi;
 //	Memo(E->name);
@@ -12567,13 +12606,6 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //		O=O->dalsi;
 //	}
 //	O=NULL;delete O;
-	while(d.v.ZAKAZKY!=NULL)
-	{
-		d.v.ZAKAZKY->predchozi=NULL;
-		delete d.v.ZAKAZKY->predchozi;
-		d.v.ZAKAZKY=d.v.ZAKAZKY->dalsi;
-	}
-	d.v.hlavicka_ZAKAZKY();
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -13514,7 +13546,7 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //	 d.v.vymazat_ZPRAVY();
 
 //	F->posun_na_element(1);
-  Form_definice_zakazek->ShowModal();
+	Form_definice_zakazek->ShowModal();
 //  Form2->ShowModal();
 }
 //---------------------------------------------------------------------------
@@ -14693,6 +14725,7 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 		{
 			if(language==CS)MB("Jazykový soubor chybí, nebo není kompletní!");//vypsáno ručně pro různé jazykové verze
 			else MB("Language file missing or incomplete!");
+			language=CS;//nastavení na default jazyk
 		}
 		delete ls_temp;ls_temp=NULL;
 		//začít od 4
@@ -15106,7 +15139,7 @@ void __fastcall TForm1::scGPSwitch1ChangeState(TObject *Sender)
 	log(__func__);//logování
 	if(scGPSwitch1->State==scswOn) {language=CS;writeINI("Nastaveni_app","jazyk","1");}
 	else{language=EN;writeINI("Nastaveni_app","jazyk","0");}
-	load_language(language,true);
+	language=(TForm1::Tlanguage)load_language(language,true);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPCheckBox_zobrazit_palceClick(TObject *Sender)

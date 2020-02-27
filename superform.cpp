@@ -74,7 +74,7 @@ void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender) {
   F->log(__func__); // logování
   Left = Form1->ClientWidth / 2 - Width / 2;
   Top = Form1->ClientHeight / 2 - Height / 2;
-  volno = false;
+  volno = true;
   pocet_davek = 0;
   ////nastaveni PP, defaultní jsou již od souboru novy, který se volá vždy, takže není defaultní nutné volat znovu
   nacti_PP();
@@ -199,7 +199,6 @@ void TForm_definice_zakazek::uloz_Default_cestu() {
 // ---------------------------------------------------------------------------
 // naètení hotových zakázek, tato metoda je volána z FormShow(), pokud existují zakázky
 void TForm_definice_zakazek::nacti_zakazky() {
-  ShowMessage("nacti_zakazky");
   F->log(__func__); // logování
   // ////vyplnìní stringgridu
   // Cvektory::TZakazka *ukaz = Form1->d.v.ZAKAZKY->dalsi;
@@ -259,11 +258,7 @@ void TForm_definice_zakazek::nacti_zakazky() {
     D = Z->davky->dalsi;
     unsigned int Col = 3;
     while (D != NULL) {
-      Z->mGrid->InsertColumn(Col, true, true);
-      // if(Z->mGrid->ColCount==4+1)Z->mGrid->Cells[Col][1].Type =Z->mGrid->glyphBUTTON; // smazani davky
-      // setGlyphButtonDavka_Add(Z->mGrid->ID,Col+1);   //vytvoøí glyph na pøidání dávky
-      // setGlyphButtonDavka_Remove(Z->mGrid->ID,Col);   //vytvoøí glyph na smazání dávky
-      Col += 1;
+      vloz_davku(Z,D);
       D = D->dalsi;
     }
     delete D;
@@ -539,6 +534,7 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
   }
   // kopírování temp zakázek do ostrých zakázek
   F->d.v.kopirujZAKAZKY_temp2ZAKAZKY();
+	F->d.v.vytvor_default_zakazku();//po kopírování zakázek dojkde ke smazání hlavièky
   // ukonèení formu a smazání temp zakázek
   KonecClick(Sender);
 }
@@ -568,7 +564,12 @@ void __fastcall TForm_definice_zakazek::KonecClick(TObject *Sender) {
     Z = NULL;
   }
 
-  Form1->d.v.vymaz_seznam_ZAKAZKY_temp();
+	Form1->d.v.vymaz_seznam_ZAKAZKY_temp();
+	//zmìna záložek
+	F->Analyza->Options->NormalColor=F->scGPPanel_mainmenu->FillColor;
+	F->Analyza->Options->FrameNormalColor=F->scGPPanel_mainmenu->FillColor;
+	F->Schema->Options->NormalColor=F->DetailsButton->Options->NormalColor;
+	F->Schema->Options->FrameNormalColor=F->DetailsButton->Options->NormalColor;
   Close();
 }
 
@@ -793,9 +794,36 @@ void TForm_definice_zakazek::setGlyphButtonDefault(unsigned long Row,
   }
 }
 
-void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col,
-    unsigned long Row) {
-  F->log(__func__); // logování
+void TForm_definice_zakazek::vloz_davku(Cvektory::TZakazka *Z,Cvektory::TDavka *davka)
+{
+	volno = false;
+  // backup pùvodního názvu zakázky pro následný merge bunek a naplnìní
+	AnsiString nazev = Z->mGrid->Cells[1][0].Text;
+	unsigned long Col=Z->mGrid->ColCount-1;
+  scGPButton_Ulozit->SetFocus();
+  Z->mGrid->InsertColumn(Col, true, true);
+  Z->mGrid->MergeCells(1, 0, 2, 0); // název     - vodorovne
+  // naplnìní pùvodním textem
+  Z->mGrid->Cells[1][0].Text = nazev;
+  // pokud neexistují dávky tak pøi prvním pøidání dávky nastavím typ na glyphbutton
+	if (Z->mGrid->ColCount == 4 + 1) Z->mGrid->Cells[Col][1].Type = Z->mGrid->glyphBUTTON;
+	if(davka==NULL)
+	{
+		F->d.v.vloz_davku(Z,0,0,0);//vkládat do dat pouze v pøípadì, že tvoøím novou dávku
+		davka=Z->davky->predchozi;
+	}
+	else
+	{
+		;//naèítání dat do mGridu
+	}
+	Z->mGrid->Update();
+	setGlyphButtonDavka_Add(Z->n, Col + 1); // vytvoøí glyph na pøidání dávky
+	setGlyphButtonDavka_Remove(Col,Z,davka); // vytvoøí glyph na smazání dávky
+	volno = true;
+}
+
+void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col, unsigned long Row) {
+	F->log(__func__); // logování
   // naètení aktuálnì editované zakázky
   Cvektory::TZakazka *Z = F->d.v.vrat_temp_zakazku(ID);
 
@@ -803,20 +831,11 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col,
     TscGPGlyphButton *J = Z->mGrid->getGlyphButton(Col, Row);
     // VÌTEV NA PØIDÁVÁNÍ DÁVEK DO ZAKÁZKY
     if (J->GlyphOptions->Kind == scgpbgkPlus) {
-      volno = false;
-      scGPButton_Ulozit->SetFocus();
-      Z->mGrid->InsertColumn(Col, true, false);
-
       Z->mGrid->Cells[2][2].Type = Z->mGrid->readEDIT;
       Z->mGrid->Cells[2][3].Type = Z->mGrid->readEDIT;
-
-      // pokud neexistují dávky tak pøi prvním pøidání dávky nastavím typ na glyphbutton
       if (Z->mGrid->ColCount == 4 + 1)
         Z->mGrid->Cells[Col][1].Type = Z->mGrid->glyphBUTTON;
-      Z->mGrid->Refresh();
-      setGlyphButtonDavka_Add(ID, Col + 1); // vytvoøí glyph na pøidání dávky
       setGlyphButtonDavka_Remove(ID, Col, Z); // vytvoøí glyph na smazání dávky
-      volno = true;
       F->d.v.vloz_davku(Z, 0, 0, 0);
     }
     // VÌTEV NA MAZÁNÍ DÁVEK ZE ZAKÁZKY
@@ -828,8 +847,19 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col,
       // setGlyphButtonDavka_Add(Row, Z->mGrid->ColCount - 1);
       // vytvoøí glyph na pøidání dávky
       volno = true;
+			F->d.v.smaz_davku(Z,Col-2);
+			//aktualizace èíslování dávek
       OnChange(Tag, ID, Col, Row);
       // F->d.v.smaz_davku(Z,Col-2);
+			if(Z->mGrid->ColCount>=4 && Z->davky->predchozi->n>0)
+			{
+				Cvektory::TDavka *D=Z->davky->dalsi;
+				for(unsigned int i=3;i<=Z->mGrid->ColCount-2;i++)
+				{
+					setGlyphButtonDavka_Remove(i,Z,D);
+					D=D->dalsi;
+        }
+			}
     }
 
     J = NULL;
@@ -851,19 +881,17 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col,
     Konec->SetFocus();
     Z->mGrid->Delete();
     Z->mGrid = NULL;
-    F->d.v.smaz_temp_zakazku(Z->n);
-    Invalidate(); // formpaint nestaèí nepøekreslí pozùstatky tabulky
-    // FormPaint(this);
+		F->d.v.smaz_temp_zakazku(Z->n);
+		FormPaint(this);
     volno = true;
   }
   // odmazání pomocného ukazatele
   Z = NULL;
-  delete Z;
+	delete Z;
 }
 
 void TForm_definice_zakazek::OnChange(long Tag, long ID, unsigned long Col,
     unsigned long Row) {
-
   if (Col >= 2 && Row >= 2 && volno == true) {
     Cvektory::TZakazka *Z = F->d.v.vrat_temp_zakazku(ID);
     volno = false;
@@ -871,7 +899,6 @@ void TForm_definice_zakazek::OnChange(long Tag, long ID, unsigned long Col,
     Z->mGrid->Cells[Col][4].Text =
         F->ms.MyToDouble(Z->mGrid->Cells[Col][2].Text) + F->ms.MyToDouble
         (Z->mGrid->Cells[Col][3].Text);
-
     if (Z->mGrid->ColCount >= 3 && Col > 2)
         // pri pouziti dávek projiti vsech sloupcu a update vsech SUM
     {
@@ -879,7 +906,6 @@ void TForm_definice_zakazek::OnChange(long Tag, long ID, unsigned long Col,
       long pocet_prazdnych = 0;
       long celkem = 0;
       ShowMessage("change");
-
       for (int i = 3; i < Z->mGrid->ColCount - 1;
       i++) // prochazeni hodnot po sloupcich
       {
@@ -891,13 +917,9 @@ void TForm_definice_zakazek::OnChange(long Tag, long ID, unsigned long Col,
       Z->mGrid->Cells[2][3].Text = pocet_prazdnych;
       Z->mGrid->Cells[2][4].Text = celkem;
     }
-    Z->mGrid->Update();
     volno = true;
   }
 
-}
-
-//////////////////////////////////////////////////
 void TForm_definice_zakazek::setButtonColor(long ID) {
   F->log(__func__); // logování
   Cvektory::TZakazka *Z = F->d.v.vrat_temp_zakazku(ID);
@@ -915,6 +937,7 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy) {
   // if (novy || add_zakazka)
   {
     F->log(__func__); // logování
+    // ShowMessage("loadHeader");
     Cvektory::TZakazka *Z = NULL;
     if (novy) // vytváøení nové zákázky a jejícho mGridu
     {
@@ -990,9 +1013,9 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy) {
     Z->mGrid->Cells[2][2].Type = Z->mGrid->EDIT; //
     Z->mGrid->Cells[2][3].Type = Z->mGrid->EDIT;
     Z->mGrid->Cells[2][4].Type = Z->mGrid->readEDIT; // celkem - suma
-    Z->mGrid->Cells[2][2].Text = "0"; // value
-    Z->mGrid->Cells[2][3].Text = "0"; // value
-    Z->mGrid->Cells[2][4].Text = "0"; // value
+    Z->mGrid->Cells[2][2].Text = "100"; // value
+    Z->mGrid->Cells[2][3].Text = "3"; // value
+    Z->mGrid->Cells[2][4].Text = "103"; // value
 
     // Z->mGrid->Cells[1][i + 1].RightBorder->Color = clWhite;
     Z->mGrid->Cells[0][2].LeftBorder->Color = light_gray;
@@ -1065,32 +1088,31 @@ void TForm_definice_zakazek::setGlyphButtonDavka_Add(unsigned long ID,
   delete J;
 }
 
-void TForm_definice_zakazek::setGlyphButtonDavka_Remove(unsigned long ID,
+void TForm_definice_zakazek::setGlyphButtonDavka_Remove(unsigned long Col, Cvektory::TZakazka *Z, Cvektory::TDavka *davka)
     unsigned long Col, Cvektory::TZakazka *Z) {
-  F->log(__func__); // logování
-  TscGPGlyphButton *H = Z->mGrid->getGlyphButton(Col, 1);
-  H->GlyphOptions->Kind = scgpbgkClose;
-  H->GlyphOptions->Thickness = 1;
-  H->ShowCaption = true;
-  if (Z->mGrid->ColCount == 5)
-    pocet_davek = 1;
+	F->log(__func__); // logování
+	TscGPGlyphButton *H = Z->mGrid->getGlyphButton(Col, 1);
+	H->GlyphOptions->Kind = scgpbgkClose;
+	H->GlyphOptions->Thickness = 1;
+	H->ShowCaption = true;
+	H->Caption = " "+F->ls->Strings[440]+" "+AnsiString(davka->n);// " Dávka "
   H->Caption = " " + F->ls->Strings[440] + " " + AnsiString(pocet_davek);
   // " Dávka "
   // H->Font->Color=(TColor)RGB(43,87,154);
-  H->Options->NormalColor = clWhite;
-  H->Options->FontNormalColor = (TColor)RGB(43, 87, 154);
-  H->Options->FontFocusedColor = (TColor)RGB(43, 87, 154);
-  H->Options->FontHotColor = (TColor)RGB(43, 87, 154);
-  H->Options->NormalColorAlpha = 255;
-  H->Options->FrameWidth = 1;
-  H->Options->FrameNormalColor = clWhite;
-  H->Width = 80;
-  H->Height = Z->mGrid->DefaultRowHeight;
+	H->Options->NormalColor = clWhite;
+	H->Options->FontNormalColor = (TColor)RGB(43, 87, 154);
+	H->Options->FontFocusedColor = (TColor)RGB(43, 87, 154);
+	H->Options->FontHotColor = (TColor)RGB(43, 87, 154);
+	H->Options->NormalColorAlpha = 255;
+	H->Options->FrameWidth = 1;
+	H->Options->FrameNormalColor = clWhite;
+	H->Width = 80;
+	H->Height = Z->mGrid->DefaultRowHeight;
   H->Options->ShapeStyle = scgpRect;
   H->Hint = F->ls->Strings[441]; // "Smazat dávku";
-  H->ShowHint = true;
-  H = NULL;
-  delete H;
+	H->ShowHint = true;
+	H = NULL;
+	delete H;
 }
 
 void TForm_definice_zakazek::setGlyphButtonColor(unsigned long Row,
