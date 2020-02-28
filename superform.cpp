@@ -836,9 +836,12 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col, unsig
       Z->mGrid->getEdit(2,2)->Enabled=false;
       Z->mGrid->getEdit(2,3)->Enabled=false;
       //v pøípadì, že pøidám dávku, nastavím na 0 pùvodní hodnoty (situace kdy jsem jel bez dávek)
+      if(Z->mGrid->ColCount==5) // pouze ale pøi prvním pøidání dávky, abych vždy nenuloval hodnoty pøi dalším pøidávání dávek
+      {
       Z->mGrid->Cells[2][2].Text = "0";
       Z->mGrid->Cells[2][3].Text = "0";
       Z->mGrid->Cells[2][4].Text = "0";
+      }
 
     }
     // VÌTEV NA MAZÁNÍ DÁVEK ZE ZAKÁZKY
