@@ -252,26 +252,32 @@ void TForm_definice_zakazek::nacti_zakazky() {
   Cvektory::TZakazka *Z = F->d.v.ZAKAZKY_temp->dalsi;
   Cvektory::TDavka *D = NULL;
   nacitam_zakazky = true; // nutné??
-  while (Z != NULL) {
-    loadHeader(Z->n, false);
-    // vytvoøení tabulky zakázky, nikoliv zakázky a tabulky
-    D = Z->davky->dalsi;
+	while (Z != NULL)
+	{
+		loadHeader(Z->n,false);
+		// vytvoøení tabulky zakázky, nikoliv zakázky a tabulky
+		D=Z->davky->dalsi;
     unsigned int Col = 3;
-    while (D != NULL) {
-      vloz_davku(Z,D);
-      D = D->dalsi;
-    }
-    delete D;
-    D = NULL;
-    // naètení informací ze zakázky do mGridu øešeno tady nebo v metodì loadHeader()
-    Z = Z->dalsi;
+		while (D != NULL)
+		{
+			vloz_davku(Z,D);
+      D=D->dalsi;
+		}
+		delete D;D=NULL;
+		if(Z->davky->dalsi!=NULL)//nastavení disabled ostatních editù u zakázky, nesmí se pøenést na dávky
+		{
+			Z->mGrid->getEdit(2,2)->Enabled=false;
+			Z->mGrid->getEdit(2,3)->Enabled=false;
+		}
+		// naètení informací ze zakázky do mGridu øešeno tady nebo v metodì loadHeader()
+    Z=Z->dalsi;
   }
   // vykreslení
   FormPaint(this);
   // ukazatelové záležitosti
   delete Z;
-  Z = NULL;
-  nacitam_zakazky = false; // nutné??
+	Z=NULL;
+  nacitam_zakazky=false; // nutné??
 }
 
 // ----------------------------------------------------------------------------
@@ -418,7 +424,7 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender) {
 // TLAÈÍTKO ULOŽIT
 void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 {
-  ShowMessage("ulozit");
+	ShowMessage("ulozit");
   F->log(__func__); // logování
   // zmena_TT = false;
   // bool neukladat = false; // pokud nebudou splnìny podmínky, nelze form uložit
@@ -522,10 +528,34 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 
   // naètení hodnot z tabulek mGridù do temp zakázek
   // mazání mgridù zakázek, dùležité, kopírování zakázek nesmaže mGridy ale odstraní zakázky temp ukazatel
-  if (F->d.v.ZAKAZKY_temp != NULL) {
-    Cvektory::TZakazka *Z = F->d.v.ZAKAZKY_temp->dalsi;
-    while (Z != NULL) {
-      Z->mGrid->Delete();
+	if (F->d.v.ZAKAZKY_temp != NULL)
+	{
+		//naèítání hodnot z tabulky do dat a mazání mGridu
+		Cvektory::TZakazka *Z = F->d.v.ZAKAZKY_temp->dalsi;
+		while (Z != NULL)
+		{
+			//naètení hodnot do dávek
+			if(Z->davky->dalsi!=NULL)
+			{
+				Cvektory::TDavka *D=Z->davky->dalsi;
+				unsigned int Col=0;
+				while(D!=NULL)
+				{
+					Col=D->n+2;
+					D->pocet_voziku=F->ms.MyToDouble(Z->mGrid->Cells[Col][2].Text);
+					D->pocet_prazdnych=F->ms.MyToDouble(Z->mGrid->Cells[Col][3].Text);
+					D->pocet_celkem=F->ms.MyToDouble(Z->mGrid->Cells[Col][4].Text);
+					D=D->dalsi;
+				}
+				delete D;D=NULL;
+			}
+			//naètení hodnot do zakázky
+			Z->name=Z->mGrid->Cells[1][0].Text;
+			Z->pocet_voziku=F->ms.MyToDouble(Z->mGrid->Cells[2][2].Text);
+			Z->serv_vozik_pocet=F->ms.MyToDouble(Z->mGrid->Cells[2][3].Text);
+			Z->opakov_servis=F->ms.MyToDouble(Z->mGrid->Cells[2][4].Text);
+			//smazání mGridu
+			Z->mGrid->Delete();
       Z->mGrid = NULL;
       Z = Z->dalsi;
     }
@@ -535,6 +565,7 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
   // kopírování temp zakázek do ostrých zakázek
   F->d.v.kopirujZAKAZKY_temp2ZAKAZKY();
 	F->d.v.vytvor_default_zakazku();//po kopírování zakázek dojkde ke smazání hlavièky
+	F->DuvodUlozit(true);
   // ukonèení formu a smazání temp zakázek
   KonecClick(Sender);
 }
@@ -786,9 +817,11 @@ void TForm_definice_zakazek::vloz_davku(Cvektory::TZakazka *Z,Cvektory::TDavka *
 		F->d.v.vloz_davku(Z,0,0,0);//vkládat do dat pouze v pøípadì, že tvoøím novou dávku
 		davka=Z->davky->predchozi;
 	}
-	else
+	else//naèítání dat do mGridu
 	{
-		;//naèítání dat do mGridu
+		Z->mGrid->Cells[Col][2].Text = davka->pocet_voziku;
+		Z->mGrid->Cells[Col][3].Text = davka->pocet_prazdnych;
+		Z->mGrid->Cells[Col][4].Text = davka->pocet_celkem;
 	}
 	Z->mGrid->Update();
 	setGlyphButtonDavka_Add(Z->n, Col + 1); // vytvoøí glyph na pøidání dávky
@@ -809,10 +842,10 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col, unsig
     if (J->GlyphOptions->Kind == scgpbgkPlus)
     {
       vloz_davku(Z);
-      Z->mGrid->getEdit(2,2)->Enabled=false;
-      Z->mGrid->getEdit(2,3)->Enabled=false;
+			Z->mGrid->getEdit(2,2)->Enabled=false;
+			Z->mGrid->getEdit(2,3)->Enabled=false;
       //v pøípadì, že pøidám dávku, nastavím na 0 pùvodní hodnoty (situace kdy jsem jel bez dávek)
-      if(Z->mGrid->ColCount==5) // pouze ale pøi prvním pøidání dávky, abych vždy nenuloval hodnoty pøi dalším pøidávání dávek
+			if(Z->mGrid->ColCount==5) // pouze ale pøi prvním pøidání dávky, abych vždy nenuloval hodnoty pøi dalším pøidávání dávek
       {
       Z->mGrid->Cells[2][2].Text = "0";
       Z->mGrid->Cells[2][3].Text = "0";
@@ -993,9 +1026,8 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy)
       Z->mGrid->Cells[1][0].Text = F->ls->Strings[434]; // "Název zakázky"
     else
       Z->mGrid->Cells[1][0].Text = Z->name;
-    Z->mGrid->Cells[1][0].Text = "Název zakázky";
-    Z->mGrid->Cells[1][1].Type = Z->mGrid->glyphBUTTON; // color zakazka
-    // Z->mGrid->Cells[2][1].Type = Z->mGrid->glyphBUTTON;
+		Z->mGrid->Cells[1][1].Type = Z->mGrid->glyphBUTTON; // color zakazka
+		// Z->mGrid->Cells[2][1].Type = Z->mGrid->glyphBUTTON;
     Z->mGrid->Cells[1][0].Font->Size = 15;
 
     Z->mGrid->Cells[1][1].Font->Size = 14;
@@ -1013,10 +1045,19 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy)
 
     Z->mGrid->Cells[2][2].Type = Z->mGrid->EDIT; //
     Z->mGrid->Cells[2][3].Type = Z->mGrid->EDIT;
-    Z->mGrid->Cells[2][4].Type = Z->mGrid->readEDIT; // celkem - suma
-    Z->mGrid->Cells[2][2].Text = "0"; // value
-    Z->mGrid->Cells[2][3].Text = "0"; // value
-    Z->mGrid->Cells[2][4].Text = "0"; // value
+		Z->mGrid->Cells[2][4].Type = Z->mGrid->readEDIT; // celkem - suma
+		if(novy)
+		{
+      Z->mGrid->Cells[2][2].Text = "0"; // value
+	  	Z->mGrid->Cells[2][3].Text = "0"; // value
+			Z->mGrid->Cells[2][4].Text = "0"; // value
+		}
+		else
+		{
+			Z->mGrid->Cells[2][2].Text=Z->pocet_voziku;
+			Z->mGrid->Cells[2][3].Text=Z->serv_vozik_pocet;
+			Z->mGrid->Cells[2][4].Text=Z->opakov_servis;
+    }
 
     // Z->mGrid->Cells[1][i + 1].RightBorder->Color = clWhite;
     Z->mGrid->Cells[0][2].LeftBorder->Color = light_gray;

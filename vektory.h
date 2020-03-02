@@ -542,6 +542,7 @@ class Cvektory
 	short vrat_druh_elementu(TElement *Element);//vrátí typ elementu -1 nenastaven nebo zarážka či předávací místo, 0 - S&G (včetně stopky), 1 - kontinuál
 	bool funkcni_element(TElement *Element);//vrátí true, pokud se jedná o funční element
 	void rotace_elementu(TObjekt *Objekt,short rotace);//orotuje všechny elementy daného objektu o danou hodnotu
+  bool oblast_elementu(TElement *Element, double X, double Y);//zkontroluje, zda se nacházím v oblasti elemetu
 	TElement *najdi_element(TObjekt *Objekt, double X, double Y);//hledá element v místě kurzoru pracuje v logických/metrických souradnicích
 	TElement *najdi_tabulku(TObjekt *Objekt, double X, double Y);//hledá tabulku elementu pouze pro daný objekt v oblasti definované pomocí šířky a výšky tabulky (která se může nacházet v daném místě kliku), pracuje v logických/metrických souradnicich, vrátí ukazatel na daný element, který tabulku vlastní, pokud se na daných souřadnicích nachází tabulka
 	TElement *vrat_element(TObjekt *Objekt, unsigned int n);//vraťí ukazatel na element dle n elementu umístěného v daném objektu

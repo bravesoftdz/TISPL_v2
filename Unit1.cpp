@@ -3626,8 +3626,10 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			Canvas->Brush->Color=clWhite;
 			Canvas->Brush->Style=bsClear;
 			Canvas->Rectangle(minule_souradnice_kurzoru.x-10,minule_souradnice_kurzoru.y-10,minule_souradnice_kurzoru.x+10,minule_souradnice_kurzoru.y+10);
+			if(d.v.vyhybka_pom!=NULL && minule_souradnice_kurzoru.x>168 && minule_souradnice_kurzoru.y>34)d.line(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,m.L2Px(d.v.vyhybka_pom->geo.X4),m.L2Py(d.v.vyhybka_pom->geo.Y4));
 			minule_souradnice_kurzoru=souradnice;
 			Canvas->Rectangle(souradnice.x-10,souradnice.y-10,souradnice.x+10,souradnice.y+10);
+			if(d.v.vyhybka_pom!=NULL)d.line(Canvas,souradnice.x,souradnice.y,m.L2Px(d.v.vyhybka_pom->geo.X4),m.L2Py(d.v.vyhybka_pom->geo.Y4));
 		}break;
 		case MOVE://posun objektu, v editaci funkce posunu objektu odstavena
 		{
@@ -4044,8 +4046,30 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 					Canvas->MoveTo(X,Y);
 					Canvas->LineTo(X2,Y2);
 				}
-				pom_element=d.v.najdi_element(akt_Objekt,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y);
-				if((pom_element!=NULL && posledni_editovany_element!=NULL && pom_element->n!=posledni_editovany_element->n) || (pom_element!=NULL && posledni_editovany_element==NULL)){posledni_editovany_element=pom_element;editace_geometrie_spustena=true;}
+				//hledání elementu na kterém je kurzor
+				pom_element=NULL;
+				Cvektory::TElement *E=akt_Objekt->element;
+				while(E!=NULL)
+				{
+					if(d.v.oblast_elementu(E,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+					{
+						pom_element=E;
+						break;
+					}
+					if(E!=akt_Objekt->element && E->predchozi->objekt_n!=akt_Objekt->n && d.v.oblast_elementu(E->predchozi,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+					{
+						pom_element=E->predchozi;
+						break;
+					}
+					if(E->eID==301 && E->predchozi2->objekt_n!=akt_Objekt->n && d.v.oblast_elementu(E->predchozi2,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+					{
+						pom_element=E->predchozi2;
+						break;
+					}
+					E=d.v.dalsi_krok(E,akt_Objekt);
+				}
+				E=NULL;delete E;
+				if((pom_element!=NULL && posledni_editovany_element!=NULL && pom_element!=posledni_editovany_element) || (pom_element!=NULL && posledni_editovany_element==NULL)){posledni_editovany_element=pom_element;editace_geometrie_spustena=true;}
 				else if(m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,akt_Objekt->element->geo.X1,akt_Objekt->element->geo.Y1,0.3) && posledni_editovany_element!=NULL){posledni_editovany_element=NULL;editace_geometrie_spustena=true;}
 		  	//////setjobid, při geometrii je třeba mít zjišťování jidů kolem kót elementu (editace přímek)
 		  	int puvJID=JID;//záloha původního JID
@@ -6293,8 +6317,42 @@ void TForm1::vlozeni_editace_geometrie()
 	//////nastavení orientace
 	short orientace=0;
 	if(posledni_editovany_element!=NULL){orientace=posledni_editovany_element->orientace;}else {orientace=d.v.vrat_posledni_element_objektu(akt_Objekt)->orientace;}
+	//////dokončování geometrie sekundární větve v objektu spojky
+	if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->predchozi2==posledni_editovany_element)
+	{
+		unsigned long n=posledni_editovany_element->objekt_n;
+		Cvektory::TElement *E=NULL;
+		if(n!=akt_Objekt->n)
+		{
+			E=d.v.vloz_element(akt_Objekt,MaxInt,posledni_editovany_element->geo.X4,posledni_editovany_element->geo.Y4,orientace,posledni_editovany_element);
+			E->geo=posledni_editovany_element->geo;
+			E->objekt_n=n;//navrácení zprávného objekt_n
+			posledni_editovany_element->objekt_n=akt_Objekt->n;
+			design_element(E,true);//nutné!!!!!!!!
+			posledni_editovany_element->geo=d.geoTemp;     posledni_editovany_element->name="TEST";
+			posledni_editovany_element->X+=posledni_editovany_element->geo.X4-posledni_editovany_element->geo.X1;
+			posledni_editovany_element->Y+=posledni_editovany_element->geo.Y4-posledni_editovany_element->geo.Y1;
+			posledni_editovany_element=E;
+		}
+		else
+		{
+			E=d.v.vloz_element(akt_Objekt,MaxInt,posledni_editovany_element->geo.X4,posledni_editovany_element->geo.Y4,orientace,posledni_editovany_element);
+			E->geo=posledni_editovany_element->geo;
+			design_element(E,true);//nutné!!!!!!!!
+			posledni_editovany_element->geo=d.geoTemp;
+			posledni_editovany_element->X=posledni_editovany_element->geo.X4;posledni_editovany_element->Y=posledni_editovany_element->geo.Y4;//souřadnice elementu
+		}
+		E=NULL;delete E;  //REFRESH();
+	}
+	//////definice sekundární větve z výhybky
+	else if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->eID==300 && d.geoTemp.orientace-d.geoTemp.rotacni_uhel!=posledni_editovany_element->dalsi->geo.orientace-posledni_editovany_element->dalsi->geo.rotacni_uhel)
+	{
+		posledni_editovany_element=d.v.vloz_element(akt_Objekt,MaxInt,d.geoTemp.X4,d.geoTemp.Y4,orientace,posledni_editovany_element->dalsi2);
+		design_element(posledni_editovany_element,true);//nutné!!!!!!!!
+		posledni_editovany_element->geo=d.geoTemp;
+	}
 	//////první vložení geometrie
-	if(posledni_editovany_element==NULL)
+	else if(posledni_editovany_element==NULL)
 	{
 		//vložení nového úseku před první element
 		if(posun_dalsich_elementu)
@@ -6323,6 +6381,7 @@ void TForm1::vlozeni_editace_geometrie()
 			//geometrie elementu
 			E->geo.X1+=posunx;E->geo.X2+=posunx;E->geo.X3+=posunx;E->geo.X4+=posunx;
 			E->geo.Y1+=posuny;E->geo.Y2+=posuny;E->geo.Y3+=posuny;E->geo.Y4+=posuny;
+			if(E->dalsi!=NULL && E->dalsi->eID==301 && E->dalsi->predchozi2==E)break;
 			E=E->dalsi;
 		}
 		E=NULL;delete E;
@@ -6354,6 +6413,7 @@ void TForm1::vlozeni_editace_geometrie()
 			//geometrie elementu
 			E->geo.X1+=posunx;E->geo.X2+=posunx;E->geo.X3+=posunx;E->geo.X4+=posunx;
 			E->geo.Y1+=posuny;E->geo.Y2+=posuny;E->geo.Y3+=posuny;E->geo.Y4+=posuny;
+			if(E->dalsi!=NULL && E->dalsi->eID==301 && E->dalsi->predchozi2==E)break;
 			E=E->dalsi;
 		}
 		E=NULL;delete E;
@@ -6361,7 +6421,7 @@ void TForm1::vlozeni_editace_geometrie()
 	//////přidávání za poslední geometrii
 	else if(posledni_editovany_element!=NULL && (posledni_editovany_element->dalsi==NULL || (posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->objekt_n!=posledni_editovany_element->objekt_n)))
 	{
-    //vložím nový prvek, který převezme geometrii posledniho a zařadí se před nej, poslední pak převezme novou geometrii - tz. posouvám poslední prvek stále před sebou
+		//vložím nový prvek, který převezme geometrii posledniho a zařadí se před nej, poslední pak převezme novou geometrii - tz. posouvám poslední prvek stále před sebou
 		if(posledni_editovany_element->geo.delka!=0)//normální provoz
 		{
 			Cvektory::TElement *E=d.v.vloz_element(akt_Objekt,MaxInt,posledni_editovany_element->geo.X4,posledni_editovany_element->geo.Y4,orientace,posledni_editovany_element);
@@ -12565,19 +12625,19 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-	if(akt_Objekt!=NULL)E=akt_Objekt->element;
-	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
-	while(E!=NULL && E->n>0)
-	{
-		Memo(E->name);
-		//Memo(d.v.vrat_objekt(E->objekt_n)->name);
-		//E=E->dalsi;
-		E=d.v.dalsi_krok(E);
-		//E=d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);
-	}
-	E=NULL;delete E;
-	delete []tab_pruchodu;
+//	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;   Memo3->Clear();
+//	if(akt_Objekt!=NULL)E=akt_Objekt->element;
+//	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
+//	while(E!=NULL && E->n>0)
+//	{
+//		Memo(E->name);
+//		//Memo(d.v.vrat_objekt(E->objekt_n)->name);
+//		//E=E->dalsi;
+//		E=d.v.dalsi_krok(E,akt_Objekt);
+//		//E=d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);
+//	}
+//	E=NULL;delete E;
+//	delete []tab_pruchodu;
 
 //	E=d.v.ELEMENTY->dalsi->dalsi->dalsi2->dalsi;
 //	Memo(E->name);
