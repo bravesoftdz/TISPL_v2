@@ -2694,24 +2694,27 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 			{
 				if(posledni_editovany_element->n!=akt_Objekt->element->n || posledni_editovany_element->n==akt_Objekt->element->n && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->objekt_n==akt_Objekt->n)
 				{
-					bool hl_vetev=true;
+					bool hl_vetev=true; bool posun=true;
 					double posunx=posledni_editovany_element->geo.X1-posledni_editovany_element->geo.X4,posuny=posledni_editovany_element->geo.Y1-posledni_editovany_element->geo.Y4;
 					Cvektory::TElement *E=NULL;
-					if(posledni_editovany_element->predchozi->n>0 && posledni_editovany_element->predchozi->objekt_n==akt_Objekt->n)E=posledni_editovany_element->predchozi;
+					if(posledni_editovany_element->predchozi->n>0/* && posledni_editovany_element->predchozi->objekt_n==akt_Objekt->n*/)E=posledni_editovany_element->predchozi;
+					if(posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->predchozi2==posledni_editovany_element)posun=false;//mažu poslední element vedlejší větve před spojkou, nepovolit posun
 					if(posledni_editovany_element->predchozi->eID==300 && posledni_editovany_element->predchozi->dalsi2==posledni_editovany_element)hl_vetev=false;//mazání prvního elementu sekundární větve za vyhybkou, posun další geometrie pouze na sekundární větvi
 					d.v.smaz_element(posledni_editovany_element,true);
 					posledni_editovany_element=E;
 					E=akt_Objekt->element;
-					if(posledni_editovany_element!=NULL && akt_Objekt->element!=NULL)E=posledni_editovany_element->dalsi;
+					if(posledni_editovany_element!=NULL)E=posledni_editovany_element->dalsi;
 					if(!hl_vetev)E=posledni_editovany_element->dalsi2;
-					while(E!=NULL && E->objekt_n==akt_Objekt->n)
+					while(E!=NULL && E->objekt_n==akt_Objekt->n && posun)
 					{
 						E->X+=posunx;E->Y+=posuny;//souřadnice elementu
 						//geometrie elementu
 						E->geo.X1+=posunx;E->geo.X2+=posunx;E->geo.X3+=posunx;E->geo.X4+=posunx;
 						E->geo.Y1+=posuny;E->geo.Y2+=posuny;E->geo.Y3+=posuny;E->geo.Y4+=posuny;
+						if(E->dalsi!=NULL && E->dalsi->eID==301 && E->dalsi->predchozi2==E)break;
 						E=d.v.dalsi_krok(E,akt_Objekt);
 					}
+					d.v.vymaz_seznam_VYHYBKY();
 					E=NULL;delete E;
 				}
 				else
@@ -2787,24 +2790,27 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 			{
 				if(posledni_editovany_element->n!=akt_Objekt->element->n || posledni_editovany_element->n==akt_Objekt->element->n && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->objekt_n==akt_Objekt->n)
 				{
-					bool hl_vetev=true;
+					bool hl_vetev=true; bool posun=true;
 					double posunx=posledni_editovany_element->geo.X1-posledni_editovany_element->geo.X4,posuny=posledni_editovany_element->geo.Y1-posledni_editovany_element->geo.Y4;
 					Cvektory::TElement *E=NULL;
-					if(posledni_editovany_element->predchozi->n>0 && posledni_editovany_element->predchozi->objekt_n==akt_Objekt->n)E=posledni_editovany_element->predchozi;
+					if(posledni_editovany_element->predchozi->n>0/* && posledni_editovany_element->predchozi->objekt_n==akt_Objekt->n*/)E=posledni_editovany_element->predchozi;
+					if(posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->predchozi2==posledni_editovany_element)posun=false;//mažu poslední element vedlejší větve před spojkou, nepovolit posun
 					if(posledni_editovany_element->predchozi->eID==300 && posledni_editovany_element->predchozi->dalsi2==posledni_editovany_element)hl_vetev=false;//mazání prvního elementu sekundární větve za vyhybkou, posun další geometrie pouze na sekundární větvi
 					d.v.smaz_element(posledni_editovany_element,true);
 					posledni_editovany_element=E;
 					E=akt_Objekt->element;
-					if(posledni_editovany_element!=NULL && akt_Objekt->element!=NULL)E=posledni_editovany_element->dalsi;
+					if(posledni_editovany_element!=NULL)E=posledni_editovany_element->dalsi;
 					if(!hl_vetev)E=posledni_editovany_element->dalsi2;
-					while(E!=NULL && E->objekt_n==akt_Objekt->n)
+					while(E!=NULL && E->objekt_n==akt_Objekt->n && posun)
 					{
 						E->X+=posunx;E->Y+=posuny;//souřadnice elementu
 						//geometrie elementu
 						E->geo.X1+=posunx;E->geo.X2+=posunx;E->geo.X3+=posunx;E->geo.X4+=posunx;
 						E->geo.Y1+=posuny;E->geo.Y2+=posuny;E->geo.Y3+=posuny;E->geo.Y4+=posuny;
+						if(E->dalsi!=NULL && E->dalsi->eID==301 && E->dalsi->predchozi2==E)break;
 						E=d.v.dalsi_krok(E,akt_Objekt);
 					}
+					d.v.vymaz_seznam_VYHYBKY();
 					E=NULL;delete E;
 				}
 				else
@@ -4076,6 +4082,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 					}
 					E=d.v.dalsi_krok(E,akt_Objekt);
 				}
+				d.v.vymaz_seznam_VYHYBKY();
 				E=NULL;delete E;
 				if((pom_element!=NULL && posledni_editovany_element!=NULL && pom_element!=posledni_editovany_element) || (pom_element!=NULL && posledni_editovany_element==NULL)){posledni_editovany_element=pom_element;editace_geometrie_spustena=true;}
 				else if(m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,akt_Objekt->element->geo.X1,akt_Objekt->element->geo.Y1,0.3) && posledni_editovany_element!=NULL){posledni_editovany_element=NULL;editace_geometrie_spustena=true;}
@@ -5610,6 +5617,7 @@ Cvektory::TObjekt *TForm1::add_objekt_za()
 
 			E=d.v.dalsi_krok(E);
 		}
+		d.v.vymaz_seznam_VYHYBKY();
 		E=NULL;delete E;
 		pom=NULL;delete pom;
 	}
@@ -6090,13 +6098,14 @@ void TForm1::vlozit_predavaci_misto()
 	log(__func__);//logování
 	UnicodeString name=ls->Strings[271];//"Předávací místo"
 	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
 	while(E!=NULL)
 	{
 		//deklarace atributů
 		long ID=0;
 		if(E->eID!=300 && E->eID!=301 && !(E->dalsi!=NULL && E->dalsi->eID==301 && E->dalsi->predchozi2==E))//výhybky a spojky jsou "PM"
 		{
-	  	//////////Vkládání předávacího místa
+			//////////Vkládání předávacího místa
 	  	if(E->eID!=200 && ((E->dalsi!=NULL && E->dalsi->pohon!=NULL && E->pohon!=NULL && E->dalsi->pohon->n!=E->pohon->n) || (E->dalsi!=NULL && (E->dalsi->pohon==NULL && E->pohon!=NULL || E->dalsi->pohon!=NULL && E->pohon==NULL))))
 	  	{
 	  		//WT přiřazení
@@ -6198,7 +6207,7 @@ void TForm1::vlozit_predavaci_misto()
 	  	}
 		}
 		//ukazatelové záležitosti
-		E=d.v.dalsi_krok(E);
+		E=d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);//nutné procházet tímto algoritmem, jeho nepoužitím může dojít k přeskočení kontroly elementu před spojkou (na hlavní větvi)
 	}
 	//////Předávací místo mezi posledním a prvním
 	if(d.v.ELEMENTY->dalsi!=NULL && d.v.ELEMENTY->predchozi->n>0)// && d.v.ELEMENTY->predchozi->objekt_n!=d.v.ELEMENTY->dalsi->objekt_n)
@@ -6260,6 +6269,7 @@ void TForm1::vlozit_predavaci_misto()
 		//////////Mazání pomocných ukazatelů
 		e_prvni=NULL;delete e_prvni;
 		e_posledni=NULL;delete e_posledni;
+		delete []tab_pruchodu;tab_pruchodu=NULL;
 	}
 }
 //---------------------------------------------------------------------------
@@ -6714,6 +6724,7 @@ void TForm1::mGrid_on_mGrid()
 					}
 					E_temp=d.v.dalsi_krok(E_temp,akt_Objekt);
 				}
+				d.v.vymaz_seznam_VYHYBKY();
 				E_temp=NULL;delete E_temp;
 			}
 			if(pokracovat)E=E->dalsi;//d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);//musí být procházeno takto, alg. prochází 2x přes vyhybky a spojky ty nejsou přejmenovávány, tudíž nevadí jeho použití, použit z důvodu, že během tohoto cyklu dochází k dalšímu pruchodu pomocí cyklu dalsi_krok, kdyby byl použit v alg. dalsi_krok vnořený dalsi_krok došlo by k chybnému průchodu
@@ -7306,6 +7317,7 @@ TPoint TForm1::bod_vlozeni_elementu(double kontr_x,double kontr_y)
 		if(akt_Objekt!=NULL)E=d.v.dalsi_krok(E,akt_Objekt);
 		else E=d.v.dalsi_krok(E);
 	}
+	d.v.vymaz_seznam_VYHYBKY();
 	//mazání ukazatele
 	E=NULL;delete E;
 	E_pom=NULL;delete E_pom;
@@ -7354,6 +7366,7 @@ bool TForm1::bod_na_geometrii(double X, double Y,Cvektory::TElement *Element)
 		if(E->geo.typ==0 && E->geo.orientace==m.Rt90(E->geo.orientace) && m.LeziVblizkostiUsecky(X,Y,E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4)==0){ret=true;break;}
 		E=d.v.dalsi_krok(E,akt_Objekt);
 	}
+	d.v.vymaz_seznam_VYHYBKY();
 	E=NULL;delete E;
 	return ret;
 }
@@ -10181,6 +10194,12 @@ void __fastcall TForm1::DrawGrid_geometrieMouseDown(TObject *Sender, TMouseButto
 		scGPCheckBox_zobrazit_pozice->Checked=false;
 		scGPCheckBox_zobrazit_palce->Checked=false;
 		stisknute_leve_tlacitko_mysi=false;//nutné!!! zustává aktivníc z dblclicku
+		//pokud neexistuje poslední editovaný vezme první element v objektu
+		if(posledni_editovany_element==NULL)
+		{
+			if(akt_Objekt->element->predchozi->n>0)posledni_editovany_element=akt_Objekt->element->predchozi;
+			else posledni_editovany_element=akt_Objekt->element;
+		}
 		REFRESH(false);
 	}
 	else {Akce=NIC;Akce_temp=NIC;REFRESH(false);}//vypunutí akce geometrie
@@ -10570,6 +10589,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 					if(Z!=NULL)break;
 					else E=d.v.dalsi_krok(E,pom_vyhybka);
 				}
+				d.v.vymaz_seznam_VYHYBKY();
 				E=NULL;delete E;
 				if(Z!=NULL)
 					MB(text_4+UnicodeString(Z->name));
@@ -12659,20 +12679,20 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;   //Memo3->Clear();
-	if(akt_Objekt!=NULL)E=akt_Objekt->element;
-	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
-	while(E!=NULL && E->objekt_n==akt_Objekt->n)
-	{
-		Memo(E->name+"->objekt_n = "+AnsiString(E->objekt_n));
-		//Memo(d.v.vrat_objekt(E->objekt_n)->name);
-		//if(E->dalsi2!=NULL)E=E->dalsi2;
-		//E=E->dalsi;
-		E=d.v.dalsi_krok(E,akt_Objekt);
-		//E=d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);
-	}
-	E=NULL;delete E;
-	delete []tab_pruchodu;
+//	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;   //Memo3->Clear();
+//	if(akt_Objekt!=NULL)E=akt_Objekt->element;
+//	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
+//	while(E!=NULL && E->objekt_n==akt_Objekt->n)
+//	{
+//		Memo(E->name+"->objekt_n = "+AnsiString(E->objekt_n));
+//		//Memo(d.v.vrat_objekt(E->objekt_n)->name);
+//		//if(E->dalsi2!=NULL)E=E->dalsi2;
+//		//E=E->dalsi;
+//		E=d.v.dalsi_krok(E,akt_Objekt);
+//		//E=d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);
+//	}
+//	E=NULL;delete E;
+//	delete []tab_pruchodu;
 
 //	E=d.v.ELEMENTY->dalsi->dalsi->dalsi2->dalsi;
 //	Memo(E->name);
@@ -12701,6 +12721,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //		O=O->dalsi;
 //	}
 //	O=NULL;delete O;
+	if(posledni_editovany_element!=NULL)Memo(posledni_editovany_element->name);else Memo("NULL");
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
