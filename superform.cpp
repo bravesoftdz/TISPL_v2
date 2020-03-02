@@ -1174,7 +1174,7 @@ void TForm_definice_zakazek::setGlyphButtonColor(unsigned long Row,
   H->Width = Z->mGrid->Columns[1].Width + Z->mGrid->Columns[2].Width - 3;
   H->Height = Z->mGrid->DefaultRowHeight;
   H->Options->ShapeStyle = scgpRect;
-  H->Hint = "Barva zakázky";
+  H->Hint = F->ls->Strings[442]; //"Barva zakázky"
   H->ShowHint = true;
   H = NULL;
   delete H;

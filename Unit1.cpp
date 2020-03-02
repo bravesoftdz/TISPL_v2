@@ -962,7 +962,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=441;i++)
+	for(unsigned short i=0;i<=442;i++)
 	{
 		switch(i)
 		{
@@ -1408,6 +1408,7 @@ void TForm1::DesignSettings()
 			case 439:text="Smazat zakázku";break;
 			case 440:text="Dávka";break;
 			case 441:text="Smazat dávku";break;
+			case 442:text="Barva zakázky";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -2693,13 +2694,16 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 			{
 				if(posledni_editovany_element->n!=akt_Objekt->element->n || posledni_editovany_element->n==akt_Objekt->element->n && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->objekt_n==akt_Objekt->n)
 				{
+					bool hl_vetev=true;
 					double posunx=posledni_editovany_element->geo.X1-posledni_editovany_element->geo.X4,posuny=posledni_editovany_element->geo.Y1-posledni_editovany_element->geo.Y4;
 					Cvektory::TElement *E=NULL;
 					if(posledni_editovany_element->predchozi->n>0 && posledni_editovany_element->predchozi->objekt_n==akt_Objekt->n)E=posledni_editovany_element->predchozi;
+					if(posledni_editovany_element->predchozi->eID==300 && posledni_editovany_element->predchozi->dalsi2==posledni_editovany_element)hl_vetev=false;//mazání prvního elementu sekundární větve za vyhybkou, posun další geometrie pouze na sekundární větvi
 					d.v.smaz_element(posledni_editovany_element,true);
 					posledni_editovany_element=E;
 					E=akt_Objekt->element;
 					if(posledni_editovany_element!=NULL && akt_Objekt->element!=NULL)E=posledni_editovany_element->dalsi;
+					if(!hl_vetev)E=posledni_editovany_element->dalsi2;
 					while(E!=NULL && E->objekt_n==akt_Objekt->n)
 					{
 						E->X+=posunx;E->Y+=posuny;//souřadnice elementu
@@ -2778,18 +2782,21 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//DELETE
 		case 46:
 		{
-			////Geometrie stejná funkce jako backspace
+			////Geometrie
 			if(Akce==GEOMETRIE && !editace_textu && posledni_editovany_element!=NULL && posledni_editovany_element->eID==MaxInt && posledni_editovany_element->objekt_n==akt_Objekt->n)
 			{
 				if(posledni_editovany_element->n!=akt_Objekt->element->n || posledni_editovany_element->n==akt_Objekt->element->n && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->objekt_n==akt_Objekt->n)
 				{
+					bool hl_vetev=true;
 					double posunx=posledni_editovany_element->geo.X1-posledni_editovany_element->geo.X4,posuny=posledni_editovany_element->geo.Y1-posledni_editovany_element->geo.Y4;
 					Cvektory::TElement *E=NULL;
 					if(posledni_editovany_element->predchozi->n>0 && posledni_editovany_element->predchozi->objekt_n==akt_Objekt->n)E=posledni_editovany_element->predchozi;
+					if(posledni_editovany_element->predchozi->eID==300 && posledni_editovany_element->predchozi->dalsi2==posledni_editovany_element)hl_vetev=false;//mazání prvního elementu sekundární větve za vyhybkou, posun další geometrie pouze na sekundární větvi
 					d.v.smaz_element(posledni_editovany_element,true);
 					posledni_editovany_element=E;
 					E=akt_Objekt->element;
 					if(posledni_editovany_element!=NULL && akt_Objekt->element!=NULL)E=posledni_editovany_element->dalsi;
+					if(!hl_vetev)E=posledni_editovany_element->dalsi2;
 					while(E!=NULL && E->objekt_n==akt_Objekt->n)
 					{
 						E->X+=posunx;E->Y+=posuny;//souřadnice elementu
@@ -3510,7 +3517,7 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
-{                        
+{
 	vyska_menu=Mouse->CursorPos.y-Y;//uchová rozdíl myšího kurzoru a Y-pixelu v pracovní oblasti
 	akt_souradnice_kurzoru_PX=TPoint(X,Y);
 	akt_souradnice_kurzoru=m.P2L(akt_souradnice_kurzoru_PX);
@@ -4014,14 +4021,15 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		}break;
 		case GEOMETRIE:
 		{
+			log(__func__);
 			if(Akce_temp==NIC)
 			{
-				Cvektory::TElement *e_poslendi=d.v.vrat_posledni_element_objektu(akt_Objekt);
+				Cvektory::TElement *e_poslendi=posledni_editovany_element;
 				//pan_move při stisknutém levém tlačítku
 		  	if(stisknute_leve_tlacitko_mysi){pan_map(Canvas,X,Y);kurzor(pan_move);}else if(Screen->Cursor==pan_move)kurzor(standard);
 				//vykreslení spojnice mezi posledním editovaným elementem a dalším elementem v objektu (pokud existuje)
-				if(e_poslendi->dalsi!=NULL && e_poslendi->geo.X4!=e_poslendi->dalsi->geo.X1 && e_poslendi->geo.X4!=e_poslendi->dalsi->geo.X1)
-		  	{
+				if(e_poslendi!=NULL && e_poslendi->dalsi!=NULL && e_poslendi->geo.X4!=e_poslendi->dalsi->geo.X1 && e_poslendi->geo.X4!=e_poslendi->dalsi->geo.X1)
+				{
 		  		//nastavení pera
 		  		Canvas->Pen->Color=clBlack;
 		  		Canvas->Pen->Width=1;
@@ -4167,7 +4175,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			nahled_ulozit(true);
 		}break;
 		default:break;
-	} 
+	}
     //fix na pridani 1 obj pro demo
 //    if(EDICE==DEMO && MOD==SCHEMA)
 //    {
@@ -4524,22 +4532,22 @@ void TForm1::getJobID(int X, int Y)
 		//5; element v objektu - působí problémy 
 		d.zprava_highlight=d.v.PtInZpravy();
 		if(d.zprava_highlight>0)JID=-102;//hledání citelné oblasti zprávy
-//		if(JID==-1)//hledání citelných oblastí elementů pro otevírání náhledu (element mimo kabinu),!!!!!!!!!!!!!!!!!!!!!!způsobí zamrzání!!!!!!!!!!!!!!!!!!!
-//		{
-//			pom_element=NULL;
-//			Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
-//			while(O!=NULL)
-//			{
-//				pom_element=d.v.najdi_element(O,m.P2Lx(X),m.P2Ly(Y));
-//				if(pom_element!=NULL)
-//				{
-//					JID=5;
-//					break;
-//				}
-//				O=O->dalsi;
-//			}
-//			O=NULL;delete O;
-//		}
+		if(JID==-1)//hledání citelných oblastí elementů pro otevírání náhledu (element mimo kabinu),!!!!!!!!!!!!!!!!!!!!!!způsobí zamrzání!!!!!!!!!!!!!!!!!!!
+		{
+			pom_element=NULL;
+			Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+			while(E!=NULL)
+			{
+				if(d.v.oblast_elementu(E,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+				{
+					pom_element=E;
+					JID=5;
+					break;
+				}
+				E=E->dalsi;
+			}
+			E=NULL;delete E;
+		}
 		if(JID==-1&&d.v.OBJEKTY->dalsi!=NULL&&Akce==NIC)
 		{
 			pom=NULL;pom_bod=NULL;
@@ -6086,108 +6094,111 @@ void TForm1::vlozit_predavaci_misto()
 	{
 		//deklarace atributů
 		long ID=0;
-		//////////Vkládání předávacího místa
-		if(E->eID!=200 && ((E->dalsi!=NULL && E->dalsi->pohon!=NULL && E->pohon!=NULL && E->dalsi->pohon->n!=E->pohon->n) || (E->dalsi!=NULL && (E->dalsi->pohon==NULL && E->pohon!=NULL || E->dalsi->pohon!=NULL && E->pohon==NULL))))
+		if(E->eID!=300 && E->eID!=301 && !(E->dalsi!=NULL && E->dalsi->eID==301 && E->dalsi->predchozi2==E))//výhybky a spojky jsou "PM"
 		{
-			//WT přiřazení
-			E->WT=0;//čekání na palec
-			if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)E->WT=m.cekani_na_palec(0,E->dalsi->pohon->roztec,E->dalsi->pohon->aRD,3);
-			//souřadnice tabulky
-			if(E->orientace==0 || E->orientace==180){E->Xt=E->X-1.9;E->Yt=E->Y+1.6;}
-			else{E->Xt=E->X+0.6;E->Yt=E->Y+0.5;}
-			//změna elemetnu na předávací místo
-			E->eID=200;
-			//názvy výhybek prozatím neřešeny
-			//if(akt_Objekt==NULL)pom_vyhybka=O;else pom_vyhybka=akt_Objekt;
-			//unsigned int nTyp=d.v.vrat_poradi_elementu_do(pom_vyhybka,E)+1;
-//			E->name=name+" "+AnsiString(nTyp);//"Předávací místo"
-//			E->short_name=E->name.SubString(1,3)+AnsiString(nTyp);
-			E->name=name+" X";
-			d.v.uprav_popisky_elementu(E);
-			pom_vyhybka=NULL;
-			//smazání a znovuvytvoření mGridu elementu
-			if(akt_Objekt!=NULL && E->objekt_n==akt_Objekt->n)
-			{
-				ID=E->mGrid->ID;
-				E->mGrid->Delete();
-				E->mGrid=new TmGrid(F);
-				E->mGrid->Tag=6;//ID formu
-				E->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
-				design_element(E,false);//nutné!
-			}
-		}
-		//////////Aktualizace WT
-		if(E->eID==200)
-		{
-			if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)E->WT=m.cekani_na_palec(0,E->dalsi->pohon->roztec,E->dalsi->pohon->aRD,3);
-			if(akt_Objekt!=NULL && akt_Objekt->n==E->objekt_n)E->mGrid->Refresh();
-		}
-		//////////Mazání nepotřebného předávacího místa + 2 PM na sobě
-		if(E->eID==200 && (E->dalsi!=NULL && E->dalsi->pohon==NULL && E->pohon==NULL || E->dalsi!=NULL && E->pohon!=NULL && E->dalsi->pohon!=NULL && E->dalsi->pohon->n==E->pohon->n))
-		{
-			//pokud je možné dojde k odstranění elementu
-			//if(E->dalsi!=NULL && E->dalsi->geo.typ==0 && E->geo.typ==0){d.v.smaz_element(E);break;}
-			//pokud ne je přepnut na zarážku
-			//else
-			{
-				//změna na zarážku
-				E->eID=MaxInt;
-				//změna názvu a úprava číslování, pouze v debug
-				if(DEBUG)
-				{
-					E->name="Zarážka";
-					d.v.uprav_popisky_elementu(E);
-				}
-				else E->name="";
-				//vynulování WT
-				E->WT=0;
-				//smazání a znovuvytvoření mGridu elementu
-				if(akt_Objekt!=NULL && E->objekt_n==akt_Objekt->n)
-				{
-					ID=E->mGrid->ID;
-					E->mGrid->Delete();
-					E->mGrid=new TmGrid(F);
-					E->mGrid->Tag=6;//ID formu
-					E->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
-					design_element(E,false);//nutné!
-				}
-			}
-		}
-		//2 pm přes sebe; bude jednodušeji realizovatelné v novém datovém modelu, přepnutí na zarážku dělá problémy, zatím odstaveno
-		if(E->eID==200 && (E->dalsi!=NULL && E->dalsi->eID==200 && E->dalsi->geo.delka<0.01))
-		{
-			//posun na druhé předávací místo
-			if(E->dalsi!=NULL)E=E->dalsi;
-    	//pokud je možné dojde k odstranění elementu
-			if(E->dalsi!=NULL && E->dalsi->geo.typ==0 && E->geo.typ==0){d.v.smaz_element(E);break;}
-			//pokud ne je přepnut na zarážku
-			else
-			{
-				//změna na zarážku
-				E->eID=MaxInt;
-				//změna názvu a úprava číslování, pouze v debug
-				if(DEBUG)
-				{
-					E->name="Zarážka";
-					d.v.uprav_popisky_elementu(E);
-				}
-				else E->name="";
-				//vynulování WT
-				E->WT=0;
-				//smazání a znovuvytvoření mGridu elementu
-				if(akt_Objekt!=NULL && E->objekt_n==akt_Objekt->n)
-				{
-					ID=E->mGrid->ID;
-					E->mGrid->Delete();
-					E->mGrid=new TmGrid(F);
-					E->mGrid->Tag=6;//ID formu
-					E->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
-					design_element(E,false);//nutné!
-				}
-			}
+	  	//////////Vkládání předávacího místa
+	  	if(E->eID!=200 && ((E->dalsi!=NULL && E->dalsi->pohon!=NULL && E->pohon!=NULL && E->dalsi->pohon->n!=E->pohon->n) || (E->dalsi!=NULL && (E->dalsi->pohon==NULL && E->pohon!=NULL || E->dalsi->pohon!=NULL && E->pohon==NULL))))
+	  	{
+	  		//WT přiřazení
+	  		E->WT=0;//čekání na palec
+	  		if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)E->WT=m.cekani_na_palec(0,E->dalsi->pohon->roztec,E->dalsi->pohon->aRD,3);
+	  		//souřadnice tabulky
+	  		if(E->orientace==0 || E->orientace==180){E->Xt=E->X-1.9;E->Yt=E->Y+1.6;}
+	  		else{E->Xt=E->X+0.6;E->Yt=E->Y+0.5;}
+	  		//změna elemetnu na předávací místo
+	  		E->eID=200;
+	  		//názvy výhybek prozatím neřešeny
+	  		//if(akt_Objekt==NULL)pom_vyhybka=O;else pom_vyhybka=akt_Objekt;
+	  		//unsigned int nTyp=d.v.vrat_poradi_elementu_do(pom_vyhybka,E)+1;
+//  			E->name=name+" "+AnsiString(nTyp);//"Předávací místo"
+//  			E->short_name=E->name.SubString(1,3)+AnsiString(nTyp);
+	  		E->name=name+" X";
+	  		d.v.uprav_popisky_elementu(E);
+	  		pom_vyhybka=NULL;
+	  		//smazání a znovuvytvoření mGridu elementu
+	  		if(akt_Objekt!=NULL && E->objekt_n==akt_Objekt->n)
+	  		{
+	  			ID=E->mGrid->ID;
+	  			E->mGrid->Delete();
+	  			E->mGrid=new TmGrid(F);
+	  			E->mGrid->Tag=6;//ID formu
+	  			E->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
+	  			design_element(E,false);//nutné!
+	  		}
+	  	}
+	  	//////////Aktualizace WT
+	  	if(E->eID==200)
+	  	{
+	  		if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)E->WT=m.cekani_na_palec(0,E->dalsi->pohon->roztec,E->dalsi->pohon->aRD,3);
+	  		if(akt_Objekt!=NULL && akt_Objekt->n==E->objekt_n)E->mGrid->Refresh();
+	  	}
+	  	//////////Mazání nepotřebného předávacího místa + 2 PM na sobě
+	  	if(E->eID==200 && (E->dalsi!=NULL && E->dalsi->pohon==NULL && E->pohon==NULL || E->dalsi!=NULL && E->pohon!=NULL && E->dalsi->pohon!=NULL && E->dalsi->pohon->n==E->pohon->n))
+	  	{
+	  		//pokud je možné dojde k odstranění elementu
+	  		//if(E->dalsi!=NULL && E->dalsi->geo.typ==0 && E->geo.typ==0){d.v.smaz_element(E);break;}
+	  		//pokud ne je přepnut na zarážku
+	  		//else
+	  		{
+	  			//změna na zarážku
+	  			E->eID=MaxInt;
+	  			//změna názvu a úprava číslování, pouze v debug
+	  			if(DEBUG)
+	  			{
+	  				E->name="Zarážka";
+	  				d.v.uprav_popisky_elementu(E);
+	  			}
+	  			else E->name="";
+	  			//vynulování WT
+	  			E->WT=0;
+	  			//smazání a znovuvytvoření mGridu elementu
+	  			if(akt_Objekt!=NULL && E->objekt_n==akt_Objekt->n)
+	  			{
+	  				ID=E->mGrid->ID;
+	  				E->mGrid->Delete();
+	  				E->mGrid=new TmGrid(F);
+	  				E->mGrid->Tag=6;//ID formu
+	  				E->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
+	  				design_element(E,false);//nutné!
+	  			}
+	  		}
+	  	}
+	  	//2 pm přes sebe; bude jednodušeji realizovatelné v novém datovém modelu, přepnutí na zarážku dělá problémy, zatím odstaveno
+	  	if(E->eID==200 && (E->dalsi!=NULL && E->dalsi->eID==200 && E->dalsi->geo.delka<0.01))
+	  	{
+	  		//posun na druhé předávací místo
+	  		if(E->dalsi!=NULL)E=E->dalsi;
+      	//pokud je možné dojde k odstranění elementu
+	  		if(E->dalsi!=NULL && E->dalsi->geo.typ==0 && E->geo.typ==0){d.v.smaz_element(E);break;}
+	  		//pokud ne je přepnut na zarážku
+	  		else
+	  		{
+	  			//změna na zarážku
+	  			E->eID=MaxInt;
+	  			//změna názvu a úprava číslování, pouze v debug
+	  			if(DEBUG)
+	  			{
+	  				E->name="Zarážka";
+	  				d.v.uprav_popisky_elementu(E);
+	  			}
+	  			else E->name="";
+	  			//vynulování WT
+	  			E->WT=0;
+	  			//smazání a znovuvytvoření mGridu elementu
+	  			if(akt_Objekt!=NULL && E->objekt_n==akt_Objekt->n)
+	  			{
+	  				ID=E->mGrid->ID;
+	  				E->mGrid->Delete();
+	  				E->mGrid=new TmGrid(F);
+	  				E->mGrid->Tag=6;//ID formu
+	  				E->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
+	  				design_element(E,false);//nutné!
+	  			}
+	  		}
+	  	}
 		}
 		//ukazatelové záležitosti
-		E=E->dalsi;
+		E=d.v.dalsi_krok(E);
 	}
 	//////Předávací místo mezi posledním a prvním
 	if(d.v.ELEMENTY->dalsi!=NULL && d.v.ELEMENTY->predchozi->n>0)// && d.v.ELEMENTY->predchozi->objekt_n!=d.v.ELEMENTY->dalsi->objekt_n)
@@ -6318,21 +6329,29 @@ void TForm1::vlozeni_editace_geometrie()
 	short orientace=0;
 	if(posledni_editovany_element!=NULL){orientace=posledni_editovany_element->orientace;}else {orientace=d.v.vrat_posledni_element_objektu(akt_Objekt)->orientace;}
 	//////dokončování geometrie sekundární větve v objektu spojky
-	if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->predchozi2==posledni_editovany_element)
+	if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->objekt_n==akt_Objekt->n && posledni_editovany_element->dalsi->predchozi2==posledni_editovany_element)
 	{
 		unsigned long n=posledni_editovany_element->objekt_n;
 		Cvektory::TElement *E=NULL;
 		if(n!=akt_Objekt->n)
 		{
+			Cvektory::TPohon *p=posledni_editovany_element->pohon;
 			E=d.v.vloz_element(akt_Objekt,MaxInt,posledni_editovany_element->geo.X4,posledni_editovany_element->geo.Y4,orientace,posledni_editovany_element);
-			E->geo=posledni_editovany_element->geo;
-			E->objekt_n=n;//navrácení zprávného objekt_n
+      E->objekt_n=n;//navrácení zprávného objekt_n
 			posledni_editovany_element->objekt_n=akt_Objekt->n;
-			design_element(E,true);//nutné!!!!!!!!
-			posledni_editovany_element->geo=d.geoTemp;     posledni_editovany_element->name="TEST";
+			E->geo=posledni_editovany_element->geo;
+			posledni_editovany_element->geo=d.geoTemp;
 			posledni_editovany_element->X+=posledni_editovany_element->geo.X4-posledni_editovany_element->geo.X1;
 			posledni_editovany_element->Y+=posledni_editovany_element->geo.Y4-posledni_editovany_element->geo.Y1;
-			posledni_editovany_element=E;
+			posledni_editovany_element->pohon=E->pohon;
+			E->pohon=p;
+			//vytvoření mgridu, element byl přesunut z jiného objektu, nemá alokovanou paměť pro mGrid
+			posledni_editovany_element->mGrid=new TmGrid(F);
+			posledni_editovany_element->mGrid->Tag=6;//ID formu
+			posledni_editovany_element->mGrid->ID=posledni_editovany_element->n;
+			design_element(posledni_editovany_element,true);//nutné!!!!!!!!
+			//posledni_editovany_element=E;
+			p=NULL;delete p;
 		}
 		else
 		{
@@ -6347,9 +6366,24 @@ void TForm1::vlozeni_editace_geometrie()
 	//////definice sekundární větve z výhybky
 	else if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->eID==300 && d.geoTemp.orientace-d.geoTemp.rotacni_uhel!=posledni_editovany_element->dalsi->geo.orientace-posledni_editovany_element->dalsi->geo.rotacni_uhel)
 	{
+    //pokud již byla nadefinovaná sekundární větev, bude odmazána
+		if(posledni_editovany_element->dalsi2->objekt_n==akt_Objekt->n)
+		{
+			Cvektory::TElement *E=posledni_editovany_element->dalsi2,*smaz=E;
+			while(E!=NULL && E->objekt_n==akt_Objekt->n)
+			{
+				smaz=E;
+				E=E->dalsi;
+				d.v.smaz_element(smaz,true);
+			}
+			E=NULL;delete E;
+			smaz=NULL;delete smaz;
+    }
+		if(posledni_editovany_element->dalsi2->eID==301)d.v.vyhybka_pom=posledni_editovany_element->dalsi2;//pokud je další v sekundární větvi spojka, jedná se o nestandartní situaci, nutno rozlišit
 		posledni_editovany_element=d.v.vloz_element(akt_Objekt,MaxInt,d.geoTemp.X4,d.geoTemp.Y4,orientace,posledni_editovany_element->dalsi2);
 		design_element(posledni_editovany_element,true);//nutné!!!!!!!!
 		posledni_editovany_element->geo=d.geoTemp;
+		d.v.vyhybka_pom=NULL;//uvedení do původního stavu
 	}
 	//////první vložení geometrie
 	else if(posledni_editovany_element==NULL)
@@ -8206,7 +8240,7 @@ void TForm1::tab_pohon_COMBO (int index)
 		else akt_Objekt->pohon=NULL;
 		Cvektory::TElement *E=akt_Objekt->element;
 		//přiřazení pohonu elementům
-		while(E!=NULL && E->objekt_n==akt_Objekt->n)
+		while(E!=NULL)
 		{
 			if(E->pohon==NULL && p_puvodni==0 || E->pohon!=NULL && p_puvodni!=0 && E->pohon->n==p_puvodni){E->pohon=akt_Objekt->pohon;}
 			set_enabled_mGrid(E);
@@ -8214,7 +8248,7 @@ void TForm1::tab_pohon_COMBO (int index)
 		}
 		//aktualizae WT v tabulkách PM
 		E=akt_Objekt->element;
-		while(E!=NULL && E->objekt_n==akt_Objekt->n)
+		while(E!=NULL)
 		{
       if(E->eID==200)
 			{
@@ -8223,8 +8257,8 @@ void TForm1::tab_pohon_COMBO (int index)
 				if(E->dalsi==NULL && pom->dalsi!=NULL && pom->element->pohon!=NULL)E->WT=m.cekani_na_palec(0,pom->element->pohon->roztec,pom->element->pohon->aRD,3);
 				E->mGrid->Cells[1][1].Text=m.round2double(outPT(E->WT),3);
 			}
-			E=E->dalsi;
-    }
+			E=d.v.dalsi_krok(E,akt_Objekt);
+		}
 		E=NULL;delete E;
 		//ostatní
 		nahled_ulozit(true);
@@ -12625,19 +12659,20 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-//	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;   Memo3->Clear();
-//	if(akt_Objekt!=NULL)E=akt_Objekt->element;
-//	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
-//	while(E!=NULL && E->n>0)
-//	{
-//		Memo(E->name);
-//		//Memo(d.v.vrat_objekt(E->objekt_n)->name);
-//		//E=E->dalsi;
-//		E=d.v.dalsi_krok(E,akt_Objekt);
-//		//E=d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);
-//	}
-//	E=NULL;delete E;
-//	delete []tab_pruchodu;
+	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;   //Memo3->Clear();
+	if(akt_Objekt!=NULL)E=akt_Objekt->element;
+	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
+	while(E!=NULL && E->objekt_n==akt_Objekt->n)
+	{
+		Memo(E->name+"->objekt_n = "+AnsiString(E->objekt_n));
+		//Memo(d.v.vrat_objekt(E->objekt_n)->name);
+		//if(E->dalsi2!=NULL)E=E->dalsi2;
+		//E=E->dalsi;
+		E=d.v.dalsi_krok(E,akt_Objekt);
+		//E=d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);
+	}
+	E=NULL;delete E;
+	delete []tab_pruchodu;
 
 //	E=d.v.ELEMENTY->dalsi->dalsi->dalsi2->dalsi;
 //	Memo(E->name);
@@ -13651,7 +13686,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		//if(akt_Objekt!=NULL){akt_Objekt->pohon=NULL;delete akt_Objekt->pohon;}
 		akt_Objekt=NULL;delete akt_Objekt;
 		PmG->Delete();PmG=NULL;delete PmG;
-    //mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
+		//mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
 		pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp;posledni_editovany_element=NULL;delete posledni_editovany_element;JID=-1;Akce=NIC;
 		FormX->posledni_E=NULL;//nutné!! slouží k ukládání posledního editovaného elementu (validace, atd.)
 		if(d.v.DATA->dalsi!=NULL)d.v.nacti_z_obrazu_DATA(true);//načtení projektu před editací a smazání obrazů, pokud DATA->dalsi neexistují znamená to, že bylo uloženo, nebude se nic načítat
