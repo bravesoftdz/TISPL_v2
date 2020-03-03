@@ -1904,7 +1904,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 	  		//ukazatelové propojení
 				Element->dalsi=p;
 	  		Element->predchozi=p->predchozi;
-	  		if(Objekt->element!=NULL && p->n==Objekt->element->n)Objekt->element=Element;//nový první element objetku
+	  		if(Objekt->element!=NULL && p==Objekt->element)Objekt->element=Element;//nový první element objetku
 				if(p->predchozi->eID==300 && p->predchozi->dalsi2==p)p->predchozi->dalsi2=Element;
 				else p->predchozi->dalsi=Element;
 	  		p->predchozi=Element;
@@ -1958,7 +1958,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 				vyhybka_pom->dalsi2=Element;//ukazatel na vedlejší větev
 				vyhybka_pom=NULL;
 			}
-			if(Objekt->element!=NULL && p->n==Objekt->element->n || Objekt->element==NULL)Objekt->element=Element;
+			if(Objekt->element!=NULL && p==Objekt->element || Objekt->element==NULL)Objekt->element=Element;
 			Element->idetifikator_vyhybka_spojka=pocet_vyhybek;
 			//geometrie
 	  	vloz_G_element(Element,0,p->geo.X1,p->geo.Y1,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,p->geo.orientace);
@@ -2045,7 +2045,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 			}
 			else//ukazatelové propojení, normální funkce
 			{
-				if(force_razeni->n==Objekt->element->n)Objekt->element=Element;
+				if(force_razeni==Objekt->element)Objekt->element=Element;
 				Element->dalsi=force_razeni;
 				Element->predchozi=force_razeni->predchozi;
 				if(force_razeni->predchozi->eID==300 && force_razeni->predchozi->dalsi2==force_razeni)force_razeni->predchozi->dalsi2=Element;
@@ -2119,6 +2119,7 @@ Cvektory::TElement *Cvektory::vloz_element_pred(TObjekt *Objekt,TElement *Elemen
 			}
 			p=dalsi_krok(p,Objekt);//posun na další prvek
 		}
+		vymaz_seznam_VYHYBKY();
 		p=NULL; delete p;
 	}
 	return ret;
@@ -2362,6 +2363,7 @@ unsigned int Cvektory::vrat_poradi_elementu_do(TElement *Element)
 		//E=E->dalsi;
 		E=dalsi_krok(E);
 	}
+	vymaz_seznam_VYHYBKY();
 	E=NULL;delete E;
 	//podle eID vrátí příslušný počet elementů
 	switch(Element->eID)
@@ -2557,6 +2559,7 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 			E=dalsi_krok(E,Objekt);
 		}
 	}
+	vymaz_seznam_VYHYBKY();
 	E=NULL;delete E;
 	return ret;
 }
@@ -2596,6 +2599,7 @@ Cvektory::TElement *Cvektory::vrat_element(unsigned int n)
 		if(E->n==n)break;
 		else E=dalsi_krok(E);
 	}
+	vymaz_seznam_VYHYBKY();
 	return E;
 }
 ////---------------------------------------------------------------------------
@@ -2616,6 +2620,7 @@ short Cvektory::PtInKota_elementu(TObjekt *Objekt,long X,long Y)
 		}
 		E=dalsi_krok(E,Objekt);
 	}
+	vymaz_seznam_VYHYBKY();
 	E=NULL;delete E;
 	return RET;
 }
@@ -2860,6 +2865,7 @@ double Cvektory::vrat_rotaci_jigu_po_predchazejicim_elementu(TElement *Element)
 		E=dalsi_krok(E);
 		//E=E->dalsi;
 	}
+	vymaz_seznam_VYHYBKY();
 	E=NULL;delete E;
 	//F->Memo("Pro "+Element->name+" o rotaci: "+Element->rotace_jig+" o celkové"+m.a360(akt_rotoce_jigu));//testovací výpis, časem možno odstranit
 	return m.a360(akt_rotoce_jigu);
