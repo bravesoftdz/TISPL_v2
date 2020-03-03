@@ -31,7 +31,6 @@ class TForm_definice_zakazek : public TForm
 {
 __published:	// IDE-managed Components
 	TColorDialog *ColorDialog1;
-	TrStringGridEd *rStringGridEd1;
 	TrEditNum *rEditNum_effektivita;
 	TscGPButton *scGPButton2;
 	TButton *Button5;
@@ -51,7 +50,6 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_zacatek;
   TscGPImageCollection *scGPImageCollection_layout;
 	void __fastcall FormShow(TObject *Sender);
-	void __fastcall rStringGridEd1Click(TObject *Sender);
 	void __fastcall scGPGlyphButton4Click(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall scGPButton_UlozitClick(TObject *Sender);

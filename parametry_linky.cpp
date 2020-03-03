@@ -164,7 +164,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
      // ShowMessage(Form1->d.v.PP.uchyt_pozice);
 
 
-		clBACKGROUND=(TColor)RGB(240,240,240);//F->m.clIntensive((TColor)RGB(128,128,128),115);//(250,250,250);
+		clBACKGROUND=clWhite;//(TColor)RGB(240,240,240);//F->m.clIntensive((TColor)RGB(128,128,128),115);//(250,250,250);
 
    	////////definice tabulky////////
 	PL_mGrid=new TmGrid(this);//vždy nutno jako první
@@ -217,7 +217,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	getmGridColors();
 
  	PL_mGrid->MergeCells(2,0,4,0);
-	PL_mGrid->MergeCells(0,0,0,1);
+ 	PL_mGrid->MergeCells(0,0,0,1);
   PL_mGrid->MergeCells(1,0,1,1);
 //  PL_mGrid->MergeCells(5,0,5,1);
   PL_mGrid->MergeCells(6,0,7,0);
