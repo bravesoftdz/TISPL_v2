@@ -167,6 +167,7 @@ class Cvektory
 		double mezera_podvozek;//mezera mezi podvozky  //DOPRYC
 		TPohon *pohon;//ukazatel na použitý pohon
 		TElement *element;//ukazatel na první element objektu
+		unsigned long element_n;//slouží pro uchování n elementu, při načítání z binárky jsou objekty načtené jako první, poté elementy, naposledy je třeba aktualizovat objektům ukazatel na element pomocí tohoto n
 		TPointD min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
 //		TPointD rozmer_kabiny;//délka a šířka obvodových zdí kabiny   //DOPRYC
 		T2Rect kabinaKotaX_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny -//DOPRYC

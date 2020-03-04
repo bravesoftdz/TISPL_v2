@@ -129,6 +129,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	float sipka_velikost=0.1*F->Zoom; if(sipka_velikost<1*3)sipka_velikost=1*3;
 	TPointD bod;
 	Cvektory::TElement *E=v.ELEMENTY->dalsi,*pom=NULL;
+	TPoint *tab_pruchodu=new TPoint[v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
 	short stav;
 	while(E!=NULL)
 	{
@@ -187,10 +188,11 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	  	}
 		}
 		//posun na další element
-		E=v.dalsi_krok(E);
+		E=v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);//nutné použít tento průcodový algoritmus, v tomto průchodu je volán algoritmus dalsi_krok, proto ho nelze použít
 	}
 	delete E;E=NULL;
 	pom=NULL;delete pom;
+	delete []tab_pruchodu;
 
 	///////////////Vykreslení spojnic mezi objekty
 	//cesty ZAKAZeK - jsou li k dispozici
@@ -5208,7 +5210,7 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			Cvektory::TElement *E=F->akt_Objekt->element;//přeskočí rovnou hlavičku
 			while(E!=NULL && E->objekt_n==F->akt_Objekt->n)
 			{
-				if((E->pohon==NULL && F->akt_Objekt->pohon==NULL || E->pohon!=NULL && F->akt_Objekt->pohon!=NULL && E->pohon->n==F->akt_Objekt->pohon->n || E->eID==200) && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT)//vykreslení tabulek elementů, kteří mají stejný pohon jako aktuálně editovaný pohon
+				if((E->pohon==NULL && F->akt_Objekt->pohon==NULL || E->pohon!=NULL && F->akt_Objekt->pohon!=NULL && E->pohon->n==F->akt_Objekt->pohon->n || E->eID==200 || E->eID==300 || E->eID==301) && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT)//vykreslení tabulek elementů, kteří mají stejný pohon jako aktuálně editovaný pohon
 				{
 					if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
 					{
