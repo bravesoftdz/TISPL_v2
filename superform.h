@@ -95,6 +95,7 @@ public:		// User declarations
   void setGlyphButtonDavka_Add(unsigned long ID,unsigned long Col);
 	void setGlyphButtonDavka_Remove(unsigned long Col,Cvektory::TZakazka *Z,Cvektory::TDavka *davka);
   void setGlyphButtonColor(unsigned long Row,unsigned long Col, Typ_buttonu typ, Cvektory::TZakazka *Z);
+  void set_formHW_button_positions();
   bool add_zakazka;
   bool add_davka;
 	bool zmena_TT;
@@ -102,6 +103,7 @@ public:		// User declarations
   bool volno;
   bool novy;
   int pocet_davek;
+  int pocet_zakazek;
   TColor barva;//barva zakáky
   TColor light_gray; //barva formu
   TColor def_gray; //vychozí barva oddìlující bunky

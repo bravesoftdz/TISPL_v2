@@ -37,15 +37,14 @@ __fastcall TForm_definice_zakazek::TForm_definice_zakazek(TComponent* Owner)
 
 // ---------------------------------------------------------------------------
 // nastavení barev komponent
-void TForm_definice_zakazek::nastav_form() {
+void TForm_definice_zakazek::nastav_form()
+{
   F->log(__func__); // logování
   // nastavení globálních barev
   light_gray = (TColor)RGB(240, 240, 240);
   def_gray = (TColor)RGB(200, 200, 200);
 
   Form_definice_zakazek->Color = light_gray; // RGB(43,87,154);
-
-  // rHTMLLabel3->Font->Color=(TColor)RGB(50,50,50);   //velky nadpis  1
 
   scGPButton2->Options->NormalColor = Form_definice_zakazek->Color;
   scGPButton2->Options->FocusedColor = Form_definice_zakazek->Color;
@@ -57,10 +56,8 @@ void TForm_definice_zakazek::nastav_form() {
   scGPButton_plan_vyroby->Options->FocusedColor = Form_definice_zakazek->Color;
   scGPButton_plan_vyroby->Options->HotColor = Form_definice_zakazek->Color;
   scGPButton_plan_vyroby->Options->PressedColor = Form_definice_zakazek->Color;
-  scGPButton_plan_vyroby->Options->FrameNormalColor =
-      Form_definice_zakazek->Color;
-  scGPButton_plan_vyroby->Options->FramePressedColor =
-      Form_definice_zakazek->Color;
+  scGPButton_plan_vyroby->Options->FrameNormalColor =Form_definice_zakazek->Color;
+  scGPButton_plan_vyroby->Options->FramePressedColor =Form_definice_zakazek->Color;
 
   Form1->m.designButton(scGPButton_Ulozit, Form_definice_zakazek, 1, 2);
   Form1->m.designButton(scGPButton_storno, Form_definice_zakazek, 2, 2);
@@ -69,7 +66,8 @@ void TForm_definice_zakazek::nastav_form() {
 // ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
 // zobrazení formuláøe
-void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender) {
+void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender)
+{
   F->log(__func__); // logování
   Left = Form1->ClientWidth / 2 - Width / 2;
   Top = Form1->ClientHeight / 2 - Height / 2;
@@ -99,8 +97,10 @@ void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender) {
   else // pokud je uloženo nìco v zakázkách tak je naètu
   {
     nacti_zakazky();
+    set_formHW_button_positions();
   }
   volno = true;
+
 }
 
 // ---------------------------------------------------------------------------
@@ -158,9 +158,11 @@ void TForm_definice_zakazek::nacti_zakazky()
   Cvektory::TZakazka *Z = F->d.v.ZAKAZKY_temp->dalsi;
   Cvektory::TDavka *D = NULL;
   nacitam_zakazky = true; // nutné??
+  pocet_zakazek = 0;
 	while (Z != NULL)
 	{
 		loadHeader(Z->n,false);
+    pocet_zakazek++;   //zvýšení poètu zakázek, které následnì nastaví výšku formuláøe v metodì set_formHW_button_positions
 		// vytvoøení tabulky zakázky, nikoliv zakázky a tabulky
 		D=Z->davky->dalsi;
     unsigned int Col = 3;
@@ -356,7 +358,7 @@ void TForm_definice_zakazek::setGlyphButtonDefault(unsigned long Row, unsigned l
     J->Options->NormalColorAlpha = 255;
     J->Options->FrameWidth = 1;
     J->Options->FrameNormalColor = clWhite;
-    J->Width = 23;
+    J->Width =  Z->mGrid->Columns[2].Width;
     J->Height = Z->mGrid->DefaultRowHeight;
     J->Options->ShapeStyle = scgpRect;
     // H->Width=30;
@@ -484,6 +486,8 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col, unsig
     Z->mGrid->Delete();
     Z->mGrid = NULL;
 		F->d.v.smaz_temp_zakazku(Z->n);
+    pocet_zakazek=F->d.v.ZAKAZKY_temp->predchozi->n; //zjisteni akt.poctu zakázek
+    set_formHW_button_positions(); //nové rozmìry formuláøe + pozice buttonu
 		FormPaint(this);
     volno = true;
   }
@@ -577,6 +581,8 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy)
       F->d.v.vloz_temp_zakazku("id", 0, "Zakazka " + AnsiString(n), clBlack, 0, 0, J, 0, 0, 0);
       Z = F->d.v.ZAKAZKY_temp->predchozi;
       F->d.v.inicializace_cesty(Z); // vytvoøí hlavièku cesty
+      pocet_zakazek=n;
+      set_formHW_button_positions();
     }
     else
       Z = F->d.v.vrat_temp_zakazku(zakazka_n);
@@ -678,7 +684,7 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy)
     delete Z;
     ////vykreslení mGridù
     if (novy)
-      FormPaint(this);
+    FormPaint(this);
     // pouze v pøípadì, že vytváøím novou zakázku s mGridem, pøi naèítání již vytvoøených zakázek musé dojít k vykreslìní až budou všehny naèteny, volaní vykreslení v metodì nacti_zakazky()
   }
 
@@ -693,8 +699,8 @@ void __fastcall TForm_definice_zakazek::FormClose(TObject *Sender,
 }
 // ---------------------------------------------------------------------------
 
-void TForm_definice_zakazek::setGlyphButtonDavka_Add(unsigned long ID,
-    unsigned long Col) {
+void TForm_definice_zakazek::setGlyphButtonDavka_Add(unsigned long ID,unsigned long Col)
+{
   Cvektory::TZakazka *Z = F->d.v.vrat_temp_zakazku(ID);
   TscGPGlyphButton *J = Z->mGrid->getGlyphButton(Col, 1);
   J->GlyphOptions->Kind = scgpbgkPlus;
@@ -734,7 +740,7 @@ void TForm_definice_zakazek::setGlyphButtonDavka_Remove(unsigned long Col, Cvekt
 	H->Options->NormalColorAlpha = 255;
 	H->Options->FrameWidth = 1;
 	H->Options->FrameNormalColor = clWhite;
-	H->Width = 80;
+	H->Width =  Z->mGrid->Columns[2].Width;
 	H->Height = Z->mGrid->DefaultRowHeight;
   H->Options->ShapeStyle = scgpRect;
   H->Hint = F->ls->Strings[441]; // "Smazat dávku";
@@ -743,8 +749,8 @@ void TForm_definice_zakazek::setGlyphButtonDavka_Remove(unsigned long Col, Cvekt
 	delete H;
 }
 
-void TForm_definice_zakazek::setGlyphButtonColor(unsigned long Row,
-    unsigned long Col, Typ_buttonu typ, Cvektory::TZakazka *Z) {
+void TForm_definice_zakazek::setGlyphButtonColor(unsigned long Row,unsigned long Col, Typ_buttonu typ, Cvektory::TZakazka *Z)
+{
   F->log(__func__); // logování
   TscGPGlyphButton *H = Z->mGrid->getGlyphButton(Col, 1);
   H->GlyphOptions->Kind = scgpbgkMore;
@@ -765,4 +771,12 @@ void TForm_definice_zakazek::setGlyphButtonColor(unsigned long Row,
   H->ShowHint = true;
   H = NULL;
   delete H;
+}
+
+void TForm_definice_zakazek::set_formHW_button_positions()
+{
+  Form_definice_zakazek->Height = pocet_zakazek *150  + 100 + scGPButton_Ulozit->Height; //150px vyska mgridu 100 - hlavicky + buttony kolem
+  scGPButton_Ulozit->Top= Form_definice_zakazek->Height - scGPButton_Ulozit->Height - 10;
+  scGPButton_storno->Top=scGPButton_Ulozit->Top;
+  if(pocet_zakazek>=3) Form_definice_zakazek->Top=50;
 }
