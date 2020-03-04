@@ -24,6 +24,7 @@ private:	// User declarations
 	void korelace_tab_pohonu_elementy(Cvektory::TElement *mimo_element=NULL);//zobrazí korelaci podle tabulky pohonu ve všech elementech,volitelnı parametr, ukazatel na element kterı chci pøeskoèit
 	void korelace_v_elementech(long ID,long Row);//jedná se o vnitøní korelace, v jednom elementu (jeden element však mùe ovlivnit i tabulku pohonu)
 	Cvektory::TElement *vrat_element_z_tabulky(long ID);//vrátí ukazatel na element, nelze pouít vra element stavající, z dùvodu e ID tabulky ji nemusí bıt totoné s n robota
+	void prirazeni_pohohonu_vetvi(Cvektory::TElement *E);//zmìní pohon sekundární vìtvi, z vıhybky nebo spojky (pokud sekundární vìtev existuje)
 
 	//promìnné pro UnitX
 	bool editace_pohonu;

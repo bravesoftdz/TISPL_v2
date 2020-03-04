@@ -5,8 +5,8 @@ object Form_definice_zakazek: TForm_definice_zakazek
   BorderStyle = bsNone
   BorderWidth = 1
   Caption = 'Definice zak'#225'zek'
-  ClientHeight = 861
-  ClientWidth = 1020
+  ClientHeight = 427
+  ClientWidth = 682
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clDefault
@@ -34,310 +34,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Quality = fqClearType
     ParentFont = False
   end
-  object rStringGridEd1: TrStringGridEd
-    Left = 5
-    Top = 744
-    Width = 1000
-    Height = 73
-    Margins.Left = 0
-    Margins.Top = 0
-    Margins.Right = 0
-    Margins.Bottom = 0
-    Align = alCustom
-    BevelEdges = []
-    BevelInner = bvNone
-    BevelOuter = bvNone
-    BorderStyle = bsNone
-    Color = clWhite
-    ColCount = 11
-    Ctl3D = False
-    DefaultColWidth = 90
-    DefaultRowHeight = 30
-    DefaultDrawing = False
-    DrawingStyle = gdsGradient
-    FixedColor = clWhite
-    RowCount = 2
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clGray
-    Font.Height = -15
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    GradientEndColor = clWhite
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goTabs, goAlwaysShowEditor]
-    ParentCtl3D = False
-    ParentFont = False
-    TabOrder = 0
-    StyleElements = [seFont, seClient]
-    OnClick = rStringGridEd1Click
-    Columns = <
-      item
-        Alignment = taCenter
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGrayText
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        Font.Quality = fqClearType
-        ParentFont = False
-        TitleCaption = 'Po'#345'ad'#237
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -13
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        TitleFont.Quality = fqClearType
-        TitleParentFont = False
-        TitleAlignment = taCenter
-        Width = 90
-      end
-      item
-        ButtonStyle = sgbDropDownList
-        DataType = sgdInteger
-        Alignment = taCenter
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGrayText
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        Font.Quality = fqClearType
-        ParentFont = False
-        PickList.Strings = (
-          '0'
-          '1'
-          '')
-        TitleCaption = 'Typ'
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -13
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        TitleFont.Quality = fqClearType
-        TitleParentFont = False
-        TitleAlignment = taCenter
-        Width = 90
-      end
-      item
-        Alignment = taCenter
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGrayText
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        Font.Quality = fqClearType
-        ParentFont = False
-        TitleCaption = 'N'#225'zev'
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -13
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        TitleFont.Quality = fqClearType
-        TitleParentFont = False
-        TitleAlignment = taCenter
-        Width = 90
-      end
-      item
-        ButtonStyle = sgbDropDownColor
-        MinValue = 1.000000000000000000
-        MaxValue = 10.000000000000000000
-        OutOfLimitDataColor = clPurple
-        DropDownRows = 20
-        Alignment = taCenter
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGrayText
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        Font.Quality = fqClearType
-        ParentFont = False
-        TitleCaption = 'Barva'
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -13
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        TitleFont.Quality = fqClearType
-        TitleParentFont = False
-        TitleAlignment = taCenter
-        Width = 90
-        FieldName = 'Polozky'
-      end
-      item
-        DataType = sgdNumber
-        Alignment = taCenter
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGrayText
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        Font.Quality = fqClearType
-        ParentFont = False
-        TitleCaption = 'Pom'#283'r'
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -13
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        TitleFont.Quality = fqClearType
-        TitleParentFont = False
-        TitleAlignment = taCenter
-        Width = 90
-      end
-      item
-        ButtonStyle = sgbButton
-        Alignment = taCenter
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGrayText
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        Font.Quality = fqClearType
-        ParentFont = False
-        TitleCaption = 'Jig'
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -13
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        TitleFont.Quality = fqClearType
-        TitleParentFont = False
-        TitleAlignment = taCenter
-        Width = 90
-      end
-      item
-        DataType = sgdNumber
-        Alignment = taCenter
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGrayText
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        Font.Quality = fqClearType
-        ParentFont = False
-        TitleCaption = 'Voz'#237'ky po'#269'et'
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -13
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        TitleFont.Quality = fqClearType
-        TitleParentFont = False
-        TitleAlignment = taCenter
-        Width = 90
-      end
-      item
-        DataType = sgdNumber
-        Alignment = taCenter
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGray
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        Font.Quality = fqClearType
-        ParentFont = False
-        TitleCaption = 'Serv.voz po'#269'et'
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -13
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        TitleFont.Quality = fqClearType
-        TitleParentFont = False
-        TitleAlignment = taCenter
-        Width = 90
-      end
-      item
-        DataType = sgdNumber
-        Alignment = taCenter
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGray
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        Font.Quality = fqClearType
-        ParentFont = False
-        TitleCaption = 'Opakov'#225'n'#237
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -13
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        TitleFont.Quality = fqClearType
-        TitleParentFont = False
-        TitleAlignment = taCenter
-        Width = 90
-      end
-      item
-        ButtonStyle = sgbButton
-        Alignment = taCenter
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGray
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        Font.Quality = fqClearType
-        ParentFont = False
-        TitleCaption = 'Cesta'
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -13
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        TitleFont.Quality = fqClearType
-        TitleParentFont = False
-        TitleAlignment = taCenter
-        Width = 90
-      end
-      item
-        DataType = sgdNumber
-        Alignment = taCenter
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGray
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        Font.Quality = fqClearType
-        ParentFont = False
-        TitleCaption = 'TakTime [s]'
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -13
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        TitleFont.Quality = fqClearType
-        TitleParentFont = False
-        TitleAlignment = taCenter
-        Width = 90
-      end>
-    ChangedCellsBkColor = clWhite
-    ColWidths = (
-      90
-      90
-      90
-      90
-      90
-      90
-      90
-      90
-      90
-      90
-      90)
-    RowHeights = (
-      30
-      30)
-  end
   object scGPButton2: TscGPButton
     Left = 1098
     Top = 724
@@ -349,7 +45,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 1
+    TabOrder = 0
     Animation = False
     Caption = '   Parametry v'#253'roby'
     CanFocused = False
@@ -447,7 +143,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Width = 225
     Height = 25
     Caption = 'Vypi'#353' cestu aktualni zakazky'
-    TabOrder = 2
+    TabOrder = 1
     Visible = False
   end
   object scGPButton_plan_vyroby: TscGPButton
@@ -461,7 +157,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 3
+    TabOrder = 2
     Animation = False
     Caption = '   Pl'#225'n v'#253'roby'
     CanFocused = False
@@ -561,7 +257,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Hint = 'P'#345'idat novou zak'#225'zku'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 4
+    TabOrder = 3
     TabStop = True
     OnClick = scGPGlyphButton_add_zakazkaClick
     Animation = False
@@ -650,10 +346,10 @@ object Form_definice_zakazek: TForm_definice_zakazek
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
-    Width = 1020
+    Width = 682
     Height = 34
     Align = alTop
-    TabOrder = 5
+    TabOrder = 4
     BlurBackground = False
     BlurBackgroundAmount = 5
     CustomImageIndex = -1
@@ -685,9 +381,10 @@ object Form_definice_zakazek: TForm_definice_zakazek
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
+    ExplicitWidth = 1020
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 970
+      Left = 632
       Top = 0
       Width = 50
       Height = 33
@@ -780,10 +477,11 @@ object Form_definice_zakazek: TForm_definice_zakazek
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 970
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 870
+      Left = 532
       Top = 0
       Width = 50
       Height = 33
@@ -875,11 +573,12 @@ object Form_definice_zakazek: TForm_definice_zakazek
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 870
     end
     object scLabel_header: TscLabel
       Left = 0
       Top = 0
-      Width = 833
+      Width = 495
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -907,10 +606,11 @@ object Form_definice_zakazek: TForm_definice_zakazek
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Definice zak'#225'zek'
+      ExplicitWidth = 833
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 920
+      Left = 582
       Top = 0
       Width = 50
       Height = 33
@@ -1002,9 +702,10 @@ object Form_definice_zakazek: TForm_definice_zakazek
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 920
     end
     object scGPGlyphButton15: TscGPGlyphButton
-      Left = 833
+      Left = 495
       Top = 0
       Width = 37
       Height = 34
@@ -1098,6 +799,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 833
     end
   end
   object rEditNum_effektivita: TrEditNum
@@ -1112,12 +814,12 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 6
+    TabOrder = 5
     Value = 90.000000000000000000
   end
   object scGPButton_Ulozit: TscGPButton
-    Left = 389
-    Top = 818
+    Left = 228
+    Top = 370
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -1126,7 +828,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 7
+    TabOrder = 6
     TabStop = True
     OnClick = scGPButton_UlozitClick
     Animation = False
@@ -1222,8 +924,8 @@ object Form_definice_zakazek: TForm_definice_zakazek
     AllowAllUp = False
   end
   object scGPButton_storno: TscGPButton
-    Left = 529
-    Top = 818
+    Left = 368
+    Top = 370
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -1232,7 +934,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 8
+    TabOrder = 7
     TabStop = True
     OnClick = scGPGlyphButton4Click
     Animation = False
@@ -1381,7 +1083,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     FrameColor = clBtnShadow
     FrameActiveColor = clHighlight
     Text = ''
-    TabOrder = 9
+    TabOrder = 8
   end
   object scGPGlyphButton_remove: TscGPGlyphButton
     Left = 210
@@ -1391,7 +1093,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Hint = 'Odebrat posledn'#237' vlo'#382'enou zak'#225'zku'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 10
+    TabOrder = 9
     TabStop = True
     Animation = False
     Caption = 'scGPGlyphButton_remove_zakazka'

@@ -413,6 +413,12 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					F->d.v.reserve_time(E,c);
 				}
 			} break;
+			case 300:
+			case 301:
+			{
+				input_state=COMBO;//nastaveni stavu
+				prirazeni_pohohonu_vetvi(E);
+			} break;
 		}
 		E->mGrid->Refresh();//refresh aktuálnì upravované tabulky
 		posledni_E=E;//uložení posledního editovaného elementu
@@ -754,13 +760,35 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 				}break;
 				case 6://otoè aktivní
 				{
-          //naètení hodnot z pohonu
+					//naètení hodnot z pohonu
 					double aRD=F->akt_Objekt->pohon->aRD,roztec=F->akt_Objekt->pohon->roztec;
 					//pøepoèty
 					E->WT=F->m.cekani_na_palec(0,roztec,aRD,3);//dùležité pro výpoèet RT, nezobrazuje se
 					E->PTotoc=F->m.PT(E->OTOC_delka,F->akt_Objekt->pohon->aRD);
 					E->mGrid->Cells[1][3].Text = F->m.round2double(F->outPT(E->PTotoc),3);
 					F->d.v.reserve_time(E);
+				}break;
+				case 300:
+				{
+					if(E->dalsi2!=NULL && E->dalsi2->pohon!=NULL)
+					{
+						//naètení hodnot z pohonu
+						double aRD=E->dalsi2->pohon->aRD,roztec=E->dalsi2->pohon->roztec;
+						//pøepoèty
+						E->WT=F->m.cekani_na_palec(0,roztec,aRD,3);//dùležité pro výpoèet RT, nezobrazuje se
+						E->mGrid->Cells[1][2].Text = F->m.round2double(F->outPT(E->WT),3);
+					}
+				}break;
+				case 301:
+				{
+					if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)
+					{
+						//naètení hodnot z pohonu
+						double aRD=E->dalsi->pohon->aRD,roztec=E->dalsi->pohon->roztec;
+						//pøepoèty
+						E->WT=F->m.cekani_na_palec(0,roztec,aRD,3);//dùležité pro výpoèet RT, nezobrazuje se
+						E->mGrid->Cells[1][2].Text = F->m.round2double(F->outPT(E->WT),3);
+					}
 				}break;
 			}
 			E->mGrid->Refresh();
@@ -817,6 +845,10 @@ void TFormX::aktualizace_tab_elementu_pOdebran ()
 				case 6://otoè aktivní
 				{
 					E->mGrid->Cells[1][3].Text=0;
+				}break;
+				case 301://spojka
+				{
+					E->mGrid->Cells[1][2].Text=0;
 				}break;
 			}
 			E->mGrid->Refresh();
@@ -1196,5 +1228,53 @@ void TFormX::aktualizace_zon_otaceni(Cvektory::TElement *E)
 		O=O->dalsi;
 	}
 	delete O;O=NULL;
+}
+//---------------------------------------------------------------------------
+//zmìní pohon sekundární vìtvi, z výhybky nebo spojky (pokud sekundární vìtev existuje)
+void TFormX::prirazeni_pohohonu_vetvi(Cvektory::TElement *E)
+{
+	////deklarace potøebných promìnných
+	TscGPComboBox *C=E->mGrid->getCombo(1,1);
+	Cvektory::TPohon *p=NULL;
+	Cvektory::TElement *e=NULL;
+
+	////zmìna pohonu na vedlejší vìtvi
+	if(C->ItemIndex!=0)p=F->d.v.vrat_pohon(C->ItemIndex);
+	if(E->eID==300)e=E->dalsi2;//pøiøazuji pohon z výhybky
+	else e=E->predchozi2;//pøiøazuji pohon ze spojky
+	while(e!=NULL && e->n>0 && e->idetifikator_vyhybka_spojka!=E->idetifikator_vyhybka_spojka)
+	{
+		e->pohon=p;
+		if(E->eID==300)e=e->dalsi;
+		else e=e->predchozi;
+	}
+
+  if(E->eID==300)
+	{
+		if(E->dalsi2!=NULL && E->dalsi2->pohon!=NULL)
+		{
+			//naètení hodnot z pohonu
+			double aRD=E->dalsi2->pohon->aRD,roztec=E->dalsi2->pohon->roztec;
+			//pøepoèty
+			E->WT=F->m.cekani_na_palec(0,roztec,aRD,3);//dùležité pro výpoèet RT, nezobrazuje se
+		}
+		else E->WT=0;
+		E->mGrid->Cells[1][2].Text = F->m.round2double(F->outPT(E->WT),3);
+	}
+	if(E->eID==301)
+	{
+		if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)
+		{
+			//naètení hodnot z pohonu
+			double aRD=E->dalsi->pohon->aRD,roztec=E->dalsi->pohon->roztec;
+			//pøepoèty
+			E->WT=F->m.cekani_na_palec(0,roztec,aRD,3);//dùležité pro výpoèet RT, nezobrazuje se
+		}else E->WT=0;
+		E->mGrid->Cells[1][2].Text = F->m.round2double(F->outPT(E->WT),3);
+	}
+	////ukazatelové záležitosti
+	C=NULL;delete C;
+	p=NULL;delete p;
+	e=NULL;delete e;
 }
 //---------------------------------------------------------------------------

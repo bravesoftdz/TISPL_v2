@@ -216,16 +216,14 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
 	getmGridColors();
 
- 	PL_mGrid->MergeCells(2,0,4,0);
-	PL_mGrid->MergeCells(0,0,0,1);
-  PL_mGrid->MergeCells(1,0,1,1);
-//  PL_mGrid->MergeCells(5,0,5,1);
+ 	PL_mGrid->MergeCells(2,0,4,0);   //slouceni rozsahy pohonu - hlavicka
+ 	PL_mGrid->MergeCells(0,0,0,1);   //vertiklani slouceni nazvu
+  PL_mGrid->MergeCells(1,0,1,1);   //horizontalni slouceni nazvu
   PL_mGrid->MergeCells(6,0,7,0);
   PL_mGrid->MergeCells(6,1,7,1);
   PL_mGrid->MergeCells(6,0,6,1);
   PL_mGrid->MergeCells(7,0,7,1);
   PL_mGrid->MergeCells(8,0,8,1);
-
 
    rHTMLLabel_InfoText->Caption="";
    rHTMLLabel_InfoText->Top = Button_storno->Top - Button_storno->Height + 5;
