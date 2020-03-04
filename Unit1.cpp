@@ -6548,6 +6548,8 @@ void TForm1::ukonceni_geometrie()
 		E1=NULL;delete E1;
 		E2=NULL;delete E2;
 	}
+	//pokud existují výhybky může dojít v průběhu editace k umožnění nebo znemožnění přiřazovat pohon na vedlejší větev, tato metoda nastaví mGridy na výchozí
+	if(d.v.pocet_vyhybek>0)mGrid_on_mGrid();
 	//kontrola zda editací geometrie nedošlo ke změně
 	vlozit_predavaci_misto();
 }
@@ -6672,6 +6674,10 @@ void TForm1::mGrid_on_mGrid()
 	log(__func__);//logování
 	if(akt_Objekt!=NULL && akt_Objekt->zobrazit_mGrid)//pokud existuje editovaný objekt a jsou zobrazeny mGridy
 	{
+    ////zablokování OnChange tabulek
+		FormX->input_state=FormX->NO;
+		FormX->vstoupeno_poh=false;
+		FormX->vstoupeno_elm=false;
 		////deklarace proměnných
 		Cvektory::TElement *E=akt_Objekt->element,*prekryty=NULL;
 		unsigned long objekt_n=akt_Objekt->n;
@@ -8529,6 +8535,8 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 		C->Clear();
 		C->Font->Color=(TColor)RGB(43,87,154);
 		C->BiDiMode=bdRightToLeft;
+		C->Enabled=true;
+    //přidávání itemů do comba
 		TscGPListBoxItem *I;
 		I=C->Items->Add();
 		if(d.v.POHONY->dalsi!=NULL)I->Caption=ls->Strings[218];//vyberte pohon     217 = žádný pohon k výberu
@@ -8541,7 +8549,15 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 			p=p->dalsi;
     }
 		delete p;p=NULL;
+		//přiřazení itemindexu podle pohonu na vedlejší větvi, pokud je definovaná
 		C->ItemIndex=0;
+		if(E->dalsi2!=E->predchozi2)
+		{
+			if(E->eID==300 && E->dalsi2->pohon!=NULL)C->ItemIndex=E->dalsi2->pohon->n;
+			if(E->eID==301 && E->predchozi2->pohon!=NULL)C->ItemIndex=E->predchozi2->pohon->n;
+		}
+		else C->Enabled=false;
+		//ukazatelové záležitosti
 		I=NULL;delete I;
 		C=NULL;delete C;
 	}

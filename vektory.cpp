@@ -4654,6 +4654,16 @@ void Cvektory::smaz_temp_zakazku(unsigned long n)
 			{
 				ukaz->predchozi->dalsi=ukaz->dalsi;
 				ukaz->dalsi->predchozi=ukaz->predchozi;
+				//uprava indexů
+				TZakazka *Z=ukaz->dalsi;
+				unsigned long n=ukaz->n;
+				while(Z!=NULL)
+				{
+					Z->n=n;
+					n++;
+					Z=Z->dalsi;
+				}
+				delete Z;Z=NULL;
 			}
 			else//poslední prvek
 			{
