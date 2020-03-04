@@ -277,19 +277,22 @@ void __fastcall TForm_definice_zakazek::scGPGlyphButton_add_zakazkaClick(TObject
 
 // ---------------------------------------------------------------------------
 
-void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender) {
-	//vykreslování mGridù zakázek
-	F->log(__func__);
-	unsigned int width=682;//defaul Width formu
+void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender)
+{
+	////deklarace
+	F->log(__func__); //logování
+	unsigned int width=682;//defaul ClientWidth formu
+	unsigned int height=283;//defaul ClientHeight formu (pro jednu zakázku), mezera mezi koncem formu a posledním mGridem = 64px
 	//vytvoøení bmp
 	Graphics::TBitmap *bmp_total=new Graphics::TBitmap;
 	bmp_total->Width=Form_definice_zakazek->Width;
 	bmp_total->Height=Form_definice_zakazek->Height;
 	//vykreslení podkladní barvy
-  bmp_total->Canvas->Brush->Color = light_gray;
+	bmp_total->Canvas->Brush->Color = light_gray;
 	bmp_total->Canvas->FillRect(TRect(0,0,bmp_total->Width,bmp_total->Height));
-	//vykreslìní mGridù
-  Cvektory::TZakazka *Z=F->d.v.ZAKAZKY_temp->dalsi;
+
+	////vykreslìní mGridù
+	Cvektory::TZakazka *Z=F->d.v.ZAKAZKY_temp->dalsi;
 	while (Z!=NULL)
 	{
 		//dynamické pozicování tabulek
@@ -299,17 +302,28 @@ void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender) {
 		Z->mGrid->Show(bmp_total->Canvas);
 		//kontrola zda je form dostateènì široký
 		if(Z->mGrid->Left+Z->mGrid->Width+Z->mGrid->Left>width)width=Z->mGrid->Left+Z->mGrid->Width+Z->mGrid->Left;
+		if(Z->dalsi==NULL && Z->mGrid->Top+Z->mGrid->Height+64>height)height=Z->mGrid->Top+Z->mGrid->Height+64;
 		Z=Z->dalsi;
-  }
+	}
 	delete Z;Z=NULL;
-	//kontrola zda není nutné zvìtšit form
-	if(width!=Form_definice_zakazek->ClientWidth)
+
+	////kontrola zda není nutné zvìtšit form
+	if(width!=Form_definice_zakazek->ClientWidth || height!=Form_definice_zakazek->ClientHeight)
 	{
-		Form_definice_zakazek->Width=width+2;
+    //upravení rozmìrù formu
+		Form_definice_zakazek->Width=width+2;//+2 rozdíl mezi clientwidth a width
+		Form_definice_zakazek->Height=height+2;//+2 rozdíl mezi clientwidth a height
+		//pozicování buttonu
+		scGPButton_Ulozit->Top=Form_definice_zakazek->Height-scGPButton_Ulozit->Height - 10;
+		scGPButton_storno->Top=scGPButton_Ulozit->Top;
+		scGPButton_Ulozit->Left=Form_definice_zakazek->Width/2-scGPButton_Ulozit->Width-22/2;
+		scGPButton_storno->Left=Form_definice_zakazek->Width/2+22/2;
+		//znovuvykreslìní
 		FormPaint(this);//pokud je nutné zvìtšít form, musí se znova spustit formpaint (bmp ma nastavené rozmìry pøed zmìnou)
 	}
 	else Canvas->Draw(0,0,bmp_total);//finální pøedání bmp_out do Canvasu
-	//smazání bmp
+
+	////smazání bmp
 	delete(bmp_total);//velice nutné
 }
 // ---------------------------------------------------------------------------
@@ -779,8 +793,8 @@ void TForm_definice_zakazek::setGlyphButtonColor(unsigned long Row,unsigned long
 
 void TForm_definice_zakazek::set_formHW_button_positions()
 {
-  Form_definice_zakazek->Height = pocet_zakazek *150  + 100 + scGPButton_Ulozit->Height; //150px vyska mgridu 100 - hlavicky + buttony kolem
-  scGPButton_Ulozit->Top= Form_definice_zakazek->Height - scGPButton_Ulozit->Height - 10;
-  scGPButton_storno->Top=scGPButton_Ulozit->Top;
-  if(pocet_zakazek>=3) Form_definice_zakazek->Top=50;
+//  Form_definice_zakazek->Height = pocet_zakazek *150  + 100 + scGPButton_Ulozit->Height; //150px vyska mgridu 100 - hlavicky + buttony kolem
+//  scGPButton_Ulozit->Top= Form_definice_zakazek->Height - scGPButton_Ulozit->Height - 10;
+//  scGPButton_storno->Top=scGPButton_Ulozit->Top;
+//  if(pocet_zakazek>=3) Form_definice_zakazek->Top=50;
 }
