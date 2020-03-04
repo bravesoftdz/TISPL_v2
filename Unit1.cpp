@@ -8229,24 +8229,19 @@ void TForm1::tab_pohon_COMBO (int index)
 		else akt_Objekt->pohon=NULL;
 		Cvektory::TElement *E=akt_Objekt->element;
 		//přiřazení pohonu elementům
-		while(E!=NULL)
+		while(E!=NULL && E->objekt_n==akt_Objekt->n)
 		{
 			if(E->pohon==NULL && p_puvodni==0 || E->pohon!=NULL && p_puvodni!=0 && E->pohon->n==p_puvodni){E->pohon=akt_Objekt->pohon;}
 			set_enabled_mGrid(E);
-			E=d.v.dalsi_krok(E,akt_Objekt);
-		}
-		//aktualizae WT v tabulkách PM
-		E=akt_Objekt->element;
-		while(E!=NULL)
-		{
-      if(E->eID==200)
+			//aktualizae WT v tabulkách PM
+			if(E->eID==200)
 			{
 				E->WT=0;
 				if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)E->WT=m.cekani_na_palec(0,E->dalsi->pohon->roztec,E->dalsi->pohon->aRD,3);
 				if(E->dalsi==NULL && pom->dalsi!=NULL && pom->element->pohon!=NULL)E->WT=m.cekani_na_palec(0,pom->element->pohon->roztec,pom->element->pohon->aRD,3);
 				E->mGrid->Cells[1][1].Text=m.round2double(outPT(E->WT),3);
 			}
-			E=d.v.dalsi_krok(E,akt_Objekt);
+			E=E->dalsi;
 		}
 		E=NULL;delete E;
 		//ostatní
@@ -9285,7 +9280,7 @@ void TForm1::redesign_element()
 			if (JID==105 || JID==106 || JID==107) zdelka_otoce=true;//delka otoče
 			break;
 		}
-		case 0 :case 4:case 10:case 14:case 18:case 104:case 108:case 200:
+		case 0 :case 4:case 10:case 14:case 18:case 104:case 108:case 200:case 300:case 301:
 		{
 			zcas=true;//pouze čas
 			break;
@@ -9476,7 +9471,14 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 			E->mGrid->Cells[0][1].Text=ls->Strings[224]+" "+cas;//"WT palec "
 			E->mGrid->Cells[1][1].Text=m.round2double(outPT(E->WT),3);
 			break;
-    }
+		}
+		case 300:
+		case 301:
+		{
+			E->mGrid->Cells[0][2].Text=ls->Strings[224]+" "+cas;//"WT palec "
+			E->mGrid->Cells[1][2].Text=m.round2double(outPT(E->WT),3);
+			break;
+		}
 	}
 	E->data.RT.y=puv_RT;//navrácení validace k RT hodnotě
 }

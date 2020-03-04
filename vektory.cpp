@@ -1781,10 +1781,14 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->objekt_n=Objekt->n;//příslušnost elementu k objektu
 	//if(F->akt_Objekt!=NULL)novy->objekt_n=F->akt_Objekt->n;
 	novy->pohon=NULL;//pohon na kterém se nachází element
-	if(novy->dalsi!=NULL && novy->dalsi->objekt_n==Objekt->n)novy->pohon=novy->dalsi->pohon;
+	//if(novy->dalsi!=NULL && novy->dalsi->objekt_n==Objekt->n)novy->pohon=novy->dalsi->pohon;
 	//else novy->pohon=Objekt->pohon;
 //	if(novy->predchozi->n!=0 && novy->predchozi->objekt_n==Objekt->n)novy->pohon=novy->predchozi->pohon;
 //	else if(novy->dalsi!=NULL && novy->dalsi->objekt_n==Objekt->n)novy->pohon=novy->dalsi->pohon;
+	novy->pohon=NULL;
+	if(novy->predchozi->n>0 && novy->predchozi->objekt_n==Objekt->n && novy->predchozi->eID!=300)novy->pohon=novy->predchozi->pohon;
+	if(novy->predchozi->n>0 && novy->predchozi->objekt_n!=Objekt->n && (Objekt->element->predchozi->n>0 && novy->predchozi->objekt_n!=Objekt->element->predchozi->objekt_n || Objekt->element->predchozi->n==0))novy->pohon=novy->predchozi->pohon;
+	if(novy==Objekt->element && novy->dalsi!=NULL)novy->pohon=novy->dalsi->pohon;
 
 	//název
 	AnsiString T="";

@@ -107,7 +107,7 @@ void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender)
 // provede pøepnutí jazyka na komponentách, mGridy se zmìní automaticky pøi vytváøení
 void TForm_definice_zakazek::nastav_jazyk() {
   F->log(__func__); // logování
-  scLabel_header->Caption = F->ls->Strings[432];
+	scLabel_header->Caption = F->ls->Strings[432];
   scGPGlyphButton_add_zakazka->Hint = F->ls->Strings[433];
   scGPButton_Ulozit->Caption = F->ls->Strings[24];
   scGPButton_storno->Caption = F->ls->Strings[71];
@@ -278,35 +278,39 @@ void __fastcall TForm_definice_zakazek::scGPGlyphButton_add_zakazkaClick(TObject
 // ---------------------------------------------------------------------------
 
 void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender) {
-  // vykreslování mGridù zakázek
-  F->log(__func__);
-  // vytvoøení bmp
-  Graphics::TBitmap *bmp_total = new Graphics::TBitmap;
-  bmp_total->Width = Form_definice_zakazek->Width;
-  bmp_total->Height = Form_definice_zakazek->Height;
-  // vykreslení podkladní barvy
+	//vykreslování mGridù zakázek
+	F->log(__func__);
+	unsigned int width=682;//defaul Width formu
+	//vytvoøení bmp
+	Graphics::TBitmap *bmp_total=new Graphics::TBitmap;
+	bmp_total->Width=Form_definice_zakazek->Width;
+	bmp_total->Height=Form_definice_zakazek->Height;
+	//vykreslení podkladní barvy
   bmp_total->Canvas->Brush->Color = light_gray;
-  bmp_total->Canvas->FillRect(TRect(0, 0, bmp_total->Width, bmp_total->Height));
-  // vykreslìní mGridù
-  Cvektory::TZakazka *Z = F->d.v.ZAKAZKY_temp->dalsi;
-  while (Z != NULL) {
-    // dynamické pozicování tabulek
-    if (Z->predchozi->n == 0)
-      Z->mGrid->Top = scGPButton_plan_vyroby->Height + scLabel_header->Height +
-          Z->mGrid->Rows[0].Height;
-    else
-      Z->mGrid->Top = Z->predchozi->mGrid->Top + Z->predchozi->mGrid->Height +
-          Z->mGrid->Rows[0].Height;
-    // vykreslení tabulky
-    Z->mGrid->Show(bmp_total->Canvas);
-    Z = Z->dalsi;
+	bmp_total->Canvas->FillRect(TRect(0,0,bmp_total->Width,bmp_total->Height));
+	//vykreslìní mGridù
+  Cvektory::TZakazka *Z=F->d.v.ZAKAZKY_temp->dalsi;
+	while (Z!=NULL)
+	{
+		//dynamické pozicování tabulek
+		if (Z->predchozi->n==0)Z->mGrid->Top=scGPButton_plan_vyroby->Height+scLabel_header->Height+Z->mGrid->Rows[0].Height;
+		else Z->mGrid->Top=Z->predchozi->mGrid->Top+Z->predchozi->mGrid->Height+Z->mGrid->Rows[0].Height;
+		//vykreslení tabulky
+		Z->mGrid->Show(bmp_total->Canvas);
+		//kontrola zda je form dostateènì široký
+		if(Z->mGrid->Left+Z->mGrid->Width+Z->mGrid->Left>width)width=Z->mGrid->Left+Z->mGrid->Width+Z->mGrid->Left;
+		Z=Z->dalsi;
   }
-  delete Z;
-  Z = NULL;
-  Z = NULL;
-  // finální pøedání bmp_out do Canvasu
-  Canvas->Draw(0, 0, bmp_total);
-  delete(bmp_total); // velice nutné
+	delete Z;Z=NULL;
+	//kontrola zda není nutné zvìtšit form
+	if(width!=Form_definice_zakazek->ClientWidth)
+	{
+		Form_definice_zakazek->Width=width+2;
+		FormPaint(this);//pokud je nutné zvìtšít form, musí se znova spustit formpaint (bmp ma nastavené rozmìry pøed zmìnou)
+	}
+	else Canvas->Draw(0,0,bmp_total);//finální pøedání bmp_out do Canvasu
+	//smazání bmp
+	delete(bmp_total);//velice nutné
 }
 // ---------------------------------------------------------------------------
 
