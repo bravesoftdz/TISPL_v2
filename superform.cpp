@@ -165,7 +165,6 @@ void TForm_definice_zakazek::nacti_zakazky()
     pocet_zakazek++;   //zvýšení poètu zakázek, které následnì nastaví výšku formuláøe v metodì set_formHW_button_positions
 		// vytvoøení tabulky zakázky, nikoliv zakázky a tabulky
 		D=Z->davky->dalsi;
-    unsigned int Col = 3;
 		while (D != NULL)
 		{
 			vloz_davku(Z,D);
@@ -281,8 +280,8 @@ void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender)
 {
 	////deklarace
 	F->log(__func__); //logování
-	unsigned int width=682;//defaul ClientWidth formu
-	unsigned int height=283;//defaul ClientHeight formu (pro jednu zakázku), mezera mezi koncem formu a posledním mGridem = 64px
+	int width=682;//defaul ClientWidth formu
+	int height=283;//defaul ClientHeight formu (pro jednu zakázku), mezera mezi koncem formu a posledním mGridem = 64px
 	//vytvoøení bmp
 	Graphics::TBitmap *bmp_total=new Graphics::TBitmap;
 	bmp_total->Width=Form_definice_zakazek->Width;
@@ -310,7 +309,7 @@ void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender)
 	////kontrola zda není nutné zvìtšit form
 	if(width!=Form_definice_zakazek->ClientWidth || height!=Form_definice_zakazek->ClientHeight)
 	{
-    //upravení rozmìrù formu
+		//upravení rozmìrù formu
 		Form_definice_zakazek->Width=width+2;//+2 rozdíl mezi clientwidth a width
 		Form_definice_zakazek->Height=height+2;//+2 rozdíl mezi clientwidth a height
 		//pozicování buttonu
@@ -530,7 +529,7 @@ void TForm_definice_zakazek::OnChange(long Tag, long ID, unsigned long Col,unsig
       long pocet = 0;
       long pocet_prazdnych = 0;
       long celkem = 0;
-      for (int i = 3; i < Z->mGrid->ColCount - 1;i++) // prochazeni hodnot po sloupcich
+			for (int i = 3; i < Z->mGrid->ColCount - 1;i++) // prochazeni hodnot po sloupcich
       {
         pocet += F->ms.MyToDouble(Z->mGrid->Cells[i][2].Text);
         pocet_prazdnych += F->ms.MyToDouble(Z->mGrid->Cells[i][3].Text);
