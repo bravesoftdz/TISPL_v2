@@ -413,6 +413,12 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					F->d.v.reserve_time(E,c);
 				}
 			} break;
+			case 300:
+			case 301:
+			{
+				input_state=COMBO;//nastaveni stavu
+				prirazeni_pohohonu_vetvi(E);
+			} break;
 		}
 		E->mGrid->Refresh();//refresh aktuálnì upravované tabulky
 		posledni_E=E;//uložení posledního editovaného elementu
@@ -1196,5 +1202,30 @@ void TFormX::aktualizace_zon_otaceni(Cvektory::TElement *E)
 		O=O->dalsi;
 	}
 	delete O;O=NULL;
+}
+//---------------------------------------------------------------------------
+//zmìní pohon sekundární vìtvi, z výhybky nebo spojky (pokud sekundární vìtev existuje)
+void TFormX::prirazeni_pohohonu_vetvi(Cvektory::TElement *E)
+{
+	////deklarace potøebných promìnných
+	TscGPComboBox *C=E->mGrid->getCombo(1,1);
+	Cvektory::TPohon *p=NULL;
+	Cvektory::TElement *e=NULL;
+
+	////zmìna pohonu na vedlejší vìtvi
+	if(C->ItemIndex!=0)p=F->d.v.vrat_pohon(C->ItemIndex);
+	if(E->eID==300)e=E->dalsi2;//pøiøazuji pohon z výhybky
+	else e=E->predchozi2;//pøiøazuji pohon ze spojky
+	while(e!=NULL && e->n>0 && e->idetifikator_vyhybka_spojka!=E->idetifikator_vyhybka_spojka)
+	{
+		e->pohon=p;
+		if(E->eID==300)e=e->dalsi;
+		else e=e->predchozi;
+	}
+
+	////ukazatelové záležitosti
+	C=NULL;delete C;
+	p=NULL;delete p;
+	e=NULL;delete e;
 }
 //---------------------------------------------------------------------------

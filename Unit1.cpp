@@ -6345,14 +6345,6 @@ void TForm1::vlozeni_editace_geometrie()
 	short orientace=0;
 	if(posledni_editovany_element!=NULL){orientace=posledni_editovany_element->orientace;}else {orientace=d.v.vrat_posledni_element_objektu(akt_Objekt)->orientace;}
 	//////dokončování geometrie sekundární větve v objektu spojky
-	//test
-//	if(posledni_editovany_element!=NULL && posledni_editovany_element->eID==300)
-//	{
-//		posledni_editovany_element=d.v.vloz_element(akt_Objekt,MaxInt,d.geoTemp.X4,d.geoTemp.Y4,orientace,posledni_editovany_element->dalsi);
-//		design_element(posledni_editovany_element,true);//nutné!!!!!!!!
-//		posledni_editovany_element->geo=d.geoTemp;
-//	}
-	//konec testu
 	if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->objekt_n==akt_Objekt->n && posledni_editovany_element->dalsi->predchozi2==posledni_editovany_element)
 	{
 		unsigned long n=posledni_editovany_element->objekt_n;
@@ -6877,65 +6869,23 @@ void TForm1::mGrid_puvodni_stav(Cvektory::TElement *E)
   		}
   		case 6://otoč aktivní (resp. otoč se stop stanicí)
   		{
-  			E->mGrid->Cells[1][1].Type=E->mGrid->COMBO;
+				E->mGrid->Cells[1][1].Type=E->mGrid->COMBO;
 				E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;
 				E->mGrid->Update();
   			break;
-  		}
-  		default:break;
+			}
+			case 300:
+			case 301:
+			{
+				E->mGrid->Cells[1][1].Type=E->mGrid->COMBO;
+				E->mGrid->Update();
+				break;
+			}
+			default:break;
 		}
 
-  	////naplnění comb
-  	if(E->eID==3||E->eID==4||E->eID==5||E->eID==6||E->eID==9||E->eID==10||E->eID==13||E->eID==14||E->eID==17||E->eID==18||E->eID==103||E->eID==104||E->eID==107||E->eID==108)//elementy s otočí
-  	{
-      //combo rotace
-  		int pozice;
-  		switch(E->eID)//nutnost zjistit pozici komba
-  		{
-  			case 3:case 9:case 13:case 17:case 103:case 107:pozice=3;break;
-  			case 4:case 10:case 14:case 18:case 104:case 108:pozice=2;break;
-  			case 5:case 6:pozice=1;break;
-  		}
-  		TscGPComboBox *C=E->mGrid->getCombo(1,pozice);
-  		C->Clear();
-  		C->Font->Color=(TColor)RGB(43,87,154);
-  		C->BiDiMode=bdRightToLeft;
-  		TscGPListBoxItem *I;
-  		I=C->Items->Add();
-  		I->Caption="180-";//kvůli opačnému zarovnání musí být číslo zapsáno jako řetězec se znaménkem na konci!
-  		I=C->Items->Add();
-  		I->Caption="90-";
-  		I=C->Items->Add();
-  		I->Caption=90;
-  		I=C->Items->Add();
-  		I->Caption=180;
-  		I=NULL;delete I;
-  		//přiřazení COMBA
-  		if(E->rotace_jig==-180)C->ItemIndex=0;
-  		if(E->rotace_jig==-90)C->ItemIndex=1;
-  		if(E->rotace_jig==90)C->ItemIndex=2;
-  		if(E->rotace_jig==180)C->ItemIndex=3;
-  		C=NULL;delete C;
-  	}
-  	//naplnění a přiřazení COMBA PD
-  	if(E->eID==1||E->eID==3||E->eID==7||E->eID==9||E->eID==11||E->eID==13||E->eID==15||E->eID==17||E->eID==101||E->eID==103||E->eID==105||E->eID==107)
-  	{
-  		TscGPComboBox *C=E->mGrid->getCombo(1,E->mGrid->RowCount-1);
-  		C->Clear();
-  		C->Font->Color=(TColor)RGB(43,87,154);
-  		C->BiDiMode=bdRightToLeft;
-			TscGPListBoxItem *I;
-			I=C->Items->Add();
-			I->Caption=ls->Strings[247];//"začátek";//kvůli opačnému zarovnání musí být číslo zapsáno jako řetězec se znaménkem na konci!
-			I=C->Items->Add();
-			I->Caption=ls->Strings[248];//"střed";
-			I=C->Items->Add();
-			I->Caption=ls->Strings[249];//"celý";
-  		I=NULL;delete I;
-  		//přiřazení COMBA
-  		C->ItemIndex=E->data.PD;
-  		C=NULL;delete C;
-  	}
+		////naplnění comb
+		napln_comba_mGridu(E);
 	}
 }
 //---------------------------------------------------------------------------

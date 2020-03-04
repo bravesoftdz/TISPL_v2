@@ -2045,12 +2045,22 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 			}
 			else//ukazatelové propojení, normální funkce
 			{
-				if(force_razeni==Objekt->element)Objekt->element=Element;
+				if(force_razeni==Objekt->element)Objekt->element=Element;//asi problém při napojování výhybky - sledovat
 				Element->dalsi=force_razeni;
-				Element->predchozi=force_razeni->predchozi;
-				if(force_razeni->predchozi->eID==300 && force_razeni->predchozi->dalsi2==force_razeni)force_razeni->predchozi->dalsi2=Element;
-				else force_razeni->predchozi->dalsi=Element;
-				force_razeni->predchozi=Element;
+				if(force_razeni->eID==301)
+				{
+					if(force_razeni->predchozi2->eID==300 && force_razeni->predchozi2->dalsi2==force_razeni)force_razeni->predchozi2->dalsi2=Element;
+					else force_razeni->predchozi2->dalsi=Element;
+					Element->predchozi=force_razeni->predchozi2;
+					force_razeni->predchozi2=Element;
+				}
+				else
+				{
+          if(force_razeni->predchozi->eID==300 && force_razeni->predchozi->dalsi2==force_razeni)force_razeni->predchozi->dalsi2=Element;
+					else force_razeni->predchozi->dalsi=Element;
+					Element->predchozi=force_razeni->predchozi;
+					force_razeni->predchozi=Element;
+				}
 			}
 	  	//změna indexů
 	  	Cvektory::TElement *E=Objekt->element;
@@ -7552,7 +7562,7 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 	  		o_kop=NULL;delete o_kop;
 				O=O->dalsi;
 	  	}
-	  	delete O;O=NULL;
+			delete O;O=NULL;
 
 			//kopírování všech elementů
 			TElement *E=ELEMENTY->dalsi,*e_kop=NULL;
