@@ -50,7 +50,7 @@ class TmGrid
 		short BottomMargin;//dolní odsazení textu
 		short LeftMargin;//levé odsazení textu
 		short RightMargin;//pravé odsazení textu
-		bool MergeState;//pouze indikuje, zda je buňka sloučena, či nikoliv, slouží jako pomůcka při vykreslování orámování sloučených buněk, zatím zůstává nevyužito
+		short MergeState;//pouze indikuje, zda je buňka sloučena=1, či nikoliv=0, sloučená a není první=2 slouží jako pomůcka při vykreslování orámování sloučených buněk
 		short InputNumbersOnly;//pokud je nastaveno na 0 lze do buňky vepsat cokoliv, 1 lze zapsat pouze reálná čísla, 2 pouze kladná reálná čísla
 		bool Highlight;//indikuje zda je buňka zvýrazněna, barva zvýraznění odpovídá globální proměnné TColor clHighlight, výchozí stav zvýraznění je false
 		TFont *Font;//vlastnosti fontu v buňce
@@ -110,8 +110,8 @@ class TmGrid
 	void CopyCells2Clipboard(unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2,UnicodeString Separator="\t");//zkopíruje danou oblast do schránky, buňky oddělí separátorem
 	void CopyAreaCell(TCells &RefCell,TCells &CopyCell,bool copyComponent=false);//zkopíruje obsah, formát (bez orámování) z buňky na buňku (bez ukazatelového propojení)
 	void CopyBordesCell(TCells &RefCell,TCells &CopyCell);//zkopíruje orámování z buňky na buňku (bez ukazatelového propojení)
-	void DeleteCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2);//smaže totálně obasah buněk v daném rozsahu tzn. obsah včetně dané komponety, paměťovou alokaci buňky však zanechá
-	void DeleteCell(unsigned long ColIdx,unsigned long RowIdx);//smaže totálně obasah buňky tzn. obsah včetně dané komponety, paměťovou alokaci buňky však zanechá
+	void DeleteCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2,bool deleteBackgroundColor=true);//smaže totálně obasah buněk v daném rozsahu tzn. obsah včetně dané komponety, paměťovou alokaci buňky však zanechá
+	void DeleteCell(unsigned long ColIdx,unsigned long RowIdx,bool deleteBackgroundColor=true);//smaže totálně obasah buňky tzn. obsah včetně dané komponety, paměťovou alokaci buňky však zanechá
 	void HighlightTable(TCanvas *Canvas,TColor Color=(TColor)RGB(0,120,215),unsigned short Size=2,unsigned short Offset=0,TPenMode PenMode=pmCopy);//zajistí zvýraznění orámování tabulky
 	void HighlightTableOnMouse(int X,int Y,TCanvas *Canvas=NULL);//zajistí zvýraznění orámování tabulky, pokud se do ni vstoupí myší
 	void HighlightRow(long Row,TColor Color=clYellow,bool SelFirstRow=false,bool unHighlightPrevRow=true);//zajistí trvalé (jedná se spíše o nastavení) řádků dle čísla řádku Row

@@ -885,33 +885,36 @@ void TmGrid::SetDraw(TCanvas *Canv,TRect Rt,unsigned long X,unsigned long Y,TCel
 	Canv->Brush->Style=bsClear;//nastvení netransparentního pozadí
 	//zarovnání
 	//samotný výpis
-	long L=Rt.Left,T=Rt.Top;
-	int W=getWidthHeightText(Cell).X*Zoom;
-	int H=getWidthHeightText(Cell).Y*Zoom;
-	//short Rot=1;//slouží jako pomůcka rotace
-	if(Cell.Font->Orientation==900){/*Rot=-1;*/H=0;if(Cell.Valign==MIDDLE)H=-getWidthHeightText(Cell).Y;}
-	if(Cell.Font->Orientation==2700){/*Rot=-1;*/W=0;if(Cell.Align==LEFT || Cell.Align==CENTER)W=-W;H=0;if(Cell.Valign==MIDDLE)H=getWidthHeightText(Cell).Y;}
-	switch(Cell.Align)
+	if(Cell.MergeState!=2)//WA pokud se nejedná o buňku s komponentou, potom je toto vykreslování zbytečné
 	{
-		case aNO:   L=m.round(Rt.Left+Cell.TextPositon.X*Zoom+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2.0*Zoom);break;
-		case LEFT:	L=m.round(Rt.Left+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2.0*Zoom);break;
-		case CENTER:L=m.round((Rt.Left+Rt.Right)/2.0-W/2.0);break;
-		case RIGHT:	L=m.round(Rt.Right-W-Cell.RightMargin*Zoom-Cells[X][Y].RightBorder->Width/2.0*Zoom);if(Cell.Font->Orientation==2700)L-=H;break;
-	}
-	switch(Cell.Valign)
-	{
-		case vNO:
+		long L=Rt.Left,T=Rt.Top;
+		int W=getWidthHeightText(Cell).X*Zoom;
+		int H=getWidthHeightText(Cell).Y*Zoom;
+		//short Rot=1;//slouží jako pomůcka rotace
+		if(Cell.Font->Orientation==900){/*Rot=-1;*/H=0;if(Cell.Valign==MIDDLE)H=-getWidthHeightText(Cell).Y;}
+		if(Cell.Font->Orientation==2700){/*Rot=-1;*/W=0;if(Cell.Align==LEFT || Cell.Align==CENTER)W=-W;H=0;if(Cell.Valign==MIDDLE)H=getWidthHeightText(Cell).Y;}
+		switch(Cell.Align)
 		{
-			T=Rt.Top+Cell.TextPositon.Y*Zoom;
-			if(Cell.Font->Orientation==0)T+=m.round(Cell.TopMargin*Zoom+Cells[X][Y].TopBorder->Width/2.0*Zoom);
-			else T-=m.round(Cell.BottomMargin*Zoom+Cells[X][Y].BottomBorder->Width/2.0*Zoom);
-		}break;
-		case TOP:		T=m.round(Rt.Top+Cell.TopMargin*Zoom+Cells[X][Y].TopBorder->Width/2.0*Zoom);break;
-		case MIDDLE:T=m.round((Rt.Top+Rt.Bottom)/2.0-H/2.0);break;
-		case BOTTOM:T=m.round(Rt.Bottom-H-Cell.BottomMargin*Zoom-Cells[X][Y].BottomBorder->Width/2.0*Zoom);break;
+			case aNO:   L=m.round(Rt.Left+Cell.TextPositon.X*Zoom+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2.0*Zoom);break;
+			case LEFT:	L=m.round(Rt.Left+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2.0*Zoom);break;
+			case CENTER:L=m.round((Rt.Left+Rt.Right)/2.0-W/2.0);break;
+			case RIGHT:	L=m.round(Rt.Right-W-Cell.RightMargin*Zoom-Cells[X][Y].RightBorder->Width/2.0*Zoom);if(Cell.Font->Orientation==2700)L-=H;break;
+		}
+		switch(Cell.Valign)
+		{
+			case vNO:
+			{
+				T=Rt.Top+Cell.TextPositon.Y*Zoom;
+				if(Cell.Font->Orientation==0)T+=m.round(Cell.TopMargin*Zoom+Cells[X][Y].TopBorder->Width/2.0*Zoom);
+				else T-=m.round(Cell.BottomMargin*Zoom+Cells[X][Y].BottomBorder->Width/2.0*Zoom);
+			}break;
+			case TOP:		T=m.round(Rt.Top+Cell.TopMargin*Zoom+Cells[X][Y].TopBorder->Width/2.0*Zoom);break;
+			case MIDDLE:T=m.round((Rt.Top+Rt.Bottom)/2.0-H/2.0);break;
+			case BOTTOM:T=m.round(Rt.Bottom-H-Cell.BottomMargin*Zoom-Cells[X][Y].BottomBorder->Width/2.0*Zoom);break;
+		}
+		TRect Rect=DrawTextLink(Canv,L,T,Cell.Text,Cell.Font,Cell.isLink,Cell.isActiveLink);//vykreslí text včetně odkazu a vrátí citelnou oblast odkazu
+		Cell.LinkCoordinateStart.x=Rect.left;Cell.LinkCoordinateStart.y=Rect.top;Cell.LinkCoordinateEnd.x=Rect.right;Cell.LinkCoordinateEnd.y=Rect.bottom;
 	}
-	TRect Rect=DrawTextLink(Canv,L,T,Cell.Text,Cell.Font,Cell.isLink,Cell.isActiveLink);//vykreslí text včetně odkazu a vrátí citelnou oblast odkazu
-	Cell.LinkCoordinateStart.x=Rect.left;Cell.LinkCoordinateStart.y=Rect.top;Cell.LinkCoordinateEnd.x=Rect.right;Cell.LinkCoordinateEnd.y=Rect.bottom;
 }
 //---------------------------------------------------------------------------
 //nastaví danou buňku na edit, pomocná metoda výše uvedené
@@ -1894,34 +1897,35 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 {
 	if(ColCell_1!=ColCell_2 || RowCell_1!=RowCell_2)//pokud se jedná o sloučení jedné buňky - nelogické sloučení nic nevykoná
 	{
+		////nastaví šířky sloupců a výšky řádků
 		SetColRow();
 
-		////kopie referenční buňky //TCells RefCell=Cells[ColCell_1][RowCell_1];// - nelze však použít takto na předávání borders, proto metoda níže, předávalo by i ukazatel
+		////kopie výchozí buňky do referenční buňky //TCells RefCell=Cells[ColCell_1][RowCell_1];// - nelze však použít takto na předávání borders, proto metoda níže, předávalo by i ukazatel
 		AnsiString backupText=Cells[ColCell_2][RowCell_2].Text;//v případě že v první výchozí buňce není text, zkusí vzít text z poslední buňky
 		TCells RefCell;CreateCell(RefCell);
 		CopyCell(Cells[ColCell_1][RowCell_1],RefCell,true);
 		if(RefCell.Text=="")RefCell.Text=backupText;//záloha textu, z první buňky, pokud je
 
-		////smaže všechny komponenty, tj. pokud se slučuje více, vezme se typ komponent v první buňce - NEW 27.2.2020
-		DeleteCells(ColCell_1,RowCell_1,ColCell_2,RowCell_2);
+		////smaže všechny komponenty - námět sloučit DeleteCells,setCells,SetRegion kvůli opakovaným průchodům, ovšem možné riziko nutné posloupnosti průchodů..
+		DeleteCells(ColCell_1,RowCell_1,ColCell_2,RowCell_2,false);//nemaže pozadí, protože by se smazala barva ve výchozí buňce, barva buněk se přepisuje pří kopirování v setCells
 
-		////nastavení referenční buňky kvůli orámování všech buněk oblasti na totožnou barvu
+		////nastavení výchozí vzorové první (nikoliv výše uvedené referenční - tu nelze v tomto momentu použít, objevilo by se vnitřní orámování) buňky kvůli orámování všech buněk oblasti na totožnou barvu s pozadím
 		TBorder B;B.Width=0;B.Style=psSolid;B.Color=Cells[ColCell_1][RowCell_1].Background->Color;
 		*Cells[ColCell_1][RowCell_1].TopBorder=*Cells[ColCell_1][RowCell_1].BottomBorder=*Cells[ColCell_1][RowCell_1].LeftBorder=*Cells[ColCell_1][RowCell_1].RightBorder=B;
-		Cells[ColCell_1][RowCell_1].MergeState=true;//označí buňku jako sloučenou, slouží pro přeskočení vykreslování orámování, uprostřed sloučených objektů ale také kvůli nastavení šířky komponent
+		if(RefCell.Type==DRAW)Cells[ColCell_1][RowCell_1].MergeState=1;//označí buňku jako sloučenou, slouží pro přeskočení vykreslování orámování, uprostřed sloučených objektů ale také kvůli nastavení šířky komponent
+		else Cells[ColCell_1][RowCell_1].MergeState=2;//označí buňku jako sloučenou, slouží pro přeskočení vypsání textu u sloučených buněk, které nejsou typu DRAW ale jsou komponenty 4.3.2020 new
 
-		////projde nejdříve všechny buňky nastaví jim prvně dle pozadí první buňky stejné pozadí a dle barvy pozadí i barvu orámování
+		////projde nejdříve všechny buňky nastaví jim prvně dle pozadí první buňky stejné pozadí a dle barvy pozadí i barvu orámování, - maže i text buňky parametrem -1 - námět sloučit DeleteCells,setCells,SetRegion kvůli opakovaným průchodům, ovšem možné riziko nutné posloupnosti průchodů..
 		SetCells(Cells[ColCell_1][RowCell_1],ColCell_1,RowCell_1,ColCell_2,RowCell_2,-1,false);
 
-		////typ první buňky
+		////navrácený typ první buňky
 		Cells[ColCell_1][RowCell_1].Type=RefCell.Type;
 
-		////vytvoří resp. předá orámování oblasti dle referenční buňky, šlo by řešit v ve výše volaném průchodu, bylo by sice systemově méně náročné, ale více komplikované na realizaci
+		////vytvoří resp. předá orámování oblasti dle referenční buňky, šlo by řešit v ve výše volaném průchodu, bylo by sice systemově méně náročné, ale více komplikované na realizaci - námět sloučit DeleteCells,setCells,SetRegion kvůli opakovaným průchodům, ovšem možné riziko nutné posloupnosti průchodů..
 		SetRegion(RefCell,ColCell_1,RowCell_1,ColCell_2,RowCell_2);
 
 		////text
 		int W=0;int H=0;
-
 		Cells[ColCell_2][RowCell_2].Text=RefCell.Text;//navrácení textu ze zálohy do poslední buňky, protože ta se vykresluje jako poslední, pokud v první buňce text není obsažen, vrátí se text z poslední buňky
 		W=getWidthHeightText(RefCell).X;
 		H=getWidthHeightText(RefCell).Y;
@@ -2131,7 +2135,7 @@ void TmGrid::SetCells(TCells &RefCell,unsigned long ColCell_1,unsigned long RowC
 			if(setText==-1)Text="";//varianta smaže
 			if(setText==1)Text=RefCell.Text;//varianta všude stejný
 			//Cells[X][Y]=RefCell;// - nelze však použít na předávání borders, proto metoda níže
-			CopyCell(RefCell,Cells[X][Y],copyComponent);
+			CopyCell(RefCell,Cells[X][Y],copyComponent);//popř. jen CopyAreaCell(RefCell,Cells[X][Y],copyComponent);
 			Cells[X][Y].Text=Text;//navrácení textu
 		}
 	}
@@ -2300,23 +2304,23 @@ void TmGrid::CopyBordesCell(TCells &RefCell,TCells &CopyCell)
 }
 //---------------------------------------------------------------------------
 //smaže totálně obasah buněk v daném rozsahu tzn. obsah včetně dané komponety, paměťovou alokaci buňky však zanechá
-void TmGrid::DeleteCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2)
+void TmGrid::DeleteCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2,bool deleteBackgroundColor)
 {
 	for(unsigned long Y=RowCell_1;Y<=RowCell_2;Y++)//po řádcích
 	{
 		for(unsigned long X=ColCell_1;X<=ColCell_2;X++)//po sloupcích
 		{
-			DeleteCell(X,Y);
+			DeleteCell(X,Y,deleteBackgroundColor);
 		}
 	}
 }
 //---------------------------------------------------------------------------
 //smaže totálně obasah buňky tzn. obsah včetně dané komponety, paměťovou alokaci buňky zanechá
-void TmGrid::DeleteCell(unsigned long ColIdx,unsigned long RowIdx)
+void TmGrid::DeleteCell(unsigned long ColIdx,unsigned long RowIdx,bool deleteBackgroundColor)
 {
 	DeleteComponents(ColIdx,RowIdx,ColIdx,RowIdx);//smaže komponentu
 	Cells[ColIdx][RowIdx].Type=DRAW;Cells[ColIdx][RowIdx].Text="";//přenastaví typy, musí být až po smazání komponenty, jinak nebude komponenta nalezena
-	Cells[ColIdx][RowIdx].Background->Color=clWhite;//odstranění barvy pozadí
+	if(deleteBackgroundColor)Cells[ColIdx][RowIdx].Background->Color=clWhite;//odstranění barvy pozadí
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
