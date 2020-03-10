@@ -1913,12 +1913,12 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 		TBorder B;B.Width=0;B.Style=psSolid;B.Color=Cells[ColCell_1][RowCell_1].Background->Color;
 		*Cells[ColCell_1][RowCell_1].TopBorder=*Cells[ColCell_1][RowCell_1].BottomBorder=*Cells[ColCell_1][RowCell_1].LeftBorder=*Cells[ColCell_1][RowCell_1].RightBorder=B;
 		if(RefCell.Type==DRAW)Cells[ColCell_1][RowCell_1].MergeState=1;//označí buňku jako sloučenou, slouží pro přeskočení vykreslování orámování, uprostřed sloučených objektů ale také kvůli nastavení šířky komponent
-		else Cells[ColCell_1][RowCell_1].MergeState=2;//označí buňku jako sloučenou, slouží pro přeskočení vypsání textu u sloučených buněk, které nejsou typu DRAW ale jsou komponenty 4.3.2020 new
+		else Cells[ColCell_1][RowCell_1].MergeState=2;//označí buňku jako sloučenou, slouží pro přeskočení vypsání textu u sloučených buněk, které nejsou typu DRAW ale jsou komponenty 4.3.2020 new, pozor v obou případech se nepředává do dalších buněk hodnota tohoto atributu, ač by podle mého měla přes setcells -> copycells -> copyareacells, takže nelze dále se slučováním pracovat při dalších akcích (např. insertcolumn či row atdp.), muselo by se případně poladit
 
 		////projde nejdříve všechny buňky nastaví jim prvně dle pozadí první buňky stejné pozadí a dle barvy pozadí i barvu orámování, - maže i text buňky parametrem -1 - námět sloučit DeleteCells,setCells,SetRegion kvůli opakovaným průchodům, ovšem možné riziko nutné posloupnosti průchodů..
-		SetCells(Cells[ColCell_1][RowCell_1],ColCell_1,RowCell_1,ColCell_2,RowCell_2,-1,false);
+		SetCells(Cells[ColCell_1][RowCell_1],ColCell_1,RowCell_1,ColCell_2,RowCell_2,-1,false);//musí být výchozí (první) buňka, nemůže zde nemůže referenční!
 
-		////navrácený typ první buňky
+		////navrácený typ první buňky - musí být až za setcells
 		Cells[ColCell_1][RowCell_1].Type=RefCell.Type;
 
 		////vytvoří resp. předá orámování oblasti dle referenční buňky, šlo by řešit v ve výše volaném průchodu, bylo by sice systemově méně náročné, ale více komplikované na realizaci - námět sloučit DeleteCells,setCells,SetRegion kvůli opakovaným průchodům, ovšem možné riziko nutné posloupnosti průchodů..
@@ -2354,6 +2354,7 @@ void TmGrid::AddColumn(bool copyPropertiesFromPreviousColumn,bool invalidate)
 }
 //---------------------------------------------------------------------------
 //přídá sloupec za sloupec uvedený dle parametru Column, pokud copyPropertiesFromPreviouscolumn je na true, zkopiruje kompomenty a vlasnosti z předchozího sloupce, pokud je invalidate na true, automaticky po přidání překreslí tabulku, někdy pokud nechci problikávat tabulku lépe nastavit na false a zavolat formpaint přímo za voláním metody InsertColumn přimo v užitém formuláři
+//pozor, po přidání sloupce za zmergovaní oblast, nevkládá komponenty z mergované buňky i přes copyPropertiesFromPreviousColumn, více vysvětlení v mergecells sekce setcells
 void TmGrid::InsertColumn(unsigned long Column,bool copyPropertiesFromPreviousColumn,bool invalidate)
 {
 	if(Column<ColCount)//pokud se nejedná o poslední sloupec, tam je to zbytečné a řeší else větev přímo funkce AddColumn
@@ -2366,13 +2367,13 @@ void TmGrid::InsertColumn(unsigned long Column,bool copyPropertiesFromPreviousCo
 			{
 				if(X>Column)//pro průchod sloupci předcházejícím přidávanému
 				{
-					CopyCell(Cells[X-1][Y],Cells[X][Y],true);//je potřeba zkopírovat nastavení buňky včetně typu komponenty (parametr true)
-					MoveComponent(X,Y,1,0);//je třeba přesunout případnou komponentu o jednu buňku dál (-1 jedna je nelogické, jedná se o +1)
-					//Cells[X-1][Y].Type=DRAW;Cells[X-1][Y].Text="";Cells[X-1][Y].Background->Color=clWhite; - asi není třeba pořeší copycell při dalším průchodu
+					CopyCell(Cells[X-1][Y],Cells[X][Y],true);//je potřeba zkopírovat nastavení buňky včetně typu komponenty (parametr true), komponenta se tím zatím nevytvoří, to by nastalo až při refresh, invalidate, update atp.
+					MoveComponent(X-1,Y,1,0);//je třeba přesunout případnou komponentu z buňky předchozího sloupce o jednu buňku sloupce dál
+					if(!copyPropertiesFromPreviousColumn){Cells[X-1][Y].Type=DRAW;Cells[X-1][Y].Text="";Cells[X-1][Y].Background->Color=clWhite;}//je třeba pokud se nekopírují komponenty s předchozího sloupce v opačném případě řeší copycell při dalším průchodu
 				}
 				else if(Column>0 && copyPropertiesFromPreviousColumn){CopyCell(Cells[Column-1][Y],Cells[Column][Y],true);Cells[Column][Y].Text="";}//u vkládaného sloupce jenom typ (což zároveň založí komponentu při naslédném udpate či refresh) a vlastnosti buňky, pokud je požadováno, je nutné smazat duplicitně zkopírovaný text
 			}
-			if(Column>0 && copyPropertiesFromPreviousColumn)Columns[X]=Columns[X-1];//zkopíruje vlastnosti z předhozího slupce
+			if(Column>0 && copyPropertiesFromPreviousColumn)Columns[X]=Columns[X-1];//zkopíruje vlastnosti (z) předhozího slupce
 		}
 		if(invalidate)Show();//pokud je požadováno překreslení, zde je nutné celou oblast překreslit
 	}
@@ -2403,7 +2404,7 @@ void TmGrid::DeleteColumn(unsigned long Column,bool invalidate)
 				if(X+1<ColCount)//mimo situace mazání posledního sloupce
 				{
 					CopyCell(Cells[X+1][Y],Cells[X][Y],true);//je potřeba zkopírovat nastavení buňky včetně typu komponenty (parametr true)
-					MoveComponent(X,Y,-1,0);
+					MoveComponent(X+1,Y,-1,0);//přesune případnou komponentu buňky sloupce následujího na aktuální pozici
 					//DeleteCell(X+1,Y);//zřejmě není třeba
 				}
 			}
@@ -2502,7 +2503,7 @@ void TmGrid::DeleteRow(unsigned long Row,bool invalidate)
 			for(unsigned long X=0;X<ColCount;X++)
 			{
 				CopyCell(Cells[X][Y+1],Cells[X][Y],true);
-				MoveComponent(X,Y,0,-1);//15.4. test v případě zrušení vrátit níže uvedené  DeleteComponents
+				MoveComponent(X,Y+1,0,-1);//přesune připadnou komponentu z buňky z následujícího řádku
 			}
 			Rows[Y]=Rows[Y+1];
 		}
@@ -2642,91 +2643,88 @@ void TmGrid::DeleteComponents(unsigned long sCol,unsigned long sRow,unsigned lon
 //---------------------------------------------------------------------------
 //posunu komponentu o sloupec či řádek, použává se nově na mazání sloupců či řádků
 void TmGrid::MoveComponent(unsigned long Col,unsigned long Row,long ColOffset,long RowOffset)
-{   //ShowMessage("Z původního sloupce "+AnsiString(Col+ColOffset)+" na nový sloupec včetně indexu"+AnsiString(Col));
-	switch(Cells[Col-ColOffset][Row-RowOffset].Type)
+{
+	switch(Cells[Col][Row].Type)
 	{
 		case readEDIT:
 		case EDIT:
 		{
-			TscGPEdit *E=getEdit(Col-ColOffset,Row-RowOffset);
-			//E->Text=getTag(Col,Row);///////tewst
-			//ShowMessage(E->Name);
-			E->Tag=getTag(Col,Row,ColCount);//přeindexování na řádek níže
-			E->Name="mGrid_EDIT_"+AnsiString(ID)+"_"+AnsiString(E->Tag);//přeindexování na řádek níže
-			//ShowMessage(E->Name);
+			TscGPEdit *E=getEdit(Col,Row);
+			E->Tag=getTag(Col+ColOffset,Row+RowOffset,ColCount);//přeindexování komponenty dle nové pozice
+			E->Name="mGrid_EDIT_"+AnsiString(ID)+"_"+AnsiString(E->Tag);//přeindexování komponenty dle nové pozice
 			E=NULL;delete E;
 		}
 		break;
 		case readNUMERIC:
 		case NUMERIC:
 		{
-			TscGPNumericEdit *N=getNumeric(Col-ColOffset,Row-RowOffset);
-			N->Tag=getTag(Col,Row);//přeindexování na řádek níže
-			N->Name="mGrid_NUMERIC_"+AnsiString(ID)+"_"+AnsiString(N->Tag);//přeindexování na řádek níže
+			TscGPNumericEdit *N=getNumeric(Col,Row);
+			N->Tag=getTag(Col+ColOffset,Row+RowOffset);//přeindexování komponenty dle nové pozice
+			N->Name="mGrid_NUMERIC_"+AnsiString(ID)+"_"+AnsiString(N->Tag);//přeindexování komponenty dle nové pozice
 			N=NULL;delete N;
 		}
 		break;
 		case BUTTON:
 		{
-			TscGPButton *B=getButton(Col-ColOffset,Row-RowOffset);
-			B->Tag=getTag(Col,Row,ColCount);//přeindexování na řádek níže
-			B->Name="mGrid_BUTTON_"+AnsiString(ID)+"_"+AnsiString(B->Tag);//přeindexování na řádek níže
+			TscGPButton *B=getButton(Col,Row);
+			B->Tag=getTag(Col+ColOffset,Row+RowOffset,ColCount);//přeindexování komponenty dle nové pozice
+			B->Name="mGrid_BUTTON_"+AnsiString(ID)+"_"+AnsiString(B->Tag);//přeindexování komponenty dle nové pozice
 			B=NULL;delete B;
 		}
 		break;
 		case LABEL:
 		{
-			TscHTMLLabel *L=getLabel(Col-ColOffset,Row-RowOffset);
-			L->Tag=getTag(Col,Row);//přeindexování na řádek níže
-			L->Name="mGrid_LABEL_"+AnsiString(ID)+"_"+AnsiString(L->Tag);//přeindexování na řádek níže
+			TscHTMLLabel *L=getLabel(Col,Row);
+			L->Tag=getTag(Col+ColOffset,Row+RowOffset);//přeindexování komponenty dle nové pozice
+			L->Name="mGrid_LABEL_"+AnsiString(ID)+"_"+AnsiString(L->Tag);//přeindexování komponenty dle nové pozice
 			L=NULL;delete L;
 		}
 		break;
 		case glyphBUTTON:
 		{
-			TscGPGlyphButton *gB=getGlyphButton(Col-ColOffset,Row-RowOffset);
-			gB->Tag=getTag(Col,Row);//přeindexování na řádek níže
-			gB->Name="mGrid_glyphBUTTON_"+AnsiString(ID)+"_"+AnsiString(gB->Tag);//přeindexování na řádek níže
+			TscGPGlyphButton *gB=getGlyphButton(Col,Row);
+			gB->Tag=getTag(Col+ColOffset,Row+RowOffset);//přeindexování komponenty dle nové pozice
+			gB->Name="mGrid_glyphBUTTON_"+AnsiString(ID)+"_"+AnsiString(gB->Tag);//přeindexování komponenty dle nové pozice
 			gB=NULL;delete gB;
 		}
 		break;
 		case COMBO:
 		{
-			TscGPComboBox *C=getCombo(Col-ColOffset,Row-RowOffset);
-			C->Tag=getTag(Col,Row);//přeindexování na řádek níže
-			C->Name="mGrid_COMBO_"+AnsiString(ID)+"_"+AnsiString(C->Tag);//přeindexování na řádek níže
+			TscGPComboBox *C=getCombo(Col,Row);
+			C->Tag=getTag(Col+ColOffset,Row+RowOffset);//přeindexování komponenty dle nové pozice
+			C->Name="mGrid_COMBO_"+AnsiString(ID)+"_"+AnsiString(C->Tag);//přeindexování komponenty dle nové pozice
 			C=NULL;delete C;
 		}
 		break;
 		case COMBOEDIT:
 		{
-			TscGPComboEdit *C=getComboEdit(Col-ColOffset,Row-RowOffset);
-			C->Tag=getTag(Col,Row);//přeindexování na řádek níže
-			C->Name="mGrid_COMBOEDIT_"+AnsiString(ID)+"_"+AnsiString(C->Tag);//přeindexování na řádek níže
+			TscGPComboEdit *C=getComboEdit(Col,Row);
+			C->Tag=getTag(Col+ColOffset,Row+RowOffset);//přeindexování komponenty dle nové pozice
+			C->Name="mGrid_COMBOEDIT_"+AnsiString(ID)+"_"+AnsiString(C->Tag);//přeindexování komponenty dle nové pozice
 			C=NULL;delete C;
 		}
 		break;
 		case CHECK:
 		{
-			TscGPCheckBox *Ch=getCheck(Col-ColOffset,Row-RowOffset);
-			Ch->Tag=getTag(Col,Row);//přeindexování na řádek níže
-			Ch->Name="mGrid_CHECK_"+AnsiString(ID)+"_"+AnsiString(Ch->Tag);//přeindexování na řádek níže
+			TscGPCheckBox *Ch=getCheck(Col,Row);
+			Ch->Tag=getTag(Col+ColOffset,Row+RowOffset);//přeindexování komponenty dle nové pozice
+			Ch->Name="mGrid_CHECK_"+AnsiString(ID)+"_"+AnsiString(Ch->Tag);//přeindexování komponenty dle nové pozice
 			Ch=NULL;delete Ch;
 		}
 		break;
 		case RADIO:
 		{
-			TscGPRadioButton *R=getRadio(Col-ColOffset,Row-RowOffset);
-			R->Tag=getTag(Col,Row);//přeindexování na řádek níže
-			R->Name="mGrid_RADIO_"+AnsiString(ID)+"_"+AnsiString(R->Tag);//přeindexování na řádek níže
+			TscGPRadioButton *R=getRadio(Col,Row);
+			R->Tag=getTag(Col+ColOffset,Row+RowOffset);//přeindexování komponenty dle nové pozice
+			R->Name="mGrid_RADIO_"+AnsiString(ID)+"_"+AnsiString(R->Tag);//přeindexování komponenty dle nové pozice
 			R=NULL;delete R;
 		}
 		break;
 		case IMAGE:
 		{
-			TscGPImage *I=getImage(Col-ColOffset,Row-RowOffset);
-			I->Tag=getTag(Col,Row);//přeindexování na řádek níže
-			I->Name="mGrid_IMAGE_"+AnsiString(ID)+"_"+AnsiString(I->Tag);//přeindexování na řádek níže
+			TscGPImage *I=getImage(Col,Row);
+			I->Tag=getTag(Col+ColOffset,Row+RowOffset);//přeindexování komponenty dle nové pozice
+			I->Name="mGrid_IMAGE_"+AnsiString(ID)+"_"+AnsiString(I->Tag);//přeindexování komponenty dle nové pozice
 			I=NULL;delete I;
 		}
 		break;

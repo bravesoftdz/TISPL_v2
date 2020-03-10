@@ -2728,7 +2728,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 				REFRESH(false);
 				d.v.vytvor_obraz_DATA();
 			}
-			else if(Akce==GEOMETRIE && TIP=="")zobraz_tip(ls->Strings[311]);
+			else if(Akce==GEOMETRIE && !editace_textu && TIP=="")zobraz_tip(ls->Strings[311]);
 		}break;
 		//ENTER
 		case 13:
