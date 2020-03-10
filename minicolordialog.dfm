@@ -3,8 +3,8 @@ object Form_color_dialog: TForm_color_dialog
   Top = 0
   BorderStyle = bsNone
   Caption = 'Form_color_dialog'
-  ClientHeight = 132
-  ClientWidth = 259
+  ClientHeight = 130
+  ClientWidth = 249
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -15,7 +15,7 @@ object Form_color_dialog: TForm_color_dialog
   PixelsPerInch = 96
   TextHeight = 13
   object scExPanel_colors: TscExPanel
-    Left = 8
+    Left = 0
     Top = 0
     Width = 249
     Height = 129
@@ -50,8 +50,8 @@ object Form_color_dialog: TForm_color_dialog
     StorePaintBuffer = False
     Caption = 'Barevn'#233' rozli'#353'en'#237' zak'#225'zky'
     object scColorGrid1: TscColorGrid
-      Left = 3
-      Top = 25
+      Left = 0
+      Top = 27
       Width = 243
       Height = 99
       Font.Charset = DEFAULT_CHARSET

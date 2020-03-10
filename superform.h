@@ -49,6 +49,7 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton_remove;
 	TrHTMLLabel *rHTMLLabel_zacatek;
   TscGPImageCollection *scGPImageCollection_layout;
+  TscGPImageCollection *scGPImageCollection1;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall scGPGlyphButton4Click(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
