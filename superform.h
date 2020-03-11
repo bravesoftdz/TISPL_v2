@@ -51,6 +51,7 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_zacatek;
   TscGPImageCollection *scGPImageCollection_layout;
 	TTimer *TimerMouseWheel;
+  TscGPImageCollection *scGPImageCollection1;
 	TEdit *Edit_for_Focus;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall scGPGlyphButton4Click(TObject *Sender);
