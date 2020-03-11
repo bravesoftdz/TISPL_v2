@@ -32,7 +32,10 @@ __fastcall TForm_definice_zakazek::TForm_definice_zakazek(TComponent* Owner)
   nastav_form(); // nastavení barev komponent
   zmena_TT = false;
   add_zakazka = false;
-  nacitam_zakazky = false;
+	nacitam_zakazky = false;
+	//bitmapa pro uložení pøesovaného obrazu - PAN
+	Pan_bmp=new Graphics::TBitmap();
+	pan_non_locked=false;
 }
 
 // ---------------------------------------------------------------------------
@@ -72,7 +75,10 @@ void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender)
   Left = Form1->ClientWidth / 2 - Width / 2;
   Top = Form1->ClientHeight / 2 - Height / 2;
   volno = false;
-  pocet_davek = 0;
+	pocet_davek = 0;
+	Akce=NIC;
+	jedno_ze_tri_otoceni_koleckem_mysi=1;
+	doba_neotaceni_mysi=0;
   ////nastaveni PP, defaultní jsou již od souboru novy, který se volá vždy, takže není defaultní nutné volat znovu
   nacti_PP();
   nastav_jazyk();
@@ -247,7 +253,7 @@ void __fastcall TForm_definice_zakazek::KonecClick(TObject *Sender)
 {
   // mazání mgridù zakázek
   if (F->d.v.ZAKAZKY_temp != NULL) {
-    Konec->SetFocus();
+    Edit_for_Focus->SetFocus();
     Cvektory::TZakazka *Z = F->d.v.ZAKAZKY_temp->dalsi;
     while (Z != NULL) {
       Z->mGrid->Delete();
@@ -272,7 +278,7 @@ void __fastcall TForm_definice_zakazek::KonecClick(TObject *Sender)
 // zkopíruje pøedchozí
 void __fastcall TForm_definice_zakazek::scGPGlyphButton_add_zakazkaClick(TObject *Sender)
 {
-  loadHeader();
+	loadHeader();
 }
 
 // ---------------------------------------------------------------------------
@@ -281,8 +287,9 @@ void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender)
 {
 	////deklarace
 	F->log(__func__); //logování
-	int width=682;//defaul ClientWidth formu
-	int height=283;//defaul ClientHeight formu (pro jednu zakázku), mezera mezi koncem formu a posledním mGridem = 64px
+	unsigned int width=682;//defaul ClientWidth formu
+	unsigned int height=283;//defaul ClientHeight formu (pro jednu zakázku), mezera mezi koncem formu a posledním mGridem = 64px
+	max_oblast_mGridu.Left=0;max_oblast_mGridu.Right=0;max_oblast_mGridu.Top=0;max_oblast_mGridu.Bottom=0;
 	//vytvoøení bmp
 	Graphics::TBitmap *bmp_total=new Graphics::TBitmap;
 	bmp_total->Width=Form_definice_zakazek->Width;
@@ -295,33 +302,47 @@ void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender)
 	Cvektory::TZakazka *Z=F->d.v.ZAKAZKY_temp->dalsi;
 	while (Z!=NULL)
 	{
-		//dynamické pozicování tabulek
-		if (Z->predchozi->n==0)Z->mGrid->Top=scGPButton_plan_vyroby->Height+scLabel_header->Height+Z->mGrid->Rows[0].Height;
-		else Z->mGrid->Top=Z->predchozi->mGrid->Top+Z->predchozi->mGrid->Height+Z->mGrid->Rows[0].Height;
+		//dynamické pozicování tabulek, pouze jednou
+		if(Z->mGrid->Top==-500)
+		{
+			if (Z->predchozi->n==0)Z->mGrid->Top=scGPButton_plan_vyroby->Height+scLabel_header->Height+Z->mGrid->Rows[0].Height;
+			else Z->mGrid->Top=Z->predchozi->mGrid->Top+Z->predchozi->mGrid->Height+Z->mGrid->Rows[0].Height;
+		}
+		//ukládání max oblasti, možná nebude potøeba
+		if(Z->n==1){max_oblast_mGridu.Left=Z->mGrid->Left;max_oblast_mGridu.Top=Z->mGrid->Top;}
+		if(Z->dalsi==NULL)max_oblast_mGridu.Bottom=Z->mGrid->Top+Z->mGrid->Height;
+		if(max_oblast_mGridu.Right<Z->mGrid->Left+Z->mGrid->Width)max_oblast_mGridu.Right=Z->mGrid->Left+Z->mGrid->Width;
+		//kontrola zda nenní tabulka mimo obraz
+		mGrid_mimo_obraz(Z);
 		//vykreslení tabulky
-		Z->mGrid->Show(bmp_total->Canvas);
+		if(Akce!=PAN_MOVE && Akce!=PAN)Z->mGrid->Show(bmp_total->Canvas);
+		else Z->mGrid->SetVisibleComponents(false);
 		//kontrola zda je form dostateènì široký
-		if(Z->mGrid->Left+Z->mGrid->Width+Z->mGrid->Left>width)width=Z->mGrid->Left+Z->mGrid->Width+Z->mGrid->Left;
-		if(Z->dalsi==NULL && Z->mGrid->Top+Z->mGrid->Height+64>height)height=Z->mGrid->Top+Z->mGrid->Height+64;
+		if(5+Z->mGrid->Width+5>width)width=5+Z->mGrid->Width+5;    // 5 náhrada za Z->mGrid->Left
+		if(Z->dalsi==NULL && 94+Z->n*Z->mGrid->Height+25*(Z->n-1)+64>height)height=94+Z->n*Z->mGrid->Height+25*(Z->n-1)+64;   //94 = Z->mGrid->Top, 25 = mezera mezi mGridy64 pdsazení od spodní hrany formu
 		Z=Z->dalsi;
 	}
 	delete Z;Z=NULL;
 
 	////kontrola zda není nutné zvìtšit form
-	if(width!=Form_definice_zakazek->ClientWidth || height!=Form_definice_zakazek->ClientHeight)
-	{
-		//upravení rozmìrù formu
-		Form_definice_zakazek->Width=width+2;//+2 rozdíl mezi clientwidth a width
-		Form_definice_zakazek->Height=height+2;//+2 rozdíl mezi clientwidth a height
-		//pozicování buttonu
-		scGPButton_Ulozit->Top=Form_definice_zakazek->Height-scGPButton_Ulozit->Height - 10;
-		scGPButton_storno->Top=scGPButton_Ulozit->Top;
-		scGPButton_Ulozit->Left=Form_definice_zakazek->Width/2-scGPButton_Ulozit->Width-22/2;
-		scGPButton_storno->Left=Form_definice_zakazek->Width/2+22/2;
-		//znovuvykreslìní
-		FormPaint(this);//pokud je nutné zvìtšít form, musí se znova spustit formpaint (bmp ma nastavené rozmìry pøed zmìnou)
-	}
-	else Canvas->Draw(0,0,bmp_total);//finální pøedání bmp_out do Canvasu
+	if(width>1135)width=1135;
+	if(height>883)height=883;
+//	if(width!=Form_definice_zakazek->ClientWidth || height!=Form_definice_zakazek->ClientHeight)
+//	{
+//		//upravení rozmìrù formu
+//		Form_definice_zakazek->Width=width+2;//+2 rozdíl mezi clientwidth a width
+//		Form_definice_zakazek->Height=height+2;//+2 rozdíl mezi clientwidth a height
+//		//pozicování buttonu
+//		scGPButton_Ulozit->Top=Form_definice_zakazek->Height-scGPButton_Ulozit->Height - 10;
+//		scGPButton_storno->Top=scGPButton_Ulozit->Top;
+//		scGPButton_Ulozit->Left=Form_definice_zakazek->Width/2-scGPButton_Ulozit->Width-22/2;
+//		scGPButton_storno->Left=Form_definice_zakazek->Width/2+22/2;
+//		//znovuvykreslìní
+//		FormPaint(this);//pokud je nutné zvìtšít form, musí se znova spustit formpaint (bmp ma nastavené rozmìry pøed zmìnou)
+//	}
+//	else
+	if(Akce!=PAN_MOVE && Akce!=PAN)Canvas->Draw(0,0,bmp_total);//finální pøedání bmp_out do Canvasu
+	else Canvas->Draw(0,0,Pan_bmp);
 
 	////smazání bmp
 	delete(bmp_total);//velice nutné
@@ -408,7 +429,7 @@ void TForm_definice_zakazek::vloz_davku(Cvektory::TZakazka *Z,Cvektory::TDavka *
   // backup pùvodního názvu zakázky pro následný merge bunek a naplnìní
  //	AnsiString nazev = Z->mGrid->Cells[1][0].Text;
 	unsigned long Col=Z->mGrid->ColCount-1;
-  scGPButton_Ulozit->SetFocus();
+  Edit_for_Focus->SetFocus();
   Z->mGrid->InsertColumn(Col,true, true);
   Z->mGrid->MergeCells(1, 0, Z->mGrid->ColCount-1, 0); // název     - vodorovne
  // Z->mGrid->Cells[1][0].Align=Z->mGrid->LEFT;
@@ -471,7 +492,7 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col, unsig
     if (J->GlyphOptions->Kind == scgpbgkClose && volno == true)
     {
       volno = false;
-      scGPButton_Ulozit->SetFocus();
+      Edit_for_Focus->SetFocus();
       Z->mGrid->DeleteColumn(Col, true);
       Z->mGrid->MergeCells(1, 0, Z->mGrid->ColCount-1, 0); //novy merge názvu
       Z->mGrid->Update();
@@ -509,8 +530,8 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col, unsig
   {
     volno = false;
     GetImages(Z,remove);
+		Edit_for_Focus->SetFocus();
   // ShowMessage(Z->mGrid->scGPImageCollection->Images->Count);
-    Konec->SetFocus();
     Z->mGrid->Delete();
     Z->mGrid = NULL;
 		F->d.v.smaz_temp_zakazku(Z->n);
@@ -541,7 +562,7 @@ void TForm_definice_zakazek::OnChange(long Tag, long ID, unsigned long Col,unsig
       long pocet = 0;
       long pocet_prazdnych = 0;
       long celkem = 0;
-			for (int i = 3; i < Z->mGrid->ColCount - 1;i++) // prochazeni hodnot po sloupcich
+			for (unsigned int i = 3; i < Z->mGrid->ColCount - 1;i++) // prochazeni hodnot po sloupcich
       {
         pocet += F->ms.MyToDouble(Z->mGrid->Cells[i][2].Text);
         pocet_prazdnych += F->ms.MyToDouble(Z->mGrid->Cells[i][3].Text);
@@ -563,7 +584,7 @@ void TForm_definice_zakazek::OnChange(long Tag, long ID, unsigned long Col,unsig
       long pocet = 0;
       long pocet_prazdnych = 0;
       long celkem = 0;
-      for (int i = 3; i < Z->mGrid->ColCount - 1;i++) // prochazeni hodnot po sloupcich
+      for (unsigned int i = 3; i < Z->mGrid->ColCount - 1;i++) // prochazeni hodnot po sloupcich
       {
         pocet += F->ms.MyToDouble(Z->mGrid->Cells[i][2].Text);
         pocet_prazdnych += F->ms.MyToDouble(Z->mGrid->Cells[i][3].Text);
@@ -876,3 +897,218 @@ void TForm_definice_zakazek::GetImages(Cvektory::TZakazka *Z,TAkce_obrazku akce_
  }
 
 }
+void __fastcall TForm_definice_zakazek::FormMouseDown(TObject *Sender, TMouseButton Button,
+          TShiftState Shift, int X, int Y)
+{
+	vychozi_souradnice_kurzoru=TPoint(X,Y);//výchozí souøadnice
+	Posun.x=0;Posun.y=0;
+	//zapnutí posunu
+	if(Akce==NIC)
+	{
+		Akce=PAN;
+		pan_non_locked=true;
+		F->kurzor(F->pan_move);
+		Akce=PAN_MOVE;//pøepne z PAN na PAN_MOVE
+		//FormPaint(this);
+		pan_create();//vytvoøí výøez pro pan_move
+  }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_definice_zakazek::FormMouseMove(TObject *Sender, TShiftState Shift,
+          int X, int Y)
+{
+  akt_souradnice_kurzoru_PX=TPoint(X,Y);
+	switch(Akce)
+	{
+		case PAN_MOVE:
+		{
+			Posun.x=(akt_souradnice_kurzoru_PX.x-vychozi_souradnice_kurzoru.x);
+			Posun.y=(akt_souradnice_kurzoru_PX.y-vychozi_souradnice_kurzoru.y);
+//			if(F->d.v.ZAKAZKY_temp->dalsi->mGrid->Left+Posun.x>5)
+//			{Posun.x=0;vychozi_souradnice_kurzoru.x=akt_souradnice_kurzoru_PX.x;}
+//			if(F->d.v.ZAKAZKY_temp->dalsi->mGrid->Top+Posun.y>94 || F->d.v.ZAKAZKY_temp->dalsi->mGrid->Top+F->d.v.ZAKAZKY_temp->dalsi->mGrid->Height+Posun.y<scGPButton_Ulozit->Top-20)
+//			{Posun.y=0;vychozi_souradnice_kurzoru.y=akt_souradnice_kurzoru_PX.y;}
+//			if(max_oblast_mGridu.Right+Posun.x<Form_definice_zakazek->Width-5)//F->Memo("Nelze ",true,true);
+//			{vychozi_souradnice_kurzoru.x=akt_souradnice_kurzoru_PX.x;Posun.x=max_oblast_mGridu.Right-(Form_definice_zakazek->Width-5);}
+			pan_map(Canvas,X,Y);   //F->Memo(Posun.x,true);
+			break;
+		}
+		default:break;
+	}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_definice_zakazek::FormMouseUp(TObject *Sender, TMouseButton Button,
+          TShiftState Shift, int X, int Y)
+{
+	if(Button==mbLeft)//zohlední jenom stisk levého tlaèítka myši
+	{
+		if(pan_non_locked){pan_non_locked=false;Akce=NIC;F->kurzor(F->standard);pan_move_map();}
+		switch(Akce)
+		{
+			case PAN_MOVE://vratí z PAN_MOVE na PAN
+			{
+				F->kurzor(F->pan); Akce=PAN;
+				pan_move_map();
+				break;
+			}
+		}
+	}
+}
+//---------------------------------------------------------------------------
+//vytvoøí výøez pro pan_move
+void TForm_definice_zakazek::pan_create()
+{
+	F->log(__func__);//logování
+	//vypnutí všech prvkù, které by se jinak promítly do bmp
+	scGPButton_Ulozit->Visible=false;
+	scGPButton_storno->Visible=false;
+	scGPButton_plan_vyroby->Visible=false;
+	scGPGlyphButton_add_zakazka->Visible=false;
+	scGPGlyphButton_remove->Visible=false;
+	//vytvoøení bmp
+	Pan_bmp->Width=ClientWidth;Pan_bmp->Height=ClientHeight;//velikost pan plochy
+	Pan_bmp->Canvas->CopyRect(Rect(0,0,ClientWidth,ClientHeight),Canvas,Rect(0,0,ClientWidth,ClientHeight));//uloží pan výøez
+	FormPaint(this);
+	//zakrytí panelu v bmp, pokud by byly bmp menší, pøi posunu bílí pruh, musí mít stejnou velikost jako form
+	Pan_bmp->Canvas->Brush->Color=light_gray;
+	Pan_bmp->Canvas->FillRect(TRect(0,0,Form_definice_zakazek->Width,scGPPanel2->Height));
+	//zobrazení skrytých
+	scGPButton_Ulozit->Visible=true;
+	scGPButton_storno->Visible=true;
+	scGPButton_plan_vyroby->Visible=true;
+	scGPGlyphButton_add_zakazka->Visible=true;
+	scGPGlyphButton_remove->Visible=true;
+}
+//---------------------------------------------------------------------------
+//Posouvá výøez mapy pøi stisknutém mezerníku a L-myši
+void TForm_definice_zakazek::pan_map(TCanvas * canv, int X, int Y)
+{
+	F->log(__func__);//logování
+	////zajištìní skrytí komponent, vedlejší produkt metody d.vykresli_mGridy();, protože má v sobì podmínky pøi pan_move
+	//if(akt_Objekt!=NULL)if(akt_Objekt->zobrazit_mGrid)d.vykresli_mGridy();
+
+	////vykreslení aktuální pan_bmp
+	canv->Brush->Color=light_gray;canv->Brush->Style=bsSolid;
+	//maže pøi posouvání obrazu starý obraz
+	canv->FillRect(TRect(0,0,ClientWidth,Y-vychozi_souradnice_kurzoru.y));//horní okraj
+	canv->FillRect(TRect(0,Y-vychozi_souradnice_kurzoru.y,X-vychozi_souradnice_kurzoru.x,Y-vychozi_souradnice_kurzoru.y+Pan_bmp->Height));//levy okraj
+	canv->FillRect(TRect(X-vychozi_souradnice_kurzoru.x+Pan_bmp->Width,Y-vychozi_souradnice_kurzoru.y,ClientWidth,ClientHeight));//pravy okraj
+	canv->FillRect(TRect(0,Y-vychozi_souradnice_kurzoru.y+Pan_bmp->Height,X-vychozi_souradnice_kurzoru.x+Pan_bmp->Width,ClientHeight));//dolní okraj
+	//samotné posouvání Pan_bmp
+	canv->Draw(X-vychozi_souradnice_kurzoru.x,Y-vychozi_souradnice_kurzoru.y,Pan_bmp);
+}
+//---------------------------------------------------------------------------
+//realizuje posunutí obrazu
+void TForm_definice_zakazek::pan_move_map()
+{
+	F->log(__func__);//logování
+	Cvektory::TZakazka *Z=F->d.v.ZAKAZKY_temp->dalsi;
+	while(Z!=NULL)
+	{
+		Z->mGrid->Left+=Posun.x;
+		Z->mGrid->Top+=Posun.y;
+		Z=Z->dalsi;
+	}
+	delete Z;Z=NULL;
+	FormPaint(this);
+}
+//---------------------------------------------------------------------------
+//koleèko dolù
+void __fastcall TForm_definice_zakazek::FormMouseWheelDown(TObject *Sender, TShiftState Shift,TPoint &MousePos, bool &Handled)
+{
+	F->log(__func__);//logování
+	if(jedno_ze_tri_otoceni_koleckem_mysi%2!=0)//Velice nutná konstrukce kvùli špatnì fungujicí funkci OnMouseWheel, detukuje každé druhou událost FormMouseWheel
+	{
+		if(Akce==NIC)
+		{
+			Akce=PAN;
+			pan_create();
+			FormPaint(this);//nutné
+			Posun.x=0;Posun.y=0;
+			vychozi_souradnice_kurzoru=TPoint(0,0);
+		}
+		if(funkcni_klavesa==0)Posun.y+=20;
+		else Posun.x-=20;
+		pan_map(Canvas,Posun.x,Posun.y);
+	}
+	jedno_ze_tri_otoceni_koleckem_mysi++;
+	if(jedno_ze_tri_otoceni_koleckem_mysi>4)jedno_ze_tri_otoceni_koleckem_mysi=1;
+	doba_neotaceni_mysi=0;TimerMouseWheel->Enabled=true;
+}
+//---------------------------------------------------------------------------
+//koleèko nahoru
+void __fastcall TForm_definice_zakazek::FormMouseWheelUp(TObject *Sender, TShiftState Shift,TPoint &MousePos, bool &Handled)
+{
+	F->log(__func__);//logování
+	if(jedno_ze_tri_otoceni_koleckem_mysi%2!=0)//Velice nutná konstrukce kvùli špatnì fungujicí funkci OnMouseWheel, detukuje každé druhou událost FormMouseWheel
+	{
+		if(Akce==NIC)
+		{
+			Akce=PAN;
+			pan_create();
+			FormPaint(this);//nutné
+			Posun.x=0;Posun.y=0;
+			vychozi_souradnice_kurzoru=TPoint(0,0);
+		}
+		if(funkcni_klavesa==0)Posun.y-=20;
+		else Posun.x+=20;
+		pan_map(Canvas,Posun.x,Posun.y);
+	}
+	jedno_ze_tri_otoceni_koleckem_mysi++;
+	if(jedno_ze_tri_otoceni_koleckem_mysi>4)jedno_ze_tri_otoceni_koleckem_mysi=1;
+	doba_neotaceni_mysi=0;TimerMouseWheel->Enabled=true;
+}
+//---------------------------------------------------------------------------
+//slouží k ukonèení posuvu bmp a posunu mGridù
+void __fastcall TForm_definice_zakazek::TimerMouseWheelTimer(TObject *Sender)
+{
+	F->log(__func__);//logování
+	if(++doba_neotaceni_mysi==3)
+	{
+		if(Akce==PAN)
+		{
+			Akce=NIC;
+			pan_move_map();
+		}
+		TimerMouseWheel->Enabled=false;
+		jedno_ze_tri_otoceni_koleckem_mysi=1;
+	}
+}
+//---------------------------------------------------------------------------
+//odchytává stisknuté klávesy
+void __fastcall TForm_definice_zakazek::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+{
+	//detekce stisknutí funkèní klávesy
+	funkcni_klavesa=0;
+	if(Shift.Contains(ssShift) && Shift.Contains(ssCtrl)){funkcni_klavesa=3;}//SHIFT + CTRL
+	else
+	{
+		if(Shift.Contains(ssShift)){funkcni_klavesa=2;}//SHIFT
+		if(Shift.Contains(ssCtrl)){funkcni_klavesa=1;}//CTRL
+	}
+}
+//---------------------------------------------------------------------------
+//slouží pro odmazávání funkèní klávesy po jejím puštìní
+void __fastcall TForm_definice_zakazek::FormKeyUp(TObject *Sender, WORD &Key, TShiftState Shift)
+{
+	funkcni_klavesa=0;
+}
+//---------------------------------------------------------------------------
+//
+void TForm_definice_zakazek::mGrid_mimo_obraz(Cvektory::TZakazka *Z)
+{
+	if(Z->mGrid->Top<scGPPanel2->Height)//pokud je mgrid v pøekryvu, nejdøíve obecná podmínka
+	{
+		unsigned int pocet_radku=Ceil((double)(scGPPanel2->Height-Z->mGrid->Top)/(double)Z->mGrid->DefaultRowHeight);
+							Z->mGrid->VisibleComponents=-1;
+		for(unsigned int i=0;i<=pocet_radku;i++)
+		{
+			for(unsigned int j=0;j<=Z->mGrid->ColCount-1;j++)
+				//if(Z->mGrid->Cells[j][i].Type!=Z->mGrid->DRAW)
+				{F->log("("+AnsiString(j)+","+AnsiString(i)+")");Z->mGrid->SetVisibleComponent(j,i,false);F->log("("+AnsiString(j)+","+AnsiString(i)+")");}
+		}
+	}
+}
+

@@ -26,6 +26,7 @@
 #include "scColorControls.hpp"
 #include "scExtControls.hpp"
 #include "Unit1.h"
+#include <Vcl.ExtCtrls.hpp>
 //---------------------------------------------------------------------------
 class TForm_definice_zakazek : public TForm
 {
@@ -49,7 +50,9 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton_remove;
 	TrHTMLLabel *rHTMLLabel_zacatek;
   TscGPImageCollection *scGPImageCollection_layout;
+	TTimer *TimerMouseWheel;
   TscGPImageCollection *scGPImageCollection1;
+	TEdit *Edit_for_Focus;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall scGPGlyphButton4Click(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -58,6 +61,19 @@ __published:	// IDE-managed Components
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall rEditNum_pocet_dnuKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
   void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
+	void __fastcall FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
+          int X, int Y);
+	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
+	void __fastcall FormMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
+          int X, int Y);
+	void __fastcall FormMouseWheelDown(TObject *Sender, TShiftState Shift, TPoint &MousePos,
+          bool &Handled);
+	void __fastcall FormMouseWheelUp(TObject *Sender, TShiftState Shift, TPoint &MousePos,
+          bool &Handled);
+	void __fastcall TimerMouseWheelTimer(TObject *Sender);
+	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall FormKeyUp(TObject *Sender, WORD &Key, TShiftState Shift);
+
 
 
 private:	// User declarations
@@ -71,6 +87,20 @@ private:	// User declarations
 	void uloz_Default_cestu();
 	void getmGridWidth();
 	void vloz_davku(Cvektory::TZakazka *Z,Cvektory::TDavka *davka=NULL);
+	void pan_create();
+	void pan_map(TCanvas * canv, int X, int Y);
+	void pan_move_map();
+	void mGrid_mimo_obraz(Cvektory::TZakazka *Z);
+
+	enum Takce{NIC=0,PAN,PAN_MOVE};Takce Akce;
+	bool pan_non_locked;
+	TPoint akt_souradnice_kurzoru_PX;//uchová aktuální pozici kurzoru
+	TPoint vychozi_souradnice_kurzoru;//uchová výchozí pozici kurzoru
+	TPointD Posun;//promìnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souøadnicích zaøízení
+	TRect max_oblast_mGridu;//uchovává si oblast leveho horního rohu prvního mGridu po poslední a nejšírší mGrid
+	short jedno_ze_tri_otoceni_koleckem_mysi;
+	short doba_neotaceni_mysi;
+	unsigned short int funkcni_klavesa;//uchovává stav poslední stisknuté funkèní klávesy
 
 
 public:		// User declarations
@@ -104,7 +134,8 @@ public:		// User declarations
   int pocet_zakazek;
   TColor barva;//barva zakáky
   TColor light_gray; //barva formu
-  TColor def_gray; //vychozí barva oddìlující bunky
+	TColor def_gray; //vychozí barva oddìlující bunky
+	Graphics::TBitmap *Pan_bmp;//kvùli mGridu jinak staèí private
 
 };
 //---------------------------------------------------------------------------
