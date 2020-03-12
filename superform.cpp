@@ -303,7 +303,7 @@ void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender)
   	while (Z!=NULL)
   	{
 			//dynamické pozicování tabulek, pouze jednou
-			if(Z->n==1 && Z->mGrid->Top==-500)Z->mGrid->Top=scGPButton_plan_vyroby->Height+scLabel_header->Height+Z->mGrid->Rows[0].Height;
+			if(Z->n==1 && Z->mGrid->Top==-500)Z->mGrid->Top=scLabel_header->Height+Z->mGrid->Rows[0].Height;
 			if(Z->n!=1)Z->mGrid->Top=Z->predchozi->mGrid->Top+Z->predchozi->mGrid->Height+Z->mGrid->Rows[0].Height;
 			//ukládání max oblasti, možná nebude potøeba
 			if(Z->n==1){max_oblast_mGridu.Left=Z->mGrid->Left;max_oblast_mGridu.Top=Z->mGrid->Top;}
