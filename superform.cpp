@@ -33,7 +33,7 @@ __fastcall TForm_definice_zakazek::TForm_definice_zakazek(TComponent* Owner)
   zmena_TT = false;
   add_zakazka = false;
 	nacitam_zakazky = false;
-
+  uz_posun = false;
 }
 
 // ---------------------------------------------------------------------------
@@ -70,8 +70,6 @@ void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender)
 	doba_neotaceni_mysi=0;
 	//bitmapa pro uložení pøesovaného obrazu - PAN
 	Pan_bmp=new Graphics::TBitmap();
-  Top=F->scLabel_titulek->Height;
-	Left=F->ClientWidth - Form_definice_zakazek->Width;
 	pan_non_locked=false;
   ////nastaveni PP, defaultní jsou již od souboru novy, který se volá vždy, takže není defaultní nutné volat znovu
   nacti_PP();
@@ -287,8 +285,8 @@ void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender)
 	F->log(__func__); //logování
 	if(Akce!=BLOK)//nepøekreslovat v nežádoucích pøípadech (napø. posun fomru)
 	{
-		int width=682;//defaul ClientWidth formu
-		int height=283;//defaul ClientHeight formu (pro jednu zakázku), mezera mezi koncem formu a posledním mGridem = 64px
+		int width=317;//defaul ClientWidth formu
+		int height=248;//defaul ClientHeight formu (pro jednu zakázku), mezera mezi koncem formu a posledním mGridem = 64px
   	max_oblast_mGridu.Left=0;max_oblast_mGridu.Right=0;max_oblast_mGridu.Top=0;max_oblast_mGridu.Bottom=0;
 		//vytvoøení bmp
   	Graphics::TBitmap *bmp_total=new Graphics::TBitmap;
@@ -307,7 +305,7 @@ void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender)
 			if(Z->n!=1)Z->mGrid->Top=Z->predchozi->mGrid->Top+Z->predchozi->mGrid->Height+Z->mGrid->Rows[0].Height;
 			//ukládání max oblasti, možná nebude potøeba
 			if(Z->n==1){max_oblast_mGridu.Left=Z->mGrid->Left;max_oblast_mGridu.Top=Z->mGrid->Top;}
-  		if(Z->dalsi==NULL)max_oblast_mGridu.Bottom=Z->mGrid->Top+Z->mGrid->Height;
+			if(Z->dalsi==NULL)max_oblast_mGridu.Bottom=Z->mGrid->Top+Z->mGrid->Height;
   		if(max_oblast_mGridu.Right<Z->mGrid->Left+Z->mGrid->Width)max_oblast_mGridu.Right=Z->mGrid->Left+Z->mGrid->Width;
   		//vykreslení tabulky
   		if(Akce!=PAN_MOVE && Akce!=PAN)Z->mGrid->Show(bmp_total->Canvas);
@@ -316,18 +314,18 @@ void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender)
   		mGrid_mimo_obraz(Z);
   		//kontrola zda je form dostateènì široký
   		if(5+Z->mGrid->Width+5>width)width=5+Z->mGrid->Width+5;    // 5 náhrada za Z->mGrid->Left
-			if(Z->dalsi==NULL && 94+Z->n*Z->mGrid->Height+25*(Z->n-1)+64>(unsigned)height)height=94+Z->n*Z->mGrid->Height+25*(Z->n-1)+64;   //94 = Z->mGrid->Top, 25 = mezera mezi mGridy64 pdsazení od spodní hrany formu
+			if(Z->dalsi==NULL && 28+Z->n*Z->mGrid->Height+25*(Z->n)+69>(unsigned)height)height=28+Z->n*Z->mGrid->Height+25*(Z->n)+69;   //28 = Z->mGrid->Top, 25 = mezera mezi mGridy, 69 pdsazení od spodní hrany formu
   		Z=Z->dalsi;
   	}
   	delete Z;Z=NULL;
 
   	////kontrola zda není nutné zvìtšit form
-  	if(width>1135)width=1135;
-		if(height>883)height=883;
+		if(width>1215)width=1215;
+		if(height>F->scGPPanel_statusbar->Top-34-2)height=F->scGPPanel_statusbar->Top-34-2;//-2 fix pøekryvu, zkrze obrys kolem formu ??
 		if(width!=Form_definice_zakazek->ClientWidth || height!=Form_definice_zakazek->ClientHeight)
-  	{
+		{
   		//upravení rozmìrù formu
-  		Form_definice_zakazek->Width=width+2;//+2 rozdíl mezi clientwidth a width
+			Form_definice_zakazek->Width=width+2;//+2 rozdíl mezi clientwidth a width
   		Form_definice_zakazek->Height=height+2;//+2 rozdíl mezi clientwidth a height
   		//pozicování buttonu
   		scGPButton_Ulozit->Top=Form_definice_zakazek->Height-scGPButton_Ulozit->Height - 10;
@@ -339,11 +337,16 @@ void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender)
 		}
 		else
 		{
+			if(!uz_posun)
+			{
+				Top=F->scLabel_titulek->Height;
+				Left=F->ClientWidth - Form_definice_zakazek->Width;
+			}
 			if(Akce!=PAN_MOVE && Akce!=PAN)Canvas->Draw(0,0,bmp_total);//finální pøedání bmp_out do Canvasu
 			else Canvas->Draw(0,0,Pan_bmp);//zabránìní probliku pøi spouštìní posunu
 		}
 
-  	////smazání bmp
+		////smazání bmp
   	delete(bmp_total);//velice nutné
 	}
 }
@@ -892,11 +895,11 @@ void __fastcall TForm_definice_zakazek::FormMouseMove(TObject *Sender, TShiftSta
 void TForm_definice_zakazek::vazat_posun()
 {
 	//vázání na Top
-	if(max_oblast_mGridu.Top+Posun.y>=94)//kontrola, zda se snazím jít pøes hranici
+	if(max_oblast_mGridu.Top+Posun.y>=59)//kontrola, zda se snazím jít pøes hranici
 	{
 		if(Posun_predchozi.x==0 && Posun_predchozi.y==0)//kontrola, zda se to stalo poprvé
 		{
-			Posun.y-=max_oblast_mGridu.Top+Posun.y-94;//upravení posunu, rychlím pohybem kurzoru se lze dostat za hranici, nutnost pøizpùsobit Posun pøesnì na hranici
+			Posun.y-=max_oblast_mGridu.Top+Posun.y-59;//upravení posunu, rychlím pohybem kurzoru se lze dostat za hranici, nutnost pøizpùsobit Posun pøesnì na hranici
 			Posun_predchozi.y=Posun.y;//uložení Posunu pro další použití
 		}
 		else Posun.y=Posun_predchozi.y;//poøád se snažím pøekonat stejnou hranici, nastavování posunu na pøedchozí
@@ -904,11 +907,11 @@ void TForm_definice_zakazek::vazat_posun()
 	else Posun_predchozi=TPoint(0,0);//nepøekraèuji hranici, vynulování pøedchozího popsunu
 
 	//vázání na Bottom
-	if(max_oblast_mGridu.Bottom+Posun.y<=scGPButton_Ulozit->Top-20)
+	if(max_oblast_mGridu.Bottom+Posun.y<=Form_definice_zakazek->Height-65)
 	{
 		if(Posun_predchozi.x==0 && Posun_predchozi.y==0)
 		{
-			Posun.y-=max_oblast_mGridu.Bottom+Posun.y-(scGPButton_Ulozit->Top-20);
+			Posun.y-=max_oblast_mGridu.Bottom+Posun.y-(Form_definice_zakazek->Height-65);
 			Posun_predchozi.y=Posun.y;
 		}
 		else Posun.y=Posun_predchozi.y;
@@ -928,11 +931,11 @@ void TForm_definice_zakazek::vazat_posun()
 	else Posun_predchozi=TPoint(0,0);
 
 	//vázání Right
-	if(max_oblast_mGridu.Right+Posun.x<=Form_definice_zakazek->ClientWidth-5)
+	if(max_oblast_mGridu.Right+Posun.x<=Form_definice_zakazek->Width-8)
 	{
 		if(Posun_predchozi.x==0 && Posun_predchozi.y==0)
 		{
-			Posun.x-=max_oblast_mGridu.Right+Posun.x-(Form_definice_zakazek->ClientWidth-5);
+			Posun.x-=max_oblast_mGridu.Right+Posun.x-(Form_definice_zakazek->Width-8);
 			Posun_predchozi.x=Posun.x;
 		}
 		else Posun.x=Posun_predchozi.x;
@@ -1128,6 +1131,7 @@ void __fastcall TForm_definice_zakazek::scLabel_headerMouseUp(TObject *Sender, T
           TShiftState Shift, int X, int Y)
 {
 	Akce=NIC;//uvolnìní akce po posunu
+	uz_posun=true;//uložení, že došlo k uživatelskému posunu
 	FormPaint(this);//pøekreslení, nìkdy pøi velkém pøesunu mùže dojít k deformaci vykreslení tabulky, proto pøekreslení po ukonèení pøesunu
 }
 //---------------------------------------------------------------------------

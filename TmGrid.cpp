@@ -1874,8 +1874,11 @@ void __fastcall TmGrid::getTagOnKeyPress(TObject *Sender,System::WideChar &Key)
 //---------------------------------------------------------------------------
 void __fastcall TmGrid::getTagMouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
 {
-	F->ID_tabulky=ID;//přeposílání ID tabulky na form1
-	Form1->FormMouseMove(Sender,Shift,X,Y);//přesměrování události na form1
+	if(AnsiString(Tag).SubString(1,1)=="6")
+	{
+		F->ID_tabulky=ID;//přeposílání ID tabulky na form1
+		Form1->FormMouseMove(Sender,Shift,X,Y);//přesměrování události na form1
+	}
 }
 //---------------------------------------------------------------------------
 //vrací událost při vstupu či přejetí myší přes komponentu

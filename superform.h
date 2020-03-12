@@ -102,6 +102,7 @@ private:	// User declarations
 	short jedno_ze_tri_otoceni_koleckem_mysi;
 	short doba_neotaceni_mysi;
 	unsigned short int funkcni_klavesa;//uchovává stav poslední stisknuté funkèní klávesy
+	bool uz_posun;//slouží k indikaci, že uživatel posunul form
 
 
 public:		// User declarations

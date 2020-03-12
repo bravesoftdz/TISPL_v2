@@ -191,7 +191,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
-    ExplicitWidth = 598
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 483
@@ -287,7 +286,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 548
     end
     object scLabel_header: TscLabel
       Left = 0
@@ -322,7 +320,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Definice zak'#225'zek'
-      ExplicitWidth = 411
     end
     object scGPGlyphButton_add_zakazka: TscGPGlyphButton
       Left = 3
@@ -514,7 +511,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 548
     end
   end
   object rEditNum_effektivita: TrEditNum
