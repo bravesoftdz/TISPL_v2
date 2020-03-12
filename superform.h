@@ -51,7 +51,6 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_zacatek;
   TscGPImageCollection *scGPImageCollection_layout;
 	TTimer *TimerMouseWheel;
-  TscGPImageCollection *scGPImageCollection1;
 	TEdit *Edit_for_Focus;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall scGPGlyphButton4Click(TObject *Sender);
@@ -77,13 +76,6 @@ __published:	// IDE-managed Components
           int X, int Y);
 	void __fastcall scLabel_headerMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
-
-
-
-
-
-
-
 
 
 
@@ -115,6 +107,7 @@ private:	// User declarations
 	short doba_neotaceni_mysi;
 	unsigned short int funkcni_klavesa;//uchovává stav poslední stisknuté funkèní klávesy
 
+
 public:		// User declarations
 	__fastcall TForm_definice_zakazek(TComponent* Owner);
 
@@ -125,14 +118,17 @@ public:		// User declarations
   void setButtonColor(long ID);
   void loadHeader(unsigned long zakazka_n=0,bool novy=true);
   enum Typ_buttonu {krizek_davky, krizek,color};
+  enum TAkce_obrazku {load,add,remove};
 
   Typ_buttonu button_type;//zjisteni ktery button ma byt designovan
+  TAkce_obrazku akce_obrazku;
 
 	void setGlyphButtonDefault(unsigned long Row,unsigned long Col, Typ_buttonu typ, Cvektory::TZakazka *Z);
   void setGlyphButtonDavka_Add(unsigned long ID,unsigned long Col);
 	void setGlyphButtonDavka_Remove(unsigned long Col,Cvektory::TZakazka *Z,Cvektory::TDavka *davka);
   void setGlyphButtonColor(unsigned long Row,unsigned long Col, Typ_buttonu typ, Cvektory::TZakazka *Z);
   void set_formHW_button_positions();
+  void GetImages(Cvektory::TZakazka *Z,TAkce_obrazku akce_obrazku);
   bool add_zakazka;
   bool add_davka;
 	bool zmena_TT;

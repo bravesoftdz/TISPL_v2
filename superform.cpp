@@ -168,6 +168,7 @@ void TForm_definice_zakazek::nacti_zakazky()
 	while (Z != NULL)
 	{
 		loadHeader(Z->n,false);
+    GetImages(Z,load);
     pocet_zakazek++;//zvýšení poètu zakázek, které následnì nastaví výšku formuláøe v metodì set_formHW_button_positions
 		//vytvoøení tabulky zakázky, nikoliv zakázky a tabulky
 		D=Z->davky->dalsi;
@@ -294,10 +295,10 @@ void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender)
   	Graphics::TBitmap *bmp_total=new Graphics::TBitmap;
   	bmp_total->Width=Form_definice_zakazek->Width;
   	bmp_total->Height=Form_definice_zakazek->Height;
+
   	//vykreslení podkladní barvy
   	bmp_total->Canvas->Brush->Color = light_gray;
   	bmp_total->Canvas->FillRect(TRect(0,0,bmp_total->Width,bmp_total->Height));
-
   	////vykreslìní mGridù
   	Cvektory::TZakazka *Z=F->d.v.ZAKAZKY_temp->dalsi;
   	while (Z!=NULL)
@@ -430,14 +431,14 @@ void TForm_definice_zakazek::vloz_davku(Cvektory::TZakazka *Z,Cvektory::TDavka *
 {
 	volno = false;
   // backup pùvodního názvu zakázky pro následný merge bunek a naplnìní
- 	AnsiString nazev = Z->mGrid->Cells[1][0].Text;
+ //	AnsiString nazev = Z->mGrid->Cells[1][0].Text;
 	unsigned long Col=Z->mGrid->ColCount-1;
   Edit_for_Focus->SetFocus();
   Z->mGrid->InsertColumn(Col,true, true);
   Z->mGrid->MergeCells(1, 0, Z->mGrid->ColCount-1, 0); // název     - vodorovne
-  Z->mGrid->Cells[1][0].Align=Z->mGrid->LEFT;
+ // Z->mGrid->Cells[1][0].Align=Z->mGrid->LEFT;
   // naplnìní pùvodním textem
-  Z->mGrid->Cells[1][0].Text = nazev;
+//  Z->mGrid->Cells[1][0].Text = nazev;
   // pokud neexistují dávky tak pøi prvním pøidání dávky nastavím typ na glyphbutton
 	if (Z->mGrid->ColCount == 4 + 1) Z->mGrid->Cells[Col][1].Type = Z->mGrid->glyphBUTTON;
 	if(davka==NULL)
@@ -462,6 +463,7 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col, unsig
 	F->log(__func__); // logování
   // naètení aktuálnì editované zakázky
   Cvektory::TZakazka *Z = F->d.v.vrat_temp_zakazku_z_mGridu(ID);
+
 
   if (Col >= 3 && Row == 1 && volno == true)
   {
@@ -496,6 +498,7 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col, unsig
       volno = false;
       Edit_for_Focus->SetFocus();
       Z->mGrid->DeleteColumn(Col, true);
+      Z->mGrid->MergeCells(1, 0, Z->mGrid->ColCount-1, 0); //novy merge názvu
       Z->mGrid->Update();
       volno = true;
 			F->d.v.smaz_davku(Z,Col-2);
@@ -531,15 +534,18 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col, unsig
   {
     volno = false;
 		Edit_for_Focus->SetFocus();
+  // ShowMessage(Z->mGrid->scGPImageCollection->Images->Count);
     Z->mGrid->Delete();
     Z->mGrid = NULL;
 		F->d.v.smaz_temp_zakazku(Z->n);
+    GetImages(Z,remove);
     pocet_zakazek=F->d.v.ZAKAZKY_temp->predchozi->n; //zjisteni akt.poctu zakázek
     set_formHW_button_positions(); //nové rozmìry formuláøe + pozice buttonu
 		FormPaint(this);
     volno = true;
   }
   // odmazání pomocného ukazatele
+  //ShowMessage(Z->mGrid->scGPImageCollection->Images->Count);
   Z = NULL;
 	delete Z;
 }
@@ -612,8 +618,10 @@ void TForm_definice_zakazek::setButtonColor(long ID)
   Z->mGrid->getGlyphButton(1, 1)->Options->FocusedColorAlpha = 225;
   Z->mGrid->getGlyphButton(1, 1)->Options->NormalColor = Form_color_dialog->scColorGrid1->ColorValue;
   //Z->mGrid->getGlyphButton(1, 1)->Options->FrameColor= Form_color_dialog->scColorGrid1->ColorValue;
-  Z->mGrid->getGlyphButton(1, 1)->Options->FrameNormalColor=  Form_color_dialog->scColorGrid1->ColorValue;
-  Z->mGrid->getGlyphButton(1, 1)->Options->FramePressedColor=  Form_color_dialog->scColorGrid1->ColorValue;
+  Z->mGrid->getGlyphButton(1, 1)->Options->FrameNormalColor= Form_color_dialog->scColorGrid1->ColorValue;
+  Z->mGrid->getGlyphButton(1, 1)->Options->FramePressedColor= Form_color_dialog->scColorGrid1->ColorValue;
+  Z->mGrid->getGlyphButton(1, 1)->Options->FrameHotColor= Form_color_dialog->scColorGrid1->ColorValue;
+  Z->mGrid->getGlyphButton(1, 1)->Options->FrameFocusedColor= Form_color_dialog->scColorGrid1->ColorValue;
   Z->mGrid->Cells[1][1].BottomBorder->Color =Form_color_dialog->scColorGrid1->ColorValue ;
   Z->mGrid->Cells[1][0].Background->Color = Form_color_dialog->scColorGrid1->ColorValue;
   Z->mGrid->getEdit(1,0)->Options->FocusedColorAlpha=255;
@@ -639,6 +647,7 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy)
       if (F->d.v.ZAKAZKY_temp != NULL && F->d.v.ZAKAZKY_temp->predchozi->n > 0)
       n = F->d.v.ZAKAZKY_temp->predchozi->n + 1;
       F->d.v.vloz_temp_zakazku("id", 0, "Zakazka " + AnsiString(n), clBlack, 0, 0, J, 0, 0, 0);
+
       Z = F->d.v.ZAKAZKY_temp->predchozi;
       F->d.v.inicializace_cesty(Z); // vytvoøí hlavièku cesty
       pocet_zakazek=n;
@@ -667,27 +676,11 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy)
     Z->mGrid->Top = -500;
     // if (Z->predchozi->n > 0) Z->mGrid->Top = Z->predchozi->mGrid->Top + Z->predchozi->mGrid->Height + Z->mGrid->Rows[0].Height;
     // else Z->mGrid->Top = Z->mGrid->Rows[0].Height + scGPButton_plan_vyroby->Height + scLabel_header->Height;
-    Z->mGrid->scGPImageCollection=scGPImageCollection_layout;
-//
-    	Graphics::TBitmap *bmp=new Graphics::TBitmap;
-	bmp->Width=108;
-	bmp->Height=73;
-	//vykreslení podkladní barvy
-	//bmp->Canvas->Brush->Color = clBlack;
-  bmp->Canvas->MoveTo(0,0); bmp->Canvas->LineTo(100,100);
 
 
-    Z->mGrid->scGPImageCollection->Images->Add()->Bitmap=bmp;
 
-    Z->mGrid->Cells[0][2].Type=Z->mGrid->IMAGE;
-    Z->mGrid->Cells[0][2].ImageIndex=2;   //dynamicky plnit
-   // Z->mGrid->scGPImageCollection->
-
-    Z->mGrid->Update();
-    Z->mGrid->getImage(0,2)->Stretch=true;
-		Z->mGrid->Cells[0][2].Align=Z->mGrid->LEFT;
-    Z->mGrid->Cells[0][2].Valign=Z->mGrid->TOP;
     Z->mGrid->Cells[1][0].Type = Z->mGrid->EDIT;
+    Z->mGrid->Cells[1][0].Font->Color=clBlack;
     // nazev  text  - slouèit podélnì
     Z->mGrid->Cells[0][0].Type = Z->mGrid->glyphBUTTON; // X  zakazka
     Z->mGrid->Cells[3][1].Type = Z->mGrid->glyphBUTTON; // X dávka
@@ -730,6 +723,8 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy)
 			Z->mGrid->Cells[2][4].Text=Z->opakov_servis;
     }
 
+    if (novy) { GetImages(Z,add);}
+
   // if(Z->mGrid->Cells[1][1].Background->Color!=clWhite) Z->mGrid->Cells[1][1].TopBorder->Color = clWhite;
     // podbarvení sloupcù s "+"
     Z->mGrid->Cells[3][4].Background->Color = light_gray;
@@ -749,7 +744,7 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy)
     setGlyphButtonColor(1, 1, color, Z);
     setGlyphButtonDefault(0, 0, krizek, Z);
     setGlyphButtonDefault(1, 2, krizek_davky, Z);
-   Z->mGrid->Cells[1][0].Align=Z->mGrid->LEFT;  // po slouèení pøijdu (add dávka) o text - proto zakomentováno
+    //Z->mGrid->Cells[1][0].Align=Z->mGrid->LEFT;  // po slouèení pøijdu (add dávka) o text - proto zakomentováno
 
     ////ukazatelové záležitosti
     Z->mGrid->Refresh();
@@ -847,6 +842,90 @@ void TForm_definice_zakazek::set_formHW_button_positions()
 //  scGPButton_Ulozit->Top= Form_definice_zakazek->Height - scGPButton_Ulozit->Height - 10;
 //  scGPButton_storno->Top=scGPButton_Ulozit->Top;
 //  if(pocet_zakazek>=3) Form_definice_zakazek->Top=50;
+}
+
+void TForm_definice_zakazek::GetImages(Cvektory::TZakazka *Z,TAkce_obrazku akce_obrazku)
+{
+  if(akce_obrazku==load)
+  {
+  // ShowMessage("load");
+  Z->mGrid->scGPImageCollection=scGPImageCollection_layout;
+ // Z->mGrid->scGPImageCollection->Images->Clear();
+  Graphics::TBitmap *bmp=new Graphics::TBitmap;
+  bmp->Width=108;
+  bmp->Height=73;
+
+  bmp->Canvas->MoveTo(0,0); bmp->Canvas->LineTo(100,100);
+  bmp->Canvas->TextOutW(8,5,Z->n);
+
+  Z->mGrid->scGPImageCollection->Images->Add()->Bitmap=bmp;
+  Z->mGrid->Cells[0][2].Type=Z->mGrid->IMAGE;
+  Z->mGrid->Cells[0][2].ImageIndex=Z->n-1;   //dynamicky plnit
+  //Z->
+
+  Z->mGrid->Update();
+  Z->mGrid->getImage(0,2)->Stretch=true;
+  Z->mGrid->Cells[0][2].Align=Z->mGrid->LEFT;
+  Z->mGrid->Cells[0][2].Valign=Z->mGrid->TOP;
+ }
+  Graphics::TBitmap *bmp=new Graphics::TBitmap;
+  bmp->Width=108;
+  bmp->Height=73;
+
+  bmp->Canvas->MoveTo(0,0); bmp->Canvas->LineTo(100,100);
+  bmp->Canvas->TextOutW(8,5,Z->n);
+
+
+ if(akce_obrazku==remove)
+ {
+   int pocet_temp_zakazek=F->d.v.ZAKAZKY_temp->predchozi->n;
+   ShowMessage("Count obrazku pred smazanim:"+AnsiString(Z->mGrid->scGPImageCollection->Images->Count)+"Z->n-1:"+AnsiString(Z->n-1)+"pocet_temp:"+AnsiString(pocet_temp_zakazek));
+  for(int i=Z->n-1;i<pocet_temp_zakazek-1;i++)
+  {
+   ShowMessage("Smaz"+AnsiString(i));
+   Z->mGrid->scGPImageCollection->Images->Delete(i);
+  }
+
+  for(int i=Z->n-1;i<=pocet_temp_zakazek-1;i++)
+  {
+    ShowMessage("Vloz"+AnsiString(i));
+   Z->mGrid->scGPImageCollection->Images->Add()->Bitmap=bmp;
+   Z->mGrid->Cells[0][2].ImageIndex=i;
+  }
+
+  //Z->mGrid->Update();
+ //  Z->mGrid->scGPImageCollection->Images->Clear();
+  //ShowMessage(Z->mGrid->scGPImageCollection->Images->Count); //probìhnutí + whilem a naplnìní Images
+//   Cvektory::TZakazka *X = F->d.v.ZAKAZKY_temp->dalsi;
+//  	while (X != NULL)
+//	{
+//    //ShowMessage(X->n);
+//    GetImages(X,load);
+//     X=X->dalsi;
+// }
+ Z->mGrid->Update();
+  ShowMessage("Count obrazku po smazani:"+AnsiString(Z->mGrid->scGPImageCollection->Images->Count));
+
+ }
+ if(akce_obrazku==add)
+ {
+   Z->mGrid->scGPImageCollection=scGPImageCollection_layout;
+ // Z->mGrid->scGPImageCollection->Images->Clear();
+  Graphics::TBitmap *bmp=new Graphics::TBitmap;
+  bmp->Width=108;
+  bmp->Height=73;
+
+  bmp->Canvas->MoveTo(0,0); bmp->Canvas->LineTo(100,100);
+  bmp->Canvas->TextOutW(8,5,Z->n);
+  Z->mGrid->scGPImageCollection->Images->Add()->Bitmap=bmp;
+  Z->mGrid->Cells[0][2].Type=Z->mGrid->IMAGE;
+  Z->mGrid->Cells[0][2].ImageIndex=Z->n-1;   //dynamicky plnit
+  Z->mGrid->Update();
+  Z->mGrid->getImage(0,2)->Stretch=true;
+  Z->mGrid->Cells[0][2].Align=Z->mGrid->LEFT;
+  Z->mGrid->Cells[0][2].Valign=Z->mGrid->TOP;
+ }
+
 }
 void __fastcall TForm_definice_zakazek::FormMouseDown(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y)
