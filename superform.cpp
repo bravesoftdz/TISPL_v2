@@ -431,7 +431,7 @@ void TForm_definice_zakazek::vloz_davku(Cvektory::TZakazka *Z,Cvektory::TDavka *
 	unsigned long Col=Z->mGrid->ColCount-1;
   Edit_for_Focus->SetFocus();
   Z->mGrid->InsertColumn(Col,true, true);
-  Z->mGrid->MergeCells(1, 0, Z->mGrid->ColCount-1, 0); // název     - vodorovne
+  Z->mGrid->MergeCells(1, 0, Z->mGrid->ColCount-2, 0); // název     - vodorovne  -2 kvùli tomu, že tam je ještì radiobutton
  // Z->mGrid->Cells[1][0].Align=Z->mGrid->LEFT;
   // naplnìní pùvodním textem
 //  Z->mGrid->Cells[1][0].Text = nazev;
@@ -677,6 +677,7 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy)
     // nazev  text  - slouèit podélnì
     Z->mGrid->Cells[0][0].Type = Z->mGrid->glyphBUTTON; // X  zakazka
     Z->mGrid->Cells[3][1].Type = Z->mGrid->glyphBUTTON; // X dávka
+    Z->mGrid->Cells[3][0].Type = Z->mGrid->CHECK; // select  zakazka
 
     Z->mGrid->Cells[0][1].Text = Z->n; // id zakázky
     if (novy)
@@ -728,7 +729,7 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy)
     Z->mGrid->Cells[3][2].Text = " ";
     Z->mGrid->Cells[3][2].BottomBorder->Color = light_gray;
 
-    Z->mGrid->MergeCells(1, 0, 3, 0); // název     - vodorovne
+    Z->mGrid->MergeCells(1, 0, 2, 0); // název     - vodorovne
     //Z->mGrid->MergeCells(1, 1, 2, 1); // merge color glyph
     Z->mGrid->MergeCells(0, 2, 0, 4); // merge ID èi obrázek
 		//Z->mGrid->Update();
