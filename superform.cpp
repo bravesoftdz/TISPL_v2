@@ -33,9 +33,6 @@ __fastcall TForm_definice_zakazek::TForm_definice_zakazek(TComponent* Owner)
   zmena_TT = false;
   add_zakazka = false;
 	nacitam_zakazky = false;
-	//bitmapa pro uložení pøesovaného obrazu - PAN
-	Pan_bmp=new Graphics::TBitmap();
-	pan_non_locked=false;
 }
 
 // ---------------------------------------------------------------------------
@@ -79,6 +76,9 @@ void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender)
 	Akce=NIC;
 	jedno_ze_tri_otoceni_koleckem_mysi=1;
 	doba_neotaceni_mysi=0;
+	//bitmapa pro uložení pøesovaného obrazu - PAN
+	Pan_bmp=new Graphics::TBitmap();
+	pan_non_locked=false;
   ////nastaveni PP, defaultní jsou již od souboru novy, který se volá vždy, takže není defaultní nutné volat znovu
   nacti_PP();
   nastav_jazyk();
@@ -168,7 +168,6 @@ void TForm_definice_zakazek::nacti_zakazky()
 	while (Z != NULL)
 	{
 		loadHeader(Z->n,false);
-    GetImages(Z,load);
     pocet_zakazek++;//zvýšení poètu zakázek, které následnì nastaví výšku formuláøe v metodì set_formHW_button_positions
 		//vytvoøení tabulky zakázky, nikoliv zakázky a tabulky
 		D=Z->davky->dalsi;
@@ -249,7 +248,7 @@ void __fastcall TForm_definice_zakazek::scGPGlyphButton4Click(TObject *Sender)
 // ---------------------------------------------------------------------------
 void __fastcall TForm_definice_zakazek::KonecClick(TObject *Sender)
 {
-  // mazání mgridù zakázek
+	// mazání mgridù zakázek
   if (F->d.v.ZAKAZKY_temp != NULL) {
     Edit_for_Focus->SetFocus();
     Cvektory::TZakazka *Z = F->d.v.ZAKAZKY_temp->dalsi;
@@ -260,8 +259,14 @@ void __fastcall TForm_definice_zakazek::KonecClick(TObject *Sender)
     }
     delete Z;
     Z = NULL;
+	}
+	//mazání bmp
+	for(int i=scGPImageCollection_layout->Count-1;i>=0;i--)
+	{
+    scGPImageCollection_layout->Images->Delete(i);
   }
 
+	//ostatní
 	Form1->d.v.vymaz_seznam_ZAKAZKY_temp();
 	delete(Pan_bmp);//mazání bmp pro posun
 	//zmìna záložek
@@ -303,14 +308,11 @@ void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender)
   	Cvektory::TZakazka *Z=F->d.v.ZAKAZKY_temp->dalsi;
   	while (Z!=NULL)
   	{
-  		//dynamické pozicování tabulek, pouze jednou
-  		if(Z->mGrid->Top==-500)
-			{
-				if (Z->predchozi->n==0)Z->mGrid->Top=scGPButton_plan_vyroby->Height+scLabel_header->Height+Z->mGrid->Rows[0].Height;
-				else Z->mGrid->Top=Z->predchozi->mGrid->Top+Z->predchozi->mGrid->Height+Z->mGrid->Rows[0].Height;
-			}
+			//dynamické pozicování tabulek, pouze jednou
+			if(Z->n==1 && Z->mGrid->Top==-500)Z->mGrid->Top=scGPButton_plan_vyroby->Height+scLabel_header->Height+Z->mGrid->Rows[0].Height;
+			if(Z->n!=1)Z->mGrid->Top=Z->predchozi->mGrid->Top+Z->predchozi->mGrid->Height+Z->mGrid->Rows[0].Height;
 			//ukládání max oblasti, možná nebude potøeba
-  		if(Z->n==1){max_oblast_mGridu.Left=Z->mGrid->Left;max_oblast_mGridu.Top=Z->mGrid->Top;}
+			if(Z->n==1){max_oblast_mGridu.Left=Z->mGrid->Left;max_oblast_mGridu.Top=Z->mGrid->Top;}
   		if(Z->dalsi==NULL)max_oblast_mGridu.Bottom=Z->mGrid->Top+Z->mGrid->Height;
   		if(max_oblast_mGridu.Right<Z->mGrid->Left+Z->mGrid->Width)max_oblast_mGridu.Right=Z->mGrid->Left+Z->mGrid->Width;
   		//vykreslení tabulky
@@ -534,11 +536,8 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col, unsig
   {
     volno = false;
 		Edit_for_Focus->SetFocus();
-  // ShowMessage(Z->mGrid->scGPImageCollection->Images->Count);
-    Z->mGrid->Delete();
-    Z->mGrid = NULL;
+	// ShowMessage(Z->mGrid->scGPImageCollection->Images->Count);
 		F->d.v.smaz_temp_zakazku(Z->n);
-    GetImages(Z,remove);
     pocet_zakazek=F->d.v.ZAKAZKY_temp->predchozi->n; //zjisteni akt.poctu zakázek
     set_formHW_button_positions(); //nové rozmìry formuláøe + pozice buttonu
 		FormPaint(this);
@@ -723,7 +722,6 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy)
 			Z->mGrid->Cells[2][4].Text=Z->opakov_servis;
     }
 
-    if (novy) { GetImages(Z,add);}
 
   // if(Z->mGrid->Cells[1][1].Background->Color!=clWhite) Z->mGrid->Cells[1][1].TopBorder->Color = clWhite;
     // podbarvení sloupcù s "+"
@@ -739,12 +737,13 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy)
     Z->mGrid->MergeCells(1, 0, 3, 0); // název     - vodorovne
     //Z->mGrid->MergeCells(1, 1, 2, 1); // merge color glyph
     Z->mGrid->MergeCells(0, 2, 0, 4); // merge ID èi obrázek
-    Z->mGrid->Update();
+		//Z->mGrid->Update();
+		GetImages(Z);//slouží jak pro naèítání tak pro vkládání nové zakázky, provede Update()
     // default rozmístìní glyphbuttonù
     setGlyphButtonColor(1, 1, color, Z);
     setGlyphButtonDefault(0, 0, krizek, Z);
     setGlyphButtonDefault(1, 2, krizek_davky, Z);
-    //Z->mGrid->Cells[1][0].Align=Z->mGrid->LEFT;  // po slouèení pøijdu (add dávka) o text - proto zakomentováno
+		//Z->mGrid->Cells[1][0].Align=Z->mGrid->LEFT;  // po slouèení pøijdu (add dávka) o text - proto zakomentováno
 
     ////ukazatelové záležitosti
     Z->mGrid->Refresh();
@@ -844,88 +843,16 @@ void TForm_definice_zakazek::set_formHW_button_positions()
 //  if(pocet_zakazek>=3) Form_definice_zakazek->Top=50;
 }
 
-void TForm_definice_zakazek::GetImages(Cvektory::TZakazka *Z,TAkce_obrazku akce_obrazku)
+void TForm_definice_zakazek::GetImages(Cvektory::TZakazka *Z)
 {
-  if(akce_obrazku==load)
-  {
-  // ShowMessage("load");
-  Z->mGrid->scGPImageCollection=scGPImageCollection_layout;
- // Z->mGrid->scGPImageCollection->Images->Clear();
-  Graphics::TBitmap *bmp=new Graphics::TBitmap;
-  bmp->Width=108;
-  bmp->Height=73;
-
-  bmp->Canvas->MoveTo(0,0); bmp->Canvas->LineTo(100,100);
-  bmp->Canvas->TextOutW(8,5,Z->n);
-
-  Z->mGrid->scGPImageCollection->Images->Add()->Bitmap=bmp;
+	Z->mGrid->scGPImageCollection=scGPImageCollection_layout;
+	Z->mGrid->scGPImageCollection->Images->Add()->Bitmap=F->d.nacti_nahled(Z->n);
   Z->mGrid->Cells[0][2].Type=Z->mGrid->IMAGE;
-  Z->mGrid->Cells[0][2].ImageIndex=Z->n-1;   //dynamicky plnit
-  //Z->
-
-  Z->mGrid->Update();
-  Z->mGrid->getImage(0,2)->Stretch=true;
-  Z->mGrid->Cells[0][2].Align=Z->mGrid->LEFT;
-  Z->mGrid->Cells[0][2].Valign=Z->mGrid->TOP;
- }
-  Graphics::TBitmap *bmp=new Graphics::TBitmap;
-  bmp->Width=108;
-  bmp->Height=73;
-
-  bmp->Canvas->MoveTo(0,0); bmp->Canvas->LineTo(100,100);
-  bmp->Canvas->TextOutW(8,5,Z->n);
-
-
- if(akce_obrazku==remove)
- {
-   int pocet_temp_zakazek=F->d.v.ZAKAZKY_temp->predchozi->n;
-   ShowMessage("Count obrazku pred smazanim:"+AnsiString(Z->mGrid->scGPImageCollection->Images->Count)+"Z->n-1:"+AnsiString(Z->n-1)+"pocet_temp:"+AnsiString(pocet_temp_zakazek));
-  for(int i=Z->n-1;i<pocet_temp_zakazek-1;i++)
-  {
-   ShowMessage("Smaz"+AnsiString(i));
-   Z->mGrid->scGPImageCollection->Images->Delete(i);
-  }
-
-  for(int i=Z->n-1;i<=pocet_temp_zakazek-1;i++)
-  {
-    ShowMessage("Vloz"+AnsiString(i));
-   Z->mGrid->scGPImageCollection->Images->Add()->Bitmap=bmp;
-   Z->mGrid->Cells[0][2].ImageIndex=i;
-  }
-
-  //Z->mGrid->Update();
- //  Z->mGrid->scGPImageCollection->Images->Clear();
-  //ShowMessage(Z->mGrid->scGPImageCollection->Images->Count); //probìhnutí + whilem a naplnìní Images
-//   Cvektory::TZakazka *X = F->d.v.ZAKAZKY_temp->dalsi;
-//  	while (X != NULL)
-//	{
-//    //ShowMessage(X->n);
-//    GetImages(X,load);
-//     X=X->dalsi;
-// }
- Z->mGrid->Update();
-  ShowMessage("Count obrazku po smazani:"+AnsiString(Z->mGrid->scGPImageCollection->Images->Count));
-
- }
- if(akce_obrazku==add)
- {
-   Z->mGrid->scGPImageCollection=scGPImageCollection_layout;
- // Z->mGrid->scGPImageCollection->Images->Clear();
-  Graphics::TBitmap *bmp=new Graphics::TBitmap;
-  bmp->Width=108;
-  bmp->Height=73;
-
-  bmp->Canvas->MoveTo(0,0); bmp->Canvas->LineTo(100,100);
-  bmp->Canvas->TextOutW(8,5,Z->n);
-  Z->mGrid->scGPImageCollection->Images->Add()->Bitmap=bmp;
-  Z->mGrid->Cells[0][2].Type=Z->mGrid->IMAGE;
-  Z->mGrid->Cells[0][2].ImageIndex=Z->n-1;   //dynamicky plnit
-  Z->mGrid->Update();
-  Z->mGrid->getImage(0,2)->Stretch=true;
-  Z->mGrid->Cells[0][2].Align=Z->mGrid->LEFT;
-  Z->mGrid->Cells[0][2].Valign=Z->mGrid->TOP;
- }
-
+	Z->mGrid->Cells[0][2].ImageIndex=Z->n-1;   //dynamicky plnit
+	Z->mGrid->Update();
+	Z->mGrid->getImage(0,2)->Stretch=true;
+	Z->mGrid->Cells[0][2].Align=Z->mGrid->LEFT;
+	Z->mGrid->Cells[0][2].Valign=Z->mGrid->TOP;
 }
 void __fastcall TForm_definice_zakazek::FormMouseDown(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y)

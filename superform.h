@@ -120,15 +120,14 @@ public:		// User declarations
   enum Typ_buttonu {krizek_davky, krizek,color};
   enum TAkce_obrazku {load,add,remove};
 
-  Typ_buttonu button_type;//zjisteni ktery button ma byt designovan
-  TAkce_obrazku akce_obrazku;
+	Typ_buttonu button_type;//zjisteni ktery button ma byt designovan
 
 	void setGlyphButtonDefault(unsigned long Row,unsigned long Col, Typ_buttonu typ, Cvektory::TZakazka *Z);
   void setGlyphButtonDavka_Add(unsigned long ID,unsigned long Col);
 	void setGlyphButtonDavka_Remove(unsigned long Col,Cvektory::TZakazka *Z,Cvektory::TDavka *davka);
   void setGlyphButtonColor(unsigned long Row,unsigned long Col, Typ_buttonu typ, Cvektory::TZakazka *Z);
   void set_formHW_button_positions();
-  void GetImages(Cvektory::TZakazka *Z,TAkce_obrazku akce_obrazku);
+	void GetImages(Cvektory::TZakazka *Z);
   bool add_zakazka;
   bool add_davka;
 	bool zmena_TT;

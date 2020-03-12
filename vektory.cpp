@@ -4672,12 +4672,22 @@ void Cvektory::smaz_temp_zakazku(unsigned long n)
 			{
 				ukaz->predchozi->dalsi=ukaz->dalsi;
 				ukaz->dalsi->predchozi=ukaz->predchozi;
+				//mazání a tvorba bmp zakázek
+				for(int i=ZAKAZKY_temp->predchozi->n-1;i>=int(ukaz->n-1);i--)
+				{
+					ukaz->mGrid->scGPImageCollection->Images->Delete(i);
+				}
+				for(int i=ukaz->n;i<=int(ZAKAZKY_temp->predchozi->n-1);i++)
+				{
+					ukaz->mGrid->scGPImageCollection->Images->Add()->Bitmap=F->d.nacti_nahled(i);
+				}
 				//uprava indexů
 				TZakazka *Z=ukaz->dalsi;
 				unsigned long n=ukaz->n;
 				while(Z!=NULL)
 				{
 					Z->n=n;
+					Z->mGrid->Cells[0][2].ImageIndex=n-1;
 					n++;
 					Z=Z->dalsi;
 				}
@@ -4695,9 +4705,12 @@ void Cvektory::smaz_temp_zakazku(unsigned long n)
 					ukaz->predchozi->dalsi=NULL;
 					ZAKAZKY_temp->predchozi=ukaz->predchozi;//zapis do hlavičky poslední prvek seznamu
 				}
+				ukaz->mGrid->scGPImageCollection->Images->Delete(ukaz->n-1);
 			}
 			vymaz_cestu_zakazky(ukaz);
 			vymaz_davky_zakazky(ukaz);
+			ukaz->mGrid->Delete();
+			ukaz->mGrid=NULL;
 			delete ukaz;ukaz=NULL;//smaže mazaný prvek
 	}
 }

@@ -4686,6 +4686,18 @@ void Cvykresli::vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popis
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
+Graphics::TBitmap *Cvykresli::nacti_nahled(unsigned int index)
+{
+	Graphics::TBitmap *bmp=new Graphics::TBitmap;
+  bmp->Width=108;
+	bmp->Height=73;
+
+  bmp->Canvas->MoveTo(0,0); bmp->Canvas->LineTo(100,100);
+	bmp->Canvas->TextOutW(8,5,index);
+
+	return bmp;
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
 //metoda vypíše zprávy ze seznamu zpráv a zároveň uloží jejich citelné oblasti
 void Cvykresli::vypis_zpravy(TCanvas *canv)
 {
