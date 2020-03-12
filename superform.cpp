@@ -174,7 +174,7 @@ void TForm_definice_zakazek::nacti_zakazky()
 		D=Z->davky->dalsi;
 		while (D != NULL)
 		{
-		//	vloz_davku(Z,D);
+			vloz_davku(Z,D);
       D=D->dalsi;
 		}
 		delete D;D=NULL;
@@ -529,12 +529,12 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col, unsig
   if (Col == 0 && Row == 0)
   {
     volno = false;
-    GetImages(Z,remove);
 		Edit_for_Focus->SetFocus();
   // ShowMessage(Z->mGrid->scGPImageCollection->Images->Count);
     Z->mGrid->Delete();
     Z->mGrid = NULL;
 		F->d.v.smaz_temp_zakazku(Z->n);
+    GetImages(Z,remove);
     pocet_zakazek=F->d.v.ZAKAZKY_temp->predchozi->n; //zjisteni akt.poctu zakázek
     set_formHW_button_positions(); //nové rozmìry formuláøe + pozice buttonu
 		FormPaint(this);
@@ -856,17 +856,40 @@ void TForm_definice_zakazek::GetImages(Cvektory::TZakazka *Z,TAkce_obrazku akce_
   Z->mGrid->scGPImageCollection->Images->Add()->Bitmap=bmp;
   Z->mGrid->Cells[0][2].Type=Z->mGrid->IMAGE;
   Z->mGrid->Cells[0][2].ImageIndex=Z->n-1;   //dynamicky plnit
+  //Z->
 
   Z->mGrid->Update();
   Z->mGrid->getImage(0,2)->Stretch=true;
   Z->mGrid->Cells[0][2].Align=Z->mGrid->LEFT;
   Z->mGrid->Cells[0][2].Valign=Z->mGrid->TOP;
  }
+  Graphics::TBitmap *bmp=new Graphics::TBitmap;
+  bmp->Width=108;
+  bmp->Height=73;
+
+  bmp->Canvas->MoveTo(0,0); bmp->Canvas->LineTo(100,100);
+  bmp->Canvas->TextOutW(8,5,Z->n);
+
+
  if(akce_obrazku==remove)
  {
-  Z->mGrid->scGPImageCollection->Images->Delete(Z->n-1);
-  Z->mGrid->Update();
-  // Z->mGrid->scGPImageCollection->Images->Clear();
+   int pocet_temp_zakazek=F->d.v.ZAKAZKY_temp->predchozi->n;
+   ShowMessage("Count obrazku pred smazanim:"+AnsiString(Z->mGrid->scGPImageCollection->Images->Count)+"Z->n-1:"+AnsiString(Z->n-1)+"pocet_temp:"+AnsiString(pocet_temp_zakazek));
+  for(int i=Z->n-1;i<pocet_temp_zakazek-1;i++)
+  {
+   ShowMessage("Smaz"+AnsiString(i));
+   Z->mGrid->scGPImageCollection->Images->Delete(i);
+  }
+
+  for(int i=Z->n-1;i<=pocet_temp_zakazek-1;i++)
+  {
+    ShowMessage("Vloz"+AnsiString(i));
+   Z->mGrid->scGPImageCollection->Images->Add()->Bitmap=bmp;
+   Z->mGrid->Cells[0][2].ImageIndex=i;
+  }
+
+  //Z->mGrid->Update();
+ //  Z->mGrid->scGPImageCollection->Images->Clear();
   //ShowMessage(Z->mGrid->scGPImageCollection->Images->Count); //probìhnutí + whilem a naplnìní Images
 //   Cvektory::TZakazka *X = F->d.v.ZAKAZKY_temp->dalsi;
 //  	while (X != NULL)
@@ -875,6 +898,8 @@ void TForm_definice_zakazek::GetImages(Cvektory::TZakazka *Z,TAkce_obrazku akce_
 //    GetImages(X,load);
 //     X=X->dalsi;
 // }
+ Z->mGrid->Update();
+  ShowMessage("Count obrazku po smazani:"+AnsiString(Z->mGrid->scGPImageCollection->Images->Count));
 
  }
  if(akce_obrazku==add)
