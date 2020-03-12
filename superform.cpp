@@ -36,6 +36,7 @@ __fastcall TForm_definice_zakazek::TForm_definice_zakazek(TComponent* Owner)
 	//bitmapa pro uložení pøesovaného obrazu - PAN
 	Pan_bmp=new Graphics::TBitmap();
 	pan_non_locked=false;
+
 }
 
 // ---------------------------------------------------------------------------
@@ -55,13 +56,6 @@ void TForm_definice_zakazek::nastav_form()
   scGPButton2->Options->PressedColor = Form_definice_zakazek->Color;
   scGPButton2->Options->FramePressedColor = Form_definice_zakazek->Color;
 
-  scGPButton_plan_vyroby->Options->NormalColor = Form_definice_zakazek->Color;
-  scGPButton_plan_vyroby->Options->FocusedColor = Form_definice_zakazek->Color;
-  scGPButton_plan_vyroby->Options->HotColor = Form_definice_zakazek->Color;
-  scGPButton_plan_vyroby->Options->PressedColor = Form_definice_zakazek->Color;
-  scGPButton_plan_vyroby->Options->FrameNormalColor =Form_definice_zakazek->Color;
-  scGPButton_plan_vyroby->Options->FramePressedColor =Form_definice_zakazek->Color;
-
   Form1->m.designButton(scGPButton_Ulozit, Form_definice_zakazek, 1, 2);
   Form1->m.designButton(scGPButton_storno, Form_definice_zakazek, 2, 2);
 }
@@ -72,13 +66,13 @@ void TForm_definice_zakazek::nastav_form()
 void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender)
 {
   F->log(__func__); // logování
-  Left = Form1->ClientWidth / 2 - Width / 2;
-  Top = Form1->ClientHeight / 2 - Height / 2;
   volno = false;
 	pocet_davek = 0;
 	Akce=NIC;
 	jedno_ze_tri_otoceni_koleckem_mysi=1;
 	doba_neotaceni_mysi=0;
+  Top=F->scLabel_titulek->Height;
+	Left=F->ClientWidth - Form_definice_zakazek->Width;
   ////nastaveni PP, defaultní jsou již od souboru novy, který se volá vždy, takže není defaultní nutné volat znovu
   nacti_PP();
   nastav_jazyk();
@@ -306,7 +300,7 @@ void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender)
   		//dynamické pozicování tabulek, pouze jednou
   		if(Z->mGrid->Top==-500)
 			{
-				if (Z->predchozi->n==0)Z->mGrid->Top=scGPButton_plan_vyroby->Height+scLabel_header->Height+Z->mGrid->Rows[0].Height;
+				if (Z->predchozi->n==0)Z->mGrid->Top=scLabel_header->Height+Z->mGrid->Rows[0].Height;
 				else Z->mGrid->Top=Z->predchozi->mGrid->Top+Z->predchozi->mGrid->Height+Z->mGrid->Rows[0].Height;
 			}
 			//ukládání max oblasti, možná nebude potøeba
@@ -1045,9 +1039,7 @@ void TForm_definice_zakazek::pan_create()
 	//vypnutí všech prvkù, které by se jinak promítly do bmp
 	scGPButton_Ulozit->Visible=false;
 	scGPButton_storno->Visible=false;
-	scGPButton_plan_vyroby->Visible=false;
 	scGPGlyphButton_add_zakazka->Visible=false;
-	scGPGlyphButton_remove->Visible=false;
 	//vytvoøení bmp
 	Pan_bmp->Width=ClientWidth;Pan_bmp->Height=ClientHeight;//velikost pan plochy
 	Pan_bmp->Canvas->CopyRect(Rect(0,0,ClientWidth,ClientHeight),Canvas,Rect(0,0,ClientWidth,ClientHeight));//uloží pan výøez
@@ -1058,9 +1050,7 @@ void TForm_definice_zakazek::pan_create()
 	//zobrazení skrytých
 	scGPButton_Ulozit->Visible=true;
 	scGPButton_storno->Visible=true;
-	scGPButton_plan_vyroby->Visible=true;
 	scGPGlyphButton_add_zakazka->Visible=true;
-	scGPGlyphButton_remove->Visible=true;
 }
 //---------------------------------------------------------------------------
 //Posouvá výøez mapy pøi stisknutém mezerníku a L-myši
