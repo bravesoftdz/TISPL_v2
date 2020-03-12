@@ -325,8 +325,8 @@ void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender)
 		if(width!=Form_definice_zakazek->ClientWidth || height!=Form_definice_zakazek->ClientHeight)
 		{
   		//upravení rozmìrù formu
-			Form_definice_zakazek->Width=width+2;//+2 rozdíl mezi clientwidth a width
-  		Form_definice_zakazek->Height=height+2;//+2 rozdíl mezi clientwidth a height
+			Form_definice_zakazek->Width=width;//+2 rozdíl mezi clientwidth a width
+  		Form_definice_zakazek->Height=height;//+2 rozdíl mezi clientwidth a height
   		//pozicování buttonu
   		scGPButton_Ulozit->Top=Form_definice_zakazek->Height-scGPButton_Ulozit->Height - 10;
   		scGPButton_storno->Top=scGPButton_Ulozit->Top;
