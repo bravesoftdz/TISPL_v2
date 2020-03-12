@@ -73,6 +73,10 @@ __published:	// IDE-managed Components
 	void __fastcall TimerMouseWheelTimer(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormKeyUp(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall scLabel_headerMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
+          int X, int Y);
+	void __fastcall scLabel_headerMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
+          int X, int Y);
 
 
 
@@ -98,12 +102,14 @@ private:	// User declarations
 	void pan_map(TCanvas * canv, int X, int Y);
 	void pan_move_map();
 	void mGrid_mimo_obraz(Cvektory::TZakazka *Z);
+	void vazat_posun();//upravý globální promìnnou posun, tak aby byl posun vázaný, tz. nelze posunout pravý konec tabulky dál než 5px od okraje formu
 
-	enum Takce{NIC=0,PAN,PAN_MOVE};Takce Akce;
+	enum Takce{NIC=0,PAN,PAN_MOVE,BLOK};Takce Akce;
 	bool pan_non_locked;
 	TPoint akt_souradnice_kurzoru_PX;//uchová aktuální pozici kurzoru
 	TPoint vychozi_souradnice_kurzoru;//uchová výchozí pozici kurzoru
-	TPointD Posun;//promìnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souøadnicích zaøízení
+	TPoint Posun;//promìnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souøadnicích zaøízení
+	TPoint Posun_predchozi;
 	TRect max_oblast_mGridu;//uchovává si oblast leveho horního rohu prvního mGridu po poslední a nejšírší mGrid
 	short jedno_ze_tri_otoceni_koleckem_mysi;
 	short doba_neotaceni_mysi;

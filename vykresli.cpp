@@ -2815,7 +2815,7 @@ unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,int i,TPointD OD, TPointD 
 //vykresli pozic a obalových zón - doporučení přejmenovat metodu
 void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 {                                                                                                                                                                                                                                                                                                          //oblouk
-if(F->scGPTrackBar_intenzita->Value>5 && F->scGPCheckBox_zobrazit_pozice->Checked && E->data.pocet_pozic>0 || (F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180) || F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->geo.typ==1)//pokud se má smysl algoritmem zabývat, pouze optimalizační podmínky
+if((F->scGPTrackBar_intenzita->Value>5 && F->akt_Objekt!=NULL || F->akt_Objekt==NULL) && F->scGPCheckBox_zobrazit_pozice->Checked && E->data.pocet_pozic>0 || (F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180) || F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->geo.typ==1)//pokud se má smysl algoritmem zabývat, pouze optimalizační podmínky
 	{
 		////výchozí hodnoty
 		double orientaceP=(E->geo.orientace-180);//bylo tady Rt90, proč?
@@ -3615,7 +3615,7 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 
 	//barva výplně
 	TColor barva=TColor RGB(218,36,44);if(stav==0)barva=(TColor)RGB(60,179,113);//zelená světlejší(TColor)RGB(50,205,50);
-	if(stav==-1)
+	if(stav==-1 && F->akt_Objekt!=NULL)
 	{
 		short I=m.get_intensity();
 		if(typ==0)I=180;//pro ikony v knihovně elementů
@@ -3723,7 +3723,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 
 	//nastavení barev
 	TColor barva=clBlack; TColor clOzeh=(TColor)RGB(255,165,0);TColor clIon=(TColor)RGB(7,107,171);TColor clCO2=(TColor)RGB(135,206,250);
-	if(stav==-1)//pokud je aktivní nebo neaktivní
+	if(stav==-1 && F->akt_Objekt!=NULL)//pokud je aktivní nebo neaktivní
 	{
 		short I=m.get_intensity();
 		if(typ==0)I=180;//pro ikony v knihovně elementů
@@ -3903,7 +3903,7 @@ void Cvykresli::vykresli_cloveka(TCanvas *canv,long X,long Y,AnsiString name,Ans
 
 	////nastavení barev
 	TColor barva=clBlack;TColor clIon=(TColor)RGB(7,107,171);
-	if(stav==-1)
+	if(stav==-1 && F->akt_Objekt!=NULL)
 	{
     short I=m.get_intensity();
 		if(typ==0)I=180;//pro ikony v knihovně elementů
@@ -4069,9 +4069,9 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 	float width=0.8*Z;if(stav==2)width=1*Z;
 
 	TColor barva=clBlack; //odstaveno, vše černě if(eID==6)barva=clRed;
-	if(stav==-1)//pokud je aktivní nebo neaktivní
+	if(stav==-1 && F->akt_Objekt!=NULL)//pokud je aktivní nebo neaktivní
 	{
-    short I=m.get_intensity();
+		short I=m.get_intensity();
 		if(typ==0)I=180;//pro ikony v knihovně elementů
 		barva=m.clIntensive(barva,I);
 	}
@@ -4205,7 +4205,7 @@ void Cvykresli::vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiStr
 	TColor barva=clBlack;
 	canv->Brush->Color=clWhite;//výplň kružnic
 	TColor clIon=(TColor)RGB(7,107,171);
-	if(stav==-1)//pokud je aktivní nebo neaktivní
+	if(stav==-1 && F->akt_Objekt!=NULL)//pokud je aktivní nebo neaktivní
 	{
     short I=m.get_intensity();
 		if(typ==0)I=180;//pro ikony v knihovně elementů
@@ -4332,7 +4332,7 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,lon
 	////nastavení barev
 	TColor barva=clBlack;
 	canv->Brush->Color=clWhite;//výplň kružnic
-	if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
+	if(stav==-1 && F->akt_Objekt!=NULL)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
 
 	////////////////----
 	if(typ==0)//ikona v knihovně elementů  - PROVIZORNĚ

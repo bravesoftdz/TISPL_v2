@@ -4611,6 +4611,20 @@ Cvektory::TZakazka *Cvektory::vrat_temp_zakazku(unsigned long n_zakazky)
 	 return ukaz;
 }
 //---------------------------------------------------------------------------
+//vrátí ukazatel (resp. data) na editovanou zakázku, podle jejiho mGridu
+Cvektory::TZakazka *Cvektory::vrat_temp_zakazku_z_mGridu(unsigned long ID)
+{
+	 TZakazka *ukaz=NULL;
+	 if(ZAKAZKY_temp!=NULL)ukaz=ZAKAZKY_temp->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
+	 while (ukaz!=NULL)
+	 {
+		//akce s ukazatelem
+		if(ukaz->mGrid!=NULL && ukaz->mGrid->ID==ID)break;
+		else ukaz=ukaz->dalsi;//posun na další prvek v seznamu
+	 }
+	 return ukaz;
+}
+//---------------------------------------------------------------------------
 //provede editaci zakázky s uvedeným “n” ze spojového seznamu ZAKAZKY_temp
 void Cvektory::edituj_temp_zakazku(unsigned long n,UnicodeString id, unsigned short typ, UnicodeString name,TColor barva,double pomer,double TT,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis)
 {
