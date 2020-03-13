@@ -3037,6 +3037,7 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 			if(key=="")MessageBeep(0);
 		}
 		if(index_kurzoru!=-2)nahled_ulozit(true);
+		duvod_validovat=1;
 		REFRESH(false);
 	}
 	if(editace_textu && index_kurzoru==1 && funkcni_klavesa==0)//editace názvu elementu skrze popisek elementu
@@ -6565,7 +6566,7 @@ double TForm1::max_voziku(Cvektory::TElement *stopka)
 //		if(d.v.PP.uchyt_pozice<d.v.PP.delka_podvozek/2.0)delka+=d.v.PP.delka_podvozek/2.0-d.v.PP.uchyt_pozice;
 //		if(d.v.PP.uchyt_pozice>d.v.PP.delka_podvozek/2.0)delka-=d.v.PP.uchyt_pozice-d.v.PP.delka_podvozek/2.0;
 		Cvektory::TElement *E=stopka->predchozi;
-		while(E!=NULL && E->n>0)
+		while(E!=NULL && E->n>0)//cyklus projde předchazijicí liniové úseky (z nich počítá délku) a zastaví až na nelionovém nebo nalezeném funkčním elementu
 		{
 			if(E->n>0)
 			{
@@ -6580,8 +6581,9 @@ double TForm1::max_voziku(Cvektory::TElement *stopka)
 			}
 			E=E->predchozi;
 		}
+		short predchazi_SG_element=1;/*NE*/ if(E!=NULL && E->data.pocet_voziku>0)predchazi_SG_element=0;/*ANO*///pokud je buffer až předchozímu S&G elementu, potom uchyt pozice nemám vliv na zvětšení bufferu, protože i na předcházející stopce zabírá (přesahuje) stejný prostor
 		E=NULL;delete E;
-		if(delka>0)ret=floor((delka+d.v.PP.uchyt_pozice)/d.v.PP.delka_podvozek);
+		if(delka>0)ret=floor((delka+d.v.PP.uchyt_pozice*predchazi_SG_element)/d.v.PP.delka_podvozek);
 		if(ret<1)ret=1;
 	}
 	return ret;
@@ -6818,7 +6820,7 @@ void TForm1::mGrid_puvodni_stav(Cvektory::TElement *E)
   		case 0://stop stanice, nastavování režimů podle ID objektu
   		{
   			unsigned int id=d.v.vrat_objekt(E->objekt_n)->id;
-  			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;
+				E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;
 				E->mGrid->exBUTTONVisible=true;
 				E->mGrid->Update();
   			break;
@@ -14530,6 +14532,7 @@ void TForm1::smaz_kurzor()
 	pom_element_temp=NULL; delete pom_element_temp;
 	pom_komora_temp=NULL; delete pom_komora_temp;
 	pom_bod_temp=NULL; delete pom_bod_temp;
+	if(duvod_validovat==1)duvod_validovat=2;
 	REFRESH(true);//uvolnění rastru
 	d.v.vytvor_obraz_DATA();
 }

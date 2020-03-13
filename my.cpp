@@ -218,7 +218,113 @@ TPointD *Cmy::getArcLine(double X,double Y,double orientace,double rotacni_uhel,
 	rotace_polygon(X1,Y1,PL,3,90-OR);//orotuje se dle skutečné orientace
 	return PL;//navrácení hodnoty
 }
-/////////////////////////////////////////////////////////////////////////////
+///------------------------------------------------------------------------------------------------------------------------------------------------------
+//vratí bod včetně akutálního azimutu bodu z bézierovy křivky dle zadaných procent z její délky, perc jsou procenta/100 pozice na křivce v intervalu <0,1>
+TPointD_3D Cmy::bezierPt(double orientace,double rotacni_uhel,double x1,double y1,double x2,double y2,double x3,double y3,double x4,double y4,double perc)
+{
+		//kvadratický bézier - p = (1-t)^2 *P0 + 2*(1-t)*t*P1 + t*t*P2 t is usually on 0-1 but that's not an essential - in fact the curves extend to infinity. P0, P1, etc are the control points. The curve goes through the two end points but not usually through the other points.
+//	int x1=100,y1=100,x2=500,y2=100,x3=500,y3=500;
+//	line(canv,x1,y1,x2,y2); line(canv,x2,y2,x3,y3);
+//	for( float i = 0 ; i < 1 ; i += 0.01 )
+//	{
+//		// The Green Line
+//		int xa = getPt( x1 , x2 , i );
+//		int ya = getPt( y1 , y2 , i );
+//		int xb = getPt( x2 , x3 , i );
+//		int yb = getPt( y2 , y3 , i );
+//
+//		// The Black Dot
+//		int x = getPt( xa , xb , i );
+//		int y = getPt( ya , yb , i );
+//
+//		canv->Pixels[x][y]=clRed;
+//	}
+
+	//kubický bézier  //p = (1-t)^3 *P0 + 3*t*(1-t)^2*P1 + 3*t^2*(1-t)*P2 + t^3*P3 t is usually on 0-1 but that's not an essential - in fact the curves extend to infinity. P0, P1, etc are the control points. The curve goes through the two end points but not usually through the other points.
+	//The Green Lines
+	if(0<perc && perc<1)
+	{
+		double xa=getPt(x1,x2,perc);
+		double ya=getPt(y1,y2,perc);
+		double xb=getPt(x2,x3,perc);
+		double yb=getPt(y2,y3,perc);
+		double xc=getPt(x3,x4,perc);
+		double yc=getPt(y3,y4,perc);
+
+		//The Blue Line
+		double xm=getPt(xa,xb,perc);
+		double ym=getPt(ya,yb,perc);
+		double xn=getPt(xb,xc,perc);
+		double yn=getPt(yb,yc,perc);
+
+		//return
+		TPointD_3D RET;
+		RET.x=getPt(xm,xn,perc);
+		RET.y=getPt(ym,yn,perc);
+		RET.z=azimut(xm,ym,xn,yn);
+		return RET;
+	}
+	else//vychozí čí koncová pozice
+	{
+		TPointD_3D RET;
+		if(perc==0){RET.x=x1;RET.y=y1;RET.z=orientace;}
+		else {RET.x=x4;RET.y=y4;RET.z=orientace-rotacni_uhel;}//pro perc==1
+		return RET;
+  }
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//podpůrná metoda výše uvedené
+double Cmy::getPt(double n1,double n2,double perc)
+{
+	double diff=n2-n1;
+	return n1+(diff*perc);
+}
+///------------------------------------------------------------------------------------------------------------------------------------------------------
+//vratí bod z linie čí z oblouku dle poměřu (perc) k celkové délce dané křivky, perc2 slouží na poměr v místě středu vozíku, který nemusí být díky rozdílnému místu uchycení totožný s parametrem perc
+TPointD_3D Cmy::getPt(double radius,double orientace,double rotacni_uhel,double X1,double Y1,double X4,double Y4,double perc,double perc2,double rotacni_uhel_predchozi, double rotacni_uhel_nasledujici)
+{
+	TPointD_3D RET;
+	if(0<perc && perc<1)
+	{
+		if(rotacni_uhel==0)//linie
+		{
+			RET.x=getPt(X1,X4,perc);
+			RET.y=getPt(Y1,Y4,perc);
+			RET.z=orientace;
+		}
+		else
+		{
+			double vychozi_uhel=90*rotacni_uhel/fabs(rotacni_uhel);//pro všechny oblouky je výchozí pro výpočet středu 90tkový oblouk, pouze záleží na směru rotace
+			TPointD s=rotace(radius,180-orientace,vychozi_uhel);//výpočet středu
+			TPointD ret=rotace(radius,180-orientace,rotacni_uhel*perc-vychozi_uhel);//výpočet ofsetu cílového bodu //dále v komentáři záloha výpočtu velikosti posunu (nepoužito) tj. trojúhelník o stranach Radius,Radius, Vypočítaná +radius,Y1+2*radius*sin(ToRad(rotacni_uhel*perc/2.0)
+			RET.x=X1+s.x+ret.x;
+			RET.y=Y1+s.y+ret.y;
+			RET.z=orientace-rotacni_uhel*perc2;//navrácení aktuální orientace nosného palce (nerelevantně vozíku)
+		}
+	}
+	else//vychozí čí koncová pozice
+	{
+		if(perc==0){RET.x=X1;RET.y=Y1;}
+		else {RET.x=X4;RET.y=X4;}//pro perc==1
+		RET.z=orientace-rotacni_uhel*perc2;//pokud je střed podvozku uvnitř oblouku či linie nebo předchozí či následuje oblouku lini a střed je mimo aktuální oblouk, vždy nehledě na uchycení na palec
+	}
+	if(perc2<0 && rotacni_uhel_predchozi==0)RET.z=orientace; if(perc2>1 && rotacni_uhel_nasledujici==0)RET.z=orientace-rotacni_uhel;//pro situace, kdy předchází či navazuje linie, ne zcela dokonale, problém by mohl být v případě rozdílného radiusu či příliš krátkých segmentů atp.
+	return RET;
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//vrátí délku bézierovy křivky, prec=preciznost výpočtu
+double Cmy::bezierDelka(int x1,int y1,int x2,int y2,int x3,int y3,int x4,int y4,double prec)
+{       //domnívám se, že by to chtělo převést do logických souřadnic kvůli přesnosti
+	double /*delka_px=0,*/delka_RET=0, x_pre=x1,y_pre=y2;
+	for( double i=0;i<=1;i+=prec)
+	{
+		TPointD_3D P=bezierPt(0,0,x1,y1,x2,y2,x3,y3,x4,y4,i);double x=P.x;double y=P.y;
+		//delka_px+=m.delka(x_pre,y_pre,x,y);
+		delka_RET+=delka(P2Lx(x_pre),P2Ly(y_pre),P2Lx(x),P2Ly(y));
+		x_pre=x;y_pre=y;
+	}
+	return delka_RET;
+}
 /////////////////////////////////////////////////////////////////////////////
 double Cmy::delka(double X1,double Y1,double X2,double Y2)
 {
@@ -269,8 +375,8 @@ double Cmy::uhel(double X1,double Y1,double X2,double Y2)
 	{return 0;}
 }
 /////////////////////////////////////////////////////////////////////////////
-//rotace                         //pozor, akt_uhel neni azimut, nutno používat akt_uhel=180-dodaný azimut
-TPointD Cmy::rotace(double delka, double akt_uhel, double rotace)//rotuje proti směru hodinových ručiček
+//rotace                         //pozor, akt_uhel neni azimut, nutno používat akt_uhel=180-dodaný azimut (potom odpovídá orientaci tzn. např. 270 je na "vpravo, na západě"), příklad rotace(10,180-270,90); orotuje 10 metrovou linii směrující vodorovně zleva doprava o 90° proti směru hodinových ručiček tj. na 180° orientace
+TPointD Cmy::rotace(double delka, double akt_uhel, double rotace)//rotace - pozor, naopak rotuje proti směru hodinových ručiček
 {
 	double Uhel=fmod(akt_uhel+rotace,360.0);// včetně ošetření přetečení přes 360 stupňů
 	if(Uhel<0){Uhel+=360;}//pro záporné hodnoty
@@ -621,81 +727,6 @@ TPointDbool Cmy::zkratit_polygon_na_roztec(double d, double r,double xp, double 
 
 		return RET;
 }
-///------------------------------------------------------------------------------------------------------------------------------------------------------
-//vratí bod včetně akutálního azimutu bodu z bézierovy křivky dle zadaných procent z její délky, perc jsou procenta/100 pozice na křivce v intervalu <0,1>
-TPointD_3D Cmy::bezierPt(double orientace,double rotacni_uhel,double x1,double y1,double x2,double y2,double x3,double y3,double x4,double y4,double perc)
-{
-		//kvadratický bézier - p = (1-t)^2 *P0 + 2*(1-t)*t*P1 + t*t*P2 t is usually on 0-1 but that's not an essential - in fact the curves extend to infinity. P0, P1, etc are the control points. The curve goes through the two end points but not usually through the other points.
-//	int x1=100,y1=100,x2=500,y2=100,x3=500,y3=500;
-//	line(canv,x1,y1,x2,y2); line(canv,x2,y2,x3,y3);
-//	for( float i = 0 ; i < 1 ; i += 0.01 )
-//	{
-//		// The Green Line
-//		int xa = getPt( x1 , x2 , i );
-//		int ya = getPt( y1 , y2 , i );
-//		int xb = getPt( x2 , x3 , i );
-//		int yb = getPt( y2 , y3 , i );
-//
-//		// The Black Dot
-//		int x = getPt( xa , xb , i );
-//		int y = getPt( ya , yb , i );
-//
-//		canv->Pixels[x][y]=clRed;
-//	}
-
-	//kubický bézier  //p = (1-t)^3 *P0 + 3*t*(1-t)^2*P1 + 3*t^2*(1-t)*P2 + t^3*P3 t is usually on 0-1 but that's not an essential - in fact the curves extend to infinity. P0, P1, etc are the control points. The curve goes through the two end points but not usually through the other points.
-	//The Green Lines
-	if(0<perc && perc<1)
-	{
-		double xa=getPt(x1,x2,perc);
-		double ya=getPt(y1,y2,perc);
-		double xb=getPt(x2,x3,perc);
-		double yb=getPt(y2,y3,perc);
-		double xc=getPt(x3,x4,perc);
-		double yc=getPt(y3,y4,perc);
-
-		//The Blue Line
-		double xm=getPt(xa,xb,perc);
-		double ym=getPt(ya,yb,perc);
-		double xn=getPt(xb,xc,perc);
-		double yn=getPt(yb,yc,perc);
-
-		//return
-		TPointD_3D RET;
-		RET.x=getPt(xm,xn,perc);
-		RET.y=getPt(ym,yn,perc);
-		RET.z=azimut(xm,ym,xn,yn);
-		return RET;
-	}
-	else//vychozí čí koncová pozice
-	{
-		TPointD_3D RET;
-		if(perc==0){RET.x=x1;RET.y=y1;RET.z=orientace;}
-		else {RET.x=x4;RET.y=y4;RET.z=orientace-rotacni_uhel;}//pro perc==1
-		return RET;
-  }
-}
-////------------------------------------------------------------------------------------------------------------------------------------------------------
-//podpůrná metoda výše uvedené
-double Cmy::getPt(double n1,double n2,double perc)
-{
-	double diff=n2-n1;
-	return n1+(diff*perc);
-}
-////------------------------------------------------------------------------------------------------------------------------------------------------------
-//vrátí délku bézierovy křivky, prec=preciznost výpočtu
-double Cmy::bezierDelka(int x1,int y1,int x2,int y2,int x3,int y3,int x4,int y4,double prec)
-{       //domnívám se, že by to chtělo převést do logických souřadnic kvůli přesnosti
-	double /*delka_px=0,*/delka_RET=0, x_pre=x1,y_pre=y2;
-	for( double i=0;i<=1;i+=prec)
-	{
-		TPointD_3D P=bezierPt(0,0,x1,y1,x2,y2,x3,y3,x4,y4,i);double x=P.x;double y=P.y;
-		//delka_px+=m.delka(x_pre,y_pre,x,y);
-		delka_RET+=delka(P2Lx(x_pre),P2Ly(y_pre),P2Lx(x),P2Ly(y));
-		x_pre=x;y_pre=y;
-	}
-	return delka_RET;
-}
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 double Cmy::cekani_na_palec(double cas, double roztec_palcu,double rychlost_dopravniku,int funkce)//vrátí dobu čekání na palec v sec, rozteč je v m, rychlost dopravníku v m/s
@@ -918,20 +949,24 @@ double Cmy::Dotoc(double PTo,double RD)
 }
 ////////////////////////
 //vratí hodnotu RT (reserve time), ta může být i záporná, WT čekání na palac si dopočítává metoda sama, pokud WT==-1, pokud je dosazena kladná hodnota větší než 0, tak je ta uvažovaná jako WT, 0 hodnota znamena WT čekání na palec neuvažovat
-double Cmy::RT(double PT,double delka_prejezdu,double RD,double R,double WT)
-{
-	if(RD!=0)
-	{
-		if(WT==-1)WT=cekani_na_palec(0,R,RD,3);
-		return F->d.v.PP.TT-(delka_prejezdu/RD+PT+WT);
-	}
-	else return 0;
-}
+//metoda aktuálně nevyžitá připadně možno smazat
+//double Cmy::RT(double PT,double delka_prejezdu,double RD,double R,double WT)
+//{
+//	if(RD!=0)
+//	{
+//		if(WT==-1)WT=cekani_na_palec(0,R,RD,3);
+//		return F->d.v.PP.TT-(delka_prejezdu/RD+PT+WT);
+//	}
+//	else return 0;
+//}
 /////////////////////////////////////////////////////////////////////////////
 //Přetížená metoda
-double Cmy::RT(double PT,double doba_prejezdu,double WT,unsigned int pocet_voziku)
-{
-	return pocet_voziku*F->d.v.PP.TT-(doba_prejezdu+PT+WT);
+double Cmy::RT(double PT,double doba_prejezdu,double WT,unsigned int pocet_voziku,double RD)
+{                                  														                            //ubraná čast přejezdu o buffer
+	//nemazat, vysvětlení: pocet_voziku=(doba_prejezdu-pocet_voziku/*nastavených - stojicích v bufferu*/*F->d.v.PP.delka_podvozek/RD)/TT;//doplní včetně skutečného počtu vozíků (tzn. vozíky v bufferu a v pohybu) na přejezdu
+	//nemazat, vysvětlení: return (pocet_voziku)*F->d.v.PP.TT-(doba_prejezdu+PT+WT);
+	if(RD==0) return 0;
+	else return (doba_prejezdu-pocet_voziku*F->d.v.PP.delka_podvozek/RD)-(doba_prejezdu+PT+WT);
 }
 /////////////////////////////////////////////////////////////////////////////
 //vratí RD dle délky otoče a času otáčení
