@@ -41,7 +41,7 @@ void  TForm_color_dialog:: SetDialogPosition(double Row, double Id)
   Cvektory::TZakazka *Z = F->d.v.vrat_temp_zakazku(Id);
    double TOP = Z->mGrid->Top + Z->mGrid->DefaultRowHeight;
    Top=Form_definice_zakazek->Top + TOP+24*Row + 1;
-   Left=Form_definice_zakazek->Left + Z->mGrid->Left + Z->mGrid->Columns[0].Width + 1;
+   Left=Form_definice_zakazek->Left + Z->mGrid->Left + Z->mGrid->Columns[0].Width; //+ Z->mGrid->Columns[1].Width + 1;
    ROW=Row;
    ID=Id;
 }
