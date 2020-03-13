@@ -330,8 +330,10 @@ void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender)
   		//pozicování buttonu
   		scGPButton_Ulozit->Top=Form_definice_zakazek->Height-scGPButton_Ulozit->Height - 10;
   		scGPButton_storno->Top=scGPButton_Ulozit->Top;
+      scGPGlyphButton_add_zakazka->Top=scGPButton_Ulozit->Top - 18;
   		scGPButton_Ulozit->Left=Form_definice_zakazek->Width/2-scGPButton_Ulozit->Width-22/2;
   		scGPButton_storno->Left=Form_definice_zakazek->Width/2+22/2;
+      scGPGlyphButton_add_zakazka->Left=scGPButton_Ulozit->Left - 40;
   		//znovuvykreslìní
 			FormPaint(this);//pokud je nutné zvìtšít form, musí se znova spustit formpaint (bmp ma nastavené rozmìry pøed zmìnou)
 		}
