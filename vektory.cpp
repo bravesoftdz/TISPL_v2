@@ -3052,11 +3052,12 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 		}
 		//výpočet RT a zapsání do dat elemetnu
 		double RT=0,WT=Element->WT;
-		if(Element->eID==0 && Element->data.pocet_voziku>1 && cas+Element->WT<PP.TT)WT*=Element->data.pocet_voziku;
-		RT=m.RT(Element->data.PT1+Element->data.PT2+Element->PTotoc,cas,WT,Element->data.pocet_voziku);
+		if(Element->eID==0/* && Element->data.pocet_voziku>0*/ && cas+Element->WT<PP.TT)WT*=Element->data.pocet_voziku;
+		double RD=0; if(Element->pohon!=NULL)RD=Element->pohon->aRD;
+		RT=m.RT(Element->data.PT1+Element->data.PT2+Element->PTotoc,cas,WT,Element->data.pocet_voziku,RD);
 		Element->data.RT.x=RT;//ryzí RT
-		if(Element->eID==0 && Element->data.pocet_voziku>1 || Element->eID==6)RT=fmod(RT,PP.TT);
-		Element->data.RT.y=RT;//přepočítané RT, nebo totožné s ryzím
+		//if(Element->eID==0 && Element->data.pocet_voziku>1 || Element->eID==6)RT=fmod(RT,PP.TT);
+		Element->data.RT.y=RT;//přepočítané RT, nebo totožné s ryzím - již se může odstranit?
 
 		//vypsání RT do tabulky elementu
 		if(F->akt_Objekt!=NULL && Element->objekt_n==F->akt_Objekt->n)
@@ -3076,12 +3077,12 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 	  					Element->data.pocet_voziku=Element->data.pocet_pozic;
 	  					Element->data.WTstop=F->m.V2WT(Element->data.pocet_voziku,PP.TT);//uložení do paměti + výpočet
 	  					Element->mGrid->Cells[1][3].Text=F->m.round2double(F->outPT(Element->data.WTstop),3);//OUTPUT
-	  					//nové RT, protože se změnilo WTstop
-	  					WT=Element->WT;
-	  					if(Element->eID==0 && Element->data.pocet_voziku>1 && cas+Element->WT<PP.TT)WT*=Element->data.pocet_voziku;
-							RT=m.RT(Element->data.PT1+Element->data.PT2+Element->PTotoc,cas,WT,Element->data.pocet_voziku);
+							//nové RT, protože se změnilo WTstop
+							WT=Element->WT;
+							if(Element->eID==0/* && Element->data.pocet_voziku>1 */&& cas+Element->WT<PP.TT)WT*=Element->data.pocet_voziku;
+							RT=m.RT(Element->data.PT1+Element->data.PT2+Element->PTotoc,cas,WT,Element->data.pocet_voziku,RD);
 							Element->data.RT.x=RT;//ryzí
-	  					if(Element->data.pocet_voziku==1)RT==fmod(RT,PP.TT);
+//	  					if(Element->data.pocet_voziku==1)RT==fmod(RT,PP.TT);   možno odsranit
 							Element->data.RT.y=RT;//přepočítané RT, nebo totožné s ryzím
 	  				}
 	  			}
@@ -5862,8 +5863,8 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 					}
 				}
 				////////////Pozor, překrytí JIGů! - musí být umístěno na konci (popř. na začátku)
-				if(PP.delka_podvozek<m.UDJ(rotaceJ) && (E->rotace_jig==0 || E->rotace_jig==180) && pocet_voziku>1)
-				{vloz_zpravu(X+x*PP.delka_podvozek*(pocet_pozic-1)/2.0,Y+y*PP.delka_podvozek*(pocet_pozic-1)/2.0,-1,402,E);pocet_erroru++;}
+				if(PP.delka_podvozek<m.UDJ(rotaceJ) && pocet_voziku>1){vloz_zpravu(X+x*PP.delka_podvozek*(pocet_pozic-1)/2.0,Y+y*PP.delka_podvozek*(pocet_pozic-1)/2.0,-1,402,E);pocet_erroru++;}//pro buffer
+				if(E->pohon!=NULL && m.UDV(rotaceJ)>m.Rz(E->pohon->aRD)){vloz_zpravu(X+x*PP.delka_podvozek/2.0,Y+y*PP.delka_podvozek/2.0,-1,402,E);pocet_erroru++;}//pro libovolný přejezd
 			}
 			////posun na další elementy
 			E=E->dalsi;

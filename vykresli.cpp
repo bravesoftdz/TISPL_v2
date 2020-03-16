@@ -2815,10 +2815,10 @@ unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,int i,TPointD OD, TPointD 
 //vykresli pozic a obalových zón - doporučení přejmenovat metodu
 void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 {                                                                                                                                                                                                                                                                                                          //oblouk
-if((F->scGPTrackBar_intenzita->Value>5 && F->akt_Objekt!=NULL || F->akt_Objekt==NULL) && F->scGPCheckBox_zobrazit_pozice->Checked && E->data.pocet_pozic>0 || (F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180) || F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->geo.typ==1)//pokud se má smysl algoritmem zabývat, pouze optimalizační podmínky
+	if(F->scGPTrackBar_intenzita->Value>5 && F->scGPCheckBox_zobrazit_pozice->Checked && E->data.pocet_pozic>0 || (F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180) || F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->geo.typ==1)//pokud se má smysl algoritmem zabývat, pouze optimalizační podmínky
 	{
 		////výchozí hodnoty
-		double orientaceP=(E->geo.orientace-180);//bylo tady Rt90, proč?
+		double orientaceP=E->geo.orientace;//bylo tady Rt90, proč? bylo tady také orientaceP=(E->geo.orientace-180);
 		unsigned int pocet_pozic=E->data.pocet_pozic;
 		double X=E->geo.X4;//Rxy(E).x;
 		double Y=E->geo.Y4;//Rxy(E).y;
@@ -2839,10 +2839,10 @@ if((F->scGPTrackBar_intenzita->Value>5 && F->akt_Objekt!=NULL || F->akt_Objekt==
 		short x=0,y=0;
 		switch(m.Rt90(orientaceP))
 		{
-			case 0:   y=1;  x=0;  break;
-			case 90:  y=0;  x=1;  break;
-			case 180: y=-1; x=0;  break;
-			case 270: y=0;  x=-1; break;
+			case 0:   y=-1; x=0;  break;
+			case 90:  y=0;  x=-1; break;
+			case 180: y=1;  x=0;  break;
+			case 270: y=0;  x=1;  break;
 		}
 
 		////vykreslení ROTACE pozic u otočí a elementů s otočemi
@@ -2892,6 +2892,7 @@ if((F->scGPTrackBar_intenzita->Value>5 && F->akt_Objekt!=NULL || F->akt_Objekt==
 		}
 
 		////vykreslení POZIC na elementu + vzniklém buffru
+//toto zakomentované jenom provizorně z důvodu níže uvedeného vývoje - aby nebylo zavadějící
 		if(F->scGPCheckBox_zobrazit_pozice->Checked && pocet_pozic>0)
 		{
 			unsigned int pocet_voziku=E->data.pocet_voziku;
@@ -2906,40 +2907,62 @@ if((F->scGPTrackBar_intenzita->Value>5 && F->akt_Objekt!=NULL || F->akt_Objekt==
 				}
 			}
 		}
+
+
 //-----------------------------------------------------------------------
-//tady vývoj:   //toto provizorn2
-//		if(F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && F->pom_temp==NULL && v.vrat_druh_elementu(E)==0 && E->sparovany!=NULL && E->name=="Stop 1"/*&& E->n==1*/)//pro S&G který má spárovaný objekt
-//		{
-//			//provizoriní algoritmus do změny DM
+//tady vývoj:
+		if(F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked /*&& F->akt_Objekt==NULL*/ && v.vrat_druh_elementu(E)==0 && E->sparovany!=NULL/* && E->name=="Stop 1"&& E->n==1*/)//pro S&G který má spárovaný objekt
+		{
+			//provizoriní algoritmus před změnou DM
 //			Cvektory::TObjekt *O=NULL;                   //další objekt                 			//další kolo                  //v případě editovaného objektu
 //			Cvektory::TElement *Et=E->dalsi;if(Et==NULL){O=v.vrat_objekt(E->objekt_n)->dalsi;if(O==NULL)O=v.OBJEKTY->dalsi;if(F->pom_temp!=NULL && O->n==F->pom_temp->n)O=F->pom_temp;if(O!=NULL && Et==NULL)Et=O->elementy->dalsi;}//tempový Element
 //			Cvektory::TElement *Esd=E->sparovany->dalsi;if(Esd==NULL){O=v.vrat_objekt(E->sparovany->objekt_n)->dalsi;if(O==NULL)O=v.OBJEKTY->dalsi;if(F->pom_temp!=NULL && O->n==F->pom_temp->n)O=F->pom_temp;if(O!=NULL && Esd==NULL)Esd=O->elementy->dalsi;}//Element za spárovaným, kvůli tomu, aby algoritmus došel až ke spárovanému bylo tu toto (nyní s tím nesouhlasím):pokud je na konci vždy zarážka, tak je zbytečné
-//			double umisteni=0;
-//			while(Esd!=Et /*&& Et!=E && Et!=NULL*/)//procházení cyklem od daného stop elementů až po jeho spárovaný stop element
-//			{
-//				////výpočetní a vykreslovací záležítosti
-//				if(Et->pohon)//pokud má element přiřazen pohon
-//				{
-//					double Rz=2;//m.Rz(4.5/60.0/*Et->pohon->aRD*/);
-//					do
-//					{
-//						TPointD_3D Pt=m.bezierPt(Et->geo.orientace,Et->geo.rotacni_uhel,Et->geo.X1,Et->geo.Y1,Et->geo.X2,Et->geo.Y2,Et->geo.X3,Et->geo.Y3,Et->geo.X4,Et->geo.Y4,umisteni/Et->geo.delka);
-//						if(E->name=="Stop 1")vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,rotaceJ,clChassis,clJig);//provizorně
-//						else vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,rotaceJ,clChassis,m.clIntensive(clJig,100));
-//						umisteni+=Rz;
-//						F->Memo(umisteni);
-//					}
-//					while(umisteni<Et->geo.delka);
-//					umisteni=Et->geo.delka-umisteni;//zbytek při přechodu na další element = výchozí umístění v dalším elementu
-//				}
-//
-//				////ukazatelové záležitosti          //další objekt         //další kolo                 //v případě editovaného objektu
-//				if(Et->dalsi==NULL){O=v.vrat_objekt(Et->objekt_n)->dalsi;if(O==NULL)O=v.OBJEKTY->dalsi;if(F->pom_temp!=NULL && O->n==F->pom_temp->n)O=F->pom_temp;if(O!=NULL)Et=O->elementy->dalsi;}
-//				else Et=Et->dalsi;
-//			}
-//			Et=NULL;delete Et;
-//			O=NULL;delete O;
-//		}
+			Cvektory::TElement *Et=E->dalsi;if(Et==NULL)Et=v.ELEMENTY->dalsi;//případně další kolo spojáku
+			Cvektory::TElement *Esd=E->sparovany->dalsi;if(Esd==NULL)Et=v.ELEMENTY->dalsi;//případně  další kolo spojáku
+//			F->Memo("_________________");
+//			F->Memo("aktuální: "+E->name);
+//			F->Memo("další: "+Et->name);
+//			F->Memo("za sparovaným další: "+Esd->name);
+
+
+			double umisteni=0;
+			bool prvni=true;//první vozík se neřeší, je již vykreslen na stopce
+			double akt_rotace_jigu=rotaceJ;
+			while(Esd!=Et /*&& Et!=E && Et!=NULL*/)//procházení cyklem od daného stop elementů až po jeho spárovaný stop element
+			{
+				////výpočetní a vykreslovací záležítosti
+				if(Et->pohon!=NULL)//pokud má element přiřazen pohon
+				{
+					double Rz=m.Rz(Et->pohon->aRD);
+					double buffer_zona=0;if(Et->data.pocet_voziku>0)buffer_zona=Et->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;//délka buffrovácí zony, pokud je
+					while(umisteni<Et->geo.delka-buffer_zona)
+					{
+						if(!prvni)
+						{
+							TPointD_3D Pt=m.getPt(Et->geo.radius,Et->geo.orientace,Et->geo.rotacni_uhel,Et->geo.X1,Et->geo.Y1,Et->geo.X4,Et->geo.Y4,umisteni/Et->geo.delka/*F->smazat/100.0*/,(umisteni+v.PP.uchyt_pozice-v.PP.delka_podvozek/2.0)/Et->geo.delka);
+							//pořešit ještě rotaci jigu dle aktuální polohy kontinuální v otoči jinak ne
+							if(E->name=="Stop 1")vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu,m.clIntensive(clChassis,100),m.clIntensive(clJig,100));
+							else vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu,clChassis,clYellow/*clJig*/);
+						}
+
+						prvni=false;						umisteni+=Rz;
+					}
+
+					//F->Memo("odečítám: "+AnsiString(Et->geo.delka));
+					//F->Memo("_________________");
+					umisteni-=Et->geo.delka;//zbytek při přechodu na další element = výchozí umístění v dalším elementu
+					//if(Et->eID==200)umisteni-=Et->WT*Et->pohon->aRD;//čekání na předávacím místě způsobí zpoždění/rozsunutí mezi vozíků
+					//pozici na novém pohonu přepočítat ze zbytkového umístění na starém do času a ten převést do vzdálenosti na novém a ještě odečíst WT, ale výše je chyba s aRD
+					if(Et->rotace_jig!=0 && -180<=Et->rotace_jig && Et->rotace_jig<=180)akt_rotace_jigu+=Et->rotace_jig;
+				}
+				////ukazatelové záležitosti          //další objekt         //další kolo                 //v případě editovaného objektu
+				//před změnou DM if(Et->dalsi==NULL){O=v.vrat_objekt(Et->objekt_n)->dalsi;if(O==NULL)O=v.OBJEKTY->dalsi;if(F->pom_temp!=NULL && O->n==F->pom_temp->n)O=F->pom_temp;if(O!=NULL)Et=O->elementy->dalsi;}
+				if(Et->dalsi==NULL)Et=v.ELEMENTY->dalsi;//další kolo spojáku
+				else Et=Et->dalsi;//další element
+			}
+			Et=NULL;delete Et;
+			//O=NULL;delete O;
+		}
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
