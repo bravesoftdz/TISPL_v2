@@ -4597,18 +4597,32 @@ void Cvektory::vloz_zakazku(TZakazka *Zakazka)
 	ZAKAZKY->predchozi=nova;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
 }
 //---------------------------------------------------------------------------
-// vrátí ukazatel (resp. data) na temp zakázku, nejčastěji editovanou
-Cvektory::TZakazka *Cvektory::vrat_temp_zakazku(unsigned long n_zakazky)
+// vrátí ukazatel (resp. data) na zakázku, nejčastěji editovanou
+Cvektory::TZakazka *Cvektory::vrat_zakazku(unsigned long n_zakazky)
 {
-	 TZakazka *ukaz=NULL;
-	 if(ZAKAZKY_temp!=NULL)ukaz=ZAKAZKY_temp->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
-	 while (ukaz!=NULL)
-	 {
+	TZakazka *ukaz=NULL;
+	if(ZAKAZKY!=NULL)ukaz=ZAKAZKY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
+	while (ukaz!=NULL)
+	{
 		//akce s ukazatelem
 		if(ukaz->n==n_zakazky)break;
 		else ukaz=ukaz->dalsi;//posun na další prvek v seznamu
-	 }
-	 return ukaz;
+	}
+	return ukaz;
+}
+//---------------------------------------------------------------------------
+// vrátí ukazatel (resp. data) na temp zakázku, nejčastěji editovanou
+Cvektory::TZakazka *Cvektory::vrat_temp_zakazku(unsigned long n_zakazky)
+{
+	TZakazka *ukaz=NULL;
+	if(ZAKAZKY_temp!=NULL)ukaz=ZAKAZKY_temp->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
+	while (ukaz!=NULL)
+	{
+		//akce s ukazatelem
+		if(ukaz->n==n_zakazky)break;
+		else ukaz=ukaz->dalsi;//posun na další prvek v seznamu
+	}
+	return ukaz;
 }
 //---------------------------------------------------------------------------
 //vrátí ukazatel (resp. data) na editovanou zakázku, podle jejiho mGridu

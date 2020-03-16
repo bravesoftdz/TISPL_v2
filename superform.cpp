@@ -159,8 +159,8 @@ void TForm_definice_zakazek::nacti_zakazky()
   pocet_zakazek = 0;
 	while (Z != NULL)
 	{
-		loadHeader(Z->n,false);
     pocet_zakazek++;//zvýšení poètu zakázek, které následnì nastaví výšku formuláøe v metodì set_formHW_button_positions
+		loadHeader(Z->n,false);
 		//vytvoøení tabulky zakázky, nikoliv zakázky a tabulky
 		D=Z->davky->dalsi;
 		while (D!=NULL)
@@ -186,7 +186,8 @@ void TForm_definice_zakazek::nacti_zakazky()
 // TLAÈÍTKO ULOŽIT
 void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 {
-  F->log(__func__); // logování
+	F->log(__func__); // logování
+	unsigned long akt_zakazka_n=0;
   // naètení hodnot z tabulek mGridù do temp zakázek
   // mazání mgridù zakázek, dùležité, kopírování zakázek nesmaže mGridy ale odstraní zakázky temp ukazatel
 	if (F->d.v.ZAKAZKY_temp != NULL)
@@ -215,16 +216,20 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 			Z->pocet_voziku=F->ms.MyToDouble(Z->mGrid->Cells[2][2].Text);
 			Z->serv_vozik_pocet=F->ms.MyToDouble(Z->mGrid->Cells[2][3].Text);
 			Z->opakov_servis=F->ms.MyToDouble(Z->mGrid->Cells[2][4].Text);
+			//kontrola zda uživatel nastavil aktuální zakázku
+			if(Z->mGrid->getCheck(Z->mGrid->ColCount-1,0)->Checked)akt_zakazka_n=Z->n;
 			//smazání mGridu
 			Z->mGrid->Delete();
       Z->mGrid = NULL;
       Z = Z->dalsi;
     }
-    delete Z;Z=NULL;
-  }
+		delete Z;Z=NULL;
+	}
   // kopírování temp zakázek do ostrých zakázek
-  F->d.v.kopirujZAKAZKY_temp2ZAKAZKY();
+	F->d.v.kopirujZAKAZKY_temp2ZAKAZKY();
 	F->d.v.vytvor_default_zakazku();//po kopírování zakázek dojkde ke smazání hlavièky
+	if(akt_zakazka_n!=0)F->zakazka_akt=F->d.v.vrat_zakazku(akt_zakazka_n);
+	else F->zakazka_akt=NULL;
 	F->DuvodUlozit(true);
   // ukonèení formu a smazání temp zakázek
   KonecClick(Sender);
@@ -296,8 +301,8 @@ void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender)
   	//vykreslení podkladní barvy
   	bmp_total->Canvas->Brush->Color = light_gray;
   	bmp_total->Canvas->FillRect(TRect(0,0,bmp_total->Width,bmp_total->Height));
-  	////vykreslìní mGridù
-  	Cvektory::TZakazka *Z=F->d.v.ZAKAZKY_temp->dalsi;
+		////vykreslìní mGridù
+		Cvektory::TZakazka *Z=F->d.v.ZAKAZKY_temp->dalsi;
   	while (Z!=NULL)
   	{
 			//dynamické pozicování tabulek, pouze jednou
@@ -317,7 +322,7 @@ void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender)
 			if(Z->dalsi==NULL && 28+Z->n*Z->mGrid->Height+25*(Z->n)+69>(unsigned)height)height=28+Z->n*Z->mGrid->Height+25*(Z->n)+69;   //28 = Z->mGrid->Top, 25 = mezera mezi mGridy, 69 pdsazení od spodní hrany formu
   		Z=Z->dalsi;
   	}
-  	delete Z;Z=NULL;
+		delete Z;Z=NULL;
 
   	////kontrola zda není nutné zvìtšit form
 		if(width>1215)width=1215;
@@ -325,8 +330,8 @@ void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender)
 		if(width!=Form_definice_zakazek->ClientWidth || height!=Form_definice_zakazek->ClientHeight)
 		{
   		//upravení rozmìrù formu
-			Form_definice_zakazek->Width=width;//+2 rozdíl mezi clientwidth a width
-  		Form_definice_zakazek->Height=height;//+2 rozdíl mezi clientwidth a height
+			Form_definice_zakazek->Width=width+2;//+2 rozdíl mezi clientwidth a width
+  		Form_definice_zakazek->Height=height+2;//+2 rozdíl mezi clientwidth a height
   		//pozicování buttonu
   		scGPButton_Ulozit->Top=Form_definice_zakazek->Height-scGPButton_Ulozit->Height - 10;
   		scGPButton_storno->Top=scGPButton_Ulozit->Top;
@@ -349,7 +354,8 @@ void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender)
 		}
 
 		////smazání bmp
-  	delete(bmp_total);//velice nutné
+		delete(bmp_total);//velice nutné
+
 	}
 }
 // ---------------------------------------------------------------------------
@@ -529,19 +535,39 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col, unsig
     }
     J = NULL;
     delete J;
-  }
-  // odstranìnní tabulky a zakázky
-  if (Col == 0 && Row == 0)
-  {
-    volno = false;
+	}
+
+	if(Col>=Z->mGrid->ColCount-1 && Row == 0 && volno == true)
+	{
+		volno = false;
+		//pokud byla zvolena zakázka jako aktuální, zkontrolu zda není oznaèená nìjaká další
+		if(Z->mGrid->getCheck(Col,Row)->Checked)
+		{
+	  	Cvektory::TZakazka *zak=F->d.v.ZAKAZKY_temp->dalsi;
+	  	while(zak!=NULL)
+	  	{
+				if(zak->n!=Z->n && zak->mGrid->getCheck(zak->mGrid->ColCount-1,0)->Checked)//pokud je nìjaká další zvolená zruší ji
+					zak->mGrid->getCheck(zak->mGrid->ColCount-1,0)->Checked=false;
+	  		zak=zak->dalsi;
+			}
+			delete zak;zak=NULL;
+		}
+		volno =true;
+	}
+
+	// odstranìnní tabulky a zakázky
+	if (Col == 0 && Row == 0)
+	{
+		volno = false;
 		Edit_for_Focus->SetFocus();
 	// ShowMessage(Z->mGrid->scGPImageCollection->Images->Count);
 		F->d.v.smaz_temp_zakazku(Z->n);
-    pocet_zakazek=F->d.v.ZAKAZKY_temp->predchozi->n; //zjisteni akt.poctu zakázek
-    set_formHW_button_positions(); //nové rozmìry formuláøe + pozice buttonu
+		//pocet_zakazek=F->d.v.ZAKAZKY_temp->predchozi->n; //zjisteni akt.poctu zakázek
+		set_formHW_button_positions(); //nové rozmìry formuláøe + pozice buttonu
 		FormPaint(this);
-    volno = true;
-  }
+		volno = true;
+	}
+
   // odmazání pomocného ukazatele
   //ShowMessage(Z->mGrid->scGPImageCollection->Images->Count);
   Z = NULL;
@@ -550,10 +576,9 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col, unsig
 ////////////////////////////////////////////////////////////
 void TForm_definice_zakazek::OnChange(long Tag, long ID, unsigned long Col,unsigned long Row)
 {
-
+	Cvektory::TZakazka *Z = F->d.v.vrat_temp_zakazku_z_mGridu(ID);
   if (Col >= 2 && Row >= 2 && volno == true)
-  {
-    Cvektory::TZakazka *Z = F->d.v.vrat_temp_zakazku_z_mGridu(ID);
+	{
     volno = false;
     // update CELKEM v miste zmeny
     Z->mGrid->Cells[Col][4].Text = F->ms.MyToDouble(Z->mGrid->Cells[Col][2].Text) + F->ms.MyToDouble (Z->mGrid->Cells[Col][3].Text);
@@ -581,8 +606,7 @@ void TForm_definice_zakazek::OnChange(long Tag, long ID, unsigned long Col,unsig
   // pøípad odmazávání dávek
   if(Col>=2 && Row == 1 && volno == true)
   {
-      volno = false;
-      Cvektory::TZakazka *Z = F->d.v.vrat_temp_zakazku_z_mGridu(ID);
+			volno = false;
       long pocet = 0;
       long pocet_prazdnych = 0;
       long celkem = 0;
@@ -603,7 +627,9 @@ void TForm_definice_zakazek::OnChange(long Tag, long ID, unsigned long Col,unsig
     }
     Z->mGrid->Update();
     volno = true;
-  }
+	}
+
+	Z=NULL;delete Z;
 }
 //////////////////////////////////////////////////////
 void TForm_definice_zakazek::setButtonColor(long ID)
@@ -648,7 +674,7 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy)
 
       Z = F->d.v.ZAKAZKY_temp->predchozi;
       F->d.v.inicializace_cesty(Z); // vytvoøí hlavièku cesty
-      pocet_zakazek=n;
+			pocet_zakazek++;//=n;
       set_formHW_button_positions();
     }
     else
@@ -657,7 +683,7 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy)
     ////vytvoøení mgridu nové zakázce
     Z->mGrid = new TmGrid(this);
     Z->mGrid->Tag = 9;
-		Z->mGrid->ID = Z->n;
+		Z->mGrid->ID = pocet_zakazek;
     Z->mGrid->Create(4, 5);
     Z->mGrid->SetColumnAutoFit(-4);
     // if(novy)
@@ -744,14 +770,17 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy)
     setGlyphButtonDefault(0, 0, krizek, Z);
     setGlyphButtonDefault(1, 2, krizek_davky, Z);
 		//Z->mGrid->Cells[1][0].Align=Z->mGrid->LEFT;  // po slouèení pøijdu (add dávka) o text - proto zakomentováno
-
+		if(!novy && F->zakazka_akt!=NULL && F->zakazka_akt->n==Z->n)//pokud naèítám zakázky a existuje aktuální zakázka, která je totožná s právì naèítanou zakázkou, zaškrtnu checkbox
+		{
+			Z->mGrid->getCheck(3,0)->Checked=true;
+    }
     ////ukazatelové záležitosti
-    Z->mGrid->Refresh();
+		Z->mGrid->Refresh();
 
     Z = NULL;
     delete Z;
     ////vykreslení mGridù
-    if (novy)
+		if(novy)
     FormPaint(this);
     // pouze v pøípadì, že vytváøím novou zakázku s mGridem, pøi naèítání již vytvoøených zakázek musé dojít k vykreslìní až budou všehny naèteny, volaní vykreslení v metodì nacti_zakazky()
   }
