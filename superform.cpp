@@ -22,6 +22,7 @@
 #pragma link "scImageCollection"
 #pragma link "scColorControls"
 #pragma link "scExtControls"
+#pragma link "scStyleManager"
 #pragma resource "*.dfm"
 TForm_definice_zakazek *Form_definice_zakazek;
 
@@ -330,10 +331,10 @@ void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender)
   		//pozicování buttonu
   		scGPButton_Ulozit->Top=Form_definice_zakazek->Height-scGPButton_Ulozit->Height - 10;
   		scGPButton_storno->Top=scGPButton_Ulozit->Top;
-      scGPGlyphButton_add_zakazka->Top=scGPButton_Ulozit->Top - 18;
+      scGPGlyphButton_add_zakazka->Top=scGPButton_Ulozit->Top - 16;
   		scGPButton_Ulozit->Left=Form_definice_zakazek->Width/2-scGPButton_Ulozit->Width-22/2;
   		scGPButton_storno->Left=Form_definice_zakazek->Width/2+22/2;
-      scGPGlyphButton_add_zakazka->Left=scGPButton_Ulozit->Left - 40;
+      scGPGlyphButton_add_zakazka->Left=2;//scGPButton_Ulozit->Left - 40;
   		//znovuvykreslìní
 			FormPaint(this);//pokud je nutné zvìtšít form, musí se znova spustit formpaint (bmp ma nastavené rozmìry pøed zmìnou)
 		}
@@ -1136,6 +1137,25 @@ void __fastcall TForm_definice_zakazek::scLabel_headerMouseUp(TObject *Sender, T
 	Akce=NIC;//uvolnìní akce po posunu
 	uz_posun=true;//uložení, že došlo k uživatelskému posunu
 	FormPaint(this);//pøekreslení, nìkdy pøi velkém pøesunu mùže dojít k deformaci vykreslení tabulky, proto pøekreslení po ukonèení pøesunu
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_definice_zakazek::scGPGlyphButton_add_zakazkaDropDown(TObject *Sender)
+
+{
+ShowMessage("Hello");
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_definice_zakazek::scGPButton1DropDown(TObject *Sender)
+{
+ShowMessage("hello");
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_definice_zakazek::scGPButton1Click(TObject *Sender)
+{
+loadHeader();
 }
 //---------------------------------------------------------------------------
 
