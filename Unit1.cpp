@@ -203,6 +203,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	antialiasing=true;
 	//nastavení implicitního souboru
 	duvod_k_ulozeni=false;
+	zakazka_akt=NULL;
 	Novy_soubor();
 	volat_parametry_linky=false;
 
@@ -962,7 +963,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=442;i++)
+	for(unsigned short i=0;i<=444;i++)
 	{
 		switch(i)
 		{
@@ -1409,6 +1410,8 @@ void TForm1::DesignSettings()
 			case 440:text="Dávka";break;
 			case 441:text="Smazat dávku";break;
 			case 442:text="Barva zakázky";break;
+			case 443:text="Zobrazit kóty geometrie";break;
+			case 444:text="Skrýt kóty geometrie";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -5467,7 +5470,7 @@ void TForm1::ESC()
 //			REFRESH();//dojde k překreslení odstraněné výhybky
 		}break;
 		case GEOMETRIE:
-		case GEOMETRIE_LIGHT:ukonceni_geometrie();break;
+		case GEOMETRIE_LIGHT:scGPButton_geometrieClick(this);break;
 	}
 	pom_vyhybka=NULL;
 	proces_pom=NULL;
@@ -10958,6 +10961,7 @@ void TForm1::NP_input()
 		scGPButton_posun_dalsich_elementu->ImageIndex=59;
 		scGPButton_posun_dalsich_elementu->Hint=ls->Strings[126];//"Povolit vázaný posun robotů, stop stanic a otočí v editovaném objektu";
 	}
+	scGPButton_geometrie->Hint=ls->Strings[443];
 	if(scGPComboBox_prepinacKot->ItemIndex==0)DKunit=(TForm1::Tm_mm)1;
 	else DKunit=(TForm1::Tm_mm)2;
 	if(akt_Objekt->pohon!=NULL)scGPComboBox_prepinacKot->Enabled=true;
@@ -11133,6 +11137,7 @@ void TForm1::zmena_editovaneho_objektu()
 			scGPButton_posun_dalsich_elementu->ImageIndex=59;
 			scGPButton_posun_dalsich_elementu->Hint=ls->Strings[126];//"Povolit vázaný posun robotů, stop stanic a otočí v editovaném objektu";
 		}
+		scGPButton_geometrie->Hint=ls->Strings[443];
 		if(scGPComboBox_prepinacKot->ItemIndex==0)DKunit=(TForm1::Tm_mm)1;
 		else DKunit=(TForm1::Tm_mm)2;
 		if(akt_Objekt->pohon!=NULL)scGPComboBox_prepinacKot->Enabled=true;
@@ -11624,6 +11629,7 @@ unsigned short int TForm1::Otevrit_soubor(UnicodeString soubor)//realizuje samot
 			d.v.PP.typ_linky=d.v.File_hlavicka.typ_linky;
 			d.v.PP.radius=d.v.File_hlavicka.radius;
 			d.v.pocet_vyhybek=d.v.File_hlavicka.pocet_vyhybek;
+			if(d.v.File_hlavicka.zakazka_akt!=0)zakazka_akt=d.v.vrat_zakazku(d.v.File_hlavicka.zakazka_akt);
 			//MOD=d.v.File_hlavicka.Mod;
 			MOD=SCHEMA;//defaultně se bude vždy otvírat v layoutu
 //			switch(MOD)
@@ -15045,6 +15051,7 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 		Form_zpravy->RzStatusPane_var_header->Caption=ls->Strings[415];
 		Form_parametry_linky->scHTMLLabel_posuvnik->Caption=ls->Strings[427];
 		scGPButton_smazat->Caption=ls->Strings[428];
+		scGPButton_geometrie->Hint=ls->Strings[443];
 
     //změna zarovnání
 		scGPComboBox_prepinacKot->Left=scGPLabel_prepinacKot->Left+scGPLabel_prepinacKot->Width;//nutné!!
@@ -15082,7 +15089,7 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
    		else
    		{
    			scGPButton_viditelnostmGrid->ImageIndex=55;
-   			scGPButton_viditelnostmGrid->Hint=ls->Strings[122];//"Zobrazit tabulky";
+				scGPButton_viditelnostmGrid->Hint=ls->Strings[122];//"Zobrazit tabulky";
    		}
    		if(akt_Objekt->zobrazit_koty)
    		{
@@ -15369,8 +15376,17 @@ void __fastcall TForm1::scGPButton_geometrieClick(TObject *Sender)
 		stisknute_leve_tlacitko_mysi=false;//nutné!!! zustává aktivníc z dblclicku
 		REFRESH(false);
 		scGPButton_geometrie->ImageIndex=82;
+		scGPButton_geometrie->Hint=ls->Strings[444];//vypnout ...
 	}
-	else {ukonceni_geometrie();Akce=NIC;Akce_temp=NIC;REFRESH(false);scGPButton_geometrie->ImageIndex=83;}//vypunutí akce geometrie
+	else
+	{
+		ukonceni_geometrie();
+		Akce=NIC;
+		Akce_temp=NIC;
+		REFRESH(false);
+		scGPButton_geometrie->ImageIndex=83;
+		scGPButton_geometrie->Hint=ls->Strings[443];//zapnout ...
+	}//vypunutí akce geometrie
 	if(akt_Objekt!=NULL)DrawGrid_knihovna->SetFocus();//nutné pro odchytávání kláves
 }
 //---------------------------------------------------------------------------

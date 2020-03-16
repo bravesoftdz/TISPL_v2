@@ -441,3 +441,5 @@ Delete contract;X;Smazat zakázku
 Batch;X;Dávka
 Delete batch;X;Smazat dávku
 Choose color;X;Barva zakázky
+Show geometry dimensions;X;Zobrazit kóty geometrie
+Hide geometry dimensions;X;Skrýt kóty geometrie

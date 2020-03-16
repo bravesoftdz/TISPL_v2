@@ -6073,6 +6073,8 @@ void Cvektory::vytvor_hlavicku_souboru()
 	File_hlavicka.radius=PP.radius;
 	//stav ikony  TODO ROSTA dodelat
 	//File_hlavicka.objekt_posunout_vse
+	if(F->zakazka_akt!=NULL)File_hlavicka.zakazka_akt=F->zakazka_akt->n;
+	else File_hlavicka.zakazka_akt=0;
 }
 //---------------------------------------------------------------------------
 //Uloží vektorová data do souboru

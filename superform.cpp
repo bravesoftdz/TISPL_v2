@@ -151,13 +151,13 @@ void TForm_definice_zakazek::uloz_Default_cestu()
 void TForm_definice_zakazek::nacti_zakazky()
 {
   F->log(__func__); // logování
-  F->d.v.kopirujZAKAZKY2ZAKAZKY_temp();
+	F->d.v.kopirujZAKAZKY2ZAKAZKY_temp();
   // pøekopíruje zakázky do temp zakázek, pro jejich editaci
   // procházení vytvoøených kopií zakázek a vytváøení jejich mGridù
   Cvektory::TZakazka *Z = F->d.v.ZAKAZKY_temp->dalsi;
   Cvektory::TDavka *D = NULL;
   nacitam_zakazky = true; // nutné??
-  pocet_zakazek = 0;
+	pocet_zakazek = 0;
 	while (Z != NULL)
 	{
     pocet_zakazek++;//zvýšení poètu zakázek, které následnì nastaví výšku formuláøe v metodì set_formHW_button_positions
@@ -177,12 +177,12 @@ void TForm_definice_zakazek::nacti_zakazky()
 		}
 		// naètení informací ze zakázky do mGridu øešeno tady nebo v metodì loadHeader()
     Z=Z->dalsi;
-  }
+	}
   // vykreslení
   FormPaint(this);
   // ukazatelové záležitosti
 	delete Z;Z=NULL;
-  nacitam_zakazky=false; // nutné??
+	nacitam_zakazky=false; // nutné??
 }
 // TLAÈÍTKO ULOŽIT
 void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
@@ -538,7 +538,7 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col, unsig
     delete J;
 	}
 
-	if(Col>=Z->mGrid->ColCount-1 && Row == 0 && volno == true)
+	if(Col>=Z->mGrid->ColCount-1 && Row == 0 && volno == true && !nacitam_zakazky)
 	{
 		volno = false;
 		//pokud byla zvolena zakázka jako aktuální, zkontrolu zda není oznaèená nìjaká další
@@ -774,7 +774,9 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy)
 		if(!novy && F->zakazka_akt!=NULL && F->zakazka_akt->n==Z->n)//pokud naèítám zakázky a existuje aktuální zakázka, která je totožná s právì naèítanou zakázkou, zaškrtnu checkbox
 		{
 			Z->mGrid->getCheck(3,0)->Checked=true;
-    }
+		}
+		//pokud nenží žádná defaultní zakázka a je pøidávána první zakázka, pøiøadí ji jako aktuální
+		if(F->zakazka_akt==NULL && Z->n==1)Z->mGrid->getCheck(3,0)->Checked=true;
     ////ukazatelové záležitosti
 		Z->mGrid->Refresh();
 

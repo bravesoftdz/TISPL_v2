@@ -439,7 +439,8 @@ class Cvektory
     int katalog;
 		short typ_linky;
     double radius;
-    short objekt_posunout_vse;
+		short objekt_posunout_vse;
+		unsigned long zakazka_akt;//uchovává n aktuální zakázky
 	};
 	TFile_hlavicka File_hlavicka;
 
