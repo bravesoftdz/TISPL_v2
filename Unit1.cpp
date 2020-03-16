@@ -7171,14 +7171,14 @@ void TForm1::aktualizace_RT()
 			//aktualizace max počtu vozíků
 			if(E->eID==0)
 			{
-				if(zakazka_akt!=NULL){C=d.v.vrat_segment_cesty(zakazka_akt,E);E->data=C->data;}//nahrání aktuálních dat
+				if(zakazka_akt!=NULL){C=d.v.vrat_segment_cesty(zakazka_akt,E);if(C!=NULL)E->data=C->data;}//nahrání aktuálních dat
 				E->data.pocet_pozic=max_voziku(E);
 				try
 				{
 					E->mGrid->Cells[1][5].Text=E->data.pocet_pozic;
 				}catch(...){}
 				d.v.reserve_time(E,C);
-				if(zakazka_akt!=NULL)C->data=E->data;//vrácení přepočítaných dat do zakázky
+				if(zakazka_akt!=NULL && C!=NULL)C->data=E->data;//vrácení přepočítaných dat do zakázky
 			}
 			//aktualizace RT
 			if(d.v.vrat_druh_elementu(E)==0 && E->eID!=0)d.v.reserve_time(E);
@@ -8424,8 +8424,8 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni,bool plnit
 	Cvektory::TCesta *C=NULL;
 	if(zakazka_akt!=NULL)
 	{
-    C=d.v.vrat_segment_cesty(zakazka_akt,E);
-		E->data=C->data;
+		C=d.v.vrat_segment_cesty(zakazka_akt,E);
+		if(C!=NULL)E->data=C->data;
 	}
 
 	//nadesignování tabulek dle typu elementu
@@ -8435,7 +8435,7 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni,bool plnit
 	else dalsi_vytvoreni_tab_elementu(E,sirka_0,sirka_1,sirka_2,sirka_3,sirka_4,sirka_56,sirka_cisla,LO,cas,delka_otoce);
 
 	//vrácení přepočítaných dat do segmentu cesty
-	if(zakazka_akt!=NULL)C->data=E->data;
+	if(zakazka_akt!=NULL && C!=NULL)C->data=E->data;
 	C=NULL;delete C;
 
 	//formátování hlavičky tabulky (vždy stejné)
@@ -9339,13 +9339,16 @@ void TForm1::redesign_element()
 	sirka_56=96;
 	//procházení pomocného spojitého seznamu
 	Cvektory::TElement *E=akt_Objekt->element;//zde lze přeskočit hlavičku
+	Cvektory::TCesta *C=NULL;
 	while (E!=NULL && E->objekt_n==akt_Objekt->n)
 	{
-		if(zakazka_akt!=NULL)E->data=d.v.vrat_segment_cesty(zakazka_akt,E)->data;//načtení aktuálních informací do elementu
+		if(zakazka_akt!=NULL)C=d.v.vrat_segment_cesty(zakazka_akt,E);
+		if(C!=NULL)E->data=C->data;//načtení aktuálních informací do elementu
 		akt_tabulek(E,LO,delka_otoce,cas,sirka_0,sirka_1,sirka_2,sirka_3,sirka_4,sirka_56,sirka_cisla);
 		E=E->dalsi;
 	}
-	E=NULL; delete E; ;
+	C=NULL; delete C;
+	E=NULL; delete E;
 	//zápis změn do INI
 	writeINI("nastaveni_nahled", "cas", PTunit);
 	writeINI("nastaveni_nahled", "LO", LOunit);
@@ -12719,49 +12722,27 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;   Memo3->Clear();
-	if(akt_Objekt!=NULL)E=akt_Objekt->element;
-	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
-	while(E!=NULL)// && E->objekt_n==akt_Objekt->n)
-	{
-		Memo(E->name+"->objekt_n = "+AnsiString(E->objekt_n));
-		//Memo(E->dalsi->name+"->objekt_n = "+AnsiString(E->dalsi->objekt_n));
-		//Memo(d.v.vrat_objekt(E->objekt_n)->name);
-		//if(E->dalsi2!=NULL)E=E->dalsi2;
-		//E=E->dalsi;
-		E=d.v.dalsi_krok(E,akt_Objekt);
-		//E=d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);
-	}
-	E=NULL;delete E;
-	delete []tab_pruchodu;
+	TRect ret;TPointD Posun;
+	//nastavení základníh hodnot sloužících pro vyhledávání
+	ret.left=MaxInt;ret.right=MaxInt*(-1);
+	ret.top=MaxInt;ret.bottom=MaxInt*(-1);
 
-//	E=d.v.ELEMENTY->dalsi->dalsi->dalsi2->dalsi;
-//	Memo(E->name);
-//	Memo("->dalsi = "+E->dalsi->name);
-//	Memo("->predchozi = "+E->predchozi->name);
-//	if(E->dalsi2!=NULL)Memo("->dalsi2 = "+E->dalsi2->name);
-//	if(E->predchozi2!=NULL)Memo("->predchozi2 = "+E->predchozi2->name);
-//	E->predchozi->dalsi2=E;
-//	E=E->predchozi;    Memo("");
-//	Memo(E->name);
-//	Memo("->dalsi = "+E->dalsi->name);
-//	Memo("->predchozi = "+E->predchozi->name);
-//	if(E->dalsi2!=NULL)Memo("->dalsi2 = "+E->dalsi2->name);
-//	if(E->predchozi2!=NULL)Memo("->predchozi2 = "+E->predchozi2->name);
-//  Memo("");
-//	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
-//	while(O!=NULL)
-//	{
-//		Memo(O->name);
-////		Cvektory::TElement *E=O->element;
-////		while(E!=NULL)
-////		{
-////
-////			E=d.v.dalsi_krok(E,O);
-////    }
-//		O=O->dalsi;
-//	}
-//	O=NULL;delete O;
+	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+	while(E!=NULL)
+	{
+		if(m.L2Px(E->geo.X1)<ret.left)ret.left=m.L2Px(E->geo.X1);
+		if(m.L2Px(E->geo.X1)>ret.right)ret.right=m.L2Px(E->geo.X1);
+		if(m.L2Py(E->geo.Y1)<ret.top)ret.top=m.L2Py(E->geo.Y1);
+		if(m.L2Py(E->geo.Y1)>ret.bottom)ret.bottom=m.L2Py(E->geo.Y1);
+		if(m.L2Px(E->geo.X4)<ret.left)ret.left=m.L2Px(E->geo.X4);
+		if(m.L2Px(E->geo.X4)>ret.right)ret.right=m.L2Px(E->geo.X4);
+		if(m.L2Py(E->geo.Y4)<ret.top)ret.top=m.L2Py(E->geo.Y4);
+		if(m.L2Py(E->geo.Y4)>ret.bottom)ret.bottom=m.L2Py(E->geo.Y4);
+		E=d.v.dalsi_krok(E);
+	}
+	delete E;E=NULL;
+
+	Canvas->Rectangle(ret.left,ret.top,ret.right,ret.bottom);
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko

@@ -3032,8 +3032,8 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 		if(Cesta==NULL && F->zakazka_akt!=NULL)//pokud nejsou v datech elementu aktuální informace
 		{
 			Cesta=vrat_segment_cesty(F->zakazka_akt,Element);
-			Element->data=Cesta->data;
-    }
+			if(Cesta!=NULL)Element->data=Cesta->data;
+		}
 		//TObjekt *O=vrat_objekt(Element->objekt_n);
 		if(Element->pohon!=NULL)cas+=Element->geo.delka/Element->pohon->aRD;//pokud má element pohon výpočet času přejezdu jeho úseku
 		else error=true;//nemá pohon = error
