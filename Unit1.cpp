@@ -1633,6 +1633,7 @@ void TForm1::Novy_soubor(bool invalidate)//samotné vytvoření nového souboru
 			 zobrazit_barvy_casovych_rezerv=false;
 			 d.cas=0;
 			 Analyza->Down=false;
+			 zakazka_akt=NULL;
 			 //Schema->Down=true;
 			 FileName="Nový.tispl";
 			 scLabel_titulek->Caption=Caption+" - ["+FileName+"]";
@@ -5689,42 +5690,6 @@ bool TForm1::pripnuti_dalsich_objektu()
 		ret=true;
 	}
 
-	////připnutí vedlejší větve na hlavní
-	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && (m.round2double(e_posledni->geo.X4,2)==m.round2double(e_posledni->dalsi->geo.X4,2) && m.round2double(e_posledni->geo.Y4,2)==m.round2double(e_posledni->dalsi->geo.Y4,2)))
-	{
-		if(e_posledni->geo.typ==0 && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=0.5)
-		{
-			//zjištění jednotlivých délek posunů
-			posun_x=-e_posledni->dalsi->geo.X4+e_posledni->geo.X4;
-			posun_y=-e_posledni->dalsi->geo.Y4+e_posledni->geo.Y4;
-			//zajištěni spojení
-			if(e_posledni->geo.orientace==90 || e_posledni->geo.orientace==270)//horizontální linie
-			{
-				//prodloužení linie vedlejší větve
-				d.v.vloz_G_element(e_posledni,0,e_posledni->geo.X1,e_posledni->geo.Y1,0,0,0,0,e_posledni->geo.X4-posun_x,e_posledni->geo.Y4,e_posledni->geo.orientace);
-				e_posledni->X-=posun_x;
-				//posun spojky, je-li to možné
-				e_posledni=e_posledni->dalsi;
-				if(e_posledni->geo.typ==0 && e_posledni->geo.delka>=0.5 && e_posledni->dalsi->geo.typ==0 && e_posledni->dalsi->geo.delka>=0.5)//pokud je vyhybka na liniovém úseku a je ji kam posunout
-				{
-					d.v.posun_element(e_posledni,posun_y,false,true);
-				}
-			}
-			else//vertikální  linie
-			{
-        //prodloužení linie vedlejší větve
-				d.v.vloz_G_element(e_posledni,0,e_posledni->geo.X1,e_posledni->geo.Y1,0,0,0,0,e_posledni->geo.X4,e_posledni->geo.Y4-posun_y,e_posledni->geo.orientace);
-				e_posledni->Y-=posun_y;
-				//posun spojky, je-li to možné
-				e_posledni=e_posledni->dalsi;
-				if(e_posledni->geo.typ==0 && e_posledni->geo.delka>=0.5 && e_posledni->dalsi->geo.typ==0 && e_posledni->dalsi->geo.delka>=0.5)//pokud je vyhybka na liniovém úseku a je ji kam posunout
-				{
-					d.v.posun_element(e_posledni,posun_x,false,true);
-        }
-      }
-		}
-		else TIP="Vedlejší větev není spojená se spojkou!";//vypsat do tipu
-	}
 	e_posledni=NULL;delete e_posledni;
 	return ret;
 }
@@ -6498,6 +6463,60 @@ void TForm1::vlozeni_editace_geometrie()
 			posledni_editovany_element->Y=posledni_editovany_element->geo.Y4;
 		}
 	}
+
+	Cvektory::TElement *e_posledni=posledni_editovany_element;
+	////připnutí vedlejší větve na hlavní
+	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && (m.round2double(e_posledni->geo.X4,2)==m.round2double(e_posledni->dalsi->geo.X4,2) || m.round2double(e_posledni->geo.Y4,2)==m.round2double(e_posledni->dalsi->geo.Y4,2)))
+	{
+		if(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel==e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=1)
+		{
+			double posun_x,posun_y;
+			//zjištění jednotlivých délek posunů
+			posun_x=-e_posledni->dalsi->geo.X4+e_posledni->geo.X4;
+			posun_y=-e_posledni->dalsi->geo.Y4+e_posledni->geo.Y4;
+
+			if(m.round2double(e_posledni->dalsi->geo.X4+posun_x,2)>=m.round2double(e_posledni->dalsi->geo.X1,2) && m.round2double(e_posledni->dalsi->geo.Y4+posun_y,2)>=m.round2double(e_posledni->dalsi->geo.Y1,2))
+			{
+				d.v.vloz_G_element(e_posledni->dalsi,0,e_posledni->dalsi->geo.X1,e_posledni->dalsi->geo.Y1,0,0,0,0,e_posledni->dalsi->geo.X4+posun_x,e_posledni->dalsi->geo.Y4+posun_y,e_posledni->dalsi->geo.orientace);
+				e_posledni->dalsi->X+=posun_x;
+				e_posledni->dalsi->Y+=posun_y;
+				d.v.vloz_G_element(e_posledni->dalsi->dalsi,0,e_posledni->dalsi->geo.X4+posun_x,e_posledni->dalsi->geo.Y4+posun_y,0,0,0,0,e_posledni->dalsi->dalsi->geo.X4,e_posledni->dalsi->dalsi->geo.Y4,e_posledni->dalsi->dalsi->geo.orientace);
+			}
+			else if(e_posledni->geo.typ==0)
+			{
+				d.v.vloz_G_element(e_posledni,0,e_posledni->geo.X1,e_posledni->geo.Y1,0,0,0,0,e_posledni->geo.X4-posun_x,e_posledni->geo.Y4-posun_y,e_posledni->geo.orientace);
+				e_posledni->X-=posun_x;
+				e_posledni->Y-=posun_y;
+      }
+			REFRESH();
+			//zajištěni spojení
+//			if(e_posledni->geo.orientace==90 || e_posledni->geo.orientace==270)//horizontální linie
+//			{
+//				//prodloužení linie vedlejší větve
+//				d.v.vloz_G_element(e_posledni,0,e_posledni->geo.X1,e_posledni->geo.Y1,0,0,0,0,e_posledni->geo.X4-posun_x,e_posledni->geo.Y4,e_posledni->geo.orientace);
+//				e_posledni->X-=posun_x;
+//				//posun spojky, je-li to možné
+//				e_posledni=e_posledni->dalsi;
+//				if(e_posledni->geo.typ==0 && e_posledni->geo.delka>=0.5 && e_posledni->dalsi->geo.typ==0 && e_posledni->dalsi->geo.delka>=0.5)//pokud je vyhybka na liniovém úseku a je ji kam posunout
+//				{
+//					d.v.posun_element(e_posledni,posun_y,false,true);
+//				}
+//			}
+//			else//vertikální  linie
+//			{
+//				//prodloužení linie vedlejší větve
+//				d.v.vloz_G_element(e_posledni,0,e_posledni->geo.X1,e_posledni->geo.Y1,0,0,0,0,e_posledni->geo.X4,e_posledni->geo.Y4-posun_y,e_posledni->geo.orientace);
+//				e_posledni->Y-=posun_y;
+//				//posun spojky, je-li to možné
+//				e_posledni=e_posledni->dalsi;
+//				if(e_posledni->geo.typ==0 && e_posledni->geo.delka>=0.5 && e_posledni->dalsi->geo.typ==0 && e_posledni->dalsi->geo.delka>=0.5)//pokud je vyhybka na liniovém úseku a je ji kam posunout
+//				{
+//					d.v.posun_element(e_posledni,posun_x,false,true);
+//				}
+//			}
+		}
+	}
+
 	nahled_ulozit(true);
 }
 //---------------------------------------------------------------------------
