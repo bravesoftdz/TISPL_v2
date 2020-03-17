@@ -123,7 +123,8 @@ public:		// User declarations
   void setButtonColor(long ID);
   void loadHeader(unsigned long zakazka_n=0,bool novy=true);
   enum Typ_buttonu {krizek_davky, krizek,color};
-  enum TAkce_obrazku {load,add,remove};
+	enum TAkce_obrazku {load,add,remove};
+	bool closing;//detekce kvùli hlavnímu formuláøi jinak volá tìlo formactivate hlavního formu
 
 	Typ_buttonu button_type;//zjisteni ktery button ma byt designovan
 

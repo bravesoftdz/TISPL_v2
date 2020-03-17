@@ -204,6 +204,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	//nastavení implicitního souboru
 	duvod_k_ulozeni=false;
 	zakazka_akt=NULL;
+	cesta_akt=NULL;
 	Novy_soubor();
 	volat_parametry_linky=false;
 
@@ -1765,7 +1766,7 @@ bool TForm1::ttr(UnicodeString Text)
 void TForm1::startUP()
 {
 	log(__func__);//logování
-  if(!Form_zpravy->closing && !Form_zpravy->Showing && !PopUPmenu->Showing && !PopUPmenu->closing && !myMessageBox->Showing && !myMessageBox->closing)//pozn. dole ještě větev else if(PopUPmenu->Showing || PopUPmenu->closing)PopUPmenu->Close();//pokud je spuštěné pop-up menu, tak ho vypne
+	if(!Form_zpravy->closing && !Form_zpravy->Showing && !PopUPmenu->Showing && !PopUPmenu->closing && !myMessageBox->Showing && !myMessageBox->closing && !Form_definice_zakazek->Showing && !Form_definice_zakazek->closing)//pozn. dole ještě větev else if(PopUPmenu->Showing || PopUPmenu->closing)PopUPmenu->Close();//pokud je spuštěné pop-up menu, tak ho vypne
 	{
     //načtení jazykové mutace, nemůže být v konstruktoru, protože ještě neexistují všechny dílčí formuláře = nelze k nim přistoupit
 		//language=(TForm1::Tlanguage)load_language(language,false);//aktivovani jazyk mutaci, problém s přepnutím jazyka při nenalezení souboru, proto metoda varací zvolený jazyk
@@ -12790,19 +12791,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	TRect ret;TPointD Posun;
-	//nastavení základníh hodnot sloužících pro vyhledávání
-	ret.left=MaxInt;ret.right=MaxInt*(-1);
-	ret.top=MaxInt;ret.bottom=MaxInt*(-1);
-
-	Cvektory::TElement *E=akt_Objekt->element;
-	while(E!=NULL && E->objekt_n==akt_Objekt->n)
-	{
-		//d.line(Canvas,0,0,m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
-		d.line(Canvas,0,0,m.L2Px(E->X),m.L2Py(E->Y));
-		E=E->dalsi;
-	}
-	E=NULL;delete E;
+	Form_definice_zakazek->Show();
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -15429,6 +15418,25 @@ void __fastcall TForm1::scGPButton_geometrieClick(TObject *Sender)
 		scGPButton_geometrie->Hint=ls->Strings[443];//zapnout ...
 	}//vypunutí akce geometrie
 	if(akt_Objekt!=NULL)DrawGrid_knihovna->SetFocus();//nutné pro odchytávání kláves
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::scGPButton_storno_cestaClick(TObject *Sender)
+{
+	Akce=NIC;
+	scGPButton_ulozit_cestu->Visible=false;
+	scGPButton_storno_cesta->Visible=false;
+	scGPGlyphButton_odstran_cestu->Visible=false;
+	Form_definice_zakazek->Show();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::scGPButton_ulozit_cestuClick(TObject *Sender)
+{
+	//uložit
+
+	//zavřít
+  scGPButton_storno_cestaClick(this);
 }
 //---------------------------------------------------------------------------
 

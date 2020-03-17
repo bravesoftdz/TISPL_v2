@@ -63,7 +63,8 @@ void TForm_definice_zakazek::nastav_form()
 // zobrazení formuláøe
 void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender)
 {
-  F->log(__func__); // logování
+	F->log(__func__); // logování
+	closing = false;
   volno = false;
 	pocet_davek = 0;
 	Akce=NIC;
@@ -240,7 +241,7 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 // Zavøení formuláøe (storno a køížek je to samé)
 void __fastcall TForm_definice_zakazek::scGPGlyphButton4Click(TObject *Sender)
 {
-  KonecClick(Sender);
+	KonecClick(Sender);
 }
 
 // ---------------------------------------------------------------------------
@@ -272,7 +273,8 @@ void __fastcall TForm_definice_zakazek::KonecClick(TObject *Sender)
 	F->Analyza->Options->FrameNormalColor=F->scGPPanel_mainmenu->FillColor;
 	F->Schema->Options->NormalColor=F->DetailsButton->Options->NormalColor;
 	F->Schema->Options->FrameNormalColor=F->DetailsButton->Options->NormalColor;
-  Close();
+	closing = true;
+	Close();
 }
 
 // ---------------------------------------------------------------------------
@@ -554,6 +556,25 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col, unsig
 			delete zak;zak=NULL;
 		}
 		volno =true;
+	}
+
+	if (Z->mGrid->Cells[Col][Row].Type==Z->mGrid->IMAGE)
+	{
+		//pozicévání tlaèítek pro tvorbu cesty
+		F->scGPButton_ulozit_cestu->Left=F->ClientWidth/2.0-(2*(F->scGPButton_ulozit_cestu->Width-11)-F->scGPGlyphButton_odstran_cestu->Width-11)/2.0;
+		F->scGPButton_ulozit_cestu->Top=F->scGPPanel_statusbar->Top-F->scGPButton_ulozit_cestu->Height-5;
+		F->scGPButton_storno_cesta->Left=F->scGPButton_ulozit_cestu->Left+F->scGPButton_ulozit_cestu->Width+22;
+		F->scGPButton_storno_cesta->Top=F->scGPPanel_statusbar->Top-F->scGPButton_storno_cesta->Height-5;
+		F->scGPGlyphButton_odstran_cestu->Left=F->scGPButton_storno_cesta->Left+F->scGPButton_storno_cesta->Width+22;
+		F->scGPGlyphButton_odstran_cestu->Top=F->scGPPanel_statusbar->Top-F->scGPGlyphButton_odstran_cestu->Height-5;
+		//zobrazení tlaèítek pro tvorbu cesty
+		F->scGPButton_ulozit_cestu->Visible=true;
+		F->scGPButton_storno_cesta->Visible=true;
+		F->scGPGlyphButton_odstran_cestu->Visible=true;
+		//nastavení akce a uzavøení formu
+		F->Akce=F->TVORBA_CESTY;
+		closing=true;
+		Form_definice_zakazek->Close();
 	}
 
 	// odstranìnní tabulky a zakázky
