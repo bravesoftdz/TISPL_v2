@@ -3,7 +3,7 @@ object Form1: TForm1
   Top = 0
   BorderStyle = bsNone
   Caption = 'ELTEP - TISPL - Timing Inspection of Single Purpose Lines'
-  ClientHeight = 799
+  ClientHeight = 912
   ClientWidth = 1281
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
@@ -32,7 +32,7 @@ object Form1: TForm1
   OnShow = FormShow
   DesignSize = (
     1281
-    799)
+    912)
   PixelsPerInch = 96
   TextHeight = 13
   object Label_wip: TLabel
@@ -223,7 +223,7 @@ object Form1: TForm1
     object LabelRoletka: TLabel
       Left = 320
       Top = 8
-      Width = 61
+      Width = 67
       Height = 13
       Caption = 'LabelRoletka'
       Visible = False
@@ -244,7 +244,6 @@ object Form1: TForm1
     Top = 729
     Width = 1281
     Height = 42
-    Align = alBottom
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clRed
     Font.Height = -11
@@ -2708,7 +2707,7 @@ object Form1: TForm1
   end
   object scGPPanel_statusbar: TscGPPanel
     Left = 0
-    Top = 771
+    Top = 884
     Width = 1281
     Height = 28
     Align = alBottom
@@ -2743,6 +2742,7 @@ object Form1: TForm1
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
+    ExplicitTop = 771
     object RzStatusPane3: TRzStatusPane
       Left = 207
       Top = 0
@@ -3492,7 +3492,7 @@ object Form1: TForm1
     Left = 0
     Top = 34
     Width = 168
-    Height = 695
+    Height = 850
     Anchors = [akLeft, akTop, akBottom]
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clNone
@@ -3538,6 +3538,7 @@ object Form1: TForm1
     HideControls = False
     Animation = False
     DisplayMode = scsvmOverlay
+    ExplicitHeight = 695
     object Image_knihovna_objektu: TImage
       Left = 0
       Top = 0
@@ -6874,7 +6875,7 @@ object Form1: TForm1
     Left = 0
     Top = 34
     Width = 250
-    Height = 695
+    Height = 850
     Anchors = [akLeft, akTop, akBottom]
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBtnText
@@ -6925,11 +6926,12 @@ object Form1: TForm1
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
     OnOpened = scSplitView_OPTIONSOpened
+    ExplicitHeight = 695
     object pravyoption_nadpis: TscGPLabel
       Left = 1
       Top = 0
       Width = 249
-      Height = 40
+      Height = 34
       Align = alTop
       Anchors = [akLeft, akTop, akRight, akBottom]
       Font.Charset = DEFAULT_CHARSET
@@ -6967,9 +6969,9 @@ object Form1: TForm1
     end
     object scExPanel_vrstvy: TscExPanel
       Left = 1
-      Top = 557
+      Top = 538
       Width = 249
-      Height = 199
+      Height = 231
       Margins.Left = 5
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -7515,10 +7517,113 @@ object Form1: TForm1
         ShowFocusRect = True
         UseFontColorToStyleColor = False
       end
+      object scGPCheckBox1: TscGPCheckBox
+        AlignWithMargins = True
+        Left = 7
+        Top = 195
+        Width = 239
+        Height = 33
+        Margins.Left = 7
+        Margins.Top = 0
+        Margins.Bottom = 0
+        Align = alTop
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -16
+        Font.Name = 'Roboto'
+        Font.Style = []
+        Font.Quality = fqClearTypeNatural
+        ParentFont = False
+        TabOrder = 5
+        TabStop = True
+        OnClick = scGPCheckBox_zobrazit_poziceClick
+        Animation = False
+        Caption = 'Zobrazit rozlo'#382'en'#237' voz'#237'k'#367
+        CanFocused = True
+        Spacing = 1
+        Layout = blGlyphLeft
+        ImageIndex = -1
+        GlowEffect.Enabled = False
+        GlowEffect.Color = clHighlight
+        GlowEffect.AlphaValue = 95
+        GlowEffect.GlowSize = 7
+        GlowEffect.Offset = 0
+        GlowEffect.Intensive = True
+        GlowEffect.StyleColors = True
+        GlowEffect.HotColor = clNone
+        GlowEffect.PressedColor = clNone
+        GlowEffect.FocusedColor = clNone
+        GlowEffect.PressedGlowSize = 7
+        GlowEffect.PressedAlphaValue = 255
+        GlowEffect.States = [scsHot, scsPressed, scsFocused]
+        ImageGlow = True
+        DisabledFontColor = clNone
+        Options.NormalColor = clWindow
+        Options.HotColor = clWindow
+        Options.PressedColor = clWindow
+        Options.DisabledColor = clWindow
+        Options.NormalColorAlpha = 255
+        Options.HotColorAlpha = 255
+        Options.PressedColorAlpha = 200
+        Options.DisabledColorAlpha = 125
+        Options.FrameNormalColor = clBtnShadow
+        Options.FrameHotColor = clHighlight
+        Options.FramePressedColor = clHighlight
+        Options.FrameDisabledColor = clBtnShadow
+        Options.FrameWidth = 2
+        Options.FrameNormalColorAlpha = 255
+        Options.FrameHotColorAlpha = 255
+        Options.FramePressedColorAlpha = 255
+        Options.FrameDisabledColorAlpha = 255
+        Options.CheckMarkNormalColor = clWindowText
+        Options.CheckMarkHotColor = clWindowText
+        Options.CheckMarkPressedColor = clWindowText
+        Options.CheckMarkDisabledColor = clWindowText
+        Options.CheckMarkNormalColorAlpha = 255
+        Options.CheckMarkHotColorAlpha = 255
+        Options.CheckMarkPressedColorAlpha = 255
+        Options.CheckMarkDisabledColorAlpha = 125
+        Options.ShapeSize = 20
+        Options.CheckMarkThickness = 2
+        Options.StyleColors = True
+        OptionsChecked.NormalColor = clWindow
+        OptionsChecked.HotColor = clWindow
+        OptionsChecked.PressedColor = clWindow
+        OptionsChecked.DisabledColor = clWindow
+        OptionsChecked.NormalColorAlpha = 255
+        OptionsChecked.HotColorAlpha = 255
+        OptionsChecked.PressedColorAlpha = 200
+        OptionsChecked.DisabledColorAlpha = 125
+        OptionsChecked.FrameNormalColor = clBtnShadow
+        OptionsChecked.FrameHotColor = clHighlight
+        OptionsChecked.FramePressedColor = clHighlight
+        OptionsChecked.FrameDisabledColor = clBtnShadow
+        OptionsChecked.FrameWidth = 2
+        OptionsChecked.FrameNormalColorAlpha = 255
+        OptionsChecked.FrameHotColorAlpha = 255
+        OptionsChecked.FramePressedColorAlpha = 255
+        OptionsChecked.FrameDisabledColorAlpha = 255
+        OptionsChecked.CheckMarkNormalColor = clWindowText
+        OptionsChecked.CheckMarkHotColor = clWindowText
+        OptionsChecked.CheckMarkPressedColor = clWindowText
+        OptionsChecked.CheckMarkDisabledColor = clWindowText
+        OptionsChecked.CheckMarkNormalColorAlpha = 255
+        OptionsChecked.CheckMarkHotColorAlpha = 255
+        OptionsChecked.CheckMarkPressedColorAlpha = 255
+        OptionsChecked.CheckMarkDisabledColorAlpha = 125
+        OptionsChecked.ShapeSize = 20
+        OptionsChecked.CheckMarkThickness = 2
+        OptionsChecked.StyleColors = True
+        Checked = False
+        ScaleFrameWidth = True
+        ScaleCheckMarkThickness = True
+        ShowFocusRect = True
+        UseFontColorToStyleColor = False
+      end
     end
     object scExPanel_podklad: TscExPanel
       Left = 1
-      Top = 40
+      Top = 34
       Width = 249
       Height = 238
       Align = alTop
@@ -7553,6 +7658,8 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  Podklad'
+      ExplicitLeft = 0
+      ExplicitTop = 29
       object scGPButton_adjustace: TscGPButton
         AlignWithMargins = True
         Left = 3
@@ -8155,9 +8262,9 @@ object Form1: TForm1
     end
     object scExPanel_ostatni: TscExPanel
       Left = 1
-      Top = 278
+      Top = 272
       Width = 249
-      Height = 211
+      Height = 198
       Margins.Left = 5
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -8474,8 +8581,8 @@ object Form1: TForm1
         ThumbUseCursor = False
       end
       object scGPSwitch1: TscGPSwitch
-        Left = 33
-        Top = 180
+        Left = 35
+        Top = 164
         Width = 42
         Height = 20
         Align = alCustom
@@ -8504,8 +8611,8 @@ object Form1: TForm1
       end
       object scLabel_CZ: TscLabel
         AlignWithMargins = True
-        Left = 85
-        Top = 180
+        Left = 87
+        Top = 164
         Width = 21
         Height = 20
         Margins.Left = 6
@@ -8531,8 +8638,8 @@ object Form1: TForm1
       end
       object scLabel_EN: TscLabel
         AlignWithMargins = True
-        Left = 6
-        Top = 180
+        Left = 8
+        Top = 164
         Width = 21
         Height = 20
         Margins.Left = 6
@@ -8559,7 +8666,7 @@ object Form1: TForm1
     end
     object scExPanel1: TscExPanel
       Left = 1
-      Top = 489
+      Top = 470
       Width = 249
       Height = 68
       Margins.Left = 5
@@ -8596,6 +8703,8 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  N'#225'stroje'
+      ExplicitLeft = -2
+      ExplicitTop = 462
       object scGPButton_mereni_vzdalenost: TscGPButton
         AlignWithMargins = True
         Left = 3
@@ -8712,7 +8821,7 @@ object Form1: TForm1
     Left = 0
     Top = 34
     Width = 0
-    Height = 695
+    Height = 850
     Anchors = [akLeft, akTop, akBottom]
     Enabled = False
     TabOrder = 23
@@ -8755,9 +8864,10 @@ object Form1: TForm1
     DisplayMode = scsvmOverlay
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
+    ExplicitHeight = 695
     object scButton_konec: TscButton
       Left = 0
-      Top = 645
+      Top = 800
       Width = 0
       Height = 50
       Align = alBottom
@@ -8848,6 +8958,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
+      ExplicitTop = 645
     end
     object scButton_otevrit: TscButton
       Left = 0
@@ -9038,7 +9149,7 @@ object Form1: TForm1
     end
     object scButton_zaloha: TscButton
       Left = 0
-      Top = 595
+      Top = 750
       Width = 0
       Height = 50
       Align = alBottom
@@ -9128,6 +9239,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
+      ExplicitTop = 595
     end
     object scButton_report: TscButton
       Left = 0
@@ -9466,7 +9578,7 @@ object Form1: TForm1
     end
     object scButton_posledni_otevreny: TscButton
       Left = 0
-      Top = 545
+      Top = 700
       Width = 0
       Height = 50
       Align = alBottom
@@ -9556,6 +9668,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
+      ExplicitTop = 545
     end
     object scButton_novy: TscButton
       Left = 0
@@ -9842,7 +9955,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118009808840910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118008809880910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10965,7 +11078,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01015400480AA80C30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01015400AC0CAC0C30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000002004000001002000000000000060
       0C00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -48922,7 +49035,7 @@ object Form1: TForm1
     RightBarColor = clRed
     HintSkipEnter = True
     UseAsGlobalHint = True
-    Left = 25
-    Top = 624
+    Left = 193
+    Top = 736
   end
 end

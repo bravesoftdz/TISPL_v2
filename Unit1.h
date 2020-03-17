@@ -326,6 +326,7 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton_smazat;
   TrHTMLHint *rHTMLHint1;
 	TscGPButton *scGPButton_geometrie;
+	TscGPCheckBox *scGPCheckBox1;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);

@@ -2913,55 +2913,41 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 //tady vývoj:
 		if(F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked /*&& F->akt_Objekt==NULL*/ && v.vrat_druh_elementu(E)==0 && E->sparovany!=NULL/* && E->name=="Stop 1"&& E->n==1*/)//pro S&G který má spárovaný objekt
 		{
-			//provizoriní algoritmus před změnou DM
-//			Cvektory::TObjekt *O=NULL;                   //další objekt                 			//další kolo                  //v případě editovaného objektu
-//			Cvektory::TElement *Et=E->dalsi;if(Et==NULL){O=v.vrat_objekt(E->objekt_n)->dalsi;if(O==NULL)O=v.OBJEKTY->dalsi;if(F->pom_temp!=NULL && O->n==F->pom_temp->n)O=F->pom_temp;if(O!=NULL && Et==NULL)Et=O->elementy->dalsi;}//tempový Element
-//			Cvektory::TElement *Esd=E->sparovany->dalsi;if(Esd==NULL){O=v.vrat_objekt(E->sparovany->objekt_n)->dalsi;if(O==NULL)O=v.OBJEKTY->dalsi;if(F->pom_temp!=NULL && O->n==F->pom_temp->n)O=F->pom_temp;if(O!=NULL && Esd==NULL)Esd=O->elementy->dalsi;}//Element za spárovaným, kvůli tomu, aby algoritmus došel až ke spárovanému bylo tu toto (nyní s tím nesouhlasím):pokud je na konci vždy zarážka, tak je zbytečné
-			Cvektory::TElement *Et=E->dalsi;if(Et==NULL)Et=v.ELEMENTY->dalsi;//případně další kolo spojáku
+			Cvektory::TElement *Et=E->dalsi;if(Et==NULL)Et=v.ELEMENTY->dalsi;//další, protože ten spravuje geometrii před sebou, tzn. od daného stop elementu, případně další kolo spojáku
 			Cvektory::TElement *Esd=E->sparovany->dalsi;if(Esd==NULL)Et=v.ELEMENTY->dalsi;//případně  další kolo spojáku
-//			F->Memo("_________________");
-//			F->Memo("aktuální: "+E->name);
-//			F->Memo("další: "+Et->name);
-//			F->Memo("za sparovaným další: "+Esd->name);
-
-
-			double umisteni=0;
+			double umisteni=0;//výchozí umístění vozíku
 			bool prvni=true;//první vozík se neřeší, je již vykreslen na stopce
 			double akt_rotace_jigu=rotaceJ;
-			while(Esd!=Et /*&& Et!=E && Et!=NULL*/)//procházení cyklem od daného stop elementů až po jeho spárovaný stop element
+			while(Esd!=Et)//procházení cyklem od dalšího elementu daného stop elementů až po jeho spárovaný stop element
 			{
 				////výpočetní a vykreslovací záležítosti
-				if(Et->pohon!=NULL)//pokud má element přiřazen pohon
+				if(Et->pohon!=NULL)//pokud má element přiřazen pohon, jinak nemá smysl řešit
 				{
-					double Rz=m.Rz(Et->pohon->aRD);
-					double buffer_zona=0;if(Et->data.pocet_voziku>0)buffer_zona=Et->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;//délka buffrovácí zony, pokud je
+					double Rz=m.Rz(Et->pohon->aRD);//stanovený rozestup dle RD pohonu
+					double buffer_zona=0;if(Et->data.pocet_voziku>0)buffer_zona=Et->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;//délka [v metrech] buffrovácí zony, pokud je obsažena na daném elementu
+					//cyklické navýšení umístění dle rozestup Rz
 					while(umisteni<Et->geo.delka-buffer_zona)
 					{
-						if(!prvni)
+						if(!prvni)//první vozík se neřeší, je již vykreslen na stopce
 						{
 							TPointD_3D Pt=m.getPt(Et->geo.radius,Et->geo.orientace,Et->geo.rotacni_uhel,Et->geo.X1,Et->geo.Y1,Et->geo.X4,Et->geo.Y4,umisteni/Et->geo.delka/*F->smazat/100.0*/,(umisteni+v.PP.uchyt_pozice-v.PP.delka_podvozek/2.0)/Et->geo.delka);
 							//pořešit ještě rotaci jigu dle aktuální polohy kontinuální v otoči jinak ne
-							if(E->name=="Stop 1")vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu,m.clIntensive(clChassis,100),m.clIntensive(clJig,100));
+							if(E->name=="Stop 1")vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu,m.clIntensive(clChassis,100),m.clIntensive(clJig,100));//tato podmínka, jenomu kvůli testům
 							else vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu,clChassis,clYellow/*clJig*/);
 						}
-
-						prvni=false;						umisteni+=Rz;
+						prvni=false;//první vozík již vyřešen, přepíše se při prvním průchodu
+						umisteni+=Rz;//navýšení umístění dle rozestup Rz
 					}
-
-					//F->Memo("odečítám: "+AnsiString(Et->geo.delka));
-					//F->Memo("_________________");
-					umisteni-=Et->geo.delka;//zbytek při přechodu na další element = výchozí umístění v dalším elementu
+					umisteni-=Et->geo.delka;//zbytek z předchzejícího geometrického úseku, který nestihl být zohledněn převeden na další geometrický úsek, resp. element = výchozí umístění v dalším elementu
 					//if(Et->eID==200)umisteni-=Et->WT*Et->pohon->aRD;//čekání na předávacím místě způsobí zpoždění/rozsunutí mezi vozíků
 					//pozici na novém pohonu přepočítat ze zbytkového umístění na starém do času a ten převést do vzdálenosti na novém a ještě odečíst WT, ale výše je chyba s aRD
-					if(Et->rotace_jig!=0 && -180<=Et->rotace_jig && Et->rotace_jig<=180)akt_rotace_jigu+=Et->rotace_jig;
+					if(Et->rotace_jig!=0 && -180<=Et->rotace_jig && Et->rotace_jig<=180)akt_rotace_jigu+=Et->rotace_jig;//zajištění aktuální rotace pro následující úsek
 				}
-				////ukazatelové záležitosti          //další objekt         //další kolo                 //v případě editovaného objektu
-				//před změnou DM if(Et->dalsi==NULL){O=v.vrat_objekt(Et->objekt_n)->dalsi;if(O==NULL)O=v.OBJEKTY->dalsi;if(F->pom_temp!=NULL && O->n==F->pom_temp->n)O=F->pom_temp;if(O!=NULL)Et=O->elementy->dalsi;}
+				////ukazatelové záležitost
 				if(Et->dalsi==NULL)Et=v.ELEMENTY->dalsi;//další kolo spojáku
 				else Et=Et->dalsi;//další element
 			}
-			Et=NULL;delete Et;
-			//O=NULL;delete O;
+			Et=NULL;delete Et;//odstranění již nepotřebného ukazatele, zde prvně nutné NULL!!!
 		}
 	}
 }
