@@ -156,7 +156,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 			if(F->zakazka_akt!=NULL)//pokud pracuji v nìjaké zakázce
 	  	{
 				c=F->d.v.vrat_segment_cesty(F->zakazka_akt,E);
-				E->data=c->data;//pøepsání aktuálních dat ze zakázky do elementu
+				if(c!=NULL)E->data=c->data;//pøepsání aktuálních dat ze zakázky do elementu
 			}
 		}
 		F->posledni_editovany_element=E;
@@ -423,7 +423,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 		E->mGrid->Refresh();//refresh aktuálnì upravované tabulky
 		posledni_E=E;//uložení posledního editovaného elementu
 		posledni_c=c;//uložení posledního editovaného segmentu cesty
-		if(F->zakazka_akt!=NULL)c->data=E->data;//navrácení pøepoèítaných dat do zakázky
+		if(F->zakazka_akt!=NULL && c!=NULL)c->data=E->data;//navrácení pøepoèítaných dat do zakázky
 		E=NULL;delete E;
 		c=NULL;delete c;
 		input_state=NOTHING;F->Timer_neaktivity->Enabled=true;//uvolnìní stavu + zapnuti timeru neaktivity, pokud dokonèí èasování spustí REFRESH

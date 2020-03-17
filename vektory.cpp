@@ -3032,8 +3032,8 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 		if(Cesta==NULL && F->zakazka_akt!=NULL)//pokud nejsou v datech elementu aktuální informace
 		{
 			Cesta=vrat_segment_cesty(F->zakazka_akt,Element);
-			Element->data=Cesta->data;
-    }
+			if(Cesta!=NULL)Element->data=Cesta->data;
+		}
 		//TObjekt *O=vrat_objekt(Element->objekt_n);
 		if(Element->pohon!=NULL)cas+=Element->geo.delka/Element->pohon->aRD;//pokud má element pohon výpočet času přejezdu jeho úseku
 		else error=true;//nemá pohon = error
@@ -4598,18 +4598,32 @@ void Cvektory::vloz_zakazku(TZakazka *Zakazka)
 	ZAKAZKY->predchozi=nova;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
 }
 //---------------------------------------------------------------------------
-// vrátí ukazatel (resp. data) na temp zakázku, nejčastěji editovanou
-Cvektory::TZakazka *Cvektory::vrat_temp_zakazku(unsigned long n_zakazky)
+// vrátí ukazatel (resp. data) na zakázku, nejčastěji editovanou
+Cvektory::TZakazka *Cvektory::vrat_zakazku(unsigned long n_zakazky)
 {
-	 TZakazka *ukaz=NULL;
-	 if(ZAKAZKY_temp!=NULL)ukaz=ZAKAZKY_temp->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
-	 while (ukaz!=NULL)
-	 {
+	TZakazka *ukaz=NULL;
+	if(ZAKAZKY!=NULL)ukaz=ZAKAZKY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
+	while (ukaz!=NULL)
+	{
 		//akce s ukazatelem
 		if(ukaz->n==n_zakazky)break;
 		else ukaz=ukaz->dalsi;//posun na další prvek v seznamu
-	 }
-	 return ukaz;
+	}
+	return ukaz;
+}
+//---------------------------------------------------------------------------
+// vrátí ukazatel (resp. data) na temp zakázku, nejčastěji editovanou
+Cvektory::TZakazka *Cvektory::vrat_temp_zakazku(unsigned long n_zakazky)
+{
+	TZakazka *ukaz=NULL;
+	if(ZAKAZKY_temp!=NULL)ukaz=ZAKAZKY_temp->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
+	while (ukaz!=NULL)
+	{
+		//akce s ukazatelem
+		if(ukaz->n==n_zakazky)break;
+		else ukaz=ukaz->dalsi;//posun na další prvek v seznamu
+	}
+	return ukaz;
 }
 //---------------------------------------------------------------------------
 //vrátí ukazatel (resp. data) na editovanou zakázku, podle jejiho mGridu
@@ -6059,6 +6073,8 @@ void Cvektory::vytvor_hlavicku_souboru()
 	File_hlavicka.radius=PP.radius;
 	//stav ikony  TODO ROSTA dodelat
 	//File_hlavicka.objekt_posunout_vse
+	if(F->zakazka_akt!=NULL)File_hlavicka.zakazka_akt=F->zakazka_akt->n;
+	else File_hlavicka.zakazka_akt=0;
 }
 //---------------------------------------------------------------------------
 //Uloží vektorová data do souboru

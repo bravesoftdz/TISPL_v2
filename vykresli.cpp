@@ -4,6 +4,7 @@
 #include "Unit1.h"
 #include "kabina_schema.h"
 #include "stdlib.h"
+#include "antialiasing.h"
 //--------------------------------------------------------------------------
 #pragma package(smart_init)
 //---------------------------------------------------------------------------
@@ -4697,13 +4698,80 @@ void Cvykresli::vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popis
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 Graphics::TBitmap *Cvykresli::nacti_nahled(unsigned int index)
 {
-	Graphics::TBitmap *bmp=new Graphics::TBitmap;
-  bmp->Width=108;
-	bmp->Height=73;
+	//deklarace proměnných
+	int W=108-4,H=73-4;//-4 == 2px odsazení od každé hrany bmp
+	double z=F->Zoom;//uchovávání původního Zoom
+	TRect ret;TPointD Posun;
+	Graphics::TBitmap *bmp=new Graphics::TBitmap,*bmp_pom=new Graphics::TBitmap;
+	//nastavení velikostí bmp
+	bmp_pom->Width=F->ClientWidth;bmp_pom->Height=F->ClientHeight;
+	bmp->Width=3*108;
+	bmp->Height=3*73;
+	//nastavení základníh hodnot sloužících pro vyhledávání
+	ret.left=MaxInt;ret.right=MaxInt*(-1);
+	ret.top=MaxInt;ret.bottom=MaxInt*(-1);
 
-  bmp->Canvas->MoveTo(0,0); bmp->Canvas->LineTo(100,100);
-	bmp->Canvas->TextOutW(8,5,index);
+	//zjištění max oblasti
+	Cvektory::TElement *E=v.ELEMENTY->dalsi;
+	while(E!=NULL)
+	{
+		if(m.L2Px(E->geo.X1)<ret.left)ret.left=m.L2Px(E->geo.X1);
+		if(m.L2Px(E->geo.X1)>ret.right)ret.right=m.L2Px(E->geo.X1);
+		if(m.L2Py(E->geo.Y1)<ret.top)ret.top=m.L2Py(E->geo.Y1);
+		if(m.L2Py(E->geo.Y1)>ret.bottom)ret.bottom=m.L2Py(E->geo.Y1);
+		if(m.L2Px(E->geo.X4)<ret.left)ret.left=m.L2Px(E->geo.X4);
+		if(m.L2Px(E->geo.X4)>ret.right)ret.right=m.L2Px(E->geo.X4);
+		if(m.L2Py(E->geo.Y4)<ret.top)ret.top=m.L2Py(E->geo.Y4);
+		if(m.L2Py(E->geo.Y4)>ret.bottom)ret.bottom=m.L2Py(E->geo.Y4);
+		E=v.dalsi_krok(E);
+	}
+	delete E;E=NULL;
 
+	//výpočet nového Zoom
+	double MaxX=m.P2Lx(ret.right),MaxY=m.P2Ly(ret.top),MinX=m.P2Lx(ret.left),MinY=m.P2Ly(ret.bottom);
+	double rozdil=0,PD=0;
+	int PD_x=W;
+	int PD_y=H;
+	if(m.m2px(MaxX-MinX)>m.m2px(MaxY-MinY)){rozdil=m.m2px(MaxX-MinX);PD=PD_x;}
+	else {rozdil=m.m2px(MaxY-MinY);PD=PD_y;}
+	F->Zoom=abs(F->Zoom*PD/rozdil);
+	F->Zoom-=fmod(F->Zoom,0.05);
+
+  //opakování vyhledávání max oblasti, v prvotním vytváření bmp musí být provedeno 2x
+	ret.left=MaxInt;ret.right=MaxInt*(-1);
+	ret.top=MaxInt;ret.bottom=MaxInt*(-1);
+	E=v.ELEMENTY->dalsi;
+	while(E!=NULL)
+	{
+		if(m.L2Px(E->geo.X1)<ret.left)ret.left=m.L2Px(E->geo.X1);
+		if(m.L2Px(E->geo.X1)>ret.right)ret.right=m.L2Px(E->geo.X1);
+		if(m.L2Py(E->geo.Y1)<ret.top)ret.top=m.L2Py(E->geo.Y1);
+		if(m.L2Py(E->geo.Y1)>ret.bottom)ret.bottom=m.L2Py(E->geo.Y1);
+		if(m.L2Px(E->geo.X4)<ret.left)ret.left=m.L2Px(E->geo.X4);
+		if(m.L2Px(E->geo.X4)>ret.right)ret.right=m.L2Px(E->geo.X4);
+		if(m.L2Py(E->geo.Y4)<ret.top)ret.top=m.L2Py(E->geo.Y4);
+		if(m.L2Py(E->geo.Y4)>ret.bottom)ret.bottom=m.L2Py(E->geo.Y4);
+		E=v.dalsi_krok(E);
+	}
+	delete E;E=NULL;
+
+	//vykreslení cesty do pomocné bmp
+	vykresli_retez(bmp_pom->Canvas);
+	//zjištění posunu pro centrování obrazu ve výsledné bmp
+	Posun.x=(ret.right-ret.left-W)/2.0+1;
+	Posun.y=(ret.bottom-ret.top-H)/2.0+1;
+	//kopírování obrazu do výsledné bmp
+	bmp->Canvas->CopyRect(Rect(0,0,bmp->Width,bmp->Height),bmp_pom->Canvas,Rect(ret.left+Posun.x,ret.top+Posun.y,ret.left+Posun.x+bmp->Width/3.0,ret.top+Posun.y+bmp->Height/3.0));
+	//mazání pomocné bmp
+	delete(bmp_pom);
+  //AA
+	Cantialising a;
+	bmp=a.antialiasing(bmp);
+
+	//navrácení původního Zoomu
+	F->Zoom=z;
+
+  //vracení výsledné bmp
 	return bmp;
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------

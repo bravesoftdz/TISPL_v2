@@ -3,10 +3,9 @@ object Form_definice_zakazek: TForm_definice_zakazek
   Top = 0
   BorderIcons = []
   BorderStyle = bsNone
-  BorderWidth = 1
   Caption = 'Definice zak'#225'zek'
-  ClientHeight = 881
-  ClientWidth = 533
+  ClientHeight = 883
+  ClientWidth = 535
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clDefault
@@ -156,7 +155,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
-    Width = 533
+    Width = 535
     Height = 34
     Align = alTop
     TabOrder = 2
@@ -193,7 +192,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     WallpaperIndex = -1
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 483
+      Left = 485
       Top = 0
       Width = 50
       Height = 33
@@ -290,7 +289,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     object scLabel_header: TscLabel
       Left = 0
       Top = 0
-      Width = 433
+      Width = 435
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -323,7 +322,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     end
     object scGPGlyphButton_small: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 433
+      Left = 435
       Top = 0
       Width = 50
       Height = 33
@@ -539,6 +538,122 @@ object Form_definice_zakazek: TForm_definice_zakazek
     GroupIndex = 0
     AllowAllUp = False
   end
+  object scGPGlyphButton_add_zakazka: TscGPButton
+    Left = 168
+    Top = 370
+    Width = 36
+    Height = 36
+    Hint = 'Vytvo'#345'it zak'#225'zku'
+    Margins.Left = 0
+    Margins.Top = 0
+    Margins.Right = 0
+    Margins.Bottom = 0
+    Align = alCustom
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWhite
+    Font.Height = -27
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqAntialiased
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 8
+    OnClick = scGPButton1Click
+    ArrowPosition = scapBottom
+    Animation = True
+    Caption = '+'
+    CanFocused = False
+    CustomDropDown = True
+    Margin = -1
+    Spacing = 1
+    Layout = blGlyphTop
+    ImageIndex = -1
+    ImageMargin = 0
+    TransparentBackground = True
+    Options.NormalColor = 8404992
+    Options.HotColor = 8404992
+    Options.PressedColor = 8404992
+    Options.FocusedColor = clBtnFace
+    Options.DisabledColor = clBtnFace
+    Options.NormalColor2 = clNone
+    Options.HotColor2 = clNone
+    Options.PressedColor2 = clNone
+    Options.FocusedColor2 = clNone
+    Options.DisabledColor2 = clNone
+    Options.NormalColorAlpha = 60
+    Options.HotColorAlpha = 100
+    Options.PressedColorAlpha = 60
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 255
+    Options.NormalColor2Alpha = 255
+    Options.HotColor2Alpha = 255
+    Options.PressedColor2Alpha = 255
+    Options.FocusedColor2Alpha = 255
+    Options.DisabledColor2Alpha = 255
+    Options.FrameNormalColor = 8404992
+    Options.FrameHotColor = clHighlight
+    Options.FramePressedColor = clHighlight
+    Options.FrameFocusedColor = clHighlight
+    Options.FrameDisabledColor = clBtnShadow
+    Options.FrameWidth = 1
+    Options.FrameNormalColorAlpha = 0
+    Options.FrameHotColorAlpha = 0
+    Options.FramePressedColorAlpha = 0
+    Options.FrameFocusedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 0
+    Options.FontNormalColor = clBlack
+    Options.FontHotColor = clBtnText
+    Options.FontPressedColor = clBtnText
+    Options.FontFocusedColor = clBtnText
+    Options.FontDisabledColor = clBtnShadow
+    Options.ShapeFillStyle = scgpsfGradient
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeFillGradientPressedAngle = -90
+    Options.ShapeFillGradientColorOffset = 15
+    Options.ShapeCornerRadius = 10
+    Options.ShapeStyle = scgpRounded
+    Options.ArrowSize = 10
+    Options.ArrowAreaSize = 14
+    Options.ArrowType = scgpatDefault
+    Options.ArrowThickness = 2
+    Options.ArrowThicknessScaled = False
+    Options.StyleColors = True
+    HotImageIndex = -1
+    FocusedImageIndex = -1
+    PressedImageIndex = -1
+    UseGalleryMenuImage = False
+    UseGalleryMenuCaption = False
+    ScaleMarginAndSpacing = False
+    WidthWithCaption = 0
+    WidthWithoutCaption = 0
+    SplitButton = True
+    RepeatClick = False
+    RepeatClickInterval = 100
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clHighlight
+    GlowEffect.AlphaValue = 255
+    GlowEffect.GlowSize = 1
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    GlowEffect.HotColor = clNone
+    GlowEffect.PressedColor = clNone
+    GlowEffect.FocusedColor = clNone
+    GlowEffect.PressedGlowSize = 2
+    GlowEffect.PressedAlphaValue = 255
+    GlowEffect.States = [scsHot, scsPressed, scsFocused]
+    ImageGlow = True
+    DropDownMenu = PopupMenu1
+    ShowGalleryMenuFromTop = False
+    ShowGalleryMenuFromRight = False
+    ShowMenuArrow = True
+    ShowFocusRect = True
+    Down = False
+    GroupIndex = 0
+    AllowAllUp = False
+    OnDropDown = scGPButton1DropDown
+  end
   object scGPButton_storno: TscGPButton
     Left = 368
     Top = 370
@@ -711,101 +826,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
     OnKeyDown = FormKeyDown
     OnKeyUp = FormKeyUp
   end
-  object scGPGlyphButton_add_zakazka: TscGPGlyphButton
-    Left = 171
-    Top = 375
-    Width = 30
-    Height = 30
-    Hint = 'P'#345'idat novou zak'#225'zku'
-    Align = alCustom
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 8
-    TabStop = True
-    OnClick = scGPGlyphButton_add_zakazkaClick
-    Animation = False
-    Caption = 'scGPGlyphButton_add_zakazka'
-    CanFocused = True
-    CustomDropDown = False
-    Layout = blGlyphLeft
-    TransparentBackground = True
-    ColorValue = clRed
-    Options.NormalColor = clLime
-    Options.HotColor = clLime
-    Options.PressedColor = clLime
-    Options.FocusedColor = clBtnFace
-    Options.DisabledColor = clBtnText
-    Options.NormalColor2 = clNone
-    Options.HotColor2 = clNone
-    Options.PressedColor2 = clNone
-    Options.FocusedColor2 = clNone
-    Options.DisabledColor2 = clNone
-    Options.NormalColorAlpha = 225
-    Options.HotColorAlpha = 200
-    Options.PressedColorAlpha = 255
-    Options.FocusedColorAlpha = 255
-    Options.DisabledColorAlpha = 5
-    Options.NormalColor2Alpha = 255
-    Options.HotColor2Alpha = 255
-    Options.PressedColor2Alpha = 255
-    Options.FocusedColor2Alpha = 255
-    Options.DisabledColor2Alpha = 255
-    Options.FrameNormalColor = clLime
-    Options.FrameHotColor = clBtnText
-    Options.FramePressedColor = clLime
-    Options.FrameFocusedColor = clHighlight
-    Options.FrameDisabledColor = clBtnText
-    Options.FrameWidth = 1
-    Options.FrameNormalColorAlpha = 0
-    Options.FrameHotColorAlpha = 100
-    Options.FramePressedColorAlpha = 0
-    Options.FrameFocusedColorAlpha = 255
-    Options.FrameDisabledColorAlpha = 30
-    Options.FontNormalColor = clBtnText
-    Options.FontHotColor = clBtnText
-    Options.FontPressedColor = clBtnText
-    Options.FontFocusedColor = clBtnText
-    Options.FontDisabledColor = clBtnShadow
-    Options.ShapeFillGradientAngle = 90
-    Options.ShapeFillGradientPressedAngle = -90
-    Options.ShapeFillGradientColorOffset = 25
-    Options.ShapeCornerRadius = 1
-    Options.ShapeStyle = scgpRounded
-    Options.ArrowSize = 9
-    Options.ArrowAreaSize = 0
-    Options.ArrowType = scgpatDefault
-    Options.ArrowThickness = 2
-    Options.ArrowThicknessScaled = False
-    Options.StyleColors = True
-    GlyphOptions.NormalColor = clWhite
-    GlyphOptions.HotColor = clBtnText
-    GlyphOptions.PressedColor = clWhite
-    GlyphOptions.FocusedColor = clBtnText
-    GlyphOptions.DisabledColor = clBtnText
-    GlyphOptions.NormalColorAlpha = 200
-    GlyphOptions.HotColorAlpha = 255
-    GlyphOptions.PressedColorAlpha = 255
-    GlyphOptions.FocusedColorAlpha = 255
-    GlyphOptions.DisabledColorAlpha = 100
-    GlyphOptions.Kind = scgpbgkPlus
-    GlyphOptions.Thickness = 2
-    GlyphOptions.ThicknessScaled = False
-    GlyphOptions.Size = 0
-    GlyphOptions.StyleColors = True
-    TextMargin = -1
-    WidthWithCaption = 0
-    WidthWithoutCaption = 0
-    SplitButton = False
-    RepeatClick = False
-    RepeatClickInterval = 100
-    ShowGalleryMenuFromTop = False
-    ShowGalleryMenuFromRight = False
-    ShowMenuArrow = True
-    ShowFocusRect = True
-    Down = False
-    GroupIndex = 0
-    AllowAllUp = False
-  end
   object ColorDialog1: TColorDialog
     Left = 657
     Top = 822
@@ -824,5 +844,15 @@ object Form_definice_zakazek: TForm_definice_zakazek
     OnTimer = TimerMouseWheelTimer
     Left = 488
     Top = 368
+  end
+  object PopupMenu1: TPopupMenu
+    Left = 312
+    Top = 240
+    object N11: TMenuItem
+      Caption = 'Nov'#225' zak'#225'zka s hlavn'#237' cestou'
+    end
+    object N21: TMenuItem
+      Caption = 'Nov'#225' zak'#225'zka s cestou posledn'#237' zak'#225'zky'
+    end
   end
 end

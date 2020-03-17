@@ -27,6 +27,8 @@
 #include "scExtControls.hpp"
 #include "Unit1.h"
 #include <Vcl.ExtCtrls.hpp>
+#include "scStyleManager.hpp"
+#include <Vcl.Menus.hpp>
 //---------------------------------------------------------------------------
 class TForm_definice_zakazek : public TForm
 {
@@ -35,7 +37,6 @@ __published:	// IDE-managed Components
 	TrEditNum *rEditNum_effektivita;
 	TscGPButton *scGPButton2;
 	TButton *Button5;
-	TscGPGlyphButton *scGPGlyphButton_add_zakazka;
 	TscGPPanel *scGPPanel2;
 	TscGPGlyphButton *Konec;
   TscLabel *scLabel_header;
@@ -48,6 +49,10 @@ __published:	// IDE-managed Components
 	TTimer *TimerMouseWheel;
 	TEdit *Edit_for_Focus;
   TscGPGlyphButton *scGPGlyphButton_small;
+  TscGPButton *scGPGlyphButton_add_zakazka;
+  TPopupMenu *PopupMenu1;
+  TMenuItem *N11;
+  TMenuItem *N21;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall scGPGlyphButton4Click(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -72,6 +77,9 @@ __published:	// IDE-managed Components
           int X, int Y);
 	void __fastcall scLabel_headerMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
+  void __fastcall scGPGlyphButton_add_zakazkaDropDown(TObject *Sender);
+  void __fastcall scGPButton1DropDown(TObject *Sender);
+  void __fastcall scGPButton1Click(TObject *Sender);
 
 
 
@@ -115,7 +123,8 @@ public:		// User declarations
   void setButtonColor(long ID);
   void loadHeader(unsigned long zakazka_n=0,bool novy=true);
   enum Typ_buttonu {krizek_davky, krizek,color};
-  enum TAkce_obrazku {load,add,remove};
+	enum TAkce_obrazku {load,add,remove};
+	bool closing;//detekce kvùli hlavnímu formuláøi jinak volá tìlo formactivate hlavního formu
 
 	Typ_buttonu button_type;//zjisteni ktery button ma byt designovan
 
