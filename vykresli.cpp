@@ -2870,7 +2870,7 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 		if(F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->geo.typ==1)
 		{
 			double fRA=fabs(E->geo.rotacni_uhel);
-			short z=E->geo.rotacni_uhel/fRA;
+			short z=E->geo.rotacni_uhel/fRA;//záznam znaménka + či -
 			short pocet=fRA/15.0-1;if(pocet<2)pocet=2;//počet vykreslených vozíků automaticky volen dle velikosti rotačního úhlu
 			short clUroven=m.round(rozmezi*pocet+1);//rozmezí odstínu v RGB
 			DWORD pole[]={m.round(5/3.0*F->Zoom),m.round(2.5/3.0*F->Zoom),m.round(1/3.0*F->Zoom),m.round(2.5/3.0*F->Zoom)};//definice uživatelského pera s vlastní definovanou linii
@@ -2893,7 +2893,6 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 		}
 
 		////vykreslení POZIC na elementu + vzniklém buffru
-//toto zakomentované jenom provizorně z důvodu níže uvedeného vývoje - aby nebylo zavadějící
 		if(F->scGPCheckBox_zobrazit_pozice->Checked && pocet_pozic>0)
 		{
 			unsigned int pocet_voziku=E->data.pocet_voziku;
@@ -2909,9 +2908,7 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 			}
 		}
 
-
-//-----------------------------------------------------------------------
-//tady vývoj:
+		/////Úvodní rozmístění vozíků
 		if(F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked /*&& F->akt_Objekt==NULL*/ && v.vrat_druh_elementu(E)==0 && E->sparovany!=NULL/* && E->name=="Stop 1"&& E->n==1*/)//pro S&G který má spárovaný objekt
 		{
 			Cvektory::TElement *Et=E->dalsi;if(Et==NULL)Et=v.ELEMENTY->dalsi;//další, protože ten spravuje geometrii před sebou, tzn. od daného stop elementu, případně další kolo spojáku
@@ -2932,17 +2929,21 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 						if(!prvni)//první vozík se neřeší, je již vykreslen na stopce
 						{
 							TPointD_3D Pt=m.getPt(Et->geo.radius,Et->geo.orientace,Et->geo.rotacni_uhel,Et->geo.X1,Et->geo.Y1,Et->geo.X4,Et->geo.Y4,umisteni/Et->geo.delka/*F->smazat/100.0*/,(umisteni+v.PP.uchyt_pozice-v.PP.delka_podvozek/2.0)/Et->geo.delka);
-							//pořešit ještě rotaci jigu dle aktuální polohy kontinuální v otoči jinak ne
+							//pořešit ještě rotaci jigu dle aktuální polohy a taky na kontinuální otoči!!!
+//			double fRA=fabs(E->geo.rotacni_uhel);
+//			short z=E->geo.rotacni_uhel/fRA;//záznam znaménka + či -
+//			vykresli_jig(canv,geo[3].x,geo[3].y,dJ,sJ,orientaceP+i*-z,rotaceJ,clRed,0);
+
 							if(E->name=="Stop 1")vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu,m.clIntensive(clChassis,100),m.clIntensive(clJig,100));//tato podmínka, jenomu kvůli testům
 							else vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu,clChassis,clYellow/*clJig*/);
 						}
 						prvni=false;//první vozík již vyřešen, přepíše se při prvním průchodu
 						umisteni+=Rz;//navýšení umístění dle rozestup Rz
 					}
-					umisteni-=Et->geo.delka;//zbytek z předchzejícího geometrického úseku, který nestihl být zohledněn převeden na další geometrický úsek, resp. element = výchozí umístění v dalším elementu
-					//if(Et->eID==200)umisteni-=Et->WT*Et->pohon->aRD;//čekání na předávacím místě způsobí zpoždění/rozsunutí mezi vozíků
-					//pozici na novém pohonu přepočítat ze zbytkového umístění na starém do času a ten převést do vzdálenosti na novém a ještě odečíst WT, ale výše je chyba s aRD
-					if(Et->rotace_jig!=0 && -180<=Et->rotace_jig && Et->rotace_jig<=180)akt_rotace_jigu+=Et->rotace_jig;//zajištění aktuální rotace pro následující úsek
+					umisteni-=Et->geo.delka;//zbytek z předchzejícího geometrického úseku, který nestihl být zohledněn převeden na další geometrický úsek, resp. element = výchozí umístění v dalším elementu, případně zohlední i přechod na nový pohon (díky práci v jednotkách délky), pouze je následně nutné odečíst případné WT při přechodu
+					if(Et->eID==200)umisteni-=Et->WT*Et->pohon->aRD;//čekání na předávacím místě způsobí zpoždění/rozsunutí mezi vozíků
+					//zajištění aktuální rotace pro následující úsek
+					if(Et->rotace_jig!=0 && -180<=Et->rotace_jig && Et->rotace_jig<=180)akt_rotace_jigu+=Et->rotace_jig;
 				}
 				////ukazatelové záležitost
 				if(Et->dalsi==NULL)Et=v.ELEMENTY->dalsi;//další kolo spojáku
@@ -2958,6 +2959,7 @@ void Cvykresli::vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dJ
 {
 	//výchozí parametry
 	double Xp=X-v.PP.uchyt_pozice;//posunutí umístění vozíku o nastavení uchycení pozice
+  orientaceP=m.a360(orientaceP-180);//nově přídáno, vozík je při konstukci vykreslování vykresklován obráceně
 
 	//transparentní pozadí (nejenom textu ale ji podvozku a jigu) ALTERNATIVA pro font:SetBkMode(canv->Handle,TRANSPARENT);
 	canv->Brush->Style=bsClear;

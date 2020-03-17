@@ -2908,7 +2908,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//F8
 		case 119:ZOOM_OUT();break;
 		//F9
-		case 120:Button11->Visible!=Button11->Visible;break;
+		case 120:if(DEBUG){Button11->Visible!=Button11->Visible;Button14->Visible!=Button14->Visible;Invalidate();}break;
 		//F10
 		case 121:Invalidate();break;
 		//F11
@@ -15313,6 +15313,18 @@ void __fastcall TForm1::scGPCheckBox1_popiskyClick(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
+void __fastcall TForm1::scGPCheckBox_rozmisteni_vozikuClick(TObject *Sender)
+{
+	log(__func__);//logování
+	if(Akce==GEOMETRIE || Akce==NIC)
+	{    //doplnit
+//		if(scGPCheckBox1_popisky->Checked)zobrazit_popisky=1;
+//		else zobrazit_popisky=0;
+//		if(Akce==NIC)writeINI("nastaveni_editace","zobrazit_popisky",zobrazit_popisky);//ukládat do ini pouze mimo geometrii
+		REFRESH();
+	}
+}
+//---------------------------------------------------------------------------
 void __fastcall TForm1::scGPCheckBox_zobrazit_kolejeClick(TObject *Sender)
 {
 	log(__func__);//logování
@@ -15439,4 +15451,6 @@ void __fastcall TForm1::scGPButton_ulozit_cestuClick(TObject *Sender)
   scGPButton_storno_cestaClick(this);
 }
 //---------------------------------------------------------------------------
+
+
 

@@ -1,5 +1,3 @@
-//---------------------------------------------------------------------------
-
 #ifndef Unit1H
 #define Unit1H
 
@@ -326,7 +324,7 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton_smazat;
   TrHTMLHint *rHTMLHint1;
 	TscGPButton *scGPButton_geometrie;
-	TscGPCheckBox *scGPCheckBox1;
+	TscGPCheckBox *scGPCheckBox_rozmisteni_voziku;
 	TscGPButton *scGPButton_ulozit_cestu;
 	TscGPButton *scGPButton_storno_cesta;
 	TscGPButton *scGPGlyphButton_odstran_cestu;
@@ -551,6 +549,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPButton_geometrieClick(TObject *Sender);
 	void __fastcall scGPButton_storno_cestaClick(TObject *Sender);
 	void __fastcall scGPButton_ulozit_cestuClick(TObject *Sender);
+	void __fastcall scGPCheckBox_rozmisteni_vozikuClick(TObject *Sender);
 
 
 
@@ -771,9 +770,9 @@ public:		// User declarations
 	bool auto_settings_open;
 	int ID_tabulky;
 	TPointD puv_souradnice;//slouží k ukládání pùvodních souøadnic, napø. pøi posunu elementu
-  short zobrazit_pozice;
-  short rotace_jigu;
-  short zobrazit_popisky;
+	short zobrazit_pozice;
+	short rotace_jigu;
+	short zobrazit_popisky;
 	short zobrazit_koleje;
 	short zobrazit_palce;
 	bool zamek_layoutu;

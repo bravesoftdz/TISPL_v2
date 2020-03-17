@@ -2742,7 +2742,6 @@ object Form1: TForm1
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
-    ExplicitTop = 771
     object RzStatusPane3: TRzStatusPane
       Left = 207
       Top = 0
@@ -3538,7 +3537,6 @@ object Form1: TForm1
     HideControls = False
     Animation = False
     DisplayMode = scsvmOverlay
-    ExplicitHeight = 695
     object Image_knihovna_objektu: TImage
       Left = 0
       Top = 0
@@ -6926,7 +6924,6 @@ object Form1: TForm1
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
     OnOpened = scSplitView_OPTIONSOpened
-    ExplicitHeight = 695
     object pravyoption_nadpis: TscGPLabel
       Left = 1
       Top = 0
@@ -7008,7 +7005,7 @@ object Form1: TForm1
       object scGPCheckBox_zobrazit_koleje: TscGPCheckBox
         AlignWithMargins = True
         Left = 7
-        Top = 63
+        Top = 195
         Width = 239
         Height = 33
         Margins.Left = 7
@@ -7025,7 +7022,215 @@ object Form1: TForm1
         TabStop = True
         OnClick = scGPCheckBox_zobrazit_kolejeClick
         Animation = False
-        Caption = 'Zobrazit koleje dopravn'#237'ku'
+        Caption = 'Koleje dopravn'#237'ku'
+        CanFocused = True
+        Spacing = 1
+        Layout = blGlyphLeft
+        ImageIndex = -1
+        GlowEffect.Enabled = False
+        GlowEffect.Color = clHighlight
+        GlowEffect.AlphaValue = 95
+        GlowEffect.GlowSize = 7
+        GlowEffect.Offset = 0
+        GlowEffect.Intensive = True
+        GlowEffect.StyleColors = True
+        GlowEffect.HotColor = clNone
+        GlowEffect.PressedColor = clNone
+        GlowEffect.FocusedColor = clNone
+        GlowEffect.PressedGlowSize = 7
+        GlowEffect.PressedAlphaValue = 255
+        GlowEffect.States = [scsHot, scsPressed, scsFocused]
+        ImageGlow = True
+        DisabledFontColor = clNone
+        Options.NormalColor = clWindow
+        Options.HotColor = clWindow
+        Options.PressedColor = clWindow
+        Options.DisabledColor = clWindow
+        Options.NormalColorAlpha = 255
+        Options.HotColorAlpha = 255
+        Options.PressedColorAlpha = 200
+        Options.DisabledColorAlpha = 125
+        Options.FrameNormalColor = clBtnShadow
+        Options.FrameHotColor = clHighlight
+        Options.FramePressedColor = clHighlight
+        Options.FrameDisabledColor = clBtnShadow
+        Options.FrameWidth = 2
+        Options.FrameNormalColorAlpha = 255
+        Options.FrameHotColorAlpha = 255
+        Options.FramePressedColorAlpha = 255
+        Options.FrameDisabledColorAlpha = 255
+        Options.CheckMarkNormalColor = clWindowText
+        Options.CheckMarkHotColor = clWindowText
+        Options.CheckMarkPressedColor = clWindowText
+        Options.CheckMarkDisabledColor = clWindowText
+        Options.CheckMarkNormalColorAlpha = 255
+        Options.CheckMarkHotColorAlpha = 255
+        Options.CheckMarkPressedColorAlpha = 255
+        Options.CheckMarkDisabledColorAlpha = 125
+        Options.ShapeSize = 20
+        Options.CheckMarkThickness = 2
+        Options.StyleColors = True
+        OptionsChecked.NormalColor = clWindow
+        OptionsChecked.HotColor = clWindow
+        OptionsChecked.PressedColor = clWindow
+        OptionsChecked.DisabledColor = clWindow
+        OptionsChecked.NormalColorAlpha = 255
+        OptionsChecked.HotColorAlpha = 255
+        OptionsChecked.PressedColorAlpha = 200
+        OptionsChecked.DisabledColorAlpha = 125
+        OptionsChecked.FrameNormalColor = clBtnShadow
+        OptionsChecked.FrameHotColor = clHighlight
+        OptionsChecked.FramePressedColor = clHighlight
+        OptionsChecked.FrameDisabledColor = clBtnShadow
+        OptionsChecked.FrameWidth = 2
+        OptionsChecked.FrameNormalColorAlpha = 255
+        OptionsChecked.FrameHotColorAlpha = 255
+        OptionsChecked.FramePressedColorAlpha = 255
+        OptionsChecked.FrameDisabledColorAlpha = 255
+        OptionsChecked.CheckMarkNormalColor = clWindowText
+        OptionsChecked.CheckMarkHotColor = clWindowText
+        OptionsChecked.CheckMarkPressedColor = clWindowText
+        OptionsChecked.CheckMarkDisabledColor = clWindowText
+        OptionsChecked.CheckMarkNormalColorAlpha = 255
+        OptionsChecked.CheckMarkHotColorAlpha = 255
+        OptionsChecked.CheckMarkPressedColorAlpha = 255
+        OptionsChecked.CheckMarkDisabledColorAlpha = 125
+        OptionsChecked.ShapeSize = 20
+        OptionsChecked.CheckMarkThickness = 2
+        OptionsChecked.StyleColors = True
+        Checked = True
+        State = cbChecked
+        ScaleFrameWidth = True
+        ScaleCheckMarkThickness = True
+        ShowFocusRect = True
+        UseFontColorToStyleColor = False
+        ExplicitTop = 215
+      end
+      object scGPCheckBox_zobrazit_pozice: TscGPCheckBox
+        AlignWithMargins = True
+        Left = 7
+        Top = 129
+        Width = 239
+        Height = 33
+        Margins.Left = 7
+        Margins.Top = 0
+        Margins.Bottom = 0
+        Align = alTop
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -16
+        Font.Name = 'Roboto'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 1
+        TabStop = True
+        OnClick = scGPCheckBox_zobrazit_poziceClick
+        Animation = False
+        Caption = 'Pozice v buffrech'
+        CanFocused = True
+        Spacing = 1
+        Layout = blGlyphLeft
+        ImageIndex = -1
+        GlowEffect.Enabled = False
+        GlowEffect.Color = clHighlight
+        GlowEffect.AlphaValue = 95
+        GlowEffect.GlowSize = 7
+        GlowEffect.Offset = 0
+        GlowEffect.Intensive = True
+        GlowEffect.StyleColors = True
+        GlowEffect.HotColor = clNone
+        GlowEffect.PressedColor = clNone
+        GlowEffect.FocusedColor = clNone
+        GlowEffect.PressedGlowSize = 7
+        GlowEffect.PressedAlphaValue = 255
+        GlowEffect.States = [scsHot, scsPressed, scsFocused]
+        ImageGlow = True
+        DisabledFontColor = clNone
+        Options.NormalColor = clWindow
+        Options.HotColor = clWindow
+        Options.PressedColor = clWindow
+        Options.DisabledColor = clWindow
+        Options.NormalColorAlpha = 255
+        Options.HotColorAlpha = 255
+        Options.PressedColorAlpha = 200
+        Options.DisabledColorAlpha = 125
+        Options.FrameNormalColor = clBtnShadow
+        Options.FrameHotColor = clHighlight
+        Options.FramePressedColor = clHighlight
+        Options.FrameDisabledColor = clBtnShadow
+        Options.FrameWidth = 2
+        Options.FrameNormalColorAlpha = 255
+        Options.FrameHotColorAlpha = 255
+        Options.FramePressedColorAlpha = 255
+        Options.FrameDisabledColorAlpha = 255
+        Options.CheckMarkNormalColor = clWindowText
+        Options.CheckMarkHotColor = clWindowText
+        Options.CheckMarkPressedColor = clWindowText
+        Options.CheckMarkDisabledColor = clWindowText
+        Options.CheckMarkNormalColorAlpha = 255
+        Options.CheckMarkHotColorAlpha = 255
+        Options.CheckMarkPressedColorAlpha = 255
+        Options.CheckMarkDisabledColorAlpha = 125
+        Options.ShapeSize = 20
+        Options.CheckMarkThickness = 2
+        Options.StyleColors = True
+        OptionsChecked.NormalColor = clWindow
+        OptionsChecked.HotColor = clWindow
+        OptionsChecked.PressedColor = clWindow
+        OptionsChecked.DisabledColor = clWindow
+        OptionsChecked.NormalColorAlpha = 255
+        OptionsChecked.HotColorAlpha = 255
+        OptionsChecked.PressedColorAlpha = 200
+        OptionsChecked.DisabledColorAlpha = 125
+        OptionsChecked.FrameNormalColor = clBtnShadow
+        OptionsChecked.FrameHotColor = clHighlight
+        OptionsChecked.FramePressedColor = clHighlight
+        OptionsChecked.FrameDisabledColor = clBtnShadow
+        OptionsChecked.FrameWidth = 2
+        OptionsChecked.FrameNormalColorAlpha = 255
+        OptionsChecked.FrameHotColorAlpha = 255
+        OptionsChecked.FramePressedColorAlpha = 255
+        OptionsChecked.FrameDisabledColorAlpha = 255
+        OptionsChecked.CheckMarkNormalColor = clWindowText
+        OptionsChecked.CheckMarkHotColor = clWindowText
+        OptionsChecked.CheckMarkPressedColor = clWindowText
+        OptionsChecked.CheckMarkDisabledColor = clWindowText
+        OptionsChecked.CheckMarkNormalColorAlpha = 255
+        OptionsChecked.CheckMarkHotColorAlpha = 255
+        OptionsChecked.CheckMarkPressedColorAlpha = 255
+        OptionsChecked.CheckMarkDisabledColorAlpha = 125
+        OptionsChecked.ShapeSize = 20
+        OptionsChecked.CheckMarkThickness = 2
+        OptionsChecked.StyleColors = True
+        Checked = True
+        State = cbChecked
+        ScaleFrameWidth = True
+        ScaleCheckMarkThickness = True
+        ShowFocusRect = True
+        UseFontColorToStyleColor = False
+        ExplicitTop = 121
+      end
+      object scGPCheckBox_zobrazit_rotace_jigu_na_otocich: TscGPCheckBox
+        AlignWithMargins = True
+        Left = 7
+        Top = 96
+        Width = 239
+        Height = 33
+        Margins.Left = 7
+        Margins.Top = 0
+        Margins.Bottom = 0
+        Align = alTop
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -16
+        Font.Name = 'Roboto'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 2
+        TabStop = True
+        OnClick = scGPCheckBox_zobrazit_rotace_jigu_na_otocichClick
+        Animation = False
+        Caption = 'Zn'#225'zorn'#283'n'#237' rotace jig'#367
         CanFocused = True
         Spacing = 1
         Layout = blGlyphLeft
@@ -7108,210 +7313,6 @@ object Form1: TForm1
         ShowFocusRect = True
         UseFontColorToStyleColor = False
       end
-      object scGPCheckBox_zobrazit_pozice: TscGPCheckBox
-        AlignWithMargins = True
-        Left = 7
-        Top = 162
-        Width = 239
-        Height = 33
-        Margins.Left = 7
-        Margins.Top = 0
-        Margins.Bottom = 0
-        Align = alTop
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWhite
-        Font.Height = -16
-        Font.Name = 'Roboto'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 1
-        TabStop = True
-        OnClick = scGPCheckBox_zobrazit_poziceClick
-        Animation = False
-        Caption = 'Zobrazit pozice'
-        CanFocused = True
-        Spacing = 1
-        Layout = blGlyphLeft
-        ImageIndex = -1
-        GlowEffect.Enabled = False
-        GlowEffect.Color = clHighlight
-        GlowEffect.AlphaValue = 95
-        GlowEffect.GlowSize = 7
-        GlowEffect.Offset = 0
-        GlowEffect.Intensive = True
-        GlowEffect.StyleColors = True
-        GlowEffect.HotColor = clNone
-        GlowEffect.PressedColor = clNone
-        GlowEffect.FocusedColor = clNone
-        GlowEffect.PressedGlowSize = 7
-        GlowEffect.PressedAlphaValue = 255
-        GlowEffect.States = [scsHot, scsPressed, scsFocused]
-        ImageGlow = True
-        DisabledFontColor = clNone
-        Options.NormalColor = clWindow
-        Options.HotColor = clWindow
-        Options.PressedColor = clWindow
-        Options.DisabledColor = clWindow
-        Options.NormalColorAlpha = 255
-        Options.HotColorAlpha = 255
-        Options.PressedColorAlpha = 200
-        Options.DisabledColorAlpha = 125
-        Options.FrameNormalColor = clBtnShadow
-        Options.FrameHotColor = clHighlight
-        Options.FramePressedColor = clHighlight
-        Options.FrameDisabledColor = clBtnShadow
-        Options.FrameWidth = 2
-        Options.FrameNormalColorAlpha = 255
-        Options.FrameHotColorAlpha = 255
-        Options.FramePressedColorAlpha = 255
-        Options.FrameDisabledColorAlpha = 255
-        Options.CheckMarkNormalColor = clWindowText
-        Options.CheckMarkHotColor = clWindowText
-        Options.CheckMarkPressedColor = clWindowText
-        Options.CheckMarkDisabledColor = clWindowText
-        Options.CheckMarkNormalColorAlpha = 255
-        Options.CheckMarkHotColorAlpha = 255
-        Options.CheckMarkPressedColorAlpha = 255
-        Options.CheckMarkDisabledColorAlpha = 125
-        Options.ShapeSize = 20
-        Options.CheckMarkThickness = 2
-        Options.StyleColors = True
-        OptionsChecked.NormalColor = clWindow
-        OptionsChecked.HotColor = clWindow
-        OptionsChecked.PressedColor = clWindow
-        OptionsChecked.DisabledColor = clWindow
-        OptionsChecked.NormalColorAlpha = 255
-        OptionsChecked.HotColorAlpha = 255
-        OptionsChecked.PressedColorAlpha = 200
-        OptionsChecked.DisabledColorAlpha = 125
-        OptionsChecked.FrameNormalColor = clBtnShadow
-        OptionsChecked.FrameHotColor = clHighlight
-        OptionsChecked.FramePressedColor = clHighlight
-        OptionsChecked.FrameDisabledColor = clBtnShadow
-        OptionsChecked.FrameWidth = 2
-        OptionsChecked.FrameNormalColorAlpha = 255
-        OptionsChecked.FrameHotColorAlpha = 255
-        OptionsChecked.FramePressedColorAlpha = 255
-        OptionsChecked.FrameDisabledColorAlpha = 255
-        OptionsChecked.CheckMarkNormalColor = clWindowText
-        OptionsChecked.CheckMarkHotColor = clWindowText
-        OptionsChecked.CheckMarkPressedColor = clWindowText
-        OptionsChecked.CheckMarkDisabledColor = clWindowText
-        OptionsChecked.CheckMarkNormalColorAlpha = 255
-        OptionsChecked.CheckMarkHotColorAlpha = 255
-        OptionsChecked.CheckMarkPressedColorAlpha = 255
-        OptionsChecked.CheckMarkDisabledColorAlpha = 125
-        OptionsChecked.ShapeSize = 20
-        OptionsChecked.CheckMarkThickness = 2
-        OptionsChecked.StyleColors = True
-        Checked = False
-        ScaleFrameWidth = True
-        ScaleCheckMarkThickness = True
-        ShowFocusRect = True
-        UseFontColorToStyleColor = False
-      end
-      object scGPCheckBox_zobrazit_rotace_jigu_na_otocich: TscGPCheckBox
-        AlignWithMargins = True
-        Left = 7
-        Top = 96
-        Width = 239
-        Height = 33
-        Margins.Left = 7
-        Margins.Top = 0
-        Margins.Bottom = 0
-        Align = alTop
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWhite
-        Font.Height = -16
-        Font.Name = 'Roboto'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 2
-        TabStop = True
-        OnClick = scGPCheckBox_zobrazit_rotace_jigu_na_otocichClick
-        Animation = False
-        Caption = 'Zobrazit rotace jig'#367
-        CanFocused = True
-        Spacing = 1
-        Layout = blGlyphLeft
-        ImageIndex = -1
-        GlowEffect.Enabled = False
-        GlowEffect.Color = clHighlight
-        GlowEffect.AlphaValue = 95
-        GlowEffect.GlowSize = 7
-        GlowEffect.Offset = 0
-        GlowEffect.Intensive = True
-        GlowEffect.StyleColors = True
-        GlowEffect.HotColor = clNone
-        GlowEffect.PressedColor = clNone
-        GlowEffect.FocusedColor = clNone
-        GlowEffect.PressedGlowSize = 7
-        GlowEffect.PressedAlphaValue = 255
-        GlowEffect.States = [scsHot, scsPressed, scsFocused]
-        ImageGlow = True
-        DisabledFontColor = clNone
-        Options.NormalColor = clWindow
-        Options.HotColor = clWindow
-        Options.PressedColor = clWindow
-        Options.DisabledColor = clWindow
-        Options.NormalColorAlpha = 255
-        Options.HotColorAlpha = 255
-        Options.PressedColorAlpha = 200
-        Options.DisabledColorAlpha = 125
-        Options.FrameNormalColor = clBtnShadow
-        Options.FrameHotColor = clHighlight
-        Options.FramePressedColor = clHighlight
-        Options.FrameDisabledColor = clBtnShadow
-        Options.FrameWidth = 2
-        Options.FrameNormalColorAlpha = 255
-        Options.FrameHotColorAlpha = 255
-        Options.FramePressedColorAlpha = 255
-        Options.FrameDisabledColorAlpha = 255
-        Options.CheckMarkNormalColor = clWindowText
-        Options.CheckMarkHotColor = clWindowText
-        Options.CheckMarkPressedColor = clWindowText
-        Options.CheckMarkDisabledColor = clWindowText
-        Options.CheckMarkNormalColorAlpha = 255
-        Options.CheckMarkHotColorAlpha = 255
-        Options.CheckMarkPressedColorAlpha = 255
-        Options.CheckMarkDisabledColorAlpha = 125
-        Options.ShapeSize = 20
-        Options.CheckMarkThickness = 2
-        Options.StyleColors = True
-        OptionsChecked.NormalColor = clWindow
-        OptionsChecked.HotColor = clWindow
-        OptionsChecked.PressedColor = clWindow
-        OptionsChecked.DisabledColor = clWindow
-        OptionsChecked.NormalColorAlpha = 255
-        OptionsChecked.HotColorAlpha = 255
-        OptionsChecked.PressedColorAlpha = 200
-        OptionsChecked.DisabledColorAlpha = 125
-        OptionsChecked.FrameNormalColor = clBtnShadow
-        OptionsChecked.FrameHotColor = clHighlight
-        OptionsChecked.FramePressedColor = clHighlight
-        OptionsChecked.FrameDisabledColor = clBtnShadow
-        OptionsChecked.FrameWidth = 2
-        OptionsChecked.FrameNormalColorAlpha = 255
-        OptionsChecked.FrameHotColorAlpha = 255
-        OptionsChecked.FramePressedColorAlpha = 255
-        OptionsChecked.FrameDisabledColorAlpha = 255
-        OptionsChecked.CheckMarkNormalColor = clWindowText
-        OptionsChecked.CheckMarkHotColor = clWindowText
-        OptionsChecked.CheckMarkPressedColor = clWindowText
-        OptionsChecked.CheckMarkDisabledColor = clWindowText
-        OptionsChecked.CheckMarkNormalColorAlpha = 255
-        OptionsChecked.CheckMarkHotColorAlpha = 255
-        OptionsChecked.CheckMarkPressedColorAlpha = 255
-        OptionsChecked.CheckMarkDisabledColorAlpha = 125
-        OptionsChecked.ShapeSize = 20
-        OptionsChecked.CheckMarkThickness = 2
-        OptionsChecked.StyleColors = True
-        Checked = False
-        ScaleFrameWidth = True
-        ScaleCheckMarkThickness = True
-        ShowFocusRect = True
-        UseFontColorToStyleColor = False
-      end
       object scGPCheckBox1_popisky: TscGPCheckBox
         AlignWithMargins = True
         Left = 7
@@ -7332,7 +7333,7 @@ object Form1: TForm1
         TabStop = True
         OnClick = scGPCheckBox1_popiskyClick
         Animation = False
-        Caption = 'Zobrazit popisky prvk'#367
+        Caption = 'Popisky prvk'#367
         CanFocused = True
         Spacing = 1
         Layout = blGlyphLeft
@@ -7418,7 +7419,7 @@ object Form1: TForm1
       object scGPCheckBox_zobrazit_palce: TscGPCheckBox
         AlignWithMargins = True
         Left = 7
-        Top = 129
+        Top = 162
         Width = 239
         Height = 33
         Margins.Left = 7
@@ -7435,7 +7436,7 @@ object Form1: TForm1
         TabStop = True
         OnClick = scGPCheckBox_zobrazit_palceClick
         Animation = False
-        Caption = 'Zobrazit palce'
+        Caption = 'Palce '#345'et'#283'zu'
         CanFocused = True
         Spacing = 1
         Layout = blGlyphLeft
@@ -7511,16 +7512,18 @@ object Form1: TForm1
         OptionsChecked.ShapeSize = 20
         OptionsChecked.CheckMarkThickness = 2
         OptionsChecked.StyleColors = True
-        Checked = False
+        Checked = True
+        State = cbChecked
         ScaleFrameWidth = True
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
+        ExplicitTop = 129
       end
-      object scGPCheckBox1: TscGPCheckBox
+      object scGPCheckBox_rozmisteni_voziku: TscGPCheckBox
         AlignWithMargins = True
         Left = 7
-        Top = 195
+        Top = 63
         Width = 239
         Height = 33
         Margins.Left = 7
@@ -7536,9 +7539,9 @@ object Form1: TForm1
         ParentFont = False
         TabOrder = 5
         TabStop = True
-        OnClick = scGPCheckBox_zobrazit_poziceClick
+        OnClick = scGPCheckBox_rozmisteni_vozikuClick
         Animation = False
-        Caption = 'Zobrazit rozlo'#382'en'#237' voz'#237'k'#367
+        Caption = 'Rozm'#237'st'#283'n'#237' voz'#237'k'#367
         CanFocused = True
         Spacing = 1
         Layout = blGlyphLeft
@@ -7614,11 +7617,14 @@ object Form1: TForm1
         OptionsChecked.ShapeSize = 20
         OptionsChecked.CheckMarkThickness = 2
         OptionsChecked.StyleColors = True
-        Checked = False
+        Checked = True
+        State = cbChecked
         ScaleFrameWidth = True
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
+        ExplicitLeft = 9
+        ExplicitTop = 50
       end
     end
     object scExPanel_podklad: TscExPanel
@@ -7658,8 +7664,6 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  Podklad'
-      ExplicitLeft = 0
-      ExplicitTop = 29
       object scGPButton_adjustace: TscGPButton
         AlignWithMargins = True
         Left = 3
@@ -8703,8 +8707,6 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  N'#225'stroje'
-      ExplicitLeft = -2
-      ExplicitTop = 462
       object scGPButton_mereni_vzdalenost: TscGPButton
         AlignWithMargins = True
         Left = 3
@@ -8864,7 +8866,6 @@ object Form1: TForm1
     DisplayMode = scsvmOverlay
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
-    ExplicitHeight = 695
     object scButton_konec: TscButton
       Left = 0
       Top = 800
@@ -8958,7 +8959,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
-      ExplicitTop = 645
     end
     object scButton_otevrit: TscButton
       Left = 0
@@ -9239,7 +9239,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
-      ExplicitTop = 595
     end
     object scButton_report: TscButton
       Left = 0
@@ -9668,7 +9667,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
-      ExplicitTop = 545
     end
     object scButton_novy: TscButton
       Left = 0
@@ -10258,7 +10256,7 @@ object Form1: TForm1
     RepeatClickInterval = 100
     GlowEffect.Enabled = False
     GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 255
+    GlowEffect.AlphaValue = 175
     GlowEffect.GlowSize = 1
     GlowEffect.Offset = 0
     GlowEffect.Intensive = True
@@ -10283,7 +10281,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C0101180098088C0910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118009009900910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -11406,7 +11404,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01015400480AB00C30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01015400B40CB40C30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000002004000001002000000000000060
       0C00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

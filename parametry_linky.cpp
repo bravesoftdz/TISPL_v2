@@ -158,7 +158,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
       scGPNumericEdit_vyska_jig->Value=Form1->d.v.PP.vyska_jig*(1+999*Delkaunit);
 
       scGPTrackBar_uchyceni->MaxValue=Form1->d.v.PP.delka_podvozek*(1+999*Delkaunit);
-      scGPTrackBar_uchyceni->Value=Form1->d.v.PP.uchyt_pozice*(1+999*Delkaunit);
+			scGPTrackBar_uchyceni->Value=Form1->d.v.PP.uchyt_pozice*(1+999*Delkaunit);
       scGPTrackBar_uchyceni->Hint=scGPTrackBar_uchyceni->Value;
 
      // ShowMessage(Form1->d.v.PP.uchyt_pozice);
@@ -574,7 +574,7 @@ void TForm_parametry_linky::nacti_pohony ()
           scGPNumericEdit_sirka_jig->Enabled=false;
           scGPNumericEdit_vyska_jig->Enabled=false;
           scGPNumericEdit_delka_podvozek->Enabled=false;
-          scGPTrackBar_uchyceni->Enabled=false;
+					scGPTrackBar_uchyceni->Enabled=false;
 
          //pokud je pohon používán, nastavím mu podbarvení bunìk, krome nazvu - ten je možne vždy mìnit
 //          PL_mGrid->Cells[2][i].Background->Color= Form_parametry_linky->Color;
@@ -1082,10 +1082,11 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
 			Close();//musí tu být, protože Button_storno ukonèuje form pouze pøes modalresults a bez tohoto by se neukonèilo
 		 }
 	}
+	if(Key==122 && DEBUG){scGPTrackBar_uchyceni->Enabled=true;scGPTrackBar_uchyceni->Value=190;}//F11
 	if(Key==123)//F12
 	{
   // Button_save->Enabled=true;
-   //automatické vygenerování pohonù
+	 //automatické vygenerování pohonù
 	 if(DEBUG)
 	 {
 
@@ -2416,4 +2417,5 @@ void __fastcall TForm_parametry_linky::scGPNumericEdit_delka_podvozekChange(TObj
 	scGPTrackBar_uchyceni->MaxValue=scGPNumericEdit_delka_podvozek->Value;/*/(1+999*Delkaunit);  */
 }
 //---------------------------------------------------------------------------
+
 
