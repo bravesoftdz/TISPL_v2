@@ -6464,59 +6464,33 @@ void TForm1::vlozeni_editace_geometrie()
 		}
 	}
 
-	Cvektory::TElement *e_posledni=posledni_editovany_element;
 	////připnutí vedlejší větve na hlavní
-	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && (m.round2double(e_posledni->geo.X4,2)==m.round2double(e_posledni->dalsi->geo.X4,2) || m.round2double(e_posledni->geo.Y4,2)==m.round2double(e_posledni->dalsi->geo.Y4,2)))
+	if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->predchozi2==posledni_editovany_element && (m.round2double(posledni_editovany_element->geo.X4,2)==m.round2double(posledni_editovany_element->dalsi->geo.X4,2) || m.round2double(posledni_editovany_element->geo.Y4,2)==m.round2double(posledni_editovany_element->dalsi->geo.Y4,2)))
 	{
-		if(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel==e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=1)
+		if(m.Rt90(posledni_editovany_element->geo.orientace-posledni_editovany_element->geo.rotacni_uhel)==m.Rt90(posledni_editovany_element->dalsi->geo.orientace-posledni_editovany_element->dalsi->geo.rotacni_uhel) && m.delka(posledni_editovany_element->dalsi->geo.X4,posledni_editovany_element->dalsi->geo.Y4,posledni_editovany_element->geo.X4,posledni_editovany_element->geo.Y4)<=1)
 		{
 			double posun_x,posun_y;
 			//zjištění jednotlivých délek posunů
-			posun_x=-e_posledni->dalsi->geo.X4+e_posledni->geo.X4;
-			posun_y=-e_posledni->dalsi->geo.Y4+e_posledni->geo.Y4;
+			posun_x=-posledni_editovany_element->dalsi->geo.X4+posledni_editovany_element->geo.X4;
+			posun_y=-posledni_editovany_element->dalsi->geo.Y4+posledni_editovany_element->geo.Y4;
 
-			if(m.round2double(e_posledni->dalsi->geo.X4+posun_x,2)>=m.round2double(e_posledni->dalsi->geo.X1,2) && m.round2double(e_posledni->dalsi->geo.Y4+posun_y,2)>=m.round2double(e_posledni->dalsi->geo.Y1,2))
+			if(m.round2double(posledni_editovany_element->dalsi->geo.X4+posun_x,2)>=m.round2double(posledni_editovany_element->dalsi->geo.X1,2) && m.round2double(posledni_editovany_element->dalsi->geo.Y4+posun_y,2)>=m.round2double(posledni_editovany_element->dalsi->geo.Y1,2))
 			{
-				d.v.vloz_G_element(e_posledni->dalsi,0,e_posledni->dalsi->geo.X1,e_posledni->dalsi->geo.Y1,0,0,0,0,e_posledni->dalsi->geo.X4+posun_x,e_posledni->dalsi->geo.Y4+posun_y,e_posledni->dalsi->geo.orientace);
-				e_posledni->dalsi->X+=posun_x;
-				e_posledni->dalsi->Y+=posun_y;
-				d.v.vloz_G_element(e_posledni->dalsi->dalsi,0,e_posledni->dalsi->geo.X4+posun_x,e_posledni->dalsi->geo.Y4+posun_y,0,0,0,0,e_posledni->dalsi->dalsi->geo.X4,e_posledni->dalsi->dalsi->geo.Y4,e_posledni->dalsi->dalsi->geo.orientace);
+				d.v.vloz_G_element(posledni_editovany_element->dalsi,0,posledni_editovany_element->dalsi->geo.X1,posledni_editovany_element->dalsi->geo.Y1,0,0,0,0,posledni_editovany_element->dalsi->geo.X4+posun_x,posledni_editovany_element->dalsi->geo.Y4+posun_y,posledni_editovany_element->dalsi->geo.orientace);
+				posledni_editovany_element->dalsi->X+=posun_x;
+				posledni_editovany_element->dalsi->Y+=posun_y;
+				d.v.vloz_G_element(posledni_editovany_element->dalsi->dalsi,0,posledni_editovany_element->dalsi->geo.X4,posledni_editovany_element->dalsi->geo.Y4,0,0,0,0,posledni_editovany_element->dalsi->dalsi->geo.X4,posledni_editovany_element->dalsi->dalsi->geo.Y4,posledni_editovany_element->dalsi->dalsi->geo.orientace);
 			}
-			else if(e_posledni->geo.typ==0)
+			else if(posledni_editovany_element->geo.typ==0)
 			{
-				d.v.vloz_G_element(e_posledni,0,e_posledni->geo.X1,e_posledni->geo.Y1,0,0,0,0,e_posledni->geo.X4-posun_x,e_posledni->geo.Y4-posun_y,e_posledni->geo.orientace);
-				e_posledni->X-=posun_x;
-				e_posledni->Y-=posun_y;
-      }
-			REFRESH();
-			//zajištěni spojení
-//			if(e_posledni->geo.orientace==90 || e_posledni->geo.orientace==270)//horizontální linie
-//			{
-//				//prodloužení linie vedlejší větve
-//				d.v.vloz_G_element(e_posledni,0,e_posledni->geo.X1,e_posledni->geo.Y1,0,0,0,0,e_posledni->geo.X4-posun_x,e_posledni->geo.Y4,e_posledni->geo.orientace);
-//				e_posledni->X-=posun_x;
-//				//posun spojky, je-li to možné
-//				e_posledni=e_posledni->dalsi;
-//				if(e_posledni->geo.typ==0 && e_posledni->geo.delka>=0.5 && e_posledni->dalsi->geo.typ==0 && e_posledni->dalsi->geo.delka>=0.5)//pokud je vyhybka na liniovém úseku a je ji kam posunout
-//				{
-//					d.v.posun_element(e_posledni,posun_y,false,true);
-//				}
-//			}
-//			else//vertikální  linie
-//			{
-//				//prodloužení linie vedlejší větve
-//				d.v.vloz_G_element(e_posledni,0,e_posledni->geo.X1,e_posledni->geo.Y1,0,0,0,0,e_posledni->geo.X4,e_posledni->geo.Y4-posun_y,e_posledni->geo.orientace);
-//				e_posledni->Y-=posun_y;
-//				//posun spojky, je-li to možné
-//				e_posledni=e_posledni->dalsi;
-//				if(e_posledni->geo.typ==0 && e_posledni->geo.delka>=0.5 && e_posledni->dalsi->geo.typ==0 && e_posledni->dalsi->geo.delka>=0.5)//pokud je vyhybka na liniovém úseku a je ji kam posunout
-//				{
-//					d.v.posun_element(e_posledni,posun_x,false,true);
-//				}
-//			}
+				d.v.vloz_G_element(posledni_editovany_element,0,posledni_editovany_element->geo.X1,posledni_editovany_element->geo.Y1,0,0,0,0,posledni_editovany_element->geo.X4-posun_x,posledni_editovany_element->geo.Y4-posun_y,posledni_editovany_element->geo.orientace);
+				posledni_editovany_element->X-=posun_x;
+				posledni_editovany_element->Y-=posun_y;
+			}
 		}
 	}
 
+	//důvod uložit
 	nahled_ulozit(true);
 }
 //---------------------------------------------------------------------------
@@ -6535,8 +6509,82 @@ void TForm1::ukonceni_geometrie()
 			posledni_editovany_element->Y=posledni_editovany_element->geo.Y4;
 		}
 	}
+	Cvektory::TElement *e_posledni=akt_Objekt->element;
+	while(e_posledni!=NULL)
+	{
+		if(e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni)break;
+		e_posledni=d.v.dalsi_krok(e_posledni,akt_Objekt);
+	}
+	d.v.vymaz_seznam_VYHYBKY();//nutnost, může dojít k přerušení průchodu
 	//////vypnutí akce
 	if(!editace_textu)Akce=NIC;Akce_temp=NIC;//musí být ještě před refresh
+	////připnutí vedlejší větve na hlavní
+	Akce=BLOK;
+	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)==m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel) && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=1 && mrYes==MB("Chcete automaticky spojit geometrii?",MB_YESNO))
+	{
+		double posun_x,posun_y;
+		short orientace=e_posledni->geo.orientace;
+		//zjištění jednotlivých délek posunů
+		posun_x=-e_posledni->dalsi->geo.X4+e_posledni->geo.X4;
+		posun_y=-e_posledni->dalsi->geo.Y4+e_posledni->geo.Y4;
+
+		//zajištěni spojení
+		if(m.Rt90(e_posledni->geo.orientace+e_posledni->geo.rotacni_uhel)==90 || m.Rt90(e_posledni->geo.orientace+e_posledni->geo.rotacni_uhel)==270)//horizontální linie
+		{
+			if(m.round2double(e_posledni->dalsi->geo.X4+posun_x,2)>=m.round2double(e_posledni->dalsi->geo.X1,2))
+			{
+				d.v.vloz_G_element(e_posledni->dalsi,0,e_posledni->dalsi->geo.X1,e_posledni->dalsi->geo.Y1,0,0,0,0,e_posledni->dalsi->geo.X4+posun_x,e_posledni->dalsi->geo.Y4,e_posledni->dalsi->geo.orientace);
+				e_posledni->dalsi->X+=posun_x;
+		  	d.v.vloz_G_element(e_posledni->dalsi->dalsi,0,e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,0,0,0,0,e_posledni->dalsi->dalsi->geo.X4,e_posledni->dalsi->dalsi->geo.Y4,e_posledni->dalsi->dalsi->geo.orientace);
+			}
+			while(e_posledni->objekt_n==akt_Objekt->n)
+			{
+				if(e_posledni->eID==300){e_posledni=NULL;break;}//narazil sem na konec větve ukončení
+				if(e_posledni->geo.orientace==orientace && e_posledni->geo.typ==0)break;
+				e_posledni=e_posledni->predchozi;
+			}
+			if(e_posledni!=NULL)
+			{
+				d.v.vloz_G_element(e_posledni,e_posledni->geo.typ,e_posledni->geo.X1,e_posledni->geo.Y1,0,0,0,0,e_posledni->geo.X4,e_posledni->geo.Y4-posun_y,e_posledni->geo.orientace,e_posledni->geo.rotacni_uhel);
+				e_posledni->Y-=posun_y;
+				e_posledni=e_posledni->dalsi;
+				while(e_posledni->eID!=301)
+				{
+					d.v.vloz_G_element(e_posledni,e_posledni->geo.typ,e_posledni->geo.X1,e_posledni->geo.Y1-posun_y,e_posledni->geo.X2,e_posledni->geo.Y2-posun_y,e_posledni->geo.X3,e_posledni->geo.Y3-posun_y,e_posledni->geo.X4,e_posledni->geo.Y4-posun_y,e_posledni->geo.orientace,e_posledni->geo.rotacni_uhel,e_posledni->geo.radius,e_posledni->geo.delka);
+					e_posledni->Y-=posun_y;
+					e_posledni=e_posledni->dalsi;
+				}
+      }
+		}
+		else//vertikální  linie
+		{
+			if(m.round2double(e_posledni->dalsi->geo.Y4+posun_y,2)>=m.round2double(e_posledni->dalsi->geo.Y1,2))
+			{
+		  	d.v.vloz_G_element(e_posledni->dalsi,0,e_posledni->dalsi->geo.X1,e_posledni->dalsi->geo.Y1,0,0,0,0,e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4+posun_y,e_posledni->dalsi->geo.orientace);
+				e_posledni->dalsi->Y+=posun_y;
+		  	d.v.vloz_G_element(e_posledni->dalsi->dalsi,0,e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,0,0,0,0,e_posledni->dalsi->dalsi->geo.X4,e_posledni->dalsi->dalsi->geo.Y4,e_posledni->dalsi->dalsi->geo.orientace);
+			}
+			while(e_posledni->objekt_n==akt_Objekt->n)
+			{
+				if(e_posledni->eID==300){e_posledni=NULL;break;}//narazil sem na konec větve ukončení
+				if(e_posledni->geo.orientace==orientace && e_posledni->geo.typ==0)break;
+				e_posledni=e_posledni->predchozi;
+			}
+			if(e_posledni!=NULL)
+			{
+				d.v.vloz_G_element(e_posledni,e_posledni->geo.typ,e_posledni->geo.X1,e_posledni->geo.Y1,0,0,0,0,e_posledni->geo.X4-posun_x,e_posledni->geo.Y4,e_posledni->geo.orientace,e_posledni->geo.rotacni_uhel);
+				e_posledni->X-=posun_x;
+				e_posledni=e_posledni->dalsi;
+				while(e_posledni->eID!=301)
+				{
+					d.v.vloz_G_element(e_posledni,e_posledni->geo.typ,e_posledni->geo.X1-posun_x,e_posledni->geo.Y1,e_posledni->geo.X2-posun_x,e_posledni->geo.Y2,e_posledni->geo.X3-posun_x,e_posledni->geo.Y3,e_posledni->geo.X4-posun_x,e_posledni->geo.Y4,e_posledni->geo.orientace,e_posledni->geo.rotacni_uhel,e_posledni->geo.radius,e_posledni->geo.delka);
+					e_posledni->X-=posun_x;
+					e_posledni=e_posledni->dalsi;
+				}
+      }
+		}
+	}
+	e_posledni=NULL;delete e_posledni;
 	//////navrácení původních hodnot
 	AnsiString T;
 	if(T==0 || T=="")rotace_jigu=0;else rotace_jigu=1;
@@ -6565,12 +6613,13 @@ void TForm1::ukonceni_geometrie()
 	//kontrola zda následující geometrie navazuje na editovanou
 	if(akt_Objekt!=NULL && pom->dalsi!=NULL)
 	{
-		Cvektory::TElement *E1=d.v.vrat_posledni_element_objektu(akt_Objekt),*E2=pom->dalsi->element;
+		Cvektory::TElement *E1=d.v.vrat_posledni_element_objektu(akt_Objekt),*E2=E1->dalsi;
 		if(!(m.round2double(E1->geo.X4,2)==m.round2double(E2->geo.X1,2) && m.round2double(E1->geo.Y4,2)==m.round2double(E2->geo.Y1,2)))
 			zobraz_tip(ls->Strings[430]);//"Geometrie následujícího objektu nenavazuje, po uložení bude možné geometrii navázat"
 		E1=NULL;delete E1;
 		E2=NULL;delete E2;
 	}
+
 	//pokud existují výhybky může dojít v průběhu editace k umožnění nebo znemožnění přiřazovat pohon na vedlejší větev, tato metoda nastaví mGridy na výchozí
 	if(d.v.pocet_vyhybek>0)mGrid_on_mGrid();
 	//kontrola zda editací geometrie nedošlo ke změně
@@ -12746,22 +12795,14 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 	ret.left=MaxInt;ret.right=MaxInt*(-1);
 	ret.top=MaxInt;ret.bottom=MaxInt*(-1);
 
-	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-	while(E!=NULL)
+	Cvektory::TElement *E=akt_Objekt->element;
+	while(E!=NULL && E->objekt_n==akt_Objekt->n)
 	{
-		if(m.L2Px(E->geo.X1)<ret.left)ret.left=m.L2Px(E->geo.X1);
-		if(m.L2Px(E->geo.X1)>ret.right)ret.right=m.L2Px(E->geo.X1);
-		if(m.L2Py(E->geo.Y1)<ret.top)ret.top=m.L2Py(E->geo.Y1);
-		if(m.L2Py(E->geo.Y1)>ret.bottom)ret.bottom=m.L2Py(E->geo.Y1);
-		if(m.L2Px(E->geo.X4)<ret.left)ret.left=m.L2Px(E->geo.X4);
-		if(m.L2Px(E->geo.X4)>ret.right)ret.right=m.L2Px(E->geo.X4);
-		if(m.L2Py(E->geo.Y4)<ret.top)ret.top=m.L2Py(E->geo.Y4);
-		if(m.L2Py(E->geo.Y4)>ret.bottom)ret.bottom=m.L2Py(E->geo.Y4);
-		E=d.v.dalsi_krok(E);
+		//d.line(Canvas,0,0,m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
+		d.line(Canvas,0,0,m.L2Px(E->X),m.L2Py(E->Y));
+		E=E->dalsi;
 	}
-	delete E;E=NULL;
-
-	Canvas->Rectangle(ret.left,ret.top,ret.right,ret.bottom);
+	E=NULL;delete E;
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
