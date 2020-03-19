@@ -5019,6 +5019,21 @@ Cvektory::TCesta *Cvektory::obsahuje_segment_cesty_element(TElement *element,TZa
 		 if(C->Element==element){RET=C;break;}
 		 C=C->dalsi;
 	 }
+	 C=NULL;delete C;
+	 return RET;
+}
+//---------------------------------------------------------------------------
+//vrátí počet výskytů elementu v cestě zakázky
+unsigned int Cvektory::kolikrat_obsahuje_segment_cesty_element(TElement *element,TZakazka *zakazka)
+{
+	 unsigned int RET=0;
+	 TCesta *C=zakazka->cesta->dalsi;
+	 while(C!=NULL)
+	 {
+		 if(C->Element==element)RET++;
+		 C=C->dalsi;
+	 }
+	 delete C;C=NULL;
 	 return RET;
 }
 //---------------------------------------------------------------------------

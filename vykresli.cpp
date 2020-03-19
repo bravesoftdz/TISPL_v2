@@ -3084,6 +3084,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,doubl
 void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//přejmenovat
 {
 	TPoint *POLE=new TPoint[4];
+	unsigned int pocet_pruchodu=0;
 	Cvektory::TElement *E=v.ELEMENTY->dalsi;
 	while(E!=NULL)
 	{
@@ -3112,10 +3113,18 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 		//nastavení pera
 		if(F->Akce==F->TVORBA_CESTY && zakazka==NULL && v.obsahuje_segment_cesty_element(E,Form_definice_zakazek->Z_cesta))
 		{
-			RetezWidth=v.PP.sirka_podvozek/2.0+m.px2m(1/3.0*F->Zoom)+2*m.px2m(m.round(F->Zoom));
-			RetezWidth=m.m2px(RetezWidth);
+			pocet_pruchodu=v.kolikrat_obsahuje_segment_cesty_element(E,Form_definice_zakazek->Z_cesta);
+			if(pocet_pruchodu>0)
+			{
+				RetezWidth=v.PP.sirka_podvozek/2.0+m.px2m(1/3.0*F->Zoom)+2*m.px2m(m.round(F->Zoom));
+				RetezWidth=m.m2px(RetezWidth);
+			}
 		}
-		if(zakazka!=NULL && !v.obsahuje_segment_cesty_element(E,zakazka))clRetez=(TColor)RGB(200, 200, 200);
+		if(zakazka!=NULL)
+		{
+			pocet_pruchodu=v.kolikrat_obsahuje_segment_cesty_element(E,zakazka);
+			if(pocet_pruchodu==0)clRetez=(TColor)RGB(200, 200, 200);
+    }
 		set_pen(canv,clRetez,m.round(RetezWidth),PS_ENDCAP_SQUARE);
 		//vykreslení řetězu
 		canv->PolyBezier(POLE,3);
@@ -3137,29 +3146,29 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 		}
 
 		/////testy
-//		for(unsigned int i=1;i<=2;i++)
-//		{
-//			double X=E->geo.X1,Y=E->geo.Y1,typ=E->geo.typ,orientace=E->geo.orientace,rotacni_uhel=E->geo.rotacni_uhel,radius=E->geo.radius,delka=E->geo.delka;
-//			double o=v.PP.sirka_podvozek/2.0+m.px2m(1/3.0*F->Zoom)+m.px2m(m.round(2*F->Zoom*0.5));
-//			o=i*m.px2m(RetezWidth);
-//			//nastavení pera
-//			TColor b=clBlue;if(i==1)b=clGreen;  if(i==2)b=clRed;
-//			set_pen(canv,b,RetezWidth,PS_ENDCAP_SQUARE);
-//			//výpočet odsazení a souřadnic
-//			TPointD S1=m.rotace(o,180-orientace,90);
-//			TPointD S2=m.rotace(o,180-orientace,-90);
-//			short z=1;if(rotacni_uhel>0)z*=-1;
-//			double DR1=delka;if(typ==1)DR1=radius+o*z;//delka či radius
-//			double DR2=delka;if(typ==1)DR2=radius+o*z*-1;//delka či radius
-//			TPointD *PL1=m.getArcLine(X+S1.x,Y+S1.y,orientace,rotacni_uhel,DR1);
-//			TPointD *PL2=m.getArcLine(X+S2.x,Y+S2.y,orientace,rotacni_uhel,DR2);
-//			//samotné výkreslení obou parelelních kolejí
-//			if(F->scGPCheckBox_zobrazit_koleje->Checked)//pokud je v menu povoleno
-//			{
-//				//bezier(canv,PL1,3);
-//				bezier(canv,PL2,3);
-//			}
-//		}
+		if(pocet_pruchodu>1)
+		{
+	  	for(unsigned int i=2;i<=pocet_pruchodu;i++)
+			{
+				double o=(i-1)*m.px2m(RetezWidth);
+	  		//nastavení pera
+				TColor b=clBlue;if(i==2)b=clGreen; if(i==3)b=clRed;
+	  		set_pen(canv,b,RetezWidth,PS_ENDCAP_SQUARE);
+	  		//výpočet odsazení a souřadnic
+//				TPointD S1=m.rotace(o,180-E->geo.orientace,90);
+				short z=1;if(E->geo.rotacni_uhel>0)z*=-1;
+//				double DR1=E->geo.delka;if(E->geo.typ==1)DR1=E->geo.radius+o*z;//delka či radius
+//				TPointD *PL1=m.getArcLine(E->geo.X1+S1.x,E->geo.Y1+S1.y,E->geo.orientace,E->geo.rotacni_uhel,DR1);
+
+		  	TPointD S2=m.rotace(o,180-E->geo.orientace,-90);
+		  	double DR2=E->geo.delka;if(E->geo.typ==1)DR2=E->geo.radius+o*z*-1;//delka či radius
+		  	TPointD *PL2=m.getArcLine(E->geo.X1+S2.x,E->geo.Y1+S2.y,E->geo.orientace,E->geo.rotacni_uhel,DR2);
+
+				//samotné výkreslení obou parelelních kolejí
+//				bezier(canv,PL1,3);
+				bezier(canv,PL2,3);
+			}
+		}
 		/////konec testů
 
 		////ukazatelové záležitosti
@@ -5979,7 +5988,25 @@ void Cvykresli::vykresli_kurzor_cesta(TCanvas *canv,Cvektory::TElement *E)
 
 	  	set_pen(canv,clBlack,m.round(RetezWidth),PS_ENDCAP_SQUARE);
 			//vykreslení řetězu
-			if(!preskocit)canv->PolyBezier(POLE,3);
+			if(!preskocit)
+			{
+				canv->PolyBezier(POLE,3);
+				unsigned int pocet_pruchodu=v.kolikrat_obsahuje_segment_cesty_element(E,Form_definice_zakazek->Z_cesta);
+				if(pocet_pruchodu>0)
+				{
+					for(unsigned int i=1;i<=pocet_pruchodu;i++)
+	    		{
+	    			double o=i*m.px2m(RetezWidth);
+						TColor b=clBlue;if(i==1)b=clGreen; if(i==2)b=clRed;
+	    			set_pen(canv,b,RetezWidth,PS_ENDCAP_SQUARE);
+	    			short z=1;if(E->geo.rotacni_uhel>0)z*=-1;
+	    			TPointD S2=m.rotace(o,180-E->geo.orientace,-90);
+	    			double DR2=E->geo.delka;if(E->geo.typ==1)DR2=E->geo.radius+o*z*-1;//delka či radius
+	    			TPointD *PL2=m.getArcLine(E->geo.X1+S2.x,E->geo.Y1+S2.y,E->geo.orientace,E->geo.rotacni_uhel,DR2);
+	    			bezier(canv,PL2,3);
+	    		}
+				}
+			}
 			if(E->dalsi!=NULL && E->dalsi->eID==301 && E->dalsi->predchozi2==E)preskocit=true;
 			else preskocit=false;
 			if(E->eID==300)break;

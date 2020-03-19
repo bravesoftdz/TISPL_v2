@@ -550,6 +550,8 @@ __published:	// IDE-managed Components
 	void __fastcall scGPButton_storno_cestaClick(TObject *Sender);
 	void __fastcall scGPButton_ulozit_cestuClick(TObject *Sender);
 	void __fastcall scGPCheckBox_rozmisteni_vozikuClick(TObject *Sender);
+	void __fastcall scGPGlyphButton_odstran_cestuClick(TObject *Sender);
+	void __fastcall N21Click(TObject *Sender);
 
 
 

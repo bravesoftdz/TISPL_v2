@@ -638,6 +638,7 @@ public:
 	void vloz_segment_cesty(TZakazka *zakazka,TElement *element,TElement *sparovany,Tdata data);//do konkrétní zakázky vloží segment cesty, slouží pro kopírování zakázek
   void kopiruj_cestu_zakazky(TZakazka *original,TZakazka *kopie);//kopíruje cestu zakázky do jiné zakázky
 	TCesta *obsahuje_segment_cesty_element(TElement *element,TZakazka *zakazka);//ověří zda daný element je součástí cesty dané zakázky či nikoliv, pokud ano vrací ukazatel na daný segment cesty
+	unsigned int kolikrat_obsahuje_segment_cesty_element(TElement *element,TZakazka *zakazka);//vrátí počet výskytů elementu v cestě zakázky
 	TZakazka *obsahuje_segment_cesty_element(TElement *element);//ověří zda daný element je součástí cesty nějaké zakázky či nikoliv, pokud ano vrací ukazatel na danou zakázku
 	TCesta *vrat_segment_cesty(TZakazka *zakazka,TElement *element);//vrátí konkrétí segment cesty v zakázce, který obsahuje element
 	void vymaz_cestu_zakazky(TZakazka *zakazka);//vymaže celou cestu dané zakázky
