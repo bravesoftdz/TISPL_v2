@@ -1192,11 +1192,22 @@ short Cmy::get_intensity()
 	return(-3.6*F->scGPTrackBar_intenzita->Value+360);
 }
 /////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
 //vrátí černou pro světlé barvy a bílou pro tmavé barvy, používá se např. na volbu barvy textu s barevným pozadím
 TColor Cmy::getBlackOrWhiteInvert(TColor color)
 {
 	if(color>(TColor)RGB(128,128,128))return clBlack; else return clWhite; //ShowMessage("černá");else ShowMessage("bílá");
+}
+/////////////////////////////////////////////////////////////////////////////
+//vratí dle hodnoty input barvu z nadefinované barevné palety, v případě "přetečení barvy opakuje
+TColor getColorOfPalette(unsigned int input)
+{
+	switch(input%4)
+	{
+		case 0:return clBlack;break;
+		case 1:return TColor RGB(255,0,0);break;
+		case 2:return TColor RGB(0,255,0);break;
+		case 3:return TColor RGB(0,0,255);break;
+	}
 }
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////

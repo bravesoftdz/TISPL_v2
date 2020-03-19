@@ -105,6 +105,7 @@ class Cmy
 	TColor clIntensive(TColor C,short A);//+A  míra zesvětlení,  -A  míra ztmaveni, max hodnota 255, min hodnota -255
 	short get_intensity();//přepočítá hodnotu posuvníku intenzivity z menu nastavení na změnu barevné intenzivity při vykreslění objektů či elementů
 	TColor getBlackOrWhiteInvert(TColor color);//vrátí černou pro světlé barvy a bílou pro tmavé barvy, používá se např. na volbu barvy textu s barevným pozadím
+	TColor getColorOfPalette(unsigned int input);//vratí dle hodnoty input barvu z nadefinované barevné palety, v případě "přetečení barvy opakuje
 
 	protected:
 };

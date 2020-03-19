@@ -2816,8 +2816,9 @@ unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,int i,TPointD OD, TPointD 
 //vykresli pozic a obalových zón - doporučení přejmenovat metodu
 void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 {                                                                                                                                                                                                                                                                                                          //oblouk
-	if(F->scGPTrackBar_intenzita->Value>5 && F->scGPCheckBox_zobrazit_pozice->Checked && E->data.pocet_pozic>0 || (F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180) || F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->geo.typ==1)//pokud se má smysl algoritmem zabývat, pouze optimalizační podmínky
-	{
+	//provizorně
+	//if(F->scGPTrackBar_intenzita->Value>5 && F->scGPCheckBox_zobrazit_pozice->Checked && E->data.pocet_pozic>0 || (F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180) || F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->geo.typ==1)//pokud se má smysl algoritmem zabývat, pouze optimalizační podmínky
+	//{
 		////výchozí hodnoty
 		double orientaceP=E->geo.orientace;//bylo tady Rt90, proč? bylo tady také orientaceP=(E->geo.orientace-180);
 		unsigned int pocet_pozic=E->data.pocet_pozic;
@@ -2846,6 +2847,9 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 			case 270: y=0;  x=1;  break;
 		}
 
+  //provizorní podmínká, po odseparování generování vozíků tuto odstranit a vrátit na uvod metody zakomentovanou
+	if(F->scGPTrackBar_intenzita->Value>5 && F->scGPCheckBox_zobrazit_pozice->Checked && E->data.pocet_pozic>0 || (F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180) || F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->geo.typ==1)//pokud se má smysl algoritmem zabývat, pouze optimalizační podmínky
+	{
 		////vykreslení ROTACE pozic u otočí a elementů s otočemi
 		if(F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180)
 		{
@@ -2896,61 +2900,61 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 		if(F->scGPCheckBox_zobrazit_pozice->Checked && pocet_pozic>0)
 		{
 			unsigned int pocet_voziku=E->data.pocet_voziku;
+			TColor clChassisTemp=m.clIntensive(clPotencial,-50),clJigTemp=m.clIntensive(clPotencial,-70);//clChassis,clJig - původní barvy
 			//vykreslení jednoho vozíku či pozice, od zadu, aby byly vykresleny nejdříve pozice
-			if(pocet_voziku==1 && (m.Rt90(rotaceJ)==0 || m.Rt90(rotaceJ)==180) && v.PP.delka_podvozek<m.UDJ(rotaceJ))vykresli_vozik(canv,0,X,Y,dJ,sJ,orientaceP,rotaceJ,clChassis,clJig);//když je na stopce jenom jeden vozík a stejně se překrývají jigy
+			if(pocet_voziku==1 && (m.Rt90(rotaceJ)==0 || m.Rt90(rotaceJ)==180) && v.PP.delka_podvozek<m.UDJ(rotaceJ))vykresli_vozik(canv,0,X,Y,dJ,sJ,orientaceP,rotaceJ,clChassisTemp,clJigTemp);//když je na stopce jenom jeden vozík a stejně se překrývají jigy
 			else
 			{
 				for(unsigned int i=pocet_pozic-1;0<i+1;i--)//nutno zápis 0<i+1, jinak zamrzá!!!
 				{
 					if(i+1>pocet_voziku)vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,m.clIntensive(clPotencial,-50),clPotencial);//záměrně šedou jak podvozek tak JIG jako potenicální pozice
-					else vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,clChassis,clJig);
+					//tuto větev nutné také duplicitně použít do tvorby vozíků
+					else vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,clChassisTemp,clJigTemp);//vykresluje se tato větev pouze pro případ skrytí zobrazení vozíků, jinak by neměla význam, protože
 				}
 			}
 		}
+	}
 
-		/////Úvodní rozmístění vozíků
-		if(F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked /*&& F->akt_Objekt==NULL*/ && v.vrat_druh_elementu(E)==0 && E->sparovany!=NULL/* && E->name=="Stop 1"&& E->n==1*/)//pro S&G který má spárovaný objekt
+	/////úvodní rozmístění vozíků - bude odseparováno do tvorby vozíků
+	if(F->scGPTrackBar_intenzita->Value>5 && F->scGPCheckBox_rozmisteni_voziku->Checked && v.vrat_druh_elementu(E)==0 && E->sparovany!=NULL/* && E->name=="Stop 1"&& E->n==1*/)//pro S&G který má spárovaný objekt
+	{
+		Cvektory::TElement *Et=E->dalsi;if(Et==NULL)Et=v.ELEMENTY->dalsi;//další, protože ten spravuje geometrii před sebou, tzn. od daného stop elementu, případně další kolo spojáku
+		Cvektory::TElement *Esd=E->sparovany->dalsi;if(Esd==NULL)Et=v.ELEMENTY->dalsi;//případně  další kolo spojáku
+		double umisteni=0;//výchozí umístění vozíku
+		bool prvni=true;//první vozík se neřeší, je již vykreslen na stopce
+		double akt_rotace_jigu=rotaceJ;
+		while(Esd!=Et)//procházení cyklem od dalšího elementu daného stop elementů až po jeho spárovaný stop element
 		{
-			Cvektory::TElement *Et=E->dalsi;if(Et==NULL)Et=v.ELEMENTY->dalsi;//další, protože ten spravuje geometrii před sebou, tzn. od daného stop elementu, případně další kolo spojáku
-			Cvektory::TElement *Esd=E->sparovany->dalsi;if(Esd==NULL)Et=v.ELEMENTY->dalsi;//případně  další kolo spojáku
-			double umisteni=0;//výchozí umístění vozíku
-			bool prvni=true;//první vozík se neřeší, je již vykreslen na stopce
-			double akt_rotace_jigu=rotaceJ;
-			while(Esd!=Et)//procházení cyklem od dalšího elementu daného stop elementů až po jeho spárovaný stop element
+			////výpočetní a vykreslovací záležítosti
+			if(Et->pohon!=NULL)//pokud má element přiřazen pohon, jinak nemá smysl řešit
 			{
-				////výpočetní a vykreslovací záležítosti
-				if(Et->pohon!=NULL)//pokud má element přiřazen pohon, jinak nemá smysl řešit
+				double Rz=m.Rz(Et->pohon->aRD);//stanovený rozestup dle RD pohonu
+				double buffer_zona=0;if(Et->data.pocet_voziku>0)buffer_zona=Et->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;//délka [v metrech] buffrovácí zony, pokud je obsažena na daném elementu
+				//cyklické navýšení umístění dle rozestup Rz
+				while(umisteni<Et->geo.delka-buffer_zona)
 				{
-					double Rz=m.Rz(Et->pohon->aRD);//stanovený rozestup dle RD pohonu
-					double buffer_zona=0;if(Et->data.pocet_voziku>0)buffer_zona=Et->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;//délka [v metrech] buffrovácí zony, pokud je obsažena na daném elementu
-					//cyklické navýšení umístění dle rozestup Rz
-					while(umisteni<Et->geo.delka-buffer_zona)
+					if(!prvni)//první vozík se neřeší, je již vykreslen na stopce
 					{
-						if(!prvni)//první vozík se neřeší, je již vykreslen na stopce
-						{
-							TPointD_3D Pt=m.getPt(Et->geo.radius,Et->geo.orientace,Et->geo.rotacni_uhel,Et->geo.X1,Et->geo.Y1,Et->geo.X4,Et->geo.Y4,umisteni/Et->geo.delka/*F->smazat/100.0*/,(umisteni+v.PP.uchyt_pozice-v.PP.delka_podvozek/2.0)/Et->geo.delka);
-							//pořešit ještě rotaci jigu dle aktuální polohy a taky na kontinuální otoči!!!
-//			double fRA=fabs(E->geo.rotacni_uhel);
-//			short z=E->geo.rotacni_uhel/fRA;//záznam znaménka + či -
-//			vykresli_jig(canv,geo[3].x,geo[3].y,dJ,sJ,orientaceP+i*-z,rotaceJ,clRed,0);
-
-							if(E->name=="Stop 1")vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu,m.clIntensive(clChassis,100),m.clIntensive(clJig,100));//tato podmínka, jenomu kvůli testům
-							else vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu,clChassis,clYellow/*clJig*/);
-						}
-						prvni=false;//první vozík již vyřešen, přepíše se při prvním průchodu
-						umisteni+=Rz;//navýšení umístění dle rozestup Rz
+						TPointD_3D Pt=m.getPt(Et->geo.radius,Et->geo.orientace,Et->geo.rotacni_uhel,Et->geo.X1,Et->geo.Y1,Et->geo.X4,Et->geo.Y4,umisteni/Et->geo.delka/*F->smazat/100.0*/,(umisteni+v.PP.uchyt_pozice-v.PP.delka_podvozek/2.0)/Et->geo.delka);
+		//pořešit ještě rotaci jigu na kontinuální otoči!!!
+						//if(E->name=="Stop 1")
+						vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu,m.clIntensive(clChassis,100),m.clIntensive(clJig,100));//tato podmínka, jenomu kvůli testům
+						//else vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu,clChassis,clYellow/*clJig*/);
 					}
-					umisteni-=Et->geo.delka;//zbytek z předchzejícího geometrického úseku, který nestihl být zohledněn převeden na další geometrický úsek, resp. element = výchozí umístění v dalším elementu, případně zohlední i přechod na nový pohon (díky práci v jednotkách délky), pouze je následně nutné odečíst případné WT při přechodu
-					if(Et->eID==200)umisteni-=Et->WT*Et->pohon->aRD;//čekání na předávacím místě způsobí zpoždění/rozsunutí mezi vozíků
-					//zajištění aktuální rotace pro následující úsek
-					if(Et->rotace_jig!=0 && -180<=Et->rotace_jig && Et->rotace_jig<=180)akt_rotace_jigu+=Et->rotace_jig;
+					prvni=false;//první vozík již vyřešen, přepíše se při prvním průchodu
+					umisteni+=Rz;//navýšení umístění dle rozestup Rz
 				}
-				////ukazatelové záležitost
-				if(Et->dalsi==NULL)Et=v.ELEMENTY->dalsi;//další kolo spojáku
-				else Et=Et->dalsi;//další element
+				umisteni-=Et->geo.delka;//zbytek z předchzejícího geometrického úseku, který nestihl být zohledněn převeden na další geometrický úsek, resp. element = výchozí umístění v dalším elementu, případně zohlední i přechod na nový pohon (díky práci v jednotkách délky), pouze je následně nutné odečíst případné WT při přechodu
+		//ověřit
+				if(Et->eID==200)umisteni-=Et->WT*Et->pohon->aRD;//čekání na předávacím místě způsobí zpoždění/rozsunutí mezi vozíků
+				//zajištění aktuální rotace pro následující úsek
+				if(Et->rotace_jig!=0 && -180<=Et->rotace_jig && Et->rotace_jig<=180)akt_rotace_jigu+=Et->rotace_jig;
 			}
-			Et=NULL;delete Et;//odstranění již nepotřebného ukazatele, zde prvně nutné NULL!!!
+			////ukazatelové záležitost
+			if(Et->dalsi==NULL)Et=v.ELEMENTY->dalsi;//další kolo spojáku
+			else Et=Et->dalsi;//další element
 		}
+		Et=NULL;delete Et;//odstranění již nepotřebného ukazatele, zde prvně nutné NULL!!!
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -2959,7 +2963,7 @@ void Cvykresli::vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dJ
 {
 	//výchozí parametry
 	double Xp=X-v.PP.uchyt_pozice;//posunutí umístění vozíku o nastavení uchycení pozice
-  orientaceP=m.a360(orientaceP-180);//nově přídáno, vozík je při konstukci vykreslování vykresklován obráceně
+	orientaceP=m.a360(orientaceP-180);//nově přídáno, vozík je při konstukci totiž vykreslování vykresklován obráceně
 
 	//transparentní pozadí (nejenom textu ale ji podvozku a jigu) ALTERNATIVA pro font:SetBkMode(canv->Handle,TRANSPARENT);
 	canv->Brush->Style=bsClear;
