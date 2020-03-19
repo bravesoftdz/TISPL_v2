@@ -204,7 +204,6 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	//nastavení implicitního souboru
 	duvod_k_ulozeni=false;
 	zakazka_akt=NULL;
-	cesta_akt=NULL;
 	Novy_soubor();
 	volat_parametry_linky=false;
 
@@ -2613,6 +2612,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 	d.vykresli_halu(bmp_in->Canvas);
 	d.vykresli_vektory(bmp_in->Canvas);
 	if(Akce==GEOMETRIE)d.smart_kurzor(bmp_in->Canvas,posledni_editovany_element);
+	if(Akce==TVORBA_CESTY)d.kurzor_cesta(bmp_in->Canvas);
 	Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 	Cantialising a;
 	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
@@ -2734,6 +2734,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 				d.v.vytvor_obraz_DATA();
 			}
 			else if(Akce==GEOMETRIE && !editace_textu && TIP=="")zobraz_tip(ls->Strings[311]);
+			if(Akce==TVORBA_CESTY)N21Click(this);//odstranění úseku
 		}break;
 		//ENTER
 		case 13:
@@ -2830,6 +2831,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 				REFRESH(false);
 				d.v.vytvor_obraz_DATA();
 			}
+			if(Akce==TVORBA_CESTY)scGPGlyphButton_odstran_cestuClick(this);//smazání cesty
 		}break;
 		//PAGE UP
 		case 33:
@@ -3417,6 +3419,26 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
           	if(JID<=-11&&!editace_textu){if(scSplitView_LEFTTOOLBAR->Visible && scSplitView_LEFTTOOLBAR->Opened)DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=pom_element->geo.delka;if((DKunit==2||DKunit==3)&&pom_element->pohon!=NULL)editovany_text=editovany_text/pom_element->pohon->aRD;editovany_text=outDK(m.round2double(ms.MyToDouble(editovany_text),3));}//editace textu
 						if(JID>=11 && JID<=99){Akce_temp=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//offset kót
 					}break;
+					case TVORBA_CESTY:
+					{
+						if(pom_element_temp!=NULL)
+						{
+							bool vlozit=true;
+							while(pom_element_temp!=NULL)
+							{
+								if(vlozit)d.v.vloz_segment_cesty(Form_definice_zakazek->Z_cesta,pom_element_temp);
+								if(pom_element_temp->eID==300)break;
+								if(pom_element_temp->dalsi!=NULL && pom_element_temp->dalsi->eID==301 && pom_element_temp->dalsi->predchozi2==pom_element_temp)vlozit=false;
+								else vlozit=true;
+								pom_element_temp=pom_element_temp->dalsi;
+							}
+							pom_element_temp=NULL;
+						}
+						else
+						{
+              pan_create();//pro případ posunu obrazu bez akce PAN
+						}
+					}break;
 					case BLOK:Akce=NIC;break;//uvolnění blokace
 					default: break;
 				}
@@ -3505,6 +3527,7 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 				}
 			}break;
 		}
+		if(Akce==TVORBA_CESTY)scGPButton_ulozit_cestuClick(this);
 		Akce=NIC;Akce_temp=NIC;
 	}
 	else//jsem v náhledu
@@ -3527,7 +3550,7 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 			if(pom_vyhybka==NULL && akt_Objekt!=NULL){KonecClick(this);Akce=BLOK;}//blokace spuštění akce pan
 		}
 		if(Akce==GEOMETRIE)ukonceni_geometrie();
-	}     
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
@@ -4038,7 +4061,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			{
 				Cvektory::TElement *e_poslendi=posledni_editovany_element;
 				//pan_move při stisknutém levém tlačítku
-		  	if(stisknute_leve_tlacitko_mysi){pan_map(Canvas,X,Y);kurzor(pan_move);}else if(Screen->Cursor==pan_move)kurzor(standard);
+				if(stisknute_leve_tlacitko_mysi){pan_map(Canvas,X,Y);kurzor(pan_move);}else if(Screen->Cursor==pan_move)kurzor(standard);
 				//vykreslení spojnice mezi posledním editovaným elementem a dalším elementem v objektu (pokud existuje)
 				if(e_poslendi!=NULL && e_poslendi->dalsi!=NULL && e_poslendi->geo.X4!=e_poslendi->dalsi->geo.X1 && e_poslendi->geo.X4!=e_poslendi->dalsi->geo.X1)
 				{
@@ -4174,6 +4197,11 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			//algoritmus na ověřování zda se kurzor nachází na objektem (a může být tedy povoleno v pop-up menu zobrazení volby nastavit parametry) přesunut do metody mousedownclick, zde se to zbytečně volalo při každém posunu myši
 			break;
 		}
+		case TVORBA_CESTY:
+		{
+      if(stisknute_leve_tlacitko_mysi){pan_map(Canvas,X,Y);kurzor(pan_move);}else if(Screen->Cursor==pan_move)kurzor(standard);
+			else REFRESH();
+		}break;
 		default: break;
 	}
 	////akce nad akcemi
@@ -4345,6 +4373,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				break;
 			}
 			case GEOMETRIE:if(Akce_temp==NIC)pan_move_map();break;
+			case TVORBA_CESTY:if(Pan_bmp!=NULL)pan_move_map();break;
 			default: break;
 		}
 
@@ -5473,6 +5502,7 @@ void TForm1::ESC()
 		}break;
 		case GEOMETRIE:
 		case GEOMETRIE_LIGHT:scGPButton_geometrieClick(this);break;
+		case TVORBA_CESTY:scGPButton_storno_cestaClick(this);break;
 	}
 	pom_vyhybka=NULL;
 	proces_pom=NULL;
@@ -12791,7 +12821,13 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Form_definice_zakazek->Show();
+	Cvektory::TCesta *C=d.v.ZAKAZKY_temp->dalsi->cesta->dalsi; Memo3->Clear();
+	while(C!=NULL)
+	{
+		Memo(C->Element->name);
+		C=C->dalsi;
+	}
+	delete C;C=NULL;
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -15393,6 +15429,7 @@ void __fastcall TForm1::scGPButton_warningClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPButton_smazatClick(TObject *Sender)
 {
+	log(__func__);//logování
 	d.v.PP.raster.filename="";
 	d.v.PP.raster.resolution=0;
 	d.v.PP.raster.X=0;
@@ -15407,6 +15444,7 @@ void __fastcall TForm1::scGPButton_smazatClick(TObject *Sender)
 //přepínač geometrického zobrazení, pouze kóty né smartkurzor
 void __fastcall TForm1::scGPButton_geometrieClick(TObject *Sender)
 {
+	log(__func__);//logování
 	if(Akce!=GEOMETRIE_LIGHT)//zapnutí akce geometrie
 	{
 		Akce=GEOMETRIE_LIGHT;
@@ -15435,22 +15473,64 @@ void __fastcall TForm1::scGPButton_geometrieClick(TObject *Sender)
 
 void __fastcall TForm1::scGPButton_storno_cestaClick(TObject *Sender)
 {
+	log(__func__);//logování
 	Akce=NIC;
 	scGPButton_ulozit_cestu->Visible=false;
 	scGPButton_storno_cesta->Visible=false;
 	scGPGlyphButton_odstran_cestu->Visible=false;
-	Form_definice_zakazek->Show();
+	d.v.vymaz_cestu_zakazky(Form_definice_zakazek->Z_cesta);
+	delete Form_definice_zakazek->Z_cesta;Form_definice_zakazek->Z_cesta=NULL;
+	REFRESH();//odstranění vykreslení cesty z layoutu
+	Form_definice_zakazek->ShowModal();
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TForm1::scGPButton_ulozit_cestuClick(TObject *Sender)
 {
-	//uložit
-
-	//zavřít
-  scGPButton_storno_cestaClick(this);
+	log(__func__);//logování
+	Akce=NIC;
+	scGPButton_ulozit_cestu->Visible=false;
+	scGPButton_storno_cesta->Visible=false;
+	scGPGlyphButton_odstran_cestu->Visible=false;
+	REFRESH();//odstranění vykreslení cesty z layoutu
+	Form_definice_zakazek->ShowModal();
 }
 //---------------------------------------------------------------------------
-
-
+//zrušení celé cesty + začátek nové
+void __fastcall TForm1::scGPGlyphButton_odstran_cestuClick(TObject *Sender)
+{
+	log(__func__);//logování
+	d.v.inicializace_cesty(Form_definice_zakazek->Z_cesta);//smaže cestu a vytvoří hlavičku nové cesty
+	d.v.vloz_cestu_po_hlavni_vetvi(Form_definice_zakazek->Z_cesta,true);//vytvoří první usek cesty
+	REFRESH();
+}
+//---------------------------------------------------------------------------
+//smaže jen poslední úsek cesty
+void __fastcall TForm1::N21Click(TObject *Sender)
+{
+  log(__func__);//logování
+  //dojde k postupnému odmazávání dokud se nenrazí na začátek mazaného úseku
+	Cvektory::TCesta *C=Form_definice_zakazek->Z_cesta->cesta->predchozi,*smaz=NULL;
+	while(C!=NULL && C->n>0)
+	{
+		smaz=C;
+		C=C->predchozi;
+		C->dalsi=NULL;
+		Form_definice_zakazek->Z_cesta->cesta->predchozi=C;
+		delete smaz;smaz=NULL;
+		//kontrola zda nejsem na konci mazaného úseku, pokud ano přerušit cyklus
+		if(C->n==0 || C->n!=0 && C->Element->eID==300)break;
+	}
+	C=NULL;delete C;
+	//kontrola zda nebyl odmazán první usek cesty, tz. není žádná cesta
+	if(Form_definice_zakazek->Z_cesta->cesta->predchozi->n==0)
+	{
+    //dojde k vytvoření prvního úseku znova
+		d.v.inicializace_cesty(Form_definice_zakazek->Z_cesta);
+		d.v.vloz_cestu_po_hlavni_vetvi(Form_definice_zakazek->Z_cesta,true);
+  }
+	//překreslení
+	REFRESH();
+}
+//---------------------------------------------------------------------------
 

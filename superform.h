@@ -80,6 +80,7 @@ __published:	// IDE-managed Components
   void __fastcall scGPGlyphButton_add_zakazkaDropDown(TObject *Sender);
   void __fastcall scGPButton1DropDown(TObject *Sender);
   void __fastcall scGPButton1Click(TObject *Sender);
+	void __fastcall N21Click(TObject *Sender);
 
 
 
@@ -99,6 +100,7 @@ private:	// User declarations
 	void pan_move_map();
 	void mGrid_mimo_obraz(Cvektory::TZakazka *Z);
 	void vazat_posun();//upravý globální promìnnou posun, tak aby byl posun vázaný, tz. nelze posunout pravý konec tabulky dál než 5px od okraje formu
+	void ulozeni_dat_z_mGridu_a_delete();
 
 	enum Takce{NIC=0,PAN,PAN_MOVE,BLOK};Takce Akce;
 	bool pan_non_locked;
@@ -111,6 +113,7 @@ private:	// User declarations
 	short doba_neotaceni_mysi;
 	unsigned short int funkcni_klavesa;//uchovává stav poslední stisknuté funkèní klávesy
 	bool uz_posun;//slouží k indikaci, že uživatel posunul form
+	unsigned long akt_zakazka_n;//ukladání, která zakázka je zvolena jako aktuální
 
 
 public:		// User declarations
@@ -120,11 +123,12 @@ public:		// User declarations
 	void OnClick(long Tag,long ID,unsigned long Col,unsigned long Row);
 	void OnEnter(long Tag,unsigned long Col,unsigned long Row);
 	void OnChange(long Tag,long ID,unsigned long Col,unsigned long Row);
-  void setButtonColor(long ID);
-  void loadHeader(unsigned long zakazka_n=0,bool novy=true);
+	void setButtonColor(long ID);
+  void loadHeader(unsigned long zakazka_n=0,bool novy=true,bool hlavni_cesta=true);
   enum Typ_buttonu {krizek_davky, krizek,color};
 	enum TAkce_obrazku {load,add,remove};
 	bool closing;//detekce kvùli hlavnímu formuláøi jinak volá tìlo formactivate hlavního formu
+	Cvektory::TZakazka *Z_cesta;
 
 	Typ_buttonu button_type;//zjisteni ktery button ma byt designovan
 

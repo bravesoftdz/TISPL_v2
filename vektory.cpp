@@ -4692,12 +4692,19 @@ void Cvektory::smaz_temp_zakazku(unsigned long n)
 				{
 					ukaz->mGrid->scGPImageCollection->Images->Delete(i);
 				}
-				for(int i=ukaz->n;i<=int(ZAKAZKY_temp->predchozi->n-1);i++)
+				TZakazka *Z=ukaz;
+				while(Z!=NULL)
 				{
-					ukaz->mGrid->scGPImageCollection->Images->Add()->Bitmap=F->d.nacti_nahled(i);
+					ukaz->mGrid->scGPImageCollection->Images->Add()->Bitmap=F->d.nacti_nahled(Z);
+					Z=Z->dalsi;
 				}
+				delete Z;Z=NULL;
+//				for(int i=ukaz->n;i<=int(ZAKAZKY_temp->predchozi->n-1);i++)
+//				{
+//					ukaz->mGrid->scGPImageCollection->Images->Add()->Bitmap=F->d.nacti_nahled(i);
+//				}
 				//uprava indexů
-				TZakazka *Z=ukaz->dalsi;
+				Z=ukaz->dalsi;
 				unsigned long n=ukaz->n;
 				while(Z!=NULL)
 				{
@@ -4931,6 +4938,19 @@ void Cvektory::inicializace_cesty(TZakazka *zakazka)
 	hlavicka_cesta_zakazky(zakazka);
 }
 //---------------------------------------------------------------------------
+//vytvoří cestu po hlavní vetvi projektu, pokud je nastaveno po vyhybku vytvoří cestu po první výhybku (včetně)
+void Cvektory::vloz_cestu_po_hlavni_vetvi(TZakazka *zakazka,bool po_vyhybku)
+{
+	TElement *E=ELEMENTY->dalsi;
+	while(E!=NULL)
+	{
+		vloz_segment_cesty(zakazka,E);
+		if(po_vyhybku && E->eID==300)break;
+		E=E->dalsi;//po hlavní vetvi
+	}
+	E=NULL;delete E;
+}
+//---------------------------------------------------------------------------
 //do konkrétní zakázky vloží segment cesty
 void Cvektory::vloz_segment_cesty(TZakazka *zakazka,TElement *element)
 {
@@ -4965,6 +4985,30 @@ void Cvektory::vloz_segment_cesty(TZakazka *zakazka,TCesta *segment_cesty)
 	zakazka->cesta->predchozi=segment;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
 }
 //---------------------------------------------------------------------------
+//kopíruje cestu zakázky do jiné zakázky
+void Cvektory::kopiruj_cestu_zakazky(TZakazka *original,TZakazka *kopie)
+{
+	inicializace_cesty(kopie);//smazání staré a vložení hlavičky
+	TCesta *C=original->cesta->dalsi,*C_kop=NULL;
+	while(C!=NULL)
+	{
+		//vytvoření kopie cesty
+		C_kop=new TCesta;
+		C_kop->n=C->n;
+		kopiruj_data_elementu(C->data,C_kop->data);//kopiruj data
+		C_kop->Element=C->Element;
+		C_kop->sparovany=C->sparovany;
+		//zařazení kopie cesty do cílové zakázky
+		kopie->cesta->predchozi->dalsi=C_kop;
+		C_kop->predchozi=kopie->cesta->predchozi;
+		C_kop->dalsi=NULL;
+		kopie->cesta->predchozi=C_kop;
+    C_kop=NULL;delete C_kop;
+		C=C->dalsi;
+	}
+	delete C;C=NULL;
+}
+//---------------------------------------------------------------------------
 //ověří zda daný element je součástí cesty dané zakázky či nikoliv, pokud ano vrací ukazatel na daný segment
 Cvektory::TCesta *Cvektory::obsahuje_segment_cesty_element(TElement *element,TZakazka *zakazka)
 {
@@ -4975,6 +5019,21 @@ Cvektory::TCesta *Cvektory::obsahuje_segment_cesty_element(TElement *element,TZa
 		 if(C->Element==element){RET=C;break;}
 		 C=C->dalsi;
 	 }
+	 C=NULL;delete C;
+	 return RET;
+}
+//---------------------------------------------------------------------------
+//vrátí počet výskytů elementu v cestě zakázky
+unsigned int Cvektory::kolikrat_obsahuje_segment_cesty_element(TElement *element,TZakazka *zakazka)
+{
+	 unsigned int RET=0;
+	 TCesta *C=zakazka->cesta->dalsi;
+	 while(C!=NULL)
+	 {
+		 if(C->Element==element)RET++;
+		 C=C->dalsi;
+	 }
+	 delete C;C=NULL;
 	 return RET;
 }
 //---------------------------------------------------------------------------

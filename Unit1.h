@@ -550,6 +550,8 @@ __published:	// IDE-managed Components
 	void __fastcall scGPButton_storno_cestaClick(TObject *Sender);
 	void __fastcall scGPButton_ulozit_cestuClick(TObject *Sender);
 	void __fastcall scGPCheckBox_rozmisteni_vozikuClick(TObject *Sender);
+	void __fastcall scGPGlyphButton_odstran_cestuClick(TObject *Sender);
+	void __fastcall N21Click(TObject *Sender);
 
 
 
@@ -716,7 +718,6 @@ public:		// User declarations
 	Graphics::TBitmap *Pan_bmp;//kvùli mGridu jinak staèí private
 	//uklazatele
 	Cvektory::TZakazka *zakazka_akt;//aktuálnì zvolená zakázka
-	Cvektory::TCesta *cesta_akt;//ukládá aktuálnì tvoøenou cestu
 	Cvektory::TObjekt *pom,*pom_vyhybka,*akt_Objekt,*copyObjekt;
 	Cvektory::TElement *pom_element,*pom_element_temp,*posledni_editovany_element,*element_temp;//element_temp je nulován pøi každém pøejetí kurzoru používán na vìci kolem PM
 	TmGrid *PmG,*mGrid_knihovna;//ukazatel na mGridovou tabulku pohonu
