@@ -67,7 +67,7 @@ class Cvykresli
 	unsigned int vykresli_pozice(TCanvas *canv, int i, TPointD OD, TPointD DO,double delka, double delkaV,double sirkaV,double delkaP,double mezera,double akt_pozice=0);//zajišuje vykreslení pozic v layoutu + pøíprava konstrukce kdy nebudu chtít vykreslovat objekt vodorovnì, pouze bude nutné zajistit ještì rotaci pozic a podvozkù
 	void vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E);//vykresli pozic a obalovıch zón
 	void vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y,double Poffset=0,bool animace=false);///zajistí vykreslení øetìzz, XY -umístìní L zaèátek (støed dopravníku) objektu v metrech, Poffset - pozièní poloha, vıchozí poloha prvního vozíku/pozice v objektu (a vùèi tomuto objektu),mùe slouit na animaci èi návaznost v pøípadì layoutu, za zmínìní stojí lokální promìnná této metody KR, co je kalibrace øetìzu vùèi podvozku napø. 0 - støed, -DP/2 - zaèátek, DP/2 - konec, èi libovolnı v m od zaèátku podvozku
-	void vykresli_retez(TCanvas *canv);
+	void vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka=NULL);
 	void vykresli_retez(TCanvas *canv,Cvektory::TRetez *Retez);
 	void vykresli_koleje(TCanvas *canv,Cvektory::TElement *E);//vykreslení jednoho geometrického segmentu dvou párù kolejí
 	void vykresli_koleje(TCanvas *canv,double X,double Y,short typ,double orientace,double rotacni_uhel,double radius,double delka,TColor clKolej=(TColor)RGB(255,69,0));//vykreslení jednoho geometrického segmentu dvou párù kolejí
@@ -93,7 +93,7 @@ class Cvykresli
 	void vykresli_ikonu_textu(TCanvas *canv,int X,int Y,AnsiString Popisek="text",short stav=0);
 	void vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popisek="spojnice",short stav=0);
 	void vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popisek="komora",short typ=0,short stav=0,double orientace=90);//typ: -2 kurzor se sprchy, -1 kurzor bez sprchy, 0 ikona bez sprchy, 1 ikona se sprchou, stav: -1 disabled, 0 normál
-	Graphics::TBitmap *nacti_nahled(unsigned int index);//vytvoøí bmp pro zakázku
+	Graphics::TBitmap *nacti_nahled(Cvektory::TZakazka *zakazka);//vytvoøí bmp pro zakázku
 	void vypis_zpravy(TCanvas *canv);//metoda vypíše zprávy ze seznamu zpráv a zároveò uloí jejich citelné oblasti
 	void nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv);
 	void linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,int Width,TColor Color=clBlack,TPenStyle PenStyle=psSolid,TPenMode PenMode=pmCopy);
@@ -140,6 +140,9 @@ class Cvykresli
 	void vykresli_packy_PL(TCanvas *canv,TscGPButton *zamek_aRD,TscGPButton *zamek_R,TscGPButton *zamek_Rz,TscGPButton *zamek_Rx);
 	void vykresli_tip(TCanvas *canv);//zajišuje vykreslování-vypisování tool tipu
 	TPointD Rxy(Cvektory::TElement *Element);//vrátí referenèní logické (v metrech) souøadnice  robota (tzn. bod v místì trysky, tj. bod v místì umístìní ve schématu), pøevede dle aktuální rotace symbolu a uchopovacích (skuteènıch) souøadnic robota, kontroluje, zda se jedná skuteènì o Robota
+	void kurzor_cesta(TCanvas *canv);
+	void vykresli_kurzor_cesta(TCanvas *canv,Cvektory::TElement *E);
+	void vykresli_potencial_cesty(TCanvas *canv,Cvektory::TElement *E);
 
 	//globální public promìnné
 	TColor clStenaKabiny,clStenaHaly,clPasiv,clError,clWarning;

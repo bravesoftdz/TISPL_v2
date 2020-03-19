@@ -633,14 +633,16 @@ private:
 //metody pro cesta konkrétní zakázky
 public:
 	void inicializace_cesty(TZakazka *zakazka);//vymaže předchozí cestu a zavolá hlavičku cesty nové
+	void vloz_cestu_po_hlavni_vetvi(TZakazka *zakazka,bool po_vyhybku=false);//vytvoří cestu po hlavní vetvi projektu, pokud je nastaveno po vyhybku vytvoří cestu po první výhybku (včetně)
 	void vloz_segment_cesty(TZakazka *zakazka,TElement *element);//do konkrétní cesty vloží segmenty cesty
 	void vloz_segment_cesty(TZakazka *zakazka,TElement *element,TElement *sparovany,Tdata data);//do konkrétní zakázky vloží segment cesty, slouží pro kopírování zakázek
+  void kopiruj_cestu_zakazky(TZakazka *original,TZakazka *kopie);//kopíruje cestu zakázky do jiné zakázky
 	TCesta *obsahuje_segment_cesty_element(TElement *element,TZakazka *zakazka);//ověří zda daný element je součástí cesty dané zakázky či nikoliv, pokud ano vrací ukazatel na daný segment cesty
 	TZakazka *obsahuje_segment_cesty_element(TElement *element);//ověří zda daný element je součástí cesty nějaké zakázky či nikoliv, pokud ano vrací ukazatel na danou zakázku
 	TCesta *vrat_segment_cesty(TZakazka *zakazka,TElement *element);//vrátí konkrétí segment cesty v zakázce, který obsahuje element
+	void vymaz_cestu_zakazky(TZakazka *zakazka);//vymaže celou cestu dané zakázky
 private:
 	void hlavicka_cesta_zakazky(TZakazka *zakazka);//vytvoří novou hlavičku pro spojový seznam konkrétní cesty dané zakázky
-	void vymaz_cestu_zakazky(TZakazka *zakazka);//vymaže celou cestu dané zakázky
 	void vloz_segment_cesty(TZakazka *zakazka,TCesta *segment_cesty);//do konkrétní zakázky vloží segmenty cesty
 
 //metody pro VOZIKY

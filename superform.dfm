@@ -850,9 +850,11 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Top = 240
     object N11: TMenuItem
       Caption = 'Nov'#225' zak'#225'zka s hlavn'#237' cestou'
+      OnClick = scGPGlyphButton_add_zakazkaClick
     end
     object N21: TMenuItem
       Caption = 'Nov'#225' zak'#225'zka s cestou posledn'#237' zak'#225'zky'
+      OnClick = N21Click
     end
   end
 end

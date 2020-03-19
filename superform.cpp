@@ -34,7 +34,9 @@ __fastcall TForm_definice_zakazek::TForm_definice_zakazek(TComponent* Owner)
   zmena_TT = false;
   add_zakazka = false;
 	nacitam_zakazky = false;
-  uz_posun = false;
+	uz_posun = false;
+	Z_cesta = NULL;
+	akt_zakazka_n=0;
 }
 
 // ---------------------------------------------------------------------------
@@ -79,7 +81,7 @@ void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender)
   F->d.v.vytvor_default_zakazku(); // vytvoøí nebo aktualizuje defaultní zakázku
 
   ////naètení zakázek a cest
-  if (Form1->d.v.ZAKAZKY->dalsi == NULL) // kdyz je spojak prazdny
+	if (F->d.v.ZAKAZKY->dalsi == NULL && F->d.v.ZAKAZKY_temp == NULL ) // kdyz je spojak prazdny
   {
     // vytvoøí defaultní øadek se zakázkou a její cestou
 
@@ -95,10 +97,17 @@ void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender)
     loadHeader();
   }
   else // pokud je uloženo nìco v zakázkách tak je naètu
-  {
-    nacti_zakazky();
+	{
+		if(Z_cesta!=NULL)//pokud otevírám form po ukonèení editace cesty
+		{
+			F->d.v.kopiruj_cestu_zakazky(Z_cesta,F->d.v.vrat_temp_zakazku(Z_cesta->n));
+  		F->d.v.vymaz_cestu_zakazky(Z_cesta);
+			delete Z_cesta;Z_cesta=NULL;
+		}
+		nacti_zakazky();
     set_formHW_button_positions();
-  }
+	}
+
   volno = true;
 
 }
@@ -151,8 +160,8 @@ void TForm_definice_zakazek::uloz_Default_cestu()
 // naètení hotových zakázek, tato metoda je volána z FormShow(), pokud existují zakázky
 void TForm_definice_zakazek::nacti_zakazky()
 {
-  F->log(__func__); // logování
-	F->d.v.kopirujZAKAZKY2ZAKAZKY_temp();
+	F->log(__func__); // logování
+	if(F->d.v.ZAKAZKY_temp==NULL || (F->d.v.ZAKAZKY_temp!=NULL && F->d.v.ZAKAZKY_temp->dalsi==NULL))F->d.v.kopirujZAKAZKY2ZAKAZKY_temp();
   // pøekopíruje zakázky do temp zakázek, pro jejich editaci
   // procházení vytvoøených kopií zakázek a vytváøení jejich mGridù
   Cvektory::TZakazka *Z = F->d.v.ZAKAZKY_temp->dalsi;
@@ -185,13 +194,26 @@ void TForm_definice_zakazek::nacti_zakazky()
 	delete Z;Z=NULL;
 	nacitam_zakazky=false; // nutné??
 }
+// ---------------------------------------------------------------------------
 // TLAÈÍTKO ULOŽIT
 void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 {
 	F->log(__func__); // logování
-	unsigned long akt_zakazka_n=0;
   // naètení hodnot z tabulek mGridù do temp zakázek
   // mazání mgridù zakázek, dùležité, kopírování zakázek nesmaže mGridy ale odstraní zakázky temp ukazatel
+	ulozeni_dat_z_mGridu_a_delete();
+	// kopírování temp zakázek do ostrých zakázek
+	F->d.v.kopirujZAKAZKY_temp2ZAKAZKY();
+	F->d.v.vytvor_default_zakazku();//po kopírování zakázek dojkde ke smazání hlavièky
+	if(akt_zakazka_n!=0)F->zakazka_akt=F->d.v.vrat_zakazku(akt_zakazka_n);
+	else F->zakazka_akt=NULL;
+	F->DuvodUlozit(true);
+  // ukonèení formu a smazání temp zakázek
+  KonecClick(Sender);
+}
+// ---------------------------------------------------------------------------
+void TForm_definice_zakazek::ulozeni_dat_z_mGridu_a_delete()
+{
 	if (F->d.v.ZAKAZKY_temp != NULL)
 	{
 		//naèítání hodnot z tabulky do dat a mazání mGridu
@@ -222,21 +244,17 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 			if(Z->mGrid->getCheck(Z->mGrid->ColCount-1,0)->Checked)akt_zakazka_n=Z->n;
 			//smazání mGridu
 			Z->mGrid->Delete();
-      Z->mGrid = NULL;
-      Z = Z->dalsi;
-    }
+			Z->mGrid = NULL;
+			Z = Z->dalsi;
+		}
 		delete Z;Z=NULL;
 	}
-  // kopírování temp zakázek do ostrých zakázek
-	F->d.v.kopirujZAKAZKY_temp2ZAKAZKY();
-	F->d.v.vytvor_default_zakazku();//po kopírování zakázek dojkde ke smazání hlavièky
-	if(akt_zakazka_n!=0)F->zakazka_akt=F->d.v.vrat_zakazku(akt_zakazka_n);
-	else F->zakazka_akt=NULL;
-	F->DuvodUlozit(true);
-  // ukonèení formu a smazání temp zakázek
-  KonecClick(Sender);
+	//mazání bmp
+	for(int i=scGPImageCollection_layout->Count-1;i>=0;i--)
+	{
+    scGPImageCollection_layout->Images->Delete(i);
+  }
 }
-
 // ---------------------------------------------------------------------------
 // Zavøení formuláøe (storno a køížek je to samé)
 void __fastcall TForm_definice_zakazek::scGPGlyphButton4Click(TObject *Sender)
@@ -573,6 +591,13 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col, unsig
 		F->scGPGlyphButton_odstran_cestu->Visible=true;
 		//nastavení akce a uzavøení formu
 		F->Akce=F->TVORBA_CESTY;
+		Z_cesta=new Cvektory::TZakazka;
+		Z_cesta->cesta=NULL;
+		Z_cesta->n=Z->n;//uložení èísla zakázky, které je editovaná cesta
+		F->d.v.inicializace_cesty(Z_cesta);
+		F->d.v.vloz_cestu_po_hlavni_vetvi(Z_cesta,true);
+		//aktualizace parametrù z tabulky do ZAKAZEK_temp + mazání mgridù zakázek
+		ulozeni_dat_z_mGridu_a_delete();
 		closing=true;
 		Form_definice_zakazek->Close();
 	}
@@ -680,7 +705,7 @@ void TForm_definice_zakazek::setButtonColor(long ID)
   Z->mGrid->Update();
 }
 
-void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy)
+void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy,bool hlavni_cesta)
 {
   // if (novy || add_zakazka)
   {
@@ -695,7 +720,9 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy)
       F->d.v.vloz_temp_zakazku("id", 0, "Zakazka " + AnsiString(n), clBlack, 0, 0, J, 0, 0, 0);
 
       Z = F->d.v.ZAKAZKY_temp->predchozi;
-      F->d.v.inicializace_cesty(Z); // vytvoøí hlavièku cesty
+			F->d.v.inicializace_cesty(Z); // vytvoøí hlavièku cesty
+			if(hlavni_cesta)F->d.v.vloz_cestu_po_hlavni_vetvi(Z);//vytvoøení základní cesty
+			else if(Z->predchozi->n>0)F->d.v.kopiruj_cestu_zakazky(Z->predchozi,Z);else F->d.v.vloz_cestu_po_hlavni_vetvi(Z);//rozcestník zda kopírovat cestu nebo vytvoøit po hlavni vetvi
 			pocet_zakazek++;//=n;
       set_formHW_button_positions();
     }
@@ -792,12 +819,12 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy)
     setGlyphButtonDefault(0, 0, krizek, Z);
     setGlyphButtonDefault(1, 2, krizek_davky, Z);
 		//Z->mGrid->Cells[1][0].Align=Z->mGrid->LEFT;  // po slouèení pøijdu (add dávka) o text - proto zakomentováno
-		if(!novy && F->zakazka_akt!=NULL && F->zakazka_akt->n==Z->n)//pokud naèítám zakázky a existuje aktuální zakázka, která je totožná s právì naèítanou zakázkou, zaškrtnu checkbox
+		if(!novy && akt_zakazka_n!=0 && akt_zakazka_n==Z->n)//pokud naèítám zakázky a existuje aktuální zakázka, která je totožná s právì naèítanou zakázkou, zaškrtnu checkbox
 		{
 			Z->mGrid->getCheck(3,0)->Checked=true;
 		}
 		//pokud nenží žádná defaultní zakázka a je pøidávána první zakázka, pøiøadí ji jako aktuální
-		if(F->zakazka_akt==NULL && Z->n==1)Z->mGrid->getCheck(3,0)->Checked=true;
+		if(akt_zakazka_n==0 && Z->n==1)Z->mGrid->getCheck(3,0)->Checked=true;
     ////ukazatelové záležitosti
 		Z->mGrid->Refresh();
 
@@ -899,7 +926,7 @@ void TForm_definice_zakazek::set_formHW_button_positions()
 void TForm_definice_zakazek::GetImages(Cvektory::TZakazka *Z)
 {
 	Z->mGrid->scGPImageCollection=scGPImageCollection_layout;
-	Z->mGrid->scGPImageCollection->Images->Add()->Bitmap=F->d.nacti_nahled(Z->n);
+	Z->mGrid->scGPImageCollection->Images->Add()->Bitmap=F->d.nacti_nahled(Z);
   Z->mGrid->Cells[0][2].Type=Z->mGrid->IMAGE;
 	Z->mGrid->Cells[0][2].ImageIndex=Z->n-1;   //dynamicky plnit
 	Z->mGrid->Update();
@@ -1207,7 +1234,13 @@ ShowMessage("hello");
 
 void __fastcall TForm_definice_zakazek::scGPButton1Click(TObject *Sender)
 {
-loadHeader();
+	if(volno)loadHeader();
+}
+//---------------------------------------------------------------------------
+//pøi vkládání nové zakázky kopírování cesty staré zakázky
+void __fastcall TForm_definice_zakazek::N21Click(TObject *Sender)
+{
+	if(volno)loadHeader(0,true,false);
 }
 //---------------------------------------------------------------------------
 
