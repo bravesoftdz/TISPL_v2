@@ -2823,11 +2823,12 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 		////výchozí hodnoty
 		double orientaceP=E->geo.orientace;//bylo tady Rt90, proč? bylo tady také orientaceP=(E->geo.orientace-180);
 		unsigned int pocet_pozic=E->data.pocet_pozic;
-		double X=E->geo.X4;//Rxy(E).x;
-		double Y=E->geo.Y4;//Rxy(E).y;
+		double X=E->geo.X4;
+		double Y=E->geo.Y4;
+
 		double dJ=v.PP.delka_jig;//později nahradit ze zakázky
 		double sJ=v.PP.sirka_jig;//později nahradit ze zakázky
-		double rotaceJ=v.vrat_rotaci_jigu_po_predchazejicim_elementu(E);//metodu po přechodu na nový DM zaktulizovat o průchod přes spoják elementů
+		double rotaceJ=v.vrat_rotaci_jigu_po_predchazejicim_elementu(E);
 		short rozmezi=55;//pouze empiricky dodaná hodnota barevného rozpětí od první až po poslední pozici rotace, bylo 40
 		unsigned short clPotRGB=180;//hotnota barevných složek dle RGB potenciálních pozic
 		TColor clPotencial=(TColor) RGB(clPotRGB,clPotRGB,clPotRGB),clChassis=(TColor) RGB(50,50,50),clJig=clPurple;
@@ -2835,7 +2836,7 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 		if(F->akt_Objekt!=NULL && E->objekt_n!=F->akt_Objekt->n)//v případě editace změna intezity barev právě needitovaných objektů
 		{
 			clPotencial=m.clIntensive(clPotencial,I);if(I>5){clPotRGB=255-m.round((100-I)/4);rozmezi=0;}
-			clChassis=m.clIntensive(clChassis,I*2);clJig=m.clIntensive(clJig,I*4);//*2,*4 pouze empiricky dodáno
+			//toto neovlivňovat, je vždy přece stejné clChassis=m.clIntensive(clChassis,I*2);clJig=m.clIntensive(clJig,I*4);//*2,*4 pouze empiricky dodáno
 		}
 
 		////určení směru vykreslování pozic
@@ -2903,7 +2904,7 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 			unsigned int pocet_voziku=E->data.pocet_voziku;
 			TColor clChassisTemp=m.clIntensive(clPotencial,-50),clJigTemp=m.clIntensive(clPotencial,-70);//clChassis,clJig - původní barvy
 			//vykreslení jednoho vozíku či pozice, od zadu, aby byly vykresleny nejdříve pozice
-			if(pocet_voziku==1 && (m.Rt90(rotaceJ)==0 || m.Rt90(rotaceJ)==180) && v.PP.delka_podvozek<m.UDJ(rotaceJ))vykresli_vozik(canv,0,X,Y,dJ,sJ,orientaceP,rotaceJ,clChassisTemp,clJigTemp);//když je na stopce jenom jeden vozík a stejně se překrývají jigy
+			if(pocet_voziku==1 && (m.Rt90(rotaceJ)==0 || m.Rt90(rotaceJ)==180) && v.PP.delka_podvozek<m.UDJ(rotaceJ))vykresli_vozik(canv,0,X,Y,dJ,sJ,orientaceP,rotaceJ,clChassisTemp,clJigTemp);//když je na stopce jenom jeden vozík a stejně se překrývají jigy nezobrazuje se buffer, jinýmy slovy při této situaci se nepředpokládá, že má smysl zobrazovat buffer (jsou to např. stopky v lakování či stopky na robotech)
 			else
 			{
 				for(unsigned int i=pocet_pozic-1;0<i+1;i--)//nutno zápis 0<i+1, jinak zamrzá!!!
@@ -2922,7 +2923,7 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 		Cvektory::TElement *Et=E->dalsi;if(Et==NULL)Et=v.ELEMENTY->dalsi;//další, protože ten spravuje geometrii před sebou, tzn. od daného stop elementu, případně další kolo spojáku
 		Cvektory::TElement *Esd=E->sparovany->dalsi;if(Esd==NULL)Et=v.ELEMENTY->dalsi;//případně  další kolo spojáku
 		double umisteni=0;//výchozí umístění vozíku
-		bool prvni=true;//první vozík se neřeší, je již vykreslen na stopce
+		bool prvni=false;//true;//první vozík se neřeší, je již vykreslen na stopce  - ZMENA!!!
 		double akt_rotace_jigu=rotaceJ;
 		while(Esd!=Et)//procházení cyklem od dalšího elementu daného stop elementů až po jeho spárovaný stop element
 		{
@@ -2938,8 +2939,8 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 					{
 						TPointD_3D Pt=m.getPt(Et->geo.radius,Et->geo.orientace,Et->geo.rotacni_uhel,Et->geo.X1,Et->geo.Y1,Et->geo.X4,Et->geo.Y4,umisteni/Et->geo.delka/*F->smazat/100.0*/,(umisteni+v.PP.uchyt_pozice-v.PP.delka_podvozek/2.0)/Et->geo.delka);
 		//pořešit ještě rotaci jigu na kontinuální otoči!!!
-						//if(E->name=="Stop 1")
-						vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu,m.clIntensive(clChassis,100),m.clIntensive(clJig,100));//tato podmínka, jenomu kvůli testům
+						vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu,clChassis,clJig);
+						//if(E->name=="Stop 1")vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu,m.clIntensive(clChassis,100),m.clIntensive(clJig,100));//tato podmínka, jenomu kvůli testům
 						//else vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu,clChassis,clYellow/*clJig*/);
 					}
 					prvni=false;//první vozík již vyřešen, přepíše se při prvním průchodu
