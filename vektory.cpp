@@ -3029,9 +3029,9 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
   	double cas=0;
   	bool pokracovat=true,error=false;
 		unsigned int i=0;//počet průchodu skrze objekt Elementu
-		if(Cesta==NULL && F->zakazka_akt!=NULL)//pokud nejsou v datech elementu aktuální informace
+		if(Cesta==NULL && zakazka_akt!=NULL && zakazka_akt->n!=NULL)//pokud nejsou v datech elementu aktuální informace
 		{
-			Cesta=vrat_segment_cesty(F->zakazka_akt,Element);
+			Cesta=vrat_segment_cesty(zakazka_akt,Element);
 			if(Cesta!=NULL)Element->data=Cesta->data;
 		}
 		//TObjekt *O=vrat_objekt(Element->objekt_n);
@@ -4852,6 +4852,21 @@ void Cvektory::kopirujZAKAZKY2ZAKAZKY_temp()
 	Z=NULL;delete Z;
 }
 //---------------------------------------------------------------------------
+//aktualizuje cestu aktuální zakázy, pokud je zvolena, pokud ne aktualizuje defaultní zakázku
+void Cvektory::update_akt_zakazky()
+{
+ //kontrola zda je zvolená uživatelská zakázka nebo jde o defaultní zakázku
+ if(zakazka_akt==NULL || zakazka_akt!=NULL && zakazka_akt->n==0)
+ {
+	 vytvor_default_zakazku();//jde o default zakázku, proběhne její aktualizace
+   zakazka_akt=ZAKAZKY;
+ }
+ else
+ {
+	 //aktualizace aktuální uživatelské zakázky
+ }
+}
+//---------------------------------------------------------------------------
 //pokud první zakázka neexistuje, založí ji a přiřadí ji cestu dle schématu, pokud existuje, tak ji smaže a nahradí novou
 void Cvektory::vytvor_default_zakazku()
 {
@@ -4860,6 +4875,7 @@ void Cvektory::vytvor_default_zakazku()
 	if(ZAKAZKY->dalsi==NULL)//pokud první zakázka neexistuje, založí ji
 	{																																				//počet vozíků vygeneruje dle hodnoty WIP+jeden navíc kvůli přehlednosti, kdy začíná náběh
 		Z->id=1;Z->typ=1;Z->name="Nová zakázka";Z->barva=clRed;Z->pomer=100;Z->TT=PP.TT;Z->pocet_voziku=WIP(1)+1;Z->serv_vozik_pocet=0;Z->opakov_servis=0;
+		Z->n==0;
 		Z->cesta=NULL;
 		Cvektory::TJig j;
 		j.sirka=F->d.v.PP.sirka_jig;j.delka=F->d.v.PP.delka_jig;j.vyska=F->d.v.PP.vyska_jig;j.ks=1;//defaultní hodnoty jigu
@@ -4869,16 +4885,7 @@ void Cvektory::vytvor_default_zakazku()
 
 	////CESTA
 	inicializace_cesty(Z);//vymaže předchozí cestu a zavolá hlavičku cesty nové
-	//procházení elementů po hlavní větvi schématu a vytovoření cesty pro default zakázku
-	TElement *E=ELEMENTY->dalsi;
-	while(E!=NULL)
-	{
-		vloz_segment_cesty(Z,E);
-		E=E->dalsi;
-	}
-	//uakazatelové záležitosti
-	delete E;E=NULL;
-
+	vloz_cestu_po_hlavni_vetvi(Z);//vloží cestu po hlavní větvi
 	////Dávky
 	inicializace_davek(Z);//vymaže předchozí dávky a zavolá hlavičku cesty nové
 	Z=NULL;delete Z;
@@ -6132,7 +6139,7 @@ void Cvektory::vytvor_hlavicku_souboru()
 	File_hlavicka.radius=PP.radius;
 	//stav ikony  TODO ROSTA dodelat
 	//File_hlavicka.objekt_posunout_vse
-	if(F->zakazka_akt!=NULL)File_hlavicka.zakazka_akt=F->zakazka_akt->n;
+	if(zakazka_akt!=NULL)File_hlavicka.zakazka_akt=zakazka_akt->n;
 	else File_hlavicka.zakazka_akt=0;
 }
 //---------------------------------------------------------------------------
