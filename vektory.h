@@ -536,7 +536,7 @@ class Cvektory
 	void vloz_G_element(TElement *Element,short typ,double X1,double Y1,double X2,double Y2,double X3,double Y3,double X4,double Y4,double orientace=0,double rotacni_uhel=0,double radius=0,double delka=0);//danému elementu přiřadí/naplní geometrickou složku
 	void uprav_popisky_elementu(TElement *Element);//upraví indexy a popisky elementů po vloženém elementu (parametr Element), pokud dostane parametrem Element NULL přejmenuje a přeindexuje všechny ovlovněné elementy do původního stavu (tlačítko storno)
 	void kopiruj_element(TElement *Original, TElement *Kopie);//zkopíruje atributy elementu bez ukazatelového propojení, pouze ukazatelové propojení na mGrid je zachováno
-	void kopiruj_data_elementu(Tdata Original,Tdata Kopie);//zkopíruje atributy dat, slouží pro zakládání cesty v zakázce
+	void kopiruj_data_elementu(Tdata Original,TCesta *cesta);//zkopíruje atributy dat, slouží pro zakládání cesty v zakázce, musí být řešeno přes cestu!!!!!! ne Tdata Original, Tdata Kopie
 	void aktualizace_prirazeni_pohonu_k_elementum(unsigned int oldN,unsigned int newN);//všem elementům, které měly přiřazen pohon s oldN(oldID), přiřadí pohon s newN(newID), podle toho, jak jsou ukládány nově do spojáku, důležité, pokud dojde k narušení pořadí ID resp n pohonů a pořadí jednotlivých řádků ve stringridu, např. kopirováním, smazáním, změnou pořadí řádků atp.
 	void vytvor_elementarni_osu(TObjekt *Original, TObjekt  *Kopie);//SMAZAT??připraví vektor provizorní osy pohonu
 	int vrat_eID_prvniho_pouziteho_robota(TObjekt *Objekt);//vratí eID prvního použitého robota, slouží na filtrování, jaké roboty v knihovně robotů zakazazovat, pokud není nic nalezeno vrátí -1

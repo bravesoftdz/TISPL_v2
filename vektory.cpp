@@ -2285,21 +2285,21 @@ void Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->sparovany=Original->sparovany;
 }
 ////---------------------------------------------------------------------------
-//zkopíruje atributy dat, slouží pro zakládání cesty v zakázce
-void Cvektory::kopiruj_data_elementu(Tdata Original,Tdata Kopie)
+//zkopíruje atributy dat, slouží pro zakládání cesty v zakázce, musí být řešeno přes cestu!!!!!! ne Tdata Original, Tdata Kopie
+void Cvektory::kopiruj_data_elementu(Tdata Original,TCesta *Cesta)
 {
-	Kopie.PD=Original.PD;
-	Kopie.orientace_jig_pred=Original.orientace_jig_pred;
-	Kopie.LO1=Original.LO1;
-	Kopie.LO2=Original.LO2;
-	Kopie.LO_pozice=Original.LO_pozice;
-	Kopie.PT1=Original.PT1;
-	Kopie.PT2=Original.PT2;
-	Kopie.WTstop=Original.WTstop;
-	Kopie.RT.x=Original.RT.x;
-	Kopie.RT.y=Original.RT.y;
-	Kopie.pocet_pozic=Original.pocet_pozic;
-	Kopie.pocet_voziku=Original.pocet_voziku;
+	Cesta->data.PD=Original.PD;
+	Cesta->data.orientace_jig_pred=Original.orientace_jig_pred;
+	Cesta->data.LO1=Original.LO1;
+	Cesta->data.LO2=Original.LO2;
+	Cesta->data.LO_pozice=Original.LO_pozice;
+	Cesta->data.PT1=Original.PT1;
+	Cesta->data.PT2=Original.PT2;
+	Cesta->data.WTstop=Original.WTstop;
+	Cesta->data.RT.x=Original.RT.x;
+	Cesta->data.RT.y=Original.RT.y;
+	Cesta->data.pocet_pozic=Original.pocet_pozic;
+	Cesta->data.pocet_voziku=Original.pocet_voziku;
 }
 ////---------------------------------------------------------------------------
 //všem elementům, které měly přiřazen pohon s oldN(oldID), přiřadí pohon s newN(newID), podle toho, jak jsou ukládány nově do spojáku, důležité, pokud dojde k narušení pořadí ID resp n pohonů a pořadí jednotlivých řádků ve stringridu, např. kopirováním, smazáním, změnou pořadí řádků atp.
@@ -4958,7 +4958,7 @@ void Cvektory::vloz_cestu_po_hlavni_vetvi(TZakazka *zakazka,bool po_vyhybku)
 void Cvektory::vloz_segment_cesty(TZakazka *zakazka,TElement *element)
 {
 	TCesta *segment=new TCesta;
-	kopiruj_data_elementu(element->data,segment->data);//kopiruj data
+	kopiruj_data_elementu(element->data,segment);//kopiruj data
 	segment->Element=element;
 	segment->sparovany=element->sparovany;
 
@@ -4969,7 +4969,7 @@ void Cvektory::vloz_segment_cesty(TZakazka *zakazka,TElement *element)
 void Cvektory::vloz_segment_cesty(TZakazka *zakazka,TElement *element,TElement *sparovany,Tdata data)
 {
 	TCesta *segment=new TCesta;
-	kopiruj_data_elementu(data,segment->data);//kopiruj data
+	kopiruj_data_elementu(data,segment);//kopiruj data
 	segment->Element=element;
 	segment->sparovany=sparovany;
 
@@ -4998,7 +4998,7 @@ void Cvektory::kopiruj_cestu_zakazky(TZakazka *original,TZakazka *kopie)
 		//vytvoření kopie cesty
 		C_kop=new TCesta;
 		C_kop->n=C->n;
-		kopiruj_data_elementu(C->data,C_kop->data);//kopiruj data
+		kopiruj_data_elementu(C->data,C_kop);//kopiruj data
 		C_kop->Element=C->Element;
 		C_kop->sparovany=C->sparovany;
 		//zařazení kopie cesty do cílové zakázky

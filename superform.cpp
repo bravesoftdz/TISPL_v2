@@ -601,7 +601,7 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col, unsig
 		F->scGPButton_storno_cesta->Visible=true;
 		F->scGPGlyphButton_odstran_cestu->Visible=true;
 		//nastavení akce a uzavøení formu
-		F->Akce=F->TVORBA_CESTY;
+		F->MOD=F->TVORBA_CESTY;
 		Z_cesta=new Cvektory::TZakazka;
 		Z_cesta->cesta=NULL;
 		Z_cesta->n=Z->n;//uloení èísla zakázky, které je editovaná cesta

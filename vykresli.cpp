@@ -3116,7 +3116,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 			canv->PolyBezier(POLE,3);
 		}
 		//nastavení pera
-		if(F->Akce==F->TVORBA_CESTY && zakazka==NULL && v.obsahuje_segment_cesty_element(E,Form_definice_zakazek->Z_cesta))
+		if(F->MOD==F->TVORBA_CESTY && zakazka==NULL && v.obsahuje_segment_cesty_element(E,Form_definice_zakazek->Z_cesta))
 		{
 			pocet_pruchodu=v.kolikrat_obsahuje_segment_cesty_element(E,Form_definice_zakazek->Z_cesta);
 			if(pocet_pruchodu>0)
