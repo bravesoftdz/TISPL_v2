@@ -117,7 +117,7 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 		E->mGrid->exBUTTON->Hint=Hint;//navrácení pùvodního textu hintu
 		E=NULL;delete E;
 	}
-	if(F->akt_Objekt!=NULL && F->editace_textu)F->smaz_kurzor();
+	if(F->OBJEKT_akt!=NULL && F->editace_textu)F->smaz_kurzor();
 	//uvolnìní inputu
 	input_state=NOTHING;
 }
@@ -135,7 +135,7 @@ void TFormX::OnEnter(long Tag,long ID,unsigned long Col,unsigned long Row)
 	if(ID==9999 && Row>=1 && F->PmG->Rows[3].Visible)//pokud je kliknuto do tabulky pohonu, podle buòky vyznèí buòky, které budou zmìnou ovlivnìné
 		korelace_tab_pohonu(Row);//spuštìno pouze v pøípadì KK tabulky
 	if(ID==9999 && Row>=1)korelace_tab_pohonu_elementy();//pøi S&G režimu je stále nutné zobrazit korelaci v elementech
-	if(ID!=9999 && F->akt_Objekt->pohon!=NULL)//korelace v tabulkách elementù
+	if(ID!=9999 && F->OBJEKT_akt->pohon!=NULL)//korelace v tabulkách elementù
 	korelace_v_elementech(ID,Row);
 }
 //---------------------------------------------------------------------------
@@ -153,9 +153,9 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 		{
 			E=vrat_element_z_tabulky(ID);//ne vždy je ID tabulky stejné jako n robota, proto nutné hledat ID=ID ne ID=n
 	  	//nahrání aktuálních dat do ukazatele
-			if(F->d.v.zakazka_akt!=NULL && F->d.v.zakazka_akt->n!=0)//pokud pracuji v nìjaké zakázce
+			if(F->d.v.ZAKAZKA_akt!=NULL && F->d.v.ZAKAZKA_akt->n!=0)//pokud pracuji v nìjaké zakázce
 	  	{
-				c=F->d.v.vrat_segment_cesty(F->d.v.zakazka_akt,E);
+				c=F->d.v.vrat_segment_cesty(F->d.v.ZAKAZKA_akt,E);
 				if(c!=NULL)E->data=c->data;//pøepsání aktuálních dat ze zakázky do elementu
 			}
 		}
@@ -194,8 +194,8 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					//ošetøení proti dìlení 0 a proti spouštìní pøi prázdném øetìzci v EDITu
 					if(E->data.PT1!=0)
 					{
-						F->akt_Objekt->pohon->aRD=E->data.LO1/E->data.PT1;//uložení do pamìti + výpoèet
-			  		F->PmG->Cells[1][rychlost].Text=F->m.round2double(F->outaRD(F->akt_Objekt->pohon->aRD),3);//OUTPUT
+						F->OBJEKT_akt->pohon->aRD=E->data.LO1/E->data.PT1;//uložení do pamìti + výpoèet
+			  		F->PmG->Cells[1][rychlost].Text=F->m.round2double(F->outaRD(F->OBJEKT_akt->pohon->aRD),3);//OUTPUT
 						//nutné ošetøení podmínkou, v pøípadì editace textu, který je celý oznaèená událost OnChange spuštìna 2x
 			  		zmena_aRD(E);
 						F->PmG->Refresh();//došlo ke zmìnì hodnot v PmG
@@ -205,7 +205,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				{
 					input_state=LO; //nastaveni stavu
 					E->data.LO1=F->inLO(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text));//INPUT
-					E->data.PT1=E->data.LO1/F->akt_Objekt->pohon->aRD;//uložení do pamìti + výpoèet
+					E->data.PT1=E->data.LO1/F->OBJEKT_akt->pohon->aRD;//uložení do pamìti + výpoèet
 					E->mGrid->Cells[Col][Row-1].Text = F->m.round2double(F->outPT(E->data.PT1),3); //OUTPUT
 				}
 				if(Row==3)// eidtace LO_pozice
@@ -238,12 +238,12 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					if(E->data.PT1!=0)
 					{
 			  		//ovlivnìní aRD
-			  		F->akt_Objekt->pohon->aRD=E->data.LO1/E->data.PT1;
-			  		F->PmG->Cells[1][rychlost].Text=F->m.round2double(F->outaRD(F->akt_Objekt->pohon->aRD),3);
+			  		F->OBJEKT_akt->pohon->aRD=E->data.LO1/E->data.PT1;
+			  		F->PmG->Cells[1][rychlost].Text=F->m.round2double(F->outaRD(F->OBJEKT_akt->pohon->aRD),3);
 			  		//zmìna aRD vyvolá následující pøepoèty
-			  		E->PTotoc=F->m.PT(E->OTOC_delka,F->akt_Objekt->pohon->aRD);
+			  		E->PTotoc=F->m.PT(E->OTOC_delka,F->OBJEKT_akt->pohon->aRD);
 			  		E->mGrid->Cells[1][4].Text=F->m.round2double(F->outPT(E->PTotoc),3);
-			  		E->data.PT2=F->m.PT(E->data.LO2,F->akt_Objekt->pohon->aRD);
+			  		E->data.PT2=F->m.PT(E->data.LO2,F->OBJEKT_akt->pohon->aRD);
 						E->mGrid->Cells[1][8].Text=F->m.round2double(F->outPT(E->data.PT2),3);
 			  		//zmìna v ostatních elementech
 			  		if(E->mGrid->Cells[Col][Row].Text!="")zmena_aRD(E);
@@ -254,7 +254,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				{
 					input_state=LO;//nastaveni stavu
 					E->data.LO1=F->inLO(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text)); //INPUT
-					E->data.PT1=E->data.LO1/F->akt_Objekt->pohon->aRD;//uložení do pamìti + výpoèet
+					E->data.PT1=E->data.LO1/F->OBJEKT_akt->pohon->aRD;//uložení do pamìti + výpoèet
 					E->mGrid->Cells[Col][Row-1].Text = F->m.round2double(F->outPT(E->data.PT1),3);//OUTPUT
 				}
 				if (Row==3)//editace COMBO
@@ -280,7 +280,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				{
 					input_state=DO;//nastaveni stavu
 					E->OTOC_delka=F->inDO(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text)); //INPUT
-					E->PTotoc=E->OTOC_delka/F->akt_Objekt->pohon->aRD;//uložení do pamìti + výpoèet
+					E->PTotoc=E->OTOC_delka/F->OBJEKT_akt->pohon->aRD;//uložení do pamìti + výpoèet
 					E->mGrid->Cells[Col][Row-1].Text = F->m.round2double(F->outPT(E->PTotoc),3);//OUTPUT
           //aktualizace zón otáèení
 					TPointD zony_otaceni=F->m.zona_otaceni(F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(E),E->rotace_jig,E->OTOC_delka);
@@ -295,12 +295,12 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					//ošetøení proti dìlení 0 a proti spouštìní pøi prázdném øetìzci v EDITu
 					if(E->data.PT2!=0)
 					{
-			   		F->akt_Objekt->pohon->aRD=E->data.LO2/E->data.PT2;//uložení do pamìti + výpoèet
-			   		F->PmG->Cells[1][rychlost].Text=F->m.round2double(F->outaRD(F->akt_Objekt->pohon->aRD),3);//OUTPUT
+			   		F->OBJEKT_akt->pohon->aRD=E->data.LO2/E->data.PT2;//uložení do pamìti + výpoèet
+			   		F->PmG->Cells[1][rychlost].Text=F->m.round2double(F->outaRD(F->OBJEKT_akt->pohon->aRD),3);//OUTPUT
 			   		//zmìna aRD vyvolá následující pøepoèty
-			   		E->data.PT1=F->m.PT(E->data.LO1,F->akt_Objekt->pohon->aRD);
+			   		E->data.PT1=F->m.PT(E->data.LO1,F->OBJEKT_akt->pohon->aRD);
 			   		E->mGrid->Cells[1][1].Text=F->m.round2double(F->outPT(E->data.PT1),3);
-			   		E->PTotoc=F->m.PT(E->OTOC_delka,F->akt_Objekt->pohon->aRD);
+			   		E->PTotoc=F->m.PT(E->OTOC_delka,F->OBJEKT_akt->pohon->aRD);
 			   		E->mGrid->Cells[1][4].Text=F->m.round2double(F->outPT(E->PTotoc),3);
 						//zmìna v ostatních elementech
 			   		if(E->mGrid->Cells[Col][Row].Text!="")zmena_aRD(E);
@@ -311,7 +311,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				{
 					input_state=LO2;//nastaveni stavu
 					E->data.LO2=F->inLO(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text)); //INPUT
-					E->data.PT2=E->data.LO2/F->akt_Objekt->pohon->aRD;//uložení do pamìti + výpoèet
+					E->data.PT2=E->data.LO2/F->OBJEKT_akt->pohon->aRD;//uložení do pamìti + výpoèet
 					E->mGrid->Cells[Col][Row-1].Text = F->m.round2double(F->outPT(E->data.PT2),3);//OUTPUT
 				}
 				if(Row==10)// eidtace COMBO PD
@@ -376,13 +376,13 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					E->mGrid->Cells[1][4].Text=F->outDO(F->m.round2double(E->zona_pred,3));
 					E->mGrid->Cells[1][5].Text=F->outDO(F->m.round2double(E->zona_za,3));
 					aktualizace_zon_otaceni(E);//pøepoèítání zón otáèení následujících elementù
-					if(F->akt_Objekt->rezim==1)F->pridani_elementu_tab_pohon(E);//pouze v KK režimu, pasivní otoè mùže být i ve S&G lakovnì
+					if(F->OBJEKT_akt->rezim==1)F->pridani_elementu_tab_pohon(E);//pouze v KK režimu, pasivní otoè mùže být i ve S&G lakovnì
 				}
 				if (Row==2)//zde se upravuje pouze délka
 				{
 					input_state=DO;//nastaveni stavu
 					E->OTOC_delka=F->inDO(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text));//INPUT
-					E->PTotoc=E->OTOC_delka/F->akt_Objekt->pohon->aRD;//uložení do pamìti + výpoèet
+					E->PTotoc=E->OTOC_delka/F->OBJEKT_akt->pohon->aRD;//uložení do pamìti + výpoèet
 					E->mGrid->Cells[Col][Row+1].Text = F->m.round2double(F->outPT(E->PTotoc),3);//OUTPUT
 					//aktualizace zón otáèení
 					TPointD zony_otaceni=F->m.zona_otaceni(F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(E),E->rotace_jig,E->OTOC_delka);
@@ -408,7 +408,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				{
 					input_state=PTotoc;//nastaveni stavu
 					E->PTotoc=F->inPT(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text));//INPUT
-					//E->OTOC_delka=F->akt_Objekt->pohon->aRD*E->PTotoc;//uložení do pamìti + výpoèet
+					//E->OTOC_delka=F->OBJEKT_akt->pohon->aRD*E->PTotoc;//uložení do pamìti + výpoèet
 					//E->mGrid->Cells[Col][Row-1].Text = F->m.round2double(F->outDO(E->OTOC_delka),3);//OUTPUT
 					F->d.v.reserve_time(E,c);
 				}
@@ -423,7 +423,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 		E->mGrid->Refresh();//refresh aktuálnì upravované tabulky
 		posledni_E=E;//uložení posledního editovaného elementu
 		posledni_c=c;//uložení posledního editovaného segmentu cesty
-		if(F->d.v.zakazka_akt!=NULL && F->d.v.zakazka_akt->n!=0 && c!=NULL)c->data=E->data;//navrácení pøepoèítaných dat do zakázky
+		if(F->d.v.ZAKAZKA_akt!=NULL && F->d.v.ZAKAZKA_akt->n!=0 && c!=NULL)c->data=E->data;//navrácení pøepoèítaných dat do zakázky
 		E=NULL;delete E;
 		c=NULL;delete c;
 		input_state=NOTHING;F->Timer_neaktivity->Enabled=true;//uvolnìní stavu + zapnuti timeru neaktivity, pokud dokonèí èasování spustí REFRESH
@@ -461,7 +461,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				//naètení aRD z editu
 				double aRD=F->inaRD(F->ms.MyToDouble(F->PmG->Cells[1][Row].Text));
 				//uložení do spojáku
-				F->akt_Objekt->pohon->aRD=aRD;
+				F->OBJEKT_akt->pohon->aRD=aRD;
 				//volání metody pro pøepoèty všech souvisejících bunìk
 				zmena_aRD();
 				//akticave a deaktivace comba pro zmìnu typu kót
@@ -478,7 +478,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				//naètení R z editu
 				double R=F->inR(F->ms.MyToDouble(F->PmG->Cells[1][Row].Text));
 				//uložení do spojáku
-				F->akt_Objekt->pohon->roztec=R;
+				F->OBJEKT_akt->pohon->roztec=R;
 				//volání metody pro pøepoèty všech souvisejících bunìk
 				zmena_R();
 			}break;
@@ -488,7 +488,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				//naètení Rx z editu
 				double Rx=F->ms.MyToDouble(F->PmG->Cells[1][Row].Text);
 				//uložení do spojáku
-				F->akt_Objekt->pohon->Rx=Rx;
+				F->OBJEKT_akt->pohon->Rx=Rx;
 				//volání metody pro pøepoèty všech souvisejících bunìk
 				zmena_Rx();
 			}break;
@@ -577,20 +577,20 @@ void TFormX::zmena_aRD (Cvektory::TElement *mimo_element)
 	//propoèty v tabulce pohonu
 	if(F->PmG->Rows[3].Visible)//pro tabulku v KK režimu
 	{
-		F->akt_Objekt->pohon->Rz=F->m.Rz(F->akt_Objekt->pohon->aRD);
-		F->PmG->Cells[1][roztec_jigu].Text=F->m.round2double(F->outRz(F->akt_Objekt->pohon->Rz),3);
-		F->akt_Objekt->pohon->Rx=F->m.Rx(F->akt_Objekt->pohon->aRD,F->akt_Objekt->pohon->roztec);
-		F->PmG->Cells[1][nasobek_roztece].Text=F->m.round2double(F->akt_Objekt->pohon->Rx,3);
-		F->PmG->Cells[1][mezera_podvozky].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->akt_Objekt->pohon->Rz,0)),3);
+		F->OBJEKT_akt->pohon->Rz=F->m.Rz(F->OBJEKT_akt->pohon->aRD);
+		F->PmG->Cells[1][roztec_jigu].Text=F->m.round2double(F->outRz(F->OBJEKT_akt->pohon->Rz),3);
+		F->OBJEKT_akt->pohon->Rx=F->m.Rx(F->OBJEKT_akt->pohon->aRD,F->OBJEKT_akt->pohon->roztec);
+		F->PmG->Cells[1][nasobek_roztece].Text=F->m.round2double(F->OBJEKT_akt->pohon->Rx,3);
+		F->PmG->Cells[1][mezera_podvozky].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->OBJEKT_akt->pohon->Rz,0)),3);
 		if(F->PmG->Rows[7].Visible)//budou zde obì mezeri mezi jigy
 		{
-			F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->akt_Objekt->pohon->Rz,1)),3);
-			F->PmG->Cells[1][7].Text=F->m.round2double(F->outRz(F->m.mezera(90,F->akt_Objekt->pohon->Rz,1)),3);
+			F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->OBJEKT_akt->pohon->Rz,1)),3);
+			F->PmG->Cells[1][7].Text=F->m.round2double(F->outRz(F->m.mezera(90,F->OBJEKT_akt->pohon->Rz,1)),3);
 		}
 		else if(F->PmG->Rows[6].Visible)//pouze jedna mezera mezi jig, nutná další kontrola, padaly by sem všechny varianty
 		{
-			double uhel=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->akt_Objekt->element);
-			F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(uhel,F->akt_Objekt->pohon->Rz,1)),3);
+			double uhel=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->OBJEKT_akt->element);
+			F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(uhel,F->OBJEKT_akt->pohon->Rz,1)),3);
 		}
 		if(F->Akce==F->NIC)validace_aRD();//validace pouze v kontinuálním režimu kabiny
 	}
@@ -605,27 +605,27 @@ void TFormX::zmena_R ()
 	//pøepoèet hodnot v tabulce pohonu
 	if(F->PmG->Rows[3].Visible)//pro tabulku v KK režimu
 	{
-    F->akt_Objekt->pohon->Rz=F->m.Rz(F->akt_Objekt->pohon->Rx,F->akt_Objekt->pohon->roztec);
-		F->PmG->Cells[1][roztec_jigu].Text=F->m.round2double(F->outRz(F->akt_Objekt->pohon->Rz),3);
-		F->akt_Objekt->pohon->aRD=F->m.RD(F->akt_Objekt->pohon->Rz); //prohozené poøadí z dùvodu, že druhý výpoèet potøebuje aktualizovaonu honotu prvního výpoètu
-		F->PmG->Cells[1][rychlost].Text=F->m.round2double(F->outaRD(F->akt_Objekt->pohon->aRD),3);
-		F->PmG->Cells[1][mezera_podvozky].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->akt_Objekt->pohon->Rz,0)),3);
+    F->OBJEKT_akt->pohon->Rz=F->m.Rz(F->OBJEKT_akt->pohon->Rx,F->OBJEKT_akt->pohon->roztec);
+		F->PmG->Cells[1][roztec_jigu].Text=F->m.round2double(F->outRz(F->OBJEKT_akt->pohon->Rz),3);
+		F->OBJEKT_akt->pohon->aRD=F->m.RD(F->OBJEKT_akt->pohon->Rz); //prohozené poøadí z dùvodu, že druhý výpoèet potøebuje aktualizovaonu honotu prvního výpoètu
+		F->PmG->Cells[1][rychlost].Text=F->m.round2double(F->outaRD(F->OBJEKT_akt->pohon->aRD),3);
+		F->PmG->Cells[1][mezera_podvozky].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->OBJEKT_akt->pohon->Rz,0)),3);
 		if(F->PmG->Rows[7].Visible)//budou zde obì mezeri mezi jigy
 		{
-			F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->akt_Objekt->pohon->Rz,1)),3);
-			F->PmG->Cells[1][7].Text=F->m.round2double(F->outRz(F->m.mezera(90,F->akt_Objekt->pohon->Rz,1)),3);
+			F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->OBJEKT_akt->pohon->Rz,1)),3);
+			F->PmG->Cells[1][7].Text=F->m.round2double(F->outRz(F->m.mezera(90,F->OBJEKT_akt->pohon->Rz,1)),3);
 		}
 		else if(F->PmG->Rows[6].Visible)//pouze jedna mezera mezi jig, nutná další kontrola, padaly by sem všechny varianty
 		{
-			double uhel=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->akt_Objekt->element);
-			F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(uhel,F->akt_Objekt->pohon->Rz,1)),3);
+			double uhel=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->OBJEKT_akt->element);
+			F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(uhel,F->OBJEKT_akt->pohon->Rz,1)),3);
 		}
 	}
 	//pøepoèet hodnot v elementech
 	F->aktualizace_ComboPohon();//zmìna rychlosti, rychlost je zobrazená v Combo pohonù
 	aktualizace_tab_elementu();
 	//////test validace rozteèe                                                                                                                            //0 = základní jednotky
-//	TTextNumber cislo=F->d.v.rVALIDACE(5,F->akt_Objekt->pohon->n,F->akt_Objekt->pohon->aRD,F->akt_Objekt->pohon->roztec,F->akt_Objekt->pohon->Rz,F->akt_Objekt->pohon->Rx,0,0,0);//F->aRDunit,F->Runit,F->Rzunit);
+//	TTextNumber cislo=F->d.v.rVALIDACE(5,F->OBJEKT_akt->pohon->n,F->OBJEKT_akt->pohon->aRD,F->OBJEKT_akt->pohon->roztec,F->OBJEKT_akt->pohon->Rz,F->OBJEKT_akt->pohon->Rx,0,0,0);//F->aRDunit,F->Runit,F->Rzunit);
 //	F->PmG->ShowNote(cislo.text);
 }
 //---------------------------------------------------------------------------
@@ -635,20 +635,20 @@ void TFormX::zmena_Rx ()
 	//pøepoèet hodnot v tabulce pohonu
 	if(F->PmG->Rows[3].Visible)//kontinuální režim
 	{
-    F->akt_Objekt->pohon->Rz=F->m.Rz(F->akt_Objekt->pohon->Rx,F->akt_Objekt->pohon->roztec);
-		F->PmG->Cells[1][roztec_jigu].Text=F->m.round2double(F->outRz(F->akt_Objekt->pohon->Rz),3);
-		F->akt_Objekt->pohon->aRD=F->m.RD(F->akt_Objekt->pohon->Rz);
-		F->PmG->Cells[1][rychlost].Text=F->m.round2double(F->outaRD(F->akt_Objekt->pohon->aRD),3);
-		F->PmG->Cells[1][mezera_podvozky].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->akt_Objekt->pohon->Rz,0)),3);
+    F->OBJEKT_akt->pohon->Rz=F->m.Rz(F->OBJEKT_akt->pohon->Rx,F->OBJEKT_akt->pohon->roztec);
+		F->PmG->Cells[1][roztec_jigu].Text=F->m.round2double(F->outRz(F->OBJEKT_akt->pohon->Rz),3);
+		F->OBJEKT_akt->pohon->aRD=F->m.RD(F->OBJEKT_akt->pohon->Rz);
+		F->PmG->Cells[1][rychlost].Text=F->m.round2double(F->outaRD(F->OBJEKT_akt->pohon->aRD),3);
+		F->PmG->Cells[1][mezera_podvozky].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->OBJEKT_akt->pohon->Rz,0)),3);
 		if(F->PmG->Rows[7].Visible)//budou zde obì mezeri mezi jigy
 		{
-			F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->akt_Objekt->pohon->Rz,1)),3);
-			F->PmG->Cells[1][7].Text=F->m.round2double(F->outRz(F->m.mezera(90,F->akt_Objekt->pohon->Rz,1)),3);
+			F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->OBJEKT_akt->pohon->Rz,1)),3);
+			F->PmG->Cells[1][7].Text=F->m.round2double(F->outRz(F->m.mezera(90,F->OBJEKT_akt->pohon->Rz,1)),3);
 		}
 		else if(F->PmG->Rows[6].Visible)//pouze jedna mezera mezi jig, nutná další kontrola, padaly by sem všechny varianty
 		{
-			double uhel=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->akt_Objekt->element);
-			F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(uhel,F->akt_Objekt->pohon->Rz,1)),3);
+			double uhel=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->OBJEKT_akt->element);
+			F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(uhel,F->OBJEKT_akt->pohon->Rz,1)),3);
 		}
 	}
 	//pøepoèet hodnot v elementech
@@ -661,28 +661,28 @@ void TFormX::aktualizace_PmG(bool Refresh)
 {
   if(F->PmG->Rows[3].Visible)//pro tabulku v kontinuálním režimu
 	{
-		F->PmG->Cells[1][rychlost].Text=F->m.round2double(F->outaRD(F->akt_Objekt->pohon->aRD),3);
-		F->PmG->Cells[1][roztec_palce].Text=F->m.round2double(F->outR(F->akt_Objekt->pohon->roztec),3);
-		F->akt_Objekt->pohon->Rx=F->m.Rx(F->akt_Objekt->pohon->aRD,F->akt_Objekt->pohon->roztec);
-		F->PmG->Cells[1][nasobek_roztece].Text=F->m.round2double(F->akt_Objekt->pohon->Rx,0);
-		F->akt_Objekt->pohon->Rz=F->m.Rz(F->akt_Objekt->pohon->aRD);
-		F->PmG->Cells[1][roztec_jigu].Text=F->m.round2double(F->outRz(F->akt_Objekt->pohon->Rz),3);
+		F->PmG->Cells[1][rychlost].Text=F->m.round2double(F->outaRD(F->OBJEKT_akt->pohon->aRD),3);
+		F->PmG->Cells[1][roztec_palce].Text=F->m.round2double(F->outR(F->OBJEKT_akt->pohon->roztec),3);
+		F->OBJEKT_akt->pohon->Rx=F->m.Rx(F->OBJEKT_akt->pohon->aRD,F->OBJEKT_akt->pohon->roztec);
+		F->PmG->Cells[1][nasobek_roztece].Text=F->m.round2double(F->OBJEKT_akt->pohon->Rx,0);
+		F->OBJEKT_akt->pohon->Rz=F->m.Rz(F->OBJEKT_akt->pohon->aRD);
+		F->PmG->Cells[1][roztec_jigu].Text=F->m.round2double(F->outRz(F->OBJEKT_akt->pohon->Rz),3);
 		//místo pro mezeru mezi podvozky
 		if(F->PmG->Rows[mezera_jig2].Visible)//budou zde obì mezeri mezi jigy
 		{
-			F->PmG->Cells[1][mezera_jig1].Text=F->outRz(F->m.mezera(0,F->akt_Objekt->pohon->Rz,1));
-			F->PmG->Cells[1][mezera_jig2].Text=F->outRz(F->m.mezera(90,F->akt_Objekt->pohon->Rz,1));
+			F->PmG->Cells[1][mezera_jig1].Text=F->outRz(F->m.mezera(0,F->OBJEKT_akt->pohon->Rz,1));
+			F->PmG->Cells[1][mezera_jig2].Text=F->outRz(F->m.mezera(90,F->OBJEKT_akt->pohon->Rz,1));
 		}
 		else if(F->PmG->Rows[mezera_jig1].Visible)//pouze jedna mezera mezi jig, nutná další kontrola, padaly by sem všechny varianty
 		{
-			double uhel=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->akt_Objekt->element);
-			F->PmG->Cells[1][mezera_jig1].Text=F->outRz(F->m.mezera(uhel,F->akt_Objekt->pohon->Rz,1));
+			double uhel=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->OBJEKT_akt->element);
+			F->PmG->Cells[1][mezera_jig1].Text=F->outRz(F->m.mezera(uhel,F->OBJEKT_akt->pohon->Rz,1));
 		}
 	}
 	else
 	{
-		F->PmG->Cells[1][rychlost].Text=F->m.round2double(F->outaRD(F->akt_Objekt->pohon->aRD),3);
-		F->PmG->Cells[1][roztec_palce].Text=F->m.round2double(F->outR(F->akt_Objekt->pohon->roztec),3);
+		F->PmG->Cells[1][rychlost].Text=F->m.round2double(F->outaRD(F->OBJEKT_akt->pohon->aRD),3);
+		F->PmG->Cells[1][roztec_palce].Text=F->m.round2double(F->outR(F->OBJEKT_akt->pohon->roztec),3);
 	}
 	if(Refresh)F->PmG->Refresh();
 }
@@ -692,17 +692,17 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 {
 	unsigned int n=999999999;
 	if(mimo_element!=NULL)n=mimo_element->n;
-	Cvektory::TElement *E=F->akt_Objekt->element;
-	while(E!=NULL && E->objekt_n==F->akt_Objekt->n)
+	Cvektory::TElement *E=F->OBJEKT_akt->element;
+	while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
 	{
-		if(E->n>0 && E->n!=n && E->pohon!=NULL && F->akt_Objekt->pohon!=NULL && E->pohon->n==F->akt_Objekt->pohon->n)//pøeskoèí mimo_element a hlavièku, poze pøepoèet elementùm které mají stejný pohon jako aktuálnì editovaný pohon
+		if(E->n>0 && E->n!=n && E->pohon!=NULL && F->OBJEKT_akt->pohon!=NULL && E->pohon->n==F->OBJEKT_akt->pohon->n)//pøeskoèí mimo_element a hlavièku, poze pøepoèet elementùm které mají stejný pohon jako aktuálnì editovaný pohon
 		{
 			switch(E->eID)
 			{
 				case 0:
 				{
 					//naètení hodnot z pohonu
-					double aRD=F->akt_Objekt->pohon->aRD,roztec=F->akt_Objekt->pohon->roztec;
+					double aRD=F->OBJEKT_akt->pohon->aRD,roztec=F->OBJEKT_akt->pohon->roztec;
 					//pøepoèty
 					E->WT=F->m.cekani_na_palec(0,roztec,aRD,3);
 					E->mGrid->Cells[1][4].Text=F->m.round2double(F->outPT(E->WT),3);
@@ -712,7 +712,7 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 				case 1:case 7:case 11:case 15:case 101:case 105://robor kontinuální
 				{
           //naètení hodnot z pohonu
-					double aRD=F->akt_Objekt->pohon->aRD;
+					double aRD=F->OBJEKT_akt->pohon->aRD;
 					//pøepoèty
 					E->data.PT1=F->m.PT(E->data.LO1,aRD);
 					E->mGrid->Cells[1][1].Text=F->m.round2double(F->outPT(E->data.PT1),3);
@@ -721,7 +721,7 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 				case 2:case 8:case 12:case 16:case 102:case 106://robot se stop stanicí
 				{
 					//naètení hodnot z pohonu
-					double aRD=F->akt_Objekt->pohon->aRD,roztec=F->akt_Objekt->pohon->roztec;
+					double aRD=F->OBJEKT_akt->pohon->aRD,roztec=F->OBJEKT_akt->pohon->roztec;
 					//pøepoèty
 					E->WT=F->m.cekani_na_palec(0,roztec,aRD,3);
 					E->mGrid->Cells[1][3].Text=F->m.round2double(F->outPT(E->WT),3);
@@ -731,7 +731,7 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 				case 3:case 9:case 13:case 17:case 103:case 107://robot s pasivní otoèí
 				{
 					//naètení hodnot z pohonu
-					double aRD=F->akt_Objekt->pohon->aRD;
+					double aRD=F->OBJEKT_akt->pohon->aRD;
 					//pøepoèty
 					E->data.PT1=F->m.PT(E->data.LO1,aRD);
 					E->mGrid->Cells[1][1].Text=F->m.round2double(F->outPT(E->data.PT1),3);
@@ -744,7 +744,7 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 				case 4:case 10:case 14:case 18:case 104:case 108://robot s aktivní otoèí
  				{
 					//naètení hodnot z pohonu
-					double aRD=F->akt_Objekt->pohon->aRD,roztec=F->akt_Objekt->pohon->roztec;
+					double aRD=F->OBJEKT_akt->pohon->aRD,roztec=F->OBJEKT_akt->pohon->roztec;
 					//pøepoèty
 					E->WT=F->m.cekani_na_palec(0,roztec,aRD,3);
 					E->mGrid->Cells[1][6].Text=F->m.round2double(F->outPT(E->WT),3);
@@ -753,7 +753,7 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
  				case 5://otoè pasivní
 				{
           //naètení hodnot z pohonu
-					double aRD=F->akt_Objekt->pohon->aRD;
+					double aRD=F->OBJEKT_akt->pohon->aRD;
 					//pøepoèty
 					E->PTotoc=F->m.PT(E->OTOC_delka,aRD);
 					E->mGrid->Cells[1][3].Text = F->m.round2double(F->outPT(E->PTotoc),3);
@@ -761,10 +761,10 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 				case 6://otoè aktivní
 				{
 					//naètení hodnot z pohonu
-					double aRD=F->akt_Objekt->pohon->aRD,roztec=F->akt_Objekt->pohon->roztec;
+					double aRD=F->OBJEKT_akt->pohon->aRD,roztec=F->OBJEKT_akt->pohon->roztec;
 					//pøepoèty
 					E->WT=F->m.cekani_na_palec(0,roztec,aRD,3);//dùležité pro výpoèet RT, nezobrazuje se
-					E->PTotoc=F->m.PT(E->OTOC_delka,F->akt_Objekt->pohon->aRD);
+					E->PTotoc=F->m.PT(E->OTOC_delka,F->OBJEKT_akt->pohon->aRD);
 					E->mGrid->Cells[1][3].Text = F->m.round2double(F->outPT(E->PTotoc),3);
 					F->d.v.reserve_time(E);
 				}break;
@@ -801,8 +801,8 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 //Naplní hodnoty které závisí na pohonu 0
 void TFormX::aktualizace_tab_elementu_pOdebran ()
 {
-	Cvektory::TElement *E=F->akt_Objekt->element;
-	while(E!=NULL && E->objekt_n==F->akt_Objekt->n)
+	Cvektory::TElement *E=F->OBJEKT_akt->element;
+	while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
 	{
 		if(E->n>0 && E->pohon==NULL)//pøeskoèí hlavièku + pøenastaví pouze elementy s odstranìným pohonem
 		{
@@ -905,10 +905,10 @@ void TFormX::korelace_tab_pohonu_elementy(Cvektory::TElement *mimo_element)
 {
 	unsigned int n=999999999;
 	if(mimo_element!=NULL)n=mimo_element->n;
-	Cvektory::TElement *E=F->akt_Objekt->element;
-	while(E!=NULL && E->objekt_n==F->akt_Objekt->n)
+	Cvektory::TElement *E=F->OBJEKT_akt->element;
+	while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
 	{
-		if(E->n>0 && E->n!=n && E->pohon!=NULL && F->akt_Objekt->pohon->n==E->pohon->n)
+		if(E->n>0 && E->n!=n && E->pohon!=NULL && F->OBJEKT_akt->pohon->n==E->pohon->n)
 		{
 			switch(E->eID)
 			{
@@ -1016,8 +1016,8 @@ void TFormX::odstranit_korelaci(bool predat_focus)
 	if(predat_focus)
 		F->DrawGrid_knihovna->SetFocus();//po kliku mimo zùstával focus poøád na editu
 	F->PmG->unHighlightAll();
-	Cvektory::TElement *E=F->akt_Objekt->element;
-	while(E!=NULL && E->objekt_n==F->akt_Objekt->n)
+	Cvektory::TElement *E=F->OBJEKT_akt->element;
+	while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
 	{
 		if(E->n>0)
 			E->mGrid->unHighlightAll();
@@ -1036,10 +1036,10 @@ void TFormX::validace_aRD(bool pouze_rozmezi)
 	TscGPComboBox *Combo=F->PmG->getCombo(0,0);
 	dopRD=0;
 	//kontrola zda je zadaná hodnota v rozmezí
-	if(F->m.between(F->akt_Objekt->pohon->aRD,F->akt_Objekt->pohon->rychlost_od,F->akt_Objekt->pohon->rychlost_do)) mimo_rozmezi=false;
+	if(F->m.between(F->OBJEKT_akt->pohon->aRD,F->OBJEKT_akt->pohon->rychlost_od,F->OBJEKT_akt->pohon->rychlost_do)) mimo_rozmezi=false;
 	else mimo_rozmezi=true;
 	//zadaná rychlost je mimo rozsah
-	if(mimo_rozmezi && F->akt_Objekt->pohon->aRD > 0)
+	if(mimo_rozmezi && F->OBJEKT_akt->pohon->aRD > 0)
 	{
 		if(F->PmG->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
 		F->PmG->ShowNote(F->ls->Strings[220],F->d.clError,14);//"Rychlost neodpovídá rozmezí!"
@@ -1047,26 +1047,26 @@ void TFormX::validace_aRD(bool pouze_rozmezi)
 	}
 	if(!mimo_rozmezi && F->PmG->Note.Text!=""){F->PmG->ShowNote("",F->d.clError,14);povolit_zakazat_editaci(true);}
 	// nutné ošetøení pro období zadávání/psaní
-	if (F->akt_Objekt->pohon->aRD > 0 && !pouze_rozmezi)
+	if (F->OBJEKT_akt->pohon->aRD > 0 && !pouze_rozmezi)
 	{
 		//výpoèet doporuèené rychosti
 		if(F->PmG->Rows[7].Visible)//v kabinì jsou 2 rùzné rotace
 		{
-			double dopRD1=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,0,F->akt_Objekt->pohon->roztec,F->d.v.PP.TT,F->akt_Objekt->pohon->aRD);
-			double dopRD2=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,90,F->akt_Objekt->pohon->roztec,F->d.v.PP.TT,F->akt_Objekt->pohon->aRD);
+			double dopRD1=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,0,F->OBJEKT_akt->pohon->roztec,F->d.v.PP.TT,F->OBJEKT_akt->pohon->aRD);
+			double dopRD2=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,90,F->OBJEKT_akt->pohon->roztec,F->d.v.PP.TT,F->OBJEKT_akt->pohon->aRD);
 			if(dopRD1>dopRD2)dopRD=dopRD1;//vypíše vìtší hodnotu
 			else dopRD=dopRD2;
 		}
 		else
-			dopRD=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,F->akt_Objekt->rotace,F->akt_Objekt->pohon->roztec,F->d.v.PP.TT,F->akt_Objekt->pohon->aRD);
+			dopRD=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,F->OBJEKT_akt->rotace,F->OBJEKT_akt->pohon->roztec,F->d.v.PP.TT,F->OBJEKT_akt->pohon->aRD);
 		//je zvolen pohon, jeho aktuální rychlost se nerovná doporuèené
-		if(Combo->ItemIndex!=0 && F->akt_Objekt->pohon->roztec>0 && F->ms.MyToDouble(dopRD)!= F->ms.MyToDouble(F->akt_Objekt->pohon->aRD) && mimo_rozmezi==false)
+		if(Combo->ItemIndex!=0 && F->OBJEKT_akt->pohon->roztec>0 && F->ms.MyToDouble(dopRD)!= F->ms.MyToDouble(F->OBJEKT_akt->pohon->aRD) && mimo_rozmezi==false)
 		{
 			if(F->PmG->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
 			F->PmG->ShowNote(F->ls->Strings[221]+" <a>"+AnsiString(F->m.round2double(F->outaRD(dopRD),3))+"</a> "+jednotky,F->d.clError,14);//"Zadejte doporuèenou rychlost pohonu:"
 		}
 		//vše je vpoøádku
-		if (F->ms.MyToDouble(dopRD)== F->ms.MyToDouble(F->akt_Objekt->pohon->aRD) && mimo_rozmezi==false)
+		if (F->ms.MyToDouble(dopRD)== F->ms.MyToDouble(F->OBJEKT_akt->pohon->aRD) && mimo_rozmezi==false)
 		{
 			povolit_zakazat_editaci(true);
 			F->PmG->ShowNote("",F->d.clError,14);
@@ -1079,7 +1079,7 @@ void TFormX::validace_aRD(bool pouze_rozmezi)
 //validace maximálního poètu vozíkù na stopce
 void TFormX::validace_max_voziku()
 {
-	if(posledni_E!=NULL && F->akt_Objekt!=NULL && posledni_E->objekt_n!=F->akt_Objekt->n)posledni_E=NULL;//pro pøípad, že se zmìnil náhled
+	if(posledni_E!=NULL && F->OBJEKT_akt!=NULL && posledni_E->objekt_n!=F->OBJEKT_akt->n)posledni_E=NULL;//pro pøípad, že se zmìnil náhled
 	if(posledni_E!=NULL && posledni_E->eID==0)
 	{
 		////deklarace potøebných atributù
@@ -1112,7 +1112,7 @@ void TFormX::validace_max_voziku()
 //voláno po kliku na link v poznámce, naplní edit aRD doporuèenou rychlostí
 void TFormX::naplneni_dopRD()
 {
-	F->akt_Objekt->pohon->aRD=dopRD;
+	F->OBJEKT_akt->pohon->aRD=dopRD;
 	F->PmG->Cells[1][rychlost].Text=F->outaRD(dopRD);
 	zmena_aRD();
 	//odstranit_korelaci();//pro jistotu zùstavala aktivní po kliku na link
@@ -1126,11 +1126,11 @@ void TFormX::naplneni_dopRD()
 bool TFormX::naplneni_max_voziku(double X,double Y,bool check_for_highlight)
 {
 	bool ret=false;
-	if(F->d.v.vrat_posledni_element_objektu(F->akt_Objekt)->n>1)
+	if(F->d.v.vrat_posledni_element_objektu(F->OBJEKT_akt)->n>1)
 	{
 		//hledání zda má nìkterý element nedokonèenou validaci
-		Cvektory::TElement *E=F->akt_Objekt->element;
-		while(E!=NULL && E->objekt_n==F->akt_Objekt->n)
+		Cvektory::TElement *E=F->OBJEKT_akt->element;
+		while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
 		{
 			//hledání elementu, kterému bylo kliknuto na doporuèený poèet vozíkù
 			if(E->eID==0 && E->mGrid!=NULL && E->mGrid->Note.Text!="" && E->mGrid->CheckLink(X,Y)==TPoint(-2,-2)){ret=true;break;}
@@ -1170,9 +1170,9 @@ void TFormX::povolit_zakazat_editaci(bool povolit)
 //	F->PmG->Update();//musí být, pøi vložení prvního kontinuálního robota problém v zobrazení
 //	F->PmG->SetEnabledComponents(povolit);
 //	F->PmG->SetEnabledComponent(1,1,true);//rychlost musí být aktivní aby ji mohl uživatel zmìnit a tím odemknout ostatní buòky
-//	if(F->akt_Objekt->elementy->dalsi!=NULL)
+//	if(F->OBJEKT_akt->elementy->dalsi!=NULL)
 //	{
-//		Cvektory::TElement *E=F->akt_Objekt->elementy->dalsi;//mùžu pøeskoèit hlavièku
+//		Cvektory::TElement *E=F->OBJEKT_akt->elementy->dalsi;//mùžu pøeskoèit hlavièku
 //		while(E!=NULL)
 //		{
 //			E->mGrid->SetEnabledComponents(povolit);
@@ -1186,8 +1186,8 @@ void TFormX::povolit_zakazat_editaci(bool povolit)
 Cvektory::TElement *TFormX::vrat_element_z_tabulky(long ID)
 {
 	Cvektory::TElement *ret=NULL;
-	Cvektory::TElement *E=F->akt_Objekt->element;//mùžu pøeskoèit element, metoda voláná po kliku do tabulky elementu
-	while(E!=NULL && E->objekt_n==F->akt_Objekt->n)
+	Cvektory::TElement *E=F->OBJEKT_akt->element;//mùžu pøeskoèit element, metoda voláná po kliku do tabulky elementu
+	while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
 	{
 		if(E->mGrid->ID==ID)
 		{
@@ -1215,7 +1215,7 @@ void TFormX::aktualizace_zon_otaceni(Cvektory::TElement *E)
 			{
 				zony_otaceni=F->m.zona_otaceni(F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(E),E->rotace_jig,E->OTOC_delka);
 				E->zona_pred=zony_otaceni.x;E->zona_za=zony_otaceni.y;
-				if(E->objekt_n==F->akt_Objekt->n)
+				if(E->objekt_n==F->OBJEKT_akt->n)
 				{
 					int row=6;if(E->eID==5)row=4;//pøepínání od kterého øádku zaèít, rùzné elementy
 					E->mGrid->Cells[1][row].Text=F->outDO(F->m.round2double(E->zona_pred,3));

@@ -789,11 +789,11 @@ Cvektory::TObjekt *Cvektory::vrat_objekt_z_roma(int X)
 }
 
 //---------------------------------------------------------------------------
-//vrátí rodičovský Objekt daného elementu, In_akt_Objekt - zda bude hledat místo daného ostrého objektu v něm
-Cvektory::TObjekt *Cvektory::vrat_objekt(TElement *Element,bool In_akt_Objekt)
+//vrátí rodičovský Objekt daného elementu, In_OBJEKT_akt - zda bude hledat místo daného ostrého objektu v něm
+Cvektory::TObjekt *Cvektory::vrat_objekt(TElement *Element,bool In_OBJEKT_akt)
 {
 	TObjekt *O=vrat_objekt(Element->n);
-	if(F->akt_Objekt!=NULL && In_akt_Objekt && O!=NULL && O->n==F->akt_Objekt->n)
+	if(F->OBJEKT_akt!=NULL && In_OBJEKT_akt && O!=NULL && O->n==F->OBJEKT_akt->n)
 	return O;
 }
 //---------------------------------------------------------------------------
@@ -1568,7 +1568,7 @@ short Cvektory::PtInKota_komory(TObjekt *Objekt,long X,long Y)
 double Cvektory::vrat_velikosti_komor(TKomora *po)
 {
   double ret=0;
-	TKomora *K=F->akt_Objekt->komora->dalsi;
+	TKomora *K=F->OBJEKT_akt->komora->dalsi;
 	while(K!=NULL)
 	{
 		ret+=K->velikost;
@@ -1779,7 +1779,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->stav=1;
 	novy->data.PD=-1;//defaultní stav pro S&G roboty
 	novy->objekt_n=Objekt->n;//příslušnost elementu k objektu
-	//if(F->akt_Objekt!=NULL)novy->objekt_n=F->akt_Objekt->n;
+	//if(F->OBJEKT_akt!=NULL)novy->objekt_n=F->OBJEKT_akt->n;
 	novy->pohon=NULL;//pohon na kterém se nachází element
 	//if(novy->dalsi!=NULL && novy->dalsi->objekt_n==Objekt->n)novy->pohon=novy->dalsi->pohon;
 	//else novy->pohon=Objekt->pohon;
@@ -1817,7 +1817,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	}
 						
 	//mGrid elementu
-	if(F->akt_Objekt!=NULL&&Objekt->n==F->akt_Objekt->n||novy->eID==MaxInt||novy->eID==300||novy->eID==301)//stačí nastavovat pouze v náhledu při vloz_element, nová strategie, je mgrid, nekopírovat a používat jenom v akt_Objekt, zde však podmínka zda se jedná o akt_Objekt nebyla z nějakého důvodu možná
+	if(F->OBJEKT_akt!=NULL&&Objekt->n==F->OBJEKT_akt->n||novy->eID==MaxInt||novy->eID==300||novy->eID==301)//stačí nastavovat pouze v náhledu při vloz_element, nová strategie, je mgrid, nekopírovat a používat jenom v OBJEKT_akt, zde však podmínka zda se jedná o OBJEKT_akt nebyla z nějakého důvodu možná
 	{
 		novy->mGrid=new TmGrid(F);
 		novy->mGrid->Tag=6;//ID formu
@@ -1900,7 +1900,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 	  			if(ELEMENTY->predchozi->n==posledni->n)ELEMENTY->predchozi=Element;
 	  		}
 	  		//geometrie + ošetření proti přiřazování geometrie v metodě kopiruj_elementy
-	  		if(F->akt_Objekt!=NULL && Element->n!=1 && Element->Xt==-100)//nutna podminka, pri nacitani z binarky je akt_Objekt=NULL a nactou se hodnoty OK
+	  		if(F->OBJEKT_akt!=NULL && Element->n!=1 && Element->Xt==-100)//nutna podminka, pri nacitani z binarky je OBJEKT_akt=NULL a nactou se hodnoty OK
 	  		vloz_G_element(Element,0,Element->predchozi->geo.X4,Element->predchozi->geo.Y4,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,Element->predchozi->geo.orientace);
 	  	}
 	  	else /*if(p->n!=Element->n)*///vkládám mezi elementy, vpřípadě, že bylo vloženo před prví prvek vrací Element, přesun je již vyřešen
@@ -2040,7 +2040,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 		//vkládání geometrie
 		else
 		{
-			if(vyhybka_pom!=NULL && force_razeni->eID==301 && force_razeni->objekt_n!=F->akt_Objekt->n)//vkládání elementu mezi výhybku a spojku
+			if(vyhybka_pom!=NULL && force_razeni->eID==301 && force_razeni->objekt_n!=F->OBJEKT_akt->n)//vkládání elementu mezi výhybku a spojku
 			{
       	Element->dalsi=force_razeni;
 				force_razeni->predchozi2->dalsi2=Element;
@@ -2277,7 +2277,7 @@ void Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->data.pocet_voziku=Original->data.pocet_voziku;
 	Kopie->data.pocet_pozic=Original->data.pocet_pozic;
 	Kopie->geo=Original->geo;
-	Kopie->mGrid=new TmGrid(F);//nová strategie, je mgrid, nekopírovat a používat jenom v akt_Objekt, zde však podmínka zda se jedná o akt_Objekt nebyla z nějakého důvodu možná
+	Kopie->mGrid=new TmGrid(F);//nová strategie, je mgrid, nekopírovat a používat jenom v OBJEKT_akt, zde však podmínka zda se jedná o OBJEKT_akt nebyla z nějakého důvodu možná
 	Kopie->objekt_n=Original->objekt_n;
 	//if(Original->pohon!=NULL)Kopie->pohon=vrat_pohon(Original->pohon->n);
 	//else
@@ -2321,7 +2321,7 @@ void Cvektory::aktualizace_prirazeni_pohonu_k_elementum(unsigned int oldN,unsign
 //připraví vektor provizorní osy pohonu
 void Cvektory::vytvor_elementarni_osu(TObjekt *Original, TObjekt  *Kopie)
 {                 //smazat
-	if(Original==F->pom && Kopie==F->akt_Objekt)
+	if(Original==F->pom && Kopie==F->OBJEKT_akt)
 	{
 		//hlavicka_elementy(Kopie);
 	//	Kopie->elementy->geo.rotace=m.Rt90(F->d.trend(F->pom));
@@ -2639,17 +2639,17 @@ short Cvektory::PtInKota_elementu(TObjekt *Objekt,long X,long Y)
 	return RET;
 }
 ////---------------------------------------------------------------------------
-//posune pouze Element z pomocného spojového seznamu akt_Objekt na parametrem uvedenou vzádlenost (v metrech) od elementu předchozího, pokud je implicitní hodnota pusun_dalsich_elementu false změněna na true, jsou o danou změnu posunu přesunuty i elementy následující Elementu (tudíž jejich vzdálenost od Elementu bude zachována, naopak v případě výchozí hodnoty false je následujícím/dalším elementům poloha zachována)
+//posune pouze Element z pomocného spojového seznamu OBJEKT_akt na parametrem uvedenou vzádlenost (v metrech) od elementu předchozího, pokud je implicitní hodnota pusun_dalsich_elementu false změněna na true, jsou o danou změnu posunu přesunuty i elementy následující Elementu (tudíž jejich vzdálenost od Elementu bude zachována, naopak v případě výchozí hodnoty false je následujícím/dalším elementům poloha zachována)
 bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dalsich_elementu,bool posun_kurzorem,bool kontrola_zmeny_poradi)
 { //!!!!!!po nasazení geometrie nutno zdokonalit, nebude se pracovát pouze se vzdálenosti na linii buď vodorvné či svislé, ale i v oblouku
 	Cvektory::TElement *E=NULL;
 	bool RET=true;
-	if(F->akt_Objekt!=NULL && F->akt_Objekt->element!=NULL/*&&F->Akce!=F->MOVE_ELEMENT*/)//raději ošetření, ač by se metoda měla volat jen v případě existence akt_Objekt
+	if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->element!=NULL/*&&F->Akce!=F->MOVE_ELEMENT*/)//raději ošetření, ač by se metoda měla volat jen v případě existence OBJEKT_akt
 	{
 		bool posun_povolit=true;
 		TPointD puv_souradnice;
 		puv_souradnice.x=Element->X;puv_souradnice.y=Element->Y;
-		if(F->akt_Objekt->element!=NULL&&vzdalenost!=0)//musí existovat alespoň jeden element&&nesmí být vzdálenost rovna nule
+		if(F->OBJEKT_akt->element!=NULL&&vzdalenost!=0)//musí existovat alespoň jeden element&&nesmí být vzdálenost rovna nule
 		{
 			//////Načtení délky před posunem
 			double vzd=vzdalenost_od_predchoziho_elementu(Element,false);
@@ -2667,13 +2667,13 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 					case 270:Element->X=Element->X+vzdalenost;break;
 				}
 				//kontrola zda je element stále na linii
-				if(F->bod_na_geometrii(0,0,Element) || Element->n==vrat_posledni_element_objektu(F->akt_Objekt)->n || !kontrola_zmeny_poradi)
+				if(F->bod_na_geometrii(0,0,Element) || Element->n==vrat_posledni_element_objektu(F->OBJEKT_akt)->n || !kontrola_zmeny_poradi)
 				{
 
 					//kontrola + změna pořadí
 					if(kontrola_zmeny_poradi)
 					{
-						E=vloz_element_pred(F->akt_Objekt,Element);
+						E=vloz_element_pred(F->OBJEKT_akt,Element);
 						if(E!=NULL && Element->dalsi!=NULL && E->n!=Element->dalsi->n)zmen_poradi_elementu(Element,E);
 					}
 					//aktualizace posouvaného elementu
@@ -2697,12 +2697,12 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				if(Element->orientace==0||Element->orientace==180)Element->X=Element->X+vzdalenost;
 				else Element->Y=Element->Y+vzdalenost;
 				//kontrola zda je element stále na linii
-				if(F->bod_na_geometrii(0,0,Element) || Element->n==vrat_posledni_element_objektu(F->akt_Objekt)->n || !kontrola_zmeny_poradi)//pokud ano
+				if(F->bod_na_geometrii(0,0,Element) || Element->n==vrat_posledni_element_objektu(F->OBJEKT_akt)->n || !kontrola_zmeny_poradi)//pokud ano
 				{
 					//kontrola + změna pořadí
 					if(kontrola_zmeny_poradi)
 					{
-						E=vloz_element_pred(F->akt_Objekt,Element);
+						E=vloz_element_pred(F->OBJEKT_akt,Element);
 						if(E!=NULL && Element->dalsi!=NULL && E->n!=Element->dalsi->n)zmen_poradi_elementu(Element,E);
 					}
 					//aktualizace posouvaného elementu
@@ -2723,7 +2723,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			if(pusun_dalsich_elementu && posun_povolit)
 			{
 				TElement *E=Element->dalsi;
-				while(E!=NULL && E->objekt_n==F->akt_Objekt->n)
+				while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
 				{
 					puv_souradnice.x=E->X;puv_souradnice.y=E->Y;
 					if(E->geo.typ!=0)break;//ukončení v případě, že se někde nachází jiná geometrie než linie
@@ -2867,7 +2867,7 @@ double Cvektory::vrat_rotaci_jigu_po_predchazejicim_elementu(TElement *Element)
 	TElement *E=ELEMENTY->dalsi;
 	while(E!=NULL)
 	{
-		if(Element==E)//pozor nelze porovnávat jen ukazatele, může docházet k porování nepřímých kopii (viz akt_Objekt)
+		if(Element==E)//pozor nelze porovnávat jen ukazatele, může docházet k porování nepřímých kopii (viz OBJEKT_akt)
 		{
 			nalezeno=true;
 			break;//akcelerátor, skončí cyklus
@@ -2990,7 +2990,7 @@ void Cvektory::aktualizuj_sparovane_ukazatele()
 			//uprava tabulek je-li potřeba
 			try
 			{
-				if(F->akt_Objekt!=NULL && E->objekt_n==F->akt_Objekt->n && E->sparovany!=NULL)
+				if(F->OBJEKT_akt!=NULL && E->objekt_n==F->OBJEKT_akt->n && E->sparovany!=NULL)
 				{
 					if(E->eID==0)E->mGrid->Cells[1][1].Text=E->sparovany->name;
 					else if(vrat_druh_elementu(E)==0)E->mGrid->Cells[1][E->mGrid->RowCount-1].Text=E->sparovany->name;
@@ -3009,7 +3009,7 @@ void Cvektory::aktualizuj_sparovane_ukazatele()
 	//zapsání do mGridu
 	try
 	{
-		if(F->akt_Objekt!=NULL && posledni->objekt_n==F->pom->n)
+		if(F->OBJEKT_akt!=NULL && posledni->objekt_n==F->pom->n)
 		{
 			if(posledni->eID==0)posledni->mGrid->Cells[1][1].Text=posledni->sparovany->name;
 			else posledni->mGrid->Cells[1][posledni->mGrid->RowCount-1].Text=posledni->sparovany->name;
@@ -3029,9 +3029,9 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
   	double cas=0;
   	bool pokracovat=true,error=false;
 		unsigned int i=0;//počet průchodu skrze objekt Elementu
-		if(Cesta==NULL && zakazka_akt!=NULL && zakazka_akt->n!=NULL)//pokud nejsou v datech elementu aktuální informace
+		if(Cesta==NULL && ZAKAZKA_akt!=NULL && ZAKAZKA_akt->n!=NULL)//pokud nejsou v datech elementu aktuální informace
 		{
-			Cesta=vrat_segment_cesty(zakazka_akt,Element);
+			Cesta=vrat_segment_cesty(ZAKAZKA_akt,Element);
 			if(Cesta!=NULL)Element->data=Cesta->data;
 		}
 		//TObjekt *O=vrat_objekt(Element->objekt_n);
@@ -3060,7 +3060,7 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 		Element->data.RT.y=RT;//přepočítané RT, nebo totožné s ryzím - již se může odstranit?
 
 		//vypsání RT do tabulky elementu
-		if(F->akt_Objekt!=NULL && Element->objekt_n==F->akt_Objekt->n)
+		if(F->OBJEKT_akt!=NULL && Element->objekt_n==F->OBJEKT_akt->n)
 		{
 			switch(Element->eID)
 	  	{
@@ -3108,7 +3108,7 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 			}
 			//pokud některý z geometrických úseků neměl přiřazený pohon RT nebude správné, vypsat error
 			if(error)Element->mGrid->ShowNote(F->ls->Strings[421],F->d.clError,14);//"RT není relevantní, některý z objektů nemá pohon!"
-			if(F->akt_Objekt->zobrazit_mGrid && refresh_mGrid)Element->mGrid->Refresh();
+			if(F->OBJEKT_akt->zobrazit_mGrid && refresh_mGrid)Element->mGrid->Refresh();
 		}
     //uložení erroru do dat, + 1 000 000 nebo - 1 000 000
 		if(error)
@@ -3610,7 +3610,7 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 		}
 	}
 	//hláška uživateli
-	if(!povolit && F->akt_Objekt!=NULL && zobrazit_tip)F->TIP=F->ls->Strings[315];//"Nelze odstranit předávací místo"
+	if(!povolit && F->OBJEKT_akt!=NULL && zobrazit_tip)F->TIP=F->ls->Strings[315];//"Nelze odstranit předávací místo"
 	if(povolit && (Element->dalsi==NULL || Element->dalsi!=NULL && Element->geo.typ==0 && Element->dalsi->geo.typ==0 || preskocit_kontolu))
 	{
 		if(O!=NULL && O->element->n==Element->n && Element->dalsi!=NULL && Element->dalsi->objekt_n==O->n)O->element=Element->dalsi;
@@ -3674,7 +3674,7 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 		//vynulování WT
 		Element->WT=0;
 		//smazání a znovuvytvoření mGridu elementu
-		if(F->akt_Objekt!=NULL && Element->objekt_n==F->akt_Objekt->n)
+		if(F->OBJEKT_akt!=NULL && Element->objekt_n==F->OBJEKT_akt->n)
 		{
 			long ID=Element->mGrid->ID;
 			Element->mGrid->Delete();
@@ -3844,7 +3844,7 @@ void Cvektory::kopiruj_pohon(TPohon *Pohon,TObjekt *Objekt)
 		}
 		else
 		{
-			*Objekt->pohon=*Pohon;//překopírování hodnot pohonů bez spojového propojení s originálem, ale i přes další a předchozí není zoohledněno propojení se daným spojovým seznamem pohonů, daný pohon je pouze datovou součástí akt_Objekt, není samostatným objektem či objektem zařazeným ve spojáku pohonů
+			*Objekt->pohon=*Pohon;//překopírování hodnot pohonů bez spojového propojení s originálem, ale i přes další a předchozí není zoohledněno propojení se daným spojovým seznamem pohonů, daný pohon je pouze datovou součástí OBJEKT_akt, není samostatným objektem či objektem zařazeným ve spojáku pohonů
 		}
 	}
 	else Objekt->pohon=NULL;
@@ -3876,7 +3876,7 @@ bool Cvektory::pohon_je_pouzivan(unsigned long n,bool po_obektech)
 		TElement *E=ELEMENTY->dalsi;
 		while(E!=NULL)
 		{
-			if(F->akt_Objekt!=NULL && F->akt_Objekt->n!=E->objekt_n || F->akt_Objekt==NULL)//kontrolovat pouze mimo aktuálně editované elementy
+			if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n || F->OBJEKT_akt==NULL)//kontrolovat pouze mimo aktuálně editované elementy
 			{if(E->eID!=0 && E->eID!=200 && E->eID!=MaxInt && E->pohon!=NULL && E->pohon->n==n){nalezen=true;break;}}
 			E=E->dalsi;
 		}
@@ -4856,10 +4856,10 @@ void Cvektory::kopirujZAKAZKY2ZAKAZKY_temp()
 void Cvektory::update_akt_zakazky()
 {
  //kontrola zda je zvolená uživatelská zakázka nebo jde o defaultní zakázku
- if(zakazka_akt==NULL || zakazka_akt!=NULL && zakazka_akt->n==0)
+ if(ZAKAZKA_akt==NULL || ZAKAZKA_akt!=NULL && ZAKAZKA_akt->n==0)
  {
 	 vytvor_default_zakazku();//jde o default zakázku, proběhne její aktualizace
-   zakazka_akt=ZAKAZKY;
+   ZAKAZKA_akt=ZAKAZKY;
  }
  else
  {
@@ -4871,17 +4871,13 @@ void Cvektory::update_akt_zakazky()
 void Cvektory::vytvor_default_zakazku()
 {
 	////ZAKAZKA
-	TZakazka *Z=ZAKAZKY;
-	if(ZAKAZKY->dalsi==NULL)//pokud první zakázka neexistuje, založí ji
-	{																																				//počet vozíků vygeneruje dle hodnoty WIP+jeden navíc kvůli přehlednosti, kdy začíná náběh
-		Z->id=1;Z->typ=1;Z->name="Nová zakázka";Z->barva=clRed;Z->pomer=100;Z->TT=PP.TT;Z->pocet_voziku=WIP(1)+1;Z->serv_vozik_pocet=0;Z->opakov_servis=0;
-		Z->n==0;
-		Z->cesta=NULL;
-		Cvektory::TJig j;
-		j.sirka=F->d.v.PP.sirka_jig;j.delka=F->d.v.PP.delka_jig;j.vyska=F->d.v.PP.vyska_jig;j.ks=1;//defaultní hodnoty jigu
-		Z->jig=j;
-		vloz_zakazku(Z);//vloží hotovou zakázku do spojového seznamu ZAKÁZKY
-	}//jinak přepíše novou cestou (zajištění aktualizace parametrů z objektu) stávající první zakázku
+	TZakazka *Z=ZAKAZKY;																																		//počet vozíků vygeneruje dle hodnoty WIP+jeden navíc kvůli přehlednosti, kdy začíná náběh
+	Z->id=1;Z->typ=1;Z->name="Nová zakázka";Z->barva=clRed;Z->pomer=100;Z->TT=PP.TT;Z->pocet_voziku=WIP(1)+1;Z->serv_vozik_pocet=0;Z->opakov_servis=0;
+	Z->n==0;
+	Z->cesta=NULL;
+	Cvektory::TJig j;
+	j.sirka=F->d.v.PP.sirka_jig;j.delka=F->d.v.PP.delka_jig;j.vyska=F->d.v.PP.vyska_jig;j.ks=1;//defaultní hodnoty jigu
+	Z->jig=j;
 
 	////CESTA
 	inicializace_cesty(Z);//vymaže předchozí cestu a zavolá hlavičku cesty nové
@@ -6139,7 +6135,7 @@ void Cvektory::vytvor_hlavicku_souboru()
 	File_hlavicka.radius=PP.radius;
 	//stav ikony  TODO ROSTA dodelat
 	//File_hlavicka.objekt_posunout_vse
-	if(zakazka_akt!=NULL)File_hlavicka.zakazka_akt=zakazka_akt->n;
+	if(ZAKAZKA_akt!=NULL)File_hlavicka.zakazka_akt=ZAKAZKA_akt->n;
 	else File_hlavicka.zakazka_akt=0;
 }
 //---------------------------------------------------------------------------
@@ -7629,7 +7625,7 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 	if(!storno)//pokud se nejedná o storno funkcionalitu vytvořím nový prázdný obraz do kterého budu projetk ukládat
 	{
 		//detekování přechodu z layoutu do editace nebo z editace do editace, editace a layout nebo editace a editace jsou nezávislé v Undo, tz. nelze se pomocí Undo dostat z editace zpět do layout, proto je nutné při přechodu smazat všechny obrazy
-		if(DATA->predchozi->n>0 && F->akt_Objekt!=NULL && (DATA->predchozi->edit_Objekt==0 || DATA->predchozi->edit_Objekt>0 && DATA->predchozi->edit_Objekt!=F->akt_Objekt->n))
+		if(DATA->predchozi->n>0 && F->OBJEKT_akt!=NULL && (DATA->predchozi->edit_Objekt==0 || DATA->predchozi->edit_Objekt>0 && DATA->predchozi->edit_Objekt!=F->OBJEKT_akt->n))
 		{
 			//mazání všech jíž nepotřebných obrazů
    		while(DATA->dalsi!=NULL)
@@ -7659,7 +7655,7 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 		DATA->predchozi=obraz;
 		obraz->dalsi=NULL;
 		//kontrola zda je otevřená editace, pokud ano doplní do obrazu n editovaného objektu (slouží k rozpoznání zda šlo o editaci nebo layout)
-		if(F->akt_Objekt!=NULL)obraz->edit_Objekt=F->akt_Objekt->n;
+		if(F->OBJEKT_akt!=NULL)obraz->edit_Objekt=F->OBJEKT_akt->n;
 	}
 	if(storno && DATA->Objekty->predchozi->n!=0)obraz=NULL;//pokud se spouští otevírání náhledu znova (přechod z editace do editace) v průběhu manipulace z daty nepřepisovat hlavičku,pří přechodu z editace do editace nenačítat z hlavičky, důležité!!!!
 
@@ -7667,7 +7663,7 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 	if(obraz!=NULL)
 	{
 		//pro Layout a Storno
-		//if(F->akt_Objekt==NULL || storno)
+		//if(F->OBJEKT_akt==NULL || storno)
 		{
 	  	//kopírování všech objektů
 	  	TObjekt *O=OBJEKTY->dalsi,*o_kop=NULL;
@@ -7710,19 +7706,19 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 			delete []tab_pruchodu;
 		}
 		//pro Editaci
-//		if(F->akt_Objekt!=NULL && !storno)
+//		if(F->OBJEKT_akt!=NULL && !storno)
 //		{
 //			//kopie aktuálně editovaného objektu
 //			TObjekt *o_kop=NULL;
 //			o_kop=new TObjekt;
-//			kopiruj_objekt(F->akt_Objekt,o_kop);
+//			kopiruj_objekt(F->OBJEKT_akt,o_kop);
 //			obraz->Objekty->predchozi=o_kop;
 //			obraz->Objekty->dalsi=o_kop;
 //			o_kop->predchozi=obraz->Objekty;
 //			o_kop->dalsi=NULL;
 //			o_kop=NULL;delete o_kop;
 //			//kopie všech elementů od prvního elementu editovaného objektu (například vázaná uprava geometrie posune celou linku)
-//			TElement *E=F->akt_Objekt->element,*e_kop=NULL;
+//			TElement *E=F->OBJEKT_akt->element,*e_kop=NULL;
 //			while(E!=NULL)
 //			{
 //				//vytvoření kopie
@@ -7734,7 +7730,7 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 //				e_kop->predchozi=obraz->Elementy->predchozi;
 //				obraz->Elementy->predchozi=e_kop;
 //				e_kop->dalsi=NULL;
-//				if((E->dalsi!=NULL && E->dalsi->objekt_n!=F->akt_Objekt->n || E->dalsi==NULL) && obraz->posledni_element_n==0)obraz->posledni_element_n=E->n;//slouží k uchováni počtu elementů v editovaném objektu, pro účely více druhů načtení z obrazu
+//				if((E->dalsi!=NULL && E->dalsi->objekt_n!=F->OBJEKT_akt->n || E->dalsi==NULL) && obraz->posledni_element_n==0)obraz->posledni_element_n=E->n;//slouží k uchováni počtu elementů v editovaném objektu, pro účely více druhů načtení z obrazu
 //				//ukazatelové záležitosti
 //				e_kop=NULL;delete e_kop;
 //				E=E->dalsi;
@@ -7788,15 +7784,15 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 		////Layout nebo Storno
 		//if(obraz->edit_Objekt==0)
 		{
-			if(F->akt_Objekt!=NULL && !storno)
+			if(F->OBJEKT_akt!=NULL && !storno)
 			{
 				F->DrawGrid_knihovna->SetFocus();
-				TElement *E=F->akt_Objekt->element;
-				while(E!=NULL && E->objekt_n==F->akt_Objekt->n)
+				TElement *E=F->OBJEKT_akt->element;
+				while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
 				{
 					E->mGrid->Delete();
 					E->mGrid=NULL;
-					E=dalsi_krok(E,F->akt_Objekt);
+					E=dalsi_krok(E,F->OBJEKT_akt);
 				}
 				E=NULL;delete E;
 				F->PmG->Delete();F->PmG=NULL;
@@ -7822,7 +7818,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 	  		dO=dO->dalsi;
     	}
 			delete dO;dO=NULL;
-			if(obraz->edit_Objekt!=0 && !storno)F->akt_Objekt=vrat_objekt(obraz->edit_Objekt);
+			if(obraz->edit_Objekt!=0 && !storno)F->OBJEKT_akt=vrat_objekt(obraz->edit_Objekt);
 
 	  	////načtení Elementů
 			TElement *dE=obraz->Elementy->dalsi,*E=NULL;
@@ -7834,7 +7830,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 				kopiruj_element(dE,E);
 				//vložení do seznamu ELEMENTY
 				sekvencni_zapis_cteni(E,NULL,tab_pruchodu);
-				if(F->akt_Objekt !=NULL && E->objekt_n==F->akt_Objekt->n && !storno)
+				if(F->OBJEKT_akt !=NULL && E->objekt_n==F->OBJEKT_akt->n && !storno)
 				{
 					E->mGrid->Tag=6;//ID formu
 					E->mGrid->ID=E->n;
@@ -7848,7 +7844,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 			delete dE;dE=NULL;
 			delete []tab_pruchodu;tab_pruchodu=NULL;vyhybka_pom=NULL;
 			//aktualizace sparovaných ukazatelu a RT
-			if(F->akt_Objekt!=NULL && !storno)
+			if(F->OBJEKT_akt!=NULL && !storno)
 			{
 				//F->vytvoreni_tab_pohon();
 				aktualizuj_sparovane_ukazatele();
@@ -7858,12 +7854,12 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 //		else
 //		{
 //			//deklatace ukazatelů
-//			TElement *za=F->akt_Objekt->element->predchozi,*E=NULL,*prvni_dalsiO=vrat_posledni_element_objektu(F->akt_Objekt)->dalsi;
+//			TElement *za=F->OBJEKT_akt->element->predchozi,*E=NULL,*prvni_dalsiO=vrat_posledni_element_objektu(F->OBJEKT_akt)->dalsi;
 //			prvni_dalsiO=NULL;delete prvni_dalsiO;
 //			//smazání starých mGridů
 //			F->DrawGrid_knihovna->SetFocus();
-//			E=F->akt_Objekt->element;
-//			while(E!=NULL && E->objekt_n==F->akt_Objekt->n)
+//			E=F->OBJEKT_akt->element;
+//			while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
 //			{
 //				E->mGrid->Delete();
 //				E->mGrid=NULL;
@@ -7873,19 +7869,19 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 //			//mazání mGridu pohonů
 //			F->PmG->Delete();F->PmG=NULL;
 //			//aktualizace dat v aktuálně editovaném objektu
-//			vymaz_komory(F->akt_Objekt);
-//			vymaz_body(F->akt_Objekt);
-//			obraz->Objekty->dalsi->element=F->akt_Objekt->element;//uchování ukazatele na první element při kopírování objektu
-//			kopiruj_objekt(obraz->Objekty->dalsi,F->akt_Objekt);
+//			vymaz_komory(F->OBJEKT_akt);
+//			vymaz_body(F->OBJEKT_akt);
+//			obraz->Objekty->dalsi->element=F->OBJEKT_akt->element;//uchování ukazatele na první element při kopírování objektu
+//			kopiruj_objekt(obraz->Objekty->dalsi,F->OBJEKT_akt);
 //			//pokud došlo ke změně počtu elementů (=mazání, přidání elementu) budou předchozí elementy smazány a vloženy nové
-//			if(vrat_posledni_element_objektu(F->akt_Objekt)->n!=obraz->posledni_element_n)
+//			if(vrat_posledni_element_objektu(F->OBJEKT_akt)->n!=obraz->posledni_element_n)
 //			{
-//				vymaz_elementy(F->akt_Objekt);//smaže všechny elementy v objektu
+//				vymaz_elementy(F->OBJEKT_akt);//smaže všechny elementy v objektu
 //				E=obraz->Elementy->dalsi;
 //				TElement *novy=NULL;
 //				while(E!=NULL)
 //				{
-//					if(E->objekt_n==F->akt_Objekt->n)//znovuvložení elementů
+//					if(E->objekt_n==F->OBJEKT_akt->n)//znovuvložení elementů
 //					{
 //						//kopírování atributů
 //						novy=new TElement;
@@ -7909,22 +7905,22 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 //							ELEMENTY->dalsi=novy;
 //							novy->predchozi=ELEMENTY;
 //						}
-//						if(F->akt_Objekt->element==NULL)F->akt_Objekt->element=novy;
+//						if(F->OBJEKT_akt->element==NULL)F->OBJEKT_akt->element=novy;
 //						za=novy;
 //						//ukazatelové záležitosi
 //						novy=NULL;delete novy;
 //					}
 //					else//aktualizace parametrů elementů nasledujících za editovaným objektem
 //					{
-//						if(novy==NULL)novy=vrat_posledni_element_objektu(F->akt_Objekt)->dalsi;
+//						if(novy==NULL)novy=vrat_posledni_element_objektu(F->OBJEKT_akt)->dalsi;
 //						else novy=novy->dalsi;
 //						kopiruj_element(E,novy);
 //					}
 //					E=E->dalsi;
 //				}
 //				//znovuvytvoření tabulky, v tomto případě musí být ve zvláštním cyklu!!!!!
-//				E=F->akt_Objekt->element;
-//				while(E!=NULL && E->objekt_n==F->akt_Objekt->n)
+//				E=F->OBJEKT_akt->element;
+//				while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
 //				{
 //					//znovuvytvoření tabulky, alokace paměti pro tabulku je v kopiruj_element();
 //					E->mGrid->Tag=6;//ID formu
@@ -7937,13 +7933,13 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 //			//nebyl změněn počet elementů, nebudu mazat pouze přepisovat parametry (aktualizace)
 //			else
 //			{
-//				TElement *or=F->akt_Objekt->element;E=obraz->Elementy->dalsi;
+//				TElement *or=F->OBJEKT_akt->element;E=obraz->Elementy->dalsi;
 //				while(E!=NULL)
 //				{
 //					//přepsaní parametry z obrazu
 //					kopiruj_element(E,or);
 //					//vytvoření nové tabulky, musí být rovnou za kopírováním elementu!!!!, pouze pro elementy v aktuálně editovaném objektu, průchod elementu i v následujícíh objektech, mohlo dojít ke změně například úpravením geometrie .. posun celé linky
-//					if(E->objekt_n==F->akt_Objekt->n)
+//					if(E->objekt_n==F->OBJEKT_akt->n)
 //					{
 //						or->mGrid->Tag=6;//ID formu
 //						or->mGrid->ID=or->n;
@@ -7956,7 +7952,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 //				E=NULL;delete E;
 //			}
 //			//aktualizace n
-//			E=vrat_posledni_element_objektu(F->akt_Objekt);
+//			E=vrat_posledni_element_objektu(F->OBJEKT_akt);
 //			unsigned long n=E->n;
 //			E=E->dalsi;
 //			while(E!=NULL)
@@ -7992,7 +7988,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 		delete dp;dp=NULL;
 
 		//znovu vytvoření tabulky pohonů pokud jsem v editaci
-		if(F->akt_Objekt!=NULL && !storno)F->vytvoreni_tab_pohon();
+		if(F->OBJEKT_akt!=NULL && !storno)F->vytvoreni_tab_pohon();
 
 		F->Timer_backup->Enabled=true;//obnovení timeru pro backup, nespouští se!
 		if(storno)

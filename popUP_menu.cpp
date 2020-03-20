@@ -541,13 +541,13 @@ void __fastcall TPopUPmenu::scLabel_cely_pohledClick(TObject *Sender)
 void __fastcall TPopUPmenu::scLabel_otocit_dolevaClick(TObject *Sender)
 {
 	closing=true;
-	Close();            // F->Memo(F->akt_Objekt->orientace_text);
-	if(F->akt_Objekt==NULL && F->JID!=-6)F->d.v.rotuj_objekt(F->pom,90);
+	Close();            // F->Memo(F->OBJEKT_akt->orientace_text);
+	if(F->OBJEKT_akt==NULL && F->JID!=-6)F->d.v.rotuj_objekt(F->pom,90);
 	else
 	{
-		if(F->akt_Objekt!=NULL)
+		if(F->OBJEKT_akt!=NULL)
 		{
-			F->akt_Objekt->orientace_text=F->m.Rt90(F->akt_Objekt->orientace_text-90);
+			F->OBJEKT_akt->orientace_text=F->m.Rt90(F->OBJEKT_akt->orientace_text-90);
 			F->nahled_ulozit(true);
 		}
 		else F->pom->orientace_text=F->m.Rt90(F->pom->orientace_text-90);
@@ -587,12 +587,12 @@ void __fastcall TPopUPmenu::scLabel_otocit_dopravaClick(TObject *Sender)
 {
 	closing=true;
 	Close();
-	if(F->akt_Objekt==NULL && F->JID!=-6)F->d.v.rotuj_objekt(F->pom,-90);
+	if(F->OBJEKT_akt==NULL && F->JID!=-6)F->d.v.rotuj_objekt(F->pom,-90);
 	else
 	{
-		if(F->akt_Objekt!=NULL)
+		if(F->OBJEKT_akt!=NULL)
 		{
-			F->akt_Objekt->orientace_text=F->m.Rt90(F->akt_Objekt->orientace_text+90);
+			F->OBJEKT_akt->orientace_text=F->m.Rt90(F->OBJEKT_akt->orientace_text+90);
 			F->nahled_ulozit(true);
 		}
 		else F->pom->orientace_text=F->m.Rt90(F->pom->orientace_text+90);

@@ -244,6 +244,7 @@ class Cvektory
 	};
 	TZakazka *ZAKAZKY;//spojový seznam zakázek
 	TZakazka *ZAKAZKY_temp;//spojový seznam zakázek
+	TZakazka *ZAKAZKA_akt;//udržuje aktuální zakázku (uživatelskou nebo defaultní)
 
 	struct TVozik
 	{
@@ -626,9 +627,6 @@ public:
   void update_akt_zakazky();//aktualizuje cestu aktuální zakázy, pokud je zvolena, pokud ne aktualizuje defaultní zakázku
 	void vytvor_default_zakazku();//pokud první zakázka neexistuje, založí ji a přiřadí ji cestu dle schématu, pokud existuje, tak ji smaže a nahradí novou
 	long vymaz_seznam_ZAKAZKY_temp();//smaze seznam ZAKAZKY_temp z paměti včetně přidružených cest, nutno implementovat při close() superformu (ať už při OK, storna, či křížku formu)
-
-	//proměnné pro zakázky
-  TZakazka *zakazka_akt;//aktuálně zvolená zakázka (default nebo uživatelská)
 
 private:
 	void hlavicka_ZAKAZKY_temp();//vytvoří novou hlavičku pro spojový seznam ZAKAZKY_temp, nutná volat při on_show superformuláře
