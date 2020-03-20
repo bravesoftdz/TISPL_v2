@@ -203,7 +203,6 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	antialiasing=true;
 	//nastavení implicitního souboru
 	duvod_k_ulozeni=false;
-	zakazka_akt=NULL;
 	Novy_soubor();
 	volat_parametry_linky=false;
 
@@ -1542,6 +1541,9 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 			 Schema->ImageIndex=78;
 			 scButton_zamek_layoutu->Hint=ls->Strings[43];//"Zamknout layout";
 		 }
+		 //odstranění staré aktuální zakázky
+		 d.v.zakazka_akt=NULL;
+		 d.v.update_akt_zakazky();//aktualizace defaultní
    	 REFRESH();
 	 }
 }
@@ -1633,7 +1635,6 @@ void TForm1::Novy_soubor(bool invalidate)//samotné vytvoření nového souboru
 			 zobrazit_barvy_casovych_rezerv=false;
 			 d.cas=0;
 			 Analyza->Down=false;
-			 zakazka_akt=NULL;
 			 //Schema->Down=true;
 			 FileName="Nový.tispl";
 			 scLabel_titulek->Caption=Caption+" - ["+FileName+"]";
@@ -1886,6 +1887,7 @@ void TForm1::startUP()
 		//pokud je v PP raster, ale nelze ho najít vypíše se hláška
 		if(d.v.PP.raster.filename!="" && !FileExists(d.v.PP.raster.filename) && mrYes==MB(ls->Strings[424]+" "+d.v.PP.raster.filename+ls->Strings[425],MB_YESNO))scButton_nacist_podkladClick(this);//"Nepodařilo se načíst podklad filename, zkontrolujte jeho existenci, nebo proveďte nové načtení."
 		d.v.vytvor_obraz_DATA();//vytvoření prvotního obrazu
+		d.v.update_akt_zakazky();//pokud je uživatelská provede aktualizace, pokud ne aktualizuje defaultní
 	}
 	else if(PopUPmenu->Showing || PopUPmenu->closing)PopUPmenu->Close();//pokud je spuštěné pop-up menu, tak ho vypne
 	Akce=NIC;
@@ -7270,14 +7272,14 @@ void TForm1::aktualizace_RT()
 			//aktualizace max počtu vozíků
 			if(E->eID==0)
 			{
-				if(zakazka_akt!=NULL){C=d.v.vrat_segment_cesty(zakazka_akt,E);if(C!=NULL)E->data=C->data;}//nahrání aktuálních dat
+				if(d.v.zakazka_akt!=NULL && d.v.zakazka_akt->n!=0){C=d.v.vrat_segment_cesty(d.v.zakazka_akt,E);if(C!=NULL)E->data=C->data;}//nahrání aktuálních dat
 				E->data.pocet_pozic=max_voziku(E);
 				try
 				{
 					E->mGrid->Cells[1][5].Text=E->data.pocet_pozic;
 				}catch(...){}
 				d.v.reserve_time(E,C);
-				if(zakazka_akt!=NULL && C!=NULL)C->data=E->data;//vrácení přepočítaných dat do zakázky
+				if(C!=NULL)C->data=E->data;//vrácení přepočítaných dat do zakázky
 			}
 			//aktualizace RT
 			if(d.v.vrat_druh_elementu(E)==0 && E->eID!=0)d.v.reserve_time(E);
@@ -8521,9 +8523,9 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni,bool plnit
 
 	//načtení aktuálních informací do elementu
 	Cvektory::TCesta *C=NULL;
-	if(zakazka_akt!=NULL)
+	if(d.v.zakazka_akt!=NULL && d.v.zakazka_akt->n!=0)
 	{
-		C=d.v.vrat_segment_cesty(zakazka_akt,E);
+		C=d.v.vrat_segment_cesty(d.v.zakazka_akt,E);
 		if(C!=NULL)E->data=C->data;
 	}
 
@@ -8534,7 +8536,7 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni,bool plnit
 	else dalsi_vytvoreni_tab_elementu(E,sirka_0,sirka_1,sirka_2,sirka_3,sirka_4,sirka_56,sirka_cisla,LO,cas,delka_otoce);
 
 	//vrácení přepočítaných dat do segmentu cesty
-	if(zakazka_akt!=NULL && C!=NULL)C->data=E->data;
+	if(C!=NULL)C->data=E->data;
 	C=NULL;delete C;
 
 	//formátování hlavičky tabulky (vždy stejné)
@@ -9441,7 +9443,7 @@ void TForm1::redesign_element()
 	Cvektory::TCesta *C=NULL;
 	while (E!=NULL && E->objekt_n==akt_Objekt->n)
 	{
-		if(zakazka_akt!=NULL)C=d.v.vrat_segment_cesty(zakazka_akt,E);
+		if(d.v.zakazka_akt!=NULL && d.v.zakazka_akt->n!=0)C=d.v.vrat_segment_cesty(d.v.zakazka_akt,E);
 		if(C!=NULL)E->data=C->data;//načtení aktuálních informací do elementu
 		akt_tabulek(E,LO,delka_otoce,cas,sirka_0,sirka_1,sirka_2,sirka_3,sirka_4,sirka_56,sirka_cisla);
 		E=E->dalsi;
@@ -11731,7 +11733,7 @@ unsigned short int TForm1::Otevrit_soubor(UnicodeString soubor)//realizuje samot
 			d.v.PP.typ_linky=d.v.File_hlavicka.typ_linky;
 			d.v.PP.radius=d.v.File_hlavicka.radius;
 			d.v.pocet_vyhybek=d.v.File_hlavicka.pocet_vyhybek;
-			if(d.v.File_hlavicka.zakazka_akt!=0)zakazka_akt=d.v.vrat_zakazku(d.v.File_hlavicka.zakazka_akt);
+			if(d.v.File_hlavicka.zakazka_akt!=0)d.v.zakazka_akt=d.v.vrat_zakazku(d.v.File_hlavicka.zakazka_akt);
 			//MOD=d.v.File_hlavicka.Mod;
 			MOD=SCHEMA;//defaultně se bude vždy otvírat v layoutu
 //			switch(MOD)

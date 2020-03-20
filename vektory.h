@@ -623,8 +623,13 @@ public:
 	TZakazka *vrat_temp_zakazku_z_mGridu(unsigned long ID);//vrátí ukazatel (resp. data) na editovanou zakázku, podle jejiho mGridu
 	void kopirujZAKAZKY_temp2ZAKAZKY(bool mazat_ZAKAZKY_temp=true);//po stisku OK v superformu zkopíruje data z ZAKAZKY_temp do ZAKAZKY, implicitně následně smaže ZAKAZKY_temp
 	void kopirujZAKAZKY2ZAKAZKY_temp();//zkopíruje ukazatel na ZAKAZEK do ZAKAZKY_temp, slouží v momentu načítání SF
+  void update_akt_zakazky();//aktualizuje cestu aktuální zakázy, pokud je zvolena, pokud ne aktualizuje defaultní zakázku
 	void vytvor_default_zakazku();//pokud první zakázka neexistuje, založí ji a přiřadí ji cestu dle schématu, pokud existuje, tak ji smaže a nahradí novou
 	long vymaz_seznam_ZAKAZKY_temp();//smaze seznam ZAKAZKY_temp z paměti včetně přidružených cest, nutno implementovat při close() superformu (ať už při OK, storna, či křížku formu)
+
+	//proměnné pro zakázky
+  TZakazka *zakazka_akt;//aktuálně zvolená zakázka (default nebo uživatelská)
+
 private:
 	void hlavicka_ZAKAZKY_temp();//vytvoří novou hlavičku pro spojový seznam ZAKAZKY_temp, nutná volat při on_show superformuláře
 	void vloz_temp_zakazku(TZakazka *Zakazka_temp);//vloží vytvořenéu zakázku do spojového seznamu ZAKÁZKY_temp
