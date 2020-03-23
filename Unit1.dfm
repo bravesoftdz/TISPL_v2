@@ -6775,7 +6775,7 @@ object Form1: TForm1
     Align = alCustom
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 44
+    TabOrder = 43
     TabStop = True
     Visible = False
     OnClick = scGPGlyphButton_definice_zakazekClick
@@ -8929,7 +8929,9 @@ object Form1: TForm1
     Font.Style = []
     Font.Quality = fqClearTypeNatural
     ParentFont = False
-    TabOrder = 45
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 44
     TabStop = True
     Visible = False
     OnClick = scGPButton_ulozit_cestuClick
@@ -9035,7 +9037,7 @@ object Form1: TForm1
     Font.Style = []
     Font.Quality = fqClearTypeNatural
     ParentFont = False
-    TabOrder = 46
+    TabOrder = 45
     TabStop = True
     Visible = False
     OnClick = scGPButton_storno_cestaClick
@@ -9152,6 +9154,7 @@ object Form1: TForm1
     ShowHint = True
     TabOrder = 47
     Visible = False
+    OnClick = scGPGlyphButton_odstran_cestuClick
     ArrowPosition = scapBottom
     Animation = True
     Caption = 'x'
@@ -10380,7 +10383,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118009009A00910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118009009A40910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -11503,7 +11506,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01015400B40CC40C30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01015400B40CC80C30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000002004000001002000000000000060
       0C00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -49468,9 +49471,11 @@ object Form1: TForm1
     Top = 664
     object N11: TMenuItem
       Caption = 'Smazat cestu'
+      OnClick = scGPGlyphButton_odstran_cestuClick
     end
     object N21: TMenuItem
       Caption = 'Smazat '#250'sek cesty'
+      OnClick = N21Click
     end
   end
   object PopupMenu_posledni_projekty: TPopupMenu
