@@ -967,7 +967,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=445;i++)
+	for(unsigned short i=0;i<=446;i++)
 	{
 		switch(i)
 		{
@@ -1417,6 +1417,7 @@ void TForm1::DesignSettings()
 			case 443:text="Zobrazit kóty geometrie";break;
 			case 444:text="Skrýt kóty geometrie";break;
 			case 445:text="Rozmístění jigů";break;
+			case 446:text="Kliknutím potvrdíte cestu";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -2764,6 +2765,8 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		{
       ////Geometrie
 			if(Akce==GEOMETRIE && !editace_textu)ukonceni_geometrie();
+			////Potvrzení tvorby cesty
+			if(MOD==TVORBA_CESTY)scGPButton_ulozit_cestuClick(this);
 			////Hala
 			if(editace_textu)smaz_kurzor();if(Akce==DRAW_HALA&&d.v.HALA.body!=NULL&&d.v.HALA.body->predchozi->n>2){d.v.vloz_bod(d.v.HALA.body->dalsi->X,d.v.HALA.body->dalsi->Y,pom,NULL,ortogonalizace_stav,true);Akce=NIC;kurzor(standard);TIP="";REFRESH();}
 			else if(Akce==DRAW_HALA){d.v.vymaz_body();Akce=NIC;kurzor(standard);TIP="";REFRESH();}
@@ -4984,19 +4987,19 @@ void TForm1::onPopUP(int X, int Y)
 				{
 					PopUPmenu->scLabel_nastavit_parametry->Caption=N+"\n  "+pom->name.UpperCase();
 					//PopUPmenu->scLabel_kopirovat->Caption=kopirovat+"\n  "+pom->name.UpperCase();
-					PopUPmenu->scLabel_smazat->Caption=smazat+"\n  "+pom->name.UpperCase();
+					if(d.v.ZAKAZKA_akt==NULL || d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n==0)PopUPmenu->scLabel_smazat->Caption=smazat+"\n  "+pom->name.UpperCase();
 				}
 				else
 				{
 					PopUPmenu->scLabel_nastavit_parametry->Caption=N+" "+pom->name.UpperCase();
 					//PopUPmenu->scLabel_kopirovat->Caption=kopirovat+" "+pom->name.UpperCase();
-					PopUPmenu->scLabel_smazat->Caption=smazat+" "+pom->name.UpperCase();
+					if(d.v.ZAKAZKA_akt==NULL || d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n==0)PopUPmenu->scLabel_smazat->Caption=smazat+" "+pom->name.UpperCase();
 				}
 				PopUPmenu->Item_otocit_doleva->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 				PopUPmenu->Item_otocit_doprava->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 				//pozor rozhoduje pořadí
-				PopUPmenu->Item_smazat->FillColor=(TColor)RGB(240,240,240);//workaround, nutnost takto vytáhnout, jinak se položka zvýrazňuje, musí být tady
-				PopUPmenu->Item_smazat->Visible=true;PopUPmenu->Panel_UP->Height+=34;
+				if(d.v.ZAKAZKA_akt==NULL || d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n==0)PopUPmenu->Item_smazat->FillColor=(TColor)RGB(240,240,240);//workaround, nutnost takto vytáhnout, jinak se položka zvýrazňuje, musí být tady
+				if(d.v.ZAKAZKA_akt==NULL || d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n==0){PopUPmenu->Item_smazat->Visible=true;PopUPmenu->Panel_UP->Height+=34;}
 				//PopUPmenu->Item_kopirovat->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 				if((long)pom->id!=VyID&&(long)pom->id!=pocet_objektu_knihovny+1)
 				{PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;}
@@ -12877,17 +12880,15 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {      Memo3->Clear();
-	switch(MOD)
-	{
-		case 0:Memo("NO");break;
-		case 1:Memo("schema");break;
-		case 2:Memo("layout");break;
-		case 3:Memo("castosa");break;
-		case 4:Memo("tprocesy");break;
-		case 5:Memo("simulace");break;
-		case 6:Memo("editace");break;
-		case 7:Memo("tvorba_cesty");break;
-	}
+	d.v.vytvor_obraz_DATA(); Memo(1);   d.v.pozice_data=d.v.DATA->predchozi->n; Memo(2);
+	d.v.nacti_z_obrazu_DATA();  Memo(3); aktualizace_RT();  Memo(4);  REFRESH();Memo("hotovo");
+//	Cvektory::TCesta_uloz *c=d.v.DATA->predchozi->Cesta;    //Memo("asdsad");
+//	while(c!=NULL)
+//	{
+//		Memo(c->n);
+//		c=c->dalsi;
+//	}
+//	delete c;c=NULL;
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -15070,10 +15071,10 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
     scGPGlyphButton_close_legenda_casove_osy->Caption=ls->Strings[66];
     CheckBox_pouzit_zadane_kapacity_OLD->Caption=ls->Strings[67];
     CheckBoxAnimovatSG_OLD->Caption=ls->Strings[68];
-    scGPLabel1->Caption=ls->Strings[69];
-    scGPButton_ulozit->Caption=ls->Strings[70];
-    scGPButton_zahodit->Caption=ls->Strings[71];
-    scGPLabel_prepinacKot->Caption=ls->Strings[72];
+		scGPLabel1->Caption=ls->Strings[69];
+		scGPButton_ulozit->Caption=ls->Strings[70];
+		scGPButton_zahodit->Caption=ls->Strings[71];
+		scGPLabel_prepinacKot->Caption=ls->Strings[72];
 		scGPImage_mereni_vzdalenost->Hint=ls->Strings[73];
     scGPImage_zamek_posunu->Hint=ls->Strings[74];
     ButtonPLAY->Hint=ls->Strings[75];
@@ -15179,6 +15180,10 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 		Form_parametry_linky->scHTMLLabel_posuvnik->Caption=ls->Strings[427];
 		scGPButton_smazat->Caption=ls->Strings[428];
 		scGPButton_geometrie->Hint=ls->Strings[443];
+		scGPButton_ulozit_cestu->Caption=ls->Strings[70];
+		scGPButton_ulozit_cestu->Hint=ls->Strings[446];
+		scGPButton_storno_cesta->Caption=ls->Strings[71];
+
 
     //změna zarovnání
 		scGPComboBox_prepinacKot->Left=scGPLabel_prepinacKot->Left+scGPLabel_prepinacKot->Width;//nutné!!

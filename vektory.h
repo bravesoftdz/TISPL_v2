@@ -213,6 +213,17 @@ class Cvektory
 		struct TCesta *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
 
+	struct TCesta_uloz//ukladání cesty
+	{
+		unsigned long n;
+		unsigned long element_n;
+		unsigned long sparovany_n;
+		Tdata data;
+
+		struct TCesta_uloz *predchozi;
+		struct TCesta_uloz *dalsi;
+	};
+
 	struct TDavka
 	{
 		unsigned long n;
@@ -454,6 +465,7 @@ class Cvektory
 		TObjekt *Objekty;
 		TElement *Elementy;
 		TPohon *Pohony;
+		TCesta_uloz *Cesta;
 
 		TDATA *dalsi;
 		TDATA *predchozi;

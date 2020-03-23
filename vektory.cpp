@@ -7613,6 +7613,14 @@ Cvektory::TDATA *Cvektory::vytvor_prazdny_obraz()
 	obraz->Pohony->dalsi=NULL;
 	obraz->Pohony->predchozi=obraz->Pohony;
 
+	////vytvoření hlavičky pro Cesty
+	obraz->Cesta=new TCesta_uloz;
+	obraz->Cesta->n=0;
+	obraz->Cesta->element_n=0;
+	obraz->Cesta->sparovany_n=0;
+	obraz->Cesta->dalsi=NULL;
+	obraz->Cesta->predchozi=obraz->Cesta;
+
 	////vracení prázdného obrazu
 	return obraz;
 }
@@ -7767,6 +7775,40 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
   		p=p->dalsi;
   	}
 		delete p;p=NULL;
+
+		//záloha cesty aktuální zakázky
+		if(ZAKAZKA_akt!=NULL && ZAKAZKA_akt->n!=0)
+		{
+			TCesta *c=ZAKAZKA_akt->cesta->dalsi;
+			TCesta_uloz *c_u=NULL;
+			while(c!=NULL)
+			{
+				c_u=new TCesta_uloz;
+				c_u->n=obraz->Cesta->predchozi->n+1;
+				c_u->element_n=c->Element->n;
+				if(c->sparovany!=NULL)c_u->sparovany_n=c->sparovany->n;
+				else c_u->sparovany_n=0;
+				c_u->data.PD=c->data.PD;
+				c_u->data.orientace_jig_pred=c->data.orientace_jig_pred;
+				c_u->data.LO1=c->data.LO1;
+				c_u->data.LO2=c->data.LO2;
+				c_u->data.LO_pozice=c->data.LO_pozice;
+				c_u->data.PT1=c->data.PT1;
+				c_u->data.PT2=c->data.PT2;
+				c_u->data.WTstop=c->data.WTstop;
+				c_u->data.RT.x=c->data.RT.x;
+				c_u->data.RT.y=c->data.RT.y;
+				c_u->data.pocet_pozic=c->data.pocet_pozic;
+				c_u->data.pocet_voziku=c->data.pocet_voziku;
+				c_u->dalsi=NULL;
+				c_u->predchozi=obraz->Cesta->predchozi;
+				obraz->Cesta->predchozi->dalsi=c_u;
+				obraz->Cesta->predchozi=c_u;
+				c_u=NULL;delete c_u;
+				c=c->dalsi;
+			}
+			delete c;c=NULL;
+		}
 	}
 }
 //---------------------------------------------------------------------------
@@ -7987,6 +8029,32 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 		delete p;p=NULL;
 		delete dp;dp=NULL;
 
+		//načtení cesty aktuální zakázky
+		if(ZAKAZKA_akt!=NULL && ZAKAZKA_akt->n!=0 && obraz->Cesta->dalsi!=NULL)
+		{
+			inicializace_cesty(ZAKAZKA_akt);
+			TCesta *c=NULL;
+			TCesta_uloz *c_u=obraz->Cesta->dalsi;
+			while(c_u!=NULL)
+			{
+				c=new TCesta;
+				c->n=c_u->n;
+				c->Element=NULL;
+				if(c_u->element_n!=0)c->Element=vrat_element(c_u->element_n);
+				c->sparovany=NULL;
+				if(c_u->sparovany_n!=0)c->sparovany=vrat_element(c_u->sparovany_n);
+				kopiruj_data_elementu(c_u->data,c);
+
+				c->dalsi=NULL;
+				c->predchozi=ZAKAZKA_akt->cesta->predchozi;
+				ZAKAZKA_akt->cesta->predchozi->dalsi=c;
+				ZAKAZKA_akt->cesta->predchozi=c;
+				c=NULL;delete c;
+				c_u=c_u->dalsi;
+			}
+			delete c_u;c_u=NULL;
+		}
+
 		//znovu vytvoření tabulky pohonů pokud jsem v editaci
 		if(F->OBJEKT_akt!=NULL && !storno)F->vytvoreni_tab_pohon();
 
@@ -8064,7 +8132,37 @@ void Cvektory::smaz_obraz_DATA(unsigned long n)
     }
   }
 
-	////smazání
+	////smazání objektů
+	while(obraz->Objekty!=NULL)
+	{
+		vymaz_body(obraz->Objekty->predchozi);
+		vymaz_komory(obraz->Objekty->predchozi);
+		delete obraz->Objekty->predchozi;
+		obraz->Objekty->predchozi=NULL;
+		obraz->Objekty=obraz->Objekty->dalsi;
+	};
+	////smazání elementů
+	while(obraz->Elementy!=NULL)
+	{
+		delete obraz->Elementy->predchozi;
+		obraz->Elementy->predchozi=NULL;
+		obraz->Elementy=obraz->Elementy->dalsi;
+	};
+	////smazání pohonů
+	while(obraz->Pohony!=NULL)
+	{
+		delete obraz->Pohony->predchozi;
+		obraz->Pohony->predchozi=NULL;
+		obraz->Pohony=obraz->Pohony->dalsi;
+	};
+	////smazání cest
+	while(obraz->Cesta!=NULL)
+	{
+		delete obraz->Cesta->predchozi;
+		obraz->Cesta->predchozi=NULL;
+		obraz->Cesta=obraz->Cesta->dalsi;
+	};
+	////smazání obrazu
 	delete obraz;obraz=NULL;
 }
 //---------------------------------------------------------------------------
