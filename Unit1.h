@@ -332,6 +332,10 @@ __published:	// IDE-managed Components
 	TMenuItem *N11;
 	TMenuItem *N21;
 	TscGPCheckBox *scGPCheckBox_rozmisteni_jigu;
+  TPopupMenu *PopupMenu_posledni_projekty;
+  TMenuItem *N1projekt1;
+  TMenuItem *N2projekt1;
+  TMenuItem *N3projekt1;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
