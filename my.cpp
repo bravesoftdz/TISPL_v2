@@ -1199,15 +1199,21 @@ TColor Cmy::getBlackOrWhiteInvert(TColor color)
 }
 /////////////////////////////////////////////////////////////////////////////
 //vratí dle hodnoty input barvu z nadefinované barevné palety, v případě "přetečení barvy opakuje
-TColor getColorOfPalette(unsigned int input)
+TColor Cmy::getColorOfPalette(unsigned int input)
 {
-	switch(input%4)
+	switch(input%5)
 	{
-		case 0:return clBlack;break;
-		case 1:return TColor RGB(255,0,0);break;
-		case 2:return TColor RGB(0,255,0);break;
-		case 3:return TColor RGB(0,0,255);break;
+//    case 0:return clBlack;break;
+//		case 1:return TColor RGB(255,0,0);break;
+//		case 2:return TColor RGB(0,255,0);break;
+//		case 3:return TColor RGB(0,0,255);break;
+		case 0:return TColor RGB(0,0,0);;break;
+		case 1:return TColor RGB(4,139,168);break;
+		case 2:return TColor RGB(246,249,48);break;
+		case 3:return TColor RGB(22,166,55);break;
+		case 4:return TColor RGB(94,58,38);break;
 	}
 }
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
+

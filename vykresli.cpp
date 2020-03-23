@@ -3106,8 +3106,11 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 		float RetezWidth=1;if(E->pohon!=NULL)RetezWidth=F->Zoom*0.5;//pokud není pohon přiřazen, tak jen elementární osa, jinak skutečná tloušťka
 
 		////vykreslení paralelních koleji
-		if(E->predchozi!=NULL && E->predchozi->pohon!=NULL && E->predchozi->eID==200)vykresli_koleje(canv,E->predchozi);//pouze grafická korekce předchozího segmentu, pokud byl překryt předávacím místem
-		if(E->pohon!=NULL)vykresli_koleje(canv,E);//pouze pokud je přiřazen pohon
+		if(zakazka==NULL && F->MOD!=F->TVORBA_CESTY)
+		{
+			if(E->predchozi!=NULL && E->predchozi->pohon!=NULL && E->predchozi->eID==200)vykresli_koleje(canv,E->predchozi);//pouze grafická korekce předchozího segmentu, pokud byl překryt předávacím místem
+			if(E->pohon!=NULL)vykresli_koleje(canv,E);//pouze pokud je přiřazen pohon
+		}
 
 		////vykreslení segementu pohonu
 		//plnění geo souřadnic do pole
@@ -3116,13 +3119,13 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 		POLE[2]=TPoint(m.L2Px(E->geo.X3),m.L2Py(E->geo.Y3));
 		POLE[3]=TPoint(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
 		//vykreslení pouzdra řetězu
-		if(E->pohon!=NULL && (F->OBJEKT_akt==NULL || F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n || F->scGPTrackBar_intenzita->Value>25 && F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n))//při editaci zobrazí pasivní jen s intenzitou větší než 25
+		if(zakazka==NULL && F->MOD!=F->TVORBA_CESTY && E->pohon!=NULL && (F->OBJEKT_akt==NULL || F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n || F->scGPTrackBar_intenzita->Value>25 && F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n))//při editaci zobrazí pasivní jen s intenzitou větší než 25
 		{
 			set_pen(canv,clKolej,m.round(RetezWidth*2),PS_ENDCAP_FLAT);
 			canv->PolyBezier(POLE,3);
 		}
 		//nastavení pera
-		if(F->MOD==F->TVORBA_CESTY && zakazka==NULL && v.obsahuje_segment_cesty_element(E,Form_definice_zakazek->Z_cesta))
+		if(F->MOD==F->TVORBA_CESTY && zakazka==NULL)
 		{
 			pocet_pruchodu=v.kolikrat_obsahuje_segment_cesty_element(E,Form_definice_zakazek->Z_cesta);
 			if(pocet_pruchodu>0)
@@ -3130,12 +3133,13 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 				RetezWidth=v.PP.sirka_podvozek/2.0+m.px2m(1/3.0*F->Zoom)+2*m.px2m(m.round(F->Zoom));
 				RetezWidth=m.m2px(RetezWidth);
 			}
+			else clRetez=(TColor)RGB(200, 200, 200);
 		}
 		if(zakazka!=NULL)
 		{
 			pocet_pruchodu=v.kolikrat_obsahuje_segment_cesty_element(E,zakazka);
 			if(pocet_pruchodu==0)clRetez=(TColor)RGB(200, 200, 200);
-    }
+		}
 		set_pen(canv,clRetez,m.round(RetezWidth),PS_ENDCAP_SQUARE);
 		//vykreslení řetězu
 		canv->PolyBezier(POLE,3);
@@ -3161,10 +3165,9 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 		{
 	  	for(unsigned int i=2;i<=pocet_pruchodu;i++)
 			{
-				double o=(i-1)*m.px2m(RetezWidth/2.0);
+				double o=(i-1)*m.px2m(m.round(RetezWidth/2.0));
 				//nastavení pera
-				TColor b=clBlue;if(i==2)b=clGreen; if(i==3)b=clRed;
-				set_pen(canv,b,RetezWidth/2.0,PS_ENDCAP_SQUARE);
+				set_pen(canv,m.getColorOfPalette(i-1),m.round(RetezWidth/2.0),PS_ENDCAP_SQUARE);
 	  		//výpočet odsazení a souřadnic
 //				TPointD S1=m.rotace(o,180-E->geo.orientace,90);
 				short z=1;if(E->geo.rotacni_uhel>0)z*=-1;
@@ -6007,9 +6010,8 @@ void Cvykresli::vykresli_kurzor_cesta(TCanvas *canv,Cvektory::TElement *E)
 				{
 					for(unsigned int i=1;i<=pocet_pruchodu;i++)
 	    		{
-						double o=i*m.px2m(RetezWidth/2.0);
-						TColor b=clBlue;if(i==1)b=clGreen; if(i==2)b=clRed;
-	    			set_pen(canv,b,RetezWidth/2.0,PS_ENDCAP_SQUARE);
+						double o=i*m.px2m(m.round(RetezWidth/2.0));
+						set_pen(canv,m.getColorOfPalette(i),m.round(RetezWidth/2.0),PS_ENDCAP_SQUARE);
 	    			short z=1;if(E->geo.rotacni_uhel>0)z*=-1;
 	    			TPointD S2=m.rotace(o,180-E->geo.orientace,-90);
 	    			double DR2=E->geo.delka;if(E->geo.typ==1)DR2=E->geo.radius+o*z*-1;//delka či radius
