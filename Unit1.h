@@ -331,7 +331,6 @@ __published:	// IDE-managed Components
 	TPopupMenu *PopupMenu1;
 	TMenuItem *N11;
 	TMenuItem *N21;
-	TscGPCheckBox *scGPCheckBox_rozmisteni_jigu;
   TPopupMenu *PopupMenu_posledni_projekty;
   TMenuItem *N1projekt1;
   TMenuItem *N2projekt1;
@@ -557,7 +556,9 @@ __published:	// IDE-managed Components
 	void __fastcall scGPCheckBox_rozmisteni_vozikuClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_odstran_cestuClick(TObject *Sender);
 	void __fastcall N21Click(TObject *Sender);
-	void __fastcall scGPCheckBox_rozmisteni_jiguClick(TObject *Sender);
+	void __fastcall N1projekt1Click(TObject *Sender);
+	void __fastcall N2projekt1Click(TObject *Sender);
+	void __fastcall N3projekt1Click(TObject *Sender);
 
 
 
@@ -670,6 +671,7 @@ private:
 	void set_font(int velikost=14);//nastaví komponentám aFont
 	bool pripnuti_dalsich_objektu();//pokud pøi uložení editovaného objektu je detekováno, že konec objketu nenavazuje na zaèátek následujísího objektu je položen dotaz a po potvrzení dojde ke spojení
 	void spojeni_prvni_posledni(double citlivost=0.5);//kontrola zda na sebe první a polední objekt navazují, pokud jsou blízko u sebe, ale nenavazují - naváže je
+	void Otevri_posledni_ulozeny(UnicodeString soubor);//otevøe jeden z posledních otevøených souborù
 
 	////promìnné
 	TDateTime TIME;
@@ -781,7 +783,7 @@ public:		// User declarations
 	short zobrazit_popisky;
 	short zobrazit_koleje;
 	short zobrazit_palce;
-	short zobrazit_rozmisteni_jigu;
+	short zobrazit_rozmisteni_voziku;
 	bool zamek_layoutu;
   int Top_backup;  //pomocne promenne pro pozici zprav
   int Left_backup; //pomocne promenne pro pozici zprav

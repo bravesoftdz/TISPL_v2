@@ -2864,23 +2864,22 @@ double Cvektory::vrat_rotaci_jigu_po_predchazejicim_elementu(TElement *Element)
 	bool nalezeno=false;
 	double akt_rotoce_jigu=0;
 	//provizorní (průchod po objektech) do doby než budou spuštěny zakázky resp. výhybky
-	TElement *E=ELEMENTY->dalsi;
-	while(E!=NULL)
+	if(ZAKAZKA_akt==NULL)update_akt_zakazky();//pro jistotu, pokud neexistuje akt zakázka vytvoří default
+	TCesta *C=ZAKAZKA_akt->cesta->dalsi;
+	while(C!=NULL)
 	{
-		if(Element==E)//pozor nelze porovnávat jen ukazatele, může docházet k porování nepřímých kopii (viz OBJEKT_akt)
+		if(Element==C->Element)//pozor nelze porovnávat jen ukazatele, může docházet k porování nepřímých kopii (viz OBJEKT_akt)
 		{
 			nalezeno=true;
 			break;//akcelerátor, skončí cyklus
 		}
 		else
 		{
-			if(E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180)akt_rotoce_jigu+=E->rotace_jig;//stále předcházející elementy, ty mě pro návrátovou hodnotu zajímají, rotace aktuálního elementu se nezohledňuje
+			if(C->Element->rotace_jig!=0 && -180<=C->Element->rotace_jig && C->Element->rotace_jig<=180)akt_rotoce_jigu+=C->Element->rotace_jig;//stále předcházející elementy, ty mě pro návrátovou hodnotu zajímají, rotace aktuálního elementu se nezohledňuje
 		}
-		E=dalsi_krok(E);
-		//E=E->dalsi;
+		C=C->dalsi;
 	}
-	vymaz_seznam_VYHYBKY();
-	E=NULL;delete E;
+	C=NULL;delete C;
 	//F->Memo("Pro "+Element->name+" o rotaci: "+Element->rotace_jig+" o celkové"+m.a360(akt_rotoce_jigu));//testovací výpis, časem možno odstranit
 	return m.a360(akt_rotoce_jigu);
 }
@@ -4863,7 +4862,7 @@ void Cvektory::update_akt_zakazky()
  }
  else
  {
-	 //aktualizace aktuální uživatelské zakázky
+	 //aktualizace dat aktuální uživatelské zakázky
  }
 }
 //---------------------------------------------------------------------------
@@ -4873,7 +4872,7 @@ void Cvektory::vytvor_default_zakazku()
 	////ZAKAZKA
 	TZakazka *Z=ZAKAZKY;																																		//počet vozíků vygeneruje dle hodnoty WIP+jeden navíc kvůli přehlednosti, kdy začíná náběh
 	Z->id=1;Z->typ=1;Z->name="Nová zakázka";Z->barva=clRed;Z->pomer=100;Z->TT=PP.TT;Z->pocet_voziku=WIP(1)+1;Z->serv_vozik_pocet=0;Z->opakov_servis=0;
-	Z->n==0;
+	Z->n=0;
 	Z->cesta=NULL;
 	Cvektory::TJig j;
 	j.sirka=F->d.v.PP.sirka_jig;j.delka=F->d.v.PP.delka_jig;j.vyska=F->d.v.PP.vyska_jig;j.ks=1;//defaultní hodnoty jigu

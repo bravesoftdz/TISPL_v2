@@ -73,7 +73,10 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 	    	}
 	    	else
 	    	{
-	    		E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
+					double rotaceJ=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(E);
+					if(E->mGrid->Cells[1][6].Text==1 && (F->m.Rt90(rotaceJ)==0 || F->m.Rt90(rotaceJ)==180) && F->d.v.PP.delka_podvozek<F->m.UDJ(rotaceJ))
+					E->mGrid->Note.Text="Pøi 0° èi 180° rotaci jigu a poètu nastavených pozic 1 nejsou zobrazeny potenciální pozice";
+					E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
 	    		E->mGrid->VisibleRow(3,true,false);//nepøekreslovat
 	    		E->mGrid->VisibleRow(5,true,false); E->mGrid->VisibleRow(6,true,false);
 				}

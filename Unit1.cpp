@@ -178,8 +178,8 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	if(T==1 || T=="")zobrazit_koleje=1;else zobrazit_koleje=0;
 	T=readINI("nastaveni_editace","zobrazit_palce"); //zobrazit palce
 	if(T==1 || T=="")zobrazit_palce=1;else zobrazit_palce=0;
-	T=readINI("nastaveni_editace","zobrazit_rozmisteni_jigu"); //zobrazit_rozmisteni_jigu
-	if(T==1 || T=="")zobrazit_rozmisteni_jigu=1;else zobrazit_rozmisteni_jigu=0;
+	T=readINI("nastaveni_editace","zobrazit_rozmisteni_voziku"); //zobrazit_rozmisteni_jigu
+	if(T==1 || T=="")zobrazit_rozmisteni_voziku=1;else zobrazit_rozmisteni_voziku=0;
 
 
 	if(rotace_jigu==1) scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
@@ -197,8 +197,22 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	if(zobrazit_palce==1)scGPCheckBox_zobrazit_palce->Checked=true;
 	else   scGPCheckBox_zobrazit_palce->Checked=false;
 
-	if(zobrazit_rozmisteni_jigu==1)scGPCheckBox_rozmisteni_jigu->Checked=true;
-	else   scGPCheckBox_rozmisteni_jigu->Checked=false;
+	if(zobrazit_rozmisteni_voziku==1)scGPCheckBox_rozmisteni_voziku->Checked=true;
+	else   scGPCheckBox_rozmisteni_voziku->Checked=false;
+
+  //načtení posledních uložených souborů
+	N1projekt1->Caption=readINI("otevrene_soubory","posledni_soubor");;
+	N2projekt1->Caption=readINI("otevrene_soubory","posledni_soubor_1");
+	N3projekt1->Caption=readINI("otevrene_soubory","posledni_soubor_2");
+	//zobrazení či skrytí položek
+	if(N1projekt1->Caption=="")N1projekt1->Visible=false;
+	else N1projekt1->Visible=true;
+	if(N2projekt1->Caption=="")N2projekt1->Visible=false;
+	else N2projekt1->Visible=true;
+	if(N3projekt1->Caption=="")N3projekt1->Visible=false;
+	else N3projekt1->Visible=true;
+	//enabled btn
+	if(N1projekt1->Caption=="" && N2projekt1->Caption=="" && N3projekt1->Caption=="")scButton_posledni_otevreny->Enabled=false;
 
 	//povolení Automatická záloha
 	Timer_backup->Enabled=true;
@@ -1070,10 +1084,10 @@ void TForm1::DesignSettings()
       case 96:text="Načíst podklad...";break;
       case 97:text="Nastavení";break;
       case 98:text="                  Vrstvy";break;
-      case 99:text="Zobrazit koleje dopravníku";break;
-      case 100:text="Zobrazit pozice";break;
-      case 101:text="Zobrazit rotace jigů";break;
-      case 102:text="Zobrazit popisky prvků";break;
+			case 99:text="Koleje dopravníku";break;
+      case 100:text="Pozice v buffrech";break;
+			case 101:text="Znázornění rotace jigů";break;
+			case 102:text="Popisky prvků";break;
       case 103:text="                  Podklad";break;
       case 104:text="Nastavit měřítko";break;
       case 105:text="Umístit podklad";break;
@@ -1263,7 +1277,7 @@ void TForm1::DesignSettings()
       case 289:text="Spodní hranice rychlosti musí být >=";break;
       case 290:text="Nebo horní hranice musí být <=";break;
       case 291:text="Parametry pohonu již nelze měnit, protože pohon je používán na jiných objektech";break;
-      case 292:text="Zobrazit palce";break;
+      case 292:text="Palce řetězu";break;
       case 293:text="Úhel [°]";break;
       case 294:text="Probíhá stahování aktualizace, neukončujte aplikaci!!! Po dokončení stahování bude program ukončen.";break;
       case 295:text="Tažením myši z vybraného bodu do cílového bodu zobrazíte vzdálenost mezi těmito body.";break;
@@ -1416,7 +1430,7 @@ void TForm1::DesignSettings()
 			case 442:text="Barva zakázky";break;
 			case 443:text="Zobrazit kóty geometrie";break;
 			case 444:text="Skrýt kóty geometrie";break;
-			case 445:text="Rozmístění jigů";break;
+			case 445:text="Rozmístění vozíků";break;
 			case 446:text="Kliknutím potvrdíte cestu";break;
 			default:text="";break;
 		}
@@ -6658,8 +6672,8 @@ void TForm1::ukonceni_geometrie()
 	if(T==0 || T=="")zobrazit_palce=0;else zobrazit_palce=1;
 	T=readINI("nastaveni_editace","rotace_jigu"); //zobrazit rotaci jigu
 	if(T==0 || T=="")rotace_jigu=0;else rotace_jigu=1;
-	T=readINI("nastaveni_editace","zobrazit_rozmisteni_jigu"); //zobrazit_rozmisteni_jigu
-	if(T==0 || T=="")zobrazit_rozmisteni_jigu=0;else zobrazit_rozmisteni_jigu=1;
+	T=readINI("nastaveni_editace","zobrazit_rozmisteni_voziku"); //zobrazit_rozmisteni_jigu
+	if(T==0 || T=="")zobrazit_rozmisteni_voziku=0;else zobrazit_rozmisteni_voziku=1;
 	if(rotace_jigu==1)scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
 	else scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=false;
 	if(zobrazit_pozice==1)scGPCheckBox_zobrazit_pozice->Checked=true;
@@ -6672,8 +6686,8 @@ void TForm1::ukonceni_geometrie()
 	else scGPCheckBox_zobrazit_palce->Checked=false;
 	if(rotace_jigu==1) scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
 	else scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=false;
-	if(zobrazit_rozmisteni_jigu==1) scGPCheckBox_rozmisteni_jigu->Checked=true;
-	else scGPCheckBox_rozmisteni_jigu->Checked=false;
+	if(zobrazit_rozmisteni_voziku==1) scGPCheckBox_rozmisteni_voziku->Checked=true;
+	else scGPCheckBox_rozmisteni_voziku->Checked=false;
 	//kontrola zda následující geometrie navazuje na editovanou
 	if(OBJEKT_akt!=NULL && pom->dalsi!=NULL)
 	{
@@ -10389,7 +10403,7 @@ void __fastcall TForm1::DrawGrid_geometrieMouseDown(TObject *Sender, TMouseButto
 		scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=false;
 		scGPCheckBox_zobrazit_pozice->Checked=false;
 		scGPCheckBox_zobrazit_palce->Checked=false;
-		scGPCheckBox_rozmisteni_jigu->Checked=false;
+		scGPCheckBox_rozmisteni_voziku->Checked=false;
 		stisknute_leve_tlacitko_mysi=false;//nutné!!! zustává aktivníc z dblclicku
 		REFRESH(false);
 	}
@@ -11874,12 +11888,23 @@ void TForm1::ulozit_posledni_otevreny()
 	//-TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
 	//-ini->WriteString("otevrene_soubory","posledni_soubor",FileName);
 	//-delete ini;
-	UnicodeString ps=readINI("otevrene_soubory","posledni_soubor"),ps1=readINI("otevrene_soubory","posledni_soubor_1"),ps2=readINI("otevrene_soubory_2","posledni_soubor");
+	UnicodeString ps=readINI("otevrene_soubory","posledni_soubor"),ps1=readINI("otevrene_soubory","posledni_soubor_1"),ps2=readINI("otevrene_soubory","posledni_soubor_2");
 	if(FileName!="Nový.tispl" && FileName!=ps && FileName!=ps1 && FileName!=ps2)//kontrola zda není ukládány už uložený v posledních otevřených
 	{
+		if(!scButton_posledni_otevreny->Enabled)scButton_posledni_otevreny->Enabled=true;
 		writeINI("otevrene_soubory","posledni_soubor",FileName);
+		N1projekt1->Caption=FileName;
 		writeINI("otevrene_soubory","posledni_soubor_1",ps);
+		N2projekt1->Caption=ps;
 		writeINI("otevrene_soubory","posledni_soubor_2",ps1);
+		N3projekt1->Caption=ps1;
+		//zobrazení či skrytí položek
+		if(N1projekt1->Caption=="")N1projekt1->Visible=false;
+		else N1projekt1->Visible=true;
+		if(N2projekt1->Caption=="")N2projekt1->Visible=false;
+		else N2projekt1->Visible=true;
+		if(N3projekt1->Caption=="")N3projekt1->Visible=false;
+		else N3projekt1->Visible=true;
 	}
 }
 //---------------------------------------------------------------------------
@@ -12879,16 +12904,8 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //---------------------------------------------------------------------------
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
-{      Memo3->Clear();
-	d.v.vytvor_obraz_DATA(); Memo(1);   d.v.pozice_data=d.v.DATA->predchozi->n; Memo(2);
-	d.v.nacti_z_obrazu_DATA();  Memo(3); aktualizace_RT();  Memo(4);  REFRESH();Memo("hotovo");
-//	Cvektory::TCesta_uloz *c=d.v.DATA->predchozi->Cesta;    //Memo("asdsad");
-//	while(c!=NULL)
-//	{
-//		Memo(c->n);
-//		c=c->dalsi;
-//	}
-//	delete c;c=NULL;
+{
+	Memo(N2projekt1->Caption);
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -15103,7 +15120,7 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
     scExPanel_vrstvy->Caption=ls->Strings[98];
     scGPCheckBox_zobrazit_koleje->Caption=ls->Strings[99];
     scGPCheckBox_zobrazit_pozice->Caption=ls->Strings[100];
-    scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Caption=ls->Strings[101];
+		scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Caption=ls->Strings[101];
     scGPCheckBox1_popisky->Caption=ls->Strings[102];
     scExPanel_podklad->Caption=ls->Strings[103];
 		scGPButton_adjustace->Caption=ls->Strings[104];
@@ -15172,7 +15189,7 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 		Form_katalog->Button_save->Caption=ls->Strings[194];
 		Form_katalog->Button_storno->Caption=ls->Strings[195];
 		scGPCheckBox_zobrazit_palce->Caption=ls->Strings[292];
-		scGPCheckBox_rozmisteni_jigu->Caption=ls->Strings[445];
+		scGPCheckBox_rozmisteni_voziku->Caption=ls->Strings[445];
 		Form_zpravy->scLabel_header->Caption=ls->Strings[412];
 		Form_zpravy->scGPGlyphButton_pripnout->Hint=ls->Strings[413];
 		Form_zpravy->RzStatusPane__chyby_caption->Caption=ls->Strings[414];
@@ -15420,9 +15437,9 @@ void __fastcall TForm1::scGPCheckBox_rozmisteni_vozikuClick(TObject *Sender)
 	log(__func__);//logování
 	if(Akce==GEOMETRIE || Akce==NIC)
 	{    //doplnit
-//		if(scGPCheckBox1_popisky->Checked)zobrazit_popisky=1;
-//		else zobrazit_popisky=0;
-//		if(Akce==NIC)writeINI("nastaveni_editace","zobrazit_popisky",zobrazit_popisky);//ukládat do ini pouze mimo geometrii
+		if(scGPCheckBox_rozmisteni_voziku->Checked)zobrazit_rozmisteni_voziku=1;
+		else zobrazit_rozmisteni_voziku=0;
+		if(Akce==NIC)writeINI("nastaveni_editace","zobrazit_rozmisteni_voziku",zobrazit_rozmisteni_voziku);//ukládat do ini pouze mimo geometrii
 		REFRESH();
 	}
 }
@@ -15519,7 +15536,7 @@ void __fastcall TForm1::scGPButton_geometrieClick(TObject *Sender)
 		scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=false;
 		scGPCheckBox_zobrazit_pozice->Checked=false;
 		scGPCheckBox_zobrazit_palce->Checked=false;
-		scGPCheckBox_rozmisteni_jigu->Checked=false;
+		scGPCheckBox_rozmisteni_voziku->Checked=false;
 		stisknute_leve_tlacitko_mysi=false;//nutné!!! zustává aktivníc z dblclicku
 		REFRESH(false);
 		scGPButton_geometrie->ImageIndex=82;
@@ -15602,17 +15619,35 @@ void __fastcall TForm1::N21Click(TObject *Sender)
 	REFRESH();
 }
 //---------------------------------------------------------------------------
-//přepnutí zobrazení rozmístění jigů
-void __fastcall TForm1::scGPCheckBox_rozmisteni_jiguClick(TObject *Sender)
+///////otevírání naposledy otevřených projektů
+void __fastcall TForm1::N1projekt1Click(TObject *Sender)
 {
-	log(__func__);//logování
-	if(Akce==GEOMETRIE || Akce==NIC)
+	N1projekt1->Caption=readINI("otevrene_soubory","posledni_soubor");//musí být, po kliku dojde k požkození captionu
+	Otevri_posledni_ulozeny(N1projekt1->Caption);
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::N2projekt1Click(TObject *Sender)
+{
+	N2projekt1->Caption=readINI("otevrene_soubory","posledni_soubor_1");//musí být, po kliku dojde k požkození captionu
+	Otevri_posledni_ulozeny(N2projekt1->Caption);
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::N3projekt1Click(TObject *Sender)
+{
+	N3projekt1->Caption=readINI("otevrene_soubory","posledni_soubor_2");//musí být, po kliku dojde k požkození captionu
+	Otevri_posledni_ulozeny(N3projekt1->Caption);
+}
+//---------------------------------------------------------------------------
+void TForm1::Otevri_posledni_ulozeny(UnicodeString soubor)
+{
+	if(soubor!=FileName)
 	{
-		if(scGPCheckBox_rozmisteni_jigu->Checked)zobrazit_rozmisteni_jigu=1;
-		else zobrazit_rozmisteni_jigu=0;
-		if(Akce==NIC)writeINI("nastaveni_editace","zobrazit_rozmisteni_jigu",zobrazit_rozmisteni_jigu);//ukládat do ini pouze mimo geometrii
-		REFRESH();
+  	//zavolá nový soubor/smaže stávajicí
+  	Novy_soubor(false);
+  	//otevrení souboru
+  	Otevrit_soubor(soubor);
+  	//zajištění vykreslení načteného souboru
+  	REFRESH();
 	}
 }
 //---------------------------------------------------------------------------
-
