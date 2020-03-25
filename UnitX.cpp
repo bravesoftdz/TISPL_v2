@@ -1308,7 +1308,7 @@ void TFormX::prirazeni_pohohonu_vetvi(Cvektory::TElement *E,bool hlavni)
 	}
 
 	////výpoèet a zapsání WT
-	if(F->d.v.ZAKAZKA_akt==NULL)F->d.v.update_akt_zakazky();//pokud neexistuje aktuální zakázka, update defaultní zakázky
+	F->d.v.update_akt_zakazky();//pokud neexistuje aktuální zakázka, update defaultní zakázky
 	Cvektory::TCesta *C=F->d.v.obsahuje_segment_cesty_element(E,F->d.v.ZAKAZKA_akt);
 	if(C!=NULL)//pokud se element nachází na cestì zakázky
 	{
@@ -1329,17 +1329,21 @@ void TFormX::prirazeni_pohohonu_vetvi(Cvektory::TElement *E,bool hlavni)
 		else E->mGrid->Cells[1][4].Text=0;
 		//pøesun na spojku
 		E=E->predchozi2;
-		p1=C->predchozi->Element->pohon;p2=E->pohon;
-		if(p1!=NULL && p2!=NULL && p1!=p2)
+		C=F->d.v.obsahuje_segment_cesty_element(E,F->d.v.ZAKAZKA_akt);
+		if(C!=NULL)
 		{
-			//naètení hodnot z pohonu
-			double aRD=p2->aRD,roztec=p2->roztec;
-			//pøepoèty
-			E->WT=F->m.cekani_na_palec(0,roztec,aRD,3);//dùležité pro výpoèet RT, nezobrazuje se
-		}else E->WT=0;
-		if(E->objekt_n==F->OBJEKT_akt->n)
-		{
-			E->mGrid->Cells[1][2].Text = F->m.round2double(F->outPT(E->WT),3);
+	  	p1=C->predchozi->Element->pohon;p2=E->pohon;
+	  	if(p1!=NULL && p2!=NULL && p1!=p2)
+	  	{
+	  		//naètení hodnot z pohonu
+	  		double aRD=p2->aRD,roztec=p2->roztec;
+	  		//pøepoèty
+	  		E->WT=F->m.cekani_na_palec(0,roztec,aRD,3);//dùležité pro výpoèet RT, nezobrazuje se
+	  	}else E->WT=0;
+	  	if(E->objekt_n==F->OBJEKT_akt->n)
+	  	{
+	  		E->mGrid->Cells[1][2].Text = F->m.round2double(F->outPT(E->WT),3);
+	  	}
 		}
 		p1=NULL;p2=NULL;
 		delete p1;delete p2;

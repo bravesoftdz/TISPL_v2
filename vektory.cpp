@@ -2047,6 +2047,14 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 				Element->predchozi=force_razeni->predchozi2;
 				force_razeni->predchozi2=Element;
 			}
+			else if(force_razeni->eID==300 && force_razeni->objekt_n!=F->OBJEKT_akt->n)//přidávání geometrie z objektu spojky
+			{
+				Element->dalsi=force_razeni->dalsi2;
+				if(force_razeni->dalsi2==force_razeni->predchozi2)force_razeni->dalsi2->predchozi2=Element;
+				else force_razeni->dalsi2->predchozi=Element;
+				Element->predchozi=force_razeni;
+				force_razeni->dalsi2=Element;
+      }
 			else//ukazatelové propojení, normální funkce
 			{
 				if(force_razeni==Objekt->element)Objekt->element=Element;//asi problém při napojování výhybky - sledovat
@@ -2067,18 +2075,16 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 				}
 			}
 	  	//změna indexů
-	  	Cvektory::TElement *E=Objekt->element;
-	  	if(E->predchozi==NULL || E->predchozi->n==0)E->n=1;
-	  	else E->n=E->predchozi->n+1;
-	  	int n=E->n;
+			Cvektory::TElement *E=ELEMENTY->dalsi;
+			int n=1;
 	  	while(E!=NULL)
 	  	{
 	  		//indexy
 	  		E->n=n;
 	  		n++;
 	  		E=dalsi_krok(E);
-	  	}
-	  	E=NULL;delete E;
+			}
+			E=NULL;delete E;
 	  	//změna názvů
 	  	uprav_popisky_elementu(Element);
 		}
@@ -2575,6 +2581,24 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 	}
 	vymaz_seznam_VYHYBKY();
 	E=NULL;delete E;
+	return ret;
+}
+////---------------------------------------------------------------------------
+//najde poslední element v objektu který odpovídá eID
+Cvektory::TElement *Cvektory::najdi_posledni_element_podle_eID(unsigned int eID,TObjekt *Objekt)
+{
+	//průchod od prvního elementu v objektu
+	TElement *ret=NULL;
+	if(Objekt!=NULL && Objekt->n>0)//ošetření proti nulovému objektu nebo hlavičce
+	{
+   	TElement *E=Objekt->element;
+   	while(E!=NULL && E->objekt_n==Objekt->n)
+   	{
+   		if(E->eID==eID)ret=E;//pokud je nalezen zapíše se, nepřeruší se cyklus, bude se přepisovat dokud nezustane v ukazateli poslední element tohoto eID v Objektu
+   		E=E->dalsi;
+   	}
+		E=NULL;delete E;
+	}
 	return ret;
 }
 ////---------------------------------------------------------------------------
@@ -3261,7 +3285,7 @@ Cvektory::TElement *Cvektory::dalsi_krok(TElement *E,TObjekt *O)
 			E=E->predchozi2;
 			if(E->objekt_n!=O->n && E->eID!=300)E=E->dalsi->dalsi;//přesun z veldejší větve na element na hlavní větvi za spojkou
 			if(E->objekt_n!=O->n && E->eID==300)E=E->dalsi2->dalsi;
-			else {while(E->objekt_n==O->n){E=E->predchozi;}E=E->dalsi;}
+			else {while(E->objekt_n==O->n){E=E->predchozi;}if(E->eID!=300)E=E->dalsi;else E=E->dalsi2;}
 		}
 		else E=E->dalsi;
 		if(E!=NULL && E==VYHYBKY->spojka)E=E->dalsi;

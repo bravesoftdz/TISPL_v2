@@ -5391,6 +5391,43 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 				else E->mGrid->SetVisibleComponents(false);//pokud pohon elementu se nerovná aktuálně editovanému pohonu, je třeba skrýt všechny komponenty (posun obrazu PAN MOVE či skryté mGridy)
 				E=v.dalsi_krok(E,F->OBJEKT_akt);
 			}
+
+			//pokud existuje předchozí předávací místo bude vykresleno
+			E=F->predchozi_PM;
+			if(E!=NULL)
+			{
+        if((E->pohon==NULL && F->OBJEKT_akt->pohon==NULL || E->pohon!=NULL && F->OBJEKT_akt->pohon!=NULL && E->pohon->n==F->OBJEKT_akt->pohon->n || E->eID==200 || E->eID==300 || E->eID==301) && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT)//vykreslení tabulek elementů, kteří mají stejný pohon jako aktuálně editovaný pohon
+				{
+					if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
+					{
+						if(F->OBJEKT_akt->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud nemají být zobrazeny mgridy nemá být zobrazen ani rastr
+						{
+							E->mGrid->Redraw=false;
+							E->mGrid->SetVisibleComponents(false);
+							E->mGrid->Left=m.L2Px(E->Xt);//kvůli případnému přesouvání tabulky
+							E->mGrid->Top=m.L2Py(E->Yt);//kvůli případnému přesouvání tabulky
+							E->mGrid->Show(canv);
+						}
+					}
+					else
+					{
+						if(F->OBJEKT_akt->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
+						{
+							E->mGrid->Redraw=true;
+							E->mGrid->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak E->mGrid->Buffer(false);
+							if(E->mGrid->VisibleComponents>-1)E->mGrid->VisibleComponents=true;//stačí volat toto, protože se pomocí Show (resp. Draw-SetCompontens-Set...) cyklem všechny komponenty na základě tohoto zobrazí pokud je nastaveno na -1 tak se při překreslování zohlední individuální nastavení komponent (z tohoto stavu je však pro další použítí třeba vrátit do stavu 0 nebo 1)
+							E->mGrid->Left=m.L2Px(E->Xt);
+							E->mGrid->Top=m.L2Py(E->Yt);
+							E->mGrid->Show(canv);
+						}
+						else//pokud ne, je třeba skrýt všechny komponenty (posun obrazu PAN MOVE či skryté mGridy)
+						{
+							E->mGrid->SetVisibleComponents(false);
+						}
+					}
+				}
+				else E->mGrid->SetVisibleComponents(false);//pokud pohon elementu se nerovná aktuálně editovanému pohonu, je třeba skrýt všechny komponenty (posun obrazu PAN MOVE či skryté mGridy)
+			}
 			E=NULL;delete E;
 		}
 		////tabulka pohonu
