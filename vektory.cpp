@@ -2228,7 +2228,7 @@ void Cvektory::uprav_popisky_elementu(TElement *Element)
 			}
 			E->short_name=E->name.SubString(1,3)+AnsiString(n);
 			//změna názvu v hlavičce mGridu, jako první z důvodu podmínky prázdného názvu
-			if(E->name!=""&&E->mGrid!=NULL)//nutné, přejmenovávám i první element, který nemá vytvořený mGrid
+			if(E->name!="" && E->mGrid!=NULL && E->eID!=300 && E->eID!=301)//nutné, přejmenovávám i první element, který nemá vytvořený mGrid
 			{
 				try
 				{
@@ -2844,7 +2844,7 @@ double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element,bool pouze
 		{
 			while(E!=NULL && E->n>0 && E->objekt_n==Element->objekt_n)//pouze předchozí elementy v objektu
 	  	{
-				if(E->eID!=MaxInt)break;//pokud se jedná o funkční element zastavit průchod
+				if(E->eID!=MaxInt || E->geo.typ!=0)break;//pokud se jedná o funkční element zastavit průchod
 				else delka+=E->geo.delka;//jedná se o zarážku - přičti délku úseku zarážky
 	  		E=E->predchozi;
 			}

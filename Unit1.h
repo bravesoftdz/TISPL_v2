@@ -600,7 +600,6 @@ private:
 	void add_element(int X, int Y);
 	void add_vyhybka_spojka();
 	void add_komoru();//pøidávání komory kabinì powerwashe, kontrola zda není souèet kabin vìtší ne rozmìr kabiny
-	void vlozit_predavaci_misto();//projde elementy a objekty, pokud je nìkde nutnost vloit pøedávací místo vloí ho tam
 	short rotace_symbol(short trend,int X_bod,int Y_bod);//dle toho, zda je umisovanı element nad osou èi pod osou pohonu je vrácena rotace symbolu, X_bod,.. je bbod vkládání elementu (jedna souøadnice ho váe na pohon)
 	void vytvoreni_tab_knihovna();//vytovoøení tabulky knihovny objektù
 	void popisky_knihovna_nahled(bool knihovna);//pøepíná popisky mezi knihovnou a editací
@@ -855,6 +854,7 @@ public:		// User declarations
 	UnicodeString get_temp_dir();
 	void vytvoreni_tab_pohon();//vytvoøení tabulky pohonu
 	void napln_comba_mGridu(Cvektory::TElement *E);
+	void vlozit_predavaci_misto();//projde elementy a objekty, pokud je nìkde nutnost vloit pøedávací místo vloí ho tam
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

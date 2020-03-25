@@ -3147,6 +3147,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 		////vykreslení předávacího místa
 		if(E->eID==200)
 		{
+      RetezWidth=1;if(E->pohon!=NULL)RetezWidth=F->Zoom*0.5;//nutné znovu počítat width, nelze použít upravený v případě zakázky
 			//výpočty souřadnic
 			TPointD V=m.rotace(m.px2m(RetezWidth*4),180-E->geo.orientace,0);//vyosení, mezera mezi pohony v předávacím místě
 
@@ -6016,7 +6017,7 @@ void Cvykresli::vykresli_kurzor_cesta(TCanvas *canv,Cvektory::TElement *E)
 	    			TPointD S2=m.rotace(o,180-E->geo.orientace,-90);
 	    			double DR2=E->geo.delka;if(E->geo.typ==1)DR2=E->geo.radius+o*z*-1;//delka či radius
 	    			TPointD *PL2=m.getArcLine(E->geo.X1+S2.x,E->geo.Y1+S2.y,E->geo.orientace,E->geo.rotacni_uhel,DR2);
-	    			bezier(canv,PL2,3);
+						bezier(canv,PL2,3);
 	    		}
 				}
 			}
