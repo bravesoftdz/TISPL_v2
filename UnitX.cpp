@@ -1325,6 +1325,8 @@ void TFormX::prirazeni_pohohonu_vetvi(Cvektory::TElement *E,bool hlavni)
 		E->mGrid->Cells[2][5].Text = F->m.round2double(F->outPT(E->WT),3);
 		if(E->pohon!=NULL)E->mGrid->Cells[1][3].Text=F->m.round2double(F->outaRD(E->pohon->aRD),3);
 		else E->mGrid->Cells[1][3].Text=0;
+		if(E->pohon!=NULL)E->mGrid->Cells[1][4].Text=AnsiString(F->m.round2double(F->outaRD(E->pohon->rychlost_od),3))+" - "+AnsiString(F->m.round2double(F->outaRD(E->pohon->rychlost_do),3));
+		else E->mGrid->Cells[1][4].Text=0;
 		//pøesun na spojku
 		E=E->predchozi2;
 		p1=C->predchozi->Element->pohon;p2=E->pohon;
