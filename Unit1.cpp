@@ -6192,7 +6192,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 			if(E->eID==200)
 			{
 				if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)E->WT=m.cekani_na_palec(0,E->dalsi->pohon->roztec,E->dalsi->pohon->aRD,3);
-				if(OBJEKT_akt!=NULL && OBJEKT_akt->n==E->objekt_n)E->mGrid->Refresh();
+				if(OBJEKT_akt!=NULL && OBJEKT_akt->n==E->objekt_n)E->mGrid->Cells[2][11].Text = F->m.round2double(F->outPT(E->WT),3);
 			}
 	  	//////////Mazání nepotřebného předávacího místa + 2 PM na sobě
 			if(E->eID==200 && (E->dalsi!=NULL && E->dalsi->pohon==NULL && E->pohon==NULL || E->dalsi!=NULL && E->pohon!=NULL && E->dalsi->pohon!=NULL && E->dalsi->pohon->n==E->pohon->n))
@@ -6345,7 +6345,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 		if(e_posledni->eID==200)
 		{
 			if(e_prvni->pohon!=NULL)e_posledni->WT=m.cekani_na_palec(0,e_prvni->pohon->roztec,e_prvni->pohon->aRD,3);
-			if(OBJEKT_akt!=NULL && OBJEKT_akt->n==e_posledni->objekt_n)e_posledni->mGrid->Refresh();
+			if(OBJEKT_akt!=NULL && OBJEKT_akt->n==e_posledni->objekt_n)E->mGrid->Cells[2][11].Text = F->m.round2double(F->outPT(E->WT),3);
 		}
 		//////////Mazání nepotřebného předávacího místa (změna na zarážku)
 		if(e_posledni->eID==200 && (e_prvni->pohon!=NULL && e_posledni->pohon!=NULL && e_prvni->pohon->n==e_posledni->pohon->n || e_prvni->pohon==NULL && e_posledni->pohon==NULL))
@@ -8447,8 +8447,8 @@ void TForm1::tab_pohon_COMBO (int index)
 			{
 				E->WT=0;
 				if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)E->WT=m.cekani_na_palec(0,E->dalsi->pohon->roztec,E->dalsi->pohon->aRD,3);
-				if(E->dalsi==NULL && pom->dalsi!=NULL && pom->element->pohon!=NULL)E->WT=m.cekani_na_palec(0,pom->element->pohon->roztec,pom->element->pohon->aRD,3);
-				E->mGrid->Cells[1][1].Text=m.round2double(outPT(E->WT),3);
+				if(E->dalsi==NULL && d.v.ELEMENTY->dalsi->pohon!=NULL)E->WT=m.cekani_na_palec(0,d.v.ELEMENTY->dalsi->pohon->roztec,d.v.ELEMENTY->dalsi->pohon->aRD,3);
+				E->mGrid->Cells[2][11].Text=m.round2double(outPT(E->WT),3);
 			}
 			E=E->dalsi;
 		}
