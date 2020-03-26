@@ -559,6 +559,7 @@ __published:	// IDE-managed Components
 	void __fastcall N1projekt1Click(TObject *Sender);
 	void __fastcall N2projekt1Click(TObject *Sender);
 	void __fastcall N3projekt1Click(TObject *Sender);
+  void __fastcall scExPanel1Click(TObject *Sender);
 
 
 
