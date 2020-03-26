@@ -13847,7 +13847,7 @@ void __fastcall TForm1::scSplitViewsClosed(TObject *Sender)
 void __fastcall TForm1::scExPanel_vrstvyClick(TObject *Sender)
 {
   log(__func__);//logování
-	scExPanel_vrstvy->RollUpState=!scExPanel_vrstvy->RollUpState;
+  scExPanel_vrstvy->RollUpState=!scExPanel_vrstvy->RollUpState;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scExPanel_ostatniClick(TObject *Sender)
@@ -16123,3 +16123,10 @@ void TForm1::Otevri_posledni_ulozeny(UnicodeString soubor)
 	}
 }
 //---------------------------------------------------------------------------
+void __fastcall TForm1::scExPanel1Click(TObject *Sender)
+{
+  log(__func__);//logování
+	scExPanel1->RollUpState=!scExPanel1->RollUpState;
+}
+//---------------------------------------------------------------------------
+
