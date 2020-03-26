@@ -559,6 +559,7 @@ class Cvektory
 	void rotace_elementu(TObjekt *Objekt,short rotace);//orotuje všechny elementy daného objektu o danou hodnotu
   bool oblast_elementu(TElement *Element, double X, double Y);//zkontroluje, zda se nacházím v oblasti elemetu
 	TElement *najdi_element(TObjekt *Objekt, double X, double Y);//hledá element v místě kurzoru pracuje v logických/metrických souradnicích
+	TElement *najdi_posledni_element_podle_eID(unsigned int eID,TObjekt *Objekt);//najde poslední element v objektu který odpovídá eID
 	TElement *najdi_tabulku(TObjekt *Objekt, double X, double Y);//hledá tabulku elementu pouze pro daný objekt v oblasti definované pomocí šířky a výšky tabulky (která se může nacházet v daném místě kliku), pracuje v logických/metrických souradnicich, vrátí ukazatel na daný element, který tabulku vlastní, pokud se na daných souřadnicích nachází tabulka
 	TElement *vrat_element(TObjekt *Objekt, unsigned int n);//vraťí ukazatel na element dle n elementu umístěného v daném objektu
 	TElement *vrat_element(unsigned int n);//vraťí ukazatel na element dle n elementu

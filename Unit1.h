@@ -601,7 +601,6 @@ private:
 	void add_element(int X, int Y);
 	void add_vyhybka_spojka();
 	void add_komoru();//pøidávání komory kabinì powerwashe, kontrola zda není souèet kabin vìtší ne rozmìr kabiny
-	void vlozit_predavaci_misto();//projde elementy a objekty, pokud je nìkde nutnost vloit pøedávací místo vloí ho tam
 	short rotace_symbol(short trend,int X_bod,int Y_bod);//dle toho, zda je umisovanı element nad osou èi pod osou pohonu je vrácena rotace symbolu, X_bod,.. je bbod vkládání elementu (jedna souøadnice ho váe na pohon)
 	void vytvoreni_tab_knihovna();//vytovoøení tabulky knihovny objektù
 	void popisky_knihovna_nahled(bool knihovna);//pøepíná popisky mezi knihovnou a editací
@@ -727,7 +726,7 @@ public:		// User declarations
 	Graphics::TBitmap *Pan_bmp;//kvùli mGridu jinak staèí private
 	//uklazatele
 	Cvektory::TObjekt *pom,*pom_vyhybka,*OBJEKT_akt,*copyObjekt;
-	Cvektory::TElement *pom_element,*pom_element_temp,*posledni_editovany_element,*element_temp;//element_temp je nulován pøi kadém pøejetí kurzoru pouíván na vìci kolem PM
+	Cvektory::TElement *pom_element,*pom_element_temp,*posledni_editovany_element,*element_temp,*predchozi_PM;//element_temp je nulován pøi kadém pøejetí kurzoru pouíván na vìci kolem PM
 	TmGrid *PmG,*mGrid_knihovna;//ukazatel na mGridovou tabulku pohonu
 	Cvektory::TKomora *pom_komora,*pom_komora_temp;
 	Cvektory::TBod *pom_bod,*pom_bod_temp;
@@ -856,6 +855,7 @@ public:		// User declarations
 	UnicodeString get_temp_dir();
 	void vytvoreni_tab_pohon();//vytvoøení tabulky pohonu
 	void napln_comba_mGridu(Cvektory::TElement *E);
+	void vlozit_predavaci_misto();//projde elementy a objekty, pokud je nìkde nutnost vloit pøedávací místo vloí ho tam
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
