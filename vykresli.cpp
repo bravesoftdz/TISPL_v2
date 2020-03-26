@@ -303,7 +303,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 //	O=NULL;delete O;
 
 	//VALIDACE a její výpis formou zpráv
-	if(F->MOD!=F->Tmod::TVORBA_CESTY)
+	if(F->MOD!=F->Tmod::TVORBA_CESTY && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT)
 	{
 		v.VALIDACE();
 		vypis_zpravy(canv);
