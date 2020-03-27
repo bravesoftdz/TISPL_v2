@@ -618,6 +618,7 @@ private:
 	unsigned short int Otevrit_soubor(UnicodeString soubor);//realizuje samotné otevøení souboru
   unsigned short int Nacist_podklad(UnicodeString soubor);//realizuje nacteni podkladu
 	void ulozit_posledni_otevreny();//uloží do ini nazev posledního pracovního souboru
+	void ulozit_historie_otevrenych();//ukládání 3 naposledy otevøených projektù do historie
 	void vse_odstranit();
 	UnicodeString get_computer_name();
 	UnicodeString get_user_name();

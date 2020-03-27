@@ -1547,7 +1547,6 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 	 log(__func__);//logování
 	 ESC();//ukončení případné akce
 	 //if(duvod_k_ulozeni) UlozitClick(this);
-	 ulozit_posledni_otevreny();
 	 Novy_soubor();//samotné vytvoření nového souboru
 	 if(!duvod_k_ulozeni)//pouze pokud byl založen nový soubor
 	 {
@@ -4278,7 +4277,7 @@ void TForm1::vykresli_spojinici_EmGrid(TCanvas *Canv,Cvektory::TElement *E)
 	log(__func__);//logování
 	double levyhorni,pravyhorni,levydolni,pravydolni;
 	bool vykresleno=false;
-	if(OBJEKT_akt!=NULL && OBJEKT_akt->zobrazit_mGrid && E!=NULL && (d.v.vrat_druh_elementu(E)!=-1 || E->eID==200 || E->eID==300 || E->eID==301) && E->eID!=100 && E->mGrid!=NULL && E->objekt_n==OBJEKT_akt->n)
+	if(OBJEKT_akt!=NULL && OBJEKT_akt->zobrazit_mGrid && E!=NULL && (d.v.vrat_druh_elementu(E)!=-1 || E->eID==200 || E->eID==300 || E->eID==301) && E->eID!=100 && E->mGrid!=NULL && (E->objekt_n==OBJEKT_akt->n || E==predchozi_PM))
 	{
 		//výpočet vzdáleností od každého rohu tabulky ke středu elementu
 		levyhorni=m.delka(m.L2Px(E->X),m.L2Py(E->Y),m.L2Px(E->Xt),m.L2Py(E->Yt));//ok
@@ -6272,7 +6271,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
     			//načtení hodnot z pohonu
     			double aRD=p2->aRD,roztec=p2->roztec;
 					//přepočty
-    			E->WT=F->m.cekani_na_palec(0,roztec,aRD,3);//důležité pro výpočet RT, nezobrazuje se
+					E->WT=m.cekani_na_palec(0,roztec,aRD,3);//důležité pro výpočet RT, nezobrazuje se
 				}
 				else E->WT=0;
 				//zapsání do mgridu
@@ -8780,7 +8779,23 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 		{
 			if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)C2->ItemIndex=E->dalsi->pohon->n;
 			if(E->dalsi==NULL && d.v.ELEMENTY->dalsi->pohon!=NULL)C2->ItemIndex=d.v.ELEMENTY->dalsi->pohon->n;
-    }
+			//zakazování comb
+			if(E->objekt_n!=OBJEKT_akt->n)C1->Enabled=false;
+			if((E->dalsi!=NULL && E->dalsi->objekt_n!=E->objekt_n || E->dalsi==NULL) && predchozi_PM!=E)C2->Enabled=false;
+			//kontrola zda jsou buňky na draw
+			if(!C1->Enabled && E->mGrid->Cells[1][3].Type==E->mGrid->EDIT)
+			{
+				mGrid_komponenta_na_draw(E->mGrid,1,3);E->mGrid->Cells[1][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[1][3].Font->Color=(TColor)RGB(128,128,128);
+				mGrid_komponenta_na_draw(E->mGrid,1,5);E->mGrid->Cells[1][5].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[1][5].Font->Color=(TColor)RGB(128,128,128);
+				mGrid_komponenta_na_draw(E->mGrid,1,6);E->mGrid->Cells[1][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[1][6].Font->Color=(TColor)RGB(128,128,128);
+			}
+			if(!C2->Enabled && E->mGrid->Cells[2][3].Type==E->mGrid->EDIT)
+      {
+				mGrid_komponenta_na_draw(E->mGrid,2,3);E->mGrid->Cells[2][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][3].Font->Color=(TColor)RGB(128,128,128);
+				mGrid_komponenta_na_draw(E->mGrid,2,5);E->mGrid->Cells[2][5].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][5].Font->Color=(TColor)RGB(128,128,128);
+				mGrid_komponenta_na_draw(E->mGrid,2,6);E->mGrid->Cells[2][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][6].Font->Color=(TColor)RGB(128,128,128);
+			}
+		}
 		//ukazatelové záležitosti
 		I1=NULL;delete I1;
 		I2=NULL;delete I2;
@@ -9114,7 +9129,8 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			//vytvoření mgridu
 			E->mGrid->Create(3,12);
 			//nastavení popisků
-			E->mGrid->Cells[1][1].Text="IN/OUT";
+			if(E->eID==300)E->mGrid->Cells[1][1].Text="IN/OUT";
+			else E->mGrid->Cells[1][1].Text="IN";
 			E->mGrid->Cells[2][1].Text="OUT";
 			E->mGrid->Cells[0][2].Text="Výber pohonu ";
 			E->mGrid->Cells[0][3].Text=ls->Strings[208]+" "+rychlost;//"Rychlost"
@@ -9575,7 +9591,8 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			//vytvoření mgridu
 			E->mGrid->Create(3,12);
 			//nastavení popisků
-			E->mGrid->Cells[1][1].Text="IN/OUT";
+			if(E->eID==300)E->mGrid->Cells[1][1].Text="IN/OUT";
+			else E->mGrid->Cells[1][1].Text="IN";
 			E->mGrid->Cells[2][1].Text="OUT";
 			E->mGrid->Cells[0][2].Text="Výber pohonu ";
 			E->mGrid->Cells[0][3].Text=ls->Strings[208]+" "+rychlost;//"Rychlost"
@@ -9879,6 +9896,13 @@ void TForm1::redesign_element()
 		akt_tabulek(E,LO,delka_otoce,cas,rychlost,R,Rz,sirka_0,sirka_1,sirka_2,sirka_3,sirka_4,sirka_56,sirka_cisla);
 		E=E->dalsi;
 	}
+	//změna jednotek i pro předchozí element
+	if(predchozi_PM!=NULL)
+	{
+		if(d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n!=0)C=d.v.vrat_segment_cesty(d.v.ZAKAZKA_akt,predchozi_PM);
+		if(C!=NULL)predchozi_PM->data=C->data;//načtení aktuálních informací do elementu
+		akt_tabulek(predchozi_PM,LO,delka_otoce,cas,rychlost,R,Rz,sirka_0,sirka_1,sirka_2,sirka_3,sirka_4,sirka_56,sirka_cisla);
+  }
 	C=NULL; delete C;
 	E=NULL; delete E;
 	//zápis změn do INI
@@ -12177,7 +12201,6 @@ void __fastcall TForm1::Toolbar_OtevritClick(TObject *Sender)
 	ESC();//ukončení případné akce
 	scSplitView_MENU->Opened=false;
 	scButton_otevrit->Down=false;
-	ulozit_posledni_otevreny();
 	if(duvod_k_ulozeni)//pokud existuje předcházejicí soubor, který je nutný uložit
 	{
 		AnsiString FNs=FileName_short(FileName);
@@ -12270,6 +12293,7 @@ unsigned short int TForm1::Otevrit_soubor(UnicodeString soubor)//realizuje samot
 //					//ZDM case SIMULACE:	editacelinky1Click(this);MOD=SCHEMA;/*simulace1Click(this);*/break;
 //					default: schemaClick(this);break;
 //			}
+			ulozit_historie_otevrenych();
 			DuvodUlozit(false);
 			duvod_validovat=2;//soubor se zvaliduje při prvním refresh
 			//aktualizace statusbaru
@@ -12347,7 +12371,11 @@ void TForm1::ulozit_posledni_otevreny()
 	//-ini->WriteString("otevrene_soubory","posledni_soubor",FileName);
 	//-delete ini;
 	writeINI("otevrene_soubory","posledni_soubor",FileName);//ukládání posledního otevřeného osuboru
-	//ukládání do historie
+}
+//---------------------------------------------------------------------------
+//ukládání 3 naposledy otevřených projektů do historie
+void TForm1::ulozit_historie_otevrenych()
+{
 	UnicodeString ps=readINI("historie","posledni_soubor_1"),ps1=readINI("historie","posledni_soubor_2"),ps2=readINI("historie","posledni_soubor_3");
 	if(FileName!="Nový.tispl" && FileName!=ps && FileName!=ps1 && FileName!=ps2)//kontrola zda není ukládány už uložený v posledních otevřených
 	{
@@ -13365,8 +13393,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	OBJEKT_akt->element=d.v.ELEMENTY->dalsi->dalsi->dalsi;
-	Memo(OBJEKT_akt->element->name);
+	Memo("");
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
