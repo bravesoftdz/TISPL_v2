@@ -770,7 +770,7 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy,bool 
     Z->mGrid->Cells[3][1].Type = Z->mGrid->glyphBUTTON; // X dávka
     Z->mGrid->Cells[3][0].Type = Z->mGrid->CHECK; // select  zakazka
 
-    Z->mGrid->Cells[0][1].Text = Z->n; // id zakázky
+   // Z->mGrid->Cells[0][1].Text = Z->n; // id zakázky
     if (novy)
       Z->mGrid->Cells[1][0].Text = F->ls->Strings[434]; // "Název zakázky"
     else
@@ -822,7 +822,7 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy,bool 
 
     Z->mGrid->MergeCells(1, 0, 2, 0); // název     - vodorovne
     //Z->mGrid->MergeCells(1, 1, 2, 1); // merge color glyph
-    Z->mGrid->MergeCells(0, 2, 0, 4); // merge ID èi obrázek
+    Z->mGrid->MergeCells(0, 1, 0, 4); // merge ID èi obrázek
 		//Z->mGrid->Update();
 		GetImages(Z);//slouží jak pro naèítání tak pro vkládání nové zakázky, provede Update()
     // default rozmístìní glyphbuttonù
