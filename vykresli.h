@@ -26,6 +26,8 @@ class Cvykresli
 	short oY;//ofset na ose Y, 5 pouze grafická korekce
 	float sizeP;//velikost textù popiskù elementù v knihovnì
 
+	//smazat: double umisteniCas;bool rotacni_zbytek;int pocitadlo;//smazat provizorní
+
 	public:
 	Cvykresli();//konstruktor
 	Cvektory v;
@@ -71,6 +73,7 @@ class Cvykresli
 	void vykresli_retez(TCanvas *canv,Cvektory::TRetez *Retez);
 	void vykresli_koleje(TCanvas *canv,Cvektory::TElement *E);//vykreslení jednoho geometrického segmentu dvou párù kolejí
 	void vykresli_koleje(TCanvas *canv,double X,double Y,short typ,double orientace,double rotacni_uhel,double radius,double delka,TColor clKolej=(TColor)RGB(255,69,0));//vykreslení jednoho geometrického segmentu dvou párù kolejí
+	void vykresli_voziky(TCanvas *canv);//vykreslí všechny vozíky ze seznamu vozíkù
 	void vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dJ,double sJ,double orientaceP=0,double rotaceJ=0,TColor clChassis=(TColor)RGB(50,50,50), TColor clJig=clPurple);//vykreslení jednoho komplexního vozíku (podvozek vèetnì jigu), , X,Y jsou souøadnice uchycení vozíku k palci, co nemusí bıt støed vozíku
 	void vykresli_jig(TCanvas *canv,double X,double Y,double dJ,double sJ,double orientaceP,double rotaceJ,TColor clJig=clPurple,float Width=2);
 //	void vykresli_simulaci(TCanvas *canv);//zajišuje vykreslení simulace
@@ -145,7 +148,7 @@ class Cvykresli
 	void vykresli_potencial_cesty(TCanvas *canv,Cvektory::TElement *E);
 
 	//globální public promìnné
-	TColor clStenaKabiny,clStenaHaly,clPasiv,clError,clWarning;
+	TColor clStenaKabiny,clStenaHaly,clPasiv,clError,clWarning,clChassis,clJig;
 	short O_width,O_height,V_width;//logické parametry, nezoomovat
 	float Robot_sirka_zakladny;
 	float Robot_delka_zakladny;

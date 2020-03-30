@@ -270,14 +270,13 @@ TPointD_3D Cmy::bezierPt(double orientace,double rotacni_uhel,double x1,double y
 		if(perc==0){RET.x=x1;RET.y=y1;RET.z=orientace;}
 		else {RET.x=x4;RET.y=y4;RET.z=orientace-rotacni_uhel;}//pro perc==1
 		return RET;
-  }
+	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //podpůrná metoda výše uvedené
 double Cmy::getPt(double n1,double n2,double perc)
 {
-	double diff=n2-n1;
-	return n1+(diff*perc);
+	return n1+((n2-n1)*perc);
 }
 ///------------------------------------------------------------------------------------------------------------------------------------------------------
 //vratí bod z linie čí z oblouku dle poměřu (perc) k celkové délce dané křivky, perc2 slouží na poměr v místě středu vozíku, který nemusí být díky rozdílnému místu uchycení totožný s parametrem perc
@@ -305,7 +304,7 @@ TPointD_3D Cmy::getPt(double radius,double orientace,double rotacni_uhel,double 
 	else//vychozí čí koncová pozice
 	{
 		if(perc==0){RET.x=X1;RET.y=Y1;}
-		else {RET.x=X4;RET.y=X4;}//pro perc==1
+		else {RET.x=X4;RET.y=Y4;}//pro perc==1
 		RET.z=orientace-rotacni_uhel*perc2;//pokud je střed podvozku uvnitř oblouku či linie nebo předchozí či následuje oblouku lini a střed je mimo aktuální oblouk, vždy nehledě na uchycení na palec
 	}
 	if(perc2<0 && rotacni_uhel_predchozi==0)RET.z=orientace; if(perc2>1 && rotacni_uhel_nasledujici==0)RET.z=orientace-rotacni_uhel;//pro situace, kdy předchází či navazuje linie, ne zcela dokonale, problém by mohl být v případě rozdílného radiusu či příliš krátkých segmentů atp.
