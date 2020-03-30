@@ -97,10 +97,10 @@ Save;X;Uloit
 Load background ...;X;Naèíst podklad...
 Options;X;Nastavení
                   Layers;X;                  Vrstvy
-Show conveyor tracks;X;Zobrazit koleje dopravníku
-Show positions;X;Zobrazit pozice
-Show jig rotation;X;Zobrazit rotace jigù
-Show element labels;X;Zobrazit popisky prvkù
+Conveyor tracks;X;Koleje dopravníku
+Position in buffers;X;Pozice v buffrech
+Illustration of jigs rotation;X;Znázornìní rotace jigù
+Labels of elements;X;Popisky prvkù
                   Background;X;                  Podklad
 Set the scale;X;Nastavit mìøítko
 Place background;X;Umístit podklad
@@ -290,7 +290,7 @@ The upper speed limit must be less than or equal to;X;Horní hranice rychlosti mu
 The lower speed limit must be >=;X;Spodní hranice rychlosti musí bıt >=
 The upper speed limit must be <=;X;Nebo horní hranice musí bıt <=
 The drive parameters can no longer be changed because the drive is used on other objects;X;Parametry pohonu ji nelze mìnit, protoe pohon je pouíván na jinıch objektech
-Show thumbs;X;Zobrazit palce
+Thumbs of chain;X;Palce øetìzu
 Angle;X;Úhel [°]
 Downloading update, do not close the application !!! When the download is complete, the program will close.;X;Probíhá stahování aktualizace, neukonèujte aplikaci!!! Po dokonèení stahování bude program ukonèen.
 Drag the mouse from the selected point to the destination point to see the distance between these points.;X;Taením myši z vybraného bodu do cílového bodu zobrazíte vzdálenost mezi tìmito body.
@@ -443,3 +443,5 @@ Delete batch;X;Smazat dávku
 Choose color;X;Barva zakázky
 Show geometry dimensions;X;Zobrazit kóty geometrie
 Hide geometry dimensions;X;Skrıt kóty geometrie
+Placement of carts ;X;Rozmístìní vozíkù
+Click to confirm path;X;Kliknutím potvrdíte cestu

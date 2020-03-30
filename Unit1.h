@@ -341,6 +341,10 @@ __published:	// IDE-managed Components
 	TPopupMenu *PopupMenu1;
 	TMenuItem *N11;
 	TMenuItem *N21;
+  TPopupMenu *PopupMenu_posledni_projekty;
+  TMenuItem *N1projekt1;
+  TMenuItem *N2projekt1;
+  TMenuItem *N3projekt1;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -562,15 +566,19 @@ __published:	// IDE-managed Components
 	void __fastcall scGPCheckBox_rozmisteni_vozikuClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_odstran_cestuClick(TObject *Sender);
 	void __fastcall N21Click(TObject *Sender);
+	void __fastcall N1projekt1Click(TObject *Sender);
+	void __fastcall N2projekt1Click(TObject *Sender);
+	void __fastcall N3projekt1Click(TObject *Sender);
+  void __fastcall scExPanel1Click(TObject *Sender);
 
 
 
 // User declarations
 	////jen public struktury a vıèty
 public:
-	enum Tmod{NO=0,SCHEMA,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE,EDITACE};Tmod MOD;
+	enum Tmod{NO=0,SCHEMA,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE,EDITACE,TVORBA_CESTY};Tmod MOD;
 	enum Tstatus{NAVRH,OVEROVANI};Tstatus STATUS;
-	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE,OFFSET_KOTY,MOVE_KOMORA,ROZMER_KOMORA,DRAW_HALA,MOVE_HALA,MOVE_BOD,MOVE_USECKA,MOVE_TEXT,GEOMETRIE,BLOK,GEOMETRIE_LIGHT,TVORBA_CESTY};Takce Akce;Takce Akce_temp;//akce temp slouí ke spuštìní akce pøi akci, pø. Akce=GEOMETRIE a pøi ní je potøeba pøesunout kóty geo. elementù, tudí Akce_temp=OFFSET_KOTY
+	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE,OFFSET_KOTY,MOVE_KOMORA,ROZMER_KOMORA,DRAW_HALA,MOVE_HALA,MOVE_BOD,MOVE_USECKA,MOVE_TEXT,GEOMETRIE,BLOK,GEOMETRIE_LIGHT};Takce Akce;Takce Akce_temp;//akce temp slouí ke spuštìní akce pøi akci, pø. Akce=GEOMETRIE a pøi ní je potøeba pøesunout kóty geo. elementù, tudí Akce_temp=OFFSET_KOTY
 	enum Tm_mm{M=0,MM,SEKUNDY,MINUTY};Tm_mm DOtocunit,DKunit,LOunit,Runit,Rzunit;//pøepínaè jednotek vzdálenost,rozšíøen o SEKUNDY,MINUTY (problém pøi pouití SEC a MIN) z dùvodu èasovıch a vzdálenostních kót
 	enum Tminsec{SEC=0,MIN};Tminsec PTunit,aRDunit ;//pøepínaè jednotek èasu
 	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o,neco,posun_ind,zmena_j,edit_text,zmena_d_x,zmena_d_y,posun_ind_ld,posun_ind_pd,editace_posun,info,close,posun_editace_obj,editace_obj};
@@ -603,14 +611,13 @@ private:
 	void add_element(int X, int Y);
 	void add_vyhybka_spojka();
 	void add_komoru();//pøidávání komory kabinì powerwashe, kontrola zda není souèet kabin vìtší ne rozmìr kabiny
-	void vlozit_predavaci_misto();//projde elementy a objekty, pokud je nìkde nutnost vloit pøedávací místo vloí ho tam
 	short rotace_symbol(short trend,int X_bod,int Y_bod);//dle toho, zda je umisovanı element nad osou èi pod osou pohonu je vrácena rotace symbolu, X_bod,.. je bbod vkládání elementu (jedna souøadnice ho váe na pohon)
 	void vytvoreni_tab_knihovna();//vytovoøení tabulky knihovny objektù
 	void popisky_knihovna_nahled(bool knihovna);//pøepíná popisky mezi knihovnou a editací
 	void odstraneni_elementu_tab_pohon(int operace);
 	void zmena_jednotek_tab_pohon();
-	void prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla,AnsiString LO,AnsiString cas,AnsiString delka_otoce);
-	void dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla,AnsiString LO,AnsiString cas,AnsiString delka_otoce);
+	void prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla,AnsiString LO,AnsiString cas,AnsiString delka_otoce,AnsiString rychlost,AnsiString R,AnsiString Rz);
+	void dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla,AnsiString LO,AnsiString cas,AnsiString delka_otoce,AnsiString rychlost,AnsiString R,AnsiString Rz);
 	void zmen_poradi_objektu(int X, int Y);//testuje zda se nejedná o zmìnu poøadí (to musí ještì uivatel potvrdit)
 	void zobraz_tip(UnicodeString text="", TCanvas* canv=NULL);//prázdnım (bez paremetrù) voláním  metody se tip smae, //pokud není parametr canvas uveden, jedná se o dlouhodobé vykreslování hodnoty TIP//pokud je parametrem pøedán Canvas vykreslí se pøímo a jednorázovì
 	void akutalizace_stavu_prichytavani_vSB();
@@ -621,6 +628,7 @@ private:
 	unsigned short int Otevrit_soubor(UnicodeString soubor);//realizuje samotné otevøení souboru
   unsigned short int Nacist_podklad(UnicodeString soubor);//realizuje nacteni podkladu
 	void ulozit_posledni_otevreny();//uloí do ini nazev posledního pracovního souboru
+	void ulozit_historie_otevrenych();//ukládání 3 naposledy otevøenıch projektù do historie
 	void vse_odstranit();
 	UnicodeString get_computer_name();
 	UnicodeString get_user_name();
@@ -651,7 +659,7 @@ private:
 	void ortogonalizace();//volá ortogonalizaci schéma, pokud je ortogonalizace povolena
 	void ortogonalizovat();//ortogonalizuje schéma
 	void db_connection();  // pøipojení k DB serveru
-	void akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_otoce,AnsiString cas,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla);
+	void akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_otoce,AnsiString cas,AnsiString rychlost,AnsiString R,AnsiString Rz,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla);
 	void vykresli_kurzor(int index);
 	void zmenJednotekKot();
 	int pocet_vyskytu_elementu_s_otoci(Cvektory::TObjekt *Objekt);//prohledá elementy v objektu, vrátí 0 pokud je rotace v objektu všude stejná, vrátí 1 pokud je pøítomno více rotací
@@ -670,11 +678,11 @@ private:
 	void smaz_bod_haly_objektu(Cvektory::TBod *bod);//smae bod haly nebo objektu, pokud existují u jen 2 poslední body smae oba
 	void mGrid_on_mGrid();//prohledá zda se pøekrıvají mGridy
   void mGrid_mimo_obraz(Cvektory::TElement *E=NULL);//kontrola zde je mGrid mimo obraz, pokud ano vypnutí komponent
-  void mGrid_puvodni_stav(Cvektory::TElement *E=NULL);//nadesingnuje tabulky elementù nebo tabulku pohonu na pùvodní stav, obnovı komponenty, naplní comba, provede Update() mGridu
-	void mGrid_komponenta_na_draw(TmGrid *mGrid,long Col,long Row);//smazì komponentu v dané buòce a zmìní typ bunky na DRAW
+	void mGrid_puvodni_stav(Cvektory::TElement *E=NULL);//nadesingnuje tabulky elementù nebo tabulku pohonu na pùvodní stav, obnovı komponenty, naplní comba, provede Update() mGridu
 	void set_font(int velikost=14);//nastaví komponentám aFont
 	bool pripnuti_dalsich_objektu();//pokud pøi uloení editovaného objektu je detekováno, e konec objketu nenavazuje na zaèátek následujísího objektu je poloen dotaz a po potvrzení dojde ke spojení
 	void spojeni_prvni_posledni(double citlivost=0.5);//kontrola zda na sebe první a polední objekt navazují, pokud jsou blízko u sebe, ale nenavazují - naváe je
+	void Otevri_posledni_ulozeny(UnicodeString soubor);//otevøe jeden z posledních otevøenıch souborù
 
 	////promìnné
 	TDateTime TIME;
@@ -729,7 +737,7 @@ public:		// User declarations
 	Graphics::TBitmap *Pan_bmp;//kvùli mGridu jinak staèí private
 	//uklazatele
 	Cvektory::TObjekt *pom,*pom_vyhybka,*OBJEKT_akt,*copyObjekt;
-	Cvektory::TElement *pom_element,*pom_element_temp,*posledni_editovany_element,*element_temp;//element_temp je nulován pøi kadém pøejetí kurzoru pouíván na vìci kolem PM
+	Cvektory::TElement *pom_element,*pom_element_temp,*posledni_editovany_element,*element_temp,*predchozi_PM;//element_temp je nulován pøi kadém pøejetí kurzoru pouíván na vìci kolem PM
 	TmGrid *PmG,*mGrid_knihovna;//ukazatel na mGridovou tabulku pohonu
 	Cvektory::TKomora *pom_komora,*pom_komora_temp;
 	Cvektory::TBod *pom_bod,*pom_bod_temp;
@@ -786,6 +794,7 @@ public:		// User declarations
 	short zobrazit_popisky;
 	short zobrazit_koleje;
 	short zobrazit_palce;
+	short zobrazit_rozmisteni_voziku;
 	bool zamek_layoutu;
   int Top_backup;  //pomocne promenne pro pozici zprav
   int Left_backup; //pomocne promenne pro pozici zprav
@@ -857,6 +866,8 @@ public:		// User declarations
 	UnicodeString get_temp_dir();
 	void vytvoreni_tab_pohon();//vytvoøení tabulky pohonu
 	void napln_comba_mGridu(Cvektory::TElement *E);
+	void vlozit_predavaci_misto_aktualizuj_WT();//projde elementy a objekty, pokud je nìkde nutnost vloit pøedávací místo vloí ho tam
+	void mGrid_komponenta_na_draw(TmGrid *mGrid,long Col,long Row);//smazì komponentu v dané buòce a zmìní typ bunky na DRAW
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

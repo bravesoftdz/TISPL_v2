@@ -2047,6 +2047,14 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 				Element->predchozi=force_razeni->predchozi2;
 				force_razeni->predchozi2=Element;
 			}
+			else if(force_razeni->eID==300 && force_razeni->objekt_n!=F->OBJEKT_akt->n)//přidávání geometrie z objektu spojky
+			{
+				Element->dalsi=force_razeni->dalsi2;
+				if(force_razeni->dalsi2==force_razeni->predchozi2)force_razeni->dalsi2->predchozi2=Element;
+				else force_razeni->dalsi2->predchozi=Element;
+				Element->predchozi=force_razeni;
+				force_razeni->dalsi2=Element;
+      }
 			else//ukazatelové propojení, normální funkce
 			{
 				if(force_razeni==Objekt->element)Objekt->element=Element;//asi problém při napojování výhybky - sledovat
@@ -2067,18 +2075,16 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 				}
 			}
 	  	//změna indexů
-	  	Cvektory::TElement *E=Objekt->element;
-	  	if(E->predchozi==NULL || E->predchozi->n==0)E->n=1;
-	  	else E->n=E->predchozi->n+1;
-	  	int n=E->n;
+			Cvektory::TElement *E=ELEMENTY->dalsi;
+			int n=1;
 	  	while(E!=NULL)
 	  	{
 	  		//indexy
 	  		E->n=n;
 	  		n++;
 	  		E=dalsi_krok(E);
-	  	}
-	  	E=NULL;delete E;
+			}
+			E=NULL;delete E;
 	  	//změna názvů
 	  	uprav_popisky_elementu(Element);
 		}
@@ -2228,7 +2234,7 @@ void Cvektory::uprav_popisky_elementu(TElement *Element)
 			}
 			E->short_name=E->name.SubString(1,3)+AnsiString(n);
 			//změna názvu v hlavičce mGridu, jako první z důvodu podmínky prázdného názvu
-			if(E->name!=""&&E->mGrid!=NULL)//nutné, přejmenovávám i první element, který nemá vytvořený mGrid
+			if(E->name!="" && E->mGrid!=NULL && E->eID!=300 && E->eID!=301)//nutné, přejmenovávám i první element, který nemá vytvořený mGrid
 			{
 				try
 				{
@@ -2285,21 +2291,21 @@ void Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->sparovany=Original->sparovany;
 }
 ////---------------------------------------------------------------------------
-//zkopíruje atributy dat, slouží pro zakládání cesty v zakázce
-void Cvektory::kopiruj_data_elementu(Tdata Original,Tdata Kopie)
+//zkopíruje atributy dat, slouží pro zakládání cesty v zakázce, musí být řešeno přes cestu!!!!!! ne Tdata Original, Tdata Kopie
+void Cvektory::kopiruj_data_elementu(Tdata Original,TCesta *Cesta)
 {
-	Kopie.PD=Original.PD;
-	Kopie.orientace_jig_pred=Original.orientace_jig_pred;
-	Kopie.LO1=Original.LO1;
-	Kopie.LO2=Original.LO2;
-	Kopie.LO_pozice=Original.LO_pozice;
-	Kopie.PT1=Original.PT1;
-	Kopie.PT2=Original.PT2;
-	Kopie.WTstop=Original.WTstop;
-	Kopie.RT.x=Original.RT.x;
-	Kopie.RT.y=Original.RT.y;
-	Kopie.pocet_pozic=Original.pocet_pozic;
-	Kopie.pocet_voziku=Original.pocet_voziku;
+	Cesta->data.PD=Original.PD;
+	Cesta->data.orientace_jig_pred=Original.orientace_jig_pred;
+	Cesta->data.LO1=Original.LO1;
+	Cesta->data.LO2=Original.LO2;
+	Cesta->data.LO_pozice=Original.LO_pozice;
+	Cesta->data.PT1=Original.PT1;
+	Cesta->data.PT2=Original.PT2;
+	Cesta->data.WTstop=Original.WTstop;
+	Cesta->data.RT.x=Original.RT.x;
+	Cesta->data.RT.y=Original.RT.y;
+	Cesta->data.pocet_pozic=Original.pocet_pozic;
+	Cesta->data.pocet_voziku=Original.pocet_voziku;
 }
 ////---------------------------------------------------------------------------
 //všem elementům, které měly přiřazen pohon s oldN(oldID), přiřadí pohon s newN(newID), podle toho, jak jsou ukládány nově do spojáku, důležité, pokud dojde k narušení pořadí ID resp n pohonů a pořadí jednotlivých řádků ve stringridu, např. kopirováním, smazáním, změnou pořadí řádků atp.
@@ -2595,6 +2601,24 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 	return ret;
 }
 ////---------------------------------------------------------------------------
+//najde poslední element v objektu který odpovídá eID
+Cvektory::TElement *Cvektory::najdi_posledni_element_podle_eID(unsigned int eID,TObjekt *Objekt)
+{
+	//průchod od prvního elementu v objektu
+	TElement *ret=NULL;
+	if(Objekt!=NULL && Objekt->n>0)//ošetření proti nulovému objektu nebo hlavičce
+	{
+   	TElement *E=Objekt->element;
+   	while(E!=NULL && E->objekt_n==Objekt->n)
+   	{
+   		if(E->eID==eID)ret=E;//pokud je nalezen zapíše se, nepřeruší se cyklus, bude se přepisovat dokud nezustane v ukazateli poslední element tohoto eID v Objektu
+   		E=E->dalsi;
+   	}
+		E=NULL;delete E;
+	}
+	return ret;
+}
+////---------------------------------------------------------------------------
 //hledá tabulku elementu pouze pro daný objekt v oblasti definované pomocí šířky a výšky tabulky (která se může nacházet v daném místě kliku), pracuje v logických/metrických souradnicich, vrátí ukazatel na daný element, který tabulku vlastní, pokud se na daných souřadnicích nachází tabulka
 Cvektory::TElement *Cvektory::najdi_tabulku(TObjekt *Objekt, double X, double Y)
 {
@@ -2605,6 +2629,7 @@ Cvektory::TElement *Cvektory::najdi_tabulku(TObjekt *Objekt, double X, double Y)
 		if(E->mGrid!=NULL && E->Xt<=X && X<=E->Xt+E->mGrid->Width*F->m2px/F->Zoom && E->Yt>=Y && Y>=E->Yt-E->mGrid->Height*F->m2px/F->Zoom)ret=E;
 		E=E->dalsi;
 	}
+	if(ret==NULL && F->predchozi_PM!=NULL && F->predchozi_PM->mGrid!=NULL && F->predchozi_PM->Xt<=X && X<=F->predchozi_PM->Xt+F->predchozi_PM->mGrid->Width*F->m2px/F->Zoom && F->predchozi_PM->Yt>=Y && Y>=F->predchozi_PM->Yt-F->predchozi_PM->mGrid->Height*F->m2px/F->Zoom)ret=F->predchozi_PM;
 	E=NULL;delete E;
 	return ret;
 }
@@ -2861,7 +2886,7 @@ double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element,bool pouze
 		{
 			while(E!=NULL && E->n>0 && E->objekt_n==Element->objekt_n)//pouze předchozí elementy v objektu
 	  	{
-				if(E->eID!=MaxInt)break;//pokud se jedná o funkční element zastavit průchod
+				if(E->eID!=MaxInt || E->geo.typ!=0)break;//pokud se jedná o funkční element zastavit průchod
 				else delka+=E->geo.delka;//jedná se o zarážku - přičti délku úseku zarážky
 	  		E=E->predchozi;
 			}
@@ -2881,23 +2906,22 @@ double Cvektory::vrat_rotaci_jigu_po_predchazejicim_elementu(TElement *Element)
 	bool nalezeno=false;
 	double akt_rotoce_jigu=0;
 	//provizorní (průchod po objektech) do doby než budou spuštěny zakázky resp. výhybky
-	TElement *E=ELEMENTY->dalsi;
-	while(E!=NULL)
+	if(ZAKAZKA_akt==NULL)update_akt_zakazky();//pro jistotu, pokud neexistuje akt zakázka vytvoří default
+	TCesta *C=ZAKAZKA_akt->cesta->dalsi;
+	while(C!=NULL)
 	{
-		if(Element==E)//pozor nelze porovnávat jen ukazatele, může docházet k porování nepřímých kopii (viz OBJEKT_akt)
+		if(Element==C->Element)//pozor nelze porovnávat jen ukazatele, může docházet k porování nepřímých kopii (viz OBJEKT_akt)
 		{
 			nalezeno=true;
 			break;//akcelerátor, skončí cyklus
 		}
 		else
 		{
-			if(E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180)akt_rotoce_jigu+=E->rotace_jig;//stále předcházející elementy, ty mě pro návrátovou hodnotu zajímají, rotace aktuálního elementu se nezohledňuje
+			if(C->Element->rotace_jig!=0 && -180<=C->Element->rotace_jig && C->Element->rotace_jig<=180)akt_rotoce_jigu+=C->Element->rotace_jig;//stále předcházející elementy, ty mě pro návrátovou hodnotu zajímají, rotace aktuálního elementu se nezohledňuje
 		}
-		E=dalsi_krok(E);
-		//E=E->dalsi;
+		C=C->dalsi;
 	}
-	vymaz_seznam_VYHYBKY();
-	E=NULL;delete E;
+	C=NULL;delete C;
 	//F->Memo("Pro "+Element->name+" o rotaci: "+Element->rotace_jig+" o celkové"+m.a360(akt_rotoce_jigu));//testovací výpis, časem možno odstranit
 	return m.a360(akt_rotoce_jigu);
 }
@@ -3279,7 +3303,7 @@ Cvektory::TElement *Cvektory::dalsi_krok(TElement *E,TObjekt *O)
 			E=E->predchozi2;
 			if(E->objekt_n!=O->n && E->eID!=300)E=E->dalsi->dalsi;//přesun z veldejší větve na element na hlavní větvi za spojkou
 			if(E->objekt_n!=O->n && E->eID==300)E=E->dalsi2->dalsi;
-			else {while(E->objekt_n==O->n){E=E->predchozi;}E=E->dalsi;}
+			else {while(E->objekt_n==O->n){E=E->predchozi;}if(E->eID!=300)E=E->dalsi;else E=E->dalsi2;}
 		}
 		else E=E->dalsi;
 		if(E!=NULL && E==VYHYBKY->spojka)E=E->dalsi;
@@ -4709,24 +4733,22 @@ void Cvektory::smaz_temp_zakazku(unsigned long n)
 				{
 					ukaz->mGrid->scGPImageCollection->Images->Delete(i);
 				}
-				TZakazka *Z=ukaz;
+				TZakazka *Z=ukaz->dalsi;
 				while(Z!=NULL)
 				{
+					Z->n-=1;
 					ukaz->mGrid->scGPImageCollection->Images->Add()->Bitmap=F->d.nacti_nahled(Z);
+					Z->n+=1;
 					Z=Z->dalsi;
 				}
 				delete Z;Z=NULL;
-//				for(int i=ukaz->n;i<=int(ZAKAZKY_temp->predchozi->n-1);i++)
-//				{
-//					ukaz->mGrid->scGPImageCollection->Images->Add()->Bitmap=F->d.nacti_nahled(i);
-//				}
 				//uprava indexů
 				Z=ukaz->dalsi;
 				unsigned long n=ukaz->n;
 				while(Z!=NULL)
 				{
 					Z->n=n;
-					Z->mGrid->Cells[0][2].ImageIndex=n-1;
+					Z->mGrid->Cells[0][1].ImageIndex=n-1;
 					n++;
 					Z=Z->dalsi;
 				}
@@ -4880,7 +4902,7 @@ void Cvektory::update_akt_zakazky()
  }
  else
  {
-	 //aktualizace aktuální uživatelské zakázky
+	 //aktualizace dat aktuální uživatelské zakázky
  }
 }
 //---------------------------------------------------------------------------
@@ -4890,7 +4912,7 @@ void Cvektory::vytvor_default_zakazku()
 	////ZAKAZKA
 	TZakazka *Z=ZAKAZKY;																																		//počet vozíků vygeneruje dle hodnoty WIP+jeden navíc kvůli přehlednosti, kdy začíná náběh
 	Z->id=1;Z->typ=1;Z->name="Nová zakázka";Z->barva=clPurple;Z->pomer=100;Z->TT=PP.TT;Z->pocet_voziku=WIP(1)+1;Z->serv_vozik_pocet=0;Z->opakov_servis=0;
-	Z->n==0;
+	Z->n=0;
 	Z->cesta=NULL;
 	Cvektory::TJig j;
 	j.sirka=F->d.v.PP.sirka_jig;j.delka=F->d.v.PP.delka_jig;j.vyska=F->d.v.PP.vyska_jig;j.ks=1;//defaultní hodnoty jigu
@@ -4975,7 +4997,7 @@ void Cvektory::vloz_cestu_po_hlavni_vetvi(TZakazka *zakazka,bool po_vyhybku)
 void Cvektory::vloz_segment_cesty(TZakazka *zakazka,TElement *element)
 {
 	TCesta *segment=new TCesta;
-	kopiruj_data_elementu(element->data,segment->data);//kopiruj data
+	kopiruj_data_elementu(element->data,segment);//kopiruj data
 	segment->Element=element;
 	segment->sparovany=element->sparovany;
 
@@ -4986,7 +5008,7 @@ void Cvektory::vloz_segment_cesty(TZakazka *zakazka,TElement *element)
 void Cvektory::vloz_segment_cesty(TZakazka *zakazka,TElement *element,TElement *sparovany,Tdata data)
 {
 	TCesta *segment=new TCesta;
-	kopiruj_data_elementu(data,segment->data);//kopiruj data
+	kopiruj_data_elementu(data,segment);//kopiruj data
 	segment->Element=element;
 	segment->sparovany=sparovany;
 
@@ -5015,7 +5037,7 @@ void Cvektory::kopiruj_cestu_zakazky(TZakazka *original,TZakazka *kopie)
 		//vytvoření kopie cesty
 		C_kop=new TCesta;
 		C_kop->n=C->n;
-		kopiruj_data_elementu(C->data,C_kop->data);//kopiruj data
+		kopiruj_data_elementu(C->data,C_kop);//kopiruj data
 		C_kop->Element=C->Element;
 		C_kop->sparovany=C->sparovany;
 		//zařazení kopie cesty do cílové zakázky
@@ -7695,6 +7717,14 @@ Cvektory::TDATA *Cvektory::vytvor_prazdny_obraz()
 	obraz->Pohony->dalsi=NULL;
 	obraz->Pohony->predchozi=obraz->Pohony;
 
+	////vytvoření hlavičky pro Cesty
+	obraz->Cesta=new TCesta_uloz;
+	obraz->Cesta->n=0;
+	obraz->Cesta->element_n=0;
+	obraz->Cesta->sparovany_n=0;
+	obraz->Cesta->dalsi=NULL;
+	obraz->Cesta->predchozi=obraz->Cesta;
+
 	////vracení prázdného obrazu
 	return obraz;
 }
@@ -7849,6 +7879,40 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
   		p=p->dalsi;
   	}
 		delete p;p=NULL;
+
+		//záloha cesty aktuální zakázky
+		if(ZAKAZKA_akt!=NULL && ZAKAZKA_akt->n!=0)
+		{
+			TCesta *c=ZAKAZKA_akt->cesta->dalsi;
+			TCesta_uloz *c_u=NULL;
+			while(c!=NULL)
+			{
+				c_u=new TCesta_uloz;
+				c_u->n=obraz->Cesta->predchozi->n+1;
+				c_u->element_n=c->Element->n;
+				if(c->sparovany!=NULL)c_u->sparovany_n=c->sparovany->n;
+				else c_u->sparovany_n=0;
+				c_u->data.PD=c->data.PD;
+				c_u->data.orientace_jig_pred=c->data.orientace_jig_pred;
+				c_u->data.LO1=c->data.LO1;
+				c_u->data.LO2=c->data.LO2;
+				c_u->data.LO_pozice=c->data.LO_pozice;
+				c_u->data.PT1=c->data.PT1;
+				c_u->data.PT2=c->data.PT2;
+				c_u->data.WTstop=c->data.WTstop;
+				c_u->data.RT.x=c->data.RT.x;
+				c_u->data.RT.y=c->data.RT.y;
+				c_u->data.pocet_pozic=c->data.pocet_pozic;
+				c_u->data.pocet_voziku=c->data.pocet_voziku;
+				c_u->dalsi=NULL;
+				c_u->predchozi=obraz->Cesta->predchozi;
+				obraz->Cesta->predchozi->dalsi=c_u;
+				obraz->Cesta->predchozi=c_u;
+				c_u=NULL;delete c_u;
+				c=c->dalsi;
+			}
+			delete c;c=NULL;
+		}
 	}
 }
 //---------------------------------------------------------------------------
@@ -8069,6 +8133,32 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 		delete p;p=NULL;
 		delete dp;dp=NULL;
 
+		//načtení cesty aktuální zakázky
+		if(ZAKAZKA_akt!=NULL && ZAKAZKA_akt->n!=0 && obraz->Cesta->dalsi!=NULL)
+		{
+			inicializace_cesty(ZAKAZKA_akt);
+			TCesta *c=NULL;
+			TCesta_uloz *c_u=obraz->Cesta->dalsi;
+			while(c_u!=NULL)
+			{
+				c=new TCesta;
+				c->n=c_u->n;
+				c->Element=NULL;
+				if(c_u->element_n!=0)c->Element=vrat_element(c_u->element_n);
+				c->sparovany=NULL;
+				if(c_u->sparovany_n!=0)c->sparovany=vrat_element(c_u->sparovany_n);
+				kopiruj_data_elementu(c_u->data,c);
+
+				c->dalsi=NULL;
+				c->predchozi=ZAKAZKA_akt->cesta->predchozi;
+				ZAKAZKA_akt->cesta->predchozi->dalsi=c;
+				ZAKAZKA_akt->cesta->predchozi=c;
+				c=NULL;delete c;
+				c_u=c_u->dalsi;
+			}
+			delete c_u;c_u=NULL;
+		}
+
 		//znovu vytvoření tabulky pohonů pokud jsem v editaci
 		if(F->OBJEKT_akt!=NULL && !storno)F->vytvoreni_tab_pohon();
 
@@ -8146,7 +8236,37 @@ void Cvektory::smaz_obraz_DATA(unsigned long n)
     }
   }
 
-	////smazání
+	////smazání objektů
+	while(obraz->Objekty!=NULL)
+	{
+		vymaz_body(obraz->Objekty->predchozi);
+		vymaz_komory(obraz->Objekty->predchozi);
+		delete obraz->Objekty->predchozi;
+		obraz->Objekty->predchozi=NULL;
+		obraz->Objekty=obraz->Objekty->dalsi;
+	};
+	////smazání elementů
+	while(obraz->Elementy!=NULL)
+	{
+		delete obraz->Elementy->predchozi;
+		obraz->Elementy->predchozi=NULL;
+		obraz->Elementy=obraz->Elementy->dalsi;
+	};
+	////smazání pohonů
+	while(obraz->Pohony!=NULL)
+	{
+		delete obraz->Pohony->predchozi;
+		obraz->Pohony->predchozi=NULL;
+		obraz->Pohony=obraz->Pohony->dalsi;
+	};
+	////smazání cest
+	while(obraz->Cesta!=NULL)
+	{
+		delete obraz->Cesta->predchozi;
+		obraz->Cesta->predchozi=NULL;
+		obraz->Cesta=obraz->Cesta->dalsi;
+	};
+	////smazání obrazu
 	delete obraz;obraz=NULL;
 }
 //---------------------------------------------------------------------------

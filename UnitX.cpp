@@ -73,7 +73,10 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 	    	}
 	    	else
 	    	{
-	    		E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
+					double rotaceJ=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(E);
+					if(E->mGrid->Cells[1][6].Text==1 && (F->m.Rt90(rotaceJ)==0 || F->m.Rt90(rotaceJ)==180) && F->d.v.PP.delka_podvozek<F->m.UDJ(rotaceJ))
+					E->mGrid->Note.Text="Pøi 0° èi 180° rotaci jigu a poètu nastavených pozic 1 nejsou zobrazeny potenciální pozice";
+					E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
 	    		E->mGrid->VisibleRow(3,true,false);//nepøekreslovat
 	    		E->mGrid->VisibleRow(5,true,false); E->mGrid->VisibleRow(6,true,false);
 				}
@@ -109,6 +112,32 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 					E->mGrid->VisibleRow(5,true,false);
 				}
 			}break;
+			case 200://pøedávací místo
+			case 300://výhybka
+			{
+				if(E->mGrid->Rows[5].Visible)
+				{
+					E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
+					E->mGrid->VisibleRow(5,false,false);
+					E->mGrid->VisibleRow(6,false,false);
+					E->mGrid->VisibleRow(7,false,false);
+					E->mGrid->VisibleRow(8,false,false);
+					E->mGrid->VisibleRow(9,false,false);
+					E->mGrid->VisibleRow(10,false,false);
+					E->mGrid->VisibleRow(11,false,false);
+				}
+				else
+				{
+					E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
+					E->mGrid->VisibleRow(5,true,false);
+					E->mGrid->VisibleRow(6,true,false);
+					E->mGrid->VisibleRow(7,true,false);
+					E->mGrid->VisibleRow(8,true,false);
+					E->mGrid->VisibleRow(9,true,false);
+					E->mGrid->VisibleRow(10,true,false);
+					E->mGrid->VisibleRow(11,true,false);
+				}
+			}break;
 		}
 		E->mGrid->exBUTTONLockPosition=true;//uzamkne pozici exButtonu, aby se nepøepozival bìhem updatu tam a zpìt
 		E->mGrid->Update();
@@ -136,7 +165,7 @@ void TFormX::OnEnter(long Tag,long ID,unsigned long Col,unsigned long Row)
 		korelace_tab_pohonu(Row);//spuštìno pouze v pøípadì KK tabulky
 	if(ID==9999 && Row>=1)korelace_tab_pohonu_elementy();//pøi S&G režimu je stále nutné zobrazit korelaci v elementech
 	if(ID!=9999 && F->OBJEKT_akt->pohon!=NULL)//korelace v tabulkách elementù
-	korelace_v_elementech(ID,Row);
+	korelace_v_elementech(ID,Col,Row);
 }
 //---------------------------------------------------------------------------
 //zpracování onchange události - INPUT, výpoèet a OUTPUT zpìt do ovlivnìné buòky
@@ -413,11 +442,113 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					F->d.v.reserve_time(E,c);
 				}
 			} break;
-			case 300:
-			case 301:
+      case 200://pøedávací místo
+			case 300://výhybka
 			{
-				input_state=COMBO;//nastaveni stavu
-				prirazeni_pohohonu_vetvi(E);
+				posledni_E=E;//pøedèasné uložení posledního editovaného elementu
+				switch(Row)
+				{
+					//nastavování pohonu
+					case 2:
+					{
+						input_state=COMBO;//nastaveni stavu
+						if(E->eID==300)//pro výhybku
+						{
+					  	if(Col==1)prirazeni_pohohonu_vetvi(E);//hlavní vìtev
+					  	else prirazeni_pohohonu_vetvi(E,false);//vedlejší vìtev
+						}
+						else prirazeni_pohohonu_PM(E,Col);
+						break;
+					}
+					//zmìna aRD
+					case 3:
+					{
+						input_state=aRD;
+						//naètení aRD z editu
+						double aRD=F->inaRD(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text));
+						//urèení cílového pohonu
+						Cvektory::TElement *e_pom=E;
+						if(Col==2 && E->eID==300)e_pom=E->dalsi2;
+						if(Col==2 && E->eID==200)
+						{
+							e_pom=E->dalsi;
+							if(e_pom==NULL)e_pom=F->d.v.ELEMENTY->dalsi;
+						}
+						//uložení do pohonu
+						F->OBJEKT_akt->pohon=e_pom->pohon;//uložení aktuálnì editovaného pohonu
+						e_pom->pohon->aRD=aRD;
+						//výpoèet ovlivnìných dat
+						e_pom->pohon->Rz=F->m.Rz(e_pom->pohon->aRD);
+						e_pom->pohon->Rx=F->m.Rx(e_pom->pohon->aRD,e_pom->pohon->roztec);
+						if(Col==2)E->WT=F->m.cekani_na_palec(0,e_pom->pohon->roztec,e_pom->pohon->aRD,3);//pouze pokud jde o další pohon
+						e_pom=NULL;delete e_pom;
+						//akticave a deaktivace comba pro zmìnu typu kót
+			    	if(aRD>0)F->scGPComboBox_prepinacKot->Enabled=true;
+			    	else//pokud je zadána nulová rychlost kóty musí být pøepnuty do módu délky
+			    	{
+			    		F->scGPComboBox_prepinacKot->Enabled=false;
+			    		if(F->scGPComboBox_prepinacKot->ItemIndex==1)F->scGPComboBox_prepinacKot->ItemIndex=0;
+						}
+						//update dat tabulek
+						update_hodnot_vyhybky_PM(E);//provede zapis do tabulky
+						aktualizace_tab_elementu(E);
+						break;
+					}
+          //zmìna rozteèe palce
+					case 5:
+					{
+            input_state=R;
+						//naètení R z editu
+						double R=F->inR(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text));
+						//urèení cílového pohonu
+						Cvektory::TElement *e_pom=E;
+						if(Col==2 && E->eID==300)e_pom=E->dalsi2;
+						if(Col==2 && E->eID==200)
+						{
+							e_pom=E->dalsi;
+							if(e_pom==NULL)e_pom=F->d.v.ELEMENTY->dalsi;
+						}
+						//uložení do pohonu
+						F->OBJEKT_akt->pohon=e_pom->pohon;
+						e_pom->pohon->roztec=R;
+						//výpoèet ovlivnìných dat
+						e_pom->pohon->Rz=F->m.Rz(e_pom->pohon->Rx,e_pom->pohon->roztec);
+						e_pom->pohon->aRD=F->m.RD(e_pom->pohon->Rz);
+						if(Col==2)E->WT=F->m.cekani_na_palec(0,e_pom->pohon->roztec,e_pom->pohon->aRD,3);//pouze pokud jde o další pohon
+						e_pom=NULL;delete e_pom;
+						//update dat tabulek
+						update_hodnot_vyhybky_PM(E);//provede zapis do tabulky
+						aktualizace_tab_elementu(E);
+						break;
+					}
+					//zmìna násobku rozteèe
+					case 6:
+					{
+            input_state=Rx;
+			    	//naètení Rx z editu
+						double Rx=F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text);
+			    	//urèení cílového pohonu
+						Cvektory::TElement *e_pom=E;
+						if(Col==2 && E->eID==300)e_pom=E->dalsi2;
+						if(Col==2 && E->eID==200)
+						{
+							e_pom=E->dalsi;
+							if(e_pom==NULL)e_pom=F->d.v.ELEMENTY->dalsi;
+						}
+						//uložení do pohonu
+						F->OBJEKT_akt->pohon=e_pom->pohon;
+						e_pom->pohon->Rx=Rx;
+						//výpoèet ovlivnìných dat
+						e_pom->pohon->Rz=F->m.Rz(e_pom->pohon->Rx,e_pom->pohon->roztec);
+						e_pom->pohon->aRD=F->m.RD(e_pom->pohon->Rz);
+						if(Col==2)E->WT=F->m.cekani_na_palec(0,e_pom->pohon->roztec,e_pom->pohon->aRD,3);//pouze pokud jde o další pohon
+						e_pom=NULL;delete e_pom;
+						//update dat tabulek
+						update_hodnot_vyhybky_PM(E);//provede zapis do tabulky
+						aktualizace_tab_elementu(E);
+						break;
+					}
+				}
 			} break;
 		}
 		E->mGrid->Refresh();//refresh aktuálnì upravované tabulky
@@ -492,7 +623,6 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				//volání metody pro pøepoèty všech souvisejících bunìk
 				zmena_Rx();
 			}break;
-			case 4://rozestup, Rz   NEBUDE EDITOVATELNÝ
 			break;
 		}
 		F->PmG->Refresh();input_state=NOTHING;F->Timer_neaktivity->Enabled=true;
@@ -768,27 +898,10 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 					E->mGrid->Cells[1][3].Text = F->m.round2double(F->outPT(E->PTotoc),3);
 					F->d.v.reserve_time(E);
 				}break;
-				case 300:
+				case 200://pøedávací místo
+				case 300://výhybla
 				{
-					if(E->dalsi2!=NULL && E->dalsi2->pohon!=NULL)
-					{
-						//naètení hodnot z pohonu
-						double aRD=E->dalsi2->pohon->aRD,roztec=E->dalsi2->pohon->roztec;
-						//pøepoèty
-						E->WT=F->m.cekani_na_palec(0,roztec,aRD,3);//dùležité pro výpoèet RT, nezobrazuje se
-						E->mGrid->Cells[1][2].Text = F->m.round2double(F->outPT(E->WT),3);
-					}
-				}break;
-				case 301:
-				{
-					if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)
-					{
-						//naètení hodnot z pohonu
-						double aRD=E->dalsi->pohon->aRD,roztec=E->dalsi->pohon->roztec;
-						//pøepoèty
-						E->WT=F->m.cekani_na_palec(0,roztec,aRD,3);//dùležité pro výpoèet RT, nezobrazuje se
-						E->mGrid->Cells[1][2].Text = F->m.round2double(F->outPT(E->WT),3);
-					}
+				  update_hodnot_vyhybky_PM(E);//provede zobrazení hodnot pohonu a výpoèítá nové hodnoty mezer, provede aktualizaci WT
 				}break;
 			}
 			E->mGrid->Refresh();
@@ -953,6 +1066,34 @@ void TFormX::korelace_tab_pohonu_elementy(Cvektory::TElement *mimo_element)
 					//E->mGrid->Cells[1][3].Highlight=true;
 					E->mGrid->Cells[1][3].Highlight=true;
 				}break;
+				case 200:
+				case 300:
+				{
+					if(mimo_element!=NULL)
+					{
+						//zjištìní, zda má element stejný pohon jako upravovaný pohon, pokud ano zjistí v jakém je sloupci
+						long Col=0;
+						if(E->pohon==F->OBJEKT_akt->pohon)Col=1;
+						if(E->eID==300 && E->predchozi2!=E->dalsi2 && E->dalsi2->pohon==F->OBJEKT_akt->pohon)Col=2;
+						if(E->eID==200)
+						{
+							Cvektory::TElement *e_pom=E->dalsi;
+							if(e_pom==NULL)e_pom=F->d.v.ELEMENTY->dalsi;
+							if(e_pom->pohon==F->OBJEKT_akt->pohon)Col=2;
+							e_pom=NULL;delete e_pom;
+						}
+						//pokud byl zjištìn sloupec, pokraèuje
+						if(Col!=0)
+						{
+							E->mGrid->Cells[Col][3].Highlight=true;
+							E->mGrid->Cells[Col][6].Highlight=true;
+							E->mGrid->Cells[Col][7].Highlight=true;
+							E->mGrid->Cells[Col][8].Highlight=true;
+							E->mGrid->Cells[Col][9].Highlight=true;
+							E->mGrid->Cells[Col][10].Highlight=true;
+            }
+          }
+				}break;
 			}
 			E->mGrid->Refresh();
 		}
@@ -962,7 +1103,7 @@ void TFormX::korelace_tab_pohonu_elementy(Cvektory::TElement *mimo_element)
 }
 //---------------------------------------------------------------------------
 //korelace uvnitø elementù
-void TFormX::korelace_v_elementech(long ID,long Row)
+void TFormX::korelace_v_elementech(long ID,long Col,long Row)
 {
 	Cvektory::TElement *E=vrat_element_z_tabulky(ID);
 	switch(E->eID)
@@ -1006,6 +1147,28 @@ void TFormX::korelace_v_elementech(long ID,long Row)
 		{
 			if (Row==2){/*E->mGrid->Cells[1][Row-1].Highlight=true;*/E->mGrid->Cells[1][Row+1].Highlight=true;}
 		} break;
+		case 200://pøedávací místo
+		case 300://výhybka
+		{
+			if(Row==3)
+			{
+				E->mGrid->Cells[Col][6].Highlight=true;
+				E->mGrid->Cells[Col][7].Highlight=true;
+				E->mGrid->Cells[Col][8].Highlight=true;
+				E->mGrid->Cells[Col][9].Highlight=true;
+				E->mGrid->Cells[Col][10].Highlight=true;
+			}
+			if(Row==5 || Row==6)
+			{
+				E->mGrid->Cells[Col][3].Highlight=true;
+				E->mGrid->Cells[Col][7].Highlight=true;
+				E->mGrid->Cells[Col][8].Highlight=true;
+				E->mGrid->Cells[Col][9].Highlight=true;
+				E->mGrid->Cells[Col][10].Highlight=true;
+			}
+			korelace_tab_pohonu_elementy(E);//oznaèení v ostatních tabulkách
+			break;
+    }
 	}
 	E->mGrid->Refresh();
 	E=NULL; delete E;
@@ -1023,6 +1186,7 @@ void TFormX::odstranit_korelaci(bool predat_focus)
 			E->mGrid->unHighlightAll();
 		E=E->dalsi;
 	}
+	if(F->predchozi_PM!=NULL)F->predchozi_PM->mGrid->unHighlightAll();
 	E=NULL;delete E;
 }
 //---------------------------------------------------------------------------
@@ -1194,8 +1358,9 @@ Cvektory::TElement *TFormX::vrat_element_z_tabulky(long ID)
 			ret=E;
 			break;
 		}
-		E=E->dalsi;
+		E=F->d.v.dalsi_krok(E,F->OBJEKT_akt);
 	}
+	if(ret==NULL && F->predchozi_PM!=NULL && F->predchozi_PM->mGrid->ID==ID)ret=F->predchozi_PM; 
 	E=NULL;delete E;
 	return ret;
 }
@@ -1231,49 +1396,219 @@ void TFormX::aktualizace_zon_otaceni(Cvektory::TElement *E)
 }
 //---------------------------------------------------------------------------
 //zmìní pohon sekundární vìtvi, z výhybky nebo spojky (pokud sekundární vìtev existuje)
-void TFormX::prirazeni_pohohonu_vetvi(Cvektory::TElement *E)
+void TFormX::prirazeni_pohohonu_vetvi(Cvektory::TElement *E,bool hlavni)
 {
 	////deklarace potøebných promìnných
-	TscGPComboBox *C=E->mGrid->getCombo(1,1);
+	TscGPComboBox *Combo;
+	if(hlavni)Combo=E->mGrid->getCombo(1,2);
+	else Combo=E->mGrid->getCombo(2,2);
 	Cvektory::TPohon *p=NULL;
+	if(Combo->ItemIndex!=0)p=F->d.v.vrat_pohon(Combo->ItemIndex);
 	Cvektory::TElement *e=NULL;
 
-	////zmìna pohonu na vedlejší vìtvi
-	if(C->ItemIndex!=0)p=F->d.v.vrat_pohon(C->ItemIndex);
-	if(E->eID==300)e=E->dalsi2;//pøiøazuji pohon z výhybky
-	else e=E->predchozi2;//pøiøazuji pohon ze spojky
-	while(e!=NULL && e->n>0 && e->idetifikator_vyhybka_spojka!=E->idetifikator_vyhybka_spojka)
+  ////uložení aktuálnì editovaného pohonu
+	F->OBJEKT_akt->pohon=p;
+	////zmìna pohonu na hlavní vìtvi
+	if(hlavni)
 	{
-		e->pohon=p;
-		if(E->eID==300)e=e->dalsi;
-		else e=e->predchozi;
+		E->pohon=p;
+		F->OBJEKT_akt->pohon=p;
+		e=E->dalsi;
+		while(e!=NULL && e->objekt_n==F->OBJEKT_akt->n)
+		{
+			e->pohon=p;
+			if(e->eID==200)break;//pokud narazím na PM zmìním mu pohon a skonèím prùchod
+			e=e->dalsi;
+		}
+		e=E->predchozi;
+		while(e!=NULL && e->n>0)
+		{
+			if(e->eID==200 || F->predchozi_PM==NULL && e->objekt_n==F->OBJEKT_akt->n)break;//pokud narazím na PM NEzmìním! mu pohon a skonèím prùchod, nebo narazím na konec objektu
+			e->pohon=p;
+			e=e->predchozi;
+		}
+	}
+	////zmìna pohonu na vedlejší vìtvi
+	else
+	{
+  	e=E->dalsi2;//pøiøazuji pohon z výhybky
+		while(e!=NULL && e->idetifikator_vyhybka_spojka!=E->idetifikator_vyhybka_spojka)
+		{
+			e->pohon=p;
+			e=e->dalsi;
+		}
+		//WT øeší fce. vložení PM
 	}
 
-  if(E->eID==300)
-	{
-		if(E->dalsi2!=NULL && E->dalsi2->pohon!=NULL)
-		{
-			//naètení hodnot z pohonu
-			double aRD=E->dalsi2->pohon->aRD,roztec=E->dalsi2->pohon->roztec;
-			//pøepoèty
-			E->WT=F->m.cekani_na_palec(0,roztec,aRD,3);//dùležité pro výpoèet RT, nezobrazuje se
-		}
-		else E->WT=0;
-		E->mGrid->Cells[1][2].Text = F->m.round2double(F->outPT(E->WT),3);
-	}
-	if(E->eID==301)
-	{
-		if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)
-		{
-			//naètení hodnot z pohonu
-			double aRD=E->dalsi->pohon->aRD,roztec=E->dalsi->pohon->roztec;
-			//pøepoèty
-			E->WT=F->m.cekani_na_palec(0,roztec,aRD,3);//dùležité pro výpoèet RT, nezobrazuje se
-		}else E->WT=0;
-		E->mGrid->Cells[1][2].Text = F->m.round2double(F->outPT(E->WT),3);
-	}
+	////naètení dat z pohonu do mGridu
+	update_hodnot_vyhybky_PM(E);
+	F->vlozit_predavaci_misto_aktualizuj_WT();//provede i aktualizaci WT všem elementù
+
 	////ukazatelové záležitosti
-	C=NULL;delete C;
+	Combo=NULL;delete Combo;
+	p=NULL;delete p;
+	e=NULL;delete e;
+}
+//---------------------------------------------------------------------------
+//zobrazí aktuální hodnoty z dat v tabulkách
+void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
+{
+	if(E->pohon!=NULL)
+	{
+		if(input_state!=aRD || input_state==aRD && E!=posledni_E)E->mGrid->Cells[1][3].Text=F->m.round2double(F->outaRD(E->pohon->aRD),3);
+		E->mGrid->Cells[1][4].Text=AnsiString(F->m.round2double(F->outaRD(E->pohon->rychlost_od),3))+" - "+AnsiString(F->m.round2double(F->outaRD(E->pohon->rychlost_do),3));
+		if(input_state!=R || input_state==R && E!=posledni_E)E->mGrid->Cells[1][5].Text=F->m.round2double(F->outR(E->pohon->roztec),3);
+		if(input_state!=Rx || input_state==Rx && E!=posledni_E)E->mGrid->Cells[1][6].Text=F->m.round2double(E->pohon->Rx,3);
+		E->mGrid->Cells[1][7].Text=F->m.round2double(F->outRz(E->pohon->Rz),3);
+		E->mGrid->Cells[1][8].Text=F->m.round2double(F->outRz(F->m.mezera(0,E->pohon->Rz,0)),3);
+		E->mGrid->Cells[1][9].Text=F->m.round2double(F->outRz(F->m.mezera(0,E->pohon->Rz,1)),3);
+		E->mGrid->Cells[1][10].Text=F->m.round2double(F->outRz(F->m.mezera(90,E->pohon->Rz,1)),3);
+		//pøepínání na edity, pouze v pøípadì, že nemam zakázanou editaci pohonu, napø PM na konci objektu, nemùžu vstupovat do 3tího sloupce
+		if(E->mGrid->getCombo(1,2)->Enabled)
+		{
+	  	E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Background->Color=clWhite;E->mGrid->Cells[1][3].Font->Color=(TColor)RGB(43,87,154);
+	  	E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Background->Color=clWhite;E->mGrid->Cells[1][5].Font->Color=(TColor)RGB(43,87,154);
+			E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Background->Color=clWhite;E->mGrid->Cells[1][6].Font->Color=(TColor)RGB(43,87,154);
+		}
+	}
+	else
+	{
+		E->mGrid->Cells[1][3].Text=0;
+		E->mGrid->Cells[1][4].Text=0;
+		E->mGrid->Cells[1][5].Text=0;
+		E->mGrid->Cells[1][6].Text=0;
+		E->mGrid->Cells[1][7].Text=0;
+		E->mGrid->Cells[1][8].Text=0;
+		E->mGrid->Cells[1][9].Text=0;
+		E->mGrid->Cells[1][10].Text=0;
+		//pøepnutí na DRAW
+		F->mGrid_komponenta_na_draw(E->mGrid,1,3);E->mGrid->Cells[1][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[1][3].Font->Color=(TColor)RGB(128,128,128);
+		F->mGrid_komponenta_na_draw(E->mGrid,1,5);E->mGrid->Cells[1][5].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[1][5].Font->Color=(TColor)RGB(128,128,128);
+		F->mGrid_komponenta_na_draw(E->mGrid,1,6);E->mGrid->Cells[1][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[1][6].Font->Color=(TColor)RGB(128,128,128);
+	}
+	if(E->eID==300)//pro výhybku
+	{
+  	if(E->dalsi2!=E->predchozi2 && E->dalsi2->pohon!=NULL)
+		{
+			if(input_state!=aRD || input_state==aRD && E!=posledni_E)E->mGrid->Cells[2][3].Text=F->m.round2double(F->outaRD(E->dalsi2->pohon->aRD),3);
+  		E->mGrid->Cells[2][4].Text=AnsiString(F->m.round2double(F->outaRD(E->dalsi2->pohon->rychlost_od),3))+" - "+AnsiString(F->m.round2double(F->outaRD(E->dalsi2->pohon->rychlost_do),3));
+			if(input_state!=R || input_state==R && E!=posledni_E)E->mGrid->Cells[2][5].Text=F->m.round2double(F->outR(E->dalsi2->pohon->roztec),3);
+			if(input_state!=Rx || input_state==Rx && E!=posledni_E)E->mGrid->Cells[2][6].Text=F->m.round2double(E->dalsi2->pohon->Rx,3);
+  		E->mGrid->Cells[2][7].Text=F->m.round2double(F->outRz(E->dalsi2->pohon->Rz),3);
+  		E->mGrid->Cells[2][8].Text=F->m.round2double(F->outRz(F->m.mezera(0,E->dalsi2->pohon->Rz,0)),3);
+  		E->mGrid->Cells[2][9].Text=F->m.round2double(F->outRz(F->m.mezera(0,E->dalsi2->pohon->Rz,1)),3);
+			E->mGrid->Cells[2][10].Text=F->m.round2double(F->outRz(F->m.mezera(90,E->dalsi2->pohon->Rz,1)),3);
+			E->mGrid->Cells[2][11].Text=F->m.round2double(F->outPT(E->WT),3);
+			//pøepínání na edity, pouze v pøípadì, že nemam zakázanou editaci pohonu, napø PM na konci objektu, nemùžu vstupovat do 3tího sloupce
+			if(E->mGrid->getCombo(2,2)->Enabled)
+			{
+		  	E->mGrid->Cells[2][3].Type=E->mGrid->EDIT;E->mGrid->Cells[2][3].Background->Color=clWhite;E->mGrid->Cells[2][3].Font->Color=(TColor)RGB(43,87,154);
+		  	E->mGrid->Cells[2][5].Type=E->mGrid->EDIT;E->mGrid->Cells[2][5].Background->Color=clWhite;E->mGrid->Cells[2][5].Font->Color=(TColor)RGB(43,87,154);
+		  	E->mGrid->Cells[2][6].Type=E->mGrid->EDIT;E->mGrid->Cells[2][6].Background->Color=clWhite;E->mGrid->Cells[2][6].Font->Color=(TColor)RGB(43,87,154);
+			}
+  	}
+  	else
+  	{
+			E->mGrid->Cells[2][3].Text=0;
+			E->mGrid->Cells[2][4].Text=0;
+			E->mGrid->Cells[2][5].Text=0;
+			E->mGrid->Cells[2][6].Text=0;
+			E->mGrid->Cells[2][7].Text=0;
+			E->mGrid->Cells[2][8].Text=0;
+			E->mGrid->Cells[2][9].Text=0;
+			E->mGrid->Cells[2][10].Text=0;
+			//pøepnutí na DRAW
+			F->mGrid_komponenta_na_draw(E->mGrid,2,3);E->mGrid->Cells[2][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][3].Font->Color=(TColor)RGB(128,128,128);
+			F->mGrid_komponenta_na_draw(E->mGrid,2,5);E->mGrid->Cells[2][5].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][5].Font->Color=(TColor)RGB(128,128,128);
+			F->mGrid_komponenta_na_draw(E->mGrid,2,6);E->mGrid->Cells[2][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][6].Font->Color=(TColor)RGB(128,128,128);
+		}
+	}
+	else//pro PM
+	{
+    Cvektory::TElement *e_pom=E->dalsi;
+		if(e_pom==NULL)e_pom=F->d.v.ELEMENTY->dalsi;//v pøípadì PM na konci linky
+		if(e_pom->pohon!=NULL)
+		{
+			if(input_state!=aRD || input_state==aRD && E!=posledni_E)E->mGrid->Cells[2][3].Text=F->m.round2double(F->outaRD(e_pom->pohon->aRD),3);
+			E->mGrid->Cells[2][4].Text=AnsiString(F->m.round2double(F->outaRD(e_pom->pohon->rychlost_od),3))+" - "+AnsiString(F->m.round2double(F->outaRD(e_pom->pohon->rychlost_do),3));
+			if(input_state!=R || input_state==R && E!=posledni_E)E->mGrid->Cells[2][5].Text=F->m.round2double(F->outR(e_pom->pohon->roztec),3);
+			if(input_state!=Rx || input_state==Rx && E!=posledni_E)E->mGrid->Cells[2][6].Text=F->m.round2double(e_pom->pohon->Rx,3);
+			E->mGrid->Cells[2][7].Text=F->m.round2double(F->outRz(e_pom->pohon->Rz),3);
+			E->mGrid->Cells[2][8].Text=F->m.round2double(F->outRz(F->m.mezera(0,e_pom->pohon->Rz,0)),3);
+			E->mGrid->Cells[2][9].Text=F->m.round2double(F->outRz(F->m.mezera(0,e_pom->pohon->Rz,1)),3);
+			E->mGrid->Cells[2][10].Text=F->m.round2double(F->outRz(F->m.mezera(90,e_pom->pohon->Rz,1)),3);
+			E->mGrid->Cells[2][11].Text=F->m.round2double(F->outPT(E->WT),3);
+			//pøepínání na edity, pouze v pøípadì, že nemam zakázanou editaci pohonu, napø PM na konci objektu, nemùžu vstupovat do 3tího sloupce
+			if(E->mGrid->getCombo(2,2)->Enabled)
+			{
+		  	E->mGrid->Cells[2][3].Type=E->mGrid->EDIT;E->mGrid->Cells[2][3].Background->Color=clWhite;E->mGrid->Cells[2][3].Font->Color=(TColor)RGB(43,87,154);
+		  	E->mGrid->Cells[2][5].Type=E->mGrid->EDIT;E->mGrid->Cells[2][5].Background->Color=clWhite;E->mGrid->Cells[2][5].Font->Color=(TColor)RGB(43,87,154);
+		  	E->mGrid->Cells[2][6].Type=E->mGrid->EDIT;E->mGrid->Cells[2][6].Background->Color=clWhite;E->mGrid->Cells[2][6].Font->Color=(TColor)RGB(43,87,154);
+			}
+		}
+		else
+		{
+    	E->mGrid->Cells[2][3].Text=0;
+			E->mGrid->Cells[2][4].Text=0;
+			E->mGrid->Cells[2][5].Text=0;
+			E->mGrid->Cells[2][6].Text=0;
+			E->mGrid->Cells[2][7].Text=0;
+			E->mGrid->Cells[2][8].Text=0;
+			E->mGrid->Cells[2][9].Text=0;
+			E->mGrid->Cells[2][10].Text=0;
+			//pøepnutí na DRAW
+			F->mGrid_komponenta_na_draw(E->mGrid,2,3);E->mGrid->Cells[2][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][3].Font->Color=(TColor)RGB(128,128,128);
+			F->mGrid_komponenta_na_draw(E->mGrid,2,5);E->mGrid->Cells[2][5].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][5].Font->Color=(TColor)RGB(128,128,128);
+			F->mGrid_komponenta_na_draw(E->mGrid,2,6);E->mGrid->Cells[2][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][6].Font->Color=(TColor)RGB(128,128,128);
+		}
+		e_pom=NULL;delete e_pom;
+  }
+}
+//---------------------------------------------------------------------------
+//pøiøazení pohonu pøed PM, nebo za PM
+void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
+{                  F->Sv(Col);
+	////deklarace + naètení pohonu, který bude pøiøazován
+	TscGPComboBox *Combo;
+	Combo=E->mGrid->getCombo(Col,2);
+	Cvektory::TPohon *p=NULL;
+	if(Combo->ItemIndex!=0)p=F->d.v.vrat_pohon(Combo->ItemIndex);
+	Cvektory::TElement *e=NULL;
+
+	////uložení aktuálnì editovaného pohonu
+	F->OBJEKT_akt->pohon=p;
+	
+	////pøiøazení pohonu pøed PM
+	if(Col==1)
+	{
+		E->pohon=p;
+		e=E->predchozi;
+		while(e!=NULL && e->n>0 && e->objekt_n==F->OBJEKT_akt->n)
+		{
+			if(e->eID==200)break;//narazil jsem na PM, konec
+			else e->pohon=p;
+			e=e->predchozi;
+		}
+	}
+	////pøiøazení pohonu za PM
+	if(Col==2)
+	{
+		e=E->dalsi;
+		while(e!=NULL && e->objekt_n==F->OBJEKT_akt->n)
+		{			
+			e->pohon=p;
+			if(e->eID==200)break;//narazil jsem na PM, zapsat nový pohon a konec
+			else e=e->predchozi;
+		}
+		if(E->dalsi!=NULL && E->dalsi->objekt_n==E->objekt_n)E->WT=F->m.cekani_na_palec(0,E->dalsi->pohon->roztec,E->dalsi->pohon->aRD,3);
+	}
+
+	////naètení dat z pohonu do mGridu
+	update_hodnot_vyhybky_PM(E);
+	F->vlozit_predavaci_misto_aktualizuj_WT();//provede i aktualizaci WT všem elementù
+									 
+	////ukazatelové záležitosti
+	Combo=NULL;delete Combo;
 	p=NULL;delete p;
 	e=NULL;delete e;
 }

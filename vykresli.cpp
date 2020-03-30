@@ -133,78 +133,84 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	//vykreslování z ELEMENTY
 	float sipka_velikost=0.1*F->Zoom; if(sipka_velikost<1*3)sipka_velikost=1*3;
 	TPointD bod;
-	Cvektory::TElement *E=v.ELEMENTY->dalsi,*pom=NULL;
-	TPoint *tab_pruchodu=new TPoint[v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
 	short stav;
-	while(E!=NULL)
+	if(F->MOD!=F->Tmod::TVORBA_CESTY)
 	{
-		//nastavování stavu
-		stav=1;
-		if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n)stav=1;//elementy v aktivním objektu
-		else stav=-1;//disabled elementy ostatních objektů
-		if(stav!=-1)stav=E->stav;//předávání stavu v aktivní kabině pro highlightování elementů
-		//vykreslení elementu a pozic
-		vykresli_pozice_a_zony(canv,E);
-		if(!(F->OBJEKT_akt!=NULL && E->objekt_n!=F->OBJEKT_akt->n && F->scGPTrackBar_intenzita->Value<5))vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->data.LO1,E->OTOC_delka,E->data.LO2,E->data.LO_pozice,E);
-		//uložení citelné oblasti pro další použití
-		E->citelna_oblast.rect3=aktOblast;
-		//vykreslení kót
-		if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n && F->OBJEKT_akt->zobrazit_koty)vykresli_kotu(canv,E);//mezi elementy
-		//E=E->dalsi;
-		pom=E->dalsi;
+   	Cvektory::TElement *E=v.ELEMENTY->dalsi,*pom=NULL;
+   	TPoint *tab_pruchodu=new TPoint[v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
+   	while(E!=NULL && F->MOD!=F->TVORBA_CESTY)
+   	{
+   		//nastavování stavu
+   		stav=1;
+   		if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n)stav=1;//elementy v aktivním objektu
+   		else stav=-1;//disabled elementy ostatních objektů
+   		if(stav!=-1)stav=E->stav;//předávání stavu v aktivní kabině pro highlightování elementů
+   		//vykreslení elementu a pozic
+   		vykresli_pozice_a_zony(canv,E);
+   		if(!(F->OBJEKT_akt!=NULL && E->objekt_n!=F->OBJEKT_akt->n && F->scGPTrackBar_intenzita->Value<5))vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->data.LO1,E->OTOC_delka,E->data.LO2,E->data.LO_pozice,E);
+   		//uložení citelné oblasti pro další použití
+   		E->citelna_oblast.rect3=aktOblast;
+   		//vykreslení kót
+   		if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n && F->OBJEKT_akt->zobrazit_koty)vykresli_kotu(canv,E);//mezi elementy
+   		//E=E->dalsi;
+   		pom=E->dalsi;
 
-		////vykreslení spojnic pokud geometrie nenavazuje
-		canv->Pen->Style=psDash;
-		canv->Pen->Mode=pmCopy;
-		canv->Pen->Width=1;
-		canv->Pen->Color=clRed;
-		canv->Brush->Style=bsClear;
-		if(pom!=NULL)
-		{
-			if(pom->eID==301 && pom->predchozi2==E){bod.x=pom->X;bod.y=pom->Y;}
-			else {bod.x=pom->geo.X1;bod.y=pom->geo.Y1;}
-			if(m.round2double(E->geo.X4,2)!=m.round2double(bod.x,2) || m.round2double(E->geo.Y4,2)!=m.round2double(bod.y,2))
-			{
-				canv->MoveTo(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
-				canv->LineTo(m.L2Px(bod.x),m.L2Py(bod.y));
-				sipka(canv,(m.L2Px(E->geo.X4)+m.L2Px(bod.x))/2.0,(m.L2Py(E->geo.Y4)+m.L2Py(bod.y))/2.0,m.azimut(m.L2Px(bod.x),m.L2Py(bod.y),m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4))*(-1),true,sipka_velikost,clRed);//zajistí vykreslení šipky - orientace spojovací linie
-			}
-		}
-		else if(v.OBJEKTY->predchozi->n>2)//vykreslení pouze v případě pokdud existjují více jak 2
-		{
-			if(m.round2double(E->geo.X4,2)!=m.round2double(v.ELEMENTY->dalsi->geo.X1,2) || m.round2double(E->geo.Y4,2)!=m.round2double(v.ELEMENTY->dalsi->geo.Y1,2))
-			{
-				canv->MoveTo(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
-				canv->LineTo(m.L2Px(v.ELEMENTY->dalsi->geo.X1),m.L2Py(v.ELEMENTY->dalsi->geo.Y1));
-				sipka(canv,(m.L2Px(E->geo.X4)+m.L2Px(v.ELEMENTY->dalsi->geo.X1))/2.0,(m.L2Py(E->geo.Y4)+m.L2Py(v.ELEMENTY->dalsi->geo.Y1))/2.0,m.azimut(m.L2Px(v.ELEMENTY->dalsi->geo.X1),m.L2Py(v.ELEMENTY->dalsi->geo.Y1),m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4))*(-1),true,sipka_velikost,clRed);//zajistí vykreslení šipky - orientace spojovací linie
-			}
-		}
-		pom=E->dalsi2;
-		if(E->eID==301)pom=NULL;//spojka si v tomto ukazateli uchovává svoji párovou výhybku
-		if(pom!=NULL)
-		{
-			if(pom->eID==301 && pom->predchozi2==E){bod.x=pom->X;bod.y=pom->Y;}
-			else {bod.x=pom->geo.X1;bod.y=pom->geo.Y1;}
-			if(m.round2double(E->geo.X4,2)!=m.round2double(bod.x,2) || m.round2double(E->geo.Y4,2)!=m.round2double(bod.y,2))
-			{
-				canv->MoveTo(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
-				canv->LineTo(m.L2Px(bod.x),m.L2Py(bod.y));
-				sipka(canv,(m.L2Px(E->geo.X4)+m.L2Px(bod.x))/2.0,(m.L2Py(E->geo.Y4)+m.L2Py(bod.y))/2.0,m.azimut(m.L2Px(bod.x),m.L2Py(bod.y),m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4))*(-1),true,sipka_velikost,clRed);//zajistí vykreslení šipky - orientace spojovací linie
-	  	}
-		}
-		//posun na další element
-		E=v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);//nutné použít tento průcodový algoritmus, v tomto průchodu je volán algoritmus dalsi_krok, proto ho nelze použít
+   		////vykreslení spojnic pokud geometrie nenavazuje
+   		canv->Pen->Style=psDash;
+   		canv->Pen->Mode=pmCopy;
+   		canv->Pen->Width=1;
+   		canv->Pen->Color=clRed;
+   		canv->Brush->Style=bsClear;
+   		if(pom!=NULL)
+   		{
+   			if(pom->eID==301 && pom->predchozi2==E){bod.x=pom->X;bod.y=pom->Y;}
+   			else {bod.x=pom->geo.X1;bod.y=pom->geo.Y1;}
+   			if(m.round2double(E->geo.X4,2)!=m.round2double(bod.x,2) || m.round2double(E->geo.Y4,2)!=m.round2double(bod.y,2))
+   			{
+   				canv->MoveTo(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
+   				canv->LineTo(m.L2Px(bod.x),m.L2Py(bod.y));
+   				sipka(canv,(m.L2Px(E->geo.X4)+m.L2Px(bod.x))/2.0,(m.L2Py(E->geo.Y4)+m.L2Py(bod.y))/2.0,m.azimut(m.L2Px(bod.x),m.L2Py(bod.y),m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4))*(-1),true,sipka_velikost,clRed);//zajistí vykreslení šipky - orientace spojovací linie
+   			}
+   		}
+   		else if(v.OBJEKTY->predchozi->n>2)//vykreslení pouze v případě pokdud existjují více jak 2
+   		{
+   			if(m.round2double(E->geo.X4,2)!=m.round2double(v.ELEMENTY->dalsi->geo.X1,2) || m.round2double(E->geo.Y4,2)!=m.round2double(v.ELEMENTY->dalsi->geo.Y1,2))
+   			{
+   				canv->MoveTo(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
+   				canv->LineTo(m.L2Px(v.ELEMENTY->dalsi->geo.X1),m.L2Py(v.ELEMENTY->dalsi->geo.Y1));
+   				sipka(canv,(m.L2Px(E->geo.X4)+m.L2Px(v.ELEMENTY->dalsi->geo.X1))/2.0,(m.L2Py(E->geo.Y4)+m.L2Py(v.ELEMENTY->dalsi->geo.Y1))/2.0,m.azimut(m.L2Px(v.ELEMENTY->dalsi->geo.X1),m.L2Py(v.ELEMENTY->dalsi->geo.Y1),m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4))*(-1),true,sipka_velikost,clRed);//zajistí vykreslení šipky - orientace spojovací linie
+   			}
+   		}
+   		pom=E->dalsi2;
+   		if(E->eID==301)pom=NULL;//spojka si v tomto ukazateli uchovává svoji párovou výhybku
+   		if(pom!=NULL)
+   		{
+   			if(pom->eID==301 && pom->predchozi2==E){bod.x=pom->X;bod.y=pom->Y;}
+   			else {bod.x=pom->geo.X1;bod.y=pom->geo.Y1;}
+   			if(m.round2double(E->geo.X4,2)!=m.round2double(bod.x,2) || m.round2double(E->geo.Y4,2)!=m.round2double(bod.y,2))
+   			{
+   				canv->MoveTo(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
+   				canv->LineTo(m.L2Px(bod.x),m.L2Py(bod.y));
+   				sipka(canv,(m.L2Px(E->geo.X4)+m.L2Px(bod.x))/2.0,(m.L2Py(E->geo.Y4)+m.L2Py(bod.y))/2.0,m.azimut(m.L2Px(bod.x),m.L2Py(bod.y),m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4))*(-1),true,sipka_velikost,clRed);//zajistí vykreslení šipky - orientace spojovací linie
+   	  	}
+   		}
+   		//posun na další element
+   		E=v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);//nutné použít tento průcodový algoritmus, v tomto průchodu je volán algoritmus dalsi_krok, proto ho nelze použít
+   	}
+   	delete E;E=NULL;
+   	pom=NULL;delete pom;
+   	delete []tab_pruchodu;
 	}
-	delete E;E=NULL;
-	pom=NULL;delete pom;
-	delete []tab_pruchodu;
 
 	///////////////vykreslení VOZÍKů
 	vykresli_voziky(canv);
 
 	///////////////VALIDACE a její výpis formou zpráv
-	v.VALIDACE();//námět na optimalizaci přesunout mimo každé překreslení
-	vypis_zpravy(canv);
+	if(F->MOD!=F->Tmod::TVORBA_CESTY && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT)
+	{
+		v.VALIDACE();
+		vypis_zpravy(canv);
+	}
 }
 //---------------------------------------------------------------------------
 //zajišťuje vykreslení pouze obrysu dle typu objektu
@@ -2719,7 +2725,7 @@ unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,int i,TPointD OD, TPointD 
 ////-----------------------------------------------------------------------------------------------------------------------------------------------------
 //vykresli pozic a obalových zón - doporučení přejmenovat metodu
 void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
-{                                                                                                                                                                                                                                                                                                          //oblouk
+{                                                                                                                                                                                                                                                                                                      //oblouk
 	//provizorně
 	//if(F->scGPTrackBar_intenzita->Value>5 && F->scGPCheckBox_zobrazit_pozice->Checked && E->data.pocet_pozic>0 || (F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180) || F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->geo.typ==1)//pokud se má smysl algoritmem zabývat, pouze optimalizační podmínky
 	//{
@@ -3059,8 +3065,11 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 		float RetezWidth=1;if(E->pohon!=NULL)RetezWidth=F->Zoom*0.5;//pokud není pohon přiřazen, tak jen elementární osa, jinak skutečná tloušťka
 
 		////vykreslení paralelních koleji
-		if(E->predchozi!=NULL && E->predchozi->pohon!=NULL && E->predchozi->eID==200)vykresli_koleje(canv,E->predchozi);//pouze grafická korekce předchozího segmentu, pokud byl překryt předávacím místem
-		if(E->pohon!=NULL)vykresli_koleje(canv,E);//pouze pokud je přiřazen pohon
+		if(zakazka==NULL && F->MOD!=F->TVORBA_CESTY)
+		{
+			if(E->predchozi!=NULL && E->predchozi->pohon!=NULL && E->predchozi->eID==200)vykresli_koleje(canv,E->predchozi);//pouze grafická korekce předchozího segmentu, pokud byl překryt předávacím místem
+			if(E->pohon!=NULL)vykresli_koleje(canv,E);//pouze pokud je přiřazen pohon
+		}
 
 		////vykreslení segementu pohonu
 		//plnění geo souřadnic do pole
@@ -3069,13 +3078,13 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 		POLE[2]=TPoint(m.L2Px(E->geo.X3),m.L2Py(E->geo.Y3));
 		POLE[3]=TPoint(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
 		//vykreslení pouzdra řetězu
-		if(E->pohon!=NULL && (F->OBJEKT_akt==NULL || F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n || F->scGPTrackBar_intenzita->Value>25 && F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n))//při editaci zobrazí pasivní jen s intenzitou větší než 25
+		if(zakazka==NULL && F->MOD!=F->TVORBA_CESTY && E->pohon!=NULL && (F->OBJEKT_akt==NULL || F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n || F->scGPTrackBar_intenzita->Value>25 && F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n))//při editaci zobrazí pasivní jen s intenzitou větší než 25
 		{
 			set_pen(canv,clKolej,m.round(RetezWidth*2),PS_ENDCAP_FLAT);
 			canv->PolyBezier(POLE,3);
 		}
 		//nastavení pera
-		if(F->Akce==F->TVORBA_CESTY && zakazka==NULL && v.obsahuje_segment_cesty_element(E,Form_definice_zakazek->Z_cesta))
+		if(F->MOD==F->TVORBA_CESTY && zakazka==NULL)
 		{
 			pocet_pruchodu=v.kolikrat_obsahuje_segment_cesty_element(E,Form_definice_zakazek->Z_cesta);
 			if(pocet_pruchodu>0)
@@ -3083,12 +3092,13 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 				RetezWidth=v.PP.sirka_podvozek/2.0+m.px2m(1/3.0*F->Zoom)+2*m.px2m(m.round(F->Zoom));
 				RetezWidth=m.m2px(RetezWidth);
 			}
+			else clRetez=(TColor)RGB(200, 200, 200);
 		}
 		if(zakazka!=NULL)
 		{
 			pocet_pruchodu=v.kolikrat_obsahuje_segment_cesty_element(E,zakazka);
 			if(pocet_pruchodu==0)clRetez=(TColor)RGB(200, 200, 200);
-    }
+		}
 		set_pen(canv,clRetez,m.round(RetezWidth),PS_ENDCAP_SQUARE);
 		//vykreslení řetězu
 		canv->PolyBezier(POLE,3);
@@ -3096,6 +3106,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 		////vykreslení předávacího místa
 		if(E->eID==200)
 		{
+      RetezWidth=1;if(E->pohon!=NULL)RetezWidth=F->Zoom*0.5;//nutné znovu počítat width, nelze použít upravený v případě zakázky
 			//výpočty souřadnic
 			TPointD V=m.rotace(m.px2m(RetezWidth*4),180-E->geo.orientace,0);//vyosení, mezera mezi pohony v předávacím místě
 
@@ -3114,10 +3125,9 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 		{
 	  	for(unsigned int i=2;i<=pocet_pruchodu;i++)
 			{
-				double o=(i-1)*m.px2m(RetezWidth);
-	  		//nastavení pera
-				TColor b=clBlue;if(i==2)b=clGreen; if(i==3)b=clRed;
-	  		set_pen(canv,b,RetezWidth,PS_ENDCAP_SQUARE);
+				double o=(i-1)*m.px2m(m.round(RetezWidth/2.0));
+				//nastavení pera
+				set_pen(canv,m.getColorOfPalette(i-1),m.round(RetezWidth/2.0),PS_ENDCAP_SQUARE);
 	  		//výpočet odsazení a souřadnic
 //				TPointD S1=m.rotace(o,180-E->geo.orientace,90);
 				short z=1;if(E->geo.rotacni_uhel>0)z*=-1;
@@ -4707,14 +4717,14 @@ void Cvykresli::vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popis
 Graphics::TBitmap *Cvykresli::nacti_nahled(Cvektory::TZakazka *zakazka)
 {
 	//deklarace proměnných
-	int W=108-4,H=73-4;//-4 == 2px odsazení od každé hrany bmp
 	double z=F->Zoom;//uchovávání původního Zoom
 	TRect ret;TPointD Posun;
 	Graphics::TBitmap *bmp=new Graphics::TBitmap,*bmp_pom=new Graphics::TBitmap;
 	//nastavení velikostí bmp
 	bmp_pom->Width=F->ClientWidth;bmp_pom->Height=F->ClientHeight;
-	bmp->Width=3*108;
-	bmp->Height=3*73;
+	bmp->Height=3*98;
+	bmp->Width=m.round((F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/(double)(F->ClientHeight-F->scGPPanel_statusbar->Height-F->scGPPanel_mainmenu->Height)*bmp->Height);//nemusí být násobeno 3x, počítá s bmp->Height, ta již je vynýsobená
+	int W=bmp->Width/3.0-10,H=bmp->Height/3.0-10;//-10 == 5px odsazení od každé hrany bmp
 	//nastavení základníh hodnot sloužících pro vyhledávání
 	ret.left=MaxInt;ret.right=MaxInt*(-1);
 	ret.top=MaxInt;ret.bottom=MaxInt*(-1);
@@ -4766,16 +4776,19 @@ Graphics::TBitmap *Cvykresli::nacti_nahled(Cvektory::TZakazka *zakazka)
 	//vykreslení cesty do pomocné bmp
 	vykresli_retez(bmp_pom->Canvas,zakazka);
 	//zjištění posunu pro centrování obrazu ve výsledné bmp
-	Posun.x=(ret.right-ret.left-W)/2.0+1;
-	Posun.y=(ret.bottom-ret.top-H)/2.0+1;
+	Posun.x=(ret.right-ret.left-W)/2.0+(W-bmp->Width/3.0)/2,0;//(W-bmp->Width/3.0) odsazení od hrany bmp
+	Posun.y=(ret.bottom-ret.top-H)/2.0+(H-bmp->Height/3.0)/2.0;
 	//kopírování obrazu do výsledné bmp
 	bmp->Canvas->CopyRect(Rect(0,0,bmp->Width,bmp->Height),bmp_pom->Canvas,Rect(ret.left+Posun.x,ret.top+Posun.y,ret.left+Posun.x+bmp->Width/3.0,ret.top+Posun.y+bmp->Height/3.0));
 	//mazání pomocné bmp
 	delete(bmp_pom);
-  //AA
+	//vykreslení ID na bmp
+	bmp->Canvas->Font=zakazka->mGrid->DefaultCell.Font;
+	bmp->Canvas->Font->Size=m.round(35);
+	bmp->Canvas->TextOutW(3*2,3*2,zakazka->n);
+	//AA
 	Cantialising a;
 	bmp=a.antialiasing(bmp);
-
 	//navrácení původního Zoomu
 	F->Zoom=z;
 
@@ -5339,6 +5352,43 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 				}
 				else E->mGrid->SetVisibleComponents(false);//pokud pohon elementu se nerovná aktuálně editovanému pohonu, je třeba skrýt všechny komponenty (posun obrazu PAN MOVE či skryté mGridy)
 				E=v.dalsi_krok(E,F->OBJEKT_akt);
+			}
+
+			//pokud existuje předchozí předávací místo bude vykresleno
+			E=F->predchozi_PM;
+			if(E!=NULL)
+			{
+        if((E->pohon==NULL && F->OBJEKT_akt->pohon==NULL || E->pohon!=NULL && F->OBJEKT_akt->pohon!=NULL && E->pohon->n==F->OBJEKT_akt->pohon->n || E->eID==200 || E->eID==300 || E->eID==301) && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT)//vykreslení tabulek elementů, kteří mají stejný pohon jako aktuálně editovaný pohon
+				{
+					if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
+					{
+						if(F->OBJEKT_akt->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud nemají být zobrazeny mgridy nemá být zobrazen ani rastr
+						{
+							E->mGrid->Redraw=false;
+							E->mGrid->SetVisibleComponents(false);
+							E->mGrid->Left=m.L2Px(E->Xt);//kvůli případnému přesouvání tabulky
+							E->mGrid->Top=m.L2Py(E->Yt);//kvůli případnému přesouvání tabulky
+							E->mGrid->Show(canv);
+						}
+					}
+					else
+					{
+						if(F->OBJEKT_akt->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
+						{
+							E->mGrid->Redraw=true;
+							E->mGrid->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak E->mGrid->Buffer(false);
+							if(E->mGrid->VisibleComponents>-1)E->mGrid->VisibleComponents=true;//stačí volat toto, protože se pomocí Show (resp. Draw-SetCompontens-Set...) cyklem všechny komponenty na základě tohoto zobrazí pokud je nastaveno na -1 tak se při překreslování zohlední individuální nastavení komponent (z tohoto stavu je však pro další použítí třeba vrátit do stavu 0 nebo 1)
+							E->mGrid->Left=m.L2Px(E->Xt);
+							E->mGrid->Top=m.L2Py(E->Yt);
+							E->mGrid->Show(canv);
+						}
+						else//pokud ne, je třeba skrýt všechny komponenty (posun obrazu PAN MOVE či skryté mGridy)
+						{
+							E->mGrid->SetVisibleComponents(false);
+						}
+					}
+				}
+				else E->mGrid->SetVisibleComponents(false);//pokud pohon elementu se nerovná aktuálně editovanému pohonu, je třeba skrýt všechny komponenty (posun obrazu PAN MOVE či skryté mGridy)
 			}
 			E=NULL;delete E;
 		}
@@ -5960,14 +6010,13 @@ void Cvykresli::vykresli_kurzor_cesta(TCanvas *canv,Cvektory::TElement *E)
 				{
 					for(unsigned int i=1;i<=pocet_pruchodu;i++)
 	    		{
-	    			double o=i*m.px2m(RetezWidth);
-						TColor b=clBlue;if(i==1)b=clGreen; if(i==2)b=clRed;
-	    			set_pen(canv,b,RetezWidth,PS_ENDCAP_SQUARE);
+						double o=i*m.px2m(m.round(RetezWidth/2.0));
+						set_pen(canv,m.getColorOfPalette(i),m.round(RetezWidth/2.0),PS_ENDCAP_SQUARE);
 	    			short z=1;if(E->geo.rotacni_uhel>0)z*=-1;
 	    			TPointD S2=m.rotace(o,180-E->geo.orientace,-90);
 	    			double DR2=E->geo.delka;if(E->geo.typ==1)DR2=E->geo.radius+o*z*-1;//delka či radius
 	    			TPointD *PL2=m.getArcLine(E->geo.X1+S2.x,E->geo.Y1+S2.y,E->geo.orientace,E->geo.rotacni_uhel,DR2);
-	    			bezier(canv,PL2,3);
+						bezier(canv,PL2,3);
 	    		}
 				}
 			}
