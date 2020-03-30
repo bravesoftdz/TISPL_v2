@@ -4758,14 +4758,14 @@ void Cvykresli::vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popis
 Graphics::TBitmap *Cvykresli::nacti_nahled(Cvektory::TZakazka *zakazka)
 {
 	//deklarace proměnných
-	int W=108-4,H=73-4;//-4 == 2px odsazení od každé hrany bmp
 	double z=F->Zoom;//uchovávání původního Zoom
 	TRect ret;TPointD Posun;
 	Graphics::TBitmap *bmp=new Graphics::TBitmap,*bmp_pom=new Graphics::TBitmap;
 	//nastavení velikostí bmp
 	bmp_pom->Width=F->ClientWidth;bmp_pom->Height=F->ClientHeight;
-	bmp->Width=3*108;
-	bmp->Height=3*73;
+	bmp->Height=3*98;
+	bmp->Width=m.round((F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/(double)(F->ClientHeight-F->scGPPanel_statusbar->Height-F->scGPPanel_mainmenu->Height)*bmp->Height);//nemusí být násobeno 3x, počítá s bmp->Height, ta již je vynýsobená
+	int W=bmp->Width/3.0-4,H=bmp->Height/3.0;//-4 == 2px odsazení od každé hrany bmp
 	//nastavení základníh hodnot sloužících pro vyhledávání
 	ret.left=MaxInt;ret.right=MaxInt*(-1);
 	ret.top=MaxInt;ret.bottom=MaxInt*(-1);
@@ -4823,10 +4823,13 @@ Graphics::TBitmap *Cvykresli::nacti_nahled(Cvektory::TZakazka *zakazka)
 	bmp->Canvas->CopyRect(Rect(0,0,bmp->Width,bmp->Height),bmp_pom->Canvas,Rect(ret.left+Posun.x,ret.top+Posun.y,ret.left+Posun.x+bmp->Width/3.0,ret.top+Posun.y+bmp->Height/3.0));
 	//mazání pomocné bmp
 	delete(bmp_pom);
-  //AA
+	//vykreslení ID na bmp
+	bmp->Canvas->Font=zakazka->mGrid->DefaultCell.Font;
+	bmp->Canvas->Font->Size=m.round(35);
+	bmp->Canvas->TextOutW(3*5,3*5,zakazka->n);
+	//AA
 	Cantialising a;
 	bmp=a.antialiasing(bmp);
-
 	//navrácení původního Zoomu
 	F->Zoom=z;
 

@@ -748,7 +748,8 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy,bool 
     Z->mGrid->SetColumnAutoFit(-4);
     // if(novy)
     {
-      Z->mGrid->Columns[0].Width = 110;
+			//Z->mGrid->Columns[0].Width = 110;
+			Z->mGrid->Columns[0].Width=F->m.round((F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/(double)(F->ClientHeight-F->scGPPanel_statusbar->Height-F->scGPPanel_mainmenu->Height)*4*Z->mGrid->Rows[0].Height);
       Z->mGrid->Columns[1].Width = 80;
       Z->mGrid->Columns[2].Width = 90;
       Z->mGrid->Columns[3].Width = 25;
@@ -942,12 +943,12 @@ void TForm_definice_zakazek::GetImages(Cvektory::TZakazka *Z)
 {
 	Z->mGrid->scGPImageCollection=scGPImageCollection_layout;
 	Z->mGrid->scGPImageCollection->Images->Add()->Bitmap=F->d.nacti_nahled(Z);
-  Z->mGrid->Cells[0][2].Type=Z->mGrid->IMAGE;
-	Z->mGrid->Cells[0][2].ImageIndex=Z->n-1;   //dynamicky plnit
+	Z->mGrid->Cells[0][1].Type=Z->mGrid->IMAGE;
+	Z->mGrid->Cells[0][1].ImageIndex=Z->n-1;   //dynamicky plnit
 	Z->mGrid->Update();
-	Z->mGrid->getImage(0,2)->Stretch=true;
-	Z->mGrid->Cells[0][2].Align=Z->mGrid->LEFT;
-	Z->mGrid->Cells[0][2].Valign=Z->mGrid->TOP;
+	Z->mGrid->getImage(0,1)->Stretch=true;
+	Z->mGrid->Cells[0][1].Align=Z->mGrid->LEFT;
+	Z->mGrid->Cells[0][1].Valign=Z->mGrid->TOP;
 }
 void __fastcall TForm_definice_zakazek::FormMouseDown(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y)
@@ -964,7 +965,7 @@ void __fastcall TForm_definice_zakazek::FormMouseDown(TObject *Sender, TMouseBut
 		//FormPaint(this);
 		pan_create();//vytvoøí výøez pro pan_move
 		Posun_predchozi=TPoint(0,0);
-  }
+	}
 }
 //---------------------------------------------------------------------------
 
