@@ -4765,7 +4765,7 @@ Graphics::TBitmap *Cvykresli::nacti_nahled(Cvektory::TZakazka *zakazka)
 	bmp_pom->Width=F->ClientWidth;bmp_pom->Height=F->ClientHeight;
 	bmp->Height=3*98;
 	bmp->Width=m.round((F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/(double)(F->ClientHeight-F->scGPPanel_statusbar->Height-F->scGPPanel_mainmenu->Height)*bmp->Height);//nemusí být násobeno 3x, počítá s bmp->Height, ta již je vynýsobená
-	int W=bmp->Width/3.0-4,H=bmp->Height/3.0;//-4 == 2px odsazení od každé hrany bmp
+	int W=bmp->Width/3.0-10,H=bmp->Height/3.0-10;//-10 == 5px odsazení od každé hrany bmp
 	//nastavení základníh hodnot sloužících pro vyhledávání
 	ret.left=MaxInt;ret.right=MaxInt*(-1);
 	ret.top=MaxInt;ret.bottom=MaxInt*(-1);
@@ -4817,8 +4817,8 @@ Graphics::TBitmap *Cvykresli::nacti_nahled(Cvektory::TZakazka *zakazka)
 	//vykreslení cesty do pomocné bmp
 	vykresli_retez(bmp_pom->Canvas,zakazka);
 	//zjištění posunu pro centrování obrazu ve výsledné bmp
-	Posun.x=(ret.right-ret.left-W)/2.0+1;
-	Posun.y=(ret.bottom-ret.top-H)/2.0+1;
+	Posun.x=(ret.right-ret.left-W)/2.0+(W-bmp->Width/3.0)/2,0;//(W-bmp->Width/3.0) odsazení od hrany bmp
+	Posun.y=(ret.bottom-ret.top-H)/2.0+(H-bmp->Height/3.0)/2.0;
 	//kopírování obrazu do výsledné bmp
 	bmp->Canvas->CopyRect(Rect(0,0,bmp->Width,bmp->Height),bmp_pom->Canvas,Rect(ret.left+Posun.x,ret.top+Posun.y,ret.left+Posun.x+bmp->Width/3.0,ret.top+Posun.y+bmp->Height/3.0));
 	//mazání pomocné bmp
@@ -4826,7 +4826,7 @@ Graphics::TBitmap *Cvykresli::nacti_nahled(Cvektory::TZakazka *zakazka)
 	//vykreslení ID na bmp
 	bmp->Canvas->Font=zakazka->mGrid->DefaultCell.Font;
 	bmp->Canvas->Font->Size=m.round(35);
-	bmp->Canvas->TextOutW(3*5,3*5,zakazka->n);
+	bmp->Canvas->TextOutW(3*2,3*2,zakazka->n);
 	//AA
 	Cantialising a;
 	bmp=a.antialiasing(bmp);

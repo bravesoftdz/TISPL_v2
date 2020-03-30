@@ -4716,24 +4716,22 @@ void Cvektory::smaz_temp_zakazku(unsigned long n)
 				{
 					ukaz->mGrid->scGPImageCollection->Images->Delete(i);
 				}
-				TZakazka *Z=ukaz;
+				TZakazka *Z=ukaz->dalsi;
 				while(Z!=NULL)
 				{
+					Z->n-=1;
 					ukaz->mGrid->scGPImageCollection->Images->Add()->Bitmap=F->d.nacti_nahled(Z);
+					Z->n+=1;
 					Z=Z->dalsi;
 				}
 				delete Z;Z=NULL;
-//				for(int i=ukaz->n;i<=int(ZAKAZKY_temp->predchozi->n-1);i++)
-//				{
-//					ukaz->mGrid->scGPImageCollection->Images->Add()->Bitmap=F->d.nacti_nahled(i);
-//				}
 				//uprava indexů
 				Z=ukaz->dalsi;
 				unsigned long n=ukaz->n;
 				while(Z!=NULL)
 				{
 					Z->n=n;
-					Z->mGrid->Cells[0][2].ImageIndex=n-1;
+					Z->mGrid->Cells[0][1].ImageIndex=n-1;
 					n++;
 					Z=Z->dalsi;
 				}
