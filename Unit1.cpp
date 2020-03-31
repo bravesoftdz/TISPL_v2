@@ -6023,17 +6023,17 @@ void TForm1::add_element (int X, int Y)
 //  		default:break;
 //		}
 //		//volání přenastavení tabulky pohonu, pouze v případech, kdy je to nutné
-		unsigned int KK1,KK2;//princip je stejný podle režimu mění se pouze eID v různých kabinách
-  	switch(OBJEKT_akt->id)
-  	{
-			case 0:case 9:KK1=101;KK2=103;break;//navěšování + svěšování
-  		case 1:KK1=15;KK2=17;break;//CO2
-  		case 2:if(scGPSwitch_robot_clovek->State==0){KK1=11;KK2=13;}else {KK1=105;KK2=107;}break;//ožeh
-  		case 4:if(scGPSwitch_robot_clovek->State==0){KK1=7;KK2=9;}else {KK1=105;KK2=107;}break;//ionizce
-  		case 5:if(scGPSwitch_robot_clovek->State==0){KK1=1;KK2=3;}else {KK1=105;KK2=107;}break;//lakovna
-		}
-		if((!PmG->Rows[3].Visible&&(E->eID==KK1||E->eID==KK2))||(PmG->Rows[3].Visible&&!PmG->Rows[7].Visible&&(E->eID==KK1||E->eID==KK2||E->eID==5||E->eID==6)))
-  		pridani_elementu_tab_pohon(E);
+//		unsigned int KK1,KK2;//princip je stejný podle režimu mění se pouze eID v různých kabinách
+//		switch(OBJEKT_akt->id)
+//		{
+//			case 0:case 9:KK1=101;KK2=103;break;//navěšování + svěšování
+//			case 1:KK1=15;KK2=17;break;//CO2
+//			case 2:if(scGPSwitch_robot_clovek->State==0){KK1=11;KK2=13;}else {KK1=105;KK2=107;}break;//ožeh
+//			case 4:if(scGPSwitch_robot_clovek->State==0){KK1=7;KK2=9;}else {KK1=105;KK2=107;}break;//ionizce
+//			case 5:if(scGPSwitch_robot_clovek->State==0){KK1=1;KK2=3;}else {KK1=105;KK2=107;}break;//lakovna
+//		}
+//		if((!PmG->Rows[3].Visible&&(E->eID==KK1||E->eID==KK2))||(PmG->Rows[3].Visible&&!PmG->Rows[7].Visible&&(E->eID==KK1||E->eID==KK2||E->eID==5||E->eID==6)))
+//			pridani_elementu_tab_pohon(E);
 		//kontrola překrytí lak. oken
 		//////Kontrola zda je zóna otáčení v LO
 		//if(E->data.LO2>0 && (E->data.LO1+(E->OTOC_delka)/2.0<E->zona_pred || E->data.LO2+(E->OTOC_delka)/2.0<E->zona_za))Sv("Zóna otáčení se nevleze do LO/PO");
@@ -6043,7 +6043,7 @@ void TForm1::add_element (int X, int Y)
 			{d.v.smaz_element(E);E=NULL;}
 		if(E!=NULL)d.v.aktualizuj_sparovane_ukazatele();//aktualizace spárovaných ukazatelů
 		if(E!=NULL && E->dalsi!=NULL && E->eID==0 && E->dalsi->eID==0)design_element(E->dalsi,false);//aktualizace počtů pozic, pokud je stopka vložena do oblasti jiné stopky
-    if(E!=NULL && (E->eID==5 || E->eID==6))FormX->validace_max_voziku();//přidána otoč do kabiny, aktualizace validace
+		if(E!=NULL && (E->eID==5 || E->eID==6))FormX->validace_max_voziku();//přidána otoč do kabiny, aktualizace validace
 		//vložení předávacího místa
 		if(E!=NULL && E->eID==200)
 		{
@@ -6062,7 +6062,7 @@ void TForm1::add_element (int X, int Y)
 			E->mGrid->Refresh();//nutné skrze aktuální údaje šířek tabulky
 			//automatické výchozí umístění mGridové tabulky dle rotace elementu a nadesignováné tabulky (jejích rozměrů) - proto musí být až za nastevením designu
 			aut_pozicovani(E,X,Y);//automatické pozicování pro nový DM při vkládání PM
-		}
+		}       log(__func__,"   3");
     if(E!=NULL && E->eID==200 && E->mGrid!=NULL)//zarovnání tabulky PM
 		{
 			//souřadnice tabulky
@@ -6850,16 +6850,19 @@ void TForm1::mGrid_mimo_obraz(Cvektory::TElement *E)
 	double presah;
 	int pocet_radku;//nemůže být unsigned
 	if(E!=NULL && E->eID!=100 && E->eID!=MaxInt)///////////////tabulky elementů
-	{
+	{          
   	//////kontrola, zda jsou řádky pod spodní lištou
-  	presah=m.L2Py(E->Yt)+E->mGrid->Height-scGPPanel_bottomtoolbar->Top;
+		presah=m.L2Py(E->Yt)+E->mGrid->Height-scGPPanel_bottomtoolbar->Top;   
   	if(presah>0)
   	{
-			pocet_radku=Ceil(presah/(double)E->mGrid->DefaultRowHeight);
+			pocet_radku=Ceil(presah/(double)E->mGrid->DefaultRowHeight);    
   		E->mGrid->exBUTTONVisible=false;
 			for (unsigned int i=E->mGrid->RowCount-1;i!=0 && i>=E->mGrid->RowCount-pocet_radku; i--)
   		{
-  			if(E->mGrid->Cells[1][i].Type!=E->mGrid->DRAW)mGrid_komponenta_na_draw(E->mGrid,1,i);
+				for(unsigned int j=1;j<=E->mGrid->ColCount-1;j++)
+				{
+					if(E->mGrid->Cells[j][i].Type!=E->mGrid->DRAW)mGrid_komponenta_na_draw(E->mGrid,j,i);
+				}
   		}
   	}
   	//////kontrola, zda je sloupec s komponenty za levou knihovnou
@@ -6869,7 +6872,14 @@ void TForm1::mGrid_mimo_obraz(Cvektory::TElement *E)
   		{
   			if(E->mGrid->Cells[1][i].Type!=E->mGrid->DRAW)mGrid_komponenta_na_draw(E->mGrid,1,i);
   		}
-  	}
+		}
+		if(E->mGrid->ColCount>2 && m.L2Px(E->Xt)+E->mGrid->Columns[0].Width+E->mGrid->Columns[1].Width<scSplitView_LEFTTOOLBAR->Width)
+  	{
+			for(unsigned int i=1;i<=E->mGrid->RowCount-1;i++)
+  		{
+  			if(E->mGrid->Cells[2][i].Type!=E->mGrid->DRAW)mGrid_komponenta_na_draw(E->mGrid,2,i);
+  		}
+		}
   	//////kontrola horní lišta
   	presah=scGPPanel_mainmenu->Height-m.L2Py(E->Yt);
   	pocet_radku=Ceil(presah/(double)E->mGrid->DefaultRowHeight);
@@ -6877,7 +6887,10 @@ void TForm1::mGrid_mimo_obraz(Cvektory::TElement *E)
 		{
 			for (unsigned int i=1;i<=E->mGrid->RowCount-1 && i<(unsigned)pocet_radku; i++)
   		{
-  			if(E->mGrid->Cells[1][i].Type!=E->mGrid->DRAW)mGrid_komponenta_na_draw(E->mGrid,1,i);
+				for(unsigned int j=1;j<=E->mGrid->ColCount-1;j++)
+				{
+					if(E->mGrid->Cells[j][i].Type!=E->mGrid->DRAW)mGrid_komponenta_na_draw(E->mGrid,j,i);
+				}
   		}
 		}
 	}
@@ -6954,6 +6967,11 @@ void TForm1::mGrid_on_mGrid()
 			mGrid_mimo_obraz(E);//kontrola + ošetření mGridů, ktěré se nacházejí mimo obraz
 			E=d.v.dalsi_krok(E,OBJEKT_akt);
 		}
+		if(predchozi_PM!=NULL)
+		{
+			mGrid_puvodni_stav(predchozi_PM);
+			mGrid_mimo_obraz(predchozi_PM);//kontrola + ošetření mGridů, ktěré se nacházejí mimo obraz
+    }
 		////kontrola překrytí
 		E=OBJEKT_akt->element;
 		//TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
@@ -7136,11 +7154,19 @@ void TForm1::mGrid_puvodni_stav(Cvektory::TElement *E)
 				E->mGrid->Update();
   			break;
 			}
+			case 200:
+			case 300:
+			{
+				E->mGrid->Cells[1][2].Type=E->mGrid->COMBO;
+				E->mGrid->Cells[2][2].Type=E->mGrid->COMBO;
+				//edity zařídí fce napln_comba_mGridu(), dynamicky se mění 
+				break;
+      }
 			default:break;
 		}
 
 		////naplnění comb
-		napln_comba_mGridu(E);
+		napln_comba_mGridu(E);//pro PM a výhybku nastaví edity
 	}
 }
 //---------------------------------------------------------------------------
@@ -8746,24 +8772,27 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 			case 6:pozice=1;break;
 		}
 		TscGPComboBox *C=E->mGrid->getCombo(1,pozice);
-		C->Clear();
-		C->Font->Color=(TColor)RGB(43,87,154);
-		C->BiDiMode=bdRightToLeft;
-		TscGPListBoxItem *I;
-		I=C->Items->Add();
-		I->Caption="180-";//kvůli opačnému zarovnání musí být číslo zapsáno jako řetězec se znaménkem na konci!
-		I=C->Items->Add();
-		I->Caption="90-";
-		I=C->Items->Add();
-		I->Caption=90;
-		I=C->Items->Add();
-		I->Caption=180;
-		I=NULL;delete I;
-		//přiřazení COMBA
-		if(E->rotace_jig==-180)C->ItemIndex=0;
-		if(E->rotace_jig==-90)C->ItemIndex=1;
-		if(E->rotace_jig==90)C->ItemIndex=2;
-		if(E->rotace_jig==180)C->ItemIndex=3;
+		if(C!=NULL)
+		{
+	  	C->Clear();
+	  	C->Font->Color=(TColor)RGB(43,87,154);
+	  	C->BiDiMode=bdRightToLeft;
+	  	TscGPListBoxItem *I;
+	  	I=C->Items->Add();
+	  	I->Caption="180-";//kvůli opačnému zarovnání musí být číslo zapsáno jako řetězec se znaménkem na konci!
+	  	I=C->Items->Add();
+	  	I->Caption="90-";
+	  	I=C->Items->Add();
+	  	I->Caption=90;
+	  	I=C->Items->Add();
+	  	I->Caption=180;
+	  	I=NULL;delete I;
+	  	//přiřazení COMBA
+	  	if(E->rotace_jig==-180)C->ItemIndex=0;
+	  	if(E->rotace_jig==-90)C->ItemIndex=1;
+	  	if(E->rotace_jig==90)C->ItemIndex=2;
+	  	if(E->rotace_jig==180)C->ItemIndex=3;
+		}
 		C=NULL;delete C;
 	}
 	//naplnění a přiřazení COMBA PD
@@ -8771,69 +8800,74 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 	{
 		E->mGrid->Update();//musí být přítomen před zakazováním komponent, před Update tabulka ještě neexistuje
 		TscGPComboBox *C=E->mGrid->getCombo(1,E->mGrid->RowCount-1);
-		C->Clear();
-		C->Font->Color=(TColor)RGB(43,87,154);
-		C->BiDiMode=bdRightToLeft;
-		TscGPListBoxItem *I;
-		I=C->Items->Add();
-		I->Caption=ls->Strings[247];//"začátek";//kvůli opačnému zarovnání musí být číslo zapsáno jako řetězec se znaménkem na konci!
-		I=C->Items->Add();
-		I->Caption=ls->Strings[248];//"střed";
-		I=C->Items->Add();
-		I->Caption=ls->Strings[249];//"celý";
-		I=NULL;delete I;
-		//přiřazení COMBA
-		C->ItemIndex=E->data.PD;
+		if(C!=NULL)
+		{
+	  	C->Clear();
+	  	C->Font->Color=(TColor)RGB(43,87,154);
+	  	C->BiDiMode=bdRightToLeft;
+	  	TscGPListBoxItem *I;
+	  	I=C->Items->Add();
+	  	I->Caption=ls->Strings[247];//"začátek";//kvůli opačnému zarovnání musí být číslo zapsáno jako řetězec se znaménkem na konci!
+	  	I=C->Items->Add();
+	  	I->Caption=ls->Strings[248];//"střed";
+	  	I=C->Items->Add();
+	  	I->Caption=ls->Strings[249];//"celý";
+	  	I=NULL;delete I;
+	  	//přiřazení COMBA
+			C->ItemIndex=E->data.PD;
+			if(E->mGrid->Columns[1].Width<100)E->mGrid->Columns[1].Width+=15;//rozčíření skrze combo
+		}
 		C=NULL;delete C;
-		if(E->mGrid->Columns[1].Width<100)E->mGrid->Columns[1].Width+=15;//rozčíření skrze combo
 	}
 	//PM + výhybka
 	if(E->eID==200 || E->eID==300)
 	{
-//		E->mGrid->Cells[1][2].Type=E->mGrid->COMBO;
-//		E->mGrid->Cells[2][2].Type=E->mGrid->COMBO;
 		E->mGrid->Update();//musí být přítomen před zakazováním komponent, před Update tabulka ještě neexistuje
 		TscGPComboBox *C1=E->mGrid->getCombo(1,2),*C2=E->mGrid->getCombo(2,2);
-		C1->Clear();C2->Clear();
-		C1->Font->Color=(TColor)RGB(43,87,154);C2->Font->Color=(TColor)RGB(43,87,154);
-		C1->BiDiMode=bdRightToLeft;C2->BiDiMode=bdRightToLeft;
-		C1->Enabled=true;C2->Enabled=true;
-		//přidávání itemů do comba
-		TscGPListBoxItem *I1,*I2;
-		I1=C1->Items->Add();I2=C2->Items->Add();
-		if(d.v.POHONY->dalsi!=NULL){I1->Caption=ls->Strings[218];I2->Caption=ls->Strings[218];}//vyberte pohon     217 = žádný pohon k výberu
-		else {I1->Caption="Žádný pohon";I2->Caption="Žádný pohon";}
-		Cvektory::TPohon *p=d.v.POHONY->dalsi;
-		while(p!=NULL)
+		if(C1!=NULL && C2!=NULL)//může dojít k NULL pokud je pohonová tabulka mimo obraz
 		{
-			I1=C1->Items->Add();I2=C2->Items->Add();
-			I1->Caption=p->name;I2->Caption=p->name;
-			p=p->dalsi;
-		}
-		delete p;p=NULL;
-		//přiřazení itemindexu podle pohonu na vedlejší větvi, pokud je definovaná
-		C1->ItemIndex=0;C2->ItemIndex=0;
-		if(E->pohon!=NULL)C1->ItemIndex=E->pohon->n;
-		if(E->eID==300)//pro výhybku
-		{
-			if(E->dalsi2!=E->predchozi2 && E->dalsi2->pohon!=NULL)C2->ItemIndex=E->dalsi2->pohon->n;
-			if(E->dalsi2==E->predchozi2)C2->Enabled=false;
-		}
-		else//pro PM
-		{
-			if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)C2->ItemIndex=E->dalsi->pohon->n;
-			if(E->dalsi==NULL && d.v.ELEMENTY->dalsi->pohon!=NULL)C2->ItemIndex=d.v.ELEMENTY->dalsi->pohon->n;
-			//zakazování comb
-			if(E->objekt_n!=OBJEKT_akt->n)C1->Enabled=false;
-			if((E->dalsi!=NULL && E->dalsi->objekt_n!=E->objekt_n || E->dalsi==NULL) && predchozi_PM!=E)C2->Enabled=false;
-		}
+   		C1->Clear();C2->Clear();
+   		C1->Font->Color=(TColor)RGB(43,87,154);C2->Font->Color=(TColor)RGB(43,87,154);
+   		C1->BiDiMode=bdRightToLeft;C2->BiDiMode=bdRightToLeft;
+   		C1->Enabled=true;C2->Enabled=true;
+   		//přidávání itemů do comba
+   		TscGPListBoxItem *I1,*I2;
+   		I1=C1->Items->Add();I2=C2->Items->Add();
+   		if(d.v.POHONY->dalsi!=NULL){I1->Caption=ls->Strings[218];I2->Caption=ls->Strings[218];}//vyberte pohon     217 = žádný pohon k výberu
+   		else {I1->Caption="Žádný pohon";I2->Caption="Žádný pohon";}
+   		Cvektory::TPohon *p=d.v.POHONY->dalsi;
+   		while(p!=NULL)
+   		{
+   			I1=C1->Items->Add();I2=C2->Items->Add();
+   			I1->Caption=p->name;I2->Caption=p->name;
+   			p=p->dalsi;
+   		}
+   		delete p;p=NULL;
+   		//přiřazení itemindexu podle pohonu na vedlejší větvi, pokud je definovaná
+   		C1->ItemIndex=0;C2->ItemIndex=0;
+   		if(E->pohon!=NULL)C1->ItemIndex=E->pohon->n;
+   		if(E->eID==300)//pro výhybku
+   		{
+   			if(E->dalsi2!=E->predchozi2 && E->dalsi2->pohon!=NULL)C2->ItemIndex=E->dalsi2->pohon->n;
+   			if(E->dalsi2==E->predchozi2)C2->Enabled=false;
+   		}
+   		else//pro PM
+   		{
+   			if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)C2->ItemIndex=E->dalsi->pohon->n;
+   			if(E->dalsi==NULL && d.v.ELEMENTY->dalsi->pohon!=NULL)C2->ItemIndex=d.v.ELEMENTY->dalsi->pohon->n;
+   			//zakazování comb
+   			if(E->objekt_n!=OBJEKT_akt->n)C1->Enabled=false;
+   			if((E->dalsi!=NULL && E->dalsi->objekt_n!=E->objekt_n || E->dalsi==NULL) && predchozi_PM!=E)C2->Enabled=false;
+   		}
 
-		//kontrola zda můžu editovat pohon
-		zmena_editovanych_bunek(E);//automaticky nastaví editované položky a needitovatelné položky pro pohonové tabulky
+   		//kontrola zda můžu editovat pohon
+			zmena_editovanych_bunek(E);//automaticky nastaví editované položky a needitovatelné položky pro pohonové tabulky
 
+			//ukazatelové záležitosti
+			I1=NULL;delete I1;
+			I2=NULL;delete I2;
+		}
 		//ukazatelové záležitosti
-		I1=NULL;delete I1;
-		I2=NULL;delete I2;
 		C1=NULL;delete C1;
 		C2=NULL;delete C2;
 	}

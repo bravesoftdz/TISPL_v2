@@ -1335,11 +1335,12 @@ bool TFormX::check_click_Note(double X,double Y,bool check_for_highlight)
 			}break;
 			case 200://naplnìní RD
 			{
+				int opraveny_pohon=validovany_pohon;
 				vstoupeno_elm=false;
 				F->d.v.vrat_pohon(validovany_pohon)->aRD=dopRD;
-				validovany_pohon=0;//byla odstranìn problém
 				aktualizace_tab_elementu();
 				validace_RD(E);
+				if(opraveny_pohon==validovany_pohon)validovany_pohon=0;//byla odstranìn problém
 			}break;
 		}
 	}
@@ -1430,7 +1431,7 @@ void TFormX::prirazeni_pohohonu_vetvi(Cvektory::TElement *E,bool hlavni)
 	if(hlavni)Combo=E->mGrid->getCombo(1,2);
 	else Combo=E->mGrid->getCombo(2,2);
 	Cvektory::TPohon *p=NULL;
-	if(Combo->ItemIndex!=0)p=F->d.v.vrat_pohon(Combo->ItemIndex);
+	if(Combo!=NULL && Combo->ItemIndex!=0)p=F->d.v.vrat_pohon(Combo->ItemIndex);
 	Cvektory::TElement *e=NULL;
 
   ////uložení aktuálnì editovaného pohonu
@@ -1578,7 +1579,12 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 		AnsiString puv_Note=E->mGrid->Note.Text;
   	bool mimo_rozmezi=false;
 		bool pouze_rozmezi=false;
-		unsigned int p1_n=E->mGrid->getCombo(1,2)->ItemIndex,p2_n=E->mGrid->getCombo(2,2)->ItemIndex;
+		unsigned int p1_n=0,p2_n=0;
+		try
+		{
+			p1_n=E->mGrid->getCombo(1,2)->ItemIndex;
+			p2_n=E->mGrid->getCombo(2,2)->ItemIndex;
+    }catch(...){;}
 		unsigned int pro_pohon=0;
 		dopRD=0;
 
@@ -1643,24 +1649,30 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 			}
 		}
 
+		//pokud probìhla validace s problémem, uložit pohon
+		if(pro_pohon!=0)validovany_pohon=pro_pohon;
+
 		//roznesení validace na ostatní
 		if(puv_Note!=E->mGrid->Note.Text)//došlo ke zmìnì note
 		{
 			puv_Note=E->mGrid->Note.Text;
-			if(F->predchozi_PM!=NULL && F->predchozi_PM!=E && (F->predchozi_PM->mGrid->getCombo(1,2)->ItemIndex==pro_pohon || F->predchozi_PM->mGrid->getCombo(2,2)->ItemIndex==pro_pohon))//pokud má PM stejný pohon jako validovaný pohon
-				F->predchozi_PM->mGrid->ShowNote(puv_Note,F->d.clError,14);
+			try//v pøípadì že by neexistovalo combo, mGrid mimo obraz
+			{
+				if(F->predchozi_PM!=NULL && F->predchozi_PM!=E && (F->predchozi_PM->mGrid->getCombo(1,2)->ItemIndex==validovany_pohon || F->predchozi_PM->mGrid->getCombo(2,2)->ItemIndex==validovany_pohon))//pokud má PM stejný pohon jako validovaný pohon
+					F->predchozi_PM->mGrid->ShowNote(puv_Note,F->d.clError,14);
+			}catch(...){;}
 			Cvektory::TElement *e_pom=F->OBJEKT_akt->element;
 			while(e_pom!=NULL && e_pom->objekt_n==F->OBJEKT_akt->n)
 			{
-				if(e_pom->eID==200 && (e_pom->mGrid->getCombo(1,2)->ItemIndex==pro_pohon || e_pom->mGrid->getCombo(2,2)->ItemIndex==pro_pohon))
-					e_pom->mGrid->ShowNote(puv_Note,F->d.clError,14);
+				try
+				{
+					if(e_pom->eID==200 && (e_pom->mGrid->getCombo(1,2)->ItemIndex==validovany_pohon || e_pom->mGrid->getCombo(2,2)->ItemIndex==validovany_pohon))
+						e_pom->mGrid->ShowNote(puv_Note,F->d.clError,14);
+				}catch(...){;}
 				e_pom=F->d.v.dalsi_krok(e_pom,F->OBJEKT_akt);
 			}
 			e_pom=NULL;delete e_pom;
 		}
-
-    //pokud probìhla validace s problémem, uložit pohon
-		if(pro_pohon!=0)validovany_pohon=pro_pohon;
 
   	//ukazatelové záležitosti
 		p=NULL;p1=NULL;p2=NULL;

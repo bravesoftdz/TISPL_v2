@@ -31,7 +31,7 @@ private:	// User declarations
 	//promìnné pro UnitX
 	bool editace_pohonu;
 	long rychlost, roztec_palce, nasobek_roztece, roztec_jigu, mezera_podvozky, mezera_jig1, mezera_jig2;
-	unsigned int validovany_pohon;
+	int validovany_pohon;
 	double dopRD;
 	//     aRD       R,roztec          Rx          Rz,rozestup
 public:		// User declarations
