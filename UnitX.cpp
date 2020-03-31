@@ -57,21 +57,6 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 		F->PmG->exBUTTON->Hint=Hint;//navrácení pùvodního textu hintu
 	}
 
-	if(ID!=9999&&Row!=-2)
-	{
-		Cvektory::TElement *E=vrat_element_z_tabulky(ID);
-		if(E->eID==200 && E->mGrid->Note.Text!="" && E->mGrid->CheckLink(F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==TPoint(-2,-2))
-		{
-			F->d.v.vrat_pohon(validovany_pohon)->aRD=dopRD; dopRD=0;
-			zmena_aRD(E);
-//			vstoupeno_elm=false;
-			validace_RD(E);
-//			F->Memo("Click into Note");
-//			E->mGrid->Note.Text="";
-		}
-		E=NULL;delete E;
-	}
-
 	if(ID!=9999&&Row==-2)
 	//funkcionalita exBUTTONu v tabulkách elementù
 	{
@@ -155,10 +140,11 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 				}
 			}break;
 		}
-		E->mGrid->exBUTTONLockPosition=true;//uzamkne pozici exButtonu, aby se nepøepozival bìhem updatu tam a zpìt
-		E->mGrid->Update();
-		E->mGrid->exBUTTONLockPosition=false;//uzamkne pozici exButtonu, aby se nepøepozival bìhem updatu tam a zpìt, toto nestaèilo: F->PmG->exBUTTON->Top=T;//zajistí, že se tlaèítko nepøepozicuje
-		F->REFRESH(true);//musí být opravdu REFRESH celého formu + mGridu
+		E->mGrid->Refresh();
+		//E->mGrid->exBUTTONLockPosition=true;//uzamkne pozici exButtonu, aby se nepøepozival bìhem updatu tam a zpìt
+		//E->mGrid->Update();
+		//E->mGrid->exBUTTONLockPosition=false;//uzamkne pozici exButtonu, aby se nepøepozival bìhem updatu tam a zpìt, toto nestaèilo: F->PmG->exBUTTON->Top=T;//zajistí, že se tlaèítko nepøepozicuje
+		//F->REFRESH(true);//musí být opravdu REFRESH celého formu + mGridu
 		E->mGrid->exBUTTON->Hint=Hint;//navrácení pùvodního textu hintu
 		E=NULL;delete E;
 	}
@@ -1215,51 +1201,51 @@ void TFormX::odstranit_korelaci(bool predat_focus)
 //validace rychlosti pøi její zmìnì
 void TFormX::validace_aRD(bool pouze_rozmezi)
 {
-	AnsiString jednotky;
-	if(F->aRDunit==0)jednotky="[m/s]";
-	else jednotky="[m/min]";
-	bool mimo_rozmezi=false;
-	TscGPComboBox *Combo=F->PmG->getCombo(0,0);
-	dopRD=0;
-	//kontrola zda je zadaná hodnota v rozmezí
-	if(F->m.between(F->OBJEKT_akt->pohon->aRD,F->OBJEKT_akt->pohon->rychlost_od,F->OBJEKT_akt->pohon->rychlost_do)) mimo_rozmezi=false;
-	else mimo_rozmezi=true;
-	//zadaná rychlost je mimo rozsah
-	if(mimo_rozmezi && F->OBJEKT_akt->pohon->aRD > 0)
-	{
-		if(F->PmG->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
-		F->PmG->ShowNote(F->ls->Strings[220],F->d.clError,14);//"Rychlost neodpovídá rozmezí!"
-		povolit_zakazat_editaci(false);
-	}
-	if(!mimo_rozmezi && F->PmG->Note.Text!=""){F->PmG->ShowNote("",F->d.clError,14);povolit_zakazat_editaci(true);}
-	// nutné ošetøení pro období zadávání/psaní
-	if (F->OBJEKT_akt->pohon->aRD > 0 && !pouze_rozmezi)
-	{
-		//výpoèet doporuèené rychosti
-		if(F->PmG->Rows[7].Visible)//v kabinì jsou 2 rùzné rotace
-		{
-			double dopRD1=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,0,F->OBJEKT_akt->pohon->roztec,F->d.v.PP.TT,F->OBJEKT_akt->pohon->aRD);
-			double dopRD2=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,90,F->OBJEKT_akt->pohon->roztec,F->d.v.PP.TT,F->OBJEKT_akt->pohon->aRD);
-			if(dopRD1>dopRD2)dopRD=dopRD1;//vypíše vìtší hodnotu
-			else dopRD=dopRD2;
-		}
-		else
-			dopRD=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,F->OBJEKT_akt->rotace,F->OBJEKT_akt->pohon->roztec,F->d.v.PP.TT,F->OBJEKT_akt->pohon->aRD);
-		//je zvolen pohon, jeho aktuální rychlost se nerovná doporuèené
-		if(Combo->ItemIndex!=0 && F->OBJEKT_akt->pohon->roztec>0 && F->ms.MyToDouble(dopRD)!= F->ms.MyToDouble(F->OBJEKT_akt->pohon->aRD) && mimo_rozmezi==false)
-		{
-			if(F->PmG->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
-			F->PmG->ShowNote(F->ls->Strings[221]+" <a>"+AnsiString(F->m.round2double(F->outaRD(dopRD),3))+"</a> "+jednotky,F->d.clError,14);//"Zadejte doporuèenou rychlost pohonu:"
-		}
-		//vše je vpoøádku
-		if (F->ms.MyToDouble(dopRD)== F->ms.MyToDouble(F->OBJEKT_akt->pohon->aRD) && mimo_rozmezi==false)
-		{
-			povolit_zakazat_editaci(true);
-			F->PmG->ShowNote("",F->d.clError,14);
-		}
-	}
-	else if(!pouze_rozmezi)F->PmG->ShowNote(F->ls->Strings[222],F->d.clError,14);//"Neplatná hodnota rychlosti pohonu!"
-	Combo=NULL;delete Combo;
+//	AnsiString jednotky;
+//	if(F->aRDunit==0)jednotky="[m/s]";
+//	else jednotky="[m/min]";
+//	bool mimo_rozmezi=false;
+//	TscGPComboBox *Combo=F->PmG->getCombo(0,0);
+//	dopRD=0;
+//	//kontrola zda je zadaná hodnota v rozmezí
+//	if(F->m.between(F->OBJEKT_akt->pohon->aRD,F->OBJEKT_akt->pohon->rychlost_od,F->OBJEKT_akt->pohon->rychlost_do)) mimo_rozmezi=false;
+//	else mimo_rozmezi=true;
+//	//zadaná rychlost je mimo rozsah
+//	if(mimo_rozmezi && F->OBJEKT_akt->pohon->aRD > 0)
+//	{
+//		if(F->PmG->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
+//		F->PmG->ShowNote(F->ls->Strings[220],F->d.clError,14);//"Rychlost neodpovídá rozmezí!"
+//		povolit_zakazat_editaci(false);
+//	}
+//	if(!mimo_rozmezi && F->PmG->Note.Text!=""){F->PmG->ShowNote("",F->d.clError,14);povolit_zakazat_editaci(true);}
+//	// nutné ošetøení pro období zadávání/psaní
+//	if (F->OBJEKT_akt->pohon->aRD > 0 && !pouze_rozmezi)
+//	{
+//		//výpoèet doporuèené rychosti
+//		if(F->PmG->Rows[7].Visible)//v kabinì jsou 2 rùzné rotace
+//		{
+//			double dopRD1=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,0,F->OBJEKT_akt->pohon->roztec,F->d.v.PP.TT,F->OBJEKT_akt->pohon->aRD);
+//			double dopRD2=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,90,F->OBJEKT_akt->pohon->roztec,F->d.v.PP.TT,F->OBJEKT_akt->pohon->aRD);
+//			if(dopRD1>dopRD2)dopRD=dopRD1;//vypíše vìtší hodnotu
+//			else dopRD=dopRD2;
+//		}
+//		else
+//			dopRD=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,F->OBJEKT_akt->rotace,F->OBJEKT_akt->pohon->roztec,F->d.v.PP.TT,F->OBJEKT_akt->pohon->aRD);
+//		//je zvolen pohon, jeho aktuální rychlost se nerovná doporuèené
+//		if(Combo->ItemIndex!=0 && F->OBJEKT_akt->pohon->roztec>0 && F->ms.MyToDouble(dopRD)!= F->ms.MyToDouble(F->OBJEKT_akt->pohon->aRD) && mimo_rozmezi==false)
+//		{
+//			if(F->PmG->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
+//			F->PmG->ShowNote(F->ls->Strings[221]+" <a>"+AnsiString(F->m.round2double(F->outaRD(dopRD),3))+"</a> "+jednotky,F->d.clError,14);//"Zadejte doporuèenou rychlost pohonu:"
+//		}
+//		//vše je vpoøádku
+//		if (F->ms.MyToDouble(dopRD)== F->ms.MyToDouble(F->OBJEKT_akt->pohon->aRD) && mimo_rozmezi==false)
+//		{
+//			povolit_zakazat_editaci(true);
+//			F->PmG->ShowNote("",F->d.clError,14);
+//		}
+//	}
+//	else if(!pouze_rozmezi)F->PmG->ShowNote(F->ls->Strings[222],F->d.clError,14);//"Neplatná hodnota rychlosti pohonu!"
+//	Combo=NULL;delete Combo;
 }
 //---------------------------------------------------------------------------
 //validace maximálního poètu vozíkù na stopce
@@ -1298,61 +1284,78 @@ void TFormX::validace_max_voziku()
 //voláno po kliku na link v poznámce, naplní edit aRD doporuèenou rychlostí
 void TFormX::naplneni_dopRD()
 {
-	F->OBJEKT_akt->pohon->aRD=dopRD;
-	F->PmG->Cells[1][rychlost].Text=F->outaRD(dopRD);
-	zmena_aRD();
-	//odstranit_korelaci();//pro jistotu zùstavala aktivní po kliku na link
-	F->PmG->ShowNote("",F->d.clError,14);
-	povolit_zakazat_editaci(true);
-	F->Akce=F->BLOK;
-	F->PmG->Refresh();//došlo ke zmìnì hodnot v tabulce
+//	F->OBJEKT_akt->pohon->aRD=dopRD;
+//	F->PmG->Cells[1][rychlost].Text=F->outaRD(dopRD);
+//	zmena_aRD();
+//	//odstranit_korelaci();//pro jistotu zùstavala aktivní po kliku na link
+//	F->PmG->ShowNote("",F->d.clError,14);
+//	povolit_zakazat_editaci(true);
+//	F->Akce=F->BLOK;
+//	F->PmG->Refresh();//došlo ke zmìnì hodnot v tabulce
 }
 //---------------------------------------------------------------------------
-//doplní doporuèený poèet maximálních vozíku po kliku
-bool TFormX::naplneni_max_voziku(double X,double Y,bool check_for_highlight)
+bool TFormX::check_click_Note(double X,double Y,bool check_for_highlight)
 {
 	bool ret=false;
-	if(F->d.v.vrat_posledni_element_objektu(F->OBJEKT_akt)->n>1)
+	//hledání zda má nìkterý element nedokonèenou validaci
+	Cvektory::TElement *E=F->OBJEKT_akt->element;
+	while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
 	{
-		//hledání zda má nìkterý element nedokonèenou validaci
-		Cvektory::TElement *E=F->OBJEKT_akt->element;
-		while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
-		{
-			//hledání elementu, kterému bylo kliknuto na doporuèený poèet vozíkù
-			if(E->eID==0 && E->mGrid!=NULL && E->mGrid->Note.Text!="" && E->mGrid->CheckLink(X,Y)==TPoint(-2,-2)){ret=true;break;}
-			E=E->dalsi;
-		}
-		//naplnìní doporuèeného max. poètu vozíkù
-		if(ret && E!=NULL && !check_for_highlight)
-		{
-			//extrakce poètu z hintu
-			AnsiString t=E->mGrid->Note.Text;
-			int i=1,zacatek=1,pocet=-1;
-			while(i<=t.Length())
-			{
-				if(pocet>=0)pocet++;
-				if(t.SubString(i,1)==">"){zacatek=i+1;pocet=0;}
-				if(pocet>0 && t.SubString(i,1)=="<")break;
-				i++;
-			}
-			//naplnìní dat + tabulka
-			E->data.pocet_voziku=F->ms.MyToDouble(t.SubString(zacatek,pocet-1));
-			E->mGrid->Cells[1][6].Text=E->data.pocet_voziku;
-			E->mGrid->ShowNote("");
-			F->Akce=F->BLOK;
-		}
-		E=NULL;delete E;
+		//hledání elementu, kterému bylo kliknuto na doporuèený poèet vozíkù
+		if(E->mGrid!=NULL && E->mGrid->Note.Text!="" && E->mGrid->CheckLink(X,Y)==TPoint(-2,-2)){ret=true;break;}
+		E=F->d.v.dalsi_krok(E,F->OBJEKT_akt);
 	}
+	if(!ret && F->predchozi_PM!=NULL && F->predchozi_PM->mGrid!=NULL && F->predchozi_PM->mGrid->Note.Text!="" && F->predchozi_PM->mGrid->CheckLink(X,Y)==TPoint(-2,-2))
+	{
+		E=F->predchozi_PM;
+		ret=true;
+  }
+	if(ret && !check_for_highlight)
+	{
+		switch(E->eID)
+		{
+			case 0://doplní doporuèený poèet maximálních vozíku po kliku
+			{
+      	//extrakce poètu z hintu
+		  	AnsiString t=E->mGrid->Note.Text;
+				int i=1,zacatek=1,pocet=-1;
+		  	while(i<=t.Length())
+		  	{
+		  		if(pocet>=0)pocet++;
+		  		if(t.SubString(i,1)==">"){zacatek=i+1;pocet=0;}
+		  		if(pocet>0 && t.SubString(i,1)=="<")break;
+		  		i++;
+		  	}
+		  	//naplnìní dat + tabulka
+		  	E->data.pocet_voziku=F->ms.MyToDouble(t.SubString(zacatek,pocet-1));
+		  	E->mGrid->Cells[1][6].Text=E->data.pocet_voziku;
+		  	E->mGrid->ShowNote("");
+		  	F->Akce=F->BLOK;
+			}break;
+			case 200://naplnìní RD
+			{
+				vstoupeno_elm=false;
+				F->d.v.vrat_pohon(validovany_pohon)->aRD=dopRD;
+				aktualizace_tab_elementu();
+				validace_RD(E);
+			}break;
+		}
+	}
+
+	//uakazatelové záležitosti
+	E=NULL;delete E;
+
+	//vrácení pro highlight
 	return ret;
 }
 //---------------------------------------------------------------------------
 //zakazuje èi povolí komponenty v tabulce pohonu a všech tabulkách elementu
 void TFormX::povolit_zakazat_editaci(bool povolit)
 {
-//	if(povolit)
-//		{F->scGPButton_ulozit->Enabled=true;}//pokud je dùvod k uložení, ale button uložit je z pøedchozího kroku neaktivní zapne ho
-//	else
-//		{F->scGPButton_ulozit->Enabled=false;}//pokud je button uložit zapnut vypne ho
+	if(povolit)
+		{F->scGPButton_ulozit->Enabled=true;}//pokud je dùvod k uložení, ale button uložit je z pøedchozího kroku neaktivní zapne ho
+	else
+		{F->scGPButton_ulozit->Enabled=false;}//pokud je button uložit zapnut vypne ho
 //	F->PmG->Update();//musí být, pøi vložení prvního kontinuálního robota problém v zobrazení
 //	F->PmG->SetEnabledComponents(povolit);
 //	F->PmG->SetEnabledComponent(1,1,true);//rychlost musí být aktivní aby ji mohl uživatel zmìnit a tím odemknout ostatní buòky
@@ -1573,8 +1576,8 @@ void TFormX::validace_RD(Cvektory::TElement *E)
   	bool mimo_rozmezi=false;
 		bool pouze_rozmezi=false;
 		unsigned int p1_n=E->mGrid->getCombo(1,2)->ItemIndex,p2_n=E->mGrid->getCombo(2,2)->ItemIndex;
-		double dopRD=0;
 		validovany_pohon=0;
+		dopRD=0;
 
 		//naètení pohonù
 		Cvektory::TPohon *p=NULL,*p1=NULL,*p2=NULL;
@@ -1585,7 +1588,7 @@ void TFormX::validace_RD(Cvektory::TElement *E)
     //pokud nalezne problém zastaví se a zobrazího, i v pøípadì, že je problémù více, až bude problém vyøešen probìhne validace zda neexistuje další problém
 		if(F->OBJEKT_akt->rezim==1)//kontrola zda je KK režim, pokud ano validovat
 		{
-	  	for(unsigned int i=1;i<=2;i++)
+			for(unsigned int i=1;i<=2;i++)
 			{
 	  		//naètení požadovaného pohonu pro validaci
 	  		if(i==1)p=p1;
@@ -1640,8 +1643,8 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 		//roznesení validace na ostatní
 		if(puv_Note!=E->mGrid->Note.Text)//došlo ke zmìnì note
 		{
-			puv_Note=E->mGrid->Note.Text;
-			if(F->predchozi_PM!=NULL && F->predchozi_PM!=E && F->predchozi_PM->mGrid->getCombo(1,2)->ItemIndex==validovany_pohon || F->predchozi_PM->mGrid->getCombo(2,2)->ItemIndex==validovany_pohon)//pokud má PM stejný pohon jako validovaný pohon
+			puv_Note=E->mGrid->Note.Text;    //F->Memo("Note: "+puv_Note);
+			if(F->predchozi_PM!=NULL && F->predchozi_PM!=E && (F->predchozi_PM->mGrid->getCombo(1,2)->ItemIndex==validovany_pohon || F->predchozi_PM->mGrid->getCombo(2,2)->ItemIndex==validovany_pohon))//pokud má PM stejný pohon jako validovaný pohon
 				F->predchozi_PM->mGrid->ShowNote(puv_Note,F->d.clError,14);
 			Cvektory::TElement *e_pom=F->OBJEKT_akt->element;
 			while(e_pom!=NULL && e_pom->objekt_n==F->OBJEKT_akt->n)

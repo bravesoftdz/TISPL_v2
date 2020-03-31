@@ -32,6 +32,7 @@ private:	// User declarations
 	bool editace_pohonu;
 	long rychlost, roztec_palce, nasobek_roztece, roztec_jigu, mezera_podvozky, mezera_jig1, mezera_jig2;
 	unsigned int validovany_pohon;
+	double dopRD;
 	//     aRD       R,roztec          Rx          Rz,rozestup
 public:		// User declarations
   __fastcall TFormX(TComponent* Owner);
@@ -45,7 +46,7 @@ public:		// User declarations
 	void validace_max_voziku();//validace maximálního poètu vozíkù na stopce
 	void povolit_zakazat_editaci(bool povolit);//zakazuje èi povolí komponenty v tabulce pohonu a všech tabulkách elementu
 	void naplneni_dopRD();//doplni doporuèenou rychlost do tabulky pohonu
-	bool naplneni_max_voziku(double X,double Y,bool check_for_highlight=false);//doplní doporuèený poèet maximálních vozíku po kliku
+  bool check_click_Note(double X,double Y,bool check_for_highlight=false);
 	void aktualizace_PmG(bool Refresh=false);//aktualizuje hodnoty v PmG
 	void aktualizace_zon_otaceni(Cvektory::TElement *E);//po zmìnì rotace na elementu E, projde všechny elementy za a pøepoèítá jim zóny otáèení
 	void validace_RD(Cvektory::TElement *E);//provede validaci RD
@@ -54,7 +55,6 @@ public:		// User declarations
   enum Tinput_state{NO,NOTHING,PT,PT2,LO,LO2,WT,DO,PTotoc,COMBO,aRD,R,Rz,Rx,P_VOZ};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
 	Tinput_state input_state;//stav vstupu PT,LO,DelkaOtoce...
 	bool vstoupeno_poh, vstoupeno_elm,validace_true;
-	double dopRD;
 	Cvektory::TElement *posledni_E;//slouží pro uložení editovaného elementu, nemusím pøi každém stisku klávesy vracet E
 	Cvektory::TCesta *posledni_c;
 };
