@@ -26,11 +26,12 @@ private:	// User declarations
 	Cvektory::TElement *vrat_element_z_tabulky(long ID);//vrátí ukazatel na element, nelze pouít vra element stavající, z dùvodu e ID tabulky ji nemusí bıt totoné s n robota
 	void prirazeni_pohohonu_vetvi(Cvektory::TElement *E,bool hlavni=true);//zmìní pohon sekundární vìtvi, z vıhybky nebo spojky (pokud sekundární vìtev existuje)
   void update_hodnot_vyhybky_PM(Cvektory::TElement *E);//zobrazí aktuální hodnoty z dat v tabulkách
-  void prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col);//pøiøazení pohonu pøed PM, nebo za PM
+	void prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col);//pøiøazení pohonu pøed PM, nebo za PM
 
 	//promìnné pro UnitX
 	bool editace_pohonu;
 	long rychlost, roztec_palce, nasobek_roztece, roztec_jigu, mezera_podvozky, mezera_jig1, mezera_jig2;
+	unsigned int validovany_pohon;
 	//     aRD       R,roztec          Rx          Rz,rozestup
 public:		// User declarations
   __fastcall TFormX(TComponent* Owner);
@@ -47,6 +48,7 @@ public:		// User declarations
 	bool naplneni_max_voziku(double X,double Y,bool check_for_highlight=false);//doplní doporuèenı poèet maximálních vozíku po kliku
 	void aktualizace_PmG(bool Refresh=false);//aktualizuje hodnoty v PmG
 	void aktualizace_zon_otaceni(Cvektory::TElement *E);//po zmìnì rotace na elementu E, projde všechny elementy za a pøepoèítá jim zóny otáèení
+	void validace_RD(Cvektory::TElement *E);//provede validaci RD
 
 	//promìnné pro vyøazení OnChange metody pøi vykreslování tabulek
   enum Tinput_state{NO,NOTHING,PT,PT2,LO,LO2,WT,DO,PTotoc,COMBO,aRD,R,Rz,Rx,P_VOZ};//uchovává vıbìr input hodnoty (aby se formuláøe necyklyly)

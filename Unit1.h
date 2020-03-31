@@ -855,6 +855,7 @@ public:		// User declarations
 	UnicodeString get_temp_dir();
 	void vytvoreni_tab_pohon();//vytvoøení tabulky pohonu
 	void napln_comba_mGridu(Cvektory::TElement *E);
+	void zmena_editovanych_bunek(Cvektory::TElement *E);//automaticky nastaví editované položky a needitovatelné položky pro pohonové tabulky
 	void vlozit_predavaci_misto_aktualizuj_WT();//projde elementy a objekty, pokud je nìkde nutnost vložit pøedávací místo vloží ho tam
 	void mGrid_komponenta_na_draw(TmGrid *mGrid,long Col,long Row);//smazì komponentu v dané buòce a zmìní typ bunky na DRAW
 };

@@ -56,6 +56,22 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 		F->REFRESH(true);//musí být opravdu REFRESH() celého formu + mGridu
 		F->PmG->exBUTTON->Hint=Hint;//navrácení pùvodního textu hintu
 	}
+
+	if(ID!=9999&&Row!=-2)
+	{
+		Cvektory::TElement *E=vrat_element_z_tabulky(ID);
+		if(E->eID==200 && E->mGrid->Note.Text!="" && E->mGrid->CheckLink(F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==TPoint(-2,-2))
+		{
+			F->d.v.vrat_pohon(validovany_pohon)->aRD=dopRD; dopRD=0;
+			zmena_aRD(E);
+//			vstoupeno_elm=false;
+			validace_RD(E);
+//			F->Memo("Click into Note");
+//			E->mGrid->Note.Text="";
+		}
+		E=NULL;delete E;
+	}
+
 	if(ID!=9999&&Row==-2)
 	//funkcionalita exBUTTONu v tabulkách elementù
 	{
@@ -901,13 +917,19 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 				case 200://pøedávací místo
 				case 300://výhybla
 				{
-				  update_hodnot_vyhybky_PM(E);//provede zobrazení hodnot pohonu a výpoèítá nové hodnoty mezer, provede aktualizaci WT
+					update_hodnot_vyhybky_PM(E);//provede zobrazení hodnot pohonu a výpoèítá nové hodnoty mezer, provede aktualizaci WT
 				}break;
 			}
 			E->mGrid->Refresh();
 		}
 		E=E->dalsi;
 	}
+	if(F->predchozi_PM!=NULL && F->predchozi_PM!=mimo_element)
+	{
+		update_hodnot_vyhybky_PM(F->predchozi_PM);
+		F->predchozi_PM->mGrid->Refresh();
+	}
+
 	E=NULL; delete E;
 }
 //---------------------------------------------------------------------------
@@ -1327,10 +1349,10 @@ bool TFormX::naplneni_max_voziku(double X,double Y,bool check_for_highlight)
 //zakazuje èi povolí komponenty v tabulce pohonu a všech tabulkách elementu
 void TFormX::povolit_zakazat_editaci(bool povolit)
 {
-	if(povolit)
-		{F->scGPButton_ulozit->Enabled=true;}//pokud je dùvod k uložení, ale button uložit je z pøedchozího kroku neaktivní zapne ho
-	else
-		{F->scGPButton_ulozit->Enabled=false;}//pokud je button uložit zapnut vypne ho
+//	if(povolit)
+//		{F->scGPButton_ulozit->Enabled=true;}//pokud je dùvod k uložení, ale button uložit je z pøedchozího kroku neaktivní zapne ho
+//	else
+//		{F->scGPButton_ulozit->Enabled=false;}//pokud je button uložit zapnut vypne ho
 //	F->PmG->Update();//musí být, pøi vložení prvního kontinuálního robota problém v zobrazení
 //	F->PmG->SetEnabledComponents(povolit);
 //	F->PmG->SetEnabledComponent(1,1,true);//rychlost musí být aktivní aby ji mohl uživatel zmìnit a tím odemknout ostatní buòky
@@ -1442,7 +1464,10 @@ void TFormX::prirazeni_pohohonu_vetvi(Cvektory::TElement *E,bool hlavni)
 
 	////naètení dat z pohonu do mGridu
 	update_hodnot_vyhybky_PM(E);
+	vstoupeno_elm=false;//zamezení, aby pøi aktualizace comba došlo k propadnutí do onchange
+	//F->zmena_editovanych_bunek(E);//aktualizuje combo a pøepíná buòky na edit èi draw
 	F->vlozit_predavaci_misto_aktualizuj_WT();//provede i aktualizaci WT všem elementù
+	vstoupeno_elm=true;//navrácení stavu
 
 	////ukazatelové záležitosti
 	Combo=NULL;delete Combo;
@@ -1463,13 +1488,6 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
 		E->mGrid->Cells[1][8].Text=F->m.round2double(F->outRz(F->m.mezera(0,E->pohon->Rz,0)),3);
 		E->mGrid->Cells[1][9].Text=F->m.round2double(F->outRz(F->m.mezera(0,E->pohon->Rz,1)),3);
 		E->mGrid->Cells[1][10].Text=F->m.round2double(F->outRz(F->m.mezera(90,E->pohon->Rz,1)),3);
-		//pøepínání na edity, pouze v pøípadì, že nemam zakázanou editaci pohonu, napø PM na konci objektu, nemùžu vstupovat do 3tího sloupce
-		if(E->mGrid->getCombo(1,2)->Enabled)
-		{
-	  	E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Background->Color=clWhite;E->mGrid->Cells[1][3].Font->Color=(TColor)RGB(43,87,154);
-	  	E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Background->Color=clWhite;E->mGrid->Cells[1][5].Font->Color=(TColor)RGB(43,87,154);
-			E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Background->Color=clWhite;E->mGrid->Cells[1][6].Font->Color=(TColor)RGB(43,87,154);
-		}
 	}
 	else
 	{
@@ -1481,10 +1499,6 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
 		E->mGrid->Cells[1][8].Text=0;
 		E->mGrid->Cells[1][9].Text=0;
 		E->mGrid->Cells[1][10].Text=0;
-		//pøepnutí na DRAW
-		F->mGrid_komponenta_na_draw(E->mGrid,1,3);E->mGrid->Cells[1][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[1][3].Font->Color=(TColor)RGB(128,128,128);
-		F->mGrid_komponenta_na_draw(E->mGrid,1,5);E->mGrid->Cells[1][5].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[1][5].Font->Color=(TColor)RGB(128,128,128);
-		F->mGrid_komponenta_na_draw(E->mGrid,1,6);E->mGrid->Cells[1][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[1][6].Font->Color=(TColor)RGB(128,128,128);
 	}
 	if(E->eID==300)//pro výhybku
 	{
@@ -1499,13 +1513,6 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
   		E->mGrid->Cells[2][9].Text=F->m.round2double(F->outRz(F->m.mezera(0,E->dalsi2->pohon->Rz,1)),3);
 			E->mGrid->Cells[2][10].Text=F->m.round2double(F->outRz(F->m.mezera(90,E->dalsi2->pohon->Rz,1)),3);
 			E->mGrid->Cells[2][11].Text=F->m.round2double(F->outPT(E->WT),3);
-			//pøepínání na edity, pouze v pøípadì, že nemam zakázanou editaci pohonu, napø PM na konci objektu, nemùžu vstupovat do 3tího sloupce
-			if(E->mGrid->getCombo(2,2)->Enabled)
-			{
-		  	E->mGrid->Cells[2][3].Type=E->mGrid->EDIT;E->mGrid->Cells[2][3].Background->Color=clWhite;E->mGrid->Cells[2][3].Font->Color=(TColor)RGB(43,87,154);
-		  	E->mGrid->Cells[2][5].Type=E->mGrid->EDIT;E->mGrid->Cells[2][5].Background->Color=clWhite;E->mGrid->Cells[2][5].Font->Color=(TColor)RGB(43,87,154);
-		  	E->mGrid->Cells[2][6].Type=E->mGrid->EDIT;E->mGrid->Cells[2][6].Background->Color=clWhite;E->mGrid->Cells[2][6].Font->Color=(TColor)RGB(43,87,154);
-			}
   	}
   	else
   	{
@@ -1517,10 +1524,6 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
 			E->mGrid->Cells[2][8].Text=0;
 			E->mGrid->Cells[2][9].Text=0;
 			E->mGrid->Cells[2][10].Text=0;
-			//pøepnutí na DRAW
-			F->mGrid_komponenta_na_draw(E->mGrid,2,3);E->mGrid->Cells[2][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][3].Font->Color=(TColor)RGB(128,128,128);
-			F->mGrid_komponenta_na_draw(E->mGrid,2,5);E->mGrid->Cells[2][5].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][5].Font->Color=(TColor)RGB(128,128,128);
-			F->mGrid_komponenta_na_draw(E->mGrid,2,6);E->mGrid->Cells[2][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][6].Font->Color=(TColor)RGB(128,128,128);
 		}
 	}
 	else//pro PM
@@ -1538,13 +1541,6 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
 			E->mGrid->Cells[2][9].Text=F->m.round2double(F->outRz(F->m.mezera(0,e_pom->pohon->Rz,1)),3);
 			E->mGrid->Cells[2][10].Text=F->m.round2double(F->outRz(F->m.mezera(90,e_pom->pohon->Rz,1)),3);
 			E->mGrid->Cells[2][11].Text=F->m.round2double(F->outPT(E->WT),3);
-			//pøepínání na edity, pouze v pøípadì, že nemam zakázanou editaci pohonu, napø PM na konci objektu, nemùžu vstupovat do 3tího sloupce
-			if(E->mGrid->getCombo(2,2)->Enabled)
-			{
-		  	E->mGrid->Cells[2][3].Type=E->mGrid->EDIT;E->mGrid->Cells[2][3].Background->Color=clWhite;E->mGrid->Cells[2][3].Font->Color=(TColor)RGB(43,87,154);
-		  	E->mGrid->Cells[2][5].Type=E->mGrid->EDIT;E->mGrid->Cells[2][5].Background->Color=clWhite;E->mGrid->Cells[2][5].Font->Color=(TColor)RGB(43,87,154);
-		  	E->mGrid->Cells[2][6].Type=E->mGrid->EDIT;E->mGrid->Cells[2][6].Background->Color=clWhite;E->mGrid->Cells[2][6].Font->Color=(TColor)RGB(43,87,154);
-			}
 		}
 		else
 		{
@@ -1556,18 +1552,116 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
 			E->mGrid->Cells[2][8].Text=0;
 			E->mGrid->Cells[2][9].Text=0;
 			E->mGrid->Cells[2][10].Text=0;
-			//pøepnutí na DRAW
-			F->mGrid_komponenta_na_draw(E->mGrid,2,3);E->mGrid->Cells[2][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][3].Font->Color=(TColor)RGB(128,128,128);
-			F->mGrid_komponenta_na_draw(E->mGrid,2,5);E->mGrid->Cells[2][5].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][5].Font->Color=(TColor)RGB(128,128,128);
-			F->mGrid_komponenta_na_draw(E->mGrid,2,6);E->mGrid->Cells[2][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][6].Font->Color=(TColor)RGB(128,128,128);
 		}
 		e_pom=NULL;delete e_pom;
-  }
+	}
+	vstoupeno_elm=false;//blokace cyklení
+	F->napln_comba_mGridu(E);
+	vstoupeno_elm=true;
+}
+//---------------------------------------------------------------------------
+//provede validaci RD
+void TFormX::validace_RD(Cvektory::TElement *E)
+{
+	if(E->eID==200)//validovat pouze u PM
+	{
+		//deklarace
+		AnsiString jednotky;
+  	if(F->aRDunit==0)jednotky="[m/s]";
+		else jednotky="[m/min]";
+		AnsiString puv_Note=E->mGrid->Note.Text;
+  	bool mimo_rozmezi=false;
+		bool pouze_rozmezi=false;
+		unsigned int p1_n=E->mGrid->getCombo(1,2)->ItemIndex,p2_n=E->mGrid->getCombo(2,2)->ItemIndex;
+		double dopRD=0;
+		validovany_pohon=0;
+
+		//naètení pohonù
+		Cvektory::TPohon *p=NULL,*p1=NULL,*p2=NULL;
+  	if(p1_n!=0)p1=F->d.v.vrat_pohon(p1_n);
+		if(p2_n!=0)p2=F->d.v.vrat_pohon(p2_n);
+
+		//dvojtá validace
+    //pokud nalezne problém zastaví se a zobrazího, i v pøípadì, že je problémù více, až bude problém vyøešen probìhne validace zda neexistuje další problém
+		if(F->OBJEKT_akt->rezim==1)//kontrola zda je KK režim, pokud ano validovat
+		{
+	  	for(unsigned int i=1;i<=2;i++)
+			{
+	  		//naètení požadovaného pohonu pro validaci
+	  		if(i==1)p=p1;
+	  		if(i==2)p=p2;
+	  		//kontrola zda je možné editovat pohon
+	  		if(E->mGrid->Cells[i][3].Type==E->mGrid->EDIT && p!=NULL)
+	  		{
+					//kontrola zda je zadaná hodnota v rozmezí
+					if(F->m.between(p->aRD,p->rychlost_od,p->rychlost_do))mimo_rozmezi=false;
+	     		else mimo_rozmezi=true;
+	     		//zadaná rychlost je mimo rozsah
+					if(mimo_rozmezi && p->aRD > 0)
+					{
+						E->mGrid->ShowNote(F->ls->Strings[220],F->d.clError,14);//"Rychlost neodpovídá rozmezí!"
+						povolit_zakazat_editaci(false);//zakáže btn uložit v editaci
+						validovany_pohon=i;//uložení pro který pohon platí validace
+						break;//byl nalezen problém, zastavení validace, lze zobrazit jen jeden problém v Note
+	     		}
+					if(!mimo_rozmezi && E->mGrid->Note.Text!="")
+					{
+						E->mGrid->ShowNote("",F->d.clError,14);
+						povolit_zakazat_editaci(true);
+					}
+       		// nutné ošetøení pro období zadávání/psaní
+					if (p->aRD > 0)
+	     		{
+	     			//výpoèet doporuèené rychosti
+						double dopRD1=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,0,p->roztec,F->d.v.PP.TT,p->aRD);
+						double dopRD2=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,90,p->roztec,F->d.v.PP.TT,p->aRD);
+						if(dopRD1>dopRD2)dopRD=dopRD1;//vypíše vìtší hodnotu
+	     			else dopRD=dopRD2;
+	     			//je zvolen pohon, jeho aktuální rychlost se nerovná doporuèené
+						if(p->roztec>0 && F->ms.MyToDouble(dopRD)!= F->ms.MyToDouble(p->aRD) && mimo_rozmezi==false)
+	     			{
+							if(E->mGrid->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
+							E->mGrid->ShowNote(F->ls->Strings[221]+" <a>"+AnsiString(F->m.round2double(F->outaRD(dopRD),3))+"</a> "+jednotky,F->d.clError,14);//"Zadejte doporuèenou rychlost pohonu:"
+							validovany_pohon=i;//uložení pro který pohon platí validace
+							break;//byl nalezen problém, zastavení validace, lze zobrazit jen jeden problém v Note
+						}
+	     			//vše je vpoøádku
+						if (F->ms.MyToDouble(dopRD)== F->ms.MyToDouble(p->aRD) && mimo_rozmezi==false)
+	     			{
+	     				povolit_zakazat_editaci(true);
+							E->mGrid->ShowNote("",F->d.clError,14);
+						}
+	     		}
+					else E->mGrid->ShowNote(F->ls->Strings[222],F->d.clError,14);//"Neplatná hodnota rychlosti pohonu!"
+				}
+			}
+		}
+
+		//roznesení validace na ostatní
+		if(puv_Note!=E->mGrid->Note.Text)//došlo ke zmìnì note
+		{
+			puv_Note=E->mGrid->Note.Text;
+			if(F->predchozi_PM!=NULL && F->predchozi_PM!=E && F->predchozi_PM->mGrid->getCombo(1,2)->ItemIndex==validovany_pohon || F->predchozi_PM->mGrid->getCombo(2,2)->ItemIndex==validovany_pohon)//pokud má PM stejný pohon jako validovaný pohon
+				F->predchozi_PM->mGrid->ShowNote(puv_Note,F->d.clError,14);
+			Cvektory::TElement *e_pom=F->OBJEKT_akt->element;
+			while(e_pom!=NULL && e_pom->objekt_n==F->OBJEKT_akt->n)
+			{
+				if(e_pom->eID==200 && (e_pom->mGrid->getCombo(1,2)->ItemIndex==validovany_pohon || e_pom->mGrid->getCombo(2,2)->ItemIndex==validovany_pohon))
+					e_pom->mGrid->ShowNote(puv_Note,F->d.clError,14);
+				e_pom=F->d.v.dalsi_krok(e_pom,F->OBJEKT_akt);
+			}
+			e_pom=NULL;delete e_pom;
+		}
+
+  	//ukazatelové záležitosti
+		p=NULL;p1=NULL;p2=NULL;
+		delete p;delete p1;delete p2;
+	}
 }
 //---------------------------------------------------------------------------
 //pøiøazení pohonu pøed PM, nebo za PM
 void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
-{                  F->Sv(Col);
+{
 	////deklarace + naètení pohonu, který bude pøiøazován
 	TscGPComboBox *Combo;
 	Combo=E->mGrid->getCombo(Col,2);
@@ -1589,24 +1683,40 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 			else e->pohon=p;
 			e=e->predchozi;
 		}
+		if(e!=NULL && e->n>0 && e->eID==200)update_hodnot_vyhybky_PM(e);//skonèil jsem pøiøazování pohonu na PM, aktualizace spojky
+		//došel jsem na zaèátek obìktu a mám v pøedchozím PM
+		if(e!=NULL && e->n>0 && (e==F->OBJEKT_akt->element || e==F->OBJEKT_akt->element->predchozi) && F->predchozi_PM!=NULL)
+		{
+			e=F->predchozi_PM->dalsi;
+			while(e!=NULL && e!=F->OBJEKT_akt->element)
+			{
+				e->pohon=p;
+				e=e->dalsi;
+			}
+			update_hodnot_vyhybky_PM(F->predchozi_PM);//aktualizace hodnot na pøedchozím PM
+		}
 	}
 	////pøiøazení pohonu za PM
 	if(Col==2)
 	{
 		e=E->dalsi;
 		while(e!=NULL && e->objekt_n==F->OBJEKT_akt->n)
-		{			
+		{
 			e->pohon=p;
 			if(e->eID==200)break;//narazil jsem na PM, zapsat nový pohon a konec
 			else e=e->predchozi;
 		}
+		if(e!=NULL && e->eID==200)update_hodnot_vyhybky_PM(e);//skonèil jsem na pøedávacím místì, update tohoto PM
 		if(E->dalsi!=NULL && E->dalsi->objekt_n==E->objekt_n)E->WT=F->m.cekani_na_palec(0,E->dalsi->pohon->roztec,E->dalsi->pohon->aRD,3);
 	}
 
 	////naètení dat z pohonu do mGridu
 	update_hodnot_vyhybky_PM(E);
+	vstoupeno_elm=false;//zamezení, aby pøi aktualizace comba došlo k propadnutí do onchange
+	//F->zmena_editovanych_bunek(E);//aktualizuje combo a pøepíná buòky na edit èi draw
 	F->vlozit_predavaci_misto_aktualizuj_WT();//provede i aktualizaci WT všem elementù
-									 
+	vstoupeno_elm=true;//navrácení stavu
+
 	////ukazatelové záležitosti
 	Combo=NULL;delete Combo;
 	p=NULL;delete p;

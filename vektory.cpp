@@ -948,6 +948,56 @@ void Cvektory::aktualizace_objektu(short typ)
 //	O=NULL;delete O;
 }
 //---------------------------------------------------------------------------
+//aktualizuje stav objektu, například po odmazání posledního KK robota objekt nezůstane v KK režimu
+void Cvektory::aktualizace_rezimu_objektu(TObjekt *Objekt,bool aktualizovat_sta_mGridu)
+{
+	//základní nastavění podle typu objektu, 0-S&G,1-Kontin.(line tracking),2-Postprocesní
+	short predchozi_rezim=Objekt->rezim;
+	Objekt->rezim=-1;
+	if(Objekt->id==5 || Objekt->id==6)Objekt->rezim=2;
+
+	//kontrola podle elementů v objektu
+	TElement *E=Objekt->element;
+	while(E!=NULL && E->objekt_n==Objekt->n)
+	{
+		short druh=vrat_druh_elementu(E);//kontrola druhu elementu
+		//pokud je druh elementu KK nebo S&G, zapiš změnu a ukonči
+		if(druh>=0)
+		{
+			Objekt->rezim=druh;//zapsání změny
+			break;//ukončení průchodu
+		}
+		E=dalsi_krok(E,Objekt);
+	}
+	//v případě přerušení průchodu nutné smazat
+	vymaz_seznam_VYHYBKY();
+
+  //skontrolovat zda nejsou v objektu PM nebo výhybky, pokud ano aktualizovat jim editované položky
+	if(aktualizovat_sta_mGridu && predchozi_rezim!=Objekt->rezim)
+	{
+		bool probehla_validace=false;
+		E=Objekt->element;
+		while(E!=NULL && E->objekt_n==Objekt->n)
+		{
+			if(E->eID==200 || E->eID==300)
+			{
+				F->napln_comba_mGridu(E);//provede aktualizaci editovaných položek v mGridu
+				if(!probehla_validace && E->eID==200)//spouštět validaci jen jednou a to pokud narazím na PM
+				{
+					FormX->validace_RD(E);//pokud byl změněn režím provede validaci aktuální rychlosti
+					probehla_validace=true;//zapsaní, že validace proběhla
+				}
+			}
+			E=dalsi_krok(E,Objekt);
+		}
+		if(F->predchozi_PM!=NULL)F->napln_comba_mGridu(F->predchozi_PM);//provede aktualizaci editovaných položek v mGridu u předchozího PM
+	}
+
+	//ukazatelové záležitosti
+	E=NULL;delete E;
+	vymaz_seznam_VYHYBKY();
+}
+//---------------------------------------------------------------------------
 //všem objektům, které měly přiřazen pohon s oldN(oldID), přiřadí pohon s newN(newID), podle toho, jak jsou ukládány nově do spojáku, důležité, pokud dojde k narušení pořadí ID resp n pohonů a pořadí jednotlivých řádků ve stringridu, např. kopirováním, smazáním, změnou pořadí řádků atp.
 void Cvektory::aktualizace_prirazeni_pohonu_k_objektum(unsigned int oldN,unsigned int newN)
 {
@@ -2127,7 +2177,7 @@ Cvektory::TElement *Cvektory::vloz_element_pred(TObjekt *Objekt,TElement *Elemen
 	{
 		Cvektory::TElement *p=Objekt->element;//začnu od prvního elementu v objektu
 		while(p!=NULL && p->objekt_n==Objekt->n)
-		{        F->log(__func__,"      "+p->name);
+		{
 			if(p!=Element)//neřeší se s aktuálním elementem (při posunu)
 			{
 				//kontrola zda vkládaný element neleží mezi prvním a druhým elementem, druhým až n
@@ -2240,7 +2290,7 @@ void Cvektory::uprav_popisky_elementu(TElement *Element)
 				{
 					E->mGrid->Cells[0][0].Text="<a>"+E->name+"</a>";
 					E->mGrid->Cells[0][0].Font->Color=clBlack;//z důvodu nasazení odkazu, po přejmenování se text vrátil do modré barvy
-					E->mGrid->MergeCells(0,0,1,0);//nutné kvůli správnému zobrazení hlavičky
+					E->mGrid->MergeCells(0,0,E->mGrid->ColCount-1,0);//nutné kvůli správnému zobrazení hlavičky
 					if(F->zobrazeni_tabulek)E->mGrid->Update();//musí zde být ošetření proti paměťové chybě
 				}catch(...){}
 			}

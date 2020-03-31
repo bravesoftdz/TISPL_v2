@@ -5973,20 +5973,21 @@ void TForm1::add_element (int X, int Y)
 		//dřívě přítomen Update(), nutné před plněním COMBA, Update() se nyní vyskytuje v metodě design_element;
 		//d.v.napln_comba_stopek();
 		//přiřazení režimu kabině
-		switch(E->eID)
-		{
-			case 0://po přidání stop nebo otoče režim žádny
-			case 5:
-  		case 6:/*nic*/;break;
-			case 1://po přidání KK režim 1
-			case 7:case 9:case 11:case 13:case 15:case 17:case 101:case 103:case 105:case 107:
-  		case 3:OBJEKT_akt->rezim=1;break;
-			case 2://po přidání S&G režim 0
-			case 8:case 10:case 12:case 14:case 16:case 18:case 102:case 104:case 106:case 108:
-			case 4:OBJEKT_akt->rezim=0;break;
-  		default:break;
-		}
-		//volání přenastavení tabulky pohonu, pouze v případech, kdy je to nutné
+		d.v.aktualizace_rezimu_objektu(OBJEKT_akt);
+//		switch(E->eID)
+//		{
+//			case 0://po přidání stop nebo otoče režim žádny
+//			case 5:
+//  		case 6:/*nic*/;break;
+//			case 1://po přidání KK režim 1
+//			case 7:case 9:case 11:case 13:case 15:case 17:case 101:case 103:case 105:case 107:
+//  		case 3:OBJEKT_akt->rezim=1;break;
+//			case 2://po přidání S&G režim 0
+//			case 8:case 10:case 12:case 14:case 16:case 18:case 102:case 104:case 106:case 108:
+//			case 4:OBJEKT_akt->rezim=0;break;
+//  		default:break;
+//		}
+//		//volání přenastavení tabulky pohonu, pouze v případech, kdy je to nutné
 		unsigned int KK1,KK2;//princip je stejný podle režimu mění se pouze eID v různých kabinách
   	switch(OBJEKT_akt->id)
   	{
@@ -6180,6 +6181,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 				//smazání a znovuvytvoření mGridu elementu
 				if(OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n)
 				{
+          DrawGrid_knihovna->SetFocus();
 					ID=E->mGrid->ID;
 					E->mGrid->Delete();
 					E->mGrid=new TmGrid(F);
@@ -6196,33 +6198,37 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 			}
 	  	//////////Mazání nepotřebného předávacího místa + 2 PM na sobě
 			if(E->eID==200 && (E->dalsi!=NULL && E->dalsi->pohon==NULL && E->pohon==NULL || E->dalsi!=NULL && E->pohon!=NULL && E->dalsi->pohon!=NULL && E->dalsi->pohon->n==E->pohon->n))
-			{
+			{         ;
 	  		//pokud je možné dojde k odstranění elementu
 	  		//if(E->dalsi!=NULL && E->dalsi->geo.typ==0 && E->geo.typ==0){d.v.smaz_element(E);break;}
 	  		//pokud ne je přepnut na zarážku
 	  		//else
-	  		{
-	  			//změna na zarážku
+				{
+					bool smazat=false;
+					//pokud je mazané předávací místo zároveň předchozí PM, nulovat ukazatel
+					if(E==predchozi_PM){predchozi_PM=NULL;smazat=true;}
+					//změna na zarážku
 	  			E->eID=MaxInt;
 	  			//změna názvu a úprava číslování, pouze v debug
 	  			if(DEBUG)
-	  			{
-	  				E->name="Zarážka";
-	  				d.v.uprav_popisky_elementu(E);
-	  			}
-	  			else E->name="";
+					{
+						E->name="Zarážka";
+						d.v.uprav_popisky_elementu(E);
+					}
+					else E->name="";
 	  			//vynulování WT
-	  			E->WT=0;
+					E->WT=0;
 	  			//smazání a znovuvytvoření mGridu elementu
-	  			if(OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n)
-	  			{
-	  				ID=E->mGrid->ID;
+					if((OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n) || smazat)
+					{
+						DrawGrid_knihovna->SetFocus();
+						ID=E->mGrid->ID;
 	  				E->mGrid->Delete();
 	  				E->mGrid=new TmGrid(F);
 	  				E->mGrid->Tag=6;//ID formu
 	  				E->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
 	  				design_element(E,false);//nutné!
-	  			}
+					}
 	  		}
 	  	}
 	  	//2 pm přes sebe; bude jednodušeji realizovatelné v novém datovém modelu, přepnutí na zarážku dělá problémy, zatím odstaveno
@@ -6249,7 +6255,8 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 	  			//smazání a znovuvytvoření mGridu elementu
 	  			if(OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n)
 	  			{
-	  				ID=E->mGrid->ID;
+						DrawGrid_knihovna->SetFocus();
+						ID=E->mGrid->ID;
 	  				E->mGrid->Delete();
 	  				E->mGrid=new TmGrid(F);
 	  				E->mGrid->Tag=6;//ID formu
@@ -6315,7 +6322,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 		Cvektory::TElement *e_prvni=d.v.ELEMENTY->dalsi,*e_posledni=d.v.ELEMENTY->predchozi;
 		E=e_posledni;
 		//////////Vkládání předávacího místa
-		if(e_prvni->pohon!=NULL && e_posledni->pohon!=NULL && e_prvni->pohon->n!=e_posledni->pohon->n || e_prvni->pohon!=NULL && e_posledni->pohon==NULL || e_prvni->pohon==NULL && e_posledni->pohon!=NULL)
+		if(e_posledni->eID!=200 && (e_prvni->pohon!=NULL && e_posledni->pohon!=NULL && e_prvni->pohon->n!=e_posledni->pohon->n || e_prvni->pohon!=NULL && e_posledni->pohon==NULL || e_prvni->pohon==NULL && e_posledni->pohon!=NULL))
 		{
 			Cvektory::TElement *E=e_posledni;
 			//WT přiřazení
@@ -6357,6 +6364,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 			//smazání a znovuvytvoření mGridu elementu
 			if(OBJEKT_akt!=NULL && e_posledni->objekt_n==OBJEKT_akt->n)
 			{
+				DrawGrid_knihovna->SetFocus();
 				ID=e_posledni->mGrid->ID;
 				e_posledni->mGrid->Delete();
 				e_posledni->mGrid=new TmGrid(F);
@@ -8747,8 +8755,8 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 	//PM + výhybka
 	if(E->eID==200 || E->eID==300)
 	{
-		E->mGrid->Cells[1][2].Type=E->mGrid->COMBO;
-		E->mGrid->Cells[2][2].Type=E->mGrid->COMBO;
+//		E->mGrid->Cells[1][2].Type=E->mGrid->COMBO;
+//		E->mGrid->Cells[2][2].Type=E->mGrid->COMBO;
 		E->mGrid->Update();//musí být přítomen před zakazováním komponent, před Update tabulka ještě neexistuje
 		TscGPComboBox *C1=E->mGrid->getCombo(1,2),*C2=E->mGrid->getCombo(2,2);
 		C1->Clear();C2->Clear();
@@ -8783,25 +8791,99 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 			//zakazování comb
 			if(E->objekt_n!=OBJEKT_akt->n)C1->Enabled=false;
 			if((E->dalsi!=NULL && E->dalsi->objekt_n!=E->objekt_n || E->dalsi==NULL) && predchozi_PM!=E)C2->Enabled=false;
-			//kontrola zda jsou buňky na draw
-			if(!C1->Enabled && E->mGrid->Cells[1][3].Type==E->mGrid->EDIT)
-			{
-				mGrid_komponenta_na_draw(E->mGrid,1,3);E->mGrid->Cells[1][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[1][3].Font->Color=(TColor)RGB(128,128,128);
-				mGrid_komponenta_na_draw(E->mGrid,1,5);E->mGrid->Cells[1][5].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[1][5].Font->Color=(TColor)RGB(128,128,128);
-				mGrid_komponenta_na_draw(E->mGrid,1,6);E->mGrid->Cells[1][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[1][6].Font->Color=(TColor)RGB(128,128,128);
-			}
-			if(!C2->Enabled && E->mGrid->Cells[2][3].Type==E->mGrid->EDIT)
-      {
-				mGrid_komponenta_na_draw(E->mGrid,2,3);E->mGrid->Cells[2][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][3].Font->Color=(TColor)RGB(128,128,128);
-				mGrid_komponenta_na_draw(E->mGrid,2,5);E->mGrid->Cells[2][5].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][5].Font->Color=(TColor)RGB(128,128,128);
-				mGrid_komponenta_na_draw(E->mGrid,2,6);E->mGrid->Cells[2][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][6].Font->Color=(TColor)RGB(128,128,128);
-			}
 		}
+
+		//kontrola zda můžu editovat pohon
+		zmena_editovanych_bunek(E);//automaticky nastaví editované položky a needitovatelné položky pro pohonové tabulky
+
 		//ukazatelové záležitosti
 		I1=NULL;delete I1;
 		I2=NULL;delete I2;
 		C1=NULL;delete C1;
 		C2=NULL;delete C2;
+	}
+}
+//---------------------------------------------------------------------------
+//automaticky nastaví editované položky a needitovatelné položky pro pohonové tabulky
+void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
+{
+	if(E->eID==200 || E->eID==300)//pouze pro pohonové tabulky
+	{
+		TscGPComboBox *C1=E->mGrid->getCombo(1,2),*C2=E->mGrid->getCombo(2,2);
+    //kontrola zda jsou buňky na draw
+		if(!C1->Enabled)
+		{
+			if(E->mGrid->Cells[1][3].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,1,3);E->mGrid->Cells[1][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[1][3].Font->Color=(TColor)RGB(128,128,128);}
+			if(E->mGrid->Cells[1][5].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,1,5);E->mGrid->Cells[1][5].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[1][5].Font->Color=(TColor)RGB(128,128,128);}
+			if(E->mGrid->Cells[1][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,1,6);E->mGrid->Cells[1][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[1][6].Font->Color=(TColor)RGB(128,128,128);}
+		}
+		if(!C2->Enabled)
+		{
+			if(E->mGrid->Cells[2][3].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,2,3);E->mGrid->Cells[2][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][3].Font->Color=(TColor)RGB(128,128,128);}
+			if(E->mGrid->Cells[2][5].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,2,5);E->mGrid->Cells[2][5].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][5].Font->Color=(TColor)RGB(128,128,128);}
+			if(E->mGrid->Cells[2][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,2,6);E->mGrid->Cells[2][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][6].Font->Color=(TColor)RGB(128,128,128);}
+		}
+		//kontrola zda můžu editovat pohon
+		if(C1->Enabled)
+		{
+			//pokud pohon exituje a není používaný
+			if(E->pohon!=NULL && !d.v.pohon_je_pouzivan(E->pohon->n,false))
+			{
+				if(d.v.vrat_objekt(E->objekt_n)->rezim==1)//povolit editaci všeho
+				{
+					E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Background->Color=clWhite;E->mGrid->Cells[1][3].Font->Color=(TColor)RGB(43,87,154);
+					E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Background->Color=clWhite;E->mGrid->Cells[1][5].Font->Color=(TColor)RGB(43,87,154);
+					E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Background->Color=clWhite;E->mGrid->Cells[1][6].Font->Color=(TColor)RGB(43,87,154);
+				}
+				else//povolit editaci RD a rozteče palce
+				{
+					E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Background->Color=clWhite;E->mGrid->Cells[1][3].Font->Color=(TColor)RGB(43,87,154);
+					E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Background->Color=clWhite;E->mGrid->Cells[1][5].Font->Color=(TColor)RGB(43,87,154);
+					if(E->mGrid->Cells[1][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,1,6);E->mGrid->Cells[1][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[1][6].Font->Color=(TColor)RGB(128,128,128);}
+				}
+			}
+			else//vše zakázat pokud je editace povolená
+			{
+				if(E->mGrid->Cells[1][3].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,1,3);E->mGrid->Cells[1][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[1][3].Font->Color=(TColor)RGB(128,128,128);}
+				if(E->mGrid->Cells[1][5].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,1,5);E->mGrid->Cells[1][5].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[1][5].Font->Color=(TColor)RGB(128,128,128);}
+				if(E->mGrid->Cells[1][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,1,6);E->mGrid->Cells[1][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[1][6].Font->Color=(TColor)RGB(128,128,128);}
+			}
+		}
+		if(C2->Enabled)
+		{
+			//načtení dalšího elementu
+			Cvektory::TElement *e_pom=E->dalsi2;
+			if(E->eID==200 && E->dalsi!=NULL)e_pom=E->dalsi;
+			if(E->eID==200 && E->dalsi==NULL)e_pom=d.v.ELEMENTY->dalsi;
+			//pokud pohon exituje a není používaný
+			if(e_pom->pohon!=NULL && !d.v.pohon_je_pouzivan(e_pom->pohon->n,false))
+			{
+				if(d.v.vrat_objekt(e_pom->objekt_n)->rezim==1)//povolit editaci všeho
+				{
+					E->mGrid->Cells[2][3].Type=E->mGrid->EDIT;E->mGrid->Cells[2][3].Background->Color=clWhite;E->mGrid->Cells[2][3].Font->Color=(TColor)RGB(43,87,154);
+					E->mGrid->Cells[2][5].Type=E->mGrid->EDIT;E->mGrid->Cells[2][5].Background->Color=clWhite;E->mGrid->Cells[2][5].Font->Color=(TColor)RGB(43,87,154);
+					E->mGrid->Cells[2][6].Type=E->mGrid->EDIT;E->mGrid->Cells[2][6].Background->Color=clWhite;E->mGrid->Cells[2][6].Font->Color=(TColor)RGB(43,87,154);
+				}
+				else//povolit editaci RD a rozteče palce
+				{
+					E->mGrid->Cells[2][3].Type=E->mGrid->EDIT;E->mGrid->Cells[2][3].Background->Color=clWhite;E->mGrid->Cells[2][3].Font->Color=(TColor)RGB(43,87,154);
+					E->mGrid->Cells[2][5].Type=E->mGrid->EDIT;E->mGrid->Cells[2][5].Background->Color=clWhite;E->mGrid->Cells[2][5].Font->Color=(TColor)RGB(43,87,154);
+					if(E->mGrid->Cells[2][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,2,6);E->mGrid->Cells[2][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][6].Font->Color=(TColor)RGB(128,128,128);}
+				}
+			}
+			else//vše zakázat pokud je editace povolená
+			{
+				if(E->mGrid->Cells[2][3].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,2,3);E->mGrid->Cells[2][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][3].Font->Color=(TColor)RGB(128,128,128);}
+				if(E->mGrid->Cells[2][5].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,2,5);E->mGrid->Cells[2][5].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][5].Font->Color=(TColor)RGB(128,128,128);}
+				if(E->mGrid->Cells[2][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,2,6);E->mGrid->Cells[2][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][6].Font->Color=(TColor)RGB(128,128,128);}
+			}
+			//ukazatelové záležitosti
+			e_pom=NULL;delete e_pom;
+		}
+
+		//ukazatelové záležitosti
+		C1=NULL;C2=NULL;
+		delete C1;delete C2;
 	}
 }
 //---------------------------------------------------------------------------
@@ -9609,10 +9691,10 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[1][2].Type=E->mGrid->COMBO;
 			if(E->pohon!=NULL)
 			{
-				E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=m.round2double(outaRD(E->pohon->aRD),3);
+				E->mGrid->Cells[1][3].Text=m.round2double(outaRD(E->pohon->aRD),3);
 				E->mGrid->Cells[1][4].Text=AnsiString(m.round2double(outaRD(E->pohon->rychlost_od),3))+" - "+AnsiString(m.round2double(outaRD(E->pohon->rychlost_do),3));
-				E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Text=m.round2double(outR(E->pohon->roztec),3);
-				E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Text=m.round2double(E->pohon->Rx,3);
+				E->mGrid->Cells[1][5].Text=m.round2double(outR(E->pohon->roztec),3);
+				E->mGrid->Cells[1][6].Text=m.round2double(E->pohon->Rx,3);
 				E->mGrid->Cells[1][7].Text=m.round2double(outRz(E->pohon->Rz),3);
 				E->mGrid->Cells[1][8].Text=m.round2double(outRz(m.mezera(0,E->pohon->Rz,0)),3);
 				E->mGrid->Cells[1][9].Text=m.round2double(outRz(m.mezera(0,E->pohon->Rz,1)),3);
@@ -11189,6 +11271,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 					Cvektory::TElement *dalsi_element=NULL;
 					if(pom_element_temp->dalsi!=NULL&&OBJEKT_akt->rezim==0)dalsi_element=pom_element_temp->dalsi;//pokud je kabina ve S&G režimu a za smazaným elementem se nachází další element, je nutné dalšímu přepočítat RT
 					d.v.smaz_element(pom_element_temp);
+					d.v.aktualizace_rezimu_objektu(OBJEKT_akt);//aktualizace režimu, např. z důvodu odstranění poslední KK elementu ... režím objektu jež nemůže být KK
 					Akce=NIC;
 					REFRESH();
 					DuvodUlozit(true);
@@ -13325,6 +13408,8 @@ void __fastcall TForm1::Timer_neaktivityTimer(TObject *Sender)
 	{
 		d.v.vytvor_obraz_DATA();//obraz pro ctrl+z
 		FormX->validace_max_voziku();//metoda rozlišuje zda byla editovaná stopka, pokud ano provede validaci, pokud ne neudělá nic
+		//pokud byl poslední editovaný element PM spustí validaci
+		if(FormX->posledni_E!=NULL && FormX->posledni_E->eID==200)FormX->validace_RD(FormX->posledni_E);
 		REFRESH(true); //nedocází k refresh tabulek, tabulky jsou v tuto chvíli naplněny aktuálními hodnotami
 	}
 	Timer_neaktivity->Enabled=false;
@@ -13465,7 +13550,9 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	//
+//	Memo(OBJEKT_akt->rezim);
+//	napln_comba_mGridu(OBJEKT_akt->element);
+	Memo(d.v.ZAKAZKA_akt->n);
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
