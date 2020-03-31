@@ -2470,6 +2470,23 @@ unsigned int Cvektory::vrat_nejvetsi_ID_tabulek (TObjekt *Objekt)
 	return ret;
 }
 ////---------------------------------------------------------------------------
+//ověří zda se jedná S&G linku z pohledu užité cesty, resp. zda obsahuje alespoň jeden S&G element včetně stopky na užité cestě, element musí být na pohonu
+bool Cvektory::SGlinka()
+{
+	bool RET=false;
+	if(ZAKAZKA_akt!=NULL && ZAKAZKA_akt->cesta!=NULL)
+	{
+		TCesta *C=ZAKAZKA_akt->cesta->dalsi;//přeskočí hlavičku
+		while (C!=NULL)
+		{
+			if(C->Element->pohon!=NULL && vrat_druh_elementu(C->Element)==0){RET=true;break;}
+			C=C->dalsi;//posun na další prvek cesty
+		}
+		delete C;
+	}
+	return RET;
+}
+////---------------------------------------------------------------------------
 //vrátí typ elementu -1 nenastaven nebo zarážka či předávací místo, 0 - S&G( včetně stopky), 1 - kontinuál
 short Cvektory::vrat_druh_elementu(TElement *Element)
 {
@@ -4944,7 +4961,7 @@ void Cvektory::vytvor_default_zakazku()
 {
 	////ZAKAZKA
 	TZakazka *Z=ZAKAZKY;																																		//počet vozíků vygeneruje dle hodnoty WIP+jeden navíc kvůli přehlednosti, kdy začíná náběh
-	Z->id=1;Z->typ=1;Z->name="Nová zakázka";Z->barva=clRed;Z->pomer=100;Z->TT=PP.TT;Z->pocet_voziku=WIP(1)+1;Z->serv_vozik_pocet=0;Z->opakov_servis=0;
+	Z->id=1;Z->typ=1;Z->name="Nová zakázka";Z->barva=clPurple;Z->pomer=100;Z->TT=PP.TT;Z->pocet_voziku=WIP(1)+1;Z->serv_vozik_pocet=0;Z->opakov_servis=0;
 	Z->n=0;
 	Z->cesta=NULL;
 	Cvektory::TJig j;
@@ -5154,91 +5171,156 @@ void Cvektory::vymaz_cestu_zakazky(TZakazka *zakazka)
 //VOZIKY
 void Cvektory::hlavicka_VOZIKY()
 {
+	//alokace
 	TVozik *novy=new TVozik;
-	novy->n=0;
-	novy->zakazka=NULL;
-	novy->typ=1;
-	novy->start=0;//výchozí pozice v grafu časových os
-	novy->pozice=-1.0;//akt. pozice na dopravniku či v grafu časových os
 
+	//atributy
+	novy->n=0;
+	novy->X=0;
+	novy->Y=0;
+	novy->typ=0;
+	novy->stav=-1;
+	novy->zakazka=NULL;
+	novy->element=NULL;
+	novy->palec=NULL;
+
+	//ukazatelové záležitosti
 	novy->predchozi=novy;//ukazuje sam na sebe
 	novy->dalsi=NULL;
 	VOZIKY=novy;
 }
 ////---------------------------------------------------------------------------
-//vygeneruje podle zadaných zakázek seznam vozíků (včetně případných servisních), seřazeno dle zakázek
+//vygeneruje podle zadané zakázky seznam vozíků v úvodním rozložení
 void Cvektory::generuj_VOZIKY()
 {
-	 if(ZAKAZKY!=NULL)//záměrně do dvou podmínek
-	 if(ZAKAZKY->dalsi!=NULL && ZAKAZKY->predchozi->n>0)
-	 {
-			vymaz_seznam_VOZIKY();
-			hlavicka_VOZIKY();
-			TZakazka *zakazka=ZAKAZKY->dalsi;//ukazatel na první objekt v seznamu ZAKAZKY, přeskočí hlavičku
-			while (zakazka!=NULL)//projíždí jednotlivé zakázky
+	////příprava seznamu a update zakázky
+	vymaz_seznam_VOZIKY();
+	hlavicka_VOZIKY();
+	update_akt_zakazky();
+
+	if(ZAKAZKA_akt!=NULL && ZAKAZKA_akt->cesta!=NULL)//možná nadbytečné
+	{
+		////definice globálních proměnných
+		double umisteniCas=0;//umístění vozíku z časového hlediska
+		double akt_rotace_jigu=0;//pro S&G brát od aktuálního elementu dodělat!!!
+		bool rotacni_zbytek=false;//indikátor, pokud předcházela kontinuální/pasivní otoč
+		bool SG=SGlinka();
+		////procházení seznamu cesty dané zakázky
+		TCesta *C=ZAKAZKA_akt->cesta->dalsi;//přeskočí hlavičku
+		while (C!=NULL)
+		{
+			if(C->Element->pohon!=NULL)
 			{
-				long servisu_celkem=0;//počet servisů mezi reálnými vozíky,počet servisních vozíků je servisu_celkem*zakazka->serv_vozik_pocet
-				if(zakazka->opakov_servis>0 && zakazka->serv_vozik_pocet>0)
+				//////////////////////////
+//	if(v.vrat_druh_elementu(E)==0 && E->sparovany!=NULL)//pro S&G který má spárovaný objekt
+//	{
+//		//ukazatelové záležitosti
+//		Cvektory::TElement *Et=E->dalsi;if(Et==NULL)Et=v.ELEMENTY->dalsi;//další, protože ten spravuje geometrii před sebou, tzn. od daného stop elementu, případně další kolo spojáku
+//		Cvektory::TElement *Esd=E->sparovany->dalsi;if(Esd==NULL)Et=v.ELEMENTY->dalsi;//případně další kolo spojáku
+//		if(E==E->sparovany)Esd=E->sparovany;//pouze pro situace, kdy je na lince zatím jenom jeden stop-element tak, aby se zobrazovaly vůbec vozíky
+//		//vychozí proměnné
+//		double umisteni=0;//výchozí umístění vozíku
+//		double akt_rotace_jigu=rotaceJ;//aktuální rotace je proměnlivá
+//		//procházení cyklem od dalšího elementu daného stop elementů až po jeho spárovaný stop element
+//		while(Et!=Esd)
+//		{
+//			F->Memo(Et->name+" "+Esd->name,true);
+//			////výpočetní a vykreslovací záležítosti
+//			if(Et->pohon!=NULL)//pokud má element přiřazen pohon, jinak nemá smysl řešit
+//			{
+//				double Rz=m.Rz(Et->pohon->aRD);//stanovený rozestup dle RD pohonu
+//				double buffer_zona=0;if(Et->data.pocet_voziku>0)buffer_zona=Et->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;//délka [v metrech] buffrovácí zony, pokud je obsažena na daném elementu
+//				//cyklické navýšení umístění dle rozestup Rz
+//				while(umisteni<=Et->geo.delka-buffer_zona)
+//				{
+//					TPointD_3D Pt=m.getPt(Et->geo.radius,Et->geo.orientace,Et->geo.rotacni_uhel,Et->geo.X1,Et->geo.Y1,Et->geo.X4,Et->geo.Y4,umisteni/Et->geo.delka/*F->smazat/100.0*/,(umisteni+v.PP.uchyt_pozice-v.PP.delka_podvozek/2.0)/Et->geo.delka);
+//		//pořešit ještě rotaci jigu na kontinuální otoči!!!
+//					vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu,clChassis,clJig);//if(E->name=="Stop 1")vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu,m.clIntensive(clChassis,100),m.clIntensive(clJig,100));//tato podmínka, jenomu kvůli testům//else vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu,clChassis,clYellow/*clJig*/);
+//					umisteni+=Rz;//navýšení umístění dle rozestup Rz
+//				}
+//				umisteni-=Et->geo.delka;//zbytek z předchzejícího geometrického úseku, který nestihl být zohledněn převeden na další geometrický úsek, resp. element = výchozí umístění v dalším elementu, případně zohlední i přechod na nový pohon (díky práci v jednotkách délky), pouze je následně nutné odečíst případné WT při přechodu
+//		//ověřit
+//				if(Et->eID==200)umisteni-=Et->WT*Et->pohon->aRD;//čekání na předávacím místě způsobí následné zpoždění/rozsunutí mezi vozíků
+//				//zajištění aktuální rotace pro následující úsek
+//				if(Et->rotace_jig!=0 && -180<=Et->rotace_jig && Et->rotace_jig<=180)akt_rotace_jigu+=Et->rotace_jig;
+//			}
+//			////ukazatelové záležitost
+//			if(Et->dalsi==NULL)Et=v.ELEMENTY->dalsi;//další kolo spojáku
+//			else Et=Et->dalsi;//další element
+//			if(E==E->sparovany){Esd=E->sparovany->dalsi;if(Esd==NULL)Et=v.ELEMENTY->dalsi;/*případně další kolo spojáku*/}//pouze pro situace, kdy je na lince zatím jenom jeden stop-element tak, aby se zobrazovaly vůbec vozíky
+//		}
+//		Et=NULL;delete Et;//odstranění již nepotřebného ukazatele, zde prvně nutné NULL!!!
+//	}
+//////////////////////////
+
+
+				TElement *E=C->Element;//pouze zkracení zápisu
+				double umisteni=umisteniCas*E->pohon->aRD;//umístění vozíku z prostorového hlediska, přepočet z časoveho
+				double Rz=m.Rz(E->pohon->aRD);//stanovený rozestup dle RD pohonu
+				double buffer_zona=0;//na kontinuálu není if(E->data.pocet_voziku>0)buffer_zona=E->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;//délka [v metrech] buffrovácí zony, pokud je obsažena na daném elementu
+				//cyklické navýšení umístění dle rozestup Rz
+				while(umisteni<=E->geo.delka-buffer_zona)//změna
 				{
-					servisu_celkem=floor((double)(zakazka->pocet_voziku/zakazka->opakov_servis)); //výpočet počtu servisů, počet servisních vozíků je servisu_celkem*zakazka->serv_vozik_pocet
-					if(zakazka->pocet_voziku%servisu_celkem==0)servisu_celkem--; //poslední se nebude započítávat
-				}
-				for(unsigned long i=1;i<=zakazka->pocet_voziku+servisu_celkem;i++)//v rámci zakázky generuje zadaný počet vozíků
-				{
-					if(servisu_celkem>0)
+					//aplikace náhodného čekání na palceproblem while, problém musí se vejít na palce musí mít vozíky rozestup dle R atd... umisteni+=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,2)*E->pohon->aRD;
+					TPointD_3D Pt=m.getPt(E->geo.radius,E->geo.orientace,E->geo.rotacni_uhel,E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4,umisteni/E->geo.delka/*F->smazat/100.0*/,(umisteni+PP.uchyt_pozice-PP.delka_podvozek/2.0)/E->geo.delka);
+					//////--------------------
+					double R=0;   //pouze pro kontinuální/pasivní otoč pro oktavní bude sice na místě, ale řešit otáčením dle umisteniCac
+					if(E->OTOC_delka>0 && E->geo.delka<=umisteni+E->OTOC_delka/2.0 && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180)
 					{
-							if(i%(zakazka->opakov_servis+1))
-							vloz_vozik(zakazka,0);//normální
-							else
-							{
-								for(unsigned int j=1;j<=zakazka->serv_vozik_pocet;j++)//vytvoří počet servisních vozíků mezi reálnými v rámci jednoho servisu
-								vloz_vozik(zakazka,1);//servisní
-							}
+						R=E->rotace_jig/2.0*(E->OTOC_delka/2.0-(E->geo.delka-umisteni))/(E->OTOC_delka/2.0);//pozice vozíku v zoně otáčení, v počátku až do středu otoče, princip výpočtu zde funguje jako PŘIČTENÍ rotace k orientaci jigu při vstupu do zóny otáčení
 					}
-					else
-					vloz_vozik(zakazka,0);//normální
+					if(rotacni_zbytek)//dokončení rotace jigu na elementu následujícím otoči (který zajišťuje na svém geometrickém počátku, který začíná otočí)
+					{
+						if(umisteni<=E->predchozi->OTOC_delka/2.0)
+						R=-E->predchozi->rotace_jig/2.0*(E->predchozi->OTOC_delka/2.0-umisteni)/(E->predchozi->OTOC_delka/2.0);//pozice vozíku v zoně otáčení, od středu otoče až do konce zóny otáčení, princip výpočtu zde funguje jako ODEČTENÍ rotace od FINÁLNÍ orientaci jigu při vÝstupu ze zóny otáčení
+						else rotacni_zbytek=false;
+					}
+					//////--------------------
+					//vykresli_vozik(canv,pocitadlo++,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu+R,clChassis,clJig);
+					vloz_vozik(ZAKAZKA_akt,E,Pt.x,Pt.y,Pt.z,akt_rotace_jigu+R);
+					umisteni+=Rz;//navýšení umístění dle rozestup Rz
 				}
-				zakazka=zakazka->dalsi;//posun na další prvek v seznamu
+				umisteni-=E->geo.delka;//zbytek z předchzejícího geometrického úseku, který nestihl být zohledněn převeden na další geometrický úsek, resp. element = výchozí umístění v dalším elementu, případně zohlední i přechod na nový pohon (díky práci v jednotkách délky), pouze je následně nutné odečíst případné WT při přechodu
+				if(E->eID==200)umisteni-=E->WT*E->pohon->aRD;//čekání na předávacím místě způsobí následné zpoždění/rozsunutí mezi vozíků
+				umisteniCas=umisteni/E->pohon->aRD;//z praktického univerzálního hlediska dané zpoždění resp. časový fond vrací v časé (není díky tomu následně nutné hledat hodnotu rychlosti předchozího pohonu)
+				//zajištění aktuální rotace pro následující úsek
+				if(E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180)
+				{
+					akt_rotace_jigu+=E->rotace_jig;//pro uchování následujícího stavu
+					rotacni_zbytek=true;//pro zoohlednění v dalším kole
+				}
 			}
-	 }
+			C=C->dalsi;//posun na další prvek cesty
+		}
+		delete C;
+	}
 }
 ////---------------------------------------------------------------------------
 //uloží ukazatel na vozík do spojového seznamu voziků
-void Cvektory::vloz_vozik(TZakazka *zakazka,short typ)//0-normální, 1-servisní
+void Cvektory::vloz_vozik(TZakazka *zakazka,TElement *element,double X,double Y,double orientaceP,double rotaceJ)
 {
+	//alokace
 	TVozik *novy=new TVozik;
-	novy->zakazka=zakazka;//přiřazení zakázky
 
-	//ZDM pozor v případě načítání existujícího stavu ze souboru změnitm toto je výchozí pozice na lince
-	//ZDM novy->segment=NULL;novy->stav=-1;
-	//ZDM novy->X=0;novy->Y=0;novy->timer=0;;
-	novy->typ=typ;
-	novy->start=0;//výchozí pozice v grafu časových os
-	novy->pozice=-1.0;//pozice na dopravniku či v grafu časových os
+	//atributy
+	novy->n=0;
+	novy->X=X;
+	novy->Y=Y;
+	novy->orientace_podvozek=orientaceP;
+	novy->rotace_jig=rotaceJ;
+	novy->typ=0;
+	novy->stav=-1;
+	novy->zakazka=zakazka;
+	novy->element=element;
+	novy->palec=NULL;
 
+	//ukazatelové záležitosti
 	novy->n=VOZIKY->predchozi->n+1;//navýším počítadlo prvku o jedničku
 	VOZIKY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
 	novy->predchozi=VOZIKY->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 	novy->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje)
 	VOZIKY->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
 };
-//---------------------------------------------------------------------------
-//slouží při úvodním načítání časových os, smaže výchozí a koncovou pozici sloužící pro tvorbu a zobrazení na časových osách
-void Cvektory::vymazat_casovou_obsazenost_objektu_a_pozice_voziku(TObjekt *Objekt,TVozik *Vozik)
-{
-	TObjekt *ukaz=Objekt->dalsi;
-	while (ukaz!=NULL)
-	{
-		//ukaz->obsazenost=0;
-		ukaz=ukaz->dalsi;
-	};
-	TVozik *ukaz1=Vozik->dalsi;
-	while (ukaz1!=NULL)
-	{
-		//ukaz1->pozice=-1.0;
-		ukaz1=ukaz1->dalsi;
-	};
-}
 //---------------------------------------------------------------------------
 //dle n resp. ID vozíku vrátí ukazatel na daný vozík
 Cvektory::TVozik *Cvektory::vrat_vozik(unsigned int n)
@@ -5252,18 +5334,15 @@ Cvektory::TVozik *Cvektory::vrat_vozik(unsigned int n)
 	return V;
 }
 ////---------------------------------------------------------------------------
-long Cvektory::vymaz_seznam_VOZIKY()
+void Cvektory::vymaz_seznam_VOZIKY()
 {
-	long pocet_smazanych_objektu=0;
 	while (VOZIKY!=NULL)
 	{
-		pocet_smazanych_objektu++;
-		VOZIKY->predchozi=NULL;
 		delete VOZIKY->predchozi;
+		VOZIKY->predchozi=NULL;
+
 		VOZIKY=VOZIKY->dalsi;
 	};
-
-	return pocet_smazanych_objektu;
 };
 //---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
@@ -6216,6 +6295,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 {
 	try
 	{
+     //vytvoření streamu pro zápis do souboru
 		 TFileStream *FileStream=new TFileStream(FileName,fmOpenWrite|fmCreate);
 
 		 //zapiše hlavičku do souboru //už neplatí:+ zbylé atributy a PP se do hlavičky zapisují v unit1
@@ -6359,6 +6439,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 			 ukaz=ukaz->dalsi;//posunutí na další pozici v seznamu
 		 };
 		 ukaz=NULL;delete ukaz;
+
 		 ////ELEMENTY
 			TPoint *tab_pruchodu=new TPoint[pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
 			TElement *E=ELEMENTY->dalsi;
@@ -6368,103 +6449,103 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 			 C_element *cE=new C_element;
 			 if(E->n>0)// && File_hlavicka.pocet_elementu>=E->n)
 			 {
-		   	 //plněný - kopírování dat jednotlivých atributů
-		   	 cE->n=E->n;
+				 //plněný - kopírování dat jednotlivých atributů
+				 cE->n=E->n;
 				 //  ShowMessage("uloz element n"+AnsiString(E->n));
 				 cE->eID=E->eID;
 				 cE->idetifikator_vyhybka_spojka=E->idetifikator_vyhybka_spojka;
-		   	 cE->name_delka=E->name.Length()+1;
-		   	 cE->X=E->X;
-		   	 cE->Y=E->Y;
-		   	 cE->Xt=E->Xt;
-		   	 cE->Yt=E->Yt;
-		   	 cE->orientace=E->orientace;
-		   	 cE->rotace_jig=E->rotace_jig;
-		   	 cE->stav=E->stav;
-		   	 cE->PD=E->data.PD;
-		   	 cE->LO1=E->data.LO1;
-		   	 cE->OTOC_delka=E->OTOC_delka;
-		   	 cE->zona_pred=E->zona_pred;
+				 cE->name_delka=E->name.Length()+1;
+				 cE->X=E->X;
+				 cE->Y=E->Y;
+				 cE->Xt=E->Xt;
+				 cE->Yt=E->Yt;
+				 cE->orientace=E->orientace;
+				 cE->rotace_jig=E->rotace_jig;
+				 cE->stav=E->stav;
+				 cE->PD=E->data.PD;
+				 cE->LO1=E->data.LO1;
+				 cE->OTOC_delka=E->OTOC_delka;
+				 cE->zona_pred=E->zona_pred;
 				 cE->zona_za=E->zona_za;
-		   	 cE->LO2=E->data.LO2;
-		   	 cE->LO_pozice=E->data.LO_pozice;
-		   	 cE->PT1=E->data.PT1;
-		   	 cE->PTotoc=E->PTotoc;
-		   	 cE->PT2=E->data.PT2;
-		   	 cE->WT=E->WT;
-		   	 cE->WTstop=E->data.WTstop;
-		   	 cE->RT=E->data.RT;
-		   	 cE->akt_pocet_voziku=E->data.pocet_voziku;
-		   	 cE->max_pocet_voziku=E->data.pocet_pozic;
+				 cE->LO2=E->data.LO2;
+				 cE->LO_pozice=E->data.LO_pozice;
+				 cE->PT1=E->data.PT1;
+				 cE->PTotoc=E->PTotoc;
+				 cE->PT2=E->data.PT2;
+				 cE->WT=E->WT;
+				 cE->WTstop=E->data.WTstop;
+		  	 cE->RT=E->data.RT;
+		  	 cE->akt_pocet_voziku=E->data.pocet_voziku;
+		  	 cE->max_pocet_voziku=E->data.pocet_pozic;
 				 cE->objekt_n=E->objekt_n;
-		   	 //  ShowMessage("E->pohony->n");
-		   	 if(E->pohon==NULL) cE->pohon_n=0;
-		   	 else cE->pohon_n=E->pohon->n;
+				 //  ShowMessage("E->pohony->n");
+		  	 if(E->pohon==NULL) cE->pohon_n=0;
+		  	 else cE->pohon_n=E->pohon->n;
 				 cE->geo=E->geo;
 				 //uložení do binárního filu
 				 FileStream->Write(cE,sizeof(C_element));//zapiše jeden prvek do souboru
 
-		   	 //text - short_name
-		   	 wchar_t *short_name=new wchar_t[5];
+		  	 //text - short_name
+				 wchar_t *short_name=new wchar_t[5];
 				 short_name=E->short_name.c_str();
-		   	 FileStream->Write(short_name,5*sizeof(wchar_t));// fixni pocet pozic
+		  	 FileStream->Write(short_name,5*sizeof(wchar_t));// fixni pocet pozic
 				 short_name=NULL; delete[] short_name;
 
 				 //text - name
 				 wchar_t *name=new wchar_t [cE->name_delka];
-		   	 name=E->name.c_str();
-		   	 FileStream->Write(name,cE->name_delka*sizeof(wchar_t));//
+		  	 name=E->name.c_str();
+				 FileStream->Write(name,cE->name_delka*sizeof(wchar_t));//
 				 //   ShowMessage(AnsiString(name)+" uloz pohon n:"+AnsiString(cE->pohon_n));
 				 name=NULL; delete[] name;
 			 }
 			 //posun na další segment cesty
 			 E=sekvencni_zapis_cteni(E,tab_pruchodu,NULL);
 			 delete cE; cE=NULL;
-		 }
-		 delete []tab_pruchodu;
-		 ////uložení HALy do_souboru
-		 ////překopírování dat do pomocného objektu uložitelného do bináru
-		 //alokace
-		 C_hala *cH=new C_hala;
-		 //samotná data
-		 cH->X=HALA.X;
-		 cH->Y=HALA.Y;
-		 if(HALA.body!=NULL)cH->pocet_bodu=HALA.body->predchozi->n;
-		 else cH->pocet_bodu=0;
-		 cH->name_delka=HALA.name.Length()+1;
-		 FileStream->Write(cH,sizeof(C_hala));//zapiše jeden prvek do souboru
-		 //text - name
-		 wchar_t *name_hala=new wchar_t [cH->name_delka];
-		 name_hala=HALA.name.c_str();
-		 FileStream->Write(name_hala,cH->name_delka*sizeof(wchar_t));//zápis názvu do souboru
-		 name_hala=NULL; delete[] name_hala;
-		 //odstranění ukazatele na Halu, již není třeba
-		 delete cH; cH=NULL;
-		 //zápis jednotlivých bodů
-		 if(HALA.body!=NULL)
-		 {
-		 	 TBod *B=HALA.body->dalsi;//přeskočí hlavičku
-		 	 while(B!=NULL)
-		 	 {
-		 		 //překopírování dat do pomocného objektu uložitelného do bináru
-		 		 C_bod *cB=new C_bod;
-		 		 //plněný - kopírování dat jednotlivých atributů
-		 		 cB->n=B->n;
-		 		 cB->X=B->X;
-		 		 cB->Y=B->Y;
-		 		 cB->kota_offset=B->kota_offset;
-		 		 FileStream->Write(cB,sizeof(C_bod));//zapiše jeden prvek do souboru
-		 		 delete cB; cB=NULL;
-		 		 //posun na další bod
-		 		 B=B->dalsi;
-		 	 }
-		 	 delete B; B=NULL;
-		 }
+		}
+		delete []tab_pruchodu;
 
-		 //uložení ZAKÁZEK
-		 TZakazka *ukaz2=ZAKAZKY->dalsi;
-		 while (ukaz2!=NULL)
-		 {
+		////uložení HALy do_souboru, překopírování dat do pomocného objektu uložitelného do bináru
+		//alokace
+		C_hala *cH=new C_hala;
+		//samotná data
+		cH->X=HALA.X;
+		cH->Y=HALA.Y;
+		if(HALA.body!=NULL)cH->pocet_bodu=HALA.body->predchozi->n;
+		else cH->pocet_bodu=0;
+		cH->name_delka=HALA.name.Length()+1;
+		FileStream->Write(cH,sizeof(C_hala));//zapiše jeden prvek do souboru
+		//text - name
+		wchar_t *name_hala=new wchar_t [cH->name_delka];
+		name_hala=HALA.name.c_str();
+		FileStream->Write(name_hala,cH->name_delka*sizeof(wchar_t));//zápis názvu do souboru
+		name_hala=NULL; delete[] name_hala;
+		//odstranění ukazatele na Halu, již není třeba
+		delete cH; cH=NULL;
+		//zápis jednotlivých bodů
+		if(HALA.body!=NULL)
+		{
+			 TBod *B=HALA.body->dalsi;//přeskočí hlavičku
+			 while(B!=NULL)
+			 {
+				 //překopírování dat do pomocného objektu uložitelného do bináru
+				 C_bod *cB=new C_bod;
+				 //plněný - kopírování dat jednotlivých atributů
+				 cB->n=B->n;
+				 cB->X=B->X;
+				 cB->Y=B->Y;
+				 cB->kota_offset=B->kota_offset;
+				 FileStream->Write(cB,sizeof(C_bod));//zapiše jeden prvek do souboru
+				 delete cB; cB=NULL;
+				 //posun na další bod
+				 B=B->dalsi;
+			 }
+			 delete B; B=NULL;
+		}
+
+		////uložení ZAKÁZEK
+		TZakazka *ukaz2=ZAKAZKY->dalsi;
+		while (ukaz2!=NULL)
+		{
 			 //překopírování dat do pomocného objektu uložitelného do bináru
 			 C_zakazka *c_ukaz2=new C_zakazka;
 
@@ -6540,11 +6621,11 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 			 //c=NULL; delete c;
 			 c_ukaz2=NULL;delete c_ukaz2;
 			 ukaz2=ukaz2->dalsi;//posunutí na další pozici v seznamu
-		 };
-		 ukaz2=NULL;delete ukaz2;
+		};
+		ukaz2=NULL;delete ukaz2;
 
-		 delete FileStream;
-		 return 1;
+		delete FileStream;
+		return 1;
 	}
 	catch(...){return 2;}
 }
@@ -7037,8 +7118,8 @@ TPointD Cvektory::vrat_zacatek_a_konec_zakazky(TZakazka *jaka)//ukazatel na cest
 	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
 	while (vozik!=NULL)
 	{
-		if(vozik->zakazka->n==jaka->n && prvni){RET.x=vozik->start/Form1->d.PX2MIN*60.0;prvni=false;}//uloží výchozí pozici prvního vozíku na zakázce
-		if(vozik->zakazka->n==jaka->n){RET.y=vozik->pozice/Form1->d.PX2MIN*60.0;}//uloží koncovou pozici posledního vozíku na zakázce
+		//odstaveno kvůli zDM if(vozik->zakazka->n==jaka->n && prvni){RET.x=vozik->start/Form1->d.PX2MIN*60.0;prvni=false;}//uloží výchozí pozici prvního vozíku na zakázce
+		//odstaveno kvůli zDM if(vozik->zakazka->n==jaka->n){RET.y=vozik->pozice/Form1->d.PX2MIN*60.0;}//uloží koncovou pozici posledního vozíku na zakázce
 		vozik=vozik->dalsi;
 	}
 	return RET;
@@ -7049,8 +7130,8 @@ TPointD Cvektory::vrat_zacatek_a_konec_zakazky(unsigned int ID_zakazky)//ukazate
 	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
 	while (vozik!=NULL)
 	{
-		if(vozik->zakazka->n==ID_zakazky && prvni){RET.x=vozik->start/Form1->d.PX2MIN*60.0;prvni=false;}//uloží výchozí pozici prvního vozíku na zakázce
-		if(vozik->zakazka->n==ID_zakazky)RET.y=vozik->pozice/Form1->d.PX2MIN*60.0;//uloží koncovou pozici posledního vozíku na zakázce
+		//odstaveno kvůli zDM if(vozik->zakazka->n==ID_zakazky && prvni){RET.x=vozik->start/Form1->d.PX2MIN*60.0;prvni=false;}//uloží výchozí pozici prvního vozíku na zakázce
+		//odstaveno kvůli zDM if(vozik->zakazka->n==ID_zakazky)RET.y=vozik->pozice/Form1->d.PX2MIN*60.0;//uloží koncovou pozici posledního vozíku na zakázce
 		vozik=vozik->dalsi;
 	}
 	return RET;
@@ -7085,8 +7166,9 @@ double Cvektory::vrat_LT()
 ////---------------------------------------------------------------------------
 double Cvektory::vrat_LT_voziku(TVozik *jaky)//vrátí celkový čas, který strávil vozík ve výrobě včetně čekání
 {
-	if(jaky!=NULL) return (jaky->pozice-jaky->start)/Form1->d.PX2MIN*60.0;
-	else return 0;
+	//odstaveno kvůli zDM if(jaky!=NULL) return (jaky->pozice-jaky->start)/Form1->d.PX2MIN*60.0;
+	//odstaveno kvůli zDM else
+	return 0;
 }
 double Cvektory::vrat_LT_voziku(unsigned int n_voziku)//vrátí celkový čas, který strávil vozík ve výrobě včetně čekání
 {
@@ -7189,7 +7271,7 @@ double Cvektory::vrat_AVGsumWT_zakazky(TZakazka *jaka)//vrátí čistý čas, kt
 ////---------------------------------------------------------------------------
 double Cvektory::vrat_TT_voziku(TVozik *jaky)//vrátí takt, resp. rozdíl čásů mezi dokončením tohoto a předchozího vozíku
 {
-	return (jaky->pozice-jaky->predchozi->pozice)/Form1->d.PX2MIN*60.0;//ošetřuje i případ prvního prvku a hlavičky, hlavička má pozici nastavenou na nula
+	return 0;//odstaveno kvůli zDM (jaky->pozice-jaky->predchozi->pozice)/Form1->d.PX2MIN*60.0;//ošetřuje i případ prvního prvku a hlavičky, hlavička má pozici nastavenou na nula
 }
 double Cvektory::vrat_TT_voziku(unsigned int n_voziku)//vrátí takt, resp. rozdíl čásů mezi dokončením tohoto a předchozího vozíku
 {
@@ -7283,8 +7365,8 @@ TPoint Cvektory::vrat_start_a_pozici_vozikuPX(unsigned int n_voziku)
 	 TVozik *V=VOZIKY->dalsi;
 	 while(V!=NULL)
 	 {
-			if(V->n==n_voziku)RET.x=V->start;
-			if(V->n==n_voziku)RET.y=V->pozice;
+			//odstaveno kvůli zDM if(V->n==n_voziku)RET.x=V->start;
+			//odstaveno kvůli zDM if(V->n==n_voziku)RET.y=V->pozice;
 			V=V->dalsi;
 	 }
 	 return RET;
@@ -7308,7 +7390,7 @@ double Cvektory::WIP(short typ_vypoctu)
 				while (vozik2!=NULL)
 				{
 
-					if(vozik->pozice>=vozik2->start)//pokud nastane situace že vozík skončil před začátkem vozíku, není nutné navyšovat počítadlo vozíků
+					//odstaveno kvůli zDM if(vozik->pozice>=vozik2->start)//pokud nastane situace že vozík skončil před začátkem vozíku, není nutné navyšovat počítadlo vozíků
 					pocet++;
 					vozik2=vozik2->dalsi;
 				}

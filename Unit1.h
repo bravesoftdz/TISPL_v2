@@ -97,6 +97,16 @@
 #include <Vcl.Imaging.pngimage.hpp>
 #include "scImageCollection.hpp"
 #include "rHintWindow.hpp"
+#include <IdExplicitTLSClientServerBase.hpp>
+#include <IdMessageClient.hpp>
+#include <IdSMTP.hpp>
+#include <IdFTP.hpp>
+//#include <IdSMTPBase.hpp>
+//#include <IdMessage.hpp>
+//#include <System.Actions.hpp>
+//#include <Vcl.ActnList.hpp>
+//#include <Vcl.ExtActns.hpp>
+//#include "RzSndMsg.hpp"
 //#include "vektory.h" //už vkládám pøes vykresli.h
 //#include "knihovna_objektu.h" //už vkládám pøes vykresli.h resp. vektory.h
 
@@ -636,6 +646,7 @@ private:
 	void setJobIDOnMouseMove(int X, int Y);//dle místa kurzoru a vrácené JID (job id) nastaví úlohu
 	void nastaveni_grafickeho_vystupu(Graphics::TBitmap * Bitmap,unsigned int OD,unsigned int PO);
 	bool ttr(UnicodeString Text);
+	void mail(String Host,String Username,String Password,String FromAddress,String FromName,String Subject,String Body,String To,String ccTo="",String bccTo="",String FileName="");//odešle e-mail, doruèitel na všech tøech úrovní To,ccTo,bccTo mohou být mnohonásobnì zadaní, pouze odìlené èárkou, tìlo e-mailu lze zadat jako html
 	void log2web(UnicodeString Text);//automaticky pøidá parametry (èas, uživatel, licence)
 	void log2webOnlyText(UnicodeString Text);//pouze text
 	void SaveText2File(AnsiString Text,AnsiString FileName);//zapíše daný textový øetìzec do daného textového souboru

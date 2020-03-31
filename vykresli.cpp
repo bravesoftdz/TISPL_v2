@@ -30,13 +30,16 @@ Cvykresli::Cvykresli()
 	Robot_delka_zakladny=1.2;
 	DoSkRB=(1.2+Robot_sirka_zakladny/2.0);//delka od středu (X,Y bodu) robota k referenčnímu bodu robota (tj. k trysce) v metrech
 	DkRB=0.8;//délka k referenčnímu bodu od uchopovacího bodu, respektive odsazení člověka od linky
+	zobrazit_celou_zpravu=0;//proměnná určující, která zpráva bude zobrazena
+	zprava_highlight=0;//pomocná proměnná sloužící na ztučnění dané zpravy či na její zobrazení
+	//default barvy
 	clStenaHaly=TColor RGB(147,166,182);
 	clStenaKabiny=m.clIntensive(clStenaHaly,40);
 	clPasiv=m.clIntensive(clBlack,180);
 	clError=clRed;
 	clWarning=TColor RGB(255,165,0);
-	zobrazit_celou_zpravu=0;//proměnná určující, která zpráva bude zobrazena
-	zprava_highlight=0;//pomocná proměnná sloužící na ztučnění dané zpravy či na její zobrazení
+	clChassis=(TColor)RGB(50,50,50);
+	clJig=clPurple;//pozn. defualt zakázka má definici barvy přimo ve v.vytvor_default_zakazku()
 	 //pěkná modrá 79,122,186   další pěkná modrá světle (YR.NO): 0,185,241   ico tispl: 33,209,255
 }
 //---------------------------------------------------------------------------
@@ -199,110 +202,10 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
    	delete []tab_pruchodu;
 	}
 
-	///////////////Vykreslení spojnic mezi objekty
-	//cesty ZAKAZeK - jsou li k dispozici
-//	if(v.ZAKAZKY!=NULL && v.ZAKAZKY->predchozi->n>0)
-//	{
-//		 Cvektory::TZakazka *Z=v.ZAKAZKY->dalsi;
-//		 while(Z!=NULL)//prochází seznam ZAKÁZEK, který obsahuje jednotlivé cesty
-//		 {
-//				Cvektory::TCesta *C=Z->cesta->dalsi;
-//				while(C!=NULL)//prochází jednotlivé prvky cesty
-//				{
-//					canv->Pen->Color=Z->barva;
-//					canv->Pen->Style=psSolid;
-//					canv->Pen->Width=m.round(2*Form1->Zoom);
-//					if(Z->barva==clGray)canv->Pen->Mode=pmCopy;else canv->Pen->Mode=pmNotXor;pmMask; //pokud se jedná o defaultní barvu vykopíruje se jina se vytvoří kombinace
-//					if(C->objekt->n==1)//pro situaci: z posledního prvku na první
-//					{
-//						//if(ukaz->n!=ukaz->predchozi->predchozi->n)//pokud jsou minimálně dva prky, ale šipka bude obousměrnná - možná žádoucí
-//						if(v.OBJEKTY->predchozi->n>=3)//až budou alespoň tři prvky,tj. poslední prvek bude mít index n větší než 3
-//						{
-//							canv->MoveTo(m.L2Px(C->predchozi->predchozi->objekt->X)+O_width*Form1->Zoom/2,m.L2Py(C->predchozi->predchozi->objekt->Y)+O_height*Form1->Zoom/2);
-//							canv->LineTo(m.L2Px(C->objekt->X)+O_width*Form1->Zoom/2,m.L2Py(C->objekt->Y)+O_height*Form1->Zoom/2);
-//							sipka(canv,m.L2Px((C->predchozi->predchozi->objekt->X+C->objekt->X)/2)+O_width*Form1->Zoom/2,m.L2Py((C->predchozi->predchozi->objekt->Y+C->objekt->Y)/2)+O_height*Form1->Zoom/2,m.azimut(C->predchozi->predchozi->objekt->X,C->predchozi->predchozi->objekt->Y,C->objekt->X,C->objekt->Y));//zajistí vykreslení šipky - orientace spojovací linie
-//							if(Z->barva!=clGray)prislusnost_cesty(canv,Z->barva,m.L2Px((C->predchozi->predchozi->objekt->X+C->objekt->X)/2)+O_width*Form1->Zoom/2,m.L2Py((C->predchozi->predchozi->objekt->Y+C->objekt->Y)/2)+O_height*Form1->Zoom/2,m.azimut(C->predchozi->predchozi->objekt->X,C->predchozi->predchozi->objekt->Y,C->objekt->X,C->objekt->Y),Z->n);
-//						}
-//					}
-//					else//pro běžné situace
-//					{
-//						canv->MoveTo(m.L2Px(C->predchozi->objekt->X)+O_width*Form1->Zoom/2,m.L2Py(C->predchozi->objekt->Y)+O_height*Form1->Zoom/2);
-//						canv->LineTo(m.L2Px(C->objekt->X)+O_width*Form1->Zoom/2,m.L2Py(C->objekt->Y)+O_height*Form1->Zoom/2);
-//						sipka(canv,m.L2Px((C->predchozi->objekt->X+C->objekt->X)/2)+O_width*Form1->Zoom/2,m.L2Py((C->predchozi->objekt->Y+C->objekt->Y)/2)+O_height*Form1->Zoom/2,m.azimut(C->predchozi->objekt->X,C->predchozi->objekt->Y,C->objekt->X,C->objekt->Y));//zajistí vykreslení šipky - orientace spojovací linie
-//						if(Z->barva!=clGray)prislusnost_cesty(canv,Z->barva,m.L2Px((C->predchozi->objekt->X+C->objekt->X)/2)+O_width*Form1->Zoom/2,m.L2Py((C->predchozi->objekt->Y+C->objekt->Y)/2)+O_height*Form1->Zoom/2,m.azimut(C->predchozi->objekt->X,C->predchozi->objekt->Y,C->objekt->X,C->objekt->Y),Z->n);
-//					}
-//					C=C->dalsi;
-//				}
-//				Z=Z->dalsi;
-//		 }
-//	}
-//	else//pokud nejsou k dispozici nadefinované cesty vykreslí se přímo jen spojovací linie mezi objekty (tj. defaultní cesta)
-//	{
-//		int n;//číslo vyhybky nebo spojky
-//		Cvektory::TObjekt* ukaz=v.OBJEKTY->dalsi;//přeskočí hlavičku
-//		float sipka_velikost=0.1*F->Zoom; if(sipka_velikost<1*3)sipka_velikost=1*3;
-//		while (ukaz!=NULL)
-//		{
-//			Cvektory::TObjekt *O=ukaz->dalsi;//přepínání kroků v cyklu (dalsi/dalsi2),zde na začátku z důvodu potřeby tab_průchodů při vykreslění
-//			canv->Pen->Style=psDash;
-//			canv->Pen->Mode=pmCopy;
-//			canv->Pen->Width=1;
-//			canv->Pen->Color=clRed;
-//			canv->Brush->Style=bsClear;
-//			if(ukaz->n==1)//pro situaci z posledního prvku na první
-//			{
-//				//if(ukaz->n!=ukaz->predchozi->predchozi->n)//pokud jsou minimálně dva prky, ale šipka bude obousměrnná - možná žádoucí
-//				if(v.OBJEKTY->predchozi->n>=3)//až budou alespoň tři prvky,tj. poslední prvek bude mít index n větší než 3
-//				{
-//					Cvektory::TObjekt *pom=ukaz->predchozi->predchozi;//pomocný ukazatel, který uchovává předchozí objekt
-//					if(ukaz->id==pocet_objektu_knihovny+1)//pokud jsem na spojce poprvé musí dojít k vykrelení spojnice k predchozi2 objektu, pokud podruhé dojde k vykreslení spojnice k predchozi objektu
-//					{
-//						n=F->ms.MyToDouble(ukaz->short_name.SubString(2,1));//extrakce pořadového čísla výhybky;
-//						pom=ukaz->predchozi->predchozi;
-//					}
-//					//vykreslení pouze v případě, že nejsou objekty přilepené na sobě
-//					Cvektory::TElement *e_posledni=F->d.v.vrat_posledni_element_objektu(pom);
-//					if(ukaz->element->geo.X1!=e_posledni->geo.X4 || ukaz->element->geo.Y1!=e_posledni->geo.Y4)
-//					{
-//						canv->MoveTo(m.L2Px(e_posledni->geo.X4),m.L2Py(e_posledni->geo.Y4));
-//						canv->LineTo(m.L2Px(ukaz->element->geo.X1),m.L2Py(ukaz->element->geo.Y1));
-//						sipka(canv,(m.L2Px(e_posledni->geo.X4)+m.L2Px(ukaz->element->geo.X1))/2.0,(m.L2Py(e_posledni->geo.Y4)+m.L2Py(ukaz->element->geo.Y1))/2.0,m.azimut(m.L2Px(ukaz->element->geo.X1),m.L2Py(ukaz->element->geo.Y1),m.L2Px(e_posledni->geo.X4),m.L2Py(e_posledni->geo.Y4))*(-1),true,sipka_velikost,clRed);//zajistí vykreslení šipky - orientace spojovací linie
-//					}
-//					e_posledni=NULL;delete e_posledni;
-//					pom=NULL;delete pom;
-//				}
-//			}
-//			else
-//			{
-//				Cvektory::TObjekt *pom=ukaz->predchozi;//pomocný ukazatel, který uchovává předchozí objekt
-//				Cvektory::TElement *e_posledni=F->d.v.vrat_posledni_element_objektu(pom);
-//				if(ukaz->id==pocet_objektu_knihovny+1)//pokud jsem na spojce poprvé musí dojít k vykrelení spojnice k predchozi2 objektu, pokud podruhé dojde k vykreslení spojnice k predchozi objektu
-//				{
-//					n=F->ms.MyToDouble(ukaz->short_name.SubString(2,1));//extrakce pořadového čísla spojky
-//					pom=ukaz->predchozi;
-//				}
-//				//vykreslení pouze v případě, že nejsou objekty přilepené na sobě
-//				if(ukaz->element->geo.X1!=e_posledni->geo.X4 || ukaz->element->geo.Y1!=e_posledni->geo.Y4)
-//				{
-//					canv->Pen->Style=psDash;
-//					canv->Pen->Mode=pmCopy;
-//					canv->Pen->Width=1;
-//					canv->Pen->Color=clRed;
-//					canv->Brush->Style=bsClear;
-//					canv->MoveTo(m.L2Px(e_posledni->geo.X4),m.L2Py(e_posledni->geo.Y4));
-//					canv->LineTo(m.L2Px(ukaz->element->geo.X1),m.L2Py(ukaz->element->geo.Y1));
-//					sipka(canv,(m.L2Px(e_posledni->geo.X4)+m.L2Px(ukaz->element->geo.X1))/2.0,(m.L2Py(e_posledni->geo.Y4)+m.L2Py(ukaz->element->geo.Y1))/2.0,m.azimut(m.L2Px(ukaz->element->geo.X1),m.L2Py(ukaz->element->geo.Y1),m.L2Px(e_posledni->geo.X4),m.L2Py(e_posledni->geo.Y4))*(-1),true,sipka_velikost,clRed);//zajistí vykreslení šipky - orientace spojovací linie
-//				}
-//				e_posledni=NULL;delete e_posledni;
-//				pom=NULL;delete pom;
-//			}
-//			ukaz=O;
-//			O=NULL;delete O;
-//		}
-//	}
-//	O=NULL;delete O;
+	///////////////vykreslení VOZÍKů
+	vykresli_voziky(canv);
 
-	//VALIDACE a její výpis formou zpráv
+	///////////////VALIDACE a její výpis formou zpráv
 	if(F->MOD!=F->Tmod::TVORBA_CESTY && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT)
 	{
 		v.VALIDACE();
@@ -1322,7 +1225,7 @@ void Cvykresli::vykresli_legendu_casovych_os(TCanvas *canv)
 //textový výpis a kóta mezivozíkového taktu, pouze pro zpřehlednění zapisu samostatně
 void Cvykresli::vypis_mezivozikovy_takt(TCanvas *canv,Cvektory::TVozik *vozik,double X,long Y,bool index)
 {
-		long X1=Form1->m.round(vozik->predchozi->pozice-PosunT.x);
+		long X1=0;//odstaveno kvůli zDM Form1->m.round(vozik->predchozi->pozice-PosunT.x);
 		long X2=Form1->m.round(X-PosunT.x);
 		short S=2;//size
 		//short O=0;//offset
@@ -1471,8 +1374,8 @@ void Cvykresli::vykresli_Xosy(TCanvas *canv)
 				unsigned int WIP=v.WIP(1);canv->Pen->Style=psDash;canv->Pen->Width=1;
 				if(ukaz->n==1)//pro první zakázku               //y -jen konec
 				{
-					canv->MoveTo(v.VOZIKY->dalsi->pozice-PosunT.x,0);
-					canv->LineTo(v.VOZIKY->dalsi->pozice-PosunT.x,WIP*KrokY+KrokY+KrokY/2-Form1->scGPPanel_mainmenu->Height+oY+oY+2-PosunT.y);
+					//odstaveno kvůli zDM canv->MoveTo(v.VOZIKY->dalsi->pozice-PosunT.x,0);
+					//odstaveno kvůli zDM canv->LineTo(v.VOZIKY->dalsi->pozice-PosunT.x,WIP*KrokY+KrokY+KrokY/2-Form1->scGPPanel_mainmenu->Height+oY+oY+2-PosunT.y);
 					canv->LineTo(0,WIP*KrokY+KrokY+KrokY/2-Form1->scGPPanel_mainmenu->Height+oY+oY+2-PosunT.y);
 				}
 				//doběh linky
@@ -2831,18 +2734,16 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 		unsigned int pocet_pozic=E->data.pocet_pozic;
 		double X=E->geo.X4;
 		double Y=E->geo.Y4;
-
-		double dJ=v.PP.delka_jig;//později nahradit ze zakázky
-		double sJ=v.PP.sirka_jig;//později nahradit ze zakázky
-		double rotaceJ=v.vrat_rotaci_jigu_po_predchazejicim_elementu(E);
+		double dJ=v.PP.delka_jig;
+		double sJ=v.PP.sirka_jig; //v případě že se budou zakázkám nastavovat individuální rozměry jiguif(v.ZAKAZKA_akt!=NULL){dJ=v.ZAKAZKA_akt->jig.delka;sJ=v.ZAKAZKA_akt->jig.sirka;}//případně vezme rozměr ze zakázky
+		double rotaceJ=v.vrat_rotaci_jigu_po_predchazejicim_elementu(E);//nepůjde rovnou načítat z Elementu??? a metoda by se nemusela užívat?
 		short rozmezi=55;//pouze empiricky dodaná hodnota barevného rozpětí od první až po poslední pozici rotace, bylo 40
 		unsigned short clPotRGB=180;//hotnota barevných složek dle RGB potenciálních pozic
 		TColor clPotencial=(TColor) RGB(clPotRGB,clPotRGB,clPotRGB),clChassis=(TColor) RGB(50,50,50),clJig=clPurple;
 		short I=100-F->scGPTrackBar_intenzita->Value;
 		if(F->OBJEKT_akt!=NULL && E->objekt_n!=F->OBJEKT_akt->n)//v případě editace změna intezity barev právě needitovaných objektů
 		{
-			clPotencial=m.clIntensive(clPotencial,I);if(I>5){clPotRGB=255-m.round((100-I)/4);rozmezi=0;}
-			//toto neovlivňovat, je vždy přece stejné clChassis=m.clIntensive(clChassis,I*2);clJig=m.clIntensive(clJig,I*4);//*2,*4 pouze empiricky dodáno
+			clPotencial=m.clIntensive(clPotencial,I);if(I>5){clPotRGB=255-m.round((100-I)/4);rozmezi=0;}//toto neovlivňovat, je vždy přece stejné clChassis=m.clIntensive(clChassis,I*2);clJig=m.clIntensive(clJig,I*4);//*2,*4 pouze empiricky dodáno
 		}
 
 		////určení směru vykreslování pozic
@@ -2855,7 +2756,7 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 			case 270: y=0;  x=1;  break;
 		}
 
-  //provizorní podmínká, po odseparování generování vozíků tuto odstranit a vrátit na uvod metody zakomentovanou
+	//provizorní podmínká, po odseparování generování vozíků tuto odstranit a vrátit na uvod metody zakomentovanou
 	if(F->scGPTrackBar_intenzita->Value>5 && F->scGPCheckBox_zobrazit_pozice->Checked && E->data.pocet_pozic>0 || (F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180) || F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->geo.typ==1)//pokud se má smysl algoritmem zabývat, pouze optimalizační podmínky
 	{
 		////vykreslení ROTACE pozic u otočí a elementů s otočemi
@@ -2908,14 +2809,14 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 		if(F->scGPCheckBox_zobrazit_pozice->Checked && pocet_pozic>0)
 		{
 			unsigned int pocet_voziku=E->data.pocet_voziku;
-			TColor clChassisTemp=m.clIntensive(clPotencial,-50),clJigTemp=m.clIntensive(clPotencial,-70);//clChassis,clJig - původní barvy
+			TColor clChassisTemp=m.clIntensive(clPotencial,-50),clJigTemp=m.clIntensive(clPotencial,-70),clPotencialBuffer=m.clIntensive(clPotencial,40);
 			//vykreslení jednoho vozíku či pozice, od zadu, aby byly vykresleny nejdříve pozice
-			if(pocet_voziku==1 && (m.Rt90(rotaceJ)==0 || m.Rt90(rotaceJ)==180) && v.PP.delka_podvozek<m.UDJ(rotaceJ))vykresli_vozik(canv,0,X,Y,dJ,sJ,orientaceP,rotaceJ,clChassisTemp,clJigTemp);//když je na stopce jenom jeden vozík a stejně se překrývají jigy nezobrazuje se buffer, jinýmy slovy při této situaci se nepředpokládá, že má smysl zobrazovat buffer (jsou to např. stopky v lakování či stopky na robotech)
+			if(pocet_voziku==1 && (m.Rt90(rotaceJ)==0 || m.Rt90(rotaceJ)==180) && v.PP.delka_podvozek<m.UDJ(rotaceJ))vykresli_vozik(canv,0,X,Y,dJ,sJ,orientaceP,rotaceJ,clChassisTemp,clJigTemp);//když je na stopce jenom jeden vozík a stejně se překrývají jigy nezobrazuje se buffer, jinýmy slovy při této situaci se nepředpokládá, že má smysl zobrazovat buffer (jsou to např. situace ve stopkách v lakování či přímo na robotech)
 			else
 			{
 				for(unsigned int i=pocet_pozic-1;0<i+1;i--)//nutno zápis 0<i+1, jinak zamrzá!!!
 				{
-					if(i+1>pocet_voziku)vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,m.clIntensive(clPotencial,-50),clPotencial);//záměrně šedou jak podvozek tak JIG jako potenicální pozice
+					if(i+1>pocet_voziku)vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,m.clIntensive(clPotencialBuffer,-50),clPotencialBuffer);//záměrně šedou jak podvozek tak JIG jako potenicální pozice
 					//tuto větev nutné také duplicitně použít do tvorby vozíků
 					else vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,clChassisTemp,clJigTemp);//vykresluje se tato větev pouze pro případ skrytí zobrazení vozíků, jinak by neměla význam, protože
 				}
@@ -2923,46 +2824,103 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 		}
 	}
 
-	/////úvodní rozmístění vozíků - bude odseparováno do tvorby vozíků
-	if(F->scGPTrackBar_intenzita->Value>5 && F->scGPCheckBox_rozmisteni_voziku->Checked && v.vrat_druh_elementu(E)==0 && E->sparovany!=NULL/* && E->name=="Stop 1"&& E->n==1*/)//pro S&G který má spárovaný objekt
+//toto již možno SMAZAT:
+/////úvodní rozmístění vozíků - bude odseparováno do tvorby vozíků
+//	if(F->scGPTrackBar_intenzita->Value>5 && F->scGPCheckBox_rozmisteni_voziku->Checked && v.vrat_druh_elementu(E)==0 && E->sparovany!=NULL/* && E->name=="Stop 1"&& E->n==1*/)//pro S&G který má spárovaný objekt
+//	{
+//		//ukazatelové záležitosti
+//		Cvektory::TElement *Et=E->dalsi;if(Et==NULL)Et=v.ELEMENTY->dalsi;//další, protože ten spravuje geometrii před sebou, tzn. od daného stop elementu, případně další kolo spojáku
+//		Cvektory::TElement *Esd=E->sparovany->dalsi;if(Esd==NULL)Et=v.ELEMENTY->dalsi;//případně další kolo spojáku
+//		if(E==E->sparovany)Esd=E->sparovany;//pouze pro situace, kdy je na lince zatím jenom jeden stop-element tak, aby se zobrazovaly vůbec vozíky
+//		//vychozí proměnné
+//		double umisteni=0;//výchozí umístění vozíku
+//		double akt_rotace_jigu=rotaceJ;//aktuální rotace je proměnlivá
+//		//procházení cyklem od dalšího elementu daného stop elementů až po jeho spárovaný stop element
+//		while(Et!=Esd)
+//		{
+//			F->Memo(Et->name+" "+Esd->name,true);
+//			////výpočetní a vykreslovací záležítosti
+//			if(Et->pohon!=NULL)//pokud má element přiřazen pohon, jinak nemá smysl řešit
+//			{
+//				double Rz=m.Rz(Et->pohon->aRD);//stanovený rozestup dle RD pohonu
+//				double buffer_zona=0;if(Et->data.pocet_voziku>0)buffer_zona=Et->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;//délka [v metrech] buffrovácí zony, pokud je obsažena na daném elementu
+//				//cyklické navýšení umístění dle rozestup Rz
+//				while(umisteni<=Et->geo.delka-buffer_zona)
+//				{
+//					TPointD_3D Pt=m.getPt(Et->geo.radius,Et->geo.orientace,Et->geo.rotacni_uhel,Et->geo.X1,Et->geo.Y1,Et->geo.X4,Et->geo.Y4,umisteni/Et->geo.delka/*F->smazat/100.0*/,(umisteni+v.PP.uchyt_pozice-v.PP.delka_podvozek/2.0)/Et->geo.delka);
+//		//pořešit ještě rotaci jigu na kontinuální otoči!!!
+//					vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu,clChassis,clJig);//if(E->name=="Stop 1")vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu,m.clIntensive(clChassis,100),m.clIntensive(clJig,100));//tato podmínka, jenomu kvůli testům//else vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu,clChassis,clYellow/*clJig*/);
+//					umisteni+=Rz;//navýšení umístění dle rozestup Rz
+//				}
+//				umisteni-=Et->geo.delka;//zbytek z předchzejícího geometrického úseku, který nestihl být zohledněn převeden na další geometrický úsek, resp. element = výchozí umístění v dalším elementu, případně zohlední i přechod na nový pohon (díky práci v jednotkách délky), pouze je následně nutné odečíst případné WT při přechodu
+//		//ověřit
+//				if(Et->eID==200)umisteni-=Et->WT*Et->pohon->aRD;//čekání na předávacím místě způsobí následné zpoždění/rozsunutí mezi vozíků
+//				//zajištění aktuální rotace pro následující úsek
+//				if(Et->rotace_jig!=0 && -180<=Et->rotace_jig && Et->rotace_jig<=180)akt_rotace_jigu+=Et->rotace_jig;
+//			}
+//			////ukazatelové záležitost
+//			if(Et->dalsi==NULL)Et=v.ELEMENTY->dalsi;//další kolo spojáku
+//			else Et=Et->dalsi;//další element
+//			if(E==E->sparovany){Esd=E->sparovany->dalsi;if(Esd==NULL)Et=v.ELEMENTY->dalsi;/*případně další kolo spojáku*/}//pouze pro situace, kdy je na lince zatím jenom jeden stop-element tak, aby se zobrazovaly vůbec vozíky
+//		}
+//		Et=NULL;delete Et;//odstranění již nepotřebného ukazatele, zde prvně nutné NULL!!!
+//	}
+	//situace, pokud není umístěn žádný stop&go element, jede se jen kontinuálně
+//	if(F->scGPTrackBar_intenzita->Value>5 && F->scGPCheckBox_rozmisteni_voziku->Checked && E->pohon!=NULL)
+//	{
+//		double umisteni=0;//výchozí umístění vozíku
+//		if(E->n!=1)//prozatim
+//		umisteni=umisteniCas*E->pohon->aRD; if(E->n==1)pocitadlo=0;
+//		double akt_rotace_jigu=rotaceJ;//aktuální rotace je proměnlivá
+//		double Rz=m.Rz(E->pohon->aRD);//stanovený rozestup dle RD pohonu
+//		double buffer_zona=0;//na kontinuálu není if(E->data.pocet_voziku>0)buffer_zona=E->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;//délka [v metrech] buffrovácí zony, pokud je obsažena na daném elementu
+//		//cyklické navýšení umístění dle rozestup Rz
+//		while(umisteni<=E->geo.delka-buffer_zona)//změna
+//		{
+//			//aplikace náhodného čekání na palceproblem while, problém musí se vejít na palce musí mít vozíky rozestup dle R atd... umisteni+=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,2)*E->pohon->aRD;
+//			TPointD_3D Pt=m.getPt(E->geo.radius,E->geo.orientace,E->geo.rotacni_uhel,E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4,umisteni/E->geo.delka/*F->smazat/100.0*/,(umisteni+v.PP.uchyt_pozice-v.PP.delka_podvozek/2.0)/E->geo.delka);
+//			//////--------------------
+//			double R=0;   //pouze pro kontinuální/pasivní otoč pro oktavní bude sice na místě, ale řešit otáčením dle umisteniCac
+//			if(E->OTOC_delka>0 && E->geo.delka<=umisteni+E->OTOC_delka/2.0 && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180)
+//			{
+//				R=E->rotace_jig/2.0*(E->OTOC_delka/2.0-(E->geo.delka-umisteni))/(E->OTOC_delka/2.0);//pozice vozíku v zoně otáčení, v počátku až do středu otoče, princip výpočtu zde funguje jako PŘIČTENÍ rotace k orientaci jigu při vstupu do zóny otáčení
+//			}
+//			if(rotacni_zbytek/* && pocitadlo!=0*/)//dokončení rotace jigu na elementu následujícím otoči (který zajišťuje na svém geometrickém počátku, který začíná otočí)
+//			{
+//				if(umisteni<=E->predchozi->OTOC_delka/2.0)
+//				R=-E->predchozi->rotace_jig/2.0*(E->predchozi->OTOC_delka/2.0-umisteni)/(E->predchozi->OTOC_delka/2.0);//pozice vozíku v zoně otáčení, od středu otoče až do konce zóny otáčení, princip výpočtu zde funguje jako ODEČTENÍ rotace od FINÁLNÍ orientaci jigu při vÝstupu ze zóny otáčení
+//				else rotacni_zbytek=false;
+//			}
+//			//////--------------------
+//			vykresli_vozik(canv,pocitadlo++,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu+R,clChassis,clJig);
+//			umisteni+=Rz;//navýšení umístění dle rozestup Rz
+//		}
+//		umisteni-=E->geo.delka;//zbytek z předchzejícího geometrického úseku, který nestihl být zohledněn převeden na další geometrický úsek, resp. element = výchozí umístění v dalším elementu, případně zohlední i přechod na nový pohon (díky práci v jednotkách délky), pouze je následně nutné odečíst případné WT při přechodu
+//		if(E->eID==200)umisteni-=E->WT*E->pohon->aRD;//čekání na předávacím místě způsobí následné zpoždění/rozsunutí mezi vozíků
+//		umisteniCas=umisteni/E->pohon->aRD;//z praktického univerzálního hlediska dané zpoždění resp. časový fond vrací v časé (není díky tomu následně nutné hledat hodnotu rychlosti předchozího pohonu)
+//		//zajištění aktuální rotace pro následující úsek
+//		if(E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180)
+//		{
+//			akt_rotace_jigu+=E->rotace_jig;//toto nzn9 nema8 v7znam
+//			rotacni_zbytek=true;//pro zoohlednění v dalším kole
+//		}
+//	}
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//vykreslí všechny vozíky ze seznamu vozíků
+void Cvykresli::vykresli_voziky(TCanvas *canv)
+{
+	if(v.VOZIKY!=NULL && F->scGPCheckBox_rozmisteni_voziku->Checked)
 	{
-		Cvektory::TElement *Et=E->dalsi;if(Et==NULL)Et=v.ELEMENTY->dalsi;//další, protože ten spravuje geometrii před sebou, tzn. od daného stop elementu, případně další kolo spojáku
-		Cvektory::TElement *Esd=E->sparovany->dalsi;if(Esd==NULL)Et=v.ELEMENTY->dalsi;//případně  další kolo spojáku
-		double umisteni=0;//výchozí umístění vozíku
-		bool prvni=false;//true;//první vozík se neřeší, je již vykreslen na stopce  - ZMENA!!!
-		double akt_rotace_jigu=rotaceJ;
-		while(Esd!=Et)//procházení cyklem od dalšího elementu daného stop elementů až po jeho spárovaný stop element
+		Cvektory::TVozik *V=v.VOZIKY->dalsi;
+		while(V!=NULL)
 		{
-			////výpočetní a vykreslovací záležítosti
-			if(Et->pohon!=NULL)//pokud má element přiřazen pohon, jinak nemá smysl řešit
-			{
-				double Rz=m.Rz(Et->pohon->aRD);//stanovený rozestup dle RD pohonu
-				double buffer_zona=0;if(Et->data.pocet_voziku>0)buffer_zona=Et->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;//délka [v metrech] buffrovácí zony, pokud je obsažena na daném elementu
-				//cyklické navýšení umístění dle rozestup Rz
-				while(umisteni<Et->geo.delka-buffer_zona)
-				{
-					if(!prvni)//první vozík se neřeší, je již vykreslen na stopce
-					{
-						TPointD_3D Pt=m.getPt(Et->geo.radius,Et->geo.orientace,Et->geo.rotacni_uhel,Et->geo.X1,Et->geo.Y1,Et->geo.X4,Et->geo.Y4,umisteni/Et->geo.delka/*F->smazat/100.0*/,(umisteni+v.PP.uchyt_pozice-v.PP.delka_podvozek/2.0)/Et->geo.delka);
-		//pořešit ještě rotaci jigu na kontinuální otoči!!!
-						vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu,clChassis,clJig);
-						//if(E->name=="Stop 1")vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu,m.clIntensive(clChassis,100),m.clIntensive(clJig,100));//tato podmínka, jenomu kvůli testům
-						//else vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu,clChassis,clYellow/*clJig*/);
-					}
-					prvni=false;//první vozík již vyřešen, přepíše se při prvním průchodu
-					umisteni+=Rz;//navýšení umístění dle rozestup Rz
-				}
-				umisteni-=Et->geo.delka;//zbytek z předchzejícího geometrického úseku, který nestihl být zohledněn převeden na další geometrický úsek, resp. element = výchozí umístění v dalším elementu, případně zohlední i přechod na nový pohon (díky práci v jednotkách délky), pouze je následně nutné odečíst případné WT při přechodu
-		//ověřit
-				if(Et->eID==200)umisteni-=Et->WT*Et->pohon->aRD;//čekání na předávacím místě způsobí zpoždění/rozsunutí mezi vozíků
-				//zajištění aktuální rotace pro následující úsek
-				if(Et->rotace_jig!=0 && -180<=Et->rotace_jig && Et->rotace_jig<=180)akt_rotace_jigu+=Et->rotace_jig;
-			}
-			////ukazatelové záležitost
-			if(Et->dalsi==NULL)Et=v.ELEMENTY->dalsi;//další kolo spojáku
-			else Et=Et->dalsi;//další element
+			if(V->zakazka->n==0)clJig=V->zakazka->barva;//mimo default zakázky JIGy nesou barvy dané zakázky
+			//pro ladění F->Memo(String(V->n)+" "+String(V->X)+" "+String(V->Y));//pro ladění
+			vykresli_vozik(canv,V->n,V->X,V->Y,v.PP.delka_jig,v.PP.sirka_jig,V->orientace_podvozek,V->rotace_jig/*připadně později dle zakázky V->Zakazka->Jig...*/,clChassis,clJig);
+			V=V->dalsi;
 		}
-		Et=NULL;delete Et;//odstranění již nepotřebného ukazatele, zde prvně nutné NULL!!!
+		delete V;
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -2984,6 +2942,7 @@ void Cvykresli::vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dJ
 	vykresli_jig(canv,C.x,C.y,dJ,sJ,orientaceP,rotaceJ,clJig);
 
 	////text - ID vozíku není vypisováno, pokud by se začlo používat, tak pozor u vykreslení pozic by bylo potřeba nastavit separátně písmo u chybových výpisů
+	canv->TextOutW(m.L2Px(X),m.L2Py(Y),ID);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_jig(TCanvas *canv,double X,double Y,double dJ,double sJ,double orientaceP,double rotaceJ,TColor clJig,float Width)

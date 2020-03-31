@@ -260,10 +260,14 @@ class Cvektory
 	struct TVozik
 	{
 		unsigned long n; //pořadí objektu ve spoj.seznamu
+		double X,Y;//umístění
+		double orientace_podvozek;//orientace podvozku dle pohybu na lince
+		double rotace_jig;//rotace jigu vuči podvozku (nehledí na skutečnou orientaci jigu)
+		short typ;//1-normální, 0 - prazdný
+		short stav;//vyháknutý -1, čeká na palec 0, jede 1
+		struct TElement *element;
+		struct TPalec *palec;
 		struct TZakazka *zakazka;//ukazatel na přidruženou zakázku
-		short typ;//0-normální, 1 - servisní
-		double start;//výchozí pozice v grafu časových os
-		double pozice;//aktuální pozice na dopravniku či v grafu časových os
 		struct TVozik *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 		struct TVozik *dalsi;//ukazatel na další objekt ve spojovém seznamu
 	};
@@ -555,6 +559,7 @@ class Cvektory
 	int vrat_eID_prvniho_pouziteho_robota(TObjekt *Objekt);//vratí eID prvního použitého robota, slouží na filtrování, jaké roboty v knihovně robotů zakazazovat, pokud není nic nalezeno vrátí -1
 	unsigned int vrat_poradi_elementu_do (TElement *Element=NULL);//vrátí pořadí robotů v objektu, stopek a otočí ve všech předchozích objektech, to všd do Elementu
 	unsigned int vrat_nejvetsi_ID_tabulek (TObjekt *Objekt);//vrátí největší ID napříč mGridy v objektu, používáno pro přiřazování ID novým tabulkám, řešeno takto z důvodu chyby při odmazávání a následném přidávání elementu (v kabině jsou 3 elementy druhý se odmaže, tabulky v kabině mají nyní ID 1 a 3, po přidání dalšího elementu bylo dříve přidano ID=pocet elementů, což by se v tomto případě rovnalo 3)
+	bool SGlinka();//ověří zda se jedná S&G linku z pohledu užité cesty, resp. zda obsahuje alespoň jeden S&G element včetně stopky na užité cestě, element musí být na pohonu
 	short vrat_druh_elementu(TElement *Element);//vrátí typ elementu -1 nenastaven nebo zarážka či předávací místo, 0 - S&G (včetně stopky), 1 - kontinuál
 	bool funkcni_element(TElement *Element);//vrátí true, pokud se jedná o funční element
 	void rotace_elementu(TObjekt *Objekt,short rotace);//orotuje všechny elementy daného objektu o danou hodnotu
@@ -666,12 +671,11 @@ private:
 //metody pro VOZIKY
 public:
 	void hlavicka_VOZIKY();//vytvoří hlavičku spojového seznamu VOZIKY
-	void generuj_VOZIKY();//vygeneruje podle zadaných zakázek seznam vozíků (včetně případných servisních), seřazeno dle zakázek
-	void vymazat_casovou_obsazenost_objektu_a_pozice_voziku(TObjekt *Objekt,TVozik *Vozik);//slouží při úvodním načítání časových os, smaže výchozí a koncovou pozici sloužící pro tvorbu a zobrazení na časových osách
+	void generuj_VOZIKY();//vygeneruje podle zadané zakázky seznam vozíků v úvodním rozložení
 	TVozik *vrat_vozik(unsigned int n);//dle n resp. ID vozíku vrátí ukazatel na daný vozík
 private:
-	void vloz_vozik(TZakazka *zakazka,short typ);//0-normální, 1-servisní
-	long vymaz_seznam_VOZIKY();
+	void vloz_vozik(TZakazka *zakazka,TElement *element,double X,double Y,double orientaceP,double rotaceJ);
+  void vymaz_seznam_VOZIKY();
 
 //metody pro PROCESY, konrola metody obsahují již neexistující atributy
 public:

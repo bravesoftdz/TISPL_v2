@@ -32,6 +32,7 @@
 #include "miniform_zpravy.h"
 #include "help.h"
 #include "MyString.h"
+#include <idattachmentfile.hpp>
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "RzPanel"
@@ -60,6 +61,7 @@
 #pragma link "scHint"
 #pragma link "scHint"
 #pragma link "rHintWindow"
+//možno smazat #pragma link "RzSndMsg"
 #pragma resource "*.dfm"
 TForm1 *Form1;
 TForm1 *F;//pouze zkrácený zapis
@@ -1949,6 +1951,36 @@ AnsiString TForm1::readINI(AnsiString Section,AnsiString Ident)
 	}
 }
 //---------------------------------------------------------------------------
+//odešle e-mail, doručitel na všech třech úrovní To,ccTo,bccTo mohou být mnohonásobně zadaní, pouze odělené čárkou, tělo e-mailu lze zadat jako html
+void TForm1::mail(String Host,String Username,String Password,String FromAddress,String FromName,String Subject,String Body,String To,String ccTo,String bccTo,String FileName)
+{
+	TIdMessage *MAIL=new TIdMessage(this);
+	MAIL->Clear();
+	MAIL->From->Address=FromAddress;
+	MAIL->From->Name=FromName;
+	MAIL->Subject=Subject;
+	MAIL->Recipients->EMailAddresses=To;
+	MAIL->CCList->EMailAddresses=ccTo;
+	MAIL->BccList->EMailAddresses=bccTo;
+	MAIL->ContentType="multipart/related; type=text/html";//text/plain
+	MAIL->CharSet="UTF-8";
+	MAIL->Body->Text=AnsiToUtf8(Body);
+	TIdAttachmentFile *Attach;
+	if(FileName!="")Attach=new TIdAttachmentFile(MAIL->MessageParts,FileName);//potřebuje #include <idattachmentfile.hpp>
+
+	TIdSMTP *SMTP=new TIdSMTP(this);
+	SMTP->Host=Host;//"smtp.seznam.cz";
+	SMTP->Username=Username;
+	SMTP->Password=Password;
+	SMTP->Port=25;//SMTP->UseTLS=utNoTLSSupport; případně použít, pro použití SSL jiný port a zároveň potřeba s SMTP propojit přes IO handler SSL komponentu + 2x patřičné DLL
+	SMTP->Connect();
+	SMTP->Send(MAIL);
+	SMTP->Disconnect(true);
+	delete Attach;//musí být jako první
+	delete MAIL;
+	delete SMTP;
+}
+//---------------------------------------------------------------------------
 //Zalogování na webu
 //automaticky přidá parametry (čas, uživatel, licence)
 void TForm1::log2web(UnicodeString Text)
@@ -2674,6 +2706,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		if(mGrid_knihovna->VisibleComponents>-1)mGrid_knihovna->VisibleComponents=true;//stačí volat toto, protože se pomocí Show (resp. Draw-SetCompontens-Set...) cyklem všechny komponenty na základě tohoto zobrazí pokud je nastaveno na -1 tak se při překreslování zohlední individuální nastavení komponent (z tohoto stavu je však pro další použítí třeba vrátit do stavu 0 nebo 1)
 		mGrid_knihovna->Show(Image_knihovna_objektu->Canvas);
 	}
+
 	///////zobrazení spojnice mezi tabulkou a elementem
 	if(OBJEKT_akt!=NULL && OBJEKT_akt->zobrazit_mGrid && (JID==0 || JID==1 || JID==100 || 1000<=JID && JID<2000) && pom_element!=NULL && Akce==NIC)vykresli_spojinici_EmGrid(Canvas,pom_element);
 }
@@ -2881,7 +2914,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 				d.PosunT.y-=(ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height-HG)/(float)d.KrokY*d.KrokY;
 				unsigned int V=ceil((d.PosunT.y-d.KrokY/2-scGPPanel_mainmenu->Height)/(d.KrokY*1.0));//zjistí aktuální číslo vozíku; pozn. KrokY/2 kvůli tomu, že střed osy je ve horozintální ose obdelníku
 				Cvektory::TVozik *Vozik=d.v.vrat_vozik(V);
-				if(Vozik==NULL)d.PosunT.x=0;else d.PosunT.x=Vozik->start;
+				//odstaveno kvůli zDM if(Vozik==NULL)d.PosunT.x=0;else d.PosunT.x=Vozik->start;
 				Invalidate();
 			}
 			break;
@@ -2891,7 +2924,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 			{
 				d.PosunT.y+=(ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height-HG)/(float)d.KrokY*d.KrokY;
 				unsigned int V=ceil((d.PosunT.y-d.KrokY/2-scGPPanel_mainmenu->Height)/(d.KrokY*1.0));//zjistí aktuální číslo vozíku; pozn. KrokY/2 kvůli tomu, že střed osy je ve horozintální ose obdelníku
-				d.PosunT.x=d.v.vrat_vozik(V)->start;
+				//odstaveno kvůli zDM d.PosunT.x=d.v.vrat_vozik(V)->start;
 				Invalidate();
 			}
 			break;
@@ -2899,7 +2932,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		case 35:
 			if(MOD==CASOVAOSA && d.v.VOZIKY->predchozi!=NULL)//na časové ose na poslední vozík
 			{
-				d.PosunT.x=d.v.VOZIKY->predchozi->pozice-ClientWidth+Canvas->TextWidth(d.v.VOZIKY->predchozi->pozice*d.PX2MIN)/2+2;
+				//odstaveno kvůli zDM d.PosunT.x=d.v.VOZIKY->predchozi->pozice-ClientWidth+Canvas->TextWidth(d.v.VOZIKY->predchozi->pozice*d.PX2MIN)/2+2;
 				d.PosunT.y=(d.v.VOZIKY->predchozi->n+1)*d.KrokY-ClientHeight+scGPPanel_statusbar->Height+scLabel_titulek->Height+HG;
 			}
 			Invalidate();
@@ -13559,7 +13592,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 void __fastcall TForm1::Button14Click(TObject *Sender)
 {
  //log(__func__);
- Form2->ShowModal();
+// Form2->ShowModal();
 //	d.v.vytvor_retez(d.v.POHONY->dalsi);
 //	d.vykresli_retez(Canvas,d.v.POHONY->dalsi->retez);
 ////	d.v.vytvor_retez(d.v.POHONY->predchozi);
@@ -13607,8 +13640,10 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 //		Memo("_____________");
 
 //d.TextOut(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,"Ahoj\ntoto je nějaký text řádku1\ntoto je nějaký text řádku 22\nhaf",Cvykresli::CENTER,Cvykresli::MIDDLE,-1);
+//d.v.PP.uchyt_pozice=0.380/2.0;
 
-
+	d.v.generuj_VOZIKY();
+	REFRESH();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
@@ -14493,8 +14528,59 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //	 d.v.vymazat_ZPRAVY();
 
 //	F->posun_na_element(1);
-	Form_definice_zakazek->ShowModal();
+	//Form_definice_zakazek->ShowModal();
 //  Form2->ShowModal();
+
+
+	////////////////připrava ladicí konzole
+	//vytvoření aktuálního snímku obrazovky
+	pan_create();//vytvoří aktuální printscreen jen pracovní plochy
+	TPngImage* PNG = new TPngImage();//kvůli větší kompresi uloženo do PNG (má větší kompresi než JPG)
+	PNG->Assign(Pan_bmp);
+	PNG->SaveToFile(get_temp_dir() +"TISPL\\" + "tispl_PrtScr"+get_user_name()+"_"+get_computer_name()+".png");
+
+	//připava textových dat
+	//+odeslat uživatele,pc,licencci,mod,aktuální log?
+
+	//odeslání e-mailu
+	//použit již připraveno metodu mail();
+//	TIdMessage *MAIL=new TIdMessage(this);
+//	MAIL->Clear();
+//	MAIL->From->Address="martin.kratochvil@lyzarskejihlavsko.cz";
+//	MAIL->From->Name="Martin Kratochvíl";
+//	MAIL->Subject="zkouška 12 včetně přílohy";
+//	MAIL->Recipients->EMailAddresses="makr77@gmail.com,kratochvil.martin@seznam.cz";
+//	MAIL->CCList->EMailAddresses="";
+//	MAIL->BccList->EMailAddresses="";
+//	MAIL->ContentType="multipart/related; type=text/html";//text/plain
+//	MAIL->CharSet="UTF-8";
+//	MAIL->Body->Text=AnsiToUtf8("Snad to <b>půjde</b> 11. port 25. již včetně přílohy Martin");
+//	TIdAttachmentFile *Attach = new TIdAttachmentFile(MAIL->MessageParts,"C:\\Users\\Martin\\AppData\\Local\\Temp\\TISPL\\tispl_PrtScrMartin_MARTIN-NOTEBOOK.png");//potřebuje #include <idattachmentfile.hpp>
+//
+//	TIdSMTP *SMTP=new TIdSMTP(this);
+//	SMTP->Host="lyzarskejihlavsko.cz";//"smtp.seznam.cz";
+//	SMTP->Username="martin.kratochvil@lyzarskejihlavsko.cz";
+//	SMTP->Password="doplnit";
+//	SMTP->Port=25;//SMTP->UseTLS=utNoTLSSupport; případně použít, pro použití SSL jiný port a zároveň potřeba s SMTP propojit přes IO handler SSL komponentu + 2x patřičné DLL
+//	SMTP->Connect();
+//	SMTP->Send(MAIL);
+//	SMTP->Disconnect(true);
+//	delete Attach;//musí být jako první
+//	delete MAIL;
+//	delete SMTP;
+//
+//	//odeslání dat na FTP server
+//	TIdFTP *FTP=new TIdFTP(this);
+//	FTP->Host="lyzarskejihlavsko.cz";//FTP server
+//	FTP->Username="hojkov@lyzarskejihlavsko.cz";
+//	FTP->Password="doplnit";
+//	FTP->TransferType=ftBinary;
+//	FTP->Passive=true;//nutno
+//	FTP->Connect();
+//	FTP->Put("C:\\Users\\Martin\\AppData\\Local\\Temp\\TISPL\\tispl_PrtScrMartin_MARTIN-NOTEBOOK.png");
+//	FTP->Disconnect();
+//	delete FTP;
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
