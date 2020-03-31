@@ -5483,12 +5483,24 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_do)
 			if(Element_od->eID!=MaxInt)break;//kota element - element
 			Element_od=Element_od->predchozi;
 		}
-		if(Element_od!=NULL && Element_od->objekt_n!=Element_do->objekt_n)Element_od=NULL;//ošetření proti tomu je-li hned první element mimo kabinu
+		//ošetření proti tomu je-li hned první element mimo kabinu, nebo hlavička elementů
+		//if(Element_od!=NULL && (Element_od->n==0 || Element_od->objekt_n!=Element_do->objekt_n))Element_od=NULL;
 		//určení bodů kóty
 		if(Element_do->geo.orientace==90||Element_do->geo.orientace==270)//vodorovná kabina
-			{if(Element_od!=NULL && Element_od->n==0 || Element_od==NULL){x1=Element_do->geo.X1;y1=Element_do->geo.Y1;}else {x1=Element_od->X;y1=Element_od->geo.Y4;}x2=Element_do->X;y2=y1;}
+		{
+			if(Element_od==NULL)
+			{x1=Element_do->geo.X1;y1=Element_do->geo.Y1;}
+			else if(Element_od->n!=0 && Element_od->objekt_n==Element_do->objekt_n){x1=Element_od->X;y1=Element_od->geo.Y4;}
+			else {x1=F->OBJEKT_akt->element->geo.X1;y1=F->OBJEKT_akt->element->geo.Y1;}
+			x2=Element_do->X;y2=y1;
+		}
 		else
-			{if(Element_od!=NULL && Element_od->n==0 || Element_od==NULL){x1=Element_do->geo.X1;y1=Element_do->geo.Y1;}else {x1=Element_od->geo.X4;y1=Element_od->Y;}y2=Element_do->Y;x2=x1;}
+		{
+			if(Element_od==NULL){x1=Element_do->geo.X1;y1=Element_do->geo.Y1;}
+			else if(Element_od->n!=0 && Element_od->objekt_n==Element_do->objekt_n){x1=Element_od->geo.X4;y1=Element_od->Y;}
+			else {x1=F->OBJEKT_akt->element->geo.X1;y1=F->OBJEKT_akt->element->geo.Y1;}
+			y2=Element_do->Y;x2=x1;
+		}
 		if(x2<F->OBJEKT_akt->element->geo.X1)O=(O-0.66)*(-1);//ošetření chybného zobrazení kóty elementu, který je před kabinou
 		//vykreslení kóty
 		vykresli_kotu(canv,x1,y1,x2,y2,Element_do,O,highlight);

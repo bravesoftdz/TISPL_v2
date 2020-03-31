@@ -27,6 +27,7 @@ __fastcall TFormX::TFormX(TComponent* Owner)
  mezera_jig1=6;
  mezera_jig2=7;
  posledni_E=NULL;
+ validovany_pohon=0;
  //pokud dojde ke zmìnì poøadí øádku, nastavit nové pozice zde, + pøepsání switche pro tabulku pohonu v OnChange + pøepsaní switche v korelace_tab_pohonu()
 }
 //---------------------------------------------------------------------------
@@ -1336,6 +1337,7 @@ bool TFormX::check_click_Note(double X,double Y,bool check_for_highlight)
 			{
 				vstoupeno_elm=false;
 				F->d.v.vrat_pohon(validovany_pohon)->aRD=dopRD;
+				validovany_pohon=0;//byla odstranìn problém
 				aktualizace_tab_elementu();
 				validace_RD(E);
 			}break;
@@ -1466,8 +1468,9 @@ void TFormX::prirazeni_pohohonu_vetvi(Cvektory::TElement *E,bool hlavni)
 	}
 
 	////naètení dat z pohonu do mGridu
-	update_hodnot_vyhybky_PM(E);
 	vstoupeno_elm=false;//zamezení, aby pøi aktualizace comba došlo k propadnutí do onchange
+	//update_hodnot_vyhybky_PM(E);
+	aktualizace_tab_elementu();
 	//F->zmena_editovanych_bunek(E);//aktualizuje combo a pøepíná buòky na edit èi draw
 	F->vlozit_predavaci_misto_aktualizuj_WT();//provede i aktualizaci WT všem elementù
 	vstoupeno_elm=true;//navrácení stavu
@@ -1576,7 +1579,7 @@ void TFormX::validace_RD(Cvektory::TElement *E)
   	bool mimo_rozmezi=false;
 		bool pouze_rozmezi=false;
 		unsigned int p1_n=E->mGrid->getCombo(1,2)->ItemIndex,p2_n=E->mGrid->getCombo(2,2)->ItemIndex;
-		validovany_pohon=0;
+		unsigned int pro_pohon=0;
 		dopRD=0;
 
 		//naètení pohonù
@@ -1604,7 +1607,7 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 					{
 						E->mGrid->ShowNote(F->ls->Strings[220],F->d.clError,14);//"Rychlost neodpovídá rozmezí!"
 						povolit_zakazat_editaci(false);//zakáže btn uložit v editaci
-						validovany_pohon=i;//uložení pro který pohon platí validace
+						pro_pohon=p->n;//uložení pro který pohon platí validace
 						break;//byl nalezen problém, zastavení validace, lze zobrazit jen jeden problém v Note
 	     		}
 					if(!mimo_rozmezi && E->mGrid->Note.Text!="")
@@ -1625,7 +1628,7 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 	     			{
 							if(E->mGrid->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
 							E->mGrid->ShowNote(F->ls->Strings[221]+" <a>"+AnsiString(F->m.round2double(F->outaRD(dopRD),3))+"</a> "+jednotky,F->d.clError,14);//"Zadejte doporuèenou rychlost pohonu:"
-							validovany_pohon=i;//uložení pro který pohon platí validace
+							pro_pohon=p->n;//uložení pro který pohon platí validace
 							break;//byl nalezen problém, zastavení validace, lze zobrazit jen jeden problém v Note
 						}
 	     			//vše je vpoøádku
@@ -1643,18 +1646,21 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 		//roznesení validace na ostatní
 		if(puv_Note!=E->mGrid->Note.Text)//došlo ke zmìnì note
 		{
-			puv_Note=E->mGrid->Note.Text;    //F->Memo("Note: "+puv_Note);
-			if(F->predchozi_PM!=NULL && F->predchozi_PM!=E && (F->predchozi_PM->mGrid->getCombo(1,2)->ItemIndex==validovany_pohon || F->predchozi_PM->mGrid->getCombo(2,2)->ItemIndex==validovany_pohon))//pokud má PM stejný pohon jako validovaný pohon
+			puv_Note=E->mGrid->Note.Text;
+			if(F->predchozi_PM!=NULL && F->predchozi_PM!=E && (F->predchozi_PM->mGrid->getCombo(1,2)->ItemIndex==pro_pohon || F->predchozi_PM->mGrid->getCombo(2,2)->ItemIndex==pro_pohon))//pokud má PM stejný pohon jako validovaný pohon
 				F->predchozi_PM->mGrid->ShowNote(puv_Note,F->d.clError,14);
 			Cvektory::TElement *e_pom=F->OBJEKT_akt->element;
 			while(e_pom!=NULL && e_pom->objekt_n==F->OBJEKT_akt->n)
 			{
-				if(e_pom->eID==200 && (e_pom->mGrid->getCombo(1,2)->ItemIndex==validovany_pohon || e_pom->mGrid->getCombo(2,2)->ItemIndex==validovany_pohon))
+				if(e_pom->eID==200 && (e_pom->mGrid->getCombo(1,2)->ItemIndex==pro_pohon || e_pom->mGrid->getCombo(2,2)->ItemIndex==pro_pohon))
 					e_pom->mGrid->ShowNote(puv_Note,F->d.clError,14);
 				e_pom=F->d.v.dalsi_krok(e_pom,F->OBJEKT_akt);
 			}
 			e_pom=NULL;delete e_pom;
 		}
+
+    //pokud probìhla validace s problémem, uložit pohon
+		if(pro_pohon!=0)validovany_pohon=pro_pohon;
 
   	//ukazatelové záležitosti
 		p=NULL;p1=NULL;p2=NULL;
@@ -1686,7 +1692,7 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 			else e->pohon=p;
 			e=e->predchozi;
 		}
-		if(e!=NULL && e->n>0 && e->eID==200)update_hodnot_vyhybky_PM(e);//skonèil jsem pøiøazování pohonu na PM, aktualizace spojky
+		//if(e!=NULL && e->n>0 && e->eID==200)update_hodnot_vyhybky_PM(e);//skonèil jsem pøiøazování pohonu na PM, aktualizace spojky
 		//došel jsem na zaèátek obìktu a mám v pøedchozím PM
 		if(e!=NULL && e->n>0 && (e==F->OBJEKT_akt->element || e==F->OBJEKT_akt->element->predchozi) && F->predchozi_PM!=NULL)
 		{
@@ -1696,7 +1702,7 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 				e->pohon=p;
 				e=e->dalsi;
 			}
-			update_hodnot_vyhybky_PM(F->predchozi_PM);//aktualizace hodnot na pøedchozím PM
+			//update_hodnot_vyhybky_PM(F->predchozi_PM);//aktualizace hodnot na pøedchozím PM
 		}
 	}
 	////pøiøazení pohonu za PM
@@ -1709,13 +1715,14 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 			if(e->eID==200)break;//narazil jsem na PM, zapsat nový pohon a konec
 			else e=e->predchozi;
 		}
-		if(e!=NULL && e->eID==200)update_hodnot_vyhybky_PM(e);//skonèil jsem na pøedávacím místì, update tohoto PM
+		//if(e!=NULL && e->eID==200)update_hodnot_vyhybky_PM(e);//skonèil jsem na pøedávacím místì, update tohoto PM
 		if(E->dalsi!=NULL && E->dalsi->objekt_n==E->objekt_n)E->WT=F->m.cekani_na_palec(0,E->dalsi->pohon->roztec,E->dalsi->pohon->aRD,3);
 	}
 
 	////naètení dat z pohonu do mGridu
-	update_hodnot_vyhybky_PM(E);
 	vstoupeno_elm=false;//zamezení, aby pøi aktualizace comba došlo k propadnutí do onchange
+	//update_hodnot_vyhybky_PM(E);
+	aktualizace_tab_elementu();
 	//F->zmena_editovanych_bunek(E);//aktualizuje combo a pøepíná buòky na edit èi draw
 	F->vlozit_predavaci_misto_aktualizuj_WT();//provede i aktualizaci WT všem elementù
 	vstoupeno_elm=true;//navrácení stavu
