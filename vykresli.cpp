@@ -206,9 +206,9 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	vykresli_voziky(canv);
 
 	///////////////VALIDACE a její výpis formou zpráv
+	v.VALIDACE();
 	if(F->MOD!=F->Tmod::TVORBA_CESTY && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT)
 	{
-		v.VALIDACE();
 		vypis_zpravy(canv);
 	}
 }

@@ -31,7 +31,6 @@ private:	// User declarations
 	//promìnné pro UnitX
 	bool editace_pohonu;
 	long rychlost, roztec_palce, nasobek_roztece, roztec_jigu, mezera_podvozky, mezera_jig1, mezera_jig2;
-	int validovany_pohon;
 	double dopRD;
 	//     aRD       R,roztec          Rx          Rz,rozestup
 public:		// User declarations
@@ -57,6 +56,7 @@ public:		// User declarations
 	bool vstoupeno_poh, vstoupeno_elm,validace_true;
 	Cvektory::TElement *posledni_E;//slouží pro uložení editovaného elementu, nemusím pøi každém stisku klávesy vracet E
 	Cvektory::TCesta *posledni_c;
+	int validovany_pohon;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFormX *FormX;

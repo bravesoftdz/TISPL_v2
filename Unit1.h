@@ -864,7 +864,7 @@ public:		// User declarations
 	void posun_na_element(unsigned long n_zpravy);//podle zprávy provede posun na daný elment
 	void smaz_kurzor();
 	UnicodeString get_temp_dir();
-	void vytvoreni_tab_pohon();//vytvoøení tabulky pohonu
+	void vytvoreni_tab_pohon(bool existuje_poh_tabulka);//vytvoøení tabulky pohonu
 	void napln_comba_mGridu(Cvektory::TElement *E);
 	void zmena_editovanych_bunek(Cvektory::TElement *E);//automaticky nastaví editované položky a needitovatelné položky pro pohonové tabulky
 	void vlozit_predavaci_misto_aktualizuj_WT();//projde elementy a objekty, pokud je nìkde nutnost vložit pøedávací místo vloží ho tam

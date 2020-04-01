@@ -3180,9 +3180,9 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 					//vypsání OK pokud je RT kladné a zároveň má stopka více akt_vozíku
 					if(Element->data.RT.y>0 && Element->data.pocet_voziku>1){Element->mGrid->Cells[1][2].Text="OK";Element->mGrid->Cells[1][2].Hint=F->m.round2double(F->outPT(Element->data.RT.y),3);Element->mGrid->Cells[1][2].ShowHint=true;}
 					else {Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->data.RT.y),3);Element->mGrid->Cells[1][2].Hint="";Element->mGrid->Cells[1][2].ShowHint=false;}
-	  		}break;
-	  		case 2:case 8:case 12:case 16:case 102:case 106://roboti se stop stanicí
-    		{
+				}break;
+				case 2:case 8:case 12:case 16:case 102:case 106://roboti se stop stanicí
+				{
 					Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->data.RT.y),3);
 	  			if(highlight_bunek)Element->mGrid->Cells[1][2].Highlight=true;//slouži pro higlightování buňky s RT při posunu elementu
 	  		}break;
@@ -7610,6 +7610,14 @@ void Cvektory::vse_odstranit()
  	}
 	hlavicka_ELEMENTY();//nutnost
 
+	//VYHYBKY
+	if(VYHYBKY!=NULL && VYHYBKY->predchozi->n>0)//pokud je více výhybek
+ 	{
+		vymaz_seznam_VYHYBKY();//vymaze vyhybky z paměti
+		delete VYHYBKY; VYHYBKY=NULL;
+ 	}
+	hlavicka_seznam_VYHYBKY();//nutnost
+
  	//POHONY
  	if(POHONY!=NULL && POHONY->predchozi->n>0)//pokud je více objektů
  	{
@@ -7977,6 +7985,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 	if(obraz!=NULL && (obraz->n==0 && storno || obraz->n!=0 && !storno))//kontrola zda sen nenarazil na poslední obraz
 	{
 		F->Timer_backup->Enabled=false;//vypnutí timeru pro backup, nesmí spustit během této metody!! (uložení nesmyslů do backup)
+		bool exituje_tab_poh=false;
 		////Layout nebo Storno
 		//if(obraz->edit_Objekt==0)
 		{
@@ -7998,6 +8007,8 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 	  	hlavicka_OBJEKTY();//nutné po mazání!!!
 	  	vymaz_seznam_ELEMENTY();
 			hlavicka_ELEMENTY();//nutné po mazání!!!
+			F->predchozi_PM=NULL;
+			ZAKAZKA_akt=NULL;
 
 			////načtení Objektů
 	  	TObjekt *dO=obraz->Objekty->dalsi,*O=NULL;
@@ -8016,7 +8027,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 			delete dO;dO=NULL;
 			if(obraz->edit_Objekt!=0 && !storno)F->OBJEKT_akt=vrat_objekt(obraz->edit_Objekt);
 
-	  	////načtení Elementů
+			////načtení Elementů
 			TElement *dE=obraz->Elementy->dalsi,*E=NULL;
 			T2Element *tab_pruchodu=new T2Element[obraz->pocet_vyhybek+1];vyhybka_pom=NULL;
     	while(dE!=NULL)
@@ -8031,6 +8042,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 					E->mGrid->Tag=6;//ID formu
 					E->mGrid->ID=E->n;
 					F->design_element(E,false,false);
+					if(E->eID==200 || E->eID==300)exituje_tab_poh=true;
 				}
 				//vloz_element(E);
 				//ukazatelové záležitosi
@@ -8039,11 +8051,21 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
     	}
 			delete dE;dE=NULL;
 			delete []tab_pruchodu;tab_pruchodu=NULL;vyhybka_pom=NULL;
-			//aktualizace sparovaných ukazatelu a RT
+			//aktualizace dat
 			if(F->OBJEKT_akt!=NULL && !storno)
 			{
-				//F->vytvoreni_tab_pohon();
+				//sparovaných ukazatelu a RT
 				aktualizuj_sparovane_ukazatele();
+				//aktualizace předchozího PM
+				if(F->OBJEKT_akt->element->predchozi->n>0)F->predchozi_PM=najdi_posledni_element_podle_eID(200,vrat_objekt(F->OBJEKT_akt->element->predchozi->objekt_n));
+				if(F->predchozi_PM!=NULL)
+				{
+		  		F->predchozi_PM->mGrid=new TmGrid(F);
+		  		F->predchozi_PM->mGrid->Tag=6;//ID formu
+					F->predchozi_PM->mGrid->ID=F->predchozi_PM->n;
+					F->design_element(F->predchozi_PM,false);//znovuvytvoření tabulek
+					bool exituje_tab_poh=true;//pohonová tabulka v editaci bude exitovat
+				}
 			}
 		}
 		//pro Editaci
@@ -8210,7 +8232,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 		}
 
 		//znovu vytvoření tabulky pohonů pokud jsem v editaci
-		if(F->OBJEKT_akt!=NULL && !storno)F->vytvoreni_tab_pohon();
+		if(F->OBJEKT_akt!=NULL && !storno)F->vytvoreni_tab_pohon(exituje_tab_poh);
 
 		F->Timer_backup->Enabled=true;//obnovení timeru pro backup, nespouští se!
 		if(storno)
