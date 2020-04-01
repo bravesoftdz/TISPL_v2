@@ -141,16 +141,16 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
    	Cvektory::TElement *E=v.ELEMENTY->dalsi,*pom=NULL;
    	TPoint *tab_pruchodu=new TPoint[v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
    	while(E!=NULL && F->MOD!=F->TVORBA_CESTY)
-   	{
+		{
    		//nastavování stavu
    		stav=1;
    		if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n)stav=1;//elementy v aktivním objektu
    		else stav=-1;//disabled elementy ostatních objektů
    		if(stav!=-1)stav=E->stav;//předávání stavu v aktivní kabině pro highlightování elementů
-   		//vykreslení elementu a pozic
-   		vykresli_pozice_a_zony(canv,E);
-   		if(!(F->OBJEKT_akt!=NULL && E->objekt_n!=F->OBJEKT_akt->n && F->scGPTrackBar_intenzita->Value<5))vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->data.LO1,E->OTOC_delka,E->data.LO2,E->data.LO_pozice,E);
-   		//uložení citelné oblasti pro další použití
+			//vykreslení elementu a pozic
+			vykresli_pozice_a_zony(canv,E);
+			if(!(F->OBJEKT_akt!=NULL && E->objekt_n!=F->OBJEKT_akt->n && F->scGPTrackBar_intenzita->Value<5))vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->data.LO1,E->OTOC_delka,E->data.LO2,E->data.LO_pozice,E);
+			//uložení citelné oblasti pro další použití
    		E->citelna_oblast.rect3=aktOblast;
    		//vykreslení kót
    		if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n && F->OBJEKT_akt->zobrazit_koty)vykresli_kotu(canv,E);//mezi elementy
@@ -195,8 +195,8 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
    				canv->LineTo(m.L2Px(bod.x),m.L2Py(bod.y));
    				sipka(canv,(m.L2Px(E->geo.X4)+m.L2Px(bod.x))/2.0,(m.L2Py(E->geo.Y4)+m.L2Py(bod.y))/2.0,m.azimut(m.L2Px(bod.x),m.L2Py(bod.y),m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4))*(-1),true,sipka_velikost,clRed);//zajistí vykreslení šipky - orientace spojovací linie
    	  	}
-   		}
-   		//posun na další element
+			}
+			//posun na další element
    		E=v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);//nutné použít tento průcodový algoritmus, v tomto průchodu je volán algoritmus dalsi_krok, proto ho nelze použít
    	}
    	delete E;E=NULL;
@@ -208,9 +208,9 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	vykresli_voziky(canv);
 
 	///////////////VALIDACE a její výpis formou zpráv
+	v.VALIDACE();
 	if(F->MOD!=F->Tmod::TVORBA_CESTY && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT)
 	{
-		v.VALIDACE();
 		vypis_zpravy(canv);
 	}
 }
@@ -2727,7 +2727,7 @@ unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,int i,TPointD OD, TPointD 
 ////-----------------------------------------------------------------------------------------------------------------------------------------------------
 //vykresli pozic a obalových zón - doporučení přejmenovat metodu
 void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
-{                                                                                                                                                                                                                                                                                                      //oblouk
+{                                                                                                                                                                                                                                                                                                     //oblouk
 	//provizorně
 	//if(F->scGPTrackBar_intenzita->Value>5 && F->scGPCheckBox_zobrazit_pozice->Checked && E->data.pocet_pozic>0 || (F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180) || F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->geo.typ==1)//pokud se má smysl algoritmem zabývat, pouze optimalizační podmínky
 	//{
@@ -3092,7 +3092,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 			if(pocet_pruchodu>0)
 			{
 				RetezWidth=v.PP.sirka_podvozek/2.0+m.px2m(1/3.0*F->Zoom)+2*m.px2m(m.round(F->Zoom));
-				RetezWidth=m.m2px(RetezWidth);
+				RetezWidth=m.m2px(RetezWidth/2.0);
 			}
 			else clRetez=(TColor)RGB(200, 200, 200);
 		}
@@ -5486,12 +5486,24 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_do)
 			if(Element_od->eID!=MaxInt)break;//kota element - element
 			Element_od=Element_od->predchozi;
 		}
-		if(Element_od!=NULL && Element_od->objekt_n!=Element_do->objekt_n)Element_od=NULL;//ošetření proti tomu je-li hned první element mimo kabinu
+		//ošetření proti tomu je-li hned první element mimo kabinu, nebo hlavička elementů
+		//if(Element_od!=NULL && (Element_od->n==0 || Element_od->objekt_n!=Element_do->objekt_n))Element_od=NULL;
 		//určení bodů kóty
 		if(Element_do->geo.orientace==90||Element_do->geo.orientace==270)//vodorovná kabina
-			{if(Element_od!=NULL && Element_od->n==0 || Element_od==NULL){x1=Element_do->geo.X1;y1=Element_do->geo.Y1;}else {x1=Element_od->X;y1=Element_od->geo.Y4;}x2=Element_do->X;y2=y1;}
+		{
+			if(Element_od==NULL)
+			{x1=Element_do->geo.X1;y1=Element_do->geo.Y1;}
+			else if(Element_od->n!=0 && Element_od->objekt_n==Element_do->objekt_n){x1=Element_od->X;y1=Element_od->geo.Y4;}
+			else {x1=F->OBJEKT_akt->element->geo.X1;y1=F->OBJEKT_akt->element->geo.Y1;}
+			x2=Element_do->X;y2=y1;
+		}
 		else
-			{if(Element_od!=NULL && Element_od->n==0 || Element_od==NULL){x1=Element_do->geo.X1;y1=Element_do->geo.Y1;}else {x1=Element_od->geo.X4;y1=Element_od->Y;}y2=Element_do->Y;x2=x1;}
+		{
+			if(Element_od==NULL){x1=Element_do->geo.X1;y1=Element_do->geo.Y1;}
+			else if(Element_od->n!=0 && Element_od->objekt_n==Element_do->objekt_n){x1=Element_od->geo.X4;y1=Element_od->Y;}
+			else {x1=F->OBJEKT_akt->element->geo.X1;y1=F->OBJEKT_akt->element->geo.Y1;}
+			y2=Element_do->Y;x2=x1;
+		}
 		if(x2<F->OBJEKT_akt->element->geo.X1)O=(O-0.66)*(-1);//ošetření chybného zobrazení kóty elementu, který je před kabinou
 		//vykreslení kóty
 		vykresli_kotu(canv,x1,y1,x2,y2,Element_do,O,highlight);
@@ -6001,7 +6013,7 @@ void Cvykresli::vykresli_kurzor_cesta(TCanvas *canv,Cvektory::TElement *E)
 	  	POLE[3]=TPoint(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
 
 	  	float	RetezWidth=v.PP.sirka_podvozek/2.0+m.px2m(1/3.0*F->Zoom)+2*m.px2m(m.round(F->Zoom));
-	  	RetezWidth=m.m2px(RetezWidth);
+	  	RetezWidth=m.m2px(RetezWidth/2.0);
 
 	  	set_pen(canv,clBlack,m.round(RetezWidth),PS_ENDCAP_SQUARE);
 			//vykreslení řetězu
@@ -6037,7 +6049,7 @@ void Cvykresli::vykresli_potencial_cesty(TCanvas *canv,Cvektory::TElement *E)
 {
 	double X=E->X,Y=E->Y;       TColor color=m.clIntensive(clBlack,245);
 	double Width=v.PP.sirka_podvozek/2.0+m.px2m(1/3.0*F->Zoom)+2*m.px2m(m.round(F->Zoom));
-	Width=m.m2px(Width);
+	Width=m.m2px(Width/2.0);
 	////potenciální Gelement
 	TPointD *PL;//=m.getArcLine(X,Y,orientace,rotacni_uhel,radius);
 	if(E->dalsi->geo.typ!=0)PL=m.getArcLine(X,Y,E->dalsi->geo.orientace,E->dalsi->geo.rotacni_uhel,E->dalsi->geo.radius);

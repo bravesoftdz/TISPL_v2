@@ -948,6 +948,56 @@ void Cvektory::aktualizace_objektu(short typ)
 //	O=NULL;delete O;
 }
 //---------------------------------------------------------------------------
+//aktualizuje stav objektu, například po odmazání posledního KK robota objekt nezůstane v KK režimu
+void Cvektory::aktualizace_rezimu_objektu(TObjekt *Objekt,bool aktualizovat_sta_mGridu)
+{
+	//základní nastavění podle typu objektu, 0-S&G,1-Kontin.(line tracking),2-Postprocesní
+	short predchozi_rezim=Objekt->rezim;
+	Objekt->rezim=-1;
+	if(Objekt->id==5 || Objekt->id==6)Objekt->rezim=2;
+
+	//kontrola podle elementů v objektu
+	TElement *E=Objekt->element;
+	while(E!=NULL && E->objekt_n==Objekt->n)
+	{
+		short druh=vrat_druh_elementu(E);//kontrola druhu elementu
+		//pokud je druh elementu KK nebo S&G, zapiš změnu a ukonči
+		if(druh>=0)
+		{
+			Objekt->rezim=druh;//zapsání změny
+			break;//ukončení průchodu
+		}
+		E=dalsi_krok(E,Objekt);
+	}
+	//v případě přerušení průchodu nutné smazat
+	vymaz_seznam_VYHYBKY();
+
+  //skontrolovat zda nejsou v objektu PM nebo výhybky, pokud ano aktualizovat jim editované položky
+	if(aktualizovat_sta_mGridu && predchozi_rezim!=Objekt->rezim)
+	{
+		bool probehla_validace=false;
+		E=Objekt->element;
+		while(E!=NULL && E->objekt_n==Objekt->n)
+		{
+			if(E->eID==200 || E->eID==300)
+			{
+				F->napln_comba_mGridu(E);//provede aktualizaci editovaných položek v mGridu
+				if(!probehla_validace && E->eID==200)//spouštět validaci jen jednou a to pokud narazím na PM
+				{
+					FormX->validace_RD(E);//pokud byl změněn režím provede validaci aktuální rychlosti
+					probehla_validace=true;//zapsaní, že validace proběhla
+				}
+			}
+			E=dalsi_krok(E,Objekt);
+		}
+		if(F->predchozi_PM!=NULL)F->napln_comba_mGridu(F->predchozi_PM);//provede aktualizaci editovaných položek v mGridu u předchozího PM
+	}
+
+	//ukazatelové záležitosti
+	E=NULL;delete E;
+	vymaz_seznam_VYHYBKY();
+}
+//---------------------------------------------------------------------------
 //všem objektům, které měly přiřazen pohon s oldN(oldID), přiřadí pohon s newN(newID), podle toho, jak jsou ukládány nově do spojáku, důležité, pokud dojde k narušení pořadí ID resp n pohonů a pořadí jednotlivých řádků ve stringridu, např. kopirováním, smazáním, změnou pořadí řádků atp.
 void Cvektory::aktualizace_prirazeni_pohonu_k_objektum(unsigned int oldN,unsigned int newN)
 {
@@ -2127,7 +2177,7 @@ Cvektory::TElement *Cvektory::vloz_element_pred(TObjekt *Objekt,TElement *Elemen
 	{
 		Cvektory::TElement *p=Objekt->element;//začnu od prvního elementu v objektu
 		while(p!=NULL && p->objekt_n==Objekt->n)
-		{        F->log(__func__,"      "+p->name);
+		{
 			if(p!=Element)//neřeší se s aktuálním elementem (při posunu)
 			{
 				//kontrola zda vkládaný element neleží mezi prvním a druhým elementem, druhým až n
@@ -2240,7 +2290,7 @@ void Cvektory::uprav_popisky_elementu(TElement *Element)
 				{
 					E->mGrid->Cells[0][0].Text="<a>"+E->name+"</a>";
 					E->mGrid->Cells[0][0].Font->Color=clBlack;//z důvodu nasazení odkazu, po přejmenování se text vrátil do modré barvy
-					E->mGrid->MergeCells(0,0,1,0);//nutné kvůli správnému zobrazení hlavičky
+					E->mGrid->MergeCells(0,0,E->mGrid->ColCount-1,0);//nutné kvůli správnému zobrazení hlavičky
 					if(F->zobrazeni_tabulek)E->mGrid->Update();//musí zde být ošetření proti paměťové chybě
 				}catch(...){}
 			}
@@ -3122,9 +3172,9 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 					//vypsání OK pokud je RT kladné a zároveň má stopka více akt_vozíku
 					if(Element->data.RT.y>0 && Element->data.pocet_voziku>1){Element->mGrid->Cells[1][2].Text="OK";Element->mGrid->Cells[1][2].Hint=F->m.round2double(F->outPT(Element->data.RT.y),3);Element->mGrid->Cells[1][2].ShowHint=true;}
 					else {Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->data.RT.y),3);Element->mGrid->Cells[1][2].Hint="";Element->mGrid->Cells[1][2].ShowHint=false;}
-	  		}break;
-	  		case 2:case 8:case 12:case 16:case 102:case 106://roboti se stop stanicí
-    		{
+				}break;
+				case 2:case 8:case 12:case 16:case 102:case 106://roboti se stop stanicí
+				{
 					Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->data.RT.y),3);
 	  			if(highlight_bunek)Element->mGrid->Cells[1][2].Highlight=true;//slouži pro higlightování buňky s RT při posunu elementu
 	  		}break;
@@ -3662,7 +3712,7 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 			else Element->dalsi->predchozi=Element->predchozi;
 			if(F->Akce!=F->GEOMETRIE && O!=NULL)//u geo. se upravuje geometrie ostatních elemntů zvlášť v Unit1, pokud je O==NULL mažu elementy smazaného objektu = neupravovat geo. dalších elementů
 			{
-				if(Element->n!=1)vloz_G_element(Element->dalsi,0,Element->predchozi->geo.X4,Element->predchozi->geo.Y4,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
+				if(Element==ELEMENTY->dalsi)vloz_G_element(Element->dalsi,0,Element->predchozi->geo.X4,Element->predchozi->geo.Y4,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
 				else vloz_G_element(Element->dalsi,0,Element->geo.X1,Element->geo.Y1,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
 			}
 		}
@@ -7552,6 +7602,14 @@ void Cvektory::vse_odstranit()
  	}
 	hlavicka_ELEMENTY();//nutnost
 
+	//VYHYBKY
+	if(VYHYBKY!=NULL && VYHYBKY->predchozi->n>0)//pokud je více výhybek
+ 	{
+		vymaz_seznam_VYHYBKY();//vymaze vyhybky z paměti
+		delete VYHYBKY; VYHYBKY=NULL;
+ 	}
+	hlavicka_seznam_VYHYBKY();//nutnost
+
  	//POHONY
  	if(POHONY!=NULL && POHONY->predchozi->n>0)//pokud je více objektů
  	{
@@ -7919,6 +7977,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 	if(obraz!=NULL && (obraz->n==0 && storno || obraz->n!=0 && !storno))//kontrola zda sen nenarazil na poslední obraz
 	{
 		F->Timer_backup->Enabled=false;//vypnutí timeru pro backup, nesmí spustit během této metody!! (uložení nesmyslů do backup)
+		bool exituje_tab_poh=false;
 		////Layout nebo Storno
 		//if(obraz->edit_Objekt==0)
 		{
@@ -7940,6 +7999,8 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 	  	hlavicka_OBJEKTY();//nutné po mazání!!!
 	  	vymaz_seznam_ELEMENTY();
 			hlavicka_ELEMENTY();//nutné po mazání!!!
+			F->predchozi_PM=NULL;
+			ZAKAZKA_akt=NULL;
 
 			////načtení Objektů
 	  	TObjekt *dO=obraz->Objekty->dalsi,*O=NULL;
@@ -7958,7 +8019,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 			delete dO;dO=NULL;
 			if(obraz->edit_Objekt!=0 && !storno)F->OBJEKT_akt=vrat_objekt(obraz->edit_Objekt);
 
-	  	////načtení Elementů
+			////načtení Elementů
 			TElement *dE=obraz->Elementy->dalsi,*E=NULL;
 			T2Element *tab_pruchodu=new T2Element[obraz->pocet_vyhybek+1];vyhybka_pom=NULL;
     	while(dE!=NULL)
@@ -7973,6 +8034,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 					E->mGrid->Tag=6;//ID formu
 					E->mGrid->ID=E->n;
 					F->design_element(E,false,false);
+					if(E->eID==200 || E->eID==300)exituje_tab_poh=true;
 				}
 				//vloz_element(E);
 				//ukazatelové záležitosi
@@ -7981,11 +8043,21 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
     	}
 			delete dE;dE=NULL;
 			delete []tab_pruchodu;tab_pruchodu=NULL;vyhybka_pom=NULL;
-			//aktualizace sparovaných ukazatelu a RT
+			//aktualizace dat
 			if(F->OBJEKT_akt!=NULL && !storno)
 			{
-				//F->vytvoreni_tab_pohon();
+				//sparovaných ukazatelu a RT
 				aktualizuj_sparovane_ukazatele();
+				//aktualizace předchozího PM
+				if(F->OBJEKT_akt->element->predchozi->n>0)F->predchozi_PM=najdi_posledni_element_podle_eID(200,vrat_objekt(F->OBJEKT_akt->element->predchozi->objekt_n));
+				if(F->predchozi_PM!=NULL)
+				{
+		  		F->predchozi_PM->mGrid=new TmGrid(F);
+		  		F->predchozi_PM->mGrid->Tag=6;//ID formu
+					F->predchozi_PM->mGrid->ID=F->predchozi_PM->n;
+					F->design_element(F->predchozi_PM,false);//znovuvytvoření tabulek
+					bool exituje_tab_poh=true;//pohonová tabulka v editaci bude exitovat
+				}
 			}
 		}
 		//pro Editaci
@@ -8152,7 +8224,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 		}
 
 		//znovu vytvoření tabulky pohonů pokud jsem v editaci
-		if(F->OBJEKT_akt!=NULL && !storno)F->vytvoreni_tab_pohon();
+		if(F->OBJEKT_akt!=NULL && !storno)F->vytvoreni_tab_pohon(exituje_tab_poh);
 
 		F->Timer_backup->Enabled=true;//obnovení timeru pro backup, nespouští se!
 		if(storno)

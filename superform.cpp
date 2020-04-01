@@ -215,6 +215,7 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 		if(akt_zakazka_n!=0)F->d.v.ZAKAZKA_akt=F->d.v.vrat_zakazku(akt_zakazka_n);
 		//else F->zakazka_akt=NULL;
 		F->DuvodUlozit(true);
+		F->duvod_validovat=2;
 		// ukonèení formu a smazání temp zakázek
 		KonecClick(Sender);
 	}
