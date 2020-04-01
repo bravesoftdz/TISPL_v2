@@ -127,7 +127,9 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	}
 	delete O;O=NULL;
 	if(F->OBJEKT_akt!=NULL)vykresli_objekt(canv,F->OBJEKT_akt);//vykreslení aktuálně editovaného objektu nad všechny ostatní objekty
-	vykresli_retez(canv);
+
+	///////////////Vykreslení dopravníků
+	vykresli_retez(canv);//přejemnovat asi na vykresli dopravník
 
 	///////////////Vykreslení elementů
 	//vykreslování z ELEMENTY
@@ -1202,7 +1204,7 @@ void Cvykresli::vykresli_legendu_casovych_os(TCanvas *canv)
 
 		//zjistí barvu (raději) druhého zobrazeného voziků, podle této barvy se vykreslí legenda
 		unsigned int Voz=ceil((Form1->scLabel_titulek->Height+PosunT.y-KrokY/2-Form1->scGPPanel_mainmenu->Height)/(KrokY*1.0));//pozn. KrokY/2 kvůli tomu, že střed osy je ve horozintální ose obdelníku
-		TColor C=v.vrat_vozik(Voz+1)->zakazka->barva;
+		TColor C=clRed;//odstaveno pro ZDMv.vrat_vozik(Voz+1)->zakazka->barva;
 
 		//vykreslování samotné legendy, podle položek, které byly použity
 		vykresli_proces(canv, "",C,0,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;V="technologický proces";canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,V);
@@ -2963,76 +2965,76 @@ void Cvykresli::vykresli_jig(TCanvas *canv,double X,double Y,double dJ,double sJ
 //metoda bude také k odstranění
 void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y,double Poffset,bool animace)
 {
-	////vychozí geometrické proměnné
-	//řetěz
-	double DD=100;O->delka_dopravniku;//délka objektu v metrech
-	//double M=O->mezera;//mezera
-	double R=O->pohon->roztec;//rozteč palců řetězu
-	double Rz=O->pohon->Rz;//rozestup
-	int Rx=m.round(O->pohon->Rx);//může být zaokrouhleno, protože musí vycházet celé číslo
-	short Rezim=O->rezim;//podle eID prvního použitého robota je nastaven ve stejnojmenné metodě režim objektu
-	double KR=0;//kalibrace řetězu vůči podvozku např. 0 - střed, -DP/2 - začátek, DP/2 - konec, či libovolný v m od začátku podvozku
-	TPointD S;S.x=X;S.y=Y;//Start
-	TPointD K;K.x=X+DD;K.y=Y;//Konec
-	//vozíková data - v případě nevykreslení vozíku zde monžno odstranit
-	double dJ=m.UDJ(v.PP.delka_jig,v.PP.sirka_jig,O->orientace);//délka jigu
-	double sJ=m.UDJ(v.PP.sirka_jig,v.PP.delka_jig,O->orientace);//šířka jigu a tím pádem i minimální kabiny
-	double DV=dJ;if(v.PP.delka_podvozek>dJ)DV=v.PP.delka_podvozek;
-																	 //ShowMessage("R="+AnsiString(R)+"Rz="+AnsiString(Rz)+"Rx="+AnsiString(Rx));
-	////obrys objektu
-	//pero+výplň
-	canv->Brush->Color=clWhite;
-	canv->Brush->Style=bsSolid;
-
-	////vykreslení řetězu a palců řetězu
-//	if(O->pohon!=NULL)//řetez - je-li přiřazen pohon
-//	{
-
-		//vykreslí samotný pohon - spojnici
-		linie(canv,m.L2Px(X),m.L2Py(Y),m.L2Px(K.x),m.L2Py(K.y),F->Zoom*0.5,clBlack);
-
-		//palce, pokud je zadaná rozteč tak se vykreslí
-		if(R>0)
-		{                    // F->Memo3->Lines->Add(Poffset);
-													 //*O->pozice - používát jen v animaci, kvůli tomu, aby byl řetěz dostatečně dlouhý
-			double startR=-(Rz)+KR+Poffset;//start je Rz=M+DV (tj. minulý vozík teoreticky mimo objekt, aby se vykreslily i palce před prvním vozíkem v objekt) a K je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, či jiné v m vůči počátku jigu, DV - konec, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu
-			if(animace)startR=-(Rz)*20/**ceil(O->pozice)*/+KR+Poffset;//start je Rz=M+DV (tj. minulý vozík teoreticky mimo objekt, aby se vykreslily i palce před prvním vozíkem v objekt) a K je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, či jiné v m vůči počátku jigu DV - konec, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu
-			unsigned int j=0;      //+R pouze grafická záležitost, aby na výstupu neořezávalo palce
-			for(double i=startR;i<=DD+R;i+=R)
-			{     //již využívám přemaskování bílým obdélníkem, nakonci této metody, zajišťuje lepší grafický efekt
-				if(/*i>=0 && */Rx>0 || Rezim!=1)//zobrazí se pouze ty, které jsou v objektu (řeší pro začátek, konec řeší podmínka, která je součástí for cyklu), druhá část podmínky je pouze ošetření, což paralelně řeší i výjimka
-				{
-					try//ošetření situaci při real-time nastavování parametrů, tak v situacích, kdy nebyly, ještě hodnoty od uživatele dopsány a přepočítány, Rx bylo 0
-					{
-						if(Rezim==1)//pro kontinuální zobrazení
-						{
-							if(j%Rx==0)//palec vyšel do rozestupu, jedná se o aktivní palec unášející vozík
-							{
-								vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,true);
-								/////////////////////provizorně zjištění aktuální rotace
-								int rotace=0;
-								Cvektory::TElement *E=O->element;//nastaveno na hlavičku, ošetřeno níže
-								while(E!=NULL && E->objekt_n==O->n)
-								{
-									if((E->eID==3 || E->eID==4 || E->eID==5 || E->eID==6 || E->eID==9 || E->eID==10 || E->eID==13 || E->eID==14 || E->eID==17 || E->eID==18 || E->eID==103 || E->eID==104 || E->eID==107 || E->eID==108) && E->X<=X+i)//jedná se o roto element a je před aktuálně vykreslovaným vozíkem
-									{
-										 rotace+=E->rotace_jig;
-									}
-									E=E->dalsi;
-								}
-								E=NULL; delete E;
-								/////////////////////
-								vykresli_vozik(canv,j,X+i,Y,dJ,sJ,0,m.Rt90(rotace));//provizorně
-							}
-							else vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,false);//jinak pasivní
-						}
-						else vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,false);//u S&G jakýkoliv
-					}
-					catch(...){;}
-				}
-				j++;//musí být mimo
-			}
-		}
+//	////vychozí geometrické proměnné
+//	//řetěz
+//	double DD=100;O->delka_dopravniku;//délka objektu v metrech
+//	//double M=O->mezera;//mezera
+//	double R=O->pohon->roztec;//rozteč palců řetězu
+//	double Rz=O->pohon->Rz;//rozestup
+//	int Rx=m.round(O->pohon->Rx);//může být zaokrouhleno, protože musí vycházet celé číslo
+//	short Rezim=O->rezim;//podle eID prvního použitého robota je nastaven ve stejnojmenné metodě režim objektu
+//	double KR=0;//kalibrace řetězu vůči podvozku např. 0 - střed, -DP/2 - začátek, DP/2 - konec, či libovolný v m od začátku podvozku
+//	TPointD S;S.x=X;S.y=Y;//Start
+//	TPointD K;K.x=X+DD;K.y=Y;//Konec
+//	//vozíková data - v případě nevykreslení vozíku zde monžno odstranit
+//	double dJ=m.UDJ(v.PP.delka_jig,v.PP.sirka_jig,O->orientace);//délka jigu
+//	double sJ=m.UDJ(v.PP.sirka_jig,v.PP.delka_jig,O->orientace);//šířka jigu a tím pádem i minimální kabiny
+//	double DV=dJ;if(v.PP.delka_podvozek>dJ)DV=v.PP.delka_podvozek;
+//																	 //ShowMessage("R="+AnsiString(R)+"Rz="+AnsiString(Rz)+"Rx="+AnsiString(Rx));
+//	////obrys objektu
+//	//pero+výplň
+//	canv->Brush->Color=clWhite;
+//	canv->Brush->Style=bsSolid;
+//
+//	////vykreslení řetězu a palců řetězu
+////	if(O->pohon!=NULL)//řetez - je-li přiřazen pohon
+////	{
+//
+//		//vykreslí samotný pohon - spojnici
+//		linie(canv,m.L2Px(X),m.L2Py(Y),m.L2Px(K.x),m.L2Py(K.y),F->Zoom*0.5,clBlack);
+//
+//		//palce, pokud je zadaná rozteč tak se vykreslí
+//		if(R>0)
+//		{                    // F->Memo3->Lines->Add(Poffset);
+//													 //*O->pozice - používát jen v animaci, kvůli tomu, aby byl řetěz dostatečně dlouhý
+//			double startR=-(Rz)+KR+Poffset;//start je Rz=M+DV (tj. minulý vozík teoreticky mimo objekt, aby se vykreslily i palce před prvním vozíkem v objekt) a K je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, či jiné v m vůči počátku jigu, DV - konec, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu
+//			if(animace)startR=-(Rz)*20/**ceil(O->pozice)*/+KR+Poffset;//start je Rz=M+DV (tj. minulý vozík teoreticky mimo objekt, aby se vykreslily i palce před prvním vozíkem v objekt) a K je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, či jiné v m vůči počátku jigu DV - konec, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu
+//			unsigned int j=0;      //+R pouze grafická záležitost, aby na výstupu neořezávalo palce
+//			for(double i=startR;i<=DD+R;i+=R)
+//			{     //již využívám přemaskování bílým obdélníkem, nakonci této metody, zajišťuje lepší grafický efekt
+//				if(/*i>=0 && */Rx>0 || Rezim!=1)//zobrazí se pouze ty, které jsou v objektu (řeší pro začátek, konec řeší podmínka, která je součástí for cyklu), druhá část podmínky je pouze ošetření, což paralelně řeší i výjimka
+//				{
+//					try//ošetření situaci při real-time nastavování parametrů, tak v situacích, kdy nebyly, ještě hodnoty od uživatele dopsány a přepočítány, Rx bylo 0
+//					{
+//						if(Rezim==1)//pro kontinuální zobrazení
+//						{
+//							if(j%Rx==0)//palec vyšel do rozestupu, jedná se o aktivní palec unášející vozík
+//							{
+//								vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,true);
+//								/////////////////////provizorně zjištění aktuální rotace
+//								int rotace=0;
+//								Cvektory::TElement *E=O->element;//nastaveno na hlavičku, ošetřeno níže
+//								while(E!=NULL && E->objekt_n==O->n)
+//								{
+//									if((E->eID==3 || E->eID==4 || E->eID==5 || E->eID==6 || E->eID==9 || E->eID==10 || E->eID==13 || E->eID==14 || E->eID==17 || E->eID==18 || E->eID==103 || E->eID==104 || E->eID==107 || E->eID==108) && E->X<=X+i)//jedná se o roto element a je před aktuálně vykreslovaným vozíkem
+//									{
+//										 rotace+=E->rotace_jig;
+//									}
+//									E=E->dalsi;
+//								}
+//								E=NULL; delete E;
+//								/////////////////////
+//								vykresli_vozik(canv,j,X+i,Y,dJ,sJ,0,m.Rt90(rotace));//provizorně
+//							}
+//							else vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,false);//jinak pasivní
+//						}
+//						else vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,false);//u S&G jakýkoliv
+//					}
+//					catch(...){;}
+//				}
+//				j++;//musí být mimo
+//			}
+//		}
 //	}
 
 
@@ -3051,7 +3053,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,doubl
 //	return RET;//vrátí index
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//přejmenovat
+void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//přejmenovat např. na vykresli_dopravnik (kreslí jak koleje tak pouzdro řetězu i řetěz samotný
 {
 	TPoint *POLE=new TPoint[4];
 	unsigned int pocet_pruchodu=0;
@@ -3123,7 +3125,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 		/////testy
 		if(pocet_pruchodu>1)
 		{
-	  	for(unsigned int i=2;i<=pocet_pruchodu;i++)
+			for(unsigned int i=2;i<=pocet_pruchodu;i++)
 			{
 				double o=(i-1)*m.px2m(m.round(RetezWidth/2.0));
 				//nastavení pera
@@ -3146,14 +3148,14 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 		/////konec testů
 
 		////ukazatelové záležitosti
-		//E=E->dalsi;//posun na další element
-		E=v.dalsi_krok(E);
+		E=v.dalsi_krok(E);//posun na další element nahrazuje při použití výhybek dřívější E=E->dalsi;
 	}
 	delete E;E=NULL;//smazání již nepotřebného ukazatele
 	delete[]POLE;POLE=NULL;
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-//void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O)//přejmenovat
+//NEMAZaT!!! je test výše uvedené metody (akorát asi již nemá zohledněné všechny změny), pro vykreslení "dokonalých předávacích míst" - NEMAZAT!!! složí jako příprava
+//void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O)//přejmenovat add výše uvedné
 //{
 //	if(O!=NULL && O->elementy!=NULL )
 //	{
@@ -3244,6 +3246,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 //		vykresli_retez(canv,v.POHONY->dalsi->retez);
 //	}
 //}////------------------------------------------------------------------------------------------------------------------------------------------------------
+//samotné vykreslení jednoho řetězu
 void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TRetez *Retez)
 {
 	if(Retez!=NULL && Retez->predchozi->n>0)
@@ -3310,7 +3313,7 @@ void Cvykresli::vykresli_koleje(TCanvas *canv,double X,double Y,short typ,double
 		bezier(canv,PL1,3);
 		bezier(canv,PL2,3);
 	}
-	//zarážka
+	//zarážka se zobrazuje pouze při geometrii (pro znázornění jednotlivých gemoetrických elementů), jinak nemá význam
 	if(F->Akce==F->GEOMETRIE || F->Akce==F->GEOMETRIE_LIGHT)
 	{
 		//line(canv,m.L2Px(X+S1.x),m.L2Py(Y+S1.y),m.L2Px(X+S2.x),m.L2Py(Y+S2.y));//na začátku
