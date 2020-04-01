@@ -3090,7 +3090,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 			if(pocet_pruchodu>0)
 			{
 				RetezWidth=v.PP.sirka_podvozek/2.0+m.px2m(1/3.0*F->Zoom)+2*m.px2m(m.round(F->Zoom));
-				RetezWidth=m.m2px(RetezWidth);
+				RetezWidth=m.m2px(RetezWidth/2.0);
 			}
 			else clRetez=(TColor)RGB(200, 200, 200);
 		}
@@ -6010,7 +6010,7 @@ void Cvykresli::vykresli_kurzor_cesta(TCanvas *canv,Cvektory::TElement *E)
 	  	POLE[3]=TPoint(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
 
 	  	float	RetezWidth=v.PP.sirka_podvozek/2.0+m.px2m(1/3.0*F->Zoom)+2*m.px2m(m.round(F->Zoom));
-	  	RetezWidth=m.m2px(RetezWidth);
+	  	RetezWidth=m.m2px(RetezWidth/2.0);
 
 	  	set_pen(canv,clBlack,m.round(RetezWidth),PS_ENDCAP_SQUARE);
 			//vykreslení řetězu
@@ -6046,7 +6046,7 @@ void Cvykresli::vykresli_potencial_cesty(TCanvas *canv,Cvektory::TElement *E)
 {
 	double X=E->X,Y=E->Y;       TColor color=m.clIntensive(clBlack,245);
 	double Width=v.PP.sirka_podvozek/2.0+m.px2m(1/3.0*F->Zoom)+2*m.px2m(m.round(F->Zoom));
-	Width=m.m2px(Width);
+	Width=m.m2px(Width/2.0);
 	////potenciální Gelement
 	TPointD *PL;//=m.getArcLine(X,Y,orientace,rotacni_uhel,radius);
 	if(E->dalsi->geo.typ!=0)PL=m.getArcLine(X,Y,E->dalsi->geo.orientace,E->dalsi->geo.rotacni_uhel,E->dalsi->geo.radius);
