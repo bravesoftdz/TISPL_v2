@@ -215,7 +215,7 @@ Gap between jigs 0°;X;Mezera mezi jigy 0°
 Gap between jigs 90°;X;Mezera mezi jigy 90°
 Gap between jigs;X;Mezera mezi jigy
 Advanced items;X;Rozšíøené položky
-No drive to choose;X;Žádný pohon k výbìru
+No drive;X;Žádný pohon
 Select the drive;X;Vyberte pohon
 Drive not assigned;X;Pohon nepøiøazen
 Speed not within range!;X;Rychlost neodpovídá rozmezí!
@@ -445,3 +445,5 @@ Show geometry dimensions;X;Zobrazit kóty geometrie
 Hide geometry dimensions;X;Skrýt kóty geometrie
 Placement of carts ;X;Rozmístìní vozíkù
 Click to confirm path;X;Kliknutím potvrdíte cestu
+Drive selection;X;Výbìr pohonu
+Speed range;X;Rozmezí rychlosti
