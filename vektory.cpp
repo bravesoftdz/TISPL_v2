@@ -991,6 +991,7 @@ void Cvektory::aktualizace_rezimu_objektu(TObjekt *Objekt,bool aktualizovat_sta_
 			E=dalsi_krok(E,Objekt);
 		}
 		if(F->predchozi_PM!=NULL)F->napln_comba_mGridu(F->predchozi_PM);//provede aktualizaci editovaných položek v mGridu u předchozího PM
+		F->aktualizace_tab_pohon(false,false,true);//obsahuje podmínku.. pokud existuje PmG
 	}
 
 	//ukazatelové záležitosti
