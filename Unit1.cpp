@@ -13782,6 +13782,7 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 
 	d.v.generuj_VOZIKY();
 	REFRESH();
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
