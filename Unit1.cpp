@@ -12161,7 +12161,19 @@ void __fastcall TForm1::UlozitjakoClick(TObject *Sender)
 //samotné uložení
 void TForm1::Ulozit_soubor()
 {
-  log(__func__);//logování
+	log(__func__);//logování
+
+	//aktualizace číslování elementů, je důležité aby ukládací alg. měl správně číslované elementy
+	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+	unsigned long n=1;
+	while(E!=NULL)
+	{
+		E->n=n;
+		n++;
+		E=d.v.dalsi_krok(E);
+	}
+	delete E;E=NULL;
+
 	//zapis dat do souboru
 	d.v.uloz_do_souboru(FileName);
 
@@ -12297,7 +12309,7 @@ unsigned short int TForm1::Otevrit_soubor(UnicodeString soubor)//realizuje samot
 		}break;
 		default: ret=2;
 		break;
-	}   log(__func__,"      Konec");//logování
+	}
 	return ret;
 }
 //---------------------------------------------------------------------------
@@ -13382,7 +13394,26 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Memo(ls->Strings[219]);
+	Memo3->Clear();
+	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+	int n=1;
+	while(E!=NULL)
+	{
+		E->n=n;
+		n++;
+		E=d.v.dalsi_krok(E);
+	}
+	delete E;E=NULL;
+	int pocet=0;
+	Cvektory::TCesta *C=d.v.ZAKAZKA_akt->cesta->dalsi;
+	while(C!=NULL)
+	{
+		Memo(C->Element->n);
+		pocet++;
+		C=C->dalsi;
+	}
+	delete C;C=NULL;
+	Memo("Počet elementů: "+AnsiString(pocet));
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
