@@ -3051,7 +3051,7 @@ void Cvektory::prirad_sparovany_element(TElement *Element)
 //projde všechny stop-elementy a aktualizuje jim ukazatele na spárované elementy
 void Cvektory::aktualizuj_sparovane_ukazatele()
 {
-	F->aktualizace_RT();//aktualizace RT v tabulkách
+	F->aktualizace_RT();//aktualizace RT v tabulkách, vně podmínka OBJEKT_akt!=NULL
 	TElement *prvni=NULL,*posledni=NULL;
 	//////procházení od prvního elementu a hledání prvního S&G elementu, po nalezení hledání dalšího S&G elementu
 	TElement *E=ELEMENTY->dalsi,*E1=NULL;
@@ -8048,22 +8048,6 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
     	}
 			delete dE;dE=NULL;
 			delete []tab_pruchodu;tab_pruchodu=NULL;vyhybka_pom=NULL;
-			//aktualizace dat
-			if(F->OBJEKT_akt!=NULL && !storno)
-			{
-				//sparovaných ukazatelu a RT
-				aktualizuj_sparovane_ukazatele();
-				//aktualizace předchozího PM
-				if(F->OBJEKT_akt->element->predchozi->n>0)F->predchozi_PM=najdi_posledni_element_podle_eID(200,vrat_objekt(F->OBJEKT_akt->element->predchozi->objekt_n));
-				if(F->predchozi_PM!=NULL)
-				{
-		  		F->predchozi_PM->mGrid=new TmGrid(F);
-		  		F->predchozi_PM->mGrid->Tag=6;//ID formu
-					F->predchozi_PM->mGrid->ID=F->predchozi_PM->n;
-					F->design_element(F->predchozi_PM,false);//znovuvytvoření tabulek
-					bool exituje_tab_poh=true;//pohonová tabulka v editaci bude exitovat
-				}
-			}
 		}
 		//pro Editaci
 //		else
@@ -8226,6 +8210,23 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 				c_u=c_u->dalsi;
 			}
 			delete c_u;c_u=NULL;
+		}
+
+		//aktualizace dat
+		//sparovaných ukazatelu a RT
+		aktualizuj_sparovane_ukazatele();//vždy!!!!
+		if(F->OBJEKT_akt!=NULL && !storno)
+		{
+			//aktualizace předchozího PM
+			if(F->OBJEKT_akt->element->predchozi->n>0)F->predchozi_PM=najdi_posledni_element_podle_eID(200,vrat_objekt(F->OBJEKT_akt->element->predchozi->objekt_n));
+			if(F->predchozi_PM!=NULL)
+			{
+				F->predchozi_PM->mGrid=new TmGrid(F);
+				F->predchozi_PM->mGrid->Tag=6;//ID formu
+				F->predchozi_PM->mGrid->ID=F->predchozi_PM->n;
+				F->design_element(F->predchozi_PM,false);//znovuvytvoření tabulek
+				bool exituje_tab_poh=true;//pohonová tabulka v editaci bude exitovat
+			}
 		}
 
 		//znovu vytvoření tabulky pohonů pokud jsem v editaci
