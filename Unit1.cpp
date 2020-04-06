@@ -13410,9 +13410,17 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	//Memo3->Clear();
-	predchozi_PM->mGrid->Cells[0][3].Text="Aktuální";
-	predchozi_PM->mGrid->Refresh();
+	d.v.update_akt_zakazky();
+	d.v.najdi_sparovane_elementy_ceste(d.v.ZAKAZKA_akt);
+	Memo3->Clear();
+	Cvektory::TCesta *E=d.v.ZAKAZKA_akt->cesta->dalsi;
+	while(E!=NULL)
+	{
+		Memo(E->Element->name+"->sparovany:");
+		if(E->sparovany!=NULL)Memo(E->sparovany->name);else Memo("NULL");
+		E=E->dalsi;
+	}
+	delete E;E=NULL;
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -16208,13 +16216,27 @@ void __fastcall TForm1::scExPanel1Click(TObject *Sender)
 
 void __fastcall TForm1::scGPGlyphButton_undoClick(TObject *Sender)
 {
-//krok zpět
+	if(d.v.pozice_data!=1)//pokud nejsem na konci
+	{
+		duvod_validovat=2;
+		if(d.v.pozice_data==0)d.v.pozice_data=d.v.DATA->predchozi->predchozi->n;
+		else d.v.pozice_data-=1;
+		d.v.nacti_z_obrazu_DATA();
+		REFRESH();
+		if(OBJEKT_akt!=NULL)mGrid_on_mGrid();//naplní comba tabulek a zkontroluje překrytí
+	}
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TForm1::scGPGlyphButton_redoClick(TObject *Sender)
 {
-//krok vpred
+	if(d.v.pozice_data<d.v.DATA->predchozi->n && d.v.pozice_data!=0)//pokud nejsem na konci
+	{
+		duvod_validovat=2;
+		d.v.pozice_data+=1;
+		d.v.nacti_z_obrazu_DATA();
+		REFRESH();
+		if(OBJEKT_akt!=NULL)mGrid_on_mGrid();//naplní comba tabulek a zkontroluje překrytí
+	}
 }
 //---------------------------------------------------------------------------
-

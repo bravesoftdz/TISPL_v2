@@ -663,6 +663,7 @@ public:
 	unsigned int kolikrat_obsahuje_segment_cesty_element(TElement *element,TZakazka *zakazka);//vrátí počet výskytů elementu v cestě zakázky
 	TZakazka *obsahuje_segment_cesty_element(TElement *element);//ověří zda daný element je součástí cesty nějaké zakázky či nikoliv, pokud ano vrací ukazatel na danou zakázku
 	TCesta *vrat_segment_cesty(TZakazka *zakazka,TElement *element);//vrátí konkrétí segment cesty v zakázce, který obsahuje element
+  void najdi_sparovane_elementy_ceste(TZakazka *zakazka);//najde a uloží všem segmentům cesty spárované elementy
 	void vymaz_cestu_zakazky(TZakazka *zakazka);//vymaže celou cestu dané zakázky
 private:
 	void hlavicka_cesta_zakazky(TZakazka *zakazka);//vytvoří novou hlavičku pro spojový seznam konkrétní cesty dané zakázky

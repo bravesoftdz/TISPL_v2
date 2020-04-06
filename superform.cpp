@@ -211,7 +211,6 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 		ulozeni_dat_z_mGridu_a_delete();
 		// kopírování temp zakázek do ostrých zakázek
 		F->d.v.kopirujZAKAZKY_temp2ZAKAZKY();
-		F->d.v.vytvor_default_zakazku();//po kopírování zakázek dojkde ke smazání hlavièky
 		if(akt_zakazka_n!=0)F->d.v.ZAKAZKA_akt=F->d.v.vrat_zakazku(akt_zakazka_n);
 		//else F->zakazka_akt=NULL;
 		F->DuvodUlozit(true);
