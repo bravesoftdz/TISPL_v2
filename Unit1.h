@@ -345,6 +345,8 @@ __published:	// IDE-managed Components
   TMenuItem *N1projekt1;
   TMenuItem *N2projekt1;
   TMenuItem *N3projekt1;
+  TscGPGlyphButton *scGPGlyphButton_undo;
+  TscGPGlyphButton *scGPGlyphButton_redo;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -570,6 +572,8 @@ __published:	// IDE-managed Components
 	void __fastcall N2projekt1Click(TObject *Sender);
 	void __fastcall N3projekt1Click(TObject *Sender);
   void __fastcall scExPanel1Click(TObject *Sender);
+  void __fastcall scGPGlyphButton_undoClick(TObject *Sender);
+  void __fastcall scGPGlyphButton_redoClick(TObject *Sender);
 
 
 
@@ -863,6 +867,7 @@ public:		// User declarations
 	void vytvoreni_tab_pohon(bool existuje_poh_tabulka);//vytvoøení tabulky pohonu
 	void aktualizace_tab_pohon(bool popisky=true,bool data=true,bool komponenty=true);//zmìní režim tabulce pohonu
 	void napln_comba_mGridu(Cvektory::TElement *E);
+	bool prohodit_sloupce_PM(Cvektory::TElement *E);//rozhodne zda mají být prohozeny sloupce PM, podle trendu geometrie
 	void zmena_editovanych_bunek(Cvektory::TElement *E);//automaticky nastaví editované položky a needitovatelné položky pro pohonové tabulky
 	void vlozit_predavaci_misto_aktualizuj_WT();//projde elementy a objekty, pokud je nìkde nutnost vložit pøedávací místo vloží ho tam
 	void mGrid_komponenta_na_draw(TmGrid *mGrid,long Col,long Row);//smazì komponentu v dané buòce a zmìní typ bunky na DRAW

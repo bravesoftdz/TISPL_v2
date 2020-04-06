@@ -4429,25 +4429,31 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,lon
 			int w1=canv->TextWidth(T1)/*,w2=canv->TextWidth(T2)*/;
 			int h=canv->TextHeight(T1);
 			long x1=0,y1=0,x2=0,y2=0;short K=0.25*Z;//pouze grafická korekce, text aby se nezohledňovalo zarovnání na diakritiku, vypadá to dinvě
-			switch((int)rotace)
+			switch((int)m.Rt90(E->geo.orientace-E->geo.rotacni_uhel))
 			{
-				case 0:case 180:
+				case 0:
+				{
+					x2=X-K;y2=Y+w1+m.m2px(0.2);
+					x1=X-h-K;y1=Y-m.m2px(0.2);
+					canv->Font->Orientation=900;
+				}break;
+				case 90:
 				{
 					x1=X-w1-m.m2px(0.2);y1=Y+K;
 					x2=X+m.m2px(0.2);y2=Y-K-h;
 				}break;
-				case 90:
+				case 180:
 				{
 					x1=X-K;y1=Y-w1-m.m2px(0.2);
-					x2=X+K+h;y2=Y+m.m2px(0.2);
-					canv->Font->Orientation=2700;
+					x2=X+h+K;y2=Y+m.m2px(0.2);
+					canv->Font->Orientation=-900;
 				}break;
 				case 270:
 				{
-					x1=X-K;y1=Y+w1+m.m2px(0.2);
-					x2=X-h-K;y2=Y-m.m2px(0.2);
-					canv->Font->Orientation=900;
+					x2=X-w1-m.m2px(0.2);y1=Y+K;
+					x1=X+m.m2px(0.2);y2=Y-K-h;
 				}break;
+
 			}
 			TextFraming(canv,x1,y1,T1);
 			TextFraming(canv,x2,y2,T2);

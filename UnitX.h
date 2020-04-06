@@ -20,12 +20,12 @@ private:	// User declarations
 	void zmena_Rx ();//vıpoèty vyvolané zmìnou Rx
 	void aktualizace_tab_elementu (Cvektory::TElement *mimo_element=NULL);//aktualizuje vıpoèty ve všech tabulkách elemntù, parametr mimo_element je ukazatel na element, kterı má bıt pøeskoèen, defaultnì hodnota, které E->n nidky nedosáhne
 	void aktualizace_tab_elementu_pOdebran ();//vynuluje všechny hodnoty závislé na pohonu ve všech tabulkách elementù
-	void aktualizace_tab_pohonu();//aktualizje data v mGridu podle dat elementu
+	void aktualizace_tab_pohonu();
 	void korelace_tab_pohonu(int Row);//zobrazi korelaci v tabulce pohonu
 	void korelace_tab_pohonu_elementy(Cvektory::TElement *mimo_element=NULL);//zobrazí korelaci podle tabulky pohonu ve všech elementech,volitelnı parametr, ukazatel na element kterı chci pøeskoèit
 	void korelace_v_elementech(long ID,long Col,long Row);//jedná se o vnitøní korelace, v jednom elementu (jeden element však mùe ovlivnit i tabulku pohonu)
 	Cvektory::TElement *vrat_element_z_tabulky(long ID);//vrátí ukazatel na element, nelze pouít vra element stavající, z dùvodu e ID tabulky ji nemusí bıt totoné s n robota
-	void prirazeni_pohohonu_vetvi(Cvektory::TElement *E,bool hlavni=true);//zmìní pohon sekundární vìtvi, z vıhybky nebo spojky (pokud sekundární vìtev existuje)
+	void prirazeni_pohohonu_vetvi(Cvektory::TElement *E,long Col);//zmìní pohon sekundární vìtvi, z vıhybky nebo spojky (pokud sekundární vìtev existuje)
   void update_hodnot_vyhybky_PM(Cvektory::TElement *E);//zobrazí aktuální hodnoty z dat v tabulkách
 	void prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col);//pøiøazení pohonu pøed PM, nebo za PM
 	void prirazeni_pohonu_defTab();//pøiøazení pohonu z PmG
@@ -48,7 +48,6 @@ public:		// User declarations
 	void povolit_zakazat_editaci(bool povolit);//zakazuje èi povolí komponenty v tabulce pohonu a všech tabulkách elementu
 	void naplneni_dopRD();//doplni doporuèenou rychlost do tabulky pohonu
   bool check_click_Note(double X,double Y,bool check_for_highlight=false);
-	void aktualizace_PmG(bool Refresh=false);//aktualizuje hodnoty v PmG
 	void aktualizace_zon_otaceni(Cvektory::TElement *E);//po zmìnì rotace na elementu E, projde všechny elementy za a pøepoèítá jim zóny otáèení
 	void validace_RD(Cvektory::TElement *E);//provede validaci RD
 

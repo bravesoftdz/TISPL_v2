@@ -3051,7 +3051,7 @@ void Cvektory::prirad_sparovany_element(TElement *Element)
 //projde všechny stop-elementy a aktualizuje jim ukazatele na spárované elementy
 void Cvektory::aktualizuj_sparovane_ukazatele()
 {
-	F->aktualizace_RT();//aktualizace RT v tabulkách
+	F->aktualizace_RT();//aktualizace RT v tabulkách, vně podmínka OBJEKT_akt!=NULL
 	TElement *prvni=NULL,*posledni=NULL;
 	//////procházení od prvního elementu a hledání prvního S&G elementu, po nalezení hledání dalšího S&G elementu
 	TElement *E=ELEMENTY->dalsi,*E1=NULL;
@@ -3961,7 +3961,7 @@ bool Cvektory::pohon_je_pouzivan(unsigned long n,bool po_obektech)
 		while(E!=NULL)
 		{
 			if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n || F->OBJEKT_akt==NULL)//kontrolovat pouze mimo aktuálně editované elementy
-			{if(E->eID!=0 && E->eID!=200 && E->eID!=MaxInt && E->pohon!=NULL && E->pohon->n==n){nalezen=true;break;}}
+			{if(vrat_druh_elementu(E)!=-1 && E->pohon!=NULL && E->pohon->n==n){nalezen=true;break;}}
 			E=E->dalsi;
 		}
 		E=NULL;delete E;
@@ -4880,11 +4880,24 @@ void Cvektory::kopirujZAKAZKY_temp2ZAKAZKY(bool mazat_ZAKAZKY_temp)
 	vymaz_seznam_ZAKAZKY();//vymazání původního seznamu
 	//hlavicka_ZAKAZKY();//založení hlavičky - není potřeba vzhledem k následující kontrukci, kdy se předává hlavička z ZAKAZKY_temp
 	ZAKAZKY=ZAKAZKY_temp;//zkopírování ukazatele na hlavičku spojaku ZAKAZKY_temp, touto konstrukcí ZAKAZKY ukazují tam, kam ZAKAZKY_temp
+
+  //znovuvytvoření default zakázky
+	vytvor_default_zakazku();//po kopírování zakázek dojkde ke smazání hlavičky
+	//přiřazení spárovaných ukazatelů k cestám
+	TZakazka *zakazka=ZAKAZKY;
+	while(zakazka!=NULL)
+	{
+		najdi_sparovane_elementy_ceste(zakazka);
+		zakazka=zakazka->dalsi;
+	}
+	delete zakazka;zakazka=NULL;
+
+	//mazání ZAKAZKY_temp
 	if(mazat_ZAKAZKY_temp)//smazání již nepotřebné hlavičky spojaku ZAKAZKY_temp, nepoužívat metodu vymaz_temp_zakazky(), protože ta maže i jednotlivé objekty a ty jsou již v ostrém spojáku ZAKAZKY
 	{
 		ZAKAZKY_temp=NULL;
 		delete ZAKAZKY_temp;
-  }
+	}
 }
 //---------------------------------------------------------------------------
 //zkopíruje data objekt ze ZAKAZEK do nezávislého ZAKAZKY_temp, není jen o předání ukazatelů slouží v momentu načítání SF
@@ -4947,6 +4960,8 @@ void Cvektory::update_akt_zakazky()
  {
 	 //aktualizace dat aktuální uživatelské zakázky
  }
+ //aktualizace spárovaných ukazatelů
+ najdi_sparovane_elementy_ceste(ZAKAZKA_akt);
 }
 //---------------------------------------------------------------------------
 //pokud první zakázka neexistuje, založí ji a přiřadí ji cestu dle schématu, pokud existuje, tak ji smaže a nahradí novou
@@ -5042,7 +5057,7 @@ void Cvektory::vloz_segment_cesty(TZakazka *zakazka,TElement *element)
 	TCesta *segment=new TCesta;
 	kopiruj_data_elementu(element->data,segment);//kopiruj data
 	segment->Element=element;
-	segment->sparovany=element->sparovany;
+	segment->sparovany=NULL;
 
 	vloz_segment_cesty(zakazka,segment);
 }
@@ -5146,6 +5161,54 @@ Cvektory::TCesta *Cvektory::vrat_segment_cesty(TZakazka *zakazka,TElement *eleme
 		else c=c->dalsi;
 	}
 	return c;
+}
+//---------------------------------------------------------------------------
+//najde a uloží všem segmentům cesty spárované elementy
+void Cvektory::najdi_sparovane_elementy_ceste(TZakazka *zakazka)
+{
+	TCesta *c=zakazka->cesta,*c_pom=NULL;
+	while(c!=NULL)
+	{
+		if(c->n>0)//přeskočení hlavičky
+		{
+			if(vrat_druh_elementu(c->Element)==0)//pokud je segment cesty S&G hledám mu spárovaný element
+			{
+				//hledání spárovaného
+				c_pom=c->dalsi;//začnu od dalšího segmentu cesty
+				while(c_pom!=NULL)
+				{
+					if(vrat_druh_elementu(c_pom->Element)==0)//pokud je element v segmentu je také S&G uložím ho
+					{
+						c->sparovany=c_pom->Element;
+						c=c_pom->predchozi;//skok v průchodu na předchozí element dalšího S&G elementu, předchozí z důvodu, že na konci cyklu c=c->dalsi
+						break;
+					}
+					else c_pom=c_pom->dalsi;//nenašel, pokračuj v hledání
+				}
+        //nenašel jsem, hledám od začátku
+				if(c->sparovany==NULL && c_pom==NULL)//došel jsem na konec seznamu a nenašel žádný S&G element, průchod od začátku
+				{
+					c_pom=zakazka->cesta->dalsi;
+					while(c_pom!=NULL)
+					{
+						if(vrat_druh_elementu(c_pom->Element)==0)//pokud je element v segmentu je také S&G uložím ho
+						{
+				  		c->sparovany=c_pom->Element;
+							c=c_pom->predchozi;//skok v průchodu na předchozí element dalšího S&G elementu, předchozí z důvodu, že na konci cyklu c=c->dalsi
+				  		break;
+						}
+			  		else c_pom=c_pom->dalsi;
+			  	}
+				}
+				//ukazatelové záležitosti
+				c_pom=NULL;delete c_pom;
+      }
+		}
+		c=c->dalsi;
+	}
+	//ukazatelové záležitosti
+	delete c;c=NULL;
+	c_pom=NULL;delete c_pom;
 }
 //---------------------------------------------------------------------------
 //vymaže celou cestu dané zakázky
@@ -8061,22 +8124,6 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
     	}
 			delete dE;dE=NULL;
 			delete []tab_pruchodu;tab_pruchodu=NULL;vyhybka_pom=NULL;
-			//aktualizace dat
-			if(F->OBJEKT_akt!=NULL && !storno)
-			{
-				//sparovaných ukazatelu a RT
-				aktualizuj_sparovane_ukazatele();
-				//aktualizace předchozího PM
-				if(F->OBJEKT_akt->element->predchozi->n>0)F->predchozi_PM=najdi_posledni_element_podle_eID(200,vrat_objekt(F->OBJEKT_akt->element->predchozi->objekt_n));
-				if(F->predchozi_PM!=NULL)
-				{
-		  		F->predchozi_PM->mGrid=new TmGrid(F);
-		  		F->predchozi_PM->mGrid->Tag=6;//ID formu
-					F->predchozi_PM->mGrid->ID=F->predchozi_PM->n;
-					F->design_element(F->predchozi_PM,false);//znovuvytvoření tabulek
-					bool exituje_tab_poh=true;//pohonová tabulka v editaci bude exitovat
-				}
-			}
 		}
 		//pro Editaci
 //		else
@@ -8239,6 +8286,23 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 				c_u=c_u->dalsi;
 			}
 			delete c_u;c_u=NULL;
+		}
+
+		//aktualizace dat
+		//sparovaných ukazatelu a RT
+		aktualizuj_sparovane_ukazatele();//vždy!!!!
+		if(F->OBJEKT_akt!=NULL && !storno)
+		{
+			//aktualizace předchozího PM
+			if(F->OBJEKT_akt->element->predchozi->n>0)F->predchozi_PM=najdi_posledni_element_podle_eID(200,vrat_objekt(F->OBJEKT_akt->element->predchozi->objekt_n));
+			if(F->predchozi_PM!=NULL)
+			{
+				F->predchozi_PM->mGrid=new TmGrid(F);
+				F->predchozi_PM->mGrid->Tag=6;//ID formu
+				F->predchozi_PM->mGrid->ID=F->predchozi_PM->n;
+				F->design_element(F->predchozi_PM,false);//znovuvytvoření tabulek
+				bool exituje_tab_poh=true;//pohonová tabulka v editaci bude exitovat
+			}
 		}
 
 		//znovu vytvoření tabulky pohonů pokud jsem v editaci
