@@ -1,5 +1,4 @@
-﻿
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 #include <vcl.h>
 #pragma hdrstop
 #include "Unit1.h"
@@ -3012,7 +3011,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 			break;
 		}
 	}
-	//Y, musí být až po nastavení funkční klávesy
+	//CTRL+Y (REDO), musí být až po nastavení funkční klávesy
 	if(Key==89 && funkcni_klavesa==1)
 	{
 		if(d.v.pozice_data<d.v.DATA->predchozi->n && d.v.pozice_data!=0)//pokud nejsem na konci
@@ -3024,7 +3023,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 			if(OBJEKT_akt!=NULL)mGrid_on_mGrid();//naplní comba tabulek a zkontroluje překrytí
 		}
 	}
-	//Z, musí být až po nastavení funkční klávesy
+	//CTRL+Z (UNDO), musí být až po nastavení funkční klávesy
 	if(Key==90 && funkcni_klavesa==1)
 	{
 		if(d.v.pozice_data!=1)//pokud nejsem na konci
@@ -12171,7 +12170,7 @@ void TForm1::Ulozit_soubor()
 
 
 
-  //zakazuje UNDO
+	//zakazuje UNDO
 	//ToolButton_undo->Enabled=false;//přepne příslušně nabídky menu
 	//Zpet->Enabled=false;//přepne příslušně nabídky menu
 }

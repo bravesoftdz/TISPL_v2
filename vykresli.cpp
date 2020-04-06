@@ -201,7 +201,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
    	}
    	delete E;E=NULL;
    	pom=NULL;delete pom;
-   	delete []tab_pruchodu;
+		delete []tab_pruchodu;
 	}
 
 	///////////////vykreslení VOZÍKů
@@ -209,10 +209,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 
 	///////////////VALIDACE a její výpis formou zpráv
 	v.VALIDACE();
-	if(F->MOD!=F->Tmod::TVORBA_CESTY && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT)
-	{
-		vypis_zpravy(canv);
-	}
+	if(F->MOD!=F->Tmod::TVORBA_CESTY && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT)vypis_zpravy(canv);
 }
 //---------------------------------------------------------------------------
 //zajišťuje vykreslení pouze obrysu dle typu objektu

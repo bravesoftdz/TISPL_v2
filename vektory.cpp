@@ -5202,6 +5202,9 @@ void Cvektory::generuj_VOZIKY()
 		TCesta *C=ZAKAZKA_akt->cesta->dalsi;//přeskočí hlavičku
 		while (C!=NULL)
 		{
+			//String S="nema"; if(C->Element->sparovany!=NULL)S=C->Element->sparovany->name;
+			//F->Memo(C->Element->name+" "+S);
+
 			////pro linku s alespoň s jedním S&G elementem, postupuje se, resp.
 			////taktuje se od prvního S&G elementu na lince, kreslí se dopředně (co následuje elementu, proto Et=E->dalsi aj., např. od dané stop po další stop)
 			if(SG)
@@ -5271,6 +5274,7 @@ TPointDbool Cvektory::generuj_voziky_segementu(TElement *E,unsigned int pocet_vo
 				else rotacni_zbytek=false;
 			}
 			//finální vložení vozíku s vypočítanými parametry do spojáku VOZIKY
+
 			vloz_vozik(ZAKAZKA_akt,E,Pt.x,Pt.y,Pt.z,akt_rotace_jigu+R);
 			//navýšení umístění dle rozestup Rz
 			umisteni+=Rz;
@@ -6009,10 +6013,19 @@ void Cvektory::vymaz_seznam_KATALOG()
 //metody pro ZPRÁVY resp. VALIDACE
 //---------------------------------------------------------------------------
 //zkontroluje buď všechny elementy (je-li vstupní parametr NULL), smaže všechny zprávy, a kde najde problém, uloží do zpráv, v případě, že není NULL
-void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s parametrem!!!
+void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s parametrem pro kontrolu jenom pouze změněného elementu!!!
 {
 	if(F->duvod_validovat==2)//validace probíhá jenom při editaci (pokud je důvod a až byla dokončena editační akce), nebo když nejsou zprávy po spuštění aplikace
 	{
+		TDateTime T;F->Memo("/popř. otáčení, buffry/ + generuj_VOZIKY + VALIDACE: "+T.CurrentTime().TimeString());//PROVIZORNÍ VÝPIS VOLÁNÍ TÉTO METODY
+
+    //ZVÁŽIT ZDE VOLÁNÍ vrat_rotaci_jigu_po_predchazejicim_elementu(POSLEDNÍ ELEMENT)
+
+		//provizorní umístnění, ač funkčně velice vhodné
+		F->Memo("________________________________");
+		generuj_VOZIKY();
+
+		//inicializační proměnné
 		F->duvod_validovat=0;//již bude zvalidováno a dále by se zbytečně volalo
 		long pocet_erroru=0,pocet_warningu=0;
 
@@ -6028,7 +6041,7 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 				////výchozí hodnoty
 				unsigned int pocet_pozic=E->data.pocet_pozic;   //doporučení rovnou to sbírat zde
 				unsigned int pocet_voziku=E->data.pocet_voziku;
-				double rotaceJ=vrat_rotaci_jigu_po_predchazejicim_elementu(E);//metodu po přechodu na nový DM zaktulizovat o průchod přes cestu
+				double rotaceJ=vrat_rotaci_jigu_po_predchazejicim_elementu(E);
 				double orientaceP=m.Rt90(E->geo.orientace-180);
 				double X=F->d.Rxy(E).x;
 				double Y=F->d.Rxy(E).y;
