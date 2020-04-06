@@ -16573,3 +16573,15 @@ void __fastcall TForm1::scExPanel1Click(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TForm1::scGPGlyphButton_undoClick(TObject *Sender)
+{
+//krok zpět
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::scGPGlyphButton_redoClick(TObject *Sender)
+{
+//krok vpred
+}
+//---------------------------------------------------------------------------
+

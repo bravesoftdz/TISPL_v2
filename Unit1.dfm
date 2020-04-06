@@ -2104,7 +2104,7 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object scLabel_titulek: TscLabel
-      Left = 449
+      Left = 519
       Top = 0
       Width = 27
       Height = 34
@@ -2136,10 +2136,11 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'TISPL'
+      ExplicitLeft = 449
     end
     object scGPSwitch_rezim: TscGPSwitch
       AlignWithMargins = True
-      Left = 333
+      Left = 403
       Top = 6
       Width = 47
       Height = 22
@@ -2171,9 +2172,10 @@ object Form1: TForm1
       FrameOnSolid = True
       FrameInside = False
       OnChangeState = scGPSwitch_rezimChangeState
+      ExplicitLeft = 333
     end
     object scLabel_klient: TscLabel
-      Left = 381
+      Left = 451
       Top = 0
       Width = 68
       Height = 34
@@ -2206,9 +2208,10 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Ov'#283#345'ov'#225'n'#237
+      ExplicitLeft = 381
     end
     object scLabel_architekt: TscLabel
-      Left = 294
+      Left = 364
       Top = 0
       Width = 38
       Height = 34
@@ -2241,9 +2244,10 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'N'#225'vrh'
+      ExplicitLeft = 294
     end
     object scLabel_mezera: TscLabel
-      Left = 279
+      Left = 349
       Top = 0
       Width = 15
       Height = 34
@@ -2274,6 +2278,7 @@ object Form1: TForm1
       Alignment = taCenter
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
+      ExplicitLeft = 279
     end
     object Nahled: TscGPButton
       Left = 564
@@ -2385,7 +2390,7 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object scGPGlyphButton_PLAY: TscGPGlyphButton
-      Left = 242
+      Left = 312
       Top = 0
       Width = 37
       Height = 34
@@ -2485,6 +2490,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 242
     end
     object scGPButton_error: TscGPButton
       Left = 384
@@ -2703,6 +2709,206 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+    end
+    object scGPGlyphButton_undo: TscGPGlyphButton
+      AlignWithMargins = True
+      Left = 242
+      Top = 0
+      Width = 35
+      Height = 33
+      Hint = 'Krok zp'#283't'
+      Margins.Left = 0
+      Margins.Top = 0
+      Margins.Right = 0
+      Margins.Bottom = 1
+      Align = alLeft
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 23
+      OnClick = scGPGlyphButton_undoClick
+      Animation = True
+      Caption = 'Toolbar_undo'
+      CanFocused = False
+      CustomDropDown = False
+      Layout = blGlyphLeft
+      TransparentBackground = True
+      ColorValue = clRed
+      Options.NormalColor = clWhite
+      Options.HotColor = clWhite
+      Options.PressedColor = clBlack
+      Options.FocusedColor = clWhite
+      Options.DisabledColor = 10114859
+      Options.NormalColor2 = clNone
+      Options.HotColor2 = clNone
+      Options.PressedColor2 = clNone
+      Options.FocusedColor2 = clNone
+      Options.DisabledColor2 = clNone
+      Options.NormalColorAlpha = 0
+      Options.HotColorAlpha = 30
+      Options.PressedColorAlpha = 50
+      Options.FocusedColorAlpha = 255
+      Options.DisabledColorAlpha = 255
+      Options.NormalColor2Alpha = 255
+      Options.HotColor2Alpha = 255
+      Options.PressedColor2Alpha = 255
+      Options.FocusedColor2Alpha = 255
+      Options.DisabledColor2Alpha = 255
+      Options.FrameNormalColor = clNone
+      Options.FrameHotColor = clNone
+      Options.FramePressedColor = clNone
+      Options.FrameFocusedColor = clNone
+      Options.FrameDisabledColor = clNone
+      Options.FrameWidth = 2
+      Options.FrameNormalColorAlpha = 70
+      Options.FrameHotColorAlpha = 100
+      Options.FramePressedColorAlpha = 150
+      Options.FrameFocusedColorAlpha = 255
+      Options.FrameDisabledColorAlpha = 30
+      Options.FontNormalColor = clBtnText
+      Options.FontHotColor = clBtnText
+      Options.FontPressedColor = clBtnText
+      Options.FontFocusedColor = clBtnText
+      Options.FontDisabledColor = clInactiveCaption
+      Options.ShapeFillGradientAngle = 90
+      Options.ShapeFillGradientPressedAngle = -90
+      Options.ShapeFillGradientColorOffset = 25
+      Options.ShapeCornerRadius = 10
+      Options.ShapeStyle = scgpRect
+      Options.ArrowSize = 9
+      Options.ArrowAreaSize = 0
+      Options.ArrowType = scgpatDefault
+      Options.ArrowThickness = 2
+      Options.ArrowThicknessScaled = False
+      Options.StyleColors = True
+      GlyphOptions.NormalColor = clWhite
+      GlyphOptions.HotColor = clWhite
+      GlyphOptions.PressedColor = clWhite
+      GlyphOptions.FocusedColor = clWhite
+      GlyphOptions.DisabledColor = clWhite
+      GlyphOptions.NormalColorAlpha = 200
+      GlyphOptions.HotColorAlpha = 255
+      GlyphOptions.PressedColorAlpha = 255
+      GlyphOptions.FocusedColorAlpha = 255
+      GlyphOptions.DisabledColorAlpha = 100
+      GlyphOptions.Kind = scgpbgkUndo
+      GlyphOptions.Thickness = 1
+      GlyphOptions.ThicknessScaled = False
+      GlyphOptions.Size = 0
+      GlyphOptions.StyleColors = True
+      TextMargin = -1
+      WidthWithCaption = 0
+      WidthWithoutCaption = 0
+      SplitButton = False
+      RepeatClick = False
+      RepeatClickInterval = 100
+      ShowGalleryMenuFromTop = False
+      ShowGalleryMenuFromRight = False
+      ShowMenuArrow = True
+      ShowFocusRect = True
+      Down = False
+      GroupIndex = 0
+      AllowAllUp = False
+      ExplicitLeft = 245
+    end
+    object scGPGlyphButton_redo: TscGPGlyphButton
+      AlignWithMargins = True
+      Left = 277
+      Top = 0
+      Width = 35
+      Height = 33
+      Hint = 'Krok zp'#283't'
+      Margins.Left = 0
+      Margins.Top = 0
+      Margins.Right = 0
+      Margins.Bottom = 1
+      Align = alLeft
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 24
+      OnClick = scGPGlyphButton_redoClick
+      Animation = True
+      Caption = 'Toolbar_undo'
+      CanFocused = False
+      CustomDropDown = False
+      Layout = blGlyphLeft
+      TransparentBackground = True
+      ColorValue = clRed
+      Options.NormalColor = clWhite
+      Options.HotColor = clWhite
+      Options.PressedColor = clBlack
+      Options.FocusedColor = clWhite
+      Options.DisabledColor = 10114859
+      Options.NormalColor2 = clNone
+      Options.HotColor2 = clNone
+      Options.PressedColor2 = clNone
+      Options.FocusedColor2 = clNone
+      Options.DisabledColor2 = clNone
+      Options.NormalColorAlpha = 0
+      Options.HotColorAlpha = 30
+      Options.PressedColorAlpha = 50
+      Options.FocusedColorAlpha = 255
+      Options.DisabledColorAlpha = 255
+      Options.NormalColor2Alpha = 255
+      Options.HotColor2Alpha = 255
+      Options.PressedColor2Alpha = 255
+      Options.FocusedColor2Alpha = 255
+      Options.DisabledColor2Alpha = 255
+      Options.FrameNormalColor = clNone
+      Options.FrameHotColor = clNone
+      Options.FramePressedColor = clNone
+      Options.FrameFocusedColor = clNone
+      Options.FrameDisabledColor = clNone
+      Options.FrameWidth = 2
+      Options.FrameNormalColorAlpha = 70
+      Options.FrameHotColorAlpha = 100
+      Options.FramePressedColorAlpha = 150
+      Options.FrameFocusedColorAlpha = 255
+      Options.FrameDisabledColorAlpha = 30
+      Options.FontNormalColor = clBtnText
+      Options.FontHotColor = clBtnText
+      Options.FontPressedColor = clBtnText
+      Options.FontFocusedColor = clBtnText
+      Options.FontDisabledColor = clInactiveCaption
+      Options.ShapeFillGradientAngle = 90
+      Options.ShapeFillGradientPressedAngle = -90
+      Options.ShapeFillGradientColorOffset = 25
+      Options.ShapeCornerRadius = 10
+      Options.ShapeStyle = scgpRect
+      Options.ArrowSize = 9
+      Options.ArrowAreaSize = 0
+      Options.ArrowType = scgpatDefault
+      Options.ArrowThickness = 2
+      Options.ArrowThicknessScaled = False
+      Options.StyleColors = True
+      GlyphOptions.NormalColor = clWhite
+      GlyphOptions.HotColor = clWhite
+      GlyphOptions.PressedColor = clWhite
+      GlyphOptions.FocusedColor = clWhite
+      GlyphOptions.DisabledColor = clWhite
+      GlyphOptions.NormalColorAlpha = 200
+      GlyphOptions.HotColorAlpha = 255
+      GlyphOptions.PressedColorAlpha = 255
+      GlyphOptions.FocusedColorAlpha = 255
+      GlyphOptions.DisabledColorAlpha = 100
+      GlyphOptions.Kind = scgpbgkRedo
+      GlyphOptions.Thickness = 1
+      GlyphOptions.ThicknessScaled = False
+      GlyphOptions.Size = 0
+      GlyphOptions.StyleColors = True
+      TextMargin = -1
+      WidthWithCaption = 0
+      WidthWithoutCaption = 0
+      SplitButton = False
+      RepeatClick = False
+      RepeatClickInterval = 100
+      ShowGalleryMenuFromTop = False
+      ShowGalleryMenuFromRight = False
+      ShowMenuArrow = True
+      ShowFocusRect = True
+      Down = False
+      GroupIndex = 0
+      AllowAllUp = False
+      ExplicitLeft = 301
     end
   end
   object scGPPanel_statusbar: TscGPPanel
@@ -8678,7 +8884,7 @@ object Form1: TForm1
       ParentFont = False
       TabOrder = 4
       Visible = False
-      OnClick = scExPanel_vrstvyClick
+      OnClick = scExPanel1Click
       BorderWidth = 1
       BackgroundStyle = scexbgsPanel
       FrameColor = clBtnShadow
@@ -10280,7 +10486,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118009009AC0910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118009009B40910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -11403,7 +11609,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01015400B40CD00C30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01015400B40CD80C30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000002004000001002000000000000060
       0C00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

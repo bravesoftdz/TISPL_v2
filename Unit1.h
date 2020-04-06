@@ -345,6 +345,8 @@ __published:	// IDE-managed Components
   TMenuItem *N1projekt1;
   TMenuItem *N2projekt1;
   TMenuItem *N3projekt1;
+  TscGPGlyphButton *scGPGlyphButton_undo;
+  TscGPGlyphButton *scGPGlyphButton_redo;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -570,6 +572,8 @@ __published:	// IDE-managed Components
 	void __fastcall N2projekt1Click(TObject *Sender);
 	void __fastcall N3projekt1Click(TObject *Sender);
   void __fastcall scExPanel1Click(TObject *Sender);
+  void __fastcall scGPGlyphButton_undoClick(TObject *Sender);
+  void __fastcall scGPGlyphButton_redoClick(TObject *Sender);
 
 
 
