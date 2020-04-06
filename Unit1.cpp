@@ -2813,7 +2813,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//ENTER
 		case 13:
 		{
-      ////Geometrie
+			////Geometrie
 			if(Akce==GEOMETRIE && !editace_textu)ukonceni_geometrie();
 			////Potvrzení tvorby cesty
 			if(MOD==TVORBA_CESTY)scGPButton_ulozit_cestuClick(this);
@@ -2878,7 +2878,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 					double posunx=posledni_editovany_element->geo.X1-posledni_editovany_element->geo.X4,posuny=posledni_editovany_element->geo.Y1-posledni_editovany_element->geo.Y4;
 					Cvektory::TElement *E=NULL;
 					if(posledni_editovany_element->predchozi->n>0/* && posledni_editovany_element->predchozi->objekt_n==OBJEKT_akt->n*/)E=posledni_editovany_element->predchozi;
-					if(posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->predchozi2==posledni_editovany_element)posun=false;//mažu poslední element vedlejší větve před spojkou, nepovolit posun
+					if(posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->predchozi2==posledni_editovany_element)posun=false;//mažu poslední element vedlejší větve před spojkou, nepovolit posun
 					if(posledni_editovany_element->predchozi->eID==300 && posledni_editovany_element->predchozi->dalsi2==posledni_editovany_element)hl_vetev=false;//mazání prvního elementu sekundární větve za vyhybkou, posun další geometrie pouze na sekundární větvi
 					d.v.smaz_element(posledni_editovany_element,true);
 					posledni_editovany_element=E;
@@ -3404,8 +3404,8 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						if(JID==-5){if(scSplitView_LEFTTOOLBAR->Visible && scSplitView_LEFTTOOLBAR->Opened)DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_bod_temp=pom_bod;if(pom_bod_temp->n!=1)editovany_text=m.round2double(m.delka(pom_bod_temp->predchozi->X,pom_bod_temp->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);else editovany_text=m.round2double(m.delka(OBJEKT_akt->body->predchozi->X,OBJEKT_akt->body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);if(DKunit==2||DKunit==3)editovany_text=m.round2double(editovany_text/OBJEKT_akt->pohon->aRD,3);editovany_text=outDK(ms.MyToDouble(editovany_text));nahled_ulozit(true);}//editace kót kabiny
 						if(JID==4){Akce=MOVE_TABLE;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//posun tabulky pohonu
 						if(JID==-102){if(d.zprava_highlight!=d.zobrazit_celou_zpravu){d.zobrazit_celou_zpravu=d.zprava_highlight;kurzor(close);}else {d.zobrazit_celou_zpravu=0;kurzor(info);}REFRESH(false);}//rozbalení nebo skrytí zpráv
-//						if(JID==-201){OBJEKT_akt->pohon=element_temp->pohon;if(OBJEKT_akt->pohon!=NULL){prirazeni_pohonu_tab_pohon(OBJEKT_akt->pohon->n);FormX->aktualizace_PmG(true);}else {prirazeni_pohonu_tab_pohon(0);PmG->getCombo(0,0)->DropDown();}if(!OBJEKT_akt->zobrazit_mGrid)scGPButton_viditelnostmGridClick(Sender);} //kliknutí na jeden z pohonů na předávacím místě
-//						if(JID==-202){if(element_temp->dalsi!=NULL && element_temp->dalsi->objekt_n==element_temp->objekt_n){OBJEKT_akt->pohon=element_temp->dalsi->pohon;if(OBJEKT_akt->pohon!=NULL){prirazeni_pohonu_tab_pohon(OBJEKT_akt->pohon->n);FormX->aktualizace_PmG(true);}else {prirazeni_pohonu_tab_pohon(0);PmG->getCombo(0,0)->DropDown();}if(!OBJEKT_akt->zobrazit_mGrid)scGPButton_viditelnostmGridClick(Sender);}else {if(element_temp->dalsi!=NULL)pom_vyhybka=d.v.vrat_objekt(element_temp->dalsi->objekt_n);else pom_vyhybka=d.v.vrat_objekt(d.v.ELEMENTY->dalsi->objekt_n);zmena_editovaneho_objektu();}}
+						if(JID==-201)Memo("prvni");
+						if(JID==-202)Memo("druhý");
 					}
 					else
 					{
@@ -6015,6 +6015,7 @@ void TForm1::add_element (int X, int Y)
 		//element byl vložen
 		if(E!=NULL)
 		{
+      d.v.update_akt_zakazky();//protřeba mít nový element v cestě
 			d.v.aktualizuj_sparovane_ukazatele();//aktualizace spárovaných ukazatelů
 			//přiřazení režimu kabině + aktualizace pohon tabulek
 			d.v.aktualizace_rezimu_objektu(OBJEKT_akt);
@@ -6043,7 +6044,7 @@ void TForm1::add_element (int X, int Y)
    			}
 			}
 			//pokud má element mGrid .. napozicuj
-			if(E->eID!=100 && E->eID!=MaxInt && E->eID!=200 && E->mGrid!=NULL)//pokud je alokovaná paměť pro mGrid element bude mít tabulku, pokud není element nebude mít tabulku
+			if(E->eID!=100 && E->eID!=MaxInt /*&& E->eID!=200*/ && E->mGrid!=NULL)//pokud je alokovaná paměť pro mGrid element bude mít tabulku, pokud není element nebude mít tabulku
 	  	{
 	  		E->mGrid->Refresh();//nutné skrze aktuální údaje šířek tabulky
 	  		//automatické výchozí umístění mGridové tabulky dle rotace elementu a nadesignováné tabulky (jejích rozměrů) - proto musí být až za nastevením designu
@@ -6222,41 +6223,35 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 	  	//////////Mazání nepotřebného předávacího místa + 2 PM na sobě
 			if(E->eID==200 && (E->dalsi!=NULL && E->dalsi->pohon==NULL && E->pohon==NULL || E->dalsi!=NULL && E->pohon!=NULL && E->dalsi->pohon!=NULL && E->dalsi->pohon->n==E->pohon->n))
 			{
-	  		//pokud je možné dojde k odstranění elementu
-	  		//if(E->dalsi!=NULL && E->dalsi->geo.typ==0 && E->geo.typ==0){d.v.smaz_element(E);break;}
-	  		//pokud ne je přepnut na zarážku
-	  		//else
+				bool smazat=false;
+				//pokud je mazané předávací místo zároveň předchozí PM, nulovat ukazatel
+				if(E==predchozi_PM){predchozi_PM=NULL;smazat=true;}
+				//změna na zarážku
+				E->eID=MaxInt;
+				//změna názvu a úprava číslování, pouze v debug
+				if(DEBUG)
 				{
-					bool smazat=false;
-					//pokud je mazané předávací místo zároveň předchozí PM, nulovat ukazatel
-					if(E==predchozi_PM){predchozi_PM=NULL;smazat=true;}
-					//změna na zarážku
-	  			E->eID=MaxInt;
-	  			//změna názvu a úprava číslování, pouze v debug
-	  			if(DEBUG)
-					{
-						E->name="Zarážka";
-						d.v.uprav_popisky_elementu(E);
-					}
-					else E->name="";
-	  			//vynulování WT
-					E->WT=0;
-	  			//smazání a znovuvytvoření mGridu elementu
-					if((OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n) || smazat)
-					{
-						DrawGrid_knihovna->SetFocus();
-						ID=E->mGrid->ID;
-	  				E->mGrid->Delete();
-	  				E->mGrid=new TmGrid(F);
-	  				E->mGrid->Tag=6;//ID formu
-	  				E->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
-	  				design_element(E,false);//nutné!
-					}
-	  		}
+					E->name="Zarážka";
+					d.v.uprav_popisky_elementu(E);
+				}
+				else E->name="";
+				//vynulování WT
+				E->WT=0;
+				//smazání a znovuvytvoření mGridu elementu
+				if((OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n) || smazat)
+				{
+					DrawGrid_knihovna->SetFocus();
+					ID=E->mGrid->ID;
+					E->mGrid->Delete();
+					E->mGrid=new TmGrid(F);
+					E->mGrid->Tag=6;//ID formu
+					E->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
+					design_element(E,false);//nutné!
+				}
 	  	}
 	  	//2 pm přes sebe; bude jednodušeji realizovatelné v novém datovém modelu, přepnutí na zarážku dělá problémy, zatím odstaveno
 			if(E->eID==200 && (E->dalsi!=NULL && E->dalsi->eID==200 && E->dalsi->geo.delka<0.01))
-	  	{
+			{
 	  		//posun na druhé předávací místo
 	  		if(E->dalsi!=NULL)E=E->dalsi;
       	//pokud je možné dojde k odstranění elementu
@@ -6329,7 +6324,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 				}
 				else E->WT=0;
 				//zapsání do mgridu
-				if(OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n)E->mGrid->Cells[1][2].Text = F->m.round2double(F->outPT(E->WT),3);
+				if(OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n)E->mGrid->Cells[1][1].Text = F->m.round2double(F->outPT(E->WT),3);
 			}
 			//ukazatelové záležitosti
 			p1=NULL;p2=NULL;C=NULL;
@@ -6436,6 +6431,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 			if(E->eID==200 || E->eID==300){existuje_tab_pohonu=true;break;}
 			else E=d.v.dalsi_krok(E,OBJEKT_akt);
 		}
+		if(predchozi_PM!=NULL)existuje_tab_pohonu=true;
 		//pokud existuje tabulka pohonu a zároveň defaultní, smaže defaultní
 		if(existuje_tab_pohonu && PmG!=NULL)
 		{
@@ -6855,8 +6851,7 @@ double TForm1::max_voziku(Cvektory::TElement *stopka)
 	double delka=stopka->geo.delka;
 	if(delka>0)//musí být něco v délce, pokud nula tak problém
 	{
-//		if(d.v.PP.uchyt_pozice<d.v.PP.delka_podvozek/2.0)delka+=d.v.PP.delka_podvozek/2.0-d.v.PP.uchyt_pozice;
-//		if(d.v.PP.uchyt_pozice>d.v.PP.delka_podvozek/2.0)delka-=d.v.PP.uchyt_pozice-d.v.PP.delka_podvozek/2.0;
+		Cvektory::TCesta *C=NULL;
 		Cvektory::TElement *E=stopka->predchozi;
 		while(E!=NULL && E->n>0)//cyklus projde předchazijicí liniové úseky (z nich počítá délku) a zastaví až na nelionovém nebo nalezeném funkčním elementu
 		{
@@ -6868,6 +6863,13 @@ double TForm1::max_voziku(Cvektory::TElement *stopka)
 					double rotace_jigu=m.Rt90(d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(E)+E->rotace_jig);
 					if(rotace_jigu==0 || rotace_jigu==180)delka-=d.v.PP.delka_jig/2.0;else delka-=d.v.PP.sirka_jig/2.0;
 				}
+				if(E->eID==1 || E->eID==3 || E->eID==7 || E->eID==9 || E->eID==11 || E->eID==13 || E->eID==15 || E->eID==17 || E->eID==101 || E->eID==103 || E->eID==105 || E->eID==107)
+				{
+					if(d.v.ZAKAZKA_akt->n!=0)C=d.v.vrat_segment_cesty(d.v.ZAKAZKA_akt,E);
+					if(C!=NULL)E->data=C->data;
+					if(E->data.LO2>0)delka-=E->data.LO2+E->data.LO_pozice;
+					else delka-=(E->data.LO1+E->data.LO2)/2.0+E->data.LO_pozice;
+        }
 				if(E->geo.typ==0 && E->eID==MaxInt)delka+=E->geo.delka;
 				else break;
 			}
@@ -6875,6 +6877,7 @@ double TForm1::max_voziku(Cvektory::TElement *stopka)
 		}
 		short predchazi_SG_element=1;/*NE*/ if(E!=NULL && E->data.pocet_voziku>0)predchazi_SG_element=0;/*ANO*///pokud je buffer až předchozímu S&G elementu, potom uchyt pozice nemám vliv na zvětšení bufferu, protože i na předcházející stopce zabírá (přesahuje) stejný prostor
 		E=NULL;delete E;
+		C=NULL;delete C;
 		if(delka>0)ret=floor((delka+d.v.PP.uchyt_pozice*predchazi_SG_element)/d.v.PP.delka_podvozek);
 		if(ret<1)ret=1;
 	}
@@ -7119,9 +7122,7 @@ void TForm1::mGrid_puvodni_stav(Cvektory::TElement *E)
 			PmG->Update();update_probehl=true;
 			tab_pohon_COMBO();
 		}
-  	PmG->Cells[1][1].Type=PmG->EDIT;
-  	PmG->Cells[1][2].Type=PmG->EDIT;
-		PmG->Cells[1][3].Type=PmG->EDIT;
+		aktualizace_tab_pohon(false,false,true);//aktualizace komponent
 		if(!update_probehl)PmG->Update();
 	}
 	else////nastavení komponent
@@ -7522,7 +7523,7 @@ short TForm1::najdi_popisky_PM(double X,double Y,Cvektory::TObjekt *Objekt)
 	short ret=0;
 	if(Akce==NIC && !editace_textu)
 	{
-		double x1,y1,x2,y2;//pozice popisků u elementu
+		double Xe,Ye,x1,y1,x2,y2;//pozice popisků u elementu
 		Canvas->Font->Size=F->m.round(2.8*Zoom);if(F->aFont->Size==12)Canvas->Font->Size=m.round(2*Zoom);
 		int w1,w2;
 		int h;
@@ -7530,7 +7531,7 @@ short TForm1::najdi_popisky_PM(double X,double Y,Cvektory::TObjekt *Objekt)
 		element_temp=NULL;
 		//průchod objektu
   	Cvektory::TElement *E=Objekt->element;
-  	while(E!=NULL)
+  	while(E!=NULL && E->objekt_n==Objekt->n)
   	{
 			if(E->eID==200)
 			{
@@ -7540,30 +7541,47 @@ short TForm1::najdi_popisky_PM(double X,double Y,Cvektory::TObjekt *Objekt)
 				if(E->dalsi==NULL && d.v.ELEMENTY->dalsi->pohon!=NULL)T2=d.v.ELEMENTY->dalsi->pohon->name;
 				if(OBJEKT_akt->orientace==270){AnsiString pom=T1;T1=T2;T2=T1;}//prohození popisků
 				w1=Canvas->TextWidth(T1);w2=Canvas->TextWidth(T2);h=Canvas->TextHeight(T1);
+				Xe=m.L2Px(E->X);Ye=m.L2Py(E->Y);
 				//definice výchozích bodů popisků + zjištění oblasti
-				switch((int)E->orientace)
+				switch((int)m.Rt90(E->geo.orientace-E->geo.rotacni_uhel))
 				{
-					case 0:case 180:
+          case 0://ok
 					{
-						x1=m.L2Px(E->X)-w1-m.m2px(0.2);y1=m.L2Py(E->Y)+K;
-						x2=m.L2Px(E->X)+m.m2px(0.2);y2=m.L2Py(E->Y)-K-h;
-						if(m.PtInRectangle(x1,y1,x1+w1,y1+h,X,Y)){ret=1;if(OBJEKT_akt->orientace==270)ret=2;element_temp=E;break;}
-						if(m.PtInRectangle(x2,y2,x2+w2,y2+h,X,Y)){ret=2;if(OBJEKT_akt->orientace==270)ret=1;element_temp=E;break;}
+						x2=Xe-K;y2=Ye-K-m.m2px(0.2);
+						x1=Xe+h-K;y1=Ye+w1+m.m2px(0.4);
+						w2=(-1)*(w2+m.m2px(0.2));
+						w1=(-1)*(w1-m.m2px(0.2));
 					}break;
-					case 90:
-					{
-						x1=m.L2Px(E->X)-K;y1=m.L2Py(E->Y)-w1-m.m2px(0.2);
-						x2=m.L2Px(E->X)+K+h;y2=m.L2Py(E->Y)+m.m2px(0.2);
-						if(m.PtInRectangle(x1,y1,x1-h,y1+w1,X,Y)){ret=1;element_temp=E;break;}
-						if(m.PtInRectangle(x2,y2,x2-h,y2+w2,X,Y)){ret=2;element_temp=E;break;}
+			  	case 90://ok
+			  	{
+						x1=Xe-w1-m.m2px(0.4);y1=Ye+K+h;
+						x2=Xe+m.m2px(0.2);y2=Ye-K;
+						h*=-1;
+						w1+=m.m2px(0.2);w2+=m.m2px(0.2);
+			  	}break;
+			  	case 180:
+			  	{
+						x1=Xe-K;y1=Ye-w1-m.m2px(0.4);
+						x2=Xe+h+K;y2=Ye+m.m2px(0.2);
+						w1+=m.m2px(0.2);w2+=m.m2px(0.2);
 					}break;
-		  		case 270:
-					{
-						x1=m.L2Px(E->X)-K;y1=m.L2Py(E->Y)+w1+m.m2px(0.2);
-						x2=m.L2Px(E->X)-h-K;y2=m.L2Py(E->Y)-m.m2px(0.2);
-						if(m.PtInRectangle(x1,y1,x1+h,y1-w1,X,Y)){ret=1;element_temp=E;break;}
-						if(m.PtInRectangle(x2,y2,x2+h,y2-w2,X,Y)){ret=2;element_temp=E;break;}
+					case 270://ok
+			  	{
+						x2=Xe-w2-m.m2px(0.4);y1=Ye+K;
+						x1=Xe+m.m2px(0.2);y2=Ye-K-h;
+						w2+=m.m2px(0.2);w1+=m.m2px(0.2);
 					}break;
+				}
+        //hledání v olbasti
+				if(m.Rt90(E->geo.orientace-E->geo.rotacni_uhel)==90 || m.Rt90(E->geo.orientace-E->geo.rotacni_uhel)==270)
+				{
+					if(m.PtInRectangle(x1,y1,x1+w1,y1+h,X,Y)){ret=1;pom_element=E;break;}
+					if(m.PtInRectangle(x2,y2,x2+w2,y2+h,X,Y)){ret=2;pom_element=E;break;}
+				}
+				else
+				{
+					if(m.PtInRectangle(x1,y1,x1-h,y1+w1,X,Y)){ret=1;pom_element=E;break;}
+					if(m.PtInRectangle(x2,y2,x2-h,y2+w2,X,Y)){ret=2;pom_element=E;break;}
 				}
 			}
 			E=E->dalsi;
@@ -8044,7 +8062,9 @@ void TForm1::vytvoreni_tab_pohon(bool existuje_poh_tabulka)
 	//neexistuje žádná pohonová tabulka, vytvoří default tabulku
 	else
 	{
-  	PmG=new TmGrid(this);//vždy nutno jako první
+		FormX->vstoupeno_elm=false;
+		FormX->vstoupeno_poh=false;
+		PmG=new TmGrid(this);//vždy nutno jako první
   	//nastavení defaultního designu
   	PmG->Left=-500;PmG->Top=-500;//pouze aby se při prvním zobrazení nezobrazovala formou probliku vlevo nahoře
   	PmG->DefaultCell.Font->Name=aFont->Name;
@@ -8181,25 +8201,25 @@ void TForm1::aktualizace_tab_pohon(bool popisky,bool data,bool komponenty)
 	////aktualizace editovatelných polozek
 	if(komponenty && PmG!=NULL)
 	{
-  	//pokud pohon exituje a není používaný
+		//pokud pohon exituje a není používaný
   	if(OBJEKT_akt->pohon!=NULL && !d.v.pohon_je_pouzivan(OBJEKT_akt->pohon->n,false))
-  	{
-  		if(OBJEKT_akt->rezim==1)//povolit editaci všeho
-  		{
-  			PmG->Cells[1][1].Type=PmG->EDIT;PmG->Cells[1][1].Background->Color=clWhite;PmG->Cells[1][1].Font->Color=(TColor)RGB(43,87,154);
+		{
+			if(OBJEKT_akt->rezim==1)//povolit editaci všeho
+			{
+				PmG->Cells[1][1].Type=PmG->EDIT;PmG->Cells[1][1].Background->Color=clWhite;PmG->Cells[1][1].Font->Color=(TColor)RGB(43,87,154);
   			PmG->Cells[1][3].Type=PmG->EDIT;PmG->Cells[1][3].Background->Color=clWhite;PmG->Cells[1][3].Font->Color=(TColor)RGB(43,87,154);
   			PmG->Cells[1][4].Type=PmG->EDIT;PmG->Cells[1][4].Background->Color=clWhite;PmG->Cells[1][4].Font->Color=(TColor)RGB(43,87,154);
   		}
   		else//povolit editaci RD a rozteče palce
-  		{
+			{
   			PmG->Cells[1][1].Type=PmG->EDIT;PmG->Cells[1][1].Background->Color=clWhite;PmG->Cells[1][1].Font->Color=(TColor)RGB(43,87,154);
   			PmG->Cells[1][3].Type=PmG->EDIT;PmG->Cells[1][3].Background->Color=clWhite;PmG->Cells[1][3].Font->Color=(TColor)RGB(43,87,154);
   			if(PmG->Cells[1][4].Type==PmG->EDIT){mGrid_komponenta_na_draw(PmG,1,4);PmG->Cells[1][4].Background->Color=(TColor)RGB(240,240,240);PmG->Cells[1][4].Font->Color=(TColor)RGB(128,128,128);}
   		}
   	}
-  	else//vše zakázat pokud je editace povolená
-  	{
-  		if(PmG->Cells[1][1].Type==PmG->EDIT){mGrid_komponenta_na_draw(PmG,1,1);PmG->Cells[1][1].Background->Color=(TColor)RGB(240,240,240);PmG->Cells[1][1].Font->Color=(TColor)RGB(128,128,128);}
+		else//vše zakázat pokud je editace povolená
+		{
+			if(PmG->Cells[1][1].Type==PmG->EDIT){mGrid_komponenta_na_draw(PmG,1,1);PmG->Cells[1][1].Background->Color=(TColor)RGB(240,240,240);PmG->Cells[1][1].Font->Color=(TColor)RGB(128,128,128);}
   		if(PmG->Cells[1][3].Type==PmG->EDIT){mGrid_komponenta_na_draw(PmG,1,3);PmG->Cells[1][3].Background->Color=(TColor)RGB(240,240,240);PmG->Cells[1][3].Font->Color=(TColor)RGB(128,128,128);}
   		if(PmG->Cells[1][4].Type==PmG->EDIT){mGrid_komponenta_na_draw(PmG,1,4);PmG->Cells[1][4].Background->Color=(TColor)RGB(240,240,240);PmG->Cells[1][4].Font->Color=(TColor)RGB(128,128,128);}
   	}
@@ -8542,7 +8562,7 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 	if(E->eID==200 || E->eID==300)
 	{
 		E->mGrid->Update();//musí být přítomen před zakazováním komponent, před Update tabulka ještě neexistuje
-		TscGPComboBox *C1=E->mGrid->getCombo(1,2),*C2=E->mGrid->getCombo(2,2);
+		TscGPComboBox *C1=E->mGrid->getCombo(1,2),*C2=E->mGrid->getCombo(2,2),*C_pom=NULL;
 		if(C1!=NULL && C2!=NULL)//může dojít k NULL pokud je pohonová tabulka mimo obraz
 		{
    		C1->Clear();C2->Clear();
@@ -8563,12 +8583,23 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
    		}
    		delete p;p=NULL;
    		//přiřazení itemindexu podle pohonu na vedlejší větvi, pokud je definovaná
-   		C1->ItemIndex=0;C2->ItemIndex=0;
-   		if(E->pohon!=NULL)C1->ItemIndex=E->pohon->n;
+			C1->ItemIndex=0;C2->ItemIndex=0;
+			//kontrola zda budou prohozeny sloupce
+			if(prohodit_sloupce_PM(E))
+			{
+				//prohhození comb
+				C_pom=C1;
+				C1=C2;
+				C2=C_pom;
+			}
+			C_pom=NULL;delete C_pom;
+			//přiřazení itemindexů
+			if(E->pohon!=NULL)C1->ItemIndex=E->pohon->n;
    		if(E->eID==300)//pro výhybku
    		{
-   			if(E->dalsi2!=E->predchozi2 && E->dalsi2->pohon!=NULL)C2->ItemIndex=E->dalsi2->pohon->n;
-   			if(E->dalsi2==E->predchozi2)C2->Enabled=false;
+        //default C2
+				if(E->dalsi2!=E->predchozi2 && E->dalsi2->pohon!=NULL)C2->ItemIndex=E->dalsi2->pohon->n;
+				if(E->dalsi2==E->predchozi2)C2->Enabled=false;
    		}
    		else//pro PM
    		{
@@ -8592,25 +8623,45 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 	}
 }
 //---------------------------------------------------------------------------
+//rozhodne zda mají být prohozeny sloupce PM, podle trendu geometrie
+bool TForm1::prohodit_sloupce_PM(Cvektory::TElement *E)
+{
+	bool ret=false;
+	short orientace=m.Rt90(E->geo.orientace-E->geo.rotacni_uhel);
+	if(orientace==270)ret=true;
+	return ret;
+}
+//---------------------------------------------------------------------------
 //automaticky nastaví editované položky a needitovatelné položky pro pohonové tabulky
 void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
 {
   log(__func__);//logování
 	if(E->eID==200 || E->eID==300)//pouze pro pohonové tabulky
 	{
-		TscGPComboBox *C1=E->mGrid->getCombo(1,2),*C2=E->mGrid->getCombo(2,2);
+		TscGPComboBox *C1=E->mGrid->getCombo(1,2),*C2=E->mGrid->getCombo(2,2),*C_pom=NULL;
+		int prvni=1,druhy=2;
+		//kontrola zda budou prohozeny sloupce
+		if(prohodit_sloupce_PM(E))
+		{
+			//prohhození comb
+			C_pom=C1;
+			C1=C2;
+			C2=C_pom;
+			prvni=2;druhy=1;
+		}
+		C_pom=NULL;delete C_pom;
     //kontrola zda jsou buňky na draw
 		if(!C1->Enabled)
 		{
-			if(E->mGrid->Cells[1][3].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,1,3);E->mGrid->Cells[1][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[1][3].Font->Color=(TColor)RGB(128,128,128);}
-			if(E->mGrid->Cells[1][5].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,1,5);E->mGrid->Cells[1][5].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[1][5].Font->Color=(TColor)RGB(128,128,128);}
-			if(E->mGrid->Cells[1][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,1,6);E->mGrid->Cells[1][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[1][6].Font->Color=(TColor)RGB(128,128,128);}
+			if(E->mGrid->Cells[prvni][3].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,prvni,3);E->mGrid->Cells[prvni][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[prvni][3].Font->Color=(TColor)RGB(128,128,128);}
+			if(E->mGrid->Cells[prvni][5].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,prvni,5);E->mGrid->Cells[prvni][5].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[prvni][5].Font->Color=(TColor)RGB(128,128,128);}
+			if(E->mGrid->Cells[prvni][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,prvni,6);E->mGrid->Cells[prvni][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[prvni][6].Font->Color=(TColor)RGB(128,128,128);}
 		}
 		if(!C2->Enabled)
 		{
-			if(E->mGrid->Cells[2][3].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,2,3);E->mGrid->Cells[2][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][3].Font->Color=(TColor)RGB(128,128,128);}
-			if(E->mGrid->Cells[2][5].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,2,5);E->mGrid->Cells[2][5].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][5].Font->Color=(TColor)RGB(128,128,128);}
-			if(E->mGrid->Cells[2][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,2,6);E->mGrid->Cells[2][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][6].Font->Color=(TColor)RGB(128,128,128);}
+			if(E->mGrid->Cells[druhy][3].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,3);E->mGrid->Cells[druhy][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][3].Font->Color=(TColor)RGB(128,128,128);}
+			if(E->mGrid->Cells[druhy][5].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,5);E->mGrid->Cells[druhy][5].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][5].Font->Color=(TColor)RGB(128,128,128);}
+			if(E->mGrid->Cells[druhy][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,6);E->mGrid->Cells[druhy][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][6].Font->Color=(TColor)RGB(128,128,128);}
 		}
 		//kontrola zda můžu editovat pohon
 		if(C1->Enabled)
@@ -8620,22 +8671,22 @@ void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
 			{
 				if(d.v.vrat_objekt(E->objekt_n)->rezim==1)//povolit editaci všeho
 				{
-					E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Background->Color=clWhite;E->mGrid->Cells[1][3].Font->Color=(TColor)RGB(43,87,154);
-					E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Background->Color=clWhite;E->mGrid->Cells[1][5].Font->Color=(TColor)RGB(43,87,154);
-					E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Background->Color=clWhite;E->mGrid->Cells[1][6].Font->Color=(TColor)RGB(43,87,154);
+					E->mGrid->Cells[prvni][3].Type=E->mGrid->EDIT;E->mGrid->Cells[prvni][3].Background->Color=clWhite;E->mGrid->Cells[prvni][3].Font->Color=(TColor)RGB(43,87,154);
+					E->mGrid->Cells[prvni][5].Type=E->mGrid->EDIT;E->mGrid->Cells[prvni][5].Background->Color=clWhite;E->mGrid->Cells[prvni][5].Font->Color=(TColor)RGB(43,87,154);
+					E->mGrid->Cells[prvni][6].Type=E->mGrid->EDIT;E->mGrid->Cells[prvni][6].Background->Color=clWhite;E->mGrid->Cells[prvni][6].Font->Color=(TColor)RGB(43,87,154);
 				}
 				else//povolit editaci RD a rozteče palce
 				{
-					E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Background->Color=clWhite;E->mGrid->Cells[1][3].Font->Color=(TColor)RGB(43,87,154);
-					E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Background->Color=clWhite;E->mGrid->Cells[1][5].Font->Color=(TColor)RGB(43,87,154);
-					if(E->mGrid->Cells[1][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,1,6);E->mGrid->Cells[1][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[1][6].Font->Color=(TColor)RGB(128,128,128);}
+					E->mGrid->Cells[prvni][3].Type=E->mGrid->EDIT;E->mGrid->Cells[prvni][3].Background->Color=clWhite;E->mGrid->Cells[prvni][3].Font->Color=(TColor)RGB(43,87,154);
+					E->mGrid->Cells[prvni][5].Type=E->mGrid->EDIT;E->mGrid->Cells[prvni][5].Background->Color=clWhite;E->mGrid->Cells[prvni][5].Font->Color=(TColor)RGB(43,87,154);
+					if(E->mGrid->Cells[prvni][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,prvni,6);E->mGrid->Cells[prvni][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[prvni][6].Font->Color=(TColor)RGB(128,128,128);}
 				}
 			}
 			else//vše zakázat pokud je editace povolená
 			{
-				if(E->mGrid->Cells[1][3].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,1,3);E->mGrid->Cells[1][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[1][3].Font->Color=(TColor)RGB(128,128,128);}
-				if(E->mGrid->Cells[1][5].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,1,5);E->mGrid->Cells[1][5].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[1][5].Font->Color=(TColor)RGB(128,128,128);}
-				if(E->mGrid->Cells[1][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,1,6);E->mGrid->Cells[1][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[1][6].Font->Color=(TColor)RGB(128,128,128);}
+				if(E->mGrid->Cells[prvni][3].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,prvni,3);E->mGrid->Cells[prvni][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[prvni][3].Font->Color=(TColor)RGB(128,128,128);}
+				if(E->mGrid->Cells[prvni][5].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,prvni,5);E->mGrid->Cells[prvni][5].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[prvni][5].Font->Color=(TColor)RGB(128,128,128);}
+				if(E->mGrid->Cells[prvni][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,prvni,6);E->mGrid->Cells[prvni][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[prvni][6].Font->Color=(TColor)RGB(128,128,128);}
 			}
 		}
 		if(C2->Enabled)
@@ -8649,22 +8700,22 @@ void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
 			{
 				if(d.v.vrat_objekt(e_pom->objekt_n)->rezim==1)//povolit editaci všeho
 				{
-					E->mGrid->Cells[2][3].Type=E->mGrid->EDIT;E->mGrid->Cells[2][3].Background->Color=clWhite;E->mGrid->Cells[2][3].Font->Color=(TColor)RGB(43,87,154);
-					E->mGrid->Cells[2][5].Type=E->mGrid->EDIT;E->mGrid->Cells[2][5].Background->Color=clWhite;E->mGrid->Cells[2][5].Font->Color=(TColor)RGB(43,87,154);
-					E->mGrid->Cells[2][6].Type=E->mGrid->EDIT;E->mGrid->Cells[2][6].Background->Color=clWhite;E->mGrid->Cells[2][6].Font->Color=(TColor)RGB(43,87,154);
+					E->mGrid->Cells[druhy][3].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][3].Background->Color=clWhite;E->mGrid->Cells[druhy][3].Font->Color=(TColor)RGB(43,87,154);
+					E->mGrid->Cells[druhy][5].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][5].Background->Color=clWhite;E->mGrid->Cells[druhy][5].Font->Color=(TColor)RGB(43,87,154);
+					E->mGrid->Cells[druhy][6].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][6].Background->Color=clWhite;E->mGrid->Cells[druhy][6].Font->Color=(TColor)RGB(43,87,154);
 				}
 				else//povolit editaci RD a rozteče palce
 				{
-					E->mGrid->Cells[2][3].Type=E->mGrid->EDIT;E->mGrid->Cells[2][3].Background->Color=clWhite;E->mGrid->Cells[2][3].Font->Color=(TColor)RGB(43,87,154);
-					E->mGrid->Cells[2][5].Type=E->mGrid->EDIT;E->mGrid->Cells[2][5].Background->Color=clWhite;E->mGrid->Cells[2][5].Font->Color=(TColor)RGB(43,87,154);
-					if(E->mGrid->Cells[2][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,2,6);E->mGrid->Cells[2][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][6].Font->Color=(TColor)RGB(128,128,128);}
+					E->mGrid->Cells[druhy][3].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][3].Background->Color=clWhite;E->mGrid->Cells[druhy][3].Font->Color=(TColor)RGB(43,87,154);
+					E->mGrid->Cells[druhy][5].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][5].Background->Color=clWhite;E->mGrid->Cells[druhy][5].Font->Color=(TColor)RGB(43,87,154);
+					if(E->mGrid->Cells[druhy][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,6);E->mGrid->Cells[druhy][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][6].Font->Color=(TColor)RGB(128,128,128);}
 				}
 			}
 			else//vše zakázat pokud je editace povolená
 			{
-				if(E->mGrid->Cells[2][3].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,2,3);E->mGrid->Cells[2][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][3].Font->Color=(TColor)RGB(128,128,128);}
-				if(E->mGrid->Cells[2][5].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,2,5);E->mGrid->Cells[2][5].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][5].Font->Color=(TColor)RGB(128,128,128);}
-				if(E->mGrid->Cells[2][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,2,6);E->mGrid->Cells[2][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[2][6].Font->Color=(TColor)RGB(128,128,128);}
+				if(E->mGrid->Cells[druhy][3].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,3);E->mGrid->Cells[druhy][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][3].Font->Color=(TColor)RGB(128,128,128);}
+				if(E->mGrid->Cells[druhy][5].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,5);E->mGrid->Cells[druhy][5].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][5].Font->Color=(TColor)RGB(128,128,128);}
+				if(E->mGrid->Cells[druhy][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,6);E->mGrid->Cells[druhy][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][6].Font->Color=(TColor)RGB(128,128,128);}
 			}
 			//ukazatelové záležitosti
 			e_pom=NULL;delete e_pom;
@@ -8998,12 +9049,15 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 		case 200://PM
 		case 300://výhybky
 		{
+      //určení zda budou prohozeny sloupce
+			int prvni=1,druhy=2;
+			if(prohodit_sloupce_PM(E)){prvni=2;druhy=1;}
 			//vytvoření mgridu
 			E->mGrid->Create(3,12);
 			//nastavení popisků
-			if(E->eID==300)E->mGrid->Cells[1][1].Text="IN/OUT";
-			else E->mGrid->Cells[1][1].Text="IN";
-			E->mGrid->Cells[2][1].Text="OUT";
+			if(E->eID==300)E->mGrid->Cells[prvni][1].Text="IN/OUT";
+			else E->mGrid->Cells[prvni][1].Text="IN";
+			E->mGrid->Cells[druhy][1].Text="OUT";
 			E->mGrid->Cells[0][2].Text=ls->Strings[447];//"Výběr pohonu "
 			E->mGrid->Cells[0][3].Text=ls->Strings[208]+" "+rychlost;//"Rychlost"
 			E->mGrid->Cells[0][4].Text=ls->Strings[448]+" "+rychlost;//"Rozmezí rychlosti "
@@ -9018,52 +9072,52 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[1][2].Type=E->mGrid->COMBO;
 			if(E->pohon!=NULL)
 			{
-				E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=m.round2double(outaRD(E->pohon->aRD),3);
-				E->mGrid->Cells[1][4].Text=AnsiString(m.round2double(outaRD(E->pohon->rychlost_od),3))+" - "+AnsiString(m.round2double(outaRD(E->pohon->rychlost_do),3));
-				E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Text=m.round2double(outR(E->pohon->roztec),3);
-				E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Text=m.round2double(E->pohon->Rx,3);
-				E->mGrid->Cells[1][7].Text=m.round2double(outRz(E->pohon->Rz),3);
-				E->mGrid->Cells[1][8].Text=m.round2double(outRz(m.mezera(0,E->pohon->Rz,0)),3);
-				E->mGrid->Cells[1][9].Text=m.round2double(outRz(m.mezera(0,E->pohon->Rz,1)),3);
-				E->mGrid->Cells[1][10].Text=m.round2double(outRz(m.mezera(90,E->pohon->Rz,1)),3);
+				E->mGrid->Cells[prvni][3].Type=E->mGrid->EDIT;E->mGrid->Cells[prvni][3].Text=m.round2double(outaRD(E->pohon->aRD),3);
+				E->mGrid->Cells[prvni][4].Text=AnsiString(m.round2double(outaRD(E->pohon->rychlost_od),3))+" - "+AnsiString(m.round2double(outaRD(E->pohon->rychlost_do),3));
+				E->mGrid->Cells[prvni][5].Type=E->mGrid->EDIT;E->mGrid->Cells[prvni][5].Text=m.round2double(outR(E->pohon->roztec),3);
+				E->mGrid->Cells[prvni][6].Type=E->mGrid->EDIT;E->mGrid->Cells[prvni][6].Text=m.round2double(E->pohon->Rx,3);
+				E->mGrid->Cells[prvni][7].Text=m.round2double(outRz(E->pohon->Rz),3);
+				E->mGrid->Cells[prvni][8].Text=m.round2double(outRz(m.mezera(0,E->pohon->Rz,0)),3);
+				E->mGrid->Cells[prvni][9].Text=m.round2double(outRz(m.mezera(0,E->pohon->Rz,1)),3);
+				E->mGrid->Cells[prvni][10].Text=m.round2double(outRz(m.mezera(90,E->pohon->Rz,1)),3);
 			}
 			else
 			{
-				E->mGrid->Cells[1][3].Text=0;
-				E->mGrid->Cells[1][4].Text=0;
-				E->mGrid->Cells[1][5].Text=0;
-				E->mGrid->Cells[1][6].Text=0;
-				E->mGrid->Cells[1][7].Text=0;
-				E->mGrid->Cells[1][8].Text=0;
-				E->mGrid->Cells[1][9].Text=0;
-				E->mGrid->Cells[1][10].Text=0;
+				E->mGrid->Cells[prvni][3].Text=0;
+				E->mGrid->Cells[prvni][4].Text=0;
+				E->mGrid->Cells[prvni][5].Text=0;
+				E->mGrid->Cells[prvni][6].Text=0;
+				E->mGrid->Cells[prvni][7].Text=0;
+				E->mGrid->Cells[prvni][8].Text=0;
+				E->mGrid->Cells[prvni][9].Text=0;
+				E->mGrid->Cells[prvni][10].Text=0;
 			}
-			E->mGrid->Cells[1][11].Text="-";
+			E->mGrid->Cells[prvni][11].Text="-";
 			//nastavování hodnot třetího sloupce
 			E->mGrid->Cells[2][2].Type=E->mGrid->COMBO;
 			if(E->eID==300)//pro výhybku
 			{
 				if(E->dalsi2!=E->predchozi2 && E->dalsi2->pohon!=NULL)
 				{
-					E->mGrid->Cells[2][3].Type=E->mGrid->EDIT;E->mGrid->Cells[2][3].Text=m.round2double(outaRD(E->dalsi2->pohon->aRD),3);
-					E->mGrid->Cells[2][4].Text=AnsiString(m.round2double(outaRD(E->dalsi2->pohon->rychlost_od),3))+" - "+AnsiString(m.round2double(outaRD(E->dalsi2->pohon->rychlost_do),3));
-					E->mGrid->Cells[2][5].Type=E->mGrid->EDIT;E->mGrid->Cells[2][5].Text=m.round2double(outR(E->dalsi2->pohon->roztec),3);
-					E->mGrid->Cells[2][6].Type=E->mGrid->EDIT;E->mGrid->Cells[2][6].Text=m.round2double(E->dalsi2->pohon->Rx,3);
-					E->mGrid->Cells[2][7].Text=m.round2double(outRz(E->dalsi2->pohon->Rz),3);
-					E->mGrid->Cells[2][8].Text=m.round2double(outRz(m.mezera(0,E->dalsi2->pohon->Rz,0)),3);
-					E->mGrid->Cells[2][9].Text=m.round2double(outRz(m.mezera(0,E->dalsi2->pohon->Rz,1)),3);
-					E->mGrid->Cells[2][10].Text=m.round2double(outRz(m.mezera(90,E->dalsi2->pohon->Rz,1)),3);
+					E->mGrid->Cells[druhy][3].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][3].Text=m.round2double(outaRD(E->dalsi2->pohon->aRD),3);
+					E->mGrid->Cells[druhy][4].Text=AnsiString(m.round2double(outaRD(E->dalsi2->pohon->rychlost_od),3))+" - "+AnsiString(m.round2double(outaRD(E->dalsi2->pohon->rychlost_do),3));
+					E->mGrid->Cells[druhy][5].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][5].Text=m.round2double(outR(E->dalsi2->pohon->roztec),3);
+					E->mGrid->Cells[druhy][6].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][6].Text=m.round2double(E->dalsi2->pohon->Rx,3);
+					E->mGrid->Cells[druhy][7].Text=m.round2double(outRz(E->dalsi2->pohon->Rz),3);
+					E->mGrid->Cells[druhy][8].Text=m.round2double(outRz(m.mezera(0,E->dalsi2->pohon->Rz,0)),3);
+					E->mGrid->Cells[druhy][9].Text=m.round2double(outRz(m.mezera(0,E->dalsi2->pohon->Rz,1)),3);
+					E->mGrid->Cells[druhy][10].Text=m.round2double(outRz(m.mezera(90,E->dalsi2->pohon->Rz,1)),3);
 				}
 				else
 				{
-					E->mGrid->Cells[2][3].Text=0;
-					E->mGrid->Cells[2][4].Text=0;
-					E->mGrid->Cells[2][5].Text=0;
-					E->mGrid->Cells[2][6].Text=0;
-					E->mGrid->Cells[2][7].Text=0;
-					E->mGrid->Cells[2][8].Text=0;
-					E->mGrid->Cells[2][9].Text=0;
-					E->mGrid->Cells[2][10].Text=0;
+					E->mGrid->Cells[druhy][3].Text=0;
+					E->mGrid->Cells[druhy][4].Text=0;
+					E->mGrid->Cells[druhy][5].Text=0;
+					E->mGrid->Cells[druhy][6].Text=0;
+					E->mGrid->Cells[druhy][7].Text=0;
+					E->mGrid->Cells[druhy][8].Text=0;
+					E->mGrid->Cells[druhy][9].Text=0;
+					E->mGrid->Cells[druhy][10].Text=0;
 				}
 			}
 			else//pro PM
@@ -9072,29 +9126,29 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 				if(e_pom==NULL)e_pom=d.v.ELEMENTY->dalsi;//PM na konci linky
 				if(e_pom->pohon!=NULL)
 				{
-					E->mGrid->Cells[2][3].Type=E->mGrid->EDIT;E->mGrid->Cells[2][3].Text=m.round2double(outaRD(e_pom->pohon->aRD),3);
-					E->mGrid->Cells[2][4].Text=AnsiString(m.round2double(outaRD(e_pom->pohon->rychlost_od),3))+" - "+AnsiString(m.round2double(outaRD(e_pom->pohon->rychlost_do),3));
-					E->mGrid->Cells[2][5].Type=E->mGrid->EDIT;E->mGrid->Cells[2][5].Text=m.round2double(outR(e_pom->pohon->roztec),3);
-					E->mGrid->Cells[2][6].Type=E->mGrid->EDIT;E->mGrid->Cells[2][6].Text=m.round2double(e_pom->pohon->Rx,3);
-					E->mGrid->Cells[2][7].Text=m.round2double(outRz(e_pom->pohon->Rz),3);
-					E->mGrid->Cells[2][8].Text=m.round2double(outRz(m.mezera(0,e_pom->pohon->Rz,0)),3);
-					E->mGrid->Cells[2][9].Text=m.round2double(outRz(m.mezera(0,e_pom->pohon->Rz,1)),3);
-					E->mGrid->Cells[2][10].Text=m.round2double(outRz(m.mezera(90,e_pom->pohon->Rz,1)),3);
+					E->mGrid->Cells[druhy][3].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][3].Text=m.round2double(outaRD(e_pom->pohon->aRD),3);
+					E->mGrid->Cells[druhy][4].Text=AnsiString(m.round2double(outaRD(e_pom->pohon->rychlost_od),3))+" - "+AnsiString(m.round2double(outaRD(e_pom->pohon->rychlost_do),3));
+					E->mGrid->Cells[druhy][5].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][5].Text=m.round2double(outR(e_pom->pohon->roztec),3);
+					E->mGrid->Cells[druhy][6].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][6].Text=m.round2double(e_pom->pohon->Rx,3);
+					E->mGrid->Cells[druhy][7].Text=m.round2double(outRz(e_pom->pohon->Rz),3);
+					E->mGrid->Cells[druhy][8].Text=m.round2double(outRz(m.mezera(0,e_pom->pohon->Rz,0)),3);
+					E->mGrid->Cells[druhy][9].Text=m.round2double(outRz(m.mezera(0,e_pom->pohon->Rz,1)),3);
+					E->mGrid->Cells[druhy][10].Text=m.round2double(outRz(m.mezera(90,e_pom->pohon->Rz,1)),3);
 				}
 				else
 				{
-					E->mGrid->Cells[2][3].Text=0;
-					E->mGrid->Cells[2][4].Text=0;
-					E->mGrid->Cells[2][5].Text=0;
-					E->mGrid->Cells[2][6].Text=0;
-					E->mGrid->Cells[2][7].Text=0;
-					E->mGrid->Cells[2][8].Text=0;
-					E->mGrid->Cells[2][9].Text=0;
-					E->mGrid->Cells[2][10].Text=0;
+					E->mGrid->Cells[druhy][3].Text=0;
+					E->mGrid->Cells[druhy][4].Text=0;
+					E->mGrid->Cells[druhy][5].Text=0;
+					E->mGrid->Cells[druhy][6].Text=0;
+					E->mGrid->Cells[druhy][7].Text=0;
+					E->mGrid->Cells[druhy][8].Text=0;
+					E->mGrid->Cells[druhy][9].Text=0;
+					E->mGrid->Cells[druhy][10].Text=0;
 				}
 				e_pom=NULL;delete e_pom;
 			}
-			E->mGrid->Cells[2][11].Text=outPT(E->WT);
+			E->mGrid->Cells[druhy][11].Text=outPT(E->WT);
 			//nastavení šířek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=210;
@@ -9451,19 +9505,12 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][3].ShowHint=true;
 			break;
 		}
-//		case 200://předávací místo
-//		{
-//			E->mGrid->Create(2,2);
-//			E->mGrid->Cells[0][1].Text=ls->Strings[224]+" "+cas;//"WT palec "
-//			E->mGrid->Cells[1][1].Text=outPT(E->WT);
-//			E->mGrid->SetColumnAutoFit(-4);
-//			E->mGrid->Columns[0].Width=120;
-//			E->mGrid->Columns[1].Width=sirka_cisla;
-//			break;
-//		}
 		case 200://PM
 		case 300://výhybka
 		{
+			//určení zda budou prohozeny sloupce
+			int prvni=1,druhy=2;
+			if(prohodit_sloupce_PM(E)){prvni=2;druhy=1;}
 			//uložení stavu zobrazení tabulky před znovuvytvořením
 			unsigned int stav=0;
 			if(E->mGrid->RowCount!=0 && E->mGrid->Rows[5].Visible)stav=1;//uchování stavu zda byla tabulka "rozbalená"
@@ -9471,9 +9518,9 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			//vytvoření mgridu
 			E->mGrid->Create(3,12);
 			//nastavení popisků
-			if(E->eID==300)E->mGrid->Cells[1][1].Text="IN/OUT";
-			else E->mGrid->Cells[1][1].Text="IN";
-			E->mGrid->Cells[2][1].Text="OUT";
+			if(E->eID==300)E->mGrid->Cells[prvni][1].Text="IN/OUT";
+			else E->mGrid->Cells[prvni][1].Text="IN";
+			E->mGrid->Cells[druhy][1].Text="OUT";
 			E->mGrid->Cells[0][2].Text=ls->Strings[447];//"Výběr pohonu "
 			E->mGrid->Cells[0][3].Text=ls->Strings[208]+" "+rychlost;//"Rychlost"
 			E->mGrid->Cells[0][4].Text=ls->Strings[448]+" "+rychlost;//"Rozmezí rychlosti "
@@ -9488,52 +9535,52 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[1][2].Type=E->mGrid->COMBO;
 			if(E->pohon!=NULL)
 			{
-				E->mGrid->Cells[1][3].Text=m.round2double(outaRD(E->pohon->aRD),3);
-				E->mGrid->Cells[1][4].Text=AnsiString(m.round2double(outaRD(E->pohon->rychlost_od),3))+" - "+AnsiString(m.round2double(outaRD(E->pohon->rychlost_do),3));
-				E->mGrid->Cells[1][5].Text=m.round2double(outR(E->pohon->roztec),3);
-				E->mGrid->Cells[1][6].Text=m.round2double(E->pohon->Rx,3);
-				E->mGrid->Cells[1][7].Text=m.round2double(outRz(E->pohon->Rz),3);
-				E->mGrid->Cells[1][8].Text=m.round2double(outRz(m.mezera(0,E->pohon->Rz,0)),3);
-				E->mGrid->Cells[1][9].Text=m.round2double(outRz(m.mezera(0,E->pohon->Rz,1)),3);
-				E->mGrid->Cells[1][10].Text=m.round2double(outRz(m.mezera(90,E->pohon->Rz,1)),3);
+				E->mGrid->Cells[prvni][3].Text=m.round2double(outaRD(E->pohon->aRD),3);
+				E->mGrid->Cells[prvni][4].Text=AnsiString(m.round2double(outaRD(E->pohon->rychlost_od),3))+" - "+AnsiString(m.round2double(outaRD(E->pohon->rychlost_do),3));
+				E->mGrid->Cells[prvni][5].Text=m.round2double(outR(E->pohon->roztec),3);
+				E->mGrid->Cells[prvni][6].Text=m.round2double(E->pohon->Rx,3);
+				E->mGrid->Cells[prvni][7].Text=m.round2double(outRz(E->pohon->Rz),3);
+				E->mGrid->Cells[prvni][8].Text=m.round2double(outRz(m.mezera(0,E->pohon->Rz,0)),3);
+				E->mGrid->Cells[prvni][9].Text=m.round2double(outRz(m.mezera(0,E->pohon->Rz,1)),3);
+				E->mGrid->Cells[prvni][10].Text=m.round2double(outRz(m.mezera(90,E->pohon->Rz,1)),3);
 			}
 			else
 			{
-				E->mGrid->Cells[1][3].Text=0;
-				E->mGrid->Cells[1][4].Text=0;
-				E->mGrid->Cells[1][5].Text=0;
-				E->mGrid->Cells[1][6].Text=0;
-				E->mGrid->Cells[1][7].Text=0;
-				E->mGrid->Cells[1][8].Text=0;
-				E->mGrid->Cells[1][9].Text=0;
+				E->mGrid->Cells[prvni][3].Text=0;
+				E->mGrid->Cells[prvni][4].Text=0;
+				E->mGrid->Cells[prvni][5].Text=0;
+				E->mGrid->Cells[prvni][6].Text=0;
+				E->mGrid->Cells[prvni][7].Text=0;
+				E->mGrid->Cells[prvni][8].Text=0;
+				E->mGrid->Cells[prvni][9].Text=0;
 				E->mGrid->Cells[1][10].Text=0;
 			}
-			E->mGrid->Cells[1][11].Text="-";
+			E->mGrid->Cells[prvni][11].Text="-";
 			//nastavování hodnot třetího sloupce
 			E->mGrid->Cells[2][2].Type=E->mGrid->COMBO;
 			if(E->eID==300)//pro výhybku
 			{
 				if(E->dalsi2!=E->predchozi2 && E->dalsi2->pohon!=NULL)
 				{
-					E->mGrid->Cells[2][3].Type=E->mGrid->EDIT;E->mGrid->Cells[2][3].Text=m.round2double(outaRD(E->dalsi2->pohon->aRD),3);
-					E->mGrid->Cells[2][4].Text=AnsiString(m.round2double(outaRD(E->dalsi2->pohon->rychlost_od),3))+" - "+AnsiString(m.round2double(outaRD(E->dalsi2->pohon->rychlost_do),3));
-					E->mGrid->Cells[2][5].Type=E->mGrid->EDIT;E->mGrid->Cells[2][5].Text=m.round2double(outR(E->dalsi2->pohon->roztec),3);
-					E->mGrid->Cells[2][6].Type=E->mGrid->EDIT;E->mGrid->Cells[2][6].Text=m.round2double(E->dalsi2->pohon->Rx,3);
-					E->mGrid->Cells[2][7].Text=m.round2double(outRz(E->dalsi2->pohon->Rz),3);
-					E->mGrid->Cells[2][8].Text=m.round2double(outRz(m.mezera(0,E->dalsi2->pohon->Rz,0)),3);
-					E->mGrid->Cells[2][9].Text=m.round2double(outRz(m.mezera(0,E->dalsi2->pohon->Rz,1)),3);
-					E->mGrid->Cells[2][10].Text=m.round2double(outRz(m.mezera(90,E->dalsi2->pohon->Rz,1)),3);
+					E->mGrid->Cells[druhy][3].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][3].Text=m.round2double(outaRD(E->dalsi2->pohon->aRD),3);
+					E->mGrid->Cells[druhy][4].Text=AnsiString(m.round2double(outaRD(E->dalsi2->pohon->rychlost_od),3))+" - "+AnsiString(m.round2double(outaRD(E->dalsi2->pohon->rychlost_do),3));
+					E->mGrid->Cells[druhy][5].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][5].Text=m.round2double(outR(E->dalsi2->pohon->roztec),3);
+					E->mGrid->Cells[druhy][6].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][6].Text=m.round2double(E->dalsi2->pohon->Rx,3);
+					E->mGrid->Cells[druhy][7].Text=m.round2double(outRz(E->dalsi2->pohon->Rz),3);
+					E->mGrid->Cells[druhy][8].Text=m.round2double(outRz(m.mezera(0,E->dalsi2->pohon->Rz,0)),3);
+					E->mGrid->Cells[druhy][9].Text=m.round2double(outRz(m.mezera(0,E->dalsi2->pohon->Rz,1)),3);
+					E->mGrid->Cells[druhy][10].Text=m.round2double(outRz(m.mezera(90,E->dalsi2->pohon->Rz,1)),3);
 				}
 				else
 				{
-					E->mGrid->Cells[2][3].Text=0;
-					E->mGrid->Cells[2][4].Text=0;
-					E->mGrid->Cells[2][5].Text=0;
-					E->mGrid->Cells[2][6].Text=0;
-					E->mGrid->Cells[2][7].Text=0;
-					E->mGrid->Cells[2][8].Text=0;
-					E->mGrid->Cells[2][9].Text=0;
-					E->mGrid->Cells[2][10].Text=0;
+					E->mGrid->Cells[druhy][3].Text=0;
+					E->mGrid->Cells[druhy][4].Text=0;
+					E->mGrid->Cells[druhy][5].Text=0;
+					E->mGrid->Cells[druhy][6].Text=0;
+					E->mGrid->Cells[druhy][7].Text=0;
+					E->mGrid->Cells[druhy][8].Text=0;
+					E->mGrid->Cells[druhy][9].Text=0;
+					E->mGrid->Cells[druhy][10].Text=0;
 				}
 			}
 			else//pro PM
@@ -9542,29 +9589,29 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 				if(e_pom==NULL)e_pom=d.v.ELEMENTY->dalsi;//PM na konci linky
 				if(e_pom->pohon!=NULL)
 				{
-					E->mGrid->Cells[2][3].Type=E->mGrid->EDIT;E->mGrid->Cells[2][3].Text=m.round2double(outaRD(e_pom->pohon->aRD),3);
-					E->mGrid->Cells[2][4].Text=AnsiString(m.round2double(outaRD(e_pom->pohon->rychlost_od),3))+" - "+AnsiString(m.round2double(outaRD(e_pom->pohon->rychlost_do),3));
-					E->mGrid->Cells[2][5].Type=E->mGrid->EDIT;E->mGrid->Cells[2][5].Text=m.round2double(outR(e_pom->pohon->roztec),3);
-					E->mGrid->Cells[2][6].Type=E->mGrid->EDIT;E->mGrid->Cells[2][6].Text=m.round2double(e_pom->pohon->Rx,3);
-					E->mGrid->Cells[2][7].Text=m.round2double(outRz(e_pom->pohon->Rz),3);
-					E->mGrid->Cells[2][8].Text=m.round2double(outRz(m.mezera(0,e_pom->pohon->Rz,0)),3);
-					E->mGrid->Cells[2][9].Text=m.round2double(outRz(m.mezera(0,e_pom->pohon->Rz,1)),3);
-					E->mGrid->Cells[2][10].Text=m.round2double(outRz(m.mezera(90,e_pom->pohon->Rz,1)),3);
+					E->mGrid->Cells[druhy][3].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][3].Text=m.round2double(outaRD(e_pom->pohon->aRD),3);
+					E->mGrid->Cells[druhy][4].Text=AnsiString(m.round2double(outaRD(e_pom->pohon->rychlost_od),3))+" - "+AnsiString(m.round2double(outaRD(e_pom->pohon->rychlost_do),3));
+					E->mGrid->Cells[druhy][5].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][5].Text=m.round2double(outR(e_pom->pohon->roztec),3);
+					E->mGrid->Cells[druhy][6].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][6].Text=m.round2double(e_pom->pohon->Rx,3);
+					E->mGrid->Cells[druhy][7].Text=m.round2double(outRz(e_pom->pohon->Rz),3);
+					E->mGrid->Cells[druhy][8].Text=m.round2double(outRz(m.mezera(0,e_pom->pohon->Rz,0)),3);
+					E->mGrid->Cells[druhy][9].Text=m.round2double(outRz(m.mezera(0,e_pom->pohon->Rz,1)),3);
+					E->mGrid->Cells[druhy][10].Text=m.round2double(outRz(m.mezera(90,e_pom->pohon->Rz,1)),3);
 				}
 				else
 				{
-					E->mGrid->Cells[2][3].Text=0;
-					E->mGrid->Cells[2][4].Text=0;
-					E->mGrid->Cells[2][5].Text=0;
-					E->mGrid->Cells[2][6].Text=0;
-					E->mGrid->Cells[2][7].Text=0;
-					E->mGrid->Cells[2][8].Text=0;
-					E->mGrid->Cells[2][9].Text=0;
-					E->mGrid->Cells[2][10].Text=0;
+					E->mGrid->Cells[druhy][3].Text=0;
+					E->mGrid->Cells[druhy][4].Text=0;
+					E->mGrid->Cells[druhy][5].Text=0;
+					E->mGrid->Cells[druhy][6].Text=0;
+					E->mGrid->Cells[druhy][7].Text=0;
+					E->mGrid->Cells[druhy][8].Text=0;
+					E->mGrid->Cells[druhy][9].Text=0;
+					E->mGrid->Cells[druhy][10].Text=0;
 				}
 				e_pom=NULL;delete e_pom;
 			}
-			E->mGrid->Cells[2][11].Text=outPT(E->WT);
+			E->mGrid->Cells[druhy][11].Text=outPT(E->WT);
 			//nastavení šířek
 			E->mGrid->SetColumnAutoFit(-4);
 			if(language==EN)E->mGrid->Columns[0].Width=250;
@@ -9598,34 +9645,6 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 				case 1:break;
 				break;
 			}
-
-//			switch(OBJEKT_akt->rezim)//tabulka má 7 řádků
-//			{
-//				case -1://nic, stejné jako S&G
-//				case 0://S&G, tři řádky
-//				case 2://postprocesní
-//				{
-//					PmG->VisibleRow(3,false,false);
-//					PmG->VisibleRow(4,false,false);
-//					PmG->VisibleRow(5,false,false);
-//					PmG->VisibleRow(6,false,false);
-//					PmG->VisibleRow(7,false,false);
-//				}break;
-//				case 1://kontinuální režim, zde jsou možné další 2 možnosti, 6 nebo 7 řádků
-//				{
-//					if(pocet_vyskytu_elementu_s_otoci(OBJEKT_akt)>0);
-//						//vyskytl se element s otočí -> 2 mezery mezi jigy, neskrývám nic
-//					else
-//						PmG->VisibleRow(7,false,false);//pouze elementy bez otočí, jen jedna mezera mezi jigy
-//					//exButton bude v obou těchto případech zobrazen
-//					PmG->exBUTTONVisible=true;
-//					PmG->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
-//					PmG->exBUTTON->ShowHint=true;
-//					PmG->exBUTTON->Hint=ls->Strings[216];//"Rozšířené položky"
-//					//vypnutí zobrazení 4ho a 5tého řádku, defaultně v KK nezobrazen
-//					PmG->VisibleRow(5,false,false);
-//				}break;//kontinuální,počítá se s jednou mezerou mezi jigy
-//			}
 		}break;
 		case 301:
 		{
@@ -9924,15 +9943,12 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			break;
 		}
-//		case 200:
-//		{
-//			E->mGrid->Cells[0][1].Text=ls->Strings[224]+" "+cas;//"WT palec "
-//			E->mGrid->Cells[1][1].Text=m.round2double(outPT(E->WT),3);
-//			break;
-//		}
 		case 200://PM
 		case 300://výhybka
 		{
+      //určení zda budou prohozeny sloupce
+			int prvni=1,druhy=2;
+			if(prohodit_sloupce_PM(E)){prvni=2;druhy=1;}
 			//upravení popisků
 			E->mGrid->Cells[0][2].Text=ls->Strings[447];//"Výběr pohonu "
 			E->mGrid->Cells[0][3].Text=ls->Strings[208]+" "+rychlost;//"Rychlost"
@@ -9947,26 +9963,26 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 			//přepočet dat
 			if(E->pohon!=NULL)//společné pro PM a výhybku
 			{
-				E->mGrid->Cells[1][3].Text=m.round2double(outaRD(E->pohon->aRD),3);
-				E->mGrid->Cells[1][4].Text=AnsiString(m.round2double(outaRD(E->pohon->rychlost_od),3))+" - "+AnsiString(m.round2double(outaRD(E->pohon->rychlost_do),3));
-				E->mGrid->Cells[1][5].Text=m.round2double(outR(E->pohon->roztec),3);
-				E->mGrid->Cells[1][6].Text=m.round2double(E->pohon->Rx,3);
-				E->mGrid->Cells[1][7].Text=m.round2double(outRz(E->pohon->Rz),3);
-				E->mGrid->Cells[1][8].Text=m.round2double(outRz(m.mezera(0,E->pohon->Rz,0)),3);
-				E->mGrid->Cells[1][9].Text=m.round2double(outRz(m.mezera(0,E->pohon->Rz,1)),3);
-				E->mGrid->Cells[1][10].Text=m.round2double(outRz(m.mezera(90,E->pohon->Rz,1)),3);
+				E->mGrid->Cells[prvni][3].Text=m.round2double(outaRD(E->pohon->aRD),3);
+				E->mGrid->Cells[prvni][4].Text=AnsiString(m.round2double(outaRD(E->pohon->rychlost_od),3))+" - "+AnsiString(m.round2double(outaRD(E->pohon->rychlost_do),3));
+				E->mGrid->Cells[prvni][5].Text=m.round2double(outR(E->pohon->roztec),3);
+				E->mGrid->Cells[prvni][6].Text=m.round2double(E->pohon->Rx,3);
+				E->mGrid->Cells[prvni][7].Text=m.round2double(outRz(E->pohon->Rz),3);
+				E->mGrid->Cells[prvni][8].Text=m.round2double(outRz(m.mezera(0,E->pohon->Rz,0)),3);
+				E->mGrid->Cells[prvni][9].Text=m.round2double(outRz(m.mezera(0,E->pohon->Rz,1)),3);
+				E->mGrid->Cells[prvni][10].Text=m.round2double(outRz(m.mezera(90,E->pohon->Rz,1)),3);
 			}
 			if(E->eID==300 && E->dalsi2!=E->predchozi2 && E->dalsi2->pohon!=NULL)//pro výhybku
 			{
 				{
-					E->mGrid->Cells[2][3].Text=m.round2double(outaRD(E->dalsi2->pohon->aRD),3);
-					E->mGrid->Cells[2][4].Text=AnsiString(m.round2double(outaRD(E->dalsi2->pohon->rychlost_od),3))+" - "+AnsiString(m.round2double(outaRD(E->dalsi2->pohon->rychlost_do),3));
-					E->mGrid->Cells[2][5].Text=m.round2double(outR(E->dalsi2->pohon->roztec),3);
-					E->mGrid->Cells[2][6].Text=m.round2double(E->dalsi2->pohon->Rx,3);
-					E->mGrid->Cells[2][7].Text=m.round2double(outRz(E->dalsi2->pohon->Rz),3);
-					E->mGrid->Cells[2][8].Text=m.round2double(outRz(m.mezera(0,E->dalsi2->pohon->Rz,0)),3);
-					E->mGrid->Cells[2][9].Text=m.round2double(outRz(m.mezera(0,E->dalsi2->pohon->Rz,1)),3);
-					E->mGrid->Cells[2][10].Text=m.round2double(outRz(m.mezera(90,E->dalsi2->pohon->Rz,1)),3);
+					E->mGrid->Cells[druhy][3].Text=m.round2double(outaRD(E->dalsi2->pohon->aRD),3);
+					E->mGrid->Cells[druhy][4].Text=AnsiString(m.round2double(outaRD(E->dalsi2->pohon->rychlost_od),3))+" - "+AnsiString(m.round2double(outaRD(E->dalsi2->pohon->rychlost_do),3));
+					E->mGrid->Cells[druhy][5].Text=m.round2double(outR(E->dalsi2->pohon->roztec),3);
+					E->mGrid->Cells[druhy][6].Text=m.round2double(E->dalsi2->pohon->Rx,3);
+					E->mGrid->Cells[druhy][7].Text=m.round2double(outRz(E->dalsi2->pohon->Rz),3);
+					E->mGrid->Cells[druhy][8].Text=m.round2double(outRz(m.mezera(0,E->dalsi2->pohon->Rz,0)),3);
+					E->mGrid->Cells[druhy][9].Text=m.round2double(outRz(m.mezera(0,E->dalsi2->pohon->Rz,1)),3);
+					E->mGrid->Cells[druhy][10].Text=m.round2double(outRz(m.mezera(90,E->dalsi2->pohon->Rz,1)),3);
 				}
 			}
 			if(E->eID==200)//pro PM
@@ -9975,18 +9991,18 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 				if(e_pom==NULL)e_pom=d.v.ELEMENTY->dalsi;//v případě PM na konci linky
 				if(e_pom->pohon!=NULL)
 				{
-					E->mGrid->Cells[2][3].Text=m.round2double(outaRD(e_pom->pohon->aRD),3);
-					E->mGrid->Cells[2][4].Text=AnsiString(m.round2double(outaRD(e_pom->pohon->rychlost_od),3))+" - "+AnsiString(m.round2double(outaRD(e_pom->pohon->rychlost_do),3));
-					E->mGrid->Cells[2][5].Text=m.round2double(outR(e_pom->pohon->roztec),3);
-					E->mGrid->Cells[2][6].Text=m.round2double(e_pom->pohon->Rx,3);
-					E->mGrid->Cells[2][7].Text=m.round2double(outRz(e_pom->pohon->Rz),3);
-					E->mGrid->Cells[2][8].Text=m.round2double(outRz(m.mezera(0,e_pom->pohon->Rz,0)),3);
-					E->mGrid->Cells[2][9].Text=m.round2double(outRz(m.mezera(0,e_pom->pohon->Rz,1)),3);
-					E->mGrid->Cells[2][10].Text=m.round2double(outRz(m.mezera(90,e_pom->pohon->Rz,1)),3);
+					E->mGrid->Cells[druhy][3].Text=m.round2double(outaRD(e_pom->pohon->aRD),3);
+					E->mGrid->Cells[druhy][4].Text=AnsiString(m.round2double(outaRD(e_pom->pohon->rychlost_od),3))+" - "+AnsiString(m.round2double(outaRD(e_pom->pohon->rychlost_do),3));
+					E->mGrid->Cells[druhy][5].Text=m.round2double(outR(e_pom->pohon->roztec),3);
+					E->mGrid->Cells[druhy][6].Text=m.round2double(e_pom->pohon->Rx,3);
+					E->mGrid->Cells[druhy][7].Text=m.round2double(outRz(e_pom->pohon->Rz),3);
+					E->mGrid->Cells[druhy][8].Text=m.round2double(outRz(m.mezera(0,e_pom->pohon->Rz,0)),3);
+					E->mGrid->Cells[druhy][9].Text=m.round2double(outRz(m.mezera(0,e_pom->pohon->Rz,1)),3);
+					E->mGrid->Cells[druhy][10].Text=m.round2double(outRz(m.mezera(90,e_pom->pohon->Rz,1)),3);
 				}
 				e_pom=NULL;delete e_pom;
 			}
-			E->mGrid->Cells[2][11].Text = F->m.round2double(F->outPT(E->WT),3);
+			E->mGrid->Cells[druhy][11].Text = F->m.round2double(F->outPT(E->WT),3);
 			//změna šířky
 			if(language==EN)E->mGrid->Columns[0].Width=250;
 			else E->mGrid->Columns[0].Width=210;
@@ -13394,26 +13410,9 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Memo3->Clear();
-	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-	int n=1;
-	while(E!=NULL)
-	{
-		E->n=n;
-		n++;
-		E=d.v.dalsi_krok(E);
-	}
-	delete E;E=NULL;
-	int pocet=0;
-	Cvektory::TCesta *C=d.v.ZAKAZKA_akt->cesta->dalsi;
-	while(C!=NULL)
-	{
-		Memo(C->Element->n);
-		pocet++;
-		C=C->dalsi;
-	}
-	delete C;C=NULL;
-	Memo("Počet elementů: "+AnsiString(pocet));
+	//Memo3->Clear();
+	predchozi_PM->mGrid->Cells[0][3].Text="Aktuální";
+	predchozi_PM->mGrid->Refresh();
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -14842,6 +14841,7 @@ void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
 	//vymazání nepotřebných obrazů
 	d.v.vymaz_seznam_DATA();
 	d.v.hlavicka_DATA();
+	d.v.update_akt_zakazky();
 	//d.v.vymaz_komory(pom);
 	//d.v.vymaz_elementy(pom,true);
 	//d.v.kopiruj_objekt(OBJEKT_akt,pom);
@@ -15197,7 +15197,6 @@ void TForm1::smaz_kurzor()
 				if(pom_element_temp->dalsi!=NULL)
 					d.v.vloz_G_element(pom_element_temp->dalsi,0,pom_element_temp->geo.X4,pom_element_temp->geo.Y4,0,0,0,0,pom_element_temp->dalsi->geo.X4,pom_element_temp->dalsi->geo.Y4,pom_element_temp->dalsi->geo.orientace,pom_element_temp->dalsi->geo.rotacni_uhel);
 			}
-			vlozit_predavaci_misto_aktualizuj_WT();//kontrola zda nedošlo k překryvu PM
 		}
 		if(index_kurzoru<=-11&&OBJEKT_akt->id==3&&Akce!=GEOMETRIE&&Akce!=GEOMETRIE_LIGHT)//editace rozmeru komor v POW
 		{

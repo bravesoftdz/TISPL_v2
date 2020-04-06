@@ -3961,7 +3961,7 @@ bool Cvektory::pohon_je_pouzivan(unsigned long n,bool po_obektech)
 		while(E!=NULL)
 		{
 			if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n || F->OBJEKT_akt==NULL)//kontrolovat pouze mimo aktuálně editované elementy
-			{if(E->eID!=0 && E->eID!=200 && E->eID!=MaxInt && E->pohon!=NULL && E->pohon->n==n){nalezen=true;break;}}
+			{if(vrat_druh_elementu(E)!=-1 && E->pohon!=NULL && E->pohon->n==n){nalezen=true;break;}}
 			E=E->dalsi;
 		}
 		E=NULL;delete E;

@@ -863,6 +863,7 @@ public:		// User declarations
 	void vytvoreni_tab_pohon(bool existuje_poh_tabulka);//vytvoøení tabulky pohonu
 	void aktualizace_tab_pohon(bool popisky=true,bool data=true,bool komponenty=true);//zmìní režim tabulce pohonu
 	void napln_comba_mGridu(Cvektory::TElement *E);
+	bool prohodit_sloupce_PM(Cvektory::TElement *E);//rozhodne zda mají být prohozeny sloupce PM, podle trendu geometrie
 	void zmena_editovanych_bunek(Cvektory::TElement *E);//automaticky nastaví editované položky a needitovatelné položky pro pohonové tabulky
 	void vlozit_predavaci_misto_aktualizuj_WT();//projde elementy a objekty, pokud je nìkde nutnost vložit pøedávací místo vloží ho tam
 	void mGrid_komponenta_na_draw(TmGrid *mGrid,long Col,long Row);//smazì komponentu v dané buòce a zmìní typ bunky na DRAW
