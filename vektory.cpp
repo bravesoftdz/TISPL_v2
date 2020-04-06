@@ -991,6 +991,7 @@ void Cvektory::aktualizace_rezimu_objektu(TObjekt *Objekt,bool aktualizovat_sta_
 			E=dalsi_krok(E,Objekt);
 		}
 		if(F->predchozi_PM!=NULL)F->napln_comba_mGridu(F->predchozi_PM);//provede aktualizaci editovaných položek v mGridu u předchozího PM
+		F->aktualizace_tab_pohon(false,false,true);//obsahuje podmínku.. pokud existuje PmG
 	}
 
 	//ukazatelové záležitosti
@@ -5207,6 +5208,8 @@ void Cvektory::generuj_VOZIKY()
 			{
 				if(vrat_druh_elementu(C->Element)==0 && C->Element->sparovany!=NULL)//pro S&G který má spárovaný objekt,resp. od S&G elementu až po jeho spárovaný, mezi tím segmenty neřeší
 				{
+					//vymazání předchozího umístění, protože u S&G se vykresluje vždy od dané stopky bez zohlednění "zbytku z minula" tj. umisteni
+					umisteniCas=0;
 					//ukazatelové záležitosti
 					TCesta *Ct=C->dalsi;if(Ct==NULL)Ct=ZAKAZKA_akt->cesta->dalsi;//další, protože ten spravuje geometrii před sebou, tzn. od daného stop elementu, případně další kolo spojáku, musí se brát datové atributy z dat segmentu cesty nikoliv dat elementu
 					TElement *Esd=C->Element->sparovany->dalsi;if(Esd==NULL)Esd=ZAKAZKA_akt->cesta->dalsi->Element;//případně další kolo spojáku
@@ -5215,8 +5218,8 @@ void Cvektory::generuj_VOZIKY()
 					while(Ct->Element!=Esd)
 					{
 						//výpočetní část
-						TPointDbool RET=generuj_voziky_segementu(Ct->Element,C->data.pocet_pozic,umisteniCas,akt_rotace_jigu,rotacni_zbytek);//pokud má či nemá pohon, řeší uvnitř metody
-						umisteniCas=RET.x;akt_rotace_jigu=RET.y;rotacni_zbytek=RET.b;
+						TPointDbool RET=generuj_voziky_segementu(Ct->Element,Ct->Element->data.pocet_voziku,umisteniCas,akt_rotace_jigu,rotacni_zbytek);//pokud má či nemá pohon, řeší uvnitř metody
+						umisteniCas=RET.x;akt_rotace_jigu=RET.y;rotacni_zbytek=RET.b;//za účely použítí v dalším kole
 						//ukazatelové záležitost
 						if(Ct->dalsi==NULL)Ct=ZAKAZKA_akt->cesta->dalsi;//další kolo spojáku
 						else {Ct=Ct->dalsi;}//další element
@@ -5231,8 +5234,8 @@ void Cvektory::generuj_VOZIKY()
 			////taktuje se od začátku prvního geometrického elementu prvního vloženého objektu, kreslí se zpětně (co předchází elementu)
 			else
 			{
-				TPointDbool RET=generuj_voziky_segementu(C->Element,C->data.pocet_pozic,umisteniCas,akt_rotace_jigu,rotacni_zbytek);//pokud má či nemá pohon, řeší uvnitř metody
-				umisteniCas=RET.x;akt_rotace_jigu=RET.y;rotacni_zbytek=RET.b;
+				TPointDbool RET=generuj_voziky_segementu(C->Element,C->data.pocet_voziku,umisteniCas,akt_rotace_jigu,rotacni_zbytek);//pokud má či nemá pohon, řeší uvnitř metody
+				umisteniCas=RET.x;akt_rotace_jigu=RET.y;rotacni_zbytek=RET.b;//za účely použítí v dalším kole
 			}
 			//ukazatelové záležitosti
 			C=C->dalsi;//posun na další prvek cesty
@@ -5251,8 +5254,9 @@ TPointDbool Cvektory::generuj_voziky_segementu(TElement *E,unsigned int pocet_vo
 		double buffer_zona=0; if(pocet_voziku>0)buffer_zona=pocet_voziku*PP.delka_podvozek-PP.uchyt_pozice;//délka [v metrech] buffrovácí zony, pokud je obsažena na daném elementu
 		//cyklické navýšení umístění dle rozestup Rz
 		while(umisteni<=E->geo.delka-buffer_zona)
-		{
+		{         //F->Memo(E->name+" | "+String(umisteni)+" | "+String(E->geo.delka-buffer_zona));
 			//aplikace náhodného čekání na palceproblem while, problém musí se vejít na palce musí mít vozíky rozestup dle R atd... umisteni+=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,2)*E->pohon->aRD;
+			//výpočet souřadnic a rotace jigu dle aktuálního umístění
 			TPointD_3D Pt=m.getPt(E->geo.radius,E->geo.orientace,E->geo.rotacni_uhel,E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4,umisteni/E->geo.delka,(umisteni+PP.uchyt_pozice-PP.delka_podvozek/2.0)/E->geo.delka);
 			//pasivní otoče - POZOR, nějak leze do STOPKY, pouze pro kontinuální/pasivní otoč pro aktavní bude sice na místě, ale řešit otáčením dle umisteniČas
 			double R=0;
@@ -5271,6 +5275,7 @@ TPointDbool Cvektory::generuj_voziky_segementu(TElement *E,unsigned int pocet_vo
 			//navýšení umístění dle rozestup Rz
 			umisteni+=Rz;
 		}
+		//kalkulace s umístěním pro další segment
 		umisteni-=E->geo.delka;//zbytek z předchzejícího geometrického úseku, který nestihl být zohledněn převeden na další geometrický úsek, resp. element = výchozí umístění v dalším elementu, případně zohlední i přechod na nový pohon (díky práci v jednotkách délky), pouze je následně nutné odečíst případné WT při přechodu
 		if(E->eID==200)umisteni-=E->WT*E->pohon->aRD;//čekání na předávacím místě způsobí následné zpoždění/rozsunutí mezi vozíků
 		umisteniCas=umisteni/E->pohon->aRD;//z praktického univerzálního hlediska dané zpoždění resp. časový fond vrací v časé (není díky tomu následně nutné hledat hodnotu rychlosti předchozího pohonu)
@@ -7106,7 +7111,7 @@ void Cvektory::SaveText2File(AnsiString Text,AnsiString FileName)
 ////---------------------------------------------------------------------------
 TPointD Cvektory::vrat_zacatek_a_konec_zakazky(TZakazka *jaka)//ukazatel na cestu resp, zakázku
 {
-	TPointD RET; RET.x=0;RET.y=0;bool prvni=true;
+	TPointD RET; RET.x=0;RET.y=0;//bool prvni=true;
 	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
 	while (vozik!=NULL)
 	{
@@ -7118,7 +7123,7 @@ TPointD Cvektory::vrat_zacatek_a_konec_zakazky(TZakazka *jaka)//ukazatel na cest
 }
 TPointD Cvektory::vrat_zacatek_a_konec_zakazky(unsigned int ID_zakazky)//ukazatel na cestu resp, zakázku
 {
-	TPointD RET; RET.x=0;RET.y=0;bool prvni=true;
+	TPointD RET; RET.x=0;RET.y=0;//bool prvni=true;
 	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
 	while (vozik!=NULL)
 	{

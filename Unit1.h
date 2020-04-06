@@ -618,7 +618,6 @@ private:
 	short rotace_symbol(short trend,int X_bod,int Y_bod);//dle toho, zda je umisovanı element nad osou èi pod osou pohonu je vrácena rotace symbolu, X_bod,.. je bbod vkládání elementu (jedna souøadnice ho váe na pohon)
 	void vytvoreni_tab_knihovna();//vytovoøení tabulky knihovny objektù
 	void popisky_knihovna_nahled(bool knihovna);//pøepíná popisky mezi knihovnou a editací
-	void odstraneni_elementu_tab_pohon(int operace);
 	void zmena_jednotek_tab_pohon();
 	void prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla,AnsiString LO,AnsiString cas,AnsiString delka_otoce,AnsiString rychlost,AnsiString R,AnsiString Rz);
 	void dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla,AnsiString LO,AnsiString cas,AnsiString delka_otoce,AnsiString rychlost,AnsiString R,AnsiString Rz);
@@ -834,9 +833,8 @@ public:		// User declarations
 	void aktualizace_maro_a_roma();//aktualizace a pøepoèet hodnot volaná kvùli èasovım osám (maro) a techn.procesùm(roma)
 	void deaktivace_zamerovace();//deaktivuje zamìøovaè label a svislice a kolmice
 	void aktualizace_combobox_pohony_v_PO(short RDunitD=-1,short RDunitT=-1);//zaktualizuje ve formuláøi parametry objektù combobox na vıpis pohonù vèetnì jednotek uvedeného rozmezí rychlostí, pokud jsou zanechané implicitní parametry short RDunitD=-1,short RDunitT=-1, je naèteno nastevní jednotek z INI aplikace pro form parametry objektu, v pøípadech, kdy uvedené parametry nejsou dané hodnotou -1, tak se uvaují jednotky dle S==0,MIN==1 pro RDunitT, resp. M==0,MM==1 pro RDunitD
-	void tab_pohon_COMBO (int index);//0=naètení pohonù do COMBA, 1=pøiøazení pohonu kabinì
+	void tab_pohon_COMBO();//naètení pohonù do comba
 	void tab_knihovna_click(double X,double Y,long Col=-1,long Row=-1);//klik do knihovny objektù, spouštìní akce pøidávání objektu
-	void aktualizace_ComboPohon ();
 	short RO; short ROs; short ROst;short ROsts;short Rotace_symbolu_minula;
 	TRect vrat_max_oblast(Cvektory::TObjekt *Objekt=NULL);//vrací max a min hodnoty x a y souøadnic, všecho v layout(elementù, objektù), nebo parametrem Objekt lze hledat max souøadnice v jednom objektu
 	double inLO  (double inLO);
@@ -854,7 +852,6 @@ public:		// User declarations
 	double inRz(double inRz);
 	double outRz(double outRz);
 	void Memo(AnsiString Text,bool clear=false,bool count=false);//urychlení vypsání do Mema
-	void pridani_elementu_tab_pohon(Cvektory::TElement *E);//pøedesign tabulky pohonu po pøidání elementu
 	void log(AnsiString Text,AnsiString Text2="");//zapíše log do textového souboru a pøidá datum
 	TRect souradnice_LO(Cvektory::TElement *E);//vrací souøadnice (PX) lakovacího okna elementu pokud nìjaké má,pokud ne vrátí souøadnice elementu
 	short prekryti_LO(Cvektory::TElement *E);//prozkoumá zda se element nepøekrıva lak. oknem se sousedními,  0=nepøkrıvá se, 1=pøekrıvá se LO, 2=pøekrıvá se zóna
@@ -863,12 +860,12 @@ public:		// User declarations
 	TPoint bod_vlozeni_elementu(double kontr_x=-1000,double kontr_y=-1000);//vrací bod vloení elementu, "pøilepuje" kurzor na geometrii pokud se jedná o pøímku, parametry kontr_x a y slouí ke kontrole bodu zda se nachází na pøímce (pøi posunu)
 	bool bod_na_geometrii(double X, double Y,Cvektory::TElement *Element=NULL);//kontroluje zde se bod nachází na geometri, vrací pouze ano/ne, pokud je do metody poslán ukazatel na element provìøí zda se tento element nachází na geometrii
 	double max_voziku(Cvektory::TElement *stopka);//vrátí maximální monı poèet vozíkù na stopce, podle geometrie pøed ní
-	void prirazeni_pohonu_tab_pohon(unsigned int index_pohonu);//pøedesignuje tabulku pohonu po pøidání elementu, nebo pohonu
 	void aktualizace_RT();//projde všechny elementy v aktuálnì editovaném objektu a upravím jim RT
 	void posun_na_element(unsigned long n_zpravy);//podle zprávy provede posun na danı elment
 	void smaz_kurzor();
 	UnicodeString get_temp_dir();
 	void vytvoreni_tab_pohon(bool existuje_poh_tabulka);//vytvoøení tabulky pohonu
+	void aktualizace_tab_pohon(bool popisky=true,bool data=true,bool komponenty=true);//zmìní reim tabulce pohonu
 	void napln_comba_mGridu(Cvektory::TElement *E);
 	void zmena_editovanych_bunek(Cvektory::TElement *E);//automaticky nastaví editované poloky a needitovatelné poloky pro pohonové tabulky
 	void vlozit_predavaci_misto_aktualizuj_WT();//projde elementy a objekty, pokud je nìkde nutnost vloit pøedávací místo vloí ho tam

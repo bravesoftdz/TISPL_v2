@@ -20,6 +20,7 @@ private:	// User declarations
 	void zmena_Rx ();//výpoèty vyvolané zmìnou Rx
 	void aktualizace_tab_elementu (Cvektory::TElement *mimo_element=NULL);//aktualizuje výpoèty ve všech tabulkách elemntù, parametr mimo_element je ukazatel na element, který má být pøeskoèen, defaultnì hodnota, které E->n nidky nedosáhne
 	void aktualizace_tab_elementu_pOdebran ();//vynuluje všechny hodnoty závislé na pohonu ve všech tabulkách elementù
+	void aktualizace_tab_pohonu();//aktualizje data v mGridu podle dat elementu
 	void korelace_tab_pohonu(int Row);//zobrazi korelaci v tabulce pohonu
 	void korelace_tab_pohonu_elementy(Cvektory::TElement *mimo_element=NULL);//zobrazí korelaci podle tabulky pohonu ve všech elementech,volitelný parametr, ukazatel na element který chci pøeskoèit
 	void korelace_v_elementech(long ID,long Col,long Row);//jedná se o vnitøní korelace, v jednom elementu (jeden element však mùže ovlivnit i tabulku pohonu)
@@ -27,6 +28,7 @@ private:	// User declarations
 	void prirazeni_pohohonu_vetvi(Cvektory::TElement *E,bool hlavni=true);//zmìní pohon sekundární vìtvi, z výhybky nebo spojky (pokud sekundární vìtev existuje)
   void update_hodnot_vyhybky_PM(Cvektory::TElement *E);//zobrazí aktuální hodnoty z dat v tabulkách
 	void prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col);//pøiøazení pohonu pøed PM, nebo za PM
+	void prirazeni_pohonu_defTab();//pøiøazení pohonu z PmG
 
 	//promìnné pro UnitX
 	bool editace_pohonu;

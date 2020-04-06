@@ -331,7 +331,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 			{
 				//nastavení highlight
 				if((F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==K->n) || (F->JID*(-1)-10==(signed)K->n || F->JID*(-1)-10==(signed)K->predchozi->n)&&F->d.v.PtInKota_komory(O,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
-				else if(F->JID*(-1)-10==(signed)K->n || F->JID>=11 && F->JID<=99)highlight=1;else highlight=0;
+				else if(F->JID*(-1)-10==(signed)K->n || F->JID==13)highlight=1;else highlight=0;
 				//vykreslení kót komor
 				switch((int)orientace)
 				{
@@ -398,7 +398,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		if(zobrazit_koty && F->OBJEKT_akt->n==O->n)
 		{
 			if((F->JID==0  && F->pom_komora!=NULL && F->pom_komora->n==O->komora->predchozi->n) || (F->JID*(-1)-10==(signed)O->komora->predchozi->n || F->JID*(-1)-10==(signed)O->komora->predchozi->predchozi->n)&&F->d.v.PtInKota_komory(O,F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)==-1)highlight=2;
-			else if(F->JID*(-1)-10==(signed)O->komora->predchozi->n || F->JID>=11&&F->JID<=99)highlight=1;
+			else if(F->JID*(-1)-10==(signed)O->komora->predchozi->n || F->JID==13)highlight=1;
 			else highlight=0;
 			//vykreslení kót komor
 			switch((int)orientace)
@@ -2826,7 +2826,7 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 		}
 	}
 
-//toto již možno SMAZAT:
+//toto již brzy možno SMAZAT:
 /////úvodní rozmístění vozíků - bude odseparováno do tvorby vozíků
 //	if(F->scGPTrackBar_intenzita->Value>5 && F->scGPCheckBox_rozmisteni_voziku->Checked && v.vrat_druh_elementu(E)==0 && E->sparovany!=NULL/* && E->name=="Stop 1"&& E->n==1*/)//pro S&G který má spárovaný objekt
 //	{
@@ -2840,7 +2840,6 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 //		//procházení cyklem od dalšího elementu daného stop elementů až po jeho spárovaný stop element
 //		while(Et!=Esd)
 //		{
-//			F->Memo(Et->name+" "+Esd->name,true);
 //			////výpočetní a vykreslovací záležítosti
 //			if(Et->pohon!=NULL)//pokud má element přiřazen pohon, jinak nemá smysl řešit
 //			{
@@ -2848,7 +2847,7 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 //				double buffer_zona=0;if(Et->data.pocet_voziku>0)buffer_zona=Et->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;//délka [v metrech] buffrovácí zony, pokud je obsažena na daném elementu
 //				//cyklické navýšení umístění dle rozestup Rz
 //				while(umisteni<=Et->geo.delka-buffer_zona)
-//				{
+//				{   F->Memo(Et->name+" | "+String(umisteni)+" | "+String(Et->data.pocet_voziku));
 //					TPointD_3D Pt=m.getPt(Et->geo.radius,Et->geo.orientace,Et->geo.rotacni_uhel,Et->geo.X1,Et->geo.Y1,Et->geo.X4,Et->geo.Y4,umisteni/Et->geo.delka/*F->smazat/100.0*/,(umisteni+v.PP.uchyt_pozice-v.PP.delka_podvozek/2.0)/Et->geo.delka);
 //		//pořešit ještě rotaci jigu na kontinuální otoči!!!
 //					vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu,clChassis,clJig);//if(E->name=="Stop 1")vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu,m.clIntensive(clChassis,100),m.clIntensive(clJig,100));//tato podmínka, jenomu kvůli testům//else vykresli_vozik(canv,0,Pt.x,Pt.y,dJ,sJ,Pt.z,akt_rotace_jigu,clChassis,clYellow/*clJig*/);
@@ -2944,7 +2943,7 @@ void Cvykresli::vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dJ
 	vykresli_jig(canv,C.x,C.y,dJ,sJ,orientaceP,rotaceJ,clJig);
 
 	////text - ID vozíku není vypisováno, pokud by se začlo používat, tak pozor u vykreslení pozic by bylo potřeba nastavit separátně písmo u chybových výpisů
-	canv->TextOutW(m.L2Px(X),m.L2Py(Y),ID);
+	if(ID>0)canv->TextOutW(m.L2Px(X),m.L2Py(Y),ID);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_jig(TCanvas *canv,double X,double Y,double dJ,double sJ,double orientaceP,double rotaceJ,TColor clJig,float Width)
@@ -3314,7 +3313,7 @@ void Cvykresli::vykresli_koleje(TCanvas *canv,double X,double Y,short typ,double
 		bezier(canv,PL2,3);
 	}
 	//zarážka se zobrazuje pouze při geometrii (pro znázornění jednotlivých gemoetrických elementů), jinak nemá význam
-	if(F->Akce==F->GEOMETRIE || F->Akce==F->GEOMETRIE_LIGHT)
+	//provizorně odstaveno if(F->Akce==F->GEOMETRIE || F->Akce==F->GEOMETRIE_LIGHT)
 	{
 		//line(canv,m.L2Px(X+S1.x),m.L2Py(Y+S1.y),m.L2Px(X+S2.x),m.L2Py(Y+S2.y));//na začátku
 		line(canv,m.L2Px(PL1[3].x),m.L2Py(PL1[3].y),m.L2Px(PL2[3].x),m.L2Py(PL2[3].y));//na konci
@@ -5467,7 +5466,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_do)
 	if(Element_do!=NULL && F->MOD==F->EDITACE)
 	{
 		if(!F->posun_dalsich_elementu && ((F->JID+10)*(-1)==(long)Element_do->n || (F->JID==-101 && F->pom_element->n==Element_do->n)))highlight=1;//v případě, že není požadován posun dalších elementů, zvýrazní i kótu následujícího elementu, že se bude také měnit
-		if((F->JID+10)*(-1)==(long)Element_do->n ||  (10<F->JID && F->JID<100))highlight=1;//když se bude editovat hodnota kóty, nebo se bude kóta posouvat, kvůli následnému zaokrouhlování musí bohužel zůstat tady
+		if((F->JID+10)*(-1)==(long)Element_do->n ||  (F->JID==13))highlight=1;//když se bude editovat hodnota kóty, nebo se bude kóta posouvat, kvůli následnému zaokrouhlování musí bohužel zůstat tady
 	}
 	//////probíhá editace kót
 	if(F->Akce==F->GEOMETRIE || F->Akce==F->GEOMETRIE_LIGHT)
@@ -5584,7 +5583,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
   if(F->OBJEKT_akt!=NULL)Presah/=2.0;//zmenšení odsazení kót při highlightu v náhledu
 	short V=0;//if(highlight==2)V=1;//vystoupení kóty
 	short H=0;if(highlight)H=1;
-	short M=0;if(10<F->JID && F->JID<100 && F->MOD==F->EDITACE)M=1;//při celkovém posunu kót se postranní spojnice nově nezvýrazňují
+	short M=0;if(F->JID==13 && F->MOD==F->EDITACE)M=1;//při celkovém posunu kót se postranní spojnice nově nezvýrazňují
 
 	////samotné vykreslení kót
 	//nastaveni pera
