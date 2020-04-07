@@ -5202,8 +5202,7 @@ void Cvektory::najdi_sparovane_elementy_ceste(TZakazka *zakazka)
 						if(vrat_druh_elementu(c_pom->Element)==0)//pokud je element v segmentu je také S&G uložím ho
 						{
 				  		c->sparovany=c_pom->Element;
-							c=c_pom->predchozi;//skok v průchodu na předchozí element dalšího S&G elementu, předchozí z důvodu, že na konci cyklu c=c->dalsi
-				  		break;
+							break;
 						}
 			  		else c_pom=c_pom->dalsi;
 			  	}
