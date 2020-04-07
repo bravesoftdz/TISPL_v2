@@ -325,11 +325,132 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 //
 //	mGrid2->Cells[1][1].Type=mGrid->BUTTON;
 //	mGrid2->Cells[1][1].Text="tlaèítko";
+
+	TElement *el=new TElement;
+
+	//definice jednotek a šíøek
+	AnsiString LO,cas,delka_otoce,rychlost,R,Rz;
+	//nastavení jednotek podle posledních nastavení
+	cas="<a>[min]</a>";//1
+	LO="<a>[mm]</a>";//1
+	delka_otoce="<a>[m]</a>";//0
+	rychlost="<a>[m/min]</a>";//
+	R="<a>[mm]</a>";//1
+	Rz="<a>[mm]</a>";//1
+	//vytvoøení mgridu
+	el->mG=new TmGrid(this);
+	el->mG->Tag=4;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
+	el->mG->ID=1;
+	el->mG->Create(5,12);
+	el->mG->Left=500;
+	el->mG->Top=500;
+	//nastavení fontu
+	TColor clFontLeft = (TColor)RGB(128,128,128);
+	//TColor clFontRight = (TColor)RGB(43,87,154);
+	//definice fontu a velikosti písma
+	el->mG->DefaultCell.Font->Name=F->aFont->Name;
+	el->mG->DefaultCell.Font->Size=F->aFont->Size;
+	el->mG->DefaultCell.Font->Color=clFontLeft;
+	//nastavení popiskù
+	el->mG->Border.Width=2;
+	el->mG->Cells[0][0].BottomBorder->Width=2;
+	el->mG->Cells[0][0].Text="Pøedávací místo 1"; el->mG->Cells[0][0].Font->Color=clBlack;
+	el->mG->Cells[3][1].Text="IN";
+	el->mG->Cells[4][1].Text="OUT";
+	el->mG->Cells[0][1].Text="Pohon"; el->mG->Cells[0][1].Font->Color=clBlack;
+
+	el->mG->Cells[0][3].Font->Orientation=900;
+	el->mG->Cells[0][3].Valign=el->mG->BOTTOM;
+	el->mG->Cells[0][3].BottomMargin=3;
+	el->mG->Cells[0][3].Align=el->mG->CENTER;
+	el->mG->Cells[0][3].Text="Rychl.";
+	el->mG->Cells[1][3].Font->Orientation=900;
+	el->mG->Cells[1][3].Valign=el->mG->BOTTOM;
+	//el->mG->Cells[1][3].BottomMargin=5;
+	el->mG->Cells[1][3].Align=el->mG->CENTER;
+	el->mG->Cells[1][3].Text="[m/min]";
+
+	el->mG->Cells[2][3].Text="Nastavená";
+	el->mG->Cells[2][4].Text="Rozmezí ";
+
+	el->mG->Cells[0][5].Font->Orientation=900;
+	el->mG->Cells[0][5].Valign=el->mG->BOTTOM;
+	el->mG->Cells[0][5].BottomMargin=10;
+	el->mG->Cells[0][5].Align=el->mG->CENTER;
+	el->mG->Cells[0][5].Text="Rozteè";
+	el->mG->Cells[1][5].Font->Orientation=900;
+	el->mG->Cells[1][5].Valign=el->mG->BOTTOM;
+	el->mG->Cells[1][5].Align=el->mG->CENTER;
+	el->mG->Cells[1][5].Text="[mm]";
+
+	el->mG->Cells[2][5].Text="Jigy";
+	el->mG->Cells[2][6].Text="Palce";
+	el->mG->Cells[2][7].Text="Násobek";
+
+	el->mG->Cells[0][8].Font->Orientation=900;el->mG->Cells[1][8].Font->Orientation=900;
+	//el->mG->Cells[1][8].Valign=
+	el->mG->Cells[0][8].Valign=el->mG->BOTTOM;
+	el->mG->Cells[1][8].BottomMargin=el->mG->Cells[0][8].Align=el->mG->CENTER;
+	el->mG->Cells[0][8].BottomMargin=7;
+	el->mG->Cells[1][8].Valign=el->mG->MIDDLE;
+	el->mG->Cells[0][8].Text="Mezera";
+	el->mG->Cells[1][8].Text=" [mm]";
+
+	el->mG->Cells[2][8].Text="Podvozky ";
+	el->mG->Cells[2][9].Text="Jigy 0°";
+	el->mG->Cells[2][10].Text="Jigy 90°";
+	el->mG->Cells[2][11].Text="max WT "+cas+" ";
+	//nastavení šíøek
+	el->mG->SetColumnAutoFit(-4);
+	el->mG->Columns[0].Width=el->mG->Columns[1].Width=el->mG->Rows[0].Height;
+	el->mG->Columns[2].Width=90;
+	el->mG->Columns[3].Width=145;
+	el->mG->Columns[4].Width=145;
+	//merge
+	el->mG->MergeCells(0,0,4,0);
+	el->mG->MergeCells(0,1,2,2);
+	el->mG->MergeCells(0,3,0,4);
+	el->mG->MergeCells(1,3,1,4);
+	el->mG->MergeCells(0,5,0,7);
+	el->mG->MergeCells(1,5,1,6);
+	el->mG->MergeCells(0,8,0,10);
+	el->mG->MergeCells(1,8,1,10);
+
+	//final design
+	el->mG->Cells[3][1].Font->Color=clBlack;
+	el->mG->Cells[4][1].Font->Color=clBlack;
+	/*el->mG->Cells[2][1].RightBorder->Width=2;*/el->mG->Cells[3][1].RightBorder->Width=2;
+	/*el->mG->Cells[2][2].RightBorder->Width=2;*/el->mG->Cells[3][2].RightBorder->Width=2;
+	//el->mG->Cells[0][3].TopBorder->Color=el->mG->Cells[1][3].TopBorder->Color=clWhite;
+	for(int i=3;i<=el->mG->RowCount-1;i++)
+	{
+		el->mG->Cells[2][i].Align=el->mG->RIGHT;
+		el->mG->Cells[2][i].RightMargin=5;
+		//el->mG->Cells[2][i].RightBorder->Width=
+		el->mG->Cells[3][i].RightBorder->Width=2;
+		el->mG->Cells[0][i].RightBorder->Color=clWhite;
+		el->mG->Cells[2][i].Font->Color=clFontLeft;
+		el->mG->Cells[0][i].Font->Color=clFontLeft;
+	}
+	el->mG->Cells[2][11].LeftBorder->Color=clWhite;
+
+	for(int i=0;i<=el->mG->ColCount-1;i++)
+	{
+		el->mG->Cells[i][3].TopBorder->Width=2;
+		el->mG->Cells[i][5].TopBorder->Width=2;
+		el->mG->Cells[i][8].TopBorder->Width=2;
+		el->mG->Cells[i][11].TopBorder->Width=2;
+  }
+
+	el->dalsi=NULL;
+	el->predchozi=ELEMENTY;
+	ELEMENTY->dalsi=el;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm2::FormPaint(TObject *Sender)
 {
 	ELEMENTY->mG->Show();
+	ELEMENTY->dalsi->mG->Show();
 	//ELEMENTY->dalsi->mG->Show();
 
 //				Form2->Canvas->Pen->Color=clGreen;
@@ -741,8 +862,6 @@ void __fastcall TForm2::Button10Click(TObject *Sender)
 
 	E=(TscGPEdit*)Form2->FindComponent("mGrid_EDIT_"+AnsiString(0)+"_"+AnsiString(8));
 	E->Top+=50;
-
-
 
 
 
