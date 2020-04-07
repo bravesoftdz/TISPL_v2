@@ -13476,7 +13476,8 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 //d.TextOut(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,"Ahoj\ntoto je nějaký text řádku1\ntoto je nějaký text řádku 22\nhaf",Cvykresli::CENTER,Cvykresli::MIDDLE,-1);
 //d.v.PP.uchyt_pozice=0.380/2.0;
 
-	d.v.generuj_VOZIKY();
+	//d.v.generuj_VOZIKY();
+	Zoom=30;ZOOM();
 	REFRESH();
 
 }
