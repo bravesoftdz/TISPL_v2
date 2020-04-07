@@ -5328,17 +5328,17 @@ TPointDbool Cvektory::generuj_voziky_segementu(TElement *E,unsigned int pocet_vo
 			//aplikace náhodného čekání na palceproblem while, problém musí se vejít na palce musí mít vozíky rozestup dle R atd... umisteni+=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,2)*E->pohon->aRD;
 			//výpočet souřadnic a rotace jigu dle aktuálního umístění
 			TPointD_3D Pt=m.getPt(E->geo.radius,E->geo.orientace,E->geo.rotacni_uhel,E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4,umisteni/E->geo.delka,(umisteni+PP.uchyt_pozice-PP.delka_podvozek/2.0)/E->geo.delka);
-			//pasivní otoče - POZOR, nějak leze do STOPKY, pouze pro kontinuální/pasivní otoč pro aktavní bude sice na místě, ale řešit otáčením dle umisteniČas
+			//pasivní otoče - POZOR pouze pro kontinuální/pasivní otoč pro aktavní bude sice na místě, ale řešit otáčením dle umisteniČas
 			double R=0;
-			if(E->OTOC_delka>0 && E->geo.delka<=umisteni+E->OTOC_delka/2.0 && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180)
+			double umisteniJIG=umisteni+PP.uchyt_pozice-PP.delka_podvozek/2.0;//pokud není uchytávání podvozku v polovině vozíku, je třeba rotovat JIG dle jiné polohy (vyplývá z kontstrukce otoče) než je poloha palce
+			if(E->OTOC_delka>0 && E->geo.delka<=umisteniJIG+E->OTOC_delka/2.0 && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180)
 			{
-				R=E->rotace_jig/2.0*(E->OTOC_delka/2.0-(E->geo.delka-umisteni))/(E->OTOC_delka/2.0);//pozice vozíku v zoně otáčení, v počátku až do středu otoče, princip výpočtu zde funguje jako PŘIČTENÍ rotace k orientaci jigu při vstupu do zóny otáčení
+				R=E->rotace_jig/2.0*(E->OTOC_delka/2.0-(E->geo.delka-umisteniJIG))/(E->OTOC_delka/2.0);//pozice vozíku v zoně otáčení, v počátku až do středu otoče, princip výpočtu zde funguje jako PŘIČTENÍ rotace k orientaci jigu při vstupu do zóny otáčení
 			}
 			if(rotacni_zbytek)//dokončení rotace jigu na elementu následujícím otoči (který zajišťuje na svém geometrickém počátku, který začíná otočí)
 			{
-				if(umisteni<=E->predchozi->OTOC_delka/2.0)
-				R=-E->predchozi->rotace_jig/2.0*(E->predchozi->OTOC_delka/2.0-umisteni)/(E->predchozi->OTOC_delka/2.0);//pozice vozíku v zoně otáčení, od středu otoče až do konce zóny otáčení, princip výpočtu zde funguje jako ODEČTENÍ rotace od FINÁLNÍ orientaci jigu při vÝstupu ze zóny otáčení
-				else rotacni_zbytek=false;
+				if(umisteni<=E->predchozi->OTOC_delka/2.0)R=-E->predchozi->rotace_jig/2.0*(E->predchozi->OTOC_delka/2.0-umisteniJIG)/(E->predchozi->OTOC_delka/2.0);//pozice vozíku v zoně otáčení, od středu otoče až do konce zóny otáčení, princip výpočtu zde funguje jako ODEČTENÍ rotace od FINÁLNÍ orientaci jigu při vÝstupu ze zóny otáčení
+				else rotacni_zbytek=false;//dokončena ilustrace otáčení JIGu
 			}
 			//finální vložení vozíku s vypočítanými parametry do spojáku VOZIKY
 			vloz_vozik(ZAKAZKA_akt,E,Pt.x,Pt.y,Pt.z,akt_rotace_jigu+R);
@@ -6110,8 +6110,8 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 				double orientaceP=m.Rt90(E->geo.orientace-180);
 				double X=F->d.Rxy(E).x;
 				double Y=F->d.Rxy(E).y;
-				double dJ=PP.delka_jig;//později nahradit ze zakázky
-				double sJ=PP.sirka_jig;//později nahradit ze zakázky
+				//double dJ=PP.delka_jig;//později nahradit ze zakázky
+				//double sJ=PP.sirka_jig;//později nahradit ze zakázky
 				////určení směru vykreslování pozic
 				short x=0,y=0;
 				switch(m.Rt90(orientaceP))
