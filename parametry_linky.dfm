@@ -7335,8 +7335,8 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 9230
-    Top = 14754
+    Left = 9239
+    Top = 14769
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -7361,9 +7361,6 @@ object Form_parametry_linky: TForm_parametry_linky
     GlyphThickness = 1
     Kind = scgpgkOneGear
     TransparentBackground = True
-    ExplicitLeft = 9227
-    ExplicitTop = 14749
-    ExplicitWidth = 100
   end
   object scGPSwitch: TscGPSwitch
     Left = 762

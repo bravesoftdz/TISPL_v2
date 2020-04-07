@@ -5167,6 +5167,14 @@ Cvektory::TCesta *Cvektory::vrat_segment_cesty(TZakazka *zakazka,TElement *eleme
 void Cvektory::najdi_sparovane_elementy_ceste(TZakazka *zakazka)
 {
 	TCesta *c=zakazka->cesta,*c_pom=NULL;
+	//mazání starých ukazatelů
+	while(c!=NULL)
+	{
+		c->sparovany=NULL;
+		c=c->dalsi;
+	}
+	//přiřazení nových
+	c=zakazka->cesta;
 	while(c!=NULL)
 	{
 		if(c->n>0)//přeskočení hlavičky
