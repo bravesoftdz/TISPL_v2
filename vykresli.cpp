@@ -2777,7 +2777,6 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 				vykresli_jig(canv,Xr-x*posun*abs(i/krok),Yr-y*posun*abs(i/krok),dJ,sJ,orientaceP,rotaceJ+i,clRed,0);//pozn. barvu nastavujeme výše
 			}
 		}
-
 		////vykreslí OBALOVOU zónu oblouků
 		if(F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->geo.typ==1)
 		{

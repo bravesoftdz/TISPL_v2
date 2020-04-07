@@ -5273,9 +5273,6 @@ void Cvektory::generuj_VOZIKY()
 		TCesta *C=ZAKAZKA_akt->cesta->dalsi;//přeskočí hlavičku
 		while (C!=NULL)
 		{
-			//String S="nema"; if(C->Element->sparovany!=NULL)S=C->Element->sparovany->name;
-			//F->Memo(C->Element->name+" "+S);
-
 			////pro linku s alespoň s jedním S&G elementem, postupuje se, resp.
 			////taktuje se od prvního S&G elementu na lince, kreslí se dopředně (co následuje elementu, proto Et=E->dalsi aj., např. od dané stop po další stop)
 			if(SG)
@@ -5286,8 +5283,8 @@ void Cvektory::generuj_VOZIKY()
 					umisteniCas=0;
 					//ukazatelové záležitosti
 					TCesta *Ct=C->dalsi;if(Ct==NULL)Ct=ZAKAZKA_akt->cesta->dalsi;//další, protože ten spravuje geometrii před sebou, tzn. od daného stop elementu, případně další kolo spojáku, musí se brát datové atributy z dat segmentu cesty nikoliv dat elementu
-					TElement *Esd=C->Element->sparovany->dalsi;if(Esd==NULL)Esd=ZAKAZKA_akt->cesta->dalsi->Element;//případně další kolo spojáku
-					if(C->Element==C->Element->sparovany)Esd=C->Element->sparovany;//pouze pro situace, kdy je na lince zatím jenom jeden stop-element tak, aby se zobrazovaly vůbec vozíky
+					TElement *Esd=C->sparovany->dalsi;if(Esd==NULL)Esd=ZAKAZKA_akt->cesta->dalsi->Element;//případně další kolo spojáku
+					if(C->Element==C->sparovany)Esd=C->sparovany;//pouze pro situace, kdy je na lince zatím jenom jeden stop-element tak, aby se zobrazovaly vůbec vozíky
 					//procházení cyklem od dalšího elementu od daného stop elementů až po jeho spárovaný stop element
 					while(Ct->Element!=Esd)
 					{
@@ -5297,7 +5294,7 @@ void Cvektory::generuj_VOZIKY()
 						//ukazatelové záležitost
 						if(Ct->dalsi==NULL)Ct=ZAKAZKA_akt->cesta->dalsi;//další kolo spojáku
 						else {Ct=Ct->dalsi;}//další element
-						if(C->Element==C->Element->sparovany){Esd=C->Element->sparovany->dalsi;if(Esd==NULL)Esd=ZAKAZKA_akt->cesta->dalsi->Element;/*případně další kolo spojáku*/}//pouze pro situace, kdy je na lince zatím jenom jeden stop-element tak, aby se zobrazovaly vůbec vozíky
+						if(C->Element==C->sparovany){Esd=C->sparovany->dalsi;if(Esd==NULL)Esd=ZAKAZKA_akt->cesta->dalsi->Element;/*případně další kolo spojáku*/}//pouze pro situace, kdy je na lince zatím jenom jeden stop-element tak, aby se zobrazovaly vůbec vozíky
 					}
 					//odstranění již nepotřebných ukazatelů, zde prvně nutné NULL!!!
 					Ct=NULL;delete Ct;
@@ -5328,7 +5325,7 @@ TPointDbool Cvektory::generuj_voziky_segementu(TElement *E,unsigned int pocet_vo
 		double buffer_zona=0; if(pocet_voziku>0)buffer_zona=pocet_voziku*PP.delka_podvozek-PP.uchyt_pozice;//délka [v metrech] buffrovácí zony, pokud je obsažena na daném elementu
 		//cyklické navýšení umístění dle rozestup Rz
 		while(umisteni<=E->geo.delka-buffer_zona)
-		{         //F->Memo(E->name+" | "+String(umisteni)+" | "+String(E->geo.delka-buffer_zona));
+		{
 			//aplikace náhodného čekání na palceproblem while, problém musí se vejít na palce musí mít vozíky rozestup dle R atd... umisteni+=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,2)*E->pohon->aRD;
 			//výpočet souřadnic a rotace jigu dle aktuálního umístění
 			TPointD_3D Pt=m.getPt(E->geo.radius,E->geo.orientace,E->geo.rotacni_uhel,E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4,umisteni/E->geo.delka,(umisteni+PP.uchyt_pozice-PP.delka_podvozek/2.0)/E->geo.delka);
@@ -5345,7 +5342,6 @@ TPointDbool Cvektory::generuj_voziky_segementu(TElement *E,unsigned int pocet_vo
 				else rotacni_zbytek=false;
 			}
 			//finální vložení vozíku s vypočítanými parametry do spojáku VOZIKY
-
 			vloz_vozik(ZAKAZKA_akt,E,Pt.x,Pt.y,Pt.z,akt_rotace_jigu+R);
 			//navýšení umístění dle rozestup Rz
 			umisteni+=Rz;
@@ -6093,7 +6089,6 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
     //ZVÁŽIT ZDE VOLÁNÍ vrat_rotaci_jigu_po_predchazejicim_elementu(POSLEDNÍ ELEMENT)
 
 		//provizorní umístnění, ač funkčně velice vhodné
-		F->Memo("________________________________");
 		generuj_VOZIKY();
 
 		//inicializační proměnné

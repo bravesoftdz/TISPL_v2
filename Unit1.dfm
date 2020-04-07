@@ -223,7 +223,7 @@ object Form1: TForm1
     object LabelRoletka: TLabel
       Left = 320
       Top = 8
-      Width = 61
+      Width = 67
       Height = 13
       Caption = 'LabelRoletka'
       Visible = False
@@ -2136,7 +2136,6 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'TISPL'
-      ExplicitLeft = 449
     end
     object scGPSwitch_rezim: TscGPSwitch
       AlignWithMargins = True
@@ -2172,7 +2171,6 @@ object Form1: TForm1
       FrameOnSolid = True
       FrameInside = False
       OnChangeState = scGPSwitch_rezimChangeState
-      ExplicitLeft = 333
     end
     object scLabel_klient: TscLabel
       Left = 451
@@ -2208,7 +2206,6 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Ov'#283#345'ov'#225'n'#237
-      ExplicitLeft = 381
     end
     object scLabel_architekt: TscLabel
       Left = 364
@@ -2244,7 +2241,6 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'N'#225'vrh'
-      ExplicitLeft = 294
     end
     object scLabel_mezera: TscLabel
       Left = 349
@@ -2278,7 +2274,6 @@ object Form1: TForm1
       Alignment = taCenter
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
-      ExplicitLeft = 279
     end
     object Nahled: TscGPButton
       Left = 564
@@ -2490,7 +2485,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 242
     end
     object scGPButton_error: TscGPButton
       Left = 384
@@ -2808,7 +2802,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 245
     end
     object scGPGlyphButton_redo: TscGPGlyphButton
       AlignWithMargins = True
@@ -2908,7 +2901,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 301
     end
   end
   object scGPPanel_statusbar: TscGPPanel
@@ -4712,12 +4704,10 @@ object Form1: TForm1
     OnClick = CheckBoxVytizenost_Click
   end
   object Memo3: TMemo
-    Left = 825
+    Left = 726
     Top = 50
-    Width = 185
-    Height = 224
-    Lines.Strings = (
-      'Memo3')
+    Width = 529
+    Height = 144
     TabOrder = 38
     Visible = False
     OnKeyDown = Memo3KeyDown
@@ -9330,7 +9320,7 @@ object Form1: TForm1
     RepeatClickInterval = 100
     GlowEffect.Enabled = False
     GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 175
+    GlowEffect.AlphaValue = 95
     GlowEffect.GlowSize = 1
     GlowEffect.Offset = 0
     GlowEffect.Intensive = True
@@ -10486,7 +10476,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118009009B40910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800B809B80910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -11609,7 +11599,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01015400B40CD80C30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01015400DC0CDC0C30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000002004000001002000000000000060
       0C00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
