@@ -983,7 +983,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=448;i++)
+	for(unsigned short i=0;i<=450;i++)
 	{
 		switch(i)
 		{
@@ -1436,6 +1436,8 @@ void TForm1::DesignSettings()
 			case 446:text="Kliknutím potvrdíte cestu";break;
 			case 447:text="Výber pohonu";break;
 			case 448:text="Rozmezí rychlosti";break;
+			case 449:text="Zpět";break;
+			case 450:text="Vpřed";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -13409,8 +13411,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	d.v.update_akt_zakazky();
-	d.v.najdi_sparovane_elementy_ceste(d.v.ZAKAZKA_akt);
+	//if(OBJEKT_akt!=NULL)d.v.update_akt_zakazky();
 	Memo3->Clear();
 	Cvektory::TCesta *E=d.v.ZAKAZKA_akt->cesta->dalsi;
 	while(E!=NULL)
@@ -15755,7 +15756,8 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 		scGPButton_ulozit_cestu->Caption=ls->Strings[70];
 		scGPButton_ulozit_cestu->Hint=ls->Strings[446];
 		scGPButton_storno_cesta->Caption=ls->Strings[71];
-
+		scGPGlyphButton_undo->Hint=ls->Strings[449];
+    scGPGlyphButton_redo->Hint=ls->Strings[450];
 
     //změna zarovnání
 		scGPComboBox_prepinacKot->Left=scGPLabel_prepinacKot->Left+scGPLabel_prepinacKot->Width;//nutné!!

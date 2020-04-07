@@ -4734,7 +4734,7 @@ Graphics::TBitmap *Cvykresli::nacti_nahled(Cvektory::TZakazka *zakazka)
 	ret.left=MaxInt;ret.right=MaxInt*(-1);
 	ret.top=MaxInt;ret.bottom=MaxInt*(-1);
 
-	//zjištění max oblasti
+	////zjištění max oblasti vykreslení pohonu
 	Cvektory::TElement *E=v.ELEMENTY->dalsi;
 	while(E!=NULL)
 	{
@@ -4750,7 +4750,7 @@ Graphics::TBitmap *Cvykresli::nacti_nahled(Cvektory::TZakazka *zakazka)
 	}
 	delete E;E=NULL;
 
-	//výpočet nového Zoom
+	////výpočet nového Zoom, podle maximální oblasti vykreslení a velikosti bmp
 	double MaxX=m.P2Lx(ret.right),MaxY=m.P2Ly(ret.top),MinX=m.P2Lx(ret.left),MinY=m.P2Ly(ret.bottom);
 	double rozdil=0,PD=0;
 	int PD_x=W;
@@ -4760,8 +4760,8 @@ Graphics::TBitmap *Cvykresli::nacti_nahled(Cvektory::TZakazka *zakazka)
 	F->Zoom=abs(F->Zoom*PD/rozdil);
 	F->Zoom-=fmod(F->Zoom,0.05);
 
-  //opakování vyhledávání max oblasti, v prvotním vytváření bmp musí být provedeno 2x
-	ret.left=MaxInt;ret.right=MaxInt*(-1);
+	////opakování vyhledávání max oblasti, v prvotním vytváření bmp musí být provedeno 2x, pro nový zoom!
+	ret.left=MaxInt;ret.right=MaxInt*(-1);//nastavení hodnot do minima
 	ret.top=MaxInt;ret.bottom=MaxInt*(-1);
 	E=v.ELEMENTY->dalsi;
 	while(E!=NULL)
