@@ -961,6 +961,7 @@ void Cvektory::aktualizace_rezimu_objektu(TObjekt *Objekt,bool aktualizovat_sta_
 	while(E!=NULL && E->objekt_n==Objekt->n)
 	{
 		short druh=vrat_druh_elementu(E);//kontrola druhu elementu
+		if(E->eID==0 || E->eID==5 || E->eID==6)druh=-1;
 		//pokud je druh elementu KK nebo S&G, zapiš změnu a ukonči
 		if(druh>=0)
 		{

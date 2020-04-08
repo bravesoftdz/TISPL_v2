@@ -148,11 +148,7 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 				}
 			}break;
 		}
-		E->mGrid->Refresh();
-		//E->mGrid->exBUTTONLockPosition=true;//uzamkne pozici exButtonu, aby se nepøepozival bìhem updatu tam a zpìt
-		//E->mGrid->Update();
-		//E->mGrid->exBUTTONLockPosition=false;//uzamkne pozici exButtonu, aby se nepøepozival bìhem updatu tam a zpìt, toto nestaèilo: F->PmG->exBUTTON->Top=T;//zajistí, že se tlaèítko nepøepozicuje
-		//F->REFRESH(true);//musí být opravdu REFRESH celého formu + mGridu
+		F->REFRESH(true);//musí být opravdu REFRESH() celého formu + mGridu
 		E->mGrid->exBUTTON->Hint=Hint;//navrácení pùvodního textu hintu
 		E=NULL;delete E;
 	}

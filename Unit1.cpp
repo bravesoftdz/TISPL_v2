@@ -9883,6 +9883,7 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 			if(E->eID!=3)t=ls->Strings[234];//"PO"
 			E->mGrid->Cells[0][1].Text="PT1 "+cas;
 			E->mGrid->Cells[0][2].Text=t+"1 "+LO;
+			E->mGrid->Cells[0][3].Text=ls->Strings[239]+" [°]";//"rotace [°]";
 			E->mGrid->Cells[0][4].Text=ls->Strings[240]+" "+cas;//"otoč "
 			E->mGrid->Cells[0][5].Text=ls->Strings[240]+" "+delka_otoce;//"otoč "
 			E->mGrid->Cells[0][6].Text=ls->Strings[275]+" "+delka_otoce;//"Zóna před "
@@ -13412,15 +13413,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
 	//if(OBJEKT_akt!=NULL)d.v.update_akt_zakazky();
-	Memo3->Clear();
-	Cvektory::TCesta *E=d.v.ZAKAZKA_akt->cesta->dalsi;
-	while(E!=NULL)
-	{
-		Memo(E->Element->name+"->sparovany:");
-		if(E->sparovany!=NULL)Memo(E->sparovany->name);else Memo("NULL");
-		E=E->dalsi;
-	}
-	delete E;E=NULL;
+	Memo(OBJEKT_akt->rezim);
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
