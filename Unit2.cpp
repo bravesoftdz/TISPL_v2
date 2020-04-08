@@ -354,33 +354,27 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 	//nastavení popiskù
 	el->mG->Border.Width=2;
 	el->mG->Cells[0][0].BottomBorder->Width=2;
-	el->mG->Cells[0][0].Text="Pøedávací místo 1"; el->mG->Cells[0][0].Font->Color=clBlack;
-	el->mG->Cells[3][1].Text="IN";
-	el->mG->Cells[4][1].Text="OUT";
+	el->mG->Cells[0][0].Text="Pøedávací místo 1"; el->mG->Cells[0][0].Font->Color=clBlack; //el->mG->Cells[0][0].TopMargin=-1;//pouze optická záležitost
+	el->mG->Cells[3][1].Text="IN";el->mG->Cells[3][1].Align=TmGrid::RIGHT;el->mG->Cells[3][1].RightMargin=5;
+	el->mG->Cells[4][1].Text="OUT";el->mG->Cells[4][1].Align=TmGrid::RIGHT;el->mG->Cells[4][1].RightMargin=5;
+	el->mG->Cells[0][1].Valign=TmGrid::MIDDLE;
 	el->mG->Cells[0][1].Text="Pohon"; el->mG->Cells[0][1].Font->Color=clBlack;
 
 	el->mG->Cells[0][3].Font->Orientation=900;
-	el->mG->Cells[0][3].Valign=el->mG->BOTTOM;
-	el->mG->Cells[0][3].BottomMargin=3;
-	el->mG->Cells[0][3].Align=el->mG->CENTER;
+	el->mG->Cells[0][3].Valign=el->mG->MIDDLE;
 	el->mG->Cells[0][3].Text="Rychl.";
-	el->mG->Cells[1][3].Font->Orientation=900;
-	el->mG->Cells[1][3].Valign=el->mG->BOTTOM;
-	//el->mG->Cells[1][3].BottomMargin=5;
-	el->mG->Cells[1][3].Align=el->mG->CENTER;
-	el->mG->Cells[1][3].Text="[m/min]";
+	el->mG->Cells[1][3].Font->Orientation=el->mG->Cells[0][3].Font->Orientation;
+	el->mG->Cells[1][3].Valign=el->mG->Cells[0][3].Valign;
+	el->mG->Cells[1][3].Text="m/min";
 
 	el->mG->Cells[2][3].Text="Nastavená";
 	el->mG->Cells[2][4].Text="Rozmezí ";
 
 	el->mG->Cells[0][5].Font->Orientation=900;
-	el->mG->Cells[0][5].Valign=el->mG->BOTTOM;
-	el->mG->Cells[0][5].BottomMargin=10;
-	el->mG->Cells[0][5].Align=el->mG->CENTER;
+	el->mG->Cells[0][5].Valign=TmGrid::MIDDLE;
 	el->mG->Cells[0][5].Text="Rozteè";
 	el->mG->Cells[1][5].Font->Orientation=900;
-	el->mG->Cells[1][5].Valign=el->mG->BOTTOM;
-	el->mG->Cells[1][5].Align=el->mG->CENTER;
+	el->mG->Cells[1][5].Valign=TmGrid::MIDDLE;
 	el->mG->Cells[1][5].Text="[mm]";
 
 	el->mG->Cells[2][5].Text="Jigy";
@@ -389,12 +383,12 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 
 	el->mG->Cells[0][8].Font->Orientation=900;el->mG->Cells[1][8].Font->Orientation=900;
 	//el->mG->Cells[1][8].Valign=
-	el->mG->Cells[0][8].Valign=el->mG->BOTTOM;
-	el->mG->Cells[1][8].BottomMargin=el->mG->Cells[0][8].Align=el->mG->CENTER;
-	el->mG->Cells[0][8].BottomMargin=7;
-	el->mG->Cells[1][8].Valign=el->mG->MIDDLE;
+	el->mG->Cells[0][8].Valign=TmGrid::MIDDLE;
+//	el->mG->Cells[1][8].BottomMargin=el->mG->Cells[0][8].Align=el->mG->CENTER;
+	el->mG->Cells[1][8].Valign=TmGrid::MIDDLE;
 	el->mG->Cells[0][8].Text="Mezera";
-	el->mG->Cells[1][8].Text=" [mm]";
+	el->mG->Cells[1][8].Text="<a>[m]</a>";  //vyøešit!!!
+	el->mG->Cells[1][8].Text="[m]";
 
 	el->mG->Cells[2][8].Text="Podvozky ";
 	el->mG->Cells[2][9].Text="Jigy 0°";
@@ -407,8 +401,8 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 	el->mG->Columns[3].Width=145;
 	el->mG->Columns[4].Width=145;
 	//merge
-	el->mG->MergeCells(0,0,4,0);
-	el->mG->MergeCells(0,1,2,2);
+	el->mG->MergeCells(0,0,4,0);//název tabulky
+	el->mG->MergeCells(0,1,2,2);//pohon
 	el->mG->MergeCells(0,3,0,4);
 	el->mG->MergeCells(1,3,1,4);
 	el->mG->MergeCells(0,5,0,7);
@@ -426,7 +420,7 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 	{
 		el->mG->Cells[2][i].Align=el->mG->RIGHT;
 		el->mG->Cells[2][i].RightMargin=5;
-		//el->mG->Cells[2][i].RightBorder->Width=
+		el->mG->Cells[2][i].RightBorder->Width=
 		el->mG->Cells[3][i].RightBorder->Width=2;
 		el->mG->Cells[0][i].RightBorder->Color=clWhite;
 		el->mG->Cells[2][i].Font->Color=clFontLeft;

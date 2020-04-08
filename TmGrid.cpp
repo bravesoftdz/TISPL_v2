@@ -890,24 +890,18 @@ void TmGrid::SetDraw(TCanvas *Canv,TRect Rt,unsigned long X,unsigned long Y,TCel
 		long L=Rt.Left,T=Rt.Top;
 		int W=getWidthHeightText(Cell).X*Zoom;
 		int H=getWidthHeightText(Cell).Y*Zoom;
-		//short Rot=1;//slouží jako pomůcka rotace
-		if(Cell.Font->Orientation==900){/*Rot=-1;*/H=0;if(Cell.Valign==MIDDLE)H=-getWidthHeightText(Cell).Y;}
-		if(Cell.Font->Orientation==2700){/*Rot=-1;*/W=0;if(Cell.Align==LEFT || Cell.Align==CENTER)W=-W;H=0;if(Cell.Valign==MIDDLE)H=getWidthHeightText(Cell).Y;}
+		if(Cell.Font->Orientation==900){H=0;if(Cell.Valign==MIDDLE)H=-getWidthHeightText(Cell).Y;}
+		if(Cell.Font->Orientation==2700){W=0;if(Cell.Align==LEFT || Cell.Align==CENTER)W=-W;H=0;if(Cell.Valign==MIDDLE)H=getWidthHeightText(Cell).Y;}
 		switch(Cell.Align)
-		{
+		{ //pozor, slouží i pro Valign jiný než vNO u mergovaných buněk, více v metodě MergeCells, z které si získá pozice textu vůči poslední buňce mergované oblasti
 			case aNO:   L=m.round(Rt.Left+Cell.TextPositon.X*Zoom+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2.0*Zoom);break;
-			case LEFT:	L=m.round(Rt.Left+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2.0*Zoom);break;
+			case LEFT:	L=m.round(Rt.Left+Cell.LeftMargin*Zoom-Cell.RightMargin*Zoom+Cells[X][Y].LeftBorder->Width/2.0*Zoom);break;
 			case CENTER:L=m.round((Rt.Left+Rt.Right)/2.0-W/2.0);break;
 			case RIGHT:	L=m.round(Rt.Right-W-Cell.RightMargin*Zoom-Cells[X][Y].RightBorder->Width/2.0*Zoom);if(Cell.Font->Orientation==2700)L-=H;break;
 		}
 		switch(Cell.Valign)
-		{
-			case vNO:
-			{
-				T=Rt.Top+Cell.TextPositon.Y*Zoom;
-				if(Cell.Font->Orientation==0)T+=m.round(Cell.TopMargin*Zoom+Cells[X][Y].TopBorder->Width/2.0*Zoom);
-				else T-=m.round(Cell.BottomMargin*Zoom+Cells[X][Y].BottomBorder->Width/2.0*Zoom);
-			}break;
+		{ //pozor vNO, slouží i pro Valign jiný než vNO u mergovaných buněk, více v metodě MergeCells, z které si získá pozice textu vůči poslední buňce mergované oblasti, pouze mergované buňky s valign=MIDDLE mohou být ještě dodatečně nastavované pomocí margins
+			case vNO:T=Rt.Top+Cell.TextPositon.Y*Zoom;T+=Cell.TopMargin*Zoom-Cell.BottomMargin*Zoom;break;//Border se nastavuje pouze u mergovaných buněk (kde je původně/záměr) valign na TOP nebo BOTTOM, jinak by to zde bylo nevyzpytatelné
 			case TOP:		T=m.round(Rt.Top+Cell.TopMargin*Zoom+Cells[X][Y].TopBorder->Width/2.0*Zoom);break;
 			case MIDDLE:T=m.round((Rt.Top+Rt.Bottom)/2.0-H/2.0);break;
 			case BOTTOM:T=m.round(Rt.Bottom-H-Cell.BottomMargin*Zoom-Cells[X][Y].BottomBorder->Width/2.0*Zoom);break;
@@ -1921,7 +1915,7 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 		////projde nejdříve všechny buňky nastaví jim prvně dle pozadí první buňky stejné pozadí a dle barvy pozadí i barvu orámování, - maže i text buňky parametrem -1 - námět sloučit DeleteCells,setCells,SetRegion kvůli opakovaným průchodům, ovšem možné riziko nutné posloupnosti průchodů..
 		SetCells(Cells[ColCell_1][RowCell_1],ColCell_1,RowCell_1,ColCell_2,RowCell_2,-1,false);//musí být výchozí (první) buňka, nemůže zde nemůže referenční!
 
-		////navrácený typ první buňky - musí být až za setcells
+		////navrácený typ první buňky - musí být až za setcells!!!
 		Cells[ColCell_1][RowCell_1].Type=RefCell.Type;
 
 		////vytvoří resp. předá orámování oblasti dle referenční buňky, šlo by řešit v ve výše volaném průchodu, bylo by sice systemově méně náročné, ale více komplikované na realizaci - námět sloučit DeleteCells,setCells,SetRegion kvůli opakovaným průchodům, ovšem možné riziko nutné posloupnosti průchodů..
@@ -1932,16 +1926,16 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 		Cells[ColCell_2][RowCell_2].Text=RefCell.Text;//navrácení textu ze zálohy do poslední buňky, protože ta se vykresluje jako poslední, pokud v první buňce text není obsažen, vrátí se text z poslední buňky
 		W=getWidthHeightText(RefCell).X;
 		H=getWidthHeightText(RefCell).Y;
-		if(RefCell.Font->Orientation==900){H=0;if(RefCell.Valign==MIDDLE)H=-getWidthHeightText(RefCell).X;}
-		if(RefCell.Font->Orientation==2700){W=0;if(RefCell.Align==LEFT || RefCell.Align==CENTER)W=-H;H=0;if(RefCell.Valign==MIDDLE)H=getWidthHeightText(RefCell).X;}
+		//if(RefCell.Font->Orientation==900){H=0;if(RefCell.Valign==MIDDLE)H=-W;}
+		//if(RefCell.Font->Orientation==2700){W=0;if(RefCell.Align==LEFT || RefCell.Align==CENTER)W=-H;H=0;if(RefCell.Valign==MIDDLE)H=W;}
 		//if(Cell.Font->Orientation==2700)L-=H;
 
 		////zarovnání
-		//nastaví velikost sloupců a řádků dle aktuálního nastavení a potřeby - DŮLEŽITE pro text!!!
+		//nastaví velikost sloupců a řádků dle aktuálního nastavení a potřeby - DŮLEŽITE pro text, aby se nepřepozivalo např. v SetDraw, ale byly dodržena pozice textu níže získana!!!
 		Cells[ColCell_2][RowCell_2].Align=aNO;
 		Cells[ColCell_2][RowCell_2].Valign=vNO;
 		//zarovnání (zarovnává dle první buňky, ale pracuje s poslední, protože ta se vykresluje zcela poslední)
-		switch(Cells[ColCell_1][RowCell_1].Align)//HORIZONTÁLNÍ ZAROVNÁNÍ
+		switch(Cells[ColCell_1][RowCell_1].Align)//HORIZONTÁLNÍ ZAROVNÁNÍ, pozor margins a někde i border řeším v setcomponents!!!
 		{
 			case LEFT:
 			{
@@ -2037,16 +2031,30 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 				 Cells[ColCell_2][RowCell_2].TextPositon.X=Columns[ColCell_2].Width-W;//řeším v setcomponents -RefCell.RightMargin-RefCell.RightBorder->Width/2;
 			}break;
 		}
-		switch(Cells[ColCell_1][RowCell_1].Valign)//VERTIKÁLNÍ ZAROVNÁNÍ
+		switch(Cells[ColCell_1][RowCell_1].Valign)//VERTIKÁLNÍ ZAROVNÁNÍ, pozor margins a někde i border řeším v setcomponents!!!
 		{
-			case TOP:
+			case TOP://pro všechny komponenty
 			{
-				 Cells[ColCell_2][RowCell_2].TextPositon.Y=Rows[RowCell_1].Top-Rows[RowCell_2].Top;//řeším v setcomponents +RefCell.TopMargin+RefCell.TopBorder->Width/2;
+				switch(RefCell.Font->Orientation)
+				{
+					case 900: Cells[ColCell_2][RowCell_2].TextPositon.Y=Rows[RowCell_1].Top-Rows[RowCell_2].Top+ceil(Cells[ColCell_1][RowCell_1].TopBorder->Width/2.0)+H;break;//u textu je pozice textu včetně textu uložena v poslední buňce slučované oblasti, tudíž odečítám od výšky této buňky střed vzádlenosti mezi první a poslední (vracím se zpět nahoru - což mate v úvodním pochopení)
+					case 2700:Cells[ColCell_2][RowCell_2].TextPositon.Y=Rows[RowCell_1].Top-Rows[RowCell_2].Top+ceil(Cells[ColCell_1][RowCell_1].TopBorder->Width/2.0);Cells[ColCell_2][RowCell_2].TextPositon.X+=W;break;//u textu je pozice textu včetně textu uložena v poslední buňce slučované oblasti, tudíž odečítám od výšky této buňky střed vzádlenosti mezi první a poslední (vracím se zpět nahoru - což mate v úvodním pochopení)
+					default:Cells[ColCell_2][RowCell_2].TextPositon.Y=Rows[RowCell_1].Top-Rows[RowCell_2].Top;break;//řeším v setcomponents +RefCell.TopMargin+RefCell.TopBorder->Width/2;
+				}
 			}break;
 			case MIDDLE:
 			{
 				switch(RefCell.Type)
 				{
+					case DRAW:
+					{
+						switch(RefCell.Font->Orientation)
+						{
+							case 900:  Cells[ColCell_2][RowCell_2].TextPositon.Y=m.round(Rows[RowCell_2].Height-(Rows[RowCell_2].Top+Rows[RowCell_2].Height-Rows[RowCell_1].Top)/2.0+H/2.0);break;//u textu je pozice textu včetně textu uložena v poslední buňce slučované oblasti, tudíž odečítám od výšky této buňky střed vzádlenosti mezi první a poslední (vracím se zpět nahoru - což mate v úvodním pochopení)
+							case 2700: Cells[ColCell_2][RowCell_2].TextPositon.Y=m.round(Rows[RowCell_2].Height-(Rows[RowCell_2].Top+Rows[RowCell_2].Height-Rows[RowCell_1].Top)/2.0-H/2.0);Cells[ColCell_2][RowCell_2].TextPositon.X+=W;break;//u textu je pozice textu včetně textu uložena v poslední buňce slučované oblasti, tudíž odečítám od výšky této buňky střed vzádlenosti mezi první a poslední (vracím se zpět nahoru - což mate v úvodním pochopení)
+							default:   Cells[ColCell_2][RowCell_2].TextPositon.Y=m.round(Rows[RowCell_2].Height-(Rows[RowCell_2].Top+Rows[RowCell_2].Height-Rows[RowCell_1].Top)/2.0-H/2.0);break;//u textu je pozice textu včetně textu uložena v poslední buňce slučované oblasti, tudíž odečítám od výšky této buňky střed vzádlenosti mezi první a poslední (vracím se zpět nahoru - což mate v úvodním pochopení)
+						}
+					}break;
 					case CHECK:
 					{
 						Cells[ColCell_1][RowCell_1].Valign=vNO;
@@ -2118,9 +2126,14 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 				}
 			}
 			break;
-			case BOTTOM:
+			case BOTTOM://pro všechny komponenty
 			{
-				Cells[ColCell_2][RowCell_2].TextPositon.Y=Rows[RowCell_2].Height-H;//řeším v setcomponents -RefCell.BottomMargin-RefCell.BottomBorder->Width/2;
+				switch(RefCell.Font->Orientation)
+				{
+					case 900:Cells[ColCell_2][RowCell_2].TextPositon.Y=ceil(Rows[RowCell_2].Height-Cells[ColCell_2][RowCell_2].BottomBorder->Width/2.0);break;//u textu je pozice textu včetně textu uložena v poslední buňce slučované oblasti, tudíž odečítám od výšky této buňky střed vzádlenosti mezi první a poslední (vracím se zpět nahoru - což mate v úvodním pochopení)
+					case 2700:Cells[ColCell_2][RowCell_2].TextPositon.Y=Rows[RowCell_2].Height-Cells[ColCell_2][RowCell_2].BottomBorder->Width-H;Cells[ColCell_2][RowCell_2].TextPositon.X+=W;break;//u textu je pozice textu včetně textu uložena v poslední buňce slučované oblasti, tudíž odečítám od výšky této buňky střed vzádlenosti mezi první a poslední (vracím se zpět nahoru - což mate v úvodním pochopení)
+					default:Cells[ColCell_2][RowCell_2].TextPositon.Y=Rows[RowCell_2].Height-H;break;//řeším v setcomponents -RefCell.BottomMargin-RefCell.BottomBorder->Width/2;
+				}
 			}
 			break;
 		}

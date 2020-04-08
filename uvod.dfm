@@ -18780,7 +18780,7 @@ object Form_uvod: TForm_uvod
     GlowEffect.StyleColors = True
     AutoSize = True
     Alignment = taCenter
-    Caption = #169' ELTEP, s.r.o., 2019'
+    Caption = #169' ELTEP, s.r.o., 2020'
   end
   object scGPLabel_TISPL: TscGPLabel
     Left = 249

@@ -204,12 +204,12 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 		delete []tab_pruchodu;
 	}
 
-	///////////////vykreslení VOZÍKů
-	vykresli_voziky(canv);
-
 	///////////////VALIDACE a její výpis formou zpráv
 	v.VALIDACE();
 	if(F->MOD!=F->Tmod::TVORBA_CESTY && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT)vypis_zpravy(canv);
+
+	///////////////vykreslení VOZÍKů, musí být až za VALIDACí kvůli generování vozíků, které je ve VALIDACi
+	vykresli_voziky(canv);
 }
 //---------------------------------------------------------------------------
 //zajišťuje vykreslení pouze obrysu dle typu objektu
@@ -4131,8 +4131,8 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 		if(typ==-1)//mód kurzor
 		{
 			//šipka                                     //pokud bych chtěl rotovat
-			sipka(canv,m.round(X-size),m.round(Y+width),/*rotace*/R-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno Z na negaci *Zoom v metodě šipka
-			sipka(canv,m.round(X+size),m.round(Y-width),/*rotace*/R-180-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno Z na negaci *Zoom v metodě šipka
+			sipka(canv,m.round(X-size),m.round(Y+width),/*rotace*/R-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno s Z slouží na negaci *Zoom v metodě šipka
+			sipka(canv,m.round(X+size),m.round(Y-width),/*rotace*/R-180-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno Z slouží  na negaci *Zoom v metodě šipka
 		}
 		else
 		{
@@ -4143,8 +4143,8 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 			canv->Rectangle(X-size,Y-width,m.round(X-size+1*Z),Y);//přežíznutí, možná lépe řešit obloukem
 			canv->Rectangle(m.round(X+size-1*Z),Y,X+size,Y+width);//přežíznutí, možná lépe řešit obloukem
 			//šipka
-			sipka(canv,m.round(X-size),m.round(Y+width),R-25,false,width/Z,barva,barva);//děleno Z na negaci *Zoom v metodě šipka
-			sipka(canv,m.round(X+size),m.round(Y-width),R-180-25,false,width/Z,barva,barva);//děleno Z na negaci *Zoom v metodě šipka
+			sipka(canv,m.round(X-size),m.round(Y+width),R-25,false,width/Z,barva,barva);//děleno Z slouží na negaci *Zoom v metodě šipka
+			sipka(canv,m.round(X+size),m.round(Y-width),R-180-25,false,width/Z,barva,barva);//děleno Z slouží na negaci *Zoom v metodě šipka
 		}
 	}
 	else
@@ -4153,8 +4153,8 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 		if(typ==-1)//mód kurzor
 		{
 			//šipka
-			sipka(canv,m.round(X-width),m.round(Y-size),R-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno Z na negaci *Zoom v metodě šipka
-			sipka(canv,m.round(X+width),m.round(Y+size),R-180-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno Z na negaci *Zoom v metodě šipka
+			sipka(canv,m.round(X-width),m.round(Y-size),R-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno Z slouží  na negaci *Zoom v metodě šipka
+			sipka(canv,m.round(X+width),m.round(Y+size),R-180-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno Z slouží  na negaci *Zoom v metodě šipka
 		}
 		else
 		{
@@ -4165,8 +4165,8 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 			canv->Rectangle(X+width,Y-size,m.round(X+width-1*Z),m.round(Y-size+width+1*Z));//přežíznutí, možná lépe řešit obloukem
 			canv->Rectangle(X+width,Y+size,m.round(X+width-1.5*Z),m.round(Y+size+width-1*Z));//přežíznutí, možná lépe řešit obloukem
 			//šipka
-			sipka(canv,m.round(X-width),m.round(Y-size),R-25,false,width/Z,barva,barva);//děleno Z na negaci *Zoom v metodě šipka
-			sipka(canv,m.round(X+width),m.round(Y+size),R-180-25,false,width/Z,barva,barva);//děleno Z na negaci *Zoom v metodě šipka
+			sipka(canv,m.round(X-width),m.round(Y-size),R-25,false,width/Z,barva,barva);//děleno Z slouží na negaci *Zoom v metodě šipka
+			sipka(canv,m.round(X+width),m.round(Y+size),R-180-25,false,width/Z,barva,barva);//děleno Z slouží na negaci *Zoom v metodě šipka
 		}
 	}
 

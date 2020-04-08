@@ -5330,7 +5330,7 @@ TPointDbool Cvektory::generuj_voziky_segementu(TElement *E,unsigned int pocet_vo
 			TPointD_3D Pt=m.getPt(E->geo.radius,E->geo.orientace,E->geo.rotacni_uhel,E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4,umisteni/E->geo.delka,(umisteni+PP.uchyt_pozice-PP.delka_podvozek/2.0)/E->geo.delka);
 			//pasivní otoče - POZOR pouze pro kontinuální/pasivní otoč pro aktavní bude sice na místě, ale řešit otáčením dle umisteniČas
 			double R=0;
-			double umisteniJIG=umisteni+PP.uchyt_pozice-PP.delka_podvozek/2.0;//pokud není uchytávání podvozku v polovině vozíku, je třeba rotovat JIG dle jiné polohy (vyplývá z kontstrukce otoče) než je poloha palce
+			double umisteniJIG=umisteni+PP.uchyt_pozice-PP.delka_podvozek/2.0;//pokud není uchytávání podvozku v polovině vozíku (pokud je řeší i toto), je třeba rotovat JIG dle jiné polohy tj. dle středu jigu (vyplývá z kontstrukce otoče) nikoliv od polohy palce (která je pouze totožná se středem jigu resp. i podvozku v situaci, kdy je uchytávání nastaveno na střed vozíku
 			if(E->OTOC_delka>0 && E->geo.delka<=umisteniJIG+E->OTOC_delka/2.0 && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180)
 			{
 				R=E->rotace_jig/2.0*(E->OTOC_delka/2.0-(E->geo.delka-umisteniJIG))/(E->OTOC_delka/2.0);//pozice vozíku v zoně otáčení, v počátku až do středu otoče, princip výpočtu zde funguje jako PŘIČTENÍ rotace k orientaci jigu při vstupu do zóny otáčení
