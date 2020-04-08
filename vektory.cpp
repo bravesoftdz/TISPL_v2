@@ -5338,7 +5338,7 @@ TPointDbool Cvektory::generuj_voziky_segementu(TElement *E,unsigned int pocet_vo
 			}
 			if(rotacni_zbytek)//dokončení rotace jigu na elementu následujícím otoči (který zajišťuje na svém geometrickém počátku, který začíná otočí)
 			{
-				if(umisteni<=E->predchozi->OTOC_delka/2.0)R=-E->predchozi->rotace_jig/2.0*(E->predchozi->OTOC_delka/2.0-umisteniJIG)/(E->predchozi->OTOC_delka/2.0);//pozice vozíku v zoně otáčení, od středu otoče až do konce zóny otáčení, princip výpočtu zde funguje jako ODEČTENÍ rotace od FINÁLNÍ orientaci jigu při vÝstupu ze zóny otáčení
+				if(umisteniJIG<=E->predchozi->OTOC_delka/2.0)R=-E->predchozi->rotace_jig/2.0*(E->predchozi->OTOC_delka/2.0-umisteniJIG)/(E->predchozi->OTOC_delka/2.0);//pozice vozíku v zoně otáčení, od středu otoče až do konce zóny otáčení, princip výpočtu zde funguje jako ODEČTENÍ rotace od FINÁLNÍ orientaci jigu při vÝstupu ze zóny otáčení
 				else rotacni_zbytek=false;//dokončena ilustrace otáčení JIGu
 			}
 			//finální vložení vozíku s vypočítanými parametry do spojáku VOZIKY
