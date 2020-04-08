@@ -735,6 +735,7 @@ TRect TmGrid::DrawTextLink(TCanvas *C,unsigned long left,unsigned long top,AnsiS
 	unsigned int Pos=Text.Pos("<a>");//pozice html tagu
 	if(Pos>0)//parsování HTML
 	{
+		//parsování
 		AnsiString T1=ms.TrimRightFrom(Text,"<a>");
 		AnsiString Link=ms.EP(Text,"<a>","</a>");
 		AnsiString T2=ms.TrimLeftFromText(Text,"</a>");

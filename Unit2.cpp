@@ -363,9 +363,9 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 	el->mG->Cells[0][3].Font->Orientation=900;
 	el->mG->Cells[0][3].Valign=el->mG->MIDDLE;
 	el->mG->Cells[0][3].Text="Rychl.";
-	el->mG->Cells[1][3].Font->Orientation=el->mG->Cells[0][3].Font->Orientation;
+	el->mG->Cells[1][3].Font->Orientation=el->mG->Cells[0][3].Font->Orientation;el->mG->Cells[1][3].isLink->Orientation=900;el->mG->Cells[1][3].isActiveLink->Orientation=900;
 	el->mG->Cells[1][3].Valign=el->mG->Cells[0][3].Valign;
-	el->mG->Cells[1][3].Text="m/min";
+	el->mG->Cells[1][3].Text="<a>m/min</a>";
 
 	el->mG->Cells[2][3].Text="Nastavená";
 	el->mG->Cells[2][4].Text="Rozmezí ";
@@ -373,22 +373,22 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 	el->mG->Cells[0][5].Font->Orientation=900;
 	el->mG->Cells[0][5].Valign=TmGrid::MIDDLE;
 	el->mG->Cells[0][5].Text="Rozteè";
-	el->mG->Cells[1][5].Font->Orientation=900;
+	el->mG->Cells[1][5].Font->Orientation=900;el->mG->Cells[1][5].isLink->Orientation=900;el->mG->Cells[1][5].isActiveLink->Orientation=900;
 	el->mG->Cells[1][5].Valign=TmGrid::MIDDLE;
-	el->mG->Cells[1][5].Text="[mm]";
+	el->mG->Cells[1][5].Text="<a>[mm]</a>";
 
 	el->mG->Cells[2][5].Text="Jigy";
 	el->mG->Cells[2][6].Text="Palce";
 	el->mG->Cells[2][7].Text="Násobek";
 
-	el->mG->Cells[0][8].Font->Orientation=900;el->mG->Cells[1][8].Font->Orientation=900;
+	el->mG->Cells[0][8].Font->Orientation=900;el->mG->Cells[1][8].Font->Orientation=900;el->mG->Cells[1][8].isLink->Orientation=900;el->mG->Cells[1][8].isActiveLink->Orientation=900;
 	//el->mG->Cells[1][8].Valign=
 	el->mG->Cells[0][8].Valign=TmGrid::MIDDLE;
 //	el->mG->Cells[1][8].BottomMargin=el->mG->Cells[0][8].Align=el->mG->CENTER;
 	el->mG->Cells[1][8].Valign=TmGrid::MIDDLE;
 	el->mG->Cells[0][8].Text="Mezera";
-	el->mG->Cells[1][8].Text="<a>[m]</a>";  //vyøešit!!!
-	el->mG->Cells[1][8].Text="[m]";
+	el->mG->Cells[1][8].Text="<a>[m]</a>";
+
 
 	el->mG->Cells[2][8].Text="Podvozky ";
 	el->mG->Cells[2][9].Text="Jigy 0°";

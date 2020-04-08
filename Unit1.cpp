@@ -289,6 +289,9 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	ID_tabulky=0;//uchovává ID tabulky, použiváné při mousemove
 	count_memo=0;//jednoduchý counter zobrazovaný v memo3
 	predchozi_PM=NULL;
+
+	//vývojářské featury
+	if(DEBUG && get_user_name()+get_computer_name()=="MartinMARTIN-NOTEBOOK"){Button14->Visible=true;Button13->Visible=false;}//pokud se dělá překlad u MaKr, je zobrazeno jeho testovací tlačítko
 }
 //---------------------------------------------------------------------------
 //nastaví komponentám aFont
@@ -1807,8 +1810,8 @@ void TForm1::startUP()
 		else scGPSwitch1->State=scswOff;
 		if(old_state==scGPSwitch1->State)language=(TForm1::Tlanguage)load_language(language,false);//neproběhla změna stavu potřeba udělat ručně
 		//////otevrení posledního souboru
-    log2web("start");
-    nastaveni.posledni_file=true;/////////////////provizorní než budu načítat z ini z filu nastavení zda otevírat či neotevírat poslední sobor
+		log2web("start");
+		nastaveni.posledni_file=true;/////////////////provizorní než budu načítat z ini z filu nastavení zda otevírat či neotevírat poslední sobor
     volat_parametry_linky=true;//následně je případně znegováno
     UnicodeString user_file=ms.delete_repeat(ms.delete_repeat(Parametry,"\"",2),"\"").Trim();
     if(user_file!="")//pokud zkouší uživatel otevřít přímo soubor kliknutím na něj mimo aplikaci
@@ -1842,7 +1845,7 @@ void TForm1::startUP()
       HANDLE hFile=CreateFile(FileName.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL,OPEN_EXISTING, 0, NULL);
       GetFileTime(hFile, &ftCreate, &ftAccess, &ftWrite);
       CloseHandle(hFile);
-      hFile=CreateFile((FileName+".bac_"+get_user_name()+"_"+get_computer_name()).c_str(), GENERIC_READ, FILE_SHARE_READ, NULL,OPEN_EXISTING, 0, NULL);
+			hFile=CreateFile((FileName+".bac_"+get_user_name()+"_"+get_computer_name()).c_str(), GENERIC_READ, FILE_SHARE_READ, NULL,OPEN_EXISTING, 0, NULL);
       GetFileTime(hFile, &ftCreate, &ftAccess, &ftWrite_bac);
       CloseHandle(hFile);
       UnicodeString text=ls->Strings[322],text_1=ls->Strings[323];
@@ -12600,7 +12603,7 @@ void TForm1::nacist_nastaveni()
   TIniFile *ini;
   if(FileExists(ExtractFilePath(Application->ExeName) + "omap_editor_"+get_user_name()+"_"+get_computer_name()+".ini"))//načte uživatelovo nastavení
   {
-    ini = new TIniFile(ExtractFilePath(Application->ExeName) + "omap_editor_"+get_user_name()+"_"+get_computer_name()+".ini");
+		ini = new TIniFile(ExtractFilePath(Application->ExeName) + "omap_editor_"+get_user_name()+"_"+get_computer_name()+".ini");
   }
   else ini = new TIniFile(ExtractFilePath(Application->ExeName) + "omap_editor.ini"); //načte implicitni
 
@@ -15617,9 +15620,10 @@ void TForm1::change_languagein_mGrid()
 unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 {
 	log(__func__);//logování
-	//nastavení adresáře k místě aplikace
+
+	////nastavení adresáře k místě aplikace
   ChDir(ExtractFilePath(Application->ExeName));    //přesune k EXE
-	UnicodeString File_language= "TISPL.language"; //cache_dir+"MK.language" už nenačítám v tempu aplikace
+	UnicodeString File_language="TISPL.language";
 
 	////naplnění pro konkrétní jazykovou mutaci
 	if(FileExists(File_language))//znovu kontrola po případném stažení souboru
@@ -15645,12 +15649,21 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 		}
 		else
 		{
-			if(language==CS)MB("Jazykový soubor chybí, nebo není kompletní!");//vypsáno ručně pro různé jazykové verze
-			else MB("Language file missing or incomplete!");
-			language=CS;//nastavení na default jazyk
+			if(DEBUG && FileExists("../../TISPL.language"))//vývojářské featura, slouží jenom pro úsporu času při vývoji, případně by mohlo řešit i v realesu pro uživatele stažení z netu
+			{
+				ShowMessage("Byl nalezen nový jazykový slovník, po stisku OK, přepíše původní uložený u EXE aplikace. Tato hláška se vypisuje pouze v DEBUGu.");
+				CopyFile(_T("../../TISPL.language"),_T("TISPL.language"),false);//přepíše starý jazykový slovník novým
+				load_language(language,false);//rekurzní zavolání znovu metody
+			}
+			else
+			{
+				if(language==CS)MB("Jazykový soubor chybí, nebo není kompletní!");//vypsáno ručně pro různé jazykové verze
+				else MB("Language file missing or incomplete!");
+				language=CS;//nastavení na default jazyk
+			}
 		}
 		delete ls_temp;ls_temp=NULL;
-		//začít od 4
+		//začít od 4!!!
   	Label_zamerovac->Caption=ls->Strings[4];
 		RzToolButton1->Hint=ls->Strings[5];
     RzToolButton2->Hint=ls->Strings[6];
