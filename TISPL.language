@@ -207,13 +207,13 @@ to;X;do
 current;X;aktuální  
 Delete this drive;X;Smazat tento pohon
 Speed;X;Rychlost
-Chain pitch ;X;Rozteè palce
-Multiple chain pitch;X;Násobek rozteèe palcù
-Jigs pitch;X;Rozteè jigù
-Gap between undercarriages;X;Mezera mezi podvozky
-Gap between jigs 0°;X;Mezera mezi jigy 0°
-Gap between jigs 90°;X;Mezera mezi jigy 90°
-Gap between jigs;X;Mezera mezi jigy
+Chain;X;Palce
+Multiple;X;Násobek
+Jigs;X;Jigù
+Undercarr.;X;Podvozky
+Jigs 0°;X;Jigy 0°
+Jigs 90°;X;Jigy 90°
+Gap;X;Mezera
 Advanced items;X;Rozšíøené poloky
 No drive;X;ádnı pohon
 Select the drive;X;Vyberte pohon
@@ -291,7 +291,7 @@ The lower speed limit must be >=;X;Spodní hranice rychlosti musí bıt >=
 The upper speed limit must be <=;X;Nebo horní hranice musí bıt <=
 The drive parameters can no longer be changed because the drive is used on other objects;X;Parametry pohonu ji nelze mìnit, protoe pohon je pouíván na jinıch objektech
 Thumbs of chain;X;Palce øetìzu
-Angle;X;Úhel [°]
+Angle [°];X;Úhel [°]
 Downloading update, do not close the application !!! When the download is complete, the program will close.;X;Probíhá stahování aktualizace, neukonèujte aplikaci!!! Po dokonèení stahování bude program ukonèen.
 Drag the mouse from the selected point to the destination point to see the distance between these points.;X;Taením myši z vybraného bodu do cílového bodu zobrazíte vzdálenost mezi tìmito body.
 Drag the mouse from the selected point on the substrate to point to the selected technologist. object, after releasing the mouse the image is calibrated.;X;Taením myši z vybraného bodu na podkladu smìøujte do vybraného technolog. objektu, po puštìní myši dojde ke kalibraci obrazu.
@@ -445,7 +445,10 @@ Show geometry dimensions;X;Zobrazit kóty geometrie
 Hide geometry dimensions;X;Skrıt kóty geometrie
 Placement of carts ;X;Rozmístìní vozíkù
 Click to confirm path;X;Kliknutím potvrdíte cestu
-Drive selection;X;Vıbìr pohonu
-Speed range;X;Rozmezí rychlosti
+Drive;X;Pohon
+Range;X;Rozmezí
 Back;X;Zpìt
 Forward;X;Vpøed
+Set;X;Nastavená
+Speed;X;Rychl.
+Pitch;X;Rozteè
