@@ -341,104 +341,132 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 	el->mG=new TmGrid(this);
 	el->mG->Tag=4;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
 	el->mG->ID=1;
-	el->mG->Create(5,12);
-	el->mG->Left=500;
-	el->mG->Top=500;
-	//nastavení fontu
+	//design deklarace
+	TColor clHeaderFont=clBlack;
+	TColor clBackgroundHidden=(TColor)RGB(240,240,240);//m.clIntensive((TColor)RGB(128,128,128),115);
 	TColor clFontLeft = (TColor)RGB(128,128,128);
 	//TColor clFontRight = (TColor)RGB(43,87,154);
 	//definice fontu a velikosti písma
 	el->mG->DefaultCell.Font->Name=F->aFont->Name;
 	el->mG->DefaultCell.Font->Size=F->aFont->Size;
-	el->mG->DefaultCell.Font->Color=clFontLeft;
+	el->mG->DefaultCell.isNegativeNumber->Name=F->aFont->Name;
+	el->mG->DefaultCell.isNegativeNumber->Size=F->aFont->Size;
+	el->mG->DefaultCell.isZero->Name=F->aFont->Name;
+	el->mG->DefaultCell.isZero->Size=F->aFont->Size;
 	el->mG->DefaultCell.isLink->Name=F->aFont->Name;
 	el->mG->DefaultCell.isLink->Size=F->aFont->Size;
 	el->mG->DefaultCell.isActiveLink->Name=F->aFont->Name;
 	el->mG->DefaultCell.isActiveLink->Size=F->aFont->Size;
+	el->mG->Note.Font->Name=F->aFont->Name;
+	el->mG->Note.Font->Size=14;
+	//urèení zda budou prohozeny sloupce
+  el->mG->Create(5,12);
+	el->mG->Left=500;
+	el->mG->Top=500;
+	int prvni=3,druhy=4;
 	//nastavení popiskù
-	el->mG->Border.Width=2;
-	el->mG->Cells[0][0].BottomBorder->Width=2;
-	el->mG->Cells[0][0].Text="Pøedávací místo 1"; el->mG->Cells[0][0].Font->Color=clBlack; //el->mG->Cells[0][0].TopMargin=-1;//pouze optická záležitost
-	el->mG->Cells[3][1].Text="IN";el->mG->Cells[3][1].Align=TmGrid::RIGHT;el->mG->Cells[3][1].RightMargin=5;
-	el->mG->Cells[4][1].Text="OUT";el->mG->Cells[4][1].Align=TmGrid::RIGHT;el->mG->Cells[4][1].RightMargin=5;
-	el->mG->Cells[0][1].Valign=TmGrid::MIDDLE;
-	el->mG->Cells[0][1].Text="Pohon"; el->mG->Cells[0][1].Font->Color=clBlack;
-
-	el->mG->Cells[0][3].Font->Orientation=900;
-	el->mG->Cells[0][3].Valign=el->mG->MIDDLE;
-	el->mG->Cells[0][3].Text="Rychl.";
-	el->mG->Cells[1][3].Font->Orientation=el->mG->Cells[0][3].Font->Orientation;el->mG->Cells[1][3].isLink->Orientation=900;el->mG->Cells[1][3].isActiveLink->Orientation=900;
-	el->mG->Cells[1][3].Valign=el->mG->Cells[0][3].Valign;
-	el->mG->Cells[1][3].Text="<a>m/min</a>";
-
-	el->mG->Cells[2][3].Text="Nastavená";
-	el->mG->Cells[2][4].Text="Rozmezí ";
-
-	el->mG->Cells[0][5].Font->Orientation=900;
-	el->mG->Cells[0][5].Valign=TmGrid::MIDDLE;
-	el->mG->Cells[0][5].Text="Rozteè";
-	el->mG->Cells[1][5].Font->Orientation=900;el->mG->Cells[1][5].isLink->Orientation=900;el->mG->Cells[1][5].isActiveLink->Orientation=900;
-	el->mG->Cells[1][5].Valign=TmGrid::MIDDLE;
-	el->mG->Cells[1][5].Text="<a>[mm]</a>";
-
-	el->mG->Cells[2][5].Text="Jigy";
-	el->mG->Cells[2][6].Text="Palce";
-	el->mG->Cells[2][7].Text="Násobek";
-
-	el->mG->Cells[0][8].Font->Orientation=900;el->mG->Cells[1][8].Font->Orientation=900;el->mG->Cells[1][8].isLink->Orientation=900;el->mG->Cells[1][8].isActiveLink->Orientation=900;
-	//el->mG->Cells[1][8].Valign=
-	el->mG->Cells[0][8].Valign=TmGrid::MIDDLE;
-//	el->mG->Cells[1][8].BottomMargin=el->mG->Cells[0][8].Align=el->mG->CENTER;
-	el->mG->Cells[1][8].Valign=TmGrid::MIDDLE;
-	el->mG->Cells[0][8].Text="Mezera";
-	el->mG->Cells[1][8].Text="<a>[m]</a>";
-
-
-	el->mG->Cells[2][8].Text="Podvozky ";
-	el->mG->Cells[2][9].Text="Jigy 0°";
-	el->mG->Cells[2][10].Text="Jigy 90°";
-	el->mG->Cells[2][11].Text="max WT "+cas+" ";
+	el->mG->Cells[prvni][1].Text="IN";
+	el->mG->Cells[druhy][1].Text="OUT";
+	el->mG->Cells[0][1].Text=F->ls->Strings[447];//"Výbìr pohonu "
+	el->mG->Cells[2][3].Text=F->ls->Strings[451];//"Nastavená"
+	el->mG->Cells[2][4].Text=F->ls->Strings[448];//"Rozmezí"
+	el->mG->Cells[2][5].Text=F->ls->Strings[209];//"Palce"
+	el->mG->Cells[2][6].Text=F->ls->Strings[210];//"Násobek"
+	el->mG->Cells[2][7].Text=F->ls->Strings[211];//"Jigù"
+	el->mG->Cells[2][8].Text=F->ls->Strings[212];//"Podvozky"
+	el->mG->Cells[2][9].Text=F->ls->Strings[213];//"Jigy 0°"
+	el->mG->Cells[2][10].Text=F->ls->Strings[214];//"Jigy 90°"
+	el->mG->Cells[0][11].Text="max WT "+cas;
+	//nastavení slouèených sloupcù
+	el->mG->Cells[0][3].Text=F->ls->Strings[452];//+" "+rychlost;//"Rychlost"
+	el->mG->Cells[1][3].Text=rychlost;//jednotky
+	el->mG->Cells[0][3].Font->Orientation=900;el->mG->Cells[0][3].Valign=TmGrid::MIDDLE;
+	el->mG->Cells[1][3].Font->Orientation=900;el->mG->Cells[1][3].isLink->Orientation=900;el->mG->Cells[1][3].isActiveLink->Orientation=900;el->mG->Cells[1][3].Valign=TmGrid::MIDDLE;
+	el->mG->Cells[0][5].Text=F->ls->Strings[453];//"Rozteè"
+	el->mG->Cells[1][5].Text=R;//jednotky
+	el->mG->Cells[0][5].Font->Orientation=900;el->mG->Cells[0][5].Valign=TmGrid::MIDDLE;
+	el->mG->Cells[1][5].Font->Orientation=900;el->mG->Cells[1][5].isLink->Orientation=900;el->mG->Cells[1][5].isActiveLink->Orientation=900;el->mG->Cells[1][5].Valign=TmGrid::MIDDLE;
+	el->mG->Cells[0][8].Text=F->ls->Strings[215];//"Mezera"
+	el->mG->Cells[1][8].Text=Rz;//jednotky
+	el->mG->Cells[0][8].Font->Orientation=900;el->mG->Cells[0][8].Valign=TmGrid::MIDDLE;
+	el->mG->Cells[1][8].Font->Orientation=900;el->mG->Cells[1][8].isLink->Orientation=900;el->mG->Cells[1][8].isActiveLink->Orientation=900;el->mG->Cells[1][8].Valign=TmGrid::MIDDLE;
 	//nastavení šíøek
 	el->mG->SetColumnAutoFit(-4);
 	el->mG->Columns[0].Width=el->mG->Columns[1].Width=el->mG->Rows[0].Height;
 	el->mG->Columns[2].Width=90;
 	el->mG->Columns[3].Width=145;
 	el->mG->Columns[4].Width=145;
-	//merge
-	el->mG->MergeCells(0,0,4,0);//název tabulky
-	el->mG->MergeCells(0,1,2,2);//pohon
-	el->mG->MergeCells(0,3,0,4);
-	el->mG->MergeCells(1,3,1,4);
-	el->mG->MergeCells(0,5,0,7);
-	el->mG->MergeCells(1,5,1,6);
-	el->mG->MergeCells(0,8,0,10);
-	el->mG->MergeCells(1,8,1,10);
+	//nastavení exButtonu, skrývání øádku max.WT Stop
+	el->mG->exBUTTONVisible=true;
+	el->mG->exBUTTON->ShowHint=true;
+	el->mG->exBUTTON->Hint=F->ls->Strings[231];//"Rozšíøené položky";
+	//hinty
+	el->mG->Cells[2][11].Hint=F->ls->Strings[229];//"maximální možná doba èekání na palec";
+	el->mG->Cells[2][11].ShowHint=true;
 
-	//final design
-	el->mG->Cells[3][1].Font->Color=clBlack;
-	el->mG->Cells[4][1].Font->Color=clBlack;
-	/*el->mG->Cells[2][1].RightBorder->Width=2;*/el->mG->Cells[3][1].RightBorder->Width=2;
-	/*el->mG->Cells[2][2].RightBorder->Width=2;*/el->mG->Cells[3][2].RightBorder->Width=2;
-	//el->mG->Cells[0][3].TopBorder->Color=el->mG->Cells[1][3].TopBorder->Color=clWhite;
-	for(int i=3;i<=el->mG->RowCount-1;i++)
+
+	///////////////////////////////Skrytí øádku///////////////////////////////
+	el->mG->Show();//vykreslìní pøed skrytím, zkoušel jsem Update i Refresh
+	el->mG->VisibleRow(5,false,false);
+	el->mG->VisibleRow(6,false,false);
+	el->mG->VisibleRow(7,false,false);
+	el->mG->VisibleRow(8,false,false);
+	el->mG->VisibleRow(9,false,false);
+	el->mG->VisibleRow(10,false,false);
+	el->mG->VisibleRow(11,false,false);
+	///////////////////////////////Konec skrytí øádku///////////////////////////////
+
+	//design tabulky
+	int prvni_sloupec=2;
+	for(unsigned int i=1;i<=el->mG->RowCount-1;i++)
 	{
-		el->mG->Cells[2][i].Align=el->mG->RIGHT;
-		el->mG->Cells[2][i].RightMargin=5;
-		el->mG->Cells[2][i].RightBorder->Width=
-		el->mG->Cells[3][i].RightBorder->Width=2;
-		el->mG->Cells[0][i].RightBorder->Color=clWhite;
-		el->mG->Cells[2][i].Font->Color=clFontLeft;
-		el->mG->Cells[0][i].Font->Color=clFontLeft;
+		//první sloupec
+		el->mG->Cells[prvni_sloupec][i].RightMargin = 3;
+		el->mG->Cells[prvni_sloupec][i].Align=mGrid->RIGHT;
+		el->mG->Cells[prvni_sloupec][i].Font->Color=clFontLeft;
+		if(prvni_sloupec>0)el->mG->Cells[0][i].Font->Color=clFontLeft;
+		//procházení dalších sloupcù
+		for(unsigned int j=prvni_sloupec+1;j<=el->mG->ColCount-1;j++)
+		{
+			if(el->mG->Cells[j][i].Type==el->mG->EDIT && (el->mG->Cells[j][i].Text==0 || F->ms.MyToDouble(el->mG->Cells[j][i].Text)!=0))el->mG->Cells[j][i].InputNumbersOnly=2;
+			el->mG->Cells[j][i].RightMargin = 3;
+			el->mG->Cells[j][i].Align=mGrid->RIGHT;
+			if(F->ms.MyToDouble(el->mG->Cells[j][i].Text)!=0)el->mG->Cells[j][i].Text=F->m.round2double(F->ms.MyToDouble(el->mG->Cells[j][i].Text),3);//pøeskoèení prvního øádku v tabulce stopky
+			if(i!=1 && el->mG->Cells[j][i].Type!=el->mG->EDIT&&el->mG->Cells[j][i].Type!=el->mG->COMBO)
+			{
+				el->mG->Cells[j][i].Background->Color=clBackgroundHidden;
+				el->mG->Cells[j][i].RightMargin=5;
+				el->mG->Cells[j][i].Font->Color=clFontLeft;
+			}
+			if(i==1)el->mG->Cells[j][i].Font->Color=clHeaderFont;
+		}
+		el->mG->Cells[3][i].LeftBorder->Width=el->mG->Cells[3][i].RightBorder->Width=2;
 	}
-	el->mG->Cells[2][11].LeftBorder->Color=clWhite;
 
-	for(int i=0;i<=el->mG->ColCount-1;i++)
+	//slouèení bunìk + design pro border
+	el->mG->MergeCells(0,0,4,0);//hlavièka tabulky
+	el->mG->Cells[0][1].Font->Color=clHeaderFont;
+	el->mG->Cells[0][1].RightBorder->Width=2;
+	el->mG->MergeCells(0,1,2,2);
+	el->mG->Cells[0][3].RightBorder->Color=clWhite;
+	el->mG->MergeCells(0,3,0,4);el->mG->MergeCells(1,3,1,4);//slouèení pro rychlost
+	el->mG->Cells[1][5].LeftBorder->Color=el->mG->Cells[1][7].LeftBorder->Color=clWhite;
+	el->mG->MergeCells(0,5,0,7);el->mG->MergeCells(1,5,1,6);//slouèení pro rozteè
+	el->mG->Cells[0][8].RightBorder->Color=clWhite;
+	el->mG->MergeCells(0,8,0,10);el->mG->MergeCells(1,8,1,10);//slouèení pro mezery
+	el->mG->Cells[0][11].RightMargin = 3;
+	el->mG->Cells[0][11].Align=mGrid->RIGHT;
+	el->mG->Cells[0][11].Font->Color=clFontLeft;
+	el->mG->MergeCells(0,11,2,11);
+
+	//vykreslení horizontálního rozdìlení sekcí
+	for(unsigned int i=0;i<=el->mG->ColCount-1;i++)
 	{
 		el->mG->Cells[i][3].TopBorder->Width=2;
 		el->mG->Cells[i][5].TopBorder->Width=2;
 		el->mG->Cells[i][8].TopBorder->Width=2;
 		el->mG->Cells[i][11].TopBorder->Width=2;
-  }
+	}
 
 	el->dalsi=NULL;
 	el->predchozi=ELEMENTY;
@@ -448,7 +476,18 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 void __fastcall TForm2::FormPaint(TObject *Sender)
 {
 	ELEMENTY->mG->Show();
-	ELEMENTY->dalsi->mG->Show();
+	ELEMENTY->dalsi->mG->Show();//vykreslení tabulky, mùže být nekompletní napø. jen 3 øádky
+	if(!ELEMENTY->dalsi->mG->Rows[5].Visible)//pokud má tabulka skryté øádky, zobrazí je a znova vykreslí celou tabulku
+	{
+		ELEMENTY->dalsi->mG->VisibleRow(5,true,false);
+		ELEMENTY->dalsi->mG->VisibleRow(6,true,false);
+		ELEMENTY->dalsi->mG->VisibleRow(7,true,false);
+		ELEMENTY->dalsi->mG->VisibleRow(8,true,false);
+		ELEMENTY->dalsi->mG->VisibleRow(9,true,false);
+		ELEMENTY->dalsi->mG->VisibleRow(10,true,false);
+		ELEMENTY->dalsi->mG->VisibleRow(11,true,false);
+		ELEMENTY->dalsi->mG->Show();//znovu vykreslìní již celé tabulky
+	}
 	//ELEMENTY->dalsi->mG->Show();
 
 //				Form2->Canvas->Pen->Color=clGreen;
