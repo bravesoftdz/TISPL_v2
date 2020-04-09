@@ -13545,8 +13545,9 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 //d.v.PP.uchyt_pozice=0.380/2.0;
 
 	//d.v.generuj_VOZIKY();
-	Zoom=30;ZOOM();
-	REFRESH();
+	//Zoom=30;ZOOM();
+	//REFRESH();
+	//d.vykresli_vyrobek(Canvas,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,0);
 
 }
 //---------------------------------------------------------------------------
