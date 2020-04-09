@@ -8511,22 +8511,12 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni,bool plnit
 	if(E->eID==300 || E->eID==200)
 	{
 		E->mGrid->MergeCells(0,0,4,0);//hlavička tabulky
-		E->mGrid->Cells[0][1].Font->Color=clHeaderFont;
+		E->mGrid->Cells[0][1].Font->Color=clBlack;
 		E->mGrid->Cells[0][1].RightBorder->Width=2;
 		E->mGrid->MergeCells(0,1,2,2);
-		E->mGrid->Cells[0][3].RightBorder->Color=clWhite;
-		E->mGrid->MergeCells(0,3,0,4);E->mGrid->MergeCells(1,3,1,4);//sloučení pro rychlost
-		E->mGrid->Cells[1][5].LeftBorder->Color=E->mGrid->Cells[1][7].LeftBorder->Color=clWhite;
-		E->mGrid->MergeCells(0,5,0,7);E->mGrid->MergeCells(1,5,1,6);//sloučení pro rozteč
-		E->mGrid->Cells[0][8].RightBorder->Color=clWhite;
-		E->mGrid->MergeCells(0,8,0,10);E->mGrid->MergeCells(1,8,1,10);//sloučení pro mezery
-		E->mGrid->Cells[0][11].RightMargin = 3;
-		E->mGrid->Cells[0][11].Align=mGrid->RIGHT;
-		E->mGrid->Cells[0][11].Font->Color=clFontLeft;
-		E->mGrid->MergeCells(0,11,2,11);
 	}
 	else E->mGrid->MergeCells(0,0,1,0);//update na tomto místě působí potíže, přesunout do add element asi a do NP_input;
-  //rozdělení sekcí v tabulkách
+	//rozdělení sekcí v tabulkách
 	if(E->eID==300 || E->eID==200)
 	{
 		for(unsigned int i=0;i<=E->mGrid->ColCount-1;i++)
@@ -9109,18 +9099,18 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[2][10].Text=ls->Strings[214];//"Jigy 90°"
 			E->mGrid->Cells[0][11].Text="max WT "+cas;
 			//nastavení sloučených sloupců
-			E->mGrid->Cells[0][3].Font->Orientation=900;E->mGrid->Cells[0][3].Valign=E->mGrid->BOTTOM;
 			E->mGrid->Cells[0][3].Text=ls->Strings[452];//+" "+rychlost;//"Rychlost"
-			E->mGrid->Cells[1][3].Font->Orientation=900;E->mGrid->Cells[1][3].Valign=E->mGrid->MIDDLE;//chybně se slučuje musí být takto
 			E->mGrid->Cells[1][3].Text=rychlost;//jednotky
-			E->mGrid->Cells[0][5].Font->Orientation=900;E->mGrid->Cells[0][5].Valign=E->mGrid->BOTTOM;
+			E->mGrid->Cells[0][3].Font->Orientation=900;E->mGrid->Cells[0][3].Valign=TmGrid::MIDDLE;
+			E->mGrid->Cells[1][3].Font->Orientation=900;E->mGrid->Cells[1][3].isLink->Orientation=900;E->mGrid->Cells[1][3].isActiveLink->Orientation=900;E->mGrid->Cells[1][3].Valign=TmGrid::MIDDLE;
 			E->mGrid->Cells[0][5].Text=ls->Strings[453];//"Rozteč"
-			E->mGrid->Cells[1][5].Font->Orientation=900;E->mGrid->Cells[1][5].Valign=E->mGrid->TOP;
 			E->mGrid->Cells[1][5].Text=R;//jednotky
-			E->mGrid->Cells[0][8].Font->Orientation=900;E->mGrid->Cells[0][8].Valign=E->mGrid->BOTTOM;
+			E->mGrid->Cells[0][5].Font->Orientation=900;E->mGrid->Cells[0][5].Valign=TmGrid::MIDDLE;
+			E->mGrid->Cells[1][5].Font->Orientation=900;E->mGrid->Cells[1][5].isLink->Orientation=900;E->mGrid->Cells[1][5].isActiveLink->Orientation=900;E->mGrid->Cells[1][5].Valign=TmGrid::MIDDLE;
 			E->mGrid->Cells[0][8].Text=ls->Strings[215];//"Mezera"
-			E->mGrid->Cells[1][8].Font->Orientation=900;E->mGrid->Cells[1][8].Valign=E->mGrid->TOP;//musí být top aby se vůbec zobrazil
 			E->mGrid->Cells[1][8].Text=Rz;//jednotky
+			E->mGrid->Cells[0][8].Font->Orientation=900;E->mGrid->Cells[0][8].Valign=TmGrid::MIDDLE;
+			E->mGrid->Cells[1][8].Font->Orientation=900;E->mGrid->Cells[1][8].isLink->Orientation=900;E->mGrid->Cells[1][8].isActiveLink->Orientation=900;E->mGrid->Cells[1][8].Valign=TmGrid::MIDDLE;
 			//nastavování hodnot druhého sloupce
 			E->mGrid->Cells[3][2].Type=E->mGrid->COMBO;
 			if(E->pohon!=NULL)
@@ -9212,6 +9202,17 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->exBUTTONVisible=true;
 			E->mGrid->exBUTTON->ShowHint=true;
 			E->mGrid->exBUTTON->Hint=ls->Strings[231];//"Rozšířené položky";
+			//merge + design hranic, vyjímečný případ, musí být před skrytím řádků !!!!!!!!!!!!!
+	  	E->mGrid->Cells[0][3].RightBorder->Color=clWhite;
+	  	E->mGrid->MergeCells(0,3,0,4);E->mGrid->MergeCells(1,3,1,4);//sloučení pro rychlost
+	  	E->mGrid->Cells[1][5].LeftBorder->Color=E->mGrid->Cells[1][7].LeftBorder->Color=clWhite;
+	  	E->mGrid->MergeCells(0,5,0,7);E->mGrid->MergeCells(1,5,1,6);//sloučení pro rozteč
+	  	E->mGrid->Cells[0][8].RightBorder->Color=clWhite;
+	  	E->mGrid->MergeCells(0,8,0,10);E->mGrid->MergeCells(1,8,1,10);//sloučení pro mezery
+	  	E->mGrid->Cells[0][11].RightMargin = 3;
+	  	E->mGrid->Cells[0][11].Align=mGrid->RIGHT;
+			E->mGrid->Cells[0][11].Font->Color=(TColor)RGB(128,128,128);
+	  	E->mGrid->MergeCells(0,11,2,11);
 			//skrytí řádků
 			E->mGrid->VisibleRow(5,false,false);
 			E->mGrid->VisibleRow(6,false,false);
@@ -9586,18 +9587,18 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[2][10].Text=ls->Strings[214];//"Jigy 90°"
 			E->mGrid->Cells[0][11].Text="max WT "+cas;
 			//nastavení sloučených sloupců
-			E->mGrid->Cells[0][3].Font->Orientation=900;E->mGrid->Cells[0][3].Valign=E->mGrid->BOTTOM;
 			E->mGrid->Cells[0][3].Text=ls->Strings[452];//+" "+rychlost;//"Rychlost"
-			E->mGrid->Cells[1][3].Font->Orientation=900;E->mGrid->Cells[1][3].Valign=E->mGrid->MIDDLE;//chybně se slučuje musí být takto
 			E->mGrid->Cells[1][3].Text=rychlost;//jednotky
-			E->mGrid->Cells[0][5].Font->Orientation=900;E->mGrid->Cells[0][5].Valign=E->mGrid->BOTTOM;
+			E->mGrid->Cells[0][3].Font->Orientation=900;E->mGrid->Cells[0][3].Valign=TmGrid::MIDDLE;
+			E->mGrid->Cells[1][3].Font->Orientation=900;E->mGrid->Cells[1][3].isLink->Orientation=900;E->mGrid->Cells[1][3].isActiveLink->Orientation=900;E->mGrid->Cells[1][3].Valign=TmGrid::MIDDLE;
 			E->mGrid->Cells[0][5].Text=ls->Strings[453];//"Rozteč"
-			E->mGrid->Cells[1][5].Font->Orientation=900;E->mGrid->Cells[1][5].Valign=E->mGrid->TOP;
 			E->mGrid->Cells[1][5].Text=R;//jednotky
-			E->mGrid->Cells[0][8].Font->Orientation=900;E->mGrid->Cells[0][8].Valign=E->mGrid->BOTTOM;
+			E->mGrid->Cells[0][5].Font->Orientation=900;E->mGrid->Cells[0][5].Valign=TmGrid::MIDDLE;
+			E->mGrid->Cells[1][5].Font->Orientation=900;E->mGrid->Cells[1][5].isLink->Orientation=900;E->mGrid->Cells[1][5].isActiveLink->Orientation=900;E->mGrid->Cells[1][5].Valign=TmGrid::MIDDLE;
 			E->mGrid->Cells[0][8].Text=ls->Strings[215];//"Mezera"
-			E->mGrid->Cells[1][8].Font->Orientation=900;E->mGrid->Cells[1][8].Valign=E->mGrid->TOP;//musí být top aby se vůbec zobrazil
 			E->mGrid->Cells[1][8].Text=Rz;//jednotky
+			E->mGrid->Cells[0][8].Font->Orientation=900;E->mGrid->Cells[0][8].Valign=TmGrid::MIDDLE;
+			E->mGrid->Cells[1][8].Font->Orientation=900;E->mGrid->Cells[1][8].isLink->Orientation=900;E->mGrid->Cells[1][8].isActiveLink->Orientation=900;E->mGrid->Cells[1][8].Valign=TmGrid::MIDDLE;
 			//nastavování hodnot druhého sloupce
 			E->mGrid->Cells[3][2].Type=E->mGrid->COMBO;
 			if(E->pohon!=NULL)
@@ -9681,8 +9682,6 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[druhy][11].Text=outPT(E->WT);
 			//nastavení šířek
 			E->mGrid->SetColumnAutoFit(-4);
-//			if(language==EN)E->mGrid->Columns[0].Width=250;
-//			else E->mGrid->Columns[0].Width=210;
 			E->mGrid->Columns[0].Width=E->mGrid->Columns[1].Width=E->mGrid->Rows[0].Height;
 			E->mGrid->Columns[2].Width=90;
 			E->mGrid->Columns[3].Width=145;
@@ -9694,6 +9693,17 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			//hinty
 			E->mGrid->Cells[2][11].Hint=ls->Strings[229];//"maximální možná doba čekání na palec";
 			E->mGrid->Cells[2][11].ShowHint=true;
+			//merge + design hranic, vyjímečný případ, musí být před skrytím řádků !!!!!!!!!!!!!
+	  	E->mGrid->Cells[0][3].RightBorder->Color=clWhite;
+	  	E->mGrid->MergeCells(0,3,0,4);E->mGrid->MergeCells(1,3,1,4);//sloučení pro rychlost
+	  	E->mGrid->Cells[1][5].LeftBorder->Color=E->mGrid->Cells[1][7].LeftBorder->Color=clWhite;
+	  	E->mGrid->MergeCells(0,5,0,7);E->mGrid->MergeCells(1,5,1,6);//sloučení pro rozteč
+	  	E->mGrid->Cells[0][8].RightBorder->Color=clWhite;
+	  	E->mGrid->MergeCells(0,8,0,10);E->mGrid->MergeCells(1,8,1,10);//sloučení pro mezery
+	  	E->mGrid->Cells[0][11].RightMargin = 3;
+	  	E->mGrid->Cells[0][11].Align=mGrid->RIGHT;
+			E->mGrid->Cells[0][11].Font->Color=(TColor)RGB(128,128,128);
+	  	E->mGrid->MergeCells(0,11,2,11);
 			//obnova stavu zobrazení tabulky
 			switch(stav)
 			{
@@ -9702,13 +9712,13 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 				{
 					E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
 					E->mGrid->VisibleRow(5,false,false);
-	     		E->mGrid->VisibleRow(6,false,false);
-	     		E->mGrid->VisibleRow(7,false,false);
-	     		E->mGrid->VisibleRow(8,false,false);
-	     		E->mGrid->VisibleRow(9,false,false);
-	     		E->mGrid->VisibleRow(10,false,false);
-	     		E->mGrid->VisibleRow(11,false,false);
-        }
+					E->mGrid->VisibleRow(6,false,false);
+					E->mGrid->VisibleRow(7,false,false);
+					E->mGrid->VisibleRow(8,false,false);
+					E->mGrid->VisibleRow(9,false,false);
+					E->mGrid->VisibleRow(10,false,false);
+					E->mGrid->VisibleRow(11,false,false);
+				}
 				break;
 				//tabulka byl před posunem rozbalena
 				case 1:break;
@@ -13487,7 +13497,11 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Memo(Zoom);
+	Form2->ShowModal();
+//  if (aRDunit==SEC) {aRDunit=MIN;}
+//		else {aRDunit=SEC;}
+//	writeINI("nastaveni_form_parametry","RDt", aRDunit);
+//	redesign_element();
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
