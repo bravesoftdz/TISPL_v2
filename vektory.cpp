@@ -5318,7 +5318,7 @@ void Cvektory::generuj_VOZIKY()
 //podpůrná metoda metody výše uvedené, řeší vždy jen daný geometrický segment daného elementu
 TPointDbool Cvektory::generuj_voziky_segementu(TElement *E,unsigned int pocet_voziku,double umisteniCas,double akt_rotace_jigu,bool rotacni_zbytek)
 {
-	if(E->pohon!=NULL)//pokud je element resp. jeho geometrie relevantní k zobrazení vozíků, bez pohonu to nejde
+	if(E->pohon!=NULL && E->pohon->aRD>0)//pokud je element resp. jeho geometrie relevantní k zobrazení vozíků, bez pohonu či uvedené rychlosti to nejde
 	{
 		double umisteni=umisteniCas*E->pohon->aRD;//umístění vozíku z prostorového hlediska, přepočet z časoveho
 		double Rz=m.Rz(E->pohon->aRD);//stanovený rozestup dle RD pohonu
@@ -6149,6 +6149,7 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 					{
 						if(E->data.RT.y<0){vloz_zpravu(X,Y,-1,406,E);pocet_erroru++;}
 						if(E->data.RT.y==0){vloz_zpravu(X,Y,1,407,E);pocet_warningu++;}
+						//dodělat pokud RT==0 a aRD==0 vypsat, že není zadaná platná rychlost
 					}
 				}
 				////////////Pozor, překrytí JIGů! - musí být umístěno na konci (popř. na začátku)
