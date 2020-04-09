@@ -351,6 +351,10 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 	el->mG->DefaultCell.Font->Name=F->aFont->Name;
 	el->mG->DefaultCell.Font->Size=F->aFont->Size;
 	el->mG->DefaultCell.Font->Color=clFontLeft;
+	el->mG->DefaultCell.isLink->Name=F->aFont->Name;
+	el->mG->DefaultCell.isLink->Size=F->aFont->Size;
+	el->mG->DefaultCell.isActiveLink->Name=F->aFont->Name;
+	el->mG->DefaultCell.isActiveLink->Size=F->aFont->Size;
 	//nastavení popiskù
 	el->mG->Border.Width=2;
 	el->mG->Cells[0][0].BottomBorder->Width=2;
@@ -719,6 +723,7 @@ void __fastcall TForm2::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 {
 	 //Memo1->Lines->Add(AnsiString(X)+" "+AnsiString(Y));
 	 ELEMENTY->mG->MouseMove(X,Y);//pro Hint a kurzor odkazu, mousemove daného formu sice mono odchytávát pøímo v mGridu, ale toto nutnost pro rozlišení tabulek
+	 ELEMENTY->dalsi->mG->MouseMove(X,Y);     FormPaint(this);
 	 //ELEMENTY->mG->CheckLink(X,Y,true);//mimo unit2 nepouívat poslední parametr true, není-li to nutné
 
 	 //if(ELEMENTY->mG->CheckLink(X,Y)==TPoint(-2,-2))Screen->Cursor=crHandPoint;else Screen->Cursor=crDefault; //funkcionalita presunuta pøímo do mGridu
