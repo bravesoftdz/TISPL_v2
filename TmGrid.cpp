@@ -733,34 +733,50 @@ TRect TmGrid::DrawTextLink(TCanvas *C,unsigned long left,unsigned long top,AnsiS
 	TRect RET;
 	short Zoom=1;if(AntiAliasing_text)Zoom=3;
 	unsigned int Pos=Text.Pos("<a>");//pozice html tagu
-	if(Pos>0)//parsování HTML
+	if(Pos>0)//parsování HTML, pouze pokud má smysl, jinak se jedná o běžný text a vypíše se rovnou
 	{
-		//parsování
+		////parsování
 		AnsiString T1=ms.TrimRightFrom(Text,"<a>");
 		AnsiString Link=ms.EP(Text,"<a>","</a>");
 		AnsiString T2=ms.TrimLeftFromText(Text,"</a>");
-		//text před odkazem
+
+		////výpis textu před odkazem
 		C->Font=FontText;
 		C->Font->Size*=Zoom;
-		C->TextOut(left,top,T1);
-		//odkaz
+		C->TextOut(left,top,T1);//0,90
+
+		////výpis odkazu včetně zajištění citelné oblasti
+		//nastavení fontu
 		C->Font=FontLink;
+		C->Font->Orientation=FontText->Orientation;//přebrání orientace hlavní textu, není umožněno odlišná rotace linku od hlavního textu, protože by se muselo ještě dořešit níže pozicování, které ovšem není na tyto situace připravené
 		C->Font->Size*=Zoom;
-		short w=C->TextWidth(T1);
-		RET.left=m.round(Left+left/Zoom+w/Zoom);//kvůli citelné oblasti pro link dané buňky
-		RET.top=m.round(Top+top/Zoom);//kvůli citelné oblasti pro link dané buňky
-		RET.bottom=m.round(Top+top/Zoom+C->TextHeight(Link)/Zoom);//kvůli citelné oblasti pro link dané buňky
-		RET.right=m.round(Left+left/Zoom+(w+C->TextWidth(Link))/Zoom);//kvůli citelné oblasti pro link dané buňky
-		if(RET.PtInRect(TPoint(X,Y))){C->Font=FontActiveLink;C->Font->Size*=Zoom;}//aktivní odkaz (je přes něj myš)
-//Form2->Memo1->Lines->Add(AnsiString(X)+";"+AnsiString(Y));
-		C->TextOut(left+w,top,Link);
-		//text za odkazem
-		w+=C->TextWidth(Link);
+		//zjištění rozměrů textu
+		short wT1=C->TextWidth(T1),wLink=C->TextWidth(Link),hLink=C->TextHeight(Link);
+		//rotace textu
+		short x=0,y=0,z=0;
+		switch(FontText->Orientation)
+		{
+			case 0:  x=1;y=0;z=0;break;
+			case 900: x=0;y=-1;z=0;break;
+			case 2700:x=0;y=1;z=1;break;
+		}
+		//zjištění citelné oblasti linku
+		RET.left=m.round(Left+(left+wT1*x-hLink*z)/Zoom);
+		RET.top=m.round(Top+(top+wT1*y+(wLink)*(y-z))/Zoom);
+		RET.right=m.round(Left+(left+(wT1+wLink)*x-hLink*(y-z))/Zoom);
+		RET.bottom=m.round(Top+(top+hLink*x+wT1*y+wLink*z)/Zoom);
+		//testování zda se v oblasti nenachazí zadané souřadnice např. myši
+		if(RET.PtInRect(TPoint(X,Y))){C->Font=FontActiveLink;C->Font->Size*=Zoom;C->Font->Orientation=FontText->Orientation;}//aktivní odkaz (je přes něj myš), pouze přebírá orientaci hlavní textu
+		C->Rectangle(TRect(left+wT1*x-hLink*z,top+wT1*y+(wLink)*(y-z),left+(wT1+wLink)*x-hLink*(y-z),top+hLink*x+wT1*y+wLink*z));//nemazat!!!//testovací vykreslení citelné oblasti, zde rozbor pro případný update: //C->Rectangle(TRect(left+wT1,	top,					left+wT1+wLink,		top+hLink));//testovací vykreslení citelné oblasti 0//C->Rectangle(TRect(left,			top-wT1-wLink,left+hLink,				top-wT1));//testovací vykreslení citelné oblasti 90//C->Rectangle(TRect(left-hLink,top+wT1,			left,							top+wT1+wLink));//testovací vykreslení citelné oblasti 270
+		//samotný výpis odkazu
+		C->TextOut(left+wT1*x,top+wT1*y,Link);
+
+		////výpis textu za odkazem
 		C->Font=FontText;
 		C->Font->Size*=Zoom;
-		C->TextOut(left+w,top,T2);
+		C->TextOut(left+(wT1+wLink)*x,top+(wT1+wLink)*y,T2);
 	}
-	else //bez odkazu
+	else//přímý výpis textu, pokud neobsahuje odkaz
 	{
 		C->TextOut(left,top,Text);
 		RET=TRect(-1,-1,-1,-1);
