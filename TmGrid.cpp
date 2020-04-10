@@ -767,7 +767,7 @@ TRect TmGrid::DrawTextLink(TCanvas *C,unsigned long left,unsigned long top,AnsiS
 		RET.bottom=m.round(Top+(top+hLink*x+wT1*y+wLink*z)/Zoom);
 		//testování zda se v oblasti nenachazí zadané souřadnice např. myši
 		if(RET.PtInRect(TPoint(X,Y))){C->Font=FontActiveLink;C->Font->Size*=Zoom;C->Font->Orientation=FontText->Orientation;}//aktivní odkaz (je přes něj myš), pouze přebírá orientaci hlavní textu
-		C->Rectangle(TRect(left+wT1*x-hLink*z,top+wT1*y+(wLink)*(y-z),left+(wT1+wLink)*x-hLink*(y-z),top+hLink*x+wT1*y+wLink*z));//nemazat!!!//testovací vykreslení citelné oblasti, zde rozbor pro případný update: //C->Rectangle(TRect(left+wT1,	top,					left+wT1+wLink,		top+hLink));//testovací vykreslení citelné oblasti 0//C->Rectangle(TRect(left,			top-wT1-wLink,left+hLink,				top-wT1));//testovací vykreslení citelné oblasti 90//C->Rectangle(TRect(left-hLink,top+wT1,			left,							top+wT1+wLink));//testovací vykreslení citelné oblasti 270
+		//nemazat!!!: testovací vykreslení citelné oblastiC->Rectangle(TRect(left+wT1*x-hLink*z,top+wT1*y+(wLink)*(y-z),left+(wT1+wLink)*x-hLink*(y-z),top+hLink*x+wT1*y+wLink*z))//zde rozbor pro případný update: //C->Rectangle(TRect(left+wT1,	top,					left+wT1+wLink,		top+hLink));//testovací vykreslení citelné oblasti 0//C->Rectangle(TRect(left,			top-wT1-wLink,left+hLink,				top-wT1));//testovací vykreslení citelné oblasti 90//C->Rectangle(TRect(left-hLink,top+wT1,			left,							top+wT1+wLink));//testovací vykreslení citelné oblasti 270
 		//samotný výpis odkazu
 		C->TextOut(left+wT1*x,top+wT1*y,Link);
 
