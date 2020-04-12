@@ -2939,7 +2939,7 @@ void Cvykresli::vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dJ
 	vykresli_jig(canv,C.x,C.y,dJ,sJ,orientaceP,rotaceJ,clJig);
 
 	////text - ID vozíku není vypisováno, pokud by se začlo používat, tak pozor u vykreslení pozic by bylo potřeba nastavit separátně písmo u chybových výpisů
-	if(ID>0)canv->TextOutW(m.L2Px(X),m.L2Py(Y),ID);
+	if(ID>0){canv->Font->Size=m.round(2*F->Zoom);canv->Font->Color=clJig;SetBkMode(canv->Handle,TRANSPARENT/*OPAQUE*/);TextFraming(canv,m.L2Px(X),m.L2Py(Y),ID);}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_jig(TCanvas *canv,double X,double Y,double dJ,double sJ,double orientaceP,double rotaceJ,TColor clJig,float Width)
@@ -2950,9 +2950,61 @@ void Cvykresli::vykresli_jig(TCanvas *canv,double X,double Y,double dJ,double sJ
 	////jig
 	if(dJ!=0 && sJ!=0)//vykreslí, pouze pokud jsou oba parametry nenulové
 	{
-		if(Width>0)set_pen2(canv,clJig,m.round(Width/3.0*F->Zoom),PS_ENDCAP_ROUND,PS_JOIN_ROUND,true);
-		obdelnik(canv,X-dJ/2.0,Y+sJ/2.0,X+dJ/2.0,Y-sJ/2.0,m.o2r(orientaceP)+rotaceJ);
+		if(Width>0 && F->Zoom<=4*3)set_pen2(canv,clJig,m.round(Width/3.0*F->Zoom),PS_ENDCAP_ROUND,PS_JOIN_ROUND,true);//pro pozice či zóny se nevykreslují
+		if(Width==0 || F->Zoom<=4*3)obdelnik(canv,X-dJ/2.0,Y+sJ/2.0,X+dJ/2.0,Y-sJ/2.0,m.o2r(orientaceP)+rotaceJ);//rám, pro pozice či zóny nebo když není detailní zoom
+		if(Width>0 && F->Zoom>4*3)vykresli_vyrobky(canv,X,Y,dJ,sJ,orientaceP,rotaceJ,clJig,Width);//při detailním zoomu vykreslí i výrobky
 	}
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::vykresli_vyrobky(TCanvas *canv,double X,double Y,double dJ,double sJ,double orientaceP,double rotaceJ,TColor clJig,float Width)
+{
+	//vykreslení jigu
+	set_pen2(canv,clChassis,m.round(Width/3.0*F->Zoom),PS_ENDCAP_FLAT,PS_JOIN_MITER,true);
+	TPointD P0=m.rotace(v.PP.delka_jig/2.0,0,m.o2r(orientaceP-90)+rotaceJ);
+	line(canv,m.L2Px(X+P0.x),m.L2Py(Y+P0.y),m.L2Px(X-P0.x),m.L2Py(Y-P0.y));//obdelnik(canv,X-dJ/2.0,Y,X+dJ/2.0,Y,m.o2r(orientaceP)+rotaceJ);
+
+	//vykreslení ochranné zóny okolo jigu
+	DWORD pole[]={m.round(5/3.0*F->Zoom),m.round(2.5/3.0*F->Zoom),m.round(1/3.0*F->Zoom),m.round(2.5/3.0*F->Zoom)};//definice uživatelského pera s vlastní definovanou linii
+	set_pen2(canv,clRed,2,PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
+	obdelnik(canv,X-dJ/2.0,Y+sJ/2.0,X+dJ/2.0,Y-sJ/2.0,m.o2r(orientaceP)+rotaceJ);
+
+	//vykreslení výrobků
+	double Z=3.5;//faktor zvětšení
+	double H=0.0834*Z;//výška výrobku (přibližná-naměřená měřidlem)
+	double W=0.08*Z;//šířka výrobku (přibližná-naměřená měřidlem 0.07753, ale raději včetně rezervy 0.8 kvůli krajům)
+	double M=-W/2/3;//mezera mezi výrobky,poměrově vůči výrobku
+	double iKrok=(W+M);//výrobek + mezera
+	double iMax=(v.PP.delka_jig-W)/iKrok;//počet úseků
+	TPointD P1=m.rotace(v.PP.delka_jig/2.0+M,0,m.o2r(orientaceP-90)+rotaceJ);//posun od vertikálního středu nalevo - kvůli excentritě
+	TPointD P2=m.rotace(v.PP.delka_jig/2.0-M,0,m.o2r(orientaceP-90)+rotaceJ);//posun od vertikálního středu napravo - kvůli excentritě
+	TPointD O=m.rotace(-H/2.0,0,m.o2r(orientaceP)+rotaceJ);//odsazení od horizontálního středu, polovina výšky výrobku, zajistí vycentrování
+	double xKrok=(-P1.x-P2.x)/iMax;//krok rozvěšení výrobků na X ose
+	double yKrok=(-P1.y-P2.y)/iMax;//krok rozvěšení výrobků na Y ose
+	for(unsigned int i=0;i<=floor(iMax);i++)
+	{
+		vykresli_vyrobek(canv,X+P1.x+O.x+xKrok*i,Y+P1.y+O.y+yKrok*i,Z,m.o2r(orientaceP)+rotaceJ,clJig/*TColor RGB(3,192,250)*/,-0.02);//jedna řada
+	}
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::vykresli_vyrobek(TCanvas *canv,double X,double Y,double Z,double rotace,TColor color,double prohloubeni)//-prohloubení,+vypouknutí vykreslovaného zrcátka
+{
+	//definice tvaru
+	TPointD *PL=new TPointD[7];
+	PL[0].x=0.0962*Z;PL[0].y=-0.0508*Z;PL[1].x=0.228*Z;PL[1].y=-0.0088*Z;PL[2].x=0.1864*Z;PL[2].y=-0.1026*Z;PL[3].x=0.0966*Z;PL[3].y=-0.1176*Z;
+	PL[4].x=(PL[0].x+PL[3].x)/2.0-prohloubeni*Z;PL[4].y=(PL[0].y+PL[3].y)/2.0;
+	PL[5].x=PL[4].x;PL[5].y=PL[4].y;PL[6].x=PL[0].x;PL[6].y=PL[0].y;
+
+	//vykreslení
+	set_pen(canv,color,2*Z,PS_ENDCAP_FLAT);
+	canv->Brush->Style=bsSolid;
+	canv->Brush->Color=color;
+	BeginPath(canv->Handle);
+	bezier(canv,PL,m.L2Px(X),m.L2Py(Y),PL[0].x,PL[0].y,rotace-90,6);//pozor, použitý polygon přetočí, tzn. při dalším použití polygonu nutno docílit stejného +180°, např. při použití obrysu
+	EndPath(canv->Handle);
+	FillPath(canv->Handle);
+
+	//smazání nepotřebného dynamického objekut
+	delete[]PL;PL=NULL;
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //zajistí vykreslení řetězz, XY -umístění L začátek (střed dopravníku) objektu v metrech, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu, za zmínění stojí lokální proměnná této metody KR, což je kalibrace řetězu vůči podvozku např. 0 - střed, -DP/2 - začátek, DP/2 - konec, či libovolný v m od začátku podvozku
