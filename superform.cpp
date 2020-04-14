@@ -204,7 +204,7 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
   // mazání mgridù zakázek, dùležité, kopírování zakázek nesmaže mGridy ale odstraní zakázky temp ukazatel
 	if(akt_zakazka_n==0 && F->d.v.ZAKAZKY_temp!=NULL && F->d.v.ZAKAZKY_temp->predchozi!=0)
 	{
-		F->MB("Nelze uložit zakázky, nebyla zvolena aktuální zakázka.");
+		F->MB(F->ls->Strings[456]);//"Nelze uložit zakázky, nebyla zvolena aktuální zakázka."
   }
 	else
 	{

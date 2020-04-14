@@ -490,7 +490,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 						break;
 					}
           //zmìna rozteèe palce
-					case 5:
+					case 6:
 					{
             input_state=R;
 						//naètení R z editu
@@ -511,7 +511,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 						break;
 					}
 					//zmìna násobku rozteèe
-					case 6:
+					case 7:
 					{
             input_state=Rx;
 			    	//naètení Rx z editu
@@ -573,7 +573,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					if(F->scGPComboBox_prepinacKot->ItemIndex==1)F->scGPComboBox_prepinacKot->ItemIndex=0;
 				}
 			}break;
-			case 3://rozteè, R
+			case 4://rozteè, R
 			{
 				input_state=R;
 				//naètení R z editu
@@ -583,7 +583,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				//volání metody pro pøepoèty všech souvisejících bunìk
 				zmena_R();
 			}break;
-			case 4://Rx
+			case 5://Rx
 			{
 				input_state=Rx;
 				//naètení Rx z editu
@@ -633,7 +633,7 @@ void TFormX::OnKeyPress(long Tag,long ID,unsigned long Col,unsigned long Row,Sys
 //			F->REFRESH(true);
 //		}
 //	}
-	if((Row==4 && ID==9999) || (ID!=9999 && Col>=3 && Row==6))//slouží pro nepovolení zapsání desetiné èárky do editu Rx
+	if((Row==5 && ID==9999) || (ID!=9999 && Col>=3 && Row==7))//slouží pro nepovolení zapsání desetiné èárky do editu Rx
 	{
 		if(AnsiString(Key)==F->ms.get_locale_decimal())
 		{
@@ -908,9 +908,9 @@ void TFormX::aktualizace_tab_pohonu()
   	{
 			if(input_state!=aRD && posledni_E==NULL || posledni_E!=NULL)F->PmG->Cells[3][1].Text=F->m.round2double(F->outaRD(F->OBJEKT_akt->pohon->aRD),3);
 			F->PmG->Cells[3][2].Text=AnsiString(F->m.round2double(F->outaRD(F->OBJEKT_akt->pohon->rychlost_od),3))+" - "+AnsiString(F->m.round2double(F->outaRD(F->OBJEKT_akt->pohon->rychlost_do),3));
-			if(input_state!=R && posledni_E==NULL || posledni_E!=NULL)F->PmG->Cells[3][3].Text=F->m.round2double(F->outR(F->OBJEKT_akt->pohon->roztec),3);
-			if(input_state!=Rx && posledni_E==NULL || posledni_E!=NULL)F->PmG->Cells[3][4].Text=F->m.round2double(F->OBJEKT_akt->pohon->Rx,3);
-			F->PmG->Cells[3][5].Text=F->m.round2double(F->outR(F->OBJEKT_akt->pohon->Rz),3);
+			if(input_state!=R && posledni_E==NULL || posledni_E!=NULL)F->PmG->Cells[3][4].Text=F->m.round2double(F->outR(F->OBJEKT_akt->pohon->roztec),3);
+			if(input_state!=Rx && posledni_E==NULL || posledni_E!=NULL)F->PmG->Cells[3][5].Text=F->m.round2double(F->OBJEKT_akt->pohon->Rx,3);
+			F->PmG->Cells[3][3].Text=F->m.round2double(F->outR(F->OBJEKT_akt->pohon->Rz),3);
 			F->PmG->Cells[3][6].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->OBJEKT_akt->pohon->Rz,0)),3);
 			F->PmG->Cells[3][7].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->OBJEKT_akt->pohon->Rz,1)),3);
 			F->PmG->Cells[3][8].Text=F->m.round2double(F->outRz(F->m.mezera(90,F->OBJEKT_akt->pohon->Rz,1)),3);
@@ -938,24 +938,24 @@ void TFormX::korelace_tab_pohonu(int Row)
   	{
   		case 1: //zmena aRD
 			{
-				F->PmG->Cells[3][4].Highlight=true; //rx
-				F->PmG->Cells[3][5].Highlight=true; //roztec jigù
+				F->PmG->Cells[3][5].Highlight=true; //rx
+				F->PmG->Cells[3][3].Highlight=true; //roztec jigù
 				F->PmG->Cells[3][6].Highlight=true; //mezera mezi podvozky
 				F->PmG->Cells[3][7].Highlight=true; //mezera mezi jigy
 				F->PmG->Cells[3][8].Highlight=true;
 			}break;
-			case 3: //zmena rozteèe R
+			case 4: //zmena rozteèe R
 			{
 				F->PmG->Cells[3][1].Highlight=true; //aRD
-				F->PmG->Cells[3][5].Highlight=true; //roztec jigù
+				F->PmG->Cells[3][3].Highlight=true; //roztec jigù
 				F->PmG->Cells[3][6].Highlight=true; //mezera mezi podvozky
 				F->PmG->Cells[3][7].Highlight=true; //mezera mezi jigy
 				F->PmG->Cells[3][8].Highlight=true;
   		}break;
-			case 4: //zmìna Rx
+			case 5: //zmìna Rx
 			{
 				F->PmG->Cells[3][1].Highlight=true; //aRD
-				F->PmG->Cells[3][5].Highlight=true; //roztec jigù
+				F->PmG->Cells[3][3].Highlight=true; //roztec jigù
 				F->PmG->Cells[3][6].Highlight=true; //mezera mezi podvozky
 				F->PmG->Cells[3][7].Highlight=true; //mezera mezi jigy
 				F->PmG->Cells[3][8].Highlight=true;
@@ -1045,8 +1045,8 @@ void TFormX::korelace_tab_pohonu_elementy(Cvektory::TElement *mimo_element)
 					else Col=4;
 				}
 				E->mGrid->Cells[Col][3].Highlight=true;
-				E->mGrid->Cells[Col][6].Highlight=true;
 				E->mGrid->Cells[Col][7].Highlight=true;
+				E->mGrid->Cells[Col][5].Highlight=true;
 				E->mGrid->Cells[Col][8].Highlight=true;
 				E->mGrid->Cells[Col][9].Highlight=true;
 				E->mGrid->Cells[Col][10].Highlight=true;
@@ -1105,17 +1105,17 @@ void TFormX::korelace_v_elementech(long ID,long Col,long Row)
 		{
 			if(Row==3)
 			{
-				E->mGrid->Cells[Col][6].Highlight=true;
 				E->mGrid->Cells[Col][7].Highlight=true;
+				E->mGrid->Cells[Col][5].Highlight=true;
 				E->mGrid->Cells[Col][8].Highlight=true;
 				E->mGrid->Cells[Col][9].Highlight=true;
 				E->mGrid->Cells[Col][10].Highlight=true;
 				korelace_tab_pohonu_elementy(E);//oznaèení v ostatních tabulkách
 			}
-			if(Row==5 || Row==6)
+			if(Row==6 || Row==7)
 			{
 				E->mGrid->Cells[Col][3].Highlight=true;
-				E->mGrid->Cells[Col][7].Highlight=true;
+				E->mGrid->Cells[Col][5].Highlight=true;
 				E->mGrid->Cells[Col][8].Highlight=true;
 				E->mGrid->Cells[Col][9].Highlight=true;
 				E->mGrid->Cells[Col][10].Highlight=true;
@@ -1127,6 +1127,7 @@ void TFormX::korelace_v_elementech(long ID,long Col,long Row)
 	E->mGrid->Refresh();
 	E=NULL; delete E;
 }
+//---------------------------------------------------------------------------
 //odstraní highlight na všech tabulkách
 void TFormX::odstranit_korelaci(bool predat_focus)
 {
@@ -1455,9 +1456,9 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
 		{
 			if(input_state!=aRD || input_state==aRD && E!=posledni_E)E->mGrid->Cells[prvni][3].Text=F->m.round2double(F->outaRD(E->pohon->aRD),3);
   		E->mGrid->Cells[prvni][4].Text=AnsiString(F->m.round2double(F->outaRD(E->pohon->rychlost_od),3))+" - "+AnsiString(F->m.round2double(F->outaRD(E->pohon->rychlost_do),3));
-  		if(input_state!=R || input_state==R && E!=posledni_E)E->mGrid->Cells[prvni][5].Text=F->m.round2double(F->outR(E->pohon->roztec),3);
-  		if(input_state!=Rx || input_state==Rx && E!=posledni_E)E->mGrid->Cells[prvni][6].Text=F->m.round2double(E->pohon->Rx,3);
-			E->mGrid->Cells[prvni][7].Text=F->m.round2double(F->outR(E->pohon->Rz),3);
+			if(input_state!=R || input_state==R && E!=posledni_E)E->mGrid->Cells[prvni][6].Text=F->m.round2double(F->outR(E->pohon->roztec),3);
+			if(input_state!=Rx || input_state==Rx && E!=posledni_E)E->mGrid->Cells[prvni][7].Text=F->m.round2double(E->pohon->Rx,3);
+			E->mGrid->Cells[prvni][5].Text=F->m.round2double(F->outR(E->pohon->Rz),3);
   		E->mGrid->Cells[prvni][8].Text=F->m.round2double(F->outRz(F->m.mezera(0,E->pohon->Rz,0)),3);
   		E->mGrid->Cells[prvni][9].Text=F->m.round2double(F->outRz(F->m.mezera(0,E->pohon->Rz,1)),3);
   		E->mGrid->Cells[prvni][10].Text=F->m.round2double(F->outRz(F->m.mezera(90,E->pohon->Rz,1)),3);
@@ -1479,9 +1480,9 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
 			{
 				if(input_state!=aRD || input_state==aRD && E!=posledni_E)E->mGrid->Cells[druhy][3].Text=F->m.round2double(F->outaRD(E->dalsi2->pohon->aRD),3);
     		E->mGrid->Cells[druhy][4].Text=AnsiString(F->m.round2double(F->outaRD(E->dalsi2->pohon->rychlost_od),3))+" - "+AnsiString(F->m.round2double(F->outaRD(E->dalsi2->pohon->rychlost_do),3));
-  			if(input_state!=R || input_state==R && E!=posledni_E)E->mGrid->Cells[druhy][5].Text=F->m.round2double(F->outR(E->dalsi2->pohon->roztec),3);
-  			if(input_state!=Rx || input_state==Rx && E!=posledni_E)E->mGrid->Cells[druhy][6].Text=F->m.round2double(E->dalsi2->pohon->Rx,3);
-				E->mGrid->Cells[druhy][7].Text=F->m.round2double(F->outR(E->dalsi2->pohon->Rz),3);
+				if(input_state!=R || input_state==R && E!=posledni_E)E->mGrid->Cells[druhy][6].Text=F->m.round2double(F->outR(E->dalsi2->pohon->roztec),3);
+				if(input_state!=Rx || input_state==Rx && E!=posledni_E)E->mGrid->Cells[druhy][7].Text=F->m.round2double(E->dalsi2->pohon->Rx,3);
+				E->mGrid->Cells[druhy][5].Text=F->m.round2double(F->outR(E->dalsi2->pohon->Rz),3);
   			E->mGrid->Cells[druhy][8].Text=F->m.round2double(F->outRz(F->m.mezera(0,E->dalsi2->pohon->Rz,0)),3);
     		E->mGrid->Cells[druhy][9].Text=F->m.round2double(F->outRz(F->m.mezera(0,E->dalsi2->pohon->Rz,1)),3);
   			E->mGrid->Cells[druhy][10].Text=F->m.round2double(F->outRz(F->m.mezera(90,E->dalsi2->pohon->Rz,1)),3);
@@ -1507,9 +1508,9 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
 			{
 				if(input_state!=aRD || input_state==aRD && E!=posledni_E)E->mGrid->Cells[druhy][3].Text=F->m.round2double(F->outaRD(e_pom->pohon->aRD),3);
   			E->mGrid->Cells[druhy][4].Text=AnsiString(F->m.round2double(F->outaRD(e_pom->pohon->rychlost_od),3))+" - "+AnsiString(F->m.round2double(F->outaRD(e_pom->pohon->rychlost_do),3));
-  			if(input_state!=R || input_state==R && E!=posledni_E)E->mGrid->Cells[druhy][5].Text=F->m.round2double(F->outR(e_pom->pohon->roztec),3);
-  			if(input_state!=Rx || input_state==Rx && E!=posledni_E)E->mGrid->Cells[druhy][6].Text=F->m.round2double(e_pom->pohon->Rx,3);
-  			E->mGrid->Cells[druhy][7].Text=F->m.round2double(F->outR(e_pom->pohon->Rz),3);
+				if(input_state!=R || input_state==R && E!=posledni_E)E->mGrid->Cells[druhy][6].Text=F->m.round2double(F->outR(e_pom->pohon->roztec),3);
+				if(input_state!=Rx || input_state==Rx && E!=posledni_E)E->mGrid->Cells[druhy][7].Text=F->m.round2double(e_pom->pohon->Rx,3);
+  			E->mGrid->Cells[druhy][5].Text=F->m.round2double(F->outR(e_pom->pohon->Rz),3);
   			E->mGrid->Cells[druhy][8].Text=F->m.round2double(F->outRz(F->m.mezera(0,e_pom->pohon->Rz,0)),3);
   			E->mGrid->Cells[druhy][9].Text=F->m.round2double(F->outRz(F->m.mezera(0,e_pom->pohon->Rz,1)),3);
 				E->mGrid->Cells[druhy][10].Text=F->m.round2double(F->outRz(F->m.mezera(90,e_pom->pohon->Rz,1)),3);
@@ -1747,7 +1748,7 @@ void TFormX::prirazeni_pohonu_defTab()
 
 	//kontrola PM
 	F->vlozit_predavaci_misto_aktualizuj_WT();
-	F->aktualizace_tab_pohon();//nebude provedena pokud dojde k odstranìní PmG
+	F->aktualizace_tab_pohon(false,true,true);//nebude provedena pokud dojde k odstranìní PmG
 
 	//ukazatelové záležitosti
 	E=NULL;p=NULL;

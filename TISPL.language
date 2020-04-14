@@ -452,3 +452,7 @@ Forward;X;Vpøed
 Set;X;Nastavená
 Speed;X;Rychl.
 Pitch;X;Rozteè
+Editing a section, do you agree? Difference =;X;Editace úseku, souhlasíte? Rozdíl =
+Do you want to automatically join geometry?;X;Chcete automaticky spojit geometrii?
+Cannot save contracts, current contract has not been selected.;X;Nelze uložit zakázky, nebyla zvolena aktuální zakázka.
+Do you want to place the element in the center of the object?;X;Chcete umístit element do støedu objektu?
