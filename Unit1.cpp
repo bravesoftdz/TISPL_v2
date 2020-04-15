@@ -8141,7 +8141,7 @@ void TForm1::vytvoreni_tab_pohon(bool existuje_poh_tabulka)
 		PmG->Cells[0][0].Font->Color=(TColor)RGB(128,128,128);
 		PmG->Cells[0][0].RightMargin=3;
 		for(int i=1;i<=ms.MyToDouble(PmG->RowCount-1);i++)
-  	{
+		{
 			if (PmG->Cells[3][i].Type==PmG->EDIT)
 				PmG->Cells[3][i].InputNumbersOnly=2;
   		else
@@ -8166,12 +8166,9 @@ void TForm1::vytvoreni_tab_pohon(bool existuje_poh_tabulka)
 		PmG->MergeCells(0,3,0,5);PmG->MergeCells(1,3,1,4);//sloučení pro rozteč
 		PmG->Cells[0][6].RightBorder->Color=clWhite;
 		PmG->MergeCells(0,6,0,8);PmG->MergeCells(1,6,1,8);//sloučení pro mezery
-		//hinty
-		PmG->Cells[2][9].Hint=ls->Strings[229];//"maximální možná doba čekání na palec";
-		PmG->Cells[2][9].ShowHint=true;
-  	//umístění tabulky
-  	TRect oblast_kabiny=vrat_max_oblast(OBJEKT_akt);
-  	if(OBJEKT_akt->Xp<0 && OBJEKT_akt->Yp<0)//definice pozice při prvním otevření objektu
+		//umístění tabulky
+		TRect oblast_kabiny=vrat_max_oblast(OBJEKT_akt);
+		if(OBJEKT_akt->Xp<0 && OBJEKT_akt->Yp<0)//definice pozice při prvním otevření objektu
   	{
   		OBJEKT_akt->Xp=m.P2Lx(oblast_kabiny.right+30);
   		OBJEKT_akt->Yp=m.P2Ly(oblast_kabiny.top-F->PmG->Rows->Height-30);
