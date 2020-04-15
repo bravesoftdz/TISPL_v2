@@ -45,7 +45,7 @@ void __fastcall TForm_katalog::FormShow(TObject *Sender)
 
   ////////vytvoření tabulky s požadovaným počtem sloupců a řádků////////
 	unsigned long ColCount=20;//pevný počet slopců
-	unsigned long RowCount=16;//pevný počet řádků
+	unsigned long RowCount=F->d.v.KATALOG->predchozi->n + 2;//dynamický počet řádků + 2 hlavička (merge)
 	K_mGrid->Create(ColCount,RowCount);//samotné vytvoření matice-tabulky
   K_mGrid->Top=scLabel_header->Height + 10;
 

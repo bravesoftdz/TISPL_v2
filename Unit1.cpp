@@ -16432,3 +16432,9 @@ void __fastcall TForm1::scGPGlyphButton_redoClick(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
+void __fastcall TForm1::scGPButton_bug_reportClick(TObject *Sender)
+{
+// form show report formu
+}
+//---------------------------------------------------------------------------
+
