@@ -315,6 +315,7 @@ class Cvektory
 		bool zamek_layoutu;//zámek editace layoutu
 		T_raster raster;
 		T_vector vector;//DOPRYC - zakomentovat
+		UnicodeString autor;//nazev autora projektu
 	};
 	T_parametry_projektu PP;
 
@@ -457,6 +458,7 @@ class Cvektory
     double radius;
 		short objekt_posunout_vse;
 		unsigned long zakazka_akt;//uchovává n aktuální zakázky
+		//UnicodeString autor;//nazev autora projektu
 	};
 	TFile_hlavicka File_hlavicka;
 

@@ -7871,6 +7871,7 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 	TDATA *obraz=DATA;//pro storno funkcionalitu nevytvařím prázdný obraz, ale ukládám do hlavičky
 	if(!storno)//pokud se nejedná o storno funkcionalitu vytvořím nový prázdný obraz do kterého budu projetk ukládat
 	{
+    if(!F->scGPGlyphButton_undo->Enabled && DATA->predchozi->n>0)F->scGPGlyphButton_undo->Enabled=true;//pokud je zakázán btn pro undo ... povolit, bude přidán nový datový obraz
 		//detekování přechodu z layoutu do editace nebo z editace do editace, editace a layout nebo editace a editace jsou nezávislé v Undo, tz. nelze se pomocí Undo dostat z editace zpět do layout, proto je nutné při přechodu smazat všechny obrazy
 		if(DATA->predchozi->n>0 && F->OBJEKT_akt!=NULL && (DATA->predchozi->edit_Objekt==0 || DATA->predchozi->edit_Objekt>0 && DATA->predchozi->edit_Objekt!=F->OBJEKT_akt->n))
 		{
@@ -7880,6 +7881,7 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 				smaz_obraz_DATA(DATA->predchozi->n);
    		}
 			pozice_data=0;//vrácení pozice na default hodnotu
+			if(F->scGPGlyphButton_redo->Enabled)F->scGPGlyphButton_redo->Enabled=false;//pokud je povolen button na redo ... zakázat, bude přidán nový obraz, přepíše následující
 		}
 		//pokud jsem používal funkcionalitu Undo a jsem například o 2 kroky zpět a vytvořím nový obraz, dojde ke smazání těchto 2 krouku (funkcionalita viz. MS Word abc -> ad)
 		if(pozice_data!=0)
@@ -7890,6 +7892,7 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 				smaz_obraz_DATA(i);
 			}
 			pozice_data=0;//vrácení pozice na default hodnotu
+			if(F->scGPGlyphButton_redo->Enabled)F->scGPGlyphButton_redo->Enabled=false;//pokud je povolen button na redo ... zakázat, bude přidán nový obraz, přepíše následující
 		}
 		//vytvoření prázdného obrazu (hlavičky objektu, elementů a pohonů)
 		obraz=vytvor_prazdny_obraz();
