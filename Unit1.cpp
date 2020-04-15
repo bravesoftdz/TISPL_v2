@@ -31,6 +31,7 @@
 #include "miniform_zpravy.h"
 #include "help.h"
 #include "MyString.h"
+#include "konzole.h"
 #include <idattachmentfile.hpp>
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -981,6 +982,8 @@ void TForm1::DesignSettings()
 	scGPComboBox_prepinacKot->Top=scGPComboBox_orientace->Top;//combobox na přepínání mezi kotami čas -- delka
 	scGPLabel1->Top=(scGPPanel_bottomtoolbar->Height-scGPLabel1->Height)/2;
 	scGPLabel_prepinacKot->Top=scGPLabel1->Top;
+  scGPButton_bug_report->Top=scGPPanel_statusbar->Top-80;
+  scGPButton_bug_report->Left=scSplitView_LEFTTOOLBAR->Width+5;
 	scGPImage_mereni_vzdalenost->Top=(scGPPanel_bottomtoolbar->Height-scGPImage_mereni_vzdalenost->Height)/2;
 	scGPImage_zamek_posunu->Top=(scGPPanel_bottomtoolbar->Height-scGPImage_zamek_posunu->Height)/2;
 	scGPButton_posun_dalsich_elementu->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_posun_dalsich_elementu->Height)/2;
@@ -2118,6 +2121,8 @@ void __fastcall TForm1::FormResize(TObject *Sender)
 	scGPComboBox_prepinacKot->Top=scGPComboBox_orientace->Top;//combobox na přepínání mezi kotami čas -- delka
 	scGPLabel1->Top=(scGPPanel_bottomtoolbar->Height-scGPLabel1->Height)/2;
 	scGPLabel_prepinacKot->Top=scGPLabel1->Top;
+  scGPButton_bug_report->Top= scGPPanel_statusbar->Top-80;
+  scGPButton_bug_report->Left=scSplitView_LEFTTOOLBAR->Width+5;
 	scGPImage_mereni_vzdalenost->Top=(scGPPanel_bottomtoolbar->Height-scGPImage_mereni_vzdalenost->Height)/2;
 	scGPImage_zamek_posunu->Top=(scGPPanel_bottomtoolbar->Height-scGPImage_zamek_posunu->Height)/2;
 	scGPButton_posun_dalsich_elementu->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_posun_dalsich_elementu->Height)/2;
@@ -16450,6 +16455,7 @@ void __fastcall TForm1::scGPGlyphButton_redoClick(TObject *Sender)
 void __fastcall TForm1::scGPButton_bug_reportClick(TObject *Sender)
 {
 // form show report formu
+Form_konzole->ShowModal();
 }
 //---------------------------------------------------------------------------
 
