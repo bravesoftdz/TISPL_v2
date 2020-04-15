@@ -16444,3 +16444,9 @@ void __fastcall TForm1::scGPGlyphButton_redoClick(TObject *Sender)
 	else if(scGPGlyphButton_redo->Enabled)scGPGlyphButton_redo->Enabled=false;
 }
 //---------------------------------------------------------------------------
+void __fastcall TForm1::scGPButton_bug_reportClick(TObject *Sender)
+{
+// form show report formu
+}
+//---------------------------------------------------------------------------
+

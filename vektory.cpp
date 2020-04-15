@@ -5943,6 +5943,22 @@ void Cvektory::vytvor_KATALOG()
 	//vertikální radiusy
   vloz_do_typu_dopravniku(vR,1500);
   vloz_do_typu_dopravniku(vR,2500);
+
+    ////Standa VaV
+	vloz_typ_dopravniku("Standa_VaV","http://galatek.cz",0);
+	vloz_do_typu_dopravniku(R,1800);
+	vloz_do_typu_dopravniku(R,1805);
+	//horizontální oblouky
+	vloz_do_typu_dopravniku(hO,90);
+	vloz_do_typu_dopravniku(hO,45);
+	vloz_do_typu_dopravniku(hO,30);
+	vloz_do_typu_dopravniku(hO,15);
+	//horizontální radiusy
+  vloz_do_typu_dopravniku(hR,700);
+	//vertikální oblouky
+	vloz_do_typu_dopravniku(vO,0);
+	//vertikální radiusy
+  vloz_do_typu_dopravniku(vR,0);
 }
 //---------------------------------------------------------------------------
 //dla zadaného n vrátí daný typ dopravníku formou ukazatatele
@@ -6084,7 +6100,7 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 {
 	if(F->duvod_validovat==2)//validace probíhá jenom při editaci (pokud je důvod a až byla dokončena editační akce), nebo když nejsou zprávy po spuštění aplikace
 	{
-		TDateTime T;F->Memo("/popř. otáčení, buffry/ + generuj_VOZIKY + VALIDACE: "+T.CurrentTime().TimeString());//PROVIZORNÍ VÝPIS VOLÁNÍ TÉTO METODY
+	 //	TDateTime T;F->Memo("/popř. otáčení, buffry/ + generuj_VOZIKY + VALIDACE: "+T.CurrentTime().TimeString());//PROVIZORNÍ VÝPIS VOLÁNÍ TÉTO METODY
 
     //ZVÁŽIT ZDE VOLÁNÍ vrat_rotaci_jigu_po_predchazejicim_elementu(POSLEDNÍ ELEMENT)
 
