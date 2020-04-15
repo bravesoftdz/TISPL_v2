@@ -5786,7 +5786,7 @@ bool TForm1::pripnuti_dalsich_objektu()
 	log(__func__);//logování
 	bool ret=false;
 	double posun_x,posun_y;
-	Cvektory::TElement *e_posledni=d.v.vrat_posledni_element_objektu(OBJEKT_akt);
+	Cvektory::TElement *e_posledni=d.v.vrat_posledni_element_objektu(OBJEKT_akt);  
 	////připnutí dalších objektů na hlavní větvi
 	if(e_posledni->dalsi!=NULL && !(e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni) && !(m.round2double(e_posledni->geo.X4,2)==m.round2double(e_posledni->dalsi->geo.X1,2) && m.round2double(e_posledni->geo.Y4,2)==m.round2double(e_posledni->dalsi->geo.Y1,2)) && mrYes==MB(ls->Strings[328],MB_YESNO,true))
 	{
@@ -5834,9 +5834,9 @@ bool TForm1::pripnuti_dalsich_objektu()
 //---------------------------------------------------------------------------
 //kontrola zda na sebe první a polední objekt navazují, pokud jsou blízko u sebe, ale nenavazují - naváže je
 void TForm1::spojeni_prvni_posledni(double citlivost)
-{
+{             
 	log(__func__);//logování
-	if(prichytavat_k_mrizce==1 && d.v.OBJEKTY->predchozi->n>=4 && d.v.ELEMENTY->dalsi->geo.typ==0 && m.delka(d.v.ELEMENTY->dalsi->geo.X1,d.v.ELEMENTY->dalsi->geo.Y1,d.v.ELEMENTY->predchozi->geo.X4,d.v.ELEMENTY->predchozi->geo.Y4)<=citlivost && m.delka(d.v.ELEMENTY->dalsi->geo.X1,d.v.ELEMENTY->dalsi->geo.Y1,d.v.ELEMENTY->predchozi->geo.X4,d.v.ELEMENTY->predchozi->geo.Y4)!=0)// && mrYes==MB(ls->Strings[431],MB_YESNO,true))//"Linka nenavazuje, přejete si automaticky dokončit?"
+	if(prichytavat_k_mrizce==1 && /*d.v.OBJEKTY->predchozi->n>=3 && */d.v.ELEMENTY->dalsi->geo.typ==0 && m.delka(d.v.ELEMENTY->dalsi->geo.X1,d.v.ELEMENTY->dalsi->geo.Y1,d.v.ELEMENTY->predchozi->geo.X4,d.v.ELEMENTY->predchozi->geo.Y4)<=citlivost && m.delka(d.v.ELEMENTY->dalsi->geo.X1,d.v.ELEMENTY->dalsi->geo.Y1,d.v.ELEMENTY->predchozi->geo.X4,d.v.ELEMENTY->predchozi->geo.Y4)!=0)// && mrYes==MB(ls->Strings[431],MB_YESNO,true))//"Linka nenavazuje, přejete si automaticky dokončit?"
 	{
 		Cvektory::TGeometrie zaloha,zaloha_posledni=d.v.ELEMENTY->predchozi->geo;
 		bool pridan=false;
@@ -5866,6 +5866,7 @@ void TForm1::spojeni_prvni_posledni(double citlivost)
 		Cvektory::TElement *E=d.v.ELEMENTY->predchozi->predchozi,*upraven=NULL;
 		while(E!=NULL && E->n>0)
 		{
+			if((hor && rozdil.y==0) || (ver && rozdil.x==0))break;//konrola zde je nutné upravovat druhou
 			if(hor && E->geo.typ==0 && (E->eID==MaxInt || E->eID==200) && (E->geo.orientace==0 || E->geo.orientace==180))
 			{
 				E->Y+=rozdil.y;
@@ -5877,7 +5878,7 @@ void TForm1::spojeni_prvni_posledni(double citlivost)
 				while(E!=NULL)
 				{
 					d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1+rozdil.y,E->geo.X2,E->geo.Y2+rozdil.y,E->geo.X3,E->geo.Y3+rozdil.y,E->geo.X4,E->geo.Y4+rozdil.y,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius);
-					E=E->dalsi;
+					E=d.v.dalsi_krok(E);
 				}
 				break;
 			}
@@ -5892,7 +5893,7 @@ void TForm1::spojeni_prvni_posledni(double citlivost)
 				while(E!=NULL)
 				{
 					d.v.vloz_G_element(E,E->geo.typ,E->geo.X1+rozdil.x,E->geo.Y1,E->geo.X2+rozdil.x,E->geo.Y2,E->geo.X3+rozdil.x,E->geo.Y3,E->geo.X4+rozdil.x,E->geo.Y4,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius);
-					E=E->dalsi;
+					E=d.v.dalsi_krok(E);
 				}
 				break;
 			}
@@ -5925,7 +5926,7 @@ void TForm1::spojeni_prvni_posledni(double citlivost)
 				{
 		  		if(hor)d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1-rozdil.y,E->geo.X2,E->geo.Y2-rozdil.y,E->geo.X3,E->geo.Y3-rozdil.y,E->geo.X4,E->geo.Y4-rozdil.y,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius);
 		  		else d.v.vloz_G_element(E,E->geo.typ,E->geo.X1-rozdil.x,E->geo.Y1,E->geo.X2-rozdil.x,E->geo.Y2,E->geo.X3-rozdil.x,E->geo.Y3,E->geo.X4-rozdil.x,E->geo.Y4,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius);
-		  		E=E->dalsi;
+		  		E=d.v.dalsi_krok(E);
 				}
 				d.v.ELEMENTY->predchozi->geo=zaloha_posledni;
 			}
@@ -13570,7 +13571,16 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	//
+	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+	while(E!=NULL)
+	{
+		if(E->dalsi!=NULL)
+		{
+			if(E->geo.X4!=E->dalsi->geo.X1 && E->geo.Y4!=E->dalsi->geo.Y1)Memo(E->name);
+		}
+		else if(E->geo.X4!=d.v.ELEMENTY->dalsi->geo.X1 && E->geo.Y4!=d.v.ELEMENTY->dalsi->geo.Y1)Memo(E->name);
+		E=E->dalsi;
+  }
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko

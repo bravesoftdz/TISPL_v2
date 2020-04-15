@@ -3170,6 +3170,25 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 		}
 
 		/////testy
+//		if(E->pohon!=NULL && E->geo.typ==0)//vykreslení vodoznaku pohonu
+//		{
+//			bool vykreslit=false;
+//			canv->Font=F->aFont;
+//			canv->Font->Size=3*F->Zoom;
+//			short W=canv->TextWidth(E->pohon->name),H=canv->TextHeight(E->pohon->name);
+//			if(E->geo.delka>m.px2m(W*2))vykreslit=true;
+//			if(E->geo.orientace==0 || E->geo.orientace==180)
+//			{
+//				W=H;H=canv->TextWidth(E->pohon->name);
+//				canv->Font->Orientation=900;
+//				H=-H/2.0;W=W*1.5;
+//			}
+//			else
+//			{
+//				W/=2.0;H*=1.5;
+//			}
+//			if(vykreslit)TextFraming(canv,m.L2Px(E->geo.X2)-W,m.L2Py(E->geo.Y2)-H,E->pohon->name);
+//		}
 		if(pocet_pruchodu>1)
 		{
 			for(unsigned int i=2;i<=pocet_pruchodu;i++)
