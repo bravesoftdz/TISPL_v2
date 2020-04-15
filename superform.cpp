@@ -200,6 +200,7 @@ void TForm_definice_zakazek::nacti_zakazky()
 void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 {
 	F->log(__func__); // logování
+	F->log("Uložení zakázek, MOD=SCHEMA, Form:Superform");
   // naètení hodnot z tabulek mGridù do temp zakázek
   // mazání mgridù zakázek, dùležité, kopírování zakázek nesmaže mGridy ale odstraní zakázky temp ukazatel
 	if(akt_zakazka_n==0 && F->d.v.ZAKAZKY_temp!=NULL && F->d.v.ZAKAZKY_temp->predchozi!=0)
@@ -265,6 +266,7 @@ void TForm_definice_zakazek::ulozeni_dat_z_mGridu_a_delete()
 // Zavøení formuláøe (storno a køížek je to samé)
 void __fastcall TForm_definice_zakazek::scGPGlyphButton4Click(TObject *Sender)
 {
+  F->log("Ukonèení editace zakázek, MOD=SCHEMA, Form:Unit1");
 	KonecClick(Sender);
 }
 
@@ -589,6 +591,7 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col, unsig
 
 	if (Z->mGrid->Cells[Col][Row].Type==Z->mGrid->IMAGE)
 	{
+		F->log("Editace cesty, MOD=SCHEMA, Form:Unit1");
 		//pozicévání tlaèítek pro tvorbu cesty
 		F->scGPButton_ulozit_cestu->Left=F->ClientWidth/2.0-(2*(F->scGPButton_ulozit_cestu->Width-11)-F->scGPGlyphButton_odstran_cestu->Width-11)/2.0;
 		F->scGPButton_ulozit_cestu->Top=F->scGPPanel_statusbar->Top-F->scGPButton_ulozit_cestu->Height-5;
