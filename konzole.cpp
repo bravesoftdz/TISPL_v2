@@ -23,12 +23,16 @@ __fastcall TForm_konzole::TForm_konzole(TComponent* Owner)
 //---------------------------------------------------------------------------
 void __fastcall TForm_konzole::CloseButtonClick(TObject *Sender)
 {
-Close();
+	Close();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_konzole::FormShow(TObject *Sender)
 {
-Left=Form1->ClientWidth/2-Form_konzole->Width/2;
-Top=Form1->ClientHeight/2-Form_konzole->Height/2;
+	//centrování formu
+	Left=Form1->ClientWidth/2-Form_konzole->Width/2;
+	Top=Form1->ClientHeight/2-Form_konzole->Height/2;
+	//naètení jazykové mutace
+	scGPToolPager->Tabs->operator [](0)->Caption=F->ls->Strings[459];
+	scLabel_header->Caption=F->ls->Strings[460];
 }
 //---------------------------------------------------------------------------

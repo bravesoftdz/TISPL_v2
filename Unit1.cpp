@@ -1009,7 +1009,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=457;i++)
+	for(unsigned short i=0;i<=460;i++)
 	{
 		switch(i)
 		{
@@ -1049,7 +1049,7 @@ void TForm1::DesignSettings()
       case 33:text="Návrh";break;
       case 34:text="parametry linky";break;
       case 35:text="Nastavení";break;
-      case 36:text="Editace";break;
+			case 36:text="Editace";break;
       case 37:text="spustit animaci";break;
       case 38:text="Aktuální polohu kurzoru v souřadnicích aplikace";break;
       case 39:text="Kliknutím na libovolné místo přidáte objekt z knihovny nebo lze upravit stávájící layout";break;
@@ -1471,6 +1471,9 @@ void TForm1::DesignSettings()
 			case 455:text="Chcete automaticky spojit geometrii?";break;
 			case 456:text="Nelze uložit zakázky, nebyla zvolena aktuální zakázka.";break;
 			case 457:text="Automaticky umístit na střed objektu?";break;
+			case 458:text="Nahlásit";break;
+			case 459:text="Popis";break;
+			case 460:text="Zaslat chybu, dotaz nebo připomínku";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -6782,7 +6785,7 @@ void TForm1::ukonceni_geometrie()
 		//zajištěni spojení
 		if(m.Rt90(e_posledni->geo.orientace+e_posledni->geo.rotacni_uhel)==90 || m.Rt90(e_posledni->geo.orientace+e_posledni->geo.rotacni_uhel)==270)//horizontální linie
 		{
-			if(m.round2double(e_posledni->dalsi->geo.X4+posun_x,2)>=m.round2double(e_posledni->dalsi->geo.X1,2))
+			if(posun_x<e_posledni->geo.delka && ((e_posledni->dalsi!=NULL && posun_x<e_posledni->dalsi->geo.delka) || e_posledni->dalsi==NULL))//kontrola zde je kam posouvat
 			{
 				d.v.vloz_G_element(e_posledni->dalsi,0,e_posledni->dalsi->geo.X1,e_posledni->dalsi->geo.Y1,0,0,0,0,e_posledni->dalsi->geo.X4+posun_x,e_posledni->dalsi->geo.Y4,e_posledni->dalsi->geo.orientace);
 				e_posledni->dalsi->X+=posun_x;
@@ -6805,11 +6808,11 @@ void TForm1::ukonceni_geometrie()
 					e_posledni->Y-=posun_y;
 					e_posledni=e_posledni->dalsi;
 				}
-      }
+			}
 		}
 		else//vertikální  linie
 		{
-			if(m.round2double(e_posledni->dalsi->geo.Y4+posun_y,2)<=m.round2double(e_posledni->dalsi->geo.Y1,2))
+			if(posun_y<e_posledni->geo.delka && ((e_posledni->dalsi!=NULL && posun_y<e_posledni->dalsi->geo.delka) || e_posledni->dalsi==NULL))//kontrola zde je kam posouvat
 			{
 		  	d.v.vloz_G_element(e_posledni->dalsi,0,e_posledni->dalsi->geo.X1,e_posledni->dalsi->geo.Y1,0,0,0,0,e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4+posun_y,e_posledni->dalsi->geo.orientace);
 				e_posledni->dalsi->Y+=posun_y;
@@ -6879,6 +6882,7 @@ void TForm1::ukonceni_geometrie()
 	if(d.v.pocet_vyhybek>0)mGrid_on_mGrid();
 	//kontrola zda editací geometrie nedošlo ke změně
 	vlozit_predavaci_misto_aktualizuj_WT();
+	nahled_ulozit(true);
 	//validovat
 	duvod_validovat=2;
 	REFRESH();
@@ -11677,9 +11681,10 @@ void TForm1::NP_input()
 	if(OBJEKT_akt->pohon!=NULL)scGPGlyphButton_PLAY->Enabled=true;
 	else scGPGlyphButton_PLAY->Enabled=false;
 
-	 scGPButton_ulozit->Enabled=false;
-	 //zapnutí spodního panelu
-	 scGPPanel_bottomtoolbar->Visible=true;
+	scGPButton_ulozit->Enabled=false;
+	//zapnutí spodního panelu
+	scGPPanel_bottomtoolbar->Visible=true;
+	scGPButton_bug_report->Top-=scGPPanel_bottomtoolbar->Height;//posun tlačítka report
 
 	//zmena horní lišty vlevo
 	scLabel_architekt->Visible=false;
@@ -13571,15 +13576,17 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+	Cvektory::TElement *E=OBJEKT_akt->element;
 	while(E!=NULL)
 	{
-		if(E->dalsi!=NULL)
-		{
-			if(E->geo.X4!=E->dalsi->geo.X1 && E->geo.Y4!=E->dalsi->geo.Y1)Memo(E->name);
-		}
-		else if(E->geo.X4!=d.v.ELEMENTY->dalsi->geo.X1 && E->geo.Y4!=d.v.ELEMENTY->dalsi->geo.Y1)Memo(E->name);
-		E=E->dalsi;
+		Canvas->Pen->Color=clRed;
+		d.line(Canvas,0,0,m.L2Px(E->geo.X1),m.L2Py(E->geo.Y1));
+		d.line(Canvas,0,0,m.L2Px(E->geo.X2),m.L2Py(E->geo.Y2));
+		Canvas->Pen->Color=clBlue;
+		d.line(Canvas,2000,2000,m.L2Px(E->geo.X3),m.L2Py(E->geo.Y3));
+		d.line(Canvas,2000,2000,m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));   break;
+//		if(E->geo.typ==0)d.v.vloz_G_element(E,0,E->geo.X1,E->geo.Y1,0,0,0,0,E->geo.X4,E->geo.Y4,E->geo.orientace);
+//		E=d.v.dalsi_krok(E);
   }
 }
 //---------------------------------------------------------------------------
@@ -14657,6 +14664,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		zobrazit_meritko=scGPSwitch_meritko->State;//navrácení do původního stavu
 		//vypnutí spodního panelu
 		scGPPanel_bottomtoolbar->Visible=false;
+		scGPButton_bug_report->Top+=scGPPanel_bottomtoolbar->Height;//navrácení tlačítka report do původních souřadnic
 		//vlevo
 		scLabel_klient->Visible=false;
 		scGPSwitch_rezim->Visible=false;
@@ -15965,7 +15973,8 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 		scGPButton_ulozit_cestu->Hint=ls->Strings[446];
 		scGPButton_storno_cesta->Caption=ls->Strings[71];
 		scGPGlyphButton_undo->Hint=ls->Strings[449];
-    scGPGlyphButton_redo->Hint=ls->Strings[450];
+		scGPGlyphButton_redo->Hint=ls->Strings[450];
+		scGPButton_bug_report->Caption=ls->Strings[458];
 
     //změna zarovnání
 		scGPComboBox_prepinacKot->Left=scGPLabel_prepinacKot->Left+scGPLabel_prepinacKot->Width;//nutné!!
