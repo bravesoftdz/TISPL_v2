@@ -503,7 +503,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 }
 //---------------------------------------------------------------------------
 //uloží objekt a jeho parametry do seznamu - přetížená fce
-void Cvektory::vloz_objekt(TObjekt *Objekt)
+Cvektory::TObjekt *Cvektory::vloz_objekt(TObjekt *Objekt)
 {                    
 	TObjekt *novy=new TObjekt;
 													
@@ -513,6 +513,8 @@ void Cvektory::vloz_objekt(TObjekt *Objekt)
 	novy->predchozi=OBJEKTY->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 	novy->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje
 	OBJEKTY->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+
+	return novy;
 }
 //---------------------------------------------------------------------------
 //alokuje paměť pro objekt, nastavý atriuty objektu, vrátí ukazatel na nově vytvořený prvek
@@ -3457,11 +3459,11 @@ Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruc
 				if(tab_pruchodu_T2E[E->idetifikator_vyhybka_spojka].spojka==NULL)
 				{
 		   		if(vyhybka_pom==NULL)//přišel jsem na vyhybku z hlavní větve
-		   		{
+					{
 		   			novy->predchozi=ELEMENTY->predchozi;
 		   			ELEMENTY->predchozi->dalsi=novy;
 		   			ELEMENTY->predchozi=novy;
-		   		}
+					}
 		   		else//přišel jsem na vyhybku z vedlejší větve
 					{
 						novy->predchozi=vyhybka_pom;
@@ -3545,8 +3547,8 @@ Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruc
 		{
 			unsigned int nedokoncene=0;
 			//průchod uloženými vyhybkami, pokud mají všechny spojky ... věe je uzavřeno, pokud některé nemá vloženou spojku pořád se pohybuji na vedlejší větvi
-	  	for(unsigned int i=1;i<=File_hlavicka.pocet_vyhybek;i++)
-	  	{
+			for(unsigned int i=1;i<=File_hlavicka.pocet_vyhybek;i++)
+			{
 				if(tab_pruchodu_T2E[i].vyhybka!=NULL && tab_pruchodu_T2E[i].spojka==NULL)//existuje nedokončená vetev
 				{
 					nedokoncene++;
@@ -3554,8 +3556,8 @@ Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruc
 				}
 			}
 			//všechny dosavadní větve jsou kompletní, smaž vyhybka_pom
-	  	if(nedokoncene==0)
-	  	{
+			if(nedokoncene==0)
+			{
 				vyhybka_pom=NULL;
 				//spojka je kompletně usezená, tz. je to poslední elemetn
 				if(novy->predchozi!=NULL && novy->predchozi2!=NULL)
@@ -3793,7 +3795,7 @@ void Cvektory::vymaz_elementy(TObjekt *Objekt)
 	while(E!=NULL && E->objekt_n==Objekt->n)
 	{
 		smaz=E;
-		E=dalsi_krok(E,Objekt);
+		E=E->dalsi;//můžu jít po hlavní, pokud narazím na výhybku nebo spojku metoda smaz_element(), odstraní celou vedlejší větevá
 		if(smaz->eID==300 || smaz->eID==301)smaz_element(smaz,false);//velice nutné kontrola u výhybek a spojek nesmí být přeskočena
 		else smaz_element(smaz,true);
 	}
@@ -6725,7 +6727,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 //---------------------------------------------------------------------------
 //načte vektorová data ze souboru
 short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
-{   F->log(__func__);
+{
 	if(!FileExists(FileName)){return 0;}
 	else
 	{
@@ -7887,7 +7889,7 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 	TDATA *obraz=DATA;//pro storno funkcionalitu nevytvařím prázdný obraz, ale ukládám do hlavičky
 	if(!storno)//pokud se nejedná o storno funkcionalitu vytvořím nový prázdný obraz do kterého budu projetk ukládat
 	{
-    if(!F->scGPGlyphButton_undo->Enabled && DATA->predchozi->n>0)F->scGPGlyphButton_undo->Enabled=true;//pokud je zakázán btn pro undo ... povolit, bude přidán nový datový obraz
+		if(!F->scGPGlyphButton_undo->Enabled && DATA->predchozi->n>0)F->scGPGlyphButton_undo->Enabled=true;//pokud je zakázán btn pro undo ... povolit, bude přidán nový datový obraz
 		//detekování přechodu z layoutu do editace nebo z editace do editace, editace a layout nebo editace a editace jsou nezávislé v Undo, tz. nelze se pomocí Undo dostat z editace zpět do layout, proto je nutné při přechodu smazat všechny obrazy
 		if(DATA->predchozi->n>0 && F->OBJEKT_akt!=NULL && (DATA->predchozi->edit_Objekt==0 || DATA->predchozi->edit_Objekt>0 && DATA->predchozi->edit_Objekt!=F->OBJEKT_akt->n))
 		{
@@ -8114,8 +8116,9 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 	  		O=new TObjekt;
 	  		kopiruj_objekt(dO,O);
 	  		O->element=NULL;//slouží pro následnou aktualizaci v metodě vloz_element();
-	  		//vložení nového objektu do spojáku
-	  		vloz_objekt(O);
+				//vložení nového objektu do spojáku
+				O=vloz_objekt(O);
+				O->n=dO->n;
 	  		//ukazatelové záležitosti
 	  		O=NULL;delete O;
 	  		dO=dO->dalsi;
@@ -8127,7 +8130,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 			TElement *dE=obraz->Elementy->dalsi,*E=NULL;
 			T2Element *tab_pruchodu=new T2Element[obraz->pocet_vyhybek+1];vyhybka_pom=NULL;
     	while(dE!=NULL)
-    	{
+			{
 				//kopírování atributů
 				E=new TElement;
 				kopiruj_element(dE,E);

@@ -348,6 +348,7 @@ __published:	// IDE-managed Components
   TscGPGlyphButton *scGPGlyphButton_undo;
   TscGPGlyphButton *scGPGlyphButton_redo;
   TscGPButton *scGPButton_bug_report;
+	TTimer *Timer_getjobid;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -576,6 +577,7 @@ __published:	// IDE-managed Components
   void __fastcall scGPGlyphButton_undoClick(TObject *Sender);
   void __fastcall scGPGlyphButton_redoClick(TObject *Sender);
   void __fastcall scGPButton_bug_reportClick(TObject *Sender);
+	void __fastcall Timer_getjobidTimer(TObject *Sender);
 
 
 

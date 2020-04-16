@@ -4301,7 +4301,8 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 //					if(++pocitadlo_zmeny_pozice.x>10 || ++pocitadlo_zmeny_pozice.y>10){pocitadlo_zmeny_pozice.x=0;pocitadlo_zmeny_pozice.y=0;pocitadlo_doby_neaktivity=1;}//naopak akcelerátor, aby se při rychlém pohybu myší zkontrolovala změna
 //					Timer_neaktivity->Enabled=true;//volá se zpožděním kvůli optimalizaci setJobIDOnMouseMove(X,Y);
 //					//pokud bych odstavil výše uvedený timer takto toto zprovoznit:
-					setJobIDOnMouseMove(X,Y);
+					//setJobIDOnMouseMove(X,Y);
+					Timer_getjobid->Enabled=true;//restart timeru pro setjobid
 			}
 			//algoritmus na ověřování zda se kurzor nachází na objektem (a může být tedy povoleno v pop-up menu zobrazení volby nastavit parametry) přesunut do metody mousedownclick, zde se to zbytečně volalo při každém posunu myši
 			break;
@@ -4667,7 +4668,7 @@ void TForm1::getJobID(int X, int Y)
 	}
 	if(MOD==SCHEMA && !d.v.PP.zamek_layoutu)//pro schéma, zjišťování jidů pro body a úsečky
 	{
-    /////////////JID udává pouze akci, není třeba aby se k němu přičítalo i číslo bodu, bod je držen jako ukazatel pom_bod/////////////
+		/////////////JID udává pouze akci, není třeba aby se k němu přičítalo i číslo bodu, bod je držen jako ukazatel pom_bod/////////////
 		//-102; citelná oblast zprávy
 		//-6; název objektu
 		//-2; hodnota kóty bodu (přímka [A,B] uložena v bodě B)
@@ -5306,7 +5307,8 @@ void TForm1::ZOOM_WINDOW()
 	Zoom=abs(Zoom*PD/rozdil);
 	//přepočtení na používaný krok zoomu
 	Zoom-=fmod(Zoom,0.5);
-	if(Zoom<0.5)Zoom=0.5;if(Zoom>10)Zoom=10;
+	if(Zoom<0.5)Zoom=0.5;
+	if(Zoom<20 && !DEBUG)Zoom=20;if(Zoom<30 && DEBUG)Zoom=30;
   //////
 
 	//vycentrování obrazu
@@ -6549,8 +6551,14 @@ void TForm1::smaz_bod_haly_objektu(Cvektory::TBod *bod)
 //vkládá novou geometrii nebo edituje již stávající geometrii
 void TForm1::vlozeni_editace_geometrie()
 {
+//	Memo(AnsiString(d.geoTemp.X1)+","+AnsiString(d.geoTemp.Y1));
+//	Memo(AnsiString(d.geoTemp.X2)+","+AnsiString(d.geoTemp.Y2));
+//	Memo(AnsiString(d.geoTemp.X3)+","+AnsiString(d.geoTemp.Y3));
+//	Memo(AnsiString(d.geoTemp.X4)+","+AnsiString(d.geoTemp.Y4));
+	d.geoTemp.X2=d.geoTemp.X3=(d.geoTemp.X1+d.geoTemp.X4)/2.0;
+	d.geoTemp.Y2=d.geoTemp.Y3=(d.geoTemp.Y1+d.geoTemp.Y4)/2.0;
 	log(__func__);//logování
-  //////deklarace atributů
+	//////deklarace atributů
 	double posunx=0,posuny=0;
 	//////nastavení orientace
 	short orientace=0;
@@ -6839,6 +6847,12 @@ void TForm1::ukonceni_geometrie()
 		}
 	}
 	e_posledni=NULL;delete e_posledni;
+
+	////připínání geometrie po hlavní větvi
+	bool zmena=pripnuti_dalsich_objektu();
+	//pokud jsem v prvním nebo posledním objektu kontrola zda je linka spojená, nebo pokud dojde k pripnutí dalších objektů
+	if(OBJEKT_akt->n==1 || OBJEKT_akt->n==d.v.OBJEKTY->predchozi->n || zmena)spojeni_prvni_posledni();//kontrola zda mám dostatečný počet objektů a zda je možno spojit je automaticky
+
 	//////navrácení původních hodnot
 	AnsiString T;
 	if(T==0 || T=="")rotace_jigu=0;else rotace_jigu=1;
@@ -13576,18 +13590,12 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Cvektory::TElement *E=OBJEKT_akt->element;
+	Cvektory::TObjekt *E=d.v.DATA->predchozi->Objekty->dalsi;Memo3->Clear();
 	while(E!=NULL)
 	{
-		Canvas->Pen->Color=clRed;
-		d.line(Canvas,0,0,m.L2Px(E->geo.X1),m.L2Py(E->geo.Y1));
-		d.line(Canvas,0,0,m.L2Px(E->geo.X2),m.L2Py(E->geo.Y2));
-		Canvas->Pen->Color=clBlue;
-		d.line(Canvas,2000,2000,m.L2Px(E->geo.X3),m.L2Py(E->geo.Y3));
-		d.line(Canvas,2000,2000,m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));   break;
-//		if(E->geo.typ==0)d.v.vloz_G_element(E,0,E->geo.X1,E->geo.Y1,0,0,0,0,E->geo.X4,E->geo.Y4,E->geo.orientace);
-//		E=d.v.dalsi_krok(E);
-  }
+		Memo("Objekt->n = "+AnsiString(E->n));
+		E=E->dalsi;
+	}
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -15022,9 +15030,6 @@ void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
 {
 	log(__func__);//logování
 	if(editace_textu)smaz_kurzor();//uložení změn při zapnuté editaci textu
-	bool zmena=pripnuti_dalsich_objektu();
-	//pokud jsem v prvním nebo posledním objektu kontrola zda je linka spojená, nebo pokud dojde k pripnutí dalších objektů
-	if(OBJEKT_akt->n==1 || OBJEKT_akt->n==d.v.OBJEKTY->predchozi->n || zmena)spojeni_prvni_posledni();//kontrola zda mám dostatečný počet objektů a zda je možno spojit je automaticky
 	//vymazání nepotřebných obrazů
 	d.v.vymaz_seznam_DATA();
 	d.v.hlavicka_DATA();
@@ -16398,24 +16403,28 @@ void __fastcall TForm1::N21Click(TObject *Sender)
 ///////otevírání naposledy otevřených projektů
 void __fastcall TForm1::N1projekt1Click(TObject *Sender)
 {
+	log(__func__);//logování
 	N1projekt1->Caption=readINI("historie","posledni_soubor_1");//musí být, po kliku dojde k požkození captionu
 	Otevri_posledni_ulozeny(N1projekt1->Caption);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::N2projekt1Click(TObject *Sender)
 {
+	log(__func__);//logování
 	N2projekt1->Caption=readINI("historie","posledni_soubor_2");//musí být, po kliku dojde k požkození captionu
 	Otevri_posledni_ulozeny(N2projekt1->Caption);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::N3projekt1Click(TObject *Sender)
 {
+	log(__func__);//logování
 	N3projekt1->Caption=readINI("historie","posledni_soubor_3");//musí být, po kliku dojde k požkození captionu
 	Otevri_posledni_ulozeny(N3projekt1->Caption);
 }
 //---------------------------------------------------------------------------
 void TForm1::Otevri_posledni_ulozeny(UnicodeString soubor)
 {
+	log(__func__);//logování
 	if(soubor!=FileName)
 	{
   	//zavolá nový soubor/smaže stávajicí
@@ -16436,6 +16445,7 @@ void __fastcall TForm1::scExPanel1Click(TObject *Sender)
 
 void __fastcall TForm1::scGPGlyphButton_undoClick(TObject *Sender)
 {
+	log(__func__);//logování
 	if(d.v.pozice_data!=1)//pokud nejsem na konci
 	{
 		if(d.v.pozice_data==0)d.v.pozice_data=d.v.DATA->predchozi->predchozi->n;
@@ -16444,7 +16454,7 @@ void __fastcall TForm1::scGPGlyphButton_undoClick(TObject *Sender)
 		{
 			d.v.nacti_z_obrazu_DATA();
 			duvod_validovat=2;
-	  	REFRESH();
+			REFRESH();
 			if(OBJEKT_akt!=NULL)mGrid_on_mGrid();//naplní comba tabulek a zkontroluje překrytí
 			if(!scGPGlyphButton_redo->Enabled)scGPGlyphButton_redo->Enabled=true;//pokud bylo provedeno undo a btn na redu neni povolen ... povolit
 			if(d.v.pozice_data==1 && scGPGlyphButton_redo->Enabled)scGPGlyphButton_undo->Enabled=false;//jsem na posledním záznamu, nepovolit dále se vracet ... btn undo zakázat
@@ -16455,6 +16465,7 @@ void __fastcall TForm1::scGPGlyphButton_undoClick(TObject *Sender)
 
 void __fastcall TForm1::scGPGlyphButton_redoClick(TObject *Sender)
 {
+	log(__func__);//logování
 	if(d.v.pozice_data<d.v.DATA->predchozi->n && d.v.pozice_data!=0)//pokud nejsem na konci
 	{
 		d.v.pozice_data+=1;
@@ -16470,8 +16481,17 @@ void __fastcall TForm1::scGPGlyphButton_redoClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPButton_bug_reportClick(TObject *Sender)
 {
-// form show report formu
-Form_konzole->ShowModal();
+	log(__func__);//logování
+	Form_konzole->ShowModal();
+}
+//---------------------------------------------------------------------------
+//timer zavolá setjobid se zpožděním, timer resetován z mousemove
+void __fastcall TForm1::Timer_getjobidTimer(TObject *Sender)
+{
+	log(__func__);
+	setJobIDOnMouseMove(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
+	Memo(__func__,true,true);
+	Timer_getjobid->Enabled=false;
 }
 //---------------------------------------------------------------------------
 
