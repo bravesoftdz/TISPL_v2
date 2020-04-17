@@ -3102,7 +3102,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,doubl
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//přejmenovat např. na vykresli_dopravnik (kreslí jak koleje tak pouzdro řetězu i řetěz samotný
 {
-	TPoint *POLE=new TPoint[4];
+	TPoint *POLE=new TPoint[4];      bool zmena=true;   TPoint zacatek;zacatek=TPoint(0,0); F->Memo3->Clear();
 	unsigned int pocet_pruchodu=0;
 	Cvektory::TElement *E=v.ELEMENTY->dalsi;
 	while(E!=NULL)
@@ -3170,25 +3170,16 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 		}
 
 		/////testy
-//		if(E->pohon!=NULL && E->geo.typ==0)//vykreslení vodoznaku pohonu
-//		{
-//			bool vykreslit=false;
-//			canv->Font=F->aFont;
-//			canv->Font->Size=3*F->Zoom;
-//			short W=canv->TextWidth(E->pohon->name),H=canv->TextHeight(E->pohon->name);
-//			if(E->geo.delka>m.px2m(W*2))vykreslit=true;
-//			if(E->geo.orientace==0 || E->geo.orientace==180)
-//			{
-//				W=H;H=canv->TextWidth(E->pohon->name);
-//				canv->Font->Orientation=900;
-//				H=-H/2.0;W=W*1.5;
-//			}
-//			else
-//			{
-//				W/=2.0;H*=1.5;
-//			}
-//			if(vykreslit)TextFraming(canv,m.L2Px(E->geo.X2)-W,m.L2Py(E->geo.Y2)-H,E->pohon->name);
-//		}
+		if(E->pohon!=NULL && E->geo.typ==0)//vykreslení vodoznaku pohonu
+		{
+			if(zacatek.x==0 && zacatek.y==0)zacatek=m.L2P(E->geo.X1,E->geo.Y1);
+			if(E->dalsi==NULL || E->eID==300 || E->eID==301 || (E->dalsi!=NULL && (E->dalsi->geo.typ!=0 || (m.delka(m.P2Lx(zacatek.x),m.P2Ly(zacatek.y),E->geo.X4,E->geo.Y4)>=9.9 && E->dalsi->objekt_n!=E->objekt_n))))
+			{
+				if(m.delka(m.P2Lx(zacatek.x),m.P2Ly(zacatek.y),E->geo.X4,E->geo.Y4)>=1)
+				{vykresli_popisek_pohonu(canv,E->pohon->name,zacatek,m.L2P(E->geo.X4,E->geo.Y4),E->geo.orientace,zmena);zmena=!zmena;}
+				zacatek=TPoint(0,0);
+			}
+		}
 		if(pocet_pruchodu>1)
 		{
 			for(unsigned int i=2;i<=pocet_pruchodu;i++)
@@ -3218,6 +3209,104 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 	}
 	delete E;E=NULL;//smazání již nepotřebného ukazatele
 	delete[]POLE;POLE=NULL;
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//vykreslí popisek/vodoznak pohonu ve středu zadané úsečky, parametr pozice zajišťuje střídání pozice vodoznaku
+void Cvykresli::vykresli_popisek_pohonu(TCanvas *canv,AnsiString text,TPoint zacatek,TPoint konec,short trend,bool pozice)
+{
+	////obecné nastavení
+	TColor barva=clPasiv;
+	int delka_sipky;
+
+	////nastavení fontu
+	canv->Font->Size=m.round(2.8*F->Zoom);if(F->aFont->Size==12)canv->Font->Size=m.round(2*F->Zoom);//stejné nastavení jako při vykreslení PM
+	canv->Font->Name="Roboto Lt";
+	canv->Font->Color=clPasiv;
+	canv->Font->Style=TFontStyles();
+
+	////nastavení odsazení a rotace fontu
+	short W=canv->TextWidth(text),H=canv->TextHeight(text);//odsazení textu od středu
+	delka_sipky=W;//nastavení délky šipky na délku textu
+	short odsazeniX=W,odsazeniY=H;
+	short poziceX=(zacatek.x+konec.x)/2.0,poziceY=(zacatek.y+konec.y)/2.0;//uchovává střed, kde se bude vykreslovat text
+	int obratit=1;if(!pozice)obratit=-1;//proměná, která obrací odsazení
+	switch(trend)
+	{
+		case 0:
+		{
+      //nastavení odsazení pro text
+			odsazeniX=H;odsazeniY=W;
+			canv->Font->Orientation=900;
+			odsazeniY=-odsazeniY/2.0;if(obratit>0)odsazeniX*=2;//else odsazeniX/=2.0;
+			odsazeniX*=obratit;//převrácení vodoznaku
+			//nastavení bodů pro šipku
+			zacatek=TPoint(poziceX-odsazeniX+m.round(H*1.2)*pozice,poziceY-m.round(delka_sipky/2.0));//počáteční bod
+			konec=TPoint(poziceX-odsazeniX+m.round(H*1.2)*pozice,poziceY+m.round(delka_sipky/2.0));//koncový bod
+			break;
+		}
+		case 180:
+		{
+			//nastavení odsazení pro text
+			obratit*=-1;
+			odsazeniX=H;odsazeniY=W;
+			canv->Font->Orientation=2700;
+			odsazeniY=+odsazeniY/2.0;if(obratit<0)odsazeniX*=2;//else odsazeniX/=2.0;
+			odsazeniX*=obratit;//převrácení vodoznaku
+			//nastavení bodů pro šipku
+			zacatek=TPoint(poziceX-odsazeniX-m.round(H*1.2)*pozice,poziceY-m.round(delka_sipky/2.0));//počáteční bod
+			konec=TPoint(poziceX-odsazeniX-m.round(H*1.2)*pozice,poziceY+m.round(delka_sipky/2.0));//koncový bod
+			obratit*=-1;
+			break;
+		}
+		case 90:case 270:
+		{
+			//nastavení odsazení pro text
+			odsazeniX/=2.0;if(obratit>0)odsazeniY*=2;//else odsazeniY/=2.0;//nastavení odsazení pro tuto rotaci
+			odsazeniY*=obratit;//převrácení vodoznaku
+			//nastavení bodů pro šipku
+			zacatek=TPoint(poziceX-m.round(delka_sipky/2.0),poziceY-odsazeniY+m.round(H*1.2)*pozice);//počáteční bod
+			konec=TPoint(poziceX+m.round(delka_sipky/2.0),poziceY-odsazeniY+m.round(H*1.2)*pozice);//koncový bod
+			break;
+    }
+	}
+
+	////vykreslení názvu
+	TextFraming(canv,poziceX-odsazeniX,poziceY-odsazeniY,text);
+
+	////vykreslení šipky u pohonu
+	//nastavení grafického pera
+	canv->Pen->Style=bsSolid;
+	canv->Pen->Width=m.round(F->Zoom/5.0);
+	canv->Pen->Color=barva;
+	obratit=1;
+	//vykreslení čáry šipky
+	if(trend==90 || trend==270)
+	{
+		if(trend==90)konec.x+=m.round(1.2*delka_sipky/4.0);
+		else zacatek.x-=m.round(1.2*delka_sipky/4.0);
+	}
+	else
+	{
+		if(trend==180)konec.y+=m.round(1.2*delka_sipky/4.0);
+		else zacatek.y-=m.round(1.2*delka_sipky/4.0);
+  }
+	line(canv,zacatek.x,zacatek.y,konec.x,konec.y);
+	//zajištění prohození začátku a konce pro opačné trnedy
+	if(trend==270 || trend==0){konec=zacatek;obratit=-1;}
+	//vykreslení skosených čar pro šipku
+	if(trend==90 || trend==270)
+	{
+		line(canv,konec.x,konec.y,konec.x-m.round(delka_sipky/4.0)*obratit,konec.y+m.round(delka_sipky/17.0));
+		line(canv,konec.x,konec.y,konec.x-m.round(delka_sipky/4.0)*obratit,konec.y-m.round(delka_sipky/17.0));
+	}
+	else
+	{
+		line(canv,konec.x,konec.y,konec.x+m.round(delka_sipky/17.0),konec.y-m.round(delka_sipky/4.0)*obratit);
+		line(canv,konec.x,konec.y,konec.x-m.round(delka_sipky/17.0),konec.y-m.round(delka_sipky/4.0)*obratit);
+	}
+
+	////navrácení rotace canv, důležité pro správnost ostatního vykreslení!!!!!
+	canv->Font->Orientation=0;
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //NEMAZaT!!! je test výše uvedené metody (akorát asi již nemá zohledněné všechny změny), pro vykreslení "dokonalých předávacích míst" - NEMAZAT!!! složí jako příprava
@@ -4481,6 +4570,7 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,lon
 		if(typ==0 && stav!=-1)canv->Font->Color=m.clIntensive(barva,100);else canv->Font->Color=barva;//ikona vs. normální zobrazení
 		canv->Font->Size=F->m.round(2.8*Z);if(F->aFont->Size==12)canv->Font->Size=F->m.round(2*Z);
 		canv->Font->Name="Roboto Lt";
+		canv->Font->Color=clPasiv;
 		canv->Font->Style = TFontStyles();
 		canv->Brush->Color=clWhite;
 		canv->Brush->Style=bsClear;
