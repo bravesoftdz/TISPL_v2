@@ -2226,8 +2226,8 @@ void Cvektory::vloz_G_element(TElement *Element,short typ,double X1,double Y1,do
 				if(delka==0)Element->geo.delka=m.delka(Element->geo.X1,Element->geo.Y1,Element->geo.X4,Element->geo.Y4);//pokud nebyla délka dodána
 				Element->geo.radius=0;
 				Element->geo.rotacni_uhel=0;
-				Element->geo.X3=Element->geo.X2=(Element->geo.X1+Element->geo.X4)/2.0;//v případě linie dopočítá kontrolní body bézierovy křivky do středu linie
-				Element->geo.Y3=Element->geo.Y2=(Element->geo.Y1+Element->geo.Y4)/2.0;//v případě linie dopočítá kontrolní body bézierovy křivky do středu linie
+				Element->geo.X2=Element->geo.X1;Element->geo.Y2=Element->geo.Y1;
+				Element->geo.X3=Element->geo.X4;Element->geo.Y3=Element->geo.Y4;
 			}break;
 			case 1://oblouk
 			{

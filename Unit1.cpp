@@ -3398,6 +3398,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 		{
 			if(Button==mbLeft/* && MOD!=REZERVY*/)//je stisknuto levé tlačítko myši
 			{
+				getJobID(X,Y);//zajištění aktuálních JID, nemusí být aktuální skrze zpoždění setjobid při mousemove
 				stisknute_leve_tlacitko_mysi=true;
 				vychozi_souradnice_kurzoru=TPoint(X,Y);//výchozí souřadnice
 				//aktivuje POSUN OBJEKTU, ELEMENTU či TABULKY,pokud je kliknuto v místě objektu (v jeho vnitřku)
@@ -5308,7 +5309,7 @@ void TForm1::ZOOM_WINDOW()
 	//přepočtení na používaný krok zoomu
 	Zoom-=fmod(Zoom,0.5);
 	if(Zoom<0.5)Zoom=0.5;
-	if(Zoom<20 && !DEBUG)Zoom=20;if(Zoom<30 && DEBUG)Zoom=30;
+	if(Zoom>20 && !DEBUG)Zoom=20;if(Zoom>30 && DEBUG)Zoom=30;
   //////
 
 	//vycentrování obrazu
@@ -5427,9 +5428,11 @@ void TForm1::pan_create()
 	if(MOD==CASOVAOSA || MOD==TECHNOPROCESY)W=0;//zajistí, že se posová i číslování vozíků resp.celá oblast
 	short H=scGPPanel_mainmenu->Height;
 	int Gh=vrat_max_vysku_grafu();if(scGPPanel_bottomtoolbar->Visible)Gh=scGPPanel_bottomtoolbar->Height;
+	scGPButton_bug_report->Visible=false;
 	Gh-=6;//WA, z nějaké důvodu to chce odebrat, aby byla posouváná plocha kompletní
 	Pan_bmp->Width=ClientWidth;Pan_bmp->Height=ClientHeight-H-Gh;//velikost pan plochy
 	Pan_bmp->Canvas->CopyRect(Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh),Canvas,Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh));//uloží pan výřez
+	scGPButton_bug_report->Visible=true;
 	//Pan_bmp->SaveToFile("test.bmp");  //pro testovací účely
 }
 //---------------------------------------------------------------------------
@@ -6551,12 +6554,6 @@ void TForm1::smaz_bod_haly_objektu(Cvektory::TBod *bod)
 //vkládá novou geometrii nebo edituje již stávající geometrii
 void TForm1::vlozeni_editace_geometrie()
 {
-//	Memo(AnsiString(d.geoTemp.X1)+","+AnsiString(d.geoTemp.Y1));
-//	Memo(AnsiString(d.geoTemp.X2)+","+AnsiString(d.geoTemp.Y2));
-//	Memo(AnsiString(d.geoTemp.X3)+","+AnsiString(d.geoTemp.Y3));
-//	Memo(AnsiString(d.geoTemp.X4)+","+AnsiString(d.geoTemp.Y4));
-	d.geoTemp.X2=d.geoTemp.X3=(d.geoTemp.X1+d.geoTemp.X4)/2.0;
-	d.geoTemp.Y2=d.geoTemp.Y3=(d.geoTemp.Y1+d.geoTemp.Y4)/2.0;
 	log(__func__);//logování
 	//////deklarace atributů
 	double posunx=0,posuny=0;
@@ -13590,12 +13587,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Cvektory::TObjekt *E=d.v.DATA->predchozi->Objekty->dalsi;Memo3->Clear();
-	while(E!=NULL)
-	{
-		Memo("Objekt->n = "+AnsiString(E->n));
-		E=E->dalsi;
-	}
+	//
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -16490,7 +16482,7 @@ void __fastcall TForm1::Timer_getjobidTimer(TObject *Sender)
 {
 	log(__func__);
 	setJobIDOnMouseMove(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
-	Memo(__func__,true,true);
+	//Memo(__func__,true,true);
 	Timer_getjobid->Enabled=false;
 }
 //---------------------------------------------------------------------------
