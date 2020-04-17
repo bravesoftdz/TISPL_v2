@@ -3227,9 +3227,10 @@ void Cvykresli::vykresli_popisek_pohonu(TCanvas *canv,AnsiString text,TPoint zac
 	////nastavení odsazení a rotace fontu
 	short W=canv->TextWidth(text),H=canv->TextHeight(text);//odsazení textu od středu
 	delka_sipky=W;//nastavení délky šipky na délku textu
-	short odsazeniX=W,odsazeniY=H;
+	short odsazeniX=W,odsazeniY=H;//default hodnoty
 	short poziceX=(zacatek.x+konec.x)/2.0,poziceY=(zacatek.y+konec.y)/2.0;//uchovává střed, kde se bude vykreslovat text
 	int obratit=1;if(!pozice)obratit=-1;//proměná, která obrací odsazení
+	double odsazeni=1.2;if(obratit>0)odsazeni=1.1;//pomocná proměnná pro posun šipky od pohonu
 	switch(trend)
 	{
 		case 0:
@@ -3237,35 +3238,35 @@ void Cvykresli::vykresli_popisek_pohonu(TCanvas *canv,AnsiString text,TPoint zac
       //nastavení odsazení pro text
 			odsazeniX=H;odsazeniY=W;
 			canv->Font->Orientation=900;
-			odsazeniY=-odsazeniY/2.0;if(obratit>0)odsazeniX*=2;//else odsazeniX/=2.0;
+			odsazeniY=-odsazeniY/2.0;if(obratit>0)odsazeniX*=2.14;//jednou je třeba připočítat výšku textu
 			odsazeniX*=obratit;//převrácení vodoznaku
 			//nastavení bodů pro šipku
-			zacatek=TPoint(poziceX-odsazeniX+m.round(H*1.2)*pozice,poziceY-m.round(delka_sipky/2.0));//počáteční bod
-			konec=TPoint(poziceX-odsazeniX+m.round(H*1.2)*pozice,poziceY+m.round(delka_sipky/2.0));//koncový bod
+			zacatek=TPoint(poziceX-odsazeniX+m.round(H*odsazeni)*pozice,poziceY-m.round(delka_sipky/2.0));//počáteční bod
+			konec=TPoint(poziceX-odsazeniX+m.round(H*odsazeni)*pozice,poziceY+m.round(delka_sipky/2.0));//koncový bod
 			break;
 		}
 		case 180:
 		{
 			//nastavení odsazení pro text
-			obratit*=-1;
+			obratit*=-1;//nutno otočit, orientace 180 má více odlišností
 			odsazeniX=H;odsazeniY=W;
 			canv->Font->Orientation=2700;
-			odsazeniY=+odsazeniY/2.0;if(obratit<0)odsazeniX*=2;//else odsazeniX/=2.0;
+			odsazeniY=+odsazeniY/2.0;if(obratit<0)odsazeniX*=2.14;//jednou je třeba připočítat výšku textu
 			odsazeniX*=obratit;//převrácení vodoznaku
 			//nastavení bodů pro šipku
-			zacatek=TPoint(poziceX-odsazeniX-m.round(H*1.2)*pozice,poziceY-m.round(delka_sipky/2.0));//počáteční bod
-			konec=TPoint(poziceX-odsazeniX-m.round(H*1.2)*pozice,poziceY+m.round(delka_sipky/2.0));//koncový bod
-			obratit*=-1;
+			zacatek=TPoint(poziceX-odsazeniX-m.round(H*odsazeni)*pozice,poziceY-m.round(delka_sipky/2.0));//počáteční bod
+			konec=TPoint(poziceX-odsazeniX-m.round(H*odsazeni)*pozice,poziceY+m.round(delka_sipky/2.0));//koncový bod
+			obratit*=-1;//navrácení do původního stavu
 			break;
 		}
 		case 90:case 270:
 		{
 			//nastavení odsazení pro text
-			odsazeniX/=2.0;if(obratit>0)odsazeniY*=2;//else odsazeniY/=2.0;//nastavení odsazení pro tuto rotaci
+			odsazeniX/=2.0;if(obratit>0)odsazeniY*=2.14;//jednou je třeba připočítat výšku textu
 			odsazeniY*=obratit;//převrácení vodoznaku
 			//nastavení bodů pro šipku
-			zacatek=TPoint(poziceX-m.round(delka_sipky/2.0),poziceY-odsazeniY+m.round(H*1.2)*pozice);//počáteční bod
-			konec=TPoint(poziceX+m.round(delka_sipky/2.0),poziceY-odsazeniY+m.round(H*1.2)*pozice);//koncový bod
+			zacatek=TPoint(poziceX-m.round(delka_sipky/2.0),poziceY-odsazeniY+m.round(H*odsazeni)*pozice);//počáteční bod
+			konec=TPoint(poziceX+m.round(delka_sipky/2.0),poziceY-odsazeniY+m.round(H*odsazeni)*pozice);//koncový bod
 			break;
     }
 	}
@@ -3279,18 +3280,20 @@ void Cvykresli::vykresli_popisek_pohonu(TCanvas *canv,AnsiString text,TPoint zac
 	canv->Pen->Width=m.round(F->Zoom/5.0);
 	canv->Pen->Color=barva;
 	obratit=1;
+
 	//vykreslení čáry šipky
 	if(trend==90 || trend==270)
 	{
-		if(trend==90)konec.x+=m.round(1.2*delka_sipky/4.0);
-		else zacatek.x-=m.round(1.2*delka_sipky/4.0);
+		if(trend==90)konec.x+=m.round(1.1*delka_sipky/4.0);
+		else zacatek.x-=m.round(1.1*delka_sipky/4.0);
 	}
 	else
 	{
-		if(trend==180)konec.y+=m.round(1.2*delka_sipky/4.0);
-		else zacatek.y-=m.round(1.2*delka_sipky/4.0);
+		if(trend==180)konec.y+=m.round(1.1*delka_sipky/4.0);
+		else zacatek.y-=m.round(1.1*delka_sipky/4.0);
   }
 	line(canv,zacatek.x,zacatek.y,konec.x,konec.y);
+
 	//zajištění prohození začátku a konce pro opačné trnedy
 	if(trend==270 || trend==0){konec=zacatek;obratit=-1;}
 	//vykreslení skosených čar pro šipku
