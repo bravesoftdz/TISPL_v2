@@ -1015,7 +1015,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=460;i++)
+	for(unsigned short i=0;i<=461;i++)
 	{
 		switch(i)
 		{
@@ -1480,6 +1480,7 @@ void TForm1::DesignSettings()
 			case 458:text="Nahlásit";break;
 			case 459:text="Popis";break;
 			case 460:text="Zaslat chybu, dotaz nebo připomínku";break;
+			case 461:text="Směr pohonu";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -11283,7 +11284,6 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 					d.v.aktualizace_rezimu_objektu(OBJEKT_akt);//aktualizace režimu, např. z důvodu odstranění poslední KK elementu ... režím objektu jež nemůže být KK
           if(eID==200)vlozit_predavaci_misto_aktualizuj_WT();//bylo odstraněno PM
 					Akce=NIC;
-					REFRESH();
 					DuvodUlozit(true);
 		  		nahled_ulozit(true);
 		  		DrawGrid_knihovna->Refresh();
@@ -11293,6 +11293,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 					pom_element=NULL;//přidáno nově 13.5.2019 - v režimu testování kvůli setJobID a předání do pom_element_puv
 					if(eID%2==0 && eID!=100 && eID!=200 && eID!=MaxInt)d.v.aktualizuj_sparovane_ukazatele();//odstraněn stop-element, nutná aktualizace
 					dalsi_element=NULL;delete dalsi_element;
+					REFRESH();
 				}else {mazani=false;Akce=NIC;}
 			}
 			if(pom_element!=NULL )//&& pom_element->eID==MaxInt)//mazání zarážky z popup
@@ -12328,6 +12329,10 @@ void __fastcall TForm1::UlozitClick(TObject *Sender)
 	if(MOD==EDITACE && duvod_ulozit_nahled)//uložení z editace = uložím editovaný objekt + celý projekt
 	{
 		Ulozit_soubor();
+		d.v.vymaz_seznam_DATA();
+		d.v.hlavicka_DATA();
+		d.v.vytvor_obraz_DATA(true);//vytovoření obrazu projektu pro funkci storno
+		d.v.vytvor_obraz_DATA();//obraz pro vracení se v náhledu
 		nahled_ulozit(false);
 	}
 	scButton_ulozit->Down=false;
@@ -15978,6 +15983,7 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 		scGPGlyphButton_undo->Hint=ls->Strings[449];
 		scGPGlyphButton_redo->Hint=ls->Strings[450];
 		scGPButton_bug_report->Caption=ls->Strings[458];
+		scGPCheckBox_popisek_pohonu->Caption=ls->Strings[461];
 
     //změna zarovnání
 		scGPComboBox_prepinacKot->Left=scGPLabel_prepinacKot->Left+scGPLabel_prepinacKot->Width;//nutné!!

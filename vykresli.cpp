@@ -3102,7 +3102,9 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,doubl
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//přejmenovat např. na vykresli_dopravnik (kreslí jak koleje tak pouzdro řetězu i řetěz samotný
 {
-	TPoint *POLE=new TPoint[4];      bool zmena=true;   TPoint zacatek;zacatek=TPoint(0,0); F->Memo3->Clear();
+	TPoint *POLE=new TPoint[4];
+	bool zmena=true;
+	TPoint zacatek;zacatek=TPoint(0,0);
 	unsigned int pocet_pruchodu=0;
 	Cvektory::TElement *E=v.ELEMENTY->dalsi;
 	while(E!=NULL)

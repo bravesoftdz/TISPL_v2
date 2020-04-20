@@ -3570,7 +3570,7 @@ Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruc
 
 		//kontrola jestli má objekt ukazatel na svůj první element
 		TObjekt *O=vrat_objekt(novy->objekt_n);
-		if(O->element==NULL || O->element!=NULL && O->element->n>novy->n)O->element=novy;//pokud objekt nemá první element nebo první element má větší n než aktuální
+		if(O!=NULL && (O->element==NULL || O->element!=NULL && O->element->n>novy->n))O->element=novy;//pokud objekt nemá první element nebo první element má větší n než aktuální
 
 		//ukazatelové záležitosti
 		O=NULL;delete O;
@@ -8151,6 +8151,9 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 			delete dE;dE=NULL;
 			delete []tab_pruchodu;tab_pruchodu=NULL;vyhybka_pom=NULL;
 		}
+
+		//navrácení počtu výhybek
+		pocet_vyhybek=obraz->pocet_vyhybek;
 		//pro Editaci
 //		else
 //		{
