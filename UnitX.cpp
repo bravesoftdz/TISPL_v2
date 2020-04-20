@@ -1378,6 +1378,7 @@ void TFormX::prirazeni_pohohonu_vetvi(Cvektory::TElement *E,long Col)
 	int p_n=0;
 	if(Combo!=NULL && Combo->ItemIndex!=0)p=F->d.v.vrat_pohon(Combo->ItemIndex);
 	if(p!=NULL)p_n=p->n;
+	F->OBJEKT_akt->pohon=p;//uložení aktuálnì editovaného pohonu
 	Cvektory::TElement *e=NULL;
 	//zjištìní jakou vìtev budu editovat
 	bool hlavni=true;
@@ -1387,7 +1388,7 @@ void TFormX::prirazeni_pohohonu_vetvi(Cvektory::TElement *E,long Col)
 		if(Col==3)Col=4;
 		if(Col==4)Col=3;
 	}
-	if(Col!=1)hlavni=false;
+	if(Col!=3)hlavni=false;
 
   ////uložení aktuálnì editovaného pohonu
 	F->OBJEKT_akt->pohon=p;
@@ -1396,7 +1397,6 @@ void TFormX::prirazeni_pohohonu_vetvi(Cvektory::TElement *E,long Col)
 	if(hlavni)
 	{
 		E->pohon=p;
-		F->OBJEKT_akt->pohon=p;
 		e=E->dalsi;
 		while(e!=NULL && e->objekt_n==F->OBJEKT_akt->n)
 		{
@@ -1424,6 +1424,7 @@ void TFormX::prirazeni_pohohonu_vetvi(Cvektory::TElement *E,long Col)
 			e->pohon=p;
 			e=e->dalsi;
 		}
+		update_hodnot_vyhybky_PM(E);//nutno udìlat ruènì, metoda aktualizace_tab_elementu(), aktualizuje pouze elementy na stejném pohonu, co vyhybka není, má pohon hlavní vìtve
 		//WT øeší fce. vložení PM
 	}
 
