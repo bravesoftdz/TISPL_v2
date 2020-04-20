@@ -196,6 +196,9 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	T=readINI("nastaveni_editace","zobrazit_rozmisteni_voziku"); //zobrazit_rozmisteni_jigu
 	if(T==1 || T=="")zobrazit_rozmisteni_voziku=1;else zobrazit_rozmisteni_voziku=0;
 	if(T=="")writeINI("nastaveni_editace","zobrazit_rozmisteni_voziku",zobrazit_rozmisteni_voziku);
+	T=readINI("nastaveni_editace","zobrazit_popisek_pohonu"); //zobrazit_popisek_pohonu
+	if(T==1 || T=="")zobrazit_popisek_pohonu=1;else zobrazit_popisek_pohonu=0;
+	if(T=="")writeINI("nastaveni_editace","zobrazit_popisek_pohonu",zobrazit_popisek_pohonu);
 
 
 	if(rotace_jigu==1) scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
@@ -215,6 +218,9 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 
 	if(zobrazit_rozmisteni_voziku==1)scGPCheckBox_rozmisteni_voziku->Checked=true;
 	else   scGPCheckBox_rozmisteni_voziku->Checked=false;
+
+	if(zobrazit_popisek_pohonu==1)scGPCheckBox_popisek_pohonu->Checked=true;
+	else   scGPCheckBox_popisek_pohonu->Checked=false;
 
   //načtení posledních uložených souborů
 	N1projekt1->Caption=readINI("historie","posledni_soubor_1");
@@ -3398,7 +3404,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 		{
 			if(Button==mbLeft/* && MOD!=REZERVY*/)//je stisknuto levé tlačítko myši
 			{
-				getJobID(X,Y);//zajištění aktuálních JID, nemusí být aktuální skrze zpoždění setjobid při mousemove
+				if(Akce==NIC)getJobID(X,Y);//zajištění aktuálních JID, nemusí být aktuální skrze zpoždění setjobid při mousemove
 				stisknute_leve_tlacitko_mysi=true;
 				vychozi_souradnice_kurzoru=TPoint(X,Y);//výchozí souřadnice
 				//aktivuje POSUN OBJEKTU, ELEMENTU či TABULKY,pokud je kliknuto v místě objektu (v jeho vnitřku)
@@ -6724,30 +6730,30 @@ void TForm1::vlozeni_editace_geometrie()
 	}
 
 	////připnutí vedlejší větve na hlavní
-	if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->predchozi2==posledni_editovany_element && (m.round2double(posledni_editovany_element->geo.X4,2)==m.round2double(posledni_editovany_element->dalsi->geo.X4,2) || m.round2double(posledni_editovany_element->geo.Y4,2)==m.round2double(posledni_editovany_element->dalsi->geo.Y4,2)))
-	{
-		if(m.Rt90(posledni_editovany_element->geo.orientace-posledni_editovany_element->geo.rotacni_uhel)==m.Rt90(posledni_editovany_element->dalsi->geo.orientace-posledni_editovany_element->dalsi->geo.rotacni_uhel) && m.delka(posledni_editovany_element->dalsi->geo.X4,posledni_editovany_element->dalsi->geo.Y4,posledni_editovany_element->geo.X4,posledni_editovany_element->geo.Y4)<=1)
-		{
-			double posun_x,posun_y;
-			//zjištění jednotlivých délek posunů
-			posun_x=-posledni_editovany_element->dalsi->geo.X4+posledni_editovany_element->geo.X4;
-			posun_y=-posledni_editovany_element->dalsi->geo.Y4+posledni_editovany_element->geo.Y4;
-
-			if(m.round2double(posledni_editovany_element->dalsi->geo.X4+posun_x,2)>=m.round2double(posledni_editovany_element->dalsi->geo.X1,2) && m.round2double(posledni_editovany_element->dalsi->geo.Y4+posun_y,2)>=m.round2double(posledni_editovany_element->dalsi->geo.Y1,2))
-			{
-				d.v.vloz_G_element(posledni_editovany_element->dalsi,0,posledni_editovany_element->dalsi->geo.X1,posledni_editovany_element->dalsi->geo.Y1,0,0,0,0,posledni_editovany_element->dalsi->geo.X4+posun_x,posledni_editovany_element->dalsi->geo.Y4+posun_y,posledni_editovany_element->dalsi->geo.orientace);
-				posledni_editovany_element->dalsi->X+=posun_x;
-				posledni_editovany_element->dalsi->Y+=posun_y;
-				d.v.vloz_G_element(posledni_editovany_element->dalsi->dalsi,0,posledni_editovany_element->dalsi->geo.X4,posledni_editovany_element->dalsi->geo.Y4,0,0,0,0,posledni_editovany_element->dalsi->dalsi->geo.X4,posledni_editovany_element->dalsi->dalsi->geo.Y4,posledni_editovany_element->dalsi->dalsi->geo.orientace);
-			}
-			else if(posledni_editovany_element->geo.typ==0)
-			{
-				d.v.vloz_G_element(posledni_editovany_element,0,posledni_editovany_element->geo.X1,posledni_editovany_element->geo.Y1,0,0,0,0,posledni_editovany_element->geo.X4-posun_x,posledni_editovany_element->geo.Y4-posun_y,posledni_editovany_element->geo.orientace);
-				posledni_editovany_element->X-=posun_x;
-				posledni_editovany_element->Y-=posun_y;
-			}
-		}
-	}
+//	if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->predchozi2==posledni_editovany_element && (m.round2double(posledni_editovany_element->geo.X4,2)==m.round2double(posledni_editovany_element->dalsi->geo.X4,2) || m.round2double(posledni_editovany_element->geo.Y4,2)==m.round2double(posledni_editovany_element->dalsi->geo.Y4,2)))
+//	{
+//		if(m.Rt90(posledni_editovany_element->geo.orientace-posledni_editovany_element->geo.rotacni_uhel)==m.Rt90(posledni_editovany_element->dalsi->geo.orientace-posledni_editovany_element->dalsi->geo.rotacni_uhel) && m.delka(posledni_editovany_element->dalsi->geo.X4,posledni_editovany_element->dalsi->geo.Y4,posledni_editovany_element->geo.X4,posledni_editovany_element->geo.Y4)<=1)
+//		{
+//			double posun_x,posun_y;
+//			//zjištění jednotlivých délek posunů
+//			posun_x=-posledni_editovany_element->dalsi->geo.X4+posledni_editovany_element->geo.X4;
+//			posun_y=-posledni_editovany_element->dalsi->geo.Y4+posledni_editovany_element->geo.Y4;
+//
+//			if(m.round2double(posledni_editovany_element->dalsi->geo.X4+posun_x,2)>=m.round2double(posledni_editovany_element->dalsi->geo.X1,2) && m.round2double(posledni_editovany_element->dalsi->geo.Y4+posun_y,2)>=m.round2double(posledni_editovany_element->dalsi->geo.Y1,2))
+//			{
+//				d.v.vloz_G_element(posledni_editovany_element->dalsi,0,posledni_editovany_element->dalsi->geo.X1,posledni_editovany_element->dalsi->geo.Y1,0,0,0,0,posledni_editovany_element->dalsi->geo.X4+posun_x,posledni_editovany_element->dalsi->geo.Y4+posun_y,posledni_editovany_element->dalsi->geo.orientace);
+//				posledni_editovany_element->dalsi->X+=posun_x;
+//				posledni_editovany_element->dalsi->Y+=posun_y;
+//				d.v.vloz_G_element(posledni_editovany_element->dalsi->dalsi,0,posledni_editovany_element->dalsi->geo.X4,posledni_editovany_element->dalsi->geo.Y4,0,0,0,0,posledni_editovany_element->dalsi->dalsi->geo.X4,posledni_editovany_element->dalsi->dalsi->geo.Y4,posledni_editovany_element->dalsi->dalsi->geo.orientace);
+//			}
+//			else if(posledni_editovany_element->geo.typ==0)
+//			{
+//				d.v.vloz_G_element(posledni_editovany_element,0,posledni_editovany_element->geo.X1,posledni_editovany_element->geo.Y1,0,0,0,0,posledni_editovany_element->geo.X4-posun_x,posledni_editovany_element->geo.Y4-posun_y,posledni_editovany_element->geo.orientace);
+//				posledni_editovany_element->X-=posun_x;
+//				posledni_editovany_element->Y-=posun_y;
+//			}
+//		}
+//	}
 
 	//důvod uložit
 	nahled_ulozit(true);
@@ -16484,6 +16490,19 @@ void __fastcall TForm1::Timer_getjobidTimer(TObject *Sender)
 	setJobIDOnMouseMove(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
 	//Memo(__func__,true,true);
 	Timer_getjobid->Enabled=false;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::scGPCheckBox_popisek_pohonuClick(TObject *Sender)
+{
+	log(__func__);//logování
+	if(Akce==GEOMETRIE || Akce==NIC)
+	{
+		if(scGPCheckBox_popisek_pohonu->Checked)zobrazit_popisek_pohonu=1;
+		else zobrazit_popisek_pohonu=0;
+		if(Akce==NIC)writeINI("nastaveni_editace","zobrazit_popisek_pohonu",zobrazit_popisek_pohonu);//ukládat do ini pouze mimo geometrii
+		REFRESH();
+	}
 }
 //---------------------------------------------------------------------------
 

@@ -349,6 +349,7 @@ __published:	// IDE-managed Components
   TscGPGlyphButton *scGPGlyphButton_redo;
   TscGPButton *scGPButton_bug_report;
 	TTimer *Timer_getjobid;
+	TscGPCheckBox *scGPCheckBox_popisek_pohonu;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -578,6 +579,7 @@ __published:	// IDE-managed Components
   void __fastcall scGPGlyphButton_redoClick(TObject *Sender);
   void __fastcall scGPButton_bug_reportClick(TObject *Sender);
 	void __fastcall Timer_getjobidTimer(TObject *Sender);
+	void __fastcall scGPCheckBox_popisek_pohonuClick(TObject *Sender);
 
 
 
@@ -802,6 +804,7 @@ public:		// User declarations
 	short zobrazit_koleje;
 	short zobrazit_palce;
 	short zobrazit_rozmisteni_voziku;
+	short zobrazit_popisek_pohonu;
 	bool zamek_layoutu;
   int Top_backup;  //pomocne promenne pro pozici zprav
   int Left_backup; //pomocne promenne pro pozici zprav
