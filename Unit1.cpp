@@ -16486,6 +16486,12 @@ void __fastcall TForm1::scGPGlyphButton_redoClick(TObject *Sender)
 void __fastcall TForm1::scGPButton_bug_reportClick(TObject *Sender)
 {
 	log(__func__);//logování
+  //vytvoření printscreeunu
+  pan_create();//vytvoří aktuální printscreen jen pracovní plochy
+	TPngImage* PNG = new TPngImage();//kvůli větší kompresi uloženo do PNG (má větší kompresi než JPG)
+	PNG->Assign(Pan_bmp);
+	PNG->SaveToFile(get_temp_dir() +"TISPL\\" + "tispl_PrtScr"+get_user_name()+"_"+get_computer_name()+".png");
+
 	Form_konzole->ShowModal();
 }
 //---------------------------------------------------------------------------

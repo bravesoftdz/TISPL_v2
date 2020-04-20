@@ -639,9 +639,11 @@ private:
 	void ulozit_posledni_otevreny();//uloží do ini nazev posledního pracovního souboru
 	void ulozit_historie_otevrenych();//ukládání 3 naposledy otevøených projektù do historie
 	void vse_odstranit();
+public:
 	UnicodeString get_computer_name();
 	UnicodeString get_user_name();
 	UnicodeString get_Windows_dir();
+private:
 	int get_DPI();
 	void redesign_element();
 	AnsiString FileName_short(AnsiString FileName);
