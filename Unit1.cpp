@@ -6928,11 +6928,11 @@ double TForm1::max_voziku(Cvektory::TElement *stopka)
 				}
 				if(E->eID==1 || E->eID==3 || E->eID==7 || E->eID==9 || E->eID==11 || E->eID==13 || E->eID==15 || E->eID==17 || E->eID==101 || E->eID==103 || E->eID==105 || E->eID==107)
 				{
-					if(d.v.ZAKAZKA_akt->n!=0)C=d.v.vrat_segment_cesty(d.v.ZAKAZKA_akt,E);
+					if(d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n!=0)C=d.v.vrat_segment_cesty(d.v.ZAKAZKA_akt,E);
 					if(C!=NULL)E->data=C->data;
 					if(E->data.LO2>0)delka-=E->data.LO2+E->data.LO_pozice;
 					else delka-=(E->data.LO1+E->data.LO2)/2.0+E->data.LO_pozice;
-        }
+				}
 				if(E->geo.typ==0 && E->eID==MaxInt)delka+=E->geo.delka;
 				else break;
 			}
@@ -11548,6 +11548,7 @@ void TForm1::NP_input()
 	 log(__func__);//logování
 	 log("Otevřeni editace, MOD=EDITACE");
 	 TIP="";
+	 Timer_getjobid->Enabled=false;
 	 if(!scSplitView_LEFTTOOLBAR->Opened)scSplitView_LEFTTOOLBAR->Opened=true;
 	 DrawGrid_knihovna->SetFocus();
 	 mGrid_knihovna->Delete();
@@ -11772,6 +11773,7 @@ void TForm1::zmena_editovaneho_objektu()
 	log(__func__);//logování
 	log("Otevřeni editace, MOD=EDITACE");
 	Timer_neaktivity->Enabled=false;//vypnutí timeru pro jistotu
+	Timer_getjobid->Enabled=false;
 	DrawGrid_knihovna->SetFocus();
 	/////////Uložení náhledu
 	bool prepnout=true,validace=false,storno=false;
@@ -13598,7 +13600,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	//
+	Memo(d.v.ZAKAZKA_akt->n);
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -14610,6 +14612,7 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 {
 	log(__func__);//logování
+	Timer_getjobid->Enabled=false;
 	//pokud je otevřené menu nebo options zavře je
 	if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)
 	{
@@ -15032,6 +15035,7 @@ void __fastcall TForm1::Button_testClick(TObject *Sender)
 void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
 {
 	log(__func__);//logování
+	Timer_getjobid->Enabled=false;
 	if(editace_textu)smaz_kurzor();//uložení změn při zapnuté editaci textu
 	//vymazání nepotřebných obrazů
 	d.v.vymaz_seznam_DATA();

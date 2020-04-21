@@ -1904,7 +1904,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 		if(Element->eID!=300 && Element->eID!=301)
 		{
 	  	if(p==NULL)//vkládám na konec
-	  	{
+			{
 	  		//ukazatelové propojení
 	  		if(posledni==NULL)//vkládání nového objektu - vkládání zarážky
 	  		{
@@ -1957,8 +1957,8 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 	  		if(F->OBJEKT_akt!=NULL && Element->n!=1 && Element->Xt==-100)//nutna podminka, pri nacitani z binarky je OBJEKT_akt=NULL a nactou se hodnoty OK
 	  		vloz_G_element(Element,0,Element->predchozi->geo.X4,Element->predchozi->geo.Y4,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,Element->predchozi->geo.orientace);
 	  	}
-	  	else /*if(p->n!=Element->n)*///vkládám mezi elementy, vpřípadě, že bylo vloženo před prví prvek vrací Element, přesun je již vyřešen
-	  	{
+			else /*if(p->n!=Element->n)*///vkládám mezi elementy, vpřípadě, že bylo vloženo před prví prvek vrací Element, přesun je již vyřešen
+			{
 	  		//ukazatelové propojení
 				Element->dalsi=p;
 	  		Element->predchozi=p->predchozi;
@@ -1967,10 +1967,10 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 				else p->predchozi->dalsi=Element;
 	  		p->predchozi=Element;
 
-    		//geometrie
-	  		vloz_G_element(Element,0,p->geo.X1,p->geo.Y1,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,p->geo.orientace);
-	  		vloz_G_element(p,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,F->d.Rxy(p).x,F->d.Rxy(p).y,p->geo.orientace);
-	  		//změna indexů
+				//geometrie
+				vloz_G_element(Element,0,p->geo.X1,p->geo.Y1,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,p->geo.orientace);
+				vloz_G_element(p,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,p->geo.X4,p->geo.Y4,p->geo.orientace);
+				//změna indexů
 	  		Cvektory::TElement *E=Element;
 	  		//E->n=vrat_poradi_elementu_do(E)+1;
 	  		int n=E->predchozi->n+1;
@@ -3661,7 +3661,37 @@ void Cvektory::smaz_vyhybku_spojku(TElement *Element)
 		}
 	}while(smazat!=NULL);
 	//upravení počtu výhybek
-	pocet_vyhybek-=pocet_mazanych_vyhybek;
+	aktualizuj_identifikator_vyhybky_spojky();
+	//pocet_vyhybek-=pocet_mazanych_vyhybek;/////////////nutno aktualizovat identifikator_vyhybka_spojka u ostatních
+}
+////---------------------------------------------------------------------------
+////---------------------------------------------------------------------------
+//aktualizuje identifikátory výhybkám a spojkám, přejmenuje
+void Cvektory::aktualizuj_identifikator_vyhybky_spojky()
+{
+  //deklarace
+	TElement *E=ELEMENTY->dalsi;//průchod spojáku elementů od začátku
+	int pocet=0;//počet výhybek, začínám od začátku
+
+	//průchod kompletního spojáku
+	while(E!=NULL)
+	{
+		if(E->eID==300)//narazil jsem na výhybku
+		{
+			pocet++;//navýšení počtu
+			E->idetifikator_vyhybka_spojka=pocet;//zapsání identifikátoru do výhybky
+			E->name="Výhybka "+AnsiString(pocet);//změna názvu
+			E->predchozi2->idetifikator_vyhybka_spojka=pocet;//zapsání identifikátoru do spojky
+			E->predchozi2->name="Spojka "+AnsiString(pocet);//změna názvu
+		}
+		E=dalsi_krok(E);
+	}
+
+	//ukazatelové záležitosti
+	delete E;E=NULL;
+
+	//zapsání počtu výhybek do proměnné
+	pocet_vyhybek=pocet;
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
