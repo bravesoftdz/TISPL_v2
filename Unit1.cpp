@@ -5702,7 +5702,7 @@ Cvektory::TObjekt *TForm1::add_objekt(int X, int Y)
 		pom_vyhybka=NULL;//odsranění pomocného ukazatele na vložený objekt
 		Akce=NIC;//musí být nad REFRESH
 		kurzor(standard);
-		ortogonalizace();
+		//ortogonalizace();//přesunuto do vektorové metodys
 		vybrany_objekt=-1;//odznačí objekt logicky, musí se nový vybrat znovu
 		if(d.v.OBJEKTY->dalsi!=NULL && d.v.OBJEKTY->predchozi->n==1)Nahled->Enabled=true;
 		TIP="";//odstranění původní nápovědy pro přidávání objektu
@@ -6886,15 +6886,6 @@ void TForm1::ukonceni_geometrie()
 	else scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=false;
 	if(zobrazit_rozmisteni_voziku==1) scGPCheckBox_rozmisteni_voziku->Checked=true;
 	else scGPCheckBox_rozmisteni_voziku->Checked=false;
-	//kontrola zda následující geometrie navazuje na editovanou
-	if(OBJEKT_akt!=NULL && pom->dalsi!=NULL)
-	{
-		Cvektory::TElement *E1=d.v.vrat_posledni_element_objektu(OBJEKT_akt),*E2=E1->dalsi;
-		if(!(m.round2double(E1->geo.X4,2)==m.round2double(E2->geo.X1,2) && m.round2double(E1->geo.Y4,2)==m.round2double(E2->geo.Y1,2)))
-			zobraz_tip(ls->Strings[430]);//"Geometrie následujícího objektu nenavazuje, po uložení bude možné geometrii navázat"
-		E1=NULL;delete E1;
-		E2=NULL;delete E2;
-	}
 
 	//pokud existují výhybky může dojít v průběhu editace k umožnění nebo znemožnění přiřazovat pohon na vedlejší větev, tato metoda nastaví mGridy na výchozí
 	if(d.v.pocet_vyhybek>0)mGrid_on_mGrid();
@@ -13600,7 +13591,17 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Memo(d.v.ZAKAZKA_akt->n);
+	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
+	while(O!=NULL)
+	{
+		if(O->id==2)
+		{
+			O->id=6;
+			O->rezim=2;
+			O->name=ls->Strings[279];
+    }
+		O=O->dalsi;
+  }
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -15425,15 +15426,20 @@ void TForm1::smaz_kurzor()
 			////posun editovaného elementu
 			d.v.vloz_G_element(pom_element_temp,0,pom_element_temp->geo.X1,pom_element_temp->geo.Y1,0,0,0,0,pom_element_temp->geo.X4+posunx,pom_element_temp->geo.Y4+posuny,pom_element_temp->geo.orientace,pom_element_temp->geo.rotacni_uhel);
 			pom_element_temp->X+=posunx;pom_element_temp->Y+=posuny;//souřadnice elementu
-			pom_element_temp=pom_element_temp->dalsi;
+			//pom_element_temp=pom_element_temp->dalsi;
 			////posun ostatních elementů a jejich geometrie
 			Cvektory::TElement *E=NULL;
+			bool prvni=true;//pomocná proměná, přeskočení úpravy souřadnic pro první, první element musí být součástí průchodu, např. úprava délky úseku před výhybkou by ovlivnila jen hlavní větev pokud bych nezačal průchodový alg. z výhybky
 			while(pom_element_temp!=NULL && pom_element_temp->objekt_n==OBJEKT_akt->n)
 			{
-				pom_element_temp->X+=posunx;pom_element_temp->Y+=posuny;//souřadnice elementu
-				//geometrie elementu
-				pom_element_temp->geo.X1+=posunx;pom_element_temp->geo.X2+=posunx;pom_element_temp->geo.X3+=posunx;pom_element_temp->geo.X4+=posunx;
-				pom_element_temp->geo.Y1+=posuny;pom_element_temp->geo.Y2+=posuny;pom_element_temp->geo.Y3+=posuny;pom_element_temp->geo.Y4+=posuny;
+				if(!prvni)//neprovádět na prvním elementu, již bylo provedeno
+				{
+			  	pom_element_temp->X+=posunx;pom_element_temp->Y+=posuny;//souřadnice elementu
+			  	//geometrie elementu
+			  	pom_element_temp->geo.X1+=posunx;pom_element_temp->geo.X2+=posunx;pom_element_temp->geo.X3+=posunx;pom_element_temp->geo.X4+=posunx;
+					pom_element_temp->geo.Y1+=posuny;pom_element_temp->geo.Y2+=posuny;pom_element_temp->geo.Y3+=posuny;pom_element_temp->geo.Y4+=posuny;
+				}
+				else prvni=false;//prošel jsem skrze první
 				E=pom_element_temp;
 				pom_element_temp=d.v.dalsi_krok(pom_element_temp,OBJEKT_akt);
 				if(pom_element_temp!=NULL && pom_element_temp->eID==301 && pom_element_temp->predchozi2==E)break;
@@ -16503,8 +16509,10 @@ void __fastcall TForm1::scGPButton_bug_reportClick(TObject *Sender)
 void __fastcall TForm1::Timer_getjobidTimer(TObject *Sender)
 {
 	log(__func__);
-	setJobIDOnMouseMove(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
-	//Memo(__func__,true,true);
+	if(Akce==NIC)
+	{
+		setJobIDOnMouseMove(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
+	}
 	Timer_getjobid->Enabled=false;
 }
 //---------------------------------------------------------------------------
