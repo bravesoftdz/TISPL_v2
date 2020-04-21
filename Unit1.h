@@ -657,7 +657,6 @@ private:
 	void setJobIDOnMouseMove(int X, int Y);//dle místa kurzoru a vrácené JID (job id) nastaví úlohu
 	void nastaveni_grafickeho_vystupu(Graphics::TBitmap * Bitmap,unsigned int OD,unsigned int PO);
 	bool ttr(UnicodeString Text);
-	void mail(String Host,String Username,String Password,String FromAddress,String FromName,String Subject,String Body,String To,String ccTo="",String bccTo="",String FileName="");//odešle e-mail, doruèitel na všech tøech úrovní To,ccTo,bccTo mohou být mnohonásobnì zadaní, pouze odìlené èárkou, tìlo e-mailu lze zadat jako html
 	void log2web(UnicodeString Text);//automaticky pøidá parametry (èas, uživatel, licence)
 	void log2webOnlyText(UnicodeString Text);//pouze text
 	void SaveText2File(AnsiString Text,AnsiString FileName);//zapíše daný textový øetìzec do daného textového souboru
@@ -880,7 +879,9 @@ public:		// User declarations
 	void zmena_editovanych_bunek(Cvektory::TElement *E);//automaticky nastaví editované položky a needitovatelné položky pro pohonové tabulky
 	void vlozit_predavaci_misto_aktualizuj_WT();//projde elementy a objekty, pokud je nìkde nutnost vložit pøedávací místo vloží ho tam
 	void mGrid_komponenta_na_draw(TmGrid *mGrid,long Col,long Row);//smazì komponentu v dané buòce a zmìní typ bunky na DRAW
-};
+  void mail(String Host,String Username,String Password,String FromAddress,String FromName,String Subject,String Body,String To,String ccTo="",String bccTo="",String FileName="");//odešle e-mail, doruèitel na všech tøech úrovní To,ccTo,bccTo mohou být mnohonásobnì zadaní, pouze odìlené èárkou, tìlo e-mailu lze zadat jako html
+
+  };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
 extern PACKAGE TForm1 *F;//pouze zkrácený zapis
