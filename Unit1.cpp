@@ -3527,11 +3527,11 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 							if(funkcni_klavesa==1 && pom_element!=NULL)Smazat1Click(Sender);
 							if(funkcni_klavesa==3)////////////rozpracováno
 							{
-								TPoint bod=bod_vlozeni_elementu();
+								TPointD bod=bod_vlozeni_elementu();
 								if(bod.x!=-1000&&bod.y!=-1000)
 								{
-									short rotace=rotace_symbol(m.Rt90(pom_element_temp->geo.orientace),bod.x,bod.y);
-									Cvektory::TElement *E=d.v.vloz_element(OBJEKT_akt,MaxInt,m.P2Lx(bod.x),m.P2Ly(bod.y),rotace,pom_element_temp);//použito force řazení, tzn. nebude přiřazena geometrie a kontrolováno pořadí
+									short rotace=rotace_symbol(m.Rt90(pom_element_temp->geo.orientace),m.L2Px(bod.x),m.L2Py(bod.y));
+									Cvektory::TElement *E=d.v.vloz_element(OBJEKT_akt,MaxInt,bod.x,bod.y,rotace,pom_element_temp);//použito force řazení, tzn. nebude přiřazena geometrie a kontrolováno pořadí
 									design_element(E,false);//nutné!!!
 									//vložení geometrie
 									if(E->predchozi->n>0)d.v.vloz_G_element(E,0,E->predchozi->geo.X4,E->predchozi->geo.Y4,0,0,0,0,E->X,E->Y,E->predchozi->geo.orientace);
@@ -3759,14 +3759,14 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				}
 				else//vykreslování elementu + přichytávání na pohon
 				{
-					TPoint souradnice=bod_vlozeni_elementu();//"přilepení" kurzoru na pohon
+					TPointD souradnice=bod_vlozeni_elementu();//"přilepení" kurzoru na pohon
 					short rotace_symbolu=0;if(OBJEKT_akt->orientace==0 || OBJEKT_akt->orientace==180)rotace_symbolu=90;
-					if(souradnice.x==-1000)souradnice=akt_souradnice_kurzoru_PX;
-					else if(pom_element_temp!=NULL)rotace_symbolu=rotace_symbol(m.Rt90(pom_element_temp->geo.orientace),souradnice.x,souradnice.y);//zjistění rotace symbolu
+					if(souradnice.x==-1000)souradnice=akt_souradnice_kurzoru;
+					else if(pom_element_temp!=NULL)rotace_symbolu=rotace_symbol(m.Rt90(pom_element_temp->geo.orientace),m.L2Px(souradnice.x),m.L2Py(souradnice.y));//zjistění rotace symbolu
 					souradnice=uprav_bod_vlozeni_elementu(souradnice,rotace_symbolu);//uprava souřadnic posun robota, bod vkládání na ramenu
 					d.vykresli_element(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,"","",element_id,-1,Rotace_symbolu_minula);
-					minule_souradnice_kurzoru=souradnice;
-					d.vykresli_element(Canvas,souradnice.x,souradnice.y,"","",element_id,-1,rotace_symbolu);
+					minule_souradnice_kurzoru=m.L2P(souradnice);
+					d.vykresli_element(Canvas,m.L2Px(souradnice.x),m.L2Py(souradnice.y),"","",element_id,-1,rotace_symbolu);
 					Rotace_symbolu_minula=rotace_symbolu;
 				}
 				pom_element_temp=NULL;//mazání ukazatele, slouží k uchovávání elementu na jehož geometrii budu vkládat element
@@ -3775,10 +3775,10 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		}
 		case VYH:
 		{
-			TPoint souradnice=bod_vlozeni_elementu();//"přilepení" kurzoru na pohon, naplní pom_element_temp
+			TPointD souradnice=bod_vlozeni_elementu();//"přilepení" kurzoru na pohon, naplní pom_element_temp
 			short rotace_symbolu=0;if(pom!=NULL && (pom->orientace==0 || pom->orientace==180))rotace_symbolu=90;
-			if(souradnice.x==-1000)souradnice=akt_souradnice_kurzoru_PX;
-			else if(pom_element_temp!=NULL)rotace_symbolu=rotace_symbol(m.Rt90(pom_element_temp->geo.orientace),souradnice.x,souradnice.y);//zjistění rotace symbolu
+			if(souradnice.x==-1000)souradnice=akt_souradnice_kurzoru;
+			else if(pom_element_temp!=NULL)rotace_symbolu=rotace_symbol(m.Rt90(pom_element_temp->geo.orientace),m.L2Px(souradnice.x),m.L2Py(souradnice.y));//zjistění rotace symbolu
 			souradnice=uprav_bod_vlozeni_elementu(souradnice,rotace_symbolu);//uprava souřadnic posun robota, bod vkládání na ramenu
 			Canvas->Pen->Color=clBlack;
 			Canvas->Pen->Mode=pmNotXor;
@@ -3788,9 +3788,9 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			Canvas->Brush->Style=bsClear;
 			Canvas->Rectangle(minule_souradnice_kurzoru.x-10,minule_souradnice_kurzoru.y-10,minule_souradnice_kurzoru.x+10,minule_souradnice_kurzoru.y+10);
 			if(d.v.vyhybka_pom!=NULL && minule_souradnice_kurzoru.x>168 && minule_souradnice_kurzoru.y>34)d.line(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,m.L2Px(d.v.vyhybka_pom->geo.X4),m.L2Py(d.v.vyhybka_pom->geo.Y4));
-			minule_souradnice_kurzoru=souradnice;
-			Canvas->Rectangle(souradnice.x-10,souradnice.y-10,souradnice.x+10,souradnice.y+10);
-			if(d.v.vyhybka_pom!=NULL)d.line(Canvas,souradnice.x,souradnice.y,m.L2Px(d.v.vyhybka_pom->geo.X4),m.L2Py(d.v.vyhybka_pom->geo.Y4));
+			minule_souradnice_kurzoru=m.L2P(souradnice);
+			Canvas->Rectangle(m.L2Px(souradnice.x)-10,m.L2Py(souradnice.y)-10,m.L2Px(souradnice.x)+10,m.L2Py(souradnice.y)+10);
+			if(d.v.vyhybka_pom!=NULL)d.line(Canvas,m.L2Px(souradnice.x),m.L2Py(souradnice.y),m.L2Px(d.v.vyhybka_pom->geo.X4),m.L2Py(d.v.vyhybka_pom->geo.Y4));
 		}break;
 		case MOVE://posun objektu, v editaci funkce posunu objektu odstavena
 		{
@@ -6034,7 +6034,7 @@ void TForm1::add_element (int X, int Y)
 	log(__func__);//logování
 	////ČÁSTEČNĚ PROVIZORNĚ
 	//rotace dle umístění na ose Y či X dle trendu
-	TPoint bod_vlozeni=bod_vlozeni_elementu();
+	TPointD bod_vlozeni=bod_vlozeni_elementu();
 	if(bod_vlozeni.x!=-1000 && pom_element_temp!=NULL)//kontrola zda vkládám na přímku
 	{
 		bool vkladani_stred=false;
@@ -6042,11 +6042,11 @@ void TForm1::add_element (int X, int Y)
 		if(OBJEKT_akt->element->geo.typ==0 && (OBJEKT_akt->element->dalsi==NULL || (OBJEKT_akt->element->dalsi!=NULL && OBJEKT_akt->element->dalsi->objekt_n!=OBJEKT_akt->n))){vkladani_stred=true;delka_objektu=OBJEKT_akt->element->geo.delka;}
 		FormX->vstoupeno_poh=false;//blokace událostí při vkládání elementu
 		FormX->vstoupeno_elm=false;
-		short rotace_symbolu=rotace_symbol(m.Rt90(pom_element_temp->geo.orientace),bod_vlozeni.x,bod_vlozeni.y);
+		short rotace_symbolu=rotace_symbol(m.Rt90(pom_element_temp->geo.orientace),m.L2Px(bod_vlozeni.x),m.L2Py(bod_vlozeni.y));
 		bod_vlozeni=uprav_bod_vlozeni_elementu(bod_vlozeni,rotace_symbolu);
 		//vložení elementu na dané souřadnice a do patřičného pomocného spojáku, pro případ storna
 		TIP="";//smazání tipu, pro jistotu
-		Cvektory::TElement *E=d.v.vloz_element(OBJEKT_akt,element_id,m.P2Lx(bod_vlozeni.x),m.P2Ly(bod_vlozeni.y),rotace_symbolu);
+		Cvektory::TElement *E=d.v.vloz_element(OBJEKT_akt,element_id,bod_vlozeni.x,bod_vlozeni.y,rotace_symbolu);
 		//nadesignuje tabulky daného elementu
 		design_element(E,true);
 		//kontrola zda může být vložen + možné odstranění
@@ -6130,25 +6130,25 @@ void TForm1::add_vyhybka_spojka()
 {
 	log(__func__);//logování
 	//rotace dle umístění na ose Y či X dle trendu
-	TPoint bod_vlozeni=bod_vlozeni_elementu();
+	TPointD bod_vlozeni=bod_vlozeni_elementu();
 	if(bod_vlozeni.x!=-1000 && pom_element_temp!=NULL)//kontrola zda vkládám na přímku
 	{
 		Cvektory::TElement *E=NULL;
 		//úprava a zjištění bodu vložení a rotace
-		short rotace_symbolu=rotace_symbol(m.Rt90(pom_element_temp->geo.orientace),bod_vlozeni.x,bod_vlozeni.y);
+		short rotace_symbolu=rotace_symbol(m.Rt90(pom_element_temp->geo.orientace),m.L2Px(bod_vlozeni.x),m.L2Py(bod_vlozeni.y));
 		bod_vlozeni=uprav_bod_vlozeni_elementu(bod_vlozeni,rotace_symbolu);
 		//vkládání výhybky
 		if(element_id==300)
 		{
 			pom=d.v.vrat_objekt(pom_element_temp->objekt_n);
-			E=d.v.vloz_element(pom,element_id,m.P2Lx(bod_vlozeni.x),m.P2Ly(bod_vlozeni.y),rotace_symbolu);
+			E=d.v.vloz_element(pom,element_id,bod_vlozeni.x,bod_vlozeni.y,rotace_symbolu);
 			element_id=301;//vložena výhybka přechod na vkládání spojky
 		}
 		//vkládání spojky
 		else
 		{
 			pom=d.v.vrat_objekt(pom_element_temp->objekt_n);
-			E=d.v.vloz_element(pom,element_id,m.P2Lx(bod_vlozeni.x),m.P2Ly(bod_vlozeni.y),rotace_symbolu);
+			E=d.v.vloz_element(pom,element_id,bod_vlozeni.x,bod_vlozeni.y,rotace_symbolu);
 			Akce=NIC;//vložena výhybka i spojka ukončení vkládání
 			d.v.vytvor_obraz_DATA();
 		}
@@ -6159,7 +6159,7 @@ void TForm1::add_vyhybka_spojka()
 		E=NULL;delete E;
 	}
 	else TIP=ls->Strings[309];//"Lze vkládat pouze na linie."
-	//REFRESH();//nesmí zde být způsobí špatné vykreslení elementů (nekompletní linka)
+	REFRESH();//nesmí zde být způsobí špatné vykreslení elementů (nekompletní linka)
 }
 //---------------------------------------------------------------------------
 //přidávání komory kabině powerwashe, kontrola zda není součet kabin větší než rozměr kabiny
@@ -7646,12 +7646,12 @@ short TForm1::najdi_popisky_PM(double X,double Y,Cvektory::TObjekt *Objekt)
 }
 //---------------------------------------------------------------------------
 //vrací bod vložení elementu, "přilepuje" kurzor na geometrii pokud se jedná o přímku, parametry kontr_x a y slouží ke kontrole bodu zda se nachází na přímce (při posunu)
-TPoint TForm1::bod_vlozeni_elementu(double kontr_x,double kontr_y)
+TPointD TForm1::bod_vlozeni_elementu(double kontr_x,double kontr_y)
 {
 	log(__func__);//logování
 	//nastavení atributů
 	pom_element_temp=NULL;
-	TPoint ret;
+	TPointD ret;
 	ret.x=-1000;ret.y=-1000;
 	double oblast=1,X1,Y1,X2,Y2,x,y;
 	if(kontr_x!=-1000){x=kontr_x;y=kontr_y;}
@@ -7670,8 +7670,8 @@ TPoint TForm1::bod_vlozeni_elementu(double kontr_x,double kontr_y)
 			if(m.PtInRectangle(X1,Y1,X2,Y2,x,y))
 			{
 				//přiřazení souřadnic pro vložení
-				if(E->geo.orientace==90 || E->geo.orientace==270){ret.x=akt_souradnice_kurzoru_PX.x;ret.y=m.L2Py(E->geo.Y1);}
-				else {ret.x=m.L2Px(E->geo.X1);ret.y=akt_souradnice_kurzoru_PX.y;}
+				if(E->geo.orientace==90 || E->geo.orientace==270){ret.x=akt_souradnice_kurzoru.x;ret.y=E->geo.Y1;}
+				else {ret.x=E->geo.X1;ret.y=akt_souradnice_kurzoru.y;}
 				pom_element_temp=E;//uchování ukazatele pro následné zjišťování orientce symbolu, nelze se již řídit orientaci kabiny
 				break;//zastavení cyklu
 			}
@@ -7688,7 +7688,7 @@ TPoint TForm1::bod_vlozeni_elementu(double kontr_x,double kontr_y)
 }
 //---------------------------------------------------------------------------
 //upraví bod kurzoru pro vložení elemntu na bod vykreslení elementu (robot na konci ramena)
-TPoint TForm1::uprav_bod_vlozeni_elementu(TPoint bod_vlozeni,short rotace_symbolu,int eID)
+TPointD TForm1::uprav_bod_vlozeni_elementu(TPointD bod_vlozeni,short rotace_symbolu,int eID)
 {
 	log(__func__);//logování
 	//nastavení atribuutů
@@ -7700,17 +7700,17 @@ TPoint TForm1::uprav_bod_vlozeni_elementu(TPoint bod_vlozeni,short rotace_symbol
 	//zohlednění posunu bodu vložení u robotů
 	if(1<=eID && eID<=4 || 7<=eID && eID<=18)//pro roboty, které mají uchopovací bod jinde než referenční
 	{
-		DoSkRB=m.m2px(d.DoSkRB);//délka od středu (uchopovacího bodu) k referenčnímu bodu, doplnit konstanty
+		DoSkRB=d.DoSkRB;//délka od středu (uchopovacího bodu) k referenčnímu bodu, doplnit konstanty
 		if(rotace_symbolu==90 || rotace_symbolu==180)DoSkRB*=-1;
 	}
 	if(101<=eID && eID<=108)//pro lidské roboty, které mají uchopovací bod jinde než referenční
 	{
-		DoSkRB=m.m2px(d.DkRB);//délka od středu (uchopovacího bodu) k referenčnímu bodu, doplnit konstanty
+		DoSkRB=d.DkRB;//délka od středu (uchopovacího bodu) k referenčnímu bodu, doplnit konstanty
 		if(rotace_symbolu==90 || rotace_symbolu==180)DoSkRB*=-1;
 	}
 	//úprava souřadnic = přichycení na pohon
 
-	if(orientace==90 || orientace==270)bod_vlozeni.y+=DoSkRB;
+	if(orientace==90 || orientace==270)bod_vlozeni.y-=DoSkRB;
 	else bod_vlozeni.x+=DoSkRB;
 	//vrácení upravených souřadnic
 	return bod_vlozeni;
@@ -11503,11 +11503,11 @@ void __fastcall TForm1::NastavitparametryClick1Click(TObject *Sender)
 	}
 	if(Akce==GEOMETRIE)//přidávání zarážky při editaci geometrie
 	{
-    TPoint bod=bod_vlozeni_elementu();
+		TPointD bod=bod_vlozeni_elementu();
 		if(bod.x!=-1000&&bod.y!=-1000)
 		{
-			short rotace=rotace_symbol(m.Rt90(pom_element_temp->geo.orientace),bod.x,bod.y);
-			Cvektory::TElement *E=d.v.vloz_element(OBJEKT_akt,MaxInt,m.P2Lx(bod.x),m.P2Ly(bod.y),rotace,pom_element_temp);//použito force řazení, tzn. nebude přiřazena geometrie a kontrolováno pořadí
+			short rotace=rotace_symbol(m.Rt90(pom_element_temp->geo.orientace),m.L2Px(bod.x),m.L2Py(bod.y));
+			Cvektory::TElement *E=d.v.vloz_element(OBJEKT_akt,MaxInt,bod.x,bod.y,rotace,pom_element_temp);//použito force řazení, tzn. nebude přiřazena geometrie a kontrolováno pořadí
 			design_element(E,false);//nutné!!!
 			//vložení geometrie
 			if(E->predchozi->n>0)d.v.vloz_G_element(E,0,E->predchozi->geo.X4,E->predchozi->geo.Y4,0,0,0,0,E->X,E->Y,E->predchozi->geo.orientace);
@@ -13591,17 +13591,8 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
-	while(O!=NULL)
-	{
-		if(O->id==2)
-		{
-			O->id=6;
-			O->rezim=2;
-			O->name=ls->Strings[279];
-    }
-		O=O->dalsi;
-  }
+	double y=OBJEKT_akt->element->dalsi->geo.Y4;
+  OBJEKT_akt->element->geo.Y1=OBJEKT_akt->element->geo.Y2=OBJEKT_akt->element->geo.Y3=OBJEKT_akt->element->geo.Y4=y;
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko

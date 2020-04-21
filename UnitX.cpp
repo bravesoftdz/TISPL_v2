@@ -1403,14 +1403,14 @@ void TFormX::prirazeni_pohohonu_vetvi(Cvektory::TElement *E,long Col)
 		{
 			e->pohon=p;
 			if(F->prohodit_sloupce_PM(e))prvni=4;else prvni=3;
-			if(e->eID==200){e->mGrid->getCombo(prvni,2)->ItemIndex=p_n;break;}//pokud narazím na PM zmìním mu pohon a skonèím prùchod
+			if(e->eID==200){if(e->mGrid->Cells[prvni][2].Type==TmGrid::COMBO)e->mGrid->getCombo(prvni,2)->ItemIndex=p_n;break;}//pokud narazím na PM zmìním mu pohon a skonèím prùchod
 			e=e->dalsi;
 		}
 		e=E->predchozi;
 		while(e!=NULL && e->n>0)
 		{
 			if(F->prohodit_sloupce_PM(e))druhy=3;else druhy=4;
-			if(e->eID==200)e->mGrid->getCombo(druhy,2)->ItemIndex=p_n;
+			if(e->eID==200 && e->mGrid->Cells[druhy][2].Type==TmGrid::COMBO)e->mGrid->getCombo(druhy,2)->ItemIndex=p_n;
 			if(e->eID==200 || F->predchozi_PM==NULL && e->objekt_n!=F->OBJEKT_akt->n || F->predchozi_PM!=NULL && F->predchozi_PM==e)break;//pokud narazím na PM NEzmìním! mu pohon a skonèím prùchod, nebo narazím na konec objektu
 			e->pohon=p;
 			e=e->predchozi;
@@ -1680,8 +1680,8 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 		while(e!=NULL && e->n>0 && e->objekt_n==F->OBJEKT_akt->n)
 		{
 			if(F->prohodit_sloupce_PM(e))druhy=3;else druhy=4;
-			if(e->eID==300)e->mGrid->getCombo(prvni,2)->ItemIndex=p_n;
-			if(e->eID==200){e->mGrid->getCombo(druhy,2)->ItemIndex=p_n;break;}//narazil jsem na PM, konec
+			if(e->eID==300 && e->mGrid->Cells[prvni][2].Type==TmGrid::COMBO)e->mGrid->getCombo(prvni,2)->ItemIndex=p_n;
+			if(e->eID==200){if(e->mGrid->Cells[druhy][2].Type==TmGrid::COMBO)e->mGrid->getCombo(druhy,2)->ItemIndex=p_n;break;}//narazil jsem na PM, konec
 			else e->pohon=p;
 			e=e->predchozi;
 		}
@@ -1689,7 +1689,7 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 		if(e!=NULL && e->n>0 && (e==F->OBJEKT_akt->element || e==F->OBJEKT_akt->element->predchozi) && F->predchozi_PM!=NULL)
 		{
 			if(F->prohodit_sloupce_PM(F->predchozi_PM))druhy=3;else druhy=4;
-			F->predchozi_PM->mGrid->getCombo(druhy,2)->ItemIndex=p_n;
+			if(F->predchozi_PM->mGrid->Cells[druhy][2].Type==TmGrid::COMBO)F->predchozi_PM->mGrid->getCombo(druhy,2)->ItemIndex=p_n;
 			e=F->predchozi_PM->dalsi;
 			while(e!=NULL && e!=F->OBJEKT_akt->element)
 			{
@@ -1706,8 +1706,8 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 		{
 			e->pohon=p;
 			if(F->prohodit_sloupce_PM(e))prvni=4;else prvni=3;
-			if(e->eID==300)e->mGrid->getCombo(prvni,2)->ItemIndex=p_n;
-			if(e->eID==200){e->mGrid->getCombo(prvni,2)->ItemIndex=p_n;break;}//narazil jsem na PM, zapsat nový pohon a konec
+			if(e->eID==300 && e->mGrid->Cells[prvni][2].Type==TmGrid::COMBO)e->mGrid->getCombo(prvni,2)->ItemIndex=p_n;
+			if(e->eID==200){if(e->mGrid->Cells[prvni][2].Type==TmGrid::COMBO)e->mGrid->getCombo(prvni,2)->ItemIndex=p_n;break;}//narazil jsem na PM, zapsat nový pohon a konec
 			else e=e->dalsi;
 		}
 		if(E->dalsi!=NULL && E->dalsi->objekt_n==E->objekt_n)E->WT=F->m.cekani_na_palec(0,E->dalsi->pohon->roztec,E->dalsi->pohon->aRD,3);
