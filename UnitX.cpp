@@ -1387,7 +1387,7 @@ void TFormX::prirazeni_pohohonu_vetvi(Cvektory::TElement *E,long Col)
 	if(F->prohodit_sloupce_PM(E))
 	{
 		if(Col==3)Col=4;
-		if(Col==4)Col=3;
+		else Col=3;
 	}
 	if(Col!=3)hlavni=false;
 
@@ -1668,7 +1668,7 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 	if(F->prohodit_sloupce_PM(E))
 	{
 		if(Col==3)Col=4;
-		if(Col==4)Col=3;
+		else Col=3;
 	}
 
 	////pøiøazení pohonu pøed PM
