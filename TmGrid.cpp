@@ -107,6 +107,7 @@ TmGrid::TmGrid(TForm *Owner)
 	DefaultCell.RightMargin=1;
 	//pouze indikuje, zda je buňka sloučena, či nikoliv, slouží jako pomůcka při vykreslování orámování sloučených buněk
 	DefaultCell.MergeState=false;
+	DefaultCell.MergeArea=TRect(-1,-1,-1,-1);
 	//pokud je nastaveno na true, nelze vepsat jinou hodnotu než číselnou (to včetně reálného čísla)
 	DefaultCell.InputNumbersOnly=false;
 	//výchozí stav zvýraznění buňky
@@ -767,7 +768,7 @@ TRect TmGrid::DrawTextLink(TCanvas *C,unsigned long left,unsigned long top,AnsiS
 		RET.bottom=m.round(Top+(top+hLink*x+wT1*y+wLink*z)/Zoom);
 		//testování zda se v oblasti nenachazí zadané souřadnice např. myši
 		if(RET.PtInRect(TPoint(X,Y))){C->Font=FontActiveLink;C->Font->Size*=Zoom;C->Font->Orientation=FontText->Orientation;}//aktivní odkaz (je přes něj myš), pouze přebírá orientaci hlavní textu
-		//nemazat!!!: testovací vykreslení citelné oblastiC->Rectangle(TRect(left+wT1*x-hLink*z,top+wT1*y+(wLink)*(y-z),left+(wT1+wLink)*x-hLink*(y-z),top+hLink*x+wT1*y+wLink*z))//zde rozbor pro případný update: //C->Rectangle(TRect(left+wT1,	top,					left+wT1+wLink,		top+hLink));//testovací vykreslení citelné oblasti 0//C->Rectangle(TRect(left,			top-wT1-wLink,left+hLink,				top-wT1));//testovací vykreslení citelné oblasti 90//C->Rectangle(TRect(left-hLink,top+wT1,			left,							top+wT1+wLink));//testovací vykreslení citelné oblasti 270
+		//nemazat!!!: testovací vykreslení citelné oblasti C->Rectangle(TRect(left+wT1*x-hLink*z,top+wT1*y+(wLink)*(y-z),left+(wT1+wLink)*x-hLink*(y-z),top+hLink*x+wT1*y+wLink*z));//zde rozbor pro případný update: //C->Rectangle(TRect(left+wT1,	top,					left+wT1+wLink,		top+hLink));//testovací vykreslení citelné oblasti 0//C->Rectangle(TRect(left,			top-wT1-wLink,left+hLink,				top-wT1));//testovací vykreslení citelné oblasti 90//C->Rectangle(TRect(left-hLink,top+wT1,			left,							top+wT1+wLink));//testovací vykreslení citelné oblasti 270
 		//samotný výpis odkazu
 		C->TextOut(left+wT1*x,top+wT1*y,Link);
 
@@ -1906,7 +1907,7 @@ void __fastcall TmGrid::OnTimer(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-//spojí dvě buňky do jedné
+//spojí oblast buněk vizuálně do jedné buňky, vlastnosti převezmé od levé horní, text do pravé dolní, začínat zadávat od nejvyšší a nejvíce vlevo
 void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2)
 {
 	if(ColCell_1!=ColCell_2 || RowCell_1!=RowCell_2)//pokud se jedná o sloučení jedné buňky - nelogické sloučení nic nevykoná
@@ -1926,8 +1927,19 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 		////nastavení výchozí vzorové první (nikoliv výše uvedené referenční - tu nelze v tomto momentu použít, objevilo by se vnitřní orámování) buňky kvůli orámování všech buněk oblasti na totožnou barvu s pozadím
 		TBorder B;B.Width=0;B.Style=psSolid;B.Color=Cells[ColCell_1][RowCell_1].Background->Color;
 		*Cells[ColCell_1][RowCell_1].TopBorder=*Cells[ColCell_1][RowCell_1].BottomBorder=*Cells[ColCell_1][RowCell_1].LeftBorder=*Cells[ColCell_1][RowCell_1].RightBorder=B;
+
+		////nastavení merge příznaku
+		//state
 		if(RefCell.Type==DRAW)Cells[ColCell_1][RowCell_1].MergeState=1;//označí buňku jako sloučenou, slouží pro přeskočení vykreslování orámování, uprostřed sloučených objektů ale také kvůli nastavení šířky komponent
-		else Cells[ColCell_1][RowCell_1].MergeState=2;//označí buňku jako sloučenou, slouží pro přeskočení vypsání textu u sloučených buněk, které nejsou typu DRAW ale jsou komponenty 4.3.2020 new, pozor v obou případech se nepředává do dalších buněk hodnota tohoto atributu, ač by podle mého měla přes setcells -> copycells -> copyareacells, takže nelze dále se slučováním pracovat při dalších akcích (např. insertcolumn či row atdp.), muselo by se případně poladit
+		else Cells[ColCell_1][RowCell_1].MergeState=2;//označí buňku jako sloučenou, slouží pro přeskočení vypsání textu u sloučených buněk, které nejsou typu DRAW ale jsou komponenty 4.3.2020 new, pozor v obou případech se nepředává do dalších buněk hodnota tohoto atributu, ač by podle mého měla přes setcells -> copycells -> copyareacells, takže nelze dále se slučováním pracovat při dalších akcích (např. insertcolumn či row atdp.), muselo by se případně poladit, možná již řeší níže uvedené MergeArea
+		//area - možná by mohlo toto kompletně nahrazovat výše uvedené
+		for(unsigned long X=ColCell_1;X<=ColCell_2;X++)
+		{
+			for(unsigned long Y=RowCell_1;Y<=RowCell_2;Y++)
+			{
+				Cells[X][Y].MergeArea=TRect(ColCell_1,RowCell_1,ColCell_2,RowCell_2);
+			}
+		}
 
 		////projde nejdříve všechny buňky nastaví jim prvně dle pozadí první buňky stejné pozadí a dle barvy pozadí i barvu orámování, - maže i text buňky parametrem -1 - námět sloučit DeleteCells,setCells,SetRegion kvůli opakovaným průchodům, ovšem možné riziko nutné posloupnosti průchodů..
 		SetCells(Cells[ColCell_1][RowCell_1],ColCell_1,RowCell_1,ColCell_2,RowCell_2,-1,false);//musí být výchozí (první) buňka, nemůže zde nemůže referenční!
@@ -1943,9 +1955,6 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 		Cells[ColCell_2][RowCell_2].Text=RefCell.Text;//navrácení textu ze zálohy do poslední buňky, protože ta se vykresluje jako poslední, pokud v první buňce text není obsažen, vrátí se text z poslední buňky
 		W=getWidthHeightText(RefCell).X;
 		H=getWidthHeightText(RefCell).Y;
-		//if(RefCell.Font->Orientation==900){H=0;if(RefCell.Valign==MIDDLE)H=-W;}
-		//if(RefCell.Font->Orientation==2700){W=0;if(RefCell.Align==LEFT || RefCell.Align==CENTER)W=-H;H=0;if(RefCell.Valign==MIDDLE)H=W;}
-		//if(Cell.Font->Orientation==2700)L-=H;
 
 		////zarovnání
 		//nastaví velikost sloupců a řádků dle aktuálního nastavení a potřeby - DŮLEŽITE pro text, aby se nepřepozivalo např. v SetDraw, ale byly dodržena pozice textu níže získana!!!
@@ -3031,7 +3040,7 @@ TPoint TmGrid::CheckLink(int X,int Y,bool invalidate)
 			}
 			return TPoint(Col,Row);//odkaz na daných souřadnicích nalezen
 		}
-		else
+		else//bez odkazu
 		{
 			if(invalidate)
 			{
@@ -3046,10 +3055,26 @@ TPoint TmGrid::CheckLink(int X,int Y,bool invalidate)
 //dle souřadnic ve formuláři, kde je tabulka zobrazena (např. dle myšího kurzoru) vrátí zda se na dané buňce a souřadnicích nachází odkaz
 bool TmGrid::CheckLink(int X,int Y,unsigned long Col,unsigned long Row)
 {
-	if(Cells[Col][Row].LinkCoordinateStart.x<=X && X<=Cells[Col][Row].LinkCoordinateEnd.x
-	&& Cells[Col][Row].LinkCoordinateStart.y<=Y && Y<=Cells[Col][Row].LinkCoordinateEnd.y)
-	return true;
-	else return false;
+	bool RET=false;
+	if(Cells[Col][Row].MergeArea==TRect(-1,-1,-1,-1))//prvně pro nemargované oblasti
+	{
+		if(Cells[Col][Row].LinkCoordinateStart.x<=X && X<=Cells[Col][Row].LinkCoordinateEnd.x
+		&& Cells[Col][Row].LinkCoordinateStart.y<=Y && Y<=Cells[Col][Row].LinkCoordinateEnd.y)
+		RET=true;
+	}
+	else//pokud se jedná o mergovanou oblast, tak zkusí pohledat ještě ve sloučených buňkách, protože odkaz může by skutečnou pozicí mimo checkovanou buňku, až je datově její součástí
+	{
+		for(unsigned long tCol=Cells[Col][Row].MergeArea.Left;tCol<=Cells[Col][Row].MergeArea.Right;tCol++)
+		{
+			for(unsigned long tRow=Cells[Col][Row].MergeArea.Top;tRow<=Cells[Col][Row].MergeArea.Bottom;tRow++)
+			{
+				if(Cells[tCol][tRow].LinkCoordinateStart.x<=X && X<=Cells[tCol][tRow].LinkCoordinateEnd.x
+				&& Cells[tCol][tRow].LinkCoordinateStart.y<=Y && Y<=Cells[tCol][tRow].LinkCoordinateEnd.y)
+				{RET=true;break;}
+			}
+		}
+	}
+	return RET;
 }
 //---------------------------------------------------------------------------
 //podle stavu state buď zobrazí nebo skryje všechny komponenty

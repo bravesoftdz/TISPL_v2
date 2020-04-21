@@ -5265,7 +5265,7 @@ void Cvektory::generuj_VOZIKY()
 	if(ZAKAZKA_akt!=NULL && ZAKAZKA_akt->cesta!=NULL)//možná nadbytečné
 	{
 		////definice globálních proměnných
-		double umisteniCas=0;//umístění vozíku z časového hlediska
+		double umisteniCas=F->smaz;//umístění vozíku z časového hlediska
 		double akt_rotace_jigu=0;//výchozí rotace jigu na lince
 		bool rotacni_zbytek=false;//indikátor, pokud předcházela kontinuální/pasivní otoč
 		bool SG=SGlinka();

@@ -50,7 +50,8 @@ class TmGrid
 		short BottomMargin;//dolní odsazení textu
 		short LeftMargin;//levé odsazení textu
 		short RightMargin;//pravé odsazení textu
-		short MergeState;//pouze indikuje, zda je buňka sloučena=1, či nikoliv=0, sloučená a není první=2 slouží jako pomůcka při vykreslování orámování sloučených buněk
+		short MergeState;//pouze indikuje, zda je buňka sloučena=1, či nikoliv=0, sloučená a není první=2 slouží jako pomůcka při vykreslování orámování sloučených buněk - mohlo by nahrazovt níže uvedené
+		TRect MergeArea;//sloučené buňky si uchovávájí oblast sloučení, jejíž jsou součástí, adresování obdedelníkového obsahu je dle indexu TRect(minCol,minRow,maxCol,maxRow), nesloučené buńky obsahuj TRect
 		short InputNumbersOnly;//pokud je nastaveno na 0 lze do buňky vepsat cokoliv, 1 lze zapsat pouze reálná čísla, 2 pouze kladná reálná čísla
 		bool Highlight;//indikuje zda je buňka zvýrazněna, barva zvýraznění odpovídá globální proměnné TColor clHighlight, výchozí stav zvýraznění je false
 		TFont *Font;//vlastnosti fontu v buňce
@@ -103,7 +104,7 @@ class TmGrid
 	void VisibleRow(unsigned long Row,bool visible=true,bool invalidate=true);//skryje či zobrazí daný řádek
 	void ClearRow(unsigned long RowIdx);//smaže text v celém řádku
 	void DeleteRow(unsigned long Row,bool invalidate=true);//smaže celý řádek, pokud je invalidate na true, automaticky po přidání překreslí tabulku, někdy pokud nechci problikávat tabulku lépe nastavit na false a zavolat formpaint přímo za voláním metody DeleteRow přimo v užitém formuláři
-	void MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2);//spojí oblast buněk do jedné buňky,text a vlastnosti převezmé od levé horní, začínat zadávat od nejvyšší a nejvíce vlevo
+	void MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2);//spojí oblast buněk vizuálně do jedné buňky, vlastnosti převezmé od levé horní, text do pravé dolní, začínat zadávat od nejvyšší a nejvíce vlevo
 	void SetCells(TCells &RefCell,unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2,short setText=0,bool copyComponent=false);//nastaví oblast buněk totožnými vlastnostmi dle referenční buňky, text podle posledního parametru buď -1 -smaže, 0 - zanechá původní (implicitně), 1 zkopíruje všude stejný), začínat zadávat od nejvyšší a nejvíce vlevo
 	void SetRegion(TCells &RefCell,unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2);//totožně ohraničí danou oblast buněk dle referenční buňky (zohledňuje i rozdíly horní,dolní,levé pravé orámování), začínat zadávat od nejvyšší a nejvíce vlevo
 	void CopyCell(TCells &RefCell,TCells &CopyCell,bool copyComponent=false);//zkopíruje obsah, formát a orámování z buňky na buňku (bez ukazatelového propojení)
