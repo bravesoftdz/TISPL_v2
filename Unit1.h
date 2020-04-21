@@ -350,6 +350,7 @@ __published:	// IDE-managed Components
   TscGPButton *scGPButton_bug_report;
 	TTimer *Timer_getjobid;
 	TscGPCheckBox *scGPCheckBox_popisek_pohonu;
+	TTimer *Timer_testyMaKr;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -580,6 +581,7 @@ __published:	// IDE-managed Components
   void __fastcall scGPButton_bug_reportClick(TObject *Sender);
 	void __fastcall Timer_getjobidTimer(TObject *Sender);
 	void __fastcall scGPCheckBox_popisek_pohonuClick(TObject *Sender);
+	void __fastcall Timer_testyMaKrTimer(TObject *Sender);
 
 
 
@@ -810,8 +812,8 @@ public:		// User declarations
   int Left_backup; //pomocne promenne pro pozici zprav
   int zpravy_backup_width;
 	int zpravy_backup_height;
-	short smazat;
-	double predchozi_orientace;//uchováváa rotaci objektu pøed posunem
+	double predchozi_orientace;//uchovává rotaci objektu pøed posunem
+	double smaz;//testovací promìnná
 
 	//metody
 	void kurzor(TKurzory typ_kurzor);

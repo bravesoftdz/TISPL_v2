@@ -223,7 +223,7 @@ object Form1: TForm1
     object LabelRoletka: TLabel
       Left = 320
       Top = 8
-      Width = 61
+      Width = 67
       Height = 13
       Caption = 'LabelRoletka'
       Visible = False
@@ -7302,7 +7302,6 @@ object Form1: TForm1
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
-        ExplicitTop = 300
       end
       object scGPCheckBox_zobrazit_pozice: TscGPCheckBox
         AlignWithMargins = True
@@ -7922,7 +7921,6 @@ object Form1: TForm1
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
-        ExplicitTop = 300
       end
     end
     object scExPanel_podklad: TscExPanel
@@ -10688,7 +10686,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C01011800B809DC0910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800E409E40910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -11811,7 +11809,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01015400DC0C000D30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01015400080D080D30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000002004000001002000000000000060
       0C00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -49805,5 +49803,10 @@ object Form1: TForm1
     OnTimer = Timer_getjobidTimer
     Left = 752
     Top = 320
+  end
+  object Timer_testyMaKr: TTimer
+    OnTimer = Timer_testyMaKrTimer
+    Left = 704
+    Top = 368
   end
 end

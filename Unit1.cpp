@@ -13654,6 +13654,9 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 	//REFRESH();
 	//d.vykresli_vyrobek(Canvas,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,0);
 
+	//	smaz=0;
+//	Timer_smazat->Enabled=true;
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
@@ -15798,7 +15801,7 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 		{
 			if(DEBUG && FileExists("../../TISPL.language"))//vývojářské featura, slouží jenom pro úsporu času při vývoji, případně by mohlo řešit i v realesu pro uživatele stažení z netu
 			{
-				ShowMessage("Byl nalezen nový jazykový slovník, po stisku OK, přepíše původní uložený u EXE aplikace. Tato hláška se vypisuje pouze v DEBUGu.");
+				ShowMessage("Byl nalezen nový jazykový slovník. Po stisku OK se přepíše původní slovník uložený u EXE aplikace. Tato hláška se vypisuje pouze v DEBUGu.");
 				CopyFile(_T("../../TISPL.language"),_T("TISPL.language"),false);//přepíše starý jazykový slovník novým
 				load_language(language,false);//rekurzní zavolání znovu metody
 			}
@@ -16507,7 +16510,6 @@ void __fastcall TForm1::Timer_getjobidTimer(TObject *Sender)
 	Timer_getjobid->Enabled=false;
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm1::scGPCheckBox_popisek_pohonuClick(TObject *Sender)
 {
 	log(__func__);//logování
@@ -16518,6 +16520,13 @@ void __fastcall TForm1::scGPCheckBox_popisek_pohonuClick(TObject *Sender)
 		if(Akce==NIC)writeINI("nastaveni_editace","zobrazit_popisek_pohonu",zobrazit_popisek_pohonu);//ukládat do ini pouze mimo geometrii
 		REFRESH();
 	}
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::Timer_testyMaKrTimer(TObject *Sender)
+{
+	smaz+=1;
+	d.v.generuj_VOZIKY();
+	REFRESH();
 }
 //---------------------------------------------------------------------------
 
