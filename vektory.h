@@ -315,6 +315,7 @@ class Cvektory
 		bool zamek_layoutu;//zámek editace layoutu
 		T_raster raster;
 		T_vector vector;//DOPRYC - zakomentovat
+		UnicodeString autor;//nazev autora projektu
 	};
 	T_parametry_projektu PP;
 
@@ -457,6 +458,7 @@ class Cvektory
     double radius;
 		short objekt_posunout_vse;
 		unsigned long zakazka_akt;//uchovává n aktuální zakázky
+		//UnicodeString autor;//nazev autora projektu
 	};
 	TFile_hlavicka File_hlavicka;
 
@@ -499,7 +501,7 @@ class Cvektory
 	void hlavicka_OBJEKTY();
 	TObjekt *vloz_objekt(unsigned int id, double X, double Y);//vloží prvek do seznamu + vrátí ukazatel na vložený prvek
 	TObjekt *vloz_objekt(unsigned int id, double X, double Y,TObjekt *pred,TObjekt *po);//přetížená fce vkládá objekt za objekt p + vrátí ukazatel na vložený prvek
-	void vloz_objekt(TObjekt *Objekt);//přetížená fce
+	TObjekt *vloz_objekt(TObjekt *Objekt);//přetížená fce
 	void nastav_atributy_objektu(TObjekt *novy,unsigned int id, double X, double Y);//alokuje paměť pro objekt, nastavý atriuty objektu, vrátí ukazatel na nově vytvořený prvek
 	TObjekt *kopiruj_objekt(TObjekt *Objekt,short offsetX=0,short offsetY=0,AnsiString index_name="",bool remove_pre_index=false,TObjekt *p=NULL);//zkopíruje objekt Objekt na konec spojového seznamu Objektů, za předpokladu že p==NULL, pokud p není NULL je objekt za tento objekt p ve spojovém seznamů objektů zařazen, hodnota offsetu je hodnota odsazení zkopírovoaného objektu od objektu vzorového,index_name slouží pro rozlišení např. LAK, LAK1, LAK2...,zároveň vrací ukazatel na právě zkopírovaný objekt např. pro další použití
 	void kopiruj_objekt(TObjekt *Original,TObjekt *Kopie);//zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze ukazatel na mGrid originálu zůstané propojený
@@ -586,7 +588,8 @@ class Cvektory
 	TElement *dalsi_krok(TElement *E,TObjekt *O=NULL);//určí další krok průchodového algorytmu ve spojáku elementů, 2 možností průchod kompletního spojáku ELEMENTY, druhá průchod pouze elementů jednoho objektu
 	TElement *predchozi_krok(TElement *E,TObjekt *O=NULL);
 	TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruchodu_TP,T2Element *tab_pruchodu_T2E);
-  void smaz_vyhybku_spojku(TElement *Element);
+	void smaz_vyhybku_spojku(TElement *Element);
+	void aktualizuj_identifikator_vyhybky_spojky();
 	void smaz_element(TElement *Element,bool preskocit_kontolu=false);//smaže element ze seznamu
 	void vymaz_elementy(TObjekt *Objekt);//smaže všechny elementy v daném objektu
 	long vymaz_seznam_ELEMENTY();//vymaže spojový seznam elementů z paměti

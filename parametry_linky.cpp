@@ -120,38 +120,32 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		if(K!=NULL)scGPGlyphButton_katalog->Caption=K->name+", "+rad+" "+AnsiString(radius*1000.0)+" mm";
 		else scGPGlyphButton_katalog->Caption=vybr;
 
-  	if(Form1->readINI("nastaveni_form_parametry", "RDt") == "1")
-    {  //budu pøevádìt na m/min
-    aRDunit=MIN;
-    F->aRDunit=F->MIN;
-    }
-		else F->aRDunit=F->SEC;
-
-    if(Form1->readINI("nastaveni_form_parametry", "DM") == "1")
-    {  //budu pøevádìt na metry - rozestup, dle nastavených jednotek mezery na PO zobrazím rozestup na PL
-    Dmunit=MM;
-    }
-    if(Form1->readINI("nastaveni_form_parametry_linky", "R") == "1")
-    {  //budu pøevádìt na metry - roztec, dle nastavených jednotek mezery na PO zobrazím rozestup na PL
-    Runit=MM;
-    }
-    if(Form1->readINI("nastaveni_form_parametry_linky", "TT") == "1")
-    {  //budu pøevádìt na metry - rozestup, dle nastavených jednotek mezery na PO zobrazím rozestup na PL
-    Taktunit=MIN;
-    rHTMLLabel_takt->Caption="TaktTime <font color=#2b579a>[m] </font>";
-    }
-    if(Form1->readINI("nastaveni_form_parametry_linky", "rozmery") == "1")
-    {  //budu pøevádìt na metry - rozestup, dle nastavených jednotek mezery na PO zobrazím rozestup na PL
-    Delkaunit=MM;
-		rHTMLLabel_delka_jig->Caption="<font color=#2b579a>[mm]</font>";
-		rHTMLLabel_sirka_jig->Caption="<font color=#2b579a>[mm]</font>";
-    rHTMLLabel_vyska_jig->Caption="<font color=#2b579a>[mm]</font>";
-    rHTMLLabel_delka_podvozek->Caption="<font color=#2b579a>[mm]</font>";
-
-     //nahrání hodnot / bud v MM nebo M
-
-    }
-     //Runit=MM;
+		//naèítání z INI, pøípadnì zápis default jednotek
+		AnsiString T=F->readINI("nastaveni_form_parametry", "RDt");
+		if(T==1){aRDunit=MIN;F->aRDunit=F->MIN;}else {aRDunit=S;F->aRDunit=F->SEC;}
+		T=F->readINI("nastaveni_form_parametry", "DM");
+		if(T==1 || T=="")Dmunit=MM;else Dmunit=M;//budu pøevádìt na metry - rozestup, dle nastavených jednotek mezery na PO zobrazím rozestup na PL
+		if(T=="")F->writeINI("nastaveni_form_parametry", "DM",Dmunit);
+		T=F->readINI("nastaveni_form_parametry_linky", "R");
+		if(T==1 || T=="")Runit=MM;else Runit=M;//budu pøevádìt na metry - roztec, dle nastavených jednotek mezery na PO zobrazím rozestup na PL
+		if(T=="")F->writeINI("nastaveni_form_parametry", "R",Runit);
+		T=F->readINI("nastaveni_form_parametry_linky", "TT");
+		if(T==1)Taktunit=MIN;else Taktunit=S;//budu pøevádìt na metry - roztec, dle nastavených jednotek mezery na PO zobrazím rozestup na PL
+		if(T=="")F->writeINI("nastaveni_form_parametry", "TT",Taktunit);
+		//nastavení caption
+		if(Taktunit==1)rHTMLLabel_takt->Caption="TaktTime <font color=#2b579a>[m] </font>";
+		T=F->readINI("nastaveni_form_parametry_linky", "rozmery");
+		if(T==1 || T=="")Delkaunit=MM;else Delkaunit=M;
+		if(T=="")F->writeINI("nastaveni_form_parametry", "rozmery",Delkaunit);
+    //nastavení caption
+		if(Delkaunit==1)
+		{  //budu pøevádìt na metry - rozestup, dle nastavených jednotek mezery na PO zobrazím rozestup na PL
+	   	rHTMLLabel_delka_jig->Caption="<font color=#2b579a>[mm]</font>";
+			rHTMLLabel_sirka_jig->Caption="<font color=#2b579a>[mm]</font>";
+			rHTMLLabel_vyska_jig->Caption="<font color=#2b579a>[mm]</font>";
+			rHTMLLabel_delka_podvozek->Caption="<font color=#2b579a>[mm]</font>";
+		 //nahrání hodnot / bud v MM nebo M
+		}
 
       scGPNumericEdit_delka_jig->Value=Form1->d.v.PP.delka_jig*(1+999*Delkaunit);
 			scGPNumericEdit_sirka_jig->Value=Form1->d.v.PP.sirka_jig*(1+999*Delkaunit);
@@ -1166,7 +1160,7 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
 
 void __fastcall TForm_parametry_linky::rEditNum_delkavozikuClick(TObject *Sender)
 {
-  F->log(__func__); //logování
+	F->log(__func__); //logování
 	rHTMLLabel_delka_jigClick(Sender);
 }
 //---------------------------------------------------------------------------

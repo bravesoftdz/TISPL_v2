@@ -347,6 +347,9 @@ __published:	// IDE-managed Components
   TMenuItem *N3projekt1;
   TscGPGlyphButton *scGPGlyphButton_undo;
   TscGPGlyphButton *scGPGlyphButton_redo;
+  TscGPButton *scGPButton_bug_report;
+	TTimer *Timer_getjobid;
+	TscGPCheckBox *scGPCheckBox_popisek_pohonu;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -574,6 +577,9 @@ __published:	// IDE-managed Components
   void __fastcall scExPanel1Click(TObject *Sender);
   void __fastcall scGPGlyphButton_undoClick(TObject *Sender);
   void __fastcall scGPGlyphButton_redoClick(TObject *Sender);
+  void __fastcall scGPButton_bug_reportClick(TObject *Sender);
+	void __fastcall Timer_getjobidTimer(TObject *Sender);
+	void __fastcall scGPCheckBox_popisek_pohonuClick(TObject *Sender);
 
 
 
@@ -633,9 +639,11 @@ private:
 	void ulozit_posledni_otevreny();//uloží do ini nazev posledního pracovního souboru
 	void ulozit_historie_otevrenych();//ukládání 3 naposledy otevøených projektù do historie
 	void vse_odstranit();
+public:
 	UnicodeString get_computer_name();
 	UnicodeString get_user_name();
 	UnicodeString get_Windows_dir();
+private:
 	int get_DPI();
 	void redesign_element();
 	AnsiString FileName_short(AnsiString FileName);
@@ -649,7 +657,6 @@ private:
 	void setJobIDOnMouseMove(int X, int Y);//dle místa kurzoru a vrácené JID (job id) nastaví úlohu
 	void nastaveni_grafickeho_vystupu(Graphics::TBitmap * Bitmap,unsigned int OD,unsigned int PO);
 	bool ttr(UnicodeString Text);
-	void mail(String Host,String Username,String Password,String FromAddress,String FromName,String Subject,String Body,String To,String ccTo="",String bccTo="",String FileName="");//odešle e-mail, doruèitel na všech tøech úrovní To,ccTo,bccTo mohou být mnohonásobnì zadaní, pouze odìlené èárkou, tìlo e-mailu lze zadat jako html
 	void log2web(UnicodeString Text);//automaticky pøidá parametry (èas, uživatel, licence)
 	void log2webOnlyText(UnicodeString Text);//pouze text
 	void SaveText2File(AnsiString Text,AnsiString FileName);//zapíše daný textový øetìzec do daného textového souboru
@@ -659,7 +666,6 @@ private:
 	void onPopUP(int X, int Y);//nastavení zobrazení popUPmenu a jeho volání vèetnì pozice
 	void close_all_items_popUPmenu();//zajistí skrýtí všech položek popUPmenu
 	void ortogonalizace_on_off();//zapíná èi vypíná automatickou ortogonalizaci
-	void ortogonalizace();//volá ortogonalizaci schéma, pokud je ortogonalizace povolena
 	void ortogonalizovat();//ortogonalizuje schéma
 	void db_connection();  // pøipojení k DB serveru
 	void akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_otoce,AnsiString cas,AnsiString rychlost,AnsiString R,AnsiString Rz,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla);
@@ -673,7 +679,7 @@ private:
 	unsigned short load_language(Tlanguage language,bool akt_mGrid=false);
 	void change_languagein_mGrid();//aktualizace popiskù v tabulkách pøi zmìnì jazyka
 	void zmena_editovaneho_objektu();//slouží k pøechodu z editace jednoho objektu do editace druhého objektu
-	TPoint uprav_bod_vlozeni_elementu(TPoint bod_vlozeni,short rotace_symbolu,int eID=-1);//upraví bod kurzoru pro vložení elemntu na bod vykreslení elementu (robot na konci ramena)
+	TPointD uprav_bod_vlozeni_elementu(TPointD bod_vlozeni,short rotace_symbolu,int eID=-1);//upraví bod kurzoru pro vložení elemntu na bod vykreslení elementu (robot na konci ramena)
   void set_enabled_mGrid(Cvektory::TElement *E);//zapne nebo vypne komponenty megridu v závislosti na tom zda má element pøiøazený pohon
   void vlozeni_editace_geometrie();//vkládá novou geometrii nebo edituje již stávající geometrii
 	void ukonceni_geometrie();//ukonèení akce geometrie a pøípadné uzavøení kruhu
@@ -798,6 +804,7 @@ public:		// User declarations
 	short zobrazit_koleje;
 	short zobrazit_palce;
 	short zobrazit_rozmisteni_voziku;
+	short zobrazit_popisek_pohonu;
 	bool zamek_layoutu;
   int Top_backup;  //pomocne promenne pro pozici zprav
   int Left_backup; //pomocne promenne pro pozici zprav
@@ -857,7 +864,7 @@ public:		// User declarations
 	short prekryti_LO(Cvektory::TElement *E);//prozkoumá zda se element nepøekrýva lak. oknem se sousedními,  0=nepøkrývá se, 1=pøekrývá se LO, 2=pøekrývá se zóna
 	double vzdalenost_meziLO(Cvektory::TElement *E,double orientace);//vrati delku v metrech mezi LO elementù
 	void design_element(Cvektory::TElement *E,bool prvni_spusteni,bool plnit_comba=true);//nadesignuje tabulky daného elementu
-	TPoint bod_vlozeni_elementu(double kontr_x=-1000,double kontr_y=-1000);//vrací bod vložení elementu, "pøilepuje" kurzor na geometrii pokud se jedná o pøímku, parametry kontr_x a y slouží ke kontrole bodu zda se nachází na pøímce (pøi posunu)
+	TPointD bod_vlozeni_elementu(double kontr_x=-1000,double kontr_y=-1000);//vrací bod vložení elementu, "pøilepuje" kurzor na geometrii pokud se jedná o pøímku, parametry kontr_x a y slouží ke kontrole bodu zda se nachází na pøímce (pøi posunu)
 	bool bod_na_geometrii(double X, double Y,Cvektory::TElement *Element=NULL);//kontroluje zde se bod nachází na geometri, vrací pouze ano/ne, pokud je do metody poslán ukazatel na element provìøí zda se tento element nachází na geometrii
 	double max_voziku(Cvektory::TElement *stopka);//vrátí maximální možný poèet vozíkù na stopce, podle geometrie pøed ní
 	void aktualizace_RT();//projde všechny elementy v aktuálnì editovaném objektu a upravím jim RT
@@ -871,6 +878,8 @@ public:		// User declarations
 	void zmena_editovanych_bunek(Cvektory::TElement *E);//automaticky nastaví editované položky a needitovatelné položky pro pohonové tabulky
 	void vlozit_predavaci_misto_aktualizuj_WT();//projde elementy a objekty, pokud je nìkde nutnost vložit pøedávací místo vloží ho tam
 	void mGrid_komponenta_na_draw(TmGrid *mGrid,long Col,long Row);//smazì komponentu v dané buòce a zmìní typ bunky na DRAW
+  void mail(String Host,String Username,String Password,String FromAddress,String FromName,String Subject,String Body,String To,String ccTo="",String bccTo="",String FileName="");//odešle e-mail, doruèitel na všech tøech úrovní To,ccTo,bccTo mohou být mnohonásobnì zadaní, pouze odìlené èárkou, tìlo e-mailu lze zadat jako html
+	void ortogonalizace();//volá ortogonalizaci schéma, pokud je ortogonalizace povolena
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

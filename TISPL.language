@@ -223,8 +223,8 @@ Enter the recommended drive speed:;X;Zadejte doporuèenou rychlost pohonu:
 Invalid drive speed value!;X;Neplatná hodnota rychlosti pohonu!
 Pair stop;X;Párová stop
 WT thumb;X;WT palec
-possible count of positions;X;potencionální poèet pozic
-set number of positions;X;nastavený poèet pozic
+Possible count of positions;X;Potencionální poèet pozic
+Set number of positions;X;Nastavený poèet pozic
 reserve time;X;èasová rezerva
 closed stop station time;X;èas uzavøené STOP stanice
 maximum possible waiting time per thumb;X;maximální možná doba èekání na palec
@@ -234,17 +234,17 @@ PW;X;LO
 length of painting window;X;délka lakovácího okna
 WA;X;PO
 length of working area;X;délka pracovní oblasti
-offset;X;vyosení
+Offset;X;Vyosení
 total process time, which is composed of subtimes;X;celkový èas procesu, který je složen z dílèích èasù
 offset of painting window;X;vyosení lakovácího okna
-rotation;X;rotace
-turning;X;otoè
+Rotation;X;Rotace
+Turning;X;Otoè
 spining;X;otáèení
 total time of the turning process;X;celkový èas procesu otoèe
 length of turning;X;délka otoèe
 length of spining;X;délka otáèení
 PTt;X;PTo
-length;X;délka
+Length;X;Délka
 start;X;zaèátek
 center;X;støed
 whole;X;celý
@@ -417,7 +417,7 @@ Number of warnings;X;Poèet varování
 Object moved, do you agree with the current location?;X;Objekt byl pøesunut, souhlasíte s aktuálním umístìním?
 maximum time ;X;maximální èas
 including max. WT thumb;X;vèetnì max. WT palec
-waiting;X;èekání
+Waiting;X;Èekání
 buffer wait time;X;doba èekání v bufferu
 RT is not relevant, some of the objects have no drive!;X;RT není relevantní, nìkterý z objektù nemá pohon!
 Irrelevant time reserve value (RT), drive is not assigned to some object!;X;Nerelevantní hodnota èasové rezervy (RT), na nìkterém objektu není pøiøazen pohon!
@@ -452,3 +452,11 @@ Forward;X;Vpøed
 Set;X;Nastavená
 Speed;X;Rychl.
 Pitch;X;Rozteè
+Editing a section, do you agree? Difference =;X;Editace úseku, souhlasíte? Rozdíl =
+Do you want to automatically join geometry?;X;Chcete automaticky spojit geometrii?
+Cannot save contracts, current contract has not been selected.;X;Nelze uložit zakázky, nebyla zvolena aktuální zakázka.
+Automatically put on center of object?;X;Automaticky umístit na støed objektu?
+Report;X;Nahlásit
+Description;X;Popis
+Send an error, question or comment;X;Zaslat chybu, dotaz nebo pøipomínku
+Drive direction;X;Smìr pohonu
