@@ -1277,7 +1277,8 @@ bool TFormX::check_click_Note(double X,double Y,bool check_for_highlight)
 		  	E->mGrid->ShowNote("");
 		  	F->Akce=F->BLOK;
 			}break;
-			case 200://naplnìní RD
+			case 200:
+			case 300://naplnìní RD
 			{
 				int opraveny_pohon=validovany_pohon;
 				vstoupeno_elm=false;
@@ -1633,7 +1634,7 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 			{
 				try
 				{
-					if(e_pom->eID==200 && (e_pom->mGrid->getCombo(3,2)->ItemIndex==validovany_pohon || e_pom->mGrid->getCombo(4,2)->ItemIndex==validovany_pohon))
+					if((e_pom->eID==200 || e_pom->eID==300) && (e_pom->mGrid->getCombo(3,2)->ItemIndex==validovany_pohon || e_pom->mGrid->getCombo(4,2)->ItemIndex==validovany_pohon))
 						e_pom->mGrid->ShowNote(puv_Note,F->d.clError,14);
 				}catch(...){;}
 				e_pom=F->d.v.dalsi_krok(e_pom,F->OBJEKT_akt);
@@ -1679,6 +1680,7 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 		while(e!=NULL && e->n>0 && e->objekt_n==F->OBJEKT_akt->n)
 		{
 			if(F->prohodit_sloupce_PM(e))druhy=3;else druhy=4;
+			if(e->eID==300)e->mGrid->getCombo(prvni,2)->ItemIndex=p_n;
 			if(e->eID==200){e->mGrid->getCombo(druhy,2)->ItemIndex=p_n;break;}//narazil jsem na PM, konec
 			else e->pohon=p;
 			e=e->predchozi;
@@ -1704,6 +1706,7 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 		{
 			e->pohon=p;
 			if(F->prohodit_sloupce_PM(e))prvni=4;else prvni=3;
+			if(e->eID==300)e->mGrid->getCombo(prvni,2)->ItemIndex=p_n;
 			if(e->eID==200){e->mGrid->getCombo(prvni,2)->ItemIndex=p_n;break;}//narazil jsem na PM, zapsat nový pohon a konec
 			else e=e->dalsi;
 		}

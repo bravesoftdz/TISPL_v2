@@ -3172,16 +3172,17 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 		}
 
 		/////testy
-		if(F->scGPCheckBox_popisek_pohonu->Checked && E->pohon!=NULL && E->geo.typ==0)//vykreslení vodoznaku pohonu
+		if(F->scGPCheckBox_popisek_pohonu->Checked && E->pohon!=NULL && E->geo.typ==0 && E->geo.orientace==m.Rt90(E->geo.orientace))//vykreslení vodoznaku pohonu
 		{
 			if(zacatek.x==0 && zacatek.y==0)zacatek=m.L2P(E->geo.X1,E->geo.Y1);
-			if(E->dalsi==NULL || E->eID==300 || E->eID==301 || (E->dalsi!=NULL && (E->dalsi->geo.typ!=0 || (m.delka(m.P2Lx(zacatek.x),m.P2Ly(zacatek.y),E->geo.X4,E->geo.Y4)>=9.9 && E->dalsi->objekt_n!=E->objekt_n))))
+			if(E->dalsi==NULL || E->eID==300 || E->eID==301 || (E->dalsi!=NULL && (E->dalsi->geo.typ!=0 || (m.delka(m.P2Lx(zacatek.x),m.P2Ly(zacatek.y),E->geo.X4,E->geo.Y4)>=9.9 && E->dalsi->objekt_n!=E->objekt_n) || (E->dalsi->geo.typ==0 && E->geo.orientace!=E->dalsi->geo.orientace))))
 			{
 				if(m.delka(m.P2Lx(zacatek.x),m.P2Ly(zacatek.y),E->geo.X4,E->geo.Y4)>=1)
 				{vykresli_popisek_pohonu(canv,E->pohon->name,zacatek,m.L2P(E->geo.X4,E->geo.Y4),E->geo.orientace,zmena);zmena=!zmena;}
 				zacatek=TPoint(0,0);
 			}
 		}
+		else zacatek=TPoint(0,0);//nulování začátečního bodu pokud není podmínka splněná
 		if(pocet_pruchodu>1)
 		{
 			for(unsigned int i=2;i<=pocet_pruchodu;i++)

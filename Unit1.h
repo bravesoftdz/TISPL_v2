@@ -666,7 +666,6 @@ private:
 	void onPopUP(int X, int Y);//nastavení zobrazení popUPmenu a jeho volání vèetnì pozice
 	void close_all_items_popUPmenu();//zajistí skrýtí všech položek popUPmenu
 	void ortogonalizace_on_off();//zapíná èi vypíná automatickou ortogonalizaci
-	void ortogonalizace();//volá ortogonalizaci schéma, pokud je ortogonalizace povolena
 	void ortogonalizovat();//ortogonalizuje schéma
 	void db_connection();  // pøipojení k DB serveru
 	void akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_otoce,AnsiString cas,AnsiString rychlost,AnsiString R,AnsiString Rz,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla);
@@ -880,8 +879,10 @@ public:		// User declarations
 	void vlozit_predavaci_misto_aktualizuj_WT();//projde elementy a objekty, pokud je nìkde nutnost vložit pøedávací místo vloží ho tam
 	void mGrid_komponenta_na_draw(TmGrid *mGrid,long Col,long Row);//smazì komponentu v dané buòce a zmìní typ bunky na DRAW
   void mail(String Host,String Username,String Password,String FromAddress,String FromName,String Subject,String Body,String To,String ccTo="",String bccTo="",String FileName="");//odešle e-mail, doruèitel na všech tøech úrovní To,ccTo,bccTo mohou být mnohonásobnì zadaní, pouze odìlené èárkou, tìlo e-mailu lze zadat jako html
+	void ortogonalizace();//volá ortogonalizaci schéma, pokud je ortogonalizace povolena
 
   };
+};
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
 extern PACKAGE TForm1 *F;//pouze zkrácený zapis
