@@ -1419,10 +1419,12 @@ void TFormX::prirazeni_pohohonu_vetvi(Cvektory::TElement *E,long Col)
 	////zmìna pohonu na vedlejší vìtvi
 	else
 	{
-  	e=E->dalsi2;//pøiøazuji pohon z výhybky
+		unsigned long o1=E->objekt_n,o2=E->predchozi2->objekt_n;
+		e=E->dalsi2;//pøiøazuji pohon z výhybky
 		while(e!=NULL && e->idetifikator_vyhybka_spojka!=E->idetifikator_vyhybka_spojka)
 		{
 			e->pohon=p;
+			if(e->objekt_n!=o1 && e->objekt_n!=o1)F->d.v.vrat_objekt(e->objekt_n)->pohon=p;//pokud je na sekundární vìtvi nìjaký objekt, pøiøadí mu pohon
 			e=e->dalsi;
 		}
 		update_hodnot_vyhybky_PM(E);//nutno udìlat ruènì, metoda aktualizace_tab_elementu(), aktualizuje pouze elementy na stejném pohonu, co vyhybka není, má pohon hlavní vìtve
@@ -1634,7 +1636,7 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 			{
 				try
 				{
-					if((e_pom->eID==200 || e_pom->eID==300) && (e_pom->mGrid->getCombo(3,2)->ItemIndex==validovany_pohon || e_pom->mGrid->getCombo(4,2)->ItemIndex==validovany_pohon))
+					if((e_pom->eID==200 || e_pom->eID==300) && ((e_pom->mGrid->Cells[3][2].Type==TmGrid::COMBO && e_pom->mGrid->getCombo(3,2)->ItemIndex==validovany_pohon) || (e_pom->mGrid->Cells[3][2].Type==TmGrid::COMBO && e_pom->mGrid->getCombo(4,2)->ItemIndex==validovany_pohon)))
 						e_pom->mGrid->ShowNote(puv_Note,F->d.clError,14);
 				}catch(...){;}
 				e_pom=F->d.v.dalsi_krok(e_pom,F->OBJEKT_akt);

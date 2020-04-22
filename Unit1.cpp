@@ -12604,6 +12604,7 @@ void __fastcall TForm1::Timer_backupTimer(TObject *Sender)
 	if(FileName=="Nový.omap")SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
 
 	//zapis dat do souboru
+	if(FileName=="")FileName="Nový.tispl";//někdy se stane, že FileName je prázdný, ošetření převzato z ukládání souboru
 	d.v.uloz_do_souboru(FileName+".bac_"+get_user_name()+"_"+get_computer_name());
 
 	//odstranění dlouhé adresy
@@ -13583,7 +13584,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Form2->ShowModal();
+	d.v.uprav_popisky_elementu(NULL);
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko

@@ -1841,7 +1841,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 //	if(novy->predchozi->n!=0 && novy->predchozi->objekt_n==Objekt->n)novy->pohon=novy->predchozi->pohon;
 //	else if(novy->dalsi!=NULL && novy->dalsi->objekt_n==Objekt->n)novy->pohon=novy->dalsi->pohon;
 	novy->pohon=NULL;
-	if(novy->predchozi->n>0 && novy->predchozi->objekt_n==Objekt->n && novy->predchozi->eID!=300)novy->pohon=novy->predchozi->pohon;
+	if(novy->predchozi->n>0 && novy->predchozi->objekt_n==Objekt->n && (novy->predchozi->eID!=300 || (novy->predchozi->eID==300 && novy->predchozi->dalsi==novy)))novy->pohon=novy->predchozi->pohon;
 	if(novy->predchozi->n>0 && Objekt->element!=NULL && novy->predchozi->objekt_n!=Objekt->n && (Objekt->element->predchozi->n>0 && novy->predchozi->objekt_n!=Objekt->element->predchozi->objekt_n || Objekt->element->predchozi->n==0))novy->pohon=novy->predchozi->pohon;
 	if(novy==Objekt->element && novy->dalsi!=NULL)novy->pohon=novy->dalsi->pohon;
 
@@ -1906,7 +1906,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 		{
 	  	if(p==NULL)//vkládám na konec
 			{
-	  		//ukazatelové propojení
+				//ukazatelové propojení
 	  		if(posledni==NULL)//vkládání nového objektu - vkládání zarážky
 	  		{
 	  			if(ELEMENTY->dalsi==NULL)//vkládání prvního bojektu a první zarážky
@@ -1972,9 +1972,15 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 				vloz_G_element(Element,0,p->geo.X1,p->geo.Y1,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,p->geo.orientace);
 				vloz_G_element(p,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,p->geo.X4,p->geo.Y4,p->geo.orientace);
 				//změna indexů
-	  		Cvektory::TElement *E=Element;
+				Cvektory::TElement *E=Element;
 	  		//E->n=vrat_poradi_elementu_do(E)+1;
-	  		int n=E->predchozi->n+1;
+				int n=E->predchozi->n+1;
+				//pokud existuje alespoň jedna vyhybka je potřeba přeindexovat celý spoják
+				if(pocet_vyhybek!=0)
+				{
+					E=ELEMENTY->dalsi;
+					n=1;
+				}
 	  		while(E!=NULL)//projetí od aktuálního objektu až do konce
 	  		{
 	  			//indexy
@@ -1983,9 +1989,10 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 					E=dalsi_krok(E);
 	  		}
 	  		E=NULL;delete E;
-	  		//změna názvů
-	  		uprav_popisky_elementu(Element);
-	  	}
+				//změna názvů
+				if(pocet_vyhybek==0)uprav_popisky_elementu(Element);
+				else uprav_popisky_elementu(NULL);//pokud je v elementech výhybka musí dojít k upravení celého spojáku
+			}
 		}
 		//vkládání výhybek a spojek
 		else
