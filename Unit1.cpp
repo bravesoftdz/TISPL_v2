@@ -3423,7 +3423,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						if(JID<=-11&&JID>=-101&&OBJEKT_akt->id!=3){if(scSplitView_LEFTTOOLBAR->Visible && scSplitView_LEFTTOOLBAR->Opened)DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;if(JID!=-101)editovany_text=m.round2double(d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp),2);else editovany_text=m.round2double(vzdalenost_meziLO(pom_element,OBJEKT_akt->orientace),2);if(DKunit==2||DKunit==3)editovany_text=m.round2double(editovany_text/OBJEKT_akt->pohon->aRD,3);editovany_text=outDK(ms.MyToDouble(editovany_text));puv_souradnice.x=pom_element->X;puv_souradnice.y=pom_element->Y;}//editace kót elementu
 						if(JID<=-11&&JID>=-101&&OBJEKT_akt->id==3){if(d.v.PtInKota_komory(OBJEKT_akt,X,Y)==-1){Akce=ROZMER_KOMORA;pom_komora_temp=pom_komora;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}else {if(scSplitView_LEFTTOOLBAR->Visible && scSplitView_LEFTTOOLBAR->Opened)DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_komora_temp=pom_komora;editovany_text=m.round2double(outDK(pom_komora->velikost),2);}}
 						if(JID==13){Akce=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//změna offsetu kót elementů, nebo změna rozměru jednotlivých kabin
-						//if(JID>=5&&JID<=12)zmena_jednotek_tab_pohon();//změna jednotek v tabulce pohonů
+						if(JID>=6&&JID<=11)zmena_jednotek_tab_pohon();//změna jednotek v tabulce pohonů
 						//if(JID==100)vytvor_edit();//změna názvu elementu skrze mGrid .. odstaveno
 						//if(JID==1){if(scSplitView_LEFTTOOLBAR->Visible && scSplitView_LEFTTOOLBAR->Opened)DrawGrid_knihovna->SetFocus();stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;nazev_puvodni=pom_element_temp->name;editace_textu=true;TimerKurzor->Enabled=true;}
 						if(JID==0&&pom_komora!=NULL&&pom_element==NULL){Akce=MOVE_KOMORA;pom_komora_temp=pom_komora;}//uchopení a přesun komory, sloužící k jejímu odstranění
@@ -3559,6 +3559,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 			//POPUP menu
 			else if(Button==mbRight)//pokud není stisknuto levé tlačítko, předpokládá se volání pop-up menu
 			{
+        if(Akce==NIC)getJobID(X,Y);//zajištění aktuálních JID, nemusí být aktuální skrze zpoždění setjobid při mousemove
 				//nejdříve deaktiviace zaměřovače, je-li aktivní
 				deaktivace_zamerovace();
 				//nastavení zobrazení popUPmenu a jeho volání včetně pozice
@@ -8318,28 +8319,19 @@ void TForm1::zmena_jednotek_tab_pohon()
    	switch(JID)
    	{
 			//rychlost
-			case 5:
 			case 6:
    		{
    			if (aRDunit==SEC) aRDunit=MIN;
    			else aRDunit=SEC;
 			}break;
-			//rozteč palce
-			case 7:
+			//rozteče
+			case 8:
    		{
    			if (Runit==M) Runit=MM;
    			else Runit=M;
 			}break;
-			//Rozteč jigů
-			case 9:
-   		{
-   			if (Rzunit==M) Rzunit=MM;
-   			else Rzunit=M;
-			}break;
 			//mezery
-			case 10:
 			case 11:
-			case 12:
 			{
 				if (Rzunit==M) Rzunit=MM;
 				else Rzunit=M;
@@ -9896,7 +9888,7 @@ void TForm1::redesign_element()
 				if(JID==104)zrychlost=true;
 				if(JID==111)zcas=true;
 				if(JID==106)zR=true;
-				if(JID>=110)zRz=true;
+				if(JID==109)zRz=true;
   			break;
   		}
   	}
@@ -13591,8 +13583,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	double y=OBJEKT_akt->element->dalsi->geo.Y4;
-  OBJEKT_akt->element->geo.Y1=OBJEKT_akt->element->geo.Y2=OBJEKT_akt->element->geo.Y3=OBJEKT_akt->element->geo.Y4=y;
+	Form2->ShowModal();
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
