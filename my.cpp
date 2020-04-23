@@ -957,8 +957,7 @@ double Cmy::Dotoc(double PTo,double RD)
 //		return F->d.v.PP.TT-(delka_prejezdu/RD+PT+WT);
 //	}
 //	else return 0;
-//}
-/////////////////////////////////////////////////////////////////////////////
+//}/////////////////////////////////////////////////////////////////////////////
 //Přetížená metoda
 double Cmy::RT(double PT,double doba_prejezdu,double WT,unsigned int pocet_voziku,double RD)
 {                                  														                            //ubraná čast přejezdu o buffer
