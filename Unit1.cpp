@@ -2813,6 +2813,8 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//BACKSPACE
 		case 8:
 		{
+			////Cesta
+			if(MOD==TVORBA_CESTY)N21Click(this);//odstranění úseku
 			////Hala
 			if(Akce==DRAW_HALA&&d.v.HALA.body->predchozi->n!=0){d.v.smaz_bod(d.v.HALA.body->predchozi);REFRESH();d.v.vytvor_obraz_DATA();}
 			else if(Akce==DRAW_HALA){Akce=NIC;kurzor(standard);}
@@ -2856,7 +2858,6 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 				d.v.vytvor_obraz_DATA();
 			}
 			else if(Akce==GEOMETRIE && !editace_textu && TIP=="")zobraz_tip(ls->Strings[311]);
-			if(Akce==TVORBA_CESTY)N21Click(this);//odstranění úseku
 		}break;
 		//ENTER
 		case 13:
@@ -2955,7 +2956,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 				REFRESH(false);
 				d.v.vytvor_obraz_DATA();
 			}
-			if(Akce==TVORBA_CESTY)scGPGlyphButton_odstran_cestuClick(this);//smazání cesty
+			if(MOD==TVORBA_CESTY)scGPGlyphButton_odstran_cestuClick(this);//smazání cesty
 		}break;
 		//PAGE UP
 		case 33:
@@ -3641,7 +3642,7 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 				}
 			}break;
 		}
-		if(Akce==TVORBA_CESTY)scGPButton_ulozit_cestuClick(this);
+		if(MOD==TVORBA_CESTY)scGPButton_ulozit_cestuClick(this);
 		Akce=NIC;Akce_temp=NIC;
 	}
 	else//jsem v náhledu
@@ -5324,7 +5325,7 @@ void TForm1::ZOOM_WINDOW()
 	Posun.x=m.round(Centr.x/m2px-(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2/Zoom);
 	Posun.y=m.round(-Centr.y/m2px-(ClientHeight)/2/Zoom);
 	//SB(Zoom,2);už se nepoužívá
-	on_change_zoom_change_scGPTrackBar();
+	on_change_zoom_change_scGPTrackBar();  Memo("problěhlo");
 
 	REFRESH();
 	//aktualizace_statusbaru(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
@@ -13584,7 +13585,15 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	d.v.uprav_popisky_elementu(NULL);
+	Cvektory::TCesta_uloz *E=d.v.DATA->Z_cesty->dalsi->cesta->dalsi;
+	unsigned int pocet=0;
+	while(E!=NULL)
+	{
+		pocet++;
+		E=E->dalsi;
+	}
+	delete E;E=NULL;
+	Memo(pocet,true);
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko

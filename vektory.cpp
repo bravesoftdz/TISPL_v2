@@ -7908,13 +7908,12 @@ Cvektory::TDATA *Cvektory::vytvor_prazdny_obraz()
 	obraz->Pohony->dalsi=NULL;
 	obraz->Pohony->predchozi=obraz->Pohony;
 
-	////vytvoření hlavičky pro Cesty
-	obraz->Cesta=new TCesta_uloz;
-	obraz->Cesta->n=0;
-	obraz->Cesta->element_n=0;
-	obraz->Cesta->sparovany_n=0;
-	obraz->Cesta->dalsi=NULL;
-	obraz->Cesta->predchozi=obraz->Cesta;
+	////vytvoření hlavičky pro Z_cesty
+	obraz->Z_cesty=new TZakazka_uloz;
+	obraz->Z_cesty->n=0;
+	obraz->Z_cesty->dalsi=NULL;
+	obraz->Z_cesty->predchozi=obraz->Z_cesty;
+
 
 	////vracení prázdného obrazu
 	return obraz;
@@ -8075,37 +8074,57 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 		delete p;p=NULL;
 
 		//záloha cesty aktuální zakázky
-		if(ZAKAZKA_akt!=NULL && ZAKAZKA_akt->n!=0)
+		if(ZAKAZKY!=NULL && ZAKAZKY->dalsi!=NULL)
 		{
-			TCesta *c=ZAKAZKA_akt->cesta->dalsi;
-			TCesta_uloz *c_u=NULL;
-			while(c!=NULL)
+			TZakazka *Z=ZAKAZKY->dalsi;
+			TZakazka_uloz *Z_u=NULL;
+			while(Z!=NULL)
 			{
-				c_u=new TCesta_uloz;
-				c_u->n=obraz->Cesta->predchozi->n+1;
-				c_u->element_n=c->Element->n;
-				if(c->sparovany!=NULL)c_u->sparovany_n=c->sparovany->n;
-				else c_u->sparovany_n=0;
-				c_u->data.PD=c->data.PD;
-				c_u->data.orientace_jig_pred=c->data.orientace_jig_pred;
-				c_u->data.LO1=c->data.LO1;
-				c_u->data.LO2=c->data.LO2;
-				c_u->data.LO_pozice=c->data.LO_pozice;
-				c_u->data.PT1=c->data.PT1;
-				c_u->data.PT2=c->data.PT2;
-				c_u->data.WTstop=c->data.WTstop;
-				c_u->data.RT.x=c->data.RT.x;
-				c_u->data.RT.y=c->data.RT.y;
-				c_u->data.pocet_pozic=c->data.pocet_pozic;
-				c_u->data.pocet_voziku=c->data.pocet_voziku;
-				c_u->dalsi=NULL;
-				c_u->predchozi=obraz->Cesta->predchozi;
-				obraz->Cesta->predchozi->dalsi=c_u;
-				obraz->Cesta->predchozi=c_u;
-				c_u=NULL;delete c_u;
-				c=c->dalsi;
+				Z_u=new TZakazka_uloz;
+				//vytvoření hlavičky pro cestu zakázky
+				Z_u->cesta=new TCesta_uloz;
+				Z_u->cesta->n=0;
+				Z_u->cesta->dalsi=NULL;
+				Z_u->cesta->predchozi=Z_u->cesta;
+				//průchod skrze segmenty cesty zakázky
+				TCesta *c=Z->cesta->dalsi;
+		  	TCesta_uloz *c_u=NULL;
+		  	while(c!=NULL)
+		  	{
+		  		c_u=new TCesta_uloz;
+					c_u->n=Z_u->cesta->predchozi->n+1;
+					c_u->element_n=c->Element->n;
+		  		if(c->sparovany!=NULL)c_u->sparovany_n=c->sparovany->n;
+		  		else c_u->sparovany_n=0;
+		  		c_u->data.PD=c->data.PD;
+		  		c_u->data.orientace_jig_pred=c->data.orientace_jig_pred;
+		  		c_u->data.LO1=c->data.LO1;
+		  		c_u->data.LO2=c->data.LO2;
+		  		c_u->data.LO_pozice=c->data.LO_pozice;
+		  		c_u->data.PT1=c->data.PT1;
+		  		c_u->data.PT2=c->data.PT2;
+		  		c_u->data.WTstop=c->data.WTstop;
+		  		c_u->data.RT.x=c->data.RT.x;
+		  		c_u->data.RT.y=c->data.RT.y;
+		  		c_u->data.pocet_pozic=c->data.pocet_pozic;
+		  		c_u->data.pocet_voziku=c->data.pocet_voziku;
+		  		c_u->dalsi=NULL;
+					c_u->predchozi=Z_u->cesta->predchozi;
+					Z_u->cesta->predchozi->dalsi=c_u;
+		  		Z_u->cesta->predchozi=c_u;
+		  		c_u=NULL;delete c_u;
+		  		c=c->dalsi;
+		  	}
+				delete c;c=NULL;
+				//uložení Z_u do obrazu
+				Z_u->dalsi=NULL;
+				Z_u->predchozi=obraz->Z_cesty->predchozi;
+				obraz->Z_cesty->predchozi->dalsi=Z_u;
+				obraz->Z_cesty->predchozi=Z_u;
+				Z_u=NULL;delete Z_u;
+				Z=Z->dalsi;
 			}
-			delete c;c=NULL;
+			delete Z;Z=NULL;
 		}
 	}
 }
@@ -8329,30 +8348,39 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 		delete p;p=NULL;
 		delete dp;dp=NULL;
 
-		//načtení cesty aktuální zakázky
-		if(ZAKAZKA_akt!=NULL && ZAKAZKA_akt->n!=0 && obraz->Cesta->dalsi!=NULL)
+		//načtení cest do zakázek, nnutno aktualizovat
+		if(ZAKAZKY!=NULL && ZAKAZKY->dalsi!=NULL && obraz->Z_cesty->dalsi!=NULL)
 		{
-			inicializace_cesty(ZAKAZKA_akt);
-			TCesta *c=NULL;
-			TCesta_uloz *c_u=obraz->Cesta->dalsi;
-			while(c_u!=NULL)
+			TZakazka *Z=ZAKAZKY->dalsi;
+			TZakazka_uloz *Z_u=obraz->Z_cesty->dalsi;
+			while(Z!=NULL)
 			{
-				c=new TCesta;
-				c->n=c_u->n;
-				c->Element=NULL;
-				if(c_u->element_n!=0)c->Element=vrat_element(c_u->element_n);
-				c->sparovany=NULL;
-				if(c_u->sparovany_n!=0)c->sparovany=vrat_element(c_u->sparovany_n);
-				kopiruj_data_elementu(c_u->data,c);
+				inicializace_cesty(Z);
+		  	TCesta *c=NULL;
+		  	TCesta_uloz *c_u=Z_u->cesta->dalsi;
+		  	while(c_u!=NULL)
+		  	{
+		  		c=new TCesta;
+		  		c->n=c_u->n;
+		  		c->Element=NULL;
+		  		if(c_u->element_n!=0)c->Element=vrat_element(c_u->element_n);
+		  		c->sparovany=NULL;
+		  		if(c_u->sparovany_n!=0)c->sparovany=vrat_element(c_u->sparovany_n);
+		  		kopiruj_data_elementu(c_u->data,c);
 
-				c->dalsi=NULL;
-				c->predchozi=ZAKAZKA_akt->cesta->predchozi;
-				ZAKAZKA_akt->cesta->predchozi->dalsi=c;
-				ZAKAZKA_akt->cesta->predchozi=c;
-				c=NULL;delete c;
-				c_u=c_u->dalsi;
+		  		c->dalsi=NULL;
+		  		c->predchozi=Z->cesta->predchozi;
+					Z->cesta->predchozi->dalsi=c;
+					Z->cesta->predchozi=c;
+		  		c=NULL;delete c;
+		  		c_u=c_u->dalsi;
+		  	}
+				delete c_u;c_u=NULL;
+				Z=Z->dalsi;
+				Z_u=Z_u->dalsi;
 			}
-			delete c_u;c_u=NULL;
+			delete Z;Z=NULL;
+			delete Z_u;Z_u=NULL;
 		}
 
 		//aktualizace dat
@@ -8472,12 +8500,18 @@ void Cvektory::smaz_obraz_DATA(unsigned long n)
 		obraz->Pohony->predchozi=NULL;
 		obraz->Pohony=obraz->Pohony->dalsi;
 	};
-	////smazání cest
-	while(obraz->Cesta!=NULL)
+	////smazání Z_cesta
+	while(obraz->Z_cesty!=NULL)
 	{
-		delete obraz->Cesta->predchozi;
-		obraz->Cesta->predchozi=NULL;
-		obraz->Cesta=obraz->Cesta->dalsi;
+		while(obraz->Z_cesty->predchozi->cesta!=NULL)
+		{
+			delete obraz->Z_cesty->predchozi->cesta->predchozi;
+			obraz->Z_cesty->predchozi->cesta->predchozi=NULL;
+			obraz->Z_cesty->predchozi->cesta=obraz->Z_cesty->predchozi->cesta->dalsi;
+		}
+		delete obraz->Z_cesty->predchozi;
+		obraz->Z_cesty->predchozi=NULL;
+		obraz->Z_cesty=obraz->Z_cesty->dalsi;
 	};
 	////smazání obrazu
 	delete obraz;obraz=NULL;
