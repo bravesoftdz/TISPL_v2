@@ -4398,7 +4398,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 					d.v.posun_objekt(m.P2Lx(predchozi_souradnice_kurzoru.x)-pom->element->geo.X1,m.P2Ly(predchozi_souradnice_kurzoru.y)-pom->element->geo.Y1,pom,false,false);
 					if(pom->orientace!=predchozi_orientace)d.v.rotuj_objekt(pom,pom->orientace-predchozi_orientace);
 				}
-				else d.v.vytvor_obraz_DATA();
+				else if(predchozi_souradnice_kurzoru.x!=m.L2Px(pom->element->geo.X1) && predchozi_souradnice_kurzoru.y!=m.L2Px(pom->element->geo.Y1))d.v.vytvor_obraz_DATA();
 				duvod_validovat=1;//pozor vyvolává na závěr metody ještě REFRESH(); ale docela byl přínosný
 				Akce=NIC;kurzor(standard);if(OBJEKT_akt!=NULL){scGPImage_zamek_posunu->ClipFrameFillColor=clWhite;scGPImage_zamek_posunu->ImageIndex=28;}//zamčen posun
 			}break;//posun objektu
@@ -5325,7 +5325,7 @@ void TForm1::ZOOM_WINDOW()
 	Posun.x=m.round(Centr.x/m2px-(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2/Zoom);
 	Posun.y=m.round(-Centr.y/m2px-(ClientHeight)/2/Zoom);
 	//SB(Zoom,2);už se nepoužívá
-	on_change_zoom_change_scGPTrackBar();  Memo("problěhlo");
+	on_change_zoom_change_scGPTrackBar();
 
 	REFRESH();
 	//aktualizace_statusbaru(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
@@ -13585,15 +13585,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Cvektory::TCesta_uloz *E=d.v.DATA->Z_cesty->dalsi->cesta->dalsi;
-	unsigned int pocet=0;
-	while(E!=NULL)
-	{
-		pocet++;
-		E=E->dalsi;
-	}
-	delete E;E=NULL;
-	Memo(pocet,true);
+	Memo(d.v.DATA->predchozi->n);
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko

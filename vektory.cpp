@@ -7926,12 +7926,11 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 	TDATA *obraz=DATA;//pro storno funkcionalitu nevytvařím prázdný obraz, ale ukládám do hlavičky
 	if(!storno)//pokud se nejedná o storno funkcionalitu vytvořím nový prázdný obraz do kterého budu projetk ukládat
 	{
-		if(!F->scGPGlyphButton_undo->Enabled && DATA->predchozi->n>0)F->scGPGlyphButton_undo->Enabled=true;//pokud je zakázán btn pro undo ... povolit, bude přidán nový datový obraz
 		//detekování přechodu z layoutu do editace nebo z editace do editace, editace a layout nebo editace a editace jsou nezávislé v Undo, tz. nelze se pomocí Undo dostat z editace zpět do layout, proto je nutné při přechodu smazat všechny obrazy
 		if(DATA->predchozi->n>0 && F->OBJEKT_akt!=NULL && (DATA->predchozi->edit_Objekt==0 || DATA->predchozi->edit_Objekt>0 && DATA->predchozi->edit_Objekt!=F->OBJEKT_akt->n))
 		{
 			//mazání všech jíž nepotřebných obrazů
-   		while(DATA->dalsi!=NULL)
+			while(DATA->dalsi!=NULL)
 			{
 				smaz_obraz_DATA(DATA->predchozi->n);
    		}
@@ -7949,6 +7948,7 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 			pozice_data=0;//vrácení pozice na default hodnotu
 			if(F->scGPGlyphButton_redo->Enabled)F->scGPGlyphButton_redo->Enabled=false;//pokud je povolen button na redo ... zakázat, bude přidán nový obraz, přepíše následující
 		}
+		if(!F->scGPGlyphButton_undo->Enabled && DATA->predchozi->n>=1)F->scGPGlyphButton_undo->Enabled=true;//pokud je zakázán btn pro undo ... povolit, bude přidán nový datový obraz
 		//vytvoření prázdného obrazu (hlavičky objektu, elementů a pohonů)
 		obraz=vytvor_prazdny_obraz();
 		//kontrola zda je místo v bufferu, případné smazání nejstaršího obrazu, tj. vždy první
@@ -8528,6 +8528,10 @@ long Cvektory::vymaz_seznam_DATA()
 		delete DATA->predchozi;
 		DATA=DATA->dalsi;
 	};
+
+	//zakázání tlačítek pro undo a redo, pokud josu povolena
+	if(F->scGPGlyphButton_undo->Enabled)F->scGPGlyphButton_undo->Enabled=false;
+	if(F->scGPGlyphButton_redo->Enabled)F->scGPGlyphButton_redo->Enabled=false;
 
 	return pocet_smazanych_DAT;
 }
