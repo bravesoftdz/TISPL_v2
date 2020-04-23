@@ -2009,16 +2009,17 @@ void TForm1::mail(String Host,String Username,String Password,String FromAddress
 	MAIL->Recipients->EMailAddresses=To;
 	MAIL->CCList->EMailAddresses=ccTo;
 	MAIL->BccList->EMailAddresses=bccTo;
-	MAIL->ContentType="multipart/related; type=text/html";//text/plain
+// 	if(FileName!="" || FileExists(FileName)) MAIL->ContentType="multipart/text";//text/plain
+//  else  MAIL->ContentType="text/html";//text/plain
 	MAIL->CharSet="UTF-8";
 	MAIL->Body->Text=AnsiToUtf8(Body);
 	TIdAttachmentFile *Attach;
-	if(FileName!="")Attach=new TIdAttachmentFile(MAIL->MessageParts,FileName);//potřebuje #include <idattachmentfile.hpp>
-
+	if(FileName!="") Attach=new TIdAttachmentFile(MAIL->MessageParts,FileName);//potřebuje #include <idattachmentfile.hpp>
 	TIdSMTP *SMTP=new TIdSMTP(this);
 	SMTP->Host=Host;//"smtp.seznam.cz";
 	SMTP->Username=Username;
 	SMTP->Password=Password;
+  ShowMessage(MAIL->MessageParts->Count);
 	SMTP->Port=25;//SMTP->UseTLS=utNoTLSSupport; případně použít, pro použití SSL jiný port a zároveň potřeba s SMTP propojit přes IO handler SSL komponentu + 2x patřičné DLL
 	SMTP->Connect();
 	SMTP->Send(MAIL);
@@ -14567,12 +14568,12 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //	MAIL->ContentType="multipart/related; type=text/html";//text/plain
 //	MAIL->CharSet="UTF-8";
 //	MAIL->Body->Text=AnsiToUtf8("Snad to <b>půjde</b> 11. port 25. již včetně přílohy Martin");
-//	TIdAttachmentFile *Attach = new TIdAttachmentFile(MAIL->MessageParts,"C:\\Users\\Martin\\AppData\\Local\\Temp\\TISPL\\tispl_PrtScrMartin_MARTIN-NOTEBOOK.png");//potřebuje #include <idattachmentfile.hpp>
+//	TIdAttachmentFile *Attach = new TIdAttachmentFile(MAIL->MessageParts,"c:\\Users\\rosta\\AppData\\Local\\Temp\\TISPL\\tispl_PrtScrrosta_ROSTA.png");//potřebuje #include <idattachmentfile.hpp>
 //
 //	TIdSMTP *SMTP=new TIdSMTP(this);
 //	SMTP->Host="lyzarskejihlavsko.cz";//"smtp.seznam.cz";
 //	SMTP->Username="martin.kratochvil@lyzarskejihlavsko.cz";
-//	SMTP->Password="doplnit";
+//	SMTP->Password="";
 //	SMTP->Port=25;//SMTP->UseTLS=utNoTLSSupport; případně použít, pro použití SSL jiný port a zároveň potřeba s SMTP propojit přes IO handler SSL komponentu + 2x patřičné DLL
 //	SMTP->Connect();
 //	SMTP->Send(MAIL);
@@ -14580,6 +14581,31 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //	delete Attach;//musí být jako první
 //	delete MAIL;
 //	delete SMTP;
+
+	TIdMessage *MAIL=new TIdMessage(this);
+	MAIL->Clear();
+	MAIL->From->Address="builderboy@seznam.cz";
+	MAIL->From->Name="TISPL";
+	MAIL->Subject="zkouška 12 včetně přílohy";
+	MAIL->Recipients->EMailAddresses="rosta.slechta@gmail.com,rosta.slechta@seznam.cz";
+	MAIL->CCList->EMailAddresses="";
+	MAIL->BccList->EMailAddresses="";
+	MAIL->ContentType="multipart/related; type=text/html";//text/plain
+	MAIL->CharSet="UTF-8";
+	MAIL->Body->Text=AnsiToUtf8("Snad to <b>půjde</b> 11. port 25. již včetně přílohy Martin");
+	TIdAttachmentFile *Attach = new TIdAttachmentFile(MAIL->MessageParts,"c:\\Users\\rosta\\AppData\\Local\\Temp\\TISPL\\tispl_PrtScrrosta_ROSTA.png");//potřebuje #include <idattachmentfile.hpp>
+
+	TIdSMTP *SMTP=new TIdSMTP(this);
+	SMTP->Host="smtp.seznam.cz";//"smtp.seznam.cz";
+	SMTP->Username="builderboy@seznam.cz";
+	SMTP->Password="camaro69";
+	SMTP->Port=25;//SMTP->UseTLS=utNoTLSSupport; případně použít, pro použití SSL jiný port a zároveň potřeba s SMTP propojit přes IO handler SSL komponentu + 2x patřičné DLL
+	SMTP->Connect();
+	SMTP->Send(MAIL);
+	SMTP->Disconnect(true);
+	delete Attach;//musí být jako první
+	delete MAIL;
+	delete SMTP;
 //
 //	//odeslání dat na FTP server
 //	TIdFTP *FTP=new TIdFTP(this);
