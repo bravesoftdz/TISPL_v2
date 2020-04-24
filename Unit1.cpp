@@ -2814,6 +2814,8 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//BACKSPACE
 		case 8:
 		{
+			////Cesta
+			if(MOD==TVORBA_CESTY)N21Click(this);//odstranění úseku
 			////Hala
 			if(Akce==DRAW_HALA&&d.v.HALA.body->predchozi->n!=0){d.v.smaz_bod(d.v.HALA.body->predchozi);REFRESH();d.v.vytvor_obraz_DATA();}
 			else if(Akce==DRAW_HALA){Akce=NIC;kurzor(standard);}
@@ -2857,7 +2859,6 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 				d.v.vytvor_obraz_DATA();
 			}
 			else if(Akce==GEOMETRIE && !editace_textu && TIP=="")zobraz_tip(ls->Strings[311]);
-			if(Akce==TVORBA_CESTY)N21Click(this);//odstranění úseku
 		}break;
 		//ENTER
 		case 13:
@@ -2956,7 +2957,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 				REFRESH(false);
 				d.v.vytvor_obraz_DATA();
 			}
-			if(Akce==TVORBA_CESTY)scGPGlyphButton_odstran_cestuClick(this);//smazání cesty
+			if(MOD==TVORBA_CESTY)scGPGlyphButton_odstran_cestuClick(this);//smazání cesty
 		}break;
 		//PAGE UP
 		case 33:
@@ -3642,7 +3643,7 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 				}
 			}break;
 		}
-		if(Akce==TVORBA_CESTY)scGPButton_ulozit_cestuClick(this);
+		if(MOD==TVORBA_CESTY)scGPButton_ulozit_cestuClick(this);
 		Akce=NIC;Akce_temp=NIC;
 	}
 	else//jsem v náhledu
@@ -4398,7 +4399,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 					d.v.posun_objekt(m.P2Lx(predchozi_souradnice_kurzoru.x)-pom->element->geo.X1,m.P2Ly(predchozi_souradnice_kurzoru.y)-pom->element->geo.Y1,pom,false,false);
 					if(pom->orientace!=predchozi_orientace)d.v.rotuj_objekt(pom,pom->orientace-predchozi_orientace);
 				}
-				else d.v.vytvor_obraz_DATA();
+				else if(predchozi_souradnice_kurzoru.x!=m.L2Px(pom->element->geo.X1) && predchozi_souradnice_kurzoru.y!=m.L2Px(pom->element->geo.Y1))d.v.vytvor_obraz_DATA();
 				duvod_validovat=1;//pozor vyvolává na závěr metody ještě REFRESH(); ale docela byl přínosný
 				Akce=NIC;kurzor(standard);if(OBJEKT_akt!=NULL){scGPImage_zamek_posunu->ClipFrameFillColor=clWhite;scGPImage_zamek_posunu->ImageIndex=28;}//zamčen posun
 			}break;//posun objektu
@@ -12605,6 +12606,7 @@ void __fastcall TForm1::Timer_backupTimer(TObject *Sender)
 	if(FileName=="Nový.omap")SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
 
 	//zapis dat do souboru
+	if(FileName=="")FileName="Nový.tispl";//někdy se stane, že FileName je prázdný, ošetření převzato z ukládání souboru
 	d.v.uloz_do_souboru(FileName+".bac_"+get_user_name()+"_"+get_computer_name());
 
 	//odstranění dlouhé adresy
@@ -13584,7 +13586,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Form2->ShowModal();
+	Memo(d.v.DATA->predchozi->n);
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko

@@ -2321,6 +2321,7 @@ void TmGrid::CopyAreaCell(TCells &RefCell,TCells &CopyCell,bool copyComponent)
 	CopyCell.RightMargin=RefCell.RightMargin;
 	//indikátor sloučení
 	CopyCell.MergeState=RefCell.MergeState;
+	CopyCell.MergeArea=RefCell.MergeArea;
 	//hint
 	CopyCell.ShowHint=RefCell.ShowHint;
 	//další vlastnosti

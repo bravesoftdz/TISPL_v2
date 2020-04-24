@@ -3172,7 +3172,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 		}
 
 		/////testy
-		if(F->scGPCheckBox_popisek_pohonu->Checked && E->pohon!=NULL && E->geo.typ==0 && E->geo.orientace==m.Rt90(E->geo.orientace))//vykreslení vodoznaku pohonu
+		if(F->scGPCheckBox_popisek_pohonu->Checked && F->MOD!=F->TVORBA_CESTY && zakazka==NULL && E->pohon!=NULL && E->geo.typ==0 && E->geo.orientace==m.Rt90(E->geo.orientace))//vykreslení vodoznaku pohonu
 		{
 			if(zacatek.x==0 && zacatek.y==0)zacatek=m.L2P(E->geo.X1,E->geo.Y1);
 			if(E->dalsi==NULL || E->eID==300 || E->eID==301 || (E->dalsi!=NULL && (E->dalsi->geo.typ!=0 || (m.delka(m.P2Lx(zacatek.x),m.P2Ly(zacatek.y),E->geo.X4,E->geo.Y4)>=9.9 && E->dalsi->objekt_n!=E->objekt_n) || (E->dalsi->geo.typ==0 && E->geo.orientace!=E->dalsi->geo.orientace))))
@@ -3238,7 +3238,8 @@ void Cvykresli::vykresli_popisek_pohonu(TCanvas *canv,AnsiString text,TPoint zac
 	{
 		case 0:
 		{
-      //nastavení odsazení pro text
+			//nastavení odsazení pro text
+			poziceY+=m.round(0.5*1.1*delka_sipky/4.0);//centrování podlě šipky, ne podle textu
 			odsazeniX=H;odsazeniY=W;
 			canv->Font->Orientation=900;
 			odsazeniY=-odsazeniY/2.0;if(obratit>0)odsazeniX*=2.14;//jednou je třeba připočítat výšku textu
@@ -3251,6 +3252,7 @@ void Cvykresli::vykresli_popisek_pohonu(TCanvas *canv,AnsiString text,TPoint zac
 		case 180:
 		{
 			//nastavení odsazení pro text
+			poziceY-=m.round(0.5*1.1*delka_sipky/4.0);//centrování podlě šipky, ne podle textu
 			obratit*=-1;//nutno otočit, orientace 180 má více odlišností
 			odsazeniX=H;odsazeniY=W;
 			canv->Font->Orientation=2700;
@@ -3265,6 +3267,7 @@ void Cvykresli::vykresli_popisek_pohonu(TCanvas *canv,AnsiString text,TPoint zac
 		case 90:case 270:
 		{
 			//nastavení odsazení pro text
+			poziceX-=m.round(0.5*1.1*delka_sipky/4.0);//centrování podlě šipky, ne podle textu
 			odsazeniX/=2.0;if(obratit>0)odsazeniY*=2.14;//jednou je třeba připočítat výšku textu
 			odsazeniY*=obratit;//převrácení vodoznaku
 			//nastavení bodů pro šipku

@@ -257,6 +257,14 @@ class Cvektory
 	TZakazka *ZAKAZKY_temp;//spojový seznam zakázek
 	TZakazka *ZAKAZKA_akt;//udržuje aktuální zakázku (uživatelskou nebo defaultní)
 
+	struct TZakazka_uloz
+	{
+		unsigned long n;//pořadí objektu ve spoj.seznamu
+		struct TCesta_uloz *cesta;
+		struct TZakazka_uloz *predchozi;
+		struct TZakazka_uloz *dalsi;
+	};
+
 	struct TVozik
 	{
 		unsigned long n; //pořadí objektu ve spoj.seznamu
@@ -471,7 +479,7 @@ class Cvektory
 		TObjekt *Objekty;
 		TElement *Elementy;
 		TPohon *Pohony;
-		TCesta_uloz *Cesta;
+		TZakazka_uloz *Z_cesty;//uchovává v sobě data cest k jednotlivým zakázkám
 
 		TDATA *dalsi;
 		TDATA *predchozi;
