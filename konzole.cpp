@@ -53,10 +53,10 @@ void __fastcall TForm_konzole::FormShow(TObject *Sender)
 void __fastcall TForm_konzole::scGPButton_odeslatClick(TObject *Sender)
 {
 //mail odeslání
-//ShowMessage(priloha_cesta);
-//"c:\\Users\\rosta\\AppData\\Local\\Temp\\TISPL\\tispl_PrtScrrosta_ROSTA.png"
 Text_formulare=Text->Lines->GetText(); // nahrání dat z Mema
-F->mail("smtp.seznam.cz","builderboy@seznam.cz","camaro69","builderboy@seznam.cz","TISPL","error",Text_formulare,"rosta.slechta@gmail.com","","","c:\\Users\\rosta\\AppData\\Local\\Temp\\TISPL\\tispl_PrtScrrosta_ROSTA.png");
+F->mail("smtp.seznam.cz","builderboy@seznam.cz","camaro69","builderboy@seznam.cz","TISPL","error",Text_formulare,"rosta.slechta@gmail.com","","",priloha_cesta);
+F->MB("Odesláno");
+Text->Clear();
 Close();
 }
 //---------------------------------------------------------------------------
