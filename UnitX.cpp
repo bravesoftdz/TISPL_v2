@@ -926,6 +926,8 @@ void TFormX::aktualizace_tab_pohonu()
 			F->PmG->Cells[3][7].Text=0;
 			F->PmG->Cells[3][8].Text=0;
 		}
+		//kontrola zda je rx nula
+		if(F->PmG->Cells[3][5].Text=="0")F->PmG->Cells[3][5].Text="-";
   }
 }
 //---------------------------------------------------------------------------
@@ -1690,6 +1692,7 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 		//došel jsem na zaèátek obìktu a mám v pøedchozím PM
 		if(e!=NULL && e->n>0 && (e==F->OBJEKT_akt->element || e==F->OBJEKT_akt->element->predchozi) && F->predchozi_PM!=NULL)
 		{
+      F->d.v.vrat_objekt(F->predchozi_PM->objekt_n)->pohon=p;
 			if(F->prohodit_sloupce_PM(F->predchozi_PM))druhy=3;else druhy=4;
 			if(F->predchozi_PM->mGrid->Cells[druhy][2].Type==TmGrid::COMBO)F->predchozi_PM->mGrid->getCombo(druhy,2)->ItemIndex=p_n;
 			e=F->predchozi_PM->dalsi;
@@ -1707,6 +1710,7 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 		while(e!=NULL && e->objekt_n==F->OBJEKT_akt->n)
 		{
 			e->pohon=p;
+			if(e->objekt_n!=E->objekt_n)F->d.v.vrat_objekt(e->objekt_n)->pohon=p;
 			if(F->prohodit_sloupce_PM(e))prvni=4;else prvni=3;
 			if(e->eID==300 && e->mGrid->Cells[prvni][2].Type==TmGrid::COMBO)e->mGrid->getCombo(prvni,2)->ItemIndex=p_n;
 			if(e->eID==200){if(e->mGrid->Cells[prvni][2].Type==TmGrid::COMBO)e->mGrid->getCombo(prvni,2)->ItemIndex=p_n;break;}//narazil jsem na PM, zapsat nový pohon a konec
@@ -1719,6 +1723,11 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 	F->vlozit_predavaci_misto_aktualizuj_WT();//musí být první!!
 	if(p!=NULL)aktualizace_tab_elementu();
 	else aktualizace_tab_elementu_pOdebran();
+
+	////aktualizace knihoven
+	F->DrawGrid_knihovna->Refresh();
+	F->DrawGrid_ostatni->Refresh();
+	F->DrawGrid_otoce->Refresh();
 
 	////ukazatelové záležitosti
 	Combo=NULL;delete Combo;

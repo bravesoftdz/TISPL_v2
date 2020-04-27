@@ -4427,6 +4427,14 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 					if(pom_element_temp->dalsi!=NULL)
 						d.v.vloz_G_element(pom_element_temp->dalsi,0,pom_element_temp->geo.X4,pom_element_temp->geo.Y4,0,0,0,0,pom_element_temp->dalsi->geo.X4,pom_element_temp->dalsi->geo.Y4,pom_element_temp->dalsi->geo.orientace,pom_element_temp->dalsi->geo.rotacni_uhel);
 				}
+				else//došlo k posunu
+				{
+					if(m.delka(puv_souradnice.x,puv_souradnice.y,pom_element_temp->X,pom_element_temp->Y)>=1)//pokud byl posun větší něž jeden
+					{
+						pom_element_temp->Xt-=puv_souradnice.x-pom_element_temp->X;
+						pom_element_temp->Yt-=puv_souradnice.y-pom_element_temp->Y;
+					}
+				}
 				pom_element_temp=NULL; delete pom_element_temp;
 				vlozit_predavaci_misto_aktualizuj_WT();//kontrola zda nebyly přesunuty 2 PM na sebe
 				//nejednalo se o posun ale o editaci textu
@@ -6090,7 +6098,7 @@ void TForm1::add_element (int X, int Y)
    			}
 			}
 			//přilepení elemntu na střed objektu
-			if(vkladani_stred && E->geo.delka>=delka_objektu/2.0-delka_objektu*0.2 && E->geo.delka<=delka_objektu/2.0+delka_objektu*0.2 && mrYes==MB(ls->Strings[457],MB_YESNO))//"Chcete umístit element do středu objektu?"
+			if(E->eID!=0 && E->eID!=5 && E->eID!=6 && E->eID!=100 && E->eID<200 && vkladani_stred && E->geo.delka>=delka_objektu/2.0-delka_objektu*0.2 && E->geo.delka<=delka_objektu/2.0+delka_objektu*0.2 && mrYes==MB(ls->Strings[457],MB_YESNO))//"Chcete umístit element do středu objektu?"
 			{
 				d.v.posun_element(E,delka_objektu/2.0);
       }
@@ -8206,7 +8214,12 @@ void TForm1::vytvoreni_tab_pohon(bool existuje_poh_tabulka)
 		PmG->VisibleRow(6,false,false);
 		PmG->VisibleRow(7,false,false);
 		PmG->VisibleRow(8,false,false);
-		//refresh
+		//kontrola zda není PmG mimo obraz, pokud ano zobrazit na def. místo
+		if(PmG->Top+PmG->Height<34 || PmG->Top>ClientHeight-73 || PmG->Left+PmG->Width<168 || PmG->Left>ClientWidth)
+		{
+			OBJEKT_akt->Xp=m.P2Lx(ClientWidth*2/3.0);
+			OBJEKT_akt->Yp=m.P2Ly(ClientHeight/2.0);
+		}
   	PmG->Refresh();
 		if(PmG->Note.Text!="")PmG->ShowNote(PmG->Note.Text,d.clWarning,14);
 	}
@@ -8279,6 +8292,8 @@ void TForm1::aktualizace_tab_pohon(bool popisky,bool data,bool komponenty)
 			PmG->Cells[3][7].Text=0;
 			PmG->Cells[3][8].Text=0;
 		}
+		//kontrola zda je rx nula
+		if(PmG->Cells[3][5].Text=="0")PmG->Cells[3][5].Text="-";
 	}
 
 	////aktualizace editovatelných polozek
@@ -8842,6 +8857,10 @@ void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
 			//ukazatelové záležitosti
 			e_pom=NULL;delete e_pom;
 		}
+
+		//kontrola zda je rx nula
+		if(E->mGrid->Cells[prvni][7].Text=="0")E->mGrid->Cells[prvni][7].Text="-";
+		if(E->mGrid->Cells[druhy][7].Text=="0")E->mGrid->Cells[druhy][7].Text="-";
 
 		//ukazatelové záležitosti
 		C1=NULL;C2=NULL;
@@ -11349,6 +11368,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 			  	{
 						d.v.smaz_objekt(pom_vyhybka);//nalezeny můžeme odstranit odstranit
 						pom_vyhybka=NULL;//delete p; nepoužívat delete je to ukazatel na ostra data
+						duvod_validovat=2;
 			  		REFRESH();
 			  		DuvodUlozit(true);
 			  	}
@@ -13586,7 +13606,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Form2->ShowModal();
+	Memo(OBJEKT_akt->orientace);
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -15372,6 +15392,7 @@ void TForm1::smaz_kurzor()
 			}break;
 			case -5://hodnota kót objektu (hrana objektu)
 			{
+				double posunx=0,posuny=0;
 				//převedení na základní jednotky
 				editovany_text=inDK(ms.MyToDouble(editovany_text));
 				if(DKunit==2||DKunit==3)editovany_text=editovany_text*OBJEKT_akt->pohon->aRD;//pokud jsou kóty v časovém režimu, převede na vzdálenost;
@@ -15382,7 +15403,17 @@ void TForm1::smaz_kurzor()
 				//výpočet posunu (jednotlivé souřadnice bodu) + posun
 				puv=m.round2double(m.delka(A->X,A->Y,pom_bod_temp->X,pom_bod_temp->Y),3);
 				posun=nov-puv;
-				d.v.posun_bod(pom_bod_temp->X+sin(DegToRad(fmod(m.azimut(A->X,A->Y,pom_bod_temp->X,pom_bod_temp->Y),360)))*posun,pom_bod_temp->Y+cos(DegToRad(fmod(m.azimut(A->X,A->Y,pom_bod_temp->X,pom_bod_temp->Y),360)))*posun,pom_bod_temp);
+				posunx=sin(DegToRad(fmod(m.azimut(A->X,A->Y,pom_bod_temp->X,pom_bod_temp->Y),360)))*posun;posuny=cos(DegToRad(fmod(m.azimut(A->X,A->Y,pom_bod_temp->X,pom_bod_temp->Y),360)))*posun;
+				pom_bod_temp=pom_bod_temp->predchozi;
+				if(pom_bod_temp->n==0)pom_bod_temp=OBJEKT_akt->body->dalsi;
+				d.v.posun_bod(pom_bod_temp->X-posunx,pom_bod_temp->Y-posuny,pom_bod_temp);
+				//pokud jsou v objektu pouze 4 body, posun i dalšího bodu, tzn. editace obdelníku
+				if(OBJEKT_akt->body->predchozi->n==4)
+				{
+         	pom_bod_temp=pom_bod_temp->predchozi;
+					if(pom_bod_temp->n==0)pom_bod_temp=OBJEKT_akt->body->dalsi;
+					d.v.posun_bod(pom_bod_temp->X-posunx,pom_bod_temp->Y-posuny,pom_bod_temp);
+				}
 				A=NULL;delete A;
 			}break;
 		}
@@ -15410,6 +15441,14 @@ void TForm1::smaz_kurzor()
 				if(pom_element_temp->dalsi!=NULL)
 					d.v.vloz_G_element(pom_element_temp->dalsi,0,pom_element_temp->geo.X4,pom_element_temp->geo.Y4,0,0,0,0,pom_element_temp->dalsi->geo.X4,pom_element_temp->dalsi->geo.Y4,pom_element_temp->dalsi->geo.orientace,pom_element_temp->dalsi->geo.rotacni_uhel);
 			}
+			else//došlo k posunu
+			{
+				if(m.delka(puv_souradnice.x,puv_souradnice.y,pom_element_temp->X,pom_element_temp->Y)>=1)//pokud byl posun větší něž jeden
+				{
+					pom_element_temp->Xt-=puv_souradnice.x-pom_element_temp->X;
+					pom_element_temp->Yt-=puv_souradnice.y-pom_element_temp->Y;
+				}
+      }
 		}
 		if(index_kurzoru<=-11&&OBJEKT_akt->id==3&&Akce!=GEOMETRIE&&Akce!=GEOMETRIE_LIGHT)//editace rozmeru komor v POW
 		{
