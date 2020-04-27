@@ -204,12 +204,14 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 		delete []tab_pruchodu;
 	}
 
-	///////////////VALIDACE a její výpis formou zpráv
+	///////////////VALIDACE její samotné provední, vnitřek metody se provede jen pokud duvod_validovat==2
 	v.VALIDACE();
-	if(F->MOD!=F->Tmod::TVORBA_CESTY && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT)vypis_zpravy(canv);
 
 	///////////////vykreslení VOZÍKů, musí být až za VALIDACí kvůli generování vozíků, které je ve VALIDACi
 	vykresli_voziky(canv);
+
+	//VALIDACE výpis formou zpráv musí být za vozíky, aby byla zcela nahoře
+	if(F->MOD!=F->Tmod::TVORBA_CESTY && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT)vypis_zpravy(canv);
 }
 //---------------------------------------------------------------------------
 //zajišťuje vykreslení pouze obrysu dle typu objektu
@@ -2884,21 +2886,21 @@ void Cvykresli::vykresli_jig(TCanvas *canv,double X,double Y,double dJ,double sJ
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_vyrobky(TCanvas *canv,double X,double Y,double dJ,double sJ,double orientaceP,double rotaceJ,TColor clJig,float Width)
 {
-	//vykreslení jigu
-	set_pen2(canv,clChassis,m.round(Width/3.0*F->Zoom),PS_ENDCAP_FLAT,PS_JOIN_MITER,true);
+	//vykreslení jigu - tyče, rámu, kde jsou navěšené výrobky
+	set_pen2(canv,m.clIntensive(clChassis,30),m.round(Width/3.0*F->Zoom),PS_ENDCAP_FLAT,PS_JOIN_MITER,true);
 	TPointD P0=m.rotace(v.PP.delka_jig/2.0,0,m.o2r(orientaceP-90)+rotaceJ);
 	line(canv,m.L2Px(X+P0.x),m.L2Py(Y+P0.y),m.L2Px(X-P0.x),m.L2Py(Y-P0.y));//obdelnik(canv,X-dJ/2.0,Y,X+dJ/2.0,Y,m.o2r(orientaceP)+rotaceJ);
 
 	//vykreslení ochranné zóny okolo jigu
 	//DWORD pole[]={m.round(5/3.0*F->Zoom),m.round(2.5/3.0*F->Zoom),m.round(1/3.0*F->Zoom),m.round(2.5/3.0*F->Zoom)};//definice uživatelského pera s vlastní definovanou linii
 	//set_pen2(canv,clRed,2,PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
-	set_pen2(canv,clJig,2*2,PS_ENDCAP_SQUARE,PS_JOIN_MITER,true);
+	set_pen2(canv,clJig,2,PS_ENDCAP_SQUARE,PS_JOIN_MITER,true);
 	obdelnik(canv,X-dJ/2.0,Y+sJ/2.0,X+dJ/2.0,Y-sJ/2.0,m.o2r(orientaceP)+rotaceJ);
 
 	//vykreslení výrobků
 	double Z=3.5;//faktor zvětšení
-	double H=0.0834*Z;//výška výrobku (přibližná-naměřená měřidlem)
-	double W=0.08*Z;//šířka výrobku (přibližná-naměřená měřidlem 0.07753, ale raději včetně rezervy 0.8 kvůli krajům)
+	double H=0.085*Z;//výška výrobku (přibližná-naměřená měřidlem 0.0834, ale raději včetně rezervy 0.085 kvůli krajům)
+	double W=0.08*Z;//šířka výrobku (přibližná-naměřená měřidlem 0.07753, ale raději včetně rezervy 0.08 kvůli krajům)
 	double M=-W/2/3;//mezera mezi výrobky,poměrově vůči výrobku
 	double iKrok=(W+M);//výrobek + mezera
 	double iMax=(v.PP.delka_jig-W)/iKrok;//počet úseků
