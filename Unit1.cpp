@@ -13613,7 +13613,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 void __fastcall TForm1::Button14Click(TObject *Sender)
 {
  //log(__func__);
- Form2->ShowModal();
+ //Form2->ShowModal();
 //	d.v.vytvor_retez(d.v.POHONY->dalsi);
 //	d.vykresli_retez(Canvas,d.v.POHONY->dalsi->retez);
 ////	d.v.vytvor_retez(d.v.POHONY->predchozi);
@@ -13670,6 +13670,8 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 
 	//	smaz=0;
 //	Timer_smazat->Enabled=true;
+duvod_validovat=2;
+REFRESH();
 
 }
 //---------------------------------------------------------------------------

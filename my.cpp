@@ -957,15 +957,16 @@ double Cmy::Dotoc(double PTo,double RD)
 //		return F->d.v.PP.TT-(delka_prejezdu/RD+PT+WT);
 //	}
 //	else return 0;
-//}
-/////////////////////////////////////////////////////////////////////////////
+//}/////////////////////////////////////////////////////////////////////////////
 //Přetížená metoda
 double Cmy::RT(double PT,double doba_prejezdu,double WT,unsigned int pocet_voziku,double RD)
-{                                  														                            //ubraná čast přejezdu o buffer
-	//nemazat, vysvětlení: pocet_voziku=(doba_prejezdu-pocet_voziku/*nastavených - stojicích v bufferu*/*F->d.v.PP.delka_podvozek/RD)/TT;//doplní včetně skutečného počtu vozíků (tzn. vozíky v bufferu a v pohybu) na přejezdu
-	//nemazat, vysvětlení: return (pocet_voziku)*F->d.v.PP.TT-(doba_prejezdu+PT+WT);
+{
 	if(RD==0) return 0;
-	else return (doba_prejezdu-pocet_voziku*F->d.v.PP.delka_podvozek/RD)-(doba_prejezdu+PT+WT);
+	else
+	{                                                             //ubraná čast přejezdu o buffer
+		double pocet_voziku_prejezd=(doba_prejezdu-pocet_voziku/*nastavených - stojicích v bufferu*/*F->d.v.PP.delka_podvozek/RD)/F->d.v.PP.TT;//doplní včetně skutečného počtu vozíků (tzn. vozíky v bufferu a v pohybu) na přejezdu
+		return (pocet_voziku_prejezd+pocet_voziku)*F->d.v.PP.TT-(doba_prejezdu+PT+WT);
+	}
 }
 /////////////////////////////////////////////////////////////////////////////
 //vratí RD dle délky otoče a času otáčení
