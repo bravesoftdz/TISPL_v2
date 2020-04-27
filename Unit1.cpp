@@ -2009,12 +2009,12 @@ void TForm1::mail(String Host,String Username,String Password,String FromAddress
 	MAIL->Recipients->EMailAddresses=To;
 	MAIL->CCList->EMailAddresses=ccTo;
 	MAIL->BccList->EMailAddresses=bccTo;
-	MAIL->ContentType="multipart/related; type=text/html";//text/plain
+// 	if(FileName!="" || FileExists(FileName)) MAIL->ContentType="multipart/text";//text/plain
+//  else  MAIL->ContentType="text/html";//text/plain
 	MAIL->CharSet="UTF-8";
 	MAIL->Body->Text=AnsiToUtf8(Body);
 	TIdAttachmentFile *Attach;
-	if(FileName!="")Attach=new TIdAttachmentFile(MAIL->MessageParts,FileName);//potřebuje #include <idattachmentfile.hpp>
-
+	if(FileName!="") Attach=new TIdAttachmentFile(MAIL->MessageParts,FileName);//potřebuje #include <idattachmentfile.hpp>
 	TIdSMTP *SMTP=new TIdSMTP(this);
 	SMTP->Host=Host;//"smtp.seznam.cz";
 	SMTP->Username=Username;
@@ -2813,6 +2813,8 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//BACKSPACE
 		case 8:
 		{
+			////Cesta
+			if(MOD==TVORBA_CESTY)N21Click(this);//odstranění úseku
 			////Hala
 			if(Akce==DRAW_HALA&&d.v.HALA.body->predchozi->n!=0){d.v.smaz_bod(d.v.HALA.body->predchozi);REFRESH();d.v.vytvor_obraz_DATA();}
 			else if(Akce==DRAW_HALA){Akce=NIC;kurzor(standard);}
@@ -2856,7 +2858,6 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 				d.v.vytvor_obraz_DATA();
 			}
 			else if(Akce==GEOMETRIE && !editace_textu && TIP=="")zobraz_tip(ls->Strings[311]);
-			if(Akce==TVORBA_CESTY)N21Click(this);//odstranění úseku
 		}break;
 		//ENTER
 		case 13:
@@ -2955,7 +2956,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 				REFRESH(false);
 				d.v.vytvor_obraz_DATA();
 			}
-			if(Akce==TVORBA_CESTY)scGPGlyphButton_odstran_cestuClick(this);//smazání cesty
+			if(MOD==TVORBA_CESTY)scGPGlyphButton_odstran_cestuClick(this);//smazání cesty
 		}break;
 		//PAGE UP
 		case 33:
@@ -3574,7 +3575,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 				kurzor(pan_move);Akce=PAN_MOVE;//přepne z PAN na PAN_MOVE
 				pan_create();//vytvoří výřez pro pan_move
 			}
-			if(Button!=mbRight)if(scSplitView_LEFTTOOLBAR->Visible && scSplitView_LEFTTOOLBAR->Opened)DrawGrid_knihovna->SetFocus();//předávání událostí na form
+			if(Button!=mbRight && scSplitView_LEFTTOOLBAR->Visible && scSplitView_LEFTTOOLBAR->Opened)DrawGrid_knihovna->SetFocus();//předávání událostí na form
 		}
 		else
 		{
@@ -3641,7 +3642,7 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 				}
 			}break;
 		}
-		if(Akce==TVORBA_CESTY)scGPButton_ulozit_cestuClick(this);
+		if(MOD==TVORBA_CESTY)scGPButton_ulozit_cestuClick(this);
 		Akce=NIC;Akce_temp=NIC;
 	}
 	else//jsem v náhledu
@@ -4397,7 +4398,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 					d.v.posun_objekt(m.P2Lx(predchozi_souradnice_kurzoru.x)-pom->element->geo.X1,m.P2Ly(predchozi_souradnice_kurzoru.y)-pom->element->geo.Y1,pom,false,false);
 					if(pom->orientace!=predchozi_orientace)d.v.rotuj_objekt(pom,pom->orientace-predchozi_orientace);
 				}
-				else d.v.vytvor_obraz_DATA();
+				else if(predchozi_souradnice_kurzoru.x!=m.L2Px(pom->element->geo.X1) && predchozi_souradnice_kurzoru.y!=m.L2Px(pom->element->geo.Y1))d.v.vytvor_obraz_DATA();
 				duvod_validovat=1;//pozor vyvolává na závěr metody ještě REFRESH(); ale docela byl přínosný
 				Akce=NIC;kurzor(standard);if(OBJEKT_akt!=NULL){scGPImage_zamek_posunu->ClipFrameFillColor=clWhite;scGPImage_zamek_posunu->ImageIndex=28;}//zamčen posun
 			}break;//posun objektu
@@ -7254,6 +7255,7 @@ void TForm1::mGrid_puvodni_stav(Cvektory::TElement *E)
 			{
 				E->mGrid->Cells[3][2].Type=E->mGrid->COMBO;
 				E->mGrid->Cells[4][2].Type=E->mGrid->COMBO;
+				E->mGrid->exBUTTONVisible=true;
 				//edity zařídí fce napln_comba_mGridu(), dynamicky se mění 
 				break;
       }
@@ -13584,7 +13586,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	d.v.uprav_popisky_elementu(NULL);
+	Form2->ShowModal();
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -14570,12 +14572,12 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //	MAIL->ContentType="multipart/related; type=text/html";//text/plain
 //	MAIL->CharSet="UTF-8";
 //	MAIL->Body->Text=AnsiToUtf8("Snad to <b>půjde</b> 11. port 25. již včetně přílohy Martin");
-//	TIdAttachmentFile *Attach = new TIdAttachmentFile(MAIL->MessageParts,"C:\\Users\\Martin\\AppData\\Local\\Temp\\TISPL\\tispl_PrtScrMartin_MARTIN-NOTEBOOK.png");//potřebuje #include <idattachmentfile.hpp>
+//	TIdAttachmentFile *Attach = new TIdAttachmentFile(MAIL->MessageParts,"c:\\Users\\rosta\\AppData\\Local\\Temp\\TISPL\\tispl_PrtScrrosta_ROSTA.png");//potřebuje #include <idattachmentfile.hpp>
 //
 //	TIdSMTP *SMTP=new TIdSMTP(this);
 //	SMTP->Host="lyzarskejihlavsko.cz";//"smtp.seznam.cz";
 //	SMTP->Username="martin.kratochvil@lyzarskejihlavsko.cz";
-//	SMTP->Password="doplnit";
+//	SMTP->Password="";
 //	SMTP->Port=25;//SMTP->UseTLS=utNoTLSSupport; případně použít, pro použití SSL jiný port a zároveň potřeba s SMTP propojit přes IO handler SSL komponentu + 2x patřičné DLL
 //	SMTP->Connect();
 //	SMTP->Send(MAIL);
@@ -14583,6 +14585,31 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //	delete Attach;//musí být jako první
 //	delete MAIL;
 //	delete SMTP;
+
+	TIdMessage *MAIL=new TIdMessage(this);
+	MAIL->Clear();
+	MAIL->From->Address="builderboy@seznam.cz";
+	MAIL->From->Name="TISPL";
+	MAIL->Subject="zkouška 12 včetně přílohy";
+	MAIL->Recipients->EMailAddresses="rosta.slechta@gmail.com,rosta.slechta@seznam.cz";
+	MAIL->CCList->EMailAddresses="";
+	MAIL->BccList->EMailAddresses="";
+	MAIL->ContentType="multipart/related; type=text/html";//text/plain
+	MAIL->CharSet="UTF-8";
+	MAIL->Body->Text=AnsiToUtf8("Snad to <b>půjde</b> 11. port 25. již včetně přílohy Martin");
+	TIdAttachmentFile *Attach = new TIdAttachmentFile(MAIL->MessageParts,"c:\\Users\\rosta\\AppData\\Local\\Temp\\TISPL\\tispl_PrtScrrosta_ROSTA.png");//potřebuje #include <idattachmentfile.hpp>
+
+	TIdSMTP *SMTP=new TIdSMTP(this);
+	SMTP->Host="smtp.seznam.cz";//"smtp.seznam.cz";
+	SMTP->Username="builderboy@seznam.cz";
+	SMTP->Password="camaro69";
+	SMTP->Port=25;//SMTP->UseTLS=utNoTLSSupport; případně použít, pro použití SSL jiný port a zároveň potřeba s SMTP propojit přes IO handler SSL komponentu + 2x patřičné DLL
+	SMTP->Connect();
+	SMTP->Send(MAIL);
+	SMTP->Disconnect(true);
+	delete Attach;//musí být jako první
+	delete MAIL;
+	delete SMTP;
 //
 //	//odeslání dat na FTP server
 //	TIdFTP *FTP=new TIdFTP(this);

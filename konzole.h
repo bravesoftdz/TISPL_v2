@@ -31,15 +31,18 @@ __published:	// IDE-managed Components
   TscGPSizeBox *scGPSizeBox1;
   TscGPToolPager *scGPToolPager;
   TscMemo *Text;
-  TscGPButton *scGPButton_ulozit_cestu;
-  TscGPButton *scGPButton_storno_cesta;
+  TscGPButton *scGPButton_odeslat;
+  TscGPButton *scGPButton_storno;
   TscGPImage *scGPImage1;
   TscLabel *scLabel2;
   TscLabel *scLabel3;
   void __fastcall CloseButtonClick(TObject *Sender);
   void __fastcall FormShow(TObject *Sender);
-  void __fastcall scGPButton_ulozit_cestuClick(TObject *Sender);
+  void __fastcall scGPButton_odeslatClick(TObject *Sender);
+  void __fastcall scGPButton_stornoClick(TObject *Sender);
 private:	// User declarations
+ String Text_formulare;
+ String priloha_cesta;
 public:		// User declarations
   __fastcall TForm_konzole(TComponent* Owner);
 };
