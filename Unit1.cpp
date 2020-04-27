@@ -3575,7 +3575,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 				kurzor(pan_move);Akce=PAN_MOVE;//přepne z PAN na PAN_MOVE
 				pan_create();//vytvoří výřez pro pan_move
 			}
-			if(Button!=mbRight)if(scSplitView_LEFTTOOLBAR->Visible && scSplitView_LEFTTOOLBAR->Opened)DrawGrid_knihovna->SetFocus();//předávání událostí na form
+			if(Button!=mbRight && scSplitView_LEFTTOOLBAR->Visible && scSplitView_LEFTTOOLBAR->Opened)DrawGrid_knihovna->SetFocus();//předávání událostí na form
 		}
 		else
 		{
@@ -7255,6 +7255,7 @@ void TForm1::mGrid_puvodni_stav(Cvektory::TElement *E)
 			{
 				E->mGrid->Cells[3][2].Type=E->mGrid->COMBO;
 				E->mGrid->Cells[4][2].Type=E->mGrid->COMBO;
+				E->mGrid->exBUTTONVisible=true;
 				//edity zařídí fce napln_comba_mGridu(), dynamicky se mění 
 				break;
       }
@@ -13585,7 +13586,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Memo(d.v.DATA->predchozi->n);
+	Form2->ShowModal();
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
