@@ -103,7 +103,7 @@ class Cmy
 	bool between(double value,double from, double to, bool left_closed=true, bool right_closed=true);//vrací true či falce zda se daná hodnota nachází čí nenachází v intervalu, interval může být uzavřený (tzn. včetně hodnoty hranice intervalu) nebo otevřený a to i rozdílně pro obě meze, implicitně jsou hranice nastaveny na uzavřený interval z obou stran, tzn. do podmínky se zahrnuje včetně obou hodnot
 	double null(double number,double tolerance=0.0000000001);//zkontroluje číslo, zda se nejadná o hodnout okolo nuly dle možné odchylky dle tolerance, předchází zvláštnímu chování výpočtů okolo nuly
 	TColor clIntensive(TColor C,short A);//+A  míra zesvětlení,  -A  míra ztmaveni, max hodnota 255, min hodnota -255
-	short get_intensity();//přepočítá hodnotu posuvníku intenzivity z menu nastavení na změnu barevné intenzivity při vykreslění objektů či elementů
+	short get_intensity();//přepočítá hodnotu posuvníku intenzity z menu nastavení na změnu barevné intenzity při vykreslění objektů či elementů
 	TColor getBlackOrWhiteInvert(TColor color);//vrátí černou pro světlé barvy a bílou pro tmavé barvy, používá se např. na volbu barvy textu s barevným pozadím
 	TColor getColorOfPalette(unsigned int input);//vratí dle hodnoty input barvu z nadefinované barevné palety, v případě "přetečení barvy opakuje
 

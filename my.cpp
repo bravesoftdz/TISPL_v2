@@ -1186,7 +1186,7 @@ TColor Cmy::clIntensive(TColor C,short A)//+A  míra zesvětlení,  -A  míra zt
 	return (TColor)RGB(R,G,B);
 }
 /////////////////////////////////////////////////////////////////////////////
-//přepošítá hodnotu posuvníku intenzivity na změnu intenzivity při vykreslění elementů
+//přepošítá hodnotu posuvníku intenzity na změnu intenzity při vykreslění elementů
 short Cmy::get_intensity()
 {
 	return(-3.6*F->scGPTrackBar_intenzita->Value+360);

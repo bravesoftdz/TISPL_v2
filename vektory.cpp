@@ -5319,24 +5319,29 @@ void Cvektory::generuj_VOZIKY()
 			{
 				if(vrat_druh_elementu(C->Element)==0 && C->Element->sparovany!=NULL)//pro S&G který má spárovaný objekt,resp. od S&G elementu až po jeho spárovaný, mezi tím segmenty neřeší
 				{
+					///inicializace
 					//vymazání předchozího umístění, protože u S&G se vykresluje vždy od dané stopky bez zohlednění "zbytku z minula" tj. umisteni
 					umisteniCas=0;
+					bool predchazi_stop=true;
 					//ukazatelové záležitosti
 					TCesta *Ct=C->dalsi;if(Ct==NULL)Ct=ZAKAZKA_akt->cesta->dalsi;//další, protože ten spravuje geometrii před sebou, tzn. od daného stop elementu, případně další kolo spojáku, musí se brát datové atributy z dat segmentu cesty nikoliv dat elementu
 					TElement *Esd=C->sparovany->dalsi;if(Esd==NULL)Esd=ZAKAZKA_akt->cesta->dalsi->Element;//případně další kolo spojáku
 					if(C->Element==C->sparovany)Esd=C->sparovany;//pouze pro situace, kdy je na lince zatím jenom jeden stop-element tak, aby se zobrazovaly vůbec vozíky
-					//procházení cyklem od dalšího elementu od daného stop elementů až po jeho spárovaný stop element
+					///samotné generování
+					//buffer, vozíky stojící v bufferu, včetně toho na stopce
+					if(C->Element->data.pocet_voziku>=1)generuj_voziky_stop_a_bufferu(C->Element,akt_rotace_jigu);
+					//vozíky na přejezdech mimo stop elementů (nicméně i přes stop se musí kvůli umístění projít) - procházení cyklem od dalšího elementu daného stop elementů (z dané stopky) až po jeho spárovaný stop element
 					while(Ct->Element!=Esd)
 					{
 						//výpočetní část
-						TPointDbool RET=generuj_voziky_segementu(Ct->Element,Ct->Element->data.pocet_voziku,umisteniCas,akt_rotace_jigu,rotacni_zbytek);//pokud má či nemá pohon, řeší uvnitř metody
-						umisteniCas=RET.x;akt_rotace_jigu=RET.y;rotacni_zbytek=RET.b;//za účely použítí v dalším kole
+						TPointDbool RET=generuj_voziky_segementu_mimo_stop_a_buffer(Ct->Element,Ct->Element->data.pocet_voziku,umisteniCas,akt_rotace_jigu,rotacni_zbytek,predchazi_stop);//pokud má či nemá pohon, řeší uvnitř metody
+						umisteniCas=RET.x;akt_rotace_jigu=RET.y;rotacni_zbytek=RET.b;predchazi_stop=false;//za účely použítí v dalším kole
 						//ukazatelové záležitost
 						if(Ct->dalsi==NULL)Ct=ZAKAZKA_akt->cesta->dalsi;//další kolo spojáku
 						else {Ct=Ct->dalsi;}//další element
 						if(C->Element==C->sparovany){Esd=C->sparovany->dalsi;if(Esd==NULL)Esd=ZAKAZKA_akt->cesta->dalsi->Element;/*případně další kolo spojáku*/}//pouze pro situace, kdy je na lince zatím jenom jeden stop-element tak, aby se zobrazovaly vůbec vozíky
 					}
-					//odstranění již nepotřebných ukazatelů, zde prvně nutné NULL!!!
+					///odstranění již nepotřebných ukazatelů, zde prvně nutné NULL!!!
 					Ct=NULL;delete Ct;
 					Esd=NULL;delete Esd;
 				}
@@ -5345,7 +5350,7 @@ void Cvektory::generuj_VOZIKY()
 			////taktuje se od začátku prvního geometrického elementu prvního vloženého objektu, kreslí se zpětně (co předchází elementu)
 			else
 			{
-				TPointDbool RET=generuj_voziky_segementu(C->Element,C->data.pocet_voziku,umisteniCas,akt_rotace_jigu,rotacni_zbytek);//pokud má či nemá pohon, řeší uvnitř metody
+				TPointDbool RET=generuj_voziky_segementu_mimo_stop_a_buffer(C->Element,C->data.pocet_voziku,umisteniCas,akt_rotace_jigu,rotacni_zbytek,false);//pokud má či nemá pohon, řeší uvnitř metody
 				umisteniCas=RET.x;akt_rotace_jigu=RET.y;rotacni_zbytek=RET.b;//za účely použítí v dalším kole
 			}
 			//ukazatelové záležitosti
@@ -5355,18 +5360,18 @@ void Cvektory::generuj_VOZIKY()
 	}
 }
 ////---------------------------------------------------------------------------
-//podpůrná metoda metody výše uvedené, řeší vždy jen daný geometrický segment daného elementu
-TPointDbool Cvektory::generuj_voziky_segementu(TElement *E,unsigned int pocet_voziku,double umisteniCas,double akt_rotace_jigu,bool rotacni_zbytek)
+//podpůrná metoda metody výše uvedené, řeší vždy jen daný geometrický segment daného elementu, mimo bufferu s vozíkem na stopce (i mimo jednovozíkový buffer)
+TPointDbool Cvektory::generuj_voziky_segementu_mimo_stop_a_buffer(TElement *E,unsigned int pocet_voziku,double umisteniCas,double akt_rotace_jigu,bool rotacni_zbytek,bool predchazi_stop)
 {
 	if(E->pohon!=NULL && E->pohon->aRD>0)//pokud je element resp. jeho geometrie relevantní k zobrazení vozíků, bez pohonu či uvedené rychlosti to nejde
 	{
 		double umisteni=umisteniCas*E->pohon->aRD;//umístění vozíku z prostorového hlediska, přepočet z časoveho
 		double Rz=m.Rz(E->pohon->aRD);//stanovený rozestup dle RD pohonu
-		double buffer_zona=0; if(pocet_voziku>0)buffer_zona=pocet_voziku*PP.delka_podvozek-PP.uchyt_pozice;//délka [v metrech] buffrovácí zony, pokud je obsažena na daném elementu
+		double buffer_zona=0; if(pocet_voziku>0)buffer_zona=pocet_voziku*PP.delka_podvozek/*toto ne, jde jen o délku mezi uchyty-PP.uchyt_pozice*/;//délka [v metrech] buffrovácí zony, pokud je obsažena na daném elementu
 		//cyklické navýšení umístění dle rozestup Rz
 		while(umisteni<=E->geo.delka-buffer_zona)
 		{
-			//aplikace náhodného čekání na palceproblem while, problém musí se vejít na palce musí mít vozíky rozestup dle R atd... umisteni+=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,2)*E->pohon->aRD;
+			//aplikace náhodného čekání na palcep roblem while, problém musí se vejít na palce musí mít vozíky rozestup dle R atd... umisteni+=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,2)*E->pohon->aRD;
 			//výpočet souřadnic a rotace jigu dle aktuálního umístění
 			TPointD_3D Pt=m.getPt(E->geo.radius,E->geo.orientace,E->geo.rotacni_uhel,E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4,umisteni/E->geo.delka,(umisteni+PP.uchyt_pozice-PP.delka_podvozek/2.0)/E->geo.delka);
 			//pasivní otoče - POZOR pouze pro kontinuální/pasivní otoč pro aktavní bude sice na místě, ale řešit otáčením dle umisteniČas
@@ -5381,8 +5386,9 @@ TPointDbool Cvektory::generuj_voziky_segementu(TElement *E,unsigned int pocet_vo
 				if(umisteniJIG<=E->predchozi->OTOC_delka/2.0)R=-E->predchozi->rotace_jig/2.0*(E->predchozi->OTOC_delka/2.0-umisteniJIG)/(E->predchozi->OTOC_delka/2.0);//pozice vozíku v zoně otáčení, od středu otoče až do konce zóny otáčení, princip výpočtu zde funguje jako ODEČTENÍ rotace od FINÁLNÍ orientaci jigu při vÝstupu ze zóny otáčení
 				else rotacni_zbytek=false;//dokončena ilustrace otáčení JIGu
 			}
-			//finální vložení vozíku s vypočítanými parametry do spojáku VOZIKY
-			vloz_vozik(ZAKAZKA_akt,E,Pt.x,Pt.y,Pt.z,akt_rotace_jigu+R);
+			//finální vložení vozíku s vypočítanými parametry do spojáku VOZIKY, vkládá se pouze pokud se nejedná o stopku, vozíky stopky se vkládájí v separátní metodě na tvorbu bufferu, (nicméně i přes stop se musí kvůli umístění zde projít, a proto se tato metoda celá volá)
+			if(!predchazi_stop)vloz_vozik(ZAKAZKA_akt,E,Pt.x,Pt.y,Pt.z,akt_rotace_jigu+R);
+			else predchazi_stop=false;//zdisablování pro další stavy, pokud bylo zrovna aktivní/tj. stop element
 			//navýšení umístění dle rozestup Rz
 			umisteni+=Rz;
 		}
@@ -5402,6 +5408,19 @@ TPointDbool Cvektory::generuj_voziky_segementu(TElement *E,unsigned int pocet_vo
 	RET.y=akt_rotace_jigu;
 	RET.b=rotacni_zbytek;
 	return RET;
+}
+////---------------------------------------------------------------------------
+//vygeneruje vozíky v bufferu včetně aktuálního vozíku na stopce
+void Cvektory::generuj_voziky_stop_a_bufferu(TElement *E,double akt_rotace_jigu)
+{
+	double umisteni=E->geo.delka-(E->data.pocet_voziku-1)*PP.delka_podvozek;//delka bufferu (-1, protože druhý vozík má až pozici 1xdelka podvozku), nepouživat -PP.uchyt_pozice
+	while(umisteni<=E->geo.delka)//generuje vozíky bufferu včetně toho na stopce (<=), pokud jsem generoval bez, dělalo občas (<) problemy
+	{
+		TPointD_3D Pt=m.getPt(E->geo.radius,E->geo.orientace,E->geo.rotacni_uhel,E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4,umisteni/E->geo.delka,(umisteni+PP.uchyt_pozice-PP.delka_podvozek/2.0)/E->geo.delka);//zjištění aktuálních souřadnic vozíků
+		TZakazka *Z=new TZakazka;Z->n=1;Z->barva=clBlue;//barevné odlišení pouze jen kvůli testům
+		vloz_vozik(Z/*ZAKAZKA_akt*/,E,Pt.x,Pt.y,Pt.z,akt_rotace_jigu);//finální vložení vozíku s vypočítanými parametry do spojáku VOZIKY
+		umisteni+=PP.delka_podvozek;//posun o další vozík
+	}
 }
 ////---------------------------------------------------------------------------
 //uloží ukazatel na vozík do spojového seznamu voziků

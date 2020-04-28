@@ -685,7 +685,8 @@ public:
 	void hlavicka_VOZIKY();//vytvoří hlavičku spojového seznamu VOZIKY
 	void generuj_VOZIKY();//vygeneruje podle zadané zakázky seznam vozíků v úvodním rozložení
 private:
-	TPointDbool generuj_voziky_segementu(TElement *E,unsigned int pocet_voziku,double umisteniCas,double akt_rotace_jigu,bool rotacni_zbytek);//podpůrná metoda metody výše uvedené, řeší vždy jen daný geometrický segment daného elementu
+	TPointDbool generuj_voziky_segementu_mimo_stop_a_buffer(TElement *E,unsigned int pocet_voziku,double umisteniCas,double akt_rotace_jigu,bool rotacni_zbytek,bool predchazi_stop);//podpůrná metoda metody výše uvedené, řeší vždy jen daný geometrický segment daného elementu, mimo bufferu s vozíkem na stopce (i mimo jednovozíkový buffer)
+	void generuj_voziky_stop_a_bufferu(TElement *E,double akt_rotace_jigu);//vygeneruje vozíky v bufferu včetně aktuálního vozíku na stopce
 	TVozik *vrat_vozik(unsigned int n);//dle n resp. ID vozíku vrátí ukazatel na daný vozík
 	void vloz_vozik(TZakazka *zakazka,TElement *element,double X,double Y,double orientaceP,double rotaceJ);
 	void vymaz_seznam_VOZIKY();
