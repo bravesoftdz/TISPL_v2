@@ -926,9 +926,10 @@ void TFormX::aktualizace_tab_pohonu()
 			F->PmG->Cells[3][7].Text=0;
 			F->PmG->Cells[3][8].Text=0;
 		}
-		//kontrola zda je rx nula
-		if(F->PmG->Cells[3][5].Text=="0")F->PmG->Cells[3][5].Text="-";
-  }
+
+		//aktualizace komponent
+		F->aktualizace_tab_pohon(false,false,true);
+	}
 }
 //---------------------------------------------------------------------------
 //highlightovaní buòìk tabulky pohonu
@@ -1460,6 +1461,11 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
 		vstoupeno_elm=false;
   	if(E->pohon!=NULL)
 		{
+			if(input_state==NOTHING && ((E->objekt_n==F->OBJEKT_akt->n && F->OBJEKT_akt->rezim==1) || (E->objekt_n!=F->OBJEKT_akt->n && F->d.v.vrat_objekt(E->objekt_n)->rezim==1)))//pøepoèet po pøidání KK elementu, pouze pøi input_state==NOTHING, tz. nepøepoèítávat pøi uživatelské zmìnì
+			{
+				E->pohon->Rz=F->m.Rz(E->pohon->aRD);
+				E->pohon->Rx=F->m.Rx(E->pohon->aRD,E->pohon->roztec);
+			}
 			if(input_state!=aRD || input_state==aRD && E!=posledni_E)E->mGrid->Cells[prvni][3].Text=F->m.round2double(F->outaRD(E->pohon->aRD),3);
   		E->mGrid->Cells[prvni][4].Text=AnsiString(F->m.round2double(F->outaRD(E->pohon->rychlost_od),3))+" - "+AnsiString(F->m.round2double(F->outaRD(E->pohon->rychlost_do),3));
 			if(input_state!=R || input_state==R && E!=posledni_E)E->mGrid->Cells[prvni][6].Text=F->m.round2double(F->outR(E->pohon->roztec),3);
@@ -1484,6 +1490,11 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
   	{
     	if(E->dalsi2!=E->predchozi2 && E->dalsi2->pohon!=NULL)
 			{
+				if(input_state==NOTHING && F->OBJEKT_akt->rezim==1)//pøepoèet po pøidání KK elementu
+		  	{
+					E->dalsi2->pohon->Rz=F->m.Rz(E->dalsi2->pohon->aRD);
+					E->dalsi2->pohon->Rx=F->m.Rx(E->dalsi2->pohon->aRD,E->dalsi2->pohon->roztec);
+				}
 				if(input_state!=aRD || input_state==aRD && E!=posledni_E)E->mGrid->Cells[druhy][3].Text=F->m.round2double(F->outaRD(E->dalsi2->pohon->aRD),3);
     		E->mGrid->Cells[druhy][4].Text=AnsiString(F->m.round2double(F->outaRD(E->dalsi2->pohon->rychlost_od),3))+" - "+AnsiString(F->m.round2double(F->outaRD(E->dalsi2->pohon->rychlost_do),3));
 				if(input_state!=R || input_state==R && E!=posledni_E)E->mGrid->Cells[druhy][6].Text=F->m.round2double(F->outR(E->dalsi2->pohon->roztec),3);
@@ -1510,8 +1521,13 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
   	{
       Cvektory::TElement *e_pom=E->dalsi;
   		if(e_pom==NULL)e_pom=F->d.v.ELEMENTY->dalsi;//v pøípadì PM na konci linky
-  		if(e_pom->pohon!=NULL)
+			if(e_pom->pohon!=NULL)
 			{
+				if(input_state==NOTHING && F->d.v.vrat_objekt(e_pom->objekt_n)->rezim==1)//pøepoèet po pøidání KK elementu
+		  	{
+					e_pom->pohon->Rz=F->m.Rz(e_pom->pohon->aRD);
+					e_pom->pohon->Rx=F->m.Rx(e_pom->pohon->aRD,e_pom->pohon->roztec);
+				}
 				if(input_state!=aRD || input_state==aRD && E!=posledni_E)E->mGrid->Cells[druhy][3].Text=F->m.round2double(F->outaRD(e_pom->pohon->aRD),3);
   			E->mGrid->Cells[druhy][4].Text=AnsiString(F->m.round2double(F->outaRD(e_pom->pohon->rychlost_od),3))+" - "+AnsiString(F->m.round2double(F->outaRD(e_pom->pohon->rychlost_do),3));
 				if(input_state!=R || input_state==R && E!=posledni_E)E->mGrid->Cells[druhy][6].Text=F->m.round2double(F->outR(e_pom->pohon->roztec),3);

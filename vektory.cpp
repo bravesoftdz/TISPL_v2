@@ -976,7 +976,7 @@ void Cvektory::aktualizace_rezimu_objektu(TObjekt *Objekt,bool aktualizovat_sta_
 	//v případě přerušení průchodu nutné smazat
 	vymaz_seznam_VYHYBKY();
 
-  //skontrolovat zda nejsou v objektu PM nebo výhybky, pokud ano aktualizovat jim editované položky
+  //zkontrolovat zda nejsou v objektu PM nebo výhybky, pokud ano aktualizovat jim editované položky
 	if(aktualizovat_sta_mGridu && predchozi_rezim!=Objekt->rezim)
 	{
 		bool probehla_validace=false;
@@ -985,7 +985,7 @@ void Cvektory::aktualizace_rezimu_objektu(TObjekt *Objekt,bool aktualizovat_sta_
 		{
 			if(E->eID==200 || E->eID==300)
 			{
-				F->napln_comba_mGridu(E);//provede aktualizaci editovaných položek v mGridu
+				FormX->update_hodnot_vyhybky_PM(E);//provede aktualizaci dat a editovaných položek v mGridu
 				if(!probehla_validace && E->eID==200)//spouštět validaci jen jednou a to pokud narazím na PM
 				{
 					FormX->validace_RD(E);//pokud byl změněn režím provede validaci aktuální rychlosti
@@ -994,8 +994,8 @@ void Cvektory::aktualizace_rezimu_objektu(TObjekt *Objekt,bool aktualizovat_sta_
 			}
 			E=dalsi_krok(E,Objekt);
 		}
-		if(F->predchozi_PM!=NULL)F->napln_comba_mGridu(F->predchozi_PM);//provede aktualizaci editovaných položek v mGridu u předchozího PM
-		F->aktualizace_tab_pohon(false,false,true);//obsahuje podmínku.. pokud existuje PmG
+		if(F->predchozi_PM!=NULL)FormX->update_hodnot_vyhybky_PM(F->predchozi_PM);//provede aktualizaci dat a editovaných položek v mGridu u předchozího PM
+		F->aktualizace_tab_pohon(false,true,true);//obsahuje podmínku.. pokud existuje PmG
 	}
 
 	//ukazatelové záležitosti
