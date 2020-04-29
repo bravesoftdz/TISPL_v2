@@ -14,6 +14,7 @@
   Font.Style = []
   OldCreateOrder = False
   Position = poDesigned
+  OnCloseQuery = FormCloseQuery
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   PixelsPerInch = 96

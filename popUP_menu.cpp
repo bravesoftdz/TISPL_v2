@@ -669,3 +669,10 @@ void __fastcall TPopUPmenu::GlyphButton_posun_obrysuMouseLeave(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+//pøi uzavírání formu musí být pøedán focus na Form1
+void __fastcall TPopUPmenu::FormCloseQuery(TObject *Sender, bool &CanClose)
+{
+	F->nastav_focus();//pøedá focus na form1, skrze odcyhtávání kláves
+}
+//---------------------------------------------------------------------------
+
