@@ -223,7 +223,7 @@ object Form1: TForm1
     object LabelRoletka: TLabel
       Left = 320
       Top = 8
-      Width = 67
+      Width = 61
       Height = 13
       Caption = 'LabelRoletka'
       Visible = False
@@ -3939,6 +3939,69 @@ object Form1: TForm1
         OnMouseWheelDown = DrawGrid_knihovnaMouseWheelDown
         OnMouseWheelUp = DrawGrid_knihovnaMouseWheelUp
       end
+      object scListGroupPanel_poznamky: TscListGroupPanel
+        Left = -2
+        Top = -410
+        Width = 166
+        Height = 500
+        Align = alCustom
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clNone
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        Font.Quality = fqClearTypeNatural
+        ParentFont = False
+        TabOrder = 1
+        Visible = False
+        AutoSize = False
+        RowCount = 1
+        RowLineMargin = 20
+        RowHeight = 0
+        GroupColor = clWindow
+        GroupColorAlpha = 255
+        Color = clBtnFace
+        Caption = 'Pozn'#225'mky'
+        HeaderFont.Charset = EASTEUROPE_CHARSET
+        HeaderFont.Color = 10114859
+        HeaderFont.Height = -15
+        HeaderFont.Name = 'Verdana'
+        HeaderFont.Style = [fsBold]
+        HeaderHeight = 30
+        HeaderMargin = 10
+        HeaderAutoColor = False
+        TransparentBackground = False
+        object DrawGrid_poznamky: TDrawGrid
+          Left = 3
+          Top = 32
+          Width = 160
+          Height = 70
+          ParentCustomHint = False
+          Align = alCustom
+          BevelInner = bvNone
+          BevelOuter = bvNone
+          BorderStyle = bsNone
+          ColCount = 2
+          Ctl3D = False
+          DefaultColWidth = 80
+          DefaultRowHeight = 57
+          FixedColor = clWhite
+          FixedCols = 0
+          RowCount = 4
+          FixedRows = 0
+          GridLineWidth = 0
+          Options = []
+          ParentCtl3D = False
+          ScrollBars = ssNone
+          TabOrder = 0
+          Visible = False
+          OnDrawCell = DrawGrid_poznamkyDrawCell
+          OnKeyDown = FormKeyDown
+          OnKeyPress = FormKeyPress
+          OnMouseWheelDown = DrawGrid_poznamkyMouseWheelDown
+          OnMouseWheelUp = DrawGrid_poznamkyMouseWheelUp
+        end
+      end
     end
     object scListGroupPanel_geometrie: TscListGroupPanel
       Left = 0
@@ -4004,69 +4067,6 @@ object Form1: TForm1
         OnMouseWheelUp = DrawGrid_geometrieMouseWheelUp
       end
     end
-    object scListGroupPanel_poznamky: TscListGroupPanel
-      Left = -2
-      Top = 508
-      Width = 166
-      Height = 500
-      Align = alCustom
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clNone
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      Font.Quality = fqClearTypeNatural
-      ParentFont = False
-      TabOrder = 4
-      Visible = False
-      AutoSize = False
-      RowCount = 1
-      RowLineMargin = 20
-      RowHeight = 0
-      GroupColor = clWindow
-      GroupColorAlpha = 255
-      Color = clBtnFace
-      Caption = 'Pozn'#225'mky'
-      HeaderFont.Charset = EASTEUROPE_CHARSET
-      HeaderFont.Color = 10114859
-      HeaderFont.Height = -15
-      HeaderFont.Name = 'Verdana'
-      HeaderFont.Style = [fsBold]
-      HeaderHeight = 30
-      HeaderMargin = 10
-      HeaderAutoColor = False
-      TransparentBackground = False
-      object DrawGrid_poznamky: TDrawGrid
-        Left = 3
-        Top = 32
-        Width = 160
-        Height = 70
-        ParentCustomHint = False
-        Align = alCustom
-        BevelInner = bvNone
-        BevelOuter = bvNone
-        BorderStyle = bsNone
-        ColCount = 2
-        Ctl3D = False
-        DefaultColWidth = 80
-        DefaultRowHeight = 57
-        FixedColor = clWhite
-        FixedCols = 0
-        RowCount = 4
-        FixedRows = 0
-        GridLineWidth = 0
-        Options = []
-        ParentCtl3D = False
-        ScrollBars = ssNone
-        TabOrder = 0
-        Visible = False
-        OnDrawCell = DrawGrid_poznamkyDrawCell
-        OnKeyDown = FormKeyDown
-        OnKeyPress = FormKeyPress
-        OnMouseWheelDown = DrawGrid_poznamkyMouseWheelDown
-        OnMouseWheelUp = DrawGrid_poznamkyMouseWheelUp
-      end
-    end
     object scGPLabel_roboti: TscGPLabel
       Left = 0
       Top = 0
@@ -4079,7 +4079,7 @@ object Form1: TForm1
       Font.Style = [fsBold]
       Font.Quality = fqAntialiased
       ParentFont = False
-      TabOrder = 5
+      TabOrder = 4
       DragForm = False
       DragTopForm = True
       ContentMarginLeft = 10
@@ -4111,7 +4111,7 @@ object Form1: TForm1
       Top = 6
       Width = 42
       Height = 22
-      TabOrder = 6
+      TabOrder = 5
       Visible = False
       BlurBackground = False
       BlurBackgroundAmount = 5
@@ -4191,7 +4191,7 @@ object Form1: TForm1
       Font.Style = [fsBold]
       Font.Quality = fqAntialiased
       ParentFont = False
-      TabOrder = 7
+      TabOrder = 6
       DragForm = False
       DragTopForm = True
       ContentMarginLeft = 10
@@ -4230,7 +4230,7 @@ object Form1: TForm1
       Font.Style = [fsBold]
       Font.Quality = fqAntialiased
       ParentFont = False
-      TabOrder = 8
+      TabOrder = 7
       DragForm = False
       DragTopForm = True
       ContentMarginLeft = 10
@@ -4269,7 +4269,7 @@ object Form1: TForm1
       Font.Style = [fsBold]
       Font.Quality = fqAntialiased
       ParentFont = False
-      TabOrder = 9
+      TabOrder = 8
       DragForm = False
       DragTopForm = True
       ContentMarginLeft = 10
@@ -4308,7 +4308,7 @@ object Form1: TForm1
       Font.Style = [fsBold]
       Font.Quality = fqAntialiased
       ParentFont = False
-      TabOrder = 10
+      TabOrder = 9
       DragForm = False
       DragTopForm = True
       ContentMarginLeft = 10
@@ -10682,11 +10682,21 @@ object Form1: TForm1
     GroupIndex = 0
     AllowAllUp = False
   end
+  object Edit_proFocus: TEdit
+    Left = -1000
+    Top = -1000
+    Width = 121
+    Height = 21
+    TabOrder = 49
+    OnKeyDown = FormKeyDown
+    OnKeyPress = FormKeyPress
+    OnKeyUp = FormKeyUp
+  end
   object ImageList1: TImageList
     Left = 216
     Top = 40
     Bitmap = {
-      494C01011800E809E80910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800E809F80910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -11809,7 +11819,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C010154000C0D0C0D30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010154000C0D1C0D30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000002004000001002000000000000060
       0C00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

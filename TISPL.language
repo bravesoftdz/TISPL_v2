@@ -223,8 +223,8 @@ Enter the recommended drive speed:;X;Zadejte doporuèenou rychlost pohonu:
 Invalid drive speed value!;X;Neplatná hodnota rychlosti pohonu!
 Pair stop;X;Párová stop
 WT thumb;X;WT palec
-Possible count of positions;X;Potencionální poèet pozic
-Set number of positions;X;Nastavený poèet pozic
+Potential;X;Potenciál.
+Used;X;Použité
 reserve time;X;èasová rezerva
 closed stop station time;X;èas uzavøené STOP stanice
 maximum possible waiting time per thumb;X;maximální možná doba èekání na palec
@@ -239,7 +239,7 @@ total process time, which is composed of subtimes;X;celkový èas procesu, který j
 offset of painting window;X;vyosení lakovácího okna
 Rotation;X;Rotace
 Turning;X;Otoè
-spining;X;otáèení
+Spining;X;Otáèení
 total time of the turning process;X;celkový èas procesu otoèe
 length of turning;X;délka otoèe
 length of spining;X;délka otáèení
@@ -273,8 +273,8 @@ Transfer point;X;Pøedávací místo
 Operator;X;Operátor
 Turning;X;Otoè
 drive not selected;X;pohon nevybrán
-Zone before;X;Zóna pøed
-Zone after;X;Zóna po
+Before;X;Pøed
+After;X;Po
 Rotation zone in front of the center;X;Zóna otáèení pøed støedem
 Zone of rotation behind the center;X;Zóna otáèení za støedem
 flashoff;X;vytìkání
@@ -461,3 +461,5 @@ Description;X;Popis
 Send an error, question or comment;X;Zaslat chybu, dotaz nebo pøipomínku
 Drive direction;X;Smìr pohonu
 The use of S&G and continuous operating mode cannot be combined.;X;Nelze kombinovat použití S&G a kontinuálního pracovního režimu.
+Zone;X;Zóna
+Posit.;X;Pozice

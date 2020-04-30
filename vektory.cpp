@@ -3011,9 +3011,9 @@ void Cvektory::prirad_sparovany_element(TElement *Element)
       //vypsání ukazatelů do mgridu
 			try
 			{
-				if(E->eID==0){E->mGrid->Cells[1][1].Text=E->sparovany->name;E->mGrid->Refresh();}
+				if(E->eID==0){E->mGrid->Cells[0][1].Text=E->sparovany->name;E->mGrid->Refresh();}
 				else if(vrat_druh_elementu(E)==0){E->mGrid->Cells[1][E->mGrid->RowCount-1].Text=E->sparovany->name;E->mGrid->Refresh();}
-				if(Element->eID==0){Element->mGrid->Cells[1][1].Text=Element->sparovany->name;Element->mGrid->Refresh();}
+				if(Element->eID==0){Element->mGrid->Cells[2][1].Text=Element->sparovany->name;Element->mGrid->Refresh();}
 				else if(vrat_druh_elementu(Element)==0){Element->mGrid->Cells[1][Element->mGrid->RowCount-1].Text=Element->sparovany->name;Element->mGrid->Refresh();}
 			}catch(...){}
 		}
@@ -3042,12 +3042,12 @@ void Cvektory::prirad_sparovany_element(TElement *Element)
 					if(E->sparovany==NULL)E->sparovany=prvni_stopka;//posledni=true;}
 					try //musí být řešeno takto, nelze rozeznat jestli existuje mgird
 					{
-						if(prvni_stopka->eID==0){prvni_stopka->mGrid->Cells[1][1].Text=E->name;prvni_stopka->mGrid->Refresh();}
+						if(prvni_stopka->eID==0){prvni_stopka->mGrid->Cells[2][1].Text=E->name;prvni_stopka->mGrid->Refresh();}
 						else if(vrat_druh_elementu(prvni_stopka)==0){prvni_stopka->mGrid->Cells[1][prvni_stopka->mGrid->RowCount-1].Text=E->name;prvni_stopka->mGrid->Refresh();}
-						if(E->eID==0){E->mGrid->Cells[1][1].Text=prvni_stopka->name;E->mGrid->Refresh();}
+						if(E->eID==0){E->mGrid->Cells[2][1].Text=prvni_stopka->name;E->mGrid->Refresh();}
 						else if(vrat_druh_elementu(E)==0){E->mGrid->Cells[1][E->mGrid->RowCount-1].Text=prvni_stopka->name;E->mGrid->Refresh();}
-//						if(prvni && prvni_stopka->eID==0){prvni_stopka->mGrid->Cells[1][1].Text=E->name;prvni_stopka->mGrid->Refresh();}
-//						if(posledni && E->eID==0){E->mGrid->Cells[1][1].Text=prvni_stopka->name;E->mGrid->Refresh();}
+//						if(prvni && prvni_stopka->eID==0){prvni_stopka->mGrid->Cells[2][1].Text=E->name;prvni_stopka->mGrid->Refresh();}
+//						if(posledni && E->eID==0){E->mGrid->Cells[2][1].Text=prvni_stopka->name;E->mGrid->Refresh();}
 					}
 					catch(...)
 					{/*MessageBeep(0);*/}
@@ -3087,7 +3087,7 @@ void Cvektory::aktualizuj_sparovane_ukazatele()
 			{
 				if(F->OBJEKT_akt!=NULL && E->objekt_n==F->OBJEKT_akt->n && E->sparovany!=NULL)
 				{
-					if(E->eID==0)E->mGrid->Cells[1][1].Text=E->sparovany->name;
+					if(E->eID==0)E->mGrid->Cells[2][1].Text=E->sparovany->name;
 					else if(vrat_druh_elementu(E)==0)E->mGrid->Cells[1][E->mGrid->RowCount-1].Text=E->sparovany->name;
 				}
 			}catch(...){}
@@ -3106,7 +3106,7 @@ void Cvektory::aktualizuj_sparovane_ukazatele()
 	{
 		if(F->OBJEKT_akt!=NULL && posledni->objekt_n==F->pom->n)
 		{
-			if(posledni->eID==0)posledni->mGrid->Cells[1][1].Text=posledni->sparovany->name;
+			if(posledni->eID==0)posledni->mGrid->Cells[2][1].Text=posledni->sparovany->name;
 			else posledni->mGrid->Cells[1][posledni->mGrid->RowCount-1].Text=posledni->sparovany->name;
 		}
 	}catch(...){}
@@ -3164,14 +3164,14 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 					//při posunu stopstanice může dojít ke změně poštu aktuálních vozíku, nový přepočet, pokud k této změně došlo
 					if(highlight_bunek)
 	  			{
-	  				Element->mGrid->Cells[1][2].Highlight=true;//slouži pro higlightování buňky s RT při posunu elementu
+						Element->mGrid->Cells[2][2].Highlight=true;//slouži pro higlightování buňky s RT při posunu elementu
 						Element->data.pocet_pozic=F->max_voziku(Element);
-	  				Element->mGrid->Cells[1][5].Text=Element->data.pocet_pozic;
+						Element->mGrid->Cells[2][5].Text=Element->data.pocet_pozic;
 						if(Element->data.pocet_pozic<Element->data.pocet_voziku)//pokud při posunu akt. počet vozíků přesáhne maximální
 	  				{
 	  					Element->data.pocet_voziku=Element->data.pocet_pozic;
 	  					Element->data.WTstop=F->m.V2WT(Element->data.pocet_voziku,PP.TT);//uložení do paměti + výpočet
-	  					Element->mGrid->Cells[1][3].Text=F->m.round2double(F->outPT(Element->data.WTstop),3);//OUTPUT
+							Element->mGrid->Cells[2][3].Text=F->m.round2double(F->outPT(Element->data.WTstop),3);//OUTPUT
 							//nové RT, protože se změnilo WTstop
 							WT=Element->WT;
 							if(Element->eID==0/* && Element->data.pocet_voziku>1 */&& cas+Element->WT<PP.TT)WT*=Element->data.pocet_voziku;
@@ -3182,8 +3182,8 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 	  				}
 	  			}
 					//vypsání OK pokud je RT kladné a zároveň má stopka více akt_vozíku
-					if(Element->data.RT.y>0 && Element->data.pocet_voziku>1){Element->mGrid->Cells[1][2].Text="OK";Element->mGrid->Cells[1][2].Hint=F->m.round2double(F->outPT(Element->data.RT.y),3);Element->mGrid->Cells[1][2].ShowHint=true;}
-					else {Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->data.RT.y),3);Element->mGrid->Cells[1][2].Hint="";Element->mGrid->Cells[1][2].ShowHint=false;}
+					if(Element->data.RT.y>0 && Element->data.pocet_voziku>1){Element->mGrid->Cells[2][2].Text="OK";Element->mGrid->Cells[2][2].Hint=F->m.round2double(F->outPT(Element->data.RT.y),3);Element->mGrid->Cells[2][2].ShowHint=true;}
+					else {Element->mGrid->Cells[2][2].Text=F->m.round2double(F->outPT(Element->data.RT.y),3);Element->mGrid->Cells[2][2].Hint="";Element->mGrid->Cells[2][2].ShowHint=false;}
 				}break;
 				case 2:case 8:case 12:case 16:case 102:case 106://roboti se stop stanicí
 				{

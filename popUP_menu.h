@@ -136,6 +136,7 @@ __published:	// IDE-managed Components
 	void __fastcall scLabel_posun_obrysuMouseLeave(TObject *Sender);
 	void __fastcall GlyphButton_posun_obrysuMouseEnter(TObject *Sender);
 	void __fastcall GlyphButton_posun_obrysuMouseLeave(TObject *Sender);
+	void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
 private:	// User declarations
 	TColor clBg,clAcBg,clAcBg2,clGlyph,clAcGlyph;
 	void top_positon(int top);//hlídání horní pozice, je-li daná komponenta horní

@@ -351,6 +351,7 @@ __published:	// IDE-managed Components
 	TTimer *Timer_getjobid;
 	TscGPCheckBox *scGPCheckBox_popisek_pohonu;
 	TTimer *Timer_testyMaKr;
+	TEdit *Edit_proFocus;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -682,7 +683,6 @@ private:
 	void change_languagein_mGrid();//aktualizace popiskù v tabulkách pøi zmìnì jazyka
 	void zmena_editovaneho_objektu();//slouží k pøechodu z editace jednoho objektu do editace druhého objektu
 	TPointD uprav_bod_vlozeni_elementu(TPointD bod_vlozeni,short rotace_symbolu,int eID=-1);//upraví bod kurzoru pro vložení elemntu na bod vykreslení elementu (robot na konci ramena)
-  void set_enabled_mGrid(Cvektory::TElement *E);//zapne nebo vypne komponenty megridu v závislosti na tom zda má element pøiøazený pohon
   void vlozeni_editace_geometrie();//vkládá novou geometrii nebo edituje již stávající geometrii
 	void ukonceni_geometrie();//ukonèení akce geometrie a pøípadné uzavøení kruhu
 	void vloz_bod_haly_objektu(int X,int Y);//vloží bod haly nebo objektu na zvolené souøadnice (fyzické), zohlední pøichytávání
@@ -882,6 +882,8 @@ public:		// User declarations
 	void mGrid_komponenta_na_draw(TmGrid *mGrid,long Col,long Row);//smazì komponentu v dané buòce a zmìní typ bunky na DRAW
   void mail(String Host,String Username,String Password,String FromAddress,String FromName,String Subject,String Body,String To,String ccTo="",String bccTo="",String FileName="");//odešle e-mail, doruèitel na všech tøech úrovní To,ccTo,bccTo mohou být mnohonásobnì zadaní, pouze odìlené èárkou, tìlo e-mailu lze zadat jako html
 	void ortogonalizace();//volá ortogonalizaci schéma, pokud je ortogonalizace povolena
+	void nastav_focus();//vrátí focus na form1, kdykoli je potøeba vrátit focus, skrze odchytávání kláves
+	void set_enabled_mGrid(Cvektory::TElement *E);//zapne nebo vypne komponenty megridu v závislosti na tom zda má element pøiøazený pohon
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
