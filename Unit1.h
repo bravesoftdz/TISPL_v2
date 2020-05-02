@@ -736,6 +736,7 @@ private:
 	UnicodeString Jazyk;
 	int count_memo;//counter pro memo
 	bool editace_geometrie_spustena;
+	int offset_scGPButton_bug_report;
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);

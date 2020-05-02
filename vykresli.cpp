@@ -3763,7 +3763,7 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	else
 	{
 		canv->Pen->Color=clWhite;//bílý framing okolo stopky
-		canv->Pen->Width=m.round(0.6*Z);
+		canv->Pen->Width=m.round(0.2*Z);
 		canv->Pen->Mode=pmCopy;
 		canv->Pen->Style=psSolid;
 		canv->Brush->Color=barva;

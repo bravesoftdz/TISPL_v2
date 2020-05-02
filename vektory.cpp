@@ -5338,7 +5338,7 @@ void Cvektory::generuj_VOZIKY()
 						//výpočetní část
 						TPointD_3Dbool RET=generuj_voziky_segementu_mimo_stop_a_buffer(Ct->Element,Ct->Element->data.pocet_voziku,umisteniCas,akt_rotace_jigu,rotacni_zbytek,predchazi_stop);//pokud má či nemá pohon, řeší uvnitř metody
 						umisteniCas=RET.x;akt_rotace_jigu=RET.y;pocet_voziku_z_prejezdu_na_bufferu=RET.z;rotacni_zbytek=RET.b;predchazi_stop=false;//za účely použítí v dalším kole
-						//ukazatelové záležitost
+						//ukazatelové záležitost pro další krok
 						if(Ct->dalsi==NULL)Ct=ZAKAZKA_akt->cesta->dalsi;//další kolo spojáku
 						else {Ct=Ct->dalsi;}//další element
 						if(C->Element==C->sparovany){Esd=C->sparovany->dalsi;if(Esd==NULL)Esd=ZAKAZKA_akt->cesta->dalsi->Element;/*případně další kolo spojáku*/}//pouze pro situace, kdy je na lince zatím jenom jeden stop-element tak, aby se zobrazovaly vůbec vozíky
@@ -5347,6 +5347,7 @@ void Cvektory::generuj_VOZIKY()
 					Ct=NULL;delete Ct;
 					Esd=NULL;delete Esd;
 				}
+				//nutno dořešit konec linky a začátek linky buffer (resp. stop), aby nedošlo k překryvu vozíků jako je tomu teď v aktuálním projektu
 			}
 			////pro KONTINUÁLNÍ linku tj. bez S&G elementu, např. ale i pro úvodní zakreslování
 			////taktuje se od začátku prvního geometrického elementu prvního vloženého objektu, generuje se se zpětně (co předchází elementu)
@@ -5372,8 +5373,8 @@ TPointD_3Dbool Cvektory::generuj_voziky_segementu_mimo_stop_a_buffer(TElement *E
 		double Rz=m.Rz(E->pohon->aRD);//stanovený rozestup dle RD pohonu
 		double buffer_zona=0; if(pocet_voziku>0)buffer_zona=pocet_voziku*PP.delka_podvozek/*toto ne, jde jen o délku mezi uchyty-PP.uchyt_pozice*/;//délka [v metrech] buffrovácí zony, pokud je obsažena na daném elementu
 		RET.z=0;//počet vozíků z přejezdu, které už přesahuji buffer, a ten o danou hodnotu navyšují
-		//cyklické navýšení umístění dle rozestup Rz
-		while(umisteni<=E->geo.delka/*-buffer_zona*/)
+		//cyklické navýšení umístění dle rozestup Rz, včetně řešení těch, co se do segmentu nevejdou kvůli bufferu
+		while(umisteni<=E->geo.delka)
 		{
 			if(umisteni<=E->geo.delka-buffer_zona)//vozíky pouze na přejezdu
 			{
@@ -6240,8 +6241,9 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 					}
 				}
 				////////////Pozor, překrytí JIGů! - musí být umístěno na konci (popř. na začátku)
-				if(PP.delka_podvozek<m.UDJ(rotaceJ) && pocet_voziku>1){vloz_zpravu(X+x*PP.delka_podvozek*(pocet_pozic-1)/2.0,Y+y*PP.delka_podvozek*(pocet_pozic-1)/2.0,-1,402,E);pocet_erroru++;}//pro buffer
-				if(E->pohon!=NULL && m.UDV(rotaceJ)>m.Rz(E->pohon->aRD)){vloz_zpravu(X+x*PP.delka_podvozek/2.0,Y+y*PP.delka_podvozek/2.0,-1,402,E);pocet_erroru++;}//pro libovolný přejezd
+				if(PP.delka_podvozek<m.UDJ(rotaceJ) && pocet_voziku>=1){vloz_zpravu(X+x*(PP.delka_podvozek*pocet_voziku/2.0-PP.uchyt_pozice),Y+y*(PP.delka_podvozek*pocet_voziku/2.0-PP.uchyt_pozice),-1,402,E);pocet_erroru++;}//pro buffer (výpis ve středu bufferu)
+//				if(E->pohon!=NULL && m.UDV(rotaceJ)>m.Rz(E->pohon->aRD)){vloz_zpravu(X+x*PP.delka_podvozek/2.0,Y+y*PP.delka_podvozek/2.0,-1,403,E);pocet_erroru++;}//pro libovolný přejezd (výpis ve středu přejezdu)
+				if(E->pohon!=NULL && m.UDV(rotaceJ)>m.Rz(E->pohon->aRD)){vloz_zpravu(X,Y,-1,403,E);pocet_erroru++;}//pro libovolný přejezd (výpis ve středu přejezdu)
 			}
 			////posun na další elementy
 			E=E->dalsi;
@@ -6263,6 +6265,7 @@ UnicodeString Cvektory::getVID(long VID)
 		case 219: Text=F->ls->Strings[219]+"!";break;//Pohon nepřiřazen!
 		case 401: Text=F->ls->Strings[401];break;//Rotace neodpovídá orientaci JIGů na začátku linky!
 		case 402: Text=F->ls->Strings[402];break;//Pozor, překrytí JIGů!
+		case 403: Text="Pozor, na následujícím úseku přejedu dochází k překrytí JIGů!";break;//Pozor, na následujícím úseku přejedu dochází k překrytí JIGů!
 		case 406: Text=F->ls->Strings[406];break;//Nestíhá se přejezd, záporná časová rezerva!
 		case 407: Text=F->ls->Strings[407];break;//Nulová časová rezerva.
 		case 450: Text="Nerelevantní hodnota časové rezervy, na některém objektu není přiřazen pohon!";break;//Nulová časová rezerva.

@@ -318,7 +318,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	if(DEBUG)scGPTrackBar1->MaxValue=20;
 
 	//vývojářské featury
-	if(DEBUG && get_user_name()+get_computer_name()=="MartinMARTIN-NOTEBOOK"){Button14->Visible=true;Button13->Visible=false;}//pokud se dělá překlad u MaKr, je zobrazeno jeho testovací tlačítko
+	if(DEBUG && get_user_name()+get_computer_name()=="MartinMARTIN-NOTEBOOK"){/*Button14->Visible=true;*/Button13->Visible=false;}//pokud se dělá překlad u MaKr, je zobrazeno jeho testovací tlačítko
 }
 //---------------------------------------------------------------------------
 //nastaví komponentám aFont
@@ -988,8 +988,9 @@ void TForm1::DesignSettings()
 	scGPComboBox_prepinacKot->Top=scGPComboBox_orientace->Top;//combobox na přepínání mezi kotami čas -- delka
 	scGPLabel1->Top=(scGPPanel_bottomtoolbar->Height-scGPLabel1->Height)/2;
 	scGPLabel_prepinacKot->Top=scGPLabel1->Top;
-  scGPButton_bug_report->Top=ClientHeight-80;
-  scGPButton_bug_report->Left=ClientWidth-scGPButton_bug_report->Width-15;
+	offset_scGPButton_bug_report=10;//používá se na více místech
+	scGPButton_bug_report->Top=ClientHeight-scGPPanel_statusbar->Height-scGPButton_bug_report->Height-offset_scGPButton_bug_report;
+	scGPButton_bug_report->Left=ClientWidth-scGPButton_bug_report->Width-offset_scGPButton_bug_report;
 	scGPImage_mereni_vzdalenost->Top=(scGPPanel_bottomtoolbar->Height-scGPImage_mereni_vzdalenost->Height)/2;
 	scGPImage_zamek_posunu->Top=(scGPPanel_bottomtoolbar->Height-scGPImage_zamek_posunu->Height)/2;
 	scGPButton_posun_dalsich_elementu->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_posun_dalsich_elementu->Height)/2;
@@ -2134,8 +2135,8 @@ void __fastcall TForm1::FormResize(TObject *Sender)
 	scGPComboBox_prepinacKot->Top=scGPComboBox_orientace->Top;//combobox na přepínání mezi kotami čas -- delka
 	scGPLabel1->Top=(scGPPanel_bottomtoolbar->Height-scGPLabel1->Height)/2;
 	scGPLabel_prepinacKot->Top=scGPLabel1->Top;
-  scGPButton_bug_report->Top=ClientHeight-80;
-  scGPButton_bug_report->Left=ClientWidth-scGPButton_bug_report->Width-15;
+	scGPButton_bug_report->Top=ClientHeight-scGPPanel_statusbar->Height-scGPButton_bug_report->Height-offset_scGPButton_bug_report;
+  scGPButton_bug_report->Left=ClientWidth-scGPButton_bug_report->Width-offset_scGPButton_bug_report;
 	scGPImage_mereni_vzdalenost->Top=(scGPPanel_bottomtoolbar->Height-scGPImage_mereni_vzdalenost->Height)/2;
 	scGPImage_zamek_posunu->Top=(scGPPanel_bottomtoolbar->Height-scGPImage_zamek_posunu->Height)/2;
 	scGPButton_posun_dalsich_elementu->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_posun_dalsich_elementu->Height)/2;
@@ -3038,7 +3039,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//F8
 		case 119:ZOOM_OUT();break;
 		//F9
-		case 120:if(DEBUG){Button11->Visible!=Button11->Visible;Button14->Visible!=Button14->Visible;Invalidate();}break;
+		case 120:if(DEBUG){Button11->Visible!=Button11->Visible;Button14->Visible=!Button14->Visible;Invalidate();}break;
 		//F10
 		case 121:Invalidate();break;
 		//F11
