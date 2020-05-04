@@ -13862,6 +13862,15 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 duvod_validovat=2;
 REFRESH();
 
+
+//		Memo("_____________________");
+//		Cvektory::TVozik *V=d.v.VOZIKY->dalsi;
+//		while(V!=NULL)
+//		{
+//			Memo(String(V->n)+" | "+V->temp+" | "+String(V->element->name)+" | "+String(V->element->objekt_n));
+//			V=V->dalsi;
+//		}
+//		delete V;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
