@@ -1016,7 +1016,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=464;i++)
+	for(unsigned short i=0;i<=465;i++)
 	{
 		switch(i)
 		{
@@ -1485,6 +1485,7 @@ void TForm1::DesignSettings()
 			case 462:text="Nelze kombinovat použití S&G a kontinuálního pracovního režimu.";break;
 			case 463:text="Zóna";break;
 			case 464:text="Pozice";break;
+			case 465:text="V úseku za předávacím místem bude nastaven pohon:";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -11467,7 +11468,10 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 		{
 			if(Akce!=GEOMETRIE && pom_element!=NULL && pom_element->eID!=MaxInt)//případ mazání běžného elementu
 			{
-				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text+pom_element_temp->name.UpperCase()+"?","",MB_YESNO))
+				AnsiString text_PM=ls->Strings[465];
+				if(pom_element->pohon!=NULL)text_PM+=" "+pom_element->pohon->name;
+				else text_PM+=" nenastaven";
+				if((pom_element->eID!=200 && mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text+pom_element_temp->name.UpperCase()+"?","",MB_YESNO)) || (pom_element->eID==200 && mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text_PM,"",MB_YESNO)))
 				{
 					int eID=pom_element_temp->eID;
 					Cvektory::TElement *dalsi_element=NULL;

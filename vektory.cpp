@@ -3720,12 +3720,12 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 	if(Element->eID==200 && !preskocit_kontolu)//mazání PM
 	{
 		//pokud se jedná o PM na konci objektu .. nelze smazat
-		if(Element->dalsi==NULL || Element->dalsi!=NULL && Element->dalsi->objekt_n!=Element->objekt_n)povolit=false;
+		//if(Element->dalsi==NULL || Element->dalsi!=NULL && Element->dalsi->objekt_n!=Element->objekt_n)povolit=false;
 		if(povolit)//budu matet PM ve středu objektu .. tz. budou min. 2 PM v objektu
 		{
 			//před mazáním PM je potřeba sjednotit pohon za mazaným PM do dalsího PM
 			TElement *dalsi_PM=Element->dalsi;
-			while(dalsi_PM!=NULL && dalsi_PM->objekt_n==Element->objekt_n)
+			while(dalsi_PM!=NULL/* && dalsi_PM->objekt_n==Element->objekt_n*/)
 			{
 				if(Element->pohon!=NULL)dalsi_PM->pohon=Element->pohon;else dalsi_PM->pohon=NULL;
 				if(dalsi_PM->eID==200)break;
@@ -3736,7 +3736,7 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 	}
 	//hláška uživateli
 	if(!povolit && F->OBJEKT_akt!=NULL && zobrazit_tip)F->TIP=F->ls->Strings[315];//"Nelze odstranit předávací místo"
-	if(povolit && (Element->dalsi==NULL || Element->dalsi!=NULL && Element->geo.typ==0 && Element->dalsi->geo.typ==0 || preskocit_kontolu))
+	if(povolit && Element->eID!=200 && (Element->dalsi==NULL || Element->dalsi!=NULL && Element->geo.typ==0 && Element->dalsi->geo.typ==0 || preskocit_kontolu))
 	{
 		if(O!=NULL && O->element->n==Element->n && Element->dalsi!=NULL && Element->dalsi->objekt_n==O->n)O->element=Element->dalsi;
 		//nejdříve smazání tabulky Elelementu
