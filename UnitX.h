@@ -28,6 +28,7 @@ private:	// User declarations
 	void prirazeni_pohohonu_vetvi(Cvektory::TElement *E,long Col);//zmìní pohon sekundární vìtvi, z výhybky nebo spojky (pokud sekundární vìtev existuje)
 	void prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col);//pøiøazení pohonu pøed PM, nebo za PM
 	void prirazeni_pohonu_defTab();//pøiøazení pohonu z PmG
+	void zapisVID(int zapis,int pozice);//zapiše na danou pozici ve VID dané èíslo
 
 	//promìnné pro UnitX
 	bool editace_pohonu;
@@ -50,6 +51,7 @@ public:		// User declarations
 	void aktualizace_zon_otaceni(Cvektory::TElement *E);//po zmìnì rotace na elementu E, projde všechny elementy za a pøepoèítá jim zóny otáèení
 	void validace_RD(Cvektory::TElement *E);//provede validaci RD
 	void update_hodnot_vyhybky_PM(Cvektory::TElement *E);//zobrazí aktuální hodnoty z dat v tabulkách
+	void vynulujVID();//vynuluje VID, podle délky nastavené v konstruktoru (viz. popisek deklarace VID) napø. 2 èíslice
 
 	//promìnné pro vyøazení OnChange metody pøi vykreslování tabulek
   enum Tinput_state{NO,NOTHING,PT,PT2,LO,LO2,WT,DO,PTotoc,COMBO,aRD,R,Rz,Rx,P_VOZ};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
@@ -58,6 +60,7 @@ public:		// User declarations
 	Cvektory::TElement *posledni_E;//slouží pro uložení editovaného elementu, nemusím pøi každém stisku klávesy vracet E
 	Cvektory::TCesta *posledni_c;
 	int validovany_pohon;
+	AnsiString VID;//dvouciferné èíslo, první èíslo znázoròuje validaci pohonu, druhé validaci stopek, pokud je èíslo 00 = bez chyb, 10 = chyba na pohonu, stop v poøádku (viz. 777 webové soubory), poèet èíslic nastaven v konstruktoru, mìnit pouze tam!!
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFormX *FormX;

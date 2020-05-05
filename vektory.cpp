@@ -3736,7 +3736,7 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 	}
 	//hláška uživateli
 	if(!povolit && F->OBJEKT_akt!=NULL && zobrazit_tip)F->TIP=F->ls->Strings[315];//"Nelze odstranit předávací místo"
-	if(povolit && Element->eID!=200 && (Element->dalsi==NULL || Element->dalsi!=NULL && Element->geo.typ==0 && Element->dalsi->geo.typ==0 || preskocit_kontolu))
+	if(povolit && (Element->eID!=200 || (Element->eID==200 && preskocit_kontolu)) && (Element->dalsi==NULL || Element->dalsi!=NULL && Element->geo.typ==0 && Element->dalsi->geo.typ==0 || preskocit_kontolu))
 	{
 		if(O!=NULL && O->element->n==Element->n && Element->dalsi!=NULL && Element->dalsi->objekt_n==O->n)O->element=Element->dalsi;
 		//nejdříve smazání tabulky Elelementu
@@ -5476,7 +5476,7 @@ Cvektory::TVozik *Cvektory::vrat_vozik(unsigned int n)
 }
 ////---------------------------------------------------------------------------
 void Cvektory::vymaz_seznam_VOZIKY()
-{    F->Memo("_________________________",true);
+{    //F->Memo("_________________________",true);
 	while (VOZIKY!=NULL)
 	{
 		delete VOZIKY->predchozi;
