@@ -897,6 +897,8 @@ void TForm1::DesignSettings()
 	DetailsButton->Visible = true;
 	scSplitView_OPTIONS->Opened=false;
 	scSplitView_OPTIONS->Align=alRight;
+	scGPGlyphButton_PLAY->GlyphOptions->Kind=scgpbgkPlay;
+	scGPGlyphButton_PLAY->Visible=true;
 
 	scGPLabel_otoce->Font->Color=clDrawGridHeaderFont;
 	scGPLabel_roboti->Font->Color= scGPLabel_otoce->Font->Color;
@@ -11904,9 +11906,7 @@ void TForm1::NP_input()
 	else DKunit=(TForm1::Tm_mm)2;
 	if(OBJEKT_akt->pohon!=NULL)scGPComboBox_prepinacKot->Enabled=true;
 	else scGPComboBox_prepinacKot->Enabled=false;
-	//nastavení tlačítka pro spouštění animace za podmínky přiřazení pohonu
-	if(OBJEKT_akt->pohon!=NULL)scGPGlyphButton_PLAY->Enabled=true;
-	else scGPGlyphButton_PLAY->Enabled=false;
+
 
 	scGPButton_ulozit->Enabled=false;
 	//zapnutí spodního panelu
@@ -11917,9 +11917,6 @@ void TForm1::NP_input()
 	scLabel_architekt->Visible=false;
 	scGPSwitch_rezim->Visible=false;
 	scLabel_klient->Visible=false;
-	scGPGlyphButton_PLAY->Visible=true;
-	scGPGlyphButton_PLAY->GlyphOptions->Kind=scgpbgkPlay;
-	scGPGlyphButton_PLAY->Hint="spustit animaci";
 
 	nahled_ulozen=false;//nově otevřen, není uložen
 	DrawGrid_knihovna->Invalidate();
@@ -12246,7 +12243,6 @@ void TForm1::vypni_editaci()
 	scLabel_klient->Visible=false;
 	scGPSwitch_rezim->Visible=false;
 	scLabel_architekt->Visible=false;
-	scGPGlyphButton_PLAY->Visible=false;
 	//navrácení zoomu a posunu do původních hodnt
 	Zoom=Zoom_predchozi2;
 	//on_change_zoom_change_scGPTrackBar();//pozor asi volá refresh
@@ -13721,7 +13717,7 @@ void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 	log(__func__);//logování
 	RO-=(1.5*Zoom/m2px)/20.0;
 	Poffset=0;
-	scGPButton_viditelnostmGridClick(Sender);//zakáže mgridy
+	if(MOD==EDITACE)scGPButton_viditelnostmGridClick(Sender);//zakáže mgridy - dodělat, když nebudou zobrazené....
 	Timer_animace->Enabled=!Timer_animace->Enabled;
 	zobrazit_meritko=!Timer_animace->Enabled;
 	d.v.PP.raster.show=!Timer_animace->Enabled;
@@ -13730,8 +13726,9 @@ void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 		scGPGlyphButton_PLAY->GlyphOptions->Kind=scgpbgkPause;
 		scGPGlyphButton_PLAY->Hint="zastavit animaci";
 		scGPGlyphButton_PLAY->ShowCaption=true;
-		if(OBJEKT_akt->pohon!=NULL)Timer_animace->Interval=F->m.round(F->m.get_timePERpx(OBJEKT_akt->pohon->aRD,0));//stejná rychlost pro všechny RD
-		else Timer_animace->Interval=40;//prozatim
+		//if(OBJEKT_akt->pohon!=NULL)Timer_animace->Interval=F->m.round(F->m.get_timePERpx(OBJEKT_akt->pohon->aRD,0));//stejná rychlost pro všechny RD
+		//else
+		Timer_animace->Interval=16;//prozatim
 		//Timer_animace->Interval=ceil(F->m.get_timePERpx(pom->RD,0,F->d.v.vrat_min_rychlost_prejezdu()));//různá rychlost dle RD, s afps se počítá dle min RD, ale nějak špatně vycházela animace ke konci (nestihl vozík vyjet)
 	}
 	else//animace zastavena
@@ -13745,9 +13742,9 @@ void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 void __fastcall TForm1::Timer_animaceTimer(TObject *Sender)
 {
 	log(__func__);//logování
-	if(MOD==EDITACE)
+	//if(MOD==EDITACE)
 	{
-		short LO=1.5;//lakovací okno
+		double LO=1.5;//lakovací okno
 
 		//rameno - kýve se po šířce lakovacího okna
 		if(ROs==0)
@@ -13779,26 +13776,26 @@ void __fastcall TForm1::Timer_animaceTimer(TObject *Sender)
 			else ROsts=0;
 		}
 
-		Poffset+=1*m2px/Zoom;//zajistí posun animace o 1px (tedy nejmenší možnou grafickou jednotku), ale posouvání probíhá v metrech
-
+		Poffset+=1*m2px/Zoom*100;//zajistí posun animace o 1px (tedy nejmenší možnou grafickou jednotku), ale posouvání probíhá v metrech
+		d.v.generuj_VOZIKY();//velice prozatim
 		REFRESH();
 	}
-	else//ROMA metoda
-	{
-		d.TP.DO+=d.TP.K;//konec zakazky v min
-		d.TP.OD=d.TP.DO;//od které min se proces začne vypisovat
-		if(d.TP.DO<=d.TP.KZ)
-		{
-			REFRESH();
-		}
-		else
-		{
-			Timer_animace->Enabled=false;
-			ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
-			ButtonPLAY->Hint="spustit animaci";
-			SyntezaClick(Sender);//vratí statický mod
-		}
-	}
+//	else//ROMA metoda
+//	{
+//		d.TP.DO+=d.TP.K;//konec zakazky v min
+//		d.TP.OD=d.TP.DO;//od které min se proces začne vypisovat
+//		if(d.TP.DO<=d.TP.KZ)
+//		{
+//			REFRESH();
+//		}
+//		else
+//		{
+//			Timer_animace->Enabled=false;
+//			ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
+//			ButtonPLAY->Hint="spustit animaci";
+//			SyntezaClick(Sender);//vratí statický mod
+//		}
+//	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
@@ -13886,15 +13883,13 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 //d.v.PP.uchyt_pozice=0.380/2.0;
 
 	//d.v.generuj_VOZIKY();
-	//Zoom=30;ZOOM();
-	//REFRESH();
 	//d.vykresli_vyrobek(Canvas,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,0);
 
-	//	smaz=0;
-//	Timer_smazat->Enabled=true;
+
+
 //duvod_validovat=2;
 //REFRESH();
-Timer_animace->Enabled=true;
+
 
 
 //		Memo("_____________________");
@@ -14960,7 +14955,6 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		scLabel_klient->Visible=false;
 		scGPSwitch_rezim->Visible=false;
 		scLabel_architekt->Visible=false;
-		scGPGlyphButton_PLAY->Visible=false;
 		//navrácení zoomu a posunu do původních hodnt
 		Zoom=Zoom_predchozi2;
 		//on_change_zoom_change_scGPTrackBar();//pozor asi volá refresh
@@ -16153,7 +16147,7 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
    // scGPButton_header_projekt->Hint=ls->Strings[34];
    // scGPGlyphButton_OPTIONS->Hint=ls->Strings[35];
     Nahled->Caption=ls->Strings[36];
-    scGPGlyphButton_PLAY->Hint=ls->Strings[37];
+		scGPGlyphButton_PLAY->Hint=ls->Strings[37];
     RzStatusPane3->Hint=ls->Strings[38];
 		//RzStatusPane4->Caption=ls->Strings[39];
     RzStatusPane4->Hint=ls->Strings[40];
@@ -16827,13 +16821,6 @@ void __fastcall TForm1::scGPCheckBox_popisek_pohonuClick(TObject *Sender)
 		if(Akce==NIC)writeINI("nastaveni_editace","zobrazit_popisek_pohonu",zobrazit_popisek_pohonu);//ukládat do ini pouze mimo geometrii
 		REFRESH();
 	}
-}
-//---------------------------------------------------------------------------
-void __fastcall TForm1::Timer_testyMaKrTimer(TObject *Sender)
-{
-	smaz+=1;
-	d.v.generuj_VOZIKY();
-	REFRESH();
 }
 //---------------------------------------------------------------------------
 //vrátí focus na form1, kdykoli je potřeba vrátit focus, skrze odchytávání kláves

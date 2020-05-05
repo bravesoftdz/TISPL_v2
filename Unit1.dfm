@@ -223,7 +223,7 @@ object Form1: TForm1
     object LabelRoletka: TLabel
       Left = 320
       Top = 8
-      Width = 61
+      Width = 67
       Height = 13
       Caption = 'LabelRoletka'
       Visible = False
@@ -2402,7 +2402,6 @@ object Form1: TForm1
       ShowHint = True
       TabOrder = 20
       TabStop = True
-      Visible = False
       OnClick = scGPGlyphButton_PLAYClick
       Animation = False
       CanFocused = True
@@ -4706,10 +4705,10 @@ object Form1: TForm1
     OnClick = CheckBoxVytizenost_Click
   end
   object Memo3: TMemo
-    Left = 726
-    Top = 50
-    Width = 529
-    Height = 144
+    Left = 527
+    Top = 67
+    Width = 568
+    Height = 148
     TabOrder = 38
     Visible = False
     OnKeyDown = Memo3KeyDown
@@ -10622,16 +10621,16 @@ object Form1: TForm1
     Options.PressedColor2Alpha = 255
     Options.FocusedColor2Alpha = 255
     Options.DisabledColor2Alpha = 255
-    Options.FrameNormalColor = 33023
-    Options.FrameHotColor = 1871359
-    Options.FramePressedColor = 33023
-    Options.FrameFocusedColor = 33023
-    Options.FrameDisabledColor = 33023
+    Options.FrameNormalColor = clRed
+    Options.FrameHotColor = clRed
+    Options.FramePressedColor = clRed
+    Options.FrameFocusedColor = clRed
+    Options.FrameDisabledColor = clRed
     Options.FrameWidth = 1
-    Options.FrameNormalColorAlpha = 0
-    Options.FrameHotColorAlpha = 0
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 255
     Options.FramePressedColorAlpha = 0
-    Options.FrameFocusedColorAlpha = 0
+    Options.FrameFocusedColorAlpha = 255
     Options.FrameDisabledColorAlpha = 100
     Options.FontNormalColor = clWhite
     Options.FontHotColor = clWhite
@@ -10696,7 +10695,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C01011800E809F80910001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800040A040A10001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -11671,35 +11670,35 @@ object Form1: TForm1
     Active = True
     AntiAliasText = gpfBest
     TeePanel = Chart1
-    Left = 632
+    Left = 696
     Top = 40
   end
   object TeeGDIPlus2: TTeeGDIPlus
     Active = True
     AntiAliasText = gpfBest
     TeePanel = Chart2
-    Left = 760
+    Left = 824
     Top = 40
   end
   object TeeGDIPlus3: TTeeGDIPlus
     Active = True
     AntiAliasText = gpfBest
     TeePanel = Chart3
-    Left = 728
+    Left = 792
     Top = 40
   end
   object TeeGDIPlus4: TTeeGDIPlus
     Active = True
     AntiAliasText = gpfBest
     TeePanel = Chart4
-    Left = 696
+    Left = 760
     Top = 40
   end
   object TeeGDIPlus5: TTeeGDIPlus
     Active = True
     AntiAliasText = gpfBest
     TeePanel = Chart6
-    Left = 664
+    Left = 728
     Top = 40
   end
   object TimerMouseWheel: TTimer
@@ -11712,7 +11711,7 @@ object Form1: TForm1
     Timeout = 500
     Host = '129.6.15.28'
     BaseDate = 2.000000000000000000
-    Left = 567
+    Left = 631
     Top = 40
   end
   object IdHTTP1: TIdHTTP
@@ -11729,7 +11728,7 @@ object Form1: TForm1
     Request.Ranges.Units = 'bytes'
     Request.Ranges = <>
     HTTPOptions = [hoForceEncodeParams]
-    Left = 599
+    Left = 663
     Top = 40
   end
   object Timer_tr: TTimer
@@ -11819,7 +11818,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C010154000C0D1C0D30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01015400280D280D30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000002004000001002000000000000060
       0C00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -37980,8 +37979,8 @@ object Form1: TForm1
     Enabled = False
     Interval = 50
     OnTimer = Timer2Timer
-    Left = 704
-    Top = 320
+    Left = 568
+    Top = 40
   end
   object TimerKurzor: TTimer
     Enabled = False
@@ -49811,14 +49810,7 @@ object Form1: TForm1
     Enabled = False
     Interval = 500
     OnTimer = Timer_getjobidTimer
-    Left = 752
-    Top = 320
-  end
-  object Timer_testyMaKr: TTimer
-    Enabled = False
-    Interval = 16
-    OnTimer = Timer_testyMaKrTimer
-    Left = 704
-    Top = 368
+    Left = 600
+    Top = 40
   end
 end
