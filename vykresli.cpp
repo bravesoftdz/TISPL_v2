@@ -2830,7 +2830,7 @@ void Cvykresli::vykresli_voziky(TCanvas *canv)
 		while(V!=NULL)
 		{
 			TColor clJigTemp=clJig;if(V->zakazka->n!=0)clJigTemp=V->zakazka->barva;//mimo default zakázky JIGy nesou barvy dané zakázky
-			//pro ladění F->Memo(String(V->n)+" "+String(V->X)+" "+String(V->Y));//pro ladění
+			//F->Memo(String(V->n)+" "+String(V->X)+" "+String(V->Y));//pro ladění
 			if(F->MOD==F->EDITACE && F->OBJEKT_akt!=NULL && V->element!=NULL && V->element->objekt_n!=F->OBJEKT_akt->n)//při editaci vozíky v pasivních objektech
 				vykresli_vozik(canv,V->n,V->X,V->Y,v.PP.delka_jig,v.PP.sirka_jig,V->orientace_podvozek,V->rotace_jig/*připadně později dle zakázky V->Zakazka->Jig...*/,m.clIntensive(clChassis,m.get_intensity()),m.clIntensive(clJigTemp,m.get_intensity()));
 			else//všechny ostatní situace
@@ -2894,7 +2894,7 @@ void Cvykresli::vykresli_vyrobky(TCanvas *canv,double X,double Y,double dJ,doubl
 	TPointD P0=m.rotace(v.PP.delka_jig/2.0,0,m.o2r(orientaceP-90)+rotaceJ);
 	line(canv,m.L2Px(X+P0.x),m.L2Py(Y+P0.y),m.L2Px(X-P0.x),m.L2Py(Y-P0.y));//obdelnik(canv,X-dJ/2.0,Y,X+dJ/2.0,Y,m.o2r(orientaceP)+rotaceJ);
 
-	//vykreslení ochranné zóny okolo jigu
+	//vykreslení ochranné zóny okolo jigu - nepoužito
 	////DWORD pole[]={m.round(5/3.0*F->Zoom),m.round(2.5/3.0*F->Zoom),m.round(1/3.0*F->Zoom),m.round(2.5/3.0*F->Zoom)};//definice uživatelského pera s vlastní definovanou linii
 	////set_pen2(canv,clRed,2,PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,pole,sizeof(pole)/sizeof(pole[0]));
 	//set_pen2(canv,clJig,2,PS_ENDCAP_SQUARE,PS_JOIN_MITER,true);

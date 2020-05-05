@@ -5394,7 +5394,7 @@ TPointD_3Dbool Cvektory::generuj_voziky_segementu_mimo_stop_a_buffer(TElement *E
 					else rotacni_zbytek=false;//dokončena ilustrace otáčení JIGu
 				}
 				//finální vložení vozíku s vypočítanými parametry do spojáku VOZIKY
-				if(!predchazi_stop)vloz_vozik(ZAKAZKA_akt,E,Pt.x,Pt.y,Pt.z,akt_rotace_jigu+R,1);//, vkládá se pouze pokud se nejedná o stopku, vozíky stopky se vkládájí v separátní metodě na tvorbu bufferu, (nicméně i přes stop se musí kvůli umístění zde projít, a proto se tato metoda celá volá)
+				if(!predchazi_stop)vloz_vozik(ZAKAZKA_akt,E,Pt.x,Pt.y,Pt.z,akt_rotace_jigu+R,1);//vkládá se pouze pokud se nejedná o stopku, vozíky stopky se vkládájí v separátní metodě na tvorbu bufferu, (nicméně i přes stop se musí kvůli umístění zde projít, a proto se tato metoda celá volá)
 				else predchazi_stop=false;//zdisablování pro další stavy, pokud bylo zrovna aktivní/tj. stop element
 			}
 			else//počet vozíků přicházejících z přejezdu, které již "narazily" do bufferu a navyšují ho
@@ -5432,6 +5432,7 @@ void Cvektory::generuj_voziky_stop_a_bufferu(TElement *E,double akt_rotace_jigu,
 		if(pocet_voziku_z_prejezdu_na_bufferu>0){Z->n=1;Z->barva=clRed;pocet_voziku_z_prejezdu_na_bufferu--;}//barevné odlišení pouze jen kvůli testům
 		else {Z->n=2;Z->barva=clBlue;}//barevné odlišení pouze jen kvůli testům
 		vloz_vozik(Z/*ZAKAZKA_akt*/,E,Pt.x,Pt.y,Pt.z,akt_rotace_jigu,-1);//finální vložení vozíku s vypočítanými parametry do spojáku VOZIKY, se stave odháknuto
+		//vloz_vozik(ZAKAZKA_akt,E,Pt.x,Pt.y,Pt.z,akt_rotace_jigu,-1);//finální vložení vozíku s vypočítanými parametry do spojáku VOZIKY, se stave odháknuto
 		umisteni+=PP.delka_podvozek;//posun o další vozík
 	}
 }
@@ -5475,7 +5476,7 @@ Cvektory::TVozik *Cvektory::vrat_vozik(unsigned int n)
 }
 ////---------------------------------------------------------------------------
 void Cvektory::vymaz_seznam_VOZIKY()
-{
+{    F->Memo("_________________________",true);
 	while (VOZIKY!=NULL)
 	{
 		delete VOZIKY->predchozi;
@@ -6261,7 +6262,7 @@ UnicodeString Cvektory::getVID(long VID)
 	UnicodeString Text="";
 	switch(VID) //řadit od nejdůležitějšího
 	{
-    case 111: Text="Z důvodu uzavření kruhu byla geometrie elementu upravena.";break;
+    case 111: Text="Počátek a konec linky byl automaticky spojen.";break;
 		case 219: Text=F->ls->Strings[219]+"!";break;//Pohon nepřiřazen!
 		case 401: Text=F->ls->Strings[401];break;//Rotace neodpovídá orientaci JIGů na začátku linky!
 		case 402: Text=F->ls->Strings[402];break;//Pozor, překrytí JIGů!
@@ -7847,7 +7848,7 @@ void Cvektory::hlavicka_DATA()
 	DATA->predchozi=DATA;
 }
 //---------------------------------------------------------------------------
-//vytvoří prázdný obraz projektu, souží pro vytváření hlavičky nebo pro nový obraz (první prázdný obraz, poté se plní)
+//vytvoří prázdný obraz projektu, slouží pro vytváření hlavičky nebo pro nový obraz (první prázdný obraz, poté se plní)
 Cvektory::TDATA *Cvektory::vytvor_prazdny_obraz()
 {
 	////alokace paměti
