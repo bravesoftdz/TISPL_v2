@@ -697,7 +697,6 @@ private:
 
 	////promìnné
 	TDateTime TIME;
-	UnicodeString LICENCE;
 	short n_prihlaseni;
 	bool logovat;
 	bool ortogonalizace_stav;
@@ -762,6 +761,7 @@ public:		// User declarations
 	TPoint minule_souradnice_kurzoru;//uchová pùvodní souøadnice pøi posunu
 
 	//promìnné
+	UnicodeString LICENCE;
 	UnicodeString VERZE;
 	double m2px;//uchovává hodnotu prostorového rozlišení programu, nativní rozlišení 0,1 m na 1 pixel pøi zoomu 1x
 	double fps;//frames per second, èetnost snímkù za sekundu - používá se pro animace a simulace
@@ -881,7 +881,7 @@ public:		// User declarations
 	void zmena_editovanych_bunek(Cvektory::TElement *E);//automaticky nastaví editované položky a needitovatelné položky pro pohonové tabulky
 	void vlozit_predavaci_misto_aktualizuj_WT();//projde elementy a objekty, pokud je nìkde nutnost vložit pøedávací místo vloží ho tam
 	void mGrid_komponenta_na_draw(TmGrid *mGrid,long Col,long Row);//smazì komponentu v dané buòce a zmìní typ bunky na DRAW
-  void mail(String Host,String Username,String Password,String FromAddress,String FromName,String Subject,String Body,String To,String ccTo="",String bccTo="",String FileName="");//odešle e-mail, doruèitel na všech tøech úrovní To,ccTo,bccTo mohou být mnohonásobnì zadaní, pouze odìlené èárkou, tìlo e-mailu lze zadat jako html
+	void mail(String Host,String Username,String Password,String FromAddress,String FromName,String Subject,String Body,String To,String ccTo="",String bccTo="",String FileName="",String FileName2="");//odešle e-mail, doruèitel na všech tøech úrovní To,ccTo,bccTo mohou být mnohonásobnì zadaní, pouze odìlené èárkou, tìlo e-mailu lze zadat jako html
 	void ortogonalizace();//volá ortogonalizaci schéma, pokud je ortogonalizace povolena
 	void nastav_focus();//vrátí focus na form1, kdykoli je potøeba vrátit focus, skrze odchytávání kláves
 	void set_enabled_mGrid(Cvektory::TElement *E);//zapne nebo vypne komponenty megridu v závislosti na tom zda má element pøiøazený pohon

@@ -2004,7 +2004,7 @@ AnsiString TForm1::readINI(AnsiString Section,AnsiString Ident)
 }
 //---------------------------------------------------------------------------
 //odešle e-mail, doručitel na všech třech úrovní To,ccTo,bccTo mohou být mnohonásobně zadaní, pouze odělené čárkou, tělo e-mailu lze zadat jako html
-void TForm1::mail(String Host,String Username,String Password,String FromAddress,String FromName,String Subject,String Body,String To,String ccTo,String bccTo,String FileName)
+void TForm1::mail(String Host,String Username,String Password,String FromAddress,String FromName,String Subject,String Body,String To,String ccTo,String bccTo,String FileName,String FileName2)
 {
 	TIdMessage *MAIL=new TIdMessage(this);
 	MAIL->Clear();
@@ -2020,6 +2020,7 @@ void TForm1::mail(String Host,String Username,String Password,String FromAddress
 	MAIL->Body->Text=AnsiToUtf8(Body);
 	TIdAttachmentFile *Attach;
 	if(FileName!="") Attach=new TIdAttachmentFile(MAIL->MessageParts,FileName);//potřebuje #include <idattachmentfile.hpp>
+	if(FileName2!="")Attach=new TIdAttachmentFile(MAIL->MessageParts,FileName2);//potřebuje #include <idattachmentfile.hpp>
 	TIdSMTP *SMTP=new TIdSMTP(this);
 	SMTP->Host=Host;//"smtp.seznam.cz";
 	SMTP->Username=Username;
@@ -2742,7 +2743,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 	Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 	Cantialising a;
 	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
-	bmp_total->Canvas->Draw(0,0,bmp_out);delete (bmp_out);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+	bmp_total->Canvas->Draw(0,0,bmp_out);delete(bmp_out);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 	////mGRIDY
 	d.vykresli_mGridy(bmp_total->Canvas);//přesunuto do vnitř metody: OBJEKT_akt->elementy!=NULL kvůli pohonům
 	////grafické MĚŘÍTKO
@@ -13692,7 +13693,7 @@ void __fastcall TForm1::ButtonPLAY_OClick(TObject *Sender)
 //tlačítko na spuštění animace v náhledu kabiny
 void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 {
-  log(__func__);//logování
+	log(__func__);//logování
 	RO-=(1.5*Zoom/m2px)/20.0;
 	Poffset=0;
 	scGPButton_viditelnostmGridClick(Sender);//zakáže mgridy
@@ -13718,7 +13719,7 @@ void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Timer_animaceTimer(TObject *Sender)
 {
-  log(__func__);//logování
+	log(__func__);//logování
 	if(MOD==EDITACE)
 	{
 		short LO=1.5;//lakovací okno
@@ -13863,8 +13864,9 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 
 	//	smaz=0;
 //	Timer_smazat->Enabled=true;
-duvod_validovat=2;
-REFRESH();
+//duvod_validovat=2;
+//REFRESH();
+Timer_animace->Enabled=true;
 
 
 //		Memo("_____________________");
@@ -16712,7 +16714,7 @@ void __fastcall TForm1::scExPanel1Click(TObject *Sender)
 	scExPanel1->RollUpState=!scExPanel1->RollUpState;
 }
 //---------------------------------------------------------------------------
-
+//ctlr+z
 void __fastcall TForm1::scGPGlyphButton_undoClick(TObject *Sender)
 {
 	log(__func__);//logování
@@ -16732,7 +16734,7 @@ void __fastcall TForm1::scGPGlyphButton_undoClick(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
-
+//ctrl+y
 void __fastcall TForm1::scGPGlyphButton_redoClick(TObject *Sender)
 {
 	log(__func__);//logování
@@ -16752,12 +16754,14 @@ void __fastcall TForm1::scGPGlyphButton_redoClick(TObject *Sender)
 void __fastcall TForm1::scGPButton_bug_reportClick(TObject *Sender)
 {
 	log(__func__);//logování
-  //vytvoření printscreeunu
-  pan_create();//vytvoří aktuální printscreen jen pracovní plochy
+	//vytovření backupu pro odeslání
+	Timer_backupTimer(Sender);
+	//vytvoření printscreeunu
+	pan_create();//vytvoří aktuální printscreen jen pracovní plochy
 	TPngImage* PNG = new TPngImage();//kvůli větší kompresi uloženo do PNG (má větší kompresi než JPG)
 	PNG->Assign(Pan_bmp);
 	PNG->SaveToFile(get_temp_dir() +"TISPL\\" + "tispl_PrtScr"+get_user_name()+"_"+get_computer_name()+".png");
-
+	//zobrazení samotné konzole
 	Form_konzole->ShowModal();
 }
 //---------------------------------------------------------------------------
