@@ -52,7 +52,7 @@ class TmGrid
 		short RightMargin;//pravé odsazení textu
 		short MergeState;//pouze indikuje, zda je buňka sloučena=1, či nikoliv=0, sloučená a není první=2 slouží jako pomůcka při vykreslování orámování sloučených buněk - mohlo by nahrazovt níže uvedené
 		TRect MergeArea;//sloučené buňky si uchovávájí oblast sloučení, jejíž jsou součástí, adresování obdedelníkového obsahu je dle indexu TRect(minCol,minRow,maxCol,maxRow), nesloučené buńky obsahuj TRect
-		short AutoSizeComponent;//pokud je požadováno nastaví automaticky rozměr obsažené kompoenty, 0-nenastaví, 1-nastaví jak šířku tak výšku, 2-jen šířku, 3-jen výšku
+		short AutoSizeComponent;//pokud je požadováno nastaví automaticky rozměr obsažené kompoenty, 0-nenastaví, 1-nastaví jak šířku tak výšku, 2-jen šířku, 3-jen výšku jen pro: edit, numeric, label, button,glyphbutton,combo,comboedit
 		short InputNumbersOnly;//pokud je nastaveno na 0 lze do buňky vepsat cokoliv, 1 lze zapsat pouze reálná čísla, 2 pouze kladná reálná čísla
 		bool Highlight;//indikuje zda je buňka zvýrazněna, barva zvýraznění odpovídá globální proměnné TColor clHighlight, výchozí stav zvýraznění je false
 		TFont *Font;//vlastnosti fontu v buňce

@@ -108,7 +108,7 @@ TmGrid::TmGrid(TForm *Owner)
 	//pouze indikuje, zda je buňka sloučena, či nikoliv, slouží jako pomůcka při vykreslování orámování sloučených buněk
 	DefaultCell.MergeState=false;
 	DefaultCell.MergeArea=TRect(-1,-1,-1,-1);
-	//pokud je požadováno nastaví automaticky rozměr obsažené kompoenty, 0-nenastaví, 1-nastaví jak šířku tak výšku, 2-jen šířku, 3-jen výšku
+	//pokud je požadováno nastaví automaticky rozměr obsažené kompoenty, 0-nenastaví, 1-nastaví jak šířku tak výšku, 2-jen šířku, 3-jen výšku jen pro: edit, numeric, label, button,glyphbutton,combo,comboedit
 	DefaultCell.AutoSizeComponent=1;
 	//pokud je nastaveno na true, nelze vepsat jinou hodnotu než číselnou (to včetně reálného čísla)
 	DefaultCell.InputNumbersOnly=false;
