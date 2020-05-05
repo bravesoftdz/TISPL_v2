@@ -631,7 +631,6 @@ private:
 	void prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla,AnsiString LO,AnsiString cas,AnsiString delka_otoce,AnsiString rychlost,AnsiString R,AnsiString Rz);
 	void dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla,AnsiString LO,AnsiString cas,AnsiString delka_otoce,AnsiString rychlost,AnsiString R,AnsiString Rz);
 	void zmen_poradi_objektu(int X, int Y);//testuje zda se nejedná o zmìnu poøadí (to musí ještì uživatel potvrdit)
-	void zobraz_tip(UnicodeString text="", TCanvas* canv=NULL);//prázdným (bez paremetrù) voláním  metody se tip smaže, //pokud není parametr canvas uveden, jedná se o dlouhodobé vykreslování hodnoty TIP//pokud je parametrem pøedán Canvas vykreslí se pøímo a jednorázovì
 	void akutalizace_stavu_prichytavani_vSB();
 	void Novy_soubor(bool invalidate=true);//samotné vytvoøení nového souboru
 	void Ulozit_soubor();//samotné uložení
@@ -885,6 +884,7 @@ public:		// User declarations
 	void ortogonalizace();//volá ortogonalizaci schéma, pokud je ortogonalizace povolena
 	void nastav_focus();//vrátí focus na form1, kdykoli je potøeba vrátit focus, skrze odchytávání kláves
 	void set_enabled_mGrid(Cvektory::TElement *E);//zapne nebo vypne komponenty megridu v závislosti na tom zda má element pøiøazený pohon
+	void zobraz_tip(UnicodeString text="", TCanvas* canv=NULL);//prázdným (bez paremetrù) voláním  metody se tip smaže, //pokud není parametr canvas uveden, jedná se o dlouhodobé vykreslování hodnoty TIP//pokud je parametrem pøedán Canvas vykreslí se pøímo a jednorázovì
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

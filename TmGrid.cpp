@@ -108,6 +108,8 @@ TmGrid::TmGrid(TForm *Owner)
 	//pouze indikuje, zda je buňka sloučena, či nikoliv, slouží jako pomůcka při vykreslování orámování sloučených buněk
 	DefaultCell.MergeState=false;
 	DefaultCell.MergeArea=TRect(-1,-1,-1,-1);
+	//pokud je požadováno nastaví automaticky rozměr obsažené kompoenty, 0-nenastaví, 1-nastaví jak šířku tak výšku, 2-jen šířku, 3-jen výšku
+	DefaultCell.AutoSizeComponent=1;
 	//pokud je nastaveno na true, nelze vepsat jinou hodnotu než číselnou (to včetně reálného čísla)
 	DefaultCell.InputNumbersOnly=false;
 	//výchozí stav zvýraznění buňky
@@ -943,10 +945,10 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	int o=0;
 	//šířka
 	if(Y==ColCount-2 && (!Columns[ColCount-1].Visible || Columns[ColCount-1].Width==0))o=1;else o=0;//dodělat podle výšky!!! pokud je poslední sloupe skryt, převezme jeho pravé orámování předposlední, u jiné situace netřeba
-	if(Cell.MergeState==false)E->Width=Columns[X].Width-floor(Cells[X+o][Y].RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);//pokud neplatí nastavuje se přímo v mergovaní, ubere pouze velikost komponenty podle šířky orámování
+	if(/*Cell.MergeState==false || <-již nepoužíváme a možno smazat*/Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==2)E->Width=Columns[X].Width-floor(Cells[X+o][Y].RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);//pokud neplatí nastavuje se přímo v mergovaní, ubere pouze velikost komponenty podle šířky orámování
 	//výška
 	if(Y+1<=RowCount-1 && Rows[Y].Visible==true && Rows[Y+1].Visible==false)o=getCountNextVisibleRow(Y);else o=0;//pokud bude následující řádek skrytý a nejedná se o poslední řádek aktuální také nebude skrytý, převezme jeho spodní orámování předposlední, u jiné situace netřeba
-	if(Cell.MergeState==false)E->Height=Rows[Y].Height-floor(Cells[X][Y+o].BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodělat ubere velikost komponenty podle šířky orámování//ubere velikost komponenty podle šířky orámování
+	if(/*Cell.MergeState==false || <-již nepoužíváme a možno smazat*/Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==3)E->Height=Rows[Y].Height-floor(Cells[X][Y+o].BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodělat ubere velikost komponenty podle šířky orámování//ubere velikost komponenty podle šířky orámování
 
 	//atributy
 	if(Cell.Type==readEDIT)E->Enabled=false;
@@ -1010,10 +1012,10 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	int o=0;
 	//šířka
 	if(Y==ColCount-2 && (!Columns[ColCount-1].Visible || Columns[ColCount-1].Width==0))o=1;else o=0;//dodělat podle výšky!!! pokud je poslední sloupe skryt, převezme jeho pravé orámování předposlední, u jiné situace netřeba
-	if(Cell.MergeState==false)N->Width=Columns[X].Width-floor(Cells[X+o][Y].RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);//pokud neplatí nastavuje se přímo v mergovaní, ubere pouze velikost komponenty podle šířky orámování
+	if(/*Cell.MergeState==false || <-již nepoužíváme a možno smazat*/Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==2)N->Width=Columns[X].Width-floor(Cells[X+o][Y].RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);//pokud neplatí nastavuje se přímo v mergovaní, ubere pouze velikost komponenty podle šířky orámování
 	//výška
 	if(Y+1<=RowCount-1 && Rows[Y].Visible==true && Rows[Y+1].Visible==false)o=getCountNextVisibleRow(Y);else o=0;//pokud bude následující řádek skrytý a nejedná se o poslední řádek aktuální také nebude skrytý, převezme jeho spodní orámování předposlední, u jiné situace netřeba
-	/*if(Cell.MergeState==false)*/N->Height=Rows[Y].Height-floor(Cells[X][Y+o].BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodělat ubere velikost komponenty podle šířky orámování//ubere velikost komponenty podle šířky orámování
+	if(/*Cell.MergeState==false || <-již nepoužíváme a možno smazat*/Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==3)N->Height=Rows[Y].Height-floor(Cells[X][Y+o].BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodělat ubere velikost komponenty podle šířky orámování//ubere velikost komponenty podle šířky orámování
 
 	//atributy
 	if(Cell.Type==NUMERIC)N->Enabled=true;else N->Enabled=false;
@@ -1075,8 +1077,8 @@ void TmGrid::SetLabel(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	L->AutoSizeHeight=false;L->AutoSizeWidth=false;
 	L->Top=R.Top+ceil(Cell.TopBorder->Width/2.0);//ubere velikost komponenty podle šířky orámování
 	L->Left=R.Left+ceil(Cell.LeftBorder->Width/2.0);//ubere velikost komponenty podle šířky orámování
-	if(Cell.MergeState==false)L->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);	 //pokud neplatí nastavuje se přímo v mergovaní, ubere pouze velikost komponenty podle šířky orámování//pokud neplatí nastavuje se přímo v mergovaní
-	/*if(Cell.MergeState==false)*/L->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodělat ubere velikost komponenty podle šířky orámování//dodělat//ubere velikost komponenty podle šířky orámování
+	if(/*Cell.MergeState==false || <-již nepoužíváme a možno smazat*/Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==2)L->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);	 //pokud neplatí nastavuje se přímo v mergovaní, ubere pouze velikost komponenty podle šířky orámování//pokud neplatí nastavuje se přímo v mergovaní
+	if(/*Cell.MergeState==false || <-již nepoužíváme a možno smazat*/Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==3)L->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodělat ubere velikost komponenty podle šířky orámování//dodělat//ubere velikost komponenty podle šířky orámování
 	if(Cell.ShowHint){L->ShowHint=true;L->Hint=Cell.Hint;}
 	if(Cell.Text=="" && Cell.isEmtyConditionalFormattingState==true)L->Color=Cell.isEmpty->Color;else L->Color=Cell.Background->Color;
 	L->Margins->Left=0;L->Margins->Right=0;L->Margins->Top=0;L->Margins->Bottom=0;
@@ -1116,8 +1118,8 @@ void TmGrid::SetButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	//atributy
 	B->Top=R.Top+ceil(Cell.TopBorder->Width/2.0)+1;
 	B->Left=R.Left+ceil(Cell.LeftBorder->Width/2.0)+1;
-	if(Cell.MergeState==false)B->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0)-1;
-	if(Cell.MergeState==false)B->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0)-1;
+	if(/*Cell.MergeState==false || <-již nepoužíváme a možno smazat*/Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==2)B->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0)-1;
+	if(/*Cell.MergeState==false || <-již nepoužíváme a možno smazat*/Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==3)B->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0)-1;
 	if(VisibleComponents>-1)B->Visible=VisibleComponents;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
 	if(Cell.ShowHint){B->ShowHint=true;B->Hint=Cell.Hint;}
 	//B->Options->NormalColor=Cell.Background->Color; zde nenastavovat!
@@ -1143,8 +1145,8 @@ void TmGrid::SetGlyphButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell
 	//atributy
 	gB->Top=R.Top+floor(Cell.TopBorder->Width/2.0)+1;
 	gB->Left=R.Left+floor(Cell.LeftBorder->Width/2.0)+1;
-	if(Cell.MergeState==false)gB->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0)-1;
-	if(Cell.MergeState==false)gB->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-floor(Cell.TopBorder->Width/2.0)-1;
+	if(/*Cell.MergeState==false || <-již nepoužíváme a možno smazat*/Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==2)gB->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0)-1;
+	if(/*Cell.MergeState==false || <-již nepoužíváme a možno smazat*/Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==3)gB->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-floor(Cell.TopBorder->Width/2.0)-1;
 	if(VisibleComponents>-1)gB->Visible=VisibleComponents;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
 	//gB->Options->NormalColor=Cell.Background->Color; zde nenastavovat!
 	if(Cell.ShowHint){gB->ShowHint=true;gB->Hint=Cell.Hint;}
@@ -1171,9 +1173,9 @@ void TmGrid::SetCombo(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	//velikost
 	short o=0;
 	if(Y==ColCount-2 && (!Columns[ColCount-1].Visible || Columns[ColCount-1].Width==0))o=1;else o=0;//pokud je poslední sloupe skryt, převezme jeho pravé orámování předposlední, u jiné situace netřeba
-	if(Cell.MergeState==false)C->Width=Columns[X].Width-floor(Cells[X+o][Y].RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);   //pokud neplatí nastavuje se přímo v mergovaní, ubere pouze velikost komponenty podle šířky orámování
+	if(/*Cell.MergeState==false || <-již nepoužíváme a možno smazat*/Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==2)C->Width=Columns[X].Width-floor(Cells[X+o][Y].RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);   //pokud neplatí nastavuje se přímo v mergovaní, ubere pouze velikost komponenty podle šířky orámování
 	if(Y==RowCount-2 && (!Rows[RowCount-1].Visible || Rows[RowCount-1].Height==0))o=1;else o=0;//pokud je poslední řádek skryt, převezme jeho spodní orámování předposlední, u jiné situace netřeba
-	/*if(Cell.MergeState==false)*/C->Height=Rows[Y].Height-floor(Cells[X+o][Y].BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodělat ubere velikost komponenty podle šířky orámování
+	if(/*Cell.MergeState==false || <-již nepoužíváme a možno smazat*/Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==3)C->Height=Rows[Y].Height-floor(Cells[X+o][Y].BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodělat ubere velikost komponenty podle šířky orámování
 
 	//zobrazení komponenty
 	if(VisibleComponents>-1)C->Visible=VisibleComponents;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
@@ -1214,9 +1216,9 @@ void TmGrid::SetComboEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	//velikost
 	short o=0;
 	if(Y==ColCount-2 && (!Columns[ColCount-1].Visible || Columns[ColCount-1].Width==0))o=1;else o=0;//pokud je poslední sloupe skryt, převezme jeho pravé orámování předposlední, u jiné situace netřeba
-	if(Cell.MergeState==false)C->Width=Columns[X].Width-floor(Cells[X+o][Y].RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);   //pokud neplatí nastavuje se přímo v mergovaní, ubere pouze velikost komponenty podle šířky orámování
+	if(/*Cell.MergeState==false || <-již nepoužíváme a možno smazat*/Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==2)C->Width=Columns[X].Width-floor(Cells[X+o][Y].RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);   //pokud neplatí nastavuje se přímo v mergovaní, ubere pouze velikost komponenty podle šířky orámování
 	if(Y==RowCount-2 && (!Rows[RowCount-1].Visible || Rows[RowCount-1].Height==0))o=1;else o=0;//pokud je poslední řádek skryt, převezme jeho spodní orámování předposlední, u jiné situace netřeba
-	/*if(Cell.MergeState==false)*/C->Height=Rows[Y].Height-floor(Cells[X+o][Y].BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodělat ubere velikost komponenty podle šířky orámování
+	if(/*Cell.MergeState==false || <-již nepoužíváme a možno smazat*/Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==3)C->Height=Rows[Y].Height-floor(Cells[X+o][Y].BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodělat ubere velikost komponenty podle šířky orámování
 
 	//zobrazení komponenty
 	if(VisibleComponents>-1)C->Visible=VisibleComponents;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
@@ -2325,6 +2327,7 @@ void TmGrid::CopyAreaCell(TCells &RefCell,TCells &CopyCell,bool copyComponent)
 	//hint
 	CopyCell.ShowHint=RefCell.ShowHint;
 	//další vlastnosti
+	CopyCell.AutoSizeComponent=RefCell.AutoSizeComponent;
 	CopyCell.InputNumbersOnly=RefCell.InputNumbersOnly;
 	CopyCell.Highlight=RefCell.Highlight;
 	////pozadí

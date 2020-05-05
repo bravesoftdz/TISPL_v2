@@ -37,8 +37,13 @@ void __fastcall TForm_konzole::FormShow(TObject *Sender)
 	Left=Form1->ClientWidth/2-Form_konzole->Width/2;
 	Top=Form1->ClientHeight/2-Form_konzole->Height/2;
 
+	//design tlaèítek
   Form1->m.designButton(scGPButton_odeslat,Form_konzole,1,2);
-  Form1->m.designButton(scGPButton_storno,Form_konzole,2,2);
+	Form1->m.designButton(scGPButton_storno,Form_konzole,2,2);
+
+	//zaškrtnutí odeslání souboru projektu
+	scGPCheckBox_odeslat_vcetne_projektu->Checked=true;
+
 	//naètení jazykové mutace
  //	scGPToolPager->Tabs->operator [](0)->Caption=F->ls->Strings[459];
 	scLabel_header->Caption=F->ls->Strings[460];
@@ -47,23 +52,23 @@ void __fastcall TForm_konzole::FormShow(TObject *Sender)
   scGPImage1->PngImage->LoadFromFile(priloha_cesta);
   scGPImage1->ImageIndex=0; //nutné nastavit, nestaèí pouze cesta k filu
   scGPImage1->Stretch=true;
-  Text->SetFocus();
+	Text->SetFocus();
  }
 //---------------------------------------------------------------------------
 void __fastcall TForm_konzole::scGPButton_odeslatClick(TObject *Sender)
 {
-//mail odeslání
-Text_formulare=Text->Lines->GetText(); // nahrání dat z Mema
-F->mail("smtp.seznam.cz","builderboy@seznam.cz","camaro69","builderboy@seznam.cz","TISPL",F->LICENCE+"_"+F->get_computer_name()+"_"+F->get_user_name()+"_"+F->VERZE,Text_formulare,"rosta.slechta@gmail.com","","",priloha_cesta,F->FileName+".bac_"+F->get_user_name()+"_"+F->get_computer_name());
-F->MB("Odesláno");
-Text->Clear();
-Close();
+	//mail odeslání
+	Text_formulare=Text->Lines->GetText();// nahrání dat z Mema
+	String projekt_cesta="";if(scGPCheckBox_odeslat_vcetne_projektu->Checked)projekt_cesta=F->FileName+".bac_"+F->get_user_name()+"_"+F->get_computer_name();
+	F->mail("smtp.seznam.cz","builderboy@seznam.cz","camaro69","builderboy@seznam.cz","TISPL",F->LICENCE+"_"+F->get_computer_name()+"_"+F->get_user_name()+"_"+F->VERZE,Text_formulare,"rosta.slechta@gmail.com","","",priloha_cesta,projekt_cesta);
+	F->zobraz_tip("Odeslano. Dìkujeme za zpìtnou vazbu.                       ");//mezery nutné, kvùli odsazení
+	Text->Clear();
+	Close();
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm_konzole::scGPButton_stornoClick(TObject *Sender)
 {
-Close();
+	Close();
 }
 //---------------------------------------------------------------------------
 

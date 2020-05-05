@@ -2006,32 +2006,39 @@ AnsiString TForm1::readINI(AnsiString Section,AnsiString Ident)
 //odešle e-mail, doručitel na všech třech úrovní To,ccTo,bccTo mohou být mnohonásobně zadaní, pouze odělené čárkou, tělo e-mailu lze zadat jako html
 void TForm1::mail(String Host,String Username,String Password,String FromAddress,String FromName,String Subject,String Body,String To,String ccTo,String bccTo,String FileName,String FileName2)
 {
-	TIdMessage *MAIL=new TIdMessage(this);
-	MAIL->Clear();
-	MAIL->From->Address=FromAddress;
-	MAIL->From->Name=FromName;
-	MAIL->Subject=Subject;
-	MAIL->Recipients->EMailAddresses=To;
-	MAIL->CCList->EMailAddresses=ccTo;
-	MAIL->BccList->EMailAddresses=bccTo;
-// 	if(FileName!="" || FileExists(FileName)) MAIL->ContentType="multipart/text";//text/plain
-//  else  MAIL->ContentType="text/html";//text/plain
-	MAIL->CharSet="UTF-8";
-	MAIL->Body->Text=AnsiToUtf8(Body);
-	TIdAttachmentFile *Attach;
-	if(FileName!="") Attach=new TIdAttachmentFile(MAIL->MessageParts,FileName);//potřebuje #include <idattachmentfile.hpp>
-	if(FileName2!="")Attach=new TIdAttachmentFile(MAIL->MessageParts,FileName2);//potřebuje #include <idattachmentfile.hpp>
-	TIdSMTP *SMTP=new TIdSMTP(this);
-	SMTP->Host=Host;//"smtp.seznam.cz";
-	SMTP->Username=Username;
-	SMTP->Password=Password;
-	SMTP->Port=25;//SMTP->UseTLS=utNoTLSSupport; případně použít, pro použití SSL jiný port a zároveň potřeba s SMTP propojit přes IO handler SSL komponentu + 2x patřičné DLL
-	SMTP->Connect();
-	SMTP->Send(MAIL);
-	SMTP->Disconnect(true);
-	delete Attach;//musí být jako první
-	delete MAIL;
-	delete SMTP;
+	try
+	{
+		TIdMessage *MAIL=new TIdMessage(this);
+		MAIL->Clear();
+		MAIL->From->Address=FromAddress;
+		MAIL->From->Name=FromName;
+		MAIL->Subject=Subject;
+		MAIL->Recipients->EMailAddresses=To;
+		MAIL->CCList->EMailAddresses=ccTo;
+		MAIL->BccList->EMailAddresses=bccTo;
+	// 	if(FileName!="" || FileExists(FileName)) MAIL->ContentType="multipart/text";//text/plain
+	//  else  MAIL->ContentType="text/html";//text/plain
+		MAIL->CharSet="UTF-8";
+		MAIL->Body->Text=AnsiToUtf8(Body);
+		TIdAttachmentFile *Attach;
+		if(FileName!="") Attach=new TIdAttachmentFile(MAIL->MessageParts,FileName);//potřebuje #include <idattachmentfile.hpp>
+		if(FileName2!="")Attach=new TIdAttachmentFile(MAIL->MessageParts,FileName2);//potřebuje #include <idattachmentfile.hpp>
+		TIdSMTP *SMTP=new TIdSMTP(this);
+		SMTP->Host=Host;//"smtp.seznam.cz";
+		SMTP->Username=Username;
+		SMTP->Password=Password;
+		SMTP->Port=25;//SMTP->UseTLS=utNoTLSSupport; případně použít, pro použití SSL jiný port a zároveň potřeba s SMTP propojit přes IO handler SSL komponentu + 2x patřičné DLL
+		SMTP->Connect();
+		SMTP->Send(MAIL);
+		SMTP->Disconnect(true);
+		delete Attach;//musí být jako první
+		delete MAIL;
+		delete SMTP;
+	}
+	catch(...)//v případě chyby odeslání
+	{
+		MB("Odeslání se nezdařilo!");
+	}
 }
 //---------------------------------------------------------------------------
 //Zalogování na webu
