@@ -54,7 +54,7 @@ void __fastcall TForm_konzole::scGPButton_odeslatClick(TObject *Sender)
 {
 //mail odeslání
 Text_formulare=Text->Lines->GetText(); // nahrání dat z Mema
-F->mail("smtp.seznam.cz","builderboy@seznam.cz","camaro69","builderboy@seznam.cz","TISPL","error",Text_formulare,"rosta.slechta@gmail.com","","",priloha_cesta);
+F->mail("smtp.seznam.cz","builderboy@seznam.cz","camaro69","builderboy@seznam.cz","TISPL",F->LICENCE+"_"+F->get_computer_name()+"_"+F->get_user_name()+"_"+F->VERZE,Text_formulare,"rosta.slechta@gmail.com","","",priloha_cesta,F->FileName+".bac_"+F->get_user_name()+"_"+F->get_computer_name());
 F->MB("Odesláno");
 Text->Clear();
 Close();
