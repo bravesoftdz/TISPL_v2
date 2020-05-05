@@ -8262,15 +8262,15 @@ void TForm1::aktualizace_tab_pohon(bool popisky,bool data,bool komponenty)
 		PmG->Cells[0][1].Text=ls->Strings[452];//+" "+rychlost;//"Rychlost"
 		PmG->Cells[1][1].Text=aRD;//jednotky
 		PmG->Cells[0][1].Font->Orientation=900;PmG->Cells[0][1].Valign=TmGrid::MIDDLE;
-		PmG->Cells[1][1].Font->Orientation=900;PmG->Cells[1][1].isLink->Orientation=900;PmG->Cells[1][1].isActiveLink->Orientation=900;PmG->Cells[1][1].Valign=TmGrid::MIDDLE;
+		PmG->Cells[1][1].Font->Orientation=900;PmG->Cells[1][1].Valign=TmGrid::MIDDLE;
 		PmG->Cells[0][3].Text=ls->Strings[453];//"Rozteč"
 		PmG->Cells[1][3].Text=R;//jednotky
 		PmG->Cells[0][3].Font->Orientation=900;PmG->Cells[0][3].Valign=TmGrid::MIDDLE;
-		PmG->Cells[1][3].Font->Orientation=900;PmG->Cells[1][3].isLink->Orientation=900;PmG->Cells[1][3].isActiveLink->Orientation=900;PmG->Cells[1][3].Valign=TmGrid::MIDDLE;
+		PmG->Cells[1][3].Font->Orientation=900;PmG->Cells[1][3].Valign=TmGrid::MIDDLE;
 		PmG->Cells[0][6].Text=ls->Strings[215];//"Mezera"
 		PmG->Cells[1][6].Text=Rz;//jednotky
 		PmG->Cells[0][6].Font->Orientation=900;PmG->Cells[0][6].Valign=TmGrid::MIDDLE;
-		PmG->Cells[1][6].Font->Orientation=900;PmG->Cells[1][6].isLink->Orientation=900;PmG->Cells[1][6].isActiveLink->Orientation=900;PmG->Cells[1][6].Valign=TmGrid::MIDDLE;
+		PmG->Cells[1][6].Font->Orientation=900;PmG->Cells[1][6].Valign=TmGrid::MIDDLE;
 	}
 
 	////aktualizace dat
@@ -9311,15 +9311,15 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][3].Text=ls->Strings[452];//+" "+rychlost;//"Rychlost"
 			E->mGrid->Cells[1][3].Text=rychlost;//jednotky
 			E->mGrid->Cells[0][3].Font->Orientation=900;E->mGrid->Cells[0][3].Valign=TmGrid::MIDDLE;
-			E->mGrid->Cells[1][3].Font->Orientation=900;E->mGrid->Cells[1][3].isLink->Orientation=900;E->mGrid->Cells[1][3].isActiveLink->Orientation=900;E->mGrid->Cells[1][3].Valign=TmGrid::MIDDLE;
+			E->mGrid->Cells[1][3].Font->Orientation=900;E->mGrid->Cells[1][3].Valign=TmGrid::MIDDLE;
 			E->mGrid->Cells[0][5].Text=ls->Strings[453];//"Rozteč"
 			E->mGrid->Cells[1][5].Text=R;//jednotky
 			E->mGrid->Cells[0][5].Font->Orientation=900;E->mGrid->Cells[0][5].Valign=TmGrid::MIDDLE;
-			E->mGrid->Cells[1][5].Font->Orientation=900;E->mGrid->Cells[1][5].isLink->Orientation=900;E->mGrid->Cells[1][5].isActiveLink->Orientation=900;E->mGrid->Cells[1][5].Valign=TmGrid::MIDDLE;
+			E->mGrid->Cells[1][5].Font->Orientation=900;E->mGrid->Cells[1][5].Valign=TmGrid::MIDDLE;
 			E->mGrid->Cells[0][8].Text=ls->Strings[215];//"Mezera"
 			E->mGrid->Cells[1][8].Text=Rz;//jednotky
 			E->mGrid->Cells[0][8].Font->Orientation=900;E->mGrid->Cells[0][8].Valign=TmGrid::MIDDLE;
-			E->mGrid->Cells[1][8].Font->Orientation=900;E->mGrid->Cells[1][8].isLink->Orientation=900;E->mGrid->Cells[1][8].isActiveLink->Orientation=900;E->mGrid->Cells[1][8].Valign=TmGrid::MIDDLE;
+			E->mGrid->Cells[1][8].Font->Orientation=900;E->mGrid->Cells[1][8].Valign=TmGrid::MIDDLE;
 			//nastavování hodnot druhého sloupce
 			E->mGrid->Cells[3][2].Type=E->mGrid->COMBO;
 			if(E->pohon!=NULL)
@@ -9851,15 +9851,15 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][3].Text=ls->Strings[452];//+" "+rychlost;//"Rychlost"
 			E->mGrid->Cells[1][3].Text=rychlost;//jednotky
 			E->mGrid->Cells[0][3].Font->Orientation=900;E->mGrid->Cells[0][3].Valign=TmGrid::MIDDLE;
-			E->mGrid->Cells[1][3].Font->Orientation=900;E->mGrid->Cells[1][3].isLink->Orientation=900;E->mGrid->Cells[1][3].isActiveLink->Orientation=900;E->mGrid->Cells[1][3].Valign=TmGrid::MIDDLE;
+			E->mGrid->Cells[1][3].Font->Orientation=900;E->mGrid->Cells[1][3].Valign=TmGrid::MIDDLE;
 			E->mGrid->Cells[0][5].Text=ls->Strings[453];//"Rozteč"
 			E->mGrid->Cells[1][5].Text=R;//jednotky
 			E->mGrid->Cells[0][5].Font->Orientation=900;E->mGrid->Cells[0][5].Valign=TmGrid::MIDDLE;
-			E->mGrid->Cells[1][5].Font->Orientation=900;E->mGrid->Cells[1][5].isLink->Orientation=900;E->mGrid->Cells[1][5].isActiveLink->Orientation=900;E->mGrid->Cells[1][5].Valign=TmGrid::MIDDLE;
+			E->mGrid->Cells[1][5].Font->Orientation=900;E->mGrid->Cells[1][5].Valign=TmGrid::MIDDLE;
 			E->mGrid->Cells[0][8].Text=ls->Strings[215];//"Mezera"
 			E->mGrid->Cells[1][8].Text=Rz;//jednotky
 			E->mGrid->Cells[0][8].Font->Orientation=900;E->mGrid->Cells[0][8].Valign=TmGrid::MIDDLE;
-			E->mGrid->Cells[1][8].Font->Orientation=900;E->mGrid->Cells[1][8].isLink->Orientation=900;E->mGrid->Cells[1][8].isActiveLink->Orientation=900;E->mGrid->Cells[1][8].Valign=TmGrid::MIDDLE;
+			E->mGrid->Cells[1][8].Font->Orientation=900;E->mGrid->Cells[1][8].Valign=TmGrid::MIDDLE;
 			//nastavování hodnot druhého sloupce
 			E->mGrid->Cells[3][2].Type=E->mGrid->COMBO;
 			if(E->pohon!=NULL)
@@ -13799,8 +13799,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Cvektory::TElement *E=OBJEKT_akt->element;
-	E->mGrid->SetEnabledComponent(1,1,true);
+	Form2->ShowModal();
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
