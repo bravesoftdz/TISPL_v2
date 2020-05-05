@@ -13,22 +13,23 @@ __fastcall TFormX::TFormX(TComponent* Owner)
   : TForm(Owner)
 { //výchozí nastavení - pøi zobrazení tab.elementù je totiž vždy volán Onchange, pøi naèítání hodnot do buòek
 	// proto je nastaven input_state=NO, aby v tento moment neprobíhal žádný výpoèet v Onchange události
- input_state=NO;
- vstoupeno_poh=false;
- vstoupeno_elm=false;
- validace_true=false;
- editace_pohonu=false;
- //nastavení pozic bunìk v tabulce pohonu
- rychlost=1;
- roztec_palce=2;
- nasobek_roztece=3;
- roztec_jigu=4;
- mezera_podvozky=5;
- mezera_jig1=6;
- mezera_jig2=7;
- posledni_E=NULL;
- validovany_pohon=0;
- //pokud dojde ke zmìnì poøadí øádku, nastavit nové pozice zde, + pøepsání switche pro tabulku pohonu v OnChange + pøepsaní switche v korelace_tab_pohonu()
+  input_state=NO;
+  vstoupeno_poh=false;
+  vstoupeno_elm=false;
+  validace_true=false;
+  editace_pohonu=false;
+  //nastavení pozic bunìk v tabulce pohonu
+  rychlost=1;
+  roztec_palce=2;
+  nasobek_roztece=3;
+  roztec_jigu=4;
+  mezera_podvozky=5;
+  mezera_jig1=6;
+  mezera_jig2=7;
+  posledni_E=NULL;
+	validovany_pohon=0;
+	VID="00";//zde se definuje poèet èíslic obažených ve VID
+	//pokud dojde ke zmìnì poøadí øádku, nastavit nové pozice zde, + pøepsání switche pro tabulku pohonu v OnChange + pøepsaní switche v korelace_tab_pohonu()
 }
 //---------------------------------------------------------------------------
 void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
@@ -684,7 +685,8 @@ void TFormX::zmena_aRD(Cvektory::TElement *mimo_element)
 	{
 		//propoèty v tabulce pohonu
 		aktualizace_tab_pohonu();
-		if(F->Akce==F->NIC)validace_aRD();//validace pouze v kontinuálním režimu kabiny
+		//validace probìhne až po uplynutí timeru
+		//if(F->Akce==F->NIC)validace_aRD();//validace pouze v kontinuálním režimu kabiny
 		//F->PmG->Refresh();, není tøeba provede OnChange
 	}
 	//propoèty v tabulkách elementù
@@ -1157,10 +1159,15 @@ void TFormX::validace_aRD(bool pouze_rozmezi)
 {
 	if(F->PmG!=NULL && F->OBJEKT_akt->pohon!=NULL && F->OBJEKT_akt->rezim==1)
 	{
-  	AnsiString jednotky;
+    //smazání pøedchozí validace z VID
+		zapisVID(0,1);//pozice jsou popsány v .h u deklarace VID a vnì metody zapisVID()
+		validovany_pohon=0;//uložit pohon na kterém se to stalo
+
+		AnsiString jednotky;
   	if(F->aRDunit==0)jednotky="[m/s]";
   	else jednotky="[m/min]";
 		bool mimo_rozmezi=false;
+		unsigned int pro_pohon=0;
   	dopRD=0;
   	//kontrola zda je zadaná hodnota v rozmezí
   	if(F->m.between(F->OBJEKT_akt->pohon->aRD,F->OBJEKT_akt->pohon->rychlost_od,F->OBJEKT_akt->pohon->rychlost_do)) mimo_rozmezi=false;
@@ -1170,8 +1177,9 @@ void TFormX::validace_aRD(bool pouze_rozmezi)
   	{
   		if(F->PmG->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
   		F->PmG->ShowNote(F->ls->Strings[220],F->d.clError,14);//"Rychlost neodpovídá rozmezí!"
-  		povolit_zakazat_editaci(false);
-  	}
+			povolit_zakazat_editaci(false);
+			pro_pohon=F->OBJEKT_akt->pohon->n;//uložení pro který pohon platí validace
+		}
   	if(!mimo_rozmezi && F->PmG->Note.Text!=""){F->PmG->ShowNote("",F->d.clError,14);povolit_zakazat_editaci(true);}
   	// nutné ošetøení pro období zadávání/psaní
   	if(F->OBJEKT_akt->pohon->aRD > 0 && !pouze_rozmezi)
@@ -1186,7 +1194,8 @@ void TFormX::validace_aRD(bool pouze_rozmezi)
 			{
   			if(F->PmG->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
   			F->PmG->ShowNote(F->ls->Strings[221]+" <a>"+AnsiString(F->m.round2double(F->outaRD(dopRD),3))+"</a> "+jednotky,F->d.clError,14);//"Zadejte doporuèenou rychlost pohonu:"
-  		}
+      	pro_pohon=F->OBJEKT_akt->pohon->n;//uložení pro který pohon platí validace
+			}
   		//vše je vpoøádku
   		if (F->ms.MyToDouble(dopRD)== F->ms.MyToDouble(F->OBJEKT_akt->pohon->aRD) && mimo_rozmezi==false)
   		{
@@ -1194,7 +1203,17 @@ void TFormX::validace_aRD(bool pouze_rozmezi)
   			F->PmG->ShowNote("",F->d.clError,14);
   		}
   	}
-		else if(!pouze_rozmezi)F->PmG->ShowNote(F->ls->Strings[222],F->d.clError,14);//"Neplatná hodnota rychlosti pohonu!"
+		else if(!pouze_rozmezi)
+		{
+			F->PmG->ShowNote(F->ls->Strings[222],F->d.clError,14);//"Neplatná hodnota rychlosti pohonu!"
+			pro_pohon=F->OBJEKT_akt->pohon->n;//uložení pro který pohon platí validace
+		}
+		//pokud probìhla validace s problémem
+		if(pro_pohon!=0)
+		{
+			validovany_pohon=pro_pohon;//uložit pohon na kterém se to stalo
+			zapisVID(1,1);//zapsání problému do VID, pozice jsou popsány v .h u deklarace VID a vnì metody zapisVID()
+		}
   }
 }
 //---------------------------------------------------------------------------
@@ -1204,6 +1223,8 @@ void TFormX::validace_max_voziku()
 	if(posledni_E!=NULL && F->OBJEKT_akt!=NULL && posledni_E->objekt_n!=F->OBJEKT_akt->n)posledni_E=NULL;//pro pøípad, že se zmìnil náhled
 	if(posledni_E!=NULL && posledni_E->eID==0)
 	{
+		////smazání pøedchozí validace z VID
+		zapisVID(0,2);//pozice jsou popsány v .h u deklarace VID a vnì metody zapisVID()
 		////deklarace potøebných atributù
 		bool validace=true;//pøedpoklad, že je vše OK
 		////samotná validace
@@ -1226,7 +1247,11 @@ void TFormX::validace_max_voziku()
 		posledni_E->mGrid->Cells[2][5].Text=posledni_E->data.pocet_pozic;
 		////nemožnost uložit pøi chybných hodnotách
 		if(validace && F->duvod_ulozit_nahled && !F->scGPButton_ulozit->Enabled)F->nahled_ulozit(true);
-		if(!validace)F->nahled_ulozit(false);
+		if(!validace)
+		{
+			povolit_zakazat_editaci(false);
+			zapisVID(1,2);//uložení chyby, pozice jsou popsány v .h u deklarace VID a vnì metody zapisVID()
+		}
 		if(validace && posledni_E->mGrid->Note.Text!="")posledni_E->mGrid->Note.Text="";
 	}
 }
@@ -1281,7 +1306,8 @@ bool TFormX::check_click_Note(double X,double Y,bool check_for_highlight)
 		  	//naplnìní dat + tabulka
 		  	E->data.pocet_voziku=F->ms.MyToDouble(t.SubString(zacatek,pocet-1));
 		  	E->mGrid->Cells[2][6].Text=E->data.pocet_voziku;
-		  	E->mGrid->ShowNote("");
+        posledni_E=E;//dùležité pro metodu validace_max_voziku
+				validace_max_voziku();
 		  	F->Akce=F->BLOK;
 			}break;
 			case 200:
@@ -1565,6 +1591,9 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 {
 	if(E->eID==200)//validovat pouze u PM
 	{
+		//smazání pøedchozí validace z VID
+		zapisVID(0,1);//pozice jsou popsány v .h u deklarace VID a vnì metody zapisVID()
+
 		//deklarace
 		AnsiString jednotky;
   	if(F->aRDunit==0)jednotky="[m/s]";
@@ -1642,8 +1671,12 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 			}
 		}
 
-		//pokud probìhla validace s problémem, uložit pohon
-		if(pro_pohon!=0)validovany_pohon=pro_pohon;
+		//pokud probìhla validace s problémem
+		if(pro_pohon!=0)
+		{
+			validovany_pohon=pro_pohon;//uložit pohon na kterém se to stalo
+			zapisVID(1,1);//zapsání problému do VID, pozice jsou popsány v .h u deklarace VID a vnì metody zapisVID()
+		}
 
 		//roznesení validace na ostatní
 		if(puv_Note!=E->mGrid->Note.Text)//došlo ke zmìnì note
@@ -1791,5 +1824,23 @@ void TFormX::prirazeni_pohonu_defTab()
 	//ukazatelové záležitosti
 	E=NULL;p=NULL;
 	delete E;delete p;
+}
+//---------------------------------------------------------------------------
+//zapiše na danou pozici ve VID dané èíslo
+void TFormX::zapisVID(int zapis,int pozice)
+{
+	//pozice = 1 ... validace pohonu
+	//pozice = 2 ... validace stopek
+	VID=VID.SubString(1,pozice-1)+AnsiString(zapis)+VID.SubString(pozice+1,VID.Length());
+}
+//---------------------------------------------------------------------------
+//vynuluje VID, podle délky nastavené v konstruktoru napø. 2 èíslice
+void TFormX::vynulujVID()
+{
+  //nulování èíslic podle poètu èíslic v øetìzci VID
+	for(int i=1;i<=VID.Length();i++)
+	{
+    zapisVID(0,i);
+  }
 }
 //---------------------------------------------------------------------------

@@ -223,8 +223,8 @@ Enter the recommended drive speed:;X;Zadejte doporuèenou rychlost pohonu:
 Invalid drive speed value!;X;Neplatná hodnota rychlosti pohonu!
 Pair stop;X;Párová stop
 WT thumb;X;WT palec
-Potential;X;Potenciál.
-Used;X;Použité
+potential;X;potenciál
+used;X;použité
 reserve time;X;èasová rezerva
 closed stop station time;X;èas uzavøené STOP stanice
 maximum possible waiting time per thumb;X;maximální možná doba èekání na palec

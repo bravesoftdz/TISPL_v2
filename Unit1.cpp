@@ -1245,8 +1245,8 @@ void TForm1::DesignSettings()
       case 222:text="Neplatná hodnota rychlosti pohonu!";break;
       case 223:text="Párová stop";break;
       case 224:text="WT palec";break;
-			case 225:text="Potenciál.";break;
-      case 226:text="Použité";break;
+			case 225:text="potenciál";break;
+      case 226:text="použité";break;
       case 227:text="časová rezerva";break;
       case 228:text="čas uzavřené STOP stanice";break;
       case 229:text="maximální možná doba čekání na palec";break;
@@ -4406,12 +4406,12 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			case MOVE:
 			{
 				//pokud byl objekt posunut a obsahuje už pohon a geometrii, zobrazen dotaz zda souhlasím z posunem
-				if(OBJEKT_akt==NULL && pom->element->pohon!=NULL && predchozi_souradnice_kurzoru.x!=m.L2Px(pom->element->geo.X1) && predchozi_souradnice_kurzoru.y!=m.L2Px(pom->element->geo.Y1) && mrNo==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,ls->Strings[416],"",MB_YESNO,true,false))//"Objekt byl přesunut, souhlasíte s aktuálním umístěním?"
+				if(OBJEKT_akt==NULL && pom->element->pohon!=NULL && ((predchozi_souradnice_kurzoru.x!=m.L2Px(pom->element->geo.X1) && predchozi_souradnice_kurzoru.y!=m.L2Px(pom->element->geo.Y1)) || pom->orientace!=predchozi_orientace) && mrNo==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,ls->Strings[416],"",MB_YESNO,true,false))//"Objekt byl přesunut, souhlasíte s aktuálním umístěním?"
 				{
 					d.v.posun_objekt(m.P2Lx(predchozi_souradnice_kurzoru.x)-pom->element->geo.X1,m.P2Ly(predchozi_souradnice_kurzoru.y)-pom->element->geo.Y1,pom,false,false);
 					if(pom->orientace!=predchozi_orientace)d.v.rotuj_objekt(pom,pom->orientace-predchozi_orientace);
 				}
-				else if(predchozi_souradnice_kurzoru.x!=m.L2Px(pom->element->geo.X1) && predchozi_souradnice_kurzoru.y!=m.L2Px(pom->element->geo.Y1))d.v.vytvor_obraz_DATA();
+				else if((predchozi_souradnice_kurzoru.x!=m.L2Px(pom->element->geo.X1) && predchozi_souradnice_kurzoru.y!=m.L2Px(pom->element->geo.Y1)) || pom->orientace!=predchozi_orientace)d.v.vytvor_obraz_DATA();
 				duvod_validovat=1;//pozor vyvolává na závěr metody ještě REFRESH(); ale docela byl přínosný
 				Akce=NIC;kurzor(standard);if(OBJEKT_akt!=NULL){scGPImage_zamek_posunu->ClipFrameFillColor=clWhite;scGPImage_zamek_posunu->ImageIndex=28;}//zamčen posun
 			}break;//posun objektu
@@ -8200,6 +8200,7 @@ void TForm1::vytvoreni_tab_pohon(bool existuje_poh_tabulka)
 			PmG->Cells[2][i].Font->Color=(TColor)RGB(128,128,128);
 			PmG->Cells[2][i].RightMargin=3;
 		}
+		PmG->Cells[0][0].Font->Color=clBlack;
 		//merge + design hranic, vyjímečný případ, musí být před skrytím řádků !!!!!!!!!!!!!
 		PmG->MergeCells(0,0,2,0);
 		PmG->Cells[2][0].Align=mGrid->RIGHT;PmG->Cells[2][0].RightMargin=3;//chová se divně, musí být nastaveno po merge
@@ -8975,7 +8976,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 					else sirka_0-=100;
 				}
 			}
-      E->mGrid->Columns[1].Width=E->mGrid->Rows[0].Height;
+      E->mGrid->Columns[0].Width=E->mGrid->Rows[0].Height;
 			E->mGrid->Columns[1].Width=sirka_0;
 			E->mGrid->Columns[2].Width=sirka_cisla;
 			//nastavení hintů
@@ -9448,7 +9449,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[1][1].Text=outPT(E->WT);
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=120;
-			E->mGrid->Columns[1].Width=145;
+			E->mGrid->Columns[1].Width=sirka_cisla;
 			//hinty
 			E->mGrid->Cells[0][1].Hint=ls->Strings[229];//"maximální možná doba čekání na palec";
 			E->mGrid->Cells[0][1].ShowHint=true;
@@ -10000,7 +10001,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[1][1].Text=outPT(E->WT);
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=120;
-			E->mGrid->Columns[1].Width=145;
+			E->mGrid->Columns[1].Width=sirka_cisla;
 			//hinty
 			E->mGrid->Cells[0][1].Hint=ls->Strings[229];//"maximální možná doba čekání na palec";
 			E->mGrid->Cells[0][1].ShowHint=true;
@@ -11762,6 +11763,8 @@ void TForm1::NP_input()
 	 Schema->Caption=ls->Strings[36]+" "+pom->name.UpperCase();
 	 if(pom->uzamknout_nahled)Schema->ImageIndex=79;
 	 else Schema->ImageIndex=-1;
+	 //nulování VID
+	 FormX->vynulujVID();
 
 	 //zobrazení knihovny pokud je skrytá
 	 //mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
@@ -11964,6 +11967,7 @@ void TForm1::NP_input()
 	//vytovření tab pohonu, pokud je třeba
 	vytvoreni_tab_pohon(poh_tab);
 	//ostatni
+	scGPSwitch1->Enabled=false;//zakázání přepínáná jazyka během editace
 	mGrid_on_mGrid();
 	pom_element_temp=OBJEKT_akt->element;//pro pořeby editace geometrie
 	on_change_zoom_change_scGPTrackBar();//musí být po design_element
@@ -11998,7 +12002,18 @@ void TForm1::zmena_editovaneho_objektu()
 			nahled_ulozit(false);
 			pripnuti_dalsich_objektu();
 		}break;
-		case mrNo:/*kontrola_PM=true;*/storno=true;break;//při storno bude načten poslední obraz projektu
+		case mrNo:
+		{
+			storno=true;
+			////kontrola zda je nutné přemazat obraz
+	  	if(ms.MyToDouble(FormX->VID)==0 && !scGPButton_ulozit->Enabled)
+	  	{
+	  		d.v.vymaz_seznam_DATA();
+	  		d.v.hlavicka_DATA();
+				d.v.update_akt_zakazky();
+				storno=false;
+	  	}
+		}break;//při storno bude načten poslední obraz projektu
 		default:prepnout=false;Akce=BLOK;break;
 	}
 	////////Můžu pokračovat?
@@ -12059,6 +12074,8 @@ void TForm1::zmena_editovaneho_objektu()
 
 		/////////Otevření nového náhledu
 		TIP="";
+		//nulování VID
+	 	FormX->vynulujVID();
 		//zobrazení knihovny pokud je skrytá, spíš pro jistotu
 	  if(!scSplitView_LEFTTOOLBAR->Opened)scSplitView_LEFTTOOLBAR->Opened=true;
   	//mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
@@ -13666,6 +13683,7 @@ void __fastcall TForm1::Timer_neaktivityTimer(TObject *Sender)
 		FormX->validace_max_voziku();//metoda rozlišuje zda byla editovaná stopka, pokud ano provede validaci, pokud ne neudělá nic
 		//pokud byl poslední editovaný element PM spustí validaci
 		if(FormX->posledni_E!=NULL && FormX->posledni_E->eID==200)FormX->validace_RD(FormX->posledni_E);
+		if(PmG!=NULL)FormX->validace_aRD();
 		REFRESH(true); //nedocází k refresh tabulek, tabulky jsou v tuto chvíli naplněny aktuálními hodnotami
 	}
 	Timer_neaktivity->Enabled=false;
@@ -13806,7 +13824,11 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Form2->ShowModal();
+	Cvektory::TElement *E=OBJEKT_akt->element->dalsi;
+	//E->mGrid->Cells[2][3].Text=E->mGrid->Cells[2][4].Text;
+//	E->mGrid->Cells[2][4].Text=E->mGrid->Cells[2][3].Text;
+//	E->mGrid->Refresh();
+	E->mGrid->exBUTTON->Top=E->mGrid->Top;
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -14882,6 +14904,15 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		//d.v.vymaz_komory(OBJEKT_akt);
 		//smazání elementů - musí být napočátku, aby nebyl problik
 		//d.v.vymaz_elementy(OBJEKT_akt,true);//&&OBJEKT_akt->element!=NULL)
+
+		////kontrola zda je nutné přemazat obraz
+		if(ms.MyToDouble(FormX->VID)==0 && !scGPButton_ulozit->Enabled)
+		{
+    	d.v.vymaz_seznam_DATA();
+			d.v.hlavicka_DATA();
+			d.v.update_akt_zakazky();
+    }
+
 		////mazání mGridů
 		Cvektory::TElement *E=OBJEKT_akt->element;
 		while(E!=NULL && E->objekt_n==OBJEKT_akt->n)
@@ -14976,6 +15007,10 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		Image_knihovna_objektu->Visible=true;//zapnutí knihovny
 		scGPButton_zmerit_vzdalenost->Visible=true;
 		scGPButton_prichytavat->Visible=true;//zapnutí tlačítka přichytávat
+		//povolení změny jazyka
+		ChDir(ExtractFilePath(Application->ExeName));    //přesune k EXE
+		UnicodeString File_language="TISPL.language";
+		if(FileExists(File_language))scGPSwitch1->Enabled=true;
 		//opětovné vytvoření tabulky objektů nebo skrytí panelu
 		vytvoreni_tab_knihovna();
 		DrawGrid_knihovna->Top=10000;//musí být zobrazena, odchytává stisk kláves
