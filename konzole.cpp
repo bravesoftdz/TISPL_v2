@@ -51,8 +51,15 @@ void __fastcall TForm_konzole::FormShow(TObject *Sender)
   priloha_cesta=F->get_temp_dir() +"TISPL\\" + "tispl_PrtScr"+F->get_user_name()+"_"+F->get_computer_name()+".png";
   scGPImage1->PngImage->LoadFromFile(priloha_cesta);
   scGPImage1->ImageIndex=0; //nutné nastavit, nestaèí pouze cesta k filu
-  scGPImage1->Stretch=true;
-	Text->SetFocus();
+  //scGPImage1->Stretch=true;
+  scGPImage1->Proportional=true;
+  scGPImage1->Height=scGPImage1->PngImage->Height;
+ Text->Clear();
+ Text->Font->Style = TFontStyles()<< fsItalic;
+ Text->Font->Color=(TColor)RGB(190,190,190);
+ Text->Lines->Add("Doprovodný text");
+	//Text->SetFocus();
+
  }
 //---------------------------------------------------------------------------
 void __fastcall TForm_konzole::scGPButton_odeslatClick(TObject *Sender)
@@ -61,7 +68,7 @@ void __fastcall TForm_konzole::scGPButton_odeslatClick(TObject *Sender)
 	Text_formulare=Text->Lines->GetText();// nahrání dat z Mema
 	String projekt_cesta="";if(scGPCheckBox_odeslat_vcetne_projektu->Checked)projekt_cesta=F->FileName+".bac_"+F->get_user_name()+"_"+F->get_computer_name();
 	F->mail("smtp.seznam.cz","builderboy@seznam.cz","camaro69","builderboy@seznam.cz","TISPL",F->LICENCE+"_"+F->get_computer_name()+"_"+F->get_user_name()+"_"+F->VERZE,Text_formulare,"rosta.slechta@gmail.com","","",priloha_cesta,projekt_cesta);
-	F->zobraz_tip("Odeslano. Dìkujeme za zpìtnou vazbu.                       ");//mezery nutné, kvùli odsazení
+	F->zobraz_tip("Odesláno. Dìkujeme za zpìtnou vazbu.                       ");//mezery nutné, kvùli odsazení
 	Text->Clear();
 	Close();
 }
@@ -69,6 +76,14 @@ void __fastcall TForm_konzole::scGPButton_odeslatClick(TObject *Sender)
 void __fastcall TForm_konzole::scGPButton_stornoClick(TObject *Sender)
 {
 	Close();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_konzole::TextClick(TObject *Sender)
+{
+Text->Clear();
+Text->Font->Style = TFontStyles(); // zrušení kurzívy a pøípadných dalších Font style nastavení
+Text->Font->Color = clBlack;
 }
 //---------------------------------------------------------------------------
 

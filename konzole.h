@@ -28,19 +28,18 @@ __published:	// IDE-managed Components
   TscGPGlyphButton *CloseButton;
   TscLabel *scLabel_header;
   TscGPPanel *scGPPanel3;
-  TscGPSizeBox *scGPSizeBox1;
   TscGPToolPager *scGPToolPager;
   TscMemo *Text;
   TscGPButton *scGPButton_odeslat;
   TscGPButton *scGPButton_storno;
   TscGPImage *scGPImage1;
-  TscLabel *scLabel2;
   TscLabel *scLabel3;
 	TscGPCheckBox *scGPCheckBox_odeslat_vcetne_projektu;
   void __fastcall CloseButtonClick(TObject *Sender);
   void __fastcall FormShow(TObject *Sender);
   void __fastcall scGPButton_odeslatClick(TObject *Sender);
   void __fastcall scGPButton_stornoClick(TObject *Sender);
+  void __fastcall TextClick(TObject *Sender);
 private:	// User declarations
  String Text_formulare;
  String priloha_cesta;

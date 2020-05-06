@@ -3,7 +3,7 @@ object Form_konzole: TForm_konzole
   Top = 0
   BorderStyle = bsNone
   Caption = 'Form_konzole'
-  ClientHeight = 482
+  ClientHeight = 384
   ClientWidth = 795
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -19,7 +19,7 @@ object Form_konzole: TForm_konzole
     Left = 0
     Top = 0
     Width = 795
-    Height = 482
+    Height = 384
     Align = alClient
     TabOrder = 0
     BlurBackground = False
@@ -58,7 +58,7 @@ object Form_konzole: TForm_konzole
       Left = 1
       Top = 1
       Width = 793
-      Height = 480
+      Height = 382
       Align = alClient
       TabOrder = 0
       PageIndex = 0
@@ -71,7 +71,7 @@ object Form_konzole: TForm_konzole
         Left = 0
         Top = 0
         Width = 793
-        Height = 480
+        Height = 382
         HorzScrollBar.Tracking = True
         VertScrollBar.Tracking = True
         Align = alTop
@@ -228,7 +228,7 @@ object Form_konzole: TForm_konzole
           object scLabel_header: TscLabel
             Left = 0
             Top = 0
-            Width = 577
+            Width = 753
             Height = 34
             Margins.Left = 0
             Margins.Top = 0
@@ -237,7 +237,7 @@ object Form_konzole: TForm_konzole
             Align = alCustom
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWhite
-            Font.Height = -16
+            Font.Height = -17
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
@@ -261,9 +261,9 @@ object Form_konzole: TForm_konzole
         end
         object scGPPanel3: TscGPPanel
           Left = 0
-          Top = 436
+          Top = 328
           Width = 793
-          Height = 44
+          Height = 54
           Align = alBottom
           TabOrder = 1
           BlurBackground = False
@@ -298,18 +298,6 @@ object Form_konzole: TForm_konzole
           StorePaintBuffer = True
           Sizeable = False
           WallpaperIndex = -1
-          object scGPSizeBox1: TscGPSizeBox
-            Left = 767
-            Top = 1
-            Width = 26
-            Height = 43
-            Cursor = crSizeNWSE
-            Align = alRight
-            TabOrder = 0
-            GlyphColor = clBlack
-            GlyphColorAlpha = 200
-            GlyphThickness = 1
-          end
           object scGPCheckBox_odeslat_vcetne_projektu: TscGPCheckBox
             Left = 3
             Top = 0
@@ -317,11 +305,12 @@ object Form_konzole: TForm_konzole
             Height = 35
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
-            Font.Height = -11
-            Font.Name = 'Tahoma'
-            Font.Style = [fsBold]
+            Font.Height = -13
+            Font.Name = 'Roboto'
+            Font.Style = []
+            Font.Quality = fqClearTypeNatural
             ParentFont = False
-            TabOrder = 1
+            TabOrder = 0
             TabStop = True
             Animation = False
             Caption = 'Odeslat v'#269'etn'#283' projektu'
@@ -412,7 +401,7 @@ object Form_konzole: TForm_konzole
           Left = 3
           Top = 37
           Width = 787
-          Height = 396
+          Height = 288
           Align = alClient
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
@@ -485,19 +474,22 @@ object Form_konzole: TForm_konzole
           FreeOnClose = False
           StorePaintBuffer = False
           object Text: TscMemo
-            Left = 473
-            Top = 40
-            Width = 311
-            Height = 353
+            Left = 487
+            Top = 36
+            Width = 298
+            Height = 255
             Align = alCustom
             BorderStyle = bsNone
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
+            Font.Name = 'Roboto'
+            Font.Style = [fsItalic]
+            Lines.Strings = (
+              'Doprovodn'#253' text')
             ParentFont = False
             TabOrder = 0
+            OnClick = TextClick
             WallpaperIndex = -1
             Transparent = False
             CustomBackgroundImageNormalIndex = -1
@@ -507,9 +499,9 @@ object Form_konzole: TForm_konzole
           end
           object scGPImage1: TscGPImage
             Left = 0
-            Top = 40
-            Width = 467
-            Height = 353
+            Top = 36
+            Width = 481
+            Height = 270
             Align = alCustom
             TabOrder = 1
             CustomImageIndex = -1
@@ -543,31 +535,18 @@ object Form_konzole: TForm_konzole
             AnimationAcceleration = False
             RotateAnimation = False
           end
-          object scLabel2: TscLabel
-            Left = 3
-            Top = 15
-            Width = 59
-            Height = 19
-            TabOrder = 2
-            DragForm = False
-            DragTopForm = True
-            GlowEffect.Enabled = False
-            GlowEffect.Color = clBtnShadow
-            GlowEffect.AlphaValue = 255
-            GlowEffect.GlowSize = 7
-            GlowEffect.Offset = 0
-            GlowEffect.Intensive = True
-            GlowEffect.StyleColors = True
-            AutoSize = True
-            UseFontColorToStyleColor = False
-            Caption = 'Obr'#225'zek'
-          end
           object scLabel3: TscLabel
-            Left = 473
-            Top = 15
-            Width = 40
-            Height = 19
-            TabOrder = 3
+            Left = 487
+            Top = 8
+            Width = 49
+            Height = 23
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -19
+            Font.Name = 'Roboto'
+            Font.Style = []
+            ParentFont = False
+            TabOrder = 2
             DragForm = False
             DragTopForm = True
             GlowEffect.Enabled = False
@@ -587,7 +566,7 @@ object Form_konzole: TForm_konzole
   end
   object scGPButton_odeslat: TscGPButton
     Left = 253
-    Top = 440
+    Top = 337
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -693,8 +672,8 @@ object Form_konzole: TForm_konzole
     AllowAllUp = False
   end
   object scGPButton_storno: TscGPButton
-    Left = 434
-    Top = 440
+    Left = 402
+    Top = 337
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
