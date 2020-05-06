@@ -66,6 +66,50 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 		F->PmG->exBUTTON->Hint=Hint;//navrácení pùvodního textu hintu
 	}
 
+	if(ID!=9999 && Col==4 && Row==0)//klik na glyphbutton v pohonové tabulce
+	{
+		Cvektory::TElement *E=vrat_element_z_tabulky(ID);
+		if(E->eID==200 || E->eID==300)
+		{
+			if(E->mGrid->Rows[3].Visible)//budu skrývat
+			{
+				E->mGrid->VisibleRow(3,false,false);    //E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
+				E->mGrid->VisibleRow(4,false,false);
+				if(E->mGrid->Rows[5].Visible)
+				{
+					E->mGrid->VisibleRow(5,false,false);
+					E->mGrid->VisibleRow(6,false,false);
+					E->mGrid->VisibleRow(7,false,false);
+					E->mGrid->VisibleRow(8,false,false);
+					E->mGrid->VisibleRow(9,false,false);
+					E->mGrid->VisibleRow(10,false,false);
+					E->mGrid->VisibleRow(11,false,false);
+				}
+				E->mGrid->exBUTTONVisible=false;
+				E->mGrid->getGlyphButton(4,0)->GlyphOptions->Kind=scgpbgkDownArrow;
+			}
+			else//budu zobrazovat
+			{
+        E->mGrid->exBUTTONVisible=true;
+				E->mGrid->VisibleRow(3,true,false);
+				E->mGrid->VisibleRow(4,true,false);
+				if(E->mGrid->exBUTTON->GlyphOptions->Kind==scgpbgkUpArrow)
+				{
+        	E->mGrid->VisibleRow(5,true,false);
+					E->mGrid->VisibleRow(6,true,false);
+					E->mGrid->VisibleRow(7,true,false);
+					E->mGrid->VisibleRow(8,true,false);
+					E->mGrid->VisibleRow(9,true,false);
+					E->mGrid->VisibleRow(10,true,false);
+					E->mGrid->VisibleRow(11,true,false);
+				}
+				E->mGrid->getGlyphButton(4,0)->GlyphOptions->Kind=scgpbgkUpArrow;
+			}
+			F->REFRESH(true);
+		}
+		E=NULL;delete E;
+  }
+
 	if(ID!=9999&&Row==-2)
 	//funkcionalita exBUTTONu v tabulkách elementù
 	{
@@ -1831,7 +1875,10 @@ void TFormX::zapisVID(int zapis,int pozice)
 {
 	//pozice = 1 ... validace pohonu
 	//pozice = 2 ... validace stopek
-	VID=VID.SubString(1,pozice-1)+AnsiString(zapis)+VID.SubString(pozice+1,VID.Length());
+	if(pozice<=VID.Length())
+	{
+		VID=VID.SubString(1,pozice-1)+AnsiString(zapis)+VID.SubString(pozice+1,VID.Length());
+	}
 }
 //---------------------------------------------------------------------------
 //vynuluje VID, podle délky nastavené v konstruktoru napø. 2 èíslice

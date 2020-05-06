@@ -8602,13 +8602,15 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni,bool plnit
 	C=NULL;delete C;
 
 	//formátování hlavičky tabulky (vždy stejné)
-	E->mGrid->Border.Width=2;
-	E->mGrid->Cells[0][0].Text="<a>"+E->name+"</a>";//nasazení linku
-	E->mGrid->Cells[0][0].isLink->Color=clHeaderFont;
-	E->mGrid->Cells[0][0].isActiveLink->Color=clHeaderFont;
-	E->mGrid->Cells[0][0].BottomBorder->Width=2;
-	//formátování buněk tabulky (vždy stejné)
 	int prvni_sloupec=0;
+	if(E->eID==200 || E->eID==300)prvni_sloupec=3;
+	E->mGrid->Border.Width=2;
+	E->mGrid->Cells[prvni_sloupec][0].Text="<a>"+E->name+"</a>";//nasazení linku
+	E->mGrid->Cells[prvni_sloupec][0].isLink->Color=clHeaderFont;
+	E->mGrid->Cells[prvni_sloupec][0].isActiveLink->Color=clHeaderFont;
+	E->mGrid->Cells[prvni_sloupec][0].BottomBorder->Width=2;
+	//formátování buněk tabulky (vždy stejné)
+	prvni_sloupec=0;
 	switch(E->eID)
 	{
 		case 0:prvni_sloupec=1;break;
@@ -8644,7 +8646,7 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni,bool plnit
 	//sloučení buněk hlavičky
 	if(E->eID==300 || E->eID==200)
 	{
-		E->mGrid->MergeCells(0,0,4,0);//hlavička tabulky
+		//E->mGrid->MergeCells(0,0,4,0);//hlavička tabulky
 		E->mGrid->Cells[0][1].Font->Color=clBlack;
 		E->mGrid->Cells[0][1].RightBorder->Width=2;
 		E->mGrid->MergeCells(0,1,2,2);
@@ -8797,7 +8799,27 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 			I1=NULL;delete I1;
 			I2=NULL;delete I2;
 		}
+
+		//nastavení scgpbuttonu
+		TscGPGlyphButton *B=E->mGrid->getGlyphButton(4,0);
+		if(B!=NULL)
+		{  //  E->mGrid->Cells[4][0].Align=TmGrid::aNO;   E->mGrid->Cells[4][0].Valign=TmGrid::Tvalign::vNO;
+			E->mGrid->Cells[4][0].AutoSizeComponent=0;//nastavý pouze výšku
+			B->GlyphOptions->Kind=scgpbgkUpArrow;  //B->Top=20;
+			B->Width=25;B->Height=25;
+			B->TransparentBackground=false;
+			B->GlyphOptions->NormalColor=clBlack;
+			B->GlyphOptions->NormalColorAlpha=200;
+			B->Options->FrameNormalColor=E->mGrid->Border.Color;//(TColor)RGB(43,87,154);
+			B->Options->FrameNormalColorAlpha=255;
+			B->Options->NormalColor=m.clIntensive((TColor)RGB(128,128,128),105);//(TColor)RGB(43,87,154);
+			B->Options->NormalColorAlpha=255;
+			B->Options->FrameWidth=E->mGrid->Border.Width;//orámování stejně široké jako orámování tabulky
+			B->Parent=Form1;
+		}
+
 		//ukazatelové záležitosti
+		B=NULL;delete B;
 		C1=NULL;delete C1;
 		C2=NULL;delete C2;
 	}
@@ -9307,6 +9329,9 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			if(E->eID==300)E->mGrid->Cells[prvni][1].Text="IN/OUT";
 			else E->mGrid->Cells[prvni][1].Text="IN";
 			E->mGrid->Cells[druhy][1].Text="OUT";
+			E->mGrid->Cells[4][0].Align=TmGrid::Talign::RIGHT;
+			E->mGrid->Cells[4][0].Valign=TmGrid::Tvalign::TOP;
+			E->mGrid->Cells[4][0].Type=TmGrid::glyphBUTTON;
 			E->mGrid->Cells[0][1].Text=ls->Strings[447];//"Pohon "
 			E->mGrid->Cells[2][3].Text=ls->Strings[451];//"Nastavená"
 			E->mGrid->Cells[2][4].Text=ls->Strings[448];//"Rozmezí"
@@ -9422,7 +9447,9 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->exBUTTON->ShowHint=true;
 			E->mGrid->exBUTTON->Hint=ls->Strings[231];//"Rozšířené položky";
 			//merge + design hranic, vyjímečný případ, musí být před skrytím řádků !!!!!!!!!!!!!
-	  	E->mGrid->Cells[0][3].RightBorder->Color=clWhite;
+			E->mGrid->Cells[0][0].RightBorder->Color=clWhite;E->mGrid->Cells[1][0].RightBorder->Color=clWhite;E->mGrid->Cells[2][0].RightBorder->Color=clWhite;E->mGrid->Cells[3][0].RightBorder->Color=clWhite;
+			E->mGrid->Cells[0][0].BottomBorder->Width=2;E->mGrid->Cells[1][0].BottomBorder->Width=2;E->mGrid->Cells[2][0].BottomBorder->Width=2;E->mGrid->Cells[3][0].BottomBorder->Width=2;E->mGrid->Cells[4][0].BottomBorder->Width=2;
+			E->mGrid->Cells[0][3].RightBorder->Color=clWhite;
 	  	E->mGrid->MergeCells(0,3,0,4);E->mGrid->MergeCells(1,3,1,4);//sloučení pro rychlost
 	  	E->mGrid->Cells[1][5].LeftBorder->Color=E->mGrid->Cells[1][7].LeftBorder->Color=clWhite;
 	  	E->mGrid->MergeCells(0,5,0,7);E->mGrid->MergeCells(1,5,1,6);//sloučení pro rozteč
@@ -9847,6 +9874,9 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			if(E->eID==300)E->mGrid->Cells[prvni][1].Text="IN/OUT";
 			else E->mGrid->Cells[prvni][1].Text="IN";
 			E->mGrid->Cells[druhy][1].Text="OUT";
+			E->mGrid->Cells[4][0].Align=TmGrid::Talign::RIGHT;
+			E->mGrid->Cells[4][0].Valign=TmGrid::Tvalign::TOP;
+			E->mGrid->Cells[4][0].Type=TmGrid::glyphBUTTON;
 			E->mGrid->Cells[0][1].Text=ls->Strings[447];//"Pohon "
 			E->mGrid->Cells[2][3].Text=ls->Strings[451];//"Nastavená"
 			E->mGrid->Cells[2][4].Text=ls->Strings[448];//"Rozmezí"
@@ -9965,6 +9995,8 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[2][11].Hint=ls->Strings[229];//"maximální možná doba čekání na palec";
 			E->mGrid->Cells[2][11].ShowHint=true;
 			//merge + design hranic, vyjímečný případ, musí být před skrytím řádků !!!!!!!!!!!!!
+			E->mGrid->Cells[0][0].RightBorder->Color=clWhite;E->mGrid->Cells[1][0].RightBorder->Color=clWhite;E->mGrid->Cells[2][0].RightBorder->Color=clWhite;E->mGrid->Cells[3][0].RightBorder->Color=clWhite;
+			E->mGrid->Cells[0][0].BottomBorder->Width=2;E->mGrid->Cells[1][0].BottomBorder->Width=2;E->mGrid->Cells[2][0].BottomBorder->Width=2;E->mGrid->Cells[3][0].BottomBorder->Width=2;E->mGrid->Cells[4][0].BottomBorder->Width=2;
 			E->mGrid->Cells[0][3].RightBorder->Color=clWhite;
 			E->mGrid->MergeCells(0,3,0,4);E->mGrid->MergeCells(1,3,1,4);//sloučení pro rychlost
 			E->mGrid->Cells[1][5].LeftBorder->Color=E->mGrid->Cells[1][7].LeftBorder->Color=clWhite;

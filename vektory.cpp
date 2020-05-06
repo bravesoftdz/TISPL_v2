@@ -2300,9 +2300,11 @@ void Cvektory::uprav_popisky_elementu(TElement *Element)
 			{
 				try
 				{
-					E->mGrid->Cells[0][0].Text="<a>"+E->name+"</a>";
-					E->mGrid->Cells[0][0].Font->Color=clBlack;//z důvodu nasazení odkazu, po přejmenování se text vrátil do modré barvy
-					E->mGrid->MergeCells(0,0,E->mGrid->ColCount-1,0);//nutné kvůli správnému zobrazení hlavičky
+					int col=0;
+					if(E->eID==200 || E->eID==300)col=3;
+					E->mGrid->Cells[col][0].Text="<a>"+E->name+"</a>";
+					E->mGrid->Cells[col][0].Font->Color=clBlack;//z důvodu nasazení odkazu, po přejmenování se text vrátil do modré barvy
+					if(col==0)E->mGrid->MergeCells(0,0,E->mGrid->ColCount-1,0);//nutné kvůli správnému zobrazení hlavičky
 					if(F->zobrazeni_tabulek)E->mGrid->Update();//musí zde být ošetření proti paměťové chybě
 				}catch(...){}
 			}
