@@ -488,12 +488,15 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 {
 	TObjekt *novy=new TObjekt;
 	//ukazatele
-	//novy->predchozi=pred;
+	novy->predchozi=pred;
+	pred->dalsi=novy;
 	novy->n=OBJEKTY->predchozi->n+1;
-	novy->predchozi=po->predchozi;
-	po->predchozi->dalsi=novy;
-	po->predchozi=novy;
+	//novy->predchozi=po->predchozi;
+//	po->predchozi->dalsi=novy;
+//	po->predchozi=novy;
 	novy->dalsi=po;
+	if(po!=NULL)po->predchozi=novy;
+	else OBJEKTY->predchozi=novy;
 	//pred->dalsi=novy;
 	//novy->n=pred->n;//přiřadím počítadlo prvku ze současného prvku, v dalším kroku se totiž navýší
 	//indexy zvýšit separátně
