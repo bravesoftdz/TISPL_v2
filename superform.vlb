@@ -11,11 +11,9 @@ Visible=True
 [Button3]
 Coordinates=235,10,59,58
 
-[Button1]
-Coordinates=10,78,59,58
-
 []
-Coordinates=10,10,59,58
+Coordinates=586,155,100,58
+Visible=True
 
 [Memo2]
 Coordinates=235,87,64,58
@@ -29,31 +27,6 @@ Coordinates=0,0,64,58
 [Memo_spojak]
 Coordinates=434,1,94,58
 
-[Button_DEL]
-Coordinates=337,56,84,58
-
-[rStringGridEd1]
-Coordinates=586,155,100,58
-Visible=True
-
-[rEditNum_pocet_prac_hod]
-Coordinates=235,164,75,58
-
-[rEditNum_pozad_mnozstvi]
-Coordinates=355,279,75,58
-
 [rEditNum_effektivita]
 Coordinates=434,232,75,58
-
-[rHTMLLabel_pocet_dnu]
-Coordinates=136,183,92,58
-
-[rHTMLLabel_pocet_prac_hod]
-Coordinates=37,183,92,58
-
-[rHTMLLabel_effektivita]
-Coordinates=586,78,92,58
-
-[rEditNum_pocet_dnu]
-Coordinates=276,279,75,58
 

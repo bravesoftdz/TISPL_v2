@@ -65,12 +65,11 @@
         <ILINK_TranslatedLibraryPath>$(BDSLIB)\$(PLATFORM)\release\$(LANGDIR);$(ILINK_TranslatedLibraryPath)</ILINK_TranslatedLibraryPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
-        <VerInfo_MinorVer>1</VerInfo_MinorVer>
-        <VerInfo_MajorVer>0</VerInfo_MajorVer>
+        <VerInfo_MajorVer>2</VerInfo_MajorVer>
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
-        <VerInfo_Keys>CompanyName=Eltep s.r.o.;FileDescription=;FileVersion=0.1.0.0;InternalName=TISPL;LegalCopyright=© ELTEP, s.r.o. 2016;LegalTrademarks=© ELTEP, s.r.o. 2016;OriginalFilename=;ProductName=Eltep - TISPl;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=Eltep s.r.o.;FileDescription=;FileVersion=2.0.0.0;InternalName=TISPL;LegalCopyright=© ELTEP, s.r.o. 2020;LegalTrademarks=© ELTEP, s.r.o. 2020;OriginalFilename=;ProductName=Eltep - TISPL;ProductVersion=2.0.0.0;Comments=</VerInfo_Keys>
         <PackageImports>adortl;appanalytics;bcbie;bcbsmp;bindcomp;bindcompdbx;bindcompfmx;bindcompvcl;bindengine;CloudService;CustomIPTransport;dbexpress;dbrtl;dbxcds;DbxClientDriver;DbxCommonDriver;DBXInterBaseDriver;DBXMySQLDriver;DBXSqliteDriver;dsnap;dsnapcon;dsnapxml;FireDAC;FireDACADSDriver;FireDACASADriver;FireDACCommon;FireDACCommonDriver;FireDACIBDriver;FireDACMSAccDriver;FireDACMySQLDriver;FireDACODBCDriver;FireDACPgDriver;FireDACSqliteDriver;fmx;fmxase;fmxdae;fmxFireDAC;fmxobj;FMXTee;FmxTeeUI;frx23;frxDB23;frxe23;frxTee23;ibmonitor;ibxbindings;ibxpress;IndyCore;IndyIPClient;IndyIPCommon;IndyIPServer;IndyProtocols;IndySystem;inet;inetdb;inetdbxpress;Intraweb;RaizeComponentsVcl;RaizeComponentsVclDb;RESTBackendComponents;RESTComponents;rtl;soapmidas;soaprtl;soapserver;svn;Tee;TeeDB;TeeUI;tethering;vcl;vclactnband;vcldb;vcldsnap;vclFireDAC;vclib;vclie;vclimg;VCLRESTComponents;vclribbon;VclSmp;vcltouch;vclwinx;vclx;xmlrtl;$(PackageImports)</PackageImports>
         <IncludePath>$(BDSINCLUDE)\windows\vcl;$(IncludePath)</IncludePath>
         <VerInfo_Locale>1033</VerInfo_Locale>
@@ -102,8 +101,7 @@
         <ILINK_TranslatedLibraryPath>$(BDSLIB)\$(PLATFORM)\debug\$(LANGDIR);$(ILINK_TranslatedLibraryPath)</ILINK_TranslatedLibraryPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
-        <VerInfo_MajorVer>0</VerInfo_MajorVer>
-        <VerInfo_MinorVer>1</VerInfo_MinorVer>
+        <VerInfo_MajorVer>2</VerInfo_MajorVer>
         <LinkPackageStatics>RosiComp_CX100.lib;stylecontrols_cbx10Seattle.lib</LinkPackageStatics>
         <LinkPackageImports>rtl.bpi;vcl.bpi;RaizeComponentsVcl.bpi;vclx.bpi;vclimg.bpi;Tee.bpi;IndySystem.bpi;IndyProtocols.bpi;IndyCore.bpi;dbrtl.bpi;vclFireDAC.bpi;FireDAC.bpi;FireDACSqliteDriver.bpi;FireDACCommonDriver.bpi;FireDACCommon.bpi;xmlrtl.bpi;vcldb.bpi;FireDACMySQLDriver.bpi;dbexpress.bpi;DbxCommonDriver.bpi;DBXMySQLDriver.bpi;vclactnband.bpi;vclie.bpi;vclwinx.bpi</LinkPackageImports>
         <VerInfo_Build>15</VerInfo_Build>
@@ -111,7 +109,7 @@
         <Icon_MainIcon>TISPL_Icon.ico</Icon_MainIcon>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=Eltep s.r.o.;FileDescription=;FileVersion=0.1.0.15;InternalName=TISPL;LegalCopyright=© ELTEP, s.r.o., 2017;LegalTrademarks=© ELTEP, s.r.o., 2017;OriginalFilename=Eltep - TISPL;ProductName=TISPL;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=Eltep s.r.o.;FileDescription=;FileVersion=2.0.0.15;InternalName=TISPL;LegalCopyright=© ELTEP, s.r.o., 2017;LegalTrademarks=© ELTEP, s.r.o., 2017;OriginalFilename=Eltep - TISPL;ProductName=TISPL;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppEnableHighDPI>true</AppEnableHighDPI>
     </PropertyGroup>
@@ -237,6 +235,12 @@
         <None Include="knihovna_objektu.h">
             <BuildOrder>3</BuildOrder>
         </None>
+        <CppCompile Include="konzole.cpp">
+            <Form>Form_konzole</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>konzole.h</DependentOn>
+            <BuildOrder>43</BuildOrder>
+        </CppCompile>
         <ResFiles Include="kurzory.res">
             <BuildOrder>8</BuildOrder>
         </ResFiles>
@@ -416,6 +420,7 @@
         <FormResources Include="jig.dfm"/>
         <FormResources Include="kalendar.dfm"/>
         <FormResources Include="katalog_dopravniku.dfm"/>
+        <FormResources Include="konzole.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
