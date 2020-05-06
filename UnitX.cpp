@@ -62,6 +62,7 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 			F->PmG->VisibleRow(7,true,false);
 			F->PmG->VisibleRow(8,true,false);
 		}
+		F->nastav_focus();
 		F->REFRESH(true);//musí být opravdu REFRESH() celého formu + mGridu
 		F->PmG->exBUTTON->Hint=Hint;//navrácení pùvodního textu hintu
 	}
@@ -105,6 +106,7 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 				}
 				E->mGrid->getGlyphButton(4,0)->GlyphOptions->Kind=scgpbgkUpArrow;
 			}
+			F->nastav_focus();
 			F->REFRESH(true);
 		}
 		E=NULL;delete E;
@@ -196,6 +198,7 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 				}
 			}break;
 		}
+		F->nastav_focus();
 		F->REFRESH(true);//musí být opravdu REFRESH() celého formu + mGridu
 		E->mGrid->exBUTTON->Hint=Hint;//navrácení pùvodního textu hintu
 		E=NULL;delete E;

@@ -2338,6 +2338,9 @@ void TmGrid::CopyAreaCell(TCells &RefCell,TCells &CopyCell,bool copyComponent)
 	CopyCell.isEmpty->Color=RefCell.isEmpty->Color;
 	CopyCell.isEmpty->Style=RefCell.isEmpty->Style;
 	CopyCell.ImageIndex=RefCell.ImageIndex;
+	//hint, přidáno MV
+	CopyCell.Hint=RefCell.Hint;
+	CopyCell.ShowHint=RefCell.ShowHint;
 }
 //---------------------------------------------------------------------------
 //zkopíruje orámování z buňky na buňku (bez ukazatelového propojení)

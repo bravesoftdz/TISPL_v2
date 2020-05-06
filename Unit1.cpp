@@ -5698,7 +5698,7 @@ Cvektory::TObjekt *TForm1::add_objekt(int X, int Y)
 //			if(oblast==2 && d.v.OBJEKTY->predchozi->n>1)ret=pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,d.v.OBJEKTY,pom);
 //			else ret=pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,pom,pom->dalsi);
 			if(pom_element!=NULL && pom_element->eID==300)pom=d.v.vrat_objekt(pom_element->dalsi2->objekt_n);//pokudvkládám na vedlejší větev před existující objekty
-			ret=pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,NULL,pom);
+			ret=pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,pom,pom->dalsi);
 			d.v.nove_indexy();//zvýší indexy nasledujicích bodů
 		}
 		pom=NULL;//odsranění pomocného ukazatele
@@ -8815,6 +8815,10 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 			B->Options->NormalColor=m.clIntensive((TColor)RGB(128,128,128),105);//(TColor)RGB(43,87,154);
 			B->Options->NormalColorAlpha=255;
 			B->Options->FrameWidth=E->mGrid->Border.Width;//orámování stejně široké jako orámování tabulky
+			B->Options->FocusedColor=B->Options->NormalColor;
+			B->Options->FocusedColorAlpha=255;
+			B->Options->FrameFocusedColor=B->Options->FrameNormalColor;
+			B->Options->FrameFocusedColorAlpha=255;
 			B->Parent=Form1;
 		}
 
@@ -13853,11 +13857,10 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Cvektory::TElement *E=OBJEKT_akt->element->dalsi;
-	//E->mGrid->Cells[2][3].Text=E->mGrid->Cells[2][4].Text;
-//	E->mGrid->Cells[2][4].Text=E->mGrid->Cells[2][3].Text;
-//	E->mGrid->Refresh();
-	E->mGrid->exBUTTON->Top=E->mGrid->Top;
+	Cvektory::TElement *E=d.v.ELEMENTY->dalsi->dalsi;
+	E->mGrid->getGlyphButton(4,0)->Left+=20;
+	E->mGrid->Refresh();
+	E=NULL;delete E;
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
