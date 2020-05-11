@@ -334,9 +334,9 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 	cas="<a>[min]</a>";//1
 	LO="<a>[mm]</a>";//1
 	delka_otoce="<a>[m]</a>";//0
-	rychlost="<a>[m/min]</a>";//
-	R="<a>[mm]</a>";//1
-	Rz="<a>[mm]</a>";//1
+	rychlost="<a>m/min</a>";//
+	R="y<a>[m1]</a>z";//1
+	Rz="a<a>[m2]</a>b";//1
 	//vytvoøení mgridu
 	el->mG=new TmGrid(this);
 	el->mG->Tag=4;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
@@ -360,9 +360,9 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 	el->mG->Note.Font->Name=F->aFont->Name;
 	el->mG->Note.Font->Size=14;
 	//urèení zda budou prohozeny sloupce
-  el->mG->Create(5,12);
+	el->mG->Create(5,12);
 	el->mG->Left=500;
-	el->mG->Top=500;
+	el->mG->Top=300;
 	int prvni=3,druhy=4;
 	//nastavení popiskù
 	el->mG->Cells[prvni][1].Text="IN";
@@ -381,15 +381,15 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 	el->mG->Cells[0][3].Text=F->ls->Strings[452];//+" "+rychlost;//"Rychlost"
 	el->mG->Cells[1][3].Text=rychlost;//jednotky
 	el->mG->Cells[0][3].Font->Orientation=900;el->mG->Cells[0][3].Valign=TmGrid::MIDDLE;
-	el->mG->Cells[1][3].Font->Orientation=900;el->mG->Cells[1][3].isLink->Orientation=900;el->mG->Cells[1][3].isActiveLink->Orientation=900;el->mG->Cells[1][3].Valign=TmGrid::MIDDLE;
+	el->mG->Cells[1][3].Font->Orientation=900;el->mG->Cells[1][3].Valign=TmGrid::MIDDLE;
 	el->mG->Cells[0][5].Text=F->ls->Strings[453];//"Rozteè"
 	el->mG->Cells[1][5].Text=R;//jednotky
 	el->mG->Cells[0][5].Font->Orientation=900;el->mG->Cells[0][5].Valign=TmGrid::MIDDLE;
-	el->mG->Cells[1][5].Font->Orientation=900;el->mG->Cells[1][5].isLink->Orientation=900;el->mG->Cells[1][5].isActiveLink->Orientation=900;el->mG->Cells[1][5].Valign=TmGrid::MIDDLE;
+	el->mG->Cells[1][5].Font->Orientation=2700;el->mG->Cells[1][5].Valign=TmGrid::MIDDLE;
 	el->mG->Cells[0][8].Text=F->ls->Strings[215];//"Mezera"
 	el->mG->Cells[1][8].Text=Rz;//jednotky
 	el->mG->Cells[0][8].Font->Orientation=900;el->mG->Cells[0][8].Valign=TmGrid::MIDDLE;
-	el->mG->Cells[1][8].Font->Orientation=900;el->mG->Cells[1][8].isLink->Orientation=900;el->mG->Cells[1][8].isActiveLink->Orientation=900;el->mG->Cells[1][8].Valign=TmGrid::MIDDLE;
+	el->mG->Cells[1][8].Font->Orientation=900;el->mG->Cells[1][8].Valign=TmGrid::MIDDLE;
 	//nastavení šíøek
 	el->mG->SetColumnAutoFit(-4);
 	el->mG->Columns[0].Width=el->mG->Columns[1].Width=el->mG->Rows[0].Height;
@@ -403,18 +403,6 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 	//hinty
 	el->mG->Cells[2][11].Hint=F->ls->Strings[229];//"maximální možná doba èekání na palec";
 	el->mG->Cells[2][11].ShowHint=true;
-
-
-	///////////////////////////////Skrytí øádku///////////////////////////////
-	el->mG->Show();//vykreslìní pøed skrytím, zkoušel jsem Update i Refresh
-	el->mG->VisibleRow(5,false,false);
-	el->mG->VisibleRow(6,false,false);
-	el->mG->VisibleRow(7,false,false);
-	el->mG->VisibleRow(8,false,false);
-	el->mG->VisibleRow(9,false,false);
-	el->mG->VisibleRow(10,false,false);
-	el->mG->VisibleRow(11,false,false);
-	///////////////////////////////Konec skrytí øádku///////////////////////////////
 
 	//design tabulky
 	int prvni_sloupec=2;
@@ -467,6 +455,19 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		el->mG->Cells[i][8].TopBorder->Width=2;
 		el->mG->Cells[i][11].TopBorder->Width=2;
 	}
+
+  	///////////////////////////////Skrytí øádku///////////////////////////////
+	el->mG->Show();//vykreslìní pøed skrytím, zkoušel jsem Update i Refresh
+	el->mG->VisibleRow(5,false,false);
+	el->mG->VisibleRow(6,false,false);
+	el->mG->VisibleRow(7,false,false);
+	el->mG->VisibleRow(8,false,false);
+	el->mG->VisibleRow(9,false,false);
+	el->mG->VisibleRow(10,false,false);
+	el->mG->VisibleRow(11,false,false);
+	///////////////////////////////Konec skrytí øádku///////////////////////////////
+
+
 
 	el->dalsi=NULL;
 	el->predchozi=ELEMENTY;
@@ -805,10 +806,14 @@ void __fastcall TForm2::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 void __fastcall TForm2::FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
 					int X, int Y)
 {
-	 if(ELEMENTY->mG->CheckLink(X,Y)==TPoint(-2,-2))
-	 {
-			ELEMENTY->mG->ShowNote("");
-	 }
+//	 if(ELEMENTY->mG->CheckLink(X,Y)==TPoint(-2,-2))
+//	 {
+//			ELEMENTY->mG->ShowNote("");
+//	 }
+
+		 ShowMessage(String(ELEMENTY->dalsi->mG->CheckLink(X,Y).x)+" "+String(ELEMENTY->dalsi->mG->CheckLink(X,Y).y));
+
+
 }
 
 //---------------------------------------------------------------------------

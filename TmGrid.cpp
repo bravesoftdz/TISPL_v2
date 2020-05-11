@@ -1139,23 +1139,36 @@ void TmGrid::SetButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 //nastaví danou buňku na GlyphButton, pomocná metoda objednu výše uvedené
 void TmGrid::SetGlyphButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 {
-	//založení + tag + název
+	////založení + tag + název
 	TscGPGlyphButton *gB=createGlyphButton(X,Y);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
 
-	//atributy
-	gB->Top=R.Top+floor(Cell.TopBorder->Width/2.0)+1;
-	gB->Left=R.Left+floor(Cell.LeftBorder->Width/2.0)+1;
+	////atributy
+	//horizarovnání zarovnání
+	gB->Left=R.Left+floor(Cell.LeftBorder->Width/2.0)+1;//výchozí při automaticky zarovnávaných buňkách či zarovnání vlevo
+	if(Cell.AutoSizeComponent!=1 && Cell.AutoSizeComponent!=2)//ostatní situace
+	switch(Cell.Align)
+	{
+		case LEFT:break;
+		case CENTER:gB->Left=R.Left+m.round((R.Width()+gB->Width)/2.0);break;
+		case RIGHT: gB->Left=R.Right-floor(Cell.RightBorder->Width/2.0)-1-gB->Width;break;
+	}
+	//vertikální zarování
+	gB->Top=R.Top+floor(Cell.TopBorder->Width/2.0)+1;//výchozí při automaticky zarovnávaných buňkách či zarovnání nahoru
+	if(Cell.AutoSizeComponent!=1 && Cell.AutoSizeComponent!=3)//ostatní situace
+	switch(Cell.Valign)
+	{
+		case TOP:break;
+		case MIDDLE: gB->Top=R.Top+m.round((R.Height()+gB->Height)/2.0);break;
+		case BOTTOM: gB->Top=R.Bottom-floor(Cell.TopBorder->Width/2.0)-1-gB->Height;break;
+	}
+	//velikost komponenty
 	if(/*Cell.MergeState==false || <-již nepoužíváme a možno smazat*/Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==2)gB->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0)-1;
 	if(/*Cell.MergeState==false || <-již nepoužíváme a možno smazat*/Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==3)gB->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-floor(Cell.TopBorder->Width/2.0)-1;
 	if(VisibleComponents>-1)gB->Visible=VisibleComponents;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
 	//gB->Options->NormalColor=Cell.Background->Color; zde nenastavovat!
 	if(Cell.ShowHint){gB->ShowHint=true;gB->Hint=Cell.Hint;}
 
-	//text
- //	gB->Font=Cell.Font;
- //	gB->Caption=Cell.Text;
-
-	//vlastník
+	////vlastník
 	gB->Parent=Form;//musí být až na konci
 	gB=NULL;delete gB;
 }
@@ -2326,6 +2339,7 @@ void TmGrid::CopyAreaCell(TCells &RefCell,TCells &CopyCell,bool copyComponent)
 	CopyCell.MergeArea=RefCell.MergeArea;
 	//hint
 	CopyCell.ShowHint=RefCell.ShowHint;
+	CopyCell.Hint=RefCell.Hint;
 	//další vlastnosti
 	CopyCell.AutoSizeComponent=RefCell.AutoSizeComponent;
 	CopyCell.InputNumbersOnly=RefCell.InputNumbersOnly;
@@ -2338,9 +2352,6 @@ void TmGrid::CopyAreaCell(TCells &RefCell,TCells &CopyCell,bool copyComponent)
 	CopyCell.isEmpty->Color=RefCell.isEmpty->Color;
 	CopyCell.isEmpty->Style=RefCell.isEmpty->Style;
 	CopyCell.ImageIndex=RefCell.ImageIndex;
-	//hint, přidáno MV
-	CopyCell.Hint=RefCell.Hint;
-	CopyCell.ShowHint=RefCell.ShowHint;
 }
 //---------------------------------------------------------------------------
 //zkopíruje orámování z buňky na buňku (bez ukazatelového propojení)
