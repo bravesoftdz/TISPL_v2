@@ -8532,6 +8532,7 @@ void TForm1::set_enabled_mGrid(Cvektory::TElement *E)
 void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni,bool plnit_comba)
 {
 	log(__func__);//logování
+	E->stav=1;//pro jistotu odstraňuje uložený highlight kóty, highlight je temp zaležitost pro editaci
 	//definice barev
 	TColor clHeaderFont=clBlack;
 	TColor clBackgroundHidden=(TColor)RGB(240,240,240);//m.clIntensive((TColor)RGB(128,128,128),115);
@@ -11978,7 +11979,7 @@ void TForm1::NP_input()
 					else E->pohon=NULL;
 					p=NULL;delete p;
 				}
-				design_element(E,false);//znovuvytvoření tabulek
+				design_element(E,true);//znovuvytvoření tabulek
 				if(E->sparovany!=NULL && E->sparovany->objekt_n==OBJEKT_akt->n)E->sparovany=d.v.vrat_element(OBJEKT_akt,E->sparovany->n);//atualizace ukazatelů
 				if(d.v.vrat_druh_elementu(E)==0)d.v.reserve_time(E);//aktualizace RT, v případě, že došlo ke změně přejezdu
 				if(E->eID==200 || E->eID==300)poh_tab=true;//pohonová tabulka v editaci bude exitovat
@@ -11994,7 +11995,7 @@ void TForm1::NP_input()
 		predchozi_PM->mGrid=new TmGrid(F);
 		predchozi_PM->mGrid->Tag=6;//ID formu
 		predchozi_PM->mGrid->ID=predchozi_PM->n;
-		design_element(predchozi_PM,false);//znovuvytvoření tabulek
+		design_element(predchozi_PM,true);//znovuvytvoření tabulek
 		poh_tab=true;//pohonová tabulka v editaci bude exitovat
 	}
 	//vytovření tab pohonu, pokud je třeba
@@ -12207,7 +12208,7 @@ void TForm1::zmena_editovaneho_objektu()
 					E->mGrid=new TmGrid(F);
 					E->mGrid->Tag=6;//ID formu
 					E->mGrid->ID=E->n;
-					design_element(E,false);
+					design_element(E,true);
 					if(E->sparovany!=NULL && E->sparovany->objekt_n==OBJEKT_akt->n)E->sparovany=d.v.vrat_element(OBJEKT_akt,E->sparovany->n);//atualizace ukazatelů
 					if(d.v.vrat_druh_elementu(E)==0)d.v.reserve_time(E);//aktualizace RT, v případě, že došlo ke změně přejezdu
 					if(E->eID==200 || E->eID==300)poh_tab_existuje=true;
@@ -12224,7 +12225,7 @@ void TForm1::zmena_editovaneho_objektu()
 			predchozi_PM->mGrid=new TmGrid(F);
 			predchozi_PM->mGrid->Tag=6;//ID formu
 			predchozi_PM->mGrid->ID=predchozi_PM->n;
-			design_element(predchozi_PM,false);//znovuvytvoření tabulek
+			design_element(predchozi_PM,true);//znovuvytvoření tabulek
 			poh_tab_existuje=true;
 		}
 		//vytvoření tab pohonu pokud je třeba
@@ -13857,10 +13858,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Cvektory::TElement *E=d.v.ELEMENTY->dalsi->dalsi;
-	E->mGrid->getGlyphButton(4,0)->Left+=20;
-	E->mGrid->Refresh();
-	E=NULL;delete E;
+	Memo(OBJEKT_akt->pohon->name);
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko

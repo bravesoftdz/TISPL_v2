@@ -3729,10 +3729,16 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 		if(povolit)//budu matet PM ve středu objektu .. tz. budou min. 2 PM v objektu
 		{
 			//před mazáním PM je potřeba sjednotit pohon za mazaným PM do dalsího PM
+			int obj_n=Element->objekt_n;
 			TElement *dalsi_PM=Element->dalsi;
 			while(dalsi_PM!=NULL/* && dalsi_PM->objekt_n==Element->objekt_n*/)
 			{
 				if(Element->pohon!=NULL)dalsi_PM->pohon=Element->pohon;else dalsi_PM->pohon=NULL;
+				if(obj_n!=dalsi_PM->objekt_n)//pokud jsem v jiném objektu než jsem začal, přiřadím mu aktuélně editovaný pohon
+				{
+					obj_n=dalsi_PM->objekt_n;
+					vrat_objekt(obj_n)->pohon=Element->pohon;
+        }
 				if(dalsi_PM->eID==200)break;
 				dalsi_PM=dalsi_PM->dalsi;
 			}
