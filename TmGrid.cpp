@@ -1149,7 +1149,7 @@ void TmGrid::SetGlyphButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell
 	switch(Cell.Align)
 	{
 		case LEFT:break;
-		case CENTER:gB->Left=R.Left+m.round((R.Width()+gB->Width)/2.0);break;
+		case CENTER:gB->Left=R.Left+m.round((R.Width()-gB->Width)/2.0);break
 		case RIGHT: gB->Left=R.Right-floor(Cell.RightBorder->Width/2.0)-1-gB->Width;break;
 	}
 	//vertikální zarování
@@ -1158,7 +1158,7 @@ void TmGrid::SetGlyphButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell
 	switch(Cell.Valign)
 	{
 		case TOP:break;
-		case MIDDLE: gB->Top=R.Top+m.round((R.Height()+gB->Height)/2.0);break;
+		case MIDDLE: gB->Top=R.Top+m.round((R.Height()-gB->Height)/2.0);break;
 		case BOTTOM: gB->Top=R.Bottom-floor(Cell.TopBorder->Width/2.0)-1-gB->Height;break;
 	}
 	//velikost komponenty
