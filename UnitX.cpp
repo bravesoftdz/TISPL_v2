@@ -1483,14 +1483,26 @@ void TFormX::prirazeni_pohohonu_vetvi(Cvektory::TElement *E,long Col)
 		{
 			e->pohon=p;
 			if(F->prohodit_sloupce_PM(e))prvni=4;else prvni=3;
-			if(e->eID==200){if(e->mGrid->Cells[prvni][2].Type==TmGrid::COMBO)e->mGrid->getCombo(prvni,2)->ItemIndex=p_n;break;}//pokud narazím na PM zmìním mu pohon a skonèím prùchod
+			if(e->eID==200)//pokud narazím na PM zmìním mu pohon a skonèím prùchod
+			{
+				if(e->mGrid->Cells[prvni][2].Type==TmGrid::COMBO)
+				{
+					Combo=e->mGrid->getCombo(prvni,2);
+					if(Combo!=NULL)Combo->ItemIndex=p_n;
+				}
+				break;
+			}
 			e=e->dalsi;
 		}
 		e=E->predchozi;
 		while(e!=NULL && e->n>0)
 		{
 			if(F->prohodit_sloupce_PM(e))druhy=3;else druhy=4;
-			if(e->eID==200 && e->mGrid->Cells[druhy][2].Type==TmGrid::COMBO)e->mGrid->getCombo(druhy,2)->ItemIndex=p_n;
+			if(e->eID==200 && e->mGrid->Cells[druhy][2].Type==TmGrid::COMBO)
+			{
+				Combo=e->mGrid->getCombo(druhy,2);
+				if(Combo!=NULL)Combo->ItemIndex=p_n;
+			}
 			if(e->eID==200 || F->predchozi_PM==NULL && e->objekt_n!=F->OBJEKT_akt->n || F->predchozi_PM!=NULL && F->predchozi_PM==e)break;//pokud narazím na PM NEzmìním! mu pohon a skonèím prùchod, nebo narazím na konec objektu
 			e->pohon=p;
 			e=e->predchozi;
@@ -1748,8 +1760,8 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 		}
 
   	//ukazatelové záležitosti
-		p=NULL;p1=NULL;p2=NULL;
-		delete p;delete p1;delete p2;
+		C=NULL;p=NULL;p1=NULL;p2=NULL;
+		delete C;delete p;delete p1;delete p2;
 	}
 }
 //---------------------------------------------------------------------------
@@ -1785,8 +1797,20 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 		while(e!=NULL && e->n>0 && e->objekt_n==F->OBJEKT_akt->n)
 		{
 			if(F->prohodit_sloupce_PM(e))druhy=3;else druhy=4;
-			if(e->eID==300 && e->mGrid->Cells[prvni][2].Type==TmGrid::COMBO)e->mGrid->getCombo(prvni,2)->ItemIndex=p_n;
-			if(e->eID==200){if(e->mGrid->Cells[druhy][2].Type==TmGrid::COMBO)e->mGrid->getCombo(druhy,2)->ItemIndex=p_n;break;}//narazil jsem na PM, konec
+			if(e->eID==300 && e->mGrid->Cells[prvni][2].Type==TmGrid::COMBO)
+			{
+				Combo=e->mGrid->getCombo(prvni,2);//extrakce ukazatele na combo v tabulce
+				if(Combo!=NULL)Combo->ItemIndex=p_n;//nutná dodateèná kontrola zda nìní NULL (mGrid mimo obraz)
+			}
+			if(e->eID==200)//narazil jsem na PM, konec
+			{
+				if(e->mGrid->Cells[druhy][2].Type==TmGrid::COMBO)
+				{
+					Combo=e->mGrid->getCombo(druhy,2);
+					if(Combo!=NULL)Combo->ItemIndex=p_n;
+				}
+				break;
+			}
 			else e->pohon=p;
 			e=e->predchozi;
 		}
@@ -1795,7 +1819,11 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 		{
       F->d.v.vrat_objekt(F->predchozi_PM->objekt_n)->pohon=p;
 			if(F->prohodit_sloupce_PM(F->predchozi_PM))druhy=3;else druhy=4;
-			if(F->predchozi_PM->mGrid->Cells[druhy][2].Type==TmGrid::COMBO)F->predchozi_PM->mGrid->getCombo(druhy,2)->ItemIndex=p_n;
+			if(F->predchozi_PM->mGrid->Cells[druhy][2].Type==TmGrid::COMBO)
+			{
+				Combo=F->predchozi_PM->mGrid->getCombo(druhy,2);
+				if(Combo!=NULL)Combo->ItemIndex=p_n;
+			}
 			e=F->predchozi_PM->dalsi;
 			while(e!=NULL && e!=F->OBJEKT_akt->element)
 			{
@@ -1813,8 +1841,20 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 			e->pohon=p;
 			if(e->objekt_n!=E->objekt_n)F->d.v.vrat_objekt(e->objekt_n)->pohon=p;
 			if(F->prohodit_sloupce_PM(e))prvni=4;else prvni=3;
-			if(e->eID==300 && e->mGrid->Cells[prvni][2].Type==TmGrid::COMBO)e->mGrid->getCombo(prvni,2)->ItemIndex=p_n;
-			if(e->eID==200){if(e->mGrid->Cells[prvni][2].Type==TmGrid::COMBO)e->mGrid->getCombo(prvni,2)->ItemIndex=p_n;break;}//narazil jsem na PM, zapsat nový pohon a konec
+			if(e->eID==300 && e->mGrid->Cells[prvni][2].Type==TmGrid::COMBO)
+			{
+				Combo=e->mGrid->getCombo(prvni,2);
+				if(Combo!=NULL)Combo->ItemIndex=p_n;
+			}
+			if(e->eID==200)//narazil jsem na PM, zapsat nový pohon a konec
+			{
+				if(e->mGrid->Cells[prvni][2].Type==TmGrid::COMBO)
+				{
+					Combo=e->mGrid->getCombo(prvni,2);
+					if(Combo!=NULL)Combo->ItemIndex=p_n;
+				}
+				break;
+			}
 			else e=e->dalsi;
 		}
 		if(E->dalsi!=NULL && E->dalsi->objekt_n==E->objekt_n)E->WT=F->m.cekani_na_palec(0,E->dalsi->pohon->roztec,E->dalsi->pohon->aRD,3);
