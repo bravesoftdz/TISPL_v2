@@ -842,7 +842,7 @@ public:		// User declarations
 	void tab_pohon_COMBO();//naètení pohonù do comba
 	void tab_knihovna_click(double X,double Y,long Col=-1,long Row=-1);//klik do knihovny objektù, spouštìní akce pøidávání objektu
 	short RO; short ROs; short ROst;short ROsts;short Rotace_symbolu_minula;
-	TRect vrat_max_oblast(Cvektory::TObjekt *Objekt=NULL);//vrací max a min hodnoty x a y souøadnic, všecho v layout(elementù, objektù), nebo parametrem Objekt lze hledat max souøadnice v jednom objektu
+	TRect vrat_max_oblast(Cvektory::TObjekt *Objekt=NULL,bool pouze_body=false);//vrací max a min hodnoty x a y souøadnic, všecho v layout(elementù, objektù), nebo parametrem Objekt lze hledat max souøadnice v jednom objektu
 	double inLO  (double inLO);
 	double outLO (double outLO);
   double inPT  (double inPT);

@@ -7291,7 +7291,7 @@ void TForm1::mGrid_puvodni_stav(Cvektory::TElement *E)
 }
 //---------------------------------------------------------------------------
 //vrací max a min hodnoty x a y souřadnic, všecho v layout(elementů, objektů), nebo parametrem Objekt lze hledat max souřadnice v jednom objektu
-TRect TForm1::vrat_max_oblast(Cvektory::TObjekt *Objekt)
+TRect TForm1::vrat_max_oblast(Cvektory::TObjekt *Objekt,bool pouze_body)
 {
 	log(__func__);//logování
 	TRect ret;
@@ -7311,20 +7311,36 @@ TRect TForm1::vrat_max_oblast(Cvektory::TObjekt *Objekt)
 			B=B->dalsi;
 		}
 		delete B;B=NULL;
-		if(predchozi_PM!=NULL)//pro předávací místo
+		//kontrola tabulky předchozího PM
+		if(!pouze_body && predchozi_PM!=NULL)
 		{
 			if(m.L2Px(predchozi_PM->Xt)<ret.left)ret.left=m.L2Px(predchozi_PM->Xt);
 			if(m.L2Px(predchozi_PM->Xt)+430>ret.right)ret.right=m.L2Px(predchozi_PM->Xt)+430;//430 = šiřka pohonové tabulky
 			if(m.L2Py(predchozi_PM->Yt)<ret.top)ret.top=m.L2Py(B->Y);
 			if(m.L2Py(predchozi_PM->Yt)+125>ret.bottom)ret.bottom=m.L2Py(predchozi_PM->Yt)+125;//125 = výška pohonové tabulky
 		}
-		if(PmG!=NULL)//pro def tabulku pohonu
+		//kontrola def tabulky pohonu
+		if(!pouze_body && PmG!=NULL)
 		{
 			if(m.L2Px(Objekt->Xp)<ret.left)ret.left=m.L2Px(Objekt->Xp);
 			if(m.L2Px(Objekt->Xp)+430>ret.right)ret.right=m.L2Px(Objekt->Xp)+430;//430 = šiřka pohonové tabulky
 			if(m.L2Py(Objekt->Yp)<ret.top)ret.top=m.L2Py(B->Y);
 			if(m.L2Py(Objekt->Yp)+125>ret.bottom)ret.bottom=m.L2Py(Objekt->Yp)+125;//125 = výška pohonové tabulky
 		}
+		//kontrola tabulek elementů v objektu
+//		if(!pouze_body)
+//		{
+//			Cvektory::TElement *E=Objekt->element;
+//			while(E!=NULL)
+//			{
+//				if(m.L2Px(E->Xt)<ret.left)ret.left=m.L2Px(E->Xt);
+//				if(E->mGrid!=NULL && m.L2Px(E->Xt)+E->mGrid->Width>ret.right)ret.right=m.L2Px(E->Xt)+E->mGrid->Width;
+//				if(m.L2Py(E->Yt)<ret.top)ret.top=m.L2Py(B->Y);
+//				if(E->mGrid!=NULL && m.L2Py(E->Yt)+E->mGrid->Height>ret.bottom)ret.bottom=m.L2Py(E->Yt)+E->mGrid->Height;
+//				E=d.v.dalsi_krok(E,Objekt);
+//			}
+//			E=NULL;delete E;
+//    }
 	}
 	//hledání souřadnic v celém layoutu
 	else
@@ -8227,7 +8243,7 @@ void TForm1::vytvoreni_tab_pohon(bool existuje_poh_tabulka)
 		PmG->Cells[0][6].RightBorder->Color=clWhite;
 		PmG->MergeCells(0,6,0,8);PmG->MergeCells(1,6,1,8);//sloučení pro mezery
 		//umístění tabulky
-		TRect oblast_kabiny=vrat_max_oblast(OBJEKT_akt);
+		TRect oblast_kabiny=vrat_max_oblast(OBJEKT_akt,true);
 		if(OBJEKT_akt->Xp<0 && OBJEKT_akt->Yp<0)//definice pozice při prvním otevření objektu
   	{
   		OBJEKT_akt->Xp=m.P2Lx(oblast_kabiny.right+30);
@@ -8818,10 +8834,9 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 		//nastavení scgpbuttonu
 		TscGPGlyphButton *B=E->mGrid->getGlyphButton(4,0);
 		if(B!=NULL)
-		{  //  E->mGrid->Cells[4][0].Align=TmGrid::aNO;   E->mGrid->Cells[4][0].Valign=TmGrid::Tvalign::vNO;
-			E->mGrid->Cells[4][0].AutoSizeComponent=0;//nastavý pouze výšku
-			B->GlyphOptions->Kind=scgpbgkUpArrow;  //B->Top=20;
-			B->Width=25;B->Height=25;
+		{
+			B->GlyphOptions->Kind=scgpbgkUpArrow;
+			B->Width=25;
 			B->TransparentBackground=false;
 			B->GlyphOptions->NormalColor=clBlack;
 			B->GlyphOptions->NormalColorAlpha=200;
@@ -9349,7 +9364,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			else E->mGrid->Cells[prvni][1].Text="IN";
 			E->mGrid->Cells[druhy][1].Text="OUT";
 			E->mGrid->Cells[4][0].Align=TmGrid::Talign::RIGHT;
-			E->mGrid->Cells[4][0].Valign=TmGrid::Tvalign::TOP;
+			E->mGrid->Cells[4][0].AutoSizeComponent=3;//nastavý pouze výšku
 			E->mGrid->Cells[4][0].Type=TmGrid::glyphBUTTON;
 			E->mGrid->Cells[0][1].Text=ls->Strings[447];//"Pohon "
 			E->mGrid->Cells[2][3].Text=ls->Strings[451];//"Nastavená"
@@ -9894,7 +9909,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			else E->mGrid->Cells[prvni][1].Text="IN";
 			E->mGrid->Cells[druhy][1].Text="OUT";
 			E->mGrid->Cells[4][0].Align=TmGrid::Talign::RIGHT;
-			E->mGrid->Cells[4][0].Valign=TmGrid::Tvalign::TOP;
+			E->mGrid->Cells[4][0].AutoSizeComponent=3;//nastavý pouze výšku
 			E->mGrid->Cells[4][0].Type=TmGrid::glyphBUTTON;
 			E->mGrid->Cells[0][1].Text=ls->Strings[447];//"Pohon "
 			E->mGrid->Cells[2][3].Text=ls->Strings[451];//"Nastavená"
@@ -12035,7 +12050,7 @@ void TForm1::NP_input()
 //	Zoom-=fmod(Zoom,0.5);
 //	if(Zoom<0.5)Zoom=0.5;
 //	if(Zoom>20 && !DEBUG)Zoom=20;if(Zoom>30 && DEBUG)Zoom=30;
-//  //vycentrování obrazu
+//	//vycentrování obrazu
 //	Posun.x=m.round(Centr.x-(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2/Zoom);
 //	Posun.y=m.round(-Centr.y-(ClientHeight)/2/Zoom);
 //
@@ -13900,7 +13915,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
 	//Cvektory::TElement *E=OBJEKT_akt->element;Memo(E->mGrid->Note.NoteArea.Height());
-	Canvas->Rectangle(265,160,1044,534);
+	Form2->ShowModal();
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
