@@ -8752,7 +8752,7 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
    		C1->Font->Color=(TColor)RGB(43,87,154);C2->Font->Color=(TColor)RGB(43,87,154);
    		C1->BiDiMode=bdRightToLeft;C2->BiDiMode=bdRightToLeft;
    		C1->Enabled=true;C2->Enabled=true;
-   		//přidávání itemů do comba
+			//přidávání itemů do comba
    		TscGPListBoxItem *I1,*I2;
    		I1=C1->Items->Add();I2=C2->Items->Add();
    		if(d.v.POHONY->dalsi!=NULL){I1->Caption=ls->Strings[218];I2->Caption=ls->Strings[218];}//vyberte pohon     217 = žádný pohon k výberu
@@ -8858,13 +8858,13 @@ void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
 		}
 		C_pom=NULL;delete C_pom;
     //kontrola zda jsou buňky na draw
-		if(!C1->Enabled)
+		if(C1!=NULL && !C1->Enabled)
 		{
 			if(E->mGrid->Cells[prvni][3].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,prvni,3);E->mGrid->Cells[prvni][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[prvni][3].Font->Color=(TColor)RGB(128,128,128);}
 			if(E->mGrid->Cells[prvni][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,prvni,6);E->mGrid->Cells[prvni][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[prvni][6].Font->Color=(TColor)RGB(128,128,128);}
 			if(E->mGrid->Cells[prvni][7].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,prvni,7);E->mGrid->Cells[prvni][7].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[prvni][7].Font->Color=(TColor)RGB(128,128,128);}
 		}
-		if(!C2->Enabled)
+		if(C2!=NULL && !C2->Enabled)
 		{
 			if(E->mGrid->Cells[druhy][3].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,3);E->mGrid->Cells[druhy][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][3].Font->Color=(TColor)RGB(128,128,128);}
 			if(E->mGrid->Cells[druhy][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,6);E->mGrid->Cells[druhy][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][6].Font->Color=(TColor)RGB(128,128,128);}
@@ -8873,7 +8873,7 @@ void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
 
 		////první sloupec
 		rezim=d.v.vrat_objekt(E->objekt_n)->rezim;
-		if(C1->Enabled)
+		if(C1!=NULL && C1->Enabled)
 		{
 	  	//pokud pohon exituje a není používaný
 	  	if(E->pohon!=NULL && !d.v.pohon_je_pouzivan(E->pohon->n,false))
@@ -8914,7 +8914,7 @@ void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
 		if(E->eID==200 && E->dalsi!=NULL)e_pom=E->dalsi;
 		if(E->eID==200 && E->dalsi==NULL)e_pom=d.v.ELEMENTY->dalsi;
 		rezim=d.v.vrat_objekt(e_pom->objekt_n)->rezim;
-		if(C2->Enabled)
+		if(C2!=NULL && C2->Enabled)
 		{
 			//pokud pohon exituje a není používaný
 			if(e_pom->pohon!=NULL && !d.v.pohon_je_pouzivan(e_pom->pohon->n,false))
@@ -13858,7 +13858,8 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Memo(OBJEKT_akt->pohon->name);
+	//Cvektory::TElement *E=OBJEKT_akt->element;Memo(E->mGrid->Note.NoteArea.Height());
+	Memo(predchozi_PM->mGrid->Cells[2][0].Text);
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
