@@ -677,7 +677,7 @@ void TmGrid::DrawNote(TCanvas *C)
 				String Tout=T.SubString(1,floor(W/(Wt/(L*1.0)))-1);Tout=Tout.SubString(1,ms.lastPos(Tout," ")-1); //zajistí odřádkování po poslední mezeře na daném řádku
 				if(W>=Wt || Wt==0)L=0;//v případě posledního řádku záměrně zneplatní délku textu a tím zajistí ukončení while cyklu, je nutné kvůli zbytku bílých znaků pravděpodobně
 				TRect LinkArea=DrawTextLink(C,leftOffset+margin_left,(Height+Border.Width)*Zoom_b+margin_top+vyska_radku,Tout,Note.Font,FontLink,FontActiveLink);//vypíše text a vrátí souřadnice případného odkazu
-				vyska_radku+=C->TextHeight(Tout);pocet_radku++;//je záměrně až po vypsání textu,protože slouží až k dalšímu užítí (dalšímu řádku nebo vrácení celkové oblasti poznámky
+				vyska_radku+=C->TextHeight(Tout);//je záměrně až po vypsání textu,protože slouží až k dalšímu užítí (dalšímu řádku nebo vrácení celkové oblasti poznámky
 				if(LinkArea!=TRect(-1,-1,-1,-1))Note.LinkArea=LinkArea;//souřadnice případného odkazu
 				T=T.SubString(Tout.Length()+1,L).TrimLeft();//zbytek textu pro dělení na další řádky
 				Wt=C->TextWidth(T);L=T.Length();//šiřka a délka zbývajícího textu
