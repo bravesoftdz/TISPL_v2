@@ -667,14 +667,17 @@ void TmGrid::DrawNote(TCanvas *C)
 		TFont *FontActiveLink=new TFont();FontActiveLink->Name=Note.Font->Name;FontActiveLink->Size=Note.Font->Size;FontActiveLink->Color=FontLink->Color;FontActiveLink->Style = TFontStyles()<<fsBold<<fsUnderline;
 		int W=(Width-leftOffset-rightOffset-margin_left-margin_right)*Zoom_b;
 		int Wt=C->TextWidth(Note.Text);
-		if(W<Wt)//pokud je text poznámky delší, řeší ještě zalamování textu
+		if(W<Wt)//pokud je text poznámky delší, řeší ještě zalamování textu, pozor na UNIT2 nefunguje správně
 		{
 			String T=Note.Text;
 			int L=T.Length();
 			int vyska_radku=0;
+			F->Memo("",true);
 			while(L>0)
-			{    //vypsat absolutně všechno, co se tady počítá, nebo se nehneme z místa, při formpaint formuláře se začne cyklit
+			{
+        F->Memo(T);
 				String Tout=T.SubString(1,floor(W/(Wt/(L*1.0)))-1);Tout=Tout.SubString(1,ms.lastPos(Tout," ")-1); //zajistí odřádkování po poslední mezeře na daném řádku
+				F->Memo(Tout);
 				if(W>=Wt || Wt==0)L=0;//v případě posledního řádku záměrně zneplatní délku textu a tím zajistí ukončení while cyklu, je nutné kvůli zbytku bílých znaků pravděpodobně
 				TRect LinkArea=DrawTextLink(C,leftOffset+margin_left,(Height+Border.Width)*Zoom_b+margin_top+vyska_radku,Tout,Note.Font,FontLink,FontActiveLink);//vypíše text a vrátí souřadnice případného odkazu
 				vyska_radku+=C->TextHeight(Tout);//je záměrně až po vypsání textu,protože slouží až k dalšímu užítí (dalšímu řádku nebo vrácení celkové oblasti poznámky
@@ -1154,11 +1157,11 @@ void TmGrid::SetGlyphButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell
 		switch(Cell.Align)
 		{
 			case CENTER:gB->Left=R.Left+m.round((R.Width()-gB->Width)/2.0);break;
-			case RIGHT: gB->Left=R.Right-floor(Cell.RightBorder->Width/2.0)-1-gB->Width;break;
+			case RIGHT: gB->Left=R.Right-ceil(Cell.RightBorder->Width/2.0)-gB->Width;break;
 		}
 	}
 	//vertikální pozice
-	if(Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==3 || Cell.Align==TOP)gB->Top=R.Top+floor(Cell.TopBorder->Width/2.0)+1;//výchozí při automaticky zarovnávaných buňkách či zarovnání nahoru
+	if(Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==3 || Cell.Align==TOP)gB->Top=R.Top+floor(Cell.TopBorder->Width/2.0)/*+1*/;//výchozí při automaticky zarovnávaných buňkách či zarovnání nahoru
 	else//ostatní situace
 	{
 		switch(Cell.Valign)
@@ -1169,7 +1172,7 @@ void TmGrid::SetGlyphButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell
 	}
 	//velikost komponenty
 	if(/*Cell.MergeState==false || <-již nepoužíváme a možno smazat*/Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==2)gB->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0)-1;
-	if(/*Cell.MergeState==false || <-již nepoužíváme a možno smazat*/Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==3)gB->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-floor(Cell.TopBorder->Width/2.0)-1;
+	if(/*Cell.MergeState==false || <-již nepoužíváme a možno smazat*/Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==3)gB->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-floor(Cell.TopBorder->Width/2.0)/*-1*/;
 	if(VisibleComponents>-1)gB->Visible=VisibleComponents;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
 	//gB->Options->NormalColor=Cell.Background->Color; zde nenastavovat!
 	if(Cell.ShowHint){gB->ShowHint=true;gB->Hint=Cell.Hint;}

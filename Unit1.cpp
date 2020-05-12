@@ -9407,7 +9407,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			if(E->eID==300)E->mGrid->Cells[prvni][1].Text="IN/OUT";
 			else E->mGrid->Cells[prvni][1].Text="IN";
 			E->mGrid->Cells[druhy][1].Text="OUT";
-			E->mGrid->Cells[4][0].Align=TmGrid::Talign::RIGHT;
+			E->mGrid->Cells[4][0].Align=TmGrid::RIGHT;
 			E->mGrid->Cells[4][0].AutoSizeComponent=3;//nastavý pouze výšku
 			E->mGrid->Cells[4][0].Type=TmGrid::glyphBUTTON;
 			E->mGrid->Cells[0][1].Text=ls->Strings[447];//"Pohon "
