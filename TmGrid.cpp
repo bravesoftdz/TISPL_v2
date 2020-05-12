@@ -648,42 +648,49 @@ int TmGrid::getCountNextVisibleRow(int Row)
 //zajistí vykreslení poznámky "pod čarou" resp. pod tabulkou
 void TmGrid::DrawNote(TCanvas *C)
 {
-	////POZNÁMKA POD ČAROU -TmGrid - poznámka "pod čarou" resp. pod tabulkou, přístup mGrid->Note, možno nastavovat hodnotu textu, font textu, ukládá si citelnou oblast, zarovnává na šířku tabulky pokud se text nevejde zalomí na další řádek (dle poslední mezery na řádku), max zobrazí dva řádky, výchozí barva červená a 11pt velikost písma
+	////POZNÁMKA POD ČAROU -TmGrid - poznámka "pod čarou" resp. pod tabulkou, přístup mGrid->Note, možno nastavovat hodnotu textu, font textu, ukládá si citelnou oblast, zarovnává na šířku tabulky pokud se text nevejde zalomí na další řádek (dle poslední mezery na řádku), neomezený počet řádků, výchozí barva červená a 11pt velikost písma, umí odkaz maximálně však jeden
 	if(Note.Text!=""/* && ColCount>0 && RowCount>0*/)
 	{
-		//zarovnání dle exBUTTONu
+		////zarovnání dle exBUTTONu
 		short leftOffset=0,rightOffset=0;
 		switch(exBUTTONalign)
 		{
 			case LEFT:exBUTTON->Left=Left;leftOffset=exBUTTON->Width;break;
 			case RIGHT:exBUTTON->Left=Left+Width-exBUTTON->Width+m.round(Border.Width/2.0);rightOffset=exBUTTON->Width;break;
 		}
-		Width=getWidth();
-		Height=getHeight();
-		short Zoom_b=1; if(AntiAliasing_text)Zoom_b=3;
+
+		////výpis poznámky
+		//Width=getWidth();//Height=getHeight(); - asi již netřeba
+		short Zoom_b=1;if(AntiAliasing_text)Zoom_b=3;
 		short margin_left=Note.margin_left*Zoom_b,margin_right=Note.margin_right*Zoom_b,margin_bootom=Note.margin_bootom*Zoom_b,margin_top=Note.margin_top*Zoom_b;
 		C->Font=Note.Font;C->Font->Size*=Zoom_b;
 		TFont *FontLink=new TFont();FontLink->Name=Note.Font->Name;FontLink->Size=Note.Font->Size;FontLink->Color=DefaultCell.isLink->Color;FontLink->Style = TFontStyles()<<fsUnderline;
 		TFont *FontActiveLink=new TFont();FontActiveLink->Name=Note.Font->Name;FontActiveLink->Size=Note.Font->Size;FontActiveLink->Color=FontLink->Color;FontActiveLink->Style = TFontStyles()<<fsBold<<fsUnderline;
-		int W=(Width-leftOffset-rightOffset-margin_left-margin_right)*Zoom_b;
-		int Wt=C->TextWidth(Note.Text);
+		String T=ms.delete_repeat(ms.delete_repeat(Note.Text,"<a>"),"</a>");//text bez odkazu, kvůli pozici, délce, šířce atd.
+		unsigned int W=(Width-leftOffset-rightOffset-margin_left-margin_right)*Zoom_b;//šířka prostoru, kde se může poznámka zobrazit, tzn. zohledňuje i případně zobrazený exbutton
+		unsigned int Wt=C->TextWidth(T);//šířka vstupního bez tagu textu
 		if(W<Wt)//pokud je text poznámky delší, řeší ještě zalamování textu, pozor na UNIT2 nefunguje správně
 		{
-			String T=Note.Text;
-			int L=T.Length();
-			int vyska_radku=0;
-			F->Memo("",true);
+			unsigned int L=T.Length();
+			unsigned int vyska_radku=0;
+			unsigned int pocet_zpracovanych_znaku=0;
+			unsigned int pocet_bilych_odstranenych_znaku=0;
+			unsigned int LinkStartPos=Note.Text.Pos("<a>")+3-3;unsigned int LinkEndPos=Note.Text.Pos("</a>")-1-3;//pozice (začátek a konec) odkazu, tedy exaktně textu k zobrazení formou linku, nikoliv tagů v již od tagu očištěném textu, proto pro ilustrativnost to příčítání a odčítání
 			while(L>0)
 			{
-        F->Memo(T);
-				String Tout=T.SubString(1,floor(W/(Wt/(L*1.0)))-1);Tout=Tout.SubString(1,ms.lastPos(Tout," ")-1); //zajistí odřádkování po poslední mezeře na daném řádku
-				F->Memo(Tout);
-				if(W>=Wt || Wt==0)L=0;//v případě posledního řádku záměrně zneplatní délku textu a tím zajistí ukončení while cyklu, je nutné kvůli zbytku bílých znaků pravděpodobně
-				TRect LinkArea=DrawTextLink(C,leftOffset+margin_left,(Height+Border.Width)*Zoom_b+margin_top+vyska_radku,Tout,Note.Font,FontLink,FontActiveLink);//vypíše text a vrátí souřadnice případného odkazu
+				String Tout=T.SubString(1,floor(W/(Wt/(L*1.0)))-1);if(Tout!=T)Tout=Tout.SubString(1,ms.lastPos(Tout," ")-1);//vypisovaný text, algoritmus zajistí odřádkování po poslední mezeře na daném řádku, pokud se jedná o poslední řádek (zbytek) Tout==T, tak již neřeší načtení jen po mezeru
+				int Tout_Lenght=Tout.Length();pocet_zpracovanych_znaku+=Tout_Lenght;
+				String ToutL=Tout;//vypisovaný text včetně odkazu
+				LinkStartPos-=pocet_bilych_odstranenych_znaku;LinkEndPos-=pocet_bilych_odstranenych_znaku;//snížení počtu o odstraněné bílé znaky
+				if(LinkStartPos>0 && LinkStartPos<=pocet_zpracovanych_znaku){ToutL=Tout.Insert("<a>",Tout_Lenght+LinkStartPos-pocet_zpracovanych_znaku);ToutL=ToutL.Insert("</a>",Tout_Lenght+LinkEndPos-pocet_zpracovanych_znaku+3+1);}
+				if(W>=Wt)L=0;//v případě posledního řádku záměrně zneplatní délku textu a tím zajistí ukončení while cyklu, je nutné kvůli zbytku bílých znaků pravděpodobně
+				TRect LinkArea=DrawTextLink(C,leftOffset+margin_left,(Height+Border.Width)*Zoom_b+margin_top+vyska_radku,ToutL,Note.Font,FontLink,FontActiveLink);//vypíše text a vrátí souřadnice případného odkazu
+				if(LinkArea!=TRect(-1,-1,-1,-1))Note.LinkArea=LinkArea;//souřadnice případného odkazu, asi musí být takto dvoustupňové, aby nepřepsalo již případné souřadnice linku z jiného průchodu
 				vyska_radku+=C->TextHeight(Tout);//je záměrně až po vypsání textu,protože slouží až k dalšímu užítí (dalšímu řádku nebo vrácení celkové oblasti poznámky
-				if(LinkArea!=TRect(-1,-1,-1,-1))Note.LinkArea=LinkArea;//souřadnice případného odkazu
+				pocet_bilych_odstranenych_znaku=T.SubString(Tout.Length()+1,L).Length();//přípava pro odečtení
 				T=T.SubString(Tout.Length()+1,L).TrimLeft();//zbytek textu pro dělení na další řádky
-				Wt=C->TextWidth(T);L=T.Length();//šiřka a délka zbývajícího textu
+				Wt=C->TextWidth(T);L=T.Length();//šířka a délka zbývajícího textu
+				pocet_bilych_odstranenych_znaku-=L;//kvůli přeindexování pozice odkazů
 			}
 			Note.NoteArea=TRect(Left+leftOffset,Top+Height,Left+W+rightOffset+margin_left+margin_right,Top+Height+Border.Width+vyska_radku+margin_bootom);//souřadnice výsledné oblasti celé poznámky
 		}																											 //zpětná korekce, takže +
@@ -1161,7 +1168,7 @@ void TmGrid::SetGlyphButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell
 		}
 	}
 	//vertikální pozice
-	if(Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==3 || Cell.Align==TOP)gB->Top=R.Top+floor(Cell.TopBorder->Width/2.0)/*+1*/;//výchozí při automaticky zarovnávaných buňkách či zarovnání nahoru
+	if(Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==3 || Cell.Valign==TOP)gB->Top=R.Top+floor(Cell.TopBorder->Width/2.0)/*+1*/;//výchozí při automaticky zarovnávaných buňkách či zarovnání nahoru
 	else//ostatní situace
 	{
 		switch(Cell.Valign)

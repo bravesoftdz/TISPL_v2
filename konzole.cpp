@@ -69,6 +69,7 @@ void __fastcall TForm_konzole::scGPButton_odeslatClick(TObject *Sender)
 	String projekt_cesta="";if(scGPCheckBox_odeslat_vcetne_projektu->Checked)projekt_cesta=F->FileName+".bac_"+F->get_user_name()+"_"+F->get_computer_name();
 	F->mail("smtp.seznam.cz","builderboy@seznam.cz","camaro69","builderboy@seznam.cz","TISPL",F->LICENCE+"_"+F->get_computer_name()+"_"+F->get_user_name()+"_"+F->VERZE,Text_formulare,"rosta.slechta@gmail.com","","",priloha_cesta,projekt_cesta);
 	F->zobraz_tip("Odesláno. Dìkujeme za zpìtnou vazbu.                       ");//mezery nutné, kvùli odsazení
+	MessageBeep(MB_OK);//zvuková signalizace
 	Text->Clear(); //Sent. Thank you for your feedback.
 	Close();
 }
