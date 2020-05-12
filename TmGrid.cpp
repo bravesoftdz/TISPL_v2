@@ -669,17 +669,26 @@ void TmGrid::DrawNote(TCanvas *C)
 		int Wt=C->TextWidth(Note.Text);
 		if(W<Wt)//pokud je text poznámky delší, řeší ještě zalamování textu
 		{
-			int L=Note.Text.Length();                                   //zajistí odřádkování po poslední mezeře na daném řádku
-			AnsiString T=Note.Text.SubString(1,floor(W/(Wt/(L*1.0)))-1);T=T.SubString(1,ms.lastPos(T," ")-1);
-			//C->TextOutW(leftOffset+margin_left,(Height+Border.Width)*Zoom_b+margin_top,T);
-			TRect R_temp=DrawTextLink(C,leftOffset+margin_left,(Height+Border.Width)*Zoom_b+margin_top,T,Note.Font,FontLink,FontActiveLink);
-			if(R_temp!=TRect(-1,-1,-1,-1))Note.LinkArea=R_temp;
-			AnsiString T1=Note.Text.SubString(T.Length()+1,L).TrimLeft();
-			//C->TextOutW(leftOffset+margin_left,(Height+Border.Width)*Zoom_b+margin_top+C->TextHeight(T),T1);
-			R_temp=DrawTextLink(C,leftOffset+margin_left,(Height+Border.Width)*Zoom_b+margin_top+C->TextHeight(T),T1,Note.Font,FontLink,FontActiveLink);
-			if(R_temp!=TRect(-1,-1,-1,-1))Note.LinkArea=R_temp;
-			Note.NoteArea=TRect(Left+leftOffset,Top+Height,Left+W+rightOffset+margin_left+margin_right,Top+Height+Border.Width+C->TextHeight(T)+C->TextHeight(T1)+margin_bootom);
-		}                                                      //zpětná korekce, takže +
+			String T=Note.Text;
+			int L=T.Length();
+			int vyska_radku=0;  int pocet_radku=0;
+			F->Memo("",true);
+			while(L>0)
+			{    //vypsat absolutně všechno, co se tady počítá, nebo se nehneme z místa, při formpaint formuláře se začne cyklit
+				String Tout=T.SubString(1,floor(W/(Wt/(L*1.0)))-1);Tout=Tout.SubString(1,ms.lastPos(Tout," ")-1); //zajistí odřádkování po poslední mezeře na daném řádku
+				F->Memo(Tout);
+				if(W>=Wt || Wt==0)L=0;//v případě posledního řádku záměrně zneplatní délku textu a tím zajistí ukončení while cyklu, je nutné kvůli zbytku bílých znaků pravděpodobně
+				TRect LinkArea=DrawTextLink(C,leftOffset+margin_left,(Height+Border.Width)*Zoom_b+margin_top+vyska_radku,Tout,Note.Font,FontLink,FontActiveLink);//vypíše text a vrátí souřadnice případného odkazu
+				vyska_radku+=C->TextHeight(Tout);pocet_radku++;//je záměrně až po vypsání textu,protože slouží až k dalšímu užítí (dalšímu řádku nebo vrácení celkové oblasti poznámky
+				//ShowMessage(vyska_radku);
+				if(LinkArea!=TRect(-1,-1,-1,-1))Note.LinkArea=LinkArea;//souřadnice případného odkazu
+				T=T.SubString(Tout.Length()+1,L).TrimLeft();//zbytek textu pro dělení na další řádky
+				Wt=C->TextWidth(T);L=T.Length();//šiřka a délka zbývajícího textu
+			}
+			//Note.NoteArea=TRect(Left+leftOffset,Top+Height,Left+W+rightOffset+margin_left+margin_right,Top+Height+Border.Width+/*vyska_radku*/wa*pocet_radku+margin_bootom);//souřadnice výsledné oblasti celé poznámky
+			ShowMessage("celkem: "+String(pocet_radku));
+			Note.NoteArea=TRect(Left+leftOffset,Top+Height,Left+W+rightOffset+margin_left+margin_right,Top+Height+150+margin_bootom);//souřadnice výsledné oblasti celé poznámky
+		}																											 //zpětná korekce, takže +
 		else//jednořádkový text
 		{
 			//C->TextOutW(leftOffset+margin_left,(Height+Border.Width)*Zoom_b+margin_top,Note.Text);
@@ -1143,23 +1152,25 @@ void TmGrid::SetGlyphButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell
 	TscGPGlyphButton *gB=createGlyphButton(X,Y);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
 
 	////atributy
-	//horizarovnání zarovnání
-	gB->Left=R.Left+floor(Cell.LeftBorder->Width/2.0)+1;//výchozí při automaticky zarovnávaných buňkách či zarovnání vlevo
-	if(Cell.AutoSizeComponent!=1 && Cell.AutoSizeComponent!=2)//ostatní situace
-	switch(Cell.Align)
+	//horizarovnání pozice
+	if(Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==2 || Cell.Align==LEFT)gB->Left=R.Left+floor(Cell.LeftBorder->Width/2.0)+1;//výchozí při automaticky zarovnávaných buňkách či zarovnání vlevo
+	else//ostatní situace
 	{
-		case LEFT:break;
-		case CENTER:gB->Left=R.Left+m.round((R.Width()-gB->Width)/2.0);break
-		case RIGHT: gB->Left=R.Right-floor(Cell.RightBorder->Width/2.0)-1-gB->Width;break;
+		switch(Cell.Align)
+		{
+			case CENTER:gB->Left=R.Left+m.round((R.Width()-gB->Width)/2.0);break;
+			case RIGHT: gB->Left=R.Right-floor(Cell.RightBorder->Width/2.0)-1-gB->Width;break;
+		}
 	}
-	//vertikální zarování
-	gB->Top=R.Top+floor(Cell.TopBorder->Width/2.0)+1;//výchozí při automaticky zarovnávaných buňkách či zarovnání nahoru
-	if(Cell.AutoSizeComponent!=1 && Cell.AutoSizeComponent!=3)//ostatní situace
-	switch(Cell.Valign)
+	//vertikální pozice
+	if(Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==3 || Cell.Align==TOP)gB->Top=R.Top+floor(Cell.TopBorder->Width/2.0)+1;//výchozí při automaticky zarovnávaných buňkách či zarovnání nahoru
+	else//ostatní situace
 	{
-		case TOP:break;
-		case MIDDLE: gB->Top=R.Top+m.round((R.Height()-gB->Height)/2.0);break;
-		case BOTTOM: gB->Top=R.Bottom-floor(Cell.TopBorder->Width/2.0)-1-gB->Height;break;
+		switch(Cell.Valign)
+		{
+			case MIDDLE: gB->Top=R.Top+m.round((R.Height()-gB->Height)/2.0);break;
+			case BOTTOM: gB->Top=R.Bottom-floor(Cell.TopBorder->Width/2.0)-1-gB->Height;break;
+		}
 	}
 	//velikost komponenty
 	if(/*Cell.MergeState==false || <-již nepoužíváme a možno smazat*/Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==2)gB->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0)-1;
