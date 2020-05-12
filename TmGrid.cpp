@@ -671,23 +671,18 @@ void TmGrid::DrawNote(TCanvas *C)
 		{
 			String T=Note.Text;
 			int L=T.Length();
-			int vyska_radku=0;  int pocet_radku=0;
-			F->Memo("",true);
+			int vyska_radku=0;
 			while(L>0)
 			{    //vypsat absolutně všechno, co se tady počítá, nebo se nehneme z místa, při formpaint formuláře se začne cyklit
 				String Tout=T.SubString(1,floor(W/(Wt/(L*1.0)))-1);Tout=Tout.SubString(1,ms.lastPos(Tout," ")-1); //zajistí odřádkování po poslední mezeře na daném řádku
-				F->Memo(Tout);
 				if(W>=Wt || Wt==0)L=0;//v případě posledního řádku záměrně zneplatní délku textu a tím zajistí ukončení while cyklu, je nutné kvůli zbytku bílých znaků pravděpodobně
 				TRect LinkArea=DrawTextLink(C,leftOffset+margin_left,(Height+Border.Width)*Zoom_b+margin_top+vyska_radku,Tout,Note.Font,FontLink,FontActiveLink);//vypíše text a vrátí souřadnice případného odkazu
 				vyska_radku+=C->TextHeight(Tout);pocet_radku++;//je záměrně až po vypsání textu,protože slouží až k dalšímu užítí (dalšímu řádku nebo vrácení celkové oblasti poznámky
-				//ShowMessage(vyska_radku);
 				if(LinkArea!=TRect(-1,-1,-1,-1))Note.LinkArea=LinkArea;//souřadnice případného odkazu
 				T=T.SubString(Tout.Length()+1,L).TrimLeft();//zbytek textu pro dělení na další řádky
 				Wt=C->TextWidth(T);L=T.Length();//šiřka a délka zbývajícího textu
 			}
-			//Note.NoteArea=TRect(Left+leftOffset,Top+Height,Left+W+rightOffset+margin_left+margin_right,Top+Height+Border.Width+/*vyska_radku*/wa*pocet_radku+margin_bootom);//souřadnice výsledné oblasti celé poznámky
-			ShowMessage("celkem: "+String(pocet_radku));
-			Note.NoteArea=TRect(Left+leftOffset,Top+Height,Left+W+rightOffset+margin_left+margin_right,Top+Height+150+margin_bootom);//souřadnice výsledné oblasti celé poznámky
+			Note.NoteArea=TRect(Left+leftOffset,Top+Height,Left+W+rightOffset+margin_left+margin_right,Top+Height+Border.Width+vyska_radku+margin_bootom);//souřadnice výsledné oblasti celé poznámky
 		}																											 //zpětná korekce, takže +
 		else//jednořádkový text
 		{
