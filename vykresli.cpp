@@ -197,7 +197,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
    	  	}
 			}
 			//posun na další element
-   		E=v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);//nutné použít tento průcodový algoritmus, v tomto průchodu je volán algoritmus dalsi_krok, proto ho nelze použít
+   		E=v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);//nutné použít tento průcodový algoritmus, v tomto průchodu je použit algoritmus dalsi_krok, nelze užit dalsi_krok pro průchod ve kterém bude vnořený znova algoritmus dalsi_krok, tento alg. používá glob. seznam výhybek, přes které prošel, pokud by běžely dva současně ukládaly by do jednoho seznamu, to by vedlo k chybným výsledkům obou průchodu, viz. https://docs.google.com/document/d/1ApxDG9tpTS6qEpKk2COsvrLZrzDl1fynWlD7xmoE6qM/edit?ts=5e3d669e#heading=h.a4ve3tnox7u5
    	}
    	delete E;E=NULL;
    	pom=NULL;delete pom;

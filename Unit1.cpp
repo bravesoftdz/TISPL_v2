@@ -6258,34 +6258,35 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 			//////////Vkládání předávacího místa
 			if(E->eID!=200 && ((E->dalsi!=NULL && E->dalsi->pohon!=NULL && E->pohon!=NULL && E->dalsi->pohon->n!=E->pohon->n) || (E->dalsi!=NULL && (E->dalsi->pohon==NULL && E->pohon!=NULL || E->dalsi->pohon!=NULL && E->pohon==NULL))))
 			{
-	  		//WT přiřazení
-	  		E->WT=0;//čekání na palec
-	  		if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)E->WT=m.cekani_na_palec(0,E->dalsi->pohon->roztec,E->dalsi->pohon->aRD,3);
-	  		//souřadnice tabulky
-	  		if(E->orientace==0 || E->orientace==180){E->Xt=E->X-1.9;E->Yt=E->Y+1.6;}
-	  		else{E->Xt=E->X+0.6;E->Yt=E->Y+0.5;}
-	  		//změna elemetnu na předávací místo
-	  		E->eID=200;
-	  		//názvy výhybek prozatím neřešeny
-	  		//if(OBJEKT_akt==NULL)pom_vyhybka=O;else pom_vyhybka=OBJEKT_akt;
-	  		//unsigned int nTyp=d.v.vrat_poradi_elementu_do(pom_vyhybka,E)+1;
-//  			E->name=name+" "+AnsiString(nTyp);//"Předávací místo"
-//  			E->short_name=E->name.SubString(1,3)+AnsiString(nTyp);
-	  		E->name=name+" X";
-	  		d.v.uprav_popisky_elementu(E);
-	  		pom_vyhybka=NULL;
-				//smazání a znovuvytvoření mGridu elementu
+        //smazání a znovuvytvoření mGridu elementu
 				if(OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n)
 				{
-          nastav_focus();
+        	nastav_focus();
 					ID=E->mGrid->ID;
 					E->mGrid->Delete();
+					E->mGrid=NULL;
+        }
+				//WT přiřazení
+				E->WT=0;//čekání na palec
+				if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)E->WT=m.cekani_na_palec(0,E->dalsi->pohon->roztec,E->dalsi->pohon->aRD,3);
+				//souřadnice tabulky
+				if(E->orientace==0 || E->orientace==180){E->Xt=E->X-1.9;E->Yt=E->Y+1.6;}
+				else{E->Xt=E->X+0.6;E->Yt=E->Y+0.5;}
+				//změna elemetnu na předávací místo
+				E->eID=200;
+				//názvy
+				E->name=name+" X";
+				d.v.uprav_popisky_elementu(E);
+				pom_vyhybka=NULL;
+				//znovuvytvoření mGridu elementu
+				if(OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n)
+				{
 					E->mGrid=new TmGrid(F);
 					E->mGrid->Tag=6;//ID formu
 					E->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
 					design_element(E,false);//nutné!
 				}
-	  	}
+			}
 	  	//////////Aktualizace WT
 			if(E->eID==200)
 			{
@@ -6300,6 +6301,14 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 				bool smazat=false;
 				//pokud je mazané předávací místo zároveň předchozí PM, nulovat ukazatel
 				if(E==predchozi_PM){predchozi_PM=NULL;smazat=true;}
+				//smazání mGridu elementu
+				if((OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n) || smazat)
+				{
+        	nastav_focus();
+					ID=E->mGrid->ID;
+					E->mGrid->Delete();
+					E->mGrid=NULL;
+        }
 				//změna na zarážku
 				E->eID=MaxInt;
 				//změna názvu a úprava číslování, pouze v debug
@@ -6311,19 +6320,16 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 				else E->name="";
 				//vynulování WT
 				E->WT=0;
-				//smazání a znovuvytvoření mGridu elementu
+				//znovuvytvoření mGridu elementu
 				if((OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n) || smazat)
 				{
-					nastav_focus();
-					ID=E->mGrid->ID;
-					E->mGrid->Delete();
 					E->mGrid=new TmGrid(F);
 					E->mGrid->Tag=6;//ID formu
 					E->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
 					design_element(E,false);//nutné!
 				}
 	  	}
-	  	//2 pm přes sebe; bude jednodušeji realizovatelné v novém datovém modelu, přepnutí na zarážku dělá problémy, zatím odstaveno
+			//2 pm přes sebe; bude jednodušeji realizovatelné v novém datovém modelu, přepnutí na zarážku dělá problémy, zatím odstaveno
 			if(E->eID==200 && (E->dalsi!=NULL && E->dalsi->eID==200 && E->dalsi->geo.delka<0.01))
 			{
 	  		//posun na druhé předávací místo
@@ -6333,7 +6339,15 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 	  		//pokud ne je přepnut na zarážku
 	  		else
 	  		{
-	  			//změna na zarážku
+					//smazání mGridu elementu
+					if(OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n)
+					{
+          	nastav_focus();
+						ID=E->mGrid->ID;
+						E->mGrid->Delete();
+						E->mGrid=NULL;
+          }
+					//změna na zarážku
 	  			E->eID=MaxInt;
 	  			//změna názvu a úprava číslování, pouze v debug
 	  			if(DEBUG)
@@ -6344,19 +6358,16 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 	  			else E->name="";
 	  			//vynulování WT
 	  			E->WT=0;
-	  			//smazání a znovuvytvoření mGridu elementu
+					//znovuvytvoření mGridu elementu
 	  			if(OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n)
 	  			{
-						nastav_focus();
-						ID=E->mGrid->ID;
-	  				E->mGrid->Delete();
 	  				E->mGrid=new TmGrid(F);
 	  				E->mGrid->Tag=6;//ID formu
 	  				E->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
 	  				design_element(E,false);//nutné!
 	  			}
 	  		}
-	  	}
+			}
 		}
 		//aktualizace WT u výhybky
 		if(E->eID==300)
@@ -6366,10 +6377,10 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 			if(C!=NULL)//pokud se element nachází na cestě zakázky
 			{
 				p1=E->pohon;p2=C->dalsi->Element->pohon;
-    		if(p1!=NULL && p2!=NULL && p1!=p2)
-    		{
+				if(p1!=NULL && p2!=NULL && p1!=p2)
+				{
     			//načtení hodnot z pohonu
-    			double aRD=p2->aRD,roztec=p2->roztec;
+					double aRD=p2->aRD,roztec=p2->roztec;
 					//přepočty
 					E->WT=m.cekani_na_palec(0,roztec,aRD,3);//důležité pro výpočet RT, nezobrazuje se
 				}
@@ -6419,6 +6430,13 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 		if(e_posledni->eID!=200 && (e_prvni->pohon!=NULL && e_posledni->pohon!=NULL && e_prvni->pohon->n!=e_posledni->pohon->n || e_prvni->pohon!=NULL && e_posledni->pohon==NULL || e_prvni->pohon==NULL && e_posledni->pohon!=NULL))
 		{
 			Cvektory::TElement *E=e_posledni;
+			//mazání mGridu
+			if(OBJEKT_akt!=NULL && e_posledni->objekt_n==OBJEKT_akt->n)
+			{
+      	ID=E->mGrid->ID;
+				E->mGrid->Delete();
+				E->mGrid=NULL;
+      }
 			//WT přiřazení
 			E->WT=0;//čekání na palec
 			if(e_prvni->pohon!=NULL)E->WT=m.cekani_na_palec(0,e_prvni->pohon->roztec,e_prvni->pohon->aRD,3);
@@ -6433,8 +6451,6 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 			//smazání a znovuvytvoření mGridu elementu
 			if(OBJEKT_akt!=NULL && e_posledni->objekt_n==OBJEKT_akt->n)
 			{
-				ID=E->mGrid->ID;
-				E->mGrid->Delete();
 				E->mGrid=new TmGrid(F);
 				E->mGrid->Tag=6;//ID formu
 				E->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
@@ -6445,7 +6461,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 		//////////Aktualizace WT
 		if(e_posledni->eID==200)
 		{
-      int sloupec=4;
+			int sloupec=4;
 			if(prohodit_sloupce_PM(E))sloupec=3;
 			if(e_prvni->pohon!=NULL)e_posledni->WT=m.cekani_na_palec(0,e_prvni->pohon->roztec,e_prvni->pohon->aRD,3);
 			if(OBJEKT_akt!=NULL && OBJEKT_akt->n==e_posledni->objekt_n)E->mGrid->Cells[sloupec][11].Text = F->m.round2double(F->outPT(E->WT),3);
@@ -12040,12 +12056,12 @@ void TForm1::NP_input()
 				if(E->eID==200 || E->eID==300)
 				{
 			  	poh_tab=true;//pohonová tabulka v editaci bude exitovat
-			  	//otevřít combo, pokud není vybrán pohon
-			  	TscGPComboBox *C1=E->mGrid->getCombo(3,2),*C2=E->mGrid->getCombo(4,2);
-			  	if(C1!=NULL && C1->ItemIndex==0 && C1->Enabled){C1->DropDown();FormX->vstoupeno_elm=true;Memo("rozbalit");}
-			  	if(C2!=NULL && C2->ItemIndex==0 && C2->Enabled){C2->DropDown();FormX->vstoupeno_elm=true;Memo("rozbalit");}
-			  	C1=NULL;C2=NULL;
-					delete C1;delete C2;
+//			  	//otevřít combo, pokud není vybrán pohon
+//					TscGPComboBox *C1=E->mGrid->getCombo(3,2),*C2=E->mGrid->getCombo(4,2);
+//					if(C1!=NULL && C1->ItemIndex==0 && C1->Enabled){C1->DropDown();FormX->vstoupeno_elm=true;Memo("rozbalit");}
+//					if(C2!=NULL && C2->ItemIndex==0 && C2->Enabled){C2->DropDown();FormX->vstoupeno_elm=true;Memo("rozbalit");}
+//					C1=NULL;C2=NULL;
+//					delete C1;delete C2;
 				}
 			}
 			E=d.v.dalsi_krok(E,OBJEKT_akt);
@@ -13975,10 +13991,11 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	TRect ob=vrat_max_oblast(OBJEKT_akt,true);
-	Canvas->Brush->Color=clRed;
-	Canvas->Pen->Color=clRed;
-	Canvas->Rectangle(ob);
+//	TRect ob=vrat_max_oblast(OBJEKT_akt,true);
+//	Canvas->Brush->Color=clRed;
+//	Canvas->Pen->Color=clRed;
+//	Canvas->Rectangle(ob);
+	Close();
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
