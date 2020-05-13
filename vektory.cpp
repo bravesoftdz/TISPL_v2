@@ -5322,7 +5322,7 @@ void Cvektory::generuj_VOZIKY()
 		bool SG=SGlinka();//typ linky, pokud obsahuje alespoň jeden SG elemement je již SG, kontinuální má význám hlavně pro prvotní zakreslování
 		int pocet_voziku_z_prejezdu_na_bufferu=0;//počet vozíků přicházejících z přejezdu, které již "narazily" do bufferu
 
-		bool element_pouzit=new bool[];
+		//bool element_pouzit=new bool[];
 		////procházení seznamu cesty dané zakázky
 		TCesta *C=ZAKAZKA_akt->cesta->dalsi;//přeskočí hlavičku
 		while (C!=NULL)

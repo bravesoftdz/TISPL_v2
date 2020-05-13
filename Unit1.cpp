@@ -14003,7 +14003,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 void __fastcall TForm1::Button14Click(TObject *Sender)
 {
  //log(__func__);
- Form2->ShowModal();
+// Form2->ShowModal();
 //	d.v.vytvor_retez(d.v.POHONY->dalsi);
 //	d.vykresli_retez(Canvas,d.v.POHONY->dalsi->retez);
 ////	d.v.vytvor_retez(d.v.POHONY->predchozi);
@@ -14071,6 +14071,23 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 //			V=V->dalsi;
 //		}
 //		delete V;
+
+
+	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+	while(E!=NULL)
+	{
+		Memo(String(E->n)+" "+String(E->name));
+		E=d.v.dalsi_krok(E);
+	}
+	E=NULL;delete E; //pokud nedojde algoritmus na konec seznamu
+	delete E;E=NULL; //pokud dojde na konec seznamu
+
+
+
+
+
+
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
