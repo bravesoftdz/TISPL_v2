@@ -8289,9 +8289,9 @@ void TForm1::vytvoreni_tab_pohon(bool existuje_poh_tabulka)
 		//umístění tabulky
 		TRect oblast_kabiny=vrat_max_oblast(OBJEKT_akt,true);
 		if(OBJEKT_akt->Xp<0 && OBJEKT_akt->Yp<0)//definice pozice při prvním otevření objektu
-  	{
-  		OBJEKT_akt->Xp=m.P2Lx(oblast_kabiny.right+30);
-  		OBJEKT_akt->Yp=m.P2Ly(oblast_kabiny.top-F->PmG->Rows->Height-30);
+		{
+			OBJEKT_akt->Xp=m.P2Lx(oblast_kabiny.right+10);    //+30
+			OBJEKT_akt->Yp=m.P2Ly(oblast_kabiny.top-F->PmG->Rows->Height);//-30
 		}
 		//naplnění comba hodnotami
 		PmG->Update();
@@ -8305,11 +8305,11 @@ void TForm1::vytvoreni_tab_pohon(bool existuje_poh_tabulka)
 		PmG->VisibleRow(7,false,false);
 		PmG->VisibleRow(8,false,false);
 		//kontrola zda není PmG mimo obraz, pokud ano zobrazit na def. místo
-		if(PmG->Top+PmG->Height<34 || PmG->Top>ClientHeight-73 || PmG->Left+PmG->Width<168 || PmG->Left>ClientWidth)
-		{
-			OBJEKT_akt->Xp=m.P2Lx(ClientWidth*2/3.0);
-			OBJEKT_akt->Yp=m.P2Ly(ClientHeight/2.0);
-		}
+//		if(PmG->Top+PmG->Height<34 || PmG->Top>ClientHeight-73 || PmG->Left+PmG->Width<168 || PmG->Left>ClientWidth)
+//		{
+//			OBJEKT_akt->Xp=m.P2Lx(ClientWidth*2/3.0);
+//			OBJEKT_akt->Yp=m.P2Ly(ClientHeight/2.0);
+//		}
   	PmG->Refresh();
 		if(PmG->Note.Text!="")PmG->ShowNote(PmG->Note.Text,d.clWarning,14);
 	}
@@ -8824,7 +8824,7 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 		{
    		C1->Clear();C2->Clear();
    		C1->Font->Color=(TColor)RGB(43,87,154);C2->Font->Color=(TColor)RGB(43,87,154);
-   		C1->BiDiMode=bdRightToLeft;C2->BiDiMode=bdRightToLeft;
+			C1->BiDiMode=bdRightToLeft;C2->BiDiMode=bdRightToLeft;
    		C1->Enabled=true;C2->Enabled=true;
 			//přidávání itemů do comba
    		TscGPListBoxItem *I1,*I2;
@@ -8865,7 +8865,7 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
    			//zakazování comb
    			if(E->objekt_n!=OBJEKT_akt->n)C1->Enabled=false;
    			if((E->dalsi!=NULL && E->dalsi->objekt_n!=E->objekt_n || E->dalsi==NULL) && predchozi_PM!=E)C2->Enabled=false;
-   		}
+			}
 
    		//kontrola zda můžu editovat pohon
 			zmena_editovanych_bunek(E);//automaticky nastaví editované položky a needitovatelné položky pro pohonové tabulky
@@ -12037,7 +12037,16 @@ void TForm1::NP_input()
 				design_element(E,true);//znovuvytvoření tabulek
 				if(E->sparovany!=NULL && E->sparovany->objekt_n==OBJEKT_akt->n)E->sparovany=d.v.vrat_element(OBJEKT_akt,E->sparovany->n);//atualizace ukazatelů
 				if(d.v.vrat_druh_elementu(E)==0)d.v.reserve_time(E);//aktualizace RT, v případě, že došlo ke změně přejezdu
-				if(E->eID==200 || E->eID==300)poh_tab=true;//pohonová tabulka v editaci bude exitovat
+				if(E->eID==200 || E->eID==300)
+				{
+			  	poh_tab=true;//pohonová tabulka v editaci bude exitovat
+			  	//otevřít combo, pokud není vybrán pohon
+			  	TscGPComboBox *C1=E->mGrid->getCombo(3,2),*C2=E->mGrid->getCombo(4,2);
+			  	if(C1!=NULL && C1->ItemIndex==0 && C1->Enabled){C1->DropDown();FormX->vstoupeno_elm=true;Memo("rozbalit");}
+			  	if(C2!=NULL && C2->ItemIndex==0 && C2->Enabled){C2->DropDown();FormX->vstoupeno_elm=true;Memo("rozbalit");}
+			  	C1=NULL;C2=NULL;
+					delete C1;delete C2;
+				}
 			}
 			E=d.v.dalsi_krok(E,OBJEKT_akt);
 		}
@@ -13966,7 +13975,9 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	TRect ob=vrat_max_oblast(OBJEKT_akt);
+	TRect ob=vrat_max_oblast(OBJEKT_akt,true);
+	Canvas->Brush->Color=clRed;
+	Canvas->Pen->Color=clRed;
 	Canvas->Rectangle(ob);
 }
 //---------------------------------------------------------------------------

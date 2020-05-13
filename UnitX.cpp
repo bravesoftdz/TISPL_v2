@@ -1204,6 +1204,7 @@ void TFormX::odstranit_korelaci(bool predat_focus)
 //validace rychlosti pøi její zmìnì
 void TFormX::validace_aRD(bool pouze_rozmezi)
 {
+	//kontrola pøi KK stavu objektu, validace všeho
 	if(F->PmG!=NULL && F->OBJEKT_akt->pohon!=NULL && F->OBJEKT_akt->rezim==1)
 	{
     //smazání pøedchozí validace z VID
@@ -1216,9 +1217,9 @@ void TFormX::validace_aRD(bool pouze_rozmezi)
 		bool mimo_rozmezi=false;
 		unsigned int pro_pohon=0;
   	dopRD=0;
-  	//kontrola zda je zadaná hodnota v rozmezí
-  	if(F->m.between(F->OBJEKT_akt->pohon->aRD,F->OBJEKT_akt->pohon->rychlost_od,F->OBJEKT_akt->pohon->rychlost_do)) mimo_rozmezi=false;
-  	else mimo_rozmezi=true;
+		//kontrola zda je zadaná hodnota v rozmezí
+		if(F->m.between(F->OBJEKT_akt->pohon->aRD,F->OBJEKT_akt->pohon->rychlost_od,F->OBJEKT_akt->pohon->rychlost_do)) mimo_rozmezi=false;
+		else mimo_rozmezi=true;
   	//zadaná rychlost je mimo rozsah
   	if(mimo_rozmezi && F->OBJEKT_akt->pohon->aRD > 0)
   	{
@@ -1227,7 +1228,7 @@ void TFormX::validace_aRD(bool pouze_rozmezi)
 			povolit_zakazat_editaci(false);
 			pro_pohon=F->OBJEKT_akt->pohon->n;//uložení pro který pohon platí validace
 		}
-  	if(!mimo_rozmezi && F->PmG->Note.Text!=""){F->PmG->ShowNote("",F->d.clError,14);povolit_zakazat_editaci(true);}
+		if(!mimo_rozmezi && F->PmG->Note.Text!=""){F->PmG->ShowNote("",F->d.clError,14);povolit_zakazat_editaci(true);}
   	// nutné ošetøení pro období zadávání/psaní
   	if(F->OBJEKT_akt->pohon->aRD > 0 && !pouze_rozmezi)
   	{
@@ -1261,7 +1262,31 @@ void TFormX::validace_aRD(bool pouze_rozmezi)
 			validovany_pohon=pro_pohon;//uložit pohon na kterém se to stalo
 			zapisVID(1,1);//zapsání problému do VID, pozice jsou popsány v .h u deklarace VID a vnì metody zapisVID()
 		}
-  }
+	}
+	//kontrola pøi ostatních stavech objektu, pouze rozmezí rychlostí
+	if(F->PmG!=NULL && F->OBJEKT_akt->pohon!=NULL && F->OBJEKT_akt->rezim!=1)
+	{
+    //deklarace
+		unsigned int pro_pohon=0;
+		//defaultní stav
+		zapisVID(0,1);//pozice jsou popsány v .h u deklarace VID a vnì metody zapisVID()
+		F->PmG->ShowNote("",F->d.clError,14);
+		validovany_pohon=0;//uložit pohon na kterém se to stalo
+		povolit_zakazat_editaci(true);
+		//kontrola zda je zadaná hodnota v rozmezí
+		if(!F->m.between(F->OBJEKT_akt->pohon->aRD,F->OBJEKT_akt->pohon->rychlost_od,F->OBJEKT_akt->pohon->rychlost_do))
+		{
+    	F->PmG->ShowNote(F->ls->Strings[220],F->d.clError,14);//"Rychlost neodpovídá rozmezí!"
+			povolit_zakazat_editaci(false);
+			pro_pohon=F->OBJEKT_akt->pohon->n;//uložení pro který pohon platí validace
+		}
+		//pokud probìhla validace s problémem
+		if(pro_pohon!=0)
+		{
+			validovany_pohon=pro_pohon;//uložit pohon na kterém se to stalo
+			zapisVID(1,1);//zapsání problému do VID, pozice jsou popsány v .h u deklarace VID a vnì metody zapisVID()
+		}
+	}
 }
 //---------------------------------------------------------------------------
 //validace maximálního poètu vozíkù na stopce
@@ -1727,6 +1752,22 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 	     		}
 					else E->mGrid->ShowNote(F->ls->Strings[222],F->d.clError,14);//"Neplatná hodnota rychlosti pohonu!"
 				}
+			}
+		}
+		//vaidace pro ostatní režimy objektu, nutné kontrolovat rozmezí rychlosti
+		else
+		{
+			if((p1!=NULL && !F->m.between(p1->aRD,p1->rychlost_od,p1->rychlost_do)) || (p2!=NULL && !F->m.between(p2->aRD,p2->rychlost_od,p2->rychlost_do)))
+			{
+      	E->mGrid->ShowNote(F->ls->Strings[220],F->d.clError,14);//"Rychlost neodpovídá rozmezí!"
+				povolit_zakazat_editaci(false);//zakáže btn uložit v editaci
+				if(p1!=NULL && !F->m.between(p1->aRD,p1->rychlost_od,p1->rychlost_do))pro_pohon=p1->n;//uložení pro který pohon platí validace
+				else pro_pohon=p2->n;
+			}
+			else
+			{
+				E->mGrid->ShowNote("",F->d.clError,14);
+				povolit_zakazat_editaci(true);
 			}
 		}
 
