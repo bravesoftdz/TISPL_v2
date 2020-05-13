@@ -2005,8 +2005,8 @@ AnsiString TForm1::readINI(AnsiString Section,AnsiString Ident)
 	}
 }
 //---------------------------------------------------------------------------
-//odešle e-mail, doručitel na všech třech úrovní To,ccTo,bccTo mohou být mnohonásobně zadaní, pouze odělené čárkou, tělo e-mailu lze zadat jako html
-void TForm1::mail(String Host,String Username,String Password,String FromAddress,String FromName,String Subject,String Body,String To,String ccTo,String bccTo,String FileName,String FileName2)
+//odešle e-mail, doručitel na všech třech úrovní To,ccTo,bccTo mohou být mnohonásobně zadaní, pouze odělené čárkou, tělo e-mailu lze zadat jako html, návratová hodnota vrací úspěšnost provedení
+bool TForm1::mail(String Host,String Username,String Password,String FromAddress,String FromName,String Subject,String Body,String To,String ccTo,String bccTo,String FileName,String FileName2)
 {
 	try
 	{
@@ -2036,10 +2036,11 @@ void TForm1::mail(String Host,String Username,String Password,String FromAddress
 		delete Attach;//musí být jako první
 		delete MAIL;
 		delete SMTP;
+		return true;
 	}
 	catch(...)//v případě chyby odeslání
 	{
-		MB("Odeslání se nezdařilo!");
+		return false;//"Odeslání se nezdařilo! či jiná chyba
 	}
 }
 //---------------------------------------------------------------------------
