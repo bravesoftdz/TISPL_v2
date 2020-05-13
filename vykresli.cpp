@@ -197,7 +197,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
    	  	}
 			}
 			//posun na další element
-   		E=v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);//nutné použít tento průcodový algoritmus, v tomto průchodu je volán algoritmus dalsi_krok, proto ho nelze použít
+   		E=v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);//nutné použít tento průchodový algoritmus, v tomto průchodu je volán algoritmus dalsi_krok, proto ho nelze použít
    	}
    	delete E;E=NULL;
    	pom=NULL;delete pom;
