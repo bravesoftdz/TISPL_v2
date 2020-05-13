@@ -2105,7 +2105,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 		//vkládání geometrie
 		else
 		{
-			if(vyhybka_pom!=NULL && force_razeni->eID==301 && force_razeni->objekt_n!=F->OBJEKT_akt->n)//vkládání elementu mezi výhybku a spojku
+			if(vyhybka_pom!=NULL && force_razeni->eID==301 && force_razeni->predchozi2->eID==300)//force_razeni->objekt_n!=F->OBJEKT_akt->n)//vkládání elementu mezi výhybku a spojku
 			{
       	Element->dalsi=force_razeni;
 				force_razeni->predchozi2->dalsi2=Element;
@@ -2142,16 +2142,16 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 	  	//změna indexů
 			Cvektory::TElement *E=ELEMENTY->dalsi;
 			int n=1;
-	  	while(E!=NULL)
-	  	{
-	  		//indexy
-	  		E->n=n;
-	  		n++;
-	  		E=dalsi_krok(E);
+			while(E!=NULL)
+			{
+				//indexy
+				E->n=n;
+				n++;
+				E=dalsi_krok(E);
 			}
 			E=NULL;delete E;
-	  	//změna názvů
-	  	uprav_popisky_elementu(Element);
+			//změna názvů
+			uprav_popisky_elementu(Element);
 		}
 	}
 }
