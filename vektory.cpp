@@ -5321,6 +5321,8 @@ void Cvektory::generuj_VOZIKY()
 		bool rotacni_zbytek=false;//indikátor, pokud předcházela kontinuální/pasivní otoč
 		bool SG=SGlinka();//typ linky, pokud obsahuje alespoň jeden SG elemement je již SG, kontinuální má význám hlavně pro prvotní zakreslování
 		int pocet_voziku_z_prejezdu_na_bufferu=0;//počet vozíků přicházejících z přejezdu, které již "narazily" do bufferu
+
+		//bool element_pouzit=new bool[];
 		////procházení seznamu cesty dané zakázky
 		TCesta *C=ZAKAZKA_akt->cesta->dalsi;//přeskočí hlavičku
 		while (C!=NULL)
@@ -5358,7 +5360,7 @@ void Cvektory::generuj_VOZIKY()
 					Ct=NULL;delete Ct;
 					Esd=NULL;delete Esd;
 				}
-				//nutno dořešit konec linky a začátek linky buffer (resp. stop), aby nedošlo k překryvu vozíků jako je tomu teď v aktuálním projektu
+
 			}
 			////pro KONTINUÁLNÍ linku tj. bez S&G elementu, např. ale i pro úvodní zakreslování
 			////taktuje se od začátku prvního geometrického elementu prvního vloženého objektu, generuje se se zpětně (co předchází elementu)
@@ -6474,133 +6476,132 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 {
 	try
 	{
-     //vytvoření streamu pro zápis do souboru
-		 TFileStream *FileStream=new TFileStream(FileName,fmOpenWrite|fmCreate);
+		//vytvoření streamu pro zápis do souboru
+		TFileStream *FileStream=new TFileStream(FileName,fmOpenWrite|fmCreate);
 
-		 //zapiše hlavičku do souboru //už neplatí:+ zbylé atributy a PP se do hlavičky zapisují v unit1
-		 vytvor_hlavicku_souboru();
-		 FileStream->Write(&File_hlavicka,sizeof(TFile_hlavicka));
+		//zapiše hlavičku do souboru //už neplatí:+ zbylé atributy a PP se do hlavičky zapisují v unit1
+		vytvor_hlavicku_souboru();
+		FileStream->Write(&File_hlavicka,sizeof(TFile_hlavicka));
 
-		 //uložení parametrů RASTRU
-		 C_raster *R=new C_raster;
-		 R->text_length=PP.raster.filename.Length()+1;
-		 R->resolution=PP.raster.resolution;
-		 R->X=PP.raster.X;
-		 R->Y=PP.raster.Y;
-		 R->show=PP.raster.show;
-		 R->grayscale=PP.raster.grayscale;
-		 R->dim=PP.raster.dim;
-		 FileStream->Write(R,sizeof(C_raster));//zapiše jeden prvek do souboru
-		 //text - adresa rastru
-		 wchar_t *name=new wchar_t[R->text_length];
-		 name=PP.raster.filename.c_str();
-		 FileStream->Write(name,R->text_length*sizeof(wchar_t));//zapiše druhý řetězec za prvek bod
-		 name=NULL; delete[] name;
-		 R=NULL;delete R;
+		//uložení parametrů RASTRU
+		C_raster *R=new C_raster;
+		R->text_length=PP.raster.filename.Length()+1;
+		R->resolution=PP.raster.resolution;
+		R->X=PP.raster.X;
+		R->Y=PP.raster.Y;
+		R->show=PP.raster.show;
+		R->grayscale=PP.raster.grayscale;
+		R->dim=PP.raster.dim;
+		FileStream->Write(R,sizeof(C_raster));//zapiše jeden prvek do souboru
+		//text - adresa rastru
+		wchar_t *name=new wchar_t[R->text_length];
+		name=PP.raster.filename.c_str();
+		FileStream->Write(name,R->text_length*sizeof(wchar_t));//zapiše druhý řetězec za prvek bod
+		name=NULL; delete[] name;
+		R=NULL;delete R;
 
-		 //uložení POHONŮ
-		 TPohon *ukaz1=POHONY->dalsi;
-		 while (ukaz1!=NULL)
-		 {
-			 ////překopírování dat do pomocného objektu uložitelného do bináru
-			 C_pohon *c_ukaz1=new C_pohon;
-      // ShowMessage("uloz pohon n"+AnsiString(ukaz1->n));
-			 //samotná data
-			 c_ukaz1->n=ukaz1->n;
-			 c_ukaz1->text_length=ukaz1->name.Length()+1;
-			 c_ukaz1->rychlost_od=ukaz1->rychlost_od;
-			 c_ukaz1->rychlost_do=ukaz1->rychlost_do;
-			 c_ukaz1->aRD=ukaz1->aRD;
-			 c_ukaz1->roztec=ukaz1->roztec;
-			 c_ukaz1->Rz=ukaz1->Rz;
-			 c_ukaz1->Rx=ukaz1->Rx;
-			 FileStream->Write(c_ukaz1,sizeof(C_pohon));//zapiše jeden prvek do souboru
-			 //text - name
-			 wchar_t *name=new wchar_t [c_ukaz1->text_length];
-			 name=ukaz1->name.c_str();
-			 FileStream->Write(name,c_ukaz1->text_length*sizeof(wchar_t));//zapiše druhý řetězec za prvek bod
-			 name=NULL; delete[] name;
+		//uložení POHONŮ
+		TPohon *ukaz1=POHONY->dalsi;
+		while (ukaz1!=NULL)
+		{
+			////překopírování dat do pomocného objektu uložitelného do bináru
+			C_pohon *c_ukaz1=new C_pohon;
+			// ShowMessage("uloz pohon n"+AnsiString(ukaz1->n));
+			//samotná data
+			c_ukaz1->n=ukaz1->n;
+			c_ukaz1->text_length=ukaz1->name.Length()+1;
+			c_ukaz1->rychlost_od=ukaz1->rychlost_od;
+			c_ukaz1->rychlost_do=ukaz1->rychlost_do;
+			c_ukaz1->aRD=ukaz1->aRD;
+			c_ukaz1->roztec=ukaz1->roztec;
+			c_ukaz1->Rz=ukaz1->Rz;
+			c_ukaz1->Rx=ukaz1->Rx;
+			FileStream->Write(c_ukaz1,sizeof(C_pohon));//zapiše jeden prvek do souboru
+			//text - name
+			wchar_t *name=new wchar_t [c_ukaz1->text_length];
+			name=ukaz1->name.c_str();
+			FileStream->Write(name,c_ukaz1->text_length*sizeof(wchar_t));//zapiše druhý řetězec za prvek bod
+			name=NULL; delete[] name;
 
-			 c_ukaz1=NULL;delete c_ukaz1;
-			 ukaz1=ukaz1->dalsi;//posunutí na další pozici v seznamu
-		 };
-		 ukaz1=NULL;delete ukaz1;
+			c_ukaz1=NULL;delete c_ukaz1;
+			ukaz1=ukaz1->dalsi;//posunutí na další pozici v seznamu
+		};
+		ukaz1=NULL;delete ukaz1;
 
-		 ////OBJEKTů
-		 TObjekt *ukaz=OBJEKTY->dalsi;
-		 while (ukaz!=NULL)
-		 {
-			 ////překopírování dat do pomocného objektu uložitelného do bináru
-			 C_objekt *c_ukaz=new C_objekt;
+		////OBJEKTů
+		TObjekt *ukaz=OBJEKTY->dalsi;
+		while (ukaz!=NULL)
+		{
+			////překopírování dat do pomocného objektu uložitelného do bináru
+			C_objekt *c_ukaz=new C_objekt;
 
-			 if(ukaz->n>0 && File_hlavicka.pocet_objektu>=ukaz->n)//mimo hlavičky či shitu
-			 {
-				 //samotná data
-				 c_ukaz->n=ukaz->n;
-				 c_ukaz->id=ukaz->id;
-				 c_ukaz->X=ukaz->X;
-				 c_ukaz->Y=ukaz->Y;
-				 c_ukaz->Xt=ukaz->Xt;
-				 c_ukaz->Yt=ukaz->Yt;
-				 c_ukaz->Xp=ukaz->Xp;
-				 c_ukaz->Yp=ukaz->Yp;
-				 c_ukaz->orientace_text=ukaz->orientace_text;
-				 c_ukaz->sirka_steny=ukaz->sirka_steny;
-         c_ukaz->orientace=ukaz->orientace;
-				 c_ukaz->rezim=ukaz->rezim;
-				 if(ukaz->body!=NULL)c_ukaz->pocet_bodu=ukaz->body->predchozi->n;
-				 else c_ukaz->pocet_bodu=0;
-				 if(ukaz->element!=NULL) c_ukaz->element_n=ukaz->element->n;
-				 else c_ukaz->element_n=0;
-				 if(ukaz->komora!=NULL) c_ukaz->pocet_komor=ukaz->komora->predchozi->n;
-				 else c_ukaz->pocet_komor=0;
-				 //c_ukaz->rotace=ukaz->rotace;
-				 if(ukaz->pohon!=NULL)c_ukaz->pohon=ukaz->pohon->n;
-				 else c_ukaz->pohon=0;
-				 c_ukaz->koty_elementu_offset=ukaz->koty_elementu_offset;
-				 c_ukaz->zobrazit_koty=ukaz->zobrazit_koty;
-				 c_ukaz->zobrazit_mGrid=ukaz->zobrazit_mGrid;
-				 c_ukaz->uzamknout_nahled=ukaz->uzamknout_nahled;
-				 c_ukaz->text_length=ukaz->name.Length()+1;
-				 FileStream->Write(c_ukaz,sizeof(C_objekt));//zapiše jeden prvek do souboru
-				 //text - short name
-				 wchar_t *short_name=new wchar_t[5];//max 4 znaky
-				 short_name=ukaz->short_name.c_str();
-				 FileStream->Write(short_name,5*sizeof(wchar_t));//zapiše jeden řetězec za prvek bod
-				 short_name=NULL; delete[] short_name;
-				 //text - name
-				 wchar_t *name=new wchar_t [c_ukaz->text_length];
-				 name=ukaz->name.c_str();
-				 FileStream->Write(name,c_ukaz->text_length*sizeof(wchar_t));//zapiše druhý řetězec za prvek bod
-				 name=NULL; delete[] name;
-				 //zapis bodu objektu
-				 if(c_ukaz->n>0 && c_ukaz->pocet_bodu>0)
-				 {
-					 TBod *B=ukaz->body->dalsi;
-					 while(B!=NULL)
-					 {
-						 //překopírování dat do pomocného objektu uložitelného do bináru
-						 C_bod *cB=new C_bod;
-						 //plněný - kopírování dat jednotlivých atributů
-						 cB->n=B->n;
-						 cB->X=B->X;
-						 cB->Y=B->Y;
-						 cB->kota_offset=B->kota_offset;
-						 FileStream->Write(cB,sizeof(C_bod));//zapiše jeden prvek do souboru
-						 //posun na další bod
-						 B=B->dalsi;
-						 delete cB; cB=NULL;
-					 }
-					 delete B; B=NULL;
-				 }
-
-				 	 //zapis komor do objektu
-         if(c_ukaz->n>0 && c_ukaz->pocet_komor>0)
-         {
-				 	TKomora *K=ukaz->komora->dalsi;
-           while(K!=NULL)
-           {
-				 		//překopírování dat do pomocného objektu uložitelného do bináru
+			if(ukaz->n>0 && File_hlavicka.pocet_objektu>=ukaz->n)//mimo hlavičky či shitu
+			{
+				//samotná data
+				c_ukaz->n=ukaz->n;
+				c_ukaz->id=ukaz->id;
+				c_ukaz->X=ukaz->X;
+				c_ukaz->Y=ukaz->Y;
+				c_ukaz->Xt=ukaz->Xt;
+				c_ukaz->Yt=ukaz->Yt;
+				c_ukaz->Xp=ukaz->Xp;
+				c_ukaz->Yp=ukaz->Yp;
+				c_ukaz->orientace_text=ukaz->orientace_text;
+				c_ukaz->sirka_steny=ukaz->sirka_steny;
+				c_ukaz->orientace=ukaz->orientace;
+				c_ukaz->rezim=ukaz->rezim;
+				if(ukaz->body!=NULL)c_ukaz->pocet_bodu=ukaz->body->predchozi->n;
+				else c_ukaz->pocet_bodu=0;
+				if(ukaz->element!=NULL) c_ukaz->element_n=ukaz->element->n;
+				else c_ukaz->element_n=0;
+				if(ukaz->komora!=NULL) c_ukaz->pocet_komor=ukaz->komora->predchozi->n;
+				else c_ukaz->pocet_komor=0;
+				//c_ukaz->rotace=ukaz->rotace;
+				if(ukaz->pohon!=NULL)c_ukaz->pohon=ukaz->pohon->n;
+				else c_ukaz->pohon=0;
+				c_ukaz->koty_elementu_offset=ukaz->koty_elementu_offset;
+				c_ukaz->zobrazit_koty=ukaz->zobrazit_koty;
+				c_ukaz->zobrazit_mGrid=ukaz->zobrazit_mGrid;
+				c_ukaz->uzamknout_nahled=ukaz->uzamknout_nahled;
+				c_ukaz->text_length=ukaz->name.Length()+1;
+				FileStream->Write(c_ukaz,sizeof(C_objekt));//zapiše jeden prvek do souboru
+				//text - short name
+				wchar_t *short_name=new wchar_t[5];//max 4 znaky
+				short_name=ukaz->short_name.c_str();
+				FileStream->Write(short_name,5*sizeof(wchar_t));//zapiše jeden řetězec za prvek bod
+				short_name=NULL; delete[] short_name;
+				//text - name
+				wchar_t *name=new wchar_t [c_ukaz->text_length];
+				name=ukaz->name.c_str();
+				FileStream->Write(name,c_ukaz->text_length*sizeof(wchar_t));//zapiše druhý řetězec za prvek bod
+				name=NULL; delete[] name;
+				//zapis bodu objektu
+				if(c_ukaz->n>0 && c_ukaz->pocet_bodu>0)
+				{
+					TBod *B=ukaz->body->dalsi;
+					while(B!=NULL)
+					{
+						//překopírování dat do pomocného objektu uložitelného do bináru
+						C_bod *cB=new C_bod;
+						//plněný - kopírování dat jednotlivých atributů
+						cB->n=B->n;
+						cB->X=B->X;
+						cB->Y=B->Y;
+						cB->kota_offset=B->kota_offset;
+						FileStream->Write(cB,sizeof(C_bod));//zapiše jeden prvek do souboru
+						//posun na další bod
+						B=B->dalsi;
+						delete cB; cB=NULL;
+					}
+					delete B; B=NULL;
+				}
+				//zapis komor do objektu
+				if(c_ukaz->n>0 && c_ukaz->pocet_komor>0)
+				{
+					TKomora *K=ukaz->komora->dalsi;
+					while(K!=NULL)
+					{
+						//překopírování dat do pomocného objektu uložitelného do bináru
 						 C_komora *cK=new C_komora;
 						//plněný - kopírování dat jednotlivých atributů
 						cK->n=K->n;
@@ -6609,77 +6610,77 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 						FileStream->Write(cK,sizeof(C_komora));//zapiše jeden prvek do souboru
 						//posun na další bod
 						K=K->dalsi;
-				 		delete cK; cK=NULL;
+						delete cK; cK=NULL;
 					}
 					delete K; K=NULL;
-				 }
-			 }
-			 c_ukaz=NULL;delete c_ukaz;
-			 ukaz=ukaz->dalsi;//posunutí na další pozici v seznamu
-		 };
-		 ukaz=NULL;delete ukaz;
+				}
+			}
+			c_ukaz=NULL;delete c_ukaz;
+			ukaz=ukaz->dalsi;//posunutí na další pozici v seznamu
+		};
+		ukaz=NULL;delete ukaz;
 
-		 ////ELEMENTY
-			TPoint *tab_pruchodu=new TPoint[pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
-			TElement *E=ELEMENTY->dalsi;
-			while(E!=NULL)
+		////ELEMENTY
+		TPoint *tab_pruchodu=new TPoint[pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
+		TElement *E=ELEMENTY->dalsi;
+		while(E!=NULL)
+		{
+			//překopírování dat do pomocného objektu uložitelného do bináru
+			C_element *cE=new C_element;
+			if(E->n>0)// && File_hlavicka.pocet_elementu>=E->n)
 			{
-			 //překopírování dat do pomocného objektu uložitelného do bináru
-			 C_element *cE=new C_element;
-			 if(E->n>0)// && File_hlavicka.pocet_elementu>=E->n)
-			 {
-				 //plněný - kopírování dat jednotlivých atributů
-				 cE->n=E->n;
-				 //  ShowMessage("uloz element n"+AnsiString(E->n));
-				 cE->eID=E->eID;
-				 cE->idetifikator_vyhybka_spojka=E->idetifikator_vyhybka_spojka;
-				 cE->name_delka=E->name.Length()+1;
-				 cE->X=E->X;
-				 cE->Y=E->Y;
-				 cE->Xt=E->Xt;
-				 cE->Yt=E->Yt;
-				 cE->orientace=E->orientace;
-				 cE->rotace_jig=E->rotace_jig;
-				 cE->stav=E->stav;
-				 cE->PD=E->data.PD;
-				 cE->LO1=E->data.LO1;
-				 cE->OTOC_delka=E->OTOC_delka;
-				 cE->zona_pred=E->zona_pred;
-				 cE->zona_za=E->zona_za;
-				 cE->LO2=E->data.LO2;
-				 cE->LO_pozice=E->data.LO_pozice;
-				 cE->PT1=E->data.PT1;
-				 cE->PTotoc=E->PTotoc;
-				 cE->PT2=E->data.PT2;
-				 cE->WT=E->WT;
-				 cE->WTstop=E->data.WTstop;
-		  	 cE->RT=E->data.RT;
-		  	 cE->akt_pocet_voziku=E->data.pocet_voziku;
-		  	 cE->max_pocet_voziku=E->data.pocet_pozic;
-				 cE->objekt_n=E->objekt_n;
-				 //  ShowMessage("E->pohony->n");
-		  	 if(E->pohon==NULL) cE->pohon_n=0;
-		  	 else cE->pohon_n=E->pohon->n;
-				 cE->geo=E->geo;
-				 //uložení do binárního filu
-				 FileStream->Write(cE,sizeof(C_element));//zapiše jeden prvek do souboru
+				//plněný - kopírování dat jednotlivých atributů
+				cE->n=E->n;
+				//  ShowMessage("uloz element n"+AnsiString(E->n));
+				cE->eID=E->eID;
+				cE->idetifikator_vyhybka_spojka=E->idetifikator_vyhybka_spojka;
+				cE->name_delka=E->name.Length()+1;
+				cE->X=E->X;
+				cE->Y=E->Y;
+				cE->Xt=E->Xt;
+				cE->Yt=E->Yt;
+				cE->orientace=E->orientace;
+				cE->rotace_jig=E->rotace_jig;
+				cE->stav=E->stav;
+				cE->PD=E->data.PD;
+				cE->LO1=E->data.LO1;
+				cE->OTOC_delka=E->OTOC_delka;
+				cE->zona_pred=E->zona_pred;
+				cE->zona_za=E->zona_za;
+				cE->LO2=E->data.LO2;
+				cE->LO_pozice=E->data.LO_pozice;
+				cE->PT1=E->data.PT1;
+				cE->PTotoc=E->PTotoc;
+				cE->PT2=E->data.PT2;
+				cE->WT=E->WT;
+				cE->WTstop=E->data.WTstop;
+				cE->RT=E->data.RT;
+				cE->akt_pocet_voziku=E->data.pocet_voziku;
+				cE->max_pocet_voziku=E->data.pocet_pozic;
+				cE->objekt_n=E->objekt_n;
+				//  ShowMessage("E->pohony->n");
+				if(E->pohon==NULL) cE->pohon_n=0;
+				else cE->pohon_n=E->pohon->n;
+				cE->geo=E->geo;
+				//uložení do binárního filu
+				FileStream->Write(cE,sizeof(C_element));//zapiše jeden prvek do souboru
 
-		  	 //text - short_name
-				 wchar_t *short_name=new wchar_t[5];
-				 short_name=E->short_name.c_str();
-		  	 FileStream->Write(short_name,5*sizeof(wchar_t));// fixni pocet pozic
-				 short_name=NULL; delete[] short_name;
+				//text - short_name
+				wchar_t *short_name=new wchar_t[5];
+				short_name=E->short_name.c_str();
+				FileStream->Write(short_name,5*sizeof(wchar_t));// fixni pocet pozic
+				short_name=NULL; delete[] short_name;
 
-				 //text - name
-				 wchar_t *name=new wchar_t [cE->name_delka];
-		  	 name=E->name.c_str();
-				 FileStream->Write(name,cE->name_delka*sizeof(wchar_t));//
-				 //   ShowMessage(AnsiString(name)+" uloz pohon n:"+AnsiString(cE->pohon_n));
-				 name=NULL; delete[] name;
-			 }
-			 //posun na další segment cesty
-			 E=sekvencni_zapis_cteni(E,tab_pruchodu,NULL);
-			 delete cE; cE=NULL;
+				//text - name
+				wchar_t *name=new wchar_t [cE->name_delka];
+				name=E->name.c_str();
+				FileStream->Write(name,cE->name_delka*sizeof(wchar_t));//
+				//   ShowMessage(AnsiString(name)+" uloz pohon n:"+AnsiString(cE->pohon_n));
+				name=NULL; delete[] name;
+			}
+			//posun na další segment cesty
+			E=sekvencni_zapis_cteni(E,tab_pruchodu,NULL);
+			delete cE; cE=NULL;
 		}
 		delete []tab_pruchodu;
 
@@ -6703,103 +6704,103 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 		//zápis jednotlivých bodů
 		if(HALA.body!=NULL)
 		{
-			 TBod *B=HALA.body->dalsi;//přeskočí hlavičku
-			 while(B!=NULL)
-			 {
-				 //překopírování dat do pomocného objektu uložitelného do bináru
-				 C_bod *cB=new C_bod;
-				 //plněný - kopírování dat jednotlivých atributů
-				 cB->n=B->n;
-				 cB->X=B->X;
-				 cB->Y=B->Y;
-				 cB->kota_offset=B->kota_offset;
-				 FileStream->Write(cB,sizeof(C_bod));//zapiše jeden prvek do souboru
-				 delete cB; cB=NULL;
-				 //posun na další bod
-				 B=B->dalsi;
-			 }
-			 delete B; B=NULL;
+			TBod *B=HALA.body->dalsi;//přeskočí hlavičku
+			while(B!=NULL)
+			{
+				//překopírování dat do pomocného objektu uložitelného do bináru
+				C_bod *cB=new C_bod;
+				//plněný - kopírování dat jednotlivých atributů
+				cB->n=B->n;
+				cB->X=B->X;
+				cB->Y=B->Y;
+				cB->kota_offset=B->kota_offset;
+				FileStream->Write(cB,sizeof(C_bod));//zapiše jeden prvek do souboru
+				delete cB; cB=NULL;
+				//posun na další bod
+				B=B->dalsi;
+			}
+			delete B; B=NULL;
 		}
 
 		////uložení ZAKÁZEK
 		TZakazka *ukaz2=ZAKAZKY->dalsi;
 		while (ukaz2!=NULL)
 		{
-			 //překopírování dat do pomocného objektu uložitelného do bináru
-			 C_zakazka *c_ukaz2=new C_zakazka;
+			//překopírování dat do pomocného objektu uložitelného do bináru
+			C_zakazka *c_ukaz2=new C_zakazka;
 
-			 //samotná data
-			 c_ukaz2->n=ukaz2->n;
-			 c_ukaz2->id_length=ukaz2->id.Length()+1;
-			 c_ukaz2->typ=ukaz2->typ;
-			 c_ukaz2->name_length=ukaz2->name.Length()+1;
-			 c_ukaz2->barva=ukaz2->barva;
-			 c_ukaz2->pomer=ukaz2->pomer;
-			 c_ukaz2->TT=ukaz2->TT;
-			 c_ukaz2->jig=ukaz2->jig;
-			 c_ukaz2->pocet_segmentu_cesty=0;
-			 if(ukaz2->cesta!=NULL) if(ukaz2->cesta->predchozi->n>=0) //raději na dva if
-			 c_ukaz2->pocet_segmentu_cesty=ukaz2->cesta->predchozi->n;
-			 c_ukaz2->pocet_davek=ukaz2->davky->predchozi->n;
-			 //ShowMessage("Cvectory 1014: "+AnsiString(c_ukaz2->pocet_segmentu_cesty));
-			 c_ukaz2->pocet_voziku=ukaz2->pocet_voziku;
-			 c_ukaz2->serv_vozik_pocet=ukaz2->serv_vozik_pocet;
-			 c_ukaz2->opakov_servis=ukaz2->opakov_servis;
-			 FileStream->Write(c_ukaz2,sizeof(C_zakazka));//zapiše jeden prvek do souboru
-			 //text - id
-			 wchar_t *id=new wchar_t [c_ukaz2->id_length];
-			 id=ukaz2->id.c_str();
-			 FileStream->Write(id,c_ukaz2->id_length*sizeof(wchar_t));//zapiše druhý řetězec za prvek bod
-			 id=NULL; delete[] id;
-			 //text - name
-			 wchar_t *name=new wchar_t [c_ukaz2->name_length];
-			 name=ukaz2->name.c_str();
-			 FileStream->Write(name,c_ukaz2->name_length*sizeof(wchar_t));//zapiše druhý řetězec za prvek bod
-			 name=NULL; delete[] name;
-			 //zápis cesty resp. jednotlivých segmentů
-			 if(c_ukaz2->pocet_segmentu_cesty>0)
-			 {
-				 TCesta *c=ukaz2->cesta->dalsi;//ukazatel na cestu dané zakázky, přeskočí hlavičku
-				 while(c!=NULL)
-				 {
-					 //překopírování dat do pomocného objektu uložitelného do bináru
-					 C_cesta *c_c=new C_cesta;
-					 //plněný - kopírování dat
-					 c_c->n=c->n;
-					 c_c->n_element=c->Element->n;
-					 c_c->n_sparovany=0;
-					 if(c->sparovany!=NULL)c_c->n_sparovany=c->sparovany->n;
-					 c_c->data=c->data;
-					 //uložení do binárního filu
-					 FileStream->Write(c_c,sizeof(C_cesta));//zapiše jeden prvek do souboru
-					 //posun na další segment cesty
-					 c=c->dalsi;
-					 c_c=NULL; delete c_c;
-				 }
-			 }
-			 //zápis dávek
-			 if(c_ukaz2->pocet_davek>0)
-			 {
-				 TDavka *d=ukaz2->davky->dalsi;//ukazatel na cestu dané zakázky, přeskočí hlavičku
-				 while(d!=NULL)
-				 {
-					 //překopírování dat do pomocného objektu uložitelného do bináru
-					 C_davka *c_d=new C_davka;
-					 //plněný - kopírování dat
-					 c_d->n=d->n;
-					 c_d->pocet_voziku=d->pocet_voziku;
-					 c_d->pocet_prazdnych=d->pocet_prazdnych;
-					 c_d->pocet_celkem=d->pocet_celkem;
-					 //uložení do binárního filu
-					 FileStream->Write(c_d,sizeof(C_davka));//zapiše jeden prvek do souboru
-					 //posun na další segment cesty
-					 d=d->dalsi;
-					 c_d=NULL; delete c_d;
-				 }
-			 }
-			 //c=NULL; delete c;
-			 c_ukaz2=NULL;delete c_ukaz2;
-			 ukaz2=ukaz2->dalsi;//posunutí na další pozici v seznamu
+			//samotná data
+			c_ukaz2->n=ukaz2->n;
+			c_ukaz2->id_length=ukaz2->id.Length()+1;
+			c_ukaz2->typ=ukaz2->typ;
+			c_ukaz2->name_length=ukaz2->name.Length()+1;
+			c_ukaz2->barva=ukaz2->barva;
+			c_ukaz2->pomer=ukaz2->pomer;
+			c_ukaz2->TT=ukaz2->TT;
+			c_ukaz2->jig=ukaz2->jig;
+			c_ukaz2->pocet_segmentu_cesty=0;
+			if(ukaz2->cesta!=NULL) if(ukaz2->cesta->predchozi->n>=0) //raději na dva if
+			c_ukaz2->pocet_segmentu_cesty=ukaz2->cesta->predchozi->n;
+			c_ukaz2->pocet_davek=ukaz2->davky->predchozi->n;
+			//ShowMessage("Cvectory 1014: "+AnsiString(c_ukaz2->pocet_segmentu_cesty));
+			c_ukaz2->pocet_voziku=ukaz2->pocet_voziku;
+			c_ukaz2->serv_vozik_pocet=ukaz2->serv_vozik_pocet;
+			c_ukaz2->opakov_servis=ukaz2->opakov_servis;
+			FileStream->Write(c_ukaz2,sizeof(C_zakazka));//zapiše jeden prvek do souboru
+			//text - id
+			wchar_t *id=new wchar_t [c_ukaz2->id_length];
+			id=ukaz2->id.c_str();
+			FileStream->Write(id,c_ukaz2->id_length*sizeof(wchar_t));//zapiše druhý řetězec za prvek bod
+			id=NULL; delete[] id;
+			//text - name
+			wchar_t *name=new wchar_t [c_ukaz2->name_length];
+			name=ukaz2->name.c_str();
+			FileStream->Write(name,c_ukaz2->name_length*sizeof(wchar_t));//zapiše druhý řetězec za prvek bod
+			name=NULL; delete[] name;
+			//zápis cesty resp. jednotlivých segmentů
+			if(c_ukaz2->pocet_segmentu_cesty>0)
+			{
+				TCesta *c=ukaz2->cesta->dalsi;//ukazatel na cestu dané zakázky, přeskočí hlavičku
+				while(c!=NULL)
+				{
+					//překopírování dat do pomocného objektu uložitelného do bináru
+					C_cesta *c_c=new C_cesta;
+					//plněný - kopírování dat
+					c_c->n=c->n;
+					c_c->n_element=c->Element->n;
+					c_c->n_sparovany=0;
+					if(c->sparovany!=NULL)c_c->n_sparovany=c->sparovany->n;
+					c_c->data=c->data;
+					//uložení do binárního filu
+					FileStream->Write(c_c,sizeof(C_cesta));//zapiše jeden prvek do souboru
+					//posun na další segment cesty
+					c=c->dalsi;
+					c_c=NULL; delete c_c;
+				}
+			}
+			//zápis dávek
+			if(c_ukaz2->pocet_davek>0)
+			{
+				TDavka *d=ukaz2->davky->dalsi;//ukazatel na cestu dané zakázky, přeskočí hlavičku
+				while(d!=NULL)
+				{
+					//překopírování dat do pomocného objektu uložitelného do bináru
+					C_davka *c_d=new C_davka;
+					//plněný - kopírování dat
+					c_d->n=d->n;
+					c_d->pocet_voziku=d->pocet_voziku;
+					c_d->pocet_prazdnych=d->pocet_prazdnych;
+					c_d->pocet_celkem=d->pocet_celkem;
+					//uložení do binárního filu
+					FileStream->Write(c_d,sizeof(C_davka));//zapiše jeden prvek do souboru
+					//posun na další segment cesty
+					d=d->dalsi;
+					c_d=NULL; delete c_d;
+				}
+			}
+			//c=NULL; delete c;
+			c_ukaz2=NULL;delete c_ukaz2;
+			ukaz2=ukaz2->dalsi;//posunutí na další pozici v seznamu
 		};
 		ukaz2=NULL;delete ukaz2;
 
@@ -6815,8 +6816,8 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 	if(!FileExists(FileName)){return 0;}
 	else
 	{
-			try
-			{
+		try
+		{
      // ShowMessage("nacitam data");
 			TFileStream *FileStream=new TFileStream(FileName,fmOpenRead);
 
@@ -6940,7 +6941,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 						TKomora *K=new TKomora;
 						K->n=cK.n;
 						K->velikost=cK.velikost;
-            K->typ=cK.typ;
+						K->typ=cK.typ;
 						vloz_komoru(ukaz,K,NULL,K->typ);
 						//delete K; K=NULL; - nesmí být
 					}
