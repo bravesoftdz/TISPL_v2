@@ -6175,6 +6175,40 @@ void TForm1::add_vyhybka_spojka()
 			E=d.v.vloz_element(pom,element_id,bod_vlozeni.x,bod_vlozeni.y,rotace_symbolu);
 			Akce=NIC;//vložena výhybka i spojka ukončení vkládání
 			d.v.vytvor_obraz_DATA();
+			//navrácení původního stavu vykreslovacích vrstev
+    	AnsiString T;
+    	if(T==0 || T=="")rotace_jigu=0;else rotace_jigu=1;
+    	T=readINI("nastaveni_editace","zobrazeni_pozic"); //zobrazit pozice
+    	if(T==0 || T=="")zobrazit_pozice=0;else zobrazit_pozice=1;
+    	T=readINI("nastaveni_editace","zobrazit_popisky"); //zobrazit popisky
+    	if(T==0 || T=="")zobrazit_popisky=0;else zobrazit_popisky=1;
+    	T=readINI("nastaveni_editace","zobrazit_koleje"); //zobrazit koleje
+    	if(T==0 || T=="")zobrazit_koleje=0;else zobrazit_koleje=1;
+    	T=readINI("nastaveni_editace","zobrazit_palce"); //zobrazit_palce
+    	if(T==0 || T=="")zobrazit_palce=0;else zobrazit_palce=1;
+    	T=readINI("nastaveni_editace","rotace_jigu"); //zobrazit rotaci jigu
+    	if(T==0 || T=="")rotace_jigu=0;else rotace_jigu=1;
+    	T=readINI("nastaveni_editace","zobrazit_rozmisteni_voziku"); //zobrazit_rozmisteni_jigu
+			if(T==0 || T=="")zobrazit_rozmisteni_voziku=0;else zobrazit_rozmisteni_voziku=1;
+			T=readINI("nastaveni_editace","zobrazit_popisek_pohonu"); //zobrazit_popisek_pohonu
+			if(T==1 || T=="")zobrazit_popisek_pohonu=1;else zobrazit_popisek_pohonu=0;
+    	if(rotace_jigu==1)scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
+    	else scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=false;
+    	if(zobrazit_pozice==1)scGPCheckBox_zobrazit_pozice->Checked=true;
+    	else scGPCheckBox_zobrazit_pozice->Checked=false;
+    	if(zobrazit_popisky==1)scGPCheckBox1_popisky->Checked=true;
+    	else scGPCheckBox1_popisky->Checked=false;
+    	if(zobrazit_koleje==1)scGPCheckBox_zobrazit_koleje->Checked=true;
+    	else scGPCheckBox_zobrazit_koleje->Checked=false;
+    	if(zobrazit_palce==1)scGPCheckBox_zobrazit_palce->Checked=true;
+    	else scGPCheckBox_zobrazit_palce->Checked=false;
+    	if(rotace_jigu==1) scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
+    	else scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=false;
+    	if(zobrazit_rozmisteni_voziku==1) scGPCheckBox_rozmisteni_voziku->Checked=true;
+			else scGPCheckBox_rozmisteni_voziku->Checked=false;
+			if(zobrazit_popisek_pohonu==1)scGPCheckBox_popisek_pohonu->Checked=true;
+			else scGPCheckBox_popisek_pohonu->Checked=false;
+			REFRESH();//nesmí zde být způsobí špatné vykreslení elementů (nekompletní linka)
 		}
 		//pozicování mgridu, doladit podle finálních rozměrů tabulky
 		if(E->orientace==0 || E->orientace==180){E->Xt=E->X-1.9;E->Yt=E->Y+2.1;}
@@ -6183,7 +6217,6 @@ void TForm1::add_vyhybka_spojka()
 		E=NULL;delete E;
 	}
 	else TIP=ls->Strings[309];//"Lze vkládat pouze na linie."
-	REFRESH();//nesmí zde být způsobí špatné vykreslení elementů (nekompletní linka)
 }
 //---------------------------------------------------------------------------
 //přidávání komory kabině powerwashe, kontrola zda není součet kabin větší než rozměr kabiny
@@ -6607,8 +6640,8 @@ void TForm1::vlozeni_editace_geometrie()
 	//////nastavení orientace
 	short orientace=0;
 	if(posledni_editovany_element!=NULL){orientace=posledni_editovany_element->orientace;}else {orientace=d.v.vrat_posledni_element_objektu(OBJEKT_akt)->orientace;}
-	//////dokončování geometrie sekundární větve v objektu spojky
-	if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->objekt_n==OBJEKT_akt->n && posledni_editovany_element->dalsi->predchozi2==posledni_editovany_element || posledni_editovany_element!=NULL && posledni_editovany_element->dalsi2!=NULL && posledni_editovany_element->dalsi2->eID==301 && posledni_editovany_element->dalsi2->objekt_n==OBJEKT_akt->n && posledni_editovany_element->dalsi2->predchozi2==posledni_editovany_element)
+	//////dokončování / začátek geometrie sekundární větve v objektu spojky
+	if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->objekt_n==OBJEKT_akt->n && posledni_editovany_element->dalsi->predchozi2==posledni_editovany_element || posledni_editovany_element!=NULL && posledni_editovany_element->dalsi2!=NULL && posledni_editovany_element->dalsi2->eID==301 && posledni_editovany_element->objekt_n!=OBJEKT_akt->n && posledni_editovany_element->dalsi2->objekt_n==OBJEKT_akt->n && posledni_editovany_element->dalsi2->predchozi2==posledni_editovany_element)
 	{
 		unsigned long n=posledni_editovany_element->objekt_n;
 		Cvektory::TElement *E=NULL;
@@ -6663,13 +6696,14 @@ void TForm1::vlozeni_editace_geometrie()
 			Cvektory::TElement *E=posledni_editovany_element->dalsi2,*smaz=E;
 			while(E!=NULL && E->objekt_n==OBJEKT_akt->n)
 			{
+				if(E==posledni_editovany_element->predchozi2)break;
 				smaz=E;
 				E=E->dalsi;
 				d.v.smaz_element(smaz,true);
 			}
 			E=NULL;delete E;
 			smaz=NULL;delete smaz;
-    }
+		}
 		if(posledni_editovany_element->dalsi2->eID==301)d.v.vyhybka_pom=posledni_editovany_element->dalsi2;//pokud je další v sekundární větvi spojka, jedná se o nestandartní situaci, nutno rozlišit
 		posledni_editovany_element=d.v.vloz_element(OBJEKT_akt,MaxInt,d.geoTemp.X4,d.geoTemp.Y4,orientace,posledni_editovany_element->dalsi2);
 		design_element(posledni_editovany_element,true);//nutné!!!!!!!!
@@ -6795,9 +6829,11 @@ void TForm1::vlozeni_editace_geometrie()
 //			}
 //		}
 //	}
-
+		 //	Memo("KONEC");
 	//důvod uložit
 	nahled_ulozit(true);
+	//vytvoření obrazu pro UNDO a REDO
+	//d.v.vytvor_obraz_DATA();   Memo("absolutní KONEC");
 }
 //---------------------------------------------------------------------------
 //ukončení akce geometrie a případné uzavření kruhu
@@ -6912,20 +6948,24 @@ void TForm1::ukonceni_geometrie()
 	if(T==0 || T=="")rotace_jigu=0;else rotace_jigu=1;
 	T=readINI("nastaveni_editace","zobrazit_rozmisteni_voziku"); //zobrazit_rozmisteni_jigu
 	if(T==0 || T=="")zobrazit_rozmisteni_voziku=0;else zobrazit_rozmisteni_voziku=1;
-	if(rotace_jigu==1)scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
-	else scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=false;
-	if(zobrazit_pozice==1)scGPCheckBox_zobrazit_pozice->Checked=true;
-	else scGPCheckBox_zobrazit_pozice->Checked=false;
-	if(zobrazit_popisky==1)scGPCheckBox1_popisky->Checked=true;
+	T=readINI("nastaveni_editace","zobrazit_popisek_pohonu"); //zobrazit_popisek_pohonu
+	if(T==1 || T=="")zobrazit_popisek_pohonu=1;else zobrazit_popisek_pohonu=0;
+  if(rotace_jigu==1)scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
+  else scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=false;
+  if(zobrazit_pozice==1)scGPCheckBox_zobrazit_pozice->Checked=true;
+  else scGPCheckBox_zobrazit_pozice->Checked=false;
+  if(zobrazit_popisky==1)scGPCheckBox1_popisky->Checked=true;
 	else scGPCheckBox1_popisky->Checked=false;
 	if(zobrazit_koleje==1)scGPCheckBox_zobrazit_koleje->Checked=true;
-	else scGPCheckBox_zobrazit_koleje->Checked=false;
-	if(zobrazit_palce==1)scGPCheckBox_zobrazit_palce->Checked=true;
-	else scGPCheckBox_zobrazit_palce->Checked=false;
-	if(rotace_jigu==1) scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
-	else scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=false;
+  else scGPCheckBox_zobrazit_koleje->Checked=false;
+  if(zobrazit_palce==1)scGPCheckBox_zobrazit_palce->Checked=true;
+  else scGPCheckBox_zobrazit_palce->Checked=false;
+  if(rotace_jigu==1) scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
+  else scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=false;
 	if(zobrazit_rozmisteni_voziku==1) scGPCheckBox_rozmisteni_voziku->Checked=true;
 	else scGPCheckBox_rozmisteni_voziku->Checked=false;
+	if(zobrazit_popisek_pohonu==1)scGPCheckBox_popisek_pohonu->Checked=true;
+	else scGPCheckBox_popisek_pohonu->Checked=false;
 
 	//pokud existují výhybky může dojít v průběhu editace k umožnění nebo znemožnění přiřazovat pohon na vedlejší větev, tato metoda nastaví mGridy na výchozí
 	if(d.v.pocet_vyhybek>0)mGrid_on_mGrid();
@@ -7656,7 +7696,7 @@ void TForm1::aktualizace_RT()
 				E->data.pocet_pozic=max_voziku(E);
 				try
 				{
-					E->mGrid->Cells[1][5].Text=E->data.pocet_pozic;
+					E->mGrid->Cells[2][5].Text=E->data.pocet_pozic;
 				}catch(...){}
 				d.v.reserve_time(E,C);
 				if(C!=NULL)C->data=E->data;//vrácení přepočítaných dat do zakázky
@@ -8203,10 +8243,18 @@ void TForm1::tab_knihovna_click(double X,double Y,long Col,long Row)
   			Akce=NIC;kurzor(standard);
   		}
   		else if(vybrany_objekt==13)
-  		{
+			{
   			Akce=VYH;
   			element_id=300;//při prvním kliku budu vždy vkládat výhybku
-  			pom_element=NULL;pom_element_temp=NULL;//důležité ukazatele pro vkládání výhybky a objektů
+				pom_element=NULL;pom_element_temp=NULL;//důležité ukazatele pro vkládání výhybky a objektů
+				//vypnutí vykreslovacích vrstev
+				scGPCheckBox1_popisky->Checked=false;//vypnutí zobrazení popisků, v budoucnu rozšířit na uložení předchozího stavu
+	    	scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=false;
+	    	scGPCheckBox_zobrazit_pozice->Checked=false;
+	    	scGPCheckBox_zobrazit_palce->Checked=false;
+				scGPCheckBox_rozmisteni_voziku->Checked=false;
+				scGPCheckBox_popisek_pohonu->Checked=false;
+				REFRESH();
   		}
   		if(vybrany_objekt==15)//vytvoř halu
   		{
@@ -11294,6 +11342,7 @@ void __fastcall TForm1::DrawGrid_geometrieMouseDown(TObject *Sender, TMouseButto
 		scGPCheckBox_zobrazit_pozice->Checked=false;
 		scGPCheckBox_zobrazit_palce->Checked=false;
 		scGPCheckBox_rozmisteni_voziku->Checked=false;
+		scGPCheckBox_popisek_pohonu->Checked=false;
 		stisknute_leve_tlacitko_mysi=false;//nutné!!! zustává aktivníc z dblclicku
 		REFRESH(false);
 	}
