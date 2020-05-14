@@ -13894,6 +13894,7 @@ void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 	d.v.PP.raster.show=!Timer_animace->Enabled;
 	if(Timer_animace->Enabled)//běží animace
 	{
+		MOD=SIMULACE;
 		scGPGlyphButton_PLAY->GlyphOptions->Kind=scgpbgkPause;
 		scGPGlyphButton_PLAY->Hint="zastavit animaci";
 		scGPGlyphButton_PLAY->ShowCaption=true;
@@ -14082,7 +14083,19 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 	E=NULL;delete E; //pokud nedojde algoritmus na konec seznamu
 	delete E;E=NULL; //pokud dojde na konec seznamu
 
+	Memo("_________________");
 
+	//proleze např. spojku vícekrát
+	E=d.v.ELEMENTY->dalsi;
+	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
+	int n=0;
+	while(E!=NULL)
+	{
+		Memo(String(++n)+" "+String(E->n)+" "+String(E->name));
+		E=d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);//použití sekvenčního algoritmu, podle stejného bude soubor načítán, tz. stejný počet elementů v sekvenčním řazení
+	}
+	delete E;E=NULL;
+	delete []tab_pruchodu;
 
 
 

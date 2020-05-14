@@ -5322,7 +5322,18 @@ void Cvektory::generuj_VOZIKY()
 		bool SG=SGlinka();//typ linky, pokud obsahuje alespoň jeden SG elemement je již SG, kontinuální má význám hlavně pro prvotní zakreslování
 		int pocet_voziku_z_prejezdu_na_bufferu=0;//počet vozíků přicházejících z přejezdu, které již "narazily" do bufferu
 
-		//bool element_pouzit=new bool[];
+		////PROVIZORNÍ vytvoření pole pro již prošlé elementy, kvůli  bufferu na vedlejší větvi
+		TElement *E=ELEMENTY->dalsi;
+		unsigned long pocet_elementu=0;
+		while(E!=NULL)
+		{
+			pocet_elementu++;
+			E=dalsi_krok(E);
+		}
+		E=NULL;delete E; //pokud nedojde algoritmus na konec seznamu
+		delete E;E=NULL; //pokud dojde na konec seznamu
+		bool *POLE_element_pouzit=new bool[pocet_elementu];
+
 		////procházení seznamu cesty dané zakázky
 		TCesta *C=ZAKAZKA_akt->cesta->dalsi;//přeskočí hlavičku
 		while (C!=NULL)
@@ -5360,7 +5371,8 @@ void Cvektory::generuj_VOZIKY()
 					Ct=NULL;delete Ct;
 					Esd=NULL;delete Esd;
 				}
-
+				///PROVIZORNĚ pro buffer na vedlejší větvi
+				POLE_element_pouzit[C->Element->n]=true;
 			}
 			////pro KONTINUÁLNÍ linku tj. bez S&G elementu, např. ale i pro úvodní zakreslování
 			////taktuje se od začátku prvního geometrického elementu prvního vloženého objektu, generuje se se zpětně (co předchází elementu)
@@ -5373,6 +5385,17 @@ void Cvektory::generuj_VOZIKY()
 			C=C->dalsi;//posun na další prvek cesty
 		}
 		delete C;//osdranění již nepotřebného pomocného ukazatele
+
+		///PROVIZORNĚ vytvoření bufferu na vedlejší větvi
+		E=ELEMENTY->dalsi;
+		while(E!=NULL)
+		{
+			if(POLE_element_pouzit[E->n]==false && vrat_druh_elementu(E)==0 && E->data.pocet_voziku>0)//pokud se jedná o nepoužitý element a je to zároveň S&G element a obsahuje více vozíků
+			generuj_voziky_stop_a_bufferu(E,90/*nutné ještě dodat dle skutečného stavu*/,0);
+			E=dalsi_krok(E);
+		}
+		E=NULL;delete E;
+		delete[] POLE_element_pouzit;
 	}
 }
 ////---------------------------------------------------------------------------
