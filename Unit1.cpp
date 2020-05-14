@@ -1714,6 +1714,8 @@ void TForm1::Novy_soubor(bool invalidate)//samotné vytvoření nového souboru
 			 zobrazit_barvy_casovych_rezerv=false;
 			 d.cas=0;
 			 Analyza->Down=false;
+			 scGPButton_bug_report->Top=ClientHeight-scGPPanel_statusbar->Height-scGPButton_bug_report->Height-offset_scGPButton_bug_report;//zarovnání buttonu
+			 scGPButton_bug_report->Left=ClientWidth-scGPButton_bug_report->Width-offset_scGPButton_bug_report;
 			 //Schema->Down=true;
 			 FileName="Nový.tispl";
 			 scLabel_titulek->Caption=Caption+" - ["+FileName+"]";
@@ -3191,8 +3193,11 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 		}
 		nahled_ulozit(true);
 		//propsání nového názvu do mGridu
-		pom_element_temp->mGrid->Cells[0][0].Text="<a>"+pom_element_temp->name+"</a>";
-		pom_element_temp->mGrid->MergeCells(0,0,1,0);
+		int prvni_sloupec=0;
+		if(pom_element_temp->eID==200 || pom_element_temp->eID==300)prvni_sloupec=3;
+		pom_element_temp->mGrid->Cells[prvni_sloupec][prvni_sloupec].Text="<a>"+pom_element_temp->name+"</a>";//nasazení linku
+		//znovusloučení buňěk
+		if(pom_element_temp->eID!=200 && pom_element_temp->eID!=300)pom_element_temp->mGrid->MergeCells(0,0,pom_element_temp->mGrid->ColCount-1,0);
 		REFRESH(true);
 	}
 }
@@ -7159,7 +7164,7 @@ void TForm1::mGrid_on_mGrid()
 		{
 			mGrid_puvodni_stav(predchozi_PM);
 			mGrid_mimo_obraz(predchozi_PM);//kontrola + ošetření mGridů, ktěré se nacházejí mimo obraz
-    }
+		}
 		////kontrola překrytí
 		E=OBJEKT_akt->element;
 		//TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
@@ -7204,6 +7209,23 @@ void TForm1::mGrid_on_mGrid()
 					}
 					E_temp=d.v.dalsi_krok(E_temp,OBJEKT_akt);
 				}
+				//nebyla nalezena tabulka elementu v překryvu, kontrola s tabulkou předchozí PM
+				if(pokracovat && predchozi_PM)
+				{
+					//definice bodů tabulky
+					TPoint p1,p2,p3,p4;
+					p1.x=m.L2Px(predchozi_PM->Xt);p1.y=m.L2Py(predchozi_PM->Yt);
+					p2.x=m.L2Px(predchozi_PM->Xt)+predchozi_PM->mGrid->Width;p2.y=m.L2Py(predchozi_PM->Yt);
+					p3.x=m.L2Px(predchozi_PM->Xt)+predchozi_PM->mGrid->Width;p3.y=m.L2Py(predchozi_PM->Yt)+predchozi_PM->mGrid->Height;
+					p4.x=m.L2Px(predchozi_PM->Xt);p4.y=m.L2Py(predchozi_PM->Yt)+predchozi_PM->mGrid->Height;
+					//kontrola, zda se některý z bodů druhé tabulky nenachází v první tabulce
+					if((tab1.PtInRect(p1) || tab1.PtInRect(p2) || tab1.PtInRect(p3) || tab1.PtInRect(p4)))
+					{
+						//nalezeno překrytí, uložení tabulky která je vykreslena dříve
+						pokracovat=false;
+						prekryty=E;
+					}
+				}
 				d.v.vymaz_seznam_VYHYBKY();
 				E_temp=NULL;delete E_temp;
 			}
@@ -7216,9 +7238,14 @@ void TForm1::mGrid_on_mGrid()
 		////řešení překrytí
 		if(prekryty!=NULL)
 		{
-			for(unsigned int i=1;i<prekryty->mGrid->RowCount;i++)
+			unsigned int Col=1;
+			if(prekryty->eID==200 || prekryty->eID==300)Col=3;
+			for(unsigned int j=Col;j<prekryty->mGrid->ColCount;j++)
 			{
-				if(prekryty->mGrid->Cells[1][i].Type!=prekryty->mGrid->DRAW)mGrid_komponenta_na_draw(prekryty->mGrid,1,i);//kontrola zda jsem narazil na komponentu nikoliv na buňku, změna na DRAW
+				for(unsigned int i=1;i<prekryty->mGrid->RowCount;i++)
+				{
+					if(prekryty->mGrid->Cells[j][i].Type!=TmGrid::DRAW && prekryty->mGrid->Cells[j][i].Type!=TmGrid::glyphBUTTON)mGrid_komponenta_na_draw(prekryty->mGrid,j,i);//kontrola zda jsem narazil na komponentu nikoliv na buňku, změna na DRAW
+				}
 			}
 		}
 
@@ -7371,7 +7398,7 @@ void TForm1::mGrid_puvodni_stav(Cvektory::TElement *E)
 				E->mGrid->Cells[4][2].Type=E->mGrid->COMBO;
 				E->mGrid->exBUTTONVisible=true;
 				B=NULL;delete B;
-				//edity zařídí fce napln_comba_mGridu(), dynamicky se mění 
+				//edity zařídí fce napln_comba_mGridu(), dynamicky se mění
 				break;
       }
 			default:break;
@@ -8292,6 +8319,7 @@ void TForm1::vytvoreni_tab_pohon(bool existuje_poh_tabulka)
   	PmG->DefaultCell.isNegativeNumber->Size=aFont->Size;
 		PmG->DefaultCell.isZero->Name=aFont->Name;
 		PmG->DefaultCell.isZero->Size=aFont->Size;
+		PmG->DefaultCell.isZero->Color=(TColor)RGB(128,128,128);//řeší problém s barvou fontu, pokud je v buňce nulová hodnota
 		PmG->DefaultCell.isLink->Name=aFont->Name;
 		PmG->DefaultCell.isLink->Size=aFont->Size;
 		PmG->DefaultCell.isActiveLink->Name=aFont->Name;
@@ -8588,6 +8616,9 @@ void TForm1::tab_pohon_COMBO()
 	//nastavení comba
 	PCombo->Items->Clear();//smazání původního obsahu
 	PCombo->Font->Color=(TColor)RGB(43,87,154);
+	PCombo->Options->FontHotColor=(TColor)RGB(43,87,154);
+	PCombo->Options->FontPressedColor=(TColor)RGB(43,87,154);
+	PCombo->Options->FontFocusedColor=(TColor)RGB(43,87,154);
 	PCombo->BiDiMode=bdRightToLeft;
 
 	//plnění comba
@@ -8684,6 +8715,7 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni,bool plnit
 	E->mGrid->DefaultCell.isNegativeNumber->Size=aFont->Size;
 	E->mGrid->DefaultCell.isZero->Name=aFont->Name;
 	E->mGrid->DefaultCell.isZero->Size=aFont->Size;
+	E->mGrid->DefaultCell.isZero->Color=clFontLeft;//řeší problém s barvou fontu, pokud je v buňce nulová hodnota
 	E->mGrid->DefaultCell.isLink->Name=aFont->Name;
 	E->mGrid->DefaultCell.isLink->Size=aFont->Size;
 	E->mGrid->DefaultCell.isActiveLink->Name=aFont->Name;
@@ -8791,7 +8823,7 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni,bool plnit
 		E->mGrid->Cells[0][1].RightBorder->Width=2;
 		E->mGrid->MergeCells(0,1,2,2);
 	}
-	else E->mGrid->MergeCells(0,0,E->mGrid->ColCount-1,0);//update na tomto místě působí potíže, přesunout do add element asi a do NP_input;
+	else E->mGrid->MergeCells(0,0,E->mGrid->ColCount-1,0);
 	//rozdělení sekcí v tabulkách
 	if(E->eID==300 || E->eID==200)
 	{
@@ -8830,7 +8862,10 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 		if(C!=NULL)
 		{
 	  	C->Clear();
-	  	C->Font->Color=(TColor)RGB(43,87,154);
+			C->Font->Color=(TColor)RGB(43,87,154);
+			C->Options->FontHotColor=(TColor)RGB(43,87,154);
+			C->Options->FontPressedColor=(TColor)RGB(43,87,154);
+			C->Options->FontFocusedColor=(TColor)RGB(43,87,154);
 	  	C->BiDiMode=bdRightToLeft;
 	  	TscGPListBoxItem *I;
 	  	I=C->Items->Add();
@@ -8864,7 +8899,10 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 		if(C!=NULL)
 		{
 	  	C->Clear();
-	  	C->Font->Color=(TColor)RGB(43,87,154);
+			C->Font->Color=(TColor)RGB(43,87,154);
+			C->Options->FontHotColor=(TColor)RGB(43,87,154);
+			C->Options->FontPressedColor=(TColor)RGB(43,87,154);
+			C->Options->FontFocusedColor=(TColor)RGB(43,87,154);
 	  	C->BiDiMode=bdRightToLeft;
 	  	TscGPListBoxItem *I;
 	  	I=C->Items->Add();
@@ -8888,7 +8926,10 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 		if(C1!=NULL && C2!=NULL)//může dojít k NULL pokud je pohonová tabulka mimo obraz
 		{
    		C1->Clear();C2->Clear();
-   		C1->Font->Color=(TColor)RGB(43,87,154);C2->Font->Color=(TColor)RGB(43,87,154);
+			C1->Font->Color=(TColor)RGB(43,87,154);C2->Font->Color=(TColor)RGB(43,87,154);
+			C1->Options->FontHotColor=(TColor)RGB(43,87,154);C2->Options->FontHotColor=(TColor)RGB(43,87,154);
+			C1->Options->FontPressedColor=(TColor)RGB(43,87,154);C2->Options->FontPressedColor=(TColor)RGB(43,87,154);
+			C1->Options->FontFocusedColor=(TColor)RGB(43,87,154);C2->Options->FontFocusedColor=(TColor)RGB(43,87,154);
 			C1->BiDiMode=bdRightToLeft;C2->BiDiMode=bdRightToLeft;
    		C1->Enabled=true;C2->Enabled=true;
 			//přidávání itemů do comba
@@ -11660,14 +11701,15 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 				AnsiString text_PM=ls->Strings[465];
 				if(pom_element->pohon!=NULL)text_PM+=" "+pom_element->pohon->name;
 				else text_PM+=" nenastaven";
-				if((pom_element->eID!=200 && mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text+pom_element_temp->name.UpperCase()+"?","",MB_YESNO)) || (pom_element->eID==200 && mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text_PM,"",MB_YESNO)))
+				if((pom_element->eID!=200 && mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text+pom_element_temp->name.UpperCase()+"?","",MB_YESNO)) || (pom_element->eID==200 && pom_element->dalsi!=NULL && pom_element->dalsi->objekt_n==OBJEKT_akt->n) && mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text_PM,"",MB_YESNO))
 				{
 					int eID=pom_element_temp->eID;
+					if(eID==300)OBJEKT_akt->pohon=pom_element_temp->pohon;//zajištění si zprávného akt. editovaného pohonu
 					Cvektory::TElement *dalsi_element=NULL;
 					if(pom_element_temp->dalsi!=NULL&&OBJEKT_akt->rezim==0)dalsi_element=pom_element_temp->dalsi;//pokud je kabina ve S&G režimu a za smazaným elementem se nachází další element, je nutné dalšímu přepočítat RT
 					d.v.smaz_element(pom_element_temp);
 					d.v.aktualizace_rezimu_objektu(OBJEKT_akt);//aktualizace režimu, např. z důvodu odstranění poslední KK elementu ... režím objektu jež nemůže být KK
-          if(eID==200)vlozit_predavaci_misto_aktualizuj_WT();//bylo odstraněno PM
+					if(eID==200 || eID==300)vlozit_predavaci_misto_aktualizuj_WT();//bylo odstraněno PM
 					Akce=NIC;
 					DuvodUlozit(true);
 		  		nahled_ulozit(true);
@@ -11679,7 +11721,14 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 					if(eID%2==0 && eID!=100 && eID!=200 && eID!=MaxInt)d.v.aktualizuj_sparovane_ukazatele();//odstraněn stop-element, nutná aktualizace
 					dalsi_element=NULL;delete dalsi_element;
 					REFRESH();
-				}else {mazani=false;Akce=NIC;}
+				}
+				else
+				{
+					//pokud se jedná o výhybku na konci objektu, nelze ji smazat
+					if(pom_element->eID==200)MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Nelze smazat předávací míto na konci objektu.","",MB_OK);
+					mazani=false;
+					Akce=NIC;
+				}
 			}
 			if(pom_element!=NULL )//&& pom_element->eID==MaxInt)//mazání zarážky z popup
 			{
@@ -12132,7 +12181,7 @@ void TForm1::NP_input()
 	vytvoreni_tab_pohon(poh_tab);
 
 	////nastavení zoomu
-	if(Zoom<5)//pokud je zoom větší nědělat nic
+	if(Zoom<=5)//pokud je zoom větší nědělat nic
 	{
 		TRect oblast;
 		TPointD Centr;
@@ -12152,9 +12201,9 @@ void TForm1::NP_input()
 		if(Zoom<0.5)Zoom=0.5;
 		if(Zoom>5)Zoom=5;//nemá smysl přibližovat více
 		//vycentrování obrazu
-  	Centr.x=m.L2Px(Centr.x);
-  	Centr.y=m.L2Py(Centr.y);
-  	Posun.x+=(Centr.x-(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2)/Zoom;
+		Centr.x=m.L2Px(Centr.x);
+		Centr.y=m.L2Py(Centr.y);
+		Posun.x+=(Centr.x-(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2)/Zoom;
 		Posun.y+=(Centr.y-(ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2)/Zoom;
 	}
 
@@ -14042,11 +14091,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-//	TRect ob=vrat_max_oblast(OBJEKT_akt,true);
-//	Canvas->Brush->Color=clRed;
-//	Canvas->Pen->Color=clRed;
-//	Canvas->Rectangle(ob);
-	Close();
+	;//
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -15878,8 +15923,13 @@ void TForm1::smaz_kurzor()
 			{
 				if(pom_element_temp->name=="")pom_element_temp->name=nazev_puvodni;
 				//propsání nového názvu do mGridu
-				pom_element_temp->mGrid->Cells[0][0].Text="<a>"+pom_element_temp->name+"</a>";
-				pom_element_temp->mGrid->MergeCells(0,0,1,0);
+				int prvni_sloupec=0;
+				if(pom_element_temp->eID==200 || pom_element_temp->eID==300)prvni_sloupec=3;
+				pom_element_temp->mGrid->Cells[prvni_sloupec][prvni_sloupec].Text="<a>"+pom_element_temp->name+"</a>";//nasazení linku
+				//znovusloučení buňěk
+				if(pom_element_temp->eID!=200 && pom_element_temp->eID!=300)pom_element_temp->mGrid->MergeCells(0,0,pom_element_temp->mGrid->ColCount-1,0);
+				//aktualizace spárovaných elementů, pokud byl změněn název S&G elementu
+				if(d.v.vrat_druh_elementu(pom_element_temp)==0)d.v.aktualizuj_sparovane_ukazatele();//aktualizijue spárovnaný ukazatel všem elementům v projektu
 			}break;
 			case -5://hodnota kót objektu (hrana objektu)
 			{

@@ -208,7 +208,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	v.VALIDACE();
 
 	///////////////vykreslení VOZÍKů, musí být až za VALIDACí kvůli generování vozíků, které je ve VALIDACi
-	vykresli_voziky(canv);
+	if(F->MOD!=F->Tmod::TVORBA_CESTY && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT)vykresli_voziky(canv);
 
 	//VALIDACE výpis formou zpráv musí být za vozíky, aby byla zcela nahoře
 	if(F->MOD!=F->Tmod::TVORBA_CESTY && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT)vypis_zpravy(canv);
@@ -3087,7 +3087,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 		canv->PolyBezier(POLE,3);
 
 		////vykreslení předávacího místa
-		if(E->eID==200)
+		if(E->eID==200 && F->MOD!=F->TVORBA_CESTY && zakazka==NULL)
 		{
       RetezWidth=1;if(E->pohon!=NULL)RetezWidth=F->Zoom*0.5;//nutné znovu počítat width, nelze použít upravený v případě zakázky
 			//výpočty souřadnic
@@ -4882,7 +4882,7 @@ Graphics::TBitmap *Cvykresli::nacti_nahled(Cvektory::TZakazka *zakazka)
 	//vykreslení cesty do pomocné bmp
 	vykresli_retez(bmp_pom->Canvas,zakazka);
 	//zjištění posunu pro centrování obrazu ve výsledné bmp
-	Posun.x=(ret.right-ret.left-W)/2.0+(W-bmp->Width/3.0)/2,0;//(W-bmp->Width/3.0) odsazení od hrany bmp
+	Posun.x=(ret.right-ret.left-W)/2.0+(W-bmp->Width/3.0)/2.0;//(W-bmp->Width/3.0) odsazení od hrany bmp
 	Posun.y=(ret.bottom-ret.top-H)/2.0+(H-bmp->Height/3.0)/2.0;
 	//kopírování obrazu do výsledné bmp
 	bmp->Canvas->CopyRect(Rect(0,0,bmp->Width,bmp->Height),bmp_pom->Canvas,Rect(ret.left+Posun.x,ret.top+Posun.y,ret.left+Posun.x+bmp->Width/3.0,ret.top+Posun.y+bmp->Height/3.0));
