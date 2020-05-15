@@ -1018,7 +1018,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=465;i++)
+	for(unsigned short i=0;i<=466;i++)
 	{
 		switch(i)
 		{
@@ -1488,6 +1488,7 @@ void TForm1::DesignSettings()
 			case 463:text="Zóna";break;
 			case 464:text="Pozice";break;
 			case 465:text="V úseku za předávacím místem bude nastaven pohon:";break;
+			case 466:text="Vložením dojde k překrytí pracovních oblastí, chcete element vložit?";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -6081,6 +6082,7 @@ void TForm1::add_element (int X, int Y)
 		//kontrola zda může být vložen + možné odstranění
 		short prekryti=prekryti_LO(E);
 		UnicodeString text=ls->Strings[332],text_1=ls->Strings[333];//"Vložením dojde k překrytí lakovacích oken, chcete element vložit?","Vložením dojde k narušení zóny otáčení, chcete element vložit?"
+		if(E->eID>=101 && E->eID<=108)text=ls->Strings[466];//"Vložením dojde k překrytí pracovních oblastí, chcete element vložit?"
 		if(prekryti==1 && mrYes!=MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text,"",MB_YESNO) || prekryti>1 && mrYes!=MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text_1,"",MB_YESNO))
 			{d.v.smaz_element(E);E=NULL;}
 		//element byl vložen
@@ -8143,19 +8145,6 @@ void TForm1::vytvoreni_tab_knihovna()
 	mGrid_knihovna->Cells[1][12].Type=mGrid_knihovna->IMAGE;
 	mGrid_knihovna->Cells[1][12].ImageIndex=13;//vyhybka
 	mGrid_knihovna->Cells[1][12].Align=mGrid_knihovna->LEFT;
-//	mGrid_knihovna->Cells[0][12].Type=mGrid_knihovna->IMAGE;
-//	mGrid_knihovna->Cells[0][12].ImageIndex=10;//buffer
-//	mGrid_knihovna->Cells[1][12].Type=mGrid_knihovna->IMAGE;
-//	if(language==CS)mGrid_knihovna->Cells[1][12].ImageIndex=11;//vytah
-//	if(language==EN)mGrid_knihovna->Cells[1][12].ImageIndex=23;
-//	mGrid_knihovna->Cells[0][13].Type=mGrid_knihovna->IMAGE;
-//	if(language==CS)mGrid_knihovna->Cells[0][13].ImageIndex=12;//přejezd
-//	if(language==EN)mGrid_knihovna->Cells[0][13].ImageIndex=26;
-//	mGrid_knihovna->Cells[1][13].Type=mGrid_knihovna->IMAGE;
-//	mGrid_knihovna->Cells[1][13].ImageIndex=14;//nedefinovany
-//	mGrid_knihovna->Cells[0][14].Type=mGrid_knihovna->IMAGE;
-//	mGrid_knihovna->Cells[0][14].ImageIndex=13;//vyhybka
-//	mGrid_knihovna->Cells[0][14].Align=mGrid_knihovna->LEFT;
 	/////////centrování komponent
 	mGrid_knihovna->Update();
 	TscGPImage *I=NULL;
@@ -8463,11 +8452,11 @@ void TForm1::aktualizace_tab_pohon(bool popisky,bool data,bool komponenty)
 			PmG->Cells[3][1].Text=m.round2double(outaRD(OBJEKT_akt->pohon->aRD),3);
   		PmG->Cells[3][2].Text=AnsiString(m.round2double(outaRD(OBJEKT_akt->pohon->rychlost_od),3))+" - "+AnsiString(m.round2double(outaRD(OBJEKT_akt->pohon->rychlost_do),3));
 			PmG->Cells[3][4].Text=m.round2double(outR(OBJEKT_akt->pohon->roztec),3);
-			if(PmG->Cells[3][5].Text!="-")PmG->Cells[3][5].Text=m.round2double(OBJEKT_akt->pohon->Rx,3);
-			if(PmG->Cells[3][3].Text!="-")PmG->Cells[3][3].Text=m.round2double(outR(OBJEKT_akt->pohon->Rz),3);
-			if(PmG->Cells[3][6].Text!="-")PmG->Cells[3][6].Text=m.round2double(outRz(m.mezera(0,OBJEKT_akt->pohon->Rz,0)),3);
-			if(PmG->Cells[3][7].Text!="-")PmG->Cells[3][7].Text=m.round2double(outRz(m.mezera(0,OBJEKT_akt->pohon->Rz,1)),3);
-			if(PmG->Cells[3][8].Text!="-")PmG->Cells[3][8].Text=m.round2double(outRz(m.mezera(90,OBJEKT_akt->pohon->Rz,1)),3);
+			if(OBJEKT_akt->rezim==1)PmG->Cells[3][5].Text=m.round2double(OBJEKT_akt->pohon->Rx,3);
+			if(OBJEKT_akt->rezim==1)PmG->Cells[3][3].Text=m.round2double(outR(OBJEKT_akt->pohon->Rz),3);
+			if(OBJEKT_akt->rezim==1)PmG->Cells[3][6].Text=m.round2double(outRz(m.mezera(0,OBJEKT_akt->pohon->Rz,0)),3);
+			if(OBJEKT_akt->rezim==1)PmG->Cells[3][7].Text=m.round2double(outRz(m.mezera(0,OBJEKT_akt->pohon->Rz,1)),3);
+			if(OBJEKT_akt->rezim==1)PmG->Cells[3][8].Text=m.round2double(outRz(m.mezera(90,OBJEKT_akt->pohon->Rz,1)),3);
   	}
   	else
   	{
@@ -8516,6 +8505,7 @@ void TForm1::aktualizace_tab_pohon(bool popisky,bool data,bool komponenty)
 			PmG->Cells[3][6].Text="-";
 			PmG->Cells[3][7].Text="-";
 			PmG->Cells[3][8].Text="-";
+			PmG->Note.Text="";
 		}
 	}
 }
@@ -14091,7 +14081,13 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	;//
+	for(unsigned int i=0;i<10;i++)
+	{
+		pom=d.v.OBJEKTY->dalsi;
+		NP_input();
+		scGPButton_stornoClick(this);
+	}
+	Memo("OK");
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -15181,7 +15177,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 	}
 	if(MOD==EDITACE)  //navrácení do módu schéma
 	{
-    log("Zavření editace, MOD=LAYOUT");
+		log("Zavření editace, MOD=LAYOUT");
 		Timer_neaktivity->Enabled=false;//vypnutí timeru pro jistotu
 		if(Akce!=NIC)ESC();
 		//////
@@ -15198,10 +15194,10 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		////kontrola zda je nutné přemazat obraz
 		if(ms.MyToDouble(FormX->VID)==0 && !scGPButton_ulozit->Enabled)
 		{
-    	d.v.vymaz_seznam_DATA();
+			d.v.vymaz_seznam_DATA();
 			d.v.hlavicka_DATA();
 			d.v.update_akt_zakazky();
-    }
+		}
 
 		////mazání mGridů
 		Cvektory::TElement *E=OBJEKT_akt->element;

@@ -3103,18 +3103,23 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 			delete PL;PL=NULL;
 		}
 
-		/////testy
+		/////vykreslování popisku pohonu
 		if(F->scGPCheckBox_popisek_pohonu->Checked && F->MOD!=F->TVORBA_CESTY && zakazka==NULL && E->pohon!=NULL && E->geo.typ==0 && E->geo.orientace==m.Rt90(E->geo.orientace))//vykreslení vodoznaku pohonu
 		{
 			if(zacatek.x==0 && zacatek.y==0)zacatek=m.L2P(E->geo.X1,E->geo.Y1);
 			if(E->dalsi==NULL || E->eID==300 || E->eID==301 || (E->dalsi!=NULL && (E->dalsi->geo.typ!=0 || (m.delka(m.P2Lx(zacatek.x),m.P2Ly(zacatek.y),E->geo.X4,E->geo.Y4)>=9.9 && E->dalsi->objekt_n!=E->objekt_n) || (E->dalsi->geo.typ==0 && E->geo.orientace!=E->dalsi->geo.orientace))))
 			{
-				if(m.delka(m.P2Lx(zacatek.x),m.P2Ly(zacatek.y),E->geo.X4,E->geo.Y4)>=1)
+				//nastavení fontu pro zjištění velikosti textu
+				canv->Font->Size=m.round(2.8*F->Zoom);if(F->aFont->Size==12)canv->Font->Size=m.round(2*F->Zoom);//stejné nastavení jako při vykreslení PM
+				canv->Font->Name="Roboto Lt";
+				//kontrola zda se popisek nad oblast vleze
+				if(m.delka(m.P2Lx(zacatek.x),m.P2Ly(zacatek.y),E->geo.X4,E->geo.Y4)>m.px2m(canv->TextWidth(E->pohon->name)))
 				{vykresli_popisek_pohonu(canv,E->pohon->name,zacatek,m.L2P(E->geo.X4,E->geo.Y4),E->geo.orientace,zmena);zmena=!zmena;}
 				zacatek=TPoint(0,0);
 			}
 		}
 		else zacatek=TPoint(0,0);//nulování začátečního bodu pokud není podmínka splněná
+    ////vykreslování mnohočetného průchodu cesty
 		if(pocet_pruchodu>1)
 		{
 			for(unsigned int i=2;i<=pocet_pruchodu;i++)
@@ -3127,11 +3132,9 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 				short z=1;if(E->geo.rotacni_uhel>0)z*=-1;
 //				double DR1=E->geo.delka;if(E->geo.typ==1)DR1=E->geo.radius+o*z;//delka či radius
 //				TPointD *PL1=m.getArcLine(E->geo.X1+S1.x,E->geo.Y1+S1.y,E->geo.orientace,E->geo.rotacni_uhel,DR1);
-
 		  	TPointD S2=m.rotace(o,180-E->geo.orientace,-90);
 		  	double DR2=E->geo.delka;if(E->geo.typ==1)DR2=E->geo.radius+o*z*-1;//delka či radius
-		  	TPointD *PL2=m.getArcLine(E->geo.X1+S2.x,E->geo.Y1+S2.y,E->geo.orientace,E->geo.rotacni_uhel,DR2);
-
+				TPointD *PL2=m.getArcLine(E->geo.X1+S2.x,E->geo.Y1+S2.y,E->geo.orientace,E->geo.rotacni_uhel,DR2);
 				//samotné výkreslení obou parelelních kolejí
 //				bezier(canv,PL1,3);
 				bezier(canv,PL2,3);
@@ -4824,7 +4827,7 @@ Graphics::TBitmap *Cvykresli::nacti_nahled(Cvektory::TZakazka *zakazka)
 {
 	//deklarace proměnných
 	double z=F->Zoom;//uchovávání původního Zoom
-	TRect ret;TPointD Posun;
+	TRect ret;TPointD posun=F->Posun;
 	Graphics::TBitmap *bmp=new Graphics::TBitmap,*bmp_pom=new Graphics::TBitmap;
 	//nastavení velikostí bmp
 	bmp_pom->Width=F->ClientWidth;bmp_pom->Height=F->ClientHeight;
@@ -4850,6 +4853,8 @@ Graphics::TBitmap *Cvykresli::nacti_nahled(Cvektory::TZakazka *zakazka)
 		E=v.dalsi_krok(E);
 	}
 	delete E;E=NULL;
+	TPointD pom;
+	pom=m.P2L(ret.left,ret.top);
 
 	////výpočet nového Zoom, podle maximální oblasti vykreslení a velikosti bmp
 	double MaxX=m.P2Lx(ret.right),MaxY=m.P2Ly(ret.top),MinX=m.P2Lx(ret.left),MinY=m.P2Ly(ret.bottom);
@@ -4861,31 +4866,14 @@ Graphics::TBitmap *Cvykresli::nacti_nahled(Cvektory::TZakazka *zakazka)
 	F->Zoom=abs(F->Zoom*PD/rozdil);
 	F->Zoom-=fmod(F->Zoom,0.05);
 
-	////opakování vyhledávání max oblasti, v prvotním vytváření bmp musí být provedeno 2x, pro nový zoom!
-	ret.left=MaxInt;ret.right=MaxInt*(-1);//nastavení hodnot do minima
-	ret.top=MaxInt;ret.bottom=MaxInt*(-1);
-	E=v.ELEMENTY->dalsi;
-	while(E!=NULL)
-	{
-		if(m.L2Px(E->geo.X1)<ret.left)ret.left=m.L2Px(E->geo.X1);
-		if(m.L2Px(E->geo.X1)>ret.right)ret.right=m.L2Px(E->geo.X1);
-		if(m.L2Py(E->geo.Y1)<ret.top)ret.top=m.L2Py(E->geo.Y1);
-		if(m.L2Py(E->geo.Y1)>ret.bottom)ret.bottom=m.L2Py(E->geo.Y1);
-		if(m.L2Px(E->geo.X4)<ret.left)ret.left=m.L2Px(E->geo.X4);
-		if(m.L2Px(E->geo.X4)>ret.right)ret.right=m.L2Px(E->geo.X4);
-		if(m.L2Py(E->geo.Y4)<ret.top)ret.top=m.L2Py(E->geo.Y4);
-		if(m.L2Py(E->geo.Y4)>ret.bottom)ret.bottom=m.L2Py(E->geo.Y4);
-		E=v.dalsi_krok(E);
-	}
-	delete E;E=NULL;
+	//posun obrazu
+	F->Posun.x+=m.L2Px(pom.x)*3.0;
+	F->Posun.y+=m.L2Py(pom.y)*3.0;
 
 	//vykreslení cesty do pomocné bmp
 	vykresli_retez(bmp_pom->Canvas,zakazka);
-	//zjištění posunu pro centrování obrazu ve výsledné bmp
-	Posun.x=(ret.right-ret.left-W)/2.0+(W-bmp->Width/3.0)/2.0;//(W-bmp->Width/3.0) odsazení od hrany bmp
-	Posun.y=(ret.bottom-ret.top-H)/2.0+(H-bmp->Height/3.0)/2.0;
 	//kopírování obrazu do výsledné bmp
-	bmp->Canvas->CopyRect(Rect(0,0,bmp->Width,bmp->Height),bmp_pom->Canvas,Rect(ret.left+Posun.x,ret.top+Posun.y,ret.left+Posun.x+bmp->Width/3.0,ret.top+Posun.y+bmp->Height/3.0));
+	bmp->Canvas->CopyRect(Rect(5*3/F->Zoom,5*3/F->Zoom,bmp->Width,bmp->Height),bmp_pom->Canvas,Rect(0,0,bmp->Width/3.0,bmp->Height/3.0));
 	//mazání pomocné bmp
 	delete(bmp_pom);
 	//vykreslení ID na bmp
@@ -4897,6 +4885,7 @@ Graphics::TBitmap *Cvykresli::nacti_nahled(Cvektory::TZakazka *zakazka)
 	bmp=a.antialiasing(bmp);
 	//navrácení původního Zoomu
 	F->Zoom=z;
+	F->Posun=posun;
 
   //vracení výsledné bmp
 	return bmp;

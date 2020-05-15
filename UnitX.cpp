@@ -74,6 +74,10 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 		{
 			if(E->mGrid->Rows[3].Visible)//budu skrývat
 			{
+        //zmenšení tabulky, úspora místa
+				E->mGrid->Columns[0].Width-=20;
+				E->mGrid->Columns[1].Width-=20;
+				E->mGrid->Columns[2].Width-=40;
 				E->mGrid->VisibleRow(3,false,false);    //E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
 				E->mGrid->VisibleRow(4,false,false);
 				if(E->mGrid->Rows[5].Visible)
@@ -91,7 +95,11 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 			}
 			else//budu zobrazovat
 			{
-        E->mGrid->exBUTTONVisible=true;
+				//zvìtšení tabulky na pùvodní rozmìry
+				E->mGrid->Columns[0].Width+=20;
+				E->mGrid->Columns[1].Width+=20;
+				E->mGrid->Columns[2].Width+=40;
+				E->mGrid->exBUTTONVisible=true;
 				E->mGrid->VisibleRow(3,true,false);
 				E->mGrid->VisibleRow(4,true,false);
 				if(E->mGrid->exBUTTON->GlyphOptions->Kind==scgpbgkUpArrow)
