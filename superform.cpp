@@ -456,8 +456,11 @@ void TForm_definice_zakazek::setGlyphButtonDefault(unsigned long Row, unsigned l
     H->Options->FrameWidth = 1;
     H->Options->FrameNormalColor = clWhite;
     H->Options->ShapeStyle = scgpRect;
+    H->Width=25;
+    H->Height=25;
     H->Hint = F->ls->Strings[439]; // "Smazat zakázku"
     H->ShowHint = true;
+    H->ShowCaption=false;
     H = NULL;
     delete H;
   }
@@ -747,8 +750,10 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy,bool 
     Z->mGrid = new TmGrid(this);
     Z->mGrid->Tag = 9;
 		Z->mGrid->ID = pocet_zakazek;
+    //Z->mGrid->DefaultRowHeight = 50;
     Z->mGrid->Create(4, 5);
     Z->mGrid->SetColumnAutoFit(-4);
+
     // if(novy)
     {
 			//Z->mGrid->Columns[0].Width = 110;
@@ -773,6 +778,10 @@ void TForm_definice_zakazek::loadHeader(unsigned long zakazka_n, bool novy,bool 
     Z->mGrid->Cells[0][0].Type = Z->mGrid->glyphBUTTON; // X  zakazka
     Z->mGrid->Cells[3][1].Type = Z->mGrid->glyphBUTTON; // X dávka
     Z->mGrid->Cells[3][0].Type = Z->mGrid->CHECK; // select  zakazka
+
+    Z->mGrid->Cells[0][0].AutoSizeComponent=3;
+    Z->mGrid->Cells[0][0].Align=Z->mGrid->LEFT;
+    //Z->mGrid->Cells[0][0].Valign=Z->mGrid->TOP;
 
    // Z->mGrid->Cells[0][1].Text = Z->n; // id zakázky
     if (novy)

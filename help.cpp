@@ -45,9 +45,17 @@ Top=Form1->ClientHeight/2-Form_help->Height/2;
 
    if(scGPToolPager->ActivePage==scGPToolPagerPage_about)
   {
-
-      UnicodeString about_text=Form1->ls->Strings[349]+" "+ F->VERZE +"<br>"+Form1->ls->Strings[350]+" "+ Application->ExeName + "<br>"+"Nastavení aplikace: " + F->get_temp_dir();
-      scHTMLLabel_about->Caption=about_text;
+    String about_text="";
+    if(DEBUG)
+    {
+    about_text=Form1->ls->Strings[349]+" "+ F->VERZE +"<br>"+Form1->ls->Strings[350]+" "+ Application->ExeName + "<br>"+"Nastavení aplikace: " + F->get_temp_dir();
+    scHTMLLabel_about->Caption=about_text;
+    }
+    else
+    {
+    about_text=Form1->ls->Strings[349]+" "+ F->VERZE +"<br>"+Form1->ls->Strings[350]+" "+ Application->ExeName;
+    scHTMLLabel_about->Caption=about_text;
+    }
   }
 
 

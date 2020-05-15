@@ -24,6 +24,7 @@ __fastcall TForm_konzole::TForm_konzole(TComponent* Owner)
 {
 Text_formulare="";
 priloha_cesta="";
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_konzole::CloseButtonClick(TObject *Sender)
@@ -57,8 +58,8 @@ void __fastcall TForm_konzole::FormShow(TObject *Sender)
  Text->Clear();
  Text->Font->Style = TFontStyles()<< fsItalic;
  Text->Font->Color=(TColor)RGB(190,190,190);
- Text->Lines->Add("prosím zadejte svùj komentáø");   //please type in your comment
-	//Text->SetFocus();
+ Text->Lines->Add("prosím, zadejte svùj komentáø");   //please type in your comment
+ count_click=0; //pomocné poèítadlo klikù
 
  }
 //---------------------------------------------------------------------------
@@ -67,12 +68,16 @@ void __fastcall TForm_konzole::scGPButton_odeslatClick(TObject *Sender)
 	//mail odeslání
 	Text_formulare=Text->Lines->GetText();// nahrání dat z Mema
 	String projekt_cesta="";if(scGPCheckBox_odeslat_vcetne_projektu->Checked)projekt_cesta=F->FileName+".bac_"+F->get_user_name()+"_"+F->get_computer_name();
-	F->mail("smtp.seznam.cz","builderboy@seznam.cz","camaro69","builderboy@seznam.cz","TISPL",F->LICENCE+"_"+F->get_computer_name()+"_"+F->get_user_name()+"_"+F->VERZE,Text_formulare,"rosta.slechta@gmail.com","","",priloha_cesta,projekt_cesta);
-	F->zobraz_tip("Odesláno. Dìkujeme za zpìtnou vazbu.                       ");//mezery nutné, kvùli odsazení
-	MessageBeep(MB_OK);//zvuková signalizace
-	Text->Clear(); //Sent. Thank you for your feedback.
-	Close();
+	if(F->mail("smtp.seznam.cz","builderboy@seznam.cz","camaro69","builderboy@seznam.cz","TISPL",F->LICENCE+"_"+F->get_computer_name()+"_"+F->get_user_name()+"_"+F->VERZE,Text_formulare,"rosta.slechta@gmail.com","","",priloha_cesta,projekt_cesta))
+  {
+  F->zobraz_tip("Odesláno. Dìkujeme za zpìtnou vazbu.                       ");//mezery nutné, kvùli odsazení
+  Close();
+  MessageBeep(MB_OK);//zvuková signalizace
+  Text->Clear(); //Sent. Thank you for your feedback.
+  }
+  else  F->MB("Nepodaøilo se odeslat, zkuste znovu.");//mezery nutné, kvùli odsazení
 }
+
 //---------------------------------------------------------------------------
 void __fastcall TForm_konzole::scGPButton_stornoClick(TObject *Sender)
 {
@@ -82,9 +87,13 @@ void __fastcall TForm_konzole::scGPButton_stornoClick(TObject *Sender)
 
 void __fastcall TForm_konzole::TextClick(TObject *Sender)
 {
-Text->Clear();
-Text->Font->Style = TFontStyles(); // zrušení kurzívy a pøípadných dalších Font style nastavení
-Text->Font->Color = clBlack;
+  count_click++;
+  if(count_click==1)  //první klik do mema smaže prùvodní text
+  {
+  Text->Clear();
+  Text->Font->Style = TFontStyles(); // zrušení kurzívy a pøípadných dalších Font style nastavení
+  Text->Font->Color = clBlack;
+  }
 }
 //---------------------------------------------------------------------------
 

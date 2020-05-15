@@ -43,6 +43,7 @@ __published:	// IDE-managed Components
 private:	// User declarations
  String Text_formulare;
  String priloha_cesta;
+ int count_click;
 public:		// User declarations
   __fastcall TForm_konzole(TComponent* Owner);
 };
