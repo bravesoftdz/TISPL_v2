@@ -678,12 +678,10 @@ object Form_help: TForm_help
               ShowCloseButton = True
               UseCustomOptions = False
             end>
-          TabIndex = 1
-          ActivePage = scGPToolPagerPage_layout
+          TabIndex = 4
+          ActivePage = scGPToolPagerPage_about
           FreeOnClose = False
           StorePaintBuffer = False
-          ExplicitLeft = -3
-          ExplicitTop = 37
           object scGPToolPagerPage3: TscGPToolPagerPage
             Left = 0
             Top = 35
@@ -696,6 +694,7 @@ object Form_help: TForm_help
             Font.Style = []
             ParentFont = False
             TabOrder = 2
+            Visible = False
             CanScroll = True
             FillGradientAngle = 90
             FillGradientBeginAlpha = 255
@@ -757,6 +756,7 @@ object Form_help: TForm_help
             Font.Style = []
             ParentFont = False
             TabOrder = 3
+            Visible = False
             CanScroll = True
             FillGradientAngle = 90
             FillGradientBeginAlpha = 255
@@ -804,72 +804,6 @@ object Form_help: TForm_help
               AutoSize = True
               UseFontColorToStyleColor = False
               Caption = 'Ot'#225'zky a odpov'#283'di'
-            end
-          end
-          object scGPToolPagerPage_about: TscGPToolPagerPage
-            Left = 0
-            Top = 35
-            Width = 878
-            Height = 388
-            Align = alTop
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -11
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-            TabOrder = 4
-            CanScroll = True
-            FillGradientAngle = 90
-            FillGradientBeginAlpha = 255
-            FillGradientEndAlpha = 255
-            FillGradientBeginColorOffset = 25
-            FillGradientEndColorOffset = 25
-            FillColor = clNone
-            FillColorAlpha = 255
-            FillColor2 = clNone
-            Color = clWhite
-            BGStyleKind = scgspbPanel
-            ScrollButtonWidth = 17
-            CustomImageIndex = -1
-            WallpaperIndex = -1
-            HotScroll = False
-            AutoSize = False
-            ScrollType = scstHorizontal
-            ScrollOffset = 0
-            ScrollTimerInterval = 50
-            ScrollButtonArrowWidth = 2
-            TouchScroll = False
-            StorePaintBuffer = False
-            object scHTMLLabel_about: TscHTMLLabel
-              Left = 14
-              Top = 16
-              Width = 141
-              Height = 18
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -15
-              Font.Name = 'Roboto'
-              Font.Style = []
-              Font.Quality = fqAntialiased
-              ParentFont = False
-              TabOrder = 0
-              AutoSizeHeight = True
-              AutoSizeWidth = True
-              AutoExecuteURL = True
-              Caption = 'scHTMLLabel_about'
-              LinkFontNormal.Charset = DEFAULT_CHARSET
-              LinkFontNormal.Color = clHighlight
-              LinkFontNormal.Height = -11
-              LinkFontNormal.Name = 'Tahoma'
-              LinkFontNormal.Style = []
-              LinkFontHover.Charset = DEFAULT_CHARSET
-              LinkFontHover.Color = clHighlight
-              LinkFontHover.Height = -11
-              LinkFontHover.Name = 'Tahoma'
-              LinkFontHover.Style = [fsUnderline]
-              MaxWidth = 0
-              TextAlignment = taLeftJustify
             end
           end
           object scGPToolPagerPage_PL: TscGPToolPagerPage
@@ -952,6 +886,7 @@ object Form_help: TForm_help
             Font.Style = []
             ParentFont = False
             TabOrder = 1
+            Visible = False
             CanScroll = True
             FillGradientAngle = 90
             FillGradientBeginAlpha = 255
@@ -991,6 +926,72 @@ object Form_help: TForm_help
               AutoSizeWidth = True
               AutoExecuteURL = True
               Caption = 'scHTMLLabel_layout'
+              LinkFontNormal.Charset = DEFAULT_CHARSET
+              LinkFontNormal.Color = clHighlight
+              LinkFontNormal.Height = -11
+              LinkFontNormal.Name = 'Tahoma'
+              LinkFontNormal.Style = []
+              LinkFontHover.Charset = DEFAULT_CHARSET
+              LinkFontHover.Color = clHighlight
+              LinkFontHover.Height = -11
+              LinkFontHover.Name = 'Tahoma'
+              LinkFontHover.Style = [fsUnderline]
+              MaxWidth = 0
+              TextAlignment = taLeftJustify
+            end
+          end
+          object scGPToolPagerPage_about: TscGPToolPagerPage
+            Left = 0
+            Top = 35
+            Width = 878
+            Height = 388
+            Align = alTop
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -11
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+            TabOrder = 4
+            CanScroll = True
+            FillGradientAngle = 90
+            FillGradientBeginAlpha = 255
+            FillGradientEndAlpha = 255
+            FillGradientBeginColorOffset = 25
+            FillGradientEndColorOffset = 25
+            FillColor = clNone
+            FillColorAlpha = 255
+            FillColor2 = clNone
+            Color = clWhite
+            BGStyleKind = scgspbPanel
+            ScrollButtonWidth = 17
+            CustomImageIndex = -1
+            WallpaperIndex = -1
+            HotScroll = False
+            AutoSize = False
+            ScrollType = scstHorizontal
+            ScrollOffset = 0
+            ScrollTimerInterval = 50
+            ScrollButtonArrowWidth = 2
+            TouchScroll = False
+            StorePaintBuffer = False
+            object scHTMLLabel_about: TscHTMLLabel
+              Left = 14
+              Top = 16
+              Width = 141
+              Height = 18
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -15
+              Font.Name = 'Roboto'
+              Font.Style = []
+              Font.Quality = fqAntialiased
+              ParentFont = False
+              TabOrder = 0
+              AutoSizeHeight = True
+              AutoSizeWidth = True
+              AutoExecuteURL = True
+              Caption = 'scHTMLLabel_about'
               LinkFontNormal.Charset = DEFAULT_CHARSET
               LinkFontNormal.Color = clHighlight
               LinkFontNormal.Height = -11
