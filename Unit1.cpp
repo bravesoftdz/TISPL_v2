@@ -1018,7 +1018,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=466;i++)
+	for(unsigned short i=0;i<=470;i++)
 	{
 		switch(i)
 		{
@@ -1489,6 +1489,10 @@ void TForm1::DesignSettings()
 			case 464:text="Pozice";break;
 			case 465:text="V úseku za předávacím místem bude nastaven pohon:";break;
 			case 466:text="Vložením dojde k překrytí pracovních oblastí, chcete element vložit?";break;
+			case 467:text="Počátek a konec linky byl automaticky spojen.";break;
+			case 468:text="Pozor, na následujícím úseku přejezdu dochází k překrytí JIGů!";break;
+			case 469:text="Nerelevantní hodnota časové rezervy, na některém objektu není přiřazen pohon!";break;
+			case 470:text="Nelze provést! Odstranění provedete výběrem totožného pohonu před a za předávacím místem";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -2881,7 +2885,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 			////Geometrie
 			if(Akce==GEOMETRIE && !editace_textu)ukonceni_geometrie();
 			////Potvrzení tvorby cesty
-			if(MOD==TVORBA_CESTY)scGPButton_ulozit_cestuClick(this);
+			if(MOD==TVORBA_CESTY && scGPButton_ulozit_cestu->Enabled)scGPButton_ulozit_cestuClick(this);
 			////Hala
 			if(editace_textu)smaz_kurzor();if(Akce==DRAW_HALA&&d.v.HALA.body!=NULL&&d.v.HALA.body->predchozi->n>2){d.v.vloz_bod(d.v.HALA.body->dalsi->X,d.v.HALA.body->dalsi->Y,pom,NULL,ortogonalizace_stav,true);Akce=NIC;kurzor(standard);TIP="";REFRESH();}
 			else if(Akce==DRAW_HALA){d.v.vymaz_body();Akce=NIC;kurzor(standard);TIP="";REFRESH();}
@@ -3473,7 +3477,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						else if(MOD==TVORBA_CESTY)
 						{
               if(pom_element_temp!=NULL)
-					  	{
+							{
 								Cvektory::TElement *epom=NULL;
 								bool pridat=true;
 								while(pom_element_temp!=NULL)
@@ -3487,6 +3491,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					  		}
 								pom_element_temp=NULL;
 								epom=NULL;delete epom;
+								if(Form_definice_zakazek->Z_cesta->cesta->predchozi->Element==d.v.ELEMENTY->predchozi)scGPButton_ulozit_cestu->Enabled=true;
 					  	}
 							else
 							{
@@ -3661,7 +3666,7 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 				}
 			}break;
 		}
-		if(MOD==TVORBA_CESTY)scGPButton_ulozit_cestuClick(this);
+		if(MOD==TVORBA_CESTY && scGPButton_ulozit_cestu->Enabled)scGPButton_ulozit_cestuClick(this);
 		Akce=NIC;Akce_temp=NIC;
 	}
 	else//jsem v náhledu
@@ -11715,7 +11720,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 				else
 				{
 					//pokud se jedná o výhybku na konci objektu, nelze ji smazat
-					if(pom_element->eID==200)MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Nelze smazat předávací míto na konci objektu.","",MB_OK);
+					if(pom_element->eID==200)MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,ls->Strings[470],"",MB_OK);//"Nelze provést! Odstranění provedete výběrem totožného pohonu před a za předávacím místem"
 					mazani=false;
 					Akce=NIC;
 				}
@@ -14081,13 +14086,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	for(unsigned int i=0;i<10;i++)
-	{
-		pom=d.v.OBJEKTY->dalsi;
-		NP_input();
-		scGPButton_stornoClick(this);
-	}
-	Memo("OK");
+	scListGroupPanel_poznamky->Top+=10;
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -16972,6 +16971,8 @@ void __fastcall TForm1::scGPGlyphButton_odstran_cestuClick(TObject *Sender)
 	log(__func__);//logování
 	d.v.inicializace_cesty(Form_definice_zakazek->Z_cesta);//smaže cestu a vytvoří hlavičku nové cesty
 	d.v.vloz_cestu_po_hlavni_vetvi(Form_definice_zakazek->Z_cesta,true);//vytvoří první usek cesty
+	if(Form_definice_zakazek->Z_cesta->cesta->predchozi->Element==d.v.ELEMENTY->predchozi)scGPButton_ulozit_cestu->Enabled=true;
+	else scGPButton_ulozit_cestu->Enabled=false;
 	REFRESH();
 }
 //---------------------------------------------------------------------------
@@ -16998,7 +16999,10 @@ void __fastcall TForm1::N21Click(TObject *Sender)
     //dojde k vytvoření prvního úseku znova
 		d.v.inicializace_cesty(Form_definice_zakazek->Z_cesta);
 		d.v.vloz_cestu_po_hlavni_vetvi(Form_definice_zakazek->Z_cesta,true);
-  }
+	}
+	//kontrola návaznosti
+	if(Form_definice_zakazek->Z_cesta->cesta->predchozi->Element==d.v.ELEMENTY->predchozi)scGPButton_ulozit_cestu->Enabled=true;
+	else scGPButton_ulozit_cestu->Enabled=false;
 	//překreslení
 	REFRESH();
 }

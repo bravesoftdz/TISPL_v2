@@ -465,3 +465,7 @@ Zone;X;Zóna
 Posit.;X;Pozice
 In section behind the transfer point will be set drive:;X;V úseku za pøedávacím místem bude nastaven pohon:
 Paste creates an overlay of work areas, do you want to insert the element?;X;Vložením dojde k pøekrytí pracovních oblastí, chcete element vložit?
+The beginning and end of the line were automatically connected.;X;Poèátek a konec linky byl automaticky spojen.
+Attention, JIGs overlap on the next section of the crossing!;X;Pozor, na následujícím úseku pøejezdu dochází k pøekrytí JIGù!
+Irrelevant value of time reserve, no drive is assigned to any object!;X;Nerelevantní hodnota èasové rezervy, na nìkterém objektu není pøiøazen pohon!
+Can not be done! To remove, select the same drive in front of and behind the transfer point;X;Nelze provést! Odstranìní provedete výbìrem totožného pohonu pøed a za pøedávacím místem
