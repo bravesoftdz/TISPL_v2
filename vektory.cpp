@@ -2508,10 +2508,10 @@ bool Cvektory::SGlinka()
 short Cvektory::vrat_druh_elementu(TElement *Element)
 {
 	short RET=-1;
-	if(Element!=NULL)                               																					//nutné přeskakovat elementarní hlavičku!
+	if(Element!=NULL)//zarážka předávací místo  výhybka a spojka 				                      //nutné přeskakovat elementarní hlavičku!
 	if(Element->eID!=MaxInt && Element->eID!=200 && Element->eID!=300 && Element->eID!=301 && Element->n>0)
 	{
-		if(Element->eID%2==0 && Element->eID!=100)RET=0;//S&G elementy
+		if(Element->eID%2==0 && Element->eID!=100)RET=0;//S&G elementy, mimo ION tyče
 		else RET=1;//kontinuální elementy
 	}
 	return RET;
@@ -5354,7 +5354,7 @@ void Cvektory::generuj_VOZIKY()
 					if(C->Element==C->sparovany)Esd=C->sparovany;//pouze pro situace, kdy je na lince zatím jenom jeden stop-element tak, aby se zobrazovaly vůbec vozíky
 					///samotné generování
 					//vozíky v BUFFRu ale pozor ještě v předchozím (před-po stop segement), vozíky stojící v bufferu, včetně toho na stopce, generuje se zpětně
-					if(C->Element->data.pocet_voziku>=1)generuj_voziky_stop_a_bufferu(C->Element,akt_rotace_jigu,pocet_voziku_z_prejezdu_na_bufferu);
+					if(vrat_druh_elementu(C->Element)==0 && C->Element->data.pocet_voziku>0)generuj_voziky_stop_a_bufferu(C->Element,akt_rotace_jigu,pocet_voziku_z_prejezdu_na_bufferu);
 					pocet_voziku_z_prejezdu_na_bufferu=0;//vynulování již zohledněno výše
 					//vozíky na PŘEJEZDECH mimo stop elementů (nicméně i přes stop se musí kvůli umístění projít) - procházení cyklem od dalšího elementu daného stop elementů (z dané stopky) až po jeho spárovaný stop element, generuje se dopředně
 					while(Ct->Element!=Esd)

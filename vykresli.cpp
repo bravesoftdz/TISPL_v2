@@ -2803,7 +2803,7 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 		}
 
 		////vykreslení POZIC na elementu + vzniklém buffru
-		if(F->scGPCheckBox_zobrazit_pozice->Checked && pocet_pozic>0)
+		if(F->scGPCheckBox_zobrazit_pozice->Checked && v.vrat_druh_elementu(E)==0 && pocet_pozic>0)
 		{
 			unsigned int pocet_voziku=E->data.pocet_voziku;
 			TColor clChassisTemp=m.clIntensive(clPotencial,-30),clJigTemp=m.clIntensive(clPotencial,-70),clPotencialBuffer=m.clIntensive(clPotencial,40);

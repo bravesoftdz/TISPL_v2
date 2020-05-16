@@ -14164,33 +14164,28 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 //		delete V;
 
 
-	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-	while(E!=NULL)
-	{
-		Memo(String(E->n)+" "+String(E->name));
-		E=d.v.dalsi_krok(E);
-	}
-	E=NULL;delete E; //pokud nedojde algoritmus na konec seznamu
-	delete E;E=NULL; //pokud dojde na konec seznamu
-
-	Memo("_________________");
-
-	//proleze např. spojku vícekrát
-	E=d.v.ELEMENTY->dalsi;
-	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
-	int n=0;
-	while(E!=NULL)
-	{
-		Memo(String(++n)+" "+String(E->n)+" "+String(E->name));
-		E=d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);//použití sekvenčního algoritmu, podle stejného bude soubor načítán, tz. stejný počet elementů v sekvenčním řazení
-	}
-	delete E;E=NULL;
-	delete []tab_pruchodu;
-
-
-
-
-
+//	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+//	while(E!=NULL)
+//	{
+//		Memo(String(E->n)+" "+String(E->name));
+//		E=d.v.dalsi_krok(E);
+//	}
+//	E=NULL;delete E; //pokud nedojde algoritmus na konec seznamu
+//	delete E;E=NULL; //pokud dojde na konec seznamu
+//
+//	Memo("_________________");
+//
+//	//proleze např. spojku vícekrát
+//	E=d.v.ELEMENTY->dalsi;
+//	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
+//	int n=0;
+//	while(E!=NULL)
+//	{
+//		Memo(String(++n)+" "+String(E->n)+" "+String(E->name));
+//		E=d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);//použití sekvenčního algoritmu, podle stejného bude soubor načítán, tz. stejný počet elementů v sekvenčním řazení
+//	}
+//	delete E;E=NULL;
+//	delete []tab_pruchodu;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
