@@ -6298,14 +6298,14 @@ UnicodeString Cvektory::getVID(long VID)
 	UnicodeString Text="";
 	switch(VID) //řadit od nejdůležitějšího
 	{
-    case 111: Text="Počátek a konec linky byl automaticky spojen.";break;
+		case 111: Text=F->ls->Strings[467];break;//"Počátek a konec linky byl automaticky spojen."
 		case 219: Text=F->ls->Strings[219]+"!";break;//Pohon nepřiřazen!
 		case 401: Text=F->ls->Strings[401];break;//Rotace neodpovídá orientaci JIGů na začátku linky!
 		case 402: Text=F->ls->Strings[402];break;//Pozor, překrytí JIGů!
-		case 403: Text="Pozor, na následujícím úseku přejedu dochází k překrytí JIGů!";break;//Pozor, na následujícím úseku přejedu dochází k překrytí JIGů!
+		case 403: Text=F->ls->Strings[468];break;//Pozor, na následujícím úseku přejezdu dochází k překrytí JIGů!
 		case 406: Text=F->ls->Strings[406];break;//Nestíhá se přejezd, záporná časová rezerva!
 		case 407: Text=F->ls->Strings[407];break;//Nulová časová rezerva.
-		case 450: Text="Nerelevantní hodnota časové rezervy, na některém objektu není přiřazen pohon!";break;//Nulová časová rezerva.
+		case 450: Text=F->ls->Strings[469];break;//Nulová časová rezerva."Nerelevantní hodnota časové rezervy, na některém objektu není přiřazen pohon!"
 		default: Text="Error or warning!";break;//obecná chyba či varování
 	}
 	return Text;
@@ -8037,46 +8037,45 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
   ////vytvoření obrazu projektu
 	if(obraz!=NULL)
 	{
-	  	//kopírování všech objektů
-	  	TObjekt *O=OBJEKTY->dalsi,*o_kop=NULL;
-	  	while(O!=NULL)
-	  	{
-				//vytvoření kopie
-				o_kop=new TObjekt;
-				kopiruj_objekt(O,o_kop);
-	  		//ukazatelové propojení kopie s obraz->Objekty
-	  		if(obraz->Objekty->dalsi==NULL)obraz->Objekty->dalsi=o_kop;
-	  		else obraz->Objekty->predchozi->dalsi=o_kop;
-	  		o_kop->predchozi=obraz->Objekty->predchozi;
-	  		obraz->Objekty->predchozi=o_kop;
-	  		o_kop->dalsi=NULL;
-	  		//ukazatelové záleřitosti
-	  		o_kop=NULL;delete o_kop;
-				O=O->dalsi;
-	  	}
-			delete O;O=NULL;
+		//kopírování všech objektů
+		TObjekt *O=OBJEKTY->dalsi,*o_kop=NULL;
+		while(O!=NULL)
+		{
+			//vytvoření kopie
+			o_kop=new TObjekt;
+			kopiruj_objekt(O,o_kop);
+			//ukazatelové propojení kopie s obraz->Objekty
+			if(obraz->Objekty->dalsi==NULL)obraz->Objekty->dalsi=o_kop;
+			else obraz->Objekty->predchozi->dalsi=o_kop;
+			o_kop->predchozi=obraz->Objekty->predchozi;
+			obraz->Objekty->predchozi=o_kop;
+			o_kop->dalsi=NULL;
+			//ukazatelové záleřitosti
+			o_kop=NULL;delete o_kop;
+			O=O->dalsi;
+		}
+		delete O;O=NULL;
 
-			//kopírování všech elementů
-//			TElement *E=ELEMENTY->dalsi,*e_kop=NULL;
-//			TPoint *tab_pruchodu=new TPoint[pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
-//			while(E!=NULL)
-//			{
-//				//vytvoření kopie
-//				e_kop=new TElement;
-//				kopiruj_element(E,e_kop);
-//				//ukazatelové propojení kopie s obraz->Elementy
-//				if(obraz->Elementy->dalsi==NULL)obraz->Elementy->dalsi=e_kop;
-//				else obraz->Elementy->predchozi->dalsi=e_kop;
-//				e_kop->predchozi=obraz->Elementy->predchozi;
-//				obraz->Elementy->predchozi=e_kop;
-//				e_kop->dalsi=NULL;
-//				//ukazatelové záležitosti
-//				e_kop=NULL;delete e_kop;
-//				E=sekvencni_zapis_cteni(E,tab_pruchodu,NULL);
-//			}
-//			delete E;E=NULL;
-//			delete []tab_pruchodu;
-//		}
+		//kopírování všech elementů
+		TElement *E=ELEMENTY->dalsi,*e_kop=NULL;
+		TPoint *tab_pruchodu=new TPoint[pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
+		while(E!=NULL)
+		{
+			//vytvoření kopie
+			e_kop=new TElement;
+			kopiruj_element(E,e_kop);
+			//ukazatelové propojení kopie s obraz->Elementy
+			if(obraz->Elementy->dalsi==NULL)obraz->Elementy->dalsi=e_kop;
+			else obraz->Elementy->predchozi->dalsi=e_kop;
+			e_kop->predchozi=obraz->Elementy->predchozi;
+			obraz->Elementy->predchozi=e_kop;
+			e_kop->dalsi=NULL;
+			//ukazatelové záležitosti
+			e_kop=NULL;delete e_kop;
+			E=sekvencni_zapis_cteni(E,tab_pruchodu,NULL);
+		}
+		delete E;E=NULL;
+		delete []tab_pruchodu;
 
 		//uložení počtu výhybek
 		obraz->pocet_vyhybek=pocet_vyhybek;
@@ -8124,31 +8123,31 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 				//průchod skrze segmenty cesty zakázky
 				TCesta *c=Z->cesta->dalsi;
 		  	TCesta_uloz *c_u=NULL;
-				while(c!=NULL)
+		  	while(c!=NULL)
 		  	{
-					c_u=new TCesta_uloz;
+		  		c_u=new TCesta_uloz;
 					c_u->n=Z_u->cesta->predchozi->n+1;
 					c_u->element_n=c->Element->n;
 		  		if(c->sparovany!=NULL)c_u->sparovany_n=c->sparovany->n;
-					else c_u->sparovany_n=0;
+		  		else c_u->sparovany_n=0;
 		  		c_u->data.PD=c->data.PD;
-					c_u->data.orientace_jig_pred=c->data.orientace_jig_pred;
+		  		c_u->data.orientace_jig_pred=c->data.orientace_jig_pred;
 		  		c_u->data.LO1=c->data.LO1;
-					c_u->data.LO2=c->data.LO2;
-					c_u->data.LO_pozice=c->data.LO_pozice;
-					c_u->data.PT1=c->data.PT1;
-					c_u->data.PT2=c->data.PT2;
-					c_u->data.WTstop=c->data.WTstop;
-					c_u->data.RT.x=c->data.RT.x;
-					c_u->data.RT.y=c->data.RT.y;
-					c_u->data.pocet_pozic=c->data.pocet_pozic;
-					c_u->data.pocet_voziku=c->data.pocet_voziku;
+		  		c_u->data.LO2=c->data.LO2;
+		  		c_u->data.LO_pozice=c->data.LO_pozice;
+		  		c_u->data.PT1=c->data.PT1;
+		  		c_u->data.PT2=c->data.PT2;
+		  		c_u->data.WTstop=c->data.WTstop;
+		  		c_u->data.RT.x=c->data.RT.x;
+		  		c_u->data.RT.y=c->data.RT.y;
+		  		c_u->data.pocet_pozic=c->data.pocet_pozic;
+		  		c_u->data.pocet_voziku=c->data.pocet_voziku;
 		  		c_u->dalsi=NULL;
 					c_u->predchozi=Z_u->cesta->predchozi;
 					Z_u->cesta->predchozi->dalsi=c_u;
-					Z_u->cesta->predchozi=c_u;
+		  		Z_u->cesta->predchozi=c_u;
 		  		c_u=NULL;delete c_u;
-					c=c->dalsi;
+		  		c=c->dalsi;
 		  	}
 				delete c;c=NULL;
 				//uložení Z_u do obrazu

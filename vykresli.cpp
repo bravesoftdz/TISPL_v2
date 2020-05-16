@@ -4867,6 +4867,7 @@ Graphics::TBitmap *Cvykresli::nacti_nahled(Cvektory::TZakazka *zakazka)
 	F->Zoom-=fmod(F->Zoom,0.05);
 
 	//posun obrazu
+	if(m.L2Px(pom.x)>0 || m.L2Py(pom.y)>0){pom.x-=1;pom.y+=1;}//korekce obrazu, nutná problém při menším zoomu
 	F->Posun.x+=m.L2Px(pom.x)*3.0;
 	F->Posun.y+=m.L2Py(pom.y)*3.0;
 

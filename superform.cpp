@@ -613,6 +613,7 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col, unsig
 		Z_cesta->n=Z->n;//uložení èísla zakázky, které je editovaná cesta
 		F->d.v.inicializace_cesty(Z_cesta);
 		F->d.v.vloz_cestu_po_hlavni_vetvi(Z_cesta,true);
+		if(Z_cesta->cesta->predchozi->Element!=F->d.v.ELEMENTY->predchozi)F->scGPButton_ulozit_cestu->Enabled=false;
 		//aktualizace parametrù z tabulky do ZAKAZEK_temp + mazání mgridù zakázek
 		ulozeni_dat_z_mGridu_a_delete();
 		closing=true;
