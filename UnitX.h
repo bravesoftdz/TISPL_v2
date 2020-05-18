@@ -45,7 +45,7 @@ public:		// User declarations
 	void odstranit_korelaci(bool predat_focus=true);//odstraní veškerou korelaci, nepoviný prametr urèuje zda má být pøedán focus z mGridu, defaultnì focus pøedává
 	void validace_aRD(bool pouze_rozmezi=false);//validace zadávané aktuální rychlosti
 	void validace_max_voziku();//validace maximálního poètu vozíkù na stopce
-	void povolit_zakazat_editaci(bool povolit);//zakazuje èi povolí komponenty v tabulce pohonu a všech tabulkách elementu
+	void povolit_zakazat_editaci();//zakazuje èi povolí ukládání editace na základì VID
 	void naplneni_dopRD();//doplni doporuèenou rychlost do tabulky pohonu
   bool check_click_Note(double X,double Y,bool check_for_highlight=false);
 	void aktualizace_zon_otaceni(Cvektory::TElement *E);//po zmìnì rotace na elementu E, projde všechny elementy za a pøepoèítá jim zóny otáèení
