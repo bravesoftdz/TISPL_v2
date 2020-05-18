@@ -2480,7 +2480,7 @@ unsigned int Cvektory::vrat_nejvetsi_ID_tabulek (TObjekt *Objekt)
 				{if(ret<(unsigned)E->mGrid->ID)ret=E->mGrid->ID;}
 				catch(...){;}
       }
-			E=E->dalsi;
+			E=dalsi_krok(E,Objekt);
 		}
 		E=NULL;delete E;
   }
@@ -2695,7 +2695,7 @@ Cvektory::TElement *Cvektory::najdi_tabulku(TObjekt *Objekt, double X, double Y)
 	{
 		//pokud mgrid existuje hledá poslední mGrid na pozici X,Y ... nesmí být po nalezení break
 		if(E->mGrid!=NULL && E->Xt<=X && X<=E->Xt+E->mGrid->Width*F->m2px/F->Zoom && E->Yt>=Y && Y>=E->Yt-E->mGrid->Height*F->m2px/F->Zoom)ret=E;
-		E=E->dalsi;
+		E=dalsi_krok(E);
 	}
 	if(ret==NULL && F->predchozi_PM!=NULL && F->predchozi_PM->mGrid!=NULL && F->predchozi_PM->Xt<=X && X<=F->predchozi_PM->Xt+F->predchozi_PM->mGrid->Width*F->m2px/F->Zoom && F->predchozi_PM->Yt>=Y && Y>=F->predchozi_PM->Yt-F->predchozi_PM->mGrid->Height*F->m2px/F->Zoom)ret=F->predchozi_PM;
 	E=NULL;delete E;
@@ -3016,7 +3016,7 @@ void Cvektory::prirad_sparovany_element(TElement *Element)
       //vypsání ukazatelů do mgridu
 			try
 			{
-				if(E->eID==0){E->mGrid->Cells[0][1].Text=E->sparovany->name;E->mGrid->Refresh();}
+				if(E->eID==0){E->mGrid->Cells[2][1].Text=E->sparovany->name;E->mGrid->Refresh();}
 				else if(vrat_druh_elementu(E)==0){E->mGrid->Cells[1][E->mGrid->RowCount-1].Text=E->sparovany->name;E->mGrid->Refresh();}
 				if(Element->eID==0){Element->mGrid->Cells[2][1].Text=Element->sparovany->name;Element->mGrid->Refresh();}
 				else if(vrat_druh_elementu(Element)==0){Element->mGrid->Cells[1][Element->mGrid->RowCount-1].Text=Element->sparovany->name;Element->mGrid->Refresh();}
@@ -3055,7 +3055,7 @@ void Cvektory::prirad_sparovany_element(TElement *Element)
 //						if(posledni && E->eID==0){E->mGrid->Cells[2][1].Text=prvni_stopka->name;E->mGrid->Refresh();}
 					}
 					catch(...)
-					{/*MessageBeep(0);*/}
+					{;}
 				}
 				prvni_stopka=NULL;delete prvni_stopka;
       }
@@ -3099,7 +3099,7 @@ void Cvektory::aktualizuj_sparovane_ukazatele()
 			//vymazání pomocných ukazatelů
 			E1=NULL;delete E1;
 		}
-		E=E->dalsi;
+		E=dalsi_krok(E);
 	}
 	//ukazatelové záležitosti
 	delete E;E=NULL;

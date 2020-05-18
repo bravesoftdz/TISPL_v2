@@ -6898,11 +6898,11 @@ void TForm1::vlozeni_editace_geometrie()
 }
 //---------------------------------------------------------------------------
 //ukončení akce geometrie a případné uzavření kruhu
-void TForm1::ukonceni_geometrie()
+void TForm1::ukonceni_geometrie(bool kontrola)
 {
 	log(__func__);//logování
 	//////uzavření kruhu
-	if(pom->dalsi==NULL && OBJEKT_akt->n!=1 && posledni_editovany_element!=NULL)
+	if(kontrola && pom->dalsi==NULL && OBJEKT_akt->n!=1 && posledni_editovany_element!=NULL)
 	{
 		double delka=m.delka(posledni_editovany_element->X,posledni_editovany_element->Y,d.v.OBJEKTY->dalsi->element->geo.X1,d.v.OBJEKTY->dalsi->element->geo.Y1);
 		if(delka <=2 && posledni_editovany_element->geo.typ==0 && (posledni_editovany_element->X==d.v.OBJEKTY->dalsi->element->geo.X1 || posledni_editovany_element->Y==d.v.OBJEKTY->dalsi->element->geo.Y1))
@@ -6923,7 +6923,7 @@ void TForm1::ukonceni_geometrie()
 	if(!editace_textu)Akce=NIC;Akce_temp=NIC;//musí být ještě před refresh
 	////připnutí vedlejší větve na hlavní
 	Akce=BLOK;
-	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)==m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel) && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=1 && mrYes==MB(ls->Strings[455],MB_YESNO))//"Chcete automaticky spojit geometrii?"
+	if(kontrola && e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)==m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel) && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=1 && mrYes==MB(ls->Strings[455],MB_YESNO))//"Chcete automaticky spojit geometrii?"
 	{
 		double posun_x,posun_y;
 		short orientace=e_posledni->geo.orientace;
@@ -6990,9 +6990,10 @@ void TForm1::ukonceni_geometrie()
 	e_posledni=NULL;delete e_posledni;
 
 	////připínání geometrie po hlavní větvi
-	bool zmena=pripnuti_dalsich_objektu();
+	bool zmena=false;
+	if(kontrola)zmena=pripnuti_dalsich_objektu();
 	//pokud jsem v prvním nebo posledním objektu kontrola zda je linka spojená, nebo pokud dojde k pripnutí dalších objektů
-	if(OBJEKT_akt->n==1 || OBJEKT_akt->n==d.v.OBJEKTY->predchozi->n || zmena)spojeni_prvni_posledni();//kontrola zda mám dostatečný počet objektů a zda je možno spojit je automaticky
+	if(kontrola && (OBJEKT_akt->n==1 || OBJEKT_akt->n==d.v.OBJEKTY->predchozi->n || zmena))spojeni_prvni_posledni();//kontrola zda mám dostatečný počet objektů a zda je možno spojit je automaticky
 
 	//////navrácení původních hodnot
 	AnsiString T;
@@ -7065,7 +7066,7 @@ double TForm1::max_voziku(Cvektory::TElement *stopka)
 					if(E->data.LO2>0)delka-=E->data.LO2+E->data.LO_pozice;
 					else delka-=(E->data.LO1+E->data.LO2)/2.0+E->data.LO_pozice;
 				}
-				if(E->geo.typ==0 && E->eID==MaxInt)delka+=E->geo.delka;
+				if(E->geo.typ==0 && E->eID==MaxInt && E->geo.orientace==stopka->geo.orientace)delka+=E->geo.delka;
 				else break;
 			}
 			E=E->predchozi;
@@ -8498,7 +8499,7 @@ void TForm1::aktualizace_tab_pohon(bool popisky,bool data,bool komponenty)
 	{
   	if(OBJEKT_akt->pohon!=NULL)
   	{
-			if(OBJEKT_akt->rezim==1)//přepočet po přidání KK elementu
+			if(OBJEKT_akt->rezim!=0)//přepočet po přidání KK elementu
 			{
 				F->OBJEKT_akt->pohon->Rz=F->m.Rz(F->OBJEKT_akt->pohon->aRD);
 				F->OBJEKT_akt->pohon->Rx=F->m.Rx(F->OBJEKT_akt->pohon->aRD,F->OBJEKT_akt->pohon->roztec);
@@ -8506,11 +8507,11 @@ void TForm1::aktualizace_tab_pohon(bool popisky,bool data,bool komponenty)
 			PmG->Cells[3][1].Text=m.round2double(outaRD(OBJEKT_akt->pohon->aRD),3);
   		PmG->Cells[3][2].Text=AnsiString(m.round2double(outaRD(OBJEKT_akt->pohon->rychlost_od),3))+" - "+AnsiString(m.round2double(outaRD(OBJEKT_akt->pohon->rychlost_do),3));
 			PmG->Cells[3][4].Text=m.round2double(outR(OBJEKT_akt->pohon->roztec),3);
-			if(OBJEKT_akt->rezim==1)PmG->Cells[3][5].Text=m.round2double(OBJEKT_akt->pohon->Rx,3);
-			if(OBJEKT_akt->rezim==1)PmG->Cells[3][3].Text=m.round2double(outR(OBJEKT_akt->pohon->Rz),3);
-			if(OBJEKT_akt->rezim==1)PmG->Cells[3][6].Text=m.round2double(outRz(m.mezera(0,OBJEKT_akt->pohon->Rz,0)),3);
-			if(OBJEKT_akt->rezim==1)PmG->Cells[3][7].Text=m.round2double(outRz(m.mezera(0,OBJEKT_akt->pohon->Rz,1)),3);
-			if(OBJEKT_akt->rezim==1)PmG->Cells[3][8].Text=m.round2double(outRz(m.mezera(90,OBJEKT_akt->pohon->Rz,1)),3);
+			if(OBJEKT_akt->rezim!=0)PmG->Cells[3][5].Text=m.round2double(OBJEKT_akt->pohon->Rx,3);
+			if(OBJEKT_akt->rezim!=0)PmG->Cells[3][3].Text=m.round2double(outR(OBJEKT_akt->pohon->Rz),3);
+			if(OBJEKT_akt->rezim!=0)PmG->Cells[3][6].Text=m.round2double(outRz(m.mezera(0,OBJEKT_akt->pohon->Rz,0)),3);
+			if(OBJEKT_akt->rezim!=0)PmG->Cells[3][7].Text=m.round2double(outRz(m.mezera(0,OBJEKT_akt->pohon->Rz,1)),3);
+			if(OBJEKT_akt->rezim!=0)PmG->Cells[3][8].Text=m.round2double(outRz(m.mezera(90,OBJEKT_akt->pohon->Rz,1)),3);
   	}
   	else
   	{
@@ -8551,7 +8552,7 @@ void TForm1::aktualizace_tab_pohon(bool popisky,bool data,bool komponenty)
 			if(PmG->Cells[3][5].Type==PmG->EDIT){mGrid_komponenta_na_draw(PmG,3,5);PmG->Cells[3][5].Background->Color=(TColor)RGB(240,240,240);PmG->Cells[3][5].Font->Color=(TColor)RGB(128,128,128);}
 		}
 		//kontrola režimu objektu
-		if(OBJEKT_akt->rezim!=1)//pokud je režim S&G, většina informací je nerelevantních
+		if(OBJEKT_akt->rezim==0)//pokud je režim S&G, většina informací je nerelevantních
 		{
 			PmG->Cells[3][3].Text="-";
 			//PmG->Cells[3][4].Text="-";
@@ -9122,7 +9123,7 @@ void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
 			}
 		}
 		//nerelevantní data, skrýt
-		if(rezim!=1)
+		if(rezim==0)
 		{
 			E->mGrid->Cells[prvni][5].Text="-";
 			//E->mGrid->Cells[prvni][6].Text="-";
@@ -9163,7 +9164,7 @@ void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
 			}
 		}
 		//nerelevantní data, skrýt
-		if(rezim!=1)
+		if(rezim==0)
 		{
 			E->mGrid->Cells[druhy][5].Text="-";
 			//E->mGrid->Cells[druhy][6].Text="-";
@@ -11694,7 +11695,7 @@ void __fastcall TForm1::FormCloseQuery(TObject *Sender, bool &CanClose)
 		int result=MB(FNs+" "+ls->Strings[318],MB_YESNOCANCEL);//" byl změněn.\nChcete ho před ukončením uložit?"
 		switch(result)
 		{
-			case mrYes:     UlozitClick(this); if(!stisknuto_storno){/*ulozit_posledni_otevreny();*/ vse_odstranit(); CanClose=true;}else CanClose=false; break;
+			case mrYes:     UlozitClick(this); if(!stisknuto_storno){ulozit_posledni_otevreny(); vse_odstranit(); CanClose=true;}else CanClose=false; break;
 			case mrNo:      ulozit_posledni_otevreny();vse_odstranit();CanClose=true; break;
 			case mrCancel:  CanClose=false; break;
 		}
@@ -14161,13 +14162,11 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	for(int i=0;i<5;i++)
-	{
-		pom=d.v.OBJEKTY->dalsi;
-		NP_input();
-		scGPButton_stornoClick(this);
-	}
-	Memo("OK");
+	Memo(m.round2double(OBJEKT_akt->pohon->Rx,3));
+	Memo(m.round2double(outR(OBJEKT_akt->pohon->Rz),3));
+	Memo(m.round2double(outRz(m.mezera(0,OBJEKT_akt->pohon->Rz,0)),3));
+	Memo(m.round2double(outRz(m.mezera(0,OBJEKT_akt->pohon->Rz,1)),3));
+	Memo(m.round2double(outRz(m.mezera(90,OBJEKT_akt->pohon->Rz,1)),3));
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -15254,12 +15253,13 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 	{
 		log("Zavření editace, MOD=LAYOUT");
 		Timer_neaktivity->Enabled=false;//vypnutí timeru pro jistotu
+		if(Akce==GEOMETRIE)ukonceni_geometrie(mazani);
 		if(Akce!=NIC)ESC();
 		//////
 		if(MOD==EDITACE&&index_kurzoru==9999||index_kurzoru==100)
 		smaz_edit(false);//smaže edit a neprovede refresh
 		nastav_focus();
-		if(editace_textu)smaz_kurzor();//také volá Refresh//smaz_kurzor se zavolá, pouze pokud je to třeba odstraňuje zbytečný problik, dodělal MaKr
+		//if(editace_textu)smaz_kurzor();//také volá Refresh//smaz_kurzor se zavolá, pouze pokud je to třeba odstraňuje zbytečný problik, dodělal MaKr
 		MOD=SCHEMA;//nutné před zoom, ale za smaz kurzor
 		//smazání případných komor
 		//d.v.vymaz_komory(OBJEKT_akt);
@@ -15346,17 +15346,6 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		DrawGrid_knihovna->Height=400;
 		scListGroupKnihovObjektu->Align=alLeft;
 		DrawGrid_knihovna->Invalidate();
-
-//		scGPLabel_roboti->Visible=false;
-//		scGPLabel_otoce->Visible=false;
-//		scGPLabel_stop->Visible=false;
-//		scGPLabel_geometrie->Visible=false;
-//		scGPLabel_poznamky->Visible=false;
-
-		//scGPLabel_roboti->Font->Style = TFontStyles(); // zrušení tučného písma resp. všech případných dalších Font style nastavení
-//		scGPLabel_roboti->Visible=true;
-		//scGPLabel_roboti->Caption="Technolog. objekty";
-		//scGPLabel_roboti->ContentMarginLeft=4;
 		scGPSwitch_robot_clovek->Visible=false;
 		scGPPanel_pomocn_proSwitch->Visible=false;
 		//REFRESH(); //- asi netřeba  asi vyvolává níže uvedený on_change_zoom_change_scGPTrackBar()
