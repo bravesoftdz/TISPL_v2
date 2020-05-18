@@ -3807,8 +3807,27 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 			uprav_popisky_elementu(Element);
 		}
 		else Element->name="";
-		//vynulování WT
-		Element->WT=0;
+    //defaultní data
+  	Element->data.LO1=1.5;
+		Element->OTOC_delka=0;
+		Element->zona_pred=0;
+		Element->zona_za=0;
+		Element->data.LO2=0;
+		Element->data.LO_pozice=0;
+		Element->data.PT1=0;
+		Element->PTotoc=0;
+		Element->data.PT2=0;
+		Element->WT=0;//čekání na palec
+		Element->data.WTstop=0;//čekání na stopce
+		Element->data.RT.x=0;//ryzí reserve time
+		Element->data.RT.y=0;//pokrácený reserve time
+		Element->data.pocet_voziku=0;
+  	Element->data.pocet_pozic=0;
+		Element->rotace_jig=0;
+		if(vrat_druh_elementu(Element)==0){Element->data.pocet_pozic=1;Element->data.pocet_voziku=1;}//S&G elementy
+		if(Element->eID==0){Element->data.pocet_pozic=2;Element->data.pocet_voziku=1;}//pouze stopky
+		Element->stav=1;
+		Element->data.PD=-1;//defaultní stav pro S&G roboty
 		//smazání a znovuvytvoření mGridu elementu
 		if(F->OBJEKT_akt!=NULL && Element->objekt_n==F->OBJEKT_akt->n)
 		{
@@ -8003,7 +8022,7 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 			while(DATA->dalsi!=NULL)
 			{
 				smaz_obraz_DATA(DATA->predchozi->n);
-   		}
+			}
 			pozice_data=0;//vrácení pozice na default hodnotu
 			if(F->scGPGlyphButton_redo->Enabled)F->scGPGlyphButton_redo->Enabled=false;//pokud je povolen button na redo ... zakázat, bude přidán nový obraz, přepíše následující
 		}
@@ -8392,9 +8411,9 @@ void Cvektory::smaz_obraz_DATA(unsigned long n)
 	  		index++;
 	  		D=D->dalsi;
 	  	}
-	  	delete D;D=NULL;
-    }
-  }
+			delete D;D=NULL;
+		}
+	}
 
 	////smazání objektů
 	while(obraz->Objekty!=NULL)
@@ -8406,36 +8425,12 @@ void Cvektory::smaz_obraz_DATA(unsigned long n)
 		obraz->Objekty=obraz->Objekty->dalsi;
 	};
 	////smazání elementů
-	//načtení všech elementu do pomocného spojáku, kvůli výhybkám je nutné mazat nejen po hlavní větvi
-	T2Element *smazat=new T2Element,*pom=NULL;
-	smazat->dalsi=NULL;smazat->predchozi=smazat;
-	TElement *E=obraz->Elementy->dalsi;
-	while(E!=NULL)
+	while(obraz->Elementy!=NULL)
 	{
-		pom=new T2Element;
-		pom->vyhybka=E;
-		pom->dalsi=NULL;
-		pom->predchozi=smazat->predchozi;
-		smazat->predchozi->dalsi=pom;
-		smazat->predchozi=pom;
-		pom=NULL;delete pom;
-		E=dalsi_krok(E);
-	}
-	delete E;E=NULL;
-	//mazání elementů a pomocných spojáků
-	while(smazat!=NULL)
-	{
-		delete smazat->predchozi->vyhybka;
-		smazat->predchozi->vyhybka=NULL;
-
-		delete smazat->predchozi;
-		smazat->predchozi=NULL;
-		smazat=smazat->dalsi;
-	}
-	delete smazat;smazat=NULL;
-	delete pom;pom=NULL;
-	delete obraz->Elementy;obraz->Elementy=NULL;
-
+		obraz->Elementy->predchozi=NULL;
+		delete obraz->Elementy->predchozi;
+		obraz->Elementy=obraz->Elementy->dalsi;
+	};
 	////smazání pohonů
 	while(obraz->Pohony!=NULL)
 	{

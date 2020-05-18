@@ -469,3 +469,11 @@ The beginning and end of the line were automatically connected.;X;Poèátek a kone
 Attention, JIGs overlap on the next section of the crossing!;X;Pozor, na následujícím úseku pøejezdu dochází k pøekrytí JIGù!
 Irrelevant value of time reserve, no drive is assigned to any object!;X;Nerelevantní hodnota èasové rezervy, na nìkterém objektu není pøiøazen pohon!
 Can not be done! To remove, select the same drive in front of and behind the transfer point;X;Nelze provést! Odstranìní provedete výbìrem totožného pohonu pøed a za pøedávacím místem
+Send an error, question or comment;X;Zaslat chybu, dotaz nebo pøipomínku
+Description;X;Popis
+please type in your comment;X;prosím, zadejte svùj komentáø
+Send including project;X;Odeslat vèetnì projektu
+Send;X;Odeslat
+Sent. Thanks for the feedback.;X;Odesláno. Dìkujeme za zpìtnou vazbu.
+Failed to send, please try again.;X;Nepodaøilo se odeslat, zkuste znovu.
+Pomocí dvojtého kliknití na výhybku nebo spojnici s její spojkou;X;Pomocí dvojtého kliknití na výhybku nebo spojnici s její spojkou
