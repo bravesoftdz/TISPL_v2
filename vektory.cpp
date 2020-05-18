@@ -554,7 +554,7 @@ void Cvektory::nastav_atributy_objektu(TObjekt *novy,unsigned int id, double X, 
 	novy->Xp=-500;
 	novy->Yp=-500;
 	novy->body=NULL;//spojový seznam definičních bodů obrysu objektu
-	novy->sirka_steny=0.15;//0.12;//šířka stěny kabiny objektu v metrech
+	novy->sirka_steny=0.15;//šířka stěny kabiny objektu v metrech
 	novy->pohon=NULL;//při vložení nemá vložen žádný pohon
 	novy->element=NULL;//ukazatel na přidružené elementy
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
@@ -573,12 +573,13 @@ void Cvektory::nastav_atributy_objektu(TObjekt *novy,unsigned int id, double X, 
 	TPointD rozmery_kabiny,konec;
 	switch(id)
 	{
-		case 0:case 9://navěšování + svěšování
+		case 0:case 9:novy->sirka_steny=0;//navěšování + svěšování
 		rozmery_kabiny.x=5;rozmery_kabiny.y=3;break;//navěšování
 		case 5:rozmery_kabiny.x=10;rozmery_kabiny.y=6;break;//lakovna
 		case 6:rozmery_kabiny.x=10;rozmery_kabiny.y=3;break;//vytěkání
 		case 7:rozmery_kabiny.x=20;rozmery_kabiny.y=3;break;//sušárna
 		case 8:rozmery_kabiny.x=20;rozmery_kabiny.y=6;break;//chlazení
+		case 12:novy->sirka_steny=0;
 		default: rozmery_kabiny.x=10;rozmery_kabiny.y=6;break;//ostatní
 	}
 	vloz_bod(X,Y+rozmery_kabiny.y/2.0,novy);vloz_bod(X+rozmery_kabiny.x,Y+rozmery_kabiny.y/2.0,novy);
