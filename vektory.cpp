@@ -8497,5 +8497,7 @@ long Cvektory::vymaz_seznam_DATA()
 //možno smazat
 void Cvektory::test_vlakna(long i)
 {
-  F->Button14->Caption=i;
+//možno přejmenovat a tímto principem volat metody na obraz
+//  F->Button14->Caption=i;
+F->Memo(i);
 }

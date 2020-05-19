@@ -27,15 +27,15 @@ __fastcall Tvlakno_obraz::Tvlakno_obraz(bool CreateSuspended)
 //---------------------------------------------------------------------------
 void __fastcall Tvlakno_obraz::Execute()
 {
-	for(i=0;!Terminated && i<1000000;i++)
+	for(i=0;!Terminated && i<1000000;i++) //for jen pro example
 	{
-		Synchronize(&test);
-		Sleep(10);
+		Synchronize(&test);  // nutne volani odkazem
+		Sleep(10);  //pro example
 	}
 }
 //---------------------------------------------------------------------------
 void __fastcall Tvlakno_obraz::test()
 {
 	Cvektory v;
-	v.test_vlakna(i);
+	v.test_vlakna(i);    //volani metod
 }

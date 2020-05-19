@@ -14320,11 +14320,10 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 //	delete E;E=NULL;
 //	delete []tab_pruchodu;
 
-	Tvlakno_obraz *vlakno;
-	//spustí vlákno zajišťující stáhnutí mapového podkladu
-	vlakno=new Tvlakno_obraz(true);
+	Tvlakno_obraz *vlakno=new Tvlakno_obraz(true);//spustí vlákno zajišťující stáhnutí mapového podkladu
 	vlakno->FreeOnTerminate=true;//po skončení bude uvolněno
 	vlakno->Resume();
+  //delete vlakno;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
