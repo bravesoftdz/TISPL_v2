@@ -58,9 +58,15 @@ void __fastcall TForm_konzole::FormShow(TObject *Sender)
  Text->Clear();
  Text->Font->Style = TFontStyles()<< fsItalic;
  Text->Font->Color=(TColor)RGB(190,190,190);
- Text->Lines->Add("prosím, zadejte svùj komentáø");   //please type in your comment
+ Text->Lines->Add(F->ls->Strings[473]);   //"prosím, zadejte svùj komentáø" / please type in your comment
  count_click=0; //pomocné poèítadlo klikù
 
+	//naètení jazyka
+	scLabel_header->Caption=F->ls->Strings[471];
+	scLabel3->Caption=F->ls->Strings[472];
+	scGPCheckBox_odeslat_vcetne_projektu->Caption=F->ls->Strings[474];
+	scGPButton_odeslat->Caption=F->ls->Strings[475];
+  scGPButton_storno->Caption=F->ls->Strings[71];
  }
 //---------------------------------------------------------------------------
 void __fastcall TForm_konzole::scGPButton_odeslatClick(TObject *Sender)
@@ -70,12 +76,12 @@ void __fastcall TForm_konzole::scGPButton_odeslatClick(TObject *Sender)
 	String projekt_cesta="";if(scGPCheckBox_odeslat_vcetne_projektu->Checked)projekt_cesta=F->FileName+".bac_"+F->get_user_name()+"_"+F->get_computer_name();
 	if(F->mail("smtp.seznam.cz","builderboy@seznam.cz","camaro69","builderboy@seznam.cz","TISPL",F->LICENCE+"_"+F->get_computer_name()+"_"+F->get_user_name()+"_"+F->VERZE,Text_formulare,"rosta.slechta@gmail.com","","",priloha_cesta,projekt_cesta))
   {
-  F->zobraz_tip("Odesláno. Dìkujeme za zpìtnou vazbu.                       ");//mezery nutné, kvùli odsazení
+	F->zobraz_tip(F->ls->Strings[476]+"                       ");//"Odesláno. Dìkujeme za zpìtnou vazbu.", mezery nutné, kvùli odsazení
   Close();
   MessageBeep(MB_OK);//zvuková signalizace
   Text->Clear(); //Sent. Thank you for your feedback.
   }
-  else  F->MB("Nepodaøilo se odeslat, zkuste znovu.");//mezery nutné, kvùli odsazení
+	else  F->MB(F->ls->Strings[477]);//"Nepodaøilo se odeslat, zkuste znovu.", mezery nutné, kvùli odsazení
 }
 
 //---------------------------------------------------------------------------

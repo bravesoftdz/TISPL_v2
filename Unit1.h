@@ -681,7 +681,7 @@ private:
 	void zmena_editovaneho_objektu();//slouží k pøechodu z editace jednoho objektu do editace druhého objektu
 	TPointD uprav_bod_vlozeni_elementu(TPointD bod_vlozeni,short rotace_symbolu,int eID=-1);//upraví bod kurzoru pro vložení elemntu na bod vykreslení elementu (robot na konci ramena)
   void vlozeni_editace_geometrie();//vkládá novou geometrii nebo edituje již stávající geometrii
-	void ukonceni_geometrie();//ukonèení akce geometrie a pøípadné uzavøení kruhu
+	void ukonceni_geometrie(bool kontorla=true);//ukonèení akce geometrie a pøípadné uzavøení kruhu
 	void vloz_bod_haly_objektu(int X,int Y);//vloží bod haly nebo objektu na zvolené souøadnice (fyzické), zohlední pøichytávání
 	void smaz_bod_haly_objektu(Cvektory::TBod *bod);//smaže bod haly nebo objektu, pokud existují už jen 2 poslední body smaže oba
 	void mGrid_on_mGrid();//prohledá zda se pøekrývají mGridy

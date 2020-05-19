@@ -1213,7 +1213,7 @@ void TFormX::odstranit_korelaci(bool predat_focus)
 void TFormX::validace_aRD(bool pouze_rozmezi)
 {
 	//kontrola pøi KK stavu objektu, validace všeho
-	if(F->PmG!=NULL && F->OBJEKT_akt->pohon!=NULL && F->OBJEKT_akt->rezim==1)
+	if(F->PmG!=NULL && F->OBJEKT_akt->pohon!=NULL && F->OBJEKT_akt->rezim!=0)
 	{
     //smazání pøedchozí validace z VID
 		zapisVID(0,1);//pozice jsou popsány v .h u deklarace VID a vnì metody zapisVID()
@@ -1231,12 +1231,12 @@ void TFormX::validace_aRD(bool pouze_rozmezi)
   	//zadaná rychlost je mimo rozsah
   	if(mimo_rozmezi && F->OBJEKT_akt->pohon->aRD > 0)
   	{
-  		if(F->PmG->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
+			//if(F->PmG->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
   		F->PmG->ShowNote(F->ls->Strings[220],F->d.clError,14);//"Rychlost neodpovídá rozmezí!"
-			povolit_zakazat_editaci(false);
+			//povolit_zakazat_editaci(false);
 			pro_pohon=F->OBJEKT_akt->pohon->n;//uložení pro který pohon platí validace
 		}
-		if(!mimo_rozmezi && F->PmG->Note.Text!=""){F->PmG->ShowNote("",F->d.clError,14);povolit_zakazat_editaci(true);}
+		if(!mimo_rozmezi && F->PmG->Note.Text!=""){F->PmG->ShowNote("",F->d.clError,14);/*povolit_zakazat_editaci(true);*/}
   	// nutné ošetøení pro období zadávání/psaní
   	if(F->OBJEKT_akt->pohon->aRD > 0 && !pouze_rozmezi)
   	{
@@ -1248,14 +1248,14 @@ void TFormX::validace_aRD(bool pouze_rozmezi)
 			//je zvolen pohon, jeho aktuální rychlost se nerovná doporuèené
 			if(F->OBJEKT_akt->pohon->roztec>0 && F->ms.MyToDouble(dopRD)!= F->ms.MyToDouble(F->OBJEKT_akt->pohon->aRD) && mimo_rozmezi==false)
 			{
-  			if(F->PmG->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
+				//if(F->PmG->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
   			F->PmG->ShowNote(F->ls->Strings[221]+" <a>"+AnsiString(F->m.round2double(F->outaRD(dopRD),3))+"</a> "+jednotky,F->d.clError,14);//"Zadejte doporuèenou rychlost pohonu:"
       	pro_pohon=F->OBJEKT_akt->pohon->n;//uložení pro který pohon platí validace
 			}
   		//vše je vpoøádku
   		if (F->ms.MyToDouble(dopRD)== F->ms.MyToDouble(F->OBJEKT_akt->pohon->aRD) && mimo_rozmezi==false)
   		{
-  			povolit_zakazat_editaci(true);
+  			//povolit_zakazat_editaci(true);
   			F->PmG->ShowNote("",F->d.clError,14);
   		}
   	}
@@ -1270,9 +1270,10 @@ void TFormX::validace_aRD(bool pouze_rozmezi)
 			validovany_pohon=pro_pohon;//uložit pohon na kterém se to stalo
 			zapisVID(1,1);//zapsání problému do VID, pozice jsou popsány v .h u deklarace VID a vnì metody zapisVID()
 		}
+		povolit_zakazat_editaci();//rozhodne se na základì VIDu
 	}
 	//kontrola pøi ostatních stavech objektu, pouze rozmezí rychlostí
-	if(F->PmG!=NULL && F->OBJEKT_akt->pohon!=NULL && F->OBJEKT_akt->rezim!=1)
+	if(F->PmG!=NULL && F->OBJEKT_akt->pohon!=NULL && F->OBJEKT_akt->rezim==0)
 	{
     //deklarace
 		unsigned int pro_pohon=0;
@@ -1280,12 +1281,12 @@ void TFormX::validace_aRD(bool pouze_rozmezi)
 		zapisVID(0,1);//pozice jsou popsány v .h u deklarace VID a vnì metody zapisVID()
 		F->PmG->ShowNote("",F->d.clError,14);
 		validovany_pohon=0;//uložit pohon na kterém se to stalo
-		povolit_zakazat_editaci(true);
+		//povolit_zakazat_editaci(true);
 		//kontrola zda je zadaná hodnota v rozmezí
 		if(!F->m.between(F->OBJEKT_akt->pohon->aRD,F->OBJEKT_akt->pohon->rychlost_od,F->OBJEKT_akt->pohon->rychlost_do))
 		{
     	F->PmG->ShowNote(F->ls->Strings[220],F->d.clError,14);//"Rychlost neodpovídá rozmezí!"
-			povolit_zakazat_editaci(false);
+			//povolit_zakazat_editaci(false);
 			pro_pohon=F->OBJEKT_akt->pohon->n;//uložení pro který pohon platí validace
 		}
 		//pokud probìhla validace s problémem
@@ -1294,6 +1295,7 @@ void TFormX::validace_aRD(bool pouze_rozmezi)
 			validovany_pohon=pro_pohon;//uložit pohon na kterém se to stalo
 			zapisVID(1,1);//zapsání problému do VID, pozice jsou popsány v .h u deklarace VID a vnì metody zapisVID()
 		}
+		povolit_zakazat_editaci();//rozhodne se na základì VIDu
 	}
 }
 //---------------------------------------------------------------------------
@@ -1329,8 +1331,8 @@ void TFormX::validace_max_voziku()
 		if(validace && F->duvod_ulozit_nahled && !F->scGPButton_ulozit->Enabled)F->nahled_ulozit(true);
 		if(!validace)
 		{
-			povolit_zakazat_editaci(false);
 			zapisVID(1,2);//uložení chyby, pozice jsou popsány v .h u deklarace VID a vnì metody zapisVID()
+			povolit_zakazat_editaci();//rozhodne se na základì VIDu
 		}
 		if(validace && posledni_E->mGrid->Note.Text!="")posledni_E->mGrid->Note.Text="";
 	}
@@ -1341,13 +1343,21 @@ void TFormX::naplneni_dopRD()
 {
 	if(F->PmG!=NULL)
 	{
-  	F->OBJEKT_akt->pohon->aRD=dopRD;
+//  	F->OBJEKT_akt->pohon->aRD=dopRD;
+//		F->PmG->Cells[3][rychlost].Text=F->m.round2double(F->outaRD(dopRD),3);
+//  	zmena_aRD();
+//  	//odstranit_korelaci();//pro jistotu zùstavala aktivní po kliku na link
+//  	F->PmG->ShowNote("",F->d.clError,14);
+//  	povolit_zakazat_editaci();//rozhodne se na základì VIDu
+//		F->Akce=F->BLOK;
+
+		int opraveny_pohon=validovany_pohon;
+		vstoupeno_elm=false;
+		F->OBJEKT_akt->pohon->aRD=dopRD;
 		F->PmG->Cells[3][rychlost].Text=F->m.round2double(F->outaRD(dopRD),3);
-  	zmena_aRD();
-  	//odstranit_korelaci();//pro jistotu zùstavala aktivní po kliku na link
-  	F->PmG->ShowNote("",F->d.clError,14);
-  	povolit_zakazat_editaci(true);
-  	F->Akce=F->BLOK;
+		zmena_aRD();//postará se o aktualizaci všech tabulek
+		validace_aRD();//znovuspuštìní valiace
+		if(opraveny_pohon==validovany_pohon)validovany_pohon=0;//byla odstranìn problém
 	}
 }
 //---------------------------------------------------------------------------
@@ -1412,26 +1422,13 @@ bool TFormX::check_click_Note(double X,double Y,bool check_for_highlight)
 	return ret;
 }
 //---------------------------------------------------------------------------
-//zakazuje èi povolí komponenty v tabulce pohonu a všech tabulkách elementu
-void TFormX::povolit_zakazat_editaci(bool povolit)
+//zakazuje èi povolí ukládání editace na základì VID
+void TFormX::povolit_zakazat_editaci()
 {
-	if(povolit)
+	if(F->ms.MyToDouble(VID)==0)
 		{F->scGPButton_ulozit->Enabled=true;}//pokud je dùvod k uložení, ale button uložit je z pøedchozího kroku neaktivní zapne ho
 	else
 		{F->scGPButton_ulozit->Enabled=false;}//pokud je button uložit zapnut vypne ho
-//	F->PmG->Update();//musí být, pøi vložení prvního kontinuálního robota problém v zobrazení
-//	F->PmG->SetEnabledComponents(povolit);
-//	F->PmG->SetEnabledComponent(1,1,true);//rychlost musí být aktivní aby ji mohl uživatel zmìnit a tím odemknout ostatní buòky
-//	if(F->OBJEKT_akt->elementy->dalsi!=NULL)
-//	{
-//		Cvektory::TElement *E=F->OBJEKT_akt->elementy->dalsi;//mùžu pøeskoèit hlavièku
-//		while(E!=NULL)
-//		{
-//			E->mGrid->SetEnabledComponents(povolit);
-//			E=E->dalsi;
-//		}
-//		E=NULL;delete E;
-//	}
 }
 //---------------------------------------------------------------------------
 //vrátí ukazatel na element, nelze použít vra element stavající, z dùvodu že ID tabulky již nemusí být totožné s n robota
@@ -1584,7 +1581,7 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
 		vstoupeno_elm=false;
   	if(E->pohon!=NULL)
 		{
-			if(input_state==NOTHING && ((E->objekt_n==F->OBJEKT_akt->n && F->OBJEKT_akt->rezim==1) || (E->objekt_n!=F->OBJEKT_akt->n && F->d.v.vrat_objekt(E->objekt_n)->rezim==1)))//pøepoèet po pøidání KK elementu, pouze pøi input_state==NOTHING, tz. nepøepoèítávat pøi uživatelské zmìnì
+			if(input_state==NOTHING && ((E->objekt_n==F->OBJEKT_akt->n && F->OBJEKT_akt->rezim!=0) || (E->objekt_n!=F->OBJEKT_akt->n && F->d.v.vrat_objekt(E->objekt_n)->rezim!=0)))//pøepoèet po pøidání KK elementu, pouze pøi input_state==NOTHING, tz. nepøepoèítávat pøi uživatelské zmìnì
 			{
 				E->pohon->Rz=F->m.Rz(E->pohon->aRD);
 				E->pohon->Rx=F->m.Rx(E->pohon->aRD,E->pohon->roztec);
@@ -1613,7 +1610,7 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
   	{
     	if(E->dalsi2!=E->predchozi2 && E->dalsi2->pohon!=NULL)
 			{
-				if(input_state==NOTHING && F->OBJEKT_akt->rezim==1)//pøepoèet po pøidání KK elementu
+				if(input_state==NOTHING && F->OBJEKT_akt->rezim!=0)//pøepoèet po pøidání KK elementu
 		  	{
 					E->dalsi2->pohon->Rz=F->m.Rz(E->dalsi2->pohon->aRD);
 					E->dalsi2->pohon->Rx=F->m.Rx(E->dalsi2->pohon->aRD,E->dalsi2->pohon->roztec);
@@ -1646,7 +1643,7 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
   		if(e_pom==NULL)e_pom=F->d.v.ELEMENTY->dalsi;//v pøípadì PM na konci linky
 			if(e_pom->pohon!=NULL)
 			{
-				if(input_state==NOTHING && F->d.v.vrat_objekt(e_pom->objekt_n)->rezim==1)//pøepoèet po pøidání KK elementu
+				if(input_state==NOTHING && F->d.v.vrat_objekt(e_pom->objekt_n)->rezim!=0)//pøepoèet po pøidání KK elementu
 		  	{
 					e_pom->pohon->Rz=F->m.Rz(e_pom->pohon->aRD);
 					e_pom->pohon->Rx=F->m.Rx(e_pom->pohon->aRD,e_pom->pohon->roztec);
@@ -1709,7 +1706,7 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 
 		//dvojtá validace
     //pokud nalezne problém zastaví se a zobrazího, i v pøípadì, že je problémù více, až bude problém vyøešen probìhne validace zda neexistuje další problém
-		if(F->OBJEKT_akt->rezim==1)//kontrola zda je KK režim, pokud ano validovat
+		if(F->OBJEKT_akt->rezim!=0)//kontrola zda je KK režim, pokud ano validovat
 		{
 			for(unsigned int i=3;i<=4;i++)
 			{
@@ -1726,14 +1723,14 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 					if(mimo_rozmezi && p->aRD > 0)
 					{
 						E->mGrid->ShowNote(F->ls->Strings[220],F->d.clError,14);//"Rychlost neodpovídá rozmezí!"
-						povolit_zakazat_editaci(false);//zakáže btn uložit v editaci
+						//povolit_zakazat_editaci(false);//zakáže btn uložit v editaci
 						pro_pohon=p->n;//uložení pro který pohon platí validace
 						break;//byl nalezen problém, zastavení validace, lze zobrazit jen jeden problém v Note
 	     		}
 					if(!mimo_rozmezi && E->mGrid->Note.Text!="")
 					{
 						E->mGrid->ShowNote("",F->d.clError,14);
-						povolit_zakazat_editaci(true);
+						//povolit_zakazat_editaci(true);
 					}
        		// nutné ošetøení pro období zadávání/psaní
 					if (p->aRD > 0)
@@ -1746,7 +1743,7 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 	     			//je zvolen pohon, jeho aktuální rychlost se nerovná doporuèené
 						if(p->roztec>0 && F->ms.MyToDouble(dopRD)!= F->ms.MyToDouble(p->aRD) && mimo_rozmezi==false)
 	     			{
-							if(E->mGrid->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
+							//if(E->mGrid->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
 							E->mGrid->ShowNote(F->ls->Strings[221]+" <a>"+AnsiString(F->m.round2double(F->outaRD(dopRD),3))+"</a> "+jednotky,F->d.clError,14);//"Zadejte doporuèenou rychlost pohonu:"
 							pro_pohon=p->n;//uložení pro který pohon platí validace
 							break;//byl nalezen problém, zastavení validace, lze zobrazit jen jeden problém v Note
@@ -1754,7 +1751,7 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 	     			//vše je vpoøádku
 						if (F->ms.MyToDouble(dopRD)== F->ms.MyToDouble(p->aRD) && mimo_rozmezi==false)
 	     			{
-	     				povolit_zakazat_editaci(true);
+	     				//povolit_zakazat_editaci(true);
 							E->mGrid->ShowNote("",F->d.clError,14);
 						}
 	     		}
@@ -1768,14 +1765,14 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 			if((p1!=NULL && !F->m.between(p1->aRD,p1->rychlost_od,p1->rychlost_do)) || (p2!=NULL && !F->m.between(p2->aRD,p2->rychlost_od,p2->rychlost_do)))
 			{
       	E->mGrid->ShowNote(F->ls->Strings[220],F->d.clError,14);//"Rychlost neodpovídá rozmezí!"
-				povolit_zakazat_editaci(false);//zakáže btn uložit v editaci
+				//povolit_zakazat_editaci(false);//zakáže btn uložit v editaci
 				if(p1!=NULL && !F->m.between(p1->aRD,p1->rychlost_od,p1->rychlost_do))pro_pohon=p1->n;//uložení pro který pohon platí validace
 				else pro_pohon=p2->n;
 			}
 			else
 			{
 				E->mGrid->ShowNote("",F->d.clError,14);
-				povolit_zakazat_editaci(true);
+				//povolit_zakazat_editaci(true);
 			}
 		}
 
@@ -1785,6 +1782,7 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 			validovany_pohon=pro_pohon;//uložit pohon na kterém se to stalo
 			zapisVID(1,1);//zapsání problému do VID, pozice jsou popsány v .h u deklarace VID a vnì metody zapisVID()
 		}
+		povolit_zakazat_editaci();//rozhodne se na základì VIDu
 
 		//roznesení validace na ostatní
 		if(puv_Note!=E->mGrid->Note.Text)//došlo ke zmìnì note
@@ -1942,6 +1940,13 @@ void TFormX::prirazeni_pohonu_defTab()
 	F->DrawGrid_ostatni->Refresh();//stop + ion tyè
 	F->DrawGrid_geometrie->Refresh();//geometrie + PM
 
+  //aktualiace parametrù
+	if(F->OBJEKT_akt->rezim!=0)
+	{
+		F->OBJEKT_akt->pohon->Rz=F->m.Rz(F->OBJEKT_akt->pohon->aRD);
+		F->OBJEKT_akt->pohon->Rx=F->m.Rx(F->OBJEKT_akt->pohon->aRD,F->OBJEKT_akt->pohon->roztec);
+	}
+
 	//prùchod skrze elementy v objektu a pøiøazení toto pohonu
 	Cvektory::TElement *E=F->OBJEKT_akt->element;
 	while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
@@ -1956,6 +1961,17 @@ void TFormX::prirazeni_pohonu_defTab()
 	//kontrola PM
 	F->vlozit_predavaci_misto_aktualizuj_WT();
 	F->aktualizace_tab_pohon(false,true,true);//nebude provedena pokud dojde k odstranìní PmG
+
+	//pokud už neexistuje PmG, nalezení PM pro spuštìní validace
+	if(F->PmG==NULL)
+	{
+		posledni_E=F->OBJEKT_akt->element;
+		while(posledni_E!=NULL && posledni_E->objekt_n==F->OBJEKT_akt->n)
+		{
+			if(posledni_E->dalsi==NULL || (posledni_E->dalsi!=NULL && posledni_E->dalsi->objekt_n!=F->OBJEKT_akt->n))break;
+      posledni_E=posledni_E->dalsi;
+		}
+	}
 
 	//ukazatelové záležitosti
 	E=NULL;p=NULL;

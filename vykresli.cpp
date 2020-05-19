@@ -251,7 +251,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
   //highilightování kabiny při přejetí kurzorem přes název objektu, řešeno zde metoda polygon() neumí zvýraznit všechny hrany
 	if(F->OBJEKT_akt==NULL && F->pom!=NULL && F->pom->n==O->n && F->JID==-6)clAkt=m.clIntensive(clStenaKabiny,-50);
 	////vnější obrys kabiny
-	if(!(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=O->n && F->scGPTrackBar_intenzita->Value<5))polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//nové vykreslování příprava
+	if(!(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=O->n && F->scGPTrackBar_intenzita->Value<5))polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);
 
 	short highlight=0;//nastavování zda mají být koty highlightovány
 
@@ -411,10 +411,9 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 		}
 	}
 
-	///název - na konec, vykreslení jako poslední vrstva
-	//název objektu - nastavení
+	////název - na konec, vykreslení jako poslední vrstva
 	nastavit_text_popisu_objektu_v_nahledu(canv);AnsiString Tn=O->name.UpperCase();AnsiString Tl=+" / ";short Wn=canv->TextWidth(Tn);
-  ////poloha nadpisu
+	//poloha nadpisu
 	double X=O->Xt;
 	double Y=O->Yt;
 	switch((int)O->orientace_text)
@@ -1700,7 +1699,7 @@ void Cvykresli::set_pen(TCanvas *canv, TColor color, int width, int style)//PS_E
 }
 ////---------------------------------------------------------------------------
 ////nastaví pero                                                             //http://www.zive.cz/clanky/geometricka-pera/sc-3-a-103079,http://mrxray.on.coocan.jp/Delphi/plSamples/190_LineEdgeStyle.htm
-void Cvykresli::set_pen2(TCanvas *canv, TColor color, int width, int ENDCAP,int JOIN,bool INSIDEFRAME,DWORD *Array,unsigned short LenghtArray)//vrátí HANDLE na nastavení pera,//popř.PS_ENDCAP_FLAT PS_ENDCAP_ROUND, PS_ENDCAP_SQUARE a PS_JOIN_ROUND, PS_JOIN_MITER (lze nastavit přes SetMiterlimit) PS_JOIN_BEVEL, viz Matoušek III str. 179 či http://www.zive.cz/clanky/geometricka-pera/sc-3-a-103079, dodáním předposledního parametru UserLineArray např. DWORD pole[]={m.round(3/3.0*F->Zoom),m.round(0.5/3.0*F->Zoom),m.round(0.2/3.0*F->Zoom),m.round(0.5/3.0*F->Zoom)} apod.  lze nadefinovat vlastní typ linie, poslední parametr je počet prvků onoho pole
+void Cvykresli::set_pen2(TCanvas *canv, TColor color, int width, int ENDCAP,int JOIN,bool INSIDEFRAME,DWORD *Array,unsigned short LenghtArray,int TextureWidth)//vrátí HANDLE na nastavení pera,//popř.PS_ENDCAP_FLAT PS_ENDCAP_ROUND, PS_ENDCAP_SQUARE a PS_JOIN_ROUND, PS_JOIN_MITER (lze nastavit přes SetMiterlimit) PS_JOIN_BEVEL, viz Matoušek III str. 179 či http://www.zive.cz/clanky/geometricka-pera/sc-3-a-103079, dodáním předposledního parametru UserLineArray např. DWORD pole[]={m.round(3/3.0*F->Zoom),m.round(0.5/3.0*F->Zoom),m.round(0.2/3.0*F->Zoom),m.round(0.5/3.0*F->Zoom)} apod.  lze nadefinovat vlastní typ linie, poslední parametr je počet prvků onoho pole
 {                                                                         //PS_JOIN_ROUND, PS_JOIN_MITER (lze nastavit přes SetMiterlimit) PS_JOIN_BEVEL,
 	DeleteObject(canv->Pen->Handle);//zruší původní pero
 	DWORD pStyle = 0;
@@ -1718,15 +1717,23 @@ void Cvykresli::set_pen2(TCanvas *canv, TColor color, int width, int ENDCAP,int 
 	DWORD pWidth = width;
 
 	LOGBRUSH lBrush;
-	lBrush.lbStyle = BS_SOLID;
 	lBrush.lbColor = color;
-	lBrush.lbHatch = 0;
-	//LOGBRUSH lBrush={BS_PATTERN,color,(unsigned)srafura()->Handle};
+	if(TextureWidth==0)//bez textury
+	{
+		lBrush.lbStyle = BS_SOLID;
+		lBrush.lbHatch = 0;
+	}
+	else//textura
+	{
+		lBrush.lbStyle = BS_PATTERN;
+		lBrush.lbHatch = (unsigned)rastrovani(color,TextureWidth,5)->Handle;
+	}
 
 	canv->Pen->Handle = ExtCreatePen(pStyle, pWidth, &lBrush, Lenght, Array);
 }
 ////---------------------------------------------------------------------------
-Graphics::TBitmap *Cvykresli::srafura()
+//vytvoří šrafovaný vzor
+Graphics::TBitmap *Cvykresli::srafura(TColor color)
 {
 	Graphics::TBitmap * Vzor=new Graphics::TBitmap;
 	Vzor->Height=50*F->Zoom;Vzor->Width=50*F->Zoom;
@@ -1739,6 +1746,25 @@ Graphics::TBitmap *Cvykresli::srafura()
 //		SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
 //		Vzor->LoadFromFile("Vzor.bmp");
 
+	return Vzor;
+}
+////---------------------------------------------------------------------------
+//vytvoří rastrovaný vzor
+Graphics::TBitmap *Cvykresli::rastrovani(TColor color,short width, short distance)
+{
+	Graphics::TBitmap * Vzor=new Graphics::TBitmap;
+	Vzor->Height=width;Vzor->Width=Vzor->Height;
+	//Vzor->Canvas->Pen->Color=clStenaHaly;
+	for(int x=0;x<Vzor->Width;x+=distance)
+	{
+		for(int y=0;y<Vzor->Height;y+=distance)
+		{
+			Vzor->Canvas->Pixels[x][y]=color;
+//			Vzor->Canvas->Pixels[x+1][y]=color;
+			Vzor->Canvas->Pixels[x+1][y+1]=color;
+//			Vzor->Canvas->Pixels[x][y+1]=color;
+		}
+	}
 	return Vzor;
 }
 ////---------------------------------------------------------------------------
@@ -5088,7 +5114,7 @@ TPoint Cvykresli::polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float s
 }
 //---------------------------------------------------------------------------
 //stav: -3 kurzor, -2 normal (implicitně), -1-disabled, 0-editace zvýrazní všechny body, 1-až počet bodů zvýraznění daného bodu,počet bodů+1 zvýraznění dané hrany včetně sousedícícíh úchopů (např. pro polygono o 6 bodech) bude hodnota stavu 7 zvýraznění první hrany (od bodu 1 do bodu 2)
-void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short sirka,int stav,bool zobrazit_koty,bool automaticky_spojovat)
+void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva,short sirka,int stav,bool zobrazit_koty,bool automaticky_spojovat)
 {
 	if(body!=NULL && body->predchozi->n>1)
 	{
@@ -5099,21 +5125,29 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva, short s
 
 		////nastavení pera spojnic
 		canv->Brush->Color=clWhite;canv->Brush->Style=bsClear;//nastavení výplně
-		if(stav==-3)//typ kurzor
+		if(sirka>0 || F->MOD==F->EDITACE || stav>=0)//pro objekty se stěnou
 		{
-			canv->Pen->Mode=pmNotXor;
-			canv->Pen->Style=psDot;
-			canv->Pen->Color=clBlack;
-			canv->Pen->Width=1;
-			canv->Brush->Style=bsClear;
+			if(stav==-3)//typ kurzor
+			{
+				canv->Pen->Mode=pmNotXor;
+				canv->Pen->Style=psDot;
+				canv->Pen->Color=clBlack;
+				canv->Pen->Width=1;
+				canv->Brush->Style=bsClear;
+			}
+			else//normální
+			{
+				//canv->Pen->Mode=pmNotXor;//pro transparentní zákres
+				if(F->MOD==F->EDITACE || stav>=0)sirka=m.m2px(0.15);
+				canv->Pen->Mode=pmCopy;
+				canv->Pen->Color=barva;if(stav==-1)canv->Pen->Color=clDisabled;//barva
+				canv->Pen->Width=sirka;//šířka v pixelech
+				set_pen(canv,canv->Pen->Color,sirka,/*PS_ENDCAP_FLAT*/PS_ENDCAP_SQUARE);
+			}
 		}
-		else//normální
+		else//pro objekty bez stěny
 		{
-			//canv->Pen->Mode=pmNotXor;//pro transparentní zákres
-			canv->Pen->Mode=pmCopy;
-			canv->Pen->Color=barva;if(stav==-1)canv->Pen->Color=clDisabled;//barva
-			canv->Pen->Width=sirka;//šířka v pixelech
-			set_pen(canv,canv->Pen->Color,sirka,/*PS_ENDCAP_FLAT*/PS_ENDCAP_SQUARE);
+			set_pen2(canv,barva,m.m2px(0.15),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true,NULL,NULL,m.m2px(0.15));
 		}
 
 		////vykreslení spojnic/hrany

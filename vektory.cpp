@@ -554,7 +554,7 @@ void Cvektory::nastav_atributy_objektu(TObjekt *novy,unsigned int id, double X, 
 	novy->Xp=-500;
 	novy->Yp=-500;
 	novy->body=NULL;//spojový seznam definičních bodů obrysu objektu
-	novy->sirka_steny=0.15;//0.12;//šířka stěny kabiny objektu v metrech
+	novy->sirka_steny=0.15;//šířka stěny kabiny objektu v metrech
 	novy->pohon=NULL;//při vložení nemá vložen žádný pohon
 	novy->element=NULL;//ukazatel na přidružené elementy
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
@@ -573,12 +573,13 @@ void Cvektory::nastav_atributy_objektu(TObjekt *novy,unsigned int id, double X, 
 	TPointD rozmery_kabiny,konec;
 	switch(id)
 	{
-		case 0:case 9://navěšování + svěšování
+		case 0:case 9:novy->sirka_steny=0;//navěšování + svěšování
 		rozmery_kabiny.x=5;rozmery_kabiny.y=3;break;//navěšování
 		case 5:rozmery_kabiny.x=10;rozmery_kabiny.y=6;break;//lakovna
 		case 6:rozmery_kabiny.x=10;rozmery_kabiny.y=3;break;//vytěkání
 		case 7:rozmery_kabiny.x=20;rozmery_kabiny.y=3;break;//sušárna
 		case 8:rozmery_kabiny.x=20;rozmery_kabiny.y=6;break;//chlazení
+		case 12:novy->sirka_steny=0;
 		default: rozmery_kabiny.x=10;rozmery_kabiny.y=6;break;//ostatní
 	}
 	vloz_bod(X,Y+rozmery_kabiny.y/2.0,novy);vloz_bod(X+rozmery_kabiny.x,Y+rozmery_kabiny.y/2.0,novy);
@@ -2480,7 +2481,7 @@ unsigned int Cvektory::vrat_nejvetsi_ID_tabulek (TObjekt *Objekt)
 				{if(ret<(unsigned)E->mGrid->ID)ret=E->mGrid->ID;}
 				catch(...){;}
       }
-			E=E->dalsi;
+			E=dalsi_krok(E,Objekt);
 		}
 		E=NULL;delete E;
   }
@@ -2695,7 +2696,7 @@ Cvektory::TElement *Cvektory::najdi_tabulku(TObjekt *Objekt, double X, double Y)
 	{
 		//pokud mgrid existuje hledá poslední mGrid na pozici X,Y ... nesmí být po nalezení break
 		if(E->mGrid!=NULL && E->Xt<=X && X<=E->Xt+E->mGrid->Width*F->m2px/F->Zoom && E->Yt>=Y && Y>=E->Yt-E->mGrid->Height*F->m2px/F->Zoom)ret=E;
-		E=E->dalsi;
+		E=dalsi_krok(E);
 	}
 	if(ret==NULL && F->predchozi_PM!=NULL && F->predchozi_PM->mGrid!=NULL && F->predchozi_PM->Xt<=X && X<=F->predchozi_PM->Xt+F->predchozi_PM->mGrid->Width*F->m2px/F->Zoom && F->predchozi_PM->Yt>=Y && Y>=F->predchozi_PM->Yt-F->predchozi_PM->mGrid->Height*F->m2px/F->Zoom)ret=F->predchozi_PM;
 	E=NULL;delete E;
@@ -3016,7 +3017,7 @@ void Cvektory::prirad_sparovany_element(TElement *Element)
       //vypsání ukazatelů do mgridu
 			try
 			{
-				if(E->eID==0){E->mGrid->Cells[0][1].Text=E->sparovany->name;E->mGrid->Refresh();}
+				if(E->eID==0){E->mGrid->Cells[2][1].Text=E->sparovany->name;E->mGrid->Refresh();}
 				else if(vrat_druh_elementu(E)==0){E->mGrid->Cells[1][E->mGrid->RowCount-1].Text=E->sparovany->name;E->mGrid->Refresh();}
 				if(Element->eID==0){Element->mGrid->Cells[2][1].Text=Element->sparovany->name;Element->mGrid->Refresh();}
 				else if(vrat_druh_elementu(Element)==0){Element->mGrid->Cells[1][Element->mGrid->RowCount-1].Text=Element->sparovany->name;Element->mGrid->Refresh();}
@@ -3055,7 +3056,7 @@ void Cvektory::prirad_sparovany_element(TElement *Element)
 //						if(posledni && E->eID==0){E->mGrid->Cells[2][1].Text=prvni_stopka->name;E->mGrid->Refresh();}
 					}
 					catch(...)
-					{/*MessageBeep(0);*/}
+					{;}
 				}
 				prvni_stopka=NULL;delete prvni_stopka;
       }
@@ -3099,7 +3100,7 @@ void Cvektory::aktualizuj_sparovane_ukazatele()
 			//vymazání pomocných ukazatelů
 			E1=NULL;delete E1;
 		}
-		E=E->dalsi;
+		E=dalsi_krok(E);
 	}
 	//ukazatelové záležitosti
 	delete E;E=NULL;
@@ -3807,8 +3808,27 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 			uprav_popisky_elementu(Element);
 		}
 		else Element->name="";
-		//vynulování WT
-		Element->WT=0;
+    //defaultní data
+  	Element->data.LO1=1.5;
+		Element->OTOC_delka=0;
+		Element->zona_pred=0;
+		Element->zona_za=0;
+		Element->data.LO2=0;
+		Element->data.LO_pozice=0;
+		Element->data.PT1=0;
+		Element->PTotoc=0;
+		Element->data.PT2=0;
+		Element->WT=0;//čekání na palec
+		Element->data.WTstop=0;//čekání na stopce
+		Element->data.RT.x=0;//ryzí reserve time
+		Element->data.RT.y=0;//pokrácený reserve time
+		Element->data.pocet_voziku=0;
+  	Element->data.pocet_pozic=0;
+		Element->rotace_jig=0;
+		if(vrat_druh_elementu(Element)==0){Element->data.pocet_pozic=1;Element->data.pocet_voziku=1;}//S&G elementy
+		if(Element->eID==0){Element->data.pocet_pozic=2;Element->data.pocet_voziku=1;}//pouze stopky
+		Element->stav=1;
+		Element->data.PD=-1;//defaultní stav pro S&G roboty
 		//smazání a znovuvytvoření mGridu elementu
 		if(F->OBJEKT_akt!=NULL && Element->objekt_n==F->OBJEKT_akt->n)
 		{
@@ -8003,7 +8023,7 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 			while(DATA->dalsi!=NULL)
 			{
 				smaz_obraz_DATA(DATA->predchozi->n);
-   		}
+			}
 			pozice_data=0;//vrácení pozice na default hodnotu
 			if(F->scGPGlyphButton_redo->Enabled)F->scGPGlyphButton_redo->Enabled=false;//pokud je povolen button na redo ... zakázat, bude přidán nový obraz, přepíše následující
 		}
@@ -8392,9 +8412,9 @@ void Cvektory::smaz_obraz_DATA(unsigned long n)
 	  		index++;
 	  		D=D->dalsi;
 	  	}
-	  	delete D;D=NULL;
-    }
-  }
+			delete D;D=NULL;
+		}
+	}
 
 	////smazání objektů
 	while(obraz->Objekty!=NULL)
@@ -8406,36 +8426,12 @@ void Cvektory::smaz_obraz_DATA(unsigned long n)
 		obraz->Objekty=obraz->Objekty->dalsi;
 	};
 	////smazání elementů
-	//načtení všech elementu do pomocného spojáku, kvůli výhybkám je nutné mazat nejen po hlavní větvi
-	T2Element *smazat=new T2Element,*pom=NULL;
-	smazat->dalsi=NULL;smazat->predchozi=smazat;
-	TElement *E=obraz->Elementy->dalsi;
-	while(E!=NULL)
+	while(obraz->Elementy!=NULL)
 	{
-		pom=new T2Element;
-		pom->vyhybka=E;
-		pom->dalsi=NULL;
-		pom->predchozi=smazat->predchozi;
-		smazat->predchozi->dalsi=pom;
-		smazat->predchozi=pom;
-		pom=NULL;delete pom;
-		E=dalsi_krok(E);
-	}
-	delete E;E=NULL;
-	//mazání elementů a pomocných spojáků
-	while(smazat!=NULL)
-	{
-		delete smazat->predchozi->vyhybka;
-		smazat->predchozi->vyhybka=NULL;
-
-		delete smazat->predchozi;
-		smazat->predchozi=NULL;
-		smazat=smazat->dalsi;
-	}
-	delete smazat;smazat=NULL;
-	delete pom;pom=NULL;
-	delete obraz->Elementy;obraz->Elementy=NULL;
-
+		obraz->Elementy->predchozi=NULL;
+		delete obraz->Elementy->predchozi;
+		obraz->Elementy=obraz->Elementy->dalsi;
+	};
 	////smazání pohonů
 	while(obraz->Pohony!=NULL)
 	{
