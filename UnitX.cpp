@@ -1343,14 +1343,6 @@ void TFormX::naplneni_dopRD()
 {
 	if(F->PmG!=NULL)
 	{
-//  	F->OBJEKT_akt->pohon->aRD=dopRD;
-//		F->PmG->Cells[3][rychlost].Text=F->m.round2double(F->outaRD(dopRD),3);
-//  	zmena_aRD();
-//  	//odstranit_korelaci();//pro jistotu zùstavala aktivní po kliku na link
-//  	F->PmG->ShowNote("",F->d.clError,14);
-//  	povolit_zakazat_editaci();//rozhodne se na základì VIDu
-//		F->Akce=F->BLOK;
-
 		int opraveny_pohon=validovany_pohon;
 		vstoupeno_elm=false;
 		F->OBJEKT_akt->pohon->aRD=dopRD;
@@ -1358,6 +1350,9 @@ void TFormX::naplneni_dopRD()
 		zmena_aRD();//postará se o aktualizaci všech tabulek
 		validace_aRD();//znovuspuštìní valiace
 		if(opraveny_pohon==validovany_pohon)validovany_pohon=0;//byla odstranìn problém
+		//refresh + pøekreslení vozíkù + aktualizace erroru
+		F->duvod_validovat=2;
+		F->REFRESH(false);
 	}
 }
 //---------------------------------------------------------------------------
@@ -1413,6 +1408,9 @@ bool TFormX::check_click_Note(double X,double Y,bool check_for_highlight)
 				p=NULL;delete p;
 			}break;
 		}
+		//refresh + pøekreslení vozíkù + aktualizace erroru
+		F->duvod_validovat=2;
+		F->REFRESH(false);
 	}
 
 	//uakazatelové záležitosti
@@ -1969,9 +1967,33 @@ void TFormX::prirazeni_pohonu_defTab()
 		while(posledni_E!=NULL && posledni_E->objekt_n==F->OBJEKT_akt->n)
 		{
 			if(posledni_E->dalsi==NULL || (posledni_E->dalsi!=NULL && posledni_E->dalsi->objekt_n!=F->OBJEKT_akt->n))break;
-      posledni_E=posledni_E->dalsi;
+			posledni_E=posledni_E->dalsi;
+		}
+		if(!posledni_E->mGrid->Rows[5].Visible)//budu zobrazovat
+		{
+			posledni_E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
+			posledni_E->mGrid->VisibleRow(5,true,false);
+			posledni_E->mGrid->VisibleRow(6,true,false);
+			posledni_E->mGrid->VisibleRow(7,true,false);
+			posledni_E->mGrid->VisibleRow(8,true,false);
+			posledni_E->mGrid->VisibleRow(9,true,false);
+			posledni_E->mGrid->VisibleRow(10,true,false);
+			posledni_E->mGrid->VisibleRow(11,true,false);
 		}
 	}
+	else
+	{
+		if(!F->PmG->Rows[3].Visible)
+		{
+    	F->PmG->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
+			F->PmG->VisibleRow(3,true,false);
+			F->PmG->VisibleRow(4,true,false);
+			F->PmG->VisibleRow(5,true,false);
+			F->PmG->VisibleRow(6,true,false);
+			F->PmG->VisibleRow(7,true,false);
+			F->PmG->VisibleRow(8,true,false);
+    }
+  }
 
 	//ukazatelové záležitosti
 	E=NULL;p=NULL;
