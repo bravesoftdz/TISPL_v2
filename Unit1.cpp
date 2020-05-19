@@ -1018,7 +1018,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=478;i++)
+	for(unsigned short i=0;i<=480;i++)
 	{
 		switch(i)
 		{
@@ -1501,6 +1501,8 @@ void TForm1::DesignSettings()
 			case 476:text="Odesláno. Děkujeme za zpětnou vazbu.";break;
 			case 477:text="Nepodařilo se odeslat, zkuste znovu.";break;
 			case 478:text="Pomocí dvojtého kliknití na výhybku nebo spojnici s její spojkou";break;
+			case 479:text="  Zobrazit stěny";break;
+			case 480:text="  Skrýt stěny";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -5045,6 +5047,14 @@ void TForm1::onPopUP(int X, int Y)
 			pom_vyhybka=d.v.PtInObjekt();//využití prázdného ukazatele pro uchovávání nalezeného objektu (přechod z náhledu do náhledu)
 			//vypisování editace objektu vždy
 			if(pom_vyhybka!=NULL){PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;}
+			//skrývání, zobrazování stěn objektu
+			if(pom_vyhybka!=NULL && pom_vyhybka==OBJEKT_akt && (OBJEKT_akt->id==0 || OBJEKT_akt->id==9 || OBJEKT_akt->id==12))
+			{
+				if(OBJEKT_akt->sirka_steny==0)PopUPmenu->scLabel_zobrazitskryt_steny->Caption=ls->Strings[479];
+				else PopUPmenu->scLabel_zobrazitskryt_steny->Caption=ls->Strings[480];
+				PopUPmenu->Item_zobrazitskryt_steny->FillColor=(TColor)RGB(240,240,240);
+				PopUPmenu->Item_zobrazitskryt_steny->Visible=true;PopUPmenu->Panel_UP->Height+=34;
+      }
 			if(pom_vyhybka==NULL)pom_vyhybka=OBJEKT_akt;
 			pom_element_temp=pom_element;
 			mazani=true;
@@ -5167,6 +5177,14 @@ void TForm1::onPopUP(int X, int Y)
 				PopUPmenu->Item_otocit_doleva->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 				PopUPmenu->Item_otocit_doprava->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 			}
+			//skrývání, zobrazování stěn objektu
+			if(pom_vyhybka!=NULL && (pom_vyhybka->id==0 || pom_vyhybka->id==9 || pom_vyhybka->id==12))
+			{
+				if(pom_vyhybka->sirka_steny==0)PopUPmenu->scLabel_zobrazitskryt_steny->Caption=ls->Strings[479];
+				else PopUPmenu->scLabel_zobrazitskryt_steny->Caption=ls->Strings[480];
+				PopUPmenu->Item_zobrazitskryt_steny->FillColor=(TColor)RGB(240,240,240);
+				PopUPmenu->Item_zobrazitskryt_steny->Visible=true;PopUPmenu->Panel_UP->Height+=34;
+      }
 			//zobrazení běžných položek, pozor rozhoduje pořadí
 			//PopUPmenu->Item_posouvat->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
 			PopUPmenu->Item_posunout->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
@@ -5210,6 +5228,7 @@ void TForm1::close_all_items_popUPmenu()
 	PopUPmenu->Item_otocit_doleva->Visible=false;
 	PopUPmenu->Item_otocit_doprava->Visible=false;
 	PopUPmenu->Item_posun_obrysu->Visible=false;
+	PopUPmenu->Item_zobrazitskryt_steny->Visible=false;
 
 	PopUPmenu->Panel_UP->Height=0;
 	PopUPmenu->Panel_DOWN->Height=0;
@@ -14162,11 +14181,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Memo(m.round2double(OBJEKT_akt->pohon->Rx,3));
-	Memo(m.round2double(outR(OBJEKT_akt->pohon->Rz),3));
-	Memo(m.round2double(outRz(m.mezera(0,OBJEKT_akt->pohon->Rz,0)),3));
-	Memo(m.round2double(outRz(m.mezera(0,OBJEKT_akt->pohon->Rz,1)),3));
-	Memo(m.round2double(outRz(m.mezera(90,OBJEKT_akt->pohon->Rz,1)),3));
+	Memo(OBJEKT_akt->sirka_steny);
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko

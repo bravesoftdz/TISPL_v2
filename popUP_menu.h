@@ -62,6 +62,9 @@ __published:	// IDE-managed Components
 	TscGPPanel *Item_otocit_doprava;
 	TscLabel *scLabel_otocit_doprava;
 	TscGPGlyphButton *GlyphButton_otocit_doprava;
+	TscGPPanel *Item_zobrazitskryt_steny;
+	TscLabel *scLabel_zobrazitskryt_steny;
+	TscGPGlyphButton *scGPGlyphButton_zobrazitskryt_steny;
 	void __fastcall scLabel_smazatClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall scLabel_zobrazit_parametryMouseEnter(TObject *Sender);
@@ -137,6 +140,13 @@ __published:	// IDE-managed Components
 	void __fastcall GlyphButton_posun_obrysuMouseEnter(TObject *Sender);
 	void __fastcall GlyphButton_posun_obrysuMouseLeave(TObject *Sender);
 	void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
+	void __fastcall scLabel_zobrazitskryt_stenyMouseEnter(TObject *Sender);
+	void __fastcall scLabel_zobrazitskryt_stenyMouseLeave(TObject *Sender);
+	void __fastcall scLabel_zobrazitskryt_stenyClick(TObject *Sender);
+	void __fastcall scGPGlyphButton_zobrazitskryt_stenyMouseEnter(TObject *Sender);
+	void __fastcall scGPGlyphButton_zobrazitskryt_stenyMouseLeave(TObject *Sender);
+
+
 private:	// User declarations
 	TColor clBg,clAcBg,clAcBg2,clGlyph,clAcGlyph;
 	void top_positon(int top);//hlídání horní pozice, je-li daná komponenta horní
