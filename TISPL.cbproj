@@ -353,6 +353,10 @@
             <DependentOn>TT_kalkulator.h</DependentOn>
             <BuildOrder>41</BuildOrder>
         </None>
+        <CppCompile Include="Tvlakno_obraz.cpp">
+            <DependentOn>Tvlakno_obraz.h</DependentOn>
+            <BuildOrder>44</BuildOrder>
+        </CppCompile>
         <CppCompile Include="Unit1.cpp">
             <Form>Form1</Form>
             <FormType>dfm</FormType>
@@ -395,32 +399,32 @@
         <FormResources Include="popUP_menu.dfm"/>
         <FormResources Include="superform.dfm"/>
         <FormResources Include="report.dfm"/>
-        <FormResources Include="parametry_linky.dfm"/>
-        <FormResources Include="parametry.dfm"/>
-        <FormResources Include="parametry_vozik.dfm"/>
         <FormResources Include="pl_priority.dfm"/>
+        <FormResources Include="parametry.dfm"/>
+        <FormResources Include="parametry_linky.dfm"/>
+        <FormResources Include="parametry_vozik.dfm"/>
         <FormResources Include="uvod.dfm"/>
         <FormResources Include="UnitX.dfm"/>
         <FormResources Include="Z_rozliseni.dfm"/>
-        <FormResources Include="TT_kalkulator.dfm"/>
         <FormResources Include="Unit2.dfm"/>
         <FormResources Include="Unit1.dfm"/>
-        <FormResources Include="gapoR.dfm"/>
-        <FormResources Include="eDesigner.dfm"/>
+        <FormResources Include="TT_kalkulator.dfm"/>
         <FormResources Include="gapoTT.dfm"/>
+        <FormResources Include="gapoR.dfm"/>
         <FormResources Include="gapoV.dfm"/>
+        <FormResources Include="help.dfm"/>
+        <FormResources Include="eDesigner.dfm"/>
         <FormResources Include="adjustace.dfm"/>
         <FormResources Include="casovaOsa_info.dfm"/>
         <FormResources Include="cesty.dfm"/>
-        <FormResources Include="help.dfm"/>
         <FormResources Include="minicolordialog.dfm"/>
         <FormResources Include="miniform_zpravy.dfm"/>
         <FormResources Include="MyMessageBox.dfm"/>
+        <FormResources Include="konzole.dfm"/>
         <FormResources Include="kabina_schema.dfm"/>
         <FormResources Include="jig.dfm"/>
         <FormResources Include="kalendar.dfm"/>
         <FormResources Include="katalog_dopravniku.dfm"/>
-        <FormResources Include="konzole.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

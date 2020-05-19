@@ -8494,3 +8494,8 @@ long Cvektory::vymaz_seznam_DATA()
 	return pocet_smazanych_DAT;
 }
 ////---------------------------------------------------------------------------
+//možno smazat
+void Cvektory::test_vlakna(long i)
+{
+  F->Button14->Caption=i;
+}

@@ -802,6 +802,7 @@ public:
 
 //pomocné metody
 	void Text2CSV(AnsiString text,AnsiString FileName="",AnsiString Title="",AnsiString DefaultExt="",AnsiString Filter="",bool openDialog=true,bool open=true);//vytovoří a otevře CSV, je-li požadováno
+  void test_vlakna(long i);//možno smazat
 
 //pomocné struktury pro ukládání do bináru
 private:
