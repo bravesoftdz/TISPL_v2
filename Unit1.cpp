@@ -17086,6 +17086,7 @@ void __fastcall TForm1::scGPButton_bug_reportClick(TObject *Sender)
 	log(__func__);//logování
 	//vytovření backupu pro odeslání
 	Timer_backupTimer(Sender);
+  if(scSplitView_MENU->Opened) scSplitView_MENU->Opened=false; //pokud je otevřené menu, tak ho zavřu
 	//vytvoření printscreeunu
 	pan_create();//vytvoří aktuální printscreen jen pracovní plochy
 	TPngImage* PNG = new TPngImage();//kvůli větší kompresi uloženo do PNG (má větší kompresi než JPG)
