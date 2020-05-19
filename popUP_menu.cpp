@@ -673,16 +673,9 @@ void __fastcall TPopUPmenu::GlyphButton_posun_obrysuMouseLeave(TObject *Sender)
 	pasiveColor();
 }
 //---------------------------------------------------------------------------
-
-//pøi uzavírání formu musí být pøedán focus na Form1
-void __fastcall TPopUPmenu::FormCloseQuery(TObject *Sender, bool &CanClose)
-{
-	F->nastav_focus();//pøedá focus na form1, skrze odcyhtávání kláves
-}
 //---------------------------------------------------------------------------
-
+/////////////////////////Zobrazení nebo skrytí hran objektu
 void __fastcall TPopUPmenu::scLabel_zobrazitskryt_stenyMouseEnter(TObject *Sender)
-
 {
 	pasiveColor();
 	Item_zobrazitskryt_steny->FillColor=clAcBg;
@@ -694,14 +687,11 @@ void __fastcall TPopUPmenu::scLabel_zobrazitskryt_stenyMouseEnter(TObject *Sende
 	top_positon(Item_zobrazitskryt_steny->Top);//hlídání horní pozice, je-li daná komponenta horní
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TPopUPmenu::scLabel_zobrazitskryt_stenyMouseLeave(TObject *Sender)
-
 {
 	pasiveColor();
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TPopUPmenu::scLabel_zobrazitskryt_stenyClick(TObject *Sender)
 {
 	closing=true;
@@ -710,6 +700,7 @@ void __fastcall TPopUPmenu::scLabel_zobrazitskryt_stenyClick(TObject *Sender)
 	{
 		if(F->OBJEKT_akt->sirka_steny!=0)F->OBJEKT_akt->sirka_steny=0;
 		else F->OBJEKT_akt->sirka_steny=0.15;
+		F->MB(F->ls->Strings[481]);//"Zmìna se projeví po pøechodu do Layout"
 	}
 	else
 	{
@@ -719,18 +710,20 @@ void __fastcall TPopUPmenu::scLabel_zobrazitskryt_stenyClick(TObject *Sender)
 	F->REFRESH(false);
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TPopUPmenu::scGPGlyphButton_zobrazitskryt_stenyMouseEnter(TObject *Sender)
-
 {
 	scLabel_zobrazitskryt_stenyMouseEnter(this);
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TPopUPmenu::scGPGlyphButton_zobrazitskryt_stenyMouseLeave(TObject *Sender)
-
 {
 	pasiveColor();
 }
 //---------------------------------------------------------------------------
+//pøi uzavírání formu musí být pøedán focus na Form1
+void __fastcall TPopUPmenu::FormCloseQuery(TObject *Sender, bool &CanClose)
+{
+	F->nastav_focus();//pøedá focus na form1, skrze odcyhtávání kláves
+}
+
 

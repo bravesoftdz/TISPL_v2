@@ -593,7 +593,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				}
 			} break;
 		}
-		E->mGrid->Refresh();//refresh aktuálnì upravované tabulky
+		if(E!=NULL && E->mGrid!=NULL)E->mGrid->Refresh();//refresh aktuálnì upravované tabulky
 		posledni_E=E;//uložení posledního editovaného elementu
 		posledni_c=c;//uložení posledního editovaného segmentu cesty
 		if(F->d.v.ZAKAZKA_akt!=NULL && F->d.v.ZAKAZKA_akt->n!=0 && c!=NULL)c->data=E->data;//navrácení pøepoèítaných dat do zakázky
@@ -1908,11 +1908,11 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 	}
 
 	////naètení dat z pohonu do mGridu
+	mazatPM(E);//kontrola a dotaz na mazání elementu + ovlivnìných PM
 	F->vlozit_predavaci_misto_aktualizuj_WT();//musí být první!!
 	input_state=COMBO;//dùležité pro nastavení enabled komponent v aktualizaci elementù
 	if(p!=NULL)aktualizace_tab_elementu();
 	else aktualizace_tab_elementu_pOdebran();
-
 	////aktualizace knihoven
 	F->DrawGrid_knihovna->Refresh();
 	F->DrawGrid_ostatni->Refresh();
@@ -1997,5 +1997,117 @@ void TFormX::vynulujVID()
 	{
     zapisVID(0,i);
   }
+}
+//---------------------------------------------------------------------------
+//kontorla a dotaz zda mají být PM na stejném pohonu smazána
+void TFormX::mazatPM(Cvektory::TElement *Element)
+{
+	//deklarace
+	bool nalezen=false;
+	bool mazat_element=false;
+	Cvektory::TElement *E=NULL;
+
+	//hledání ovlivnìného PM v celém objektu
+	if(Element==NULL)
+	{
+		//hledání ovlivnìného PM
+		E=F->OBJEKT_akt->element;
+		while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
+  	{
+  		//kontrola zda jsem narazil na PM a je možné ho smazat
+  		if(E->eID==200 && (E->dalsi!=NULL && E->pohon==E->dalsi->pohon) || (E->dalsi==NULL && E->pohon==F->d.v.ELEMENTY->dalsi->pohon))
+  		{
+				Element=E;
+				mazat_element=true;
+  			break;
+  		}
+  		else E=E->dalsi;
+		}
+    //kontrola predchoziho PM
+		if(F->predchozi_PM!=NULL && ((F->predchozi_PM->dalsi!=NULL && F->predchozi_PM->pohon==F->predchozi_PM->dalsi->pohon) || (F->predchozi_PM->dalsi==NULL && F->predchozi_PM->pohon==F->d.v.ELEMENTY->dalsi->pohon)))
+		{
+			nalezen=true;
+			E=F->predchozi_PM;
+		}
+	}
+
+	//hledání ovlivnìného PM pøed a za PM, které vyvolalo zmìnu
+	else
+	{
+		if((Element->dalsi!=NULL && Element->pohon==Element->dalsi->pohon) || (Element->dalsi==NULL && Element->pohon==F->d.v.ELEMENTY->dalsi->pohon))mazat_element=true;
+		//hledání ovlivnìného PM
+		E=Element->dalsi;
+		while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
+		{
+			//kontrola zda jsem narazil na PM a je možné ho smazat
+			if(E->eID==200 && (E->dalsi!=NULL && E->pohon==E->dalsi->pohon) || (E->dalsi==NULL && E->pohon==F->d.v.ELEMENTY->dalsi->pohon))
+			{
+				nalezen=true;
+				break;
+			}
+			else E=E->dalsi;
+		}
+		//kontrola zda sem za PM našel ovlivnìné PM, pokud ne kontrola pøed PM
+		if(!nalezen)
+		{
+			E=Element->predchozi;
+			while(E!=NULL && E->n>0 && E->objekt_n==F->OBJEKT_akt->n)
+			{
+				//kontrola zda jsem narazil na PM a je možné ho smazat
+				if(E->eID==200 && (E->dalsi!=NULL && E->pohon==E->dalsi->pohon) || (E->dalsi==NULL && E->pohon==F->d.v.ELEMENTY->dalsi->pohon))
+				{
+					nalezen=true;
+					break;
+				}
+				else E=E->predchozi;
+      }
+		}
+  	//kontrola predchoziho PM
+		if(!nalezen && F->predchozi_PM!=NULL && ((F->predchozi_PM->dalsi!=NULL && F->predchozi_PM->pohon==F->predchozi_PM->dalsi->pohon) || (F->predchozi_PM->dalsi==NULL && F->predchozi_PM->pohon==F->d.v.ELEMENTY->dalsi->pohon)))
+		{
+			nalezen=true;
+			E=F->predchozi_PM;
+		}
+	}
+
+  //uložení posunu a zoom pøed posuny na elementy
+	TPointD predchozi_posun=F->Posun;
+	double predchozi_zoom=F->Zoom;
+
+	//dotaz + smazání samotného PM kde byla vyvolaná zmìna
+	String name="";
+	if(nalezen)name=E->name;
+	if(mazat_element && Element!=NULL && Element->eID==200)//zmìna mùže být vyvolána i z výhybky
+	{
+		F->posun_na_element(Element);
+		F->REFRESH(false);//musí následovat pøesunu
+		F->pom_element=Element;
+		F->pom_element_temp=Element;
+		//podstrèení souøadnic pro zobrazení MB
+		F->akt_souradnice_kurzoru_PX.x=F->m.L2Px(Element->geo.X4+0.5);
+		F->akt_souradnice_kurzoru_PX.y=F->m.L2Py(Element->geo.Y4+0.5);
+		F->Smazat1Click(this);
+	}
+
+	//kontrola zde ovlivnìné PM existuje + dotaz na mazání
+	if(nalezen)
+	{
+		F->posun_na_element(E);
+		F->REFRESH(false);//musí následovat pøesunu
+		E->name=name;//pokud došlo k odstranìní napøíklad pøedchozího PM, došlo již i k aktualizaci názvù, napø v praxi smažu první predchozí PM "PM1" a druhy dotaz na Element, který býval "PM2" bude: "Chcete smazat PM1"
+		F->pom_element=E;
+		F->pom_element_temp=E;
+		//podstrèení souøadnic pro zobrazení MB
+		F->akt_souradnice_kurzoru_PX.x=F->m.L2Px(E->geo.X4+0.5);
+		F->akt_souradnice_kurzoru_PX.y=F->m.L2Py(E->geo.Y4+0.5);
+		F->Smazat1Click(this);
+	}
+
+	//uložení posunu a zoom pøed posuny na elementy
+	F->Posun=predchozi_posun;
+	F->Zoom=predchozi_zoom;
+
+	//ukazatelové záležitosti
+	E=NULL;delete E;
 }
 //---------------------------------------------------------------------------

@@ -868,6 +868,7 @@ public:		// User declarations
 	double max_voziku(Cvektory::TElement *stopka);//vrátí maximální možný poèet vozíkù na stopce, podle geometrie pøed ní
 	void aktualizace_RT();//projde všechny elementy v aktuálnì editovaném objektu a upravím jim RT
 	void posun_na_element(unsigned long n_zpravy);//podle zprávy provede posun na daný elment
+	void posun_na_element(Cvektory::TElement *E);//pøesune se na danný element
 	void smaz_kurzor();
 	UnicodeString get_temp_dir();
 	void vytvoreni_tab_pohon(bool existuje_poh_tabulka);//vytvoøení tabulky pohonu
