@@ -18,7 +18,6 @@ private:	// User declarations
 	void zmena_aRD (Cvektory::TElement *mimo_element=NULL);//výpoèty vyvolané zmìnou aRD, parametr mimo_element je zde pouze pøedáván do metody aktualizace_tab_elementu
 	void zmena_R ();//výpoèty vyvolané zmìnou R
 	void zmena_Rx ();//výpoèty vyvolané zmìnou Rx
-	void aktualizace_tab_elementu (Cvektory::TElement *mimo_element=NULL);//aktualizuje výpoèty ve všech tabulkách elemntù, parametr mimo_element je ukazatel na element, který má být pøeskoèen, defaultnì hodnota, které E->n nidky nedosáhne
 	void aktualizace_tab_elementu_pOdebran ();//vynuluje všechny hodnoty závislé na pohonu ve všech tabulkách elementù
 	void aktualizace_tab_pohonu();
 	void korelace_tab_pohonu(int Row);//zobrazi korelaci v tabulce pohonu
@@ -52,6 +51,8 @@ public:		// User declarations
 	void validace_RD(Cvektory::TElement *E);//provede validaci RD
 	void update_hodnot_vyhybky_PM(Cvektory::TElement *E);//zobrazí aktuální hodnoty z dat v tabulkách
 	void vynulujVID();//vynuluje VID, podle délky nastavené v konstruktoru (viz. popisek deklarace VID) napø. 2 èíslice
+	void aktualizace_tab_elementu (Cvektory::TElement *mimo_element=NULL);//aktualizuje výpoèty ve všech tabulkách elemntù, parametr mimo_element je ukazatel na element, který má být pøeskoèen, defaultnì hodnota, které E->n nidky nedosáhne
+  void mazatPM(Cvektory::TElement *Element=NULL);//kontorla a dotaz zda mají být PM na stejném pohonu smazána
 
 	//promìnné pro vyøazení OnChange metody pøi vykreslování tabulek
   enum Tinput_state{NO,NOTHING,PT,PT2,LO,LO2,WT,DO,PTotoc,COMBO,aRD,R,Rz,Rx,P_VOZ};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)

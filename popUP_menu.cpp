@@ -59,6 +59,7 @@ void TPopUPmenu::pasiveColor()//nastaví všechny položky na pasivní resp. default
 	Item_otocit_doleva->FillColor=clBg;
 	Item_otocit_doprava->FillColor=clBg;
 	Item_posun_obrysu->FillColor=clBg;
+	Item_zobrazitskryt_steny->FillColor=clBg;
 	GlyphButton_close->Options->NormalColor=clAcBg;
 	GlyphButton_close->Options->HotColor=clRed;
 	GlyphButton_close->Options->FocusedColor=clAcBg;
@@ -107,6 +108,9 @@ void TPopUPmenu::pasiveColor()//nastaví všechny položky na pasivní resp. default
 	GlyphButton_posun_obrysu->Options->NormalColor=clGlyph;
 	GlyphButton_posun_obrysu->GlyphOptions->NormalColor=clWhite;
 	GlyphButton_posun_obrysu->GlyphOptions->NormalColorAlpha=200;
+	scGPGlyphButton_zobrazitskryt_steny->Options->NormalColor=clGlyph;
+	scGPGlyphButton_zobrazitskryt_steny->GlyphOptions->NormalColor=clWhite;
+	scGPGlyphButton_zobrazitskryt_steny->GlyphOptions->NormalColorAlpha=200;
 	closing=false;
 }
 //---------------------------------------------------------------------------
@@ -532,6 +536,7 @@ void __fastcall TPopUPmenu::GlyphButton_cely_pohledMouseLeave(TObject *Sender)
 void __fastcall TPopUPmenu::scLabel_cely_pohledClick(TObject *Sender)
 {
 	closing=true;
+	pasiveColor();//musí zde být, problém s ponecháním focus barev na label cely_pohled i po znovuotevøení popup
 	Close();
 	Form1->RzToolButton11Click(Sender);
 }
@@ -668,11 +673,57 @@ void __fastcall TPopUPmenu::GlyphButton_posun_obrysuMouseLeave(TObject *Sender)
 	pasiveColor();
 }
 //---------------------------------------------------------------------------
-
+//---------------------------------------------------------------------------
+/////////////////////////Zobrazení nebo skrytí hran objektu
+void __fastcall TPopUPmenu::scLabel_zobrazitskryt_stenyMouseEnter(TObject *Sender)
+{
+	pasiveColor();
+	Item_zobrazitskryt_steny->FillColor=clAcBg;
+	scGPGlyphButton_zobrazitskryt_steny->Options->NormalColor=clAcBg;
+	scGPGlyphButton_zobrazitskryt_steny->Options->HotColor=clAcBg;
+	scGPGlyphButton_zobrazitskryt_steny->Options->FocusedColor=clAcBg;
+	scGPGlyphButton_zobrazitskryt_steny->GlyphOptions->NormalColor=clAcGlyph;
+	scGPGlyphButton_zobrazitskryt_steny->GlyphOptions->NormalColorAlpha=255;
+	top_positon(Item_zobrazitskryt_steny->Top);//hlídání horní pozice, je-li daná komponenta horní
+}
+//---------------------------------------------------------------------------
+void __fastcall TPopUPmenu::scLabel_zobrazitskryt_stenyMouseLeave(TObject *Sender)
+{
+	pasiveColor();
+}
+//---------------------------------------------------------------------------
+void __fastcall TPopUPmenu::scLabel_zobrazitskryt_stenyClick(TObject *Sender)
+{
+	closing=true;
+	Close();
+	if(F->OBJEKT_akt!=NULL)
+	{
+		if(F->OBJEKT_akt->sirka_steny!=0)F->OBJEKT_akt->sirka_steny=0;
+		else F->OBJEKT_akt->sirka_steny=0.15;
+		F->MB(F->ls->Strings[481]);//"Zmìna se projeví po pøechodu do Layout"
+	}
+	else
+	{
+		if(F->pom_vyhybka->sirka_steny!=0)F->pom_vyhybka->sirka_steny=0;
+		else F->pom_vyhybka->sirka_steny=0.15;
+	}
+	F->REFRESH(false);
+}
+//---------------------------------------------------------------------------
+void __fastcall TPopUPmenu::scGPGlyphButton_zobrazitskryt_stenyMouseEnter(TObject *Sender)
+{
+	scLabel_zobrazitskryt_stenyMouseEnter(this);
+}
+//---------------------------------------------------------------------------
+void __fastcall TPopUPmenu::scGPGlyphButton_zobrazitskryt_stenyMouseLeave(TObject *Sender)
+{
+	pasiveColor();
+}
+//---------------------------------------------------------------------------
 //pøi uzavírání formu musí být pøedán focus na Form1
 void __fastcall TPopUPmenu::FormCloseQuery(TObject *Sender, bool &CanClose)
 {
 	F->nastav_focus();//pøedá focus na form1, skrze odcyhtávání kláves
 }
-//---------------------------------------------------------------------------
+
 

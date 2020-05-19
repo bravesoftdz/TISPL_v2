@@ -3723,7 +3723,7 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 		zobrazit_tip=false;
 		smaz_vyhybku_spojku(Element);
   }
-	if(Element->eID==200 && !preskocit_kontolu)//mazání PM
+	if(Element->eID==200 && !preskocit_kontolu && ((Element->dalsi!=NULL && Element->dalsi->pohon!=Element->pohon) || (Element->dalsi==NULL && ELEMENTY->dalsi->pohon!=Element->pohon)))//mazání PM
 	{
 		//pokud se jedná o PM na konci objektu .. nelze smazat
 		//if(Element->dalsi==NULL || Element->dalsi!=NULL && Element->dalsi->objekt_n!=Element->objekt_n)povolit=false;
@@ -3740,7 +3740,34 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 					obj_n=dalsi_PM->objekt_n;
 					vrat_objekt(obj_n)->pohon=Element->pohon;
         }
-				if(dalsi_PM->eID==200)break;
+				if(dalsi_PM->eID==200)
+				{
+          //aktualizace comba u dalšího PM
+					if(dalsi_PM->objekt_n==F->OBJEKT_akt->n && dalsi_PM->mGrid!=NULL)
+					{
+						//prohození sloupců
+           	int prvni=3,druhy=4;
+						if(F->prohodit_sloupce_PM(dalsi_PM))
+           	{
+							prvni=4;
+							druhy=3;
+						}
+						//aktualizace itemindexu
+						try
+						{
+					  	if(dalsi_PM->mGrid->Cells[prvni][2].Type==TmGrid::COMBO)
+					  	{
+                int p_n=0;
+					  		if(Element->pohon!=NULL)p_n=Element->pohon->n;
+					  		TscGPComboBox *Combo=dalsi_PM->mGrid->getCombo(prvni,2);
+					  		if(Combo!=NULL)Combo->ItemIndex=p_n;
+					  		Combo=NULL;delete Combo;
+					  	}
+						}catch(...){;}
+					}
+					//okončneí průchodu
+					break;
+				}
 				dalsi_PM=dalsi_PM->dalsi;
 			}
 			dalsi_PM=NULL;delete dalsi_PM;
@@ -3799,7 +3826,15 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 	}
 	else if(povolit)//změna na zarážku, v případě že mažu element který obsahuje složitejsí geometrii
 	{
-    //změna na zarážku
+    //smazání a znovuvytvoření mGridu elementu
+		long ID=Element->n;
+		if(F->OBJEKT_akt!=NULL && (Element->objekt_n==F->OBJEKT_akt->n || Element==F->predchozi_PM))
+		{
+			ID=Element->mGrid->ID;
+			Element->mGrid->Delete();
+			Element->mGrid=NULL;
+		}
+		//změna na zarážku
 		Element->eID=MaxInt;
 		//změna názvu a úprava číslování, pouze v debug
 		if(DEBUG)
@@ -3808,8 +3843,8 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 			uprav_popisky_elementu(Element);
 		}
 		else Element->name="";
-    //defaultní data
-  	Element->data.LO1=1.5;
+		//defaultní data
+		Element->data.LO1=1.5;
 		Element->OTOC_delka=0;
 		Element->zona_pred=0;
 		Element->zona_za=0;
@@ -3823,38 +3858,22 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 		Element->data.RT.x=0;//ryzí reserve time
 		Element->data.RT.y=0;//pokrácený reserve time
 		Element->data.pocet_voziku=0;
-  	Element->data.pocet_pozic=0;
+		Element->data.pocet_pozic=0;
 		Element->rotace_jig=0;
 		if(vrat_druh_elementu(Element)==0){Element->data.pocet_pozic=1;Element->data.pocet_voziku=1;}//S&G elementy
 		if(Element->eID==0){Element->data.pocet_pozic=2;Element->data.pocet_voziku=1;}//pouze stopky
 		Element->stav=1;
 		Element->data.PD=-1;//defaultní stav pro S&G roboty
 		//smazání a znovuvytvoření mGridu elementu
-		if(F->OBJEKT_akt!=NULL && Element->objekt_n==F->OBJEKT_akt->n)
+		if(F->OBJEKT_akt!=NULL && Element->objekt_n==F->OBJEKT_akt->n)// || Element==F->predchozi_PM))
 		{
-			long ID=Element->mGrid->ID;
-			Element->mGrid->Delete();
-			Element->mGrid=NULL;
 			Element->mGrid=new TmGrid(F);
 			Element->mGrid->Tag=6;//ID formu
 			Element->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
+			Element->mGrid->Create(2,1);
 			F->design_element(Element,false);//nutné!
 		}
 	}
-	//kontrola zda má být navrácen default režim objektu
-	if(O!=NULL && povolit)
-	{
-		TElement *E=O->element;
-		bool zmena_rezimu=true;
-  	while(E!=NULL && E->objekt_n==O->n)
-		{
-			if(E->eID!=MaxInt){zmena_rezimu=false;break;}
-			E=E->dalsi;
-		}
-		E=NULL;delete E;
-		if(zmena_rezimu)O->rezim=-1;
-	}
-	O=NULL;delete O;
 }
 ////---------------------------------------------------------------------------
 //smaže všechny elementy v daném objektu

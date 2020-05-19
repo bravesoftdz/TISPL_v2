@@ -1019,7 +1019,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=478;i++)
+	for(unsigned short i=0;i<=481;i++)
 	{
 		switch(i)
 		{
@@ -1502,6 +1502,9 @@ void TForm1::DesignSettings()
 			case 476:text="Odesláno. Děkujeme za zpětnou vazbu.";break;
 			case 477:text="Nepodařilo se odeslat, zkuste znovu.";break;
 			case 478:text="Pomocí dvojtého kliknití na výhybku nebo spojnici s její spojkou";break;
+			case 479:text="  Zobrazit stěny";break;
+			case 480:text="  Skrýt stěny";break;
+			case 481:text="Změna se projeví po přechodu do Layout";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -5046,6 +5049,14 @@ void TForm1::onPopUP(int X, int Y)
 			pom_vyhybka=d.v.PtInObjekt();//využití prázdného ukazatele pro uchovávání nalezeného objektu (přechod z náhledu do náhledu)
 			//vypisování editace objektu vždy
 			if(pom_vyhybka!=NULL){PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;}
+			//skrývání, zobrazování stěn objektu
+			if(pom_vyhybka!=NULL && pom_vyhybka==OBJEKT_akt && (OBJEKT_akt->id==0 || OBJEKT_akt->id==9 || OBJEKT_akt->id==12))
+			{
+				if(OBJEKT_akt->sirka_steny==0)PopUPmenu->scLabel_zobrazitskryt_steny->Caption=ls->Strings[479];
+				else PopUPmenu->scLabel_zobrazitskryt_steny->Caption=ls->Strings[480];
+				PopUPmenu->Item_zobrazitskryt_steny->FillColor=(TColor)RGB(240,240,240);
+				PopUPmenu->Item_zobrazitskryt_steny->Visible=true;PopUPmenu->Panel_UP->Height+=34;
+      }
 			if(pom_vyhybka==NULL)pom_vyhybka=OBJEKT_akt;
 			pom_element_temp=pom_element;
 			mazani=true;
@@ -5168,6 +5179,14 @@ void TForm1::onPopUP(int X, int Y)
 				PopUPmenu->Item_otocit_doleva->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 				PopUPmenu->Item_otocit_doprava->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 			}
+			//skrývání, zobrazování stěn objektu
+			if(pom_vyhybka!=NULL && (pom_vyhybka->id==0 || pom_vyhybka->id==9 || pom_vyhybka->id==12))
+			{
+				if(pom_vyhybka->sirka_steny==0)PopUPmenu->scLabel_zobrazitskryt_steny->Caption=ls->Strings[479];
+				else PopUPmenu->scLabel_zobrazitskryt_steny->Caption=ls->Strings[480];
+				PopUPmenu->Item_zobrazitskryt_steny->FillColor=(TColor)RGB(240,240,240);
+				PopUPmenu->Item_zobrazitskryt_steny->Visible=true;PopUPmenu->Panel_UP->Height+=34;
+      }
 			//zobrazení běžných položek, pozor rozhoduje pořadí
 			//PopUPmenu->Item_posouvat->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
 			PopUPmenu->Item_posunout->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
@@ -5211,6 +5230,7 @@ void TForm1::close_all_items_popUPmenu()
 	PopUPmenu->Item_otocit_doleva->Visible=false;
 	PopUPmenu->Item_otocit_doprava->Visible=false;
 	PopUPmenu->Item_posun_obrysu->Visible=false;
+	PopUPmenu->Item_zobrazitskryt_steny->Visible=false;
 
 	PopUPmenu->Panel_UP->Height=0;
 	PopUPmenu->Panel_DOWN->Height=0;
@@ -6358,95 +6378,95 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 				if(OBJEKT_akt!=NULL && OBJEKT_akt->n==E->objekt_n)E->mGrid->Cells[sloupec][11].Text = F->m.round2double(F->outPT(E->WT),3);
 			}
 	  	//////////Mazání nepotřebného předávacího místa + 2 PM na sobě
-			if(E->eID==200 && (E->dalsi!=NULL && E->dalsi->pohon==NULL && E->pohon==NULL || E->dalsi!=NULL && E->pohon!=NULL && E->dalsi->pohon!=NULL && E->dalsi->pohon->n==E->pohon->n))
-			{
-				bool smazat=false;
-				//pokud je mazané předávací místo zároveň předchozí PM, nulovat ukazatel
-				if(E==predchozi_PM){predchozi_PM=NULL;smazat=true;}
-				//smazání mGridu elementu
-				if((OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n) || smazat)
-				{
-        	nastav_focus();
-					ID=E->mGrid->ID;
-					E->mGrid->Delete();
-					E->mGrid=NULL;
-        }
-				//změna na zarážku
-				E->eID=MaxInt;
-				//změna názvu a úprava číslování, pouze v debug
-				if(DEBUG)
-				{
-					E->name="Zarážka";
-					d.v.uprav_popisky_elementu(E);
-				}
-				else E->name="";
-				//vynulování WT
-				E->WT=0;
-				//znovuvytvoření mGridu elementu
-				if((OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n) || smazat)
-				{
-					E->mGrid=new TmGrid(F);
-					E->mGrid->Tag=6;//ID formu
-					E->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
-					design_element(E,false);//nutné!
-				}
-	  	}
+//			if(E->eID==200 && (E->dalsi!=NULL && E->dalsi->pohon==NULL && E->pohon==NULL || E->dalsi!=NULL && E->pohon!=NULL && E->dalsi->pohon!=NULL && E->dalsi->pohon->n==E->pohon->n))
+//			{
+//				bool smazat=false;
+//				//pokud je mazané předávací místo zároveň předchozí PM, nulovat ukazatel
+//				if(E==predchozi_PM){predchozi_PM=NULL;smazat=true;}
+//				//smazání mGridu elementu
+//				if((OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n) || smazat)
+//				{
+//					nastav_focus();
+//					ID=E->mGrid->ID;
+//					E->mGrid->Delete();
+//					E->mGrid=NULL;
+//				}
+//				//změna na zarážku
+//				E->eID=MaxInt;
+//				//změna názvu a úprava číslování, pouze v debug
+//				if(DEBUG)
+//				{
+//					E->name="Zarážka";
+//					d.v.uprav_popisky_elementu(E);
+//				}
+//				else E->name="";
+//				//vynulování WT
+//				E->WT=0;
+//				//znovuvytvoření mGridu elementu
+//				if((OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n) || smazat)
+//				{
+//					E->mGrid=new TmGrid(F);
+//					E->mGrid->Tag=6;//ID formu
+//					E->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
+//					design_element(E,false);//nutné!
+//				}
+//			}
 			//2 pm přes sebe; bude jednodušeji realizovatelné v novém datovém modelu, přepnutí na zarážku dělá problémy, zatím odstaveno
-			if(E->eID==200 && (E->dalsi!=NULL && E->dalsi->eID==200 && E->dalsi->geo.delka<0.01))
-			{
-	  		//posun na druhé předávací místo
-	  		if(E->dalsi!=NULL)E=E->dalsi;
-      	//pokud je možné dojde k odstranění elementu
-	  		if(E->dalsi!=NULL && E->dalsi->geo.typ==0 && E->geo.typ==0){d.v.smaz_element(E);break;}
-	  		//pokud ne je přepnut na zarážku
-	  		else
-	  		{
-					//smazání mGridu elementu
-					if(OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n)
-					{
-          	nastav_focus();
-						ID=E->mGrid->ID;
-						E->mGrid->Delete();
-						E->mGrid=NULL;
-          }
-					//změna na zarážku
-	  			E->eID=MaxInt;
-	  			//změna názvu a úprava číslování, pouze v debug
-	  			if(DEBUG)
-	  			{
-	  				E->name="Zarážka";
-	  				d.v.uprav_popisky_elementu(E);
-	  			}
-	  			else E->name="";
-	  			//defaultní data
-       		E->data.LO1=1.5;
-					E->OTOC_delka=0;
-					E->zona_pred=0;
-					E->zona_za=0;
-					E->data.LO2=0;
-					E->data.LO_pozice=0;
-					E->data.PT1=0;
-					E->PTotoc=0;
-					E->data.PT2=0;
-					E->WT=0;//čekání na palec
-					E->data.WTstop=0;//čekání na stopce
-					E->data.RT.x=0;//ryzí reserve time
-					E->data.RT.y=0;//pokrácený reserve time
-					E->data.pocet_voziku=0;
-					E->data.pocet_pozic=0;
-					E->rotace_jig=0;
-					E->stav=1;
-					E->data.PD=-1;//defaultní stav pro S&G roboty
-					//znovuvytvoření mGridu elementu
-					if(OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n)
-					{
-	  				E->mGrid=new TmGrid(F);
-	  				E->mGrid->Tag=6;//ID formu
-	  				E->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
-	  				design_element(E,false);//nutné!
-	  			}
-	  		}
-			}
+//			if(E->eID==200 && (E->dalsi!=NULL && E->dalsi->eID==200 && E->dalsi->geo.delka<0.01))
+//			{
+//				//posun na druhé předávací místo
+//				if(E->dalsi!=NULL)E=E->dalsi;
+//				//pokud je možné dojde k odstranění elementu
+//				if(E->dalsi!=NULL && E->dalsi->geo.typ==0 && E->geo.typ==0){d.v.smaz_element(E);break;}
+//				//pokud ne je přepnut na zarážku
+//				else
+//				{
+//					//smazání mGridu elementu
+//					if(OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n)
+//					{
+//						nastav_focus();
+//						ID=E->mGrid->ID;
+//						E->mGrid->Delete();
+//						E->mGrid=NULL;
+//					}
+//					//změna na zarážku
+//					E->eID=MaxInt;
+//					//změna názvu a úprava číslování, pouze v debug
+//					if(DEBUG)
+//					{
+//						E->name="Zarážka";
+//						d.v.uprav_popisky_elementu(E);
+//					}
+//					else E->name="";
+//					//defaultní data
+//					E->data.LO1=1.5;
+//					E->OTOC_delka=0;
+//					E->zona_pred=0;
+//					E->zona_za=0;
+//					E->data.LO2=0;
+//					E->data.LO_pozice=0;
+//					E->data.PT1=0;
+//					E->PTotoc=0;
+//					E->data.PT2=0;
+//					E->WT=0;//čekání na palec
+//					E->data.WTstop=0;//čekání na stopce
+//					E->data.RT.x=0;//ryzí reserve time
+//					E->data.RT.y=0;//pokrácený reserve time
+//					E->data.pocet_voziku=0;
+//					E->data.pocet_pozic=0;
+//					E->rotace_jig=0;
+//					E->stav=1;
+//					E->data.PD=-1;//defaultní stav pro S&G roboty
+//					//znovuvytvoření mGridu elementu
+//					if(OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n)
+//					{
+//						E->mGrid=new TmGrid(F);
+//						E->mGrid->Tag=6;//ID formu
+//						E->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
+//						design_element(E,false);//nutné!
+//					}
+//				}
+//			}
 		}
 		//aktualizace WT u výhybky
 		if(E->eID==300)
@@ -6546,41 +6566,41 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 			if(OBJEKT_akt!=NULL && OBJEKT_akt->n==e_posledni->objekt_n)E->mGrid->Cells[sloupec][11].Text = F->m.round2double(F->outPT(E->WT),3);
 		}
 		//////////Mazání nepotřebného předávacího místa (změna na zarážku)
-		if(e_posledni->eID==200 && (e_prvni->pohon!=NULL && e_posledni->pohon!=NULL && e_prvni->pohon->n==e_posledni->pohon->n || e_prvni->pohon==NULL && e_posledni->pohon==NULL))
-		{
-			//změna na zarážku
-			e_posledni->eID=MaxInt;
-			//defaultní data
-			e_posledni->data.LO1=1.5;
-			e_posledni->OTOC_delka=0;
-			e_posledni->zona_pred=0;
-			e_posledni->zona_za=0;
-			e_posledni->data.LO2=0;
-			e_posledni->data.LO_pozice=0;
-			e_posledni->data.PT1=0;
-			e_posledni->PTotoc=0;
-			e_posledni->data.PT2=0;
-			e_posledni->WT=0;//čekání na palec
-			e_posledni->data.WTstop=0;//čekání na stopce
-			e_posledni->data.RT.x=0;//ryzí reserve time
-			e_posledni->data.RT.y=0;//pokrácený reserve time
-			e_posledni->data.pocet_voziku=0;
-			e_posledni->data.pocet_pozic=0;
-			e_posledni->rotace_jig=0;
-			e_posledni->stav=1;
-			e_posledni->data.PD=-1;//defaultní stav pro S&G roboty
-			//smazání a znovuvytvoření mGridu elementu
-			if(OBJEKT_akt!=NULL && e_posledni->objekt_n==OBJEKT_akt->n)
-			{
-				nastav_focus();
-				ID=e_posledni->mGrid->ID;
-				e_posledni->mGrid->Delete();
-				e_posledni->mGrid=new TmGrid(F);
-				e_posledni->mGrid->Tag=6;//ID formu
-				e_posledni->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
-				design_element(e_posledni,false);//nutné!
-			}
-		}
+//		if(e_posledni->eID==200 && (e_prvni->pohon!=NULL && e_posledni->pohon!=NULL && e_prvni->pohon->n==e_posledni->pohon->n || e_prvni->pohon==NULL && e_posledni->pohon==NULL))
+//		{
+//			//změna na zarážku
+//			e_posledni->eID=MaxInt;
+//			//defaultní data
+//			e_posledni->data.LO1=1.5;
+//			e_posledni->OTOC_delka=0;
+//			e_posledni->zona_pred=0;
+//			e_posledni->zona_za=0;
+//			e_posledni->data.LO2=0;
+//			e_posledni->data.LO_pozice=0;
+//			e_posledni->data.PT1=0;
+//			e_posledni->PTotoc=0;
+//			e_posledni->data.PT2=0;
+//			e_posledni->WT=0;//čekání na palec
+//			e_posledni->data.WTstop=0;//čekání na stopce
+//			e_posledni->data.RT.x=0;//ryzí reserve time
+//			e_posledni->data.RT.y=0;//pokrácený reserve time
+//			e_posledni->data.pocet_voziku=0;
+//			e_posledni->data.pocet_pozic=0;
+//			e_posledni->rotace_jig=0;
+//			e_posledni->stav=1;
+//			e_posledni->data.PD=-1;//defaultní stav pro S&G roboty
+//			//smazání a znovuvytvoření mGridu elementu
+//			if(OBJEKT_akt!=NULL && e_posledni->objekt_n==OBJEKT_akt->n)
+//			{
+//				nastav_focus();
+//				ID=e_posledni->mGrid->ID;
+//				e_posledni->mGrid->Delete();
+//				e_posledni->mGrid=new TmGrid(F);
+//				e_posledni->mGrid->Tag=6;//ID formu
+//				e_posledni->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
+//				design_element(e_posledni,false);//nutné!
+//			}
+//		}
 		//////////Mazání pomocných ukazatelů
 		e_prvni=NULL;delete e_prvni;
 		e_posledni=NULL;delete e_posledni;
@@ -7451,7 +7471,7 @@ void TForm1::mGrid_puvodni_stav(Cvektory::TElement *E)
 			case 300:
 			{
 				TscGPGlyphButton *B=E->mGrid->getGlyphButton(4,0);
-				if(B!=NULL)B->Visible=true;
+				//if(B!=NULL)B->Visible=true;
 				E->mGrid->Cells[3][2].Type=E->mGrid->COMBO;
 				E->mGrid->Cells[4][2].Type=E->mGrid->COMBO;
 				E->mGrid->exBUTTONVisible=true;
@@ -11747,7 +11767,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 				AnsiString text_PM=ls->Strings[465];
 				if(pom_element->pohon!=NULL)text_PM+=" "+pom_element->pohon->name;
 				else text_PM+=" nenastaven";
-				if((pom_element->eID!=200 && mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text+pom_element_temp->name.UpperCase()+"?","",MB_YESNO)) || (pom_element->eID==200 && pom_element->dalsi!=NULL && pom_element->dalsi->objekt_n==OBJEKT_akt->n) && mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text_PM,"",MB_YESNO))
+				if((pom_element->eID!=200 && mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text+pom_element_temp->name.UpperCase()+"?","",MB_YESNO)))// || (pom_element->eID==200 && pom_element->dalsi!=NULL && pom_element->objekt_n==OBJEKT_akt->n && pom_element->dalsi->objekt_n==OBJEKT_akt->n) && mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text_PM,"",MB_YESNO))
 				{
 					int eID=pom_element_temp->eID;
 					if(eID==300)OBJEKT_akt->pohon=pom_element_temp->pohon;//zajištění si zprávného akt. editovaného pohonu
@@ -11768,10 +11788,35 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 					dalsi_element=NULL;delete dalsi_element;
 					REFRESH();
 				}
-				else
+				else if(pom_element->eID==200)
 				{
-					//pokud se jedná o výhybku na konci objektu, nelze ji smazat
-					if(pom_element->eID==200)MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,ls->Strings[470],"",MB_OK);//"Nelze provést! Odstranění provedete výběrem totožného pohonu před a za předávacím místem"
+					bool nulovatPM=false;
+					nastav_focus();
+					//pokud mažu PM
+					if(pom_element->objekt_n==OBJEKT_akt->n && pom_element->dalsi!=NULL && pom_element->dalsi->objekt_n==OBJEKT_akt->n && pom_element->pohon!=pom_element->dalsi->pohon && mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text_PM,"",MB_YESNO))
+					{
+						if(pom_element_temp==predchozi_PM)nulovatPM=true;
+						d.v.smaz_element(pom_element_temp);
+						pom_element_temp=NULL;pom_element=NULL;
+						FormX->aktualizace_tab_elementu();//odstraněním může dojít k ovlivnění následujícího PM
+						FormX->mazatPM();//kontrola PM zda jsou nějaké k mazání
+					}
+					//pokud se jedná o PM na konci objektu, které je na rozdílných pohonech, nelze smazat
+					else if((pom_element->dalsi!=NULL && pom_element->pohon!=pom_element->dalsi->pohon) || (pom_element->dalsi==NULL && pom_element->pohon!=d.v.ELEMENTY->dalsi->pohon))
+						MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,ls->Strings[470],"",MB_OK);//"Nelze provést! Odstranění provedete výběrem totožného pohonu před a za předávacím místem"
+					else
+					{
+            //dotaz zda má být PM odstraněno nebo ponecháno
+						if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text+pom_element_temp->name.UpperCase()+"?","",MB_YESNO))
+						{
+							if(pom_element_temp==predchozi_PM)nulovatPM=true;
+							d.v.smaz_element(pom_element_temp);
+							pom_element_temp=NULL;pom_element=NULL;
+						}
+						else vlozit_predavaci_misto_aktualizuj_WT();//dojde k refreshi WT
+					}
+					//kontrola zda vynulovat předchozí PM
+					if(nulovatPM)predchozi_PM=NULL;
 					mazani=false;
 					Akce=NIC;
 				}
@@ -12633,13 +12678,7 @@ void TForm1::posun_na_element(unsigned long n_zpravy)
 		if(Z->n!=(unsigned)d.zobrazit_celou_zpravu)d.zobrazit_celou_zpravu=Z->n;//zobrazení celé zprávy, před refresh
 
 		//////posun na element + zoom
-		//nastavení zoomu na vhodný náhled
-		if(Zoom<=4 && OBJEKT_akt!=NULL)Zoom=5.0;
-		zneplatnit_minulesouradnice();
-		TPoint Centr;Centr.x=E->X;Centr.y=E->Y;
-		//vycentrování obrazu na střed
-		Posun.x=Centr.x/m2px-ClientWidth/2/Zoom;
-		Posun.y=-Centr.y/m2px-(ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2/Zoom; //ClientHeight-scGPPanel_bottomtoolbar->Height
+    posun_na_element(E);
 
 		//////pokud jsem v editaci a editovaný objekt není totožný s objektem ve kterém je element
 		if(OBJEKT_akt!=NULL && OBJEKT_akt->n!=E->objekt_n)
@@ -12659,6 +12698,17 @@ void TForm1::posun_na_element(unsigned long n_zpravy)
 		E=NULL;delete E;
 	}
 	Z=NULL;delete Z;
+}
+//---------------------------------------------------------------------------
+void TForm1::posun_na_element(Cvektory::TElement *E)
+{
+	//nastavení zoomu na vhodný náhled
+	if(Zoom<=4 && OBJEKT_akt!=NULL)Zoom=5.0;
+	zneplatnit_minulesouradnice();
+	TPoint Centr;Centr.x=E->X;Centr.y=E->Y;
+	//vycentrování obrazu na střed
+	Posun.x=Centr.x/m2px-ClientWidth/2/Zoom;
+	Posun.y=-Centr.y/m2px-(ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2/Zoom; //ClientHeight-scGPPanel_bottomtoolbar->Height
 }
 //---------------------------------------------------------------------------
 //zaktualizuje ve formuláři parametry objektů combobox na výpis pohonů včetně jednotek uvedeného rozmezí rychlostí, pokud jsou zanechané implicitní parametry short RDunitD=-1,short RDunitT=-1, je načteno nastevní jednotek z INI aplikace pro form parametry objektu, v případech, kdy uvedené parametry nejsou dané hodnotou -1, tak se uvažují jednotky dle S==0,MIN==1 pro RDunitT, resp. M==0,MM==1 pro RDunitD
@@ -14163,11 +14213,14 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Memo(m.round2double(OBJEKT_akt->pohon->Rx,3));
-	Memo(m.round2double(outR(OBJEKT_akt->pohon->Rz),3));
-	Memo(m.round2double(outRz(m.mezera(0,OBJEKT_akt->pohon->Rz,0)),3));
-	Memo(m.round2double(outRz(m.mezera(0,OBJEKT_akt->pohon->Rz,1)),3));
-	Memo(m.round2double(outRz(m.mezera(90,OBJEKT_akt->pohon->Rz,1)),3));
+  Memo3->Clear();
+	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+	while(E!=NULL)
+	{
+		Memo(E->name+"->objekt_n="+AnsiString(E->objekt_n));
+		E=E->dalsi;
+	}
+	delete E;E=NULL;
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -17163,6 +17216,7 @@ void __fastcall TForm1::scGPButton_bug_reportClick(TObject *Sender)
 	log(__func__);//logování
 	//vytovření backupu pro odeslání
 	Timer_backupTimer(Sender);
+  if(scSplitView_MENU->Opened) scSplitView_MENU->Opened=false; //pokud je otevřené menu, tak ho zavřu
 	//vytvoření printscreeunu
 	pan_create();//vytvoří aktuální printscreen jen pracovní plochy
 	TPngImage* PNG = new TPngImage();//kvůli větší kompresi uloženo do PNG (má větší kompresi než JPG)
