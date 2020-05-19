@@ -1754,7 +1754,6 @@ Graphics::TBitmap *Cvykresli::rastrovani(TColor color,short width, short distanc
 {
 	Graphics::TBitmap * Vzor=new Graphics::TBitmap;
 	Vzor->Height=width;Vzor->Width=Vzor->Height;
-	//Vzor->Canvas->Pen->Color=clStenaHaly;
 	for(int x=0;x<Vzor->Width;x+=distance)
 	{
 		for(int y=0;y<Vzor->Height;y+=distance)
@@ -1768,72 +1767,72 @@ Graphics::TBitmap *Cvykresli::rastrovani(TColor color,short width, short distanc
 	return Vzor;
 }
 ////---------------------------------------------------------------------------
+//asi možno smazat, už se asi nevyužívá
 TColor Cvykresli::set_color(TCanvas *canv, Cvektory::TObjekt *O)
 {
-		unsigned short i=0;
-		Cvektory::TObjekt *D=O->dalsi;
-		if(O!=NULL && D==NULL)D=v.OBJEKTY->dalsi;//jedná se o poslední objekt a další bude první
-		if(O->pohon!=NULL && D->pohon!=NULL)//pro situaci kdy je pohon přiřazen
+	unsigned short i=0;
+	Cvektory::TObjekt *D=O->dalsi;
+	if(O!=NULL && D==NULL)D=v.OBJEKTY->dalsi;//jedná se o poslední objekt a další bude první
+	if(O->pohon!=NULL && D->pohon!=NULL)//pro situaci kdy je pohon přiřazen
+	{
+		if(D->pohon->roztec==0)
 		{
-			if(D->pohon->roztec==0)
+			i=10;//pokud je u dalšího pohon přiřazen, ale není zadaná rozteč, není kompletní a kompetentní info
+			F->Z("<b>"+O->name.UpperCase()+"<br>problém</b> - pohon <b>"+D->pohon->name+"</b> přiřazen objektu <b>"+D->name+"</b> nemá přiřazenou rozteč!<br><b>řešení</b> - nastavte pohonu patřičnou rozteč.<br><br>",true);
+		}
+		else//jsou k dispozici data
+		{                         //zvažit zda RD či aRD (kvůli PP)
+			if(O->mezera>=m.minM(O->pohon->aRD,D->pohon->aRD,D->pohon->roztec))
 			{
-				i=10;//pokud je u dalšího pohon přiřazen, ale není zadaná rozteč, není kompletní a kompetentní info
-				F->Z("<b>"+O->name.UpperCase()+"<br>problém</b> - pohon <b>"+D->pohon->name+"</b> přiřazen objektu <b>"+D->name+"</b> nemá přiřazenou rozteč!<br><b>řešení</b> - nastavte pohonu patřičnou rozteč.<br><br>",true);
+				i=0;//je v pořádku
+				//nelze přepíše F->Z("<b>Linka v pořádku.</b>",false);
 			}
-			else//jsou k dispozici data
-			{                         //zvažit zda RD či aRD (kvůli PP)
-				if(O->mezera>=m.minM(O->pohon->aRD,D->pohon->aRD,D->pohon->roztec))
-				{
-					i=0;//je v pořádku
-					//nelze přepíše F->Z("<b>Linka v pořádku.</b>",false);
-				}
-				else
-				{
-					i=1;//není v pořádku nestíhá se čekání
-					F->Z("<b>"+O->name.UpperCase()+"<br>problém</b> - nedostatečná doba čekání na palec, resp. rozestup!<br><b>řešení</b> - upravte rychlost pohonu nebo pohonu objektu následujícího či nastavte větší mezeru resp. rozestup mezi vozíky!<br><br>",true);
-				}
+			else
+			{
+				i=1;//není v pořádku nestíhá se čekání
+				F->Z("<b>"+O->name.UpperCase()+"<br>problém</b> - nedostatečná doba čekání na palec, resp. rozestup!<br><b>řešení</b> - upravte rychlost pohonu nebo pohonu objektu následujícího či nastavte větší mezeru resp. rozestup mezi vozíky!<br><br>",true);
 			}
 		}
-		else//situace kdy nejsou pohony přiřazeny
+	}
+	else//situace kdy nejsou pohony přiřazeny
+	{
+		if(O->pohon==NULL && D->pohon==NULL)//ani jeden z nich
 		{
-			if(O->pohon==NULL && D->pohon==NULL)//ani jeden z nich
-			{
-				F->Z("<b>"+O->name.UpperCase()+" a "+D->name.UpperCase()+"<br>problém</b> - objekty nemají přiřazeny pohony!<br><b>řešení</b> - přiřaďte patřičné pohony.<br><br>",true);
-			}
-			else//jenom jeden není přiřazen
-			{
-				if(O->pohon==NULL)F->Z("<b>"+O->name.UpperCase()+"<br>problém</b> - není přiřazen pohon!<br><b>řešení</b> - přiřaďte patřičný pohon.<br><br>",true);
-				if(D->pohon==NULL && D!=v.OBJEKTY->dalsi)F->Z("<b>"+O->name.UpperCase()+"<br>problém</b> - následující objekt <b>"+D->name.UpperCase()+"</b> nemá přiřazen pohon!<br><b>řešení</b> - přiřaďte patřičný pohon objektu "+D->name.UpperCase()+".<br><br>",true);
-			}
-			i=10;//červeně šrafování, není kompletní a kompetentní info
+			F->Z("<b>"+O->name.UpperCase()+" a "+D->name.UpperCase()+"<br>problém</b> - objekty nemají přiřazeny pohony!<br><b>řešení</b> - přiřaďte patřičné pohony.<br><br>",true);
 		}
+		else//jenom jeden není přiřazen
+		{
+			if(O->pohon==NULL)F->Z("<b>"+O->name.UpperCase()+"<br>problém</b> - není přiřazen pohon!<br><b>řešení</b> - přiřaďte patřičný pohon.<br><br>",true);
+			if(D->pohon==NULL && D!=v.OBJEKTY->dalsi)F->Z("<b>"+O->name.UpperCase()+"<br>problém</b> - následující objekt <b>"+D->name.UpperCase()+"</b> nemá přiřazen pohon!<br><b>řešení</b> - přiřaďte patřičný pohon objektu "+D->name.UpperCase()+".<br><br>",true);
+		}
+		i=10;//červeně šrafování, není kompletní a kompetentní info
+	}
 
-	 /*	rgb(255,140,0) - DarkOrange
-		rgb(255,215,0) - Gold (žlutá)
-		rgb(218,112,214) - Orchid (fialová)
-		LightSkyBlue	rgb(135,206,250)
-		//rgb(135,206,235) - SkyBlue
-		rgb(152,251,152) -PaleGreen
-
-		*/
-		canv->Pen->Style=psClear;
-		canv->Pen->Width=1;
-		canv->Brush->Style=bsSolid;
-		if(m.cele_cislo(Form1->Zoom)==false && i>0)canv->Pen->Style=psSolid;
-		switch(i)
-		{
-			case 0:/*canv->Pen->Color=clWhite;canv->Brush->Color=clWhite*/;break;
-			case 1:canv->Pen->Color=clRed;canv->Brush->Color=clRed;break;
-			case 2:canv->Pen->Color=(TColor)RGB(255,140,0);canv->Brush->Color=(TColor)RGB(255,140,0);break;
-			case 3:canv->Pen->Color=(TColor)RGB(255,215,0);canv->Brush->Color=(TColor)RGB(255,215,0);break;
-			case 4:canv->Pen->Color=(TColor)RGB(218,112,214);canv->Brush->Color=(TColor)RGB(218,112,214);break;
-			case 5:canv->Pen->Color=(TColor)RGB(135,206,250);canv->Brush->Color=(TColor)RGB(135,206,250);break;
-			case 6:canv->Pen->Color=(TColor)RGB(152,251,152);canv->Brush->Color=(TColor)RGB(152,251,152);break;
-			//default:
-			default:canv->Brush->Style=bsDiagCross;canv->Pen->Color=clRed;canv->Brush->Color=clRed;break;
-		}
-		if(i==0) return (TColor)0;
-		else return canv->Pen->Color;
+	/*	rgb(255,140,0) - DarkOrange
+	rgb(255,215,0) - Gold (žlutá)
+	rgb(218,112,214) - Orchid (fialová)
+	LightSkyBlue	rgb(135,206,250)
+	//rgb(135,206,235) - SkyBlue
+	rgb(152,251,152) -PaleGreen
+	*/
+	canv->Pen->Style=psClear;
+	canv->Pen->Width=1;
+	canv->Brush->Style=bsSolid;
+	if(m.cele_cislo(Form1->Zoom)==false && i>0)canv->Pen->Style=psSolid;
+	switch(i)
+	{
+		case 0:/*canv->Pen->Color=clWhite;canv->Brush->Color=clWhite*/;break;
+		case 1:canv->Pen->Color=clRed;canv->Brush->Color=clRed;break;
+		case 2:canv->Pen->Color=(TColor)RGB(255,140,0);canv->Brush->Color=(TColor)RGB(255,140,0);break;
+		case 3:canv->Pen->Color=(TColor)RGB(255,215,0);canv->Brush->Color=(TColor)RGB(255,215,0);break;
+		case 4:canv->Pen->Color=(TColor)RGB(218,112,214);canv->Brush->Color=(TColor)RGB(218,112,214);break;
+		case 5:canv->Pen->Color=(TColor)RGB(135,206,250);canv->Brush->Color=(TColor)RGB(135,206,250);break;
+		case 6:canv->Pen->Color=(TColor)RGB(152,251,152);canv->Brush->Color=(TColor)RGB(152,251,152);break;
+		//default:
+		default:canv->Brush->Style=bsDiagCross;canv->Pen->Color=clRed;canv->Brush->Color=clRed;break;
+	}
+	if(i==0) return (TColor)0;
+	else return canv->Pen->Color;
 }
 //---------------------------------------------------------------------------
 //nakreslí editační okno
