@@ -8552,7 +8552,7 @@ void TForm1::aktualizace_tab_pohon(bool popisky,bool data,bool komponenty)
 		//pokud pohon exituje a není používaný
   	if(OBJEKT_akt->pohon!=NULL && !d.v.pohon_je_pouzivan(OBJEKT_akt->pohon->n,false))
 		{
-			if(OBJEKT_akt->rezim==1)//povolit editaci všeho
+			if(OBJEKT_akt->rezim!=0)//povolit editaci všeho
 			{
 				PmG->Cells[3][1].Type=PmG->EDIT;PmG->Cells[3][1].Background->Color=clWhite;PmG->Cells[3][1].Font->Color=(TColor)RGB(43,87,154);
 				PmG->Cells[3][4].Type=PmG->EDIT;PmG->Cells[3][4].Background->Color=clWhite;PmG->Cells[3][4].Font->Color=(TColor)RGB(43,87,154);
@@ -9122,7 +9122,7 @@ void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
 	  	//pokud pohon exituje a není používaný
 	  	if(E->pohon!=NULL && !d.v.pohon_je_pouzivan(E->pohon->n,false))
 	  	{
-	  		if(rezim==1)//povolit editaci všeho
+	  		if(rezim!=0)//povolit editaci všeho
 	  		{
 	  			E->mGrid->Cells[prvni][3].Type=E->mGrid->EDIT;E->mGrid->Cells[prvni][3].Background->Color=clWhite;E->mGrid->Cells[prvni][3].Font->Color=(TColor)RGB(43,87,154);
 	  			E->mGrid->Cells[prvni][6].Type=E->mGrid->EDIT;E->mGrid->Cells[prvni][6].Background->Color=clWhite;E->mGrid->Cells[prvni][6].Font->Color=(TColor)RGB(43,87,154);
@@ -9163,7 +9163,7 @@ void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
 			//pokud pohon exituje a není používaný
 			if(e_pom->pohon!=NULL && !d.v.pohon_je_pouzivan(e_pom->pohon->n,false))
 			{
-				if(rezim==1)//povolit editaci všeho
+				if(rezim!=0)//povolit editaci všeho
 				{
 					E->mGrid->Cells[druhy][3].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][3].Background->Color=clWhite;E->mGrid->Cells[druhy][3].Font->Color=(TColor)RGB(43,87,154);
 					E->mGrid->Cells[druhy][6].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][6].Background->Color=clWhite;E->mGrid->Cells[druhy][6].Font->Color=(TColor)RGB(43,87,154);
