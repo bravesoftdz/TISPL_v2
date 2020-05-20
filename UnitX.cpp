@@ -747,11 +747,12 @@ void TFormX::zmena_Rx ()
 //pøepoèet v tabulkách elementù po zmìnì parametrù v tabulce pohonu
 void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 {
-	unsigned int n=999999999;
+	unsigned int n=999999999; F->Memo3->Clear();
 	if(mimo_element!=NULL)n=mimo_element->n;
 	Cvektory::TElement *E=F->OBJEKT_akt->element;
 	while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
 	{
+    if(E->eID==200 || E->eID==300)zobrazit_skryt_radkyPM(E);
 		if(E->n>0 && E->n!=n && E->pohon!=NULL && F->OBJEKT_akt->pohon!=NULL && E->pohon->n==F->OBJEKT_akt->pohon->n)//pøeskoèí mimo_element a hlavièku, poze pøepoèet elementùm které mají stejný pohon jako aktuálnì editovaný pohon
 		{
 			switch(E->eID)
@@ -833,6 +834,7 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 				}break;
 			}
 			if(input_state==COMBO)F->set_enabled_mGrid(E);//pouze pøi zmìnì pohonu, jinak zbyteèné
+			//update rozbalení zabalení tabulek
 			E->mGrid->Refresh();
 		}
 		E=E->dalsi;
@@ -842,6 +844,8 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 	if(F->predchozi_PM!=NULL && F->predchozi_PM!=mimo_element)
 	{
 		update_hodnot_vyhybky_PM(F->predchozi_PM);
+		//update rozbalení zabalení tabulek
+		zobrazit_skryt_radkyPM(F->predchozi_PM);
 		F->predchozi_PM->mGrid->Refresh();
 	}
 
@@ -1637,86 +1641,7 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
 		F->zmena_editovanych_bunek(E);
 
 		//update rozbalení zabalení tabulek
-		switch(F->OBJEKT_akt->stavPM)
-		{
-			//defaultní stav zobrazeny comba a rychlosti
-			case 0:
-			{
-        if(!E->mGrid->Rows[3].Visible)
-				{
-					E->mGrid->VisibleRow(3,true,false);
-					E->mGrid->VisibleRow(4,true,false);
-					E->mGrid->exBUTTONVisible=true;
-					E->mGrid->getGlyphButton(4,0)->GlyphOptions->Kind=scgpbgkUpArrow;
-					//zmenšení tabulky, úspora místa
-					E->mGrid->Columns[0].Width+=20;
-					E->mGrid->Columns[1].Width+=20;
-					E->mGrid->Columns[2].Width+=40;
-				}
-				if(E->mGrid->Rows[5].Visible)
-				{
-					E->mGrid->VisibleRow(5,false,false);
-					E->mGrid->VisibleRow(6,false,false);
-					E->mGrid->VisibleRow(7,false,false);
-					E->mGrid->VisibleRow(8,false,false);
-					E->mGrid->VisibleRow(9,false,false);
-					E->mGrid->VisibleRow(10,false,false);
-					E->mGrid->VisibleRow(11,false,false);
-					E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
-				}
-				break;
-			}
-			//minimized, skrytí všeho kromì hlavièky a comb
-			case 1:
-			{
-				if(E->mGrid->Rows[3].Visible)
-				{
-					E->mGrid->VisibleRow(3,false,false);
-					E->mGrid->VisibleRow(4,false,false);
-			  	E->mGrid->VisibleRow(5,false,false);
-			  	E->mGrid->VisibleRow(6,false,false);
-			  	E->mGrid->VisibleRow(7,false,false);
-			  	E->mGrid->VisibleRow(8,false,false);
-			  	E->mGrid->VisibleRow(9,false,false);
-			  	E->mGrid->VisibleRow(10,false,false);
-			  	E->mGrid->VisibleRow(11,false,false);
-					E->mGrid->exBUTTONVisible=false;
-					E->mGrid->getGlyphButton(4,0)->GlyphOptions->Kind=scgpbgkDownArrow;
-					//zmenšení tabulky, úspora místa
-			  	E->mGrid->Columns[0].Width-=20;
-			  	E->mGrid->Columns[1].Width-=20;
-			  	E->mGrid->Columns[2].Width-=40;
-				}
-				break;
-			}
-			//vìe zobrazeno
-			case 2:
-			{
-				if(!E->mGrid->Rows[3].Visible)
-				{
-					E->mGrid->VisibleRow(3,true,false);
-					E->mGrid->VisibleRow(4,true,false);
-					E->mGrid->exBUTTONVisible=true;
-					E->mGrid->getGlyphButton(4,0)->GlyphOptions->Kind=scgpbgkUpArrow;
-					//zmenšení tabulky, úspora místa
-					E->mGrid->Columns[0].Width+=20;
-					E->mGrid->Columns[1].Width+=20;
-					E->mGrid->Columns[2].Width+=40;
-				}
-				if(!E->mGrid->Rows[5].Visible)
-				{
-					E->mGrid->VisibleRow(5,true,false);
-					E->mGrid->VisibleRow(6,true,false);
-					E->mGrid->VisibleRow(7,true,false);
-					E->mGrid->VisibleRow(8,true,false);
-					E->mGrid->VisibleRow(9,true,false);
-					E->mGrid->VisibleRow(10,true,false);
-					E->mGrid->VisibleRow(11,true,false);
-        }
-				E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
-				break;
-      }
-    }
+		//zobrazit_skryt_radkyPM(E);
 	}
 }
 //---------------------------------------------------------------------------
@@ -1993,7 +1918,7 @@ void TFormX::prirazeni_pohonu_defTab()
 	F->DrawGrid_geometrie->Refresh();//geometrie + PM
 
   //aktualiace parametrù
-	if(F->OBJEKT_akt->rezim!=0)
+	if(F->OBJEKT_akt->rezim!=0 && p!=NULL)
 	{
 		F->OBJEKT_akt->pohon->Rz=F->m.Rz(F->OBJEKT_akt->pohon->aRD);
 		F->OBJEKT_akt->pohon->Rx=F->m.Rx(F->OBJEKT_akt->pohon->aRD,F->OBJEKT_akt->pohon->roztec);
@@ -2162,5 +2087,91 @@ void TFormX::mazatPM(Cvektory::TElement *Element)
 
 	//ukazatelové záležitosti
 	E=NULL;delete E;
+}
+//---------------------------------------------------------------------------
+//zobrazí èi skryje øádky PM tabulek podle stavu uloženého v objektu
+void TFormX::zobrazit_skryt_radkyPM(Cvektory::TElement *E)
+{
+  //update rozbalení zabalení tabulek
+	switch(F->OBJEKT_akt->stavPM)
+	{
+		//defaultní stav zobrazeny comba a rychlosti
+		case 0:
+		{
+			if(!E->mGrid->Rows[3].Visible)
+			{
+				E->mGrid->VisibleRow(3,true,false);
+				E->mGrid->VisibleRow(4,true,false);
+				E->mGrid->exBUTTONVisible=true;
+				E->mGrid->getGlyphButton(4,0)->GlyphOptions->Kind=scgpbgkUpArrow;
+				//zmenšení tabulky, úspora místa
+				E->mGrid->Columns[0].Width+=20;
+				E->mGrid->Columns[1].Width+=20;
+				E->mGrid->Columns[2].Width+=40;
+			}
+			if(E->mGrid->Rows[5].Visible)
+			{
+				E->mGrid->VisibleRow(5,false,false);
+				E->mGrid->VisibleRow(6,false,false);
+				E->mGrid->VisibleRow(7,false,false);
+				E->mGrid->VisibleRow(8,false,false);
+				E->mGrid->VisibleRow(9,false,false);
+				E->mGrid->VisibleRow(10,false,false);
+				E->mGrid->VisibleRow(11,false,false);
+				E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
+			}
+			break;
+		}
+		//minimized, skrytí všeho kromì hlavièky a comb
+		case 1:
+		{
+			if(E->mGrid->Rows[3].Visible)
+			{
+				E->mGrid->VisibleRow(3,false,false);
+				E->mGrid->VisibleRow(4,false,false);
+				E->mGrid->VisibleRow(5,false,false);
+		  	E->mGrid->VisibleRow(6,false,false);
+		  	E->mGrid->VisibleRow(7,false,false);
+				E->mGrid->VisibleRow(8,false,false);
+				E->mGrid->VisibleRow(9,false,false);
+		  	E->mGrid->VisibleRow(10,false,false);
+				E->mGrid->VisibleRow(11,false,false);
+				E->mGrid->exBUTTONVisible=false;
+				E->mGrid->getGlyphButton(4,0)->GlyphOptions->Kind=scgpbgkDownArrow;
+				//zmenšení tabulky, úspora místa
+				E->mGrid->Columns[0].Width-=20;
+				E->mGrid->Columns[1].Width-=20;
+				E->mGrid->Columns[2].Width-=40;
+			}
+			break;
+		}
+		//vìe zobrazeno
+		case 2:
+		{
+			if(!E->mGrid->Rows[3].Visible)
+			{
+				E->mGrid->VisibleRow(3,true,false);
+				E->mGrid->VisibleRow(4,true,false);
+				E->mGrid->exBUTTONVisible=true;
+				E->mGrid->getGlyphButton(4,0)->GlyphOptions->Kind=scgpbgkUpArrow;
+				//zmenšení tabulky, úspora místa
+				E->mGrid->Columns[0].Width+=20;
+				E->mGrid->Columns[1].Width+=20;
+				E->mGrid->Columns[2].Width+=40;
+			}
+			if(!E->mGrid->Rows[5].Visible)
+			{
+				E->mGrid->VisibleRow(5,true,false);
+				E->mGrid->VisibleRow(6,true,false);
+				E->mGrid->VisibleRow(7,true,false);
+				E->mGrid->VisibleRow(8,true,false);
+				E->mGrid->VisibleRow(9,true,false);
+				E->mGrid->VisibleRow(10,true,false);
+				E->mGrid->VisibleRow(11,true,false);
+			}
+			E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
+			break;
+		}
+	}
 }
 //---------------------------------------------------------------------------
