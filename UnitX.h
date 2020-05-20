@@ -28,6 +28,7 @@ private:	// User declarations
 	void prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col);//pøiøazení pohonu pøed PM, nebo za PM
 	void prirazeni_pohonu_defTab();//pøiøazení pohonu z PmG
 	void zapisVID(int zapis,int pozice);//zapiše na danou pozici ve VID dané èíslo
+	void zobrazit_skryt_radkyPM(Cvektory::TElement *E);//zobrazí èi skryje øádky PM tabulek podle stavu uloženého v objektu
 
 	//promìnné pro UnitX
 	bool editace_pohonu;

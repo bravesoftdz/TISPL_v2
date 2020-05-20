@@ -154,6 +154,7 @@ class Cvektory
     double orientace_text;//orientace textu (názvu objektu) dle světových stran
 		double Xp,Yp;// souřadnice tab pohonu pro možnost posouvání dodat!!!   //PRIDAT
 		short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking)KK,2-Postprocesní (PP), -1 nenastaven, pouzíva tab.pohonu
+		short stavPM;//obsahuje stav pohonových tabulek v objektu 0-normal (zobrazeny rychlosti a comba, dafaultní stav), 1-minimized (pouze hlavička tabulek a comba), 2-maximized (vše zobrazeno)
 		double CT;//pro status návrh   //DOPRYC
 		double RD;//pro status návrh v m/s, jenom pomocná proměnná získaná jako DD/CT, stežejní je většinou aRD (aktuální rychlost), která se váže přímo (i datově) k pohonu  //DOPRYC
 		double delka_dopravniku;//delka dopravníku v rámci objektu   //DOPRYC
@@ -840,6 +841,7 @@ private:
 			unsigned long element_n;
       unsigned long pocet_komor;
 			unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
+			unsigned short stavPM;//obsahuje stav pohonových tabulek v objektu 0-normal (zobrazeny rychlosti a comba, dafaultní stav), 1-minimized (pouze hlavička tabulek a comba), 2-maximized (vše zobrazeno)
       double sirka_steny;//šířka stěny kabiny objektu v metrech
 			double orientace;//orientace objektu
 			unsigned int pohon;//"id" resp. n přidruženého - roletkou vybraného pohonu

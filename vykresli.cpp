@@ -3132,7 +3132,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 		if(F->scGPCheckBox_popisek_pohonu->Checked && F->MOD!=F->TVORBA_CESTY && zakazka==NULL && E->pohon!=NULL && E->geo.typ==0 && E->geo.orientace==m.Rt90(E->geo.orientace))//vykreslení vodoznaku pohonu
 		{
 			if(zacatek.x==0 && zacatek.y==0)zacatek=m.L2P(E->geo.X1,E->geo.Y1);
-			if(E->dalsi==NULL || E->eID==300 || E->eID==301 || (E->dalsi!=NULL && (E->dalsi->geo.typ!=0 || (m.delka(m.P2Lx(zacatek.x),m.P2Ly(zacatek.y),E->geo.X4,E->geo.Y4)>=9.9 && E->dalsi->objekt_n!=E->objekt_n) || (E->dalsi->geo.typ==0 && E->geo.orientace!=E->dalsi->geo.orientace))))
+			if(E->dalsi==NULL || E->eID==300 || E->eID==301 || (E->dalsi!=NULL && (E->dalsi->pohon!=E->pohon || (E->dalsi->geo.X1!=E->geo.X4 || E->dalsi->geo.Y1!=E->geo.Y4) || E->dalsi->geo.typ!=0 || (m.delka(m.P2Lx(zacatek.x),m.P2Ly(zacatek.y),E->geo.X4,E->geo.Y4)>=9.9 && E->dalsi->objekt_n!=E->objekt_n) || (E->dalsi->geo.typ==0 && E->geo.orientace!=E->dalsi->geo.orientace))))
 			{
 				//nastavení fontu pro zjištění velikosti textu
 				canv->Font->Size=m.round(2.8*F->Zoom);if(F->aFont->Size==12)canv->Font->Size=m.round(2*F->Zoom);//stejné nastavení jako při vykreslení PM
@@ -4886,8 +4886,8 @@ Graphics::TBitmap *Cvykresli::nacti_nahled(Cvektory::TZakazka *zakazka)
 	double rozdil=0,PD=0;
 	int PD_x=W;
 	int PD_y=H;
-	if(m.m2px(MaxX-MinX)>m.m2px(MaxY-MinY)){rozdil=m.m2px(MaxX-MinX);PD=PD_x;}
-	else {rozdil=m.m2px(MaxY-MinY);PD=PD_y;}
+	if(m.m2px(MaxX-MinX)>m.abs_d(m.m2px(MaxY-MinY))){rozdil=m.m2px(MaxX-MinX);PD=PD_x;}
+	else {rozdil=m.abs_d(m.m2px(MaxY-MinY));PD=PD_y;}
 	F->Zoom=abs(F->Zoom*PD/rozdil);
 	F->Zoom-=fmod(F->Zoom,0.05);
 
@@ -4901,7 +4901,7 @@ Graphics::TBitmap *Cvykresli::nacti_nahled(Cvektory::TZakazka *zakazka)
 	//kopírování obrazu do výsledné bmp
 	bmp->Canvas->CopyRect(Rect(5*3/F->Zoom,5*3/F->Zoom,bmp->Width,bmp->Height),bmp_pom->Canvas,Rect(0,0,bmp->Width/3.0,bmp->Height/3.0));
 	//mazání pomocné bmp
-	delete(bmp_pom);
+	//delete(bmp_pom);
 	//vykreslení ID na bmp
 	bmp->Canvas->Font=zakazka->mGrid->DefaultCell.Font;
 	bmp->Canvas->Font->Size=m.round(35);
@@ -6055,15 +6055,16 @@ void Cvykresli::sound()
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::kurzor_cesta(TCanvas *canv)
 {
-	Cvektory::TElement *E=Form_definice_zakazek->Z_cesta->cesta->predchozi->Element;
-	if(E->eID==300)vykresli_kurzor_cesta(canv,E);
+	Cvektory::TElement *E=Form_definice_zakazek->Z_cesta->cesta->predchozi->Element;      if(E==v.ELEMENTY->predchozi)E=v.ELEMENTY->dalsi;
+	if(E->eID==300 || E==v.ELEMENTY->dalsi)vykresli_kurzor_cesta(canv,E);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_kurzor_cesta(TCanvas *canv,Cvektory::TElement *E)
 {
 	vykresli_potencial_cesty(canv,E);
 	F->pom_element_temp=NULL;
-	double X=E->X,Y=E->Y;
+	double X=E->geo.X4,Y=E->geo.Y4;
+	if(E->dalsi2==NULL){X=E->geo.X1;Y=E->geo.Y1;}//pokdu nejsem na výhybce, jsem na začátku linky, proto musím začínat z X1,Y1
 	set_pen(canv,clBlack,m.m2px(v.PP.sirka_podvozek/2.0+m.px2m(1/3.0*F->Zoom)+2*m.px2m(m.round(F->Zoom))),PS_ENDCAP_FLAT);//nastavení geometrického pera
 	TPointD *PL;  bool pokracovat=true,vykreslit=false;
 	if(E->dalsi->geo.typ!=0)PL=m.getArcLine(X,Y,E->dalsi->geo.orientace,E->dalsi->geo.rotacni_uhel,E->dalsi->geo.radius);
@@ -6092,10 +6093,14 @@ void Cvykresli::vykresli_kurzor_cesta(TCanvas *canv,Cvektory::TElement *E)
 	{
 		vykreslit=true;
 		pokracovat=false;
-		F->pom_element_temp=E->dalsi;
-		E=E->dalsi;
+		if(E!=v.ELEMENTY->dalsi)
+		{
+			F->pom_element_temp=E->dalsi;
+			E=E->dalsi;
+		}
+		else F->pom_element_temp=E;
 	}
-	if(pokracovat)
+	if(pokracovat && E->dalsi2!=NULL)
 	{
 		if(E->dalsi2->geo.typ!=0)PL=m.getArcLine(X,Y,E->dalsi2->geo.orientace,E->dalsi2->geo.rotacni_uhel,E->dalsi2->geo.radius);
   	else
@@ -6173,7 +6178,9 @@ void Cvykresli::vykresli_kurzor_cesta(TCanvas *canv,Cvektory::TElement *E)
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_potencial_cesty(TCanvas *canv,Cvektory::TElement *E)
 {
-	double X=E->X,Y=E->Y;       TColor color=m.clIntensive(clBlack,245);
+	double X=E->geo.X4,Y=E->geo.Y4;
+	if(E->dalsi2==NULL){X=E->geo.X1;Y=E->geo.Y1;}//pokdu nejsem na výhybce, jsem na začátku linky, proto musím začínat z X1,Y1
+	TColor color=m.clIntensive(clBlack,245);
 	double Width=v.PP.sirka_podvozek/2.0+m.px2m(1/3.0*F->Zoom)+2*m.px2m(m.round(F->Zoom));
 	Width=m.m2px(Width/2.0);
 	////potenciální Gelement
@@ -6207,25 +6214,28 @@ void Cvykresli::vykresli_potencial_cesty(TCanvas *canv,Cvektory::TElement *E)
 	else set_pen(canv,color,Width,PS_ENDCAP_FLAT);//nastavení geometrického pera
 	canv->PolyBezier((TPoint*)POLE,3);//samotné vykreslení bézierovy křivky
 					color=m.clIntensive(clBlack,245);
-	if(E->dalsi2->geo.typ!=0)PL=m.getArcLine(X,Y,E->dalsi2->geo.orientace,E->dalsi2->geo.rotacni_uhel,E->dalsi2->geo.radius);
-	else
+	if(E->dalsi2!=NULL)
 	{
-		PL[0].x=X;
-		PL[0].y=Y;
-		if(E->dalsi2->geo.orientace==90 || E->dalsi2->geo.orientace==270)
-		{
-			double x=2;if(E->dalsi2->geo.orientace==270)x=-2;
-			PL[3].x=X+x;
-			PL[3].y=Y;
-		}
-		else
-		{
-			double y=2;if(E->dalsi2->geo.orientace==180)y=-2;
-			PL[3].x=X;
-			PL[3].y=Y+y;
-		}
-		PL[2].x=PL[1].x=(PL[0].x+PL[3].x)/2.0;
-		PL[2].y=PL[1].y=(PL[0].y+PL[3].y)/2.0;
+  	if(E->dalsi2->geo.typ!=0)PL=m.getArcLine(X,Y,E->dalsi2->geo.orientace,E->dalsi2->geo.rotacni_uhel,E->dalsi2->geo.radius);
+  	else
+  	{
+  		PL[0].x=X;
+  		PL[0].y=Y;
+  		if(E->dalsi2->geo.orientace==90 || E->dalsi2->geo.orientace==270)
+  		{
+  			double x=2;if(E->dalsi2->geo.orientace==270)x=-2;
+  			PL[3].x=X+x;
+  			PL[3].y=Y;
+  		}
+  		else
+  		{
+  			double y=2;if(E->dalsi2->geo.orientace==180)y=-2;
+  			PL[3].x=X;
+  			PL[3].y=Y+y;
+  		}
+  		PL[2].x=PL[1].x=(PL[0].x+PL[3].x)/2.0;
+  		PL[2].y=PL[1].y=(PL[0].y+PL[3].y)/2.0;
+  	}
 	}
 
 	POINT POLEa[]={{m.L2Px(PL[0].x),m.L2Py(PL[0].y)},m.L2Px(PL[1].x),m.L2Py(PL[1].y),m.L2Px(PL[2].x),m.L2Py(PL[2].y),m.L2Px(PL[3].x),m.L2Py(PL[3].y)};//převod do fyzických souřadnic
