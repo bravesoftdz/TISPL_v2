@@ -2703,7 +2703,7 @@ Cvektory::TElement *Cvektory::najdi_tabulku(TObjekt *Objekt, double X, double Y)
 	return ret;
 }
 ////---------------------------------------------------------------------------
-//vraťí ukazatel na element dle n elementu umístěného v daném objektu
+//vratí ukazatel na element dle n elementu umístěného v daném objektu
 Cvektory::TElement *Cvektory::vrat_element(TObjekt *Objekt, unsigned int n)
 {
 	TElement *E=Objekt->element;
@@ -2715,7 +2715,7 @@ Cvektory::TElement *Cvektory::vrat_element(TObjekt *Objekt, unsigned int n)
 	return E;
 }
 ////---------------------------------------------------------------------------
-//vraťí ukazatel na element dle n elementu
+//vratí ukazatel na element dle n elementu
 Cvektory::TElement *Cvektory::vrat_element(unsigned int n)
 {
 	TElement *E=ELEMENTY->dalsi;
@@ -8497,5 +8497,6 @@ long Cvektory::vymaz_seznam_DATA()
 //možno smazat
 void Cvektory::test_vlakna(long i)
 {
-  F->Button14->Caption=i;
+	TElement *E=vrat_element(i);
+	F->Button14->Caption=E->name;
 }

@@ -4,7 +4,7 @@
 #pragma hdrstop
 
 #include "Tvlakno_obraz.h"
-#include "vektory.h"
+#include "unit1.h"
 #pragma package(smart_init)
 //---------------------------------------------------------------------------
 
@@ -30,12 +30,11 @@ void __fastcall Tvlakno_obraz::Execute()
 	for(i=0;!Terminated && i<1000000;i++)
 	{
 		Synchronize(&test);
-		Sleep(10);
+		Sleep(2000);
 	}
 }
 //---------------------------------------------------------------------------
 void __fastcall Tvlakno_obraz::test()
 {
-	Cvektory v;
-	v.test_vlakna(i);
+	F->d.v.test_vlakna(i);
 }

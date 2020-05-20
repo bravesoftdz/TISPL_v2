@@ -2723,7 +2723,7 @@ void TForm1::Z(UnicodeString Text,bool add,TColor color)
 //metoda volá kurzory aplikace
 void TForm1::kurzor(TKurzory typ_kurzor)
 {
-  log(__func__);//logování
+	log(__func__);//logování
 	if(typ_kurzor>0)Screen->Cursor=(TCursor)typ_kurzor;
 	else Screen->Cursor=crDefault;
 }
@@ -2740,57 +2740,61 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		FMaximized=false;MaxButtonClick(this);//aby bylo připraveno minimalizační tlačítko
 	}
 
-	///////při přechodu z nebo do módu TVORBA_CESTY
-	if(MOD==TVORBA_CESTY && scSplitView_LEFTTOOLBAR->Visible)
+	if(MOD!=SIMULACE)
 	{
-		scSplitView_LEFTTOOLBAR->Visible=false;
-		mGrid_knihovna->SetVisibleComponents(false);
-	}
-	if(MOD!=TVORBA_CESTY && !scSplitView_LEFTTOOLBAR->Visible)
-	{
-		scSplitView_LEFTTOOLBAR->Visible=true;
-    //musí dojít ke smazání a znova vytvoření
-		mGrid_knihovna->Delete();mGrid_knihovna=NULL;
-		vytvoreni_tab_knihovna();
+		///////při přechodu z nebo do módu TVORBA_CESTY
+		if(MOD==TVORBA_CESTY && scSplitView_LEFTTOOLBAR->Visible)
+		{
+			scSplitView_LEFTTOOLBAR->Visible=false;
+			mGrid_knihovna->SetVisibleComponents(false);
+		}
+		if(MOD!=TVORBA_CESTY && !scSplitView_LEFTTOOLBAR->Visible)
+		{
+			scSplitView_LEFTTOOLBAR->Visible=true;
+			//musí dojít ke smazání a znova vytvoření
+			mGrid_knihovna->Delete();mGrid_knihovna=NULL;
+			vytvoreni_tab_knihovna();
+		}
+
+		////////jednolivé VRSTVY
+		Zoom_predchozi_AA=Zoom;//musí být tu, před mody (mohl by být i před kreslením gridu)
+		////rastrový uživatelský POKDKLAD
+		Graphics::TBitmap *bmp_total=new Graphics::TBitmap;bmp_total->Width=ClientWidth;bmp_total->Height=ClientHeight;
+		if(d.v.PP.raster.show)nacti_podklad(bmp_total->Canvas);
+		////vykreslení GRIDu
+		if(grid && Zoom_predchozi_AA>0.5 && (Akce==MOVE_BOD||Akce==DRAW_HALA) && prichytavat_k_mrizce==1)d.vykresli_grid(bmp_total->Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí//vykreslení gridu
+		////VEKTORY
+		Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+		bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu //zkoušel jsem nastavit plochu antialiasingu bez ovládacích prvků LeftToolbar a menu, ale kopírování do jiné BMP to zpomalovalo více neooptimalizovaná oblast pro 3xbmp
+		Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
+		d.vykresli_halu(bmp_in->Canvas);
+		d.vykresli_vektory(bmp_in->Canvas);
+		if(Akce==GEOMETRIE)d.smart_kurzor(bmp_in->Canvas,posledni_editovany_element);
+		if(MOD==TVORBA_CESTY)d.kurzor_cesta(bmp_in->Canvas);
+		Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
+		Cantialising a;
+		Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+		bmp_total->Canvas->Draw(0,0,bmp_out);delete(bmp_out);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+		////mGRIDY
+		d.vykresli_mGridy(bmp_total->Canvas);//přesunuto do vnitř metody: OBJEKT_akt->elementy!=NULL kvůli pohonům
+		////grafické MĚŘÍTKO
+		if(zobrazit_meritko && Akce!=MOVE_HALA && MOD!=TVORBA_CESTY)d.meritko(bmp_total->Canvas);
+		//finální předání bmp_out do Canvasu
+		Canvas->Draw(0,0,bmp_total);
+		delete (bmp_total);//velice nutné
+		////TIP
+		d.vykresli_tip(Canvas);
+
+		////////vykreslování tabulky pro přidávání objektů, temp řešení
+		if(mGrid_knihovna!=NULL && OBJEKT_akt==NULL && MOD!=TVORBA_CESTY)
+		{
+			mGrid_knihovna->Redraw=true;
+			mGrid_knihovna->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak mGrid_knihovna->Buffer(false);
+			if(mGrid_knihovna->VisibleComponents>-1)mGrid_knihovna->VisibleComponents=true;//stačí volat toto, protože se pomocí Show (resp. Draw-SetCompontens-Set...) cyklem všechny komponenty na základě tohoto zobrazí pokud je nastaveno na -1 tak se při překreslování zohlední individuální nastavení komponent (z tohoto stavu je však pro další použítí třeba vrátit do stavu 0 nebo 1)
+			mGrid_knihovna->Show(Image_knihovna_objektu->Canvas);
+		}
 	}
 
-	////////jednolivé VRSTVY
-	Zoom_predchozi_AA=Zoom;//musí být tu, před mody (mohl by být i před kreslením gridu)
-	////rastrový uživatelský POKDKLAD
-	Graphics::TBitmap *bmp_total=new Graphics::TBitmap;bmp_total->Width=ClientWidth;bmp_total->Height=ClientHeight;
-	if(d.v.PP.raster.show)nacti_podklad(bmp_total->Canvas);
-	////vykreslení GRIDu
-	if(grid && Zoom_predchozi_AA>0.5 && (Akce==MOVE_BOD||Akce==DRAW_HALA) && prichytavat_k_mrizce==1)d.vykresli_grid(bmp_total->Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí//vykreslení gridu
-	////VEKTORY
-	Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-	bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu //zkoušel jsem nastavit plochu antialiasingu bez ovládacích prvků LeftToolbar a menu, ale kopírování do jiné BMP to zpomalovalo více neooptimalizovaná oblast pro 3xbmp
-	Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
-	d.vykresli_halu(bmp_in->Canvas);
-	d.vykresli_vektory(bmp_in->Canvas);
-	if(Akce==GEOMETRIE)d.smart_kurzor(bmp_in->Canvas,posledni_editovany_element);
-	if(MOD==TVORBA_CESTY)d.kurzor_cesta(bmp_in->Canvas);
-	Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
-	Cantialising a;
-	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
-	bmp_total->Canvas->Draw(0,0,bmp_out);delete(bmp_out);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
-	////mGRIDY
-	d.vykresli_mGridy(bmp_total->Canvas);//přesunuto do vnitř metody: OBJEKT_akt->elementy!=NULL kvůli pohonům
-	////grafické MĚŘÍTKO
-	if(zobrazit_meritko && Akce!=MOVE_HALA && MOD!=TVORBA_CESTY)d.meritko(bmp_total->Canvas);
-	//finální předání bmp_out do Canvasu
-	Canvas->Draw(0,0,bmp_total);
-	delete (bmp_total);//velice nutné
-	////TIP
-	d.vykresli_tip(Canvas);
-
-	////////vykreslování tabulky pro přidávání objektů, temp řešení
-	if(mGrid_knihovna!=NULL && OBJEKT_akt==NULL && MOD!=TVORBA_CESTY)
-	{
-		mGrid_knihovna->Redraw=true;
-		mGrid_knihovna->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak mGrid_knihovna->Buffer(false);
-		if(mGrid_knihovna->VisibleComponents>-1)mGrid_knihovna->VisibleComponents=true;//stačí volat toto, protože se pomocí Show (resp. Draw-SetCompontens-Set...) cyklem všechny komponenty na základě tohoto zobrazí pokud je nastaveno na -1 tak se při překreslování zohlední individuální nastavení komponent (z tohoto stavu je však pro další použítí třeba vrátit do stavu 0 nebo 1)
-		mGrid_knihovna->Show(Image_knihovna_objektu->Canvas);
-	}
 }
 //---------------------------------------------------------------------------
 void TForm1::nacti_podklad(TCanvas *Canv)
@@ -14118,6 +14122,7 @@ void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 		scGPGlyphButton_PLAY->GlyphOptions->Kind=scgpbgkPause;
 		scGPGlyphButton_PLAY->Hint="zastavit animaci";
 		scGPGlyphButton_PLAY->ShowCaption=true;
+		scGPButton_bug_report->Enabled=false;
 		//if(OBJEKT_akt->pohon!=NULL)Timer_animace->Interval=F->m.round(F->m.get_timePERpx(OBJEKT_akt->pohon->aRD,0));//stejná rychlost pro všechny RD
 		//else
 		Timer_animace->Interval=16;//prozatim
@@ -14128,6 +14133,7 @@ void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 		scGPGlyphButton_PLAY->GlyphOptions->Kind=scgpbgkPlay;
 		scGPGlyphButton_PLAY->Hint="spustit animaci";
 		zobrazit_meritko=scGPSwitch_meritko->State;//navrácení do původního stavu
+		scGPButton_bug_report->Enabled=false;
 	}
 }
 //---------------------------------------------------------------------------

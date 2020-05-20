@@ -1158,7 +1158,7 @@ void TmGrid::SetGlyphButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell
 
 	////atributy
 	//horizarovnání pozice
-	if(Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==2 || Cell.Align==LEFT)gB->Left=R.Left+floor(Cell.LeftBorder->Width/2.0)+1;//výchozí při automaticky zarovnávaných buňkách či zarovnání vlevo
+	if(Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==2 || Cell.Align==LEFT)gB->Left=R.Left+ceil(Cell.LeftBorder->Width/2.0)/*+1*/;//výchozí při automaticky zarovnávaných buňkách či zarovnání vlevo
 	else//ostatní situace
 	{
 		switch(Cell.Align)
@@ -1168,18 +1168,18 @@ void TmGrid::SetGlyphButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell
 		}
 	}
 	//vertikální pozice
-	if(Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==3 || Cell.Valign==TOP)gB->Top=R.Top+floor(Cell.TopBorder->Width/2.0)/*+1*/;//výchozí při automaticky zarovnávaných buňkách či zarovnání nahoru
+	if(Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==3 || Cell.Valign==TOP)gB->Top=R.Top+ceil(Cell.TopBorder->Width/2.0)/*+1*/;//výchozí při automaticky zarovnávaných buňkách či zarovnání nahoru
 	else//ostatní situace
 	{
 		switch(Cell.Valign)
 		{
 			case MIDDLE: gB->Top=R.Top+m.round((R.Height()-gB->Height)/2.0);break;
-			case BOTTOM: gB->Top=R.Bottom-floor(Cell.TopBorder->Width/2.0)-1-gB->Height;break;
+			case BOTTOM: gB->Top=R.Bottom-ceil(Cell.TopBorder->Width/2.0)/*-1*/-gB->Height;break;
 		}
 	}
 	//velikost komponenty
-	if(/*Cell.MergeState==false || <-již nepoužíváme a možno smazat*/Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==2)gB->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0)-1;
-	if(/*Cell.MergeState==false || <-již nepoužíváme a možno smazat*/Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==3)gB->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-floor(Cell.TopBorder->Width/2.0)/*-1*/;
+	if(/*Cell.MergeState==false || <-již nepoužíváme a možno smazat*/Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==2)gB->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0)/*-1*/;
+	if(/*Cell.MergeState==false || <-již nepoužíváme a možno smazat*/Cell.AutoSizeComponent==1 || Cell.AutoSizeComponent==3)gB->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0)/*-1*/;
 	if(VisibleComponents>-1)gB->Visible=VisibleComponents;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
 	//gB->Options->NormalColor=Cell.Background->Color; zde nenastavovat!
 	if(Cell.ShowHint){gB->ShowHint=true;gB->Hint=Cell.Hint;}
