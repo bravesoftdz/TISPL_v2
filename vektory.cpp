@@ -549,6 +549,7 @@ void Cvektory::nastav_atributy_objektu(TObjekt *novy,unsigned int id, double X, 
 	novy->short_name=short_name;
 	novy->name=name;
 	novy->rezim=-1;if(id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
+	novy->stavPM=0;//0-normal (zobrazeny rychlosti a comba, dafaultní stav), 1-minimized (pouze hlavička tabulek a comba), 2-maximized (vše zobrazeno)
 	novy->X=X;//přiřadím X osu,pozice objektu
 	novy->Y=Y;//přiřadím Y osu,pozice objektu
 	novy->Xp=-500;
@@ -703,6 +704,7 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->orientace_text=Original->orientace_text;
 	Kopie->sirka_steny=Original->sirka_steny;
 	Kopie->rezim=Original->rezim;
+	Kopie->stavPM=Original->stavPM;
 	Kopie->pohon=Original->pohon;
 	//kopiruj_pohon(Original->pohon,Kopie);//POHON
 	Kopie->min_prujezdni_profil=Original->min_prujezdni_profil;
@@ -2125,7 +2127,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 			{
 				if(force_razeni==Objekt->element)Objekt->element=Element;//asi problém při napojování výhybky - sledovat
 				Element->dalsi=force_razeni;
-				if(force_razeni->eID==301)
+				if(force_razeni->eID==301 && vyhybka_pom!=NULL)
 				{
 					if(force_razeni->predchozi2->eID==300 && force_razeni->predchozi2->dalsi2==force_razeni)force_razeni->predchozi2->dalsi2=Element;
 					else force_razeni->predchozi2->dalsi=Element;
@@ -6612,6 +6614,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 				c_ukaz->sirka_steny=ukaz->sirka_steny;
 				c_ukaz->orientace=ukaz->orientace;
 				c_ukaz->rezim=ukaz->rezim;
+        c_ukaz->stavPM=ukaz->stavPM;
 				if(ukaz->body!=NULL)c_ukaz->pocet_bodu=ukaz->body->predchozi->n;
 				else c_ukaz->pocet_bodu=0;
 				if(ukaz->element!=NULL) c_ukaz->element_n=ukaz->element->n;
@@ -6960,6 +6963,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 					ukaz->sirka_steny=c_ukaz->sirka_steny;
           ukaz->body=NULL;  //NUTNOST PRO AUTO VYTVARENI HLAVICKY
 					ukaz->rezim=c_ukaz->rezim;
+					ukaz->stavPM=c_ukaz->stavPM;
 					ukaz->orientace=c_ukaz->orientace;
 					ukaz->pohon=vrat_pohon(c_ukaz->pohon);
 					ukaz->koty_elementu_offset=c_ukaz->koty_elementu_offset;

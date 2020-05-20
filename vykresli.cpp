@@ -3132,7 +3132,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 		if(F->scGPCheckBox_popisek_pohonu->Checked && F->MOD!=F->TVORBA_CESTY && zakazka==NULL && E->pohon!=NULL && E->geo.typ==0 && E->geo.orientace==m.Rt90(E->geo.orientace))//vykreslení vodoznaku pohonu
 		{
 			if(zacatek.x==0 && zacatek.y==0)zacatek=m.L2P(E->geo.X1,E->geo.Y1);
-			if(E->dalsi==NULL || E->eID==300 || E->eID==301 || (E->dalsi!=NULL && (E->dalsi->geo.typ!=0 || (m.delka(m.P2Lx(zacatek.x),m.P2Ly(zacatek.y),E->geo.X4,E->geo.Y4)>=9.9 && E->dalsi->objekt_n!=E->objekt_n) || (E->dalsi->geo.typ==0 && E->geo.orientace!=E->dalsi->geo.orientace))))
+			if(E->dalsi==NULL || E->eID==300 || E->eID==301 || (E->dalsi!=NULL && (E->dalsi->pohon!=E->pohon || (E->dalsi->geo.X1!=E->geo.X4 || E->dalsi->geo.Y1!=E->geo.Y4) || E->dalsi->geo.typ!=0 || (m.delka(m.P2Lx(zacatek.x),m.P2Ly(zacatek.y),E->geo.X4,E->geo.Y4)>=9.9 && E->dalsi->objekt_n!=E->objekt_n) || (E->dalsi->geo.typ==0 && E->geo.orientace!=E->dalsi->geo.orientace))))
 			{
 				//nastavení fontu pro zjištění velikosti textu
 				canv->Font->Size=m.round(2.8*F->Zoom);if(F->aFont->Size==12)canv->Font->Size=m.round(2*F->Zoom);//stejné nastavení jako při vykreslení PM

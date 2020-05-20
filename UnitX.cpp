@@ -42,7 +42,7 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 	if(ID==9999&&Row==-2)//pokud je stisknut exButton v tabulce pohonu
 	{
 		AnsiString Hint=F->PmG->exBUTTON->Hint;F->PmG->exBUTTON->Hint="";//zabráni probliku Hintu, toto sloužilo pro tlaèítko, ale nebylo plnì uèinné: int T=F->PmG->exBUTTON->Top;
-		if(F->PmG->Rows[3].Visible)
+		if(F->OBJEKT_akt->stavPM==2)
 		{
 			F->PmG->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
 			F->PmG->VisibleRow(3,false,false);
@@ -51,6 +51,7 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 			F->PmG->VisibleRow(6,false,false);
 			F->PmG->VisibleRow(7,false,false);
 			F->PmG->VisibleRow(8,false,false);
+			F->OBJEKT_akt->stavPM=0;//default
 		}
 		else
     {
@@ -61,7 +62,9 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 			F->PmG->VisibleRow(6,true,false);
 			F->PmG->VisibleRow(7,true,false);
 			F->PmG->VisibleRow(8,true,false);
+			F->OBJEKT_akt->stavPM=2;//max
 		}
+		F->nahled_ulozit(true);//novì se ukládá stav tabulky -> dùvod uložit pøi zmìnì stavu
 		F->nastav_focus();
 		F->REFRESH(true);//musí být opravdu REFRESH() celého formu + mGridu
 		F->PmG->exBUTTON->Hint=Hint;//navrácení pùvodního textu hintu
@@ -72,48 +75,20 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 		Cvektory::TElement *E=vrat_element_z_tabulky(ID);
 		if(E->eID==200 || E->eID==300)
 		{
-			if(E->mGrid->Rows[3].Visible)//budu skrývat
+			if(F->OBJEKT_akt->stavPM!=1)//budu skrývat
 			{
-        //zmenšení tabulky, úspora místa
-				E->mGrid->Columns[0].Width-=20;
-				E->mGrid->Columns[1].Width-=20;
-				E->mGrid->Columns[2].Width-=40;
-				E->mGrid->VisibleRow(3,false,false);    //E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
-				E->mGrid->VisibleRow(4,false,false);
-				if(E->mGrid->Rows[5].Visible)
-				{
-					E->mGrid->VisibleRow(5,false,false);
-					E->mGrid->VisibleRow(6,false,false);
-					E->mGrid->VisibleRow(7,false,false);
-					E->mGrid->VisibleRow(8,false,false);
-					E->mGrid->VisibleRow(9,false,false);
-					E->mGrid->VisibleRow(10,false,false);
-					E->mGrid->VisibleRow(11,false,false);
-				}
-				E->mGrid->exBUTTONVisible=false;
-				E->mGrid->getGlyphButton(4,0)->GlyphOptions->Kind=scgpbgkDownArrow;
+				F->OBJEKT_akt->stavPM=1;//uložení stavu minimized
 			}
 			else//budu zobrazovat
 			{
-				//zvìtšení tabulky na pùvodní rozmìry
-				E->mGrid->Columns[0].Width+=20;
-				E->mGrid->Columns[1].Width+=20;
-				E->mGrid->Columns[2].Width+=40;
-				E->mGrid->exBUTTONVisible=true;
-				E->mGrid->VisibleRow(3,true,false);
-				E->mGrid->VisibleRow(4,true,false);
 				if(E->mGrid->exBUTTON->GlyphOptions->Kind==scgpbgkUpArrow)
 				{
-        	E->mGrid->VisibleRow(5,true,false);
-					E->mGrid->VisibleRow(6,true,false);
-					E->mGrid->VisibleRow(7,true,false);
-					E->mGrid->VisibleRow(8,true,false);
-					E->mGrid->VisibleRow(9,true,false);
-					E->mGrid->VisibleRow(10,true,false);
-					E->mGrid->VisibleRow(11,true,false);
+					F->OBJEKT_akt->stavPM=2;//navrácení do stavu maximazied
 				}
-				E->mGrid->getGlyphButton(4,0)->GlyphOptions->Kind=scgpbgkUpArrow;
+				else F->OBJEKT_akt->stavPM=0;//defaultní stav
 			}
+			aktualizace_tab_elementu();//update PM provede skrytí èi zobrazení øádkù podle stavuPM
+			F->nahled_ulozit(true);//novì se ukládá stav tabulky -> dùvod uložit pøi zmìnì stavu
 			F->nastav_focus();
 			F->REFRESH(true);
 		}
@@ -182,28 +157,16 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 			case 200://pøedávací místo
 			case 300://výhybka
 			{
-				if(E->mGrid->Rows[5].Visible)
+				if(F->OBJEKT_akt->stavPM==2)
 				{
-					E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
-					E->mGrid->VisibleRow(5,false,false);
-					E->mGrid->VisibleRow(6,false,false);
-					E->mGrid->VisibleRow(7,false,false);
-					E->mGrid->VisibleRow(8,false,false);
-					E->mGrid->VisibleRow(9,false,false);
-					E->mGrid->VisibleRow(10,false,false);
-					E->mGrid->VisibleRow(11,false,false);
+					F->OBJEKT_akt->stavPM=0;//jdu z max do default stavu
 				}
 				else
 				{
-					E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
-					E->mGrid->VisibleRow(5,true,false);
-					E->mGrid->VisibleRow(6,true,false);
-					E->mGrid->VisibleRow(7,true,false);
-					E->mGrid->VisibleRow(8,true,false);
-					E->mGrid->VisibleRow(9,true,false);
-					E->mGrid->VisibleRow(10,true,false);
-					E->mGrid->VisibleRow(11,true,false);
+					F->OBJEKT_akt->stavPM=2;//jdu z default do max stavu
 				}
+				aktualizace_tab_elementu();//update PM provede skrytí èi zobrazení øádkù podle stavuPM
+				F->nahled_ulozit(true);//novì se ukládá stav tabulky -> dùvod uložit pøi zmìnì stavu
 			}break;
 		}
 		F->nastav_focus();
@@ -1669,7 +1632,91 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
   		}
 			e_pom=NULL;delete e_pom;
 		}
+
+		//update co lze editovat
 		F->zmena_editovanych_bunek(E);
+
+		//update rozbalení zabalení tabulek
+		switch(F->OBJEKT_akt->stavPM)
+		{
+			//defaultní stav zobrazeny comba a rychlosti
+			case 0:
+			{
+        if(!E->mGrid->Rows[3].Visible)
+				{
+					E->mGrid->VisibleRow(3,true,false);
+					E->mGrid->VisibleRow(4,true,false);
+					E->mGrid->exBUTTONVisible=true;
+					E->mGrid->getGlyphButton(4,0)->GlyphOptions->Kind=scgpbgkUpArrow;
+					//zmenšení tabulky, úspora místa
+					E->mGrid->Columns[0].Width+=20;
+					E->mGrid->Columns[1].Width+=20;
+					E->mGrid->Columns[2].Width+=40;
+				}
+				if(E->mGrid->Rows[5].Visible)
+				{
+					E->mGrid->VisibleRow(5,false,false);
+					E->mGrid->VisibleRow(6,false,false);
+					E->mGrid->VisibleRow(7,false,false);
+					E->mGrid->VisibleRow(8,false,false);
+					E->mGrid->VisibleRow(9,false,false);
+					E->mGrid->VisibleRow(10,false,false);
+					E->mGrid->VisibleRow(11,false,false);
+					E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
+				}
+				break;
+			}
+			//minimized, skrytí všeho kromì hlavièky a comb
+			case 1:
+			{
+				if(E->mGrid->Rows[3].Visible)
+				{
+					E->mGrid->VisibleRow(3,false,false);
+					E->mGrid->VisibleRow(4,false,false);
+			  	E->mGrid->VisibleRow(5,false,false);
+			  	E->mGrid->VisibleRow(6,false,false);
+			  	E->mGrid->VisibleRow(7,false,false);
+			  	E->mGrid->VisibleRow(8,false,false);
+			  	E->mGrid->VisibleRow(9,false,false);
+			  	E->mGrid->VisibleRow(10,false,false);
+			  	E->mGrid->VisibleRow(11,false,false);
+					E->mGrid->exBUTTONVisible=false;
+					E->mGrid->getGlyphButton(4,0)->GlyphOptions->Kind=scgpbgkDownArrow;
+					//zmenšení tabulky, úspora místa
+			  	E->mGrid->Columns[0].Width-=20;
+			  	E->mGrid->Columns[1].Width-=20;
+			  	E->mGrid->Columns[2].Width-=40;
+				}
+				break;
+			}
+			//vìe zobrazeno
+			case 2:
+			{
+				if(!E->mGrid->Rows[3].Visible)
+				{
+					E->mGrid->VisibleRow(3,true,false);
+					E->mGrid->VisibleRow(4,true,false);
+					E->mGrid->exBUTTONVisible=true;
+					E->mGrid->getGlyphButton(4,0)->GlyphOptions->Kind=scgpbgkUpArrow;
+					//zmenšení tabulky, úspora místa
+					E->mGrid->Columns[0].Width+=20;
+					E->mGrid->Columns[1].Width+=20;
+					E->mGrid->Columns[2].Width+=40;
+				}
+				if(!E->mGrid->Rows[5].Visible)
+				{
+					E->mGrid->VisibleRow(5,true,false);
+					E->mGrid->VisibleRow(6,true,false);
+					E->mGrid->VisibleRow(7,true,false);
+					E->mGrid->VisibleRow(8,true,false);
+					E->mGrid->VisibleRow(9,true,false);
+					E->mGrid->VisibleRow(10,true,false);
+					E->mGrid->VisibleRow(11,true,false);
+        }
+				E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
+				break;
+      }
+    }
 	}
 }
 //---------------------------------------------------------------------------
@@ -1824,6 +1871,13 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 
 	////uložení aktuálnì editovaného pohonu
 	F->OBJEKT_akt->pohon=p;
+	//aktualizace parametrù
+	if(p!=NULL)
+	{
+    F->OBJEKT_akt->stavPM=2;//rozšíøit mGridy
+		p->Rz=F->m.Rz(p->aRD);
+		p->Rx=F->m.Rx(p->aRD,p->roztec);
+  }
 
 	////prohození sloupcù
 	int prvni=3,druhy=4;
@@ -1957,6 +2011,7 @@ void TFormX::prirazeni_pohonu_defTab()
 	else aktualizace_tab_elementu();//došlo ke zmìnám v tabulce pohonu, které ovlivní i ostatní elementy
 
 	//kontrola PM
+	F->OBJEKT_akt->stavPM=2;//max po zvolení pohonu
 	F->vlozit_predavaci_misto_aktualizuj_WT();
 	F->aktualizace_tab_pohon(false,true,true);//nebude provedena pokud dojde k odstranìní PmG
 
@@ -1969,31 +2024,7 @@ void TFormX::prirazeni_pohonu_defTab()
 			if(posledni_E->dalsi==NULL || (posledni_E->dalsi!=NULL && posledni_E->dalsi->objekt_n!=F->OBJEKT_akt->n))break;
 			posledni_E=posledni_E->dalsi;
 		}
-		if(!posledni_E->mGrid->Rows[5].Visible)//budu zobrazovat
-		{
-			posledni_E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
-			posledni_E->mGrid->VisibleRow(5,true,false);
-			posledni_E->mGrid->VisibleRow(6,true,false);
-			posledni_E->mGrid->VisibleRow(7,true,false);
-			posledni_E->mGrid->VisibleRow(8,true,false);
-			posledni_E->mGrid->VisibleRow(9,true,false);
-			posledni_E->mGrid->VisibleRow(10,true,false);
-			posledni_E->mGrid->VisibleRow(11,true,false);
-		}
 	}
-	else
-	{
-		if(!F->PmG->Rows[3].Visible)
-		{
-    	F->PmG->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
-			F->PmG->VisibleRow(3,true,false);
-			F->PmG->VisibleRow(4,true,false);
-			F->PmG->VisibleRow(5,true,false);
-			F->PmG->VisibleRow(6,true,false);
-			F->PmG->VisibleRow(7,true,false);
-			F->PmG->VisibleRow(8,true,false);
-    }
-  }
 
 	//ukazatelové záležitosti
 	E=NULL;p=NULL;
