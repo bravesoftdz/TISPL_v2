@@ -6895,7 +6895,7 @@ void TForm1::vlozeni_editace_geometrie()
 		if(mrYes==MB(ls->Strings[455],MB_YESNO))//"Chcete automaticky spojit geometrii?"
 		{
 			double posun_x,posun_y;
-			short orientace=e_posledni->geo.orientace;
+			short orientace=e_posledni->dalsi->geo.orientace;
 			//zjištění jednotlivých délek posunů
 			posun_x=-e_posledni->dalsi->geo.X4+e_posledni->geo.X4;
 			posun_y=-e_posledni->dalsi->geo.Y4+e_posledni->geo.Y4;
@@ -6930,6 +6930,7 @@ void TForm1::vlozeni_editace_geometrie()
 			}
 			else//vertikální  linie
 			{
+        //posun spojky na místo
 				if(posun_y<e_posledni->geo.delka && ((e_posledni->dalsi!=NULL && posun_y<e_posledni->dalsi->geo.delka) || e_posledni->dalsi==NULL))//kontrola zde je kam posouvat
 				{
 					d.v.vloz_G_element(e_posledni->dalsi,0,e_posledni->dalsi->geo.X1,e_posledni->dalsi->geo.Y1,0,0,0,0,e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4+posun_y,e_posledni->dalsi->geo.orientace);
@@ -9074,6 +9075,15 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 		if(B!=NULL)
 		{
 			B->GlyphOptions->Kind=scgpbgkUpArrow;
+			if(!E->mGrid->Rows[3].Visible)
+			{
+				B->GlyphOptions->Kind=scgpbgkDownArrow;
+				//zmenšení tabulky, úspora místa
+				E->mGrid->Columns[0].Width=5;
+				E->mGrid->Columns[1].Width=5;
+				E->mGrid->Columns[2].Width=50;
+				E->mGrid->exBUTTONVisible=false;
+			}
 			B->Width=25;
 			B->TransparentBackground=false;
 			B->GlyphOptions->NormalColor=clBlack;
@@ -14277,42 +14287,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	int W=m.round((F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/(double)(F->ClientHeight-F->scGPPanel_statusbar->Height-F->scGPPanel_mainmenu->Height)*98),H=98;//-10 == 5px odsazení od každé hrany bmp
-	//nastavení základníh hodnot sloužících pro vyhledávání
-	double MaxX=MaxInt*(-1),MaxY=MaxInt,MinX=MaxInt,MinY=MaxInt*(-1);
-
-	////zjištění max oblasti vykreslení pohonu
-	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-	while(E!=NULL)
-	{
-		if(E->geo.X1<MinX)MinX=E->geo.X1;
-		if(E->geo.X1>MaxX)MaxX=E->geo.X1;
-		if(E->geo.Y1<MaxY)MaxY=E->geo.Y1;
-		if(E->geo.Y1>MinY)MinY=E->geo.Y1;
-		if(E->geo.X4<MinX)MinX=E->geo.X4;
-		if(E->geo.X4>MaxX)MaxX=E->geo.X4;
-		if(E->geo.Y4<MaxY)MaxY=E->geo.Y4;
-		if(E->geo.Y4>MinY)MinY=E->geo.Y4;
-		E=d.v.dalsi_krok(E);
-	}
-	delete E;E=NULL;
-
-	////výpočet nového Zoom, podle maximální oblasti vykreslení a velikosti bmp
-	double rozdil=0,PD=0,rozdilX=m.m2px(MaxX-MinX),rozdilY=m.abs_d(m.m2px(MaxY-MinY));
-	if(rozdilX>rozdilY){rozdil=rozdilX;PD=W;}
-	else {rozdil=rozdilY;PD=H;}
-	Zoom=abs(F->Zoom*PD/rozdil);
-	Zoom-=fmod(F->Zoom,0.05);
-
-  ////výpočet posunu
-	double A=m.P2Lx(0)-MinX;
-	A=m.L2Px(MinX);
-	Memo(A);
-	Posun.x+=A/Zoom;           //v logických použít -, ve fyzyckých použít +
-	Posun.y+=(m.L2Py(MinY)-35)/Zoom;
-
-	////překreslení
-	REFRESH();
+	Memo(OBJEKT_akt->stavPM);
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -15420,6 +15395,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		////kontrola zda je nutné přemazat obraz
 		if(ms.MyToDouble(FormX->VID)==0 && !scGPButton_ulozit->Enabled)
 		{
+			mazani=true;
 			vymaz_seznam_obrazu();//vymazání nepotřebných obrazů
 			d.v.update_akt_zakazky();
 		}
@@ -15455,7 +15431,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		//mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
 		pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp;posledni_editovany_element=NULL;delete posledni_editovany_element;JID=-1;Akce=NIC;
 		FormX->posledni_E=NULL;//nutné!! slouží k ukládání posledního editovaného elementu (validace, atd.)
-		if(d.v.DATA->dalsi!=NULL)d.v.nacti_z_obrazu_DATA(true);//načtení projektu před editací a smazání obrazů, pokud DATA->dalsi neexistují znamená to, že bylo uloženo, nebude se nic načítat
+		if(d.v.DATA->dalsi!=NULL && !mazani){d.v.nacti_z_obrazu_DATA(true);}//načtení projektu před editací a smazání obrazů, pokud DATA->dalsi neexistují znamená to, že bylo uloženo, nebude se nic načítat
 		vytvor_obraz();//vytvoření nového obrazu pro layout
 		//vlozit_predavaci_misto_aktualizuj_WT();//zkontroluje, zda nemusí být přidáno nebo odstraněno předávací místo
 		duvod_validovat=2;//vyvolá validaci, zajistí aktualizaci zpráv a výpisu v miniformu zpráv, NECHAT AŽ ZA FUNKČNÍMI ZÁLEŽITOSTMI

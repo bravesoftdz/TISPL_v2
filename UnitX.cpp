@@ -747,7 +747,7 @@ void TFormX::zmena_Rx ()
 //pøepoèet v tabulkách elementù po zmìnì parametrù v tabulce pohonu
 void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 {
-	unsigned int n=999999999; F->Memo3->Clear();
+	unsigned int n=999999999;
 	if(mimo_element!=NULL)n=mimo_element->n;
 	Cvektory::TElement *E=F->OBJEKT_akt->element;
 	while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
