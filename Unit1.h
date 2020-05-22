@@ -101,6 +101,7 @@
 #include <IdMessageClient.hpp>
 #include <IdSMTP.hpp>
 #include <IdFTP.hpp>
+#include "Tvlakno_obraz.h"
 //#include <IdSMTPBase.hpp>
 //#include <IdMessage.hpp>
 //#include <System.Actions.hpp>
@@ -691,6 +692,8 @@ private:
 	bool pripnuti_dalsich_objektu();//pokud pøi uložení editovaného objektu je detekováno, že konec objketu nenavazuje na zaèátek následujísího objektu je položen dotaz a po potvrzení dojde ke spojení
 	void spojeni_prvni_posledni(double citlivost=0.5);//kontrola zda na sebe první a polední objekt navazují, pokud jsou blízko u sebe, ale nenavazují - naváže je
 	void Otevri_posledni_ulozeny(UnicodeString soubor);//otevøe jeden z posledních otevøených souborù
+	void vytvor_obraz(bool stornoUNDO=false);//slouží k vytvoøení obrazu pro storno + undo nebo jen undo
+	void vymaz_seznam_obrazu();//vymaže všechny obrazy v poøadníku
 
 	////promìnné
 	TDateTime TIME;
@@ -733,6 +736,7 @@ private:
 	int count_memo;//counter pro memo
 	bool editace_geometrie_spustena;
 	int offset_scGPButton_bug_report;
+	Tvlakno_obraz *vlakno;
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
@@ -811,6 +815,7 @@ public:		// User declarations
   int zpravy_backup_width;
 	int zpravy_backup_height;
 	double predchozi_orientace;//uchovává rotaci objektu pøed posunem
+	unsigned int vlakno_akce;//uchovává akci, kterou má vlákno vykonat, 0 - nic, 1 - vytvoøení obrazu pro UNDO, 2 - vytvoøení obrazu pro storno a UNDO, 3 - vymazání obrazù
 
 	//metody
 	void kurzor(TKurzory typ_kurzor);

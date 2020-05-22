@@ -4848,73 +4848,65 @@ void Cvykresli::vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popis
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-Graphics::TBitmap *Cvykresli::nacti_nahled(Cvektory::TZakazka *zakazka)
+Graphics::TBitmap *Cvykresli::nacti_nahled_cesty(Cvektory::TZakazka *zakazka)
 {
 	//deklarace proměnných
 	double z=F->Zoom;//uchovávání původního Zoom
-	TRect ret;TPointD posun=F->Posun;
-	Graphics::TBitmap *bmp=new Graphics::TBitmap,*bmp_pom=new Graphics::TBitmap;
+	TPointD posun=F->Posun;
+	Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
 	//nastavení velikostí bmp
-	bmp_pom->Width=F->ClientWidth;bmp_pom->Height=F->ClientHeight;
-	bmp->Height=3*98;
-	bmp->Width=m.round((F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/(double)(F->ClientHeight-F->scGPPanel_statusbar->Height-F->scGPPanel_mainmenu->Height)*bmp->Height);//nemusí být násobeno 3x, počítá s bmp->Height, ta již je vynýsobená
-	int W=bmp->Width/3.0-10,H=bmp->Height/3.0-10;//-10 == 5px odsazení od každé hrany bmp
+	bmp_in->Height=3*98;
+	bmp_in->Width=m.round((F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/(double)(F->ClientHeight-F->scGPPanel_statusbar->Height-F->scGPPanel_mainmenu->Height)*bmp_in->Height);//nemusí být násobeno 3x, počítá s bmp->Height, ta již je vynýsobená
+	int W=bmp_in->Width/3.0-10,H=bmp_in->Height/3.0-10;//-10 == 5px odsazení od každé hrany bmp
 	//nastavení základníh hodnot sloužících pro vyhledávání
-	ret.left=MaxInt;ret.right=MaxInt*(-1);
-	ret.top=MaxInt;ret.bottom=MaxInt*(-1);
-
+	double MaxX=MaxInt*(-1),MaxY=MaxInt,MinX=MaxInt,MinY=MaxInt*(-1);
 	////zjištění max oblasti vykreslení pohonu
 	Cvektory::TElement *E=v.ELEMENTY->dalsi;
 	while(E!=NULL)
 	{
-		if(m.L2Px(E->geo.X1)<ret.left)ret.left=m.L2Px(E->geo.X1);
-		if(m.L2Px(E->geo.X1)>ret.right)ret.right=m.L2Px(E->geo.X1);
-		if(m.L2Py(E->geo.Y1)<ret.top)ret.top=m.L2Py(E->geo.Y1);
-		if(m.L2Py(E->geo.Y1)>ret.bottom)ret.bottom=m.L2Py(E->geo.Y1);
-		if(m.L2Px(E->geo.X4)<ret.left)ret.left=m.L2Px(E->geo.X4);
-		if(m.L2Px(E->geo.X4)>ret.right)ret.right=m.L2Px(E->geo.X4);
-		if(m.L2Py(E->geo.Y4)<ret.top)ret.top=m.L2Py(E->geo.Y4);
-		if(m.L2Py(E->geo.Y4)>ret.bottom)ret.bottom=m.L2Py(E->geo.Y4);
+		if(E->geo.X1<MinX)MinX=E->geo.X1;
+		if(E->geo.X1>MaxX)MaxX=E->geo.X1;
+		if(E->geo.Y1<MaxY)MaxY=E->geo.Y1;
+		if(E->geo.Y1>MinY)MinY=E->geo.Y1;
+		if(E->geo.X4<MinX)MinX=E->geo.X4;
+		if(E->geo.X4>MaxX)MaxX=E->geo.X4;
+		if(E->geo.Y4<MaxY)MaxY=E->geo.Y4;
+		if(E->geo.Y4>MinY)MinY=E->geo.Y4;
 		E=v.dalsi_krok(E);
 	}
 	delete E;E=NULL;
-	TPointD pom;
-	pom=m.P2L(ret.left,ret.top);
 
 	////výpočet nového Zoom, podle maximální oblasti vykreslení a velikosti bmp
-	double MaxX=m.P2Lx(ret.right),MaxY=m.P2Ly(ret.top),MinX=m.P2Lx(ret.left),MinY=m.P2Ly(ret.bottom);
-	double rozdil=0,PD=0;
-	int PD_x=W;
-	int PD_y=H;
-	if(m.m2px(MaxX-MinX)>m.abs_d(m.m2px(MaxY-MinY))){rozdil=m.m2px(MaxX-MinX);PD=PD_x;}
-	else {rozdil=m.abs_d(m.m2px(MaxY-MinY));PD=PD_y;}
+	double rozdil=0,PD=0,rozdilX=m.m2px(MaxX-MinX),rozdilY=m.abs_d(m.m2px(MaxY-MinY));
+	if(rozdilX>rozdilY){rozdil=rozdilX;PD=W;}
+	else {rozdil=rozdilY;PD=H;}
 	F->Zoom=abs(F->Zoom*PD/rozdil);
 	F->Zoom-=fmod(F->Zoom,0.05);
 
-	//posun obrazu
-	if(m.L2Px(pom.x)>0 || m.L2Py(pom.y)>0){pom.x-=1;pom.y+=1;}//korekce obrazu, nutná problém při menším zoomu
-	F->Posun.x+=m.L2Px(pom.x)*3.0;
-	F->Posun.y+=m.L2Py(pom.y)*3.0;
+	//posun obrazu je ve fyzyckých souřadnicích, musí být dělen Zoom, posun středu oblasti na střed bmp
+	F->Posun.x+=(m.L2Px((MaxX+MinX)/2.0)-W/2.0-5)/F->Zoom;
+	F->Posun.y+=(m.L2Py((MinY+MaxY)/2.0)-H/2.0-5)/F->Zoom;
 
 	//vykreslení cesty do pomocné bmp
-	vykresli_retez(bmp_pom->Canvas,zakazka);
-	//kopírování obrazu do výsledné bmp
-	bmp->Canvas->CopyRect(Rect(5*3/F->Zoom,5*3/F->Zoom,bmp->Width,bmp->Height),bmp_pom->Canvas,Rect(0,0,bmp->Width/3.0,bmp->Height/3.0));
-	//mazání pomocné bmp
-	//delete(bmp_pom);
+	F->Zoom*=3;//kvůli AA
+	vykresli_retez(bmp_in->Canvas,zakazka);
+
 	//vykreslení ID na bmp
-	bmp->Canvas->Font=zakazka->mGrid->DefaultCell.Font;
-	bmp->Canvas->Font->Size=m.round(35);
-	bmp->Canvas->TextOutW(3*2,3*2,zakazka->n);
+	bmp_in->Canvas->Font=zakazka->mGrid->DefaultCell.Font;
+	bmp_in->Canvas->Font->Size=m.round(35);
+	bmp_in->Canvas->TextOutW(3*2,3*2,zakazka->n);
+
 	//AA
 	Cantialising a;
-	bmp=a.antialiasing(bmp);
+	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);
+	delete(bmp_in);
+
 	//navrácení původního Zoomu
 	F->Zoom=z;
 	F->Posun=posun;
 
-  //vracení výsledné bmp
-	return bmp;
+	//vracení výsledné bmp
+	return bmp_out;
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //metoda vypíše zprávy ze seznamu zpráv a zároveň uloží jejich citelné oblasti

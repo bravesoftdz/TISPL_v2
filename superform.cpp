@@ -955,7 +955,9 @@ void TForm_definice_zakazek::set_formHW_button_positions()
 void TForm_definice_zakazek::GetImages(Cvektory::TZakazka *Z)
 {
 	Z->mGrid->scGPImageCollection=scGPImageCollection_layout;
-	Z->mGrid->scGPImageCollection->Images->Add()->Bitmap=F->d.nacti_nahled(Z);
+	Graphics::TBitmap *bmp=F->d.nacti_nahled_cesty(Z);
+	Z->mGrid->scGPImageCollection->Images->Add()->Bitmap=bmp;
+	delete(bmp);
 	Z->mGrid->Cells[0][1].Type=Z->mGrid->IMAGE;
 	Z->mGrid->Cells[0][1].ImageIndex=Z->n-1;   //dynamicky plnit
 	Z->mGrid->Update();
