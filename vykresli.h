@@ -49,10 +49,10 @@ class Cvykresli
 	enum Tvalign{TOP,MIDDLE,BOTTOM};
 
 	void vykresli_halu(TCanvas *canv,int typ=-2);//stav: -3 kurzor, -2 normal (implicitnì), -1-highlight bez editace, 0-editace zvırazní všechny body, 1-a poèet bodù zvıraznìní daného bodu,poèet bodù+1 zvıraznìní dané hrany vèetnì sousedícícíh úchopù (napø. pro polygono o 6 bodech) bude hodnota stavu 7 zvıraznìní první hrany (od bodu 1 do bodu 2)
-	void vykresli_vektory(TCanvas *canv);//vykreslí zakázky, cesty, spojnice, kabiny, pohony, elementy atd.
+	void vykresli_vektory(TCanvas *canv, short scena=0);//vykreslí zakázky, cesty, spojnice, kabiny, pohony, elementy atd. //scena 0 - vše, scena 1 - statické elementy, scena 2 - dynamické elementy
 	void vykresli_objekty(TCanvas *canv);
 	void vykresli_objekt(TCanvas *canv, Cvektory::TObjekt *ukaz);
-	void vykresli_elementy(TCanvas *canv);
+	void vykresli_elementy(TCanvas *canv,short scena);//scena 0 - vše, scena 1 - statické elementy, scena 2 - dynamické elementy
 	void vykresli_kruh(TCanvas *canv, Cvektory::TObjekt *O);
 	void prislusnost_cesty(TCanvas *canv,TColor Color,int X,int Y,float A,short N);
 	void vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav=-2,bool zobrazit_koty=true);//zajišuje vykreslení pouze obrysu dle typu objektu
@@ -87,7 +87,7 @@ class Cvykresli
 //	void priprav_palce();//pøidá novı palec do seznamu PALCE s umístìním pøímo na linku dle stanovené rozteèe
 //	void umisti_palec(TCanvas *canv,Cvektory::TPalec *ukaz);//zajišuje aktuální umístìní vozíku na lince vùèi animaci
 	void vykresli_palec(TCanvas *canv,double X,double Y,bool NEW,bool ACTIVE);//zajišuje samotné vykreslení palce, parametr NEW rozlišuje novı palec a palace starı ji ke smazání (to slouí pro simulaci), poslední parametr znaèí, zda palec oznaèit jako aktivní
-	void vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,unsigned int eID=0,short typ=0,double rotace=0,short stav=1,double LO1=1.5,double OTOC_delka=0,double LO2=0,double LO_pozice=0,Cvektory::TElement *E=NULL);//celková vykreslovací metoda, vykreslí buï stopku, robota nebo otoè
+	void vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiString name,AnsiString short_name,unsigned int eID=0,short typ=0,double rotace=0,short stav=1,double LO1=1.5,double OTOC_delka=0,double LO2=0,double LO_pozice=0,Cvektory::TElement *E=NULL);//celková vykreslovací metoda, vykreslí buï stopku, robota nebo otoè
 	void vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID=1,short typ=0,double rotace=0,short stav=1,double LO1=1.5,double OTOC_delka=0,double LO2=0,double aP=0,float TS=0,double LO_pozice=0);
 	void vykresli_cloveka(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,double LO1,double OTOC_delka,double LO2);//vykresli siluetu èlovìk s pøípadnì pøidruenım elememntem, rotuje po smìru hodinovıch ruèièek, pro animaci slouí okolo hranièních stupòu 0,90,180,270, vdy rozsah -45° a +44°, napø. 45-134° je maximální pracovní rozsah pro èlovìka rotovaného na 90° atd.
 	void vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ=0, double rotace=0, short stav=1);
