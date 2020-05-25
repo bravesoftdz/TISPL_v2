@@ -476,7 +476,7 @@ Send including project;X;Odeslat vèetnì projektu
 Send;X;Odeslat
 Sent. Thanks for the feedback.;X;Odesláno. Dìkujeme za zpìtnou vazbu.
 Failed to send, please try again.;X;Nepodaøilo se odeslat, zkuste znovu.
-Pomocí dvojtého kliknití na výhybku nebo spojnici s její spojkou;X;Pomocí dvojtého kliknití na výhybku nebo spojnici s její spojkou
+Use double click on the created section to start creating geometry;X;Poklepáním na vzniklý úsek zahájíte tvorbu geometrie
   Show walls;X;  Zobrazit stìny
   Hide walls;X;  Skrýt stìny
 The change will take effect after switching to Layout;X;Zmìna se projeví po pøechodu do Layout

@@ -319,7 +319,7 @@ void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender)
 	F->log(__func__); //logování
 	if(Akce!=BLOK)//nepøekreslovat v nežádoucích pøípadech (napø. posun fomru)
 	{
-		int width=317;//defaul ClientWidth formu
+		int width=382;//317;//defaul ClientWidth formu
 		int height=248;//defaul ClientHeight formu (pro jednu zakázku), mezera mezi koncem formu a posledním mGridem = 64px
   	max_oblast_mGridu.Left=0;max_oblast_mGridu.Right=0;max_oblast_mGridu.Top=0;max_oblast_mGridu.Bottom=0;
 		//vytvoøení bmp
@@ -360,7 +360,7 @@ void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender)
 		{
   		//upravení rozmìrù formu
 			Form_definice_zakazek->Width=width;//+2 rozdíl mezi clientwidth a width
-  		Form_definice_zakazek->Height=height;//+2 rozdíl mezi clientwidth a height
+			Form_definice_zakazek->Height=height;//+2 rozdíl mezi clientwidth a height
   		//pozicování buttonu
   		scGPButton_Ulozit->Top=Form_definice_zakazek->Height-scGPButton_Ulozit->Height - 10;
   		scGPButton_storno->Top=scGPButton_Ulozit->Top;
@@ -592,6 +592,7 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col, unsig
 		volno =true;
 	}
 
+	////tvorba nebo editace cesty
 	if (Z->mGrid->Cells[Col][Row].Type==Z->mGrid->IMAGE)
 	{
 		F->log("Editace cesty, MOD=SCHEMA, Form:Unit1");
@@ -612,11 +613,12 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col, unsig
 		Z_cesta->cesta=NULL;
 		Z_cesta->n=Z->n;//uložení èísla zakázky, které je editovaná cesta
 		F->d.v.inicializace_cesty(Z_cesta);
-		F->d.v.vloz_cestu_po_hlavni_vetvi(Z_cesta,true);
+		F->d.v.kopiruj_cestu_zakazky(Z,Z_cesta);//kopírování uložené cesty pro její editaci
 		if(Z_cesta->cesta->predchozi->Element!=F->d.v.ELEMENTY->predchozi)F->scGPButton_ulozit_cestu->Enabled=false;
 		//aktualizace parametrù z tabulky do ZAKAZEK_temp + mazání mgridù zakázek
 		ulozeni_dat_z_mGridu_a_delete();
 		closing=true;
+		F->nastav_focus();//pøedání focusu pro odchytávání kláves
 		Form_definice_zakazek->Close();
 	}
 
@@ -955,7 +957,9 @@ void TForm_definice_zakazek::set_formHW_button_positions()
 void TForm_definice_zakazek::GetImages(Cvektory::TZakazka *Z)
 {
 	Z->mGrid->scGPImageCollection=scGPImageCollection_layout;
-	Z->mGrid->scGPImageCollection->Images->Add()->Bitmap=F->d.nacti_nahled(Z);
+	Graphics::TBitmap *bmp=F->d.nacti_nahled_cesty(Z);
+	Z->mGrid->scGPImageCollection->Images->Add()->Bitmap=bmp;
+	delete(bmp);
 	Z->mGrid->Cells[0][1].Type=Z->mGrid->IMAGE;
 	Z->mGrid->Cells[0][1].ImageIndex=Z->n-1;   //dynamicky plnit
 	Z->mGrid->Update();

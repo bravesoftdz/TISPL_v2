@@ -747,7 +747,7 @@ void TFormX::zmena_Rx ()
 //pøepoèet v tabulkách elementù po zmìnì parametrù v tabulce pohonu
 void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 {
-	unsigned int n=999999999; F->Memo3->Clear();
+	unsigned int n=999999999;
 	if(mimo_element!=NULL)n=mimo_element->n;
 	Cvektory::TElement *E=F->OBJEKT_akt->element;
 	while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
@@ -1286,7 +1286,7 @@ void TFormX::validace_max_voziku()
 		if(posledni_E->data.pocet_voziku>1)
 		{
 			double rotace=F->m.Rt90(F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(posledni_E)+90);
-			if(rotace==posledni_E->geo.orientace || rotace==F->m.Rt90(posledni_E->geo.orientace+180))
+			if(rotace==posledni_E->geo.orientace)// || rotace==F->m.Rt90(posledni_E->geo.orientace+180))
 			{
 				validace=false;
 				posledni_E->mGrid->ShowNote(F->ls->Strings[426]+" <a>"+AnsiString(1)+"</a>");//"Kvùli pøekryvu jigù nelze nastavit vìtší poèet vozíkù než"

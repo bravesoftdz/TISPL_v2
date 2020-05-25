@@ -4873,19 +4873,27 @@ void Cvektory::smaz_temp_zakazku(unsigned long n)
 				while(Z!=NULL)
 				{
 					Z->n-=1;
-					ukaz->mGrid->scGPImageCollection->Images->Add()->Bitmap=F->d.nacti_nahled(Z);
+					Graphics::TBitmap *bmp=F->d.nacti_nahled_cesty(Z);
+					ukaz->mGrid->scGPImageCollection->Images->Add()->Bitmap=bmp;
+					delete(bmp);
 					Z->n+=1;
 					Z=Z->dalsi;
 				}
 				delete Z;Z=NULL;
-				//uprava indexů
+				//uprava indexů a posun tabulek
 				Z=ukaz->dalsi;
+				long top=ukaz->mGrid->Top,pom=0;
 				unsigned long n=ukaz->n;
 				while(Z!=NULL)
 				{
 					Z->n=n;
 					Z->mGrid->Cells[0][1].ImageIndex=n-1;
 					n++;
+					//posun ostatních tabulek
+					pom=Z->mGrid->Top;
+					Z->mGrid->Top=top;
+					top=pom;
+					//posun na další zakázku
 					Z=Z->dalsi;
 				}
 				delete Z;Z=NULL;
@@ -8234,10 +8242,10 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 				E=NULL;delete E;
 				F->PmG->Delete();F->PmG=NULL;
 			}
-			////mazání dat starého projektu
+			////mazání dat starého projektu, které budou nahrazeny
 			vymaz_seznam_OBJEKTY();
 			hlavicka_OBJEKTY();//nutné po mazání!!!
-	  	vymaz_seznam_ELEMENTY();
+			vymaz_seznam_ELEMENTY();
 			hlavicka_ELEMENTY();//nutné po mazání!!!
 			F->predchozi_PM=NULL;
 			ZAKAZKA_akt=NULL;
@@ -8501,6 +8509,32 @@ long Cvektory::vymaz_seznam_DATA()
 //možno smazat
 void Cvektory::test_vlakna(long i)
 {
-	TElement *E=vrat_element(i);
-	F->Button14->Caption=E->name;
+//	TElement *E=vrat_element(i);
+//	F->Button14->Caption=E->name;
+	switch(F->vlakno_akce)
+	{
+		//vytvoření obrazu pro UNDO
+		case 1:
+		{
+			vytvor_obraz_DATA();
+			break;
+		}
+		//vytvoření obrazu pro UNDO + storno
+		case 2:
+		{
+			vytvor_obraz_DATA(true);
+			vytvor_obraz_DATA();
+			break;
+		}
+		//vymazání seznamu obrazů
+		case 3:
+		{
+			vymaz_seznam_DATA();
+			hlavicka_DATA();
+			break;
+		}
+		default:break;
+	}
+	F->vlakno_akce=0;//navrácení do default stavu
 }
+////---------------------------------------------------------------------------

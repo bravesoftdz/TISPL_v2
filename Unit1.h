@@ -101,6 +101,7 @@
 #include <IdMessageClient.hpp>
 #include <IdSMTP.hpp>
 #include <IdFTP.hpp>
+#include "Tvlakno_obraz.h"
 //#include <IdSMTPBase.hpp>
 //#include <IdMessage.hpp>
 //#include <System.Actions.hpp>
@@ -690,7 +691,10 @@ private:
 	void set_font(int velikost=14);//nastaví komponentám aFont
 	bool pripnuti_dalsich_objektu();//pokud pøi uloení editovaného objektu je detekováno, e konec objketu nenavazuje na zaèátek následujísího objektu je poloen dotaz a po potvrzení dojde ke spojení
 	void spojeni_prvni_posledni(double citlivost=0.5);//kontrola zda na sebe první a polední objekt navazují, pokud jsou blízko u sebe, ale nenavazují - naváe je
+	void napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni);//provede kontrolu, zdá je monost geometrii spojit, dotáe se a spojí geometrii pokud uivatel souhlasí
 	void Otevri_posledni_ulozeny(UnicodeString soubor);//otevøe jeden z posledních otevøenıch souborù
+	void vytvor_obraz(bool stornoUNDO=false);//slouí k vytvoøení obrazu pro storno + undo nebo jen undo
+	void vymaz_seznam_obrazu();//vymae všechny obrazy v poøadníku
 	void vytvor_statickou_scenu();//vytvoøí BMP se statickou scénou
 
 	////promìnné
@@ -734,6 +738,8 @@ private:
 	int count_memo;//counter pro memo
 	bool editace_geometrie_spustena;
 	int offset_scGPButton_bug_report;
+	Tvlakno_obraz *vlakno;
+	bool storno;//slouí k rozlišení jestli bylo stisknuto storno nebo byl zavolán jeho stisk z tlaèítka uloit
 	bool refreshovat_scGPTrackBar;//promìnná zajišujíci, e se scGPTracBar nerefreshuje pokud mu pøi zmìnì zoomu mimo scGPTracBar
 
 public:		// User declarations
@@ -814,6 +820,7 @@ public:		// User declarations
   int zpravy_backup_width;
 	int zpravy_backup_height;
 	double predchozi_orientace;//uchovává rotaci objektu pøed posunem
+	unsigned int vlakno_akce;//uchovává akci, kterou má vlákno vykonat, 0 - nic, 1 - vytvoøení obrazu pro UNDO, 2 - vytvoøení obrazu pro storno a UNDO, 3 - vymazání obrazù
 
 	//metody
 	void kurzor(TKurzory typ_kurzor);
