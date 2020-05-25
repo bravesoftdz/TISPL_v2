@@ -3679,7 +3679,7 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 						O=NULL;delete O;
 					}
 					//element mimo kabinu
-					if(pom==NULL && (JID==5 || JID==6) && pom_element!=NULL)pom=d.v.vrat_objekt(pom_element->objekt_n);
+					if((JID==5 || JID==6) && pom_element!=NULL)pom=d.v.vrat_objekt(pom_element->objekt_n);
 					if(pom!=NULL && Akce==NIC && !d.v.PP.zamek_layoutu)NP_input();//otevření editace
 					if(pom!=NULL && d.v.PP.zamek_layoutu)MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,ls->Strings[423],"",MB_OK,true,false);//info o zamčeném layoutu
 					if(JID==1)vloz_bod_haly_objektu(X,Y);//přidání bodu haly
@@ -4392,7 +4392,7 @@ void TForm1::vykresli_spojinici_EmGrid(TCanvas *Canv,Cvektory::TElement *E)
 	double levyhorni,pravyhorni,levydolni,pravydolni;
 	bool vykresleno=false;
 	if(E==NULL && predchozi_PM!=NULL && d.v.oblast_elementu(predchozi_PM,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))E=predchozi_PM;
-	if(OBJEKT_akt!=NULL && OBJEKT_akt->zobrazit_mGrid && E!=NULL && (d.v.vrat_druh_elementu(E)!=-1 || E->eID==200 || E->eID==300 || E->eID==301) && E->eID!=100 && E->mGrid!=NULL && (E->objekt_n==OBJEKT_akt->n || E==predchozi_PM))
+	if(OBJEKT_akt!=NULL && OBJEKT_akt->zobrazit_mGrid && E!=NULL && !(JID<=-11 && JID>=-100) && !(JID<=99 && JID>=13)&& (d.v.vrat_druh_elementu(E)!=-1 || E->eID==200 || E->eID==300 || E->eID==301) && E->eID!=100 && E->mGrid!=NULL && (E->objekt_n==OBJEKT_akt->n || E==predchozi_PM))
 	{
 		//výpočet vzdáleností od každého rohu tabulky ke středu elementu
 		levyhorni=m.delka(m.L2Px(E->X),m.L2Py(E->Y),m.L2Px(E->Xt),m.L2Py(E->Yt));//ok
@@ -5056,7 +5056,7 @@ void TForm1::onPopUP(int X, int Y)
 			}
 		}
 		break;
-		case SIMULACE:break;
+		//case SIMULACE:break;
 		case EDITACE:
 		{
 			pom_vyhybka=d.v.PtInObjekt();//využití prázdného ukazatele pro uchovávání nalezeného objektu (přechod z náhledu do náhledu)
@@ -5133,7 +5133,7 @@ void TForm1::onPopUP(int X, int Y)
 			PopUPmenu->Item_cely_pohled->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
 			break;
 		}
-		default://pro SCHEMA
+		case SCHEMA://pro SCHEMA
 		{
 			//povoluje nastavení položek kopírování či smazání objektu
 //			pom=d.v.najdi_objekt(m.P2Lx(X),m.P2Ly(Y),d.O_width*m2px,d.O_height*m2px);
@@ -5202,6 +5202,14 @@ void TForm1::onPopUP(int X, int Y)
       }
 			//zobrazení běžných položek, pozor rozhoduje pořadí
 			//PopUPmenu->Item_posouvat->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
+			PopUPmenu->Item_posunout->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
+			PopUPmenu->Item_priblizit->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
+			PopUPmenu->Item_oddalit->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
+			PopUPmenu->Item_vybrat_oknem->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
+			PopUPmenu->Item_cely_pohled->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
+		}break;
+		default:
+		{
 			PopUPmenu->Item_posunout->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
 			PopUPmenu->Item_priblizit->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
 			PopUPmenu->Item_oddalit->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
@@ -7433,7 +7441,6 @@ void TForm1::mGrid_puvodni_stav(Cvektory::TElement *E)
   	{
   		case 0://stop stanice, nastavování režimů podle ID objektu
   		{
-  			unsigned int id=d.v.vrat_objekt(E->objekt_n)->id;
 				E->mGrid->Cells[2][3].Type=E->mGrid->EDIT;E->mGrid->Cells[2][6].Type=E->mGrid->EDIT;
 				E->mGrid->exBUTTONVisible=true;
 				E->mGrid->Update();
@@ -12170,7 +12177,7 @@ void TForm1::NP_input()
 	 Timer_getjobid->Enabled=false;
 	 if(!scSplitView_LEFTTOOLBAR->Opened)scSplitView_LEFTTOOLBAR->Opened=true;
 	 nastav_focus();
-	 mGrid_knihovna->Delete();
+	 if(mGrid_knihovna!=NULL)mGrid_knihovna->Delete();
 	 delete mGrid_knihovna;mGrid_knihovna=NULL;
 	 //předesignované tlačítko layout - editace
 	 Schema->Caption=ls->Strings[36]+" "+pom->name.UpperCase();
@@ -14304,7 +14311,418 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Memo(OBJEKT_akt->stavPM);
+  ////vypisování dat do CSV
+	String data_CSV="";//+="Parametry linky"+UnicodeString(Form1->scLabel_titulek->Caption)+"\n";
+//	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
+//	while(O!=NULL)
+//	{
+//		data_CSV+=AnsiString(O->name)+"\n";
+//		data_CSV+=AnsiString(O->n)+"\n";
+//		data_CSV+=AnsiString(O->id)+"\n";
+//		data_CSV+=AnsiString(O->short_name)+"\n";
+//		data_CSV+=AnsiString(O->name)+"\n";
+//		data_CSV+=AnsiString(O->X)+"\n";
+//		data_CSV+=AnsiString(O->Y)+"\n";
+//		Cvektory::TBod *b=O->body;
+//		while(b!=NULL)
+//		{
+//			if(b->n>0)data_CSV+=AnsiString(b->n)+"\n";
+//			b=b->dalsi;
+//		}
+//		b=NULL;delete b;
+//		data_CSV+=AnsiString(O->sirka_steny)+"\n";
+//		data_CSV+=AnsiString(O->Xk)+"\n";
+//		data_CSV+=AnsiString(O->Yk)+"\n";
+//		data_CSV+=AnsiString(O->Xt)+"\n";
+//		data_CSV+=AnsiString(O->Yt)+"\n";
+//		data_CSV+=AnsiString(O->orientace_text)+"\n";
+//		data_CSV+=AnsiString(O->Xp)+"\n";
+//		data_CSV+=AnsiString(O->Yp)+"\n";
+//		data_CSV+=AnsiString(O->rezim)+"\n";
+//		data_CSV+=AnsiString(O->stavPM)+"\n";
+//		data_CSV+=AnsiString(O->CT)+"\n";
+//		data_CSV+=AnsiString(O->RD)+"\n";
+//		data_CSV+=AnsiString(O->delka_dopravniku)+"\n";
+//		data_CSV+=AnsiString(O->kapacita)+"\n";
+//		data_CSV+=AnsiString(O->kapacita_dop)+"\n";
+//		data_CSV+=AnsiString(O->pozice)+"\n";
+//		data_CSV+=AnsiString(O->rotace)+"\n";
+//		data_CSV+=AnsiString(O->orientace)+"\n";
+//		data_CSV+=AnsiString(O->mezera)+"\n";
+//		data_CSV+=AnsiString(O->mezera_jig)+"\n";
+//		data_CSV+=AnsiString(O->mezera_podvozek)+"\n";
+//	  if(O->pohon!=NULL)data_CSV+=AnsiString(O->pohon->name)+"\n";
+//   	else data_CSV+="NULL\n";
+//		data_CSV+=AnsiString(O->element->name)+"\n";
+//		data_CSV+=AnsiString(O->element_n)+"\n";
+//		data_CSV+=AnsiString(O->min_prujezdni_profil.x)+"\n";
+//		data_CSV+=AnsiString(O->min_prujezdni_profil.y)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect1.left)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect1.right)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect1.top)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect1.bottom)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect2.left)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect2.right)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect2.top)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect2.bottom)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect1.left)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect1.right)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect1.top)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect1.bottom)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect2.left)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect2.right)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect2.top)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect2.bottom)+"\n";
+//		data_CSV+=AnsiString(O->koty_elementu_offset.x)+"\n";
+//		data_CSV+=AnsiString(O->koty_elementu_offset.y)+"\n";
+//		Cvektory::TKomora *k=O->komora;
+//		while(k!=NULL)
+//		{
+//			if(k->n>0)data_CSV+=AnsiString(k->n)+"\n";
+//			k=k->dalsi;
+//		}
+//		k=NULL;delete k;
+//		data_CSV+=AnsiString(O->cekat_na_palce)+"\n";
+//		data_CSV+=AnsiString(O->stopka)+"\n";
+//		data_CSV+=AnsiString(O->odchylka)+"\n";
+//		data_CSV+=AnsiString(O->obsazenost)+"\n";
+//		data_CSV+=AnsiString(O->CT_zamek)+"\n";
+//		data_CSV+=AnsiString(O->RD_zamek)+"\n";
+//		data_CSV+=AnsiString(O->DD_zamek)+"\n";
+//		data_CSV+=AnsiString(O->K_zamek)+"\n";
+//		data_CSV+=AnsiString(O->poznamka)+"\n";
+//		if(O->probehla_aktualizace_prirazeni_pohonu)data_CSV+="true\n";else data_CSV+="false\n";
+//		if(O->zobrazit_koty)data_CSV+="true\n";else data_CSV+="false\n";
+//		if(O->zobrazit_mGrid)data_CSV+="true\n";else data_CSV+="false\n";
+//		if(O->uzamknout_nahled)data_CSV+="true\n";else data_CSV+="false\n";
+//		O=O->dalsi;
+//	}
+//	delete O;O=NULL;
+
+	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+	while(E!=NULL)
+	{
+		data_CSV+=E->name+"\n";
+		data_CSV+=AnsiString(E->n)+"\n";
+		data_CSV+=AnsiString(E->eID)+"\n";
+		data_CSV+=AnsiString(E->idetifikator_vyhybka_spojka)+"\n";
+		data_CSV+=AnsiString(E->short_name)+"\n";
+		data_CSV+=AnsiString(E->name)+"\n";
+		data_CSV+=AnsiString(E->orientace)+"\n";
+		data_CSV+=AnsiString(E->rotace_jig)+"\n";
+		data_CSV+=AnsiString(E->stav)+"\n";
+		data_CSV+=AnsiString(E->X)+"\n";
+		data_CSV+=AnsiString(E->Y)+"\n";
+		data_CSV+=AnsiString(E->Z)+"\n";
+		data_CSV+=AnsiString(E->Xt)+"\n";
+		data_CSV+=AnsiString(E->Yt)+"\n";
+		data_CSV+=AnsiString(E->PTotoc)+"\n";
+		data_CSV+=AnsiString(E->OTOC_delka)+"\n";
+		data_CSV+=AnsiString(E->zona_pred)+"\n";
+		data_CSV+=AnsiString(E->zona_za)+"\n";
+		data_CSV+=AnsiString(E->WT)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect0.left)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect0.right)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect0.top)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect0.bottom)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect1.left)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect1.right)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect1.top)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect1.bottom)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect2.left)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect2.right)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect2.top)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect2.bottom)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect3.left)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect3.right)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect3.top)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect3.bottom)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect4.left)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect4.right)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect4.top)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect4.bottom)+"\n";
+		data_CSV+=AnsiString(E->geo.typ)+"\n";
+		data_CSV+=AnsiString(E->geo.delka)+"\n";
+		data_CSV+=AnsiString(E->geo.radius)+"\n";
+		data_CSV+=AnsiString(E->geo.orientace)+"\n";
+		data_CSV+=AnsiString(E->geo.rotacni_uhel)+"\n";
+		data_CSV+=AnsiString(E->geo.X1)+"\n";
+		data_CSV+=AnsiString(E->geo.Y1)+"\n";
+		data_CSV+=AnsiString(E->geo.X2)+"\n";
+		data_CSV+=AnsiString(E->geo.Y2)+"\n";
+		data_CSV+=AnsiString(E->geo.X3)+"\n";
+		data_CSV+=AnsiString(E->geo.Y3)+"\n";
+		data_CSV+=AnsiString(E->geo.X4)+"\n";
+		data_CSV+=AnsiString(E->geo.Y4)+"\n";
+		data_CSV+=AnsiString(E->geoH.typ)+"\n";
+		data_CSV+=AnsiString(E->geoH.delka)+"\n";
+		data_CSV+=AnsiString(E->geoH.radius)+"\n";
+		data_CSV+=AnsiString(E->geoH.orientace)+"\n";
+		data_CSV+=AnsiString(E->geoH.rotacni_uhel)+"\n";
+		data_CSV+=AnsiString(E->geoH.X1)+"\n";
+		data_CSV+=AnsiString(E->geoH.Y1)+"\n";
+		data_CSV+=AnsiString(E->geoH.X2)+"\n";
+		data_CSV+=AnsiString(E->geoH.Y2)+"\n";
+		data_CSV+=AnsiString(E->geoH.X3)+"\n";
+		data_CSV+=AnsiString(E->geoH.Y3)+"\n";
+		data_CSV+=AnsiString(E->geoH.X4)+"\n";
+		data_CSV+=AnsiString(E->geoH.Y4)+"\n";
+		data_CSV+=AnsiString(E->data.PD)+"\n";
+		data_CSV+=AnsiString(E->data.orientace_jig_pred)+"\n";
+		data_CSV+=AnsiString(E->data.LO1)+"\n";
+		data_CSV+=AnsiString(E->data.LO2)+"\n";
+		data_CSV+=AnsiString(E->data.LO_pozice)+"\n";
+		data_CSV+=AnsiString(E->data.PT1)+"\n";
+		data_CSV+=AnsiString(E->data.PT2)+"\n";
+		data_CSV+=AnsiString(E->data.WTstop)+"\n";
+		data_CSV+=AnsiString(E->data.RT.x)+"\n";
+		data_CSV+=AnsiString(E->data.RT.y)+"\n";
+		data_CSV+=AnsiString(E->data.pocet_pozic)+"\n";
+		data_CSV+=AnsiString(E->data.pocet_voziku)+"\n";
+		data_CSV+=AnsiString(E->objekt_n)+"\n";
+		if(E->pohon!=NULL)data_CSV+=AnsiString(E->pohon->name)+"\n";
+		else data_CSV+="NULL\n";
+		if(E->sparovany!=NULL)data_CSV+=E->sparovany->name+"\n";
+		if(E->predchozi2!=NULL)data_CSV+=E->predchozi2->name+"\n";
+		if(E->dalsi2!=NULL)data_CSV+=E->dalsi2->name+"\n";
+		E=E->dalsi;
+	}
+	delete E;E=NULL;
+//
+//	Memo("");
+//
+//	Cvektory::TPohon *P=d.v.POHONY->dalsi;
+//	while(P!=NULL)
+//	{
+//		Memo(P->name);
+//		P=P->dalsi;
+//	}
+//	P=NULL;delete P;
+
+
+  ////cyklus pro otevírání a zavírání objektu s volitelným krokem + měření času
+	TDateTime start;
+	String s;
+	double cas=0,celkem_otevreni=0,celkem_zavreni=0;
+	unsigned int pocet_kroku=2;
+	for(unsigned int i=0;i<pocet_kroku;i++)
+	{
+//		start=Now();
+		pom=d.v.OBJEKTY->dalsi;
+		NP_input();
+//		cas=ms.MyToDouble(TimeToStr(Now()-start).SubString(6,2));
+//		celkem_otevreni+=cas;
+//		Memo("Čas otevření: "+AnsiString(cas));
+//		start=Now();
+		scGPButton_stornoClick(this);
+//		cas=ms.MyToDouble(TimeToStr(Now()-start).SubString(6,2));
+//		celkem_zavreni+=cas;
+//		Memo("Čas zavření: "+AnsiString(cas));
+	}
+
+	////pokračování výpisu dat do CSV
+	data_CSV+="\n\n";
+	TMemoryStream* MemoryStream=new TMemoryStream();
+	MemoryStream->Clear();
+	MemoryStream->Write(data_CSV.c_str(),data_CSV.Length());//Win kodování
+	MemoryStream->SaveToFile(FileName+"_testy1.csv");
+	delete MemoryStream;
+	data_CSV="";
+	//data_CSV+="----------------------\n";
+//	Memo("Průměrný čas otevření: "+AnsiString(celkem_otevreni/(double)pocet_kroku));
+//	Memo("Průměrný čas zavření: "+AnsiString(cas/(double)pocet_kroku));
+
+//	O=d.v.OBJEKTY->dalsi;
+//	while(O!=NULL)
+//	{
+//		data_CSV+=AnsiString(O->name)+"\n";
+//		data_CSV+=AnsiString(O->n)+"\n";
+//		data_CSV+=AnsiString(O->id)+"\n";
+//		data_CSV+=AnsiString(O->short_name)+"\n";
+//		data_CSV+=AnsiString(O->name)+"\n";
+//		data_CSV+=AnsiString(O->X)+"\n";
+//		data_CSV+=AnsiString(O->Y)+"\n";
+//		Cvektory::TBod *b=O->body;
+//		while(b!=NULL)
+//		{
+//			if(b->n>0)data_CSV+=AnsiString(b->n)+"\n";
+//			b=b->dalsi;
+//		}
+//		b=NULL;delete b;
+//		data_CSV+=AnsiString(O->sirka_steny)+"\n";
+//		data_CSV+=AnsiString(O->Xk)+"\n";
+//		data_CSV+=AnsiString(O->Yk)+"\n";
+//		data_CSV+=AnsiString(O->Xt)+"\n";
+//		data_CSV+=AnsiString(O->Yt)+"\n";
+//		data_CSV+=AnsiString(O->orientace_text)+"\n";
+//		data_CSV+=AnsiString(O->Xp)+"\n";
+//		data_CSV+=AnsiString(O->Yp)+"\n";
+//		data_CSV+=AnsiString(O->rezim)+"\n";
+//		data_CSV+=AnsiString(O->stavPM)+"\n";
+//		data_CSV+=AnsiString(O->CT)+"\n";
+//		data_CSV+=AnsiString(O->RD)+"\n";
+//		data_CSV+=AnsiString(O->delka_dopravniku)+"\n";
+//		data_CSV+=AnsiString(O->kapacita)+"\n";
+//		data_CSV+=AnsiString(O->kapacita_dop)+"\n";
+//		data_CSV+=AnsiString(O->pozice)+"\n";
+//		data_CSV+=AnsiString(O->rotace)+"\n";
+//		data_CSV+=AnsiString(O->orientace)+"\n";
+//		data_CSV+=AnsiString(O->mezera)+"\n";
+//		data_CSV+=AnsiString(O->mezera_jig)+"\n";
+//		data_CSV+=AnsiString(O->mezera_podvozek)+"\n";
+//		if(O->pohon!=NULL)data_CSV+=AnsiString(O->pohon->name)+"\n";
+//		else data_CSV+="NULL\n";
+//		data_CSV+=AnsiString(O->element->name)+"\n";
+//		data_CSV+=AnsiString(O->element_n)+"\n";
+//		data_CSV+=AnsiString(O->min_prujezdni_profil.x)+"\n";
+//		data_CSV+=AnsiString(O->min_prujezdni_profil.y)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect1.left)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect1.right)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect1.top)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect1.bottom)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect2.left)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect2.right)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect2.top)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect2.bottom)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect1.left)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect1.right)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect1.top)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect1.bottom)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect2.left)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect2.right)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect2.top)+"\n";
+//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect2.bottom)+"\n";
+//		data_CSV+=AnsiString(O->koty_elementu_offset.x)+"\n";
+//		data_CSV+=AnsiString(O->koty_elementu_offset.y)+"\n";
+//		Cvektory::TKomora *k=O->komora;
+//		while(k!=NULL)
+//		{
+//			if(k->n>0)data_CSV+=AnsiString(k->n)+"\n";
+//			k=k->dalsi;
+//		}
+//		k=NULL;delete k;
+//		data_CSV+=AnsiString(O->cekat_na_palce)+"\n";
+//		data_CSV+=AnsiString(O->stopka)+"\n";
+//		data_CSV+=AnsiString(O->odchylka)+"\n";
+//		data_CSV+=AnsiString(O->obsazenost)+"\n";
+//		data_CSV+=AnsiString(O->CT_zamek)+"\n";
+//		data_CSV+=AnsiString(O->RD_zamek)+"\n";
+//		data_CSV+=AnsiString(O->DD_zamek)+"\n";
+//		data_CSV+=AnsiString(O->K_zamek)+"\n";
+//		data_CSV+=AnsiString(O->poznamka)+"\n";
+//		if(O->probehla_aktualizace_prirazeni_pohonu)data_CSV+="true\n";else data_CSV+="false\n";
+//		if(O->zobrazit_koty)data_CSV+="true\n";else data_CSV+="false\n";
+//		if(O->zobrazit_mGrid)data_CSV+="true\n";else data_CSV+="false\n";
+//		if(O->uzamknout_nahled)data_CSV+="true\n";else data_CSV+="false\n";
+//		O=O->dalsi;
+//	}
+//	delete O;O=NULL;
+
+	E=d.v.ELEMENTY->dalsi;
+	while(E!=NULL)
+	{
+		data_CSV+=E->name+"\n";
+		data_CSV+=AnsiString(E->n)+"\n";
+		data_CSV+=AnsiString(E->eID)+"\n";
+		data_CSV+=AnsiString(E->idetifikator_vyhybka_spojka)+"\n";
+		data_CSV+=AnsiString(E->short_name)+"\n";
+		data_CSV+=AnsiString(E->name)+"\n";
+		data_CSV+=AnsiString(E->orientace)+"\n";
+		data_CSV+=AnsiString(E->rotace_jig)+"\n";
+		data_CSV+=AnsiString(E->stav)+"\n";
+		data_CSV+=AnsiString(E->X)+"\n";
+		data_CSV+=AnsiString(E->Y)+"\n";
+		data_CSV+=AnsiString(E->Z)+"\n";
+		data_CSV+=AnsiString(E->Xt)+"\n";
+		data_CSV+=AnsiString(E->Yt)+"\n";
+		data_CSV+=AnsiString(E->PTotoc)+"\n";
+		data_CSV+=AnsiString(E->OTOC_delka)+"\n";
+		data_CSV+=AnsiString(E->zona_pred)+"\n";
+		data_CSV+=AnsiString(E->zona_za)+"\n";
+		data_CSV+=AnsiString(E->WT)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect0.left)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect0.right)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect0.top)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect0.bottom)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect1.left)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect1.right)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect1.top)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect1.bottom)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect2.left)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect2.right)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect2.top)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect2.bottom)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect3.left)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect3.right)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect3.top)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect3.bottom)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect4.left)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect4.right)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect4.top)+"\n";
+		data_CSV+=AnsiString(E->citelna_oblast.rect4.bottom)+"\n";
+		data_CSV+=AnsiString(E->geo.typ)+"\n";
+		data_CSV+=AnsiString(E->geo.delka)+"\n";
+		data_CSV+=AnsiString(E->geo.radius)+"\n";
+		data_CSV+=AnsiString(E->geo.orientace)+"\n";
+		data_CSV+=AnsiString(E->geo.rotacni_uhel)+"\n";
+		data_CSV+=AnsiString(E->geo.X1)+"\n";
+		data_CSV+=AnsiString(E->geo.Y1)+"\n";
+		data_CSV+=AnsiString(E->geo.X2)+"\n";
+		data_CSV+=AnsiString(E->geo.Y2)+"\n";
+		data_CSV+=AnsiString(E->geo.X3)+"\n";
+		data_CSV+=AnsiString(E->geo.Y3)+"\n";
+		data_CSV+=AnsiString(E->geo.X4)+"\n";
+		data_CSV+=AnsiString(E->geo.Y4)+"\n";
+		data_CSV+=AnsiString(E->geoH.typ)+"\n";
+		data_CSV+=AnsiString(E->geoH.delka)+"\n";
+		data_CSV+=AnsiString(E->geoH.radius)+"\n";
+		data_CSV+=AnsiString(E->geoH.orientace)+"\n";
+		data_CSV+=AnsiString(E->geoH.rotacni_uhel)+"\n";
+		data_CSV+=AnsiString(E->geoH.X1)+"\n";
+		data_CSV+=AnsiString(E->geoH.Y1)+"\n";
+		data_CSV+=AnsiString(E->geoH.X2)+"\n";
+		data_CSV+=AnsiString(E->geoH.Y2)+"\n";
+		data_CSV+=AnsiString(E->geoH.X3)+"\n";
+		data_CSV+=AnsiString(E->geoH.Y3)+"\n";
+		data_CSV+=AnsiString(E->geoH.X4)+"\n";
+		data_CSV+=AnsiString(E->geoH.Y4)+"\n";
+		data_CSV+=AnsiString(E->data.PD)+"\n";
+		data_CSV+=AnsiString(E->data.orientace_jig_pred)+"\n";
+		data_CSV+=AnsiString(E->data.LO1)+"\n";
+		data_CSV+=AnsiString(E->data.LO2)+"\n";
+		data_CSV+=AnsiString(E->data.LO_pozice)+"\n";
+		data_CSV+=AnsiString(E->data.PT1)+"\n";
+		data_CSV+=AnsiString(E->data.PT2)+"\n";
+		data_CSV+=AnsiString(E->data.WTstop)+"\n";
+		data_CSV+=AnsiString(E->data.RT.x)+"\n";
+		data_CSV+=AnsiString(E->data.RT.y)+"\n";
+		data_CSV+=AnsiString(E->data.pocet_pozic)+"\n";
+		data_CSV+=AnsiString(E->data.pocet_voziku)+"\n";
+		data_CSV+=AnsiString(E->objekt_n)+"\n";
+		if(E->pohon!=NULL)data_CSV+=AnsiString(E->pohon->name)+"\n";
+		else data_CSV+="NULL\n";
+		if(E->sparovany!=NULL)data_CSV+=E->sparovany->name+"\n";
+		if(E->predchozi2!=NULL)data_CSV+=E->predchozi2->name+"\n";
+		if(E->dalsi2!=NULL)data_CSV+=E->dalsi2->name+"\n";
+		E=E->dalsi;
+	}
+	delete E;E=NULL;
+
+//	P=d.v.POHONY->dalsi;
+//	while(P!=NULL)
+//	{
+//		Memo(P->name);
+//		P=P->dalsi;
+//	}
+//	P=NULL;delete P;
+  data_CSV+="\n\n";
+	MemoryStream=new TMemoryStream();
+	MemoryStream->Clear();
+	MemoryStream->Write(data_CSV.c_str(),data_CSV.Length());//Win kodování
+	MemoryStream->SaveToFile(FileName+"_testy2.csv");
+	delete MemoryStream;
+
+	Memo("hotovo");
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -14407,7 +14825,7 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 	Tvlakno_obraz *vlakno=new Tvlakno_obraz(true);//spustí vlákno zajišťující stáhnutí mapového podkladu
 	vlakno->FreeOnTerminate=true;//po skončení bude uvolněno
 	vlakno->Resume();
-  //delete vlakno;
+	//delete vlakno;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
@@ -15397,7 +15815,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		log("Zavření editace, MOD=LAYOUT");
 		Timer_neaktivity->Enabled=false;//vypnutí timeru pro jistotu
 		if(Akce==GEOMETRIE)ukonceni_geometrie(mazani);
-		if(Akce!=NIC)ESC();
+		if(Akce!=NIC || editace_textu)ESC();
 		//////
 		if(MOD==EDITACE&&index_kurzoru==9999||index_kurzoru==100)
 		smaz_edit(false);//smaže edit a neprovede refresh
@@ -17346,9 +17764,10 @@ void TForm1::vytvor_obraz(bool stornoUNDO)
 	log(__func__);
 	if(stornoUNDO)vlakno_akce=2;//vytvoření obrazu pro UNDO a storno
 	else vlakno_akce=1;//vytvoření obrazu pro UNDO
-  vlakno=new Tvlakno_obraz(true);//spustí vlákno zajišťující stáhnutí mapového podkladu
-	vlakno->FreeOnTerminate=true;//po skončení bude uvolněno
-	vlakno->Resume();
+//	vlakno=new Tvlakno_obraz(true);//spustí vlákno zajišťující stáhnutí mapového podkladu
+//	vlakno->FreeOnTerminate=true;//po skončení bude uvolněno
+//	vlakno->Resume();
+	d.v.test_vlakna(1);
 }
 //---------------------------------------------------------------------------
 //vymaže všechny obrazy v pořadníku
@@ -17356,9 +17775,10 @@ void TForm1::vymaz_seznam_obrazu()
 {
 	log(__func__);
 	vlakno_akce=3;//mazání obrazů
-  vlakno=new Tvlakno_obraz(true);//spustí vlákno zajišťující stáhnutí mapového podkladu
-	vlakno->FreeOnTerminate=true;//po skončení bude uvolněno
-	vlakno->Resume();
+//  vlakno=new Tvlakno_obraz(true);//spustí vlákno zajišťující stáhnutí mapového podkladu
+//	vlakno->FreeOnTerminate=true;//po skončení bude uvolněno
+//	vlakno->Resume();
+	d.v.test_vlakna(1);
 }
 //---------------------------------------------------------------------------
 

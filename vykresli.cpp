@@ -140,7 +140,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	{
    	Cvektory::TElement *E=v.ELEMENTY->dalsi,*pom=NULL;
    	TPoint *tab_pruchodu=new TPoint[v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
-   	while(E!=NULL && F->MOD!=F->TVORBA_CESTY)
+   	while(E!=NULL)
 		{
    		//nastavování stavu
    		stav=1;
@@ -3062,7 +3062,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 	TPoint *POLE=new TPoint[4];
 	bool zmena=true;
 	TPoint zacatek;zacatek=TPoint(0,0);
-	unsigned int pocet_pruchodu=0;
+	unsigned int pocet_pruchodu=0;//predchozi_pocet_pruchodu=0;
 	Cvektory::TElement *E=v.ELEMENTY->dalsi;
 	while(E!=NULL)
 	{
@@ -3144,27 +3144,33 @@ void Cvykresli::vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka)//pře
 			}
 		}
 		else zacatek=TPoint(0,0);//nulování začátečního bodu pokud není podmínka splněná
-    ////vykreslování mnohočetného průchodu cesty
+		////vykreslování mnohočetného průchodu cesty
 		if(pocet_pruchodu>1)
 		{
+			TColor barva;
+			double o=0,DR2=0;
+			short z=1;
+			TPointD S2,*PL2;
 			for(unsigned int i=2;i<=pocet_pruchodu;i++)
 			{
-				double o=(i-1)*m.px2m(m.round(RetezWidth/2.0));
+				o=(i-1)*m.px2m(m.round(RetezWidth/2.0));
 				//nastavení pera
-				set_pen(canv,m.getColorOfPalette(i-1),m.round(RetezWidth/2.0),PS_ENDCAP_SQUARE);
+				barva=m.getColorOfPalette(i-1);
+				set_pen(canv,barva,m.round(RetezWidth/2.0),PS_ENDCAP_SQUARE);
 	  		//výpočet odsazení a souřadnic
 //				TPointD S1=m.rotace(o,180-E->geo.orientace,90);
-				short z=1;if(E->geo.rotacni_uhel>0)z*=-1;
+				z=1;if(E->geo.rotacni_uhel>0)z*=-1;
 //				double DR1=E->geo.delka;if(E->geo.typ==1)DR1=E->geo.radius+o*z;//delka či radius
 //				TPointD *PL1=m.getArcLine(E->geo.X1+S1.x,E->geo.Y1+S1.y,E->geo.orientace,E->geo.rotacni_uhel,DR1);
-		  	TPointD S2=m.rotace(o,180-E->geo.orientace,-90);
-		  	double DR2=E->geo.delka;if(E->geo.typ==1)DR2=E->geo.radius+o*z*-1;//delka či radius
-				TPointD *PL2=m.getArcLine(E->geo.X1+S2.x,E->geo.Y1+S2.y,E->geo.orientace,E->geo.rotacni_uhel,DR2);
+				S2=m.rotace(o,180-E->geo.orientace,-90);
+		  	DR2=E->geo.delka;if(E->geo.typ==1)DR2=E->geo.radius+o*z*-1;//delka či radius
+				PL2=m.getArcLine(E->geo.X1+S2.x,E->geo.Y1+S2.y,E->geo.orientace,E->geo.rotacni_uhel,DR2);
 				//samotné výkreslení obou parelelních kolejí
 //				bezier(canv,PL1,3);
 				bezier(canv,PL2,3);
 			}
 		}
+		//predchozi_pocet_pruchodu=pocet_pruchodu;
 		/////konec testů
 
 		////ukazatelové záležitosti

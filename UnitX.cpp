@@ -1286,7 +1286,7 @@ void TFormX::validace_max_voziku()
 		if(posledni_E->data.pocet_voziku>1)
 		{
 			double rotace=F->m.Rt90(F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(posledni_E)+90);
-			if(rotace==posledni_E->geo.orientace || rotace==F->m.Rt90(posledni_E->geo.orientace+180))
+			if(rotace==posledni_E->geo.orientace)// || rotace==F->m.Rt90(posledni_E->geo.orientace+180))
 			{
 				validace=false;
 				posledni_E->mGrid->ShowNote(F->ls->Strings[426]+" <a>"+AnsiString(1)+"</a>");//"Kvùli pøekryvu jigù nelze nastavit vìtší poèet vozíkù než"
