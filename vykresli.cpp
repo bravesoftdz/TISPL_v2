@@ -59,7 +59,7 @@ void Cvykresli::vykresli_halu(TCanvas *canv,int stav)
 	if(F->OBJEKT_akt!=NULL)stav=-1;
 	//nastavení kót
 	bool zobrazit_koty=true;
-	if(F->MOD==F->EDITACE)zobrazit_koty=false;
+	if(F->MOD==F->EDITACE || F->MOD==F->SIMULACE)zobrazit_koty=false;
 	//vykreslení
 	short sirka_steny_px=m.m2px(0.4);//m->px
 	TColor clHala=clStenaHaly;//defaultní barva
@@ -116,7 +116,30 @@ TPointD Cvykresli::Rxy(Cvektory::TElement *Element)
 //vykreslí zakázky, cesty, spojnice, kabiny, pohony, elementy
 void Cvykresli::vykresli_vektory(TCanvas *canv)
 {
-	///////////////Vykreslení objektů
+	/////Vykreslení haly
+	vykresli_halu(canv);
+
+	/////Vykreslení objektů
+	vykresli_objekty(canv);
+
+	/////Vykreslení dopravníků
+	vykresli_retez(canv);//přejemnovat asi na vykresli dopravník
+
+	/////Vykreslení elementů
+	vykresli_elementy(canv);
+
+	/////VALIDACE její samotné provední, vnitřek metody se provede jen pokud duvod_validovat==2
+	if(F->MOD!=F->SIMULACE)v.VALIDACE();
+
+	/////vykreslení VOZÍKů, musí být až za VALIDACí kvůli generování vozíků, které je ve VALIDACi
+	if(F->MOD!=F->TVORBA_CESTY && F->MOD!=F->SIMULACE && F->Akce!=F->GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT)vykresli_voziky(canv);
+
+	/////VALIDACE výpis formou zpráv musí být za vozíky, aby byla zcela nahoře
+	if(F->MOD!=F->TVORBA_CESTY && F->MOD!=F->SIMULACE && F->Akce!=F->GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT)vypis_zpravy(canv);
+}
+//---------------------------------------------------------------------------
+void Cvykresli::vykresli_objekty(TCanvas *canv)
+{
 	//samotné objekty, kreslím až v samostatném následujícím cyklu, aby se nakreslilo do horní vrstvy
 	Cvektory::TObjekt *O=v.OBJEKTY->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
@@ -127,91 +150,81 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	}
 	delete O;O=NULL;
 	if(F->OBJEKT_akt!=NULL)vykresli_objekt(canv,F->OBJEKT_akt);//vykreslení aktuálně editovaného objektu nad všechny ostatní objekty
-
-	///////////////Vykreslení dopravníků
-	vykresli_retez(canv);//přejemnovat asi na vykresli dopravník
-
-	///////////////Vykreslení elementů
+}
+//---------------------------------------------------------------------------
+void Cvykresli::vykresli_elementy(TCanvas *canv)
+{
 	//vykreslování z ELEMENTY
 	float sipka_velikost=0.1*F->Zoom; if(sipka_velikost<1*3)sipka_velikost=1*3;
 	TPointD bod;
 	short stav;
 	if(F->MOD!=F->Tmod::TVORBA_CESTY)
 	{
-   	Cvektory::TElement *E=v.ELEMENTY->dalsi,*pom=NULL;
-   	TPoint *tab_pruchodu=new TPoint[v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
-   	while(E!=NULL && F->MOD!=F->TVORBA_CESTY)
+		Cvektory::TElement *E=v.ELEMENTY->dalsi,*pom=NULL;
+		TPoint *tab_pruchodu=new TPoint[v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
+		while(E!=NULL && F->MOD!=F->TVORBA_CESTY)
 		{
-   		//nastavování stavu
-   		stav=1;
-   		if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n)stav=1;//elementy v aktivním objektu
-   		else stav=-1;//disabled elementy ostatních objektů
-   		if(stav!=-1)stav=E->stav;//předávání stavu v aktivní kabině pro highlightování elementů
+			//nastavování stavu
+			stav=1;
+			if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n)stav=1;//elementy v aktivním objektu
+			else stav=-1;//disabled elementy ostatních objektů
+			if(stav!=-1)stav=E->stav;//předávání stavu v aktivní kabině pro highlightování elementů
 			//vykreslení elementu a pozic
-			vykresli_pozice_a_zony(canv,E);
+			if(F->MOD!=F->SIMULACE)vykresli_pozice_a_zony(canv,E);
 			if(!(F->OBJEKT_akt!=NULL && E->objekt_n!=F->OBJEKT_akt->n && F->scGPTrackBar_intenzita->Value<5))vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->data.LO1,E->OTOC_delka,E->data.LO2,E->data.LO_pozice,E);
 			//uložení citelné oblasti pro další použití
-   		E->citelna_oblast.rect3=aktOblast;
-   		//vykreslení kót
-   		if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n && F->OBJEKT_akt->zobrazit_koty)vykresli_kotu(canv,E);//mezi elementy
-   		//E=E->dalsi;
-   		pom=E->dalsi;
+			E->citelna_oblast.rect3=aktOblast;
+			//vykreslení kót
+			if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n && F->OBJEKT_akt->zobrazit_koty)vykresli_kotu(canv,E);//mezi elementy
+			//E=E->dalsi;
+			pom=E->dalsi;
 
-   		////vykreslení spojnic pokud geometrie nenavazuje
-   		canv->Pen->Style=psDash;
-   		canv->Pen->Mode=pmCopy;
-   		canv->Pen->Width=1;
-   		canv->Pen->Color=clRed;
-   		canv->Brush->Style=bsClear;
-   		if(pom!=NULL)
-   		{
-   			if(pom->eID==301 && pom->predchozi2==E){bod.x=pom->X;bod.y=pom->Y;}
-   			else {bod.x=pom->geo.X1;bod.y=pom->geo.Y1;}
-   			if(m.round2double(E->geo.X4,2)!=m.round2double(bod.x,2) || m.round2double(E->geo.Y4,2)!=m.round2double(bod.y,2))
-   			{
-   				canv->MoveTo(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
-   				canv->LineTo(m.L2Px(bod.x),m.L2Py(bod.y));
-   				sipka(canv,(m.L2Px(E->geo.X4)+m.L2Px(bod.x))/2.0,(m.L2Py(E->geo.Y4)+m.L2Py(bod.y))/2.0,m.azimut(m.L2Px(bod.x),m.L2Py(bod.y),m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4))*(-1),true,sipka_velikost,clRed);//zajistí vykreslení šipky - orientace spojovací linie
-   			}
-   		}
-   		else if(v.OBJEKTY->predchozi->n>2)//vykreslení pouze v případě pokdud existjují více jak 2
-   		{
-   			if(m.round2double(E->geo.X4,2)!=m.round2double(v.ELEMENTY->dalsi->geo.X1,2) || m.round2double(E->geo.Y4,2)!=m.round2double(v.ELEMENTY->dalsi->geo.Y1,2))
-   			{
-   				canv->MoveTo(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
-   				canv->LineTo(m.L2Px(v.ELEMENTY->dalsi->geo.X1),m.L2Py(v.ELEMENTY->dalsi->geo.Y1));
-   				sipka(canv,(m.L2Px(E->geo.X4)+m.L2Px(v.ELEMENTY->dalsi->geo.X1))/2.0,(m.L2Py(E->geo.Y4)+m.L2Py(v.ELEMENTY->dalsi->geo.Y1))/2.0,m.azimut(m.L2Px(v.ELEMENTY->dalsi->geo.X1),m.L2Py(v.ELEMENTY->dalsi->geo.Y1),m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4))*(-1),true,sipka_velikost,clRed);//zajistí vykreslení šipky - orientace spojovací linie
-   			}
-   		}
-   		pom=E->dalsi2;
-   		if(E->eID==301)pom=NULL;//spojka si v tomto ukazateli uchovává svoji párovou výhybku
-   		if(pom!=NULL)
-   		{
-   			if(pom->eID==301 && pom->predchozi2==E){bod.x=pom->X;bod.y=pom->Y;}
-   			else {bod.x=pom->geo.X1;bod.y=pom->geo.Y1;}
-   			if(m.round2double(E->geo.X4,2)!=m.round2double(bod.x,2) || m.round2double(E->geo.Y4,2)!=m.round2double(bod.y,2))
-   			{
-   				canv->MoveTo(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
-   				canv->LineTo(m.L2Px(bod.x),m.L2Py(bod.y));
-   				sipka(canv,(m.L2Px(E->geo.X4)+m.L2Px(bod.x))/2.0,(m.L2Py(E->geo.Y4)+m.L2Py(bod.y))/2.0,m.azimut(m.L2Px(bod.x),m.L2Py(bod.y),m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4))*(-1),true,sipka_velikost,clRed);//zajistí vykreslení šipky - orientace spojovací linie
-   	  	}
+			////vykreslení spojnic pokud geometrie nenavazuje
+			canv->Pen->Style=psDash;
+			canv->Pen->Mode=pmCopy;
+			canv->Pen->Width=1;
+			canv->Pen->Color=clRed;
+			canv->Brush->Style=bsClear;
+			if(pom!=NULL)
+			{
+				if(pom->eID==301 && pom->predchozi2==E){bod.x=pom->X;bod.y=pom->Y;}
+				else {bod.x=pom->geo.X1;bod.y=pom->geo.Y1;}
+				if(m.round2double(E->geo.X4,2)!=m.round2double(bod.x,2) || m.round2double(E->geo.Y4,2)!=m.round2double(bod.y,2))
+				{
+					canv->MoveTo(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
+					canv->LineTo(m.L2Px(bod.x),m.L2Py(bod.y));
+					sipka(canv,(m.L2Px(E->geo.X4)+m.L2Px(bod.x))/2.0,(m.L2Py(E->geo.Y4)+m.L2Py(bod.y))/2.0,m.azimut(m.L2Px(bod.x),m.L2Py(bod.y),m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4))*(-1),true,sipka_velikost,clRed);//zajistí vykreslení šipky - orientace spojovací linie
+				}
+			}
+			else if(v.OBJEKTY->predchozi->n>2)//vykreslení pouze v případě pokdud existjují více jak 2
+			{
+				if(m.round2double(E->geo.X4,2)!=m.round2double(v.ELEMENTY->dalsi->geo.X1,2) || m.round2double(E->geo.Y4,2)!=m.round2double(v.ELEMENTY->dalsi->geo.Y1,2))
+				{
+					canv->MoveTo(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
+					canv->LineTo(m.L2Px(v.ELEMENTY->dalsi->geo.X1),m.L2Py(v.ELEMENTY->dalsi->geo.Y1));
+					sipka(canv,(m.L2Px(E->geo.X4)+m.L2Px(v.ELEMENTY->dalsi->geo.X1))/2.0,(m.L2Py(E->geo.Y4)+m.L2Py(v.ELEMENTY->dalsi->geo.Y1))/2.0,m.azimut(m.L2Px(v.ELEMENTY->dalsi->geo.X1),m.L2Py(v.ELEMENTY->dalsi->geo.Y1),m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4))*(-1),true,sipka_velikost,clRed);//zajistí vykreslení šipky - orientace spojovací linie
+				}
+			}
+			pom=E->dalsi2;
+			if(E->eID==301)pom=NULL;//spojka si v tomto ukazateli uchovává svoji párovou výhybku
+			if(pom!=NULL)
+			{
+				if(pom->eID==301 && pom->predchozi2==E){bod.x=pom->X;bod.y=pom->Y;}
+				else {bod.x=pom->geo.X1;bod.y=pom->geo.Y1;}
+				if(m.round2double(E->geo.X4,2)!=m.round2double(bod.x,2) || m.round2double(E->geo.Y4,2)!=m.round2double(bod.y,2))
+				{
+					canv->MoveTo(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
+					canv->LineTo(m.L2Px(bod.x),m.L2Py(bod.y));
+					sipka(canv,(m.L2Px(E->geo.X4)+m.L2Px(bod.x))/2.0,(m.L2Py(E->geo.Y4)+m.L2Py(bod.y))/2.0,m.azimut(m.L2Px(bod.x),m.L2Py(bod.y),m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4))*(-1),true,sipka_velikost,clRed);//zajistí vykreslení šipky - orientace spojovací linie
+				}
 			}
 			//posun na další element
-   		E=v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);//nutné použít tento průcodový algoritmus, v tomto průchodu je použit algoritmus dalsi_krok, nelze užit dalsi_krok pro průchod ve kterém bude vnořený znova algoritmus dalsi_krok, tento alg. používá glob. seznam výhybek, přes které prošel, pokud by běžely dva současně ukládaly by do jednoho seznamu, to by vedlo k chybným výsledkům obou průchodu, viz. https://docs.google.com/document/d/1ApxDG9tpTS6qEpKk2COsvrLZrzDl1fynWlD7xmoE6qM/edit?ts=5e3d669e#heading=h.a4ve3tnox7u5
-   	}
-   	delete E;E=NULL;
-   	pom=NULL;delete pom;
+			E=v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);//nutné použít tento průcodový algoritmus, v tomto průchodu je použit algoritmus dalsi_krok, nelze užit dalsi_krok pro průchod ve kterém bude vnořený znova algoritmus dalsi_krok, tento alg. používá glob. seznam výhybek, přes které prošel, pokud by běžely dva současně ukládaly by do jednoho seznamu, to by vedlo k chybným výsledkům obou průchodu, viz. https://docs.google.com/document/d/1ApxDG9tpTS6qEpKk2COsvrLZrzDl1fynWlD7xmoE6qM/edit?ts=5e3d669e#heading=h.a4ve3tnox7u5
+		}
+		delete E;E=NULL;
+		pom=NULL;delete pom;
 		delete []tab_pruchodu;
 	}
-
-	///////////////VALIDACE její samotné provední, vnitřek metody se provede jen pokud duvod_validovat==2
-	v.VALIDACE();
-
-	///////////////vykreslení VOZÍKů, musí být až za VALIDACí kvůli generování vozíků, které je ve VALIDACi
-	if(F->MOD!=F->Tmod::TVORBA_CESTY && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT)vykresli_voziky(canv);
-
-	//VALIDACE výpis formou zpráv musí být za vozíky, aby byla zcela nahoře
-	if(F->MOD!=F->Tmod::TVORBA_CESTY && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT)vypis_zpravy(canv);
 }
 //---------------------------------------------------------------------------
 //zajišťuje vykreslení pouze obrysu dle typu objektu
@@ -251,7 +264,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
   //highilightování kabiny při přejetí kurzorem přes název objektu, řešeno zde metoda polygon() neumí zvýraznit všechny hrany
 	if(F->OBJEKT_akt==NULL && F->pom!=NULL && F->pom->n==O->n && F->JID==-6)clAkt=m.clIntensive(clStenaKabiny,-50);
 	////vnější obrys kabiny
-	if(!(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=O->n && F->scGPTrackBar_intenzita->Value<5))polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);
+	if(!(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=O->n && F->scGPTrackBar_intenzita->Value<5 || F->MOD==F->SIMULACE && sirka_steny_px==0))polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);
 
 	short highlight=0;//nastavování zda mají být koty highlightovány
 

@@ -148,7 +148,7 @@ double Cmy::P2Lx(long fyzicka)
 {
 	try
 	{
-		return (fyzicka/Form1->Zoom+Form1->Posun.x)*Form1->m2px;
+		return (fyzicka/F->Zoom+F->Posun.x)*F->m2px;
 	}
 	catch(...)
 	{return 0;}
@@ -157,7 +157,7 @@ double Cmy::P2Ly(long fyzicka)
 {
 	try
 	{
-		return -1.0*(fyzicka/Form1->Zoom+Form1->Posun.y)*Form1->m2px;
+		return -1.0*(fyzicka/F->Zoom+F->Posun.y)*F->m2px;
 	}
 	catch(...)
 	{return 0;}

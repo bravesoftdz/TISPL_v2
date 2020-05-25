@@ -317,6 +317,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	predchozi_PM=NULL;
 	scGPTrackBar1->MaxValue=17;
 	if(DEBUG)scGPTrackBar1->MaxValue=20;
+	refreshovat_scGPTrackBar=true;
 
 	//vývojářské featury
 	if(DEBUG && get_user_name()+get_computer_name()=="MartinMARTIN-NOTEBOOK"){/*Button14->Visible=true;*/Button13->Visible=false;}//pokud se dělá překlad u MaKr, je zobrazeno jeho testovací tlačítko
@@ -2741,6 +2742,8 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		FMaximized=false;MaxButtonClick(this);//aby bylo připraveno minimalizační tlačítko
 	}
 
+	Zoom_predchozi_AA=Zoom;//musí být tu, před MÓDy (mohl by být i před kreslením gridu)
+
 	if(MOD!=SIMULACE)
 	{
 		///////při přechodu z nebo do módu TVORBA_CESTY
@@ -2758,17 +2761,14 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		}
 
 		////////jednolivé VRSTVY
-		Zoom_predchozi_AA=Zoom;//musí být tu, před mody (mohl by být i před kreslením gridu)
 		////rastrový uživatelský POKDKLAD
 		Graphics::TBitmap *bmp_total=new Graphics::TBitmap;bmp_total->Width=ClientWidth;bmp_total->Height=ClientHeight;
 		if(d.v.PP.raster.show)nacti_podklad(bmp_total->Canvas);
 		////vykreslení GRIDu
 		if(grid && Zoom_predchozi_AA>0.5 && (Akce==MOVE_BOD||Akce==DRAW_HALA) && prichytavat_k_mrizce==1)d.vykresli_grid(bmp_total->Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí//vykreslení gridu
 		////VEKTORY
-		Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-		bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu //zkoušel jsem nastavit plochu antialiasingu bez ovládacích prvků LeftToolbar a menu, ale kopírování do jiné BMP to zpomalovalo více neooptimalizovaná oblast pro 3xbmp
+		Graphics::TBitmap *bmp_in=new Graphics::TBitmap;bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu //zkoušel jsem nastavit plochu antialiasingu bez ovládacích prvků LeftToolbar a menu, ale kopírování do jiné BMP to zpomalovalo více neooptimalizovaná oblast pro 3xbmp
 		Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
-		d.vykresli_halu(bmp_in->Canvas);
 		d.vykresli_vektory(bmp_in->Canvas);
 		if(Akce==GEOMETRIE)d.smart_kurzor(bmp_in->Canvas,posledni_editovany_element);
 		if(MOD==TVORBA_CESTY)d.kurzor_cesta(bmp_in->Canvas);
@@ -2780,7 +2780,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		d.vykresli_mGridy(bmp_total->Canvas);//přesunuto do vnitř metody: OBJEKT_akt->elementy!=NULL kvůli pohonům
 		////grafické MĚŘÍTKO
 		if(zobrazit_meritko && Akce!=MOVE_HALA && MOD!=TVORBA_CESTY)d.meritko(bmp_total->Canvas);
-		//finální předání bmp_out do Canvasu
+		//finální vykreslení bmp_total do Canvasu
 		Canvas->Draw(0,0,bmp_total);
 		delete (bmp_total);//velice nutné
 		////TIP
@@ -2795,7 +2795,39 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			mGrid_knihovna->Show(Image_knihovna_objektu->Canvas);
 		}
 	}
-
+	else//
+	{
+		if(Akce!=PAN_MOVE)
+		{ //Memo("test vykreslení staticka scena",false,true);
+			Graphics::TBitmap *bmp_total=new Graphics::TBitmap;bmp_total->Width=ClientWidth;bmp_total->Height=ClientHeight;//vytvoření finální bmp, která bude vykreslena do Canvasu formu
+			Graphics::TBitmap *bmp_in=new Graphics::TBitmap;bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;
+			bmp_in->Canvas->Draw(0,0,Staticka_scena);//statická scéna
+			Zoom_predchozi_AA=Zoom;//záloha původního zoomu
+			Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
+			d.vykresli_voziky(bmp_in->Canvas);//dynamická scéna
+			Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
+			Cantialising a;
+			Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
+			bmp_total->Canvas->Draw(0,0,bmp_out);delete(bmp_out);
+			Canvas->Draw(0,0,bmp_total);//finální předání bmp_out do Canvasu
+			delete (bmp_total);//velice nutné
+		}
+	}
+}
+//---------------------------------------------------------------------------
+//vytvoří BMP se statickou scénou
+void TForm1::vytvor_statickou_scenu()
+{
+	delete Staticka_scena;//před vytvořením nové kvůli realokaci nejdříve nutné odstranit
+	if(MOD==SIMULACE)
+	{          //Memo("test vytvoření staticka scena");
+		Staticka_scena=new Graphics::TBitmap;
+		Staticka_scena->Width=ClientWidth*3;Staticka_scena->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu, nicméně nemá smysl nyní Statickou scenu antialiasingovat, protože by se stejně antialiasingovala samostatná dynamická scéna a navíc to způsobovalo zde umístěné grafické chyby
+		Zoom_predchozi_AA=Zoom;//záloha původního zoomu
+		Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
+		d.vykresli_vektory(Staticka_scena->Canvas);
+		Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
+	}
 }
 //---------------------------------------------------------------------------
 void TForm1::nacti_podklad(TCanvas *Canv)
@@ -2827,7 +2859,6 @@ void TForm1::REFRESH()
 {
 	log(__func__);//logování
 	FormPaint(this);
-	if(Label_wip->Visible)Label_wip->Invalidate();//}//pokude je zapntutý antialiasing neproblikne, ale jen se "přeplácne" bitmapou nedojde k probliknutí
 	RM();//korekce chyby oskakování pravého menu
 }
 //---------------------------------------------------------------------------
@@ -4976,7 +5007,6 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 		pom_bod_puv=NULL;delete pom_bod_puv;
 	}
 }
-
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //deaktivuje zaměřovač label a svislice a kolmice
@@ -4985,8 +5015,8 @@ void TForm1::deaktivace_zamerovace()
 	log(__func__);//logování
 	if(Label_zamerovac->Visible)
 	{
-		 d.vykresli_svislici_na_casove_osy(Canvas,minule_souradnice_kurzoru.X,minule_souradnice_kurzoru.Y);
-		 Label_zamerovac->Visible=false;pocitadlo_doby_neaktivity=0;Timer_neaktivity->Enabled=false;//monitoruje dobu nečinosti od znovu
+		d.vykresli_svislici_na_casove_osy(Canvas,minule_souradnice_kurzoru.X,minule_souradnice_kurzoru.Y);
+		Label_zamerovac->Visible=false;pocitadlo_doby_neaktivity=0;Timer_neaktivity->Enabled=false;//monitoruje dobu nečinosti od znovu
 	}
 }
 //---------------------------------------------------------------------------
@@ -5356,6 +5386,7 @@ void TForm1::ZOOM()
 		//Mouse->CursorPos=TPoint(ClientWidth/2,(ClientHeight-RzStatusBar1->Height)/2); - špatně
 		if(vycentrovat)Mouse->CursorPos=TPoint(m.L2Px(akt_souradnice_kurzoru.x),m.L2Py(akt_souradnice_kurzoru.y)+vyska_menu);
 		vycentrovat=true;
+		vytvor_statickou_scenu();//vytvoří BMP s novou statickou scénou, musí být před REFRESH()
 		REFRESH();
 		DuvodUlozit(true);
 	}
@@ -5400,7 +5431,7 @@ void TForm1::ZOOM_WINDOW()
 	Posun.y=m.round(-Centr.y/m2px-(ClientHeight)/2/Zoom);
 	//SB(Zoom,2);už se nepoužívá
 	on_change_zoom_change_scGPTrackBar();
-
+	vytvor_statickou_scenu();//vytvoří BMP se statickou scénou, musí být před REFRESH()
 	REFRESH();
 	//aktualizace_statusbaru(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
 	//checkZoomMenuItems();//povolení či zakázní zoomu
@@ -5515,7 +5546,7 @@ void TForm1::pan_create()
 	Gh-=6;//WA, z nějaké důvodu to chce odebrat, aby byla posouváná plocha kompletní
 	Pan_bmp->Width=ClientWidth;Pan_bmp->Height=ClientHeight-H-Gh;//velikost pan plochy
 	Pan_bmp->Canvas->CopyRect(Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh),Canvas,Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh));//uloží pan výřez
-	scGPButton_bug_report->Visible=true;
+	if(MOD!=SIMULACE)scGPButton_bug_report->Visible=true;
 	//Pan_bmp->SaveToFile("test.bmp");  //pro testovací účely
 }
 //---------------------------------------------------------------------------
@@ -5555,6 +5586,7 @@ void TForm1::pan_move_map()
 		if(d.PosunT.y-(akt_souradnice_kurzoru_PX.y-vychozi_souradnice_kurzoru.y)<0)d.PosunT.y=0;
 		else d.PosunT.y-=(akt_souradnice_kurzoru_PX.y-vychozi_souradnice_kurzoru.y);
 	}
+	vytvor_statickou_scenu();//vytvoří BMP se statickou scénou, musí být před REFRESH()
 	REFRESH();
 	DuvodUlozit(true);
 }
@@ -13329,6 +13361,7 @@ void TForm1::vse_odstranit()
 	predchozi_PM=NULL;delete predchozi_PM;
 	copyObjekt=NULL;delete copyObjekt;
 	copyObjektRzRx.x=0;copyObjektRzRx.y=0;
+	delete Staticka_scena;
 	//delete LogFileStream; //zde nesmí být kvůli logování
 }
 //---------------------------------------------------------------------------
@@ -14175,21 +14208,26 @@ void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 	log(__func__);//logování
 	RO-=(1.5*Zoom/m2px)/20.0;
 	Poffset=0;
-	if(MOD==EDITACE)scGPButton_viditelnostmGridClick(Sender);//zakáže mgridy - dodělat, když nebudou zobrazené....
+
 	Timer_animace->Enabled=!Timer_animace->Enabled;
-	zobrazit_meritko=!Timer_animace->Enabled;
-	d.v.PP.raster.show=!Timer_animace->Enabled;
+//	if(MOD==EDITACE)scGPButton_viditelnostmGridClick(Sender);//zakáže mgridy - dodělat, když nebudou zobrazené....
+//	zobrazit_meritko=!Timer_animace->Enabled;
+//	d.v.PP.raster.show=!Timer_animace->Enabled;
 	if(Timer_animace->Enabled)//běží animace
 	{
 		MOD=SIMULACE;
+		vytvor_statickou_scenu();//načtení statických záležitostí do statické scény, musí být před REFRESH
+		//ovládací prvky
+		scGPButton_bug_report->Visible=false;
+		if(scButton_zamek_layoutu->ImageIndex==68)scButton_zamek_layoutuClick(Sender);//pokud ještě není layout zamčený zamkne, pozor OBSAHUJE REFRESH
+		//tlačítko simulace
 		scGPGlyphButton_PLAY->GlyphOptions->Kind=scgpbgkPause;
 		scGPGlyphButton_PLAY->Hint="zastavit animaci";
 		scGPGlyphButton_PLAY->ShowCaption=true;
-		scGPButton_bug_report->Enabled=false;
 		//if(OBJEKT_akt->pohon!=NULL)Timer_animace->Interval=F->m.round(F->m.get_timePERpx(OBJEKT_akt->pohon->aRD,0));//stejná rychlost pro všechny RD
 		//else
-		Timer_animace->Interval=16;//prozatim
-		//Timer_animace->Interval=ceil(F->m.get_timePERpx(pom->RD,0,F->d.v.vrat_min_rychlost_prejezdu()));//různá rychlost dle RD, s afps se počítá dle min RD, ale nějak špatně vycházela animace ke konci (nestihl vozík vyjet)
+		//Timer_animace->Interval=16;//prozatim
+		Timer_animace->Interval=1;//ceil(m2px/Zoom/d.v.vrat_min_rychlost_prejezdu()*1000.0/fps);   //ceil(F->m.get_timePERpx(pom->RD,0,d.v.vrat_min_rychlost_prejezdu()));//různá rychlost dle RD, s afps se počítá dle min RD, ale nějak špatně vycházela animace ke konci (nestihl vozík vyjet)
 	}
 	else//animace zastavena
 	{
@@ -14202,7 +14240,7 @@ void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Timer_animaceTimer(TObject *Sender)
 {
-	log(__func__);//logování
+	//log(__func__);//logování tady nepoužívat, případně jen v mimořádných testovacích účelech
 	//if(MOD==EDITACE)
 	{
 		double LO=1.5;//lakovací okno
@@ -14237,26 +14275,10 @@ void __fastcall TForm1::Timer_animaceTimer(TObject *Sender)
 			else ROsts=0;
 		}
 
-		Poffset+=1*m2px/Zoom*100;//zajistí posun animace o 1px (tedy nejmenší možnou grafickou jednotku), ale posouvání probíhá v metrech
+		Poffset+=1*m2px/Zoom*100;//zajistí posun animace o 1px (tedy nejmenší možnou grafickou jednotku), ale posouvání probíhá v metrech, 100 je tam jen momentální WA, jinak tam nepatří
 		d.v.generuj_VOZIKY();//velice prozatim
 		REFRESH();
 	}
-//	else//ROMA metoda
-//	{
-//		d.TP.DO+=d.TP.K;//konec zakazky v min
-//		d.TP.OD=d.TP.DO;//od které min se proces začne vypisovat
-//		if(d.TP.DO<=d.TP.KZ)
-//		{
-//			REFRESH();
-//		}
-//		else
-//		{
-//			Timer_animace->Enabled=false;
-//			ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
-//			ButtonPLAY->Hint="spustit animaci";
-//			SyntezaClick(Sender);//vratí statický mod
-//		}
-//	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
@@ -14388,10 +14410,21 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 //	delete E;E=NULL;
 //	delete []tab_pruchodu;
 
-	Tvlakno_obraz *vlakno=new Tvlakno_obraz(true);//spustí vlákno zajišťující stáhnutí mapového podkladu
-	vlakno->FreeOnTerminate=true;//po skončení bude uvolněno
-	vlakno->Resume();
-  //delete vlakno;
+//	Tvlakno_obraz *vlakno=new Tvlakno_obraz(true);//spustí vlákno zajišťující stáhnutí mapového podkladu
+//	vlakno->FreeOnTerminate=true;//po skončení bude uvolněno
+//	vlakno->Resume();
+//	//delete vlakno;
+
+		Timer_animace->Interval=ceil(m2px/Zoom/d.v.vrat_min_rychlost_prejezdu()*1000.0/afps);   //ceil(F->m.get_timePERpx(pom->RD,0,d.v.vrat_min_rychlost_prejezdu()));//různá rychlost dle RD, s afps se počítá dle min RD, ale nějak špatně vycházela animace ke konci (nestihl vozík vyjet)
+		Memo(m2px/Zoom);
+		Memo(m2px/Zoom/d.v.vrat_min_rychlost_prejezdu());
+		Memo(m2px/Zoom/d.v.vrat_min_rychlost_prejezdu()*1000.0);
+		Memo(afps);
+
+//		0,0142857142857143
+//1,71428571428571
+//1714,28571428571
+//INF
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
@@ -14714,13 +14747,15 @@ void __fastcall TForm1::scGPTrackBar1Change(TObject *Sender)
 		case 19:Zoom=30;break;
 	}
 	scLabel_ZOOM->Caption=AnsiString(Zoom*100)+" %";
-	REFRESH();
+	if(refreshovat_scGPTrackBar)REFRESH();
+	else refreshovat_scGPTrackBar=true;
 }
 //---------------------------------------------------------------------------
 //při změně zoomu aktulizuje palec na trackBaru, inverzní funkce k funkci předchozí
 void TForm1::on_change_zoom_change_scGPTrackBar()
 {
-  log(__func__);//logování
+	log(__func__);//logování
+	refreshovat_scGPTrackBar=false;//aby nedocházelo následnou onchange trackbaru (k metodě výše uvedené) k neřízenému a nadbytečnému refreshování
 	if(Zoom==0.25)	scGPTrackBar1->Value=0;
 	if(Zoom==0.5)		scGPTrackBar1->Value=1;
 	if(Zoom==1)			scGPTrackBar1->Value=2;
@@ -14741,7 +14776,7 @@ void TForm1::on_change_zoom_change_scGPTrackBar()
 	if(Zoom==20)		scGPTrackBar1->Value=17;
 	if(Zoom==25)		scGPTrackBar1->Value=18;
 	if(Zoom==30)		scGPTrackBar1->Value=19;
-	scLabel_ZOOM->Caption=AnsiString(Zoom*100)+" %";
+	scLabel_ZOOM->Caption=String(Zoom*100)+" %";
 }
 //---------------------------------------------------------------------------
 //přepínání režimu aplikace návrh ověřování
@@ -16249,7 +16284,7 @@ void TForm1::smaz_kurzor()
 	d.v.vytvor_obraz_DATA();
 }
 //---------------------------------------------------------------------------
-//vypnutí/zapnutí zamčení náhledu
+//vypnutí/zapnutí zamčení editace
 void __fastcall TForm1::scButton_zamekClick(TObject *Sender)
 {
 	log(__func__);//logování

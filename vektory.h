@@ -535,7 +535,7 @@ class Cvektory
 	TObjekt *vrat_objekty_bez_pohonu();//vratí formou ukazatele na pole objekty bez pohonů
 	AnsiString vypis_objekty_s_pohony_bez_roztece(bool shortname=true);//vrátí AnsiString řetezec shortname či name (dle parametru, který je implicitně na shortname=true) seznam objektů, které mají přiřazený pohon bez uvedené rozteče jednotlivé názvy objektů oddělí  ", " tj. čárkou a mezerou, v případě že žádný objekt nenajde, vrátí prázdný řetězec, pozor pohony bez přiřazení k objektům nevypisuje
 	AnsiString vypis_objekty_mimo_100vytizeni(bool shortname=true, bool vypsat_procetna=true, AnsiString separator=", ");//vrátí AnsiString řetezec shortname či name (dle parametru, který je implicitně na shortname=true) seznam objektů podle zakázek, které nemají 100% vytížení/// SMAZAT??
-	double vrat_min_rychlost_prejezdu();//SMAZAT??najde ze všech objektů nejnižší rychlost přejezdu (tj. totál min RD), neřeší přiřazení k pohonům, pomůcka pro stanovení referenční rychlosti animace
+	double vrat_min_rychlost_prejezdu();//najde minimální rychlost pohonu (tj. totál min RD) ze všech použitých pohonů, pomůcka pro stanovení referenční rychlosti animace
 	short smaz_objekt(TObjekt *Objekt);//smaže objekt ze seznamu
 	void zmen_poradi_objektu(TObjekt *aktualni_poradi,TObjekt *nove_poradi);
 	void zmen_poradi_objektu(unsigned long aktualni_poradi,unsigned long nove_poradi);

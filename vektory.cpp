@@ -1162,18 +1162,18 @@ AnsiString Cvektory::vypis_objekty_mimo_100vytizeni(bool shortname, bool vypsat_
 	 return T;
 }
 //---------------------------------------------------------------------------
-//najde ze všech objektů nejnižší rychlost přejezdu (tj. totál min RD), neřeší přiřazení k pohonům, pomůcka pro stanovení referenční rychlosti animace
+//najde minimální rychlost pohonu (tj. totál min RD) ze všech použitých pohonů, pomůcka pro stanovení referenční rychlosti animace
 double Cvektory::vrat_min_rychlost_prejezdu()
 {
 	double minRD=0.0;
-//	if(OBJEKTY->dalsi!=NULL)minRD=OBJEKTY->dalsi->RD;
-//	TObjekt *O=OBJEKTY->dalsi->dalsi;//přeskočí hlavičku a výše uvedený
-//	while (O!=NULL)
-//	{
-//		if(O->RD<minRD)minRD=O->RD;
-//		O=O->dalsi;//posun na další prvek
-//	}
-//	O=NULL;delete O;
+	TPohon *P=POHONY->dalsi;//přeskočí hlavičku a výše uvedený
+	if(P!=NULL)minRD=P->aRD;
+	while (P!=NULL)
+	{
+		if(P->aRD<minRD)minRD=P->aRD;
+		P=P->dalsi;//posun na další prvek
+	}
+	P=NULL;delete P;
 	return minRD;
 }
 //---------------------------------------------------------------------------

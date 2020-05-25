@@ -691,6 +691,7 @@ private:
 	bool pripnuti_dalsich_objektu();//pokud pøi uloení editovaného objektu je detekováno, e konec objketu nenavazuje na zaèátek následujísího objektu je poloen dotaz a po potvrzení dojde ke spojení
 	void spojeni_prvni_posledni(double citlivost=0.5);//kontrola zda na sebe první a polední objekt navazují, pokud jsou blízko u sebe, ale nenavazují - naváe je
 	void Otevri_posledni_ulozeny(UnicodeString soubor);//otevøe jeden z posledních otevøenıch souborù
+	void vytvor_statickou_scenu();//vytvoøí BMP se statickou scénou
 
 	////promìnné
 	TDateTime TIME;
@@ -733,6 +734,7 @@ private:
 	int count_memo;//counter pro memo
 	bool editace_geometrie_spustena;
 	int offset_scGPButton_bug_report;
+	bool refreshovat_scGPTrackBar;//promìnná zajišujíci, e se scGPTracBar nerefreshuje pokud mu pøi zmìnì zoomu mimo scGPTracBar
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
@@ -743,6 +745,7 @@ public:		// User declarations
 	Cgrafy g;
 	TPO_math pm;//INSTANCE NA VİPOÈETNÍ ÈÁST PO tj. PO_math
 	Graphics::TBitmap *Pan_bmp;//kvùli mGridu jinak staèí private
+	Graphics::TBitmap *Staticka_scena;//bitmapa statické scény
 	//uklazatele
 	Cvektory::TObjekt *pom,*pom_vyhybka,*OBJEKT_akt,*copyObjekt;
 	Cvektory::TElement *pom_element,*pom_element_temp,*posledni_editovany_element,*element_temp,*predchozi_PM;//element_temp je nulován pøi kadém pøejetí kurzoru pouíván na vìci kolem PM
