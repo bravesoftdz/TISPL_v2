@@ -1487,7 +1487,6 @@
       StorePaintBuffer = True
       Sizeable = False
       WallpaperIndex = -1
-      ExplicitTop = 300
       object scLabel_zobrazitskryt_steny: TscLabel
         Left = 37
         Top = 0
@@ -1522,7 +1521,6 @@
         VertAlignment = scvtaCenter
         UseFontColorToStyleColor = True
         Caption = '  Zobrazit st'#283'ny'
-        ExplicitTop = 400
       end
       object scGPGlyphButton_zobrazitskryt_steny: TscGPGlyphButton
         Left = 0
@@ -1530,6 +1528,7 @@
         Width = 37
         Height = 34
         Align = alLeft
+        DragKind = dkDock
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clNone
         Font.Height = -11
@@ -1604,7 +1603,7 @@
         GlyphOptions.PressedColorAlpha = 255
         GlyphOptions.FocusedColorAlpha = 255
         GlyphOptions.DisabledColorAlpha = 150
-        GlyphOptions.Kind = scgpbgkCheckOptions
+        GlyphOptions.Kind = scgpbgkMaximize
         GlyphOptions.Thickness = 2
         GlyphOptions.ThicknessScaled = False
         GlyphOptions.Size = 0
@@ -1663,7 +1662,6 @@
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
-    ExplicitTop = 271
     object Item_poznamka: TscGPPanel
       Left = 0
       Top = 205

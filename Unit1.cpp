@@ -318,6 +318,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	scGPTrackBar1->MaxValue=17;
 	if(DEBUG)scGPTrackBar1->MaxValue=20;
 	vlakno_akce=0;//defaultní stav
+	storno=true;//defaultně počítat se stištěným stornem
 
 	//vývojářské featury
 	if(DEBUG && get_user_name()+get_computer_name()=="MartinMARTIN-NOTEBOOK"){/*Button14->Visible=true;*/Button13->Visible=false;}//pokud se dělá překlad u MaKr, je zobrazeno jeho testovací tlačítko
@@ -5178,7 +5179,7 @@ void TForm1::onPopUP(int X, int Y)
 				PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 			}
 			if(pom_bod!=NULL || d.v.PtInBody()!=NULL || pom!=NULL){PopUPmenu->Item_posun_obrysu->Visible=true;PopUPmenu->Panel_UP->Height+=34;}
-			if(JID==5 && pom_element!=NULL && (pom_element->eID==300 || pom_element->eID==301))//nabízení možnosti odstranění výhybky nebo spojky
+			if((JID==5 || JID==6) && pom_element!=NULL && (pom_element->eID==300 || pom_element->eID==301))//nabízení možnosti odstranění výhybky nebo spojky
 			{
         pom_element_temp=pom_element;//uložení pro případ ztráty ukazatele při pohybu kurzorem
         //pom_vyhybka=NULL;//odstrannění uloženého ukazatele, usnadnění pro metodu Smazat1Click
@@ -15411,7 +15412,6 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		////kontrola zda je nutné přemazat obraz
 		if(ms.MyToDouble(FormX->VID)==0 && !scGPButton_ulozit->Enabled)
 		{
-			mazani=true;
 			vymaz_seznam_obrazu();//vymazání nepotřebných obrazů
 			d.v.update_akt_zakazky();
 		}
@@ -15433,7 +15433,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 			predchozi_PM=NULL;
 		}
 		////
-		if(!mazani&&scGPButton_ulozit->Enabled)d.v.uprav_popisky_elementu(NULL);//volání přejmenování elementů, pouze v případě kdy je něco v kabině a bylo stisknuto pouze storno, při ulož je stisk strona volán taky
+		if(storno && scGPButton_ulozit->Enabled)d.v.uprav_popisky_elementu(NULL);//volání přejmenování elementů, pouze v případě kdy je něco v kabině a bylo stisknuto pouze storno, při ulož je stisk strona volán taky
 		pom=NULL;//pom->pohon=NULL;delete pom->pohon;pom=NULL; toto nelze, odpřiřadilo by to pohon i na ostrém
 //		d.v.vymaz_elementy(OBJEKT_akt,true);
 		//if(OBJEKT_akt!=NULL){OBJEKT_akt->pohon=NULL;delete OBJEKT_akt->pohon;}
@@ -15447,7 +15447,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		//mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
 		pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp;posledni_editovany_element=NULL;delete posledni_editovany_element;JID=-1;Akce=NIC;
 		FormX->posledni_E=NULL;//nutné!! slouží k ukládání posledního editovaného elementu (validace, atd.)
-		if(d.v.DATA->dalsi!=NULL && !mazani){d.v.nacti_z_obrazu_DATA(true);}//načtení projektu před editací a smazání obrazů, pokud DATA->dalsi neexistují znamená to, že bylo uloženo, nebude se nic načítat
+		if(d.v.DATA->dalsi!=NULL && storno){d.v.nacti_z_obrazu_DATA(true);}//načtení projektu před editací a smazání obrazů, pokud DATA->dalsi neexistují znamená to, že bylo uloženo, nebude se nic načítat
 		vytvor_obraz();//vytvoření nového obrazu pro layout
 		//vlozit_predavaci_misto_aktualizuj_WT();//zkontroluje, zda nemusí být přidáno nebo odstraněno předávací místo
 		duvod_validovat=2;//vyvolá validaci, zajistí aktualizaci zpráv a výpisu v miniformu zpráv, NECHAT AŽ ZA FUNKČNÍMI ZÁLEŽITOSTMI
@@ -15507,6 +15507,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		DrawGrid_knihovna->Top=10000;//musí být zobrazena, odchytává stisk kláves
 		on_change_zoom_change_scGPTrackBar();//pozor asi volá refresh, změna pořadí
 	}
+	storno=true;//nastavení do defaultního stavu
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
@@ -15819,6 +15820,7 @@ void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
 	nahled_ulozit(false);
 	mazani=true;//použití proměnné, která se v tomto čase nevyužívá, slouží k rozpoznání zda bylo stisknuto dříve storno či uližit
 	//a to z důvodu volání uprav_popisky_elementu(přejmenování změn po stisku storno)
+	storno=false;//důležité nastavení pro storno, rozlišení, že volám storno z tlačítka uložit, tudíž nemazat nic
 	scGPButton_stornoClick(Sender);//další funkcionalita je již stejná jako ve stornu, včetně vymazání ukazatele OBJEKT_akt včetně jeho elementů popř. komor
 	mazani=false;
 }

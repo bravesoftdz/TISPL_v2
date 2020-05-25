@@ -738,6 +738,7 @@ private:
 	bool editace_geometrie_spustena;
 	int offset_scGPButton_bug_report;
 	Tvlakno_obraz *vlakno;
+	bool storno;//slouží k rozlišení jestli bylo stisknuto storno nebo byl zavolán jeho stisk z tlaèítka uložit
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
