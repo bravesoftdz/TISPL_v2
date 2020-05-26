@@ -2797,7 +2797,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			mGrid_knihovna->Show(Image_knihovna_objektu->Canvas);
 		}
 	}
-	else//
+	else//Simulace
 	{
 		if(Akce!=PAN_MOVE)
 		{ //Memo("test vykreslení staticka scena",false,true);
@@ -14849,7 +14849,12 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 //	vlakno->Resume();
 //	//delete vlakno;
 
-		Sk(ceil(m2px/Zoom/d.v.vrat_min_rychlost_prejezdu()*1000.0/fps));   //ceil(F->m.get_timePERpx(pom->RD,0,d.v.vrat_min_rychlost_prejezdu()));//různá rychlost dle RD, s afps se počítá dle min RD, ale nějak špatně vycházela animace ke konci (nestihl vozík vyjet)
+		//Sk(ceil(m2px/Zoom/d.v.vrat_min_rychlost_prejezdu()*1000.0/fps));   //ceil(F->m.get_timePERpx(pom->RD,0,d.v.vrat_min_rychlost_prejezdu()));//různá rychlost dle RD, s afps se počítá dle min RD, ale nějak špatně vycházela animace ke konci (nestihl vozík vyjet)
+		//Sk(Form_parametry_linky->scComboBox_vyber_produkt->ItemIndex);
+
+
+
+
 
 }
 //---------------------------------------------------------------------------
