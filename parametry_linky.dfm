@@ -7335,8 +7335,8 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 9242
-    Top = 14774
+    Left = 9314
+    Top = 14894
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -7361,9 +7361,8 @@ object Form_parametry_linky: TForm_parametry_linky
     GlyphThickness = 1
     Kind = scgpgkOneGear
     TransparentBackground = True
-    ExplicitLeft = 9239
-    ExplicitTop = 14769
-    ExplicitWidth = 100
+    ExplicitLeft = 9251
+    ExplicitTop = 14789
   end
   object scGPSwitch: TscGPSwitch
     Left = 762
@@ -7550,6 +7549,73 @@ object Form_parametry_linky: TForm_parametry_linky
     ThumbShapeStyle = scgptssRoundRect
     ThumbCursor = crDefault
     ThumbUseCursor = False
+  end
+  object scComboBox_vyber_produkt: TscComboBox
+    Left = 578
+    Top = 413
+    Width = 145
+    Height = 21
+    ItemIndex = 1
+    Items.Strings = (
+      'obalov'#225' z'#243'na'
+      'zrc'#225'dka'
+      #269'tverec')
+    WordBreak = False
+    SelectionStyle = scstStyled
+    SelectionColor = clNone
+    SelectionTextColor = clHighlightText
+    ImageIndex = -1
+    ItemHeight = 15
+    TabOrder = 27
+    Text = 'zrc'#225'dka'
+    Visible = False
+    StyleKind = scscbDefault
+    ShowFocusRect = True
+    OnChange = scComboBox_vyber_produktChange
+  end
+  object scCheckBox_vyber_produkt: TscCheckBox
+    Left = 745
+    Top = 407
+    Width = 147
+    Height = 35
+    TabOrder = 28
+    TabStop = True
+    Visible = False
+    CustomCheckedImageIndex = -1
+    CustomCheckedImageHotIndex = -1
+    CustomCheckedImagePressedIndex = -1
+    CustomCheckedImageDisabledIndex = -1
+    CustomUnCheckedImageIndex = -1
+    CustomUnCheckedImageHotIndex = -1
+    CustomUnCheckedImagePressedIndex = -1
+    CustomUnCheckedImageDisabledIndex = -1
+    CustomGrayedImageIndex = -1
+    CustomGrayedImageHotIndex = -1
+    CustomGrayedImagePressedIndex = -1
+    CustomGrayedImageDisabledIndex = -1
+    UseFontColorToStyleColor = False
+    Animation = False
+    Caption = 'zobrazit obal. z'#243'nu jigu'
+    CanFocused = True
+    Spacing = 1
+    Layout = blGlyphLeft
+    ImageIndex = -1
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clHighlight
+    GlowEffect.AlphaValue = 255
+    GlowEffect.GlowSize = 7
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    GlowEffect.HotColor = clNone
+    GlowEffect.PressedColor = clNone
+    GlowEffect.FocusedColor = clNone
+    GlowEffect.PressedGlowSize = 7
+    GlowEffect.PressedAlphaValue = 255
+    GlowEffect.States = [scsHot, scsPressed, scsFocused]
+    ImageGlow = True
+    Checked = False
+    ShowFocusRect = True
   end
   object rHTMLHint1: TrHTMLHint
     HintFont.Charset = DEFAULT_CHARSET
