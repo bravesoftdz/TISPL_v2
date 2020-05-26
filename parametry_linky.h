@@ -112,6 +112,8 @@ __published:	// IDE-managed Components
   TscGPTrackBar *scGPTrackBar_uchyceni;
   TscHTMLLabel *scHTMLLabel1;
 	TscHTMLLabel *scHTMLLabel_posuvnik;
+  TscComboBox *scComboBox_vyber_produkt;
+  TscCheckBox *scCheckBox_vyber_produkt;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -170,6 +172,7 @@ __published:	// IDE-managed Components
   void __fastcall scGPTrackBar_uchyceniMouseMove(TObject *Sender, TShiftState Shift,
           int X, int Y);
   void __fastcall scGPNumericEdit_delka_podvozekChange(TObject *Sender);
+  void __fastcall scComboBox_vyber_produktChange(TObject *Sender);
 
 
 

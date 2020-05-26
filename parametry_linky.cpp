@@ -225,6 +225,12 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
    rHTMLLabel_info_zmenaR->Top= Button_storno->Top - Button_storno->Height + 5;
    rHTMLLabel_info_zmenaR->Left=Button_storno->Left;
    rHTMLLabel_info_zmenaR->Caption="";
+
+  // scComboBox_vyber_produkt->Top= Button_storno->Top - Button_storno->Height + 5;
+  // scComboBox_vyber_produkt->Left =  Button_storno->Left + scComboBox_vyber_produkt->Width;
+
+  // scCheckBox_vyber_produkt->Top= scComboBox_vyber_produkt->Top;
+  // scCheckBox_vyber_produkt->Left =  scComboBox_vyber_produkt->Left + scComboBox_vyber_produkt->Width;
 	 //Nastav_zamky(empty_klik_ico,empty_klik);
 	 vypis(""); VID=-1;
 
@@ -628,6 +634,8 @@ void __fastcall TForm_parametry_linky::Button_stornoClick(TObject *Sender)
 	F->Layout->Options->FrameNormalColor=F->scGPPanel_mainmenu->FillColor;
 	F->Schema->Options->NormalColor=F->DetailsButton->Options->NormalColor;
 	F->Schema->Options->FrameNormalColor=F->DetailsButton->Options->NormalColor;
+  scComboBox_vyber_produkt->Visible=false;
+  scCheckBox_vyber_produkt->Visible=false;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::KonecClick(TObject *Sender)
@@ -657,6 +665,9 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		double Takt;
 		bool volat_aktualizaci=false;
 		int aktualizace_id;
+
+    scCheckBox_vyber_produkt->Visible=false;
+    scComboBox_vyber_produkt->Visible=false;
 
 
      //pøed samotnım uloením, kontrola zdali jsou podstatné údaje u pohonu nastaveny
@@ -1063,6 +1074,19 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_add_mezi_pohonyClick(TObj
 void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 {
   F->log(__func__); //logování
+  if(Key==120)//F9 nastav produkty
+	{
+		if (scComboBox_vyber_produkt->Visible==true)
+    {
+    scComboBox_vyber_produkt->Visible=false;
+    scCheckBox_vyber_produkt->Visible=false;
+    }
+    else
+    {
+    scComboBox_vyber_produkt->Visible=true;
+    scCheckBox_vyber_produkt->Visible=true;
+    }
+	}
 	if(Key==13)//ENTER
 	{
 		 if(Button_save->Enabled)Button_saveClick(Sender);//pokud jsou zároveò splnìny podmínky pro stisk OK
@@ -2414,4 +2438,12 @@ void __fastcall TForm_parametry_linky::scGPNumericEdit_delka_podvozekChange(TObj
 }
 //---------------------------------------------------------------------------
 
+
+void __fastcall TForm_parametry_linky::scComboBox_vyber_produktChange(TObject *Sender)
+
+{
+if(scComboBox_vyber_produkt->ItemIndex==0) scCheckBox_vyber_produkt->Enabled=false;
+else scCheckBox_vyber_produkt->Enabled=true;
+}
+//---------------------------------------------------------------------------
 
