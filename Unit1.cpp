@@ -2808,7 +2808,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
 			d.vykresli_elementy(bmp_in->Canvas,2);//dynamická scéna
 			d.vykresli_voziky(bmp_in->Canvas);//dynamická scéna
-			d.vykresli_vozik(bmp_in->Canvas,0,m.P2Lx(0+Poffset),m.P2Ly(1000),d.v.PP.delka_jig,d.v.PP.sirka_jig,0,0);
+			//pouze testovací d.vykresli_vozik(bmp_in->Canvas,0,m.P2Lx(0+Poffset*Zoom),m.P2Ly(1000),d.v.PP.delka_jig,d.v.PP.sirka_jig,0,0);
 			Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 			Cantialising a;
 			Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
@@ -14304,7 +14304,7 @@ void __fastcall TForm1::Timer_animaceTimer(TObject *Sender)
 			else ROsts=0;
 		}
 
-		Poffset+=1;//m2px*3;///(1*m2px/(Zoom);//zajistí posun animace vždy o 1px (tedy nejmenší možnou grafickou jednotku) dle zoomu, ale posouvání probíhá v metrech
+		Poffset+=1;//zajistí posun animace vždy o 1s reálného času (strojového dle Timer_animace->Interval, který by měl reflektovat aktuální rychlosti zajišťující plynulost animace)
 		d.v.generuj_VOZIKY();//velice prozatim
 		REFRESH();
 	}
