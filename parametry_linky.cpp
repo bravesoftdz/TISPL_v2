@@ -226,11 +226,11 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
    rHTMLLabel_info_zmenaR->Left=Button_storno->Left;
    rHTMLLabel_info_zmenaR->Caption="";
 
-  // scComboBox_vyber_produkt->Top= Button_storno->Top - Button_storno->Height + 5;
-  // scComboBox_vyber_produkt->Left =  Button_storno->Left + scComboBox_vyber_produkt->Width;
-
-  // scCheckBox_vyber_produkt->Top= scComboBox_vyber_produkt->Top;
-  // scCheckBox_vyber_produkt->Left =  scComboBox_vyber_produkt->Left + scComboBox_vyber_produkt->Width;
+//   scComboBox_vyber_produkt->Top= Button_storno->Top + Button_storno->Height ;
+//   scComboBox_vyber_produkt->Left =  Button_storno->Left + scComboBox_vyber_produkt->Width + 10 ;
+//
+//   scCheckBox_vyber_produkt->Top= scComboBox_vyber_produkt->Top;
+//   scCheckBox_vyber_produkt->Left =  scComboBox_vyber_produkt->Left + scComboBox_vyber_produkt->Width;
 	 //Nastav_zamky(empty_klik_ico,empty_klik);
 	 vypis(""); VID=-1;
 
@@ -2290,7 +2290,9 @@ void TForm_parametry_linky::getmGridColors()
 	 Button_storno->Top=Button_save->Top;//Form_parametry_linky->Height - 40;
    scGPGlyphButton_DEL_nepouzite->Top=Button_save->Top;
 	 scGPGlyphButton_DEL_nepouzite->Left=PL_mGrid->Columns[8].Left - 5; //minus kvuli oramovani buttonu, které se zobrazí pøi najetí myší
-
+  // scComboBox_vyber_produkt->Top = Button_storno->Top + Button_storno->Height;
+   //scComboBox_vyber_produkt->Left =
+  // scCheckBox_vyber_produkt->Left
   scGPGlyphButton_OPTIONS->Top=PL_mGrid->Top + PL_mGrid->Height ;
 	scGPGlyphButton_OPTIONS->Left=Button_save->Left + Button_save->Width + 350;
 

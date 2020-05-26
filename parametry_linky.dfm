@@ -7335,8 +7335,8 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 9314
-    Top = 14894
+    Left = 9350
+    Top = 14954
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -7551,8 +7551,8 @@ object Form_parametry_linky: TForm_parametry_linky
     ThumbUseCursor = False
   end
   object scComboBox_vyber_produkt: TscComboBox
-    Left = 578
-    Top = 413
+    Left = 529
+    Top = 8
     Width = 145
     Height = 21
     ItemIndex = 1
@@ -7574,9 +7574,9 @@ object Form_parametry_linky: TForm_parametry_linky
     OnChange = scComboBox_vyber_produktChange
   end
   object scCheckBox_vyber_produkt: TscCheckBox
-    Left = 745
-    Top = 407
-    Width = 147
+    Left = 695
+    Top = 0
+    Width = 148
     Height = 35
     TabOrder = 28
     TabStop = True
