@@ -6151,7 +6151,8 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 			//ukončení editace geometrie
 			if(vypnout)
 			{
-		  	AnsiString T;
+        Akce=BLOK;//blokace akce, aby se nespoštěl refresh při změně viditelnosti vrstev
+				AnsiString T;
 		  	if(T==0 || T=="")rotace_jigu=0;else rotace_jigu=1;
 		  	T=readINI("nastaveni_editace","zobrazeni_pozic"); //zobrazit pozice
 		  	if(T==0 || T=="")zobrazit_pozice=0;else zobrazit_pozice=1;
@@ -6392,6 +6393,7 @@ void TForm1::add_vyhybka_spojka()
 			Akce=NIC;//vložena výhybka i spojka ukončení vkládání
 			vytvor_obraz();
 			//navrácení původního stavu vykreslovacích vrstev
+			Akce=BLOK;
     	AnsiString T;
     	if(T==0 || T=="")rotace_jigu=0;else rotace_jigu=1;
     	T=readINI("nastaveni_editace","zobrazeni_pozic"); //zobrazit pozice
@@ -7061,6 +7063,19 @@ void TForm1::vlozeni_editace_geometrie()
 void TForm1::ukonceni_geometrie(bool kontrola)
 {
 	log(__func__);//logování
+
+	////aktualizace indexů
+	unsigned long n=1;
+	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+	while(E!=NULL)
+	{
+		E->n=n;
+		n++;
+		E=d.v.dalsi_krok(E);
+	}
+	delete E;E=NULL;
+	d.v.uprav_popisky_elementu(NULL);
+
 	//////uzavření kruhu
 //	if(kontrola && pom->dalsi==NULL && OBJEKT_akt->n!=1 && posledni_editovany_element!=NULL)
 //	{
@@ -7089,6 +7104,7 @@ void TForm1::ukonceni_geometrie(bool kontrola)
 	if(kontrola && (OBJEKT_akt->n==1 || OBJEKT_akt->n==d.v.OBJEKTY->predchozi->n || zmena))spojeni_prvni_posledni();//kontrola zda mám dostatečný počet objektů a zda je možno spojit je automaticky
 
 	//////navrácení původních hodnot
+	Akce=BLOK;
 	AnsiString T;
 	if(T==0 || T=="")rotace_jigu=0;else rotace_jigu=1;
 	T=readINI("nastaveni_editace","zobrazeni_pozic"); //zobrazit pozice
@@ -7123,7 +7139,7 @@ void TForm1::ukonceni_geometrie(bool kontrola)
 	else scGPCheckBox_popisek_pohonu->Checked=false;
 
 	//pokud existují výhybky může dojít v průběhu editace k umožnění nebo znemožnění přiřazovat pohon na vedlejší větev, tato metoda nastaví mGridy na výchozí
-	if(d.v.pocet_vyhybek>0)mGrid_on_mGrid();
+	//if(d.v.pocet_vyhybek>0)mGrid_on_mGrid();
 	//kontrola zda editací geometrie nedošlo ke změně
 	vlozit_predavaci_misto_aktualizuj_WT();
 	nahled_ulozit(true);
@@ -9161,7 +9177,7 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 		B=NULL;delete B;
 		C1=NULL;delete C1;
 		C2=NULL;delete C2;
-	}
+	}      ;
 }
 //---------------------------------------------------------------------------
 //rozhodne zda mají být prohozeny sloupce PM, podle trendu geometrie
@@ -11588,7 +11604,7 @@ void __fastcall TForm1::DrawGrid_geometrieMouseDown(TObject *Sender, TMouseButto
 		stisknute_leve_tlacitko_mysi=false;//nutné!!! zustává aktivníc z dblclicku
 		REFRESH(false);
 	}
-	else {Akce=NIC;Akce_temp=NIC;REFRESH(false);}//vypunutí akce geometrie
+	else {ukonceni_geometrie();}//vypunutí akce geometrie
 	if(Col==1 && OBJEKT_akt->pohon!=NULL && pom->id!=3 && (d.v.ZAKAZKA_akt==NULL || d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n==0))
 	{
 		element_id=200;
@@ -12375,26 +12391,12 @@ void TForm1::NP_input()
 				E->mGrid=new TmGrid(F);
 				E->mGrid->Tag=6;//ID formu
 				E->mGrid->ID=E->n;
-				//aktualizace pohonu
-				if(E->pohon!=NULL)
-				{
-					Cvektory::TPohon *p=d.v.vrat_pohon(E->pohon->n);
-					if(p!=NULL)E->pohon->name=p->name;
-					else E->pohon=NULL;
-					p=NULL;delete p;
-				}
 				design_element(E,true);//znovuvytvoření tabulek
 				if(E->sparovany!=NULL && E->sparovany->objekt_n==OBJEKT_akt->n)E->sparovany=d.v.vrat_element(OBJEKT_akt,E->sparovany->n);//atualizace ukazatelů
 				if(d.v.vrat_druh_elementu(E)==0)d.v.reserve_time(E);//aktualizace RT, v případě, že došlo ke změně přejezdu
 				if(E->eID==200 || E->eID==300)
 				{
-			  	poh_tab=true;//pohonová tabulka v editaci bude exitovat
-//			  	//otevřít combo, pokud není vybrán pohon
-//					TscGPComboBox *C1=E->mGrid->getCombo(3,2),*C2=E->mGrid->getCombo(4,2);
-//					if(C1!=NULL && C1->ItemIndex==0 && C1->Enabled){C1->DropDown();FormX->vstoupeno_elm=true;Memo("rozbalit");}
-//					if(C2!=NULL && C2->ItemIndex==0 && C2->Enabled){C2->DropDown();FormX->vstoupeno_elm=true;Memo("rozbalit");}
-//					C1=NULL;C2=NULL;
-//					delete C1;delete C2;
+					poh_tab=true;//pohonová tabulka v editaci bude exitovat
 				}
 			}
 			E=d.v.dalsi_krok(E,OBJEKT_akt);
@@ -14334,35 +14336,36 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
 	////cyklus pro otevírání a zavírání objektu s volitelným krokem + měření času
-	TDateTime start;
-	String s;               // Cvektory::TElement *E=d.v.ELEMENTY->dalsi,*e=NULL;
-	double cas=0,celkem_otevreni=0,celkem_zavreni=0;
-	unsigned int pocet_kroku=10;
-	for(unsigned int i=0;i<pocet_kroku;i++)
-	{
-		start=Now();
-//		E=d.v.ELEMENTY->dalsi;
-//		while(E!=NULL)
-//		{
-//			e=new Cvektory::TElement;d.v.kopiruj_element(E,e);
-//			delete e;e=NULL;
-//			E=E->dalsi;
-//		}
-//		delete E;E=NULL;
-		pom=d.v.OBJEKTY->dalsi;//predchozi->predchozi->predchozi;
-		NP_input();
-		cas=ms.MyToDouble(TimeToStr(Now()-start).SubString(6,2));
-		celkem_otevreni+=cas;
-		Memo("Čas otevření: "+AnsiString(cas));
-		start=Now();
-		scGPButton_stornoClick(this);
-		cas=ms.MyToDouble(TimeToStr(Now()-start).SubString(6,2));
-		celkem_zavreni+=cas;
-		Memo("Čas zavření: "+AnsiString(cas));
-	}
-	Memo("------------");
-	Memo("Průměrný čas otevření: "+AnsiString(celkem_otevreni/(double)pocet_kroku));
-	Memo("Průměrný čas zavření: "+AnsiString(cas/(double)pocet_kroku));
+//	TDateTime start;
+//	String s;
+//	double cas=0,celkem_otevreni=0,celkem_zavreni=0;
+//	unsigned int pocet_kroku=10;
+//	for(unsigned int i=0;i<pocet_kroku;i++)
+//	{
+//		start=Now();
+//		pom=d.v.OBJEKTY->dalsi;//predchozi->predchozi->predchozi;
+//		NP_input();
+//		cas=ms.MyToDouble(TimeToStr(Now()-start).SubString(6,2));
+//		celkem_otevreni+=cas;
+//		Memo("Čas otevření: "+AnsiString(cas));
+//		start=Now();
+//		scGPButton_stornoClick(this);
+//		cas=ms.MyToDouble(TimeToStr(Now()-start).SubString(6,2));
+//		celkem_zavreni+=cas;
+//		Memo("Čas zavření: "+AnsiString(cas));
+//	}
+//	Memo("------------");
+//	Memo("Průměrný čas otevření: "+AnsiString(celkem_otevreni/(double)pocet_kroku));
+//	Memo("Průměrný čas zavření: "+AnsiString(cas/(double)pocet_kroku));
+
+//  Memo3->Clear();
+//	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+//	while(E!=NULL)
+//	{
+//		Memo(E->n);
+//		E=d.v.dalsi_krok(E);
+//	}
+//	delete E;E=NULL;
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -15501,6 +15504,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		{
 			vymaz_seznam_obrazu();//vymazání nepotřebných obrazů
 			d.v.update_akt_zakazky();
+			storno=false;
 		}
 
 		////mazání mGridů
@@ -15534,7 +15538,11 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		//mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
 		pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp;posledni_editovany_element=NULL;delete posledni_editovany_element;JID=-1;Akce=NIC;
 		FormX->posledni_E=NULL;//nutné!! slouží k ukládání posledního editovaného elementu (validace, atd.)
-		if(d.v.DATA->dalsi!=NULL && storno){d.v.nacti_z_obrazu_DATA(true);duvod_validovat=2;}//načtení projektu před editací a smazání obrazů, pokud DATA->dalsi neexistují znamená to, že bylo uloženo, nebude se nic načítat
+		if(d.v.DATA->dalsi!=NULL && storno)//pokud bylo stisknuto storno a je třeba přepsat obraz
+		{
+			d.v.nacti_z_obrazu_DATA(true);//načtení projektu před editací a smazání obrazů
+			duvod_validovat=2;//pouze v případě, že přepisuji obraz
+		}
 		vytvor_obraz();//vytvoření nového obrazu pro layout
 		//vlozit_predavaci_misto_aktualizuj_WT();//zkontroluje, zda nemusí být přidáno nebo odstraněno předávací místo
 		//duvod_validovat=2;//vyvolá validaci, zajistí aktualizaci zpráv a výpisu v miniformu zpráv, NECHAT AŽ ZA FUNKČNÍMI ZÁLEŽITOSTMI
@@ -17068,7 +17076,7 @@ void __fastcall TForm1::scGPTrackBar_intenzitaChange(TObject *Sender)
 void __fastcall TForm1::scGPCheckBox_zobrazit_rotace_jigu_na_otocichClick(TObject *Sender)
 {
 	log(__func__);//logování
-	if(Akce==GEOMETRIE || Akce==NIC)
+	if(Akce==NIC)
 	{
 		if(scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked)rotace_jigu=1;
 		else rotace_jigu=0;
@@ -17080,7 +17088,7 @@ void __fastcall TForm1::scGPCheckBox_zobrazit_rotace_jigu_na_otocichClick(TObjec
 void __fastcall TForm1::scGPCheckBox_zobrazit_poziceClick(TObject *Sender)
 {
 	log(__func__);//logování
-	if(Akce==GEOMETRIE || Akce==NIC)
+	if(Akce==NIC)
 	{
 		if(scGPCheckBox_zobrazit_pozice->Checked)zobrazit_pozice=1;
 		else zobrazit_pozice=0;
@@ -17099,7 +17107,7 @@ void __fastcall TForm1::Memo3KeyDown(TObject *Sender, WORD &Key, TShiftState Shi
 void __fastcall TForm1::scGPCheckBox1_popiskyClick(TObject *Sender)
 {
 	log(__func__);//logování
-	if(Akce==GEOMETRIE || Akce==NIC)
+	if(Akce==NIC)
 	{
 		if(scGPCheckBox1_popisky->Checked)zobrazit_popisky=1;
 		else zobrazit_popisky=0;
@@ -17111,7 +17119,7 @@ void __fastcall TForm1::scGPCheckBox1_popiskyClick(TObject *Sender)
 void __fastcall TForm1::scGPCheckBox_rozmisteni_vozikuClick(TObject *Sender)
 {
 	log(__func__);//logování
-	if(Akce==GEOMETRIE || Akce==NIC)
+	if(Akce==NIC)
 	{    //doplnit
 		if(scGPCheckBox_rozmisteni_voziku->Checked)zobrazit_rozmisteni_voziku=1;
 		else zobrazit_rozmisteni_voziku=0;
@@ -17123,7 +17131,7 @@ void __fastcall TForm1::scGPCheckBox_rozmisteni_vozikuClick(TObject *Sender)
 void __fastcall TForm1::scGPCheckBox_zobrazit_kolejeClick(TObject *Sender)
 {
 	log(__func__);//logování
-	if(Akce==GEOMETRIE || Akce==NIC)
+	if(Akce==NIC)
 	{
 		if(scGPCheckBox_zobrazit_koleje->Checked)zobrazit_koleje=1;
 		else zobrazit_koleje=0;
@@ -17143,7 +17151,7 @@ void __fastcall TForm1::scGPSwitch1ChangeState(TObject *Sender)
 void __fastcall TForm1::scGPCheckBox_zobrazit_palceClick(TObject *Sender)
 {
 	log(__func__);//logování
-	if(Akce==GEOMETRIE || Akce==NIC)
+	if(Akce==NIC)
 	{
 		if(scGPCheckBox_zobrazit_palce->Checked)zobrazit_palce=1;
 		else zobrazit_palce=0;
@@ -17412,7 +17420,7 @@ void __fastcall TForm1::Timer_getjobidTimer(TObject *Sender)
 void __fastcall TForm1::scGPCheckBox_popisek_pohonuClick(TObject *Sender)
 {
 	log(__func__);//logování
-	if(Akce==GEOMETRIE || Akce==NIC)
+	if(Akce==NIC)
 	{
 		if(scGPCheckBox_popisek_pohonu->Checked)zobrazit_popisek_pohonu=1;
 		else zobrazit_popisek_pohonu=0;
@@ -17433,10 +17441,10 @@ void TForm1::vytvor_obraz(bool stornoUNDO)
 	log(__func__);
 	if(stornoUNDO)vlakno_akce=2;//vytvoření obrazu pro UNDO a storno
 	else vlakno_akce=1;//vytvoření obrazu pro UNDO
-//	vlakno_obraz=new Tvlakno_obraz(true);//spustí vlákno zajišťující stáhnutí mapového podkladu
-//	vlakno_obraz->FreeOnTerminate=true;//po skončení bude uvolněno
-//	vlakno_obraz->Resume();
-	d.v.vlakno_obraz();
+	vlakno_obraz=new Tvlakno_obraz(true);//spustí vlákno zajišťující stáhnutí mapového podkladu
+	vlakno_obraz->FreeOnTerminate=true;//po skončení bude uvolněno
+	vlakno_obraz->Resume();
+	//d.v.vlakno_obraz();
 }
 //---------------------------------------------------------------------------
 //vymaže všechny obrazy v pořadníku
