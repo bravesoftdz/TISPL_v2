@@ -36,29 +36,5 @@ void __fastcall Tvlakno_obraz::Execute()
 //---------------------------------------------------------------------------
 void __fastcall Tvlakno_obraz::test()
 {
-	F->d.v.test_vlakna(i);
-//	switch(F->vlakno_akce)
-//	{
-//		//vytvoøení obrazu pro UNDO
-//		case 1:
-//		{
-//			F->d.v.vytvor_obraz_DATA();
-//			break;
-//		}
-//		//vytvoøení obrazu pro UNDO + storno
-//		case 2:
-//		{
-//			F->d.v.vytvor_obraz_DATA(true);
-//			F->d.v.vytvor_obraz_DATA();
-//			break;
-//		}
-//		//vymazání seznamu obrazù
-//		case 3:
-//		{
-//			F->d.v.vymaz_seznam_DATA();
-//			F->d.v.hlavicka_DATA();
-//			break;
-//		}
-//		default:break;
-//	}
+	F->d.v.vlakno_obraz();//provádí operace s obrazem na vláknì
 }

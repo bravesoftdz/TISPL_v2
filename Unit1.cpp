@@ -9007,25 +9007,25 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 		TscGPComboBox *C=E->mGrid->getCombo(sloupec,pozice);
 		if(C!=NULL)
 		{
-	  	C->Clear();
+			C->Clear();
 			C->Font->Color=(TColor)RGB(43,87,154);
 			C->Options->FontHotColor=(TColor)RGB(43,87,154);
 			C->Options->FontPressedColor=(TColor)RGB(43,87,154);
 			C->Options->FontFocusedColor=(TColor)RGB(43,87,154);
-	  	C->BiDiMode=bdRightToLeft;
-	  	TscGPListBoxItem *I;
-	  	I=C->Items->Add();
+			C->BiDiMode=bdRightToLeft;
+			TscGPListBoxItem *I;
+			I=C->Items->Add();
 	  	I->Caption="180-";//kvůli opačnému zarovnání musí být číslo zapsáno jako řetězec se znaménkem na konci!
-	  	I=C->Items->Add();
-	  	I->Caption="90-";
-	  	I=C->Items->Add();
-	  	I->Caption=90;
-	  	I=C->Items->Add();
+			I=C->Items->Add();
+			I->Caption="90-";
+			I=C->Items->Add();
+			I->Caption=90;
+			I=C->Items->Add();
 	  	I->Caption=180;
 	  	I=NULL;delete I;
 	  	//přiřazení COMBA
 	  	if(E->rotace_jig==-180)C->ItemIndex=0;
-	  	if(E->rotace_jig==-90)C->ItemIndex=1;
+			if(E->rotace_jig==-90)C->ItemIndex=1;
 	  	if(E->rotace_jig==90)C->ItemIndex=2;
 	  	if(E->rotace_jig==180)C->ItemIndex=3;
 		}
@@ -9056,7 +9056,7 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 	  	I=C->Items->Add();
 	  	I->Caption=ls->Strings[248];//"střed";
 			I=C->Items->Add();
-	  	I->Caption=ls->Strings[249];//"celý";
+			I->Caption=ls->Strings[249];//"celý";
 	  	I=NULL;delete I;
 	  	//přiřazení COMBA
 			C->ItemIndex=E->data.PD;
@@ -9077,21 +9077,21 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 			C1->Options->FontPressedColor=(TColor)RGB(43,87,154);C2->Options->FontPressedColor=(TColor)RGB(43,87,154);
 			C1->Options->FontFocusedColor=(TColor)RGB(43,87,154);C2->Options->FontFocusedColor=(TColor)RGB(43,87,154);
 			C1->BiDiMode=bdRightToLeft;C2->BiDiMode=bdRightToLeft;
-   		C1->Enabled=true;C2->Enabled=true;
+			C1->Enabled=true;C2->Enabled=true;
 			//přidávání itemů do comba
    		TscGPListBoxItem *I1,*I2;
    		I1=C1->Items->Add();I2=C2->Items->Add();
    		if(d.v.POHONY->dalsi!=NULL){I1->Caption=ls->Strings[218];I2->Caption=ls->Strings[218];}//vyberte pohon     217 = žádný pohon k výberu
    		else {I1->Caption="Žádný pohon";I2->Caption="Žádný pohon";}
    		Cvektory::TPohon *p=d.v.POHONY->dalsi;
-   		while(p!=NULL)
+			while(p!=NULL)
    		{
    			I1=C1->Items->Add();I2=C2->Items->Add();
    			I1->Caption=p->name;I2->Caption=p->name;
    			p=p->dalsi;
    		}
    		delete p;p=NULL;
-   		//přiřazení itemindexu podle pohonu na vedlejší větvi, pokud je definovaná
+			//přiřazení itemindexu podle pohonu na vedlejší větvi, pokud je definovaná
 			C1->ItemIndex=0;C2->ItemIndex=0;
 			//kontrola zda budou prohozeny sloupce
 			if(prohodit_sloupce_PM(E))
@@ -9105,21 +9105,21 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 			//přiřazení itemindexů
 			if(E->pohon!=NULL)C1->ItemIndex=E->pohon->n;
    		if(E->eID==300)//pro výhybku
-   		{
+			{
         //default C2
 				if(E->dalsi2!=E->predchozi2 && E->dalsi2->pohon!=NULL)C2->ItemIndex=E->dalsi2->pohon->n;
 				if(E->dalsi2==E->predchozi2)C2->Enabled=false;
    		}
    		else//pro PM
    		{
-   			if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)C2->ItemIndex=E->dalsi->pohon->n;
+				if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)C2->ItemIndex=E->dalsi->pohon->n;
    			if(E->dalsi==NULL && d.v.ELEMENTY->dalsi->pohon!=NULL)C2->ItemIndex=d.v.ELEMENTY->dalsi->pohon->n;
    			//zakazování comb
    			if(E->objekt_n!=OBJEKT_akt->n)C1->Enabled=false;
    			if((E->dalsi!=NULL && E->dalsi->objekt_n!=E->objekt_n || E->dalsi==NULL) && predchozi_PM!=E)C2->Enabled=false;
 			}
 
-   		//kontrola zda můžu editovat pohon
+			//kontrola zda můžu editovat pohon
 			zmena_editovanych_bunek(E);//automaticky nastaví editované položky a needitovatelné položky pro pohonové tabulky
 
 			//ukazatelové záležitosti
@@ -9176,7 +9176,7 @@ bool TForm1::prohodit_sloupce_PM(Cvektory::TElement *E)
 //automaticky nastaví editované položky a needitovatelné položky pro pohonové tabulky
 void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
 {
-  log(__func__);//logování
+	log(__func__);//logování
 	if(E->eID==200 || E->eID==300)//pouze pro pohonové tabulky
 	{
 		TscGPComboBox *C1=E->mGrid->getCombo(3,2),*C2=E->mGrid->getCombo(4,2),*C_pom=NULL;
@@ -9441,7 +9441,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 		case 9:case 13:case 17:case 103:case 107:
 		case 3://robot s pasivní otočí
 		{
-      //načtení hodnot z pohonu + ošetření proti nepřiřazenému pohonu
+			//načtení hodnot z pohonu + ošetření proti nepřiřazenému pohonu
 			if(E->pohon!=NULL)aRD=E->pohon->aRD;
 			TPointD zony_otaceni=m.zona_otaceni(d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(E),E->rotace_jig,E->OTOC_delka);
 			//načtení popisků
@@ -13392,7 +13392,7 @@ void TForm1::vse_odstranit()
 	predchozi_PM=NULL;delete predchozi_PM;
 	copyObjekt=NULL;delete copyObjekt;
 	copyObjektRzRx.x=0;copyObjektRzRx.y=0;
-	vlakno=NULL;delete vlakno;
+	vlakno_obraz=NULL;delete vlakno_obraz;
 	delete Staticka_scena;
 	//delete LogFileStream; //zde nesmí být kvůli logování
 }
@@ -14333,418 +14333,36 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-  ////vypisování dat do CSV
-	String data_CSV="";//+="Parametry linky"+UnicodeString(Form1->scLabel_titulek->Caption)+"\n";
-//	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
-//	while(O!=NULL)
-//	{
-//		data_CSV+=AnsiString(O->name)+"\n";
-//		data_CSV+=AnsiString(O->n)+"\n";
-//		data_CSV+=AnsiString(O->id)+"\n";
-//		data_CSV+=AnsiString(O->short_name)+"\n";
-//		data_CSV+=AnsiString(O->name)+"\n";
-//		data_CSV+=AnsiString(O->X)+"\n";
-//		data_CSV+=AnsiString(O->Y)+"\n";
-//		Cvektory::TBod *b=O->body;
-//		while(b!=NULL)
-//		{
-//			if(b->n>0)data_CSV+=AnsiString(b->n)+"\n";
-//			b=b->dalsi;
-//		}
-//		b=NULL;delete b;
-//		data_CSV+=AnsiString(O->sirka_steny)+"\n";
-//		data_CSV+=AnsiString(O->Xk)+"\n";
-//		data_CSV+=AnsiString(O->Yk)+"\n";
-//		data_CSV+=AnsiString(O->Xt)+"\n";
-//		data_CSV+=AnsiString(O->Yt)+"\n";
-//		data_CSV+=AnsiString(O->orientace_text)+"\n";
-//		data_CSV+=AnsiString(O->Xp)+"\n";
-//		data_CSV+=AnsiString(O->Yp)+"\n";
-//		data_CSV+=AnsiString(O->rezim)+"\n";
-//		data_CSV+=AnsiString(O->stavPM)+"\n";
-//		data_CSV+=AnsiString(O->CT)+"\n";
-//		data_CSV+=AnsiString(O->RD)+"\n";
-//		data_CSV+=AnsiString(O->delka_dopravniku)+"\n";
-//		data_CSV+=AnsiString(O->kapacita)+"\n";
-//		data_CSV+=AnsiString(O->kapacita_dop)+"\n";
-//		data_CSV+=AnsiString(O->pozice)+"\n";
-//		data_CSV+=AnsiString(O->rotace)+"\n";
-//		data_CSV+=AnsiString(O->orientace)+"\n";
-//		data_CSV+=AnsiString(O->mezera)+"\n";
-//		data_CSV+=AnsiString(O->mezera_jig)+"\n";
-//		data_CSV+=AnsiString(O->mezera_podvozek)+"\n";
-//	  if(O->pohon!=NULL)data_CSV+=AnsiString(O->pohon->name)+"\n";
-//   	else data_CSV+="NULL\n";
-//		data_CSV+=AnsiString(O->element->name)+"\n";
-//		data_CSV+=AnsiString(O->element_n)+"\n";
-//		data_CSV+=AnsiString(O->min_prujezdni_profil.x)+"\n";
-//		data_CSV+=AnsiString(O->min_prujezdni_profil.y)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect1.left)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect1.right)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect1.top)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect1.bottom)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect2.left)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect2.right)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect2.top)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect2.bottom)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect1.left)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect1.right)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect1.top)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect1.bottom)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect2.left)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect2.right)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect2.top)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect2.bottom)+"\n";
-//		data_CSV+=AnsiString(O->koty_elementu_offset.x)+"\n";
-//		data_CSV+=AnsiString(O->koty_elementu_offset.y)+"\n";
-//		Cvektory::TKomora *k=O->komora;
-//		while(k!=NULL)
-//		{
-//			if(k->n>0)data_CSV+=AnsiString(k->n)+"\n";
-//			k=k->dalsi;
-//		}
-//		k=NULL;delete k;
-//		data_CSV+=AnsiString(O->cekat_na_palce)+"\n";
-//		data_CSV+=AnsiString(O->stopka)+"\n";
-//		data_CSV+=AnsiString(O->odchylka)+"\n";
-//		data_CSV+=AnsiString(O->obsazenost)+"\n";
-//		data_CSV+=AnsiString(O->CT_zamek)+"\n";
-//		data_CSV+=AnsiString(O->RD_zamek)+"\n";
-//		data_CSV+=AnsiString(O->DD_zamek)+"\n";
-//		data_CSV+=AnsiString(O->K_zamek)+"\n";
-//		data_CSV+=AnsiString(O->poznamka)+"\n";
-//		if(O->probehla_aktualizace_prirazeni_pohonu)data_CSV+="true\n";else data_CSV+="false\n";
-//		if(O->zobrazit_koty)data_CSV+="true\n";else data_CSV+="false\n";
-//		if(O->zobrazit_mGrid)data_CSV+="true\n";else data_CSV+="false\n";
-//		if(O->uzamknout_nahled)data_CSV+="true\n";else data_CSV+="false\n";
-//		O=O->dalsi;
-//	}
-//	delete O;O=NULL;
-
-	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-	while(E!=NULL)
-	{
-		data_CSV+=E->name+"\n";
-		data_CSV+=AnsiString(E->n)+"\n";
-		data_CSV+=AnsiString(E->eID)+"\n";
-		data_CSV+=AnsiString(E->idetifikator_vyhybka_spojka)+"\n";
-		data_CSV+=AnsiString(E->short_name)+"\n";
-		data_CSV+=AnsiString(E->name)+"\n";
-		data_CSV+=AnsiString(E->orientace)+"\n";
-		data_CSV+=AnsiString(E->rotace_jig)+"\n";
-		data_CSV+=AnsiString(E->stav)+"\n";
-		data_CSV+=AnsiString(E->X)+"\n";
-		data_CSV+=AnsiString(E->Y)+"\n";
-		data_CSV+=AnsiString(E->Z)+"\n";
-		data_CSV+=AnsiString(E->Xt)+"\n";
-		data_CSV+=AnsiString(E->Yt)+"\n";
-		data_CSV+=AnsiString(E->PTotoc)+"\n";
-		data_CSV+=AnsiString(E->OTOC_delka)+"\n";
-		data_CSV+=AnsiString(E->zona_pred)+"\n";
-		data_CSV+=AnsiString(E->zona_za)+"\n";
-		data_CSV+=AnsiString(E->WT)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect0.left)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect0.right)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect0.top)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect0.bottom)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect1.left)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect1.right)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect1.top)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect1.bottom)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect2.left)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect2.right)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect2.top)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect2.bottom)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect3.left)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect3.right)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect3.top)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect3.bottom)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect4.left)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect4.right)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect4.top)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect4.bottom)+"\n";
-		data_CSV+=AnsiString(E->geo.typ)+"\n";
-		data_CSV+=AnsiString(E->geo.delka)+"\n";
-		data_CSV+=AnsiString(E->geo.radius)+"\n";
-		data_CSV+=AnsiString(E->geo.orientace)+"\n";
-		data_CSV+=AnsiString(E->geo.rotacni_uhel)+"\n";
-		data_CSV+=AnsiString(E->geo.X1)+"\n";
-		data_CSV+=AnsiString(E->geo.Y1)+"\n";
-		data_CSV+=AnsiString(E->geo.X2)+"\n";
-		data_CSV+=AnsiString(E->geo.Y2)+"\n";
-		data_CSV+=AnsiString(E->geo.X3)+"\n";
-		data_CSV+=AnsiString(E->geo.Y3)+"\n";
-		data_CSV+=AnsiString(E->geo.X4)+"\n";
-		data_CSV+=AnsiString(E->geo.Y4)+"\n";
-		data_CSV+=AnsiString(E->geoH.typ)+"\n";
-		data_CSV+=AnsiString(E->geoH.delka)+"\n";
-		data_CSV+=AnsiString(E->geoH.radius)+"\n";
-		data_CSV+=AnsiString(E->geoH.orientace)+"\n";
-		data_CSV+=AnsiString(E->geoH.rotacni_uhel)+"\n";
-		data_CSV+=AnsiString(E->geoH.X1)+"\n";
-		data_CSV+=AnsiString(E->geoH.Y1)+"\n";
-		data_CSV+=AnsiString(E->geoH.X2)+"\n";
-		data_CSV+=AnsiString(E->geoH.Y2)+"\n";
-		data_CSV+=AnsiString(E->geoH.X3)+"\n";
-		data_CSV+=AnsiString(E->geoH.Y3)+"\n";
-		data_CSV+=AnsiString(E->geoH.X4)+"\n";
-		data_CSV+=AnsiString(E->geoH.Y4)+"\n";
-		data_CSV+=AnsiString(E->data.PD)+"\n";
-		data_CSV+=AnsiString(E->data.orientace_jig_pred)+"\n";
-		data_CSV+=AnsiString(E->data.LO1)+"\n";
-		data_CSV+=AnsiString(E->data.LO2)+"\n";
-		data_CSV+=AnsiString(E->data.LO_pozice)+"\n";
-		data_CSV+=AnsiString(E->data.PT1)+"\n";
-		data_CSV+=AnsiString(E->data.PT2)+"\n";
-		data_CSV+=AnsiString(E->data.WTstop)+"\n";
-		data_CSV+=AnsiString(E->data.RT.x)+"\n";
-		data_CSV+=AnsiString(E->data.RT.y)+"\n";
-		data_CSV+=AnsiString(E->data.pocet_pozic)+"\n";
-		data_CSV+=AnsiString(E->data.pocet_voziku)+"\n";
-		data_CSV+=AnsiString(E->objekt_n)+"\n";
-		if(E->pohon!=NULL)data_CSV+=AnsiString(E->pohon->name)+"\n";
-		else data_CSV+="NULL\n";
-		if(E->sparovany!=NULL)data_CSV+=E->sparovany->name+"\n";
-		if(E->predchozi2!=NULL)data_CSV+=E->predchozi2->name+"\n";
-		if(E->dalsi2!=NULL)data_CSV+=E->dalsi2->name+"\n";
-		E=E->dalsi;
-	}
-	delete E;E=NULL;
-//
-//	Memo("");
-//
-//	Cvektory::TPohon *P=d.v.POHONY->dalsi;
-//	while(P!=NULL)
-//	{
-//		Memo(P->name);
-//		P=P->dalsi;
-//	}
-//	P=NULL;delete P;
-
-
-  ////cyklus pro otevírání a zavírání objektu s volitelným krokem + měření času
+	////cyklus pro otevírání a zavírání objektu s volitelným krokem + měření času
 	TDateTime start;
-	String s;
+	String s;               // Cvektory::TElement *E=d.v.ELEMENTY->dalsi,*e=NULL;
 	double cas=0,celkem_otevreni=0,celkem_zavreni=0;
-	unsigned int pocet_kroku=2;
+	unsigned int pocet_kroku=10;
 	for(unsigned int i=0;i<pocet_kroku;i++)
 	{
-//		start=Now();
-		pom=d.v.OBJEKTY->dalsi;
+		start=Now();
+//		E=d.v.ELEMENTY->dalsi;
+//		while(E!=NULL)
+//		{
+//			e=new Cvektory::TElement;d.v.kopiruj_element(E,e);
+//			delete e;e=NULL;
+//			E=E->dalsi;
+//		}
+//		delete E;E=NULL;
+		pom=d.v.OBJEKTY->dalsi;//predchozi->predchozi->predchozi;
 		NP_input();
-//		cas=ms.MyToDouble(TimeToStr(Now()-start).SubString(6,2));
-//		celkem_otevreni+=cas;
-//		Memo("Čas otevření: "+AnsiString(cas));
-//		start=Now();
+		cas=ms.MyToDouble(TimeToStr(Now()-start).SubString(6,2));
+		celkem_otevreni+=cas;
+		Memo("Čas otevření: "+AnsiString(cas));
+		start=Now();
 		scGPButton_stornoClick(this);
-//		cas=ms.MyToDouble(TimeToStr(Now()-start).SubString(6,2));
-//		celkem_zavreni+=cas;
-//		Memo("Čas zavření: "+AnsiString(cas));
+		cas=ms.MyToDouble(TimeToStr(Now()-start).SubString(6,2));
+		celkem_zavreni+=cas;
+		Memo("Čas zavření: "+AnsiString(cas));
 	}
-
-	////pokračování výpisu dat do CSV
-	data_CSV+="\n\n";
-	TMemoryStream* MemoryStream=new TMemoryStream();
-	MemoryStream->Clear();
-	MemoryStream->Write(data_CSV.c_str(),data_CSV.Length());//Win kodování
-	MemoryStream->SaveToFile(FileName+"_testy1.csv");
-	delete MemoryStream;
-	data_CSV="";
-	//data_CSV+="----------------------\n";
-//	Memo("Průměrný čas otevření: "+AnsiString(celkem_otevreni/(double)pocet_kroku));
-//	Memo("Průměrný čas zavření: "+AnsiString(cas/(double)pocet_kroku));
-
-//	O=d.v.OBJEKTY->dalsi;
-//	while(O!=NULL)
-//	{
-//		data_CSV+=AnsiString(O->name)+"\n";
-//		data_CSV+=AnsiString(O->n)+"\n";
-//		data_CSV+=AnsiString(O->id)+"\n";
-//		data_CSV+=AnsiString(O->short_name)+"\n";
-//		data_CSV+=AnsiString(O->name)+"\n";
-//		data_CSV+=AnsiString(O->X)+"\n";
-//		data_CSV+=AnsiString(O->Y)+"\n";
-//		Cvektory::TBod *b=O->body;
-//		while(b!=NULL)
-//		{
-//			if(b->n>0)data_CSV+=AnsiString(b->n)+"\n";
-//			b=b->dalsi;
-//		}
-//		b=NULL;delete b;
-//		data_CSV+=AnsiString(O->sirka_steny)+"\n";
-//		data_CSV+=AnsiString(O->Xk)+"\n";
-//		data_CSV+=AnsiString(O->Yk)+"\n";
-//		data_CSV+=AnsiString(O->Xt)+"\n";
-//		data_CSV+=AnsiString(O->Yt)+"\n";
-//		data_CSV+=AnsiString(O->orientace_text)+"\n";
-//		data_CSV+=AnsiString(O->Xp)+"\n";
-//		data_CSV+=AnsiString(O->Yp)+"\n";
-//		data_CSV+=AnsiString(O->rezim)+"\n";
-//		data_CSV+=AnsiString(O->stavPM)+"\n";
-//		data_CSV+=AnsiString(O->CT)+"\n";
-//		data_CSV+=AnsiString(O->RD)+"\n";
-//		data_CSV+=AnsiString(O->delka_dopravniku)+"\n";
-//		data_CSV+=AnsiString(O->kapacita)+"\n";
-//		data_CSV+=AnsiString(O->kapacita_dop)+"\n";
-//		data_CSV+=AnsiString(O->pozice)+"\n";
-//		data_CSV+=AnsiString(O->rotace)+"\n";
-//		data_CSV+=AnsiString(O->orientace)+"\n";
-//		data_CSV+=AnsiString(O->mezera)+"\n";
-//		data_CSV+=AnsiString(O->mezera_jig)+"\n";
-//		data_CSV+=AnsiString(O->mezera_podvozek)+"\n";
-//		if(O->pohon!=NULL)data_CSV+=AnsiString(O->pohon->name)+"\n";
-//		else data_CSV+="NULL\n";
-//		data_CSV+=AnsiString(O->element->name)+"\n";
-//		data_CSV+=AnsiString(O->element_n)+"\n";
-//		data_CSV+=AnsiString(O->min_prujezdni_profil.x)+"\n";
-//		data_CSV+=AnsiString(O->min_prujezdni_profil.y)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect1.left)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect1.right)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect1.top)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect1.bottom)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect2.left)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect2.right)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaX_oblastHodnotaAJednotky.rect2.top)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect2.bottom)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect1.left)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect1.right)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect1.top)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect1.bottom)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect2.left)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect2.right)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect2.top)+"\n";
-//		data_CSV+=AnsiString(O->kabinaKotaY_oblastHodnotaAJednotky.rect2.bottom)+"\n";
-//		data_CSV+=AnsiString(O->koty_elementu_offset.x)+"\n";
-//		data_CSV+=AnsiString(O->koty_elementu_offset.y)+"\n";
-//		Cvektory::TKomora *k=O->komora;
-//		while(k!=NULL)
-//		{
-//			if(k->n>0)data_CSV+=AnsiString(k->n)+"\n";
-//			k=k->dalsi;
-//		}
-//		k=NULL;delete k;
-//		data_CSV+=AnsiString(O->cekat_na_palce)+"\n";
-//		data_CSV+=AnsiString(O->stopka)+"\n";
-//		data_CSV+=AnsiString(O->odchylka)+"\n";
-//		data_CSV+=AnsiString(O->obsazenost)+"\n";
-//		data_CSV+=AnsiString(O->CT_zamek)+"\n";
-//		data_CSV+=AnsiString(O->RD_zamek)+"\n";
-//		data_CSV+=AnsiString(O->DD_zamek)+"\n";
-//		data_CSV+=AnsiString(O->K_zamek)+"\n";
-//		data_CSV+=AnsiString(O->poznamka)+"\n";
-//		if(O->probehla_aktualizace_prirazeni_pohonu)data_CSV+="true\n";else data_CSV+="false\n";
-//		if(O->zobrazit_koty)data_CSV+="true\n";else data_CSV+="false\n";
-//		if(O->zobrazit_mGrid)data_CSV+="true\n";else data_CSV+="false\n";
-//		if(O->uzamknout_nahled)data_CSV+="true\n";else data_CSV+="false\n";
-//		O=O->dalsi;
-//	}
-//	delete O;O=NULL;
-
-	E=d.v.ELEMENTY->dalsi;
-	while(E!=NULL)
-	{
-		data_CSV+=E->name+"\n";
-		data_CSV+=AnsiString(E->n)+"\n";
-		data_CSV+=AnsiString(E->eID)+"\n";
-		data_CSV+=AnsiString(E->idetifikator_vyhybka_spojka)+"\n";
-		data_CSV+=AnsiString(E->short_name)+"\n";
-		data_CSV+=AnsiString(E->name)+"\n";
-		data_CSV+=AnsiString(E->orientace)+"\n";
-		data_CSV+=AnsiString(E->rotace_jig)+"\n";
-		data_CSV+=AnsiString(E->stav)+"\n";
-		data_CSV+=AnsiString(E->X)+"\n";
-		data_CSV+=AnsiString(E->Y)+"\n";
-		data_CSV+=AnsiString(E->Z)+"\n";
-		data_CSV+=AnsiString(E->Xt)+"\n";
-		data_CSV+=AnsiString(E->Yt)+"\n";
-		data_CSV+=AnsiString(E->PTotoc)+"\n";
-		data_CSV+=AnsiString(E->OTOC_delka)+"\n";
-		data_CSV+=AnsiString(E->zona_pred)+"\n";
-		data_CSV+=AnsiString(E->zona_za)+"\n";
-		data_CSV+=AnsiString(E->WT)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect0.left)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect0.right)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect0.top)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect0.bottom)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect1.left)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect1.right)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect1.top)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect1.bottom)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect2.left)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect2.right)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect2.top)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect2.bottom)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect3.left)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect3.right)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect3.top)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect3.bottom)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect4.left)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect4.right)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect4.top)+"\n";
-		data_CSV+=AnsiString(E->citelna_oblast.rect4.bottom)+"\n";
-		data_CSV+=AnsiString(E->geo.typ)+"\n";
-		data_CSV+=AnsiString(E->geo.delka)+"\n";
-		data_CSV+=AnsiString(E->geo.radius)+"\n";
-		data_CSV+=AnsiString(E->geo.orientace)+"\n";
-		data_CSV+=AnsiString(E->geo.rotacni_uhel)+"\n";
-		data_CSV+=AnsiString(E->geo.X1)+"\n";
-		data_CSV+=AnsiString(E->geo.Y1)+"\n";
-		data_CSV+=AnsiString(E->geo.X2)+"\n";
-		data_CSV+=AnsiString(E->geo.Y2)+"\n";
-		data_CSV+=AnsiString(E->geo.X3)+"\n";
-		data_CSV+=AnsiString(E->geo.Y3)+"\n";
-		data_CSV+=AnsiString(E->geo.X4)+"\n";
-		data_CSV+=AnsiString(E->geo.Y4)+"\n";
-		data_CSV+=AnsiString(E->geoH.typ)+"\n";
-		data_CSV+=AnsiString(E->geoH.delka)+"\n";
-		data_CSV+=AnsiString(E->geoH.radius)+"\n";
-		data_CSV+=AnsiString(E->geoH.orientace)+"\n";
-		data_CSV+=AnsiString(E->geoH.rotacni_uhel)+"\n";
-		data_CSV+=AnsiString(E->geoH.X1)+"\n";
-		data_CSV+=AnsiString(E->geoH.Y1)+"\n";
-		data_CSV+=AnsiString(E->geoH.X2)+"\n";
-		data_CSV+=AnsiString(E->geoH.Y2)+"\n";
-		data_CSV+=AnsiString(E->geoH.X3)+"\n";
-		data_CSV+=AnsiString(E->geoH.Y3)+"\n";
-		data_CSV+=AnsiString(E->geoH.X4)+"\n";
-		data_CSV+=AnsiString(E->geoH.Y4)+"\n";
-		data_CSV+=AnsiString(E->data.PD)+"\n";
-		data_CSV+=AnsiString(E->data.orientace_jig_pred)+"\n";
-		data_CSV+=AnsiString(E->data.LO1)+"\n";
-		data_CSV+=AnsiString(E->data.LO2)+"\n";
-		data_CSV+=AnsiString(E->data.LO_pozice)+"\n";
-		data_CSV+=AnsiString(E->data.PT1)+"\n";
-		data_CSV+=AnsiString(E->data.PT2)+"\n";
-		data_CSV+=AnsiString(E->data.WTstop)+"\n";
-		data_CSV+=AnsiString(E->data.RT.x)+"\n";
-		data_CSV+=AnsiString(E->data.RT.y)+"\n";
-		data_CSV+=AnsiString(E->data.pocet_pozic)+"\n";
-		data_CSV+=AnsiString(E->data.pocet_voziku)+"\n";
-		data_CSV+=AnsiString(E->objekt_n)+"\n";
-		if(E->pohon!=NULL)data_CSV+=AnsiString(E->pohon->name)+"\n";
-		else data_CSV+="NULL\n";
-		if(E->sparovany!=NULL)data_CSV+=E->sparovany->name+"\n";
-		if(E->predchozi2!=NULL)data_CSV+=E->predchozi2->name+"\n";
-		if(E->dalsi2!=NULL)data_CSV+=E->dalsi2->name+"\n";
-		E=E->dalsi;
-	}
-	delete E;E=NULL;
-
-//	P=d.v.POHONY->dalsi;
-//	while(P!=NULL)
-//	{
-//		Memo(P->name);
-//		P=P->dalsi;
-//	}
-//	P=NULL;delete P;
-  data_CSV+="\n\n";
-	MemoryStream=new TMemoryStream();
-	MemoryStream->Clear();
-	MemoryStream->Write(data_CSV.c_str(),data_CSV.Length());//Win kodování
-	MemoryStream->SaveToFile(FileName+"_testy2.csv");
-	delete MemoryStream;
-
-	Memo("hotovo");
+	Memo("------------");
+	Memo("Průměrný čas otevření: "+AnsiString(celkem_otevreni/(double)pocet_kroku));
+	Memo("Průměrný čas zavření: "+AnsiString(cas/(double)pocet_kroku));
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -15916,10 +15534,10 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		//mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
 		pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp;posledni_editovany_element=NULL;delete posledni_editovany_element;JID=-1;Akce=NIC;
 		FormX->posledni_E=NULL;//nutné!! slouží k ukládání posledního editovaného elementu (validace, atd.)
-		if(d.v.DATA->dalsi!=NULL && storno){d.v.nacti_z_obrazu_DATA(true);}//načtení projektu před editací a smazání obrazů, pokud DATA->dalsi neexistují znamená to, že bylo uloženo, nebude se nic načítat
+		if(d.v.DATA->dalsi!=NULL && storno){d.v.nacti_z_obrazu_DATA(true);duvod_validovat=2;}//načtení projektu před editací a smazání obrazů, pokud DATA->dalsi neexistují znamená to, že bylo uloženo, nebude se nic načítat
 		vytvor_obraz();//vytvoření nového obrazu pro layout
 		//vlozit_predavaci_misto_aktualizuj_WT();//zkontroluje, zda nemusí být přidáno nebo odstraněno předávací místo
-		duvod_validovat=2;//vyvolá validaci, zajistí aktualizaci zpráv a výpisu v miniformu zpráv, NECHAT AŽ ZA FUNKČNÍMI ZÁLEŽITOSTMI
+		//duvod_validovat=2;//vyvolá validaci, zajistí aktualizaci zpráv a výpisu v miniformu zpráv, NECHAT AŽ ZA FUNKČNÍMI ZÁLEŽITOSTMI
 		//v případě animace vypnutí a nastavení do výchozího stavu
 		Timer_animace->Enabled=false;
 		ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
@@ -17815,10 +17433,10 @@ void TForm1::vytvor_obraz(bool stornoUNDO)
 	log(__func__);
 	if(stornoUNDO)vlakno_akce=2;//vytvoření obrazu pro UNDO a storno
 	else vlakno_akce=1;//vytvoření obrazu pro UNDO
-//	vlakno=new Tvlakno_obraz(true);//spustí vlákno zajišťující stáhnutí mapového podkladu
-//	vlakno->FreeOnTerminate=true;//po skončení bude uvolněno
-//	vlakno->Resume();
-	d.v.test_vlakna(1);
+//	vlakno_obraz=new Tvlakno_obraz(true);//spustí vlákno zajišťující stáhnutí mapového podkladu
+//	vlakno_obraz->FreeOnTerminate=true;//po skončení bude uvolněno
+//	vlakno_obraz->Resume();
+	d.v.vlakno_obraz();
 }
 //---------------------------------------------------------------------------
 //vymaže všechny obrazy v pořadníku
@@ -17826,10 +17444,10 @@ void TForm1::vymaz_seznam_obrazu()
 {
 	log(__func__);
 	vlakno_akce=3;//mazání obrazů
-//  vlakno=new Tvlakno_obraz(true);//spustí vlákno zajišťující stáhnutí mapového podkladu
-//	vlakno->FreeOnTerminate=true;//po skončení bude uvolněno
-//	vlakno->Resume();
-	d.v.test_vlakna(1);
+//  vlakno_obraz=new Tvlakno_obraz(true);//spustí vlákno zajišťující stáhnutí mapového podkladu
+//	vlakno_obraz->FreeOnTerminate=true;//po skončení bude uvolněno
+//	vlakno_obraz->Resume();
+	d.v.vlakno_obraz();
 }
 //---------------------------------------------------------------------------
 
