@@ -2142,19 +2142,22 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 					force_razeni->predchozi=Element;
 				}
 			}
-	  	//změna indexů
-			Cvektory::TElement *E=ELEMENTY->dalsi;
-			int n=1;
-			while(E!=NULL)
-			{
-				//indexy
-				E->n=n;
-				n++;
-				E=dalsi_krok(E);
-			}
-			E=NULL;delete E;
+			//změna indexů a kontrola popisků elementů přesunuta do ukončneí editace geometrie, tam proběhne jednou na konci, tady probíhala po každém vložení části geometrie
+//			Cvektory::TElement *E=ELEMENTY->dalsi;//Element->predchozi;
+			//přesun vždy na výhybku
+//			if(Element->predchozi->eID==300 && Element->predchozi->dalsi2==Element)E=Element->predchozi;
+//			if(Element->dalsi->eID==301 && Element->dalsi->predchozi2==Element)E=Element->dalsi->dalsi2;
+//			unsigned long n=E->n;
+//			while(E!=NULL)
+//			{
+//				//indexy
+//				E->n=n;
+//				n=n+1;
+//				E=dalsi_krok(E);
+//			}
+//			E=NULL;delete E;
 			//změna názvů
-			uprav_popisky_elementu(Element);
+//			uprav_popisky_elementu(Element);
 		}
 	}
 }
@@ -2353,7 +2356,7 @@ void Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->data.pocet_voziku=Original->data.pocet_voziku;
 	Kopie->data.pocet_pozic=Original->data.pocet_pozic;
 	Kopie->geo=Original->geo;
-	Kopie->mGrid=NULL;//new TmGrid(F);//nová strategie, je mgrid, nekopírovat a používat jenom v OBJEKT_akt, zde však podmínka zda se jedná o OBJEKT_akt nebyla z nějakého důvodu možná
+	Kopie->mGrid=NULL;//nealokovat!!!!!! k alokci pro mGrid dochází v metodě Form1::NP_input() při otevírání náhledu
 	Kopie->objekt_n=Original->objekt_n;
 	//if(Original->pohon!=NULL)Kopie->pohon=vrat_pohon(Original->pohon->n);
 	//else
