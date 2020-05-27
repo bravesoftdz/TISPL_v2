@@ -3713,7 +3713,7 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 					}
 					//element mimo kabinu
 					if((JID==5 || JID==6) && pom_element!=NULL)pom=d.v.vrat_objekt(pom_element->objekt_n);
-					if(pom!=NULL && Akce==NIC && !d.v.PP.zamek_layoutu)NP_input();//otevření editace
+					if(pom!=NULL && Akce==NIC && !d.v.PP.zamek_layoutu)otevri_editaci();//otevření editace
 					if(pom!=NULL && d.v.PP.zamek_layoutu)MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,ls->Strings[423],"",MB_OK,true,false);//info o zamčeném layoutu
 					if(JID==1)vloz_bod_haly_objektu(X,Y);//přidání bodu haly
 				}
@@ -12194,7 +12194,7 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 void __fastcall TForm1::NastavitparametryClick1Click(TObject *Sender)
 {
 	log(__func__);
-	if(MOD==SCHEMA && pom_bod_temp==NULL){pom=pom_vyhybka;if(pom!=NULL)NP_input();}//předání z pomocného ukazatele objekt do pom, zabrání ztráty pom, pokud uživatel sjede kurzorem mimo objekt při otevřeném popup + ochrana proti prázdnému pom (asi zbytečná)
+	if(MOD==SCHEMA && pom_bod_temp==NULL){pom=pom_vyhybka;if(pom!=NULL)otevri_editaci();}//předání z pomocného ukazatele objekt do pom, zabrání ztráty pom, pokud uživatel sjede kurzorem mimo objekt při otevřeném popup + ochrana proti prázdnému pom (asi zbytečná)
 	if(OBJEKT_akt!=NULL && pom_vyhybka!=NULL && OBJEKT_akt->n!=pom_vyhybka->n && pom_bod_temp==NULL)//otevírání náhledu z náhledu, přechot na editaci jiného objektu
 	{
 		zmena_editovaneho_objektu();
@@ -12235,23 +12235,7 @@ void __fastcall TForm1::NastavitparametryClick1Click(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
-//podpůrná metoda řeší vstupní část dat, vyseparováno, z důvodu toho, že z GAPO aktulizauji případně spuštěné PO a nemohu volat NP, protože to v sobě obsahu ShowModal - vedlo k chybě, nutno řešit převody jednotek
-void TForm1::NPin()
-{
-  //R - 21.1.2020 - KOMPLETNĚ ODEBRÁNO, VAZBA NA STARÉ PO - ODEBRÁNO Z PROJEKTU
-	log(__func__);//logování
-//
-}
-//---------------------------------------------------------------------------
-//volá form na nastevení parametrů, dřívější nastavparametry1click, převody jednotek se řeší při formshow formu
-void TForm1::NP()
-{
-//R - 21.1.2020 - KOMPLETNĚ ODEBRÁNO, VAZBA NA STARÉ PO - ODEBRÁNO Z PROJEKTU
-	log(__func__);//logování
-//
-}
-//---------------------------------------------------------------------------
-void TForm1::NP_input()
+void TForm1::otevri_editaci()
 {
 	 log(__func__);//logování
 	 log("Otevřeni editace, MOD=EDITACE");
@@ -12276,145 +12260,136 @@ void TForm1::NP_input()
 		 edit_vyhybka=pom_element;
 	 }
 
-	 Posun_predchozi2=Posun_predchozi=Posun;
-	 Zoom_predchozi2=Zoom_predchozi=Zoom;
-	 vytvor_obraz(true);//vytvoření obrazu pro storno a UNDO
-
-
-//	 //zobrazení knihovny pokud je skrytá
-//	 //mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
+	 //zobrazení knihovny pokud je skrytá
+	 //mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
 	 pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp;posledni_editovany_element=NULL;delete posledni_editovany_element;JID=-1;Akce=NIC;
-//	 scGPButton_prichytavat->Visible=false;//vypnutí tlačítka přichytávat
-//	 scButton_zamek_layoutu->Visible=false;//vypnutí tlačítka pro zámek layoutu
-//	 Image_knihovna_objektu->Visible=false;//vypnutí komponenty s knihovnou
+	 scGPButton_prichytavat->Visible=false;//vypnutí tlačítka přichytávat
+	 scButton_zamek_layoutu->Visible=false;//vypnutí tlačítka pro zámek layoutu
+	 Image_knihovna_objektu->Visible=false;//vypnutí komponenty s knihovnou
 	 JID=-1;//ošetření, s JID se pracuje i v náhledu
 	 element_id=99999;//ošetření pro správné zobrazování mgridů
-//	 pom_bod=NULL;pom_bod_temp=NULL;//s těmito ukazateli pracuje jak náhled tak schéma, ošetření
-//	 //zablokování OnChange tabulek
-//	 FormX->input_state=FormX->NO;
-//	 FormX->vstoupeno_poh=false;
-//	 FormX->vstoupeno_elm=false;
+	 pom_bod=NULL;pom_bod_temp=NULL;//s těmito ukazateli pracuje jak náhled tak schéma, ošetření
+	 //zablokování OnChange tabulek
+	 FormX->input_state=FormX->NO;
+	 FormX->vstoupeno_poh=false;
+	 FormX->vstoupeno_elm=false;
 	 MOD=EDITACE;
-//	 //založení pomocného tempového ukazatele pro akutálně editovaný objekt a překopírování jeho atributů
-//	 //OBJEKT_akt=new Cvektory::TObjekt; OBJEKT_akt->pohon=NULL; OBJEKT_akt->pohon=new Cvektory::TPohon; OBJEKT_akt->element=NULL;
-//	 //zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze mGrid je propojen
-//	 //d.v.kopiruj_objekt(pom,OBJEKT_akt);//pokud elementy existují nakopíruje je do pomocného nezávislého spojáku pomocného objektu
+	 //založení pomocného tempového ukazatele pro akutálně editovaný objekt a překopírování jeho atributů
+	 //OBJEKT_akt=new Cvektory::TObjekt; OBJEKT_akt->pohon=NULL; OBJEKT_akt->pohon=new Cvektory::TPohon; OBJEKT_akt->element=NULL;
+	 //zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze mGrid je propojen
+	 //d.v.kopiruj_objekt(pom,OBJEKT_akt);//pokud elementy existují nakopíruje je do pomocného nezávislého spojáku pomocného objektu
 	 OBJEKT_akt=pom;//podle nového DM - ostrý ukazatel na originál
-	 vlakno_akce=0;//mazání obrazů
-	vlakno_obraz=new Tvlakno_obraz(true);//spustí vlákno zajišťující stáhnutí mapového podkladu
-	vlakno_obraz->FreeOnTerminate=true;//po skončení bude uvolněno
-	vlakno_obraz->Resume();
-//	 nastav_focus();
-//	 popisky_knihovna_nahled(false);//nastavní popisků pro editaci
-//	 DrawGrid_knihovna->Top=33;
-//	 kurzor(standard);
-//	 vytvor_obraz(true);//vytvoření obrazu pro storno a UNDO
-//	 ////řešení nového zoomu a posunu obrazu pro účely náhldeu
-//	 //zazálohování hodnot posunu a zoomu
-//	 Posun_predchozi2=Posun_predchozi=Posun;
-//	 Zoom_predchozi2=Zoom_predchozi=Zoom;
-//	 JID=-1;
-//	 //DrawGrid_knihovna->Visible=false; //nezobrazí přepozicování elementů
-//	 DrawGrid_knihovna->DefaultRowHeight=140;
-//	 if(OBJEKT_akt->id==3)DrawGrid_knihovna->DefaultColWidth=160;
-//	 else DrawGrid_knihovna->DefaultColWidth=80;
-//	 DrawGrid_knihovna->Left=3;
-//	 DrawGrid_knihovna->Height=DrawGrid_knihovna->DefaultRowHeight*2; // dle počtu řádků
-//	 mazani=false;//pomocná proměnná pro strono / uložit problém (uložit volá storno, nutno rozlišit zda mažu nebo ukládám)
-//
-//	 //objekt ionizace
-//	 if(OBJEKT_akt->id==4 || OBJEKT_akt->id==2 || OBJEKT_akt->id==5){scGPPanel_pomocn_proSwitch->Visible=true;scGPSwitch_robot_clovek->Visible=true;}
-//
-//	 DrawGrid_otoce->DefaultColWidth=80;
-//
-//	 scListGroupPanel_hlavickaOtoce->Visible=true;
-//	 scListGroupPanel_hlavickaOtoce->Top=DrawGrid_knihovna->Height + scGPPanel_mainmenu->Height;
-//	 scGPLabel_otoce->Top = scListGroupPanel_hlavickaOtoce->Top;//  + scGPPanel_mainmenu->Height;//scListGroupPanel_hlavickaOtoce->Top + scGPPanel_mainmenu->Height;
-//	 DrawGrid_otoce->Visible=true;
-//
-//	 scListGroupPanel_hlavickaOstatni->Visible=true;
-//	 scListGroupPanel_hlavickaOstatni->Top=scListGroupPanel_hlavickaOtoce->Top + scListGroupPanel_hlavickaOtoce->Height;
-//	 scGPLabel_stop->Top=scListGroupPanel_hlavickaOstatni->Top -1;// + scGPPanel_mainmenu->Height-1;//MV přidáno z důvodu zobrazování čar v knihovně
-//	 DrawGrid_ostatni->Visible=true;
-//
-//	 scListGroupPanel_geometrie->Visible=true;
-//	 scListGroupPanel_geometrie->Top=scListGroupPanel_hlavickaOstatni->Top +   scListGroupPanel_hlavickaOstatni->Height;
-//	 scGPLabel_geometrie->Top=scListGroupPanel_geometrie->Top-1;// + scGPPanel_mainmenu->Height-1;//MV přidáno z důvodu zobrazování čar v knihovně
-//	 DrawGrid_geometrie->Visible=true;
-//
-//	 scListGroupPanel_poznamky->Visible=true;
-//	 scListGroupPanel_poznamky->Top= scListGroupPanel_geometrie->Top + scListGroupPanel_geometrie->Height;
-//	 scGPLabel_poznamky->Top=scListGroupPanel_poznamky->Top-1;// + scGPPanel_mainmenu->Height-1;//MV přidáno z důvodu zobrazování čar v knihovně
-//	 DrawGrid_poznamky->Visible=true;
-//
-//	 if(OBJEKT_akt->id==4 || OBJEKT_akt->id==2 || OBJEKT_akt->id==5)scGPLabel_roboti->Caption=ls->Strings[55];//"Robot           Operátor";//mezery tvoří místo, kde je zobrazen switch
-//	 else if(OBJEKT_akt->id==3)scGPLabel_roboti->Caption=ls->Strings[56];//"Sekce";
-//	 else if(OBJEKT_akt->id==0 || OBJEKT_akt->id==9)scGPLabel_roboti->Caption=ls->Strings[57];//"Operátoři";
-//	 else scGPLabel_roboti->Caption=ls->Strings[58];//"Roboti";
-//
-//	 scGPLabel_roboti->ContentMarginLeft=10;
-//
-//	//nastavení tlačítek na výchozí hodnoty
-//	if(OBJEKT_akt->uzamknout_nahled)
-//	{
-//		scButton_zamek->ImageIndex=37; //zamčeno
-//		//Schema->ImageIndex=79;
-//		scButton_zamek->Hint=ls->Strings[119];//"Odemknout editaci";
-//	}
-//	else
-//	{
-//		scButton_zamek->ImageIndex=60;
-//		//Schema->ImageIndex=78;
-//		scButton_zamek->Hint=ls->Strings[120];//"Zamknout editaci";
-//	}
-//	if(OBJEKT_akt->zobrazit_mGrid)
-//	{
-//		scGPButton_viditelnostmGrid->ImageIndex=54;
-//		scGPButton_viditelnostmGrid->Hint=ls->Strings[121];//"Skrýt tabulky";
-//	}
-//	else
-//	{
-//		scGPButton_viditelnostmGrid->ImageIndex=55;
-//		scGPButton_viditelnostmGrid->Hint=ls->Strings[122];//"Zobrazit tabulky";
-//	}
-//	if(OBJEKT_akt->zobrazit_koty)
-//	{
-//		scGPButton_viditelnostKoty->ImageIndex=56;
-//		scGPButton_viditelnostKoty->Hint=ls->Strings[123];//"Skrýt kóty";
-//	}
-//	else
-//	{
-//		scGPButton_viditelnostKoty->ImageIndex=57;
-//		scGPButton_viditelnostKoty->Hint=ls->Strings[124];//"Zobrazit kóty";
-//	}
-//	if(posun_dalsich_elementu)
-//	{
-//		scGPButton_posun_dalsich_elementu->ImageIndex=58;
-//		scGPButton_posun_dalsich_elementu->Hint=ls->Strings[125];//"Zakázat vázaný posun robotů, stop stanic a otočí v editovaném objektu";
-//	}
-//	else
-//	{
-//		scGPButton_posun_dalsich_elementu->ImageIndex=59;
-//		scGPButton_posun_dalsich_elementu->Hint=ls->Strings[126];//"Povolit vázaný posun robotů, stop stanic a otočí v editovaném objektu";
-//	}
-//	scGPButton_geometrie->Hint=ls->Strings[443];
-//	if(scGPComboBox_prepinacKot->ItemIndex==0)DKunit=(TForm1::Tm_mm)1;
-//	else DKunit=(TForm1::Tm_mm)2;
-//	if(OBJEKT_akt->pohon!=NULL)scGPComboBox_prepinacKot->Enabled=true;
-//	else scGPComboBox_prepinacKot->Enabled=false;
-//
-//
-//	scGPButton_ulozit->Enabled=false;
-//	//zapnutí spodního panelu
-//	scGPPanel_bottomtoolbar->Visible=true;
-//	scGPButton_bug_report->Top-=scGPPanel_bottomtoolbar->Height;//posun tlačítka report
-//
-//	//zmena horní lišty vlevo
-//	scLabel_architekt->Visible=false;
-//	scGPSwitch_rezim->Visible=false;
-//	scLabel_klient->Visible=false;
-//
-//	nahled_ulozen=false;//nově otevřen, není uložen
+	 nastav_focus();
+	 popisky_knihovna_nahled(false);//nastavní popisků pro editaci
+	 DrawGrid_knihovna->Top=33;
+	 kurzor(standard);
+	 vytvor_obraz(true);//vytvoření obrazu pro storno a UNDO
+	 ////řešení nového zoomu a posunu obrazu pro účely náhldeu
+	 //zazálohování hodnot posunu a zoomu
+	 Posun_predchozi2=Posun_predchozi=Posun;
+	 Zoom_predchozi2=Zoom_predchozi=Zoom;
+	 JID=-1;
+	 //DrawGrid_knihovna->Visible=false; //nezobrazí přepozicování elementů
+	 DrawGrid_knihovna->DefaultRowHeight=140;
+	 if(OBJEKT_akt->id==3)DrawGrid_knihovna->DefaultColWidth=160;
+	 else DrawGrid_knihovna->DefaultColWidth=80;
+	 DrawGrid_knihovna->Left=3;
+	 DrawGrid_knihovna->Height=DrawGrid_knihovna->DefaultRowHeight*2; // dle počtu řádků
+	 mazani=false;//pomocná proměnná pro strono / uložit problém (uložit volá storno, nutno rozlišit zda mažu nebo ukládám)
+
+	 //objekt ionizace
+	 if(OBJEKT_akt->id==4 || OBJEKT_akt->id==2 || OBJEKT_akt->id==5){scGPPanel_pomocn_proSwitch->Visible=true;scGPSwitch_robot_clovek->Visible=true;}
+
+	 DrawGrid_otoce->DefaultColWidth=80;
+
+	 scListGroupPanel_hlavickaOtoce->Visible=true;
+	 scListGroupPanel_hlavickaOtoce->Top=DrawGrid_knihovna->Height + scGPPanel_mainmenu->Height;
+	 scGPLabel_otoce->Top = scListGroupPanel_hlavickaOtoce->Top;//  + scGPPanel_mainmenu->Height;//scListGroupPanel_hlavickaOtoce->Top + scGPPanel_mainmenu->Height;
+	 DrawGrid_otoce->Visible=true;
+
+	 scListGroupPanel_hlavickaOstatni->Visible=true;
+	 scListGroupPanel_hlavickaOstatni->Top=scListGroupPanel_hlavickaOtoce->Top + scListGroupPanel_hlavickaOtoce->Height;
+	 scGPLabel_stop->Top=scListGroupPanel_hlavickaOstatni->Top -1;// + scGPPanel_mainmenu->Height-1;//MV přidáno z důvodu zobrazování čar v knihovně
+	 DrawGrid_ostatni->Visible=true;
+
+	 scListGroupPanel_geometrie->Visible=true;
+	 scListGroupPanel_geometrie->Top=scListGroupPanel_hlavickaOstatni->Top +   scListGroupPanel_hlavickaOstatni->Height;
+	 scGPLabel_geometrie->Top=scListGroupPanel_geometrie->Top-1;// + scGPPanel_mainmenu->Height-1;//MV přidáno z důvodu zobrazování čar v knihovně
+	 DrawGrid_geometrie->Visible=true;
+
+	 scListGroupPanel_poznamky->Visible=true;
+	 scListGroupPanel_poznamky->Top= scListGroupPanel_geometrie->Top + scListGroupPanel_geometrie->Height;
+	 scGPLabel_poznamky->Top=scListGroupPanel_poznamky->Top-1;// + scGPPanel_mainmenu->Height-1;//MV přidáno z důvodu zobrazování čar v knihovně
+	 DrawGrid_poznamky->Visible=true;
+
+	 if(OBJEKT_akt->id==4 || OBJEKT_akt->id==2 || OBJEKT_akt->id==5)scGPLabel_roboti->Caption=ls->Strings[55];//"Robot           Operátor";//mezery tvoří místo, kde je zobrazen switch
+	 else if(OBJEKT_akt->id==3)scGPLabel_roboti->Caption=ls->Strings[56];//"Sekce";
+	 else if(OBJEKT_akt->id==0 || OBJEKT_akt->id==9)scGPLabel_roboti->Caption=ls->Strings[57];//"Operátoři";
+	 else scGPLabel_roboti->Caption=ls->Strings[58];//"Roboti";
+
+	 scGPLabel_roboti->ContentMarginLeft=10;
+
+	//nastavení tlačítek na výchozí hodnoty
+	if(OBJEKT_akt->uzamknout_nahled)
+	{
+		scButton_zamek->ImageIndex=37; //zamčeno
+		//Schema->ImageIndex=79;
+		scButton_zamek->Hint=ls->Strings[119];//"Odemknout editaci";
+	}
+	else
+	{
+		scButton_zamek->ImageIndex=60;
+		//Schema->ImageIndex=78;
+		scButton_zamek->Hint=ls->Strings[120];//"Zamknout editaci";
+	}
+	if(OBJEKT_akt->zobrazit_mGrid)
+	{
+		scGPButton_viditelnostmGrid->ImageIndex=54;
+		scGPButton_viditelnostmGrid->Hint=ls->Strings[121];//"Skrýt tabulky";
+	}
+	else
+	{
+		scGPButton_viditelnostmGrid->ImageIndex=55;
+		scGPButton_viditelnostmGrid->Hint=ls->Strings[122];//"Zobrazit tabulky";
+	}
+	if(OBJEKT_akt->zobrazit_koty)
+	{
+		scGPButton_viditelnostKoty->ImageIndex=56;
+		scGPButton_viditelnostKoty->Hint=ls->Strings[123];//"Skrýt kóty";
+	}
+	else
+	{
+		scGPButton_viditelnostKoty->ImageIndex=57;
+		scGPButton_viditelnostKoty->Hint=ls->Strings[124];//"Zobrazit kóty";
+	}
+	if(posun_dalsich_elementu)
+	{
+		scGPButton_posun_dalsich_elementu->ImageIndex=58;
+		scGPButton_posun_dalsich_elementu->Hint=ls->Strings[125];//"Zakázat vázaný posun robotů, stop stanic a otočí v editovaném objektu";
+	}
+	else
+	{
+		scGPButton_posun_dalsich_elementu->ImageIndex=59;
+		scGPButton_posun_dalsich_elementu->Hint=ls->Strings[126];//"Povolit vázaný posun robotů, stop stanic a otočí v editovaném objektu";
+	}
+	scGPButton_geometrie->Hint=ls->Strings[443];
+	if(scGPComboBox_prepinacKot->ItemIndex==0)DKunit=(TForm1::Tm_mm)1;
+	else DKunit=(TForm1::Tm_mm)2;
+	if(OBJEKT_akt->pohon!=NULL)scGPComboBox_prepinacKot->Enabled=true;
+	else scGPComboBox_prepinacKot->Enabled=false;
+
+
+	scGPButton_ulozit->Enabled=false;
+	//zapnutí spodního panelu
+	scGPPanel_bottomtoolbar->Visible=true;
+	scGPButton_bug_report->Top-=scGPPanel_bottomtoolbar->Height;//posun tlačítka report
+
+	//zmena horní lišty vlevo
+	scLabel_architekt->Visible=false;
+	scGPSwitch_rezim->Visible=false;
+	scLabel_klient->Visible=false;
+
+	nahled_ulozen=false;//nově otevřen, není uložen
 
 	//znovu provedení designu při otevření náhledu, který není prázdný
 	bool poh_tab=false;
@@ -12863,7 +12838,7 @@ void TForm1::posun_na_element(unsigned long n_zpravy)
 		if(OBJEKT_akt==NULL)
 		{
 			pom=d.v.vrat_objekt(E->objekt_n);
-			NP_input();//provede REFRESH
+			otevri_editaci();//provede REFRESH
     }
 
 		//////ostatní
@@ -14382,7 +14357,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //	{
 //		start=Now();
 //		pom=d.v.OBJEKTY->dalsi;//predchozi->predchozi->predchozi;
-//		NP_input();
+//		otevri_editaci();
 //		cas=ms.MyToDouble(TimeToStr(Now()-start).SubString(6,2));
 //		celkem_otevreni+=cas;
 //		Memo("Čas otevření: "+AnsiString(cas));
@@ -15155,7 +15130,7 @@ void __fastcall TForm1::ComboBoxCekaniChange(TObject *Sender)
 //						if(Form_parametry->ClientHeight==646){int H=366;if(O->rezim==1)H=526;if(O->rezim==1)H=486;Form_parametry->ClientHeight=H;}//pokud se jedná o první spuštění, protože jinak je neznámá výška formu
 //						akt_souradnice_kurzoru_PX.x=Form1->ClientWidth/2-Form_parametry->ClientWidth/2-10;
 //						akt_souradnice_kurzoru_PX.y=Form1->ClientHeight/2-Form_parametry->ClientHeight/2-10;
-						NP();//volá formulář parametry objektů pro přiřazení pohonu ke konkrétnímu objektu//volá form na nastevení parametrů, dřívější nastavparemetry1click
+//						NP();//volá formulář parametry objektů pro přiřazení pohonu ke konkrétnímu objektu//volá form na nastevení parametrů, dřívější nastavparemetry1click
 					}
 					O=O->dalsi;
 				}
@@ -16940,7 +16915,7 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 		//aktualizace mGridu
 		if(akt_mGrid)change_languagein_mGrid();
 		//aktualizace hintů tlačítek v editaci
-		if(OBJEKT_akt!=NULL)//stačí pouze při otevřeném náhledu, při otevýrání nového se aktualizace provede v NP_input
+		if(OBJEKT_akt!=NULL)//stačí pouze při otevřeném náhledu, při otevýrání nového se aktualizace provede v otevri_editaci
 		{
       if(OBJEKT_akt->uzamknout_nahled)
    		{
@@ -17046,7 +17021,7 @@ void __fastcall TForm1::NahledClick(TObject *Sender)
 //	{
 //		if(posledni_editovany_objekt!=NULL)pom=posledni_editovany_objekt;
 //		else pom=d.v.OBJEKTY->predchozi;
-//		NP_input();
+//		otevri_editaci();
 //	}
 }
 //---------------------------------------------------------------------------
@@ -17479,9 +17454,9 @@ void TForm1::vytvor_obraz(bool stornoUNDO)
 	log(__func__);
 	if(stornoUNDO)vlakno_akce=2;//vytvoření obrazu pro UNDO a storno
 	else vlakno_akce=1;//vytvoření obrazu pro UNDO
-//	vlakno_obraz=new Tvlakno_obraz(true);//spustí vlákno zajišťující stáhnutí mapového podkladu
-//	vlakno_obraz->FreeOnTerminate=true;//po skončení bude uvolněno
-//	vlakno_obraz->Resume();
+	vlakno_obraz=new Tvlakno_obraz(true);//spustí vlákno zajišťující stáhnutí mapového podkladu
+	vlakno_obraz->FreeOnTerminate=true;//po skončení bude uvolněno
+	vlakno_obraz->Resume();
 	d.v.vlakno_obraz();
 }
 //---------------------------------------------------------------------------
@@ -17494,133 +17469,6 @@ void TForm1::vymaz_seznam_obrazu()
 //	vlakno_obraz->FreeOnTerminate=true;//po skončení bude uvolněno
 //	vlakno_obraz->Resume();
 	d.v.vlakno_obraz();
-}
-//---------------------------------------------------------------------------
-void TForm1::test1()
-{
-	//
-}
-//---------------------------------------------------------------------------
-void TForm1::test2()
-{
-   //zobrazení knihovny pokud je skrytá
-	 //mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
-	 scGPButton_prichytavat->Visible=false;//vypnutí tlačítka přichytávat
-	 scButton_zamek_layoutu->Visible=false;//vypnutí tlačítka pro zámek layoutu
-	 Image_knihovna_objektu->Visible=false;//vypnutí komponenty s knihovnou
-	 pom_bod=NULL;pom_bod_temp=NULL;//s těmito ukazateli pracuje jak náhled tak schéma, ošetření
-	 //zablokování OnChange tabulek
-	 FormX->input_state=FormX->NO;
-	 FormX->vstoupeno_poh=false;
-	 FormX->vstoupeno_elm=false;
-	 //založení pomocného tempového ukazatele pro akutálně editovaný objekt a překopírování jeho atributů
-	 //OBJEKT_akt=new Cvektory::TObjekt; OBJEKT_akt->pohon=NULL; OBJEKT_akt->pohon=new Cvektory::TPohon; OBJEKT_akt->element=NULL;
-	 //zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze mGrid je propojen
-	 //d.v.kopiruj_objekt(pom,OBJEKT_akt);//pokud elementy existují nakopíruje je do pomocného nezávislého spojáku pomocného objektu
-	 nastav_focus();
-	 popisky_knihovna_nahled(false);//nastavní popisků pro editaci
-	 DrawGrid_knihovna->Top=33;
-	 //DrawGrid_knihovna->Visible=false; //nezobrazí přepozicování elementů
-	 DrawGrid_knihovna->DefaultRowHeight=140;
-	 if(OBJEKT_akt->id==3)DrawGrid_knihovna->DefaultColWidth=160;
-	 else DrawGrid_knihovna->DefaultColWidth=80;
-	 DrawGrid_knihovna->Left=3;
-	 DrawGrid_knihovna->Height=DrawGrid_knihovna->DefaultRowHeight*2; // dle počtu řádků
-	 mazani=false;//pomocná proměnná pro strono / uložit problém (uložit volá storno, nutno rozlišit zda mažu nebo ukládám)
-
-	 //objekt ionizace
-	 if(OBJEKT_akt->id==4 || OBJEKT_akt->id==2 || OBJEKT_akt->id==5){scGPPanel_pomocn_proSwitch->Visible=true;scGPSwitch_robot_clovek->Visible=true;}
-
-	 DrawGrid_otoce->DefaultColWidth=80;
-
-	 scListGroupPanel_hlavickaOtoce->Visible=true;
-	 scListGroupPanel_hlavickaOtoce->Top=DrawGrid_knihovna->Height + scGPPanel_mainmenu->Height;
-	 scGPLabel_otoce->Top = scListGroupPanel_hlavickaOtoce->Top;//  + scGPPanel_mainmenu->Height;//scListGroupPanel_hlavickaOtoce->Top + scGPPanel_mainmenu->Height;
-	 DrawGrid_otoce->Visible=true;
-
-	 scListGroupPanel_hlavickaOstatni->Visible=true;
-	 scListGroupPanel_hlavickaOstatni->Top=scListGroupPanel_hlavickaOtoce->Top + scListGroupPanel_hlavickaOtoce->Height;
-	 scGPLabel_stop->Top=scListGroupPanel_hlavickaOstatni->Top -1;// + scGPPanel_mainmenu->Height-1;//MV přidáno z důvodu zobrazování čar v knihovně
-	 DrawGrid_ostatni->Visible=true;
-
-	 scListGroupPanel_geometrie->Visible=true;
-	 scListGroupPanel_geometrie->Top=scListGroupPanel_hlavickaOstatni->Top +   scListGroupPanel_hlavickaOstatni->Height;
-	 scGPLabel_geometrie->Top=scListGroupPanel_geometrie->Top-1;// + scGPPanel_mainmenu->Height-1;//MV přidáno z důvodu zobrazování čar v knihovně
-	 DrawGrid_geometrie->Visible=true;
-
-	 scListGroupPanel_poznamky->Visible=true;
-	 scListGroupPanel_poznamky->Top= scListGroupPanel_geometrie->Top + scListGroupPanel_geometrie->Height;
-	 scGPLabel_poznamky->Top=scListGroupPanel_poznamky->Top-1;// + scGPPanel_mainmenu->Height-1;//MV přidáno z důvodu zobrazování čar v knihovně
-	 DrawGrid_poznamky->Visible=true;
-
-	 if(OBJEKT_akt->id==4 || OBJEKT_akt->id==2 || OBJEKT_akt->id==5)scGPLabel_roboti->Caption=ls->Strings[55];//"Robot           Operátor";//mezery tvoří místo, kde je zobrazen switch
-	 else if(OBJEKT_akt->id==3)scGPLabel_roboti->Caption=ls->Strings[56];//"Sekce";
-	 else if(OBJEKT_akt->id==0 || OBJEKT_akt->id==9)scGPLabel_roboti->Caption=ls->Strings[57];//"Operátoři";
-	 else scGPLabel_roboti->Caption=ls->Strings[58];//"Roboti";
-
-	 scGPLabel_roboti->ContentMarginLeft=10;
-
-	//nastavení tlačítek na výchozí hodnoty
-	if(OBJEKT_akt->uzamknout_nahled)
-	{
-		scButton_zamek->ImageIndex=37; //zamčeno
-		//Schema->ImageIndex=79;
-		scButton_zamek->Hint=ls->Strings[119];//"Odemknout editaci";
-	}
-	else
-	{
-		scButton_zamek->ImageIndex=60;
-		//Schema->ImageIndex=78;
-		scButton_zamek->Hint=ls->Strings[120];//"Zamknout editaci";
-	}
-	if(OBJEKT_akt->zobrazit_mGrid)
-	{
-		scGPButton_viditelnostmGrid->ImageIndex=54;
-		scGPButton_viditelnostmGrid->Hint=ls->Strings[121];//"Skrýt tabulky";
-	}
-	else
-	{
-		scGPButton_viditelnostmGrid->ImageIndex=55;
-		scGPButton_viditelnostmGrid->Hint=ls->Strings[122];//"Zobrazit tabulky";
-	}
-	if(OBJEKT_akt->zobrazit_koty)
-	{
-		scGPButton_viditelnostKoty->ImageIndex=56;
-		scGPButton_viditelnostKoty->Hint=ls->Strings[123];//"Skrýt kóty";
-	}
-	else
-	{
-		scGPButton_viditelnostKoty->ImageIndex=57;
-		scGPButton_viditelnostKoty->Hint=ls->Strings[124];//"Zobrazit kóty";
-	}
-	if(posun_dalsich_elementu)
-	{
-		scGPButton_posun_dalsich_elementu->ImageIndex=58;
-		scGPButton_posun_dalsich_elementu->Hint=ls->Strings[125];//"Zakázat vázaný posun robotů, stop stanic a otočí v editovaném objektu";
-	}
-	else
-	{
-		scGPButton_posun_dalsich_elementu->ImageIndex=59;
-		scGPButton_posun_dalsich_elementu->Hint=ls->Strings[126];//"Povolit vázaný posun robotů, stop stanic a otočí v editovaném objektu";
-	}
-	scGPButton_geometrie->Hint=ls->Strings[443];
-	if(scGPComboBox_prepinacKot->ItemIndex==0)DKunit=(TForm1::Tm_mm)1;
-	else DKunit=(TForm1::Tm_mm)2;
-	if(OBJEKT_akt->pohon!=NULL)scGPComboBox_prepinacKot->Enabled=true;
-	else scGPComboBox_prepinacKot->Enabled=false;
-
-
-	scGPButton_ulozit->Enabled=false;
-	//zapnutí spodního panelu
-	scGPPanel_bottomtoolbar->Visible=true;
-	scGPButton_bug_report->Top-=scGPPanel_bottomtoolbar->Height;//posun tlačítka report
-
-	//zmena horní lišty vlevo
-	scLabel_architekt->Visible=false;
-	scGPSwitch_rezim->Visible=false;
-	scLabel_klient->Visible=false;
-
-	nahled_ulozen=false;        //REFRESH();
 }
 //---------------------------------------------------------------------------
 

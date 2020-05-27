@@ -825,9 +825,7 @@ public:		// User declarations
 	//metody
 	void kurzor(TKurzory typ_kurzor);
 	void vypni_editaci();
-	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click
-	void NPin();//podpùrná metoda NP(), øeší vstupní èást dat, vyseparováno, z dùvodu toho, že z GAPO aktulizauji pøípadnì spuštìné PO a nemohu volat NP, protože to v sobì obsahu ShowModal - vedlo k chybì
-  void NP_input(); // volá zobrazení PO - nahrazuje NP a NPin
+	void otevri_editaci(); // volá zobrazení PO - nahrazuje NP a NPin
 	void ZOOM_IN();//pøiblížení
 	void ZOOM_OUT();//oddálení
 	void REFRESH();
@@ -893,8 +891,6 @@ public:		// User declarations
 	void nastav_focus();//vrátí focus na form1, kdykoli je potøeba vrátit focus, skrze odchytávání kláves
 	void set_enabled_mGrid(Cvektory::TElement *E);//zapne nebo vypne komponenty megridu v závislosti na tom zda má element pøiøazený pohon
 	void zobraz_tip(UnicodeString text="", TCanvas* canv=NULL);//prázdným (bez paremetrù) voláním  metody se tip smaže, //pokud není parametr canvas uveden, jedná se o dlouhodobé vykreslování hodnoty TIP//pokud je parametrem pøedán Canvas vykreslí se pøímo a jednorázovì
-	void test1();
-	void test2();
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
