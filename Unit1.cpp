@@ -12283,18 +12283,18 @@ void TForm1::NP_input()
 
 //	 //zobrazení knihovny pokud je skrytá
 //	 //mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
-//	 pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp;posledni_editovany_element=NULL;delete posledni_editovany_element;JID=-1;Akce=NIC;
+	 pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp;posledni_editovany_element=NULL;delete posledni_editovany_element;JID=-1;Akce=NIC;
 //	 scGPButton_prichytavat->Visible=false;//vypnutí tlačítka přichytávat
 //	 scButton_zamek_layoutu->Visible=false;//vypnutí tlačítka pro zámek layoutu
 //	 Image_knihovna_objektu->Visible=false;//vypnutí komponenty s knihovnou
-//	 JID=-1;//ošetření, s JID se pracuje i v náhledu
-//	 element_id=99999;//ošetření pro správné zobrazování mgridů
+	 JID=-1;//ošetření, s JID se pracuje i v náhledu
+	 element_id=99999;//ošetření pro správné zobrazování mgridů
 //	 pom_bod=NULL;pom_bod_temp=NULL;//s těmito ukazateli pracuje jak náhled tak schéma, ošetření
 //	 //zablokování OnChange tabulek
 //	 FormX->input_state=FormX->NO;
 //	 FormX->vstoupeno_poh=false;
 //	 FormX->vstoupeno_elm=false;
-//	 MOD=EDITACE;
+	 MOD=EDITACE;
 //	 //založení pomocného tempového ukazatele pro akutálně editovaný objekt a překopírování jeho atributů
 //	 //OBJEKT_akt=new Cvektory::TObjekt; OBJEKT_akt->pohon=NULL; OBJEKT_akt->pohon=new Cvektory::TPohon; OBJEKT_akt->element=NULL;
 //	 //zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze mGrid je propojen
@@ -12507,7 +12507,7 @@ void TForm1::NP_input()
 	{
 		if(OBJEKT_akt->pohon==NULL && d.v.POHONY->dalsi!=NULL && PmG!=NULL && !(PmG->Top+PmG->Height<34 || PmG->Top>ClientHeight-73 || PmG->Left+PmG->Width<168 || PmG->Left>ClientWidth)){PmG->getCombo(3,0)->DropDown();FormX->vstoupeno_poh=true;}//otevření COMBA pokud objekt nemá žádný pohon a pokud existují nějaké pohony
 	}
-	//REFRESH();//přidáno kvůli zobrazení tab. pohonů a kót (při shodném zoomu layout->editace)
+	REFRESH();//přidáno kvůli zobrazení tab. pohonů a kót (při shodném zoomu layout->editace)
 	edit_vyhybka=NULL;delete edit_vyhybka;
 }
 //---------------------------------------------------------------------------
@@ -17505,18 +17505,14 @@ void TForm1::test2()
 {
    //zobrazení knihovny pokud je skrytá
 	 //mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
-	 pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp;posledni_editovany_element=NULL;delete posledni_editovany_element;JID=-1;Akce=NIC;
 	 scGPButton_prichytavat->Visible=false;//vypnutí tlačítka přichytávat
 	 scButton_zamek_layoutu->Visible=false;//vypnutí tlačítka pro zámek layoutu
 	 Image_knihovna_objektu->Visible=false;//vypnutí komponenty s knihovnou
-	 JID=-1;//ošetření, s JID se pracuje i v náhledu
-	 element_id=99999;//ošetření pro správné zobrazování mgridů
 	 pom_bod=NULL;pom_bod_temp=NULL;//s těmito ukazateli pracuje jak náhled tak schéma, ošetření
 	 //zablokování OnChange tabulek
 	 FormX->input_state=FormX->NO;
 	 FormX->vstoupeno_poh=false;
 	 FormX->vstoupeno_elm=false;
-	 MOD=EDITACE;
 	 //založení pomocného tempového ukazatele pro akutálně editovaný objekt a překopírování jeho atributů
 	 //OBJEKT_akt=new Cvektory::TObjekt; OBJEKT_akt->pohon=NULL; OBJEKT_akt->pohon=new Cvektory::TPohon; OBJEKT_akt->element=NULL;
 	 //zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze mGrid je propojen
@@ -17524,10 +17520,6 @@ void TForm1::test2()
 	 nastav_focus();
 	 popisky_knihovna_nahled(false);//nastavní popisků pro editaci
 	 DrawGrid_knihovna->Top=33;
-	 kurzor(standard);
-	 ////řešení nového zoomu a posunu obrazu pro účely náhldeu
-	 //zazálohování hodnot posunu a zoomu
-	 JID=-1;
 	 //DrawGrid_knihovna->Visible=false; //nezobrazí přepozicování elementů
 	 DrawGrid_knihovna->DefaultRowHeight=140;
 	 if(OBJEKT_akt->id==3)DrawGrid_knihovna->DefaultColWidth=160;
@@ -17628,7 +17620,7 @@ void TForm1::test2()
 	scGPSwitch_rezim->Visible=false;
 	scLabel_klient->Visible=false;
 
-	nahled_ulozen=false;        REFRESH();
+	nahled_ulozen=false;        //REFRESH();
 }
 //---------------------------------------------------------------------------
 
