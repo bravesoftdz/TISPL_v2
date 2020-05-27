@@ -14474,9 +14474,28 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 		//Sk(Form_parametry_linky->scComboBox_vyber_produkt->ItemIndex);
 
 
-
-
-
+		TDateTime start;
+    String s;
+    Cvektory::TElement *E=d.v.ELEMENTY->dalsi,*e=NULL;
+    double cas=0,celkem_otevreni=0,celkem_zavreni=0;
+		unsigned int pocet_kroku=50;
+    for(unsigned int i=0;i<pocet_kroku;i++)
+    {
+        start=Now();
+        E=d.v.ELEMENTY->dalsi;
+        while(E!=NULL)
+        {
+            e=new Cvektory::TElement;d.v.kopiruj_element(E,e);
+            delete e;e=NULL;
+            E=E->dalsi;
+        }
+        delete E;E=NULL;
+        cas=ms.MyToDouble(TimeToStr(Now()-start).SubString(6,2));
+        celkem_otevreni+=cas;
+        Memo("Čas kopírování: "+AnsiString(cas));
+    }
+    Memo("------------");
+		Memo("Průměrný čas kopírování: "+AnsiString(celkem_otevreni/(double)pocet_kroku));
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
