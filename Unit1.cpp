@@ -2797,7 +2797,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			mGrid_knihovna->Show(Image_knihovna_objektu->Canvas);
 		}
 	}
-	else//
+	else//Simulace
 	{
 		if(Akce!=PAN_MOVE)
 		{ //Memo("test vykreslení staticka scena",false,true);
@@ -2808,6 +2808,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
 			d.vykresli_elementy(bmp_in->Canvas,2);//dynamická scéna
 			d.vykresli_voziky(bmp_in->Canvas);//dynamická scéna
+			//pouze testovací d.vykresli_vozik(bmp_in->Canvas,0,m.P2Lx(0+Poffset*Zoom),m.P2Ly(1000),d.v.PP.delka_jig,d.v.PP.sirka_jig,0,0);
 			Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 			Cantialising a;
 			Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
@@ -14254,11 +14255,8 @@ void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 		//tlačítko simulace
 		scGPGlyphButton_PLAY->GlyphOptions->Kind=scgpbgkPause;
 		scGPGlyphButton_PLAY->Hint="zastavit animaci";
-		scGPGlyphButton_PLAY->ShowCaption=true;
-		//if(OBJEKT_akt->pohon!=NULL)Timer_animace->Interval=F->m.round(F->m.get_timePERpx(OBJEKT_akt->pohon->aRD,0));//stejná rychlost pro všechny RD
-		//else
-		//Timer_animace->Interval=16;//prozatim
-		Timer_animace->Interval=1;//ceil(m2px/Zoom/d.v.vrat_min_rychlost_prejezdu()*1000.0/fps);   //ceil(F->m.get_timePERpx(pom->RD,0,d.v.vrat_min_rychlost_prejezdu()));//různá rychlost dle RD, s afps se počítá dle min RD, ale nějak špatně vycházela animace ke konci (nestihl vozík vyjet)
+		scGPGlyphButton_PLAY->ShowCaption=true;            //optimálně pohybově nejpomalejšího pohonu či animovaného elementu
+		Timer_animace->Interval=floor(m2px/(Zoom*3)/d.v.vrat_min_rychlost_prejezdu()*1000.0/fps);   //ceil(F->m.get_timePERpx(pom->RD,0,d.v.vrat_min_rychlost_prejezdu()));//různá rychlost dle RD, s afps se počítá dle min RD, ale nějak špatně vycházela animace ke konci (nestihl vozík vyjet)
 	}
 	else//animace zastavena
 	{
@@ -14281,7 +14279,7 @@ void __fastcall TForm1::Timer_animaceTimer(TObject *Sender)
 		{
 			if(RO>-(LO*Zoom/m2px))
 			{
-				RO-=(LO*Zoom/m2px)/20.0;
+				RO-=(LO*Zoom/m2px)/20.0;//krok po 20
 			}
 			else ROs=1;
 		}
@@ -14289,7 +14287,7 @@ void __fastcall TForm1::Timer_animaceTimer(TObject *Sender)
 		{
 			if(RO<(LO*Zoom/m2px))
 			{
-				RO+=(LO*Zoom/m2px)/20.0;
+				RO+=(LO*Zoom/m2px)/20.0;//krok po 20
 			}
 			else ROs=0;
 		}
@@ -14297,16 +14295,16 @@ void __fastcall TForm1::Timer_animaceTimer(TObject *Sender)
 		//tryska - jen se kýve ze strany na strany v rozmezí -30 až +30 stupňů
 		if(ROsts==0)
 		{
-			if(ROst<30)ROst+=5;
+			if(ROst<30)ROst+=5;//krok po 5
 			else ROsts=1;
 		}
 		else
 		{
-			if(ROst>-30)ROst-=5;
+			if(ROst>-30)ROst-=5;//krok po 5
 			else ROsts=0;
 		}
 
-		Poffset+=1*m2px/Zoom*100;//zajistí posun animace o 1px (tedy nejmenší možnou grafickou jednotku), ale posouvání probíhá v metrech, 100 je tam jen momentální WA, jinak tam nepatří
+		Poffset+=1;//zajistí posun animace vždy o 1s reálného času (strojového dle Timer_animace->Interval, který by měl reflektovat aktuální rychlosti zajišťující plynulost animace)
 		d.v.generuj_VOZIKY();//velice prozatim
 		REFRESH();
 	}
@@ -14469,16 +14467,13 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 //	vlakno->Resume();
 //	//delete vlakno;
 
-		Timer_animace->Interval=ceil(m2px/Zoom/d.v.vrat_min_rychlost_prejezdu()*1000.0/afps);   //ceil(F->m.get_timePERpx(pom->RD,0,d.v.vrat_min_rychlost_prejezdu()));//různá rychlost dle RD, s afps se počítá dle min RD, ale nějak špatně vycházela animace ke konci (nestihl vozík vyjet)
-		Memo(m2px/Zoom);
-		Memo(m2px/Zoom/d.v.vrat_min_rychlost_prejezdu());
-		Memo(m2px/Zoom/d.v.vrat_min_rychlost_prejezdu()*1000.0);
-		Memo(afps);
+		//Sk(ceil(m2px/Zoom/d.v.vrat_min_rychlost_prejezdu()*1000.0/fps));   //ceil(F->m.get_timePERpx(pom->RD,0,d.v.vrat_min_rychlost_prejezdu()));//různá rychlost dle RD, s afps se počítá dle min RD, ale nějak špatně vycházela animace ke konci (nestihl vozík vyjet)
+		//Sk(Form_parametry_linky->scComboBox_vyber_produkt->ItemIndex);
 
-//		0,0142857142857143
-//1,71428571428571
-//1714,28571428571
-//INF
+
+
+
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
