@@ -2863,7 +2863,7 @@ void TForm1::REFRESH()
 {
 	log(__func__);//logování
 	FormPaint(this);
-	RM();//korekce chyby oskakování pravého menu
+	//RM();//korekce chyby oskakování pravého menu
 }
 //---------------------------------------------------------------------------
 void TForm1::REFRESH(bool refreshovat_mGridy)
