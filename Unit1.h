@@ -893,6 +893,8 @@ public:		// User declarations
 	void nastav_focus();//vrátí focus na form1, kdykoli je potøeba vrátit focus, skrze odchytávání kláves
 	void set_enabled_mGrid(Cvektory::TElement *E);//zapne nebo vypne komponenty megridu v závislosti na tom zda má element pøiøazený pohon
 	void zobraz_tip(UnicodeString text="", TCanvas* canv=NULL);//prázdným (bez paremetrù) voláním  metody se tip smaže, //pokud není parametr canvas uveden, jedná se o dlouhodobé vykreslování hodnoty TIP//pokud je parametrem pøedán Canvas vykreslí se pøímo a jednorázovì
+	void test1();
+	void test2();
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

@@ -36,5 +36,6 @@ void __fastcall Tvlakno_obraz::Execute()
 //---------------------------------------------------------------------------
 void __fastcall Tvlakno_obraz::test()
 {
-	F->d.v.vlakno_obraz();//provádí operace s obrazem na vláknì
+	//F->d.v.vlakno_obraz();//provádí operace s obrazem na vláknì
+	F->test2();
 }
