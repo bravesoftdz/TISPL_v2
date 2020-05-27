@@ -2353,7 +2353,7 @@ void Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->data.pocet_voziku=Original->data.pocet_voziku;
 	Kopie->data.pocet_pozic=Original->data.pocet_pozic;
 	Kopie->geo=Original->geo;
-	Kopie->mGrid=new TmGrid(F);//nová strategie, je mgrid, nekopírovat a používat jenom v OBJEKT_akt, zde však podmínka zda se jedná o OBJEKT_akt nebyla z nějakého důvodu možná
+	Kopie->mGrid=NULL;//new TmGrid(F);//nová strategie, je mgrid, nekopírovat a používat jenom v OBJEKT_akt, zde však podmínka zda se jedná o OBJEKT_akt nebyla z nějakého důvodu možná
 	Kopie->objekt_n=Original->objekt_n;
 	//if(Original->pohon!=NULL)Kopie->pohon=vrat_pohon(Original->pohon->n);
 	//else
@@ -8506,11 +8506,9 @@ long Cvektory::vymaz_seznam_DATA()
 	return pocet_smazanych_DAT;
 }
 ////---------------------------------------------------------------------------
-//možno smazat
-void Cvektory::test_vlakna(long i)
+//provádí operace s obrazem na vlákně
+void Cvektory::vlakno_obraz()
 {
-//	TElement *E=vrat_element(i);
-//	F->Button14->Caption=E->name;
 	switch(F->vlakno_akce)
 	{
 		//vytvoření obrazu pro UNDO
