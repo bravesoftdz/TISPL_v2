@@ -3201,7 +3201,6 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 			OBJEKT_akt->name=OBJEKT_akt->name.SubString(1,OBJEKT_akt->name.Length()-1);
 		else
 			OBJEKT_akt->name+=Key;
-		nahled_ulozit(true);
 		REFRESH(false);
 	}
 	if (editace_textu&&index_kurzoru==-7)//editace short nadpisu kabiny
@@ -3211,7 +3210,6 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 		else if(OBJEKT_akt->short_name.Length()!=4)
 			OBJEKT_akt->short_name+=Key;
 		else MessageBeep(0);
-		nahled_ulozit(true);
 		REFRESH(false);
 	}
 	if (editace_textu&&(index_kurzoru<=-11||index_kurzoru==-2||index_kurzoru==-5))//editace kót elementů,kót haly nebo objektu, kót kabiny
@@ -3223,7 +3221,6 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 			editovany_text+=key;
 			if(key=="")MessageBeep(0);
 		}
-		if(index_kurzoru!=-2)nahled_ulozit(true);
 		duvod_validovat=1;
 		REFRESH(false);
 	}
@@ -3248,7 +3245,6 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 			else
 				pom_element_temp->name+=key;//key s malým k, prochází numerickým filtrem, v tomto případě žádoucí
 		}
-		nahled_ulozit(true);
 		//propsání nového názvu do mGridu
 		int prvni_sloupec=0;
 		if(pom_element_temp->eID==200 || pom_element_temp->eID==300)prvni_sloupec=3;
@@ -11989,7 +11985,6 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 					pom_element=NULL;//přidáno nově 13.5.2019 - v režimu testování kvůli setJobID a předání do pom_element_puv
 					if(eID%2==0 && eID!=100 && eID!=200 && eID!=MaxInt)d.v.aktualizuj_sparovane_ukazatele();//odstraněn stop-element, nutná aktualizace
 					dalsi_element=NULL;delete dalsi_element;
-					REFRESH();
 				}
 				else if(pom_element->eID==200)
 				{
@@ -12035,7 +12030,6 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 						if(pom_element->dalsi!=NULL)posledni_editovany_element=pom_element->dalsi;else if(pom_element->predchozi->n>0)posledni_editovany_element=pom_element->predchozi;else posledni_editovany_element=NULL;
 						d.v.smaz_element(pom_element);
 						if(posledni_editovany_element!=NULL)d.v.vloz_G_element(posledni_editovany_element,0,X1,Y1,0,0,0,0,posledni_editovany_element->geo.X4,posledni_editovany_element->geo.Y4,posledni_editovany_element->geo.orientace);
-						REFRESH(false);
 					}else TIP=ls->Strings[311];//"Nelze smazat."
 				}
 				else TIP=ls->Strings[311];//"Nelze smazat."
@@ -12056,9 +12050,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 					d.v.smaz_komoru(OBJEKT_akt,pom_komora_temp);
 					pom_komora_temp=NULL;delete pom_komora_temp;
 					DuvodUlozit(true);
-					refresh_mGrid=false;  editace_textu=true;
-					REFRESH();
-					refresh_mGrid=true;
+					editace_textu=true;
 				}
 				Akce=NIC;
 			}
@@ -12093,7 +12085,6 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 						d.v.smaz_objekt(pom_vyhybka);//nalezeny můžeme odstranit odstranit
 						pom_vyhybka=NULL;//delete p; nepoužívat delete je to ukazatel na ostra data
 						duvod_validovat=2;
-			  		REFRESH();
 			  		DuvodUlozit(true);
 			  	}
 				}
@@ -12110,11 +12101,23 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 			{
 				d.v.smaz_element(pom_element_temp);
 				pom_element_temp=NULL;pom_element=NULL;
-				REFRESH();
-      }
+			}
 			break;
 		}
 	}
+	//přeindexování a změna názvů
+	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+	unsigned int n=1;
+	while(E!=NULL)
+	{
+		E->n=n;
+		n++;
+		E=d.v.dalsi_krok(E);
+	}
+	delete E;E=NULL;
+	d.v.uprav_popisky_elementu(NULL);
+	REFRESH();//musí být na konci!!! po aktualizaci n a názvů
+	//vytvoření obrazu
 	vytvor_obraz();
 }
 //---------------------------------------------------------------------------
@@ -14418,14 +14421,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //		E=d.v.dalsi_krok(E);
 //	}
 //	delete E;E=NULL;
-	int poc=0;
-	Cvektory::TElement *E=d.v.DATA->predchozi->Elementy->dalsi;
-	while(E!=NULL)
-	{
-		poc++;
-		E=E->dalsi;
-	}
-	Memo(poc);
+	MB("ahoj");
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -16417,6 +16413,7 @@ void TForm1::smaz_kurzor()
 	pom_bod_temp=NULL; delete pom_bod_temp;
 	if(duvod_validovat==1)duvod_validovat=2;
 	REFRESH(true);//uvolnění rastru
+	nahled_ulozit(true);
 	vytvor_obraz();
 }
 //---------------------------------------------------------------------------
