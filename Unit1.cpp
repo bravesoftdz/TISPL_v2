@@ -3508,7 +3508,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						if(JID==-3){Akce=MOVE_BOD;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;ortogonalizace_stav=false;nahled_ulozit(true);}//posun jednoho bodu
 						if(JID==-4){Akce=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;nahled_ulozit(true);}//změna offsetu kóty
 						if(JID==-5){nastav_focus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_bod_temp=pom_bod;if(pom_bod_temp->n!=1)editovany_text=m.round2double(m.delka(pom_bod_temp->predchozi->X,pom_bod_temp->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);else editovany_text=m.round2double(m.delka(OBJEKT_akt->body->predchozi->X,OBJEKT_akt->body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);if(DKunit==2||DKunit==3)editovany_text=m.round2double(editovany_text/OBJEKT_akt->pohon->aRD,3);editovany_text=outDK(ms.MyToDouble(editovany_text));nahled_ulozit(true);}//editace kót kabiny
-						if(JID==4){Akce=MOVE_TABLE;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//posun tabulky pohonu
+						if(JID==4){Akce=MOVE_TABLE;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;refresh_mGrid=false;d.nabuffrovat_mGridy();puv_souradnice.x=OBJEKT_akt->Xp;puv_souradnice.y=OBJEKT_akt->Yp;}//posun tabulky pohonu
 						if(JID==-102){if(d.zprava_highlight!=d.zobrazit_celou_zpravu){d.zobrazit_celou_zpravu=d.zprava_highlight;kurzor(close);}else {d.zobrazit_celou_zpravu=0;kurzor(info);}REFRESH(false);}//rozbalení nebo skrytí zpráv
 //						if(JID==-201)Memo("prvni");
 //						if(JID==-202)Memo("druhý");
@@ -4482,12 +4482,21 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			}break;//posun objektu
 			case MOVE_TABLE:
 			{
+				//posun tabulek elementů
 				if(pom_element!=NULL)
 				{
 					if(puv_souradnice.x!=pom_element->Xt && puv_souradnice.y!=pom_element->Yt)mGrid_on_mGrid();//kontrola, zda nejsou překryty mGridy elementů a PmG
 					JID=-1;setJobIDOnMouseMove(X,Y);kurzor(posun_l);//kvůli rychlé aktualizaci po přesunu včetně Highlightu
 				}
+				//posun def. tabulky pohonu
+				else if(PmG!=NULL)
+				{
+        	if(puv_souradnice.x!=OBJEKT_akt->Xp && puv_souradnice.y!=OBJEKT_akt->Yp)mGrid_on_mGrid();//kontrola, zda nejsou překryty mGridy elementů a PmG
+					JID=-1;setJobIDOnMouseMove(X,Y);kurzor(posun_l);//kvůli rychlé aktualizaci po přesunu včetně Highlightu
+				}
+				//rušení akce a kurzoru
 				Akce=NIC;kurzor(standard);//REFRESH();znovu zakomentován, protože je volán v setJobIDOnMouseMove
+        //vytvoření obrazu pro UNDO a REDO
 				vytvor_obraz();
 			}break;
 			case MOVE_ELEMENT:
@@ -4789,20 +4798,17 @@ void TForm1::getJobID(int X, int Y)
 			Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
 			while(E!=NULL)
 			{
-				if(E->eID!=300 && d.v.oblast_elementu(E,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+				if(d.v.oblast_elementu(E,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
 				{
+					if(E->eID==300 || E->eID==301)JID=6;
+					else JID=5;
 					pom_element=E;
-					JID=5;
-					break;
-				}
-				else if(E->eID==300 && (m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,E->geo.X4,E->geo.Y4,0.5) || (E->dalsi2->eID==301 && m.LeziVblizkostiUsecky(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,E->geo.X4,E->geo.Y4,E->dalsi2->geo.X4,E->dalsi2->geo.Y4)<=0.5)))
-				{
-					JID=6;
-					pom_element=E;
+					break;//pokud chci první nalezený element ... break, pokud chci poslední nalezeny bez breaku (např. problém překrývání 2 citelných oblastí)
 				}
 				E=d.v.dalsi_krok(E);
 			}
 			E=NULL;delete E;
+			d.v.vymaz_seznam_VYHYBKY();//musí být pokud může dojít k přerušení průchodu alg. dalsi_krok
 		}
 		if(JID==-1&&d.v.OBJEKTY->dalsi!=NULL&&Akce==NIC)
 		{
@@ -5171,7 +5177,7 @@ void TForm1::onPopUP(int X, int Y)
 //			pom=d.v.najdi_objekt(m.P2Lx(X),m.P2Ly(Y),d.O_width*m2px,d.O_height*m2px);
 //			pom_bod=d.v.najdi_bod(pom);
 			//element mimo kabinu
-			if(pom==NULL && JID==5 && pom_element!=NULL)pom=d.v.vrat_objekt(pom_element->objekt_n);
+			if(pom==NULL && (JID==5 || JID==6) && pom_element!=NULL)pom=d.v.vrat_objekt(pom_element->objekt_n);
 			pom_vyhybka=pom;//uchovávání ukazatele pro případ, že uživatel po zobrazení popup menu sjede kurzorem z objektu
 			pom_element_temp=NULL;
 			if(pom!=NULL && JID!=-6)// nelze volat přímo metodu najdi objekt, protože pom se používá dále
@@ -6577,7 +6583,11 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 				int sloupec=4;
 				if(prohodit_sloupce_PM(E))sloupec=3;
 				if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)E->WT=m.cekani_na_palec(0,E->dalsi->pohon->roztec,E->dalsi->pohon->aRD,3);
-				if(OBJEKT_akt!=NULL && OBJEKT_akt->n==E->objekt_n)E->mGrid->Cells[sloupec][11].Text = F->m.round2double(F->outPT(E->WT),3);
+				if(OBJEKT_akt!=NULL && OBJEKT_akt->n==E->objekt_n)
+				{
+					if(E->WT!=0)E->mGrid->Cells[sloupec][11].Text=F->m.round2double(F->outPT(E->WT),3);
+					else E->mGrid->Cells[sloupec][11].Text="-";
+				}
 			}
 	  	//////////Mazání nepotřebného předávacího místa + 2 PM na sobě
 //			if(E->eID==200 && (E->dalsi!=NULL && E->dalsi->pohon==NULL && E->pohon==NULL || E->dalsi!=NULL && E->pohon!=NULL && E->dalsi->pohon!=NULL && E->dalsi->pohon->n==E->pohon->n))
@@ -6689,7 +6699,11 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 				//zapsání do mgridu
 				int sloupec=4;
 				if(prohodit_sloupce_PM(E))sloupec=3;
-				if(OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n)E->mGrid->Cells[sloupec][11].Text = F->m.round2double(F->outPT(E->WT),3);
+				if(OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n)
+				{
+					if(E->WT!=0)E->mGrid->Cells[sloupec][11].Text=F->m.round2double(F->outPT(E->WT),3);
+					else E->mGrid->Cells[sloupec][11].Text="-";
+				}
 			}
 			//ukazatelové záležitosti
 			p1=NULL;p2=NULL;C=NULL;
@@ -6765,7 +6779,11 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 			int sloupec=4;
 			if(prohodit_sloupce_PM(E))sloupec=3;
 			if(e_prvni->pohon!=NULL)e_posledni->WT=m.cekani_na_palec(0,e_prvni->pohon->roztec,e_prvni->pohon->aRD,3);
-			if(OBJEKT_akt!=NULL && OBJEKT_akt->n==e_posledni->objekt_n)E->mGrid->Cells[sloupec][11].Text = F->m.round2double(F->outPT(E->WT),3);
+			if(OBJEKT_akt!=NULL && OBJEKT_akt->n==e_posledni->objekt_n)
+			{
+				if(E->WT!=0)E->mGrid->Cells[sloupec][11].Text=F->m.round2double(F->outPT(E->WT),3);
+				else E->mGrid->Cells[sloupec][11].Text="-";
+			}
 		}
 		//////////Mazání nepotřebného předávacího místa (změna na zarážku)
 //		if(e_posledni->eID==200 && (e_prvni->pohon!=NULL && e_posledni->pohon!=NULL && e_prvni->pohon->n==e_posledni->pohon->n || e_prvni->pohon==NULL && e_posledni->pohon==NULL))
@@ -7068,7 +7086,7 @@ void TForm1::vlozeni_editace_geometrie()
 		if(posledni_editovany_element->geo.delka!=0)//normální provoz
 		{
 			//kontrola a uchovávání zda edituji hlavní nebo veldejší větev
-			if(posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->predchozi2==posledni_editovany_element)d.v.vyhybka_pom=posledni_editovany_element;
+			if(posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->predchozi2==posledni_editovany_element)d.v.vyhybka_pom=posledni_editovany_element;
 			posledni_editovany_element=d.v.vloz_element(OBJEKT_akt,MaxInt,d.geoTemp.X4,d.geoTemp.Y4,orientace,posledni_editovany_element->dalsi);
 			posledni_editovany_element->geo=d.geoTemp;
 			design_element(posledni_editovany_element,true);//nutné!!!!!!!!
@@ -7086,8 +7104,8 @@ void TForm1::vlozeni_editace_geometrie()
 	napojeni_vedlejsi_vetve(posledni_editovany_element);
 	//důvod uložit
 	nahled_ulozit(true);
-	//vytvoření obrazu pro UNDO a REDO
-	//vytvor_obraz();   Memo("absolutní KONEC");
+	//vytvoření obrazu pro UNDO a REDO, nelze načíst obrazi při editaci geometrie ... pam. chyba
+	//vytvor_obraz();
 }
 //---------------------------------------------------------------------------
 //ukončení akce geometrie a případné uzavření kruhu
@@ -8663,14 +8681,14 @@ void TForm1::aktualizace_tab_pohon(bool popisky,bool data,bool komponenty)
   	}
   	else
   	{
-			PmG->Cells[3][1].Text=0;
-  		PmG->Cells[3][2].Text=0;
-			PmG->Cells[3][3].Text=0;
-			PmG->Cells[3][4].Text=0;
-			PmG->Cells[3][5].Text=0;
-			PmG->Cells[3][6].Text=0;
-			PmG->Cells[3][7].Text=0;
-			PmG->Cells[3][8].Text=0;
+			PmG->Cells[3][1].Text="-";
+  		PmG->Cells[3][2].Text="-";
+			PmG->Cells[3][3].Text="-";
+			PmG->Cells[3][4].Text="-";
+			PmG->Cells[3][5].Text="-";
+			PmG->Cells[3][6].Text="-";
+			PmG->Cells[3][7].Text="-";
+			PmG->Cells[3][8].Text="-";
 		}
 	}
 
@@ -9757,14 +9775,14 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			}
 			else
 			{
-				E->mGrid->Cells[prvni][3].Text=0;
-				E->mGrid->Cells[prvni][4].Text=0;
-				E->mGrid->Cells[prvni][5].Text=0;
-				E->mGrid->Cells[prvni][6].Text=0;
-				E->mGrid->Cells[prvni][7].Text=0;
-				E->mGrid->Cells[prvni][8].Text=0;
-				E->mGrid->Cells[prvni][9].Text=0;
-				E->mGrid->Cells[prvni][10].Text=0;
+				E->mGrid->Cells[prvni][3].Text="-";
+				E->mGrid->Cells[prvni][4].Text="-";
+				E->mGrid->Cells[prvni][5].Text="-";
+				E->mGrid->Cells[prvni][6].Text="-";
+				E->mGrid->Cells[prvni][7].Text="-";
+				E->mGrid->Cells[prvni][8].Text="-";
+				E->mGrid->Cells[prvni][9].Text="-";
+				E->mGrid->Cells[prvni][10].Text="-";
 			}
 			E->mGrid->Cells[prvni][11].Text="-";
 			//nastavování hodnot třetího sloupce
@@ -9784,14 +9802,14 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 				}
 				else
 				{
-					E->mGrid->Cells[druhy][3].Text=0;
-					E->mGrid->Cells[druhy][4].Text=0;
-					E->mGrid->Cells[druhy][5].Text=0;
-					E->mGrid->Cells[druhy][6].Text=0;
-					E->mGrid->Cells[druhy][7].Text=0;
-					E->mGrid->Cells[druhy][8].Text=0;
-					E->mGrid->Cells[druhy][9].Text=0;
-					E->mGrid->Cells[druhy][10].Text=0;
+					E->mGrid->Cells[druhy][3].Text="-";
+					E->mGrid->Cells[druhy][4].Text="-";
+					E->mGrid->Cells[druhy][5].Text="-";
+					E->mGrid->Cells[druhy][6].Text="-";
+					E->mGrid->Cells[druhy][7].Text="-";
+					E->mGrid->Cells[druhy][8].Text="-";
+					E->mGrid->Cells[druhy][9].Text="-";
+					E->mGrid->Cells[druhy][10].Text="-";
 				}
 			}
 			else//pro PM
@@ -9811,18 +9829,19 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 				}
 				else
 				{
-					E->mGrid->Cells[druhy][3].Text=0;
-					E->mGrid->Cells[druhy][4].Text=0;
-					E->mGrid->Cells[druhy][5].Text=0;
-					E->mGrid->Cells[druhy][6].Text=0;
-					E->mGrid->Cells[druhy][7].Text=0;
-					E->mGrid->Cells[druhy][8].Text=0;
-					E->mGrid->Cells[druhy][9].Text=0;
-					E->mGrid->Cells[druhy][10].Text=0;
+					E->mGrid->Cells[druhy][3].Text="-";
+					E->mGrid->Cells[druhy][4].Text="-";
+					E->mGrid->Cells[druhy][5].Text="-";
+					E->mGrid->Cells[druhy][6].Text="-";
+					E->mGrid->Cells[druhy][7].Text="-";
+					E->mGrid->Cells[druhy][8].Text="-";
+					E->mGrid->Cells[druhy][9].Text="-";
+					E->mGrid->Cells[druhy][10].Text="-";
 				}
 				e_pom=NULL;delete e_pom;
 			}
-			E->mGrid->Cells[druhy][11].Text=outPT(E->WT);
+			if(E->WT!=0)E->mGrid->Cells[druhy][11].Text=outPT(E->WT);
+			else E->mGrid->Cells[druhy][11].Text="-";
 			//nastavení šířek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=E->mGrid->Columns[1].Width=E->mGrid->Rows[0].Height;
@@ -10329,14 +10348,14 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			}
 			else
 			{
-				E->mGrid->Cells[prvni][3].Text=0;
-				E->mGrid->Cells[prvni][4].Text=0;
-				E->mGrid->Cells[prvni][5].Text=0;
-				E->mGrid->Cells[prvni][6].Text=0;
-				E->mGrid->Cells[prvni][7].Text=0;
-				E->mGrid->Cells[prvni][8].Text=0;
-				E->mGrid->Cells[prvni][9].Text=0;
-				E->mGrid->Cells[prvni][10].Text=0;
+				E->mGrid->Cells[prvni][3].Text="-";
+				E->mGrid->Cells[prvni][4].Text="-";
+				E->mGrid->Cells[prvni][5].Text="-";
+				E->mGrid->Cells[prvni][6].Text="-";
+				E->mGrid->Cells[prvni][7].Text="-";
+				E->mGrid->Cells[prvni][8].Text="-";
+				E->mGrid->Cells[prvni][9].Text="-";
+				E->mGrid->Cells[prvni][10].Text="-";
 			}
 			E->mGrid->Cells[prvni][11].Text="-";
 			//nastavování hodnot třetího sloupce
@@ -10356,14 +10375,14 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 				}
 				else
 				{
-					E->mGrid->Cells[druhy][3].Text=0;
-					E->mGrid->Cells[druhy][4].Text=0;
-					E->mGrid->Cells[druhy][5].Text=0;
-					E->mGrid->Cells[druhy][6].Text=0;
-					E->mGrid->Cells[druhy][7].Text=0;
-					E->mGrid->Cells[druhy][8].Text=0;
-					E->mGrid->Cells[druhy][9].Text=0;
-					E->mGrid->Cells[druhy][10].Text=0;
+					E->mGrid->Cells[druhy][3].Text="-";
+					E->mGrid->Cells[druhy][4].Text="-";
+					E->mGrid->Cells[druhy][5].Text="-";
+					E->mGrid->Cells[druhy][6].Text="-";
+					E->mGrid->Cells[druhy][7].Text="-";
+					E->mGrid->Cells[druhy][8].Text="-";
+					E->mGrid->Cells[druhy][9].Text="-";
+					E->mGrid->Cells[druhy][10].Text="-";
 				}
 			}
 			else//pro PM
@@ -10383,18 +10402,19 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 				}
 				else
 				{
-					E->mGrid->Cells[druhy][3].Text=0;
-					E->mGrid->Cells[druhy][4].Text=0;
-					E->mGrid->Cells[druhy][5].Text=0;
-					E->mGrid->Cells[druhy][6].Text=0;
-					E->mGrid->Cells[druhy][7].Text=0;
-					E->mGrid->Cells[druhy][8].Text=0;
-					E->mGrid->Cells[druhy][9].Text=0;
-					E->mGrid->Cells[druhy][10].Text=0;
+					E->mGrid->Cells[druhy][3].Text="-";
+					E->mGrid->Cells[druhy][4].Text="-";
+					E->mGrid->Cells[druhy][5].Text="-";
+					E->mGrid->Cells[druhy][6].Text="-";
+					E->mGrid->Cells[druhy][7].Text="-";
+					E->mGrid->Cells[druhy][8].Text="-";
+					E->mGrid->Cells[druhy][9].Text="-";
+					E->mGrid->Cells[druhy][10].Text="-";
 				}
 				e_pom=NULL;delete e_pom;
 			}
-			E->mGrid->Cells[druhy][11].Text=outPT(E->WT);
+			if(E->WT!=0)E->mGrid->Cells[druhy][11].Text=outPT(E->WT);
+			else E->mGrid->Cells[druhy][11].Text="-";
 			//nastavení šířek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=E->mGrid->Columns[1].Width=E->mGrid->Rows[0].Height;
@@ -10850,7 +10870,8 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 				}
 				e_pom=NULL;delete e_pom;
 			}
-			E->mGrid->Cells[druhy][11].Text = F->m.round2double(F->outPT(E->WT),3);
+			if(E->WT!=0)E->mGrid->Cells[druhy][11].Text=F->m.round2double(F->outPT(E->WT),3);
+			else E->mGrid->Cells[druhy][11].Text="-";
 			break;
 		}
 		case 301:
@@ -12480,7 +12501,16 @@ void TForm1::otevri_editaci()
 	}
 	else//normální funkčnost
 	{
-		if(OBJEKT_akt->pohon==NULL && d.v.POHONY->dalsi!=NULL && PmG!=NULL && !(PmG->Top+PmG->Height<34 || PmG->Top>ClientHeight-73 || PmG->Left+PmG->Width<168 || PmG->Left>ClientWidth)){PmG->getCombo(3,0)->DropDown();FormX->vstoupeno_poh=true;}//otevření COMBA pokud objekt nemá žádný pohon a pokud existují nějaké pohony
+		if(OBJEKT_akt->pohon==NULL && d.v.POHONY->dalsi!=NULL && PmG!=NULL)//otevření COMBA pokud objekt nemá žádný pohon a pokud existují nějaké pohony
+		{
+			TscGPComboBox *C=PmG->getCombo(3,0);
+			if(C!=NULL)
+			{
+				C->DropDown();
+				FormX->vstoupeno_poh=true;
+			}
+			C=NULL;delete C;
+    }
 	}
 	REFRESH();//přidáno kvůli zobrazení tab. pohonů a kót (při shodném zoomu layout->editace)
 	edit_vyhybka=NULL;delete edit_vyhybka;
@@ -12735,7 +12765,16 @@ void TForm1::zmena_editovaneho_objektu()
 		if(kontrola_PM)vlozit_predavaci_misto_aktualizuj_WT();
 		Akce=BLOK;//blokace spouštění mousedown po této metodě, bez blokace dojde k spuštění akce pan
 		REFRESH();//musí být z důvodu změny vykreslení
-		if(OBJEKT_akt->pohon==NULL && d.v.POHONY->dalsi!=NULL && PmG!=NULL && !(PmG->Top+PmG->Height<34 || PmG->Top>ClientHeight-73 || PmG->Left+PmG->Width<168 || PmG->Left>ClientWidth)){PmG->getCombo(3,0)->DropDown();FormX->vstoupeno_poh=true;}//otevření COMBA pokud objekt nemá žádný pohon a pokud existují nějaké pohony
+		if(OBJEKT_akt->pohon==NULL && d.v.POHONY->dalsi!=NULL && PmG!=NULL)//otevření COMBA pokud objekt nemá žádný pohon a pokud existují nějaké pohony
+		{
+			TscGPComboBox *C=PmG->getCombo(3,0);
+			if(C!=NULL)
+			{
+				C->DropDown();
+				FormX->vstoupeno_poh=true;
+			}
+			C=NULL;delete C;
+    }
 	}
 }
 //---------------------------------------------------------------------------
@@ -14379,6 +14418,14 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //		E=d.v.dalsi_krok(E);
 //	}
 //	delete E;E=NULL;
+	int poc=0;
+	Cvektory::TElement *E=d.v.DATA->predchozi->Elementy->dalsi;
+	while(E!=NULL)
+	{
+		poc++;
+		E=E->dalsi;
+	}
+	Memo(poc);
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -14809,26 +14856,26 @@ void __fastcall TForm1::scGPTrackBar1Change(TObject *Sender)
 	if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
 	switch(scGPTrackBar1->Value)
 	{
-		case 0:Zoom=0.25;break;
-		case 1:Zoom=0.5;break;
-		case 2:Zoom=1;break;
-		case 3:Zoom=1.5;break;
-		case 4:Zoom=2;break;
-		case 5:Zoom=2.5;break;
-		case 6:Zoom=3;break;
-		case 7:Zoom=3.5;break;
-		case 8:Zoom=4;break;
-		case 9:Zoom=4.5;break;
-		case 10:Zoom=5;break;
-		case 11:Zoom=6;break;
-		case 12:Zoom=7;break;
-		case 13:Zoom=8;break;
-		case 14:Zoom=9;break;
-		case 15:Zoom=10;break;
-		case 16:Zoom=15;break;
-		case 17:Zoom=20;break;
-		case 18:Zoom=25;break;
-		case 19:Zoom=30;break;
+		case 1:Zoom=0.25;break;
+		case 2:Zoom=0.5;break;
+		case 3:Zoom=1;break;
+		case 4:Zoom=1.5;break;
+		case 5:Zoom=2;break;
+		case 6:Zoom=2.5;break;
+		case 7:Zoom=3;break;
+		case 8:Zoom=3.5;break;
+		case 9:Zoom=4;break;
+		case 10:Zoom=4.5;break;
+		case 11:Zoom=5;break;
+		case 12:Zoom=6;break;
+		case 13:Zoom=7;break;
+		case 14:Zoom=8;break;
+		case 15:Zoom=9;break;
+		case 16:Zoom=10;break;
+		case 17:Zoom=15;break;
+		case 18:Zoom=20;break;
+		case 19:Zoom=25;break;
+		case 20:Zoom=30;break;
 	}
 	scLabel_ZOOM->Caption=AnsiString(Zoom*100)+" %";
 	if(refreshovat_scGPTrackBar)REFRESH();
@@ -14840,26 +14887,26 @@ void TForm1::on_change_zoom_change_scGPTrackBar()
 {
 	log(__func__);//logování
 	refreshovat_scGPTrackBar=false;//aby nedocházelo následnou onchange trackbaru (k metodě výše uvedené) k neřízenému a nadbytečnému refreshování
-	if(Zoom==0.25)	scGPTrackBar1->Value=0;
-	if(Zoom==0.5)		scGPTrackBar1->Value=1;
-	if(Zoom==1)			scGPTrackBar1->Value=2;
-	if(Zoom==1.5)		scGPTrackBar1->Value=3;
-	if(Zoom==2)			scGPTrackBar1->Value=4;
-	if(Zoom==2.5)		scGPTrackBar1->Value=5;
-	if(Zoom==3)			scGPTrackBar1->Value=6;
-	if(Zoom==3.5)		scGPTrackBar1->Value=7;
-	if(Zoom==4)			scGPTrackBar1->Value=8;
-	if(Zoom==4.5)		scGPTrackBar1->Value=9;
-	if(Zoom==5)			scGPTrackBar1->Value=10;
-  if(Zoom==6)		  scGPTrackBar1->Value=11;
-  if(Zoom==7)		  scGPTrackBar1->Value=12;
-  if(Zoom==8)		  scGPTrackBar1->Value=13;
-  if(Zoom==9)		  scGPTrackBar1->Value=14;
-	if(Zoom==10)		scGPTrackBar1->Value=15;
-	if(Zoom==15)		scGPTrackBar1->Value=16;
-	if(Zoom==20)		scGPTrackBar1->Value=17;
-	if(Zoom==25)		scGPTrackBar1->Value=18;
-	if(Zoom==30)		scGPTrackBar1->Value=19;
+	if(Zoom==0.25)	scGPTrackBar1->Value=1;
+	if(Zoom==0.5)		scGPTrackBar1->Value=2;
+	if(Zoom==1)			scGPTrackBar1->Value=3;
+	if(Zoom==1.5)		scGPTrackBar1->Value=4;
+	if(Zoom==2)			scGPTrackBar1->Value=5;
+	if(Zoom==2.5)		scGPTrackBar1->Value=6;
+	if(Zoom==3)			scGPTrackBar1->Value=7;
+	if(Zoom==3.5)		scGPTrackBar1->Value=8;
+	if(Zoom==4)			scGPTrackBar1->Value=9;
+	if(Zoom==4.5)		scGPTrackBar1->Value=10;
+	if(Zoom==5)			scGPTrackBar1->Value=11;
+	if(Zoom==6)		  scGPTrackBar1->Value=12;
+	if(Zoom==7)		  scGPTrackBar1->Value=13;
+	if(Zoom==8)		  scGPTrackBar1->Value=14;
+	if(Zoom==9)		  scGPTrackBar1->Value=15;
+	if(Zoom==10)		scGPTrackBar1->Value=16;
+	if(Zoom==15)		scGPTrackBar1->Value=17;
+	if(Zoom==20)		scGPTrackBar1->Value=18;
+	if(Zoom==25)		scGPTrackBar1->Value=19;
+	if(Zoom==30)		scGPTrackBar1->Value=20;
 	scLabel_ZOOM->Caption=String(Zoom*100)+" %";
 }
 //---------------------------------------------------------------------------
@@ -17457,7 +17504,7 @@ void TForm1::vytvor_obraz(bool stornoUNDO)
 	vlakno_obraz=new Tvlakno_obraz(true);//spustí vlákno zajišťující stáhnutí mapového podkladu
 	vlakno_obraz->FreeOnTerminate=true;//po skončení bude uvolněno
 	vlakno_obraz->Resume();
-	d.v.vlakno_obraz();
+	//d.v.vlakno_obraz();
 }
 //---------------------------------------------------------------------------
 //vymaže všechny obrazy v pořadníku

@@ -1562,14 +1562,14 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
   	}
   	else
 		{
-			E->mGrid->Cells[prvni][3].Text=0;
-  		E->mGrid->Cells[prvni][4].Text=0;
-  		E->mGrid->Cells[prvni][5].Text=0;
-  		E->mGrid->Cells[prvni][6].Text=0;
-  		E->mGrid->Cells[prvni][7].Text=0;
-  		E->mGrid->Cells[prvni][8].Text=0;
-  		E->mGrid->Cells[prvni][9].Text=0;
-  		E->mGrid->Cells[prvni][10].Text=0;
+			E->mGrid->Cells[prvni][3].Text="-";
+  		E->mGrid->Cells[prvni][4].Text="-";
+  		E->mGrid->Cells[prvni][5].Text="-";
+  		E->mGrid->Cells[prvni][6].Text="-";
+  		E->mGrid->Cells[prvni][7].Text="-";
+  		E->mGrid->Cells[prvni][8].Text="-";
+  		E->mGrid->Cells[prvni][9].Text="-";
+			E->mGrid->Cells[prvni][10].Text="-";
   	}
   	if(E->eID==300)//pro výhybku
   	{
@@ -1588,18 +1588,19 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
   			E->mGrid->Cells[druhy][8].Text=F->m.round2double(F->outRz(F->m.mezera(0,E->dalsi2->pohon->Rz,0)),3);
     		E->mGrid->Cells[druhy][9].Text=F->m.round2double(F->outRz(F->m.mezera(0,E->dalsi2->pohon->Rz,1)),3);
   			E->mGrid->Cells[druhy][10].Text=F->m.round2double(F->outRz(F->m.mezera(90,E->dalsi2->pohon->Rz,1)),3);
-  			E->mGrid->Cells[druhy][11].Text=F->m.round2double(F->outPT(E->WT),3);
+				if(E->WT!=0)E->mGrid->Cells[druhy][11].Text=F->m.round2double(F->outPT(E->WT),3);
+				else E->mGrid->Cells[druhy][11].Text="-";
     	}
     	else
 			{
-				E->mGrid->Cells[druhy][3].Text=0;
-  			E->mGrid->Cells[druhy][4].Text=0;
-  			E->mGrid->Cells[druhy][5].Text=0;
-  			E->mGrid->Cells[druhy][6].Text=0;
-  			E->mGrid->Cells[druhy][7].Text=0;
-  			E->mGrid->Cells[druhy][8].Text=0;
-  			E->mGrid->Cells[druhy][9].Text=0;
-  			E->mGrid->Cells[druhy][10].Text=0;
+				E->mGrid->Cells[druhy][3].Text="-";
+				E->mGrid->Cells[druhy][4].Text="-";
+				E->mGrid->Cells[druhy][5].Text="-";
+				E->mGrid->Cells[druhy][6].Text="-";
+				E->mGrid->Cells[druhy][7].Text="-";
+				E->mGrid->Cells[druhy][8].Text="-";
+				E->mGrid->Cells[druhy][9].Text="-";
+				E->mGrid->Cells[druhy][10].Text="-";
   		}
   	}
   	else//pro PM
@@ -1621,18 +1622,19 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
   			E->mGrid->Cells[druhy][8].Text=F->m.round2double(F->outRz(F->m.mezera(0,e_pom->pohon->Rz,0)),3);
   			E->mGrid->Cells[druhy][9].Text=F->m.round2double(F->outRz(F->m.mezera(0,e_pom->pohon->Rz,1)),3);
 				E->mGrid->Cells[druhy][10].Text=F->m.round2double(F->outRz(F->m.mezera(90,e_pom->pohon->Rz,1)),3);
-				E->mGrid->Cells[druhy][11].Text=F->m.round2double(F->outPT(E->WT),3);
+				if(E->WT!=0)E->mGrid->Cells[druhy][11].Text=F->m.round2double(F->outPT(E->WT),3);
+				else E->mGrid->Cells[druhy][11].Text="-";
 			}
 			else
 			{
-				E->mGrid->Cells[druhy][3].Text=0;
-  			E->mGrid->Cells[druhy][4].Text=0;
-  			E->mGrid->Cells[druhy][5].Text=0;
-  			E->mGrid->Cells[druhy][6].Text=0;
-  			E->mGrid->Cells[druhy][7].Text=0;
-  			E->mGrid->Cells[druhy][8].Text=0;
-  			E->mGrid->Cells[druhy][9].Text=0;
-  			E->mGrid->Cells[druhy][10].Text=0;
+				E->mGrid->Cells[druhy][3].Text="-";
+				E->mGrid->Cells[druhy][4].Text="-";
+				E->mGrid->Cells[druhy][5].Text="-";
+				E->mGrid->Cells[druhy][6].Text="-";
+				E->mGrid->Cells[druhy][7].Text="-";
+				E->mGrid->Cells[druhy][8].Text="-";
+				E->mGrid->Cells[druhy][9].Text="-";
+				E->mGrid->Cells[druhy][10].Text="-";
   		}
 			e_pom=NULL;delete e_pom;
 		}

@@ -3604,6 +3604,7 @@ void Cvektory::smaz_vyhybku_spojku(TElement *Element)
 {
 	//deklarace proměnných + založení seznamu smazat
 	unsigned int pocet_mazanych_vyhybek=1;
+	unsigned long objekt=Element->objekt_n;
 	T2Element *smazat=new T2Element,*pom=new T2Element;
 	smazat->n=0;smazat->dalsi=NULL;smazat->predchozi=smazat;
 	TElement *E=NULL;
@@ -3660,12 +3661,47 @@ void Cvektory::smaz_vyhybku_spojku(TElement *Element)
 		E=pom->vyhybka;//uložení mazaného elementu do pomocného ukazatele
 		if(objekt_n!=0 && objekt_n!=E->objekt_n && objekt_n!=O1_n && objekt_n!=O2_n)smaz_objekt(vrat_objekt(objekt_n));//mazání prázdného objektu
 		objekt_n=E->objekt_n;
-		//pokud mažu výhybku nebo spojku je důležité upravit ukazatele na hlavní větvi a geometrii
-		if(E->eID==300 || E->eID==301)smaz_element(E,true);
-		else//mazání ostatních elementů
+
+		if(F->OBJEKT_akt!=NULL)
 		{
-			delete E;
-			E=NULL;
+			//pokud mažu výhybku nebo spojku je důležité upravit ukazatele na hlavní větvi a geometrii
+			if(E->eID==300 || E->eID==301)smaz_element(E,true);
+			else
+			{
+				//mazání mGridů
+				if(E->mGrid!=NULL && (E->objekt_n==F->OBJEKT_akt->n || E==F->predchozi_PM))
+				{
+					try
+					{
+						E->mGrid->Delete();
+          }catch(...){;}
+				}
+				E->mGrid=NULL;
+				//mazání elementu
+				delete E;
+				E=NULL;
+      }
+		}
+		else
+		{
+			//pokud mažu výhybku nebo spojku je důležité upravit ukazatele na hlavní větvi a geometrii
+			if(E->eID==300 || E->eID==301)
+			{
+	  		E->predchozi->dalsi=E->dalsi;
+	  		E->dalsi->predchozi=E->predchozi;
+	  		//pokud se jedná o element v jiném než výchzím objektu, musí dojít k úpraě geometrie úseku
+	  		if(E->objekt_n!=objekt)
+	  		{
+	  			vloz_G_element(E->dalsi,E->dalsi->geo.typ,E->geo.X1,E->geo.Y1,0,0,0,0,E->dalsi->geo.X4,E->dalsi->geo.Y4,E->dalsi->geo.orientace,E->dalsi->geo.rotacni_uhel,E->dalsi->geo.radius);
+	  		}
+	  		delete E;
+	  		E=NULL;
+	  	}
+	  	else//mazání ostatních elementů
+	  	{
+	  		delete E;
+	  		E=NULL;
+			}
 		}
 		//vyřazení záznamu se seznamu smazat
 		smazat->predchozi=pom->predchozi;
@@ -3779,8 +3815,8 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 		}
 	}
 	//hláška uživateli
-	if(!povolit && F->OBJEKT_akt!=NULL && zobrazit_tip)F->TIP=F->ls->Strings[315];//"Nelze odstranit předávací místo"
-	if(povolit && (Element->eID!=200 || (Element->eID==200 && preskocit_kontolu)) && (Element->dalsi==NULL || Element->dalsi!=NULL && Element->geo.typ==0 && Element->dalsi->geo.typ==0 || preskocit_kontolu))
+	if(!povolit && F->OBJEKT_akt!=NULL && zobrazit_tip)F->TIP=F->ls->Strings[315];//"Nelze odstranit předávací místo"                                                                       //povolit přeskočení kontroly pouze při mazání celého objektu
+	if(povolit && (Element->eID!=200 || (Element->eID==200 && preskocit_kontolu)) && (Element->dalsi==NULL || Element->dalsi!=NULL && Element->geo.typ==0 && Element->dalsi->geo.typ==0 || (F->OBJEKT_akt==NULL && preskocit_kontolu)))
 	{
 		if(O!=NULL && O->element->n==Element->n && Element->dalsi!=NULL && Element->dalsi->objekt_n==O->n)O->element=Element->dalsi;
 		//nejdříve smazání tabulky Elelementu
@@ -3831,7 +3867,7 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 	}
 	else if(povolit)//změna na zarážku, v případě že mažu element který obsahuje složitejsí geometrii
 	{
-    //smazání a znovuvytvoření mGridu elementu
+		//smazání a znovuvytvoření mGridu elementu
 		long ID=Element->n;
 		if(F->OBJEKT_akt!=NULL && (Element->objekt_n==F->OBJEKT_akt->n || Element==F->predchozi_PM))
 		{
@@ -3849,6 +3885,8 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 		}
 		else Element->name="";
 		//defaultní data
+		Element->dalsi2=NULL;
+		Element->predchozi2=NULL;
 		Element->data.LO1=1.5;
 		Element->OTOC_delka=0;
 		Element->zona_pred=0;
@@ -8235,6 +8273,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 			if(F->OBJEKT_akt!=NULL && !storno)
 			{
 				F->DrawGrid_knihovna->SetFocus();
+				//mazání mGridů elementů
 				TElement *E=F->OBJEKT_akt->element;
 				while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
 				{
@@ -8243,7 +8282,18 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 					E=dalsi_krok(E,F->OBJEKT_akt);
 				}
 				E=NULL;delete E;
-				F->PmG->Delete();F->PmG=NULL;
+				//mazání def. tabulky pohonu
+				if(F->PmG!=NULL)
+				{
+					F->PmG->Delete();
+					F->PmG=NULL;
+				}
+				//mazání tabulky predchozí_PM
+				if(F->predchozi_PM!=NULL)
+				{
+					F->predchozi_PM->mGrid->Delete();
+					F->predchozi_PM->mGrid=NULL;
+        }
 			}
 			////mazání dat starého projektu, které budou nahrazeny
 			vymaz_seznam_OBJEKTY();
@@ -8279,10 +8329,12 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 				//kopírování atributů
 				E=new TElement;
 				kopiruj_element(dE,E);
+
 				//vložení do seznamu ELEMENTY
 				sekvencni_zapis_cteni(E,NULL,tab_pruchodu);
 				if(F->OBJEKT_akt !=NULL && E->objekt_n==F->OBJEKT_akt->n && !storno)
 				{
+          E->mGrid=new TmGrid(F);
 					E->mGrid->Tag=6;//ID formu
 					E->mGrid->ID=E->n;
 					F->design_element(E,false,false);
@@ -8369,12 +8421,11 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 				F->predchozi_PM->mGrid->Tag=6;//ID formu
 				F->predchozi_PM->mGrid->ID=F->predchozi_PM->n;
 				F->design_element(F->predchozi_PM,false);//znovuvytvoření tabulek
-				bool exituje_tab_poh=true;//pohonová tabulka v editaci bude exitovat
+				exituje_tab_poh=true;//pohonová tabulka v editaci bude exitovat
 			}
+			//znovu vytvoření tabulky pohonů pokud je třeba
+			F->vytvoreni_tab_pohon(exituje_tab_poh);
 		}
-
-		//znovu vytvoření tabulky pohonů pokud jsem v editaci
-		if(F->OBJEKT_akt!=NULL && !storno)F->vytvoreni_tab_pohon(exituje_tab_poh);
 
 		F->Timer_backup->Enabled=true;//obnovení timeru pro backup, nespouští se!
 		if(storno)
