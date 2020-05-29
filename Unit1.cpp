@@ -320,6 +320,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	refreshovat_scGPTrackBar=true;
 	vlakno_akce=0;//defaultní stav
 	storno=true;//defaultně počítat se stištěným stornem
+	vir_edit=NULL;
 
 	//vývojářské featury
 	if(DEBUG && get_user_name()+get_computer_name()=="MartinMARTIN-NOTEBOOK"){/*Button14->Visible=true;*/Button13->Visible=false;}//pokud se dělá překlad u MaKr, je zobrazeno jeho testovací tlačítko
@@ -14390,38 +14391,67 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	////cyklus pro otevírání a zavírání objektu s volitelným krokem + měření času
-//	TDateTime start;
-//	String s;
-//	double cas=0,celkem_otevreni=0,celkem_zavreni=0;
-//	unsigned int pocet_kroku=10;
-//	for(unsigned int i=0;i<pocet_kroku;i++)
-//	{
-//		start=Now();
-//		pom=d.v.OBJEKTY->dalsi;//predchozi->predchozi->predchozi;
-//		otevri_editaci();
-//		cas=ms.MyToDouble(TimeToStr(Now()-start).SubString(6,2));
-//		celkem_otevreni+=cas;
-//		Memo("Čas otevření: "+AnsiString(cas));
-//		start=Now();
-//		scGPButton_stornoClick(this);
-//		cas=ms.MyToDouble(TimeToStr(Now()-start).SubString(6,2));
-//		celkem_zavreni+=cas;
-//		Memo("Čas zavření: "+AnsiString(cas));
-//	}
-//	Memo("------------");
-//	Memo("Průměrný čas otevření: "+AnsiString(celkem_otevreni/(double)pocet_kroku));
-//	Memo("Průměrný čas zavření: "+AnsiString(cas/(double)pocet_kroku));
+  //edit neexistuje, vytvořím ho
+	if(vir_edit==NULL)
+	{
+		//vytvoření editu
+		vir_edit=new TscGPEdit(F);
 
-//  Memo3->Clear();
-//	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-//	while(E!=NULL)
-//	{
-//		Memo(E->n);
-//		E=d.v.dalsi_krok(E);
-//	}
-//	delete E;E=NULL;
-	MB("ahoj");
+		//nastavení fontu v canvasu na font pro nadpis objektu
+		d.nastavit_text_popisu_objektu_v_nahledu(Canvas);
+		String text=OBJEKT_akt->name.UpperCase();
+
+		//výchozí atributy
+		vir_edit->Tag=1;
+		vir_edit->Name="virtualni_edit";
+		vir_edit->AutoSize=false;//nutné před nastavováním rozmerů
+		vir_edit->Height=Canvas->TextHeight(text);
+		vir_edit->Width=2*Canvas->TextWidth(text);
+		vir_edit->Options->FrameNormalColor=clWhite;
+		vir_edit->Options->FrameNormalColorAlpha=255;
+		vir_edit->Options->FrameHotColor=clWhite;
+		vir_edit->Options->FrameHotColorAlpha=255;
+		vir_edit->Options->FrameFocusedColor=clWhite;
+		vir_edit->Options->FrameFocusedColorAlpha=255;
+		vir_edit->Options->FrameWidth=0;
+		vir_edit->Transparent=true;//nutnost
+		vir_edit->Visible=true;
+		vir_edit->CharCase=ecUpperCase;
+		vir_edit->Margins->Left=0;vir_edit->Margins->Right=0;vir_edit->Margins->Top=0;vir_edit->Margins->Bottom=0;
+
+		//poloha nadpisu
+		double X=OBJEKT_akt->Xt;
+		double Y=OBJEKT_akt->Yt;
+		switch((int)OBJEKT_akt->orientace_text)
+		{
+			case 0:X=m.L2Px(X)-Canvas->TextHeight(text);Y=m.L2Py(Y)+m.round(Canvas->TextWidth(text)/2.0);break;//nastavení rotace canvasu
+			case 90:X=m.L2Px(X)-m.round((Canvas->TextWidth(text))/2.0);Y=m.L2Py(Y)-Canvas->TextHeight(text);break;
+			case 180:X=m.L2Px(X)+Canvas->TextHeight(text);Y=m.L2Py(Y)-m.round(Canvas->TextWidth(text)/2.0);break;//nastavení rotace canvasu
+			case 270:X=m.L2Px(X)-m.round((Canvas->TextWidth(text))/2.0);Y=m.L2Py(Y)-Canvas->TextHeight(text);break;
+		}
+		vir_edit->Left=X-5;//-5 = korekce edit vs. vykreslení
+		vir_edit->Top=Y-5;
+
+		//font
+		vir_edit->Font=Canvas->Font;
+		vir_edit->Font->Color=m.clIntensive(TColor RGB(147,166,182),40);
+		vir_edit->Text=text;
+
+		//události
+		vir_edit->OnKeyDown=&FormKeyDown;
+		vir_edit->OnKeyPress=&FormKeyPress;
+
+		//musí být až na konci
+		vir_edit->Parent=F;
+		vir_edit->SetFocus();
+	}
+	//edit existuje smazat
+	else
+	{
+    nastav_focus();
+		vir_edit->Free();
+		vir_edit=NULL;delete vir_edit;
+	}
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko

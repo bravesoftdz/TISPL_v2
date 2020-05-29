@@ -741,6 +741,7 @@ private:
 	Tvlakno_obraz *vlakno_obraz;
 	bool storno;//slouí k rozlišení jestli bylo stisknuto storno nebo byl zavolán jeho stisk z tlaèítka uloit
 	bool refreshovat_scGPTrackBar;//promìnná zajišujíci, e se scGPTracBar nerefreshuje pokud mu pøi zmìnì zoomu mimo scGPTracBar
+	TscGPEdit *vir_edit;
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
