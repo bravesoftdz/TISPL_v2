@@ -741,6 +741,7 @@ private:
 	Tvlakno_obraz *vlakno_obraz;
 	bool storno;//slouí k rozlišení jestli bylo stisknuto storno nebo byl zavolán jeho stisk z tlaèítka uloit
 	bool refreshovat_scGPTrackBar;//promìnná zajišujíci, e se scGPTracBar nerefreshuje pokud mu pøi zmìnì zoomu mimo scGPTracBar
+	TscGPEdit *vir_edit;
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
@@ -825,9 +826,7 @@ public:		// User declarations
 	//metody
 	void kurzor(TKurzory typ_kurzor);
 	void vypni_editaci();
-	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click
-	void NPin();//podpùrná metoda NP(), øeší vstupní èást dat, vyseparováno, z dùvodu toho, e z GAPO aktulizauji pøípadnì spuštìné PO a nemohu volat NP, protoe to v sobì obsahu ShowModal - vedlo k chybì
-  void NP_input(); // volá zobrazení PO - nahrazuje NP a NPin
+	void otevri_editaci(); // volá zobrazení PO - nahrazuje NP a NPin
 	void ZOOM_IN();//pøiblíení
 	void ZOOM_OUT();//oddálení
 	void REFRESH();

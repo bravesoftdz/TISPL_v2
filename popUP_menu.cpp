@@ -557,6 +557,7 @@ void __fastcall TPopUPmenu::scLabel_otocit_dolevaClick(TObject *Sender)
 		}
 		else F->pom->orientace_text=F->m.Rt90(F->pom->orientace_text-90);
 	}
+	F->REFRESH();
 }
 //---------------------------------------------------------------------------
 void __fastcall TPopUPmenu::scLabel_otocit_dolevaMouseEnter(TObject *Sender)
@@ -602,6 +603,7 @@ void __fastcall TPopUPmenu::scLabel_otocit_dopravaClick(TObject *Sender)
 		}
 		else F->pom->orientace_text=F->m.Rt90(F->pom->orientace_text+90);
 	}
+	F->REFRESH();
 }
 //---------------------------------------------------------------------------
 void __fastcall TPopUPmenu::scLabel_otocit_dopravaMouseEnter(TObject *Sender)

@@ -597,9 +597,9 @@ class Cvektory
 	TElement *dalsi_krok(TElement *E,TObjekt *O=NULL);//určí další krok průchodového algorytmu ve spojáku elementů, 2 možností průchod kompletního spojáku ELEMENTY, druhá průchod pouze elementů jednoho objektu
 	TElement *predchozi_krok(TElement *E,TObjekt *O=NULL);
 	TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruchodu_TP,T2Element *tab_pruchodu_T2E);
-	void smaz_vyhybku_spojku(TElement *Element);
+	void smaz_vyhybku_spojku(TElement *Element,unsigned long maz_OBJ=0);
 	void aktualizuj_identifikator_vyhybky_spojky();
-	void smaz_element(TElement *Element,bool preskocit_kontolu=false);//smaže element ze seznamu
+	void smaz_element(TElement *Element,bool preskocit_kontolu=false,unsigned long maz_OBJ=0);//smaže element ze seznamu
 	void vymaz_elementy(TObjekt *Objekt);//smaže všechny elementy v daném objektu
 	long vymaz_seznam_ELEMENTY();//vymaže spojový seznam elementů z paměti
 

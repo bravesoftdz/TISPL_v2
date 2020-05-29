@@ -3796,6 +3796,7 @@ void Cvykresli::vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiStr
 			if(scena==0 || scena==1)
 			{
 				/////////provizorní řešení !!!!!!!!!!!!
+				unsigned int velikost=m.round(2*F->Zoom);
 				TColor barva=clRed;if(eID==301)barva=clBlue;
 				canv->Pen->Color=barva;
 				canv->Pen->Width=m.round(1);
@@ -3803,7 +3804,7 @@ void Cvykresli::vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiStr
 				canv->Pen->Style=psSolid;
 				canv->Brush->Color=barva;
 				canv->Brush->Style=bsSolid;
-				canv->Rectangle(X-20,Y-20,X+20,Y+20);
+				canv->Rectangle(X-velikost,Y-velikost,X+velikost,Y+velikost);
 			}
 		}
 		break;
