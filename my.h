@@ -106,6 +106,7 @@ class Cmy
 	short get_intensity();//přepočítá hodnotu posuvníku intenzity z menu nastavení na změnu barevné intenzity při vykreslění objektů či elementů
 	TColor getBlackOrWhiteInvert(TColor color);//vrátí černou pro světlé barvy a bílou pro tmavé barvy, používá se např. na volbu barvy textu s barevným pozadím
 	TColor getColorOfPalette(unsigned int input);//vratí dle hodnoty input barvu z nadefinované barevné palety, v případě "přetečení barvy opakuje
+	short getValueFromPosition(long GlobalValue,short Position);
 
 	protected:
 };

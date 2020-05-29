@@ -247,6 +247,8 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	pocitadlo_doby_neaktivity=0;
 
 	antialiasing=true;
+	d.SCENA=0;
+
 	//nastavení implicitního souboru
 	duvod_k_ulozeni=false;
 	Novy_soubor();
@@ -255,7 +257,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	//zjistí verzi aplikace
 	DWORD ver=GetFileVersion(Application->ExeName);
 	VERZE=UnicodeString(HIWORD(ver))+"."+UnicodeString(LOWORD(ver));
-	//VERZE=UnicodeString(UnicodeString(HIWORD(ver) >> 16)+"."+UnicodeString(HIWORD(ver) & 0xFFFF)+"."+UnicodeString(LOWORD(ver) >> 16)+"."+UnicodeString(LOWORD(ver) & 0xFFFF));
+	//VERZE=UnicodeString(UnicodeString(HIWORD(ver) >> 16)+"."+UnicodeString(HIWORD(ver) & 0xFFFF)+"."+UnicodeString(LOWORD(ver) >> 16)+"."+UnicodeString(LOWORD(ver) & 0xFFFF)); nefunguje
 
 	//licence, logování atp.
 	Caption="ELTEP - tispl";
@@ -274,9 +276,9 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	copyObjekt=new Cvektory::TObjekt;
 	copyObjektRzRx.x=0;copyObjektRzRx.y=0;
 
-	//načtení řetězů - jsou-li k dispozici
-	SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
-	d.v.nacti_CSV_retezy("řetězy.csv");
+//	//načtení řetězů - jsou-li k dispozici - může být odstraněno
+//	SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
+//	d.v.nacti_CSV_retezy("řetězy.csv");
 
 	//načtení aktuálního Fontu - aFont dále v kódu neměnit!!!
 	aFont=new TFont();//aktuální nastavený výchozí font
@@ -767,11 +769,11 @@ void TForm1::set_font(int velikost)
   Form_parametry_linky->scGPGlyphButton_info->Font=aFont;
   Form_parametry_linky->scGPGlyphButton_info->Font->Color=barva;
   Form_parametry_linky->scGPGlyphButton_info->Font->Size=velikost;
-  barva=Form_parametry_linky->scGPGlyphButton_refresh->Font->Color;
+	barva=Form_parametry_linky->scGPGlyphButton_refresh->Font->Color;
   Form_parametry_linky->scGPGlyphButton_refresh->Font=aFont;
   Form_parametry_linky->scGPGlyphButton_refresh->Font->Color=barva;
   Form_parametry_linky->scGPGlyphButton_refresh->Font->Size=velikost;
-  barva=Form_parametry_linky->scGPButton_vozik->Font->Color;
+	barva=Form_parametry_linky->scGPButton_vozik->Font->Color;
   Form_parametry_linky->scGPButton_vozik->Font=aFont;
   Form_parametry_linky->scGPButton_vozik->Font->Color=barva;
   Form_parametry_linky->scGPButton_vozik->Font->Size=velikost;
@@ -2753,84 +2755,113 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 
 	Zoom_predchozi_AA=Zoom;//musí být tu, před MÓDy (mohl by být i před kreslením gridu)
 
-	if(MOD!=SIMULACE)
+	///////při přechodu z nebo do módu TVORBA_CESTY
+	if(MOD==TVORBA_CESTY && scSplitView_LEFTTOOLBAR->Visible)
 	{
-		///////při přechodu z nebo do módu TVORBA_CESTY
-		if(MOD==TVORBA_CESTY && scSplitView_LEFTTOOLBAR->Visible)
-		{
-			scSplitView_LEFTTOOLBAR->Visible=false;
-			mGrid_knihovna->SetVisibleComponents(false);
-		}
-		if(MOD!=TVORBA_CESTY && !scSplitView_LEFTTOOLBAR->Visible)
-		{
-			scSplitView_LEFTTOOLBAR->Visible=true;
-			//musí dojít ke smazání a znova vytvoření
-			mGrid_knihovna->Delete();mGrid_knihovna=NULL;
-			vytvoreni_tab_knihovna();
-		}
+		scSplitView_LEFTTOOLBAR->Visible=false;
+		mGrid_knihovna->SetVisibleComponents(false);
+	}
+	if(MOD!=TVORBA_CESTY && MOD!=SIMULACE && !scSplitView_LEFTTOOLBAR->Visible)
+	{
+		scSplitView_LEFTTOOLBAR->Visible=true;
+		//musí dojít ke smazání a znova vytvoření
+		mGrid_knihovna->Delete();mGrid_knihovna=NULL;
+		vytvoreni_tab_knihovna();
+	}
+
+//		////////jednolivé VRSTVY
+//		////rastrový uživatelský POKDKLAD
+//		Graphics::TBitmap *bmp_total=new Graphics::TBitmap;bmp_total->Width=ClientWidth;bmp_total->Height=ClientHeight;
+//		if(d.v.PP.raster.show)nacti_podklad(bmp_total->Canvas);
+//		////vykreslení GRIDu
+//		if(grid && Zoom_predchozi_AA>0.5 && (Akce==MOVE_BOD||Akce==DRAW_HALA) && prichytavat_k_mrizce==1)d.vykresli_grid(bmp_total->Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí//vykreslení gridu
+//		////VEKTORY
+//		Graphics::TBitmap *bmp_in=new Graphics::TBitmap;bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu //zkoušel jsem nastavit plochu antialiasingu bez ovládacích prvků LeftToolbar a menu, ale kopírování do jiné BMP to zpomalovalo více neooptimalizovaná oblast pro 3xbmp
+//		Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
+//		d.vykresli_vektory(bmp_in->Canvas);
+//		if(Akce==GEOMETRIE)d.smart_kurzor(bmp_in->Canvas,posledni_editovany_element);
+//		if(MOD==TVORBA_CESTY)d.kurzor_cesta(bmp_in->Canvas);
+//		Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
+//		Cantialising a;
+//		Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+//		bmp_total->Canvas->Draw(0,0,bmp_out);delete(bmp_out);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+//		////mGRIDY
+//		d.vykresli_mGridy(bmp_total->Canvas);//přesunuto do vnitř metody: OBJEKT_akt->elementy!=NULL kvůli pohonům
+//		////grafické MĚŘÍTKO
+//		if(zobrazit_meritko && Akce!=MOVE_HALA && MOD!=TVORBA_CESTY)d.meritko(bmp_total->Canvas);
+//		////finální vykreslení bmp_total do Canvasu
+//		Canvas->Draw(0,0,bmp_total);
+//		delete (bmp_total);//velice nutné
+//		////TIP
+//		d.vykresli_tip(Canvas);
 
 		////////jednolivé VRSTVY
-		////rastrový uživatelský POKDKLAD
-		Graphics::TBitmap *bmp_total=new Graphics::TBitmap;bmp_total->Width=ClientWidth;bmp_total->Height=ClientHeight;
-		if(d.v.PP.raster.show)nacti_podklad(bmp_total->Canvas);
-		////vykreslení GRIDu
-		if(grid && Zoom_predchozi_AA>0.5 && (Akce==MOVE_BOD||Akce==DRAW_HALA) && prichytavat_k_mrizce==1)d.vykresli_grid(bmp_total->Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí//vykreslení gridu
-		////VEKTORY
-		Graphics::TBitmap *bmp_in=new Graphics::TBitmap;bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu //zkoušel jsem nastavit plochu antialiasingu bez ovládacích prvků LeftToolbar a menu, ale kopírování do jiné BMP to zpomalovalo více neooptimalizovaná oblast pro 3xbmp
-		Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
-		d.vykresli_vektory(bmp_in->Canvas);
-		if(Akce==GEOMETRIE)d.smart_kurzor(bmp_in->Canvas,posledni_editovany_element);
-		if(MOD==TVORBA_CESTY)d.kurzor_cesta(bmp_in->Canvas);
-		Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
-		Cantialising a;
-		Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
-		bmp_total->Canvas->Draw(0,0,bmp_out);delete(bmp_out);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
-		////mGRIDY
-		d.vykresli_mGridy(bmp_total->Canvas);//přesunuto do vnitř metody: OBJEKT_akt->elementy!=NULL kvůli pohonům
-		////grafické MĚŘÍTKO
-		if(zobrazit_meritko && Akce!=MOVE_HALA && MOD!=TVORBA_CESTY)d.meritko(bmp_total->Canvas);
-		//finální vykreslení bmp_total do Canvasu
-		Canvas->Draw(0,0,bmp_total);
-		delete (bmp_total);//velice nutné
-		////TIP
-		d.vykresli_tip(Canvas);
+		if(Akce!=PAN_MOVE)
+		{
+			Graphics::TBitmap *bmp_total=new Graphics::TBitmap;bmp_total->Width=ClientWidth;bmp_total->Height=ClientHeight;//vytvoření finální bmp, která bude vykreslena do Canvasu formu
+			////rastrový uživatelský POKDKLAD
+			if(d.v.PP.raster.show && MOD!=SIMULACE)nacti_podklad(bmp_total->Canvas);
+			////vykreslení GRIDu
+			if(grid && Zoom_predchozi_AA>0.5 && (Akce==MOVE_BOD||Akce==DRAW_HALA) && prichytavat_k_mrizce==1 && MOD!=SIMULACE)d.vykresli_grid(bmp_total->Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí//vykreslení gridu
+			////VEKTORY
+			Graphics::TBitmap *bmp_in=new Graphics::TBitmap;bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;
+			if(d.SCENA>0)bmp_in->Canvas->Draw(0,0,Staticka_scena);//statická scéna, je volaná pouze pokud to má smysl
+			Zoom_predchozi_AA=Zoom;Zoom*=3;//záloha původního zoomu,nový *3 vyplývá z logiky algoritmu antialiasingu
+			short s=2;if(d.SCENA==0)s=0;
+			d.vykresli_vektory(bmp_in->Canvas,s);//dynamická scéna
+			Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
+			Cantialising a;
+			Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
+			bmp_total->Canvas->Draw(0,0,bmp_out);delete(bmp_out);
+			////mGRIDY
+			if(MOD!=SIMULACE)d.vykresli_mGridy(bmp_total->Canvas);//přesunuto do vnitř metody: OBJEKT_akt->elementy!=NULL kvůli pohonům
+			////grafické MĚŘÍTKO
+			if(MOD!=SIMULACE && zobrazit_meritko && Akce!=MOVE_HALA && MOD!=TVORBA_CESTY)d.meritko(bmp_total->Canvas);
+			////finální vykreslení bmp_total do Canvasu
+			Canvas->Draw(0,0,bmp_total);//finální předání bmp_out do Canvasu
+			delete (bmp_total);//velice nutné
+			////TIP
+			if(MOD!=SIMULACE)d.vykresli_tip(Canvas);
+		}
 
 		////////vykreslování tabulky pro přidávání objektů, temp řešení
-		if(mGrid_knihovna!=NULL && OBJEKT_akt==NULL && MOD!=TVORBA_CESTY)
+		if(mGrid_knihovna!=NULL && OBJEKT_akt==NULL && MOD!=TVORBA_CESTY && MOD!=SIMULACE)
 		{
 			mGrid_knihovna->Redraw=true;
 			mGrid_knihovna->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak mGrid_knihovna->Buffer(false);
 			if(mGrid_knihovna->VisibleComponents>-1)mGrid_knihovna->VisibleComponents=true;//stačí volat toto, protože se pomocí Show (resp. Draw-SetCompontens-Set...) cyklem všechny komponenty na základě tohoto zobrazí pokud je nastaveno na -1 tak se při překreslování zohlední individuální nastavení komponent (z tohoto stavu je však pro další použítí třeba vrátit do stavu 0 nebo 1)
 			mGrid_knihovna->Show(Image_knihovna_objektu->Canvas);
 		}
-	}
-	else//Simulace
-	{
-		if(Akce!=PAN_MOVE)
-		{ //Memo("test vykreslení staticka scena",false,true);
-			Graphics::TBitmap *bmp_total=new Graphics::TBitmap;bmp_total->Width=ClientWidth;bmp_total->Height=ClientHeight;//vytvoření finální bmp, která bude vykreslena do Canvasu formu
-			Graphics::TBitmap *bmp_in=new Graphics::TBitmap;bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;
-			bmp_in->Canvas->Draw(0,0,Staticka_scena);//statická scéna
-			Zoom_predchozi_AA=Zoom;//záloha původního zoomu
-			Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
-			d.vykresli_elementy(bmp_in->Canvas,2);//dynamická scéna
-			d.vykresli_voziky(bmp_in->Canvas);//dynamická scéna
-			//pouze testovací d.vykresli_vozik(bmp_in->Canvas,0,m.P2Lx(0+Poffset*Zoom),m.P2Ly(1000),d.v.PP.delka_jig,d.v.PP.sirka_jig,0,0);
-			Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
-			Cantialising a;
-			Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
-			bmp_total->Canvas->Draw(0,0,bmp_out);delete(bmp_out);
-			Canvas->Draw(0,0,bmp_total);//finální předání bmp_out do Canvasu
-			delete (bmp_total);//velice nutné
-		}
-	}
+//	}
+//	else//Simulace
+//	{
+//		if(Akce!=PAN_MOVE)
+//		{ //Memo("test vykreslení staticka scena",false,true);
+//			Graphics::TBitmap *bmp_total=new Graphics::TBitmap;bmp_total->Width=ClientWidth;bmp_total->Height=ClientHeight;//vytvoření finální bmp, která bude vykreslena do Canvasu formu
+//			Graphics::TBitmap *bmp_in=new Graphics::TBitmap;bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;
+//			if(d.SCENA>0)bmp_in->Canvas->Draw(0,0,Staticka_scena);//statická scéna, je volaná pouze pokud to má smysl
+//			Zoom_predchozi_AA=Zoom;//záloha původního zoomu
+//			Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
+//			short s=2;if(d.SCENA==0)s=0;
+//			d.vykresli_vektory(bmp_in->Canvas,s);//dynamická scéna
+////			d.vykresli_elementy(bmp_in->Canvas,2);//dynamická scéna
+////			d.vykresli_voziky(bmp_in->Canvas);//dynamická scéna
+//			//pouze testovací d.vykresli_vozik(bmp_in->Canvas,0,m.P2Lx(0+Poffset*Zoom),m.P2Ly(1000),d.v.PP.delka_jig,d.v.PP.sirka_jig,0,0);
+//			Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
+//			Cantialising a;
+//			Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
+//			bmp_total->Canvas->Draw(0,0,bmp_out);delete(bmp_out);
+//			Canvas->Draw(0,0,bmp_total);//finální předání bmp_out do Canvasu
+//			delete (bmp_total);//velice nutné
+//		}
+//	}
 }
 //---------------------------------------------------------------------------
 //vytvoří BMP se statickou scénou
 void TForm1::vytvor_statickou_scenu()
 {
 	delete Staticka_scena;//před vytvořením nové kvůli realokaci nejdříve nutné odstranit
-	if(MOD==SIMULACE)
+	if(d.SCENA>0)
 	{          //Memo("test vytvoření staticka scena");
 		Staticka_scena=new Graphics::TBitmap;
 		Staticka_scena->Width=ClientWidth*3;Staticka_scena->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu, nicméně nemá smysl nyní Statickou scenu antialiasingovat, protože by se stejně antialiasingovala samostatná dynamická scéna a navíc to způsobovalo zde umístěné grafické chyby
@@ -2869,15 +2900,28 @@ void TForm1::nacti_podklad(TCanvas *Canv)
 void TForm1::REFRESH()
 {
 	log(__func__);//logování
+	d.SCENA=0;
 	FormPaint(this);
-	//RM();//korekce chyby oskakování pravého menu
 }
 //---------------------------------------------------------------------------
 void TForm1::REFRESH(bool refreshovat_mGridy)
 {
 	log(AnsiString(__func__)+"pozn. parametr refreshovat_mGridy"); //logování
 	refresh_mGrid=refreshovat_mGridy;
-  REFRESH();
+	REFRESH();
+}
+//---------------------------------------------------------------------------
+void TForm1::REFRESH(long ZprVozEleDopObjHal,bool refreshovat_mGridy)
+{
+	log(AnsiString(__func__)+"pozn. parametry scena a refreshovat_mGridy"); //logování
+	//d.SCENA=22111;
+	//Memo("__________________");
+	//Memo(scena);
+	bool zmena=false;if(d.SCENA!=ZprVozEleDopObjHal)zmena=true;
+	d.SCENA=ZprVozEleDopObjHal;
+	if(zmena){/*Memo("vytvarim_statickou_scenu");*/vytvor_statickou_scenu();}//načtení statických záležitostí do statické scény, pokud nastala změna scény, musí být před REFRESH, d.SCENA>0 je ošetřeno ve vnitř metody
+	if(m.getValueFromPosition(d.SCENA,4)>0 || d.SCENA==0)refresh_mGrid=refreshovat_mGridy;///else if(OBJEKT_akt!=NULL && zmena){OBJEKT_akt->zobrazit_mGrid=false;d.vykresli_objekty(Canvas);}
+	FormPaint(this);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -3134,7 +3178,7 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 //			OBJEKT_akt->name=OBJEKT_akt->name.SubString(1,OBJEKT_akt->name.Length()-1);
 //		else
 //			OBJEKT_akt->name+=Key;
-//		REFRESH(false);
+		REFRESH(21,false);
 	}
 	if (editace_textu&&index_kurzoru==-7)//editace short nadpisu kabiny
 	{
@@ -14340,7 +14384,8 @@ void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 //	d.v.PP.raster.show=!Timer_animace->Enabled;
 	if(Timer_animace->Enabled)//běží animace
 	{
-		MOD=SIMULACE;
+		MOD=SIMULACE;//mód musí být před vytvořením scény
+		d.SCENA=22111;
 		vytvor_statickou_scenu();//načtení statických záležitostí do statické scény, musí být před REFRESH
 		//ovládací prvky
 		scGPButton_bug_report->Visible=false;
@@ -14349,7 +14394,7 @@ void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 		scGPGlyphButton_PLAY->GlyphOptions->Kind=scgpbgkPause;
 		scGPGlyphButton_PLAY->Hint="zastavit animaci";
 		scGPGlyphButton_PLAY->ShowCaption=true;            //optimálně pohybově nejpomalejšího pohonu či animovaného elementu
-		Timer_animace->Interval=floor(m2px/(Zoom*3)/d.v.vrat_min_rychlost_prejezdu()*1000.0/fps);   //ceil(F->m.get_timePERpx(pom->RD,0,d.v.vrat_min_rychlost_prejezdu()));//různá rychlost dle RD, s afps se počítá dle min RD, ale nějak špatně vycházela animace ke konci (nestihl vozík vyjet)
+		Timer_animace->Interval=floor(m2px/(Zoom/**3*/)/d.v.vrat_min_rychlost_prejezdu()*1000.0/fps);   //ceil(F->m.get_timePERpx(pom->RD,0,d.v.vrat_min_rychlost_prejezdu()));//různá rychlost dle RD, s afps se počítá dle min RD, ale nějak špatně vycházela animace ke konci (nestihl vozík vyjet)
 	}
 	else//animace zastavena
 	{
@@ -14535,28 +14580,41 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 		//Sk(Form_parametry_linky->scComboBox_vyber_produkt->ItemIndex);
 
 
-		TDateTime start;
-    String s;
-    Cvektory::TElement *E=d.v.ELEMENTY->dalsi,*e=NULL;
-    double cas=0,celkem_otevreni=0,celkem_zavreni=0;
-		unsigned int pocet_kroku=50;
-    for(unsigned int i=0;i<pocet_kroku;i++)
-    {
-        start=Now();
-        E=d.v.ELEMENTY->dalsi;
-        while(E!=NULL)
-        {
-            e=new Cvektory::TElement;d.v.kopiruj_element(E,e);
-            delete e;e=NULL;
-            E=E->dalsi;
-        }
-        delete E;E=NULL;
-        cas=ms.MyToDouble(TimeToStr(Now()-start).SubString(6,2));
-        celkem_otevreni+=cas;
-        Memo("Čas kopírování: "+AnsiString(cas));
-    }
-    Memo("------------");
-		Memo("Průměrný čas kopírování: "+AnsiString(celkem_otevreni/(double)pocet_kroku));
+//		TDateTime start;
+//    String s;
+//    Cvektory::TElement *E=d.v.ELEMENTY->dalsi,*e=NULL;
+//    double cas=0,celkem_otevreni=0,celkem_zavreni=0;
+//		unsigned int pocet_kroku=50;
+//    for(unsigned int i=0;i<pocet_kroku;i++)
+//    {
+//        start=Now();
+//        E=d.v.ELEMENTY->dalsi;
+//        while(E!=NULL)
+//        {
+//            e=new Cvektory::TElement;d.v.kopiruj_element(E,e);
+//            delete e;e=NULL;
+//            E=E->dalsi;
+//        }
+//        delete E;E=NULL;
+//        cas=ms.MyToDouble(TimeToStr(Now()-start).SubString(6,2));
+//        celkem_otevreni+=cas;
+//        Memo("Čas kopírování: "+AnsiString(cas));
+//    }
+//    Memo("------------");
+//		Memo("Průměrný čas kopírování: "+AnsiString(celkem_otevreni/(double)pocet_kroku));
+
+
+	//d.SCENA=22111;
+//	MOD=SIMULACE;
+//	d.SCENA=0;
+//	if(d.SCENA>0)vytvor_statickou_scenu();//načtení statických záležitostí do statické scény, musí být před REFRESH
+//	REFRESH();
+
+REFRESH(121,false);
+
+
+
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
@@ -16259,6 +16317,7 @@ void TForm1::vykresli_kurzor(int index)
 		stav_kurzoru=!stav_kurzoru;
   }
 }
+//---------------------------------------------------------------------------
 //smaže kurzor pokud je stále vykreslený i po vypnutí editace textu
 void TForm1::smaz_kurzor()
 {

@@ -833,6 +833,7 @@ public:		// User declarations
 	void ZOOM_OUT();//oddálení
 	void REFRESH();
 	void REFRESH(bool refreshovat_mGridy);
+	void REFRESH(long ZprVozEleDopObjHal,bool refreshovat_mGridy);
 	void DuvodUlozit(bool stav);
 	void nahled_ulozit(bool duvod_ulozit);
 	void SB(UnicodeString Text, unsigned short Pane=4);//domnívám se, že zde má být hodnota 5
