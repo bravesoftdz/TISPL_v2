@@ -3178,7 +3178,7 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 //			OBJEKT_akt->name=OBJEKT_akt->name.SubString(1,OBJEKT_akt->name.Length()-1);
 //		else
 //			OBJEKT_akt->name+=Key;
-		REFRESH(21,false);
+//		REFRESH(21,false);
 	}
 	if (editace_textu&&index_kurzoru==-7)//editace short nadpisu kabiny
 	{
@@ -3279,38 +3279,16 @@ void TForm1::smaz_edit(bool refresh)
 	if(refresh)REFRESH();
 }
 //---------------------------------------------------------------------------
-//zapně či vypne edit pro editaci textu v náhledu
-void TForm1::zapnout_vynout_editEditace()
+//zapně či vypne (smaže) edit pro editaci textu v náhledu
+void TForm1::zapnout_vynout_editEditace(bool zapnout,bool smazat)
 {
 	log(__func__);
-	//edit neexistuje, vytvořím ho
-	if(/*editace_textu &&*/ editEditace==NULL)
+	if(!smazat)
 	{
-		//vytvoření editu
-		editEditace=new TscGPEdit(F);
-
+		////načtení základních parametrů
 		//nastavení fontu v canvasu na font pro nadpis objektu
 		d.nastavit_text_popisu_objektu_v_nahledu(Canvas);
 		String text=OBJEKT_akt->name.UpperCase();
-
-		//výchozí atributy
-		editEditace->Tag=1;
-		editEditace->Name="virtualni_edit";
-		editEditace->AutoSize=false;//nutné před nastavováním rozmerů
-		editEditace->Height=Canvas->TextHeight(text);
-		editEditace->Width=2*Canvas->TextWidth(text);
-		editEditace->Options->FrameNormalColor=clWhite;
-		editEditace->Options->FrameNormalColorAlpha=255;
-		editEditace->Options->FrameHotColor=clWhite;
-		editEditace->Options->FrameHotColorAlpha=255;
-		editEditace->Options->FrameFocusedColor=clWhite;
-		editEditace->Options->FrameFocusedColorAlpha=255;
-		editEditace->Options->FrameWidth=0;
-		editEditace->Transparent=true;//nutnost
-		editEditace->Visible=true;
-		editEditace->CharCase=ecUpperCase;
-		editEditace->Margins->Left=0;editEditace->Margins->Right=0;editEditace->Margins->Top=0;editEditace->Margins->Bottom=0;
-
 		//poloha nadpisu
 		double X=OBJEKT_akt->Xt;
 		double Y=OBJEKT_akt->Yt;
@@ -3321,32 +3299,76 @@ void TForm1::zapnout_vynout_editEditace()
 			case 180:X=m.L2Px(X)+Canvas->TextHeight(text);Y=m.L2Py(Y)-m.round(Canvas->TextWidth(text)/2.0);break;//nastavení rotace canvasu
 			case 270:X=m.L2Px(X)-m.round((Canvas->TextWidth(text))/2.0);Y=m.L2Py(Y)-Canvas->TextHeight(text);break;
 		}
-		editEditace->Left=X-5;//-5 = korekce edit vs. vykreslení
-		editEditace->Top=Y-5;
 
-		//font
-		editEditace->Font=Canvas->Font;
-		editEditace->Font->Color=m.clIntensive(TColor RGB(147,166,182),40);
-		editEditace->Text=text;
+		////edit neexistuje, vytvořím ho
+  	if(zapnout && editEditace==NULL)
+  	{
+  		//vytvoření editu
+			editEditace=new TscGPEdit(F);
 
-		//události
-		editEditace->OnKeyDown=&FormKeyDown;
-		editEditace->OnKeyPress=&FormKeyPress;
+  		//výchozí atributy
+  		editEditace->Tag=1;
+  		editEditace->Name="virtualni_edit";
+  		editEditace->AutoSize=false;//nutné před nastavováním rozmerů
+  		editEditace->Height=Canvas->TextHeight(text);
+  		editEditace->Width=2*Canvas->TextWidth(text);
+  		editEditace->Options->FrameNormalColor=clWhite;
+  		editEditace->Options->FrameNormalColorAlpha=255;
+  		editEditace->Options->FrameHotColor=clWhite;
+  		editEditace->Options->FrameHotColorAlpha=255;
+  		editEditace->Options->FrameFocusedColor=clWhite;
+  		editEditace->Options->FrameFocusedColorAlpha=255;
+  		editEditace->Options->FrameWidth=0;
+  		editEditace->Transparent=true;//nutnost
+  		editEditace->Visible=true;
+  		editEditace->CharCase=ecUpperCase;
+  		editEditace->Margins->Left=0;editEditace->Margins->Right=0;editEditace->Margins->Top=0;editEditace->Margins->Bottom=0;
 
-		//musí být až na konci
-		editEditace->Parent=F;
-		editEditace->SetFocus();
+			//poloha editu
+  		editEditace->Left=X-5;//-5 = korekce edit vs. vykreslení
+			editEditace->Top=Y-5;
+
+  		//font
+  		editEditace->Font=Canvas->Font;
+  		editEditace->Font->Color=m.clIntensive(TColor RGB(147,166,182),40);
+  		editEditace->Text=text;
+
+  		//události
+  		editEditace->OnKeyDown=&FormKeyDown;
+  		editEditace->OnKeyPress=&FormKeyPress;
+
+  		//musí být až na konci
+  		editEditace->Parent=F;
+  		editEditace->SetFocus();
+		}
+
+		////zapnutí editu poku již existuje
+		if(zapnout && editEditace!=NULL)
+		{
+      //poloha editu
+  		editEditace->Left=X-5;//-5 = korekce edit vs. vykreslení
+			editEditace->Top=Y-5;
+			//zobrazení
+			editEditace->Show();
+		}
+
+		////edit existuje skrýt
+		if(!zapnout && editEditace!=NULL)
+  	{
+			editEditace->Hide();
+  		JID=-1;
+  		editace_textu=false;
+			editovany_text="";
+  	}
 	}
-	//edit existuje smazat
+
+	////mazání editu napříkald při odchodu z editace
 	else if(editEditace!=NULL)
 	{
-		JID=-1;
-		editace_textu=false;
-		editovany_text="";
-		nastav_focus();
+    nastav_focus();
 		editEditace->Free();
 		editEditace=NULL;//nesmí být delete
-	}
+  }
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormKeyUp(TObject *Sender, WORD &Key, TShiftState Shift)
@@ -4588,7 +4610,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				vytvor_obraz();
 				break;
 			}
-			case MOVE_TEXT:if(OBJEKT_akt!=NULL && vychozi_souradnice_kurzoru.x==minule_souradnice_kurzoru.x && vychozi_souradnice_kurzoru.y==minule_souradnice_kurzoru.y){nastav_focus();editace_textu=true;index_kurzoru=-6;nazev_puvodni=OBJEKT_akt->name;zapnout_vynout_editEditace();/*stav_kurzoru=false;TimerKurzor->Enabled=true;*/}Akce=NIC;kurzor(standard);pom_vyhybka=NULL;vytvor_obraz();break;
+			case MOVE_TEXT:if(OBJEKT_akt!=NULL && vychozi_souradnice_kurzoru.x==minule_souradnice_kurzoru.x && vychozi_souradnice_kurzoru.y==minule_souradnice_kurzoru.y){nastav_focus();editace_textu=true;index_kurzoru=-6;nazev_puvodni=OBJEKT_akt->name;zapnout_vynout_editEditace(true);/*stav_kurzoru=false;TimerKurzor->Enabled=true;*/}Akce=NIC;kurzor(standard);pom_vyhybka=NULL;vytvor_obraz();break;
 			case MOVE_BOD:
 			case MOVE_USECKA:Akce=NIC;kurzor(standard);vytvor_obraz();break;
 			case MOVE_HALA:Akce=NIC;kurzor(standard);REFRESH();vytvor_obraz();break;//refresh z důvodu znovu zapnutí měřítka a gridu
@@ -14471,7 +14493,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	//
+	Memo(scGPButton_prichytavat->Left-1);
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -15712,6 +15734,8 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		Image_knihovna_objektu->Visible=true;//zapnutí knihovny
 		scGPButton_zmerit_vzdalenost->Visible=true;
 		scGPButton_prichytavat->Visible=true;//zapnutí tlačítka přichytávat
+		//mazání editEditace
+		zapnout_vynout_editEditace(false,true);
 		//povolení změny jazyka
 		ChDir(ExtractFilePath(Application->ExeName));    //přesune k EXE
 		UnicodeString File_language="TISPL.language";
@@ -16336,7 +16360,7 @@ void TForm1::smaz_kurzor()
 		switch(index_kurzoru)
 		{
 			case -7:if(OBJEKT_akt->short_name=="")OBJEKT_akt->short_name=nazev_puvodni;break;
-			case -6:OBJEKT_akt->name=editEditace->Text;if(OBJEKT_akt->name=="")OBJEKT_akt->name=nazev_puvodni;break;
+			case -6:if(editEditace!=NULL)OBJEKT_akt->name=editEditace->Text;if(OBJEKT_akt->name=="" || editEditace==NULL)OBJEKT_akt->name=nazev_puvodni;break;
 			case 1:
 			{
 				if(pom_element_temp->name=="")pom_element_temp->name=nazev_puvodni;
@@ -16485,7 +16509,7 @@ void TForm1::smaz_kurzor()
 	pom_element_temp=NULL; delete pom_element_temp;
 	pom_komora_temp=NULL; delete pom_komora_temp;
 	pom_bod_temp=NULL; delete pom_bod_temp;
-	if(editEditace!=NULL)zapnout_vynout_editEditace();
+	zapnout_vynout_editEditace(false);
 	if(duvod_validovat==1)duvod_validovat=2;
 	REFRESH(true);//uvolnění rastru
 	nahled_ulozit(true);
@@ -17335,6 +17359,7 @@ void __fastcall TForm1::scGPButton_smazatClick(TObject *Sender)
 	d.v.PP.raster.show=false;
 	d.v.PP.raster.grayscale=false;
 	d.v.PP.raster.dim=0;
+	DuvodUlozit(true);
 	REFRESH(false);
 	scSplitView_OPTIONS->Opened=false;
 }

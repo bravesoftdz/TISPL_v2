@@ -349,9 +349,13 @@ __published:	// IDE-managed Components
 	TTimer *Timer_getjobid;
 	TscGPCheckBox *scGPCheckBox_popisek_pohonu;
 	TEdit *Edit_proFocus;
-	TscLabel *scLabel_statusbar_0;
 	TscLabel *scLabel_statusbar_1;
+	TscLabel *scLabel_statusbar_0;
 	TscLabel *scLabel_statusbar_2;
+	TImage *Image_rozdelovac_0;
+	TImage *Image_rozdelovac_1;
+	TImage *Image_rozdelovac_2;
+	TImage *Image_rozdelovac_3;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -675,7 +679,7 @@ private:
 	int pocet_vyskytu_elementu_s_otoci(Cvektory::TObjekt *Objekt);//prohledá elementy v objektu, vrátí 0 pokud je rotace v objektu všude stejná, vrátí 1 pokud je pøítomno více rotací
 	void vytvor_edit();//vytvoøí edit na místì hlavièky tabulky, slouží ke zmìnì názvu elementu
 	void smaz_edit(bool refresh=true);//smaže edit, který sloužil pro zmìnu názvu elementu a nový název zapíše do elementu, defaultnì provede refresh, pokud není pøedáno parametrem jinak
-  void zapnout_vynout_editEditace();//zapnì èi vypne edit pro editaci textu v náhledu
+  void zapnout_vynout_editEditace(bool zapnout,bool smazat=false);//zapnì èi vypne edit pro editaci textu v náhledu
 	void vykresli_spojinici_EmGrid(TCanvas *Canv,Cvektory::TElement *E);//vykreslí spojnici mezi tabulkou a elementem z nejbližšího rohu tabulky
 	void nacti_podklad(TCanvas *Canv);
 	unsigned short load_language(Tlanguage language,bool akt_mGrid=false);

@@ -2941,6 +2941,54 @@ object Form1: TForm1
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
+    object Image_rozdelovac_0: TImage
+      Left = 207
+      Top = 0
+      Width = 1
+      Height = 28
+      Picture.Data = {
+        0954506E67496D61676589504E470D0A1A0A0000000D49484452000000020000
+        001C0802000000C408F998000000017352474200AECE1CE90000000467414D41
+        0000B18F0BFC6105000000097048597300000EC300000EC301C76FA864000000
+        124944415478DA63B42D3EC9C0C0C038942900045029593A0CAC7C0000000049
+        454E44AE426082}
+    end
+    object Image_rozdelovac_1: TImage
+      Left = 306
+      Top = 0
+      Width = 2
+      Height = 28
+      Picture.Data = {
+        0954506E67496D61676589504E470D0A1A0A0000000D49484452000000020000
+        001C0802000000C408F998000000017352474200AECE1CE90000000467414D41
+        0000B18F0BFC6105000000097048597300000EC300000EC301C76FA864000000
+        124944415478DA63B42D3EC9C0C0C038942900045029593A0CAC7C0000000049
+        454E44AE426082}
+    end
+    object Image_rozdelovac_2: TImage
+      Left = 396
+      Top = 0
+      Width = 2
+      Height = 28
+      Picture.Data = {
+        0954506E67496D61676589504E470D0A1A0A0000000D49484452000000020000
+        001C0802000000C408F998000000017352474200AECE1CE90000000467414D41
+        0000B18F0BFC6105000000097048597300000EC300000EC301C76FA864000000
+        124944415478DA63B42D3EC9C0C0C038942900045029593A0CAC7C0000000049
+        454E44AE426082}
+    end
+    object Image_rozdelovac_3: TImage
+      Left = 1829
+      Top = 0
+      Width = 1
+      Height = 28
+      Picture.Data = {
+        0954506E67496D61676589504E470D0A1A0A0000000D49484452000000020000
+        001C0802000000C408F998000000017352474200AECE1CE90000000467414D41
+        0000B18F0BFC6105000000097048597300000EC300000EC301C76FA864000000
+        124944415478DA63B42D3EC9C0C0C038942900045029593A0CAC7C0000000049
+        454E44AE426082}
+    end
     object scGPTrackBar1: TscGPTrackBar
       AlignWithMargins = True
       Left = 78
@@ -3524,10 +3572,10 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
     end
-    object scLabel_statusbar_0: TscLabel
-      Left = 207
+    object scLabel_statusbar_1: TscLabel
+      Left = 208
       Top = 7
-      Width = 100
+      Width = 98
       Height = 14
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWhite
@@ -3537,6 +3585,33 @@ object Form1: TForm1
       Font.Quality = fqClearTypeNatural
       ParentFont = False
       TabOrder = 8
+      DragForm = False
+      DragTopForm = True
+      GlowEffect.Enabled = False
+      GlowEffect.Color = clBtnShadow
+      GlowEffect.AlphaValue = 255
+      GlowEffect.GlowSize = 7
+      GlowEffect.Offset = 0
+      GlowEffect.Intensive = True
+      GlowEffect.StyleColors = True
+      AutoSize = False
+      Alignment = taCenter
+      UseFontColorToStyleColor = False
+      Caption = '[0;0] m'
+    end
+    object scLabel_statusbar_0: TscLabel
+      Left = 308
+      Top = 7
+      Width = 88
+      Height = 14
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      Font.Quality = fqClearTypeNatural
+      ParentFont = False
+      TabOrder = 9
       OnClick = scLabel_statusbar_0Click
       DragForm = False
       DragTopForm = True
@@ -3552,38 +3627,15 @@ object Form1: TForm1
       UseFontColorToStyleColor = False
       Caption = 'status_0'
     end
-    object scLabel_statusbar_1: TscLabel
-      Left = 307
-      Top = 7
-      Width = 100
-      Height = 14
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      Font.Quality = fqClearTypeNatural
-      ParentFont = False
-      TabOrder = 9
-      DragForm = False
-      DragTopForm = True
-      GlowEffect.Enabled = False
-      GlowEffect.Color = clBtnShadow
-      GlowEffect.AlphaValue = 255
-      GlowEffect.GlowSize = 7
-      GlowEffect.Offset = 0
-      GlowEffect.Intensive = True
-      GlowEffect.StyleColors = True
-      AutoSize = False
-      Alignment = taCenter
-      UseFontColorToStyleColor = False
-      Caption = 'status_1'
-    end
     object scLabel_statusbar_2: TscLabel
-      Left = 407
+      Left = 401
       Top = 7
       Width = 758
       Height = 14
+      Margins.Left = 0
+      Margins.Top = 0
+      Margins.Right = 0
+      Margins.Bottom = 0
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWhite
       Font.Height = -12
@@ -10706,7 +10758,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C01011800040A200A10001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800040A240A10001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -11829,7 +11881,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01015400280D440D30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01015400280D480D30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000002004000001002000000000000060
       0C00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
