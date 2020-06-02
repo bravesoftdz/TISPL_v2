@@ -11,6 +11,7 @@
 #pragma link "scControls"
 #pragma link "scGPControls"
 #pragma link "scGPExtControls"
+#pragma link "scHtmlControls"
 #pragma resource "*.dfm"
 TForm_adjustace *Form_adjustace;
 //---------------------------------------------------------------------------
@@ -40,7 +41,7 @@ void __fastcall TForm_adjustace::FormShow(TObject *Sender)
     scGPNumericEdit_vzdalenost->SetFocus();
     Delkaunit=M;
     scGPNumericEdit_vzdalenost->Value=0.0;
-    rHTMLLabel_jednotkyClick(this);
+    scHTMLLabel_jednotkyClick(this);
 }
 //---------------------------------------------------------------------------
 void TForm_adjustace::position()
@@ -79,18 +80,18 @@ void __fastcall TForm_adjustace::scGPButton_OKClick(TObject *Sender)
 //---------------------------------------------------------------------------
 
 
-void __fastcall TForm_adjustace::rHTMLLabel_jednotkyClick(TObject *Sender)
+void __fastcall TForm_adjustace::scHTMLLabel_jednotkyClick(TObject *Sender)
 {
  if(Delkaunit==M){
 
  Delkaunit=MM;
- rHTMLLabel_jednotky->Caption="<font color=#2b579a>[mm]</font>";
+ scHTMLLabel_jednotky->Caption="[mm]";
  scGPNumericEdit_vzdalenost->Value=scGPNumericEdit_vzdalenost->Value*1000.0;
  }
  else
  {
  Delkaunit=M;
- rHTMLLabel_jednotky->Caption="<font color=#2b579a>[m]</font>";
+ scHTMLLabel_jednotky->Caption="[m]";
  scGPNumericEdit_vzdalenost->Value=scGPNumericEdit_vzdalenost->Value/1000.0;
  }
 

@@ -12,6 +12,7 @@
 #include "scGPControls.hpp"
 #include "scGPExtControls.hpp"
 #include <Vcl.Mask.hpp>
+#include "scHtmlControls.hpp"
 //---------------------------------------------------------------------------
 class TForm_adjustace : public TForm
 {
@@ -22,14 +23,14 @@ __published:	// IDE-managed Components
   TscGPButton *scGPButton_storno;
   TscGPButton *scGPButton_OK;
   TscGPNumericEdit *scGPNumericEdit_vzdalenost;
-  TrHTMLLabel *rHTMLLabel_vzdalenost;
-  TrHTMLLabel *rHTMLLabel_jednotky;
+  TscHTMLLabel *scHTMLLabel_vzdalenost;
+  TscHTMLLabel *scHTMLLabel_jednotky;
   void __fastcall scGPButton_stornoClick(TObject *Sender);
   void __fastcall KonecClick(TObject *Sender);
   void __fastcall FormShow(TObject *Sender);
   void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
   void __fastcall scGPButton_OKClick(TObject *Sender);
-  void __fastcall rHTMLLabel_jednotkyClick(TObject *Sender);
+  void __fastcall scHTMLLabel_jednotkyClick(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 
