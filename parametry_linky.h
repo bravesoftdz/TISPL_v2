@@ -29,6 +29,8 @@
 #include "scStyledForm.hpp"
 #include "scImageCollection.hpp"
 #include "scGPMeters.hpp"
+#include <Vcl.ComCtrls.hpp>
+#include "scHint.hpp"
 #include <sstream>
 #include <iomanip>
 #include "TmGrid.h"
@@ -45,11 +47,7 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton_vozik;
 	TscGPButton *scGPButton_pohon;
 	TButton *Vypis_pohony;
-	TrHTMLLabel *rHTMLLabel_eDesigner;
-	TrHTMLLabel *rHTMLLabel_takt;
-	TrHTMLLabel *rHTMLLabel_sirka_jig;
 	TscGPButton *scGPButton_obecne;
-	TrHTMLLabel *rHTMLLabel_doporuc_pohony;
 	TscExPanel *scExPanel_doporuc_pohony;
 	TscHTMLLabel *scHTMLLabel_doporuc_pohony;
 	TscGPButton *scGPButton_doporucene;
@@ -57,11 +55,7 @@ __published:	// IDE-managed Components
 	TscLabel *scLabel_TT_change_hint;
 	TMemo *Memo1;
 	TscGPButton *scGPButton_jig;
-	TrHTMLLabel *rHTMLLabel_delka_jig;
 	TscGPSwitch *scGPSwitch;
-  TrHTMLLabel *rHTMLLabel_podlahovy;
-  TrHTMLLabel *rHTMLLabel_podvesny;
-	TrHTMLLabel *rHTMLLabel_JIG;
 	TscGPNumericEdit *scGPNumericEdit_delka_jig;
 	TscGPNumericEdit *scGPNumericEdit_sirka_jig;
 	TscGPPanel *PopUPmenu;
@@ -83,18 +77,12 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *GlyphButton_close;
   TscGPGlyphButton *scGPGlyphButton_ADD_old;
 	TscGPGlyphButton *scGPGlyphButton_DEL_nepouzite;
-	TrHTMLLabel *rHTMLLabel_vyska_jig;
-	TrHTMLLabel *rHTMLLabel_podvozek_zaves;
-	TrHTMLLabel *rHTMLLabel_delka_podvozek;
 	TscGPGlyphButton *scGPGlyphButton_takttime_kalkulator;
 	TscGPNumericEdit *scGPNumericEdit_delka_podvozek;
 	TscGPNumericEdit *scGPNumericEdit_vyska_jig;
-	TrHTMLHint *rHTMLHint1;
-	TrHTMLLabel *rHTMLLabel_InfoText;
 	TscGPGlyphButton *scGPGlyphButton_TT;
 	TscGPGlyphButton *scGPGlyphButton_vozik_edit;
   TscGPGlyphButton *scGPGlyphButton_refresh;
-  TrHTMLLabel *rHTMLLabel_info_zmenaR;
   TscGPGlyphButton *scGPGlyphButton_ADD;
   TscGPGlyphButton *scGPGlyphButton1;
   TscGPGlyphButton *scGPGlyphButton_smazat_pohon;
@@ -104,8 +92,6 @@ __published:	// IDE-managed Components
   TscPanel *scPanel_vozik;
   TscImage *scImage1;
   TscGPGearActivityIndicator *scGPGlyphButton_OPTIONS;
-  TrImageEx *rImageEx_jig_podlahovy;
-	TrImageEx *rImageEx_jig_podvesny;
   TscHTMLLabel *scHTMLLabel_jig_info;
   TscGPGlyphButton *scGPGlyphButton_katalog;
   TscStyledForm *scStyledForm2;
@@ -114,6 +100,18 @@ __published:	// IDE-managed Components
 	TscHTMLLabel *scHTMLLabel_posuvnik;
   TscComboBox *scComboBox_vyber_produkt;
   TscCheckBox *scCheckBox_vyber_produkt;
+  TEdit *Edit1;
+  TscHTMLLabel *scHTMLLabel_sirka_jig;
+  TscHTMLLabel *scHTMLLabel_delka_podvozek;
+  TscHTMLLabel *scHTMLLabel_vyska_jig;
+  TscHTMLLabel *scHTMLLabel_delka_jig;
+  TscHTMLLabel *scHTMLLabel_takt;
+  TscHint *scHint1;
+  TscLabel *scHTMLLabel_podlahovy;
+  TscLabel *scHTMLLabel_podvesny;
+  TscHTMLLabel *scHTMLLabel_InfoText;
+  TImage *ImageEx_jig_podvesny;
+  TImage *ImageEx_jig_podlahovy;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -125,12 +123,12 @@ __published:	// IDE-managed Components
 	void __fastcall scExPanel_doporuc_pohonyClose(TObject *Sender);
 	void __fastcall rEditNum_takt_Change(TObject *Sender);
 	void __fastcall rHTMLLabel_delkavozikuClick(TObject *Sender);
-	void __fastcall rHTMLLabel_sirka_jigClick(TObject *Sender);
-	void __fastcall rHTMLLabel_taktClick(TObject *Sender);
+	void __fastcall scHTMLLabel_sirka_jigClick(TObject *Sender);
+	void __fastcall rHTMLLabel_takt2Click(TObject *Sender);
 	void __fastcall scGPGlyphButton_add_mezi_pohonyClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall rEditNum_delkavozikuClick(TObject *Sender);
-	void __fastcall rHTMLLabel_delka_jigClick(TObject *Sender);
+	void __fastcall scHTMLLabel_delka_jigClick(TObject *Sender);
 	void __fastcall rHTMLLabel_delka_vozikuClick(TObject *Sender);
 	void __fastcall Button_DELMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall rEditNum_delka_jigu_oldKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
