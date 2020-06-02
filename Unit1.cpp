@@ -243,7 +243,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 
 	//nastavení zobrazení
 	antialiasing=true;
-	d.SCENA=1111111;
+	d.SCENA=0;//1111111;
 	vychozi_stav_sceny=d.SCENA;
 
 	//nastavení implicitního souboru
