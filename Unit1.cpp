@@ -2641,6 +2641,8 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		Zoom_predchozi_AA=Zoom;Zoom*=3;//záloha původního zoomu,nový *3 vyplývá z logiky algoritmu antialiasingu
 		short s=2;if(d.SCENA==0)s=0;//řešení pro vykreslit VŠE
 		if(d.SCENA!=1111111)d.vykresli_vektory(bmp_in->Canvas,s);//DYNAMICKÁ scéna,pokud je požadavek vše do statické, tak zbytečně se neřeší dynamická
+		if(Akce==GEOMETRIE)d.smart_kurzor(bmp_in->Canvas,posledni_editovany_element);
+		if(MOD==TVORBA_CESTY)d.kurzor_cesta(bmp_in->Canvas);
 		Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 		Cantialising a;
 		Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
