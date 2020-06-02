@@ -899,7 +899,7 @@ public:		// User declarations
 	void zobraz_tip(UnicodeString text="", TCanvas* canv=NULL);//prázdným (bez paremetrù) voláním  metody se tip smaže, //pokud není parametr canvas uveden, jedná se o dlouhodobé vykreslování hodnoty TIP//pokud je parametrem pøedán Canvas vykreslí se pøímo a jednorázovì
 };
 //---------------------------------------------------------------------------
-extern PACKAGE TForm1 *Form1
+extern PACKAGE TForm1 *Form1;
 extern PACKAGE TForm1 *F;//pouze zkrácený zapis
 extern AnsiString Parametry; //pøíjímá parametry programu, dùležité pro otevírání programu konrkétním souborem
 //---------------------------------------------------------------------------

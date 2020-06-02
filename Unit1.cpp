@@ -14265,7 +14265,7 @@ void __fastcall TForm1::ButtonPLAY_OClick(TObject *Sender)
 //tlačítko na spuštění animace v náhledu kabiny
 void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 {
-	if(MOD==LAYOUT || MOD==SCHEMA || MOD==SIMULACE)
+	if(MOD==LAYOUT || MOD==SIMULACE)
 	{
 		log(__func__);//logování
 		RO-=(1.5*Zoom/m2px)/20.0;
@@ -14508,7 +14508,7 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 //	if(d.SCENA>0)vytvor_statickou_scenu();//načtení statických záležitostí do statické scény, musí být před REFRESH
 //	REFRESH();
 
-REFRESH(Edit1->Text.ToInt(),false);
+//REFRESH(Edit1->Text.ToInt(),false);
 
 
 }
