@@ -50,7 +50,7 @@ void Cvykresli::vykresli_halu(TCanvas *canv,int stav)
 {
 	//změny stavů
 	stav=-2;//defaultní stav
-	if(F->MOD==F->SCHEMA)//ošetření, tato metoda se spouští i při náhledu !!!!
+	if(F->MOD==F->LAYOUT)//ošetření, tato metoda se spouští i při náhledu !!!!
 	{
     if(F->Akce==F->MOVE_HALA)stav=0;
 		if(F->JID==0)stav=F->pom_bod->n;//body
@@ -5757,7 +5757,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	////vstupní proměnné
 	if(F->JID==-10 && F->MOD==F->EDITACE)highlight=0;//highlight - pokud se mění pouze jednotky, tak se kóta nehiglightuje
 	if(aktElement==NULL&&komora==NULL&&bod==NULL)highlight=0;//highlight -odstranění highlightu na kótách mezi lak. okny
-	short meritko=1;if(F->MOD==F->SCHEMA){width*=5;meritko=5;}//měřítko (náhled vs. schéma)
+	short meritko=1;if(F->MOD==F->LAYOUT){width*=5;meritko=5;}//měřítko (náhled vs. schéma)
 	width=m.round(width*F->Zoom);if(highlight)width*=2;//šířka linie
 	short Presah=m.round(1.3*F->Zoom);if(Offset<0)Presah*=-1;//přesah packy u kóty,v případě záporného offsetu je vystoupení kóty nazákladě tohot záporné
   if(F->OBJEKT_akt!=NULL)Presah/=2.0;//zmenšení odsazení kót při highlightu v náhledu

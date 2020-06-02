@@ -944,7 +944,7 @@ void TForm1::DesignSettings()
 
 	//scExPanel_ostatni->Top=72+27;
 
-	if(MOD==SCHEMA) //zobrazeni labelu - je hezci, v hlavicce drawgrid knihovny
+	if(MOD==LAYOUT) //zobrazeni labelu - je hezci, v hlavicce drawgrid knihovny
 	{
 		//scGPLabel_roboti->Visible=true;
 //		scGPLabel_roboti->Caption="Technolog. objekty";
@@ -1665,7 +1665,7 @@ void TForm1::Novy_soubor(bool invalidate)//samotné vytvoření nového souboru
 			 d.v.hlavicka_VOZIKY();// nemusí tu být pokud nebudu ukládat vozíky do filuzaložení spojového seznamu pro vozíky
 
 			 //tady bude přepnutí založek dodělat
-			 if(MOD!=SCHEMA)schemaClick(this);//volání MODu SCHEMA
+			 if(MOD!=LAYOUT)schemaClick(this);//volání MODu LAYOUT
 			 scGPSwitch_rezim->State=scswOff;
 			 //SB("NÁVRH",1);
 
@@ -2177,11 +2177,11 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
 {
 	log(__func__);//logování
 	if(MOD==EDITACE && Schema->ImageIndex!=-1)scButton_zamekClick(this);
-	if(MOD==SCHEMA)scButton_zamek_layoutuClick(this);
-	if(MOD!=SCHEMA && MOD!=EDITACE)
+	if(MOD==LAYOUT)scButton_zamek_layoutuClick(this);
+	if(MOD!=LAYOUT && MOD!=EDITACE)
 	{
 	ESC();//zruší případnou rozdělanou akci
-	MOD=SCHEMA;
+	MOD=LAYOUT;
 	if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
 	Timer_simulace->Enabled=false;
 	scSplitView_MENU->Opened=false;//zavře případně otevřené menu
@@ -3568,7 +3568,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					}
 					else
 					{
-						if(MOD==SCHEMA)//OBJEKT
+						if(MOD==LAYOUT)//OBJEKT
 						{
 							if(JID==3&&!d.v.PP.zamek_layoutu){Akce=MOVE;kurzor(posun_l);minule_souradnice_kurzoru=TPoint(X,Y);predchozi_souradnice_kurzoru=m.L2P(pom->element->geo.X1,pom->element->geo.Y1);predchozi_orientace=pom->orientace;}
 							else if(JID==-1&&Akce==NIC){Akce=PAN;pan_non_locked=true;}//přímo dovolení PAN pokud se neposová objekt = Rosťova prosba
@@ -3632,8 +3632,8 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						else {Akce=PAN;pan_non_locked=true;}//přímo dovolení PAN pokud se neposová objekt   = Rosťova prosba
 					}
 				}
-				if(funkcni_klavesa==3 && (MOD==SCHEMA && JID==1 || MOD==EDITACE && OBJEKT_akt->id!=3 && JID==-2))vloz_bod_haly_objektu(X,Y);//ctrl+shift+klik na přímku -> přidání bodu
-				if(funkcni_klavesa==1 && (MOD==SCHEMA && JID==0 || MOD==EDITACE && JID==-3))smaz_bod_haly_objektu(pom_bod);//ctrl+klik na bod -> odstranění bodu
+				if(funkcni_klavesa==3 && (MOD==LAYOUT && JID==1 || MOD==EDITACE && OBJEKT_akt->id!=3 && JID==-2))vloz_bod_haly_objektu(X,Y);//ctrl+shift+klik na přímku -> přidání bodu
+				if(funkcni_klavesa==1 && (MOD==LAYOUT && JID==0 || MOD==EDITACE && JID==-3))smaz_bod_haly_objektu(pom_bod);//ctrl+klik na bod -> odstranění bodu
 				else if(funkcni_klavesa==1 && Akce!=GEOMETRIE || Akce==ZOOM_W_MENU)Akce=ZOOM_W;
 				switch(Akce)
 				{
@@ -3766,7 +3766,7 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 			break;
 			case SIMULACE:break;
 			case MAGNETICKE_LASO:zanuti_vypnuti_magnetickeho_lasa();break;//vypnutí
-			default://pro SCHEMA
+			default://pro LAYOUT
 			{
 				//povoluje nastavení položek kopírování či smazání objektu
 				if(Akce==DRAW_HALA)
@@ -4460,7 +4460,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		{
 			Akce=NIC;
 			if(MOD!=CASOVAOSA)zneplatnit_minulesouradnice();
-			if(MOD==EDITACE && OBJEKT_akt!=NULL || MOD==SCHEMA)
+			if(MOD==EDITACE && OBJEKT_akt!=NULL || MOD==LAYOUT)
 			{    //testování odstaveno
 //					pocitadlo_doby_neaktivity=0; Timer_neaktivity->Interval=20;
 //					if(++pocitadlo_zmeny_pozice.x>10 || ++pocitadlo_zmeny_pozice.y>10){pocitadlo_zmeny_pozice.x=0;pocitadlo_zmeny_pozice.y=0;pocitadlo_doby_neaktivity=1;}//naopak akcelerátor, aby se při rychlém pohybu myší zkontrolovala změna
@@ -4488,7 +4488,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		default:break;
 	}
     //fix na pridani 1 obj pro demo
-//    if(EDICE==DEMO && MOD==SCHEMA)
+//    if(EDICE==DEMO && MOD==LAYOUT)
 //    {
 //    if(d.v.OBJEKTY->predchozi->n >= 1) DrawGrid_knihovna->Visible=false;
 //    else   DrawGrid_knihovna->Visible=true;
@@ -4539,7 +4539,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			case ZOOM_W:ZOOM_WINDOW();break;//ZOOM_WINDOW
 			case ADD://přidání objekt či elementu
 			{
-				if(MOD==SCHEMA)add_objekt(X,Y);//přídání objektu v modu SCHEMA
+				if(MOD==LAYOUT)add_objekt(X,Y);//přídání objektu v modu LAYOUT
 				else {if(element_id>=0)add_element(X,Y);else add_komoru();/*d.vykresli_element(Canvas,X,Y,"","",element_id,-1,Rotace_symbolu_minula);-již není třeba, někde se refreshuje*/}//přídání elementu v modu EDITACE
 				zneplatnit_minulesouradnice();
 				kurzor(standard);
@@ -4854,7 +4854,7 @@ void TForm1::getJobID(int X, int Y)
 			O=NULL;delete O;
 		}
 	}
-	if(MOD==SCHEMA && !d.v.PP.zamek_layoutu)//pro schéma, zjišťování jidů pro body a úsečky
+	if(MOD==LAYOUT && !d.v.PP.zamek_layoutu)//pro schéma, zjišťování jidů pro body a úsečky
 	{
 		/////////////JID udává pouze akci, není třeba aby se k němu přičítalo i číslo bodu, bod je držen jako ukazatel pom_bod/////////////
 		//-102; citelná oblast zprávy
@@ -5067,7 +5067,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 		pom_element_puv=NULL;delete pom_element_puv;
 		pom_komora_puv=NULL;delete pom_komora_puv;
 	}
-	if(MOD==SCHEMA && !d.v.PP.zamek_layoutu)//pro schéma, změna kurzorů pro body a úsečky
+	if(MOD==LAYOUT && !d.v.PP.zamek_layoutu)//pro schéma, změna kurzorů pro body a úsečky
 	{
 		int puvJID=JID;//záloha původního JID
 		Cvektory::TBod *pom_bod_puv=pom_bod;
@@ -5270,7 +5270,7 @@ void TForm1::onPopUP(int X, int Y)
 			PopUPmenu->Item_cely_pohled->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
 			break;
 		}
-		case SCHEMA://pro SCHEMA
+		case LAYOUT://pro LAYOUT
 		{
 			//povoluje nastavení položek kopírování či smazání objektu
 //			pom=d.v.najdi_objekt(m.P2Lx(X),m.P2Ly(Y),d.O_width*m2px,d.O_height*m2px);
@@ -8564,7 +8564,7 @@ void TForm1::popisky_knihovna_nahled(bool knihovna)
 void TForm1::tab_knihovna_click(double X,double Y,long Col,long Row)
 {
 	log(__func__);//logování
-	if(Akce==NIC && MOD==SCHEMA)
+	if(Akce==NIC && MOD==LAYOUT)
 	{
   	if(Col<0 || Row<0)
   	{
@@ -11510,7 +11510,7 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 		delete (bmp_out);//velice nutné
 		delete (bmp_in);//velice nutné
 	}
-//	if(MOD==SCHEMA)
+//	if(MOD==LAYOUT)
 //	{
 //
 //		////////////////////neAA verze
@@ -11718,7 +11718,7 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton
 			refresh_mGrid=false;REFRESH();refresh_mGrid=true;
     }
 	}
-	else//pro SCHEMA
+	else//pro LAYOUT
 	{
 		SB(ls->Strings[384]+" "+knihovna_objektu[Col+Row+Row].name);//"Kliknutím na libovolné místo umístíte objekt "
 		//SB(AnsiString(DrawGrid_knihovna->TopRow)+" "+AnsiString(Col)+" "+AnsiString(Row)+" "+knihovna_objektu[Col+Row+Row].name);
@@ -12196,7 +12196,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 			}
 			break;
 		}
-		default://SCHEMA
+		default://LAYOUT
 		{
 			//ať to nemusí znovu hledat beru z pom Cvektory::TObjekt *p=d.v.najdi_bod(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width,d.O_height);
 			if(pom_vyhybka!=NULL && pom_element_temp==NULL && pom_bod_temp==NULL)//pokud byl prvek nalezen
@@ -12353,7 +12353,7 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 void __fastcall TForm1::NastavitparametryClick1Click(TObject *Sender)
 {
 	log(__func__);
-	if(MOD==SCHEMA && pom_bod_temp==NULL){pom=pom_vyhybka;if(pom!=NULL)otevri_editaci();}//předání z pomocného ukazatele objekt do pom, zabrání ztráty pom, pokud uživatel sjede kurzorem mimo objekt při otevřeném popup + ochrana proti prázdnému pom (asi zbytečná)
+	if(MOD==LAYOUT && pom_bod_temp==NULL){pom=pom_vyhybka;if(pom!=NULL)otevri_editaci();}//předání z pomocného ukazatele objekt do pom, zabrání ztráty pom, pokud uživatel sjede kurzorem mimo objekt při otevřeném popup + ochrana proti prázdnému pom (asi zbytečná)
 	if(OBJEKT_akt!=NULL && pom_vyhybka!=NULL && OBJEKT_akt->n!=pom_vyhybka->n && pom_bod_temp==NULL)//otevírání náhledu z náhledu, přechot na editaci jiného objektu
 	{
 		zmena_editovaneho_objektu();
@@ -12710,7 +12710,7 @@ void TForm1::zmena_editovaneho_objektu()
   	/////////Uzavření starého náhledu
   	if(MOD==EDITACE&&index_kurzoru==9999||index_kurzoru==100)smaz_edit(false);//smaže edit a neprovede refresh
   	if(editace_textu)smaz_kurzor();//také volá Refresh//smaz_kurzor se zavolá, pouze pokud je to třeba odstraňuje zbytečný problik, dodělal MaKr
-  	MOD=SCHEMA;//nutné před zoom, ale za smaz kurzor
+  	MOD=LAYOUT;//nutné před zoom, ale za smaz kurzor
   	//mazání mGridů
   	Cvektory::TElement *E=OBJEKT_akt->element;
   	while(E!=NULL && E->objekt_n==OBJEKT_akt->n)
@@ -12922,7 +12922,7 @@ void TForm1::vypni_editaci()
 {
 	log(__func__);//logování
 	nastav_focus();
-	MOD=SCHEMA;//nutné před zoom, ale za smaz kurzor
+	MOD=LAYOUT;//nutné před zoom, ale za smaz kurzor
 	//mazání mGridů
 	Cvektory::TElement *E=OBJEKT_akt->element;
 	while(E!=NULL && E->objekt_n==OBJEKT_akt->n)
@@ -13417,16 +13417,16 @@ unsigned short int TForm1::Otevrit_soubor(UnicodeString soubor)//realizuje samot
 			else d.v.ZAKAZKA_akt=NULL;
 			d.v.update_akt_zakazky();
 			//MOD=d.v.File_hlavicka.Mod;
-			MOD=SCHEMA;//defaultně se bude vždy otvírat v layoutu
+			MOD=LAYOUT;//defaultně se bude vždy otvírat v layoutu
 //			switch(MOD)
 //			{
 //					case NO:REFRESH();break; //překreslí obraz pro ostatní případy
-//					case SCHEMA: 	/*schemaClick(this);*/break;   //????????????? při modu schéma zapínat schéma ??? odstaveno
+//					case LAYOUT: 	/*schemaClick(this);*/break;   //????????????? při modu schéma zapínat schéma ??? odstaveno
 //					//ZDM case TESTOVANI:	testovnkapacity1Click(this);break;
 //					//ZDM case REZERVY:		casoverezervy1Click(this);break;
-//					//ZDM case CASOVAOSA:	editacelinky1Click(this);MOD=SCHEMA;/*casovosa1Click(this);*/break;
-//					//ZDM case TECHNOPROCESY:editacelinky1Click(this);MOD=SCHEMA;break;
-//					//ZDM case SIMULACE:	editacelinky1Click(this);MOD=SCHEMA;/*simulace1Click(this);*/break;
+//					//ZDM case CASOVAOSA:	editacelinky1Click(this);MOD=LAYOUT;/*casovosa1Click(this);*/break;
+//					//ZDM case TECHNOPROCESY:editacelinky1Click(this);MOD=LAYOUT;break;
+//					//ZDM case SIMULACE:	editacelinky1Click(this);MOD=LAYOUT;/*simulace1Click(this);*/break;
 //					default: schemaClick(this);break;
 //			}
 			ulozit_historie_otevrenych();
@@ -13737,7 +13737,7 @@ void __fastcall TForm1::Export1Click(TObject *Sender)
 
 		switch(MOD)//uloží obraz dle daného modu zobrazení
 		{
-			case SCHEMA:
+			case LAYOUT:
 			if(!antialiasing)d.vykresli_vektory(Bitmap->Canvas);//vykreslování všech vektorů
 			else
 			{
@@ -15521,7 +15521,7 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //   DrawGrid_knihovna->Height=400;
 //   scListGroupKnihovObjektu->Align=alLeft;
 //   DrawGrid_knihovna->Invalidate();
-//   MOD=SCHEMA;
+//   MOD=LAYOUT;
 //   }
 //   else
 //   {
@@ -15666,7 +15666,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		smaz_edit(false);//smaže edit a neprovede refresh
 		nastav_focus();
 		//if(editace_textu)smaz_kurzor();//také volá Refresh//smaz_kurzor se zavolá, pouze pokud je to třeba odstraňuje zbytečný problik, dodělal MaKr
-		MOD=SCHEMA;//nutné před zoom, ale za smaz kurzor
+		MOD=LAYOUT;//nutné před zoom, ale za smaz kurzor
 		//smazání případných komor
 		//d.v.vymaz_komory(OBJEKT_akt);
 		//smazání elementů - musí být napočátku, aby nebyl problik
@@ -16074,7 +16074,7 @@ void __fastcall TForm1::DrawGrid_poznamkyMouseWheelUp(TObject *Sender, TShiftSta
 void __fastcall TForm1::Button_testClick(TObject *Sender)
 {
 	log(__func__);//logování
-	MOD=SCHEMA;
+	MOD=LAYOUT;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
@@ -17435,9 +17435,9 @@ void __fastcall TForm1::scGPButton_geometrieClick(TObject *Sender)
 void __fastcall TForm1::scGPButton_storno_cestaClick(TObject *Sender)
 {
 	log(__func__);//logování
-	F->log("Ukočení editace cesty, MOD=SCHEMA, Form:Unit1");
+	F->log("Ukočení editace cesty, MOD=LAYOUT, Form:Unit1");
 	Akce=NIC;
-	MOD=SCHEMA;
+	MOD=LAYOUT;
 	scGPButton_ulozit_cestu->Visible=false;
 	scGPButton_storno_cesta->Visible=false;
 	scGPGlyphButton_odstran_cestu->Visible=false;
@@ -17451,9 +17451,9 @@ void __fastcall TForm1::scGPButton_storno_cestaClick(TObject *Sender)
 void __fastcall TForm1::scGPButton_ulozit_cestuClick(TObject *Sender)
 {
 	log(__func__);//logování
-	F->log("Uložení nové cesty, MOD=SCHEMA, Form:Unit1");
+	F->log("Uložení nové cesty, MOD=LAYOUT, Form:Unit1");
 	Akce=NIC;
-	MOD=SCHEMA;
+	MOD=LAYOUT;
 	scGPButton_ulozit_cestu->Visible=false;
 	scGPButton_storno_cesta->Visible=false;
 	scGPGlyphButton_odstran_cestu->Visible=false;
@@ -17690,7 +17690,7 @@ void TForm1::zanuti_vypnuti_magnetickeho_lasa()
 		d.v.vymaz_davky_zakazky(Form_definice_zakazek->Z_cesta);
 		delete Form_definice_zakazek->Z_cesta;Form_definice_zakazek->Z_cesta=NULL;//smaže mazaný prvek
 		//přepnutí modu
-		if(OBJEKT_akt==NULL)MOD=SCHEMA;
+		if(OBJEKT_akt==NULL)MOD=LAYOUT;
 		else MOD=EDITACE;
 	}
 }
