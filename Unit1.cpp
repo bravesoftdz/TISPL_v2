@@ -14473,7 +14473,7 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 
 //	Tvlakno_obraz *vlakno=new Tvlakno_obraz(true);//spustí vlákno zajišťující stáhnutí mapového podkladu
 //	vlakno->FreeOnTerminate=true;//po skončení bude uvolněno
-//	vlakno->Resume();
+//	vlakno->Start();
 //	//delete vlakno;
 
 		//Sk(ceil(m2px/Zoom/d.v.vrat_min_rychlost_prejezdu()*1000.0/fps));   //ceil(F->m.get_timePERpx(pom->RD,0,d.v.vrat_min_rychlost_prejezdu()));//různá rychlost dle RD, s afps se počítá dle min RD, ale nějak špatně vycházela animace ke konci (nestihl vozík vyjet)
@@ -17476,7 +17476,7 @@ void TForm1::vytvor_obraz(bool stornoUNDO)
 	else vlakno_akce=1;//vytvoření obrazu pro UNDO
 	vlakno_obraz=new Tvlakno_obraz(true);//spustí vlákno zajišťující stáhnutí mapového podkladu
 	vlakno_obraz->FreeOnTerminate=true;//po skončení bude uvolněno
-	vlakno_obraz->Resume();
+	vlakno_obraz->Start();
 	//d.v.vlakno_obraz();
 }
 //---------------------------------------------------------------------------
@@ -17487,7 +17487,7 @@ void TForm1::vymaz_seznam_obrazu()
 	vlakno_akce=3;//mazání obrazů
 //  vlakno_obraz=new Tvlakno_obraz(true);//spustí vlákno zajišťující stáhnutí mapového podkladu
 //	vlakno_obraz->FreeOnTerminate=true;//po skončení bude uvolněno
-//	vlakno_obraz->Resume();
+//	vlakno_obraz->Start();
 	d.v.vlakno_obraz();
 }
 //---------------------------------------------------------------------------
