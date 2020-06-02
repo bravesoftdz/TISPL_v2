@@ -1,6 +1,5 @@
 #ifndef Unit1H
 #define Unit1H
-
 //---------------------------------------------------------------------------
 #include <System.Classes.hpp>
 #include <Vcl.Controls.hpp>
@@ -349,9 +348,6 @@ __published:	// IDE-managed Components
 	TTimer *Timer_getjobid;
 	TscGPCheckBox *scGPCheckBox_popisek_pohonu;
 	TEdit *Edit_proFocus;
-<<<<<<< HEAD
-	TEdit *Edit1;
-=======
 	TscLabel *scLabel_statusbar_1;
 	TscLabel *scLabel_statusbar_0;
 	TscLabel *scLabel_statusbar_2;
@@ -359,7 +355,6 @@ __published:	// IDE-managed Components
 	TImage *Image_rozdelovac_1;
 	TImage *Image_rozdelovac_2;
 	TImage *Image_rozdelovac_3;
->>>>>>> 35f884d520be477a5acd049c2e6c3351b011c803
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -749,12 +744,8 @@ private:
 	Tvlakno_obraz *vlakno_obraz;
 	bool storno;//slouí k rozlišení jestli bylo stisknuto storno nebo byl zavolán jeho stisk z tlaèítka uloit
 	bool refreshovat_scGPTrackBar;//promìnná zajišujíci, e se scGPTracBar nerefreshuje pokud mu pøi zmìnì zoomu mimo scGPTracBar
-<<<<<<< HEAD
-	TscGPEdit *vir_edit;
-	long vychozi_stav_sceny;
-=======
 	TscGPEdit *editEditace;
->>>>>>> 35f884d520be477a5acd049c2e6c3351b011c803
+	long vychozi_stav_sceny;
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
@@ -908,7 +899,7 @@ public:		// User declarations
 	void zobraz_tip(UnicodeString text="", TCanvas* canv=NULL);//prázdnım (bez paremetrù) voláním  metody se tip smae, //pokud není parametr canvas uveden, jedná se o dlouhodobé vykreslování hodnoty TIP//pokud je parametrem pøedán Canvas vykreslí se pøímo a jednorázovì
 };
 //---------------------------------------------------------------------------
-extern PACKAGE TForm1 *Form1;
+extern PACKAGE TForm1 *Form1
 extern PACKAGE TForm1 *F;//pouze zkrácenı zapis
 extern AnsiString Parametry; //pøíjímá parametry programu, dùleité pro otevírání programu konrkétním souborem
 //---------------------------------------------------------------------------
