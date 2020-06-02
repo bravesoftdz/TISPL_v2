@@ -1,6 +1,5 @@
 #ifndef Unit1H
 #define Unit1H
-
 //---------------------------------------------------------------------------
 #include <System.Classes.hpp>
 #include <Vcl.Controls.hpp>
@@ -361,8 +360,6 @@ __published:	// IDE-managed Components
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int ARow, TRect &Rect,
           TGridDrawState State);
-	void __fastcall testovnkapacity1Click(TObject *Sender);
-	void __fastcall casoverezervy1Click(TObject *Sender);
 	void __fastcall schemaClick(TObject *Sender);
 	void __fastcall DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
@@ -419,7 +416,6 @@ __published:	// IDE-managed Components
 	void __fastcall Obnovitobraz1Click(TObject *Sender);
 	void __fastcall csv1Click(TObject *Sender);
 	void __fastcall html1Click(TObject *Sender);
-	void __fastcall simulace1Click(TObject *Sender);
 	void __fastcall RzStatusPane1Click(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Timer_simulaceTimer(TObject *Sender);
@@ -592,7 +588,7 @@ __published:	// IDE-managed Components
 // User declarations
 	////jen public struktury a v˝Ëty
 public:
-	enum Tmod{NO=0,SCHEMA,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE,EDITACE,TVORBA_CESTY,MAGNETICKE_LASO};Tmod MOD;
+	enum Tmod{NO=0,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE,EDITACE,TVORBA_CESTY,MAGNETICKE_LASO};Tmod MOD;
 	enum Tstatus{NAVRH,OVEROVANI};Tstatus STATUS;
 	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE,OFFSET_KOTY,MOVE_KOMORA,ROZMER_KOMORA,DRAW_HALA,MOVE_HALA,MOVE_BOD,MOVE_USECKA,MOVE_TEXT,GEOMETRIE,BLOK,GEOMETRIE_LIGHT};Takce Akce;Takce Akce_temp;//akce temp slouûÌ ke spuötÏnÌ akce p¯i akci, p¯. Akce=GEOMETRIE a p¯i nÌ je pot¯eba p¯esunout kÛty geo. element˘, tudÌû Akce_temp=OFFSET_KOTY
 	enum Tm_mm{M=0,MM,SEKUNDY,MINUTY};Tm_mm DOtocunit,DKunit,LOunit,Runit,Rzunit;//p¯epÌnaË jednotek vzd·lenost,rozöÌ¯en o SEKUNDY,MINUTY (problÈm p¯i pouûitÌ SEC a MIN) z d˘vodu Ëasov˝ch a vzd·lenostnÌch kÛt
@@ -749,6 +745,7 @@ private:
 	bool storno;//slouûÌ k rozliöenÌ jestli bylo stisknuto storno nebo byl zavol·n jeho stisk z tlaËÌtka uloûit
 	bool refreshovat_scGPTrackBar;//promÏnn· zajiöùujÌci, ûe se scGPTracBar nerefreshuje pokud mu p¯i zmÏnÏ zoomu mimo scGPTracBar
 	TscGPEdit *editEditace;
+	long vychozi_stav_sceny;
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
@@ -838,7 +835,7 @@ public:		// User declarations
 	void ZOOM_OUT();//odd·lenÌ
 	void REFRESH();
 	void REFRESH(bool refreshovat_mGridy);
-	void REFRESH(long ZprVozEleDopObjHal,bool refreshovat_mGridy);
+	void REFRESH(long ZprVozEledElesDopObjHal,bool refreshovat_mGridy);
 	void DuvodUlozit(bool stav);
 	void nahled_ulozit(bool duvod_ulozit);
 	void SB(UnicodeString Text, unsigned short Pane=4);//domnÌv·m se, ûe zde m· b˝t hodnota 5

@@ -49,10 +49,10 @@ class Cvykresli
 	enum Tvalign{TOP,MIDDLE,BOTTOM};
 
 	void vykresli_halu(TCanvas *canv,int typ=-2);//stav: -3 kurzor, -2 normal (implicitnì), -1-highlight bez editace, 0-editace zvırazní všechny body, 1-a poèet bodù zvıraznìní daného bodu,poèet bodù+1 zvıraznìní dané hrany vèetnì sousedícícíh úchopù (napø. pro polygono o 6 bodech) bude hodnota stavu 7 zvıraznìní první hrany (od bodu 1 do bodu 2)
-	void vykresli_vektory(TCanvas *canv, short scena=0);//vykreslí zakázky, cesty, spojnice, kabiny, pohony, elementy atd. //scena 0 - vše, scena 1 - statické elementy, scena 2 - dynamické elementy
+	void vykresli_vektory(TCanvas *canv, short scena=0);//vykreslí zakázky, cesty, spojnice, kabiny, pohony, elementy atd. //scena 0 - vše, scena 1 - statická scéna, scena 2 - dynamická scéna
 	void vykresli_objekty(TCanvas *canv);
 	void vykresli_objekt(TCanvas *canv, Cvektory::TObjekt *ukaz);
-	void vykresli_elementy(TCanvas *canv,short scena);//scena 0 - vše, scena 1 - statické elementy, scena 2 - dynamické elementy
+	void vykresli_elementy(TCanvas *canv,short scena);//scena 0 - vše do dynamické, scena 1 - implicitnì statické elementy do statické scény, scena 2 - implicitnì statické elementy do dynamické scény, scena 3 - implicitnì dynamické elementy do statické scény, scena 4 - implicitnì dynamické elementy do dynamické scény
 	void vykresli_kruh(TCanvas *canv, Cvektory::TObjekt *O);
 	void prislusnost_cesty(TCanvas *canv,TColor Color,int X,int Y,float A,short N);
 	void vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav=-2,bool zobrazit_koty=true);//zajišuje vykreslení pouze obrysu dle typu objektu
