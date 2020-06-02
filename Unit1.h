@@ -122,8 +122,6 @@ class TForm1 : public TForm
 {
 __published:	// IDE-managed Components
 	TRzToolbar *RzToolbar1;
-	TRzStatusPane *RzStatusPane3;
-	TRzStatusPane *RzStatusPane4;
 	TButton *Button1;
 	TImageList *ImageList1;
 	TRzToolButton *RzToolButton1;
@@ -141,7 +139,6 @@ __published:	// IDE-managed Components
 	TRzToolButton *RzToolButton11;
 	TRzToolButton *RzToolButton12;
 	TMemo *Memo1;
-	TRzStatusPane *RzStatusPane5;
 	TSaveDialog *SaveDialog;
 	TOpenDialog *OpenDialog1;
 	TTimer *Timer_backup;
@@ -352,7 +349,17 @@ __published:	// IDE-managed Components
 	TTimer *Timer_getjobid;
 	TscGPCheckBox *scGPCheckBox_popisek_pohonu;
 	TEdit *Edit_proFocus;
+<<<<<<< HEAD
 	TEdit *Edit1;
+=======
+	TscLabel *scLabel_statusbar_1;
+	TscLabel *scLabel_statusbar_0;
+	TscLabel *scLabel_statusbar_2;
+	TImage *Image_rozdelovac_0;
+	TImage *Image_rozdelovac_1;
+	TImage *Image_rozdelovac_2;
+	TImage *Image_rozdelovac_3;
+>>>>>>> 35f884d520be477a5acd049c2e6c3351b011c803
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -396,7 +403,6 @@ __published:	// IDE-managed Components
 	void __fastcall RzToolButton11Click(TObject *Sender);
 	void __fastcall Smazat1Click(TObject *Sender);
 	void __fastcall NastavitparametryClick1Click(TObject *Sender);
-	void __fastcall RzStatusPane5Click(TObject *Sender);
 	void __fastcall Edit_takt_timeChange(TObject *Sender);
 	void __fastcall Edit_pocet_vozikuChange(TObject *Sender);
 	void __fastcall UlozitClick(TObject *Sender);
@@ -580,13 +586,14 @@ __published:	// IDE-managed Components
   void __fastcall scGPButton_bug_reportClick(TObject *Sender);
 	void __fastcall Timer_getjobidTimer(TObject *Sender);
 	void __fastcall scGPCheckBox_popisek_pohonuClick(TObject *Sender);
+	void __fastcall scLabel_statusbar_0Click(TObject *Sender);
 
 
 
 // User declarations
 	////jen public struktury a vıèty
 public:
-	enum Tmod{NO=0,SCHEMA,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE,EDITACE,TVORBA_CESTY};Tmod MOD;
+	enum Tmod{NO=0,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE,EDITACE,TVORBA_CESTY,MAGNETICKE_LASO};Tmod MOD;
 	enum Tstatus{NAVRH,OVEROVANI};Tstatus STATUS;
 	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE,OFFSET_KOTY,MOVE_KOMORA,ROZMER_KOMORA,DRAW_HALA,MOVE_HALA,MOVE_BOD,MOVE_USECKA,MOVE_TEXT,GEOMETRIE,BLOK,GEOMETRIE_LIGHT};Takce Akce;Takce Akce_temp;//akce temp slouí ke spuštìní akce pøi akci, pø. Akce=GEOMETRIE a pøi ní je potøeba pøesunout kóty geo. elementù, tudí Akce_temp=OFFSET_KOTY
 	enum Tm_mm{M=0,MM,SEKUNDY,MINUTY};Tm_mm DOtocunit,DKunit,LOunit,Runit,Rzunit;//pøepínaè jednotek vzdálenost,rozšíøen o SEKUNDY,MINUTY (problém pøi pouití SEC a MIN) z dùvodu èasovıch a vzdálenostních kót
@@ -673,13 +680,15 @@ private:
 	int pocet_vyskytu_elementu_s_otoci(Cvektory::TObjekt *Objekt);//prohledá elementy v objektu, vrátí 0 pokud je rotace v objektu všude stejná, vrátí 1 pokud je pøítomno více rotací
 	void vytvor_edit();//vytvoøí edit na místì hlavièky tabulky, slouí ke zmìnì názvu elementu
 	void smaz_edit(bool refresh=true);//smae edit, kterı slouil pro zmìnu názvu elementu a novı název zapíše do elementu, defaultnì provede refresh, pokud není pøedáno parametrem jinak
+  void zapnout_vynout_editEditace(bool zapnout,bool smazat=false);//zapnì èi vypne edit pro editaci textu v náhledu
 	void vykresli_spojinici_EmGrid(TCanvas *Canv,Cvektory::TElement *E);//vykreslí spojnici mezi tabulkou a elementem z nejblišího rohu tabulky
 	void nacti_podklad(TCanvas *Canv);
 	unsigned short load_language(Tlanguage language,bool akt_mGrid=false);
 	void change_languagein_mGrid();//aktualizace popiskù v tabulkách pøi zmìnì jazyka
 	void zmena_editovaneho_objektu();//slouí k pøechodu z editace jednoho objektu do editace druhého objektu
 	TPointD uprav_bod_vlozeni_elementu(TPointD bod_vlozeni,short rotace_symbolu,int eID=-1);//upraví bod kurzoru pro vloení elemntu na bod vykreslení elementu (robot na konci ramena)
-  void vlozeni_editace_geometrie();//vkládá novou geometrii nebo edituje ji stávající geometrii
+	void vlozeni_editace_geometrie();//vkládá novou geometrii nebo edituje ji stávající geometrii
+	void smaz_usek_geometrie();//vymae aktuální usek geometrie
 	void ukonceni_geometrie(bool kontorla=true);//ukonèení akce geometrie a pøípadné uzavøení kruhu
 	void vloz_bod_haly_objektu(int X,int Y);//vloí bod haly nebo objektu na zvolené souøadnice (fyzické), zohlední pøichytávání
 	void smaz_bod_haly_objektu(Cvektory::TBod *bod);//smae bod haly nebo objektu, pokud existují u jen 2 poslední body smae oba
@@ -694,6 +703,7 @@ private:
 	void vytvor_obraz(bool stornoUNDO=false);//slouí k vytvoøení obrazu pro storno + undo nebo jen undo
 	void vymaz_seznam_obrazu();//vymae všechny obrazy v poøadníku
 	void vytvor_statickou_scenu();//vytvoøí BMP se statickou scénou
+	void zanuti_vypnuti_magnetickeho_lasa();//spustí mod magnetické laso nebo jej ukonèí s vıpisem namìøené hodnoty
 
 	////promìnné
 	TDateTime TIME;
@@ -739,8 +749,12 @@ private:
 	Tvlakno_obraz *vlakno_obraz;
 	bool storno;//slouí k rozlišení jestli bylo stisknuto storno nebo byl zavolán jeho stisk z tlaèítka uloit
 	bool refreshovat_scGPTrackBar;//promìnná zajišujíci, e se scGPTracBar nerefreshuje pokud mu pøi zmìnì zoomu mimo scGPTracBar
+<<<<<<< HEAD
 	TscGPEdit *vir_edit;
 	long vychozi_stav_sceny;
+=======
+	TscGPEdit *editEditace;
+>>>>>>> 35f884d520be477a5acd049c2e6c3351b011c803
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);

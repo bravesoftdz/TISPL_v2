@@ -626,12 +626,19 @@ object Form1: TForm1
     Width = 1281
     Height = 34
     Align = alTop
+    FluentUIOpaque = False
     TabOrder = 19
     BlurBackground = False
     BlurBackgroundAmount = 5
+    BackgroundStyle = gppbsColor
+    ContentMarginLeft = 0
+    ContentMarginRight = 0
+    ContentMarginTop = 0
+    ContentMarginBottom = 0
     CustomImageIndex = -1
     DragForm = False
     DragTopForm = True
+    DrawTextMode = scdtmGDI
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
     FillGradientEndAlpha = 255
@@ -669,12 +676,23 @@ object Form1: TForm1
       Margins.Right = 0
       Margins.Bottom = 1
       Align = alRight
+      FluentUIOpaque = False
       TabOrder = 0
       OnClick = KonecClick
       Animation = True
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       Caption = 'Konec'
       CanFocused = False
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
+      FluentLightEffect = False
       Layout = blGlyphLeft
       TransparentBackground = True
       ColorValue = clRed
@@ -724,7 +742,18 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       GlyphOptions.NormalColor = clWhite
       GlyphOptions.HotColor = clWhite
       GlyphOptions.PressedColor = clWhite
@@ -765,12 +794,23 @@ object Form1: TForm1
       Margins.Right = 0
       Margins.Bottom = 1
       Align = alRight
+      FluentUIOpaque = False
       TabOrder = 1
       OnClick = MinButtonClick
       Animation = True
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       Caption = 'scGPGlyphButton1'
       CanFocused = False
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
+      FluentLightEffect = False
       Layout = blGlyphLeft
       TransparentBackground = True
       ColorValue = clRed
@@ -820,7 +860,18 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       GlyphOptions.NormalColor = clWhite
       GlyphOptions.HotColor = clWhite
       GlyphOptions.PressedColor = clWhite
@@ -867,12 +918,22 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 2
       OnClick = schemaClick
       Animation = True
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       Caption = 'Layout'
       CanFocused = False
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
       Margin = -1
       Spacing = 1
       Layout = blGlyphRight
@@ -926,8 +987,20 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       HotImageIndex = -1
+      FluentLightEffect = False
       FocusedImageIndex = 76
       PressedImageIndex = -1
       UseGalleryMenuImage = False
@@ -980,12 +1053,22 @@ object Form1: TForm1
       Font.Quality = fqClearTypeNatural
       ParentFont = False
       ParentShowHint = False
+      FluentUIOpaque = False
       ShowHint = True
       TabOrder = 3
       Animation = True
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       Caption = 'Menu'
       CanFocused = False
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
       Margin = -1
       Spacing = 1
       Layout = blGlyphTop
@@ -1038,8 +1121,20 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       HotImageIndex = -1
+      FluentLightEffect = False
       FocusedImageIndex = -1
       PressedImageIndex = -1
       UseGalleryMenuImage = False
@@ -1089,12 +1184,22 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 4
       OnClick = AnalyzaClick
       Animation = True
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       Caption = 'Zak'#225'zky'
       CanFocused = False
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
       Margin = -1
       Spacing = 1
       Layout = blGlyphLeft
@@ -1147,8 +1252,20 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       HotImageIndex = -1
+      FluentLightEffect = False
       FocusedImageIndex = -1
       PressedImageIndex = -1
       UseGalleryMenuImage = False
@@ -1198,13 +1315,23 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 5
       Visible = False
       OnClick = SyntezaClick
       Animation = True
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       Caption = 'Animace'
       CanFocused = False
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
       Margin = -1
       Spacing = 1
       Layout = blGlyphLeft
@@ -1257,8 +1384,20 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       HotImageIndex = -1
+      FluentLightEffect = False
       FocusedImageIndex = -1
       PressedImageIndex = -1
       UseGalleryMenuImage = False
@@ -1304,13 +1443,24 @@ object Form1: TForm1
       Margins.Bottom = 1
       Align = alLeft
       ParentShowHint = False
+      FluentUIOpaque = False
       ShowHint = True
       TabOrder = 6
       OnClick = UlozitClick
       Animation = True
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       Caption = 'Toolbar_Ulozit'
       CanFocused = False
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
+      FluentLightEffect = False
       Layout = blGlyphLeft
       TransparentBackground = True
       ColorValue = clRed
@@ -1360,7 +1510,18 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       GlyphOptions.NormalColor = clWhite
       GlyphOptions.HotColor = clWhite
       GlyphOptions.PressedColor = clWhite
@@ -1403,13 +1564,24 @@ object Form1: TForm1
       Margins.Bottom = 1
       Align = alLeft
       ParentShowHint = False
+      FluentUIOpaque = False
       ShowHint = True
       TabOrder = 7
       OnClick = NovySouborClick
       Animation = True
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       Caption = 'scGPGlyphButton1'
       CanFocused = False
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
+      FluentLightEffect = False
       Layout = blGlyphLeft
       TransparentBackground = True
       ColorValue = clRed
@@ -1459,7 +1631,18 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       GlyphOptions.NormalColor = clWhite
       GlyphOptions.HotColor = clWhite
       GlyphOptions.PressedColor = clWhite
@@ -1502,13 +1685,24 @@ object Form1: TForm1
       Margins.Bottom = 1
       Align = alLeft
       ParentShowHint = False
+      FluentUIOpaque = False
       ShowHint = True
       TabOrder = 8
       OnClick = Toolbar_OtevritClick
       Animation = True
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       Caption = 'Otev'#345#237't'
       CanFocused = False
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
+      FluentLightEffect = False
       Layout = blGlyphLeft
       TransparentBackground = True
       ColorValue = clRed
@@ -1558,7 +1752,18 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       GlyphOptions.NormalColor = clWhite
       GlyphOptions.HotColor = clWhite
       GlyphOptions.PressedColor = clWhite
@@ -1599,12 +1804,23 @@ object Form1: TForm1
       Margins.Right = 0
       Margins.Bottom = 1
       Align = alRight
+      FluentUIOpaque = False
       TabOrder = 9
       OnClick = MaxButtonClick
       Animation = True
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       Caption = 'scGPGlyphButton1'
       CanFocused = False
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
+      FluentLightEffect = False
       Layout = blGlyphLeft
       TransparentBackground = True
       ColorValue = clRed
@@ -1654,7 +1870,18 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       GlyphOptions.NormalColor = clWhite
       GlyphOptions.HotColor = clWhite
       GlyphOptions.PressedColor = clWhite
@@ -1696,13 +1923,24 @@ object Form1: TForm1
       Margins.Right = 0
       Margins.Bottom = 0
       Align = alLeft
+      FluentUIOpaque = False
       TabOrder = 10
       Visible = False
       OnClick = DetailsButtonClick
       Animation = True
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       Caption = 'scGPGlyphButton1'
       CanFocused = False
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
+      FluentLightEffect = False
       Layout = blGlyphLeft
       TransparentBackground = True
       ColorValue = clRed
@@ -1752,7 +1990,18 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       GlyphOptions.NormalColor = clWhite
       GlyphOptions.HotColor = clWhite
       GlyphOptions.PressedColor = clWhite
@@ -1799,12 +2048,22 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 11
       OnClick = Button_dopravnik_parametryClick
       Animation = True
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       Caption = 'Parametry linky'
       CanFocused = False
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
       Margin = -1
       Spacing = 1
       Layout = blGlyphLeft
@@ -1857,8 +2116,20 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       HotImageIndex = -1
+      FluentLightEffect = False
       FocusedImageIndex = -1
       PressedImageIndex = -1
       UseGalleryMenuImage = False
@@ -1908,13 +2179,23 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 12
       Visible = False
       OnClick = AnalyzaClick
       Animation = True
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       Caption = 'Anal'#253'za'
       CanFocused = False
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
       Margin = -1
       Spacing = 1
       Layout = blGlyphLeft
@@ -1967,8 +2248,20 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       HotImageIndex = -1
+      FluentLightEffect = False
       FocusedImageIndex = -1
       PressedImageIndex = -1
       UseGalleryMenuImage = False
@@ -2017,13 +2310,24 @@ object Form1: TForm1
       Font.Quality = fqClearTypeNatural
       ParentFont = False
       ParentShowHint = False
+      FluentUIOpaque = False
       ShowHint = True
       TabOrder = 13
       OnClick = Vypicestuktempu1Click
       Animation = True
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       Caption = 'scGPGlyphButton1'
       CanFocused = False
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
+      FluentLightEffect = False
       Layout = blGlyphLeft
       TransparentBackground = True
       ColorValue = clRed
@@ -2073,7 +2377,18 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       GlyphOptions.NormalColor = 16744448
       GlyphOptions.HotColor = clWhite
       GlyphOptions.PressedColor = clBtnText
@@ -2120,6 +2435,7 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 14
       OnDblClick = scLabel_titulekDblClick
       DragForm = True
@@ -2148,6 +2464,7 @@ object Form1: TForm1
       Margins.Right = 1
       Margins.Bottom = 6
       Align = alLeft
+      FluentUIOpaque = False
       TabOrder = 15
       Visible = False
       Animation = True
@@ -2189,6 +2506,7 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 16
       Visible = False
       OnDblClick = scLabel_titulekDblClick
@@ -2224,6 +2542,7 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 17
       Visible = False
       OnDblClick = scLabel_titulekDblClick
@@ -2259,6 +2578,7 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 18
       OnDblClick = scLabel_titulekDblClick
       DragForm = True
@@ -2292,12 +2612,22 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 19
       OnClick = NahledClick
       Animation = True
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       Caption = 'Editace'
       CanFocused = False
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
       Margin = -1
       Spacing = 1
       Layout = blGlyphLeft
@@ -2350,8 +2680,20 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       HotImageIndex = -1
+      FluentLightEffect = False
       FocusedImageIndex = -1
       PressedImageIndex = -1
       UseGalleryMenuImage = False
@@ -2399,13 +2741,24 @@ object Form1: TForm1
       Font.Quality = fqClearTypeNatural
       ParentFont = False
       ParentShowHint = False
+      FluentUIOpaque = False
       ShowHint = True
       TabOrder = 20
       TabStop = True
       OnClick = scGPGlyphButton_PLAYClick
       Animation = False
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       CanFocused = True
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
+      FluentLightEffect = False
       Layout = blGlyphLeft
       TransparentBackground = True
       ColorValue = clRed
@@ -2455,7 +2808,18 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       GlyphOptions.NormalColor = clWhite
       GlyphOptions.HotColor = 33023
       GlyphOptions.PressedColor = clWhite
@@ -2500,13 +2864,23 @@ object Form1: TForm1
       Font.Quality = fqAntialiased
       ParentFont = False
       ParentShowHint = False
+      FluentUIOpaque = False
       ShowHint = True
       TabOrder = 21
       Visible = False
       OnClick = scGPButton_errorClick
       Animation = False
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       CanFocused = False
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
       Margin = -1
       Spacing = 1
       Layout = blGlyphLeft
@@ -2560,8 +2934,20 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       HotImageIndex = 73
+      FluentLightEffect = False
       FocusedImageIndex = 80
       PressedImageIndex = -1
       UseGalleryMenuImage = False
@@ -2609,13 +2995,23 @@ object Form1: TForm1
       Font.Quality = fqAntialiased
       ParentFont = False
       ParentShowHint = False
+      FluentUIOpaque = False
       ShowHint = True
       TabOrder = 22
       Visible = False
       OnClick = scGPButton_warningClick
       Animation = False
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       CanFocused = False
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
       Margin = -1
       Spacing = 1
       Layout = blGlyphLeft
@@ -2669,8 +3065,20 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       HotImageIndex = -1
+      FluentLightEffect = False
       FocusedImageIndex = -1
       PressedImageIndex = -1
       UseGalleryMenuImage = False
@@ -2717,13 +3125,24 @@ object Form1: TForm1
       Align = alLeft
       Enabled = False
       ParentShowHint = False
+      FluentUIOpaque = False
       ShowHint = True
       TabOrder = 23
       OnClick = scGPGlyphButton_undoClick
       Animation = True
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       Caption = 'Toolbar_undo'
       CanFocused = False
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
+      FluentLightEffect = False
       Layout = blGlyphLeft
       TransparentBackground = True
       ColorValue = clRed
@@ -2773,7 +3192,18 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       GlyphOptions.NormalColor = clWhite
       GlyphOptions.HotColor = clWhite
       GlyphOptions.PressedColor = clWhite
@@ -2817,13 +3247,24 @@ object Form1: TForm1
       Align = alLeft
       Enabled = False
       ParentShowHint = False
+      FluentUIOpaque = False
       ShowHint = True
       TabOrder = 24
       OnClick = scGPGlyphButton_redoClick
       Animation = True
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       Caption = 'Toolbar_undo'
       CanFocused = False
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
+      FluentLightEffect = False
       Layout = blGlyphLeft
       TransparentBackground = True
       ColorValue = clRed
@@ -2873,7 +3314,18 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       GlyphOptions.NormalColor = clWhite
       GlyphOptions.HotColor = clWhite
       GlyphOptions.PressedColor = clWhite
@@ -2910,12 +3362,19 @@ object Form1: TForm1
     Width = 1281
     Height = 28
     Align = alBottom
+    FluentUIOpaque = False
     TabOrder = 20
     BlurBackground = False
     BlurBackgroundAmount = 5
+    BackgroundStyle = gppbsColor
+    ContentMarginLeft = 0
+    ContentMarginRight = 0
+    ContentMarginTop = 0
+    ContentMarginBottom = 0
     CustomImageIndex = -1
     DragForm = False
     DragTopForm = True
+    DrawTextMode = scdtmGDI
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
     FillGradientEndAlpha = 255
@@ -2941,75 +3400,53 @@ object Form1: TForm1
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
-    object RzStatusPane3: TRzStatusPane
+    object Image_rozdelovac_0: TImage
       Left = 207
       Top = 0
+      Width = 1
       Height = 28
-      Hint = 'Aktu'#225'ln'#237' polohu kurzoru v sou'#345'adnic'#237'ch aplikace'
-      BorderWidth = 0
-      FlatColor = 10114859
-      Align = alLeft
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      Font.Quality = fqClearTypeNatural
-      ParentFont = False
-      ParentShowHint = False
-      ShowHint = True
-      Alignment = taCenter
-      BlinkColor = 10114859
-      Caption = ''
-      ExplicitLeft = 338
-      ExplicitTop = 6
+      Picture.Data = {
+        0954506E67496D61676589504E470D0A1A0A0000000D49484452000000020000
+        001C0802000000C408F998000000017352474200AECE1CE90000000467414D41
+        0000B18F0BFC6105000000097048597300000EC300000EC301C76FA864000000
+        124944415478DA63B42D3EC9C0C0C038942900045029593A0CAC7C0000000049
+        454E44AE426082}
     end
-    object RzStatusPane4: TRzStatusPane
-      Left = 397
+    object Image_rozdelovac_1: TImage
+      Left = 306
       Top = 0
-      Width = 768
+      Width = 2
       Height = 28
-      Hint = 'Rychl'#225' n'#225'pov'#283'da aplikace'
-      BorderWidth = 0
-      FlatColor = 10114859
-      Align = alClient
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      Font.Quality = fqClearTypeNatural
-      ParentFont = False
-      ParentShowHint = False
-      ShowHint = True
-      BlinkColor = 10114859
-      Caption = ''
-      DefaultWidth = 200
-      ExplicitLeft = 479
-      ExplicitWidth = 674
+      Picture.Data = {
+        0954506E67496D61676589504E470D0A1A0A0000000D49484452000000020000
+        001C0802000000C408F998000000017352474200AECE1CE90000000467414D41
+        0000B18F0BFC6105000000097048597300000EC300000EC301C76FA864000000
+        124944415478DA63B42D3EC9C0C0C038942900045029593A0CAC7C0000000049
+        454E44AE426082}
     end
-    object RzStatusPane5: TRzStatusPane
-      Left = 307
+    object Image_rozdelovac_2: TImage
+      Left = 396
       Top = 0
-      Width = 90
+      Width = 2
       Height = 28
-      Hint = 'Kliknut'#237'm zm'#283'n'#237'te re'#382'im p'#345'ichyt'#225'v'#225'n'#237' objektu ke m'#345#237#382'ce'
-      BorderWidth = 0
-      FlatColor = 10114859
-      Align = alLeft
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      Font.Quality = fqClearTypeNatural
-      ParentFont = False
-      ParentShowHint = False
-      ShowHint = True
-      OnClick = RzStatusPane5Click
-      Alignment = taCenter
-      BlinkColor = 10114859
-      Caption = ''
+      Picture.Data = {
+        0954506E67496D61676589504E470D0A1A0A0000000D49484452000000020000
+        001C0802000000C408F998000000017352474200AECE1CE90000000467414D41
+        0000B18F0BFC6105000000097048597300000EC300000EC301C76FA864000000
+        124944415478DA63B42D3EC9C0C0C038942900045029593A0CAC7C0000000049
+        454E44AE426082}
+    end
+    object Image_rozdelovac_3: TImage
+      Left = 1829
+      Top = 0
+      Width = 1
+      Height = 28
+      Picture.Data = {
+        0954506E67496D61676589504E470D0A1A0A0000000D49484452000000020000
+        001C0802000000C408F998000000017352474200AECE1CE90000000467414D41
+        0000B18F0BFC6105000000097048597300000EC300000EC301C76FA864000000
+        124944415478DA63B42D3EC9C0C0C038942900045029593A0CAC7C0000000049
+        454E44AE426082}
     end
     object scGPTrackBar1: TscGPTrackBar
       AlignWithMargins = True
@@ -3021,10 +3458,13 @@ object Form1: TForm1
       Margins.Right = 1
       Margins.Bottom = 2
       Align = alLeft
+      FluentUIOpaque = False
       TabOrder = 0
       TransparentBackground = True
       ShowFocusRect = True
       JumpWhenClick = True
+      MouseWheelSupport = True
+      MouseWheelOpposite = False
       CanFocused = False
       MouseSupport = True
       MinValue = 1
@@ -3033,6 +3473,8 @@ object Form1: TForm1
       Vertical = False
       ReadOnly = False
       OnChange = scGPTrackBar1Change
+      DrawTextMode = scdtmGDI
+      FocusFrameColor = clNone
       TrackColor = clWhite
       TrackProgressColor = clWhite
       TrackSize = 1
@@ -3057,12 +3499,23 @@ object Form1: TForm1
       Margins.Right = 0
       Margins.Bottom = 0
       Align = alLeft
+      FluentUIOpaque = False
       TabOrder = 1
       OnClick = scGPGlyphButton_ZOOM_MINUSClick
       Animation = True
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       Caption = 'scGPGlyphButton1'
       CanFocused = False
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
+      FluentLightEffect = False
       Layout = blGlyphLeft
       TransparentBackground = True
       ColorValue = clRed
@@ -3112,7 +3565,18 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       GlyphOptions.NormalColor = clWhite
       GlyphOptions.HotColor = clWhite
       GlyphOptions.PressedColor = clWhite
@@ -3153,12 +3617,23 @@ object Form1: TForm1
       Margins.Right = 1
       Margins.Bottom = 0
       Align = alLeft
+      FluentUIOpaque = False
       TabOrder = 2
       OnClick = scGPGlyphButton_ZOOM_PLUSClick
       Animation = True
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       Caption = 'scGPGlyphButton1'
       CanFocused = False
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
+      FluentLightEffect = False
       Layout = blGlyphLeft
       TransparentBackground = True
       ColorValue = clRed
@@ -3208,7 +3683,18 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       GlyphOptions.NormalColor = clWhite
       GlyphOptions.HotColor = clWhite
       GlyphOptions.PressedColor = clWhite
@@ -3245,6 +3731,7 @@ object Form1: TForm1
       Height = 28
       Cursor = crSizeNWSE
       Align = alRight
+      FluentUIOpaque = False
       TabOrder = 3
       Visible = False
       GlyphColor = clWhite
@@ -3264,6 +3751,7 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 4
       DragForm = False
       DragTopForm = True
@@ -3292,6 +3780,7 @@ object Form1: TForm1
       Margins.Bottom = 0
       Align = alRight
       ParentShowHint = False
+      FluentUIOpaque = False
       ShowHint = True
       TabOrder = 5
       OnClick = scButton_zamek_layoutuClick
@@ -3389,13 +3878,23 @@ object Form1: TForm1
       Font.Quality = fqClearType
       ParentFont = False
       ParentShowHint = False
+      FluentUIOpaque = False
       ShowHint = True
       TabOrder = 6
       TabStop = True
       OnClick = scGPImage_mereni_vzdalenostClick
       Animation = False
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       CanFocused = True
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
       Margin = -1
       Spacing = 1
       Layout = blGlyphLeft
@@ -3449,8 +3948,20 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       HotImageIndex = -1
+      FluentLightEffect = False
       FocusedImageIndex = -1
       PressedImageIndex = -1
       UseGalleryMenuImage = False
@@ -3500,13 +4011,23 @@ object Form1: TForm1
       Font.Quality = fqClearType
       ParentFont = False
       ParentShowHint = False
+      FluentUIOpaque = False
       ShowHint = True
       TabOrder = 7
       TabStop = True
       OnClick = scGPButton_prichytavatClick
       Animation = False
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       CanFocused = True
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
       Margin = -1
       Spacing = 1
       Layout = blGlyphLeft
@@ -3560,8 +4081,20 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       HotImageIndex = -1
+      FluentLightEffect = False
       FocusedImageIndex = -1
       PressedImageIndex = -1
       UseGalleryMenuImage = False
@@ -3594,19 +4127,118 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
     end
+    object scLabel_statusbar_1: TscLabel
+      Left = 208
+      Top = 7
+      Width = 98
+      Height = 14
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      Font.Quality = fqClearTypeNatural
+      ParentFont = False
+      FluentUIOpaque = False
+      TabOrder = 8
+      DragForm = False
+      DragTopForm = True
+      GlowEffect.Enabled = False
+      GlowEffect.Color = clBtnShadow
+      GlowEffect.AlphaValue = 255
+      GlowEffect.GlowSize = 7
+      GlowEffect.Offset = 0
+      GlowEffect.Intensive = True
+      GlowEffect.StyleColors = True
+      AutoSize = False
+      Alignment = taCenter
+      UseFontColorToStyleColor = False
+      Caption = '[0;0] m'
+    end
+    object scLabel_statusbar_0: TscLabel
+      Left = 308
+      Top = 7
+      Width = 88
+      Height = 14
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      Font.Quality = fqClearTypeNatural
+      ParentFont = False
+      FluentUIOpaque = False
+      TabOrder = 9
+      OnClick = scLabel_statusbar_0Click
+      DragForm = False
+      DragTopForm = True
+      GlowEffect.Enabled = False
+      GlowEffect.Color = clBtnShadow
+      GlowEffect.AlphaValue = 255
+      GlowEffect.GlowSize = 7
+      GlowEffect.Offset = 0
+      GlowEffect.Intensive = True
+      GlowEffect.StyleColors = True
+      AutoSize = False
+      Alignment = taCenter
+      UseFontColorToStyleColor = False
+      Caption = 'status_0'
+    end
+    object scLabel_statusbar_2: TscLabel
+      Left = 401
+      Top = 7
+      Width = 758
+      Height = 14
+      Margins.Left = 0
+      Margins.Top = 0
+      Margins.Right = 0
+      Margins.Bottom = 0
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      Font.Quality = fqClearTypeNatural
+      ParentFont = False
+      FluentUIOpaque = False
+      TabOrder = 10
+      DragForm = False
+      DragTopForm = True
+      GlowEffect.Enabled = False
+      GlowEffect.Color = clBtnShadow
+      GlowEffect.AlphaValue = 255
+      GlowEffect.GlowSize = 7
+      GlowEffect.Offset = 0
+      GlowEffect.Intensive = True
+      GlowEffect.StyleColors = True
+      AutoSize = False
+      UseFontColorToStyleColor = False
+      Caption = 'status_2'
+    end
   end
   object scGPGlyphButton2: TscGPGlyphButton
     Left = 175
     Top = 34
     Width = 30
     Height = 30
+    FluentUIOpaque = False
     TabOrder = 22
     Visible = False
     OnClick = scGPGlyphButton2Click
     Animation = True
+    Badge.Color = clRed
+    Badge.ColorAlpha = 255
+    Badge.Font.Charset = DEFAULT_CHARSET
+    Badge.Font.Color = clWhite
+    Badge.Font.Height = -11
+    Badge.Font.Name = 'Tahoma'
+    Badge.Font.Style = [fsBold]
+    Badge.Visible = False
     Caption = 'scGPGlyphButton1'
     CanFocused = False
     CustomDropDown = False
+    DrawTextMode = scdtmGDI
+    FluentLightEffect = False
     Layout = blGlyphLeft
     TransparentBackground = True
     ColorValue = clRed
@@ -3656,7 +4288,18 @@ object Form1: TForm1
     Options.ArrowType = scgpatDefault
     Options.ArrowThickness = 2
     Options.ArrowThicknessScaled = False
+    Options.ArrowNormalColor = clBtnText
+    Options.ArrowHotColor = clBtnText
+    Options.ArrowPressedColor = clBtnText
+    Options.ArrowFocusedColor = clBtnText
+    Options.ArrowDisabledColor = clBtnText
+    Options.ArrowNormalColorAlpha = 200
+    Options.ArrowHotColorAlpha = 255
+    Options.ArrowPressedColorAlpha = 255
+    Options.ArrowFocusedColorAlpha = 200
+    Options.ArrowDisabledColorAlpha = 125
     Options.StyleColors = True
+    Options.PressedHotColors = False
     GlyphOptions.NormalColor = clBtnText
     GlyphOptions.HotColor = clBtnText
     GlyphOptions.PressedColor = clBtnText
@@ -3699,6 +4342,7 @@ object Form1: TForm1
     Font.Style = []
     Font.Quality = fqClearTypeNatural
     ParentFont = False
+    FluentUIOpaque = False
     TabOrder = 25
     CustomImageIndex = -1
     DragForm = False
@@ -3759,6 +4403,7 @@ object Form1: TForm1
       Font.Style = [fsBold]
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 0
       AutoSize = True
       RowCount = 1
@@ -3823,6 +4468,7 @@ object Form1: TForm1
       Font.Style = [fsBold]
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 1
       Visible = False
       StyleElements = [seFont, seClient]
@@ -3888,6 +4534,7 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 2
       Visible = False
       AutoSize = False
@@ -3952,6 +4599,7 @@ object Form1: TForm1
       Font.Style = [fsBold]
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 3
       Visible = False
       AutoSize = False
@@ -4016,6 +4664,7 @@ object Form1: TForm1
       Font.Style = [fsBold]
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 10
       Visible = False
       AutoSize = False
@@ -4078,9 +4727,11 @@ object Form1: TForm1
       Font.Style = [fsBold]
       Font.Quality = fqAntialiased
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 4
       DragForm = False
       DragTopForm = True
+      DrawTextMode = scdtmGDI
       ContentMarginLeft = 10
       ContentMarginRight = 5
       ContentMarginTop = 7
@@ -4110,13 +4761,20 @@ object Form1: TForm1
       Top = 6
       Width = 42
       Height = 22
+      FluentUIOpaque = False
       TabOrder = 5
       Visible = False
       BlurBackground = False
       BlurBackgroundAmount = 5
+      BackgroundStyle = gppbsColor
+      ContentMarginLeft = 0
+      ContentMarginRight = 0
+      ContentMarginTop = 0
+      ContentMarginBottom = 0
       CustomImageIndex = -1
       DragForm = False
       DragTopForm = True
+      DrawTextMode = scdtmGDI
       FillGradientAngle = 0
       FillGradientBeginAlpha = 0
       FillGradientEndAlpha = 0
@@ -4153,6 +4811,7 @@ object Form1: TForm1
         Margins.Right = 0
         Margins.Bottom = 0
         ParentShowHint = False
+        FluentUIOpaque = False
         ShowHint = False
         TabOrder = 0
         Animation = True
@@ -4190,9 +4849,11 @@ object Form1: TForm1
       Font.Style = [fsBold]
       Font.Quality = fqAntialiased
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 6
       DragForm = False
       DragTopForm = True
+      DrawTextMode = scdtmGDI
       ContentMarginLeft = 10
       ContentMarginRight = 5
       ContentMarginTop = 7
@@ -4229,9 +4890,11 @@ object Form1: TForm1
       Font.Style = [fsBold]
       Font.Quality = fqAntialiased
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 7
       DragForm = False
       DragTopForm = True
+      DrawTextMode = scdtmGDI
       ContentMarginLeft = 10
       ContentMarginRight = 5
       ContentMarginTop = 7
@@ -4268,9 +4931,11 @@ object Form1: TForm1
       Font.Style = [fsBold]
       Font.Quality = fqAntialiased
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 8
       DragForm = False
       DragTopForm = True
+      DrawTextMode = scdtmGDI
       ContentMarginLeft = 10
       ContentMarginRight = 5
       ContentMarginTop = 7
@@ -4307,9 +4972,11 @@ object Form1: TForm1
       Font.Style = [fsBold]
       Font.Quality = fqAntialiased
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 9
       DragForm = False
       DragTopForm = True
+      DrawTextMode = scdtmGDI
       ContentMarginLeft = 10
       ContentMarginRight = 5
       ContentMarginTop = 7
@@ -4394,15 +5061,26 @@ object Form1: TForm1
     Font.Style = []
     Font.Quality = fqClearTypeNatural
     ParentFont = False
+    FluentUIOpaque = False
     TabOrder = 30
     Visible = False
     StyleElements = [seFont, seClient]
     OnClick = scGPGlyphButton_close_grafyClick
     ArrowPosition = scapBottom
     Animation = False
+    Badge.Color = clRed
+    Badge.ColorAlpha = 255
+    Badge.Font.Charset = DEFAULT_CHARSET
+    Badge.Font.Color = clWhite
+    Badge.Font.Height = -11
+    Badge.Font.Name = 'Tahoma'
+    Badge.Font.Style = [fsBold]
+    Badge.Visible = False
     Caption = 'Zobrazit grafy'
     CanFocused = False
     CustomDropDown = False
+    DrawTextMode = scdtmGDI
+    FluentLightEffect = False
     Layout = blGlyphRight
     TransparentBackground = True
     ColorValue = clRed
@@ -4453,7 +5131,18 @@ object Form1: TForm1
     Options.ArrowType = scgpatDefault
     Options.ArrowThickness = 2
     Options.ArrowThicknessScaled = False
+    Options.ArrowNormalColor = clBtnText
+    Options.ArrowHotColor = clBtnText
+    Options.ArrowPressedColor = clBtnText
+    Options.ArrowFocusedColor = clBtnText
+    Options.ArrowDisabledColor = clBtnText
+    Options.ArrowNormalColorAlpha = 200
+    Options.ArrowHotColorAlpha = 255
+    Options.ArrowPressedColorAlpha = 255
+    Options.ArrowFocusedColorAlpha = 200
+    Options.ArrowDisabledColorAlpha = 125
     Options.StyleColors = True
+    Options.PressedHotColors = False
     GlyphOptions.NormalColor = clWhite
     GlyphOptions.HotColor = clWhite
     GlyphOptions.PressedColor = clWhite
@@ -4495,6 +5184,7 @@ object Form1: TForm1
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
+    FluentUIOpaque = False
     TabOrder = 31
     Visible = False
     BorderWidth = 1
@@ -4505,6 +5195,7 @@ object Form1: TForm1
     HeaderStyle = scexphsHeader
     CaptionImageIndex = -1
     ChangeRollStateWithCaptionClick = False
+    HorzRollButtonPosition = scrbpRight
     Spacing = 5
     ShowFrame = True
     RealWidth = 0
@@ -4578,14 +5269,25 @@ object Form1: TForm1
     Font.Quality = fqClearTypeNatural
     ParentBiDiMode = False
     ParentFont = False
+    FluentUIOpaque = False
     TabOrder = 34
     Visible = False
     StyleElements = [seFont, seClient]
     OnClick = scGPGlyphButton_close_legenda_casove_osyClick
     Animation = False
+    Badge.Color = clRed
+    Badge.ColorAlpha = 255
+    Badge.Font.Charset = DEFAULT_CHARSET
+    Badge.Font.Color = clWhite
+    Badge.Font.Height = -11
+    Badge.Font.Name = 'Tahoma'
+    Badge.Font.Style = [fsBold]
+    Badge.Visible = False
     Caption = 'Zobrazit legendu'
     CanFocused = False
     CustomDropDown = False
+    DrawTextMode = scdtmGDI
+    FluentLightEffect = False
     Layout = blGlyphLeft
     TransparentBackground = True
     ColorValue = clRed
@@ -4636,7 +5338,18 @@ object Form1: TForm1
     Options.ArrowType = scgpatDefault
     Options.ArrowThickness = 2
     Options.ArrowThicknessScaled = False
+    Options.ArrowNormalColor = clBtnText
+    Options.ArrowHotColor = clBtnText
+    Options.ArrowPressedColor = clBtnText
+    Options.ArrowFocusedColor = clBtnText
+    Options.ArrowDisabledColor = clBtnText
+    Options.ArrowNormalColorAlpha = 200
+    Options.ArrowHotColorAlpha = 255
+    Options.ArrowPressedColorAlpha = 255
+    Options.ArrowFocusedColorAlpha = 200
+    Options.ArrowDisabledColorAlpha = 125
     Options.StyleColors = True
+    Options.PressedHotColors = False
     GlyphOptions.NormalColor = clWhite
     GlyphOptions.HotColor = clWhite
     GlyphOptions.PressedColor = clWhite
@@ -4718,13 +5431,20 @@ object Form1: TForm1
     Top = 687
     Width = 1216
     Height = 45
+    FluentUIOpaque = False
     TabOrder = 39
     Visible = False
     BlurBackground = False
     BlurBackgroundAmount = 5
+    BackgroundStyle = gppbsColor
+    ContentMarginLeft = 0
+    ContentMarginRight = 0
+    ContentMarginTop = 0
+    ContentMarginBottom = 0
     CustomImageIndex = -1
     DragForm = False
     DragTopForm = True
+    DrawTextMode = scdtmGDI
     FrameSides = [gppfsTop]
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
@@ -4762,10 +5482,12 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 0
       Visible = False
       DragForm = False
       DragTopForm = True
+      DrawTextMode = scdtmGDI
       ContentMarginLeft = 0
       ContentMarginRight = 0
       ContentMarginTop = 0
@@ -4803,6 +5525,7 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 1
       Visible = False
       ContentMargin = 0
@@ -4810,23 +5533,38 @@ object Form1: TForm1
       Animation = False
       CheckedListMode = False
       CheckedListWrap = True
+      DetailPosition = scgplbdBottom
+      DetailWordWrap = False
+      DrawTextMode = scdtmGDI
       Items = <
         item
           Header = False
           Enabled = True
           Caption = 'Automaticky'
+          CustomColor = clNone
+          CustomColorAlpha = 255
+          CustomTextColor = clNone
+          CustomDetailTextColor = clNone
           Checked = False
         end
         item
           Header = False
           Enabled = True
           Caption = 'Vodorovn'#283
+          CustomColor = clNone
+          CustomColorAlpha = 255
+          CustomTextColor = clNone
+          CustomDetailTextColor = clNone
           Checked = False
         end
         item
           Header = False
           Enabled = True
           Caption = 'Svisle'
+          CustomColor = clNone
+          CustomColorAlpha = 255
+          CustomTextColor = clNone
+          CustomDetailTextColor = clNone
           Checked = False
         end>
       ItemIndex = 0
@@ -4931,13 +5669,23 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 2
       TabStop = True
       OnClick = scGPButton_OKClick
       Animation = False
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       Caption = 'Ulo'#382'it'
       CanFocused = True
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
       Margin = -1
       Spacing = 1
       Layout = blGlyphLeft
@@ -4990,8 +5738,20 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       HotImageIndex = -1
+      FluentLightEffect = False
       FocusedImageIndex = -1
       PressedImageIndex = -1
       UseGalleryMenuImage = False
@@ -5036,13 +5796,23 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 3
       TabStop = True
       OnClick = scGPButton_stornoClick
       Animation = False
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       Caption = 'Storno'
       CanFocused = True
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
       Margin = -1
       Spacing = 1
       Layout = blGlyphLeft
@@ -5095,8 +5865,20 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       HotImageIndex = -1
+      FluentLightEffect = False
       FocusedImageIndex = -1
       PressedImageIndex = -1
       UseGalleryMenuImage = False
@@ -5139,6 +5921,7 @@ object Form1: TForm1
       Margins.Right = 0
       Margins.Bottom = 0
       ParentShowHint = False
+      FluentUIOpaque = False
       ShowHint = True
       TabOrder = 4
       OnClick = scButton_zamekClick
@@ -5232,13 +6015,23 @@ object Form1: TForm1
       Font.Quality = fqAntialiased
       ParentFont = False
       ParentShowHint = False
+      FluentUIOpaque = False
       ShowHint = True
       TabOrder = 5
       TabStop = True
       OnClick = scGPButton_viditelnostmGridClick
       Animation = False
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       CanFocused = True
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
       Margin = -1
       Spacing = 1
       Layout = blGlyphLeft
@@ -5292,8 +6085,20 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       HotImageIndex = -1
+      FluentLightEffect = False
       FocusedImageIndex = -1
       PressedImageIndex = -1
       UseGalleryMenuImage = False
@@ -5334,13 +6139,23 @@ object Form1: TForm1
       BiDiMode = bdLeftToRight
       ParentBiDiMode = False
       ParentShowHint = False
+      FluentUIOpaque = False
       ShowHint = True
       TabOrder = 6
       TabStop = True
       OnClick = scGPButton_viditelnostKotyClick
       Animation = False
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       CanFocused = True
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
       Margin = -1
       Spacing = 1
       Layout = blGlyphLeft
@@ -5394,8 +6209,20 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       HotImageIndex = -1
+      FluentLightEffect = False
       FocusedImageIndex = -1
       PressedImageIndex = -1
       UseGalleryMenuImage = False
@@ -5436,13 +6263,23 @@ object Form1: TForm1
       BiDiMode = bdLeftToRight
       ParentBiDiMode = False
       ParentShowHint = False
+      FluentUIOpaque = False
       ShowHint = True
       TabOrder = 7
       TabStop = True
       OnClick = scGPButton_posun_dalsich_elementuClick
       Animation = False
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       CanFocused = True
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
       Margin = -1
       Spacing = 1
       Layout = blGlyphLeft
@@ -5496,8 +6333,20 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       HotImageIndex = -1
+      FluentLightEffect = False
       FocusedImageIndex = -1
       PressedImageIndex = -1
       UseGalleryMenuImage = False
@@ -5543,6 +6392,7 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 8
       OnClick = scGPComboBox_prepinacKotClick
       ContentMargin = 0
@@ -5550,17 +6400,28 @@ object Form1: TForm1
       Animation = False
       CheckedListMode = False
       CheckedListWrap = True
+      DetailPosition = scgplbdBottom
+      DetailWordWrap = False
+      DrawTextMode = scdtmGDI
       Items = <
         item
           Header = False
           Enabled = True
           Caption = '[mm]'
+          CustomColor = clNone
+          CustomColorAlpha = 255
+          CustomTextColor = clNone
+          CustomDetailTextColor = clNone
           Checked = False
         end
         item
           Header = False
           Enabled = True
           Caption = '[s]'
+          CustomColor = clNone
+          CustomColorAlpha = 255
+          CustomTextColor = clNone
+          CustomDetailTextColor = clNone
           Checked = False
         end>
       ItemIndex = 0
@@ -5664,9 +6525,11 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 9
       DragForm = False
       DragTopForm = True
+      DrawTextMode = scdtmGDI
       ContentMarginLeft = 0
       ContentMarginRight = 0
       ContentMarginTop = 0
@@ -5706,6 +6569,7 @@ object Form1: TForm1
       Font.Quality = fqAntialiased
       ParentFont = False
       ParentShowHint = False
+      FluentUIOpaque = False
       ShowHint = True
       TabOrder = 10
       OnClick = scGPImage_mereni_vzdalenostClick
@@ -5736,6 +6600,7 @@ object Form1: TForm1
       ClipFrameFillColorAlpha = 255
       ClipFrameColor = clNone
       ClipFrameWidth = 0
+      DrawTextMode = scdtmGDI
       RotationAngle = 0
       AnimationAcceleration = False
       RotateAnimation = False
@@ -5819,6 +6684,7 @@ object Form1: TForm1
       Font.Quality = fqClearTypeNatural
       ParentFont = False
       ParentShowHint = False
+      FluentUIOpaque = False
       ShowHint = True
       TabOrder = 11
       Visible = False
@@ -5851,6 +6717,7 @@ object Form1: TForm1
       ClipFrameFillColorAlpha = 255
       ClipFrameColor = clWhite
       ClipFrameWidth = 1
+      DrawTextMode = scdtmGDI
       RotationAngle = 0
       AnimationAcceleration = False
       RotateAnimation = False
@@ -5870,13 +6737,23 @@ object Form1: TForm1
       Font.Quality = fqAntialiased
       ParentFont = False
       ParentShowHint = False
+      FluentUIOpaque = False
       ShowHint = True
       TabOrder = 12
       TabStop = True
       OnClick = scGPButton_geometrieClick
       Animation = False
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       CanFocused = True
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
       Margin = -1
       Spacing = 1
       Layout = blGlyphLeft
@@ -5930,8 +6807,20 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       HotImageIndex = -1
+      FluentLightEffect = False
       FocusedImageIndex = -1
       PressedImageIndex = -1
       UseGalleryMenuImage = False
@@ -5987,6 +6876,7 @@ object Form1: TForm1
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
+    FluentUIOpaque = False
     TabOrder = 41
     Visible = False
     BorderWidth = 1
@@ -5997,6 +6887,7 @@ object Form1: TForm1
     HeaderStyle = scexphsHeader
     CaptionImageIndex = -1
     ChangeRollStateWithCaptionClick = False
+    HorzRollButtonPosition = scrbpRight
     Spacing = 5
     ShowFrame = True
     RealWidth = 0
@@ -6025,15 +6916,26 @@ object Form1: TForm1
       Font.Style = []
       ParentFont = False
       ParentShowHint = False
+      FluentUIOpaque = False
       ShowHint = True
       TabOrder = 0
       TabStop = True
       Visible = False
       OnClick = ButtonPLAY_OClick
       Animation = False
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       Caption = 'scGPButton_generuj'
       CanFocused = True
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
+      FluentLightEffect = False
       Layout = blGlyphLeft
       TransparentBackground = True
       ColorValue = clRed
@@ -6083,7 +6985,18 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       GlyphOptions.NormalColor = clWhite
       GlyphOptions.HotColor = 33023
       GlyphOptions.PressedColor = clWhite
@@ -6118,6 +7031,7 @@ object Form1: TForm1
       Top = 79
       Width = 243
       Height = 21
+      FluentUIOpaque = False
       ItemIndex = 0
       Items.Strings = (
         #382#225'dn'#225
@@ -6191,6 +7105,7 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 4
       TabStop = True
       OnClick = CheckBox_pouzit_zadane_kapacity_OLDClick
@@ -6214,6 +7129,7 @@ object Form1: TForm1
       GlowEffect.PressedAlphaValue = 255
       GlowEffect.States = [scsHot, scsPressed, scsFocused]
       ImageGlow = True
+      DrawTextMode = scdtmGDI
       DisabledFontColor = clNone
       Options.NormalColor = clWindow
       Options.HotColor = clWindow
@@ -6289,6 +7205,7 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 5
       TabStop = True
       OnClick = CheckBoxVytizenost_Click
@@ -6312,6 +7229,7 @@ object Form1: TForm1
       GlowEffect.PressedAlphaValue = 255
       GlowEffect.States = [scsHot, scsPressed, scsFocused]
       ImageGlow = True
+      DrawTextMode = scdtmGDI
       DisabledFontColor = clNone
       Options.NormalColor = clWindow
       Options.HotColor = clWindow
@@ -6388,6 +7306,7 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 6
       TabStop = True
       OnClick = CheckBoxVymena_barev_Click
@@ -6411,6 +7330,7 @@ object Form1: TForm1
       GlowEffect.PressedAlphaValue = 255
       GlowEffect.States = [scsHot, scsPressed, scsFocused]
       ImageGlow = True
+      DrawTextMode = scdtmGDI
       DisabledFontColor = clNone
       Options.NormalColor = clWindow
       Options.HotColor = clWindow
@@ -6485,6 +7405,7 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 7
       TabStop = True
       OnClick = CheckBoxVytizenost_Click
@@ -6508,6 +7429,7 @@ object Form1: TForm1
       GlowEffect.PressedAlphaValue = 255
       GlowEffect.States = [scsHot, scsPressed, scsFocused]
       ImageGlow = True
+      DrawTextMode = scdtmGDI
       DisabledFontColor = clNone
       Options.NormalColor = clWindow
       Options.HotColor = clWindow
@@ -6609,6 +7531,7 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 9
       TabStop = True
       Visible = False
@@ -6633,6 +7556,7 @@ object Form1: TForm1
       GlowEffect.PressedAlphaValue = 255
       GlowEffect.States = [scsHot, scsPressed, scsFocused]
       ImageGlow = True
+      DrawTextMode = scdtmGDI
       DisabledFontColor = clNone
       Options.NormalColor = clWindow
       Options.HotColor = clWindow
@@ -6713,6 +7637,7 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 10
       Visible = False
       DragForm = True
@@ -6745,6 +7670,7 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 11
       Visible = False
       DragForm = True
@@ -6774,15 +7700,26 @@ object Form1: TForm1
       Font.Style = []
       ParentFont = False
       ParentShowHint = False
+      FluentUIOpaque = False
       ShowHint = True
       TabOrder = 12
       TabStop = True
       Visible = False
       OnClick = scGPButton_generujClick
       Animation = False
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       Caption = 'scGPButton_generuj'
       CanFocused = True
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
+      FluentLightEffect = False
       Layout = blGlyphLeft
       TransparentBackground = True
       ColorValue = clRed
@@ -6832,7 +7769,18 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       GlyphOptions.NormalColor = clWhite
       GlyphOptions.HotColor = 33023
       GlyphOptions.PressedColor = clWhite
@@ -6873,11 +7821,22 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 13
       OnClick = scGPGlyphButton_info_cekaniClick
       Animation = True
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       CanFocused = False
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
+      FluentLightEffect = False
       Layout = blGlyphTop
       TransparentBackground = True
       ColorValue = clRed
@@ -6927,7 +7886,18 @@ object Form1: TForm1
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       GlyphOptions.NormalColor = 16744448
       GlyphOptions.HotColor = 16744448
       GlyphOptions.PressedColor = clBtnText
@@ -6971,14 +7941,24 @@ object Form1: TForm1
     Margins.Bottom = 0
     Align = alCustom
     ParentShowHint = False
+    FluentUIOpaque = False
     ShowHint = True
     TabOrder = 43
     TabStop = True
     Visible = False
     OnClick = scGPGlyphButton_definice_zakazekClick
     Animation = False
+    Badge.Color = clRed
+    Badge.ColorAlpha = 255
+    Badge.Font.Charset = DEFAULT_CHARSET
+    Badge.Font.Color = clWhite
+    Badge.Font.Height = -11
+    Badge.Font.Name = 'Tahoma'
+    Badge.Font.Style = [fsBold]
+    Badge.Visible = False
     CanFocused = True
     CustomDropDown = False
+    DrawTextMode = scdtmGDI
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
@@ -7032,8 +8012,20 @@ object Form1: TForm1
     Options.ArrowType = scgpatDefault
     Options.ArrowThickness = 2
     Options.ArrowThicknessScaled = False
+    Options.ArrowNormalColor = clBtnText
+    Options.ArrowHotColor = clBtnText
+    Options.ArrowPressedColor = clBtnText
+    Options.ArrowFocusedColor = clBtnText
+    Options.ArrowDisabledColor = clBtnText
+    Options.ArrowNormalColorAlpha = 200
+    Options.ArrowHotColorAlpha = 255
+    Options.ArrowPressedColorAlpha = 255
+    Options.ArrowFocusedColorAlpha = 200
+    Options.ArrowDisabledColorAlpha = 125
     Options.StyleColors = True
+    Options.PressedHotColors = False
     HotImageIndex = -1
+    FluentLightEffect = False
     FocusedImageIndex = -1
     PressedImageIndex = -1
     UseGalleryMenuImage = False
@@ -7079,6 +8071,7 @@ object Form1: TForm1
     Font.Style = []
     Font.Quality = fqClearTypeNatural
     ParentFont = False
+    FluentUIOpaque = False
     TabOrder = 21
     OnMouseLeave = scSplitView_OPTIONSMouseLeave
     CustomImageIndex = -1
@@ -7134,9 +8127,11 @@ object Form1: TForm1
       Font.Name = 'Roboto'
       Font.Style = []
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 0
       DragForm = False
       DragTopForm = True
+      DrawTextMode = scdtmGDI
       ContentMarginLeft = 5
       ContentMarginRight = 5
       ContentMarginTop = 5
@@ -7174,6 +8169,7 @@ object Form1: TForm1
       Font.Name = 'Roboto'
       Font.Style = []
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 3
       OnClick = scExPanel_vrstvyClick
       BorderWidth = 1
@@ -7185,6 +8181,7 @@ object Form1: TForm1
       CaptionImages = scGPVirtualImageList1
       CaptionImageIndex = -1
       ChangeRollStateWithCaptionClick = False
+      HorzRollButtonPosition = scrbpRight
       Spacing = 5
       ShowFrame = False
       RealWidth = 0
@@ -7215,6 +8212,7 @@ object Form1: TForm1
         Font.Name = 'Roboto'
         Font.Style = []
         ParentFont = False
+        FluentUIOpaque = False
         TabOrder = 0
         TabStop = True
         OnClick = scGPCheckBox_zobrazit_kolejeClick
@@ -7238,6 +8236,7 @@ object Form1: TForm1
         GlowEffect.PressedAlphaValue = 255
         GlowEffect.States = [scsHot, scsPressed, scsFocused]
         ImageGlow = True
+        DrawTextMode = scdtmGDI
         DisabledFontColor = clNone
         Options.NormalColor = clWindow
         Options.HotColor = clWindow
@@ -7318,6 +8317,7 @@ object Form1: TForm1
         Font.Name = 'Roboto'
         Font.Style = []
         ParentFont = False
+        FluentUIOpaque = False
         TabOrder = 1
         TabStop = True
         OnClick = scGPCheckBox_zobrazit_poziceClick
@@ -7341,6 +8341,7 @@ object Form1: TForm1
         GlowEffect.PressedAlphaValue = 255
         GlowEffect.States = [scsHot, scsPressed, scsFocused]
         ImageGlow = True
+        DrawTextMode = scdtmGDI
         DisabledFontColor = clNone
         Options.NormalColor = clWindow
         Options.HotColor = clWindow
@@ -7421,6 +8422,7 @@ object Form1: TForm1
         Font.Name = 'Roboto'
         Font.Style = []
         ParentFont = False
+        FluentUIOpaque = False
         TabOrder = 2
         TabStop = True
         OnClick = scGPCheckBox_zobrazit_rotace_jigu_na_otocichClick
@@ -7444,6 +8446,7 @@ object Form1: TForm1
         GlowEffect.PressedAlphaValue = 255
         GlowEffect.States = [scsHot, scsPressed, scsFocused]
         ImageGlow = True
+        DrawTextMode = scdtmGDI
         DisabledFontColor = clNone
         Options.NormalColor = clWindow
         Options.HotColor = clWindow
@@ -7524,6 +8527,7 @@ object Form1: TForm1
         Font.Name = 'Roboto'
         Font.Style = []
         ParentFont = False
+        FluentUIOpaque = False
         TabOrder = 3
         TabStop = True
         OnClick = scGPCheckBox1_popiskyClick
@@ -7547,6 +8551,7 @@ object Form1: TForm1
         GlowEffect.PressedAlphaValue = 255
         GlowEffect.States = [scsHot, scsPressed, scsFocused]
         ImageGlow = True
+        DrawTextMode = scdtmGDI
         DisabledFontColor = clNone
         Options.NormalColor = clWindow
         Options.HotColor = clWindow
@@ -7627,6 +8632,7 @@ object Form1: TForm1
         Font.Name = 'Roboto'
         Font.Style = []
         ParentFont = False
+        FluentUIOpaque = False
         TabOrder = 4
         TabStop = True
         OnClick = scGPCheckBox_zobrazit_palceClick
@@ -7650,6 +8656,7 @@ object Form1: TForm1
         GlowEffect.PressedAlphaValue = 255
         GlowEffect.States = [scsHot, scsPressed, scsFocused]
         ImageGlow = True
+        DrawTextMode = scdtmGDI
         DisabledFontColor = clNone
         Options.NormalColor = clWindow
         Options.HotColor = clWindow
@@ -7731,6 +8738,7 @@ object Form1: TForm1
         Font.Style = []
         Font.Quality = fqClearTypeNatural
         ParentFont = False
+        FluentUIOpaque = False
         TabOrder = 5
         TabStop = True
         OnClick = scGPCheckBox_rozmisteni_vozikuClick
@@ -7754,6 +8762,7 @@ object Form1: TForm1
         GlowEffect.PressedAlphaValue = 255
         GlowEffect.States = [scsHot, scsPressed, scsFocused]
         ImageGlow = True
+        DrawTextMode = scdtmGDI
         DisabledFontColor = clNone
         Options.NormalColor = clWindow
         Options.HotColor = clWindow
@@ -7834,6 +8843,7 @@ object Form1: TForm1
         Font.Name = 'Roboto'
         Font.Style = []
         ParentFont = False
+        FluentUIOpaque = False
         TabOrder = 6
         TabStop = True
         OnClick = scGPCheckBox_popisek_pohonuClick
@@ -7857,6 +8867,7 @@ object Form1: TForm1
         GlowEffect.PressedAlphaValue = 255
         GlowEffect.States = [scsHot, scsPressed, scsFocused]
         ImageGlow = True
+        DrawTextMode = scdtmGDI
         DisabledFontColor = clNone
         Options.NormalColor = clWindow
         Options.HotColor = clWindow
@@ -7934,6 +8945,7 @@ object Form1: TForm1
       Font.Name = 'Roboto'
       Font.Style = []
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 1
       OnClick = scExPanel_podkladClick
       BorderWidth = 1
@@ -7945,6 +8957,7 @@ object Form1: TForm1
       CaptionImages = scGPVirtualImageList1
       CaptionImageIndex = -1
       ChangeRollStateWithCaptionClick = False
+      HorzRollButtonPosition = scrbpRight
       Spacing = 5
       ShowFrame = False
       RealWidth = 0
@@ -7975,13 +8988,23 @@ object Form1: TForm1
         Font.Name = 'Roboto'
         Font.Style = []
         ParentFont = False
+        FluentUIOpaque = False
         TabOrder = 0
         TabStop = True
         OnClick = scGPButton_adjustaceClick
         Animation = False
+        Badge.Color = clRed
+        Badge.ColorAlpha = 255
+        Badge.Font.Charset = DEFAULT_CHARSET
+        Badge.Font.Color = clWhite
+        Badge.Font.Height = -11
+        Badge.Font.Name = 'Tahoma'
+        Badge.Font.Style = [fsBold]
+        Badge.Visible = False
         Caption = 'Nastavit m'#283#345#237'tko'
         CanFocused = True
         CustomDropDown = False
+        DrawTextMode = scdtmGDI
         Margin = -1
         Spacing = 1
         Layout = blGlyphLeft
@@ -8035,8 +9058,20 @@ object Form1: TForm1
         Options.ArrowType = scgpatDefault
         Options.ArrowThickness = 2
         Options.ArrowThicknessScaled = False
+        Options.ArrowNormalColor = clBtnText
+        Options.ArrowHotColor = clBtnText
+        Options.ArrowPressedColor = clBtnText
+        Options.ArrowFocusedColor = clBtnText
+        Options.ArrowDisabledColor = clBtnText
+        Options.ArrowNormalColorAlpha = 200
+        Options.ArrowHotColorAlpha = 255
+        Options.ArrowPressedColorAlpha = 255
+        Options.ArrowFocusedColorAlpha = 200
+        Options.ArrowDisabledColorAlpha = 125
         Options.StyleColors = True
+        Options.PressedHotColors = False
         HotImageIndex = -1
+        FluentLightEffect = False
         FocusedImageIndex = -1
         PressedImageIndex = -1
         UseGalleryMenuImage = False
@@ -8085,13 +9120,23 @@ object Form1: TForm1
         Font.Name = 'Roboto'
         Font.Style = []
         ParentFont = False
+        FluentUIOpaque = False
         TabOrder = 1
         TabStop = True
         OnClick = scGPButton_kalibraceClick
         Animation = False
+        Badge.Color = clRed
+        Badge.ColorAlpha = 255
+        Badge.Font.Charset = DEFAULT_CHARSET
+        Badge.Font.Color = clWhite
+        Badge.Font.Height = -11
+        Badge.Font.Name = 'Tahoma'
+        Badge.Font.Style = [fsBold]
+        Badge.Visible = False
         Caption = 'Um'#237'stit podklad'
         CanFocused = True
         CustomDropDown = False
+        DrawTextMode = scdtmGDI
         Margin = -1
         Spacing = 1
         Layout = blGlyphLeft
@@ -8145,8 +9190,20 @@ object Form1: TForm1
         Options.ArrowType = scgpatDefault
         Options.ArrowThickness = 2
         Options.ArrowThicknessScaled = False
+        Options.ArrowNormalColor = clBtnText
+        Options.ArrowHotColor = clBtnText
+        Options.ArrowPressedColor = clBtnText
+        Options.ArrowFocusedColor = clBtnText
+        Options.ArrowDisabledColor = clBtnText
+        Options.ArrowNormalColorAlpha = 200
+        Options.ArrowHotColorAlpha = 255
+        Options.ArrowPressedColorAlpha = 255
+        Options.ArrowFocusedColorAlpha = 200
+        Options.ArrowDisabledColorAlpha = 125
         Options.StyleColors = True
+        Options.PressedHotColors = False
         HotImageIndex = -1
+        FluentLightEffect = False
         FocusedImageIndex = -1
         PressedImageIndex = -1
         UseGalleryMenuImage = False
@@ -8196,6 +9253,7 @@ object Form1: TForm1
         Font.Name = 'Roboto'
         Font.Style = []
         ParentFont = False
+        FluentUIOpaque = False
         TabOrder = 2
         TabStop = True
         OnClick = scGPCheckBox_stupne_sediClick
@@ -8219,6 +9277,7 @@ object Form1: TForm1
         GlowEffect.PressedAlphaValue = 255
         GlowEffect.States = [scsHot, scsPressed, scsFocused]
         ImageGlow = True
+        DrawTextMode = scdtmGDI
         DisabledFontColor = clNone
         Options.NormalColor = clWindow
         Options.HotColor = clWindow
@@ -8299,6 +9358,7 @@ object Form1: TForm1
         Font.Name = 'Roboto'
         Font.Style = []
         ParentFont = False
+        FluentUIOpaque = False
         TabOrder = 3
         TabStop = True
         OnClick = scGPCheckBox_zobraz_podkladClick
@@ -8322,6 +9382,7 @@ object Form1: TForm1
         GlowEffect.PressedAlphaValue = 255
         GlowEffect.States = [scsHot, scsPressed, scsFocused]
         ImageGlow = True
+        DrawTextMode = scdtmGDI
         DisabledFontColor = clNone
         Options.NormalColor = clWindow
         Options.HotColor = clWindow
@@ -8394,10 +9455,13 @@ object Form1: TForm1
         Margins.Top = 0
         Margins.Right = 0
         Margins.Bottom = 0
+        FluentUIOpaque = False
         TabOrder = 4
         TransparentBackground = True
         ShowFocusRect = True
         JumpWhenClick = False
+        MouseWheelSupport = True
+        MouseWheelOpposite = False
         CanFocused = True
         MouseSupport = True
         MinValue = 0
@@ -8406,6 +9470,8 @@ object Form1: TForm1
         Vertical = False
         ReadOnly = False
         OnChange = scGPTrackBar_svetelnost_posuvkaChange
+        DrawTextMode = scdtmGDI
+        FocusFrameColor = clNone
         TrackColor = clBtnShadow
         TrackProgressColor = clHighlight
         TrackSize = 2
@@ -8434,6 +9500,7 @@ object Form1: TForm1
         Font.Name = 'Roboto'
         Font.Style = []
         ParentFont = False
+        FluentUIOpaque = False
         TabOrder = 5
         DragForm = False
         DragTopForm = True
@@ -8464,13 +9531,23 @@ object Form1: TForm1
         Font.Name = 'Roboto'
         Font.Style = []
         ParentFont = False
+        FluentUIOpaque = False
         TabOrder = 6
         TabStop = True
         OnClick = scGPButton_smazatClick
         Animation = False
+        Badge.Color = clRed
+        Badge.ColorAlpha = 255
+        Badge.Font.Charset = DEFAULT_CHARSET
+        Badge.Font.Color = clWhite
+        Badge.Font.Height = -11
+        Badge.Font.Name = 'Tahoma'
+        Badge.Font.Style = [fsBold]
+        Badge.Visible = False
         Caption = 'Smazat podklad'
         CanFocused = True
         CustomDropDown = False
+        DrawTextMode = scdtmGDI
         Margin = -1
         Spacing = 1
         Layout = blGlyphLeft
@@ -8524,8 +9601,20 @@ object Form1: TForm1
         Options.ArrowType = scgpatDefault
         Options.ArrowThickness = 2
         Options.ArrowThicknessScaled = False
+        Options.ArrowNormalColor = clBtnText
+        Options.ArrowHotColor = clBtnText
+        Options.ArrowPressedColor = clBtnText
+        Options.ArrowFocusedColor = clBtnText
+        Options.ArrowDisabledColor = clBtnText
+        Options.ArrowNormalColorAlpha = 200
+        Options.ArrowHotColorAlpha = 255
+        Options.ArrowPressedColorAlpha = 255
+        Options.ArrowFocusedColorAlpha = 200
+        Options.ArrowDisabledColorAlpha = 125
         Options.StyleColors = True
+        Options.PressedHotColors = False
         HotImageIndex = -1
+        FluentLightEffect = False
         FocusedImageIndex = -1
         PressedImageIndex = -1
         UseGalleryMenuImage = False
@@ -8572,6 +9661,7 @@ object Form1: TForm1
       Font.Name = 'Roboto'
       Font.Style = []
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 2
       OnClick = scExPanel_vrstvyClick
       BorderWidth = 1
@@ -8583,6 +9673,7 @@ object Form1: TForm1
       CaptionImages = scGPVirtualImageList1
       CaptionImageIndex = -1
       ChangeRollStateWithCaptionClick = False
+      HorzRollButtonPosition = scrbpRight
       Spacing = 5
       ShowFrame = False
       RealWidth = 0
@@ -8614,6 +9705,7 @@ object Form1: TForm1
         Font.Name = 'Roboto'
         Font.Style = []
         ParentFont = False
+        FluentUIOpaque = False
         TabOrder = 0
         TabStop = True
         OnClick = scGPCheckBox_ortogonClick
@@ -8637,6 +9729,7 @@ object Form1: TForm1
         GlowEffect.PressedAlphaValue = 255
         GlowEffect.States = [scsHot, scsPressed, scsFocused]
         ImageGlow = True
+        DrawTextMode = scdtmGDI
         DisabledFontColor = clNone
         Options.NormalColor = clWindow
         Options.HotColor = clWindow
@@ -8707,6 +9800,7 @@ object Form1: TForm1
         Width = 42
         Height = 20
         Enabled = False
+        FluentUIOpaque = False
         TabOrder = 1
         Animation = True
         FrameColor = clWhite
@@ -8736,6 +9830,7 @@ object Form1: TForm1
         Width = 42
         Height = 20
         Align = alCustom
+        FluentUIOpaque = False
         TabOrder = 2
         Animation = True
         FrameColor = clWhite
@@ -8772,6 +9867,7 @@ object Form1: TForm1
         Font.Name = 'Roboto'
         Font.Style = []
         ParentFont = False
+        FluentUIOpaque = False
         TabOrder = 3
         DragForm = False
         DragTopForm = True
@@ -8799,6 +9895,7 @@ object Form1: TForm1
         Font.Name = 'Roboto'
         Font.Style = []
         ParentFont = False
+        FluentUIOpaque = False
         TabOrder = 4
         DragForm = False
         DragTopForm = True
@@ -8828,6 +9925,7 @@ object Form1: TForm1
         Font.Name = 'Roboto'
         Font.Style = []
         ParentFont = False
+        FluentUIOpaque = False
         TabOrder = 5
         DragForm = False
         DragTopForm = True
@@ -8853,11 +9951,14 @@ object Form1: TForm1
         Margins.Right = 0
         Margins.Bottom = 0
         ParentShowHint = False
+        FluentUIOpaque = False
         ShowHint = True
         TabOrder = 6
         TransparentBackground = True
         ShowFocusRect = True
         JumpWhenClick = False
+        MouseWheelSupport = True
+        MouseWheelOpposite = False
         CanFocused = True
         MouseSupport = True
         MinValue = 1
@@ -8866,6 +9967,8 @@ object Form1: TForm1
         Vertical = False
         ReadOnly = False
         OnChange = scGPTrackBar_intenzitaChange
+        DrawTextMode = scdtmGDI
+        FocusFrameColor = clNone
         TrackColor = clBtnShadow
         TrackProgressColor = clHighlight
         TrackSize = 2
@@ -8885,6 +9988,7 @@ object Form1: TForm1
         Width = 42
         Height = 20
         Align = alCustom
+        FluentUIOpaque = False
         TabOrder = 7
         Animation = True
         FrameColor = clWhite
@@ -8921,6 +10025,7 @@ object Form1: TForm1
         Font.Name = 'Roboto'
         Font.Style = []
         ParentFont = False
+        FluentUIOpaque = False
         TabOrder = 8
         DragForm = False
         DragTopForm = True
@@ -8948,6 +10053,7 @@ object Form1: TForm1
         Font.Name = 'Roboto'
         Font.Style = []
         ParentFont = False
+        FluentUIOpaque = False
         TabOrder = 9
         DragForm = False
         DragTopForm = True
@@ -8976,6 +10082,7 @@ object Form1: TForm1
       Font.Name = 'Roboto'
       Font.Style = []
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 4
       Visible = False
       OnClick = scExPanel1Click
@@ -8988,6 +10095,7 @@ object Form1: TForm1
       CaptionImages = scGPVirtualImageList1
       CaptionImageIndex = -1
       ChangeRollStateWithCaptionClick = False
+      HorzRollButtonPosition = scrbpRight
       Spacing = 5
       ShowFrame = False
       RealWidth = 0
@@ -9018,13 +10126,23 @@ object Form1: TForm1
         Font.Style = []
         Font.Quality = fqClearType
         ParentFont = False
+        FluentUIOpaque = False
         TabOrder = 0
         TabStop = True
         OnClick = scGPImage_mereni_vzdalenostClick
         Animation = False
+        Badge.Color = clRed
+        Badge.ColorAlpha = 255
+        Badge.Font.Charset = DEFAULT_CHARSET
+        Badge.Font.Color = clWhite
+        Badge.Font.Height = -11
+        Badge.Font.Name = 'Tahoma'
+        Badge.Font.Style = [fsBold]
+        Badge.Visible = False
         Caption = 'Zm'#283#345'it vzd'#225'lenost'
         CanFocused = True
         CustomDropDown = False
+        DrawTextMode = scdtmGDI
         Margin = -1
         Spacing = 1
         Layout = blGlyphLeft
@@ -9078,8 +10196,20 @@ object Form1: TForm1
         Options.ArrowType = scgpatDefault
         Options.ArrowThickness = 2
         Options.ArrowThicknessScaled = False
+        Options.ArrowNormalColor = clBtnText
+        Options.ArrowHotColor = clBtnText
+        Options.ArrowPressedColor = clBtnText
+        Options.ArrowFocusedColor = clBtnText
+        Options.ArrowDisabledColor = clBtnText
+        Options.ArrowNormalColorAlpha = 200
+        Options.ArrowHotColorAlpha = 255
+        Options.ArrowPressedColorAlpha = 255
+        Options.ArrowFocusedColorAlpha = 200
+        Options.ArrowDisabledColorAlpha = 125
         Options.StyleColors = True
+        Options.PressedHotColors = False
         HotImageIndex = -1
+        FluentLightEffect = False
         FocusedImageIndex = -1
         PressedImageIndex = -1
         UseGalleryMenuImage = False
@@ -9127,15 +10257,25 @@ object Form1: TForm1
     Font.Quality = fqClearTypeNatural
     ParentFont = False
     ParentShowHint = False
+    FluentUIOpaque = False
     ShowHint = True
     TabOrder = 44
     TabStop = True
     Visible = False
     OnClick = scGPButton_ulozit_cestuClick
     Animation = False
+    Badge.Color = clRed
+    Badge.ColorAlpha = 255
+    Badge.Font.Charset = DEFAULT_CHARSET
+    Badge.Font.Color = clWhite
+    Badge.Font.Height = -11
+    Badge.Font.Name = 'Tahoma'
+    Badge.Font.Style = [fsBold]
+    Badge.Visible = False
     Caption = 'Ulo'#382'it'
     CanFocused = True
     CustomDropDown = False
+    DrawTextMode = scdtmGDI
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
@@ -9188,8 +10328,20 @@ object Form1: TForm1
     Options.ArrowType = scgpatDefault
     Options.ArrowThickness = 2
     Options.ArrowThicknessScaled = False
+    Options.ArrowNormalColor = clBtnText
+    Options.ArrowHotColor = clBtnText
+    Options.ArrowPressedColor = clBtnText
+    Options.ArrowFocusedColor = clBtnText
+    Options.ArrowDisabledColor = clBtnText
+    Options.ArrowNormalColorAlpha = 200
+    Options.ArrowHotColorAlpha = 255
+    Options.ArrowPressedColorAlpha = 255
+    Options.ArrowFocusedColorAlpha = 200
+    Options.ArrowDisabledColorAlpha = 125
     Options.StyleColors = True
+    Options.PressedHotColors = False
     HotImageIndex = -1
+    FluentLightEffect = False
     FocusedImageIndex = -1
     PressedImageIndex = -1
     UseGalleryMenuImage = False
@@ -9234,14 +10386,24 @@ object Form1: TForm1
     Font.Style = []
     Font.Quality = fqClearTypeNatural
     ParentFont = False
+    FluentUIOpaque = False
     TabOrder = 45
     TabStop = True
     Visible = False
     OnClick = scGPButton_storno_cestaClick
     Animation = False
+    Badge.Color = clRed
+    Badge.ColorAlpha = 255
+    Badge.Font.Charset = DEFAULT_CHARSET
+    Badge.Font.Color = clWhite
+    Badge.Font.Height = -11
+    Badge.Font.Name = 'Tahoma'
+    Badge.Font.Style = [fsBold]
+    Badge.Visible = False
     Caption = 'Storno'
     CanFocused = True
     CustomDropDown = False
+    DrawTextMode = scdtmGDI
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
@@ -9294,8 +10456,20 @@ object Form1: TForm1
     Options.ArrowType = scgpatDefault
     Options.ArrowThickness = 2
     Options.ArrowThicknessScaled = False
+    Options.ArrowNormalColor = clBtnText
+    Options.ArrowHotColor = clBtnText
+    Options.ArrowPressedColor = clBtnText
+    Options.ArrowFocusedColor = clBtnText
+    Options.ArrowDisabledColor = clBtnText
+    Options.ArrowNormalColorAlpha = 200
+    Options.ArrowHotColorAlpha = 255
+    Options.ArrowPressedColorAlpha = 255
+    Options.ArrowFocusedColorAlpha = 200
+    Options.ArrowDisabledColorAlpha = 125
     Options.StyleColors = True
+    Options.PressedHotColors = False
     HotImageIndex = -1
+    FluentLightEffect = False
     FocusedImageIndex = -1
     PressedImageIndex = -1
     UseGalleryMenuImage = False
@@ -9348,15 +10522,25 @@ object Form1: TForm1
     ParentFont = False
     ParentShowHint = False
     PopupMenu = PopupMenu1
+    FluentUIOpaque = False
     ShowHint = True
     TabOrder = 47
     Visible = False
     OnClick = scGPGlyphButton_odstran_cestuClick
     ArrowPosition = scapBottom
     Animation = True
+    Badge.Color = clRed
+    Badge.ColorAlpha = 255
+    Badge.Font.Charset = DEFAULT_CHARSET
+    Badge.Font.Color = clWhite
+    Badge.Font.Height = -11
+    Badge.Font.Name = 'Tahoma'
+    Badge.Font.Style = [fsBold]
+    Badge.Visible = False
     Caption = 'x'
     CanFocused = False
     CustomDropDown = True
+    DrawTextMode = scdtmGDI
     Margin = -1
     Spacing = 1
     Layout = blGlyphTop
@@ -9410,8 +10594,20 @@ object Form1: TForm1
     Options.ArrowType = scgpatDefault
     Options.ArrowThickness = 2
     Options.ArrowThicknessScaled = False
+    Options.ArrowNormalColor = clBtnText
+    Options.ArrowHotColor = clBtnText
+    Options.ArrowPressedColor = clBtnText
+    Options.ArrowFocusedColor = clBtnText
+    Options.ArrowDisabledColor = clBtnText
+    Options.ArrowNormalColorAlpha = 200
+    Options.ArrowHotColorAlpha = 255
+    Options.ArrowPressedColorAlpha = 255
+    Options.ArrowFocusedColorAlpha = 200
+    Options.ArrowDisabledColorAlpha = 125
     Options.StyleColors = True
+    Options.PressedHotColors = False
     HotImageIndex = -1
+    FluentLightEffect = False
     FocusedImageIndex = -1
     PressedImageIndex = -1
     UseGalleryMenuImage = False
@@ -9452,6 +10648,7 @@ object Form1: TForm1
     Height = 850
     Anchors = [akLeft, akTop, akBottom]
     Enabled = False
+    FluentUIOpaque = False
     TabOrder = 23
     CustomImageIndex = -1
     DragForm = False
@@ -9505,6 +10702,7 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 0
       OnClick = KonecClick
       Animation = False
@@ -9599,6 +10797,7 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 1
       OnClick = Toolbar_OtevritClick
       Animation = False
@@ -9692,6 +10891,7 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 2
       OnClick = scGPGlyphButton_OPTIONSClick
       Animation = False
@@ -9786,6 +10986,7 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 3
       OnClick = Obnovitzezlohy1Click
       Animation = False
@@ -9879,6 +11080,7 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 4
       OnClick = html1Click
       Animation = False
@@ -9964,6 +11166,7 @@ object Form1: TForm1
       Top = 332
       Width = 42
       Height = 20
+      FluentUIOpaque = False
       TabOrder = 5
       Visible = False
       Animation = True
@@ -10000,6 +11203,7 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 6
       Visible = False
       DragForm = False
@@ -10028,6 +11232,7 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 7
       OnClick = UlozitjakoClick
       Animation = False
@@ -10121,6 +11326,7 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 8
       OnClick = Export1Click
       Animation = False
@@ -10214,6 +11420,7 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 9
       OnClick = MagnaClick
       Animation = False
@@ -10308,6 +11515,7 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 10
       OnClick = NovySouborClick
       Animation = False
@@ -10402,6 +11610,7 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 11
       OnClick = UlozitClick
       Animation = False
@@ -10495,6 +11704,7 @@ object Form1: TForm1
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 12
       OnClick = scButton_nacist_podkladClick
       Animation = False
@@ -10588,13 +11798,23 @@ object Form1: TForm1
     Font.Style = []
     Font.Quality = fqClearTypeNatural
     ParentFont = False
+    FluentUIOpaque = False
     TabOrder = 48
     TabStop = True
     OnClick = scGPButton_bug_reportClick
     Animation = False
+    Badge.Color = clRed
+    Badge.ColorAlpha = 255
+    Badge.Font.Charset = DEFAULT_CHARSET
+    Badge.Font.Color = clWhite
+    Badge.Font.Height = -11
+    Badge.Font.Name = 'Tahoma'
+    Badge.Font.Style = [fsBold]
+    Badge.Visible = False
     Caption = 'Nahl'#225'sit'
     CanFocused = True
     CustomDropDown = False
+    DrawTextMode = scdtmGDI
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
@@ -10647,8 +11867,20 @@ object Form1: TForm1
     Options.ArrowType = scgpatDefault
     Options.ArrowThickness = 2
     Options.ArrowThicknessScaled = False
+    Options.ArrowNormalColor = clBtnText
+    Options.ArrowHotColor = clBtnText
+    Options.ArrowPressedColor = clBtnText
+    Options.ArrowFocusedColor = clBtnText
+    Options.ArrowDisabledColor = clBtnText
+    Options.ArrowNormalColorAlpha = 200
+    Options.ArrowHotColorAlpha = 255
+    Options.ArrowPressedColorAlpha = 255
+    Options.ArrowFocusedColorAlpha = 200
+    Options.ArrowDisabledColorAlpha = 125
     Options.StyleColors = True
+    Options.PressedHotColors = False
     HotImageIndex = -1
+    FluentLightEffect = False
     FocusedImageIndex = -1
     PressedImageIndex = -1
     UseGalleryMenuImage = False
@@ -10695,7 +11927,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C01011800040A1C0A10001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800040A280A10001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -11765,6 +12997,11 @@ object Form1: TForm1
     Top = 160
   end
   object scStyledForm1: TscStyledForm
+    FluentUIBackground = scfuibNone
+    FluentUIAcrylicColor = clBtnFace
+    FluentUIAcrylicColorAlpha = 100
+    FluentUIBorder = True
+    FluentUIInactiveAcrylicColorOpaque = False
     DWMClientShadow = False
     DWMClientShadowHitTest = False
     DropDownForm = False
@@ -11818,7 +13055,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01015400280D400D30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01015400280D4C0D30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000002004000001002000000000000060
       0C00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -38131,6 +39368,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'Navesovani'
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -38553,6 +39792,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'CO2'
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -38975,6 +40216,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'Ozeh'
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -39397,6 +40640,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'Powerwash'
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -39819,6 +41064,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'Ionizace'
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -40241,6 +41488,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'Lakovani'
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -40491,6 +41740,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'Vytekani'
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -40944,6 +42195,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'Suseni'
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -41722,6 +42975,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'Chlazeni'
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -41863,6 +43118,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'Svesovani'
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -42285,6 +43542,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'Buffer'
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -42707,6 +43966,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'Vytah'
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -43129,6 +44390,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'Prejezd'
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -43325,6 +44588,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'Vyhybka'
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -43747,6 +45012,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'Nedefinovany'
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -44272,6 +45539,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'Btn_vytvorit_halu'
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -44797,6 +46066,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'Btn_import'
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -45219,6 +46490,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'EN_O'#382'eh'
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -45641,6 +46914,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'EN_Ionizace'
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -46063,6 +47338,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'EN_Lakov'#225'n'#237
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -46313,6 +47590,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'EN_Vyt'#283'k'#225'n'#237
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -46766,6 +48045,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'EN_Su'#353'en'#237
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -47544,6 +48825,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'EN_Chlazen'#237
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -47966,6 +49249,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'EN_V'#253'tah'
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -48107,6 +49392,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'EN_Nav'#283#353'ov'#225'n'#237
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -48248,6 +49535,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'EN_Sv'#283#353'ov'#225'n'#237
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -48670,6 +49959,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'EN_P'#345'ejezd'
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -49187,6 +50478,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'EN_Btn_Vytvo'#345'it'
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -49471,6 +50764,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'Iko_posun_objektu_zam'
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end
       item
         Bitmap.Data = {
@@ -49755,6 +51050,8 @@ object Form1: TForm1
         Proportional = False
         Description = 'Iko_posun_objektu_ode'
         Scaled = True
+        PixelOffsetModeHighQuality = True
+        InterpolationModeHighQuality = True
       end>
     Left = 800
     Top = 480
