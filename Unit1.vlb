@@ -4,9 +4,6 @@ Coordinates=0,233,58,36
 [Timer_neaktivity]
 Coordinates=268,461,109,36
 
-[RzStatusPane3]
-Coordinates=175,602,104,36
-
 [Button7]
 Coordinates=970,212,59,58
 
@@ -90,9 +87,6 @@ Coordinates=1135,496,91,36
 
 [TeeGDIPlus1]
 Coordinates=1036,631,91,36
-
-[RzStatusPane5]
-Coordinates=511,510,104,36
 
 [SaveDialog]
 Coordinates=838,631,80,36
@@ -211,9 +205,6 @@ Coordinates=447,372,107,36
 [scStyledForm1]
 Coordinates=872,779,100,36
 
-[RzStatusPane4]
-Coordinates=333,372,104,36
-
 [Button4]
 Coordinates=548,144,59,58
 
@@ -245,7 +236,7 @@ Coordinates=319,280,124,36
 Coordinates=10,280,90,36
 
 []
-Coordinates=219,372,104,36
+Coordinates=511,510,104,36
 Visible=True
 
 [scSplitView_OPTIONS]

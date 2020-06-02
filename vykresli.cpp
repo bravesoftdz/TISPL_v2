@@ -118,25 +118,25 @@ TPointD Cvykresli::Rxy(Cvektory::TElement *Element)
 void Cvykresli::vykresli_vektory(TCanvas *canv, short scena)//scena 0 - vše, scena 1 - statické elementy, scena 2 - dynamické elementy
 {
 	/////Vykreslení haly
-	vykresli_halu(canv);
+	if(m.getValueFromPosition(SCENA,1)==scena)vykresli_halu(canv);
 
 	/////Vykreslení objektů
-	vykresli_objekty(canv);
+	if(m.getValueFromPosition(SCENA,2)==scena)vykresli_objekty(canv);
 
 	/////Vykreslení dopravníků
-	vykresli_retez(canv);//přejemnovat asi na vykresli dopravník
+	if(m.getValueFromPosition(SCENA,3)==scena)vykresli_retez(canv);//přejemnovat asi na vykresli dopravník
 
 	/////Vykreslení elementů
-	vykresli_elementy(canv,scena);
+	if(m.getValueFromPosition(SCENA,4)>0 || scena==0)vykresli_elementy(canv,scena);
 
 	/////VALIDACE její samotné provední, vnitřek metody se provede jen pokud duvod_validovat==2
-	if(F->MOD!=F->SIMULACE)v.VALIDACE();
+	if(m.getValueFromPosition(SCENA,6)==scena)v.VALIDACE();
 
 	/////vykreslení VOZÍKů, musí být až za VALIDACí kvůli generování vozíků, které je ve VALIDACi
-	if(F->MOD!=F->TVORBA_CESTY && F->MOD!=F->SIMULACE && F->Akce!=F->GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT)vykresli_voziky(canv);
+	if(F->MOD!=F->TVORBA_CESTY && F->Akce!=F->GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT && m.getValueFromPosition(SCENA,5)==scena)vykresli_voziky(canv);
 
 	/////VALIDACE výpis formou zpráv musí být za vozíky, aby byla zcela nahoře
-	if(F->MOD!=F->TVORBA_CESTY && F->MOD!=F->SIMULACE && F->Akce!=F->GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT)vypis_zpravy(canv);
+	if(F->MOD!=F->TVORBA_CESTY && F->Akce!=F->GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT && m.getValueFromPosition(SCENA,6)==scena)vypis_zpravy(canv);
 }
 //---------------------------------------------------------------------------
 void Cvykresli::vykresli_objekty(TCanvas *canv)
@@ -3796,6 +3796,7 @@ void Cvykresli::vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiStr
 			if(scena==0 || scena==1)
 			{
 				/////////provizorní řešení !!!!!!!!!!!!
+				unsigned int velikost=m.round(2*F->Zoom);
 				TColor barva=clRed;if(eID==301)barva=clBlue;
 				canv->Pen->Color=barva;
 				canv->Pen->Width=m.round(1);
@@ -3803,7 +3804,7 @@ void Cvykresli::vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiStr
 				canv->Pen->Style=psSolid;
 				canv->Brush->Color=barva;
 				canv->Brush->Style=bsSolid;
-				canv->Rectangle(X-20,Y-20,X+20,Y+20);
+				canv->Rectangle(X-velikost,Y-velikost,X+velikost,Y+velikost);
 			}
 		}
 		break;

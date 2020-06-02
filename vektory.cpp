@@ -507,9 +507,9 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 //---------------------------------------------------------------------------
 //uloží objekt a jeho parametry do seznamu - přetížená fce
 Cvektory::TObjekt *Cvektory::vloz_objekt(TObjekt *Objekt)
-{                    
+{
 	TObjekt *novy=new TObjekt;
-													
+
 	*novy=*Objekt;//novy bude ukazovat tam kam prvek Objekt
 	novy->n=OBJEKTY->predchozi->n+1;//navýším počítadlo prvku o jedničku
 	OBJEKTY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
@@ -832,6 +832,13 @@ short int Cvektory::smaz_objekt(TObjekt *Objekt)
 	vymaz_body(Objekt);
 	vymaz_komory(Objekt);
 	delete Objekt;Objekt=NULL;//smaže mazaný prvek
+
+	TElement *E=ELEMENTY->dalsi;
+	while(E!=NULL)
+	{
+		E=dalsi_krok(E);
+	}  delete E;E=NULL;
+
 
 	return 0;
 
@@ -1473,7 +1480,7 @@ void Cvektory::rotuj_objekt(TObjekt *Objekt, double rotace)
 	if(rotace!=0)
 	{
 		double azimut=Objekt->orientace-rotace;
-		if(azimut<0)azimut=270;//ošetření proti přetotočení 
+		if(azimut<0)azimut=270;//ošetření proti přetotočení
 		if(azimut==360)azimut=0;//ošetření proti přetotočení
 		TPointD Bod;
 		////rotace kabiny-polygonu
@@ -1876,7 +1883,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 		if(novy->eID!=MaxInt || novy->eID==MaxInt && DEBUG)novy->name=T+" "+AnsiString(nTyp);else novy->name=T;//číslování a pojmenovávání zarážek pouze v debug
 		novy->short_name=T.SubString(1,3)+AnsiString(nTyp);
 	}
-						
+
 	//mGrid elementu
 	if(F->OBJEKT_akt!=NULL&&Objekt->n==F->OBJEKT_akt->n||novy->eID==MaxInt||novy->eID==300||novy->eID==301)//stačí nastavovat pouze v náhledu při vloz_element, nová strategie, je mgrid, nekopírovat a používat jenom v OBJEKT_akt, zde však podmínka zda se jedná o OBJEKT_akt nebyla z nějakého důvodu možná
 	{
@@ -3600,7 +3607,7 @@ Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruc
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 //smaže spojku nebo vyhybku společně s jejich větví
-void Cvektory::smaz_vyhybku_spojku(TElement *Element)
+void Cvektory::smaz_vyhybku_spojku(TElement *Element,unsigned long maz_OBJ)
 {
 	//deklarace proměnných + založení seznamu smazat
 	unsigned int pocet_mazanych_vyhybek=1;
@@ -3661,9 +3668,17 @@ void Cvektory::smaz_vyhybku_spojku(TElement *Element)
 		if(objekt_n!=0 && objekt_n!=E->objekt_n && objekt_n!=O1_n && objekt_n!=O2_n)smaz_objekt(vrat_objekt(objekt_n));//mazání prázdného objektu
 		objekt_n=E->objekt_n;
 		//pokud mažu výhybku nebo spojku je důležité upravit ukazatele na hlavní větvi a geometrii
-		if(E->eID==300 || E->eID==301)smaz_element(E,true);
+		if(E->eID==300 || E->eID==301)smaz_element(E,true,maz_OBJ);
 		else//mazání ostatních elementů
 		{
+			if(E->mGrid!=NULL && F->OBJEKT_akt!=NULL && (E->objekt_n==F->OBJEKT_akt->n || E==F->predchozi_PM))
+			{
+				try
+				{
+					E->mGrid->Delete();
+				}catch(...){;}
+			}
+			E->mGrid=NULL;
 			delete E;
 			E=NULL;
 		}
@@ -3715,7 +3730,7 @@ void Cvektory::aktualizuj_identifikator_vyhybky_spojky()
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 //smaže element ze seznamu
-void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
+void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu,unsigned long maz_OBJ)
 {
 	bool povolit=true;
 	bool zobrazit_tip=true;
@@ -3726,7 +3741,7 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 		povolit=false;
 		preskocit_kontolu=false;
 		zobrazit_tip=false;
-		smaz_vyhybku_spojku(Element);
+		smaz_vyhybku_spojku(Element,maz_OBJ);
   }
 	if(Element->eID==200 && !preskocit_kontolu && ((Element->dalsi!=NULL && Element->dalsi->pohon!=Element->pohon) || (Element->dalsi==NULL && ELEMENTY->dalsi->pohon!=Element->pohon)))//mazání PM
 	{
@@ -3779,8 +3794,8 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 		}
 	}
 	//hláška uživateli
-	if(!povolit && F->OBJEKT_akt!=NULL && zobrazit_tip)F->TIP=F->ls->Strings[315];//"Nelze odstranit předávací místo"
-	if(povolit && (Element->eID!=200 || (Element->eID==200 && preskocit_kontolu)) && (Element->dalsi==NULL || Element->dalsi!=NULL && Element->geo.typ==0 && Element->dalsi->geo.typ==0 || preskocit_kontolu))
+	if(!povolit && F->OBJEKT_akt!=NULL && zobrazit_tip)F->TIP=F->ls->Strings[315];//"Nelze odstranit předávací místo"                                                                                //pokud bude hlavní větev pokračovat obloukem, problém při ukončování projektu kontrola
+	if(povolit && (Element->eID!=200 || (Element->eID==200 && preskocit_kontolu)) && (Element->dalsi==NULL || Element->dalsi!=NULL && Element->geo.typ==0 && Element->dalsi->geo.typ==0 || (maz_OBJ>0/* && Element->objekt_n==maz_OBJ*/)))
 	{
 		if(O!=NULL && O->element->n==Element->n && Element->dalsi!=NULL && Element->dalsi->objekt_n==O->n)O->element=Element->dalsi;
 		//nejdříve smazání tabulky Elelementu
@@ -3815,17 +3830,6 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 				ELEMENTY->predchozi=Element->predchozi;//zapis do hlavičky poslední prvek seznamu
 			}
 		}
-		//přeindexování a změna názvů
-		TElement *E=Element->dalsi;
-		int n=Element->predchozi->n;
-		while(E!=NULL)
-		{
-			n++;
-			E->n=n;
-			E=E->dalsi;
-		}
-		delete E;E=NULL;
-		if(ELEMENTY->dalsi!=NULL && Element->predchozi->n>0)uprav_popisky_elementu(Element->predchozi);else uprav_popisky_elementu(NULL);
 		//odstranění z pěměti
 		delete Element;Element=NULL;
 	}
@@ -3845,7 +3849,7 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 		if(DEBUG)
 		{
 			Element->name="Zarážka";
-			uprav_popisky_elementu(Element);
+			//uprav_popisky_elementu(Element);//přesunuto na úroveň unit1 smazat1click
 		}
 		else Element->name="";
 		//defaultní data
@@ -3869,6 +3873,8 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu)
 		if(Element->eID==0){Element->data.pocet_pozic=2;Element->data.pocet_voziku=1;}//pouze stopky
 		Element->stav=1;
 		Element->data.PD=-1;//defaultní stav pro S&G roboty
+		Element->dalsi2=NULL;
+		Element->predchozi2=NULL;
 		//smazání a znovuvytvoření mGridu elementu
 		if(F->OBJEKT_akt!=NULL && Element->objekt_n==F->OBJEKT_akt->n)// || Element==F->predchozi_PM))
 		{
@@ -3889,8 +3895,8 @@ void Cvektory::vymaz_elementy(TObjekt *Objekt)
 	{
 		smaz=E;
 		E=E->dalsi;//můžu jít po hlavní, pokud narazím na výhybku nebo spojku metoda smaz_element(), odstraní celou vedlejší větevá
-		if(smaz->eID==300 || smaz->eID==301)smaz_element(smaz,false);//velice nutné kontrola u výhybek a spojek nesmí být přeskočena
-		else smaz_element(smaz,true);
+		if(smaz->eID==300 || smaz->eID==301)smaz_element(smaz,false,Objekt->n);//velice nutné kontrola u výhybek a spojek nesmí být přeskočena
+		else smaz_element(smaz,true,Objekt->n);
 	}
 	Objekt->element=NULL;
 	E=NULL;delete E;
@@ -3931,9 +3937,9 @@ long Cvektory::vymaz_seznam_ELEMENTY()
 	delete smazat;smazat=NULL;
 	delete pom;pom=NULL;
 	delete ELEMENTY;ELEMENTY=NULL;
-	
+
 //	while (ELEMENTY!=NULL)
-//	{       
+//	{
 //		pocet_smazanych_objektu++;
 //		ELEMENTY->predchozi=NULL;
 //		delete ELEMENTY->predchozi;
@@ -4062,7 +4068,7 @@ bool Cvektory::pohon_je_pouzivan(unsigned long n,bool po_obektech)
 		}
 		E=NULL;delete E;
 	}
-	O=NULL;delete O;  
+	O=NULL;delete O;
 	return nalezen;
 }
 ////---------------------------------------------------------------------------
@@ -4654,7 +4660,7 @@ Cvektory::TDavka *Cvektory::vrat_davku(TZakazka *zakazka,unsigned long n)
 void Cvektory::smaz_davku(TZakazka *zakazka,unsigned long n)
 {
 	TDavka *smaz=vrat_davku(zakazka,n),*pom=smaz->dalsi;
-  //úprava indexů 
+  //úprava indexů
 	unsigned long index=smaz->n;
 	while(pom!=NULL)
 	{
@@ -7931,7 +7937,7 @@ void Cvektory::hlavicka_DATA()
 {
 	////alokace paměti + vytvoření hlavičky
 	DATA=vytvor_prazdny_obraz();
-	
+
 	////ukazatelové zalezitosti DAT
 	DATA->dalsi=NULL;
 	DATA->predchozi=DATA;
@@ -8234,6 +8240,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 		{
 			if(F->OBJEKT_akt!=NULL && !storno)
 			{
+				//mazání mGridů elementů
 				F->DrawGrid_knihovna->SetFocus();
 				TElement *E=F->OBJEKT_akt->element;
 				while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
@@ -8243,7 +8250,18 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 					E=dalsi_krok(E,F->OBJEKT_akt);
 				}
 				E=NULL;delete E;
-				F->PmG->Delete();F->PmG=NULL;
+				//mazání PmG
+				if(F->PmG!=NULL)
+				{
+					F->PmG->Delete();
+					F->PmG=NULL;
+				}
+				//mazání predchozi_PM
+				if(F->predchozi_PM!=NULL)
+				{
+					F->predchozi_PM->mGrid->Delete();
+					F->predchozi_PM->mGrid=NULL;
+				}
 			}
 			////mazání dat starého projektu, které budou nahrazeny
 			vymaz_seznam_OBJEKTY();
@@ -8283,6 +8301,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 				sekvencni_zapis_cteni(E,NULL,tab_pruchodu);
 				if(F->OBJEKT_akt !=NULL && E->objekt_n==F->OBJEKT_akt->n && !storno)
 				{
+					E->mGrid=new TmGrid(F);
 					E->mGrid->Tag=6;//ID formu
 					E->mGrid->ID=E->n;
 					F->design_element(E,false,false);
@@ -8369,12 +8388,11 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 				F->predchozi_PM->mGrid->Tag=6;//ID formu
 				F->predchozi_PM->mGrid->ID=F->predchozi_PM->n;
 				F->design_element(F->predchozi_PM,false);//znovuvytvoření tabulek
-				bool exituje_tab_poh=true;//pohonová tabulka v editaci bude exitovat
+				exituje_tab_poh=true;//pohonová tabulka v editaci bude exitovat
 			}
+			//znovu vytvoření tabulky pohonů pokud je třeba
+			F->vytvoreni_tab_pohon(exituje_tab_poh);
 		}
-
-		//znovu vytvoření tabulky pohonů pokud jsem v editaci
-		if(F->OBJEKT_akt!=NULL && !storno)F->vytvoreni_tab_pohon(exituje_tab_poh);
 
 		F->Timer_backup->Enabled=true;//obnovení timeru pro backup, nespouští se!
 		if(storno)
@@ -8539,3 +8557,4 @@ void Cvektory::vlakno_obraz()
 	F->vlakno_akce=0;//navrácení do default stavu
 }
 ////---------------------------------------------------------------------------
+
