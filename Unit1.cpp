@@ -337,50 +337,50 @@ void TForm1::set_font(int velikost)
   Label_zamerovac->Font=aFont;
   Label_zamerovac->Font->Color=barva;
   Label_zamerovac->Font->Size=velikost;
-  barva=RzToolButton1->Font->Color;
-  RzToolButton1->Font=aFont;
-  RzToolButton1->Font->Color=barva;
-  RzToolButton1->Font->Size=velikost;
-  barva=RzToolButton3->Font->Color;
-  RzToolButton3->Font=aFont;
-  RzToolButton3->Font->Color=barva;
-  RzToolButton3->Font->Size=velikost;
-  barva=RzToolButton4->Font->Color;
-  RzToolButton4->Font=aFont;
-  RzToolButton4->Font->Color=barva;
-  RzToolButton4->Font->Size=velikost;
-  barva=RzToolButton5->Font->Color;
-  RzToolButton5->Font=aFont;
-  RzToolButton5->Font->Color=barva;
-  RzToolButton5->Font->Size=velikost;
-  barva=RzToolButton6->Font->Color;
-  RzToolButton6->Font=aFont;
-  RzToolButton6->Font->Color=barva;
-  RzToolButton6->Font->Size=velikost;
-  barva=RzToolButton7->Font->Color;
-  RzToolButton7->Font=aFont;
-  RzToolButton7->Font->Color=barva;
-  RzToolButton7->Font->Size=velikost;
-  barva=RzToolButton8->Font->Color;
-  RzToolButton8->Font=aFont;
-  RzToolButton8->Font->Color=barva;
-  RzToolButton8->Font->Size=velikost;
-  barva=RzToolButton9->Font->Color;
-  RzToolButton9->Font=aFont;
-  RzToolButton9->Font->Color=barva;
-  RzToolButton9->Font->Size=velikost;
-  barva=RzToolButton10->Font->Color;
-  RzToolButton10->Font=aFont;
-  RzToolButton10->Font->Color=barva;
-  RzToolButton10->Font->Size=velikost;
-  barva=RzToolButton11->Font->Color;
-  RzToolButton11->Font=aFont;
-  RzToolButton11->Font->Color=barva;
-  RzToolButton11->Font->Size=velikost;
-  barva=RzToolButton12->Font->Color;
-  RzToolButton12->Font=aFont;
-  RzToolButton12->Font->Color=barva;
-  RzToolButton12->Font->Size=velikost;
+//  barva=RzToolButton1->Font->Color;
+//  RzToolButton1->Font=aFont;
+//  RzToolButton1->Font->Color=barva;
+//  RzToolButton1->Font->Size=velikost;
+//  barva=RzToolButton3->Font->Color;
+//  RzToolButton3->Font=aFont;
+//  RzToolButton3->Font->Color=barva;
+//  RzToolButton3->Font->Size=velikost;
+//  barva=RzToolButton4->Font->Color;
+//  RzToolButton4->Font=aFont;
+//  RzToolButton4->Font->Color=barva;
+//  RzToolButton4->Font->Size=velikost;
+//  barva=RzToolButton5->Font->Color;
+//  RzToolButton5->Font=aFont;
+//  RzToolButton5->Font->Color=barva;
+//  RzToolButton5->Font->Size=velikost;
+//  barva=RzToolButton6->Font->Color;
+//  RzToolButton6->Font=aFont;
+//  RzToolButton6->Font->Color=barva;
+//  RzToolButton6->Font->Size=velikost;
+//  barva=RzToolButton7->Font->Color;
+//  RzToolButton7->Font=aFont;
+//  RzToolButton7->Font->Color=barva;
+//  RzToolButton7->Font->Size=velikost;
+//  barva=RzToolButton8->Font->Color;
+//  RzToolButton8->Font=aFont;
+//  RzToolButton8->Font->Color=barva;
+//  RzToolButton8->Font->Size=velikost;
+//  barva=RzToolButton9->Font->Color;
+//  RzToolButton9->Font=aFont;
+//  RzToolButton9->Font->Color=barva;
+//  RzToolButton9->Font->Size=velikost;
+//  barva=RzToolButton10->Font->Color;
+//  RzToolButton10->Font=aFont;
+//  RzToolButton10->Font->Color=barva;
+//  RzToolButton10->Font->Size=velikost;
+//  barva=RzToolButton11->Font->Color;
+//  RzToolButton11->Font=aFont;
+//  RzToolButton11->Font->Color=barva;
+//  RzToolButton11->Font->Size=velikost;
+//  barva=RzToolButton12->Font->Color;
+//  RzToolButton12->Font=aFont;
+//  RzToolButton12->Font->Color=barva;
+//  RzToolButton12->Font->Size=velikost;
   barva=Button4->Font->Color;
   Button4->Font=aFont;
   Button4->Font->Color=barva;
@@ -733,22 +733,14 @@ void TForm1::set_font(int velikost)
   Analyza->Font=aFont;
   Analyza->Font->Color=barva;
   Analyza->Font->Size=velikost;
-  barva=Form_parametry_linky->rHTMLLabel_eDesigner->Font->Color;
-  Form_parametry_linky->rHTMLLabel_eDesigner->Font=aFont;
-  Form_parametry_linky->rHTMLLabel_eDesigner->Font->Color=barva;
-  Form_parametry_linky->rHTMLLabel_eDesigner->Font->Size=velikost;
-  barva=Form_parametry_linky->rHTMLLabel_doporuc_pohony->Font->Color;
-  Form_parametry_linky->rHTMLLabel_doporuc_pohony->Font=aFont;
-  Form_parametry_linky->rHTMLLabel_doporuc_pohony->Font->Color=barva;
-  Form_parametry_linky->rHTMLLabel_doporuc_pohony->Font->Size=velikost;
-  barva=Form_parametry_linky->rHTMLLabel_podlahovy->Font->Color;
-  Form_parametry_linky->rHTMLLabel_podlahovy->Font=aFont;
-  Form_parametry_linky->rHTMLLabel_podlahovy->Font->Color=barva;
-  Form_parametry_linky->rHTMLLabel_podlahovy->Font->Size=velikost;
-  barva=Form_parametry_linky->rHTMLLabel_podvesny->Font->Color;
-  Form_parametry_linky->rHTMLLabel_podvesny->Font=aFont;
-  Form_parametry_linky->rHTMLLabel_podvesny->Font->Color=barva;
-  Form_parametry_linky->rHTMLLabel_podvesny->Font->Size=velikost;
+  barva=Form_parametry_linky->scHTMLLabel_podlahovy->Font->Color;
+  Form_parametry_linky->scHTMLLabel_podlahovy->Font=aFont;
+  Form_parametry_linky->scHTMLLabel_podlahovy->Font->Color=barva;
+  Form_parametry_linky->scHTMLLabel_podlahovy->Font->Size=velikost;
+  barva=Form_parametry_linky->scHTMLLabel_podvesny->Font->Color;
+  Form_parametry_linky->scHTMLLabel_podvesny->Font=aFont;
+  Form_parametry_linky->scHTMLLabel_podvesny->Font->Color=barva;
+  Form_parametry_linky->scHTMLLabel_podvesny->Font->Size=velikost;
   barva=Form_parametry_linky->Button_save->Font->Color;
   Form_parametry_linky->Button_save->Font=aFont;
   Form_parametry_linky->Button_save->Font->Color=barva;
@@ -833,14 +825,6 @@ void TForm1::set_font(int velikost)
   Form_parametry_linky->scGPButton_obecne->Font=aFont;
   Form_parametry_linky->scGPButton_obecne->Font->Color=barva;
   Form_parametry_linky->scGPButton_obecne->Font->Size=velikost;
-  barva=Form_parametry_linky->rHTMLLabel_JIG->Font->Color;
-  Form_parametry_linky->rHTMLLabel_JIG->Font=aFont;
-  Form_parametry_linky->rHTMLLabel_JIG->Font->Color=barva;
-  Form_parametry_linky->rHTMLLabel_JIG->Font->Size=velikost;
-  barva=Form_parametry_linky->rHTMLLabel_podvozek_zaves->Font->Color;
-  Form_parametry_linky->rHTMLLabel_podvozek_zaves->Font=aFont;
-  Form_parametry_linky->rHTMLLabel_podvozek_zaves->Font->Color=barva;
-  Form_parametry_linky->rHTMLLabel_podvozek_zaves->Font->Size=velikost;
   barva=Form_parametry_linky->scHTMLLabel_jig_info->Font->Color;
   Form_parametry_linky->scHTMLLabel_jig_info->Font=aFont;
   Form_parametry_linky->scHTMLLabel_jig_info->Font->Color=barva;
@@ -1565,9 +1549,9 @@ void TForm1::edice()
         scGPCheckBox_ortogon->Enabled=true;
 
 
-				RzToolButton1->Enabled=false;
-				RzToolButton2->Enabled=false;
-				RzToolButton3->Enabled=false;
+//				RzToolButton1->Enabled=false;
+//				RzToolButton2->Enabled=false;
+//				RzToolButton3->Enabled=false;
 
 				//Edit_takt_time->Enabled=false;
 		 //M			Button_dopravnik_parametry->Enabled=false;
@@ -1723,8 +1707,8 @@ void TForm1::Novy_soubor(bool invalidate)//samotné vytvoření nového souboru
 			 //Akce=NIC;Akce_temp=NIC;Screen->Cursor=crDefault;//změní kurzor na default
 
 			 DuvodUlozit(false);
-			 RzToolButton4->Enabled=false;
-			 RzToolButton5->Enabled=false;
+		 //	 RzToolButton4->Enabled=false;
+		 //	 RzToolButton5->Enabled=false;
 			 uchop_zobrazen=false;
 			 vycentrovat=true;
 			 posun_objektu=false;//nutnost, aby se během realizace posunu neaktivoval další posun
@@ -2222,7 +2206,7 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
 	ComboBoxDOmin->Visible=false;
 	rComboBoxKrok->Visible=false;
 	scLabel_filtrovat->Visible=false;
-	LabelRoletka->Visible=false;
+ //	LabelRoletka->Visible=false;
 	CheckBox_pouzit_zadane_kapacity->Visible=false;
 	//g.ShowGrafy(false);  //GRAFY - ODEBRÁNY Z BUILDU  21.1.2020 - ZAKOMENTOVÁNO, ODEBRÁNO Z PROJEKTU
 	ComboBoxCekani->Visible=false;
@@ -2547,9 +2531,9 @@ void __fastcall TForm1::SyntezaClick(TObject *Sender)
 	Timer_animace->Enabled=false;
 	ButtonPLAY->Visible=true;
 	ButtonPLAY->Caption="PLAY";
-	LabelRoletka->Visible=true;
-	LabelRoletka->Caption="Filtr minut";
-	LabelRoletka->Font->Color=clBlack;
+ //	LabelRoletka->Visible=true;
+ //	LabelRoletka->Caption="Filtr minut";
+ //	LabelRoletka->Font->Color=clBlack;
 	scGPCheckBox_ortogon->Visible=false;
   scGPCheckBox_pocet_voziku_dle_WIP->Visible=false;
 	scGPGlyphButton_close_legenda_casove_osy->Visible=false;
@@ -5583,7 +5567,7 @@ void __fastcall TForm1::Predchozipohled1Click(TObject *Sender)
 	Zoom=Zoom_predchozi;
 	Posun=Posun_predchozi;
 	//Predchozipohled1->Enabled=false;
-	RzToolButton12->Enabled=false;
+//	RzToolButton12->Enabled=false;
 	REFRESH();
 	DuvodUlozit(true);
 }
@@ -5593,7 +5577,7 @@ void TForm1::Uloz_predchozi_pohled()
 	Zoom_predchozi=Zoom;
 	Posun_predchozi=Posun;
 	//Predchozipohled1->Enabled=true;
-	RzToolButton12->Enabled=true;
+ //	RzToolButton12->Enabled=true;
 	DuvodUlozit(true);
 }
 //---------------------------------------------------------------------------
@@ -13712,7 +13696,7 @@ void TForm1::DuvodUlozit(bool stav)
 {
 	log(__func__);//logování
 	//nastavení stavu ovládacích prvků
-	RzToolButton3->Enabled=stav;
+ //	RzToolButton3->Enabled=stav;
 	Toolbar_Ulozit->Enabled=stav;
 	scButton_ulozit->Enabled=stav;
 	//samotný indikátor změny a důvodu k uložení
@@ -15250,9 +15234,6 @@ void __fastcall TForm1::scButton2Click(TObject *Sender)
 		DuvodUlozit(true);
 		UlozitjakoClick(this);
 
-		//MB(T2);
-		Form_parametry_linky->rHTMLLabel_eDesigner->Visible=true;
-		Form_parametry_linky->rHTMLLabel_eDesigner->Caption=T2;
 		SB(T2);//zobraz_tip(T2);
 		Button_dopravnik_parametryClick(Sender);//volání parametrů linky
 
@@ -15262,7 +15243,6 @@ void __fastcall TForm1::scButton2Click(TObject *Sender)
 
 		SB(T4);zobraz_tip(T4);MB(T4,MB_OK,false);
 
-		Form_parametry_linky->rHTMLLabel_eDesigner->Visible=false;
 		DuvodUlozit(true);
 	}
 	else//nebyla nalezena šablona
@@ -16919,18 +16899,18 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 		delete ls_temp;ls_temp=NULL;
 		//začít od 4!!!
   	Label_zamerovac->Caption=ls->Strings[4];
-		RzToolButton1->Hint=ls->Strings[5];
-    RzToolButton2->Hint=ls->Strings[6];
-		RzToolButton3->Hint=ls->Strings[7];
-    RzToolButton4->Hint=ls->Strings[8];
-		RzToolButton5->Hint=ls->Strings[9];
-		RzToolButton6->Hint=ls->Strings[10];
-    RzToolButton7->Hint=ls->Strings[11];
-    RzToolButton8->Hint=ls->Strings[12];
-    RzToolButton9->Hint=ls->Strings[13];
-    RzToolButton10->Hint=ls->Strings[14];
-    RzToolButton11->Hint=ls->Strings[15];
-    RzToolButton12->Hint=ls->Strings[16];
+//		RzToolButton1->Hint=ls->Strings[5];
+//    RzToolButton2->Hint=ls->Strings[6];
+//		RzToolButton3->Hint=ls->Strings[7];
+//    RzToolButton4->Hint=ls->Strings[8];
+//		RzToolButton5->Hint=ls->Strings[9];
+//		RzToolButton6->Hint=ls->Strings[10];
+//    RzToolButton7->Hint=ls->Strings[11];
+//    RzToolButton8->Hint=ls->Strings[12];
+//    RzToolButton9->Hint=ls->Strings[13];
+//    RzToolButton10->Hint=ls->Strings[14];
+//    RzToolButton11->Hint=ls->Strings[15];
+//    RzToolButton12->Hint=ls->Strings[16];
     Button4->Caption=ls->Strings[17];
     ButtonPLAY_O->Caption=ls->Strings[18];
     Konec->Caption=ls->Strings[19];
@@ -17025,10 +17005,10 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
     scExPanel1->Caption=ls->Strings[116];
     scGPButton_mereni_vzdalenost->Caption=ls->Strings[117];
   	Analyza->Caption=ls->Strings[118];
-    Form_parametry_linky->rHTMLLabel_eDesigner->Caption=ls->Strings[127];
-    Form_parametry_linky->rHTMLLabel_doporuc_pohony->Caption=ls->Strings[128];
-    Form_parametry_linky->rHTMLLabel_podlahovy->Caption=ls->Strings[129];
-    Form_parametry_linky->rHTMLLabel_podvesny->Caption=ls->Strings[130];
+    //Form_parametry_linky->rHTMLLabel_eDesigner->Caption=ls->Strings[127];
+    //Form_parametry_linky->rHTMLLabel_doporuc_pohony->Caption=ls->Strings[128];
+    Form_parametry_linky->scHTMLLabel_podlahovy->Caption=ls->Strings[129];
+    Form_parametry_linky->scHTMLLabel_podvesny->Caption=ls->Strings[130];
     Form_parametry_linky->Button_save->Caption=ls->Strings[131];
     Form_parametry_linky->Button_storno->Caption=ls->Strings[132];
     Form_parametry_linky->Konec->Caption=ls->Strings[133];
@@ -17052,8 +17032,8 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
     Form_parametry_linky->scGPGlyphButton_vozik_edit->Hint=ls->Strings[151];
     Form_parametry_linky->scGPGlyphButton_ADD->Hint=ls->Strings[152];
     Form_parametry_linky->scGPButton_obecne->Caption=ls->Strings[153];
-    Form_parametry_linky->rHTMLLabel_JIG->Caption=ls->Strings[154];
-    Form_parametry_linky->rHTMLLabel_podvozek_zaves->Caption=ls->Strings[155];
+    //Form_parametry_linky->rHTMLLabel_JIG->Caption=ls->Strings[154];
+    //Form_parametry_linky->rHTMLLabel_podvozek_zaves->Caption=ls->Strings[155];
     Form_parametry_linky->scHTMLLabel_jig_info->Caption=ls->Strings[156];
     Form_parametry_linky->scGPGlyphButton_ADD_old->Hint=ls->Strings[157];
     Form_parametry_linky->scGPGlyphButton_OPTIONS->Hint=ls->Strings[158];

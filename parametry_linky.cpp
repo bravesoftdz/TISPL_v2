@@ -31,6 +31,7 @@
 #pragma link "scStyledForm"
 #pragma link "scImageCollection"
 #pragma link "scGPMeters"
+#pragma link "scHint"
 #pragma resource "*.dfm"
 TForm_parametry_linky *Form_parametry_linky;
 //---------------------------------------------------------------------------
@@ -106,7 +107,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
     //F->scStyledForm1->ShowClientInActiveEffect();
    // scHTMLLabel1->Caption="Ahojky - <bgcolor =clWhite>[mm]</bgcolor>";
 		 scGPTrackBar_uchyceni->Top=196;
-		 scGPTrackBar_uchyceni->Left=614;
+		 scGPTrackBar_uchyceni->Left=611;
      scGPSwitch->Enabled=false;
 
 		 //naètení parametrù katalogu
@@ -133,17 +134,17 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		if(T==1)Taktunit=MIN;else Taktunit=S;//budu pøevádìt na metry - roztec, dle nastavených jednotek mezery na PO zobrazím rozestup na PL
 		if(T=="")F->writeINI("nastaveni_form_parametry", "TT",Taktunit);
 		//nastavení caption
-		if(Taktunit==1)rHTMLLabel_takt->Caption="TaktTime <font color=#2b579a>[m] </font>";
+		if(Taktunit==1)scHTMLLabel_takt->Caption="[m]";
 		T=F->readINI("nastaveni_form_parametry_linky", "rozmery");
 		if(T==1 || T=="")Delkaunit=MM;else Delkaunit=M;
 		if(T=="")F->writeINI("nastaveni_form_parametry", "rozmery",Delkaunit);
     //nastavení caption
 		if(Delkaunit==1)
 		{  //budu pøevádìt na metry - rozestup, dle nastavených jednotek mezery na PO zobrazím rozestup na PL
-	   	rHTMLLabel_delka_jig->Caption="<font color=#2b579a>[mm]</font>";
-			rHTMLLabel_sirka_jig->Caption="<font color=#2b579a>[mm]</font>";
-			rHTMLLabel_vyska_jig->Caption="<font color=#2b579a>[mm]</font>";
-			rHTMLLabel_delka_podvozek->Caption="<font color=#2b579a>[mm]</font>";
+	   	scHTMLLabel_delka_jig->Caption="[mm]";
+			scHTMLLabel_sirka_jig->Caption="[mm]";
+			scHTMLLabel_vyska_jig->Caption="[mm]";
+			scHTMLLabel_delka_podvozek->Caption="[mm]";
 		 //nahrání hodnot / bud v MM nebo M
 		}
 
@@ -220,18 +221,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
   PL_mGrid->MergeCells(7,0,7,1);
   PL_mGrid->MergeCells(8,0,8,1);
 
-   rHTMLLabel_InfoText->Caption="";
-   rHTMLLabel_InfoText->Top = Button_storno->Top - Button_storno->Height + 5;
-   rHTMLLabel_info_zmenaR->Top= Button_storno->Top - Button_storno->Height + 5;
-   rHTMLLabel_info_zmenaR->Left=Button_storno->Left;
-   rHTMLLabel_info_zmenaR->Caption="";
-
-//   scComboBox_vyber_produkt->Top= Button_storno->Top + Button_storno->Height ;
-//   scComboBox_vyber_produkt->Left =  Button_storno->Left + scComboBox_vyber_produkt->Width + 10 ;
-//
-//   scCheckBox_vyber_produkt->Top= scComboBox_vyber_produkt->Top;
-//   scCheckBox_vyber_produkt->Left =  scComboBox_vyber_produkt->Left + scComboBox_vyber_produkt->Width;
-	 //Nastav_zamky(empty_klik_ico,empty_klik);
+   scHTMLLabel_InfoText->Caption="";
+   scHTMLLabel_InfoText->Top = Button_storno->Top - Button_storno->Height + 5;
 	 vypis(""); VID=-1;
 
 	 //povolení vstupù do zmìny TT a vozíku + Uložit + Storno button
@@ -250,13 +241,13 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
 		if(scGPSwitch->State==0)
     {
-		rImageEx_jig_podlahovy->Visible=true;
-    rImageEx_jig_podvesny->Visible=false;
+		ImageEx_jig_podlahovy->Visible=true;
+    ImageEx_jig_podvesny->Visible=false;
     }
 		else
     {
-     rImageEx_jig_podvesny->Visible=true;
-     rImageEx_jig_podlahovy->Visible=false;
+     ImageEx_jig_podvesny->Visible=true;
+     ImageEx_jig_podlahovy->Visible=false;
      }
     nastav_edity();//nastaví edity
 
@@ -276,9 +267,9 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 			//scGPButton_vozik->Caption="   Vozík";
 			//scGPButton_vozik->ImageIndex=21;
 			//scGPButton_obecne->Caption="   Takt time";
-			rHTMLLabel_takt->Visible=true;
+			scHTMLLabel_takt->Visible=true;
 			rEditNum_takt->Visible=true;
-			rHTMLLabel_sirka_jig->Visible=true;
+			scHTMLLabel_sirka_jig->Visible=true;
 		}
 		else          //Klient
 		{
@@ -288,7 +279,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		 //	rHTMLLabel_sirka_jig->Visible=false;
 
 			scGPButton_obecne->Visible=false;
-			rHTMLLabel_takt->Visible=false;
+			scHTMLLabel_takt->Visible=false;
 			rEditNum_takt->Visible=false;
 		}
 
@@ -360,11 +351,6 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 scGPButton_jig->Options->PressedColor=Button_save->Options->NormalColor;
 	 scGPButton_jig->Options->FramePressedColor=Button_save->Options->NormalColor;
 
-	// rStringGridEd_tab_dopravniky->Left=1;
- //	 rStringGridEd_tab_dopravniky->Width=Form_parametry_linky->Width-2;
-
-    rHTMLLabel_podlahovy->Color=Form_parametry_linky->Color;
-    rHTMLLabel_podvesny->Color=rHTMLLabel_podlahovy->Color;
 
 	 scGPButton_doporucene->Options->NormalColor=Form_parametry_linky->Color;
 	 scGPButton_doporucene->Options->FrameNormalColor=Form_parametry_linky->Color;
@@ -373,8 +359,6 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 if(Form1->d.v.PP.typ_linky==0) scGPSwitch->State=scswOff;
 	 else  { scGPSwitch->State=scswOn; }
 	 //scRadioGroup_typVoziku->ItemIndex=Form1->d.v.PP.typ_voziku;
-
-  // rEditNum_takt->
 
 	 if(Taktunit==MIN)
 	 {
@@ -414,20 +398,20 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 scGPGlyphButton_ADD->Top=PL_mGrid->Top+PL_mGrid->Height + 1;
 	 scGPButton_vozik->Top=scGPButton_obecne->Top;
 	 scPanel_vozik->Top=scPanel_takt->Top;
-	 rHTMLLabel_podlahovy->Top=scGPButton_vozik->Top+scGPButton_vozik->Height/2-rHTMLLabel_podlahovy->Height/2;
-	 scGPSwitch->Top=rHTMLLabel_podlahovy->Top;
-	 rHTMLLabel_podvesny->Top=rHTMLLabel_podlahovy->Top;
+	 scHTMLLabel_podlahovy->Top=scGPButton_vozik->Top+scGPButton_vozik->Height/2-scHTMLLabel_podlahovy->Height/2;
+	 scGPSwitch->Top=scHTMLLabel_podlahovy->Top;
+	 scHTMLLabel_podvesny->Top=scHTMLLabel_podlahovy->Top;
 	 //TOP uvnitø
 	 scImage1->Top=scPanel_takt->Height/2-scImage1->Height/2;
 	 rEditNum_takt->Top=scPanel_takt->Height/2-rEditNum_takt->Height/2+1;
-	 rHTMLLabel_takt->Top=scPanel_takt->Height/2-rHTMLLabel_takt->Height/2+1;
+	 scHTMLLabel_takt->Top=scPanel_takt->Height/2-scHTMLLabel_takt->Height/2+1;
 	 //Left uvnitø
 	 scImage1->Left=40+6;//scImage1->Left=40 nelze použít scImage1->Left proto zmìøeno a pøidáno ruènì 40
 	 rEditNum_takt->Left=169;
-	 rHTMLLabel_takt->Left=rHTMLLabel_takt->Left+6;
+	 scHTMLLabel_takt->Left=scHTMLLabel_takt->Left+6;
 	 //obrázky
-	 rImageEx_jig_podlahovy->Left=scPanel_vozik->Width/2-rImageEx_jig_podlahovy->Width/2;
-	 rImageEx_jig_podvesny->Left=scPanel_vozik->Width/2-rImageEx_jig_podvesny->Width/2;
+	 ImageEx_jig_podlahovy->Left=scPanel_vozik->Width/2-ImageEx_jig_podlahovy->Width/2;
+	 ImageEx_jig_podvesny->Left=scPanel_vozik->Width/2-ImageEx_jig_podvesny->Width/2;
 	 //design tlaèítek
 	 Form1->m.designButton(Button_save,Form_parametry_linky,1,2);
 	 Form1->m.designButton(Button_storno,Form_parametry_linky,2,2);
@@ -634,8 +618,8 @@ void __fastcall TForm_parametry_linky::Button_stornoClick(TObject *Sender)
 	F->Layout->Options->FrameNormalColor=F->scGPPanel_mainmenu->FillColor;
 	F->Schema->Options->NormalColor=F->DetailsButton->Options->NormalColor;
 	F->Schema->Options->FrameNormalColor=F->DetailsButton->Options->NormalColor;
-  scComboBox_vyber_produkt->Visible=false;
-  scCheckBox_vyber_produkt->Visible=false;
+  //scComboBox_vyber_produkt->Visible=false;
+  //scCheckBox_vyber_produkt->Visible=false;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::KonecClick(TObject *Sender)
@@ -666,8 +650,8 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		bool volat_aktualizaci=false;
 		int aktualizace_id;
 
-    scCheckBox_vyber_produkt->Visible=false;
-    scComboBox_vyber_produkt->Visible=false;
+    //scCheckBox_vyber_produkt->Visible=false;
+    //scComboBox_vyber_produkt->Visible=false;
 
 
      //pøed samotným uložením, kontrola zdali jsou podstatné údaje u pohonu nastaveny
@@ -994,16 +978,16 @@ void __fastcall TForm_parametry_linky::rEditNum_takt_Change(TObject *Sender)
 void __fastcall TForm_parametry_linky::rHTMLLabel_delkavozikuClick(TObject *Sender)
 {
   F->log(__func__); //logování
-	rHTMLLabel_delka_jigClick(Sender);
+	scHTMLLabel_delka_jigClick(Sender);
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm_parametry_linky::rHTMLLabel_sirka_jigClick(TObject *Sender)
+void __fastcall TForm_parametry_linky::scHTMLLabel_sirka_jigClick(TObject *Sender)
 {
   F->log(__func__); //logování
-	rHTMLLabel_delka_jigClick(Sender);
+	scHTMLLabel_delka_jigClick(Sender);
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm_parametry_linky::rHTMLLabel_taktClick(TObject *Sender)
+void __fastcall TForm_parametry_linky::rHTMLLabel_takt2Click(TObject *Sender)
 {
 //
    F->log(__func__); //logování
@@ -1012,14 +996,14 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_taktClick(TObject *Sender)
 		Taktunit=S;
 		//delka - pøepoèítání
 		rEditNum_takt->Value=rEditNum_takt->Value*60.0;
-		rHTMLLabel_takt->Caption="<font color=#2b579a>[s]</font>";
+		scHTMLLabel_takt->Caption="[s]";
 	}
 	else//metrech tak se pøepne na MM
 	{
 		Taktunit=MIN;
 		//delka - pøepoèítání
 		rEditNum_takt->Value=rEditNum_takt->Value/60.0;
-		rHTMLLabel_takt->Caption="<font color=#2b579a>[m]</font>";
+		scHTMLLabel_takt->Caption="[m]";
 	}
 
 }
@@ -1076,6 +1060,7 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
   F->log(__func__); //logování
   if(Key==120)//F9 nastav produkty
 	{
+    //ShowMessage("F9");
 		if (scComboBox_vyber_produkt->Visible==true)
     {
     scComboBox_vyber_produkt->Visible=false;
@@ -1175,6 +1160,7 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
   PL_mGrid->Refresh();
 	input_state=NOTHING;
 	vykresli_obdelnik_vpravo();
+  Button_save->SetFocus();
 	}
   }
 }
@@ -1185,10 +1171,10 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
 void __fastcall TForm_parametry_linky::rEditNum_delkavozikuClick(TObject *Sender)
 {
 	F->log(__func__); //logování
-	rHTMLLabel_delka_jigClick(Sender);
+	scHTMLLabel_delka_jigClick(Sender);
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm_parametry_linky::rHTMLLabel_delka_jigClick(TObject *Sender)
+void __fastcall TForm_parametry_linky::scHTMLLabel_delka_jigClick(TObject *Sender)
 {
   F->log(__func__); //logování
 	if(Delkaunit==MM)//pokud je v MM, tak pøepne na metry
@@ -1196,32 +1182,32 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_delka_jigClick(TObject *Sender
 		Delkaunit=M;
 		//delka - pøepoèítání
 
-		rHTMLLabel_delka_jig->Caption="<font color=#2b579a>[m]</font>";
+		scHTMLLabel_delka_jig->Caption="[m]";
 		scGPNumericEdit_delka_jig->Value=scGPNumericEdit_delka_jig->Value/1000.0;
 
-		rHTMLLabel_sirka_jig->Caption="<font color=#2b579a>[m]</font>";
+		scHTMLLabel_sirka_jig->Caption="[m]";
 		scGPNumericEdit_sirka_jig->Value=scGPNumericEdit_sirka_jig->Value/1000.0;
 
-		rHTMLLabel_delka_podvozek->Caption="<font color=#2b579a>[m]</font>";
+		scHTMLLabel_delka_podvozek->Caption="[m]";
 		scGPNumericEdit_delka_podvozek->Value=scGPNumericEdit_delka_podvozek->Value/1000.0;
 
-		rHTMLLabel_vyska_jig->Caption="<font color=#2b579a>[m]</font>";
+		scHTMLLabel_vyska_jig->Caption="[m]";
 		scGPNumericEdit_vyska_jig->Value=scGPNumericEdit_vyska_jig->Value/1000.0;
 	}
 	else//metrech tak se pøepne na MM
 	{
 		Delkaunit=MM;
 
-		rHTMLLabel_delka_jig->Caption="<font color=#2b579a>[mm]</font>";
+		scHTMLLabel_delka_jig->Caption="[mm]";
 		scGPNumericEdit_delka_jig->Value=scGPNumericEdit_delka_jig->Value*1000.0;
 
-		rHTMLLabel_sirka_jig->Caption="<font color=#2b579a>[mm]</font>";
+		scHTMLLabel_sirka_jig->Caption="[mm]";
 		scGPNumericEdit_sirka_jig->Value=scGPNumericEdit_sirka_jig->Value*1000.0;
 
-		rHTMLLabel_delka_podvozek->Caption="<font color=#2b579a>[mm]</font>";
+		scHTMLLabel_delka_podvozek->Caption="[mm]";
 		scGPNumericEdit_delka_podvozek->Value=scGPNumericEdit_delka_podvozek->Value*1000.0;
 
-		rHTMLLabel_vyska_jig->Caption="<font color=#2b579a>[mm]</font>";
+		scHTMLLabel_vyska_jig->Caption="[mm]";
 		scGPNumericEdit_vyska_jig->Value=scGPNumericEdit_vyska_jig->Value*1000.0;
 	}
 	vozik_zmena_jednotek();
@@ -1248,22 +1234,22 @@ void TForm_parametry_linky::vozik_zmena_jednotek()
 		scGPNumericEdit_vyska_jig->Left=37;
 	}
 	//nastavování odkazù
-	if(rImageEx_jig_podlahovy->Visible)
+	if(ImageEx_jig_podlahovy->Visible)
 	{
-		rHTMLLabel_delka_jig->Left=scGPNumericEdit_delka_jig->Left+scGPNumericEdit_delka_jig->Width+2;
-		rHTMLLabel_delka_podvozek->Left=scGPNumericEdit_delka_podvozek->Left+scGPNumericEdit_delka_podvozek->Width+2;
+		scHTMLLabel_delka_jig->Left=scGPNumericEdit_delka_jig->Left+scGPNumericEdit_delka_jig->Width+2;
+		scHTMLLabel_delka_podvozek->Left=scGPNumericEdit_delka_podvozek->Left+scGPNumericEdit_delka_podvozek->Width+2;
 	}
 	else
 	{
-		rHTMLLabel_delka_podvozek->Left=scGPNumericEdit_delka_jig->Left+scGPNumericEdit_delka_jig->Width+2;
-		rHTMLLabel_delka_jig->Left=scGPNumericEdit_delka_podvozek->Left+scGPNumericEdit_delka_podvozek->Width+2;
+		scHTMLLabel_delka_podvozek->Left=scGPNumericEdit_delka_jig->Left+scGPNumericEdit_delka_jig->Width+2;
+		scHTMLLabel_delka_jig->Left=scGPNumericEdit_delka_podvozek->Left+scGPNumericEdit_delka_podvozek->Width+2;
 	}
-	rHTMLLabel_sirka_jig->Left=scGPNumericEdit_sirka_jig->Left+scGPNumericEdit_sirka_jig->Width+2;
-	rHTMLLabel_vyska_jig->Left=scGPNumericEdit_vyska_jig->Left+scGPNumericEdit_vyska_jig->Width+2;
+	scHTMLLabel_sirka_jig->Left=scGPNumericEdit_sirka_jig->Left+scGPNumericEdit_sirka_jig->Width+2;
+	scHTMLLabel_vyska_jig->Left=scGPNumericEdit_vyska_jig->Left+scGPNumericEdit_vyska_jig->Width+2;
 }
 void __fastcall TForm_parametry_linky::rHTMLLabel_delka_vozikuClick(TObject *Sender)
 {
-	rHTMLLabel_delka_jigClick(Sender);
+	scHTMLLabel_delka_jigClick(Sender);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::Button_DELMouseMove(TObject *Sender, TShiftState Shift,
@@ -1573,7 +1559,7 @@ void __fastcall TForm_parametry_linky::scLabel_smazat_nepouziteClick(TObject *Se
 				Button_save->Top=Form_parametry_linky->Height - 40;
 				Button_storno->Top=Form_parametry_linky->Height - 40;
 				scGPGlyphButton_DEL_nepouzite->Top=Form_parametry_linky->Height-30;
-				rHTMLLabel_InfoText->Top=  PL_mGrid->Height + 8;
+				scHTMLLabel_InfoText->Top=  PL_mGrid->Height + 8;
 				vypis("",false);
 			}
       else {PL_mGrid->getCheck(6,j)->Checked=true;  PL_mGrid->getCheck(6,j)->Enabled=true;   }
@@ -1632,13 +1618,13 @@ void __fastcall TForm_parametry_linky::scGPSwitchChangeState(TObject *Sender)
     F->log(__func__); //logování
 		if(scGPSwitch->State==0)
     {
-		 rImageEx_jig_podlahovy->Visible=true;//bude podlahový
-		 rImageEx_jig_podvesny->Visible=false;
+		 ImageEx_jig_podlahovy->Visible=true;//bude podlahový
+		 ImageEx_jig_podvesny->Visible=false;
     }
 		else
     {
-		 rImageEx_jig_podvesny->Visible=true;//bude podvìsný
-     rImageEx_jig_podlahovy->Visible=false;
+		 ImageEx_jig_podvesny->Visible=true;//bude podvìsný
+     ImageEx_jig_podlahovy->Visible=false;
 		}
 		nastav_edity();
 }
@@ -1649,27 +1635,27 @@ void TForm_parametry_linky::nastav_edity ()
   F->log(__func__); //logování
 	int y=0,x=0;
 
-	if(rImageEx_jig_podlahovy->Visible)
+	if(ImageEx_jig_podlahovy->Visible)
 	{
 		scGPNumericEdit_sirka_jig->Top=100;
-		rHTMLLabel_sirka_jig->Top=100;
+		scHTMLLabel_sirka_jig->Top=100;
 		scGPNumericEdit_vyska_jig->Top=82;
-		rHTMLLabel_vyska_jig->Top=82;
+		scHTMLLabel_vyska_jig->Top=82;
 
 		scGPNumericEdit_delka_jig->Left=194; //194
 		scGPNumericEdit_delka_podvozek->Left=184;
 	}
-	if(rImageEx_jig_podvesny->Visible)
+	if(ImageEx_jig_podvesny->Visible)
 	{
 		scGPNumericEdit_sirka_jig->Top=148;
-		rHTMLLabel_sirka_jig->Top=148;
+		scHTMLLabel_sirka_jig->Top=148;
 		scGPNumericEdit_vyska_jig->Top=98;
-		rHTMLLabel_vyska_jig->Top=98;
+		scHTMLLabel_vyska_jig->Top=98;
 
 		scGPNumericEdit_delka_jig->Left=189;//189
 		scGPNumericEdit_delka_podvozek->Left=181;
 	}
-	if(rImageEx_jig_podlahovy->Visible&&scGPNumericEdit_delka_jig->Top>scGPNumericEdit_delka_podvozek->Top||rImageEx_jig_podvesny->Visible&&scGPNumericEdit_delka_jig->Top<scGPNumericEdit_delka_podvozek->Top)//podlahový vozík a zároveò špatné edity
+	if(ImageEx_jig_podlahovy->Visible&&scGPNumericEdit_delka_jig->Top>scGPNumericEdit_delka_podvozek->Top||ImageEx_jig_podvesny->Visible&&scGPNumericEdit_delka_jig->Top<scGPNumericEdit_delka_podvozek->Top)//podlahový vozík a zároveò špatné edity
 	{
 		y=scGPNumericEdit_delka_jig->Top;
 		x=scGPNumericEdit_delka_jig->Left;
@@ -1678,17 +1664,17 @@ void TForm_parametry_linky::nastav_edity ()
 		scGPNumericEdit_delka_jig->Left=scGPNumericEdit_delka_podvozek->Left;
 		scGPNumericEdit_delka_podvozek->Left=x;
 	}
-  if(rImageEx_jig_podlahovy->Visible)
+  if(ImageEx_jig_podlahovy->Visible)
 	{
-  	rHTMLLabel_delka_jig->Left=scGPNumericEdit_delka_jig->Left+scGPNumericEdit_delka_jig->Width+2;
-		rHTMLLabel_delka_podvozek->Left=scGPNumericEdit_delka_podvozek->Left+scGPNumericEdit_delka_podvozek->Width+2;
+  	scHTMLLabel_delka_jig->Left=scGPNumericEdit_delka_jig->Left+scGPNumericEdit_delka_jig->Width+2;
+		scHTMLLabel_delka_podvozek->Left=scGPNumericEdit_delka_podvozek->Left+scGPNumericEdit_delka_podvozek->Width+2;
 	}
 	else
 	{
-  	rHTMLLabel_delka_podvozek->Left=scGPNumericEdit_delka_jig->Left+scGPNumericEdit_delka_jig->Width+2;
-		rHTMLLabel_delka_jig->Left=scGPNumericEdit_delka_podvozek->Left+scGPNumericEdit_delka_podvozek->Width+2;
+  	scHTMLLabel_delka_podvozek->Left=scGPNumericEdit_delka_jig->Left+scGPNumericEdit_delka_jig->Width+2;
+		scHTMLLabel_delka_jig->Left=scGPNumericEdit_delka_podvozek->Left+scGPNumericEdit_delka_podvozek->Width+2;
   }
-	rHTMLLabel_sirka_jig->Left=scGPNumericEdit_sirka_jig->Left+scGPNumericEdit_sirka_jig->Width+2;
+	scHTMLLabel_sirka_jig->Left=scGPNumericEdit_sirka_jig->Left+scGPNumericEdit_sirka_jig->Width+2;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormClose(TObject *Sender, TCloseAction &Action)
@@ -1714,32 +1700,32 @@ void TForm_parametry_linky::vypis(UnicodeString text,bool red,bool link)
  //if(text=="m].</b>")text="";//provizorní WA, pøi zmìnì Rz a byla-li v poøádku to vrací toto  - již není tøeba, ale zatím nechávám
 		if (text != "") // zobrazí a vypíše
 		{
-				rHTMLHint1->ToString()=text;//natežení do hintu zajišuje zobrazení celého textu, nepoužívá se klasický hint
+				scHint1->ToString()=text;//natežení do hintu zajišuje zobrazení celého textu, nepoužívá se klasický hint
 				//prodllužení formu if(!rHTMLLabel_InfoText->Visible){Height+=(40+19);position();}pouze pokud byl pøedtím popisek skrytý + kontrola pozice formu
 
-				if(link)rHTMLLabel_InfoText->Font->Style = TFontStyles()<< fsUnderline;//zapnutí podtrženého písma
-				else rHTMLLabel_InfoText->Font->Style = TFontStyles();
+				if(link)scHTMLLabel_InfoText->Font->Style = TFontStyles()<< fsUnderline;//zapnutí podtrženého písma
+				else scHTMLLabel_InfoText->Font->Style = TFontStyles();
 
 				if (red)
 				{
 						Button_save->Enabled=false;  //R - doèasné povolení ukládání pøi validaci
-						rHTMLLabel_InfoText->Font->Color = clRed;
-            rHTMLLabel_InfoText->Color=clWhite;
+						scHTMLLabel_InfoText->Font->Color = clRed;
+            scHTMLLabel_InfoText->Color=clWhite;
 				}
 				else
 				{
-						rHTMLLabel_InfoText->Font->Color = (TColor)RGB(0,128,255);
+						scHTMLLabel_InfoText->Font->Color = (TColor)RGB(0,128,255);
 				}
-				rHTMLLabel_InfoText->Left = 10;
-				rHTMLLabel_InfoText->Top = Button_storno->Top - Button_storno->Height  + 5;
-				rHTMLLabel_InfoText->Caption = text;
-				rHTMLLabel_InfoText->Visible = true;
-        rHTMLLabel_InfoText->Color=clWhite;
+				scHTMLLabel_InfoText->Left = 10;
+				scHTMLLabel_InfoText->Top = Button_storno->Top - Button_storno->Height  + 5;
+				scHTMLLabel_InfoText->Caption = text;
+				scHTMLLabel_InfoText->Visible = true;
+        scHTMLLabel_InfoText->Color=clWhite;
 		}
 		else // skryje
 		{
 				//zkrácení formu if(rHTMLLabel_InfoText->Visible)Height-=(40+19);
-				rHTMLLabel_InfoText->Visible = false;
+				scHTMLLabel_InfoText->Visible = false;
 		}
 }
 //---------------------------------------------------------------------------
@@ -2442,10 +2428,11 @@ void __fastcall TForm_parametry_linky::scGPNumericEdit_delka_podvozekChange(TObj
 
 
 void __fastcall TForm_parametry_linky::scComboBox_vyber_produktChange(TObject *Sender)
-
 {
 if(scComboBox_vyber_produkt->ItemIndex==0) scCheckBox_vyber_produkt->Enabled=false;
 else scCheckBox_vyber_produkt->Enabled=true;
 }
 //---------------------------------------------------------------------------
+
+
 
