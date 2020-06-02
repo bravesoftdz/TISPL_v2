@@ -1030,8 +1030,8 @@ object Form_parametry_linky: TForm_parametry_linky
     OnClose = scExPanel_doporuc_pohonyClose
     object scHTMLLabel_doporuc_pohony: TscHTMLLabel
       AlignWithMargins = True
-      Left = 6
-      Top = 40
+      Left = 12
+      Top = 46
       Width = 221
       Height = 19
       Align = alCustom
@@ -1062,8 +1062,6 @@ object Form_parametry_linky: TForm_parametry_linky
       LinkFontHover.Style = [fsUnderline]
       MaxWidth = 0
       TextAlignment = taLeftJustify
-      ExplicitLeft = 3
-      ExplicitTop = 37
     end
     object scGPGlyphButton_add_mezi_pohony: TscGPGlyphButton
       Left = 419
@@ -7890,8 +7888,8 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 9929
-    Top = 15919
+    Left = 9941
+    Top = 15939
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -7917,8 +7915,8 @@ object Form_parametry_linky: TForm_parametry_linky
     GlyphThickness = 1
     Kind = scgpgkOneGear
     TransparentBackground = True
-    ExplicitLeft = 9557
-    ExplicitTop = 15299
+    ExplicitLeft = 9938
+    ExplicitTop = 15934
   end
   object scGPSwitch: TscGPSwitch
     Left = 762
@@ -8203,14 +8201,6 @@ object Form_parametry_linky: TForm_parametry_linky
     Checked = False
     ShowFocusRect = True
   end
-  object Edit1: TEdit
-    Left = 240
-    Top = 368
-    Width = 121
-    Height = 19
-    TabOrder = 29
-    Text = 'Edit1'
-  end
   object scHTMLLabel_podlahovy: TscLabel
     Left = 685
     Top = 55
@@ -8224,7 +8214,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Quality = fqClearType
     ParentFont = False
     FluentUIOpaque = False
-    TabOrder = 30
+    TabOrder = 29
     DragForm = False
     DragTopForm = True
     GlowEffect.Enabled = False
@@ -8251,7 +8241,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Quality = fqClearType
     ParentFont = False
     FluentUIOpaque = False
-    TabOrder = 31
+    TabOrder = 30
     DragForm = False
     DragTopForm = True
     GlowEffect.Enabled = False
@@ -8278,7 +8268,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Quality = fqClearType
     ParentFont = False
     FluentUIOpaque = False
-    TabOrder = 32
+    TabOrder = 31
     OnClick = rHTMLLabel_InfoTextClick
     AutoSizeHeight = True
     AutoSizeWidth = True

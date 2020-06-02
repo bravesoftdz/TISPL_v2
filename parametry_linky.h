@@ -100,7 +100,6 @@ __published:	// IDE-managed Components
 	TscHTMLLabel *scHTMLLabel_posuvnik;
   TscComboBox *scComboBox_vyber_produkt;
   TscCheckBox *scCheckBox_vyber_produkt;
-  TEdit *Edit1;
   TscHTMLLabel *scHTMLLabel_sirka_jig;
   TscHTMLLabel *scHTMLLabel_delka_podvozek;
   TscHTMLLabel *scHTMLLabel_vyska_jig;
