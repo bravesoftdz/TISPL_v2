@@ -352,13 +352,12 @@ __published:	// IDE-managed Components
 	TTimer *Timer_getjobid;
 	TscGPCheckBox *scGPCheckBox_popisek_pohonu;
 	TEdit *Edit_proFocus;
+	TEdit *Edit1;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int ARow, TRect &Rect,
           TGridDrawState State);
-	void __fastcall testovnkapacity1Click(TObject *Sender);
-	void __fastcall casoverezervy1Click(TObject *Sender);
 	void __fastcall schemaClick(TObject *Sender);
 	void __fastcall DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
@@ -416,7 +415,6 @@ __published:	// IDE-managed Components
 	void __fastcall Obnovitobraz1Click(TObject *Sender);
 	void __fastcall csv1Click(TObject *Sender);
 	void __fastcall html1Click(TObject *Sender);
-	void __fastcall simulace1Click(TObject *Sender);
 	void __fastcall RzStatusPane1Click(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Timer_simulaceTimer(TObject *Sender);
@@ -742,6 +740,7 @@ private:
 	bool storno;//slouûÌ k rozliöenÌ jestli bylo stisknuto storno nebo byl zavol·n jeho stisk z tlaËÌtka uloûit
 	bool refreshovat_scGPTrackBar;//promÏnn· zajiöùujÌci, ûe se scGPTracBar nerefreshuje pokud mu p¯i zmÏnÏ zoomu mimo scGPTracBar
 	TscGPEdit *vir_edit;
+	long vychozi_stav_sceny;
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
@@ -831,7 +830,7 @@ public:		// User declarations
 	void ZOOM_OUT();//odd·lenÌ
 	void REFRESH();
 	void REFRESH(bool refreshovat_mGridy);
-	void REFRESH(long ZprVozEleDopObjHal,bool refreshovat_mGridy);
+	void REFRESH(long ZprVozEledElesDopObjHal,bool refreshovat_mGridy);
 	void DuvodUlozit(bool stav);
 	void nahled_ulozit(bool duvod_ulozit);
 	void SB(UnicodeString Text, unsigned short Pane=4);//domnÌv·m se, ûe zde m· b˝t hodnota 5

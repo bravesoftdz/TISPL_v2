@@ -115,7 +115,7 @@ TPointD Cvykresli::Rxy(Cvektory::TElement *Element)
 }
 //---------------------------------------------------------------------------
 //vykreslí zakázky, cesty, spojnice, kabiny, pohony, elementy
-void Cvykresli::vykresli_vektory(TCanvas *canv, short scena)//scena 0 - vše, scena 1 - statické elementy, scena 2 - dynamické elementy
+void Cvykresli::vykresli_vektory(TCanvas *canv, short scena)//scena 0 - vše, scena 1 - statická scéna, scena 2 - dynamická scéna (odkud je voláno), následně se vyfiltruje podle toho, jak je nastaveno
 {
 	/////Vykreslení haly
 	if(m.getValueFromPosition(SCENA,1)==scena)vykresli_halu(canv);
@@ -127,16 +127,17 @@ void Cvykresli::vykresli_vektory(TCanvas *canv, short scena)//scena 0 - vše, sc
 	if(m.getValueFromPosition(SCENA,3)==scena)vykresli_retez(canv);//přejemnovat asi na vykresli dopravník
 
 	/////Vykreslení elementů
-	if(m.getValueFromPosition(SCENA,4)>0 || scena==0)vykresli_elementy(canv,scena);
+	if(m.getValueFromPosition(SCENA,4)==scena)vykresli_elementy(canv,scena);							//implicitně statická sekce (může být ale i v dynamické scéně), popř. pokud se vykresluje vše do dynamické vykresluje jak statickou tak dynamickou sekci společně
+	if(m.getValueFromPosition(SCENA,5)==scena && SCENA!=0)vykresli_elementy(canv,scena+2);//implicitně dynamická sekce (může být ale i ve statické scéně), pokud se vykresluje vše do dynamické, tato se již kvůli zbytečnému dalšímu průchodu cyklu již nevykresluje, protože výše vykresluje statickou tak dynamickou sekci společně
 
 	/////VALIDACE její samotné provední, vnitřek metody se provede jen pokud duvod_validovat==2
-	if(m.getValueFromPosition(SCENA,6)==scena)v.VALIDACE();
+	if(m.getValueFromPosition(SCENA,7)==scena)v.VALIDACE();
 
 	/////vykreslení VOZÍKů, musí být až za VALIDACí kvůli generování vozíků, které je ve VALIDACi
-	if(F->MOD!=F->TVORBA_CESTY && F->Akce!=F->GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT && m.getValueFromPosition(SCENA,5)==scena)vykresli_voziky(canv);
+	if(F->MOD!=F->TVORBA_CESTY && F->Akce!=F->GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT && m.getValueFromPosition(SCENA,6)==scena)vykresli_voziky(canv);
 
 	/////VALIDACE výpis formou zpráv musí být za vozíky, aby byla zcela nahoře
-	if(F->MOD!=F->TVORBA_CESTY && F->Akce!=F->GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT && m.getValueFromPosition(SCENA,6)==scena)vypis_zpravy(canv);
+	if(F->MOD!=F->TVORBA_CESTY && F->Akce!=F->GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT && m.getValueFromPosition(SCENA,7)==scena)vypis_zpravy(canv);
 }
 //---------------------------------------------------------------------------
 void Cvykresli::vykresli_objekty(TCanvas *canv)
@@ -153,7 +154,7 @@ void Cvykresli::vykresli_objekty(TCanvas *canv)
 	if(F->OBJEKT_akt!=NULL)vykresli_objekt(canv,F->OBJEKT_akt);//vykreslení aktuálně editovaného objektu nad všechny ostatní objekty
 }
 //---------------------------------------------------------------------------
-void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)//scena 0 - vše, scena 1 - statické elementy, scena 2 - dynamické elementy
+void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)//scena 0 - vše do dynamické, scena 1 - implicitně statické elementy do statické scény, scena 2 - implicitně statické elementy do dynamické scény, scena 3 - implicitně dynamické elementy do statické scény, scena 4 - implicitně dynamické elementy do dynamické scény
 {
 	//vykreslování z ELEMENTY
 	float sipka_velikost=0.1*F->Zoom; if(sipka_velikost<1*3)sipka_velikost=1*3;
@@ -171,7 +172,7 @@ void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)//scena 0 - vše, sc
 			else stav=-1;//disabled elementy ostatních objektů
 			if(stav!=-1)stav=E->stav;//předávání stavu v aktivní kabině pro highlightování elementů
 			//vykreslení elementu a pozic
-			if(F->MOD!=F->SIMULACE)vykresli_pozice_a_zony(canv,E);
+			if(F->MOD!=F->SIMULACE && scena<=2)vykresli_pozice_a_zony(canv,E);
 			if(!(F->OBJEKT_akt!=NULL && E->objekt_n!=F->OBJEKT_akt->n && F->scGPTrackBar_intenzita->Value<5))vykresli_element(canv,scena,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->data.LO1,E->OTOC_delka,E->data.LO2,E->data.LO_pozice,E);
 			//uložení citelné oblasti pro další použití
 			E->citelna_oblast.rect3=aktOblast;
@@ -181,7 +182,7 @@ void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)//scena 0 - vše, sc
 			pom=E->dalsi;
 
 			////vykreslení spojnic pokud geometrie nenavazuje
-			if(scena<=1)
+			if(scena<=2)
 			{
 				canv->Pen->Style=psDash;
 				canv->Pen->Mode=pmCopy;
@@ -3756,17 +3757,17 @@ void Cvykresli::vykresli_palec(TCanvas *canv,double X,double Y,bool NEW,bool ACT
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //celková vykreslovací metoda, vykreslí buď stopku, robota nebo otoč
 void Cvykresli::vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiString name,AnsiString short_name,unsigned int eID,short typ,double rotace,short stav,double LO1,double OTOC_delka,double LO2,double LO_pozice,Cvektory::TElement *E)
-{ //scena 0 - vše, scena 1 - statické elementy, scena 2 - dynamické elementy
+{ //scena 0 - vše do dynamické, scena 1 - implicitně statické elementy do statické scény, scena 2 - implicitně statické elementy do dynamické scény, scena 3 - implicitně dynamické elementy do statické scény, scena 4 - implicitně dynamické elementy do dynamické scény
 	rotace=m.Rt90(rotace);
 	switch(eID)
 	{
-		case 0:  if(scena==0 || scena==2)vykresli_stopku(canv,X,Y,name,short_name,typ,rotace,stav);break;//stopka
+		case 0:  if(scena==0 || scena>2)vykresli_stopku(canv,X,Y,name,short_name,typ,rotace,stav);break;//stopka
 		case 1:  vykresli_robota(canv,scena,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0,F->RO,F->ROst,LO_pozice);break;//kontinuální robota
 		case 2:  vykresli_robota(canv,scena,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0,F->RO,F->ROst);break;//robot se stopkou
 		case 3:  vykresli_robota(canv,scena,X,Y,name,short_name,eID,typ,rotace,stav,LO1,OTOC_delka,LO2,F->RO,F->ROst);break;//robot s pasivní otočí
 		case 4:  vykresli_robota(canv,scena,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0,F->RO,F->ROst);break;//robot s aktivní otočí (tj. s otočí a se stopkou)
-		case 5:  if(scena==0 || scena==1)vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//pasivní otoč
-		case 6:  if(scena==0 || scena==1)vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//aktivní otoč
+		case 5:  if(scena<=2)vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//pasivní otoč
+		case 6:  if(scena<=2)vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//aktivní otoč
 		case 7:  vykresli_robota(canv,scena,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0,F->RO,F->ROst,LO_pozice);break;//kontinuální robota
 		case 8:  vykresli_robota(canv,scena,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0,F->RO,F->ROst);break;//robot se stopkou
 		case 9:  vykresli_robota(canv,scena,X,Y,name,short_name,eID,typ,rotace,stav,LO1,OTOC_delka,LO2,F->RO,F->ROst);break;//robot s pasivní otočí
@@ -3779,7 +3780,7 @@ void Cvykresli::vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiStr
 		case 16: vykresli_robota(canv,scena,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0,F->RO,F->ROst);break;//robot se stopkou
 		case 17: vykresli_robota(canv,scena,X,Y,name,short_name,eID,typ,rotace,stav,LO1,OTOC_delka,LO2,F->RO,F->ROst);break;//robot s pasivní otočí
 		case 18: vykresli_robota(canv,scena,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0,F->RO,F->ROst);break;//robot s aktivní otočí (tj. s otočí a se stopkou)
-		case 100:if(scena==0 || scena==1)vykresli_ion(canv,X,Y,name,short_name,typ,rotace,stav,F->ROst);break;//ion tyč
+		case 100:if(scena<=2)vykresli_ion(canv,X,Y,name,short_name,typ,rotace,stav,F->ROst);break;//ion tyč
 		case 101:vykresli_cloveka(canv,scena,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0);break;//lidský robot
 		case 102:vykresli_cloveka(canv,scena,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0);break;//lidský robot se stop stanicí
 		case 103:vykresli_cloveka(canv,scena,X,Y,name,short_name,eID,typ,rotace,stav,LO1,OTOC_delka,LO2);break;//lidský robot s pasivní otočí
@@ -3788,7 +3789,7 @@ void Cvykresli::vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiStr
 		case 106:vykresli_cloveka(canv,scena,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0);break;//lidský robot ionizace se stop stanicí
 		case 107:vykresli_cloveka(canv,scena,X,Y,name,short_name,eID,typ,rotace,stav,LO1,OTOC_delka,LO2);break;//lidský robot  ionizace s pasivní otočí
 		case 108:vykresli_cloveka(canv,scena,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0);break;//lidský robot ionizace s aktivní otočí (resp. s otočí a stop stanicí)
-		case 200:if(scena==0 || scena==1)vykresli_predavaci_misto(canv,E,X,Y,name,typ,rotace,stav);break;//vykreslení předávacího místa - pouze popisek
+		case 200:if(scena<=2)vykresli_predavaci_misto(canv,E,X,Y,name,typ,rotace,stav);break;//vykreslení předávacího místa - pouze popisek
 		//case MaxInt:if(scena==0 || scena==1)vykresli_zarazku(canv,X,Y);break;//vykreslení zarážky pro testovací účely
 		case 300://výhybka
 		case 301://spojka
@@ -3975,7 +3976,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,short scena,long X,long Y,AnsiStri
 	canv->Brush->Color=clWhite;
 
 	////statická scéna
-	if(scena<=1)
+	if(scena<=2)
 	{
 		////základna
 		TRect zakladna=TRect(m.round(X-delka_zakladny/2.0),m.round(Y-sirka_zakladny/2.0),m.round(X+delka_zakladny/2.0),m.round(Y+sirka_zakladny/2.0));
@@ -3983,7 +3984,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,short scena,long X,long Y,AnsiStri
 	}
 
 	//dynamická scéna
-	if(scena==0 ||scena==2)
+	if(scena==0 || 3<=scena)
 	{
 		////tryska
 		long cX=X-aP;long cY=m.round(Y-sirka_zakladny/2.0-DkRB+DT);//skutečný referenční bod (nikoliv uchopovací, ten je u robota odlišný) minus výška trysky
@@ -4028,7 +4029,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,short scena,long X,long Y,AnsiStri
 	//short_name="R1";//prozatim
 
 	////text
-	if(typ!=-1 && scena<=1)//v módu kurzor se název nezobrazuje
+	if(typ!=-1 && scena<=2)//v módu kurzor se název nezobrazuje
 	{              //pokud by tu nebylo ošetření zdisablovaného stavu, tak by se font již vypisoval bílou barvou....
 		if(typ==0 && stav!=-1)canv->Font->Color=m.clIntensive(barva,100);else canv->Font->Color=barva;//ikona vs. normální zobrazení
 		canv->Font->Style = TFontStyles();//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
@@ -4109,7 +4110,7 @@ void Cvykresli::vykresli_cloveka(TCanvas *canv,short scena,long X,long Y,AnsiStr
 	{
 		case 101: case 105: if(typ==1 && scena<=1)  vykresli_lakovaci_okno(canv,X,Y,LO1,0,0,DkRBpx,m.Rt90(rotace90+180+rotace2));break;//pokud se jedná o kontinuálního robota v normálním zobrazení, zobrazí se ještě lakovací okno
 		case 102: case 106: if(scena==0 ||scena==2) vykresli_stopku(canv,pX,pY,"","",typ,m.Rt90(rotace90+rotace2),stav);break;//robot se stopkou
-		case 103: case 107: if(typ==1 && scena<=1) 	vykresli_lakovaci_okno(canv,X,Y,LO1,OTOC_delka,LO2,DkRBpx,m.Rt90(rotace90+180+rotace2));if(scena<=1)vykresli_otoc(canv,pX,pY,"","",5,typ,m.Rt90(rotace90+rotace2),stav);break;//s pasivní otočí
+		case 103: case 107: if(typ==1 && scena<=2) 	vykresli_lakovaci_okno(canv,X,Y,LO1,OTOC_delka,LO2,DkRBpx,m.Rt90(rotace90+180+rotace2));if(scena<=2)vykresli_otoc(canv,pX,pY,"","",5,typ,m.Rt90(rotace90+rotace2),stav);break;//s pasivní otočí
 		case 104: case 108: if(scena==0 ||scena==1) vykresli_otoc(canv,pX,pY,"","",6,typ,m.Rt90(rotace90+rotace2),stav);break;//s aktivní otočí (tj. s otočí a se stopkou)
 	}
 	if(typ==0)F->Zoom*=1.5;//navrácení do původního stavu
@@ -4124,7 +4125,8 @@ void Cvykresli::vykresli_cloveka(TCanvas *canv,short scena,long X,long Y,AnsiStr
 		clIon=m.clIntensive(clIon,I);
 	}//pokud je aktivní nebo neaktivní
 
-	if(scena==0 || scena==2)//dynamická scéna
+	////dynamická scéna
+	if(scena==0 || 3<=scena)
 	{
 		////nastavení pera
 		float W=0.02;if(F->antialiasing)W*=3;
@@ -4234,7 +4236,7 @@ void Cvykresli::vykresli_cloveka(TCanvas *canv,short scena,long X,long Y,AnsiStr
 	}
 
 	////text
-	if(typ!=-1 && scena<=1)//v módu kurzor se název nezobrazuje
+	if(typ!=-1 && scena<=2)//v módu kurzor se název nezobrazuje
 	{              //pokud by tu nebylo ošetření zdisablovaného stavu, tak by se font již vypisoval bílou barvou....
 		if(typ==0 && stav!=-1)canv->Font->Color=m.clIntensive(barva,100);else canv->Font->Color=barva;//ikona vs. normální zobrazení
 		canv->Font->Style = TFontStyles();//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
