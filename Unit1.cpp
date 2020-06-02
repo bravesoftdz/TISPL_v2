@@ -2951,6 +2951,8 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 			if(Akce==GEOMETRIE && !editace_textu)ukonceni_geometrie();
 			////Potvrzení tvorby cesty
 			if(MOD==TVORBA_CESTY && scGPButton_ulozit_cestu->Enabled)scGPButton_ulozit_cestuClick(this);
+			////ukončení měření pomocí manetického lasa
+			if(MOD==MAGNETICKE_LASO)zanuti_vypnuti_magnetickeho_lasa();
 			////Hala
 			if(editace_textu)smaz_kurzor();
 			if(Akce==DRAW_HALA&&d.v.HALA.body!=NULL&&d.v.HALA.body->predchozi->n>2){d.v.vloz_bod(d.v.HALA.body->dalsi->X,d.v.HALA.body->dalsi->Y,pom,NULL,ortogonalizace_stav,true);Akce=NIC;kurzor(standard);TIP="";REFRESH();}
@@ -2995,8 +2997,10 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 				if(scGPImage_zamek_posunu->ImageIndex!=28)scGPImage_zamek_posunu->ImageIndex=28;//zamčen posun
 				blok=true;
 			}
+			////ukončení měření pomocí manetického lasa
+			if(MOD==MAGNETICKE_LASO)zanuti_vypnuti_magnetickeho_lasa();
 			//volání metody ESC();
-			if(Akce==NIC && OBJEKT_akt!=NULL && !blok)KonecClick(this);else ESC();
+			else if(Akce==NIC && OBJEKT_akt!=NULL && !blok)KonecClick(this);else ESC();
 		}
 		break;
 		//MEZERNÍK
@@ -3616,6 +3620,30 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								Akce=PAN;
 								pan_non_locked=true;
 							}
+						}
+						else if(MOD==MAGNETICKE_LASO)
+						{
+							if(Form_definice_zakazek->Z_cesta==NULL)
+							{
+								Form_definice_zakazek->Z_cesta=new Cvektory::TZakazka;
+								Form_definice_zakazek->Z_cesta->cesta=NULL;
+								Form_definice_zakazek->Z_cesta->n=99;//uložení čísla zakázky, které je editovaná cesta
+								d.v.inicializace_cesty(Form_definice_zakazek->Z_cesta);
+							}
+							//vkládání elementů pro měření
+							if(JID==5 && pom_element!=NULL)
+							{
+								//vložení prvního elementu
+								if(Form_definice_zakazek->Z_cesta->cesta->predchozi->n==0)
+								{
+                  //posun na další element, geometrie prvního elementu není pro měření podstatná
+									if(pom_element->dalsi==NULL)pom_element=d.v.ELEMENTY->dalsi;
+									else pom_element=pom_element->dalsi;
+								}
+								//vkládání dalšího elementu, rovnou do zakázky bez jakékoliv úpravy
+								//vložení do cesty
+								d.v.vloz_segment_cesty(Form_definice_zakazek->Z_cesta,pom_element);
+							}
             }
 						else {Akce=PAN;pan_non_locked=true;}//přímo dovolení PAN pokud se neposová objekt   = Rosťova prosba
 					}
@@ -3753,6 +3781,7 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 			}
 			break;
 			case SIMULACE:break;
+			case MAGNETICKE_LASO:zanuti_vypnuti_magnetickeho_lasa();break;//vypnutí
 			default://pro SCHEMA
 			{
 				//povoluje nastavení položek kopírování či smazání objektu
@@ -4853,7 +4882,7 @@ void TForm1::getJobID(int X, int Y)
 		//2; oblast kóty bodu (přímka [A,B] uložena v bodě B)
 		//3; oblas objektu
 		//4; hrana objektu
-		//5; element v objektu - působí problémy
+		//5; element v objektu
 		//6; výhybka nebo spojnice mezi výhybkou a spojoku
 		d.zprava_highlight=d.v.PtInZpravy();
 		if(d.zprava_highlight>0)JID=-102;//hledání citelné oblasti zprávy
@@ -4913,7 +4942,28 @@ void TForm1::getJobID(int X, int Y)
 			O=NULL;delete O;
 		}
 	}
-	if(JID==-1 && (d.v.PP.zamek_layoutu || OBJEKT_akt!=NULL && OBJEKT_akt->uzamknout_nahled))//hledání citelné oblasti zprávy, vždy vyhledávat(i při zamčeném layoutu či editaci)!!
+	//měření pomocí magnetického lasa
+	if(MOD==MAGNETICKE_LASO)
+	{
+		//JID není úplně třeba stačí plnit pom_element
+		//5; element v objektu
+		pom_element=NULL;
+		Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+		while(E!=NULL)
+		{
+			if(d.v.oblast_elementu(E,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+			{
+				JID=5;
+				pom_element=E;
+				break;//pokud chci první nalezený element ... break, pokud chci poslední nalezeny bez breaku (např. problém překrývání 2 citelných oblastí)
+			}
+			E=d.v.dalsi_krok(E);
+		}
+		E=NULL;delete E;
+		d.v.vymaz_seznam_VYHYBKY();//musí být pokud může dojít k přerušení průchodu alg. dalsi_krok
+	}
+	//hledání citelné oblasti zprávy, vždy vyhledávat(i při zamčeném layoutu či editaci)!!
+	if(JID==-1 && (d.v.PP.zamek_layoutu || OBJEKT_akt!=NULL && OBJEKT_akt->uzamknout_nahled))
 	{
 		d.zprava_highlight=d.v.PtInZpravy();
 		if(d.zprava_highlight>0)JID=-102;
@@ -14493,7 +14543,8 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	Memo(scGPButton_prichytavat->Left-1);
+	////zapnutí měření pomocí manetického lasa
+	zanuti_vypnuti_magnetickeho_lasa();
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -17626,6 +17677,36 @@ void __fastcall TForm1::scLabel_statusbar_0Click(TObject *Sender)
 
 	akutalizace_stavu_prichytavani_vSB();
 	REFRESH();
+}
+//---------------------------------------------------------------------------
+//spustí mod magnetické laso nebo jej ukončí s výpisem naměřené hodnoty
+void TForm1::zanuti_vypnuti_magnetickeho_lasa()
+{
+	if(MOD!=MAGNETICKE_LASO)
+	{
+		MOD=MAGNETICKE_LASO;
+	}
+	else
+	{
+		//sečtení délky
+		double delka=0;
+		Cvektory::TElement *E=Form_definice_zakazek->Z_cesta->cesta->predchozi->Element;
+		while(E!=NULL && E->n>0)
+		{
+			delka+=E->geo.delka;
+			if(E==Form_definice_zakazek->Z_cesta->cesta->dalsi->Element)break;
+			E=E->predchozi;
+		}
+		E=NULL;delete E;
+		MB("Celková délka je "+AnsiString(delka)+" m.");
+		//mazání zakázky
+		d.v.vymaz_cestu_zakazky(Form_definice_zakazek->Z_cesta);
+		d.v.vymaz_davky_zakazky(Form_definice_zakazek->Z_cesta);
+		delete Form_definice_zakazek->Z_cesta;Form_definice_zakazek->Z_cesta=NULL;//smaže mazaný prvek
+		//přepnutí modu
+		if(OBJEKT_akt==NULL)MOD=SCHEMA;
+		else MOD=EDITACE;
+	}
 }
 //---------------------------------------------------------------------------
 

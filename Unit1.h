@@ -592,7 +592,7 @@ __published:	// IDE-managed Components
 // User declarations
 	////jen public struktury a výèty
 public:
-	enum Tmod{NO=0,SCHEMA,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE,EDITACE,TVORBA_CESTY};Tmod MOD;
+	enum Tmod{NO=0,SCHEMA,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE,EDITACE,TVORBA_CESTY,MAGNETICKE_LASO};Tmod MOD;
 	enum Tstatus{NAVRH,OVEROVANI};Tstatus STATUS;
 	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE,OFFSET_KOTY,MOVE_KOMORA,ROZMER_KOMORA,DRAW_HALA,MOVE_HALA,MOVE_BOD,MOVE_USECKA,MOVE_TEXT,GEOMETRIE,BLOK,GEOMETRIE_LIGHT};Takce Akce;Takce Akce_temp;//akce temp slouží ke spuštìní akce pøi akci, pø. Akce=GEOMETRIE a pøi ní je potøeba pøesunout kóty geo. elementù, tudíž Akce_temp=OFFSET_KOTY
 	enum Tm_mm{M=0,MM,SEKUNDY,MINUTY};Tm_mm DOtocunit,DKunit,LOunit,Runit,Rzunit;//pøepínaè jednotek vzdálenost,rozšíøen o SEKUNDY,MINUTY (problém pøi použití SEC a MIN) z dùvodu èasových a vzdálenostních kót
@@ -702,6 +702,7 @@ private:
 	void vytvor_obraz(bool stornoUNDO=false);//slouží k vytvoøení obrazu pro storno + undo nebo jen undo
 	void vymaz_seznam_obrazu();//vymaže všechny obrazy v poøadníku
 	void vytvor_statickou_scenu();//vytvoøí BMP se statickou scénou
+	void zanuti_vypnuti_magnetickeho_lasa();//spustí mod magnetické laso nebo jej ukonèí s výpisem namìøené hodnoty
 
 	////promìnné
 	TDateTime TIME;
