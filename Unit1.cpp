@@ -12622,6 +12622,7 @@ void TForm1::otevri_editaci()
 	mGrid_on_mGrid();
 	pom_element_temp=OBJEKT_akt->element;//pro pořeby editace geometrie
 	on_change_zoom_change_scGPTrackBar();//musí být po design_element
+	REFRESH(true);//metoda on_change_zoom_change_scGPTrackBar() již nespůsobuje refresh
 	FormX->input_state=FormX->NOTHING;
 	//zapnutí editace pokud je třeba
 	if(editace_vyhybky)
@@ -15672,7 +15673,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		//d.v.vymaz_elementy(OBJEKT_akt,true);//&&OBJEKT_akt->element!=NULL)
 
 		////kontrola zda je nutné přemazat obraz
-		if(ms.MyToDouble(FormX->VID)==0 && !scGPButton_ulozit->Enabled)
+		if(storno && ms.MyToDouble(FormX->VID)==0 && !scGPButton_ulozit->Enabled)
 		{
 			vymaz_seznam_obrazu();//vymazání nepotřebných obrazů
 			d.v.update_akt_zakazky();
@@ -15774,9 +15775,11 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		//opětovné vytvoření tabulky objektů nebo skrytí panelu
 		vytvoreni_tab_knihovna();
 		DrawGrid_knihovna->Top=10000;//musí být zobrazena, odchytává stisk kláves
-		on_change_zoom_change_scGPTrackBar();//pozor asi volá refresh, změna pořadí
+		on_change_zoom_change_scGPTrackBar();//pozor už nevyvolává refresh
+		REFRESH();//false není třeba, mGridy už neexistují
 	}
 	storno=true;//nastavení do defaultního stavu
+	log(__func__,"    KONEC");
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
@@ -16678,34 +16681,37 @@ void __fastcall TForm1::scGPButton_posun_dalsich_elementuClick(TObject *Sender)
 void __fastcall TForm1::scGPComboBox_prepinacKotClick(TObject *Sender)
 {
 	log(__func__);//logování
-	if(Akce==GEOMETRIE)ukonceni_geometrie();//ukončení pouze geometrie, ESC zde zlobí
-	if(editace_textu)smaz_kurzor();//ukončení editace
-	//pokud je otevřené menu nebo options zavře je
-	if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)
+	if(MOD==EDITACE)
 	{
-		if(OBJEKT_akt!=NULL)DrawGrid_knihovna->Visible=false;DrawGrid_otoce->Visible=false;DrawGrid_ostatni->Visible=false;DrawGrid_geometrie->Visible=false;DrawGrid_poznamky->Visible=false;
-		if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
-		if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
-		if(OBJEKT_akt!=NULL)DrawGrid_knihovna->Visible=true;DrawGrid_otoce->Visible=true;DrawGrid_ostatni->Visible=true;DrawGrid_geometrie->Visible=true;DrawGrid_poznamky->Visible=true;
-	}
-	if(FormX->input_state==FormX->NOTHING)//ošetření proti spouštění 2x při změně COMBA v tabulce pohonu
-	{
-		//není nutno provádět kontrolu, prováděna jinde -> aktivace / deaktivace komponenty
-		refresh_mGrid=false;
-		switch(scGPComboBox_prepinacKot->ItemIndex)
-		{
-			case 0://nastavena délka
-			{
-				/*if(DKunit==SEKUNDY)DKunit=M;else*/ DKunit=MM;//překlopění základních na základní, ..
-			}break;
-			case 1://nastaven čas
-			{
-				/*if(DKunit==M)*/DKunit=SEKUNDY;/*else DKunit=MINUTY;*///překlopění základních na základní, ..
-			}break;
-		}
-		writeINI("nastaveni_nahled","koty_delka", DKunit);
-		REFRESH(false);
-		refresh_mGrid=true;//navrácení stavu
+  	if(Akce==GEOMETRIE)ukonceni_geometrie();//ukončení pouze geometrie, ESC zde zlobí
+  	if(editace_textu)smaz_kurzor();//ukončení editace
+  	//pokud je otevřené menu nebo options zavře je
+  	if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)
+  	{
+  		if(OBJEKT_akt!=NULL)DrawGrid_knihovna->Visible=false;DrawGrid_otoce->Visible=false;DrawGrid_ostatni->Visible=false;DrawGrid_geometrie->Visible=false;DrawGrid_poznamky->Visible=false;
+  		if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
+  		if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
+  		if(OBJEKT_akt!=NULL)DrawGrid_knihovna->Visible=true;DrawGrid_otoce->Visible=true;DrawGrid_ostatni->Visible=true;DrawGrid_geometrie->Visible=true;DrawGrid_poznamky->Visible=true;
+  	}
+  	if(FormX->input_state==FormX->NOTHING)//ošetření proti spouštění 2x při změně COMBA v tabulce pohonu
+  	{
+  		//není nutno provádět kontrolu, prováděna jinde -> aktivace / deaktivace komponenty
+  		refresh_mGrid=false;
+  		switch(scGPComboBox_prepinacKot->ItemIndex)
+  		{
+  			case 0://nastavena délka
+  			{
+  				/*if(DKunit==SEKUNDY)DKunit=M;else*/ DKunit=MM;//překlopění základních na základní, ..
+  			}break;
+  			case 1://nastaven čas
+  			{
+  				/*if(DKunit==M)*/DKunit=SEKUNDY;/*else DKunit=MINUTY;*///překlopění základních na základní, ..
+  			}break;
+  		}
+  		writeINI("nastaveni_nahled","koty_delka", DKunit);
+  		REFRESH(false);
+  		refresh_mGrid=true;//navrácení stavu
+  	}
 	}
 }
 //---------------------------------------------------------------------------
