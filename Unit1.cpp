@@ -62,9 +62,7 @@
 #pragma link "scHint"
 #pragma link "scHint"
 //#pragma link "rHintWindow"
-#pragma link "rImprovedComps"
-#pragma link "rImprovedComps"
-#pragma link "rImprovedComps"
+//#pragma link "rImprovedComps"
 #pragma resource "*.dfm"
 TForm1 *Form1, *F;//pouze zkrácený zapis
 AnsiString Parametry;
