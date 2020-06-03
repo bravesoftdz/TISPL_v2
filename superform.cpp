@@ -597,16 +597,17 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col, unsig
 	{
 		F->log("Editace cesty, MOD=SCHEMA, Form:Unit1");
 		//pozicévání tlaèítek pro tvorbu cesty
-		F->scGPButton_ulozit_cestu->Left=F->ClientWidth/2.0-(2*(F->scGPButton_ulozit_cestu->Width-11)-F->scGPGlyphButton_odstran_cestu->Width-11)/2.0;
-		F->scGPButton_ulozit_cestu->Top=F->scGPPanel_statusbar->Top-F->scGPButton_ulozit_cestu->Height-5;
-		F->scGPButton_storno_cesta->Left=F->scGPButton_ulozit_cestu->Left+F->scGPButton_ulozit_cestu->Width+22;
-		F->scGPButton_storno_cesta->Top=F->scGPPanel_statusbar->Top-F->scGPButton_storno_cesta->Height-5;
-		F->scGPGlyphButton_odstran_cestu->Left=F->scGPButton_storno_cesta->Left+F->scGPButton_storno_cesta->Width+22;
-		F->scGPGlyphButton_odstran_cestu->Top=F->scGPPanel_statusbar->Top-F->scGPGlyphButton_odstran_cestu->Height-5;
+		F->zapnuti_vypnuti_panelEditace(true);
+//		F->scGPButton_ulozit_cestu->Left=F->ClientWidth/2.0-(2*(F->scGPButton_ulozit_cestu->Width-11)-F->scGPGlyphButton_odstran_cestu->Width-11)/2.0;
+//		F->scGPButton_ulozit_cestu->Top=F->scGPPanel_statusbar->Top-F->scGPButton_ulozit_cestu->Height-5;
+//		F->scGPButton_storno_cesta->Left=F->scGPButton_ulozit_cestu->Left+F->scGPButton_ulozit_cestu->Width+22;
+//		F->scGPButton_storno_cesta->Top=F->scGPPanel_statusbar->Top-F->scGPButton_storno_cesta->Height-5;
+//		F->scGPGlyphButton_odstran_cestu->Left=F->scGPButton_storno_cesta->Left+F->scGPButton_storno_cesta->Width+22;
+//		F->scGPGlyphButton_odstran_cestu->Top=F->scGPPanel_statusbar->Top-F->scGPGlyphButton_odstran_cestu->Height-5;
 		//zobrazení tlaèítek pro tvorbu cesty
-		F->scGPButton_ulozit_cestu->Visible=true;
-		F->scGPButton_storno_cesta->Visible=true;
-		F->scGPGlyphButton_odstran_cestu->Visible=true;
+//		F->scGPButton_ulozit_cestu->Visible=true;
+//		F->scGPButton_storno_cesta->Visible=true;
+//		F->scGPGlyphButton_odstran_cestu->Visible=true;
 		//nastavení akce a uzavøení formu
 		F->MOD=F->TVORBA_CESTY;
 		Z_cesta=new Cvektory::TZakazka;
