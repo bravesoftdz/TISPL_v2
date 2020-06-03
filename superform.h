@@ -29,7 +29,7 @@
 #include <Vcl.ExtCtrls.hpp>
 #include "scStyleManager.hpp"
 #include <Vcl.Menus.hpp>
-#include "rImprovedComps.hpp"
+//#include "rImprovedComps.hpp"
 //#include "rImprovedComps.hpp"
 
 //---------------------------------------------------------------------------

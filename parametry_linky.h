@@ -15,7 +15,7 @@
 #include <Vcl.ValEdit.hpp>
 #include "scExtControls.hpp"
 #include "scHtmlControls.hpp"
-#include "pl_priority.h"
+//#include "pl_priority.h"
 #include "scModernControls.hpp"
 #include "scGPExtControls.hpp"
 #include <Vcl.Mask.hpp>

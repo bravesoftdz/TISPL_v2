@@ -5,8 +5,8 @@
 
 #include "superform.h"
 #include "unit1.h"
-#include "cesty.h"
-#include "jig.h"
+//#include "cesty.h"
+//#include "jig.h"
 #include "minicolordialog.h"
 
 // ---------------------------------------------------------------------------

@@ -7,7 +7,7 @@
 #include <Vcl.Controls.hpp>
 #include <Vcl.StdCtrls.hpp>
 #include <Vcl.Forms.hpp>
-#include "rHTMLLabel.hpp"
+//#include "rHTMLLabel.hpp"
 #include "scControls.hpp"
 #include "scGPControls.hpp"
 #include "scGPExtControls.hpp"
@@ -16,12 +16,12 @@
 class TForm_kalibrace : public TForm
 {
 __published:	// IDE-managed Components
-  TrHTMLLabel *rHTMLLabel_vzdalenost;
+//  TrHTMLLabel *rHTMLLabel_vzdalenost;
   TscGPNumericEdit *scGPNumericEdit_vzdalenost;
   TscGPPanel *scGPPanel_hlavicka;
   TscGPGlyphButton *Konec;
   TscLabel *scLabel_titulek;
-  TrHTMLLabel *rHTMLLabel1;
+//  TrHTMLLabel *rHTMLLabel1;
   TscGPNumericEdit *scGPNumericEdit1;
   TscGPButton *scGPButton_OK;
   TscGPButton *scGPButton_storno;

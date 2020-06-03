@@ -9,7 +9,7 @@
 //#include "gapoR.h"
 #include "unit2.h"
 #include "unitX.h"
-#include "poznamky.h"
+//#include "poznamky.h"
 #include "parametry_linky.h"
 #include "katalog_dopravniku.h"
 #include "superform.h"
