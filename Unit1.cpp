@@ -3360,7 +3360,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 	{
 		if(!dblClick)//v případě, že se nejedná o double click
 		{
-			if(Button==mbLeft/* && MOD!=REZERVY*/)//je stisknuto levé tlačítko myši
+			if(Button==mbLeft)//je stisknuto levé tlačítko myši
 			{
 				if(Akce==NIC)getJobID(X,Y);//zajištění aktuálních JID, nemusí být aktuální skrze zpoždění setjobid při mousemove
 				stisknute_leve_tlacitko_mysi=true;
@@ -14512,7 +14512,9 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 
 //REFRESH(Edit1->Text.ToInt(),false);
 
-
+//	 Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+//	 if(m.PtInSegment(E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))Memo("v");
+//	 else Memo("mimo");
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)

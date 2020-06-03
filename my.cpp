@@ -674,87 +674,101 @@ bool Cmy::PtInIon(double X,double Y,double Xmys,double Ymys,double rotace)
 	else return false;
 }
 /////////////////////////////////////////////////////////////////////////////
+//otestuje zda v daném geometrickém segmetnu (o velikosti pásma aktuální šířky kolejí) se nachází souřadnice kurzor myši, pokud ano, vrátí true, jinak false
+bool Cmy::PtInSegment(double X,double Y,short typ,double orientace,double rotacni_uhel,double radius,double delka,double Xmys,double Ymys)
+{
+	//vytvoření testovací oblasti
+	BeginPath(F->Canvas->Handle);
+	F->d.vytvor_oblast_koleje(F->Canvas,X,Y,typ,orientace,rotacni_uhel,radius,delka);
+	EndPath(F->Canvas->Handle);
+
+	//testování finální citelné oblasti
+	if(PtInRegion(PathToRegion(F->Canvas->Handle),L2Px(Xmys),L2Py(Ymys)))return true;
+	else return false;
+}
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 TPointDbool Cmy::zkratit_polygon_na_roztec(double d, double r,double xp, double yp, double x0, double y0, double x1, double y1)//d - delka linky,r - roztec palcuxp, yp - souradnice oznaceneho bodu x0, y0, x1, y1- souradnice sousedu k oznacenemu bodu
 {
-		TPointDbool RET;
-		// zkratit linku o z, d je delka linky, r je roztec zubu
-		double z=fmod(d,r);
+	TPointDbool RET;
+	// zkratit linku o z, d je delka linky, r je roztec zubu
+	double z=fmod(d,r);
 
-		// kontrola vhodnosti vybraneho bodu
-		double d0=sqrt(pow((x0-xp),2)+pow((y0-yp),2));
-		double d1=sqrt(pow((x1-xp),2)+pow((y1-yp),2));
-		double dt=sqrt(pow((x0-x1),2)+pow((y0-y1),2));
-		double sq=d0+d1-dt-z;
+	// kontrola vhodnosti vybraneho bodu
+	double d0=sqrt(pow((x0-xp),2)+pow((y0-yp),2));
+	double d1=sqrt(pow((x1-xp),2)+pow((y1-yp),2));
+	double dt=sqrt(pow((x0-x1),2)+pow((y0-y1),2));
+	double sq=d0+d1-dt-z;
 
-		if (sq<0)
-			RET.b=false; //pokud nebude splnena trojuhelnikova nerovnost, nemuze se dany bod pouzit
+	if (sq<0)
+		RET.b=false; //pokud nebude splnena trojuhelnikova nerovnost, nemuze se dany bod pouzit
+	else
+	{
+		double d0n=((d0+d1-z)*d0)/(d0+d1); // prepocitani ocekavanych delek
+		double d1n=((d0+d1-z)*d1)/(d0+d1);
+
+		double m=((pow(d0n,2)-pow(d1n,2))/2*dt)+(dt/2); // prusecik pocitan metodikou popsanou na wikibooks(prusecik dvou kruznic)
+		ShowMessage(pow(d0n,2)); ShowMessage(pow(m,2));
+		double v=sqrt(fabs(pow(d0n,2)-pow(m,2)));// dela se to trojuhelnikama  <--DOPLNĚNA ABSOLUTNÍ HODNOTA PRO REÁLNÁ ČÍSLA
+
+		double xs=x0+(m/dt)*(x1-x0); // vypocet pruseciku spojnice bodu s osou
+		double ys=y0+(m/dt)*(y1-y0);
+
+		double xn1=xs-(v/dt)*(y0-y1); // mozne souradnice novych bodu
+		double yn1=ys+(v/dt)*(x0-x1);
+		double xn2=xs+(v/dt)*(y0-y1);
+		double yn2=ys-(v/dt)*(x0-x1);
+
+		double dist1=sqrt(pow((xn1-xp),2)+pow((yn1-yp),2)); // nalezeni blizsiho bodu
+		double dist2=sqrt(pow((xn2-xp),2)+pow((yn2-yp),2));
+
+		double xn,yn;
+
+		if (dist1<dist2)
+		{
+			xn=xn1;
+			yn=yn1;
+		}
 		else
 		{
-			double d0n=((d0+d1-z)*d0)/(d0+d1); // prepocitani ocekavanych delek
-			double d1n=((d0+d1-z)*d1)/(d0+d1);
-
-			double m=((pow(d0n,2)-pow(d1n,2))/2*dt)+(dt/2); // prusecik pocitan metodikou popsanou na wikibooks(prusecik dvou kruznic)
-			ShowMessage(pow(d0n,2)); ShowMessage(pow(m,2));
-			double v=sqrt(fabs(pow(d0n,2)-pow(m,2)));// dela se to trojuhelnikama  <--DOPLNĚNA ABSOLUTNÍ HODNOTA PRO REÁLNÁ ČÍSLA
-
-			double xs=x0+(m/dt)*(x1-x0); // vypocet pruseciku spojnice bodu s osou
-			double ys=y0+(m/dt)*(y1-y0);
-
-			double xn1=xs-(v/dt)*(y0-y1); // mozne souradnice novych bodu
-			double yn1=ys+(v/dt)*(x0-x1);
-			double xn2=xs+(v/dt)*(y0-y1);
-			double yn2=ys-(v/dt)*(x0-x1);
-
-			double dist1=sqrt(pow((xn1-xp),2)+pow((yn1-yp),2)); // nalezeni blizsiho bodu
-			double dist2=sqrt(pow((xn2-xp),2)+pow((yn2-yp),2));
-
-			double xn,yn;
-
-			if (dist1<dist2)
-			{
-				xn=xn1;
-				yn=yn1;
-			}
-			else
-			{
-				xn=xn2;
-				yn=yn2;
-			}
-
-			RET.b=true; RET.x=xn; RET.y=yn;
+			xn=xn2;
+			yn=yn2;
 		}
 
-		return RET;
+		RET.b=true; RET.x=xn; RET.y=yn;
+	}
+
+	return RET;
 }
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 double Cmy::cekani_na_palec(double cas, double roztec_palcu,double rychlost_dopravniku,int funkce)//vrátí dobu čekání na palec v sec, rozteč je v m, rychlost dopravníku v m/s
 {
-		//if(zohlednit && rezim!=1)//pokud se jedná o kontinuální režim neřeší se, předpokládá se, že jede na stejném dopravníku
-		{
-			//exaktní výpočet je použitelný jenom v případ známe goemetrie, navíc obsahuje chybu
-			//double cas_presunu_mezi_palci=(60*roztec_palcu)/(rychlost_dopravniku*100);  //to 100 je převod na cm z m
-			//nn, neceločíselný zbyte double zbytek_po_deleni=(cas*60/cas_presunu_mezi_palci)-floor(cas*60/cas_presunu_mezi_palci);//tzn. kde se nachází
-			//return cas_presunu_mezi_palci*zbytek_po_deleni;
-			//jako střední hodnota vyplývající z normálního pravděpodonostního rozdělení hodnot
-			//(cas_presunu_mezi_palci-0)/2 resp. (max-min)/2
-			//return (roztec_palcu/(rychlost_dopravniku*1000.0))/2.0; //vrátí dobu čekání na palec v min, rozteče je v mm resp. v m za z minu u rychlosti dopravniku
-		}
-		//else return 0;
+	//if(zohlednit && rezim!=1)//pokud se jedná o kontinuální režim neřeší se, předpokládá se, že jede na stejném dopravníku
+	{
+		//exaktní výpočet je použitelný jenom v případ známe goemetrie, navíc obsahuje chybu
+		//double cas_presunu_mezi_palci=(60*roztec_palcu)/(rychlost_dopravniku*100);  //to 100 je převod na cm z m
+		//nn, neceločíselný zbyte double zbytek_po_deleni=(cas*60/cas_presunu_mezi_palci)-floor(cas*60/cas_presunu_mezi_palci);//tzn. kde se nachází
+		//return cas_presunu_mezi_palci*zbytek_po_deleni;
+		//jako střední hodnota vyplývající z normálního pravděpodonostního rozdělení hodnot
+		//(cas_presunu_mezi_palci-0)/2 resp. (max-min)/2
+		//return (roztec_palcu/(rychlost_dopravniku*1000.0))/2.0; //vrátí dobu čekání na palec v min, rozteče je v mm resp. v m za z minu u rychlosti dopravniku
+	}
+	//else return 0;
 
-		//vrátí dobu čekání na palec v sec, rozteč je v m, rychlost dopravníku v m/s
-		double RET=0.0;
-		double MIN=0.0;double MAX=0.0; if(rychlost_dopravniku!=0)MAX=roztec_palcu/rychlost_dopravniku;
-		double ZOI=0.1;if(MAX==0 || MAX<=ZOI)ZOI=0.0;//korekce pro zajištění zprava otevřeného intervalu (nemůže být uzavřený, protože to není reálné, dochází v takové situaci ještě k uchopení původním palcem), řád kokekce zvolen neexaktně, pouze dle úvahy, pokud není MAX hodnota (například z důvodu 0 hodnoty rozteče) kladné číslo větší než nula, tak se korekce neuvažuje, aby se nešlo do mínusu s výpočtem (tedy čekáním)
-		switch(funkce)
-		{
-				case 0:RET=MIN;break;//nic resp minimum=0, nečeká na palec vůbec buď vyšel přesně nebo se nezohledňuje
-				case 1:RET=(MAX-ZOI+MIN)/2.0;break;//střední hodnota (v tomto případě i průměr) dle normálního rozdělení pro hodnoty <0,max)
-				case 2:RET=fmod(rand(),MAX*10)/10.0+MIN;break;//náhodná hodnota v rozmezí <0,max) čekání na palce, zde ZOI není nutné zohledňovat, protože již vyplývá z použitého algoritmu
-				case 3:RET=MAX-ZOI;break;//max.možná hodnota čekání na pale
-				case 4:/*RET=tady bude exaktní výpočet pro geometrii*/break;
-		}
-		return RET;
+	//vrátí dobu čekání na palec v sec, rozteč je v m, rychlost dopravníku v m/s
+	double RET=0.0;
+	double MIN=0.0;double MAX=0.0; if(rychlost_dopravniku!=0)MAX=roztec_palcu/rychlost_dopravniku;
+	double ZOI=0.1;if(MAX==0 || MAX<=ZOI)ZOI=0.0;//korekce pro zajištění zprava otevřeného intervalu (nemůže být uzavřený, protože to není reálné, dochází v takové situaci ještě k uchopení původním palcem), řád kokekce zvolen neexaktně, pouze dle úvahy, pokud není MAX hodnota (například z důvodu 0 hodnoty rozteče) kladné číslo větší než nula, tak se korekce neuvažuje, aby se nešlo do mínusu s výpočtem (tedy čekáním)
+	switch(funkce)
+	{
+			case 0:RET=MIN;break;//nic resp minimum=0, nečeká na palec vůbec buď vyšel přesně nebo se nezohledňuje
+			case 1:RET=(MAX-ZOI+MIN)/2.0;break;//střední hodnota (v tomto případě i průměr) dle normálního rozdělení pro hodnoty <0,max)
+			case 2:RET=fmod(rand(),MAX*10)/10.0+MIN;break;//náhodná hodnota v rozmezí <0,max) čekání na palce, zde ZOI není nutné zohledňovat, protože již vyplývá z použitého algoritmu
+			case 3:RET=MAX-ZOI;break;//max.možná hodnota čekání na pale
+			case 4:/*RET=tady bude exaktní výpočet pro geometrii*/break;
+	}
+	return RET;
 }
 /////////////////////////////////////////////////////////////////////////////
 //metoda vratí minimální možnou mezeru mezi vozíky, pokud je parametr mezera roven 0, v případě nenulového parametru mezery vrací vhodnou nejbližší hodnotu této mezery vůči rozměrům rozteč a rozměr vozíku, pokud nebude zadaná rozteč tj. bude 0, vrací hodnotu 0, lze parametrizovat vracený výsledek 0 (implicitně) - kritická mezera, 1 či 281 - mezera mezi JIG, 2 či 282 mezera mezi PODVOZKY
