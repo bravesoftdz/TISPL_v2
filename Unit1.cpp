@@ -724,10 +724,6 @@ void TForm1::set_font(int velikost)
   Form_parametry_linky->scGPGlyphButton_info->Font=aFont;
   Form_parametry_linky->scGPGlyphButton_info->Font->Color=barva;
   Form_parametry_linky->scGPGlyphButton_info->Font->Size=velikost;
-	barva=Form_parametry_linky->scGPGlyphButton_refresh->Font->Color;
-  Form_parametry_linky->scGPGlyphButton_refresh->Font=aFont;
-  Form_parametry_linky->scGPGlyphButton_refresh->Font->Color=barva;
-  Form_parametry_linky->scGPGlyphButton_refresh->Font->Size=velikost;
 	barva=Form_parametry_linky->scGPButton_vozik->Font->Color;
   Form_parametry_linky->scGPButton_vozik->Font=aFont;
   Form_parametry_linky->scGPButton_vozik->Font->Color=barva;
@@ -736,18 +732,6 @@ void TForm1::set_font(int velikost)
   Form_parametry_linky->scGPButton_pohon->Font=aFont;
   Form_parametry_linky->scGPButton_pohon->Font->Color=barva;
   Form_parametry_linky->scGPButton_pohon->Font->Size=velikost;
-  barva=Form_parametry_linky->scExPanel_doporuc_pohony->Font->Color;
-  Form_parametry_linky->scExPanel_doporuc_pohony->Font=aFont;
-  Form_parametry_linky->scExPanel_doporuc_pohony->Font->Color=barva;
-  Form_parametry_linky->scExPanel_doporuc_pohony->Font->Size=velikost;
-  barva=Form_parametry_linky->scGPGlyphButton_add_mezi_pohony->Font->Color;
-  Form_parametry_linky->scGPGlyphButton_add_mezi_pohony->Font=aFont;
-  Form_parametry_linky->scGPGlyphButton_add_mezi_pohony->Font->Color=barva;
-  Form_parametry_linky->scGPGlyphButton_add_mezi_pohony->Font->Size=velikost;
-  barva=Form_parametry_linky->scGPButton_jig->Font->Color;
-  Form_parametry_linky->scGPButton_jig->Font=aFont;
-  Form_parametry_linky->scGPButton_jig->Font->Color=barva;
-  Form_parametry_linky->scGPButton_jig->Font->Size=velikost;
   barva=Form_parametry_linky->scLabel_zobrazit_parametry->Font->Color;
   Form_parametry_linky->scLabel_zobrazit_parametry->Font=aFont;
   Form_parametry_linky->scLabel_zobrazit_parametry->Font->Color=barva;
@@ -768,18 +752,6 @@ void TForm1::set_font(int velikost)
   Form_parametry_linky->scLabel_nastavit_parametry->Font=aFont;
   Form_parametry_linky->scLabel_nastavit_parametry->Font->Color=barva;
   Form_parametry_linky->scLabel_nastavit_parametry->Font->Size=velikost;
-  barva=Form_parametry_linky->scGPGlyphButton_DEL_nepouzite->Font->Color;
-  Form_parametry_linky->scGPGlyphButton_DEL_nepouzite->Font=aFont;
-  Form_parametry_linky->scGPGlyphButton_DEL_nepouzite->Font->Color=barva;
-  Form_parametry_linky->scGPGlyphButton_DEL_nepouzite->Font->Size=velikost;
-  barva=Form_parametry_linky->scGPGlyphButton_TT->Font->Color;
-  Form_parametry_linky->scGPGlyphButton_TT->Font=aFont;
-  Form_parametry_linky->scGPGlyphButton_TT->Font->Color=barva;
-  Form_parametry_linky->scGPGlyphButton_TT->Font->Size=velikost;
-  barva=Form_parametry_linky->scGPGlyphButton_vozik_edit->Font->Color;
-  Form_parametry_linky->scGPGlyphButton_vozik_edit->Font=aFont;
-  Form_parametry_linky->scGPGlyphButton_vozik_edit->Font->Color=barva;
-  Form_parametry_linky->scGPGlyphButton_vozik_edit->Font->Size=velikost;
   barva=Form_parametry_linky->scGPGlyphButton_ADD->Font->Color;
   Form_parametry_linky->scGPGlyphButton_ADD->Font=aFont;
   Form_parametry_linky->scGPGlyphButton_ADD->Font->Color=barva;
@@ -14391,7 +14363,7 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 
 //	Tvlakno_obraz *vlakno=new Tvlakno_obraz(true);//spustí vlákno zajišťující stáhnutí mapového podkladu
 //	vlakno->FreeOnTerminate=true;//po skončení bude uvolněno
-//	vlakno->Start();
+//	vlakno->Resume();
 //	//delete vlakno;
 
 		//Sk(ceil(m2px/Zoom/d.v.vrat_min_rychlost_prejezdu()*1000.0/fps));   //ceil(F->m.get_timePERpx(pom->RD,0,d.v.vrat_min_rychlost_prejezdu()));//různá rychlost dle RD, s afps se počítá dle min RD, ale nějak špatně vycházela animace ke konci (nestihl vozík vyjet)
@@ -16751,22 +16723,22 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
     Form_parametry_linky->Konec->Caption=ls->Strings[133];
     Form_parametry_linky->scLabel1->Caption=ls->Strings[134];
     Form_parametry_linky->scGPGlyphButton_info->Caption=ls->Strings[135];
-    Form_parametry_linky->scGPGlyphButton_refresh->Caption=ls->Strings[136];
-    Form_parametry_linky->scGPGlyphButton_refresh->Hint=ls->Strings[137];
+    //Form_parametry_linky->scGPGlyphButton_refresh->Caption=ls->Strings[136];
+    //Form_parametry_linky->scGPGlyphButton_refresh->Hint=ls->Strings[137];
     Form_parametry_linky->scGPButton_vozik->Caption=ls->Strings[138];
     Form_parametry_linky->scGPButton_pohon->Caption=ls->Strings[139];
-    Form_parametry_linky->scExPanel_doporuc_pohony->Caption=ls->Strings[140];
-    Form_parametry_linky->scGPGlyphButton_add_mezi_pohony->Hint=ls->Strings[141];
-    Form_parametry_linky->scGPButton_jig->Caption=ls->Strings[142];
+    //Form_parametry_linky->scExPanel_doporuc_pohony->Caption=ls->Strings[140];
+    //Form_parametry_linky->scGPGlyphButton_add_mezi_pohony->Hint=ls->Strings[141];
+    //Form_parametry_linky->scGPButton_jig->Caption=ls->Strings[142];
     Form_parametry_linky->scLabel_zobrazit_parametry->Caption=ls->Strings[143];
     Form_parametry_linky->scLabel_smazat->Caption=ls->Strings[144];
     Form_parametry_linky->scLabel_smazat_nepouzite->Caption=ls->Strings[145];
     Form_parametry_linky->scLabel_kopirovat->Caption=ls->Strings[146];
     Form_parametry_linky->scLabel_nastavit_parametry->Caption=ls->Strings[147];
-    Form_parametry_linky->scGPGlyphButton_DEL_nepouzite->Caption=ls->Strings[148];
-    Form_parametry_linky->scGPGlyphButton_DEL_nepouzite->Hint=ls->Strings[149];
-    Form_parametry_linky->scGPGlyphButton_TT->Hint=ls->Strings[150];
-    Form_parametry_linky->scGPGlyphButton_vozik_edit->Hint=ls->Strings[151];
+    //Form_parametry_linky->scGPGlyphButton_DEL_nepouzite->Caption=ls->Strings[148];
+    //Form_parametry_linky->scGPGlyphButton_DEL_nepouzite->Hint=ls->Strings[149];
+    //Form_parametry_linky->scGPGlyphButton_TT->Hint=ls->Strings[150];
+    //Form_parametry_linky->scGPGlyphButton_vozik_edit->Hint=ls->Strings[151];
     Form_parametry_linky->scGPGlyphButton_ADD->Hint=ls->Strings[152];
     Form_parametry_linky->scGPButton_obecne->Caption=ls->Strings[153];
     //Form_parametry_linky->rHTMLLabel_JIG->Caption=ls->Strings[154];
@@ -17367,7 +17339,7 @@ void TForm1::vytvor_obraz(bool stornoUNDO)
 	else vlakno_akce=1;//vytvoření obrazu pro UNDO
 	vlakno_obraz=new Tvlakno_obraz(true);//spustí vlákno zajišťující stáhnutí mapového podkladu
 	vlakno_obraz->FreeOnTerminate=true;//po skončení bude uvolněno
-	vlakno_obraz->Start();
+	vlakno_obraz->Resume();
 	//d.v.vlakno_obraz();
 }
 //---------------------------------------------------------------------------
@@ -17378,7 +17350,7 @@ void TForm1::vymaz_seznam_obrazu()
 	vlakno_akce=3;//mazání obrazů
 //  vlakno_obraz=new Tvlakno_obraz(true);//spustí vlákno zajišťující stáhnutí mapového podkladu
 //	vlakno_obraz->FreeOnTerminate=true;//po skončení bude uvolněno
-//	vlakno_obraz->Start();
+//	vlakno_obraz->Resume();
 	d.v.vlakno_obraz();
 }
 //---------------------------------------------------------------------------

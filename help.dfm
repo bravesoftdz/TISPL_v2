@@ -25,12 +25,19 @@ object Form_help: TForm_help
     Width = 880
     Height = 485
     Align = alClient
+    FluentUIOpaque = False
     TabOrder = 0
     BlurBackground = False
     BlurBackgroundAmount = 5
+    BackgroundStyle = gppbsColor
+    ContentMarginLeft = 0
+    ContentMarginRight = 0
+    ContentMarginTop = 0
+    ContentMarginBottom = 0
     CustomImageIndex = -1
     DragForm = False
     DragTopForm = True
+    DrawTextMode = scdtmGDI
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
     FillGradientEndAlpha = 255
@@ -64,6 +71,7 @@ object Form_help: TForm_help
       Width = 878
       Height = 483
       Align = alClient
+      FluentUIOpaque = False
       TabOrder = 0
       PageIndex = 0
       Pages = <
@@ -93,6 +101,7 @@ object Form_help: TForm_help
         WallpaperIndex = -1
         CustomBackgroundImageIndex = -1
         FullUpdate = False
+        FluentUIOpaque = False
         StorePaintBuffer = False
         BackgroundStyle = scsbsPanel
         object scGPPanel2: TscGPPanel
@@ -101,12 +110,19 @@ object Form_help: TForm_help
           Width = 878
           Height = 34
           Align = alTop
+          FluentUIOpaque = False
           TabOrder = 0
           BlurBackground = False
           BlurBackgroundAmount = 5
+          BackgroundStyle = gppbsColor
+          ContentMarginLeft = 0
+          ContentMarginRight = 0
+          ContentMarginTop = 0
+          ContentMarginBottom = 0
           CustomImageIndex = -1
           DragForm = True
           DragTopForm = True
+          DrawTextMode = scdtmGDI
           FillGradientAngle = 90
           FillGradientBeginAlpha = 255
           FillGradientEndAlpha = 255
@@ -144,12 +160,23 @@ object Form_help: TForm_help
             Margins.Right = 0
             Margins.Bottom = 0
             Align = alRight
+            FluentUIOpaque = False
             TabOrder = 0
             OnClick = CloseButtonClick
             Animation = True
+            Badge.Color = clRed
+            Badge.ColorAlpha = 255
+            Badge.Font.Charset = DEFAULT_CHARSET
+            Badge.Font.Color = clWhite
+            Badge.Font.Height = -11
+            Badge.Font.Name = 'Tahoma'
+            Badge.Font.Style = [fsBold]
+            Badge.Visible = False
             Caption = 'CloseButton'
             CanFocused = False
             CustomDropDown = False
+            DrawTextMode = scdtmGDI
+            FluentLightEffect = False
             Layout = blGlyphLeft
             TransparentBackground = True
             ColorValue = clRed
@@ -199,7 +226,18 @@ object Form_help: TForm_help
             Options.ArrowType = scgpatDefault
             Options.ArrowThickness = 2
             Options.ArrowThicknessScaled = False
+            Options.ArrowNormalColor = clBtnText
+            Options.ArrowHotColor = clBtnText
+            Options.ArrowPressedColor = clBtnText
+            Options.ArrowFocusedColor = clBtnText
+            Options.ArrowDisabledColor = clBtnText
+            Options.ArrowNormalColorAlpha = 200
+            Options.ArrowHotColorAlpha = 255
+            Options.ArrowPressedColorAlpha = 255
+            Options.ArrowFocusedColorAlpha = 200
+            Options.ArrowDisabledColorAlpha = 125
             Options.StyleColors = True
+            Options.PressedHotColors = False
             GlyphOptions.NormalColor = clWhite
             GlyphOptions.HotColor = clWhite
             GlyphOptions.PressedColor = clWhite
@@ -245,6 +283,7 @@ object Form_help: TForm_help
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
+            FluentUIOpaque = False
             TabOrder = 1
             DragForm = True
             DragTopForm = True
@@ -268,12 +307,19 @@ object Form_help: TForm_help
             Width = 180
             Height = 34
             Align = alRight
+            FluentUIOpaque = False
             TabOrder = 2
             BlurBackground = False
             BlurBackgroundAmount = 5
+            BackgroundStyle = gppbsColor
+            ContentMarginLeft = 0
+            ContentMarginRight = 0
+            ContentMarginTop = 0
+            ContentMarginBottom = 0
             CustomImageIndex = -1
             DragForm = False
             DragTopForm = True
+            DrawTextMode = scdtmGDI
             FillGradientAngle = 90
             FillGradientBeginAlpha = 255
             FillGradientEndAlpha = 255
@@ -308,12 +354,19 @@ object Form_help: TForm_help
           Width = 878
           Height = 26
           Align = alBottom
+          FluentUIOpaque = False
           TabOrder = 1
           BlurBackground = False
           BlurBackgroundAmount = 5
+          BackgroundStyle = gppbsColor
+          ContentMarginLeft = 0
+          ContentMarginRight = 0
+          ContentMarginTop = 0
+          ContentMarginBottom = 0
           CustomImageIndex = -1
           DragForm = False
           DragTopForm = True
+          DrawTextMode = scdtmGDI
           FrameSides = [gppfsTop]
           FillGradientAngle = 90
           FillGradientBeginAlpha = 255
@@ -348,6 +401,7 @@ object Form_help: TForm_help
             Height = 25
             Cursor = crSizeNWSE
             Align = alRight
+            FluentUIOpaque = False
             TabOrder = 0
             GlyphColor = clBlack
             GlyphColorAlpha = 200
@@ -366,9 +420,11 @@ object Form_help: TForm_help
           Font.Name = 'Roboto'
           Font.Style = []
           ParentFont = False
+          FluentUIOpaque = False
           TabOrder = 2
           OnClick = scGPToolPagerClick
           Color = clWhite
+          DrawTextMode = scdtmGDI
           TabsBGFillColor = 15987699
           TabsBGFillColorAlpha = 255
           TransparentBackground = False
@@ -678,8 +734,8 @@ object Form_help: TForm_help
               ShowCloseButton = True
               UseCustomOptions = False
             end>
-          TabIndex = 4
-          ActivePage = scGPToolPagerPage_about
+          TabIndex = 3
+          ActivePage = scGPToolPagerPage4
           FreeOnClose = False
           StorePaintBuffer = False
           object scGPToolPagerPage3: TscGPToolPagerPage
@@ -693,6 +749,7 @@ object Form_help: TForm_help
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
+            FluentUIOpaque = False
             TabOrder = 2
             Visible = False
             CanScroll = True
@@ -715,6 +772,8 @@ object Form_help: TForm_help
             ScrollOffset = 0
             ScrollTimerInterval = 50
             ScrollButtonArrowWidth = 1
+            HorzScrollDirection = scgspsdLeftToRight
+            VertScrollDirection = scgspsdTopToBottom
             TouchScroll = False
             StorePaintBuffer = False
             object scLabel28: TscLabel
@@ -728,6 +787,7 @@ object Form_help: TForm_help
               Font.Name = 'Tahoma'
               Font.Style = []
               ParentFont = False
+              FluentUIOpaque = False
               TabOrder = 0
               StyleElements = [seClient, seBorder]
               DragForm = False
@@ -744,68 +804,6 @@ object Form_help: TForm_help
               Caption = 'Geometrie text'
             end
           end
-          object scGPToolPagerPage4: TscGPToolPagerPage
-            Left = 0
-            Top = 35
-            Width = 878
-            Height = 388
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -11
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-            TabOrder = 3
-            Visible = False
-            CanScroll = True
-            FillGradientAngle = 90
-            FillGradientBeginAlpha = 255
-            FillGradientEndAlpha = 255
-            FillGradientBeginColorOffset = 25
-            FillGradientEndColorOffset = 25
-            FillColor = clNone
-            FillColorAlpha = 255
-            FillColor2 = clNone
-            Color = clBtnFace
-            BGStyleKind = scgspbTransparent
-            ScrollButtonWidth = 17
-            CustomImageIndex = -1
-            WallpaperIndex = -1
-            HotScroll = False
-            AutoSize = False
-            ScrollType = scstHorizontal
-            ScrollOffset = 0
-            ScrollTimerInterval = 50
-            ScrollButtonArrowWidth = 2
-            TouchScroll = False
-            StorePaintBuffer = False
-            object scLabel4: TscLabel
-              Left = 22
-              Top = 18
-              Width = 104
-              Height = 27
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clBlack
-              Font.Height = -11
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
-              TabOrder = 0
-              StyleElements = [seClient, seBorder]
-              DragForm = False
-              DragTopForm = True
-              GlowEffect.Enabled = True
-              GlowEffect.Color = clWhite
-              GlowEffect.AlphaValue = 200
-              GlowEffect.GlowSize = 7
-              GlowEffect.Offset = 0
-              GlowEffect.Intensive = True
-              GlowEffect.StyleColors = True
-              AutoSize = True
-              UseFontColorToStyleColor = False
-              Caption = 'Ot'#225'zky a odpov'#283'di'
-            end
-          end
           object scGPToolPagerPage_PL: TscGPToolPagerPage
             Left = 0
             Top = 35
@@ -817,8 +815,8 @@ object Form_help: TForm_help
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
+            FluentUIOpaque = False
             TabOrder = 0
-            Visible = False
             CanScroll = True
             FillGradientAngle = 90
             FillGradientBeginAlpha = 255
@@ -839,6 +837,8 @@ object Form_help: TForm_help
             ScrollOffset = 0
             ScrollTimerInterval = 50
             ScrollButtonArrowWidth = 1
+            HorzScrollDirection = scgspsdLeftToRight
+            VertScrollDirection = scgspsdTopToBottom
             TouchScroll = False
             StorePaintBuffer = True
             object scHTMLLabel_PL: TscHTMLLabel
@@ -853,6 +853,7 @@ object Form_help: TForm_help
               Font.Style = []
               Font.Quality = fqAntialiased
               ParentFont = False
+              FluentUIOpaque = False
               TabOrder = 0
               AutoSizeHeight = True
               AutoSizeWidth = True
@@ -885,6 +886,7 @@ object Form_help: TForm_help
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
+            FluentUIOpaque = False
             TabOrder = 1
             Visible = False
             CanScroll = True
@@ -907,6 +909,8 @@ object Form_help: TForm_help
             ScrollOffset = 0
             ScrollTimerInterval = 50
             ScrollButtonArrowWidth = 1
+            HorzScrollDirection = scgspsdLeftToRight
+            VertScrollDirection = scgspsdTopToBottom
             TouchScroll = False
             StorePaintBuffer = False
             object scHTMLLabel_layout: TscHTMLLabel
@@ -921,6 +925,7 @@ object Form_help: TForm_help
               Font.Style = []
               Font.Quality = fqAntialiased
               ParentFont = False
+              FluentUIOpaque = False
               TabOrder = 0
               AutoSizeHeight = True
               AutoSizeWidth = True
@@ -952,7 +957,9 @@ object Form_help: TForm_help
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
+            FluentUIOpaque = False
             TabOrder = 4
+            Visible = False
             CanScroll = True
             FillGradientAngle = 90
             FillGradientBeginAlpha = 255
@@ -973,6 +980,8 @@ object Form_help: TForm_help
             ScrollOffset = 0
             ScrollTimerInterval = 50
             ScrollButtonArrowWidth = 2
+            HorzScrollDirection = scgspsdLeftToRight
+            VertScrollDirection = scgspsdTopToBottom
             TouchScroll = False
             StorePaintBuffer = False
             object scHTMLLabel_about: TscHTMLLabel
@@ -987,6 +996,7 @@ object Form_help: TForm_help
               Font.Style = []
               Font.Quality = fqAntialiased
               ParentFont = False
+              FluentUIOpaque = False
               TabOrder = 0
               AutoSizeHeight = True
               AutoSizeWidth = True
@@ -1006,11 +1016,81 @@ object Form_help: TForm_help
               TextAlignment = taLeftJustify
             end
           end
+          object scGPToolPagerPage4: TscGPToolPagerPage
+            Left = 0
+            Top = 35
+            Width = 878
+            Height = 388
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -11
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+            FluentUIOpaque = False
+            TabOrder = 3
+            CanScroll = True
+            FillGradientAngle = 90
+            FillGradientBeginAlpha = 255
+            FillGradientEndAlpha = 255
+            FillGradientBeginColorOffset = 25
+            FillGradientEndColorOffset = 25
+            FillColor = clNone
+            FillColorAlpha = 255
+            FillColor2 = clNone
+            Color = clBtnFace
+            BGStyleKind = scgspbTransparent
+            ScrollButtonWidth = 17
+            CustomImageIndex = -1
+            WallpaperIndex = -1
+            HotScroll = False
+            AutoSize = False
+            ScrollType = scstHorizontal
+            ScrollOffset = 0
+            ScrollTimerInterval = 50
+            ScrollButtonArrowWidth = 2
+            HorzScrollDirection = scgspsdLeftToRight
+            VertScrollDirection = scgspsdTopToBottom
+            TouchScroll = False
+            StorePaintBuffer = False
+            object scLabel4: TscLabel
+              Left = 22
+              Top = 18
+              Width = 104
+              Height = 27
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clBlack
+              Font.Height = -11
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              FluentUIOpaque = False
+              TabOrder = 0
+              StyleElements = [seClient, seBorder]
+              DragForm = False
+              DragTopForm = True
+              GlowEffect.Enabled = True
+              GlowEffect.Color = clWhite
+              GlowEffect.AlphaValue = 200
+              GlowEffect.GlowSize = 7
+              GlowEffect.Offset = 0
+              GlowEffect.Intensive = True
+              GlowEffect.StyleColors = True
+              AutoSize = True
+              UseFontColorToStyleColor = False
+              Caption = 'Ot'#225'zky a odpov'#283'di'
+            end
+          end
         end
       end
     end
   end
   object scStyledForm1: TscStyledForm
+    FluentUIBackground = scfuibNone
+    FluentUIAcrylicColor = clBtnFace
+    FluentUIAcrylicColorAlpha = 100
+    FluentUIBorder = True
+    FluentUIInactiveAcrylicColorOpaque = False
     DWMClientShadow = True
     DWMClientShadowHitTest = True
     DropDownForm = False
@@ -1070,6 +1150,7 @@ object Form_help: TForm_help
     ScaleThemes = False
     ScaleResources = True
     ScaleFormBorder = True
+    RTLMode = False
     Left = 728
     Top = 400
   end

@@ -44,7 +44,6 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton_Ulozit;
 	TscGPButton *scGPButton_storno;
 	TscEdit *scEdit_zacatek;
-	TrHTMLLabel *rHTMLLabel_zacatek;
   TscGPImageCollection *scGPImageCollection_layout;
 	TTimer *TimerMouseWheel;
 	TEdit *Edit_for_Focus;

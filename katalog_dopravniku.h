@@ -15,6 +15,8 @@
 #include "parametry_linky.h"
 #include "rHTMLLabel.hpp"
 #include "rHintWindow.hpp"
+#include "scHint.hpp"
+#include "scHtmlControls.hpp"
 //---------------------------------------------------------------------------
 class TForm_katalog : public TForm
 {
@@ -25,8 +27,8 @@ __published:	// IDE-managed Components
   TscGPButton *Button_save;
   TscGPButton *Button_storno;
   TMemo *Memo1;
-  TrHTMLLabel *rHTMLLabel_InfoText;
-  TrHTMLHint *rHTMLHint1;
+  TscHTMLLabel *scHTMLLabel_InfoText;
+  TscHint *scHint1;
   void __fastcall FormShow(TObject *Sender);
   void __fastcall FormPaint(TObject *Sender);
   void __fastcall Button_stornoClick(TObject *Sender);

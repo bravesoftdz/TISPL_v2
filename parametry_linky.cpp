@@ -226,12 +226,9 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 vypis(""); VID=-1;
 
 	 //povolení vstupù do zmìny TT a vozíku + Uložit + Storno button
-		scGPGlyphButton_vozik_edit->Enabled=true;
-		scGPGlyphButton_TT->Enabled=true;
+
 		Button_storno->Enabled=true;
 		Button_save->Enabled=true;
-
-		scExPanel_doporuc_pohony->Visible=false;
 		PopUPmenu->Visible=false;
 
 
@@ -297,8 +294,6 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		if(!data_nalezena)
 		{
 			PL_mGrid->RowCount=2; //slouèená hlavièka jsou 2 øádky
-      scGPGlyphButton_DEL_nepouzite->Visible=false;
-
       PL_mGrid->Columns[7].Width=190+30;
 			PL_mGrid->Columns[8].Width=1;
 
@@ -315,11 +310,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		for(unsigned int PID=0;PID<zrusena_prirazeni_PID_size;PID++)zrusena_prirazeni_PID[PID]=false;
 
 
-	// rStringGridEd_tab_dopravniky->Columns->Items[0]->Visible=false;
-
-	 scHTMLLabel_doporuc_pohony->Color=(TColor)RGB(230,230,230);
-
-	 scGPButton_vozik->Options->NormalColor=Button_save->Options->NormalColor;
+   scGPButton_vozik->Options->NormalColor=Button_save->Options->NormalColor;
 	 scGPButton_vozik->Options->FocusedColor=Button_save->Options->NormalColor;
 	 scGPButton_vozik->Options->HotColor=Button_save->Options->NormalColor;
 	 scGPButton_vozik->Options->PressedColor=Button_save->Options->NormalColor;
@@ -342,19 +333,6 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 scGPButton_obecne->Options->FrameNormalColor=Button_save->Options->NormalColor;
 	 scGPButton_obecne->Options->PressedColor=Button_save->Options->NormalColor;
 	 scGPButton_obecne->Options->FramePressedColor=Button_save->Options->NormalColor;
-
-	 scGPButton_jig->Options->NormalColor=Button_save->Options->NormalColor;
-	 scGPButton_jig->Options->FocusedColor=Button_save->Options->NormalColor;
-	 scGPButton_jig->Options->HotColor=Button_save->Options->NormalColor;
-	 scGPButton_jig->Options->PressedColor=Button_save->Options->NormalColor;
-	 scGPButton_jig->Options->FrameNormalColor=Button_save->Options->NormalColor;
-	 scGPButton_jig->Options->PressedColor=Button_save->Options->NormalColor;
-	 scGPButton_jig->Options->FramePressedColor=Button_save->Options->NormalColor;
-
-
-	 scGPButton_doporucene->Options->NormalColor=Form_parametry_linky->Color;
-	 scGPButton_doporucene->Options->FrameNormalColor=Form_parametry_linky->Color;
-
 
 	 if(Form1->d.v.PP.typ_linky==0) scGPSwitch->State=scswOff;
 	 else  { scGPSwitch->State=scswOn; }
@@ -956,13 +934,6 @@ void __fastcall TForm_parametry_linky::scGPButton_doporuceneClick(TObject *Sende
 		//scExPanel_doporuc_pohony->Width=Canvas->TextWidth(Form1->ms.TrimLeftFrom_UTF(scHTMLLabel_doporuc_pohony->Caption," </br>"));
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm_parametry_linky::scExPanel_doporuc_pohonyClose(TObject *Sender)
-{
-    F->log(__func__); //logování
-    scExPanel_doporuc_pohony->Visible=false;
-    scGPButton_doporucene->Visible=true;
-}
-//---------------------------------------------------------------------------
 
 void __fastcall TForm_parametry_linky::rEditNum_takt_Change(TObject *Sender)
 {
@@ -1301,12 +1272,6 @@ void __fastcall TForm_parametry_linky::FormPaint(TObject *Sender)
 {
  	PL_mGrid->Show();//vykreslí tabulku
 
-	if(zobrazitFrameForm)Form1->m.frameForm(Form_parametry_linky,clWebOrange,1);
-
-	if(VID==-1) { /*scGPGlyphButton_ADD->Enabled=true;*/ /*scGPGlyphButton_ADD->Visible=true;*/ scGPGlyphButton_vozik_edit->Enabled=true; scGPGlyphButton_TT->Enabled=true;  }
-	else {       /*scGPGlyphButton_ADD->Enabled=false;*/ /*scGPGlyphButton_ADD->Visible=false;*/  scGPGlyphButton_vozik_edit->Enabled=false; scGPGlyphButton_TT->Enabled=false; }
-
-  //	workaround - zrušení orámování okolo nepoužitých vnìjších bunìk
   vykresli_obdelnik_vpravo();
 }
 //---------------------------------------------------------------------------
@@ -1524,87 +1489,7 @@ void __fastcall TForm_parametry_linky::scLabel_smazatMouseLeave(TObject *Sender)
 	pasiveColor();
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm_parametry_linky::GlyphButton_smazatMouseEnter(TObject *Sender)
-{
-  F->log(__func__); //logování
-	scLabel_smazatMouseEnter(Sender);
-}
-//---------------------------------------------------------------------------
-void __fastcall TForm_parametry_linky::GlyphButton_smazatMouseLeave(TObject *Sender)
-{
-  F->log(__func__); //logování
-	pasiveColor();
-}
-//---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-//prochází všechny pohany a pokud je pohon nepoužíván, smaže ho
-void __fastcall TForm_parametry_linky::scLabel_smazat_nepouziteClick(TObject *Sender)
-{
-	F->log(__func__); //logování
-	UnicodeString text="Opravdu chcete smazat nepoužívané pohony?";
-	if(F->ls->Strings[371]!="")text=F->ls->Strings[371];
-	if(mrYes==F->MB(text,MB_YESNO))
-	{
-		for(unsigned int j=2;j<PL_mGrid->RowCount;j++)//prochází všechny pohony a pokud je pohon nepoužíván, smažeho
-		{
-			if(Form1->d.v.pohon_je_pouzivan(getPID(j))==false)//pohon není používaný
-			{
-				//samotné smazání øádku + zajistí snížení poètu øádkù + nesmí se pøeindexovávat!!! kvùli metodám, které sahají do spojáku POHONY
-				PL_mGrid->DeleteRow(j,false);
-				j--;//musí po smazání nutnì snížit index
 
-				PL_mGrid->Height=PL_mGrid->RowCount*30 + 48;
-				Form_parametry_linky->Height= PL_mGrid->Height +428;
-				//scGPGlyphButton_ADD->Top=Form_parametry_linky->Height - 65 ;
-				Button_save->Top=Form_parametry_linky->Height - 40;
-				Button_storno->Top=Form_parametry_linky->Height - 40;
-				scGPGlyphButton_DEL_nepouzite->Top=Form_parametry_linky->Height-30;
-				scHTMLLabel_InfoText->Top=  PL_mGrid->Height + 8;
-				vypis("",false);
-			}
-      else {PL_mGrid->getCheck(6,j)->Checked=true;  PL_mGrid->getCheck(6,j)->Enabled=true;   }
-		}
-     PL_mGrid->Refresh();
-     setADD_ButtonPosition();
-		//neexistuje nepoužívaný pohon a je tedy vhodné nabídku na smazání nepoužitých nezobrazovat
-		scGPGlyphButton_DEL_nepouzite->Visible=false;
-	}
-}
-//---------------------------------------------------------------------------
-void __fastcall TForm_parametry_linky::scLabel_smazat_nepouziteMouseEnter(TObject *Sender)
-{
-  F->log(__func__); //logování
-	pasiveColor();
-	Item_smazat_nepouzite->FillColor=clAcBg;
-	GlyphButton_smazat_nepouzite->Options->NormalColor=clAcBg;
-	GlyphButton_smazat_nepouzite->Options->HotColor=clAcBg;
-	GlyphButton_smazat_nepouzite->Options->FocusedColor=clAcBg;
-	GlyphButton_smazat_nepouzite->GlyphOptions->NormalColor=clAcGlyph;
-	GlyphButton_smazat_nepouzite->GlyphOptions->NormalColorAlpha=255;
-	top_positon(Item_smazat_nepouzite->Top);//hlídání horní pozice, je-li daná komponenta horní kvùli nastavení køížku
-}
-//---------------------------------------------------------------------------
-void __fastcall TForm_parametry_linky::scLabel_smazat_nepouziteMouseLeave(TObject *Sender)
-{
-  F->log(__func__); //logování
-	pasiveColor();
-}
-//---------------------------------------------------------------------------
-void __fastcall TForm_parametry_linky::GlyphButton_smazat_nepouziteMouseEnter(TObject *Sender)
-{
-  F->log(__func__); //logování
-	scLabel_smazat_nepouziteMouseEnter(Sender);
-}
-//---------------------------------------------------------------------------
-void __fastcall TForm_parametry_linky::GlyphButton_smazat_nepouziteMouseLeave(TObject *Sender)
-{
-  F->log(__func__); //logování
-	pasiveColor();
-}
-//---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::scHTMLLabel_doporuc_pohonyClick(TObject *Sender)
 {
   F->log(__func__); //logování
@@ -2214,8 +2099,6 @@ void TForm_parametry_linky::getmGridColors()
   H->Options->NormalColorAlpha=255;
   H->Options->FrameWidth=1;
   H->Options->FrameNormalColor=clWhite;
-  H->Width=scGPGlyphButton_smazat_pohon->Width;
-  H->Height=scGPGlyphButton_smazat_pohon->Height;
   H->Options->ShapeStyle=scgpRect;
 	H->Width=30;
 	if(F->ls->Strings[207]!="")H->Hint=F->ls->Strings[207];else H->Hint="Smazat tento pohon";
@@ -2274,8 +2157,7 @@ void TForm_parametry_linky::getmGridColors()
 	 Form_parametry_linky->Height=PL_mGrid->Top + PL_mGrid->RowCount*PL_mGrid->DefaultRowHeight + 80;
 	 Button_save->Top=Form_parametry_linky->Height-11-Button_save->Height;//Form_parametry_linky->Height - 40;
 	 Button_storno->Top=Button_save->Top;//Form_parametry_linky->Height - 40;
-   scGPGlyphButton_DEL_nepouzite->Top=Button_save->Top;
-	 scGPGlyphButton_DEL_nepouzite->Left=PL_mGrid->Columns[8].Left - 5; //minus kvuli oramovani buttonu, které se zobrazí pøi najetí myší
+ //	 scGPGlyphButton_DEL_nepouzite->Left=PL_mGrid->Columns[8].Left - 5; //minus kvuli oramovani buttonu, které se zobrazí pøi najetí myší
   // scComboBox_vyber_produkt->Top = Button_storno->Top + Button_storno->Height;
    //scComboBox_vyber_produkt->Left =
   // scCheckBox_vyber_produkt->Left
