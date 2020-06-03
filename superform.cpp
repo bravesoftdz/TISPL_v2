@@ -596,26 +596,15 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col, unsig
 	if (Z->mGrid->Cells[Col][Row].Type==Z->mGrid->IMAGE)
 	{
 		F->log("Editace cesty, MOD=SCHEMA, Form:Unit1");
-		//pozicévání tlaèítek pro tvorbu cesty
-		F->zapnuti_vypnuti_panelEditace(true);
-//		F->scGPButton_ulozit_cestu->Left=F->ClientWidth/2.0-(2*(F->scGPButton_ulozit_cestu->Width-11)-F->scGPGlyphButton_odstran_cestu->Width-11)/2.0;
-//		F->scGPButton_ulozit_cestu->Top=F->scGPPanel_statusbar->Top-F->scGPButton_ulozit_cestu->Height-5;
-//		F->scGPButton_storno_cesta->Left=F->scGPButton_ulozit_cestu->Left+F->scGPButton_ulozit_cestu->Width+22;
-//		F->scGPButton_storno_cesta->Top=F->scGPPanel_statusbar->Top-F->scGPButton_storno_cesta->Height-5;
-//		F->scGPGlyphButton_odstran_cestu->Left=F->scGPButton_storno_cesta->Left+F->scGPButton_storno_cesta->Width+22;
-//		F->scGPGlyphButton_odstran_cestu->Top=F->scGPPanel_statusbar->Top-F->scGPGlyphButton_odstran_cestu->Height-5;
-		//zobrazení tlaèítek pro tvorbu cesty
-//		F->scGPButton_ulozit_cestu->Visible=true;
-//		F->scGPButton_storno_cesta->Visible=true;
-//		F->scGPGlyphButton_odstran_cestu->Visible=true;
 		//nastavení akce a uzavøení formu
 		F->MOD=F->TVORBA_CESTY;
+		F->zapnuti_vypnuti_panelEditace(true);//zapnutí panelu s tlaèítky
 		Z_cesta=new Cvektory::TZakazka;
 		Z_cesta->cesta=NULL;
 		Z_cesta->n=Z->n;//uložení èísla zakázky, které je editovaná cesta
 		F->d.v.inicializace_cesty(Z_cesta);
 		F->d.v.kopiruj_cestu_zakazky(Z,Z_cesta);//kopírování uložené cesty pro její editaci
-		if(Z_cesta->cesta->predchozi->Element!=F->d.v.ELEMENTY->predchozi)F->scGPButton_ulozit_cestu->Enabled=false;
+		if(Z_cesta->cesta->predchozi->Element!=F->d.v.ELEMENTY->predchozi)F->scGPButton_ulozit->Enabled=false;
 		//aktualizace parametrù z tabulky do ZAKAZEK_temp + mazání mgridù zakázek
 		ulozeni_dat_z_mGridu_a_delete();
 		closing=true;

@@ -246,7 +246,6 @@ __published:	// IDE-managed Components
 	TMemo *Memo3;
   TTimer *Timer2;
 	TscGPPanel *scGPPanel_bottomtoolbar;
-	TscGPComboBox *scGPComboBox_orientace;
 	TscGPButton *scGPButton_ulozit;
 	TscGPButton *scGPButton_zahodit;
 	TscButton *scButton_zamek;
@@ -289,8 +288,6 @@ __published:	// IDE-managed Components
   TrHTMLHint *rHTMLHint1;
 	TscGPButton *scGPButton_geometrie;
 	TscGPCheckBox *scGPCheckBox_rozmisteni_voziku;
-	TscGPButton *scGPButton_ulozit_cestu;
-	TscGPButton *scGPButton_storno_cesta;
 	TscGPButton *scGPGlyphButton_odstran_cestu;
 	TPopupMenu *PopupMenu1;
 	TMenuItem *N11;
@@ -523,8 +520,6 @@ __published:	// IDE-managed Components
   void __fastcall scGPButton_warningClick(TObject *Sender);
 	void __fastcall scGPButton_smazatClick(TObject *Sender);
 	void __fastcall scGPButton_geometrieClick(TObject *Sender);
-	void __fastcall scGPButton_storno_cestaClick(TObject *Sender);
-	void __fastcall scGPButton_ulozit_cestuClick(TObject *Sender);
 	void __fastcall scGPCheckBox_rozmisteni_vozikuClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_odstran_cestuClick(TObject *Sender);
 	void __fastcall N21Click(TObject *Sender);
