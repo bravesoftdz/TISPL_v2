@@ -265,7 +265,6 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	edice();//zakázání či povolení grafických uživatelských prvků dle úrovně edice
 	n_prihlaseni=0;
 	TZF=!DEBUG;//TRIAL_zakazat_funkcionality - nyní nastaveno pro RELEASE
-	if(TZF)scGPSwitch_rezim->Enabled=false;
 	LogFileStream=new TFileStream("LOGFILE.txt",fmOpenWrite|fmCreate|fmShareDenyNone);
 	logovat=true;
 
@@ -393,10 +392,6 @@ void TForm1::set_font(int velikost)
   PopupMenuButton->Font=aFont;
   PopupMenuButton->Font->Color=barva;
   PopupMenuButton->Font->Size=velikost;
-  barva=Synteza->Font->Color;
-  Synteza->Font=aFont;
-  Synteza->Font->Color=barva;
-  Synteza->Font->Size=velikost;
   barva=Toolbar_Ulozit->Font->Color;
   Toolbar_Ulozit->Font=aFont;
 	Toolbar_Ulozit->Font->Color=barva;
@@ -417,10 +412,6 @@ void TForm1::set_font(int velikost)
   Layout->Font=aFont;
   Layout->Font->Color=barva;
   Layout->Font->Size=velikost;
-  barva=Simulace->Font->Color;
-  Simulace->Font=aFont;
-  Simulace->Font->Color=barva;
-  Simulace->Font->Size=velikost;
   barva=scGPGlyphButton_napoveda->Font->Color;
   scGPGlyphButton_napoveda->Font=aFont;
   scGPGlyphButton_napoveda->Font->Color=barva;
@@ -429,14 +420,6 @@ void TForm1::set_font(int velikost)
   scLabel_titulek->Font=aFont;
   scLabel_titulek->Font->Color=barva;
   scLabel_titulek->Font->Size=velikost;
-  barva=scLabel_klient->Font->Color;
-  scLabel_klient->Font=aFont;
-  scLabel_klient->Font->Color=barva;
-  scLabel_klient->Font->Size=velikost;
-  barva=scLabel_architekt->Font->Color;
-  scLabel_architekt->Font=aFont;
-  scLabel_architekt->Font->Color=barva;
-  scLabel_architekt->Font->Size=velikost;
 	barva=Nahled->Font->Color;
   Nahled->Font=aFont;
   Nahled->Font->Color=barva;
@@ -517,10 +500,6 @@ void TForm1::set_font(int velikost)
   pohonobjekt->Font=aFont;
   pohonobjekt->Font->Color=barva;
   pohonobjekt->Font->Size=velikost;
-  barva=scGPGlyphButton_close_legenda_casove_osy->Font->Color;
-  scGPGlyphButton_close_legenda_casove_osy->Font=aFont;
-  scGPGlyphButton_close_legenda_casove_osy->Font->Color=barva;
-  scGPGlyphButton_close_legenda_casove_osy->Font->Size=velikost;
   barva=CheckBox_pouzit_zadane_kapacity_OLD->Font->Color;
   CheckBox_pouzit_zadane_kapacity_OLD->Font=aFont;
   CheckBox_pouzit_zadane_kapacity_OLD->Font->Color=barva;
@@ -529,10 +508,6 @@ void TForm1::set_font(int velikost)
   CheckBoxAnimovatSG_OLD->Font=aFont;
   CheckBoxAnimovatSG_OLD->Font->Color=barva;
   CheckBoxAnimovatSG_OLD->Font->Size=velikost;
-  barva=scGPLabel1->Font->Color;
-  scGPLabel1->Font=aFont;
-  scGPLabel1->Font->Color=barva;
-  scGPLabel1->Font->Size=velikost;
   barva=scGPButton_ulozit->Font->Color;
   scGPButton_ulozit->Font=aFont;
   scGPButton_ulozit->Font->Color=barva;
@@ -589,10 +564,6 @@ void TForm1::set_font(int velikost)
   scGPButton_generuj->Font=aFont;
   scGPButton_generuj->Font->Color=barva;
   scGPButton_generuj->Font->Size=velikost;
-  barva=scGPButton_header_def_zakazek->Font->Color;
-  scGPButton_header_def_zakazek->Font=aFont;
-  scGPButton_header_def_zakazek->Font->Color=barva;
-  scGPButton_header_def_zakazek->Font->Size=velikost;
   barva=scButton_konec->Font->Color;
   scButton_konec->Font=aFont;
   scButton_konec->Font->Color=barva;
@@ -901,23 +872,15 @@ void TForm1::DesignSettings()
 
   scListGroupPanel_hlavickaOstatni->HeaderAutoColor=scListGroupKnihovObjektu->HeaderAutoColor;
   scListGroupPanel_hlavickaOstatni->Color=scListGroupKnihovObjektu->Color;
-	//scSplitView_OPTIONS->Color=light_gray;
- //	scExPanel_vrstvy->Color=light_gray;
- //	scExPanel_ostatni->Color=light_gray;
 
 	//nastaveni barvy prepinacu modu
-	//Schema->Options->PressedColor=DetailsButton->Options->NormalColor;
-	//Layout->Options->PressedColor=DetailsButton->Options->NormalColor;
+
 	Analyza->Options->PressedColor=DetailsButton->Options->NormalColor;
-	Synteza->Options->PressedColor=DetailsButton->Options->NormalColor;
-	Simulace->Options->PressedColor=DetailsButton->Options->NormalColor;
 	Nahled->Options->PressedColor=DetailsButton->Options->NormalColor;
   //nastavení barvy fontu stisknutému tlačítku
 	//Schema->Options->FontPressedColor=clWhite;
 	//Layout->Options->FontPressedColor=clWhite;
 	Analyza->Options->FontPressedColor=clWhite;
-	Synteza->Options->FontPressedColor=clWhite;
-	Simulace->Options->FontPressedColor=clWhite;
 	Nahled->Options->FontPressedColor=clWhite;
 
 	//nastavení barvy pro knihovnu
@@ -957,9 +920,9 @@ void TForm1::DesignSettings()
 	scGPButton_ulozit->Left=scGPButton_zahodit->Left-scGPButton_zahodit->Width-22;
 	//scGPImage_zamek_posunu->Left=22-4;//okraj komponenty != okraji obrázku
 	scGPImage_mereni_vzdalenost->Left=22-4;//scGPImage_zamek_posunu->Left+scGPImage_zamek_posunu->Width+22-13;
-	scGPLabel1->Left=scGPImage_mereni_vzdalenost->Left+scGPImage_mereni_vzdalenost->Width+22-8;
-	scGPLabel_prepinacKot->Left=scGPLabel1->Left;//label k přepínači kót
-	scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
+ //	scGPLabel1->Left=scGPImage_mereni_vzdalenost->Left+scGPImage_mereni_vzdalenost->Width+22-8;
+ //scGPLabel_prepinacKot->Left=scGPLabel1->Left;//label k přepínači kót
+ //	scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
 	scGPComboBox_prepinacKot->Left=scGPLabel_prepinacKot->Left+scGPLabel_prepinacKot->Width;//combobox na přepínání mezi kotami čas -- delka
 	scGPButton_posun_dalsich_elementu->Left=scGPPanel_bottomtoolbar->Width-scGPButton_posun_dalsich_elementu->Width-25;
 	scButton_zamek->Left=scGPButton_posun_dalsich_elementu->Left-scButton_zamek->Width-18;
@@ -971,8 +934,8 @@ void TForm1::DesignSettings()
 	scGPButton_zahodit->Top=scGPButton_ulozit->Top;
 	scGPComboBox_orientace->Top=(scGPPanel_bottomtoolbar->Height-scGPComboBox_orientace->Height)/2;
 	scGPComboBox_prepinacKot->Top=scGPComboBox_orientace->Top;//combobox na přepínání mezi kotami čas -- delka
-	scGPLabel1->Top=(scGPPanel_bottomtoolbar->Height-scGPLabel1->Height)/2;
-	scGPLabel_prepinacKot->Top=scGPLabel1->Top;
+ //	scGPLabel1->Top=(scGPPanel_bottomtoolbar->Height-scGPLabel1->Height)/2;
+//	scGPLabel_prepinacKot->Top=scGPLabel1->Top;
 	offset_scGPButton_bug_report=10;//používá se na více místech
 	scGPButton_bug_report->Top=ClientHeight-scGPPanel_statusbar->Height-scGPButton_bug_report->Height-offset_scGPButton_bug_report;
 	scGPButton_bug_report->Left=ClientWidth-scGPButton_bug_report->Width-offset_scGPButton_bug_report;
@@ -1532,9 +1495,6 @@ void TForm1::edice()
 				//DrawGrid_knihovna->Enabled=false;
 			//	Nastvitparametry1->Enabled=false;
 				//Smazat1->Enabled=false;
-        scLabel_architekt->Visible=false;
-        scGPSwitch_rezim->Visible=false;
-        scLabel_klient->Visible=false;
         scGPButton_mereni_vzdalenost->Enabled=true;
         scLabel1_svetelnost->Enabled=false;
         scGPCheckBox_stupne_sedi->Enabled=false;
@@ -1659,7 +1619,6 @@ void TForm1::Novy_soubor(bool invalidate)
 
 		 //tady bude přepnutí založek dodělat
 			 if(MOD!=LAYOUT)schemaClick(this);//volání MODu LAYOUT
-		 scGPSwitch_rezim->State=scswOff;
 
 		 Zoom=1.0; on_change_zoom_change_scGPTrackBar();
 		 Zoom_predchozi=1.0;
@@ -2135,9 +2094,9 @@ void __fastcall TForm1::FormResize(TObject *Sender)
 	scGPButton_ulozit->Left=scGPButton_zahodit->Left-scGPButton_zahodit->Width-22;
 	//scGPImage_zamek_posunu->Left=22-4;//okraj komponenty != okraji obrázku
 	scGPImage_mereni_vzdalenost->Left=22-4;//scGPImage_zamek_posunu->Left+scGPImage_zamek_posunu->Width+22-13;
-	scGPLabel1->Left=scGPImage_mereni_vzdalenost->Left+scGPImage_mereni_vzdalenost->Width+22-8;
-	scGPLabel_prepinacKot->Left=scGPLabel1->Left;//label k přepínači kót
-	scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
+	//scGPLabel1->Left=scGPImage_mereni_vzdalenost->Left+scGPImage_mereni_vzdalenost->Width+22-8;
+	//scGPLabel_prepinacKot->Left=scGPLabel1->Left;//label k přepínači kót
+	//scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
 	scGPComboBox_prepinacKot->Left=scGPLabel_prepinacKot->Left+scGPLabel_prepinacKot->Width;//combobox na přepínání mezi kotami čas -- delka
 	scGPButton_posun_dalsich_elementu->Left=scGPPanel_bottomtoolbar->Width-scGPButton_posun_dalsich_elementu->Width-25;
 	scButton_zamek->Left=scGPButton_posun_dalsich_elementu->Left-scButton_zamek->Width-18;
@@ -2149,8 +2108,8 @@ void __fastcall TForm1::FormResize(TObject *Sender)
 	scGPButton_zahodit->Top=scGPButton_ulozit->Top;
 	scGPComboBox_orientace->Top=(scGPPanel_bottomtoolbar->Height-scGPComboBox_orientace->Height)/2;
 	scGPComboBox_prepinacKot->Top=scGPComboBox_orientace->Top;//combobox na přepínání mezi kotami čas -- delka
-	scGPLabel1->Top=(scGPPanel_bottomtoolbar->Height-scGPLabel1->Height)/2;
-	scGPLabel_prepinacKot->Top=scGPLabel1->Top;
+	//scGPLabel1->Top=(scGPPanel_bottomtoolbar->Height-scGPLabel1->Height)/2;
+	//scGPLabel_prepinacKot->Top=scGPLabel1->Top;
 	scGPButton_bug_report->Top=ClientHeight-scGPPanel_statusbar->Height-scGPButton_bug_report->Height-offset_scGPButton_bug_report;
   scGPButton_bug_report->Left=ClientWidth-scGPButton_bug_report->Width-offset_scGPButton_bug_report;
 	scGPImage_mereni_vzdalenost->Top=(scGPPanel_bottomtoolbar->Height-scGPImage_mereni_vzdalenost->Height)/2;
@@ -2227,7 +2186,6 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
 	//scGPButton_kalibrace->Top = scLabel1_svetelnost->Top + scLabel1_svetelnost->Height;
   //scGPButton_adjustace->Top = scLabel1_svetelnost->Top + scLabel1_svetelnost->Height;
 	scGPCheckBox_pocet_voziku_dle_WIP->Visible=false;
-	scGPGlyphButton_close_legenda_casove_osy->Visible=false;
  //	scGPButton_header_def_zakazek->Visible=false;
  //	scGPButton_header_param_linky->Visible=false;
 	Pan_bmp->Width=0;Pan_bmp->Height=0;//při přechodu z jiného režimu smaže starou Pan_bmp
@@ -2252,7 +2210,6 @@ void __fastcall TForm1::LayoutClick(TObject *Sender)
 	//scSplitView_LEFTTOOLBAR->Visible=false;
 	scGPCheckBox_ortogon->Visible=false;
 	scGPCheckBox_pocet_voziku_dle_WIP->Visible=false;
-	scGPGlyphButton_close_legenda_casove_osy->Visible=false;
 	scGPGlyphButton_close_grafy->Visible=false;
  //	g.ShowGrafy(false);//vypne grafy (případ pokud by se přecházelo z časových os do layoutu) //GRAFY - ODEBRÁNY Z BUILDU  21.1.2020 - ZAKOMENTOVÁNO, ODEBRÁNO Z PROJEKTU
 	SB(ls->Strings[379]);
@@ -2365,15 +2322,12 @@ void __fastcall TForm1::scGPGlyphButton_close_grafyClick(TObject *Sender)
 	 //	g.ShowGrafy(false); //GRAFY - ODEBRÁNY Z BUILDU  21.1.2020 - ZAKOMENTOVÁNO, ODEBRÁNO Z PROJEKTU
 		scGPGlyphButton_close_grafy->GlyphOptions->Kind=scgpbgkUpArrow;//změní typ ikony
 		scGPGlyphButton_close_grafy->ShowCaption=true;//zobrazí titulek
-		if(scGPGlyphButton_close_legenda_casove_osy->GlyphOptions->Kind==scgpbgkUpArrow)scGPGlyphButton_close_legenda_casove_osy->Top=scGPPanel_statusbar->Top-Form1->scGPGlyphButton_close_grafy->Height;//buttonglyph legendy přesune pokud je minimalizováná
 	}
 	else
 	{
-		scGPGlyphButton_close_grafy->Top=Form1->Chart2->Top;
 	 //	g.ShowGrafy(true);  //GRAFY - ODEBRÁNY Z BUILDU  21.1.2020 - ZAKOMENTOVÁNO, ODEBRÁNO Z PROJEKTU
 		scGPGlyphButton_close_grafy->GlyphOptions->Kind=scgpbgkDownArrow;//změní typ ikony
 		scGPGlyphButton_close_grafy->ShowCaption=false;//skryje titulek
-		if(scGPGlyphButton_close_legenda_casove_osy->GlyphOptions->Kind==scgpbgkUpArrow)scGPGlyphButton_close_legenda_casove_osy->Top=Form1->Chart2->Top;//buttonglyph legendy přesune pokud je minimalizováná
 	}
 	scGPGlyphButton_close_grafy->Left=Form1->ClientWidth-Form1->scGPGlyphButton_close_grafy->Width;
 	//pozn. šířka Buttnu se zadává pomocí paramerů Width, WidthWithCaption,WidthWitoutCaption v proporties
@@ -2383,19 +2337,9 @@ void __fastcall TForm1::scGPGlyphButton_close_grafyClick(TObject *Sender)
 //přepíná tlačito na skrytí nebo zobrazí legendu časových os, dle stavu tlačítka dochází poté k samotnému skrývání či zobrazování v Cvykresli vykresli_legendu_casovych_os(TCanvas *canv)
 void __fastcall TForm1::scGPGlyphButton_close_legenda_casove_osyClick(TObject *Sender)
 {
+ //možno smazat
 	log(__func__);//logování
-	if(scGPGlyphButton_close_legenda_casove_osy->GlyphOptions->Kind==scgpbgkDownArrow)
-	{
-		scGPGlyphButton_close_legenda_casove_osy->GlyphOptions->Kind=scgpbgkUpArrow;//změní typ ikony
-		scGPGlyphButton_close_legenda_casove_osy->ShowCaption=true;
-	}
-	else
-	{
-		scGPGlyphButton_close_legenda_casove_osy->GlyphOptions->Kind=scgpbgkDownArrow;//změní typ ikony
-		scGPGlyphButton_close_legenda_casove_osy->ShowCaption=false;
-	}
-	//pozn. šířka Buttonu se zadává pomocí paramerů Width, WidthWithCaption,WidthWitoutCaption v proporties
-	REFRESH();
+
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -2741,7 +2685,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 {
 	log(__func__);//logování
 	funkcni_klavesa=0;
-	int HG=0; if(scGPGlyphButton_close_grafy->GlyphOptions->Kind==scgpbgkDownArrow)HG=Chart2->Height;//o výšku grafu
+	int HG=0;
 	int PXM=50;int D=Form1->m.round(d.v.PP.delka_jig*PXM);int S=Form1->m.round(d.v.PP.sirka_jig*PXM);short Yofset=D;if(S>D)Yofset=S;//pro posun obrazu v technologických procesech
 	switch(Key)
 	{
@@ -5498,7 +5442,7 @@ void TForm1::pan_create()
 	int W=scSplitView_LEFTTOOLBAR->Width;
 	if(MOD==CASOVAOSA || MOD==TECHNOPROCESY)W=0;//zajistí, že se posová i číslování vozíků resp.celá oblast
 	short H=scGPPanel_mainmenu->Height;
-	int Gh=vrat_max_vysku_grafu();if(scGPPanel_bottomtoolbar->Visible)Gh=scGPPanel_bottomtoolbar->Height;
+	int Gh=0;if(scGPPanel_bottomtoolbar->Visible)Gh=scGPPanel_bottomtoolbar->Height;
 	scGPButton_bug_report->Visible=false;
 	Gh-=6;//WA, z nějaké důvodu to chce odebrat, aby byla posouváná plocha kompletní
 	Pan_bmp->Width=ClientWidth;Pan_bmp->Height=ClientHeight-H-Gh;//velikost pan plochy
@@ -11771,60 +11715,58 @@ HRGN hreg=CreatePolygonRgn(body,5,WINDING);//vytvoření regionu
 	d.v.edituj_temp_zakazku(2,"druha_edit",0,"druha_zakazka_edit",clBlue,50,2.0,30,0,0);
 
 	//zkouška výpisu ZAKAZKY_temp
-	Memo2->Clear();
-	Memo2->Visible=true;
 	Cvektory::TZakazka *ukaz=d.v.ZAKAZKY_temp;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
 	int i=0;
 	while (ukaz!=NULL)
 	{
-		if(i==0)Memo2->Lines->Add(AnsiString(i++)+": "+AnsiString(ukaz->n)+" "+ukaz->name+" /"+AnsiString(ukaz->predchozi->name));
-		else
-		Memo2->Lines->Add(AnsiString(i++)+": "+AnsiString(ukaz->n)+" "+ukaz->name);//akce s ukazatelem
+	 //	if(i==0)Memo2->Lines->Add(AnsiString(i++)+": "+AnsiString(ukaz->n)+" "+ukaz->name+" /"+AnsiString(ukaz->predchozi->name));
+	 //	else
+		//Memo2->Lines->Add(AnsiString(i++)+": "+AnsiString(ukaz->n)+" "+ukaz->name);//akce s ukazatelem
 		ukaz=ukaz->dalsi;//posun na další prvek v seznamu
 	}
 
 	//zkouška změny pořadí
-	Memo2->Lines->Add("zmena poradi:");
+	//Memo2->Lines->Add("zmena poradi:");
 	//d.v.zmen_poradi_temp_zakazky(Edit1->Text.ToInt(),Edit2->Text.ToInt());
 	d.v.zmen_poradi_temp_zakazky(5,3);
 	ukaz=d.v.ZAKAZKY_temp;
 	i=0;
 	while (ukaz!=NULL)
 	{
-		if(i==0)Memo2->Lines->Add(AnsiString(i++)+": "+AnsiString(ukaz->n)+" "+ukaz->name+" /"+AnsiString(ukaz->predchozi->name));
-		else
-		Memo2->Lines->Add(AnsiString(i++)+": "+AnsiString(ukaz->n)+" "+ukaz->name);//akce s ukazatelem
+	 //	if(i==0)Memo2->Lines->Add(AnsiString(i++)+": "+AnsiString(ukaz->n)+" "+ukaz->name+" /"+AnsiString(ukaz->predchozi->name));
+	 //	else
+	 //	Memo2->Lines->Add(AnsiString(i++)+": "+AnsiString(ukaz->n)+" "+ukaz->name);//akce s ukazatelem
 		ukaz=ukaz->dalsi;//posun na další prvek v seznamu
 	}
 
 	//zkouška uložení do ZAKAZKY
 	d.v.kopirujZAKAZKY_temp2ZAKAZKY();
-	Memo2->Lines->Add("ZAKAZKY:");
+ //	Memo2->Lines->Add("ZAKAZKY:");
 	ukaz=d.v.ZAKAZKY->dalsi;
 	while (ukaz!=NULL)
 	{
-		Memo2->Lines->Add(AnsiString(ukaz->n)+" "+ukaz->name+" /"+AnsiString(ukaz->predchozi->name)+" "+ukaz->jig.vyska);//akce s ukazatelem
+	 //	Memo2->Lines->Add(AnsiString(ukaz->n)+" "+ukaz->name+" /"+AnsiString(ukaz->predchozi->name)+" "+ukaz->jig.vyska);//akce s ukazatelem
 		ukaz=ukaz->dalsi;//posun na další prvek v seznamu
 	}
-	Memo2->Lines->Add("ZAKAZKY_temp:");
-	if(d.v.ZAKAZKY_temp!=NULL)
-	{
-		ukaz=d.v.ZAKAZKY_temp->dalsi;
-		while (ukaz!=NULL)
-		{
-			Memo2->Lines->Add(AnsiString(ukaz->n)+" "+ukaz->name);//akce s ukazatelem
-			ukaz=ukaz->dalsi;//posun na další prvek v seznamu
-		}
-	}
-	else Memo2->Lines->Add("prázdný");
+ //	Memo2->Lines->Add("ZAKAZKY_temp:");
+//	if(d.v.ZAKAZKY_temp!=NULL)
+//	{
+//		ukaz=d.v.ZAKAZKY_temp->dalsi;
+//		while (ukaz!=NULL)
+//		{
+//	 //		Memo2->Lines->Add(AnsiString(ukaz->n)+" "+ukaz->name);//akce s ukazatelem
+//			ukaz=ukaz->dalsi;//posun na další prvek v seznamu
+//		}
+//	}
+//	else Memo2->Lines->Add("prázdný");
 
 	//zkouška vozíky výpis
 	d.v.generuj_VOZIKY();
-	Memo2->Lines->Add("Vozíky:");
+ //	Memo2->Lines->Add("Vozíky:");
 	Cvektory::TVozik *v=d.v.VOZIKY->dalsi;
 	while (v!=NULL)
 	{
-			Memo2->Lines->Add(AnsiString(v->n)+" "+v->zakazka->n);//akce s ukazatelem
+	 //		Memo2->Lines->Add(AnsiString(v->n)+" "+v->zakazka->n);//akce s ukazatelem
 			v=v->dalsi;//posun na další prvek v seznamu
 	}
 }
@@ -12377,11 +12319,6 @@ void TForm1::otevri_editaci()
 	scGPPanel_bottomtoolbar->Visible=true;
 	scGPButton_bug_report->Top-=scGPPanel_bottomtoolbar->Height;//posun tlačítka report
 
-	//zmena horní lišty vlevo
-	scLabel_architekt->Visible=false;
-	scGPSwitch_rezim->Visible=false;
-	scLabel_klient->Visible=false;
-
 	nahled_ulozen=false;//nově otevřen, není uložen
 
 	//znovu provedení designu při otevření náhledu, který není prázdný
@@ -12784,10 +12721,6 @@ void TForm1::vypni_editaci()
 	pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp;posledni_editovany_element=NULL;delete posledni_editovany_element;JID=-1;Akce=NIC;
 	//vypnutí spodního panelu
 	scGPPanel_bottomtoolbar->Visible=false;
-	//vlevo
-	scLabel_klient->Visible=false;
-	scGPSwitch_rezim->Visible=false;
-	scLabel_architekt->Visible=false;
 	//navrácení zoomu a posunu do původních hodnt
 	Zoom=Zoom_predchozi2;
 	//on_change_zoom_change_scGPTrackBar();//pozor asi volá refresh
@@ -13978,21 +13911,6 @@ void __fastcall TForm1::CheckBoxPALCE_Click(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-int TForm1::vrat_max_vysku_grafu()
-{
-	log(__func__);//logování
-  int RET=0;
-  if(RET<=Chart1->Height && Chart1->Visible)RET=Chart1->Height;
-  if(RET<=Chart2->Height && Chart2->Visible)RET=Chart2->Height;
-  if(RET<=Chart3->Height && Chart3->Visible)RET=Chart3->Height;
-  if(RET<=Chart4->Height && Chart4->Visible)RET=Chart4->Height;
-  if(RET<=Chart6->Height && Chart6->Visible)RET=Chart6->Height;
-  //případně doplnit další grafy!!!!!
-  return RET;
-}
-//---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-
 void __fastcall TForm1::Chart1Click(TObject *Sender)
 {
 	log(__func__);//logování
@@ -14925,10 +14843,9 @@ void __fastcall TForm1::scSplitViewsClosing(TObject *Sender)
 		scSplitViews_closing_on_AA=true;
 		int W=scSplitView_LEFTTOOLBAR->Width;
 		short H=scLabel_titulek->Height;
-		int Gh=vrat_max_vysku_grafu();
 		Graphics::TBitmap *bmp_OPT_CLOSE=new Graphics::TBitmap;
-		bmp_OPT_CLOSE->Width=ClientWidth-W;bmp_OPT_CLOSE->Height=ClientHeight-H-Gh;
-		bmp_OPT_CLOSE->Canvas->CopyRect(Rect(0,0,ClientWidth-W,ClientHeight-H-Gh),Canvas,Rect(0+W,0+H,ClientWidth,ClientHeight-Gh));//zkopíruje aktuální výřez
+		bmp_OPT_CLOSE->Width=ClientWidth-W;bmp_OPT_CLOSE->Height=ClientHeight-H;
+		bmp_OPT_CLOSE->Canvas->CopyRect(Rect(0,0,ClientWidth-W,ClientHeight-H),Canvas,Rect(0+W,0+H,ClientWidth,ClientHeight));//zkopíruje aktuální výřez
 		antialiasing=false;
 		Canvas->Draw(0+W,0+H,bmp_OPT_CLOSE);
 		delete (bmp_OPT_CLOSE);//velice nutné
@@ -15022,7 +14939,7 @@ void __fastcall TForm1::hl_spojak_zakazkyClick(TObject *Sender)
 	Cvektory::TZakazka *ukaz=d.v.ZAKAZKY->dalsi;
 	while (ukaz!=NULL)
 	{
-		Memo2->Lines->Add(AnsiString(ukaz->name)+";/predchozi:"+AnsiString(ukaz->predchozi->name)+"/;"+AnsiString(ukaz->barva)+";"+AnsiString(ukaz->pomer)+";"+AnsiString(ukaz->pocet_voziku)+";"+AnsiString(ukaz->serv_vozik_pocet)+";"+AnsiString(ukaz->TT));
+	 //	Memo2->Lines->Add(AnsiString(ukaz->name)+";/predchozi:"+AnsiString(ukaz->predchozi->name)+"/;"+AnsiString(ukaz->barva)+";"+AnsiString(ukaz->pomer)+";"+AnsiString(ukaz->pocet_voziku)+";"+AnsiString(ukaz->serv_vozik_pocet)+";"+AnsiString(ukaz->TT));
 		ukaz=ukaz->dalsi;
 	}
 }
@@ -15033,7 +14950,7 @@ void __fastcall TForm1::button_zakazky_tempClick(TObject *Sender)
 	Cvektory::TZakazka *ukaz=d.v.ZAKAZKY_temp->dalsi;
 	while (ukaz!=NULL)
 	{
-			Memo2->Lines->Add(AnsiString(ukaz->name)+";"+AnsiString(ukaz->barva)+";"+AnsiString(ukaz->pomer)+";"+AnsiString(ukaz->pocet_voziku)+";"+AnsiString(ukaz->serv_vozik_pocet)+";"+AnsiString(ukaz->TT));
+		 //	Memo2->Lines->Add(AnsiString(ukaz->name)+";"+AnsiString(ukaz->barva)+";"+AnsiString(ukaz->pomer)+";"+AnsiString(ukaz->pocet_voziku)+";"+AnsiString(ukaz->serv_vozik_pocet)+";"+AnsiString(ukaz->TT));
 			ukaz=ukaz->dalsi;
 	}
 }
@@ -15189,34 +15106,12 @@ void __fastcall TForm1::pohonobjektClick(TObject *Sender)
 
 	while(O!=NULL)
 	{
-		Memo2->Lines->Add(O->pohon->n);
+	 //	Memo2->Lines->Add(O->pohon->n);
 		O=O->dalsi;
 	}
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm1::Button12Click(TObject *Sender)
-{
-	log(__func__);//logování
-	Memo2->Visible=true;
-	Cvektory::TPohon *P=d.v.POHONY->dalsi;
-	while(P!=NULL)
-	{
-		Memo2->Lines->Add(P->name);
-		P=P->dalsi;
-	}
-
-	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
-	while(O!=NULL)
-	{
-		Memo2->Lines->Add(O->pohon->name);
-		if(O->pohon==d.v.POHONY->dalsi)
-		Memo2->Lines->Add("stejný");
-		else Memo2->Lines->Add("není stejný");
-		O=O->dalsi;
-	}
-}
-//---------------------------------------------------------------------------
 //při otevření panelu
 void __fastcall TForm1::scSplitView_OPTIONSPanelPaint(TCanvas *ACanvas, TRect &ARect)
 {
@@ -15567,10 +15462,6 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		//vypnutí spodního panelu
 		scGPPanel_bottomtoolbar->Visible=false;
 		scGPButton_bug_report->Top+=scGPPanel_bottomtoolbar->Height;//navrácení tlačítka report do původních souřadnic
-		//vlevo
-		scLabel_klient->Visible=false;
-		scGPSwitch_rezim->Visible=false;
-		scLabel_architekt->Visible=false;
 		//navrácení zoomu a posunu do původních hodnt
 		Zoom=Zoom_predchozi2;
 		//on_change_zoom_change_scGPTrackBar();//pozor asi volá refresh
@@ -16764,17 +16655,17 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 		else Schema->Caption=ls->Strings[36];
     PopupMenuButton->Caption=ls->Strings[21];
     PopupMenuButton->Hint=ls->Strings[22];
-    Synteza->Caption=ls->Strings[23];
+    //Synteza->Caption=ls->Strings[23];
     Toolbar_Ulozit->Hint=ls->Strings[24];
     Toolbar_NovySoubor->Hint=ls->Strings[25];
     Toolbar_Otevrit->Caption=ls->Strings[26];
     Toolbar_Otevrit->Hint=ls->Strings[27];
     DetailsButton->Hint=ls->Strings[28];
 		Layout->Caption=ls->Strings[29];
-    Simulace->Caption=ls->Strings[30];
+    //Simulace->Caption=ls->Strings[30];
     scGPGlyphButton_napoveda->Hint=ls->Strings[31];
-    scLabel_klient->Caption=ls->Strings[32];
-    scLabel_architekt->Caption=ls->Strings[33];
+    //scLabel_klient->Caption=ls->Strings[32];
+    //scLabel_architekt->Caption=ls->Strings[33];
    // scGPButton_header_projekt->Hint=ls->Strings[34];
    // scGPGlyphButton_OPTIONS->Hint=ls->Strings[35];
     Nahled->Caption=ls->Strings[36];
@@ -16795,13 +16686,13 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
   	scListGroupPanel_poznamky->Caption=ls->Strings[49];
   	scGPLabel_poznamky->Caption=ls->Strings[54];
 		scGPGlyphButton_close_grafy->Caption=ls->Strings[62];
-   // scExPanel_log_header->Caption=ls->Strings[63];
+   //scExPanel_log_header->Caption=ls->Strings[63];
     scExPanel_html->Caption=ls->Strings[64];
     pohonobjekt->Caption=ls->Strings[65];
-    scGPGlyphButton_close_legenda_casove_osy->Caption=ls->Strings[66];
+    //scGPGlyphButton_close_legenda_casove_osy->Caption=ls->Strings[66];
     CheckBox_pouzit_zadane_kapacity_OLD->Caption=ls->Strings[67];
     CheckBoxAnimovatSG_OLD->Caption=ls->Strings[68];
-		scGPLabel1->Caption=ls->Strings[69];
+		//scGPLabel1->Caption=ls->Strings[69];
 		scGPButton_ulozit->Caption=ls->Strings[70];
 		scGPButton_zahodit->Caption=ls->Strings[71];
 		scGPLabel_prepinacKot->Caption=ls->Strings[72];
@@ -16816,7 +16707,7 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
     scLabel_filtrovat->Caption=ls->Strings[81];
     scLabel_doba_cekani->Caption=ls->Strings[82];
     scGPButton_generuj->Hint=ls->Strings[83];
-    scGPButton_header_def_zakazek->Hint=ls->Strings[84];
+    //scGPButton_header_def_zakazek->Hint=ls->Strings[84];
     scButton_konec->Caption=ls->Strings[85];
     scButton_otevrit->Caption=ls->Strings[86];
     scButton4->Caption=ls->Strings[87];

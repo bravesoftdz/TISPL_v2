@@ -19,7 +19,7 @@
 #include "scModernControls.hpp"
 #include "scGPExtControls.hpp"
 #include <Vcl.Mask.hpp>
-#include "PL_math.h"
+//#include "PL_math.h"
 #include "rHintWindow.hpp"
 #include "scGPImages.hpp"
 #include <Vcl.Graphics.hpp>
@@ -175,7 +175,7 @@ __published:	// IDE-managed Components
 
 
 private:	// User declarations
-	TPL_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PL tj. PL_math
+ //	TPL_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PL tj. PL_math
 	enum Tinput_state{NO,NOTHING,LOADING,JOB,DV,SV,TT,RZ,RX,aRD,R,jednotky_prevod,R_prevod,Rz_prevod,aRD_prevod};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
 	enum Tinput_clicked_edit {empty_klik,TT_klik,DV_klik,SV_klik,V_klik,Podvoz_klik,aRD_klik,R_klik,Rz_klik,Rx_klik,nazev_klik,od_klik,do_klik}; //zjisteni na ktery edit nebo bunku ve sloupci bylo kliknuto
 	enum Tinput_clicked_icon {empty_klik_ico,aRD_klik_ico,R_klik_ico,Rz_klik_ico,Rx_klik_ico}; //zjisteni na kterou ikonku zámku bylo kliknuto

@@ -120,23 +120,8 @@ const bool DEBUG=false;
 class TForm1 : public TForm
 {
 __published:	// IDE-managed Components
-	TRzToolbar *RzToolbar1;
 	TButton *Button1;
 	TImageList *ImageList1;
-	TRzToolButton *RzToolButton1;
-	TRzToolButton *RzToolButton2;
-	TRzToolButton *RzToolButton3;
-	TRzSpacer *RzSpacer1;
-	TRzToolButton *RzToolButton4;
-	TRzToolButton *RzToolButton5;
-	TRzToolButton *RzToolButton6;
-	TRzToolButton *RzToolButton7;
-	TRzToolButton *RzToolButton8;
-	TRzToolButton *RzToolButton9;
-	TRzSpacer *RzSpacer2;
-	TRzToolButton *RzToolButton10;
-	TRzToolButton *RzToolButton11;
-	TRzToolButton *RzToolButton12;
 	TMemo *Memo1;
 	TSaveDialog *SaveDialog;
 	TOpenDialog *OpenDialog1;
@@ -150,35 +135,16 @@ __published:	// IDE-managed Components
 	TButton *Button7;
 	TButton *Button9;
 	TButton *Button10;
-	TChart *Chart1;
-	TChart *Chart2;
-	TChart *Chart3;
-	TChart *Chart4;
 	TLabel *Label_wip;
-	TGanttSeries *Series1;
-	TBarSeries *Series5;
-	TBarSeries *Series6;
 	TButton *Button2;
 	TTimer *Timer_neaktivity;
 	TButton *ButtonPLAY_O;
 	TTimer *Timer_animace;
-	TChart *Chart6;
 	TCheckBox *CheckBoxAnimovatSG_OLD;
 	TLabel *Label_zamerovac;
-	TPieSeries *Series7;
-	TTeeGDIPlus *TeeGDIPlus1;
-	TTeeGDIPlus *TeeGDIPlus2;
-	TTeeGDIPlus *TeeGDIPlus3;
-	TTeeGDIPlus *TeeGDIPlus4;
-	TTeeGDIPlus *TeeGDIPlus5;
 	TComboBox *ComboBoxDOmin;
 	TComboBox *ComboBoxODmin;
-	TLabel *LabelRoletka;
-	TBarSeries *Series2;
-	TBarSeries *Series3;
 	TTimer *TimerMouseWheel;
-	TBarSeries *Series9;
-	TBarSeries *Series10;
 	TIdTime *IdTime1;
 	TIdHTTP *IdHTTP1;
 	TTimer *Timer_tr;
@@ -194,7 +160,6 @@ __published:	// IDE-managed Components
 	TscGPButton *Schema;
 	TscGPButton *PopupMenuButton;
 	TscGPButton *Analyza;
-	TscGPButton *Synteza;
 	TscGPGlyphButton *Toolbar_Ulozit;
 	TscGPGlyphButton *Toolbar_NovySoubor;
 	TscGPGlyphButton *Toolbar_Otevrit;
@@ -209,7 +174,6 @@ __published:	// IDE-managed Components
 	TscStyledForm *scStyledForm1;
 	TscGPGlyphButton *scGPGlyphButton2;
 	TscGPButton *Layout;
-	TscGPButton *Simulace;
 	TscButton *scButton_otevrit;
 	TscButton *scButton_konec;
 	TscButton *scButton4;
@@ -239,20 +203,15 @@ __published:	// IDE-managed Components
 	TscExPanel *scExPanel_vrstvy;
 	TscLabel *scLabel_titulek;
 	TButton *hl_spojak_zakazky;
-	TMemo *Memo2;
 	TButton *button_zakazky_temp;
 	TscButton *scButton_novy;
 	TButton *Button11;
 	TscGPGlyphButton *scGPGlyphButton_close_grafy;
 	TscButton *scButton_ulozit;
-	TscGPSwitch *scGPSwitch_rezim;
-	TscLabel *scLabel_klient;
-	TscLabel *scLabel_architekt;
 	TscExPanel *scExPanel_html;
 	TWebBrowser *WebBrowser1;
 	TButton *pohonobjekt;
 	TButton *Button12;
-	TscGPGlyphButton *scGPGlyphButton_close_legenda_casove_osy;
 	TButton *Button13;
 	TscGPGlyphButton *scGPButton_generuj;
 	TscLabel *scLabel_filtrovat;
@@ -261,7 +220,6 @@ __published:	// IDE-managed Components
 	TscGPCheckBox *CheckBox_pouzit_zadane_kapacity;
 	TscGPGlyphButton *ButtonPLAY;
 	TscLabel *scLabel_mezera;
-	TscGPButton *scGPButton_header_def_zakazek;
 	TscGPCheckBox *scGPCheckBox_pocet_voziku_dle_WIP;
 	TscGPGlyphButton *scGPGlyphButton_info_cekani;
   TscListGroupPanel *scListGroupPanel_hlavickaOtoce;
@@ -288,7 +246,6 @@ __published:	// IDE-managed Components
 	TMemo *Memo3;
   TTimer *Timer2;
 	TscGPPanel *scGPPanel_bottomtoolbar;
-	TscGPLabel *scGPLabel1;
 	TscGPComboBox *scGPComboBox_orientace;
 	TscGPButton *scGPButton_ulozit;
 	TscGPButton *scGPButton_zahodit;
@@ -483,7 +440,6 @@ __published:	// IDE-managed Components
 	void __fastcall scSplitView_OPTIONSOpened(TObject *Sender);
 	void __fastcall LayoutClick(TObject *Sender);
 	void __fastcall pohonobjektClick(TObject *Sender);
-	void __fastcall Button12Click(TObject *Sender);
 	void __fastcall scSplitView_OPTIONSPanelPaint(TCanvas *ACanvas, TRect &ARect);
 	void __fastcall scGPCheckBox_ortogonClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_close_legenda_casove_osyClick(TObject *Sender);
@@ -651,7 +607,6 @@ private:
 	void nacist_nastaveni();
 	void ulozit_nastaveni();
 	void zavrit_uvod();//zavøe úvodní dialog
-	int vrat_max_vysku_grafu();//vratí maximální oblast
 	bool najdi_nazev_obj(double X,double Y,Cvektory::TObjekt *Objekt);//vratí zda jsem v oblasti textu
   short najdi_popisky_PM(double X,double Y,Cvektory::TObjekt *Objekt);//najde na jakém popisku u PM se nachází kurzor, vrací 0: nenalezeno, 1: pohon 1, 2: pohon 2
 	void getJobID(int X, int Y);//vrátí do globální promìnné JID ID úlohy/funkcionality v místì kurzoru, zároveò pokud v místì tabulky èi elementu nahraje ukazatel do globální promìnné pom_element, význam jednotlivých JID hodnot v komentáøi definici metody
