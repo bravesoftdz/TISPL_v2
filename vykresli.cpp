@@ -3450,6 +3450,46 @@ void Cvykresli::vykresli_koleje(TCanvas *canv,double X,double Y,short typ,double
 	delete PL1;PL1=NULL;delete PL2;PL2=NULL;
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
+//vytvoření jednoho geometrického segmentu z dvou párů kolejí určeného k testování, zda se nachazí v dané oblasti bod, podružná metoda, volaná z matematické knihovny
+//nelze využívat výše uvedenou metodu, oblast musí být uzavřená
+void Cvykresli::vytvor_oblast_koleje(TCanvas *canv,double X,double Y,short typ,double orientace,double rotacni_uhel,double radius,double delka)
+{
+	//offset o poloviny nastavené šířky podvozku + tloušťka linie zakresu podvozku
+	double o=v.PP.sirka_podvozek/2.0+m.px2m(1/3.0*F->Zoom);
+	//nastavení pera
+	//není třeba set_pen(canv,clKolej,m.round(F->Zoom*0.5),PS_ENDCAP_SQUARE);
+	//výpočet odsazení a souřadnic
+	TPointD S1=m.rotace(o,180-orientace,90);
+	TPointD S2=m.rotace(o,180-orientace,-90);
+	short z=1;if(rotacni_uhel>0)z*=-1;
+	double DR1=delka;if(typ==1)DR1=radius+o*z;//delka či radius
+	double DR2=delka;if(typ==1)DR2=radius+o*z*-1;//delka či radius
+	TPointD *PL1=m.getArcLine(X+S1.x,Y+S1.y,orientace,rotacni_uhel,DR1);
+	TPointD *PL2=m.getArcLine(X+S2.x,Y+S2.y,orientace,rotacni_uhel,DR2);
+	TPointD *PL=new TPointD[13];
+	//kolej tam
+	PL[0]=PL1[0];
+	PL[1]=PL1[1];
+	PL[2]=PL1[2];
+	PL[3]=PL1[3];
+	//spojinice
+	PL[4].x=PL1[3].x;PL[4].y=PL1[3].y;
+	PL[5].x=PL2[3].x;PL[5].y=PL1[3].y;
+	PL[6]=PL2[3];
+	//kolej zpet
+	PL[7]=PL2[2];
+	PL[8]=PL2[1];
+	PL[9]=PL2[0];
+	//spojinice
+	PL[10]=PL2[0];
+	PL[11]=PL1[0];
+	PL[12]=PL1[0];
+	//vytvoření do canvasu
+	bezier(canv,PL,13-1);
+	//odstranění
+	delete PL1;PL1=NULL;delete PL2;PL2=NULL;delete PL;PL=NULL;
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
