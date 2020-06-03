@@ -2,7 +2,7 @@
 #pragma hdrstop
 #include "vektory.h"
 #include "unit1.h"
-#include "parametry.h"//ODSTRANIT
+//#include "parametry.h"//ODSTRANIT
 #include "miniform_zpravy.h"
 ////---------------------------------------------------------------------------
 #pragma package(smart_init)

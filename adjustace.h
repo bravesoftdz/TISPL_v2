@@ -7,7 +7,7 @@
 #include <Vcl.Controls.hpp>
 #include <Vcl.StdCtrls.hpp>
 #include <Vcl.Forms.hpp>
-#include "rHTMLLabel.hpp"
+//#include "rHTMLLabel.hpp"
 #include "scControls.hpp"
 #include "scGPControls.hpp"
 #include "scGPExtControls.hpp"

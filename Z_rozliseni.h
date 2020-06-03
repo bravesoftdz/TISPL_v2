@@ -12,7 +12,7 @@
 #include <Vcl.ExtCtrls.hpp>
 #include <Vcl.Graphics.hpp>
 #include <Vcl.Imaging.pngimage.hpp>
-#include "rHTMLLabel.hpp"
+//#include "rHTMLLabel.hpp"
 #include <Vcl.Imaging.jpeg.hpp>
 #include "scModernControls.hpp"
 #include "scHtmlControls.hpp"

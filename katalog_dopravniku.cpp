@@ -8,8 +8,8 @@
 #pragma package(smart_init)
 #pragma link "scControls"
 #pragma link "scGPControls"
-#pragma link "rHTMLLabel"
-#pragma link "rHintWindow"
+//#pragma link "rHTMLLabel"
+//#pragma link "rHintWindow"
 #pragma link "scHint"
 #pragma link "scHtmlControls"
 #pragma resource "*.dfm"

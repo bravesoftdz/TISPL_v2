@@ -4,9 +4,9 @@
 #include "antialiasing.h"
 #include "vykresli.h"
 #include <Clipbrd.hpp>
-#include "gapoTT.h"
-#include "gapoV.h"
-#include "gapoR.h"
+//#include "gapoTT.h"
+//#include "gapoV.h"
+//#include "gapoR.h"
 #include "unit2.h"
 #include "unitX.h"
 #include "poznamky.h"

@@ -13,8 +13,8 @@
 #include "Unit1.h"
 #include "vektory.h"
 #include "parametry_linky.h"
-#include "rHTMLLabel.hpp"
-#include "rHintWindow.hpp"
+//#include "rHTMLLabel.hpp"
+//#include "rHintWindow.hpp"
 #include "scHint.hpp"
 #include "scHtmlControls.hpp"
 //---------------------------------------------------------------------------

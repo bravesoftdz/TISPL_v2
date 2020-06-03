@@ -16,13 +16,13 @@
 #include "uvod.h"
 #include "antialiasing.h"
 #include "popUP_menu.h"
-#include "eDesigner.h"
+//#include "eDesigner.h"
 #include "casovaOsa_info.h"
 #include "report.h"
-#include "PO_math.h"
-#include "kabina_schema.h"
+//#include "PO_math.h"
+//#include "kabina_schema.h"
 #include "Unit2.h"
-#include "gapoR.h"
+//#include "gapoR.h"
 #include "adjustace.h"
 #include "kalibrace.h"
 #include "Z_rozliseni.h"
@@ -36,15 +36,15 @@
 #include <idattachmentfile.hpp>//přílohy mailů
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
-#pragma link "RzPanel"
-#pragma link "RzSplit"
-#pragma link "RzStatus"
-#pragma link "RzButton"
-#pragma link "RzBorder"
-#pragma link "RzGrids"
-#pragma link "RzLabel"
-#pragma link "rStringGridEd"
-#pragma link "rStringGridEd"
+//#pragma link "RzPanel"
+//#pragma link "RzSplit"
+//#pragma link "RzStatus"
+//#pragma link "RzButton"
+//#pragma link "RzBorder"
+//#pragma link "RzGrids"
+//#pragma link "RzLabel"
+//#pragma link "rStringGridEd"
+//#pragma link "rStringGridEd"
 #pragma link "scControls"
 #pragma link "scGPControls"
 #pragma link "scStyledForm"
@@ -56,12 +56,12 @@
 #pragma link "scHtmlControls"
 #pragma link "scWebBrowser"
 #pragma link "scGPExtControls"
-#pragma link "rHintWindow"
-#pragma link "rHTMLLabel"
+//#pragma link "rHintWindow"
+//#pragma link "rHTMLLabel"
 #pragma link "scImageCollection"
 #pragma link "scHint"
 #pragma link "scHint"
-#pragma link "rHintWindow"
+//#pragma link "rHintWindow"
 #pragma resource "*.dfm"
 TForm1 *Form1, *F;//pouze zkrácený zapis
 AnsiString Parametry;
@@ -16804,8 +16804,8 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 		scGPCheckBox_rozmisteni_voziku->Caption=ls->Strings[445];
 		Form_zpravy->scLabel_header->Caption=ls->Strings[412];
 		Form_zpravy->scGPGlyphButton_pripnout->Hint=ls->Strings[413];
-		Form_zpravy->RzStatusPane__chyby_caption->Caption=ls->Strings[414];
-		Form_zpravy->RzStatusPane_var_header->Caption=ls->Strings[415];
+		Form_zpravy->scLabel_chyby->Caption=ls->Strings[414];
+		Form_zpravy->scLabel_varovani->Caption=ls->Strings[415];
 		Form_parametry_linky->scHTMLLabel_posuvnik->Caption=ls->Strings[427];
 		scGPButton_smazat->Caption=ls->Strings[428];
 		scGPButton_geometrie->Hint=ls->Strings[443];
