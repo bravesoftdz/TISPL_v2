@@ -246,7 +246,6 @@ __published:	// IDE-managed Components
 	TMemo *Memo3;
   TTimer *Timer2;
 	TscGPPanel *scGPPanel_bottomtoolbar;
-	TscGPComboBox *scGPComboBox_orientace;
 	TscGPButton *scGPButton_ulozit;
 	TscGPButton *scGPButton_zahodit;
 	TscButton *scButton_zamek;
@@ -289,8 +288,6 @@ __published:	// IDE-managed Components
   TrHTMLHint *rHTMLHint1;
 	TscGPButton *scGPButton_geometrie;
 	TscGPCheckBox *scGPCheckBox_rozmisteni_voziku;
-	TscGPButton *scGPButton_ulozit_cestu;
-	TscGPButton *scGPButton_storno_cesta;
 	TscGPButton *scGPGlyphButton_odstran_cestu;
 	TPopupMenu *PopupMenu1;
 	TMenuItem *N11;
@@ -523,8 +520,6 @@ __published:	// IDE-managed Components
   void __fastcall scGPButton_warningClick(TObject *Sender);
 	void __fastcall scGPButton_smazatClick(TObject *Sender);
 	void __fastcall scGPButton_geometrieClick(TObject *Sender);
-	void __fastcall scGPButton_storno_cestaClick(TObject *Sender);
-	void __fastcall scGPButton_ulozit_cestuClick(TObject *Sender);
 	void __fastcall scGPCheckBox_rozmisteni_vozikuClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_odstran_cestuClick(TObject *Sender);
 	void __fastcall N21Click(TObject *Sender);
@@ -852,6 +847,7 @@ public:		// User declarations
 	void nastav_focus();//vrátí focus na form1, kdykoli je potøeba vrátit focus, skrze odchytávání kláves
 	void set_enabled_mGrid(Cvektory::TElement *E);//zapne nebo vypne komponenty megridu v závislosti na tom zda má element pøiøazený pohon
 	void zobraz_tip(UnicodeString text="", TCanvas* canv=NULL);//prázdným (bez paremetrù) voláním  metody se tip smaže, //pokud není parametr canvas uveden, jedná se o dlouhodobé vykreslování hodnoty TIP//pokud je parametrem pøedán Canvas vykreslí se pøímo a jednorázovì
+	void zapnuti_vypnuti_panelEditace(bool zapnout);//zapnout nebo vypnout panel editace, automaticky podle MODu zobrazí èi skryje urèité prvky
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

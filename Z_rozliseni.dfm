@@ -4981,78 +4981,6 @@ object Form_Z_rozliseni: TForm_Z_rozliseni
       145001451450014514500145145001451450014514500145145001451450048B
       4B45140051451401FFD9}
   end
-  object rHTMLLabel_Text1: TrHTMLLabel
-    Left = 232
-    Top = 210
-    Width = 105
-    Height = 40
-    AutoSize = False
-    Caption = 
-      '1.Klikn'#283'te prav'#253'm tla'#269#237'tekm my'#353'i na soubor <font color=#2b579a>T' +
-      'ISPL.exe</font>, zobrazte <font color=#2b579a>Vlastnosti</font> ' +
-      'souboru. Nyn'#237' p'#345'ejd'#283'te do z'#225'lo'#382'ky <font color=#2b579a>Kompatibil' +
-      'ita</font>. Zde klikn'#283'te na tla'#269#237'tko zn'#225'zorn'#283'n'#233' na obr'#225'zku '#269'. 1.'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clGray
-    Font.Height = 19
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-  end
-  object rHTMLLabel_Text2: TrHTMLLabel
-    Left = 456
-    Top = 210
-    Width = 105
-    Height = 40
-    AutoSize = False
-    Caption = 
-      '2. Na obr'#225'zku '#269'. 2 je zobrazeno z'#225'kladn'#237' nastaven'#237' hodnot DPI, p' +
-      'ro optim'#225'ln'#237' zobrazen'#237' je nutn'#233' tyto hodnoty upravit.'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clGray
-    Font.Height = 19
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-  end
-  object rHTMLLabel_Text3: TrHTMLLabel
-    Left = 672
-    Top = 210
-    Width = 105
-    Height = 40
-    AutoSize = False
-    Caption = 
-      '3. Upravte hodnoty DPI podle vyzna'#269'en'#237' na obr'#225'zku '#269'. 3. Klikn'#283'te' +
-      ' na tla'#269#237'tko ukon'#269'it a spus'#357'e aplikaci znova.'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clGray
-    Font.Height = 19
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-  end
-  object rHTMLLabel_upozorneni: TrHTMLLabel
-    Left = 0
-    Top = 40
-    Width = 992
-    Height = 21
-    Caption = 
-      '<font color=#FF0000>Nastaven'#237' m'#283#345#237'tka na va'#353'em po'#269#237'ta'#269'i nen'#237' kom' +
-      'patibiln'#237' s touto aplikac'#237'. Pro spr'#225'vn'#253' chod zm'#283#328'te nastaven'#237' ap' +
-      'likace pomoc'#237' tohoto n'#225'vodu.</font>'
-    Color = clRed
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clGray
-    Font.Height = 19
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentColor = False
-    ParentFont = False
-  end
   object Image4: TImage
     Left = 232
     Top = 85
@@ -6503,12 +6431,19 @@ object Form_Z_rozliseni: TForm_Z_rozliseni
     Width = 989
     Height = 34
     Align = alTop
+    FluentUIOpaque = False
     TabOrder = 0
     BlurBackground = False
     BlurBackgroundAmount = 5
+    BackgroundStyle = gppbsColor
+    ContentMarginLeft = 0
+    ContentMarginRight = 0
+    ContentMarginTop = 0
+    ContentMarginBottom = 0
     CustomImageIndex = -1
     DragForm = False
     DragTopForm = True
+    DrawTextMode = scdtmGDI
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
     FillGradientEndAlpha = 255
@@ -6546,12 +6481,23 @@ object Form_Z_rozliseni: TForm_Z_rozliseni
       Margins.Right = 0
       Margins.Bottom = 1
       Align = alRight
+      FluentUIOpaque = False
       TabOrder = 0
       OnClick = scGPButton_stornoClick
       Animation = True
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       Caption = 'Konec'
       CanFocused = False
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
+      FluentLightEffect = False
       Layout = blGlyphLeft
       TransparentBackground = True
       ColorValue = clRed
@@ -6601,7 +6547,18 @@ object Form_Z_rozliseni: TForm_Z_rozliseni
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       GlyphOptions.NormalColor = clWhite
       GlyphOptions.HotColor = clWhite
       GlyphOptions.PressedColor = clWhite
@@ -6649,6 +6606,7 @@ object Form_Z_rozliseni: TForm_Z_rozliseni
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 1
       DragForm = True
       DragTopForm = True
@@ -6676,12 +6634,23 @@ object Form_Z_rozliseni: TForm_Z_rozliseni
       Margins.Right = 0
       Margins.Bottom = 1
       Align = alRight
+      FluentUIOpaque = False
       TabOrder = 2
       OnClick = MinButtonClick
       Animation = True
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
       Caption = 'scGPGlyphButton1'
       CanFocused = False
       CustomDropDown = False
+      DrawTextMode = scdtmGDI
+      FluentLightEffect = False
       Layout = blGlyphLeft
       TransparentBackground = True
       ColorValue = clRed
@@ -6731,7 +6700,18 @@ object Form_Z_rozliseni: TForm_Z_rozliseni
       Options.ArrowType = scgpatDefault
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
       Options.StyleColors = True
+      Options.PressedHotColors = False
       GlyphOptions.NormalColor = clWhite
       GlyphOptions.HotColor = clWhite
       GlyphOptions.PressedColor = clWhite
@@ -6767,6 +6747,7 @@ object Form_Z_rozliseni: TForm_Z_rozliseni
       Width = 42
       Height = 20
       Align = alCustom
+      FluentUIOpaque = False
       TabOrder = 3
       Animation = True
       FrameColor = clWhite
@@ -6803,6 +6784,7 @@ object Form_Z_rozliseni: TForm_Z_rozliseni
       Font.Name = 'Roboto'
       Font.Style = []
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 4
       DragForm = False
       DragTopForm = True
@@ -6830,6 +6812,7 @@ object Form_Z_rozliseni: TForm_Z_rozliseni
       Font.Name = 'Roboto'
       Font.Style = []
       ParentFont = False
+      FluentUIOpaque = False
       TabOrder = 5
       DragForm = False
       DragTopForm = True
@@ -6856,13 +6839,23 @@ object Form_Z_rozliseni: TForm_Z_rozliseni
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
+    FluentUIOpaque = False
     TabOrder = 1
     TabStop = True
     OnClick = scGPButton_stornoClick
     Animation = False
+    Badge.Color = clRed
+    Badge.ColorAlpha = 255
+    Badge.Font.Charset = DEFAULT_CHARSET
+    Badge.Font.Color = clWhite
+    Badge.Font.Height = -11
+    Badge.Font.Name = 'Tahoma'
+    Badge.Font.Style = [fsBold]
+    Badge.Visible = False
     Caption = 'Storno'
     CanFocused = True
     CustomDropDown = False
+    DrawTextMode = scdtmGDI
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
@@ -6915,9 +6908,21 @@ object Form_Z_rozliseni: TForm_Z_rozliseni
     Options.ArrowType = scgpatDefault
     Options.ArrowThickness = 2
     Options.ArrowThicknessScaled = False
+    Options.ArrowNormalColor = clBtnText
+    Options.ArrowHotColor = clBtnText
+    Options.ArrowPressedColor = clBtnText
+    Options.ArrowFocusedColor = clBtnText
+    Options.ArrowDisabledColor = clBtnText
+    Options.ArrowNormalColorAlpha = 200
+    Options.ArrowHotColorAlpha = 255
+    Options.ArrowPressedColorAlpha = 255
+    Options.ArrowFocusedColorAlpha = 200
+    Options.ArrowDisabledColorAlpha = 125
     Options.StyleColors = True
+    Options.PressedHotColors = False
     HotImageIndex = -1
     ModalResult = 2
+    FluentLightEffect = False
     FocusedImageIndex = -1
     PressedImageIndex = -1
     UseGalleryMenuImage = False
@@ -6961,13 +6966,23 @@ object Form_Z_rozliseni: TForm_Z_rozliseni
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
+    FluentUIOpaque = False
     TabOrder = 2
     TabStop = True
     OnClick = KonecClick
     Animation = False
+    Badge.Color = clRed
+    Badge.ColorAlpha = 255
+    Badge.Font.Charset = DEFAULT_CHARSET
+    Badge.Font.Color = clWhite
+    Badge.Font.Height = -11
+    Badge.Font.Name = 'Tahoma'
+    Badge.Font.Style = [fsBold]
+    Badge.Visible = False
     Caption = 'Ukon'#269'it'
     CanFocused = True
     CustomDropDown = False
+    DrawTextMode = scdtmGDI
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
@@ -7020,9 +7035,21 @@ object Form_Z_rozliseni: TForm_Z_rozliseni
     Options.ArrowType = scgpatDefault
     Options.ArrowThickness = 2
     Options.ArrowThicknessScaled = False
+    Options.ArrowNormalColor = clBtnText
+    Options.ArrowHotColor = clBtnText
+    Options.ArrowPressedColor = clBtnText
+    Options.ArrowFocusedColor = clBtnText
+    Options.ArrowDisabledColor = clBtnText
+    Options.ArrowNormalColorAlpha = 200
+    Options.ArrowHotColorAlpha = 255
+    Options.ArrowPressedColorAlpha = 255
+    Options.ArrowFocusedColorAlpha = 200
+    Options.ArrowDisabledColorAlpha = 125
     Options.StyleColors = True
+    Options.PressedHotColors = False
     HotImageIndex = -1
     ModalResult = 1
+    FluentLightEffect = False
     FocusedImageIndex = -1
     PressedImageIndex = -1
     UseGalleryMenuImage = False
@@ -7054,5 +7081,141 @@ object Form_Z_rozliseni: TForm_Z_rozliseni
     Down = False
     GroupIndex = 0
     AllowAllUp = False
+  end
+  object scHTMLLabel_Text1: TscHTMLLabel
+    Left = 232
+    Top = 210
+    Width = 105
+    Height = 76
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    FluentUIOpaque = False
+    TabOrder = 3
+    AutoSizeHeight = False
+    AutoSizeWidth = False
+    AutoExecuteURL = True
+    Caption = 
+      '1. Klikn'#283'te prav'#253'm tla'#269#237'tekm my'#353'i na soubor <br><font color=#2b5' +
+      '79a>TISPL.exe</font>, zobrazte <font color=#2b579a>Vlastnosti</f' +
+      'ont> souboru. Nyn'#237' <br>p'#345'ejd'#283'te do z'#225'lo'#382'ky <font color=#2b579a>K' +
+      'ompatibilita</font>. Zde klikn'#283'te na <br>tla'#269#237'tko zn'#225'zorn'#283'n'#233' na ' +
+      'obr'#225'zku '#269'. 1.'
+    LinkFontNormal.Charset = DEFAULT_CHARSET
+    LinkFontNormal.Color = clHighlight
+    LinkFontNormal.Height = -11
+    LinkFontNormal.Name = 'Tahoma'
+    LinkFontNormal.Style = []
+    LinkFontHover.Charset = DEFAULT_CHARSET
+    LinkFontHover.Color = clHighlight
+    LinkFontHover.Height = -11
+    LinkFontHover.Name = 'Tahoma'
+    LinkFontHover.Style = [fsUnderline]
+    MaxWidth = 0
+    TextAlignment = taLeftJustify
+  end
+  object scHTMLLabel_Text2: TscHTMLLabel
+    Left = 456
+    Top = 210
+    Width = 105
+    Height = 57
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    FluentUIOpaque = False
+    TabOrder = 4
+    AutoSizeHeight = False
+    AutoSizeWidth = False
+    AutoExecuteURL = True
+    Caption = 
+      '2. Na obr'#225'zku '#269'. 2 je zobrazeno z'#225'kladn'#237' nastaven'#237' <br>hodnot DP' +
+      'I, pro optim'#225'ln'#237' zobrazen'#237' je nutn'#233' tyto <br>hodnoty upravit.'
+    LinkFontNormal.Charset = DEFAULT_CHARSET
+    LinkFontNormal.Color = clHighlight
+    LinkFontNormal.Height = -11
+    LinkFontNormal.Name = 'Tahoma'
+    LinkFontNormal.Style = []
+    LinkFontHover.Charset = DEFAULT_CHARSET
+    LinkFontHover.Color = clHighlight
+    LinkFontHover.Height = -11
+    LinkFontHover.Name = 'Tahoma'
+    LinkFontHover.Style = [fsUnderline]
+    MaxWidth = 0
+    TextAlignment = taLeftJustify
+  end
+  object scHTMLLabel_Text3: TscHTMLLabel
+    Left = 672
+    Top = 210
+    Width = 105
+    Height = 57
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    FluentUIOpaque = False
+    TabOrder = 5
+    AutoSizeHeight = False
+    AutoSizeWidth = False
+    AutoExecuteURL = True
+    Caption = 
+      '3. Upravte hodnoty DPI podle vyzna'#269'en'#237' na <br>obr'#225'zku '#269'. 3. Klik' +
+      'n'#283'te na tla'#269#237'tko ukon'#269'it a spus'#357'e <br>aplikaci znova.'
+    LinkFontNormal.Charset = DEFAULT_CHARSET
+    LinkFontNormal.Color = clHighlight
+    LinkFontNormal.Height = -11
+    LinkFontNormal.Name = 'Tahoma'
+    LinkFontNormal.Style = []
+    LinkFontHover.Charset = DEFAULT_CHARSET
+    LinkFontHover.Color = clHighlight
+    LinkFontHover.Height = -11
+    LinkFontHover.Name = 'Tahoma'
+    LinkFontHover.Style = [fsUnderline]
+    MaxWidth = 0
+    TextAlignment = taLeftJustify
+  end
+  object scHTMLLabel_upozorneni: TscHTMLLabel
+    Left = 0
+    Top = 40
+    Width = 985
+    Height = 19
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    FluentUIOpaque = False
+    TabOrder = 6
+    AutoSizeHeight = False
+    AutoSizeWidth = True
+    AutoExecuteURL = True
+    Caption = 
+      '<font color=#2b579a>Nastaven'#237' m'#283#345#237'tka na va'#353'em po'#269#237'ta'#269'i nen'#237' kom' +
+      'patibiln'#237' s touto aplikac'#237'. Pro spr'#225'vn'#253' chod zm'#283#328'te nastaven'#237' ap' +
+      'likace pomoc'#237' tohoto n'#225'vodu.</font>'
+    LinkFontNormal.Charset = DEFAULT_CHARSET
+    LinkFontNormal.Color = clHighlight
+    LinkFontNormal.Height = -11
+    LinkFontNormal.Name = 'Tahoma'
+    LinkFontNormal.Style = []
+    LinkFontHover.Charset = DEFAULT_CHARSET
+    LinkFontHover.Color = clHighlight
+    LinkFontHover.Height = -11
+    LinkFontHover.Name = 'Tahoma'
+    LinkFontHover.Style = [fsUnderline]
+    MaxWidth = 0
+    TextAlignment = taLeftJustify
   end
 end
