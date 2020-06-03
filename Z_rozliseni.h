@@ -12,9 +12,10 @@
 #include <Vcl.ExtCtrls.hpp>
 #include <Vcl.Graphics.hpp>
 #include <Vcl.Imaging.pngimage.hpp>
-#include "rHTMLLabel.hpp"
+//#include "rHTMLLabel.hpp"
 #include <Vcl.Imaging.jpeg.hpp>
 #include "scModernControls.hpp"
+#include "scHtmlControls.hpp"
 //---------------------------------------------------------------------------
 class TForm_Z_rozliseni : public TForm
 {
@@ -27,10 +28,6 @@ __published:	// IDE-managed Components
 	TImage *Image1;
 	TImage *Image2;
 	TImage *Image3;
-	TrHTMLLabel *rHTMLLabel_Text1;
-	TrHTMLLabel *rHTMLLabel_Text2;
-	TrHTMLLabel *rHTMLLabel_Text3;
-	TrHTMLLabel *rHTMLLabel_upozorneni;
 	TscGPGlyphButton *MinButton;
 	TImage *Image4;
 	TImage *Image5;
@@ -38,6 +35,10 @@ __published:	// IDE-managed Components
 	TscGPSwitch *scGPSwitch_language;
 	TscLabel *scLabel_CZ;
 	TscLabel *scLabel_EN;
+	TscHTMLLabel *scHTMLLabel_Text1;
+	TscHTMLLabel *scHTMLLabel_Text2;
+	TscHTMLLabel *scHTMLLabel_Text3;
+	TscHTMLLabel *scHTMLLabel_upozorneni;
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall scGPButton_stornoClick(TObject *Sender);
 	void __fastcall MinButtonClick(TObject *Sender);

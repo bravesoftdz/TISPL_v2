@@ -8,8 +8,10 @@
 #pragma package(smart_init)
 #pragma link "scControls"
 #pragma link "scGPControls"
-#pragma link "rHTMLLabel"
-#pragma link "rHintWindow"
+//#pragma link "rHTMLLabel"
+//#pragma link "rHintWindow"
+#pragma link "scHint"
+#pragma link "scHtmlControls"
 #pragma resource "*.dfm"
 TForm_katalog *Form_katalog;
 //---------------------------------------------------------------------------
@@ -308,31 +310,31 @@ void TForm_katalog::vypis(UnicodeString text,bool red,bool link)
  //if(text=="m].</b>")text="";//provizorní WA, při změně Rz a byla-li v pořádku to vrací toto  - již není třeba, ale zatím nechávám
 		if (text != "") // zobrazí a vypíše
 		{
-				rHTMLHint1->ToString()=text;//natežení do hintu zajišťuje zobrazení celého textu, nepoužívá se klasický hint
+				scHint1->ToString()=text;//natežení do hintu zajišťuje zobrazení celého textu, nepoužívá se klasický hint
 				//prodllužení formu if(!rHTMLLabel_InfoText->Visible){Height+=(40+19);position();}pouze pokud byl předtím popisek skrytý + kontrola pozice formu
 
-				if(link)rHTMLLabel_InfoText->Font->Style = TFontStyles()<< fsUnderline;//zapnutí podtrženého písma
-				else rHTMLLabel_InfoText->Font->Style = TFontStyles();
+				if(link)scHTMLLabel_InfoText->Font->Style = TFontStyles()<< fsUnderline;//zapnutí podtrženého písma
+				else scHTMLLabel_InfoText->Font->Style = TFontStyles();
 
 				if (red)
 				{
 						Button_save->Enabled=false;  //R - dočasné povolení ukládání při validaci
-						rHTMLLabel_InfoText->Font->Color = clRed;
-            rHTMLLabel_InfoText->Color=clWhite;
+						scHTMLLabel_InfoText->Font->Color = clRed;
+            scHTMLLabel_InfoText->Color=clWhite;
 				}
 				else
 				{
-						rHTMLLabel_InfoText->Font->Color = (TColor)RGB(0,128,255);
+						scHTMLLabel_InfoText->Font->Color = (TColor)RGB(0,128,255);
 				}
-				rHTMLLabel_InfoText->Top = K_mGrid->Height + scLabel_header->Height + 14;
-        rHTMLLabel_InfoText->Left = 4;
-				rHTMLLabel_InfoText->Caption = text;
-				rHTMLLabel_InfoText->Visible = true;
-        rHTMLLabel_InfoText->Color=clWhite;
+				scHTMLLabel_InfoText->Top = K_mGrid->Height + scLabel_header->Height + 14;
+        scHTMLLabel_InfoText->Left = 4;
+				scHTMLLabel_InfoText->Caption = text;
+				scHTMLLabel_InfoText->Visible = true;
+        scHTMLLabel_InfoText->Color=clWhite;
 		}
 		else // skryje
 		{
 				//zkrácení formu if(rHTMLLabel_InfoText->Visible)Height-=(40+19);
-				rHTMLLabel_InfoText->Visible = false;
+				scHTMLLabel_InfoText->Visible = false;
 		}
 }

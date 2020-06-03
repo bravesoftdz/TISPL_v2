@@ -11,15 +11,15 @@
 #include <Vcl.ValEdit.hpp>
 #include <Vcl.Menus.hpp>
 #include <Vcl.ExtCtrls.hpp>
-#include "rHTMLLabel.hpp"
-#include "rImprovedComps.hpp"
+//#include "rHTMLLabel.hpp"
+//#include "rImprovedComps.hpp"
 #include "scControls.hpp"
 #include "scGPControls.hpp"
 #include <Vcl.Mask.hpp>
 #include "scGPExtControls.hpp"
 #include "PO_math.h"
 #include "scHint.hpp"
-#include "rHintWindow.hpp"
+//#include "rHintWindow.hpp"
 
 //---------------------------------------------------------------------------
 class TForm_parametry : public TForm

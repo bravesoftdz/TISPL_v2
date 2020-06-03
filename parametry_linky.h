@@ -6,21 +6,21 @@
 #include <Vcl.Controls.hpp>
 #include <Vcl.StdCtrls.hpp>
 #include <Vcl.Forms.hpp>
-#include "rHTMLLabel.hpp"
-#include "rImprovedComps.hpp"
-#include "rStringGridEd.hpp"
+//#include "rHTMLLabel.hpp"
+//#include "rImprovedComps.hpp"
+//#include "rStringGridEd.hpp"
 #include "scControls.hpp"
 #include "scGPControls.hpp"
 #include <Vcl.Grids.hpp>
 #include <Vcl.ValEdit.hpp>
 #include "scExtControls.hpp"
 #include "scHtmlControls.hpp"
-#include "pl_priority.h"
+//#include "pl_priority.h"
 #include "scModernControls.hpp"
 #include "scGPExtControls.hpp"
 #include <Vcl.Mask.hpp>
-#include "PL_math.h"
-#include "rHintWindow.hpp"
+//#include "PL_math.h"
+//#include "rHintWindow.hpp"
 #include "scGPImages.hpp"
 #include <Vcl.Graphics.hpp>
 #include <Vcl.Imaging.jpeg.hpp>
@@ -46,15 +46,7 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton_info;
 	TscGPButton *scGPButton_vozik;
 	TscGPButton *scGPButton_pohon;
-	TButton *Vypis_pohony;
 	TscGPButton *scGPButton_obecne;
-	TscExPanel *scExPanel_doporuc_pohony;
-	TscHTMLLabel *scHTMLLabel_doporuc_pohony;
-	TscGPButton *scGPButton_doporucene;
-	TscGPGlyphButton *scGPGlyphButton_add_mezi_pohony;
-	TscLabel *scLabel_TT_change_hint;
-	TMemo *Memo1;
-	TscGPButton *scGPButton_jig;
 	TscGPSwitch *scGPSwitch;
 	TscGPNumericEdit *scGPNumericEdit_delka_jig;
 	TscGPNumericEdit *scGPNumericEdit_sirka_jig;
@@ -76,18 +68,10 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *GlyphButton_nastavit_parametry;
 	TscGPGlyphButton *GlyphButton_close;
   TscGPGlyphButton *scGPGlyphButton_ADD_old;
-	TscGPGlyphButton *scGPGlyphButton_DEL_nepouzite;
-	TscGPGlyphButton *scGPGlyphButton_takttime_kalkulator;
 	TscGPNumericEdit *scGPNumericEdit_delka_podvozek;
 	TscGPNumericEdit *scGPNumericEdit_vyska_jig;
-	TscGPGlyphButton *scGPGlyphButton_TT;
-	TscGPGlyphButton *scGPGlyphButton_vozik_edit;
-  TscGPGlyphButton *scGPGlyphButton_refresh;
   TscGPGlyphButton *scGPGlyphButton_ADD;
-  TscGPGlyphButton *scGPGlyphButton1;
-  TscGPGlyphButton *scGPGlyphButton_smazat_pohon;
   TscGPNumericEdit *rEditNum_takt;
-  TButton *Button1;
   TscPanel *scPanel_takt;
   TscPanel *scPanel_vozik;
   TscImage *scImage1;
@@ -119,7 +103,6 @@ __published:	// IDE-managed Components
 	void __fastcall Button_DEL_Click(TObject *Sender);
 	void __fastcall Vypis_pohonyClick(TObject *Sender);
 	void __fastcall scGPButton_doporuceneClick(TObject *Sender);
-	void __fastcall scExPanel_doporuc_pohonyClose(TObject *Sender);
 	void __fastcall rEditNum_takt_Change(TObject *Sender);
 	void __fastcall rHTMLLabel_delkavozikuClick(TObject *Sender);
 	void __fastcall scHTMLLabel_sirka_jigClick(TObject *Sender);
@@ -141,15 +124,8 @@ __published:	// IDE-managed Components
 	void __fastcall GlyphButton_closeClick(TObject *Sender);
 	void __fastcall scLabel_kopirovatClick(TObject *Sender);
 	void __fastcall scLabel_smazatClick(TObject *Sender);
-	void __fastcall scLabel_smazat_nepouziteClick(TObject *Sender);
-	void __fastcall scLabel_smazat_nepouziteMouseEnter(TObject *Sender);
-	void __fastcall scLabel_smazat_nepouziteMouseLeave(TObject *Sender);
-	void __fastcall GlyphButton_smazat_nepouziteMouseEnter(TObject *Sender);
-	void __fastcall GlyphButton_smazat_nepouziteMouseLeave(TObject *Sender);
-	void __fastcall GlyphButton_smazatMouseLeave(TObject *Sender);
 	void __fastcall scLabel_smazatMouseLeave(TObject *Sender);
 	void __fastcall scLabel_smazatMouseEnter(TObject *Sender);
-	void __fastcall GlyphButton_smazatMouseEnter(TObject *Sender);
 	void __fastcall scLabel_kopirovatMouseEnter(TObject *Sender);
 	void __fastcall scLabel_kopirovatMouseLeave(TObject *Sender);
 	void __fastcall GlyphButton_kopirovatMouseEnter(TObject *Sender);
@@ -175,7 +151,7 @@ __published:	// IDE-managed Components
 
 
 private:	// User declarations
-	TPL_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PL tj. PL_math
+ //	TPL_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PL tj. PL_math
 	enum Tinput_state{NO,NOTHING,LOADING,JOB,DV,SV,TT,RZ,RX,aRD,R,jednotky_prevod,R_prevod,Rz_prevod,aRD_prevod};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
 	enum Tinput_clicked_edit {empty_klik,TT_klik,DV_klik,SV_klik,V_klik,Podvoz_klik,aRD_klik,R_klik,Rz_klik,Rx_klik,nazev_klik,od_klik,do_klik}; //zjisteni na ktery edit nebo bunku ve sloupci bylo kliknuto
 	enum Tinput_clicked_icon {empty_klik_ico,aRD_klik_ico,R_klik_ico,Rz_klik_ico,Rx_klik_ico}; //zjisteni na kterou ikonku zámku bylo kliknuto

@@ -2,7 +2,7 @@
 #pragma hdrstop
 #include "vektory.h"
 #include "unit1.h"
-#include "parametry.h"//ODSTRANIT
+//#include "parametry.h"//ODSTRANIT
 #include "miniform_zpravy.h"
 ////---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -2482,11 +2482,11 @@ unsigned int Cvektory::vrat_poradi_elementu_do(TElement *Element)
 unsigned int Cvektory::vrat_nejvetsi_ID_tabulek (TObjekt *Objekt)
 {
 	unsigned int ret=0;
-	if(Objekt->element!=NULL)
+	if(Objekt->element!=NULL && F->OBJEKT_akt!=NULL)//pouze pro vkládání v editaci
 	{
 		TElement *E=Objekt->element;
 		while(E!=NULL && E->objekt_n==Objekt->n)
-		{
+		{  F->log(__func__,"    "+E->name);
 			if(E->n>0/*&&E->eID!=100 && E->mGrid!=NULL*/)//přeskočení hlavičky a elementu bez tabulky
 			{
 				try//mGrid může být neNULL, ale zároveň nemusí existovat (pouze alokovaná paměť)
@@ -2496,7 +2496,7 @@ unsigned int Cvektory::vrat_nejvetsi_ID_tabulek (TObjekt *Objekt)
 			E=dalsi_krok(E,Objekt);
 		}
 		E=NULL;delete E;
-  }
+	}
 	return ret;
 }
 ////---------------------------------------------------------------------------
@@ -3374,11 +3374,11 @@ Cvektory::TElement *Cvektory::dalsi_krok(TElement *E,TObjekt *O)
 			VYHYBKY->spojka=E;//uložení spojky na které jsem již byl
 			E=E->predchozi2;
 			if(E->objekt_n!=O->n && E->eID!=300)E=E->dalsi->dalsi;//přesun z veldejší větve na element na hlavní větvi za spojkou
-			if(E->objekt_n!=O->n && E->eID==300)E=E->dalsi2->dalsi;
-			else {while(E->objekt_n==O->n){E=E->predchozi;}if(E->eID!=300)E=E->dalsi;else E=E->dalsi2;}
+			else if(E->objekt_n!=O->n && E->eID==300)E=E->dalsi2->dalsi;
+			else if(E->objekt_n!=O->n){while(E->objekt_n==O->n){E=E->predchozi;}if(E->eID!=300)E=E->dalsi;else E=E->dalsi2;}
 		}
 		else E=E->dalsi;
-		if(E!=NULL && E==VYHYBKY->spojka)E=E->dalsi;
+		//if(E!=NULL && E==VYHYBKY->spojka)E=E->dalsi;
 		if(E!=NULL && E->objekt_n!=O->n)E=NULL;//pokud jsem již mimo objekt
 	}
 	//pokud alg. skončí smazat pro jistotu seznam, např. při průchodu pouze v objektu může zůstat naplněný

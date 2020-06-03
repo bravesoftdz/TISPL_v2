@@ -10,7 +10,7 @@
 #pragma link "scControls"
 #pragma link "scGPControls"
 #pragma link "scGPExtControls"
-#pragma link "RzStatus"
+//#pragma link "RzStatus"
 #pragma link "scGPImages"
 #pragma resource "*.dfm"
 TForm_zpravy *Form_zpravy;
@@ -161,9 +161,9 @@ void  TForm_zpravy::update_zpravy(long pocet_erroru, long pocet_warningu)
 				delete Z;
 				//naplnìní do statusbaru miniformu
 				//RzStatusPane_pocet_chyb_value->Caption=pocet_erroru;
-        RzStatusPane__chyby_caption->Caption="Poèet chyb "+AnsiString(pocet_erroru);
+        scLabel_chyby->Caption="Poèet chyb "+AnsiString(pocet_erroru);
 			 //	RzStatusPane_pocet_var_value->Caption=pocet_warningu;
-        RzStatusPane_var_header->Caption= "Poèet varování "+AnsiString(pocet_warningu);
+        scLabel_varovani->Caption= "Poèet varování "+AnsiString(pocet_warningu);
 			  if(custom_size==false)	Form_zpravy->Height = (pocet_erroru+pocet_warningu) *  scGPListBox_zpravy->ItemHeight + scLabel_header->Height + scGPPanel_statusbar->Height + 5;   //5px rezervnich
         if(Form_zpravy->Height > F->ClientHeight)   Form_zpravy->Height =  F->ClientHeight  -  scGPPanel_statusbar->Height - scLabel_header->Height - F->scLabel_titulek->Height;
 			}

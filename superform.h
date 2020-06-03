@@ -8,13 +8,13 @@
 #include <Vcl.StdCtrls.hpp>
 #include <Vcl.Forms.hpp>
 #include <Vcl.Grids.hpp>
-#include "RzGrids.hpp"
+//#include "RzGrids.hpp"
 #include <Vcl.ColorGrd.hpp>
 #include <Vcl.Dialogs.hpp>
 #include <Vcl.ValEdit.hpp>
-#include "rHTMLLabel.hpp"
-#include "rImprovedComps.hpp"
-#include "rStringGridEd.hpp"
+//#include "rHTMLLabel.hpp"
+//#include "rImprovedComps.hpp"
+//#include "rStringGridEd.hpp"
 #include "scControls.hpp"
 #include "scGPControls.hpp"
 #include <System.ImageList.hpp>
@@ -29,12 +29,14 @@
 #include <Vcl.ExtCtrls.hpp>
 #include "scStyleManager.hpp"
 #include <Vcl.Menus.hpp>
+//#include "rImprovedComps.hpp"
+//#include "rImprovedComps.hpp"
+
 //---------------------------------------------------------------------------
 class TForm_definice_zakazek : public TForm
 {
 __published:	// IDE-managed Components
 	TColorDialog *ColorDialog1;
-	TrEditNum *rEditNum_effektivita;
 	TscGPButton *scGPButton2;
 	TButton *Button5;
 	TscGPPanel *scGPPanel2;
@@ -44,7 +46,6 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton_Ulozit;
 	TscGPButton *scGPButton_storno;
 	TscEdit *scEdit_zacatek;
-	TrHTMLLabel *rHTMLLabel_zacatek;
   TscGPImageCollection *scGPImageCollection_layout;
 	TTimer *TimerMouseWheel;
 	TEdit *Edit_for_Focus;

@@ -7,7 +7,7 @@
 #include "unit1.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
-#pragma link "rHTMLLabel"
+//#pragma link "rHTMLLabel"
 #pragma link "scControls"
 #pragma link "scGPControls"
 #pragma link "scGPExtControls"

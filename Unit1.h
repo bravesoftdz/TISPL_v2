@@ -5,26 +5,26 @@
 #include <Vcl.Controls.hpp>
 #include <Vcl.StdCtrls.hpp>
 #include <Vcl.Forms.hpp>
-#include "RzPanel.hpp"
+//#include "RzPanel.hpp"
 #include <Vcl.ExtCtrls.hpp>
 #include <Vcl.Menus.hpp>
-#include "RzSplit.hpp"
-#include "RzStatus.hpp"
+//#include "RzSplit.hpp"
+//#include "RzStatus.hpp"
 #include <Vcl.Grids.hpp>
-#include "RzButton.hpp"
+//#include "RzButton.hpp"
 #include <System.ImageList.hpp>
 #include <Vcl.ImgList.hpp>
-#include "RzBorder.hpp"
+//#include "RzBorder.hpp"
 #include <Vcl.Dialogs.hpp>
 #include <Vcl.ExtDlgs.hpp>
-#include "RzGrids.hpp"
+//#include "RzGrids.hpp"
 #include <VCLTee.GanttCh.hpp>
 #include <VCLTee.Chart.hpp>
 #include <VCLTee.Series.hpp>
 #include <VclTee.TeeGDIPlus.hpp>
 #include <VCLTee.TeEngine.hpp>
 #include <VCLTee.TeeProcs.hpp>
-#include "RzLabel.hpp"
+//#include "RzLabel.hpp"
 #include <IdBaseComponent.hpp>
 #include <IdComponent.hpp>
 #include <IdDayTime.hpp>
@@ -67,8 +67,8 @@
 #include <IdIOHandlerStack.hpp>
 #include <IdSSL.hpp>
 #include <IdSSLOpenSSL.hpp>
-#include "rImprovedComps.hpp"
-#include "rStringGridEd.hpp"
+//#include "rImprovedComps.hpp"
+//#include "rStringGridEd.hpp"
 #include "scControls.hpp"
 #include "scGPControls.hpp"
 #include "scStyledForm.hpp"
@@ -91,16 +91,19 @@
 #include "grafy.h"
 #include "PO_math.h"
 #include "scGPExtControls.hpp"
-#include "rHintWindow.hpp"
+//#include "rHintWindow.hpp"
 #include "UnitX.h"
 #include <Vcl.Imaging.pngimage.hpp>
 #include "scImageCollection.hpp"
-#include "rHintWindow.hpp"
+//#include "rHintWindow.hpp"
 #include <IdExplicitTLSClientServerBase.hpp>
 #include <IdMessageClient.hpp>
 #include <IdSMTP.hpp>
 #include <IdFTP.hpp>
 #include "Tvlakno_obraz.h"
+//#include "rImprovedComps.hpp"
+//#include "rImprovedComps.hpp"
+//#include "rImprovedComps.hpp"
 //#include <IdSMTPBase.hpp>
 //#include <IdMessage.hpp>
 //#include <System.Actions.hpp>
@@ -120,23 +123,8 @@ const bool DEBUG=false;
 class TForm1 : public TForm
 {
 __published:	// IDE-managed Components
-	TRzToolbar *RzToolbar1;
 	TButton *Button1;
 	TImageList *ImageList1;
-	TRzToolButton *RzToolButton1;
-	TRzToolButton *RzToolButton2;
-	TRzToolButton *RzToolButton3;
-	TRzSpacer *RzSpacer1;
-	TRzToolButton *RzToolButton4;
-	TRzToolButton *RzToolButton5;
-	TRzToolButton *RzToolButton6;
-	TRzToolButton *RzToolButton7;
-	TRzToolButton *RzToolButton8;
-	TRzToolButton *RzToolButton9;
-	TRzSpacer *RzSpacer2;
-	TRzToolButton *RzToolButton10;
-	TRzToolButton *RzToolButton11;
-	TRzToolButton *RzToolButton12;
 	TMemo *Memo1;
 	TSaveDialog *SaveDialog;
 	TOpenDialog *OpenDialog1;
@@ -150,35 +138,14 @@ __published:	// IDE-managed Components
 	TButton *Button7;
 	TButton *Button9;
 	TButton *Button10;
-	TChart *Chart1;
-	TChart *Chart2;
-	TChart *Chart3;
-	TChart *Chart4;
 	TLabel *Label_wip;
-	TGanttSeries *Series1;
-	TBarSeries *Series5;
-	TBarSeries *Series6;
 	TButton *Button2;
 	TTimer *Timer_neaktivity;
 	TButton *ButtonPLAY_O;
 	TTimer *Timer_animace;
-	TChart *Chart6;
 	TCheckBox *CheckBoxAnimovatSG_OLD;
 	TLabel *Label_zamerovac;
-	TPieSeries *Series7;
-	TTeeGDIPlus *TeeGDIPlus1;
-	TTeeGDIPlus *TeeGDIPlus2;
-	TTeeGDIPlus *TeeGDIPlus3;
-	TTeeGDIPlus *TeeGDIPlus4;
-	TTeeGDIPlus *TeeGDIPlus5;
-	TComboBox *ComboBoxDOmin;
-	TComboBox *ComboBoxODmin;
-	TLabel *LabelRoletka;
-	TBarSeries *Series2;
-	TBarSeries *Series3;
 	TTimer *TimerMouseWheel;
-	TBarSeries *Series9;
-	TBarSeries *Series10;
 	TIdTime *IdTime1;
 	TIdHTTP *IdHTTP1;
 	TTimer *Timer_tr;
@@ -187,14 +154,12 @@ __published:	// IDE-managed Components
 	TFDQuery *FDQuery1;
 	TButton *SQL_processID;
 	TFDQuery *FDQuery2;
-	TrComboBoxEx *rComboBoxKrok;
 	TscGPPanel *scGPPanel_mainmenu;
 	TscGPGlyphButton *Konec;
 	TscGPGlyphButton *MinButton;
 	TscGPButton *Schema;
 	TscGPButton *PopupMenuButton;
 	TscGPButton *Analyza;
-	TscGPButton *Synteza;
 	TscGPGlyphButton *Toolbar_Ulozit;
 	TscGPGlyphButton *Toolbar_NovySoubor;
 	TscGPGlyphButton *Toolbar_Otevrit;
@@ -209,7 +174,6 @@ __published:	// IDE-managed Components
 	TscStyledForm *scStyledForm1;
 	TscGPGlyphButton *scGPGlyphButton2;
 	TscGPButton *Layout;
-	TscGPButton *Simulace;
 	TscButton *scButton_otevrit;
 	TscButton *scButton_konec;
 	TscButton *scButton4;
@@ -232,38 +196,21 @@ __published:	// IDE-managed Components
 	TscLabel *scLabel_ZOOM;
 	TscGPSwitch *scGPSwitch_meritko;
 	TscLabel *scLabel5;
-	TscGPCheckBox *CheckBoxVymena_barev;
-	TscGPCheckBox *CheckBoxVytizenost;
-	TscComboBox *ComboBoxCekani;
 	TscGPLabel *pravyoption_nadpis;
 	TscExPanel *scExPanel_vrstvy;
 	TscLabel *scLabel_titulek;
 	TButton *hl_spojak_zakazky;
-	TMemo *Memo2;
 	TButton *button_zakazky_temp;
 	TscButton *scButton_novy;
 	TButton *Button11;
 	TscGPGlyphButton *scGPGlyphButton_close_grafy;
 	TscButton *scButton_ulozit;
-	TscGPSwitch *scGPSwitch_rezim;
-	TscLabel *scLabel_klient;
-	TscLabel *scLabel_architekt;
 	TscExPanel *scExPanel_html;
 	TWebBrowser *WebBrowser1;
 	TButton *pohonobjekt;
 	TButton *Button12;
-	TscGPGlyphButton *scGPGlyphButton_close_legenda_casove_osy;
 	TButton *Button13;
-	TscGPGlyphButton *scGPButton_generuj;
-	TscLabel *scLabel_filtrovat;
-	TscLabel *scLabel_doba_cekani;
-	TscGPCheckBox *CheckBoxAnimovatSG;
-	TscGPCheckBox *CheckBox_pouzit_zadane_kapacity;
-	TscGPGlyphButton *ButtonPLAY;
 	TscLabel *scLabel_mezera;
-	TscGPButton *scGPButton_header_def_zakazek;
-	TscGPCheckBox *scGPCheckBox_pocet_voziku_dle_WIP;
-	TscGPGlyphButton *scGPGlyphButton_info_cekani;
   TscListGroupPanel *scListGroupPanel_hlavickaOtoce;
   TDrawGrid *DrawGrid_otoce;
   TscListGroupPanel *scListGroupPanel_hlavickaOstatni;
@@ -288,8 +235,6 @@ __published:	// IDE-managed Components
 	TMemo *Memo3;
   TTimer *Timer2;
 	TscGPPanel *scGPPanel_bottomtoolbar;
-	TscGPLabel *scGPLabel1;
-	TscGPComboBox *scGPComboBox_orientace;
 	TscGPButton *scGPButton_ulozit;
 	TscGPButton *scGPButton_zahodit;
 	TscButton *scButton_zamek;
@@ -308,7 +253,6 @@ __published:	// IDE-managed Components
   TscGPButton *scGPButton_mereni_vzdalenost;
   TscExPanel *scExPanel_ostatni;
   TscGPCheckBox *scGPCheckBox_ortogon;
-  TscExPanel *scExPanel_nastaveni_starych_modu;
 	TscGPImage *scGPImage_zamek_posunu;
 	TscButton *scButton_zamek_layoutu;
 	TscGPImageCollection *scGPImageCollection_Objekty;
@@ -329,11 +273,8 @@ __published:	// IDE-managed Components
   TscGPButton *scGPButton_error;
   TscGPButton *scGPButton_warning;
 	TscGPButton *scGPButton_smazat;
-  TrHTMLHint *rHTMLHint1;
 	TscGPButton *scGPButton_geometrie;
 	TscGPCheckBox *scGPCheckBox_rozmisteni_voziku;
-	TscGPButton *scGPButton_ulozit_cestu;
-	TscGPButton *scGPButton_storno_cesta;
 	TscGPButton *scGPGlyphButton_odstran_cestu;
 	TPopupMenu *PopupMenu1;
 	TMenuItem *N11;
@@ -440,18 +381,14 @@ __published:	// IDE-managed Components
 	void __fastcall eXtreme1Click(TObject *Sender);
 	void __fastcall Button2Click(TObject *Sender);
 	void __fastcall Timer_neaktivityTimer(TObject *Sender);
-	void __fastcall ButtonPLAY_OClick(TObject *Sender);
 	void __fastcall Timer_animaceTimer(TObject *Sender);
 	void __fastcall CheckBoxVytizenost_Click(TObject *Sender);
 	void __fastcall Button13Click(TObject *Sender);
 	void __fastcall CheckBoxVymena_barev_Click(TObject *Sender);
-	void __fastcall ComboBoxODminChange(TObject *Sender);
-	void __fastcall ComboBoxDOminChange(TObject *Sender);
 	void __fastcall TimerMouseWheelTimer(TObject *Sender);
 	void __fastcall Timer_trTimer(TObject *Sender);
 	void __fastcall CheckBox_pouzit_zadane_kapacity_OLDClick(TObject *Sender);
 	void __fastcall SQL_processIDClick(TObject *Sender);
-	void __fastcall rComboBoxKrokChange(TObject *Sender);
 	void __fastcall MaxButtonClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_OPTIONS_OldClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -468,7 +405,6 @@ __published:	// IDE-managed Components
 	void __fastcall scGPSwitch_rezimChangeState(TObject *Sender);
 	void __fastcall scSplitViewsClosing(TObject *Sender);
 	void __fastcall scSplitViewsClosed(TObject *Sender);
-	void __fastcall scExPanel_ostatniClick(TObject *Sender);
 	void __fastcall scExPanel_vrstvyClick(TObject *Sender);
 	void __fastcall scGPSwitch_meritkoChangeState(TObject *Sender);
 	void __fastcall scSplitView_OPTIONSMouseLeave(TObject *Sender);
@@ -483,7 +419,6 @@ __published:	// IDE-managed Components
 	void __fastcall scSplitView_OPTIONSOpened(TObject *Sender);
 	void __fastcall LayoutClick(TObject *Sender);
 	void __fastcall pohonobjektClick(TObject *Sender);
-	void __fastcall Button12Click(TObject *Sender);
 	void __fastcall scSplitView_OPTIONSPanelPaint(TCanvas *ACanvas, TRect &ARect);
 	void __fastcall scGPCheckBox_ortogonClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_close_legenda_casove_osyClick(TObject *Sender);
@@ -567,8 +502,6 @@ __published:	// IDE-managed Components
   void __fastcall scGPButton_warningClick(TObject *Sender);
 	void __fastcall scGPButton_smazatClick(TObject *Sender);
 	void __fastcall scGPButton_geometrieClick(TObject *Sender);
-	void __fastcall scGPButton_storno_cestaClick(TObject *Sender);
-	void __fastcall scGPButton_ulozit_cestuClick(TObject *Sender);
 	void __fastcall scGPCheckBox_rozmisteni_vozikuClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_odstran_cestuClick(TObject *Sender);
 	void __fastcall N21Click(TObject *Sender);
@@ -651,7 +584,6 @@ private:
 	void nacist_nastaveni();
 	void ulozit_nastaveni();
 	void zavrit_uvod();//zavøe úvodní dialog
-	int vrat_max_vysku_grafu();//vratí maximální oblast
 	bool najdi_nazev_obj(double X,double Y,Cvektory::TObjekt *Objekt);//vratí zda jsem v oblasti textu
   short najdi_popisky_PM(double X,double Y,Cvektory::TObjekt *Objekt);//najde na jakém popisku u PM se nachází kurzor, vrací 0: nenalezeno, 1: pohon 1, 2: pohon 2
 	void getJobID(int X, int Y);//vrátí do globální promìnné JID ID úlohy/funkcionality v místì kurzoru, zároveò pokud v místì tabulky èi elementu nahraje ukazatel do globální promìnné pom_element, význam jednotlivých JID hodnot v komentáøi definici metody
@@ -897,6 +829,7 @@ public:		// User declarations
 	void nastav_focus();//vrátí focus na form1, kdykoli je potøeba vrátit focus, skrze odchytávání kláves
 	void set_enabled_mGrid(Cvektory::TElement *E);//zapne nebo vypne komponenty megridu v závislosti na tom zda má element pøiøazený pohon
 	void zobraz_tip(UnicodeString text="", TCanvas* canv=NULL);//prázdným (bez paremetrù) voláním  metody se tip smaže, //pokud není parametr canvas uveden, jedná se o dlouhodobé vykreslování hodnoty TIP//pokud je parametrem pøedán Canvas vykreslí se pøímo a jednorázovì
+	void zapnuti_vypnuti_panelEditace(bool zapnout);//zapnout nebo vypnout panel editace, automaticky podle MODu zobrazí èi skryje urèité prvky
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
