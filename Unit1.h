@@ -123,34 +123,20 @@ const bool DEBUG=false;
 class TForm1 : public TForm
 {
 __published:	// IDE-managed Components
-	TButton *Button1;
 	TImageList *ImageList1;
-	TMemo *Memo1;
 	TSaveDialog *SaveDialog;
 	TOpenDialog *OpenDialog1;
 	TTimer *Timer_backup;
 	TSavePictureDialog *SavePictureDialog1;
-	TTimer *Timer_simulace;
-	TButton *Button3;
-	TButton *Button4;
-	TButton *Button5;
-	TButton *Button6;
-	TButton *Button7;
-	TButton *Button9;
-	TButton *Button10;
-	TLabel *Label_wip;
 	TButton *Button2;
 	TTimer *Timer_neaktivity;
 	TButton *ButtonPLAY_O;
 	TTimer *Timer_animace;
-	TCheckBox *CheckBoxAnimovatSG_OLD;
-	TLabel *Label_zamerovac;
 	TTimer *TimerMouseWheel;
 	TIdTime *IdTime1;
 	TIdHTTP *IdHTTP1;
 	TTimer *Timer_tr;
 	TFDConnection *FDConnection1;
-	TCheckBox *CheckBox_pouzit_zadane_kapacity_OLD;
 	TFDQuery *FDQuery1;
 	TButton *SQL_processID;
 	TFDQuery *FDQuery2;
@@ -172,7 +158,6 @@ __published:	// IDE-managed Components
 	TscGPSizeBox *scGPSizeBox;
 	TscSplitView *scSplitView_OPTIONS;
 	TscStyledForm *scStyledForm1;
-	TscGPGlyphButton *scGPGlyphButton2;
 	TscGPButton *Layout;
 	TscButton *scButton_otevrit;
 	TscButton *scButton_konec;
@@ -199,17 +184,12 @@ __published:	// IDE-managed Components
 	TscGPLabel *pravyoption_nadpis;
 	TscExPanel *scExPanel_vrstvy;
 	TscLabel *scLabel_titulek;
-	TButton *hl_spojak_zakazky;
-	TButton *button_zakazky_temp;
 	TscButton *scButton_novy;
-	TButton *Button11;
-	TscGPGlyphButton *scGPGlyphButton_close_grafy;
+	TButton *ButtonRosta;
 	TscButton *scButton_ulozit;
 	TscExPanel *scExPanel_html;
 	TWebBrowser *WebBrowser1;
-	TButton *pohonobjekt;
-	TButton *Button12;
-	TButton *Button13;
+	TButton *ButtonMaVl;
 	TscLabel *scLabel_mezera;
   TscListGroupPanel *scListGroupPanel_hlavickaOtoce;
   TDrawGrid *DrawGrid_otoce;
@@ -232,8 +212,8 @@ __published:	// IDE-managed Components
   TscGPLabel *scGPLabel_roboti;
   TscGPButton *scGPButton_adjustace;
   TscExPanel *scExPanel_podklad;
-	TMemo *Memo3;
-  TTimer *Timer2;
+	TMemo *Memo_testy;
+	TTimer *TimerSmazEditNazvuElementuVTabulce;
 	TscGPPanel *scGPPanel_bottomtoolbar;
 	TscGPButton *scGPButton_ulozit;
 	TscGPButton *scGPButton_zahodit;
@@ -249,7 +229,7 @@ __published:	// IDE-managed Components
 	TscGPImage *scGPImage_mereni_vzdalenost;
 	TscGPSwitch *scGPSwitch_robot_clovek;
 	TscGPPanel *scGPPanel_pomocn_proSwitch;
-	TButton *Button14;
+	TButton *ButtonMaKr;
   TscGPButton *scGPButton_mereni_vzdalenost;
   TscExPanel *scExPanel_ostatni;
   TscGPCheckBox *scGPCheckBox_ortogon;
@@ -307,7 +287,6 @@ __published:	// IDE-managed Components
 	void __fastcall FormResize(TObject *Sender);
 	void __fastcall FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
-	void __fastcall Button1Click(TObject *Sender);
 	void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
 	void __fastcall FormMouseWheelDown(TObject *Sender, TShiftState Shift, TPoint &MousePos,
           bool &Handled);
@@ -359,20 +338,11 @@ __published:	// IDE-managed Components
 	void __fastcall html1Click(TObject *Sender);
 	void __fastcall RzStatusPane1Click(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
-	void __fastcall Timer_simulaceTimer(TObject *Sender);
-	void __fastcall Button3Click(TObject *Sender);
 	void __fastcall Vypicestuktempu1Click(TObject *Sender);
-	void __fastcall Button4Click(TObject *Sender);
-	void __fastcall Button5Click(TObject *Sender);
-	void __fastcall Button6Click(TObject *Sender);
-	void __fastcall Button7Click(TObject *Sender);
-	void __fastcall Button9Click(TObject *Sender);
-	void __fastcall Button10Click(TObject *Sender);
 	void __fastcall AnalyzaClick(TObject *Sender);
 	void __fastcall FormShortCut(TWMKey &Msg, bool &Handled);
 	void __fastcall CheckBoxPALCE_Click(TObject *Sender);
 	void __fastcall Chart1Click(TObject *Sender);
-	void __fastcall SyntezaClick(TObject *Sender);
 	void __fastcall Zobrazitparametry1Click(TObject *Sender);
 	void __fastcall Rychlexport1Click(TObject *Sender);
 	void __fastcall MagnaClick(TObject *Sender);
@@ -382,12 +352,10 @@ __published:	// IDE-managed Components
 	void __fastcall Button2Click(TObject *Sender);
 	void __fastcall Timer_neaktivityTimer(TObject *Sender);
 	void __fastcall Timer_animaceTimer(TObject *Sender);
-	void __fastcall CheckBoxVytizenost_Click(TObject *Sender);
-	void __fastcall Button13Click(TObject *Sender);
+	void __fastcall ButtonMaVlClick(TObject *Sender);
 	void __fastcall CheckBoxVymena_barev_Click(TObject *Sender);
 	void __fastcall TimerMouseWheelTimer(TObject *Sender);
 	void __fastcall Timer_trTimer(TObject *Sender);
-	void __fastcall CheckBox_pouzit_zadane_kapacity_OLDClick(TObject *Sender);
 	void __fastcall SQL_processIDClick(TObject *Sender);
 	void __fastcall MaxButtonClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_OPTIONS_OldClick(TObject *Sender);
@@ -396,7 +364,6 @@ __published:	// IDE-managed Components
 	void __fastcall scGPGlyphButton_ZOOM_PLUSClick(TObject *Sender);
 	void __fastcall scLabel_titulekDblClick(TObject *Sender);
 	void __fastcall MinButtonClick(TObject *Sender);
-	void __fastcall scGPGlyphButton2Click(TObject *Sender);
 	void __fastcall Button_dopravnik_parametryClick(TObject *Sender);
 	void __fastcall DetailsButtonClick(TObject *Sender);
 	void __fastcall scGPTrackBar1Change(TObject *Sender);
@@ -409,19 +376,14 @@ __published:	// IDE-managed Components
 	void __fastcall scGPSwitch_meritkoChangeState(TObject *Sender);
 	void __fastcall scSplitView_OPTIONSMouseLeave(TObject *Sender);
 	void __fastcall scSplitView_MENUMouseLeave(TObject *Sender);
-	void __fastcall hl_spojak_zakazkyClick(TObject *Sender);
-	void __fastcall button_zakazky_tempClick(TObject *Sender);
 	void __fastcall scButton2Click(TObject *Sender);
 	void __fastcall scGPGlyphButton_definice_zakazekClick(TObject *Sender);
-	void __fastcall scGPGlyphButton_close_grafyClick(TObject *Sender);
 	void __fastcall ComboBoxCekaniChange(TObject *Sender);
 	void __fastcall scGPGlyphButton_zpravy_ikonaClick(TObject *Sender);
 	void __fastcall scSplitView_OPTIONSOpened(TObject *Sender);
 	void __fastcall LayoutClick(TObject *Sender);
-	void __fastcall pohonobjektClick(TObject *Sender);
 	void __fastcall scSplitView_OPTIONSPanelPaint(TCanvas *ACanvas, TRect &ARect);
 	void __fastcall scGPCheckBox_ortogonClick(TObject *Sender);
-	void __fastcall scGPGlyphButton_close_legenda_casove_osyClick(TObject *Sender);
 	void __fastcall scGPButton_generujClick(TObject *Sender);
 	void __fastcall scExPanel_log_headerClick(TObject *Sender);
 	void __fastcall scExPanel_log_headerMouseDown(TObject *Sender, TMouseButton Button,
@@ -439,7 +401,7 @@ __published:	// IDE-managed Components
           int X, int Y);
   void __fastcall DrawGrid_ostatniMouseDown(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y);
-  void __fastcall Button11Click(TObject *Sender);
+  void __fastcall ButtonRostaClick(TObject *Sender);
   void __fastcall scGPButton_stornoClick(TObject *Sender);
   void __fastcall scButton_nacist_podkladClick(TObject *Sender);
   void __fastcall DrawGrid_geometrieDrawCell(TObject *Sender, int ACol, int ARow,
@@ -472,7 +434,7 @@ __published:	// IDE-managed Components
   void __fastcall Button_testClick(TObject *Sender);
 	void __fastcall scGPButton_OKClick(TObject *Sender);
   void __fastcall scGPEdit1Change(TObject *Sender);
-  void __fastcall Timer2Timer(TObject *Sender);
+  void __fastcall TimerSmazEditNazvuElementuVTabulceTimer(TObject *Sender);
 	void __fastcall scButton_zamekClick(TObject *Sender);
 	void __fastcall TimerKurzorTimer(TObject *Sender);
 	void __fastcall FormKeyPress(TObject *Sender, System::WideChar &Key);
@@ -483,7 +445,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPImage_mereni_vzdalenostClick(TObject *Sender);
 	void __fastcall scGPSwitch_robot_clovekChangeState(TObject *Sender);
 	void __fastcall scGPComboBox_prepinacKotClick(TObject *Sender);
-	void __fastcall Button14Click(TObject *Sender);
+	void __fastcall ButtonMaKrClick(TObject *Sender);
   void __fastcall scGPButton_posun_halyClick(TObject *Sender);
   void __fastcall scGPButton_nakreslit_haluClick(TObject *Sender);
 	void __fastcall NahledClick(TObject *Sender);
@@ -492,7 +454,7 @@ __published:	// IDE-managed Components
   void __fastcall scGPTrackBar_intenzitaChange(TObject *Sender);
   void __fastcall scGPCheckBox_zobrazit_rotace_jigu_na_otocichClick(TObject *Sender);
   void __fastcall scGPCheckBox_zobrazit_poziceClick(TObject *Sender);
-	void __fastcall Memo3KeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall Memo_testyKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
   void __fastcall scGPCheckBox1_popiskyClick(TObject *Sender);
   void __fastcall scGPCheckBox_zobrazit_kolejeClick(TObject *Sender);
   void __fastcall scGPSwitch1ChangeState(TObject *Sender);
@@ -784,7 +746,6 @@ public:		// User declarations
 	void kopirovat_objekt();//pokud je oznaèený objekt, zajistí jeho zkopírování, pøipoèítá index 1,2,3
 	void RM();//korekce chyby oskakování pravého menu
 	void aktualizace_maro_a_roma();//aktualizace a pøepoèet hodnot volaná kvùli èasovým osám (maro) a techn.procesùm(roma)
-	void deaktivace_zamerovace();//deaktivuje zamìøovaè label a svislice a kolmice
 	void aktualizace_combobox_pohony_v_PO(short RDunitD=-1,short RDunitT=-1);//zaktualizuje ve formuláøi parametry objektù combobox na výpis pohonù vèetnì jednotek uvedeného rozmezí rychlostí, pokud jsou zanechané implicitní parametry short RDunitD=-1,short RDunitT=-1, je naèteno nastevní jednotek z INI aplikace pro form parametry objektu, v pøípadech, kdy uvedené parametry nejsou dané hodnotou -1, tak se uvažují jednotky dle S==0,MIN==1 pro RDunitT, resp. M==0,MM==1 pro RDunitD
 	void tab_pohon_COMBO();//naètení pohonù do comba
 	void tab_knihovna_click(double X,double Y,long Col=-1,long Row=-1);//klik do knihovny objektù, spouštìní akce pøidávání objektu
@@ -804,7 +765,7 @@ public:		// User declarations
 	double outR(double outR);
 	double inRz(double inRz);
 	double outRz(double outRz);
-	void Memo(AnsiString Text,bool clear=false,bool count=false);//urychlení vypsání do Mema
+	void Memo(AnsiString Text,bool clear=false,bool count=false);//urychlení vypsání do Memo_testy
 	void log(AnsiString Text,AnsiString Text2="");//zapíše log do textového souboru a pøidá datum
 	TRect souradnice_LO(Cvektory::TElement *E);//vrací souøadnice (PX) lakovacího okna elementu pokud nìjaké má,pokud ne vrátí souøadnice elementu
 	short prekryti_LO(Cvektory::TElement *E);//prozkoumá zda se element nepøekrýva lak. oknem se sousedními,  0=nepøkrývá se, 1=pøekrývá se LO, 2=pøekrývá se zóna
