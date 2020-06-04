@@ -515,6 +515,7 @@ __published:	// IDE-managed Components
 	void __fastcall Timer_getjobidTimer(TObject *Sender);
 	void __fastcall scGPCheckBox_popisek_pohonuClick(TObject *Sender);
 	void __fastcall scLabel_statusbar_0Click(TObject *Sender);
+	void __fastcall scExPanel_ostatniClick(TObject *Sender);
 
 
 

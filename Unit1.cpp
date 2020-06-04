@@ -14750,8 +14750,8 @@ void __fastcall TForm1::scSplitViewsClosed(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scExPanel_vrstvyClick(TObject *Sender)
 {
-  log(__func__);//logování
-  scExPanel_vrstvy->RollUpState=!scExPanel_vrstvy->RollUpState;
+	log(__func__);//logování
+	scExPanel_vrstvy->RollUpState=!scExPanel_vrstvy->RollUpState;
 }
 //---------------------------------------------------------------------------
 //vypnutí či zapnutí ortogonolazice
@@ -16632,7 +16632,7 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
     scGPCheckBox_stupne_sedi->Caption=ls->Strings[106];
     scGPCheckBox_zobraz_podklad->Caption=ls->Strings[107];
     scLabel1_svetelnost->Caption=ls->Strings[108];
-    scExPanel_ostatni->Caption=ls->Strings[109];
+		scExPanel_ostatni->Caption=ls->Strings[109];
     scGPCheckBox_ortogon->Caption=ls->Strings[110];
     scGPCheckBox_ortogon->Hint=ls->Strings[111];
     scLabel16->Caption=ls->Strings[112];
@@ -17347,6 +17347,12 @@ void TForm1::zapnuti_vypnuti_panelEditace(bool zapnout)
 		//posun tlačítka report
 		scGPButton_bug_report->Top+=scGPPanel_bottomtoolbar->Height;
 	}
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::scExPanel_ostatniClick(TObject *Sender)
+{
+	log(__func__);//logování
+	scExPanel_ostatni->RollUpState=!scExPanel_ostatni->RollUpState;
 }
 //---------------------------------------------------------------------------
 
