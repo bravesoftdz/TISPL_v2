@@ -10,7 +10,7 @@
 #include "scControls.hpp"
 #include "scGPControls.hpp"
 #include "scGPExtControls.hpp"
-#include "RzStatus.hpp"
+//#include "RzStatus.hpp"
 #include "scGPImages.hpp"
 //---------------------------------------------------------------------------
 class TForm_zpravy : public TForm
@@ -23,12 +23,12 @@ __published:	// IDE-managed Components
   TscGPListBox *scGPListBox_zpravy;
   TscGPPanel *scGPPanel_statusbar;
   TscGPSizeBox *scGPSizeBox;
-  TRzStatusPane *RzStatusPane__chyby_caption;
-  TRzStatusPane *RzStatusPane_var_header;
   TscGPImage *scGPImage_warning;
   TscGPImage *scGPImage_error;
-  TscGPGlyphButton *scGPGlyphButton1;
   TscGPGlyphButton *scGPGlyphButton2;
+  TscLabel *scLabel_varovani;
+  TscLabel *scLabel_chyby;
+  TscGPGlyphButton *scGPGlyphButton1;
   void __fastcall FormShow(TObject *Sender);
   void __fastcall scGPListBox_zpravyMouseMove(TObject *Sender, TShiftState Shift,
           int X, int Y);

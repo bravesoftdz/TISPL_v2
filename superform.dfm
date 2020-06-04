@@ -477,21 +477,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
       AllowAllUp = False
     end
   end
-  object rEditNum_effektivita: TrEditNum
-    Left = 1204
-    Top = 724
-    Width = 97
-    Height = 28
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = 20
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-    TabOrder = 3
-    Value = 90.000000000000000000
-  end
   object scGPButton_Ulozit: TscGPButton
     Left = 228
     Top = 370
@@ -504,7 +489,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Style = []
     ParentFont = False
     FluentUIOpaque = False
-    TabOrder = 4
+    TabOrder = 3
     TabStop = True
     OnClick = scGPButton_UlozitClick
     Animation = False
@@ -641,7 +626,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     ParentShowHint = False
     FluentUIOpaque = False
     ShowHint = True
-    TabOrder = 8
+    TabOrder = 7
     OnClick = scGPButton1Click
     ArrowPosition = scapBottom
     Animation = True
@@ -770,7 +755,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Style = []
     ParentFont = False
     FluentUIOpaque = False
-    TabOrder = 5
+    TabOrder = 4
     TabStop = True
     OnClick = scGPGlyphButton4Click
     Animation = False
@@ -942,14 +927,14 @@ object Form_definice_zakazek: TForm_definice_zakazek
     FrameColor = clBtnShadow
     FrameActiveColor = clHighlight
     Text = ''
-    TabOrder = 6
+    TabOrder = 5
   end
   object Edit_for_Focus: TEdit
     Left = -500
     Top = -500
     Width = 121
     Height = 28
-    TabOrder = 7
+    TabOrder = 6
     Text = 'Edit_for_Focus'
     OnKeyDown = FormKeyDown
     OnKeyUp = FormKeyUp

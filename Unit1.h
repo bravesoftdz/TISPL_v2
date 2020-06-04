@@ -5,26 +5,26 @@
 #include <Vcl.Controls.hpp>
 #include <Vcl.StdCtrls.hpp>
 #include <Vcl.Forms.hpp>
-#include "RzPanel.hpp"
+//#include "RzPanel.hpp"
 #include <Vcl.ExtCtrls.hpp>
 #include <Vcl.Menus.hpp>
-#include "RzSplit.hpp"
-#include "RzStatus.hpp"
+//#include "RzSplit.hpp"
+//#include "RzStatus.hpp"
 #include <Vcl.Grids.hpp>
-#include "RzButton.hpp"
+//#include "RzButton.hpp"
 #include <System.ImageList.hpp>
 #include <Vcl.ImgList.hpp>
-#include "RzBorder.hpp"
+//#include "RzBorder.hpp"
 #include <Vcl.Dialogs.hpp>
 #include <Vcl.ExtDlgs.hpp>
-#include "RzGrids.hpp"
+//#include "RzGrids.hpp"
 #include <VCLTee.GanttCh.hpp>
 #include <VCLTee.Chart.hpp>
 #include <VCLTee.Series.hpp>
 #include <VclTee.TeeGDIPlus.hpp>
 #include <VCLTee.TeEngine.hpp>
 #include <VCLTee.TeeProcs.hpp>
-#include "RzLabel.hpp"
+//#include "RzLabel.hpp"
 #include <IdBaseComponent.hpp>
 #include <IdComponent.hpp>
 #include <IdDayTime.hpp>
@@ -67,8 +67,8 @@
 #include <IdIOHandlerStack.hpp>
 #include <IdSSL.hpp>
 #include <IdSSLOpenSSL.hpp>
-#include "rImprovedComps.hpp"
-#include "rStringGridEd.hpp"
+//#include "rImprovedComps.hpp"
+//#include "rStringGridEd.hpp"
 #include "scControls.hpp"
 #include "scGPControls.hpp"
 #include "scStyledForm.hpp"
@@ -91,16 +91,19 @@
 #include "grafy.h"
 #include "PO_math.h"
 #include "scGPExtControls.hpp"
-#include "rHintWindow.hpp"
+//#include "rHintWindow.hpp"
 #include "UnitX.h"
 #include <Vcl.Imaging.pngimage.hpp>
 #include "scImageCollection.hpp"
-#include "rHintWindow.hpp"
+//#include "rHintWindow.hpp"
 #include <IdExplicitTLSClientServerBase.hpp>
 #include <IdMessageClient.hpp>
 #include <IdSMTP.hpp>
 #include <IdFTP.hpp>
 #include "Tvlakno_obraz.h"
+//#include "rImprovedComps.hpp"
+//#include "rImprovedComps.hpp"
+//#include "rImprovedComps.hpp"
 //#include <IdSMTPBase.hpp>
 //#include <IdMessage.hpp>
 //#include <System.Actions.hpp>
@@ -142,8 +145,6 @@ __published:	// IDE-managed Components
 	TTimer *Timer_animace;
 	TCheckBox *CheckBoxAnimovatSG_OLD;
 	TLabel *Label_zamerovac;
-	TComboBox *ComboBoxDOmin;
-	TComboBox *ComboBoxODmin;
 	TTimer *TimerMouseWheel;
 	TIdTime *IdTime1;
 	TIdHTTP *IdHTTP1;
@@ -153,7 +154,6 @@ __published:	// IDE-managed Components
 	TFDQuery *FDQuery1;
 	TButton *SQL_processID;
 	TFDQuery *FDQuery2;
-	TrComboBoxEx *rComboBoxKrok;
 	TscGPPanel *scGPPanel_mainmenu;
 	TscGPGlyphButton *Konec;
 	TscGPGlyphButton *MinButton;
@@ -196,9 +196,6 @@ __published:	// IDE-managed Components
 	TscLabel *scLabel_ZOOM;
 	TscGPSwitch *scGPSwitch_meritko;
 	TscLabel *scLabel5;
-	TscGPCheckBox *CheckBoxVymena_barev;
-	TscGPCheckBox *CheckBoxVytizenost;
-	TscComboBox *ComboBoxCekani;
 	TscGPLabel *pravyoption_nadpis;
 	TscExPanel *scExPanel_vrstvy;
 	TscLabel *scLabel_titulek;
@@ -213,15 +210,7 @@ __published:	// IDE-managed Components
 	TButton *pohonobjekt;
 	TButton *Button12;
 	TButton *Button13;
-	TscGPGlyphButton *scGPButton_generuj;
-	TscLabel *scLabel_filtrovat;
-	TscLabel *scLabel_doba_cekani;
-	TscGPCheckBox *CheckBoxAnimovatSG;
-	TscGPCheckBox *CheckBox_pouzit_zadane_kapacity;
-	TscGPGlyphButton *ButtonPLAY;
 	TscLabel *scLabel_mezera;
-	TscGPCheckBox *scGPCheckBox_pocet_voziku_dle_WIP;
-	TscGPGlyphButton *scGPGlyphButton_info_cekani;
   TscListGroupPanel *scListGroupPanel_hlavickaOtoce;
   TDrawGrid *DrawGrid_otoce;
   TscListGroupPanel *scListGroupPanel_hlavickaOstatni;
@@ -264,7 +253,6 @@ __published:	// IDE-managed Components
   TscGPButton *scGPButton_mereni_vzdalenost;
   TscExPanel *scExPanel_ostatni;
   TscGPCheckBox *scGPCheckBox_ortogon;
-  TscExPanel *scExPanel_nastaveni_starych_modu;
 	TscGPImage *scGPImage_zamek_posunu;
 	TscButton *scButton_zamek_layoutu;
 	TscGPImageCollection *scGPImageCollection_Objekty;
@@ -285,7 +273,6 @@ __published:	// IDE-managed Components
   TscGPButton *scGPButton_error;
   TscGPButton *scGPButton_warning;
 	TscGPButton *scGPButton_smazat;
-  TrHTMLHint *rHTMLHint1;
 	TscGPButton *scGPButton_geometrie;
 	TscGPCheckBox *scGPCheckBox_rozmisteni_voziku;
 	TscGPButton *scGPGlyphButton_odstran_cestu;
@@ -394,18 +381,14 @@ __published:	// IDE-managed Components
 	void __fastcall eXtreme1Click(TObject *Sender);
 	void __fastcall Button2Click(TObject *Sender);
 	void __fastcall Timer_neaktivityTimer(TObject *Sender);
-	void __fastcall ButtonPLAY_OClick(TObject *Sender);
 	void __fastcall Timer_animaceTimer(TObject *Sender);
 	void __fastcall CheckBoxVytizenost_Click(TObject *Sender);
 	void __fastcall Button13Click(TObject *Sender);
 	void __fastcall CheckBoxVymena_barev_Click(TObject *Sender);
-	void __fastcall ComboBoxODminChange(TObject *Sender);
-	void __fastcall ComboBoxDOminChange(TObject *Sender);
 	void __fastcall TimerMouseWheelTimer(TObject *Sender);
 	void __fastcall Timer_trTimer(TObject *Sender);
 	void __fastcall CheckBox_pouzit_zadane_kapacity_OLDClick(TObject *Sender);
 	void __fastcall SQL_processIDClick(TObject *Sender);
-	void __fastcall rComboBoxKrokChange(TObject *Sender);
 	void __fastcall MaxButtonClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_OPTIONS_OldClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -422,7 +405,6 @@ __published:	// IDE-managed Components
 	void __fastcall scGPSwitch_rezimChangeState(TObject *Sender);
 	void __fastcall scSplitViewsClosing(TObject *Sender);
 	void __fastcall scSplitViewsClosed(TObject *Sender);
-	void __fastcall scExPanel_ostatniClick(TObject *Sender);
 	void __fastcall scExPanel_vrstvyClick(TObject *Sender);
 	void __fastcall scGPSwitch_meritkoChangeState(TObject *Sender);
 	void __fastcall scSplitView_OPTIONSMouseLeave(TObject *Sender);

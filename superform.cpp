@@ -5,16 +5,16 @@
 
 #include "superform.h"
 #include "unit1.h"
-#include "cesty.h"
-#include "jig.h"
+//#include "cesty.h"
+//#include "jig.h"
 #include "minicolordialog.h"
 
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)
-#pragma link "RzGrids"
-#pragma link "rHTMLLabel"
-#pragma link "rImprovedComps"
-#pragma link "rStringGridEd"
+//#pragma link "RzGrids"
+//#pragma link "rHTMLLabel"
+//#pragma link "rImprovedComps"
+//#pragma link "rStringGridEd"
 #pragma link "scControls"
 #pragma link "scGPControls"
 #pragma link "scGPExtControls"
@@ -23,6 +23,7 @@
 #pragma link "scColorControls"
 #pragma link "scExtControls"
 #pragma link "scStyleManager"
+//#pragma link "rImprovedComps"
 #pragma resource "*.dfm"
 TForm_definice_zakazek *Form_definice_zakazek;
 

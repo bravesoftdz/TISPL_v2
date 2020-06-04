@@ -10,7 +10,7 @@
 #pragma package(smart_init)
 #pragma link "scControls"
 #pragma link "scGPControls"
-#pragma link "rHTMLLabel"
+//#pragma link "rHTMLLabel"
 #pragma link "scModernControls"
 #pragma link "scHtmlControls"
 #pragma resource "*.dfm"

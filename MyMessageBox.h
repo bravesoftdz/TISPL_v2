@@ -13,9 +13,10 @@
 #include <Buttons.hpp>
 #include "scControls.hpp"
 #include "scGPControls.hpp"
-#include "rHTMLLabel.hpp"
+//#include "rHTMLLabel.hpp"
 #include "scGPExtControls.hpp"
 #include <Vcl.Mask.hpp>
+#include "scHtmlControls.hpp"
 //---------------------------------------------------------------------------
 class TmyMessageBox : public TForm
 {
@@ -26,12 +27,12 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyph_info;
 	TscGPButton *Button_Yes;
 	TscGPButton *Button_No;
-	TrHTMLLabel *Label_text;
 	TscGPButton *Button_OK;
 	TscGPButton *Button_Cancel;
 	TscGPCheckBox *CheckBox_pamatovat;
 	TscGPGlyphButton *scGPGlyphButton_copy;
 	TscGPEdit *scGPEdit1;
+  TscLabel *Label_text;
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormShow(TObject *Sender);

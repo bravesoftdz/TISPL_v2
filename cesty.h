@@ -7,9 +7,9 @@
 #include <Vcl.Controls.hpp>
 #include <Vcl.StdCtrls.hpp>
 #include <Vcl.Forms.hpp>
-#include "rHTMLLabel.hpp"
-#include "rStringGridEd.hpp"
-#include "RzButton.hpp"
+//#include "rHTMLLabel.hpp"
+//#include "rStringGridEd.hpp"
+//#include "RzButton.hpp"
 #include <Vcl.Grids.hpp>
 #include "scControls.hpp"
 #include "scGPControls.hpp"
