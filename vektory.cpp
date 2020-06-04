@@ -3375,7 +3375,7 @@ Cvektory::TElement *Cvektory::dalsi_krok(TElement *E,TObjekt *O)
 			E=E->predchozi2;
 			if(E->objekt_n!=O->n && E->eID!=300)E=E->dalsi->dalsi;//přesun z veldejší větve na element na hlavní větvi za spojkou
 			else if(E->objekt_n!=O->n && E->eID==300)E=E->dalsi2->dalsi;
-			else if(E->objekt_n!=O->n){while(E->objekt_n==O->n){E=E->predchozi;}if(E->eID!=300)E=E->dalsi;else E=E->dalsi2;}
+			else if(E->objekt_n==O->n){while(E->objekt_n==O->n){E=E->predchozi;}if(E->eID!=300)E=E->dalsi;else E=E->dalsi2;}
 		}
 		else E=E->dalsi;
 		//if(E!=NULL && E==VYHYBKY->spojka)E=E->dalsi;
@@ -3596,7 +3596,7 @@ Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruc
 
 		//kontrola jestli má objekt ukazatel na svůj první element
 		TObjekt *O=vrat_objekt(novy->objekt_n);
-		if(O!=NULL && (O->element==NULL || O->element!=NULL && O->element->n>novy->n))O->element=novy;//pokud objekt nemá první element nebo první element má větší n než aktuální
+		if(O!=NULL && novy->n==O->element_n)O->element=novy;//načtení prvního elementu v objektu
 
 		//ukazatelové záležitosti
 		O=NULL;delete O;
