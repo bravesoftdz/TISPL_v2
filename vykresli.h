@@ -11,22 +11,12 @@ class Cvykresli
 	private:
 
 	bool lezi_v_pasmu(TCanvas *c,long X,long Y,long x1,long y1,long x2,long y2,long x3,long y3,long x4,long y4,bool odecti_region=true);
-//	void SG(Cvektory::TVozik *ukaz);//zajištuje základní funkcionalitu technologického objektu v reimu S&G pøi vykreslování simulaci
-//	void STOPKA(Cvektory::TVozik *ukaz);//zajištuje základní funkcionalitu technologického objektu STOPKA pøi vykreslování simulaci
-//	bool KOLIZE(Cvektory::TVozik *V1,Cvektory::TVozik *V2);//vrací logickou hodnotu zda došlo èi nedošlo ke kolizi s jinım vozíkem
-	void vykresli_proces(TCanvas *canv, AnsiString shortname, TColor color,short typ, long X1, long X2,long Y,bool legenda=false);//vykreslí jeden dílèí èasovı proces (obdelníèek procesu objektu) pro jeden vozík, vytaeno pouze kvùli pøehlednosti
-	void vykresli_legendu_casovych_os(TCanvas *canv);//vykreslí a napozicuje legendu pro jednotlivé procesy na èasovıch osách, pokud je skrytá pozicuje alespoò samotné tlaèítko podle zobrazenıch èi skrytıch grafù
-	void vypis_mezivozikovy_takt(TCanvas *canv,Cvektory::TVozik *vozik, double X,long Y,bool index=false);//pouze pro zpøehlednìní zapisu, textovı vıpis a kóta mezivozíkového taktu
-	void vytizenost_procesu(TCanvas *canv, Cvektory::TProces *P,double X,int Y);
-	void vykresli_Xosy(TCanvas *canv);//vykreslí statické svislice na èasové osy
 	int CorEx(Cvektory::TObjekt *O);//vrátí souøadnice dle typu buï støedové nebo excentrické v podobì levého horního rohu objektu
 	int CorEy(Cvektory::TObjekt *O);//vrátí souøadnice dle typu buï støedové nebo excentrické v podobì levého horního rohu objektu
 
 	Cvektory::TProces *Pom_proces;//pomocnı ukazatel na proces, vyuívá se v pøi naèítání pùvodnì vytvoøenıch náhodnıch hodnot èekání na palec
 	short oY;//ofset na ose Y, 5 pouze grafická korekce
 	float sizeP;//velikost textù popiskù elementù v knihovnì
-
-	//smazat: double umisteniCas;bool rotacni_zbytek;int pocitadlo;//smazat provizorní
 
 	public:
 	Cvykresli();//konstruktor
@@ -59,24 +49,14 @@ class Cvykresli
 	void vykresli_pow_sprchu(TCanvas *canv,long X1,long X2,long Y1,long Y2,unsigned int velikost_komory_px,TColor color,double sirka,short pmpp,short typ=0,double orientace=-90);//symbolika tekoucí kapaliny u POW
 	void vykresli_grid(TCanvas *canv,int size_grid=10);
 	void vykresli_meridlo(TCanvas *canv,int X,int Y,bool kalibracni_sipka=false);//v pøípadì mìøení vzdálenosti vykreslí spojnici a popø. vypisuje hodnotu vzdálenosti
-	//	void vykresli_graf_rezervy(TCanvas *canv);//mód graf rezerv
-	void vykresli_casove_osy(TCanvas *canv);//MARO metoda, celkové vykreslení módu èasové osy
-	void vykresli_vytizenost_objektu(TCanvas *canv);
-	double proces(TCanvas *canv, unsigned int n, double X_predchozi, double X, int Y, Cvektory::TCesta *C/*segment cesty*/, Cvektory::TVozik *vozik);
-	void vykresli_svislici_na_casove_osy(TCanvas *canv,int X,int Y);//vykreslí pohyblivou svislici yna èasové osy dle umístìní kurzoru myši
-	void zobrazit_label_zamerovac(int X,int Y);//vypiše labal zamìøovaè
-	void vykresli_technologicke_procesy(TCanvas *canv);//ROMA metoda, vykreslí graf technologickıch procesù vùèi jednotlivım t-objektùm v èase
-	void vykresli_layout(TCanvas *canv);//zajišuje vykreslení layout
-	unsigned int vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y,double Poffset=0,bool animace=false);////metoda pouívaná ve starém náhledu objektu, mono odstranit///zajistí vykreslení náhledu objektu, XY -umístìní L zaèátek (støed dopravníku) objektu v metrech, Poffset - pozièní poloha, vıchozí poloha prvního vozíku/pozice v objektu (a vùèi tomuto objektu),mùe slouit na animaci èi návaznost v pøípadì layoutu, za zmínìní stojí lokální promìnná této metody KR, co je kalibrace øetìzu vùèi podvozku napø. 0 - støed, -DP/2 - zaèátek, DP/2 - konec, èi libovolnı v m od zaèátku podvozku
-	unsigned int vykresli_pozice(TCanvas *canv, int i, TPointD OD, TPointD DO,double delka, double delkaV,double sirkaV,double delkaP,double mezera,double akt_pozice=0);//zajišuje vykreslení pozic v layoutu + pøíprava konstrukce kdy nebudu chtít vykreslovat objekt vodorovnì, pouze bude nutné zajistit ještì rotaci pozic a podvozkù
 	void vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E);//vykresli pozic a obalovıch zón
 	void vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y,double Poffset=0,bool animace=false);///zajistí vykreslení øetìzz, XY -umístìní L zaèátek (støed dopravníku) objektu v metrech, Poffset - pozièní poloha, vıchozí poloha prvního vozíku/pozice v objektu (a vùèi tomuto objektu),mùe slouit na animaci èi návaznost v pøípadì layoutu, za zmínìní stojí lokální promìnná této metody KR, co je kalibrace øetìzu vùèi podvozku napø. 0 - støed, -DP/2 - zaèátek, DP/2 - konec, èi libovolnı v m od zaèátku podvozku
 	void vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka=NULL);
-	void vykresli_popisek_pohonu(TCanvas *canv,AnsiString text,TPoint zacatek,TPoint konec,short trend,bool pozice);//vykreslí popisek/vodoznak pohonu ve støedu zadané úseèky, parametr pozice zajišuje støídání pozice vodoznaku
 	void vykresli_retez(TCanvas *canv,Cvektory::TRetez *Retez);
 	void vykresli_koleje(TCanvas *canv,Cvektory::TElement *E);//vykreslení jednoho geometrického segmentu dvou párù kolejí
 	void vykresli_koleje(TCanvas *canv,double X,double Y,short typ,double orientace,double rotacni_uhel,double radius,double delka,TColor clKolej=(TColor)RGB(255,69,0));//vykreslení jednoho geometrického segmentu dvou párù kolejí
 	void vytvor_oblast_koleje(TCanvas *canv,double X,double Y,short typ,double orientace,double rotacni_uhel,double radius,double delka);//vytvoøení jednoho geometrického segmentu z dvou párù kolejí urèeného k testování, zda se nachazí v dané oblasti bod, podruná metoda, volaná z matematické knihovny
+	void vykresli_popisek_pohonu(TCanvas *canv,AnsiString text,TPoint zacatek,TPoint konec,short trend,bool pozice);//vykreslí popisek pohonu ve støedu zadané úseèky, parametr pozice zajišuje støídání pozice popisku
 	void vykresli_voziky(TCanvas *canv);//vykreslí všechny vozíky ze seznamu vozíkù
 	void vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dJ,double sJ,double orientaceP=0,double rotaceJ=0,TColor clChassis=(TColor)RGB(50,50,50), TColor clJig=clPurple,float Width=2);//vykreslení jednoho komplexního vozíku (podvozek vèetnì jigu), , X,Y jsou souøadnice uchycení vozíku k palci, co nemusí bıt støed vozíku
 	void vykresli_jig(TCanvas *canv,double X,double Y,double dJ,double sJ,double orientaceP,double rotaceJ,TColor clJig=clPurple,float Width=2);
