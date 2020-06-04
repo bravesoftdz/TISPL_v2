@@ -1,29 +1,11 @@
 ﻿[Timer_neaktivity]
 Coordinates=268,461,109,36
 
-[Button7]
-Coordinates=970,212,59,58
-
 [DetailsButton]
 Coordinates=980,556,91,36
 
-[Button3]
-Coordinates=353,144,59,58
-
 [SavePictureDialog1]
 Coordinates=969,111,128,36
-
-[Button8]
-Coordinates=10,212,59,58
-
-[Button5]
-Coordinates=901,212,59,58
-
-[Memo1]
-Coordinates=179,144,64,58
-
-[Button6]
-Coordinates=820,10,59,58
 
 [Timer_tr]
 Coordinates=683,557,63,36
@@ -43,29 +25,14 @@ Coordinates=1135,111,90,36
 [Timer_backup]
 Coordinates=1135,221,96,36
 
-[Label_wip]
-Coordinates=832,144,72,58
-
 [SaveDialog]
 Coordinates=838,631,80,36
-
-[Button9]
-Coordinates=617,144,59,58
-
-[Timer_animace]
-Coordinates=155,631,103,36
 
 [ImageList1]
 Coordinates=1297,111,77,36
 
-[Label_zamerovac]
-Coordinates=422,144,116,58
-
 [TimerMouseWheel]
 Coordinates=1297,551,122,36
-
-[Button10]
-Coordinates=225,212,66,58
 
 [MinButton]
 Coordinates=953,418,72,36
@@ -73,17 +40,11 @@ Coordinates=953,418,72,36
 [FDConnection1]
 Coordinates=229,705,104,36
 
-[Timer_simulace]
-Coordinates=1457,386,105,36
-
 [MaxButton]
 Coordinates=1107,372,76,36
 
 [FDQuery2]
 Coordinates=142,212,73,58
-
-[Button1]
-Coordinates=977,144,59,58
 
 [Konec]
 Coordinates=809,372,51,36
@@ -96,9 +57,6 @@ Coordinates=564,372,121,36
 
 [scStyledForm1]
 Coordinates=872,779,100,36
-
-[Button4]
-Coordinates=548,144,59,58
 
 [scLabel16]
 Coordinates=455,326,73,36
@@ -118,14 +76,11 @@ Coordinates=1619,661,85,36
 [scLabel11]
 Coordinates=453,280,73,36
 
-[scGPGlyphButton2]
-Coordinates=319,280,124,36
-
 [scGPButton2]
 Coordinates=10,280,90,36
 
 []
-Coordinates=410,87,118,36
+Coordinates=411,446,122,58
 Visible=True
 
 [scSplitView_OPTIONS]
@@ -145,9 +100,6 @@ Coordinates=1046,144,105,58
 
 [scGPSizeBox]
 Coordinates=120,464,93,36
-
-[hl_spojak_zakazky]
-Coordinates=411,446,122,58
 
 [scExPanel_vrstvy]
 Coordinates=381,1,116,36
@@ -179,9 +131,6 @@ Coordinates=1463,111,180,36
 [scGPPanel_mainmenu]
 Coordinates=1322,441,145,36
 
-[button_zakazky_temp]
-Coordinates=104,153,139,58
-
 [scLabel5]
 Coordinates=640,631,66,36
 
@@ -199,9 +148,6 @@ Coordinates=983,510,103,36
 
 [Toolbar_NovySoubor]
 Coordinates=10,510,136,36
-
-[Button11]
-Coordinates=538,323,66,58
 
 [scExPanel_log_header]
 Coordinates=1110,331,147,36
@@ -223,15 +169,6 @@ Coordinates=354,326,91,36
 
 [scGPSwitch_grid]
 Coordinates=1004,280,91,36
-
-[scGPGlyphButton_close_grafy]
-Coordinates=1681,56,158,36
-
-[CheckBoxAnimovatSG_OLD]
-Coordinates=1021,10,145,58
-
-[CheckBox_pouzit_zadane_kapacity_OLD]
-Coordinates=301,212,218,58
 
 [ButtonPLAY_O]
 Coordinates=510,10,84,58
@@ -268,4 +205,10 @@ Coordinates=1145,631,49,36
 
 [scExPanel_ostatni]
 Coordinates=1322,496,120,36
+
+[ButtonRosta]
+Coordinates=538,323,66,58
+
+[Timer_simulace]
+Coordinates=155,631,103,36
 

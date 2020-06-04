@@ -3,7 +3,7 @@ object Form1: TForm1
   Top = 0
   BorderStyle = bsNone
   Caption = 'ELTEP - TISPL - Timing Inspection of Single Purpose Lines'
-  ClientHeight = 912
+  ClientHeight = 587
   ClientWidth = 1281
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
@@ -32,158 +32,16 @@ object Form1: TForm1
   OnShow = FormShow
   DesignSize = (
     1281
-    912)
+    587)
   PixelsPerInch = 96
   TextHeight = 13
-  object Label_wip: TLabel
-    Left = 213
-    Top = 159
-    Width = 78
-    Height = 19
-    Caption = 'Label_wip'
-    Font.Charset = EASTEUROPE_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -16
-    Font.Name = 'Arial'
-    Font.Style = [fsBold]
-    Font.Quality = fqClearTypeNatural
-    ParentFont = False
-    Visible = False
-  end
-  object Label_zamerovac: TLabel
-    Left = 189
-    Top = 123
-    Width = 32
-    Height = 28
-    Margins.Left = 6
-    Margins.Top = 6
-    Margins.Right = 6
-    Margins.Bottom = 6
-    Caption = 'voz'#237'k:'#13'min:'
-    Color = clWhite
-    Font.Charset = EASTEUROPE_CHARSET
-    Font.Color = clGray
-    Font.Height = -11
-    Font.Name = 'Arial'
-    Font.Style = [fsBold]
-    Font.Quality = fqClearTypeNatural
-    ParentColor = False
-    ParentFont = False
-    Visible = False
-  end
-  object Button1: TButton
-    Left = 183
-    Top = 432
-    Width = 75
-    Height = 25
-    Caption = 'ButtonZakazky'
-    TabOrder = 0
-    Visible = False
-    OnClick = Button1Click
-  end
-  object Memo1: TMemo
-    Left = 0
-    Top = 729
-    Width = 1281
-    Height = 42
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clRed
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    Font.Quality = fqClearTypeNatural
-    Lines.Strings = (
-      '')
-    ParentFont = False
-    TabOrder = 1
-    Visible = False
-  end
-  object Button3: TButton
-    Left = 183
-    Top = 184
-    Width = 85
-    Height = 25
-    Caption = 'Nav'#283'sit voz'#237'k (0)'
-    TabOrder = 2
-    Visible = False
-    OnClick = Button3Click
-  end
-  object Button4: TButton
-    Left = 183
-    Top = 215
-    Width = 85
-    Height = 25
-    Caption = 'Pauza simulace'
-    TabOrder = 3
-    Visible = False
-    OnClick = Button4Click
-  end
-  object Button5: TButton
-    Left = 183
-    Top = 277
-    Width = 85
-    Height = 25
-    Caption = 'stopka'
-    TabOrder = 4
-    Visible = False
-    OnClick = Button5Click
-  end
-  object Button6: TButton
-    Left = 183
-    Top = 308
-    Width = 85
-    Height = 25
-    Caption = #269'ekat na palec'
-    TabOrder = 5
-    Visible = False
-    OnClick = Button6Click
-  end
-  object Button7: TButton
-    Left = 183
-    Top = 246
-    Width = 85
-    Height = 25
-    Caption = 'Krok simulace'
-    TabOrder = 6
-    Visible = False
-    OnClick = Button7Click
-  end
-  object Button8: TButton
-    Left = 183
-    Top = 339
-    Width = 85
-    Height = 25
-    Caption = 'D'#233'lka dopravn'#237'ku'
-    TabOrder = 7
-    Visible = False
-  end
-  object Button9: TButton
-    Left = 183
-    Top = 401
-    Width = 129
-    Height = 25
-    Caption = 'vypsat spoj'#225'k VOZIKY'
-    TabOrder = 8
-    Visible = False
-    OnClick = Button9Click
-  end
-  object Button10: TButton
-    Left = 183
-    Top = 370
-    Width = 110
-    Height = 25
-    Caption = 'zkr'#225'tit linky dle palc'#367
-    TabOrder = 9
-    Visible = False
-    OnClick = Button10Click
-  end
   object Button2: TButton
     Left = 852
     Top = 1
     Width = 75
     Height = 25
     Caption = 'EXPO'
-    TabOrder = 10
+    TabOrder = 0
     Visible = False
     OnClick = Button2Click
   end
@@ -193,16 +51,16 @@ object Form1: TForm1
     Width = 43
     Height = 21
     Caption = 'PLAY'
-    TabOrder = 11
+    TabOrder = 1
     Visible = False
   end
   object SQL_processID: TButton
-    Left = 644
-    Top = 508
+    Left = 675
+    Top = 89
     Width = 75
     Height = 25
     Caption = 'SQL_processID'
-    TabOrder = 12
+    TabOrder = 2
     Visible = False
     OnClick = SQL_processIDClick
   end
@@ -213,7 +71,7 @@ object Form1: TForm1
     Height = 34
     Align = alTop
     FluentUIOpaque = False
-    TabOrder = 13
+    TabOrder = 3
     BlurBackground = False
     BlurBackgroundAmount = 5
     BackgroundStyle = gppbsColor
@@ -2572,12 +2430,12 @@ object Form1: TForm1
   end
   object scGPPanel_statusbar: TscGPPanel
     Left = 0
-    Top = 884
+    Top = 559
     Width = 1281
     Height = 28
     Align = alBottom
     FluentUIOpaque = False
-    TabOrder = 14
+    TabOrder = 4
     BlurBackground = False
     BlurBackgroundAmount = 5
     BackgroundStyle = gppbsColor
@@ -3430,283 +3288,20 @@ object Form1: TForm1
       Caption = 'status_2'
     end
   end
-  object scGPGlyphButton2: TscGPGlyphButton
-    Left = 175
-    Top = 34
-    Width = 30
-    Height = 30
-    FluentUIOpaque = False
-    TabOrder = 16
-    Visible = False
-    OnClick = scGPGlyphButton2Click
-    Animation = True
-    Badge.Color = clRed
-    Badge.ColorAlpha = 255
-    Badge.Font.Charset = DEFAULT_CHARSET
-    Badge.Font.Color = clWhite
-    Badge.Font.Height = -11
-    Badge.Font.Name = 'Tahoma'
-    Badge.Font.Style = [fsBold]
-    Badge.Visible = False
-    Caption = 'scGPGlyphButton1'
-    CanFocused = False
-    CustomDropDown = False
-    DrawTextMode = scdtmGDI
-    FluentLightEffect = False
-    Layout = blGlyphLeft
-    TransparentBackground = True
-    ColorValue = clRed
-    Options.NormalColor = clBtnText
-    Options.HotColor = clBtnText
-    Options.PressedColor = clBtnText
-    Options.FocusedColor = clBtnFace
-    Options.DisabledColor = clBtnText
-    Options.NormalColor2 = clNone
-    Options.HotColor2 = clNone
-    Options.PressedColor2 = clNone
-    Options.FocusedColor2 = clNone
-    Options.DisabledColor2 = clNone
-    Options.NormalColorAlpha = 10
-    Options.HotColorAlpha = 20
-    Options.PressedColorAlpha = 30
-    Options.FocusedColorAlpha = 255
-    Options.DisabledColorAlpha = 5
-    Options.NormalColor2Alpha = 255
-    Options.HotColor2Alpha = 255
-    Options.PressedColor2Alpha = 255
-    Options.FocusedColor2Alpha = 255
-    Options.DisabledColor2Alpha = 255
-    Options.FrameNormalColor = clBtnText
-    Options.FrameHotColor = clBtnText
-    Options.FramePressedColor = clBtnText
-    Options.FrameFocusedColor = clHighlight
-    Options.FrameDisabledColor = clBtnText
-    Options.FrameWidth = 2
-    Options.FrameNormalColorAlpha = 70
-    Options.FrameHotColorAlpha = 100
-    Options.FramePressedColorAlpha = 150
-    Options.FrameFocusedColorAlpha = 255
-    Options.FrameDisabledColorAlpha = 30
-    Options.FontNormalColor = clBtnText
-    Options.FontHotColor = clBtnText
-    Options.FontPressedColor = clBtnText
-    Options.FontFocusedColor = clBtnText
-    Options.FontDisabledColor = clBtnShadow
-    Options.ShapeFillGradientAngle = 90
-    Options.ShapeFillGradientPressedAngle = -90
-    Options.ShapeFillGradientColorOffset = 25
-    Options.ShapeCornerRadius = 10
-    Options.ShapeStyle = scgpRounded
-    Options.ArrowSize = 9
-    Options.ArrowAreaSize = 0
-    Options.ArrowType = scgpatDefault
-    Options.ArrowThickness = 2
-    Options.ArrowThicknessScaled = False
-    Options.ArrowNormalColor = clBtnText
-    Options.ArrowHotColor = clBtnText
-    Options.ArrowPressedColor = clBtnText
-    Options.ArrowFocusedColor = clBtnText
-    Options.ArrowDisabledColor = clBtnText
-    Options.ArrowNormalColorAlpha = 200
-    Options.ArrowHotColorAlpha = 255
-    Options.ArrowPressedColorAlpha = 255
-    Options.ArrowFocusedColorAlpha = 200
-    Options.ArrowDisabledColorAlpha = 125
-    Options.StyleColors = True
-    Options.PressedHotColors = False
-    GlyphOptions.NormalColor = clBtnText
-    GlyphOptions.HotColor = clBtnText
-    GlyphOptions.PressedColor = clBtnText
-    GlyphOptions.FocusedColor = clBtnText
-    GlyphOptions.DisabledColor = clBtnText
-    GlyphOptions.NormalColorAlpha = 200
-    GlyphOptions.HotColorAlpha = 255
-    GlyphOptions.PressedColorAlpha = 255
-    GlyphOptions.FocusedColorAlpha = 255
-    GlyphOptions.DisabledColorAlpha = 150
-    GlyphOptions.Kind = scgpbgkPriorArrow
-    GlyphOptions.Thickness = 2
-    GlyphOptions.ThicknessScaled = False
-    GlyphOptions.Size = 0
-    GlyphOptions.StyleColors = True
-    TextMargin = -1
-    WidthWithCaption = 0
-    WidthWithoutCaption = 0
-    SplitButton = False
-    RepeatClick = False
-    RepeatClickInterval = 100
-    ShowGalleryMenuFromTop = False
-    ShowGalleryMenuFromRight = False
-    ShowMenuArrow = True
-    ShowFocusRect = True
-    Down = False
-    GroupIndex = 0
-    AllowAllUp = False
-  end
-  object hl_spojak_zakazky: TButton
-    Left = 183
-    Top = 463
-    Width = 91
-    Height = 25
-    Caption = 'hl_spojak_zakazky'
-    TabOrder = 19
-    Visible = False
-    OnClick = hl_spojak_zakazkyClick
-  end
-  object button_zakazky_temp: TButton
-    Left = 303
-    Top = 463
-    Width = 185
-    Height = 25
-    Caption = 'button_zakazky_temp'
-    TabOrder = 20
-    Visible = False
-    OnClick = button_zakazky_tempClick
-  end
-  object Button11: TButton
-    Left = 355
-    Top = 329
+  object ButtonRosta: TButton
+    Left = 174
+    Top = 158
     Width = 116
     Height = 25
     Caption = 'ButtonROSTAtesty'
-    TabOrder = 21
+    TabOrder = 8
     Visible = False
-    OnClick = Button11Click
+    OnClick = ButtonRostaClick
     OnKeyDown = FormKeyDown
   end
-  object scGPGlyphButton_close_grafy: TscGPGlyphButton
-    AlignWithMargins = True
-    Left = 227
-    Top = 117
-    Width = 20
-    Height = 24
-    Margins.Left = 0
-    Margins.Top = 0
-    Margins.Right = 0
-    Margins.Bottom = 0
-    Align = alCustom
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNone
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearTypeNatural
-    ParentFont = False
-    FluentUIOpaque = False
-    TabOrder = 22
-    Visible = False
-    StyleElements = [seFont, seClient]
-    OnClick = scGPGlyphButton_close_grafyClick
-    ArrowPosition = scapBottom
-    Animation = False
-    Badge.Color = clRed
-    Badge.ColorAlpha = 255
-    Badge.Font.Charset = DEFAULT_CHARSET
-    Badge.Font.Color = clWhite
-    Badge.Font.Height = -11
-    Badge.Font.Name = 'Tahoma'
-    Badge.Font.Style = [fsBold]
-    Badge.Visible = False
-    Caption = 'Zobrazit grafy'
-    CanFocused = False
-    CustomDropDown = False
-    DrawTextMode = scdtmGDI
-    FluentLightEffect = False
-    Layout = blGlyphRight
-    TransparentBackground = True
-    ColorValue = clRed
-    Cancel = True
-    Options.NormalColor = clMedGray
-    Options.HotColor = clMedGray
-    Options.PressedColor = clRed
-    Options.FocusedColor = clRed
-    Options.DisabledColor = clBtnText
-    Options.NormalColor2 = clNone
-    Options.HotColor2 = clNone
-    Options.PressedColor2 = clNone
-    Options.FocusedColor2 = clNone
-    Options.DisabledColor2 = clNone
-    Options.NormalColorAlpha = 255
-    Options.HotColorAlpha = 255
-    Options.PressedColorAlpha = 180
-    Options.FocusedColorAlpha = 220
-    Options.DisabledColorAlpha = 0
-    Options.NormalColor2Alpha = 255
-    Options.HotColor2Alpha = 255
-    Options.PressedColor2Alpha = 255
-    Options.FocusedColor2Alpha = 255
-    Options.DisabledColor2Alpha = 255
-    Options.FrameNormalColor = clMedGray
-    Options.FrameHotColor = clRed
-    Options.FramePressedColor = clRed
-    Options.FrameFocusedColor = clMedGray
-    Options.FrameDisabledColor = clBtnText
-    Options.FrameWidth = 2
-    Options.FrameNormalColorAlpha = 255
-    Options.FrameHotColorAlpha = 220
-    Options.FramePressedColorAlpha = 220
-    Options.FrameFocusedColorAlpha = 255
-    Options.FrameDisabledColorAlpha = 0
-    Options.FontNormalColor = clWhite
-    Options.FontHotColor = clWhite
-    Options.FontPressedColor = clWhite
-    Options.FontFocusedColor = clWhite
-    Options.FontDisabledColor = clWhite
-    Options.ShapeFillGradientAngle = 90
-    Options.ShapeFillGradientPressedAngle = -90
-    Options.ShapeFillGradientColorOffset = 25
-    Options.ShapeCornerRadius = 1
-    Options.ShapeStyle = scgpRect
-    Options.ArrowSize = 9
-    Options.ArrowAreaSize = 0
-    Options.ArrowType = scgpatDefault
-    Options.ArrowThickness = 2
-    Options.ArrowThicknessScaled = False
-    Options.ArrowNormalColor = clBtnText
-    Options.ArrowHotColor = clBtnText
-    Options.ArrowPressedColor = clBtnText
-    Options.ArrowFocusedColor = clBtnText
-    Options.ArrowDisabledColor = clBtnText
-    Options.ArrowNormalColorAlpha = 200
-    Options.ArrowHotColorAlpha = 255
-    Options.ArrowPressedColorAlpha = 255
-    Options.ArrowFocusedColorAlpha = 200
-    Options.ArrowDisabledColorAlpha = 125
-    Options.StyleColors = True
-    Options.PressedHotColors = False
-    GlyphOptions.NormalColor = clWhite
-    GlyphOptions.HotColor = clWhite
-    GlyphOptions.PressedColor = clWhite
-    GlyphOptions.FocusedColor = clWhite
-    GlyphOptions.DisabledColor = clWhite
-    GlyphOptions.NormalColorAlpha = 200
-    GlyphOptions.HotColorAlpha = 255
-    GlyphOptions.PressedColorAlpha = 255
-    GlyphOptions.FocusedColorAlpha = 255
-    GlyphOptions.DisabledColorAlpha = 150
-    GlyphOptions.Kind = scgpbgkDownArrow
-    GlyphOptions.Thickness = 2
-    GlyphOptions.ThicknessScaled = False
-    GlyphOptions.Size = 0
-    GlyphOptions.StyleColors = True
-    TextMargin = -1
-    ScaleFrameWidth = False
-    WidthWithCaption = 100
-    WidthWithoutCaption = 20
-    SplitButton = False
-    RepeatClick = False
-    RepeatClickInterval = 100
-    ShowGalleryMenuFromTop = False
-    ShowGalleryMenuFromRight = False
-    ShowMenuArrow = False
-    ShowFocusRect = False
-    Down = False
-    GroupIndex = 0
-    AllowAllUp = True
-  end
   object scExPanel_html: TscExPanel
-    Left = 183
-    Top = 583
+    Left = 564
+    Top = 158
     Width = 133
     Height = 67
     Font.Charset = DEFAULT_CHARSET
@@ -3716,7 +3311,7 @@ object Form1: TForm1
     Font.Style = []
     ParentFont = False
     FluentUIOpaque = False
-    TabOrder = 23
+    TabOrder = 9
     Visible = False
     BorderWidth = 1
     BackgroundStyle = scexbgsPanel
@@ -3748,10 +3343,7 @@ object Form1: TForm1
       Height = 42
       Align = alClient
       TabOrder = 0
-      ExplicitLeft = -209
-      ExplicitTop = -178
-      ExplicitWidth = 342
-      ExplicitHeight = 217
+      ExplicitLeft = -20
       ControlData = {
         4C0000008A0D0000570400000100000001020000000000000000000000000000
         000000004C000000000000000000000001000000E0D057007335CF11AE690800
@@ -3760,77 +3352,32 @@ object Form1: TForm1
         00000000000000000100000000000000000000000000000000000000}
     end
   end
-  object pohonobjekt: TButton
-    Left = 494
-    Top = 463
-    Width = 75
-    Height = 25
-    Caption = 'Pohon - objektu'
-    TabOrder = 24
-    Visible = False
-    OnClick = pohonobjektClick
-  end
-  object Button12: TButton
-    Left = 584
-    Top = 463
-    Width = 75
-    Height = 25
-    Caption = 'TPohony'
-    TabOrder = 25
-    Visible = False
-  end
-  object Button13: TButton
-    Left = 355
-    Top = 360
+  object ButtonMaVl: TButton
+    Left = 174
+    Top = 189
     Width = 116
     Height = 25
     Caption = 'ButtonMaVLtesty'
-    TabOrder = 26
-    OnClick = Button13Click
+    TabOrder = 10
+    OnClick = ButtonMaVlClick
     OnKeyDown = FormKeyDown
   end
-  object CheckBox_pouzit_zadane_kapacity_OLD: TCheckBox
-    Left = 288
-    Top = 238
-    Width = 171
-    Height = 20
-    Caption = 'pou'#382#237't zadan'#233' kapacity objekt'#367
-    Color = clBtnFace
-    ParentColor = False
-    TabOrder = 27
-    Visible = False
-    OnClick = CheckBox_pouzit_zadane_kapacity_OLDClick
-  end
-  object CheckBoxAnimovatSG_OLD: TCheckBox
-    Left = 301
-    Top = 212
-    Width = 145
-    Height = 20
-    Caption = 'animovat i jednokapacitn'#237
-    Checked = True
-    Color = clBtnFace
-    ParentColor = False
-    State = cbChecked
-    TabOrder = 28
-    Visible = False
-    OnClick = CheckBoxVytizenost_Click
-  end
-  object Memo3: TMemo
-    Left = 688
-    Top = 165
-    Width = 239
+  object Memo_testy: TMemo
+    Left = 296
+    Top = 139
+    Width = 257
     Height = 119
-    TabOrder = 29
+    TabOrder = 11
     Visible = False
-    OnKeyDown = Memo3KeyDown
+    OnKeyDown = Memo_testyKeyDown
   end
   object scGPPanel_bottomtoolbar: TscGPPanel
-    Left = 164
-    Top = 687
+    Left = 169
+    Top = 511
     Width = 1216
     Height = 45
     FluentUIOpaque = False
-    TabOrder = 30
+    TabOrder = 12
     Visible = False
     BlurBackground = False
     BlurBackgroundAmount = 5
@@ -5204,26 +4751,26 @@ object Form1: TForm1
       AllowAllUp = False
     end
   end
-  object Button14: TButton
-    Left = 355
-    Top = 391
+  object ButtonMaKr: TButton
+    Left = 174
+    Top = 220
     Width = 116
     Height = 25
     Caption = 'ButtonMaKRtesty'
-    TabOrder = 31
+    TabOrder = 13
     Visible = False
-    OnClick = Button14Click
+    OnClick = ButtonMaKrClick
     OnKeyDown = FormKeyDown
   end
   object scSplitView_MENU: TscSplitView
     Left = 0
     Top = 34
     Width = 0
-    Height = 850
+    Height = 525
     Anchors = [akLeft, akTop, akBottom]
     Enabled = False
     FluentUIOpaque = False
-    TabOrder = 17
+    TabOrder = 6
     CustomImageIndex = -1
     DragForm = False
     DragTopForm = True
@@ -5265,7 +4812,7 @@ object Form1: TForm1
     OnClosing = scSplitViewsClosing
     object scButton_konec: TscButton
       Left = 0
-      Top = 800
+      Top = 475
       Width = 0
       Height = 50
       Align = alBottom
@@ -5549,7 +5096,7 @@ object Form1: TForm1
     end
     object scButton_zaloha: TscButton
       Left = 0
-      Top = 750
+      Top = 425
       Width = 0
       Height = 50
       Align = alBottom
@@ -5983,7 +5530,7 @@ object Form1: TForm1
     end
     object scButton_posledni_otevreny: TscButton
       Left = 0
-      Top = 700
+      Top = 375
       Width = 0
       Height = 50
       Align = alBottom
@@ -6361,8 +5908,8 @@ object Form1: TForm1
     end
   end
   object scGPButton_bug_report: TscGPButton
-    Left = 256
-    Top = 799
+    Left = 1173
+    Top = 470
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -6373,7 +5920,7 @@ object Form1: TForm1
     Font.Quality = fqClearTypeNatural
     ParentFont = False
     FluentUIOpaque = False
-    TabOrder = 33
+    TabOrder = 15
     TabStop = True
     OnClick = scGPButton_bug_reportClick
     Animation = False
@@ -6492,7 +6039,7 @@ object Form1: TForm1
     Top = -1000
     Width = 121
     Height = 21
-    TabOrder = 36
+    TabOrder = 18
     OnKeyDown = FormKeyDown
     OnKeyPress = FormKeyPress
     OnKeyUp = FormKeyUp
@@ -6501,7 +6048,7 @@ object Form1: TForm1
     Left = 0
     Top = 34
     Width = 0
-    Height = 850
+    Height = 525
     Anchors = [akLeft, akTop, akBottom]
     Enabled = False
     Font.Charset = DEFAULT_CHARSET
@@ -6512,7 +6059,7 @@ object Form1: TForm1
     Font.Quality = fqClearTypeNatural
     ParentFont = False
     FluentUIOpaque = False
-    TabOrder = 15
+    TabOrder = 5
     OnMouseLeave = scSplitView_OPTIONSMouseLeave
     CustomImageIndex = -1
     DragForm = False
@@ -7929,8 +7476,8 @@ object Form1: TForm1
         AlignWithMargins = True
         Left = 6
         Top = 205
-        Width = 156
-        Height = 19
+        Width = 150
+        Height = 18
         Margins.Top = 0
         Margins.Right = 0
         Margins.Bottom = 0
@@ -8103,7 +7650,7 @@ object Form1: TForm1
       ParentFont = False
       FluentUIOpaque = False
       TabOrder = 2
-      OnClick = scExPanel_vrstvyClick
+      OnClick = scExPanel_ostatniClick
       BorderWidth = 1
       BackgroundStyle = scexbgsPanel
       FrameColor = clBtnShadow
@@ -8298,8 +7845,8 @@ object Form1: TForm1
         AlignWithMargins = True
         Left = 57
         Top = 97
-        Width = 52
-        Height = 20
+        Width = 49
+        Height = 19
         Margins.Left = 6
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWhite
@@ -8326,8 +7873,8 @@ object Form1: TForm1
         AlignWithMargins = True
         Left = 57
         Top = 127
-        Width = 59
-        Height = 20
+        Width = 54
+        Height = 19
         Margins.Left = 6
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWhite
@@ -8354,8 +7901,8 @@ object Form1: TForm1
         AlignWithMargins = True
         Left = 5
         Top = 67
-        Width = 164
-        Height = 19
+        Width = 154
+        Height = 18
         Margins.Top = 0
         Margins.Right = 0
         Margins.Bottom = 0
@@ -8457,7 +8004,7 @@ object Form1: TForm1
         Left = 87
         Top = 164
         Width = 21
-        Height = 20
+        Height = 19
         Margins.Left = 6
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWhite
@@ -8484,8 +8031,8 @@ object Form1: TForm1
         AlignWithMargins = True
         Left = 8
         Top = 164
-        Width = 21
-        Height = 20
+        Width = 22
+        Height = 19
         Margins.Left = 6
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWhite
@@ -8688,7 +8235,7 @@ object Form1: TForm1
     Left = 0
     Top = 34
     Width = 168
-    Height = 850
+    Height = 525
     Anchors = [akLeft, akTop, akBottom]
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clNone
@@ -8698,7 +8245,7 @@ object Form1: TForm1
     Font.Quality = fqClearTypeNatural
     ParentFont = False
     FluentUIOpaque = False
-    TabOrder = 18
+    TabOrder = 7
     CustomImageIndex = -1
     DragForm = False
     DragTopForm = True
@@ -8943,7 +8490,7 @@ object Form1: TForm1
     end
     object scListGroupPanel_geometrie: TscListGroupPanel
       Left = 0
-      Top = 398
+      Top = 494
       Width = 166
       Height = 90
       Align = alCustom
@@ -8964,7 +8511,6 @@ object Form1: TForm1
       GroupColor = clWindow
       GroupColorAlpha = 255
       Color = clBtnFace
-      Caption = 'Geometrie linky'
       HeaderFont.Charset = EASTEUROPE_CHARSET
       HeaderFont.Color = 10114859
       HeaderFont.Height = -15
@@ -9008,7 +8554,7 @@ object Form1: TForm1
     end
     object scListGroupPanel_poznamky: TscListGroupPanel
       Left = -2
-      Top = -410
+      Top = 584
       Width = 166
       Height = 500
       Align = alCustom
@@ -9358,10 +8904,10 @@ object Form1: TForm1
     end
   end
   object ImageList1: TImageList
-    Left = 216
+    Left = 520
     Top = 40
     Bitmap = {
-      494C01011800040A440A10001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800540A580A10001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10294,56 +9840,49 @@ object Form1: TForm1
   end
   object SaveDialog: TSaveDialog
     Options = [ofOverwritePrompt, ofHideReadOnly, ofEnableSizing]
-    Left = 248
+    Left = 208
     Top = 40
   end
   object OpenDialog1: TOpenDialog
-    Left = 280
+    Left = 176
     Top = 40
   end
   object Timer_backup: TTimer
     Interval = 120000
     OnTimer = Timer_backupTimer
-    Left = 344
-    Top = 40
+    Left = 176
+    Top = 88
   end
   object SavePictureDialog1: TSavePictureDialog
     DefaultExt = '*.bmp'
-    Left = 312
-    Top = 40
-  end
-  object Timer_simulace: TTimer
-    Enabled = False
-    Interval = 17
-    OnTimer = Timer_simulaceTimer
-    Left = 440
+    Left = 240
     Top = 40
   end
   object Timer_neaktivity: TTimer
     Enabled = False
     OnTimer = Timer_neaktivityTimer
-    Left = 408
-    Top = 40
+    Left = 240
+    Top = 88
   end
-  object Timer_animace: TTimer
+  object Timer_simulace: TTimer
     Enabled = False
     Interval = 40
-    OnTimer = Timer_animaceTimer
-    Left = 472
-    Top = 40
+    OnTimer = Timer_simulaceTimer
+    Left = 272
+    Top = 88
   end
   object TimerMouseWheel: TTimer
     Interval = 250
     OnTimer = TimerMouseWheelTimer
-    Left = 504
-    Top = 40
+    Left = 304
+    Top = 88
   end
   object IdTime1: TIdTime
     Timeout = 500
     Host = '129.6.15.28'
     BaseDate = 2.000000000000000000
-    Left = 631
-    Top = 40
+    Left = 455
+    Top = 88
   end
   object IdHTTP1: TIdHTTP
     AllowCookies = True
@@ -10359,15 +9898,15 @@ object Form1: TForm1
     Request.Ranges.Units = 'bytes'
     Request.Ranges = <>
     HTTPOptions = [hoForceEncodeParams]
-    Left = 663
-    Top = 40
+    Left = 487
+    Top = 88
   end
   object Timer_tr: TTimer
     Enabled = False
     Interval = 100000
     OnTimer = Timer_trTimer
-    Left = 376
-    Top = 40
+    Left = 208
+    Top = 88
   end
   object FDConnection1: TFDConnection
     Params.Strings = (
@@ -10380,20 +9919,20 @@ object Form1: TForm1
     FetchOptions.CursorKind = ckDefault
     ResourceOptions.AssignedValues = [rvSilentMode]
     ResourceOptions.SilentMode = True
-    Left = 520
-    Top = 160
+    Left = 576
+    Top = 88
   end
   object FDQuery1: TFDQuery
     Connection = FDConnection1
     ResourceOptions.AssignedValues = [rvSilentMode]
     ResourceOptions.SilentMode = True
-    Left = 568
-    Top = 160
+    Left = 608
+    Top = 88
   end
   object FDQuery2: TFDQuery
     Connection = FDConnection1
-    Left = 616
-    Top = 160
+    Left = 640
+    Top = 88
   end
   object scStyledForm1: TscStyledForm
     FluentUIBackground = scfuibNone
@@ -10444,17 +9983,17 @@ object Form1: TForm1
     CaptionWallpaperTopMargin = 1
     CaptionWallpaperRightMargin = 1
     CaptionWallpaperBottomMargin = 1
-    Left = 567
-    Top = 296
+    Left = 303
+    Top = 40
   end
   object ImageList48: TImageList
     ColorDepth = cd32Bit
     Height = 48
     Width = 48
-    Left = 511
-    Top = 230
+    Left = 423
+    Top = 38
     Bitmap = {
-      494C01015400280D680D30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01015400780D7C0D30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000002004000001002000000000000060
       0C00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -36607,23 +36146,23 @@ object Form1: TForm1
     DefaultWidth = 24
     DefaultHeight = 24
     SourceImageList = ImageList48
-    Left = 583
-    Top = 230
+    Left = 455
+    Top = 38
     Bitmap = {}
   end
-  object Timer2: TTimer
+  object TimerSmazEditNazvuElementuVTabulce: TTimer
     Enabled = False
     Interval = 50
-    OnTimer = Timer2Timer
-    Left = 568
-    Top = 40
+    OnTimer = TimerSmazEditNazvuElementuVTabulceTimer
+    Left = 368
+    Top = 88
   end
   object TimerKurzor: TTimer
     Enabled = False
     Interval = 600
     OnTimer = TimerKurzorTimer
-    Left = 536
-    Top = 40
+    Left = 336
+    Top = 88
   end
   object scGPImageCollection_Objekty: TscGPImageCollection
     Images = <
@@ -48452,12 +47991,12 @@ object Form1: TForm1
         PixelOffsetModeHighQuality = True
         InterpolationModeHighQuality = True
       end>
-    Left = 800
-    Top = 480
+    Left = 488
+    Top = 40
   end
   object PopupMenu1: TPopupMenu
-    Left = 928
-    Top = 736
+    Left = 336
+    Top = 40
     object N11: TMenuItem
       Caption = 'Smazat cestu'
       OnClick = scGPGlyphButton_odstran_cestuClick
@@ -48468,8 +48007,8 @@ object Form1: TForm1
     end
   end
   object PopupMenu_posledni_projekty: TPopupMenu
-    Left = 640
-    Top = 296
+    Left = 368
+    Top = 40
     object N1projekt1: TMenuItem
       Caption = '1 projekt'
       OnClick = N1projekt1Click
@@ -48487,7 +48026,7 @@ object Form1: TForm1
     Enabled = False
     Interval = 500
     OnTimer = Timer_getjobidTimer
-    Left = 600
-    Top = 40
+    Left = 400
+    Top = 88
   end
 end
