@@ -4401,7 +4401,7 @@ TPointD *Cvykresli::vykresli_potencial_Gelement(TCanvas *canv,double X,double Y,
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_mGridy(TCanvas *canv)
 {
-	if(F->OBJEKT_akt!=NULL && F->Timer_animace->Enabled==false)//pokud není editovaný nějaký objekt nebo při timeru aplikace se tabulky nezobrazí
+	if(F->OBJEKT_akt!=NULL && F->Timer_simulace->Enabled==false)//pokud není editovaný nějaký objekt nebo při timeru aplikace se tabulky nezobrazí
 	{
 		////tabulky elementů
 		if(F->OBJEKT_akt->element!=NULL)

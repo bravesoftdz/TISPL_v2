@@ -2472,7 +2472,6 @@ object Form1: TForm1
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
-    ExplicitTop = 884
     object Image_rozdelovac_0: TImage
       Left = 207
       Top = 0
@@ -4811,7 +4810,6 @@ object Form1: TForm1
     DisplayMode = scsvmOverlay
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
-    ExplicitHeight = 850
     object scButton_konec: TscButton
       Left = 0
       Top = 475
@@ -4906,7 +4904,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
-      ExplicitTop = 800
     end
     object scButton_otevrit: TscButton
       Left = 0
@@ -5190,7 +5187,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
-      ExplicitTop = 750
     end
     object scButton_report: TscButton
       Left = 0
@@ -5626,7 +5622,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
-      ExplicitTop = 700
     end
     object scButton_novy: TscButton
       Left = 0
@@ -6106,7 +6101,6 @@ object Form1: TForm1
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
     OnOpened = scSplitView_OPTIONSOpened
-    ExplicitHeight = 850
     object pravyoption_nadpis: TscGPLabel
       Left = 1
       Top = 0
@@ -8288,7 +8282,6 @@ object Form1: TForm1
     HideControls = False
     Animation = False
     DisplayMode = scsvmOverlay
-    ExplicitHeight = 850
     object Image_knihovna_objektu: TImage
       Left = 0
       Top = 0
@@ -8915,7 +8908,7 @@ object Form1: TForm1
     Left = 520
     Top = 40
     Bitmap = {
-      494C01011800500A500A10001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800540A540A10001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9872,10 +9865,10 @@ object Form1: TForm1
     Left = 240
     Top = 88
   end
-  object Timer_animace: TTimer
+  object Timer_simulace: TTimer
     Enabled = False
     Interval = 40
-    OnTimer = Timer_animaceTimer
+    OnTimer = Timer_simulaceTimer
     Left = 272
     Top = 88
   end
@@ -10001,7 +9994,7 @@ object Form1: TForm1
     Left = 423
     Top = 38
     Bitmap = {
-      494C01015400740D740D30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01015400780D780D30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000002004000001002000000000000060
       0C00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

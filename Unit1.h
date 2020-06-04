@@ -131,7 +131,7 @@ __published:	// IDE-managed Components
 	TButton *Button2;
 	TTimer *Timer_neaktivity;
 	TButton *ButtonPLAY_O;
-	TTimer *Timer_animace;
+	TTimer *Timer_simulace;
 	TTimer *TimerMouseWheel;
 	TIdTime *IdTime1;
 	TIdHTTP *IdHTTP1;
@@ -351,7 +351,7 @@ __published:	// IDE-managed Components
 	void __fastcall eXtreme1Click(TObject *Sender);
 	void __fastcall Button2Click(TObject *Sender);
 	void __fastcall Timer_neaktivityTimer(TObject *Sender);
-	void __fastcall Timer_animaceTimer(TObject *Sender);
+	void __fastcall Timer_simulaceTimer(TObject *Sender);
 	void __fastcall ButtonMaVlClick(TObject *Sender);
 	void __fastcall CheckBoxVymena_barev_Click(TObject *Sender);
 	void __fastcall TimerMouseWheelTimer(TObject *Sender);

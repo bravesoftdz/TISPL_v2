@@ -70,9 +70,6 @@ Coordinates=1036,631,91,36
 [SaveDialog]
 Coordinates=838,631,80,36
 
-[Timer_animace]
-Coordinates=155,631,103,36
-
 [Series7]
 Coordinates=1297,1,58,36
 
@@ -349,4 +346,7 @@ Coordinates=1322,496,120,36
 
 [ButtonRosta]
 Coordinates=538,323,66,58
+
+[Timer_simulace]
+Coordinates=155,631,103,36
 

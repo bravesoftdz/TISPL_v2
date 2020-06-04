@@ -12068,8 +12068,8 @@ void TForm1::zmena_editovaneho_objektu()
 		}
   	//mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
   	pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp;posledni_editovany_element=NULL;delete posledni_editovany_element;JID=-1;Akce=NIC;
-  	//v případě animace vypnutí a nastavení do výchozího stavu
-  	Timer_animace->Enabled=false;
+		//v případě animace vypnutí a nastavení do výchozího stavu
+		Timer_simulace->Enabled=false;
   	zobrazit_meritko=scGPSwitch_meritko->State;//navrácení do původního stavu
 		//storno funkcionalita
 		unsigned long objekt_n=pom_vyhybka->n;//uchovávání, pokud bude stisknuto storno dojde ke smazání objektu
@@ -13547,11 +13547,11 @@ void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 		RO-=(1.5*Zoom/m2px)/20.0;
 		Poffset=0;
 
-		Timer_animace->Enabled=!Timer_animace->Enabled;
+		Timer_simulace->Enabled=!Timer_simulace->Enabled;
 	//	if(MOD==EDITACE)scGPButton_viditelnostmGridClick(Sender);//zakáže mgridy - dodělat, když nebudou zobrazené....
 	//	zobrazit_meritko=!Timer_animace->Enabled;
 	//	d.v.PP.raster.show=!Timer_animace->Enabled;
-		if(Timer_animace->Enabled)//běží animace
+		if(Timer_simulace->Enabled)//běží animace
 		{
 			MOD=SIMULACE;//mód musí být před vytvořením scény
 			d.SCENA=221111;
@@ -13563,7 +13563,7 @@ void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 			scGPGlyphButton_PLAY->GlyphOptions->Kind=scgpbgkPause;
 			scGPGlyphButton_PLAY->Hint="zastavit animaci";
 			scGPGlyphButton_PLAY->ShowCaption=true;            //optimálně pohybově nejpomalejšího pohonu či animovaného elementu
-			Timer_animace->Interval=floor(m2px/(Zoom/**3*/)/d.v.vrat_min_rychlost_prejezdu()*1000.0/fps);   //ceil(F->m.get_timePERpx(pom->RD,0,d.v.vrat_min_rychlost_prejezdu()));//různá rychlost dle RD, s afps se počítá dle min RD, ale nějak špatně vycházela animace ke konci (nestihl vozík vyjet)
+			Timer_simulace->Interval=floor(m2px/(Zoom/**3*/)/d.v.vrat_min_rychlost_prejezdu()*1000.0/fps);   //ceil(F->m.get_timePERpx(pom->RD,0,d.v.vrat_min_rychlost_prejezdu()));//různá rychlost dle RD, s afps se počítá dle min RD, ale nějak špatně vycházela animace ke konci (nestihl vozík vyjet)
 		}
 		else//animace zastavena
 		{
@@ -13578,7 +13578,7 @@ void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 	else MB("V této verzi aplikace lze spustit simulaci pouze v layoutu.");
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm1::Timer_animaceTimer(TObject *Sender)
+void __fastcall TForm1::Timer_simulaceTimer(TObject *Sender)
 {
 	//log(__func__);//logování tady nepoužívat, případně jen v mimořádných testovacích účelech
 	//if(MOD==EDITACE)
@@ -14687,7 +14687,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		//vlozit_predavaci_misto_aktualizuj_WT();//zkontroluje, zda nemusí být přidáno nebo odstraněno předávací místo
 		//duvod_validovat=2;//vyvolá validaci, zajistí aktualizaci zpráv a výpisu v miniformu zpráv, NECHAT AŽ ZA FUNKČNÍMI ZÁLEŽITOSTMI
 		//v případě animace vypnutí a nastavení do výchozího stavu
-		Timer_animace->Enabled=false;
+		Timer_simulace->Enabled=false;
 	 //	ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
 	 //	ButtonPLAY->Hint="spustit animaci";
 		zobrazit_meritko=scGPSwitch_meritko->State;//navrácení do původního stavu
