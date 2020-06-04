@@ -328,7 +328,6 @@ object Form_parametry_linky: TForm_parametry_linky
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
-    ExplicitWidth = 1108
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 918
@@ -448,7 +447,6 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 1058
     end
     object scLabel1: TscLabel
       Left = 0
@@ -483,7 +481,6 @@ object Form_parametry_linky: TForm_parametry_linky
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Parametry linky'
-      ExplicitWidth = 984
     end
     object scGPGlyphButton_info: TscGPGlyphButton
       Left = 881
@@ -604,7 +601,6 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 1021
     end
   end
   object scGPButton_vozik: TscGPButton
@@ -6518,8 +6514,8 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 10142
-    Top = 16274
+    Left = 10163
+    Top = 16309
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -6545,9 +6541,6 @@ object Form_parametry_linky: TForm_parametry_linky
     GlyphThickness = 1
     Kind = scgpgkOneGear
     TransparentBackground = True
-    ExplicitLeft = 9953
-    ExplicitTop = 15959
-    ExplicitWidth = 100
   end
   object scGPSwitch: TscGPSwitch
     Left = 762
@@ -6769,7 +6762,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Width = 145
     Height = 21
     FluentUIOpaque = False
-    ItemIndex = -1
+    ItemIndex = 1
     Items.Strings = (
       'obalov'#225' z'#243'na'
       'zrc'#225'tka'
@@ -6781,7 +6774,7 @@ object Form_parametry_linky: TForm_parametry_linky
     ImageIndex = -1
     ItemHeight = 15
     TabOrder = 14
-    Text = 'zrc'#225'dka'
+    Text = 'zrc'#225'tka'
     Visible = False
     StyleKind = scscbDefault
     ShowFocusRect = True
