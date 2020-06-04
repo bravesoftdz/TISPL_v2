@@ -2807,9 +2807,9 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 	{
 		switch(index_kurzoru)
 		{
-			case -6:Clipboard()->AsText=OBJEKT_akt->name;break;
-			case  1:Clipboard()->AsText=pom_element_temp->name;break;
-			default:Clipboard()->AsText=editovany_text;break;
+		 //	case -6:Clipboard()->AsText=OBJEKT_akt->name;break;
+		 //	case  1:Clipboard()->AsText=pom_element_temp->name;break;
+		 //	default:Clipboard()->AsText=editovany_text;break;
 		}
 	}
 	//ctrl+v
@@ -2817,9 +2817,9 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 	{
     switch(index_kurzoru)
 		{
-			case -6:OBJEKT_akt->name=Clipboard()->AsText;REFRESH(false);break;
-			case  1:pom_element_temp->name=Clipboard()->AsText;REFRESH(false);break;
-			default:editovany_text=Clipboard()->AsText;break;
+		//	case -6:OBJEKT_akt->name=Clipboard()->AsText;REFRESH(false);break;
+		//	case  1:pom_element_temp->name=Clipboard()->AsText;REFRESH(false);break;
+		//	default:editovany_text=Clipboard()->AsText;break;
 		}
 	}
 /*ascii

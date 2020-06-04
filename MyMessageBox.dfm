@@ -363,7 +363,6 @@ object myMessageBox: TmyMessageBox
     Margin = -1
     Spacing = 1
     Layout = blGlyphTop
-    Images = Form1.scGPVirtualImageList1
     ImageIndex = -1
     ImageMargin = 0
     TransparentBackground = True
@@ -492,7 +491,6 @@ object myMessageBox: TmyMessageBox
     Margin = -1
     Spacing = 1
     Layout = blGlyphTop
-    Images = Form1.scGPVirtualImageList1
     ImageIndex = -1
     ImageMargin = 0
     TransparentBackground = True
@@ -621,7 +619,6 @@ object myMessageBox: TmyMessageBox
     Margin = -1
     Spacing = 1
     Layout = blGlyphTop
-    Images = Form1.scGPVirtualImageList1
     ImageIndex = -1
     ImageMargin = 0
     TransparentBackground = True
@@ -750,7 +747,6 @@ object myMessageBox: TmyMessageBox
     Margin = -1
     Spacing = 1
     Layout = blGlyphTop
-    Images = Form1.scGPVirtualImageList1
     ImageIndex = -1
     ImageMargin = 0
     TransparentBackground = True

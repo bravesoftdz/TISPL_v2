@@ -170,7 +170,8 @@ void __fastcall TmyMessageBox::FormPaint(TObject *Sender)
 //kopírování obsahu label_text do schránky
 void __fastcall TmyMessageBox::scGPGlyphButton_copyClick(TObject *Sender)
 {
-	Clipboard()->AsText=Label_text->Caption;
+ //	Clipboard()->AsText=Label_text->Caption;
+
 }
 //---------------------------------------------------------------------------
 //funguje pouze jako pøesmìrování této události na form, edit má na sobì neustále focus
