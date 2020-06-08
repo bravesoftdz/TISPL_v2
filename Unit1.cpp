@@ -2315,9 +2315,10 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		if(d.SCENA>0 && d.SCENA!=2222222)bmp_in->Canvas->Draw(0,0,Staticka_scena);//STATICKÁ scéna, je volaná pouze pokud to má smysl, není přeantialiasingovaná(AA), je jen připravená (3x větší) pro AA (aby byl již dříve AAnemá to smysl, pouze je 3x větší BMP, ale jinak by se nejednalo o úsporu)
 		Zoom_predchozi_AA=Zoom;Zoom*=3;//záloha původního zoomu,nový *3 vyplývá z logiky algoritmu antialiasingu
 		short s=2;if(d.SCENA==0)s=0;//řešení pro vykreslit VŠE
-		if(d.SCENA!=1111111)d.vykresli_vektory(bmp_in->Canvas,s);//DYNAMICKÁ scéna,pokud je požadavek vše do statické, tak zbytečně se neřeší dynamická
+		if(d.SCENA!=1111111 || pom!=NULL)d.vykresli_vektory(bmp_in->Canvas,s);//DYNAMICKÁ scéna,pokud je požadavek vše do statické a není aktivní pom objekt, tak zbytečně se neřeší dynamická
 		if(Akce==GEOMETRIE)d.smart_kurzor(bmp_in->Canvas,posledni_editovany_element);
 		if(MOD==TVORBA_CESTY)d.kurzor_cesta(bmp_in->Canvas);
+		//tady bude nová podoba měřítka->
 		Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 		Cantialising a;
 		Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
@@ -11410,7 +11411,7 @@ void __fastcall TForm1::FormCloseQuery(TObject *Sender, bool &CanClose)
 		writeINI("Nastaveni_app","ortogonalizace",(short)ortogonalizace_stav);
 		//zatím nepoužíváme writeINI("Nastaveni_app","status",STATUS);
 		delete aFont; aFont=NULL;
-		//delete LogFileStream;
+		delete LogFileStream;//zde to bylo z neznáme příčiny zakomentovanén a nevíme proč, přitom se to tu maže správně (nepatří do vse_odstranit)
 	}
 }
 //---------------------------------------------------------------------------
@@ -12914,7 +12915,7 @@ void TForm1::vse_odstranit()
 	vlakno_obraz=NULL;delete vlakno_obraz;
 	delete Staticka_scena;
 	delete editEditace;editEditace=NULL;
-	//delete LogFileStream; //zde nesmí být kvůli logování, proto to zde nechat jako upozornění
+	//delete LogFileStream; //zde nesmí být kvůli logování (resp. musí se ukončnovat až při konci aplikace nikoliv projektu), proto to zde nechat jako upozornění
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -13553,8 +13554,9 @@ void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 	//	d.v.PP.raster.show=!Timer_animace->Enabled;
 		if(Timer_simulace->Enabled)//běží animace
 		{
+			scGPCheckBox_rozmisteni_voziku->Checked=true;
 			MOD=SIMULACE;//mód musí být před vytvořením scény
-			d.SCENA=221111;
+			d.SCENA=221111;//zprávy nejsou zobrazeny, vozíky a aktivní části elementů jsou v dynamické scéně
 			vytvor_statickou_scenu();//načtení statických záležitostí do statické scény, musí být před REFRESH
 			//ovládací prvky
 			scGPButton_bug_report->Visible=false;
@@ -13770,9 +13772,12 @@ void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 
 //REFRESH(Edit1->Text.ToInt(),false);
 
-	 Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-	 if(m.PtInSegment(E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))Memo("v");
-	 else Memo("mimo");
+//	 Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+//	 if(m.PtInSegment(E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))Memo("v");
+//	 else Memo("mimo");
+
+   //if(d.v.POHONY->dalsi->palec==NULL)ShowMessage("NULL");
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)

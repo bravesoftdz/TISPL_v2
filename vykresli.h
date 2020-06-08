@@ -23,18 +23,6 @@ class Cvykresli
 	Cvektory v;
 	Cmy m;
 
-	//--promìnné k úèelu filtrace
-	struct TTP
-	{
-		double K;//Krok po kolika minutach se bude zobrazovat
-		double OD;//od které min se proces zaène vypisovat
-		double DO;//do ktere se bude vypisovat
-		double KZ;//kosntatní konec zakazky v min
-		unsigned int Nod;//rozmezí jakı se vypíše vozik,
-		unsigned int Ndo;//rozmezí jakı se vypíše vozik, pokud bude 0 vypisují se všechny
-		bool A;//animace true nebo false
-	};TTP TP;//nastavení modu technologické procesy
-
 	enum Talign{LEFT,CENTER,RIGHT};
 	enum Tvalign{TOP,MIDDLE,BOTTOM};
 
@@ -42,7 +30,6 @@ class Cvykresli
 	void vykresli_vektory(TCanvas *canv, short scena=0);//vykreslí zakázky, cesty, spojnice, kabiny, pohony, elementy atd. //scena 0 - vše, scena 1 - statická scéna, scena 2 - dynamická scéna
 	void vykresli_objekty(TCanvas *canv);
 	void vykresli_objekt(TCanvas *canv, Cvektory::TObjekt *ukaz);
-	void vykresli_elementy(TCanvas *canv,short scena);//scena 0 - vše do dynamické, scena 1 - implicitnì statické elementy do statické scény, scena 2 - implicitnì statické elementy do dynamické scény, scena 3 - implicitnì dynamické elementy do statické scény, scena 4 - implicitnì dynamické elementy do dynamické scény
 	void vykresli_kruh(TCanvas *canv, Cvektory::TObjekt *O);
 	void prislusnost_cesty(TCanvas *canv,TColor Color,int X,int Y,float A,short N);
 	void vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav=-2,bool zobrazit_koty=true);//zajišuje vykreslení pouze obrysu dle typu objektu
@@ -50,24 +37,20 @@ class Cvykresli
 	void vykresli_grid(TCanvas *canv,int size_grid=10);
 	void vykresli_meridlo(TCanvas *canv,int X,int Y,bool kalibracni_sipka=false);//v pøípadì mìøení vzdálenosti vykreslí spojnici a popø. vypisuje hodnotu vzdálenosti
 	void vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E);//vykresli pozic a obalovıch zón
-	void vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y,double Poffset=0,bool animace=false);///zajistí vykreslení øetìzz, XY -umístìní L zaèátek (støed dopravníku) objektu v metrech, Poffset - pozièní poloha, vıchozí poloha prvního vozíku/pozice v objektu (a vùèi tomuto objektu),mùe slouit na animaci èi návaznost v pøípadì layoutu, za zmínìní stojí lokální promìnná této metody KR, co je kalibrace øetìzu vùèi podvozku napø. 0 - støed, -DP/2 - zaèátek, DP/2 - konec, èi libovolnı v m od zaèátku podvozku
-	void vykresli_retez(TCanvas *canv, Cvektory::TZakazka *zakazka=NULL);
+	void vykresli_dopravnik(TCanvas *canv, Cvektory::TZakazka *zakazka=NULL);//kreslí koleje, pouzdro øetìzu, øetìz samotnı, pøedávací místo i popisek pohonu, slouí i zároveò na náhled cest zakázek
 	void vykresli_retez(TCanvas *canv,Cvektory::TRetez *Retez);
 	void vykresli_koleje(TCanvas *canv,Cvektory::TElement *E);//vykreslení jednoho geometrického segmentu dvou párù kolejí
 	void vykresli_koleje(TCanvas *canv,double X,double Y,short typ,double orientace,double rotacni_uhel,double radius,double delka,TColor clKolej=(TColor)RGB(255,69,0));//vykreslení jednoho geometrického segmentu dvou párù kolejí
 	void vytvor_oblast_koleje(TCanvas *canv,double X,double Y,short typ,double orientace,double rotacni_uhel,double radius,double delka);//vytvoøení jednoho geometrického segmentu z dvou párù kolejí urèeného k testování, zda se nachazí v dané oblasti bod, podruná metoda, volaná z matematické knihovny
+	void vykresli_palce(TCanvas *canv,Cvektory::TPohon *pohon);//zajišuje vykreslení palcù
+	void vykresli_palec(TCanvas *canv,Cvektory::TPalec *P);//zajišuje samotné vykreslení palce
 	void vykresli_popisek_pohonu(TCanvas *canv,AnsiString text,TPoint zacatek,TPoint konec,short trend,bool pozice);//vykreslí popisek pohonu ve støedu zadané úseèky, parametr pozice zajišuje støídání pozice popisku
 	void vykresli_voziky(TCanvas *canv);//vykreslí všechny vozíky ze seznamu vozíkù
 	void vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dJ,double sJ,double orientaceP=0,double rotaceJ=0,TColor clChassis=(TColor)RGB(50,50,50), TColor clJig=clPurple,float Width=2);//vykreslení jednoho komplexního vozíku (podvozek vèetnì jigu), , X,Y jsou souøadnice uchycení vozíku k palci, co nemusí bıt støed vozíku
 	void vykresli_jig(TCanvas *canv,double X,double Y,double dJ,double sJ,double orientaceP,double rotaceJ,TColor clJig=clPurple,float Width=2);
 	void vykresli_vyrobky(TCanvas *canv,double X,double Y,double dJ,double sJ,double orientaceP,double rotaceJ,TColor clJig,float Width);
 	void vykresli_vyrobek(TCanvas *canv,double X,double Y,double Z=5,double rotace=0,TColor color=clRed,double prohloubeni=0.02);
-//	void vykresli_simulaci(TCanvas *canv);//zajišuje vykreslení simulace
-//	void umisti_vozik(TCanvas *canv,Cvektory::TVozik *ukaz);//zajišuje umístìní vozíku na lince
-//	void vykresli_vozik(TCanvas *canv,Cvektory::TVozik *ukaz,long X,long Y,bool NEW);//zajišuje vykreslení vozíku pøi simulaci, pokud je NEW==1, tak se vykreslí novı, pøi 0 se smae starı
-//	void priprav_palce();//pøidá novı palec do seznamu PALCE s umístìním pøímo na linku dle stanovené rozteèe
-//	void umisti_palec(TCanvas *canv,Cvektory::TPalec *ukaz);//zajišuje aktuální umístìní vozíku na lince vùèi animaci
-	void vykresli_palec(TCanvas *canv,double X,double Y,bool NEW,bool ACTIVE);//zajišuje samotné vykreslení palce, parametr NEW rozlišuje novı palec a palace starı ji ke smazání (to slouí pro simulaci), poslední parametr znaèí, zda palec oznaèit jako aktivní
+	void vykresli_elementy(TCanvas *canv,short scena);//scena 0 - vše do dynamické, scena 1 - implicitnì statické elementy do statické scény, scena 2 - implicitnì statické elementy do dynamické scény, scena 3 - implicitnì dynamické elementy do statické scény, scena 4 - implicitnì dynamické elementy do dynamické scény
 	void vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiString name,AnsiString short_name,unsigned int eID=0,short typ=0,double rotace=0,short stav=1,double LO1=1.5,double OTOC_delka=0,double LO2=0,double LO_pozice=0,Cvektory::TElement *E=NULL);//celková vykreslovací metoda, vykreslí buï stopku, robota nebo otoè
 	void vykresli_robota(TCanvas *canv,short scena,long X,long Y,AnsiString name,AnsiString short_name,short eID=1,short typ=0,double rotace=0,short stav=1,double LO1=1.5,double OTOC_delka=0,double LO2=0,double aP=0,float TS=0,double LO_pozice=0);
 	void vykresli_cloveka(TCanvas *canv,short scena,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,double LO1,double OTOC_delka,double LO2);//vykresli siluetu èlovìk s pøípadnì pøidruenım elememntem, rotuje po smìru hodinovıch ruèièek, pro animaci slouí okolo hranièních stupòu 0,90,180,270, vdy rozsah -45° a +44°, napø. 45-134° je maximální pracovní rozsah pro èlovìka rotovaného na 90° atd.

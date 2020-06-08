@@ -41,7 +41,7 @@ class Cvektory
 		double X1,Y1,X2,Y2,X3,Y3,X4,Y4;//body bézieru
 	};
 
-	struct TRetez
+	struct TRetez//resp. geometrie pouzdra řetězu
 	{
 		unsigned long n; //pořadí objektu ve spoj.seznamu
 		TGeometrie geo;
@@ -49,6 +49,20 @@ class Cvektory
 		struct TRetez *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 		struct TRetez *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
+
+	struct TPalec//jednotlivé palce, v podstatě skutečný řetěz
+	{
+		unsigned long n; //pořadí objektu ve spoj.seznamu
+		double X,Y;//umístění
+		double orientace;
+		short stav;//stav palce aktivní - 1 má vozík, pasivní
+		//double pozice;
+		//struct TObjekt *segment;
+		//přiřazení k dopravníku???
+		struct TPalec *predchozi;
+		struct TPalec *dalsi;
+	};
+	//TPalec *PALCE;//spojový seznam palců na řetězu
 
 	struct TPohon
 	{
@@ -60,7 +74,8 @@ class Cvektory
 		double roztec;//rozteč palců v m
 		double Rz;//rozestup aktivních palců v m
 		double Rx;//rozestup aktivních palců (počet aktivních palců)
-		TRetez *retez;//geometrie pohonu, řetězu
+		TRetez *retez;//geometrie pohonu, řetězu resp. pouzdro řetězu
+		TPalec *palec;//jednotlivé palce v podstatě ve skutečnosti řetěz
 		struct TPohon *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 		struct TPohon *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
@@ -274,8 +289,8 @@ class Cvektory
 		double rotace_jig;//rotace jigu vuči podvozku (nehledí na skutečnou orientaci jigu)
 		short typ;//1-normální, 0 - prazdný
 		short stav;//vyháknutý -1, čeká na palec 0, jede 1
-		struct TElement *element;
-		struct TPalec *palec;
+		struct TElement *element;//na jekém segmentu elementu se momentálně nachází
+		struct TPalec *palec;//pokud je uchycen k palci, tak k jakému
 		struct TZakazka *zakazka;//ukazatel na přidruženou zakázku
 		struct TVozik *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 		struct TVozik *dalsi;//ukazatel na další objekt ve spojovém seznamu
@@ -327,17 +342,6 @@ class Cvektory
 		UnicodeString autor;//nazev autora projektu
 	};
 	T_parametry_projektu PP;
-
-	struct TPalec
-	{
-		unsigned long n; //pořadí objektu ve spoj.seznamu
-		//double pozice;
-		//struct TObjekt *segment;
-		//přiřazení k dopravníku???
-		struct TPalec *predchozi;
-		struct TPalec *dalsi;
-	};
-	TPalec *PALCE;//spojový seznam palců na řetězu
 
 	struct TProces
 	{
@@ -620,11 +624,13 @@ class Cvektory
 	AnsiString vypis_objekty_nestihajici_prejezd(TPohon *pohon,double testRD,short rezim=-1);//vypíše objekty přiřazené k danému pohonu nestíhající přejezd při navrhovaném testRD, možno nastavit režim, pro S&G + PP hodnota režim 20
 	AnsiString kontrola_rychlosti_prejezdu(TObjekt *O,short rezim,double CT=0,double MT=0,double WT=0,double aRD=0,double DD=0,short aRDunit=-1,unsigned short precision=3,AnsiString mark="..",bool add_decimal=false,AnsiString separator_aRD=" o ");//SMAZAT??zkontroluje objekt zda daná rychlost pohonu odpovídá požadované rychlosti pohonu, pokud ne vrátí popis včetně hodnoty, lze poslat externí testovací parametry nebo nechat ověřit dle uložených ve spojáku objekty
 	TPohon *najdi_pohon_dle_RD(double RD);//ověří zda je stejná rychlost pohonu na lince používána, pokud není vratí NULL, jinak ukazatel na daný pohon
-	void vytvor_retez(TPohon *Pohon);//danému pohonu vytvoří řetěz dle geometrie všech elementů, co spadají pod daný pohon
+	void vytvor_retez(TPohon *Pohon);//danému pohonu vytvoří řetěz a palce dle geometrie všech elementů, co spadají pod daný pohon
 	void vloz_segment_retezu(TRetez *Retez,TPohon *Pohon);//danému řetězu vloží jeden geometrický segment
+	void vloz_palec(TPalec *Palec,TPohon *Pohon);//danému pohonu vloží jeden palec
 	void zrusit_prirazeni_pohunu_k_objektum_elementum(unsigned long n);//všem objektům s n pohonem zruší přiřazení k tomuto pohonu a nahradí hodnotu ukazatele na přiřazený pohon za NULL, nově i všem elementům
 	long vymaz_seznam_POHONY();//smaže jednotlivé prvky seznamu, včetně hlavičky, pokud následuje další práce se seznamem, je nutné založit nejdříve hlavičku pomocí hlavicka_pohony()
 	void smazat_retez(TPohon *pohon);//danému pohonu smaže jeho řetěz
+	void smazat_palce(TPohon *pohon);//danému pohonu smaže jeho palce řetězu
 	//	double delka_dopravniku(Cvektory::TObjekt *ukaz);
 	//následují 4 možno odstanit:
 	TTextNumber rVALIDACE(short VID,unsigned long PID,double aRD,double R,double Rz,double Rx,short aRDunit,short Runit,short Rzunit);//zkontroluje aplikovatelnost uvažovaného hodnodty dle VID parametru, resp. čísla sloupce (aRD=4,R=5,Rz=6,Rx=7 na všech objektech, přiřazených k danému pohonu označeným parametrem PID, pokud je zadán parametr getValueOrMessage 0 (který je zároveň implicitní), vratí doporučenou hodnotu dle VID, pokud je zvoleno 1, vrátí text chybouvé hlášku s problémem a doporučenou hodnotou, pokud vrátí prázdné uvozovky, je vše v pořádku, //vstupy aRD,R,Rz,Rx a výstupní číselná hodnota jsou v SI jednotkách, naopak textový řetězec problému resp. doporučení, obsahuje hodnotu již převedenou dle aRDunit, Runit, Rzunit
