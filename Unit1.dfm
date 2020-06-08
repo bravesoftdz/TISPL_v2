@@ -7476,8 +7476,8 @@ object Form1: TForm1
         AlignWithMargins = True
         Left = 6
         Top = 205
-        Width = 156
-        Height = 19
+        Width = 150
+        Height = 18
         Margins.Top = 0
         Margins.Right = 0
         Margins.Bottom = 0
@@ -7650,7 +7650,7 @@ object Form1: TForm1
       ParentFont = False
       FluentUIOpaque = False
       TabOrder = 2
-      OnClick = scExPanel_vrstvyClick
+      OnClick = scExPanel_ostatniClick
       BorderWidth = 1
       BackgroundStyle = scexbgsPanel
       FrameColor = clBtnShadow
@@ -7845,8 +7845,8 @@ object Form1: TForm1
         AlignWithMargins = True
         Left = 57
         Top = 97
-        Width = 52
-        Height = 20
+        Width = 49
+        Height = 19
         Margins.Left = 6
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWhite
@@ -7873,8 +7873,8 @@ object Form1: TForm1
         AlignWithMargins = True
         Left = 57
         Top = 127
-        Width = 59
-        Height = 20
+        Width = 54
+        Height = 19
         Margins.Left = 6
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWhite
@@ -7901,8 +7901,8 @@ object Form1: TForm1
         AlignWithMargins = True
         Left = 5
         Top = 67
-        Width = 164
-        Height = 19
+        Width = 154
+        Height = 18
         Margins.Top = 0
         Margins.Right = 0
         Margins.Bottom = 0
@@ -8004,7 +8004,7 @@ object Form1: TForm1
         Left = 87
         Top = 164
         Width = 21
-        Height = 20
+        Height = 19
         Margins.Left = 6
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWhite
@@ -8031,8 +8031,8 @@ object Form1: TForm1
         AlignWithMargins = True
         Left = 8
         Top = 164
-        Width = 21
-        Height = 20
+        Width = 22
+        Height = 19
         Margins.Left = 6
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWhite
@@ -8490,7 +8490,7 @@ object Form1: TForm1
     end
     object scListGroupPanel_geometrie: TscListGroupPanel
       Left = 0
-      Top = 398
+      Top = 494
       Width = 166
       Height = 90
       Align = alCustom
@@ -8511,7 +8511,6 @@ object Form1: TForm1
       GroupColor = clWindow
       GroupColorAlpha = 255
       Color = clBtnFace
-      Caption = 'Geometrie linky'
       HeaderFont.Charset = EASTEUROPE_CHARSET
       HeaderFont.Color = 10114859
       HeaderFont.Height = -15
@@ -8555,7 +8554,7 @@ object Form1: TForm1
     end
     object scListGroupPanel_poznamky: TscListGroupPanel
       Left = -2
-      Top = -410
+      Top = 584
       Width = 166
       Height = 500
       Align = alCustom
@@ -8908,7 +8907,7 @@ object Form1: TForm1
     Left = 520
     Top = 40
     Bitmap = {
-      494C01011800540A540A10001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800540A580A10001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9994,7 +9993,7 @@ object Form1: TForm1
     Left = 423
     Top = 38
     Bitmap = {
-      494C01015400780D780D30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01015400780D7C0D30003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000002004000001002000000000000060
       0C00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

@@ -718,6 +718,7 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->uzamknout_nahled=Original->uzamknout_nahled;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 	//obě kopírovací metody musí být ke konci
 	Kopie->element=Original->element;
+  Kopie->element_n=Original->element_n;
 	kopiruj_body(Original,Kopie);
 }
 //---------------------------------------------------------------------------
@@ -3332,8 +3333,8 @@ Cvektory::TElement *Cvektory::dalsi_krok(TElement *E,TObjekt *O)
   			}
   		}
   		//jsem v sekundární vetvi na posledním elementu před spojkou
-  		else if(E->dalsi!=NULL && E->dalsi->eID==301 && VYHYBKY->predchozi->n!=0 && E->dalsi->idetifikator_vyhybka_spojka==VYHYBKY->predchozi->vyhybka->idetifikator_vyhybka_spojka)
-  		{
+			else if(E->dalsi!=NULL && E->dalsi->eID==301 && VYHYBKY->predchozi->n!=0 && E->dalsi->idetifikator_vyhybka_spojka==VYHYBKY->predchozi->vyhybka->idetifikator_vyhybka_spojka)
+			{
   			//navrácení na hlavní větev + kontrola zda za vyhybkou není hned spojka (výhybka v sekundární větvi)
   			do
     		{
@@ -3414,6 +3415,20 @@ Cvektory::TElement *Cvektory::predchozi_krok(TElement *E,TObjekt *O)
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
+//vytvoří tabulku průchodu pro alg. sekundarni_zapis_cteni()
+Cvektory::T2Element *Cvektory::vytvor_tabElm_pruchodu()
+{
+	T2Element *tab_pruchodu=new T2Element[File_hlavicka.pocet_vyhybek+1];
+	for(unsigned int i=0;i<=File_hlavicka.pocet_vyhybek+1;i++)
+	{
+		tab_pruchodu[i].vyhybka_pocet=0;
+		tab_pruchodu[i].spojka_pocet=0;
+  }
+	vyhybka_pom=NULL;
+  return tab_pruchodu;
+}
+////---------------------------------------------------------------------------
+//slouží k ukládání elementů do binárky a pro jejich čtení a zároveň uložení do spojáku
 Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruchodu_TP,T2Element *tab_pruchodu_T2E)
 {
 	////zápis pomocí sekvenčního algoritmu
@@ -3446,6 +3461,10 @@ Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruc
 	////čtení pomocí sekvenčního algoritmu + ukládání
 	else
 	{
+		//aktualizace počtu průchodů přes elementy, konkrétně přes výhybky a spojky
+		if(E->eID==300)tab_pruchodu_T2E[E->idetifikator_vyhybka_spojka].vyhybka_pocet++;
+		if(E->eID==301)tab_pruchodu_T2E[E->idetifikator_vyhybka_spojka].spojka_pocet++;
+
 		//pokud neexistuje hlavička vytvoří ji
 		if(ELEMENTY==NULL)hlavicka_ELEMENTY();
 		TElement *novy=NULL;//nový element
@@ -3475,6 +3494,7 @@ Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruc
 					else vyhybka_pom->dalsi=novy;//předchozí výhybka
 					vyhybka_pom=novy;
 				}
+				vyhybka_pom=novy;//uložení pro průchod vedlejší větve
 				tab_pruchodu_T2E[E->idetifikator_vyhybka_spojka].spojka=novy;//uložení do tabulky průchodů
 			}
 			//vkládám výhybku
@@ -3486,7 +3506,7 @@ Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruc
 		   		if(vyhybka_pom==NULL)//přišel jsem na vyhybku z hlavní větve
 					{
 		   			novy->predchozi=ELEMENTY->predchozi;
-		   			ELEMENTY->predchozi->dalsi=novy;
+						ELEMENTY->predchozi->dalsi=novy;
 		   			ELEMENTY->predchozi=novy;
 					}
 		   		else//přišel jsem na vyhybku z vedlejší větve
@@ -3519,7 +3539,7 @@ Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruc
 			}
 		}
 
-		////další průchod přes spojku nebo výhybku, tz. aktualizace ukazatelů
+		////další průchod přes spojku, tz. aktualizace ukazatelů
 		else if(E->eID==301 && tab_pruchodu_T2E[E->idetifikator_vyhybka_spojka].spojka!=NULL)
 		{
 			//načtení již vložené výhybky
@@ -3527,14 +3547,14 @@ Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruc
 			//aktualizace zbývajících ukazatelů
 			if(vyhybka_pom==NULL)// && novy->predchozi==NULL)//přišel jsem na spojku z hlavní větve
 			{
-				novy->predchozi=ELEMENTY->predchozi;
-				if(ELEMENTY->predchozi->eID==300 && ELEMENTY->predchozi->dalsi2==NULL)ELEMENTY->predchozi->dalsi2=novy;
-				else ELEMENTY->predchozi->dalsi=novy;
+				if(novy->predchozi==NULL)novy->predchozi=ELEMENTY->predchozi;
+				if(novy->predchozi->eID==300 && novy->predchozi->dalsi2==NULL)ELEMENTY->predchozi->dalsi2=novy;
+				else novy->predchozi->dalsi=novy;
 				ELEMENTY->predchozi=novy;
 			}
 			if(vyhybka_pom!=NULL)// && novy->predchozi2==NULL)//přišel jsem na spojku z vedlejší větve
 			{
-				novy->predchozi2=vyhybka_pom;
+				if(novy->predchozi2==NULL)novy->predchozi2=vyhybka_pom;
 				if(vyhybka_pom->eID==300 && vyhybka_pom->dalsi2==NULL)vyhybka_pom->dalsi2=novy;//předchozí je běžný element
 				else vyhybka_pom->dalsi=novy;//předchozí výhybka
 				vyhybka_pom=novy;//na vyhybce vždy končí vedlejší větev
@@ -3545,17 +3565,17 @@ Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruc
 			V=NULL;delete V;
 		}
 
-		////další průchod přes spojku nebo výhybku, tz. aktualizace ukazatelů
+		////další průchod přes výhybku, tz. aktualizace ukazatelů
 		else if(E->eID==300 && tab_pruchodu_T2E[E->idetifikator_vyhybka_spojka].vyhybka!=NULL)
 		{
 			//načtení již vložené výhybky
 			novy=tab_pruchodu_T2E[E->idetifikator_vyhybka_spojka].vyhybka;
 			//aktualizace zbývajících ukazatelů
-			if(vyhybka_pom==NULL && novy->predchozi==NULL)//přišel jsem na vyhybku z hlavní větve
+			if(vyhybka_pom==NULL/* && novy->predchozi==NULL*/)//přišel jsem na vyhybku z hlavní větve
 			{
-				novy->predchozi=ELEMENTY->predchozi;
-				if(ELEMENTY->predchozi->eID==300)ELEMENTY->predchozi->dalsi2=novy;
-				else ELEMENTY->predchozi->dalsi=novy;
+				if(novy->predchozi==NULL)novy->predchozi=ELEMENTY->predchozi;
+				if(novy->predchozi->eID==300)novy->predchozi->dalsi2=novy;
+				else novy->predchozi->dalsi=novy;
 				ELEMENTY->predchozi=novy;
 			}
 			else if(novy->predchozi==NULL)//přišel jsem na vyhybku z vedlejší větve
@@ -3563,18 +3583,20 @@ Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruc
 				novy->predchozi=vyhybka_pom;
 				if(vyhybka_pom->eID!=300 && ELEMENTY->predchozi->dalsi2==NULL)vyhybka_pom->dalsi=novy;//předchozí je běžný element
 				else vyhybka_pom->dalsi2=novy;//předchozí výhybka
+
 			}
-			if(novy->n!=ELEMENTY->predchozi->n)vyhybka_pom=novy;//druhý průchod výhybkou v sekundarní větvi, tz. nevrátil sem se na hlavní větev musím tedy udržovat poslední element v vyhybka_pom
+			if(novy!=ELEMENTY->predchozi)vyhybka_pom=novy;//druhý průchod výhybkou v sekundarní větvi, tz. nevrátil sem se na hlavní větev musím tedy udržovat poslední element v vyhybka_pom
 		}
 
-		////jsem na spojce, a mám naplněný ukazatel vyhybka_pom (udržuje poslední element v sek. vetvi), kontrola zda sem uzavřel sekundární větce
-		if(vyhybka_pom!=NULL && novy->eID==301)
+		////jsem na vyhybce nebo spojce a mám naplněný ukazatel vyhybka_pom (udržuje poslední element v sek. vetvi), kontrola zda sem uzavřel sekundární větce
+		if(vyhybka_pom!=NULL && (E->eID==300 || E->eID==301))
 		{
 			unsigned int nedokoncene=0;
-			//průchod uloženými vyhybkami, pokud mají všechny spojky ... věe je uzavřeno, pokud některé nemá vloženou spojku pořád se pohybuji na vedlejší větvi
-			for(unsigned int i=1;i<=File_hlavicka.pocet_vyhybek;i++)
+			//průchod uloženými vyhybkami a spojkami, kontrola na zda mám nějaké neuzavřené větve
+			for(unsigned int i=1;i<=File_hlavicka.pocet_vyhybek+1;i++)
 			{
-				if(tab_pruchodu_T2E[i].vyhybka!=NULL && tab_pruchodu_T2E[i].spojka==NULL)//existuje nedokončená vetev
+				if((tab_pruchodu_T2E[i].vyhybka_pocet>=1 && tab_pruchodu_T2E[i].spojka_pocet>=1 && tab_pruchodu_T2E[i].vyhybka->dalsi2!=NULL && tab_pruchodu_T2E[i].spojka->predchozi2!=NULL) || (tab_pruchodu_T2E[i].vyhybka_pocet==0 && tab_pruchodu_T2E[i].spojka_pocet==0));
+				else
 				{
 					nedokoncene++;
 					break;
@@ -3583,13 +3605,9 @@ Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruc
 			//všechny dosavadní větve jsou kompletní, smaž vyhybka_pom
 			if(nedokoncene==0)
 			{
+				ELEMENTY->predchozi=vyhybka_pom;
+				vyhybka_pom->dalsi=NULL;
 				vyhybka_pom=NULL;
-				//spojka je kompletně usezená, tz. je to poslední elemetn
-				if(novy->predchozi!=NULL && novy->predchozi2!=NULL)
-				{
-					ELEMENTY->predchozi=novy;
-					novy->dalsi=NULL;
-				}
 			}
 		}
 
@@ -7091,7 +7109,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 				c_ukaz=NULL; delete c_ukaz;
 			};
 			////ELEMENTY
-			T2Element *tab_pruchodu=new T2Element[File_hlavicka.pocet_vyhybek+1];vyhybka_pom=NULL;
+			T2Element *tab_pruchodu=vytvor_tabElm_pruchodu();
 			for(unsigned int j=1;j<=File_hlavicka.pocet_elementu;j++)
 			{
 				TElement *E=new TElement;
@@ -7148,6 +7166,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 				cE=NULL;delete cE;
 			}
 			delete []tab_pruchodu;tab_pruchodu=NULL;vyhybka_pom=NULL;
+
 			////HALA
 			//alokace pomocného ukazatele
 			C_hala *cH=new C_hala;
@@ -7236,7 +7255,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			TObjekt *O=OBJEKTY->dalsi;
 			while(O!=NULL)
 			{
-        O->element=vrat_element(O->element_n);
+				O->element=vrat_element(O->element_n);
 				O=O->dalsi;
 			}
 			delete O;O=NULL;
@@ -8160,6 +8179,7 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 			//vytvoření kopie
 			o_kop=new TObjekt;
 			kopiruj_objekt(O,o_kop);
+      o_kop->element_n=O->element->n;
 			//ukazatelové propojení kopie s obraz->Objekty
 			if(obraz->Objekty->dalsi==NULL)obraz->Objekty->dalsi=o_kop;
 			else obraz->Objekty->predchozi->dalsi=o_kop;
@@ -8347,7 +8367,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 
 			////načtení Elementů
 			TElement *dE=obraz->Elementy->dalsi,*E=NULL;
-			T2Element *tab_pruchodu=new T2Element[obraz->pocet_vyhybek+1];vyhybka_pom=NULL;
+			T2Element *tab_pruchodu=vytvor_tabElm_pruchodu();
 			while(dE!=NULL)
 			{
 				//kopírování atributů
@@ -8370,6 +8390,15 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
     	}
 			delete dE;dE=NULL;
 			delete []tab_pruchodu;tab_pruchodu=NULL;vyhybka_pom=NULL;
+
+			////elementy vloženy, aktualizace ukazatelů Objekt->element
+			O=OBJEKTY->dalsi;
+			while(O!=NULL)
+			{
+				O->element=vrat_element(O->element_n);
+				O=O->dalsi;
+			}
+      delete O;O=NULL;
 		}
 
 		//navrácení počtu výhybek

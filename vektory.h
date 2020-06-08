@@ -149,7 +149,9 @@ class Cvektory
 	{
 		unsigned long n;
 		TElement *vyhybka;
+		unsigned long vyhybka_pocet;//uchovává informaci kolikrát jsem byl na výhybce
 		TElement *spojka;
+    unsigned long spojka_pocet;//uchovává informaci kolikrát jsem byl na spojce
 		T2Element *dalsi;
 		T2Element *predchozi;
 	};
@@ -600,6 +602,7 @@ class Cvektory
 	long vymaz_seznam_VYHYBKY();
 	TElement *dalsi_krok(TElement *E,TObjekt *O=NULL);//určí další krok průchodového algorytmu ve spojáku elementů, 2 možností průchod kompletního spojáku ELEMENTY, druhá průchod pouze elementů jednoho objektu
 	TElement *predchozi_krok(TElement *E,TObjekt *O=NULL);
+  T2Element *vytvor_tabElm_pruchodu();//vytvoří tabulku průchodu pro alg. sekundarni_zapis_cteni()
 	TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruchodu_TP,T2Element *tab_pruchodu_T2E);
 	void smaz_vyhybku_spojku(TElement *Element,unsigned long maz_OBJ=0);
 	void aktualizuj_identifikator_vyhybky_spojky();

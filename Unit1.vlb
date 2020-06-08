@@ -1,53 +1,17 @@
-﻿[Series6]
-Coordinates=0,233,58,36
-
-[Timer_neaktivity]
+﻿[Timer_neaktivity]
 Coordinates=268,461,109,36
-
-[RzToolButton2]
-Coordinates=1081,556,100,36
 
 [DetailsButton]
 Coordinates=980,556,91,36
 
-[RzToolbar1]
-Coordinates=604,10,81,58
-
 [SavePictureDialog1]
 Coordinates=969,111,128,36
-
-[TeeGDIPlus5]
-Coordinates=969,166,91,36
-
-[Series1]
-Coordinates=969,276,58,36
-
-[Chart6]
-Coordinates=1122,144,53,58
-
-[RzToolButton4]
-Coordinates=404,556,100,36
-
-[Series2]
-Coordinates=969,551,58,36
-
-[Series3]
-Coordinates=910,557,58,36
 
 [Timer_tr]
 Coordinates=683,557,63,36
 
-[RzToolButton3]
-Coordinates=125,556,100,36
-
 [scGPTrackBar1]
 Coordinates=10,556,105,36
-
-[TeeGDIPlus4]
-Coordinates=139,557,91,36
-
-[RzSpacer2]
-Coordinates=1103,510,78,36
 
 [Button2]
 Coordinates=952,10,59,58
@@ -61,80 +25,20 @@ Coordinates=1135,111,90,36
 [Timer_backup]
 Coordinates=1135,221,96,36
 
-[TeeGDIPlus2]
-Coordinates=1135,496,91,36
-
-[TeeGDIPlus1]
-Coordinates=1036,631,91,36
-
 [SaveDialog]
 Coordinates=838,631,80,36
-
-[Series7]
-Coordinates=1297,1,58,36
 
 [ImageList1]
 Coordinates=1297,111,77,36
 
-[RzToolButton8]
-Coordinates=661,464,100,36
-
-[Chart3]
-Coordinates=671,212,53,58
-
-[Series10]
-Coordinates=1297,386,65,36
-
-[RzToolButton7]
-Coordinates=551,464,100,36
-
-[Chart2]
-Coordinates=889,10,53,58
-
 [TimerMouseWheel]
 Coordinates=1297,551,122,36
-
-[LabelRoletka]
-Coordinates=253,144,90,58
-
-[rComboBoxKrok]
-Coordinates=264,10,108,124
-
-[ComboBoxDOmin]
-Coordinates=137,10,117,124
-
-[RzToolButton1]
-Coordinates=10,464,100,36
-
-[RzToolButton5]
-Coordinates=1111,418,100,36
 
 [MinButton]
 Coordinates=953,418,72,36
 
-[RzToolButton9]
-Coordinates=843,418,100,36
-
 [FDConnection1]
 Coordinates=229,705,104,36
-
-[RzSpacer1]
-Coordinates=755,418,78,36
-
-[Chart4]
-Coordinates=914,144,53,58
-
-[RzToolButton12]
-Coordinates=638,418,107,36
-
-[Series9]
-Coordinates=1457,1,58,36
-
-[Chart1]
-Coordinates=769,144,53,58
-
-[RzToolButton11]
-Coordinates=290,418,107,36
 
 [MaxButton]
 Coordinates=1107,372,76,36
@@ -145,29 +49,14 @@ Coordinates=142,212,73,58
 [Konec]
 Coordinates=809,372,51,36
 
-[TeeGDIPlus3]
-Coordinates=1457,661,91,36
-
-[Series5]
-Coordinates=1457,716,58,36
-
 [IdHTTP1]
 Coordinates=1457,771,66,36
-
-[ComboBoxODmin]
-Coordinates=10,10,117,124
 
 [PopupMenuButton]
 Coordinates=564,372,121,36
 
-[RzToolButton10]
-Coordinates=447,372,107,36
-
 [scStyledForm1]
 Coordinates=872,779,100,36
-
-[RzToolButton6]
-Coordinates=10,372,100,36
 
 [scLabel16]
 Coordinates=455,326,73,36
@@ -212,17 +101,11 @@ Coordinates=1046,144,105,58
 [scGPSizeBox]
 Coordinates=120,464,93,36
 
-[CheckBoxVymena_barev]
-Coordinates=576,87,159,36
-
 [scExPanel_vrstvy]
 Coordinates=381,1,116,36
 
 [scListGroupKnihovObjektu]
 Coordinates=1412,56,167,36
-
-[ComboBoxCekani]
-Coordinates=410,87,118,36
 
 [pravyoption_nadpis]
 Coordinates=809,87,126,36
@@ -239,17 +122,11 @@ Coordinates=773,335,104,36
 [DrawGrid_knihovna]
 Coordinates=1292,221,127,36
 
-[Memo2]
-Coordinates=35,153,64,58
-
 [scSplitView_MENU]
 Coordinates=1322,276,125,36
 
 [scSplitView_LEFTTOOLBAR]
 Coordinates=1463,111,180,36
-
-[CheckBoxVytizenost]
-Coordinates=1322,331,132,36
 
 [scGPPanel_mainmenu]
 Coordinates=1322,441,145,36
@@ -272,9 +149,6 @@ Coordinates=983,510,103,36
 [Toolbar_NovySoubor]
 Coordinates=10,510,136,36
 
-[scGPSwitch_rezim]
-Coordinates=632,335,122,36
-
 [scExPanel_log_header]
 Coordinates=1110,331,147,36
 
@@ -289,12 +163,6 @@ Coordinates=1492,221,199,36
 
 [scButton_report]
 Coordinates=1204,551,72,36
-
-[scLabel_architekt]
-Coordinates=1204,56,66,36
-
-[scLabel_klient]
-Coordinates=249,542,66,36
 
 [scGPSwitch_AA]
 Coordinates=354,326,91,36
@@ -329,17 +197,11 @@ Coordinates=699,280,72,36
 [Analyza]
 Coordinates=318,556,76,36
 
-[Synteza]
-Coordinates=941,326,138,36
-
 [Schema]
 Coordinates=1113,464,110,36
 
 [Layout]
 Coordinates=1145,631,49,36
-
-[Simulace]
-Coordinates=73,249,65,36
 
 [scExPanel_ostatni]
 Coordinates=1322,496,120,36
