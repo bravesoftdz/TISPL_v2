@@ -13788,8 +13788,17 @@ void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 //	 if(m.PtInSegment(E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))Memo("v");
 //	 else Memo("mimo");
 
-   //if(d.v.POHONY->dalsi->palec==NULL)ShowMessage("NULL");
+	 //if(d.v.POHONY->dalsi->palec==NULL)ShowMessage("NULL");
 
+	 //testovací hodnoty
+	 double a=1;//radius - E->geo.radius
+	 double b=1.2;//vzdálenost od bodu kliku ke středovému bod oblouku (ke středu kružnice, z které je oblouk tvořen) tj. vrátit si souřadnice středu (asi udělat ještě metodu
+	 double c=0.5;//vzdálenost mezi bodem kliku a výchozím bodem oblouku (E->geo.X1,E->geo.Y1) tj. = delka(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,E->geo.X1,E->geo.Y1)
+
+	 double uhel=m.getAngleFromTriangle(a,b,c,3);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
+	 ShowMessage(uhel);
+	 d.vykresli_potencial_Gelement(Canvas,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,90,uhel,10,clRed,false);//vykreslení, pokud bude nepřesné metodu vylepšíme
+	 ShowMessage(m.R2Larc(1,uhel));//vrácení délky dané výseče, tj. k na(při)počítání měřené délky
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)

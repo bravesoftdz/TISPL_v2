@@ -103,6 +103,26 @@ double Cmy::R2Larc(double radius,double angle)
 {
 	return radius*2*M_PI*a360(fabs(angle))/360.0;
 }
+/////////////////////////////////////////////////////////////////////////////
+//ze zadaného radiusu a délky tetivy vrátí úhel kruhové výseče ve stupních
+double Cmy::T2Aarc(double radius,double t_lenght)
+{
+	return ToDeg(2*ArcSin(t_lenght/(radius*2)));
+}
+//////////////////////////////////////////////////////////////////////////////
+//ze tří zadaných stran trojúhlelníku vrátí úhel dle parametru p 1-alfa,2-beta,3-gama
+double Cmy::getAngleFromTriangle(double a,double b,double c,short p)
+{
+	double RET=0;
+	switch(p)
+	{
+		case 1:RET=ToDeg(ArcCos((b*b+c*c-a*a)/(2*b*c)));break;//ALFA
+		case 2:RET=ToDeg(ArcCos((a*a+c*c-b*b)/(2*a*c)));break;//BETA
+		case 3:RET=ToDeg(ArcCos((a*a+b*b-c*c)/(2*a*b)));break;//GAMA
+	}
+	return RET;
+}
+//////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 //Převede logické souřadnice na fyzické (displej zařízení) , vraci fyzické souřadnice
 TPoint Cmy::L2P(double logickaX, double logickaY)
@@ -561,7 +581,7 @@ long Cmy::LeziVblizkostiUsecky(double x, double y, double X1, double Y1, double 
 	}
 }
 /////////////////////////////////////////////////////////////////////////////
-//funkce ověřující, zda kurzor myši, leží v obdelníku obsaném danému oblouku, souřadnice kurzoru myši se zadávají v logických souřadnicích, ostatní v logických
+//funkce ověřující, zda kurzor myši, leží v obdelníku obsaném danému oblouku, souřadnice kurzoru myši se zadávají v logických souřadnicích, ostatní v logických, pro ověření zda leží na oblouku (s určitým perimetrem okolo obloukové linie) řešení níže metoda PtInSegment
 bool Cmy::LeziVoblouku(double X,double Y,double orientace,double RA,double R,double Xmys,double Ymys)
 {
 	bool RET=false;
@@ -1217,10 +1237,6 @@ TColor Cmy::getColorOfPalette(unsigned int input)
 {
 	switch(input%5)
 	{
-//    case 0:return clBlack;break;
-//		case 1:return TColor RGB(255,0,0);break;
-//		case 2:return TColor RGB(0,255,0);break;
-//		case 3:return TColor RGB(0,0,255);break;
 		case 0:return TColor RGB(0,0,0);;break;
 		case 1:return TColor RGB(4,139,168);break;
 		case 2:return TColor RGB(246,249,48);break;
