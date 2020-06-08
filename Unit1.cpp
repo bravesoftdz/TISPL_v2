@@ -2670,11 +2670,19 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 	//key = pouze čísla, Key = všechny znaky
 	if (editace_textu&&index_kurzoru==-6 && funkcni_klavesa==0)//editace nadpisu kabiny, není třeba nic provádět
 	{
-//		if(Key==8)//pokud je stisknut backspace
-//			OBJEKT_akt->name=OBJEKT_akt->name.SubString(1,OBJEKT_akt->name.Length()-1);
-//		else
-//			OBJEKT_akt->name+=Key;
-//		REFRESH(21,false);
+		if(editEditace==NULL)
+		{
+			//pokud je stisknut backspace
+			if(Key==8)OBJEKT_akt->name=OBJEKT_akt->name.SubString(1,OBJEKT_akt->name.Length()-1);
+			else OBJEKT_akt->name+=Key;
+			REFRESH(false);
+		}
+		//nastavování dynamické velikosi editu
+		else
+		{
+			d.nastavit_text_popisu_objektu_v_nahledu(Canvas);
+			if(editEditace->Text.Length()>1)editEditace->Width=Canvas->TextWidth(editEditace->Text);//-Canvas->TextWidth("A");//v tehle chvílí je na obrazovce např. LAKOVN, ale v kódu je LAKOVNA, musí být tedy odečtena šířka jednoho písmene
+		}
 	}
 	if (editace_textu&&index_kurzoru==-7)//editace short nadpisu kabiny
 	{
@@ -2779,7 +2787,7 @@ void TForm1::smaz_edit(bool refresh)
 void TForm1::zapnout_vynout_editEditace(bool zapnout,bool smazat)
 {
 	log(__func__);
-	if(!smazat)
+	if(!smazat && editace_textu)
 	{
 		////načtení základních parametrů
 		//nastavení fontu v canvasu na font pro nadpis objektu
@@ -2790,9 +2798,9 @@ void TForm1::zapnout_vynout_editEditace(bool zapnout,bool smazat)
 		double Y=OBJEKT_akt->Yt;
 		switch((int)OBJEKT_akt->orientace_text)
 		{
-			case 0:X=m.L2Px(X)-Canvas->TextHeight(text);Y=m.L2Py(Y)+m.round(Canvas->TextWidth(text)/2.0);break;//nastavení rotace canvasu
+			case 0:TimerKurzor->Enabled=true;zapnout=false;break;//X=m.L2Px(X)-Canvas->TextHeight(text);Y=m.L2Py(Y)+m.round(Canvas->TextWidth(text)/2.0);break;//nastavení rotace canvasu
 			case 90:X=m.L2Px(X)-m.round((Canvas->TextWidth(text))/2.0);Y=m.L2Py(Y)-Canvas->TextHeight(text);break;
-			case 180:X=m.L2Px(X)+Canvas->TextHeight(text);Y=m.L2Py(Y)-m.round(Canvas->TextWidth(text)/2.0);break;//nastavení rotace canvasu
+			case 180:TimerKurzor->Enabled=true;zapnout=false;break;//X=m.L2Px(X)+Canvas->TextHeight(text);Y=m.L2Py(Y)-m.round(Canvas->TextWidth(text)/2.0);break;//nastavení rotace canvasu
 			case 270:X=m.L2Px(X)-m.round((Canvas->TextWidth(text))/2.0);Y=m.L2Py(Y)-Canvas->TextHeight(text);break;
 		}
 
@@ -2805,14 +2813,14 @@ void TForm1::zapnout_vynout_editEditace(bool zapnout,bool smazat)
   		//výchozí atributy
   		editEditace->Tag=1;
   		editEditace->Name="virtualni_edit";
-  		editEditace->AutoSize=false;//nutné před nastavováním rozmerů
+			editEditace->AutoSize=false;//nutné před nastavováním rozmerů
   		editEditace->Height=Canvas->TextHeight(text);
-  		editEditace->Width=2*Canvas->TextWidth(text);
-  		editEditace->Options->FrameNormalColor=clWhite;
+			editEditace->Width=Canvas->TextWidth(text);
+			editEditace->Options->FrameNormalColor=clWhite;
   		editEditace->Options->FrameNormalColorAlpha=255;
   		editEditace->Options->FrameHotColor=clWhite;
   		editEditace->Options->FrameHotColorAlpha=255;
-  		editEditace->Options->FrameFocusedColor=clWhite;
+			editEditace->Options->FrameFocusedColor=clRed;//clWhite;
   		editEditace->Options->FrameFocusedColorAlpha=255;
   		editEditace->Options->FrameWidth=0;
   		editEditace->Transparent=true;//nutnost
@@ -2834,8 +2842,9 @@ void TForm1::zapnout_vynout_editEditace(bool zapnout,bool smazat)
   		editEditace->OnKeyPress=&FormKeyPress;
 
   		//musí být až na konci
-  		editEditace->Parent=F;
-  		editEditace->SetFocus();
+			editEditace->Parent=F;
+			editEditace->SetFocus();//po kliku na nadpis nastaví označení celého textu
+			editEditace->SelStart=text.Length();//nastaví kurzor na konec textu
 		}
 
 		////zapnutí editu poku již existuje
@@ -2846,17 +2855,17 @@ void TForm1::zapnout_vynout_editEditace(bool zapnout,bool smazat)
 			editEditace->Top=Y-5;
 			//zobrazení
 			editEditace->Show();
-			editEditace->SetFocus();
+			//editEditace->SetFocus();//po kliku na nadpis nastaví označení celého textu
 		}
+	}
 
-		////edit existuje skrýt
-		if(!zapnout && editEditace!=NULL)
-  	{
-			editEditace->Hide();
-  		JID=-1;
-  		editace_textu=false;
-			editovany_text="";
-  	}
+	////edit existuje skrýt
+	else if(!zapnout && !smazat && editEditace!=NULL)
+	{
+		editEditace->Hide();
+		JID=-1;
+		editace_textu=false;
+		editovany_text="";
 	}
 
 	////mazání editu napříkald při odchodu z editace
@@ -2865,7 +2874,8 @@ void TForm1::zapnout_vynout_editEditace(bool zapnout,bool smazat)
     nastav_focus();
 		editEditace->Free();
 		editEditace=NULL;//nesmí být delete
-  }
+		editace_textu=false;//pro jistotu
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormKeyUp(TObject *Sender, WORD &Key, TShiftState Shift)
@@ -6303,7 +6313,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 			Cvektory::TPohon *p1=NULL,*p2=NULL;
 			if(C!=NULL)
 			{
-				p1=C->predchozi->Element->pohon;p2=E->pohon;
+				p2=C->dalsi->Element->pohon;p1=E->pohon;
 				if(p1!=NULL && p2!=NULL && p1!=p2)
 				{
 					//načtení hodnot z pohonu
@@ -12074,6 +12084,8 @@ void TForm1::zmena_editovaneho_objektu()
 		//storno funkcionalita
 		unsigned long objekt_n=pom_vyhybka->n;//uchovávání, pokud bude stisknuto storno dojde ke smazání objektu
 		if(storno)d.v.nacti_z_obrazu_DATA(true);//až po uzavření staré editace
+    //mazání editEditace
+		zapnout_vynout_editEditace(false,true);
 		/////////Přenastavení editovaného objektu
 		pom=d.v.vrat_objekt(objekt_n);//pom_vyhybka slouží k uložení ukazatele na pro další náhled
 
@@ -15374,7 +15386,7 @@ void TForm1::smaz_kurzor()
 	if(editace_textu && OBJEKT_akt!=NULL)//ukončí editaci textu
 	{
     //pokud je kurzor vykreslen překresli ho
-		if(editEditace==NULL && stav_kurzoru) vykresli_kurzor(index_kurzoru);
+		if(editEditace==NULL && stav_kurzoru)vykresli_kurzor(index_kurzoru);
 		TimerKurzor->Enabled=false;
 		//pokud bylo zadáno nic přepíše nic původními hodnotamy
 		if((editovany_text==""||ms.MyToDouble(editovany_text)==0)&&index_kurzoru==-5){if(pom_bod_temp->n!=1)editovany_text=m.round2double(m.delka(pom_bod_temp->predchozi->X,pom_bod_temp->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);else editovany_text=m.round2double(m.delka(OBJEKT_akt->body->predchozi->X,OBJEKT_akt->body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);if(DKunit==2||DKunit==3)editovany_text=editovany_text/OBJEKT_akt->pohon->aRD;editovany_text=outDK(ms.MyToDouble(editovany_text));}
@@ -15384,7 +15396,7 @@ void TForm1::smaz_kurzor()
 		switch(index_kurzoru)
 		{
 			case -7:if(OBJEKT_akt->short_name=="")OBJEKT_akt->short_name=nazev_puvodni;break;
-			case -6:if(editEditace!=NULL)OBJEKT_akt->name=editEditace->Text;if(OBJEKT_akt->name=="" || editEditace==NULL)OBJEKT_akt->name=nazev_puvodni;break;
+			case -6:if(editEditace!=NULL)OBJEKT_akt->name=editEditace->Text;if(OBJEKT_akt->name=="")OBJEKT_akt->name=nazev_puvodni;break;
 			case 1:
 			{
 				if(pom_element_temp->name=="")pom_element_temp->name=nazev_puvodni;
@@ -15534,6 +15546,8 @@ void TForm1::smaz_kurzor()
 	pom_komora_temp=NULL; delete pom_komora_temp;
 	pom_bod_temp=NULL; delete pom_bod_temp;
 	zapnout_vynout_editEditace(false);
+	//pro jistotu na konec
+	editace_textu=false;editovany_text="";index_kurzoru=0;
 	if(duvod_validovat==1)duvod_validovat=2;
 	REFRESH(true);//uvolnění rastru
 	nahled_ulozit(true);
