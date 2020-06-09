@@ -1560,7 +1560,7 @@ void TForm1::Novy_soubor(bool invalidate)
 void __fastcall TForm1::FormActivate(TObject *Sender)
 {
   log(__func__);//logování
- if (DEBUG || !DEBUG)//	if(!DEBUG)  R - úprava 5.6.2020 - test konektivity i pro DEBUG verzi
+	if (DEBUG || !DEBUG)//	if(!DEBUG)  R - úprava 5.6.2020 - test konektivity i pro DEBUG verzi   //RELEASE
 	{
 		//toto odkomentovat pro spuštění TTR
 		if(!ttr("start"))
@@ -1572,7 +1572,7 @@ void __fastcall TForm1::FormActivate(TObject *Sender)
 		//Timer_tr->Enabled=false;// toto zakomentovat pro spuštění TTR
 		{startUP();}//toto vždy odkomentované
 	}
-	else//RELEASE
+	else//DEBUG
 	{
 		Timer_tr->Enabled=false;
     startUP();
@@ -2358,6 +2358,13 @@ void TForm1::vytvor_statickou_scenu()
 		d.vykresli_vektory(Staticka_scena->Canvas,1);
 		Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 	}
+}
+//---------------------------------------------------------------------------
+//přetížená výše uvedené přímo s parametrem nastavení scény
+void TForm1::vytvor_statickou_scenu(long SCENA)
+{
+	d.SCENA=SCENA;
+	vytvor_statickou_scenu();
 }
 //---------------------------------------------------------------------------
 void TForm1::nacti_podklad(TCanvas *Canv)

@@ -110,7 +110,7 @@ double Cmy::T2Aarc(double radius,double t_lenght)
 	return ToDeg(2*ArcSin(t_lenght/(radius*2)));
 }
 //////////////////////////////////////////////////////////////////////////////
-//ze tří zadaných stran trojúhlelníku vrátí úhel dle parametru p 1-alfa,2-beta,3-gama
+//ze tří zadaných stran trojúhlelníku vrátí úhel ve stupních dle parametru p 1-alfa,2-beta,3-gama
 double Cmy::getAngleFromTriangle(double a,double b,double c,short p)
 {
 	double RET=0;
@@ -331,7 +331,7 @@ TPointD_3D Cmy::getPt(double radius,double orientace,double rotacni_uhel,double 
 	return RET;
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-//vrátí délku bézierovy křivky, prec=preciznost výpočtu
+//vrátí délku bézierovy křivky, prec=preciznost výpočtu - asi nevyužito
 double Cmy::bezierDelka(int x1,int y1,int x2,int y2,int x3,int y3,int x4,int y4,double prec)
 {       //domnívám se, že by to chtělo převést do logických souřadnic kvůli přesnosti
 	double /*delka_px=0,*/delka_RET=0, x_pre=x1,y_pre=y2;

@@ -4000,6 +4000,12 @@ TPointD *Cvykresli::vykresli_potencial_Gelement(TCanvas *canv,double X,double Y,
 	return PL;
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
+//zajistí jednorázové vykreslení libovolného obloukového či liniového (dle situace) g-elementu, X,Y jsou logické souřadnice výchozího vykreslování, parametry: orientace oblouku - dle světových stran (umí i jiné než 90° násobky), rotační úhel - pod kterým je oblouk rotován, může být záporný (znaménko určuje směr rotace, + proti směru hodinových ručiček, - po směru), max. hodnota +90 a min. hodnota -90 (je-li nastaven na 0° jedná se o linii), radius - je radius oblouku v metrech nebo pokud je rotační úhel nastaven na 0° tedy se jedná o linii, je radius délkou linie)
+void Cvykresli::vykresli_Gelement(TCanvas *canv,double X,double Y,double orientace,double rotacni_uhel,double radius,TColor color,short width, bool popisek)
+{
+  //
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_mGridy(TCanvas *canv)
 {
