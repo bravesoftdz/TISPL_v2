@@ -147,8 +147,8 @@ void Cvykresli::vykresli_objekty(TCanvas *canv)
 	Cvektory::TObjekt *O=v.OBJEKTY->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
 	{
-		//pokud je aktivní editace přeskočí vykreslení kabiny aktuálně editovaného objektu
-		if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=O->n || F->OBJEKT_akt==NULL)vykresli_objekt(canv,O);
+		//pokud je aktivní editace přeskočí vykreslení obrysu aktuálně editovaného objektu a zároveň pokud se jedná o Layout, scéna objektů je nastavena na statickou, přeskakuje aktuální pom objekt
+		if((F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=O->n || F->OBJEKT_akt==NULL) && (F->OBJEKT_akt==NULL && m.getValueFromPosition(SCENA,2)==1 && O!=F->pom))vykresli_objekt(canv,O);
 		O=O->dalsi;
 	}
 	delete O;O=NULL;
@@ -4001,9 +4001,27 @@ TPointD *Cvykresli::vykresli_potencial_Gelement(TCanvas *canv,double X,double Y,
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //zajistí jednorázové vykreslení libovolného obloukového či liniového (dle situace) g-elementu, X,Y jsou logické souřadnice výchozího vykreslování, parametry: orientace oblouku - dle světových stran (umí i jiné než 90° násobky), rotační úhel - pod kterým je oblouk rotován, může být záporný (znaménko určuje směr rotace, + proti směru hodinových ručiček, - po směru), max. hodnota +90 a min. hodnota -90 (je-li nastaven na 0° jedná se o linii), radius - je radius oblouku v metrech nebo pokud je rotační úhel nastaven na 0° tedy se jedná o linii, je radius délkou linie)
-void Cvykresli::vykresli_Gelement(TCanvas *canv,double X,double Y,double orientace,double rotacni_uhel,double radius,TColor color,short width, bool popisek)
+void Cvykresli::vykresli_Gelement(TCanvas *canv,double X,double Y,double orientace,double rotacni_uhel,double radius,TColor color,float width,String Text)
 {
-  //
+	////vykreslení Gelementu
+	TPointD *PL=m.getArcLine(X,Y,orientace,rotacni_uhel,radius);
+	POINT POLE[]={{m.L2Px(PL[0].x),m.L2Py(PL[0].y)},m.L2Px(PL[1].x),m.L2Py(PL[1].y),m.L2Px(PL[2].x),m.L2Py(PL[2].y),m.L2Px(PL[3].x),m.L2Py(PL[3].y)};//převod do fyzických souřadnic
+	//nastavení geometrického pera
+	set_pen(canv,color,m.round(F->Zoom*width),PS_ENDCAP_FLAT);//nastavení geometrického pera
+	canv->PolyBezier((TPoint*)POLE,3);//samotné vykreslení bézierovy křivky
+
+	////výpis textu
+	if(Text!="")
+	{
+		//nastavení písma
+		canv->Brush->Style=bsClear;
+		canv->Font->Style = TFontStyles();
+		canv->Font->Name=F->aFont->Name;
+		canv->Font->Size=3*F->Zoom;
+		canv->Font->Color=color;//m.clIntensive(color,-10);
+		//volání výpisu textu
+		TextFraming(canv,m.L2Px(PL[3].x),m.L2Py(PL[3].y),Text,canv->Font);//vykreslí na konci
+  }
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -13829,7 +13829,7 @@ void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 
 	 double uhel=m.getAngleFromTriangle(a,b,c,3);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
 	 ShowMessage(uhel);
-	 d.vykresli_potencial_Gelement(Canvas,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,90,uhel,10,clRed,false);//vykreslení, pokud bude nepřesné metodu vylepšíme
+	 d.vykresli_Gelement(Canvas,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,90,uhel,10,clRed,1,String(m.round2double(m.R2Larc(1,uhel)*1000,2))+" [mm]");//vykreslení, pokud bude nepřesné metodu vylepšíme
 	 ShowMessage(m.R2Larc(1,uhel));//vrácení délky dané výseče, tj. k na(při)počítání měřené délky
 }
 //---------------------------------------------------------------------------
