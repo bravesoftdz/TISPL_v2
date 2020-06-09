@@ -3674,13 +3674,16 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				O=NULL;delete O;
 			}
 			minule_souradnice_kurzoru=TPoint(X,Y);
-			if(MOD==LAYOUT)
-			{
-				//ZprVozEledElesDopObjHal
-				if(zmena_pohonu)REFRESH(1111221,false);//mění se i pohon
-				else REFRESH(1111121,false);//pouze změna objektu
-			}
-			else REFRESH();
+//			if(MOD==LAYOUT)//čekání na funkčnost pom v statické scéně
+//			{
+//				//ZprVozEledElesDopObjHal
+//				long scena=1111121;//pouze změna objektu
+//				if(zmena_pohonu)scena=1111221;//změna objektu a pohonu
+//				if(pom==NULL)scena=1111112;//změna haly
+//				REFRESH(scena,false);
+//			}
+//			else
+			REFRESH();
 			A=NULL;B=NULL;delete A;delete B;
 			break;
 		}
@@ -3695,7 +3698,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				else d.v.posun_body(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),OBJEKT_akt);
 				if(TIP!="")TIP="";
 				refresh_mGrid=false;
-				REFRESH();
+				REFRESH(1111112,false);
 				refresh_mGrid=true;
 			}
 			minule_souradnice_kurzoru=TPoint(X,Y);//slouží i k určení výchozího bodu pro posun
@@ -4050,11 +4053,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 	if(Button==mbLeft)//zohlední jenom stisk levého tlačítka myši
 	{
     //navrácení do plně statické scény
-		if(MOD==LAYOUT && d.SCENA!=1111111)
-		{
-			d.SCENA=11111111;
-			vytvor_statickou_scenu();
-    }
+		if(MOD==LAYOUT && d.SCENA!=1111111)vytvor_statickou_scenu(11111111);
 		refresh_mGrid=true;//globální navracení stavu
 		if(pan_non_locked){pan_non_locked=false;Akce=NIC; kurzor(standard);pan_move_map();if(OBJEKT_akt!=NULL && puv_souradnice.x!=X && puv_souradnice.y!=Y)mGrid_on_mGrid();}//kontrola, zda nejsou překryty mGridy elementů a PmG
 		switch(Akce)
@@ -4614,14 +4613,14 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 			//kurzory (provizorně), ...
 			kurzor(standard);
 			if(JID==-102){if(d.zprava_highlight==d.zobrazit_celou_zpravu)kurzor(close);else kurzor(info);scena=2111111;}//zprávy
-			if(JID==-6){kurzor(posun_editace_obj);scena=1111121;}//posun nadpisu objektu / editace objektu
+			if(JID==-6){kurzor(posun_editace_obj);/*scena=1111121;*/}//posun nadpisu objektu / editace objektu
 			if(JID==-2){kurzor(edit_text);scena=1111112;}//hodnota kóty
-			if(JID==0){kurzor(posun_ind);if(pom==NULL)scena=1111112;else scena=1111121;}//posun bodu
+			if(JID==0){kurzor(posun_ind);if(pom==NULL)scena=1111112;/*else scena=1111121;*/}//posun bodu
 			if(JID==3)kurzor(posun_editace_obj);//oblast objektu, není vysvěcován
 			if(JID==5 || JID==6)kurzor(editace_obj);//element mimo objekt - pouze editace
 			if(JID==1||JID==4)//posun úsečky
 			{
-				if(pom==NULL)scena=1111112;else scena=1111121;
+				if(pom==NULL)scena=1111112;//else scena=1111121;
 				//načtení bodů úsečky
 				Cvektory::TBod *A=NULL,*B=pom_bod;//return proměnná + krokování cyklu
 				if(pom_bod->n!=1)A=pom_bod->predchozi;
@@ -16580,6 +16579,7 @@ void __fastcall TForm1::scGPGlyphButton_undoClick(TObject *Sender)
 		{
 			d.v.nacti_z_obrazu_DATA();
 			duvod_validovat=2;
+			vytvor_statickou_scenu();
 			REFRESH();
 			if(OBJEKT_akt!=NULL)mGrid_on_mGrid();//naplní comba tabulek a zkontroluje překrytí
 			if(!scGPGlyphButton_redo->Enabled)scGPGlyphButton_redo->Enabled=true;//pokud bylo provedeno undo a btn na redu neni povolen ... povolit
@@ -16597,6 +16597,7 @@ void __fastcall TForm1::scGPGlyphButton_redoClick(TObject *Sender)
 		d.v.pozice_data+=1;
 		d.v.nacti_z_obrazu_DATA();
 		duvod_validovat=2;
+    vytvor_statickou_scenu();
 		REFRESH();
 		if(OBJEKT_akt!=NULL)mGrid_on_mGrid();//naplní comba tabulek a zkontroluje překrytí
 		if(d.v.pozice_data==d.v.DATA->predchozi->n && scGPGlyphButton_redo->Enabled)scGPGlyphButton_redo->Enabled=false;//dostal jsem se na konec, není kam dál redo použít ... zakázat redo btn
@@ -16778,5 +16779,24 @@ void __fastcall TForm1::scExPanel_ostatniClick(TObject *Sender)
 {
 	log(__func__);//logování
 	scExPanel_ostatni->RollUpState=!scExPanel_ostatni->RollUpState;
+}
+//---------------------------------------------------------------------------
+//zajistí rotaci objektu
+void TForm1::rotuj_objekt_click(double rotace)
+{
+  log(__func__);//logování
+	if(OBJEKT_akt==NULL && JID!=-6)d.v.rotuj_objekt(F->pom,rotace);
+	else
+	{
+		if(OBJEKT_akt!=NULL)
+		{
+			OBJEKT_akt->orientace_text=m.Rt90(OBJEKT_akt->orientace_text+rotace);
+			nahled_ulozit(true);
+		}
+		else pom->orientace_text=m.Rt90(pom->orientace_text+rotace);
+	}
+  vytvor_obraz();
+  vytvor_statickou_scenu();
+	REFRESH();
 }
 //---------------------------------------------------------------------------
