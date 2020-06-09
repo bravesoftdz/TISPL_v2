@@ -8901,7 +8901,7 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 		B=NULL;delete B;
 		C1=NULL;delete C1;
 		C2=NULL;delete C2;
-	}      ;
+	}
 }
 //---------------------------------------------------------------------------
 //rozhodne zda mají být prohozeny sloupce PM, podle trendu geometrie
@@ -11942,10 +11942,7 @@ void TForm1::otevri_editaci()
 				design_element(E,true);//znovuvytvoření tabulek
 				if(E->sparovany!=NULL && E->sparovany->objekt_n==OBJEKT_akt->n)E->sparovany=d.v.vrat_element(OBJEKT_akt,E->sparovany->n);//atualizace ukazatelů
 				if(d.v.vrat_druh_elementu(E)==0)d.v.reserve_time(E);//aktualizace RT, v případě, že došlo ke změně přejezdu
-				if(E->eID==200 || E->eID==300)
-				{
-					poh_tab=true;//pohonová tabulka v editaci bude exitovat
-				}
+				if(E->eID==200 || E->eID==300)poh_tab=true;//pohonová tabulka v editaci bude exitovat
 			}
 			E=d.v.dalsi_krok(E,OBJEKT_akt);
 		}
@@ -13673,15 +13670,13 @@ void __fastcall TForm1::Timer_simulaceTimer(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 {
-	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];
-	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+	Cvektory::TElement *E=d.v.OBJEKTY->predchozi->element;
 	while(E!=NULL)
 	{
 		Memo(E->name);
-		E=d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);
+		E=d.v.dalsi_krok(E,d.v.OBJEKTY->predchozi);
 	}
-	delete[]tab_pruchodu;
-  delete E;E=NULL;
+	E=NULL;delete E;
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
