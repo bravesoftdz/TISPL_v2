@@ -2276,7 +2276,7 @@ void TForm1::kurzor(TKurzory typ_kurzor)
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormPaint(TObject *Sender)
-{               Memo("ZprVozEledElesDopObjHal");Memo(d.SCENA,true);
+{
 	////////při změně rozlišení nebo obrazovky dojde k MAXIMALIZACI OKNA programu  - problém při ruční minimalizaci!
 	if(ClientWidth!=Monitor->Width&&FMaximized)
 	{
@@ -4053,11 +4053,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 	if(Button==mbLeft)//zohlední jenom stisk levého tlačítka myši
 	{
     //navrácení do plně statické scény
-		if(MOD==LAYOUT && d.SCENA!=1111111)
-		{
-			d.SCENA=11111111;
-			vytvor_statickou_scenu();
-    }
+		if(MOD==LAYOUT && d.SCENA!=1111111)vytvor_statickou_scenu(11111111);
 		refresh_mGrid=true;//globální navracení stavu
 		if(pan_non_locked){pan_non_locked=false;Akce=NIC; kurzor(standard);pan_move_map();if(OBJEKT_akt!=NULL && puv_souradnice.x!=X && puv_souradnice.y!=Y)mGrid_on_mGrid();}//kontrola, zda nejsou překryty mGridy elementů a PmG
 		switch(Akce)
