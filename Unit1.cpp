@@ -244,7 +244,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 
 	//nastavení zobrazení
 	antialiasing=true;
-	d.SCENA=0;//1111111;
+	d.SCENA=1111111;
 	vychozi_stav_sceny=d.SCENA;
 
 	//nastavení implicitního souboru
@@ -3178,7 +3178,11 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 							case 3:TIP=ls->Strings[306];break;
 						}
 						if(pom_bod->n>3)TIP=ls->Strings[306];
-						if(pom_bod->n>1)REFRESH();//vykreslovat pouze v případě jednoho a více bodů
+						if(pom_bod->n>1)//vykreslovat pouze v případě jednoho a více bodů
+						{
+							vytvor_statickou_scenu();//aktualizuje BMP statické scény o nový objekt, musí být před REFRESH, není důvod měnit nastavení d.SCENA
+							REFRESH();
+						}
 						zneplatnit_minulesouradnice();//pro vykreslení spojnice (mousemove)
 						break;
 					}
@@ -3463,7 +3467,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			{
 				if(abs(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x))>=0.001 && abs(akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y))>=0.001)d.v.posun_objekt(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),pom);
 				minule_souradnice_kurzoru=TPoint(X,Y);
-				REFRESH(false);
+				REFRESH(2222221,false);//ZprVozEledElesDopObjHal
 			}else Akce=NIC;
 			break;
 		}
@@ -3575,6 +3579,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		}
 		case MOVE_USECKA:
 		{
+			bool zmena_pohonu=false;
 			Cvektory::TBod *A,*B;//body úsečky
 			if(pom_bod->n==1)//poslední úsečka
 			{
@@ -3640,6 +3645,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 						O->element->Y+=posun_y;
 			  	}
 					d.v.vloz_G_element(O->element,0,O->element->geo.X1,O->element->geo.Y1,0,0,0,0,O->element->X,O->element->Y,O->element->geo.orientace);
+          zmena_pohonu=true;
 				}
 				//////uchopeno za vrh/spodek .. budu posouvat osu pohonu
 				else
@@ -3661,7 +3667,13 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				O=NULL;delete O;
 			}
 			minule_souradnice_kurzoru=TPoint(X,Y);
-			REFRESH();
+			if(MOD==LAYOUT)
+			{
+				//ZprVozEledElesDopObjHal
+				if(zmena_pohonu)REFRESH(1111221,false);//mění se i pohon
+				else REFRESH(1111121,false);//pouze změna objektu
+			}
+			else REFRESH();
 			A=NULL;B=NULL;delete A;delete B;
 			break;
 		}
@@ -4030,6 +4042,12 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 	log(__func__);//logování
 	if(Button==mbLeft)//zohlední jenom stisk levého tlačítka myši
 	{
+    //navrácení do plně statické scény
+		if(MOD==LAYOUT && d.SCENA!=1111111)
+		{
+			d.SCENA=11111111;
+			vytvor_statickou_scenu();
+    }
 		refresh_mGrid=true;//globální navracení stavu
 		if(pan_non_locked){pan_non_locked=false;Akce=NIC; kurzor(standard);pan_move_map();if(OBJEKT_akt!=NULL && puv_souradnice.x!=X && puv_souradnice.y!=Y)mGrid_on_mGrid();}//kontrola, zda nejsou překryty mGridy elementů a PmG
 		switch(Akce)
@@ -4589,7 +4607,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 			//kurzory (provizorně), ...
 			kurzor(standard);
 			if(JID==-102){if(d.zprava_highlight==d.zobrazit_celou_zpravu)kurzor(close);else kurzor(info);scena=2111111;}//zprávy
-			if(JID==-6){kurzor(posun_editace_obj);scena=11111121;}//posun nadpisu objektu / editace objektu
+			if(JID==-6){kurzor(posun_editace_obj);scena=1111121;}//posun nadpisu objektu / editace objektu
 			if(JID==-2){kurzor(edit_text);scena=1111112;}//hodnota kóty
 			if(JID==0){kurzor(posun_ind);if(pom==NULL)scena=1111112;else scena=1111121;}//posun bodu
 			if(JID==3)kurzor(posun_editace_obj);//oblast objektu, není vysvěcován
@@ -4626,9 +4644,8 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 				else if((azimut>270&&azimut<360)||(azimut>90&&azimut<180))kurzor(posun_ind_ld);
 				//smazání pomocných ukazatelů
 				A=NULL;B=NULL;delete A;delete B;
-			}
-			//REFRESH(scena,false);
-			REFRESH();
+			}  if(scena==1111121)scena=1111111;
+			REFRESH(scena,false);
 		}
 
 		if(d.zprava_highlight>0 && Form_zpravy->Visible)Form_zpravy->highlight(d.zprava_highlight-1);//highlight řádků v miniformu zprávy
@@ -5470,6 +5487,7 @@ Cvektory::TObjekt *TForm1::add_objekt(int X, int Y)
 		vybrany_objekt=-1;//odznačí objekt logicky, musí se nový vybrat znovu
 		if(d.v.OBJEKTY->dalsi!=NULL && d.v.OBJEKTY->predchozi->n==1)Nahled->Enabled=true;
 		TIP="";//odstranění původní nápovědy pro přidávání objektu
+    vytvor_statickou_scenu();//aktualizuje BMP statické scény o nový objekt, musí být před REFRESH, není důvod měnit nastavení d.SCENA
 		REFRESH();
 		vytvor_obraz();
 		DuvodUlozit(true);
@@ -11602,6 +11620,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 	}
 	delete E;E=NULL;
 	d.v.uprav_popisky_elementu(NULL);
+  if(d.SCENA!=0)vytvor_statickou_scenu();//aktualizuje BMP statické scény o nový objekt, musí být před REFRESH, není důvod měnit nastavení d.SCENA
 	REFRESH();//musí být na konci!!! po aktualizaci n a názvů
 	//vytvoření obrazu
 	vytvor_obraz();
@@ -14774,7 +14793,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		DrawGrid_knihovna->Top=10000;//musí být zobrazena, odchytává stisk kláves
 		on_change_zoom_change_scGPTrackBar();//pozor už nevyvolává refresh
 		//d.SCENA=1111111, prozatím statická scéna funkční pouze v layoutu, pro editaci se nepoužívá
-		REFRESH(/*1111111*/);//false není třeba, mGridy už neexistují
+		REFRESH(1111111,false);//false není třeba, mGridy už neexistují
 		storno=true;//nastavení do defaultního stavu
 	}
   //ukončení tvorby cesty
@@ -16213,6 +16232,7 @@ void __fastcall TForm1::scGPButton_nakreslit_haluClick(TObject *Sender)
 				B=B->dalsi;
   		}
 			delete B;B=NULL;
+      vytvor_statickou_scenu();//aktualizuje BMP statické scény o nový objekt, musí být před REFRESH, není důvod měnit nastavení d.SCENA, pro budoucí refresh
   		scGPButton_nakreslit_haluClick(this);//znovu spuštění metody
 		}
 	}
