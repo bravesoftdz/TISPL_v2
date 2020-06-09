@@ -3420,7 +3420,7 @@ Cvektory::TElement *Cvektory::predchozi_krok(TElement *E,TObjekt *O)
 Cvektory::T2Element *Cvektory::vytvor_tabElm_pruchodu()
 {
 	T2Element *tab_pruchodu=new T2Element[File_hlavicka.pocet_vyhybek+1];
-	for(unsigned int i=0;i<=File_hlavicka.pocet_vyhybek+1;i++)
+	for(unsigned int i=0;i<File_hlavicka.pocet_vyhybek+1;i++)
 	{
 		tab_pruchodu[i].vyhybka_pocet=0;
 		tab_pruchodu[i].spojka_pocet=0;
@@ -3594,7 +3594,7 @@ Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruc
 		{
 			unsigned int nedokoncene=0;
 			//průchod uloženými vyhybkami a spojkami, kontrola na zda mám nějaké neuzavřené větve
-			for(unsigned int i=1;i<=File_hlavicka.pocet_vyhybek+1;i++)
+			for(unsigned int i=1;i<File_hlavicka.pocet_vyhybek+1;i++)
 			{
 				if((tab_pruchodu_T2E[i].vyhybka_pocet>=1 && tab_pruchodu_T2E[i].spojka_pocet>=1 && tab_pruchodu_T2E[i].vyhybka->dalsi2!=NULL && tab_pruchodu_T2E[i].spojka->predchozi2!=NULL) || (tab_pruchodu_T2E[i].vyhybka_pocet==0 && tab_pruchodu_T2E[i].spojka_pocet==0));
 				else
