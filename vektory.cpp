@@ -3581,7 +3581,7 @@ Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruc
 			else if(novy->predchozi==NULL)//přišel jsem na vyhybku z vedlejší větve
 			{
 				novy->predchozi=vyhybka_pom;
-				if(vyhybka_pom->eID!=300 && ELEMENTY->predchozi->dalsi2==NULL)vyhybka_pom->dalsi=novy;//předchozí je běžný element
+				if(vyhybka_pom->eID!=300 && vyhybka_pom->dalsi2==NULL)vyhybka_pom->dalsi=novy;//předchozí je běžný element
 				else vyhybka_pom->dalsi2=novy;//předchozí výhybka
 
 			}
@@ -3925,13 +3925,13 @@ long Cvektory::vymaz_seznam_ELEMENTY()
 {
 	long pocet_smazanych_objektu=0;
 	//načtení všech elementu do pomocného spojáku, kvůli výhybkám je nutné mazat nejen po hlavní větvi
-	T2Element *smazat=new T2Element,*pom=NULL;
+	TElement *smazat=new TElement,*pom=NULL;
 	smazat->dalsi=NULL;smazat->predchozi=smazat;
 	TElement *E=ELEMENTY->dalsi;
 	while(E!=NULL)
 	{
-		pom=new T2Element;
-		pom->vyhybka=E;
+		pom=new TElement;
+		pom=E;
 		pom->dalsi=NULL;
 		pom->predchozi=smazat->predchozi;
 		smazat->predchozi->dalsi=pom;
@@ -3941,12 +3941,9 @@ long Cvektory::vymaz_seznam_ELEMENTY()
 	}
 	delete E;E=NULL;
 	//mazání elementů a pomocných spojáků
-	while(smazat!=NULL)
+	while (smazat!=NULL)
 	{
     pocet_smazanych_objektu++;
-		delete smazat->predchozi->vyhybka;
-		smazat->predchozi->vyhybka=NULL;
-
 		delete smazat->predchozi;
 		smazat->predchozi=NULL;
 		smazat=smazat->dalsi;
@@ -3954,14 +3951,6 @@ long Cvektory::vymaz_seznam_ELEMENTY()
 	delete smazat;smazat=NULL;
 	delete pom;pom=NULL;
 	delete ELEMENTY;ELEMENTY=NULL;
-
-//	while (ELEMENTY!=NULL)
-//	{
-//		pocet_smazanych_objektu++;
-//		ELEMENTY->predchozi=NULL;
-//		delete ELEMENTY->predchozi;
-//		ELEMENTY=ELEMENTY->dalsi;
-//	};
 
 	return pocet_smazanych_objektu;
 }
@@ -8353,15 +8342,15 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 	  	{
 	  		//vytvoření nového objektu
 				O=new TObjekt;
-	  		kopiruj_objekt(dO,O);
-	  		O->element=NULL;//slouží pro následnou aktualizaci v metodě vloz_element();
+				kopiruj_objekt(dO,O);
+				O->element=NULL;//slouží pro následnou aktualizaci v metodě vloz_element();
 				//vložení nového objektu do spojáku
 				O=vloz_objekt(O);
 				O->n=dO->n;
 	  		//ukazatelové záležitosti
 	  		O=NULL;delete O;
 				dO=dO->dalsi;
-    	}
+			}
 			delete dO;dO=NULL;
 			if(obraz->edit_Objekt!=0 && !storno)F->OBJEKT_akt=vrat_objekt(obraz->edit_Objekt);
 
@@ -8386,8 +8375,8 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 				//vloz_element(E);
 				//ukazatelové záležitosi
 				E=NULL;delete E;
-	  		dE=dE->dalsi;
-    	}
+				dE=dE->dalsi;
+			}
 			delete dE;dE=NULL;
 			delete []tab_pruchodu;tab_pruchodu=NULL;vyhybka_pom=NULL;
 

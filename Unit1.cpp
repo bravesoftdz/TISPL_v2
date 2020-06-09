@@ -4196,7 +4196,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			default: break;
 		}
     //navrácení do plně statické scény
-		if(MOD==LAYOUT && (d.SCENA!=1111111))REFRESH(11111111,false);//zobrazení aktuální scény, např při ukončení posuvu musí být změny promtnuty do BMP scény a ta následně zobrazena
+		if(MOD==LAYOUT && (d.SCENA!=1111111 || pom!=NULL))REFRESH(11111111,false);//zobrazení aktuální scény, např při ukončení posuvu musí být změny promtnuty do BMP scény a ta následně zobrazena
 
 		switch(Akce_temp)
 		{
@@ -4606,6 +4606,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 	{
 		int puvJID=JID;//záloha původního JID
 		Cvektory::TBod *pom_bod_puv=pom_bod;
+		Cvektory::TObjekt *predchozi_pom=pom;
 		getJobID(X,Y);//zjištění aktuálního JID
 		if(puvJID!=JID || pom_bod_puv!=pom_bod)//pokud došlo ke změně JID, nebo změně bodu bez změny JID, jinak nemá smysl řešit
 		{
@@ -4651,7 +4652,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 				//smazání pomocných ukazatelů
 				A=NULL;B=NULL;delete A;delete B;
 			}
-			if(pom!=NULL)vytvor_statickou_scenu();
+			if((pom!=NULL && pom!=predchozi_pom) || (pom==NULL && predchozi_pom!=NULL))vytvor_statickou_scenu();
 			REFRESH(scena,false);
 		}
 
@@ -13672,13 +13673,15 @@ void __fastcall TForm1::Timer_simulaceTimer(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 {
-	Cvektory::T2Element *tab_pruchodu=new Cvektory::T2Element[2+1];
-	for(unsigned int i=0;i<2+1;i++)
+	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];
+	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+	while(E!=NULL)
 	{
-//		tab_pruchodu[i].vyhybka_pocet=0;
-//		tab_pruchodu[i].spojka_pocet=0;
-		Memo(tab_pruchodu[i].vyhybka_pocet);
+		Memo(E->name);
+		E=d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);
 	}
+	delete[]tab_pruchodu;
+  delete E;E=NULL;
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
