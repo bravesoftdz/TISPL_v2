@@ -2276,7 +2276,7 @@ void TForm1::kurzor(TKurzory typ_kurzor)
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormPaint(TObject *Sender)
-{              // Memo("ZprVozEledElesDopObjHal");Memo(d.SCENA,true);
+{
 	////////při změně rozlišení nebo obrazovky dojde k MAXIMALIZACI OKNA programu  - problém při ruční minimalizaci!
 	if(ClientWidth!=Monitor->Width&&FMaximized)
 	{
@@ -4052,8 +4052,6 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 	log(__func__);//logování
 	if(Button==mbLeft)//zohlední jenom stisk levého tlačítka myši
 	{
-    //navrácení do plně statické scény
-		if(MOD==LAYOUT && d.SCENA!=1111111)vytvor_statickou_scenu(11111111);
 		refresh_mGrid=true;//globální navracení stavu
 		if(pan_non_locked){pan_non_locked=false;Akce=NIC; kurzor(standard);pan_move_map();if(OBJEKT_akt!=NULL && puv_souradnice.x!=X && puv_souradnice.y!=Y)mGrid_on_mGrid();}//kontrola, zda nejsou překryty mGridy elementů a PmG
 		switch(Akce)
@@ -4197,6 +4195,8 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			//case TVORBA_CESTY:if(Pan_bmp!=NULL)pan_move_map();break;
 			default: break;
 		}
+    //navrácení do plně statické scény
+		if(MOD==LAYOUT && (d.SCENA!=1111111))REFRESH(11111111,false);//zobrazení aktuální scény, např při ukončení posuvu musí být změny promtnuty do BMP scény a ta následně zobrazena
 
 		switch(Akce_temp)
 		{
@@ -4454,7 +4454,7 @@ void TForm1::getJobID(int X, int Y)
 		{
 			Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
 			while(O!=NULL)
-			{                                       //pom_vyhybka
+			{
 				if(najdi_nazev_obj(X,Y,O)){JID=-6;pom=O;break;}//název objektu
 				O=O->dalsi;
 			}
@@ -4650,7 +4650,8 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 				else if((azimut>270&&azimut<360)||(azimut>90&&azimut<180))kurzor(posun_ind_ld);
 				//smazání pomocných ukazatelů
 				A=NULL;B=NULL;delete A;delete B;
-			}  if(scena==1111121)scena=1111111;
+			}
+			if(pom!=NULL)vytvor_statickou_scenu();
 			REFRESH(scena,false);
 		}
 
@@ -11776,6 +11777,7 @@ void TForm1::otevri_editaci()
 	 log(__func__);//logování
 	 log("Otevřeni editace, MOD=EDITACE");
 	 TIP="";
+   d.SCENA=0;//odstavení statické scény
 	 Timer_getjobid->Enabled=false;
 	 if(!scSplitView_LEFTTOOLBAR->Opened)scSplitView_LEFTTOOLBAR->Opened=true;
 	 nastav_focus();
@@ -16791,7 +16793,7 @@ void TForm1::rotuj_objekt_click(double rotace)
 		else pom->orientace_text=m.Rt90(pom->orientace_text+rotace);
 	}
   vytvor_obraz();
-  vytvor_statickou_scenu();
+  vytvor_statickou_scenu();//aktualizuje BMP statické scény pro vykreslení aktuálního stavu
 	REFRESH();
 }
 //---------------------------------------------------------------------------
