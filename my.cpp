@@ -111,7 +111,7 @@ double Cmy::T2Aarc(double radius,double t_lenght)
 }
 //////////////////////////////////////////////////////////////////////////////
 //ze tří zadaných stran trojúhlelníku vrátí úhel ve stupních dle parametru p 1-alfa,2-beta,3-gama
-double Cmy::getAngleFromTriangle(double a,double b,double c,short p)
+double Cmy::AngleFromTriangle(double a,double b,double c,short p)
 {
 	double RET=0;
 	switch(p)
@@ -121,6 +121,13 @@ double Cmy::getAngleFromTriangle(double a,double b,double c,short p)
 		case 3:RET=ToDeg(ArcCos((a*a+b*b-c*c)/(2*a*b)));break;//GAMA
 	}
 	return RET;
+}
+//////////////////////////////////////////////////////////////////////////////
+//vrátí hodnotu úhlu části oblouku, který svírá výchozí bod oblouku, střed pomyslné kružnice oblouku a přímka procházejí tímto středem a souřadnicemi myši, pozor, neřeší přetečení přes oblast, nebo kurzor myši zcela mimo oblast
+double Cmy::uhelObloukuVsMys(double Xoblouk,double Yoblouk,double orientace,double rotacni_uhel,double radius,double Xmys,double Ymys)
+{
+	TPointD S=getArcCenter(Xoblouk,Yoblouk,orientace,rotacni_uhel,radius);
+	return AngleFromTriangle(radius,delka(Xmys,Ymys,S.x,S.y),delka(Xmys,Ymys,Xoblouk,Yoblouk),3);
 }
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
@@ -202,6 +209,15 @@ long double Cmy::getResolution(int puvX,int puvY,int aktX,int aktY,double metry)
 }
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
+//vráti střed pomyslné kružnice, z které je oblouk tvořen
+TPointD Cmy::getArcCenter(double X,double Y,double orientace,double rotacni_uhel,double radius)
+{
+	double vychozi_uhel=90*rotacni_uhel/fabs(rotacni_uhel);//pro všechny oblouky je výchozí pro výpočet středu 90tkový oblouk, pouze záleží na směru rotace
+	TPointD ret=rotace(radius,180-orientace,vychozi_uhel);//výpočet středu
+	ret.x+=X;ret.y+=Y;
+	return ret;
+}
+/////////////////////////////////////////////////////////////////////////////
 //vrátí vzdálenost od výchozího a koncového bodu k řídícímu bodu oblouku realizovaného bézierovou křivkou, vstupním parametrem je rotační úhel a radius, připraveno pouze pro některé úhly, výpočet není sice zcela exaktní, ale v rámci požadované tolerance výborný
 double Cmy::getL(double RA,double R)
 {
@@ -234,7 +250,7 @@ TPointD *Cmy::getArcLine(double X,double Y,double orientace,double rotacni_uhel,
 	double Y2=Y1+b;//koncový bod oblouku
 	TPointD K=rotace(X2,Y2,X2,Y2-L,-90+fabs(RA));//nový koncový řídící po rotaci
 	TPointD *PL=new TPointD[4]; PL[0].x=X1;PL[0].y=Y1;PL[1].x=X1+L;PL[1].y=Y1;PL[2].x=K.x;PL[2].y=K.y;PL[3].x=X2;PL[3].y=Y2;
-	if(RA<0)zrcadli_polygon(PL,3,180);//v případě záporné hodnoty přerotuje
+	if(RA<0)zrcadli_polygon(PL,3,180);//v případě záporné hodnoty přerotuje okolo osy
 	rotace_polygon(X1,Y1,PL,3,90-OR);//orotuje se dle skutečné orientace
 	return PL;//navrácení hodnoty
 }

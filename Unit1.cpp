@@ -2348,9 +2348,9 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 void TForm1::vytvor_statickou_scenu()
 {
 	log(__func__,String(d.SCENA));//logování
-	if(Staticka_scena!=NULL){delete Staticka_scena;Staticka_scena=NULL;/*Memo("delete staticka scena",false,true);*/}//před vytvořením nové kvůli realokaci nejdříve nutné odstranit
+	if(Staticka_scena!=NULL){delete Staticka_scena;Staticka_scena=NULL;}//před vytvořením nové kvůli realokaci nejdříve nutné odstranit
 	if(d.SCENA>0 && d.SCENA!=2222222)
-	{ 			 //Memo("test vytvoření staticka scena");
+	{
 		Staticka_scena=new Graphics::TBitmap;
 		Staticka_scena->Width=ClientWidth*3;Staticka_scena->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu, nicméně nemá smysl nyní Statickou scenu antialiasingovat, protože by se stejně antialiasingovala samostatná dynamická scéna a navíc to způsobovalo zde umístěné grafické chyby
 		Zoom_predchozi_AA=Zoom;//záloha původního zoomu
@@ -13819,21 +13819,35 @@ void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 
 //REFRESH(Edit1->Text.ToInt(),false);
 
+//detekce test na první elementu v aktuálním projektu
 //	 Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
 //	 if(m.PtInSegment(E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))Memo("v");
 //	 else Memo("mimo");
 
-	 //if(d.v.POHONY->dalsi->palec==NULL)ShowMessage("NULL");
 
 	 //testovací hodnoty
-	 double a=1;//radius - E->geo.radius
-	 double b=1.2;//vzdálenost od bodu kliku ke středovému bod oblouku (ke středu kružnice, z které je oblouk tvořen) tj. vrátit si souřadnice středu (asi udělat ještě metodu
-	 double c=0.5;//vzdálenost mezi bodem kliku a výchozím bodem oblouku (E->geo.X1,E->geo.Y1) tj. = delka(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,E->geo.X1,E->geo.Y1)
+//	 double a=1;//radius - E->geo.radius
+//	 double b=1.2;//vzdálenost od bodu kliku ke středovému bod oblouku (ke středu kružnice, z které je oblouk tvořen) tj. vrátit si souřadnice středu (asi udělat ještě metodu
+//	 double c=0.5;//vzdálenost mezi bodem kliku a výchozím bodem oblouku (E->geo.X1,E->geo.Y1) tj. = m.delka(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,E->geo.X1,E->geo.Y1)
+//	 double uhel=m.AngleFromTriangle(a,b,c,3);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
+//	 ShowMessage(uhel);
 
-	 double uhel=m.getAngleFromTriangle(a,b,c,3);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
-	 ShowMessage(uhel);
-	 d.vykresli_Gelement(Canvas,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,90,uhel,10,clRed,1,String(m.round2double(m.R2Larc(1,uhel)*1000,2))+" [mm]");//vykreslení, pokud bude nepřesné metodu vylepšíme
-	 ShowMessage(m.R2Larc(1,uhel));//vrácení délky dané výseče, tj. k na(při)počítání měřené délky
+
+	 double R=10;//E->geo.radius
+	 double RA=90;//E->geo.rotacni_uhel
+	 double OR=90;//E->orientace
+	 double Xoblouku=40,Yoblouku=-30;//E->geo.X a E->geo.Y
+	 double uhel=m.uhelObloukuVsMys(Xoblouku,Yoblouku,OR,RA,R,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
+	 double delka=m.R2Larc(1,uhel);//požadovaná délka na oblouku vybraná myší, vracení délky dané výseče, tj. k na(při)počítání měřené délky
+	 d.vykresli_Gelement(Canvas,Xoblouku,Yoblouku,OR,RA,R,clBlue,2);//podkladový element (tj. normálně linka)
+	 d.vykresli_Gelement(Canvas,Xoblouku,Yoblouku,OR,uhel,R,clRed,1,String(m.round2double(delka*1000,2))+" [mm]");//vykreslení měřícího kurzoru, metodu ještě vylepším
+																																										//výpis délky dané výseče
+
+//	 TPointD S=m.getArcCenter(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,OR,RA,R);
+//	 Memo(String(S.x)+" "+String(S.y));
+//	 d.line(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,m.L2Px(S.x),m.L2Py(S.y));//pouze na testy označení stredu
+
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)

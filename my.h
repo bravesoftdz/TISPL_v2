@@ -24,7 +24,8 @@ class Cmy
 	double o2r(double number);//převede hodnotu orientace dle světových stran na hodnotu rotace (proti směru hodinových ručiček a vpravo naležato jako výchozí pozice)
 	double R2Larc(double radius,double angle);//ze zadaného radiusu vrátí obvod kruhové výseče o velikosti definované úhlem výseče ve stupních
 	double T2Aarc(double radius,double t_lenght);//ze zadaného radiusu a délky tetivy vrátí úhel kruhové výseče ve stupních
-	double getAngleFromTriangle(double a,double b,double c,short p);//ze tří zadaných stran trojúhlelníku vrátí úhel ve stupních dle parametru p 1-alfa,2-beta,3-gama
+	double AngleFromTriangle(double a,double b,double c,short p);//ze tří zadaných stran trojúhlelníku vrátí úhel ve stupních dle parametru p 1-alfa,2-beta,3-gama
+	double uhelObloukuVsMys(double Xoblouk,double Yoblouk,double orientace,double rotacni_uhel,double radius,double Xmys,double Ymys);//vrátí hodnotu úhlu části oblouku, který svírá výchozí bod oblouku, střed pomyslné kružnice oblouku a přímka procházejí tímto středem a souřadnicemi myši, pozor, neřeší přetečení přes oblast, nebo kurzor myši zcela mimo oblast
 	TPointD P2L(TPoint fyzicke);
 	TPointD P2L(long fyzickaX,long fyzickaY);
 	double P2Lx(long fyzicka);
@@ -42,6 +43,7 @@ class Cmy
 	bool cele_cislo(double number);
 	double mod_d(double number1,double number2);//možno nahradit fci fmod z math.h  - to si už tak nejsem jistý viz paramatry této funkce - ukazatel?
 	bool isFinite(double number1,double number2);
+	TPointD getArcCenter(double X,double Y,double orientace,double rotacni_uhel,double radius);//vráti střed pomyslné kružnice, z které je oblouk tvořen
 	double getL(double RA,double R);//vrátí vzdálenost od výchozího a koncového bodu k řídícímu bodu oblouku realizovaného bézierovou křivkou, vstupním parametrem je rotační úhel a radius, připraveno pouze pro některé úhly, výpočet není sice zcela exaktní, ale v rámci požadované tolerance výborný
 	TPointD *getArcLine(double X,double Y,double orientace,double rotacni_uhel,double radius);//vrátí souřadnice (4 místné pole TPointD tj. 8 hodnot) bézierovy křivky oblouku či linie dle zadaných souřadnic, X,Y jsou logické souřadnice výchozího vykreslování, parametry: orientace oblouku - dle světových stran (umí i jiné než 90° násobky), rotační úhel - pod kterým je oblouk rotován, může být záporný (znaménko určuje směr rotace, + proti směru hodinových ručiček, - po směru), max. hodnota +90 a min. hodnota -90 (je-li nastaven na 0° jedná se o linii), radius - je radius oblouku v metrech nebo pokud je rotační úhel nastaven na 0° tedy se jedná o linii, je radius délkou linie
 	TPointD_3D bezierPt(double orientace,double rotacni_uhel,double x1,double y1,double x2,double y2,double x3,double y3,double x4,double y4,double perc);//vratí bod včetně akutálního azimutu bodu z bézierovy křivky dle zadaných procent z její délky, perc jsou procenta/100 pozice na křivce v intervalu <0,1>
