@@ -110,7 +110,6 @@
 //#include <Vcl.ActnList.hpp>
 //#include <Vcl.ExtActns.hpp>
 //#include "RzSndMsg.hpp"
-//#include "vektory.h" //už vkládám pøes vykresli.h
 //#include "knihovna_objektu.h" //už vkládám pøes vykresli.h resp. vektory.h
 
 //podmínìný pøeklad, zda se jedná èí nejedná o debug
