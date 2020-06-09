@@ -792,6 +792,7 @@ public:		// User declarations
 	void set_enabled_mGrid(Cvektory::TElement *E);//zapne nebo vypne komponenty megridu v závislosti na tom zda má element pøiøazený pohon
 	void zobraz_tip(UnicodeString text="", TCanvas* canv=NULL);//prázdným (bez paremetrù) voláním  metody se tip smaže, //pokud není parametr canvas uveden, jedná se o dlouhodobé vykreslování hodnoty TIP//pokud je parametrem pøedán Canvas vykreslí se pøímo a jednorázovì
 	void zapnuti_vypnuti_panelEditace(bool zapnout);//zapnout nebo vypnout panel editace, automaticky podle MODu zobrazí èi skryje urèité prvky
+  void rotuj_objekt_click(double rotace);//zajistí rotaci objektu
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
