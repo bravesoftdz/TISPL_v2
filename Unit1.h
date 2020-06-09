@@ -593,6 +593,7 @@ private:
 	void vytvor_obraz(bool stornoUNDO=false);//slouží k vytvoøení obrazu pro storno + undo nebo jen undo
 	void vymaz_seznam_obrazu();//vymaže všechny obrazy v poøadníku
 	void vytvor_statickou_scenu();//vytvoøí BMP se statickou scénou
+	void vytvor_statickou_scenu(long SCENA);//pøetížená výše uvedené pøímo s parametrem nastavení scény
 	void zanuti_vypnuti_magnetickeho_lasa();//spustí mod magnetické laso nebo jej ukonèí s výpisem namìøené hodnoty
 
 	////promìnné

@@ -24,7 +24,7 @@ class Cmy
 	double o2r(double number);//převede hodnotu orientace dle světových stran na hodnotu rotace (proti směru hodinových ručiček a vpravo naležato jako výchozí pozice)
 	double R2Larc(double radius,double angle);//ze zadaného radiusu vrátí obvod kruhové výseče o velikosti definované úhlem výseče ve stupních
 	double T2Aarc(double radius,double t_lenght);//ze zadaného radiusu a délky tetivy vrátí úhel kruhové výseče ve stupních
-	double getAngleFromTriangle(double a,double b,double c,short p);//ze tří zadaných stran trojúhlelníku vrátí úhel dle parametru p 1-alfa,2-beta,3-gama
+	double getAngleFromTriangle(double a,double b,double c,short p);//ze tří zadaných stran trojúhlelníku vrátí úhel ve stupních dle parametru p 1-alfa,2-beta,3-gama
 	TPointD P2L(TPoint fyzicke);
 	TPointD P2L(long fyzickaX,long fyzickaY);
 	double P2Lx(long fyzicka);
