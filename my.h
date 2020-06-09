@@ -23,6 +23,8 @@ class Cmy
 	double r2o(double number);//převede hodnotu rotace (proti směru hodinových ručiček a vpravo naležato jako výchozí pozice) na orientaci dle světových stran
 	double o2r(double number);//převede hodnotu orientace dle světových stran na hodnotu rotace (proti směru hodinových ručiček a vpravo naležato jako výchozí pozice)
 	double R2Larc(double radius,double angle);//ze zadaného radiusu vrátí obvod kruhové výseče o velikosti definované úhlem výseče ve stupních
+	double T2Aarc(double radius,double t_lenght);//ze zadaného radiusu a délky tetivy vrátí úhel kruhové výseče ve stupních
+	double getAngleFromTriangle(double a,double b,double c,short p);//ze tří zadaných stran trojúhlelníku vrátí úhel dle parametru p 1-alfa,2-beta,3-gama
 	TPointD P2L(TPoint fyzicke);
 	TPointD P2L(long fyzickaX,long fyzickaY);
 	double P2Lx(long fyzicka);
@@ -90,7 +92,7 @@ class Cmy
 	double prejezd_voziku_rychlost(double CT,double MT,double PT,double WT,double DD);//vrátí požadovanou rychlost přejezdu, umí si dopočítat MT, není-li dodáno, pokud vyjde záporná rychlost tzn. nestíhá
 	double kontrola_rychlosti_prejezdu(double CT,double MT,double PT,double WT,double DD,double aRD);//vrátí rozdíl aktuální rychlosti pohonu a potřebné k uskuteční přejezdu, pokud je hodnota 0 je v pořádku, je-li záporná, přejezd se nestíhá o danou hodnotu v m/s, je-li kladná, je aktuální rychlost o danou hodnoutu hodnotu v m/s vyšší
 	long LeziVblizkostiUsecky(double x, double y, double X1, double Y1, double X2, double Y2);
-	bool LeziVoblouku(double X,double Y,double orientace,double RA,double R,double Xmys,double Ymys);//funkce ověřující, zda kurzor myši, leží v obdelníku obsaném danému oblouku, souřadnice kurzoru myši se zadávají v logických souřadnicích, ostatní v logických
+	bool LeziVoblouku(double X,double Y,double orientace,double RA,double R,double Xmys,double Ymys);//funkce ověřující, zda kurzor myši, leží v obdelníku obsaném danému oblouku, souřadnice kurzoru myši se zadávají v logických souřadnicích, ostatní v logických, pro ověření zda leží na oblouku (s určitým perimetrem okolo obloukové linie) řešení níže metoda PtInSegment
 	bool PtInCircle(double point_X,double point_Y,double center_X,double center_Y,double radius);//metoda ověří, zda se bod nachází v zadaném kruhu
 	bool PtInRectangle(double X1,double Y1,double X2,double Y2,double Xmys,double Ymys);//metoda ověří, zda se bod nachází v obdelníku
 	bool PtInStopka(double Ex,double Ey,double X,double Y,short uhel);//metoda ověří, zda se bod nachází ve stopce
