@@ -147,8 +147,8 @@ void Cvykresli::vykresli_objekty(TCanvas *canv)
 	Cvektory::TObjekt *O=v.OBJEKTY->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
 	{
-		//pokud je aktivní editace přeskočí vykreslení obrysu aktuálně editovaného objektu a zároveň pokud se jedná o Layout, scéna objektů je nastavena na statickou, přeskakuje aktuální pom objekt
-		if((F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=O->n || F->OBJEKT_akt==NULL) && (F->OBJEKT_akt==NULL && m.getValueFromPosition(SCENA,2)==1 && O!=F->pom))vykresli_objekt(canv,O);
+		//pokud je aktivní editace přeskočí vykreslení obrysu aktuálně editovaného objektu nebo pokud se jedná o Layout přeskakuje aktuální pom objekt, je-li statická scéna nastavena na 1, protože ten se nativně vykresluje samostatně do dynamické
+		if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=O->n || F->OBJEKT_akt==NULL && !(m.getValueFromPosition(SCENA,2)==1 && O==F->pom))vykresli_objekt(canv,O);
 		O=O->dalsi;
 	}
 	delete O;O=NULL;
