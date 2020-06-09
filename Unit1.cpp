@@ -2276,7 +2276,7 @@ void TForm1::kurzor(TKurzory typ_kurzor)
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormPaint(TObject *Sender)
-{
+{              // Memo("ZprVozEledElesDopObjHal");Memo(d.SCENA,true);
 	////////při změně rozlišení nebo obrazovky dojde k MAXIMALIZACI OKNA programu  - problém při ruční minimalizaci!
 	if(ClientWidth!=Monitor->Width&&FMaximized)
 	{
@@ -4450,7 +4450,7 @@ void TForm1::getJobID(int X, int Y)
 				}
 			}
 		}
-		else if(d.v.OBJEKTY->dalsi!=NULL)//hledání nadpisu objektu
+		if(JID==-1 && d.v.OBJEKTY->dalsi!=NULL)//hledání nadpisu objektu
 		{
 			Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
 			while(O!=NULL)
@@ -5334,7 +5334,8 @@ void TForm1::ESC()
 {
 	log(__func__);//logování
 	if(TIP!="Kliknutím na objekt v knihovně objektu, tažením a následným usazením přidáte objekt." || ls->Strings[304]!="" && TIP!=ls->Strings[304])TIP="";//smazání zobrazeného tipu
-	if(Akce==DRAW_HALA&&d.v.HALA.body!=NULL&&d.v.HALA.body->predchozi->n>2){d.v.vloz_bod(d.v.HALA.body->dalsi->X,d.v.HALA.body->dalsi->Y,pom,NULL,ortogonalizace_stav,true);Akce=NIC;kurzor(standard);REFRESH();}else if(Akce==DRAW_HALA){d.v.vymaz_body();Akce=NIC;kurzor(standard);REFRESH();}
+	if(Akce==DRAW_HALA&&d.v.HALA.body!=NULL&&d.v.HALA.body->predchozi->n>2){d.v.vloz_bod(d.v.HALA.body->dalsi->X,d.v.HALA.body->dalsi->Y,pom,NULL,ortogonalizace_stav,true);Akce=NIC;kurzor(standard);REFRESH();}
+	else if(Akce==DRAW_HALA){d.v.vymaz_body();Akce=NIC;kurzor(standard);REFRESH();}
 	scSplitView_MENU->Opened=false;//zavře případně otevřené menu
 	scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
 	zneplatnit_minulesouradnice();
@@ -16230,14 +16231,8 @@ void __fastcall TForm1::scGPButton_nakreslit_haluClick(TObject *Sender)
 		}
 		else if(mrYes==MB(ls->Strings[368],MB_YESNO))//"Dojde k odstranění haly, chcete pokračovat?"
 		{
-  		//smaže starou halu
-			Cvektory::TBod *B=d.v.HALA.body->dalsi;
-  		while(B!=NULL)
-			{
-  			d.v.smaz_bod(B);
-				B=B->dalsi;
-  		}
-			delete B;B=NULL;
+			//smaže starou halu
+			d.v.vymaz_body();
       vytvor_statickou_scenu();//aktualizuje BMP statické scény o nový objekt, musí být před REFRESH, není důvod měnit nastavení d.SCENA, pro budoucí refresh
   		scGPButton_nakreslit_haluClick(this);//znovu spuštění metody
 		}
