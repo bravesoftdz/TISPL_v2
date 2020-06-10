@@ -1873,14 +1873,14 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 		case 200: T=F->ls->Strings[271];break;
 		case 300: T="Výhybka";break;
 		case 301: T="Spojka";break;
-		case MaxInt: if(DEBUG)T="Zarážka";else T="";break;
+		case MaxInt: T="Zarážka";break;
 	}
 	if(101<=eID && eID<=108)T=F->ls->Strings[272];//"Operátor";
 	if(novy->name=="")//přiřazení názvu pouze v případě, že element žádné nemá, při posuvu je novému elementu přiřazeno jméno
 	{
 		unsigned int nTyp=vrat_poradi_elementu_do(novy)+1;//pokud se jedná o roboty
 		if(novy->eID==300 || novy->eID==301)nTyp=novy->idetifikator_vyhybka_spojka;
-		if(novy->eID!=MaxInt || novy->eID==MaxInt && DEBUG)novy->name=T+" "+AnsiString(nTyp);else novy->name=T;//číslování a pojmenovávání zarážek pouze v debug
+		novy->name=T+" "+AnsiString(nTyp);//číslování a pojmenovávání zarážek pouze v debug
 		novy->short_name=T.SubString(1,3)+AnsiString(nTyp);
 	}
 
@@ -2285,7 +2285,7 @@ void Cvektory::uprav_popisky_elementu(TElement *Element)
 			//výhybka a spojka
 			case 300:case 301:break;//nepřejmenovává se
 			//zarážka
-			case MaxInt:if(DEBUG)rename=true;else rename=false;break;
+			case MaxInt:rename=true;break;
 			//roboti, operátoři a ION
 			default :if(E->name.SubString(1,5)=="Robot" || E->name.SubString(1,8)==t_operator || E->name.SubString(1,7)==t_ion || E->name=="")rename=true;else rename=false;break;//musí zde být, jinak nějakým způsobem je pro robot rename nastaveno na true
 		}
@@ -3645,13 +3645,13 @@ void Cvektory::smaz_vyhybku_spojku(TElement *Element,unsigned long maz_OBJ)
 		//uložení elementu do spojáku mazaných
 		if((E->eID==300 && tab_pruchodu_T2E[E->idetifikator_vyhybka_spojka].vyhybka_pocet<=1) || (E->eID==301 && tab_pruchodu_T2E[E->idetifikator_vyhybka_spojka].spojka_pocet<=1) || (E->eID!=300 && E->eID!=301))
 		{
-	  	pom=new T2Element;
-	  	pom->vyhybka=E;
-	  	pom->n=smazat->predchozi->n+1;
-	  	pom->dalsi=NULL;
-	  	pom->predchozi=smazat->predchozi;
-	  	smazat->predchozi->dalsi=pom;
-	  	smazat->predchozi=pom;
+			pom=new T2Element;
+			pom->vyhybka=E;
+			pom->n=smazat->predchozi->n+1;
+			pom->dalsi=NULL;
+			pom->predchozi=smazat->predchozi;
+			smazat->predchozi->dalsi=pom;
+			smazat->predchozi=pom;
 			pom=NULL;delete pom;
 		}
 
@@ -3667,12 +3667,12 @@ void Cvektory::smaz_vyhybku_spojku(TElement *Element,unsigned long maz_OBJ)
   		else
 			{
   			nedokoncene++;
-  			break;
+				break;
   		}
 		}
 		if(nedokoncene==0)break;
 	}
-  delete []tab;
+	delete []tab;
 
 	////samotné mazání
 	//unsigned long objekt_n=0,O1_n=Element->objekt_n,O2_n=Element->predchozi2->objekt_n;//uchovávání n objektů, kde se nachází výhybka a spojka
@@ -3694,8 +3694,12 @@ void Cvektory::smaz_vyhybku_spojku(TElement *Element,unsigned long maz_OBJ)
 				}catch(...){;}
 			}
 			E->mGrid=NULL;
-			delete E;
-			E=NULL;
+			//odebrání ukazatele na první element
+			TObjekt *o=vrat_objekt(E->objekt_n);
+			if(o!=NULL && E==o->element)o->element=NULL;
+			o=NULL;delete o;
+			//samotné smazání elementu
+			delete E;E=NULL;
 		}
 		//vyřazení záznamu se seznamu smazat
 		smazat->predchozi=pom->predchozi;
@@ -3712,7 +3716,16 @@ void Cvektory::smaz_vyhybku_spojku(TElement *Element,unsigned long maz_OBJ)
 	//upravení počtu výhybek
 	aktualizuj_identifikator_vyhybky_spojky();
 	vymaz_seznam_VYHYBKY();
-	//pocet_vyhybek-=pocet_mazanych_vyhybek;/////////////nutno aktualizovat identifikator_vyhybka_spojka u ostatních
+	//kontrola zda nezbyl nějaký prázdný objekt bez elementů, pokud ano smaže jej
+	TObjekt *O=OBJEKTY->dalsi,*o_pom=NULL;
+	while(O!=NULL)
+	{
+		o_pom=O;
+		O=O->dalsi;
+		if(o_pom->element==NULL)smaz_objekt(o_pom);
+	}
+	o_pom=NULL;delete o_pom;
+	delete O;O=NULL;
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
@@ -3852,6 +3865,10 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu,unsigned lo
 				ELEMENTY->predchozi=Element->predchozi;//zapis do hlavičky poslední prvek seznamu
 			}
 		}
+		//odebrání ukazatele na první element
+		TObjekt *o=vrat_objekt(Element->objekt_n);
+		if(o!=NULL && Element==o->element)o->element=NULL;
+		o=NULL;delete o;
 		//odstranění z pěměti
 		delete Element;Element=NULL;
 	}
@@ -3867,13 +3884,9 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu,unsigned lo
 		}
 		//změna na zarážku
 		Element->eID=MaxInt;
-		//změna názvu a úprava číslování, pouze v debug
-		if(DEBUG)
-		{
-			Element->name="Zarážka";
-			//uprav_popisky_elementu(Element);//přesunuto na úroveň unit1 smazat1click
-		}
-		else Element->name="";
+		//změna názvu a úprava číslování
+		Element->name="Zarážka";
+		//uprav_popisky_elementu(Element);//přesunuto na úroveň unit1 smazat1click
 		//defaultní data
 		Element->data.LO1=1.5;
 		Element->OTOC_delka=0;
@@ -3912,17 +3925,62 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu,unsigned lo
 //smaže všechny elementy v daném objektu
 void Cvektory::vymaz_elementy(TObjekt *Objekt)
 {
+  T2Element *smazat=new T2Element,*pom=new T2Element;
+	smazat->n=0;smazat->dalsi=NULL;smazat->predchozi=smazat;
 	TElement *E=Objekt->element,*smaz=NULL;
 	while(E!=NULL && E->objekt_n==Objekt->n)
 	{
 		smaz=E;
 		E=E->dalsi;//můžu jít po hlavní, pokud narazím na výhybku nebo spojku metoda smaz_element(), odstraní celou vedlejší větevá
-		if(smaz->eID==300 || smaz->eID==301)smaz_element(smaz,false,Objekt->n);//velice nutné kontrola u výhybek a spojek nesmí být přeskočena
-		else smaz_element(smaz,true,Objekt->n);
+		//if(smaz->eID==300 || smaz->eID==301)//smaz_vyhybku_spojku(smaz,Objekt->n);//smaz_element(smaz,false,Objekt->n);//velice nutné kontrola u výhybek a spojek nesmí být přeskočena
+		{
+			pom=new T2Element;
+			pom->vyhybka=smaz;
+			pom->n=smazat->predchozi->n+1;
+			pom->dalsi=NULL;
+			pom->predchozi=smazat->predchozi;
+			smazat->predchozi->dalsi=pom;
+			smazat->predchozi=pom;
+			pom=NULL;delete pom;
+    }
+		//else smaz_element(smaz,true,Objekt->n);
 	}
+
+	//mazání pouze výhybek, musí být zvlášť !!!!!!!!!!!
+	pom=smazat->dalsi;
+	while(pom!=NULL)
+	{
+		if(pom->vyhybka!=NULL && pom->vyhybka->name!="" && (pom->vyhybka->eID==300 || pom->vyhybka->eID==301))
+		{
+			smaz_vyhybku_spojku(pom->vyhybka,pom->vyhybka->objekt_n);
+		}
+		pom=pom->dalsi;
+	}
+
+	//mazání normálních elementů + spojáku smazat
+	do
+	{
+		pom=smazat->predchozi;//od konce
+		if(pom->vyhybka!=NULL && pom->vyhybka->name!="")smaz_element(pom->vyhybka,true,Objekt->n);
+		//vyřazení záznamu se seznamu smazat
+		smazat->predchozi=pom->predchozi;
+		smazat->predchozi->dalsi=NULL;
+		//smazání záznamu
+		delete pom;pom=NULL;
+		//pokud jsem na hlavičce seznamu smazat, smažu hlavičku a cyklus se ukončí
+		if(smazat->predchozi->n==0)
+		{
+			delete smazat;
+			smazat=NULL;
+		}
+	}while(smazat!=NULL);
+
+	//ukazatelové záležitosti
+  pom=NULL;delete pom;
 	Objekt->element=NULL;
 	E=NULL;delete E;
 	smaz=NULL;delete smaz;
+
 }
 ////---------------------------------------------------------------------------
 //vymaže spojový seznam elementů z paměti

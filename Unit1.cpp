@@ -2276,7 +2276,7 @@ void TForm1::kurzor(TKurzory typ_kurzor)
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormPaint(TObject *Sender)
-{
+{            
 	////////při změně rozlišení nebo obrazovky dojde k MAXIMALIZACI OKNA programu  - problém při ruční minimalizaci!
 	if(ClientWidth!=Monitor->Width&&FMaximized)
 	{
@@ -2311,7 +2311,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		////vykreslení GRIDu
 		if(grid && Zoom_predchozi_AA>0.5 && (Akce==MOVE_BOD||Akce==DRAW_HALA) && prichytavat_k_mrizce==1 && MOD!=SIMULACE)d.vykresli_grid(bmp_total->Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí//vykreslení gridu
 		////VEKTORY
-		Graphics::TBitmap *bmp_in=new Graphics::TBitmap;bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;
+		Graphics::TBitmap *bmp_in=new Graphics::TBitmap;bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;   
 		if(d.SCENA>0 && d.SCENA!=2222222)bmp_in->Canvas->Draw(0,0,Staticka_scena);//STATICKÁ scéna, je volaná pouze pokud to má smysl, není přeantialiasingovaná(AA), je jen připravená (3x větší) pro AA (aby byl již dříve AAnemá to smysl, pouze je 3x větší BMP, ale jinak by se nejednalo o úsporu)
 		Zoom_predchozi_AA=Zoom;Zoom*=3;//záloha původního zoomu,nový *3 vyplývá z logiky algoritmu antialiasingu
 		short s=2;if(d.SCENA==0)s=0;//řešení pro vykreslit VŠE
@@ -2341,7 +2341,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		mGrid_knihovna->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak mGrid_knihovna->Buffer(false);
 		if(mGrid_knihovna->VisibleComponents>-1)mGrid_knihovna->VisibleComponents=true;//stačí volat toto, protože se pomocí Show (resp. Draw-SetCompontens-Set...) cyklem všechny komponenty na základě tohoto zobrazí pokud je nastaveno na -1 tak se při překreslování zohlední individuální nastavení komponent (z tohoto stavu je však pro další použítí třeba vrátit do stavu 0 nebo 1)
 		mGrid_knihovna->Show(Image_knihovna_objektu->Canvas);
-	}
+	} 
 }
 //---------------------------------------------------------------------------
 //vytvoří BMP se statickou scénou
@@ -4468,7 +4468,7 @@ void TForm1::getJobID(int X, int Y)
 			d.vykresli_Gelement(Canvas,Xoblouku,Yoblouku,OR,RA,R,clBlue,2);//podkladový element (tj. normálně linka)
 			d.vykresli_Gelement(Canvas,Xoblouku,Yoblouku,OR,uhel,R,clRed,1,String(m.round2double(delka*1000,2))+" [mm]");//vykreslení měřícího kurzoru, metodu ještě vylepším
 		}
-	}
+	}  
 	//pouze na test zatížení Memo3->Visible=true;Memo3->Lines->Add(s_mazat++);
 }
 //---------------------------------------------------------------------------
@@ -4778,7 +4778,7 @@ void TForm1::onPopUP(int X, int Y)
 			PopUPmenu->Item_vybrat_oknem->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
 			PopUPmenu->Item_cely_pohled->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
 			break;
-		}
+		}  
 		case LAYOUT://pro LAYOUT
 		{
 			//povoluje nastavení položek kopírování či smazání objektu
@@ -11577,11 +11577,12 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 				else
 				{
 					if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text_5+pom_vyhybka->name.UpperCase()+text_6,"",MB_YESNO))
-			  	{
+					{
 						d.v.smaz_objekt(pom_vyhybka);//nalezeny můžeme odstranit odstranit
 						pom_vyhybka=NULL;//delete p; nepoužívat delete je to ukazatel na ostra data
+						pom=NULL;
 						duvod_validovat=2;
-			  		DuvodUlozit(true);
+						DuvodUlozit(true);
 			  	}
 				}
 			}
@@ -11612,8 +11613,8 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 	}
 	delete E;E=NULL;
 	d.v.uprav_popisky_elementu(NULL);
-  if(d.SCENA!=0)vytvor_statickou_scenu();//aktualizuje BMP statické scény o nový objekt, musí být před REFRESH, není důvod měnit nastavení d.SCENA
-	REFRESH();//musí být na konci!!! po aktualizaci n a názvů
+	if(d.SCENA!=0)vytvor_statickou_scenu();//aktualizuje BMP statické scény o nový objekt, musí být před REFRESH, není důvod měnit nastavení d.SCENA
+  REFRESH();
 	//vytvoření obrazu
 	vytvor_obraz();
 }
@@ -13653,11 +13654,15 @@ void __fastcall TForm1::Timer_simulaceTimer(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 {
-//	TRect oblast;
-//	oblast=vrat_max_oblast();
-//	Canvas->Rectangle(oblast);
-	if(Akce!=MAGNETICKE_LASO)Akce=MAGNETICKE_LASO;
-	else Akce=NIC;
+//	if(Akce!=MAGNETICKE_LASO)Akce=MAGNETICKE_LASO;
+//	else Akce=NIC;
+	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+	while(E!=NULL)
+	{
+		Memo(E->name);
+		E=E->dalsi;
+	}
+	delete E;E=NULL;
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
