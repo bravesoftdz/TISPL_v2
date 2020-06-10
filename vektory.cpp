@@ -3464,7 +3464,7 @@ Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruc
 	////čtení pomocí sekvenčního algoritmu + ukládání
 	else
 	{
-    //pokud neexistuje hlavička vytvoří ji
+		//pokud neexistuje hlavička vytvoří ji
 		if(ELEMENTY==NULL)hlavicka_ELEMENTY();
 
 		//aktualizace počtu průchodů přes elementy, platí pouze pro výhybky a spojky
@@ -3506,7 +3506,7 @@ Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruc
 				{
 		   		if(vyhybka_pom==NULL)//přišel jsem na vyhybku z hlavní větve
 					{
-		   			E->predchozi=ELEMENTY->predchozi;
+						E->predchozi=ELEMENTY->predchozi;
 						ELEMENTY->predchozi->dalsi=E;
 		   			ELEMENTY->predchozi=E;
 					}
@@ -3631,58 +3631,57 @@ void Cvektory::smaz_vyhybku_spojku(TElement *Element,unsigned long maz_OBJ)
 	smazat->n=0;smazat->dalsi=NULL;smazat->predchozi=smazat;
 	TElement *E=NULL;
 	if(Element->eID==301)Element=Element->dalsi2;//pokud je Element spojka přesunu se na výhybku
-	uloz_vyhybku_do_seznamu(Element);
-	pom->vyhybka=Element;
-	pom->n=1;
-	pom->dalsi=NULL;
-	pom->predchozi=smazat->predchozi;
-	smazat->predchozi->dalsi=pom;
-	smazat->predchozi=pom;
-	pom=NULL;delete pom;
 
-	////naplnění seznamu smazat elementy, které budou smazány
-	E=Element->dalsi2;
-	while(E!=NULL && VYHYBKY->predchozi->n!=0)
+	//průchod skrze všechny ovlivněné elementy
+	T2Element *tab_pruchodu_T2E=vytvor_tabElm_pruchodu();
+	TPoint *tab=new TPoint[pocet_vyhybek+1];
+	E=Element;//->dalsi2;
+	while(E!=NULL)
 	{
-    //uložení do seznamu mazaných elementů
-		if(E!=NULL && VYHYBKY->predchozi->n>0)
+		//aktualizace počtu průchodů přes elementy, platí pouze pro výhybky a spojky
+		if(E->eID==300){tab_pruchodu_T2E[E->idetifikator_vyhybka_spojka].vyhybka=E;tab_pruchodu_T2E[E->idetifikator_vyhybka_spojka].vyhybka_pocet++;}
+		if(E->eID==301){tab_pruchodu_T2E[E->idetifikator_vyhybka_spojka].spojka=E;tab_pruchodu_T2E[E->idetifikator_vyhybka_spojka].spojka_pocet++;}
+
+		//uložení elementu do spojáku mazaných
+		if((E->eID==300 && tab_pruchodu_T2E[E->idetifikator_vyhybka_spojka].vyhybka_pocet<=1) || (E->eID==301 && tab_pruchodu_T2E[E->idetifikator_vyhybka_spojka].spojka_pocet<=1) || (E->eID!=300 && E->eID!=301))
 		{
-			pom=new T2Element;
-			pom->vyhybka=E;
-			pom->n=smazat->predchozi->n+1;
-			pom->dalsi=NULL;
-			pom->predchozi=smazat->predchozi;
-			smazat->predchozi->dalsi=pom;
-			smazat->predchozi=pom;
-			if(E->eID==300)pocet_mazanych_vyhybek++;
+	  	pom=new T2Element;
+	  	pom->vyhybka=E;
+	  	pom->n=smazat->predchozi->n+1;
+	  	pom->dalsi=NULL;
+	  	pom->predchozi=smazat->predchozi;
+	  	smazat->predchozi->dalsi=pom;
+	  	smazat->predchozi=pom;
+			pom=NULL;delete pom;
 		}
+
 		//posun na další element
-		if(E->eID==300)//jsem na výhybce
+    E=sekvencni_zapis_cteni(E,tab,NULL);
+
+		////jsem na vyhybce nebo spojce a mám naplněný ukazatel vyhybka_pom (udržuje poslední element v sek. vetvi), kontrola zda sem uzavřel sekundární větce
+  	unsigned int nedokoncene=0;
+  	//průchod uloženými vyhybkami a spojkami, kontrola na zda mám nějaké neuzavřené větve
+  	for(unsigned int i=1;i<File_hlavicka.pocet_vyhybek+1;i++)
 		{
-			uloz_vyhybku_do_seznamu(E);//uloži ji do seznamu, abych věděl kam se mám vrátit
-			E=E->dalsi2;//další krok bude na sekundární větev
+  		if((tab_pruchodu_T2E[i].vyhybka_pocet>=1 && tab_pruchodu_T2E[i].spojka_pocet>=1 && tab_pruchodu_T2E[i].vyhybka->dalsi2!=NULL && tab_pruchodu_T2E[i].spojka->predchozi2!=NULL) || (tab_pruchodu_T2E[i].vyhybka_pocet==0 && tab_pruchodu_T2E[i].spojka_pocet==0));
+  		else
+			{
+  			nedokoncene++;
+  			break;
+  		}
 		}
-		//jsem v sekundární vetvi na posledním elementu před spojkou
-		else if(E->eID==301 && VYHYBKY->predchozi->n!=0)
-		{
-			//navrácení na hlavní větev + kontrola zda za vyhybkou není hned spojka (výhybka v sekundární větvi)
-			E=VYHYBKY->predchozi->vyhybka->dalsi;//navrácení zpět na výhybku
-			smaz_vyhybku_ze_seznamu();//smazání výhybky kterou jsem již prošel
-		}
-		else if(VYHYBKY->predchozi->n!=0)E=E->dalsi;
+		if(nedokoncene==0)break;
 	}
-	//ukazatelové záležitosti
-	E=NULL;delete E;
-	pom=NULL;delete pom;
+  delete []tab;
 
 	////samotné mazání
-	unsigned long objekt_n=0,O1_n=Element->objekt_n,O2_n=Element->predchozi2->objekt_n;//uchovávání n objektů, kde se nachází výhybka a spojka
-  do
+	//unsigned long objekt_n=0,O1_n=Element->objekt_n,O2_n=Element->predchozi2->objekt_n;//uchovávání n objektů, kde se nachází výhybka a spojka
+	do
 	{
 		pom=smazat->predchozi;//od konce
 		E=pom->vyhybka;//uložení mazaného elementu do pomocného ukazatele
-		if(objekt_n!=0 && objekt_n!=E->objekt_n && objekt_n!=O1_n && objekt_n!=O2_n)smaz_objekt(vrat_objekt(objekt_n));//mazání prázdného objektu
-		objekt_n=E->objekt_n;
+		//if(objekt_n!=0 && objekt_n!=E->objekt_n && objekt_n!=O1_n && objekt_n!=O2_n)smaz_objekt(vrat_objekt(objekt_n));//mazání prázdného objektu
+		//objekt_n=E->objekt_n;
 		//pokud mažu výhybku nebo spojku je důležité upravit ukazatele na hlavní větvi a geometrii
 		if(E->eID==300 || E->eID==301)smaz_element(E,true,maz_OBJ);
 		else//mazání ostatních elementů
@@ -3712,6 +3711,7 @@ void Cvektory::smaz_vyhybku_spojku(TElement *Element,unsigned long maz_OBJ)
 	}while(smazat!=NULL);
 	//upravení počtu výhybek
 	aktualizuj_identifikator_vyhybky_spojky();
+	vymaz_seznam_VYHYBKY();
 	//pocet_vyhybek-=pocet_mazanych_vyhybek;/////////////nutno aktualizovat identifikator_vyhybka_spojka u ostatních
 }
 ////---------------------------------------------------------------------------
@@ -3719,7 +3719,7 @@ void Cvektory::smaz_vyhybku_spojku(TElement *Element,unsigned long maz_OBJ)
 //aktualizuje identifikátory výhybkám a spojkám, přejmenuje
 void Cvektory::aktualizuj_identifikator_vyhybky_spojky()
 {
-  //deklarace
+	//deklarace
 	TElement *E=ELEMENTY->dalsi;//průchod spojáku elementů od začátku
 	int pocet=0;//počet výhybek, začínám od začátku
 
@@ -3823,11 +3823,17 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu,unsigned lo
 		//vyřazení prvku ze seznamu a napojení prvku dalšího na prvek předchozí prku mazaného
 		if(Element->dalsi!=NULL)//ošetření proti poslednímu prvku
 		{
-			if(Element->predchozi->eID==300 && Element->predchozi->dalsi2==Element)Element->predchozi->dalsi2=Element->dalsi;
-			else Element->predchozi->dalsi=Element->dalsi;
-			if(Element->dalsi->eID==301 && Element->dalsi->predchozi2==Element)Element->dalsi->predchozi2=Element->predchozi;
-			else Element->dalsi->predchozi=Element->predchozi;
-			if(F->Akce!=F->GEOMETRIE && O!=NULL)//u geo. se upravuje geometrie ostatních elemntů zvlášť v Unit1, pokud je O==NULL mažu elementy smazaného objektu = neupravovat geo. dalších elementů
+			if(Element->predchozi!=NULL)//nutná kontrola, může dojít, že tyto ukazatele neexistují, to vzníká při odstraňování větví
+			{
+				if(Element->predchozi->eID==300 && Element->predchozi->dalsi2==Element)Element->predchozi->dalsi2=Element->dalsi;
+				else Element->predchozi->dalsi=Element->dalsi;
+			}
+			if(Element->dalsi!=NULL)//nutná kontrola, může dojít, že tyto ukazatele neexistují, to vzníká při odstraňování větví
+			{
+				if(Element->dalsi->eID==301 && Element->dalsi->predchozi2==Element)Element->dalsi->predchozi2=Element->predchozi;
+				else Element->dalsi->predchozi=Element->predchozi;
+			}
+			if(Element->dalsi!=NULL && Element->predchozi!=NULL && F->Akce!=F->GEOMETRIE && O!=NULL)//u geo. se upravuje geometrie ostatních elemntů zvlášť v Unit1, pokud je O==NULL mažu elementy smazaného objektu = neupravovat geo. dalších elementů
 			{
 				if(Element==ELEMENTY->dalsi)vloz_G_element(Element->dalsi,0,Element->predchozi->geo.X4,Element->predchozi->geo.Y4,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
 				else vloz_G_element(Element->dalsi,0,Element->geo.X1,Element->geo.Y1,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
