@@ -836,7 +836,7 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 			//update rozbalení zabalení tabulek
 			E->mGrid->Refresh();
 		}
-		E=E->dalsi;
+		E=F->d.v.dalsi_krok(E,F->OBJEKT_akt);
 	}
 
 	//pøedchozí PM

@@ -4443,31 +4443,31 @@ void TForm1::getJobID(int X, int Y)
 		}
 	}
 	else
-	{      Memo_testy->Clear(); 
+	{      
 		//detekce bodu v prvním Gelementu (segmentu) o šířce kolejí v aktuálním projektu
 		Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
 		while(E!=NULL)
 		{
-			Memo(E->name);
 			if(m.PtInSegment(E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))break;
 			E=d.v.dalsi_krok(E);
 		}
 		d.v.vymaz_seznam_VYHYBKY();//nutné použít pokud dojde k přerušení cyklu dalsi_krok()
-		if(E!=NULL)Memo("nalezen: "+E->name);
-		else Memo("nalezen: NULL",false,true);
+//		if(E!=NULL)Memo("nalezen: "+E->name);
+//		else Memo("nalezen: NULL",false,true);
 
-			///////////////////////////
-//		if(E!=NULL)
-//		{	
-//			double R=E->geo.radius;
-//			double RA=E->geo.rotacni_uhel;
-//			double OR=E->orientace;
-//			double Xoblouku=E->geo.X1,Yoblouku=E->geo.Y1;//E->geo.X a E->geo.Y
-//	  	double uhel=m.uhelObloukuVsMys(Xoblouku,Yoblouku,OR,RA,R,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
-//			double delka=m.R2Larc(1,uhel);//požadovaná délka na oblouku vybraná myší, vracení délky dané výseče, tj. k na(při)počítání měřené délky
-//			d.vykresli_Gelement(Canvas,Xoblouku,Yoblouku,OR,RA,R,clBlue,2);//podkladový element (tj. normálně linka)
-//			d.vykresli_Gelement(Canvas,Xoblouku,Yoblouku,OR,uhel,R,clRed,1,String(m.round2double(delka*1000,2))+" [mm]");//vykreslení měřícího kurzoru, metodu ještě vylepším
-//		}
+		///////////////////////////
+		if(E!=NULL && E->geo.typ!=0)
+		{	
+			REFRESH();
+			double R=E->geo.radius;
+			double RA=E->geo.rotacni_uhel;
+			double OR=E->orientace;
+			double Xoblouku=E->geo.X1,Yoblouku=E->geo.Y1;//E->geo.X a E->geo.Y
+	  	double uhel=m.uhelObloukuVsMys(Xoblouku,Yoblouku,OR,RA,R,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
+			double delka=m.R2Larc(1,uhel);//požadovaná délka na oblouku vybraná myší, vracení délky dané výseče, tj. k na(při)počítání měřené délky
+			d.vykresli_Gelement(Canvas,Xoblouku,Yoblouku,OR,RA,R,clBlue,2);//podkladový element (tj. normálně linka)
+			d.vykresli_Gelement(Canvas,Xoblouku,Yoblouku,OR,uhel,R,clRed,1,String(m.round2double(delka*1000,2))+" [mm]");//vykreslení měřícího kurzoru, metodu ještě vylepším
+		}
 	}
 	//pouze na test zatížení Memo3->Visible=true;Memo3->Lines->Add(s_mazat++);
 }
@@ -13653,6 +13653,9 @@ void __fastcall TForm1::Timer_simulaceTimer(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 {
+//	TRect oblast;
+//	oblast=vrat_max_oblast();
+//	Canvas->Rectangle(oblast);
 	if(Akce!=MAGNETICKE_LASO)Akce=MAGNETICKE_LASO;
 	else Akce=NIC;
 }
@@ -14106,7 +14109,11 @@ void __fastcall TForm1::scGPTrackBar1Change(TObject *Sender)
 		case 20:Zoom=30;break;
 	}
 	scLabel_ZOOM->Caption=AnsiString(Zoom*100)+" %";
-	if(refreshovat_scGPTrackBar)REFRESH();
+	if(refreshovat_scGPTrackBar)
+	{
+    if(MOD==LAYOUT)vytvor_statickou_scenu();//aktualizace BMP statické scény, změna ZOOMu
+		REFRESH();
+	}
 	else refreshovat_scGPTrackBar=true;
 }
 //---------------------------------------------------------------------------
@@ -16312,6 +16319,7 @@ void __fastcall TForm1::scGPCheckBox_zobrazit_rotace_jigu_na_otocichClick(TObjec
 		if(scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked)rotace_jigu=1;
 		else rotace_jigu=0;
 		if(Akce==NIC)writeINI("nastaveni_editace","rotace_jigu",rotace_jigu);//ukládat do ini pouze mimo geometrii
+    vytvor_statickou_scenu();//aktualizuje BMP statické scény, došlo ke změně
 		REFRESH();
   }
 }
@@ -16324,7 +16332,8 @@ void __fastcall TForm1::scGPCheckBox_zobrazit_poziceClick(TObject *Sender)
 		if(scGPCheckBox_zobrazit_pozice->Checked)zobrazit_pozice=1;
 		else zobrazit_pozice=0;
 		if(Akce==NIC)writeINI("nastaveni_editace","zobrazeni_pozic",zobrazit_pozice);//ukládat do ini pouze mimo geometrii
-    REFRESH();
+    vytvor_statickou_scenu();//aktualizuje BMP statické scény, došlo ke změně
+		REFRESH();
   }
 }
 //---------------------------------------------------------------------------
@@ -16343,6 +16352,7 @@ void __fastcall TForm1::scGPCheckBox1_popiskyClick(TObject *Sender)
 		if(scGPCheckBox1_popisky->Checked)zobrazit_popisky=1;
 		else zobrazit_popisky=0;
 		if(Akce==NIC)writeINI("nastaveni_editace","zobrazit_popisky",zobrazit_popisky);//ukládat do ini pouze mimo geometrii
+    vytvor_statickou_scenu();//aktualizuje BMP statické scény, došlo ke změně
 		REFRESH();
 	}
 }
@@ -16355,6 +16365,7 @@ void __fastcall TForm1::scGPCheckBox_rozmisteni_vozikuClick(TObject *Sender)
 		if(scGPCheckBox_rozmisteni_voziku->Checked)zobrazit_rozmisteni_voziku=1;
 		else zobrazit_rozmisteni_voziku=0;
 		if(Akce==NIC)writeINI("nastaveni_editace","zobrazit_rozmisteni_voziku",zobrazit_rozmisteni_voziku);//ukládat do ini pouze mimo geometrii
+    vytvor_statickou_scenu();//aktualizuje BMP statické scény, došlo ke změně
 		REFRESH();
 	}
 }
@@ -16367,6 +16378,7 @@ void __fastcall TForm1::scGPCheckBox_zobrazit_kolejeClick(TObject *Sender)
 		if(scGPCheckBox_zobrazit_koleje->Checked)zobrazit_koleje=1;
 		else zobrazit_koleje=0;
 		if(Akce==NIC)writeINI("nastaveni_editace","zobrazit_koleje",zobrazit_koleje);//ukládat do ini pouze mimo geometrii
+    vytvor_statickou_scenu();//aktualizuje BMP statické scény, došlo ke změně
 		REFRESH();
 	}
 }
@@ -16387,6 +16399,7 @@ void __fastcall TForm1::scGPCheckBox_zobrazit_palceClick(TObject *Sender)
 		if(scGPCheckBox_zobrazit_palce->Checked)zobrazit_palce=1;
 		else zobrazit_palce=0;
 		if(Akce==NIC)writeINI("nastaveni_editace","zobrazit_palce",zobrazit_palce);//ukládat do ini pouze mimo geometrii
+    vytvor_statickou_scenu();//aktualizuje BMP statické scény, došlo ke změně
 		REFRESH();
 	}
 }
@@ -16629,6 +16642,7 @@ void __fastcall TForm1::scGPCheckBox_popisek_pohonuClick(TObject *Sender)
 		if(scGPCheckBox_popisek_pohonu->Checked)zobrazit_popisek_pohonu=1;
 		else zobrazit_popisek_pohonu=0;
 		if(Akce==NIC)writeINI("nastaveni_editace","zobrazit_popisek_pohonu",zobrazit_popisek_pohonu);//ukládat do ini pouze mimo geometrii
+		vytvor_statickou_scenu();//aktualizuje BMP statické scény, došlo ke změně
 		REFRESH();
 	}
 }

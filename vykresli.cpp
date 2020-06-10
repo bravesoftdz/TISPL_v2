@@ -2313,6 +2313,22 @@ void Cvykresli::vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiStr
 				canv->Brush->Color=barva;
 				canv->Brush->Style=bsSolid;
 				canv->Rectangle(X-velikost,Y-velikost,X+velikost,Y+velikost);
+        ////vykreslení popisku
+        canv->Font->Color=barva;
+				canv->Font->Size=F->m.round(2.8*F->Zoom);if(F->aFont->Size==12)canv->Font->Size=F->m.round(2*F->Zoom);
+				canv->Font->Name=F->aFont->Name;
+	    	canv->Font->Style = TFontStyles();
+	    	canv->Brush->Color=clWhite;
+				canv->Brush->Style=bsClear;
+				AnsiString t="V";
+				if(E->eID==301)t="S";
+				t+=String(E->idetifikator_vyhybka_spojka);
+				switch((int)E->geo.orientace)
+				{
+					case 90:case 270:X=m.round(X-canv->TextWidth(t)/2.0);Y=m.round(Y-velikost*1.2-canv->TextHeight(t));break;
+					default:X=m.round(X-velikost*1.2-canv->TextWidth(t));Y=m.round(Y-canv->TextHeight(t)/2.0);break;
+				}
+				TextFraming(canv,X,Y,t);
 			}
 		}
 		break;
@@ -2392,7 +2408,7 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 		  	long x,y;
 		  	//rotace
 				switch((int)rotace)//posun referenčního bodu kvůli bílému orámování
-		  	{                                                                                                                                                                             //nechat duplicitně        //vypsání indexu stopky, v případě editace i tučně
+				{                                                                                                                                                                             //nechat duplicitně        //vypsání indexu stopky, v případě editace i tučně
 					case 0: 	rotace_textu(canv,0+900); x=m.round(X-h/2.0);   		y=m.round(Y-size+2*Z);	aktOblast=TRect(m.round(x/zAA),m.round((y-w)/zAA),m.round((x+h)/zAA),m.round(y/zAA)); TextFraming(canv,x,y,T1+" ");if(stav==3){canv->Font->Style = TFontStyles()<< fsBold;rotace_textu(canv,0+900);}TextFraming(canv,x,y-canv->TextWidth(T1+" "),T2);break;
 					case 90:	rotace_textu(canv,0);		  x=m.round(X+size-2*Z);		y=m.round(Y-h/2);     	aktOblast=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+w)/zAA),m.round((y+h)/zAA)); TextFraming(canv,x,y,T1+" ");if(stav==3)canv->Font->Style = TFontStyles()<< fsBold;TextFraming(canv,x+canv->TextWidth(T1+" "),y,T2);break;
 					case 180:	rotace_textu(canv,2700);  x=m.round(X+h/2.0);   		y=m.round(Y+size-2*Z);	aktOblast=TRect(m.round((x-h)/zAA),m.round(y/zAA),m.round(x/zAA),m.round((y+w)/zAA)); TextFraming(canv,x,y,T1+" ");if(stav==3){canv->Font->Style = TFontStyles()<< fsBold;rotace_textu(canv,2700);}TextFraming(canv,x,y+canv->TextWidth(T1+" "),T2);break;
