@@ -2445,9 +2445,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 			////Geometrie
 			if(Akce==GEOMETRIE && !editace_textu)ukonceni_geometrie();
 			////Potvrzení tvorby cesty
-			if(MOD==TVORBA_CESTY && scGPButton_ulozit->Enabled)scGPButton_OKClick(this);
-			////ukončení měření pomocí manetického lasa
-			if(MOD==MAGNETICKE_LASO)zanuti_vypnuti_magnetickeho_lasa();
+			if(MOD==TVORBA_CESTY && scGPButton_ulozit->Enabled)scGPButton_OKClick(this);;
 			////Hala
 			if(editace_textu)smaz_kurzor();
 			if(Akce==DRAW_HALA&&d.v.HALA.body!=NULL&&d.v.HALA.body->predchozi->n>2){d.v.vloz_bod(d.v.HALA.body->dalsi->X,d.v.HALA.body->dalsi->Y,pom,NULL,ortogonalizace_stav,true);Akce=NIC;kurzor(standard);TIP="";REFRESH();}
@@ -2492,8 +2490,6 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 				if(scGPImage_zamek_posunu->ImageIndex!=28)scGPImage_zamek_posunu->ImageIndex=28;//zamčen posun
 				blok=true;
 			}
-			////ukončení měření pomocí manetického lasa
-			if(MOD==MAGNETICKE_LASO)zanuti_vypnuti_magnetickeho_lasa();
 			//volání metody ESC();
 			else if(Akce==NIC && OBJEKT_akt!=NULL && !blok)KonecClick(this);else ESC();
 		}
@@ -3120,30 +3116,6 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								pan_non_locked=true;
 							}
 						}
-						else if(MOD==MAGNETICKE_LASO)
-						{
-							if(Form_definice_zakazek->Z_cesta==NULL)
-							{
-								Form_definice_zakazek->Z_cesta=new Cvektory::TZakazka;
-								Form_definice_zakazek->Z_cesta->cesta=NULL;
-								Form_definice_zakazek->Z_cesta->n=99;//uložení čísla zakázky, které je editovaná cesta
-								d.v.inicializace_cesty(Form_definice_zakazek->Z_cesta);
-							}
-							//vkládání elementů pro měření
-							if(JID==5 && pom_element!=NULL)
-							{
-								//vložení prvního elementu
-								if(Form_definice_zakazek->Z_cesta->cesta->predchozi->n==0)
-								{
-                  //posun na další element, geometrie prvního elementu není pro měření podstatná
-									if(pom_element->dalsi==NULL)pom_element=d.v.ELEMENTY->dalsi;
-									else pom_element=pom_element->dalsi;
-								}
-								//vkládání dalšího elementu, rovnou do zakázky bez jakékoliv úpravy
-								//vložení do cesty
-								d.v.vloz_segment_cesty(Form_definice_zakazek->Z_cesta,pom_element);
-							}
-            }
 						else {Akce=PAN;pan_non_locked=true;}//přímo dovolení PAN pokud se neposová objekt   = Rosťova prosba
 					}
 				}
@@ -3282,7 +3254,6 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 			}
 			break;
 			case SIMULACE:break;
-			case MAGNETICKE_LASO:zanuti_vypnuti_magnetickeho_lasa();break;//vypnutí
 			default://pro LAYOUT
 			{
 				//povoluje nastavení položek kopírování či smazání objektu
@@ -3983,8 +3954,9 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		}break;
 		case NIC://přejíždění po ploše aplikace, bez aktuálně nastavené akce
 		case BLOK:
+		case MAGNETICKE_LASO:
 		{
-			Akce=NIC;
+			if(Akce!=MAGNETICKE_LASO)Akce=NIC;
 			if(MOD!=CASOVAOSA)zneplatnit_minulesouradnice();
 			if(MOD==EDITACE && OBJEKT_akt!=NULL || MOD==LAYOUT)
 			{    //testování odstaveno
@@ -4249,250 +4221,260 @@ void TForm1::getJobID(int X, int Y)
 	JID=-1;//výchozí stav, nic nenalezeno
 	pom_element=NULL;
 	pom_komora=NULL;
-	pom_bod=NULL;
+	pom_bod=NULL;   
 	d.zprava_highlight=0;
-	if(MOD==EDITACE && !OBJEKT_akt->uzamknout_nahled)
+	if(Akce!=MAGNETICKE_LASO)
 	{
-		//nejdříve se zkouší hledat souřadnice myši v TABULCE POHONů
-		if(PmG!=NULL && OBJEKT_akt->zobrazit_mGrid)
-		{
-  		int IdxRow=PmG->GetIdxRow(X,Y);
-			//if(IdxRow==0)JID=4;//hlavička NEVYUŽITO, je tam COMBO, zachováno jako rezerva
-			if(IdxRow>0)//nějaký z řádků mimo nultého tj. hlavičky, nelze použít else, protože IdxRow -1 bude také možný výsledek
+  	if(MOD==EDITACE && !OBJEKT_akt->uzamknout_nahled)
+  	{
+  		//nejdříve se zkouší hledat souřadnice myši v TABULCE POHONů
+  		if(PmG!=NULL && OBJEKT_akt->zobrazit_mGrid)
   		{
-				int IdxCol=PmG->GetIdxColumn(X,Y);
-				//if(IdxCol==1)//řádky v prvním sloupeci
-  			{
-  				if(PmG->CheckLink(X,Y,IdxCol,IdxRow))JID=4+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
-					//else JID=XX+IdxRow;//řádek v nultém sloupci mimo odkaz - NEVYUŽITO
-  			}
-				//else JID=XX+IdxRow;//řádky v dalších sloupcích - NEVYUŽITO
-			}
-			//pokud nic nenalezeno snažím se najít PmG i nad komponenty v tabulce
-			if(JID==-1 && ((m.L2Px(OBJEKT_akt->Xp)<X+m.L2Px(OBJEKT_akt->Xp) && X+m.L2Px(OBJEKT_akt->Xp)<=m.L2Px(OBJEKT_akt->Xp)+PmG->Width && ID_tabulky==9999)||(m.L2Px(OBJEKT_akt->Xp)<X && X<=m.L2Px(OBJEKT_akt->Xp)+PmG->Width)) && ((m.L2Py(OBJEKT_akt->Yp)<Y+m.L2Py(OBJEKT_akt->Yp) && Y+m.L2Py(OBJEKT_akt->Yp)<m.L2Py(OBJEKT_akt->Yp)+PmG->Height && ID_tabulky==9999) || (m.L2Py(OBJEKT_akt->Yp)<Y && Y<m.L2Py(OBJEKT_akt->Yp)+PmG->Height)))JID=4;
-		}
-		if(JID==-1)//pokud nebyla tabulka pohonu nalezena zkouší hledat další aktivní prvky náhledu
-		{
-  		//dále TABULKY ELEMENTŮ
-			pom_element=d.v.najdi_tabulku(OBJEKT_akt,m.P2Lx(X),m.P2Ly(Y));
-  		if(pom_element!=NULL && OBJEKT_akt->zobrazit_mGrid)//možné měnit rozmístění a rozměry a tabulka nalezena, tzn. klik či přejetí myší přes tabulku
-			{
-				int IdxRow=pom_element->mGrid->GetIdxRow(X,Y);
-				if(IdxRow==0)
-  			{                                 //kvůli sloučeným buňkám
-  				if(pom_element->mGrid->CheckLink(X,Y,0,0) || pom_element->mGrid->CheckLink(X,Y,1,0))JID=100+0;//text názvu (pseudointeraktivní text - formou editu a definovaný odkazem <a>název</a>) v hlavičce
-  				else if(OBJEKT_akt->uzamknout_nahled==false)JID=1000+0;//hlavička - posouvat tabulku je možné pouze při odemčeném náhledu
-  			}
+  			int IdxRow=PmG->GetIdxRow(X,Y);
+  			//if(IdxRow==0)JID=4;//hlavička NEVYUŽITO, je tam COMBO, zachováno jako rezerva
   			if(IdxRow>0)//nějaký z řádků mimo nultého tj. hlavičky, nelze použít else, protože IdxRow -1 bude také možný výsledek
-				{
-					int IdxCol=pom_element->mGrid->GetIdxColumn(X,Y);
-					if(pom_element->mGrid->CheckLink(X,Y,IdxCol,IdxRow))JID=100+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
-					else if(IdxCol==0)//řádky v prvním sloupeci
-					{
-						//if(pom_element->mGrid->CheckLink(X,Y,IdxCol,IdxRow))JID=100+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
-						/*else */if(OBJEKT_akt->uzamknout_nahled==false)JID=1000+IdxRow;//řádky bez odkazu možné posouvat tabulku je možné pouze při odemčeném náhledu
-					}
-  				else if(OBJEKT_akt->uzamknout_nahled==false)JID=2000+IdxRow;//řádky v druhém a dalších sloupcích
-				}
+  			{
+  				int IdxCol=PmG->GetIdxColumn(X,Y);
+  				//if(IdxCol==1)//řádky v prvním sloupeci
+  				{
+  					if(PmG->CheckLink(X,Y,IdxCol,IdxRow))JID=4+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
+  					//else JID=XX+IdxRow;//řádek v nultém sloupci mimo odkaz - NEVYUŽITO
+  				}
+  				//else JID=XX+IdxRow;//řádky v dalších sloupcích - NEVYUŽITO
+  			}
+  			//pokud nic nenalezeno snažím se najít PmG i nad komponenty v tabulce
+  			if(JID==-1 && ((m.L2Px(OBJEKT_akt->Xp)<X+m.L2Px(OBJEKT_akt->Xp) && X+m.L2Px(OBJEKT_akt->Xp)<=m.L2Px(OBJEKT_akt->Xp)+PmG->Width && ID_tabulky==9999)||(m.L2Px(OBJEKT_akt->Xp)<X && X<=m.L2Px(OBJEKT_akt->Xp)+PmG->Width)) && ((m.L2Py(OBJEKT_akt->Yp)<Y+m.L2Py(OBJEKT_akt->Yp) && Y+m.L2Py(OBJEKT_akt->Yp)<m.L2Py(OBJEKT_akt->Yp)+PmG->Height && ID_tabulky==9999) || (m.L2Py(OBJEKT_akt->Yp)<Y && Y<m.L2Py(OBJEKT_akt->Yp)+PmG->Height)))JID=4;
   		}
-			else//tabulka nenalezena, takže zkouší najít ELEMENT
-			{
-				d.zprava_highlight=d.v.PtInZpravy();
-				if(d.zprava_highlight>0)JID=-102;//hledání citelné oblasti zprávy
-				else
-				{
-					pom_element=NULL;
-					if(OBJEKT_akt->uzamknout_nahled==false && (d.v.ZAKAZKA_akt==NULL || d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n==0))pom_element=F->d.v.najdi_element(OBJEKT_akt,m.P2Lx(X),m.P2Ly(Y));//pouze pokud je možné měnit rozmístění a rozměry,nutné jako samostatná podmínka
-					if(pom_element!=NULL)//element nalezen, tzn. klik či přejetí myší přes elemement nikoliv tabulku
-					{
-						if(scGPCheckBox1_popisky->Checked && pom_element->citelna_oblast.rect3.PtInRect(TPoint(X,Y)))JID=1;//byl nalezen název elementu
-						else JID=0; //byl nálezen element nikoliv jeho název, určeno k smazání či posunu elementu
-					}
-			  	else //ani element nenalezen, hledá tedy interaktivní text, obrys a kóty atp.
-			  	{
-						pom_bod=d.v.najdi_bod(OBJEKT_akt);//pokouším se najít bod v obrysu kabiny
-			  		if(pom_bod!=NULL)JID=-3;//bod nalezen
-			  		else //bod nenalezen, pokouším se najít hranu kabiny
-			  		{
-			  			pom_bod=d.v.najdi_usecku(OBJEKT_akt,2);
-			  			if(pom_bod!=NULL)JID=-2;//hrana nalezena
-			  			else
-			  			{ //testování zda se nejedná o NÁZEV či ZKRATKA objektu, ZATÍM NEREFLEKTUJE ORIENTACI NÁHLEDU
-								d.nastavit_text_popisu_objektu_v_nahledu(Canvas);
-								if(najdi_nazev_obj(X,Y,OBJEKT_akt))JID=-6;//název objektu
-			  				if(JID==-1)//hledání předávacího místa, pohon 1 nebo pohon 2
-			  				{
-			  					short pohon=najdi_popisky_PM(X,Y,OBJEKT_akt);
-			  					if(pohon>0)JID=-200-pohon;
-			  				}
-			  				if(JID==-1)//nejedná tj. testují se KÓTY
-			  				{
-			  					if(OBJEKT_akt->zobrazit_koty)//pouze pokud je náhled povolen a jsou kóty zobrazeny
-			  					{
-										short PtInKota_elementu=-1;
-										if(d.v.ZAKAZKA_akt==NULL || d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n==0)PtInKota_elementu=d.v.PtInKota_elementu(OBJEKT_akt,X,Y);
-			  						//jednotky kóty buď kabiny nebo kót elementů JID=-10
-										if(PtInKota_elementu==3)JID=-101;//hodnota LO kóty
-										else if(OBJEKT_akt->kabinaKotaX_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || OBJEKT_akt->kabinaKotaY_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || PtInKota_elementu==2)JID=-10;
-			  						else if(OBJEKT_akt->uzamknout_nahled==false)//hledám kóty kabiny
-			  						{
-			  							short PtInKota_bod=d.v.PtInKota_bod(OBJEKT_akt);//metoda vrací zda jsem v oblasti kóty nebo v její hodnotě + ukládá ukazatel na bod do pom_bod
-			  							if(PtInKota_bod==0 && pom_bod!=NULL)JID=-4;//oblast kóty - posun kóty
-											else if(PtInKota_bod==1 && pom_bod!=NULL)JID=-5;//hodnota kóty
-											else//kóty elementů RET=13
-											{
-			  								if(PtInKota_elementu==0 && pom_element!=NULL)JID=13;//oblast kóty - posun kóty
-												if(PtInKota_elementu==1 && pom_element!=NULL)JID=(10+pom_element->n)*(-1);//hodnota kóty
-			  							}
-			  						}
-			  					}
-			  				}
-			  			}
-			  		}
-					}
-				}
-			}
-		}
-		if(JID==-1&&OBJEKT_akt->uzamknout_nahled==false&&OBJEKT_akt->id==3)
-		{
-			pom_komora=d.v.najdi_komoru(OBJEKT_akt);
-			if(pom_komora!=NULL)//komora nalezena
-			{
-				JID=0;//uložení komory do JID
-				//detekce hrany komory
-				switch((int)OBJEKT_akt->orientace)
-				{
-					case 0:if(Y<=m.L2Py(OBJEKT_akt->body->dalsi->Y+d.v.vrat_velikosti_komor(pom_komora))+9&&Y>=m.L2Py(OBJEKT_akt->body->dalsi->Y+d.v.vrat_velikosti_komor(pom_komora))-3)JID=(10+pom_komora->n)*(-1);break;
-					case 90:if(X<=m.L2Px(OBJEKT_akt->body->dalsi->X+d.v.vrat_velikosti_komor(pom_komora))+9&&X>=m.L2Px(OBJEKT_akt->body->dalsi->X+d.v.vrat_velikosti_komor(pom_komora))-3)JID=(10+pom_komora->n)*(-1);break;
-					case 180:if(Y>=m.L2Py(OBJEKT_akt->body->dalsi->Y-d.v.vrat_velikosti_komor(pom_komora))-9&&Y<=m.L2Py(OBJEKT_akt->body->dalsi->Y-d.v.vrat_velikosti_komor(pom_komora))+3)JID=(10+pom_komora->n)*(-1);break;
-					case 270:if(X>=m.L2Px(OBJEKT_akt->body->dalsi->X-d.v.vrat_velikosti_komor(pom_komora))-9&&X<=m.L2Px(OBJEKT_akt->body->dalsi->X-d.v.vrat_velikosti_komor(pom_komora))+3)JID=(10+pom_komora->n)*(-1);break;
-				}
-			}
-			else if(OBJEKT_akt->zobrazit_koty)//prohledávání kót
-			{
-				short PtInKota_komory=d.v.PtInKota_komory(OBJEKT_akt,X,Y);
-				if(PtInKota_komory==0 && pom_komora!=NULL)JID=10+pom_komora->n;//oblast kóty - posun kóty
-				if(PtInKota_komory==1 && pom_komora!=NULL)JID=(10+pom_komora->n)*(-1);//hodnota kóty
-			}
-		}
-		if(JID==-1)//jiný objekt než objekt editovaný
-		{
-			Cvektory::TObjekt *O=d.v.PtInObjekt();
-			if(O!=NULL && O->n!=OBJEKT_akt->n)JID=-203;
-			O=NULL;delete O;
+  		if(JID==-1)//pokud nebyla tabulka pohonu nalezena zkouší hledat další aktivní prvky náhledu
+  		{
+    		//dále TABULKY ELEMENTŮ
+  			pom_element=d.v.najdi_tabulku(OBJEKT_akt,m.P2Lx(X),m.P2Ly(Y));
+  			if(pom_element!=NULL && OBJEKT_akt->zobrazit_mGrid)//možné měnit rozmístění a rozměry a tabulka nalezena, tzn. klik či přejetí myší přes tabulku
+  			{
+  				int IdxRow=pom_element->mGrid->GetIdxRow(X,Y);
+  				if(IdxRow==0)
+    			{                                 //kvůli sloučeným buňkám
+    				if(pom_element->mGrid->CheckLink(X,Y,0,0) || pom_element->mGrid->CheckLink(X,Y,1,0))JID=100+0;//text názvu (pseudointeraktivní text - formou editu a definovaný odkazem <a>název</a>) v hlavičce
+  					else if(OBJEKT_akt->uzamknout_nahled==false)JID=1000+0;//hlavička - posouvat tabulku je možné pouze při odemčeném náhledu
+    			}
+    			if(IdxRow>0)//nějaký z řádků mimo nultého tj. hlavičky, nelze použít else, protože IdxRow -1 bude také možný výsledek
+  				{
+  					int IdxCol=pom_element->mGrid->GetIdxColumn(X,Y);
+  					if(pom_element->mGrid->CheckLink(X,Y,IdxCol,IdxRow))JID=100+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
+  					else if(IdxCol==0)//řádky v prvním sloupeci
+  					{
+  						//if(pom_element->mGrid->CheckLink(X,Y,IdxCol,IdxRow))JID=100+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
+  						/*else */if(OBJEKT_akt->uzamknout_nahled==false)JID=1000+IdxRow;//řádky bez odkazu možné posouvat tabulku je možné pouze při odemčeném náhledu
+  					}
+    				else if(OBJEKT_akt->uzamknout_nahled==false)JID=2000+IdxRow;//řádky v druhém a dalších sloupcích
+  				}
+    		}
+  			else//tabulka nenalezena, takže zkouší najít ELEMENT
+  			{
+  				d.zprava_highlight=d.v.PtInZpravy();
+  				if(d.zprava_highlight>0)JID=-102;//hledání citelné oblasti zprávy
+  				else
+  				{
+  					pom_element=NULL;
+  					if(OBJEKT_akt->uzamknout_nahled==false && (d.v.ZAKAZKA_akt==NULL || d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n==0))pom_element=F->d.v.najdi_element(OBJEKT_akt,m.P2Lx(X),m.P2Ly(Y));//pouze pokud je možné měnit rozmístění a rozměry,nutné jako samostatná podmínka
+  					if(pom_element!=NULL)//element nalezen, tzn. klik či přejetí myší přes elemement nikoliv tabulku
+  					{
+  						if(scGPCheckBox1_popisky->Checked && pom_element->citelna_oblast.rect3.PtInRect(TPoint(X,Y)))JID=1;//byl nalezen název elementu
+  						else JID=0; //byl nálezen element nikoliv jeho název, určeno k smazání či posunu elementu
+  					}
+  					else //ani element nenalezen, hledá tedy interaktivní text, obrys a kóty atp.
+  			  	{
+  						pom_bod=d.v.najdi_bod(OBJEKT_akt);//pokouším se najít bod v obrysu kabiny
+  						if(pom_bod!=NULL)JID=-3;//bod nalezen
+  			  		else //bod nenalezen, pokouším se najít hranu kabiny
+  			  		{
+  							pom_bod=d.v.najdi_usecku(OBJEKT_akt,2);
+  			  			if(pom_bod!=NULL)JID=-2;//hrana nalezena
+  			  			else
+  							{ //testování zda se nejedná o NÁZEV či ZKRATKA objektu, ZATÍM NEREFLEKTUJE ORIENTACI NÁHLEDU
+  								d.nastavit_text_popisu_objektu_v_nahledu(Canvas);
+  								if(najdi_nazev_obj(X,Y,OBJEKT_akt))JID=-6;//název objektu
+  								if(JID==-1)//hledání předávacího místa, pohon 1 nebo pohon 2
+  			  				{
+  			  					short pohon=najdi_popisky_PM(X,Y,OBJEKT_akt);
+  									if(pohon>0)JID=-200-pohon;
+  			  				}
+  			  				if(JID==-1)//nejedná tj. testují se KÓTY
+  								{
+  			  					if(OBJEKT_akt->zobrazit_koty)//pouze pokud je náhled povolen a jsou kóty zobrazeny
+  			  					{
+  										short PtInKota_elementu=-1;
+  										if(d.v.ZAKAZKA_akt==NULL || d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n==0)PtInKota_elementu=d.v.PtInKota_elementu(OBJEKT_akt,X,Y);
+  			  						//jednotky kóty buď kabiny nebo kót elementů JID=-10
+  										if(PtInKota_elementu==3)JID=-101;//hodnota LO kóty
+  										else if(OBJEKT_akt->kabinaKotaX_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || OBJEKT_akt->kabinaKotaY_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || PtInKota_elementu==2)JID=-10;
+  			  						else if(OBJEKT_akt->uzamknout_nahled==false)//hledám kóty kabiny
+  										{
+  			  							short PtInKota_bod=d.v.PtInKota_bod(OBJEKT_akt);//metoda vrací zda jsem v oblasti kóty nebo v její hodnotě + ukládá ukazatel na bod do pom_bod
+  			  							if(PtInKota_bod==0 && pom_bod!=NULL)JID=-4;//oblast kóty - posun kóty
+  											else if(PtInKota_bod==1 && pom_bod!=NULL)JID=-5;//hodnota kóty
+  											else//kóty elementů RET=13
+  											{
+  												if(PtInKota_elementu==0 && pom_element!=NULL)JID=13;//oblast kóty - posun kóty
+  												if(PtInKota_elementu==1 && pom_element!=NULL)JID=(10+pom_element->n)*(-1);//hodnota kóty
+  			  							}
+  										}
+  			  					}
+  			  				}
+  							}
+  			  		}
+  					}
+  				}
+  			}
+  		}
+  		if(JID==-1&&OBJEKT_akt->uzamknout_nahled==false&&OBJEKT_akt->id==3)
+  		{
+  			pom_komora=d.v.najdi_komoru(OBJEKT_akt);
+  			if(pom_komora!=NULL)//komora nalezena
+  			{
+  				JID=0;//uložení komory do JID
+  				//detekce hrany komory
+  				switch((int)OBJEKT_akt->orientace)
+  				{
+  					case 0:if(Y<=m.L2Py(OBJEKT_akt->body->dalsi->Y+d.v.vrat_velikosti_komor(pom_komora))+9&&Y>=m.L2Py(OBJEKT_akt->body->dalsi->Y+d.v.vrat_velikosti_komor(pom_komora))-3)JID=(10+pom_komora->n)*(-1);break;
+  					case 90:if(X<=m.L2Px(OBJEKT_akt->body->dalsi->X+d.v.vrat_velikosti_komor(pom_komora))+9&&X>=m.L2Px(OBJEKT_akt->body->dalsi->X+d.v.vrat_velikosti_komor(pom_komora))-3)JID=(10+pom_komora->n)*(-1);break;
+  					case 180:if(Y>=m.L2Py(OBJEKT_akt->body->dalsi->Y-d.v.vrat_velikosti_komor(pom_komora))-9&&Y<=m.L2Py(OBJEKT_akt->body->dalsi->Y-d.v.vrat_velikosti_komor(pom_komora))+3)JID=(10+pom_komora->n)*(-1);break;
+  					case 270:if(X>=m.L2Px(OBJEKT_akt->body->dalsi->X-d.v.vrat_velikosti_komor(pom_komora))-9&&X<=m.L2Px(OBJEKT_akt->body->dalsi->X-d.v.vrat_velikosti_komor(pom_komora))+3)JID=(10+pom_komora->n)*(-1);break;
+  				}
+  			}
+  			else if(OBJEKT_akt->zobrazit_koty)//prohledávání kót
+  			{
+  				short PtInKota_komory=d.v.PtInKota_komory(OBJEKT_akt,X,Y);
+  				if(PtInKota_komory==0 && pom_komora!=NULL)JID=10+pom_komora->n;//oblast kóty - posun kóty
+  				if(PtInKota_komory==1 && pom_komora!=NULL)JID=(10+pom_komora->n)*(-1);//hodnota kóty
+  			}
+  		}
+  		if(JID==-1)//jiný objekt než objekt editovaný
+  		{
+  			Cvektory::TObjekt *O=d.v.PtInObjekt();
+  			if(O!=NULL && O->n!=OBJEKT_akt->n)JID=-203;
+  			O=NULL;delete O;
+  		}
+  	}
+  	if(MOD==LAYOUT && !d.v.PP.zamek_layoutu)//pro schéma, zjišťování jidů pro body a úsečky
+  	{
+  		/////////////JID udává pouze akci, není třeba aby se k němu přičítalo i číslo bodu, bod je držen jako ukazatel pom_bod/////////////
+  		//-102; citelná oblast zprávy
+  		//-6; název objektu
+  		//-2; hodnota kóty bodu (přímka [A,B] uložena v bodě B)
+  		//-1=NIC!!!!!!!!!!!!!!!
+  		//0; bod haly nebo objektu
+  		//1; úsečka haly nebo objektu
+  		//2; oblast kóty bodu (přímka [A,B] uložena v bodě B)
+  		//3; oblas objektu
+  		//4; hrana objektu
+  		//5; element v objektu
+  		//6; výhybka nebo spojnice mezi výhybkou a spojoku
+  		d.zprava_highlight=d.v.PtInZpravy();
+  		if(d.zprava_highlight>0)JID=-102;//hledání citelné oblasti zprávy
+  		if(JID==-1)//hledání citelných oblastí elementů pro otevírání náhledu (element mimo kabinu),!!!!!!!!!!!!!!!!!!!!!!způsobí zamrzání (nově předěláno - sledovat)!!!!!!!!!!!!!!!!!!!
+  		{
+  			pom_element=NULL;
+  			Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+  			while(E!=NULL)
+  			{
+  				if(d.v.oblast_elementu(E,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+  				{
+  					if(E->eID==300 || E->eID==301)JID=6;
+  					else JID=5;
+  					pom_element=E;
+  					break;//pokud chci první nalezený element ... break, pokud chci poslední nalezeny bez breaku (např. problém překrývání 2 citelných oblastí)
+  				}
+  				//hledání zda nejsem na vedlejší větvi výhybky
+  				else if(E->eID==300 && E->dalsi2==E->predchozi2 && m.LeziVblizkostiUsecky(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,E->geo.X4,E->geo.Y4,E->predchozi2->geo.X4,E->predchozi2->geo.Y4)<=1)
+  				{
+  					JID=6;
+  					pom_element=E;
+  					break;
+          }
+  				E=d.v.dalsi_krok(E);
+  			}
+  			E=NULL;delete E;
+  			d.v.vymaz_seznam_VYHYBKY();//musí být pokud může dojít k přerušení průchodu alg. dalsi_krok
+  		}
+  		if(JID==-1&&d.v.OBJEKTY->dalsi!=NULL&&Akce==NIC)
+  		{
+  			pom=NULL;pom_bod=NULL;
+  			pom=d.v.PtInObjekt();
+  			if(pom!=NULL)//byl nalezen objekt
+  			{
+  				pom_bod=d.v.najdi_usecku(pom,5);
+  				if(pom_bod!=NULL)JID=4;//nalezena hrana objektu
+  				else JID=3;//nalezen pouze objekt
+  			}
+  		}
+  		if(JID==-1&&(d.v.HALA.body!=NULL||pom!=NULL&&pom->body!=NULL)&&Akce==NIC)//má smysl pouze pokd existuje hala nebo objekt
+  		{
+  			pom_bod=d.v.najdi_bod(pom);//pokouším se najít bod
+  			if(pom_bod!=NULL)JID=0;//bod nalezen
+  			else//bod nenalezen, pokusí se najít úsečku
+  	  	{
+  				pom_bod=d.v.najdi_usecku(pom,5);//druhý parametr udává přesnost s jakou hledám, popřípadě velikost oblasti kolem úsečky
+  				if(pom_bod!=NULL)JID=1;//usečka nalezena
+  				else//usečka nenalezena, pokusí se najít kótu
+  				{
+  					short PtInKota_bod=d.v.PtInKota_bod(pom);//metoda vrací zda jsem v oblasti kóty nebo v její hodnotě + ukládá ukazatel na bod do pom_bod
+  					if(PtInKota_bod==0 && pom_bod!=NULL)JID=2;//oblast kóty - posun kóty
+  					if(PtInKota_bod==1 && pom_bod!=NULL)JID=-2;//hodnota kóty
+  				}
+  			}
+  		}
+  		if(JID==-1 && d.v.OBJEKTY->dalsi!=NULL)//hledání nadpisu objektu
+  		{
+  			Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
+  			while(O!=NULL)
+  			{
+  				if(najdi_nazev_obj(X,Y,O)){JID=-6;pom=O;break;}//název objektu
+  				O=O->dalsi;
+  			}
+  			O=NULL;delete O;
+  		}
+  	}
+  	//hledání citelné oblasti zprávy, vždy vyhledávat(i při zamčeném layoutu či editaci)!!
+  	if(JID==-1 && (d.v.PP.zamek_layoutu || OBJEKT_akt!=NULL && OBJEKT_akt->uzamknout_nahled))
+  	{
+  		d.zprava_highlight=d.v.PtInZpravy();
+  		if(d.zprava_highlight>0)JID=-102;
 		}
 	}
-	if(MOD==LAYOUT && !d.v.PP.zamek_layoutu)//pro schéma, zjišťování jidů pro body a úsečky
-	{
-		/////////////JID udává pouze akci, není třeba aby se k němu přičítalo i číslo bodu, bod je držen jako ukazatel pom_bod/////////////
-		//-102; citelná oblast zprávy
-		//-6; název objektu
-		//-2; hodnota kóty bodu (přímka [A,B] uložena v bodě B)
-    //-1=NIC!!!!!!!!!!!!!!!
-		//0; bod haly nebo objektu
-		//1; úsečka haly nebo objektu
-		//2; oblast kóty bodu (přímka [A,B] uložena v bodě B)
-		//3; oblas objektu
-		//4; hrana objektu
-		//5; element v objektu
-		//6; výhybka nebo spojnice mezi výhybkou a spojoku
-		d.zprava_highlight=d.v.PtInZpravy();
-		if(d.zprava_highlight>0)JID=-102;//hledání citelné oblasti zprávy
-		if(JID==-1)//hledání citelných oblastí elementů pro otevírání náhledu (element mimo kabinu),!!!!!!!!!!!!!!!!!!!!!!způsobí zamrzání (nově předěláno - sledovat)!!!!!!!!!!!!!!!!!!!
-		{
-			pom_element=NULL;
-			Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-			while(E!=NULL)
-			{
-				if(d.v.oblast_elementu(E,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
-				{
-					if(E->eID==300 || E->eID==301)JID=6;
-					else JID=5;
-					pom_element=E;
-					break;//pokud chci první nalezený element ... break, pokud chci poslední nalezeny bez breaku (např. problém překrývání 2 citelných oblastí)
-				}
-				//hledání zda nejsem na vedlejší větvi výhybky
-				else if(E->eID==300 && E->dalsi2==E->predchozi2 && m.LeziVblizkostiUsecky(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,E->geo.X4,E->geo.Y4,E->predchozi2->geo.X4,E->predchozi2->geo.Y4)<=1)
-				{
-        	JID=6;
-					pom_element=E;
-					break;
-        }
-				E=d.v.dalsi_krok(E);
-			}
-			E=NULL;delete E;
-			d.v.vymaz_seznam_VYHYBKY();//musí být pokud může dojít k přerušení průchodu alg. dalsi_krok
-		}
-		if(JID==-1&&d.v.OBJEKTY->dalsi!=NULL&&Akce==NIC)
-		{
-			pom=NULL;pom_bod=NULL;
-			pom=d.v.PtInObjekt();
-			if(pom!=NULL)//byl nalezen objekt
-			{
-				pom_bod=d.v.najdi_usecku(pom,5);
-				if(pom_bod!=NULL)JID=4;//nalezena hrana objektu
-				else JID=3;//nalezen pouze objekt
-			}
-		}
-		if(JID==-1&&(d.v.HALA.body!=NULL||pom!=NULL&&pom->body!=NULL)&&Akce==NIC)//má smysl pouze pokd existuje hala nebo objekt
-		{
-			pom_bod=d.v.najdi_bod(pom);//pokouším se najít bod
-			if(pom_bod!=NULL)JID=0;//bod nalezen
-			else//bod nenalezen, pokusí se najít úsečku
-	  	{
-				pom_bod=d.v.najdi_usecku(pom,5);//druhý parametr udává přesnost s jakou hledám, popřípadě velikost oblasti kolem úsečky
-				if(pom_bod!=NULL)JID=1;//usečka nalezena
-				else//usečka nenalezena, pokusí se najít kótu
-				{
-					short PtInKota_bod=d.v.PtInKota_bod(pom);//metoda vrací zda jsem v oblasti kóty nebo v její hodnotě + ukládá ukazatel na bod do pom_bod
-					if(PtInKota_bod==0 && pom_bod!=NULL)JID=2;//oblast kóty - posun kóty
-					if(PtInKota_bod==1 && pom_bod!=NULL)JID=-2;//hodnota kóty
-				}
-			}
-		}
-		if(JID==-1 && d.v.OBJEKTY->dalsi!=NULL)//hledání nadpisu objektu
-		{
-			Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
-			while(O!=NULL)
-			{
-				if(najdi_nazev_obj(X,Y,O)){JID=-6;pom=O;break;}//název objektu
-				O=O->dalsi;
-			}
-			O=NULL;delete O;
-		}
-	}
-	//měření pomocí magnetického lasa
-	if(MOD==MAGNETICKE_LASO)
-	{
-		//JID není úplně třeba stačí plnit pom_element
-		//5; element v objektu
-		pom_element=NULL;
+	else
+	{      Memo_testy->Clear(); 
+		//detekce bodu v prvním Gelementu (segmentu) o šířce kolejí v aktuálním projektu
 		Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
 		while(E!=NULL)
 		{
-			if(d.v.oblast_elementu(E,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
-			{
-				JID=5;
-				pom_element=E;
-				break;//pokud chci první nalezený element ... break, pokud chci poslední nalezeny bez breaku (např. problém překrývání 2 citelných oblastí)
-			}
+			Memo(E->name);
+			if(m.PtInSegment(E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))break;
 			E=d.v.dalsi_krok(E);
 		}
-		E=NULL;delete E;
-		d.v.vymaz_seznam_VYHYBKY();//musí být pokud může dojít k přerušení průchodu alg. dalsi_krok
-	}
-	//hledání citelné oblasti zprávy, vždy vyhledávat(i při zamčeném layoutu či editaci)!!
-	if(JID==-1 && (d.v.PP.zamek_layoutu || OBJEKT_akt!=NULL && OBJEKT_akt->uzamknout_nahled))
-	{
-		d.zprava_highlight=d.v.PtInZpravy();
-		if(d.zprava_highlight>0)JID=-102;
+		d.v.vymaz_seznam_VYHYBKY();//nutné použít pokud dojde k přerušení cyklu dalsi_krok()
+		if(E!=NULL)Memo("nalezen: "+E->name);
+		else Memo("nalezen: NULL",false,true);
+
+			///////////////////////////
+//		if(E!=NULL)
+//		{	
+//			double R=E->geo.radius;
+//			double RA=E->geo.rotacni_uhel;
+//			double OR=E->orientace;
+//			double Xoblouku=E->geo.X1,Yoblouku=E->geo.Y1;//E->geo.X a E->geo.Y
+//	  	double uhel=m.uhelObloukuVsMys(Xoblouku,Yoblouku,OR,RA,R,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
+//			double delka=m.R2Larc(1,uhel);//požadovaná délka na oblouku vybraná myší, vracení délky dané výseče, tj. k na(při)počítání měřené délky
+//			d.vykresli_Gelement(Canvas,Xoblouku,Yoblouku,OR,RA,R,clBlue,2);//podkladový element (tj. normálně linka)
+//			d.vykresli_Gelement(Canvas,Xoblouku,Yoblouku,OR,uhel,R,clRed,1,String(m.round2double(delka*1000,2))+" [mm]");//vykreslení měřícího kurzoru, metodu ještě vylepším
+//		}
 	}
 	//pouze na test zatížení Memo3->Visible=true;Memo3->Lines->Add(s_mazat++);
 }
 //---------------------------------------------------------------------------
 //dle místa kurzoru a vrácené JID (job id) nastaví úlohu
 void TForm1::setJobIDOnMouseMove(int X, int Y)
-{
+{             
 	log(__func__);//logování
 	if(MOD==EDITACE)
 	{
@@ -4503,8 +4485,8 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 			try//může se stát, že k tomuto dojde v době načítání z datového obrazu ... proto ošetření
 			{pom_element->mGrid->Highlight=false;}//tabulka zrušení highlightnutí
 			catch(...){;}
-		}
-  	int puvJID=JID;//záloha původního JID
+		}     
+		int puvJID=JID;//záloha původního JID
 		Cvektory::TElement *pom_element_puv=pom_element;//pouze ošetření, aby neproblikával mGrid elementu, při přejíždění přes element
 		Cvektory::TKomora *pom_komora_puv=pom_komora;
 		getJobID(X,Y);//zjištění aktuálního JID
@@ -4606,7 +4588,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 	{
 		int puvJID=JID;//záloha původního JID
 		Cvektory::TBod *pom_bod_puv=pom_bod;
-		Cvektory::TObjekt *predchozi_pom=pom;
+		Cvektory::TObjekt *predchozi_pom=pom; 
 		getJobID(X,Y);//zjištění aktuálního JID
 		if(puvJID!=JID || pom_bod_puv!=pom_bod)//pokud došlo ke změně JID, nebo změně bodu bez změny JID, jinak nemá smysl řešit
 		{
@@ -6092,6 +6074,7 @@ void TForm1::add_vyhybka_spojka()
 			if(zobrazit_popisek_pohonu==1)scGPCheckBox_popisek_pohonu->Checked=true;
 			else scGPCheckBox_popisek_pohonu->Checked=false;
 			TIP=ls->Strings[478];//zobrazení nápovědy jak otevřít editace sekundární větve po dokončení vložení výhybky
+      vytvor_statickou_scenu();//aktualizace BMP statické scény, nově výhybka a spojka, nutné aktualizovat
 			REFRESH();//nesmí zde být způsobí špatné vykreslení elementů (nekompletní linka)
 		}
 		//pozicování mgridu, doladit podle finálních rozměrů tabulky
@@ -13670,13 +13653,8 @@ void __fastcall TForm1::Timer_simulaceTimer(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 {
-	Cvektory::TElement *E=d.v.OBJEKTY->predchozi->element;
-	while(E!=NULL)
-	{
-		Memo(E->name);
-		E=d.v.dalsi_krok(E,d.v.OBJEKTY->predchozi);
-	}
-	E=NULL;delete E;
+	if(Akce!=MAGNETICKE_LASO)Akce=MAGNETICKE_LASO;
+	else Akce=NIC;
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -16634,7 +16612,7 @@ void __fastcall TForm1::scGPButton_bug_reportClick(TObject *Sender)
 void __fastcall TForm1::Timer_getjobidTimer(TObject *Sender)
 {
 	log(__func__);
-	if(Akce==NIC)
+	if(Akce==NIC || Akce==MAGNETICKE_LASO)
 	{
 		setJobIDOnMouseMove(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
 	}
@@ -16696,38 +16674,6 @@ void __fastcall TForm1::scLabel_statusbar_0Click(TObject *Sender)
 
 	akutalizace_stavu_prichytavani_vSB();
 	REFRESH();
-}
-//---------------------------------------------------------------------------
-//spustí mod magnetické laso nebo jej ukončí s výpisem naměřené hodnoty
-void TForm1::zanuti_vypnuti_magnetickeho_lasa()
-{
-	//zapnutí modu pro měření pomocí magnetického lasa
-	if(MOD!=MAGNETICKE_LASO)
-	{
-		MOD=MAGNETICKE_LASO;
-	}
-	//vypnutí modu magnetického lasa
-	else
-	{
-		//sečtení délky
-		double delka=0;
-		Cvektory::TElement *E=Form_definice_zakazek->Z_cesta->cesta->predchozi->Element;
-		while(E!=NULL && E->n>0)
-		{
-			delka+=E->geo.delka;
-			if(E==Form_definice_zakazek->Z_cesta->cesta->dalsi->Element)break;
-			E=E->predchozi;
-		}
-		E=NULL;delete E;
-		MB("Celková délka je "+AnsiString(delka)+" m.");
-		//mazání zakázky
-		d.v.vymaz_cestu_zakazky(Form_definice_zakazek->Z_cesta);
-		d.v.vymaz_davky_zakazky(Form_definice_zakazek->Z_cesta);
-		delete Form_definice_zakazek->Z_cesta;Form_definice_zakazek->Z_cesta=NULL;//smaže mazaný prvek
-		//přepnutí modu
-		if(OBJEKT_akt==NULL)MOD=LAYOUT;
-		else MOD=EDITACE;
-	}
 }
 //---------------------------------------------------------------------------
 //zapnout nebo vypnout panel editace, automaticky podle MODu zobrazí či skryje určité prvky

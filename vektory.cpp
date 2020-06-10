@@ -3460,7 +3460,7 @@ Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruc
 	}
 	////čtení pomocí sekvenčního algoritmu + ukládání
 	else
-	{   // F->log(__func__,"   "+E->name);
+	{
 		//aktualizace počtu průchodů přes elementy, konkrétně přes výhybky a spojky
 		if(E->eID==300)tab_pruchodu_T2E[E->idetifikator_vyhybka_spojka].vyhybka_pocet++;
 		if(E->eID==301)tab_pruchodu_T2E[E->idetifikator_vyhybka_spojka].spojka_pocet++;
@@ -3468,11 +3468,6 @@ Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruc
 		//pokud neexistuje hlavička vytvoří ji
 		if(ELEMENTY==NULL)hlavicka_ELEMENTY();
 		TElement *novy=NULL;//nový element
-
-//		if(vyhybka_pom!=NULL && vyhybka_pom->eID==300 && tab_pruchodu_T2E[vyhybka_pom->idetifikator_vyhybka_spojka].vyhybka_pocet==2)
-//		{              F->Sv(vyhybka_pom->name);
-//			vyhybka_pom->dalsi=E;
-//		}
 
 		////první průchod skre spojku, výhybku nebo průchod přes ostatní elementy
 		if(E->eID==300 && tab_pruchodu_T2E[E->idetifikator_vyhybka_spojka].vyhybka==NULL || E->eID==301 && tab_pruchodu_T2E[E->idetifikator_vyhybka_spojka].spojka==NULL || E->eID!=300 && E->eID!=301)
@@ -3514,11 +3509,11 @@ Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruc
 						ELEMENTY->predchozi->dalsi=novy;
 		   			ELEMENTY->predchozi=novy;
 					}
-		   		else//přišel jsem na vyhybku z vedlejší větve
+					else//přišel jsem na vyhybku z vedlejší větve
 					{
 						novy->predchozi=vyhybka_pom;
-						if(vyhybka_pom->eID==300 && vyhybka_pom->dalsi2==NULL)vyhybka_pom->dalsi2=novy;//předchozí je běžný element
-						else vyhybka_pom->dalsi=novy;//předchozí výhybka
+						if(vyhybka_pom->eID==300 && tab_pruchodu_T2E[vyhybka_pom->idetifikator_vyhybka_spojka].vyhybka_pocet==1)vyhybka_pom->dalsi2=novy;//předchozí je výhybka, na která byla v předchozím kroku vložena = teď jsem na dalsi2 (vedlejší větev)
+						else vyhybka_pom->dalsi=novy;//běžný element, nebo výhybka z hlavní větve
 					}
 				}
 				//předchozí element by spojka pro aktuální výhybku, nedelám nic
@@ -3586,8 +3581,8 @@ Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruc
 			else if(novy->predchozi==NULL)//přišel jsem na vyhybku z vedlejší větve
 			{
 				novy->predchozi=vyhybka_pom;
-				if(vyhybka_pom->eID!=300 && vyhybka_pom->dalsi2==NULL)vyhybka_pom->dalsi=novy;//předchozí je běžný element
-				else vyhybka_pom->dalsi2=novy;//předchozí výhybka
+				if(vyhybka_pom->eID==300 && vyhybka_pom->dalsi2==NULL)vyhybka_pom->dalsi2=novy;//předchozí je výhybka, která nema nadefinovanou vedlejší větev
+				else vyhybka_pom->dalsi=novy;//předchozí je běžný element, nebo vyhybka, která nemá nadefinovanou hlavní vetev
 			}
 			if(novy!=ELEMENTY->predchozi)vyhybka_pom=novy;//druhý průchod výhybkou v sekundarní větvi, tz. nevrátil sem se na hlavní větev musím tedy udržovat poslední element v vyhybka_pom
 		}
