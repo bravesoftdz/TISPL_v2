@@ -3423,17 +3423,21 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			if(souradnice.x==-1000)souradnice=akt_souradnice_kurzoru;
 			else if(pom_element_temp!=NULL)rotace_symbolu=rotace_symbol(m.Rt90(pom_element_temp->geo.orientace),m.L2Px(souradnice.x),m.L2Py(souradnice.y));//zjistění rotace symbolu
 			souradnice=uprav_bod_vlozeni_elementu(souradnice,rotace_symbolu);//uprava souřadnic posun robota, bod vkládání na ramenu
-			Canvas->Pen->Color=clBlack;
-			Canvas->Pen->Mode=pmNotXor;
-			Canvas->Pen->Style=psDot;
-			Canvas->Pen->Width=1;
-			Canvas->Brush->Color=clWhite;
-			Canvas->Brush->Style=bsClear;
-			Canvas->Rectangle(minule_souradnice_kurzoru.x-10,minule_souradnice_kurzoru.y-10,minule_souradnice_kurzoru.x+10,minule_souradnice_kurzoru.y+10);
-			if(d.v.vyhybka_pom!=NULL && minule_souradnice_kurzoru.x>168 && minule_souradnice_kurzoru.y>34)d.line(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,m.L2Px(d.v.vyhybka_pom->geo.X4),m.L2Py(d.v.vyhybka_pom->geo.Y4));
-			minule_souradnice_kurzoru=m.L2P(souradnice);
-			Canvas->Rectangle(m.L2Px(souradnice.x)-10,m.L2Py(souradnice.y)-10,m.L2Px(souradnice.x)+10,m.L2Py(souradnice.y)+10);
-			if(d.v.vyhybka_pom!=NULL)d.line(Canvas,m.L2Px(souradnice.x),m.L2Py(souradnice.y),m.L2Px(d.v.vyhybka_pom->geo.X4),m.L2Py(d.v.vyhybka_pom->geo.Y4));
+			//ošetření proti vykreslení, když je kurzor mimo pracovní plochu
+			if(X>scSplitView_LEFTTOOLBAR->Width && Y<scGPPanel_statusbar->Top && Y>scGPPanel_mainmenu->Height)
+			{
+		  	Canvas->Pen->Color=clBlack;
+		  	Canvas->Pen->Mode=pmNotXor;
+		  	Canvas->Pen->Style=psDot;
+		  	Canvas->Pen->Width=1;
+		  	Canvas->Brush->Color=clWhite;
+		  	Canvas->Brush->Style=bsClear;
+		  	Canvas->Rectangle(minule_souradnice_kurzoru.x-10,minule_souradnice_kurzoru.y-10,minule_souradnice_kurzoru.x+10,minule_souradnice_kurzoru.y+10);
+		  	if(d.v.vyhybka_pom!=NULL && minule_souradnice_kurzoru.x>168 && minule_souradnice_kurzoru.y>34)d.line(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,m.L2Px(d.v.vyhybka_pom->geo.X4),m.L2Py(d.v.vyhybka_pom->geo.Y4));
+		  	minule_souradnice_kurzoru=m.L2P(souradnice);
+		  	Canvas->Rectangle(m.L2Px(souradnice.x)-10,m.L2Py(souradnice.y)-10,m.L2Px(souradnice.x)+10,m.L2Py(souradnice.y)+10);
+				if(d.v.vyhybka_pom!=NULL)d.line(Canvas,m.L2Px(souradnice.x),m.L2Py(souradnice.y),m.L2Px(d.v.vyhybka_pom->geo.X4),m.L2Py(d.v.vyhybka_pom->geo.Y4));
+			}
 		}break;
 		case MOVE://posun objektu, v editaci funkce posunu objektu odstavena
 		{
@@ -6554,7 +6558,7 @@ void TForm1::vlozeni_editace_geometrie()
 	short orientace=0;
 	if(posledni_editovany_element!=NULL){orientace=posledni_editovany_element->orientace;}else {orientace=d.v.vrat_posledni_element_objektu(OBJEKT_akt)->orientace;}
 	//////dokončování / začátek geometrie sekundární větve v objektu spojky
-	if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->objekt_n==OBJEKT_akt->n && posledni_editovany_element->dalsi->predchozi2==posledni_editovany_element || posledni_editovany_element!=NULL && posledni_editovany_element->dalsi2!=NULL && posledni_editovany_element->dalsi2->eID==301 && posledni_editovany_element->objekt_n!=OBJEKT_akt->n && posledni_editovany_element->dalsi2->objekt_n==OBJEKT_akt->n && posledni_editovany_element->dalsi2->predchozi2==posledni_editovany_element)
+	if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->objekt_n!=OBJEKT_akt->n && posledni_editovany_element->dalsi->objekt_n==OBJEKT_akt->n && posledni_editovany_element->dalsi->predchozi2==posledni_editovany_element || posledni_editovany_element!=NULL && posledni_editovany_element->dalsi2!=NULL && posledni_editovany_element->dalsi2->eID==301 && posledni_editovany_element->objekt_n!=OBJEKT_akt->n && posledni_editovany_element->dalsi2->objekt_n==OBJEKT_akt->n && posledni_editovany_element->dalsi2->predchozi2==posledni_editovany_element)
 	{
 		unsigned long n=posledni_editovany_element->objekt_n;
 		Cvektory::TElement *E=NULL;
@@ -6659,7 +6663,7 @@ void TForm1::vlozeni_editace_geometrie()
 		E=NULL;delete E;
 	}
 	//////editace pohonu ve středu
-	else if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->objekt_n==posledni_editovany_element->objekt_n)
+	else if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID!=301 && posledni_editovany_element->dalsi->objekt_n==posledni_editovany_element->objekt_n)
 	{
 		//vložení úseku
 		if(posun_dalsich_elementu)
@@ -6691,7 +6695,7 @@ void TForm1::vlozeni_editace_geometrie()
 		E=NULL;delete E;
 	}
 	//////přidávání za poslední geometrii (hlavní i vedlejší)
-	else if(posledni_editovany_element!=NULL && (posledni_editovany_element->dalsi==NULL || (posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->objekt_n!=posledni_editovany_element->objekt_n)))
+	else if(posledni_editovany_element!=NULL && (posledni_editovany_element->dalsi==NULL || (posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301) || (posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->objekt_n!=posledni_editovany_element->objekt_n)))
 	{
 		//vložím nový prvek, který převezme geometrii posledniho a zařadí se před nej, poslední pak převezme novou geometrii - tz. posouvám poslední prvek stále před sebou
 		if(posledni_editovany_element->geo.delka!=0)//normální provoz
@@ -13656,13 +13660,24 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 {
 //	if(Akce!=MAGNETICKE_LASO)Akce=MAGNETICKE_LASO;
 //	else Akce=NIC;
+//	Memo_testy->Clear();
+//	TPoint *tab=new TPoint[d.v.pocet_vyhybek+1];
 	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
 	while(E!=NULL)
 	{
 		Memo(E->name);
-		E=E->dalsi;
+		E=d.v.dalsi_krok(E);//d.v.sekvencni_zapis_cteni(E,tab,NULL);
 	}
 	delete E;E=NULL;
+//	delete []tab;
+//	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
+//	while(O!=NULL)
+//	{
+//		Memo(O->name+"->n="+String(O->n));
+//    Memo("->element->objekt_n="+String(O->element->objekt_n));
+//		O=O->dalsi;
+//	}
+//	delete O;O=NULL;
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko

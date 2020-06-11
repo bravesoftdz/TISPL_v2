@@ -809,6 +809,7 @@ Cvektory::TObjekt *Cvektory::vrat_objekt(TElement *Element,bool In_OBJEKT_akt)
 //smaze objekt ze seznamu
 short int Cvektory::smaz_objekt(TObjekt *Objekt)
 {
+  unsigned long mazany=Objekt->n;
 	//vyřazení prvku ze seznamu a napojení prvku dalšího na prvek předchozí prku mazaného
 	if(Objekt->dalsi!=NULL)//ošetření proti poslednímu prvku
 	{
@@ -833,16 +834,28 @@ short int Cvektory::smaz_objekt(TObjekt *Objekt)
 	vymaz_komory(Objekt);
 	delete Objekt;Objekt=NULL;//smaže mazaný prvek
 
+	//aktualizace číslování objektů, řešeno zde, metoda nove_indexy slouží při vkládání objektů, není zcela vhodná pro mazání objektu
+	TObjekt *O=OBJEKTY->dalsi;
+	unsigned long n=1;
+	while(O!=NULL)
+	{
+		O->n=n;
+		n++;
+    O=O->dalsi;
+	}
+	delete O;O=NULL;
+
+	//aktualizace číslování elementů->objekt_n
 	TElement *E=ELEMENTY->dalsi;
 	while(E!=NULL)
 	{
-		E=dalsi_krok(E);
-	}  delete E;E=NULL;
-
+		if(E->objekt_n>mazany)E->objekt_n--;
+		E=dalsi_krok(E);//procházení skrze všechny elementy, nejjistější metoda
+	}
+	delete E;E=NULL;
 
 	return 0;
-
-};
+}
 //---------------------------------------------------------------------------
 //dle zadaného TT  či případně dalších hodnot zaktualizuje paramametry všech objektů
 //typ -2://zaktualizuje přiřazení pohonu k objektu, nutné pokud proběhla změna v pohonech, protože původní jsou smazané
@@ -3925,25 +3938,25 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu,unsigned lo
 //smaže všechny elementy v daném objektu
 void Cvektory::vymaz_elementy(TObjekt *Objekt)
 {
-  T2Element *smazat=new T2Element,*pom=new T2Element;
+	//deklarace pomocného spojáku pro uchování mazaných elementů
+	T2Element *smazat=new T2Element,*pom=new T2Element;
 	smazat->n=0;smazat->dalsi=NULL;smazat->predchozi=smazat;
-	TElement *E=Objekt->element,*smaz=NULL;
+
+	//načtení elementů v objektu, stačí po hlavní větvi, vyhybky a spojky budou mazat celé větve pozdeji
+	TElement *E=Objekt->element;
 	while(E!=NULL && E->objekt_n==Objekt->n)
 	{
-		smaz=E;
-		E=E->dalsi;//můžu jít po hlavní, pokud narazím na výhybku nebo spojku metoda smaz_element(), odstraní celou vedlejší větevá
-		//if(smaz->eID==300 || smaz->eID==301)//smaz_vyhybku_spojku(smaz,Objekt->n);//smaz_element(smaz,false,Objekt->n);//velice nutné kontrola u výhybek a spojek nesmí být přeskočena
-		{
-			pom=new T2Element;
-			pom->vyhybka=smaz;
-			pom->n=smazat->predchozi->n+1;
-			pom->dalsi=NULL;
-			pom->predchozi=smazat->predchozi;
-			smazat->predchozi->dalsi=pom;
-			smazat->predchozi=pom;
-			pom=NULL;delete pom;
-    }
-		//else smaz_element(smaz,true,Objekt->n);
+		//uložení do pomoxného spojáku
+		pom=new T2Element;
+		pom->vyhybka=E;
+		pom->n=smazat->predchozi->n+1;
+		pom->dalsi=NULL;
+		pom->predchozi=smazat->predchozi;
+		smazat->predchozi->dalsi=pom;
+		smazat->predchozi=pom;
+		pom=NULL;delete pom;
+		//posun na další element
+		E=E->dalsi;
 	}
 
 	//mazání pouze výhybek, musí být zvlášť !!!!!!!!!!!
@@ -3979,7 +3992,6 @@ void Cvektory::vymaz_elementy(TObjekt *Objekt)
   pom=NULL;delete pom;
 	Objekt->element=NULL;
 	E=NULL;delete E;
-	smaz=NULL;delete smaz;
 
 }
 ////---------------------------------------------------------------------------
@@ -3988,13 +4000,13 @@ long Cvektory::vymaz_seznam_ELEMENTY()
 {
 	long pocet_smazanych_objektu=0;
 	//načtení všech elementu do pomocného spojáku, kvůli výhybkám je nutné mazat nejen po hlavní větvi
-	TElement *smazat=new TElement,*pom=NULL;
+	T2Element *smazat=new T2Element,*pom=NULL;
 	smazat->dalsi=NULL;smazat->predchozi=smazat;
 	TElement *E=ELEMENTY->dalsi;
 	while(E!=NULL)
 	{
-		pom=new TElement;
-		pom=E;
+		pom=new T2Element;
+		pom->vyhybka=E;
 		pom->dalsi=NULL;
 		pom->predchozi=smazat->predchozi;
 		smazat->predchozi->dalsi=pom;
@@ -4006,7 +4018,11 @@ long Cvektory::vymaz_seznam_ELEMENTY()
 	//mazání elementů a pomocných spojáků
 	while (smazat!=NULL)
 	{
-    pocet_smazanych_objektu++;
+		pocet_smazanych_objektu++;
+		//mazání elementu
+		delete smazat->predchozi->vyhybka;
+		smazat->predchozi->vyhybka=NULL;
+		//mazání pomocného spojáku
 		delete smazat->predchozi;
 		smazat->predchozi=NULL;
 		smazat=smazat->dalsi;
@@ -7025,7 +7041,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 	{
 		try
 		{
-     // ShowMessage("nacitam data");
+		 // ShowMessage("nacitam data");
 			TFileStream *FileStream=new TFileStream(FileName,fmOpenRead);
 
 			//načte hlavičku ze souboru
@@ -7092,7 +7108,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 				FileStream->Read(c_ukaz,sizeof(C_objekt));//načte jeden prvek ze souboru
 				if(c_ukaz->n!=0 && File_hlavicka.pocet_objektu>=c_ukaz->n)//pokud nenačte hlavičku či nějaký shit
 				{
-      //    ShowMessage("n objektu: "+AnsiString(c_ukaz->n));
+			//    ShowMessage("n objektu: "+AnsiString(c_ukaz->n));
 					//samotná data
 					ukaz->n=c_ukaz->n;
 					ukaz->id=c_ukaz->id;
