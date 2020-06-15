@@ -3476,7 +3476,7 @@ Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruc
 
 	////čtení pomocí sekvenčního algoritmu + ukládání
 	else
-	{
+	{      
 		//pokud neexistuje hlavička vytvoří ji
 		if(ELEMENTY==NULL)hlavicka_ELEMENTY();
 
@@ -3560,14 +3560,15 @@ Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruc
 			E=tab_pruchodu_T2E[E->idetifikator_vyhybka_spojka].spojka;
 			//aktualizace zbývajících ukazatelů
 			if(vyhybka_pom==NULL)//přišel jsem na spojku z hlavní větve
-			{
+			{                  
 				if(E->predchozi==NULL)E->predchozi=ELEMENTY->predchozi;//pokud ještě není nastavena hlavní větev nastaví ji
 				if(E->predchozi->eID==300 && E->predchozi->dalsi2==NULL)ELEMENTY->predchozi->dalsi2=E;
 				else E->predchozi->dalsi=E;
 				ELEMENTY->predchozi=E;
 			}
 			if(vyhybka_pom!=NULL)//přišel jsem na spojku z vedlejší větve
-			{
+			{                       
+				if(E->predchozi==NULL)E->predchozi=vyhybka_pom;//pokud ještě není nastavena hlavní větev nastaví ji
 				if(E->predchozi2==NULL)E->predchozi2=vyhybka_pom;//pokud ještě není nadefinovaná vedlejší větev nastaví ji
 				if(vyhybka_pom->eID==300 && vyhybka_pom->dalsi2==NULL)vyhybka_pom->dalsi2=E;//předchozí je běžný element
 				else vyhybka_pom->dalsi=E;//předchozí výhybka
@@ -3657,7 +3658,7 @@ void Cvektory::smaz_vyhybku_spojku(TElement *Element,unsigned long maz_OBJ)
 
 		//uložení elementu do spojáku mazaných
 		if((E->eID==300 && tab_pruchodu_T2E[E->idetifikator_vyhybka_spojka].vyhybka_pocet<=1) || (E->eID==301 && tab_pruchodu_T2E[E->idetifikator_vyhybka_spojka].spojka_pocet<=1) || (E->eID!=300 && E->eID!=301))
-		{
+		{    
 			pom=new T2Element;
 			pom->vyhybka=E;
 			pom->n=smazat->predchozi->n+1;
@@ -3665,7 +3666,7 @@ void Cvektory::smaz_vyhybku_spojku(TElement *Element,unsigned long maz_OBJ)
 			pom->predchozi=smazat->predchozi;
 			smazat->predchozi->dalsi=pom;
 			smazat->predchozi=pom;
-			pom=NULL;delete pom;
+			pom=NULL;delete pom;   
 		}
 
 		//posun na další element
@@ -3716,7 +3717,6 @@ void Cvektory::smaz_vyhybku_spojku(TElement *Element,unsigned long maz_OBJ)
 		}
 		//vyřazení záznamu se seznamu smazat
 		smazat->predchozi=pom->predchozi;
-		smazat->predchozi->dalsi=NULL;
 		//smazání záznamu
 		delete pom;pom=NULL;
 		//pokud jsem na hlavičce seznamu smazat, smažu hlavičku a cyklus se ukončí
@@ -3726,6 +3726,7 @@ void Cvektory::smaz_vyhybku_spojku(TElement *Element,unsigned long maz_OBJ)
 			smazat=NULL;
 		}
 	}while(smazat!=NULL);
+
 	//upravení počtu výhybek
 	aktualizuj_identifikator_vyhybky_spojky();
 	vymaz_seznam_VYHYBKY();
@@ -3748,12 +3749,12 @@ void Cvektory::aktualizuj_identifikator_vyhybky_spojky()
 	//deklarace
 	TElement *E=ELEMENTY->dalsi;//průchod spojáku elementů od začátku
 	int pocet=0;//počet výhybek, začínám od začátku
-
+						
 	//průchod kompletního spojáku
 	while(E!=NULL)
 	{
 		if(E->eID==300)//narazil jsem na výhybku
-		{
+		{			
 			pocet++;//navýšení počtu
 			E->idetifikator_vyhybka_spojka=pocet;//zapsání identifikátoru do výhybky
 			E->name="Výhybka "+AnsiString(pocet);//změna názvu
@@ -3848,13 +3849,13 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu,unsigned lo
 		}
 		//vyřazení prvku ze seznamu a napojení prvku dalšího na prvek předchozí prku mazaného
 		if(Element->dalsi!=NULL)//ošetření proti poslednímu prvku
-		{
+		{           
 			if(Element->predchozi!=NULL)//nutná kontrola, může dojít, že tyto ukazatele neexistují, to vzníká při odstraňování větví
 			{
 				if(Element->predchozi->eID==300 && Element->predchozi->dalsi2==Element)Element->predchozi->dalsi2=Element->dalsi;
 				else Element->predchozi->dalsi=Element->dalsi;
 			}
-			if(Element->dalsi!=NULL)//nutná kontrola, může dojít, že tyto ukazatele neexistují, to vzníká při odstraňování větví
+			if(Element->dalsi!=NULL && Element->predchozi!=NULL)//nutná kontrola, může dojít, že tyto ukazatele neexistují, to vzníká při odstraňování větví
 			{
 				if(Element->dalsi->eID==301 && Element->dalsi->predchozi2==Element)Element->dalsi->predchozi2=Element->predchozi;
 				else Element->dalsi->predchozi=Element->predchozi;
@@ -4019,10 +4020,8 @@ long Cvektory::vymaz_seznam_ELEMENTY()
 	while (smazat!=NULL)
 	{
 		pocet_smazanych_objektu++;
-		//mazání elementu
-		delete smazat->predchozi->vyhybka;
 		smazat->predchozi->vyhybka=NULL;
-		//mazání pomocného spojáku
+		delete smazat->predchozi->vyhybka;
 		delete smazat->predchozi;
 		smazat->predchozi=NULL;
 		smazat=smazat->dalsi;

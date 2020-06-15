@@ -2311,7 +2311,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		////vykreslení GRIDu
 		if(grid && Zoom_predchozi_AA>0.5 && (Akce==MOVE_BOD||Akce==DRAW_HALA) && prichytavat_k_mrizce==1 && MOD!=SIMULACE)d.vykresli_grid(bmp_total->Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí//vykreslení gridu
 		////VEKTORY
-		Graphics::TBitmap *bmp_in=new Graphics::TBitmap;bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;   
+		Graphics::TBitmap *bmp_in=new Graphics::TBitmap;bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;
 		if(d.SCENA>0 && d.SCENA!=2222222)bmp_in->Canvas->Draw(0,0,Staticka_scena);//STATICKÁ scéna, je volaná pouze pokud to má smysl, není přeantialiasingovaná(AA), je jen připravená (3x větší) pro AA (aby byl již dříve AAnemá to smysl, pouze je 3x větší BMP, ale jinak by se nejednalo o úsporu)
 		Zoom_predchozi_AA=Zoom;Zoom*=3;//záloha původního zoomu,nový *3 vyplývá z logiky algoritmu antialiasingu
 		short s=2;if(d.SCENA==0)s=0;//řešení pro vykreslit VŠE
@@ -2341,7 +2341,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		mGrid_knihovna->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak mGrid_knihovna->Buffer(false);
 		if(mGrid_knihovna->VisibleComponents>-1)mGrid_knihovna->VisibleComponents=true;//stačí volat toto, protože se pomocí Show (resp. Draw-SetCompontens-Set...) cyklem všechny komponenty na základě tohoto zobrazí pokud je nastaveno na -1 tak se při překreslování zohlední individuální nastavení komponent (z tohoto stavu je však pro další použítí třeba vrátit do stavu 0 nebo 1)
 		mGrid_knihovna->Show(Image_knihovna_objektu->Canvas);
-	} 
+	}
 }
 //---------------------------------------------------------------------------
 //vytvoří BMP se statickou scénou
@@ -3074,8 +3074,8 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						if(JID==-5){nastav_focus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_bod_temp=pom_bod;if(pom_bod_temp->n!=1)editovany_text=m.round2double(m.delka(pom_bod_temp->predchozi->X,pom_bod_temp->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);else editovany_text=m.round2double(m.delka(OBJEKT_akt->body->predchozi->X,OBJEKT_akt->body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);if(DKunit==2||DKunit==3)editovany_text=m.round2double(editovany_text/OBJEKT_akt->pohon->aRD,3);editovany_text=outDK(ms.MyToDouble(editovany_text));nahled_ulozit(true);}//editace kót kabiny
 						if(JID==4){Akce=MOVE_TABLE;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;refresh_mGrid=false;d.nabuffrovat_mGridy();puv_souradnice.x=OBJEKT_akt->Xp;puv_souradnice.y=OBJEKT_akt->Yp;}//posun tabulky pohonu
 						if(JID==-102){if(d.zprava_highlight!=d.zobrazit_celou_zpravu){d.zobrazit_celou_zpravu=d.zprava_highlight;kurzor(close);}else {d.zobrazit_celou_zpravu=0;kurzor(info);}REFRESH(false);}//rozbalení nebo skrytí zpráv
-//						if(JID==-201)Memo("prvni");
-//						if(JID==-202)Memo("druhý");
+//						if(JID==-201)Memo("prvni");//oblasti předávacího místa
+//						if(JID==-202)Memo("druhý");//oblasti předávacího místa
 					}
 					else
 					{
@@ -3305,7 +3305,11 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 			}
 			if(pom_vyhybka!=NULL && (OBJEKT_akt==NULL || OBJEKT_akt!=NULL && OBJEKT_akt->n!=pom_vyhybka->n))zmena_editovaneho_objektu();//otevření náhledu
 			if(JID==-2 && OBJEKT_akt->id!=3)vloz_bod_haly_objektu(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);//přidání bodu objektu
-			if(pom_vyhybka==NULL && OBJEKT_akt!=NULL){KonecClick(this);Akce=BLOK;}//blokace spuštění akce pan
+			if(pom_vyhybka==NULL && OBJEKT_akt!=NULL && scGPButton_ulozit->Enabled && ms.MyToDouble(FormX->VID)==0)
+			{
+				KonecClick(this);
+				Akce=BLOK;
+			}//blokace spuštění akce pan
 		}
 		if(Akce==GEOMETRIE)ukonceni_geometrie();
 	}
@@ -4172,7 +4176,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			default: break;
 		}
     //navrácení do plně statické scény
-		if(MOD==LAYOUT && (d.SCENA!=1111111 || pom!=NULL))REFRESH(11111111,false);//zobrazení aktuální scény, např při ukončení posuvu musí být změny promtnuty do BMP scény a ta následně zobrazena
+		if(MOD==LAYOUT && Akce==NIC && (d.SCENA!=1111111 || pom!=NULL))REFRESH(11111111,false);//zobrazení aktuální scény, např při ukončení posuvu musí být změny promtnuty do BMP scény a ta následně zobrazena
 
 		switch(Akce_temp)
 		{
@@ -5395,6 +5399,7 @@ void TForm1::ESC()
 			if(zobrazit_popisek_pohonu==1)scGPCheckBox_popisek_pohonu->Checked=true;
 			else scGPCheckBox_popisek_pohonu->Checked=false;
 			//překreslení
+			vytvor_statickou_scenu();
 			REFRESH();
 		}break;
 		case GEOMETRIE:ukonceni_geometrie();break;
@@ -6045,40 +6050,40 @@ void TForm1::add_vyhybka_spojka()
 			vytvor_obraz();
 			//navrácení původního stavu vykreslovacích vrstev
 			Akce=BLOK;
-    	AnsiString T;
-    	if(T==0 || T=="")rotace_jigu=0;else rotace_jigu=1;
+			AnsiString T;
+			if(T==0 || T=="")rotace_jigu=0;else rotace_jigu=1;
     	T=readINI("nastaveni_editace","zobrazeni_pozic"); //zobrazit pozice
-    	if(T==0 || T=="")zobrazit_pozice=0;else zobrazit_pozice=1;
+			if(T==0 || T=="")zobrazit_pozice=0;else zobrazit_pozice=1;
     	T=readINI("nastaveni_editace","zobrazit_popisky"); //zobrazit popisky
-    	if(T==0 || T=="")zobrazit_popisky=0;else zobrazit_popisky=1;
+			if(T==0 || T=="")zobrazit_popisky=0;else zobrazit_popisky=1;
     	T=readINI("nastaveni_editace","zobrazit_koleje"); //zobrazit koleje
-    	if(T==0 || T=="")zobrazit_koleje=0;else zobrazit_koleje=1;
+			if(T==0 || T=="")zobrazit_koleje=0;else zobrazit_koleje=1;
     	T=readINI("nastaveni_editace","zobrazit_palce"); //zobrazit_palce
-    	if(T==0 || T=="")zobrazit_palce=0;else zobrazit_palce=1;
+			if(T==0 || T=="")zobrazit_palce=0;else zobrazit_palce=1;
     	T=readINI("nastaveni_editace","rotace_jigu"); //zobrazit rotaci jigu
     	if(T==0 || T=="")rotace_jigu=0;else rotace_jigu=1;
-    	T=readINI("nastaveni_editace","zobrazit_rozmisteni_voziku"); //zobrazit_rozmisteni_jigu
+			T=readINI("nastaveni_editace","zobrazit_rozmisteni_voziku"); //zobrazit_rozmisteni_jigu
 			if(T==0 || T=="")zobrazit_rozmisteni_voziku=0;else zobrazit_rozmisteni_voziku=1;
 			T=readINI("nastaveni_editace","zobrazit_popisek_pohonu"); //zobrazit_popisek_pohonu
 			if(T==1 || T=="")zobrazit_popisek_pohonu=1;else zobrazit_popisek_pohonu=0;
-    	if(rotace_jigu==1)scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
+			if(rotace_jigu==1)scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
+			else scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=false;
+			if(zobrazit_pozice==1)scGPCheckBox_zobrazit_pozice->Checked=true;
+			else scGPCheckBox_zobrazit_pozice->Checked=false;
+			if(zobrazit_popisky==1)scGPCheckBox1_popisky->Checked=true;
+			else scGPCheckBox1_popisky->Checked=false;
+			if(zobrazit_koleje==1)scGPCheckBox_zobrazit_koleje->Checked=true;
+			else scGPCheckBox_zobrazit_koleje->Checked=false;
+			if(zobrazit_palce==1)scGPCheckBox_zobrazit_palce->Checked=true;
+			else scGPCheckBox_zobrazit_palce->Checked=false;
+			if(rotace_jigu==1) scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
     	else scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=false;
-    	if(zobrazit_pozice==1)scGPCheckBox_zobrazit_pozice->Checked=true;
-    	else scGPCheckBox_zobrazit_pozice->Checked=false;
-    	if(zobrazit_popisky==1)scGPCheckBox1_popisky->Checked=true;
-    	else scGPCheckBox1_popisky->Checked=false;
-    	if(zobrazit_koleje==1)scGPCheckBox_zobrazit_koleje->Checked=true;
-    	else scGPCheckBox_zobrazit_koleje->Checked=false;
-    	if(zobrazit_palce==1)scGPCheckBox_zobrazit_palce->Checked=true;
-    	else scGPCheckBox_zobrazit_palce->Checked=false;
-    	if(rotace_jigu==1) scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
-    	else scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=false;
-    	if(zobrazit_rozmisteni_voziku==1) scGPCheckBox_rozmisteni_voziku->Checked=true;
+			if(zobrazit_rozmisteni_voziku==1) scGPCheckBox_rozmisteni_voziku->Checked=true;
 			else scGPCheckBox_rozmisteni_voziku->Checked=false;
 			if(zobrazit_popisek_pohonu==1)scGPCheckBox_popisek_pohonu->Checked=true;
 			else scGPCheckBox_popisek_pohonu->Checked=false;
 			TIP=ls->Strings[478];//zobrazení nápovědy jak otevřít editace sekundární větve po dokončení vložení výhybky
-      vytvor_statickou_scenu();//aktualizace BMP statické scény, nově výhybka a spojka, nutné aktualizovat
+			vytvor_statickou_scenu();//aktualizace BMP statické scény, nově výhybka a spojka, nutné aktualizovat
 			REFRESH();//nesmí zde být způsobí špatné vykreslení elementů (nekompletní linka)
 		}
 		//pozicování mgridu, doladit podle finálních rozměrů tabulky
@@ -8144,6 +8149,7 @@ void TForm1::tab_knihovna_click(double X,double Y,long Col,long Row)
 	    	scGPCheckBox_zobrazit_palce->Checked=false;
 				scGPCheckBox_rozmisteni_voziku->Checked=false;
 				scGPCheckBox_popisek_pohonu->Checked=false;
+				vytvor_statickou_scenu();
 				REFRESH();
   		}
   		if(vybrany_objekt==15)//vytvoř halu
@@ -11618,7 +11624,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 	delete E;E=NULL;
 	d.v.uprav_popisky_elementu(NULL);
 	if(d.SCENA!=0)vytvor_statickou_scenu();//aktualizuje BMP statické scény o nový objekt, musí být před REFRESH, není důvod měnit nastavení d.SCENA
-  REFRESH();
+	REFRESH();
 	//vytvoření obrazu
 	vytvor_obraz();
 }
@@ -13665,19 +13671,14 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
 	while(E!=NULL)
 	{
-		Memo(E->name);
-		E=d.v.dalsi_krok(E);//d.v.sekvencni_zapis_cteni(E,tab,NULL);
+		if(E->idetifikator_vyhybka_spojka==9)
+		{
+			Memo(E->dalsi->name);
+      Memo(E->predchozi->name);
+    }
+		E=d.v.dalsi_krok(E);
 	}
 	delete E;E=NULL;
-//	delete []tab;
-//	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
-//	while(O!=NULL)
-//	{
-//		Memo(O->name+"->n="+String(O->n));
-//    Memo("->element->objekt_n="+String(O->element->objekt_n));
-//		O=O->dalsi;
-//	}
-//	delete O;O=NULL;
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -13960,7 +13961,7 @@ void __fastcall TForm1::KonecClick(TObject *Sender)
 			if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
 			if(OBJEKT_akt!=NULL)DrawGrid_knihovna->Visible=true;DrawGrid_otoce->Visible=true;DrawGrid_ostatni->Visible=true;DrawGrid_geometrie->Visible=true;DrawGrid_poznamky->Visible=true;
 		}
-		if (scGPButton_ulozit->Enabled)
+		if(scGPButton_ulozit->Enabled)
 		{
 			vysledek=MB(ls->Strings[343]+" "+OBJEKT_akt->name+"?",MB_YESNO,true);//"Chcete uložit změny objektu"
 			switch (vysledek)
@@ -16670,6 +16671,7 @@ void __fastcall TForm1::scGPCheckBox_popisek_pohonuClick(TObject *Sender)
 //vrátí focus na form1, kdykoli je potřeba vrátit focus, skrze odchytávání kláves
 void TForm1::nastav_focus()
 {
+	log(__func__);
 	Edit_proFocus->SetFocus();
 }
 //---------------------------------------------------------------------------
