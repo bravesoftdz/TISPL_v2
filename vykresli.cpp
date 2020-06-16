@@ -141,18 +141,28 @@ void Cvykresli::vykresli_vektory(TCanvas *canv, short scena)//scena 0 - vše, sc
 	if(F->MOD!=F->TVORBA_CESTY && F->Akce!=F->GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT && m.getValueFromPosition(SCENA,7)==scena)vypis_zpravy(canv);
 }
 //---------------------------------------------------------------------------
+//samotné objekty, kreslím až v samostatném cyklu, aby se nakreslilo do horní vrstvy
 void Cvykresli::vykresli_objekty(TCanvas *canv)
 {
-	//samotné objekty, kreslím až v samostatném následujícím cyklu, aby se nakreslilo do horní vrstvy
 	Cvektory::TObjekt *O=v.OBJEKTY->dalsi;//přeskočí hlavičku
+	////prvně se kreslí objekty bez stěny
 	while (O!=NULL)
 	{
 		//pokud je aktivní editace přeskočí vykreslení obrysu aktuálně editovaného objektu nebo pokud se jedná o Layout přeskakuje aktuální pom objekt, je-li statická scéna nastavena na 1, protože ten se nativně vykresluje samostatně do dynamické
-		if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=O->n || F->OBJEKT_akt==NULL && !(m.getValueFromPosition(SCENA,2)==1 && O==F->pom))vykresli_objekt(canv,O);
+		if(O->sirka_steny==0 && (F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=O->n || F->OBJEKT_akt==NULL && !(m.getValueFromPosition(SCENA,2)==1 && O==F->pom)))vykresli_objekt(canv,O);
+		O=O->dalsi;
+	}
+	////potom až objekty se stěnou
+	O=v.OBJEKTY->dalsi;//přeskočí hlavičku
+	while (O!=NULL)
+	{
+		//pokud je aktivní editace přeskočí vykreslení obrysu aktuálně editovaného objektu nebo pokud se jedná o Layout přeskakuje aktuální pom objekt, je-li statická scéna nastavena na 1, protože ten se nativně vykresluje samostatně do dynamické
+		if(O->sirka_steny>0 && (F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=O->n || F->OBJEKT_akt==NULL && !(m.getValueFromPosition(SCENA,2)==1 && O==F->pom)))vykresli_objekt(canv,O);
 		O=O->dalsi;
 	}
 	delete O;O=NULL;
-	if(F->OBJEKT_akt!=NULL)vykresli_objekt(canv,F->OBJEKT_akt);//vykreslení aktuálně editovaného objektu nad všechny ostatní objekty
+	////vykreslení aktuálně editovaného objektu nad všechny ostatní objekty
+	if(F->OBJEKT_akt!=NULL)vykresli_objekt(canv,F->OBJEKT_akt);
 }
 //---------------------------------------------------------------------------
 void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)//scena 0 - vše do dynamické, scena 1 - implicitně statické elementy do statické scény, scena 2 - implicitně statické elementy do dynamické scény, scena 3 - implicitně dynamické elementy do statické scény, scena 4 - implicitně dynamické elementy do dynamické scény
@@ -555,7 +565,7 @@ void Cvykresli::sipka(TCanvas *canv, int X, int Y, float azimut, short typ, floa
 //---------------------------------------------------------------------------
 void Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *ukaz)
 {
-	//nová koncepce - metodu vykresli_rectangle - patřičně přejmenovat
+	//nová koncepce - metodu vykresli_kruh - patřičně přejmenovat
 	if((long)ukaz->id!=F->VyID&&(long)ukaz->id!=pocet_objektu_knihovny+1)//vykreslování objektů, pro výhybky a spojky zvlášť vykreslení
 	{
 		vykresli_kabinu(canv,ukaz,-2,false);
@@ -925,6 +935,25 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv,int X,int Y,bool kalibracni_sipka
 			double A=m.azimut(F->vychozi_souradnice_kurzoru.x,-F->vychozi_souradnice_kurzoru.y,X,-Y);
 			sipka(canv,(F->vychozi_souradnice_kurzoru.x+X)/2,(F->vychozi_souradnice_kurzoru.y+Y)/2,A,true,10,m.clIntensive(clRed,100),m.clIntensive(clRed,100),pmNotXor,psSolid);
 		}
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+//metoda na vykreslení měřítka á la magnetické laso nebo vzádlenost teploměrů na pohonu
+void Cvykresli::vykresli_meridlo(TCanvas *canv)
+{
+//	//pouze vstupní testovací hodnoty oblouku (převzít z elementu, dle na daném uřádku uvedených komentářů) - SMAZAT
+//	double R=1;//E->geo.radius
+//	double RA=90;//E->geo.rotacni_uhel //double RA=F->Edit1->Text.ToDouble();//rotační úhel, pod kterým je oblouk rotován - směřován (proti směru hodinových ručiček), může být záporný (po směru hodinových ručiček)
+//	double OR=270;//E->orientace
+//	double Xoblouku=40,Yoblouku=-30;//E->geo.X a E->geo.Y
+//
+//	//výpočetní část, mělo by být volané v případě úspěchu podmínky if(m.PtInSegment....
+//	double uhel=m.uhelObloukuVsMys(Xoblouku,Yoblouku,OR,RA,R,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
+//	double delka=m.R2Larc(R,uhel);//požadovaná délka na oblouku vybraná myší, vracení délky dané výseče, tj. k na(při)počítání měřené délky
+//
+//	//vykreslovací část
+//	vykresli_Gelement(canv,Xoblouku,Yoblouku,OR,RA,R,clBlue,1);//pouze podkladový element (tj. běžně vykreslená linka) - SMAZAT
+//	TPointD *souradnice_k_dalsimu_pouziti=//poslední souřadnice vráceného pole lze použít např. na umístění teploměru, či pokud se nebude hodit přímo při vykreslení (ale jinak zbytečné), lze použít samostatnou matematickou metodu: //TPointD *Cmy::getArcLine(double X,double Y,double orientace,double rotacni_uhel,double radius)
+//	vykresli_Gelement(canv,Xoblouku,Yoblouku,OR,uhel,R,clRed,2,String(m.round2double(delka*1000,2))+" [mm]");//vykreslení měřícího kurzoru, popisek není nutné používat, metodu ještě vylepším
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
@@ -2316,6 +2345,8 @@ void Cvykresli::vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiStr
 			}
 		}
 		break;
+		case 400:
+		vykresli_teplomer(canv,X,Y,name,short_name,eID,typ,rotace,stav);
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -2932,7 +2963,7 @@ void Cvykresli::vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiStr
 	TColor clIon=(TColor)RGB(7,107,171);
 	if(stav==-1 && F->OBJEKT_akt!=NULL)//pokud je aktivní nebo neaktivní
 	{
-    short I=m.get_intensity();
+		short I=m.get_intensity();
 		if(typ==0)I=180;//pro ikony v knihovně elementů
 		barva=m.clIntensive(barva,I);
 		clIon=m.clIntensive(clIon,I);
@@ -2978,6 +3009,7 @@ void Cvykresli::vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiStr
 		TPoint P=polygonDleOsy(canv,X-vzdalenost+polomer-TO,Y,DT/1.5,TW,TZ,0+TS,0,PenMode,barva,clWhite);
 		if(stav>0 && typ!=-1)polygonDleOsy(canv,P.x,P.y,DT/2.0,TW/2.0,TZ*4,0+TS,0,pmMask,clWhite,clIon);
 
+		//pravá tryska
 		P=polygonDleOsy(canv,X+vzdalenost-polomer+TO,Y,DT/1.5,TW,TZ,180+TS,0,PenMode,barva,clWhite);
 		if(stav>0 && typ!=-1)polygonDleOsy(canv,P.x,P.y,DT/2.0,TW/2.0,TZ*4,180+TS,0,pmMask,clWhite,clIon);
 
@@ -3032,6 +3064,89 @@ void Cvykresli::vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiStr
 		}
 	}
 }
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::vykresli_teplomer(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav)
+{
+	double Z=Form1->Zoom;//zoom, pouze zkrácení zápisu
+	////konstanty
+	int polomer=m.m2px(0.2);if(stav==2)polomer=m.m2px(0.22);//poloměr kružnic zadaná v metrech
+	float tloustka_linie=1.05/3.0;if(stav==2)tloustka_linie*=1.3;//pokud má být zvýrazněn  //vykreslovací linie
+	float DT=m.m2px(0.35*2);//delka teploměru v metrech
+//	float TW=m.m2px(0.2*1.5);//tryska šířka před zúžením, nastavení dle fobota sirka_ramena v metrech
+//	float TZ=TW/2.0;//tryska ve zúžení //sirka2
+//	float TO=polomer/2.0;//odsazeni trysky od okraje tyče
+//	short o=1*Z;//odsazení textu
+	int vzdalenost=0;m.m2px(v.PP.sirka_podvozek/2.0)+polomer+DT;if(typ==0)vzdalenost=m.m2px(1.3/2.0);//vzdálenost kružnice od středu v metrech (vzádlenost kružnic podělená dvěmi), pro kurzor a normální zobrazení dle šířky kolejí linky (šířky vozíku), jinak fixní šířka pro ikonu v galerii
+
+	////nastavení barev
+	TColor barva=clBlack;
+	canv->Brush->Color=clWhite;//výplň kružnic
+
+	if(stav==-1 && F->OBJEKT_akt!=NULL)//pokud je aktivní nebo neaktivní
+	{
+		short I=m.get_intensity();
+		if(typ==0)I=180;//pro ikony v knihovně elementů
+		barva=m.clIntensive(barva,I);
+	}
+
+	////nastavení pera - dle typu zobrazení
+	TPenMode PenMode=pmCopy;
+	if(typ==-1)//typ kurzor
+	{
+		PenMode=pmNotXor;
+		canv->Pen->Style=psDot;
+		canv->Pen->Color=barva;
+		canv->Pen->Width=1;
+		canv->Brush->Style=bsClear;
+	}
+	else
+	{
+		canv->Pen->Style=psSolid;
+		canv->Pen->Width=F->m.round(tloustka_linie*Z);
+		canv->Pen->Mode=PenMode;
+		canv->Pen->Color=barva;
+		canv->Brush->Style=bsSolid;
+	}
+
+	////vykreslení elementu
+	canv->RoundRect(X-polomer/3,Y-vzdalenost-polomer*4,X+polomer/3,Y-vzdalenost+polomer,polomer/2,polomer/2);
+	canv->Ellipse(X-polomer,Y-vzdalenost-polomer,X+polomer,Y-vzdalenost+polomer);
+
+//	if (rotace==0 || rotace==180)//svislé vykreslení
+//	{
+//		//horní tryska
+//		TPoint P=polygonDleOsy(canv,X,Y-vzdalenost+polomer-TO,DT/1.5,TW,TZ,90,0,PenMode,barva,clWhite);
+//		if(stav>0 && typ!=-1)polygonDleOsy(canv,P.x,P.y,DT/2.0,TW/2,TZ*4,90,0,pmMask,clWhite,clIon);
+//
+//		//dolní tryska
+////		P=polygonDleOsy(canv,X,Y+vzdalenost-polomer+TO,DT/1.5,TW,TZ,270+TS,0,PenMode,barva,clWhite);
+////		if(stav>0 && typ!=-1)polygonDleOsy(canv,P.x,P.y,DT/2,TW/2,TZ*4,270+TS,0,pmMask,clWhite,clIon);
+//
+//		//vykreslení kružnic
+//		canv->Pen->Mode=PenMode;
+//		canv->Pen->Color=barva;
+//		canv->Ellipse(X-polomer,Y-vzdalenost-polomer,X+polomer,Y-vzdalenost+polomer);
+////		canv->Ellipse(X-polomer,Y+vzdalenost+polomer,X+polomer,Y+vzdalenost-polomer);
+//	}
+//	else//vodorovne vykreslení
+//	{
+//		//levá tryska
+//		TPoint P=polygonDleOsy(canv,X-vzdalenost+polomer-TO,Y,DT/1.5,TW,TZ,0,0,PenMode,barva,clWhite);
+//		if(stav>0 && typ!=-1)polygonDleOsy(canv,P.x,P.y,DT/2.0,TW/2.0,TZ*4,0,0,pmMask,clWhite,clIon);
+//
+////		P=polygonDleOsy(canv,X+vzdalenost-polomer+TO,Y,DT/1.5,TW,TZ,180+TS,0,PenMode,barva,clWhite);
+////		if(stav>0 && typ!=-1)polygonDleOsy(canv,P.x,P.y,DT/2.0,TW/2.0,TZ*4,180+TS,0,pmMask,clWhite,clIon);
+//
+//		//vykreslení kružnic
+//		canv->Pen->Mode=PenMode;
+//		canv->Pen->Color=barva;
+//		canv->Ellipse(X-vzdalenost-polomer,Y-polomer,X-vzdalenost+polomer,Y+polomer);
+//		//canv->Ellipse(X+vzdalenost-polomer,Y-polomer,X+vzdalenost+polomer,Y+polomer);
+//	}
+
+
+}
+//void vykresli_vytekacku(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ,double rotace,short stav);
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_zarazku(TCanvas *canv,long X,long Y)
 {
@@ -3908,8 +4023,7 @@ void Cvykresli::vykresli_Gelement_kurzor(TCanvas *canv,double X,double Y,double 
 	TColor clPotencial=m.clIntensive(clBlack,245);
 	TColor clAktual=m.clIntensive(clBlack,120);
 
-	//vykreslení potenciální linie         //minimum 3 metry, potenciál je délka aktuální linie + 3 m, aby bylo jasné, že je možné stále prodlužovat
-	//vykresli_potencial_Gelement(canv,X,Y,orientace,0,delka_linie+3,clPotencial,false);
+	//vykreslení potenciální linie         //minimum 1 metry, potenciál je délka aktuální linie + 1 m, aby bylo jasné, že je možné stále prodlužovat
 	vykresli_potencial_Gelement(canv,X,Y,orientace,0,delka_linie+1,clPotencial,false);//provizorně nastaveno na 1 metr
 
 	//vykreslení potenciálních oblouků dle katalogu
@@ -3997,17 +4111,18 @@ TPointD *Cvykresli::vykresli_potencial_Gelement(TCanvas *canv,double X,double Y,
 		//volání výpisu textu
 		TextFraming(canv,Xt,Yt,T,canv->Font);
 	}
-	return PL;
+	return PL;//návrátová hodnota souřadnic oblouku pro případné další použití
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //zajistí jednorázové vykreslení libovolného obloukového či liniového (dle situace) g-elementu, X,Y jsou logické souřadnice výchozího vykreslování, parametry: orientace oblouku - dle světových stran (umí i jiné než 90° násobky), rotační úhel - pod kterým je oblouk rotován, může být záporný (znaménko určuje směr rotace, + proti směru hodinových ručiček, - po směru), max. hodnota +90 a min. hodnota -90 (je-li nastaven na 0° jedná se o linii), radius - je radius oblouku v metrech nebo pokud je rotační úhel nastaven na 0° tedy se jedná o linii, je radius délkou linie)
-void Cvykresli::vykresli_Gelement(TCanvas *canv,double X,double Y,double orientace,double rotacni_uhel,double radius,TColor color,float width,String Text)
+TPointD *Cvykresli::vykresli_Gelement(TCanvas *canv,double X,double Y,double orientace,double rotacni_uhel,double radius,TColor color,float width,String Text)
 {
 	////vykreslení Gelementu
 	TPointD *PL=m.getArcLine(X,Y,orientace,rotacni_uhel,radius);
 	POINT POLE[]={{m.L2Px(PL[0].x),m.L2Py(PL[0].y)},m.L2Px(PL[1].x),m.L2Py(PL[1].y),m.L2Px(PL[2].x),m.L2Py(PL[2].y),m.L2Px(PL[3].x),m.L2Py(PL[3].y)};//převod do fyzických souřadnic
 	//nastavení geometrického pera
 	set_pen(canv,color,m.round(F->Zoom*width),PS_ENDCAP_FLAT);//nastavení geometrického pera
+	canv->Pen->Mode=pmNotXor;
 	canv->PolyBezier((TPoint*)POLE,3);//samotné vykreslení bézierovy křivky
 
 	////výpis textu
@@ -4021,7 +4136,15 @@ void Cvykresli::vykresli_Gelement(TCanvas *canv,double X,double Y,double orienta
 		canv->Font->Color=color;//m.clIntensive(color,-10);
 		//volání výpisu textu
 		TextFraming(canv,m.L2Px(PL[3].x),m.L2Py(PL[3].y),Text,canv->Font);//vykreslí na konci
-  }
+	}
+
+	////záloha - nemazat, pokud bycho potřeboval oblouk vykreslovat standardní metodou (např. kvůli přesnosni):
+	//float SA=F->Edit1->Text.ToDouble();//výchozí úhel, pod kterým oblouk začíná, musí být kladný - 0° je na 3 hodinách
+	//set_pen(canv,clGreen,1/**F->Zoom*/,PS_ENDCAP_FLAT);
+	//canv->MoveTo(m.L2Px(Xoblouku),m.L2Py(Yoblouku));//musí se přesunout pero na začátek, oblouku, v případě kontinuálního kreslení netřeba
+	//canv->AngleArc(m.L2Px(Xoblouku),m.L2Py(Yoblouku),m.m2px(R),SA,RA);
+
+	return PL;//návrátová hodnota souřadnic oblouku pro případné další použití
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------

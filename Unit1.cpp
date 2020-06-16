@@ -2318,7 +2318,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		if(d.SCENA!=1111111 || pom!=NULL)d.vykresli_vektory(bmp_in->Canvas,s);//DYNAMICKÁ scéna,pokud je požadavek vše do statické a není aktivní pom objekt, tak zbytečně se neřeší dynamická
 		if(Akce==GEOMETRIE)d.smart_kurzor(bmp_in->Canvas,posledni_editovany_element);
 		if(MOD==TVORBA_CESTY)d.kurzor_cesta(bmp_in->Canvas);
-		//tady bude volaná nová podoba metody měřítka->
+		d.vykresli_meridlo(bmp_in->Canvas);
 		Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 		Cantialising a;
 		Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
@@ -13818,33 +13818,36 @@ void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 //REFRESH(Edit1->Text.ToInt(),false);
 
 //detekce test na první elementu v aktuálním projektu
-//	 Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-//	 if(m.PtInSegment(E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))Memo("v");
-//	 else Memo("mimo");
-
-
+	 Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+	 if(m.PtInSegment(E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))Memo("v");
+	 else Memo("mimo");
+///////////////////
 	 //testovací hodnoty
 //	 double a=1;//radius - E->geo.radius
 //	 double b=1.2;//vzdálenost od bodu kliku ke středovému bod oblouku (ke středu kružnice, z které je oblouk tvořen) tj. vrátit si souřadnice středu (asi udělat ještě metodu
 //	 double c=0.5;//vzdálenost mezi bodem kliku a výchozím bodem oblouku (E->geo.X1,E->geo.Y1) tj. = m.delka(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,E->geo.X1,E->geo.Y1)
 //	 double uhel=m.AngleFromTriangle(a,b,c,3);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
 //	 ShowMessage(uhel);
+//	 double R=10;//E->geo.radius
+//	 double RA=-90;//E->geo.rotacni_uhel //	double RA=F->Edit_rotace->Text.ToDouble();//rotační úhel, pod kterým je oblouk rotován - směřován (proti směru hodinových ručiček), může být záporný (po směru hodinových ručiček)
+//	 double OR=90;//E->orientace
+//	 double Xoblouku=40,Yoblouku=-30;//E->geo.X a E->geo.Y
+//	 double uhel=m.uhelObloukuVsMys(Xoblouku,Yoblouku,OR,RA,R,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
+//	 double delka=m.R2Larc(R,uhel);//požadovaná délka na oblouku vybraná myší, vracení délky dané výseče, tj. k na(při)počítání měřené délky
+//	 d.vykresli_Gelement(Canvas,Xoblouku,Yoblouku,OR,RA,R,clBlue,2);//podkladový element (tj. normálně vykreslená linka)
+//	 d.vykresli_Gelement(Canvas,Xoblouku,Yoblouku,OR,uhel,R,clRed,1,String(m.round2double(delka*1000,2))+" [mm]");//vykreslení měřícího kurzoru, metodu ještě vylepším
+//																																							//výpis délky dané výseče
+////	 TPointD S=m.getArcCenter(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,OR,RA,R);
+////	 Memo(String(S.x)+" "+String(S.y));
+////	 d.line(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,m.L2Px(S.x),m.L2Py(S.y));//pouze na testy označení stredu
+////	//standardní vykreslení oblouku
+//	float SA=Edit1->Text.ToDouble();//výchozí úhel, pod kterým oblouk začíná, musí být kladný - 0° je na 3 hodinách
+//	d.set_pen(Canvas,clGreen,1/**F->Zoom*/,PS_ENDCAP_FLAT);
+//	Canvas->MoveTo(m.L2Px(Xoblouku),m.L2Py(Yoblouku));//musí se přesunout pero na začátek, oblouku, v případě kontinuálního kreslení netřeba
+//	Canvas->AngleArc(m.L2Px(Xoblouku),m.L2Py(Yoblouku),m.m2px(R),SA,RA);
 
-
-	 double R=10;//E->geo.radius
-	 double RA=90;//E->geo.rotacni_uhel
-	 double OR=90;//E->orientace
-	 double Xoblouku=40,Yoblouku=-30;//E->geo.X a E->geo.Y
-	 double uhel=m.uhelObloukuVsMys(Xoblouku,Yoblouku,OR,RA,R,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
-	 double delka=m.R2Larc(1,uhel);//požadovaná délka na oblouku vybraná myší, vracení délky dané výseče, tj. k na(při)počítání měřené délky
-	 d.vykresli_Gelement(Canvas,Xoblouku,Yoblouku,OR,RA,R,clBlue,2);//podkladový element (tj. normálně linka)
-	 d.vykresli_Gelement(Canvas,Xoblouku,Yoblouku,OR,uhel,R,clRed,1,String(m.round2double(delka*1000,2))+" [mm]");//vykreslení měřícího kurzoru, metodu ještě vylepším
-																																										//výpis délky dané výseče
-
-//	 TPointD S=m.getArcCenter(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,OR,RA,R);
-//	 Memo(String(S.x)+" "+String(S.y));
-//	 d.line(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,m.L2Px(S.x),m.L2Py(S.y));//pouze na testy označení stredu
-
+//	d.v.ELEMENTY->dalsi->eID=400;
+//	REFRESH();
 
 }
 //---------------------------------------------------------------------------
@@ -16809,3 +16812,4 @@ void TForm1::rotuj_objekt_click(double rotace)
 	REFRESH();
 }
 //---------------------------------------------------------------------------
+
