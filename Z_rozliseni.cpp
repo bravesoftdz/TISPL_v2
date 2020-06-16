@@ -107,6 +107,7 @@ void TForm_Z_rozliseni::zmena_jazyka()
 }
 void __fastcall TForm_Z_rozliseni::KonecClick(TObject *Sender)
 {
+	Close();
 	F->Close();
 }
 //---------------------------------------------------------------------------
