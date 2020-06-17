@@ -15,6 +15,7 @@ Cvektory::Cvektory()
 	hlavicka_ZAKAZKY();//vytvoří novou hlavičku pro zakazky
 	hlavicka_VOZIKY();//vytvoří novou hlavičku pro vozíky
 	hlavicka_DATA();//vytvoří novou hlavičku pro DATA
+  hlavicka_MAG_LASO();//vytvoří novou hlavičku pro magnetické laso
 	//hlavicka_RETEZY();//vytvoří novou hlavičku pro řetězy - nepoužíváno
 	//hlavicka_palce();//vytvoří novou hlavičku pro palce - zatím nepoužíváno
 	HALA.body=NULL;
@@ -8088,6 +8089,14 @@ void Cvektory::vse_odstranit()
 	}
 	hlavicka_DATA();//nutnost
 
+	//MAG_LASO
+	if(MAG_LASO!=NULL && MAG_LASO->predchozi->n>0)//pokud je více elementů
+ 	{
+		vymaz_seznam_MAG_LASO();//vymaze elementy z paměti
+		delete MAG_LASO; MAG_LASO=NULL;
+ 	}
+	hlavicka_MAG_LASO();//nutnost
+
 //		//palce
 //		if(PALCE->predchozi->n>0)//pokud je více objektů
 //		{
@@ -8750,6 +8759,141 @@ void Cvektory::vlakno_obraz()
 		default:break;
 	}
 	F->vlakno_akce=0;//navrácení do default stavu
+}
+////---------------------------------------------------------------------------
+////---------------------------------------------------------------------------
+////---------------------------------------------------------------------------
+//MAGNETICKÉ LASO
+//vytvoří novou hlavičku pro magnetické laso
+void Cvektory::hlavicka_MAG_LASO()
+{
+	TCesta *novy=new TCesta;
+	novy->n=0;
+	novy->Element=NULL;
+	novy->sparovany=NULL;
+	novy->predchozi=novy;//ukazuje sam na sebe
+	novy->dalsi=NULL;
+	MAG_LASO=novy;
+
+	//ukazatelové záležitosti
+	novy=NULL;delete novy;
+}
+////---------------------------------------------------------------------------
+//smaže kompletní seznam pro magnetické laso
+long Cvektory::vymaz_seznam_MAG_LASO()
+{
+	long pocet_smazanych_segmentu=0;
+	while (MAG_LASO!=NULL)
+	{
+		pocet_smazanych_segmentu++;
+		if(MAG_LASO->predchozi->n==0)//do hlavičky ukládán fiktivní element se souřadnicemi liniového měření
+		{
+			delete MAG_LASO->predchozi->Element;
+			MAG_LASO->predchozi->Element=NULL;
+		}
+		MAG_LASO->predchozi=NULL;
+		delete MAG_LASO->predchozi;
+		MAG_LASO=MAG_LASO->dalsi;
+	};
+
+	return pocet_smazanych_segmentu;
+}
+////---------------------------------------------------------------------------
+//vloží nový segment do magnetického lasa
+void Cvektory::vloz_segment_MAG_LASA(TElement *E)
+{
+  //ukazatelové vytvoření a vložení segmentu
+	TCesta *novy=new TCesta;
+	novy->n=MAG_LASO->predchozi->n+1;
+	novy->dalsi=NULL;
+	novy->predchozi=MAG_LASO->predchozi;
+	MAG_LASO->predchozi->dalsi=novy;
+	MAG_LASO->predchozi=novy;
+
+	//parametry segmentu
+	novy->Element=E;
+	novy->sparovany=NULL;
+
+  //ukazatelové záležitosti
+	novy=NULL;delete novy;
+}
+////---------------------------------------------------------------------------
+//smaže segmenty z mag. lasa
+void Cvektory::smaz_segment_MAG_LASA(TElement *E)
+{
+	//hledání mazaného segmentu
+  bool ukoncit=false;
+	TCesta *smazat=NULL;
+	while(MAG_LASO->dalsi!=NULL)//nemazat až na hlavičku, ošrtření
+	{
+    //nastavení vstupních atributů
+		smazat=MAG_LASO->predchozi;
+
+		//kontrola zda nejsem na E, pokud ano ukoncit po jeho smazání
+		if(smazat->Element==E)ukoncit=true;
+
+		//odstranění ze spojáku
+		smazat->predchozi->dalsi=NULL;
+		MAG_LASO->predchozi=smazat->predchozi;
+
+		//smazání segmentu
+		delete smazat;smazat=NULL;
+
+		//ukončení po smazání segmentu, který obsahuje E
+		if(ukoncit)break;
+	}
+}
+////---------------------------------------------------------------------------
+//"přilepování" souřadnic na gaometrii linky, linie i oblouky
+TPointD Cvektory::bod_na_geometrii(TElement *E)
+{
+	//deklarace
+	TPointD ret;
+	ret.x=F->akt_souradnice_kurzoru.x;ret.y=F->akt_souradnice_kurzoru.y;
+
+	//přichytávání bodu na linii
+	if(E->geo.typ==0 && (E->geo.orientace==m.Rt90(E->geo.orientace) || E->geo.orientace==360))//jen pro přímky 0,90,180,270°
+	{
+		//přiřazení souřadnic pro vložení
+		if(E->geo.orientace==90 || E->geo.orientace==270){ret.x=F->akt_souradnice_kurzoru.x;ret.y=E->geo.Y1;}
+		else {ret.x=E->geo.X1;ret.y=F->akt_souradnice_kurzoru.y;}
+	}
+
+	//přichytávání bodu na oblouk
+	if(E->geo.typ!=0)
+	{
+		double uhel=m.uhelObloukuVsMys(E->geo.X1,E->geo.Y1,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
+		TPointD *souradnice=m.getArcLine(E->geo.X1,E->geo.Y1,E->geo.orientace,uhel,E->geo.radius);
+		ret=souradnice[3];
+	}
+
+	//navracení souřadnic
+	return ret;
+}
+////---------------------------------------------------------------------------
+//kontrola zda spoják magnetického lasa obsahuje segment s danným elementem
+short Cvektory::obsahuje_MAG_LASO_element(TElement *E)
+{
+	//deklarace
+	short ret=0;
+
+	//hledání zda je element v mag. lasu
+	TCesta *segment=MAG_LASO->dalsi;
+	while(segment!=NULL)
+	{
+		if(segment->Element==E)
+		{
+			ret=segment->n;
+      break;
+		}
+		segment=segment->dalsi;
+	}
+
+	//ukazatelové záležitosti
+	segment=NULL;delete segment;
+
+  //návrat zda byl nalezen nebo ne
+	return ret;
 }
 ////---------------------------------------------------------------------------
 

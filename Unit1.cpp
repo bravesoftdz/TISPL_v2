@@ -2318,7 +2318,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		if(d.SCENA!=1111111 || pom!=NULL)d.vykresli_vektory(bmp_in->Canvas,s);//DYNAMICKÁ scéna,pokud je požadavek vše do statické a není aktivní pom objekt, tak zbytečně se neřeší dynamická
 		if(Akce==GEOMETRIE)d.smart_kurzor(bmp_in->Canvas,posledni_editovany_element);
 		if(MOD==TVORBA_CESTY)d.kurzor_cesta(bmp_in->Canvas);
-		d.vykresli_meridlo(bmp_in->Canvas);
+		if(Akce==MAGNETICKE_LASO)d.vykresli_meridlo(bmp_in->Canvas);
 		Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 		Cantialising a;
 		Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
@@ -3196,6 +3196,33 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					{
 						if(JID<=-11&&!editace_textu){nastav_focus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=pom_element->geo.delka;if((DKunit==2||DKunit==3)&&pom_element->pohon!=NULL)editovany_text=editovany_text/pom_element->pohon->aRD;editovany_text=outDK(m.round2double(ms.MyToDouble(editovany_text),3));}//editace textu
 						if(JID==13){Akce_temp=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//offset kót
+					}break;
+					case MAGNETICKE_LASO:
+					{
+						//vkládání počátečního bodu pro měření
+						if(d.v.MAG_LASO->dalsi==NULL && d.v.MAG_LASO->Element==NULL)
+						{
+							if(pom_element!=NULL)akt_souradnice_kurzoru=d.v.bod_na_geometrii(pom_element);
+							Cvektory::TElement *E=new Cvektory::TElement;
+							E->n=99999;
+							E->geo.X1=akt_souradnice_kurzoru.x;
+							E->geo.Y1=akt_souradnice_kurzoru.y;
+							E->geo.X4=E->geo.X1;
+							E->geo.Y4=E->geo.Y1;
+							E->geo.rotacni_uhel=0;
+							E->geo.orientace=0;
+							E->geo.radius=0;
+							E->geo.delka=0;
+							d.v.MAG_LASO->Element=E;
+							d.v.MAG_LASO->sparovany=NULL;
+							if(pom_element!=NULL)d.v.MAG_LASO->sparovany=pom_element;//ukládání počátečního elementu pokud jsem začal na geometrii
+							E=NULL;delete E;
+						}
+            //ukončení měření
+						else
+						{
+							scGPImage_mereni_vzdalenostClick(this);
+            }
 					}break;
 					case BLOK:Akce=NIC;break;//uvolnění blokace
 					default: break;
@@ -4451,32 +4478,55 @@ void TForm1::getJobID(int X, int Y)
 		}
 	}
 	else
-	{      
+	{
 		//detekce bodu v prvním Gelementu (segmentu) o šířce kolejí v aktuálním projektu
+		pom_element=NULL;
 		Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
 		while(E!=NULL)
 		{
-			if(m.PtInSegment(E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))break;
+			//jsem na segmentu
+			if(m.PtInSegment(E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+			{
+				//přichycení souřadnic na pohon, užitečné do budoucna
+				akt_souradnice_kurzoru=d.v.bod_na_geometrii(E);
+				pom_element=E;
+
+				//
+				if(d.v.MAG_LASO->Element!=NULL)//pokud už byla započat cesta
+				{
+					short segment=d.v.obsahuje_MAG_LASO_element(E);
+
+					//element není obsažen v magnetickém lasu a je to následující element v cestě
+					if(segment==0 && (d.v.MAG_LASO->predchozi->sparovany==E->predchozi || (E->predchozi!=NULL && E->predchozi->n>0 && E->predchozi->predchozi==d.v.MAG_LASO->predchozi->Element)))
+						d.v.vloz_segment_MAG_LASA(E->predchozi);
+
+//					else if(segment==0 && (d.v.MAG_LASO->predchozi->sparovany==E->predchozi2 || (E->predchozi->n>0 && E->predchozi->predchozi2==d.v.MAG_LASO->predchozi->Element)))
+//						d.v.vloz_segment_MAG_LASA(E->predchozi);
+
+					//element je již obsazen v seznamu magnetického lasa, budou smazány následující segmenty cesty, pokud existují další segmenty
+					if(segment>0 && segment!=d.v.MAG_LASO->predchozi->n)
+            d.v.smaz_segment_MAG_LASA(E);
+				}
+				break;
+			}
 			E=d.v.dalsi_krok(E);
 		}
-		d.v.vymaz_seznam_VYHYBKY();//nutné použít pokud dojde k přerušení cyklu dalsi_krok()
-//		if(E!=NULL)Memo("nalezen: "+E->name);
-//		else Memo("nalezen: NULL",false,true);
 
-		///////////////////////////
-		if(E!=NULL && E->geo.typ!=0)
-		{	
-			REFRESH();
-			double R=E->geo.radius;
-			double RA=E->geo.rotacni_uhel;
-			double OR=E->orientace;
-			double Xoblouku=E->geo.X1,Yoblouku=E->geo.Y1;//E->geo.X a E->geo.Y
-	  	double uhel=m.uhelObloukuVsMys(Xoblouku,Yoblouku,OR,RA,R,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
-			double delka=m.R2Larc(1,uhel);//požadovaná délka na oblouku vybraná myší, vracení délky dané výseče, tj. k na(při)počítání měřené délky
-			d.vykresli_Gelement(Canvas,Xoblouku,Yoblouku,OR,RA,R,clBlue,2);//podkladový element (tj. normálně linka)
-			d.vykresli_Gelement(Canvas,Xoblouku,Yoblouku,OR,uhel,R,clRed,1,String(m.round2double(delka*1000,2))+" [mm]");//vykreslení měřícího kurzoru, metodu ještě vylepším
-		}
-	}  
+		///////test
+//		Memo_testy->Clear();
+//		Cvektory::TCesta *C=d.v.MAG_LASO->dalsi;
+//		while(C!=NULL)
+//		{
+//			Memo(C->Element->name);
+//			C=C->dalsi;
+//		}
+//    delete C;C=NULL;
+		///////
+
+		E=NULL;delete E;
+		d.v.vymaz_seznam_VYHYBKY();//nutné použít pokud dojde k přerušení cyklu dalsi_krok()
+    REFRESH();
+	}
 	//pouze na test zatížení Memo3->Visible=true;Memo3->Lines->Add(s_mazat++);
 }
 //---------------------------------------------------------------------------
@@ -5404,6 +5454,10 @@ void TForm1::ESC()
 		}break;
 		case GEOMETRIE:ukonceni_geometrie();break;
 		case GEOMETRIE_LIGHT:scGPButton_geometrieClick(this);break;
+		case MAGNETICKE_LASO:
+		{
+			scGPImage_mereni_vzdalenostClick(this);
+		}break;
 	}
 	if(MOD==TVORBA_CESTY)scGPButton_OKClick(this);
 	pom_vyhybka=NULL;
@@ -7735,8 +7789,7 @@ TPointD TForm1::bod_vlozeni_elementu(double kontr_x,double kontr_y)
 			if(m.PtInRectangle(X1,Y1,X2,Y2,x,y))
 			{
 				//přiřazení souřadnic pro vložení
-				if(E->geo.orientace==90 || E->geo.orientace==270){ret.x=akt_souradnice_kurzoru.x;ret.y=E->geo.Y1;}
-				else {ret.x=E->geo.X1;ret.y=akt_souradnice_kurzoru.y;}
+				ret=d.v.bod_na_geometrii(E);
 				pom_element_temp=E;//uchování ukazatele pro následné zjišťování orientce symbolu, nelze se již řídit orientaci kabiny
 				break;//zastavení cyklu
 			}
@@ -13664,21 +13717,30 @@ void __fastcall TForm1::Timer_simulaceTimer(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 {
-//	if(Akce!=MAGNETICKE_LASO)Akce=MAGNETICKE_LASO;
-//	else Akce=NIC;
 //	Memo_testy->Clear();
 //	TPoint *tab=new TPoint[d.v.pocet_vyhybek+1];
-	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-	while(E!=NULL)
-	{
-		if(E->idetifikator_vyhybka_spojka==9)
-		{
-			Memo(E->dalsi->name);
-      Memo(E->predchozi->name);
-    }
-		E=d.v.dalsi_krok(E);
-	}
-	delete E;E=NULL;
+//	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+//	long pocet=0;
+//	while(E!=NULL && pocet<1)
+//	{
+//		d.v.vloz_segment_MAG_LASA(E);
+//		pocet++;
+//		E=E->dalsi;
+//	}
+//	E=NULL;delete E;
+//
+//	E=d.v.MAG_LASO->Element=new Cvektory::TElement;
+//	E->n=99999;
+//	E->geo.X1=30;
+//	E->geo.Y1=-23;
+//	E->geo.X4=d.v.ELEMENTY->dalsi->geo.X1;
+//	E->geo.Y4=d.v.ELEMENTY->dalsi->geo.Y1;
+//	E->geo.rotacni_uhel=0;
+//	E->geo.orientace=m.azimut(30,-23,E->geo.X4,E->geo.Y4);
+//	E->geo.radius=m.delka(30,-23,E->geo.X4,E->geo.Y4);
+//	E->geo.delka=E->geo.radius;
+
+	scGPImage_mereni_vzdalenostClick(this);
 }
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
@@ -15813,19 +15875,32 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 	//pokud je otevřené menu nebo options zavře je
 	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
 	if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
+//	if(Akce==NIC)
+//	{
+//		scSplitView_OPTIONS->Close();
+//		Akce=MEASURE;
+//		kurzor(add_o);
+//		scGPImage_mereni_vzdalenost->ClipFrameFillColor=(TColor)RGB(225,225,225);
+//	}
+//	else
+//	{
+//		Akce=NIC;
+//		kurzor(standard);
+//		scGPImage_mereni_vzdalenost->ClipFrameFillColor=clWhite;
+//	}
 	if(Akce==NIC)
 	{
-		scSplitView_OPTIONS->Close();
-		Akce=MEASURE;
-		kurzor(add_o);
-		scGPImage_mereni_vzdalenost->ClipFrameFillColor=(TColor)RGB(225,225,225);
+		Akce=MAGNETICKE_LASO;
 	}
 	else
 	{
 		Akce=NIC;
-		kurzor(standard);
-		scGPImage_mereni_vzdalenost->ClipFrameFillColor=clWhite;
+		d.v.vymaz_seznam_MAG_LASO();
+		d.v.hlavicka_MAG_LASO();
+    REFRESH();
 	}
+  //vrátí focus na form
+	nastav_focus();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPSwitch_robot_clovekChangeState(TObject *Sender)
