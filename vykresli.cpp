@@ -944,7 +944,7 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 	double R,RA,OR,X,Y,uhel,delka=0,azimut;
 
 	////neliniové měření
-	if(F->pom_element!=NULL && F->pom_element->predchozi==v.MAG_LASO->predchozi->Element)
+	if(F->pom_element!=NULL && (F->pom_element->predchozi==v.MAG_LASO->predchozi->Element || (F->pom_element->predchozi->eID==301 && F->pom_element->predchozi->predchozi2==v.MAG_LASO->predchozi->Element)))
 	{
     //vykreslení uložených segmentů v mag lasu
   	Cvektory::TCesta *C=v.MAG_LASO->dalsi;
@@ -954,7 +954,7 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
   		X=C->Element->geo.X1;Y=C->Element->geo.Y1;
   		if(C->n==1){X=v.MAG_LASO->Element->geo.X1;Y=v.MAG_LASO->Element->geo.Y1;}
   		RA=C->Element->geo.rotacni_uhel;
-  		OR=C->Element->geo.orientace;
+			OR=C->Element->geo.orientace;
   		d=m.delka(X,Y,C->Element->geo.X4,C->Element->geo.Y4);
   		delka+=d;
   		if(C->Element->geo.typ==0)
@@ -972,25 +972,24 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
   	}
 		delete C;C=NULL;
 
-		//pouze vstupní testovací hodnoty oblouku (převzít z elementu, dle na daném uřádku uvedených komentářů) - SMAZAT
-   	if(F->pom_element!=NULL && F->pom_element->geo.typ!=0 && v.MAG_LASO->dalsi!=NULL)
-   	{
-   		R=F->pom_element->geo.radius;//1
-   		RA=F->pom_element->geo.rotacni_uhel;//90//double RA=F->Edit1->Text.ToDouble();//rotační úhel, pod kterým je oblouk rotován - směřován (proti směru hodinových ručiček), může být záporný (po směru hodinových ručiček)
-   		OR=F->pom_element->geo.orientace;//270
-   		X=F->pom_element->geo.X1,Y=F->pom_element->geo.Y1;// a E->geo.Y//40,-30
+		//vykreslení části oblouku
+		if(F->pom_element!=NULL && F->pom_element->geo.typ!=0 && v.MAG_LASO->dalsi!=NULL)
+		{
+			R=F->pom_element->geo.radius;
+			RA=F->pom_element->geo.rotacni_uhel;//rotační úhel, pod kterým je oblouk rotován - směřován (proti směru hodinových ručiček), může být záporný (po směru hodinových ručiček)
+			OR=F->pom_element->geo.orientace;
+   		X=F->pom_element->geo.X1,Y=F->pom_element->geo.Y1;
 
    		//výpočetní část, mělo by být volané v případě úspěchu podmínky if(m.PtInSegment....
    		uhel=m.uhelObloukuVsMys(X,Y,OR,RA,R,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
    		delka+=m.R2Larc(R,uhel);//požadovaná délka na oblouku vybraná myší, vracení délky dané výseče, tj. k na(při)počítání měřené délky
 
-   		//vykreslovací část
-   		//vykresli_Gelement(canv,X,Y,OR,RA,R,clBlue,1);//pouze podkladový element (tj. běžně vykreslená linka) - SMAZAT                                                                                                                                        //zjištění kam jsem kliknul v oblouku, viz. vykresli_Gelement, uhel = rotacni uhel
+			//vykreslovací část																																																																			 //zjištění kam jsem kliknul v oblouku, viz. vykresli_Gelement, uhel = rotacni uhel
    		TPointD *souradnice_k_dalsimu_pouziti=//poslední souřadnice vráceného pole lze použít např. na umístění teploměru, či pokud se nebude hodit přímo při vykreslení (ale jinak zbytečné), lze použít samostatnou matematickou metodu: //TPointD *Cmy::getArcLine(double X,double Y,double orientace,double rotacni_uhel,double radius)
    		vykresli_Gelement(canv,X,Y,OR,uhel,R,clRed,2,String(m.round2double(delka*1000,2))+" [mm]");//vykreslení měřícího kurzoru, popisek není nutné používat, metodu ještě vylepším
    	}
 
-   	//liniová geometrie
+		//vykreslení části přímky
    	else if(F->pom_element!=NULL && v.MAG_LASO->Element!=NULL)
    	{
    		X=F->pom_element->geo.X1;Y=F->pom_element->geo.Y1;

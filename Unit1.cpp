@@ -4477,39 +4477,72 @@ void TForm1::getJobID(int X, int Y)
   		if(d.zprava_highlight>0)JID=-102;
 		}
 	}
+
+  ////magnetické laso
 	else
 	{
-		//detekce bodu v prvním Gelementu (segmentu) o šířce kolejí v aktuálním projektu
+		velikost_citelne_oblasti_elementu=1.0;
 		pom_element=NULL;
 		Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
 		while(E!=NULL)
 		{
+			//hledání citelné olbasti viditelných elementů  ..... budu ukládat E ne E->predchozi!!!!!!!!§ změna
+//			if(prichytavat_k_mrizce==1 && (E->eID!=MaxInt || (E->eID==MaxInt && (E->dalsi==NULL || (E->dalsi!=NULL && E->dalsi->objekt_n!=E->objekt_n)))) && m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,E->geo.X4,E->geo.Y4,velikost_citelne_oblasti_elementu))
+//			{
+//				akt_souradnice_kurzoru=d.v.bod_na_geometrii(E);//přichycení souřadnic na pohon, užitečné do budoucna
+//				pom_element=E;//uložení elementu, slouží pro přenos informace zda m.PtInSegmet je true
+//
+//				//nalezeno, uložení do spojáku mag. lasa
+//				short segment=d.v.obsahuje_MAG_LASO_element(E);//zjištění zda se element již nevyskytuje v mag- lasu
+//
+//				//element není obsažen v magnetickém lasu a je to následující element v cestě, nepořítam se spojkou v mag. lasu
+//				if(segment==0 && (d.v.MAG_LASO->predchozi->sparovany==E->predchozi || (E->predchozi!=NULL && E->predchozi->n>0 && E->predchozi->predchozi==d.v.MAG_LASO->predchozi->Element)))
+//					d.v.vloz_segment_MAG_LASA(E->predchozi);
+//
+//				//kontrola zda není předchozí spojka
+//				if(segment==0 && E->predchozi->eID==301 && E->predchozi->predchozi2->predchozi==d.v.MAG_LASO->predchozi->Element)
+//					d.v.vloz_segment_MAG_LASA(E->predchozi->predchozi2);
+//
+//				//kontrola zde předchozí předchozí není spojka
+//				if(segment==0 && E->predchozi->n>0 && E->predchozi->predchozi->eID==301 && E->predchozi->predchozi->predchozi2==d.v.MAG_LASO->predchozi->Element)
+//					d.v.vloz_segment_MAG_LASA(E->predchozi);
+//
+//				//element je již obsazen v seznamu magnetického lasa, bude smazán segment cesty obsahující E, taktéž budou smazány následující segmenty cesty, pokud existují další segmenty
+//				if(segment>0)
+//					d.v.smaz_segment_MAG_LASA(E);
+//				break;
+//			}
+
 			//jsem na segmentu
 			if(m.PtInSegment(E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
 			{
-				//přichycení souřadnic na pohon, užitečné do budoucna
-				akt_souradnice_kurzoru=d.v.bod_na_geometrii(E);
-				pom_element=E;
+				akt_souradnice_kurzoru=d.v.bod_na_geometrii(E);//přichycení souřadnic na pohon, užitečné do budoucna
+				pom_element=E;//uložení elementu, slouží pro přenos informace zda m.PtInSegmet je true
 
-				//
-				if(d.v.MAG_LASO->Element!=NULL)//pokud už byla započat cesta
+				//pokud byla zapčata cesta ukládání již pročlých segmentů
+				if(d.v.MAG_LASO->Element!=NULL)
 				{
-					short segment=d.v.obsahuje_MAG_LASO_element(E);
+					short segment=d.v.obsahuje_MAG_LASO_element(E);//zjištění zda se element již nevyskytuje v mag- lasu
 
-					//element není obsažen v magnetickém lasu a je to následující element v cestě
+					//element není obsažen v magnetickém lasu a je to následující element v cestě, nepořítam se spojkou v mag. lasu
 					if(segment==0 && (d.v.MAG_LASO->predchozi->sparovany==E->predchozi || (E->predchozi!=NULL && E->predchozi->n>0 && E->predchozi->predchozi==d.v.MAG_LASO->predchozi->Element)))
 						d.v.vloz_segment_MAG_LASA(E->predchozi);
 
-//					else if(segment==0 && (d.v.MAG_LASO->predchozi->sparovany==E->predchozi2 || (E->predchozi->n>0 && E->predchozi->predchozi2==d.v.MAG_LASO->predchozi->Element)))
-//						d.v.vloz_segment_MAG_LASA(E->predchozi);
+					//kontrola zda není předchozí spojka
+					if(segment==0 && E->predchozi->eID==301 && E->predchozi->predchozi2->predchozi==d.v.MAG_LASO->predchozi->Element)
+						d.v.vloz_segment_MAG_LASA(E->predchozi->predchozi2);
 
-					//element je již obsazen v seznamu magnetického lasa, budou smazány následující segmenty cesty, pokud existují další segmenty
-					if(segment>0 && segment!=d.v.MAG_LASO->predchozi->n)
-            d.v.smaz_segment_MAG_LASA(E);
+					//kontrola zde předchozí předchozí není spojka
+					if(segment==0 && E->predchozi->n>0 && E->predchozi->predchozi->eID==301 && E->predchozi->predchozi->predchozi2==d.v.MAG_LASO->predchozi->Element)
+						d.v.vloz_segment_MAG_LASA(E->predchozi);
+
+					//element je již obsazen v seznamu magnetického lasa, bude smazán segment cesty obsahující E, taktéž budou smazány následující segmenty cesty, pokud existují další segmenty
+					if(segment>0)
+						d.v.smaz_segment_MAG_LASA(E);
 				}
 				break;
 			}
-			E=d.v.dalsi_krok(E);
+			E=d.v.dalsi_krok(E);//posun na další element, průchod celé linky
 		}
 
 		///////test
@@ -4520,12 +4553,12 @@ void TForm1::getJobID(int X, int Y)
 //			Memo(C->Element->name);
 //			C=C->dalsi;
 //		}
-//    delete C;C=NULL;
+//		delete C;C=NULL;
 		///////
 
 		E=NULL;delete E;
 		d.v.vymaz_seznam_VYHYBKY();//nutné použít pokud dojde k přerušení cyklu dalsi_krok()
-    REFRESH();
+    REFRESH();//slouží k vykreslení a překreslení mag. lasa
 	}
 	//pouze na test zatížení Memo3->Visible=true;Memo3->Lines->Add(s_mazat++);
 }
