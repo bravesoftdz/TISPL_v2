@@ -720,6 +720,7 @@ public:		// User declarations
 	int zpravy_backup_height;
 	double predchozi_orientace;//uchovává rotaci objektu pøed posunem
 	unsigned int vlakno_akce;//uchovává akci, kterou má vlákno vykonat, 0 - nic, 1 - vytvoøení obrazu pro UNDO, 2 - vytvoøení obrazu pro storno a UNDO, 3 - vymazání obrazù
+  double velikost_citelne_oblasti_elementu;//urèuje velikost citelné oblsati [m] kolem bodu elementu na pohonu
 
 	//metody
 	void kurzor(TKurzory typ_kurzor);

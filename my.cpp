@@ -127,7 +127,7 @@ double Cmy::AngleFromTriangle(double a,double b,double c,short p)
 double Cmy::uhelObloukuVsMys(double Xoblouk,double Yoblouk,double orientace,double rotacni_uhel,double radius,double Xmys,double Ymys)
 {
 	TPointD S=getArcCenter(Xoblouk,Yoblouk,orientace,rotacni_uhel,radius);
-	return AngleFromTriangle(radius,delka(Xmys,Ymys,S.x,S.y),delka(Xmys,Ymys,Xoblouk,Yoblouk),3);
+	return rotacni_uhel/fabs(rotacni_uhel)*AngleFromTriangle(radius,delka(Xmys,Ymys,S.x,S.y),delka(Xmys,Ymys,Xoblouk,Yoblouk),3);//rotacni_uhel/fabs(rotacni_uhel) zajišťuje pouze znaménko úhlu
 }
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
@@ -228,7 +228,7 @@ double Cmy::getL(double RA,double R)
 		case 30:L=R*0.175536663479836;break;
 		case 45:L=R*0.26521649;break;
 		case 90:L*=R;break;
-		default: L*=R*RA/90.0;//už se značnou nepřesností
+		default: L*=R*fabs(RA)/90.0;//už se značnou nepřesností
 	}
 	return L;
 }
