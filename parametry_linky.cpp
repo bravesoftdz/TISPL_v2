@@ -255,11 +255,11 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender) {
   if (F->ls->Strings[203] != "")
     PL_mGrid->Cells[6][0].Text = F->ls->Strings[203];
   else
-    PL_mGrid->Cells[6][0].Text = "Pouíván - na objektech";
+    PL_mGrid->Cells[6][0].Text = "Pouíván";
   PL_mGrid->Cells[7][0].Text = "";
   PL_mGrid->Cells[8][0].Text = "";
 
-  PL_mGrid->Cells[7][0].Align = PL_mGrid->LEFT;
+  PL_mGrid->Cells[6][0].Align = PL_mGrid->CENTER;
 
   PL_mGrid->Cells[0][1].Text = "";
   PL_mGrid->Cells[1][1].Text = "";
@@ -283,7 +283,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender) {
   PL_mGrid->MergeCells(2, 0, 4, 0); // slouceni rozsahy pohonu - hlavicka
   PL_mGrid->MergeCells(0, 0, 0, 1); // vertiklani slouceni nazvu
   PL_mGrid->MergeCells(1, 0, 1, 1); // horizontalni slouceni nazvu
-  PL_mGrid->MergeCells(6, 0, 7, 0);
+ // PL_mGrid->MergeCells(6, 0, 7, 0);
   PL_mGrid->MergeCells(6, 1, 7, 1);
   PL_mGrid->MergeCells(6, 0, 6, 1);
   PL_mGrid->MergeCells(7, 0, 7, 1);
@@ -510,18 +510,17 @@ void TForm_parametry_linky::nacti_pohony() {
     PL_mGrid->Refresh(); // nutné
     data_nalezena = true; // pokud jsou ve spojaku nejaka data, nastavit na true
     for (unsigned int i = 2; i < PL_mGrid->RowCount; i++) {
-      OBJEKTY_POUZIVAJICI_POHON = Form1->d.v.vypis_objekty_vyuzivajici_pohon
-          (ukaz->n);
-      if (OBJEKTY_POUZIVAJICI_POHON != "") {
-        if (OBJEKTY_POUZIVAJICI_POHON.Length() > 15)
-          PL_mGrid->Cells[7][i].Text = OBJEKTY_POUZIVAJICI_POHON.SubString(1,
-        20) + "...";
-        else
-          PL_mGrid->Cells[7][i].Text = OBJEKTY_POUZIVAJICI_POHON;
-
-      }
-      else
-        PL_mGrid->Cells[7][i].Text = "";
+     // OBJEKTY_POUZIVAJICI_POHON = Form1->d.v.vypis_objekty_vyuzivajici_pohon(ukaz->n);
+//      if (OBJEKTY_POUZIVAJICI_POHON != "") {
+//        if (OBJEKTY_POUZIVAJICI_POHON.Length() > 15)
+//          PL_mGrid->Cells[7][i].Text = OBJEKTY_POUZIVAJICI_POHON.SubString(1,
+//        20) + "...";
+//        else
+//          PL_mGrid->Cells[7][i].Text = OBJEKTY_POUZIVAJICI_POHON;
+//
+//      }
+//      else
+//        PL_mGrid->Cells[7][i].Text = "";
 
       PL_mGrid->Cells[0][i].Text = ukaz->n;
       PL_mGrid->Cells[1][i].Text = ukaz->name;
@@ -539,6 +538,7 @@ void TForm_parametry_linky::nacti_pohony() {
         PL_mGrid->Cells[4][i].Text = ukaz->aRD * (1 + 59.0 * aRDunit);
 
       PL_mGrid->Cells[5][i].Type = PL_mGrid->COMBO;
+      PL_mGrid->Cells[6][i].Type = PL_mGrid->CHECK;
       PL_mGrid->Refresh();
       // kvùli práci s combem je nutnı refresh po nastavení na typ COMBO
       TscGPComboBox *C = PL_mGrid->getCombo(5, i);
@@ -598,15 +598,15 @@ void TForm_parametry_linky::nacti_pohony() {
             (TColor)RGB(200, 200, 200);
         PL_mGrid->getCombo(5, i)->Options->FrameDisabledColorAlpha = 250;
         PL_mGrid->Cells[6][i].Type = PL_mGrid->CHECK;
-        PL_mGrid->Cells[7][i].Type = PL_mGrid->BUTTON;
-        PL_mGrid->Refresh();
-        PL_mGrid->getButton(7, i)->Options->NormalColor =
-            (TColor)RGB(250, 250, 250);
-        PL_mGrid->getButton(7, i)->Options->NormalColorAlpha = 250;
-        PL_mGrid->getButton(7, i)->Options->FrameWidth = 1;
-        PL_mGrid->getButton(7, i)->Options->FrameNormalColor =
-            (TColor)RGB(200, 200, 200);
-        PL_mGrid->getButton(7, i)->Options->FrameNormalColorAlpha = 250;
+//        PL_mGrid->Cells[7][i].Type = PL_mGrid->BUTTON;
+//        PL_mGrid->Refresh();
+//        PL_mGrid->getButton(7, i)->Options->NormalColor =
+//            (TColor)RGB(250, 250, 250);
+//        PL_mGrid->getButton(7, i)->Options->NormalColorAlpha = 250;
+//        PL_mGrid->getButton(7, i)->Options->FrameWidth = 1;
+//        PL_mGrid->getButton(7, i)->Options->FrameNormalColor =
+//            (TColor)RGB(200, 200, 200);
+//        PL_mGrid->getButton(7, i)->Options->FrameNormalColorAlpha = 250;
         PL_mGrid->Cells[8][i].Type = PL_mGrid->glyphBUTTON;
       }
       else {
@@ -617,17 +617,17 @@ void TForm_parametry_linky::nacti_pohony() {
         PL_mGrid->Cells[5][i].Type = PL_mGrid->COMBO;
         /* PL_mGrid->Cells[6][i].Type=PL_mGrid->CHECK; */
         PL_mGrid->Cells[6][i].RightBorder->Color = clWhite;
-        PL_mGrid->Cells[7][i].Type = PL_mGrid->BUTTON;
+        //PL_mGrid->Cells[7][i].Type = PL_mGrid->BUTTON;
         PL_mGrid->Cells[8][i].Type = PL_mGrid->glyphBUTTON;
 
         PL_mGrid->Refresh();
-        PL_mGrid->getButton(7, i)->Options->NormalColor =
-            (TColor)RGB(250, 250, 250);
-        PL_mGrid->getButton(7, i)->Options->NormalColorAlpha = 250;
-        PL_mGrid->getButton(7, i)->Options->FrameWidth = 1;
-        PL_mGrid->getButton(7, i)->Options->FrameNormalColor =
-            (TColor)RGB(200, 200, 200);
-        PL_mGrid->getButton(7, i)->Options->FrameNormalColorAlpha = 250;
+//        PL_mGrid->getButton(7, i)->Options->NormalColor =
+//            (TColor)RGB(250, 250, 250);
+//        PL_mGrid->getButton(7, i)->Options->NormalColorAlpha = 250;
+//        PL_mGrid->getButton(7, i)->Options->FrameWidth = 1;
+//        PL_mGrid->getButton(7, i)->Options->FrameNormalColor =
+//            (TColor)RGB(200, 200, 200);
+//        PL_mGrid->getButton(7, i)->Options->FrameNormalColorAlpha = 250;
 
         PL_mGrid->Cells[2][i].InputNumbersOnly = 2;
         PL_mGrid->Cells[3][i].InputNumbersOnly = 2;
@@ -643,7 +643,7 @@ void TForm_parametry_linky::nacti_pohony() {
         PL_mGrid->getCheck(6, i)->ShowHint = true;
         PL_mGrid->getCheck(6, i)->Hint = "Zrušit pøiøazení k objektùm";
         PL_mGrid->getCheck(6, i)->Checked = true;
-        PL_mGrid->getCheck(6, i)->Enabled = true;
+        PL_mGrid->getCheck(6, i)->Enabled = false;
 
         rEditNum_takt->Enabled = false;
         scGPNumericEdit_delka_jig->Enabled = false;
@@ -659,10 +659,9 @@ void TForm_parametry_linky::nacti_pohony() {
         // PL_mGrid->Cells[2][i].Background->Color= Form_parametry_linky->Color;
         // PL_mGrid->Cells[3][i].Background->Color=  PL_mGrid->Cells[2][i].Background->Color;
         PL_mGrid->Cells[4][i].Background->Color = Form_parametry_linky->Color;
-        PL_mGrid->Cells[5][i].Background->Color =
-            PL_mGrid->Cells[4][i].Background->Color;
-        PL_mGrid->Cells[7][i].Background->Color =
-            PL_mGrid->Cells[4][i].Background->Color;
+        PL_mGrid->Cells[5][i].Background->Color = PL_mGrid->Cells[4][i].Background->Color;
+       // PL_mGrid->Cells[7][i].Background->Color =  PL_mGrid->Cells[4][i].Background->Color;
+
         // PL_mGrid->getButton(7,i)->Options->FramePressedColor=clWhite;
         // PL_mGrid->getButton(7,i)->Options->FrameNormalColor=clWhite;
         // PL_mGrid->getButton(7,i)->Options->FrameFocusedColor=clWhite;
@@ -671,11 +670,11 @@ void TForm_parametry_linky::nacti_pohony() {
       }
       else {
         input_state = R;
-        // PL_mGrid->getCheck(6,i)->Checked=false;
-        // PL_mGrid->getCheck(6,i)->Enabled=false;
-        // PL_mGrid->getCheck(6,i)->ShowHint=true;
-        // PL_mGrid->getCheck(6,i)->Hint="Zrušit pøiøazení k objektùm";
-        PL_mGrid->Cells[7][i].Text = "";
+         PL_mGrid->getCheck(6,i)->Checked=false;
+         PL_mGrid->getCheck(6,i)->Enabled=false;
+         PL_mGrid->getCheck(6,i)->ShowHint=true;
+         PL_mGrid->getCheck(6,i)->Hint="Zrušit pøiøazení k objektùm";
+        //PL_mGrid->Cells[7][i].Text = "";
       }
 
       ukaz = ukaz->dalsi;
@@ -954,11 +953,11 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender) {
     PL_mGrid->Cells[3][i].Type = PL_mGrid->EDIT;
     PL_mGrid->Cells[4][i].Type = PL_mGrid->EDIT;
     PL_mGrid->Cells[5][i].Type = PL_mGrid->COMBO;
-    PL_mGrid->Cells[6][i].Type = PL_mGrid->DRAW;
-    /* PL_mGrid->Cells[6][i].Type=PL_mGrid->CHECK; */
+    //PL_mGrid->Cells[6][i].Type = PL_mGrid->DRAW;
+     PL_mGrid->Cells[6][i].Type=PL_mGrid->CHECK;
     PL_mGrid->Cells[6][i].RightBorder->Color = clWhite;
     // Check zobrazen pouze v pøípadì, e je pohon pøiøazen
-    PL_mGrid->Cells[7][i].Type = PL_mGrid->BUTTON;
+    //PL_mGrid->Cells[7][i].Type = PL_mGrid->BUTTON;
 
     PL_mGrid->Cells[2][i].InputNumbersOnly = 2;
     PL_mGrid->Cells[3][i].InputNumbersOnly = 2;
@@ -990,7 +989,7 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender) {
     // defaultní item index pøi klik na + pohonu
     PL_mGrid->getCombo(5, i)->ItemIndex = 0;
 
-    // PL_mGrid->getCheck(6,i)->Enabled=false;
+    PL_mGrid->getCheck(6,i)->Enabled=false;
     // PL_mGrid->getCheck(6,i)->ShowHint=true; PL_mGrid->getCheck(6,i)->Hint="Zrušit pøiøazení k objektùm";
     // PL_mGrid->getCombo(5,i)->Height=PL_mGrid->getEdit(4,i)->Height;
     getDeleteButtonSettings(i);
@@ -1276,9 +1275,10 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key,
         }
 
         PL_mGrid->Cells[8][i].Type = PL_mGrid->glyphBUTTON;
+        PL_mGrid->Cells[6][i].Type = PL_mGrid->CHECK;
         PL_mGrid->Update();
 
-        // PL_mGrid->getCheck(6,i)->Enabled=false;
+         PL_mGrid->getCheck(6,i)->Enabled=false;
         // PL_mGrid->getCheck(6,i)->ShowHint=true; PL_mGrid->getCheck(6,i)->Hint="Zrušit pøiøazení k objektùm";
         getDeleteButtonSettings(i);
         getPrirazeneObjDesign(i);
@@ -2094,8 +2094,7 @@ void TForm_parametry_linky::OnClick(long Tag, long ID, unsigned long Col,
               PL_mGrid->Cells[1][Row].Background->Color;
           PL_mGrid->Cells[5][Row].Background->Color =
               PL_mGrid->Cells[1][Row].Background->Color;
-          PL_mGrid->Cells[7][Row].Background->Color =
-              PL_mGrid->Cells[1][Row].Background->Color;
+        //  PL_mGrid->Cells[7][Row].Background->Color = PL_mGrid->Cells[1][Row].Background->Color;
 
           PL_mGrid->Refresh();
           zrusena_prirazeni_PID[getPID(Row) - 1] = true;
@@ -2293,7 +2292,7 @@ void TForm_parametry_linky::getmGridColors() {
   PL_mGrid->Cells[5][0].Font->Color = PL_mGrid->Cells[1][0].Font->Color;
   PL_mGrid->Cells[5][1].Font->Color = PL_mGrid->Cells[1][0].Font->Color;
   PL_mGrid->Cells[6][0].Font->Color = PL_mGrid->Cells[1][0].Font->Color;
-  PL_mGrid->Cells[7][0].Font->Color = PL_mGrid->Cells[1][0].Font->Color;
+  //PL_mGrid->Cells[7][0].Font->Color = PL_mGrid->Cells[1][0].Font->Color;
   PL_mGrid->Cells[8][0].Font->Color = PL_mGrid->Cells[1][0].Font->Color;
 
   PL_mGrid->Cells[2][1].Font->Color = PL_mGrid->Cells[1][0].Font->Color;
@@ -2333,13 +2332,13 @@ void TForm_parametry_linky::getmGridWidth() {
   F->log(__func__); // logování
   PL_mGrid->Columns[0].Width = 30;
   PL_mGrid->Columns[0].Visible = false;
-  PL_mGrid->Columns[1].Width = 220;
-  PL_mGrid->Columns[2].Width = 100;
-  PL_mGrid->Columns[3].Width = 100;
-  PL_mGrid->Columns[4].Width = 100;
-  PL_mGrid->Columns[5].Width = 100;
-  PL_mGrid->Columns[6].Width = 30;
-  PL_mGrid->Columns[7].Width = 190;
+  PL_mGrid->Columns[1].Width = 250;
+  PL_mGrid->Columns[2].Width = 130;
+  PL_mGrid->Columns[3].Width = 130;
+  PL_mGrid->Columns[4].Width = 130;
+  PL_mGrid->Columns[5].Width = 120;
+  PL_mGrid->Columns[6].Width = 80;
+  PL_mGrid->Columns[7].Width = 0;   //30 20 px
   PL_mGrid->Columns[8].Width = 30;
 }
 
@@ -2368,37 +2367,37 @@ void TForm_parametry_linky::getDeleteButtonSettings(int Row) {
 
 void TForm_parametry_linky::getPrirazeneObjDesign(int Row) {
 
-  TscGPButton *CH = PL_mGrid->getButton(7, Row);
-
-  CH->ImageIndex = -1;
-  CH->ShowCaption = true;
-  CH->Caption = PL_mGrid->Cells[7][Row].Text;
-
-  CH->ShowHint = true;
-  CH->Options->NormalColor = clWhite;
-  CH->Options->NormalColorAlpha = 255;
-  CH->Options->FrameWidth = 1;
-  CH->WordWrap = false;
-  CH->Margin = 0;
-  CH->Hint = OBJEKTY_POUZIVAJICI_POHON;
-  CH->Options->FontNormalColor = clGlyph;
-  CH->Options->FontFocusedColor = clGlyph;
-  CH->Options->FontHotColor = clGlyph;
-  CH->Options->FontDisabledColor = clGlyph;
-  CH->Options->NormalColor = clWhite;
-  CH->Options->FocusedColor = CH->Options->NormalColor;
-  CH->Options->HotColor = CH->Options->NormalColor;
-  CH->Options->PressedColor = CH->Options->NormalColor;
-  CH->Options->FrameNormalColor = CH->Options->NormalColor;
-  CH->Options->PressedColor = CH->Options->NormalColor;
-  CH->Options->FramePressedColor = CH->Options->NormalColor;
-  CH->Options->FocusedColor = clWhite;
-  CH->Options->FocusedColorAlpha = 255;
-  CH->Options->FrameFocusedColor = clWhite;
-  CH->CanFocused = false;
-  // CH->Down=true;
-  CH = NULL;
-  delete CH;
+//  TscGPButton *CH = PL_mGrid->getButton(7, Row);
+//
+//  CH->ImageIndex = -1;
+//  CH->ShowCaption = true;
+//  CH->Caption = PL_mGrid->Cells[7][Row].Text;
+//
+//  CH->ShowHint = true;
+//  CH->Options->NormalColor = clWhite;
+//  CH->Options->NormalColorAlpha = 255;
+//  CH->Options->FrameWidth = 1;
+//  CH->WordWrap = false;
+//  CH->Margin = 0;
+//  CH->Hint = OBJEKTY_POUZIVAJICI_POHON;
+//  CH->Options->FontNormalColor = clGlyph;
+//  CH->Options->FontFocusedColor = clGlyph;
+//  CH->Options->FontHotColor = clGlyph;
+//  CH->Options->FontDisabledColor = clGlyph;
+//  CH->Options->NormalColor = clWhite;
+//  CH->Options->FocusedColor = CH->Options->NormalColor;
+//  CH->Options->HotColor = CH->Options->NormalColor;
+//  CH->Options->PressedColor = CH->Options->NormalColor;
+//  CH->Options->FrameNormalColor = CH->Options->NormalColor;
+//  CH->Options->PressedColor = CH->Options->NormalColor;
+//  CH->Options->FramePressedColor = CH->Options->NormalColor;
+//  CH->Options->FocusedColor = clWhite;
+//  CH->Options->FocusedColorAlpha = 255;
+//  CH->Options->FrameFocusedColor = clWhite;
+//  CH->CanFocused = false;
+//  // CH->Down=true;
+//  CH = NULL;
+//  delete CH;
 }
 
 void TForm_parametry_linky::setADD_ButtonPosition() {
@@ -2443,7 +2442,7 @@ void __fastcall TForm_parametry_linky::Button1Click(TObject *Sender) {
     PL_mGrid->Cells[4][i].Type = PL_mGrid->EDIT;
     PL_mGrid->Cells[5][i].Type = PL_mGrid->EDIT;
     PL_mGrid->Cells[6][i].Type = PL_mGrid->CHECK;
-    PL_mGrid->Cells[7][i].Type = PL_mGrid->BUTTON;
+   // PL_mGrid->Cells[7][i].Type = PL_mGrid->BUTTON;
 
     PL_mGrid->Cells[2][i].InputNumbersOnly = 2;
     PL_mGrid->Cells[3][i].InputNumbersOnly = 2;

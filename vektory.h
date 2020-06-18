@@ -230,6 +230,7 @@ class Cvektory
 		struct TCesta *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 		struct TCesta *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
+  TCesta *MAG_LASO;
 
 	struct TCesta_uloz//ukladání cesty
 	{
@@ -773,6 +774,14 @@ public:
 
 	unsigned long pozice_data;//uchovává pozici ve spojáku dat, pro posunování při ctrl+z funkcionalitě
 	unsigned long pocet_kroku;//určuje počet uchovávaných obrazů projektu
+
+//magnetické laso
+	void hlavicka_MAG_LASO();//vytvoří novou hlavičku pro magnetické laso
+	long vymaz_seznam_MAG_LASO();//smaže kompletní seznam pro magnetické laso
+	void vloz_segment_MAG_LASA(TElement *E);//vloží nový segment do magnetického lasa
+	void smaz_segment_MAG_LASA(TElement *E);//smaže segment z magnetického lasa
+	TPointD bod_na_geometrii(TElement *E);//"přilepování" souřadnic na gaometrii linky, linie i oblouky
+	short obsahuje_MAG_LASO_element(TElement *E);//kontrola zda spoják magnetického lasa obsahuje segment s danným elementem
 
 //souborové operace
 	void vytvor_hlavicku_souboru();

@@ -40,8 +40,11 @@ __published:	// IDE-managed Components
 private:	// User declarations
     void LoadValues();
 		void LoadStyles();
+    void getCheckSettings();
 
 		TmGrid *K_mGrid;
+    TPoint check;
+    TColor clBACKGROUND_light,clBACKGROUND_dark,clNORMAL,clOTHER_AFTER_CHOOSE;
 
 public:		// User declarations
   __fastcall TForm_katalog(TComponent* Owner);

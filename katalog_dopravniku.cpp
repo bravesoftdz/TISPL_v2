@@ -22,6 +22,10 @@ __fastcall TForm_katalog::TForm_katalog(TComponent* Owner)
 	F->m.designButton(Button_save,Form_katalog,1,2);
 	F->m.designButton(Button_storno,Form_katalog,2,2);
   zmena=false;
+  check.X=0;
+  check.Y=0;
+ 	clNORMAL	 = (TColor)RGB(200,200,200); //(TColor)RGB(128,128,128);
+  clOTHER_AFTER_CHOOSE			 = (TColor)RGB(128,128,128); //(TColor)RGB(200,200,200);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_katalog::FormShow(TObject *Sender)
@@ -46,14 +50,14 @@ void __fastcall TForm_katalog::FormShow(TObject *Sender)
   F->scStyledForm1->ShowClientInActiveEffect();
 
   ////////vytvoření tabulky s požadovaným počtem sloupců a řádků////////
-	unsigned long ColCount=20;//pevný počet slopců
+	unsigned long ColCount=21;//pevný počet slopců
 	unsigned long RowCount=F->d.v.KATALOG->predchozi->n + 2;//dynamický počet řádků + 2 hlavička (merge)
 	K_mGrid->Create(ColCount,RowCount);//samotné vytvoření matice-tabulky
   K_mGrid->Top=scLabel_header->Height + 10;
 
-
-  K_mGrid->Columns[0].Width=120;
-	for(unsigned int i=1;i<=ColCount;i++)
+  K_mGrid->Columns[0].Width=25;
+  K_mGrid->Columns[1].Width=90;
+	for(unsigned int i=2;i<=ColCount;i++)
   {
     K_mGrid->Columns[i].Width=50;
   }
@@ -61,16 +65,23 @@ void __fastcall TForm_katalog::FormShow(TObject *Sender)
 
   LoadValues(); //načtení hodnot do tabulky
   K_mGrid->Refresh();
-  LoadStyles(); // načtení designu tabuly
 
-		K_mGrid->MergeCells(0,0,0,1);
-		K_mGrid->MergeCells(1,0,3,1);
-		K_mGrid->MergeCells(4,0,11,0);
-		K_mGrid->MergeCells(4,1,7,1);
-		K_mGrid->MergeCells(8,1,11,1);
-		K_mGrid->MergeCells(12,0,19,0);
-		K_mGrid->MergeCells(12,1,15,1);
-		K_mGrid->MergeCells(16,1,19,1);
+
+		K_mGrid->MergeCells(1,0,1,1);
+		K_mGrid->MergeCells(2,0,4,1);
+		K_mGrid->MergeCells(5,0,12,0);
+		K_mGrid->MergeCells(5,1,8,1);
+		K_mGrid->MergeCells(9,1,12,1);
+		K_mGrid->MergeCells(13,0,20,0);
+		K_mGrid->MergeCells(13,1,16,1);
+		K_mGrid->MergeCells(17,1,20,1);
+    K_mGrid->MergeCells(0,0,0,1);
+    K_mGrid->MergeCells(0,0,1,0);
+    K_mGrid->MergeCells(0,1,1,1);
+
+     LoadStyles(); // načtení designu tabuly
+     getCheckSettings();
+
   //pozice formu - střed obrazovky
   Left=Form1->ClientWidth/2-Form_katalog->Width/2;
   Top=Form1->ClientHeight/2-Form_katalog->Height/2;
@@ -93,26 +104,27 @@ void __fastcall TForm_katalog::FormPaint(TObject *Sender)
 void TForm_katalog::LoadValues ()
 {
   // vytvoření hlavičky
-	K_mGrid->Cells[0][0].Text="CALDAN";
-	K_mGrid->Cells[1][0].Text=F->ls->Strings[196];//"Rozteč palců [mm]";
-	K_mGrid->Cells[4][0].Text=F->ls->Strings[197];//"Horizontální oblouky";
-	K_mGrid->Cells[4][1].Text=F->ls->Strings[293];//"Oblouk [°]";
-	K_mGrid->Cells[8][1].Text=F->ls->Strings[198];//"Rádius [mm]";
-	K_mGrid->Cells[12][0].Text=F->ls->Strings[199];//"Vertikální oblouky";
-	K_mGrid->Cells[12][1].Text=F->ls->Strings[293];//"Oblouk [°]";
-	K_mGrid->Cells[16][1].Text=F->ls->Strings[198];//"Rádius [mm]";
+ // K_mGrid->Cells[0][0].Text="Výběr";
+	K_mGrid->Cells[1][0].Text="CALDAN";
+	K_mGrid->Cells[2][0].Text=F->ls->Strings[196];//"Rozteč palců [mm]";
+	K_mGrid->Cells[5][0].Text=F->ls->Strings[197];//"Horizontální oblouky";
+	K_mGrid->Cells[5][1].Text=F->ls->Strings[293];//"Oblouk [°]";
+	K_mGrid->Cells[9][1].Text=F->ls->Strings[198];//"Rádius [mm]";
+	K_mGrid->Cells[13][0].Text=F->ls->Strings[199];//"Vertikální oblouky";
+	K_mGrid->Cells[13][1].Text=F->ls->Strings[293];//"Oblouk [°]";
+	K_mGrid->Cells[17][1].Text=F->ls->Strings[198];//"Rádius [mm]";
 
   Cvektory::Ttyp_dopravniku *K=F->d.v.KATALOG->dalsi;//přeskočí hlavičku
 	while(K!=NULL)
 	{
     //funkční část
-		K_mGrid->Cells[0][K->n+1].Text=K->name;
+		K_mGrid->Cells[1][K->n+1].Text=K->name;
     Cvektory::TDoubleHodnota *H=K->roztec->dalsi;
 
     //pro rozteče
     while(H!=NULL)
 	  {
-			K_mGrid->Cells[H->n][K->n+1].Text=H->hodnota;
+			K_mGrid->Cells[1+H->n][K->n+1].Text=H->hodnota;
       H=H->dalsi;
     }
 
@@ -120,7 +132,7 @@ void TForm_katalog::LoadValues ()
     H=K->hOblouk->dalsi;
     while(H!=NULL)
 	  {
-			K_mGrid->Cells[3+H->n][K->n+1].Text=H->hodnota;
+			K_mGrid->Cells[4+H->n][K->n+1].Text=H->hodnota;
       H=H->dalsi;
     }
 
@@ -128,7 +140,7 @@ void TForm_katalog::LoadValues ()
     H=K->hRadius->dalsi;
     while(H!=NULL)
 	  {
-			K_mGrid->Cells[7+H->n][K->n+1].Text=H->hodnota;
+			K_mGrid->Cells[8+H->n][K->n+1].Text=H->hodnota;
       H=H->dalsi;
     }
 
@@ -136,7 +148,7 @@ void TForm_katalog::LoadValues ()
     H=K->vOblouk->dalsi;
     while(H!=NULL)
 	  {
-			K_mGrid->Cells[11+H->n][K->n+1].Text=H->hodnota;
+			K_mGrid->Cells[12+H->n][K->n+1].Text=H->hodnota;
       H=H->dalsi;
     }
 
@@ -144,7 +156,7 @@ void TForm_katalog::LoadValues ()
     H=K->vRadius->dalsi;
     while(H!=NULL)
 	  {
-			K_mGrid->Cells[15+H->n][K->n+1].Text=H->hodnota;
+			K_mGrid->Cells[16+H->n][K->n+1].Text=H->hodnota;
       H=H->dalsi;
     }
     //ukazatelová část
@@ -158,18 +170,26 @@ void TForm_katalog::LoadValues ()
   {
 	 if(F->ms.MyToDouble(K_mGrid->Cells[i][katalog_id+1].Text) == radius)
 	 {
-		if(i>=8 && i<=11) K_mGrid->Cells[i][katalog_id+1].Font->Color=(TColor)RGB(226,122,21);
+		if(i>=9 && i<=12) K_mGrid->Cells[i][katalog_id+1].Font->Color=(TColor)RGB(226,122,21);
    }
 
   }
   //nastaveni barev pro zobrazeni vybrane hodnoty - cerna
 	for(unsigned int i=2;i<K_mGrid->RowCount;i++)
   {
+   K_mGrid->Cells[0][i].Type=K_mGrid->CHECK;
+   K_mGrid->Cells[0][i].RightBorder->Color=clWhite;
+
 		if(i==(unsigned)katalog_id+1)
       {
 			 for(unsigned int j=0;j<K_mGrid->ColCount;j++)
        {
-        if(F->ms.MyToDouble(K_mGrid->Cells[j][i].Text) != radius) K_mGrid->Cells[j][i].Font->Color=clBlack;
+        if(F->ms.MyToDouble(K_mGrid->Cells[j][i].Text) != radius)
+        {
+        K_mGrid->Cells[j][i].Font->Color=clBlack;
+        check.X=j; check.Y=i;
+        //ShowMessage(j);ShowMessage(i);
+        }
        }
       }
   }
@@ -177,7 +197,7 @@ void TForm_katalog::LoadValues ()
 
 void TForm_katalog::LoadStyles ()
 {
- TColor clBACKGROUND_light,clBACKGROUND_dark;
+
  //clBACKGROUND_light=Form1->m.clIntensive((TColor)RGB(200,200,200),35);
  //clBACKGROUND_dark=clWhite;//Form1->m.clIntensive((TColor)RGB(240,240,240),35);
 
@@ -189,10 +209,33 @@ void TForm_katalog::LoadStyles ()
 
 	for (unsigned int r = 2; r <= K_mGrid->RowCount-1; r++)
  {
-   K_mGrid->Cells[8][r].Type=K_mGrid->EDIT;
-   K_mGrid->Cells[9][r].Type=K_mGrid->EDIT;
-   K_mGrid->Cells[10][r].Type=K_mGrid->EDIT;
-   K_mGrid->Cells[11][r].Type=K_mGrid->EDIT;
+ // K_mGrid->Cells[0][r].Font->Color=clBlack;
+   K_mGrid->Cells[1][r].Font->Color=clBlack;
+   K_mGrid->Cells[2][r].Font->Color=clOTHER_AFTER_CHOOSE;
+   K_mGrid->Cells[3][r].Font->Color=clOTHER_AFTER_CHOOSE;
+   K_mGrid->Cells[4][r].Font->Color=clOTHER_AFTER_CHOOSE;
+   K_mGrid->Cells[5][r].Font->Color=clOTHER_AFTER_CHOOSE;
+   K_mGrid->Cells[6][r].Font->Color=clOTHER_AFTER_CHOOSE;
+   K_mGrid->Cells[7][r].Font->Color=clOTHER_AFTER_CHOOSE;
+   K_mGrid->Cells[8][r].Font->Color=clOTHER_AFTER_CHOOSE;
+   K_mGrid->Cells[9][r].Font->Color=clOTHER_AFTER_CHOOSE;
+   K_mGrid->Cells[10][r].Font->Color=clOTHER_AFTER_CHOOSE;
+   K_mGrid->Cells[11][r].Font->Color=clOTHER_AFTER_CHOOSE;
+   K_mGrid->Cells[12][r].Font->Color=clOTHER_AFTER_CHOOSE;
+   K_mGrid->Cells[13][r].Font->Color=clOTHER_AFTER_CHOOSE;
+   K_mGrid->Cells[14][r].Font->Color=clOTHER_AFTER_CHOOSE;
+   K_mGrid->Cells[15][r].Font->Color=clOTHER_AFTER_CHOOSE;
+   K_mGrid->Cells[16][r].Font->Color=clOTHER_AFTER_CHOOSE;
+   K_mGrid->Cells[17][r].Font->Color=clOTHER_AFTER_CHOOSE;
+   K_mGrid->Cells[18][r].Font->Color=clOTHER_AFTER_CHOOSE;
+   K_mGrid->Cells[19][r].Font->Color=clOTHER_AFTER_CHOOSE;
+   K_mGrid->Cells[20][r].Font->Color=clOTHER_AFTER_CHOOSE;
+
+
+
+  // K_mGrid->Cells[9][r].Type=K_mGrid->CHECK;
+  // K_mGrid->Cells[10][r].Type=K_mGrid->;
+  // K_mGrid->Cells[11][r].Type=K_mGrid->EDIT;
  }
 }
 
@@ -201,7 +244,7 @@ void TForm_katalog::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row
 
  if(!zmena)
  {
-   if(Col>=8 && Col<=11)
+   if(Col>=9 && Col<=12)
    {
     zmena=true;
 			for(unsigned int i=1;i<K_mGrid->RowCount;i++)
@@ -221,7 +264,7 @@ void TForm_katalog::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row
 
  if(!zmena)
  {
-   if(Col>=8 && Col<=11)
+   if(Col>=9 && Col<=12)
    {
     zmena=true;
 			for(unsigned int i=1;i<K_mGrid->RowCount;i++)
@@ -239,7 +282,7 @@ void TForm_katalog::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row
   zmena=false;
  }
   //ziskani hodnot radius a katalog ID
-  if(Col>=8 && Col<=11)
+  if(Col>=9 && Col<=12)
    {
 
    radius=Form1->ms.MyToDouble(K_mGrid->Cells[Col][Row].Text);
@@ -338,3 +381,16 @@ void TForm_katalog::vypis(UnicodeString text,bool red,bool link)
 				scHTMLLabel_InfoText->Visible = false;
 		}
 }
+
+void TForm_katalog::getCheckSettings ()
+{
+   TscGPCheckBox *CH=K_mGrid->getCheck(0,check.Y);  //výchozí stav zašrtávátka
+   CH->Checked=true;
+   CH=NULL;delete CH;
+
+  for(unsigned int i=2;i<K_mGrid->ColCount;i++)
+  {
+   K_mGrid->Cells[i][check.Y].Font->Color=(TColor)RGB(43,87,154);//clNORMAL;
+  }
+}
+
