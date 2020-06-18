@@ -147,7 +147,7 @@ class Cvykresli
 	short pasivni_vektory_intenzita;//intenzita pasivních vektorù pøi editaci objektu
 	unsigned long zobrazit_celou_zpravu;//promìnná urèující, která zpráva bude zobrazena
 	unsigned long zprava_highlight;//pomocná promìnná sloužící na ztuènìní dané zpravy
-	long SCENA;
+	long SCENA;//ZprVozEledElesDopObjHal
 
 	protected:
 

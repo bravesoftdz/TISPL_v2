@@ -3293,8 +3293,8 @@ void Cvektory::uloz_vyhybku_do_seznamu(TElement *vyhybka)
 void Cvektory::smaz_vyhybku_ze_seznamu()
 {
 	T2Element *smaz=VYHYBKY->predchozi;
-	VYHYBKY->predchozi->predchozi->dalsi=NULL;
-	VYHYBKY->predchozi=VYHYBKY->predchozi->predchozi;
+	smaz->predchozi->dalsi=NULL;
+	VYHYBKY->predchozi=smaz->predchozi;
 	delete smaz;smaz=NULL;
 }
 ////---------------------------------------------------------------------------
@@ -3302,10 +3302,11 @@ long Cvektory::vymaz_seznam_VYHYBKY()
 {
 	while(VYHYBKY!=NULL)
 	{
-		VYHYBKY->predchozi=NULL;
 		delete VYHYBKY->predchozi;
+		VYHYBKY->predchozi=NULL;
 		VYHYBKY=VYHYBKY->dalsi;
 	}
+  delete VYHYBKY;VYHYBKY=NULL;
 	hlavicka_seznam_VYHYBKY();
 }
 ////---------------------------------------------------------------------------
@@ -8064,10 +8065,8 @@ void Cvektory::vse_odstranit()
 	//VYHYBKY
 	if(VYHYBKY!=NULL && VYHYBKY->predchozi->n>0)//pokud je více výhybek
  	{
-		vymaz_seznam_VYHYBKY();//vymaze vyhybky z paměti
-		delete VYHYBKY; VYHYBKY=NULL;
- 	}
-	hlavicka_seznam_VYHYBKY();//nutnost
+		vymaz_seznam_VYHYBKY();//vymaze vyhybky z paměti a vytvoří hlavičku
+	}
 
  	//POHONY
  	if(POHONY!=NULL && POHONY->predchozi->n>0)//pokud je více objektů
@@ -8786,7 +8785,7 @@ long Cvektory::vymaz_seznam_MAG_LASO()
 	while (MAG_LASO!=NULL)
 	{
 		pocet_smazanych_segmentu++;
-		if(MAG_LASO->predchozi->n==0)//do hlavičky ukládán fiktivní element se souřadnicemi liniového měření
+		if(MAG_LASO->predchozi->Element!=NULL && MAG_LASO->predchozi->Element->n==MaxInt)//vymaže virtuální elementy
 		{
 			delete MAG_LASO->predchozi->Element;
 			MAG_LASO->predchozi->Element=NULL;
