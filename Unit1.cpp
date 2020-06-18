@@ -13820,9 +13820,11 @@ void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 //REFRESH(Edit1->Text.ToInt(),false);
 
 //detekce test na první elementu v aktuálním projektu
-	 Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-	 if(m.PtInSegment(E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))Memo("v");
-	 else Memo("mimo");
+//	 Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+//	 if(m.PtInSegment(E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))Memo("v");
+//	 else Memo("mimo");
+
+
 ///////////////////
 	 //testovací hodnoty
 //	 double a=1;//radius - E->geo.radius
@@ -13848,8 +13850,14 @@ void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 //	Canvas->MoveTo(m.L2Px(Xoblouku),m.L2Py(Yoblouku));//musí se přesunout pero na začátek, oblouku, v případě kontinuálního kreslení netřeba
 //	Canvas->AngleArc(m.L2Px(Xoblouku),m.L2Py(Yoblouku),m.m2px(R),SA,RA);
 
-//	d.v.ELEMENTY->dalsi->eID=400;
+//	d.v.ELEMENTY->dalsi->eID=401;
+//	//d.v.smaz_element(d.v.ELEMENTY->dalsi);
+//	vytvor_statickou_scenu();
 //	REFRESH();
+
+
+	 //	 TPointD *souradnice_k_dalsimu_pouziti=vykresli_Gelement(canv,Xoblouku,Yoblouku,OR,RA,R,clBlue,1);
+//	 F->Memo(String(souradnice_k_dalsimu_pouziti[3].x)+" "+String(souradnice_k_dalsimu_pouziti[3].y));
 
 }
 //---------------------------------------------------------------------------
