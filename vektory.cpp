@@ -2536,7 +2536,7 @@ short Cvektory::vrat_druh_elementu(TElement *Element)
 {
 	short RET=-1;
 	if(Element!=NULL)//zarážka předávací místo  výhybka a spojka 				                      //nutné přeskakovat elementarní hlavičku!
-	if(Element->eID!=MaxInt && Element->eID!=200 && Element->eID!=300 && Element->eID!=301 && Element->n>0)
+	if(Element->eID!=MaxInt && Element->eID!=200 && Element->eID!=300 && Element->eID!=301 && Element->eID!=400 && Element->eID!=401 && Element->eID!=402 && Element->n>0)
 	{
 		if(Element->eID%2==0 && Element->eID!=100)RET=0;//S&G elementy, mimo ION tyče
 		else RET=1;//kontinuální elementy
