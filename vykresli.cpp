@@ -4188,6 +4188,7 @@ TPointD *Cvykresli::vykresli_Gelement(TCanvas *canv,double X,double Y,double ori
 	//canv->AngleArc(m.L2Px(Xoblouku),m.L2Py(Yoblouku),m.m2px(R),SA,RA);
 
 	////výpis textu,vykreslí na konci Gelementu
+	short oY=m.m2px(0.2);//;svislé výchozí odsazení zadané v metrech, použité následně v px
 	if(Text!="" || Text2!="")
 	{
 		//nastavení písma
@@ -4197,11 +4198,11 @@ TPointD *Cvykresli::vykresli_Gelement(TCanvas *canv,double X,double Y,double ori
 		canv->Font->Size=3*F->Zoom;
 		canv->Font->Color=color;//m.clIntensive(color,-10);
 	}
-	if(Text!="")TextFraming(canv,m.L2Px(PL[3].x),m.L2Py(PL[3].y),Text,canv->Font);
+	if(Text!="")TextFraming(canv,m.L2Px(PL[3].x),m.L2Py(PL[3].y)+oY,Text,canv->Font);
 	if(Text2!="")
 	{
 		short W=0;if(Text!="")W=canv->TextHeight(Text);//pokud existuje Text, odřádkuje Text2 na další řádek
-		TextFraming(canv,m.L2Px(PL[3].x),m.L2Py(PL[3].y)+W,Text2,canv->Font);
+		TextFraming(canv,m.L2Px(PL[3].x),m.L2Py(PL[3].y)+oY+W,Text2,canv->Font);
 	}
 
 	return PL;//návrátová hodnota souřadnic oblouku pro případné další použití
