@@ -941,16 +941,15 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv,int X,int Y,bool kalibracni_sipka
 void Cvykresli::vykresli_meridlo(TCanvas *canv)
 {
 	////deklarace
-	double R,RA,OR,X,Y,uhel,delka=0,azimut;
+	double R,RA,OR,X,Y,uhel,delka=0,azimut,cas=0,d;
 
   ////vykreslení uložených segmentů v mag lasu, pokud je třeba
 	if(F->pom_element!=NULL && (F->pom_element->predchozi==v.MAG_LASO->predchozi->Element || (F->pom_element->predchozi->eID==301 && F->pom_element->predchozi->predchozi2==v.MAG_LASO->predchozi->Element) || F->pom_element==v.MAG_LASO->predchozi->Element || (F->pom_element->eID==301 && F->pom_element->predchozi2==v.MAG_LASO->predchozi->Element)))
 	{
-
 		Cvektory::TCesta *C=v.MAG_LASO->dalsi;
   	while(C!=NULL)
 		{
-  		double d=0;
+			//nastavení parametrů pro vykreslení + výpočet délky
 			X=C->Element->geo.X1;Y=C->Element->geo.Y1;
   		if(C->n==1){X=v.MAG_LASO->Element->geo.X1;Y=v.MAG_LASO->Element->geo.Y1;}
 			RA=C->Element->geo.rotacni_uhel;
@@ -967,9 +966,17 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
   			R=C->Element->geo.radius;
   			uhel=RA;//max z rotačního úhlu
 			}
+      //výpočet času
+			if((C->Element->n!=MaxInt && C->Element->pohon==NULL) || (C->Element->n==MaxInt && C->sparovany!=NULL && C->sparovany->pohon==NULL));
+			else
+			{
+				if(C->Element->n==MaxInt && C->sparovany!=NULL)cas+=d/C->sparovany->pohon->aRD;
+				else cas+=d/C->Element->pohon->aRD;
+			}
 			//vykresli_Gelement(canv,X,Y,OR,uhel,R,clRed,2);
-			if(C->dalsi==NULL && F->pom_element!=NULL && (F->pom_element==v.MAG_LASO->predchozi->Element || F->pom_element->predchozi2==v.MAG_LASO->predchozi->Element))vykresli_Gelement(canv,X,Y,OR,uhel,R,clRed,2,String(m.round2double(delka*1000,2))+" [mm]");
-			else vykresli_Gelement(canv,X,Y,OR,uhel,R,clRed,2);
+			//if(C->dalsi==NULL && F->pom_element!=NULL && (F->pom_element==v.MAG_LASO->predchozi->Element || F->pom_element->predchozi2==v.MAG_LASO->predchozi->Element))vykresli_Gelement(canv,X,Y,OR,uhel,R,clRed,2,String(m.round2double(delka*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]");
+			//else
+			vykresli_Gelement(canv,X,Y,OR,uhel,R,clRed,2);
 			C=C->dalsi;
 		}
 		delete C;C=NULL;
@@ -988,11 +995,13 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 
    		//výpočetní část, mělo by být volané v případě úspěchu podmínky if(m.PtInSegment....
    		uhel=m.uhelObloukuVsMys(X,Y,OR,RA,R,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
-			delka+=m.R2Larc(R,uhel);//požadovaná délka na oblouku vybraná myší, vracení délky dané výseče, tj. k na(při)počítání měřené délky
+			d+=m.R2Larc(R,uhel);//požadovaná délka na oblouku vybraná myší, vracení délky dané výseče, tj. k na(při)počítání měřené délky
+			delka+=d;
+			if(F->pom_element->pohon!=NULL)cas+=d/F->pom_element->pohon->aRD;
 
 			//vykreslovací část																																																																			 //zjištění kam jsem kliknul v oblouku, viz. vykresli_Gelement, uhel = rotacni uhel
 			TPointD *souradnice_k_dalsimu_pouziti=//poslední souřadnice vráceného pole lze použít např. na umístění teploměru, či pokud se nebude hodit přímo při vykreslení (ale jinak zbytečné), lze použít samostatnou matematickou metodu: //TPointD *Cmy::getArcLine(double X,double Y,double orientace,double rotacni_uhel,double radius)
-			vykresli_Gelement(canv,X,Y,OR,uhel,R,clRed,2,String(m.round2double(delka*1000,2))+" [mm]");//vykreslení měřícího kurzoru, popisek není nutné používat, metodu ještě vylepším
+			vykresli_Gelement(canv,X,Y,OR,uhel,R,clRed,2,String(m.round2double(delka*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]");//vykreslení měřícího kurzoru, popisek není nutné používat, metodu ještě vylepším
    	}
 
 		//vykreslení části přímky
@@ -1002,9 +1011,10 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
    		if(v.MAG_LASO->dalsi==NULL){X=v.MAG_LASO->predchozi->Element->geo.X1;Y=v.MAG_LASO->predchozi->Element->geo.Y1;}
    		OR=F->pom_element->geo.orientace;
    		TPointD konec=v.bod_na_geometrii(F->pom_element);
-			double d=m.delka(X,Y,konec.x,konec.y);
+			d=m.delka(X,Y,konec.x,konec.y);
 			delka+=d;
-			vykresli_Gelement(canv,X,Y,OR,0,d,clRed,2,String(m.round2double(delka*1000,2))+" [mm]");
+			if(F->pom_element->pohon!=NULL)cas+=d/F->pom_element->pohon->aRD;
+			vykresli_Gelement(canv,X,Y,OR,0,d,clRed,2,String(m.round2double(delka*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]");
 		}
 	}
 
@@ -1014,7 +1024,11 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 		X=v.MAG_LASO->Element->geo.X1;Y=v.MAG_LASO->Element->geo.Y1;
 		delka=m.delka(X,Y,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);
 		azimut=m.azimut(X,Y,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);
-		vykresli_Gelement(canv,X,Y,azimut,0,delka,clRed,2,String(m.round2double(delka*1000,2))+" [mm]");
+		if(v.MAG_LASO->dalsi==NULL && v.MAG_LASO->sparovany!=NULL && F->pom_element!=NULL && F->pom_element->pohon!=NULL && v.MAG_LASO->sparovany==F->pom_element)
+		{
+			cas=delka/F->pom_element->pohon->aRD;
+			vykresli_Gelement(canv,X,Y,azimut,0,delka,clRed,2,String(m.round2double(delka*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]");
+		}else vykresli_Gelement(canv,X,Y,azimut,0,delka,clRed,2,String(m.round2double(delka*1000,2))+" [mm]");
 	}
 
 }
@@ -4194,6 +4208,8 @@ TPointD *Cvykresli::vykresli_Gelement(TCanvas *canv,double X,double Y,double ori
 	//canv->AngleArc(m.L2Px(Xoblouku),m.L2Py(Yoblouku),m.m2px(R),SA,RA);
 
 	////výpis textu,vykreslí na konci Gelementu
+  //odsazení
+	int oX=m.m2px(0.5);//posun z pod kurzoru
 	short oY=m.m2px(0.2);//;svislé výchozí odsazení zadané v metrech, použité následně v px
 	if(Text!="" || Text2!="")
 	{
@@ -4204,11 +4220,11 @@ TPointD *Cvykresli::vykresli_Gelement(TCanvas *canv,double X,double Y,double ori
 		canv->Font->Size=3*F->Zoom;
 		canv->Font->Color=color;//m.clIntensive(color,-10);
 	}
-	if(Text!="")TextFraming(canv,m.L2Px(PL[3].x),m.L2Py(PL[3].y)+oY,Text,canv->Font);
+	if(Text!="")TextFraming(canv,m.L2Px(PL[3].x)+oX,m.L2Py(PL[3].y)+oY,Text,canv->Font);
 	if(Text2!="")
 	{
 		short W=0;if(Text!="")W=canv->TextHeight(Text);//pokud existuje Text, odřádkuje Text2 na další řádek
-		TextFraming(canv,m.L2Px(PL[3].x),m.L2Py(PL[3].y)+oY+W,Text2,canv->Font);
+		TextFraming(canv,m.L2Px(PL[3].x)+oX,m.L2Py(PL[3].y)+oY+W,Text2,canv->Font);
 	}
 
 	return PL;//návrátová hodnota souřadnic oblouku pro případné další použití
