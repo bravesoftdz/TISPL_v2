@@ -1286,9 +1286,9 @@ void TmGrid::SetCheck(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	switch(Cell.Align)
 	{
 		case aNO:		Ch->Left+=Left-preLeft;break;
-		case LEFT:	Ch->Width=Columns[X].Width-2;Ch->Left=R.Left+1;break;
+		case LEFT:	Ch->Width=Columns[X].Width-2;Ch->Left=R.Left+Cell.LeftMargin;break;//pokud obsahuje text nenastavuje se šířka
 		case CENTER:Ch->Left=R.Left+Columns[X].Width/2-Ch->Width/2;break;
-		case RIGHT:	Ch->Width=Columns[X].Width-2;Ch->Left=R.Left+1;Ch->BiDiMode=bdRightToLeft;break;
+		case RIGHT:	Ch->Width=Columns[X].Width-2+1-Cell.RightMargin;Ch->Left=R.Left+1;Ch->BiDiMode=bdRightToLeft;break;//case RIGHT:	Ch->Width=Columns[X].Width-2;Ch->Left=R.Left+1;Ch->BiDiMode=bdRightToLeft;break;původní
 	}
 	switch(Cell.Valign)
 	{
@@ -1563,7 +1563,7 @@ TscGPCheckBox *TmGrid::createCheck(unsigned long Col,unsigned long Row)
     Ch->Options->ShapeSize=20;
     Ch->OptionsChecked->ShapeSize=Ch->Options->ShapeSize;
     Ch->Height=Ch->Options->ShapeSize;
-    Ch->Width=Ch->Options->ShapeSize;
+		if(Ch->Caption=="")Ch->Width=Ch->Options->ShapeSize;//pokud obsahuje text, nenastavuje se šířka
 
 		//události
 		Ch->OnClick=&getTagOnClick;
