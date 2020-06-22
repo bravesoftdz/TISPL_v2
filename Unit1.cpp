@@ -13805,7 +13805,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	E->geo.orientace=m.azimut(30,-23,E->geo.X4,E->geo.Y4);
 //	E->geo.radius=m.delka(30,-23,E->geo.X4,E->geo.Y4);
 //	E->geo.delka=E->geo.radius;
-
+		 Memo("");
 	scGPImage_mereni_vzdalenostClick(this);
 }
 //---------------------------------------------------------------------------
@@ -15984,7 +15984,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 	else
 	{
 		//zjištění délky a času, první a poslední segment cesty jsou fiktivní elementy
-		if(d.v.MAG_LASO->dalsi!=NULL)
+		if(d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->predchozi->Element->n==MaxInt)
 		{
 			Cvektory::TCesta *C=d.v.MAG_LASO->dalsi;
 			double s=0,delka=0,cas=0;
@@ -16008,8 +16008,20 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 					if((C->Element->n!=MaxInt && C->Element->pohon==NULL) || (C->Element->n==MaxInt && C->sparovany!=NULL && C->sparovany->pohon==NULL))chyba=true;
 					else
 					{
-						if(C->Element->n==MaxInt && C->sparovany!=NULL)cas+=s/C->sparovany->pohon->aRD;
-						else cas+=s/C->Element->pohon->aRD;
+						if(C->Element->n==MaxInt && C->sparovany!=NULL)
+						{
+							cas+=s/C->sparovany->pohon->aRD;
+							if(C->sparovany->eID==0)cas+=C->sparovany->data.WTstop;
+							if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->sparovany->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
+							if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->sparovany->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
+						}
+						else
+						{
+							cas+=s/C->Element->pohon->aRD;
+							if(C->Element->eID==0)cas+=C->Element->data.WTstop;
+							if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->Element->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
+							if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->Element->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
+						}
 					}
 					delka+=s;
 					C=C->dalsi;

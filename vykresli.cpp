@@ -943,7 +943,7 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 	////deklarace
 	double R,RA,OR,X,Y,uhel,delka=0,azimut,cas=0,d;
 
-  ////vykreslení uložených segmentů v mag lasu, pokud je třeba
+	////vykreslení uložených segmentů v mag lasu, pokud je třeba
 	if(F->pom_element!=NULL && (F->pom_element->predchozi==v.MAG_LASO->predchozi->Element || (F->pom_element->predchozi->eID==301 && F->pom_element->predchozi->predchozi2==v.MAG_LASO->predchozi->Element) || F->pom_element==v.MAG_LASO->predchozi->Element || (F->pom_element->eID==301 && F->pom_element->predchozi2==v.MAG_LASO->predchozi->Element)))
 	{
 		Cvektory::TCesta *C=v.MAG_LASO->dalsi;
@@ -970,8 +970,20 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 			if((C->Element->n!=MaxInt && C->Element->pohon==NULL) || (C->Element->n==MaxInt && C->sparovany!=NULL && C->sparovany->pohon==NULL));
 			else
 			{
-				if(C->Element->n==MaxInt && C->sparovany!=NULL)cas+=d/C->sparovany->pohon->aRD;
-				else cas+=d/C->Element->pohon->aRD;
+				if(C->Element->n==MaxInt && C->sparovany!=NULL)
+				{
+					cas+=d/C->sparovany->pohon->aRD;
+					if(C->sparovany->eID==0)cas+=C->sparovany->data.WTstop;
+					if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->sparovany->pohon!=C->dalsi->Element->pohon){cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);F->Memo(C->sparovany->name);}
+					if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->sparovany->pohon!=C->dalsi->sparovany->pohon){cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);F->Memo(C->sparovany->name);}
+				}
+				else
+				{
+					cas+=d/C->Element->pohon->aRD;
+					if(C->Element->eID==0)cas+=C->Element->data.WTstop;
+					if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->Element->pohon!=C->dalsi->Element->pohon){cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);F->Memo(C->Element->name);}
+					if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->Element->pohon!=C->dalsi->sparovany->pohon){cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);F->Memo(C->Element->name);}
+				}
 			}
 			//vykresli_Gelement(canv,X,Y,OR,uhel,R,clRed,2);
 			//if(C->dalsi==NULL && F->pom_element!=NULL && (F->pom_element==v.MAG_LASO->predchozi->Element || F->pom_element->predchozi2==v.MAG_LASO->predchozi->Element))vykresli_Gelement(canv,X,Y,OR,uhel,R,clRed,2,String(m.round2double(delka*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]");
@@ -995,9 +1007,22 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 
    		//výpočetní část, mělo by být volané v případě úspěchu podmínky if(m.PtInSegment....
    		uhel=m.uhelObloukuVsMys(X,Y,OR,RA,R,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
-			d+=m.R2Larc(R,uhel);//požadovaná délka na oblouku vybraná myší, vracení délky dané výseče, tj. k na(při)počítání měřené délky
+			d=m.R2Larc(R,uhel);//požadovaná délka na oblouku vybraná myší, vracení délky dané výseče, tj. k na(při)počítání měřené délky
 			delka+=d;
-			if(F->pom_element->pohon!=NULL)cas+=d/F->pom_element->pohon->aRD;
+      //vypočet času
+			if(F->pom_element->pohon!=NULL)
+			{
+		  	if(v.MAG_LASO->Element->n==MaxInt && v.MAG_LASO->sparovany!=NULL)
+		  	{
+		  		cas+=d/F->pom_element->pohon->aRD;
+					if(v.MAG_LASO->sparovany->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
+				}
+		  	else
+		  	{
+					cas+=d/F->pom_element->pohon->aRD;
+					if(v.MAG_LASO->Element->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
+		  	}
+			}
 
 			//vykreslovací část																																																																			 //zjištění kam jsem kliknul v oblouku, viz. vykresli_Gelement, uhel = rotacni uhel
 			TPointD *souradnice_k_dalsimu_pouziti=//poslední souřadnice vráceného pole lze použít např. na umístění teploměru, či pokud se nebude hodit přímo při vykreslení (ale jinak zbytečné), lze použít samostatnou matematickou metodu: //TPointD *Cmy::getArcLine(double X,double Y,double orientace,double rotacni_uhel,double radius)
@@ -1007,13 +1032,29 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 		//vykreslení části přímky
    	else if(F->pom_element!=NULL && v.MAG_LASO->Element!=NULL)
    	{
-   		X=F->pom_element->geo.X1;Y=F->pom_element->geo.Y1;
+      //výpočetní část
+			X=F->pom_element->geo.X1;Y=F->pom_element->geo.Y1;
    		if(v.MAG_LASO->dalsi==NULL){X=v.MAG_LASO->predchozi->Element->geo.X1;Y=v.MAG_LASO->predchozi->Element->geo.Y1;}
    		OR=F->pom_element->geo.orientace;
    		TPointD konec=v.bod_na_geometrii(F->pom_element);
 			d=m.delka(X,Y,konec.x,konec.y);
 			delka+=d;
-			if(F->pom_element->pohon!=NULL)cas+=d/F->pom_element->pohon->aRD;
+      //vypočet času
+			if(F->pom_element->pohon!=NULL)
+			{
+				if(v.MAG_LASO->Element->n==MaxInt && v.MAG_LASO->sparovany!=NULL)
+				{
+					cas+=d/F->pom_element->pohon->aRD;
+					if(v.MAG_LASO->sparovany->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
+				}
+		  	else
+		  	{
+					cas+=d/F->pom_element->pohon->aRD;
+					if(v.MAG_LASO->Element->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
+				}
+			}
+
+			//vykreslovací část
 			vykresli_Gelement(canv,X,Y,OR,0,d,clRed,2,String(m.round2double(delka*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]");
 		}
 	}

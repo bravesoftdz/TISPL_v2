@@ -1563,7 +1563,7 @@ TscGPCheckBox *TmGrid::createCheck(unsigned long Col,unsigned long Row)
     Ch->Options->ShapeSize=20;
     Ch->OptionsChecked->ShapeSize=Ch->Options->ShapeSize;
     Ch->Height=Ch->Options->ShapeSize;
-		if(Ch->Caption=="")Ch->Width=Ch->Options->ShapeSize;//pokud obsahuje text, nenastavuje se šířka
+		Ch->Width=Ch->Options->ShapeSize;//pokud obsahuje text caption, je třeba nastavit šířku tak, aby text byl vidět
 
 		//události
 		Ch->OnClick=&getTagOnClick;
