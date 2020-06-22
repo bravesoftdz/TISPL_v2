@@ -679,8 +679,14 @@ bool Cmy::PtInClovek(double X,double Y,double Xmys,double Ymys,double rotace,sho
 	EndPath(F->Canvas->Handle);
 
 	//testování finální citelné oblasti
-	if(PtInRegion(PathToRegion(F->Canvas->Handle),L2Px(Xmys),L2Py(Ymys)))return true;
-	else return false;
+//	if(PtInRegion(PathToRegion(F->Canvas->Handle),L2Px(Xmys),L2Py(Ymys)))return true;
+//	else return false;
+	//nové řešení
+	bool RET=false;
+	HRGN h=PathToRegion(F->Canvas->Handle);
+	if(PtInRegion(h,L2Px(Xmys),L2Py(Ymys)))RET=true;else RET=false;
+	DeleteObject(h);
+	return RET;
 }
 /////////////////////////////////////////////////////////////////////////////
 //metoda ověří zda je bod ve vnitř obrysu ION tyčí, který se nachází na daných souřadnicích
@@ -706,8 +712,14 @@ bool Cmy::PtInIon(double X,double Y,double Xmys,double Ymys,double rotace)
 	EndPath(F->Canvas->Handle);
 
 	//testování finální citelné oblasti
-	if(PtInRegion(PathToRegion(F->Canvas->Handle),L2Px(Xmys),L2Py(Ymys)))return true;
-	else return false;
+//	if(PtInRegion(PathToRegion(F->Canvas->Handle),L2Px(Xmys),L2Py(Ymys)))return true;
+//	else return false;
+	//nové řešení
+	bool RET=false;
+	HRGN h=PathToRegion(F->Canvas->Handle);
+	if(PtInRegion(h,L2Px(Xmys),L2Py(Ymys)))RET=true;else RET=false;
+	DeleteObject(h);
+	return RET;
 }
 /////////////////////////////////////////////////////////////////////////////
 //otestuje zda v daném geometrickém segmetnu (o velikosti pásma aktuální šířky kolejí) se nachází souřadnice kurzor myši, pokud ano, vrátí true, jinak false
@@ -719,8 +731,14 @@ bool Cmy::PtInSegment(double X,double Y,short typ,double orientace,double rotacn
 	EndPath(F->Canvas->Handle);
 
 	//testování finální citelné oblasti
-	if(PtInRegion(PathToRegion(F->Canvas->Handle),L2Px(Xmys),L2Py(Ymys)))return true;
-	else return false;
+//	if(PtInRegion(PathToRegion(F->Canvas->Handle),L2Px(Xmys),L2Py(Ymys)))return true;
+//	else return false;
+	//nové řešení
+	bool RET=false;
+	HRGN h=PathToRegion(F->Canvas->Handle);
+	if(PtInRegion(h,L2Px(Xmys),L2Py(Ymys)))RET=true;else RET=false;
+	DeleteObject(h);
+	return RET;
 }
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
