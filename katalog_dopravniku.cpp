@@ -18,14 +18,14 @@ TForm_katalog *Form_katalog;
 __fastcall TForm_katalog::TForm_katalog(TComponent* Owner)
   : TForm(Owner)
 {
- 	//defaultní design a pozicování tlačítek OK a STORNO
-	F->m.designButton(Button_save,Form_katalog,1,2);
-	F->m.designButton(Button_storno,Form_katalog,2,2);
+
   zmena=false;
   check.X=0;
   check.Y=0;
  	clNORMAL	 = (TColor)RGB(200,200,200); //(TColor)RGB(128,128,128);
   clOTHER_AFTER_CHOOSE			 = (TColor)RGB(128,128,128); //(TColor)RGB(200,200,200);
+  clSELECTED_BLUE = (TColor)RGB(43,87,154); //modrá
+  clBACKGROUND = (TColor)RGB(240,240,240);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_katalog::FormShow(TObject *Sender)
@@ -50,7 +50,7 @@ void __fastcall TForm_katalog::FormShow(TObject *Sender)
   F->scStyledForm1->ShowClientInActiveEffect();
 
   ////////vytvoření tabulky s požadovaným počtem sloupců a řádků////////
-	unsigned long ColCount=21;//pevný počet slopců
+	unsigned long ColCount=19;//pevný počet slopců
 	unsigned long RowCount=F->d.v.KATALOG->predchozi->n + 2;//dynamický počet řádků + 2 hlavička (merge)
 	K_mGrid->Create(ColCount,RowCount);//samotné vytvoření matice-tabulky
   K_mGrid->Top=scLabel_header->Height + 10;
@@ -72,9 +72,9 @@ void __fastcall TForm_katalog::FormShow(TObject *Sender)
 		K_mGrid->MergeCells(5,0,12,0);
 		K_mGrid->MergeCells(5,1,8,1);
 		K_mGrid->MergeCells(9,1,12,1);
-		K_mGrid->MergeCells(13,0,20,0);
+		K_mGrid->MergeCells(13,0,18,0);
 		K_mGrid->MergeCells(13,1,16,1);
-		K_mGrid->MergeCells(17,1,20,1);
+		K_mGrid->MergeCells(17,1,18,1);
     K_mGrid->MergeCells(0,0,0,1);
     K_mGrid->MergeCells(0,0,1,0);
     K_mGrid->MergeCells(0,1,1,1);
@@ -92,6 +92,10 @@ void __fastcall TForm_katalog::FormShow(TObject *Sender)
 	Form_katalog->Height = scLabel_header->Height +  K_mGrid->Height + Button_save->Height + 70;
 
 	vypis(F->ls->Strings[193],false);//"Kliknutím do seznamu rádiusů vyberete katalog dopravníků"
+
+  	//defaultní design a pozicování tlačítek OK a STORNO
+	F->m.designButton(Button_save,Form_katalog,1,2);
+	F->m.designButton(Button_storno,Form_katalog,2,2);
 }
 //---------------------------------------------------------------------------
 
@@ -156,7 +160,7 @@ void TForm_katalog::LoadValues ()
     H=K->vRadius->dalsi;
     while(H!=NULL)
 	  {
-			K_mGrid->Cells[16+H->n][K->n+1].Text=H->hodnota;
+		 	K_mGrid->Cells[16+H->n][K->n+1].Text=H->hodnota;
       H=H->dalsi;
     }
     //ukazatelová část
@@ -201,7 +205,7 @@ void TForm_katalog::LoadStyles ()
  //clBACKGROUND_light=Form1->m.clIntensive((TColor)RGB(200,200,200),35);
  //clBACKGROUND_dark=clWhite;//Form1->m.clIntensive((TColor)RGB(240,240,240),35);
 
- for (unsigned int s = 0; s < K_mGrid->ColCount-1; s++)
+ for (unsigned int s = 0; s <= K_mGrid->ColCount-1; s++)
  {  //černý font v hlavičcce
 	 K_mGrid->Cells[s][0].Font->Color=clBlack;
 	 K_mGrid->Cells[s][1].Font->Color=clBlack;
@@ -210,26 +214,49 @@ void TForm_katalog::LoadStyles ()
 	for (unsigned int r = 2; r <= K_mGrid->RowCount-1; r++)
  {
  // K_mGrid->Cells[0][r].Font->Color=clBlack;
-   K_mGrid->Cells[1][r].Font->Color=clBlack;
-   K_mGrid->Cells[2][r].Font->Color=clOTHER_AFTER_CHOOSE;
+   K_mGrid->Cells[1][r].Font->Color=clOTHER_AFTER_CHOOSE;
+   K_mGrid->Cells[2][r].Font->Color=clOTHER_AFTER_CHOOSE; //DefaultCell.isZero->Color=(TColor)RGB(43,87,154);//(TColor)RGB(128,128,128);
    K_mGrid->Cells[3][r].Font->Color=clOTHER_AFTER_CHOOSE;
    K_mGrid->Cells[4][r].Font->Color=clOTHER_AFTER_CHOOSE;
    K_mGrid->Cells[5][r].Font->Color=clOTHER_AFTER_CHOOSE;
    K_mGrid->Cells[6][r].Font->Color=clOTHER_AFTER_CHOOSE;
    K_mGrid->Cells[7][r].Font->Color=clOTHER_AFTER_CHOOSE;
    K_mGrid->Cells[8][r].Font->Color=clOTHER_AFTER_CHOOSE;
+
+
    K_mGrid->Cells[9][r].Font->Color=clOTHER_AFTER_CHOOSE;
    K_mGrid->Cells[10][r].Font->Color=clOTHER_AFTER_CHOOSE;
    K_mGrid->Cells[11][r].Font->Color=clOTHER_AFTER_CHOOSE;
    K_mGrid->Cells[12][r].Font->Color=clOTHER_AFTER_CHOOSE;
+
+   K_mGrid->Cells[9][r].Align=K_mGrid->LEFT;
+   K_mGrid->Cells[10][r].Align=K_mGrid->LEFT;
+   K_mGrid->Cells[11][r].Align=K_mGrid->LEFT;
+   K_mGrid->Cells[12][r].Align=K_mGrid->LEFT;
+
+   K_mGrid->Cells[9][r].LeftMargin=3;
+   K_mGrid->Cells[10][r].LeftMargin=3;
+   K_mGrid->Cells[11][r].LeftMargin=3;
+   K_mGrid->Cells[12][r].LeftMargin=3;
+
+    K_mGrid->Cells[9][r].Type=K_mGrid->CHECK;
+    K_mGrid->Cells[10][r].Type=K_mGrid->CHECK;
+    K_mGrid->Cells[11][r].Type=K_mGrid->CHECK;
+    K_mGrid->Cells[12][r].Type=K_mGrid->CHECK;
+
    K_mGrid->Cells[13][r].Font->Color=clOTHER_AFTER_CHOOSE;
    K_mGrid->Cells[14][r].Font->Color=clOTHER_AFTER_CHOOSE;
    K_mGrid->Cells[15][r].Font->Color=clOTHER_AFTER_CHOOSE;
    K_mGrid->Cells[16][r].Font->Color=clOTHER_AFTER_CHOOSE;
    K_mGrid->Cells[17][r].Font->Color=clOTHER_AFTER_CHOOSE;
    K_mGrid->Cells[18][r].Font->Color=clOTHER_AFTER_CHOOSE;
-   K_mGrid->Cells[19][r].Font->Color=clOTHER_AFTER_CHOOSE;
-   K_mGrid->Cells[20][r].Font->Color=clOTHER_AFTER_CHOOSE;
+ //  K_mGrid->Cells[19][r].Font->Color=clOTHER_AFTER_CHOOSE;
+ //  K_mGrid->Cells[20][r].Font->Color=clOTHER_AFTER_CHOOSE;
+   K_mGrid->Cells[13][r].isZero->Color=clOTHER_AFTER_CHOOSE;
+   K_mGrid->Cells[17][r].isZero->Color=clOTHER_AFTER_CHOOSE;
+   K_mGrid->Cells[18][r].isZero->Color=clOTHER_AFTER_CHOOSE;
+ //  K_mGrid->Cells[19][r].isZero->Color=clOTHER_AFTER_CHOOSE;
+  // K_mGrid->Cells[20][r].isZero->Color=clOTHER_AFTER_CHOOSE;
 
 
 
@@ -241,7 +268,7 @@ void TForm_katalog::LoadStyles ()
 
 void TForm_katalog::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row)
 {
-
+   // K_mGrid->HighlightRow()
  if(!zmena)
  {
    if(Col>=9 && Col<=12)
@@ -307,7 +334,7 @@ void __fastcall TForm_katalog::FormMouseMove(TObject *Sender, TShiftState Shift,
           int Y)
 {
 	unsigned long Row=K_mGrid->GetIdxRow(X,Y);
-	if(Row>=2 && Row<100)K_mGrid->HighlightRowOnMouse(X,Y,(TColor)RGB(240,240,240));
+ //	if(Row>=2 && Row<100)K_mGrid->HighlightRowOnMouse(X,Y,(TColor)RGB(240,240,240));
 }
 //---------------------------------------------------------------------------
 
@@ -384,13 +411,31 @@ void TForm_katalog::vypis(UnicodeString text,bool red,bool link)
 
 void TForm_katalog::getCheckSettings ()
 {
+
    TscGPCheckBox *CH=K_mGrid->getCheck(0,check.Y);  //výchozí stav zašrtávátka
    CH->Checked=true;
    CH=NULL;delete CH;
+   //K_mGrid->HighlightRow(check.Y,(TColor)RGB(240,240,240));
 
-  for(unsigned int i=2;i<K_mGrid->ColCount;i++)
+    K_mGrid->Cells[9][check.Y].Type=K_mGrid->CHECK;
+   // K_mGrid->Cells[9][check.Y].Align=K_mGrid->LEFT;
+    K_mGrid->Update();
+    TscGPCheckBox *H=K_mGrid->getCheck(9,check.Y);
+   // H->Width=60;
+    H->BiDiMode=bdRightToLeft;
+    H->Layout=blGlyphRight;
+    H=NULL;delete H;
+    K_mGrid->Columns[9].Width=55;
+
+  for(unsigned int i=1;i<K_mGrid->ColCount;i++)
   {
-   K_mGrid->Cells[i][check.Y].Font->Color=(TColor)RGB(43,87,154);//clNORMAL;
+   K_mGrid->Cells[i][check.Y].Font->Color=clSELECTED_BLUE;
+   K_mGrid->Cells[i][check.Y].Background->Color=clBACKGROUND;
   }
+
+
 }
+
+
+
 
