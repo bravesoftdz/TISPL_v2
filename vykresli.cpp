@@ -1015,13 +1015,11 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 		  	if(v.MAG_LASO->Element->n==MaxInt && v.MAG_LASO->sparovany!=NULL)
 		  	{
 		  		cas+=d/F->pom_element->pohon->aRD;
-					if(v.MAG_LASO->sparovany->eID==0)cas+=v.MAG_LASO->sparovany->data.WTstop;
 					if(v.MAG_LASO->sparovany->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
 				}
 		  	else
 		  	{
-		  		cas+=d/F->pom_element->pohon->aRD;
-					if(v.MAG_LASO->Element->eID==0)cas+=v.MAG_LASO->Element->data.WTstop;
+					cas+=d/F->pom_element->pohon->aRD;
 					if(v.MAG_LASO->Element->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
 		  	}
 			}
@@ -1047,13 +1045,11 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 				if(v.MAG_LASO->Element->n==MaxInt && v.MAG_LASO->sparovany!=NULL)
 				{
 					cas+=d/F->pom_element->pohon->aRD;
-					if(v.MAG_LASO->sparovany->eID==0)cas+=v.MAG_LASO->sparovany->data.WTstop;
 					if(v.MAG_LASO->sparovany->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
 				}
 		  	else
 		  	{
 					cas+=d/F->pom_element->pohon->aRD;
-					if(v.MAG_LASO->Element->eID==0)cas+=v.MAG_LASO->Element->data.WTstop;
 					if(v.MAG_LASO->Element->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
 				}
 			}
