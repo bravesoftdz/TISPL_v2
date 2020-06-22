@@ -3208,6 +3208,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						E->geo.orientace=0;
 						E->geo.radius=0;
 						E->geo.delka=0;
+						E->geo.typ=0;
             //kontrola přichytávání na elementy při počátečním a koncovém bodu
 						if(prichytavat_k_mrizce==1)
 						{
@@ -3234,6 +3235,12 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 							}
 							d.v.vymaz_seznam_VYHYBKY();//nutné pokud dojde k nedokončení alg. dalsi_krok
 							el=NULL;delete el;
+						}
+						//uložení typu geometrie
+						if(pom_element!=NULL)
+						{
+							E->geo.typ=pom_element->geo.typ;
+							E->geo.radius=pom_element->geo.radius;
 						}
 						//vkládání počátečního bodu pro měření
 						if(d.v.MAG_LASO->dalsi==NULL && d.v.MAG_LASO->Element==NULL)
@@ -4592,7 +4599,7 @@ void TForm1::getJobID(int X, int Y)
 		}
 
     //vykreslení měřidla, pouze v případě, že mám nadefinovaný první bod
-		if(d.v.MAG_LASO->Element!=NULL)REFRESH(d.SCENA,false);//slouží k vykreslení a překreslení mag. lasa
+		if(d.v.MAG_LASO->Element!=NULL)REFRESH();//slouží k vykreslení a překreslení mag. lasa
 	}
 	//pouze na test zatížení Memo3->Visible=true;Memo3->Lines->Add(s_mazat++);
 }
@@ -13806,7 +13813,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	E->geo.orientace=m.azimut(30,-23,E->geo.X4,E->geo.Y4);
 //	E->geo.radius=m.delka(30,-23,E->geo.X4,E->geo.Y4);
 //	E->geo.delka=E->geo.radius;
-
+         Memo("");
 	scGPImage_mereni_vzdalenostClick(this);
 }
 //---------------------------------------------------------------------------
@@ -16015,10 +16022,10 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 	else
 	{
 		//zjištění délky a času, první a poslední segment cesty jsou fiktivní elementy
-		if(d.v.MAG_LASO->dalsi!=NULL)
+		if(d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->predchozi->Element->n==MaxInt)
 		{
 			Cvektory::TCesta *C=d.v.MAG_LASO->dalsi;
-			double s=0,delka=0,cas=0;
+			double s=0,delka=0,cas=0,X,Y,uhel;
 	  	bool chyba=false;
 			String popisek="";//slouží pro rozšíření MB o
 			if(d.v.MAG_LASO->predchozi->n==1 && C->Element->n==MaxInt)//lineární měření
@@ -16035,12 +16042,36 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 			{
 				while(C!=NULL)
 				{
-					s=m.delka(C->predchozi->Element->geo.X4,C->predchozi->Element->geo.Y4,C->Element->geo.X4,C->Element->geo.Y4);
+					//zjištění souřadnic
+					X=C->Element->geo.X1;Y=C->Element->geo.Y1;
+					if(C->n==1){X=d.v.MAG_LASO->Element->geo.X1;Y=d.v.MAG_LASO->Element->geo.Y1;}
+					//vypočet delky
+					if(C->Element->n!=MaxInt && C->n!=1)s=C->Element->geo.delka;
+					else if(C->Element->geo.typ==0)s=m.delka(X,Y,C->Element->geo.X4,C->Element->geo.Y4);
+					else
+					{
+						s=m.delka(X,Y,C->Element->geo.X4,C->Element->geo.Y4);
+						double uhel=m.T2Aarc(C->Element->geo.radius,s);
+						s=m.R2Larc(C->Element->geo.radius,uhel);
+					}
+					//s=m.delka(C->predchozi->Element->geo.X4,C->predchozi->Element->geo.Y4,C->Element->geo.X4,C->Element->geo.Y4);
 					if((C->Element->n!=MaxInt && C->Element->pohon==NULL) || (C->Element->n==MaxInt && C->sparovany!=NULL && C->sparovany->pohon==NULL))chyba=true;
 					else
 					{
-						if(C->Element->n==MaxInt && C->sparovany!=NULL)cas+=s/C->sparovany->pohon->aRD;
-						else cas+=s/C->Element->pohon->aRD;
+						if(C->Element->n==MaxInt && C->sparovany!=NULL)
+						{
+							cas+=s/C->sparovany->pohon->aRD;
+							if(C->sparovany->eID==0)cas+=C->sparovany->data.WTstop;
+							if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->sparovany->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
+							if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->sparovany->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
+						}
+						else
+						{
+							cas+=s/C->Element->pohon->aRD;
+							if(C->Element->eID==0)cas+=C->Element->data.WTstop;
+							if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->Element->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
+							if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->Element->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
+						}
 					}
 					delka+=s;
 					C=C->dalsi;
@@ -16051,7 +16082,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 				if(d.v.MAG_LASO->predchozi->sparovany!=NULL && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->Element->geo.X3 && d.v.MAG_LASO->predchozi->Element->geo.X3==d.v.MAG_LASO->predchozi->Element->geo.X4)
 					popisek+=", přichyceno na "+d.v.MAG_LASO->predchozi->sparovany->name;
 			}
-			MB(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,"Délka = "+String(m.round2double(delka*1000,2))+" [mm]"+popisek,"");
+			MB(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,"Délka = "+String(m.round2double(delka*1000,2))+" [mm]"+popisek,"",MB_OK,true,false,366,true,true);
 			C=NULL;delete C;
 		}
 		Akce=NIC;

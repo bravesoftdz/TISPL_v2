@@ -244,6 +244,20 @@ void TForm_katalog::LoadStyles ()
     K_mGrid->Cells[11][r].Type=K_mGrid->CHECK;
     K_mGrid->Cells[12][r].Type=K_mGrid->CHECK;
 
+    K_mGrid->Update();
+    K_mGrid->getCheck(9,r)->BiDiMode=bdRightToLeft;
+    K_mGrid->getCheck(9,r)->Layout=blGlyphRight;
+
+    K_mGrid->getCheck(10,r)->BiDiMode=bdRightToLeft;
+    K_mGrid->getCheck(10,r)->Layout=blGlyphRight;
+
+    K_mGrid->getCheck(11,r)->BiDiMode=bdRightToLeft;
+    K_mGrid->getCheck(11,r)->Layout=blGlyphRight;
+
+    K_mGrid->getCheck(12,r)->BiDiMode=bdRightToLeft;
+    K_mGrid->getCheck(12,r)->Layout=blGlyphRight;
+
+
    K_mGrid->Cells[13][r].Font->Color=clOTHER_AFTER_CHOOSE;
    K_mGrid->Cells[14][r].Font->Color=clOTHER_AFTER_CHOOSE;
    K_mGrid->Cells[15][r].Font->Color=clOTHER_AFTER_CHOOSE;
@@ -421,7 +435,6 @@ void TForm_katalog::getCheckSettings ()
    // K_mGrid->Cells[9][check.Y].Align=K_mGrid->LEFT;
     K_mGrid->Update();
     TscGPCheckBox *H=K_mGrid->getCheck(9,check.Y);
-   // H->Width=60;
     H->BiDiMode=bdRightToLeft;
     H->Layout=blGlyphRight;
     H=NULL;delete H;
