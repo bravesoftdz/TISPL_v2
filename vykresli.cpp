@@ -951,11 +951,20 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 		{
 			//nastavení parametrů pro vykreslení + výpočet délky
 			X=C->Element->geo.X1;Y=C->Element->geo.Y1;
-  		if(C->n==1){X=v.MAG_LASO->Element->geo.X1;Y=v.MAG_LASO->Element->geo.Y1;}
+			if(C->n==1){X=v.MAG_LASO->Element->geo.X1;Y=v.MAG_LASO->Element->geo.Y1;}
 			RA=C->Element->geo.rotacni_uhel;
 			OR=C->Element->geo.orientace;
-			d=m.delka(X,Y,C->Element->geo.X4,C->Element->geo.Y4);
+			//ypočet delky
+			if(C->Element->n!=MaxInt && C->n!=1)d=C->Element->geo.delka;
+			else if(C->Element->geo.typ==0)d=m.delka(X,Y,C->Element->geo.X4,C->Element->geo.Y4);
+			else
+			{
+				d=m.delka(X,Y,C->Element->geo.X4,C->Element->geo.Y4);
+				uhel=m.T2Aarc(C->Element->geo.radius,d);
+				d=m.R2Larc(C->Element->geo.radius,uhel);
+			}
 			delka+=d;
+
   		if(C->Element->geo.typ==0)
   		{
   			R=d;
@@ -974,21 +983,20 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 				{
 					cas+=d/C->sparovany->pohon->aRD;
 					if(C->sparovany->eID==0)cas+=C->sparovany->data.WTstop;
-					if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->sparovany->pohon!=C->dalsi->Element->pohon){cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);F->Memo(C->sparovany->name);}
-					if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->sparovany->pohon!=C->dalsi->sparovany->pohon){cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);F->Memo(C->sparovany->name);}
+					if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->sparovany->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
+					if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->sparovany->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
 				}
 				else
 				{
 					cas+=d/C->Element->pohon->aRD;
 					if(C->Element->eID==0)cas+=C->Element->data.WTstop;
-					if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->Element->pohon!=C->dalsi->Element->pohon){cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);F->Memo(C->Element->name);}
-					if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->Element->pohon!=C->dalsi->sparovany->pohon){cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);F->Memo(C->Element->name);}
+					if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->Element->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
+					if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->Element->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
 				}
 			}
-			//vykresli_Gelement(canv,X,Y,OR,uhel,R,clRed,2);
-			//if(C->dalsi==NULL && F->pom_element!=NULL && (F->pom_element==v.MAG_LASO->predchozi->Element || F->pom_element->predchozi2==v.MAG_LASO->predchozi->Element))vykresli_Gelement(canv,X,Y,OR,uhel,R,clRed,2,String(m.round2double(delka*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]");
-			//else
+			//vykreslení segmentu
 			vykresli_Gelement(canv,X,Y,OR,uhel,R,clRed,2);
+      //posun na další segment
 			C=C->dalsi;
 		}
 		delete C;C=NULL;
@@ -1000,13 +1008,14 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 		//vykreslení části oblouku
 		if(F->pom_element!=NULL && F->pom_element->geo.typ!=0 && v.MAG_LASO->dalsi!=NULL)
 		{
+      //načítání parametrů
 			R=F->pom_element->geo.radius;
 			RA=F->pom_element->geo.rotacni_uhel;//rotační úhel, pod kterým je oblouk rotován - směřován (proti směru hodinových ručiček), může být záporný (po směru hodinových ručiček)
 			OR=F->pom_element->geo.orientace;
    		X=F->pom_element->geo.X1,Y=F->pom_element->geo.Y1;
 
    		//výpočetní část, mělo by být volané v případě úspěchu podmínky if(m.PtInSegment....
-   		uhel=m.uhelObloukuVsMys(X,Y,OR,RA,R,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
+			uhel=m.uhelObloukuVsMys(X,Y,OR,RA,R,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
 			d=m.R2Larc(R,uhel);//požadovaná délka na oblouku vybraná myší, vracení délky dané výseče, tj. k na(při)počítání měřené délky
 			delka+=d;
       //vypočet času
@@ -1014,32 +1023,34 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 			{
 		  	if(v.MAG_LASO->Element->n==MaxInt && v.MAG_LASO->sparovany!=NULL)
 		  	{
-		  		cas+=d/F->pom_element->pohon->aRD;
+					cas+=d/F->pom_element->pohon->aRD;
 					if(v.MAG_LASO->sparovany->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
 				}
 		  	else
 		  	{
 					cas+=d/F->pom_element->pohon->aRD;
 					if(v.MAG_LASO->Element->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
-		  	}
+				}
 			}
 
 			//vykreslovací část																																																																			 //zjištění kam jsem kliknul v oblouku, viz. vykresli_Gelement, uhel = rotacni uhel
 			TPointD *souradnice_k_dalsimu_pouziti=//poslední souřadnice vráceného pole lze použít např. na umístění teploměru, či pokud se nebude hodit přímo při vykreslení (ale jinak zbytečné), lze použít samostatnou matematickou metodu: //TPointD *Cmy::getArcLine(double X,double Y,double orientace,double rotacni_uhel,double radius)
 			vykresli_Gelement(canv,X,Y,OR,uhel,R,clRed,2,String(m.round2double(delka*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]");//vykreslení měřícího kurzoru, popisek není nutné používat, metodu ještě vylepším
-   	}
+		}
 
 		//vykreslení části přímky
    	else if(F->pom_element!=NULL && v.MAG_LASO->Element!=NULL)
    	{
-      //výpočetní část
+			//načítání parametrů
 			X=F->pom_element->geo.X1;Y=F->pom_element->geo.Y1;
    		if(v.MAG_LASO->dalsi==NULL){X=v.MAG_LASO->predchozi->Element->geo.X1;Y=v.MAG_LASO->predchozi->Element->geo.Y1;}
-   		OR=F->pom_element->geo.orientace;
+			OR=F->pom_element->geo.orientace;
+			//výpočetní část
    		TPointD konec=v.bod_na_geometrii(F->pom_element);
 			d=m.delka(X,Y,konec.x,konec.y);
 			delka+=d;
-      //vypočet času
+
+			//vypočet času
 			if(F->pom_element->pohon!=NULL)
 			{
 				if(v.MAG_LASO->Element->n==MaxInt && v.MAG_LASO->sparovany!=NULL)
@@ -1062,14 +1073,18 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 	////liniové měřění
 	else if(v.MAG_LASO->Element!=NULL && (F->pom_element==NULL || (F->pom_element!=NULL && F->pom_element!=v.MAG_LASO->predchozi->Element && F->pom_element->predchozi2!=v.MAG_LASO->predchozi->Element)))
 	{
+		//načtení parametrů
 		X=v.MAG_LASO->Element->geo.X1;Y=v.MAG_LASO->Element->geo.Y1;
+		//výpočetní část
 		delka=m.delka(X,Y,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);
 		azimut=m.azimut(X,Y,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);
+    //výpočt času a vykreslení
 		if(v.MAG_LASO->dalsi==NULL && v.MAG_LASO->sparovany!=NULL && F->pom_element!=NULL && F->pom_element->pohon!=NULL && v.MAG_LASO->sparovany==F->pom_element)
 		{
 			cas=delka/F->pom_element->pohon->aRD;
 			vykresli_Gelement(canv,X,Y,azimut,0,delka,clRed,2,String(m.round2double(delka*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]");
-		}else vykresli_Gelement(canv,X,Y,azimut,0,delka,clRed,2,String(m.round2double(delka*1000,2))+" [mm]");
+		}
+		else vykresli_Gelement(canv,X,Y,azimut,0,delka,clRed,2,String(m.round2double(delka*1000,2))+" [mm]");
 	}
 
 }
