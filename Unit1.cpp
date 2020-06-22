@@ -2585,6 +2585,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 			ButtonMaVl->Visible!=ButtonMaVl->Visible;ButtonMaKr->Visible=!ButtonMaKr->Visible;Invalidate();
 			ButtonMaVl->Left=scSplitView_LEFTTOOLBAR->Width;ButtonMaKr->Left=ButtonMaVl->Left;
 			ButtonMaVl->Top=scGPPanel_mainmenu->Height;ButtonMaKr->Top=ButtonMaVl->Top;
+			if(ButtonMaKr->Visible)ButtonMaKr->SetFocus();
 		}break;
 		//F10
 		case 121:Invalidate();break;
@@ -13816,9 +13817,9 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 	scGPImage_mereni_vzdalenostClick(this);
 }
 //---------------------------------------------------------------------------
-//MaKr testovací tlačítko
-void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
-{
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//MAKR - archiv
  //log(__func__);
 // Form2->ShowModal();
 //	d.v.vytvor_retez(d.v.POHONY->dalsi);
@@ -13990,11 +13991,41 @@ void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 //	vytvor_statickou_scenu();
 //	REFRESH();
 
-
-	 //	 TPointD *souradnice_k_dalsimu_pouziti=vykresli_Gelement(canv,Xoblouku,Yoblouku,OR,RA,R,clBlue,1);
+ //	 TPointD *souradnice_k_dalsimu_pouziti=vykresli_Gelement(canv,Xoblouku,Yoblouku,OR,RA,R,clBlue,1);
 //	 F->Memo(String(souradnice_k_dalsimu_pouziti[3].x)+" "+String(souradnice_k_dalsimu_pouziti[3].y));
+//---------------------------------------------------------------------------
+//MaKr testovací tlačítko
+void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
+{
+	//s-start, k-konec, 1-první úsečka, 2-druhá úsečka
 
+	///////testovací vstupy - různé situace
+	////test totožné (i protisměrné)
+	//double xs1=0;double ys1=0;double xk1=20;double yk1=20;
+	//double xs2=20;double ys2=20;double xk2=0;double yk2=0;
+	////test rovnoběžné (i protisměrné)
+	//double xs1=0;double ys1=0;double xk1=20;double yk1=20;
+	//double xs2=20+20;double ys2=20;double xk2=0+20;double yk2=0;
+	////mimoběžné, průsečík mimo úsečky, pouze přímek
+	//double xs1=0;double ys1=0;double xk1=20;double yk1=20;
+	//double xs2=20;double ys2=50;double xk2=40;double yk2=-50;
+	//mimoběžné, průsečík i úsečky
+	double xs1=0;double ys1=0;double xk1=20;double yk1=20;
+	double xs2=20;double ys2=50;double xk2=10;double yk2=-50;
+
+	//vykreslení testovacích úseček
+	d.line(Canvas,m.L2Px(xs1),m.L2Py(ys1),m.L2Px(xk1),m.L2Py(yk1));
+	d.line(Canvas,m.L2Px(xs2),m.L2Py(ys2),m.L2Px(xk2),m.L2Py(yk2));
+
+	//výpočet průsečíku
+	TPointD P=m.PrusecikPrimek(xs1,ys1,xk1,yk1,xs2,ys2,xk2,yk2);
+
+  //nutné ošetření výstupů pří různých situacícíh
+	if(IsNan(P.x) || IsNan(P.y))Memo("nemají průsečík, jsou totožné: "+String(P.x)+" "+String(P.y));
+	else if(IsInfinite(P.x) || IsInfinite(P.y))Memo("nemají průsečík, jsou rovnoběžné"+String(P.x)+" "+String(P.y));
+	else Memo("mají průsečík"+String(P.x)+" "+String(P.y));
 }
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
 {
