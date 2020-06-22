@@ -11,7 +11,7 @@ class Cmy
 {
   private:
 
-  public:
+	public:
 	long round(double number);//fce pro zaokrouhlení realného čísla na nejblížší celé číslo
 	double round2double(double number,unsigned short precision);//zaokrouhlí na počet desetinných míst dle precison
 	AnsiString round2double(double number,unsigned short precision,AnsiString mark,bool add_decimal=false);//zaokrouhlí na počet desetinných míst dle precison a vratí hodnotu pomocí řetezce, za číslem následuje znak, dle posledního parametru (např dvě tečky .. jakože číslo pokračuje), pokud číslo obsahuje reálnou část nezobrazenou v rámci precision, pokud je nastaven poslední parametr add_decimal na true a je-li reálná část kratší než počet reaálných míst decimál, jsou do tohototo počtu doplněny nuly
@@ -95,6 +95,7 @@ class Cmy
 	double kontrola_rychlosti_prejezdu(double CT,double MT,double PT,double WT,double DD,double aRD);//vrátí rozdíl aktuální rychlosti pohonu a potřebné k uskuteční přejezdu, pokud je hodnota 0 je v pořádku, je-li záporná, přejezd se nestíhá o danou hodnotu v m/s, je-li kladná, je aktuální rychlost o danou hodnoutu hodnotu v m/s vyšší
 	long LeziVblizkostiUsecky(double x, double y, double X1, double Y1, double X2, double Y2);
 	bool LeziVoblouku(double X,double Y,double orientace,double RA,double R,double Xmys,double Ymys);//funkce ověřující, zda kurzor myši, leží v obdelníku obsaném danému oblouku, souřadnice kurzoru myši se zadávají v logických souřadnicích, ostatní v logických, pro ověření zda leží na oblouku (s určitým perimetrem okolo obloukové linie) řešení níže metoda PtInSegment
+	TPointD PrusecikPrimek(double xs1,double ys1,double xk1,double yk1,double xs2,double ys2,double xk2,double yk2);//funkce vrátí průsečík dvou přímek či úseček, daná přímka musí být definována dvěma body na přímce (úsečkou, ale průsečík řesí mimo rozsah úsečky), pozor nutné ošetřit výstupní stavy, pokud jsou úsečky totožné, vrací pro každou souřadnici NAN (lze otestovat pomocí IsNan(vrácená_hodnota),nebo rovnoběžné -INF, či rovnoběžné protisměrné INF (lze otestovat pomocí IsInfinite(vrácená_hodnota))
 	bool PtInCircle(double point_X,double point_Y,double center_X,double center_Y,double radius);//metoda ověří, zda se bod nachází v zadaném kruhu
 	bool PtInRectangle(double X1,double Y1,double X2,double Y2,double Xmys,double Ymys);//metoda ověří, zda se bod nachází v obdelníku
 	bool PtInStopka(double Ex,double Ey,double X,double Y,short uhel);//metoda ověří, zda se bod nachází ve stopce

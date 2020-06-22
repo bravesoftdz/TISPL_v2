@@ -610,6 +610,16 @@ bool Cmy::LeziVoblouku(double X,double Y,double orientace,double RA,double R,dou
 	return RET;
 }
 /////////////////////////////////////////////////////////////////////////////
+//funkce vrátí průsečík dvou přímek či úseček, daná přímka musí být definována dvěma body na přímce (úsečkou, ale průsečík řesí mimo rozsah úsečky)
+//pozor nutné ošetřit výstupní stavy, pokud jsou úsečky totožné, vrací pro každou souřadnici NAN (lze otestovat pomocí IsNan(vrácená_hodnota),nebo rovnoběžné -INF, či rovnoběžné protisměrné INF (lze otestovat pomocí IsInfinite(vrácená_hodnota))
+TPointD Cmy::PrusecikPrimek(double xs1,double ys1,double xk1,double yk1,double xs2,double ys2,double xk2,double yk2)
+{
+	TPointD RET;
+	RET.x=((yk1-ys1)*(xk2-xs2)*xs1+(xk1-xs1)*(xk2-xs2)*(ys2-ys1)-(yk2-ys2)*(xk1-xs1)*xs2)/((yk1-ys1)*(xk2-xs2)-(xk1-xs1)*(yk2-ys2));
+	RET.y=(RET.x*(yk1-ys1)+ys1*(xk1-xs1)-xs1*(yk1-ys1))/(xk1-xs1);
+	return RET;
+}
+/////////////////////////////////////////////////////////////////////////////
 //funkce ověří, zda se bod nachází v zadaném kruhu
 bool Cmy::PtInCircle(double point_X,double point_Y,double center_X,double center_Y,double radius)
 {
