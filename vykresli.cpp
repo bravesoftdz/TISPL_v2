@@ -989,6 +989,7 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 			{
 				if(C->Element->n==MaxInt && C->sparovany!=NULL)
 				{
+					if(v.vrat_druh_elementu(C->sparovany)==0)cas+=C->sparovany->data.PT1+C->sparovany->data.PT2+C->sparovany->WT+C->sparovany->PTotoc;
 					cas+=d/C->sparovany->pohon->aRD;
 					if(C->sparovany->eID==0 && C->dalsi==NULL && C->Element->geo.X2==C->Element->geo.X3 && C->Element->geo.X3==C->Element->geo.X4)
 					{
@@ -1000,6 +1001,7 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 				}
 				else
 				{
+          if(v.vrat_druh_elementu(C->Element)==0)cas+=C->Element->data.PT1+C->Element->data.PT2+C->Element->WT+C->Element->PTotoc;
 					cas+=d/C->Element->pohon->aRD;
 					if(C->Element->eID==0)
 					{
@@ -1077,7 +1079,11 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 				if(F->pom_element->eID==0)
 				{
 					double rozdil=F->pom_element->geo.delka-(F->pom_element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice);
-					if(d>rozdil){cas+=m.V2WT(floor((d-rozdil)/v.PP.delka_podvozek),v.PP.TT);d_pom=rozdil;}
+					if(d>rozdil)
+					{
+						cas+=m.V2WT(ceil((d-rozdil)/v.PP.delka_podvozek),v.PP.TT);//připočítání WT na aktuálním vozíku
+						d_pom=rozdil;//zmenšení délky jen na délku pojezdu
+					}
 				}
 				//vypočet času přejezdu a WTpalec
 				if(v.MAG_LASO->Element->n==MaxInt && v.MAG_LASO->sparovany!=NULL)
@@ -1108,8 +1114,26 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
     //výpočt času a vykreslení
 		if(v.MAG_LASO->dalsi==NULL && v.MAG_LASO->sparovany!=NULL && F->pom_element!=NULL && F->pom_element->pohon!=NULL && v.MAG_LASO->sparovany==F->pom_element)
 		{
-			cas=delka/F->pom_element->pohon->aRD;
-			vykresli_Gelement(canv,X,Y,azimut,0,delka,clRed,2,String(m.round2double(delka*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]");
+			//kontrola + vypočet WT na vozík v bufferu
+			d=delka;
+      if(F->pom_element->eID==0)
+			{
+				//výpočet vzdálenosti od stopstanice
+				double s=m.delka(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,F->pom_element->geo.X4,F->pom_element->geo.Y4);
+				double check=m.delka(v.MAG_LASO->Element->geo.X4,v.MAG_LASO->Element->geo.Y4,F->pom_element->geo.X4,F->pom_element->geo.Y4);
+				//výpočet velikosti bufferu stopstanice
+				double buf=F->pom_element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;
+				if(s<buf)//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
+				{
+					cas+=m.V2WT(ceil((buf-s)/v.PP.delka_podvozek),v.PP.TT);//připočítání WT na aktuálním vozíku
+					delka-=buf-s;//zmenšení délky jen na délku pojezdu
+					if(check<buf)delka=0;
+				}
+			}
+			//vypočet času přejezdu
+			cas+=delka/F->pom_element->pohon->aRD;
+      //vykreslení
+			vykresli_Gelement(canv,X,Y,azimut,0,d,clRed,2,String(m.round2double(d*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]");
 		}
 		else vykresli_Gelement(canv,X,Y,azimut,0,delka,clRed,2,String(m.round2double(delka*1000,2))+" [mm]");
 	}
