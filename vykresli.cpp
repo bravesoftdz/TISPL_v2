@@ -4308,7 +4308,7 @@ TPointD *Cvykresli::vykresli_Gelement(TCanvas *canv,double X,double Y,double ori
 		canv->Pen->Mode=pmNotXor;
 		canv->PolyBezier((TPoint*)POLE,3);//samotné vykreslení bézierovy křivky
 	}
-	if(typ>0)//vykreslit pouze koleje, případně včetně zarážek
+	if(typ>=0)//vykreslit pouze koleje, případně včetně zarážek
 	{
 		bool druh=0;if(rotacni_uhel!=0)druh=1;
 		vykresli_koleje(canv,X,Y,druh,orientace,rotacni_uhel,radius,radius,color,typ);

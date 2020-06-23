@@ -14012,6 +14012,12 @@ void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 	////test totožné (i protisměrné)
 	//double xs1=0;double ys1=0;double xk1=20;double yk1=20;
 	//double xs2=20;double ys2=20;double xk2=0;double yk2=0;
+	////test totožné svislé (i protisměrné)
+	//double xs1=0;double ys1=0;double xk1=0;double yk1=20;
+	//double xs2=0;double ys2=20;double xk2=0;double yk2=0;
+	////test totožné vodorovné (i protisměrné)
+	//double xs1=0;double ys1=0;double xk1=20;double yk1=0;
+	//double xs2=20;double ys2=0;double xk2=0;double yk2=0;
 	////test rovnoběžné (i protisměrné)
 	//double xs1=0;double ys1=0;double xk1=20;double yk1=20;
 	//double xs2=20+20;double ys2=20;double xk2=0+20;double yk2=0;
@@ -14019,20 +14025,23 @@ void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 	//double xs1=0;double ys1=0;double xk1=20;double yk1=20;
 	//double xs2=20;double ys2=50;double xk2=40;double yk2=-50;
 	//mimoběžné, průsečík i úsečky
-//	double xs1=0;double ys1=0;double xk1=20;double yk1=20;
-//	double xs2=20;double ys2=50;double xk2=10;double yk2=-50;
+	//double xs1=0;double ys1=0;double xk1=20;double yk1=20;
+	//double xs2=20;double ys2=50;double xk2=10;double yk2=-50;
 	//první svislá - hází na Y NAN
-//	double xs1=0;double ys1=0;double xk1=0;double yk1=30;
-//	double xs2=-10;double ys2=10;double xk2=10;double yk2=30;
+	//double xs1=0;double ys1=0;double xk1=0;double yk1=30;
+	//double xs2=-10;double ys2=10;double xk2=10;double yk2=30;
 	//druhá svislá - je ok
-//	double xs1=-10;double ys1=10;double xk1=10;double yk1=30;
-//	double xs2=0;double ys2=0;double xk2=0;double yk2=30;
-	//kolmé obě - hazí na Y NAN
-//	double xs1=0;double ys1=0;double xk1=0;double yk1=30;
-//	double xs2=-10;double ys2=10;double xk2=10;double yk2=10;
-	//kolmé obě - je OK
-	double xs1=-10;double ys1=10;double xk1=10;double yk1=10;
-	double xs2=0;double ys2=0;double xk2=0;double yk2=30;
+	//double xs1=-10;double ys1=10;double xk1=10;double yk1=30;
+	//double xs2=0;double ys2=0;double xk2=0;double yk2=30;
+	//kolmé obě - první svislá hazelo na Y NAN
+	//double xs1=0;double ys1=0;double xk1=0;double yk1=30;
+	//double xs2=-10;double ys2=10;double xk2=10;double yk2=10;
+	//kolmé obě - druhá svislá je OK
+	//double xs1=-10;double ys1=10;double xk1=10;double yk1=10;
+	//double xs2=0;double ys2=0;double xk2=0;double yk2=30;
+	//kolmé obě - MV test, původně hazelo na Y NAN, po změně pořadí bylo OK
+  double xs1=38;double ys1=-41;double xk1=38;double yk1=-37;
+	double xs2=35;double ys2=-39;double xk2=45;double yk2=-39;
 
 	//vykreslení testovacích úseček
 	d.line(Canvas,m.L2Px(xs1),m.L2Py(ys1),m.L2Px(xk1),m.L2Py(yk1));
@@ -14043,8 +14052,8 @@ void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 
   //nutné ošetření výstupů pří různých situacícíh
 	if(IsNan(P.x) || IsNan(P.y))Memo("nemají průsečík, jsou totožné: "+String(P.x)+" "+String(P.y));
-	else if(IsInfinite(P.x) || IsInfinite(P.y))Memo("nemají průsečík, jsou rovnoběžné"+String(P.x)+" "+String(P.y));
-	else Memo("mají průsečík"+String(P.x)+" "+String(P.y));
+	else if(IsInfinite(P.x) || IsInfinite(P.y))Memo("nemají průsečík, jsou rovnoběžné: "+String(P.x)+" "+String(P.y));
+	else Memo("mají průsečík: "+String(P.x)+" "+String(P.y));
 
 	if(!IsNan(P.x) && !IsNan(P.y) && !IsInfinite(P.x) && !IsInfinite(P.y))Memo("MV - mají průsečík");
 }
