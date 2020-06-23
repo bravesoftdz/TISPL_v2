@@ -1016,7 +1016,7 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 			//vykreslení segmentu
 			if(C->n==1 && C->Element->geo.typ!=0)//pokud je první segment část oblouku nutné pozměnit vykreslení
 			{X=C->Element->geo.X4; Y=C->Element->geo.Y4;if(OR==90 || OR==180)uhel=-1*uhel;OR=m.Rt90(OR-C->Element->geo.rotacni_uhel-180);}
-			vykresli_Gelement(canv,X,Y,OR,uhel,R,clRed,2);
+			vykresli_Gelement(canv,X,Y,OR,uhel,R,clMeridlo,2);
 			//posun na další segment
 			C=C->dalsi;
 		}
@@ -1056,12 +1056,12 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 
 			//vykreslovací část																																																																			 //zjištění kam jsem kliknul v oblouku, viz. vykresli_Gelement, uhel = rotacni uhel
 			TPointD *souradnice_k_dalsimu_pouziti=//poslední souřadnice vráceného pole lze použít např. na umístění teploměru, či pokud se nebude hodit přímo při vykreslení (ale jinak zbytečné), lze použít samostatnou matematickou metodu: //TPointD *Cmy::getArcLine(double X,double Y,double orientace,double rotacni_uhel,double radius)
-			vykresli_Gelement(canv,X,Y,OR,uhel,R,clRed,2,String(m.round2double(delka*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]");//vykreslení měřícího kurzoru, popisek není nutné používat, metodu ještě vylepším
+			vykresli_Gelement(canv,X,Y,OR,uhel,R,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]",0);//vykreslení měřícího kurzoru, popisek není nutné používat, metodu ještě vylepším
 		}
 
 		//vykreslení části přímky
    	else if(F->pom_element!=NULL && v.MAG_LASO->Element!=NULL)
-   	{
+		{
 			//načítání parametrů
 			X=F->pom_element->geo.X1;Y=F->pom_element->geo.Y1;
    		if(v.MAG_LASO->dalsi==NULL){X=v.MAG_LASO->predchozi->Element->geo.X1;Y=v.MAG_LASO->predchozi->Element->geo.Y1;}
@@ -1099,7 +1099,7 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 			}
 
 			//vykreslovací část
-			vykresli_Gelement(canv,X,Y,OR,0,d,clRed,2,String(m.round2double(delka*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]");
+			vykresli_Gelement(canv,X,Y,OR,0,d,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]");
 		}
 	}
 
@@ -1133,9 +1133,9 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 			//vypočet času přejezdu
 			cas+=delka/F->pom_element->pohon->aRD;
       //vykreslení
-			vykresli_Gelement(canv,X,Y,azimut,0,d,clRed,2,String(m.round2double(d*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]");
+			vykresli_Gelement(canv,X,Y,azimut,0,d,clMeridlo,2,String(m.round2double(d*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]");
 		}
-		else vykresli_Gelement(canv,X,Y,azimut,0,delka,clRed,2,String(m.round2double(delka*1000,2))+" [mm]");
+		else vykresli_Gelement(canv,X,Y,azimut,0,delka,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]");
 	}
 
 }
