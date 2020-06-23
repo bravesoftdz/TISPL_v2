@@ -782,6 +782,7 @@ public:
 	void smaz_segment_MAG_LASA(TElement *E);//smaže segment z magnetického lasa
 	TPointD bod_na_geometrii(TElement *E);//"přilepování" souřadnic na gaometrii linky, linie i oblouky
 	short obsahuje_MAG_LASO_element(TElement *E);//kontrola zda spoják magnetického lasa obsahuje segment s danným elementem
+	TPointD InVrata(TElement *E);//zkontroloje, zda existují vrátka objektu a jestli jsem kurzorem v jejich oblasti, pokud ano vrátí bod, pokud ne vrátí [-MaxInt,-MaxInt]
 
 //souborové operace
 	void vytvor_hlavicku_souboru();

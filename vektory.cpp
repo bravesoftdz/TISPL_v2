@@ -8895,4 +8895,49 @@ short Cvektory::obsahuje_MAG_LASO_element(TElement *E)
 	return ret;
 }
 ////---------------------------------------------------------------------------
+//zkontroloje, zda existují vrátka objektu a jestli jsem kurzorem v jejich oblasti, pokud ano vrátí bod, pokud ne vrátí [-MaxInt,-MaxInt]
+TPointD Cvektory::InVrata(TElement *E)
+{
+	//deklarace
+	TPointD ret;
+	ret.x=ret.y=-1*MaxInt;//defaultní stav nenalezeno
+	TObjekt *O=vrat_objekt(E->objekt_n);
+	//pouze kontrolovat u objektů se stěnami a má body, pouze pro liniovou geometrii objektu
+	if(E->geo.typ==0 && O!=NULL && O->sirka_steny>0 && O->body!=NULL && O->body->dalsi!=NULL)
+	{
+		//deklarace parametrů úseček
+		TPointD P;
+		double xs1=E->geo.X1;double ys1=E->geo.Y1;double xk1=E->geo.X4;double yk1=E->geo.Y4;//úsečka z geometrie kontrolovaného elementu
+		double xs2,ys2,xk2,yk2;
+		//průchod skrze hrany objektu
+		TBod *A=O->body->dalsi,*B=NULL;
+		while(A!=NULL)
+		{
+			//nastavení druhé úsečky
+			B=A->dalsi;
+			if(B==NULL)B=O->body->dalsi;
+			xs2=A->X;ys2=A->Y;xk2=B->X;yk2=B->Y;
+			//kontrola zda existuje průsečík
+			P=m.PrusecikPrimek(xs1,ys1,xk1,yk1,xs2,ys2,xk2,yk2);
+			if(!IsNan(P.x) && !IsNan(P.y) && !IsInfinite(P.x) && !IsInfinite(P.y))//prusečík existuje
+			{
+				//kontrola zda jsem kurzorem v této oblasti
+				if(m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,P.x,P.y,F->velikost_citelne_oblasti_elementu))
+				{
+					ret=P;
+          break;
+        }
+      }
+			A=A->dalsi;
+		}
+		//ukazatelové záležitosti
+    A=NULL;delete A;
+		B=NULL;delete B;
+	}
+	//ukazatelové záležitosti
+	O=NULL;delete O;
+	//vracení výsledku
+  return ret;
+}
+////---------------------------------------------------------------------------
 

@@ -3228,7 +3228,16 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								if(m.PtInSegment(el->geo.X1,el->geo.Y1,el->geo.typ,el->geo.orientace,el->geo.rotacni_uhel,el->geo.radius,el->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
 								{
 									pom_element=el;
-									akt_souradnice_kurzoru=d.v.bod_na_geometrii(pom_element);
+									//kontrola zda jsem na hraně objektu
+									TPointD P;
+									P.x=-1*MaxInt;P.y=-1*MaxInt;
+									if(prichytavat_k_mrizce==1)P=d.v.InVrata(el);
+									if(P.x!=-1*MaxInt && P.y!=-1*MaxInt)
+									{
+										akt_souradnice_kurzoru=P;
+									}
+									//pokud ne přilepit pouze na pohon
+									else akt_souradnice_kurzoru=d.v.bod_na_geometrii(pom_element);
 									break;
                 }
 								el=d.v.dalsi_krok(el);
@@ -13813,7 +13822,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	E->geo.orientace=m.azimut(30,-23,E->geo.X4,E->geo.Y4);
 //	E->geo.radius=m.delka(30,-23,E->geo.X4,E->geo.Y4);
 //	E->geo.delka=E->geo.radius;
-         Memo("");
+		 Memo("");
 	scGPImage_mereni_vzdalenostClick(this);
 }
 //---------------------------------------------------------------------------
@@ -14036,6 +14045,8 @@ void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 	if(IsNan(P.x) || IsNan(P.y))Memo("nemají průsečík, jsou totožné: "+String(P.x)+" "+String(P.y));
 	else if(IsInfinite(P.x) || IsInfinite(P.y))Memo("nemají průsečík, jsou rovnoběžné"+String(P.x)+" "+String(P.y));
 	else Memo("mají průsečík"+String(P.x)+" "+String(P.y));
+
+	if(!IsNan(P.x) && !IsNan(P.y) && !IsInfinite(P.x) && !IsInfinite(P.y))Memo("MV - mají průsečík");
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -16066,21 +16077,31 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 						double uhel=m.T2Aarc(C->Element->geo.radius,s);
 						s=m.R2Larc(C->Element->geo.radius,uhel);
 					}
-					//s=m.delka(C->predchozi->Element->geo.X4,C->predchozi->Element->geo.Y4,C->Element->geo.X4,C->Element->geo.Y4);
+					//vypočet času
 					if((C->Element->n!=MaxInt && C->Element->pohon==NULL) || (C->Element->n==MaxInt && C->sparovany!=NULL && C->sparovany->pohon==NULL))chyba=true;
 					else
 					{
 						if(C->Element->n==MaxInt && C->sparovany!=NULL)
 						{
 							cas+=s/C->sparovany->pohon->aRD;
-							if(C->sparovany->eID==0)cas+=C->sparovany->data.WTstop;
+							//pokud se jedná o poslední element (musí být přichycen), nezařína se od hlavičky (prvního bodu)
+							if(C->sparovany->eID==0 && C->dalsi==NULL && C->Element->geo.X2==C->Element->geo.X3 && C->Element->geo.X3==C->Element->geo.X4 && C->predchozi->Element!=C->sparovany)
+							{
+								cas+=C->sparovany->data.WTstop;
+								cas-=(C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->sparovany->pohon->aRD;
+							}
 							if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->sparovany->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
 							if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->sparovany->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
 						}
 						else
 						{
 							cas+=s/C->Element->pohon->aRD;
-							if(C->Element->eID==0)cas+=C->Element->data.WTstop;
+							if(C->Element->eID==0)
+							{
+								cas+=C->Element->data.WTstop;
+								if(s>=C->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)
+									cas-=(C->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->Element->pohon->aRD;
+							}
 							if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->Element->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
 							if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->Element->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
 						}
