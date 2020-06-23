@@ -614,6 +614,14 @@ bool Cmy::LeziVoblouku(double X,double Y,double orientace,double RA,double R,dou
 //pozor nutné ošetřit výstupní stavy, pokud jsou úsečky totožné, vrací pro každou souřadnici NAN (lze otestovat pomocí IsNan(vrácená_hodnota),nebo rovnoběžné -INF, či rovnoběžné protisměrné INF (lze otestovat pomocí IsInfinite(vrácená_hodnota))
 TPointD Cmy::PrusecikPrimek(double xs1,double ys1,double xk1,double yk1,double xs2,double ys2,double xk2,double yk2)
 {
+	//ošetření, pokud je svislá linie jako první, zamění pořadí zadávaných úseček
+	if(xs1==xk1)
+	{
+		double xs1temp=xs1;double ys1temp=ys1;double xk1temp=xk1;double yk1temp=yk1;
+		xs1=xs2;ys1=ys2;xk1=xk2;yk1=yk2;
+		xs2=xs1temp;ys2=ys1temp;xk2=xk1temp;yk2=yk1temp;
+	}
+	//samotný výpočet
 	TPointD RET;
 	RET.x=((yk1-ys1)*(xk2-xs2)*xs1+(xk1-xs1)*(xk2-xs2)*(ys2-ys1)-(yk2-ys2)*(xk1-xs1)*xs2)/((yk1-ys1)*(xk2-xs2)-(xk1-xs1)*(yk2-ys2));
 	RET.y=(RET.x*(yk1-ys1)+ys1*(xk1-xs1)-xs1*(yk1-ys1))/(xk1-xs1);
