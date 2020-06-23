@@ -3898,12 +3898,12 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu,unsigned lo
 		{
 			if(Element->predchozi!=NULL)//nutná kontrola, může dojít, že tyto ukazatele neexistují, to vzníká při odstraňování větví
 			{
-				if(Element->predchozi->eID==300 && Element->predchozi->dalsi2==Element)Element->predchozi->dalsi2=Element->dalsi;
+				if(Element->predchozi->eID==300 && Element->predchozi->dalsi2==Element && Element->predchozi->dalsi!=Element)Element->predchozi->dalsi2=Element->dalsi;
 				else Element->predchozi->dalsi=Element->dalsi;
 			}
 			if(Element->dalsi!=NULL && Element->predchozi!=NULL)//nutná kontrola, může dojít, že tyto ukazatele neexistují, to vzníká při odstraňování větví
 			{
-				if(Element->dalsi->eID==301 && Element->dalsi->predchozi2==Element)Element->dalsi->predchozi2=Element->predchozi;
+				if(Element->dalsi->eID==301 && Element->dalsi->predchozi2==Element && Element->dalsi->predchozi!=Element)Element->dalsi->predchozi2=Element->predchozi;
 				else Element->dalsi->predchozi=Element->predchozi;
 			}
 			if(Element->dalsi!=NULL && Element->predchozi!=NULL && F->Akce!=F->GEOMETRIE && O!=NULL)//u geo. se upravuje geometrie ostatních elemntů zvlášť v Unit1, pokud je O==NULL mažu elementy smazaného objektu = neupravovat geo. dalších elementů

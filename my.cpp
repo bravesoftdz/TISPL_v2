@@ -1084,6 +1084,12 @@ double Cmy::V2WT(double V,double TT)
 	return V*TT;
 }
 /////////////////////////////////////////////////////////////////////////////
+//dle celkového WT a počtu použitých pozic vrátí WT na aktuální pozici, NEPOUŽÍVÁ SE!!!
+double Cmy::casVbufferu(double WTstop,unsigned int pocet_pouzitych_pozic,unsigned int akt_pozice)
+{
+	return (WTstop/(double)pocet_pouzitych_pozic)*akt_pozice;
+}
+/////////////////////////////////////////////////////////////////////////////
 //vrátí užitnou délku vozíku
 double Cmy::UDV(double dJ,double sJ,double rotace)
 {

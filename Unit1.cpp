@@ -13822,7 +13822,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	E->geo.orientace=m.azimut(30,-23,E->geo.X4,E->geo.Y4);
 //	E->geo.radius=m.delka(30,-23,E->geo.X4,E->geo.Y4);
 //	E->geo.delka=E->geo.radius;
-		 Memo("");
+  Memo("");
 	scGPImage_mereni_vzdalenostClick(this);
 }
 //---------------------------------------------------------------------------
@@ -16031,28 +16031,42 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		vytvor_statickou_scenu();//vypnutí vrstvy errorů a nastavení zbytku na statickou scénu
 	}
 	else
-	{
+	{   
 		//zjištění délky a času, první a poslední segment cesty jsou fiktivní elementy
 		if(d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->predchozi->Element->n==MaxInt)
-		{
+		{     
 			Cvektory::TCesta *C=d.v.MAG_LASO->dalsi;
 			double s=0,delka=0,cas=0,X,Y,uhel;
 	  	bool chyba=false;
 			String popisek="";//slouží pro rozšíření MB o
 			if(d.v.MAG_LASO->predchozi->n==1 && C->Element->n==MaxInt)//lineární měření
 	  	{
-				delka=m.delka(C->predchozi->Element->geo.X1,C->predchozi->Element->geo.Y1,C->Element->geo.X4,C->Element->geo.Y4);
+				double d_pom=delka=m.delka(C->predchozi->Element->geo.X1,C->predchozi->Element->geo.Y1,C->Element->geo.X4,C->Element->geo.Y4);
 				if(d.v.MAG_LASO->sparovany!=NULL && d.v.MAG_LASO->sparovany==d.v.MAG_LASO->predchozi->sparovany && d.v.MAG_LASO->sparovany->pohon!=NULL)
-				{
-					cas=delka/d.v.MAG_LASO->sparovany->pohon->aRD;
+				{           
+					if(d.v.MAG_LASO->predchozi->sparovany->eID==0)
+					{                    
+						//výpočet vzdálenosti od stopstanice
+						double dl=m.delka(C->Element->geo.X4,C->Element->geo.Y4,C->sparovany->geo.X4,C->sparovany->geo.Y4);
+						double check=m.delka(d.v.MAG_LASO->Element->geo.X4,d.v.MAG_LASO->Element->geo.Y4,C->sparovany->geo.X4,C->sparovany->geo.Y4);
+						//výpočet velikosti bufferu stopstanice
+						double buf=C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice;
+						if(dl<buf)//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
+						{       
+							cas+=m.V2WT(ceil((buf-dl)/d.v.PP.delka_podvozek),d.v.PP.TT);//připočítání WT na aktuálním vozíku
+							d_pom-=buf-dl;//zmenšení délky jen na délku pojezdu
+							if(check<buf)d_pom=0;//kontrola zda neměřím pouze v bufferu, tzn. neexistuje žádný čas přejezdu
+						}	
+					}
+					cas+=d_pom/d.v.MAG_LASO->sparovany->pohon->aRD;
 					popisek="; Čas = "+String(m.round2double(cas,2))+" [s]";
 				}
 				if(C->sparovany!=NULL && C->Element->geo.X2==C->Element->geo.X3 && C->Element->geo.X3==C->Element->geo.X4)popisek+=", přichyceno na "+C->sparovany->name;
-	  	}
+			}
 			else//nelineární měření
-			{
+			{  
 				while(C!=NULL)
-				{
+				{      
 					//zjištění souřadnic
 					X=C->Element->geo.X1;Y=C->Element->geo.Y1;
 					if(C->n==1){X=d.v.MAG_LASO->Element->geo.X1;Y=d.v.MAG_LASO->Element->geo.Y1;}
@@ -16070,25 +16084,44 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 					else
 					{
 						if(C->Element->n==MaxInt && C->sparovany!=NULL)
-						{
-							cas+=s/C->sparovany->pohon->aRD;
+						{             
+							double d_pom=s;
 							//pokud se jedná o poslední element (musí být přichycen), nezařína se od hlavičky (prvního bodu)
 							if(C->sparovany->eID==0 && C->dalsi==NULL && C->Element->geo.X2==C->Element->geo.X3 && C->Element->geo.X3==C->Element->geo.X4 && C->predchozi->Element!=C->sparovany)
 							{
 								cas+=C->sparovany->data.WTstop;
 								cas-=(C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->sparovany->pohon->aRD;
 							}
+							//pokud se jedná o nedokončený segment stopky, kontrola zda jsem na nějakém vozíku, pokud ano připočítat WT na jeho pozici
+							else if(C->sparovany->eID==0)
+							{	
+								//výpočet vzdálenosti od stopstanice
+								double dl=m.delka(C->predchozi->Element->geo.X4,C->predchozi->Element->geo.Y4,C->Element->geo.X4,C->Element->geo.Y4);
+								//výpočet velikosti bufferu stopstanice
+								double buf=C->sparovany->geo.delka-(C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice);
+								if(dl>buf)//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
+								{       
+									cas+=m.V2WT(ceil((dl-buf)/d.v.PP.delka_podvozek),d.v.PP.TT);//připočítání WT na aktuálním vozíku
+									d_pom-=dl-buf;//zmenšení délky jen na délku pojezdu
+								}
+							}
+							//výpočet času přejezdu
+							cas+=d_pom/C->sparovany->pohon->aRD;
+							//přičtení WT na palec při změně pohonu
 							if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->sparovany->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
 							if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->sparovany->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
 						}
 						else
 						{
+							if(d.v.vrat_druh_elementu(C->Element)==0)cas+=C->Element->data.PT1+C->Element->data.PT2+C->Element->WT+C->Element->PTotoc;
 							cas+=s/C->Element->pohon->aRD;
 							if(C->Element->eID==0)
 							{
 								cas+=C->Element->data.WTstop;
-								if(s>=C->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)
+								//pokud je úsek uložený v mag. lasu kompletní ... odečtení přejezdu přes buffer
+								if(s==C->Element->geo.delka)
 									cas-=(C->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->Element->pohon->aRD;
+								//není třeba řešít nedokončený buffer, zde se nepočátá poslendí element, ale pouze již prošl= elementy
 							}
 							if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->Element->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
 							if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->Element->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
