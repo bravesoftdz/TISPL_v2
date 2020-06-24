@@ -182,7 +182,7 @@ void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)//scena 0 - vše do 
 			stav=1;
 			if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n)stav=1;//elementy v aktivním objektu
 			else stav=-1;//disabled elementy ostatních objektů
-			if(stav!=-1)stav=E->stav;//předávání stavu v aktivní kabině pro highlightování elementů
+			if(stav!=-1 || F->OBJEKT_akt==NULL)stav=E->stav;//předávání stavu v aktivní kabině pro highlightování elementů// přídání OBJEKT_akt!=NULL MV 24.6.2020
 			//vykreslení elementu a pozic
 			if(F->MOD!=F->SIMULACE && scena<=2)vykresli_pozice_a_zony(canv,E);
 			if(!(F->OBJEKT_akt!=NULL && E->objekt_n!=F->OBJEKT_akt->n && F->scGPTrackBar_intenzita->Value<5))vykresli_element(canv,scena,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->data.LO1,E->OTOC_delka,E->data.LO2,E->data.LO_pozice,E);
@@ -1140,6 +1140,28 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 		else vykresli_Gelement(canv,X,Y,azimut,0,delka,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]");
 	}
 
+	////vykreslní citelných oblastí
+  if(F->prichytavat_k_mrizce==1 && F->pom_element!=NULL)
+	{
+		//nastavení geometrického pera
+		short width=m.round(F->Zoom*2);
+		set_pen(canv,clMeridlo,width,PS_ENDCAP_FLAT);
+		canv->Pen->Mode=pmNotXor;
+		//vykreslení
+		if(F->pom_element->stav==2 && F->pom_element!=v.MAG_LASO->sparovany)canv->Ellipse(m.L2Px(F->pom_element->geo.X4)-width,m.L2Py(F->pom_element->geo.Y4)-width,m.L2Px(F->pom_element->geo.X4)+width,m.L2Py(F->pom_element->geo.Y4)+width);
+		else if(F->pom_element->predchozi->stav==2 && F->pom_element->predchozi!=v.MAG_LASO->sparovany)canv->Ellipse(m.L2Px(F->pom_element->predchozi->geo.X4)-width,m.L2Py(F->pom_element->predchozi->geo.Y4)-width,m.L2Px(F->pom_element->predchozi->geo.X4)+width,m.L2Py(F->pom_element->predchozi->geo.Y4)+width);
+    //kontrola zda jsem na vrátkách objektu
+		else
+		{
+			TPointD P;
+			P=v.InVrata(F->pom_element);
+			if(P.x!=-1*MaxInt && P.y!=-1*MaxInt)
+			{
+				//vykreslení
+				canv->Ellipse(m.L2Px(P.x)-width,m.L2Py(P.y)-width,m.L2Px(P.x)+width,m.L2Py(P.y)+width);
+      }
+		}
+	}
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
