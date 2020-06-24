@@ -4537,16 +4537,15 @@ void TForm1::getJobID(int X, int Y)
 	////magnetické laso
 	else
 	{
-		short stav=1;
-		unsigned int zmena=0;
 		pom_element=NULL;
 		if(d.v.MAG_LASO->Element!=NULL && d.v.MAG_LASO->sparovany!=NULL)//spouštět pouze v příadě, že se nejedná o 100% lineární měření, nespouštět na začátku
-		{
+		{          Memo(String(d.v.MAG_LASO->Element->geo.X4)+"=="+String(d.v.MAG_LASO->sparovany->geo.X4)+"&&"+String(d.v.MAG_LASO->Element->geo.Y4)+"=="+String(d.v.MAG_LASO->sparovany->geo.Y4));
 			Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
 			while(E!=NULL)
 			{
-        //nulování stavu
-				if(E!=d.v.MAG_LASO->sparovany)E->stav=1;
+				//nulování stavu, pokud se nejedná o počáteční bod přichycený na element
+				if(E!=d.v.MAG_LASO->sparovany && (d.v.MAG_LASO->Element->geo.X4!=d.v.MAG_LASO->sparovany->geo.X4 || d.v.MAG_LASO->Element->geo.Y4!=d.v.MAG_LASO->sparovany->geo.Y4))
+					E->stav=1;
 				//kontrola zda jsem na segmentu
 				if(m.PtInSegment(E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
 				{
