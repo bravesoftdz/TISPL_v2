@@ -3209,41 +3209,38 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						E->geo.radius=0;
 						E->geo.delka=0;
 						E->geo.typ=0;
-            //kontrola přichytávání na elementy při počátečním a koncovém bodu
-						if(prichytavat_k_mrizce==1)
+						//kontrola přichytávání na elementy při počátečním a koncovém bodu
+						Cvektory::TElement *el=d.v.ELEMENTY->dalsi;
+						while(el!=NULL)
 						{
-							Cvektory::TElement *el=d.v.ELEMENTY->dalsi;
-							while(el!=NULL)
+							//kontrola oblastí elementů
+							if(prichytavat_k_mrizce==1 && (el->eID!=MaxInt || (el->eID==MaxInt && el->dalsi==NULL)) && m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,el->geo.X4,el->geo.Y4,velikost_citelne_oblasti_elementu))
 							{
-								//kontrola oblastí elementů
-								if(prichytavat_k_mrizce==1 && (el->eID!=MaxInt || (el->eID==MaxInt && (el->dalsi==NULL/* || (el->dalsi!=NULL && el->dalsi->objekt_n!=el->objekt_n)*/ /*|| (el->dalsi->eID==301 && el->dalsi->predchozi2==el)*/))) && m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,el->geo.X4,el->geo.Y4,velikost_citelne_oblasti_elementu))
-								{
-									//přichytit souřadnicemi na element, X2 a X3 se používají jako příznak přichycení, pokud je přichicenou jsou nenulové a rovnají se X4
-									E->geo.X2=E->geo.X3=akt_souradnice_kurzoru.x=el->geo.X4;
-									E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=el->geo.Y4;
-									pom_element=el;
-									//highlight, pouze pro prvního
-									if(d.v.MAG_LASO->dalsi==NULL && d.v.MAG_LASO->Element==NULL)pom_element->stav=2;
-									break;
-								}
-								//kontrola zda jsem na pohonu
-								if(m.PtInSegment(el->geo.X1,el->geo.Y1,el->geo.typ,el->geo.orientace,el->geo.rotacni_uhel,el->geo.radius,el->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
-								{
-									pom_element=el;
-									//kontrola zda jsem na hraně objektu
-									TPointD P;
-									P.x=-1*MaxInt;P.y=-1*MaxInt;
-									if(prichytavat_k_mrizce==1)P=d.v.InVrata(el);
-									if(P.x!=-1*MaxInt && P.y!=-1*MaxInt)akt_souradnice_kurzoru=P;
-									//pokud ne přilepit pouze na pohon
-									else akt_souradnice_kurzoru=d.v.bod_na_geometrii(pom_element);
-									break;
-                }
-								el=d.v.dalsi_krok(el);
+								//přichytit souřadnicemi na element, X2 a X3 se používají jako příznak přichycení, pokud je přichicenou jsou nenulové a rovnají se X4
+								E->geo.X2=E->geo.X3=akt_souradnice_kurzoru.x=el->geo.X4;
+								E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=el->geo.Y4;
+								pom_element=el;
+								//highlight, pouze pro prvního
+								if(d.v.MAG_LASO->dalsi==NULL && d.v.MAG_LASO->Element==NULL)pom_element->stav=2;
+								break;
 							}
-							d.v.vymaz_seznam_VYHYBKY();//nutné pokud dojde k nedokončení alg. dalsi_krok
-							el=NULL;delete el;
+							//kontrola zda jsem na pohonu
+							if(m.PtInSegment(el->geo.X1,el->geo.Y1,el->geo.typ,el->geo.orientace,el->geo.rotacni_uhel,el->geo.radius,el->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+							{
+								pom_element=el;
+								//kontrola zda jsem na hraně objektu
+								TPointD P;
+								P.x=-1*MaxInt;P.y=-1*MaxInt;
+								if(prichytavat_k_mrizce==1)P=d.v.InVrata(el);
+								if(P.x!=-1*MaxInt && P.y!=-1*MaxInt)akt_souradnice_kurzoru=P;
+								//pokud ne přilepit pouze na pohon
+								else akt_souradnice_kurzoru=d.v.bod_na_geometrii(pom_element);
+								break;
+							}
+							el=d.v.dalsi_krok(el);
 						}
+						d.v.vymaz_seznam_VYHYBKY();//nutné pokud dojde k nedokončení alg. dalsi_krok
+						el=NULL;delete el;
 						//uložení typu geometrie
 						if(pom_element!=NULL)
 						{
@@ -4537,17 +4534,18 @@ void TForm1::getJobID(int X, int Y)
 	////magnetické laso
 	else
 	{
+		bool nalezeno=false;//slouží pro ukončení cyklu hledání, tzn. první nalezený segment ne poslední
 		pom_element=NULL;
 		if(d.v.MAG_LASO->Element!=NULL && d.v.MAG_LASO->sparovany!=NULL)//spouštět pouze v příadě, že se nejedná o 100% lineární měření, nespouštět na začátku
-		{          Memo(String(d.v.MAG_LASO->Element->geo.X4)+"=="+String(d.v.MAG_LASO->sparovany->geo.X4)+"&&"+String(d.v.MAG_LASO->Element->geo.Y4)+"=="+String(d.v.MAG_LASO->sparovany->geo.Y4));
+		{
 			Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
 			while(E!=NULL)
 			{
 				//nulování stavu, pokud se nejedná o počáteční bod přichycený na element
-				if(E!=d.v.MAG_LASO->sparovany && (d.v.MAG_LASO->Element->geo.X4!=d.v.MAG_LASO->sparovany->geo.X4 || d.v.MAG_LASO->Element->geo.Y4!=d.v.MAG_LASO->sparovany->geo.Y4))
+				if(E!=d.v.MAG_LASO->sparovany || (d.v.MAG_LASO->Element->geo.X4!=d.v.MAG_LASO->sparovany->geo.X4 || d.v.MAG_LASO->Element->geo.Y4!=d.v.MAG_LASO->sparovany->geo.Y4))
 					E->stav=1;
 				//kontrola zda jsem na segmentu
-				if(m.PtInSegment(E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+				if(!nalezeno && m.PtInSegment(E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
 				{
 					akt_souradnice_kurzoru=d.v.bod_na_geometrii(E);//přichycení souřadnic na pohon, užitečné do budoucna
 					pom_element=E;//uložení elementu, slouží pro přenos informace zda m.PtInSegmet je true
@@ -4561,31 +4559,41 @@ void TForm1::getJobID(int X, int Y)
 						if(segment==0 && (d.v.MAG_LASO->predchozi->sparovany==E->predchozi || (E->predchozi!=NULL && E->predchozi->n>0 && E->predchozi->predchozi==d.v.MAG_LASO->predchozi->Element)))
 							d.v.vloz_segment_MAG_LASA(E->predchozi);
 
-						//kontrola zda není předchozí spojka
+						//kontrola zda není předchozí spojka, vedlejší větev
 						if(segment==0 && E->predchozi->eID==301 && E->predchozi->predchozi2->predchozi==d.v.MAG_LASO->predchozi->Element)
 							d.v.vloz_segment_MAG_LASA(E->predchozi->predchozi2);
 
-						//kontrola zde předchozí předchozí není spojka
+						//kontrola zda není předchozí spojka, hlavní větev
+						if(segment==0 && E->predchozi->eID==301 && E->predchozi->predchozi->predchozi==d.v.MAG_LASO->predchozi->Element)
+							d.v.vloz_segment_MAG_LASA(E->predchozi->predchozi);
+
+						//kontrola zde předchozí předchozí není spojka, vedlejší větev
 						if(segment==0 && E->predchozi->n>0 && E->predchozi->predchozi->eID==301 && E->predchozi->predchozi->predchozi2==d.v.MAG_LASO->predchozi->Element)
-	  					d.v.vloz_segment_MAG_LASA(E->predchozi);
+							d.v.vloz_segment_MAG_LASA(E->predchozi);
+
+						//kontrola zde předchozí předchozí není spojka, hlavní větev
+						if(segment==0 && E->predchozi->n>0 && E->predchozi->predchozi->eID==301 && E->predchozi->predchozi->predchozi==d.v.MAG_LASO->predchozi->Element)
+							d.v.vloz_segment_MAG_LASA(E->predchozi);
 
 						//element je již obsazen v seznamu magnetického lasa, bude smazán segment cesty obsahující E, taktéž budou smazány následující segmenty cesty, pokud existují další segmenty
 						if(segment>0)
 							d.v.smaz_segment_MAG_LASA(E);
 					}
-					//break;
+					nalezeno=true;
+					//break;//odstaveno z důvodu resetování stavu elementů pro potřeby highlightu
+
 					//hledání oblastí pro highlight elementu
 					if(prichytavat_k_mrizce==1)
 					{
 				  	//hledání viditelných elementu
-				  	if(pom_element->eID!=MaxInt && m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,pom_element->geo.X4,pom_element->geo.Y4,velikost_citelne_oblasti_elementu))
+						if(pom_element->eID!=MaxInt && m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,pom_element->geo.X4,pom_element->geo.Y4,velikost_citelne_oblasti_elementu))
 				  	{
 			    		//highlightování elementu
 				  		pom_element->stav=2;
 			    	}
 				  	//kontrola zda nebudu přichicen na předchozí element
-				  	else if(pom_element->predchozi!=NULL && pom_element->predchozi->n>0 && m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,pom_element->predchozi->geo.X4,pom_element->predchozi->geo.Y4,velikost_citelne_oblasti_elementu))
-				  	{
+						else if(pom_element->predchozi!=NULL && pom_element->predchozi->n>0 && pom_element->predchozi->eID!=MaxInt && m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,pom_element->predchozi->geo.X4,pom_element->predchozi->geo.Y4,velikost_citelne_oblasti_elementu))
+						{
 				  		//highlightování elementu
 				  		pom_element->predchozi->stav=2;
 						}
@@ -13817,9 +13825,10 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 
 //	scGPImage_mereni_vzdalenostClick(this);
 
-	Memo(d.v.OBJEKTY->dalsi->dalsi->dalsi->element->name);
-	Memo(d.v.OBJEKTY->dalsi->dalsi->dalsi->element->eID);//=2;
-	//vytvor_statickou_scenu();REFRESH(0,false);
+	Cvektory::TElement *E=d.v.vrat_objekt(16)->element;
+	Memo(E->name);
+	Memo("->predchozi = "+E->predchozi->name);
+	Memo("->predchozi2 = "+E->predchozi2->name);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
