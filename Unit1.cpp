@@ -4543,7 +4543,6 @@ void TForm1::getJobID(int X, int Y)
 	////magnetické laso
 	else
 	{
-		bool nalezeno=false;//slouží pro ukončení cyklu hledání, tzn. první nalezený segment ne poslední
 		pom_element=NULL;
 		if(d.v.MAG_LASO->Element!=NULL && d.v.MAG_LASO->sparovany!=NULL)//spouštět pouze v příadě, že se nejedná o 100% lineární měření, nespouštět na začátku
 		{
@@ -4554,10 +4553,14 @@ void TForm1::getJobID(int X, int Y)
 				if(E!=d.v.MAG_LASO->sparovany || (d.v.MAG_LASO->Element->geo.X4!=d.v.MAG_LASO->sparovany->geo.X4 || d.v.MAG_LASO->Element->geo.Y4!=d.v.MAG_LASO->sparovany->geo.Y4))
 					E->stav=1;
 				//kontrola zda jsem na segmentu
-				if(!nalezeno && m.PtInSegment(E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+				if(m.PtInSegment(E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
 				{
-					akt_souradnice_kurzoru=d.v.bod_na_geometrii(E);//přichycení souřadnic na pohon, užitečné do budoucna
-					pom_element=E;//uložení elementu, slouží pro přenos informace zda m.PtInSegmet je true
+					//pokud se změnit pom_element nebo je nulový ulož
+					if(!(pom_element!=NULL && (pom_element->predchozi==d.v.MAG_LASO->predchozi->Element || (pom_element->predchozi->eID==301 && pom_element->predchozi->predchozi2==d.v.MAG_LASO->predchozi->Element) || (pom_element->predchozi->eID==301 && pom_element->predchozi->predchozi==d.v.MAG_LASO->predchozi->Element))))
+					{
+						akt_souradnice_kurzoru=d.v.bod_na_geometrii(E);//přichycení souřadnic na pohon, užitečné do budoucna
+						pom_element=E;//uložení elementu, slouží pro přenos informace zda m.PtInSegmet je true
+					}
 
 					//pokud byla zapčata cesta ukládání již pročlých segmentů
 					if(d.v.MAG_LASO->Element!=NULL)
@@ -4588,7 +4591,6 @@ void TForm1::getJobID(int X, int Y)
 						if(segment>0)
 							d.v.smaz_segment_MAG_LASA(E);
 					}
-					nalezeno=true;
 					//break;//odstaveno z důvodu resetování stavu elementů pro potřeby highlightu
 
 					//hledání oblastí pro highlight elementu
@@ -5436,7 +5438,7 @@ void __fastcall TForm1::RzToolButton11Click(TObject *Sender)
   	{
       //deklarace
   		int MaxX=oblast.right,MaxY=oblast.top,MinX=oblast.left,MinY=oblast.bottom;
-  		int PD_x=ClientWidth-scSplitView_LEFTTOOLBAR->Width;
+			int PD_x=ClientWidth-scSplitView_LEFTTOOLBAR->Width;
   		int PD_y=ClientHeight-vyska_menu-scGPPanel_statusbar->Height-scGPPanel_mainmenu->Height;//-vyska_menu-RzStatusBar1->Height je navíc nemá tam co dělat
   		TPointD centr;
   		centr.x=m.P2Lx((MaxX+MinX)/2.0);
@@ -5449,8 +5451,8 @@ void __fastcall TForm1::RzToolButton11Click(TObject *Sender)
   		if(Zoom<0.5)Zoom=0.5;if(Zoom>10)Zoom=10;
 
   		//vycentrování obrazu
-  		PD_x=(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0;
-  		PD_y=ClientHeight/2.0;
+			PD_x=(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0;
+			PD_y=(ClientHeight+(scGPPanel_mainmenu->Height-scGPPanel_statusbar->Height))/2.0;
   		Posun.x+=(m.L2Px(centr.x)-PD_x)/Zoom;
   		Posun.y+=(m.L2Py(centr.y)-PD_y)/Zoom;
 
@@ -12120,7 +12122,7 @@ void TForm1::otevri_editaci()
 
 		//vycentrování obrazu
 		PD_x=(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0;
-		PD_y=ClientHeight/2.0;
+		PD_y=(ClientHeight+(scGPPanel_mainmenu->Height-scGPPanel_statusbar->Height)-scGPPanel_bottomtoolbar->Height)/2.0;
 		Posun.x+=(m.L2Px(centr.x)-PD_x)/Zoom;
 		Posun.y+=(m.L2Py(centr.y)-PD_y)/Zoom;
 	}
@@ -12399,7 +12401,7 @@ void TForm1::zmena_editovaneho_objektu()
 		if(Zoom<0.5)Zoom=0.5;if(Zoom>10)Zoom=10;
 		//vycentrování obrazu
 		PD_x=(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0;
-		PD_y=ClientHeight/2.0;
+		PD_y=(ClientHeight+(scGPPanel_mainmenu->Height-scGPPanel_statusbar->Height)-scGPPanel_bottomtoolbar->Height)/2.0;
 		Posun.x+=(m.L2Px(centr.x)-PD_x)/Zoom;
 		Posun.y+=(m.L2Py(centr.y)-PD_y)/Zoom;
 
@@ -13804,59 +13806,37 @@ void __fastcall TForm1::Timer_simulaceTimer(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 {
-//	Memo_testy->Clear();
-//	TPoint *tab=new TPoint[d.v.pocet_vyhybek+1];
-//	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-//	long pocet=0;
-//	while(E!=NULL && pocet<1)
-//	{
-//		d.v.vloz_segment_MAG_LASA(E);
-//		pocet++;
-//		E=E->dalsi;
-//	}
-//	E=NULL;delete E;
-//
-//	E=d.v.MAG_LASO->Element=new Cvektory::TElement;
-//	E->n=99999;
-//	E->geo.X1=30;
-//	E->geo.Y1=-23;
-//	E->geo.X4=d.v.ELEMENTY->dalsi->geo.X1;
-//	E->geo.Y4=d.v.ELEMENTY->dalsi->geo.Y1;
-//	E->geo.rotacni_uhel=0;
-//	E->geo.orientace=m.azimut(30,-23,E->geo.X4,E->geo.Y4);
-//	E->geo.radius=m.delka(30,-23,E->geo.X4,E->geo.Y4);
-//	E->geo.delka=E->geo.radius;
-
+//	Memo("");
 //	scGPImage_mereni_vzdalenostClick(this);
 
-	TRect oblast=vrat_max_oblast();
-	if(!(oblast.left>10000 && oblast.right<-10000))
-	{
-    //deklarace
-		int MaxX=oblast.right,MaxY=oblast.top,MinX=oblast.left,MinY=oblast.bottom;
-		int PD_x=ClientWidth-scSplitView_LEFTTOOLBAR->Width;
-		int PD_y=ClientHeight-vyska_menu-scGPPanel_statusbar->Height-scGPPanel_mainmenu->Height;//-vyska_menu-RzStatusBar1->Height je navíc nemá tam co dělat
-		TPointD centr;
-		centr.x=m.P2Lx((MaxX+MinX)/2.0);
-		centr.y=m.P2Ly((MaxY+MinY)/2.0);
-
-		//výpočet nového Zoomu
-		double Z1=abs(Zoom*PD_x/(MaxX-MinX)),Z2=abs(Zoom*PD_y/abs(MaxY-MinY));
-		Z1-=fmod(Z1,0.5);Z2-=fmod(Z2,0.5);
-		if(Z1>Z2)Zoom=Z2;else Zoom=Z1;
-		if(Zoom<0.5)Zoom=0.5;if(Zoom>10)Zoom=10;
-
-		//vycentrování obrazu
-		PD_x=(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0;
-		PD_y=ClientHeight/2.0;
-		Posun.x+=(m.L2Px(centr.x)-PD_x)/Zoom;
-		Posun.y+=(m.L2Py(centr.y)-PD_y)/Zoom;
-
-		//překreslení
-		on_change_zoom_change_scGPTrackBar();
-	}
-  vytvor_statickou_scenu();
-	REFRESH();
+//	TRect oblast=vrat_max_oblast();
+//	if(!(oblast.left>10000 && oblast.right<-10000))
+//	{
+//		//deklarace
+//		int MaxX=oblast.right,MaxY=oblast.top,MinX=oblast.left,MinY=oblast.bottom;
+//		int PD_x=ClientWidth-scSplitView_LEFTTOOLBAR->Width;
+//		int PD_y=ClientHeight-vyska_menu-scGPPanel_statusbar->Height-scGPPanel_mainmenu->Height;//-vyska_menu-RzStatusBar1->Height je navíc nemá tam co dělat
+//		TPointD centr;
+//		centr.x=m.P2Lx((MaxX+MinX)/2.0);
+//		centr.y=m.P2Ly((MaxY+MinY)/2.0);
+//
+//		//výpočet nového Zoomu
+//		double Z1=abs(Zoom*PD_x/(MaxX-MinX)),Z2=abs(Zoom*PD_y/abs(MaxY-MinY));
+//		Z1-=fmod(Z1,0.5);Z2-=fmod(Z2,0.5);
+//		if(Z1>Z2)Zoom=Z2;else Zoom=Z1;
+//		if(Zoom<0.5)Zoom=0.5;if(Zoom>10)Zoom=10;
+//
+//		//vycentrování obrazu
+//		PD_x=(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0;
+//		PD_y=(ClientHeight+(scGPPanel_mainmenu->Height-scGPPanel_statusbar->Height)-scGPPanel_bottomtoolbar->Height)/2.0;
+//		Posun.x+=(m.L2Px(centr.x)-PD_x)/Zoom;
+//		Posun.y+=(m.L2Py(centr.y)-PD_y)/Zoom;
+//
+//		//překreslení
+//		on_change_zoom_change_scGPTrackBar();
+//	}
+//	vytvor_statickou_scenu();
+//	REFRESH();
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
