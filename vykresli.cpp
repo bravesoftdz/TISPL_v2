@@ -41,7 +41,7 @@ Cvykresli::Cvykresli()
 	clWarning=TColor RGB(255,165,0);
 	clChassis=(TColor)RGB(50,50,50);
 	clJig=clPurple;//pozn. defualt zakázka má definici barvy přimo ve v.vytvor_default_zakazku()
-	clMeridlo=clWebOrange;
+	clMeridlo=TColor RGB(255,31,255);
 	 //pěkná modrá 79,122,186   další pěkná modrá světle (YR.NO): 0,185,241   ico tispl: 33,209,255
 }
 //---------------------------------------------------------------------------
@@ -2304,7 +2304,8 @@ void Cvykresli::vykresli_koleje(TCanvas *canv,double X,double Y,short typ,double
 	//offset o poloviny nastavené šířky podvozku + tloušťka linie zakresu podvozku
 	double o=v.PP.sirka_podvozek/2.0+m.px2m(1/3.0*F->Zoom);
 	//nastavení pera
-	set_pen(canv,clKolej,m.round(F->Zoom*0.5),PS_ENDCAP_SQUARE);
+	float width=0.5; //if(clKolej==clMeridlo){width*=3;canv->Pen->Mode=pmNotXor;}
+	set_pen(canv,clKolej,m.round(F->Zoom*width),PS_ENDCAP_SQUARE);
 	//výpočet odsazení a souřadnic
 	TPointD S1=m.rotace(o,180-orientace,90);
 	TPointD S2=m.rotace(o,180-orientace,-90);
