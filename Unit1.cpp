@@ -95,7 +95,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	grid=true; size_grid=10;//velikost je v logických jednotkách (metrech)
 
 	//bitmapa pro uložení přesovaného obrazu - PAN, a pro statickou scénu
-	Pan_bmp=new Graphics::TBitmap();
+	Pan_bmp=new Graphics::TBitmap();Pan_bmp_ALL=NULL;
 	pan_non_locked=false;
 	Staticka_scena=NULL;
 
@@ -2312,18 +2312,25 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		////vykreslení GRIDu
 		if(grid && Zoom_predchozi_AA>0.5 && (Akce==MOVE_BOD||Akce==DRAW_HALA) && prichytavat_k_mrizce==1 && MOD!=SIMULACE)d.vykresli_grid(bmp_total->Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí//vykreslení gridu
 		////VEKTORY
-		Graphics::TBitmap *bmp_in=new Graphics::TBitmap;bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;
-		if(d.SCENA>0 && d.SCENA!=2222222)bmp_in->Canvas->Draw(0,0,Staticka_scena);//STATICKÁ scéna, je volaná pouze pokud to má smysl, není přeantialiasingovaná(AA), je jen připravená (3x větší) pro AA (aby byl již dříve AAnemá to smysl, pouze je 3x větší BMP, ale jinak by se nejednalo o úsporu)
-		Zoom_predchozi_AA=Zoom;Zoom*=3;//záloha původního zoomu,nový *3 vyplývá z logiky algoritmu antialiasingu
-		short s=2;if(d.SCENA==0)s=0;//řešení pro vykreslit VŠE
-		if(d.SCENA!=1111111 || pom!=NULL)d.vykresli_vektory(bmp_in->Canvas,s);//DYNAMICKÁ scéna,pokud je požadavek vše do statické a není aktivní pom objekt, tak zbytečně se neřeší dynamická
-		if(Akce==GEOMETRIE)d.smart_kurzor(bmp_in->Canvas,posledni_editovany_element);
-		if(MOD==TVORBA_CESTY)d.kurzor_cesta(bmp_in->Canvas);
-		if(Akce==MAGNETICKE_LASO)d.vykresli_meridlo(bmp_in->Canvas);
-		Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
-		Cantialising a;
-		Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
-		bmp_total->Canvas->Draw(0,0,bmp_out);delete(bmp_out);
+		if((d.SCENA==1111111 || d.SCENA==111111) && Akce!=GEOMETRIE && MOD!=TVORBA_CESTY && Akce!=MAGNETICKE_LASO && pom==NULL)//vše STATICKÁ scéna, nejsou žádně akce
+		{
+			bmp_total->Canvas->Draw(0,0,Staticka_scena);//varianta, kdy je přeantialiasingovaná
+		}
+		else
+		{
+			Graphics::TBitmap *bmp_in=new Graphics::TBitmap;bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;
+			if(d.SCENA>0 && d.SCENA!=2222222 /*&& d.SCENA!=1111111 && d.SCENA!=111111*/)bmp_in->Canvas->Draw(0,0,Staticka_scena);//STATICKÁ scéna, je volaná pouze pokud to má smysl, není přeantialiasingovaná(AA), je jen připravená (3x větší) pro AA (aby byl již dříve AAnemá to smysl, pouze je 3x větší BMP, ale jinak by se nejednalo o úsporu)
+			Zoom_predchozi_AA=Zoom;Zoom*=3;//záloha původního zoomu,nový *3 vyplývá z logiky algoritmu antialiasingu
+			short s=2;if(d.SCENA==0)s=0;//řešení pro vykreslit VŠE
+			if(/*d.SCENA!=1111111 && d.SCENA!=111111 || */pom!=NULL)d.vykresli_vektory(bmp_in->Canvas,s);//DYNAMICKÁ scéna, pokud není vše do statické nebo je aktivní pom objekt (např. výběr hrany atp.), tak se řešeí dynamická scena, jinak ne, protože nemá smysl
+			if(Akce==GEOMETRIE)d.smart_kurzor(bmp_in->Canvas,posledni_editovany_element);
+			if(MOD==TVORBA_CESTY)d.kurzor_cesta(bmp_in->Canvas);
+			if(Akce==MAGNETICKE_LASO)d.vykresli_meridlo(bmp_in->Canvas);
+			Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
+			Cantialising a;
+			Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
+			bmp_total->Canvas->Draw(0,0,bmp_out);delete(bmp_out);
+		}
 		////mGRIDY
 		if(MOD!=SIMULACE && Akce!=MAGNETICKE_LASO)d.vykresli_mGridy(bmp_total->Canvas);//přesunuto do vnitř metody: OBJEKT_akt->elementy!=NULL kvůli pohonům
 		////grafické MĚŘÍTKO
@@ -2345,20 +2352,30 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
-//vytvoří BMP se statickou scénou
+//vytvoří BMP se statickou scénou, NEVYTVÁŘÍ POUZE pro kompletní dynamickou scénu
 void TForm1::vytvor_statickou_scenu()
 {
 	log(__func__,String(d.SCENA));//logování
 	if(Staticka_scena!=NULL){delete Staticka_scena;Staticka_scena=NULL;}//před vytvořením nové kvůli realokaci nejdříve nutné odstranit
-	if(d.SCENA>0 && d.SCENA!=2222222)
+	Zoom_predchozi_AA=Zoom;//záloha původního zoomu
+	Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
+	if((d.SCENA==1111111 || d.SCENA==111111) && Akce!=GEOMETRIE && MOD!=TVORBA_CESTY && Akce!=MAGNETICKE_LASO && pom==NULL)//vše STATICKÁ scéna, nejsou žádně akce, pokud se jedná o kompletně statickou scenu, vytvoří již bmp Staticka_scena rovnou přeantialiasingovanoou
+	{
+		Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+		bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+		d.vykresli_vektory(bmp_in->Canvas,1);
+		Cantialising a;Staticka_scena=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
+		//Staticka_scena->SaveToFile("staticka_scena_bezAA.bmp");
+	}
+	else
+	if(d.SCENA>0 && d.SCENA!=2222222)//pro případy kdy se nejedná o kompletní statickou a ani kompletní dynamickou scenu, v tomto případě nemá smysl nyní Statickou scenu antialiasingovat
 	{
 		Staticka_scena=new Graphics::TBitmap;
 		Staticka_scena->Width=ClientWidth*3;Staticka_scena->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu, nicméně nemá smysl nyní Statickou scenu antialiasingovat, protože by se stejně antialiasingovala samostatná dynamická scéna a navíc to způsobovalo zde umístěné grafické chyby
-		Zoom_predchozi_AA=Zoom;//záloha původního zoomu
-		Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
 		d.vykresli_vektory(Staticka_scena->Canvas,1);
-		Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
+		//Staticka_scena->SaveToFile("staticka_scena_sAA.bmp");
 	}
+	Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 }
 //---------------------------------------------------------------------------
 //přetížená výše uvedené přímo s parametrem nastavení scény
@@ -5313,13 +5330,45 @@ void TForm1::pan_create()
 	int W=scSplitView_LEFTTOOLBAR->Width;
 	if(MOD==CASOVAOSA || MOD==TECHNOPROCESY)W=0;//zajistí, že se posová i číslování vozíků resp.celá oblast
 	short H=scGPPanel_mainmenu->Height;
-	int Gh=0;if(scGPPanel_bottomtoolbar->Visible)Gh=scGPPanel_bottomtoolbar->Height;
+	int Gh=0;if(scGPPanel_bottomtoolbar->Visible)Gh=scGPPanel_bottomtoolbar->Height;Gh-=6;//WA, z nějaké důvodu to chce odebrat, aby byla posouváná plocha kompletní
 	scGPButton_bug_report->Visible=false;
-	Gh-=6;//WA, z nějaké důvodu to chce odebrat, aby byla posouváná plocha kompletní
-	Pan_bmp->Width=ClientWidth;Pan_bmp->Height=ClientHeight-H-Gh;//velikost pan plochy
+	Pan_bmp->Width=ClientWidth*2;Pan_bmp->Height=ClientHeight-H-Gh;//velikost pan plochy
 	Pan_bmp->Canvas->CopyRect(Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh),Canvas,Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh));//uloží pan výřez
 	if(MOD!=SIMULACE)scGPButton_bug_report->Visible=true;
 	//Pan_bmp->SaveToFile("test.bmp");  //pro testovací účely
+
+	/////////////////////
+	//testy - celoobrazovková alternativa - zatím nemazat!!!
+	//varianta 1) pro vlákno
+//	Zoom_predchozi_AA=Zoom;//záloha původního zoomu
+//	TPointD Posun_predchozi=Posun;
+//	Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
+//	if(Pan_bmp_ALL!=NULL){delete Pan_bmp_ALL;Pan_bmp_ALL=NULL;}//před vytvořením nové kvůli realokaci nejdříve nutné odstranit
+//	Posun.x-=ClientWidth/Zoom*3;Posun.y-=ClientHeight/Zoom*3;
+//	Graphics::TBitmap *bmp_test=new Graphics::TBitmap;
+//	bmp_test->Width=ClientWidth*3*3;bmp_test->Height=ClientHeight*3*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+//	d.vykresli_vektory(bmp_test->Canvas,1);
+//	Cantialising a; Pan_bmp_ALL=a.antialiasing(bmp_test,false);delete(bmp_test);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
+//	//Pan_bmp_ALL->SaveToFile("testALL.bmp");
+//	Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
+//	Posun=Posun_predchozi;
+//	MessageBeep(0);
+
+//	//varianta 2) pro použítí zde optimalizovaná, ale stále pomalá
+//	//	Zoom_predchozi_AA=Zoom;//záloha původního zoomu
+//	TPointD Posun_predchozi=Posun;
+//	Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
+//	if(Pan_bmp_ALL!=NULL){delete Pan_bmp_ALL;Pan_bmp_ALL=NULL;}//před vytvořením nové kvůli realokaci nejdříve nutné odstranit
+//	Posun.x-=(ClientWidth-akt_souradnice_kurzoru_PX.x)/Zoom*3;Posun.y-=(ClientHeight-akt_souradnice_kurzoru_PX.y)/Zoom*3;
+//	T.x=ClientWidth-akt_souradnice_kurzoru_PX.x;T.y=ClientHeight-akt_souradnice_kurzoru_PX.y;
+//	Graphics::TBitmap *bmp_test=new Graphics::TBitmap;
+//	bmp_test->Width=ClientWidth*3*2;bmp_test->Height=ClientHeight*3*2;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+//	d.vykresli_vektory(bmp_test->Canvas,1);
+//	Cantialising a; Pan_bmp_ALL=a.antialiasing(bmp_test,false);delete(bmp_test);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
+//	Pan_bmp_ALL->SaveToFile("testALL.bmp");
+//	Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
+//	Posun=Posun_predchozi;
+//	MessageBeep(0);
 }
 //---------------------------------------------------------------------------
 //Posouvá výřez mapy při stisknutém mezerníku a L-myši
@@ -5338,6 +5387,8 @@ void TForm1::pan_map(TCanvas * canv, int X, int Y)
 	canv->FillRect(TRect(0,Y-vychozi_souradnice_kurzoru.y+Pan_bmp->Height,X-vychozi_souradnice_kurzoru.x+Pan_bmp->Width,ClientHeight));//dolní okraj
 	//samotné posouvání Pan_bmp
 	canv->Draw(X-vychozi_souradnice_kurzoru.x,Y-vychozi_souradnice_kurzoru.y,Pan_bmp);
+//	canv->Draw(X-vychozi_souradnice_kurzoru.x-ClientWidth,Y-vychozi_souradnice_kurzoru.y-ClientHeight,Pan_bmp_ALL);//varianta 1) viz pan_create
+//	canv->Draw(X-vychozi_souradnice_kurzoru.x-T.x,Y-vychozi_souradnice_kurzoru.y-T.y,Pan_bmp_ALL);//varianta 2) viz pan_create
 }
 //---------------------------------------------------------------------------
 //realizuje posunutí obrazu
@@ -13087,7 +13138,9 @@ void TForm1::vse_odstranit()
 	copyObjekt=NULL;delete copyObjekt;
 	copyObjektRzRx.x=0;copyObjektRzRx.y=0;
 	vlakno_obraz=NULL;delete vlakno_obraz;
-	delete Staticka_scena;Staticka_scena=NULL;//musí být =NULL, vse_odstranit() se spouští např. při stisku nového projektu
+	delete(Staticka_scena);Staticka_scena=NULL;//musí být =NULL, vse_odstranit() se spouští např. při stisku nového projektu
+	//if(Pan_bmp!=NULL)delete(Pan_bmp);Pan_bmp=NULL;muselo by se alokovat při použítí nikoliv v konstruktoru, vhodné předělat
+	if(Pan_bmp_ALL!=NULL)delete(Pan_bmp_ALL);Pan_bmp_ALL=NULL;
 	delete editEditace;editEditace=NULL;
 	//delete LogFileStream; //zde nesmí být kvůli logování (resp. musí se ukončnovat až při konci aplikace nikoliv projektu), proto to zde nechat jako upozornění
 }
@@ -14002,10 +14055,6 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 
  //	 TPointD *souradnice_k_dalsimu_pouziti=vykresli_Gelement(canv,Xoblouku,Yoblouku,OR,RA,R,clBlue,1);
 //	 F->Memo(String(souradnice_k_dalsimu_pouziti[3].x)+" "+String(souradnice_k_dalsimu_pouziti[3].y));
-//---------------------------------------------------------------------------
-//MaKr testovací tlačítko
-void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
-{
 	//s-start, k-konec, 1-první úsečka, 2-druhá úsečka
 
 	///////testovací vstupy - různé situace
@@ -14040,22 +14089,31 @@ void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 	//double xs1=-10;double ys1=10;double xk1=10;double yk1=10;
 	//double xs2=0;double ys2=0;double xk2=0;double yk2=30;
 	//kolmé obě - MV test, původně hazelo na Y NAN, po změně pořadí bylo OK
-  double xs1=38;double ys1=-41;double xk1=38;double yk1=-37;
-	double xs2=35;double ys2=-39;double xk2=45;double yk2=-39;
-
-	//vykreslení testovacích úseček
-	d.line(Canvas,m.L2Px(xs1),m.L2Py(ys1),m.L2Px(xk1),m.L2Py(yk1));
-	d.line(Canvas,m.L2Px(xs2),m.L2Py(ys2),m.L2Px(xk2),m.L2Py(yk2));
-
-	//výpočet průsečíku
-	TPointD P=m.PrusecikPrimek(xs1,ys1,xk1,yk1,xs2,ys2,xk2,yk2);
-
-  //nutné ošetření výstupů pří různých situacícíh
-	if(IsNan(P.x) || IsNan(P.y))Memo("nemají průsečík, jsou totožné: "+String(P.x)+" "+String(P.y));
-	else if(IsInfinite(P.x) || IsInfinite(P.y))Memo("nemají průsečík, jsou rovnoběžné: "+String(P.x)+" "+String(P.y));
-	else Memo("mají průsečík: "+String(P.x)+" "+String(P.y));
-
-	if(!IsNan(P.x) && !IsNan(P.y) && !IsInfinite(P.x) && !IsInfinite(P.y))Memo("MV - mají průsečík");
+//	double xs1=38;double ys1=-41;double xk1=38;double yk1=-37;
+//	double xs2=35;double ys2=-39;double xk2=45;double yk2=-39;
+//	double xs1=46;double ys1=-36;double xk1=46;double yk1=-32;
+//	double xs2=43;double ys2=-34;double xk2=53;double yk2=-34;
+//
+//	//vykreslení testovacích úseček
+//	d.line(Canvas,m.L2Px(xs1),m.L2Py(ys1),m.L2Px(xk1),m.L2Py(yk1));
+//	d.line(Canvas,m.L2Px(xs2),m.L2Py(ys2),m.L2Px(xk2),m.L2Py(yk2));
+//
+//	//výpočet průsečíku
+//	TPointD P=m.PrusecikPrimek(xs1,ys1,xk1,yk1,xs2,ys2,xk2,yk2);
+//
+//	//nutné ošetření výstupů pří různých situacícíh
+//	if(IsNan(P.x) || IsNan(P.y))Memo("nemají průsečík, jsou totožné: "+String(P.x)+" "+String(P.y));
+//	else if(IsInfinite(P.x) || IsInfinite(P.y))Memo("nemají průsečík, jsou rovnoběžné: "+String(P.x)+" "+String(P.y));
+//	else Memo("mají průsečík: "+String(P.x)+" "+String(P.y));
+//
+//	if(!IsNan(P.x) && !IsNan(P.y) && !IsInfinite(P.x) && !IsInfinite(P.y))Memo("MV - mají průsečík");
+//---------------------------------------------------------------------------
+//MaKr testovací tlačítko
+void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
+{
+	//Memo(d.SCENA,true);
+	//Pan_bmp_ALL->SaveToFile("testALL.bmp");
+	pan_create();
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
