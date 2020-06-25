@@ -4607,6 +4607,10 @@ void TForm1::getJobID(int X, int Y)
 						//element je již obsazen v seznamu magnetického lasa, bude smazán segment cesty obsahující E, taktéž budou smazány následující segmenty cesty, pokud existují další segmenty
 						if(segment>0)
 							d.v.smaz_segment_MAG_LASA(E);
+
+						//experiment
+//						if(segment==0 && (d.v.MAG_LASO->predchozi->sparovany==E->dalsi || (E->dalsi!=NULL && E->dalsi->n>0 && E->dalsi->dalsi==d.v.MAG_LASO->predchozi->Element)))
+//							d.v.vloz_segment_MAG_LASA(E->dalsi);
 					}
 					//break;//odstaveno z důvodu resetování stavu elementů pro potřeby highlightu
 
@@ -5212,23 +5216,26 @@ void TForm1::ZOOM_WINDOW()
 //		Zoom+=0.5;
 //	}
 
-	//////nově
+  //deklarace
+	int MaxX=akt_souradnice_kurzoru_PX.x,MaxY=akt_souradnice_kurzoru_PX.y,MinX=vychozi_souradnice_kurzoru.x,MinY=vychozi_souradnice_kurzoru.y;
 	int PD_x=ClientWidth-scSplitView_LEFTTOOLBAR->Width;
-	int PD_y=ClientHeight-vyska_menu-scGPPanel_statusbar->Height;//-vyska_menu-RzStatusBar1->Height je navíc nemá tam co dělat
+	int PD_y=ClientHeight-vyska_menu-scGPPanel_statusbar->Height-scGPPanel_mainmenu->Height;//-vyska_menu-RzStatusBar1->Height je navíc nemá tam co dělat
+	TPointD centr;
+	centr.x=m.P2Lx((MaxX+MinX)/2.0);
+	centr.y=m.P2Ly((MaxY+MinY)/2.0);
+
 	//výpočet nového Zoomu
-	double rozdil=0,PD=0;
-	if(m.m2px(m.P2Lx(akt_souradnice_kurzoru_PX.x)-m.P2Lx(vychozi_souradnice_kurzoru.x))>m.abs_d(m.m2px(m.P2Ly(akt_souradnice_kurzoru_PX.y)-m.P2Ly(vychozi_souradnice_kurzoru.y)))){rozdil=m.m2px(m.P2Lx(akt_souradnice_kurzoru_PX.x)-m.P2Lx(vychozi_souradnice_kurzoru.x));PD=PD_x;}
-	else {rozdil=m.abs_d(m.m2px(m.P2Ly(akt_souradnice_kurzoru_PX.y)-m.P2Ly(vychozi_souradnice_kurzoru.y)));PD=PD_y;}
-	Zoom=abs(Zoom*PD/rozdil);
-	//přepočtení na používaný krok zoomu
-	Zoom-=fmod(Zoom,0.5);
-	if(Zoom<0.5)Zoom=0.5;
-	if(Zoom>20 && !DEBUG)Zoom=20;if(Zoom>30 && DEBUG)Zoom=30;
-	//////
+	double Z1=abs(Zoom*PD_x/(MaxX-MinX)),Z2=abs(Zoom*PD_y/abs(MaxY-MinY));
+	Z1-=fmod(Z1,0.5);Z2-=fmod(Z2,0.5);
+	if(Z1>Z2)Zoom=Z2;else Zoom=Z1;
+	if(Zoom<0.5)Zoom=0.5;if(Zoom>10)Zoom=10;
 
 	//vycentrování obrazu
-	Posun.x=m.round(Centr.x/m2px-(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2/Zoom);
-	Posun.y=m.round(-Centr.y/m2px-(ClientHeight)/2/Zoom);
+	PD_x=(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0;
+	PD_y=(ClientHeight+(scGPPanel_mainmenu->Height-scGPPanel_statusbar->Height))/2.0;
+	Posun.x+=(m.L2Px(centr.x)-PD_x)/Zoom;
+	Posun.y+=(m.L2Py(centr.y)-PD_y)/Zoom;
+
 	//SB(Zoom,2);už se nepoužívá
 	on_change_zoom_change_scGPTrackBar();
 	vytvor_statickou_scenu();//vytvoří BMP se statickou scénou, musí být před REFRESH()
@@ -5487,25 +5494,25 @@ void __fastcall TForm1::RzToolButton11Click(TObject *Sender)
 		TRect oblast=vrat_max_oblast();
 		if(!(oblast.left>10000 && oblast.right<-10000))
   	{
-      //deklarace
-  		int MaxX=oblast.right,MaxY=oblast.top,MinX=oblast.left,MinY=oblast.bottom;
+			//deklarace
+			int MaxX=oblast.right,MaxY=oblast.top,MinX=oblast.left,MinY=oblast.bottom;
 			int PD_x=ClientWidth-scSplitView_LEFTTOOLBAR->Width;
-  		int PD_y=ClientHeight-vyska_menu-scGPPanel_statusbar->Height-scGPPanel_mainmenu->Height;//-vyska_menu-RzStatusBar1->Height je navíc nemá tam co dělat
-  		TPointD centr;
-  		centr.x=m.P2Lx((MaxX+MinX)/2.0);
-  		centr.y=m.P2Ly((MaxY+MinY)/2.0);
+			int PD_y=ClientHeight-vyska_menu-scGPPanel_statusbar->Height-scGPPanel_mainmenu->Height;//-vyska_menu-RzStatusBar1->Height je navíc nemá tam co dělat
+			TPointD centr;
+			centr.x=m.P2Lx((MaxX+MinX)/2.0);
+			centr.y=m.P2Ly((MaxY+MinY)/2.0);
 
-  		//výpočet nového Zoomu
-  		double Z1=abs(Zoom*PD_x/(MaxX-MinX)),Z2=abs(Zoom*PD_y/abs(MaxY-MinY));
+			//výpočet nového Zoomu
+			double Z1=abs(Zoom*PD_x/(MaxX-MinX)),Z2=abs(Zoom*PD_y/abs(MaxY-MinY));
   		Z1-=fmod(Z1,0.5);Z2-=fmod(Z2,0.5);
-  		if(Z1>Z2)Zoom=Z2;else Zoom=Z1;
-  		if(Zoom<0.5)Zoom=0.5;if(Zoom>10)Zoom=10;
+			if(Z1>Z2)Zoom=Z2;else Zoom=Z1;
+			if(Zoom<0.5)Zoom=0.5;if(Zoom>10)Zoom=10;
 
   		//vycentrování obrazu
 			PD_x=(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0;
 			PD_y=(ClientHeight+(scGPPanel_mainmenu->Height-scGPPanel_statusbar->Height))/2.0;
-  		Posun.x+=(m.L2Px(centr.x)-PD_x)/Zoom;
-  		Posun.y+=(m.L2Py(centr.y)-PD_y)/Zoom;
+			Posun.x+=(m.L2Px(centr.x)-PD_x)/Zoom;
+			Posun.y+=(m.L2Py(centr.y)-PD_y)/Zoom;
 
   		//překreslení
   		on_change_zoom_change_scGPTrackBar();
@@ -13859,8 +13866,8 @@ void __fastcall TForm1::Timer_simulaceTimer(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 {
-//	Memo("");
-//	scGPImage_mereni_vzdalenostClick(this);
+	Memo("");
+	scGPImage_mereni_vzdalenostClick(this);
 
 //	TRect oblast=vrat_max_oblast();
 //	if(!(oblast.left>10000 && oblast.right<-10000))
@@ -16104,13 +16111,13 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 //	}
 	if(Akce!=MAGNETICKE_LASO)
 	{
-		//skrytí mgridů
+		//skrytí mgridů v editaci
 		if(OBJEKT_akt!=NULL)
 		{
-	  	bool p_stav=OBJEKT_akt->zobrazit_mGrid;
-	  	OBJEKT_akt->zobrazit_mGrid=false;
-	  	REFRESH();//můsí být překresleno
-	  	OBJEKT_akt->zobrazit_mGrid=p_stav;
+			bool p_stav=OBJEKT_akt->zobrazit_mGrid;//uložení původního stavu mGridů
+			OBJEKT_akt->zobrazit_mGrid=false;//skrytí
+			REFRESH();//můsí být překresleno, překreslením dojde ke skrytí komponent mGridů, jinak by byly stále viditelné
+			OBJEKT_akt->zobrazit_mGrid=p_stav;//navrácení původního stavu do objektu
 		}
 		//zapnutí akceá
 		if(Akce!=NIC)ESC();
@@ -16121,7 +16128,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		Timer_getjobid->Enabled=false;//odstavení timeru, není potřeba
 		d.SCENA=122111;//ZprVozEledElesDopObjHal
 		vytvor_statickou_scenu();//vypnutí vrstvy errorů a nastavení zbytku na statickou scénu
-		zobraz_tip(ls->Strings[483]);//má v sobě REFRESH(), je ntuné volat až po vytvořeni statické scény
+		zobraz_tip(ls->Strings[483]);//má v sobě REFRESH(), je nutné volat až po vytvořeni statické scény
 	}
 	else
 	{

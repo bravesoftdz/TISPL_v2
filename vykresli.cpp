@@ -945,7 +945,7 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 	double R,RA,OR,X,Y,uhel=0,delka=0,azimut,cas=0,d;
 
 	////vykreslení uložených segmentů v mag lasu, pokud je třeba
-	if(F->pom_element!=NULL && (F->pom_element->predchozi==v.MAG_LASO->predchozi->Element || (F->pom_element->predchozi->eID==301 && F->pom_element->predchozi->predchozi2==v.MAG_LASO->predchozi->Element) || F->pom_element==v.MAG_LASO->predchozi->Element || (F->pom_element->eID==301 && F->pom_element->predchozi2==v.MAG_LASO->predchozi->Element) || (F->pom_element->predchozi->eID==301 && F->pom_element->predchozi->predchozi==v.MAG_LASO->predchozi->Element)))
+	if(F->pom_element!=NULL && (F->pom_element->dalsi==v.MAG_LASO->predchozi->Element || F->pom_element->predchozi==v.MAG_LASO->predchozi->Element || (F->pom_element->predchozi->eID==301 && F->pom_element->predchozi->predchozi2==v.MAG_LASO->predchozi->Element) || F->pom_element==v.MAG_LASO->predchozi->Element || (F->pom_element->eID==301 && F->pom_element->predchozi2==v.MAG_LASO->predchozi->Element) || (F->pom_element->predchozi->eID==301 && F->pom_element->predchozi->predchozi==v.MAG_LASO->predchozi->Element)))
 	{
 		Cvektory::TCesta *C=v.MAG_LASO->dalsi;
   	while(C!=NULL)
@@ -1017,7 +1017,7 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 			short typ=0;
 			if(C->n==1)typ=1;
 			if(C->n==1 && C->Element->geo.typ!=0)//pokud je první segment část oblouku nutné pozměnit vykreslení
-			{X=C->Element->geo.X4; Y=C->Element->geo.Y4;if(OR==90 || OR==180)uhel=-1*uhel;OR=m.Rt90(OR-C->Element->geo.rotacni_uhel-180);}
+			{X=C->Element->geo.X4; Y=C->Element->geo.Y4;OR=m.Rt90(C->Element->dalsi->geo.orientace-180);if(OR==90 ||OR==180)uhel=-1*uhel;/*F->Memo(OR);*/typ=2;}
 			vykresli_Gelement(canv,X,Y,OR,uhel,R,clMeridlo,2,"","",typ);
 			//posun na další segment
 			C=C->dalsi;
@@ -1026,18 +1026,18 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 	}
 
 	////neliniové měření, pouze v případě, že jsem za posledním segmentem cesty a na pohonu
-	if(F->pom_element!=NULL && (F->pom_element->predchozi==v.MAG_LASO->predchozi->Element || (F->pom_element->predchozi->eID==301 && F->pom_element->predchozi->predchozi2==v.MAG_LASO->predchozi->Element) || (F->pom_element->predchozi->eID==301 && F->pom_element->predchozi->predchozi==v.MAG_LASO->predchozi->Element)))
+	if(F->pom_element!=NULL && (F->pom_element->dalsi==v.MAG_LASO->predchozi->Element ||F->pom_element->predchozi==v.MAG_LASO->predchozi->Element || (F->pom_element->predchozi->eID==301 && F->pom_element->predchozi->predchozi2==v.MAG_LASO->predchozi->Element) || (F->pom_element->predchozi->eID==301 && F->pom_element->predchozi->predchozi==v.MAG_LASO->predchozi->Element)))
 	{
 		//vykreslení části oblouku
 		if(F->pom_element!=NULL && F->pom_element->geo.typ!=0 && v.MAG_LASO->dalsi!=NULL)
 		{
-      //načítání parametrů
+			//načítání parametrů
 			R=F->pom_element->geo.radius;
 			RA=F->pom_element->geo.rotacni_uhel;//rotační úhel, pod kterým je oblouk rotován - směřován (proti směru hodinových ručiček), může být záporný (po směru hodinových ručiček)
 			OR=F->pom_element->geo.orientace;
    		X=F->pom_element->geo.X1,Y=F->pom_element->geo.Y1;
 
-   		//výpočetní část, mělo by být volané v případě úspěchu podmínky if(m.PtInSegment....
+			//výpočetní část, mělo by být volané v případě úspěchu podmínky if(m.PtInSegment....
 			uhel=m.uhelObloukuVsMys(X,Y,OR,RA,R,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
 			d=m.R2Larc(R,uhel);//požadovaná délka na oblouku vybraná myší, vracení délky dané výseče, tj. k na(při)počítání měřené délky
 			delka+=d;
@@ -1066,14 +1066,14 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 		{
 			//načítání parametrů
 			X=F->pom_element->geo.X1;Y=F->pom_element->geo.Y1;
-   		if(v.MAG_LASO->dalsi==NULL){X=v.MAG_LASO->predchozi->Element->geo.X1;Y=v.MAG_LASO->predchozi->Element->geo.Y1;}
+			if(v.MAG_LASO->dalsi==NULL){X=v.MAG_LASO->predchozi->Element->geo.X1;Y=v.MAG_LASO->predchozi->Element->geo.Y1;}
 			OR=F->pom_element->geo.orientace;
 			//výpočetní část
-   		TPointD konec=v.bod_na_geometrii(F->pom_element);
+			TPointD konec=v.bod_na_geometrii(F->pom_element);
 			d=m.delka(X,Y,konec.x,konec.y);
 			delka+=d;
 
-      //vypočet času
+			//vypočet času
 			if(F->pom_element->pohon!=NULL)
 			{
 				double d_pom=d;
