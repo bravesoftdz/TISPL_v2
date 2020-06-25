@@ -2298,7 +2298,7 @@ void Cvykresli::vykresli_koleje(TCanvas *canv,Cvektory::TElement *E)
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-//vykreslení jednoho geometrického segmentu dvou párů kolejí,TypZarazky=0 bez (implicitně-default),1=na začátku,2=na konci
+//vykreslení jednoho geometrického segmentu dvou párů kolejí,TypZarazky=0 bez (implicitně-default),1=na začátku,2=na konci,3=na začátku i na konci
 void Cvykresli::vykresli_koleje(TCanvas *canv,double X,double Y,short typ,double orientace,double rotacni_uhel,double radius,double delka,TColor clKolej,short TypZarazky)
 {
 	//offset o poloviny nastavené šířky podvozku + tloušťka linie zakresu podvozku
@@ -2320,8 +2320,8 @@ void Cvykresli::vykresli_koleje(TCanvas *canv,double X,double Y,short typ,double
 		bezier(canv,PL2,3);
 	}
 	//zarážka se zobrazuje pouze při geometrii (pro znázornění jednotlivých gemoetrických elementů), jinak nemá význam
-	if(TypZarazky==1 || F->Akce==F->GEOMETRIE || F->Akce==F->GEOMETRIE_LIGHT)line(canv,m.L2Px(X+S1.x),m.L2Py(Y+S1.y),m.L2Px(X+S2.x),m.L2Py(Y+S2.y));//na začátku
-	if(TypZarazky==2 || F->Akce==F->GEOMETRIE || F->Akce==F->GEOMETRIE_LIGHT)line(canv,m.L2Px(PL1[3].x),m.L2Py(PL1[3].y),m.L2Px(PL2[3].x),m.L2Py(PL2[3].y));//na konci
+	if(TypZarazky==1 || TypZarazky==3 || F->Akce==F->GEOMETRIE || F->Akce==F->GEOMETRIE_LIGHT)line(canv,m.L2Px(X+S1.x),m.L2Py(Y+S1.y),m.L2Px(X+S2.x),m.L2Py(Y+S2.y));//na začátku
+	if(TypZarazky==2 || TypZarazky==3 || F->Akce==F->GEOMETRIE || F->Akce==F->GEOMETRIE_LIGHT)line(canv,m.L2Px(PL1[3].x),m.L2Py(PL1[3].y),m.L2Px(PL2[3].x),m.L2Py(PL2[3].y));//na konci
 
 	delete PL1;PL1=NULL;delete PL2;PL2=NULL;
 }
@@ -4320,7 +4320,7 @@ TPointD *Cvykresli::vykresli_potencial_Gelement(TCanvas *canv,double X,double Y,
 	return PL;//návrátová hodnota souřadnic oblouku pro případné další použití
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-//zajistí jednorázové vykreslení libovolného obloukového či liniového (dle situace) g-elementu, X,Y jsou logické souřadnice výchozího vykreslování, parametry: orientace oblouku - dle světových stran (umí i jiné než 90° násobky), rotační úhel - pod kterým je oblouk rotován, může být záporný (znaménko určuje směr rotace, + proti směru hodinových ručiček, - po směru), max. hodnota +90 a min. hodnota -90 (je-li nastaven na 0° jedná se o linii), radius - je radius oblouku v metrech nebo pokud je rotační úhel nastaven na 0° tedy se jedná o linii, je radius délkou linie), typ=-1 jen středová čára, typ=0 jen koleje, typ 1=koleje+zarážka na začátku, typ 2=koleje+zarážka na konci
+//zajistí jednorázové vykreslení libovolného obloukového či liniového (dle situace) g-elementu, X,Y jsou logické souřadnice výchozího vykreslování, parametry: orientace oblouku - dle světových stran (umí i jiné než 90° násobky), rotační úhel - pod kterým je oblouk rotován, může být záporný (znaménko určuje směr rotace, + proti směru hodinových ručiček, - po směru), max. hodnota +90 a min. hodnota -90 (je-li nastaven na 0° jedná se o linii), radius - je radius oblouku v metrech nebo pokud je rotační úhel nastaven na 0° tedy se jedná o linii, je radius délkou linie), typ=-1 jen středová čára, typ=0 jen koleje, typ 1=koleje+zarážka na začátku, typ 2=koleje+zarážka na konci, typ 3=na začátku i na konci
 TPointD *Cvykresli::vykresli_Gelement(TCanvas *canv,double X,double Y,double orientace,double rotacni_uhel,double radius,TColor color,float width,String Text,String Text2,short typ)
 {
 	////vykreslení Gelementu
