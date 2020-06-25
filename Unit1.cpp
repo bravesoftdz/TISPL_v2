@@ -1562,7 +1562,7 @@ void TForm1::Novy_soubor(bool invalidate)
 void __fastcall TForm1::FormActivate(TObject *Sender)
 {
   log(__func__);//logování
-	if (DEBUG || !DEBUG)//	if(!DEBUG)  R - úprava 5.6.2020 - test konektivity i pro DEBUG verzi   //RELEASE
+	if (/*DEBUG||*/ !DEBUG)//	if(!DEBUG)  R - úprava 5.6.2020 - test konektivity i pro DEBUG verzi   //RELEASE
 	{
 		//toto odkomentovat pro spuštění TTR
 		if(!ttr("start"))
@@ -16128,7 +16128,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		Timer_getjobid->Enabled=false;//odstavení timeru, není potřeba
 		d.SCENA=122111;//ZprVozEledElesDopObjHal
 		vytvor_statickou_scenu();//vypnutí vrstvy errorů a nastavení zbytku na statickou scénu
-    zobraz_tip(ls->Strings[483]);//musí být po vytvoření statické scény
+		zobraz_tip(ls->Strings[483]);//má v sobě REFRESH(), je nutné volat až po vytvořeni statické scény
 	}
 	else
 	{
