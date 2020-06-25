@@ -1144,7 +1144,7 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
   if(F->prichytavat_k_mrizce==1 && F->pom_element!=NULL)
 	{
 		//nastavení geometrického pera
-		short width=m.round(F->Zoom*2);
+		short width=m.round(m.m2px(F->velikost_citelne_oblasti_elementu));
 		set_pen(canv,clMeridlo,width,PS_ENDCAP_FLAT);
 		canv->Pen->Mode=pmNotXor;
 		//vykreslení
@@ -3769,11 +3769,10 @@ Graphics::TBitmap *Cvykresli::nacti_nahled_cesty(Cvektory::TZakazka *zakazka)
 	delete E;E=NULL;
 
 	////výpočet nového Zoom, podle maximální oblasti vykreslení a velikosti bmp
-	double rozdil=0,PD=0,rozdilX=m.m2px(MaxX-MinX),rozdilY=m.abs_d(m.m2px(MaxY-MinY));
-	if(rozdilX>rozdilY){rozdil=rozdilX;PD=W;}
-	else {rozdil=rozdilY;PD=H;}
-	F->Zoom=abs(F->Zoom*PD/rozdil);
-	F->Zoom-=fmod(F->Zoom,0.05);
+	double z1,z2,rozdilX=m.m2px(MaxX-MinX),rozdilY=m.abs_d(m.m2px(MaxY-MinY));
+	z1=abs(F->Zoom*W/rozdilX);z2=abs(F->Zoom*H/rozdilY);
+	z1-=fmod(z1,0.05);z2-=fmod(z2,0.05);
+	if(z1>z2)F->Zoom=z2;else F->Zoom=z1;
 
 	//posun obrazu je ve fyzyckých souřadnicích, musí být dělen Zoom, posun středu oblasti na střed bmp
 	F->Posun.x+=(m.L2Px((MaxX+MinX)/2.0)-W/2.0-5)/F->Zoom;

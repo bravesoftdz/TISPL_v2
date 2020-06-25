@@ -837,7 +837,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=482;i++)
+	for(unsigned short i=0;i<=483;i++)
 	{
 		switch(i)
 		{
@@ -1324,6 +1324,7 @@ void TForm1::DesignSettings()
 			case 480:text="  Skrýt stěny";break;
 			case 481:text="Změna se projeví po přechodu do Layout";break;
 			case 482:text="vyosení pracovní oblasti";break;
+      case 483:text="Kliknutím do libovolné oblasti zahájíte měření";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -3219,6 +3220,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								//přichytit souřadnicemi na element, X2 a X3 se používají jako příznak přichycení, pokud je přichicenou jsou nenulové a rovnají se X4
 								E->geo.X2=E->geo.X3=akt_souradnice_kurzoru.x=el->geo.X4;
 								E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=el->geo.Y4;
+                E->name=el->name;
 								pom_element=el;
 								//highlight, pouze pro prvního
 								if(d.v.MAG_LASO->dalsi==NULL && d.v.MAG_LASO->Element==NULL)pom_element->stav=2;
@@ -3232,7 +3234,14 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								TPointD P;
 								P.x=-1*MaxInt;P.y=-1*MaxInt;
 								if(prichytavat_k_mrizce==1)P=d.v.InVrata(el);
-								if(P.x!=-1*MaxInt && P.y!=-1*MaxInt)akt_souradnice_kurzoru=P;
+								if(P.x!=-1*MaxInt && P.y!=-1*MaxInt)
+								{
+                  //přichytit souřadnicemi na element, X2 a X3 se používají jako příznak přichycení, pokud je přichicenou jsou nenulové a rovnají se X4
+									E->geo.X2=E->geo.X3=akt_souradnice_kurzoru.x=el->geo.X4;
+									E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=el->geo.Y4;
+									E->name="hranu kabiny";
+									akt_souradnice_kurzoru=P;
+								}
 								//pokud ne přilepit pouze na pohon
 								else akt_souradnice_kurzoru=d.v.bod_na_geometrii(pom_element);
 								break;
@@ -5422,32 +5431,32 @@ void __fastcall TForm1::RzToolButton11Click(TObject *Sender)
 	Uloz_predchozi_pohled();
 	try
 	{
-		//načtení proměnných
 		TRect oblast=vrat_max_oblast();
 		if(!(oblast.left>10000 && oblast.right<-10000))
-		{
-	  	double MaxX=m.P2Lx(oblast.right),MaxY=m.P2Ly(oblast.top),MinX=m.P2Lx(oblast.left),MinY=m.P2Ly(oblast.bottom);
-	  	int PD_x=ClientWidth-scSplitView_LEFTTOOLBAR->Width;
-	  	int PD_y=ClientHeight-vyska_menu-scGPPanel_statusbar->Height;//-vyska_menu-RzStatusBar1->Height je navíc nemá tam co dělat
-	  	//výpočet nového Zoomu
-	  	double rozdil=0,PD=0;
-	  	if(m.m2px(MaxX-MinX)>m.m2px(MaxY-MinY)){rozdil=m.m2px(MaxX-MinX);PD=PD_x;}
-	  	else {rozdil=m.m2px(MaxY-MinY);PD=PD_y;}
-	  	Zoom=abs(Zoom*PD/rozdil);
-	  	//přepočtení na používaný krok zoomu
-	  	Zoom-=fmod(Zoom,0.5);
-	  	if(Zoom<0.5)Zoom=0.5;if(Zoom>10)Zoom=10;
-	  	//vycentrování obrazu
-	  	PD_x=ClientWidth+scSplitView_LEFTTOOLBAR->Width;
-	  	PD_y=ClientHeight+vyska_menu+scGPPanel_statusbar->Height/2.0;
-	  	Posun.x=(MaxX+MinX)/2/m2px-PD_x/2/Zoom;
-	  	Posun.y=-(MaxY+MinY)/2/m2px-PD_y/2/Zoom;
-	  	if(MaxX+MinX==0)//v případě, že není objekt
-	  	{
-	  		 Posun.x=-scListGroupKnihovObjektu->Width;if(vyska_menu>0)Posun.y=-vyska_menu+9;else Posun.y=-29;
-	  	}
-			on_change_zoom_change_scGPTrackBar();
-		}
+  	{
+      //deklarace
+  		int MaxX=oblast.right,MaxY=oblast.top,MinX=oblast.left,MinY=oblast.bottom;
+  		int PD_x=ClientWidth-scSplitView_LEFTTOOLBAR->Width;
+  		int PD_y=ClientHeight-vyska_menu-scGPPanel_statusbar->Height-scGPPanel_mainmenu->Height;//-vyska_menu-RzStatusBar1->Height je navíc nemá tam co dělat
+  		TPointD centr;
+  		centr.x=m.P2Lx((MaxX+MinX)/2.0);
+  		centr.y=m.P2Ly((MaxY+MinY)/2.0);
+
+  		//výpočet nového Zoomu
+  		double Z1=abs(Zoom*PD_x/(MaxX-MinX)),Z2=abs(Zoom*PD_y/abs(MaxY-MinY));
+  		Z1-=fmod(Z1,0.5);Z2-=fmod(Z2,0.5);
+  		if(Z1>Z2)Zoom=Z2;else Zoom=Z1;
+  		if(Zoom<0.5)Zoom=0.5;if(Zoom>10)Zoom=10;
+
+  		//vycentrování obrazu
+  		PD_x=(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0;
+  		PD_y=ClientHeight/2.0;
+  		Posun.x+=(m.L2Px(centr.x)-PD_x)/Zoom;
+  		Posun.y+=(m.L2Py(centr.y)-PD_y)/Zoom;
+
+  		//překreslení
+  		on_change_zoom_change_scGPTrackBar();
+  	}
 	}catch(...){};
 	vytvor_statickou_scenu();
 	REFRESH();
@@ -12094,28 +12103,26 @@ void TForm1::otevri_editaci()
 	////nastavení zoomu
 	if(Zoom<=5)//pokud je zoom větší nědělat nic
 	{
-		TRect oblast;
-		TPointD Centr;
-		oblast=vrat_max_oblast(OBJEKT_akt);
-		Centr.x=m.P2Lx((oblast.left+oblast.right)/2);
-		Centr.y=m.P2Ly((oblast.top+oblast.bottom)/2);
-		//výpočet nového zoomu
+		//deklarace
+		TRect oblast=vrat_max_oblast(OBJEKT_akt);
+		int MaxX=oblast.right,MaxY=oblast.top,MinX=oblast.left,MinY=oblast.bottom;
 		int PD_x=ClientWidth-scSplitView_LEFTTOOLBAR->Width;
-		int PD_y=ClientHeight-vyska_menu-scGPPanel_statusbar->Height;//-vyska_menu-RzStatusBar1->Height je navíc nemá tam co dělat
+		int PD_y=ClientHeight-vyska_menu-scGPPanel_statusbar->Height-scGPPanel_mainmenu->Height;//-vyska_menu-RzStatusBar1->Height je navíc nemá tam co dělat
+		TPointD centr;
+		centr.x=m.P2Lx((MaxX+MinX)/2.0);
+		centr.y=m.P2Ly((MaxY+MinY)/2.0);
+
 		//výpočet nového Zoomu
-		double rozdil=0,PD=0;
-		if((oblast.right-oblast.left)>(oblast.bottom-oblast.top)){rozdil=oblast.right-oblast.left;PD=PD_x;}
-		else {rozdil=oblast.bottom-oblast.top;PD=PD_y;}
-		Zoom=abs(Zoom*PD/rozdil);
-		//přepočtení na používaný krok zoomu
-		Zoom-=fmod(Zoom,0.5);
-		if(Zoom<0.5)Zoom=0.5;
-		if(Zoom>5)Zoom=5;//nemá smysl přibližovat více
+		double Z1=abs(Zoom*PD_x/(MaxX-MinX)),Z2=abs(Zoom*PD_y/abs(MaxY-MinY));
+		Z1-=fmod(Z1,0.5);Z2-=fmod(Z2,0.5);
+		if(Z1>Z2)Zoom=Z2;else Zoom=Z1;
+		if(Zoom<0.5)Zoom=0.5;if(Zoom>10)Zoom=10;
+
 		//vycentrování obrazu
-		Centr.x=m.L2Px(Centr.x);
-		Centr.y=m.L2Py(Centr.y);
-		Posun.x+=(Centr.x-(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2)/Zoom;
-		Posun.y+=(Centr.y-(ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2)/Zoom;
+		PD_x=(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0;
+		PD_y=ClientHeight/2.0;
+		Posun.x+=(m.L2Px(centr.x)-PD_x)/Zoom;
+		Posun.y+=(m.L2Py(centr.y)-PD_y)/Zoom;
 	}
 
 	zneplatnit_minulesouradnice();
@@ -12377,28 +12384,25 @@ void TForm1::zmena_editovaneho_objektu()
 		//vytvoření tab pohonu pokud je třeba
 		vytvoreni_tab_pohon(poh_tab_existuje);
 		////nastavení zoomu
-		TRect oblast;
-		TPointD Centr;
-		oblast=vrat_max_oblast(OBJEKT_akt);
-		Centr.x=m.P2Lx((oblast.left+oblast.right)/2);
-		Centr.y=m.P2Ly((oblast.top+oblast.bottom)/2);
-		//výpočet nového zoomu
+		//deklarace
+		TRect oblast=vrat_max_oblast(OBJEKT_akt);
+		int MaxX=oblast.right,MaxY=oblast.top,MinX=oblast.left,MinY=oblast.bottom;
 		int PD_x=ClientWidth-scSplitView_LEFTTOOLBAR->Width;
-		int PD_y=ClientHeight-vyska_menu-scGPPanel_statusbar->Height;//-vyska_menu-RszStatusBar1->Height je navíc nemá tam co dělat
+		int PD_y=ClientHeight-vyska_menu-scGPPanel_statusbar->Height-scGPPanel_mainmenu->Height;//-vyska_menu-RzStatusBar1->Height je navíc nemá tam co dělat
+		TPointD centr;
+		centr.x=m.P2Lx((MaxX+MinX)/2.0);
+		centr.y=m.P2Ly((MaxY+MinY)/2.0);
 		//výpočet nového Zoomu
-		double rozdil=0,PD=0;
-		if((oblast.right-oblast.left)>(oblast.bottom-oblast.top)){rozdil=oblast.right-oblast.left;PD=PD_x;}
-		else {rozdil=oblast.bottom-oblast.top;PD=PD_y;}
-		Zoom=abs(Zoom*PD/rozdil);
-		//přepočtení na používaný krok zoomu
-		Zoom-=fmod(Zoom,0.5);
-		if(Zoom<0.5)Zoom=0.5;
-		if(Zoom>5)Zoom=5;//nemá smysl přibližovat více
+		double Z1=abs(Zoom*PD_x/(MaxX-MinX)),Z2=abs(Zoom*PD_y/abs(MaxY-MinY));
+		Z1-=fmod(Z1,0.5);Z2-=fmod(Z2,0.5);
+		if(Z1>Z2)Zoom=Z2;else Zoom=Z1;
+		if(Zoom<0.5)Zoom=0.5;if(Zoom>10)Zoom=10;
 		//vycentrování obrazu
-		Centr.x=m.L2Px(Centr.x);
-		Centr.y=m.L2Py(Centr.y);
-		Posun.x+=(Centr.x-(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2)/Zoom;
-		Posun.y+=(Centr.y-(ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2)/Zoom;
+		PD_x=(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0;
+		PD_y=ClientHeight/2.0;
+		Posun.x+=(m.L2Px(centr.x)-PD_x)/Zoom;
+		Posun.y+=(m.L2Py(centr.y)-PD_y)/Zoom;
+
 		//ostatní
 		mGrid_on_mGrid();
 		pom_element_temp=OBJEKT_akt->element;//pro pořeby editace geometrie
@@ -13825,10 +13829,34 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 
 //	scGPImage_mereni_vzdalenostClick(this);
 
-	Cvektory::TElement *E=d.v.vrat_objekt(16)->element;
-	Memo(E->name);
-	Memo("->predchozi = "+E->predchozi->name);
-	Memo("->predchozi2 = "+E->predchozi2->name);
+	TRect oblast=vrat_max_oblast();
+	if(!(oblast.left>10000 && oblast.right<-10000))
+	{
+    //deklarace
+		int MaxX=oblast.right,MaxY=oblast.top,MinX=oblast.left,MinY=oblast.bottom;
+		int PD_x=ClientWidth-scSplitView_LEFTTOOLBAR->Width;
+		int PD_y=ClientHeight-vyska_menu-scGPPanel_statusbar->Height-scGPPanel_mainmenu->Height;//-vyska_menu-RzStatusBar1->Height je navíc nemá tam co dělat
+		TPointD centr;
+		centr.x=m.P2Lx((MaxX+MinX)/2.0);
+		centr.y=m.P2Ly((MaxY+MinY)/2.0);
+
+		//výpočet nového Zoomu
+		double Z1=abs(Zoom*PD_x/(MaxX-MinX)),Z2=abs(Zoom*PD_y/abs(MaxY-MinY));
+		Z1-=fmod(Z1,0.5);Z2-=fmod(Z2,0.5);
+		if(Z1>Z2)Zoom=Z2;else Zoom=Z1;
+		if(Zoom<0.5)Zoom=0.5;if(Zoom>10)Zoom=10;
+
+		//vycentrování obrazu
+		PD_x=(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0;
+		PD_y=ClientHeight/2.0;
+		Posun.x+=(m.L2Px(centr.x)-PD_x)/Zoom;
+		Posun.y+=(m.L2Py(centr.y)-PD_y)/Zoom;
+
+		//překreslení
+		on_change_zoom_change_scGPTrackBar();
+	}
+  vytvor_statickou_scenu();
+	REFRESH();
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -16049,15 +16077,16 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		//zapnutí akceá
 		if(Akce!=NIC)ESC();
 		Akce=MAGNETICKE_LASO;
+		kurzor(add_o);
+		zobraz_tip(ls->Strings[483]);
 		scGPImage_mereni_vzdalenost->ClipFrameFillColor=(TColor)RGB(225,225,225);
 		scGPButton_zmerit_vzdalenost->Options->NormalColor=(TColor)RGB(86,120,173);
-		if(Screen->Cursor!=standard)kurzor(standard);
 		Timer_getjobid->Enabled=false;//odstavení timeru, není potřeba
 		d.SCENA=122111;//ZprVozEledElesDopObjHal
 		vytvor_statickou_scenu();//vypnutí vrstvy errorů a nastavení zbytku na statickou scénu
 	}
 	else
-	{   
+	{
 		//zjištění délky a času, první a poslední segment cesty jsou fiktivní elementy
 		if(d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->predchozi->Element->n==MaxInt)
 		{     
@@ -16087,7 +16116,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 					cas+=d_pom/d.v.MAG_LASO->sparovany->pohon->aRD;
 					popisek="; Čas = "+String(m.round2double(cas,2))+" [s]";
 				}
-				if(C->sparovany!=NULL && C->Element->geo.X2==C->Element->geo.X3 && C->Element->geo.X3==C->Element->geo.X4)popisek+=", přichyceno na "+C->sparovany->name;
+				if(C->sparovany!=NULL && C->Element->geo.X2==C->Element->geo.X3 && C->Element->geo.X3==C->Element->geo.X4)popisek+=", přichyceno na "+C->Element->name;
 			}
 			else//nelineární měření
 			{
@@ -16160,12 +16189,13 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 				popisek="; Čas = "+String(m.round2double(cas,2))+" [s]";
 				if(chyba)popisek+=", nerelevatní časový údaj, na některém úseku nebyl nadefinován pohon";
 				if(d.v.MAG_LASO->predchozi->sparovany!=NULL && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->Element->geo.X3 && d.v.MAG_LASO->predchozi->Element->geo.X3==d.v.MAG_LASO->predchozi->Element->geo.X4)
-					popisek+=", přichyceno na "+d.v.MAG_LASO->predchozi->sparovany->name;
+					popisek+=", přichyceno na "+d.v.MAG_LASO->predchozi->Element->name;
 			}
 			MB(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,"Délka = "+String(m.round2double(delka*1000,2))+" [mm]"+popisek,"",MB_OK,true,false,366,true,true);
 			C=NULL;delete C;
 		}
 		Akce=NIC;
+    kurzor(standard);
 		scGPImage_mereni_vzdalenost->ClipFrameFillColor=clWhite;
 		scGPButton_zmerit_vzdalenost->Options->NormalColor=scGPButton_zmerit_vzdalenost->Options->HotColor;
 		//odstranění stavů
