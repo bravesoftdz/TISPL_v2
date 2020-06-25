@@ -7241,7 +7241,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 					E->Yt=cE->Yt;
 					E->orientace=cE->orientace;
 					E->rotace_jig=cE->rotace_jig;
-					E->stav=cE->stav;
+					E->stav=1;//cE->stav;
 					E->data.PD=cE->PD;
 					E->data.LO1=cE->LO1;
 					E->OTOC_delka=cE->OTOC_delka;

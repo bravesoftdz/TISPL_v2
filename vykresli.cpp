@@ -182,7 +182,7 @@ void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)//scena 0 - vše do 
 			stav=1;
 			if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n)stav=1;//elementy v aktivním objektu
 			else stav=-1;//disabled elementy ostatních objektů
-			if(stav!=-1)stav=E->stav;//předávání stavu v aktivní kabině pro highlightování elementů
+			if(stav!=-1 || F->OBJEKT_akt==NULL)stav=E->stav;//předávání stavu v aktivní kabině pro highlightování elementů// přídání OBJEKT_akt!=NULL MV 24.6.2020
 			//vykreslení elementu a pozic
 			if(F->MOD!=F->SIMULACE && scena<=2)vykresli_pozice_a_zony(canv,E);
 			if(!(F->OBJEKT_akt!=NULL && E->objekt_n!=F->OBJEKT_akt->n && F->scGPTrackBar_intenzita->Value<5))vykresli_element(canv,scena,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->data.LO1,E->OTOC_delka,E->data.LO2,E->data.LO_pozice,E);
@@ -945,7 +945,7 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 	double R,RA,OR,X,Y,uhel=0,delka=0,azimut,cas=0,d;
 
 	////vykreslení uložených segmentů v mag lasu, pokud je třeba
-	if(F->pom_element!=NULL && (F->pom_element->predchozi==v.MAG_LASO->predchozi->Element || (F->pom_element->predchozi->eID==301 && F->pom_element->predchozi->predchozi2==v.MAG_LASO->predchozi->Element) || F->pom_element==v.MAG_LASO->predchozi->Element || (F->pom_element->eID==301 && F->pom_element->predchozi2==v.MAG_LASO->predchozi->Element)))
+	if(F->pom_element!=NULL && (F->pom_element->predchozi==v.MAG_LASO->predchozi->Element || (F->pom_element->predchozi->eID==301 && F->pom_element->predchozi->predchozi2==v.MAG_LASO->predchozi->Element) || F->pom_element==v.MAG_LASO->predchozi->Element || (F->pom_element->eID==301 && F->pom_element->predchozi2==v.MAG_LASO->predchozi->Element) || (F->pom_element->predchozi->eID==301 && F->pom_element->predchozi->predchozi==v.MAG_LASO->predchozi->Element)))
 	{
 		Cvektory::TCesta *C=v.MAG_LASO->dalsi;
   	while(C!=NULL)
@@ -1014,9 +1014,11 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 				}
 			}
 			//vykreslení segmentu
+			short typ=0;
+			if(C->n==1)typ=1;
 			if(C->n==1 && C->Element->geo.typ!=0)//pokud je první segment část oblouku nutné pozměnit vykreslení
 			{X=C->Element->geo.X4; Y=C->Element->geo.Y4;if(OR==90 || OR==180)uhel=-1*uhel;OR=m.Rt90(OR-C->Element->geo.rotacni_uhel-180);}
-			vykresli_Gelement(canv,X,Y,OR,uhel,R,clRed,2);
+			vykresli_Gelement(canv,X,Y,OR,uhel,R,clMeridlo,2,"","",typ);
 			//posun na další segment
 			C=C->dalsi;
 		}
@@ -1024,7 +1026,7 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 	}
 
 	////neliniové měření, pouze v případě, že jsem za posledním segmentem cesty a na pohonu
-	if(F->pom_element!=NULL && (F->pom_element->predchozi==v.MAG_LASO->predchozi->Element || (F->pom_element->predchozi->eID==301 && F->pom_element->predchozi->predchozi2==v.MAG_LASO->predchozi->Element)))
+	if(F->pom_element!=NULL && (F->pom_element->predchozi==v.MAG_LASO->predchozi->Element || (F->pom_element->predchozi->eID==301 && F->pom_element->predchozi->predchozi2==v.MAG_LASO->predchozi->Element) || (F->pom_element->predchozi->eID==301 && F->pom_element->predchozi->predchozi==v.MAG_LASO->predchozi->Element)))
 	{
 		//vykreslení části oblouku
 		if(F->pom_element!=NULL && F->pom_element->geo.typ!=0 && v.MAG_LASO->dalsi!=NULL)
@@ -1056,12 +1058,12 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 
 			//vykreslovací část																																																																			 //zjištění kam jsem kliknul v oblouku, viz. vykresli_Gelement, uhel = rotacni uhel
 			TPointD *souradnice_k_dalsimu_pouziti=//poslední souřadnice vráceného pole lze použít např. na umístění teploměru, či pokud se nebude hodit přímo při vykreslení (ale jinak zbytečné), lze použít samostatnou matematickou metodu: //TPointD *Cmy::getArcLine(double X,double Y,double orientace,double rotacni_uhel,double radius)
-			vykresli_Gelement(canv,X,Y,OR,uhel,R,clRed,2,String(m.round2double(delka*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]");//vykreslení měřícího kurzoru, popisek není nutné používat, metodu ještě vylepším
+			vykresli_Gelement(canv,X,Y,OR,uhel,R,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]",2);//vykreslení měřícího kurzoru, popisek není nutné používat, metodu ještě vylepším
 		}
 
 		//vykreslení části přímky
    	else if(F->pom_element!=NULL && v.MAG_LASO->Element!=NULL)
-   	{
+		{
 			//načítání parametrů
 			X=F->pom_element->geo.X1;Y=F->pom_element->geo.Y1;
    		if(v.MAG_LASO->dalsi==NULL){X=v.MAG_LASO->predchozi->Element->geo.X1;Y=v.MAG_LASO->predchozi->Element->geo.Y1;}
@@ -1099,12 +1101,12 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 			}
 
 			//vykreslovací část
-			vykresli_Gelement(canv,X,Y,OR,0,d,clRed,2,String(m.round2double(delka*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]");
+			vykresli_Gelement(canv,X,Y,OR,0,d,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]",2);
 		}
 	}
 
 	////liniové měřění
-	else if(v.MAG_LASO->Element!=NULL && (F->pom_element==NULL || (F->pom_element!=NULL && F->pom_element!=v.MAG_LASO->predchozi->Element && F->pom_element->predchozi2!=v.MAG_LASO->predchozi->Element)))
+	else if(v.MAG_LASO->Element!=NULL && (F->pom_element==NULL || (F->pom_element!=NULL && F->pom_element!=v.MAG_LASO->predchozi->Element && F->pom_element->predchozi2!=v.MAG_LASO->predchozi->Element && F->pom_element->predchozi->predchozi2!=v.MAG_LASO->predchozi->Element && F->pom_element->predchozi->predchozi!=v.MAG_LASO->predchozi->Element)))
 	{
 		//načtení parametrů
 		X=v.MAG_LASO->Element->geo.X1;Y=v.MAG_LASO->Element->geo.Y1;
@@ -1133,11 +1135,35 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 			//vypočet času přejezdu
 			cas+=delka/F->pom_element->pohon->aRD;
       //vykreslení
-			vykresli_Gelement(canv,X,Y,azimut,0,d,clRed,2,String(m.round2double(d*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]");
+			vykresli_Gelement(canv,X,Y,azimut,0,d,clMeridlo,2,String(m.round2double(d*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]",1);
 		}
-		else vykresli_Gelement(canv,X,Y,azimut,0,delka,clRed,2,String(m.round2double(delka*1000,2))+" [mm]");
+		else vykresli_Gelement(canv,X,Y,azimut,0,delka,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]");
 	}
 
+	////vykreslní citelných oblastí
+  if(F->prichytavat_k_mrizce==1 && F->pom_element!=NULL)
+	{
+		//nastavení geometrického pera
+		short width=m.round(m.m2px(F->velikost_citelne_oblasti_elementu));
+		set_pen(canv,clMeridlo,width,PS_ENDCAP_FLAT);
+		canv->Pen->Mode=pmNotXor;
+		//vykreslení
+		if(F->pom_element->stav==2 && (F->pom_element!=v.MAG_LASO->sparovany || (v.MAG_LASO->Element->geo.X4!=v.MAG_LASO->sparovany->geo.X4 || v.MAG_LASO->Element->geo.Y4!=v.MAG_LASO->sparovany->geo.Y4)))
+			canv->Ellipse(m.L2Px(F->pom_element->geo.X4)-width,m.L2Py(F->pom_element->geo.Y4)-width,m.L2Px(F->pom_element->geo.X4)+width,m.L2Py(F->pom_element->geo.Y4)+width);
+		else if(F->pom_element->predchozi->stav==2 && (F->pom_element->predchozi!=v.MAG_LASO->sparovany || (v.MAG_LASO->Element->geo.X4!=v.MAG_LASO->sparovany->geo.X4 || v.MAG_LASO->Element->geo.Y4!=v.MAG_LASO->sparovany->geo.Y4)))
+			canv->Ellipse(m.L2Px(F->pom_element->predchozi->geo.X4)-width,m.L2Py(F->pom_element->predchozi->geo.Y4)-width,m.L2Px(F->pom_element->predchozi->geo.X4)+width,m.L2Py(F->pom_element->predchozi->geo.Y4)+width);
+		//kontrola zda jsem na vrátkách objektu
+		else
+		{
+			TPointD P;
+			P=v.InVrata(F->pom_element);
+			if(P.x!=-1*MaxInt && P.y!=-1*MaxInt)
+			{
+				//vykreslení
+				canv->Ellipse(m.L2Px(P.x)-width,m.L2Py(P.y)-width,m.L2Px(P.x)+width,m.L2Py(P.y)+width);
+      }
+		}
+	}
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
@@ -3743,11 +3769,10 @@ Graphics::TBitmap *Cvykresli::nacti_nahled_cesty(Cvektory::TZakazka *zakazka)
 	delete E;E=NULL;
 
 	////výpočet nového Zoom, podle maximální oblasti vykreslení a velikosti bmp
-	double rozdil=0,PD=0,rozdilX=m.m2px(MaxX-MinX),rozdilY=m.abs_d(m.m2px(MaxY-MinY));
-	if(rozdilX>rozdilY){rozdil=rozdilX;PD=W;}
-	else {rozdil=rozdilY;PD=H;}
-	F->Zoom=abs(F->Zoom*PD/rozdil);
-	F->Zoom-=fmod(F->Zoom,0.05);
+	double z1,z2,rozdilX=m.m2px(MaxX-MinX),rozdilY=m.abs_d(m.m2px(MaxY-MinY));
+	z1=abs(F->Zoom*W/rozdilX);z2=abs(F->Zoom*H/rozdilY);
+	z1-=fmod(z1,0.05);z2-=fmod(z2,0.05);
+	if(z1>z2)F->Zoom=z2;else F->Zoom=z1;
 
 	//posun obrazu je ve fyzyckých souřadnicích, musí být dělen Zoom, posun středu oblasti na střed bmp
 	F->Posun.x+=(m.L2Px((MaxX+MinX)/2.0)-W/2.0-5)/F->Zoom;

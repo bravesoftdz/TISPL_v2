@@ -201,7 +201,7 @@ Vertical curves;X;Vertikální oblouky
 Name;X;Název
 Range and speed of drive;X;Rozmezí a rychlost pohonu
 Chain pitch ;X;Rozteè palce
-Used;X;Používán
+Used - on objects;X;Používán - na objektech
 from;X;od
 to;X;do
 current;X;aktuální  
@@ -476,8 +476,9 @@ Send including project;X;Odeslat vèetnì projektu
 Send;X;Odeslat
 Sent. Thanks for the feedback.;X;Odesláno. Dìkujeme za zpìtnou vazbu.
 Failed to send, please try again.;X;Nepodaøilo se odeslat, zkuste znovu.
-Use double click on the created section to start creating geometry;X;Poklepáním na vzniklý úsek zahájíte tvorbu geometrie 
+Use double click on the created section to start creating geometry;X;Poklepáním na vzniklý úsek zahájíte tvorbu geometrie
   Show walls;X;  Zobrazit stìny
   Hide walls;X;  Skrýt stìny
 The change will take effect after switching to Layout;X;Zmìna se projeví po pøechodu do Layout
 offset of working area;X;vyosení pracovní oblasti
+Click in any area to start the measurement;X;Kliknutím do libovolné oblasti zahájíte mìøení
