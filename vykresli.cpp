@@ -1213,7 +1213,7 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 			{
 				X=C->Element->geo.X4;Y=C->Element->geo.Y4;
 				OR=m.Rt90(C->Element->geo.orientace-C->Element->geo.rotacni_uhel-180);//obrácení orientace
-				if(C->Element->geo.rotacni_uhel>0 && (C->Element->geo.orientace==0|| C->Element->geo.orientace==90))uhel=-uhel;//změna směrování RA/úhlu
+				if(C->Element->geo.rotacni_uhel>0)uhel=-uhel;//změna směrování RA/úhlu
 				typ=2;
 			}
 			//vykreslení segmentu
