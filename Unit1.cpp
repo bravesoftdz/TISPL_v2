@@ -1562,7 +1562,7 @@ void TForm1::Novy_soubor(bool invalidate)
 void __fastcall TForm1::FormActivate(TObject *Sender)
 {
   log(__func__);//logování
-	if (/*DEBUG||*/ !DEBUG)//	if(!DEBUG)  R - úprava 5.6.2020 - test konektivity i pro DEBUG verzi   //RELEASE
+	if (DEBUG|| !DEBUG)//	if(!DEBUG)  R - úprava 5.6.2020 - test konektivity i pro DEBUG verzi   //RELEASE
 	{
 		//toto odkomentovat pro spuštění TTR
 		if(!ttr("start"))
