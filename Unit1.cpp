@@ -4572,10 +4572,11 @@ void TForm1::getJobID(int X, int Y)
 				//kontrola zda jsem na segmentu
 				if(m.PtInSegment(E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
 				{
+					//if(!(pom_element!=NULL && d.v.MAG_LASO->dalsi==NULL && d.v.MAG_LASO->sparovany==pom_element))Memo("uložit");//else Memo("ERROR");
 					//pokud se změnit pom_element nebo je nulový ulož
-					if(!(pom_element!=NULL && (pom_element->predchozi==d.v.MAG_LASO->predchozi->Element || (pom_element->predchozi->eID==301 && pom_element->predchozi->predchozi2==d.v.MAG_LASO->predchozi->Element) || (pom_element->predchozi->eID==301 && pom_element->predchozi->predchozi==d.v.MAG_LASO->predchozi->Element))))
+					if(!(pom_element!=NULL && (pom_element->predchozi==d.v.MAG_LASO->predchozi->Element || (pom_element->predchozi->eID==301 && pom_element->predchozi->predchozi2==d.v.MAG_LASO->predchozi->Element) || (pom_element->predchozi->eID==301 && pom_element->predchozi->predchozi==d.v.MAG_LASO->predchozi->Element))) &&
+						 !(pom_element!=NULL && (pom_element->dalsi==d.v.MAG_LASO->predchozi->Element || pom_element->dalsi2==d.v.MAG_LASO->predchozi->Element || (d.v.MAG_LASO->dalsi==NULL && d.v.MAG_LASO->sparovany==pom_element) || (pom_element->dalsi!=NULL && pom_element->dalsi->dalsi==d.v.MAG_LASO->predchozi->Element))))
 					{
-						akt_souradnice_kurzoru=d.v.bod_na_geometrii(E);//přichycení souřadnic na pohon, užitečné do budoucna
 						pom_element=E;//uložení elementu, slouží pro přenos informace zda m.PtInSegmet je true
 					}
 
@@ -4584,6 +4585,7 @@ void TForm1::getJobID(int X, int Y)
 					{
 						short segment=d.v.obsahuje_MAG_LASO_element(E);//zjištění zda se element již nevyskytuje v mag- lasu
 
+            /////////měření po trendu
 						//element není obsažen v magnetickém lasu a je to následující element v cestě, nepořítam se spojkou v mag. lasu
 						if(segment==0 && (d.v.MAG_LASO->predchozi->sparovany==E->predchozi || (E->predchozi!=NULL && E->predchozi->n>0 && E->predchozi->predchozi==d.v.MAG_LASO->predchozi->Element)))
 							d.v.vloz_segment_MAG_LASA(E->predchozi);
@@ -4604,13 +4606,36 @@ void TForm1::getJobID(int X, int Y)
 						if(segment==0 && E->predchozi->n>0 && E->predchozi->predchozi->eID==301 && E->predchozi->predchozi->predchozi==d.v.MAG_LASO->predchozi->Element)
 							d.v.vloz_segment_MAG_LASA(E->predchozi);
 
+						/////////měření proti trendu
+						//začátek + obecně na hlavní větvi
+						if(segment==0 && d.v.MAG_LASO->predchozi->sparovany==E->dalsi || (E->dalsi!=NULL && E->dalsi->n>0 && E->dalsi->eID!=301 && E->dalsi->dalsi==d.v.MAG_LASO->predchozi->Element))
+							d.v.vloz_segment_MAG_LASA(E->dalsi);
+
+            //začátek měření přes spojku
+						if(segment==0 && d.v.MAG_LASO->dalsi==NULL && E->dalsi!=NULL && E->dalsi->eID==301 && E->dalsi->dalsi==d.v.MAG_LASO->predchozi->sparovany)
+							d.v.vloz_segment_MAG_LASA(E->dalsi);
+
+            //z hlavnní větve na vedlejší přes spojku
+						if(segment==0 && E->dalsi!=NULL && E->dalsi->dalsi!=NULL && E->dalsi->dalsi->eID==301 && E->dalsi->dalsi->dalsi==d.v.MAG_LASO->predchozi->Element)
+							d.v.vloz_segment_MAG_LASA(E->dalsi);
+
+            //návrat z vedlejší větve na hlavní přes výhybku
+						if(segment==0 && E->eID==300 && E->dalsi2->dalsi==d.v.MAG_LASO->predchozi->Element)
+							d.v.vloz_segment_MAG_LASA(E->dalsi2);
+
+						//předchozí výhybka, předchozí v ceste vedlejší větev
+						if(segment==0 && E->dalsi!=NULL && E->dalsi->eID==300 && E->dalsi->dalsi2==d.v.MAG_LASO->predchozi->Element)
+							d.v.vloz_segment_MAG_LASA(E->dalsi);
+
+            //z hlavní větve na hlavní přes spojku
+						if(segment==0 && E->dalsi!=NULL && E->dalsi->eID==301 && E->dalsi->dalsi!=NULL && E->dalsi->dalsi->dalsi==d.v.MAG_LASO->predchozi->Element)
+							d.v.vloz_segment_MAG_LASA(E->dalsi->dalsi);
+
+
+            /////////mazání obsaženého
 						//element je již obsazen v seznamu magnetického lasa, bude smazán segment cesty obsahující E, taktéž budou smazány následující segmenty cesty, pokud existují další segmenty
 						if(segment>0)
 							d.v.smaz_segment_MAG_LASA(E);
-
-						//experiment
-//						if(segment==0 && (d.v.MAG_LASO->predchozi->sparovany==E->dalsi || (E->dalsi!=NULL && E->dalsi->n>0 && E->dalsi->dalsi==d.v.MAG_LASO->predchozi->Element)))
-//							d.v.vloz_segment_MAG_LASA(E->dalsi);
 					}
 					//break;//odstaveno z důvodu resetování stavu elementů pro potřeby highlightu
 
@@ -4639,8 +4664,29 @@ void TForm1::getJobID(int X, int Y)
 			d.v.vymaz_seznam_VYHYBKY();//nutné použít pokud dojde k přerušení cyklu dalsi_krok()
 		}
 
+		//přichycení souřadnic na pohon, až na konec před vykreslením, aby první element neovlivnil hledání dalších elementu
+		akt_souradnice_kurzoru=d.v.bod_na_geometrii(pom_element);//přichycení souřadnic na pohon, užitečné do budoucna
+		//kontrola zda nejsem kurzorem na výchozím bodě měření, pokud ano smazat záznamy
+		if(pom_element!=NULL && d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->sparovany==pom_element)d.v.smaz_segment_MAG_LASA(d.v.MAG_LASO->dalsi->Element);
 		//vykreslení měřidla, pouze v případě, že mám nadefinovaný první bod
 		if(d.v.MAG_LASO->Element!=NULL)REFRESH();//slouží k vykreslení a překreslení mag. lasa
+
+		//////testy
+//		Memo_testy->Clear();
+//		Cvektory::TCesta *C=d.v.MAG_LASO;
+//		while(C!=NULL && C->Element!=NULL)
+//		{
+//			if(C->Element->n==MaxInt)Memo("->sparovany: "+C->sparovany->name);
+//			else Memo(C->Element->name);
+//			C=C->dalsi;
+//		}
+//		C=NULL;delete C;
+//		if(pom_element!=NULL)
+//		{
+//			Memo("pom_element->d: "+pom_element->dalsi->name);
+//			Memo("pom_element->d->d: "+pom_element->dalsi->dalsi->name);
+//			Memo("pom_element->d->d->d: "+pom_element->dalsi->dalsi->dalsi->name);
+//		}
 	}
 	//pouze na test zatížení Memo3->Visible=true;Memo3->Lines->Add(s_mazat++);
 }
@@ -13866,8 +13912,8 @@ void __fastcall TForm1::Timer_simulaceTimer(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 {
-	Memo("");
-	scGPImage_mereni_vzdalenostClick(this);
+//	Memo("");
+//	scGPImage_mereni_vzdalenostClick(this);
 
 //	TRect oblast=vrat_max_oblast();
 //	if(!(oblast.left>10000 && oblast.right<-10000))
@@ -13897,6 +13943,11 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	}
 //	vytvor_statickou_scenu();
 //	REFRESH();
+
+	Cvektory::TElement *E=d.v.OBJEKTY->dalsi->element->dalsi->dalsi->dalsi->dalsi2;
+	Memo(E->name);
+	d.line(Canvas,0,0,m.L2Px(E->geo.X1),m.L2Py(E->geo.Y1));
+	d.line(Canvas,0,0,m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
