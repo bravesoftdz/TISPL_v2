@@ -80,7 +80,7 @@ Coordinates=453,280,73,36
 Coordinates=10,280,90,36
 
 []
-Coordinates=411,446,122,58
+Coordinates=1297,606,61,36
 Visible=True
 
 [scSplitView_OPTIONS]
@@ -136,9 +136,6 @@ Coordinates=640,631,66,36
 
 [(TMenuItem)]
 Coordinates=1463,331,88,36
-
-[IdTime1]
-Coordinates=1297,606,61,36
 
 [Toolbar_Ulozit]
 Coordinates=1046,510,98,36

@@ -133,7 +133,6 @@ __published:	// IDE-managed Components
 	TButton *ButtonPLAY_O;
 	TTimer *Timer_simulace;
 	TTimer *TimerMouseWheel;
-	TIdTime *IdTime1;
 	TIdHTTP *IdHTTP1;
 	TTimer *Timer_tr;
 	TFDConnection *FDConnection1;

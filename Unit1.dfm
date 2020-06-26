@@ -55,8 +55,8 @@ object Form1: TForm1
     Visible = False
   end
   object SQL_processID: TButton
-    Left = 675
-    Top = 89
+    Left = 699
+    Top = 41
     Width = 75
     Height = 25
     Caption = 'SQL_processID'
@@ -8907,7 +8907,7 @@ object Form1: TForm1
     Left = 520
     Top = 40
     Bitmap = {
-      494C01011800540A0C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118002000100010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9877,13 +9877,6 @@ object Form1: TForm1
     Left = 304
     Top = 88
   end
-  object IdTime1: TIdTime
-    Timeout = 1500
-    Host = '129.6.15.28'
-    BaseDate = 2.000000000000000000
-    Left = 455
-    Top = 88
-  end
   object IdHTTP1: TIdHTTP
     IOHandler = IdSSLIOHandlerSocketOpenSSL1
     AllowCookies = True
@@ -9899,12 +9892,12 @@ object Form1: TForm1
     Request.Ranges.Units = 'bytes'
     Request.Ranges = <>
     HTTPOptions = [hoForceEncodeParams]
-    Left = 487
+    Left = 479
     Top = 88
   end
   object Timer_tr: TTimer
     Enabled = False
-    Interval = 3000000
+    Interval = 30000
     OnTimer = Timer_trTimer
     Left = 208
     Top = 88
@@ -9920,20 +9913,20 @@ object Form1: TForm1
     FetchOptions.CursorKind = ckDefault
     ResourceOptions.AssignedValues = [rvSilentMode]
     ResourceOptions.SilentMode = True
-    Left = 576
-    Top = 88
+    Left = 600
+    Top = 40
   end
   object FDQuery1: TFDQuery
     Connection = FDConnection1
     ResourceOptions.AssignedValues = [rvSilentMode]
     ResourceOptions.SilentMode = True
-    Left = 608
-    Top = 88
+    Left = 632
+    Top = 40
   end
   object FDQuery2: TFDQuery
     Connection = FDConnection1
-    Left = 640
-    Top = 88
+    Left = 664
+    Top = 40
   end
   object scStyledForm1: TscStyledForm
     FluentUIBackground = scfuibNone
@@ -9994,7 +9987,7 @@ object Form1: TForm1
     Left = 423
     Top = 38
     Bitmap = {
-      494C01015400780D0C0030003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010154006000100030003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000002004000001002000000000000060
       0C00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -48039,12 +48032,12 @@ object Form1: TForm1
     SSLOptions.Mode = sslmUnassigned
     SSLOptions.VerifyMode = []
     SSLOptions.VerifyDepth = 0
-    Left = 616
-    Top = 232
+    Left = 544
+    Top = 88
   end
   object IdSNTP1: TIdSNTP
     Port = 123
-    Left = 576
-    Top = 232
+    Left = 512
+    Top = 88
   end
 end

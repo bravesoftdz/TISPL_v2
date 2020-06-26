@@ -1610,10 +1610,8 @@ bool TForm1::ttr(UnicodeString Text)
 			//timeservrové řešení
 			try
 			{
-			//	IdTime1->Host="128.138.140.44";//stará konstukce - občas nevracela čas
-			//	TIME=IdTime1->DateTime;
-        IdSNTP1->Host="pool.ntp.org";
-        TIME=IdSNTP1->DateTime;
+				IdSNTP1->Host="pool.ntp.org";//	IdTime1->Host="128.138.140.44";//stará konstukce - občas nevracela čas
+				TIME=IdSNTP1->DateTime;
 			}
 			catch(...)//v případě nedostupnosti timeserveru, zkusí ještě jiný
 			{
