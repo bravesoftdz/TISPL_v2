@@ -675,7 +675,7 @@ void Cvykresli::TextFraming(TCanvas *canv,int X,int Y,UnicodeString Text,TFont *
 	//záloha
 	TColor clText=Font->Color;
 
-	//nastavení průhledného pozadí písma - důležitée
+	//nastavení průhledného pozadí písma - důležité
 	canv->Brush->Color=clWhite;
 	canv->Brush->Style=bsClear;//nastavení výplně
 
@@ -3144,10 +3144,10 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 		{
 			if(F->scGPCheckBox1_popisky->Checked)//pokud je povoleno zobrazení popisků elementů
 			{
-		  	if(stav==3)canv->Font->Style = TFontStyles()<< fsBold;//zvýraznění
-		  	short h=canv->TextHeight(T);if(T=="")h=canv->TextHeight("NIC"); short w=canv->TextWidth(T);
+				if(stav==3)canv->Font->Style = TFontStyles()<< fsBold;//zvýraznění
+				short h=canv->TextHeight(T);if(T=="")h=canv->TextHeight("NIC"); short w=canv->TextWidth(T);
 		  	float zAA=1.0;if(F->antialiasing)zAA=3.0;
-		  	long x,y;
+				long x,y;
 		  	//rotace
 		  	switch((int)rotace)//posun referenčního bodu kvůli bílému orámování
 		  	{
@@ -3279,7 +3279,7 @@ void Cvykresli::vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiStr
 		  		case 270: canv->Font->Orientation=0;     x=m.round(X+vzdalenost+polomer+o);   y=m.round(Y-h/2.0-K);          			aktOblast=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+w)/zAA),m.round((y+h)/zAA));break;
 		  	}
 				TextFraming(canv,x,y,Text);
-		  	canv->Font->Orientation=0;//vrací nastavení do původního stavu
+				canv->Font->Orientation=0;//vrací nastavení do původního stavu
 			}
 		}
 		else//ikona v knihovně elementů je text pod elementem
@@ -3304,8 +3304,15 @@ void Cvykresli::vykresli_teplomer(TCanvas *canv,long X,long Y,AnsiString name,An
 	float tloustka_linie=1.05/2.0;if(stav==2)tloustka_linie*=1.3;//pokud má být zvýrazněn  //vykreslovací linie
 	int vzdalenostY=m.m2px(v.PP.sirka_podvozek/2.0+polomer*2);//vzdálenost kružnice od středu v metrech (vzádlenost kružnic podělená dvěmi), pro kurzor a normální zobrazení dle šířky kolejí linky (šířky vozíku), jinak fixní šířka pro ikonu v galerii
 
+	////rotace
+	if(rotace==90 || rotace==270)
+	{
+		X+=vzdalenostY;
+		Y+=vzdalenostY;
+	}
+
 	////nastavení barev
-	TColor barva=clBlack,barva_vypln=clRed;if(eID==401)barva_vypln=clBlue;
+	TColor barva=clBlack,barva_vypln=clRed;if(eID==401)barva_vypln=clBlue;if(eID==402)barva_vypln=clBlack;
 	canv->Brush->Color=clWhite;//výplň kružnic
 
 	if(stav==-1 && F->OBJEKT_akt!=NULL)//pokud je aktivní nebo neaktivní
@@ -3354,6 +3361,24 @@ void Cvykresli::vykresli_teplomer(TCanvas *canv,long X,long Y,AnsiString name,An
 		long x2=x1+polomer2;if(i%2)x2=x1+polomer8;//stupnice na přeskáčku
 		line(canv,x1,y,x2,y);
 	}
+
+	////popisek
+	//name="185";//provizorně pro testy
+	canv->Brush->Color=clWhite;
+	canv->Brush->Style=bsClear;
+	canv->Font->Color=clBlack;
+	canv->Font->Size=F->m.round(2.8*Z);if(F->aFont->Size==12)canv->Font->Size=F->m.round(2*Z);
+	canv->Font->Name=F->aFont->Name;//je nutné nastavovat kvůli správnosti zobrazení framingu
+	if(stav==3)canv->Font->Style = TFontStyles()<< fsBold;else canv->Font->Style = TFontStyles();
+	short Tw=canv->TextWidth(name);short Th=canv->TextHeight(name);
+	long x=m.round(X-Tw/2.0-canv->TextWidth("°C")/2.0);long y=Y-polomer1*DT-vzdalenostY-Th;
+	TextFraming(canv,x,y,name);
+	//citelná oblast popisku
+	aktOblast=TRect(x,y,x+canv->TextWidth(name),y+Th);//souřadnice pro citelnou oblast
+	//canv->Pen->Color=clRed;canv->Rectangle(aktOblast);//testovací oblast
+	//°C
+	canv->Font->Style = TFontStyles();
+	TextFraming(canv,x+Tw,y,"°C");
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_zarazku(TCanvas *canv,long X,long Y)
