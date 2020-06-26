@@ -13954,8 +13954,15 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //MaKr testovací tlačítko
 void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 {
-	//Memo(d.SCENA,true);                                                                                             //d.v.ELEMENTY->dalsi->orientace
-	if(m.PtInTeplomer(d.v.ELEMENTY->dalsi->X,d.v.ELEMENTY->dalsi->Y,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,0))Memo("v");else Memo("mimo");
+	 //testovací hodnoty
+	 double R=10;//E->geo.radius
+	 double RA=-90;//E->geo.rotacni_uhel //	double RA=F->Edit_rotace->Text.ToDouble();//rotační úhel, pod kterým je oblouk rotován - směřován (proti směru hodinových ručiček), může být záporný (po směru hodinových ručiček)
+	 double OR=90;//E->orientace
+	 double Xoblouku=40,Yoblouku=-30;//E->geo.X a E->geo.Y
+	 double uhel=m.uhelObloukuVsMys(Xoblouku,Yoblouku,OR,RA,R,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
+	 double delka=m.R2Larc(R,uhel);//požadovaná délka na oblouku vybraná myší, vracení délky dané výseče, tj. k na(při)počítání měřené délky
+	 d.vykresli_Gelement(Canvas,Xoblouku,Yoblouku,OR,RA,R,clBlue,2);//podkladový element (tj. normálně vykreslená linka)
+	 d.vykresli_Gelement(Canvas,Xoblouku,Yoblouku,OR,uhel,R,clRed,1,String(m.round2double(delka*1000,2))+" [mm]");
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
