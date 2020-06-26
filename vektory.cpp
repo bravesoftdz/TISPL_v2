@@ -8850,20 +8850,24 @@ TPointD Cvektory::bod_na_geometrii(TElement *E)
 	TPointD ret;
 	ret.x=F->akt_souradnice_kurzoru.x;ret.y=F->akt_souradnice_kurzoru.y;
 
-	//přichytávání bodu na linii
-	if(E->geo.typ==0 && (E->geo.orientace==m.Rt90(E->geo.orientace) || E->geo.orientace==360))//jen pro přímky 0,90,180,270°
+  //ošetření proti prázdnému ukazateli
+	if(E!=NULL)
 	{
-		//přiřazení souřadnic pro vložení
-		if(E->geo.orientace==90 || E->geo.orientace==270){ret.x=F->akt_souradnice_kurzoru.x;ret.y=E->geo.Y1;}
-		else {ret.x=E->geo.X1;ret.y=F->akt_souradnice_kurzoru.y;}
-	}
+  	//přichytávání bodu na linii
+  	if(E->geo.typ==0 && (E->geo.orientace==m.Rt90(E->geo.orientace) || E->geo.orientace==360))//jen pro přímky 0,90,180,270°
+  	{
+  		//přiřazení souřadnic pro vložení
+  		if(E->geo.orientace==90 || E->geo.orientace==270){ret.x=F->akt_souradnice_kurzoru.x;ret.y=E->geo.Y1;}
+  		else {ret.x=E->geo.X1;ret.y=F->akt_souradnice_kurzoru.y;}
+  	}
 
-	//přichytávání bodu na oblouk
-	if(E->geo.typ!=0)
-	{
-		double uhel=m.uhelObloukuVsMys(E->geo.X1,E->geo.Y1,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
-		TPointD *souradnice=m.getArcLine(E->geo.X1,E->geo.Y1,E->geo.orientace,uhel,E->geo.radius);
-		ret=souradnice[3];
+  	//přichytávání bodu na oblouk
+  	if(E->geo.typ!=0)
+  	{
+  		double uhel=m.uhelObloukuVsMys(E->geo.X1,E->geo.Y1,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
+  		TPointD *souradnice=m.getArcLine(E->geo.X1,E->geo.Y1,E->geo.orientace,uhel,E->geo.radius);
+  		ret=souradnice[3];
+		}
 	}
 
 	//navracení souřadnic
@@ -8876,20 +8880,24 @@ short Cvektory::obsahuje_MAG_LASO_element(TElement *E)
 	//deklarace
 	short ret=0;
 
-	//hledání zda je element v mag. lasu
-	TCesta *segment=MAG_LASO->dalsi;
-	while(segment!=NULL)
+  //ošetření proti prázdnému ukazateli
+	if(E!=NULL)
 	{
-		if(segment->Element==E)
-		{
-			ret=segment->n;
-      break;
-		}
-		segment=segment->dalsi;
-	}
+  	//hledání zda je element v mag. lasu
+  	TCesta *segment=MAG_LASO->dalsi;
+  	while(segment!=NULL)
+  	{
+  		if(segment->Element==E)
+  		{
+  			ret=segment->n;
+  			break;
+  		}
+  		segment=segment->dalsi;
+  	}
 
-	//ukazatelové záležitosti
-	segment=NULL;delete segment;
+  	//ukazatelové záležitosti
+		segment=NULL;delete segment;
+	}
 
   //návrat zda byl nalezen nebo ne
 	return ret;

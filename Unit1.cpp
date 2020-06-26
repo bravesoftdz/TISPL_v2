@@ -95,7 +95,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	grid=true; size_grid=10;//velikost je v logických jednotkách (metrech)
 
 	//bitmapa pro uložení přesovaného obrazu - PAN, a pro statickou scénu
-	Pan_bmp=new Graphics::TBitmap();
+	Pan_bmp=new Graphics::TBitmap();Pan_bmp_ALL=NULL;
 	pan_non_locked=false;
 	Staticka_scena=NULL;
 
@@ -1562,7 +1562,7 @@ void TForm1::Novy_soubor(bool invalidate)
 void __fastcall TForm1::FormActivate(TObject *Sender)
 {
   log(__func__);//logování
-	if (DEBUG || !DEBUG)//	if(!DEBUG)  R - úprava 5.6.2020 - test konektivity i pro DEBUG verzi   //RELEASE
+	if (/*DEBUG||*/ !DEBUG)//	if(!DEBUG)  R - úprava 5.6.2020 - test konektivity i pro DEBUG verzi   //RELEASE
 	{
 		//toto odkomentovat pro spuštění TTR
 		if(!ttr("start"))
@@ -2316,18 +2316,25 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		////vykreslení GRIDu
 		if(grid && Zoom_predchozi_AA>0.5 && (Akce==MOVE_BOD||Akce==DRAW_HALA) && prichytavat_k_mrizce==1 && MOD!=SIMULACE)d.vykresli_grid(bmp_total->Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí//vykreslení gridu
 		////VEKTORY
-		Graphics::TBitmap *bmp_in=new Graphics::TBitmap;bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;
-		if(d.SCENA>0 && d.SCENA!=2222222)bmp_in->Canvas->Draw(0,0,Staticka_scena);//STATICKÁ scéna, je volaná pouze pokud to má smysl, není přeantialiasingovaná(AA), je jen připravená (3x větší) pro AA (aby byl již dříve AAnemá to smysl, pouze je 3x větší BMP, ale jinak by se nejednalo o úsporu)
-		Zoom_predchozi_AA=Zoom;Zoom*=3;//záloha původního zoomu,nový *3 vyplývá z logiky algoritmu antialiasingu
-		short s=2;if(d.SCENA==0)s=0;//řešení pro vykreslit VŠE
-		if(d.SCENA!=1111111 || pom!=NULL)d.vykresli_vektory(bmp_in->Canvas,s);//DYNAMICKÁ scéna,pokud je požadavek vše do statické a není aktivní pom objekt, tak zbytečně se neřeší dynamická
-		if(Akce==GEOMETRIE)d.smart_kurzor(bmp_in->Canvas,posledni_editovany_element);
-		if(MOD==TVORBA_CESTY)d.kurzor_cesta(bmp_in->Canvas);
-		if(Akce==MAGNETICKE_LASO)d.vykresli_meridlo(bmp_in->Canvas);
-		Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
-		Cantialising a;
-		Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
-		bmp_total->Canvas->Draw(0,0,bmp_out);delete(bmp_out);
+		if((d.SCENA==1111111 || d.SCENA==111111) && Akce!=GEOMETRIE && MOD!=TVORBA_CESTY && Akce!=MAGNETICKE_LASO && pom==NULL)//vše STATICKÁ scéna, nejsou žádně akce
+		{
+			bmp_total->Canvas->Draw(0,0,Staticka_scena);//varianta, kdy je přeantialiasingovaná
+		}
+		else
+		{
+			Graphics::TBitmap *bmp_in=new Graphics::TBitmap;bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;
+			if(d.SCENA>0 && d.SCENA!=2222222 /*&& d.SCENA!=1111111 && d.SCENA!=111111*/)bmp_in->Canvas->Draw(0,0,Staticka_scena);//STATICKÁ scéna, je volaná pouze pokud to má smysl, není přeantialiasingovaná(AA), je jen připravená (3x větší) pro AA (aby byl již dříve AAnemá to smysl, pouze je 3x větší BMP, ale jinak by se nejednalo o úsporu)
+			Zoom_predchozi_AA=Zoom;Zoom*=3;//záloha původního zoomu,nový *3 vyplývá z logiky algoritmu antialiasingu
+			short s=2;if(d.SCENA==0)s=0;//řešení pro vykreslit VŠE
+			if(/*d.SCENA!=1111111 && d.SCENA!=111111 || */pom!=NULL)d.vykresli_vektory(bmp_in->Canvas,s);//DYNAMICKÁ scéna, pokud není vše do statické nebo je aktivní pom objekt (např. výběr hrany atp.), tak se řešeí dynamická scena, jinak ne, protože nemá smysl
+			if(Akce==GEOMETRIE)d.smart_kurzor(bmp_in->Canvas,posledni_editovany_element);
+			if(MOD==TVORBA_CESTY)d.kurzor_cesta(bmp_in->Canvas);
+			if(Akce==MAGNETICKE_LASO)d.vykresli_meridlo(bmp_in->Canvas);
+			Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
+			Cantialising a;
+			Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
+			bmp_total->Canvas->Draw(0,0,bmp_out);delete(bmp_out);
+		}
 		////mGRIDY
 		if(MOD!=SIMULACE && Akce!=MAGNETICKE_LASO)d.vykresli_mGridy(bmp_total->Canvas);//přesunuto do vnitř metody: OBJEKT_akt->elementy!=NULL kvůli pohonům
 		////grafické MĚŘÍTKO
@@ -2349,20 +2356,30 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
-//vytvoří BMP se statickou scénou
+//vytvoří BMP se statickou scénou, NEVYTVÁŘÍ POUZE pro kompletní dynamickou scénu
 void TForm1::vytvor_statickou_scenu()
 {
 	log(__func__,String(d.SCENA));//logování
 	if(Staticka_scena!=NULL){delete Staticka_scena;Staticka_scena=NULL;}//před vytvořením nové kvůli realokaci nejdříve nutné odstranit
-	if(d.SCENA>0 && d.SCENA!=2222222)
+	Zoom_predchozi_AA=Zoom;//záloha původního zoomu
+	Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
+	if((d.SCENA==1111111 || d.SCENA==111111) && Akce!=GEOMETRIE && MOD!=TVORBA_CESTY && Akce!=MAGNETICKE_LASO && pom==NULL)//vše STATICKÁ scéna, nejsou žádně akce, pokud se jedná o kompletně statickou scenu, vytvoří již bmp Staticka_scena rovnou přeantialiasingovanoou
+	{
+		Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+		bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+		d.vykresli_vektory(bmp_in->Canvas,1);
+		Cantialising a;Staticka_scena=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
+		//Staticka_scena->SaveToFile("staticka_scena_bezAA.bmp");
+	}
+	else
+	if(d.SCENA>0 && d.SCENA!=2222222)//pro případy kdy se nejedná o kompletní statickou a ani kompletní dynamickou scenu, v tomto případě nemá smysl nyní Statickou scenu antialiasingovat
 	{
 		Staticka_scena=new Graphics::TBitmap;
 		Staticka_scena->Width=ClientWidth*3;Staticka_scena->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu, nicméně nemá smysl nyní Statickou scenu antialiasingovat, protože by se stejně antialiasingovala samostatná dynamická scéna a navíc to způsobovalo zde umístěné grafické chyby
-		Zoom_predchozi_AA=Zoom;//záloha původního zoomu
-		Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
 		d.vykresli_vektory(Staticka_scena->Canvas,1);
-		Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
+		//Staticka_scena->SaveToFile("staticka_scena_sAA.bmp");
 	}
+	Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 }
 //---------------------------------------------------------------------------
 //přetížená výše uvedené přímo s parametrem nastavení scény
@@ -4546,7 +4563,6 @@ void TForm1::getJobID(int X, int Y)
 	////magnetické laso
 	else
 	{
-		bool nalezeno=false;//slouží pro ukončení cyklu hledání, tzn. první nalezený segment ne poslední
 		pom_element=NULL;
 		if(d.v.MAG_LASO->Element!=NULL && d.v.MAG_LASO->sparovany!=NULL)//spouštět pouze v příadě, že se nejedná o 100% lineární měření, nespouštět na začátku
 		{
@@ -4557,16 +4573,22 @@ void TForm1::getJobID(int X, int Y)
 				if(E!=d.v.MAG_LASO->sparovany || (d.v.MAG_LASO->Element->geo.X4!=d.v.MAG_LASO->sparovany->geo.X4 || d.v.MAG_LASO->Element->geo.Y4!=d.v.MAG_LASO->sparovany->geo.Y4))
 					E->stav=1;
 				//kontrola zda jsem na segmentu
-				if(!nalezeno && m.PtInSegment(E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+				if(m.PtInSegment(E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
 				{
-					akt_souradnice_kurzoru=d.v.bod_na_geometrii(E);//přichycení souřadnic na pohon, užitečné do budoucna
-					pom_element=E;//uložení elementu, slouží pro přenos informace zda m.PtInSegmet je true
+					//if(!(pom_element!=NULL && d.v.MAG_LASO->dalsi==NULL && d.v.MAG_LASO->sparovany==pom_element))Memo("uložit");//else Memo("ERROR");
+					//pokud se změnit pom_element nebo je nulový ulož
+					if(!(pom_element!=NULL && (pom_element->predchozi==d.v.MAG_LASO->predchozi->Element || (pom_element->predchozi->eID==301 && pom_element->predchozi->predchozi2==d.v.MAG_LASO->predchozi->Element) || (pom_element->predchozi->eID==301 && pom_element->predchozi->predchozi==d.v.MAG_LASO->predchozi->Element))) &&
+						 !(pom_element!=NULL && (pom_element->dalsi==d.v.MAG_LASO->predchozi->Element || pom_element->dalsi2==d.v.MAG_LASO->predchozi->Element || (d.v.MAG_LASO->dalsi==NULL && d.v.MAG_LASO->sparovany==pom_element) || (pom_element->dalsi!=NULL && pom_element->dalsi->dalsi==d.v.MAG_LASO->predchozi->Element))))
+					{
+						pom_element=E;//uložení elementu, slouží pro přenos informace zda m.PtInSegmet je true
+					}
 
 					//pokud byla zapčata cesta ukládání již pročlých segmentů
 					if(d.v.MAG_LASO->Element!=NULL)
 					{
 						short segment=d.v.obsahuje_MAG_LASO_element(E);//zjištění zda se element již nevyskytuje v mag- lasu
 
+            /////////měření po trendu
 						//element není obsažen v magnetickém lasu a je to následující element v cestě, nepořítam se spojkou v mag. lasu
 						if(segment==0 && (d.v.MAG_LASO->predchozi->sparovany==E->predchozi || (E->predchozi!=NULL && E->predchozi->n>0 && E->predchozi->predchozi==d.v.MAG_LASO->predchozi->Element)))
 							d.v.vloz_segment_MAG_LASA(E->predchozi);
@@ -4587,11 +4609,37 @@ void TForm1::getJobID(int X, int Y)
 						if(segment==0 && E->predchozi->n>0 && E->predchozi->predchozi->eID==301 && E->predchozi->predchozi->predchozi==d.v.MAG_LASO->predchozi->Element)
 							d.v.vloz_segment_MAG_LASA(E->predchozi);
 
+						/////////měření proti trendu
+						//začátek + obecně na hlavní větvi
+						if(segment==0 && d.v.MAG_LASO->predchozi->sparovany==E->dalsi || (E->dalsi!=NULL && E->dalsi->n>0 && E->dalsi->eID!=301 && E->dalsi->dalsi==d.v.MAG_LASO->predchozi->Element))
+							d.v.vloz_segment_MAG_LASA(E->dalsi);
+
+            //začátek měření přes spojku
+						if(segment==0 && d.v.MAG_LASO->dalsi==NULL && E->dalsi!=NULL && E->dalsi->eID==301 && E->dalsi->dalsi==d.v.MAG_LASO->predchozi->sparovany)
+							d.v.vloz_segment_MAG_LASA(E->dalsi);
+
+            //z hlavnní větve na vedlejší přes spojku
+						if(segment==0 && E->dalsi!=NULL && E->dalsi->dalsi!=NULL && E->dalsi->dalsi->eID==301 && E->dalsi->dalsi->dalsi==d.v.MAG_LASO->predchozi->Element)
+							d.v.vloz_segment_MAG_LASA(E->dalsi);
+
+            //návrat z vedlejší větve na hlavní přes výhybku
+						if(segment==0 && E->eID==300 && E->dalsi2->dalsi==d.v.MAG_LASO->predchozi->Element)
+							d.v.vloz_segment_MAG_LASA(E->dalsi2);
+
+						//předchozí výhybka, předchozí v ceste vedlejší větev
+						if(segment==0 && E->dalsi!=NULL && E->dalsi->eID==300 && E->dalsi->dalsi2==d.v.MAG_LASO->predchozi->Element)
+							d.v.vloz_segment_MAG_LASA(E->dalsi);
+
+            //z hlavní větve na hlavní přes spojku
+						if(segment==0 && E->dalsi!=NULL && E->dalsi->eID==301 && E->dalsi->dalsi!=NULL && E->dalsi->dalsi->dalsi==d.v.MAG_LASO->predchozi->Element)
+							d.v.vloz_segment_MAG_LASA(E->dalsi->dalsi);
+
+
+            /////////mazání obsaženého
 						//element je již obsazen v seznamu magnetického lasa, bude smazán segment cesty obsahující E, taktéž budou smazány následující segmenty cesty, pokud existují další segmenty
 						if(segment>0)
 							d.v.smaz_segment_MAG_LASA(E);
 					}
-					nalezeno=true;
 					//break;//odstaveno z důvodu resetování stavu elementů pro potřeby highlightu
 
 					//hledání oblastí pro highlight elementu
@@ -4619,8 +4667,29 @@ void TForm1::getJobID(int X, int Y)
 			d.v.vymaz_seznam_VYHYBKY();//nutné použít pokud dojde k přerušení cyklu dalsi_krok()
 		}
 
+		//přichycení souřadnic na pohon, až na konec před vykreslením, aby první element neovlivnil hledání dalších elementu
+		akt_souradnice_kurzoru=d.v.bod_na_geometrii(pom_element);//přichycení souřadnic na pohon, užitečné do budoucna
+		//kontrola zda nejsem kurzorem na výchozím bodě měření, pokud ano smazat záznamy
+		if(pom_element!=NULL && d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->sparovany==pom_element)d.v.smaz_segment_MAG_LASA(d.v.MAG_LASO->dalsi->Element);
 		//vykreslení měřidla, pouze v případě, že mám nadefinovaný první bod
 		if(d.v.MAG_LASO->Element!=NULL)REFRESH();//slouží k vykreslení a překreslení mag. lasa
+
+		//////testy
+//		Memo_testy->Clear();
+//		Cvektory::TCesta *C=d.v.MAG_LASO;
+//		while(C!=NULL && C->Element!=NULL)
+//		{
+//			if(C->Element->n==MaxInt)Memo("->sparovany: "+C->sparovany->name);
+//			else Memo(C->Element->name);
+//			C=C->dalsi;
+//		}
+//		C=NULL;delete C;
+//		if(pom_element!=NULL)
+//		{
+//			Memo("pom_element->d: "+pom_element->dalsi->name);
+//			Memo("pom_element->d->d: "+pom_element->dalsi->dalsi->name);
+//			Memo("pom_element->d->d->d: "+pom_element->dalsi->dalsi->dalsi->name);
+//		}
 	}
 	//pouze na test zatížení Memo3->Visible=true;Memo3->Lines->Add(s_mazat++);
 }
@@ -5196,23 +5265,26 @@ void TForm1::ZOOM_WINDOW()
 //		Zoom+=0.5;
 //	}
 
-	//////nově
+  //deklarace
+	int MaxX=akt_souradnice_kurzoru_PX.x,MaxY=akt_souradnice_kurzoru_PX.y,MinX=vychozi_souradnice_kurzoru.x,MinY=vychozi_souradnice_kurzoru.y;
 	int PD_x=ClientWidth-scSplitView_LEFTTOOLBAR->Width;
-	int PD_y=ClientHeight-vyska_menu-scGPPanel_statusbar->Height;//-vyska_menu-RzStatusBar1->Height je navíc nemá tam co dělat
+	int PD_y=ClientHeight-vyska_menu-scGPPanel_statusbar->Height-scGPPanel_mainmenu->Height;//-vyska_menu-RzStatusBar1->Height je navíc nemá tam co dělat
+	TPointD centr;
+	centr.x=m.P2Lx((MaxX+MinX)/2.0);
+	centr.y=m.P2Ly((MaxY+MinY)/2.0);
+
 	//výpočet nového Zoomu
-	double rozdil=0,PD=0;
-	if(m.m2px(m.P2Lx(akt_souradnice_kurzoru_PX.x)-m.P2Lx(vychozi_souradnice_kurzoru.x))>m.abs_d(m.m2px(m.P2Ly(akt_souradnice_kurzoru_PX.y)-m.P2Ly(vychozi_souradnice_kurzoru.y)))){rozdil=m.m2px(m.P2Lx(akt_souradnice_kurzoru_PX.x)-m.P2Lx(vychozi_souradnice_kurzoru.x));PD=PD_x;}
-	else {rozdil=m.abs_d(m.m2px(m.P2Ly(akt_souradnice_kurzoru_PX.y)-m.P2Ly(vychozi_souradnice_kurzoru.y)));PD=PD_y;}
-	Zoom=abs(Zoom*PD/rozdil);
-	//přepočtení na používaný krok zoomu
-	Zoom-=fmod(Zoom,0.5);
-	if(Zoom<0.5)Zoom=0.5;
-	if(Zoom>20 && !DEBUG)Zoom=20;if(Zoom>30 && DEBUG)Zoom=30;
-	//////
+	double Z1=abs(Zoom*PD_x/(MaxX-MinX)),Z2=abs(Zoom*PD_y/abs(MaxY-MinY));
+	Z1-=fmod(Z1,0.5);Z2-=fmod(Z2,0.5);
+	if(Z1>Z2)Zoom=Z2;else Zoom=Z1;
+	if(Zoom<0.5)Zoom=0.5;if(Zoom>10)Zoom=10;
 
 	//vycentrování obrazu
-	Posun.x=m.round(Centr.x/m2px-(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2/Zoom);
-	Posun.y=m.round(-Centr.y/m2px-(ClientHeight)/2/Zoom);
+	PD_x=(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0;
+	PD_y=(ClientHeight+(scGPPanel_mainmenu->Height-scGPPanel_statusbar->Height))/2.0;
+	Posun.x+=(m.L2Px(centr.x)-PD_x)/Zoom;
+	Posun.y+=(m.L2Py(centr.y)-PD_y)/Zoom;
+
 	//SB(Zoom,2);už se nepoužívá
 	on_change_zoom_change_scGPTrackBar();
 	vytvor_statickou_scenu();//vytvoří BMP se statickou scénou, musí být před REFRESH()
@@ -5325,13 +5397,45 @@ void TForm1::pan_create()
 	int W=scSplitView_LEFTTOOLBAR->Width;
 	if(MOD==CASOVAOSA || MOD==TECHNOPROCESY)W=0;//zajistí, že se posová i číslování vozíků resp.celá oblast
 	short H=scGPPanel_mainmenu->Height;
-	int Gh=0;if(scGPPanel_bottomtoolbar->Visible)Gh=scGPPanel_bottomtoolbar->Height;
+	int Gh=0;if(scGPPanel_bottomtoolbar->Visible)Gh=scGPPanel_bottomtoolbar->Height;Gh-=6;//WA, z nějaké důvodu to chce odebrat, aby byla posouváná plocha kompletní
 	scGPButton_bug_report->Visible=false;
-	Gh-=6;//WA, z nějaké důvodu to chce odebrat, aby byla posouváná plocha kompletní
-	Pan_bmp->Width=ClientWidth;Pan_bmp->Height=ClientHeight-H-Gh;//velikost pan plochy
+	Pan_bmp->Width=ClientWidth*2;Pan_bmp->Height=ClientHeight-H-Gh;//velikost pan plochy
 	Pan_bmp->Canvas->CopyRect(Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh),Canvas,Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh));//uloží pan výřez
 	if(MOD!=SIMULACE)scGPButton_bug_report->Visible=true;
 	//Pan_bmp->SaveToFile("test.bmp");  //pro testovací účely
+
+	/////////////////////
+	//testy - celoobrazovková alternativa - zatím nemazat!!!
+	//varianta 1) pro vlákno
+//	Zoom_predchozi_AA=Zoom;//záloha původního zoomu
+//	TPointD Posun_predchozi=Posun;
+//	Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
+//	if(Pan_bmp_ALL!=NULL){delete Pan_bmp_ALL;Pan_bmp_ALL=NULL;}//před vytvořením nové kvůli realokaci nejdříve nutné odstranit
+//	Posun.x-=ClientWidth/Zoom*3;Posun.y-=ClientHeight/Zoom*3;
+//	Graphics::TBitmap *bmp_test=new Graphics::TBitmap;
+//	bmp_test->Width=ClientWidth*3*3;bmp_test->Height=ClientHeight*3*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+//	d.vykresli_vektory(bmp_test->Canvas,1);
+//	Cantialising a; Pan_bmp_ALL=a.antialiasing(bmp_test,false);delete(bmp_test);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
+//	//Pan_bmp_ALL->SaveToFile("testALL.bmp");
+//	Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
+//	Posun=Posun_predchozi;
+//	MessageBeep(0);
+
+//	//varianta 2) pro použítí zde optimalizovaná, ale stále pomalá
+//	//	Zoom_predchozi_AA=Zoom;//záloha původního zoomu
+//	TPointD Posun_predchozi=Posun;
+//	Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
+//	if(Pan_bmp_ALL!=NULL){delete Pan_bmp_ALL;Pan_bmp_ALL=NULL;}//před vytvořením nové kvůli realokaci nejdříve nutné odstranit
+//	Posun.x-=(ClientWidth-akt_souradnice_kurzoru_PX.x)/Zoom*3;Posun.y-=(ClientHeight-akt_souradnice_kurzoru_PX.y)/Zoom*3;
+//	T.x=ClientWidth-akt_souradnice_kurzoru_PX.x;T.y=ClientHeight-akt_souradnice_kurzoru_PX.y;
+//	Graphics::TBitmap *bmp_test=new Graphics::TBitmap;
+//	bmp_test->Width=ClientWidth*3*2;bmp_test->Height=ClientHeight*3*2;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+//	d.vykresli_vektory(bmp_test->Canvas,1);
+//	Cantialising a; Pan_bmp_ALL=a.antialiasing(bmp_test,false);delete(bmp_test);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
+//	Pan_bmp_ALL->SaveToFile("testALL.bmp");
+//	Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
+//	Posun=Posun_predchozi;
+//	MessageBeep(0);
 }
 //---------------------------------------------------------------------------
 //Posouvá výřez mapy při stisknutém mezerníku a L-myši
@@ -5350,6 +5454,8 @@ void TForm1::pan_map(TCanvas * canv, int X, int Y)
 	canv->FillRect(TRect(0,Y-vychozi_souradnice_kurzoru.y+Pan_bmp->Height,X-vychozi_souradnice_kurzoru.x+Pan_bmp->Width,ClientHeight));//dolní okraj
 	//samotné posouvání Pan_bmp
 	canv->Draw(X-vychozi_souradnice_kurzoru.x,Y-vychozi_souradnice_kurzoru.y,Pan_bmp);
+//	canv->Draw(X-vychozi_souradnice_kurzoru.x-ClientWidth,Y-vychozi_souradnice_kurzoru.y-ClientHeight,Pan_bmp_ALL);//varianta 1) viz pan_create
+//	canv->Draw(X-vychozi_souradnice_kurzoru.x-T.x,Y-vychozi_souradnice_kurzoru.y-T.y,Pan_bmp_ALL);//varianta 2) viz pan_create
 }
 //---------------------------------------------------------------------------
 //realizuje posunutí obrazu
@@ -5437,25 +5543,25 @@ void __fastcall TForm1::RzToolButton11Click(TObject *Sender)
 		TRect oblast=vrat_max_oblast();
 		if(!(oblast.left>10000 && oblast.right<-10000))
   	{
-      //deklarace
-  		int MaxX=oblast.right,MaxY=oblast.top,MinX=oblast.left,MinY=oblast.bottom;
-  		int PD_x=ClientWidth-scSplitView_LEFTTOOLBAR->Width;
-  		int PD_y=ClientHeight-vyska_menu-scGPPanel_statusbar->Height-scGPPanel_mainmenu->Height;//-vyska_menu-RzStatusBar1->Height je navíc nemá tam co dělat
-  		TPointD centr;
-  		centr.x=m.P2Lx((MaxX+MinX)/2.0);
-  		centr.y=m.P2Ly((MaxY+MinY)/2.0);
+			//deklarace
+			int MaxX=oblast.right,MaxY=oblast.top,MinX=oblast.left,MinY=oblast.bottom;
+			int PD_x=ClientWidth-scSplitView_LEFTTOOLBAR->Width;
+			int PD_y=ClientHeight-vyska_menu-scGPPanel_statusbar->Height-scGPPanel_mainmenu->Height;//-vyska_menu-RzStatusBar1->Height je navíc nemá tam co dělat
+			TPointD centr;
+			centr.x=m.P2Lx((MaxX+MinX)/2.0);
+			centr.y=m.P2Ly((MaxY+MinY)/2.0);
 
-  		//výpočet nového Zoomu
-  		double Z1=abs(Zoom*PD_x/(MaxX-MinX)),Z2=abs(Zoom*PD_y/abs(MaxY-MinY));
+			//výpočet nového Zoomu
+			double Z1=abs(Zoom*PD_x/(MaxX-MinX)),Z2=abs(Zoom*PD_y/abs(MaxY-MinY));
   		Z1-=fmod(Z1,0.5);Z2-=fmod(Z2,0.5);
-  		if(Z1>Z2)Zoom=Z2;else Zoom=Z1;
-  		if(Zoom<0.5)Zoom=0.5;if(Zoom>10)Zoom=10;
+			if(Z1>Z2)Zoom=Z2;else Zoom=Z1;
+			if(Zoom<0.5)Zoom=0.5;if(Zoom>10)Zoom=10;
 
   		//vycentrování obrazu
-  		PD_x=(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0;
-  		PD_y=ClientHeight/2.0;
-  		Posun.x+=(m.L2Px(centr.x)-PD_x)/Zoom;
-  		Posun.y+=(m.L2Py(centr.y)-PD_y)/Zoom;
+			PD_x=(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0;
+			PD_y=(ClientHeight+(scGPPanel_mainmenu->Height-scGPPanel_statusbar->Height))/2.0;
+			Posun.x+=(m.L2Px(centr.x)-PD_x)/Zoom;
+			Posun.y+=(m.L2Py(centr.y)-PD_y)/Zoom;
 
   		//překreslení
   		on_change_zoom_change_scGPTrackBar();
@@ -12123,7 +12229,7 @@ void TForm1::otevri_editaci()
 
 		//vycentrování obrazu
 		PD_x=(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0;
-		PD_y=ClientHeight/2.0;
+		PD_y=(ClientHeight+(scGPPanel_mainmenu->Height-scGPPanel_statusbar->Height)-scGPPanel_bottomtoolbar->Height)/2.0;
 		Posun.x+=(m.L2Px(centr.x)-PD_x)/Zoom;
 		Posun.y+=(m.L2Py(centr.y)-PD_y)/Zoom;
 	}
@@ -12402,7 +12508,7 @@ void TForm1::zmena_editovaneho_objektu()
 		if(Zoom<0.5)Zoom=0.5;if(Zoom>10)Zoom=10;
 		//vycentrování obrazu
 		PD_x=(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0;
-		PD_y=ClientHeight/2.0;
+		PD_y=(ClientHeight+(scGPPanel_mainmenu->Height-scGPPanel_statusbar->Height)-scGPPanel_bottomtoolbar->Height)/2.0;
 		Posun.x+=(m.L2Px(centr.x)-PD_x)/Zoom;
 		Posun.y+=(m.L2Py(centr.y)-PD_y)/Zoom;
 
@@ -13094,7 +13200,9 @@ void TForm1::vse_odstranit()
 	copyObjekt=NULL;delete copyObjekt;
 	copyObjektRzRx.x=0;copyObjektRzRx.y=0;
 	vlakno_obraz=NULL;delete vlakno_obraz;
-	delete Staticka_scena;Staticka_scena=NULL;//musí být =NULL, vse_odstranit() se spouští např. při stisku nového projektu
+	delete(Staticka_scena);Staticka_scena=NULL;//musí být =NULL, vse_odstranit() se spouští např. při stisku nového projektu
+	//if(Pan_bmp!=NULL)delete(Pan_bmp);Pan_bmp=NULL;muselo by se alokovat při použítí nikoliv v konstruktoru, vhodné předělat
+	if(Pan_bmp_ALL!=NULL)delete(Pan_bmp_ALL);Pan_bmp_ALL=NULL;
 	delete editEditace;editEditace=NULL;
 	//delete LogFileStream; //zde nesmí být kvůli logování (resp. musí se ukončnovat až při konci aplikace nikoliv projektu), proto to zde nechat jako upozornění
 }
@@ -13608,291 +13716,50 @@ void __fastcall TForm1::Timer_simulaceTimer(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 {
-//	Memo_testy->Clear();
-//	TPoint *tab=new TPoint[d.v.pocet_vyhybek+1];
-//	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-//	long pocet=0;
-//	while(E!=NULL && pocet<1)
-//	{
-//		d.v.vloz_segment_MAG_LASA(E);
-//		pocet++;
-//		E=E->dalsi;
-//	}
-//	E=NULL;delete E;
-//
-//	E=d.v.MAG_LASO->Element=new Cvektory::TElement;
-//	E->n=99999;
-//	E->geo.X1=30;
-//	E->geo.Y1=-23;
-//	E->geo.X4=d.v.ELEMENTY->dalsi->geo.X1;
-//	E->geo.Y4=d.v.ELEMENTY->dalsi->geo.Y1;
-//	E->geo.rotacni_uhel=0;
-//	E->geo.orientace=m.azimut(30,-23,E->geo.X4,E->geo.Y4);
-//	E->geo.radius=m.delka(30,-23,E->geo.X4,E->geo.Y4);
-//	E->geo.delka=E->geo.radius;
-
+//	Memo("");
 //	scGPImage_mereni_vzdalenostClick(this);
 
-	TRect oblast=vrat_max_oblast();
-	if(!(oblast.left>10000 && oblast.right<-10000))
-	{
-    //deklarace
-		int MaxX=oblast.right,MaxY=oblast.top,MinX=oblast.left,MinY=oblast.bottom;
-		int PD_x=ClientWidth-scSplitView_LEFTTOOLBAR->Width;
-		int PD_y=ClientHeight-vyska_menu-scGPPanel_statusbar->Height-scGPPanel_mainmenu->Height;//-vyska_menu-RzStatusBar1->Height je navíc nemá tam co dělat
-		TPointD centr;
-		centr.x=m.P2Lx((MaxX+MinX)/2.0);
-		centr.y=m.P2Ly((MaxY+MinY)/2.0);
-
-		//výpočet nového Zoomu
-		double Z1=abs(Zoom*PD_x/(MaxX-MinX)),Z2=abs(Zoom*PD_y/abs(MaxY-MinY));
-		Z1-=fmod(Z1,0.5);Z2-=fmod(Z2,0.5);
-		if(Z1>Z2)Zoom=Z2;else Zoom=Z1;
-		if(Zoom<0.5)Zoom=0.5;if(Zoom>10)Zoom=10;
-
-		//vycentrování obrazu
-		PD_x=(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0;
-		PD_y=ClientHeight/2.0;
-		Posun.x+=(m.L2Px(centr.x)-PD_x)/Zoom;
-		Posun.y+=(m.L2Py(centr.y)-PD_y)/Zoom;
-
-		//překreslení
-		on_change_zoom_change_scGPTrackBar();
-	}
-  vytvor_statickou_scenu();
-	REFRESH();
-}
-//---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-//MAKR - archiv
- //log(__func__);
-// Form2->ShowModal();
-//	d.v.vytvor_retez(d.v.POHONY->dalsi);
-//	d.vykresli_retez(Canvas,d.v.POHONY->dalsi->retez);
-////	d.v.vytvor_retez(d.v.POHONY->predchozi);
-//	Memo("____-");
-//	Cvektory::TRetez *R=d.v.POHONY->dalsi->retez;
-//	while(R!=NULL)
+//	TRect oblast=vrat_max_oblast();
+//	if(!(oblast.left>10000 && oblast.right<-10000))
 //	{
-//		Memo(R->eID);
-//		R=R->dalsi;
-//	}
-//	delete R;
-//	Memo("____________");
-//	R=d.v.POHONY->predchozi->retez->dalsi;
-//	while(R!=NULL)
-//	{
-//		Memo(R->eID);
-//		R=R->dalsi;
-//	}
-//	delete R;
-
-//		IdTime1->Host="128.138.140.44";//testovací TIME SERVER
-//		TDateTime TIME=IdTime1->DateTime;
-//		Sk(TIME);
-
-	 //d.v.vloz_zpravu(0,0,0,NULL,ls->Strings[401]);
-	 //d.v.vloz_zpravu(0,0,0,NULL,ls->Strings[402]);
-//	 if(d.v.ZPRAVY!=NULL)
-//	 {
-//		 Cvektory::TZprava *Z=d.v.ZPRAVY->dalsi;
-//		 while(Z!=NULL)
-//		 {
-//			 Memo(Z->n);Memo(d.v.getVID(Z->VID));if(Z->Element!=NULL){if(Z->Element->name=="")Memo(Z->Element->name);else {Memo(Z->Element->n);Memo(Z->Element->eID);}}else Memo("není");
-//			 Memo("______________________");
-//			 Z=Z->dalsi;
-//		 }
-//		 delete Z;
-//	 }
-	 //Sk(d.v.vrat_zpravu(2)->Popisek);
-	 //d.v.vymazat_ZPRAVY();
-
-
-//		Form_zpravy->scGPListBox_zpravy->Items->Clear();
-//		Memo((short)Akce);
-//		Memo((short) duvod_validovat);
-//		Memo("_____________");
-
-//d.TextOut(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,"Ahoj\ntoto je nějaký text řádku1\ntoto je nějaký text řádku 22\nhaf",Cvykresli::CENTER,Cvykresli::MIDDLE,-1);
-//d.v.PP.uchyt_pozice=0.380/2.0;
-
-	//d.v.generuj_VOZIKY();
-	//d.vykresli_vyrobek(Canvas,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,0);
-
-
-
-//duvod_validovat=2;
-//REFRESH();
-
-
-
-//		Memo("_____________________");
-//		Cvektory::TVozik *V=d.v.VOZIKY->dalsi;
-//		while(V!=NULL)
-//		{
-//			Memo(String(V->n)+" | "+V->temp+" | "+String(V->element->name)+" | "+String(V->element->objekt_n));
-//			V=V->dalsi;
-//		}
-//		delete V;
-
-
-//	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-//	while(E!=NULL)
-//	{
-//		Memo(String(E->n)+" "+String(E->name));
-//		E=d.v.dalsi_krok(E);
-//	}
-//	E=NULL;delete E; //pokud nedojde algoritmus na konec seznamu
-//	delete E;E=NULL; //pokud dojde na konec seznamu
+//		//deklarace
+//		int MaxX=oblast.right,MaxY=oblast.top,MinX=oblast.left,MinY=oblast.bottom;
+//		int PD_x=ClientWidth-scSplitView_LEFTTOOLBAR->Width;
+//		int PD_y=ClientHeight-vyska_menu-scGPPanel_statusbar->Height-scGPPanel_mainmenu->Height;//-vyska_menu-RzStatusBar1->Height je navíc nemá tam co dělat
+//		TPointD centr;
+//		centr.x=m.P2Lx((MaxX+MinX)/2.0);
+//		centr.y=m.P2Ly((MaxY+MinY)/2.0);
 //
-//	Memo("_________________");
+//		//výpočet nového Zoomu
+//		double Z1=abs(Zoom*PD_x/(MaxX-MinX)),Z2=abs(Zoom*PD_y/abs(MaxY-MinY));
+//		Z1-=fmod(Z1,0.5);Z2-=fmod(Z2,0.5);
+//		if(Z1>Z2)Zoom=Z2;else Zoom=Z1;
+//		if(Zoom<0.5)Zoom=0.5;if(Zoom>10)Zoom=10;
 //
-//	//proleze např. spojku vícekrát
-//	E=d.v.ELEMENTY->dalsi;
-//	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
-//	int n=0;
-//	while(E!=NULL)
-//	{
-//		Memo(String(++n)+" "+String(E->n)+" "+String(E->name));
-//		E=d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);//použití sekvenčního algoritmu, podle stejného bude soubor načítán, tz. stejný počet elementů v sekvenčním řazení
+//		//vycentrování obrazu
+//		PD_x=(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0;
+//		PD_y=(ClientHeight+(scGPPanel_mainmenu->Height-scGPPanel_statusbar->Height)-scGPPanel_bottomtoolbar->Height)/2.0;
+//		Posun.x+=(m.L2Px(centr.x)-PD_x)/Zoom;
+//		Posun.y+=(m.L2Py(centr.y)-PD_y)/Zoom;
+//
+//		//překreslení
+//		on_change_zoom_change_scGPTrackBar();
 //	}
-//	delete E;E=NULL;
-//	delete []tab_pruchodu;
-
-//	Tvlakno_obraz *vlakno=new Tvlakno_obraz(true);//spustí vlákno zajišťující stáhnutí mapového podkladu
-//	vlakno->FreeOnTerminate=true;//po skončení bude uvolněno
-//	vlakno->Start();
-//	//delete vlakno;
-
-		//Sk(ceil(m2px/Zoom/d.v.vrat_min_rychlost_prejezdu()*1000.0/fps));   //ceil(F->m.get_timePERpx(pom->RD,0,d.v.vrat_min_rychlost_prejezdu()));//různá rychlost dle RD, s afps se počítá dle min RD, ale nějak špatně vycházela animace ke konci (nestihl vozík vyjet)
-		//Sk(Form_parametry_linky->scComboBox_vyber_produkt->ItemIndex);
-
-
-//		TDateTime start;
-//    String s;
-//    Cvektory::TElement *E=d.v.ELEMENTY->dalsi,*e=NULL;
-//    double cas=0,celkem_otevreni=0,celkem_zavreni=0;
-//		unsigned int pocet_kroku=50;
-//    for(unsigned int i=0;i<pocet_kroku;i++)
-//    {
-//        start=Now();
-//        E=d.v.ELEMENTY->dalsi;
-//        while(E!=NULL)
-//        {
-//            e=new Cvektory::TElement;d.v.kopiruj_element(E,e);
-//            delete e;e=NULL;
-//            E=E->dalsi;
-//        }
-//        delete E;E=NULL;
-//        cas=ms.MyToDouble(TimeToStr(Now()-start).SubString(6,2));
-//        celkem_otevreni+=cas;
-//        Memo("Čas kopírování: "+AnsiString(cas));
-//    }
-//    Memo("------------");
-//		Memo("Průměrný čas kopírování: "+AnsiString(celkem_otevreni/(double)pocet_kroku));
-
-
-	//d.SCENA=22111;
-//	MOD=SIMULACE;
-//	d.SCENA=0;
-//	if(d.SCENA>0)vytvor_statickou_scenu();//načtení statických záležitostí do statické scény, musí být před REFRESH
-//	REFRESH();
-
-//REFRESH(Edit1->Text.ToInt(),false);
-
-//detekce test na první elementu v aktuálním projektu
-//	 Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-//	 if(m.PtInSegment(E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))Memo("v");
-//	 else Memo("mimo");
-
-
-///////////////////
-	 //testovací hodnoty
-//	 double a=1;//radius - E->geo.radius
-//	 double b=1.2;//vzdálenost od bodu kliku ke středovému bod oblouku (ke středu kružnice, z které je oblouk tvořen) tj. vrátit si souřadnice středu (asi udělat ještě metodu
-//	 double c=0.5;//vzdálenost mezi bodem kliku a výchozím bodem oblouku (E->geo.X1,E->geo.Y1) tj. = m.delka(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,E->geo.X1,E->geo.Y1)
-//	 double uhel=m.AngleFromTriangle(a,b,c,3);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
-//	 ShowMessage(uhel);
-//	 double R=10;//E->geo.radius
-//	 double RA=-90;//E->geo.rotacni_uhel //	double RA=F->Edit_rotace->Text.ToDouble();//rotační úhel, pod kterým je oblouk rotován - směřován (proti směru hodinových ručiček), může být záporný (po směru hodinových ručiček)
-//	 double OR=90;//E->orientace
-//	 double Xoblouku=40,Yoblouku=-30;//E->geo.X a E->geo.Y
-//	 double uhel=m.uhelObloukuVsMys(Xoblouku,Yoblouku,OR,RA,R,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
-//	 double delka=m.R2Larc(R,uhel);//požadovaná délka na oblouku vybraná myší, vracení délky dané výseče, tj. k na(při)počítání měřené délky
-//	 d.vykresli_Gelement(Canvas,Xoblouku,Yoblouku,OR,RA,R,clBlue,2);//podkladový element (tj. normálně vykreslená linka)
-//	 d.vykresli_Gelement(Canvas,Xoblouku,Yoblouku,OR,uhel,R,clRed,1,String(m.round2double(delka*1000,2))+" [mm]");//vykreslení měřícího kurzoru, metodu ještě vylepším
-//																																							//výpis délky dané výseče
-////	 TPointD S=m.getArcCenter(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,OR,RA,R);
-////	 Memo(String(S.x)+" "+String(S.y));
-////	 d.line(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,m.L2Px(S.x),m.L2Py(S.y));//pouze na testy označení stredu
-////	//standardní vykreslení oblouku
-//	float SA=Edit1->Text.ToDouble();//výchozí úhel, pod kterým oblouk začíná, musí být kladný - 0° je na 3 hodinách
-//	d.set_pen(Canvas,clGreen,1/**F->Zoom*/,PS_ENDCAP_FLAT);
-//	Canvas->MoveTo(m.L2Px(Xoblouku),m.L2Py(Yoblouku));//musí se přesunout pero na začátek, oblouku, v případě kontinuálního kreslení netřeba
-//	Canvas->AngleArc(m.L2Px(Xoblouku),m.L2Py(Yoblouku),m.m2px(R),SA,RA);
-
-//	d.v.ELEMENTY->dalsi->eID=401;
-//	//d.v.smaz_element(d.v.ELEMENTY->dalsi);
 //	vytvor_statickou_scenu();
 //	REFRESH();
 
- //	 TPointD *souradnice_k_dalsimu_pouziti=vykresli_Gelement(canv,Xoblouku,Yoblouku,OR,RA,R,clBlue,1);
-//	 F->Memo(String(souradnice_k_dalsimu_pouziti[3].x)+" "+String(souradnice_k_dalsimu_pouziti[3].y));
+	Cvektory::TElement *E=d.v.OBJEKTY->dalsi->element->dalsi->dalsi->dalsi->dalsi2;
+	Memo(E->name);
+	d.line(Canvas,0,0,m.L2Px(E->geo.X1),m.L2Py(E->geo.Y1));
+	d.line(Canvas,0,0,m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
+}
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
 void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 {
-	//s-start, k-konec, 1-první úsečka, 2-druhá úsečka
-
-	///////testovací vstupy - různé situace
-	////test totožné (i protisměrné)
-	//double xs1=0;double ys1=0;double xk1=20;double yk1=20;
-	//double xs2=20;double ys2=20;double xk2=0;double yk2=0;
-	////test totožné svislé (i protisměrné)
-	//double xs1=0;double ys1=0;double xk1=0;double yk1=20;
-	//double xs2=0;double ys2=20;double xk2=0;double yk2=0;
-	////test totožné vodorovné (i protisměrné)
-	//double xs1=0;double ys1=0;double xk1=20;double yk1=0;
-	//double xs2=20;double ys2=0;double xk2=0;double yk2=0;
-	////test rovnoběžné (i protisměrné)
-	//double xs1=0;double ys1=0;double xk1=20;double yk1=20;
-	//double xs2=20+20;double ys2=20;double xk2=0+20;double yk2=0;
-	////mimoběžné, průsečík mimo úsečky, pouze přímek
-	//double xs1=0;double ys1=0;double xk1=20;double yk1=20;
-	//double xs2=20;double ys2=50;double xk2=40;double yk2=-50;
-	//mimoběžné, průsečík i úsečky
-	//double xs1=0;double ys1=0;double xk1=20;double yk1=20;
-	//double xs2=20;double ys2=50;double xk2=10;double yk2=-50;
-	//první svislá - hází na Y NAN
-	//double xs1=0;double ys1=0;double xk1=0;double yk1=30;
-	//double xs2=-10;double ys2=10;double xk2=10;double yk2=30;
-	//druhá svislá - je ok
-	//double xs1=-10;double ys1=10;double xk1=10;double yk1=30;
-	//double xs2=0;double ys2=0;double xk2=0;double yk2=30;
-	//kolmé obě - první svislá hazelo na Y NAN
-	//double xs1=0;double ys1=0;double xk1=0;double yk1=30;
-	//double xs2=-10;double ys2=10;double xk2=10;double yk2=10;
-	//kolmé obě - druhá svislá je OK
-	//double xs1=-10;double ys1=10;double xk1=10;double yk1=10;
-	//double xs2=0;double ys2=0;double xk2=0;double yk2=30;
-	//kolmé obě - MV test, původně hazelo na Y NAN, po změně pořadí bylo OK
-  double xs1=46;double ys1=-36;double xk1=46;double yk1=-32;
-  double xs2=43;double ys2=-34;double xk2=53;double yk2=-34;
-
-	//vykreslení testovacích úseček
-	d.line(Canvas,m.L2Px(xs1),m.L2Py(ys1),m.L2Px(xk1),m.L2Py(yk1));
-	d.line(Canvas,m.L2Px(xs2),m.L2Py(ys2),m.L2Px(xk2),m.L2Py(yk2));
-
-	//výpočet průsečíku
-	TPointD P=m.PrusecikPrimek(xs1,ys1,xk1,yk1,xs2,ys2,xk2,yk2);
-
-  //nutné ošetření výstupů pří různých situacícíh
-	if(IsNan(P.x) || IsNan(P.y))Memo("nemají průsečík, jsou totožné: "+String(P.x)+" "+String(P.y));
-	else if(IsInfinite(P.x) || IsInfinite(P.y))Memo("nemají průsečík, jsou rovnoběžné: "+String(P.x)+" "+String(P.y));
-	else Memo("mají průsečík: "+String(P.x)+" "+String(P.y));
-
-	if(!IsNan(P.x) && !IsNan(P.y) && !IsInfinite(P.x) && !IsInfinite(P.y))Memo("MV - mají průsečík");
+	//Memo(d.SCENA,true);                                                                                             //d.v.ELEMENTY->dalsi->orientace
+	if(m.PtInTeplomer(d.v.ELEMENTY->dalsi->X,d.v.ELEMENTY->dalsi->Y,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,0))Memo("v");else Memo("mimo");
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -15890,24 +15757,24 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 //	}
 	if(Akce!=MAGNETICKE_LASO)
 	{
-		//skrytí mgridů
+		//skrytí mgridů v editaci
 		if(OBJEKT_akt!=NULL)
 		{
-	  	bool p_stav=OBJEKT_akt->zobrazit_mGrid;
-	  	OBJEKT_akt->zobrazit_mGrid=false;
-	  	REFRESH();//můsí být překresleno
-	  	OBJEKT_akt->zobrazit_mGrid=p_stav;
+			bool p_stav=OBJEKT_akt->zobrazit_mGrid;//uložení původního stavu mGridů
+			OBJEKT_akt->zobrazit_mGrid=false;//skrytí
+			REFRESH();//můsí být překresleno, překreslením dojde ke skrytí komponent mGridů, jinak by byly stále viditelné
+			OBJEKT_akt->zobrazit_mGrid=p_stav;//navrácení původního stavu do objektu
 		}
 		//zapnutí akceá
 		if(Akce!=NIC)ESC();
 		Akce=MAGNETICKE_LASO;
 		kurzor(add_o);
-		zobraz_tip(ls->Strings[483]);
 		scGPImage_mereni_vzdalenost->ClipFrameFillColor=(TColor)RGB(225,225,225);
 		scGPButton_zmerit_vzdalenost->Options->NormalColor=(TColor)RGB(86,120,173);
 		Timer_getjobid->Enabled=false;//odstavení timeru, není potřeba
 		d.SCENA=122111;//ZprVozEledElesDopObjHal
 		vytvor_statickou_scenu();//vypnutí vrstvy errorů a nastavení zbytku na statickou scénu
+		zobraz_tip(ls->Strings[483]);//má v sobě REFRESH(), je nutné volat až po vytvořeni statické scény
 	}
 	else
 	{

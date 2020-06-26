@@ -495,9 +495,11 @@ private:
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
 	struct Tnastaveni{bool autosave;unsigned short int minut;bool posledni_file;};Tnastaveni nastaveni;
 	enum Tlanguage{EN,MN,CS};Tlanguage language;
-	////instance
+	////ukazatele
 	Cvektory::TProces *proces_pom;
 	TFileStream *LogFileStream;
+	Graphics::TBitmap *Staticka_scena;//bitmapa statické scény
+	Graphics::TBitmap *Pan_bmp_LEFT,*Pan_bmp_RIGHT,*Pan_bmp_ALL;//kvùli mGridu jinak staèí private
 
 	////metody
 	void aut_pozicovani(Cvektory::TElement *E, int X, int Y);
@@ -648,9 +650,8 @@ public:		// User declarations
 	Cvykresli d;
 	Cgrafy g;
 	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
-	Graphics::TBitmap *Pan_bmp;//kvùli mGridu jinak staèí private
-	Graphics::TBitmap *Staticka_scena;//bitmapa statické scény
 	//uklazatele
+	Graphics::TBitmap *Pan_bmp;//kvùli mGridu jinak staèí private
 	Cvektory::TObjekt *pom,*pom_vyhybka,*OBJEKT_akt,*copyObjekt;
 	Cvektory::TElement *pom_element,*pom_element_temp,*posledni_editovany_element,*element_temp,*predchozi_PM;//element_temp je nulován pøi každém pøejetí kurzoru používán na vìci kolem PM
 	TmGrid *PmG,*mGrid_knihovna;//ukazatel na mGridovou tabulku pohonu
@@ -663,6 +664,7 @@ public:		// User declarations
 	TPoint vychozi_souradnice_kurzoru;//uchová výchozí pozici kurzoru
 	TPoint predchozi_souradnice_kurzoru;//uchová pùvodní pozici kurzoru pøi stisku tlaèítka myši
 	TPoint minule_souradnice_kurzoru;//uchová pùvodní souøadnice pøi posunu
+	TPointD T;//testovací
 
 	//promìnné
 	UnicodeString LICENCE;
