@@ -26,6 +26,7 @@ __fastcall TForm_katalog::TForm_katalog(TComponent* Owner)
   clOTHER_AFTER_CHOOSE			 = (TColor)RGB(128,128,128); //(TColor)RGB(200,200,200);
   clSELECTED_BLUE = (TColor)RGB(43,87,154); //modrá
   clBACKGROUND = (TColor)RGB(240,240,240);
+  input_state=NO;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_katalog::FormShow(TObject *Sender)
@@ -96,6 +97,7 @@ void __fastcall TForm_katalog::FormShow(TObject *Sender)
   	//defaultní design a pozicování tlačítek OK a STORNO
 	F->m.designButton(Button_save,Form_katalog,1,2);
 	F->m.designButton(Button_storno,Form_katalog,2,2);
+  input_state=NOTHING;
 }
 //---------------------------------------------------------------------------
 
@@ -174,7 +176,18 @@ void TForm_katalog::LoadValues ()
   {
 	 if(F->ms.MyToDouble(K_mGrid->Cells[i][katalog_id+1].Text) == radius)
 	 {
-		if(i>=9 && i<=12) K_mGrid->Cells[i][katalog_id+1].Font->Color=(TColor)RGB(226,122,21);
+		if(i>=9 && i<=12)
+    {
+     K_mGrid->Cells[i][katalog_id+1].Font->Color=(TColor)RGB(226,122,21);
+     K_mGrid->Cells[i][katalog_id+1].Type=K_mGrid->CHECK;
+     K_mGrid->Update();
+     TscGPCheckBox *H=K_mGrid->getCheck(i,katalog_id+1);
+     H->BiDiMode=bdRightToLeft;
+     H->Layout=blGlyphRight;
+     H->Checked=true;
+     H=NULL;delete H;
+     check.X=i;
+    }
    }
 
   }
@@ -191,7 +204,7 @@ void TForm_katalog::LoadValues ()
         if(F->ms.MyToDouble(K_mGrid->Cells[j][i].Text) != radius)
         {
         K_mGrid->Cells[j][i].Font->Color=clBlack;
-        check.X=j; check.Y=i;
+        check.Y=i;
         //ShowMessage(j);ShowMessage(i);
         }
        }
@@ -239,23 +252,23 @@ void TForm_katalog::LoadStyles ()
    K_mGrid->Cells[11][r].LeftMargin=3;
    K_mGrid->Cells[12][r].LeftMargin=3;
 
-    K_mGrid->Cells[9][r].Type=K_mGrid->CHECK;
-    K_mGrid->Cells[10][r].Type=K_mGrid->CHECK;
-    K_mGrid->Cells[11][r].Type=K_mGrid->CHECK;
-    K_mGrid->Cells[12][r].Type=K_mGrid->CHECK;
-
-    K_mGrid->Update();
-    K_mGrid->getCheck(9,r)->BiDiMode=bdRightToLeft;
-    K_mGrid->getCheck(9,r)->Layout=blGlyphRight;
-
-    K_mGrid->getCheck(10,r)->BiDiMode=bdRightToLeft;
-    K_mGrid->getCheck(10,r)->Layout=blGlyphRight;
-
-    K_mGrid->getCheck(11,r)->BiDiMode=bdRightToLeft;
-    K_mGrid->getCheck(11,r)->Layout=blGlyphRight;
-
-    K_mGrid->getCheck(12,r)->BiDiMode=bdRightToLeft;
-    K_mGrid->getCheck(12,r)->Layout=blGlyphRight;
+//    K_mGrid->Cells[9][r].Type=K_mGrid->CHECK;
+//    K_mGrid->Cells[10][r].Type=K_mGrid->CHECK;
+//    K_mGrid->Cells[11][r].Type=K_mGrid->CHECK;
+//    K_mGrid->Cells[12][r].Type=K_mGrid->CHECK;
+//
+//    K_mGrid->Update();
+//    K_mGrid->getCheck(9,r)->BiDiMode=bdRightToLeft;
+//    K_mGrid->getCheck(9,r)->Layout=blGlyphRight;
+//
+//    K_mGrid->getCheck(10,r)->BiDiMode=bdRightToLeft;
+//    K_mGrid->getCheck(10,r)->Layout=blGlyphRight;
+//
+//    K_mGrid->getCheck(11,r)->BiDiMode=bdRightToLeft;
+//    K_mGrid->getCheck(11,r)->Layout=blGlyphRight;
+//
+//    K_mGrid->getCheck(12,r)->BiDiMode=bdRightToLeft;
+//    K_mGrid->getCheck(12,r)->Layout=blGlyphRight;
 
 
    K_mGrid->Cells[13][r].Font->Color=clOTHER_AFTER_CHOOSE;
@@ -269,59 +282,56 @@ void TForm_katalog::LoadStyles ()
    K_mGrid->Cells[13][r].isZero->Color=clOTHER_AFTER_CHOOSE;
    K_mGrid->Cells[17][r].isZero->Color=clOTHER_AFTER_CHOOSE;
    K_mGrid->Cells[18][r].isZero->Color=clOTHER_AFTER_CHOOSE;
- //  K_mGrid->Cells[19][r].isZero->Color=clOTHER_AFTER_CHOOSE;
-  // K_mGrid->Cells[20][r].isZero->Color=clOTHER_AFTER_CHOOSE;
 
 
 
-  // K_mGrid->Cells[9][r].Type=K_mGrid->CHECK;
-  // K_mGrid->Cells[10][r].Type=K_mGrid->;
-  // K_mGrid->Cells[11][r].Type=K_mGrid->EDIT;
  }
 }
 
 void TForm_katalog::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row)
 {
-   // K_mGrid->HighlightRow()
- if(!zmena)
+ if (input_state==NOTHING)
  {
-   if(Col>=9 && Col<=12)
-   {
+
+  input_state=JOB;
+  if(!zmena)
+  {
     zmena=true;
-			for(unsigned int i=1;i<K_mGrid->RowCount;i++)
-      {
-				 if(i!=Row)
-         {
-						for(unsigned int j=0;j<K_mGrid->ColCount;j++)
+     if(Col==0)
+     {
+        for(unsigned int i=2;i<K_mGrid->RowCount;i++)
+        {
+
+           if(i!=Row)
+           {
+              K_mGrid->getCheck(0,i)->Checked=false;
+              for(unsigned int j=1;j<K_mGrid->ColCount;j++)
+               {
+               K_mGrid->Cells[j][i].Font->Color=clOTHER_AFTER_CHOOSE;//(TColor)RGB(43,87,154);  //odbarveni  - nevybrano
+               if(j>=9 && j<=12) { /*ShowMessage(j);*/ K_mGrid->Cells[j][i].Type=K_mGrid->readEDIT;    }
+              // ShowMessage(j);
+               }
+           }
+
+        }
+
+     }
+     if(Col==0)
+     {
+       for(unsigned int i=2;i<K_mGrid->RowCount;i++)
+        {
+          if(i==Row)
              {
-             K_mGrid->Cells[j][i].Font->Color=(TColor)RGB(43,87,154);  //odbarveni  - nevybrano
+             //ShowMessage("Row");
+              check.Y=i;
+              getCheckSettings();
              }
-         }
+
+        }
       }
-
+    zmena=false;
    }
-  zmena=false;
- }
 
- if(!zmena)
- {
-   if(Col>=9 && Col<=12)
-   {
-    zmena=true;
-			for(unsigned int i=1;i<K_mGrid->RowCount;i++)
-      {
-				 if(i==Row)
-         {
-            for(unsigned int j=0;j<K_mGrid->ColCount;j++)
-             {
-             K_mGrid->Cells[j][i].Font->Color=clBlack;  //nabarveni - vybrano
-             }
-         }
-      }
-
-   }
-  zmena=false;
- }
   //ziskani hodnot radius a katalog ID
   if(Col>=9 && Col<=12)
    {
@@ -331,8 +341,10 @@ void TForm_katalog::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row
    }
 
 
- FormPaint(this);
- Button_save->SetFocus();
+   FormPaint(this);
+   Button_save->SetFocus();
+   input_state=NOTHING;
+  }
 }
 
 void __fastcall TForm_katalog::Button_stornoClick(TObject *Sender)
@@ -429,21 +441,36 @@ void TForm_katalog::getCheckSettings ()
    TscGPCheckBox *CH=K_mGrid->getCheck(0,check.Y);  //výchozí stav zašrtávátka
    CH->Checked=true;
    CH=NULL;delete CH;
-   //K_mGrid->HighlightRow(check.Y,(TColor)RGB(240,240,240));
 
-    K_mGrid->Cells[9][check.Y].Type=K_mGrid->CHECK;
-   // K_mGrid->Cells[9][check.Y].Align=K_mGrid->LEFT;
-    K_mGrid->Update();
-    TscGPCheckBox *H=K_mGrid->getCheck(9,check.Y);
-    H->BiDiMode=bdRightToLeft;
-    H->Layout=blGlyphRight;
-    H=NULL;delete H;
-    K_mGrid->Columns[9].Width=55;
+    K_mGrid->Columns[9].Width=60;
+    K_mGrid->Columns[10].Width=60;
+    K_mGrid->Columns[11].Width=60;
+    K_mGrid->Columns[12].Width=60;
 
   for(unsigned int i=1;i<K_mGrid->ColCount;i++)
   {
    K_mGrid->Cells[i][check.Y].Font->Color=clSELECTED_BLUE;
    K_mGrid->Cells[i][check.Y].Background->Color=clBACKGROUND;
+  // if(check.X==i)
+   K_mGrid->Cells[9][check.Y].Type=K_mGrid->CHECK;
+   K_mGrid->Cells[10][check.Y].Type=K_mGrid->CHECK;
+   K_mGrid->Cells[11][check.Y].Type=K_mGrid->CHECK;
+   K_mGrid->Cells[12][check.Y].Type=K_mGrid->CHECK;
+  }
+
+    for(unsigned int j=9;j<=12;j++)
+  {
+    K_mGrid->Cells[j][check.Y].Align=K_mGrid->LEFT;
+    K_mGrid->Update();
+    TscGPCheckBox *H=K_mGrid->getCheck(j,check.Y);
+    if(H->Caption=="") { /*H->Visible=false;*/  K_mGrid->Cells[j][check.Y].Type=K_mGrid->readEDIT;  }
+    else
+    {
+    H->BiDiMode=bdRightToLeft;
+    H->Layout=blGlyphRight;
+    }
+    H=NULL;delete H;
+
   }
 
 

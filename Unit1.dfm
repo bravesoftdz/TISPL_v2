@@ -5543,7 +5543,6 @@ object Form1: TForm1
       ParentFont = False
       FluentUIOpaque = False
       TabOrder = 9
-      OnClick = MagnaClick
       Animation = False
       Caption = 'Posledn'#237' projekty'
       CanFocused = False
@@ -8908,7 +8907,7 @@ object Form1: TForm1
     Left = 520
     Top = 40
     Bitmap = {
-      494C01011800540A040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800540A0C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9886,6 +9885,7 @@ object Form1: TForm1
     Top = 88
   end
   object IdHTTP1: TIdHTTP
+    IOHandler = IdSSLIOHandlerSocketOpenSSL1
     AllowCookies = True
     ProxyParams.BasicAuthentication = False
     ProxyParams.ProxyPort = 0
@@ -9904,7 +9904,7 @@ object Form1: TForm1
   end
   object Timer_tr: TTimer
     Enabled = False
-    Interval = 10000000
+    Interval = 3000000
     OnTimer = Timer_trTimer
     Left = 208
     Top = 88
@@ -9994,7 +9994,7 @@ object Form1: TForm1
     Left = 423
     Top = 38
     Bitmap = {
-      494C01015400780D040030003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01015400780D0C0030003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000002004000001002000000000000060
       0C00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -48029,5 +48029,22 @@ object Form1: TForm1
     OnTimer = Timer_getjobidTimer
     Left = 400
     Top = 88
+  end
+  object IdSSLIOHandlerSocketOpenSSL1: TIdSSLIOHandlerSocketOpenSSL
+    MaxLineAction = maException
+    Port = 0
+    DefaultPort = 0
+    SSLOptions.Method = sslvSSLv23
+    SSLOptions.SSLVersions = [sslvSSLv2, sslvSSLv3, sslvTLSv1, sslvTLSv1_1, sslvTLSv1_2]
+    SSLOptions.Mode = sslmUnassigned
+    SSLOptions.VerifyMode = []
+    SSLOptions.VerifyDepth = 0
+    Left = 616
+    Top = 232
+  end
+  object IdSNTP1: TIdSNTP
+    Port = 123
+    Left = 576
+    Top = 232
   end
 end

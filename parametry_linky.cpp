@@ -536,7 +536,7 @@ void TForm_parametry_linky::nacti_pohony() {
         PL_mGrid->Cells[4][i].Text = "";
       else
         PL_mGrid->Cells[4][i].Text = ukaz->aRD * (1 + 59.0 * aRDunit);
-      PL_mGrid->Cells[6][i].Text=i;
+     // PL_mGrid->Cells[6][i].Text=i;
       PL_mGrid->Cells[5][i].Type = PL_mGrid->COMBO;
       PL_mGrid->Cells[6][i].Type = PL_mGrid->CHECK;
       PL_mGrid->Refresh();

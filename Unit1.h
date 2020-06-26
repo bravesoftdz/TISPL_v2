@@ -101,6 +101,7 @@
 #include <IdSMTP.hpp>
 #include <IdFTP.hpp>
 #include "Tvlakno_obraz.h"
+#include <IdSNMP.hpp>
 //#include "rImprovedComps.hpp"
 //#include "rImprovedComps.hpp"
 //#include "rImprovedComps.hpp"
@@ -275,6 +276,8 @@ __published:	// IDE-managed Components
 	TImage *Image_rozdelovac_1;
 	TImage *Image_rozdelovac_2;
 	TImage *Image_rozdelovac_3;
+  TIdSSLIOHandlerSocketOpenSSL *IdSSLIOHandlerSocketOpenSSL1;
+  TIdSNTP *IdSNTP1;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -344,10 +347,6 @@ __published:	// IDE-managed Components
 	void __fastcall Chart1Click(TObject *Sender);
 	void __fastcall Zobrazitparametry1Click(TObject *Sender);
 	void __fastcall Rychlexport1Click(TObject *Sender);
-	void __fastcall MagnaClick(TObject *Sender);
-	void __fastcall SPPP1Click(TObject *Sender);
-	void __fastcall Boskovice1Click(TObject *Sender);
-	void __fastcall eXtreme1Click(TObject *Sender);
 	void __fastcall Button2Click(TObject *Sender);
 	void __fastcall Timer_neaktivityTimer(TObject *Sender);
 	void __fastcall Timer_simulaceTimer(TObject *Sender);
