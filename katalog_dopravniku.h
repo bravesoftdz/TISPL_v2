@@ -29,7 +29,6 @@ __published:	// IDE-managed Components
   TMemo *Memo1;
   TscHTMLLabel *scHTMLLabel_InfoText;
   TscHint *scHint1;
-  TscGPCheckBox *scGPCheckBox1;
   void __fastcall FormShow(TObject *Sender);
   void __fastcall FormPaint(TObject *Sender);
   void __fastcall Button_stornoClick(TObject *Sender);
@@ -46,6 +45,8 @@ private:	// User declarations
 		TmGrid *K_mGrid;
     TPoint check;
     TColor clBACKGROUND_light,clBACKGROUND_dark,clNORMAL,clOTHER_AFTER_CHOOSE,clSELECTED_BLUE,clBACKGROUND;
+    enum Tinput_state{NO,NOTHING,LOADING,JOB};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
+
 
 public:		// User declarations
   __fastcall TForm_katalog(TComponent* Owner);
@@ -55,6 +56,7 @@ public:		// User declarations
     double radius;
     int katalog_id;
     void vypis(UnicodeString text,bool red=true,bool link=false);
+    Tinput_state input_state;//stav vstupu DV,SV,TT...atd
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm_katalog *Form_katalog;
