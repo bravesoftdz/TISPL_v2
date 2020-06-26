@@ -36,7 +36,9 @@ class Cvykresli
 	void vykresli_pow_sprchu(TCanvas *canv,long X1,long X2,long Y1,long Y2,unsigned int velikost_komory_px,TColor color,double sirka,short pmpp,short typ=0,double orientace=-90);//symbolika tekoucí kapaliny u POW
 	void vykresli_grid(TCanvas *canv,int size_grid=10);
 	void vykresli_meridlo(TCanvas *canv,int X,int Y,bool kalibracni_sipka=false);//v pøípadì mìøení vzdálenosti vykreslí spojnici a popø. vypisuje hodnotu vzdálenosti, používá se asi i na kalibraci podkladu
-	void vykresli_meridlo(TCanvas *canv);//metoda na vykreslení mìøítka á la magnetické laso nebo vzádlenost teplomìrù v na pohonu
+	void vykresli_meridlo(TCanvas *canv);//metoda na vykreslení mìøítka á la magnetické laso nebo vzádlenost teplomìrù v na pohonu, pøsmìruje vykreslení podle trendu
+	void vykresli_meridlo_po_trendu(TCanvas *canv);//vykreslí mìøení po trendu linky
+	void vykresli_meridlo_proti_trendu(TCanvas *canv);//vykresli mìøení proti trendu linky
 	void vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E);//vykresli pozic a obalových zón
 	void vykresli_dopravnik(TCanvas *canv, Cvektory::TZakazka *zakazka=NULL);//kreslí koleje, pouzdro øetìzu, øetìz samotný, pøedávací místo i popisek pohonu, slouží i zároveò na náhled cest zakázek
 	void vykresli_retez(TCanvas *canv,Cvektory::TRetez *Retez);
