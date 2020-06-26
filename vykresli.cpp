@@ -3514,32 +3514,13 @@ void Cvykresli::vykresli_teplomer(TCanvas *canv,long X,long Y,AnsiString name,An
 	TColor barva=clBlack,barva_vypln=clRed;if(eID==401)barva_vypln=clBlue;if(eID==402)barva_vypln=clBlack;
 	canv->Brush->Color=clWhite;//výplň kružnic
 
-	if(stav==-1 && F->OBJEKT_akt!=NULL)//pokud je aktivní nebo neaktivní
-	{
-		short I=m.get_intensity();
-		if(typ==0)I=180;//pro ikony v knihovně elementů, pokud by se používalo
-		barva=m.clIntensive(barva,I);
-		barva_vypln=m.clIntensive(barva_vypln,I);
-	}
-
-	////nastavení pera - dle typu zobrazení
+	////nastavení pera
 	TPenMode PenMode=pmCopy;
-	if(typ==-1)//typ kurzor
-	{
-		PenMode=pmNotXor;
-		canv->Pen->Style=psDot;
-		canv->Pen->Color=barva;
-		canv->Pen->Width=1;
-		canv->Brush->Style=bsClear;
-	}
-	else
-	{
-		canv->Pen->Style=psSolid;
-		canv->Pen->Width=F->m.round(tloustka_linie*Z);
-		canv->Pen->Mode=PenMode;
-		canv->Pen->Color=barva;
-		canv->Brush->Style=bsSolid;
-	}
+	canv->Pen->Style=psSolid;
+	canv->Pen->Width=F->m.round(tloustka_linie*Z);
+	canv->Pen->Mode=PenMode;
+	canv->Pen->Color=barva;
+	canv->Brush->Style=bsSolid;
 
 	////vykreslení elementu
 	//obrys

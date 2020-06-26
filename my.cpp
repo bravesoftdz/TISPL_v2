@@ -740,6 +740,47 @@ bool Cmy::PtInIon(double X,double Y,double Xmys,double Ymys,double rotace)
 	return RET;
 }
 /////////////////////////////////////////////////////////////////////////////
+//metoda ověří zda je bod ve vnitř obrysu teploměru, který se nachází na daných souřadnicích
+bool Cmy::PtInTeplomer(double X,double Y,double Xmys,double Ymys,double rotace)
+{
+	////vstupní proměnné či konstanty
+	X=L2Px(X);Y=L2Py(Y);
+	double Z=F->Zoom;//zoom, pouze zkrácení zápisu
+	float polomer=0.2;//poloměr kružnic zadaná v metrech
+	int polomer1=m2px(polomer);//poloměr kružnic
+	int polomer2=m2px(polomer/2.0);//poloměr kružnic
+	int polomer8=m2px(polomer/8.0);//poloměr kružnic
+	short DT=4;//násobek poloměru z kterého vznikné délka teploměru
+	int vzdalenostY=m2px(F->d.v.PP.sirka_podvozek/2.0+polomer*2);//vzdálenost kružnice od středu v metrech (vzádlenost kružnic podělená dvěmi), pro kurzor a normální zobrazení dle šířky kolejí linky (šířky vozíku), jinak fixní šířka pro ikonu v galerii
+
+	////rotace
+	if(rotace==90 || rotace==270)
+	{
+		X+=vzdalenostY;
+		Y+=vzdalenostY;
+	}
+
+	////uzavření do cesty
+	BeginPath(F->Canvas->Handle);
+	//obrys elementu
+	F->Canvas->Ellipse(X-polomer1,Y-polomer1-vzdalenostY,X+polomer1,Y+polomer1-vzdalenostY);//baňka
+	F->Canvas->RoundRect(X-polomer2,Y-polomer1*DT-vzdalenostY,X+polomer2,Y-vzdalenostY,polomer1,polomer1);//tyčka
+	//stupnice opsaný obdelník
+	F->Canvas->Rectangle(TRect(X+polomer2,Y-polomer1*3-polomer8*2-vzdalenostY,X+polomer1+polomer2+polomer8,Y-polomer1-vzdalenostY));//pouze empiricky nasázené hodnoty, aby oblast vyšla nějak "rozumně"
+	EndPath(F->Canvas->Handle);
+
+	////testování finální citelné oblasti
+//	if(PtInRegion(PathToRegion(F->Canvas->Handle),L2Px(Xmys),L2Py(Ymys)))return true;
+//	else return false;
+	//nové řešení - výše nepoužívat
+	bool RET=false;
+	HRGN h=PathToRegion(F->Canvas->Handle);
+	//InvertRgn(F->Canvas->Handle,h); test výpisu oblasti
+	if(PtInRegion(h,L2Px(Xmys),L2Py(Ymys)))RET=true;else RET=false;
+	DeleteObject(h);
+	return RET;
+}
+/////////////////////////////////////////////////////////////////////////////
 //otestuje zda v daném geometrickém segmetnu (o velikosti pásma aktuální šířky kolejí) se nachází souřadnice kurzor myši, pokud ano, vrátí true, jinak false
 bool Cmy::PtInSegment(double X,double Y,short typ,double orientace,double rotacni_uhel,double radius,double delka,double Xmys,double Ymys)
 {
