@@ -11856,10 +11856,11 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 					pom_bod_temp=NULL;delete pom_bod_temp;
 				}
 			}
-			if(pom_element_temp!=NULL)
+			if(pom_element_temp!=NULL)//sazání výhybky z layoutu
 			{
 				d.v.smaz_element(pom_element_temp);
 				pom_element_temp=NULL;pom_element=NULL;
+        duvod_validovat=2;//validovat při REFRESH() zajistí odmazání errorů
 			}
 			break;
 		}
@@ -15742,17 +15743,16 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 //	}
 	if(Akce!=MAGNETICKE_LASO)
 	{
+		bool p_stav;
 		//skrytí mgridů v editaci
 		if(OBJEKT_akt!=NULL)
 		{
-			bool p_stav=OBJEKT_akt->zobrazit_mGrid;//uložení původního stavu mGridů
+			p_stav=OBJEKT_akt->zobrazit_mGrid;//uložení původního stavu mGridů
 			OBJEKT_akt->zobrazit_mGrid=false;//skrytí
-			REFRESH();//můsí být překresleno, překreslením dojde ke skrytí komponent mGridů, jinak by byly stále viditelné
-			OBJEKT_akt->zobrazit_mGrid=p_stav;//navrácení původního stavu do objektu
+			//REFRESH();//můsí být překresleno, překreslením dojde ke skrytí komponent mGridů, jinak by byly stále viditelné, REFRESH je vyvolán níže v metodě zobraz_tip
 		}
 		//zapnutí akceá
 		if(Akce!=NIC)ESC();
-		Akce=MAGNETICKE_LASO;
 		kurzor(add_o);
 		scGPImage_mereni_vzdalenost->ClipFrameFillColor=(TColor)RGB(225,225,225);
 		scGPButton_zmerit_vzdalenost->Options->NormalColor=(TColor)RGB(86,120,173);
@@ -15760,6 +15760,8 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		d.SCENA=122111;//ZprVozEledElesDopObjHal
 		vytvor_statickou_scenu();//vypnutí vrstvy errorů a nastavení zbytku na statickou scénu
 		zobraz_tip(ls->Strings[483]);//má v sobě REFRESH(), je nutné volat až po vytvořeni statické scény
+		Akce=MAGNETICKE_LASO;//až po refresh
+		if(OBJEKT_akt!=NULL)OBJEKT_akt->zobrazit_mGrid=p_stav;//navrácení původního stavu do objektu
 	}
 	else
 	{
