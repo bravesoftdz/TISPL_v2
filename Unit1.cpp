@@ -13715,22 +13715,25 @@ void __fastcall TForm1::Timer_simulaceTimer(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 {
-	double delka,cas,R,RA,OR,X,Y,uhel;
-	pom_element=d.v.ELEMENTY->dalsi->dalsi;
+//	double delka,cas,R,RA,OR,X,Y,uhel;
+//	pom_element=d.v.ELEMENTY->dalsi->dalsi;
+//
+//	//načítání parametrů
+//	R=F->pom_element->geo.radius;
+//	RA=-F->pom_element->geo.rotacni_uhel;//rotační úhel, pod kterým je oblouk rotován - směřován (proti směru hodinových ručiček), může být záporný (po směru hodinových ručiček)
+//	OR=F->pom_element->geo.orientace;
+//	X=F->pom_element->geo.X1,Y=F->pom_element->geo.Y1;
+//
+//	//výpočetní část, mělo by být volané v případě úspěchu podmínky if(m.PtInSegment....
+//	uhel=60;//m.uhelObloukuVsMys(X,Y,OR,RA,R,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
+//	delka=m.R2Larc(R,uhel);//požadovaná délka na oblouku vybraná myší, vracení délky dané výseče, tj. k na(při)počítání měřené délky
+//
+//	//vykreslovací část
+//	d.vykresli_Gelement(Canvas,X,Y,OR,uhel,R,d.clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]","");
+//	d.vykresli_Gelement(Canvas,X,Y,OR,20,R,d.clMeridlo,2,"","");//vykreslení měřícího kurzoru, popisek není nutné používat, metodu ještě vylepším
 
-	//načítání parametrů
-	R=F->pom_element->geo.radius;
-	RA=-F->pom_element->geo.rotacni_uhel;//rotační úhel, pod kterým je oblouk rotován - směřován (proti směru hodinových ručiček), může být záporný (po směru hodinových ručiček)
-	OR=F->pom_element->geo.orientace;
-	X=F->pom_element->geo.X1,Y=F->pom_element->geo.Y1;
-
-	//výpočetní část, mělo by být volané v případě úspěchu podmínky if(m.PtInSegment....
-	uhel=60;//m.uhelObloukuVsMys(X,Y,OR,RA,R,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
-	delka=m.R2Larc(R,uhel);//požadovaná délka na oblouku vybraná myší, vracení délky dané výseče, tj. k na(při)počítání měřené délky
-
-	//vykreslovací část
-	d.vykresli_Gelement(Canvas,X,Y,OR,uhel,R,d.clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]","");
-	d.vykresli_Gelement(Canvas,X,Y,OR,20,R,d.clMeridlo,2,"","");//vykreslení měřícího kurzoru, popisek není nutné používat, metodu ještě vylepším
+	Memo("");
+  scGPImage_mereni_vzdalenostClick(this);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -15770,7 +15773,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		{
 			//kontrola zda měřím po trendu nebo proti
 			bool po_trendu=true;
-			if((d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->dalsi->sparovany!=NULL && d.v.MAG_LASO->dalsi->sparovany==d.v.MAG_LASO->sparovany && m.azimut(d.v.MAG_LASO->Element->geo.X1,d.v.MAG_LASO->Element->geo.Y1,d.v.MAG_LASO->predchozi->Element->geo.X4,d.v.MAG_LASO->predchozi->Element->geo.Y4)!=d.v.MAG_LASO->dalsi->sparovany->geo.orientace-d.v.MAG_LASO->dalsi->sparovany->geo.rotacni_uhel) || (d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->sparovany!=NULL && (d.v.MAG_LASO->predchozi->n>1 && ((d.v.MAG_LASO->dalsi->dalsi->Element->n!=MaxInt && (d.v.MAG_LASO->dalsi->dalsi->Element->dalsi==d.v.MAG_LASO->sparovany || (d.v.MAG_LASO->dalsi->predchozi->Element->dalsi!=NULL && d.v.MAG_LASO->predchozi->predchozi->Element->dalsi->dalsi==d.v.MAG_LASO->sparovany) || d.v.MAG_LASO->dalsi->dalsi->Element->dalsi2==d.v.MAG_LASO->sparovany)) || (d.v.MAG_LASO->dalsi->dalsi->Element->n==MaxInt && d.v.MAG_LASO->dalsi->dalsi->sparovany!=NULL && (d.v.MAG_LASO->dalsi->dalsi->sparovany->dalsi==d.v.MAG_LASO->sparovany || (d.v.MAG_LASO->dalsi->predchozi->sparovany->dalsi!=NULL && d.v.MAG_LASO->dalsi->dalsi->sparovany->dalsi->dalsi==d.v.MAG_LASO->sparovany) || d.v.MAG_LASO->dalsi->dalsi->sparovany->dalsi2==d.v.MAG_LASO->sparovany))))))
+			if((d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->dalsi->sparovany!=NULL && d.v.MAG_LASO->dalsi->sparovany==d.v.MAG_LASO->sparovany && m.azimut(d.v.MAG_LASO->Element->geo.X1,d.v.MAG_LASO->Element->geo.Y1,d.v.MAG_LASO->predchozi->Element->geo.X4,d.v.MAG_LASO->predchozi->Element->geo.Y4)!=d.v.MAG_LASO->dalsi->sparovany->geo.orientace-d.v.MAG_LASO->dalsi->sparovany->geo.rotacni_uhel) || (d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->sparovany!=NULL && (d.v.MAG_LASO->predchozi->n>1 && ((d.v.MAG_LASO->dalsi->dalsi->Element->n!=MaxInt && (d.v.MAG_LASO->dalsi->dalsi->Element->dalsi==d.v.MAG_LASO->sparovany || (d.v.MAG_LASO->dalsi->dalsi->Element->dalsi!=NULL && d.v.MAG_LASO->dalsi->dalsi->Element->dalsi->dalsi==d.v.MAG_LASO->sparovany) || d.v.MAG_LASO->dalsi->dalsi->Element->dalsi2==d.v.MAG_LASO->sparovany)) || (d.v.MAG_LASO->dalsi->dalsi->Element->n==MaxInt && d.v.MAG_LASO->dalsi->dalsi->sparovany!=NULL && (d.v.MAG_LASO->dalsi->dalsi->sparovany->dalsi==d.v.MAG_LASO->sparovany || (d.v.MAG_LASO->dalsi->predchozi->sparovany->dalsi!=NULL && d.v.MAG_LASO->dalsi->dalsi->sparovany->dalsi->dalsi==d.v.MAG_LASO->sparovany) || d.v.MAG_LASO->dalsi->dalsi->sparovany->dalsi2==d.v.MAG_LASO->sparovany))))))
 				po_trendu=false;
 			//měření
 			Cvektory::TCesta *C=d.v.MAG_LASO->dalsi;
@@ -15872,7 +15875,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 					  		cas+=d_pom/C->sparovany->pohon->aRD;
 					  		//přičtení WT na palec při změně pohonu
 					  		if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->sparovany->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
-					  		if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->sparovany->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
+								if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->sparovany->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
 					  	}
 					  	else
 					  	{
@@ -15891,7 +15894,8 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 					  		if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->Element->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
 							}
 						}
-						//měření času proti trendu linky
+            //měření času proti trendu linky
+						else
 						{
 							Cvektory::TElement *CE=C->Element;
 							if(C->Element->n==MaxInt)CE=C->sparovany;
@@ -15914,7 +15918,8 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 						  		}
 								}
 							}
-							else//výpočet času pro všechny kromě prvního
+							//výpočet času pro všechny kromě prvního
+							else
 							{
                 if(d.v.vrat_druh_elementu(CE)==0)cas+=CE->data.PT1+CE->data.PT2+CE->WT+CE->PTotoc+CE->data.WTstop;//přičtení časových složek u S&G elementů
 								if(CE->eID==0)//odečtení přejezdu v bufferu
@@ -15923,7 +15928,11 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 									if(s>=buf)cas-=(buf)/CE->pohon->aRD;
 									else cas-=(s)/CE->pohon->aRD;
 								}
-              }
+							}
+							//připočtení čekání na palec při přechodu mezi pohony
+							if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && CE->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
+							if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && CE->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
+							//ukazatelové záležitosti
 							CE=NULL;delete CE;
             }
 					}

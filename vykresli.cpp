@@ -1086,15 +1086,15 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv)
       //vypočet času
 			if(F->pom_element->pohon!=NULL)
 			{
-		  	if(v.MAG_LASO->Element->n==MaxInt && v.MAG_LASO->sparovany!=NULL)
+				if(v.MAG_LASO->predchozi->Element->n==MaxInt && v.MAG_LASO->predchozi->sparovany!=NULL)
 		  	{
 					cas+=d/F->pom_element->pohon->aRD;
-					if(v.MAG_LASO->sparovany->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
+					if(v.MAG_LASO->predchozi->sparovany->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
 				}
 		  	else
 		  	{
 					cas+=d/F->pom_element->pohon->aRD;
-					if(v.MAG_LASO->Element->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
+					if(v.MAG_LASO->predchozi->Element->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
 				}
 			}
 
@@ -1130,15 +1130,15 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv)
 					}
 				}
 				//vypočet času přejezdu a WTpalec
-				if(v.MAG_LASO->Element->n==MaxInt && v.MAG_LASO->sparovany!=NULL)
+				if(v.MAG_LASO->predchozi->Element->n==MaxInt && v.MAG_LASO->predchozi->sparovany!=NULL)
 				{
 					cas+=d_pom/F->pom_element->pohon->aRD;
-					if(v.MAG_LASO->sparovany->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
+					if(v.MAG_LASO->predchozi->sparovany->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
 				}
 				else
 				{
 					cas+=d_pom/F->pom_element->pohon->aRD;
-					if(v.MAG_LASO->Element->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
+					if(v.MAG_LASO->predchozi->Element->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
 				}
 			}
 
@@ -1223,12 +1223,12 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv)
 				uhel=0;
 			}
   		else
-  		{
+			{
 				R=C->Element->geo.radius;
 				if(C->n==1)R=v.MAG_LASO->sparovany->geo.radius;
 				if(uhel==0)uhel=RA;//max z rotačního úhlu
 			}
-      //výpočet času
+			//výpočet času
 			if((C->Element->n!=MaxInt && C->Element->pohon==NULL) || (C->Element->n==MaxInt && C->sparovany!=NULL && C->sparovany->pohon==NULL));
 			else
 			{
@@ -1244,7 +1244,7 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv)
 					if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->sparovany->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
 					if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->sparovany->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
 				}
-				else if(v.MAG_LASO->sparovany!=C->Element || (v.MAG_LASO->sparovany!=C->Element && d==C->Element->geo.delka))
+				else if(C->Element->eID!=0 || (C->Element->eID==0 && (v.MAG_LASO->sparovany!=C->Element || (v.MAG_LASO->sparovany!=C->Element && d==C->Element->geo.delka))))
 				{
 					if(v.vrat_druh_elementu(C->Element)==0)cas+=C->Element->data.PT1+C->Element->data.PT2+C->Element->WT+C->Element->PTotoc;
 					cas+=d/C->Element->pohon->aRD;
@@ -1260,7 +1260,7 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv)
 				else
 				{
 					//řešit pouze část bufferu
-          //kontrola + vypočet WT na vozík v bufferu
+					//kontrola + vypočet WT na vozík v bufferu
 					double d_pom=d;
 					if(C->Element->eID==0)
 					{
@@ -1269,19 +1269,19 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv)
 						double s=m.delka(v.MAG_LASO->Element->geo.X4,v.MAG_LASO->Element->geo.Y4,C->Element->geo.X4,C->Element->geo.Y4);
 						//výpočet velikosti bufferu stopstanice
 						double buf=C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;
-	    			//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
+						//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
 	    			if(s<=buf)
 	    			{
-	    				cas+=m.V2WT(ceil((buf-s)/v.PP.delka_podvozek),v.PP.TT);//připočítání WT na aktuálním vozíku
+							cas+=m.V2WT(ceil((buf-s)/v.PP.delka_podvozek),v.PP.TT);//připočítání WT na aktuálním vozíku
 							if(check<buf)d_pom=0;//nepočítám žádný další čas
 							else d_pom-=buf-s;//zmenšení délky jen na délku pojezdu
-	    			}
-	    		}
+						}
+					}
       		//vypočet času přejezdu
 					cas+=d_pom/C->Element->pohon->aRD;
 
-          //výpočet WT při přechodu na jiný pohon
-          if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->Element->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
+					//výpočet WT při přechodu na jiný pohon
+					if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->Element->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
 					if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->Element->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
 				}
 			}
@@ -1321,15 +1321,15 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv)
       //vypočet času
 			if(F->pom_element->pohon!=NULL)
 			{
-				if(v.MAG_LASO->Element->n==MaxInt && v.MAG_LASO->sparovany!=NULL)
+				if(v.MAG_LASO->predchozi->Element->n==MaxInt && v.MAG_LASO->predchozi->sparovany!=NULL)
 		  	{
 					cas+=d/F->pom_element->pohon->aRD;
-					if(v.MAG_LASO->sparovany->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
+					if(v.MAG_LASO->predchozi->sparovany->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
 				}
 		  	else
 		  	{
 					cas+=d/F->pom_element->pohon->aRD;
-					if(v.MAG_LASO->Element->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
+					if(v.MAG_LASO->predchozi->Element->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
 				}
 			}
 
@@ -1359,18 +1359,18 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv)
 					double buf=F->pom_element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;
 					cas+=F->pom_element->data.WTstop+F->pom_element->WT;
 					if(d<=buf)d_pom=0;
-          else d_pom-=buf;//odstranění přejezdu přes buffer
+					else d_pom-=buf;//odstranění přejezdu přes buffer
 				}
 				//vypočet času přejezdu a WTpalec
-				if(v.MAG_LASO->Element->n==MaxInt && v.MAG_LASO->sparovany!=NULL)
+				if(v.MAG_LASO->predchozi->Element->n==MaxInt && v.MAG_LASO->predchozi->sparovany!=NULL)
 				{
 					cas+=d_pom/F->pom_element->pohon->aRD;
-					if(v.MAG_LASO->sparovany->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
+					if(v.MAG_LASO->predchozi->sparovany->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);//není třeba zde řešít, řeší se výše v průchodu uložených segmentů
 				}
 				else
 				{
 					cas+=d_pom/F->pom_element->pohon->aRD;
-					if(v.MAG_LASO->Element->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
+					if(v.MAG_LASO->predchozi->Element->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);//není třeba zde řešít, řeší se výše v průchodu uložených segmentů
 				}
 			}
 
