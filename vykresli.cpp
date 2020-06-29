@@ -941,10 +941,36 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv,int X,int Y,bool kalibracni_sipka
 //metoda na vykreslení měřítka á la magnetické laso nebo vzádlenost teploměrů na pohonu
 void Cvykresli::vykresli_meridlo(TCanvas *canv)
 {
+  ////přesměrování podle typu vykreslení
 	if(F->pom_element!=NULL && ((v.MAG_LASO->dalsi==NULL && m.azimut(v.MAG_LASO->Element->geo.X1,v.MAG_LASO->Element->geo.Y1,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y)!=F->pom_element->geo.orientace-F->pom_element->geo.rotacni_uhel) || (v.MAG_LASO->dalsi!=NULL && v.MAG_LASO->sparovany!=NULL && ((v.MAG_LASO->predchozi->n==1 && ((F->pom_element->dalsi==v.MAG_LASO->sparovany || (F->pom_element->dalsi!=NULL && F->pom_element->dalsi->dalsi==v.MAG_LASO->sparovany)) || F->pom_element->dalsi2==v.MAG_LASO->sparovany)) || (v.MAG_LASO->predchozi->n>1 && (v.MAG_LASO->dalsi->dalsi->Element->dalsi==v.MAG_LASO->sparovany || (v.MAG_LASO->dalsi->dalsi->Element->dalsi!=NULL && v.MAG_LASO->dalsi->dalsi->Element->dalsi->dalsi==v.MAG_LASO->sparovany) || v.MAG_LASO->dalsi->dalsi->Element->dalsi2==v.MAG_LASO->sparovany))))))
 		vykresli_meridlo_proti_trendu(canv);
 	else
 		vykresli_meridlo_po_trendu(canv);
+
+  ////vykreslní citelných oblastí
+  if(F->prichytavat_k_mrizce==1 && F->pom_element!=NULL)
+	{
+		//nastavení geometrického pera
+		short width=m.round(m.m2px(F->velikost_citelne_oblasti_elementu));
+		set_pen(canv,clMeridlo,width,PS_ENDCAP_FLAT);
+		canv->Pen->Mode=pmNotXor;
+		//vykreslení
+		if(F->pom_element->stav==2 && (F->pom_element!=v.MAG_LASO->sparovany || (v.MAG_LASO->Element->geo.X4!=v.MAG_LASO->sparovany->geo.X4 || v.MAG_LASO->Element->geo.Y4!=v.MAG_LASO->sparovany->geo.Y4)))
+			canv->Ellipse(m.L2Px(F->pom_element->geo.X4)-width,m.L2Py(F->pom_element->geo.Y4)-width,m.L2Px(F->pom_element->geo.X4)+width,m.L2Py(F->pom_element->geo.Y4)+width);
+		else if(F->pom_element->predchozi->stav==2 && (F->pom_element->predchozi!=v.MAG_LASO->sparovany || (v.MAG_LASO->Element->geo.X4!=v.MAG_LASO->sparovany->geo.X4 || v.MAG_LASO->Element->geo.Y4!=v.MAG_LASO->sparovany->geo.Y4)))
+			canv->Ellipse(m.L2Px(F->pom_element->predchozi->geo.X4)-width,m.L2Py(F->pom_element->predchozi->geo.Y4)-width,m.L2Px(F->pom_element->predchozi->geo.X4)+width,m.L2Py(F->pom_element->predchozi->geo.Y4)+width);
+		//kontrola zda jsem na vrátkách objektu
+		else
+		{
+			TPointD P;
+			P=v.InVrata(F->pom_element);
+			if(P.x!=-1*MaxInt && P.y!=-1*MaxInt)
+			{
+				//vykreslení
+				canv->Ellipse(m.L2Px(P.x)-width,m.L2Py(P.y)-width,m.L2Px(P.x)+width,m.L2Py(P.y)+width);
+			}
+		}
+	}
 }
 ////---------------------------------------------------------------------------
 //vykreslí měření po trendu linky
@@ -1155,31 +1181,6 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv)
 		}
 		else vykresli_Gelement(canv,X,Y,azimut,0,delka,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]");
 	}
-
-	////vykreslní citelných oblastí
-  if(F->prichytavat_k_mrizce==1 && F->pom_element!=NULL)
-	{
-		//nastavení geometrického pera
-		short width=m.round(m.m2px(F->velikost_citelne_oblasti_elementu));
-		set_pen(canv,clMeridlo,width,PS_ENDCAP_FLAT);
-		canv->Pen->Mode=pmNotXor;
-		//vykreslení
-		if(F->pom_element->stav==2 && (F->pom_element!=v.MAG_LASO->sparovany || (v.MAG_LASO->Element->geo.X4!=v.MAG_LASO->sparovany->geo.X4 || v.MAG_LASO->Element->geo.Y4!=v.MAG_LASO->sparovany->geo.Y4)))
-			canv->Ellipse(m.L2Px(F->pom_element->geo.X4)-width,m.L2Py(F->pom_element->geo.Y4)-width,m.L2Px(F->pom_element->geo.X4)+width,m.L2Py(F->pom_element->geo.Y4)+width);
-		else if(F->pom_element->predchozi->stav==2 && (F->pom_element->predchozi!=v.MAG_LASO->sparovany || (v.MAG_LASO->Element->geo.X4!=v.MAG_LASO->sparovany->geo.X4 || v.MAG_LASO->Element->geo.Y4!=v.MAG_LASO->sparovany->geo.Y4)))
-			canv->Ellipse(m.L2Px(F->pom_element->predchozi->geo.X4)-width,m.L2Py(F->pom_element->predchozi->geo.Y4)-width,m.L2Px(F->pom_element->predchozi->geo.X4)+width,m.L2Py(F->pom_element->predchozi->geo.Y4)+width);
-		//kontrola zda jsem na vrátkách objektu
-		else
-		{
-			TPointD P;
-			P=v.InVrata(F->pom_element);
-			if(P.x!=-1*MaxInt && P.y!=-1*MaxInt)
-			{
-				//vykreslení
-				canv->Ellipse(m.L2Px(P.x)-width,m.L2Py(P.y)-width,m.L2Px(P.x)+width,m.L2Py(P.y)+width);
-			}
-		}
-	}
 }
 ////---------------------------------------------------------------------------
 //vykreslí měření proti trendu linky
@@ -1358,6 +1359,7 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv)
 					double buf=F->pom_element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;
 					cas+=F->pom_element->data.WTstop+F->pom_element->WT;
 					if(d<=buf)d_pom=0;
+          else d_pom-=buf;//odstranění přejezdu přes buffer
 				}
 				//vypočet času přejezdu a WTpalec
 				if(v.MAG_LASO->Element->n==MaxInt && v.MAG_LASO->sparovany!=NULL)
