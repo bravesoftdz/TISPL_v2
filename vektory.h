@@ -157,6 +157,18 @@ class Cvektory
 	};
 	T2Element *VYHYBKY;
 
+  struct TCesta//pouze přidružený spoják, který je součástí zakázky, jeden objekt spojáku je jeden segment cesty
+	{
+		unsigned long n;
+		Tdata data;//data elementu pro konkrétní zakázku
+		struct TElement *Element;//element v segmentu cesty
+		struct TElement *sparovany;//spárovaný element k elementu, opět unikátní pro zakázku
+
+		struct TCesta *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+		struct TCesta *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+	};
+	TCesta *MAG_LASO;
+
 	struct TObjekt
 	{
 		unsigned long n; //pořadí objektu ve spoj.seznamu
@@ -192,6 +204,7 @@ class Cvektory
 		T2Rect kabinaKotaY_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny -//DOPRYC
 		TPointD koty_elementu_offset;//.x=odsazení kót elementů v metrech normální stav, .y=odsazení kót elementův metrech editace geometrie  - NEW + dodat do CObjekt!!!!
 		TKomora *komora;//ukazatel na případné komory objektu - NEW + dodat do CObjekt
+		TCesta *c_teplomery;
 		unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky   //DOPRYC
 		unsigned short stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky   //DOPRYC
 		double odchylka;//povolená odchylka u PP z CT  //DOPRYC
@@ -219,18 +232,6 @@ class Cvektory
 		double vyska;
 		double ks;//kusů
 	};
-
-	struct TCesta//pouze přidružený spoják, který je součástí zakázky, jeden objekt spojáku je jeden segment cesty
-	{
-		unsigned long n;
-		Tdata data;//data elementu pro konkrétní zakázku
-		struct TElement *Element;//element v segmentu cesty
-		struct TElement *sparovany;//spárovaný element k elementu, opět unikátní pro zakázku
-
-		struct TCesta *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-		struct TCesta *dalsi;//ukazatel na  další objekt ve spojovém seznamu
-	};
-  TCesta *MAG_LASO;
 
 	struct TCesta_uloz//ukladání cesty
 	{
@@ -816,6 +817,12 @@ public:
 	double WIP(short typ_vypoctu=0);//vrátí max. počet vozíků na lince, kde parametr s implicitní hodnotou 0 je volaný výpočet z překrytí vozíků na časových osách, hodnot 1 - součtem kapacit zadaných (resp. v návrháru/architektovi vypočítaných), hodnota 2 - součtem kapacit vypočtených v časových osách,  3 - tradiční výpočet WIP=1/TT*LT
 	void uloz_doporucene_kapacity_objetku();//ukládá vypočtené doporučené kapacity jednotlivým technologickým objektům do jejich atribitu dop_kapacita, která se nezadává uživatelsky, ale jedině v tomto algoritmu
 	TMinMedAvgMax_d vrat_statisticke_doby_cekani_na_palec(TCesta *segment_cesty);//vrátí minimální, střední, průměrnou a maximální dobu čekání na palec v sec pro daný objekt (segment cesty) tak, jak bylo vypočteno v analýze/na časových osách, musí být tedy zde zvolena nějaká (libovolná) volba čekání na palec, mimo "žádná", Struktura TMinMedAvgMax_d vrací 4 hodnoty, min, med, agv, max datového typu double, volání výsledků probíhá přes “tečkový selektor”
+
+//c_teploměry
+  void hlavicka_c_teplomery(TObjekt *Objekt);//vytvoří v objektu hlavičku pro cestu teploměrů
+	void vymaz_seznam_c_teplomery(TObjekt *Objekt);//vymaže seznam teploměrů z objektu
+  void vloz_segment_cesty_c_teplomery(TObjekt *Objekt,TElement *Element,bool teplomer=false,double X=0,double Y=0);//vloží segment cesty do cest teploměrů v objektu, nebo vložení teploměru, doplnění bodu vložení
+	void vytvor_default_c_teplomery(TObjekt *Objekt);//vytvoří 2 teploměry a defaultní cestu mezi nimi
 
 //SQL
 	AnsiString QUERY(AnsiString query);//vratí AnsiString hodnod dle zadaného dotazu v syntaxi SQL, zatím umí jen základní úroveň - asi odstranit

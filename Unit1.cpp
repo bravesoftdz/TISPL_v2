@@ -2328,6 +2328,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			if(Akce==GEOMETRIE)d.smart_kurzor(bmp_in->Canvas,posledni_editovany_element);
 			if(MOD==TVORBA_CESTY)d.kurzor_cesta(bmp_in->Canvas);
 			if(Akce==MAGNETICKE_LASO)d.vykresli_meridlo(bmp_in->Canvas);
+      if(OBJEKT_akt!=NULL)d.vykresli_oblast_teplomery(bmp_in->Canvas,OBJEKT_akt);
 			Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 			Cantialising a;
 			Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
@@ -13732,8 +13733,20 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	d.vykresli_Gelement(Canvas,X,Y,OR,uhel,R,d.clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]","");
 //	d.vykresli_Gelement(Canvas,X,Y,OR,20,R,d.clMeridlo,2,"","");//vykreslení měřícího kurzoru, popisek není nutné používat, metodu ještě vylepším
 
-	Memo("");
-  scGPImage_mereni_vzdalenostClick(this);
+//	Memo("");
+//  scGPImage_mereni_vzdalenostClick(this);
+
+	Cvektory::TObjekt *O=d.v.vrat_objekt(19);
+	d.v.vytvor_default_c_teplomery(O);
+
+	Cvektory::TCesta *ct=O->c_teplomery->dalsi;
+	while(ct!=NULL)
+	{
+		Memo(ct->Element->name+"->eID = "+String(ct->Element->eID));
+		ct=ct->dalsi;
+	}
+	delete ct;ct=NULL;
+	O=NULL;delete O;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

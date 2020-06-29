@@ -1414,6 +1414,25 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv)
 	}
 }
 ////---------------------------------------------------------------------------
+//vykreslí teploměry a cestu mezi nimi
+void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,Cvektory::TObjekt *Objekt)
+{
+  //kontrola zda existují teploměry
+	if(Objekt!=NULL && Objekt->c_teplomery!=NULL)
+	{
+		Cvektory::TCesta *ct=Objekt->c_teplomery->dalsi;
+		while(ct!=NULL)
+		{
+			//vykreslení teploměrů
+			if(ct->Element->n==MaxInt)vykresli_teplomer(canv,m.L2Px(ct->Element->geo.X4),m.L2Py(ct->Element->geo.Y4),"","",ct->Element->eID,1,ct->sparovany->geo.orientace-ct->sparovany->geo.rotacni_uhel,1);
+			//vykreslení cesty
+
+			ct=ct->dalsi;
+		}
+    delete ct;ct=NULL;
+  }
+}
+////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
