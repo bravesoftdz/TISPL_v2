@@ -2465,7 +2465,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 			////Geometrie
 			if(Akce==GEOMETRIE && !editace_textu)ukonceni_geometrie();
 			////Potvrzení tvorby cesty
-			if(MOD==TVORBA_CESTY && scGPButton_ulozit->Enabled)scGPButton_OKClick(this);;
+			if(MOD==TVORBA_CESTY && scGPButton_ulozit->Enabled)scGPButton_OKClick(this);
 			////Hala
 			if(editace_textu)smaz_kurzor();
 			if(Akce==DRAW_HALA&&d.v.HALA.body!=NULL&&d.v.HALA.body->predchozi->n>2){d.v.vloz_bod(d.v.HALA.body->dalsi->X,d.v.HALA.body->dalsi->Y,pom,NULL,ortogonalizace_stav,true);Akce=NIC;kurzor(standard);TIP="";REFRESH();}
@@ -13714,42 +13714,22 @@ void __fastcall TForm1::Timer_simulaceTimer(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 {
-//	Memo("");
-//	scGPImage_mereni_vzdalenostClick(this);
+	double delka,cas,R,RA,OR,X,Y,uhel;
+	pom_element=d.v.ELEMENTY->dalsi->dalsi;
 
-//	TRect oblast=vrat_max_oblast();
-//	if(!(oblast.left>10000 && oblast.right<-10000))
-//	{
-//		//deklarace
-//		int MaxX=oblast.right,MaxY=oblast.top,MinX=oblast.left,MinY=oblast.bottom;
-//		int PD_x=ClientWidth-scSplitView_LEFTTOOLBAR->Width;
-//		int PD_y=ClientHeight-vyska_menu-scGPPanel_statusbar->Height-scGPPanel_mainmenu->Height;//-vyska_menu-RzStatusBar1->Height je navíc nemá tam co dělat
-//		TPointD centr;
-//		centr.x=m.P2Lx((MaxX+MinX)/2.0);
-//		centr.y=m.P2Ly((MaxY+MinY)/2.0);
-//
-//		//výpočet nového Zoomu
-//		double Z1=abs(Zoom*PD_x/(MaxX-MinX)),Z2=abs(Zoom*PD_y/abs(MaxY-MinY));
-//		Z1-=fmod(Z1,0.5);Z2-=fmod(Z2,0.5);
-//		if(Z1>Z2)Zoom=Z2;else Zoom=Z1;
-//		if(Zoom<0.5)Zoom=0.5;if(Zoom>10)Zoom=10;
-//
-//		//vycentrování obrazu
-//		PD_x=(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0;
-//		PD_y=(ClientHeight+(scGPPanel_mainmenu->Height-scGPPanel_statusbar->Height)-scGPPanel_bottomtoolbar->Height)/2.0;
-//		Posun.x+=(m.L2Px(centr.x)-PD_x)/Zoom;
-//		Posun.y+=(m.L2Py(centr.y)-PD_y)/Zoom;
-//
-//		//překreslení
-//		on_change_zoom_change_scGPTrackBar();
-//	}
-//	vytvor_statickou_scenu();
-//	REFRESH();
+	//načítání parametrů
+	R=F->pom_element->geo.radius;
+	RA=-F->pom_element->geo.rotacni_uhel;//rotační úhel, pod kterým je oblouk rotován - směřován (proti směru hodinových ručiček), může být záporný (po směru hodinových ručiček)
+	OR=F->pom_element->geo.orientace;
+	X=F->pom_element->geo.X1,Y=F->pom_element->geo.Y1;
 
-	Cvektory::TElement *E=d.v.OBJEKTY->dalsi->element->dalsi->dalsi->dalsi->dalsi2;
-	Memo(E->name);
-	d.line(Canvas,0,0,m.L2Px(E->geo.X1),m.L2Py(E->geo.Y1));
-	d.line(Canvas,0,0,m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
+	//výpočetní část, mělo by být volané v případě úspěchu podmínky if(m.PtInSegment....
+	uhel=60;//m.uhelObloukuVsMys(X,Y,OR,RA,R,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
+	delka=m.R2Larc(R,uhel);//požadovaná délka na oblouku vybraná myší, vracení délky dané výseče, tj. k na(při)počítání měřené délky
+
+	//vykreslovací část
+	d.vykresli_Gelement(Canvas,X,Y,OR,uhel,R,d.clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]","");
+	d.vykresli_Gelement(Canvas,X,Y,OR,20,R,d.clMeridlo,2,"","");//vykreslení měřícího kurzoru, popisek není nutné používat, metodu ještě vylepším
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -15789,7 +15769,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 			//kontrola zda měřím po trendu nebo proti
 			bool po_trendu=true;
 			if((d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->dalsi->sparovany!=NULL && d.v.MAG_LASO->dalsi->sparovany==d.v.MAG_LASO->sparovany && m.azimut(d.v.MAG_LASO->Element->geo.X1,d.v.MAG_LASO->Element->geo.Y1,d.v.MAG_LASO->predchozi->Element->geo.X4,d.v.MAG_LASO->predchozi->Element->geo.Y4)!=d.v.MAG_LASO->dalsi->sparovany->geo.orientace-d.v.MAG_LASO->dalsi->sparovany->geo.rotacni_uhel) || (d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->sparovany!=NULL && (d.v.MAG_LASO->predchozi->n>1 && ((d.v.MAG_LASO->dalsi->dalsi->Element->n!=MaxInt && (d.v.MAG_LASO->dalsi->dalsi->Element->dalsi==d.v.MAG_LASO->sparovany || (d.v.MAG_LASO->dalsi->predchozi->Element->dalsi!=NULL && d.v.MAG_LASO->predchozi->predchozi->Element->dalsi->dalsi==d.v.MAG_LASO->sparovany) || d.v.MAG_LASO->dalsi->dalsi->Element->dalsi2==d.v.MAG_LASO->sparovany)) || (d.v.MAG_LASO->dalsi->dalsi->Element->n==MaxInt && d.v.MAG_LASO->dalsi->dalsi->sparovany!=NULL && (d.v.MAG_LASO->dalsi->dalsi->sparovany->dalsi==d.v.MAG_LASO->sparovany || (d.v.MAG_LASO->dalsi->predchozi->sparovany->dalsi!=NULL && d.v.MAG_LASO->dalsi->dalsi->sparovany->dalsi->dalsi==d.v.MAG_LASO->sparovany) || d.v.MAG_LASO->dalsi->dalsi->sparovany->dalsi2==d.v.MAG_LASO->sparovany))))))
-				po_trendu=false;;
+				po_trendu=false;
 			//měření
 			Cvektory::TCesta *C=d.v.MAG_LASO->dalsi;
 			double s=0,delka=0,cas=0,X,Y,uhel;
@@ -15833,7 +15813,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 				if(C->sparovany!=NULL && C->Element->geo.X2==C->Element->geo.X3 && C->Element->geo.X3==C->Element->geo.X4)popisek+=", přichyceno na "+C->Element->name;
 			}
 			else//nelineární měření
-			{   Memo_testy->Clear();
+			{
 				while(C!=NULL)
 				{
 					//zjištění souřadnic
@@ -15923,7 +15903,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 						  		//výpočet vzdálenosti od stopstanice
 									double s=m.delka(d.v.MAG_LASO->Element->geo.X4,d.v.MAG_LASO->Element->geo.Y4,CE->geo.X4,CE->geo.Y4);
 						  		//výpočet velikosti bufferu stopstanice
-									double buf=CE->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice;);
+									double buf=CE->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice;
 						  		//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
 									if(s<=buf)
 									{
