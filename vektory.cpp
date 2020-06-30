@@ -458,6 +458,7 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->koty_elementu_offset.x=0;//odsazení kót elementů v metrech
 	novy->koty_elementu_offset.y=0;//odsazení kót elementů v metrech
 	novy->komora=NULL;//ukazatel na komory
+  novy->c_teplomery=NULL;
 	novy->probehla_aktualizace_prirazeni_pohonu=false;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
 	novy->zobrazit_koty=true;//proměnná určující, zda se budou zobrzovat kóty
 	novy->zobrazit_mGrid=true;//proměnná určující, zda budou zobrazeny mGridy
@@ -712,6 +713,7 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->koty_elementu_offset=Original->koty_elementu_offset;
 	Kopie->komora=NULL;//POZOR TOTO NENÍ ZCELA SPRÁVNĚ, MĚLO BY SE NEJDŘÍVE SMAZAT PŘIDRUŽENÝ SPOJÁK, ABY NEZŮSTAL V PAMĚTI
 	Kopie->body=NULL;//POZOR TOTO NENÍ ZCELA SPRÁVNĚ, MĚLO BY SE NEJDŘÍVE SMAZAT PŘIDRUŽENÝ SPOJÁK, ABY NEZŮSTAL V PAMĚTI
+  Kopie->c_teplomery=NULL;
 	if(Kopie->id==3)kopiruj_komory(Original,Kopie);//pokud se jedná o POWash
 	Kopie->probehla_aktualizace_prirazeni_pohonu=Original->probehla_aktualizace_prirazeni_pohonu;
 	Kopie->zobrazit_koty=Original->zobrazit_koty;//proměnná určující, zda se budou zobrzovat kóty
@@ -833,6 +835,7 @@ short int Cvektory::smaz_objekt(TObjekt *Objekt)
 	vymaz_elementy(Objekt);
 	vymaz_body(Objekt);
 	vymaz_komory(Objekt);
+  vymaz_seznam_c_teplomery(Objekt);
 	delete Objekt;Objekt=NULL;//smaže mazaný prvek
 
 	//aktualizace číslování objektů, řešeno zde, metoda nove_indexy slouží při vkládání objektů, není zcela vhodná pro mazání objektu
@@ -1424,6 +1427,7 @@ long Cvektory::vymaz_seznam_OBJEKTY()
 	{
 		vymaz_body(OBJEKTY->predchozi);
 		vymaz_komory(OBJEKTY->predchozi);
+		vymaz_seznam_c_teplomery(OBJEKTY->predchozi);
 		//vymaz_elementy(OBJEKTY->predchozi);
 		pocet_smazanych_objektu++;
 		OBJEKTY->predchozi=NULL;
@@ -7176,6 +7180,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 					ukaz->element=NULL;
 					ukaz->element_n=c_ukaz->element_n;
 					ukaz->komora=NULL;    //NUTNOST PRO AUTO VYTVARENI HLAVICKY
+          ukaz->c_teplomery=NULL;
 					ukaz->zobrazit_koty=c_ukaz->zobrazit_koty;
 					ukaz->zobrazit_mGrid=c_ukaz->zobrazit_mGrid;
 					ukaz->uzamknout_nahled=c_ukaz->uzamknout_nahled;
@@ -8948,6 +8953,158 @@ TPointD Cvektory::InVrata(TElement *E)
 	O=NULL;delete O;
 	//vracení výsledku
   return ret;
+}
+////---------------------------------------------------------------------------
+//vytvoří v objektu hlavičku pro cestu teploměrů
+void Cvektory::hlavicka_c_teplomery(TObjekt *Objekt)
+{
+  //vytvoření segmentu
+	TCesta *novy=new TCesta;
+
+  //definice atriburů
+	novy->n=0;
+	novy->Element=NULL;
+	novy->sparovany=NULL;
+	novy->dalsi=NULL;
+	novy->predchozi=novy;
+
+	//zařazení do seznamu
+	Objekt->c_teplomery=novy;
+
+  //ukazatelové záležitosti
+	novy=NULL;delete novy;
+}
+////---------------------------------------------------------------------------
+//vymaže seznam teploměrů z objektu
+void Cvektory::vymaz_seznam_c_teplomery(TObjekt *Objekt)
+{
+	//kontrola zda je co mazat
+	if(Objekt->c_teplomery!=NULL)
+	{
+		//mazání všeho
+		while(Objekt->c_teplomery!=NULL)
+		{
+      //odmazání fiktivního elementu teploměr
+			if(Objekt->c_teplomery->predchozi->Element!=NULL && Objekt->c_teplomery->predchozi->Element->n==MaxInt)
+			{
+				delete Objekt->c_teplomery->predchozi->Element;
+				Objekt->c_teplomery->predchozi->Element=NULL;
+			}
+      //mazání segmentu
+			delete Objekt->c_teplomery->predchozi;
+			Objekt->c_teplomery->predchozi=NULL;
+			Objekt->c_teplomery=Objekt->c_teplomery->dalsi;
+		}
+
+		//mazání hlavičky a nulování ukazatele
+		delete Objekt->c_teplomery;Objekt->c_teplomery=NULL;
+  }
+}
+////---------------------------------------------------------------------------
+//vloží segment cesty do cest teploměrů v objektu, nebo vložení teploměru, doplnění bodu vložení
+void Cvektory::vloz_segment_cesty_c_teplomery(TObjekt *Objekt,TElement *Element,bool teplomer,double X,double Y)
+{
+	//pokud objekt nemá cestu vytvoří jí
+	if(Objekt->c_teplomery==NULL)hlavicka_c_teplomery(Objekt);
+
+	//vytvoření nove vkládáného záznamu
+	TCesta *novy=new TCesta;
+
+	//definice atributů
+	novy->n=Objekt->c_teplomery->predchozi->n+1;
+	novy->Element=Element;
+	novy->sparovany=NULL;
+	novy->dalsi=NULL;
+
+  //vkládání teploměru
+	if(teplomer)
+	{
+    novy->sparovany=Element;
+		novy->Element=new TElement;
+		novy->Element->n=MaxInt;
+		novy->Element->geo.X1=novy->Element->geo.X4=X;
+		novy->Element->geo.Y1=novy->Element->geo.Y4=Y;
+    //nastavení eID podle typu objektu
+    unsigned int eID;
+		switch(Objekt->id)
+		{
+			case 6:eID=402;break;//"vytěkání"
+			case 7:eID=400;break;//"sušení"
+			case 8:eID=401;break;//"chlazení"
+      default:eID==400;break;
+		}
+		novy->Element->eID=eID;
+  }
+
+  //zařazení do seznamu
+	novy->predchozi=Objekt->c_teplomery->predchozi;
+	Objekt->c_teplomery->predchozi->dalsi=novy;
+  Objekt->c_teplomery->predchozi=novy;
+
+	//ukazatelové záležitosti
+	novy=NULL;delete novy;
+}
+////---------------------------------------------------------------------------
+//vytvoří 2 teploměry a defaultní cestu mezi nimi
+void Cvektory::vytvor_default_c_teplomery(TObjekt *Objekt)
+{
+	//v případě že již existuje vymazat
+	if(Objekt->c_teplomery!=NULL)vymaz_seznam_c_teplomery(Objekt);
+	//založení hlavičky
+	hlavicka_c_teplomery(Objekt);
+
+	//hledání vrátek
+	TElement *E=Objekt->element,*prvniE=NULL,*posledniE=NULL;
+	TPointD P,prvni,posledni;
+	int nalezeno=0;
+	while(E!=NULL && E->objekt_n==Objekt->n)
+	{
+    //hledání průsečíku s kabinou objektu
+		P=InVrata(E);
+		if(P.x!=-1*MaxInt && P.y!=-1*MaxInt)//pokud byl nalezen
+		{
+			nalezeno++;//počet nalezených bodů
+			posledni=P;//zapsání každého nalezeného bodu do posledního
+			posledniE=E;//ukládání ukazatele
+		}
+		if(nalezeno==1)//pokud se jedná o první nalezený bod, zapíše ho do prvního
+		{
+			prvni=P;
+			prvniE=E;//ukládání ukazatele
+		}
+
+    //ukazatelové záležitosti
+		if(E->dalsi==NULL || (E->dalsi!=NULL && E->dalsi->objekt_n!=Objekt->n))break;//přerušení průchodu na posledním elementu
+		E=E->dalsi;//procházení pouze po hlavní větvi, "hlavní" vrátka
+	}
+
+	//kontrola zda existují vrátka + řešení
+	if(prvniE==NULL)//pokud nebyl nalezen
+	{
+		prvniE=Objekt->element;//defaultně vezmu první element v kabině
+		prvni.x=prvniE->geo.X1;prvni.y=prvniE->geo.Y1;//první bod geometrie tohoto elementu
+	}
+	if(posledniE==NULL)//pokud nebyl nalezen
+	{
+		posledniE=E;//defaultně poslední element v kabině
+		posledni.x=posledniE->geo.X4;posledni.y=posledniE->geo.Y4;//první bod geometrie tohoto elementu
+	}
+
+	//vkládání teploměrů a cesty mezi nimi
+	vloz_segment_cesty_c_teplomery(Objekt,prvniE,true,prvni.x,prvni.y);
+	E=prvniE->dalsi;
+	while(E!=NULL)
+	{
+    //vkládání segmentů cesty a druhého teploměru
+		if(E==posledniE){vloz_segment_cesty_c_teplomery(Objekt,posledniE,true,posledni.x,posledni.y);break;}
+		else vloz_segment_cesty_c_teplomery(Objekt,E);
+		E=E->dalsi;
+  }
+
+	//ukazatelové záležitosti
+	E=NULL;delete E;
+	posledniE=NULL;delete posledniE;
+	prvniE=NULL;delete prvniE;
 }
 ////---------------------------------------------------------------------------
 

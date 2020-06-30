@@ -39,6 +39,7 @@ class Cvykresli
 	void vykresli_meridlo(TCanvas *canv);//metoda na vykreslení mìøítka á la magnetické laso nebo vzádlenost teplomìrù v na pohonu, pøsmìruje vykreslení podle trendu
 	void vykresli_meridlo_po_trendu(TCanvas *canv);//vykreslí mìøení po trendu linky
 	void vykresli_meridlo_proti_trendu(TCanvas *canv);//vykresli mìøení proti trendu linky
+  void vykresli_oblast_teplomery(TCanvas *canv,Cvektory::TObjekt *Objekt);//vykreslí teplomìry a cestu mezi nimi
 	void vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E);//vykresli pozic a obalových zón
 	void vykresli_dopravnik(TCanvas *canv, Cvektory::TZakazka *zakazka=NULL);//kreslí koleje, pouzdro øetìzu, øetìz samotný, pøedávací místo i popisek pohonu, slouží i zároveò na náhled cest zakázek
 	void vykresli_retez(TCanvas *canv,Cvektory::TRetez *Retez);
