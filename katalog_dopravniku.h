@@ -46,6 +46,7 @@ private:	// User declarations
     TPoint check;
     TColor clBACKGROUND_light,clBACKGROUND_dark,clNORMAL,clOTHER_AFTER_CHOOSE,clSELECTED_BLUE,clBACKGROUND;
     enum Tinput_state{NO,NOTHING,LOADING,JOB};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
+    unsigned int last_Col, last_Row;
 
 
 public:		// User declarations
@@ -57,6 +58,9 @@ public:		// User declarations
     int katalog_id;
     void vypis(UnicodeString text,bool red=true,bool link=false);
     Tinput_state input_state;//stav vstupu DV,SV,TT...atd
+    unsigned long ColCount;
+    unsigned long RowCount;
+
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm_katalog *Form_katalog;
