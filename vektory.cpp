@@ -2728,7 +2728,14 @@ Cvektory::TElement *Cvektory::najdi_tabulku(TObjekt *Objekt, double X, double Y)
 		if(E->mGrid!=NULL && E->Xt<=X && X<=E->Xt+E->mGrid->Width*F->m2px/F->Zoom && E->Yt>=Y && Y>=E->Yt-E->mGrid->Height*F->m2px/F->Zoom)ret=E;
 		E=dalsi_krok(E);
 	}
+	//hledání předchozího PM
 	if(ret==NULL && F->predchozi_PM!=NULL && F->predchozi_PM->mGrid!=NULL && F->predchozi_PM->Xt<=X && X<=F->predchozi_PM->Xt+F->predchozi_PM->mGrid->Width*F->m2px/F->Zoom && F->predchozi_PM->Yt>=Y && Y>=F->predchozi_PM->Yt-F->predchozi_PM->mGrid->Height*F->m2px/F->Zoom)ret=F->predchozi_PM;
+  //hledání tabulky teploměru
+	if(ret==NULL && Objekt==F->OBJEKT_akt && Objekt->c_teplomery!=NULL && Objekt->c_teplomery->predchozi->Element->mGrid!=NULL)
+	{
+		E=Objekt->c_teplomery->predchozi->Element;
+		if(E->mGrid!=NULL && E->Xt<=X && X<=E->Xt+E->mGrid->Width*F->m2px/F->Zoom && E->Yt>=Y && Y>=E->Yt-E->mGrid->Height*F->m2px/F->Zoom)ret=E;
+  }
 	E=NULL;delete E;
 	return ret;
 }
@@ -8909,7 +8916,7 @@ short Cvektory::obsahuje_MAG_LASO_element(TElement *E)
 }
 ////---------------------------------------------------------------------------
 //zkontroloje, zda existují vrátka objektu a jestli jsem kurzorem v jejich oblasti, pokud ano vrátí bod, pokud ne vrátí [-MaxInt,-MaxInt]
-TPointD Cvektory::InVrata(TElement *E)
+TPointD Cvektory::InVrata(TElement *E,bool kontrola_kurzoru)
 {
 	//deklarace
 	TPointD ret;
@@ -8934,11 +8941,11 @@ TPointD Cvektory::InVrata(TElement *E)
 			P=m.PrusecikPrimek(xs1,ys1,xk1,yk1,xs2,ys2,xk2,yk2);
 			if(!IsNan(P.x) && !IsNan(P.y) && !IsInfinite(P.x) && !IsInfinite(P.y))//prusečík existuje
 			{
-				//kontrola zda jsem kurzorem v této oblasti
-				if(m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,P.x,P.y,F->velikost_citelne_oblasti_elementu))
+				//kontrola zda jsem kurzorem v této oblasti, pokud je navoleno, když ne kontrola zda jsem v segmentu elementu, přidána kontrola koncových bodů, ptinsegment měl problém s počátečním bodem
+				if((!kontrola_kurzoru && ((P.x==xs1 && P.y==ys1) || (P.x==xk1 && P.y==yk1) || m.LeziVblizkostiUsecky(P.x,P.y,xs1,ys1,xk1,yk1)==0)) || m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,P.x,P.y,F->velikost_citelne_oblasti_elementu))
 				{
 					ret=P;
-          break;
+					break;
         }
       }
 			A=A->dalsi;
@@ -9020,6 +9027,9 @@ void Cvektory::vloz_segment_cesty_c_teplomery(TObjekt *Objekt,TElement *Element,
     novy->sparovany=Element;
 		novy->Element=new TElement;
 		novy->Element->n=MaxInt;
+    novy->Element->objekt_n=Element->objekt_n;
+    novy->Element->mGrid=NULL;
+		novy->Element->geo=Element->geo;//kopírování všech parametrů geometrie
 		novy->Element->geo.X1=novy->Element->geo.X4=X;
 		novy->Element->geo.Y1=novy->Element->geo.Y4=Y;
     //nastavení eID podle typu objektu
@@ -9058,20 +9068,25 @@ void Cvektory::vytvor_default_c_teplomery(TObjekt *Objekt)
 	while(E!=NULL && E->objekt_n==Objekt->n)
 	{
     //hledání průsečíku s kabinou objektu
-		P=InVrata(E);
+		P=InVrata(E,false);
 		if(P.x!=-1*MaxInt && P.y!=-1*MaxInt)//pokud byl nalezen
 		{
 			nalezeno++;//počet nalezených bodů
-			posledni=P;//zapsání každého nalezeného bodu do posledního
-			posledniE=E;//ukládání ukazatele
-		}
-		if(nalezeno==1)//pokud se jedná o první nalezený bod, zapíše ho do prvního
-		{
-			prvni=P;
-			prvniE=E;//ukládání ukazatele
+      if(nalezeno==1)//pokud se jedná o první nalezený bod, zapíše ho do prvního
+	  	{
+	  		prvni=P;
+				prvniE=E;//ukládání ukazatele
+				//pokud je v objektu pouze jeden element, dochází k problémům při hledání vrátek, work
+				if(E->dalsi==NULL || (E->dalsi!=NULL && E->dalsi->objekt_n!=Objekt->n)){prvni.x=E->geo.X1;prvni.y=E->geo.Y1;}
+			}
+			else//každý další se ukládá do posledního
+			{
+				posledni=P;//zapsání každého nalezeného bodu do posledního
+				posledniE=E;//ukládání ukazatele
+      }
 		}
 
-    //ukazatelové záležitosti
+		//ukazatelové záležitosti
 		if(E->dalsi==NULL || (E->dalsi!=NULL && E->dalsi->objekt_n!=Objekt->n))break;//přerušení průchodu na posledním elementu
 		E=E->dalsi;//procházení pouze po hlavní větvi, "hlavní" vrátka
 	}
@@ -9090,14 +9105,20 @@ void Cvektory::vytvor_default_c_teplomery(TObjekt *Objekt)
 
 	//vkládání teploměrů a cesty mezi nimi
 	vloz_segment_cesty_c_teplomery(Objekt,prvniE,true,prvni.x,prvni.y);
-	E=prvniE->dalsi;
-	while(E!=NULL)
+	//kontrola zda se první a poslední element rovná
+	if(prvniE==posledniE)vloz_segment_cesty_c_teplomery(Objekt,posledniE,true,posledni.x,posledni.y);
+  //uložení cesty
+	else
 	{
-    //vkládání segmentů cesty a druhého teploměru
-		if(E==posledniE){vloz_segment_cesty_c_teplomery(Objekt,posledniE,true,posledni.x,posledni.y);break;}
-		else vloz_segment_cesty_c_teplomery(Objekt,E);
-		E=E->dalsi;
-  }
+  	E=prvniE->dalsi;
+  	while(E!=NULL)
+  	{
+  		//vkládání segmentů cesty a druhého teploměru
+  		if(E==posledniE){vloz_segment_cesty_c_teplomery(Objekt,posledniE,true,posledni.x,posledni.y);break;}
+  		else vloz_segment_cesty_c_teplomery(Objekt,E);
+  		E=E->dalsi;
+  	}
+	}
 
 	//ukazatelové záležitosti
 	E=NULL;delete E;
@@ -9105,4 +9126,103 @@ void Cvektory::vytvor_default_c_teplomery(TObjekt *Objekt)
 	prvniE=NULL;delete prvniE;
 }
 ////---------------------------------------------------------------------------
+//hledá zda není uživatel kurzorem nad teploměrem, pokud ano vrátí ukazatel na teploměr
+Cvektory::TElement *Cvektory::najdi_teplomer()
+{
+	//deklarace
+	TElement *ret=NULL;
+
+	//hledání zda jsem v oblasti nějakého teploměru, pokud existuje cesta a teploměry
+	if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->c_teplomery!=NULL)
+	{
+		//kontrola prvního teploměru
+		if(m.PtInTeplomer(F->OBJEKT_akt->c_teplomery->dalsi->Element->geo.X1,F->OBJEKT_akt->c_teplomery->dalsi->Element->geo.Y1,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,F->OBJEKT_akt->c_teplomery->dalsi->sparovany->orientace))
+		{
+			ret=F->OBJEKT_akt->c_teplomery->dalsi->Element;//nalezeno
+		}
+		//kontrola druhého teploměru
+		if(m.PtInTeplomer(F->OBJEKT_akt->c_teplomery->predchozi->Element->geo.X1,F->OBJEKT_akt->c_teplomery->predchozi->Element->geo.Y1,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,F->OBJEKT_akt->c_teplomery->predchozi->sparovany->orientace))
+		{
+			ret=F->OBJEKT_akt->c_teplomery->predchozi->Element;//nalezeno
+		}
+	}
+
+	//vracení parametru
+	return ret;
+}
+////---------------------------------------------------------------------------
+//zkopíruje cestu a teploměry do spojáku MAG_LASO
+void Cvektory::kopiruj_c_teplomeru_do_MAG_LASO(TCesta *original)
+{
+	if(MAG_LASO!=NULL)vymaz_seznam_MAG_LASO();
+	TCesta *akt=original,*novy=NULL;
+	while(akt!=NULL)
+	{
+		//kopírování segmentu
+		novy=new TCesta;
+		novy->n=akt->n;
+		novy->data=akt->data;
+		novy->Element=akt->Element;
+		novy->sparovany=akt->sparovany;
+		if(akt->Element!=NULL && akt->Element->n==MaxInt)
+		{
+			novy->Element=new TElement;
+			kopiruj_element(akt->Element,novy->Element);//kopírování parametrů
+    }
+
+		//zařazení do spojáku kopie
+		novy->dalsi=NULL;
+		if(MAG_LASO==NULL)
+		{
+			novy->predchozi=novy;
+			MAG_LASO=novy;
+		}
+		else
+		{
+			novy->predchozi=MAG_LASO->predchozi;
+			MAG_LASO->predchozi->dalsi=novy;
+			MAG_LASO->predchozi=novy;
+		}
+
+		//posun na další segment cesty
+    novy=NULL;delete novy;
+		akt=akt->dalsi;
+	}
+	delete akt;akt=NULL;
+}
+////---------------------------------------------------------------------------
+//posunem teploměru dochází k editaci jeho oblasti
+void Cvektory::posun_teplomeru(TElement *teplomer)
+{
+	//kontrola zda existuje teploměr
+	if(teplomer!=NULL && F->OBJEKT_akt!=NULL && F->OBJEKT_akt->c_teplomery!=NULL)
+	{
+		//načtení elementu v jehož segmentu se nachází kurzor
+		TElement *E=NULL;//ELEMENTY->dalsi;
+		while(E!=NULL)
+		{
+			if(m.PtInSegment(E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y))
+				break;
+			E=dalsi_krok(E);
+		}
+		vymaz_seznam_VYHYBKY();//musí být pokud dojde k přerušení alg. dalsi_krok()
+
+		//přiřazení do spojáku
+		//if(E!=NULL)
+		{
+	  	//posun prvního teploměru
+			if(teplomer==F->OBJEKT_akt->c_teplomery->dalsi->Element)
+			{
+				F->OBJEKT_akt->c_teplomery->dalsi->Element->geo.X1=F->OBJEKT_akt->c_teplomery->dalsi->Element->geo.X4=F->akt_souradnice_kurzoru.x;
+				F->OBJEKT_akt->c_teplomery->dalsi->Element->geo.Y1=F->OBJEKT_akt->c_teplomery->dalsi->Element->geo.Y4=F->akt_souradnice_kurzoru.y;
+			}
+	  	//posun posledního teploměru
+	  	else
+	  	{
+				F->OBJEKT_akt->c_teplomery->predchozi->Element->geo.X1=F->OBJEKT_akt->c_teplomery->predchozi->Element->geo.X4=F->akt_souradnice_kurzoru.x;
+				F->OBJEKT_akt->c_teplomery->predchozi->Element->geo.Y1=F->OBJEKT_akt->c_teplomery->predchozi->Element->geo.Y4=F->akt_souradnice_kurzoru.y;
+	  	}
+		}
+  }
+}
 
