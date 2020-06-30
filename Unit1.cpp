@@ -5415,7 +5415,7 @@ void TForm1::pan_create()
 	short H=scGPPanel_mainmenu->Height;
 	int Gh=0;if(scGPPanel_bottomtoolbar->Visible)Gh=scGPPanel_bottomtoolbar->Height;Gh-=6;//WA, z nějaké důvodu to chce odebrat, aby byla posouváná plocha kompletní
 	scGPButton_bug_report->Visible=false;
-	Pan_bmp->Width=ClientWidth*2;Pan_bmp->Height=ClientHeight-H-Gh;//velikost pan plochy
+	Pan_bmp->Width=ClientWidth;Pan_bmp->Height=ClientHeight-H-Gh;//velikost pan plochy
 	Pan_bmp->Canvas->CopyRect(Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh),Canvas,Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh));//uloží pan výřez
 	if(MOD!=SIMULACE)scGPButton_bug_report->Visible=true;
 	//Pan_bmp->SaveToFile("test.bmp");  //pro testovací účely
