@@ -2314,7 +2314,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		////vykreslení GRIDu
 		if(grid && Zoom_predchozi_AA>0.5 && (Akce==MOVE_BOD||Akce==DRAW_HALA) && prichytavat_k_mrizce==1 && MOD!=SIMULACE)d.vykresli_grid(bmp_total->Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí//vykreslení gridu
 		////VEKTORY
-		if((d.SCENA==1111111 || d.SCENA==111111) && Akce!=GEOMETRIE && MOD!=TVORBA_CESTY && Akce!=MAGNETICKE_LASO && pom==NULL)//vše STATICKÁ scéna, nejsou žádně akce
+		if((d.SCENA==1111111 || d.SCENA==111111) && Akce!=GEOMETRIE && MOD!=TVORBA_CESTY && Akce!=MAGNETICKE_LASO && pom==NULL)//vše STATICKÁ scéna - totální statická scena, nejsou žádně akce
 		{
 			bmp_total->Canvas->Draw(0,0,Staticka_scena);//varianta, kdy je přeantialiasingovaná
 		}
@@ -2324,11 +2324,12 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			if(d.SCENA>0 && d.SCENA!=2222222 /*&& d.SCENA!=1111111 && d.SCENA!=111111*/)bmp_in->Canvas->Draw(0,0,Staticka_scena);//STATICKÁ scéna, je volaná pouze pokud to má smysl, není přeantialiasingovaná(AA), je jen připravená (3x větší) pro AA (aby byl již dříve AAnemá to smysl, pouze je 3x větší BMP, ale jinak by se nejednalo o úsporu)
 			Zoom_predchozi_AA=Zoom;Zoom*=3;//záloha původního zoomu,nový *3 vyplývá z logiky algoritmu antialiasingu
 			short s=2;if(d.SCENA==0)s=0;//řešení pro vykreslit VŠE
-			if(/*d.SCENA!=1111111 && d.SCENA!=111111 || */pom!=NULL)d.vykresli_vektory(bmp_in->Canvas,s);//DYNAMICKÁ scéna, pokud není vše do statické nebo je aktivní pom objekt (např. výběr hrany atp.), tak se řešeí dynamická scena, jinak ne, protože nemá smysl
+			//if(/*d.SCENA!=1111111 && d.SCENA!=111111 || */pom!=NULL)
+			d.vykresli_vektory(bmp_in->Canvas,s);//DYNAMICKÁ scéna, pokud není vše do statické nebo je aktivní pom objekt (např. výběr hrany atp.), tak se řešeí dynamická scena, jinak ne, protože nemá smysl
 			if(Akce==GEOMETRIE)d.smart_kurzor(bmp_in->Canvas,posledni_editovany_element);
 			if(MOD==TVORBA_CESTY)d.kurzor_cesta(bmp_in->Canvas);
 			if(Akce==MAGNETICKE_LASO)d.vykresli_meridlo(bmp_in->Canvas);
-      if(OBJEKT_akt!=NULL)d.vykresli_oblast_teplomery(bmp_in->Canvas,OBJEKT_akt);
+			if(OBJEKT_akt!=NULL)d.vykresli_oblast_teplomery(bmp_in->Canvas,OBJEKT_akt);
 			Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 			Cantialising a;
 			Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
@@ -13753,7 +13754,10 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //MaKr testovací tlačítko
 void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 {
-	Memo(d.SCENA);
+	d.SCENA=1122111;
+	vytvor_statickou_scenu();
+	REFRESH();
+	//Memo(d.SCENA);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
