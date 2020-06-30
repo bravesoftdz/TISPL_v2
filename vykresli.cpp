@@ -139,7 +139,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv, short scena)//scena 0 - vše, sc
 	if(F->MOD!=F->TVORBA_CESTY && F->Akce!=F->GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT && m.getValueFromPosition(SCENA,6)==scena)vykresli_voziky(canv);
 
 	/////VALIDACE výpis formou zpráv musí být za vozíky, aby byla zcela nahoře
-	//if(F->MOD!=F->TVORBA_CESTY && F->Akce!=F->GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT && m.getValueFromPosition(SCENA,7)==scena)vypis_zpravy(canv);
+	if(F->MOD!=F->TVORBA_CESTY && F->Akce!=F->GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT && m.getValueFromPosition(SCENA,7)==scena)vypis_zpravy(canv);
 }
 //---------------------------------------------------------------------------
 //samotné objekty, kreslím až v samostatném cyklu, aby se nakreslilo do horní vrstvy
