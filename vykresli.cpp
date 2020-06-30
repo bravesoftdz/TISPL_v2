@@ -139,7 +139,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv, short scena)//scena 0 - vše, sc
 	if(F->MOD!=F->TVORBA_CESTY && F->Akce!=F->GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT && m.getValueFromPosition(SCENA,6)==scena)vykresli_voziky(canv);
 
 	/////VALIDACE výpis formou zpráv musí být za vozíky, aby byla zcela nahoře
-	//if(F->MOD!=F->TVORBA_CESTY && F->Akce!=F->GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT && m.getValueFromPosition(SCENA,7)==scena)vypis_zpravy(canv);
+	if(F->MOD!=F->TVORBA_CESTY && F->Akce!=F->GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT && m.getValueFromPosition(SCENA,7)==scena)vypis_zpravy(canv);
 }
 //---------------------------------------------------------------------------
 //samotné objekty, kreslím až v samostatném cyklu, aby se nakreslilo do horní vrstvy
@@ -1420,15 +1420,39 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,Cvektory::TObjekt *Objek
   //kontrola zda existují teploměry
 	if(Objekt!=NULL && Objekt->c_teplomery!=NULL)
 	{
+		double X1,Y1,X2,Y2,OR,RA,R;
 		Cvektory::TCesta *ct=Objekt->c_teplomery->dalsi;
 		while(ct!=NULL)
 		{
-			//vykreslení teploměrů
-			if(ct->Element->n==MaxInt)vykresli_teplomer(canv,m.L2Px(ct->Element->geo.X4),m.L2Py(ct->Element->geo.Y4),"","",ct->Element->eID,1,ct->sparovany->geo.orientace-ct->sparovany->geo.rotacni_uhel,1);
-			//vykreslení cesty
-
+			////vykreslení teploměrů
+			if(ct->Element->n==MaxInt)vykresli_teplomer(canv,m.L2Px(ct->Element->geo.X4),m.L2Py(ct->Element->geo.Y4),"","",ct->Element->eID,1,ct->sparovany->orientace,1);
+			////vykreslení cesty
+			//načtení obecných parametrů
+			R=ct->Element->geo.radius;
+			OR=ct->Element->geo.orientace;
+			RA=ct->Element->geo.rotacni_uhel;
+			X1=ct->Element->geo.X1;Y1=ct->Element->geo.Y1;
+			X2=ct->Element->geo.X4;Y2=ct->Element->geo.Y4;
+			//načtení souřadnic
+			if(ct->n==1 && ct->sparovany!=NULL){X2=ct->sparovany->geo.X4;Y2=ct->sparovany->geo.Y4;}
+			if(ct->dalsi==NULL && ct->sparovany!=NULL){X1=ct->sparovany->geo.X1;Y1=ct->sparovany->geo.Y1;}
+			//výpočet délky a úhlu, prouze pro teploměry
+			if(ct->sparovany!=NULL)
+			{
+				if(ct->Element->geo.typ==0)R=m.delka(X1,Y1,X2,Y2);
+		  	else
+		  	{
+		  		double d=m.delka(X1,Y1,X2,Y2);
+		  		RA=m.T2Aarc(R,d);
+				}
+			}
+			else if(ct->Element->geo.typ==0)R=ct->Element->geo.delka;
+			//samotné vykreslení segmentu, kontrola, pokud existuje jen jden segment, vykreslí ho pouze jednou ne 2x
+			if(Objekt->c_teplomery->dalsi->sparovany!=Objekt->c_teplomery->predchozi->sparovany || (Objekt->c_teplomery->dalsi->sparovany==Objekt->c_teplomery->predchozi->sparovany && ct->n==1))
+				vykresli_Gelement(canv,X1,Y1,OR,RA,R,clRed,3);
 			ct=ct->dalsi;
 		}
+
     delete ct;ct=NULL;
   }
 }
@@ -4758,6 +4782,41 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 				else//pokud ne, je třeba skrýt komponenty
 				{
 					F->PmG->SetVisibleComponents(false);
+				}
+			}
+		}
+		////tabulka teploměru
+		if(F->OBJEKT_akt->c_teplomery!=NULL && F->OBJEKT_akt->zobrazit_mGrid && F->OBJEKT_akt->c_teplomery->predchozi->Element->mGrid!=NULL)
+		{
+			if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
+			{
+				if(F->OBJEKT_akt->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT)//pokud nemají být zobrazeny mgridy nemá být zobrazen ani rastr
+				{
+					F->OBJEKT_akt->c_teplomery->predchozi->Element->mGrid->Redraw=false;
+					F->OBJEKT_akt->c_teplomery->predchozi->Element->mGrid->Left=m.L2Px(F->OBJEKT_akt->c_teplomery->predchozi->Element->Xt);
+					F->OBJEKT_akt->c_teplomery->predchozi->Element->mGrid->Top=m.L2Py(F->OBJEKT_akt->c_teplomery->predchozi->Element->Yt);
+					F->OBJEKT_akt->c_teplomery->predchozi->Element->mGrid->SetVisibleComponents(false);
+					F->OBJEKT_akt->c_teplomery->predchozi->Element->mGrid->Show(canv);
+				}
+				else//pokud ne, je třeba skrýt komponenty
+				{
+					F->OBJEKT_akt->c_teplomery->predchozi->Element->mGrid->SetVisibleComponents(false);
+				}
+			}
+			else
+			{
+				if(F->OBJEKT_akt->zobrazit_mGrid &&  F->Akce!=F->Takce::PAN_MOVE && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT)//pokud je mGrid zobrazen a nejedná se o posun obrazu
+				{
+					F->OBJEKT_akt->c_teplomery->predchozi->Element->mGrid->Redraw=true;
+					F->OBJEKT_akt->c_teplomery->predchozi->Element->mGrid->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak F->OBJEKT_akt->c_teplomery->predchozi->Element->mGrid->Buffer(false);
+					if(F->OBJEKT_akt->c_teplomery->predchozi->Element->mGrid->VisibleComponents>-1)F->OBJEKT_akt->c_teplomery->predchozi->Element->mGrid->VisibleComponents=true;//stačí volat toto, protože se pomocí Show (resp. Draw-SetCompontens-Set...) cyklem všechny komponenty, pokud je nastaveno na -1 tak se při překreslování zohlední individuální nastavení komponent (z tohoto stavu je však pro další použítí třeba vrátit do stavu 0 nebo 1)
+					F->OBJEKT_akt->c_teplomery->predchozi->Element->mGrid->Left=m.L2Px(F->OBJEKT_akt->c_teplomery->predchozi->Element->Xt);
+					F->OBJEKT_akt->c_teplomery->predchozi->Element->mGrid->Top=m.L2Py(F->OBJEKT_akt->c_teplomery->predchozi->Element->Yt);
+					F->OBJEKT_akt->c_teplomery->predchozi->Element->mGrid->Show(canv);
+				}
+				else//pokud ne, je třeba skrýt komponenty
+				{
+					F->OBJEKT_akt->c_teplomery->predchozi->Element->mGrid->SetVisibleComponents(false);
 				}
 			}
 		}

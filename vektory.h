@@ -783,7 +783,7 @@ public:
 	void smaz_segment_MAG_LASA(TElement *E);//smaže segment z magnetického lasa
 	TPointD bod_na_geometrii(TElement *E);//"přilepování" souřadnic na gaometrii linky, linie i oblouky
 	short obsahuje_MAG_LASO_element(TElement *E);//kontrola zda spoják magnetického lasa obsahuje segment s danným elementem
-	TPointD InVrata(TElement *E);//zkontroloje, zda existují vrátka objektu a jestli jsem kurzorem v jejich oblasti, pokud ano vrátí bod, pokud ne vrátí [-MaxInt,-MaxInt]
+	TPointD InVrata(TElement *E,bool kontrola_kurzoru=true);//zkontroloje, zda existují vrátka objektu a jestli jsem kurzorem v jejich oblasti, pokud ano vrátí bod, pokud ne vrátí [-MaxInt,-MaxInt]
 
 //souborové operace
 	void vytvor_hlavicku_souboru();
@@ -823,6 +823,9 @@ public:
 	void vymaz_seznam_c_teplomery(TObjekt *Objekt);//vymaže seznam teploměrů z objektu
   void vloz_segment_cesty_c_teplomery(TObjekt *Objekt,TElement *Element,bool teplomer=false,double X=0,double Y=0);//vloží segment cesty do cest teploměrů v objektu, nebo vložení teploměru, doplnění bodu vložení
 	void vytvor_default_c_teplomery(TObjekt *Objekt);//vytvoří 2 teploměry a defaultní cestu mezi nimi
+	Cvektory::TElement *najdi_teplomer();//hledá zda není uživatel kurzorem nad teploměrem, pokud ano vrátí ukazatel na teploměr
+	void kopiruj_c_teplomeru_do_MAG_LASO(TCesta *original);//zkopíruje cestu a teploměry do spojáku MAG_LASO
+  void posun_teplomeru(TElement *teplomer);//posunem teploměru dochází k editaci jeho oblasti
 
 //SQL
 	AnsiString QUERY(AnsiString query);//vratí AnsiString hodnod dle zadaného dotazu v syntaxi SQL, zatím umí jen základní úroveň - asi odstranit
