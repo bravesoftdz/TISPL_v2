@@ -6496,7 +6496,9 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 				////////////Pohon nepřiřazen!
 				if(funkcni_element(E) && E->pohon==NULL)
 				{
-					vloz_zpravu(X,Y,-1,219,E);pocet_erroru++;
+					if(E->eID==300 || E->eID==301)vloz_zpravu(X+0.3,Y+0.3,-1,219,E);//výhybky a spojky mírné (nutné) odsazení od daného umístění
+					else vloz_zpravu(X,Y,-1,219,E);//ostatní elementy přímo v daném umístění elementu
+					pocet_erroru++;
 				}
 				////////////Rotace neodpovídá orientaci JIGů na začátku linky!
 				if(E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180)
