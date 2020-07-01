@@ -565,6 +565,7 @@ void Cvektory::nastav_atributy_objektu(TObjekt *novy,unsigned int id, double X, 
 	if(id==3)novy->koty_elementu_offset.x=1;else novy->koty_elementu_offset.x=4;//odsazení kót elementů v metrech,v kabině POW se kóty vykroslují od hrany kabiny, ne od pohonu
 	novy->koty_elementu_offset.y=0.4;
 	novy->komora=NULL;//ukazatel na komory
+	novy->c_teplomery=NULL;
 	if(id==3)for(short i=1;i<=4;i++)vloz_komoru(novy,2.5,NULL,i%2);//pokud se jedná o POWash,nastaví defaultně 4 stejné komory
 	novy->probehla_aktualizace_prirazeni_pohonu=false;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
 	novy->zobrazit_koty=true;//proměnná určující, zda se budou zobrzovat kóty

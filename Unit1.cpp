@@ -1044,7 +1044,7 @@ void TForm1::DesignSettings()
       case 200:text="Název";break;
       case 201:text="Rozmezí a rychlost pohonu";break;
       case 202:text="Rozteč palce";break;
-      case 203:text="Používán - na objektech";break;
+			case 203:text="Používán";break;
       case 204:text="od";break;
       case 205:text="do";break;
       case 206:text="aktuální  ";break;
@@ -4660,8 +4660,11 @@ void TForm1::getJobID(int X, int Y)
 						if(segment==0 && E->dalsi!=NULL && E->dalsi->eID==301 && E->dalsi->dalsi!=NULL && E->dalsi->dalsi->dalsi==d.v.MAG_LASO->predchozi->Element)
 							d.v.vloz_segment_MAG_LASA(E->dalsi->dalsi);
 
+						//začátek na vedlejší větvi, za spojkou
+						if(segment==0 && E->eID==300 && E->dalsi2!=NULL && E->dalsi2==d.v.MAG_LASO->predchozi->sparovany)
+							d.v.vloz_segment_MAG_LASA(E->dalsi2);
 
-            /////////mazání obsaženého
+						/////////mazání obsaženého
 						//element je již obsazen v seznamu magnetického lasa, bude smazán segment cesty obsahující E, taktéž budou smazány následující segmenty cesty, pokud existují další segmenty
 						if(segment>0)
 							d.v.smaz_segment_MAG_LASA(E);
@@ -4710,12 +4713,6 @@ void TForm1::getJobID(int X, int Y)
 //			C=C->dalsi;
 //		}
 //		C=NULL;delete C;
-//		if(pom_element!=NULL)
-//		{
-//			Memo("pom_element->d: "+pom_element->dalsi->name);
-//			Memo("pom_element->d->d: "+pom_element->dalsi->dalsi->name);
-//			Memo("pom_element->d->d->d: "+pom_element->dalsi->dalsi->dalsi->name);
-//		}
 	}
 	//pouze na test zatížení Memo3->Visible=true;Memo3->Lines->Add(s_mazat++);
 }
@@ -13800,40 +13797,23 @@ void __fastcall TForm1::Timer_simulaceTimer(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 {
-//	double delka,cas,R,RA,OR,X,Y,uhel;
-//	pom_element=d.v.ELEMENTY->dalsi->dalsi;
-//
-//	//načítání parametrů
-//	R=F->pom_element->geo.radius;
-//	RA=-F->pom_element->geo.rotacni_uhel;//rotační úhel, pod kterým je oblouk rotován - směřován (proti směru hodinových ručiček), může být záporný (po směru hodinových ručiček)
-//	OR=F->pom_element->geo.orientace;
-//	X=F->pom_element->geo.X1,Y=F->pom_element->geo.Y1;
-//
-//	//výpočetní část, mělo by být volané v případě úspěchu podmínky if(m.PtInSegment....
-//	uhel=60;//m.uhelObloukuVsMys(X,Y,OR,RA,R,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
-//	delka=m.R2Larc(R,uhel);//požadovaná délka na oblouku vybraná myší, vracení délky dané výseče, tj. k na(při)počítání měřené délky
-//
-//	//vykreslovací část
-//	d.vykresli_Gelement(Canvas,X,Y,OR,uhel,R,d.clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]","");
-//	d.vykresli_Gelement(Canvas,X,Y,OR,20,R,d.clMeridlo,2,"","");//vykreslení měřícího kurzoru, popisek není nutné používat, metodu ještě vylepším
-
-//	Memo("");
+	Memo("");
 //  scGPImage_mereni_vzdalenostClick(this);
 //	case 6:eID=402;break;//"vytěkání"
 //	case 7:eID=400;break;//"sušení"
 //	case 8://chalzeni
 //								 Memo(OBJEKT_akt->n); //4
-	if(OBJEKT_akt==NULL)
-	{
-   	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
-   	while(O!=NULL)
-   	{
-   		if(O->id>=6 && O->id<=8)d.v.vytvor_default_c_teplomery(O);
-   		O=O->dalsi;
-		}
-		delete O;O=NULL;
-	}
-  else vytvor_aktualizuj_tab_teplomeru();
+//	if(OBJEKT_akt==NULL)
+//	{
+//   	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
+//   	while(O!=NULL)
+//   	{
+//   		if(O->id>=6 && O->id<=8)d.v.vytvor_default_c_teplomery(O);
+//   		O=O->dalsi;
+//		}
+//		delete O;O=NULL;
+//	}
+//  else vytvor_aktualizuj_tab_teplomeru();
 //	Cvektory::TObjekt *O=d.v.vrat_objekt(12);
 //	d.v.vytvor_default_c_teplomery(O);
 //	Memo(OBJEKT_akt->n);
@@ -15892,7 +15872,26 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 			String popisek="";//slouží pro rozšíření MB o
 			if(d.v.MAG_LASO->predchozi->n==1 && C->Element->n==MaxInt)//lineární měření
 			{
-				double d_pom=delka=m.delka(C->predchozi->Element->geo.X1,C->predchozi->Element->geo.Y1,C->Element->geo.X4,C->Element->geo.Y4);
+				double d_pom;
+				//měření v oblouku
+				if(d.v.MAG_LASO->sparovany!=NULL && d.v.MAG_LASO->sparovany->geo.typ!=0)
+				{
+					double u1,u2,X,Y;
+					X=d.v.MAG_LASO->sparovany->geo.X1;Y=d.v.MAG_LASO->sparovany->geo.Y1;
+					u1=m.uhelObloukuVsMys(X,Y,d.v.MAG_LASO->sparovany->geo.orientace,d.v.MAG_LASO->sparovany->geo.rotacni_uhel,d.v.MAG_LASO->sparovany->geo.radius,d.v.MAG_LASO->Element->geo.X1,d.v.MAG_LASO->Element->geo.Y1);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
+					u2=m.uhelObloukuVsMys(X,Y,d.v.MAG_LASO->sparovany->geo.orientace,d.v.MAG_LASO->sparovany->geo.rotacni_uhel,d.v.MAG_LASO->sparovany->geo.radius,C->Element->geo.X4,C->Element->geo.Y4);
+					Memo("u1="+String(u1)+"; u2="+String(u2)+"; rozdil="+String(u2-u1));
+					if((u2-u1<0 && u1>0 && u2>0) || (u2-u1>0 && u1<0 && u2<0))
+		    	{
+						d_pom=u1;
+		    		u1=u2;
+						u2=d_pom;
+					}
+          d_pom=delka=m.R2Larc(d.v.MAG_LASO->sparovany->geo.radius,u2)-m.R2Larc(d.v.MAG_LASO->sparovany->geo.radius,u1);
+				}
+				//měření v linii
+				else d_pom=delka=m.delka(C->predchozi->Element->geo.X1,C->predchozi->Element->geo.Y1,C->Element->geo.X4,C->Element->geo.Y4);
+        //měření času
 				if(d.v.MAG_LASO->sparovany!=NULL && d.v.MAG_LASO->sparovany==d.v.MAG_LASO->predchozi->sparovany && d.v.MAG_LASO->sparovany->pohon!=NULL)
 				{
 					if(d.v.MAG_LASO->predchozi->sparovany->eID==0)
@@ -17067,7 +17066,7 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
      ;
     }
 
-  }
+	}
 }
 //---------------------------------------------------------------------------
 
