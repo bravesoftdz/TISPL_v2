@@ -1044,7 +1044,7 @@ void TForm1::DesignSettings()
       case 200:text="Název";break;
       case 201:text="Rozmezí a rychlost pohonu";break;
       case 202:text="Rozteč palce";break;
-      case 203:text="Používán - na objektech";break;
+			case 203:text="Používán";break;
       case 204:text="od";break;
       case 205:text="do";break;
       case 206:text="aktuální  ";break;
@@ -17036,7 +17036,7 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
      ;
     }
 
-  }
+	}
 }
 //---------------------------------------------------------------------------
 
