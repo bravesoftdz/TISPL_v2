@@ -502,7 +502,6 @@ private:
 	TFileStream *LogFileStream;
 	Graphics::TBitmap *Staticka_scena;//bitmapa statické scény
 	Graphics::TBitmap *Pan_bmp_ALL;//kvùli mGridu jinak staèí private
-	Tvlakno_obraz *vlakno_obraz;
 	vlakno_panCreate *vlakno_PanCreate;
 
 	////metody
@@ -726,7 +725,7 @@ public:		// User declarations
 	double predchozi_orientace;//uchovává rotaci objektu pøed posunem
 	unsigned int vlakno_akce;//uchovává akci, kterou má vlákno vykonat, 0 - nic, 1 - vytvoøení obrazu pro UNDO, 2 - vytvoøení obrazu pro storno a UNDO, 3 - vymazání obrazù
 	double velikost_citelne_oblasti_elementu;//urèuje velikost citelné oblsati [m] kolem bodu elementu na pohonu
-  Tvlakno_obraz *vlakno_obraz;
+	Tvlakno_obraz *vlakno_obraz;
 	bool vlakno_PanCreateState;
 
 	//metody
