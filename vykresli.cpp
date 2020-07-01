@@ -1430,13 +1430,11 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv)
 				delka=m.R2Larc(v.MAG_LASO->sparovany->geo.radius,u2)-m.R2Larc(v.MAG_LASO->sparovany->geo.radius,u1);
 				cas=delka/F->pom_element->pohon->aRD;
 				vykresli_Gelement(canv,X,Y,v.MAG_LASO->sparovany->geo.orientace,u2,v.MAG_LASO->sparovany->geo.radius,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]",2);
-				vykresli_Gelement(canv,X,Y,v.MAG_LASO->sparovany->geo.orientace,u1,v.MAG_LASO->sparovany->geo.radius,(TColor) RGB(255,69,0),2,"","",2);
+				vykresli_Gelement(canv,X,Y,v.MAG_LASO->sparovany->geo.orientace,u1,v.MAG_LASO->sparovany->geo.radius,(TColor) RGB(255,69,0),2,"","",2,clMeridlo);
 			}
 		}
-		//vykreslení linie bez pohonu
-		else if(F->pom_element->geo.typ==0)vykresli_Gelement(canv,X,Y,azimut,0,delka,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]");
-    //vykreslení části oblouky bez pohonu
-		else
+		//vykreslení části oblouky bez pohonu
+		else if(F->pom_element->geo.typ!=0 && F->pom_element==v.MAG_LASO->sparovany)
 		{
       X=v.MAG_LASO->sparovany->geo.X1;Y=v.MAG_LASO->sparovany->geo.Y1;
 			double u1,u2;
@@ -1451,8 +1449,10 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv)
 			}
 			delka=m.R2Larc(v.MAG_LASO->sparovany->geo.radius,u2)-m.R2Larc(v.MAG_LASO->sparovany->geo.radius,u1);
 			vykresli_Gelement(canv,X,Y,v.MAG_LASO->sparovany->geo.orientace,u2,v.MAG_LASO->sparovany->geo.radius,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]","",2);
-			vykresli_Gelement(canv,X,Y,v.MAG_LASO->sparovany->geo.orientace,u1,v.MAG_LASO->sparovany->geo.radius,(TColor) RGB(255,69,0),2,"","",2);
-    }
+			vykresli_Gelement(canv,X,Y,v.MAG_LASO->sparovany->geo.orientace,u1,v.MAG_LASO->sparovany->geo.radius,(TColor) RGB(255,69,0),2,"","",2,clMeridlo);
+		}
+    //vykreslení linie bez pohonu
+		else vykresli_Gelement(canv,X,Y,azimut,0,delka,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]");
 	}
 }
 ////---------------------------------------------------------------------------
@@ -1467,7 +1467,7 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,Cvektory::TObjekt *Objek
 		while(ct!=NULL)
 		{
 			////vykreslení teploměrů
-			if(ct->Element->n==MaxInt)vykresli_teplomer(canv,m.L2Px(ct->Element->geo.X4),m.L2Py(ct->Element->geo.Y4),"","",ct->Element->eID,1,ct->sparovany->orientace,1);
+			if(ct->Element->n==MaxInt)vykresli_teplomer(canv,m.L2Px(ct->Element->X),m.L2Py(ct->Element->Y),"","",ct->Element->eID,1,ct->sparovany->orientace,1);
 			////vykreslení cesty
 			//načtení obecných parametrů
 			R=ct->Element->geo.radius;
