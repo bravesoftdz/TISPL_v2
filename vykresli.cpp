@@ -3685,7 +3685,7 @@ void Cvykresli::vykresli_teplomer(TCanvas *canv,long X,long Y,AnsiString name,An
 	canv->Font->Size=F->m.round(2.8*Z);if(F->aFont->Size==12)canv->Font->Size=F->m.round(2*Z);
 	canv->Font->Name=F->aFont->Name;//je nutné nastavovat kvůli správnosti zobrazení framingu
 	if(stav==3)canv->Font->Style = TFontStyles()<< fsBold;else canv->Font->Style = TFontStyles();
-	short Tw=canv->TextWidth(name);short Th=canv->TextHeight(name);
+	short Tw=canv->TextWidth(name);short Th=canv->TextHeight(name);if(name=="")Th=canv->TextHeight("°C");
 	long x=m.round(X-Tw/2.0-canv->TextWidth("°C")/2.0);long y=Y-polomer1*DT-vzdalenostY-Th;
 	TextFraming(canv,x,y,name);
 	//citelná oblast popisku
