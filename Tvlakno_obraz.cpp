@@ -29,9 +29,10 @@ void __fastcall Tvlakno_obraz::Execute()
 {
 //	for(i=0;!Terminated && i<1000000;i++) //for jen pro example
 //	{
-		Synchronize(&test);  // nutne volani odkazem
+//		Synchronize(&test);  // nutne volani odkazem
 //		Sleep(2000);
 //	}
+	F->d.v.vlakno_obraz();//provádí operace s obrazem na vláknì
 }
 //---------------------------------------------------------------------------
 void __fastcall Tvlakno_obraz::test()

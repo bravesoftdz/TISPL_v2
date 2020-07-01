@@ -1185,10 +1185,10 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv)
 ////---------------------------------------------------------------------------
 //vykreslí měření proti trendu linky
 void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv)
-{         // F->Memo(__func__);
+{
 	////deklarace
 	double R,RA,OR,X,Y,uhel=0,delka=0,azimut,cas=0,d;
-					 // if(F->pom_element!=NULL && v.MAG_LASO->sparovany!=NULL)F->Memo("pom_element: "+F->pom_element->name+"; mag_laso->sparovany: "+v.MAG_LASO->predchozi->sparovany->name);
+
 	////test měření proti trendu
 	if(F->pom_element!=NULL && (F->pom_element->dalsi==v.MAG_LASO->predchozi->Element || F->pom_element->dalsi2==v.MAG_LASO->predchozi->Element || (F->pom_element->dalsi!=NULL && F->pom_element->dalsi->dalsi==v.MAG_LASO->predchozi->Element) || F->pom_element->dalsi2==v.MAG_LASO->predchozi->Element))
 	{

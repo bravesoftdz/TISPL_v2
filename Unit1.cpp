@@ -313,6 +313,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	if(DEBUG)scGPTrackBar1->MaxValue=20;
 	refreshovat_scGPTrackBar=true;
 	vlakno_akce=0;//defaultní stav
+  vlakno_obraz=NULL;
 	storno=true;//defaultně počítat se stištěným stornem
 	editEditace=NULL;
 	velikost_citelne_oblasti_elementu=0.12;//v metrech, 0.114285714285714 šířka pouzdra pohonu
@@ -13826,6 +13827,30 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	}
 //	delete C;C=NULL;    //d.line(Canvas,0,0,m.L2Px(O->c_teplomery->dalsi->Element->geo.X4),m.L2Py(O->c_teplomery->dalsi->Element->geo.Y4));
 	//d.line(Canvas,0,0,m.L2Px(O->c_teplomery->predchozi->Element->geo.X4),m.L2Py(O->c_teplomery->predchozi->Element->geo.Y4));
+
+
+	////cyklus pro otevírání a zavírání objektu s volitelným krokem + měření času
+//	TDateTime start;
+//	String s;
+//	double cas=0,celkem_otevreni=0,celkem_zavreni=0;
+//	unsigned int pocet_kroku=10;
+//	for(unsigned int i=0;i<pocet_kroku;i++)
+//	{
+//		start=Now();
+//		pom=d.v.OBJEKTY->dalsi;//predchozi->predchozi->predchozi;
+//		otevri_editaci();
+//		cas=ms.MyToDouble(TimeToStr(Now()-start).SubString(6,2));
+//		celkem_otevreni+=cas;
+//		Memo("Čas otevření: "+AnsiString(cas));
+//		start=Now();
+//		scGPButton_stornoClick(this);
+//		cas=ms.MyToDouble(TimeToStr(Now()-start).SubString(6,2));
+//		celkem_zavreni+=cas;
+//		Memo("Čas zavření: "+AnsiString(cas));
+//	}
+//	Memo("------------");
+//	Memo("Průměrný čas otevření: "+AnsiString(celkem_otevreni/(double)pocet_kroku));
+//	Memo("Průměrný čas zavření: "+AnsiString(celkem_zavreni/(double)pocet_kroku));
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -15880,7 +15905,6 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 					X=d.v.MAG_LASO->sparovany->geo.X1;Y=d.v.MAG_LASO->sparovany->geo.Y1;
 					u1=m.uhelObloukuVsMys(X,Y,d.v.MAG_LASO->sparovany->geo.orientace,d.v.MAG_LASO->sparovany->geo.rotacni_uhel,d.v.MAG_LASO->sparovany->geo.radius,d.v.MAG_LASO->Element->geo.X1,d.v.MAG_LASO->Element->geo.Y1);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
 					u2=m.uhelObloukuVsMys(X,Y,d.v.MAG_LASO->sparovany->geo.orientace,d.v.MAG_LASO->sparovany->geo.rotacni_uhel,d.v.MAG_LASO->sparovany->geo.radius,C->Element->geo.X4,C->Element->geo.Y4);
-					Memo("u1="+String(u1)+"; u2="+String(u2)+"; rozdil="+String(u2-u1));
 					if((u2-u1<0 && u1>0 && u2>0) || (u2-u1>0 && u1<0 && u2<0))
 		    	{
 						d_pom=u1;
