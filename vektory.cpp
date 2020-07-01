@@ -8754,6 +8754,9 @@ void Cvektory::vlakno_obraz()
 		case 1:
 		{
 			vytvor_obraz_DATA();
+			F->vlakno_obraz->Terminate();
+			F->vlakno_obraz->Free();
+			F->vlakno_obraz=NULL;delete F->vlakno_obraz;
 			break;
 		}
 		//vytvoření obrazu pro UNDO + storno
@@ -8761,6 +8764,9 @@ void Cvektory::vlakno_obraz()
 		{
 			vytvor_obraz_DATA(true);
 			vytvor_obraz_DATA();
+      F->vlakno_obraz->Terminate();
+			F->vlakno_obraz->Free();
+			F->vlakno_obraz=NULL;delete F->vlakno_obraz;
 			break;
 		}
 		//vymazání seznamu obrazů

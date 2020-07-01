@@ -636,7 +636,6 @@ private:
 	int count_memo;//counter pro memo
 	bool editace_geometrie_spustena;
 	int offset_scGPButton_bug_report;
-	Tvlakno_obraz *vlakno_obraz;
 	bool storno;//slouí k rozlišení jestli bylo stisknuto storno nebo byl zavolán jeho stisk z tlaèítka uloit
 	bool refreshovat_scGPTrackBar;//promìnná zajišujíci, e se scGPTracBar nerefreshuje pokud mu pøi zmìnì zoomu mimo scGPTracBar
 	TscGPEdit *editEditace;
@@ -722,6 +721,7 @@ public:		// User declarations
 	double predchozi_orientace;//uchovává rotaci objektu pøed posunem
 	unsigned int vlakno_akce;//uchovává akci, kterou má vlákno vykonat, 0 - nic, 1 - vytvoøení obrazu pro UNDO, 2 - vytvoøení obrazu pro storno a UNDO, 3 - vymazání obrazù
   double velikost_citelne_oblasti_elementu;//urèuje velikost citelné oblsati [m] kolem bodu elementu na pohonu
+  Tvlakno_obraz *vlakno_obraz;
 
 	//metody
 	void kurzor(TKurzory typ_kurzor);
