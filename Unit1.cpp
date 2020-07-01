@@ -32,7 +32,6 @@
 #include "help.h"
 #include "MyString.h"
 #include "konzole.h"
-#include "Tvlakno_obraz.h"
 #include <idattachmentfile.hpp>//přílohy mailů
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -98,6 +97,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	Pan_bmp=new Graphics::TBitmap();Pan_bmp_ALL=NULL;
 	pan_non_locked=false;
 	Staticka_scena=NULL;
+	vlakno_PanCreate=NULL;
 
 	//načtení nestandardních kurzorů aplikace
 	HCURSOR HC;
@@ -1563,7 +1563,7 @@ void TForm1::Novy_soubor(bool invalidate)
 void __fastcall TForm1::FormActivate(TObject *Sender)
 {
   log(__func__);//logování
-	if (DEBUG|| !DEBUG)//	if(!DEBUG)  R - úprava 5.6.2020 - test konektivity i pro DEBUG verzi   //RELEASE
+	if (/*DEBUG||*/!DEBUG)//	if(!DEBUG)  R - úprava 5.6.2020 - test konektivity i pro DEBUG verzi   //RELEASE
 	{
 		//toto odkomentovat pro spuštění TTR
 		if(!ttr("start"))
@@ -2381,6 +2381,16 @@ void TForm1::vytvor_statickou_scenu()
 		//Staticka_scena->SaveToFile("staticka_scena_sAA.bmp");
 	}
 	Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
+
+//  log(__func__,"vlakno_pan_create");//logování
+//	Memo((short)vlakno_PanCreateState);
+//	if(vlakno_PanCreateState==false)//vykonná se pouze pokud zrovna ještě neběží
+//	{
+//		vlakno_PanCreateState=true;
+//		vlakno_PanCreate=new vlakno_panCreate(true);//vytvoří vlákno
+//		vlakno_PanCreate->FreeOnTerminate=true;//po skončení bude uvolněno
+//		vlakno_PanCreate->Start();
+//	}
 }
 //---------------------------------------------------------------------------
 //přetížená výše uvedené přímo s parametrem nastavení scény
@@ -5427,7 +5437,7 @@ void TForm1::pan_create()
 //	if(Pan_bmp_ALL!=NULL){delete Pan_bmp_ALL;Pan_bmp_ALL=NULL;}//před vytvořením nové kvůli realokaci nejdříve nutné odstranit
 //	Posun.x-=ClientWidth/Zoom*3;Posun.y-=ClientHeight/Zoom*3;
 //	Graphics::TBitmap *bmp_test=new Graphics::TBitmap;
-//	bmp_test->Width=ClientWidth*3*3;bmp_test->Height=ClientHeight*3*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+//	bmp_test->Width=ClientWidth*3*3;bmp_test->Height=ClientHeight*3*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu, *3 z principu algoritmu (tři nabuffrované obrazovky, neví se kam, se bude obraz posouvat)
 //	d.vykresli_vektory(bmp_test->Canvas,1);
 //	Cantialising a; Pan_bmp_ALL=a.antialiasing(bmp_test,false);delete(bmp_test);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
 //	//Pan_bmp_ALL->SaveToFile("testALL.bmp");
@@ -5443,7 +5453,7 @@ void TForm1::pan_create()
 //	Posun.x-=(ClientWidth-akt_souradnice_kurzoru_PX.x)/Zoom*3;Posun.y-=(ClientHeight-akt_souradnice_kurzoru_PX.y)/Zoom*3;
 //	T.x=ClientWidth-akt_souradnice_kurzoru_PX.x;T.y=ClientHeight-akt_souradnice_kurzoru_PX.y;
 //	Graphics::TBitmap *bmp_test=new Graphics::TBitmap;
-//	bmp_test->Width=ClientWidth*3*2;bmp_test->Height=ClientHeight*3*2;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+//	bmp_test->Width=ClientWidth*3*2;bmp_test->Height=ClientHeight*3*2;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu, *2 z principu algoritmu (dvě nabuffrované obrazovky)
 //	d.vykresli_vektory(bmp_test->Canvas,1);
 //	Cantialising a; Pan_bmp_ALL=a.antialiasing(bmp_test,false);delete(bmp_test);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
 //	Pan_bmp_ALL->SaveToFile("testALL.bmp");
@@ -5452,11 +5462,34 @@ void TForm1::pan_create()
 //	MessageBeep(0);
 }
 //---------------------------------------------------------------------------
+//vytvoří výřez pro pan_move - velký
+void TForm1::pan_create2()
+{
+	Zoom_predchozi_AA=Zoom;//záloha původního zoomu
+	TPointD Posun_predchozi=Posun;
+	Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
+	if(Pan_bmp_ALL!=NULL){delete Pan_bmp_ALL;Pan_bmp_ALL=NULL;}//před vytvořením nové kvůli realokaci nejdříve nutné odstranit
+	Posun.x-=ClientWidth/Zoom*3;Posun.y-=ClientHeight/Zoom*3;
+	Graphics::TBitmap *bmp_test=new Graphics::TBitmap;
+	bmp_test->Width=ClientWidth*3*3;bmp_test->Height=ClientHeight*3*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu, *3 z principu algoritmu (tři nabuffrované obrazovky, neví se kam, se bude obraz posouvat)
+	d.SCENA=1111111;
+	d.vykresli_vektory(bmp_test->Canvas,1);
+	Cantialising a;Pan_bmp_ALL=a.antialiasing(bmp_test,false);delete(bmp_test);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
+	//Pan_bmp_ALL->SaveToFile("testALL.bmp");
+	Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
+	Posun=Posun_predchozi;
+	MessageBeep(0);
+	vlakno_PanCreateState=false;
+	vlakno_PanCreate->Terminate();
+	vlakno_PanCreate->Free();
+	vlakno_PanCreate=NULL;delete vlakno_PanCreate;
+}
+//---------------------------------------------------------------------------
 //Posouvá výřez mapy při stisknutém mezerníku a L-myši
 void TForm1::pan_map(TCanvas * canv, int X, int Y)
 {
 	log(__func__);//logování
-	////zajištění skrytí komponent, vedlejší produkt metody d.vykresli_mGridy();, protože má v sobě podmínky při pan_move
+	////zajištění skrytí komponent, vedlejší produkt metody d.vykresli_mGridy() protože má v sobě podmínky při pan_move
 	if(OBJEKT_akt!=NULL)if(OBJEKT_akt->zobrazit_mGrid)d.vykresli_mGridy();
 
 	////vykreslení aktuální pan_bmp
@@ -5467,8 +5500,9 @@ void TForm1::pan_map(TCanvas * canv, int X, int Y)
 	canv->FillRect(TRect(X-vychozi_souradnice_kurzoru.x+Pan_bmp->Width,Y-vychozi_souradnice_kurzoru.y,ClientWidth,ClientHeight));//pravy okraj
 	canv->FillRect(TRect(0,Y-vychozi_souradnice_kurzoru.y+Pan_bmp->Height,X-vychozi_souradnice_kurzoru.x+Pan_bmp->Width,ClientHeight));//dolní okraj
 	//samotné posouvání Pan_bmp
+	//if(vlakno_PanCreateState==1)
 	canv->Draw(X-vychozi_souradnice_kurzoru.x,Y-vychozi_souradnice_kurzoru.y,Pan_bmp);
-//	canv->Draw(X-vychozi_souradnice_kurzoru.x-ClientWidth,Y-vychozi_souradnice_kurzoru.y-ClientHeight,Pan_bmp_ALL);//varianta 1) viz pan_create
+	//else canv->Draw(X-vychozi_souradnice_kurzoru.x-ClientWidth,Y-vychozi_souradnice_kurzoru.y-ClientHeight,Pan_bmp_ALL);//varianta 1) viz pan_create
 //	canv->Draw(X-vychozi_souradnice_kurzoru.x-T.x,Y-vychozi_souradnice_kurzoru.y-T.y,Pan_bmp_ALL);//varianta 2) viz pan_create
 }
 //---------------------------------------------------------------------------
@@ -13823,10 +13857,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //MaKr testovací tlačítko
 void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 {
-	d.SCENA=1122111;
-	vytvor_statickou_scenu();
-	REFRESH();
-	//Memo(d.SCENA);
+//
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -16926,7 +16957,7 @@ void TForm1::vytvor_obraz(bool stornoUNDO)
 	log(__func__);
 	if(stornoUNDO)vlakno_akce=2;//vytvoření obrazu pro UNDO a storno
 	else vlakno_akce=1;//vytvoření obrazu pro UNDO
-	vlakno_obraz=new Tvlakno_obraz(true);//spustí vlákno zajišťující stáhnutí mapového podkladu
+	vlakno_obraz=new Tvlakno_obraz(true);//spustí vlákno
 	vlakno_obraz->FreeOnTerminate=true;//po skončení bude uvolněno
 	vlakno_obraz->Start();
 	//d.v.vlakno_obraz();
@@ -17062,5 +17093,7 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 	}
 }
 //---------------------------------------------------------------------------
+
+
 
 
