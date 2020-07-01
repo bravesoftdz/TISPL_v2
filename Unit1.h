@@ -67,6 +67,12 @@
 #include <IdIOHandlerStack.hpp>
 #include <IdSSL.hpp>
 #include <IdSSLOpenSSL.hpp>
+#include <IdSNMP.hpp>
+#include <IdExplicitTLSClientServerBase.hpp>
+#include <IdMessageClient.hpp>
+#include <IdSMTP.hpp>
+#include <IdFTP.hpp>
+#include <Vcl.Imaging.pngimage.hpp>
 //#include "rImprovedComps.hpp"
 //#include "rStringGridEd.hpp"
 #include "scControls.hpp"
@@ -93,15 +99,12 @@
 #include "scGPExtControls.hpp"
 //#include "rHintWindow.hpp"
 #include "UnitX.h"
-#include <Vcl.Imaging.pngimage.hpp>
 #include "scImageCollection.hpp"
 //#include "rHintWindow.hpp"
-#include <IdExplicitTLSClientServerBase.hpp>
-#include <IdMessageClient.hpp>
-#include <IdSMTP.hpp>
-#include <IdFTP.hpp>
+
 #include "Tvlakno_obraz.h"
-#include <IdSNMP.hpp>
+#include "Tvlakno_panCreate.h"
+
 //#include "rImprovedComps.hpp"
 //#include "rImprovedComps.hpp"
 //#include "rImprovedComps.hpp"
@@ -442,7 +445,6 @@ __published:	// IDE-managed Components
 	void __fastcall scGPImage_mereni_vzdalenostClick(TObject *Sender);
 	void __fastcall scGPSwitch_robot_clovekChangeState(TObject *Sender);
 	void __fastcall scGPComboBox_prepinacKotClick(TObject *Sender);
-	void __fastcall ButtonMaKrClick(TObject *Sender);
   void __fastcall scGPButton_posun_halyClick(TObject *Sender);
   void __fastcall scGPButton_nakreslit_haluClick(TObject *Sender);
 	void __fastcall NahledClick(TObject *Sender);
@@ -475,6 +477,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPCheckBox_popisek_pohonuClick(TObject *Sender);
 	void __fastcall scLabel_statusbar_0Click(TObject *Sender);
 	void __fastcall scExPanel_ostatniClick(TObject *Sender);
+	void __fastcall ButtonMaKrClick(TObject *Sender);
 
 
 
@@ -498,7 +501,9 @@ private:
 	Cvektory::TProces *proces_pom;
 	TFileStream *LogFileStream;
 	Graphics::TBitmap *Staticka_scena;//bitmapa statické scény
-	Graphics::TBitmap *Pan_bmp_LEFT,*Pan_bmp_RIGHT,*Pan_bmp_ALL;//kvùli mGridu jinak staèí private
+	Graphics::TBitmap *Pan_bmp_ALL;//kvùli mGridu jinak staèí private
+	Tvlakno_obraz *vlakno_obraz;
+	vlakno_panCreate *vlakno_PanCreate;
 
 	////metody
 	void aut_pozicovani(Cvektory::TElement *E, int X, int Y);
@@ -636,7 +641,6 @@ private:
 	int count_memo;//counter pro memo
 	bool editace_geometrie_spustena;
 	int offset_scGPButton_bug_report;
-	Tvlakno_obraz *vlakno_obraz;
 	bool storno;//slouí k rozlišení jestli bylo stisknuto storno nebo byl zavolán jeho stisk z tlaèítka uloit
 	bool refreshovat_scGPTrackBar;//promìnná zajišujíci, e se scGPTracBar nerefreshuje pokud mu pøi zmìnì zoomu mimo scGPTracBar
 	TscGPEdit *editEditace;
@@ -721,7 +725,8 @@ public:		// User declarations
 	int zpravy_backup_height;
 	double predchozi_orientace;//uchovává rotaci objektu pøed posunem
 	unsigned int vlakno_akce;//uchovává akci, kterou má vlákno vykonat, 0 - nic, 1 - vytvoøení obrazu pro UNDO, 2 - vytvoøení obrazu pro storno a UNDO, 3 - vymazání obrazù
-  double velikost_citelne_oblasti_elementu;//urèuje velikost citelné oblsati [m] kolem bodu elementu na pohonu
+	double velikost_citelne_oblasti_elementu;//urèuje velikost citelné oblsati [m] kolem bodu elementu na pohonu
+	bool vlakno_PanCreateState;
 
 	//metody
 	void kurzor(TKurzory typ_kurzor);
@@ -793,7 +798,8 @@ public:		// User declarations
 	void set_enabled_mGrid(Cvektory::TElement *E);//zapne nebo vypne komponenty megridu v závislosti na tom zda má element pøiøazenı pohon
 	void zobraz_tip(UnicodeString text="", TCanvas* canv=NULL);//prázdnım (bez paremetrù) voláním  metody se tip smae, //pokud není parametr canvas uveden, jedná se o dlouhodobé vykreslování hodnoty TIP//pokud je parametrem pøedán Canvas vykreslí se pøímo a jednorázovì
 	void zapnuti_vypnuti_panelEditace(bool zapnout);//zapnout nebo vypnout panel editace, automaticky podle MODu zobrazí èi skryje urèité prvky
-  void rotuj_objekt_click(double rotace);//zajistí rotaci objektu
+	void rotuj_objekt_click(double rotace);//zajistí rotaci objektu
+	void pan_create2();//vytvoøí vıøez pro pan_move - velkı
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
