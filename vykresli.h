@@ -40,6 +40,7 @@ class Cvykresli
 	void vykresli_meridlo_po_trendu(TCanvas *canv);//vykreslí mìøení po trendu linky
 	void vykresli_meridlo_proti_trendu(TCanvas *canv);//vykresli mìøení proti trendu linky
   void vykresli_oblast_teplomery(TCanvas *canv,Cvektory::TObjekt *Objekt);//vykreslí teplomìry a cestu mezi nimi
+  void vykresli_segment_cesty_teplomeru(TCanvas *canv,Cvektory::TElement *Element,short teplomer=0);//vykreslí segment cesty oblasti teplomìrù, parametr teplomìr udává zda se bude vykreslovat prvni nebo posledni teplomìr, 1 ... prvni, 2 ... posledni
 	void vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E);//vykresli pozic a obalových zón
 	void vykresli_dopravnik(TCanvas *canv, Cvektory::TZakazka *zakazka=NULL);//kreslí koleje, pouzdro øetìzu, øetìz samotný, pøedávací místo i popisek pohonu, slouží i zároveò na náhled cest zakázek
 	void vykresli_retez(TCanvas *canv,Cvektory::TRetez *Retez);
