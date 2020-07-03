@@ -32,6 +32,7 @@ __fastcall TForm_katalog::TForm_katalog(TComponent* Owner)
 
 
 
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_katalog::FormShow(TObject *Sender)
@@ -42,7 +43,7 @@ void __fastcall TForm_katalog::FormShow(TObject *Sender)
   K_mGrid=new TmGrid(this);//vždy nutno jako první
   K_mGrid->Tag=8;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
   K_mGrid->Create(ColCount,RowCount);//samotné vytvoření matice-tabulky
-
+  K_mGrid->VisibleComponents=-1;
      ////////vytvoření tabulky s požadovaným počtem sloupců a řádků////////
 
 	//načtení hodnot z PP
@@ -109,6 +110,9 @@ void __fastcall TForm_katalog::FormShow(TObject *Sender)
 	F->m.designButton(Button_save,Form_katalog,1,2);
 	F->m.designButton(Button_storno,Form_katalog,2,2);
   input_state=NOTHING;
+
+ // ShowMessage(radius);
+ // ShowMessage(katalog_id);
 }
 //---------------------------------------------------------------------------
 
@@ -190,7 +194,6 @@ void TForm_katalog::LoadValues ()
 	 {
 		if(i>=9 && i<=12)
     {
-
      K_mGrid->Cells[i][katalog_id+1].Font->Color=(TColor)RGB(226,122,21);
      K_mGrid->Cells[i][katalog_id+1].Type=K_mGrid->CHECK;
 
@@ -209,8 +212,9 @@ void TForm_katalog::LoadValues ()
   //nastaveni barev pro zobrazeni vybrane hodnoty - cerna
 	for(unsigned int i=2;i<K_mGrid->RowCount;i++)
   {
-   K_mGrid->Cells[0][i].Type=K_mGrid->CHECK;
+   K_mGrid->Cells[0][i].Type=K_mGrid->CHECK; //typ CHECK pro první sloupec
    K_mGrid->Cells[0][i].RightBorder->Color=clWhite;
+
 
 		if(i==(unsigned)katalog_id+1)
       {
@@ -224,7 +228,6 @@ void TForm_katalog::LoadValues ()
        }
       }
   }
-  // ShowMessage("konec");
 }
 
 void TForm_katalog::LoadStyles ()
@@ -265,25 +268,6 @@ void TForm_katalog::LoadStyles ()
    K_mGrid->Cells[10][r].LeftMargin=3;
    K_mGrid->Cells[11][r].LeftMargin=3;
    K_mGrid->Cells[12][r].LeftMargin=3;
-
-//    K_mGrid->Cells[9][r].Type=K_mGrid->CHECK;
-//    K_mGrid->Cells[10][r].Type=K_mGrid->CHECK;
-//    K_mGrid->Cells[11][r].Type=K_mGrid->CHECK;
-//    K_mGrid->Cells[12][r].Type=K_mGrid->CHECK;
-//
-//    K_mGrid->Update();
-//    K_mGrid->getCheck(9,r)->BiDiMode=bdRightToLeft;
-//    K_mGrid->getCheck(9,r)->Layout=blGlyphRight;
-//
-//    K_mGrid->getCheck(10,r)->BiDiMode=bdRightToLeft;
-//    K_mGrid->getCheck(10,r)->Layout=blGlyphRight;
-//
-//    K_mGrid->getCheck(11,r)->BiDiMode=bdRightToLeft;
-//    K_mGrid->getCheck(11,r)->Layout=blGlyphRight;
-//
-//    K_mGrid->getCheck(12,r)->BiDiMode=bdRightToLeft;
-//    K_mGrid->getCheck(12,r)->Layout=blGlyphRight;
-
 
    K_mGrid->Cells[13][r].Font->Color=clOTHER_AFTER_CHOOSE;
    K_mGrid->Cells[14][r].Font->Color=clOTHER_AFTER_CHOOSE;
@@ -327,15 +311,16 @@ void TForm_katalog::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row
                {
                    if(K_mGrid->Cells[j][i].Type==K_mGrid->CHECK)
                    {
-                    K_mGrid->Cells[j][i].Type=K_mGrid->readEDIT;
-                   /*ShowMessage(i)*/;// původně vybraný změním na readEdit (visible false nereaguje)
+                    String text;
+                    text=K_mGrid->getCheck(j,i)->Caption;  //z checkboxu si vezmu jeho popisek
+                    K_mGrid->DeleteCell(j,i);  //smazu typ Checkbox
+                    K_mGrid->Cells[j][i].Text=text;  //nastavím text
+                    K_mGrid->Cells[j][i].Type=TmGrid::DRAW;  //zobrazim text
                    }
                }
            }
-
         }
       }
-
     }
     if(Col==0)
      {
@@ -353,10 +338,13 @@ void TForm_katalog::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row
     //ziskani hodnot radius a katalog ID
     if(Col>=9 && Col<=12)
      {
-
      radius=Form1->ms.MyToDouble(K_mGrid->Cells[Col][Row].Text);
      katalog_id=Row-1;
-     ShowMessage(radius);
+       for(int i=9;i<=12;i++) // po kliknutí nastavim všechny checked=false
+       {
+       if(K_mGrid->Cells[i][Row].Type==K_mGrid->CHECK)  K_mGrid->getCheck(i,Row)->Checked=false;
+       }
+     K_mGrid->getCheck(Col,Row)->Checked=true;  //na závěr potom vybraný nastavím checked=true
      }
 
 
@@ -365,8 +353,6 @@ void TForm_katalog::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row
    input_state=NOTHING;
   }
  }
-  last_Col=Col;
-  last_Row=Row;
 
 }
 
@@ -374,8 +360,11 @@ void __fastcall TForm_katalog::Button_stornoClick(TObject *Sender)
 {
 F->scStyledForm1->HideClientInActiveEffect();
 Form_parametry_linky->scStyledForm2->HideClientInActiveEffect();
+//check.X=0;
+//check.Y=0;
 Button_storno->SetFocus();//workaround proti padání K_mGridu (padalo při odstraňování komponent), Focus se přesune z mazané komponenty na K_mGridu, na komponentu nemazanou
 K_mGrid->Delete();
+K_mGrid=NULL;
 
 }
 //---------------------------------------------------------------------------
@@ -397,6 +386,8 @@ F->scStyledForm1->HideClientInActiveEffect();
 Form_parametry_linky->scStyledForm2->HideClientInActiveEffect();
 
 Button_storno->SetFocus();
+K_mGrid->Delete();
+K_mGrid=NULL;
 //Form_parametry_linky->Close();
 
 //Close();
@@ -437,13 +428,13 @@ void TForm_katalog::vypis(UnicodeString text,bool red,bool link)
 
 				if (red)
 				{
-						Button_save->Enabled=false;  //R - dočasné povolení ukládání při validaci
-						scHTMLLabel_InfoText->Font->Color = clRed;
-            scHTMLLabel_InfoText->Color=clWhite;
+        Button_save->Enabled=false;  //R - dočasné povolení ukládání při validaci
+        scHTMLLabel_InfoText->Font->Color = clRed;
+        scHTMLLabel_InfoText->Color=clWhite;
 				}
 				else
 				{
-						scHTMLLabel_InfoText->Font->Color = (TColor)RGB(0,128,255);
+        scHTMLLabel_InfoText->Font->Color = (TColor)RGB(0,128,255);
 				}
 				scHTMLLabel_InfoText->Top = K_mGrid->Height + scLabel_header->Height + 14;
         scHTMLLabel_InfoText->Left = 4;
@@ -460,12 +451,10 @@ void TForm_katalog::vypis(UnicodeString text,bool red,bool link)
 
 void TForm_katalog::getCheckSettings ()
 {
-   //ShowMessage("getCheckSettings");
 
- //ShowMessage(check.Y);
-  if(check.Y==0) check.Y=2;  //v konstruktoru je defaul check.Y==0, kvůli sloučené hlavičce ale nastavím na 2 (první řádek katalog. hodnot)
+  if(check.Y==0) check.Y=2;  //v konstruktoru je default check.Y==0, kvůli sloučené hlavičce ale nastavím na 2 (první řádek katalog. hodnot)
 
-   TscGPCheckBox *CH=K_mGrid->getCheck(0,check.Y);  //výchozí stav zašrtávátka
+   TscGPCheckBox *CH=K_mGrid->getCheck(0,check.Y);  //výchozí stav zašrtávátka 1 sloupce
    CH->Checked=true;
    CH=NULL;delete CH;
 
@@ -476,34 +465,38 @@ void TForm_katalog::getCheckSettings ()
 
   for(unsigned int i=1;i<K_mGrid->ColCount;i++)
   {
+
    K_mGrid->Cells[i][check.Y].Font->Color=clSELECTED_BLUE;
    K_mGrid->Cells[i][check.Y].Background->Color=clBACKGROUND;
+
    if(K_mGrid->Cells[9][check.Y].Text!="")    K_mGrid->Cells[9][check.Y].Type=K_mGrid->CHECK;
    if(K_mGrid->Cells[10][check.Y].Text!="")   K_mGrid->Cells[10][check.Y].Type=K_mGrid->CHECK;
    if(K_mGrid->Cells[11][check.Y].Text!="")   K_mGrid->Cells[11][check.Y].Type=K_mGrid->CHECK;
    if(K_mGrid->Cells[12][check.Y].Text!="")   K_mGrid->Cells[12][check.Y].Type=K_mGrid->CHECK;
   }
      K_mGrid->Update();
-      if(check.X!=0)
-     {
+     if(check.X!=0)
+  {
+      K_mGrid->getCheck(9,check.Y)->Checked=true;  //výchozí stav zašrtávátka radiusu
 
-     TscGPCheckBox *CH=K_mGrid->getCheck(9,check.Y);  //výchozí stav zašrtávátka radiusu
-     CH->Checked=true;
-     CH=NULL;delete CH;
-    }
+     radius=Form1->ms.MyToDouble(K_mGrid->Cells[check.X][check.Y].Text); //uložení radiusu
+     katalog_id=check.Y-1;
+  }
 
   if(check.X==0)
   {
-
    check.X=9; // při prvotním spuštění automat. výběr
    TscGPCheckBox *CH=K_mGrid->getCheck(check.X,check.Y);  //výchozí stav zašrtávátka radiusu
    CH->Checked=true;
    CH=NULL;delete CH;
+
+   radius=Form1->ms.MyToDouble(K_mGrid->Cells[check.X][check.Y].Text); //uložení radiusu
+   katalog_id=1;
   }
 
     for(unsigned int j=9;j<=12;j++)
   {
-    //K_mGrid->Cells[j][check.Y].Align=K_mGrid->LEFT;
+    K_mGrid->Cells[j][check.Y].Align=K_mGrid->LEFT;
 
     TscGPCheckBox *H=K_mGrid->getCheck(j,check.Y);
     if(H->Caption=="") { /*H->Visible=false;*/  K_mGrid->Cells[j][check.Y].Text="";  }
@@ -519,6 +512,29 @@ void TForm_katalog::getCheckSettings ()
    // ShowMessage("KonecgetCheckSettings");
 }
 
+void TForm_katalog::clearCheck()
+{
+
+  for (int i=2; i < RowCount; i++)
+  {
+      for(unsigned int j=9;j<=12;j++)
+      {
+
+         if(K_mGrid->Cells[j][i].Type==K_mGrid->CHECK)
+         {
+          TscGPCheckBox *H=K_mGrid->getCheck(j,i);
+          if(H->Checked) H->Checked=false;
+                         /*ShowMessage(i)*/;// původně vybraný změním na readEdit (visible false nereaguje)
+         }
+     }
+  }
 
 
+}
+
+void __fastcall TForm_katalog::Button1Click(TObject *Sender)
+{
+//K_mGrid
+}
+//---------------------------------------------------------------------------
 

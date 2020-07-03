@@ -95,6 +95,7 @@ __published:	// IDE-managed Components
   TscHTMLLabel *scHTMLLabel_InfoText;
   TImage *ImageEx_jig_podvesny;
   TImage *ImageEx_jig_podlahovy;
+  TButton *Button1;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
