@@ -29,7 +29,6 @@ __published:	// IDE-managed Components
   TMemo *Memo1;
   TscHTMLLabel *scHTMLLabel_InfoText;
   TscHint *scHint1;
-  TButton *Button1;
   void __fastcall FormShow(TObject *Sender);
   void __fastcall FormPaint(TObject *Sender);
   void __fastcall Button_stornoClick(TObject *Sender);

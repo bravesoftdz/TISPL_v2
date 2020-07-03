@@ -6514,8 +6514,8 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 10391
-    Top = 16689
+    Left = 10403
+    Top = 16709
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -6541,8 +6541,8 @@ object Form_parametry_linky: TForm_parametry_linky
     GlyphThickness = 1
     Kind = scgpgkOneGear
     TransparentBackground = True
-    ExplicitLeft = 10388
-    ExplicitTop = 16684
+    ExplicitLeft = 10400
+    ExplicitTop = 16704
   end
   object scGPSwitch: TscGPSwitch
     Left = 762
@@ -6912,15 +6912,6 @@ object Form_parametry_linky: TForm_parametry_linky
     LinkFontHover.Style = [fsUnderline]
     MaxWidth = 0
     TextAlignment = taLeftJustify
-  end
-  object Button1: TButton
-    Left = 216
-    Top = 40
-    Width = 75
-    Height = 25
-    Caption = 'Button1'
-    TabOrder = 19
-    OnClick = Button1Click
   end
   object scStyledForm2: TscStyledForm
     FluentUIBackground = scfuibNone
