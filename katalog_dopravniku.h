@@ -29,6 +29,7 @@ __published:	// IDE-managed Components
   TMemo *Memo1;
   TscHTMLLabel *scHTMLLabel_InfoText;
   TscHint *scHint1;
+  TButton *Button1;
   void __fastcall FormShow(TObject *Sender);
   void __fastcall FormPaint(TObject *Sender);
   void __fastcall Button_stornoClick(TObject *Sender);
@@ -36,6 +37,7 @@ __published:	// IDE-managed Components
   void __fastcall Button_saveClick(TObject *Sender);
   void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
   void __fastcall KonecClick(TObject *Sender);
+  void __fastcall Button1Click(TObject *Sender);
 
 private:	// User declarations
     void LoadValues();
@@ -47,6 +49,7 @@ private:	// User declarations
     TColor clBACKGROUND_light,clBACKGROUND_dark,clNORMAL,clOTHER_AFTER_CHOOSE,clSELECTED_BLUE,clBACKGROUND;
     enum Tinput_state{NO,NOTHING,LOADING,JOB};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
     unsigned int last_Col, last_Row;
+    void clearCheck();
 
 
 public:		// User declarations

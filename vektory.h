@@ -169,6 +169,17 @@ class Cvektory
 	};
 	TCesta *MAG_LASO;
 
+	struct TTeplomery//uchovává v sobě teploměry a jejich cestu pro různé zakázky
+	{
+		unsigned long n;
+		unsigned long Z_n;
+		TElement *prvni;
+		TElement *posledni;
+		TCesta *cesta;
+		TTeplomery *dalsi;
+		TTeplomery *predchozi;
+	};
+
 	struct TObjekt
 	{
 		unsigned long n; //pořadí objektu ve spoj.seznamu
@@ -205,6 +216,7 @@ class Cvektory
 		TPointD koty_elementu_offset;//.x=odsazení kót elementů v metrech normální stav, .y=odsazení kót elementův metrech editace geometrie  - NEW + dodat do CObjekt!!!!
 		TKomora *komora;//ukazatel na případné komory objektu - NEW + dodat do CObjekt
 		TCesta *c_teplomery;
+    TTeplomery *teplomery;
 		unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky   //DOPRYC
 		unsigned short stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky   //DOPRYC
 		double odchylka;//povolená odchylka u PP z CT  //DOPRYC
@@ -818,13 +830,17 @@ public:
 	void uloz_doporucene_kapacity_objetku();//ukládá vypočtené doporučené kapacity jednotlivým technologickým objektům do jejich atribitu dop_kapacita, která se nezadává uživatelsky, ale jedině v tomto algoritmu
 	TMinMedAvgMax_d vrat_statisticke_doby_cekani_na_palec(TCesta *segment_cesty);//vrátí minimální, střední, průměrnou a maximální dobu čekání na palec v sec pro daný objekt (segment cesty) tak, jak bylo vypočteno v analýze/na časových osách, musí být tedy zde zvolena nějaká (libovolná) volba čekání na palec, mimo "žádná", Struktura TMinMedAvgMax_d vrací 4 hodnoty, min, med, agv, max datového typu double, volání výsledků probíhá přes “tečkový selektor”
 
-//c_teploměry
-  void hlavicka_c_teplomery(TObjekt *Objekt);//vytvoří v objektu hlavičku pro cestu teploměrů
-	void vymaz_seznam_c_teplomery(TObjekt *Objekt);//vymaže seznam teploměrů z objektu
-  void vloz_segment_cesty_c_teplomery(TObjekt *Objekt,TElement *Element,bool teplomer=false,double X=0,double Y=0);//vloží segment cesty do cest teploměrů v objektu, nebo vložení teploměru, doplnění bodu vložení
+//teploměry
+	void hlavicka_teplomery(TObjekt *Objekt);
+	void hlavicka_cesty_teplomery(TTeplomery *teplomery);//vytvoří v objektu hlavičku pro cestu teploměrů
+  void vymaz_teplomery(TObjekt *Objekt,TTeplomery *teplomery);//vymaže konkrétní záznam teploměrů
+	void vymaz_seznam_teplomery(TObjekt *Objekt);//vymaže seznam teploměrů z objektu
+  Cvektory::TTeplomery *vrat_teplomery_podle_zakazky(TObjekt *Objekt,TZakazka *Zakazka);//vrátí ukazatel na záznam teploměrů pro konkrétní zakázku
+  Cvektory::TTeplomery *vytvor_zaznam_teplomeru_pro_zakazku(TObjekt *Objekt,TZakazka *Zakazka);//vytvoří záznam teploměrů pro zakázku
+	void vloz_segment_cesty_teplomery(TObjekt *Objekt,TElement *Element,bool prvni=false,bool posledni=false,double X=0,double Y=0);//vloží segment cesty do cest teploměrů v objektu, nebo vložení teploměru, doplnění bodu vložení
+  void vloz_segment_cesty_do_seznamu_cesty(TTeplomery *teplomery,TElement *Element,bool prvni=false,bool posledni=false,unsigned int eID=400,double X=0,double Y=0);
 	void vytvor_default_c_teplomery(TObjekt *Objekt);//vytvoří 2 teploměry a defaultní cestu mezi nimi
 	Cvektory::TElement *najdi_teplomer();//hledá zda není uživatel kurzorem nad teploměrem, pokud ano vrátí ukazatel na teploměr
-	void kopiruj_c_teplomeru_do_MAG_LASO(TCesta *original);//zkopíruje cestu a teploměry do spojáku MAG_LASO
   void posun_teplomeru(TElement *teplomer);//posunem teploměru dochází k editaci jeho oblasti
 
 //SQL

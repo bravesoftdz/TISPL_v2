@@ -217,6 +217,15 @@ object Form_katalog: TForm_katalog
       UseFontColorToStyleColor = True
       Caption = 'Katalog dopravn'#237'k'#367
     end
+    object Button1: TButton
+      Left = 88
+      Top = 3
+      Width = 75
+      Height = 25
+      Caption = 'Button1'
+      TabOrder = 2
+      OnClick = Button1Click
+    end
   end
   object Button_save: TscGPButton
     Left = 366

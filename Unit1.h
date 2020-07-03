@@ -597,7 +597,6 @@ private:
 	void vymaz_seznam_obrazu();//vymaže všechny obrazy v poøadníku
 	void vytvor_statickou_scenu();//vytvoøí BMP se statickou scénou
 	void vytvor_statickou_scenu(long SCENA);//pøetížená výše uvedené pøímo s parametrem nastavení scény
-	void vytvor_aktualizuj_tab_teplomeru();//vytvoøí nebo aktualizuje mGrid teplomerù pro OBJEKT_akt
 
 	////promìnné
 	TDateTime TIME;
@@ -802,7 +801,8 @@ public:		// User declarations
 	void zapnuti_vypnuti_panelEditace(bool zapnout);//zapnout nebo vypnout panel editace, automaticky podle MODu zobrazí èi skryje urèité prvky
 	void rotuj_objekt_click(double rotace);//zajistí rotaci objektu
 	void pan_create2();//vytvoøí výøez pro pan_move - velký
-	void START();//zapne stopky
+  	void vytvor_aktualizuj_tab_teplomeru();//vytvoøí nebo aktualizuje mGrid teplomerù pro OBJEKT_akt
+  	void START();//zapne stopky
 	void STOP(bool MB=false);//vypne stopky, pokud je parementr metody nastaven na false (což je implicitnì), je zajištìn výpis do mema, pokud na true tak do ShowMessage
 };
 //---------------------------------------------------------------------------

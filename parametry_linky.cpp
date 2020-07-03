@@ -2427,62 +2427,65 @@ void TForm_parametry_linky::setFormHeight() {
 
 void __fastcall TForm_parametry_linky::Button1Click(TObject *Sender) {
   F->log(__func__); // logování
-  // automatické vygenerování pohonù
-  for (int i = PL_mGrid->RowCount; i <= 4; i++) {
+//  // automatické vygenerování pohonù
+//  for (int i = PL_mGrid->RowCount; i <= 4; i++) {
+//
+//    input_state = JOB;
+//    PL_mGrid->AddRow(true, false);
+//
+//    PL_mGrid->Cells[0][i].Text = getMaxPID() + 1; // PL_mGrid->RowCount - 2;
+//    PL_mGrid->Cells[1][i].Text = "nový pohon " + AnsiString(i - 1);
+//
+//    getmGridWidth();
+//    PL_mGrid->Cells[1][i].Type = PL_mGrid->EDIT;
+//    PL_mGrid->Cells[2][i].Type = PL_mGrid->EDIT;
+//    PL_mGrid->Cells[3][i].Type = PL_mGrid->EDIT;
+//    PL_mGrid->Cells[4][i].Type = PL_mGrid->EDIT;
+//    PL_mGrid->Cells[5][i].Type = PL_mGrid->EDIT;
+//    PL_mGrid->Cells[6][i].Type = PL_mGrid->CHECK;
+//    // PL_mGrid->Cells[7][i].Type = PL_mGrid->BUTTON;
+//
+//    PL_mGrid->Cells[2][i].InputNumbersOnly = 2;
+//    PL_mGrid->Cells[3][i].InputNumbersOnly = 2;
+//    PL_mGrid->Cells[4][i].InputNumbersOnly = 2;
+//    PL_mGrid->Cells[5][i].InputNumbersOnly = 2;
+//
+//    if (i == 2) {
+//      PL_mGrid->Cells[2][i].Text = "0,2";
+//      PL_mGrid->Cells[3][i].Text = "5";
+//      PL_mGrid->Cells[4][i].Text = "0,5";
+//      PL_mGrid->Cells[5][i].Text = "250";
+//    }
+//
+//    if (i >= 3) {
+//      PL_mGrid->Cells[2][i].Text =
+//          PL_mGrid->Cells[2][i - 1].Text * AnsiString(i - 1);
+//      PL_mGrid->Cells[3][i].Text =
+//          PL_mGrid->Cells[3][i - 1].Text * AnsiString(i - 1);
+//      PL_mGrid->Cells[4][i].Text =
+//          PL_mGrid->Cells[4][i - 1].Text * AnsiString(i - 1);
+//      PL_mGrid->Cells[5][i].Text =
+//          PL_mGrid->Cells[5][i - 1].Text * AnsiString(i - 1);
+//    }
+//
+//    PL_mGrid->Cells[8][i].Type = PL_mGrid->glyphBUTTON;
+//
+//    PL_mGrid->Refresh();
+//    PL_mGrid->getCheck(6, i)->Enabled = false;
+//    PL_mGrid->getCheck(6, i)->ShowHint = true;
+//    PL_mGrid->getCheck(6, i)->Hint = "Zrušit pøiøazení k objektùm";
+//    getDeleteButtonSettings(i);
+//    getPrirazeneObjDesign(i);
+//    setADD_ButtonPosition();
+//    setFormHeight();
+//    // R - zakoment scGPGlyphButton_DEL_nepouzite->Visible=true;
+//
+//  }
+//  input_state = NOTHING;
+//  vykresli_obdelnik_vpravo();
 
-    input_state = JOB;
-    PL_mGrid->AddRow(true, false);
-
-    PL_mGrid->Cells[0][i].Text = getMaxPID() + 1; // PL_mGrid->RowCount - 2;
-    PL_mGrid->Cells[1][i].Text = "nový pohon " + AnsiString(i - 1);
-
-    getmGridWidth();
-    PL_mGrid->Cells[1][i].Type = PL_mGrid->EDIT;
-    PL_mGrid->Cells[2][i].Type = PL_mGrid->EDIT;
-    PL_mGrid->Cells[3][i].Type = PL_mGrid->EDIT;
-    PL_mGrid->Cells[4][i].Type = PL_mGrid->EDIT;
-    PL_mGrid->Cells[5][i].Type = PL_mGrid->EDIT;
-    PL_mGrid->Cells[6][i].Type = PL_mGrid->CHECK;
-    // PL_mGrid->Cells[7][i].Type = PL_mGrid->BUTTON;
-
-    PL_mGrid->Cells[2][i].InputNumbersOnly = 2;
-    PL_mGrid->Cells[3][i].InputNumbersOnly = 2;
-    PL_mGrid->Cells[4][i].InputNumbersOnly = 2;
-    PL_mGrid->Cells[5][i].InputNumbersOnly = 2;
-
-    if (i == 2) {
-      PL_mGrid->Cells[2][i].Text = "0,2";
-      PL_mGrid->Cells[3][i].Text = "5";
-      PL_mGrid->Cells[4][i].Text = "0,5";
-      PL_mGrid->Cells[5][i].Text = "250";
-    }
-
-    if (i >= 3) {
-      PL_mGrid->Cells[2][i].Text =
-          PL_mGrid->Cells[2][i - 1].Text * AnsiString(i - 1);
-      PL_mGrid->Cells[3][i].Text =
-          PL_mGrid->Cells[3][i - 1].Text * AnsiString(i - 1);
-      PL_mGrid->Cells[4][i].Text =
-          PL_mGrid->Cells[4][i - 1].Text * AnsiString(i - 1);
-      PL_mGrid->Cells[5][i].Text =
-          PL_mGrid->Cells[5][i - 1].Text * AnsiString(i - 1);
-    }
-
-    PL_mGrid->Cells[8][i].Type = PL_mGrid->glyphBUTTON;
-
-    PL_mGrid->Refresh();
-    PL_mGrid->getCheck(6, i)->Enabled = false;
-    PL_mGrid->getCheck(6, i)->ShowHint = true;
-    PL_mGrid->getCheck(6, i)->Hint = "Zrušit pøiøazení k objektùm";
-    getDeleteButtonSettings(i);
-    getPrirazeneObjDesign(i);
-    setADD_ButtonPosition();
-    setFormHeight();
-    // R - zakoment scGPGlyphButton_DEL_nepouzite->Visible=true;
-
-  }
-  input_state = NOTHING;
-  vykresli_obdelnik_vpravo();
+PL_mGrid->VisibleComponents=-1;
+PL_mGrid->getCheck(6, 2)->Visible=false;
 
 }
 // ---------------------------------------------------------------------------
