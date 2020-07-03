@@ -3690,7 +3690,7 @@ void Cvykresli::vykresli_teplomer(TCanvas *canv,long X,long Y,AnsiString name,An
 	TextFraming(canv,x,y,name);
 	//citelná oblast popisku
 	aktOblast=TRect(x,y,x+canv->TextWidth(name),y+Th);//souřadnice pro citelnou oblast
-	//canv->Pen->Color=clRed;canv->Rectangle(aktOblast);//testovací oblast
+	//canv->Pen->Color=clRed;canv->Rectangle(aktOblast);//testovací oblast vykreslení
 	//°C
 	canv->Font->Style = TFontStyles();
 	TextFraming(canv,x+Tw,y,"°C");

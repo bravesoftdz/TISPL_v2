@@ -1,4 +1,5 @@
-﻿//MAKR - archiv
+﻿
+//MAKR - archiv
  //log(__func__);
 // Form2->ShowModal();
 //	d.v.vytvor_retez(d.v.POHONY->dalsi);
@@ -224,3 +225,29 @@
 //	else Memo("mají průsečík: "+String(P.x)+" "+String(P.y));
 //
 //	if(!IsNan(P.x) && !IsNan(P.y) && !IsInfinite(P.x) && !IsInfinite(P.y))Memo("MV - mají průsečík");
+
+
+
+	if(m.PtInTeplomer(d.v.ELEMENTY->dalsi->X,d.v.ELEMENTY->dalsi->Y,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.v.ELEMENTY->dalsi->orientace))Memo("v");else Memo("mimo");
+
+TDateTime start;
+	String s;
+	double cas=0,celkem_otevreni=0,celkem_zavreni=0;
+	unsigned int pocet_kroku=10;
+	for(unsigned int i=0;i<pocet_kroku;i++)
+	{
+		start=Now();
+		pom=d.v.OBJEKTY->dalsi;//predchozi->predchozi->predchozi;
+		otevri_editaci();
+		cas=ms.MyToDouble(TimeToStr(Now()-start).SubString(6,2));
+		celkem_otevreni+=cas;
+		Memo("Čas otevření: "+AnsiString(cas));
+		start=Now();
+		scGPButton_stornoClick(this);
+		cas=ms.MyToDouble(TimeToStr(Now()-start).SubString(6,2));
+		celkem_zavreni+=cas;
+		Memo("Čas zavření: "+AnsiString(cas));
+	}
+	Memo("------------");
+	Memo("Průměrný čas otevření: "+AnsiString(celkem_otevreni/(double)pocet_kroku));
+	Memo("Průměrný čas zavření: "+AnsiString(cas/(double)pocet_kroku));
