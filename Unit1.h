@@ -605,6 +605,8 @@ private:
 	bool ortogonalizace_stav;
 	bool kalibrace_hotova;
 	bool pan_non_locked;
+	short panType;
+	TPointD bmpPANall_XY;//uloení souøadnic levého horního rohu
 	bool stisknute_leve_tlacitko_mysi;//uchovává stav levého tlaèítka myši
 	unsigned short int funkcni_klavesa;//uchovává stav poslední stisknuté funkèní klávesy
 	unsigned short int vyska_menu;
@@ -643,6 +645,7 @@ private:
 	bool refreshovat_scGPTrackBar;//promìnná zajišujíci, e se scGPTracBar nerefreshuje pokud mu pøi zmìnì zoomu mimo scGPTracBar
 	TscGPEdit *editEditace;
 	long vychozi_stav_sceny;
+	TDateTime start;
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
@@ -666,7 +669,6 @@ public:		// User declarations
 	TPoint vychozi_souradnice_kurzoru;//uchová vıchozí pozici kurzoru
 	TPoint predchozi_souradnice_kurzoru;//uchová pùvodní pozici kurzoru pøi stisku tlaèítka myši
 	TPoint minule_souradnice_kurzoru;//uchová pùvodní souøadnice pøi posunu
-	TPointD T;//testovací
 
 	//promìnné
 	UnicodeString LICENCE;
@@ -799,7 +801,9 @@ public:		// User declarations
 	void zapnuti_vypnuti_panelEditace(bool zapnout);//zapnout nebo vypnout panel editace, automaticky podle MODu zobrazí èi skryje urèité prvky
 	void rotuj_objekt_click(double rotace);//zajistí rotaci objektu
 	void pan_create2();//vytvoøí vıøez pro pan_move - velkı
-  void vytvor_aktualizuj_tab_teplomeru();//vytvoøí nebo aktualizuje mGrid teplomerù pro OBJEKT_akt
+  	void vytvor_aktualizuj_tab_teplomeru();//vytvoøí nebo aktualizuje mGrid teplomerù pro OBJEKT_akt
+  	void START();//zapne stopky
+	void STOP(bool MB=false);//vypne stopky, pokud je parementr metody nastaven na false (co je implicitnì), je zajištìn vıpis do mema, pokud na true tak do ShowMessage
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

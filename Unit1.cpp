@@ -2204,7 +2204,7 @@ void TForm1::SB(UnicodeString Text, unsigned short Pane)
 //---------------------------------------------------------------------------
 void TForm1::S(UnicodeString Text)
 {
-		ShowMessage(Text);
+	ShowMessage(Text);
 }
 //---------------------------------------------------------------------------
 //usnadňuje přístup k ShowMessage - MaKr
@@ -5440,19 +5440,28 @@ void TForm1::LEFT()//smer doleva
 void TForm1::pan_create()
 {
 	log(__func__);//logování
-	int W=scSplitView_LEFTTOOLBAR->Width;
-	if(MOD==CASOVAOSA || MOD==TECHNOPROCESY)W=0;//zajistí, že se posová i číslování vozíků resp.celá oblast
-	short H=scGPPanel_mainmenu->Height;
-	int Gh=0;if(scGPPanel_bottomtoolbar->Visible)Gh=scGPPanel_bottomtoolbar->Height;Gh-=6;//WA, z nějaké důvodu to chce odebrat, aby byla posouváná plocha kompletní
-	scGPButton_bug_report->Visible=false;
-	Pan_bmp->Width=ClientWidth;Pan_bmp->Height=ClientHeight-H-Gh;//velikost pan plochy
-	Pan_bmp->Canvas->CopyRect(Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh),Canvas,Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh));//uloží pan výřez
-	if(MOD!=SIMULACE)scGPButton_bug_report->Visible=true;
-	//Pan_bmp->SaveToFile("test.bmp");  //pro testovací účely
+
+	TRect oblast=vrat_max_oblast();
+	short R=20;//nutná rezerva okraje v px
+	long MaxX=oblast.right+R,MaxY=oblast.bottom+R,MinX=oblast.left-R,MinY=oblast.top-R;//pozor na znaménka Y
+	float K=1.2;//koeficient zvětšení, 1.5 už méně efektivní, než pokrytím dokonalá (optimální) varianta 2
+	short o=0;if(scSplitView_LEFTTOOLBAR->Visible)o=scSplitView_LEFTTOOLBAR->Width;
+	if(MaxY-MinY>K*ClientHeight || MOD==EDITACE || 0+o<=MinX && MaxX<=ClientWidth && 0<=MinY && MaxY<=ClientHeight)//pokud by se jednalo o příliš velkou oblast nebo editaci nebo je daná oblast menší než zobrazovaná
+	{
+		//varianta 0) - povodní varianta sreenu obrazovky, bez nutnosti AA - velice rychlá, bez nabuffrovaného přesahu, tj. při každém posunu je vidět bílá nepřipravená plocha + nevýhodou je obtisk všech tlačítek či měřítka
+		panType=0;
+		int W=scSplitView_LEFTTOOLBAR->Width;
+		if(MOD==CASOVAOSA || MOD==TECHNOPROCESY)W=0;//zajistí, že se posová i číslování vozíků resp.celá oblast
+		short H=scGPPanel_mainmenu->Height;
+		int Gh=0;if(scGPPanel_bottomtoolbar->Visible)Gh=scGPPanel_bottomtoolbar->Height;Gh-=6;//WA, z nějaké důvodu to chce odebrat, aby byla posouváná plocha kompletní
+		scGPButton_bug_report->Visible=false;
+		Pan_bmp->Width=ClientWidth;Pan_bmp->Height=ClientHeight-H-Gh;//velikost pan plochy
+		Pan_bmp->Canvas->CopyRect(Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh),Canvas,Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh));//uloží pan výřez
+		if(MOD!=SIMULACE)scGPButton_bug_report->Visible=true;
+		//Pan_bmp->SaveToFile("test.bmp");  //pro testovací účely
 
 	/////////////////////
-	//testy - celoobrazovková alternativa - zatím nemazat!!!
-	//varianta 1) pro vlákno
+	//varianta 1) pro vlákno - neví se kam se bude posun odehrávat, tj. vytvoří oblast 3x3 obrazovek, ve středu je daná aktuální
 //	Zoom_predchozi_AA=Zoom;//záloha původního zoomu
 //	TPointD Posun_predchozi=Posun;
 //	Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
@@ -5467,8 +5476,8 @@ void TForm1::pan_create()
 //	Posun=Posun_predchozi;
 //	MessageBeep(0);
 
-//	//varianta 2) pro použítí zde optimalizovaná, ale stále pomalá
-//	//	Zoom_predchozi_AA=Zoom;//záloha původního zoomu
+//	//varianta 2) pro použítí zde optimalizovaná, ale stále pomalá, předpokládá se v momentu kliku (nelze ji připravit předem např. na vlákně), kdy se připraví přípraví max. dostatečná oblast napravo a nalevo resp. nahoru o dolu oblast, kterou je maximálně možné zobrazit, nic navíc
+//	Zoom_predchozi_AA=Zoom;//záloha původního zoomu
 //	TPointD Posun_predchozi=Posun;
 //	Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
 //	if(Pan_bmp_ALL!=NULL){delete Pan_bmp_ALL;Pan_bmp_ALL=NULL;}//před vytvořením nové kvůli realokaci nejdříve nutné odstranit
@@ -5482,29 +5491,62 @@ void TForm1::pan_create()
 //	Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 //	Posun=Posun_predchozi;
 //	MessageBeep(0);
+	}
+	else
+	{
+	 //varianta 3)rozměr bmp dle rozměru vektorových dat, nebo pokud by se jednalo o příliš velkou oblast, tak jen max násobek dle K obrazovky
+//	 TRect oblast=vrat_max_oblast();
+//	 short R=20;//nutná rezerva okraje v px
+//	 long MaxX=oblast.right+R,MaxY=oblast.bottom+R,MinX=oblast.left-R,MinY=oblast.top-R;//pozor na znaménka Y
+//	 float K=1.2;//koeficient zvětšení, 1.5 už méně efektivní, než pokrytím dokonalá (optimální) varianta 2
+//	 if(MaxY-MinY>K*ClientHeight)//pokud by se jednalo o příliš velkou oblast, tak jen max násobek dle K obrazovky
+//	 {
+//			int Ox=m.round(((MaxX-MinX)*K-(MaxX-MinX))/2.0);//odsazení na X
+//			int Oy=m.round(((MaxY-MinY)*K-(MaxY-MinY))/2.0);//odsazení na Y
+//			MinX=0-Ox;
+//			MaxX=ClientWidth+Ox;
+//			MinY=0-Oy;
+//			MaxY=ClientHeight+Oy;
+//	 }
+		panType=3;
+		bmpPANall_XY.x=m.P2Lx(MinX);bmpPANall_XY.y=m.P2Ly(MinY);
+		Zoom_predchozi_AA=Zoom;//záloha původního zoomu
+		TPointD Posun_predchozi=Posun;
+		if(Pan_bmp_ALL!=NULL){delete Pan_bmp_ALL;Pan_bmp_ALL=NULL;}//před vytvořením nové kvůli realokaci nejdříve nutné odstranit
+		Posun.x+=m.round(MinX/Zoom);Posun.y+=m.round(MinY/Zoom);//lépe před zoomem,levý horní roh oblasti
+		Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu, lépe za posunem
+		Graphics::TBitmap *bmp_test=new Graphics::TBitmap;
+		bmp_test->Width=ceil(abs((double)MaxX-MinX)*3);bmp_test->Height=ceil(abs((double)MaxY-MinY)*3);//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+		d.vykresli_vektory(bmp_test->Canvas,1);
+		Cantialising a; Pan_bmp_ALL=a.antialiasing(bmp_test,false);delete(bmp_test);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
+		//Pan_bmp_ALL->SaveToFile("testALL.bmp");
+		Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
+		Posun=Posun_predchozi;
+		//MessageBeep(0);
+	}
 }
 //---------------------------------------------------------------------------
-//vytvoří výřez pro pan_move - velký
+//vytvoří výřez pro pan_move - velký  - varianta 1 - voláná z vlákna při vytvor_statickou_scenu
 void TForm1::pan_create2()
 {
-	Zoom_predchozi_AA=Zoom;//záloha původního zoomu
-	TPointD Posun_predchozi=Posun;
-	Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
-	if(Pan_bmp_ALL!=NULL){delete Pan_bmp_ALL;Pan_bmp_ALL=NULL;}//před vytvořením nové kvůli realokaci nejdříve nutné odstranit
-	Posun.x-=ClientWidth/Zoom*3;Posun.y-=ClientHeight/Zoom*3;
-	Graphics::TBitmap *bmp_test=new Graphics::TBitmap;
-	bmp_test->Width=ClientWidth*3*3;bmp_test->Height=ClientHeight*3*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu, *3 z principu algoritmu (tři nabuffrované obrazovky, neví se kam, se bude obraz posouvat)
-	d.SCENA=1111111;
-	d.vykresli_vektory(bmp_test->Canvas,1);
-	Cantialising a;Pan_bmp_ALL=a.antialiasing(bmp_test,false);delete(bmp_test);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
-	//Pan_bmp_ALL->SaveToFile("testALL.bmp");
-	Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
-	Posun=Posun_predchozi;
-	MessageBeep(0);
-	vlakno_PanCreateState=false;
-	vlakno_PanCreate->Terminate();
-	vlakno_PanCreate->Free();
-	vlakno_PanCreate=NULL;delete vlakno_PanCreate;
+//	Zoom_predchozi_AA=Zoom;//záloha původního zoomu
+//	TPointD Posun_predchozi=Posun;
+//	Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
+//	if(Pan_bmp_ALL!=NULL){delete Pan_bmp_ALL;Pan_bmp_ALL=NULL;}//před vytvořením nové kvůli realokaci nejdříve nutné odstranit
+//	Posun.x-=ClientWidth/Zoom*3;Posun.y-=ClientHeight/Zoom*3;
+//	Graphics::TBitmap *bmp_test=new Graphics::TBitmap;
+//	bmp_test->Width=ClientWidth*3*3;bmp_test->Height=ClientHeight*3*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu, *3 z principu algoritmu (tři nabuffrované obrazovky, neví se kam, se bude obraz posouvat)
+//	d.SCENA=1111111;
+//	d.vykresli_vektory(bmp_test->Canvas,1);
+//	Cantialising a;Pan_bmp_ALL=a.antialiasing(bmp_test,false);delete(bmp_test);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
+//	//Pan_bmp_ALL->SaveToFile("testALL.bmp");
+//	Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
+//	Posun=Posun_predchozi;
+//	MessageBeep(0);
+//	vlakno_PanCreateState=false;
+//	vlakno_PanCreate->Terminate();
+//	vlakno_PanCreate->Free();
+//	vlakno_PanCreate=NULL;delete vlakno_PanCreate;
 }
 //---------------------------------------------------------------------------
 //Posouvá výřez mapy při stisknutém mezerníku a L-myši
@@ -5515,17 +5557,33 @@ void TForm1::pan_map(TCanvas * canv, int X, int Y)
 	if(OBJEKT_akt!=NULL)if(OBJEKT_akt->zobrazit_mGrid)d.vykresli_mGridy();
 
 	////vykreslení aktuální pan_bmp
-	canv->Brush->Color=clWhite/*clLtGray*/;canv->Brush->Style=bsSolid;
-	//maže při posouvání obrazu starý obraz
-	canv->FillRect(TRect(0,0,/*X-kurzor_souradnice_puvodni.x+Pan_bmp->Width*/ClientWidth,Y-vychozi_souradnice_kurzoru.y));//horní okraj
-	canv->FillRect(TRect(0,Y-vychozi_souradnice_kurzoru.y,X-vychozi_souradnice_kurzoru.x,Y-vychozi_souradnice_kurzoru.y+Pan_bmp->Height));//levy okraj
-	canv->FillRect(TRect(X-vychozi_souradnice_kurzoru.x+Pan_bmp->Width,Y-vychozi_souradnice_kurzoru.y,ClientWidth,ClientHeight));//pravy okraj
-	canv->FillRect(TRect(0,Y-vychozi_souradnice_kurzoru.y+Pan_bmp->Height,X-vychozi_souradnice_kurzoru.x+Pan_bmp->Width,ClientHeight));//dolní okraj
-	//samotné posouvání Pan_bmp
-	//if(vlakno_PanCreateState==1)
-	canv->Draw(X-vychozi_souradnice_kurzoru.x,Y-vychozi_souradnice_kurzoru.y,Pan_bmp);
-	//else canv->Draw(X-vychozi_souradnice_kurzoru.x-ClientWidth,Y-vychozi_souradnice_kurzoru.y-ClientHeight,Pan_bmp_ALL);//varianta 1) viz pan_create
-//	canv->Draw(X-vychozi_souradnice_kurzoru.x-T.x,Y-vychozi_souradnice_kurzoru.y-T.y,Pan_bmp_ALL);//varianta 2) viz pan_create
+  canv->Brush->Color=clWhite;/*clLtGray*/canv->Brush->Style=bsSolid;
+	if(panType==0)
+	{
+		//maže při posouvání obrazu starý obraz
+		canv->FillRect(TRect(0,0,/*X-kurzor_souradnice_puvodni.x+Pan_bmp->Width*/ClientWidth,Y-vychozi_souradnice_kurzoru.y));//horní okraj
+		canv->FillRect(TRect(0,Y-vychozi_souradnice_kurzoru.y,X-vychozi_souradnice_kurzoru.x,Y-vychozi_souradnice_kurzoru.y+Pan_bmp->Height));//levy okraj
+		canv->FillRect(TRect(X-vychozi_souradnice_kurzoru.x+Pan_bmp->Width,Y-vychozi_souradnice_kurzoru.y,ClientWidth,ClientHeight));//pravy okraj
+		canv->FillRect(TRect(0,Y-vychozi_souradnice_kurzoru.y+Pan_bmp->Height,X-vychozi_souradnice_kurzoru.x+Pan_bmp->Width,ClientHeight));//dolní okraj
+		//samotné posouvání Pan_bmp
+		//if(vlakno_PanCreateState==1)
+		canv->Draw(X-vychozi_souradnice_kurzoru.x,Y-vychozi_souradnice_kurzoru.y,Pan_bmp);//varianta 0
+		//else canv->Draw(X-vychozi_souradnice_kurzoru.x-ClientWidth,Y-vychozi_souradnice_kurzoru.y-ClientHeight,Pan_bmp_ALL);//varianta 1) viz pan_create
+		//canv->Draw(X-vychozi_souradnice_kurzoru.x-T.x,Y-vychozi_souradnice_kurzoru.y-T.y,Pan_bmp_ALL);//varianta 2) viz pan_create
+	}
+	//varianta 3
+	if(panType==3)
+	{
+		int x=X-vychozi_souradnice_kurzoru.x+m.L2Px(bmpPANall_XY.x);
+		int y=Y-vychozi_souradnice_kurzoru.y+m.L2Py(bmpPANall_XY.y);
+		//maže při posouvání obrazu starý obraz
+		canv->FillRect(TRect(0,0,ClientWidth,y));//horní okraj
+		canv->FillRect(TRect(0,y,x,ClientHeight));//levy okraj
+		canv->FillRect(TRect(x+Pan_bmp_ALL->Width,y,ClientWidth,ClientHeight));//pravy okraj
+		canv->FillRect(TRect(x,y+Pan_bmp_ALL->Height,x+Pan_bmp_ALL->Width,ClientHeight));//dolní okraj
+		//samotná bmp obrazu
+		canv->Draw(x,y,Pan_bmp_ALL);
+	}
 }
 //---------------------------------------------------------------------------
 //realizuje posunutí obrazu
@@ -5612,30 +5670,30 @@ void __fastcall TForm1::RzToolButton11Click(TObject *Sender)
 	{
 		TRect oblast=vrat_max_oblast();
 		if(!(oblast.left>10000 && oblast.right<-10000))
-  	{
+		{
 			//deklarace
 			int MaxX=oblast.right,MaxY=oblast.top,MinX=oblast.left,MinY=oblast.bottom;
 			int PD_x=ClientWidth-scSplitView_LEFTTOOLBAR->Width;
-			int PD_y=ClientHeight-vyska_menu-scGPPanel_statusbar->Height-scGPPanel_mainmenu->Height;//-vyska_menu-RzStatusBar1->Height je navíc nemá tam co dělat
+			int PD_y=ClientHeight-vyska_menu-scGPPanel_statusbar->Height-scGPPanel_mainmenu->Height;
 			TPointD centr;
 			centr.x=m.P2Lx((MaxX+MinX)/2.0);
 			centr.y=m.P2Ly((MaxY+MinY)/2.0);
 
 			//výpočet nového Zoomu
 			double Z1=abs(Zoom*PD_x/(MaxX-MinX)),Z2=abs(Zoom*PD_y/abs(MaxY-MinY));
-  		Z1-=fmod(Z1,0.5);Z2-=fmod(Z2,0.5);
+			Z1-=fmod(Z1,0.5);Z2-=fmod(Z2,0.5);
 			if(Z1>Z2)Zoom=Z2;else Zoom=Z1;
 			if(Zoom<0.5)Zoom=0.5;if(Zoom>10)Zoom=10;
 
-  		//vycentrování obrazu
+			//vycentrování obrazu
 			PD_x=(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0;
 			PD_y=(ClientHeight+(scGPPanel_mainmenu->Height-scGPPanel_statusbar->Height))/2.0;
 			Posun.x+=(m.L2Px(centr.x)-PD_x)/Zoom;
 			Posun.y+=(m.L2Py(centr.y)-PD_y)/Zoom;
 
-  		//překreslení
-  		on_change_zoom_change_scGPTrackBar();
-  	}
+			//překreslení
+			on_change_zoom_change_scGPTrackBar();
+		}
 	}catch(...){};
 	vytvor_statickou_scenu();
 	REFRESH();
@@ -13887,7 +13945,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //MaKr testovací tlačítko
 void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 {
-//
+//vždy nechat
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -17131,7 +17189,20 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 	}
 }
 //---------------------------------------------------------------------------
-
+//zapne stopky
+void TForm1::START()
+{
+	start=Now();
+}
+//---------------------------------------------------------------------------
+//vypne stopky, pokud je parementr metody nastaven na false (což je implicitně), je zajištěn výpis do mema, pokud na true tak do ShowMessage
+void TForm1::STOP(bool MB)
+{
+	MessageBeep(0);
+	String R=TimeToStr(Now()-start);
+	if(MB)S(R);else Memo(R);
+}
+//---------------------------------------------------------------------------
 
 
 

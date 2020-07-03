@@ -104,7 +104,7 @@ double Cmy::R2Larc(double radius,double angle)
 	return radius*2*M_PI*a360(fabs(angle))/360.0;
 }
 /////////////////////////////////////////////////////////////////////////////
-//ze zadaného radiusu a délky tetivy vrátí úhel kruhové výseče ve stupních
+//ze zadaného radiusu a délky tětivy vrátí úhel kruhové výseče ve stupních
 double Cmy::T2Aarc(double radius,double t_lenght)
 {
 	return ToDeg(2*ArcSin(t_lenght/(radius*2)));
