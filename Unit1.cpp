@@ -5445,9 +5445,10 @@ void TForm1::pan_create()
 	short R=20;//nutná rezerva okraje v px
 	long MaxX=oblast.right+R,MaxY=oblast.bottom+R,MinX=oblast.left-R,MinY=oblast.top-R;//pozor na znaménka Y
 	float K=1.2;//koeficient zvětšení, 1.5 už méně efektivní, než pokrytím dokonalá (optimální) varianta 2
-	if(MaxY-MinY>K*ClientHeight || MOD==EDITACE)//pokud by se jednalo o příliš velkou oblast, tak jen max násobek dle K obrazovky
+	short o=0;if(scSplitView_LEFTTOOLBAR->Visible)o=scSplitView_LEFTTOOLBAR->Width;
+	if(MaxY-MinY>K*ClientHeight || MOD==EDITACE || 0+o<=MinX && MaxX<=ClientWidth && 0<=MinY && MaxY<=ClientHeight)//pokud by se jednalo o příliš velkou oblast nebo editaci nebo je daná oblast menší než zobrazovaná
 	{
-		//varianta 0) - povodní varianta sreenu obrazovky, bez nutnosti AA - velice rychlá
+		//varianta 0) - povodní varianta sreenu obrazovky, bez nutnosti AA - velice rychlá, bez nabuffrovaného přesahu, tj. při každém posunu je vidět bílá nepřipravená plocha + nevýhodou je obtisk všech tlačítek či měřítka
 		panType=0;
 		int W=scSplitView_LEFTTOOLBAR->Width;
 		if(MOD==CASOVAOSA || MOD==TECHNOPROCESY)W=0;//zajistí, že se posová i číslování vozíků resp.celá oblast
