@@ -3149,6 +3149,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								epom=NULL;delete epom;
 								if(Form_definice_zakazek->Z_cesta->cesta->predchozi->Element==d.v.ELEMENTY->predchozi)scGPButton_ulozit->Enabled=true;
 								else scGPButton_ulozit->Enabled=false;
+                vytvor_statickou_scenu();
 					  	}
 							else
 							{
@@ -14008,7 +14009,13 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 
 	//OBJEKT_akt->element->mGrid->AddRow(false,false);
 	//OBJEKT_akt->element->mGrid->Update();
-	d.v.vytvor_default_c_teplomery(d.v.OBJEKTY->predchozi);
+	Cvektory::TCesta *C=Form_definice_zakazek->Z_cesta->cesta->dalsi; Memo_testy->Clear();
+	while(C!=NULL)
+	{
+		Memo(C->Element->name);
+		C=C->dalsi;
+	}
+  delete C;C=NULL;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -15031,7 +15038,8 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		MOD=LAYOUT;
 		zapnuti_vypnuti_panelEditace(false);
   	d.v.vymaz_cestu_zakazky(Form_definice_zakazek->Z_cesta);
-  	delete Form_definice_zakazek->Z_cesta;Form_definice_zakazek->Z_cesta=NULL;
+		delete Form_definice_zakazek->Z_cesta;Form_definice_zakazek->Z_cesta=NULL;
+		vytvor_statickou_scenu();//musí zde být
   	REFRESH();//odstranění vykreslení cesty z layoutu
   	Form_definice_zakazek->ShowModal();
 	}
@@ -15361,6 +15369,7 @@ void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
   	Akce=NIC;
   	MOD=LAYOUT;
 		zapnuti_vypnuti_panelEditace(false);
+		vytvor_statickou_scenu();
   	REFRESH();//odstranění vykreslení cesty z layoutu
   	Form_definice_zakazek->ShowModal();
   }
@@ -16951,6 +16960,7 @@ void __fastcall TForm1::scGPGlyphButton_odstran_cestuClick(TObject *Sender)
 	d.v.vloz_cestu_po_hlavni_vetvi(Form_definice_zakazek->Z_cesta,true);//vytvoří první usek cesty
 	if(Form_definice_zakazek->Z_cesta->cesta->predchozi->Element==d.v.ELEMENTY->predchozi)scGPButton_ulozit->Enabled=true;
 	else scGPButton_ulozit->Enabled=false;
+  vytvor_statickou_scenu();
 	REFRESH();
 }
 //---------------------------------------------------------------------------
@@ -16982,6 +16992,7 @@ void __fastcall TForm1::N21Click(TObject *Sender)
 	if(Form_definice_zakazek->Z_cesta->cesta->predchozi->Element==d.v.ELEMENTY->predchozi)scGPButton_ulozit->Enabled=true;
 	else scGPButton_ulozit->Enabled=false;
 	//překreslení
+  vytvor_statickou_scenu();
 	REFRESH();
 }
 //---------------------------------------------------------------------------
@@ -17423,8 +17434,7 @@ void TForm1::pridej_radek_tab_teplomeru(TmGrid *mGrid,double cas,double WT,bool 
 	mGrid->Cells[0][mGrid->RowCount-1].Hint=text_id;
 	if(celkem)
 	{
-		//
-		mGrid->Cells[1][mGrid->RowCount-1].Text=m.round2double(outPT(cas+WT),3);
+		mGrid->Cells[1][mGrid->RowCount-1].Text=m.round2double(cas+WT,3);//není třeba převádět skrze outPT, sčítájí se hodnoty v tabulkce, které již prošly přes outpt
 		mGrid->MergeCells(1,mGrid->RowCount-1,2,mGrid->RowCount-1);
 		//deklarace barev
 		TColor clBackgroundHidden=(TColor)RGB(240,240,240);

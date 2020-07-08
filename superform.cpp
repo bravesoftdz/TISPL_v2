@@ -620,6 +620,8 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col, unsig
 		F->d.v.inicializace_cesty(Z_cesta);
 		F->d.v.kopiruj_cestu_zakazky(Z,Z_cesta);//kopírování uložené cesty pro její editaci
 		if(Z_cesta->cesta->predchozi->Element!=F->d.v.ELEMENTY->predchozi)F->scGPButton_ulozit->Enabled=false;
+    //centrování obrazu
+		F->RzToolButton11Click(this);
 		//aktualizace parametrù z tabulky do ZAKAZEK_temp + mazání mgridù zakázek
 		ulozeni_dat_z_mGridu_a_delete();
 		closing=true;
