@@ -210,10 +210,24 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
   }
 	else
 	{
+		Cvektory::TZakazka *Zpredchozi=F->d.v.ZAKAZKA_akt;//uložení pøedchozí pro zmìnu cest teplomìrù
 		ulozeni_dat_z_mGridu_a_delete();
-		// kopírování temp zakázek do ostrých zakázek
+		//kopírování temp zakázek do ostrých zakázek
 		F->d.v.kopirujZAKAZKY_temp2ZAKAZKY();
 		if(akt_zakazka_n!=0)F->d.v.ZAKAZKA_akt=F->d.v.vrat_zakazku(akt_zakazka_n);
+    //aktualizace cest teplomìrù
+		if(Zpredchozi!=F->d.v.ZAKAZKA_akt)
+		{
+	  	Cvektory::TObjekt *Objekt=F->d.v.OBJEKTY->dalsi;
+	  	while(Objekt!=NULL)
+	  	{
+	  		//pokud má objekt teplomìry, úprava cesty na aktuální zakázku
+	  		if(Objekt->teplomery!=NULL)F->d.v.zmena_zakazky_vytvoreni_teplomeru(Objekt,Zpredchozi,F->d.v.ZAKAZKA_akt);
+	  		Objekt=Objekt->dalsi;
+	  	}
+	  	delete Objekt;Objekt=NULL;
+		}
+    Zpredchozi=NULL;delete Zpredchozi;
 		//else F->zakazka_akt=NULL;
 		F->DuvodUlozit(true);
 		F->duvod_validovat=2;

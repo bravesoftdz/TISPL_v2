@@ -1522,6 +1522,21 @@ void TFormX::prirazeni_pohohonu_vetvi(Cvektory::TElement *E,long Col)
 	input_state=COMBO;//dùležité pro nastavení enabled komponent v aktualizaci elementù
 	aktualizace_tab_elementu();
 
+	//vytvoøení cesty teplomìrù po pøiøazení pohonu
+	Cvektory::TTeplomery *T=F->d.v.vrat_teplomery_podle_zakazky(F->OBJEKT_akt,F->d.v.ZAKAZKA_akt);
+	if(F->OBJEKT_akt->pohon!=NULL && F->OBJEKT_akt->id>=6 && F->OBJEKT_akt->id<=8 && T==NULL)
+	{
+		F->d.v.vytvor_default_c_teplomery(F->OBJEKT_akt);
+		F->vytvor_aktualizuj_tab_teplomeru();
+	}
+	//pokud dojde k odstranìní pohonu, dojde ke smazání teplomìrù
+	if((F->OBJEKT_akt->pohon==NULL ||  !(F->OBJEKT_akt->id>=6 && F->OBJEKT_akt->id<=8)) && T!=NULL)
+	{
+		F->d.v.vymaz_teplomery(F->OBJEKT_akt,T);
+		delete T;T=NULL;
+	}
+	T=NULL;delete T;
+
 	////ukazatelové záležitosti
 	Combo=NULL;delete Combo;
 	p=NULL;delete p;
@@ -1900,6 +1915,21 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 	Combo=NULL;delete Combo;
 	p=NULL;delete p;
 	e=NULL;delete e;
+
+	//vytvoøení cesty teplomìrù po pøiøazení pohonu
+	Cvektory::TTeplomery *T=F->d.v.vrat_teplomery_podle_zakazky(F->OBJEKT_akt,F->d.v.ZAKAZKA_akt);
+	if(F->OBJEKT_akt->pohon!=NULL && F->OBJEKT_akt->id>=6 && F->OBJEKT_akt->id<=8 && T==NULL)
+	{
+		F->d.v.vytvor_default_c_teplomery(F->OBJEKT_akt);
+		F->vytvor_aktualizuj_tab_teplomeru();
+	}
+	//pokud dojde k odstranìní pohonu, dojde ke smazání teplomìrù
+	if((F->OBJEKT_akt->pohon==NULL ||  !(F->OBJEKT_akt->id>=6 && F->OBJEKT_akt->id<=8)) && T!=NULL)
+	{
+		F->d.v.vymaz_teplomery(F->OBJEKT_akt,T);
+		delete T;T=NULL;
+	}
+	T=NULL;delete T;
 }
 //---------------------------------------------------------------------------
 //pøiøazení pohonu z PmG
@@ -1951,6 +1981,21 @@ void TFormX::prirazeni_pohonu_defTab()
 			posledni_E=posledni_E->dalsi;
 		}
 	}
+
+	//vytvoøení cesty teplomìrù po pøiøazení pohonu
+	Cvektory::TTeplomery *T=F->d.v.vrat_teplomery_podle_zakazky(F->OBJEKT_akt,F->d.v.ZAKAZKA_akt);
+	if(F->OBJEKT_akt->pohon!=NULL && F->OBJEKT_akt->id>=6 && F->OBJEKT_akt->id<=8 && T==NULL)
+	{
+		F->d.v.vytvor_default_c_teplomery(F->OBJEKT_akt);
+		F->vytvor_aktualizuj_tab_teplomeru();
+	}
+	//pokud dojde k odstranìní pohonu, dojde ke smazání teplomìrù
+	if((F->OBJEKT_akt->pohon==NULL ||  !(F->OBJEKT_akt->id>=6 && F->OBJEKT_akt->id<=8)) && T!=NULL)
+	{
+		F->d.v.vymaz_teplomery(F->OBJEKT_akt,T);
+		delete T;T=NULL;
+	}
+	T=NULL;delete T;
 
 	//ukazatelové záležitosti
 	E=NULL;p=NULL;

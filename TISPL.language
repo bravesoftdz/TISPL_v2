@@ -482,3 +482,7 @@ Use double click on the created section to start creating geometry;X;Poklepáním 
 The change will take effect after switching to Layout;X;Zmìna se projeví po pøechodu do Layout
 offset of working area;X;vyosení pracovní oblasti
 Click in any area to start the measurement;X;Kliknutím do libovolné oblasti zahájíte mìøení
+Section;X;Úsek
+Time;X;Èas
+crossing;X;pøejezd
+total;X;celkem

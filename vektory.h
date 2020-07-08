@@ -215,7 +215,6 @@ class Cvektory
 		T2Rect kabinaKotaY_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny -//DOPRYC
 		TPointD koty_elementu_offset;//.x=odsazení kót elementů v metrech normální stav, .y=odsazení kót elementův metrech editace geometrie  - NEW + dodat do CObjekt!!!!
 		TKomora *komora;//ukazatel na případné komory objektu - NEW + dodat do CObjekt
-		TCesta *c_teplomery;
     TTeplomery *teplomery;
 		unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky   //DOPRYC
 		unsigned short stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky   //DOPRYC
@@ -783,6 +782,7 @@ public:
 	void nacti_z_obrazu_DATA(bool storno=false);//načtení z obrazu projektu v závislosti zda se jedná o storno funkcionalitu, layout nebo editaci objektu
 	Cvektory::TDATA *vrat_obraz_DATA(unsigned long n);//vrátí obraz podle jeho n
 	void smaz_obraz_DATA(unsigned long n=0);//smaže konkrétní obraz
+  void smaz_data_obrazu(TDATA *obraz);//mazání dat v obrazu, objekty, elementy, ...
 	long vymaz_seznam_DATA();//smaže kompletní seznam DATA
 
 	unsigned long pozice_data;//uchovává pozici ve spojáku dat, pro posunování při ctrl+z funkcionalitě
@@ -841,7 +841,10 @@ public:
   void vloz_segment_cesty_do_seznamu_cesty(TTeplomery *teplomery,TElement *Element,bool prvni=false,bool posledni=false,unsigned int eID=400,double X=0,double Y=0);
 	void vytvor_default_c_teplomery(TObjekt *Objekt);//vytvoří 2 teploměry a defaultní cestu mezi nimi
 	Cvektory::TElement *najdi_teplomer();//hledá zda není uživatel kurzorem nad teploměrem, pokud ano vrátí ukazatel na teploměr
-  void posun_teplomeru(TElement *teplomer);//posunem teploměru dochází k editaci jeho oblasti
+	void posun_teplomeru(TElement *teplomer);//posunem teploměru dochází k editaci jeho oblasti
+	void zmena_zakazky_vytvoreni_teplomeru(TObjekt *Objekt,TZakazka *Zakt,TZakazka *Znova);//provede kontrolu, zda existuje cesta pro akt zakázku pokud ano, zkontroluje jestli existuje cesta i na nové zakázce, pokud ne vytvoří default cestu od vrátek k vrátkům
+	void kopiruj_seznam_teplomery(TObjekt *zdroj,TObjekt *cil);//kopíruje záznamy teploměrů do jiného objektu, pro účely obrazu objektu
+  Cvektory::TTeplomery *kopiruj_teplomer(TTeplomery *original);//vytvoří kopii z originálního záznamu teploměrů
 
 //SQL
 	AnsiString QUERY(AnsiString query);//vratí AnsiString hodnod dle zadaného dotazu v syntaxi SQL, zatím umí jen základní úroveň - asi odstranit
@@ -884,7 +887,8 @@ private:
 			double orientace_text;//orientace nadpisu objektu
       unsigned long pocet_bodu;
 			unsigned long element_n;
-      unsigned long pocet_komor;
+			unsigned long pocet_komor;
+      unsigned long pocet_teplomeru;
 			unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
 			unsigned short stavPM;//obsahuje stav pohonových tabulek v objektu 0-normal (zobrazeny rychlosti a comba, dafaultní stav), 1-minimized (pouze hlavička tabulek a comba), 2-maximized (vše zobrazeno)
       double sirka_steny;//šířka stěny kabiny objektu v metrech
@@ -976,7 +980,8 @@ private:
 			TPointD RT;//reserve time
 
       unsigned int akt_pocet_voziku;
-      unsigned int max_pocet_voziku;
+			unsigned int max_pocet_voziku;
+      unsigned long sparovany_n;
       unsigned long objekt_n;//příslušnost elementu k objektu
       unsigned long pohon_n;//příslušnost elementu k pohonu
 			TGeometrie geo;
@@ -988,6 +993,13 @@ private:
 			unsigned long n_element;
 			unsigned long n_sparovany;
 			Tdata data;
+	};
+
+	struct C_teplomery//uchovává v sobě teploměry a jejich cestu pro různé zakázky
+	{
+		unsigned long n;
+		unsigned long Z_n;
+		unsigned long pocet_sehmentu_cesty;
 	};
 
 //	struct C_vozik//pro konverzi do bináru
