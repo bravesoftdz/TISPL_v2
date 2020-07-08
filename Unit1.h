@@ -804,7 +804,8 @@ public:		// User declarations
   	void vytvor_aktualizuj_tab_teplomeru();//vytvoøí nebo aktualizuje mGrid teplomerù pro OBJEKT_akt
   	void START();//zapne stopky
 	void STOP(bool MB=false);//vypne stopky, pokud je parementr metody nastaven na false (což je implicitnì), je zajištìn výpis do mema, pokud na true tak do ShowMessage
-};
+  void GetTime(short int rezim);
+  };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
 extern PACKAGE TForm1 *F;//pouze zkrácený zapis

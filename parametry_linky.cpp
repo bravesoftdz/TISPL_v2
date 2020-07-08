@@ -497,6 +497,10 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender) {
   scHTMLLabel_posuvnik->Left =
       (scGPTrackBar_uchyceni->Left + scGPTrackBar_uchyceni->Width + 10) -
       scPanel_vozik->Left;
+
+
+
+      if(scGPGlyphButton_katalog->Caption=="Vybrat dopravník") { scGPGlyphButton_katalog->Font->Color=clRed; ShowMessage("ted"); }
 }
 
 // ---------------------------------------------------------------------------
@@ -744,33 +748,6 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender) {
   bool volat_aktualizaci = false;
   int aktualizace_id;
 
-  // scCheckBox_vyber_produkt->Visible=false;
-  // scComboBox_vyber_produkt->Visible=false;
-
-  // pøed samotným uložením, kontrola zdali jsou podstatné údaje u pohonu nastaveny
-  // pokud nìco chybí, zakážu uložení
-  // int count=0;
-  //
-  // for (unsigned int i = 2; i < PL_mGrid->RowCount; i++)
-  // {
-  // if(PL_mGrid->Cells[2][i].Text=="") count++;
-  // if(PL_mGrid->Cells[3][i].Text=="") count++;
-  // if(PL_mGrid->Cells[4][i].Text=="") count++;
-  // //if(PL_mGrid->Cells[5][i].Text=="") count++;
-  // if(PL_mGrid->getCombo(5,i)->Text=="") count++;
-  // }
-  //
-  // if(count>0)
-  // {
-  //
-  // scStyledForm2->ShowClientInActiveEffect();
-  //
-  // if(mrOk==Form1->MB("Nelze uložit, vyplòte všechny údaje o pohonu",MB_OK))
-  // {
-  // Ulozit=false;
-  // scStyledForm2->HideClientInActiveEffect();
-  // }
-  // }
   // uložení katalogu
   F->d.v.PP.katalog = katalog_id;
   F->d.v.PP.radius = radius;
@@ -1013,43 +990,6 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender) {
 
 // ---------------------------------------------------------------------------
 // smaže poslední øádek - již se nepoužívá, ale nechvám
-void __fastcall TForm_parametry_linky::Button_DEL_Click(TObject *Sender) {
-  // if(Form1->d.v.pohon_je_pouzivan(rStringGridEd_tab_dopravniky->RowCount-1))
-  // {
-  // AnsiString objekty=Form1->d.v.vypis_objekty_vyuzivajici_pohon(getPID(rStringGridEd_tab_dopravniky->RowCount-1),true);
-  // if(mrOk==Form1->MB("Pohon je používán pro objekty: <b>"+objekty+"</b>. Opravdu má být pohon smazán?",MB_OKCANCEL)){
-  //
-  // //pùvodní zakomentovaná konstrukcenefunguje správnì pro pøípad storna, proto øeší následující øádek, Form1->d.v.zrusit_prirazeni_pohunu_k_objektum(getPID(rStringGridEd_tab_dopravniky->RowCount-1));
-  // zrusena_prirazeni_PID[getPID(rStringGridEd_tab_dopravniky->RowCount-1)-1]=true;
-  // rStringGridEd_tab_dopravniky->Rows[rStringGridEd_tab_dopravniky->RowCount]->Clear();
-  //
-  // if(rStringGridEd_tab_dopravniky->RowCount>1)
-  // {
-  // rStringGridEd_tab_dopravniky->RowCount--;
-  // }
-  // //	Form1->MB("Smazano");
-  // }
-  // else
-  // {
-  // //storno   - nic se nedìje
-  // }
-  // }
-  // else// pohon neni pouzivany, mohu ho smazat cokoliv ze stringgridu
-  // {
-  // rStringGridEd_tab_dopravniky->Rows[rStringGridEd_tab_dopravniky->RowCount]->Clear();
-  // if(rStringGridEd_tab_dopravniky->RowCount>1)
-  // {
-  // rStringGridEd_tab_dopravniky->RowCount--;
-  // }
-  // }
-  //
-  // //	for (long i = 1; i < rStringGridEd_tab_dopravniky->RowCount; i++)
-  // //	rStringGridEd_tab_dopravniky->Cells[0][i] = i;
-  //
-  // //pozice info tlaèítka - asi je tlaèítko stejnì provizorní
-  // pozice_scGPGlyphButton_hint();
-}
-// ---------------------------------------------------------------------------
 
 void __fastcall TForm_parametry_linky::Vypis_pohonyClick(TObject *Sender) {
   F->log(__func__); // logování
@@ -1066,30 +1006,6 @@ void __fastcall TForm_parametry_linky::Vypis_pohonyClick(TObject *Sender) {
 
 // ---------------------------------------------------------------------------
 // zobrazí panel se navrženými pohony
-void __fastcall TForm_parametry_linky::scGPButton_doporuceneClick
-    (TObject *Sender) {
-  // F->log(__func__); //logování
-  // scExPanel_doporuc_pohony->Visible=false;
-  // scGPButton_doporucene->Visible=false;
-  // if(F->pom==NULL)//pokud je voláno PL pøímo                        //zajistí zobrazení ve stejných jednotkách jako na PO
-  // scHTMLLabel_doporuc_pohony->Caption=F->d.v.navrhni_POHONY("</br>",F->ms.a2i(F->readINI("nastaveni_form_parametry", "RDt")));
-  // else// pokud je PL voláno z PO                                    //zajistí zobrazení ve stejných jednotkách jako na PO
-  // scHTMLLabel_doporuc_pohony->Caption=F->d.v.navrhni_POHONY("</br>",Form_parametry->RDunitT);
-  // if(scHTMLLabel_doporuc_pohony->Caption=="")
-  // {
-  // scHTMLLabel_doporuc_pohony->Caption="Nejsou k dispozici žádné navržené pohony";
-  // scGPGlyphButton_add_mezi_pohony;
-  // scGPGlyphButton_add_mezi_pohony->Visible=false;
-  // }
-  // else
-  // {
-  // scGPGlyphButton_add_mezi_pohony->Visible=true;
-  // }
-  // šíøka komponenty dle aktuálnì zobrazeného textu
-  // Canvas->Font=scExPanel_doporuc_pohony->Font;
-  // scExPanel_doporuc_pohony->Width=Canvas->TextWidth(Form1->ms.TrimLeftFrom_UTF(scHTMLLabel_doporuc_pohony->Caption," </br>"));
-}
-// ---------------------------------------------------------------------------
 
 void __fastcall TForm_parametry_linky::rEditNum_takt_Change(TObject *Sender) {
   F->log(__func__); // logování
@@ -1237,14 +1153,14 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key,
 
         input_state = JOB;
         // pøiøazení katalogu
-        if (katalog_id == 0) {
+        if (katalog_id == 0)
+        {
           katalog_id = 1;
           radius = 1.0;
           AnsiString rad = "rádius";
           if (F->ls->Strings[191] != "")
             rad = F->ls->Strings[191];
-          scGPGlyphButton_katalog->Caption = F->d.v.KATALOG->dalsi->name +
-              ", " + rad + " " + radius * 1000.0 + " mm"; // aktualizace buttonu
+          scGPGlyphButton_katalog->Caption = F->d.v.KATALOG->dalsi->name +", " + rad + " " + radius * 1000.0 + " mm"; // aktualizace buttonu
         }
         Button_ADD_Click(this);
 

@@ -18,7 +18,6 @@ TForm_katalog *Form_katalog;
 __fastcall TForm_katalog::TForm_katalog(TComponent* Owner)
   : TForm(Owner)
 {
-
   zmena=false;
   check.X=0;
   check.Y=0;
@@ -27,12 +26,6 @@ __fastcall TForm_katalog::TForm_katalog(TComponent* Owner)
   clSELECTED_BLUE = (TColor)RGB(43,87,154); //modrá
   clBACKGROUND = (TColor)RGB(240,240,240);
   input_state=NO;
-  last_Col=0;
-  last_Row=0;
-
-
-
-
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_katalog::FormShow(TObject *Sender)
@@ -388,7 +381,7 @@ void __fastcall TForm_katalog::Button_saveClick(TObject *Sender)
 Form_parametry_linky->katalog_id=katalog_id;
 Form_parametry_linky->radius=radius/1000.0;
 F->d.v.PP.katalog=Form_parametry_linky->katalog_id;
-F->d.v.PP.katalog=Form_parametry_linky->radius;
+F->d.v.PP.radius=Form_parametry_linky->radius;
 
 F->scStyledForm1->HideClientInActiveEffect();
 Form_parametry_linky->scStyledForm2->HideClientInActiveEffect();
