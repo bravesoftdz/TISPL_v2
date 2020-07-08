@@ -500,7 +500,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender) {
 
 
 
-      if(scGPGlyphButton_katalog->Caption=="Vybrat dopravník") { scGPGlyphButton_katalog->Font->Color=clRed; ShowMessage("ted"); }
+     // if(scGPGlyphButton_katalog->Caption=="Vybrat dopravník") { scGPGlyphButton_katalog->Font->Color=clRed; ShowMessage("ted"); }
 }
 
 // ---------------------------------------------------------------------------
