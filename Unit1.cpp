@@ -317,6 +317,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	storno=true;//defaultně počítat se stištěným stornem
 	editEditace=NULL;
 	velikost_citelne_oblasti_elementu=0.12;//v metrech, 0.114285714285714 šířka pouzdra pohonu
+	zobrazit_upozorneni_teplomery=true;
 
 	//vývojářské featury
 	if(DEBUG && get_user_name()+get_computer_name()=="MartinMARTIN-NOTEBOOK"){ButtonMaVl->Visible=false;}//pokud se dělá překlad u MaKr, je skryto MV tlačítko testovací tlačítko, MaKr testovací se volá přes F9
@@ -4246,7 +4247,8 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 					if(pom_element->eID==301 && (pom_element->predchozi2->geo.X4!=pom_element->geo.X4 || pom_element->predchozi2->geo.Y4!=pom_element->geo.Y4) && m.delka(pom_element->predchozi2->geo.X4,pom_element->predchozi2->geo.Y4,pom_element->geo.X4,pom_element->geo.Y4)<=1)
 					{
 						napojeni_vedlejsi_vetve(pom_element->predchozi2);
-          }
+					}
+          reset_teplomeru();//přegeneruje teploměry je-li třeba a vypíše hlášku užovateli
 				}
 				pom_element_temp=NULL; delete pom_element_temp;
 				vlozit_predavaci_misto_aktualizuj_WT();//kontrola zda nebyly přesunuty 2 PM na sebe
@@ -6404,6 +6406,7 @@ void TForm1::add_element (int X, int Y)
 		TIP=ls->Strings[309];//"Lze vkládat pouze na linie."
 	}
 	REFRESH();
+  reset_teplomeru();//přegeneruje teploměry je-li třeba a vypíše hlášku užovateli
 }
 //---------------------------------------------------------------------------
 void TForm1::add_vyhybka_spojka()
@@ -7245,6 +7248,7 @@ void TForm1::ukonceni_geometrie(bool kontrola)
 	//validovat
 	duvod_validovat=2;
 	REFRESH();
+  reset_teplomeru();//přegeneruje teploměry je-li třeba a vypíše hlášku užovateli
 }
 //---------------------------------------------------------------------------
 //vrátí maximální možný počet vozíků na stopce, podle geometrie před ní
@@ -11967,6 +11971,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 					pom_element=NULL;//přidáno nově 13.5.2019 - v režimu testování kvůli setJobID a předání do pom_element_puv
 					if(eID%2==0 && eID!=100 && eID!=200 && eID!=MaxInt)d.v.aktualizuj_sparovane_ukazatele();//odstraněn stop-element, nutná aktualizace
 					dalsi_element=NULL;delete dalsi_element;
+          reset_teplomeru();//přegeneruje teploměry je-li třeba a vypíše hlášku užovateli
 				}
 				else if(pom_element->eID==200)
 				{
@@ -11999,6 +12004,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 					if(nulovatPM)predchozi_PM=NULL;
 					mazani=false;
 					Akce=NIC;
+          reset_teplomeru();//přegeneruje teploměry je-li třeba a vypíše hlášku užovateli
 				}
 			}
 			if(pom_element!=NULL )//&& pom_element->eID==MaxInt)//mazání zarážky z popup
@@ -12012,6 +12018,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 						if(pom_element->dalsi!=NULL)posledni_editovany_element=pom_element->dalsi;else if(pom_element->predchozi->n>0)posledni_editovany_element=pom_element->predchozi;else posledni_editovany_element=NULL;
 						d.v.smaz_element(pom_element);
 						if(posledni_editovany_element!=NULL)d.v.vloz_G_element(posledni_editovany_element,0,X1,Y1,0,0,0,0,posledni_editovany_element->geo.X4,posledni_editovany_element->geo.Y4,posledni_editovany_element->geo.orientace);
+            reset_teplomeru();//přegeneruje teploměry je-li třeba a vypíše hlášku užovateli
 					}else TIP=ls->Strings[311];//"Nelze smazat."
 				}
 				else TIP=ls->Strings[311];//"Nelze smazat."
@@ -14009,13 +14016,9 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 
 	//OBJEKT_akt->element->mGrid->AddRow(false,false);
 	//OBJEKT_akt->element->mGrid->Update();
-	Cvektory::TCesta *C=Form_definice_zakazek->Z_cesta->cesta->dalsi; Memo_testy->Clear();
-	while(C!=NULL)
-	{
-		Memo(C->Element->name);
-		C=C->dalsi;
-	}
-  delete C;C=NULL;
+	d.v.vymaz_seznam_teplomery(OBJEKT_akt);
+	d.v.vytvor_default_c_teplomery(OBJEKT_akt);
+	vytvor_aktualizuj_tab_teplomeru();
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -17310,7 +17313,7 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 				else cas+=delka/T->prvni->sparovany->pohon->aRD;
 				WT+=T->prvni->sparovany->WT;
 			}
-			
+
 			//výpočet času na cestě
 			Cvektory::TCesta *CE=T->cesta->dalsi;
 			while(CE!=NULL)
@@ -17493,6 +17496,24 @@ void TForm1::GetTime(short int rezim)
 
 
 }
-
-
-
+//---------------------------------------------------------------------------
+//zborazí upozornění, že došlo ke změně geometrie a resetuje oblasti teplomerů
+void TForm1::reset_teplomeru()
+{
+  //kontrola zda má oběkt záznam o teploměrech
+	if(OBJEKT_akt!=NULL && OBJEKT_akt->teplomery!=NULL)
+	{
+    //kontrola zda má záznam pro konkrétní zakázku
+		Cvektory::TTeplomery *T=d.v.vrat_teplomery_podle_zakazky(OBJEKT_akt,d.v.ZAKAZKA_akt);
+		if(T!=NULL)
+		{
+			//pokud mám zobrazit upozornění, zobrazím
+			if(zobrazit_upozorneni_teplomery)MB(-1,-1,"Byla změněna geometrie linky, oblast teploměrů bude obnovena.","",MB_OK,true,true);
+			//mazání teplomerů a vytvoření default
+      d.v.vymaz_seznam_teplomery(OBJEKT_akt);
+			d.v.vytvor_default_c_teplomery(OBJEKT_akt);
+			vytvor_aktualizuj_tab_teplomeru();
+    }
+	}
+}
+//---------------------------------------------------------------------------

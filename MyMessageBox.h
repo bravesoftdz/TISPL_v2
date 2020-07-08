@@ -40,6 +40,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPGlyphButton_copyClick(TObject *Sender);
 	void __fastcall scGPEdit1KeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall Button_YesClick(TObject *Sender);
+	void __fastcall CheckBox_pamatovatClick(TObject *Sender);
 
 private:	// User declarations
 	enum T_mbTYPE{OK=0,OKCANCEL=1,YESNO=4,YESNOCANCEL=3};

@@ -186,4 +186,10 @@ void __fastcall TmyMessageBox::Button_YesClick(TObject *Sender)
   closing=true;
 }
 //---------------------------------------------------------------------------
+//kliknutí na možnost pamatovat si volbu
+void __fastcall TmyMessageBox::CheckBox_pamatovatClick(TObject *Sender)
+{
+  F->zobrazit_upozorneni_teplomery=false;//zatím použito pouze pro úèel MB s oznámením, že cesty budou pøegenerovány
+}
+//---------------------------------------------------------------------------
 

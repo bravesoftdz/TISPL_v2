@@ -29,6 +29,7 @@ private:	// User declarations
 	void prirazeni_pohonu_defTab();//pøiøazení pohonu z PmG
 	void zapisVID(int zapis,int pozice);//zapiše na danou pozici ve VID dané èíslo
 	void zobrazit_skryt_radkyPM(Cvektory::TElement *E);//zobrazí èi skryje øádky PM tabulek podle stavu uloženého v objektu
+  void aktualizace_teplomeru();//provede aktualizaci èasu v tabulce teplomìrù
 
 	//promìnné pro UnitX
 	bool editace_pohonu;

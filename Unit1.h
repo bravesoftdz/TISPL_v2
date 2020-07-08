@@ -597,6 +597,7 @@ private:
 	void vymaz_seznam_obrazu();//vymaže všechny obrazy v poøadníku
 	void vytvor_statickou_scenu();//vytvoøí BMP se statickou scénou
 	void vytvor_statickou_scenu(long SCENA);//pøetížená výše uvedené pøímo s parametrem nastavení scény
+  void reset_teplomeru();//zborazí upozornìní, že došlo ke zmìnì geometrie a resetuje oblasti teplomerù
 
 	////promìnné
 	TDateTime TIME;
@@ -728,6 +729,7 @@ public:		// User declarations
 	double velikost_citelne_oblasti_elementu;//urèuje velikost citelné oblsati [m] kolem bodu elementu na pohonu
 	Tvlakno_obraz *vlakno_obraz;
 	bool vlakno_PanCreateState;
+  bool zobrazit_upozorneni_teplomery;
 
 	//metody
 	void kurzor(TKurzory typ_kurzor);

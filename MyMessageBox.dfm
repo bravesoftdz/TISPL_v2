@@ -857,6 +857,7 @@ object myMessageBox: TmyMessageBox
     ParentFont = False
     FluentUIOpaque = False
     TabOrder = 5
+    OnClick = CheckBox_pamatovatClick
     Animation = False
     Caption = 'Pamatovat si volbu'
     CanFocused = False
@@ -1064,7 +1065,7 @@ object myMessageBox: TmyMessageBox
   end
   object scGPEdit1: TscGPEdit
     Left = 32384
-    Top = 32628
+    Top = 32616
     Width = 121
     Height = 23
     FluentUIOpaque = False

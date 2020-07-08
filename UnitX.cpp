@@ -239,6 +239,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					//pøepoèet RT
 					F->d.v.reserve_time(E,c);
 				}
+				aktualizace_teplomeru();
 				//dodìlat plnìní pamìti pøi editaci bunìk
 			} break;
 			case 1:case 7:case 11:case 15:case 101:case 105: //robot (kontinuální)
@@ -2218,6 +2219,203 @@ void TFormX::zobrazit_skryt_radkyPM(Cvektory::TElement *E)
 			E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
 			break;
 		}
+	}
+}
+//---------------------------------------------------------------------------
+//provede aktualizaci èasu v tabulce teplomìrù
+void TFormX::aktualizace_teplomeru()
+{
+	if(F->OBJEKT_akt->teplomery!=NULL)
+	{
+		Cvektory::TTeplomery *T=F->d.v.vrat_teplomery_podle_zakazky(F->OBJEKT_akt,F->d.v.ZAKAZKA_akt);
+		if(T!=NULL)
+		{
+	  	double cas=0,WT=0,delka=0;
+	  	unsigned int radek=1;
+	  	bool prejezd=true;
+	  	//výpoèet èasu na zaèátku
+	  	if(T->prvni->sparovany->pohon!=NULL)
+	  	{
+	  		//výpoèet délky oblasti
+				delka=F->m.delka(T->prvni->geo.X1,T->prvni->geo.Y1,T->prvni->sparovany->geo.X4,T->prvni->sparovany->geo.Y4);
+	  		//pokud se jedná o stopku poèítat s bufferem
+	  		if(T->prvni->sparovany->eID==0)
+	  		{
+	  			//nahrání aktuálních dat do ukazatele
+					if(F->d.v.ZAKAZKA_akt!=NULL && F->d.v.ZAKAZKA_akt->n!=0)//pokud pracuji v nìjaké zakázce
+	  			{
+						Cvektory::TCesta *c=F->d.v.vrat_segment_cesty(F->d.v.ZAKAZKA_akt,T->prvni->sparovany);
+	  				if(c!=NULL)T->prvni->sparovany->data=c->data;//pøepsání aktuálních dat ze zakázky do elementu
+	  				c=NULL;delete c;
+	  			}
+	  			//výpoèet délky bufferu
+					double buf=T->prvni->sparovany->data.pocet_voziku*F->d.v.PP.delka_podvozek-F->d.v.PP.uchyt_pozice;
+	  			//pokud je úsek menší než délka bufferu pøipoètení wt podle toho na jakém jsem vozíku
+	  			if(delka<=buf)
+	  			{
+	  				prejezd=false;
+						cas+=F->m.V2WT(ceil((delka-buf)/F->d.v.PP.delka_podvozek),F->d.v.PP.TT);//pøipoèítání WT na aktuálním vozíku
+	  			}
+	  			//pokud je úsek vìtší než buffer pøipoètení WTstop a pøejezdu
+	  			else
+	  			{
+	  				delka=delka-buf;
+	  				cas+=delka/T->prvni->sparovany->pohon->aRD;
+	  				//rozpad na pøejezd a buffer
+	  				prejezd=true;
+	  				//aktualizace parametrù v tabulce
+						T->posledni->mGrid->Cells[1][radek].Text=F->m.round2double(F->outPT(cas),3);
+						T->posledni->mGrid->Cells[2][radek].Text=F->m.round2double(F->outPT(WT),3);
+	  				radek++;cas=0;WT=0;
+	  				//konec aktualizace
+	  				prejezd=false;
+	  				cas+=T->prvni->sparovany->data.WTstop;
+	  			}
+	  		}
+	  		else cas+=delka/T->prvni->sparovany->pohon->aRD;
+	  		WT+=T->prvni->sparovany->WT;
+	  	}
+
+	  	//výpoèet èasu na cestì
+	  	Cvektory::TCesta *CE=T->cesta->dalsi;
+	  	while(CE!=NULL)
+	  	{
+	  		if(CE->Element->pohon!=NULL)
+	  		{
+	  			if(CE->Element->eID==0)
+	  			{
+	  				//nahrání aktuálních dat do ukazatele
+						if(F->d.v.ZAKAZKA_akt!=NULL && F->d.v.ZAKAZKA_akt->n!=0)//pokud pracuji v nìjaké zakázce
+	  				{
+							Cvektory::TCesta *c=F->d.v.vrat_segment_cesty(F->d.v.ZAKAZKA_akt,CE->Element);
+	  					if(c!=NULL)CE->Element->data=c->data;//pøepsání aktuálních dat ze zakázky do elementu
+	  					c=NULL;delete c;
+	  				}
+	  				//výpoèet èasu
+	  				if(!prejezd)//pokud byl pøed tím buffer, zmìna, potøebuju zapsat pøejezd
+	  				{
+	  					//aktualizace parametrù v tabulce
+							T->posledni->mGrid->Cells[1][radek].Text=F->m.round2double(F->outPT(cas),3);
+							T->posledni->mGrid->Cells[2][radek].Text=F->m.round2double(F->outPT(WT),3);
+	  					radek++;cas=0;WT=0;
+	  				}
+						delka=CE->Element->geo.delka-CE->Element->data.pocet_voziku*F->d.v.PP.delka_podvozek-F->d.v.PP.uchyt_pozice;
+	  				cas+=delka/CE->Element->pohon->aRD;
+	  				prejezd=true;
+	  				//zapsání èásti pøejezdu
+	  				//aktualizace parametrù v tabulce
+						T->posledni->mGrid->Cells[1][radek].Text=F->m.round2double(F->outPT(cas),3);
+						T->posledni->mGrid->Cells[2][radek].Text=F->m.round2double(F->outPT(WT),3);
+	  				radek++;cas=0;WT=0;
+	  				//konec aktualizace
+	  				prejezd=false;
+	  				cas+=CE->Element->data.WTstop;
+	  			}
+	  			else
+	  			{
+	  				if(!prejezd)//pokud byl pøed tím buffer, zmìna, bude následovat pøejezd
+	  				{
+	  					//aktualizace parametrù v tabulce
+							T->posledni->mGrid->Cells[1][radek].Text=F->m.round2double(F->outPT(cas),3);
+							T->posledni->mGrid->Cells[2][radek].Text=F->m.round2double(F->outPT(WT),3);
+	  					radek++;cas=0;WT=0;
+	  				}
+	  				prejezd=true;
+	  				cas+=CE->Element->geo.delka/CE->Element->pohon->aRD;
+	  			}
+	  			WT+=CE->Element->WT;
+	  		}
+	  		CE=CE->dalsi;
+	  	}
+	  	//ukazatelové záležitosti
+	  	CE=NULL;delete CE;
+
+	  	//výpoèet èasu na konci
+	  	if(T->posledni->sparovany->pohon!=NULL)
+	  	{
+	  		//výpoèet délky oblasti
+				delka=F->m.delka(T->posledni->sparovany->geo.X1,T->posledni->sparovany->geo.Y1,T->posledni->geo.X4,T->posledni->geo.Y4);
+	  		//pokud se jedná o stopku poèítat s bufferem
+	  		if(T->posledni->sparovany->eID==0)
+	  		{
+	  			//nahrání aktuálních dat do ukazatele
+					if(F->d.v.ZAKAZKA_akt!=NULL && F->d.v.ZAKAZKA_akt->n!=0)//pokud pracuji v nìjaké zakázce
+	  			{
+						Cvektory::TCesta *c=F->d.v.vrat_segment_cesty(F->d.v.ZAKAZKA_akt,T->posledni->sparovany);
+	  				if(c!=NULL)T->posledni->sparovany->data=c->data;//pøepsání aktuálních dat ze zakázky do elementu
+	  				c=NULL;delete c;
+	  			}
+	  			//výpoèet délky bufferu
+					double buf=T->posledni->sparovany->data.pocet_voziku*F->d.v.PP.delka_podvozek-F->d.v.PP.uchyt_pozice;
+	  			//pokud je úsek menší než délka bufferu pøipoètení wt podle toho na jakém jsem vozíku
+	  			if(delka<=buf)
+	  			{
+	  				if(prejezd)//pokud byl pøejezd, zmìna, bude následovat buffer
+	  				{
+              //aktualizace parametrù v tabulce
+							T->posledni->mGrid->Cells[1][radek].Text=F->m.round2double(F->outPT(cas),3);
+							T->posledni->mGrid->Cells[2][radek].Text=F->m.round2double(F->outPT(WT),3);
+	  					radek++;cas=0;WT=0;
+	  				}
+	  				prejezd=false;
+	  				WT+=T->posledni->sparovany->WT;
+						cas+=F->m.V2WT(ceil((delka-buf)/F->d.v.PP.delka_podvozek),F->d.v.PP.TT);//pøipoèítání WT na aktuálním vozíku
+	  			}
+	  			//pokud je úsek vìtší než buffer pøipoètení WTstop a pøejezdu
+	  			else
+	  			{
+	  				if(!prejezd)//pokud byl pøed tím buffer, zmìna, potøebuju zapsat pøejezd
+	  				{
+	  					//aktualizace parametrù v tabulce
+							T->posledni->mGrid->Cells[1][radek].Text=F->m.round2double(F->outPT(cas),3);
+							T->posledni->mGrid->Cells[2][radek].Text=F->m.round2double(F->outPT(WT),3);
+	  					radek++;cas=0;WT=0;
+	  				}
+	  				delka=delka-buf;
+	  				cas+=delka/T->posledni->sparovany->pohon->aRD;
+	  				prejezd=true;
+	  				//rozpad na pøejezd a buffer
+	  				//aktualizace parametrù v tabulce
+						T->posledni->mGrid->Cells[1][radek].Text=F->m.round2double(F->outPT(cas),3);
+						T->posledni->mGrid->Cells[2][radek].Text=F->m.round2double(F->outPT(WT),3);
+	  				radek++;cas=0;WT=0;
+	  				//konec aktualizace
+	  				prejezd=false;
+	  				WT+=T->posledni->sparovany->WT;
+	  				cas+=T->posledni->sparovany->data.WTstop;
+	  			}
+	  		}
+	  		else//není stop
+	  		{
+	  			if(!prejezd)
+	  			{
+	  				//aktualizace parametrù v tabulce
+						T->posledni->mGrid->Cells[1][radek].Text=F->m.round2double(F->outPT(cas),3);
+						T->posledni->mGrid->Cells[2][radek].Text=F->m.round2double(F->outPT(WT),3);
+	  				radek++;cas=0;WT=0;
+	  			}
+	  			prejezd=true;
+	  			cas+=delka/T->posledni->sparovany->pohon->aRD;
+	  			WT+=T->posledni->sparovany->WT;
+	  		}
+
+	  		//aktualizace posledního øádku
+				T->posledni->mGrid->Cells[1][radek].Text=F->m.round2double(F->outPT(cas),3);
+				T->posledni->mGrid->Cells[2][radek].Text=F->m.round2double(F->outPT(WT),3);
+	  		radek++;cas=0;WT=0;
+	  	}
+	  	//aktualizace øádku souètu
+      cas=0;WT=0;
+	  	for(unsigned int i=1;i<=T->posledni->mGrid->RowCount-1;i++)
+	  	{
+				cas+=F->ms.MyToDouble(T->posledni->mGrid->Cells[1][i].Text);
+	  		WT+=F->ms.MyToDouble(T->posledni->mGrid->Cells[2][i].Text);
+	  	}
+			T->posledni->mGrid->Cells[2][radek].Text=F->m.round2double(cas+WT,3);
+		}
+
+    //ukazatelové záležitosti
+		T=NULL;delete T;
 	}
 }
 //---------------------------------------------------------------------------

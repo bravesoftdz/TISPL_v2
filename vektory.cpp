@@ -9414,6 +9414,17 @@ void Cvektory::vytvor_default_c_teplomery(TObjekt *Objekt)
 
 	//hledání vrátek
 	TCesta *CE=vrat_segment_cesty(ZAKAZKA_akt,Objekt->element),*CprvniE=NULL,*CposledniE=NULL;
+	//pokud není první element oběktu v cestě, kontrola ostatních zda jsou v cestě
+	if(CE==NULL && Objekt->element->dalsi!=NULL && Objekt->element->dalsi->objekt_n==Objekt->n)
+	{
+		TElement *E=Objekt->element->dalsi;
+		while(CE==NULL && E!=NULL && E->objekt_n==Objekt->n)
+		{
+			CE=vrat_segment_cesty(ZAKAZKA_akt,E);
+      E=E->dalsi;
+		}
+    E=NULL;delete E;
+  }
   //kontrola, zda existuje první element v cestě, pokud ne nic nevytvářet
 	if(CE!=NULL)
 	{
@@ -9522,6 +9533,13 @@ void Cvektory::posun_teplomeru(TElement *teplomer)
 		TCesta *CE=ZAKAZKA_akt->cesta->dalsi;
 		while(CE!=NULL)
 		{
+      //kontrola přichicení na element
+			if(F->prichytavat_k_mrizce==1 && (CE->Element->eID!=MaxInt || (CE->Element->eID==MaxInt && CE->Element->dalsi==NULL)) && m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,CE->Element->geo.X4,CE->Element->geo.Y4,F->velikost_citelne_oblasti_elementu))
+			{
+				teplomer->X=CE->Element->geo.X4;
+				teplomer->Y=CE->Element->geo.Y4;
+        break;
+      }
 			//kontrola zda nejsme v segmentu aktuálně kontrolovaného elementu
 			if(m.PtInSegment(CE->Element->geo.X1,CE->Element->geo.Y1,CE->Element->geo.typ,CE->Element->geo.orientace,CE->Element->geo.rotacni_uhel,CE->Element->geo.radius,CE->Element->geo.delka,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y))
 			{
