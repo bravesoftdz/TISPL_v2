@@ -805,7 +805,8 @@ public:		// User declarations
   void pridej_radek_tab_teplomeru(TmGrid *mGrid,double cas,double WT,bool prejezd,bool celkem=false);
 	void START();//zapne stopky
 	void STOP(bool MB=false);//vypne stopky, pokud je parementr metody nastaven na false (což je implicitnì), je zajištìn výpis do mema, pokud na true tak do ShowMessage
-};
+  void GetTime(short int rezim);
+  };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
 extern PACKAGE TForm1 *F;//pouze zkrácený zapis

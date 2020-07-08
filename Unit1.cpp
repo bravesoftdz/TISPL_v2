@@ -17488,6 +17488,11 @@ void TForm1::STOP(bool MB)
 	if(MB)S(R);else Memo(R);
 }
 //---------------------------------------------------------------------------
+void TForm1::GetTime(short int rezim)
+{
+
+
+}
 
 
 
