@@ -1470,7 +1470,7 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,Cvektory::TObjekt *Objek
 			vykresli_teplomer(canv,m.L2Px(teplomery->posledni->X),m.L2Py(teplomery->posledni->Y),"","",teplomery->posledni->eID,1,teplomery->posledni->sparovany->orientace,1);
 
 			/////vykresení cesty
-			if(teplomery->prvni!=teplomery->posledni)
+			if(teplomery->prvni->sparovany!=teplomery->posledni->sparovany)
 			{
 				vykresli_segment_cesty_teplomeru(canv,teplomery->prvni,1);//vykreslení cesty od prvního teploměru
 				vykresli_segment_cesty_teplomeru(canv,teplomery->posledni,2);//vykreslení cesty k poslednímu teploměru
@@ -1478,7 +1478,21 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,Cvektory::TObjekt *Objek
       //vykrelsení spojnice mezi teploměry na jednom segmentu pohonu
 			else
 			{
-				;//doplnit vykreslení pro teploměry na linii nebo oblouku
+				double X1,Y1,OR,RA,R;
+				//vykreslení linie mezi teploměry
+				if(teplomery->prvni->sparovany->geo.typ==0)
+				{
+			  	OR=teplomery->prvni->geo.orientace;
+			  	RA=teplomery->prvni->geo.rotacni_uhel;
+			  	X1=teplomery->prvni->geo.X1;Y1=teplomery->prvni->geo.Y1;
+			  	R=m.delka(X1,Y1,teplomery->posledni->geo.X4,teplomery->posledni->geo.Y4);
+					vykresli_Gelement(canv,X1,Y1,OR,RA,R,clRed,3);
+				}
+        //vykrelsení čísti úseku mezi teploměry
+				else
+				{
+					;//nelze aplikovat stejnou metodu vykreslení jako u mag_lasa, kreslí se na prázdný prostor, zde nopomůže barva kolejí
+        }
       }
 	  	Cvektory::TCesta *ct=teplomery->cesta->dalsi;
 	  	while(ct!=NULL)
