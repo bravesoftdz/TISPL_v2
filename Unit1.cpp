@@ -3241,7 +3241,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					}break;
 					case MAGNETICKE_LASO:
 					{
-            if(pom_element!=NULL)akt_souradnice_kurzoru=d.v.bod_na_geometrii(pom_element);
+						if(pom_element!=NULL)akt_souradnice_kurzoru=d.v.bod_na_geometrii(pom_element);
 						Cvektory::TElement *E=new Cvektory::TElement;
 						E->n=MaxInt;
 						E->geo.rotacni_uhel=0;
@@ -4653,18 +4653,18 @@ void TForm1::getJobID(int X, int Y)
 
 						/////////měření proti trendu
 						//začátek + obecně na hlavní větvi
-						if(segment==0 && d.v.MAG_LASO->predchozi->sparovany==E->dalsi || (E->dalsi!=NULL && E->dalsi->n>0 && E->dalsi->eID!=301 && E->dalsi->dalsi==d.v.MAG_LASO->predchozi->Element))
+						if((segment==0 && d.v.MAG_LASO->predchozi->sparovany==E->dalsi && E->dalsi!=NULL) || (E->dalsi!=NULL && E->dalsi->n>0 && E->dalsi->eID!=301 && E->dalsi->dalsi==d.v.MAG_LASO->predchozi->Element))
 							d.v.vloz_segment_MAG_LASA(E->dalsi);
 
-            //začátek měření přes spojku
+						//začátek měření přes spojku
 						if(segment==0 && d.v.MAG_LASO->dalsi==NULL && E->dalsi!=NULL && E->dalsi->eID==301 && E->dalsi->dalsi==d.v.MAG_LASO->predchozi->sparovany)
 							d.v.vloz_segment_MAG_LASA(E->dalsi);
 
-            //z hlavnní větve na vedlejší přes spojku
+						//z hlavnní větve na vedlejší přes spojku
 						if(segment==0 && E->dalsi!=NULL && E->dalsi->dalsi!=NULL && E->dalsi->dalsi->eID==301 && E->dalsi->dalsi->dalsi==d.v.MAG_LASO->predchozi->Element)
 							d.v.vloz_segment_MAG_LASA(E->dalsi);
 
-            //návrat z vedlejší větve na hlavní přes výhybku
+						//návrat z vedlejší větve na hlavní přes výhybku
 						if(segment==0 && E->eID==300 && E->dalsi2->dalsi==d.v.MAG_LASO->predchozi->Element)
 							d.v.vloz_segment_MAG_LASA(E->dalsi2);
 
@@ -4672,7 +4672,7 @@ void TForm1::getJobID(int X, int Y)
 						if(segment==0 && E->dalsi!=NULL && E->dalsi->eID==300 && E->dalsi->dalsi2==d.v.MAG_LASO->predchozi->Element)
 							d.v.vloz_segment_MAG_LASA(E->dalsi);
 
-            //z hlavní větve na hlavní přes spojku
+						//z hlavní větve na hlavní přes spojku
 						if(segment==0 && E->dalsi!=NULL && E->dalsi->eID==301 && E->dalsi->dalsi!=NULL && E->dalsi->dalsi->dalsi==d.v.MAG_LASO->predchozi->Element)
 							d.v.vloz_segment_MAG_LASA(E->dalsi->dalsi);
 
@@ -4729,11 +4729,12 @@ void TForm1::getJobID(int X, int Y)
 
 		//////testy
 //		Memo_testy->Clear();
+//		if(d.v.MAG_LASO->predchozi!=NULL)Memo("predchozi n:"+String(d.v.MAG_LASO->predchozi->n));
 //		Cvektory::TCesta *C=d.v.MAG_LASO;
 //		while(C!=NULL && C->Element!=NULL)
 //		{
-//			if(C->Element->n==MaxInt)Memo("->sparovany: "+C->sparovany->name);
-//			else Memo(C->Element->name);
+//			if(C->Element->n==MaxInt)Memo("->sparovany: "+C->sparovany->name+"; n: "+String(C->n));
+//			else Memo(C->Element->name+"; n: "+String(C->n));
 //			C=C->dalsi;
 //		}
 //		C=NULL;delete C;
@@ -5222,7 +5223,6 @@ void __fastcall TForm1::RzToolButton9Click(TObject *Sender)//Zoom out z toolbaru
 void TForm1::ZOOM_IN()
 {
 	log(__func__);//logování
-	if(MOD==EDITACE&&zobrazeni_tabulek&&Zoom==2.5) scGPButton_viditelnostmGridClick(this);
 	if(Zoom==0.25)//při odchodu z 0.25
 	{
 			Uloz_predchozi_pohled();
@@ -5247,7 +5247,6 @@ void TForm1::ZOOM_OUT()
 	if(MOD==EDITACE)
 	{
 		if(Zoom>=3)zobrazeni_tabulek=OBJEKT_akt->zobrazit_mGrid;
-		if(Zoom==3&&OBJEKT_akt->zobrazit_mGrid)scGPButton_viditelnostmGridClick(this);
 	}
 	if(Zoom>0.5)
 	{
@@ -6350,14 +6349,15 @@ void TForm1::add_element (int X, int Y)
     	//bylo vloženo předávací místo
    		if(E->eID==200)
    		{
-   			Cvektory::TElement *E_temp=E->dalsi;//posunutí se za předávací místp
+   			Cvektory::TElement *E_temp=E->dalsi;//posunutí se za předávací místo
    			while(E_temp!=NULL && E_temp->objekt_n==OBJEKT_akt->n)//odmazání pohonu za zarážkou
    			{
    				E_temp->pohon=NULL;
 					set_enabled_mGrid(E_temp);
 					if(E_temp->eID==200)break;
 					else E_temp=E_temp->dalsi;
-   			}
+				}
+        if(E_temp!=NULL)FormX->update_hodnot_vyhybky_PM(E_temp);//update hodnot následující výhybky
    			E_temp=NULL;delete E_temp;
 				vlozit_predavaci_misto_aktualizuj_WT();//kontrola zda nemá být na konec kabiny vloženo předávací místo
 				design_element(E,false);//nutno předesignovat!! tabulka PM má v druhém sloupci totožný pohon jako v prvním, tento pohon byl z dalších elementů odstraněn v cyklu výše
@@ -14016,9 +14016,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 
 	//OBJEKT_akt->element->mGrid->AddRow(false,false);
 	//OBJEKT_akt->element->mGrid->Update();
-	d.v.vymaz_seznam_teplomery(OBJEKT_akt);
-	d.v.vytvor_default_c_teplomery(OBJEKT_akt);
-	vytvor_aktualizuj_tab_teplomeru();
+	Memo("");
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -14309,6 +14307,10 @@ void __fastcall TForm1::scGPTrackBar1Change(TObject *Sender)
 		case 20:Zoom=30;break;
 	}
 	scLabel_ZOOM->Caption=AnsiString(Zoom*100)+" %";
+
+  //zobrazení a skrytím mgridů při konkrétním zoomu
+	if(OBJEKT_akt!=NULL && ((Zoom<=2.5 && OBJEKT_akt->zobrazit_mGrid) || (Zoom>=3 && !OBJEKT_akt->zobrazit_mGrid)))scGPButton_viditelnostmGridClick(this);
+
 	if(refreshovat_scGPTrackBar)
 	{
     if(MOD==LAYOUT)vytvor_statickou_scenu();//aktualizace BMP statické scény, změna ZOOMu
@@ -14343,6 +14345,9 @@ void TForm1::on_change_zoom_change_scGPTrackBar()
 	if(Zoom==25)		scGPTrackBar1->Value=19;
 	if(Zoom==30)		scGPTrackBar1->Value=20;
 	scLabel_ZOOM->Caption=String(Zoom*100)+" %";
+
+	//zobrazení a skrytím mgridů při konkrétním zoomu
+	if(OBJEKT_akt!=NULL && ((Zoom<=2.5 && OBJEKT_akt->zobrazit_mGrid) || (Zoom>=3 && !OBJEKT_akt->zobrazit_mGrid)))scGPButton_viditelnostmGridClick(this);
 }
 //---------------------------------------------------------------------------
 //přepínání režimu aplikace návrh ověřování
@@ -16064,12 +16069,12 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		{
 			//kontrola zda měřím po trendu nebo proti
 			bool po_trendu=true;
-			if((d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->dalsi->sparovany!=NULL && d.v.MAG_LASO->dalsi->sparovany==d.v.MAG_LASO->sparovany && m.azimut(d.v.MAG_LASO->Element->geo.X1,d.v.MAG_LASO->Element->geo.Y1,d.v.MAG_LASO->predchozi->Element->geo.X4,d.v.MAG_LASO->predchozi->Element->geo.Y4)!=d.v.MAG_LASO->dalsi->sparovany->geo.orientace-d.v.MAG_LASO->dalsi->sparovany->geo.rotacni_uhel) || (d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->sparovany!=NULL && (d.v.MAG_LASO->predchozi->n>1 && ((d.v.MAG_LASO->dalsi->dalsi->Element->n!=MaxInt && (d.v.MAG_LASO->dalsi->dalsi->Element->dalsi==d.v.MAG_LASO->sparovany || (d.v.MAG_LASO->dalsi->dalsi->Element->dalsi!=NULL && d.v.MAG_LASO->dalsi->dalsi->Element->dalsi->dalsi==d.v.MAG_LASO->sparovany) || d.v.MAG_LASO->dalsi->dalsi->Element->dalsi2==d.v.MAG_LASO->sparovany)) || (d.v.MAG_LASO->dalsi->dalsi->Element->n==MaxInt && d.v.MAG_LASO->dalsi->dalsi->sparovany!=NULL && (d.v.MAG_LASO->dalsi->dalsi->sparovany->dalsi==d.v.MAG_LASO->sparovany || (d.v.MAG_LASO->dalsi->predchozi->sparovany->dalsi!=NULL && d.v.MAG_LASO->dalsi->dalsi->sparovany->dalsi->dalsi==d.v.MAG_LASO->sparovany) || d.v.MAG_LASO->dalsi->dalsi->sparovany->dalsi2==d.v.MAG_LASO->sparovany))))))
+			if((d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->dalsi->sparovany!=NULL && d.v.MAG_LASO->dalsi->sparovany==d.v.MAG_LASO->sparovany && m.azimut(d.v.MAG_LASO->Element->geo.X1,d.v.MAG_LASO->Element->geo.Y1,d.v.MAG_LASO->predchozi->Element->geo.X4,d.v.MAG_LASO->predchozi->Element->geo.Y4)!=d.v.MAG_LASO->dalsi->sparovany->geo.orientace-d.v.MAG_LASO->dalsi->sparovany->geo.rotacni_uhel) || (d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->sparovany!=NULL && (d.v.MAG_LASO->predchozi->n>1 && ((d.v.MAG_LASO->dalsi->dalsi->Element->n!=MaxInt && (d.v.MAG_LASO->dalsi->dalsi->Element->dalsi==d.v.MAG_LASO->sparovany || (d.v.MAG_LASO->dalsi->dalsi->Element->dalsi!=NULL && d.v.MAG_LASO->dalsi->dalsi->Element->dalsi->dalsi==d.v.MAG_LASO->sparovany) || d.v.MAG_LASO->dalsi->dalsi->Element->dalsi2==d.v.MAG_LASO->sparovany)) || (d.v.MAG_LASO->dalsi->dalsi->Element->n==MaxInt && d.v.MAG_LASO->dalsi->dalsi->sparovany!=NULL && (d.v.MAG_LASO->dalsi->dalsi->sparovany->dalsi==d.v.MAG_LASO->sparovany || (d.v.MAG_LASO->dalsi->dalsi->sparovany->dalsi!=NULL && d.v.MAG_LASO->dalsi->dalsi->sparovany->dalsi->dalsi==d.v.MAG_LASO->sparovany) || d.v.MAG_LASO->dalsi->dalsi->sparovany->dalsi2==d.v.MAG_LASO->sparovany))))))
 				po_trendu=false;
 			//měření
 			Cvektory::TCesta *C=d.v.MAG_LASO->dalsi;
 			double s=0,delka=0,cas=0,X,Y,uhel;
-	  	bool chyba=false;
+			bool chyba=false;
 			String popisek="";//slouží pro rozšíření MB o
 			if(d.v.MAG_LASO->predchozi->n==1 && C->Element->n==MaxInt)//lineární měření
 			{
@@ -17280,6 +17285,7 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 			{
 				//výpočet délky oblasti
 				delka=m.delka(T->prvni->geo.X1,T->prvni->geo.Y1,T->prvni->sparovany->geo.X4,T->prvni->sparovany->geo.Y4);
+				if(T->prvni->sparovany==T->posledni->sparovany)delka=m.delka(T->prvni->geo.X1,T->prvni->geo.Y1,T->posledni->geo.X4,T->posledni->geo.Y4);//pokud jsou oba teploměry na stejném úseku, měřit délku mezi jejich souřadnicemi
 				//pokud se jedná o stopku počítat s bufferem
 				if(T->prvni->sparovany->eID==0)
 				{
@@ -17319,7 +17325,7 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 			while(CE!=NULL)
 			{
 				if(CE->Element->pohon!=NULL)
-				{ 
+				{
 					if(CE->Element->eID==0)
 					{
 						//nahrání aktuálních dat do ukazatele
@@ -17352,8 +17358,8 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 			CE=NULL;delete CE;
 							
 			//výpočet času na konci
-			if(T->posledni->sparovany->pohon!=NULL)
-			{      
+			if(T->posledni->sparovany->pohon!=NULL && T->posledni->sparovany!=T->prvni->sparovany)
+			{
 				//výpočet délky oblasti
 				delka=m.delka(T->posledni->sparovany->geo.X1,T->posledni->sparovany->geo.Y1,T->posledni->geo.X4,T->posledni->geo.Y4);
 				//pokud se jedná o stopku počítat s bufferem

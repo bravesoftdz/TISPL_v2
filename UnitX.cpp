@@ -753,7 +753,7 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 	while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
 	{
     if(E->eID==200 || E->eID==300)zobrazit_skryt_radkyPM(E);
-		if(E->n>0 && E->n!=n && E->pohon!=NULL && F->OBJEKT_akt->pohon!=NULL && E->pohon->n==F->OBJEKT_akt->pohon->n)//pøeskoèí mimo_element a hlavièku, poze pøepoèet elementùm které mají stejný pohon jako aktuálnì editovaný pohon
+		if(E->n>0 && E->n!=n && E->pohon!=NULL && F->OBJEKT_akt->pohon!=NULL && (E->pohon->n==F->OBJEKT_akt->pohon->n || (E->eID==200 || E->eID==300)))//pøeskoèí mimo_element a hlavièku, poze pøepoèet elementùm které mají stejný pohon jako aktuálnì editovaný pohon
 		{
 			switch(E->eID)
 			{
@@ -859,7 +859,7 @@ void TFormX::aktualizace_tab_elementu_pOdebran ()
 	Cvektory::TElement *E=F->OBJEKT_akt->element;
 	while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
 	{
-		if(E->n>0 && E->pohon==NULL)//pøeskoèí hlavièku + pøenastaví pouze elementy s odstranìným pohonem
+		if(E->n>0 && (E->pohon==NULL || (E->eID==200 || E->eID==300)))//pøeskoèí hlavièku + pøenastaví pouze elementy s odstranìným pohonem
 		{
 			switch(E->eID)
 			{
@@ -1585,6 +1585,7 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
   		E->mGrid->Cells[prvni][8].Text="-";
   		E->mGrid->Cells[prvni][9].Text="-";
 			E->mGrid->Cells[prvni][10].Text="-";
+      E->mGrid->Cells[prvni][11].Text="-";
   	}
   	if(E->eID==300)//pro výhybku
   	{
@@ -1616,6 +1617,7 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
 				E->mGrid->Cells[druhy][8].Text="-";
 				E->mGrid->Cells[druhy][9].Text="-";
 				E->mGrid->Cells[druhy][10].Text="-";
+        E->mGrid->Cells[druhy][11].Text="-";
   		}
   	}
   	else//pro PM
@@ -1650,6 +1652,7 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
 				E->mGrid->Cells[druhy][8].Text="-";
 				E->mGrid->Cells[druhy][9].Text="-";
 				E->mGrid->Cells[druhy][10].Text="-";
+        E->mGrid->Cells[druhy][11].Text="-";
   		}
 			e_pom=NULL;delete e_pom;
 		}
@@ -1898,7 +1901,7 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 			}
 			else e=e->dalsi;
 		}
-		if(E->dalsi!=NULL && E->dalsi->objekt_n==E->objekt_n)E->WT=F->m.cekani_na_palec(0,E->dalsi->pohon->roztec,E->dalsi->pohon->aRD,3);
+		if(E->dalsi!=NULL && E->dalsi->pohon!=NULL && E->dalsi->objekt_n==E->objekt_n)E->WT=F->m.cekani_na_palec(0,E->dalsi->pohon->roztec,E->dalsi->pohon->aRD,3);
 	}
 
 	////naètení dat z pohonu do mGridu
