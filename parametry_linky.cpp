@@ -710,7 +710,8 @@ void __fastcall TForm_parametry_linky::KonecClick(TObject *Sender) {
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender) {
+void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
+{
   F->log(__func__); // logování
   Changes = false; // obecna zmena = zmena PP ci TT
   Changes_TT = false; // konkretni zmena TT
@@ -753,14 +754,16 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender) {
   }
 
   // ukladej
-  if (Ulozit) {
+  if (Ulozit)
+  {
     zrusit_prirazeni_smazanych_ci_odrazenych_pohunu_k_objektum(); // i elementùm
     Form1->d.v.vymaz_seznam_POHONY();
     Form1->d.v.hlavicka_POHONY();
 
     bool nelze_ulozit = false;
 
-    for (unsigned int i = 2; i < PL_mGrid->RowCount; i++) {
+    for (unsigned int i = 2; i < PL_mGrid->RowCount; i++)
+    {
       double rychlost_od;
       double rychlost_do;
       double roztec;
@@ -774,50 +777,51 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender) {
       else
         nazev = PL_mGrid->Cells[1][i].Text;
 
-      if (PL_mGrid->Cells[2][i].Text == "") {
+      if (PL_mGrid->Cells[2][i].Text == "")
+      {
         rychlost_od = 0;
         nelze_ulozit = true;
       }
       else
-        rychlost_od = Form1->ms.MyToDouble(PL_mGrid->Cells[2][i].Text) /
-            (1 + 59.0 * aRDunit);
+        rychlost_od = Form1->ms.MyToDouble(PL_mGrid->Cells[2][i].Text) / (1 + 59.0 * aRDunit);
 
-      if (PL_mGrid->Cells[3][i].Text == "") {
+      if (PL_mGrid->Cells[3][i].Text == "")
+      {
         rychlost_do = 0;
         nelze_ulozit = true;
       }
       else
-        rychlost_do = Form1->ms.MyToDouble(PL_mGrid->Cells[3][i].Text) /
-            (1 + 59.0 * aRDunit);
+        rychlost_do = Form1->ms.MyToDouble(PL_mGrid->Cells[3][i].Text) / (1 + 59.0 * aRDunit);
 
-      if (PL_mGrid->Cells[4][i].Text == "") {
+      if (PL_mGrid->Cells[4][i].Text == "")
+      {
         aRD = 0;
         nelze_ulozit = true;
       }
       else
-        aRD = Form1->ms.MyToDouble(PL_mGrid->Cells[4][i].Text) /
-            (1 + 59.0 * aRDunit);
+        aRD = Form1->ms.MyToDouble(PL_mGrid->Cells[4][i].Text) / (1 + 59.0 * aRDunit);
 
       // ShowMessage(PL_mGrid->getCombo(5,i)->Items->operator [](PL_mGrid->getCombo(5,i)->ItemIndex)->Caption);
-      roztec = F->ms.MyToDouble(PL_mGrid->getCombo(5, i)->Items->operator[]
-          (PL_mGrid->getCombo(5, i)->ItemIndex)->Caption);
-      if (Runit == MM)
-        roztec /= 1000.0;
+      roztec = F->ms.MyToDouble(PL_mGrid->getCombo(5, i)->Items->operator[](PL_mGrid->getCombo(5, i)->ItemIndex)->Caption);
+      if (Runit == MM) roztec /= 1000.0;
 
-      if (PL_mGrid->getButton(7, i)->Caption == "") {
-        Rz = 0.0;
-        Rx = 0.0;
-      } // pokud není pohon pøiøazen nuluj
+//      if (PL_mGrid->getCheck(6, i)->Checked==false)
+//      {
+//        Rz = 0.0;
+//        Rx = 0.0;
+//        ShowMessage("false");
+//      } // pokud není pohon pøiøazen nuluj
 
-      Rx = PL_mGrid->getCombo(5, i)->ItemIndex;
-      // využití RX pro ItemIndex položky
+      int roztec_id=0;
+      roztec_id = PL_mGrid->getCombo(5, i)->ItemIndex;
+      // ItemIndex položky
       // uložení pohonu do spojáku
-      Form1->d.v.vloz_pohon(nazev, rychlost_od, rychlost_do, aRD, roztec,
-          Rz, Rx);
+      Form1->d.v.vloz_pohon(nazev, rychlost_od, rychlost_do, aRD, roztec,Rz, Rx,roztec_id);
 
       // všem objektùm, které mìly pøiøazen pohon s oldN(oldID), pøiøadí pohon s newN(newID), podle toho, jak jsou ukládány novì do spojáku, dùležité, pokud dojde k narušení poøadí ID resp n pohonù a poøadí jednotlivých øádkù ve stringridu, napø. kopirováním, smazáním, zmìnou poøadí øádkù atp., øeší i pro pøípad napø. 2->3,3->4 pomocí atributu objektu probehla_aktualizace_prirazeni_pohonu (aby prvnì nebyl pøiøezn pohon s id 2 na 3 a potom všechny pohony s id 3 na pohon 4, protože mìly být pøiøazený jen nìkteré...)
       Form1->d.v.aktualizace_prirazeni_pohonu_k_objektum(getPID(i), i - 1);
       Form1->d.v.aktualizace_prirazeni_pohonu_k_elementum(getPID(i), i - 1);
+       ShowMessage(Rx);
     }
     // po dokonèení aktualizace pøiøazení pohonu (pøi ukládání pohonu na PL) vrátí atribut probehla_aktualizace_prirazeni_pohonu všech objektù na false, aby bylo pøipraveno k dalšímu opìtovnému užítí, nepøímo spolupracuje s metodou výše uvedenou aktualizace_prirazeni_pohonu_k_objektum
     Form1->d.v.aktualizace_prirazeni_pohonu_dokoncena();
