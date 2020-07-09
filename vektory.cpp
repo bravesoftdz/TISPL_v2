@@ -4213,7 +4213,10 @@ bool Cvektory::pohon_je_pouzivan(unsigned long n,bool po_obektech)
 		while(E!=NULL)
 		{
 			if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n || F->OBJEKT_akt==NULL)//kontrolovat pouze mimo aktuálně editované elementy
-			{if(vrat_druh_elementu(E)!=-1 && E->pohon!=NULL && E->pohon->n==n){nalezen=true;break;}}
+			{
+				if(E->pohon!=NULL && E->pohon->n==n)
+				{nalezen=true;break;}
+			}
 			E=E->dalsi;
 		}
 		E=NULL;delete E;
@@ -4253,10 +4256,10 @@ void Cvektory::aktualizuj_parametry_pouzivanych_pohonu()
 	{
   	TPohon *p=POHONY->dalsi;
   	while(p!=NULL)
-  	{
+		{
   		//kontrola zda je pohon používán
-  		if(pohon_je_pouzivan(p->n,false))
-  		{
+			if(pohon_je_pouzivan(p->n,false))
+			{
   			//aktualizace Rx a Rz
   			p->Rz=m.Rz(p->aRD);
   			p->Rx=m.Rx(p->aRD,p->roztec);
@@ -7352,7 +7355,8 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			  		FileStream->Read(&cT,sizeof(C_teplomery));//načte jeden prvek ze souboru
 						TTeplomery *T=new TTeplomery;
 			  		T->n=cT.n;
-			  		T->Z_n=cT.Z_n;
+						T->Z_n=cT.Z_n;
+            T->cesta=NULL;
 						hlavicka_cesty_teplomery(T);//vytvoří hlavičku pro cesty
 						//načtení prvního teplomeru
 						TElement *E_pom=new TElement;//slouží pro uchování n elementu, který ještě neexistuje
@@ -9226,7 +9230,7 @@ void Cvektory::hlavicka_teplomery(TObjekt *Objekt)
 	novy->Z_n=0;
 	novy->prvni=NULL;
 	novy->posledni=NULL;
-	hlavicka_cesty_teplomery(novy);
+	novy->cesta=NULL;
 	novy->dalsi=NULL;
 	novy->predchozi=novy;
 
@@ -9240,7 +9244,10 @@ void Cvektory::hlavicka_teplomery(TObjekt *Objekt)
 //vytvoří v objektu hlavičku pro cestu teploměrů
 void Cvektory::hlavicka_cesty_teplomery(TTeplomery *teplomery)
 {
-  //vytvoření segmentu
+	//kontrola a mazání stávající cesty
+	if(teplomery->cesta!=NULL)vymaz_seznam_cest(teplomery);
+
+	//vytvoření segmentu
 	TCesta *novy=new TCesta;
 
   //definice atriburů
@@ -9264,15 +9271,7 @@ void Cvektory::vymaz_teplomery(TObjekt *Objekt,TTeplomery *teplomery)
 	if(teplomery!=NULL)
 	{
 		//mazání segmentů cesty
-		while(teplomery->cesta!=NULL)
-		{
-			//mazání segmentu
-			delete teplomery->cesta->predchozi;
-			teplomery->cesta->predchozi=NULL;
-			teplomery->cesta=teplomery->cesta->dalsi;
-		}
-		//mazání hlavičky a nulování ukazatele
-		delete teplomery->cesta;teplomery->cesta=NULL;
+		vymaz_seznam_cest(teplomery);
 
 		//mazání tabulky oblasti, pokud existuje
     if(teplomery->posledni!=NULL && teplomery->posledni->mGrid!=NULL)
@@ -9295,8 +9294,23 @@ void Cvektory::vymaz_teplomery(TObjekt *Objekt,TTeplomery *teplomery)
 		else Objekt->teplomery=NULL;
 
 		//smazání záznamu
-    delete teplomery;teplomery=NULL;
+		delete teplomery;teplomery=NULL;
 	}
+}
+////---------------------------------------------------------------------------
+//vymaže seznam cest z teplomerů
+void Cvektory::vymaz_seznam_cest(TTeplomery *teplomery)
+{
+  //mazání segmentů cesty
+	while(teplomery->cesta!=NULL)
+	{
+		//mazání segmentu
+		delete teplomery->cesta->predchozi;
+		teplomery->cesta->predchozi=NULL;
+		teplomery->cesta=teplomery->cesta->dalsi;
+	}
+	//mazání hlavičky a nulování ukazatele
+	delete teplomery->cesta;teplomery->cesta=NULL;
 }
 ////---------------------------------------------------------------------------
 //vymaže seznam teploměrů z objektu
@@ -9354,6 +9368,7 @@ Cvektory::TTeplomery *Cvektory::vytvor_zaznam_teplomeru_pro_zakazku(TObjekt *Obj
 	novy->Z_n=Zakazka->n;
 	novy->prvni=NULL;
 	novy->posledni=NULL;
+  novy->cesta=NULL;
 	hlavicka_cesty_teplomery(novy);
 
   //zařazení do spojáku teploměrů v objektu
@@ -9442,6 +9457,7 @@ void Cvektory::vytvor_default_c_teplomery(TObjekt *Objekt)
 	//v případě že již existuje vymazat
 	TTeplomery *T=vrat_teplomery_podle_zakazky(Objekt,ZAKAZKA_akt);
 	if(T!=NULL)vymaz_teplomery(Objekt,T);
+  update_akt_zakazky();//důležité mít aktuální data
 
 	//hledání vrátek
 	TCesta *CE=vrat_segment_cesty(ZAKAZKA_akt,Objekt->element),*CprvniE=NULL,*CposledniE=NULL;
@@ -9835,6 +9851,7 @@ Cvektory::TTeplomery *Cvektory::kopiruj_teplomer(TTeplomery *original)
 	novy->Z_n=original->Z_n;
 	novy->dalsi=NULL;
 	novy->predchozi=NULL;
+  novy->cesta=NULL;
 	hlavicka_cesty_teplomery(novy);
 								 
 	//kopírování segmentů cesty
@@ -9883,6 +9900,85 @@ Cvektory::TTeplomery *Cvektory::kopiruj_teplomer(TTeplomery *original)
 	t2=NULL;delete t2; 
 	
 	return novy;
+}
+////---------------------------------------------------------------------------
+//pokud došlo ke změně, která může ovlivnit cestu teploměru, zkontroluje, zda je možné aktualizovat a pokud ano, aktualizuje
+void Cvektory::aktualizuj_cestu_teplomeru(TObjekt *Objekt)
+{
+	F->reset_teplomeru();//přesměrování, dále neotestovaný kód
+//	if(Objekt!=NULL && Objekt->teplomery!=NULL)
+//	{
+//		TTeplomery *T=vrat_teplomery_podle_zakazky(Objekt,ZAKAZKA_akt);
+//		if(T!=NULL)
+//		{
+//			update_akt_zakazky();//důležité mít aktuální data
+//			//deklarace
+//   		bool nalezen_prvni=false,nalezen_posledni=false;
+//			double X1,Y1,X2,Y2;
+//			X1=T->prvni->geo.X1;Y1=T->prvni->geo.Y1;
+//			X2=T->prvni->geo.X4;Y2=T->prvni->geo.Y4;
+//			TCesta *CE=ZAKAZKA_akt->cesta->dalsi;
+//			//nulování spárovaných elementů teplomerů
+//			TElement *E1=T->prvni->sparovany,*E2=T->posledni->sparovany;
+//   		T->prvni->sparovany=NULL;
+//			T->posledni->sparovany=NULL;
+//
+//   		//hledání nových spárovaných elementů
+//			while(CE!=NULL)
+//			{
+//   			//kontrola, zda je první element stále na geometrii
+//   			if(!nalezen_prvni && m.PtInSegment(CE->Element->geo.X1,CE->Element->geo.Y1,CE->Element->geo.typ,CE->Element->geo.orientace,CE->Element->geo.rotacni_uhel,CE->Element->geo.radius,CE->Element->geo.delka,X1,Y1))
+//   			{
+//					nalezen_prvni=true;
+//   				T->prvni->sparovany=CE->Element;
+//   			}
+//   			//kontrola, zda je posledni element stále na geometrii
+//   			if(!nalezen_posledni && m.PtInSegment(CE->Element->geo.X1,CE->Element->geo.Y1,CE->Element->geo.typ,CE->Element->geo.orientace,CE->Element->geo.rotacni_uhel,CE->Element->geo.radius,CE->Element->geo.delka,X2,Y2))
+//				{
+//					nalezen_posledni=true;
+//   				T->posledni->sparovany=CE->Element;
+//   			}
+//   			//posun na další segnemt cesty, případně konec průchodu
+//				if(nalezen_prvni && nalezen_posledni)break;
+//   			CE=CE->dalsi;
+//			}
+//
+//			//aktualizace cesty
+//			if(T->prvni->sparovany!=NULL && T->posledni->sparovany!=NULL)
+//			{
+//				//kontrola, zda byla změna
+//				if(E1!=T->prvni->sparovany || E2!=T->posledni->sparovany)
+//				{
+//					//mazání stare cesty
+//		   		hlavicka_cesty_teplomery(T);//smaže a vytvoří hlavičku
+//		   		//pokud je cesta mezi teploměry aktualizuje, pokud ne nedelá nic
+//		   		if(T->prvni->sparovany!=T->posledni->sparovany)
+//		   		{
+//						CE=vrat_segment_cesty(ZAKAZKA_akt,T->prvni->sparovany)->dalsi;
+//		   			while(CE!=NULL)
+//		   			{
+//		   				if(CE->Element==T->posledni->sparovany)break;
+//		   				vloz_segment_cesty_do_seznamu_cesty(T,CE->Element);
+//							CE=CE->dalsi;
+//		   			}
+//					}
+//				}
+//			}
+//
+//			//došlo k chybe vytvoření default cesty
+//			else F->reset_teplomeru();
+//
+//			//aktualizace tabulky
+//			F->vytvor_aktualizuj_tab_teplomeru();
+//
+//      //ukazatelové záležitosti
+//			CE=NULL;delete CE;
+//			E1=NULL;delete E1;
+//			E2=NULL;delete E2;
+//		}
+//		//uakazatelové záležitosti
+//		T=NULL;delete T;
+//	}
 }
 ////---------------------------------------------------------------------------
 

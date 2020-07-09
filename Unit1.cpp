@@ -4248,7 +4248,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 					{
 						napojeni_vedlejsi_vetve(pom_element->predchozi2);
 					}
-          reset_teplomeru();//přegeneruje teploměry je-li třeba a vypíše hlášku užovateli
+          d.v.aktualizuj_cestu_teplomeru(OBJEKT_akt);//pokud existuje cesta mezi teploměry aktualizuje ji, jinak vytvoří default cestu
 				}
 				pom_element_temp=NULL; delete pom_element_temp;
 				vlozit_predavaci_misto_aktualizuj_WT();//kontrola zda nebyly přesunuty 2 PM na sebe
@@ -6399,6 +6399,7 @@ void TForm1::add_element (int X, int Y)
 		//Zde vložit podmínku pro kontrolu jaký element byl vložen, na základě toho znemožnit klik na roboty opačné funkcionality
 		nahled_ulozit(true);//důvod k uložení náhledu
 		refresh_mGrid=true;//nutné pro správné zobrazení mgridů po přidání elementu
+		d.v.aktualizuj_cestu_teplomeru(OBJEKT_akt);//pokud existuje cesta mezi teploměry aktualizuje ji, jinak vytvoří default cestu
 		vytvor_obraz();
 	}
 	else
@@ -6406,7 +6407,6 @@ void TForm1::add_element (int X, int Y)
 		TIP=ls->Strings[309];//"Lze vkládat pouze na linie."
 	}
 	REFRESH();
-  reset_teplomeru();//přegeneruje teploměry je-li třeba a vypíše hlášku užovateli
 }
 //---------------------------------------------------------------------------
 void TForm1::add_vyhybka_spojka()
@@ -11971,7 +11971,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 					pom_element=NULL;//přidáno nově 13.5.2019 - v režimu testování kvůli setJobID a předání do pom_element_puv
 					if(eID%2==0 && eID!=100 && eID!=200 && eID!=MaxInt)d.v.aktualizuj_sparovane_ukazatele();//odstraněn stop-element, nutná aktualizace
 					dalsi_element=NULL;delete dalsi_element;
-          reset_teplomeru();//přegeneruje teploměry je-li třeba a vypíše hlášku užovateli
+					d.v.aktualizuj_cestu_teplomeru(OBJEKT_akt);//pokud existuje cesta mezi teploměry aktualizuje ji, jinak vytvoří default cestu
 				}
 				else if(pom_element->eID==200)
 				{
@@ -12004,7 +12004,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 					if(nulovatPM)predchozi_PM=NULL;
 					mazani=false;
 					Akce=NIC;
-          reset_teplomeru();//přegeneruje teploměry je-li třeba a vypíše hlášku užovateli
+					d.v.aktualizuj_cestu_teplomeru(OBJEKT_akt);//pokud existuje cesta mezi teploměry aktualizuje ji, jinak vytvoří default cestu
 				}
 			}
 			if(pom_element!=NULL )//&& pom_element->eID==MaxInt)//mazání zarážky z popup
@@ -12018,7 +12018,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 						if(pom_element->dalsi!=NULL)posledni_editovany_element=pom_element->dalsi;else if(pom_element->predchozi->n>0)posledni_editovany_element=pom_element->predchozi;else posledni_editovany_element=NULL;
 						d.v.smaz_element(pom_element);
 						if(posledni_editovany_element!=NULL)d.v.vloz_G_element(posledni_editovany_element,0,X1,Y1,0,0,0,0,posledni_editovany_element->geo.X4,posledni_editovany_element->geo.Y4,posledni_editovany_element->geo.orientace);
-            reset_teplomeru();//přegeneruje teploměry je-li třeba a vypíše hlášku užovateli
+            d.v.aktualizuj_cestu_teplomeru(OBJEKT_akt);//pokud existuje cesta mezi teploměry aktualizuje ji, jinak vytvoří default cestu
 					}else TIP=ls->Strings[311];//"Nelze smazat."
 				}
 				else TIP=ls->Strings[311];//"Nelze smazat."
@@ -13869,6 +13869,7 @@ void __fastcall TForm1::Timer_neaktivityTimer(TObject *Sender)
 		FormX->validace_max_voziku();//metoda rozlišuje zda byla editovaná stopka, pokud ano provede validaci, pokud ne neudělá nic
 		//pokud byl poslední editovaný element PM spustí validaci
 		if(FormX->posledni_E!=NULL && FormX->posledni_E->eID==200)FormX->validace_RD(FormX->posledni_E);
+		if(FormX->posledni_E!=NULL && FormX->posledni_E->eID==0)FormX->aktualizace_teplomeru();
 		if(PmG!=NULL)FormX->validace_aRD();
 		REFRESH(true); //nedocází k refresh tabulek, tabulky jsou v tuto chvíli naplněny aktuálními hodnotami
 	}
@@ -14016,7 +14017,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 
 	//OBJEKT_akt->element->mGrid->AddRow(false,false);
 	//OBJEKT_akt->element->mGrid->Update();
-	Memo("");
+	d.v.aktualizuj_cestu_teplomeru(OBJEKT_akt);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -17301,7 +17302,7 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 					//pokud je úsek menší než délka bufferu připočtení wt podle toho na jakém jsem vozíku
 					if(delka<=buf)
 					{
-            prejezd=false;
+						prejezd=false;
 						cas+=m.V2WT(ceil((delka-buf)/d.v.PP.delka_podvozek),d.v.PP.TT);//připočítání WT na aktuálním vozíku
 					}
 					//pokud je úsek větší než buffer připočtení WTstop a přejezdu
@@ -17354,9 +17355,9 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 				}
 				CE=CE->dalsi;
 			}
-      //ukazatelové záležitosti
+			//ukazatelové záležitosti
 			CE=NULL;delete CE;
-							
+
 			//výpočet času na konci
 			if(T->posledni->sparovany->pohon!=NULL && T->posledni->sparovany!=T->prvni->sparovany)
 			{
@@ -17364,14 +17365,14 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 				delka=m.delka(T->posledni->sparovany->geo.X1,T->posledni->sparovany->geo.Y1,T->posledni->geo.X4,T->posledni->geo.Y4);
 				//pokud se jedná o stopku počítat s bufferem
 				if(T->posledni->sparovany->eID==0)
-				{      
+				{
 					//nahrání aktuálních dat do ukazatele
 					if(d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n!=0)//pokud pracuji v nějaké zakázce
 					{
 						Cvektory::TCesta *c=d.v.vrat_segment_cesty(d.v.ZAKAZKA_akt,T->posledni->sparovany);
 						if(c!=NULL)T->posledni->sparovany->data=c->data;//přepsání aktuálních dat ze zakázky do elementu
 						c=NULL;delete c;
-					}  
+					}
 					//výpočet délky bufferu
 					double buf=T->posledni->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice;
 					//pokud je úsek menší než délka bufferu připočtení wt podle toho na jakém jsem vozíku
@@ -17379,34 +17380,36 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 					{
 						if(prejezd){pridej_radek_tab_teplomeru(T->posledni->mGrid,cas,WT,prejezd);cas=0;WT=0;}//pokud byl přejezd, změna, bude následovat buffer
 						prejezd=false;
-						WT+=T->posledni->sparovany->WT;  
+						WT+=T->posledni->sparovany->WT;
 						cas+=m.V2WT(ceil((delka-buf)/d.v.PP.delka_podvozek),d.v.PP.TT);//připočítání WT na aktuálním vozíku
 					}
 					//pokud je úsek větší než buffer připočtení WTstop a přejezdu
 					else
 					{
-            if(!prejezd){pridej_radek_tab_teplomeru(T->posledni->mGrid,cas,WT,prejezd);cas=0;WT=0;}//pokud byl před tím buffer, změna, potřebuju zapsat přejezd
+						if(!prejezd){pridej_radek_tab_teplomeru(T->posledni->mGrid,cas,WT,prejezd);cas=0;WT=0;}//pokud byl před tím buffer, změna, potřebuju zapsat přejezd
 						delka=delka-buf;
 						cas+=delka/T->posledni->sparovany->pohon->aRD;
 						prejezd=true;
 						//rozpad na přejezd a buffer
 						pridej_radek_tab_teplomeru(T->posledni->mGrid,cas,WT,prejezd);cas=0;WT=0;//zapsání části přejezdu
 						prejezd=false;
-						WT+=T->posledni->sparovany->WT;  
+						WT+=T->posledni->sparovany->WT;
 						cas+=T->posledni->sparovany->data.WTstop;
-					}    
+					}
 				}
-				else//není stop 
+				else//není stop
 				{
 					if(!prejezd){pridej_radek_tab_teplomeru(T->posledni->mGrid,cas,WT,prejezd);cas=0;WT=0;}
 					prejezd=true;
-					cas+=delka/T->posledni->sparovany->pohon->aRD; 
-					WT+=T->posledni->sparovany->WT;  
+					cas+=delka/T->posledni->sparovany->pohon->aRD;
+					WT+=T->posledni->sparovany->WT;
 				}
-				
+
 				//vypsání řádku
 				pridej_radek_tab_teplomeru(T->posledni->mGrid,cas,WT,prejezd);cas=0;WT=0;
-			}					
+			}
+      //kontrola zda nejsou ještě k vypsání nějaké hodnoty, může nastat, když budou oba teploměry na jedné stoce
+			if(cas>0 || WT>0){pridej_radek_tab_teplomeru(T->posledni->mGrid,cas,WT,prejezd);cas=0;WT=0;}
 			//vložení řádku součtu
 			pridej_radek_tab_teplomeru(T->posledni->mGrid,cas,WT,false,true);
 		}

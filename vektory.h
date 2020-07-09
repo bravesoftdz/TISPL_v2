@@ -836,6 +836,7 @@ public:
 	void hlavicka_teplomery(TObjekt *Objekt);
 	void hlavicka_cesty_teplomery(TTeplomery *teplomery);//vytvoří v objektu hlavičku pro cestu teploměrů
   void vymaz_teplomery(TObjekt *Objekt,TTeplomery *teplomery);//vymaže konkrétní záznam teploměrů
+  void vymaz_seznam_cest(TTeplomery *teplomery);//vymaže seznam cest z teplomerů
 	void vymaz_seznam_teplomery(TObjekt *Objekt);//vymaže seznam teploměrů z objektu
   Cvektory::TTeplomery *vrat_teplomery_podle_zakazky(TObjekt *Objekt,TZakazka *Zakazka);//vrátí ukazatel na záznam teploměrů pro konkrétní zakázku
   Cvektory::TTeplomery *vytvor_zaznam_teplomeru_pro_zakazku(TObjekt *Objekt,TZakazka *Zakazka);//vytvoří záznam teploměrů pro zakázku
@@ -846,7 +847,8 @@ public:
 	void posun_teplomeru(TElement *teplomer);//posunem teploměru dochází k editaci jeho oblasti
 	void zmena_zakazky_vytvoreni_teplomeru(TObjekt *Objekt,TZakazka *Zakt,TZakazka *Znova);//provede kontrolu, zda existuje cesta pro akt zakázku pokud ano, zkontroluje jestli existuje cesta i na nové zakázce, pokud ne vytvoří default cestu od vrátek k vrátkům
 	void kopiruj_seznam_teplomery(TObjekt *zdroj,TObjekt *cil);//kopíruje záznamy teploměrů do jiného objektu, pro účely obrazu objektu
-  Cvektory::TTeplomery *kopiruj_teplomer(TTeplomery *original);//vytvoří kopii z originálního záznamu teploměrů
+	Cvektory::TTeplomery *kopiruj_teplomer(TTeplomery *original);//vytvoří kopii z originálního záznamu teploměrů
+	void aktualizuj_cestu_teplomeru(TObjekt *Objekt);//pokud došlo ke změně, která může ovlivnit cestu teploměru, zkontroluje, zda je možné aktualizovat a pokud ano, aktualizuje
 
 //SQL
 	AnsiString QUERY(AnsiString query);//vratí AnsiString hodnod dle zadaného dotazu v syntaxi SQL, zatím umí jen základní úroveň - asi odstranit

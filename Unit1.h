@@ -597,7 +597,6 @@ private:
 	void vymaz_seznam_obrazu();//vymaže všechny obrazy v poøadníku
 	void vytvor_statickou_scenu();//vytvoøí BMP se statickou scénou
 	void vytvor_statickou_scenu(long SCENA);//pøetížená výše uvedené pøímo s parametrem nastavení scény
-  void reset_teplomeru();//zborazí upozornìní, že došlo ke zmìnì geometrie a resetuje oblasti teplomerù
 
 	////promìnné
 	TDateTime TIME;
@@ -807,7 +806,8 @@ public:		// User declarations
   void pridej_radek_tab_teplomeru(TmGrid *mGrid,double cas,double WT,bool prejezd,bool celkem=false);
 	void START();//zapne stopky
 	void STOP(bool MB=false);//vypne stopky, pokud je parementr metody nastaven na false (což je implicitnì), je zajištìn výpis do mema, pokud na true tak do ShowMessage
-  void GetTime(short int rezim);
+	void GetTime(short int rezim);
+  void reset_teplomeru();//zborazí upozornìní, že došlo ke zmìnì geometrie a resetuje oblasti teplomerù
   };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
