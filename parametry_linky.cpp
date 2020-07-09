@@ -556,7 +556,7 @@ void TForm_parametry_linky::nacti_pohony() {
           // obrácenì, jelikož v katalogu jsou vždy mm
           else
             I->Caption = H->hodnota;
-          C->ItemIndex = ukaz->Rx; // RX se využívá jako ITEMINDEX položky
+          C->ItemIndex = ukaz->roztec_ID; // ITEMINDEX položky
           H = H->dalsi;
         }
         I = NULL;
@@ -811,6 +811,8 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 //        Rx = 0.0;
 //        ShowMessage("false");
 //      } // pokud není pohon pøiøazen nuluj
+      Rz = 0.0;
+      Rx = 0.0;
 
       int roztec_id=0;
       roztec_id = PL_mGrid->getCombo(5, i)->ItemIndex;
@@ -821,10 +823,12 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
       // všem objektùm, které mìly pøiøazen pohon s oldN(oldID), pøiøadí pohon s newN(newID), podle toho, jak jsou ukládány novì do spojáku, dùležité, pokud dojde k narušení poøadí ID resp n pohonù a poøadí jednotlivých øádkù ve stringridu, napø. kopirováním, smazáním, zmìnou poøadí øádkù atp., øeší i pro pøípad napø. 2->3,3->4 pomocí atributu objektu probehla_aktualizace_prirazeni_pohonu (aby prvnì nebyl pøiøezn pohon s id 2 na 3 a potom všechny pohony s id 3 na pohon 4, protože mìly být pøiøazený jen nìkteré...)
       Form1->d.v.aktualizace_prirazeni_pohonu_k_objektum(getPID(i), i - 1);
       Form1->d.v.aktualizace_prirazeni_pohonu_k_elementum(getPID(i), i - 1);
-       ShowMessage(Rx);
+      // ShowMessage(Rx);
     }
+     F->d.v.aktualizuj_parametry_pouzivanych_pohonu();
     // po dokonèení aktualizace pøiøazení pohonu (pøi ukládání pohonu na PL) vrátí atribut probehla_aktualizace_prirazeni_pohonu všech objektù na false, aby bylo pøipraveno k dalšímu opìtovnému užítí, nepøímo spolupracuje s metodou výše uvedenou aktualizace_prirazeni_pohonu_k_objektum
     Form1->d.v.aktualizace_prirazeni_pohonu_dokoncena();
+
     //
 
     // docasne - resim pouze rozmery Jigu neporovnamvam tedy vuci voziku
