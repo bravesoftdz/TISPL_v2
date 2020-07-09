@@ -4108,6 +4108,7 @@ void Cvektory::hlavicka_POHONY()
 	novy->rychlost_do=0;
 	novy->aRD=0;
 	novy->roztec=0;
+	novy->roztec_ID=0;
 	novy->Rz=0;
 	novy->Rx=0;
 	novy->retez=NULL;
@@ -4135,7 +4136,7 @@ void Cvektory::vloz_pohon(TPohon *pohon)
 }
 ////---------------------------------------------------------------------------
 //vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
-void Cvektory::vloz_pohon(UnicodeString name,double rychlost_od,double rychlost_do,double aRD,double R,double Rz,double Rx)
+void Cvektory::vloz_pohon(UnicodeString name,double rychlost_od,double rychlost_do,double aRD,double R,double Rz,double Rx,unsigned int roztec_ID)
 {
 	F->log(__func__);//logování
 	TPohon *novy=new TPohon;
@@ -4144,6 +4145,7 @@ void Cvektory::vloz_pohon(UnicodeString name,double rychlost_od,double rychlost_
 	novy->rychlost_do=rychlost_do;
 	novy->aRD=aRD;
 	novy->roztec=R;
+  novy->roztec_ID=roztec_ID;
 	novy->Rz=Rz;
 	novy->Rx=Rx;
 	novy->retez=NULL;
@@ -4241,6 +4243,30 @@ Cvektory::TObjekt *Cvektory::pohon_je_pouzivan(unsigned long n,TObjekt *mimo_obj
 		O=O->dalsi;
 	}
 	return O;
+}
+////---------------------------------------------------------------------------
+//aktualizuje Rx a Rz pohonů, které jsou používané, provádí se pro přepsání pohonů na PL
+void Cvektory::aktualizuj_parametry_pouzivanych_pohonu()
+{
+  //kontrola, zda existují pohony
+	if(POHONY!=NULL)
+	{
+  	TPohon *p=POHONY->dalsi;
+  	while(p!=NULL)
+  	{
+  		//kontrola zda je pohon používán
+  		if(pohon_je_pouzivan(p->n,false))
+  		{
+  			//aktualizace Rx a Rz
+  			p->Rz=m.Rz(p->aRD);
+  			p->Rx=m.Rx(p->aRD,p->roztec);
+			}
+  		//posun na další pohon
+  		p=p->dalsi;
+  	}
+  	//ukazatelové záležitosti
+  	delete p;p=NULL;
+	}
 }
 ////---------------------------------------------------------------------------
 //dle n pohonu vráti objekty, které pohon používají, pokud je short_name na true, vrátí kratký název objektu jinak dlouhý
@@ -6797,6 +6823,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 			c_ukaz1->rychlost_do=ukaz1->rychlost_do;
 			c_ukaz1->aRD=ukaz1->aRD;
 			c_ukaz1->roztec=ukaz1->roztec;
+      c_ukaz1->roztec_ID=ukaz1->roztec_ID;
 			c_ukaz1->Rz=ukaz1->Rz;
 			c_ukaz1->Rx=ukaz1->Rx;
 			FileStream->Write(c_ukaz1,sizeof(C_pohon));//zapiše jeden prvek do souboru
@@ -7226,6 +7253,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 					ukaz1->rychlost_do=c_ukaz1->rychlost_do;
 					ukaz1->aRD=c_ukaz1->aRD;
 					ukaz1->roztec=c_ukaz1->roztec;
+					ukaz1->roztec_ID=c_ukaz1->roztec_ID;
 					ukaz1->Rz=c_ukaz1->Rz;
 					ukaz1->Rx=c_ukaz1->Rx;
 					ukaz1->retez=NULL;//možná prozatím jinak načítat buď z přidruženého spojáku nebo volat metodu po načtení elementů
@@ -8437,6 +8465,7 @@ Cvektory::TDATA *Cvektory::vytvor_prazdny_obraz()
 	obraz->Pohony->rychlost_do=0;
 	obraz->Pohony->aRD=0;
 	obraz->Pohony->roztec=0;
+  obraz->Pohony->roztec_ID=0;
 	obraz->Pohony->Rz=0;
 	obraz->Pohony->Rx=0;
 	obraz->Pohony->retez=NULL;
@@ -8558,6 +8587,7 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 			p_kop->rychlost_do=p->rychlost_do;
 			p_kop->aRD=p->aRD;
 			p_kop->roztec=p->roztec;
+      p_kop->roztec_ID=p->roztec_ID;
 			p_kop->Rz=p->Rz;
 			p_kop->Rx=p->Rx;
 			p_kop->retez=p->retez;
@@ -8753,6 +8783,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 			p->rychlost_do=dp->rychlost_do;
 			p->aRD=dp->aRD;
 			p->roztec=dp->roztec;
+      p->roztec_ID=dp->roztec_ID;
 			p->Rz=dp->Rz;
 			p->Rx=dp->Rx;
 			p->retez=dp->retez;
