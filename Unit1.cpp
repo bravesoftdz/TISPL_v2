@@ -7249,7 +7249,7 @@ void TForm1::ukonceni_geometrie(bool kontrola)
 	//validovat
 	duvod_validovat=2;
 	REFRESH();
-  reset_teplomeru();//přegeneruje teploměry je-li třeba a vypíše hlášku užovateli
+  if(kontrola)reset_teplomeru();//přegeneruje teploměry je-li třeba a vypíše hlášku užovateli
 }
 //---------------------------------------------------------------------------
 //vrátí maximální možný počet vozíků na stopce, podle geometrie před ní
@@ -14019,7 +14019,14 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 
 	//OBJEKT_akt->element->mGrid->AddRow(false,false);
 	//OBJEKT_akt->element->mGrid->Update();
-	d.v.aktualizuj_cestu_teplomeru();
+  Memo_testy->Clear();
+	Cvektory::TTeplomery *T=d.v.OBJEKTY->predchozi->teplomery->dalsi;
+	Memo("prvni: "+T->prvni->sparovany->name);
+	Cvektory::TCesta *CE=T->cesta->dalsi;
+	if(CE==NULL)Memo("Cesta neexistuje");
+	CE=NULL;delete CE;
+	Memo("posledni: "+T->posledni->sparovany->name);
+	T=NULL;delete T;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -14912,7 +14919,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 	{
 		log("Zavření editace, MOD=LAYOUT");
 		Timer_neaktivity->Enabled=false;//vypnutí timeru pro jistotu
-		if(Akce==GEOMETRIE)ukonceni_geometrie(mazani);
+		if(Akce==GEOMETRIE)ukonceni_geometrie(mazani);//musí být invertováno, mazani==true při uložit
 		if(Akce!=NIC || editace_textu)ESC();
 		//////
 		if(MOD==EDITACE&&index_kurzoru==9999||index_kurzoru==100)

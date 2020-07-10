@@ -8834,6 +8834,45 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 		}
 
 		//aktualizace dat
+    //aktualizace Objekt->element ukazatele, a aktualizace ukazatelů teploměrů
+		TObjekt *O=OBJEKTY->dalsi;
+		while(O!=NULL)
+		{
+			if(O->teplomery!=NULL)
+			{
+				unsigned long n;
+				TTeplomery *T=O->teplomery->dalsi;
+				while(T!=NULL)
+				{
+					//spárovaný element prvního teploměru
+					n=T->prvni->sparovany->n;
+					delete T->prvni->sparovany;T->prvni->sparovany=NULL;
+					T->prvni->sparovany=vrat_element(n);
+					//spárovaný element posledního teploměru
+					n=T->posledni->sparovany->n;
+					delete T->posledni->sparovany;T->posledni->sparovany=NULL;
+					T->posledni->sparovany=vrat_element(n);
+					//elementy v cestě
+					TCesta *C=T->cesta->dalsi;
+					while(C!=NULL)
+					{
+						//vrácení ukazatele na element
+						n=C->Element->n;
+						delete C->Element;C->Element=NULL;
+						C->Element=vrat_element(n);
+						C=C->dalsi;
+					}
+					delete C;C=NULL;
+					//posun na další záznam teploměrů
+					T=T->dalsi;
+				}
+				delete T;T=NULL;
+			}
+			//posun na další objekt
+			O=O->dalsi;
+		}
+		delete O;O=NULL;
+
 		//sparovaných ukazatelu a RT
 		aktualizuj_sparovane_ukazatele();//vždy!!!!
 		if(F->OBJEKT_akt!=NULL && !storno)
@@ -8917,9 +8956,9 @@ void Cvektory::smaz_obraz_DATA(unsigned long n)
 			TDATA *D=DATA->dalsi;
 			unsigned long index=1;
 	  	while(D!=NULL)
-	  	{
+			{
 	  		D->n=index;
-	  		index++;
+				index++;
 	  		D=D->dalsi;
 	  	}
 			delete D;D=NULL;
@@ -8935,13 +8974,13 @@ void Cvektory::smaz_obraz_DATA(unsigned long n)
 //---------------------------------------------------------------------------
 //mazání dat v obrazu, objekty, elementy, ...
 void Cvektory::smaz_data_obrazu(TDATA *obraz)
-{       
-  ////smazání objektů
+{
+	////smazání objektů
 	while(obraz->Objekty!=NULL)
 	{
 		vymaz_body(obraz->Objekty->predchozi);
 		vymaz_komory(obraz->Objekty->predchozi);
-		vymaz_seznam_teplomery(obraz->Objekty->predchozi);
+		vymaz_seznam_teplomery(obraz->Objekty->predchozi,false);//vymazat i s elementy
 		delete obraz->Objekty->predchozi;
 		obraz->Objekty->predchozi=NULL;
 		obraz->Objekty=obraz->Objekty->dalsi;
@@ -9264,25 +9303,30 @@ void Cvektory::hlavicka_cesty_teplomery(TTeplomery *teplomery)
 	novy=NULL;delete novy;
 }
 ////---------------------------------------------------------------------------
-//vymaže konkrétní záznam teploměrů
-void Cvektory::vymaz_teplomery(TObjekt *Objekt,TTeplomery *teplomery)
+//vymaže konkrétní záznam teploměrů, s elementy nebo bez
+void Cvektory::vymaz_teplomery(TObjekt *Objekt,TTeplomery *teplomery,bool ponechat_elementy)
 {
 	//kontrola zda je co mazat
 	if(teplomery!=NULL)
 	{
 		//mazání segmentů cesty
-		vymaz_seznam_cest(teplomery);
+		vymaz_seznam_cest(teplomery,ponechat_elementy);
 
 		//mazání tabulky oblasti, pokud existuje
-    if(teplomery->posledni!=NULL && teplomery->posledni->mGrid!=NULL)
+		if(teplomery->posledni!=NULL && teplomery->posledni->mGrid!=NULL)
 		{
 			teplomery->posledni->mGrid->Delete();
-      teplomery->posledni->mGrid=NULL;
+			teplomery->posledni->mGrid=NULL;
 		}
 
 		//mazání teploměrů
+		if(!ponechat_elementy)//mazání spárovaných, pokud mají být mazány
+		{
+			if(teplomery->prvni!=NULL){delete teplomery->prvni->sparovany;teplomery->prvni->sparovany=NULL;}
+			if(teplomery->posledni!=NULL){delete teplomery->posledni->sparovany;teplomery->posledni->sparovany=NULL;}
+		}
 		delete teplomery->prvni;teplomery->prvni=NULL;
-    delete teplomery->posledni;teplomery->posledni=NULL;
+		delete teplomery->posledni;teplomery->posledni=NULL;
 
 		//vyřezení záznamu z objektu
 		if(teplomery->n!=0)
@@ -9298,12 +9342,18 @@ void Cvektory::vymaz_teplomery(TObjekt *Objekt,TTeplomery *teplomery)
 	}
 }
 ////---------------------------------------------------------------------------
-//vymaže seznam cest z teplomerů
-void Cvektory::vymaz_seznam_cest(TTeplomery *teplomery)
+//vymaže seznam cest z teplomerů, s elementy nebo bez
+void Cvektory::vymaz_seznam_cest(TTeplomery *teplomery,bool ponechat_elementy)
 {
   //mazání segmentů cesty
 	while(teplomery->cesta!=NULL)
 	{
+		//mazání elementů pokud mají být mazány
+		if(!ponechat_elementy)
+		{
+			delete teplomery->cesta->predchozi->Element;
+      teplomery->cesta->predchozi->Element=NULL;
+    }
 		//mazání segmentu
 		delete teplomery->cesta->predchozi;
 		teplomery->cesta->predchozi=NULL;
@@ -9313,8 +9363,8 @@ void Cvektory::vymaz_seznam_cest(TTeplomery *teplomery)
 	delete teplomery->cesta;teplomery->cesta=NULL;
 }
 ////---------------------------------------------------------------------------
-//vymaže seznam teploměrů z objektu
-void Cvektory::vymaz_seznam_teplomery(TObjekt *Objekt)
+//vymaže seznam teploměrů z objektu, s elementy nebo bez
+void Cvektory::vymaz_seznam_teplomery(TObjekt *Objekt,bool ponechat_elementy)
 {
 	//kontrola zda je co mazat
 	if(Objekt!=NULL && Objekt->teplomery!=NULL)
@@ -9322,10 +9372,10 @@ void Cvektory::vymaz_seznam_teplomery(TObjekt *Objekt)
 		//mazání záznamů teploměru
 		while(Objekt->teplomery!=NULL)
 		{
-			vymaz_teplomery(Objekt,Objekt->teplomery->predchozi);
+			vymaz_teplomery(Objekt,Objekt->teplomery->predchozi,ponechat_elementy);
 		}
 		//smazání hlavičky a nulování ukazatele
-    delete Objekt->teplomery;Objekt->teplomery=NULL;
+		delete Objekt->teplomery;Objekt->teplomery=NULL;
 	}
 }
 ////---------------------------------------------------------------------------
@@ -9856,9 +9906,13 @@ Cvektory::TTeplomery *Cvektory::kopiruj_teplomer(TTeplomery *original)
 								 
 	//kopírování segmentů cesty
 	TCesta *CE=original->cesta->dalsi;
+	TElement *Ekop=NULL;
 	while(CE!=NULL)
 	{
-		vloz_segment_cesty_do_seznamu_cesty(novy,CE->Element);
+		Ekop=new TElement;
+		kopiruj_element(CE->Element,Ekop);
+		vloz_segment_cesty_do_seznamu_cesty(novy,Ekop);
+		Ekop=NULL;delete Ekop;
 		CE=CE->dalsi;
 	}
 
@@ -9873,7 +9927,10 @@ Cvektory::TTeplomery *Cvektory::kopiruj_teplomer(TTeplomery *original)
 	t1->Xt=t1->X=t1->geo.X1=t1->geo.X4=original->prvni->X;
 	t1->Yt=t1->Y=t1->geo.Y1=t1->geo.Y4=original->prvni->Y;
 	t1->eID=original->prvni->eID;
-	t1->sparovany=original->prvni->sparovany;
+	Ekop=new TElement;
+	kopiruj_element(original->prvni->sparovany,Ekop);
+	t1->sparovany=Ekop;
+	Ekop=NULL;delete Ekop;
 	t1->dalsi=NULL;
 	t1->dalsi2=NULL;
 	t1->predchozi==NULL;
@@ -9888,7 +9945,10 @@ Cvektory::TTeplomery *Cvektory::kopiruj_teplomer(TTeplomery *original)
 	t2->Xt=t2->X=t2->geo.X1=t2->geo.X4=original->posledni->X;
 	t2->Yt=t2->Y=t2->geo.Y1=t2->geo.Y4=original->posledni->Y;
 	t2->eID=original->posledni->eID;
-	t2->sparovany=original->posledni->sparovany;
+  Ekop=new TElement;
+	kopiruj_element(original->posledni->sparovany,Ekop);
+	t2->sparovany=Ekop;
+	Ekop=NULL;delete Ekop;
 	t2->dalsi=NULL;
 	t2->dalsi2=NULL;
 	t2->predchozi==NULL;
@@ -9897,7 +9957,8 @@ Cvektory::TTeplomery *Cvektory::kopiruj_teplomer(TTeplomery *original)
 	novy->prvni=t1;
 	novy->posledni=t2;
 	t1=NULL;delete t1;
-	t2=NULL;delete t2; 
+	t2=NULL;delete t2;
+  Ekop=NULL;delete Ekop;
 	
 	return novy;
 }

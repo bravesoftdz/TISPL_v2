@@ -835,9 +835,9 @@ public:
 //teploměry
 	void hlavicka_teplomery(TObjekt *Objekt);
 	void hlavicka_cesty_teplomery(TTeplomery *teplomery);//vytvoří v objektu hlavičku pro cestu teploměrů
-  void vymaz_teplomery(TObjekt *Objekt,TTeplomery *teplomery);//vymaže konkrétní záznam teploměrů
-  void vymaz_seznam_cest(TTeplomery *teplomery);//vymaže seznam cest z teplomerů
-	void vymaz_seznam_teplomery(TObjekt *Objekt);//vymaže seznam teploměrů z objektu
+	void vymaz_teplomery(TObjekt *Objekt,TTeplomery *teplomery,bool ponechat_elementy=true);//vymaže konkrétní záznam teploměrů, s elementy nebo bez
+  void vymaz_seznam_cest(TTeplomery *teplomery,bool ponechat_elementy=true);//vymaže seznam cest z teplomerů, s elementy nebo bez
+	void vymaz_seznam_teplomery(TObjekt *Objekt,bool ponechat_elementy=true);//vymaže seznam teploměrů z objektu s elementy nebo bez
   Cvektory::TTeplomery *vrat_teplomery_podle_zakazky(TObjekt *Objekt,TZakazka *Zakazka);//vrátí ukazatel na záznam teploměrů pro konkrétní zakázku
   Cvektory::TTeplomery *vytvor_zaznam_teplomeru_pro_zakazku(TObjekt *Objekt,TZakazka *Zakazka);//vytvoří záznam teploměrů pro zakázku
 	void vloz_segment_cesty_teplomery(TObjekt *Objekt,TElement *Element,bool prvni=false,bool posledni=false,double X=0,double Y=0);//vloží segment cesty do cest teploměrů v objektu, nebo vložení teploměru, doplnění bodu vložení
