@@ -4351,7 +4351,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 //JID=-4;//oblast kót objektu									Původní: svislá pravá hrana objektu
 //JID=-5;//hodnoty kót objektu								Původní: vodorovná dolní hrana objektu
 //JID=-6;//název objektu
-//JID=-7; NIC!!
+//JID=-7;//teploměr
 //JID=-8;//prázdné														Původní: vodorovná kóta kabiny
 //JID=-9;//prázdné														Původní: uchop tabulky pohonu
 //JID=-10;//jednotky kóty
@@ -4738,7 +4738,7 @@ void TForm1::getJobID(int X, int Y)
 //			C=C->dalsi;
 //		}
 //		C=NULL;delete C;
-	}    
+	}
 	//pouze na test zatížení Memo3->Visible=true;Memo3->Lines->Add(s_mazat++);
 }
 //---------------------------------------------------------------------------
@@ -14017,6 +14017,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 
 	//OBJEKT_akt->element->mGrid->AddRow(false,false);
 	//OBJEKT_akt->element->mGrid->Update();
+  Memo("");
 	d.v.aktualizuj_cestu_teplomeru(OBJEKT_akt);
 }
 //---------------------------------------------------------------------------
@@ -17509,19 +17510,20 @@ void TForm1::GetTime(short int rezim)
 //zborazí upozornění, že došlo ke změně geometrie a resetuje oblasti teplomerů
 void TForm1::reset_teplomeru()
 {
-  //kontrola zda má oběkt záznam o teploměrech
+	log(__func__);
+	//kontrola zda má oběkt záznam o teploměrech
 	if(OBJEKT_akt!=NULL && OBJEKT_akt->teplomery!=NULL)
 	{
     //kontrola zda má záznam pro konkrétní zakázku
 		Cvektory::TTeplomery *T=d.v.vrat_teplomery_podle_zakazky(OBJEKT_akt,d.v.ZAKAZKA_akt);
 		if(T!=NULL)
 		{
-			//pokud mám zobrazit upozornění, zobrazím
-			if(zobrazit_upozorneni_teplomery)MB(-1,-1,"Byla změněna geometrie linky, oblast teploměrů bude obnovena.","",MB_OK,true,true);
 			//mazání teplomerů a vytvoření default
-      d.v.vymaz_seznam_teplomery(OBJEKT_akt);
+			d.v.vymaz_seznam_teplomery(OBJEKT_akt);
 			d.v.vytvor_default_c_teplomery(OBJEKT_akt);
 			vytvor_aktualizuj_tab_teplomeru();
+      //pokud mám zobrazit upozornění, zobrazím
+			if(zobrazit_upozorneni_teplomery)MB(-1,-1,"Byla změněna geometrie linky, oblast teploměrů bude obnovena.","",MB_OK,true,true);
     }
 	}
 }
