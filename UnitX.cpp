@@ -2292,7 +2292,7 @@ void TFormX::aktualizace_teplomeru()
 						}
 						//vıpoèet èasu
 						if(!prejezd){radek=aktualizuj_radek_tab_teplomeru(T->posledni->mGrid,radek,cas,WT);cas=0;WT=0;}//pokud byl pøed tím buffer, zmìna, potøebuju zapsat pøejezd
-						delka=CE->Element->geo.delka-CE->Element->data.pocet_voziku*F->d.v.PP.delka_podvozek-F->d.v.PP.uchyt_pozice;
+						delka=CE->Element->geo.delka-(CE->Element->data.pocet_voziku*F->d.v.PP.delka_podvozek-F->d.v.PP.uchyt_pozice);
 						cas+=delka/CE->Element->pohon->aRD;
 						prejezd=true;
 						radek=aktualizuj_radek_tab_teplomeru(T->posledni->mGrid,radek,cas,WT);cas=0;WT=0;//zapsání èásti pøejezdu
@@ -2393,6 +2393,6 @@ unsigned int TFormX::aktualizuj_radek_tab_teplomeru(TmGrid *mGrid,unsigned int r
 		mGrid->Cells[2][radek].Text=F->m.round2double(F->outPT(WT),3);
 		radek++;
 	}
-  return radek;
+	return radek;
 }
 //---------------------------------------------------------------------------

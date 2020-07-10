@@ -4248,7 +4248,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 					{
 						napojeni_vedlejsi_vetve(pom_element->predchozi2);
 					}
-          d.v.aktualizuj_cestu_teplomeru(OBJEKT_akt);//pokud existuje cesta mezi teploměry aktualizuje ji, jinak vytvoří default cestu
+          d.v.aktualizuj_cestu_teplomeru();//pokud existuje cesta mezi teploměry aktualizuje ji, jinak vytvoří default cestu
 				}
 				pom_element_temp=NULL; delete pom_element_temp;
 				vlozit_predavaci_misto_aktualizuj_WT();//kontrola zda nebyly přesunuty 2 PM na sebe
@@ -6399,7 +6399,7 @@ void TForm1::add_element (int X, int Y)
 		//Zde vložit podmínku pro kontrolu jaký element byl vložen, na základě toho znemožnit klik na roboty opačné funkcionality
 		nahled_ulozit(true);//důvod k uložení náhledu
 		refresh_mGrid=true;//nutné pro správné zobrazení mgridů po přidání elementu
-		d.v.aktualizuj_cestu_teplomeru(OBJEKT_akt);//pokud existuje cesta mezi teploměry aktualizuje ji, jinak vytvoří default cestu
+		d.v.aktualizuj_cestu_teplomeru();//pokud existuje cesta mezi teploměry aktualizuje ji, jinak vytvoří default cestu
 		vytvor_obraz();
 	}
 	else
@@ -6471,6 +6471,7 @@ void TForm1::add_vyhybka_spojka()
 			TIP=ls->Strings[478];//zobrazení nápovědy jak otevřít editace sekundární větve po dokončení vložení výhybky
 			vytvor_statickou_scenu();//aktualizace BMP statické scény, nově výhybka a spojka, nutné aktualizovat
 			REFRESH();//nesmí zde být způsobí špatné vykreslení elementů (nekompletní linka)
+			d.v.aktualizuj_cestu_teplomeru();
 		}
 		//pozicování mgridu, doladit podle finálních rozměrů tabulky
 		if(E->orientace==0 || E->orientace==180){E->Xt=E->X-1.9;E->Yt=E->Y+2.1;}
@@ -11971,7 +11972,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 					pom_element=NULL;//přidáno nově 13.5.2019 - v režimu testování kvůli setJobID a předání do pom_element_puv
 					if(eID%2==0 && eID!=100 && eID!=200 && eID!=MaxInt)d.v.aktualizuj_sparovane_ukazatele();//odstraněn stop-element, nutná aktualizace
 					dalsi_element=NULL;delete dalsi_element;
-					d.v.aktualizuj_cestu_teplomeru(OBJEKT_akt);//pokud existuje cesta mezi teploměry aktualizuje ji, jinak vytvoří default cestu
+					d.v.aktualizuj_cestu_teplomeru();//pokud existuje cesta mezi teploměry aktualizuje ji, jinak vytvoří default cestu
 				}
 				else if(pom_element->eID==200)
 				{
@@ -12004,7 +12005,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 					if(nulovatPM)predchozi_PM=NULL;
 					mazani=false;
 					Akce=NIC;
-					d.v.aktualizuj_cestu_teplomeru(OBJEKT_akt);//pokud existuje cesta mezi teploměry aktualizuje ji, jinak vytvoří default cestu
+					d.v.aktualizuj_cestu_teplomeru();//pokud existuje cesta mezi teploměry aktualizuje ji, jinak vytvoří default cestu
 				}
 			}
 			if(pom_element!=NULL )//&& pom_element->eID==MaxInt)//mazání zarážky z popup
@@ -12018,7 +12019,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 						if(pom_element->dalsi!=NULL)posledni_editovany_element=pom_element->dalsi;else if(pom_element->predchozi->n>0)posledni_editovany_element=pom_element->predchozi;else posledni_editovany_element=NULL;
 						d.v.smaz_element(pom_element);
 						if(posledni_editovany_element!=NULL)d.v.vloz_G_element(posledni_editovany_element,0,X1,Y1,0,0,0,0,posledni_editovany_element->geo.X4,posledni_editovany_element->geo.Y4,posledni_editovany_element->geo.orientace);
-            d.v.aktualizuj_cestu_teplomeru(OBJEKT_akt);//pokud existuje cesta mezi teploměry aktualizuje ji, jinak vytvoří default cestu
+            d.v.aktualizuj_cestu_teplomeru();//pokud existuje cesta mezi teploměry aktualizuje ji, jinak vytvoří default cestu
 					}else TIP=ls->Strings[311];//"Nelze smazat."
 				}
 				else TIP=ls->Strings[311];//"Nelze smazat."
@@ -12091,7 +12092,8 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 			{
 				d.v.smaz_element(pom_element_temp);
 				pom_element_temp=NULL;pom_element=NULL;
-        duvod_validovat=2;//validovat při REFRESH() zajistí odmazání errorů
+				duvod_validovat=2;//validovat při REFRESH() zajistí odmazání errorů
+				d.v.aktualizuj_cestu_teplomeru();
 			}
 			break;
 		}
@@ -14017,8 +14019,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 
 	//OBJEKT_akt->element->mGrid->AddRow(false,false);
 	//OBJEKT_akt->element->mGrid->Update();
-  Memo("");
-	d.v.aktualizuj_cestu_teplomeru(OBJEKT_akt);
+	d.v.aktualizuj_cestu_teplomeru();
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -15754,7 +15755,8 @@ void TForm1::smaz_kurzor()
 					pom_element_temp->Xt-=puv_souradnice.x-pom_element_temp->X;
 					pom_element_temp->Yt-=puv_souradnice.y-pom_element_temp->Y;
 				}
-      }
+			}
+      d.v.aktualizuj_cestu_teplomeru();
 		}
 		if(index_kurzoru<=-11&&OBJEKT_akt->id==3&&Akce!=GEOMETRIE&&Akce!=GEOMETRIE_LIGHT)//editace rozmeru komor v POW
 		{
@@ -17339,7 +17341,7 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 						}
 						//výpočet času
 						if(!prejezd){pridej_radek_tab_teplomeru(T->posledni->mGrid,cas,WT,prejezd);cas=0;WT=0;}//pokud byl před tím buffer, změna, potřebuju zapsat přejezd
-						delka=CE->Element->geo.delka-CE->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice;
+						delka=CE->Element->geo.delka-(CE->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice);
 						cas+=delka/CE->Element->pohon->aRD;
 						prejezd=true;
 						pridej_radek_tab_teplomeru(T->posledni->mGrid,cas,WT,prejezd);cas=0;WT=0;//zapsání části přejezdu

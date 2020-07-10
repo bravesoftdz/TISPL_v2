@@ -848,7 +848,7 @@ public:
 	void zmena_zakazky_vytvoreni_teplomeru(TObjekt *Objekt,TZakazka *Zakt,TZakazka *Znova);//provede kontrolu, zda existuje cesta pro akt zakázku pokud ano, zkontroluje jestli existuje cesta i na nové zakázce, pokud ne vytvoří default cestu od vrátek k vrátkům
 	void kopiruj_seznam_teplomery(TObjekt *zdroj,TObjekt *cil);//kopíruje záznamy teploměrů do jiného objektu, pro účely obrazu objektu
 	Cvektory::TTeplomery *kopiruj_teplomer(TTeplomery *original);//vytvoří kopii z originálního záznamu teploměrů
-	void aktualizuj_cestu_teplomeru(TObjekt *Objekt);//pokud došlo ke změně, která může ovlivnit cestu teploměru, zkontroluje, zda je možné aktualizovat a pokud ano, aktualizuje
+	void aktualizuj_cestu_teplomeru();//pokud došlo ke změně, která může ovlivnit cestu teploměru, zkontroluje, zda je možné aktualizovat a pokud ano, aktualizuje
 
 //SQL
 	AnsiString QUERY(AnsiString query);//vratí AnsiString hodnod dle zadaného dotazu v syntaxi SQL, zatím umí jen základní úroveň - asi odstranit

@@ -9903,81 +9903,88 @@ Cvektory::TTeplomery *Cvektory::kopiruj_teplomer(TTeplomery *original)
 }
 ////---------------------------------------------------------------------------
 //pokud došlo ke změně, která může ovlivnit cestu teploměru, zkontroluje, zda je možné aktualizovat a pokud ano, aktualizuje
-void Cvektory::aktualizuj_cestu_teplomeru(TObjekt *Objekt)
-{                 F->log(__func__);
-	//F->reset_teplomeru();//přesměrování, dále neotestovaný kód
-	if(Objekt!=NULL && Objekt->teplomery!=NULL)
+void Cvektory::aktualizuj_cestu_teplomeru()
+{
+	TObjekt *Objekt=OBJEKTY->dalsi;
+	while(Objekt!=NULL)
 	{
-		TTeplomery *T=vrat_teplomery_podle_zakazky(Objekt,ZAKAZKA_akt);
-		if(T!=NULL)
-		{
-			update_akt_zakazky();//důležité mít aktuální data
-			//deklarace
-   		bool nalezen_prvni=false,nalezen_posledni=false;
-			double X1,Y1,X2,Y2;
-			X1=T->prvni->geo.X1;Y1=T->prvni->geo.Y1;
-			X2=T->posledni->geo.X4;Y2=T->posledni->geo.Y4;
-			TCesta *CE=ZAKAZKA_akt->cesta->dalsi;
-			//nulování spárovaných elementů teplomerů
-			TElement *E1=T->prvni->sparovany,*E2=T->posledni->sparovany;
-   		T->prvni->sparovany=NULL;
-			T->posledni->sparovany=NULL;
+  	if(Objekt->teplomery!=NULL)
+  	{
+  		TTeplomery *T=vrat_teplomery_podle_zakazky(Objekt,ZAKAZKA_akt);
+  		if(T!=NULL)
+  		{
+  			update_akt_zakazky();//důležité mít aktuální data
+  			//deklarace
+  			bool nalezen_prvni=false,nalezen_posledni=false;
+  			double X1,Y1,X2,Y2;
+  			X1=T->prvni->geo.X1;Y1=T->prvni->geo.Y1;
+  			X2=T->posledni->geo.X4;Y2=T->posledni->geo.Y4;
+  			TCesta *CE=ZAKAZKA_akt->cesta->dalsi;
+  			//nulování spárovaných elementů teplomerů
+  			TElement *E1=T->prvni->sparovany,*E2=T->posledni->sparovany;
+  			T->prvni->sparovany=NULL;
+  			T->posledni->sparovany=NULL;
 
-   		//hledání nových spárovaných elementů
-			while(CE!=NULL)
-			{
-				//kontrola, zda je první element stále na geometrii
-				if(!nalezen_prvni && (m.PtInSegment(CE->Element->geo.X1,CE->Element->geo.Y1,CE->Element->geo.typ,CE->Element->geo.orientace,CE->Element->geo.rotacni_uhel,CE->Element->geo.radius,CE->Element->geo.delka,X1,Y1)/* || (CE->Element->geo.X4==X1 && CE->Element->geo.Y4==Y1)*/))
-				{
-					nalezen_prvni=true;
-					T->prvni->sparovany=CE->Element;
-				}
-				//kontrola, zda je posledni element stále na geometrii
-				if(!nalezen_posledni && (m.PtInSegment(CE->Element->geo.X1,CE->Element->geo.Y1,CE->Element->geo.typ,CE->Element->geo.orientace,CE->Element->geo.rotacni_uhel,CE->Element->geo.radius,CE->Element->geo.delka,X2,Y2) || (CE->Element->geo.X4==X2 && CE->Element->geo.Y4==Y2)))
-				{
-					nalezen_posledni=true;
-					T->posledni->sparovany=CE->Element;
-   			}
-   			//posun na další segnemt cesty, případně konec průchodu
-				if(nalezen_prvni && nalezen_posledni)break;
-				CE=CE->dalsi;
-			}
+  			//hledání nových spárovaných elementů
+  			while(CE!=NULL)
+  			{
+  				//kontrola, zda je první element stále na geometrii
+  				if(!nalezen_prvni && (m.PtInSegment(CE->Element->geo.X1,CE->Element->geo.Y1,CE->Element->geo.typ,CE->Element->geo.orientace,CE->Element->geo.rotacni_uhel,CE->Element->geo.radius,CE->Element->geo.delka,X1,Y1)/* || (CE->Element->geo.X4==X1 && CE->Element->geo.Y4==Y1)*/))
+  				{
+  					nalezen_prvni=true;
+  					T->prvni->sparovany=CE->Element;
+  				}
+  				//kontrola, zda je posledni element stále na geometrii
+  				if(!nalezen_posledni && (m.PtInSegment(CE->Element->geo.X1,CE->Element->geo.Y1,CE->Element->geo.typ,CE->Element->geo.orientace,CE->Element->geo.rotacni_uhel,CE->Element->geo.radius,CE->Element->geo.delka,X2,Y2) || (CE->Element->geo.X4==X2 && CE->Element->geo.Y4==Y2)))
+  				{
+  					nalezen_posledni=true;
+  					T->posledni->sparovany=CE->Element;
+  				}
+     			//posun na další segnemt cesty, případně konec průchodu
+  				if(nalezen_prvni && nalezen_posledni)break;
+  				CE=CE->dalsi;
+  			}
 
-			//aktualizace cesty
-			if(T->prvni->sparovany!=NULL && T->posledni->sparovany!=NULL)
-			{
-				//kontrola, zda byla změna
-				if(E1!=T->prvni->sparovany || E2!=T->posledni->sparovany)
-				{
-					//mazání stare cesty
-		   		hlavicka_cesty_teplomery(T);//smaže a vytvoří hlavičku
-		   		//pokud je cesta mezi teploměry aktualizuje, pokud ne nedelá nic
-					if(T->prvni->sparovany!=T->posledni->sparovany)
-		   		{
-						CE=vrat_segment_cesty(ZAKAZKA_akt,T->prvni->sparovany)->dalsi;
-		   			while(CE!=NULL)
-						{
-		   				if(CE->Element==T->posledni->sparovany)break;
-							vloz_segment_cesty_do_seznamu_cesty(T,CE->Element);
-							CE=CE->dalsi;
-		   			}
-					}
-				}
-        //aktualizace tabulky
-				if(Objekt==F->OBJEKT_akt)F->vytvor_aktualizuj_tab_teplomeru();
-			}
+  			//aktualizace cesty
+  			if(T->prvni->sparovany!=NULL && T->posledni->sparovany!=NULL)
+  			{
+  				//kontrola, zda byla změna
+  				if(E1!=T->prvni->sparovany || E2!=T->posledni->sparovany)
+  				{
+  					//mazání stare cesty
+  					hlavicka_cesty_teplomery(T);//smaže a vytvoří hlavičku
+  					//pokud je cesta mezi teploměry aktualizuje, pokud ne nedelá nic
+  					if(T->prvni->sparovany!=T->posledni->sparovany)
+  		   		{
+  						CE=vrat_segment_cesty(ZAKAZKA_akt,T->prvni->sparovany)->dalsi;
+  						while(CE!=NULL)
+  						{
+  		   				if(CE->Element==T->posledni->sparovany)break;
+  							vloz_segment_cesty_do_seznamu_cesty(T,CE->Element);
+  							CE=CE->dalsi;
+  						}
+  					}
+  				}
+          //aktualizace tabulky
+  				if(Objekt==F->OBJEKT_akt)F->vytvor_aktualizuj_tab_teplomeru();
+  			}
 
-			//došlo k chybe vytvoření default cesty, obsahuje aktualizaci tabulky
-			else F->reset_teplomeru();
+  			//došlo k chybe vytvoření default cesty, obsahuje aktualizaci tabulky
+  			else F->reset_teplomeru();
 
-			//ukazatelové záležitosti
-			CE=NULL;delete CE;
-			E1=NULL;delete E1;
-			E2=NULL;delete E2;
+  			//ukazatelové záležitosti
+  			CE=NULL;delete CE;
+  			E1=NULL;delete E1;
+  			E2=NULL;delete E2;
+  		}
+  		//uakazatelové záležitosti
+  		T=NULL;delete T;
 		}
-		//uakazatelové záležitosti
-		T=NULL;delete T;
+		//posun na další objekt
+		Objekt=Objekt->dalsi;
 	}
+	//ukazatelové záležitosti
+  delete Objekt;Objekt=NULL;
 }
 ////---------------------------------------------------------------------------
 
