@@ -215,7 +215,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				if(c!=NULL)E->data=c->data;//pøepsání aktuálních dat ze zakázky do elementu
 			}
 		}
-		F->posledni_editovany_element=E;
+		//F->posledni_editovany_element=E;//odstaveno, narušuje tvorbu geometrie
 		////výpoèty
 		switch(E->eID)
 		{
@@ -468,7 +468,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					F->d.v.reserve_time(E,c);
 				}
 			} break;
-      case 200://pøedávací místo
+			case 200://pøedávací místo
 			case 300://výhybka
 			{
 				posledni_E=E;//pøedèasné uložení posledního editovaného elementu
@@ -510,10 +510,10 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 						aktualizace_tab_elementu(E);
 						break;
 					}
-          //zmìna rozteèe palce
+					//zmìna rozteèe palce
 					case 6:
 					{
-            input_state=R;
+						input_state=R;
 						//naètení R z editu
 						double R=F->inR(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text));
 						//urèení cílového pohonu
@@ -534,10 +534,10 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					//zmìna násobku rozteèe
 					case 7:
 					{
-            input_state=Rx;
-			    	//naètení Rx z editu
+						input_state=Rx;
+						//naètení Rx z editu
 						double Rx=F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text);
-			    	//urèení cílového pohonu
+						//urèení cílového pohonu
 						Cvektory::TPohon *p=F->d.v.vrat_pohon(E->mGrid->getCombo(Col,2)->ItemIndex);
 						//uložení do pohonu
 						F->OBJEKT_akt->pohon=p;
@@ -1795,7 +1795,7 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 			e_pom=NULL;delete e_pom;
 		}
 
-  	//ukazatelové záležitosti
+		//ukazatelové záležitosti
 		C=NULL;p=NULL;p1=NULL;p2=NULL;
 		delete C;delete p;delete p1;delete p2;
 	}
@@ -1821,7 +1821,7 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
     F->OBJEKT_akt->stavPM=2;//rozšíøit mGridy
 		p->Rz=F->m.Rz(p->aRD);
 		p->Rx=F->m.Rx(p->aRD,p->roztec);
-  }
+	}
 
 	////prohození sloupcù
 	int prvni=3,druhy=4;

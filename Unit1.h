@@ -597,6 +597,7 @@ private:
 	void vymaz_seznam_obrazu();//vymaže všechny obrazy v poøadníku
 	void vytvor_statickou_scenu();//vytvoøí BMP se statickou scénou
 	void vytvor_statickou_scenu(long SCENA);//pøetížená výše uvedené pøímo s parametrem nastavení scény
+  void design_statusbar();//provde zarovnání zarážek a zmìní velikost výpisù ve statusbaru
 
 	////promìnné
 	TDateTime TIME;
