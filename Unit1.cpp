@@ -4657,7 +4657,7 @@ void TForm1::getJobID(int X, int Y)
 
 						/////////měření proti trendu
 						//začátek + obecně na hlavní větvi
-						if((segment==0 && d.v.MAG_LASO->predchozi->sparovany==E->dalsi && E->dalsi!=NULL) || (E->dalsi!=NULL && E->dalsi->n>0 && E->dalsi->eID!=301 && E->dalsi->dalsi==d.v.MAG_LASO->predchozi->Element))
+						if(segment==0 && ((d.v.MAG_LASO->predchozi->sparovany==E->dalsi && E->dalsi!=NULL) || (E->dalsi!=NULL && E->dalsi->n>0 && E->dalsi->eID!=301 && E->dalsi->dalsi==d.v.MAG_LASO->predchozi->Element)))
 							d.v.vloz_segment_MAG_LASA(E->dalsi);
 
 						//začátek měření přes spojku
@@ -6395,6 +6395,7 @@ void TForm1::add_element (int X, int Y)
 //	  	}
       //kontrolazda nejsou tabulky přes sebe + řešení
 			mGrid_on_mGrid();
+      OBJEKT_akt->pohon=E->pohon;//aktualizace aktuálně editovaného pohonu
 		}
 		//až na konec:
 		E=NULL;delete E;
@@ -14041,6 +14042,9 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	Cvektory::TElement *E=OBJEKT_akt->teplomery->dalsi->posledni;
 //	E->mGrid->DeleteRow(E->mGrid->RowCount-1,false);
 //	E->mGrid->Update();
+	Cvektory::TTeplomery *T=OBJEKT_akt->teplomery->dalsi;
+	Memo(String(T->prvni->geo.X1)+";"+String(T->prvni->geo.Y1));
+  Memo(String(T->prvni->sparovany->geo.X4)+";"+String(T->prvni->sparovany->geo.Y4));
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -17299,13 +17303,13 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 			}
 			else
 			{
-        //mazání všech rádků kromě hlavičky
+				//mazání všech rádků kromě hlavičky
 				for(unsigned int i=T->posledni->mGrid->RowCount-1;i>0;i--)
 				{
 					T->posledni->mGrid->DeleteRow(i,false); 
 				}
 			}
-				 
+
 			////existuje ... aktualizace řádků
 			double cas=0,WT=0,delka=0;
 			bool prejezd=true;
@@ -17445,6 +17449,7 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 		//ukazatelové záležitosti
     T=NULL;delete T;
 	}
+	log(__func__,"    KONEC");
 }
 //---------------------------------------------------------------------------
 //vloží záznam na samostatný řádek v tabulce teploměru, 3 možnosti: přejezd, buffer, celkem

@@ -7373,6 +7373,8 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 						E->objekt_n=cE->objekt_n;
 						E_pom->n=cE->sparovany_n;
 						E->sparovany=E_pom;
+						E->mGrid=NULL;
+            E->pohon=NULL;
 						E_pom=NULL;delete E_pom;
 						E->geo=cE->geo;
 						wchar_t *name=new wchar_t[cE->name_delka];
@@ -7397,6 +7399,8 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 						E_pom=new TElement;
 						E_pom->n=cE->sparovany_n;
 						E->sparovany=E_pom;
+						E->mGrid=NULL;
+						E->pohon=NULL;
 						E_pom=NULL;delete E_pom;
 						E->geo=cE->geo;
 			  		name=new wchar_t[cE->name_delka];
@@ -9989,16 +9993,16 @@ void Cvektory::aktualizuj_cestu_teplomeru()
   			//hledání nových spárovaných elementů
   			while(CE!=NULL)
   			{
-  				//kontrola, zda je první element stále na geometrii
-  				if(!nalezen_prvni && (m.PtInSegment(CE->Element->geo.X1,CE->Element->geo.Y1,CE->Element->geo.typ,CE->Element->geo.orientace,CE->Element->geo.rotacni_uhel,CE->Element->geo.radius,CE->Element->geo.delka,X1,Y1)/* || (CE->Element->geo.X4==X1 && CE->Element->geo.Y4==Y1)*/))
-  				{
-  					nalezen_prvni=true;
-  					T->prvni->sparovany=CE->Element;
+					//kontrola, zda je první element stále na geometrii
+					if(!nalezen_prvni && (m.PtInSegment(CE->Element->geo.X1,CE->Element->geo.Y1,CE->Element->geo.typ,CE->Element->geo.orientace,CE->Element->geo.rotacni_uhel,CE->Element->geo.radius,CE->Element->geo.delka,X1,Y1) || (CE->Element->geo.X4==X1 && CE->Element->geo.Y4==Y1)))
+					{
+						nalezen_prvni=true;
+						T->prvni->sparovany=CE->Element;
   				}
   				//kontrola, zda je posledni element stále na geometrii
   				if(!nalezen_posledni && (m.PtInSegment(CE->Element->geo.X1,CE->Element->geo.Y1,CE->Element->geo.typ,CE->Element->geo.orientace,CE->Element->geo.rotacni_uhel,CE->Element->geo.radius,CE->Element->geo.delka,X2,Y2) || (CE->Element->geo.X4==X2 && CE->Element->geo.Y4==Y2)))
-  				{
-  					nalezen_posledni=true;
+					{
+						nalezen_posledni=true;
   					T->posledni->sparovany=CE->Element;
   				}
      			//posun na další segnemt cesty, případně konec průchodu
