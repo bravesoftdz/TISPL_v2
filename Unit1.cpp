@@ -3412,7 +3412,7 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 					//element mimo kabinu
 					if((JID==5 || JID==6) && pom_element!=NULL)pom=d.v.vrat_objekt(pom_element->objekt_n);
 					if(pom!=NULL && Akce==NIC && !d.v.PP.zamek_layoutu)otevri_editaci();//otevření editace
-					if(pom!=NULL && d.v.PP.zamek_layoutu)MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,ls->Strings[423],"",MB_OK,true,false);//info o zamčeném layoutu
+					if(pom!=NULL && d.v.PP.zamek_layoutu){MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,ls->Strings[423],"",MB_OK,true,false);pom=NULL;}//info o zamčeném layoutu
 					if(JID==1)vloz_bod_haly_objektu(X,Y);//přidání bodu haly
 				}
 			}break;
@@ -5328,7 +5328,9 @@ void TForm1::ZOOM_WINDOW()
 	double Z1=abs(Zoom*PD_x/(MaxX-MinX)),Z2=abs(Zoom*PD_y/abs(MaxY-MinY));
 	Z1-=fmod(Z1,0.5);Z2-=fmod(Z2,0.5);
 	if(Z1>Z2)Zoom=Z2;else Zoom=Z1;
-	if(Zoom<0.5)Zoom=0.5;if(Zoom>10)Zoom=10;
+	if(Zoom<0.5)Zoom=0.5;
+	if(Zoom>20 && !DEBUG)Zoom=20;
+	if(Zoom>30 && DEBUG)Zoom=30;
 
 	//vycentrování obrazu
 	PD_x=(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0;
@@ -5673,8 +5675,8 @@ void __fastcall TForm1::RzToolButton11Click(TObject *Sender)
 	Uloz_predchozi_pohled();
 	try
 	{
-		TRect oblast=vrat_max_oblast();
-		if(!(oblast.left>10000 && oblast.right<-10000))
+		TRect oblast=vrat_max_oblast();//fce. defaultně vrací MaxInt a -MaxInt
+		if(oblast.left!=MaxInt && oblast.right!=MaxInt*(-1))
 		{
 			//deklarace
 			int MaxX=oblast.right,MaxY=oblast.top,MinX=oblast.left,MinY=oblast.bottom;
@@ -7110,6 +7112,33 @@ void TForm1::vlozeni_editace_geometrie()
 			posledni_editovany_element->X=posledni_editovany_element->geo.X4;
 			posledni_editovany_element->Y=posledni_editovany_element->geo.Y4;
 		}
+	}
+
+  //////pokud edituji úsek PM, změnit PM na zarážku
+	if(posledni_editovany_element!=NULL && posledni_editovany_element->eID==200)
+	{
+		//smazání a znovuvytvoření mGridu elementu
+		if(posledni_editovany_element->mGrid!=NULL)
+		{
+			nastav_focus();
+			posledni_editovany_element->mGrid->Delete();
+			posledni_editovany_element->mGrid=NULL;
+		}
+		//nulování WT
+		posledni_editovany_element->WT=0;//čekání na palec
+		//změna elemetnu na zarážku
+		posledni_editovany_element->eID=MaxInt;
+		//název
+		if(DEBUG)
+		{
+			posledni_editovany_element->name="Zarážka";
+			d.v.uprav_popisky_elementu(posledni_editovany_element);
+		}
+		else posledni_editovany_element->name="";
+		posledni_editovany_element->mGrid=new TmGrid(F);
+		posledni_editovany_element->mGrid->Tag=6;//ID formu
+		posledni_editovany_element->mGrid->ID=posledni_editovany_element->n;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
+		design_element(posledni_editovany_element,false);//nutné!
 	}
 
   ////aktualizace indexů
@@ -14013,7 +14042,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 	//OBJEKT_akt->element->mGrid->AddRow(false,false);
 	//OBJEKT_akt->element->mGrid->Update();
 	//vlozit_predavaci_misto_aktualizuj_WT();
-  if(OBJEKT_akt->teplomery==NULL)Memo("OK");else Memo("ERROR");
+	OBJEKT_akt->element->mGrid->AddRow(false,false);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -16775,7 +16804,8 @@ void __fastcall TForm1::scButton_zamek_layoutuClick(TObject *Sender)
 	}
 	design_statusbar();//změní pozici zarážek ve statusbaru
 	DuvodUlozit(true);
-	REFRESH(false);//kvůli překreslení měřítka
+	pom=NULL;//nulování, používá se při vykreslování statické scény
+	REFRESH(d.SCENA,false);//kvůli překreslení měřítka
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPTrackBar_intenzitaChange(TObject *Sender)
