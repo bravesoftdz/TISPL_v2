@@ -12462,7 +12462,6 @@ void TForm1::otevri_editaci()
 	}
 	//vytovření tab pohonu, pokud je třeba
 	vytvoreni_tab_pohon(poh_tab);
-
 	////nastavení zoomu
 	if(Zoom<=5)//pokud je zoom větší nědělat nic
 	{
@@ -12497,7 +12496,7 @@ void TForm1::otevri_editaci()
 	mGrid_on_mGrid();
 	pom_element_temp=OBJEKT_akt->element;//pro pořeby editace geometrie
 	on_change_zoom_change_scGPTrackBar();//musí být po design_element
-	REFRESH(true);//metoda on_change_zoom_change_scGPTrackBar() již nespůsobuje refresh
+	REFRESH();//metoda on_change_zoom_change_scGPTrackBar() již nespůsobuje refresh
 	FormX->input_state=FormX->NOTHING;
 	//zapnutí editace pokud je třeba
 	if(editace_vyhybky)
@@ -14039,10 +14038,9 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	Memo("Průměrný čas otevření: "+AnsiString(celkem_otevreni/(double)pocet_kroku));
 //	Memo("Průměrný čas zavření: "+AnsiString(celkem_zavreni/(double)pocet_kroku));
 
-	//OBJEKT_akt->element->mGrid->AddRow(false,false);
-	//OBJEKT_akt->element->mGrid->Update();
-	//vlozit_predavaci_misto_aktualizuj_WT();
-	OBJEKT_akt->element->mGrid->AddRow(false,false);
+//	Cvektory::TElement *E=OBJEKT_akt->teplomery->dalsi->posledni;
+//	E->mGrid->DeleteRow(E->mGrid->RowCount-1,false);
+//	E->mGrid->Update();
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -17283,6 +17281,7 @@ void TForm1::rotuj_objekt_click(double rotace)
 void TForm1::vytvor_aktualizuj_tab_teplomeru()
 {
 	log(__func__);
+  FormX->vstoupeno_elm=false;
 	//kontrola zda jsem v editaci a cesta teploměry také existuje
 	if(OBJEKT_akt!=NULL && OBJEKT_akt->teplomery!=NULL)
 	{
@@ -17299,7 +17298,7 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 				design_element(T->posledni,true);
 			}
 			else
-			{             
+			{
         //mazání všech rádků kromě hlavičky
 				for(unsigned int i=T->posledni->mGrid->RowCount-1;i>0;i--)
 				{
@@ -17341,7 +17340,7 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 						cas+=delka/T->prvni->sparovany->pohon->aRD;
 						//rozpad na přejezd a buffer
 						prejezd=true;
-						pridej_radek_tab_teplomeru(T->posledni->mGrid,cas,WT,prejezd);cas=0;WT=0;
+						pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;
 						prejezd=false;
 						cas+=T->prvni->sparovany->data.WTstop;
 					}
@@ -17366,17 +17365,17 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
               c=NULL;delete c;
 						}
 						//výpočet času
-						if(!prejezd){pridej_radek_tab_teplomeru(T->posledni->mGrid,cas,WT,prejezd);cas=0;WT=0;}//pokud byl před tím buffer, změna, potřebuju zapsat přejezd
+						if(!prejezd){pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;}//pokud byl před tím buffer, změna, potřebuju zapsat přejezd
 						delka=CE->Element->geo.delka-(CE->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice);
 						cas+=delka/CE->Element->pohon->aRD;
 						prejezd=true;
-						pridej_radek_tab_teplomeru(T->posledni->mGrid,cas,WT,prejezd);cas=0;WT=0;//zapsání části přejezdu
+						pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;//zapsání části přejezdu
 						prejezd=false;
 						cas+=CE->Element->data.WTstop;
 					}
 					else 
 					{
-            if(!prejezd){pridej_radek_tab_teplomeru(T->posledni->mGrid,cas,WT,prejezd);cas=0;WT=0;}//pokud byl před tím buffer, změna, bude následovat přejezd
+						if(!prejezd){pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;}//pokud byl před tím buffer, změna, bude následovat přejezd
 						prejezd=true;
 						cas+=CE->Element->geo.delka/CE->Element->pohon->aRD;
 					}
@@ -17407,7 +17406,7 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 					//pokud je úsek menší než délka bufferu připočtení wt podle toho na jakém jsem vozíku
 					if(delka<=buf)
 					{
-						if(prejezd){pridej_radek_tab_teplomeru(T->posledni->mGrid,cas,WT,prejezd);cas=0;WT=0;}//pokud byl přejezd, změna, bude následovat buffer
+						if(prejezd){pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;}//pokud byl přejezd, změna, bude následovat buffer
 						prejezd=false;
 						WT+=T->posledni->sparovany->WT;
 						cas+=m.V2WT(ceil((delka-buf)/d.v.PP.delka_podvozek),d.v.PP.TT);//připočítání WT na aktuálním vozíku
@@ -17415,12 +17414,12 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 					//pokud je úsek větší než buffer připočtení WTstop a přejezdu
 					else
 					{
-						if(!prejezd){pridej_radek_tab_teplomeru(T->posledni->mGrid,cas,WT,prejezd);cas=0;WT=0;}//pokud byl před tím buffer, změna, potřebuju zapsat přejezd
+						if(!prejezd){pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;}//pokud byl před tím buffer, změna, potřebuju zapsat přejezd
 						delka=delka-buf;
 						cas+=delka/T->posledni->sparovany->pohon->aRD;
 						prejezd=true;
 						//rozpad na přejezd a buffer
-						pridej_radek_tab_teplomeru(T->posledni->mGrid,cas,WT,prejezd);cas=0;WT=0;//zapsání části přejezdu
+						pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;//zapsání části přejezdu
 						prejezd=false;
 						WT+=T->posledni->sparovany->WT;
 						cas+=T->posledni->sparovany->data.WTstop;
@@ -17428,19 +17427,19 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 				}
 				else//není stop
 				{
-					if(!prejezd){pridej_radek_tab_teplomeru(T->posledni->mGrid,cas,WT,prejezd);cas=0;WT=0;}
+					if(!prejezd){pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;}
 					prejezd=true;
 					cas+=delka/T->posledni->sparovany->pohon->aRD;
 					WT+=T->posledni->sparovany->WT;
 				}
 
 				//vypsání řádku
-				pridej_radek_tab_teplomeru(T->posledni->mGrid,cas,WT,prejezd);cas=0;WT=0;
+				pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;
 			}
       //kontrola zda nejsou ještě k vypsání nějaké hodnoty, může nastat, když budou oba teploměry na jedné stoce
-			if(cas>0 || WT>0){pridej_radek_tab_teplomeru(T->posledni->mGrid,cas,WT,prejezd);cas=0;WT=0;}
+			if(cas>0 || WT>0){pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;}
 			//vložení řádku součtu
-			pridej_radek_tab_teplomeru(T->posledni->mGrid,cas,WT,false,true);
+			pridej_radek_tab_teplomeru(T->posledni,cas,WT,false,true);
 		}
 
 		//ukazatelové záležitosti
@@ -17449,7 +17448,7 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 }
 //---------------------------------------------------------------------------
 //vloží záznam na samostatný řádek v tabulce teploměru, 3 možnosti: přejezd, buffer, celkem
-void TForm1::pridej_radek_tab_teplomeru(TmGrid *mGrid,double cas,double WT,bool prejezd,bool celkem)
+void TForm1::pridej_radek_tab_teplomeru(Cvektory::TElement *E,double cas,double WT,bool prejezd,bool celkem)
 {
 	log(__func__);//logování
 	//načtení výchozích parametrů
@@ -17461,57 +17460,58 @@ void TForm1::pridej_radek_tab_teplomeru(TmGrid *mGrid,double cas,double WT,bool 
 		text=ls->Strings[487];//celkem
 		text_id=487;
 		cas=0;WT=0;
-		for(unsigned int i=1;i<=mGrid->RowCount-1;i++)
+		for(unsigned int i=1;i<=E->mGrid->RowCount-1;i++)
 		{
-			cas+=ms.MyToDouble(mGrid->Cells[1][i].Text);
-			WT+=ms.MyToDouble(mGrid->Cells[2][i].Text);
+			cas+=ms.MyToDouble(E->mGrid->Cells[1][i].Text);
+			WT+=ms.MyToDouble(E->mGrid->Cells[2][i].Text);
 		}
 	}
 
 	//přidání řádku
-	mGrid->AddRow(false,false);
-	mGrid->Update();//musí zde být, vyvoláva problik, proč??
-	mGrid->Cells[0][mGrid->RowCount-1].Text=text;
-	mGrid->Cells[0][mGrid->RowCount-1].Hint=text_id;
+	E->mGrid->AddRow(true,false);//musí být kopírovány, jinak problémy!!!!!!!!!!!!!!!
+	//E->mGrid->Update();//musí zde být, vyvoláva problik, proč??
+	E->mGrid->Cells[0][E->mGrid->RowCount-1].Text=text;
+	E->mGrid->Cells[0][E->mGrid->RowCount-1].Hint=text_id;
 	if(celkem)
 	{
-		mGrid->Cells[1][mGrid->RowCount-1].Text=m.round2double(cas+WT,3);//není třeba převádět skrze outPT, sčítájí se hodnoty v tabulkce, které již prošly přes outpt
-		mGrid->MergeCells(1,mGrid->RowCount-1,2,mGrid->RowCount-1);
+		E->mGrid->Update();
+		E->mGrid->Cells[1][E->mGrid->RowCount-1].Text=m.round2double(cas+WT,3);//není třeba převádět skrze outPT, sčítájí se hodnoty v tabulkce, které již prošly přes outpt
+		E->mGrid->MergeCells(1,E->mGrid->RowCount-1,2,E->mGrid->RowCount-1);
 		//deklarace barev
 		TColor clBackgroundHidden=(TColor)RGB(240,240,240);
 		TColor clFontLeft=(TColor)RGB(128,128,128);
 		//design tabulky
-		mGrid->Cells[0][0].Align=TmGrid::Talign::RIGHT;mGrid->Cells[0][0].RightMargin=5;
-		mGrid->Cells[1][0].Align=TmGrid::Talign::RIGHT;mGrid->Cells[1][0].RightMargin=5;
-		mGrid->Cells[2][0].Align=TmGrid::Talign::RIGHT;mGrid->Cells[2][0].RightMargin=5;
+		E->mGrid->Cells[0][0].Align=TmGrid::Talign::RIGHT;E->mGrid->Cells[0][0].RightMargin=5;
+		E->mGrid->Cells[1][0].Align=TmGrid::Talign::RIGHT;E->mGrid->Cells[1][0].RightMargin=5;
+		E->mGrid->Cells[2][0].Align=TmGrid::Talign::RIGHT;E->mGrid->Cells[2][0].RightMargin=5;
 		//finalní design tabulky
-		for(unsigned int i=1;i<=mGrid->RowCount-1;i++)
+		for(unsigned int i=1;i<=E->mGrid->RowCount-1;i++)
 		{
 			//ohraničení
-			mGrid->Cells[0][i].RightBorder->Width=2;   
-			if(i==1){mGrid->Cells[0][i].TopBorder->Width=2;mGrid->Cells[1][i].TopBorder->Width=2;mGrid->Cells[2][i].TopBorder->Width=2;}
-			if(i==mGrid->RowCount-1)mGrid->Cells[1][i].RightBorder->Color=clBackgroundHidden;
+			E->mGrid->Cells[0][i].RightBorder->Width=2;
+			if(i==1){E->mGrid->Cells[0][i].TopBorder->Width=2;E->mGrid->Cells[1][i].TopBorder->Width=2;E->mGrid->Cells[2][i].TopBorder->Width=2;}
+			if(i==E->mGrid->RowCount-1)E->mGrid->Cells[1][i].RightBorder->Color=clBackgroundHidden;
 			//zarovnání v buňkách
-			mGrid->Cells[0][i].Align=TmGrid::Talign::RIGHT;
-			mGrid->Cells[1][i].Align=TmGrid::Talign::RIGHT;
-			mGrid->Cells[2][i].Align=TmGrid::Talign::RIGHT;	
+			E->mGrid->Cells[0][i].Align=TmGrid::Talign::RIGHT;
+			E->mGrid->Cells[1][i].Align=TmGrid::Talign::RIGHT;
+			E->mGrid->Cells[2][i].Align=TmGrid::Talign::RIGHT;
 			//odsazení textu, normální buňka 5px
-			mGrid->Cells[0][i].RightMargin=5;
-			mGrid->Cells[1][i].RightMargin=5;
-			mGrid->Cells[2][i].RightMargin=5;
-			//barva fontu v buňkách		
-			mGrid->Cells[0][i].Font->Color=clFontLeft;
-			mGrid->Cells[1][i].Font->Color=clFontLeft;
-			mGrid->Cells[2][i].Font->Color=clFontLeft;
+			E->mGrid->Cells[0][i].RightMargin=5;
+			E->mGrid->Cells[1][i].RightMargin=5;
+			E->mGrid->Cells[2][i].RightMargin=5;
+			//barva fontu v buňkách
+			E->mGrid->Cells[0][i].Font->Color=clFontLeft;
+			E->mGrid->Cells[1][i].Font->Color=clFontLeft;
+			E->mGrid->Cells[2][i].Font->Color=clFontLeft;
 			//barva pozadí needitovatelných buněk
-			mGrid->Cells[1][i].Background->Color=clBackgroundHidden;
-			mGrid->Cells[2][i].Background->Color=clBackgroundHidden;
+			E->mGrid->Cells[1][i].Background->Color=clBackgroundHidden;
+			E->mGrid->Cells[2][i].Background->Color=clBackgroundHidden;
 		}
 	}
 	else
 	{
-		mGrid->Cells[1][mGrid->RowCount-1].Text=m.round2double(outPT(cas),3);
-		mGrid->Cells[2][mGrid->RowCount-1].Text=m.round2double(outPT(WT),3);
+		E->mGrid->Cells[1][E->mGrid->RowCount-1].Text=m.round2double(outPT(cas),3);
+		E->mGrid->Cells[2][E->mGrid->RowCount-1].Text=m.round2double(outPT(WT),3);
 	}
 }
 //---------------------------------------------------------------------------

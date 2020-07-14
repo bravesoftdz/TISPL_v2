@@ -10008,26 +10008,22 @@ void Cvektory::aktualizuj_cestu_teplomeru()
 
   			//aktualizace cesty
   			if(T->prvni->sparovany!=NULL && T->posledni->sparovany!=NULL)
-  			{
-  				//kontrola, zda byla změna
-  				if(E1!=T->prvni->sparovany || E2!=T->posledni->sparovany)
-  				{
-  					//mazání stare cesty
-  					hlavicka_cesty_teplomery(T);//smaže a vytvoří hlavičku
-  					//pokud je cesta mezi teploměry aktualizuje, pokud ne nedelá nic
-  					if(T->prvni->sparovany!=T->posledni->sparovany)
-  		   		{
-  						CE=vrat_segment_cesty(ZAKAZKA_akt,T->prvni->sparovany)->dalsi;
-  						while(CE!=NULL)
-  						{
-  		   				if(CE->Element==T->posledni->sparovany)break;
-  							vloz_segment_cesty_do_seznamu_cesty(T,CE->Element);
-  							CE=CE->dalsi;
-  						}
-  					}
-  				}
+				{
+					//mazání stare cesty
+					hlavicka_cesty_teplomery(T);//smaže a vytvoří hlavičku
+  				//pokud je cesta mezi teploměry aktualizuje, pokud ne nedelá nic
+					if(T->prvni->sparovany!=T->posledni->sparovany)
+					{
+  					CE=vrat_segment_cesty(ZAKAZKA_akt,T->prvni->sparovany)->dalsi;
+						while(CE!=NULL)
+  					{
+							if(CE->Element==T->posledni->sparovany)break;
+							vloz_segment_cesty_do_seznamu_cesty(T,CE->Element);
+							CE=CE->dalsi;
+						}
+					}
           //aktualizace tabulky
-  				if(Objekt==F->OBJEKT_akt)F->vytvor_aktualizuj_tab_teplomeru();
+					if(Objekt==F->OBJEKT_akt)F->vytvor_aktualizuj_tab_teplomeru();
   			}
 
   			//došlo k chybe vytvoření default cesty, obsahuje aktualizaci tabulky
@@ -10045,7 +10041,7 @@ void Cvektory::aktualizuj_cestu_teplomeru()
 		Objekt=Objekt->dalsi;
 	}
 	//ukazatelové záležitosti
-  delete Objekt;Objekt=NULL;
+	delete Objekt;Objekt=NULL;
 }
 ////---------------------------------------------------------------------------
 
