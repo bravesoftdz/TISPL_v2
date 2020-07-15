@@ -1549,7 +1549,7 @@ void Cvykresli::vykresli_segment_cesty_teplomeru(TCanvas *canv,Cvektory::TElemen
 	}
 	else if(Element->geo.typ==0)R=Element->geo.delka;
 	//samotné vykreslení segmentu, kontrola, pokud existuje jen jden segment, vykreslí ho pouze jednou ne 2x
-	vykresli_Gelement(canv,X1,Y1,OR,RA,R,clRed,3);
+	if(X1!=X2 || Y1!=Y2)vykresli_Gelement(canv,X1,Y1,OR,RA,R,clRed,3);
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
@@ -5060,7 +5060,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double
 	//else delka=m.round2double(delka,3);//if(AnsiString(delka).Pos("00000000001"))F->ms.MyToDouble(AnsiString(delka).SubString(1,AnsiString(delka).Pos("00000000001")-1));//pro mm ošetření proti 00000000001, protože nelze použít zaokrouhlení na větší počet desitnných míst
 	if(T=="")T=m.round2double(delka,0/*nefuguje zde správně,".."*/);//standardní zobrazení na 3 reálná místa
 	//odstaveno zobrazujeme na 3 realná if(highlight==1 || F->editace_textu)T=delka;//pokud se na kótu najede a předpokládá se editace tak se číslo rozbalí - nezaokrouhluje se, editace textu je možná navíc
-	vykresli_kotu(canv,m.L2Px(X1),m.L2Py(Y1),m.L2Px(X2),m.L2Py(Y2),T,aktElement,m.m2px(Offset),highlight,width,color,LO_kota,komora);
+	if(T!="0")vykresli_kotu(canv,m.L2Px(X1),m.L2Py(Y1),m.L2Px(X2),m.L2Py(Y2),T,aktElement,m.m2px(Offset),highlight,width,color,LO_kota,komora);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //v px + dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně, aktElement pokud bude NULL, předpokládá se, že je to kóta kabiny

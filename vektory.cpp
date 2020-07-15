@@ -2849,10 +2849,10 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			else if(vzd!=0 && posun_kurzorem && posun_povolit)//posun kurozem!!!!!!!!!!!!!!!!!!!!!
 			{
 				//realizace posunu
-				if(Element->orientace==0||Element->orientace==180)Element->X=Element->X+vzdalenost;
+				if(Element->geo.orientace-Element->geo.rotacni_uhel==90||Element->geo.orientace-Element->geo.rotacni_uhel==270)Element->X=Element->X+vzdalenost;
 				else Element->Y=Element->Y+vzdalenost;
 				//kontrola zda je element stále na linii
-				if(F->bod_na_geometrii(0,0,Element) || Element->n==vrat_posledni_element_objektu(F->OBJEKT_akt)->n || !kontrola_zmeny_poradi)//pokud ano
+				if(F->bod_na_geometrii(0,0,Element) || /*Element->n==vrat_posledni_element_objektu(F->OBJEKT_akt)->n ||*/ !kontrola_zmeny_poradi)//pokud ano
 				{
 					//kontrola + změna pořadí
 					if(kontrola_zmeny_poradi)
@@ -2884,12 +2884,12 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 					if(E->geo.typ!=0)break;//ukončení v případě, že se někde nachází jiná geometrie než linie
 					if(vzd!=0 && !posun_kurzorem && E->eID!=MaxInt && E->eID!=200)//neposunovat zarážku
 					{
-						if(Element->orientace==0||Element->orientace==180)E->X=E->X-(vzd/m.abs_d(vzd))*(m.abs_d(vzd)-vzdalenost);//výpočet pro posuv z kót
+						if(Element->geo.orientace-Element->geo.rotacni_uhel==90||Element->geo.orientace-Element->geo.rotacni_uhel==270)E->X=E->X-(vzd/m.abs_d(vzd))*(m.abs_d(vzd)-vzdalenost);//výpočet pro posuv z kót
 						else E->Y=E->Y-(vzd/m.abs_d(vzd))*(m.abs_d(vzd)-vzdalenost);
 					}
 					if(vzd!=0 && posun_kurzorem && E->eID!=MaxInt && E->eID!=200)
 					{
-						if(Element->orientace==0||Element->orientace==180)E->X=E->X+vzdalenost;//výpočet pro posun kurzorem
+						if(Element->geo.orientace-Element->geo.rotacni_uhel==90||Element->geo.orientace-Element->geo.rotacni_uhel==270)E->X=E->X+vzdalenost;//výpočet pro posun kurzorem
 						else E->Y=E->Y+vzdalenost;
 					}
           //kontrola zda je element stále na linii
@@ -9169,15 +9169,15 @@ TPointD Cvektory::bod_na_geometrii(TElement *E)
 	{
   	//přichytávání bodu na linii
   	if(E->geo.typ==0 && (E->geo.orientace==m.Rt90(E->geo.orientace) || E->geo.orientace==360))//jen pro přímky 0,90,180,270°
-  	{
+		{
   		//přiřazení souřadnic pro vložení
   		if(E->geo.orientace==90 || E->geo.orientace==270){ret.x=F->akt_souradnice_kurzoru.x;ret.y=E->geo.Y1;}
   		else {ret.x=E->geo.X1;ret.y=F->akt_souradnice_kurzoru.y;}
-  	}
+		}
 
   	//přichytávání bodu na oblouk
   	if(E->geo.typ!=0)
-  	{
+		{
   		double uhel=m.uhelObloukuVsMys(E->geo.X1,E->geo.Y1,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
   		TPointD *souradnice=m.getArcLine(E->geo.X1,E->geo.Y1,E->geo.orientace,uhel,E->geo.radius);
   		ret=souradnice[3];
@@ -9991,8 +9991,8 @@ void Cvektory::aktualizuj_cestu_teplomeru()
   			T->posledni->sparovany=NULL;
 
   			//hledání nových spárovaných elementů
-  			while(CE!=NULL)
-  			{
+				while(CE!=NULL)
+				{
 					//kontrola, zda je první element stále na geometrii
 					if(!nalezen_prvni && (m.PtInSegment(CE->Element->geo.X1,CE->Element->geo.Y1,CE->Element->geo.typ,CE->Element->geo.orientace,CE->Element->geo.rotacni_uhel,CE->Element->geo.radius,CE->Element->geo.delka,X1,Y1) || (CE->Element->geo.X4==X1 && CE->Element->geo.Y4==Y1)))
 					{
@@ -10003,7 +10003,7 @@ void Cvektory::aktualizuj_cestu_teplomeru()
   				if(!nalezen_posledni && (m.PtInSegment(CE->Element->geo.X1,CE->Element->geo.Y1,CE->Element->geo.typ,CE->Element->geo.orientace,CE->Element->geo.rotacni_uhel,CE->Element->geo.radius,CE->Element->geo.delka,X2,Y2) || (CE->Element->geo.X4==X2 && CE->Element->geo.Y4==Y2)))
 					{
 						nalezen_posledni=true;
-  					T->posledni->sparovany=CE->Element;
+						T->posledni->sparovany=CE->Element;
   				}
      			//posun na další segnemt cesty, případně konec průchodu
   				if(nalezen_prvni && nalezen_posledni)break;

@@ -3649,7 +3649,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		{
 			bool nemazat=true;
 			//samotný pohyb, který je vázán na pohon
-			if (pom_element->orientace==0 || pom_element->orientace==180)
+			if (pom_element->geo.orientace-pom_element->geo.rotacni_uhel==90 || pom_element->geo.orientace-pom_element->geo.rotacni_uhel==270)
 				nemazat=d.v.posun_element(pom_element,akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),posun_dalsich_elementu,true);
 			else
 				nemazat=d.v.posun_element(pom_element,akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),posun_dalsich_elementu,true);
@@ -4252,7 +4252,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 					{
 						napojeni_vedlejsi_vetve(pom_element->predchozi2);
 					}
-          d.v.aktualizuj_cestu_teplomeru();//pokud existuje cesta mezi teploměry aktualizuje ji, jinak vytvoří default cestu
+					d.v.aktualizuj_cestu_teplomeru();//pokud existuje cesta mezi teploměry aktualizuje ji, jinak vytvoří default cestu
 				}
 				pom_element_temp=NULL; delete pom_element_temp;
 				vlozit_predavaci_misto_aktualizuj_WT();//kontrola zda nebyly přesunuty 2 PM na sebe
@@ -4781,10 +4781,10 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
       	}catch(...){;}
 			}
 			if(JID==-102){if(d.zprava_highlight==d.zobrazit_celou_zpravu)kurzor(close);else kurzor(info);}//zprávy
-			if(JID==0&&OBJEKT_akt->id!=3){if(pom_element->orientace==0||pom_element->orientace==180)kurzor(zmena_d_x);else kurzor(zmena_d_y);pom_element->stav=2;refresh_mGrid=false;}//posun ELEMENT
+			if(JID==0&&OBJEKT_akt->id!=3){if(pom_element->geo.orientace-pom_element->geo.rotacni_uhel==90||pom_element->geo.orientace-pom_element->geo.rotacni_uhel==270)kurzor(zmena_d_x);else kurzor(zmena_d_y);pom_element->stav=2;refresh_mGrid=false;}//posun ELEMENT
 			if(JID==0&&OBJEKT_akt->id==3){kurzor(posun_ind);}//posun komory
 			if(JID==1){kurzor(editace_posun);pom_element->stav=3;refresh_mGrid=false;}//ELEMENT název
-  		//použit závěrečný REFRESH if(pom_element!=pom_element_puv && (puvJID==0 || JID==0)/* || (puvJID==0 && JID==1) || (puvJID==1 && JID==0)*/){REFRESH();}//důvod k REFRESH, pouze v případě změny elementu či přechodu z názvu na celý element a opačně
+  		//použit závěrečný REFRESH if(pom_eleF->bod_na_geometrii(0,0,Element)ment!=pom_element_puv && (puvJID==0 || JID==0)/* || (puvJID==0 && JID==1) || (puvJID==1 && JID==0)*/){REFRESH();}//důvod k REFRESH, pouze v případě změny elementu či přechodu z názvu na celý element a opačně
   		//použit závěrečný REFRESH if(10<JID && JID<1000){REFRESH();}//hodnota kóty
 			//if(JID==100){kurzor(edit_text);pom_element->mGrid->CheckLink(X,Y);refresh_mGrid=true;}//název elementu v hlavičce tabulky - aktivace dodáním pouze aktuálních souřadnic
   		if(JID==1000){pom_element->mGrid->CheckLink(X,Y);refresh_mGrid=true;}//pouze pro přechod název hlavička, aby název nezůstal tučně - aktivace dodáním pouze aktuálních souřadnic
@@ -7261,7 +7261,7 @@ void TForm1::ukonceni_geometrie(bool kontrola)
 	//pokud existují výhybky může dojít v průběhu editace k umožnění nebo znemožnění přiřazovat pohon na vedlejší větev, tato metoda nastaví mGridy na výchozí
 	//if(d.v.pocet_vyhybek>0)mGrid_on_mGrid();
 	//kontrola zda editací geometrie nedošlo ke změně
-	if(kontrola)reset_teplomeru();//přegeneruje teploměry je-li třeba a vypíše hlášku užovateli
+	if(kontrola)d.v.aktualizuj_cestu_teplomeru();//pokud existuje cesta mezi teploměry aktualizuje ji, jinak vytvoří default cestu
 	if(kontrola)vlozit_predavaci_misto_aktualizuj_WT();
 	nahled_ulozit(true);
 	//validovat
@@ -8207,14 +8207,19 @@ bool TForm1::bod_na_geometrii(double X, double Y,Cvektory::TElement *Element)
 	log(__func__);//logování
 	bool ret=false;
 	if(Element!=NULL){X=d.Rxy(Element).x;Y=d.Rxy(Element).y;}
-	Cvektory::TElement *E=OBJEKT_akt->element;
-	while(E!=NULL && E->objekt_n==OBJEKT_akt->n)
+  //kontrola, zda před elementem není začátek linky nebo oblouk, pokud ano a jsem skoro na 0 zastavení posunu
+	if(((Element->predchozi->n>0 && Element->predchozi->geo.typ!=0) || (Element->predchozi->n==0)) && m.delka(X,Y,Element->geo.X1,Element->geo.Y1)<0.01)ret=false;
+	else
 	{
-		if(E->geo.typ==0 && E->geo.orientace==m.Rt90(E->geo.orientace) && m.LeziVblizkostiUsecky(X,Y,E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4)==0){ret=true;break;}
-		E=d.v.dalsi_krok(E,OBJEKT_akt);
+  	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+  	while(E!=NULL)
+  	{
+  		if(E->geo.typ==0 && (m.PtInSegment(E->geo.X1,E->geo.Y1,0,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,X,Y) || (X==E->geo.X1 && Y==E->geo.Y1))){ret=true;break;}
+  		E=d.v.dalsi_krok(E);
+  	}
+  	d.v.vymaz_seznam_VYHYBKY();
+		E=NULL;delete E;
 	}
-	d.v.vymaz_seznam_VYHYBKY();
-	E=NULL;delete E;
 	return ret;
 }
 //---------------------------------------------------------------------------
@@ -14044,7 +14049,9 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	E->mGrid->Update();
 	Cvektory::TTeplomery *T=OBJEKT_akt->teplomery->dalsi;
 	Memo(String(T->prvni->geo.X1)+";"+String(T->prvni->geo.Y1));
-  Memo(String(T->prvni->sparovany->geo.X4)+";"+String(T->prvni->sparovany->geo.Y4));
+	Memo(String(T->prvni->sparovany->geo.X4)+";"+String(T->prvni->sparovany->geo.Y4));
+	d.line(Canvas,0,0,m.L2Px(T->prvni->geo.X1),m.L2Py(T->prvni->geo.Y1));
+	d.line(Canvas,0,0,m.L2Px(T->prvni->sparovany->geo.X4),m.L2Py(T->prvni->sparovany->geo.Y4));
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
