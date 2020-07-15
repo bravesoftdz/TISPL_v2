@@ -10031,7 +10031,7 @@ void Cvektory::aktualizuj_cestu_teplomeru()
   			}
 
   			//došlo k chybe vytvoření default cesty, obsahuje aktualizaci tabulky
-  			else F->reset_teplomeru();
+  			else F->reset_teplomeru(Objekt);
 
   			//ukazatelové záležitosti
   			CE=NULL;delete CE;

@@ -808,7 +808,7 @@ public:		// User declarations
 	void START();//zapne stopky
 	void STOP(bool MB=false);//vypne stopky, pokud je parementr metody nastaven na false (což je implicitnì), je zajištìn výpis do mema, pokud na true tak do ShowMessage
 	void GetTime(short int rezim);
-  void reset_teplomeru();//zborazí upozornìní, že došlo ke zmìnì geometrie a resetuje oblasti teplomerù
+  void reset_teplomeru(Cvektory::TObjekt *Objekt);//zborazí upozornìní, že došlo ke zmìnì geometrie a resetuje oblasti teplomerù
   };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

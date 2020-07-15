@@ -3110,7 +3110,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						if(JID>=6&&JID<=11)zmena_jednotek_tab_pohon();//změna jednotek v tabulce pohonů
 						//if(JID==100)vytvor_edit();//změna názvu elementu skrze mGrid .. odstaveno
 						//if(JID==1){nastav_focus();stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;nazev_puvodni=pom_element_temp->name;editace_textu=true;TimerKurzor->Enabled=true;}
-						if(JID==-7){d.SCENA=1111111;bool stav=OBJEKT_akt->zobrazit_mGrid;OBJEKT_akt->zobrazit_mGrid=false;vytvor_statickou_scenu();REFRESH();OBJEKT_akt->zobrazit_mGrid=stav;Akce=POSUN_TEPLOMER;puv_souradnice.x=pom_element->X;puv_souradnice.y=pom_element->Y;}//kliknutí na teploměr
+						if(JID==-7){bool stav=OBJEKT_akt->zobrazit_mGrid;OBJEKT_akt->zobrazit_mGrid=false;REFRESH();Akce=POSUN_TEPLOMER;d.SCENA=1111111;vytvor_statickou_scenu();OBJEKT_akt->zobrazit_mGrid=stav;puv_souradnice.x=pom_element->X;puv_souradnice.y=pom_element->Y;}//kliknutí na teploměr
 						if(JID==0&&pom_komora!=NULL&&pom_element==NULL){Akce=MOVE_KOMORA;pom_komora_temp=pom_komora;}//uchopení a přesun komory, sloužící k jejímu odstranění
 						//nové JID pro objekt
 						if(JID==-2){Akce=MOVE_USECKA;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;nahled_ulozit(true);}//posun úsečky
@@ -5694,7 +5694,7 @@ void __fastcall TForm1::RzToolButton11Click(TObject *Sender)
 
 			//vycentrování obrazu
 			PD_x=(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2.0;
-			PD_y=(ClientHeight+(scGPPanel_mainmenu->Height-scGPPanel_statusbar->Height))/2.0;
+			PD_y=(ClientHeight/*+(scGPPanel_mainmenu->Height-scGPPanel_statusbar->Height)*/)/2.0;
 			Posun.x+=(m.L2Px(centr.x)-PD_x)/Zoom;
 			Posun.y+=(m.L2Py(centr.y)-PD_y)/Zoom;
 
@@ -6094,6 +6094,7 @@ void TForm1::spojeni_prvni_posledni(double citlivost)
 			Centr.x=upraven->geo.X1;
 			Centr.y=upraven->geo.Y1;
 			//vycentrování obrazu na střed
+			Posun_predchozi=Posun;
 			Posun.x=Centr.x/m2px-ClientWidth/2/Zoom;
 			Posun.y=-Centr.y/m2px-(ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2/Zoom; //ClientHeight-scGPPanel_bottomtoolbar->Height
 			//překreslení, fyzický přesun
@@ -6103,7 +6104,7 @@ void TForm1::spojeni_prvni_posledni(double citlivost)
 			d.line(Canvas,m.L2Px(upraven->geo.X1),m.L2Py(upraven->geo.Y1),m.L2Px(upraven->geo.X4),m.L2Py(upraven->geo.Y4));
 			//otázka zda uživatel souhlasí, pokud ne navrácení do úůvodního stavu
 			AnsiString T="";
-			if(hor)T=rozdil.y;else T=rozdil.x;
+			if(hor)T=m.round2double(rozdil.y,3);else T=m.round2double(rozdil.x,3);
 			if(mrNo==MB(m.L2Px(upraven->geo.X1),m.L2Py(upraven->geo.Y1),ls->Strings[454]+" "+T+".","",MB_YESNO,true,false,366,true,true))//"Editace úseku, souhlasíte? Rozdil ="
 			{
         if(pridan)d.v.smaz_element(d.v.ELEMENTY->predchozi);
@@ -6117,6 +6118,8 @@ void TForm1::spojeni_prvni_posledni(double citlivost)
 				}
 				d.v.ELEMENTY->predchozi->geo=zaloha_posledni;
 			}
+      //navrácení na původní posun
+			Posun=Posun_predchozi;
 		}
 		E=NULL;delete E;
 	}
@@ -7720,6 +7723,18 @@ TRect TForm1::vrat_max_oblast(Cvektory::TObjekt *Objekt,bool pouze_body)
 			B=B->dalsi;
 		}
 		delete B;B=NULL;
+    //kontrola názvu
+		d.nastavit_text_popisu_objektu_v_nahledu(Canvas);
+		AnsiString Tn=Objekt->name.UpperCase();
+		short Wn=Canvas->TextWidth(Tn)/2.0;
+		short Hn=Canvas->TextHeight(Tn);
+		if(Objekt->orientace_text==0 || Objekt->orientace_text==180){Wn=Hn;Hn=Canvas->TextWidth(Tn)/2.0;}
+		if(Objekt->orientace_text!=180 && m.L2Px(Objekt->Xt)-Wn<ret.left)ret.left=m.L2Px(Objekt->Xt)-Wn;
+		if(Objekt->orientace_text==180 && m.L2Px(Objekt->Xt)<ret.left)ret.left=m.L2Px(Objekt->Xt);
+		if(m.L2Px(Objekt->Xt)+Wn>ret.right)ret.right=m.L2Px(Objekt->Xt)+Wn;
+		if(m.L2Py(Objekt->Yt)-Hn<ret.top)ret.top=m.L2Py(Objekt->Yt)-Hn;
+		if(Objekt->orientace==90 || Objekt->orientace==270)Hn=0;
+		if(m.L2Py(Objekt->Yt)+Hn>ret.bottom)ret.bottom=m.L2Py(Objekt->Yt)+Hn;
 		//kontrola tabulky předchozího PM
 		if(!pouze_body && predchozi_PM!=NULL)
 		{
@@ -7750,7 +7765,7 @@ TRect TForm1::vrat_max_oblast(Cvektory::TObjekt *Objekt,bool pouze_body)
 			if(PmG!=NULL && m.L2Py(Objekt->Yp)+PmG->Height*konst>ret.bottom)ret.bottom=m.L2Py(Objekt->Yp)+PmG->Height*konst;
 		}
 		//kontrola tabulek elementů v objektu
-		if(!pouze_body)
+		if(!pouze_body && Objekt==OBJEKT_akt)
 		{
 			Cvektory::TElement *E=Objekt->element;
 			while(E!=NULL)
@@ -7797,7 +7812,8 @@ TRect TForm1::vrat_max_oblast(Cvektory::TObjekt *Objekt,bool pouze_body)
 				short Wn=Canvas->TextWidth(Tn)/2.0;
 				short Hn=Canvas->TextHeight(Tn);
 				if(O->orientace_text==0 || O->orientace_text==180){Wn=Hn;Hn=Canvas->TextWidth(Tn)/2.0;}
-				if(m.L2Px(O->Xt)-Wn<ret.left)ret.left=m.L2Px(O->Xt)-Wn;
+				if(O->orientace_text!=180 && m.L2Px(O->Xt)-Wn<ret.left)ret.left=m.L2Px(O->Xt)-Wn;
+				if(O->orientace_text==180 && m.L2Px(O->Xt)<ret.left)ret.left=m.L2Px(O->Xt);
 				if(m.L2Px(O->Xt)+Wn>ret.right)ret.right=m.L2Px(O->Xt)+Wn;
 				if(m.L2Py(O->Yt)-Hn<ret.top)ret.top=m.L2Py(O->Yt)-Hn;
 				if(O->orientace==90 || O->orientace==270)Hn=0;
@@ -14047,11 +14063,14 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	Cvektory::TElement *E=OBJEKT_akt->teplomery->dalsi->posledni;
 //	E->mGrid->DeleteRow(E->mGrid->RowCount-1,false);
 //	E->mGrid->Update();
-	Cvektory::TTeplomery *T=OBJEKT_akt->teplomery->dalsi;
-	Memo(String(T->prvni->geo.X1)+";"+String(T->prvni->geo.Y1));
-	Memo(String(T->prvni->sparovany->geo.X4)+";"+String(T->prvni->sparovany->geo.Y4));
-	d.line(Canvas,0,0,m.L2Px(T->prvni->geo.X1),m.L2Py(T->prvni->geo.Y1));
-	d.line(Canvas,0,0,m.L2Px(T->prvni->sparovany->geo.X4),m.L2Py(T->prvni->sparovany->geo.Y4));
+
+	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
+	while(O!=NULL)
+	{
+		Memo(O->name);
+		O=O->dalsi;
+	}
+	delete O;O=NULL;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -17097,12 +17116,12 @@ void __fastcall TForm1::scGPGlyphButton_undoClick(TObject *Sender)
 		{
 			d.v.nacti_z_obrazu_DATA();
 			duvod_validovat=2;
-			vytvor_statickou_scenu();
-			REFRESH();
+			if(OBJEKT_akt==NULL)vytvor_statickou_scenu();
 			if(OBJEKT_akt!=NULL)mGrid_on_mGrid();//naplní comba tabulek a zkontroluje překrytí
 			if(!scGPGlyphButton_redo->Enabled)scGPGlyphButton_redo->Enabled=true;//pokud bylo provedeno undo a btn na redu neni povolen ... povolit
 			if(d.v.pozice_data==1 && scGPGlyphButton_redo->Enabled)scGPGlyphButton_undo->Enabled=false;//jsem na posledním záznamu, nepovolit dále se vracet ... btn undo zakázat
       if(OBJEKT_akt!=NULL)posledni_editovany_element=OBJEKT_akt->element;//musí být pro geometrii, kurzor by zůstal vyset ve vzduchu
+			REFRESH();
 		}
 	}
 }
@@ -17116,11 +17135,11 @@ void __fastcall TForm1::scGPGlyphButton_redoClick(TObject *Sender)
 		d.v.pozice_data+=1;
 		d.v.nacti_z_obrazu_DATA();
 		duvod_validovat=2;
-    vytvor_statickou_scenu();
-		REFRESH();
+		if(OBJEKT_akt==NULL)vytvor_statickou_scenu();
 		if(OBJEKT_akt!=NULL)mGrid_on_mGrid();//naplní comba tabulek a zkontroluje překrytí
 		if(d.v.pozice_data==d.v.DATA->predchozi->n && scGPGlyphButton_redo->Enabled)scGPGlyphButton_redo->Enabled=false;//dostal jsem se na konec, není kam dál redo použít ... zakázat redo btn
 		if(!scGPGlyphButton_redo->Enabled)scGPGlyphButton_undo->Enabled=true;//bylo provedeno redo, pokud není povolený btn na undo ... povolit
+    REFRESH();
 	}
 	else if(scGPGlyphButton_redo->Enabled)scGPGlyphButton_redo->Enabled=false;
 }
@@ -17549,22 +17568,22 @@ void TForm1::GetTime(short int rezim)
 }
 //---------------------------------------------------------------------------
 //zborazí upozornění, že došlo ke změně geometrie a resetuje oblasti teplomerů
-void TForm1::reset_teplomeru()
+void TForm1::reset_teplomeru(Cvektory::TObjekt *Objekt)
 {
 	log(__func__);
 	//kontrola zda má oběkt záznam o teploměrech
-	if(OBJEKT_akt!=NULL && OBJEKT_akt->teplomery!=NULL)
+	if(Objekt!=NULL && Objekt->teplomery!=NULL)
 	{
     //kontrola zda má záznam pro konkrétní zakázku
-		Cvektory::TTeplomery *T=d.v.vrat_teplomery_podle_zakazky(OBJEKT_akt,d.v.ZAKAZKA_akt);
+		Cvektory::TTeplomery *T=d.v.vrat_teplomery_podle_zakazky(Objekt,d.v.ZAKAZKA_akt);
 		if(T!=NULL)
 		{
 			//mazání teplomerů a vytvoření default
-			d.v.vymaz_seznam_teplomery(OBJEKT_akt);
-			d.v.vytvor_default_c_teplomery(OBJEKT_akt);
-			vytvor_aktualizuj_tab_teplomeru();
+			d.v.vymaz_seznam_teplomery(Objekt);
+			d.v.vytvor_default_c_teplomery(Objekt);
+			if(Objekt==OBJEKT_akt)vytvor_aktualizuj_tab_teplomeru();
       //pokud mám zobrazit upozornění, zobrazím
-			if(zobrazit_upozorneni_teplomery)MB(-1,-1,"Byla změněna geometrie linky, oblast teploměrů bude obnovena.","",MB_OK,true,true);
+			if(zobrazit_upozorneni_teplomery && Objekt==OBJEKT_akt)MB(-1,-1,"Byla změněna geometrie linky, oblast teploměrů bude obnovena.","",MB_OK,true,true);
     }
 	}
 }
