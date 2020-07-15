@@ -8810,7 +8810,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 			while(Z!=NULL)
 			{
 				inicializace_cesty(Z);
-		  	TCesta *c=NULL;
+				TCesta *c=NULL;
 		  	TCesta_uloz *c_u=Z_u->cesta->dalsi;
 				while(c_u!=NULL)
 		  	{
@@ -8836,6 +8836,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 			delete Z;Z=NULL;
 			delete Z_u;Z_u=NULL;
 		}
+    update_akt_zakazky();//případný update zakázky v hlavičce
 
 		//aktualizace dat
     //aktualizace Objekt->element ukazatele, a aktualizace ukazatelů teploměrů
@@ -8893,6 +8894,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 			}
 			//znovu vytvoření tabulky pohonů pokud je třeba
 			F->vytvoreni_tab_pohon(exituje_tab_poh);
+      F->vytvor_aktualizuj_tab_teplomeru();//znovuvytvoření tabulky teploměrů
 		}
 
 		F->Timer_backup->Enabled=true;//obnovení timeru pro backup, nespouští se!
@@ -9396,7 +9398,7 @@ Cvektory::TTeplomery *Cvektory::vrat_teplomery_podle_zakazky(TObjekt *Objekt,TZa
 		T=Objekt->teplomery->dalsi;
 		while(T!=NULL)
 		{
-      //pokud ano, ulož uukazatel a zastav průchod
+			//pokud ano, ulož uukazatel a zastav průchod
 			if(T->Z_n==Zakazka->n){ret=T;break;}
 			T=T->dalsi;
 		}

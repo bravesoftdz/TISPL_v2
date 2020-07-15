@@ -14063,14 +14063,6 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	Cvektory::TElement *E=OBJEKT_akt->teplomery->dalsi->posledni;
 //	E->mGrid->DeleteRow(E->mGrid->RowCount-1,false);
 //	E->mGrid->Update();
-
-	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
-	while(O!=NULL)
-	{
-		Memo(O->name);
-		O=O->dalsi;
-	}
-	delete O;O=NULL;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -16184,6 +16176,8 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 					}
 					cas+=d_pom/d.v.MAG_LASO->sparovany->pohon->aRD;
 					popisek="; Čas = "+String(m.round2double(cas,2))+" [s]";
+					if((d.v.MAG_LASO->predchozi->sparovany->eID==200 || d.v.MAG_LASO->predchozi->sparovany->eID==300) && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->Element->geo.X3 && d.v.MAG_LASO->predchozi->Element->geo.Y2==d.v.MAG_LASO->predchozi->Element->geo.Y3)
+						cas+=d.v.MAG_LASO->predchozi->sparovany->WT;
 				}
 				if(C->sparovany!=NULL && C->Element->geo.X2==C->Element->geo.X3 && C->Element->geo.X3==C->Element->geo.X4)popisek+=", přichyceno na "+C->Element->name;
 			}
@@ -16309,6 +16303,10 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 					C=C->dalsi;
 				}
 				delete C;C=NULL;
+				//kontrola přichycení na PM, pokud ano přičtení WT
+				if((d.v.MAG_LASO->predchozi->sparovany->eID==200 || d.v.MAG_LASO->predchozi->sparovany->eID==300) && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->Element->geo.X3 && d.v.MAG_LASO->predchozi->Element->geo.Y2==d.v.MAG_LASO->predchozi->Element->geo.Y3)
+					cas+=d.v.MAG_LASO->predchozi->sparovany->WT;
+				//nastavení popiků pro MB
 				popisek="; Čas = "+String(m.round2double(cas,2))+" [s]";
 				if(chyba)popisek+=", nerelevatní časový údaj, na některém úseku nebyl nadefinován pohon";
 				if(d.v.MAG_LASO->predchozi->sparovany!=NULL && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->Element->geo.X3 && d.v.MAG_LASO->predchozi->Element->geo.X3==d.v.MAG_LASO->predchozi->Element->geo.X4)
@@ -17317,10 +17315,10 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 	if(OBJEKT_akt!=NULL && OBJEKT_akt->teplomery!=NULL)
 	{
 		Cvektory::TTeplomery *T=d.v.vrat_teplomery_podle_zakazky(OBJEKT_akt,d.v.ZAKAZKA_akt);
-    //kontrola zda existuje cesta pro aktuální zakázku
+		//kontrola zda existuje cesta pro aktuální zakázku
 		if(T!=NULL)
 		{
-	  	//tabulka neexistuje vytvoří ji
+			//tabulka neexistuje vytvoří ji
 			if(T->posledni->mGrid==NULL)
 			{
 				T->posledni->mGrid=new TmGrid(F);
@@ -17476,7 +17474,6 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 		//ukazatelové záležitosti
     T=NULL;delete T;
 	}
-	log(__func__,"    KONEC");
 }
 //---------------------------------------------------------------------------
 //vloží záznam na samostatný řádek v tabulce teploměru, 3 možnosti: přejezd, buffer, celkem
