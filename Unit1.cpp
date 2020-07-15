@@ -7158,7 +7158,7 @@ void TForm1::vlozeni_editace_geometrie()
 	//důvod uložit
 	nahled_ulozit(true);
 	//vytvoření obrazu pro UNDO a REDO, nelze načíst obrazi při editaci geometrie ... pam. chyba
-	//vytvor_obraz();
+	vytvor_obraz();
 }
 //---------------------------------------------------------------------------
 //vymaže aktuální usek geometrie
@@ -16097,7 +16097,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		zobraz_tip(ls->Strings[483]);//má v sobě REFRESH(), je nutné volat až po vytvořeni statické scény
 		Akce=MAGNETICKE_LASO;//až po refresh
 		if(OBJEKT_akt!=NULL)OBJEKT_akt->zobrazit_mGrid=p_stav;//navrácení původního stavu do objektu
-    count_memo=0;//ukazatel kolikrát proběhl cyklus načtení dat ze zakázky, pouze jednou
+		count_memo=0;//ukazatel kolikrát proběhl cyklus načtení dat ze zakázky, pouze jednou
 	}
 	else
 	{
@@ -17102,6 +17102,7 @@ void __fastcall TForm1::scGPGlyphButton_undoClick(TObject *Sender)
 			if(OBJEKT_akt!=NULL)mGrid_on_mGrid();//naplní comba tabulek a zkontroluje překrytí
 			if(!scGPGlyphButton_redo->Enabled)scGPGlyphButton_redo->Enabled=true;//pokud bylo provedeno undo a btn na redu neni povolen ... povolit
 			if(d.v.pozice_data==1 && scGPGlyphButton_redo->Enabled)scGPGlyphButton_undo->Enabled=false;//jsem na posledním záznamu, nepovolit dále se vracet ... btn undo zakázat
+      if(OBJEKT_akt!=NULL)posledni_editovany_element=OBJEKT_akt->element;//musí být pro geometrii, kurzor by zůstal vyset ve vzduchu
 		}
 	}
 }
