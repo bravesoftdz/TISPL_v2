@@ -6232,9 +6232,18 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 		  	if(zobrazit_rozmisteni_voziku==1) scGPCheckBox_rozmisteni_voziku->Checked=true;
 		  	else scGPCheckBox_rozmisteni_voziku->Checked=false;
 		  	if(zobrazit_popisek_pohonu==1)scGPCheckBox_popisek_pohonu->Checked=true;
-		  	else scGPCheckBox_popisek_pohonu->Checked=false;
+				else scGPCheckBox_popisek_pohonu->Checked=false;
+				//aktualizace comb ve výhybkách
+        Cvektory::TElement *E=OBJEKT_akt->element;
+				while(E!=NULL)
+				{
+					if(E->eID==300)napln_comba_mGridu(E);
+					E=d.v.dalsi_krok(E,OBJEKT_akt);
+				}
+				E=NULL;delete E;
+				d.v.vymaz_seznam_VYHYBKY();
 			}
-			REFRESH(false);
+			REFRESH();
 		}
 	}
 }
@@ -7267,12 +7276,24 @@ void TForm1::ukonceni_geometrie(bool kontrola)
 	if(kontrola)d.v.aktualizuj_cestu_teplomeru();//pokud existuje cesta mezi teploměry aktualizuje ji, jinak vytvoří default cestu
 	if(kontrola)vlozit_predavaci_misto_aktualizuj_WT();
 	nahled_ulozit(true);
+	//aktualizace comb ve výhybkách
+  Cvektory::TElement *E=OBJEKT_akt->element;
+	while(E!=NULL)
+	{
+		if(E->eID==300)
+		{
+			napln_comba_mGridu(E);
+			FormX->update_hodnot_vyhybky_PM(E);//musí být skrze možnost smazání sekundární větve
+		}
+		E=d.v.dalsi_krok(E,OBJEKT_akt);
+	}
+	E=NULL;delete E;
 	//validovat
 	duvod_validovat=2;
 	//kurzor
 	if(Screen->Cursor!=standard)kurzor(standard);
   //překreslení
-	REFRESH();
+	REFRESH(d.SCENA,true);
 }
 //---------------------------------------------------------------------------
 //vrátí maximální možný počet vozíků na stopce, podle geometrie před ní
@@ -9023,6 +9044,7 @@ void TForm1::set_enabled_mGrid(Cvektory::TElement *E)
 void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni,bool plnit_comba)
 {
 	log(__func__);//logování
+  FormX->vstoupeno_elm=false;
 	E->stav=1;//pro jistotu odstraňuje uložený highlight kóty, highlight je temp zaležitost pro editaci
 	//definice barev
 	TColor clHeaderFont=clBlack;
@@ -9174,6 +9196,7 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni,bool plnit
 void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 {
 	log(__func__);
+  FormX->vstoupeno_elm=false;
 	//naplnění a přiřazení COMBA rotace
 	if(E->eID==3||E->eID==4||E->eID==5||E->eID==6||E->eID==9||E->eID==10||E->eID==13||E->eID==14||E->eID==17||E->eID==18||E->eID==103||E->eID==104||E->eID==107||E->eID==108)//elementy s otočí
 	{
@@ -9271,7 +9294,7 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
    			I1=C1->Items->Add();I2=C2->Items->Add();
    			I1->Caption=p->name;I2->Caption=p->name;
    			p=p->dalsi;
-			}      ;
+			}
 			delete p;p=NULL;
 			//přiřazení itemindexu podle pohonu na vedlejší větvi, pokud je definovaná
 			C1->ItemIndex=0;C2->ItemIndex=0;
@@ -9286,19 +9309,19 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 			C_pom=NULL;delete C_pom;
 			//přiřazení itemindexů
 			if(E->pohon!=NULL)C1->ItemIndex=E->pohon->n;
-   		if(E->eID==300)//pro výhybku
+			if(E->eID==300)//pro výhybku
 			{
-        //default C2
+				//default C2
 				if(E->dalsi2!=E->predchozi2 && E->dalsi2->pohon!=NULL)C2->ItemIndex=E->dalsi2->pohon->n;
 				if(E->dalsi2==E->predchozi2)C2->Enabled=false;
-   		}
+			}
    		else//pro PM
-   		{
+			{
 				if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)C2->ItemIndex=E->dalsi->pohon->n;
-   			if(E->dalsi==NULL && d.v.ELEMENTY->dalsi->pohon!=NULL)C2->ItemIndex=d.v.ELEMENTY->dalsi->pohon->n;
+				if(E->dalsi==NULL && d.v.ELEMENTY->dalsi->pohon!=NULL)C2->ItemIndex=d.v.ELEMENTY->dalsi->pohon->n;
    			//zakazování comb
-   			if(E->objekt_n!=OBJEKT_akt->n)C1->Enabled=false;
-   			if((E->dalsi!=NULL && E->dalsi->objekt_n!=E->objekt_n || E->dalsi==NULL) && predchozi_PM!=E)C2->Enabled=false;
+				if(E->objekt_n!=OBJEKT_akt->n)C1->Enabled=false;
+				if((E->dalsi!=NULL && E->dalsi->objekt_n!=E->objekt_n || E->dalsi==NULL) && predchozi_PM!=E)C2->Enabled=false;
 			}
 
 			//kontrola zda můžu editovat pohon
@@ -9359,6 +9382,7 @@ bool TForm1::prohodit_sloupce_PM(Cvektory::TElement *E)
 void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
 {
 	log(__func__);//logování
+	FormX->vstoupeno_elm=false;
 	if(E->eID==200 || E->eID==300)//pouze pro pohonové tabulky
 	{
 		TscGPComboBox *C1=E->mGrid->getCombo(3,2),*C2=E->mGrid->getCombo(4,2),*C_pom=NULL;
