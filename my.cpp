@@ -877,7 +877,7 @@ double Cmy::cekani_na_palec(double cas, double roztec_palcu,double rychlost_dopr
 	{
 			case 0:RET=MIN;break;//nic resp minimum=0, nečeká na palec vůbec buď vyšel přesně nebo se nezohledňuje
 			case 1:RET=(MAX-ZOI+MIN)/2.0;break;//střední hodnota (v tomto případě i průměr) dle normálního rozdělení pro hodnoty <0,max)
-			case 2:RET=fmod(rand(),MAX*10)/10.0+MIN;break;//náhodná hodnota v rozmezí <0,max) čekání na palce, zde ZOI není nutné zohledňovat, protože již vyplývá z použitého algoritmu
+			case 2:RET=RAND(MIN,MAX,1,true,false);/*fmod(rand(),MAX*10)/10.0+MIN;*/break;//náhodná hodnota v rozmezí <0,max) čekání na palce, zde ZOI není nutné zohledňovat, protože již vyplývá z použitého algoritmu
 			case 3:RET=MAX-ZOI;break;//max.možná hodnota čekání na pale
 			case 4:/*RET=tady bude exaktní výpočet pro geometrii*/break;
 	}
@@ -1350,4 +1350,15 @@ short Cmy::getValueFromPosition(long GlobalValue,short Position)
 	double base=GlobalValue/pow(10.0,Position);
 	return floor(base*10)-floor(base)*10;//nutné takto (jinak problémy s 1->0.999998 atd.
 }
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+//vrátí náhodné číslo v daném rozsahu o požadované přesnosti, MIN a MAX mohou být součástí navrácených hodnot (jedná se o oboustranně uzavřený interval - implicitně), pokud není nastaveno jinak posledními dvěma parametry, které umožňují nastavení z jedne či obou stran otevřený interval
+//srand(time(NULL)); v knihovně ktéré se tato metoda volá je nutno volat jako úplně první toto (nejvýše v kódu knihovny)
+double Cmy::RAND(double MIN, double MAX,unsigned short precision,bool MINin,bool MAXin)
+{
+	double P=pow(10.0,precision);
+	if(!MINin)MIN+=1/P;if(!MAXin)MAX-=1/P;//pokud se jedná z jedné strany o otevřený interval
+	return fmod(rand(),(MAX+1/P-MIN)*P)/P+MIN;
+}
+/////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////

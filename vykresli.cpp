@@ -2345,16 +2345,17 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 //vykreslí všechny vozíky ze seznamu vozíků
 void Cvykresli::vykresli_voziky(TCanvas *canv)
 {
-  	////test
-//	Cvektory::TPohon *P=v.POHONY->dalsi;
-//	while(P!=NULL)
-//	{
-//		v.vytvor_retez(P);//a palce
-//		vykresli_retez(canv,P->retez);//spíše pouzdrou řetězu
-//		vykresli_palce(canv,P);
-//		P=P->dalsi;
-//	}
-//	delete P;
+	////test
+	Cvektory::TPohon *P=v.POHONY->dalsi;
+	while(P!=NULL)
+	{
+		//v.vytvor_retez(P);//a palce - aktuálně generuje na MaKr tlačítku
+		//vykresli_retez(canv,P->retez);//spíše pouzdrou řetězu
+		vykresli_palce(canv,P);
+		P=P->dalsi;
+	}
+	delete P;
+	////----
 
 	if(v.VOZIKY!=NULL && F->scGPCheckBox_rozmisteni_voziku->Checked)
 	{
@@ -2640,7 +2641,9 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TRetez *Retez)
 //bude to chtít ukládat stav řetezu dle OBJEKT_akt, a potom dořešit elementární osy s geometrii, typicky po zadané geometrii a odebraném pohonu
 
 		TPoint POLE[4];
-		set_pen(canv,clBlue,F->Zoom*0.5*2,PS_ENDCAP_SQUARE);//nastavení pera
+		TColor clRetez=clBlue;
+		//if((int)m.RAND(1,2)%2)clRetez=clGreen;
+		set_pen(canv,clRetez,F->Zoom*0.5*2);//nastavení pera
 		Cvektory::TRetez *R=Retez->dalsi;
 		while(R!=NULL)
 		{
@@ -2649,11 +2652,14 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TRetez *Retez)
 			POLE[1]=TPoint(m.L2Px(R->geo.X2),m.L2Py(R->geo.Y2));
 			POLE[2]=TPoint(m.L2Px(R->geo.X3),m.L2Py(R->geo.Y3));
 			POLE[3]=TPoint(m.L2Px(R->geo.X4),m.L2Py(R->geo.Y4));
-			//vykreslení jednoho segmentu - musí se bohužel vykreslovat postupně
+			//vykreslení jednoho segmentu - musí se bohužel vykreslovat postupně kvůli výhybkám atd.
 			canv->PolyBezier(POLE,3);
 			//ukazatelové záležitosti
 			R=R->dalsi;//posun na další element
 		}
+		//smazání již nepotřebného ukazatele
+		delete R;R=NULL;
+
 		//smazání již nepotřebného ukazatele
 		delete R;R=NULL;
 	}
@@ -2749,6 +2755,7 @@ void Cvykresli::vykresli_palce(TCanvas *canv,Cvektory::TPohon *pohon)
 		while(P!=NULL)
 		{
 			//F->Memo(String(P->X)+" "+String(P->Y));
+			if(P->X!=DOUBLE_MIN && P->Y!=DOUBLE_MIN && P->orientace!=DOUBLE_MIN)//pouze pokud se nejedná o nezneplatněný palec, který nemá být vidět (DOUBLE_MIN - jedná se o "poznávací znamení")
 			vykresli_palec(canv,P);
 			P=P->dalsi;
 		}
@@ -2760,10 +2767,13 @@ void Cvykresli::vykresli_palce(TCanvas *canv,Cvektory::TPohon *pohon)
 void Cvykresli::vykresli_palec(TCanvas *canv,Cvektory::TPalec *P)
 {
 	double s=0.025;//0.05;//0.01;
-	canv->Pen->Color=clRed;
+	canv->Pen->Color=clRed;if(P->n%2)canv->Pen->Color=clBlue;
 	canv->Pen->Width=m.round(0.1*F->Zoom);
 	//canv->Ellipse(m.L2Px(P->X-s),m.L2Py(P->Y+s),m.L2Px(P->X+s),m.L2Py(P->Y-s));
 	obdelnik(canv,P->X-s/1.5,P->Y+s,P->X+s/1.5,P->Y-s,m.o2r(P->orientace),P->X,P->Y);//provizorně kvůli testování
+	canv->Font->Size=m.round(0.75*F->Zoom);
+	canv->Font->Color=canv->Pen->Color;
+	TextOut(canv,m.L2Px(P->X),m.L2Py(P->Y),P->n,CENTER,TOP);//pouze pro testy
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //vykreslí popisek pohonu ve středu zadané úsečky, parametr pozice zajišťuje střídání pozice popisku
@@ -4530,7 +4540,7 @@ void Cvykresli::uchop(TCanvas *canv,Cvektory::TBod *B,TColor barva)
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //volání smart kurzoru sloužícího pro výběr geometrického elementu, to dle předchozích parametrů resp. typů geometrických elementu a zadaných vstupního paramerů metody, tj. dle posledního existujícího elementu
-void Cvykresli::smart_kurzor(TCanvas *canv,Cvektory::TElement *E)
+void Cvykresli::smart_kurzor(TCanvas *canv,Cvektory::TElement *E,short typElementu)
 {
 	Cvektory::TElement *Ep=NULL;
 	//příprava atributů
@@ -4553,7 +4563,7 @@ void Cvykresli::smart_kurzor(TCanvas *canv,Cvektory::TElement *E)
 		//defaultně od prvního bodu aktuální kabiny
 		preXk=F->OBJEKT_akt->element->geo.X1;
 		preYk=F->OBJEKT_akt->element->geo.Y1;
-		//pokud existuje předchozí kabina tak od jejího posledního bodu
+		//pokud existuje předchozí kabina, tak od jejího posledního bodu
 		if(F->OBJEKT_akt->element->predchozi->n!=0)
 		{
 			e_posledni=F->OBJEKT_akt->element->predchozi;
@@ -4568,12 +4578,12 @@ void Cvykresli::smart_kurzor(TCanvas *canv,Cvektory::TElement *E)
 	if(Ep!=NULL && E!=NULL)prepreRA=Ep->geo.rotacni_uhel;
 	Ep=NULL;delete Ep;
 	//samotné volání smart kurzoru
-	smart_kurzor(canv,preXk,preYk,preOR,preRA,prepreRA);
+	smart_kurzor(canv,preXk,preYk,preOR,preRA,prepreRA,typElementu);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //volání smart kurzoru sloužícího pro výběr geometrického elementu, to dle předchozích parametrů resp. typů geometrických elementu a zadaných vstupních paramerů metody, viz:
 //preXk,preYk - koncové souřadnice, preOR - orientace, preRA - rotační úhel předchozího tj. posledního již vytvořeného geometrického elementu, prepreRArotační úhel před-předchozího geometrického elementu - neexistují-li tyto pre resp. prepre element(y), zadat nulu
-void Cvykresli::smart_kurzor(TCanvas *canv,double preXk,double preYk,double preOR,double preRA,double prepreRA)
+void Cvykresli::smart_kurzor(TCanvas *canv,double preXk,double preYk,double preOR,double preRA,double prepreRA,short typElementu)
 {
 	////vstupní parametry
 	double R=v.PP.radius;//radius dle katalogu
@@ -4591,34 +4601,40 @@ void Cvykresli::smart_kurzor(TCanvas *canv,double preXk,double preYk,double preO
 
 	////hledání v citelné oblasti linie ve tvaru "V" (toto rozmezí, rozptyl je hodnota nejmenšího oblouku (částečně logicky by se nabízelo /2, ale vhodnější /3, +- rozptylu nahrazuje fabs), hledá i přes výše nalezené řešní, což je důležíté ("jinak by se v některých případech na lini vůbec nedostalo")
 	double delka_linie=0;
-	double a=m.azimut(preXk,preYk,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);//azimut mezi výchozím bodem a akt. pozicí myši
-	double o=m.a360(preOR-preRA); if(o==0 && a>180)o=360;//orientace, pokud je nula a myš je v levém kvadrantu, je nutné z 0° udělat 360°
-	if(POLE_RA[3]/3>fabs(o-a))RA=0;
-	//if(RA==0)delka_linie=ceil(m.delka(preXk,preYk,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y)/3.0)*3;//u linie nabízí delší kresbu, po násobcích 3 metrů
-	if(RA==0){delka_linie=m.round(m.delka(preXk,preYk,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y));if(delka_linie<1)delka_linie=1;}//provizorně nastaveno na 1 metr
+	if(typElementu!=1)
+	{
+		double a=m.azimut(preXk,preYk,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);//azimut mezi výchozím bodem a akt. pozicí myši
+		double o=m.a360(preOR-preRA); if(o==0 && a>180)o=360;//orientace, pokud je nula a myš je v levém kvadrantu, je nutné z 0° udělat 360°
+		if(POLE_RA[3]/3>fabs(o-a))RA=0;
+		//if(RA==0)delka_linie=ceil(m.delka(preXk,preYk,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y)/3.0)*3;//u linie nabízí delší kresbu, po násobcích 3 metrů
+		if(RA==0){delka_linie=m.round(m.delka(preXk,preYk,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y));if(delka_linie<1)delka_linie=1;}//provizorně nastaveno na 1 metr
+	}
 
 	////samotné vykreslení kurzoru dle hodnoty RA z předchozího algoritmu (aktuální orientace je prozatím z d.Temp.z, kde vypočtena jako je orientace minus rotace předchozího gElementu)
-	vykresli_Gelement_kurzor(canv,preXk,preYk,m.a360(preOR-preRA),RA,R,delka_linie,preRA,prepreRA);
+	vykresli_Gelement_kurzor(canv,preXk,preYk,m.a360(preOR-preRA),RA,R,delka_linie,preRA,prepreRA,typElementu);
 
 	////!!!důležitá poznámka: uchování v globální proměnné aktuálně vracených hodnot ze smart kurzoru pro možné uložení do geometrického elementu nastává níže
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //obloukový či liniový (dle situace) kurzor g-elementu, X,Y jsou logické souřadnice výchozího vykreslování, parametry: orientace oblouku - dle světových stran (umí i jiné než 90° násobky), rotační úhel, pod kterým je oblouk rotován, může být záporný (znaménko určuje směr rotace, + proti směru hodinových ručiček, - po směru), max. hodnota +90 a min. hodnota -90 (je-li nastaven na 0° jedná se o linii), radius - je radius oblouku v metrech nebo pokud je rotační úhel nastaven na 0° tedy se jedná o linii, je radius délkou linie)
-void Cvykresli::vykresli_Gelement_kurzor(TCanvas *canv,double X,double Y,double orientace,double rotacni_uhel,double radius,double delka_linie,double predchozi_rotacni_uhel,double predpredchozi_rotacni_uhel)
+void Cvykresli::vykresli_Gelement_kurzor(TCanvas *canv,double X,double Y,double orientace,double rotacni_uhel,double radius,double delka_linie,double predchozi_rotacni_uhel,double predpredchozi_rotacni_uhel,short typElementu)
 {
 	TColor clPotencial=m.clIntensive(clBlack,245);
 	TColor clAktual=m.clIntensive(clBlack,120);
 
 	//vykreslení potenciální linie         //minimum 1 metry, potenciál je délka aktuální linie + 1 m, aby bylo jasné, že je možné stále prodlužovat
-	vykresli_potencial_Gelement(canv,X,Y,orientace,0,delka_linie+1,clPotencial,false);//provizorně nastaveno na 1 metr
+	if(typElementu==0 || typElementu==2)vykresli_potencial_Gelement(canv,X,Y,orientace,0,delka_linie+1,clPotencial,false);//provizorně nastaveno na 1 metr
 
 	//vykreslení potenciálních oblouků dle katalogu
-	short RA[]={90,45,30,15};//nahradit načítáním ze spojáku vybraného katalogu (ale zatím postrádá význam, všude jsou stejné úhly), pokud bych chtěl násleně break, muselo by být řazeno od nejmenšího RA
-	short intenzitaK=0,intenzitaZ=0;//intenzita barvy
-	for(unsigned short i=0;i<4;i++)
-	{    //povoluje libovolný uhel po linii, ale pouze stejný po předch. oblouku && zajišťuje selekci nesmyslné varianty á la tangens) && !nesmí být 3x90° za sebou
-		if((predchozi_rotacni_uhel==0 || RA[i]==predchozi_rotacni_uhel) && predchozi_rotacni_uhel>=0 && !(RA[i]==90 && predpredchozi_rotacni_uhel==predchozi_rotacni_uhel && predchozi_rotacni_uhel==90))vykresli_potencial_Gelement(canv,X,Y,orientace,RA[i],radius,m.clIntensive(clPotencial,-20*intenzitaK++),false);
-		if((predchozi_rotacni_uhel==0 || -RA[i]==predchozi_rotacni_uhel) && predchozi_rotacni_uhel<=0 && !(-RA[i]==-90 && predpredchozi_rotacni_uhel==predchozi_rotacni_uhel && predchozi_rotacni_uhel==-90))vykresli_potencial_Gelement(canv,X,Y,orientace,-RA[i],radius,m.clIntensive(clPotencial,-20*intenzitaZ++),false);
+	if(typElementu==0 || typElementu==1)
+	{
+		short RA[]={90,45,30,15};//nahradit načítáním ze spojáku vybraného katalogu (ale zatím postrádá význam, všude jsou stejné úhly), pokud bych chtěl násleně break, muselo by být řazeno od nejmenšího RA
+		short intenzitaK=0,intenzitaZ=0;//intenzita barvy
+		for(unsigned short i=0;i<4;i++)
+		{    //povoluje libovolný uhel po linii, ale pouze stejný po předch. oblouku && zajišťuje selekci nesmyslné varianty á la tangens) && !nesmí být 3x90° za sebou
+			if((predchozi_rotacni_uhel==0 || RA[i]==predchozi_rotacni_uhel) && predchozi_rotacni_uhel>=0 && !(RA[i]==90 && predpredchozi_rotacni_uhel==predchozi_rotacni_uhel && predchozi_rotacni_uhel==90))vykresli_potencial_Gelement(canv,X,Y,orientace,RA[i],radius,m.clIntensive(clPotencial,-20*intenzitaK++),false);
+			if((predchozi_rotacni_uhel==0 || -RA[i]==predchozi_rotacni_uhel) && predchozi_rotacni_uhel<=0 && !(-RA[i]==-90 && predpredchozi_rotacni_uhel==predchozi_rotacni_uhel && predchozi_rotacni_uhel==-90))vykresli_potencial_Gelement(canv,X,Y,orientace,-RA[i],radius,m.clIntensive(clPotencial,-20*intenzitaZ++),false);
+		}
 	}
 
 	//vykreslení aktuální vybrané volby

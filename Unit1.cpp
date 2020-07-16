@@ -69,15 +69,15 @@ AnsiString Parametry;
 __fastcall TForm1::TForm1(TComponent* Owner)
 	: TForm(Owner)
 {
-	Akce=BLOK;Akce_temp=NIC;MOD=NO;Screen->Cursor=crDefault;//změní kurzor na default + zapniti blokace akce, zabrání spouštění onclick událostí
-
 	srand(time(NULL));//nutno tady tj. úplně první!!!
+
+	Akce=BLOK;Akce_temp=NIC;MOD=NO;Screen->Cursor=crDefault;//změní kurzor na default + zapniti blokace akce, zabrání spouštění onclick událostí
 
 	F=Form1;//pouze zkrácení zápisu
 
 	db_connection();//připojení k DB
 
-	Form1->Width=1290;//workaround bílé mezery v záložkové liště - nefunguje
+	//Form1->Width=1290;//workaround bílé mezery v záložkové liště - nefunguje
 
 	m2px=0.1;//uchovává hodnotu prostorového rozlišení programu, nativní rozlišení 0,1 m na 1 pixel při zoomu 1x
 	fps=24*3;//frames per second, četnost snímků za sekundu - používá se pro animace a simulace, misto 24Hz 60Hz, hráči her doporučují min fps 60 + min obnovovací frekvence monitoru 60Hz
@@ -2598,7 +2598,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//F1 - volání nápovědy
 		case 112:break;
 		//F2
-		case 113:if(DEBUG && Memo_testy->Visible)Memo_testy->CopyToClipboard();Memo_testy->Clear();break;
+		case 113:if(DEBUG && Memo_testy->Visible){Memo_testy->SelectAll();Memo_testy->CopyToClipboard();Memo_testy->Clear();}break;
 		//F3 - pohled celé schéma
 		case 114:RzToolButton11Click(Sender);break;
 		//F4
@@ -13806,7 +13806,7 @@ void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 	{
 		log(__func__);//logování
 		RO-=(1.5*Zoom/m2px)/20.0;
-		Poffset=0;
+		sTIME=0;
 
 		Timer_simulace->Enabled=!Timer_simulace->Enabled;
 	//	if(MOD==EDITACE)scGPButton_viditelnostmGridClick(Sender);//zakáže mgridy - dodělat, když nebudou zobrazené....
@@ -13877,8 +13877,9 @@ void __fastcall TForm1::Timer_simulaceTimer(TObject *Sender)
 			else ROsts=0;
 		}
 
-		Poffset+=1;//zajistí posun animace vždy o 1s reálného času (strojového dle Timer_animace->Interval, který by měl reflektovat aktuální rychlosti zajišťující plynulost animace)
-		d.v.generuj_VOZIKY();//velice prozatim
+		sTIME+=0.1;/*1*///zajistí posun animace vždy o 1s reálného času (strojového dle Timer_animace->Interval, který by měl reflektovat aktuální rychlosti zajišťující plynulost animace)
+		//d.v.generuj_VOZIKY();//velice prozatim
+		d.v.posun_palce_retezu();
 		REFRESH();
 	}
 }
@@ -13944,8 +13945,21 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
 void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
-{
-//vždy nechat
+{//vždy nechat tento komentář
+
+	Cvektory::TPohon *P=d.v.POHONY->dalsi;
+	while(P!=NULL)
+	{
+		d.v.vytvor_retez(P);//a palce
+		P=P->dalsi;
+	}
+	delete P;
+
+			MOD=SIMULACE;//mód musí být před vytvořením scény
+			d.SCENA=221111;//zprávy nejsou zobrazeny, vozíky a aktivní části elementů jsou v dynamické scéně
+			vytvor_statickou_scenu();//načtení statických záležitostí do statické scény, musí být před REFRESH
+	REFRESH();
+
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -15918,7 +15932,7 @@ void __fastcall TForm1::scGPComboBox_prepinacKotClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 //urychlení vypsání do Memo_testy
-void TForm1::Memo(AnsiString Text, bool clear,bool count)
+void TForm1::Memo(AnsiString Text, bool clear,bool count,bool copyFinalTextToClipboard)
 {
   log(__func__);//logování
 	if(clear)Memo_testy->Clear();
@@ -15928,7 +15942,11 @@ void TForm1::Memo(AnsiString Text, bool clear,bool count)
 	Memo_testy->Left=scSplitView_LEFTTOOLBAR->Width;
 	Memo_testy->Visible=true;
 	Memo_testy->Lines->Add(Text);
-	Memo_testy->CopyToClipboard();
+	if(copyFinalTextToClipboard)
+	{
+		Memo_testy->SelectAll();
+		Memo_testy->CopyToClipboard();
+  }
 }
 //---------------------------------------------------------------------------
 //zapínání a vypínaní meření
@@ -17203,6 +17221,9 @@ void TForm1::STOP(bool MB)
 	if(MB)S(R);else Memo(R);
 }
 //---------------------------------------------------------------------------
+
+
+
 
 
 

@@ -57,8 +57,6 @@ class Cvektory
 		double orientace;
 		short stav;//stav palce aktivní - 1 má vozík, pasivní
 		//double pozice;
-		//struct TObjekt *segment;
-		//přiřazení k dopravníku???
 		struct TPalec *predchozi;
 		struct TPalec *dalsi;
 	};
@@ -74,6 +72,7 @@ class Cvektory
 		double roztec;//rozteč palců v m
 		double Rz;//rozestup aktivních palců v m
 		double Rx;//rozestup aktivních palců (počet aktivních palců)
+		double umisteni;//umisteni retezu resp. palců, tempová proměnná pro simulaci
 		TRetez *retez;//geometrie pohonu, řetězu resp. pouzdro řetězu
 		TPalec *palec;//jednotlivé palce v podstatě ve skutečnosti řetěz
 		struct TPohon *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
@@ -643,6 +642,7 @@ class Cvektory
 	TPohon *najdi_pohon_dle_RD(double RD);//ověří zda je stejná rychlost pohonu na lince používána, pokud není vratí NULL, jinak ukazatel na daný pohon
 	void vytvor_retez(TPohon *Pohon);//danému pohonu vytvoří řetěz a palce dle geometrie všech elementů, co spadají pod daný pohon
 	void vloz_segment_retezu(TRetez *Retez,TPohon *Pohon);//danému řetězu vloží jeden geometrický segment
+	void posun_palce_retezu();//od pohonům resp. jejich řetězům posune palce o daný časový úsek
 	void vloz_palec(TPalec *Palec,TPohon *Pohon);//danému pohonu vloží jeden palec
 	void zrusit_prirazeni_pohunu_k_objektum_elementum(unsigned long n);//všem objektům s n pohonem zruší přiřazení k tomuto pohonu a nahradí hodnotu ukazatele na přiřazený pohon za NULL, nově i všem elementům
 	long vymaz_seznam_POHONY();//smaže jednotlivé prvky seznamu, včetně hlavičky, pokud následuje další práce se seznamem, je nutné založit nejdříve hlavičku pomocí hlavicka_pohony()

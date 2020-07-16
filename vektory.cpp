@@ -4442,23 +4442,29 @@ void Cvektory::vytvor_retez(TPohon *Pohon)
 
 	//////vytvoření nových dat
 	if(ELEMENTY!=NULL)
-	{                           //nutno doladit dle skutečné rychlosti pohonu
-		double umisteni=F->Poffset*0.0083333333*3/*pro testy úvodní simulace jinak 0*/;
+	{
+		double delka=0;//celková délka řetězu zatím uvažovaná bez vychylení na předávacích místech
+		//if(F->Poffset*0.0083333333*3>=Pohon->roztec)F->Poffset=0;//pro testy úvodní simulace
+		//double umisteni=F->Poffset*0.0083333333*3/*pro testy úvodní simulace jinak 0*/;
+		double umisteni=0;
 		TElement *E=ELEMENTY->dalsi;//přeskočí hlavičku
 		while(E!=NULL)//procházení jednotlivých elementů pro tvorbů řetězu
 		{
-			if(E->pohon!=NULL && Pohon!=NULL && E->pohon->n==Pohon->n)//řetěz tvořen pouze z geometrie všech elementů, co spadají pod daný pohon
+			if(E->pohon!=NULL && Pohon!=NULL && E->pohon->n==Pohon->n && E->geo.delka>0)//řetěz tvořen pouze z geometrie všech elementů, co spadají pod daný pohon
 			{
+				////DELKA - celková délka řetězu zatím uvažovaná bez vychylení na předávacích místech, proto vystrčená provizorně zde
+				delka+=E->geo.delka;
+
 				////PALCE - nutné do samostané metody kvůli vykreslování
-				while(umisteni<=E->geo.delka)
+				while(m.round2double(umisteni,3)<=E->geo.delka)//m.round2double(umisteni,3) je nasazeno kvůli nepřesnosti v číselném řádu, procházení jednoho segmentu a umísťování palce na tento segment
 				{
 					TPalec *P=new TPalec;
 					vloz_palec(P,Pohon);
 					//výpočet souřadnic a rotace jigu dle aktuálního umístění
-					TPointD_3D Pt=m.getPt(E->geo.radius,E->geo.orientace,E->geo.rotacni_uhel,E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4,umisteni/E->geo.delka,(umisteni+PP.uchyt_pozice-PP.delka_podvozek/2.0)/E->geo.delka);
+					TPointD_3D Pt=m.getPt(E->geo.radius,E->geo.orientace,E->geo.rotacni_uhel,E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4,umisteni/E->geo.delka,umisteni/E->geo.delka);
 					P->X=Pt.x;P->Y=Pt.y;P->orientace=Pt.z;
 					//navýšení umístění dle rozteče
-					umisteni+=E->pohon->roztec;
+					umisteni+=Pohon->roztec;
 					P=NULL;delete P;
 				}
 
@@ -4468,57 +4474,71 @@ void Cvektory::vytvor_retez(TPohon *Pohon)
 				////všechy elementy včetně předávacího místa, to se ještě následně případně ovlivňuje níže (dotváří)
 				R->eID=E->eID;
 				R->geo=E->geo;
-				////Předávací místo, výpočet souřadnic předávacího místa - ubrání z existujícho segmentu, přepsání výše uvedených souřadnic
-				//vstupní parametry dimenzující geometrii předávacího místa
-				float  D=1;//delká vyosování - 1 metr na každou stranu
-				float RetezWidth=1;//šířka řetezu kvůli vyosení v předávacím místě
-				TPointD V=m.rotace(RetezWidth*F->m2px,180-E->geo.orientace+90,0);//vyosení, mezera mezi pohony v předávacím místě
-				TPointD Z=m.rotace(D,180-E->geo.orientace,0);//začátek vyosování
-				////situace před předávacím místem
-				if(E->eID==200)
-				{
-					//segment řetězu před předávacím místem konkrétně před vyosení
-					R->eID=E->eID-1;//eID 199 poslední segment před vysováním tj. před předávacím místem
-					R->geo.X1=E->geo.X1; 							 			 R->geo.Y1=E->geo.Y1;
-					R->geo.X2=(E->geo.X4-Z.x+E->geo.X1)/2.0; R->geo.Y2=(E->geo.Y4-Z.y+E->geo.Y1)/2.0;
-					R->geo.X3=R->geo.X2; 										 R->geo.Y3=R->geo.Y2;
-					R->geo.X4=E->geo.X4-Z.x; 								 R->geo.Y4=E->geo.Y4-Z.y;
+				//dokonalé předávací místo, zatím odstaveno, stačí odkomentovat, ale má návaznost na palce řetězu ty by ještě bylo nutné měnit v místě předávacího místa (resp. jejich souřadnice)
+//				////Předávací místo, výpočet souřadnic předávacího místa - ubrání z existujícho segmentu, přepsání výše uvedených souřadnic
+//				//vstupní parametry dimenzující geometrii předávacího místa
+//				float  D=1;//delká vyosování - 1 metr na každou stranu
+//				float RetezWidth=1;//šířka řetezu kvůli vyosení v předávacím místě
+//				TPointD V=m.rotace(RetezWidth*F->m2px,180-E->geo.orientace+90,0);//vyosení, mezera mezi pohony v předávacím místě
+//				TPointD Z=m.rotace(D,180-E->geo.orientace,0);//začátek vyosování
+//				////situace před předávacím místem
+//				if(E->eID==200)
+//				{
+//					//segment řetězu před předávacím místem konkrétně před vyosení
+//					R->eID=E->eID-1;//eID 199 poslední segment před vysováním tj. před předávacím místem
+//					R->geo.X1=E->geo.X1; 							 			 R->geo.Y1=E->geo.Y1;
+//					R->geo.X2=(E->geo.X4-Z.x+E->geo.X1)/2.0; R->geo.Y2=(E->geo.Y4-Z.y+E->geo.Y1)/2.0;
+//					R->geo.X3=R->geo.X2; 										 R->geo.Y3=R->geo.Y2;
+//					R->geo.X4=E->geo.X4-Z.x; 								 R->geo.Y4=E->geo.Y4-Z.y;
+//
+//					//segment řetězu předávací místo konkrétně od vyosení
+//					TRetez *R1=new TRetez;
+//					vloz_segment_retezu(R1,Pohon);
+//					R1->eID=E->eID;//eID 200
+//					R1->geo.X1=R->geo.X4; 						R1->geo.Y1=R->geo.Y4;
+//					R1->geo.X2=E->geo.X4-Z.x/2.0;			R1->geo.Y2=E->geo.Y4-Z.y/2.0;
+//					R1->geo.X3=E->geo.X4-Z.x/2.0+V.x;	R1->geo.Y3=E->geo.Y4-Z.y/2.0+V.y;
+//					R1->geo.X4=E->geo.X4+V.x;					R1->geo.Y4=E->geo.Y4+V.y;
+//				}
+//				///situace za předávacím místem
+//				TElement *Ep=E->predchozi;
+//				if(Ep!=NULL && Ep->eID==200)
+//				{
+//					//segment řetězu za předávacím místem konkrétně v největším místě vyosení za předávacím místem
+//					R->eID=E->eID+1;//eID 201 segment řetězu za předávacím místem konkrétně v největším místě vyosení za předávacím místem
+//					R->geo.X1=E->geo.X1+Z.x; 						 R->geo.Y1=E->geo.Y1+Z.y;
+//					R->geo.X2=(R->geo.X1+E->geo.X4)/2.0; R->geo.Y2=(R->geo.Y1+E->geo.Y4)/2.0;
+//					R->geo.X3=R->geo.X2; 								 R->geo.Y3=R->geo.Y2;
+//					R->geo.X4=E->geo.X4; 								 R->geo.Y4=E->geo.Y4;
+//
+//					//segment řetězu předávací místo konkrétně ke konci vyosení
+//					TRetez *R1=new TRetez;
+//					vloz_segment_retezu(R1,Pohon);
+//					R1->eID=E->eID+2;//eID 202
+//					R1->geo.X1=E->geo.X1-V.x;					R1->geo.Y1=E->geo.Y1-V.y;
+//					R1->geo.X2=E->geo.X1+Z.x/2.0-V.x;	R1->geo.Y2=E->geo.Y1+Z.y/2.0-V.y;
+//					R1->geo.X3=E->geo.X1+Z.x/2.0;			R1->geo.Y3=E->geo.Y1+Z.y/2.0;
+//					R1->geo.X4=R->geo.X1; 						R1->geo.Y4=R->geo.Y1;
+//				}
 
-					//segment řetězu předávací místo konkrétně od vyosení
-					TRetez *R1=new TRetez;
-					vloz_segment_retezu(R1,Pohon);
-					R1->eID=E->eID;//eID 200
-					R1->geo.X1=R->geo.X4; 							R1->geo.Y1=R->geo.Y4;
-					R1->geo.X2=E->geo.X4-Z.x/2.0;			R1->geo.Y2=E->geo.Y4-Z.y/2.0;
-					R1->geo.X3=E->geo.X4-Z.x/2.0+V.x;	R1->geo.Y3=E->geo.Y4-Z.y/2.0+V.y;
-					R1->geo.X4=E->geo.X4+V.x;					R1->geo.Y4=E->geo.Y4+V.y;
-				}
-				///situace za předávacím místem
-				TElement *Ep=E->predchozi;
-				if(Ep!=NULL && Ep->eID==200)
-				{
-					//segment řetězu za předávacím místem konkrétně v největším místě vyosení za předávacím místem
-					R->eID=E->eID+1;//eID 201 segment řetězu za předávacím místem konkrétně v největším místě vyosení za předávacím místem
-					R->geo.X1=E->geo.X1+Z.x; 							 	 R->geo.Y1=E->geo.Y1+Z.y;
-					R->geo.X2=(R->geo.X1+E->geo.X4)/2.0; 		 R->geo.Y2=(R->geo.Y1+E->geo.Y4)/2.0;
-					R->geo.X3=R->geo.X2; 										 R->geo.Y3=R->geo.Y2;
-					R->geo.X4=E->geo.X4; 								 		 R->geo.Y4=E->geo.Y4;
-
-					//segment řetězu předávací místo konkrétně ke konci vyosení
-					TRetez *R1=new TRetez;
-					vloz_segment_retezu(R1,Pohon);
-					R1->eID=E->eID+2;//eID 202
-					R1->geo.X1=E->geo.X1-V.x;					R1->geo.Y1=E->geo.Y1-V.y;
-					R1->geo.X2=E->geo.X1+Z.x/2.0-V.x;	R1->geo.Y2=E->geo.Y1+Z.y/2.0-V.y;
-					R1->geo.X3=E->geo.X1+Z.x/2.0;			R1->geo.Y3=E->geo.Y1+Z.y/2.0;
-					R1->geo.X4=R->geo.X1; 						R1->geo.Y4=R->geo.Y1;
-				}
-				//kalkulace s umístěním palce pro další segment
+				////kalkulace s umístěním palce pro další segment
 				umisteni-=E->geo.delka;//zbytek z předchzejícího geometrického úseku, který nestihl být zohledněn převeden na další geometrický úsek, resp. element = výchozí umístění v dalším elementu
 			}
 			E=dalsi_krok(E);//posun na další element nahrazuje při použití výhybek dřívější E=E->dalsi;
 		}
-		E=NULL;delete E;
+		delete E;
+
+		////doplnění případného posledního (momentálně virtuálního) palce, který není vidět (je mimo řetěz), pozor řeší jenom předpoklad, že rozteč palců je menší než délka řetězu
+		if(delka>0 && ceil(delka/Pohon->roztec)+1>Pohon->palec->predchozi->n)//pokud je potřebná délka (pro celočíselnou dělitelnost roztečí) řetězu větší než aktuální, přídá palec (momentálně virutální)
+		{
+			//F->Memo("____________"+Pohon->name);
+			//F->Memo(Pohon->palec->predchozi->n);
+			TPalec *P=new TPalec;
+			vloz_palec(P,Pohon);
+			P->X=DOUBLE_MIN;P->Y=DOUBLE_MIN;P->orientace=DOUBLE_MIN;//zneplatní souřadnice, což zajistí, že tento palec nebude zatím vidět (jedná se o "poznávací znamení")
+			P=NULL;delete P;
+			//F->Memo(Pohon->palec->predchozi->n);
+		}
 	}
 }
 ////---------------------------------------------------------------------------
@@ -4538,6 +4558,71 @@ void Cvektory::vloz_segment_retezu(TRetez *Retez,TPohon *Pohon)
 	Retez->dalsi=NULL; //nový prvek neukazuje na žádný další prvek, resp. ukazuje na NULL
 	Pohon->retez->predchozi->dalsi=Retez;//za poslední aktuální prvek vloží nový poslední
 	Pohon->retez->predchozi=Retez;//hlavička nově ukazuje již na nový bod jako poslední prvek
+}
+////---------------------------------------------------------------------------
+//od daného pohonu resp. řetězu posune palce o daný časový úsek
+void Cvektory::posun_palce_retezu()
+{
+	TPohon *Pohon=POHONY->dalsi;//přeskočí hlavičku
+	while(Pohon!=NULL)
+	{
+		if(Pohon->retez!=NULL && Pohon->palec!=NULL)
+		{
+			////vstupní proměnné či ukazatele
+			TRetez *R=Pohon->retez->dalsi;//přeskočí hlavičku ŘETĚZ
+			TPalec *P=Pohon->palec->dalsi;//přeskočí hlavičku PALCE
+			Pohon->umisteni+=fmod(F->sTIME*Pohon->aRD,Pohon->roztec);//aktuální čas simulace * rychlost pohonu
+			if(Pohon->n==1)F->Memo(String(Pohon->umisteni)+" "+String(Pohon->roztec));
+			////vynulování umístění, objevil se nový palec
+			if(Pohon->umisteni>=Pohon->roztec)
+			{
+				///objevil se nový palec, tzn. posune se zpět o celý úsek rozteče (tj. jak kdyby neustále rozteč byla odečítáná při přetečení)
+				//Pohon->umisteni-=Pohon->roztec;
+				///přeskládání spojáku pálců a to tak, že poslední palec bude první (hned za hlavičkou), původně první bude druhý, původně předposlední bude poslední atd
+				TPalec *P1=Pohon->palec->predchozi;//uložení původně posledního, následně prvního
+				//hlavička
+				Pohon->palec->dalsi=P1;//na první místo za hlavičku
+				Pohon->palec->predchozi=P1->predchozi;//hlavička ukazuje na poslední prvek na původní předposlední
+				//nový první, původně poslední
+				P1->predchozi->dalsi=NULL;//původní předposlední bude uzavírat spojový seznam
+				P1->predchozi=Pohon->palec;//je první, tedy předchůdce je hlavička
+				P1->dalsi=P;//nový první ukazuje na další na původní první nyní druhý
+				//nyní druhý, původní první
+				P->predchozi=P1;//ukazuje na předchůdce místo na hlavičku na nyní první (původně poslední)
+				//pro další použítí nahraje do globálního ukazatele prního palce, nový ukazatel na první palec
+				P=P1;
+				P1=NULL;delete P1;
+			}
+
+			////procházení jednotlivých elementů pro tvorbů řetězu
+			while(R!=NULL)
+			{
+				while(m.round2double(Pohon->umisteni,3)<=R->geo.delka)//m.round2double(Pohon->umisteni,3) je nasazeno kvůli nepřesnosti v číselném řádu
+				{
+					//výpočet souřadnic a rotace jigu dle aktuálního umístění
+					TPointD_3D Pt=m.getPt(R->geo.radius,R->geo.orientace,R->geo.rotacni_uhel,R->geo.X1,R->geo.Y1,R->geo.X4,R->geo.Y4,Pohon->umisteni/R->geo.delka,Pohon->umisteni/R->geo.delka);
+					P->X=Pt.x;P->Y=Pt.y;P->orientace=Pt.z;
+					P=P->dalsi;
+					//navýšení umístění dle rozteče
+					Pohon->umisteni+=Pohon->roztec;
+				}
+				//kalkulace s umístěním palce pro další segment
+				Pohon->umisteni-=R->geo.delka;//zbytek z předchzejícího geometrického úseku, který nestihl být zohledněn převeden na další geometrický úsek, resp. element = výchozí umístění v dalším elementu
+				R=R->dalsi;
+			}
+			////pokud existují ještě nějaké palce, které nejsou vidět (jsou mimo viditelnou část řetězu), tak jim zneplatní souřadnice,
+			while(P!=NULL)
+			{
+				P->X=DOUBLE_MIN;P->Y=DOUBLE_MIN;P->orientace=DOUBLE_MIN;//zneplatní souřadnice, což zajistí, že tento palec nebude zatím vidět (jedná se o "poznávací znamení")
+				P=P->dalsi;
+			}
+			////odstranění již nepotřebných ukazatelů
+			R=NULL;delete R;
+			P=NULL;delete P;
+		}
+		Pohon=Pohon->dalsi;
+	}
+	Pohon=NULL;delete Pohon;
 }
 ////---------------------------------------------------------------------------
 //danému pohonu vloží jeden palec
@@ -6314,7 +6399,7 @@ void Cvektory::vytvor_KATALOG()
   vloz_do_typu_dopravniku(vR,1500);
   vloz_do_typu_dopravniku(vR,2500);
 
-    ////Standa VaV
+	////Standa VaV
 	vloz_typ_dopravniku("Standa_VaV","http://galatek.cz",0);
 	vloz_do_typu_dopravniku(R,1800);
 	vloz_do_typu_dopravniku(R,1805);
@@ -6324,11 +6409,28 @@ void Cvektory::vytvor_KATALOG()
 	vloz_do_typu_dopravniku(hO,30);
 	vloz_do_typu_dopravniku(hO,15);
 	//horizontální radiusy
-  vloz_do_typu_dopravniku(hR,700);
+	vloz_do_typu_dopravniku(hR,700);
 	//vertikální oblouky
 	vloz_do_typu_dopravniku(vO,0);
 	//vertikální radiusy
-  vloz_do_typu_dopravniku(vR,0);
+	vloz_do_typu_dopravniku(vR,0);
+
+	////Testy
+	vloz_typ_dopravniku("TESTY","nic.cz",0);
+	vloz_do_typu_dopravniku(R,180);
+	vloz_do_typu_dopravniku(R,500);
+	vloz_do_typu_dopravniku(R,1800);
+	//horizontální oblouky
+	vloz_do_typu_dopravniku(hO,90);
+	vloz_do_typu_dopravniku(hO,45);
+	vloz_do_typu_dopravniku(hO,30);
+	vloz_do_typu_dopravniku(hO,15);
+	//horizontální radiusy
+	vloz_do_typu_dopravniku(hR,1000);
+	//vertikální oblouky
+	vloz_do_typu_dopravniku(vO,0);
+	//vertikální radiusy
+	vloz_do_typu_dopravniku(vR,0);
 }
 //---------------------------------------------------------------------------
 //dla zadaného n vrátí daný typ dopravníku formou ukazatatele

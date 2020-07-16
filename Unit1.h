@@ -703,7 +703,7 @@ public:		// User declarations
 	bool posun_dalsich_elementu;//indikuje zda je požadován posun dalších elementù
 	bool mazani;
 	bool zobrazeni_tabulek;
-	double Poffset;
+	double sTIME;//simulaèní èas
 	bool refresh_mGrid;//nevykresluje se z buffru ale pøímo
 	bool nabuffrovano;//udržuje, zda je buffer mgridových rastrù aktuální
 	bool duvod_ulozit_nahled;//uchovává v sobì dùvod k uložení náhledu
@@ -772,7 +772,7 @@ public:		// User declarations
 	double outR(double outR);
 	double inRz(double inRz);
 	double outRz(double outRz);
-	void Memo(AnsiString Text,bool clear=false,bool count=false);//urychlení vypsání do Memo_testy
+	void Memo(AnsiString Text,bool clear=false,bool count=false,bool copyFinalTextToClipboard=false);//urychlení vypsání do Memo_testy
 	void log(AnsiString Text,AnsiString Text2="");//zapíše log do textového souboru a pøidá datum
 	TRect souradnice_LO(Cvektory::TElement *E);//vrací souøadnice (PX) lakovacího okna elementu pokud nìjaké má,pokud ne vrátí souøadnice elementu
 	short prekryti_LO(Cvektory::TElement *E);//prozkoumá zda se element nepøekrýva lak. oknem se sousedními,  0=nepøkrývá se, 1=pøekrývá se LO, 2=pøekrývá se zóna

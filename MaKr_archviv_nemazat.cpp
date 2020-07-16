@@ -251,3 +251,30 @@ TDateTime start;
 	Memo("------------");
 	Memo("Průměrný čas otevření: "+AnsiString(celkem_otevreni/(double)pocet_kroku));
 	Memo("Průměrný čas zavření: "+AnsiString(cas/(double)pocet_kroku));
+
+	for(unsigned long i=0;i<=1000;i++)
+	{
+		Memo(m.RAND(1.1,9.1,1,true,false),false,false,true);
+	}
+
+
+
+		TColor clRetez=clBlue;if((int)m.RAND(1,2)%2)clRetez=clGreen;
+		set_pen(canv,clRetez,F->Zoom*0.5*2);//nastavení pera
+		Cvektory::TRetez *R=Retez->dalsi;
+		unsigned long i=0;
+		unsigned long pocet=4*Retez->predchozi->n-(Retez->predchozi->n-1);
+		TPoint *POLE=new TPoint[pocet];
+		while(R!=NULL)
+		{
+			//plnění jednoho segmentu do pole
+			if(i==0)POLE[i]=TPoint(m.L2Px(R->geo.X1),m.L2Py(R->geo.Y1));
+			POLE[i]=TPoint(m.L2Px(R->geo.X2),m.L2Py(R->geo.Y2));
+			POLE[i]=TPoint(m.L2Px(R->geo.X3),m.L2Py(R->geo.Y3));
+			POLE[i]=TPoint(m.L2Px(R->geo.X4),m.L2Py(R->geo.Y4));
+			i++;
+			//ukazatelové záležitosti
+			R=R->dalsi;//posun na další element
+		}
+		//vykreslení celého segmentu
+		canv->PolyBezier(POLE,pocet-1);
