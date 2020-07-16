@@ -4863,7 +4863,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 	{
 		int puvJID=JID;//záloha původního JID
 		Cvektory::TBod *pom_bod_puv=pom_bod;
-		Cvektory::TObjekt *predchozi_pom=pom; 
+		Cvektory::TObjekt *predchozi_pom=pom;
 		getJobID(X,Y);//zjištění aktuálního JID
 		if(puvJID!=JID || pom_bod_puv!=pom_bod)//pokud došlo ke změně JID, nebo změně bodu bez změny JID, jinak nemá smysl řešit
 		{
@@ -6488,9 +6488,9 @@ void TForm1::add_vyhybka_spojka()
 			if(zobrazit_popisek_pohonu==1)scGPCheckBox_popisek_pohonu->Checked=true;
 			else scGPCheckBox_popisek_pohonu->Checked=false;
 			TIP=ls->Strings[478];//zobrazení nápovědy jak otevřít editace sekundární větve po dokončení vložení výhybky
+			d.v.aktualizuj_cestu_teplomeru();
 			vytvor_statickou_scenu();//aktualizace BMP statické scény, nově výhybka a spojka, nutné aktualizovat
 			REFRESH();//nesmí zde být způsobí špatné vykreslení elementů (nekompletní linka)
-			d.v.aktualizuj_cestu_teplomeru();
 		}
 		//pozicování mgridu, doladit podle finálních rozměrů tabulky
 		if(E->orientace==0 || E->orientace==180){E->Xt=E->X-1.9;E->Yt=E->Y+2.1;}
@@ -17144,7 +17144,7 @@ void __fastcall TForm1::scGPGlyphButton_undoClick(TObject *Sender)
 			if(OBJEKT_akt!=NULL)mGrid_on_mGrid();//naplní comba tabulek a zkontroluje překrytí
 			if(!scGPGlyphButton_redo->Enabled)scGPGlyphButton_redo->Enabled=true;//pokud bylo provedeno undo a btn na redu neni povolen ... povolit
 			if(d.v.pozice_data==1 && scGPGlyphButton_redo->Enabled)scGPGlyphButton_undo->Enabled=false;//jsem na posledním záznamu, nepovolit dále se vracet ... btn undo zakázat
-      if(OBJEKT_akt!=NULL)posledni_editovany_element=OBJEKT_akt->element;//musí být pro geometrii, kurzor by zůstal vyset ve vzduchu
+			if(OBJEKT_akt!=NULL)posledni_editovany_element=OBJEKT_akt->element;//musí být pro geometrii, kurzor by zůstal vyset ve vzduchu
 			REFRESH();
 		}
 	}
@@ -17163,7 +17163,7 @@ void __fastcall TForm1::scGPGlyphButton_redoClick(TObject *Sender)
 		if(OBJEKT_akt!=NULL)mGrid_on_mGrid();//naplní comba tabulek a zkontroluje překrytí
 		if(d.v.pozice_data==d.v.DATA->predchozi->n && scGPGlyphButton_redo->Enabled)scGPGlyphButton_redo->Enabled=false;//dostal jsem se na konec, není kam dál redo použít ... zakázat redo btn
 		if(!scGPGlyphButton_redo->Enabled)scGPGlyphButton_undo->Enabled=true;//bylo provedeno redo, pokud není povolený btn na undo ... povolit
-    REFRESH();
+		REFRESH();
 	}
 	else if(scGPGlyphButton_redo->Enabled)scGPGlyphButton_redo->Enabled=false;
 }
