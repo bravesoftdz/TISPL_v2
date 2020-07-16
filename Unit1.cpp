@@ -3133,11 +3133,11 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 							if(JID==0){Akce=MOVE_BOD;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;ortogonalizace_stav=false;}//posun jednoho bodu
 							if(JID==1||JID==4){Akce=MOVE_USECKA;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//posun úsečky
 							if(JID==2){Akce=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//změna offsetu kót
-							if(JID==-6){Akce=MOVE_TEXT;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//posun názvu v layoutu
+							if(JID==-6){Akce=MOVE_TEXT;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;vytvor_statickou_scenu();}//posun názvu v layoutu
 						}
 						else if(MOD==TVORBA_CESTY)
 						{
-              if(pom_element_temp!=NULL)
+							if(pom_element_temp!=NULL)
 							{
 								Cvektory::TElement *epom=NULL;
 								bool pridat=true;
@@ -3828,7 +3828,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				pom->Yt+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
       }
 			minule_souradnice_kurzoru=TPoint(X,Y);
-			REFRESH(false);
+			REFRESH();
 			break;
     }
 		case ROZMER_KOMORA://změna rozmerů komor pomocí úchopu
@@ -14087,6 +14087,8 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	Cvektory::TElement *E=OBJEKT_akt->teplomery->dalsi->posledni;
 //	E->mGrid->DeleteRow(E->mGrid->RowCount-1,false);
 //	E->mGrid->Update();
+	if(m.between(4,1,4))Memo("v rozmezí");
+  else Memo("mimo rozmezí");
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

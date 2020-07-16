@@ -1192,12 +1192,11 @@ void TFormX::validace_aRD(bool pouze_rozmezi)
 		unsigned int pro_pohon=0;
   	dopRD=0;
 		//kontrola zda je zadaná hodnota v rozmezí
-		if(F->m.between(F->OBJEKT_akt->pohon->aRD,F->OBJEKT_akt->pohon->rychlost_od,F->OBJEKT_akt->pohon->rychlost_do)) mimo_rozmezi=false;
+		if(F->m.between(F->OBJEKT_akt->pohon->aRD,F->OBJEKT_akt->pohon->rychlost_od,F->OBJEKT_akt->pohon->rychlost_do))mimo_rozmezi=false;
 		else mimo_rozmezi=true;
   	//zadaná rychlost je mimo rozsah
   	if(mimo_rozmezi && F->OBJEKT_akt->pohon->aRD > 0)
   	{
-			//if(F->PmG->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
   		F->PmG->ShowNote(F->ls->Strings[220],F->d.clError,14);//"Rychlost neodpovídá rozmezí!"
 			//povolit_zakazat_editaci(false);
 			pro_pohon=F->OBJEKT_akt->pohon->n;//uložení pro který pohon platí validace
@@ -1207,14 +1206,27 @@ void TFormX::validace_aRD(bool pouze_rozmezi)
   	if(F->OBJEKT_akt->pohon->aRD > 0 && !pouze_rozmezi)
   	{
 			//výpoèet doporuèené rychosti
-			double dopRD1=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,0,F->OBJEKT_akt->pohon->roztec,F->d.v.PP.TT,F->OBJEKT_akt->pohon->aRD);
-			double dopRD2=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,90,F->OBJEKT_akt->pohon->roztec,F->d.v.PP.TT,F->OBJEKT_akt->pohon->aRD);
-			if(dopRD1>dopRD2)dopRD=dopRD1;//vypíše vìtší hodnotu
-			else dopRD=dopRD2;
+			double dopRD1=0,dopRD2=0,aRD=F->OBJEKT_akt->pohon->aRD;
+			unsigned int n=0;
+			do
+			{
+				//navyšování nebo snižování testovací rychlosti, tak aby byla v rozsahu pohonu
+				if(n!=0)
+				{
+					if(F->OBJEKT_akt->pohon->aRD>F->OBJEKT_akt->pohon->rychlost_do || (F->OBJEKT_akt->pohon->aRD<F->OBJEKT_akt->pohon->rychlost_do && F->OBJEKT_akt->pohon->rychlost_do-F->OBJEKT_akt->pohon->aRD>0 && F->OBJEKT_akt->pohon->rychlost_do-F->OBJEKT_akt->pohon->aRD<F->OBJEKT_akt->pohon->aRD-F->OBJEKT_akt->pohon->rychlost_od))aRD=0.99*aRD;//snižování hodnoty o 1%
+					else aRD=1.01*aRD;//navýšení hodnoty o 1%
+				}
+				//výpoèet doporuèených rychlostí
+				dopRD1=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,0,F->OBJEKT_akt->pohon->roztec,F->d.v.PP.TT,aRD);
+				dopRD2=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,90,F->OBJEKT_akt->pohon->roztec,F->d.v.PP.TT,aRD);
+				//zapsání menší hodnoty jako dopRD
+				if(dopRD1>dopRD2)dopRD=dopRD1;//vypíše vetší hodnotu
+				else dopRD=dopRD2;
+				n++;
+			}while(!F->m.between(dopRD,F->OBJEKT_akt->pohon->rychlost_od,F->OBJEKT_akt->pohon->rychlost_do));
 			//je zvolen pohon, jeho aktuální rychlost se nerovná doporuèené
 			if(F->OBJEKT_akt->pohon->roztec>0 && F->ms.MyToDouble(dopRD)!= F->ms.MyToDouble(F->OBJEKT_akt->pohon->aRD) && mimo_rozmezi==false)
 			{
-				//if(F->PmG->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
   			F->PmG->ShowNote(F->ls->Strings[221]+" <a>"+AnsiString(F->m.round2double(F->outaRD(dopRD),3))+"</a> "+jednotky,F->d.clError,14);//"Zadejte doporuèenou rychlost pohonu:"
       	pro_pohon=F->OBJEKT_akt->pohon->n;//uložení pro který pohon platí validace
 			}
@@ -1252,7 +1264,6 @@ void TFormX::validace_aRD(bool pouze_rozmezi)
 		if(!F->m.between(F->OBJEKT_akt->pohon->aRD,F->OBJEKT_akt->pohon->rychlost_od,F->OBJEKT_akt->pohon->rychlost_do))
 		{
     	F->PmG->ShowNote(F->ls->Strings[220],F->d.clError,14);//"Rychlost neodpovídá rozmezí!"
-			//povolit_zakazat_editaci(false);
 			pro_pohon=F->OBJEKT_akt->pohon->n;//uložení pro který pohon platí validace
 		}
 		//pokud probìhla validace s problémem
@@ -1309,10 +1320,11 @@ void TFormX::naplneni_dopRD()
 {
 	if(F->PmG!=NULL)
 	{
+		vstoupeno_poh=false;//musí dojít k blokaci onchange, jinak se do aRD nahraje zaokrouhlená hodnota
 		int opraveny_pohon=validovany_pohon;
 		vstoupeno_elm=false;
-		F->OBJEKT_akt->pohon->aRD=dopRD;
 		F->PmG->Cells[3][rychlost].Text=F->m.round2double(F->outaRD(dopRD),3);
+		F->OBJEKT_akt->pohon->aRD=dopRD;
 		zmena_aRD();//postará se o aktualizaci všech tabulek
 		validace_aRD();//znovuspuštìní valiace
 		if(opraveny_pohon==validovany_pohon)validovany_pohon=0;//byla odstranìn problém
@@ -1364,6 +1376,7 @@ bool TFormX::check_click_Note(double X,double Y,bool check_for_highlight)
 			case 200:
 			case 300://naplnìní RD
 			{
+        vstoupeno_elm=false;//musí dojít k blokaci onchange, jinak se do aRD nahraje zaokrouhlená hodnota
 				int opraveny_pohon=validovany_pohon;
 				vstoupeno_elm=false;
 				Cvektory::TPohon *p=F->d.v.vrat_pohon(validovany_pohon);
@@ -1725,10 +1738,24 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 					if (p->aRD > 0)
 	     		{
 	     			//výpoèet doporuèené rychosti
-						double dopRD1=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,0,p->roztec,F->d.v.PP.TT,p->aRD);
-						double dopRD2=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,90,p->roztec,F->d.v.PP.TT,p->aRD);
-						if(dopRD1>dopRD2)dopRD=dopRD1;//vypíše vìtší hodnotu
-	     			else dopRD=dopRD2;
+		      	double dopRD1=0,dopRD2=0,aRD=F->OBJEKT_akt->pohon->aRD;
+		      	unsigned int n=0;
+		      	do
+		      	{
+		      		//navyšování nebo snižování testovací rychlosti, tak aby byla v rozsahu pohonu
+		      		if(n!=0)
+		      		{
+								if(F->OBJEKT_akt->pohon->aRD>F->OBJEKT_akt->pohon->rychlost_do || (F->OBJEKT_akt->pohon->aRD<F->OBJEKT_akt->pohon->rychlost_do && F->OBJEKT_akt->pohon->rychlost_do-F->OBJEKT_akt->pohon->aRD>0 && F->OBJEKT_akt->pohon->rychlost_do-F->OBJEKT_akt->pohon->aRD<F->OBJEKT_akt->pohon->aRD-F->OBJEKT_akt->pohon->rychlost_od))aRD=0.99*aRD;//snižování hodnoty o 1%
+								else aRD=1.01*aRD;//navýšení hodnoty o 1%
+		      		}
+		      		//výpoèet doporuèených rychlostí
+		      		dopRD1=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,0,F->OBJEKT_akt->pohon->roztec,F->d.v.PP.TT,aRD);
+		      		dopRD2=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,90,F->OBJEKT_akt->pohon->roztec,F->d.v.PP.TT,aRD);
+		      		//zapsání menší hodnoty jako dopRD
+		      		if(dopRD1>dopRD2)dopRD=dopRD1;//vypíše vetší hodnotu
+		      		else dopRD=dopRD2;
+		      		n++;
+						}while(!F->m.between(dopRD,F->OBJEKT_akt->pohon->rychlost_od,F->OBJEKT_akt->pohon->rychlost_do));
 	     			//je zvolen pohon, jeho aktuální rychlost se nerovná doporuèené
 						if(p->roztec>0 && F->ms.MyToDouble(dopRD)!= F->ms.MyToDouble(p->aRD) && mimo_rozmezi==false)
 	     			{
