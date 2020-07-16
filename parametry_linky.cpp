@@ -316,33 +316,14 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender) {
   }
   nastav_edity(); // nastaví edity
 
-  // if(Form1->d.v.navrhni_POHONY()=="")
-  // {
-  // scGPButton_doporucene->Visible=false;
-  // rHTMLLabel_doporuc_pohony->Caption=""; // neexistují žádné objekty -> neumím spoèítat doporuè. rychlosti
-  // }
-  // else
-  // {
-  // scGPButton_doporucene->Visible=false;
-  // rHTMLLabel_doporuc_pohony->Caption="Navržené pohony pro objekty bez pøiøazených pohonù:";
-  // }
-
   if (Form1->STATUS == Form1->NAVRH) // Architekt
   {
-    // scGPButton_vozik->Caption="   Vozík";
-    // scGPButton_vozik->ImageIndex=21;
-    // scGPButton_obecne->Caption="   Takt time";
     scHTMLLabel_takt->Visible = true;
     rEditNum_takt->Visible = true;
     scHTMLLabel_sirka_jig->Visible = true;
   }
   else // Klient
   {
-    // scGPButton_vozik->Caption="   Jig";
-    // scGPButton_vozik->ImageIndex=19;
-    // scGPButton_pohon->Caption="   Pohon";
-    // rHTMLLabel_sirka_jig->Visible=false;
-
     scGPButton_obecne->Visible = false;
     scHTMLLabel_takt->Visible = false;
     rEditNum_takt->Visible = false;
@@ -361,8 +342,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender) {
 
   if (!data_nalezena) {
     PL_mGrid->RowCount = 2; // slouèená hlavièka jsou 2 øádky
-    PL_mGrid->Columns[7].Width = 190 + 30;
-    PL_mGrid->Columns[8].Width = 1;
+    PL_mGrid->Columns[7].Width = 25;
+    PL_mGrid->Columns[8].Width = 0;
 
   }
 
@@ -497,6 +478,10 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender) {
   scHTMLLabel_posuvnik->Left =
       (scGPTrackBar_uchyceni->Left + scGPTrackBar_uchyceni->Width + 10) -
       scPanel_vozik->Left;
+
+
+
+     // if(scGPGlyphButton_katalog->Caption=="Vybrat dopravník") { scGPGlyphButton_katalog->Font->Color=clRed; ShowMessage("ted"); }
 }
 
 // ---------------------------------------------------------------------------
@@ -507,7 +492,7 @@ void TForm_parametry_linky::nacti_pohony() {
   Cvektory::TPohon *ukaz = Form1->d.v.POHONY->dalsi;
   if (ukaz != NULL) {
     PL_mGrid->RowCount = Form1->d.v.POHONY->predchozi->n + 2;
-    PL_mGrid->Refresh(); // nutné
+    PL_mGrid->Update(); // nutné
     data_nalezena = true; // pokud jsou ve spojaku nejaka data, nastavit na true
     for (unsigned int i = 2; i < PL_mGrid->RowCount; i++) {
       // OBJEKTY_POUZIVAJICI_POHON = Form1->d.v.vypis_objekty_vyuzivajici_pohon(ukaz->n);
@@ -539,7 +524,7 @@ void TForm_parametry_linky::nacti_pohony() {
      // PL_mGrid->Cells[6][i].Text=i;
       PL_mGrid->Cells[5][i].Type = PL_mGrid->COMBO;
       PL_mGrid->Cells[6][i].Type = PL_mGrid->CHECK;
-      PL_mGrid->Refresh();
+      PL_mGrid->Update();
       // kvùli práci s combem je nutný refresh po nastavení na typ COMBO
       TscGPComboBox *C = PL_mGrid->getCombo(5, i);
       TscGPListBoxItem *I;
@@ -571,7 +556,7 @@ void TForm_parametry_linky::nacti_pohony() {
           // obrácenì, jelikož v katalogu jsou vždy mm
           else
             I->Caption = H->hodnota;
-          C->ItemIndex = ukaz->Rx; // RX se využívá jako ITEMINDEX položky
+          C->ItemIndex = ukaz->roztec_ID; // ITEMINDEX položky
           H = H->dalsi;
         }
         I = NULL;
@@ -620,7 +605,7 @@ void TForm_parametry_linky::nacti_pohony() {
         // PL_mGrid->Cells[7][i].Type = PL_mGrid->BUTTON;
         PL_mGrid->Cells[8][i].Type = PL_mGrid->glyphBUTTON;
 
-        PL_mGrid->Refresh();
+        PL_mGrid->Update();
         // PL_mGrid->getButton(7, i)->Options->NormalColor =
         // (TColor)RGB(250, 250, 250);
         // PL_mGrid->getButton(7, i)->Options->NormalColorAlpha = 250;
@@ -635,10 +620,11 @@ void TForm_parametry_linky::nacti_pohony() {
         PL_mGrid->Cells[5][i].InputNumbersOnly = 2;
       }
 
-      PL_mGrid->Refresh();
+      PL_mGrid->Update();
       // kvùli prací s následných Checkboxem je nutný refresh
 
-      if (Form1->d.v.pohon_je_pouzivan(ukaz->n)) {
+      if (Form1->d.v.pohon_je_pouzivan(ukaz->n))
+      {
         input_state = R;
         PL_mGrid->getCheck(6, i)->ShowHint = true;
         PL_mGrid->getCheck(6, i)->Hint = "Zrušit pøiøazení k objektùm";
@@ -659,8 +645,7 @@ void TForm_parametry_linky::nacti_pohony() {
         // PL_mGrid->Cells[2][i].Background->Color= Form_parametry_linky->Color;
         // PL_mGrid->Cells[3][i].Background->Color=  PL_mGrid->Cells[2][i].Background->Color;
         PL_mGrid->Cells[4][i].Background->Color = Form_parametry_linky->Color;
-        PL_mGrid->Cells[5][i].Background->Color =
-            PL_mGrid->Cells[4][i].Background->Color;
+        PL_mGrid->Cells[5][i].Background->Color = PL_mGrid->Cells[4][i].Background->Color;
         // PL_mGrid->Cells[7][i].Background->Color =  PL_mGrid->Cells[4][i].Background->Color;
 
         // PL_mGrid->getButton(7,i)->Options->FramePressedColor=clWhite;
@@ -669,7 +654,8 @@ void TForm_parametry_linky::nacti_pohony() {
         // PL_mGrid->getButton(7,i)->Enabled=false;
 
       }
-      else {
+      else
+      {
         input_state = R;
         PL_mGrid->getCheck(6, i)->Checked = false;
         PL_mGrid->getCheck(6, i)->Enabled = false;
@@ -686,7 +672,7 @@ void TForm_parametry_linky::nacti_pohony() {
     // F_gapoR->pohony_zmena=new TPoint[F->d.v.POHONY->predchozi->n+1]; //alokace o jednièku vyšší, nultý index není totiž využíván
     // for(unsigned int i=0; i<=F->d.v.POHONY->predchozi->n;i++){F_gapoR->pohony_zmena[i].X=false;F_gapoR->pohony_zmena[i].Y=false;}
 
-    PL_mGrid->Refresh();
+    PL_mGrid->Update();
     // R- zakoment scGPGlyphButton_DEL_nepouzite->Visible=true;
     input_state = NOTHING;
 
@@ -724,7 +710,8 @@ void __fastcall TForm_parametry_linky::KonecClick(TObject *Sender) {
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender) {
+void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
+{
   F->log(__func__); // logování
   Changes = false; // obecna zmena = zmena PP ci TT
   Changes_TT = false; // konkretni zmena TT
@@ -744,33 +731,6 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender) {
   bool volat_aktualizaci = false;
   int aktualizace_id;
 
-  // scCheckBox_vyber_produkt->Visible=false;
-  // scComboBox_vyber_produkt->Visible=false;
-
-  // pøed samotným uložením, kontrola zdali jsou podstatné údaje u pohonu nastaveny
-  // pokud nìco chybí, zakážu uložení
-  // int count=0;
-  //
-  // for (unsigned int i = 2; i < PL_mGrid->RowCount; i++)
-  // {
-  // if(PL_mGrid->Cells[2][i].Text=="") count++;
-  // if(PL_mGrid->Cells[3][i].Text=="") count++;
-  // if(PL_mGrid->Cells[4][i].Text=="") count++;
-  // //if(PL_mGrid->Cells[5][i].Text=="") count++;
-  // if(PL_mGrid->getCombo(5,i)->Text=="") count++;
-  // }
-  //
-  // if(count>0)
-  // {
-  //
-  // scStyledForm2->ShowClientInActiveEffect();
-  //
-  // if(mrOk==Form1->MB("Nelze uložit, vyplòte všechny údaje o pohonu",MB_OK))
-  // {
-  // Ulozit=false;
-  // scStyledForm2->HideClientInActiveEffect();
-  // }
-  // }
   // uložení katalogu
   F->d.v.PP.katalog = katalog_id;
   F->d.v.PP.radius = radius;
@@ -794,14 +754,16 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender) {
   }
 
   // ukladej
-  if (Ulozit) {
+  if (Ulozit)
+  {
     zrusit_prirazeni_smazanych_ci_odrazenych_pohunu_k_objektum(); // i elementùm
     Form1->d.v.vymaz_seznam_POHONY();
     Form1->d.v.hlavicka_POHONY();
 
     bool nelze_ulozit = false;
 
-    for (unsigned int i = 2; i < PL_mGrid->RowCount; i++) {
+    for (unsigned int i = 2; i < PL_mGrid->RowCount; i++)
+    {
       double rychlost_od;
       double rychlost_do;
       double roztec;
@@ -815,53 +777,58 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender) {
       else
         nazev = PL_mGrid->Cells[1][i].Text;
 
-      if (PL_mGrid->Cells[2][i].Text == "") {
+      if (PL_mGrid->Cells[2][i].Text == "")
+      {
         rychlost_od = 0;
         nelze_ulozit = true;
       }
       else
-        rychlost_od = Form1->ms.MyToDouble(PL_mGrid->Cells[2][i].Text) /
-            (1 + 59.0 * aRDunit);
+        rychlost_od = Form1->ms.MyToDouble(PL_mGrid->Cells[2][i].Text) / (1 + 59.0 * aRDunit);
 
-      if (PL_mGrid->Cells[3][i].Text == "") {
+      if (PL_mGrid->Cells[3][i].Text == "")
+      {
         rychlost_do = 0;
         nelze_ulozit = true;
       }
       else
-        rychlost_do = Form1->ms.MyToDouble(PL_mGrid->Cells[3][i].Text) /
-            (1 + 59.0 * aRDunit);
+        rychlost_do = Form1->ms.MyToDouble(PL_mGrid->Cells[3][i].Text) / (1 + 59.0 * aRDunit);
 
-      if (PL_mGrid->Cells[4][i].Text == "") {
+      if (PL_mGrid->Cells[4][i].Text == "")
+      {
         aRD = 0;
         nelze_ulozit = true;
       }
       else
-        aRD = Form1->ms.MyToDouble(PL_mGrid->Cells[4][i].Text) /
-            (1 + 59.0 * aRDunit);
+        aRD = Form1->ms.MyToDouble(PL_mGrid->Cells[4][i].Text) / (1 + 59.0 * aRDunit);
 
       // ShowMessage(PL_mGrid->getCombo(5,i)->Items->operator [](PL_mGrid->getCombo(5,i)->ItemIndex)->Caption);
-      roztec = F->ms.MyToDouble(PL_mGrid->getCombo(5, i)->Items->operator[]
-          (PL_mGrid->getCombo(5, i)->ItemIndex)->Caption);
-      if (Runit == MM)
-        roztec /= 1000.0;
+      roztec = F->ms.MyToDouble(PL_mGrid->getCombo(5, i)->Items->operator[](PL_mGrid->getCombo(5, i)->ItemIndex)->Caption);
+      if (Runit == MM) roztec /= 1000.0;
 
-      if (PL_mGrid->getButton(7, i)->Caption == "") {
-        Rz = 0.0;
-        Rx = 0.0;
-      } // pokud není pohon pøiøazen nuluj
+//      if (PL_mGrid->getCheck(6, i)->Checked==false)
+//      {
+//        Rz = 0.0;
+//        Rx = 0.0;
+//        ShowMessage("false");
+//      } // pokud není pohon pøiøazen nuluj
+      Rz = 0.0;
+      Rx = 0.0;
 
-      Rx = PL_mGrid->getCombo(5, i)->ItemIndex;
-      // využití RX pro ItemIndex položky
+      int roztec_id=0;
+      roztec_id = PL_mGrid->getCombo(5, i)->ItemIndex;
+      // ItemIndex položky
       // uložení pohonu do spojáku
-      Form1->d.v.vloz_pohon(nazev, rychlost_od, rychlost_do, aRD, roztec,
-          Rz, Rx);
+      Form1->d.v.vloz_pohon(nazev, rychlost_od, rychlost_do, aRD, roztec,Rz, Rx,roztec_id);
 
       // všem objektùm, které mìly pøiøazen pohon s oldN(oldID), pøiøadí pohon s newN(newID), podle toho, jak jsou ukládány novì do spojáku, dùležité, pokud dojde k narušení poøadí ID resp n pohonù a poøadí jednotlivých øádkù ve stringridu, napø. kopirováním, smazáním, zmìnou poøadí øádkù atp., øeší i pro pøípad napø. 2->3,3->4 pomocí atributu objektu probehla_aktualizace_prirazeni_pohonu (aby prvnì nebyl pøiøezn pohon s id 2 na 3 a potom všechny pohony s id 3 na pohon 4, protože mìly být pøiøazený jen nìkteré...)
       Form1->d.v.aktualizace_prirazeni_pohonu_k_objektum(getPID(i), i - 1);
       Form1->d.v.aktualizace_prirazeni_pohonu_k_elementum(getPID(i), i - 1);
+      // ShowMessage(Rx);
     }
+     F->d.v.aktualizuj_parametry_pouzivanych_pohonu();
     // po dokonèení aktualizace pøiøazení pohonu (pøi ukládání pohonu na PL) vrátí atribut probehla_aktualizace_prirazeni_pohonu všech objektù na false, aby bylo pøipraveno k dalšímu opìtovnému užítí, nepøímo spolupracuje s metodou výše uvedenou aktualizace_prirazeni_pohonu_k_objektum
     Form1->d.v.aktualizace_prirazeni_pohonu_dokoncena();
+
     //
 
     // docasne - resim pouze rozmery Jigu neporovnamvam tedy vuci voziku
@@ -969,7 +936,7 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender) {
     if (i == 2)
       PL_mGrid->Cells[8][i].Type = PL_mGrid->glyphBUTTON;
 
-    PL_mGrid->Refresh();
+    PL_mGrid->Update();
 
     TscGPComboBox *C = PL_mGrid->getCombo(5, i);
     TscGPListBoxItem *I;
@@ -998,6 +965,7 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender) {
     setADD_ButtonPosition();
     setFormHeight();
     // R - zakoment scGPGlyphButton_DEL_nepouzite->Visible=true;
+    PL_mGrid->Refresh();
     vykresli_obdelnik_vpravo();
     input_state = NOTHING;
   }
@@ -1009,47 +977,11 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender) {
     F->MB(text);
     scStyledForm2->HideClientInActiveEffect();
   }
+
 }
 
 // ---------------------------------------------------------------------------
 // smaže poslední øádek - již se nepoužívá, ale nechvám
-void __fastcall TForm_parametry_linky::Button_DEL_Click(TObject *Sender) {
-  // if(Form1->d.v.pohon_je_pouzivan(rStringGridEd_tab_dopravniky->RowCount-1))
-  // {
-  // AnsiString objekty=Form1->d.v.vypis_objekty_vyuzivajici_pohon(getPID(rStringGridEd_tab_dopravniky->RowCount-1),true);
-  // if(mrOk==Form1->MB("Pohon je používán pro objekty: <b>"+objekty+"</b>. Opravdu má být pohon smazán?",MB_OKCANCEL)){
-  //
-  // //pùvodní zakomentovaná konstrukcenefunguje správnì pro pøípad storna, proto øeší následující øádek, Form1->d.v.zrusit_prirazeni_pohunu_k_objektum(getPID(rStringGridEd_tab_dopravniky->RowCount-1));
-  // zrusena_prirazeni_PID[getPID(rStringGridEd_tab_dopravniky->RowCount-1)-1]=true;
-  // rStringGridEd_tab_dopravniky->Rows[rStringGridEd_tab_dopravniky->RowCount]->Clear();
-  //
-  // if(rStringGridEd_tab_dopravniky->RowCount>1)
-  // {
-  // rStringGridEd_tab_dopravniky->RowCount--;
-  // }
-  // //	Form1->MB("Smazano");
-  // }
-  // else
-  // {
-  // //storno   - nic se nedìje
-  // }
-  // }
-  // else// pohon neni pouzivany, mohu ho smazat cokoliv ze stringgridu
-  // {
-  // rStringGridEd_tab_dopravniky->Rows[rStringGridEd_tab_dopravniky->RowCount]->Clear();
-  // if(rStringGridEd_tab_dopravniky->RowCount>1)
-  // {
-  // rStringGridEd_tab_dopravniky->RowCount--;
-  // }
-  // }
-  //
-  // //	for (long i = 1; i < rStringGridEd_tab_dopravniky->RowCount; i++)
-  // //	rStringGridEd_tab_dopravniky->Cells[0][i] = i;
-  //
-  // //pozice info tlaèítka - asi je tlaèítko stejnì provizorní
-  // pozice_scGPGlyphButton_hint();
-}
-// ---------------------------------------------------------------------------
 
 void __fastcall TForm_parametry_linky::Vypis_pohonyClick(TObject *Sender) {
   F->log(__func__); // logování
@@ -1066,30 +998,6 @@ void __fastcall TForm_parametry_linky::Vypis_pohonyClick(TObject *Sender) {
 
 // ---------------------------------------------------------------------------
 // zobrazí panel se navrženými pohony
-void __fastcall TForm_parametry_linky::scGPButton_doporuceneClick
-    (TObject *Sender) {
-  // F->log(__func__); //logování
-  // scExPanel_doporuc_pohony->Visible=false;
-  // scGPButton_doporucene->Visible=false;
-  // if(F->pom==NULL)//pokud je voláno PL pøímo                        //zajistí zobrazení ve stejných jednotkách jako na PO
-  // scHTMLLabel_doporuc_pohony->Caption=F->d.v.navrhni_POHONY("</br>",F->ms.a2i(F->readINI("nastaveni_form_parametry", "RDt")));
-  // else// pokud je PL voláno z PO                                    //zajistí zobrazení ve stejných jednotkách jako na PO
-  // scHTMLLabel_doporuc_pohony->Caption=F->d.v.navrhni_POHONY("</br>",Form_parametry->RDunitT);
-  // if(scHTMLLabel_doporuc_pohony->Caption=="")
-  // {
-  // scHTMLLabel_doporuc_pohony->Caption="Nejsou k dispozici žádné navržené pohony";
-  // scGPGlyphButton_add_mezi_pohony;
-  // scGPGlyphButton_add_mezi_pohony->Visible=false;
-  // }
-  // else
-  // {
-  // scGPGlyphButton_add_mezi_pohony->Visible=true;
-  // }
-  // šíøka komponenty dle aktuálnì zobrazeného textu
-  // Canvas->Font=scExPanel_doporuc_pohony->Font;
-  // scExPanel_doporuc_pohony->Width=Canvas->TextWidth(Form1->ms.TrimLeftFrom_UTF(scHTMLLabel_doporuc_pohony->Caption," </br>"));
-}
-// ---------------------------------------------------------------------------
 
 void __fastcall TForm_parametry_linky::rEditNum_takt_Change(TObject *Sender) {
   F->log(__func__); // logování
@@ -1237,14 +1145,14 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key,
 
         input_state = JOB;
         // pøiøazení katalogu
-        if (katalog_id == 0) {
+        if (katalog_id == 0)
+        {
           katalog_id = 1;
           radius = 1.0;
           AnsiString rad = "rádius";
           if (F->ls->Strings[191] != "")
             rad = F->ls->Strings[191];
-          scGPGlyphButton_katalog->Caption = F->d.v.KATALOG->dalsi->name +
-              ", " + rad + " " + radius * 1000.0 + " mm"; // aktualizace buttonu
+          scGPGlyphButton_katalog->Caption = F->d.v.KATALOG->dalsi->name +", " + rad + " " + radius * 1000.0 + " mm"; // aktualizace buttonu
         }
         Button_ADD_Click(this);
 
@@ -1289,7 +1197,7 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key,
         // Form_parametry_linky->Color=F->m.clIntensive(clGray,10);
       }
 
-      PL_mGrid->Refresh();
+      PL_mGrid->Update();
       input_state = NOTHING;
       vykresli_obdelnik_vpravo();
       Button_save->SetFocus();
@@ -1898,7 +1806,8 @@ double TForm_parametry_linky::getTT() {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void TForm_parametry_linky::VALIDACE(int ACol, int ARow) {
+void TForm_parametry_linky::VALIDACE(int ACol, int ARow)
+{
   F->log(__func__); // logování
   // naètení textù + jazykové mutace
   AnsiString jednotky;
@@ -1929,25 +1838,20 @@ void TForm_parametry_linky::VALIDACE(int ACol, int ARow) {
 
   case 2: // OD - RD
     {
-      double RD = F->ms.MyToDouble(PL_mGrid->Cells[4][ARow].Text) /
-          (1 + 59.0 * aRDunit);
-      double P_od = F->ms.MyToDouble(PL_mGrid->Cells[2][ARow].Text) /
-          (1 + 59.0 * aRDunit);
-      double P_do = F->ms.MyToDouble(PL_mGrid->Cells[3][ARow].Text) /
-          (1 + 59.0 * aRDunit);
-      if (Form1->m.between(RD, P_od, P_do) && P_od >= P_do / 4) {
+      double RD = F->ms.MyToDouble(PL_mGrid->Cells[4][ARow].Text)/(1 + 59.0 * aRDunit);
+      double P_od = F->ms.MyToDouble(PL_mGrid->Cells[2][ARow].Text)/(1 + 59.0 * aRDunit);
+      double P_do = F->ms.MyToDouble(PL_mGrid->Cells[3][ARow].Text)/(1 + 59.0 * aRDunit);
+      if (Form1->m.between(RD, P_od, P_do) && P_od >= P_do / 4)
+      {
         PL_mGrid->ShowNote("");
         scGPGlyphButton_ADD->Visible = true;
         Button_save->Enabled = true;
       }
-      else {
+      else
+      {
         PL_mGrid->Note.Text = "";
-        if (!Form1->m.between(RD, P_od, P_do))
-          PL_mGrid->ShowNote(rozsah, clRed, 13);
-        if (P_od < P_do / 4)
-          PL_mGrid->ShowNote(PL_mGrid->Note.Text + dolni1 +
-            AnsiString(P_do / 4*(1 + 59.0*aRDunit)) + " " + jednotky + ".",
-            clRed, 13);
+        if (!Form1->m.between(RD, P_od, P_do)) PL_mGrid->ShowNote(rozsah, clRed, 13);
+        if (P_od < P_do / 4) PL_mGrid->ShowNote(PL_mGrid->Note.Text + dolni1 + AnsiString(P_do / 4*(1 + 59.0*aRDunit)) + " " + jednotky + ".",clRed, 13);
         VID = 23;
         Row_validace = ARow;
         Col_validace = ACol;
@@ -1958,26 +1862,23 @@ void TForm_parametry_linky::VALIDACE(int ACol, int ARow) {
 
   case 3: // DO - RD
     {
-      double RD = F->ms.MyToDouble(PL_mGrid->Cells[4][ARow].Text) /
-          (1 + 59.0 * aRDunit);
-      double P_od = F->ms.MyToDouble(PL_mGrid->Cells[2][ARow].Text) /
-          (1 + 59.0 * aRDunit);
-      double P_do = F->ms.MyToDouble(PL_mGrid->Cells[3][ARow].Text) /
-          (1 + 59.0 * aRDunit);
+      double RD = F->ms.MyToDouble(PL_mGrid->Cells[4][ARow].Text)/(1 + 59.0 * aRDunit);
+      double P_od = F->ms.MyToDouble(PL_mGrid->Cells[2][ARow].Text)/(1 + 59.0 * aRDunit);
+      double P_do = F->ms.MyToDouble(PL_mGrid->Cells[3][ARow].Text)/(1 + 59.0 * aRDunit);
 
-      if (Form1->m.between(RD, P_od, P_do) && P_do <= P_od * 4) {
+      if (Form1->m.between(RD, P_od, P_do) && P_do <= P_od * 4)
+      {
         PL_mGrid->ShowNote("");
         scGPGlyphButton_ADD->Visible = true;
         Button_save->Enabled = true;
       }
-      else {
+      else
+      {
         PL_mGrid->Note.Text = "";
         if (!Form1->m.between(RD, P_od, P_do))
           PL_mGrid->ShowNote(rozsah, clRed, 13);
         if (P_do > P_od*4)
-          PL_mGrid->ShowNote(PL_mGrid->Note.Text + horni1 +
-            AnsiString(P_od*4*(1 + 59.0*aRDunit)) + " " + jednotky + ".",
-            clRed, 13);
+          PL_mGrid->ShowNote(PL_mGrid->Note.Text + horni1 + AnsiString(P_od*4*(1 + 59.0*aRDunit)) + " " + jednotky + ".",clRed, 13);
         VID = 23;
         Row_validace = ARow;
         Col_validace = ACol;
@@ -2002,7 +1903,7 @@ void TForm_parametry_linky::VALIDACE(int ACol, int ARow) {
         Button_save->Enabled = true;
       }
       else {
-        // vypis("Nastavte správný rozsah a rychlost pohonu.");
+         vypis("Nastavte správný rozsah a rychlost pohonu.");
         PL_mGrid->Note.Text = "";
         if (!Form1->m.between(RD, P_od, P_do))
           PL_mGrid->ShowNote(rozsah, clRed, 13);
@@ -2167,7 +2068,7 @@ void TForm_parametry_linky::OnClick(long Tag, long ID, unsigned long Col,
         if (PL_mGrid->RowCount < 3) {
           PL_mGrid->Columns[7].Width = 190 + 30;
           PL_mGrid->Columns[8].Width = 1;
-          PL_mGrid->Refresh();
+          PL_mGrid->Update();
         }
       }
     }
@@ -2275,10 +2176,10 @@ void __fastcall TForm_parametry_linky::FormMouseDown(TObject *Sender,
 
       }
       // PL_mGrid->MergeCells(5,0,5,1);
-      PL_mGrid->Refresh();
+      PL_mGrid->Update();
     }
     Button_storno->SetFocus();
-    PL_mGrid->Refresh();
+    PL_mGrid->Update();
   }
 }
 
@@ -2315,6 +2216,7 @@ void TForm_parametry_linky::getmGridColors() {
   PL_mGrid->Cells[5][0].Background->Color = clBACKGROUND;
   PL_mGrid->Cells[5][1].Background->Color = clBACKGROUND;
   PL_mGrid->Cells[6][0].Background->Color = clBACKGROUND;
+  PL_mGrid->Cells[6][0].RightBorder->Color = clBACKGROUND;
   PL_mGrid->Cells[7][0].Background->Color = clBACKGROUND;
   PL_mGrid->Cells[8][0].Background->Color = Form_parametry_linky->Color;
   // PL_mGrid->Cells[8][0].
@@ -2503,14 +2405,10 @@ void TForm_parametry_linky::vykresli_obdelnik_vpravo() {
   Canvas->Pen->Color = Form_parametry_linky->Color; // (TColor)RGB(240,240,240);
 
   Canvas->MoveTo(PL_mGrid->Left + PL_mGrid->Columns[8].Left + 1, PL_mGrid->Top);
-  Canvas->LineTo(PL_mGrid->Left + PL_mGrid->Columns[8].Left + PL_mGrid->Left +
-      PL_mGrid->Columns[8].Width - 10, PL_mGrid->Top);
+  Canvas->LineTo(PL_mGrid->Left + PL_mGrid->Columns[8].Left + PL_mGrid->Left + PL_mGrid->Columns[8].Width - 10, PL_mGrid->Top);
 
-  Canvas->MoveTo(PL_mGrid->Left + PL_mGrid->Columns[8].Left + PL_mGrid->Left +
-      PL_mGrid->Columns[8].Width - 10,
-      PL_mGrid->Top + 2*PL_mGrid->DefaultRowHeight);
-  Canvas->LineTo(PL_mGrid->Left + PL_mGrid->Columns[8].Left + PL_mGrid->Left +
-      PL_mGrid->Columns[8].Width - 10, PL_mGrid->Top - 1);
+  Canvas->MoveTo(PL_mGrid->Left + PL_mGrid->Columns[8].Left + PL_mGrid->Left + PL_mGrid->Columns[8].Width - 10, PL_mGrid->Top + 2*PL_mGrid->DefaultRowHeight);
+  Canvas->LineTo(PL_mGrid->Left + PL_mGrid->Columns[8].Left + PL_mGrid->Left + PL_mGrid->Columns[8].Width - 10, PL_mGrid->Top - 1);
 }
 
 void __fastcall TForm_parametry_linky::scGPGlyphButton_katalogClick

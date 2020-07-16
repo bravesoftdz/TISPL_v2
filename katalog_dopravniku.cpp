@@ -18,21 +18,14 @@ TForm_katalog *Form_katalog;
 __fastcall TForm_katalog::TForm_katalog(TComponent* Owner)
   : TForm(Owner)
 {
-
   zmena=false;
   check.X=0;
   check.Y=0;
  	clNORMAL	 = (TColor)RGB(200,200,200); //(TColor)RGB(128,128,128);
-  clOTHER_AFTER_CHOOSE			 = (TColor)RGB(128,128,128); //(TColor)RGB(200,200,200);
+  clOTHER_AFTER_CHOOSE			 = (TColor)RGB(150,150,150); //(TColor)RGB(200,200,200);
   clSELECTED_BLUE = (TColor)RGB(43,87,154); //modrá
   clBACKGROUND = (TColor)RGB(240,240,240);
   input_state=NO;
-  last_Col=0;
-  last_Row=0;
-
-
-
-
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_katalog::FormShow(TObject *Sender)
@@ -65,7 +58,6 @@ void __fastcall TForm_katalog::FormShow(TObject *Sender)
   F->scStyledForm1->InActiveClientBlurAmount=1;
   F->scStyledForm1->ShowClientInActiveEffect();
 
- //	K_mGrid->Create(ColCount,RowCount);//samotné vytvoření matice-tabulky
   K_mGrid->Top=scLabel_header->Height + 10;
 
   K_mGrid->Columns[0].Width=25;
@@ -111,8 +103,6 @@ void __fastcall TForm_katalog::FormShow(TObject *Sender)
 	F->m.designButton(Button_storno,Form_katalog,2,2);
   input_state=NOTHING;
 
- // ShowMessage(radius);
- // ShowMessage(katalog_id);
 }
 //---------------------------------------------------------------------------
 
@@ -281,7 +271,20 @@ void TForm_katalog::LoadStyles ()
    K_mGrid->Cells[17][r].isZero->Color=clOTHER_AFTER_CHOOSE;
    K_mGrid->Cells[18][r].isZero->Color=clOTHER_AFTER_CHOOSE;
  }
- // ShowMessage("konec styles");
+
+  for (int i = 0; i <=K_mGrid->RowCount-1; i++)
+  {
+   for (int j = 1; j <= K_mGrid->ColCount-1; j++)
+   {
+    int width=2;
+     if(j==1)K_mGrid->Cells[j][i].RightBorder->Width=width;
+     if(j==4)K_mGrid->Cells[j][i].RightBorder->Width=width;
+     if(j==8)K_mGrid->Cells[j][i].RightBorder->Width=width;
+     if(j==12)K_mGrid->Cells[j][i].RightBorder->Width=width;
+     if(j==16)K_mGrid->Cells[j][i].RightBorder->Width=width;
+   }
+  }
+
 }
 
 void TForm_katalog::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row)
@@ -289,9 +292,6 @@ void TForm_katalog::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row
  if (input_state==NOTHING)
  {
   input_state=JOB;
-  if(!zmena)
-  {
-     zmena=true;
      if(Col==0)
      {
         for(unsigned int i=2;i<K_mGrid->RowCount;i++)
@@ -322,18 +322,19 @@ void TForm_katalog::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row
         }
       }
     }
-    if(Col==0)
+    if(Col==0 && katalog_id!=Row-1)
      {
        for(unsigned int i=2;i<K_mGrid->RowCount;i++)
         {
           if(i==Row)    //odchytnutí kliku do řádku a nasledně designové nastavení getCheckSettings
              {
               check.Y=i;
+              radius=1;
               getCheckSettings();
              }
         }
       }
-    zmena=false;
+     if(Col==0 && katalog_id==Row-1) K_mGrid->getCheck(0,Row)->Checked=true; //kliknutí sám na sebe
 
     //ziskani hodnot radius a katalog ID
     if(Col>=9 && Col<=12)
@@ -346,13 +347,10 @@ void TForm_katalog::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row
        }
      K_mGrid->getCheck(Col,Row)->Checked=true;  //na závěr potom vybraný nastavím checked=true
      }
-
-
-   FormPaint(this);
-   Button_save->SetFocus();
-   input_state=NOTHING;
-  }
  }
+  FormPaint(this);
+  Button_save->SetFocus();
+  input_state=NOTHING;
 
 }
 
@@ -379,8 +377,11 @@ void __fastcall TForm_katalog::FormMouseMove(TObject *Sender, TShiftState Shift,
 
 void __fastcall TForm_katalog::Button_saveClick(TObject *Sender)
 {
+//ShowMessage("ukladam katalog"+AnsiString(katalog_id));
 Form_parametry_linky->katalog_id=katalog_id;
 Form_parametry_linky->radius=radius/1000.0;
+F->d.v.PP.katalog=Form_parametry_linky->katalog_id;
+F->d.v.PP.radius=Form_parametry_linky->radius;
 
 F->scStyledForm1->HideClientInActiveEffect();
 Form_parametry_linky->scStyledForm2->HideClientInActiveEffect();
@@ -388,9 +389,6 @@ Form_parametry_linky->scStyledForm2->HideClientInActiveEffect();
 Button_storno->SetFocus();
 K_mGrid->Delete();
 K_mGrid=NULL;
-//Form_parametry_linky->Close();
-
-//Close();
 }
 //---------------------------------------------------------------------------
 
@@ -451,7 +449,7 @@ void TForm_katalog::vypis(UnicodeString text,bool red,bool link)
 
 void TForm_katalog::getCheckSettings ()
 {
-
+  input_state=JOB;
   if(check.Y==0) check.Y=2;  //v konstruktoru je default check.Y==0, kvůli sloučené hlavičce ale nastavím na 2 (první řádek katalog. hodnot)
 
    TscGPCheckBox *CH=K_mGrid->getCheck(0,check.Y);  //výchozí stav zašrtávátka 1 sloupce
@@ -475,21 +473,21 @@ void TForm_katalog::getCheckSettings ()
    if(K_mGrid->Cells[12][check.Y].Text!="")   K_mGrid->Cells[12][check.Y].Type=K_mGrid->CHECK;
   }
      K_mGrid->Update();
-     if(check.X!=0)
-  {
+     if(check.X!=0 && radius==1)
+     {
+      //ShowMessage("radius1?");
       K_mGrid->getCheck(9,check.Y)->Checked=true;  //výchozí stav zašrtávátka radiusu
-
-     radius=Form1->ms.MyToDouble(K_mGrid->Cells[check.X][check.Y].Text); //uložení radiusu
-     katalog_id=check.Y-1;
-  }
+      radius=Form1->ms.MyToDouble(K_mGrid->Cells[9][check.Y].Text); //uložení radiusu
+      katalog_id=check.Y-1;
+     }
 
   if(check.X==0)
   {
    check.X=9; // při prvotním spuštění automat. výběr
    TscGPCheckBox *CH=K_mGrid->getCheck(check.X,check.Y);  //výchozí stav zašrtávátka radiusu
+
    CH->Checked=true;
    CH=NULL;delete CH;
-
    radius=Form1->ms.MyToDouble(K_mGrid->Cells[check.X][check.Y].Text); //uložení radiusu
    katalog_id=1;
   }
@@ -508,8 +506,10 @@ void TForm_katalog::getCheckSettings ()
     H=NULL;delete H;
 
   }
-
+    //ShowMessage("KonecGetCheck"+AnsiString(radius));
+    //ShowMessage(katalog_id);
    // ShowMessage("KonecgetCheckSettings");
+   input_state=NOTHING;
 }
 
 void TForm_katalog::clearCheck()
@@ -528,8 +528,6 @@ void TForm_katalog::clearCheck()
          }
      }
   }
-
-
 }
 
 void __fastcall TForm_katalog::Button1Click(TObject *Sender)

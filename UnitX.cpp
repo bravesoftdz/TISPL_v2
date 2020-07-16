@@ -215,7 +215,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				if(c!=NULL)E->data=c->data;//pøepsání aktuálních dat ze zakázky do elementu
 			}
 		}
-		F->posledni_editovany_element=E;
+		//F->posledni_editovany_element=E;//odstaveno, narušuje tvorbu geometrie
 		////výpoèty
 		switch(E->eID)
 		{
@@ -468,7 +468,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					F->d.v.reserve_time(E,c);
 				}
 			} break;
-      case 200://pøedávací místo
+			case 200://pøedávací místo
 			case 300://výhybka
 			{
 				posledni_E=E;//pøedèasné uložení posledního editovaného elementu
@@ -510,10 +510,10 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 						aktualizace_tab_elementu(E);
 						break;
 					}
-          //zmìna rozteèe palce
+					//zmìna rozteèe palce
 					case 6:
 					{
-            input_state=R;
+						input_state=R;
 						//naètení R z editu
 						double R=F->inR(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text));
 						//urèení cílového pohonu
@@ -534,10 +534,10 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					//zmìna násobku rozteèe
 					case 7:
 					{
-            input_state=Rx;
-			    	//naètení Rx z editu
+						input_state=Rx;
+						//naètení Rx z editu
 						double Rx=F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text);
-			    	//urèení cílového pohonu
+						//urèení cílového pohonu
 						Cvektory::TPohon *p=F->d.v.vrat_pohon(E->mGrid->getCombo(Col,2)->ItemIndex);
 						//uložení do pohonu
 						F->OBJEKT_akt->pohon=p;
@@ -752,7 +752,7 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 	while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
 	{
     if(E->eID==200 || E->eID==300)zobrazit_skryt_radkyPM(E);
-		if(E->n>0 && E->n!=n && E->pohon!=NULL && F->OBJEKT_akt->pohon!=NULL && E->pohon->n==F->OBJEKT_akt->pohon->n)//pøeskoèí mimo_element a hlavièku, poze pøepoèet elementùm které mají stejný pohon jako aktuálnì editovaný pohon
+		if(E->n>0 && E->n!=n && E->pohon!=NULL && F->OBJEKT_akt->pohon!=NULL && (E->pohon->n==F->OBJEKT_akt->pohon->n || (E->eID==200 || E->eID==300)))//pøeskoèí mimo_element a hlavièku, poze pøepoèet elementùm které mají stejný pohon jako aktuálnì editovaný pohon
 		{
 			switch(E->eID)
 			{
@@ -858,7 +858,7 @@ void TFormX::aktualizace_tab_elementu_pOdebran ()
 	Cvektory::TElement *E=F->OBJEKT_akt->element;
 	while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
 	{
-		if(E->n>0 && E->pohon==NULL)//pøeskoèí hlavièku + pøenastaví pouze elementy s odstranìným pohonem
+		if(E->n>0 && (E->pohon==NULL || (E->eID==200 || E->eID==300)))//pøeskoèí hlavièku + pøenastaví pouze elementy s odstranìným pohonem
 		{
 			switch(E->eID)
 			{
@@ -1192,12 +1192,11 @@ void TFormX::validace_aRD(bool pouze_rozmezi)
 		unsigned int pro_pohon=0;
   	dopRD=0;
 		//kontrola zda je zadaná hodnota v rozmezí
-		if(F->m.between(F->OBJEKT_akt->pohon->aRD,F->OBJEKT_akt->pohon->rychlost_od,F->OBJEKT_akt->pohon->rychlost_do)) mimo_rozmezi=false;
+		if(F->m.between(F->OBJEKT_akt->pohon->aRD,F->OBJEKT_akt->pohon->rychlost_od,F->OBJEKT_akt->pohon->rychlost_do))mimo_rozmezi=false;
 		else mimo_rozmezi=true;
   	//zadaná rychlost je mimo rozsah
   	if(mimo_rozmezi && F->OBJEKT_akt->pohon->aRD > 0)
   	{
-			//if(F->PmG->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
   		F->PmG->ShowNote(F->ls->Strings[220],F->d.clError,14);//"Rychlost neodpovídá rozmezí!"
 			//povolit_zakazat_editaci(false);
 			pro_pohon=F->OBJEKT_akt->pohon->n;//uložení pro který pohon platí validace
@@ -1207,14 +1206,27 @@ void TFormX::validace_aRD(bool pouze_rozmezi)
   	if(F->OBJEKT_akt->pohon->aRD > 0 && !pouze_rozmezi)
   	{
 			//výpoèet doporuèené rychosti
-			double dopRD1=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,0,F->OBJEKT_akt->pohon->roztec,F->d.v.PP.TT,F->OBJEKT_akt->pohon->aRD);
-			double dopRD2=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,90,F->OBJEKT_akt->pohon->roztec,F->d.v.PP.TT,F->OBJEKT_akt->pohon->aRD);
-			if(dopRD1>dopRD2)dopRD=dopRD1;//vypíše vìtší hodnotu
-			else dopRD=dopRD2;
+			double dopRD1=0,dopRD2=0,aRD=F->OBJEKT_akt->pohon->aRD;
+			unsigned int n=0;
+			do
+			{
+				//navyšování nebo snižování testovací rychlosti, tak aby byla v rozsahu pohonu
+				if(n!=0)
+				{
+					if(F->OBJEKT_akt->pohon->aRD>F->OBJEKT_akt->pohon->rychlost_do || (F->OBJEKT_akt->pohon->aRD<F->OBJEKT_akt->pohon->rychlost_do && F->OBJEKT_akt->pohon->rychlost_do-F->OBJEKT_akt->pohon->aRD>0 && F->OBJEKT_akt->pohon->rychlost_do-F->OBJEKT_akt->pohon->aRD<F->OBJEKT_akt->pohon->aRD-F->OBJEKT_akt->pohon->rychlost_od))aRD=0.99*aRD;//snižování hodnoty o 1%
+					else aRD=1.01*aRD;//navýšení hodnoty o 1%
+				}
+				//výpoèet doporuèených rychlostí
+				dopRD1=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,0,F->OBJEKT_akt->pohon->roztec,F->d.v.PP.TT,aRD);
+				dopRD2=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,90,F->OBJEKT_akt->pohon->roztec,F->d.v.PP.TT,aRD);
+				//zapsání menší hodnoty jako dopRD
+				if(dopRD1>dopRD2)dopRD=dopRD1;//vypíše vetší hodnotu
+				else dopRD=dopRD2;
+				n++;
+			}while(!F->m.between(dopRD,F->OBJEKT_akt->pohon->rychlost_od,F->OBJEKT_akt->pohon->rychlost_do));
 			//je zvolen pohon, jeho aktuální rychlost se nerovná doporuèené
 			if(F->OBJEKT_akt->pohon->roztec>0 && F->ms.MyToDouble(dopRD)!= F->ms.MyToDouble(F->OBJEKT_akt->pohon->aRD) && mimo_rozmezi==false)
 			{
-				//if(F->PmG->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
   			F->PmG->ShowNote(F->ls->Strings[221]+" <a>"+AnsiString(F->m.round2double(F->outaRD(dopRD),3))+"</a> "+jednotky,F->d.clError,14);//"Zadejte doporuèenou rychlost pohonu:"
       	pro_pohon=F->OBJEKT_akt->pohon->n;//uložení pro který pohon platí validace
 			}
@@ -1252,7 +1264,6 @@ void TFormX::validace_aRD(bool pouze_rozmezi)
 		if(!F->m.between(F->OBJEKT_akt->pohon->aRD,F->OBJEKT_akt->pohon->rychlost_od,F->OBJEKT_akt->pohon->rychlost_do))
 		{
     	F->PmG->ShowNote(F->ls->Strings[220],F->d.clError,14);//"Rychlost neodpovídá rozmezí!"
-			//povolit_zakazat_editaci(false);
 			pro_pohon=F->OBJEKT_akt->pohon->n;//uložení pro který pohon platí validace
 		}
 		//pokud probìhla validace s problémem
@@ -1309,10 +1320,11 @@ void TFormX::naplneni_dopRD()
 {
 	if(F->PmG!=NULL)
 	{
+		vstoupeno_poh=false;//musí dojít k blokaci onchange, jinak se do aRD nahraje zaokrouhlená hodnota
 		int opraveny_pohon=validovany_pohon;
 		vstoupeno_elm=false;
-		F->OBJEKT_akt->pohon->aRD=dopRD;
 		F->PmG->Cells[3][rychlost].Text=F->m.round2double(F->outaRD(dopRD),3);
+		F->OBJEKT_akt->pohon->aRD=dopRD;
 		zmena_aRD();//postará se o aktualizaci všech tabulek
 		validace_aRD();//znovuspuštìní valiace
 		if(opraveny_pohon==validovany_pohon)validovany_pohon=0;//byla odstranìn problém
@@ -1364,6 +1376,7 @@ bool TFormX::check_click_Note(double X,double Y,bool check_for_highlight)
 			case 200:
 			case 300://naplnìní RD
 			{
+        vstoupeno_elm=false;vstoupeno_poh=false;//musí dojít k blokaci onchange, jinak se do aRD nahraje zaokrouhlená hodnota
 				int opraveny_pohon=validovany_pohon;
 				vstoupeno_elm=false;
 				Cvektory::TPohon *p=F->d.v.vrat_pohon(validovany_pohon);
@@ -1522,6 +1535,21 @@ void TFormX::prirazeni_pohohonu_vetvi(Cvektory::TElement *E,long Col)
 	input_state=COMBO;//dùležité pro nastavení enabled komponent v aktualizaci elementù
 	aktualizace_tab_elementu();
 
+	//vytvoøení cesty teplomìrù po pøiøazení pohonu
+	Cvektory::TTeplomery *T=F->d.v.vrat_teplomery_podle_zakazky(F->OBJEKT_akt,F->d.v.ZAKAZKA_akt);
+	if(F->OBJEKT_akt->pohon!=NULL && F->OBJEKT_akt->id>=6 && F->OBJEKT_akt->id<=8 && T==NULL)
+	{
+		F->d.v.vytvor_default_c_teplomery(F->OBJEKT_akt);
+		F->vytvor_aktualizuj_tab_teplomeru();
+	}
+	//pokud dojde k odstranìní pohonu, dojde ke smazání teplomìrù
+	if((F->OBJEKT_akt->pohon==NULL ||  !(F->OBJEKT_akt->id>=6 && F->OBJEKT_akt->id<=8)) && T!=NULL)
+	{
+		F->d.v.vymaz_teplomery(F->OBJEKT_akt,T);
+		delete T;T=NULL;
+	}
+	T=NULL;delete T;
+
 	////ukazatelové záležitosti
 	Combo=NULL;delete Combo;
 	p=NULL;delete p;
@@ -1569,6 +1597,7 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
   		E->mGrid->Cells[prvni][8].Text="-";
   		E->mGrid->Cells[prvni][9].Text="-";
 			E->mGrid->Cells[prvni][10].Text="-";
+      E->mGrid->Cells[prvni][11].Text="-";
   	}
   	if(E->eID==300)//pro výhybku
   	{
@@ -1600,6 +1629,7 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
 				E->mGrid->Cells[druhy][8].Text="-";
 				E->mGrid->Cells[druhy][9].Text="-";
 				E->mGrid->Cells[druhy][10].Text="-";
+        E->mGrid->Cells[druhy][11].Text="-";
   		}
   	}
   	else//pro PM
@@ -1634,6 +1664,7 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
 				E->mGrid->Cells[druhy][8].Text="-";
 				E->mGrid->Cells[druhy][9].Text="-";
 				E->mGrid->Cells[druhy][10].Text="-";
+        E->mGrid->Cells[druhy][11].Text="-";
   		}
 			e_pom=NULL;delete e_pom;
 		}
@@ -1649,7 +1680,7 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
 //provede validaci RD
 void TFormX::validace_RD(Cvektory::TElement *E)
 {
-	if(E->eID==200)//validovat pouze u PM
+	if(E->eID==200 && F->OBJEKT_akt->pohon->aRD!=0)//validovat pouze u PM
 	{
 		//smazání pøedchozí validace z VID
 		zapisVID(0,1);//pozice jsou popsány v .h u deklarace VID a vnì metody zapisVID()
@@ -1705,14 +1736,28 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 					}
        		// nutné ošetøení pro období zadávání/psaní
 					if (p->aRD > 0)
-	     		{
+					{
 	     			//výpoèet doporuèené rychosti
-						double dopRD1=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,0,p->roztec,F->d.v.PP.TT,p->aRD);
-						double dopRD2=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,90,p->roztec,F->d.v.PP.TT,p->aRD);
-						if(dopRD1>dopRD2)dopRD=dopRD1;//vypíše vìtší hodnotu
-	     			else dopRD=dopRD2;
+		      	double dopRD1=0,dopRD2=0,aRD=F->OBJEKT_akt->pohon->aRD;
+		      	unsigned int n=0;
+		      	do
+						{
+		      		//navyšování nebo snižování testovací rychlosti, tak aby byla v rozsahu pohonu
+		      		if(n!=0)
+		      		{
+								if(p->aRD>p->rychlost_do || (p->aRD<p->rychlost_do && p->rychlost_do-p->aRD>0 && p->rychlost_do-p->aRD<p->aRD-p->rychlost_od))aRD=0.99*aRD;//snižování hodnoty o 1%
+								else aRD=1.01*aRD;//navýšení hodnoty o 1%
+							}
+							//výpoèet doporuèených rychlostí
+							dopRD1=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,0,p->roztec,F->d.v.PP.TT,aRD);
+							dopRD2=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,90,p->roztec,F->d.v.PP.TT,aRD);
+							//zapsání menší hodnoty jako dopRD
+		      		if(dopRD1>dopRD2)dopRD=dopRD1;//vypíše vetší hodnotu
+							else dopRD=dopRD2;
+							n++;
+						}while(!F->m.between(dopRD,p->rychlost_od,p->rychlost_do));
 	     			//je zvolen pohon, jeho aktuální rychlost se nerovná doporuèené
-						if(p->roztec>0 && F->ms.MyToDouble(dopRD)!= F->ms.MyToDouble(p->aRD) && mimo_rozmezi==false)
+						if(p->roztec>0 && dopRD!=p->aRD && mimo_rozmezi==false)
 	     			{
 							//if(E->mGrid->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
 							E->mGrid->ShowNote(F->ls->Strings[221]+" <a>"+AnsiString(F->m.round2double(F->outaRD(dopRD),3))+"</a> "+jednotky,F->d.clError,14);//"Zadejte doporuèenou rychlost pohonu:"
@@ -1720,7 +1765,7 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 							break;//byl nalezen problém, zastavení validace, lze zobrazit jen jeden problém v Note
 						}
 	     			//vše je vpoøádku
-						if (F->ms.MyToDouble(dopRD)== F->ms.MyToDouble(p->aRD) && mimo_rozmezi==false)
+						if (dopRD==p->aRD && mimo_rozmezi==false)
 	     			{
 	     				//povolit_zakazat_editaci(true);
 							E->mGrid->ShowNote("",F->d.clError,14);
@@ -1777,7 +1822,7 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 			e_pom=NULL;delete e_pom;
 		}
 
-  	//ukazatelové záležitosti
+		//ukazatelové záležitosti
 		C=NULL;p=NULL;p1=NULL;p2=NULL;
 		delete C;delete p;delete p1;delete p2;
 	}
@@ -1803,7 +1848,7 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
     F->OBJEKT_akt->stavPM=2;//rozšíøit mGridy
 		p->Rz=F->m.Rz(p->aRD);
 		p->Rx=F->m.Rx(p->aRD,p->roztec);
-  }
+	}
 
 	////prohození sloupcù
 	int prvni=3,druhy=4;
@@ -1882,7 +1927,7 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 			}
 			else e=e->dalsi;
 		}
-		if(E->dalsi!=NULL && E->dalsi->objekt_n==E->objekt_n)E->WT=F->m.cekani_na_palec(0,E->dalsi->pohon->roztec,E->dalsi->pohon->aRD,3);
+		if(E->dalsi!=NULL && E->dalsi->pohon!=NULL && E->dalsi->objekt_n==E->objekt_n)E->WT=F->m.cekani_na_palec(0,E->dalsi->pohon->roztec,E->dalsi->pohon->aRD,3);
 	}
 
 	////naètení dat z pohonu do mGridu
@@ -1900,6 +1945,21 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 	Combo=NULL;delete Combo;
 	p=NULL;delete p;
 	e=NULL;delete e;
+
+	//vytvoøení cesty teplomìrù po pøiøazení pohonu
+	Cvektory::TTeplomery *T=F->d.v.vrat_teplomery_podle_zakazky(F->OBJEKT_akt,F->d.v.ZAKAZKA_akt);
+	if(F->OBJEKT_akt->pohon!=NULL && F->OBJEKT_akt->id>=6 && F->OBJEKT_akt->id<=8 && T==NULL)
+	{
+		F->d.v.vytvor_default_c_teplomery(F->OBJEKT_akt);
+		F->vytvor_aktualizuj_tab_teplomeru();
+	}
+	//pokud dojde k odstranìní pohonu, dojde ke smazání teplomìrù
+	if((F->OBJEKT_akt->pohon==NULL ||  !(F->OBJEKT_akt->id>=6 && F->OBJEKT_akt->id<=8)) && T!=NULL)
+	{
+		F->d.v.vymaz_teplomery(F->OBJEKT_akt,T);
+		delete T;T=NULL;
+	}
+	T=NULL;delete T;
 }
 //---------------------------------------------------------------------------
 //pøiøazení pohonu z PmG
@@ -1951,6 +2011,21 @@ void TFormX::prirazeni_pohonu_defTab()
 			posledni_E=posledni_E->dalsi;
 		}
 	}
+
+	//vytvoøení cesty teplomìrù po pøiøazení pohonu
+	Cvektory::TTeplomery *T=F->d.v.vrat_teplomery_podle_zakazky(F->OBJEKT_akt,F->d.v.ZAKAZKA_akt);
+	if(F->OBJEKT_akt->pohon!=NULL && F->OBJEKT_akt->id>=6 && F->OBJEKT_akt->id<=8 && T==NULL)
+	{
+		F->d.v.vytvor_default_c_teplomery(F->OBJEKT_akt);
+		F->vytvor_aktualizuj_tab_teplomeru();
+	}
+	//pokud dojde k odstranìní pohonu, dojde ke smazání teplomìrù
+	if((F->OBJEKT_akt->pohon==NULL ||  !(F->OBJEKT_akt->id>=6 && F->OBJEKT_akt->id<=8)) && T!=NULL)
+	{
+		F->d.v.vymaz_teplomery(F->OBJEKT_akt,T);
+		delete T;T=NULL;
+	}
+	T=NULL;delete T;
 
 	//ukazatelové záležitosti
 	E=NULL;p=NULL;
@@ -2174,5 +2249,177 @@ void TFormX::zobrazit_skryt_radkyPM(Cvektory::TElement *E)
 			break;
 		}
 	}
+}
+//---------------------------------------------------------------------------
+//provede aktualizaci èasu v tabulce teplomìrù
+void TFormX::aktualizace_teplomeru()
+{
+	if(F->OBJEKT_akt->teplomery!=NULL)
+	{
+		Cvektory::TTeplomery *T=F->d.v.vrat_teplomery_podle_zakazky(F->OBJEKT_akt,F->d.v.ZAKAZKA_akt);
+		if(T!=NULL)
+		{
+	  	double cas=0,WT=0,delka=0;
+	  	unsigned int radek=1;
+	  	bool prejezd=true;
+	  	//výpoèet èasu na zaèátku
+	  	if(T->prvni->sparovany->pohon!=NULL)
+			{
+				//výpoèet délky oblasti
+				delka=F->m.delka(T->prvni->geo.X1,T->prvni->geo.Y1,T->prvni->sparovany->geo.X4,T->prvni->sparovany->geo.Y4);
+				if(T->prvni->sparovany==T->posledni->sparovany)delka=F->m.delka(T->prvni->geo.X1,T->prvni->geo.Y1,T->posledni->geo.X4,T->posledni->geo.Y4);//pokud jsou oba teplomìry na stejném úseku, mìøit délku mezi jejich souøadnicemi
+				//pokud se jedná o stopku poèítat s bufferem
+				if(T->prvni->sparovany->eID==0)
+				{
+					//nahrání aktuálních dat do ukazatele
+					if(F->d.v.ZAKAZKA_akt!=NULL && F->d.v.ZAKAZKA_akt->n!=0)//pokud pracuji v nìjaké zakázce
+					{
+						Cvektory::TCesta *c=F->d.v.vrat_segment_cesty(F->d.v.ZAKAZKA_akt,T->prvni->sparovany);
+						if(c!=NULL)T->prvni->sparovany->data=c->data;//pøepsání aktuálních dat ze zakázky do elementu
+						c=NULL;delete c;
+					}
+					//výpoèet délky bufferu
+					double buf=T->prvni->sparovany->data.pocet_voziku*F->d.v.PP.delka_podvozek-F->d.v.PP.uchyt_pozice;
+					//pokud je úsek menší než délka bufferu pøipoètení wt podle toho na jakém jsem vozíku
+					if(delka<=buf)
+					{
+						prejezd=false;
+						cas+=F->m.V2WT(ceil((delka-buf)/F->d.v.PP.delka_podvozek),F->d.v.PP.TT);//pøipoèítání WT na aktuálním vozíku
+					}
+					//pokud je úsek vìtší než buffer pøipoètení WTstop a pøejezdu
+					else
+					{
+            delka=delka-buf;
+						cas+=delka/T->prvni->sparovany->pohon->aRD;
+						//rozpad na pøejezd a buffer
+						prejezd=true;
+						radek=aktualizuj_radek_tab_teplomeru(T->posledni->mGrid,radek,cas,WT);cas=0;WT=0;
+						prejezd=false;
+						cas+=T->prvni->sparovany->data.WTstop;
+					}
+				}
+				else cas+=delka/T->prvni->sparovany->pohon->aRD;
+				WT+=T->prvni->sparovany->WT;
+			}
+
+			//výpoèet èasu na cestì
+			Cvektory::TCesta *CE=T->cesta->dalsi;
+			while(CE!=NULL)
+			{
+				if(CE->Element->pohon!=NULL)
+				{
+					if(CE->Element->eID==0)
+					{
+						//nahrání aktuálních dat do ukazatele
+						if(F->d.v.ZAKAZKA_akt!=NULL && F->d.v.ZAKAZKA_akt->n!=0)//pokud pracuji v nìjaké zakázce
+						{
+							Cvektory::TCesta *c=F->d.v.vrat_segment_cesty(F->d.v.ZAKAZKA_akt,CE->Element);
+							if(c!=NULL)CE->Element->data=c->data;//pøepsání aktuálních dat ze zakázky do elementu
+              c=NULL;delete c;
+						}
+						//výpoèet èasu
+						if(!prejezd){radek=aktualizuj_radek_tab_teplomeru(T->posledni->mGrid,radek,cas,WT);cas=0;WT=0;}//pokud byl pøed tím buffer, zmìna, potøebuju zapsat pøejezd
+						delka=CE->Element->geo.delka-(CE->Element->data.pocet_voziku*F->d.v.PP.delka_podvozek-F->d.v.PP.uchyt_pozice);
+						cas+=delka/CE->Element->pohon->aRD;
+						prejezd=true;
+						radek=aktualizuj_radek_tab_teplomeru(T->posledni->mGrid,radek,cas,WT);cas=0;WT=0;//zapsání èásti pøejezdu
+						prejezd=false;
+						cas+=CE->Element->data.WTstop;
+					}
+					else
+					{
+            if(!prejezd){radek=aktualizuj_radek_tab_teplomeru(T->posledni->mGrid,radek,cas,WT);cas=0;WT=0;}//pokud byl pøed tím buffer, zmìna, bude následovat pøejezd
+						prejezd=true;
+						cas+=CE->Element->geo.delka/CE->Element->pohon->aRD;
+					}
+					WT+=CE->Element->WT;
+				}
+				CE=CE->dalsi;
+			}
+			//ukazatelové záležitosti
+			CE=NULL;delete CE;
+
+			//výpoèet èasu na konci
+			if(T->posledni->sparovany->pohon!=NULL && T->posledni->sparovany!=T->prvni->sparovany)
+			{
+				//výpoèet délky oblasti
+				delka=F->m.delka(T->posledni->sparovany->geo.X1,T->posledni->sparovany->geo.Y1,T->posledni->geo.X4,T->posledni->geo.Y4);
+				//pokud se jedná o stopku poèítat s bufferem
+				if(T->posledni->sparovany->eID==0)
+				{
+					//nahrání aktuálních dat do ukazatele
+					if(F->d.v.ZAKAZKA_akt!=NULL && F->d.v.ZAKAZKA_akt->n!=0)//pokud pracuji v nìjaké zakázce
+					{
+						Cvektory::TCesta *c=F->d.v.vrat_segment_cesty(F->d.v.ZAKAZKA_akt,T->posledni->sparovany);
+						if(c!=NULL)T->posledni->sparovany->data=c->data;//pøepsání aktuálních dat ze zakázky do elementu
+						c=NULL;delete c;
+					}
+					//výpoèet délky bufferu
+					double buf=T->posledni->sparovany->data.pocet_voziku*F->d.v.PP.delka_podvozek-F->d.v.PP.uchyt_pozice;
+					//pokud je úsek menší než délka bufferu pøipoètení wt podle toho na jakém jsem vozíku
+					if(delka<=buf)
+					{
+						if(prejezd){radek=aktualizuj_radek_tab_teplomeru(T->posledni->mGrid,radek,cas,WT);cas=0;WT=0;}//pokud byl pøejezd, zmìna, bude následovat buffer
+						prejezd=false;
+						WT+=T->posledni->sparovany->WT;
+						cas+=F->m.V2WT(ceil((delka-buf)/F->d.v.PP.delka_podvozek),F->d.v.PP.TT);//pøipoèítání WT na aktuálním vozíku
+					}
+					//pokud je úsek vìtší než buffer pøipoètení WTstop a pøejezdu
+					else
+					{
+						if(!prejezd){radek=aktualizuj_radek_tab_teplomeru(T->posledni->mGrid,radek,cas,WT);cas=0;WT=0;}//pokud byl pøed tím buffer, zmìna, potøebuju zapsat pøejezd
+						delka=delka-buf;
+						cas+=delka/T->posledni->sparovany->pohon->aRD;
+						prejezd=true;
+						//rozpad na pøejezd a buffer
+						radek=aktualizuj_radek_tab_teplomeru(T->posledni->mGrid,radek,cas,WT);cas=0;WT=0;//zapsání èásti pøejezdu
+						prejezd=false;
+						WT+=T->posledni->sparovany->WT;
+						cas+=T->posledni->sparovany->data.WTstop;
+					}
+				}
+				else//není stop
+				{
+					if(!prejezd){radek=aktualizuj_radek_tab_teplomeru(T->posledni->mGrid,radek,cas,WT);cas=0;WT=0;}
+					prejezd=true;
+					cas+=delka/T->posledni->sparovany->pohon->aRD;
+					WT+=T->posledni->sparovany->WT;
+				}
+
+				//vypsání øádku
+				radek=aktualizuj_radek_tab_teplomeru(T->posledni->mGrid,radek,cas,WT);cas=0;WT=0;
+			}
+			//kontrola zda nejsou ještì k vypsání nìjaké hodnoty, mùže nastat, když budou oba teplomìry na jedné stoce
+			if(cas>0 || WT>0){radek=aktualizuj_radek_tab_teplomeru(T->posledni->mGrid,radek,cas,WT);cas=0;WT=0;}
+			//aktualizace øádku souètu
+			radek=aktualizuj_radek_tab_teplomeru(T->posledni->mGrid,radek,cas,WT,true);
+		}
+
+    //ukazatelové záležitosti
+		T=NULL;delete T;
+	}
+}
+//---------------------------------------------------------------------------
+//aktualizuje parametry konkrétního øádku tabulky teplomìrù
+unsigned int TFormX::aktualizuj_radek_tab_teplomeru(TmGrid *mGrid,unsigned int radek,double cas,double WT,bool soucet)
+{
+	//aktualizace parametrù v tabulce
+	if(soucet)
+	{
+    cas=0;WT=0;
+		for(unsigned int i=1;i<radek;i++)
+	  {
+			cas+=F->ms.MyToDouble(mGrid->Cells[1][i].Text);
+			WT+=F->ms.MyToDouble(mGrid->Cells[2][i].Text);
+	  }
+		mGrid->Cells[2][radek].Text=F->m.round2double(cas+WT,3);
+	}
+	else
+	{
+		mGrid->Cells[1][radek].Text=F->m.round2double(F->outPT(cas),3);
+		mGrid->Cells[2][radek].Text=F->m.round2double(F->outPT(WT),3);
+		radek++;
+	}
+	return radek;
 }
 //---------------------------------------------------------------------------

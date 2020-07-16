@@ -597,6 +597,7 @@ private:
 	void vymaz_seznam_obrazu();//vymaže všechny obrazy v poøadníku
 	void vytvor_statickou_scenu();//vytvoøí BMP se statickou scénou
 	void vytvor_statickou_scenu(long SCENA);//pøetížená výše uvedené pøímo s parametrem nastavení scény
+  void design_statusbar();//provde zarovnání zarážek a zmìní velikost výpisù ve statusbaru
 
 	////promìnné
 	TDateTime TIME;
@@ -728,6 +729,7 @@ public:		// User declarations
 	double velikost_citelne_oblasti_elementu;//urèuje velikost citelné oblsati [m] kolem bodu elementu na pohonu
 	Tvlakno_obraz *vlakno_obraz;
 	bool vlakno_PanCreateState;
+  bool zobrazit_upozorneni_teplomery;
 
 	//metody
 	void kurzor(TKurzory typ_kurzor);
@@ -801,10 +803,13 @@ public:		// User declarations
 	void zapnuti_vypnuti_panelEditace(bool zapnout);//zapnout nebo vypnout panel editace, automaticky podle MODu zobrazí èi skryje urèité prvky
 	void rotuj_objekt_click(double rotace);//zajistí rotaci objektu
 	void pan_create2();//vytvoøí výøez pro pan_move - velký
-  	void vytvor_aktualizuj_tab_teplomeru();//vytvoøí nebo aktualizuje mGrid teplomerù pro OBJEKT_akt
-  	void START();//zapne stopky
+	void vytvor_aktualizuj_tab_teplomeru();//vytvoøí nebo aktualizuje mGrid teplomerù pro OBJEKT_akt
+  void pridej_radek_tab_teplomeru(Cvektory::TElement *E,double cas,double WT,bool prejezd,bool celkem=false);
+	void START();//zapne stopky
 	void STOP(bool MB=false);//vypne stopky, pokud je parementr metody nastaven na false (což je implicitnì), je zajištìn výpis do mema, pokud na true tak do ShowMessage
-};
+	void GetTime(short int rezim);
+  void reset_teplomeru(Cvektory::TObjekt *Objekt);//zborazí upozornìní, že došlo ke zmìnì geometrie a resetuje oblasti teplomerù
+  };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
 extern PACKAGE TForm1 *F;//pouze zkrácený zapis

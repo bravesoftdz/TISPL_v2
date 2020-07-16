@@ -1470,20 +1470,34 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,Cvektory::TObjekt *Objek
 			vykresli_teplomer(canv,m.L2Px(teplomery->posledni->X),m.L2Py(teplomery->posledni->Y),"","",teplomery->posledni->eID,1,teplomery->posledni->sparovany->orientace,1);
 
 			/////vykresení cesty
-			if(teplomery->prvni!=teplomery->posledni)
+			if(teplomery->prvni->sparovany!=teplomery->posledni->sparovany)
 			{
-				vykresli_segment_cesty_teplomeru(canv,teplomery->prvni,1);//vykreslení cesty od prvního teploměru
-				vykresli_segment_cesty_teplomeru(canv,teplomery->posledni,2);//vykreslení cesty k poslednímu teploměru
+				vykresli_segment_cesty_teplomeru(canv,teplomery->prvni,teplomery->prvni->eID,1);//vykreslení cesty od prvního teploměru
+				vykresli_segment_cesty_teplomeru(canv,teplomery->posledni,teplomery->prvni->eID,2);//vykreslení cesty k poslednímu teploměru
 			}
       //vykrelsení spojnice mezi teploměry na jednom segmentu pohonu
 			else
 			{
-				;//doplnit vykreslení pro teploměry na linii nebo oblouku
+				double X1,Y1,OR,RA,R;
+				//vykreslení linie mezi teploměry
+				if(teplomery->prvni->sparovany->geo.typ==0)
+				{
+			  	OR=teplomery->prvni->geo.orientace;
+			  	RA=teplomery->prvni->geo.rotacni_uhel;
+			  	X1=teplomery->prvni->geo.X1;Y1=teplomery->prvni->geo.Y1;
+			  	R=m.delka(X1,Y1,teplomery->posledni->geo.X4,teplomery->posledni->geo.Y4);
+					vykresli_Gelement(canv,X1,Y1,OR,RA,R,clRed,3);
+				}
+        //vykrelsení čísti úseku mezi teploměry
+				else
+				{
+					;//nelze aplikovat stejnou metodu vykreslení jako u mag_lasa, kreslí se na prázdný prostor, zde nopomůže barva kolejí
+        }
       }
 	  	Cvektory::TCesta *ct=teplomery->cesta->dalsi;
 	  	while(ct!=NULL)
 			{
-				vykresli_segment_cesty_teplomeru(canv,ct->Element);
+				vykresli_segment_cesty_teplomeru(canv,ct->Element,teplomery->prvni->eID);
         //posun na další segment cesty
 				ct=ct->dalsi;
 			}
@@ -1494,7 +1508,7 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,Cvektory::TObjekt *Objek
 }
 ////---------------------------------------------------------------------------
 //vykreslí segment cesty oblasti teploměrů, parametr teploměr udává zda se bude vykreslovat prvni nebo posledni teploměr, 1 ... prvni, 2 ... posledni
-void Cvykresli::vykresli_segment_cesty_teplomeru(TCanvas *canv,Cvektory::TElement *Element,short teplomer)
+void Cvykresli::vykresli_segment_cesty_teplomeru(TCanvas *canv,Cvektory::TElement *Element,unsigned int eID,short teplomer)
 {
   //deklarace
 	double X1,Y1,X2,Y2,OR,RA,R;
@@ -1534,8 +1548,14 @@ void Cvykresli::vykresli_segment_cesty_teplomeru(TCanvas *canv,Cvektory::TElemen
 		}
 	}
 	else if(Element->geo.typ==0)R=Element->geo.delka;
+	//nastavení barev pro vykreslení oblasti
+	TColor clTeplomery=clBlack;//default, vytěkání
+	if(eID==400)clTeplomery=clRed;//sušení
+	if(eID==401)clTeplomery=clBlue;//chlazení
+	clTeplomery=m.clIntensive(clTeplomery,210);//zesvětlení barvy
+	float width=m.m2px(v.PP.sirka_podvozek/F->Zoom)+2*(1/3.0*F->Zoom)/F->Zoom;//nastavení šířky
 	//samotné vykreslení segmentu, kontrola, pokud existuje jen jden segment, vykreslí ho pouze jednou ne 2x
-	vykresli_Gelement(canv,X1,Y1,OR,RA,R,clRed,3);
+	if(X1!=X2 || Y1!=Y2)vykresli_Gelement(canv,X1,Y1,OR,RA,R,clTeplomery,width);
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
@@ -2509,8 +2529,9 @@ void Cvykresli::vykresli_dopravnik(TCanvas *canv, Cvektory::TZakazka *zakazka)
 	{
 		////vstupní proměnné
 		//musí být uvnitř cyklu pro nové nastavení
-		TColor clKolej=(TColor) RGB(255,69,0); if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n)clKolej=m.clIntensive(clKolej,m.get_intensity()/1.8);//zesvětlování neaktivních pohonů
-		TColor clRetez=clBlack; if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n)clRetez=m.clIntensive(clRetez,m.get_intensity());//zesvětlování neaktivních pohonů
+		TColor clKolej=(TColor) RGB(255,69,0); if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n && F->Akce!=F->Takce::POSUN_TEPLOMER)clKolej=m.clIntensive(clKolej,m.get_intensity()/1.8);//zesvětlování neaktivních pohonů
+		TColor clRetez=clBlack; if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n && F->Akce!=F->Takce::POSUN_TEPLOMER)clRetez=m.clIntensive(clRetez,m.get_intensity());//zesvětlování neaktivních pohonů
+		if(F->Akce==F->Takce::POSUN_TEPLOMER && !v.obsahuje_segment_cesty_element(E,v.ZAKAZKA_akt)){clRetez=m.clIntensive(clRetez,m.get_intensity());clKolej=m.clIntensive(clKolej,m.get_intensity()/1.8);}//zesvětlení neaktivních věcí
 		float RetezWidth=1;if(E->pohon!=NULL)RetezWidth=F->Zoom*0.5;//pokud není pohon přiřazen, tak jen elementární osa, jinak skutečná tloušťka
 
 		////vykreslení paralelních koleji
@@ -2671,7 +2692,8 @@ void Cvykresli::vykresli_koleje(TCanvas *canv,Cvektory::TElement *E)
 	if(F->OBJEKT_akt==NULL || F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n || F->scGPTrackBar_intenzita->Value>25 && F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n)//při editaci zobrazí pasivní jen s intenzitou větší než 25
 	{
 		TColor clKolej=(TColor) RGB(255,69,0);
-		if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n)clKolej=m.clIntensive(clKolej,m.round(m.get_intensity()/1.8));//zesvětlování neaktivních pohonů
+		if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n && F->Akce!=F->Takce::POSUN_TEPLOMER)clKolej=m.clIntensive(clKolej,m.round(m.get_intensity()/1.8));//zesvětlování neaktivních pohonů
+		if(F->Akce==F->Takce::POSUN_TEPLOMER && !v.obsahuje_segment_cesty_element(E,v.ZAKAZKA_akt))clKolej=m.clIntensive(clKolej,m.round(m.get_intensity()/1.8));//zesvětlení neaktivních větví
 		vykresli_koleje(canv,E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,clKolej);
 	}
 }
@@ -5062,7 +5084,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double
 	//else delka=m.round2double(delka,3);//if(AnsiString(delka).Pos("00000000001"))F->ms.MyToDouble(AnsiString(delka).SubString(1,AnsiString(delka).Pos("00000000001")-1));//pro mm ošetření proti 00000000001, protože nelze použít zaokrouhlení na větší počet desitnných míst
 	if(T=="")T=m.round2double(delka,0/*nefuguje zde správně,".."*/);//standardní zobrazení na 3 reálná místa
 	//odstaveno zobrazujeme na 3 realná if(highlight==1 || F->editace_textu)T=delka;//pokud se na kótu najede a předpokládá se editace tak se číslo rozbalí - nezaokrouhluje se, editace textu je možná navíc
-	vykresli_kotu(canv,m.L2Px(X1),m.L2Py(Y1),m.L2Px(X2),m.L2Py(Y2),T,aktElement,m.m2px(Offset),highlight,width,color,LO_kota,komora);
+	if(T!="0")vykresli_kotu(canv,m.L2Px(X1),m.L2Py(Y1),m.L2Px(X2),m.L2Py(Y2),T,aktElement,m.m2px(Offset),highlight,width,color,LO_kota,komora);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //v px + dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně, aktElement pokud bude NULL, předpokládá se, že je to kóta kabiny

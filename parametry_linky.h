@@ -95,15 +95,12 @@ __published:	// IDE-managed Components
   TscHTMLLabel *scHTMLLabel_InfoText;
   TImage *ImageEx_jig_podvesny;
   TImage *ImageEx_jig_podlahovy;
-  TButton *Button1;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall Button_saveClick(TObject *Sender);
 	void __fastcall Button_ADD_Click(TObject *Sender);
-	void __fastcall Button_DEL_Click(TObject *Sender);
 	void __fastcall Vypis_pohonyClick(TObject *Sender);
-	void __fastcall scGPButton_doporuceneClick(TObject *Sender);
 	void __fastcall rEditNum_takt_Change(TObject *Sender);
 	void __fastcall rHTMLLabel_delkavozikuClick(TObject *Sender);
 	void __fastcall scHTMLLabel_sirka_jigClick(TObject *Sender);

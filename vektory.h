@@ -70,6 +70,7 @@ class Cvektory
 		double rychlost_do;//maximální pracovní rychlost dopravníku
 		double aRD;//aktuální rychlost dopravníku m/s
 		double roztec;//rozteč palců v m
+    unsigned int roztec_ID;//uchovává v sobě ItemIndex rozteče
 		double Rz;//rozestup aktivních palců v m
 		double Rx;//rozestup aktivních palců (počet aktivních palců)
 		double umisteni;//umisteni retezu resp. palců, tempová proměnná pro simulaci
@@ -214,7 +215,6 @@ class Cvektory
 		T2Rect kabinaKotaY_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny -//DOPRYC
 		TPointD koty_elementu_offset;//.x=odsazení kót elementů v metrech normální stav, .y=odsazení kót elementův metrech editace geometrie  - NEW + dodat do CObjekt!!!!
 		TKomora *komora;//ukazatel na případné komory objektu - NEW + dodat do CObjekt
-		TCesta *c_teplomery;
     TTeplomery *teplomery;
 		unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky   //DOPRYC
 		unsigned short stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky   //DOPRYC
@@ -630,11 +630,12 @@ class Cvektory
 //metody pro POHONY
 	void hlavicka_POHONY();
 	void vloz_pohon(TPohon *pohon);//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
-	void vloz_pohon(UnicodeString name,double rychlost_od,double rychlost_do,double aRD,double R,double Rz,double Rx);//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
+	void vloz_pohon(UnicodeString name,double rychlost_od,double rychlost_do,double aRD,double R,double Rz,double Rx,unsigned int roztec_ID=0);//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
 	TPohon *vrat_pohon(unsigned long n);//vrátí ukazatel na pohon dle n pohonu
 	void kopiruj_pohon(TPohon *Pohon,TObjekt *Objekt);//bez ukazatelového propojení zkopíruje atributu pohonu do pohonu požadovaného objektu, neobsahuje-li tento objekt alokovanou paměť pro pohon, naalokuje jí
-	bool pohon_je_pouzivan(unsigned long n,bool po_obektech=true);//dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv
+	bool pohon_je_pouzivan(unsigned long n,bool po_obektech=true,bool vsechny_elementy=false);//dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv
 	TObjekt *pohon_je_pouzivan(unsigned long n,TObjekt *mimo_objekt,short rezim=-1);//dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv, ten vrátí formou ukazatale na první nalezený používáný, druhý vstupní parametr metody TObjekt mimo_objekt je ukazatel na objekt, který se bude při vyhledávání ignorovat, nenajde-li vrací NULL, třetí parametr, pokud je náchán na implicitní -1 řeší se pro všechny režim, pokud je v rozmezí 0 až 2 řeší se pro konkrétní režim
+  void aktualizuj_parametry_pouzivanych_pohonu();//aktualizuje Rx a Rz pohonů, které jsou používané, provádí se pro přepsání pohonů na PL
 	unsigned long vrat_pocet_nepouzivanych_pohonu();//vrátí počet nepoužívaných pohonů
 	double minRD(TPohon *pohon);//SMAZAT??vrátí nejnižší možnou rychlost ze všech objektů, které jsou přiřazené k danému pohonu (využívá se pro S&G a PP, u KK musí být RD v souladu s TT)//pokud vrátí 0, znamená, že pohon není využíván
 	AnsiString vypis_objekty_nestihajici_prejezd(TPohon *pohon,double testRD,short rezim=-1);//vypíše objekty přiřazené k danému pohonu nestíhající přejezd při navrhovaném testRD, možno nastavit režim, pro S&G + PP hodnota režim 20
@@ -783,6 +784,7 @@ public:
 	void nacti_z_obrazu_DATA(bool storno=false);//načtení z obrazu projektu v závislosti zda se jedná o storno funkcionalitu, layout nebo editaci objektu
 	Cvektory::TDATA *vrat_obraz_DATA(unsigned long n);//vrátí obraz podle jeho n
 	void smaz_obraz_DATA(unsigned long n=0);//smaže konkrétní obraz
+  void smaz_data_obrazu(TDATA *obraz);//mazání dat v obrazu, objekty, elementy, ...
 	long vymaz_seznam_DATA();//smaže kompletní seznam DATA
 
 	unsigned long pozice_data;//uchovává pozici ve spojáku dat, pro posunování při ctrl+z funkcionalitě
@@ -833,15 +835,20 @@ public:
 //teploměry
 	void hlavicka_teplomery(TObjekt *Objekt);
 	void hlavicka_cesty_teplomery(TTeplomery *teplomery);//vytvoří v objektu hlavičku pro cestu teploměrů
-  void vymaz_teplomery(TObjekt *Objekt,TTeplomery *teplomery);//vymaže konkrétní záznam teploměrů
-	void vymaz_seznam_teplomery(TObjekt *Objekt);//vymaže seznam teploměrů z objektu
+	void vymaz_teplomery(TObjekt *Objekt,TTeplomery *teplomery,bool ponechat_elementy=true);//vymaže konkrétní záznam teploměrů, s elementy nebo bez
+  void vymaz_seznam_cest(TTeplomery *teplomery,bool ponechat_elementy=true);//vymaže seznam cest z teplomerů, s elementy nebo bez
+	void vymaz_seznam_teplomery(TObjekt *Objekt,bool ponechat_elementy=true);//vymaže seznam teploměrů z objektu s elementy nebo bez
   Cvektory::TTeplomery *vrat_teplomery_podle_zakazky(TObjekt *Objekt,TZakazka *Zakazka);//vrátí ukazatel na záznam teploměrů pro konkrétní zakázku
   Cvektory::TTeplomery *vytvor_zaznam_teplomeru_pro_zakazku(TObjekt *Objekt,TZakazka *Zakazka);//vytvoří záznam teploměrů pro zakázku
 	void vloz_segment_cesty_teplomery(TObjekt *Objekt,TElement *Element,bool prvni=false,bool posledni=false,double X=0,double Y=0);//vloží segment cesty do cest teploměrů v objektu, nebo vložení teploměru, doplnění bodu vložení
   void vloz_segment_cesty_do_seznamu_cesty(TTeplomery *teplomery,TElement *Element,bool prvni=false,bool posledni=false,unsigned int eID=400,double X=0,double Y=0);
 	void vytvor_default_c_teplomery(TObjekt *Objekt);//vytvoří 2 teploměry a defaultní cestu mezi nimi
 	Cvektory::TElement *najdi_teplomer();//hledá zda není uživatel kurzorem nad teploměrem, pokud ano vrátí ukazatel na teploměr
-  void posun_teplomeru(TElement *teplomer);//posunem teploměru dochází k editaci jeho oblasti
+	void posun_teplomeru(TElement *teplomer);//posunem teploměru dochází k editaci jeho oblasti
+	void zmena_zakazky_vytvoreni_teplomeru(TObjekt *Objekt,TZakazka *Zakt,TZakazka *Znova);//provede kontrolu, zda existuje cesta pro akt zakázku pokud ano, zkontroluje jestli existuje cesta i na nové zakázce, pokud ne vytvoří default cestu od vrátek k vrátkům
+	void kopiruj_seznam_teplomery(TObjekt *zdroj,TObjekt *cil);//kopíruje záznamy teploměrů do jiného objektu, pro účely obrazu objektu
+	Cvektory::TTeplomery *kopiruj_teplomer(TTeplomery *original);//vytvoří kopii z originálního záznamu teploměrů
+	void aktualizuj_cestu_teplomeru();//pokud došlo ke změně, která může ovlivnit cestu teploměru, zkontroluje, zda je možné aktualizovat a pokud ano, aktualizuje
 
 //SQL
 	AnsiString QUERY(AnsiString query);//vratí AnsiString hodnod dle zadaného dotazu v syntaxi SQL, zatím umí jen základní úroveň - asi odstranit
@@ -870,6 +877,7 @@ private:
 			double rychlost_do;//maximální pracovní rychlost dopravníku
 			double aRD;//aktuální rychlost dopravníku m/s
 			double roztec;//rozteč palců v m
+      unsigned int roztec_ID;//uchovává v sobě ItemIndex rozteče
 			double Rz;//rozestup aktivních palců v m
 			double Rx;//rozestup aktivních palců (počet aktivních palců)
 	};
@@ -884,7 +892,8 @@ private:
 			double orientace_text;//orientace nadpisu objektu
       unsigned long pocet_bodu;
 			unsigned long element_n;
-      unsigned long pocet_komor;
+			unsigned long pocet_komor;
+      unsigned long pocet_teplomeru;
 			unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
 			unsigned short stavPM;//obsahuje stav pohonových tabulek v objektu 0-normal (zobrazeny rychlosti a comba, dafaultní stav), 1-minimized (pouze hlavička tabulek a comba), 2-maximized (vše zobrazeno)
       double sirka_steny;//šířka stěny kabiny objektu v metrech
@@ -976,7 +985,8 @@ private:
 			TPointD RT;//reserve time
 
       unsigned int akt_pocet_voziku;
-      unsigned int max_pocet_voziku;
+			unsigned int max_pocet_voziku;
+      unsigned long sparovany_n;
       unsigned long objekt_n;//příslušnost elementu k objektu
       unsigned long pohon_n;//příslušnost elementu k pohonu
 			TGeometrie geo;
@@ -988,6 +998,13 @@ private:
 			unsigned long n_element;
 			unsigned long n_sparovany;
 			Tdata data;
+	};
+
+	struct C_teplomery//uchovává v sobě teploměry a jejich cestu pro různé zakázky
+	{
+		unsigned long n;
+		unsigned long Z_n;
+		unsigned long pocet_sehmentu_cesty;
 	};
 
 //	struct C_vozik//pro konverzi do bináru
