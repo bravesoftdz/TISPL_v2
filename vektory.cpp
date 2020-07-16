@@ -3850,7 +3850,7 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu,unsigned lo
 		preskocit_kontolu=false;
 		zobrazit_tip=false;
 		smaz_vyhybku_spojku(Element,maz_OBJ);
-  }
+	}
 	if(Element->eID==200 && !preskocit_kontolu && ((Element->dalsi!=NULL && Element->dalsi->pohon!=Element->pohon) || (Element->dalsi==NULL && ELEMENTY->dalsi->pohon!=Element->pohon)))//mazání PM
 	{
 		//pokud se jedná o PM na konci objektu .. nelze smazat
@@ -3949,7 +3949,7 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu,unsigned lo
 	}
 	else if(povolit)//změna na zarážku, v případě že mažu element který obsahuje složitejsí geometrii
 	{
-    //smazání a znovuvytvoření mGridu elementu
+		//smazání a znovuvytvoření mGridu elementu
 		long ID=Element->n;
 		if(F->OBJEKT_akt!=NULL && (Element->objekt_n==F->OBJEKT_akt->n || Element==F->predchozi_PM))
 		{
@@ -8685,7 +8685,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 			if(F->OBJEKT_akt!=NULL && !storno)
 			{
 				//mazání mGridů elementů
-				F->DrawGrid_knihovna->SetFocus();
+				F->nastav_focus();
 				TElement *E=F->OBJEKT_akt->element;
 				while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
 				{
@@ -8724,6 +8724,9 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 			hlavicka_ELEMENTY();//nutné po mazání!!!
 			F->predchozi_PM=NULL;
 			ZAKAZKA_akt=NULL;
+
+			////mazání ukazatelů
+      F->pom=NULL;//musí zde být, může působit problémy při vykreslení
 								 
 			////načtení Objektů
 			TObjekt *dO=obraz->Objekty->dalsi,*O=NULL;

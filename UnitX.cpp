@@ -1376,7 +1376,7 @@ bool TFormX::check_click_Note(double X,double Y,bool check_for_highlight)
 			case 200:
 			case 300://naplnìní RD
 			{
-        vstoupeno_elm=false;//musí dojít k blokaci onchange, jinak se do aRD nahraje zaokrouhlená hodnota
+        vstoupeno_elm=false;vstoupeno_poh=false;//musí dojít k blokaci onchange, jinak se do aRD nahraje zaokrouhlená hodnota
 				int opraveny_pohon=validovany_pohon;
 				vstoupeno_elm=false;
 				Cvektory::TPohon *p=F->d.v.vrat_pohon(validovany_pohon);
@@ -1680,7 +1680,7 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
 //provede validaci RD
 void TFormX::validace_RD(Cvektory::TElement *E)
 {
-	if(E->eID==200)//validovat pouze u PM
+	if(E->eID==200 && F->OBJEKT_akt->pohon->aRD!=0)//validovat pouze u PM
 	{
 		//smazání pøedchozí validace z VID
 		zapisVID(0,1);//pozice jsou popsány v .h u deklarace VID a vnì metody zapisVID()
@@ -1736,28 +1736,28 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 					}
        		// nutné ošetøení pro období zadávání/psaní
 					if (p->aRD > 0)
-	     		{
+					{
 	     			//výpoèet doporuèené rychosti
 		      	double dopRD1=0,dopRD2=0,aRD=F->OBJEKT_akt->pohon->aRD;
 		      	unsigned int n=0;
 		      	do
-		      	{
+						{
 		      		//navyšování nebo snižování testovací rychlosti, tak aby byla v rozsahu pohonu
 		      		if(n!=0)
 		      		{
-								if(F->OBJEKT_akt->pohon->aRD>F->OBJEKT_akt->pohon->rychlost_do || (F->OBJEKT_akt->pohon->aRD<F->OBJEKT_akt->pohon->rychlost_do && F->OBJEKT_akt->pohon->rychlost_do-F->OBJEKT_akt->pohon->aRD>0 && F->OBJEKT_akt->pohon->rychlost_do-F->OBJEKT_akt->pohon->aRD<F->OBJEKT_akt->pohon->aRD-F->OBJEKT_akt->pohon->rychlost_od))aRD=0.99*aRD;//snižování hodnoty o 1%
+								if(p->aRD>p->rychlost_do || (p->aRD<p->rychlost_do && p->rychlost_do-p->aRD>0 && p->rychlost_do-p->aRD<p->aRD-p->rychlost_od))aRD=0.99*aRD;//snižování hodnoty o 1%
 								else aRD=1.01*aRD;//navýšení hodnoty o 1%
-		      		}
-		      		//výpoèet doporuèených rychlostí
-		      		dopRD1=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,0,F->OBJEKT_akt->pohon->roztec,F->d.v.PP.TT,aRD);
-		      		dopRD2=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,90,F->OBJEKT_akt->pohon->roztec,F->d.v.PP.TT,aRD);
-		      		//zapsání menší hodnoty jako dopRD
+							}
+							//výpoèet doporuèených rychlostí
+							dopRD1=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,0,p->roztec,F->d.v.PP.TT,aRD);
+							dopRD2=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,90,p->roztec,F->d.v.PP.TT,aRD);
+							//zapsání menší hodnoty jako dopRD
 		      		if(dopRD1>dopRD2)dopRD=dopRD1;//vypíše vetší hodnotu
-		      		else dopRD=dopRD2;
-		      		n++;
-						}while(!F->m.between(dopRD,F->OBJEKT_akt->pohon->rychlost_od,F->OBJEKT_akt->pohon->rychlost_do));
+							else dopRD=dopRD2;
+							n++;
+						}while(!F->m.between(dopRD,p->rychlost_od,p->rychlost_do));
 	     			//je zvolen pohon, jeho aktuální rychlost se nerovná doporuèené
-						if(p->roztec>0 && F->ms.MyToDouble(dopRD)!= F->ms.MyToDouble(p->aRD) && mimo_rozmezi==false)
+						if(p->roztec>0 && dopRD!=p->aRD && mimo_rozmezi==false)
 	     			{
 							//if(E->mGrid->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
 							E->mGrid->ShowNote(F->ls->Strings[221]+" <a>"+AnsiString(F->m.round2double(F->outaRD(dopRD),3))+"</a> "+jednotky,F->d.clError,14);//"Zadejte doporuèenou rychlost pohonu:"
@@ -1765,7 +1765,7 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 							break;//byl nalezen problém, zastavení validace, lze zobrazit jen jeden problém v Note
 						}
 	     			//vše je vpoøádku
-						if (F->ms.MyToDouble(dopRD)== F->ms.MyToDouble(p->aRD) && mimo_rozmezi==false)
+						if (dopRD==p->aRD && mimo_rozmezi==false)
 	     			{
 	     				//povolit_zakazat_editaci(true);
 							E->mGrid->ShowNote("",F->d.clError,14);

@@ -4549,7 +4549,7 @@ void TForm1::getJobID(int X, int Y)
   					break;//pokud chci první nalezený element ... break, pokud chci poslední nalezeny bez breaku (např. problém překrývání 2 citelných oblastí)
   				}
   				//hledání zda nejsem na vedlejší větvi výhybky
-  				else if(E->eID==300 && E->dalsi2==E->predchozi2 && m.LeziVblizkostiUsecky(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,E->geo.X4,E->geo.Y4,E->predchozi2->geo.X4,E->predchozi2->geo.Y4)<=1)
+  				else if(E->eID==300 && E->dalsi2==E->predchozi2 && m.LeziVblizkostiUsecky(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,E->geo.X4,E->geo.Y4,E->predchozi2->geo.X4,E->predchozi2->geo.Y4)<=0.5)
   				{
   					JID=6;
   					pom_element=E;
@@ -4730,18 +4730,6 @@ void TForm1::getJobID(int X, int Y)
 		if(pom_element!=NULL && d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->sparovany==pom_element)d.v.smaz_segment_MAG_LASA(d.v.MAG_LASO->dalsi->Element);
 		//vykreslení měřidla, pouze v případě, že mám nadefinovaný první bod
 		if(d.v.MAG_LASO->Element!=NULL)REFRESH();//slouží k vykreslení a překreslení mag. lasa
-
-		//////testy
-//		Memo_testy->Clear();
-//		if(d.v.MAG_LASO->predchozi!=NULL)Memo("predchozi n:"+String(d.v.MAG_LASO->predchozi->n));
-//		Cvektory::TCesta *C=d.v.MAG_LASO;
-//		while(C!=NULL && C->Element!=NULL)
-//		{
-//			if(C->Element->n==MaxInt)Memo("->sparovany: "+C->sparovany->name+"; n: "+String(C->n));
-//			else Memo(C->Element->name+"; n: "+String(C->n));
-//			C=C->dalsi;
-//		}
-//		C=NULL;delete C;
 	}
 	//pouze na test zatížení Memo3->Visible=true;Memo3->Lines->Add(s_mazat++);
 }
@@ -4909,7 +4897,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 				//smazání pomocných ukazatelů
 				A=NULL;B=NULL;delete A;delete B;
 			}
-			if((pom!=NULL && pom!=predchozi_pom) || (pom==NULL && predchozi_pom!=NULL))vytvor_statickou_scenu();
+			if((pom!=NULL && pom!=predchozi_pom) || (pom==NULL && predchozi_pom!=NULL) || JID==6)vytvor_statickou_scenu();
 			REFRESH(scena,false);
 		}
 
@@ -7637,7 +7625,7 @@ void TForm1::mGrid_puvodni_stav(Cvektory::TElement *E)
 	else////nastavení komponent
 	{
 		switch(E->eID)
-  	{
+		{
   		case 0://stop stanice, nastavování režimů podle ID objektu
   		{
 				E->mGrid->Cells[2][3].Type=E->mGrid->EDIT;E->mGrid->Cells[2][6].Type=E->mGrid->EDIT;
@@ -7710,6 +7698,7 @@ void TForm1::mGrid_puvodni_stav(Cvektory::TElement *E)
 				E->mGrid->Cells[3][2].Type=E->mGrid->COMBO;
 				E->mGrid->Cells[4][2].Type=E->mGrid->COMBO;
 				E->mGrid->exBUTTONVisible=true;
+				if(E->eID==300)napln_comba_mGridu(E);//nastavení editovatelných comb a jejich naplnění
 				B=NULL;delete B;
 				//edity zařídí fce napln_comba_mGridu(), dynamicky se mění
 				break;
@@ -9276,8 +9265,11 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 		TscGPComboBox *C1=E->mGrid->getCombo(3,2),*C2=E->mGrid->getCombo(4,2),*C_pom=NULL;
 		if(C1!=NULL && C2!=NULL)//může dojít k NULL pokud je pohonová tabulka mimo obraz
 		{
-   		C1->Clear();C2->Clear();
+			C1->Clear();C2->Clear();
+			E->mGrid->Cells[3][2].Background->Color=clWhite;E->mGrid->Cells[4][2].Background->Color=clWhite;
+			E->mGrid->Cells[3][2].Font->Color=(TColor)RGB(43,87,154);;E->mGrid->Cells[4][2].Font->Color=(TColor)RGB(43,87,154);;
 			C1->Font->Color=(TColor)RGB(43,87,154);C2->Font->Color=(TColor)RGB(43,87,154);
+			C1->Options->FontNormalColor=(TColor)RGB(43,87,154);C2->Options->FontNormalColor=(TColor)RGB(43,87,154);
 			C1->Options->FontHotColor=(TColor)RGB(43,87,154);C2->Options->FontHotColor=(TColor)RGB(43,87,154);
 			C1->Options->FontPressedColor=(TColor)RGB(43,87,154);C2->Options->FontPressedColor=(TColor)RGB(43,87,154);
 			C1->Options->FontFocusedColor=(TColor)RGB(43,87,154);C2->Options->FontFocusedColor=(TColor)RGB(43,87,154);
@@ -14087,8 +14079,9 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	Cvektory::TElement *E=OBJEKT_akt->teplomery->dalsi->posledni;
 //	E->mGrid->DeleteRow(E->mGrid->RowCount-1,false);
 //	E->mGrid->Update();
-	if(m.between(4,1,4))Memo("v rozmezí");
-  else Memo("mimo rozmezí");
+	Canvas->Pen->Color=RGB(43,87,154);
+	Canvas->Pen->Width=5;
+	d.line(Canvas,0,0,2000,2000);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
