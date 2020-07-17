@@ -30,6 +30,7 @@ private:	// User declarations
 	void zapisVID(int zapis,int pozice);//zapiše na danou pozici ve VID dané èíslo
 	void zobrazit_skryt_radkyPM(Cvektory::TElement *E);//zobrazí èi skryje øádky PM tabulek podle stavu uloženého v objektu
   unsigned int aktualizuj_radek_tab_teplomeru(TmGrid *mGrid,unsigned int radek,double cas,double WT,bool soucet=false);//aktualizuje parametry konkrétního øádku tabulky teplomìrù
+  void podbarvi_edit(Cvektory::TElement *E,long Col,long Row,bool def_nastaveni=true);//nastaví defautlní barvy editu a buòce, nebo podbarvé buòku
 
 	//promìnné pro UnitX
 	bool editace_pohonu;
