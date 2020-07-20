@@ -1842,6 +1842,8 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->orientace=orientace;//důležité pro volání makra m.Rxy, bez tohoto by makro vracelo chybné hodnoty
 	novy->dalsi=NULL;
 	novy->predchozi=NULL;
+	novy->dalsi2=NULL;
+	novy->predchozi2=NULL;
 
 	//ukazatelové propojení + řazení
 	vloz_element(Objekt,novy,Ep);
@@ -2061,8 +2063,8 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 			if(Objekt->element!=NULL && p==Objekt->element || Objekt->element==NULL)Objekt->element=Element;
 			Element->idetifikator_vyhybka_spojka=pocet_vyhybek;
 			//geometrie
-	  	vloz_G_element(Element,0,p->geo.X1,p->geo.Y1,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,p->geo.orientace);
-			vloz_G_element(p,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,F->d.Rxy(p).x,F->d.Rxy(p).y,p->geo.orientace);
+			vloz_G_element(Element,0,p->geo.X1,p->geo.Y1,0,0,0,0,Element->X,Element->Y,p->geo.orientace);
+			vloz_G_element(p,0,Element->X,Element->Y,0,0,0,0,p->geo.X4,p->geo.Y4,p->geo.orientace);
 			//změna indexů
 			Cvektory::TElement *E=Element;
 			int n=p->n;
