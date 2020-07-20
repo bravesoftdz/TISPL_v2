@@ -6241,7 +6241,7 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 			//ukončení editace geometrie
 			if(vypnout)
 			{
-        Akce=BLOK;//blokace akce, aby se nespoštěl refresh při změně viditelnosti vrstev
+				Akce=BLOK;//blokace akce, aby se nespoštěl refresh při změně viditelnosti vrstev
 				AnsiString T;
 		  	if(T==0 || T=="")rotace_jigu=0;else rotace_jigu=1;
 		  	T=readINI("nastaveni_editace","zobrazeni_pozic"); //zobrazit pozice
@@ -6274,17 +6274,23 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 		  	else scGPCheckBox_rozmisteni_voziku->Checked=false;
 		  	if(zobrazit_popisek_pohonu==1)scGPCheckBox_popisek_pohonu->Checked=true;
 				else scGPCheckBox_popisek_pohonu->Checked=false;
-				//aktualizace comb ve výhybkách
+				//aktualizace comb ve výhybkách + refreshování všech tabulek, musí být, aby nedošlo k chybnému vykreslení mgridů, způsobuje zobrazení MB
         Cvektory::TElement *E=OBJEKT_akt->element;
 				while(E!=NULL)
 				{
 					if(E->eID==300)napln_comba_mGridu(E);
+					E->mGrid->Refresh();
 					E=d.v.dalsi_krok(E,OBJEKT_akt);
 				}
 				E=NULL;delete E;
 				d.v.vymaz_seznam_VYHYBKY();
+				//refresh ostatních tabulek
+				if(predchozi_PM!=NULL)predchozi_PM->mGrid->Refresh();
+				Cvektory::TTeplomery *Tep=d.v.vrat_teplomery_podle_zakazky(OBJEKT_akt,d.v.ZAKAZKA_akt);
+				if(Tep!=NULL)Tep->posledni->mGrid->Refresh();
+				Tep=NULL;delete Tep;
 			}
-			REFRESH();
+			REFRESH(d.SCENA,true);
 			E=NULL;delete E;
 		}
 	}
