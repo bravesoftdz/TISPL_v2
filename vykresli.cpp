@@ -201,7 +201,7 @@ void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)//scena 0 - vše do 
 				canv->Pen->Width=1;
 				canv->Pen->Color=clRed;
 				canv->Brush->Style=bsClear;
-				if(pom!=NULL)
+				if(pom!=NULL && pom->geo.delka!=0 && E->geo.delka!=0)
 				{
 					if(pom->eID==301 && pom->predchozi2==E){bod.x=pom->X;bod.y=pom->Y;}
 					else {bod.x=pom->geo.X1;bod.y=pom->geo.Y1;}
@@ -212,7 +212,7 @@ void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)//scena 0 - vše do 
 						sipka(canv,(m.L2Px(E->geo.X4)+m.L2Px(bod.x))/2.0,(m.L2Py(E->geo.Y4)+m.L2Py(bod.y))/2.0,m.azimut(m.L2Px(bod.x),m.L2Py(bod.y),m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4))*(-1),true,sipka_velikost,clRed);//zajistí vykreslení šipky - orientace spojovací linie
 					}
 				}
-				else if(v.OBJEKTY->predchozi->n>2)//vykreslení pouze v případě pokdud existjují více jak 2
+				else if(pom==NULL && v.OBJEKTY->predchozi->n>2)//vykreslení pouze v případě pokdud existjují více jak 2
 				{
 					if(m.round2double(E->geo.X4,2)!=m.round2double(v.ELEMENTY->dalsi->geo.X1,2) || m.round2double(E->geo.Y4,2)!=m.round2double(v.ELEMENTY->dalsi->geo.Y1,2))
 					{

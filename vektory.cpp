@@ -1940,7 +1940,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 		////funkcionalita pro běžné elementy
 		if(Element->eID!=300 && Element->eID!=301)
 		{
-	  	if(p==NULL)//vkládám na konec
+			if(p==NULL)//vkládám na konec
 			{
 				//ukazatelové propojení
 	  		if(posledni==NULL)//vkládání nového objektu - vkládání zarážky
@@ -1996,7 +1996,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 	  	}
 			else /*if(p->n!=Element->n)*///vkládám mezi elementy, vpřípadě, že bylo vloženo před prví prvek vrací Element, přesun je již vyřešen
 			{
-	  		//ukazatelové propojení
+				//ukazatelové propojení
 				Element->dalsi=p;
 	  		Element->predchozi=p->predchozi;
 	  		if(Objekt->element!=NULL && p==Objekt->element)Objekt->element=Element;//nový první element objetku
@@ -2006,7 +2006,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 
 				//geometrie
 				vloz_G_element(Element,0,p->geo.X1,p->geo.Y1,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,p->geo.orientace);
-				vloz_G_element(p,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,p->geo.X4,p->geo.Y4,p->geo.orientace);
+				if(Element->X!=p->geo.X4 && Element->Y!=p->geo.Y4 && p->geo.typ==0)vloz_G_element(p,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,p->geo.X4,p->geo.Y4,p->geo.orientace);
 				//změna indexů
 				Cvektory::TElement *E=Element;
 	  		//E->n=vrat_poradi_elementu_do(E)+1;
@@ -2064,7 +2064,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 			Element->idetifikator_vyhybka_spojka=pocet_vyhybek;
 			//geometrie
 			vloz_G_element(Element,0,p->geo.X1,p->geo.Y1,0,0,0,0,Element->X,Element->Y,p->geo.orientace);
-			vloz_G_element(p,0,Element->X,Element->Y,0,0,0,0,p->geo.X4,p->geo.Y4,p->geo.orientace);
+			if(Element->X!=p->geo.X4 && Element->Y!=p->geo.Y4 && p->geo.typ==0)vloz_G_element(p,0,Element->X,Element->Y,0,0,0,0,p->geo.X4,p->geo.Y4,p->geo.orientace);
 			//změna indexů
 			Cvektory::TElement *E=Element;
 			int n=p->n;
@@ -2224,17 +2224,29 @@ void Cvektory::vloz_element(TElement *Element)
 Cvektory::TElement *Cvektory::vloz_element_pred(TObjekt *Objekt,TElement *Element)
 {
 	Cvektory::TElement *ret=NULL;//návratová proměnná, defaultně prázdn
-	if((F->Akce==F->ADD||F->Akce==F->VYH||F->Akce==F->MOVE_ELEMENT||F->editace_textu) && Objekt->element!=NULL/* && Objekt->element->dalsi!=NULL*/)//ošetření proti spouštění při zavírání a otvírání náhledu
+	if((F->Akce==F->ADD || F->Akce==F->VYH || F->Akce==F->MOVE_ELEMENT || F->editace_textu) && Objekt->element!=NULL/* && Objekt->element->dalsi!=NULL*/)//ošetření proti spouštění při zavírání a otvírání náhledu
 	{
 		Cvektory::TElement *p=Objekt->element;//začnu od prvního elementu v objektu
 		while(p!=NULL && p->objekt_n==Objekt->n)
 		{
 			if(p!=Element)//neřeší se s aktuálním elementem (při posunu)
 			{
+				//přichytávání na konec začátek a konec oblouku, pouze pro výhybku a spojku
+				if((Element->eID==300 || Element->eID==301) && F->Akce==F->Takce::VYH && F->prichytavat_k_mrizce==1 && p->geo.typ!=0)
+				{
+					if(m.delka(Element->X,Element->Y,p->geo.X1,p->geo.Y1)<1){ret=p;break;}//začátek linie
+					if(m.delka(Element->X,Element->Y,p->geo.X4,p->geo.Y4)<1){ret=p->dalsi;break;}//konec linie
+				}
 				//kontrola zda vkládaný element neleží mezi prvním a druhým elementem, druhým až n
 				if(p->geo.typ==0 && m.LeziVblizkostiUsecky(m.round2double(F->d.Rxy(Element).x,2),m.round2double(F->d.Rxy(Element).y,2),m.round2double(p->geo.X1,2),m.round2double(p->geo.Y1,2),m.round2double(p->geo.X4,2),m.round2double(p->geo.Y4,2))==0)
 				{
 					ret=p;//uložení elementu, který předcházi vkládanému elementu
+					break;
+				}
+				//předávací místo může být přesně na konci funkčního elementu, i když se jedná o oblouk
+				if(Element->eID==200 && Element->X==p->geo.X4 && Element->Y==p->geo.Y4)
+				{
+					ret=p->dalsi;//uložení elementu, který předcházi vkládanému elementu
 					break;
 				}
 			}
@@ -2806,13 +2818,13 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 		bool posun_povolit=true;
 		TPointD puv_souradnice;
 		puv_souradnice.x=Element->X;puv_souradnice.y=Element->Y;
-		if(F->OBJEKT_akt->element!=NULL&&vzdalenost!=0)//musí existovat alespoň jeden element&&nesmí být vzdálenost rovna nule
+		if(F->OBJEKT_akt->element!=NULL && vzdalenost!=0)//musí existovat alespoň jeden element&&nesmí být vzdálenost rovna nule
 		{
 			//////Načtení délky před posunem
-			double vzd=vzdalenost_od_predchoziho_elementu(Element,false);
+			double vzd=Element->geo.delka;//vzdalenost_od_predchoziho_elementu(Element,false);
 			if((Element->dalsi!=NULL && Element->dalsi->geo.typ!=0 || Element->geo.typ!=0) && kontrola_zmeny_poradi)posun_povolit=false;//pokud by element ovlivnil posunem geometrii
 			//////Realizace posunu + validace
-			if(vzd!=0 && !posun_kurzorem && posun_povolit)//posun z kót!!!!!!!!!!!!!!!!!!!!!
+			if(!posun_kurzorem && posun_povolit)//posun z kót!!!!!!!!!!!!!!!!!!!!!
 			{
 				//realizace posunu
 				vzdalenost=(vzd/m.abs_d(vzd))*(m.abs_d(vzd)-vzdalenost);
@@ -2848,7 +2860,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				else
 				{Element->X=puv_souradnice.x;Element->Y=puv_souradnice.y;posun_povolit=false;F->TIP=F->ls->Strings[307];}//"Prvek nelze přesunout"
 			}
-			else if(vzd!=0 && posun_kurzorem && posun_povolit)//posun kurozem!!!!!!!!!!!!!!!!!!!!!
+			else if(posun_kurzorem && posun_povolit)//posun kurozem!!!!!!!!!!!!!!!!!!!!!
 			{
 				//realizace posunu
 				if(Element->geo.orientace-Element->geo.rotacni_uhel==90||Element->geo.orientace-Element->geo.rotacni_uhel==270)Element->X=Element->X+vzdalenost;
