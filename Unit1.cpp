@@ -2336,7 +2336,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			short s=2;if(d.SCENA==0)s=0;//řešení pro vykreslit VŠE
 			//if(/*d.SCENA!=1111111 && d.SCENA!=111111 || */pom!=NULL)
 			d.vykresli_vektory(bmp_in->Canvas,s);//DYNAMICKÁ scéna, pokud není vše do statické nebo je aktivní pom objekt (např. výběr hrany atp.), tak se řešeí dynamická scena, jinak ne, protože nemá smysl
-			if(Akce==GEOMETRIE)d.smart_kurzor(bmp_in->Canvas,posledni_editovany_element);
+			if(Akce==GEOMETRIE)d.smart_kurzor(bmp_in->Canvas,posledni_editovany_element);//0,1,2
 			if(MOD==TVORBA_CESTY)d.kurzor_cesta(bmp_in->Canvas);
 			if(Akce==MAGNETICKE_LASO)d.vykresli_meridlo(bmp_in->Canvas);
 			if(OBJEKT_akt!=NULL && Akce!=GEOMETRIE)d.vykresli_oblast_teplomery(bmp_in->Canvas,OBJEKT_akt);
@@ -9381,12 +9381,17 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 	if(E->eID==200 || E->eID==300)
 	{
 		E->mGrid->Update();//musí být přítomen před zakazováním komponent, před Update tabulka ještě neexistuje
+		//default barvy buňěk pod combem, pokud existuje vedlejší větev
+		if(E->eID==300 && E->dalsi2!=E->predchozi2)
+		{
+			E->mGrid->Cells[3][2].Background->Color=clWhite;E->mGrid->Cells[4][2].Background->Color=clWhite;
+			E->mGrid->Cells[3][2].Font->Color=(TColor)RGB(43,87,154);;E->mGrid->Cells[4][2].Font->Color=(TColor)RGB(43,87,154);
+		}
 		TscGPComboBox *C1=E->mGrid->getCombo(3,2),*C2=E->mGrid->getCombo(4,2),*C_pom=NULL;
 		if(C1!=NULL && C2!=NULL)//může dojít k NULL pokud je pohonová tabulka mimo obraz
 		{
 			C1->Clear();C2->Clear();
-			E->mGrid->Cells[3][2].Background->Color=clWhite;E->mGrid->Cells[4][2].Background->Color=clWhite;
-			E->mGrid->Cells[3][2].Font->Color=(TColor)RGB(43,87,154);;E->mGrid->Cells[4][2].Font->Color=(TColor)RGB(43,87,154);;
+      //nastavení default barev comba
 			C1->Font->Color=(TColor)RGB(43,87,154);C2->Font->Color=(TColor)RGB(43,87,154);
 			C1->Options->FontNormalColor=(TColor)RGB(43,87,154);C2->Options->FontNormalColor=(TColor)RGB(43,87,154);
 			C1->Options->FontHotColor=(TColor)RGB(43,87,154);C2->Options->FontHotColor=(TColor)RGB(43,87,154);
