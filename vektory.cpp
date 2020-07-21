@@ -4598,13 +4598,14 @@ void Cvektory::posun_palce_retezu()
 			////vstupní proměnné či ukazatele
 			TRetez *R=Pohon->retez->dalsi;//přeskočí hlavičku ŘETĚZ
 			TPalec *P=Pohon->palec->dalsi;//přeskočí hlavičku PALCE
-			Pohon->umisteni+=fmod(F->sTIME*Pohon->aRD,Pohon->roztec);//aktuální čas simulace * rychlost pohonu
-			if(Pohon->n==1)F->Memo(String(Pohon->umisteni)+" "+String(Pohon->roztec));
+			//Pohon->umisteni+=fmod(F->sTIME*Pohon->aRD,Pohon->roztec);//aktuální čas simulace * rychlost pohonu=umisteni, umístení prvního palce (nejedná se vždy o n==1, ale vizuálně prvně vykreslovaného a ve spojáku palců umístěného aktuálně na první pozici)
+      Pohon->umisteni+=m.px2m(1);
+			//if(Pohon->n==1)F->Memo(String(Pohon->umisteni)+" "+String(Pohon->roztec));
 			////vynulování umístění, objevil se nový palec
 			if(Pohon->umisteni>=Pohon->roztec)
 			{
 				///objevil se nový palec, tzn. posune se zpět o celý úsek rozteče (tj. jak kdyby neustále rozteč byla odečítáná při přetečení)
-				//Pohon->umisteni-=Pohon->roztec;
+				Pohon->umisteni-=Pohon->roztec;
 				///přeskládání spojáku pálců a to tak, že poslední palec bude první (hned za hlavičkou), původně první bude druhý, původně předposlední bude poslední atd
 				TPalec *P1=Pohon->palec->predchozi;//uložení původně posledního, následně prvního
 				//hlavička
@@ -4621,20 +4622,23 @@ void Cvektory::posun_palce_retezu()
 				P1=NULL;delete P1;
 			}
 
+			////vychozí umístení prvního palce (nejedná se vždy o n==1, ale vizuálně prvně vykreslovaného a ve spojáku palců umístěného aktuálně na první pozici)
+			double umisteni=Pohon->umisteni;//následně vždy umístění aktuálně zpracovávaného palce
+
 			////procházení jednotlivých elementů pro tvorbů řetězu
 			while(R!=NULL)
 			{
-				while(m.round2double(Pohon->umisteni,3)<=R->geo.delka)//m.round2double(Pohon->umisteni,3) je nasazeno kvůli nepřesnosti v číselném řádu
+				while(m.round2double(umisteni,3)<=R->geo.delka)//m.round2double(umisteni,3) je nasazeno kvůli nepřesnosti v číselném řádu
 				{
 					//výpočet souřadnic a rotace jigu dle aktuálního umístění
-					TPointD_3D Pt=m.getPt(R->geo.radius,R->geo.orientace,R->geo.rotacni_uhel,R->geo.X1,R->geo.Y1,R->geo.X4,R->geo.Y4,Pohon->umisteni/R->geo.delka,Pohon->umisteni/R->geo.delka);
+					TPointD_3D Pt=m.getPt(R->geo.radius,R->geo.orientace,R->geo.rotacni_uhel,R->geo.X1,R->geo.Y1,R->geo.X4,R->geo.Y4,umisteni/R->geo.delka,umisteni/R->geo.delka);
 					P->X=Pt.x;P->Y=Pt.y;P->orientace=Pt.z;
 					P=P->dalsi;
 					//navýšení umístění dle rozteče
-					Pohon->umisteni+=Pohon->roztec;
+					umisteni+=Pohon->roztec;
 				}
 				//kalkulace s umístěním palce pro další segment
-				Pohon->umisteni-=R->geo.delka;//zbytek z předchzejícího geometrického úseku, který nestihl být zohledněn převeden na další geometrický úsek, resp. element = výchozí umístění v dalším elementu
+				umisteni-=R->geo.delka;//zbytek z předchzejícího geometrického úseku, který nestihl být zohledněn převeden na další geometrický úsek, resp. element = výchozí umístění v dalším elementu
 				R=R->dalsi;
 			}
 			////pokud existují ještě nějaké palce, které nejsou vidět (jsou mimo viditelnou část řetězu), tak jim zneplatní souřadnice,
