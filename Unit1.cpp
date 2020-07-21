@@ -7076,15 +7076,16 @@ void TForm1::vlozeni_editace_geometrie()
 	else if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->eID==300 && posledni_editovany_element->objekt_n==OBJEKT_akt->n)// && d.geoTemp.orientace-d.geoTemp.rotacni_uhel!=posledni_editovany_element->dalsi->geo.orientace-posledni_editovany_element->dalsi->geo.rotacni_uhel)
 	{
 		//pokud již byla nadefinovaná sekundární větev, bude odmazána
-		if(posledni_editovany_element->dalsi2->objekt_n==OBJEKT_akt->n)
+		if(posledni_editovany_element->dalsi2!=posledni_editovany_element->predchozi2)
 		{
 			Cvektory::TElement *E=posledni_editovany_element->dalsi2,*smaz=E;
-			while(E!=NULL && E->objekt_n==OBJEKT_akt->n)
+			while(E!=NULL)
 			{
 				if(E==posledni_editovany_element->predchozi2)break;
 				smaz=E;
 				E=E->dalsi;
-				d.v.smaz_element(smaz,true);
+				if(smaz->eID!=300 && smaz->eID!=301)d.v.smaz_element(smaz,true,1);//musí zde být fiktivní číslo objektu, to zaručí, že element bude úplně smazán ne nahrazen zarážkou
+        else d.v.smaz_element(smaz);//u výhybek je třeba provést kontroly a nechat odmazat celé větve
 			}
 			E=NULL;delete E;
 			smaz=NULL;delete smaz;
