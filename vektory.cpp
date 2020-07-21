@@ -1908,7 +1908,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	}
 
 	//mGrid elementu
-	if(F->OBJEKT_akt!=NULL&&Objekt->n==F->OBJEKT_akt->n||novy->eID==MaxInt||novy->eID==300||novy->eID==301)//stačí nastavovat pouze v náhledu při vloz_element, nová strategie, je mgrid, nekopírovat a používat jenom v OBJEKT_akt, zde však podmínka zda se jedná o OBJEKT_akt nebyla z nějakého důvodu možná
+	if(F->OBJEKT_akt!=NULL && (Objekt->n==F->OBJEKT_akt->n || novy->eID==MaxInt || novy->eID==300 || novy->eID==301))//stačí nastavovat pouze v náhledu při vloz_element, nová strategie, je mgrid, nekopírovat a používat jenom v OBJEKT_akt, zde však podmínka zda se jedná o OBJEKT_akt nebyla z nějakého důvodu možná
 	{
 		novy->mGrid=new TmGrid(F);
 		novy->mGrid->Tag=6;//ID formu
@@ -2360,7 +2360,7 @@ void Cvektory::uprav_popisky_elementu(TElement *Element)
 				}catch(...){;}
 			}
 		}
-		//E=E->dalsi;//posun na další prvek
+    //aktualizace ID tabulek
 		E=sekvencni_zapis_cteni(E,tab_pruchodu,NULL);//musí být procházeno takto, alg. prochází 2x přes vyhybky a spojky ty nejsou přejmenovávány, tudíž nevadí jeho použití, použit z důvodu, že během tohoto cyklu dochází k dalšímu pruchodu pomocí cyklu dalsi_krok, kdyby byl použit v alg. dalsi_krok vnořený dalsi_krok došlo by k chybnému průchodu
 	}
 	E=NULL; delete E;
@@ -3912,8 +3912,8 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu,unsigned lo
 		}
 	}
 	//hláška uživateli
-	if(!povolit && F->OBJEKT_akt!=NULL && zobrazit_tip)F->TIP=F->ls->Strings[315];//"Nelze odstranit předávací místo"                                                                                //pokud bude hlavní větev pokračovat obloukem, problém při ukončování projektu kontrola
-	if(povolit && (Element->eID!=200 || (Element->eID==200 && preskocit_kontolu)) && (Element->dalsi==NULL || Element->dalsi!=NULL && Element->geo.typ==0 && Element->dalsi->geo.typ==0 || (maz_OBJ>0/* && Element->objekt_n==maz_OBJ*/)))
+	if(!povolit && F->OBJEKT_akt!=NULL && zobrazit_tip)F->TIP=F->ls->Strings[315];//"Nelze odstranit předávací místo"
+	if(povolit && (Element->eID!=200 || (Element->eID==200 && preskocit_kontolu) || (Element->eID==200 && Element->geo.delka==0)) && (Element->dalsi==NULL || Element->dalsi!=NULL && ((Element->geo.typ==0 && Element->dalsi->geo.typ==0) || Element->geo.delka==0) || (maz_OBJ>0/* && Element->objekt_n==maz_OBJ*/)))//pokud bude hlavní větev pokračovat obloukem, problém při ukončování projektu kontrola
 	{
 		if(O!=NULL && O->element->n==Element->n && Element->dalsi!=NULL && Element->dalsi->objekt_n==O->n)O->element=Element->dalsi;
 		//nejdříve smazání tabulky Elelementu
@@ -3964,10 +3964,8 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu,unsigned lo
 	else if(povolit)//změna na zarážku, v případě že mažu element který obsahuje složitejsí geometrii
 	{
 		//smazání a znovuvytvoření mGridu elementu
-		long ID=Element->n;
 		if(F->OBJEKT_akt!=NULL && (Element->objekt_n==F->OBJEKT_akt->n || Element==F->predchozi_PM))
 		{
-			ID=Element->mGrid->ID;
 			Element->mGrid->Delete();
 			Element->mGrid=NULL;
 		}
@@ -4004,7 +4002,7 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu,unsigned lo
 		{
 			Element->mGrid=new TmGrid(F);
 			Element->mGrid->Tag=6;//ID formu
-			Element->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
+			Element->mGrid->ID=ELEMENTY->predchozi->n+5;//předávání nejvetšího možného ID, aktualizace n elementů se provede, až po mazání, proto přiřadit větší ID aby nedošlo ke kolizi s jiným mGridem
 			Element->mGrid->Create(2,1);
 			F->design_element(Element,false);//nutné!
 		}

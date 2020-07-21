@@ -6660,7 +6660,6 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 	while(E!=NULL)
 	{
 		//deklarace atributů
-		long ID=0;
 		if(E->eID!=300 && E->eID!=301 && !(E->dalsi!=NULL && E->dalsi->eID==301 && E->dalsi->predchozi2==E))//výhybky a spojky jsou "PM"
 		{
 			//////////Vkládání předávacího místa
@@ -6672,8 +6671,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 		   		//smazání a znovuvytvoření mGridu elementu
 		   		if(OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n)
 		   		{
-		   			nastav_focus();
-		   			ID=E->mGrid->ID;
+						nastav_focus();
 		   			E->mGrid->Delete();
 		   			E->mGrid=NULL;
 		   		}
@@ -6694,7 +6692,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 					{
 						E->mGrid=new TmGrid(F);
 						E->mGrid->Tag=6;//ID formu
-						E->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
+						E->mGrid->ID=d.v.ELEMENTY->predchozi->n+3;//předávání nejvetšího možného ID, aktualizace n elementů se provede, až po vložení, proto přiřadit větší ID aby nedošlo ke kolizi s jiným mGridem
 						design_element(E,false);//nutné!
 					}
 				}
@@ -6803,8 +6801,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 			{
 		  	//mazání mGridu
 		  	if(OBJEKT_akt!=NULL && e_posledni->objekt_n==OBJEKT_akt->n)
-		  	{
-		  		ID=E->mGrid->ID;
+				{
 		  		E->mGrid->Delete();
 		  		E->mGrid=NULL;
 		  	}
@@ -6823,9 +6820,9 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 		  	if(OBJEKT_akt!=NULL && e_posledni->objekt_n==OBJEKT_akt->n)
 		  	{
 		  		E->mGrid=new TmGrid(F);
-		  		E->mGrid->Tag=6;//ID formu
-		  		E->mGrid->ID=E->n;//ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
-		  		design_element(E,false);//nutné!
+					E->mGrid->Tag=6;//ID formu
+					E->mGrid->ID=d.v.ELEMENTY->predchozi->n+3;//předávání nejvetšího možného ID, aktualizace n elementů se provede, až po vložení, proto přiřadit větší ID aby nedošlo ke kolizi s jiným mGridem
+					design_element(E,false);//nutné!
 		  	}
 			}
       //vložení PM s nulovou geometrií
@@ -6890,7 +6887,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 				predchozi_PM=E;
 				predchozi_PM->mGrid=new TmGrid(F);
 				predchozi_PM->mGrid->Tag=6;//ID formu
-				predchozi_PM->mGrid->ID=predchozi_PM->n;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
+				predchozi_PM->mGrid->ID=d.v.ELEMENTY->predchozi->n+3;//předávání nejvetšího možného ID, aktualizace n elementů se provede, až po vložení, proto přiřadit větší ID aby nedošlo ke kolizi s jiným mGridem
 				design_element(predchozi_PM,false);//nutné!
 			}
 		}
@@ -13970,7 +13967,7 @@ void __fastcall TForm1::Timer_neaktivityTimer(TObject *Sender)
 		vytvor_obraz();//obraz pro ctrl+z
 		FormX->validace_max_voziku();//metoda rozlišuje zda byla editovaná stopka, pokud ano provede validaci, pokud ne neudělá nic
 		//pokud byl poslední editovaný element PM spustí validaci
-		if(FormX->posledni_E!=NULL && FormX->posledni_E->eID==200)FormX->validace_RD(FormX->posledni_E);
+		if(FormX->posledni_E!=NULL && (FormX->posledni_E->eID==200 || FormX->posledni_E->eID==300))FormX->validace_RD(FormX->posledni_E);
 		if(FormX->posledni_E!=NULL && FormX->posledni_E->eID==0)FormX->aktualizace_teplomeru();
 		if(PmG!=NULL)FormX->validace_aRD();
 		REFRESH(true); //nedocází k refresh tabulek, tabulky jsou v tuto chvíli naplněny aktuálními hodnotami
@@ -14121,15 +14118,12 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	Cvektory::TElement *E=OBJEKT_akt->teplomery->dalsi->posledni;
 //	E->mGrid->DeleteRow(E->mGrid->RowCount-1,false);
 //	E->mGrid->Update();
-	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;  Memo_testy->Clear();
+  Memo_testy->Clear();
+	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
 	while(E!=NULL)
 	{
-//		if(E->eID==301)
-//		{
-			Memo(E->name);
-//			Memo(String(E->geo.X1)+";"+String(E->geo.Y1));
-//      Memo(String(E->geo.X4)+";"+String(E->geo.Y4));
-//		}
+		Memo(E->name+"->n="+String(E->n));
+    if(OBJEKT_akt!=NULL && (E->objekt_n==OBJEKT_akt->n || E==predchozi_PM))Memo("->mGrid->ID="+String(E->mGrid->ID));
 		E=E->dalsi;
 	}
 	delete E;E=NULL;

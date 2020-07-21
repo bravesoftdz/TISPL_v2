@@ -18,7 +18,7 @@ __fastcall TFormX::TFormX(TComponent* Owner)
   validace_true=false;
   editace_pohonu=false;
   //nastavení pozic bunìk v tabulce pohonu
-  rychlost=1;
+	rychlost=1;
   roztec_palce=2;
   nasobek_roztece=3;
   roztec_jigu=4;
@@ -72,7 +72,7 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 	if(ID!=9999 && Col==4 && Row==0)//klik na glyphbutton v pohonové tabulce
 	{
 		Cvektory::TElement *E=vrat_element_z_tabulky(ID);
-		if(E->eID==200 || E->eID==300)
+		if(E!=NULL && (E->eID==200 || E->eID==300))
 		{
 			if(F->OBJEKT_akt->stavPM!=1)//budu skrývat
 			{
@@ -1284,8 +1284,8 @@ void TFormX::validace_aRD(bool pouze_rozmezi)
 //validace maximálního poètu vozíkù na stopce
 void TFormX::validace_max_voziku()
 {
-	if(posledni_E!=NULL && F->OBJEKT_akt!=NULL && posledni_E->objekt_n!=F->OBJEKT_akt->n)posledni_E=NULL;//pro pøípad, že se zmìnil náhled
-	if(posledni_E!=NULL && posledni_E->eID==0)
+	//if(posledni_E!=NULL && F->OBJEKT_akt!=NULL && posledni_E->objekt_n!=F->OBJEKT_akt->n)posledni_E=NULL;//pro pøípad, že se zmìnil náhled
+	if(posledni_E!=NULL && posledni_E->objekt_n==F->OBJEKT_akt->n && posledni_E->eID==0)
 	{
 		////smazání pøedchozí validace z VID
 		zapisVID(0,2);//pozice jsou popsány v .h u deklarace VID a vnì metody zapisVID()
@@ -1483,6 +1483,13 @@ void TFormX::prirazeni_pohohonu_vetvi(Cvektory::TElement *E,long Col)
 		else Col=3;
 	}
 	if(Col!=3)hlavni=false;
+  //aktualizace parametrù
+	if(p!=NULL)
+	{
+		F->OBJEKT_akt->stavPM=2;//rozšíøit mGridy
+		p->Rz=F->m.Rz(p->aRD);
+		p->Rx=F->m.Rx(p->aRD,p->roztec);
+	}
 
   ////uložení aktuálnì editovaného pohonu
 	F->OBJEKT_akt->pohon=p;
@@ -1686,7 +1693,7 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
 //provede validaci RD
 void TFormX::validace_RD(Cvektory::TElement *E)
 {
-	if(E->eID==200 && F->OBJEKT_akt->pohon->aRD!=0)//validovat pouze u PM
+	if((E->eID==200 || E->eID==300) && F->OBJEKT_akt->pohon->aRD!=0)//validovat pouze u PM
 	{
 		//smazání pøedchozí validace z VID
 		zapisVID(0,1);//pozice jsou popsány v .h u deklarace VID a vnì metody zapisVID()
@@ -1746,7 +1753,7 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 					if (p->aRD > 0)
 					{
 						//výpoèet doporuèené rychosti
-		      	double dopRD1=0,dopRD2=0,aRD=F->OBJEKT_akt->pohon->aRD;
+						double dopRD1=0,dopRD2=0,aRD=p->aRD;
 		      	unsigned int n=0;
 						do
 						{
@@ -1927,7 +1934,7 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 	//aktualizace parametrù
 	if(p!=NULL)
 	{
-    F->OBJEKT_akt->stavPM=2;//rozšíøit mGridy
+		F->OBJEKT_akt->stavPM=2;//rozšíøit mGridy
 		p->Rz=F->m.Rz(p->aRD);
 		p->Rx=F->m.Rx(p->aRD,p->roztec);
 	}
@@ -2060,7 +2067,7 @@ void TFormX::prirazeni_pohonu_defTab()
 	F->DrawGrid_ostatni->Refresh();//stop + ion tyè
 	F->DrawGrid_geometrie->Refresh();//geometrie + PM
 
-  //aktualiace parametrù
+	//aktualiace parametrù
 	if(F->OBJEKT_akt->rezim!=0 && p!=NULL)
 	{
 		F->OBJEKT_akt->pohon->Rz=F->m.Rz(F->OBJEKT_akt->pohon->aRD);
@@ -2212,7 +2219,10 @@ void TFormX::mazatPM(Cvektory::TElement *Element)
 
 	//dotaz + smazání samotného PM kde byla vyvolaná zmìna
 	String name="";
-	if(nalezen)name=E->name;
+	if(nalezen && E!=NULL)name=E->name;
+  //kontrola, zda je možné smazat Element
+	if(!(Element->dalsi!=NULL && Element->pohon==Element->dalsi->pohon) || (Element->dalsi==NULL && Element->pohon==F->d.v.ELEMENTY->dalsi->pohon))Element=NULL;
+  if(Element==E && E!=NULL)E=NULL;
 	if(mazat_element && Element!=NULL && Element->eID==200)//zmìna mùže být vyvolána i z výhybky
 	{
 		F->posun_na_element(Element);
@@ -2226,7 +2236,7 @@ void TFormX::mazatPM(Cvektory::TElement *Element)
 	}
 
 	//kontrola zde ovlivnìné PM existuje + dotaz na mazání
-	if(nalezen)
+	if(nalezen && mazat_element && E!=NULL)
 	{
 		F->posun_na_element(E);
 		F->REFRESH(false);//musí následovat pøesunu
