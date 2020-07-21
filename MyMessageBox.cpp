@@ -183,7 +183,8 @@ void __fastcall TmyMessageBox::scGPEdit1KeyDown(TObject *Sender, WORD &Key, TShi
 //po klikutí pøepnì glob. promìnou na true, slouží k blokaci formactivate na Unit1
 void __fastcall TmyMessageBox::Button_YesClick(TObject *Sender)
 {
-  closing=true;
+	closing=true;
+  Button_OK->Down=false;Button_Yes->Down=false;
 }
 //---------------------------------------------------------------------------
 //kliknutí na možnost pamatovat si volbu

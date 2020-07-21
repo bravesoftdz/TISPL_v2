@@ -647,6 +647,7 @@ private:
 	TscGPEdit *editEditace;
 	long vychozi_stav_sceny;
 	TDateTime start;
+  short typElementu;//slouží k rozlišení vykreslení u smart_kurzoru
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);

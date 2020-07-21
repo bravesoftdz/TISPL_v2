@@ -1842,6 +1842,8 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->orientace=orientace;//důležité pro volání makra m.Rxy, bez tohoto by makro vracelo chybné hodnoty
 	novy->dalsi=NULL;
 	novy->predchozi=NULL;
+	novy->dalsi2=NULL;
+	novy->predchozi2=NULL;
 
 	//ukazatelové propojení + řazení
 	vloz_element(Objekt,novy,Ep);
@@ -1906,7 +1908,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	}
 
 	//mGrid elementu
-	if(F->OBJEKT_akt!=NULL&&Objekt->n==F->OBJEKT_akt->n||novy->eID==MaxInt||novy->eID==300||novy->eID==301)//stačí nastavovat pouze v náhledu při vloz_element, nová strategie, je mgrid, nekopírovat a používat jenom v OBJEKT_akt, zde však podmínka zda se jedná o OBJEKT_akt nebyla z nějakého důvodu možná
+	if(F->OBJEKT_akt!=NULL && (Objekt->n==F->OBJEKT_akt->n || novy->eID==MaxInt || novy->eID==300 || novy->eID==301))//stačí nastavovat pouze v náhledu při vloz_element, nová strategie, je mgrid, nekopírovat a používat jenom v OBJEKT_akt, zde však podmínka zda se jedná o OBJEKT_akt nebyla z nějakého důvodu možná
 	{
 		novy->mGrid=new TmGrid(F);
 		novy->mGrid->Tag=6;//ID formu
@@ -1938,7 +1940,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 		////funkcionalita pro běžné elementy
 		if(Element->eID!=300 && Element->eID!=301)
 		{
-	  	if(p==NULL)//vkládám na konec
+			if(p==NULL)//vkládám na konec
 			{
 				//ukazatelové propojení
 	  		if(posledni==NULL)//vkládání nového objektu - vkládání zarážky
@@ -1994,7 +1996,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 	  	}
 			else /*if(p->n!=Element->n)*///vkládám mezi elementy, vpřípadě, že bylo vloženo před prví prvek vrací Element, přesun je již vyřešen
 			{
-	  		//ukazatelové propojení
+				//ukazatelové propojení
 				Element->dalsi=p;
 	  		Element->predchozi=p->predchozi;
 	  		if(Objekt->element!=NULL && p==Objekt->element)Objekt->element=Element;//nový první element objetku
@@ -2004,7 +2006,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 
 				//geometrie
 				vloz_G_element(Element,0,p->geo.X1,p->geo.Y1,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,p->geo.orientace);
-				vloz_G_element(p,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,p->geo.X4,p->geo.Y4,p->geo.orientace);
+				if(Element->X!=p->geo.X4 && Element->Y!=p->geo.Y4 && p->geo.typ==0)vloz_G_element(p,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,p->geo.X4,p->geo.Y4,p->geo.orientace);
 				//změna indexů
 				Cvektory::TElement *E=Element;
 	  		//E->n=vrat_poradi_elementu_do(E)+1;
@@ -2061,8 +2063,8 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 			if(Objekt->element!=NULL && p==Objekt->element || Objekt->element==NULL)Objekt->element=Element;
 			Element->idetifikator_vyhybka_spojka=pocet_vyhybek;
 			//geometrie
-	  	vloz_G_element(Element,0,p->geo.X1,p->geo.Y1,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,p->geo.orientace);
-			vloz_G_element(p,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,F->d.Rxy(p).x,F->d.Rxy(p).y,p->geo.orientace);
+			vloz_G_element(Element,0,p->geo.X1,p->geo.Y1,0,0,0,0,Element->X,Element->Y,p->geo.orientace);
+			if(Element->X!=p->geo.X4 && Element->Y!=p->geo.Y4 && p->geo.typ==0)vloz_G_element(p,0,Element->X,Element->Y,0,0,0,0,p->geo.X4,p->geo.Y4,p->geo.orientace);
 			//změna indexů
 			Cvektory::TElement *E=Element;
 			int n=p->n;
@@ -2222,17 +2224,29 @@ void Cvektory::vloz_element(TElement *Element)
 Cvektory::TElement *Cvektory::vloz_element_pred(TObjekt *Objekt,TElement *Element)
 {
 	Cvektory::TElement *ret=NULL;//návratová proměnná, defaultně prázdn
-	if((F->Akce==F->ADD||F->Akce==F->VYH||F->Akce==F->MOVE_ELEMENT||F->editace_textu) && Objekt->element!=NULL/* && Objekt->element->dalsi!=NULL*/)//ošetření proti spouštění při zavírání a otvírání náhledu
+	if((F->Akce==F->ADD || F->Akce==F->VYH || F->Akce==F->MOVE_ELEMENT || F->editace_textu) && Objekt->element!=NULL/* && Objekt->element->dalsi!=NULL*/)//ošetření proti spouštění při zavírání a otvírání náhledu
 	{
 		Cvektory::TElement *p=Objekt->element;//začnu od prvního elementu v objektu
 		while(p!=NULL && p->objekt_n==Objekt->n)
 		{
 			if(p!=Element)//neřeší se s aktuálním elementem (při posunu)
 			{
+				//přichytávání na konec začátek a konec oblouku, pouze pro výhybku a spojku
+				if((Element->eID==300 || Element->eID==301) && F->Akce==F->Takce::VYH && F->prichytavat_k_mrizce==1 && p->geo.typ!=0)
+				{
+					if(m.delka(Element->X,Element->Y,p->geo.X1,p->geo.Y1)<1){ret=p;break;}//začátek linie
+					if(m.delka(Element->X,Element->Y,p->geo.X4,p->geo.Y4)<1){ret=p->dalsi;break;}//konec linie
+				}
 				//kontrola zda vkládaný element neleží mezi prvním a druhým elementem, druhým až n
 				if(p->geo.typ==0 && m.LeziVblizkostiUsecky(m.round2double(F->d.Rxy(Element).x,2),m.round2double(F->d.Rxy(Element).y,2),m.round2double(p->geo.X1,2),m.round2double(p->geo.Y1,2),m.round2double(p->geo.X4,2),m.round2double(p->geo.Y4,2))==0)
 				{
 					ret=p;//uložení elementu, který předcházi vkládanému elementu
+					break;
+				}
+				//předávací místo může být přesně na konci funkčního elementu, i když se jedná o oblouk
+				if(Element->eID==200 && Element->X==p->geo.X4 && Element->Y==p->geo.Y4)
+				{
+					ret=p->dalsi;//uložení elementu, který předcházi vkládanému elementu
 					break;
 				}
 			}
@@ -2346,7 +2360,7 @@ void Cvektory::uprav_popisky_elementu(TElement *Element)
 				}catch(...){;}
 			}
 		}
-		//E=E->dalsi;//posun na další prvek
+    //aktualizace ID tabulek
 		E=sekvencni_zapis_cteni(E,tab_pruchodu,NULL);//musí být procházeno takto, alg. prochází 2x přes vyhybky a spojky ty nejsou přejmenovávány, tudíž nevadí jeho použití, použit z důvodu, že během tohoto cyklu dochází k dalšímu pruchodu pomocí cyklu dalsi_krok, kdyby byl použit v alg. dalsi_krok vnořený dalsi_krok došlo by k chybnému průchodu
 	}
 	E=NULL; delete E;
@@ -2804,13 +2818,13 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 		bool posun_povolit=true;
 		TPointD puv_souradnice;
 		puv_souradnice.x=Element->X;puv_souradnice.y=Element->Y;
-		if(F->OBJEKT_akt->element!=NULL&&vzdalenost!=0)//musí existovat alespoň jeden element&&nesmí být vzdálenost rovna nule
+		if(F->OBJEKT_akt->element!=NULL && vzdalenost!=0)//musí existovat alespoň jeden element&&nesmí být vzdálenost rovna nule
 		{
 			//////Načtení délky před posunem
-			double vzd=vzdalenost_od_predchoziho_elementu(Element,false);
+			double vzd=Element->geo.delka;//vzdalenost_od_predchoziho_elementu(Element,false);
 			if((Element->dalsi!=NULL && Element->dalsi->geo.typ!=0 || Element->geo.typ!=0) && kontrola_zmeny_poradi)posun_povolit=false;//pokud by element ovlivnil posunem geometrii
 			//////Realizace posunu + validace
-			if(vzd!=0 && !posun_kurzorem && posun_povolit)//posun z kót!!!!!!!!!!!!!!!!!!!!!
+			if(!posun_kurzorem && posun_povolit)//posun z kót!!!!!!!!!!!!!!!!!!!!!
 			{
 				//realizace posunu
 				vzdalenost=(vzd/m.abs_d(vzd))*(m.abs_d(vzd)-vzdalenost);
@@ -2846,7 +2860,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				else
 				{Element->X=puv_souradnice.x;Element->Y=puv_souradnice.y;posun_povolit=false;F->TIP=F->ls->Strings[307];}//"Prvek nelze přesunout"
 			}
-			else if(vzd!=0 && posun_kurzorem && posun_povolit)//posun kurozem!!!!!!!!!!!!!!!!!!!!!
+			else if(posun_kurzorem && posun_povolit)//posun kurozem!!!!!!!!!!!!!!!!!!!!!
 			{
 				//realizace posunu
 				if(Element->geo.orientace-Element->geo.rotacni_uhel==90||Element->geo.orientace-Element->geo.rotacni_uhel==270)Element->X=Element->X+vzdalenost;
@@ -3898,8 +3912,8 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu,unsigned lo
 		}
 	}
 	//hláška uživateli
-	if(!povolit && F->OBJEKT_akt!=NULL && zobrazit_tip)F->TIP=F->ls->Strings[315];//"Nelze odstranit předávací místo"                                                                                //pokud bude hlavní větev pokračovat obloukem, problém při ukončování projektu kontrola
-	if(povolit && (Element->eID!=200 || (Element->eID==200 && preskocit_kontolu)) && (Element->dalsi==NULL || Element->dalsi!=NULL && Element->geo.typ==0 && Element->dalsi->geo.typ==0 || (maz_OBJ>0/* && Element->objekt_n==maz_OBJ*/)))
+	if(!povolit && F->OBJEKT_akt!=NULL && zobrazit_tip)F->TIP=F->ls->Strings[315];//"Nelze odstranit předávací místo"
+	if(povolit && (Element->eID!=200 || (Element->eID==200 && preskocit_kontolu) || (Element->eID==200 && Element->geo.delka==0)) && (Element->dalsi==NULL || Element->dalsi!=NULL && ((Element->geo.typ==0 && Element->dalsi->geo.typ==0) || Element->geo.delka==0) || (maz_OBJ>0/* && Element->objekt_n==maz_OBJ*/)))//pokud bude hlavní větev pokračovat obloukem, problém při ukončování projektu kontrola
 	{
 		if(O!=NULL && O->element->n==Element->n && Element->dalsi!=NULL && Element->dalsi->objekt_n==O->n)O->element=Element->dalsi;
 		//nejdříve smazání tabulky Elelementu
@@ -3921,7 +3935,7 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu,unsigned lo
 				if(Element->dalsi->eID==301 && Element->dalsi->predchozi2==Element && Element->dalsi->predchozi!=Element)Element->dalsi->predchozi2=Element->predchozi;
 				else Element->dalsi->predchozi=Element->predchozi;
 			}
-			if(Element->dalsi!=NULL && Element->predchozi!=NULL && F->Akce!=F->GEOMETRIE && O!=NULL)//u geo. se upravuje geometrie ostatních elemntů zvlášť v Unit1, pokud je O==NULL mažu elementy smazaného objektu = neupravovat geo. dalších elementů
+			if(Element->dalsi!=NULL && Element->dalsi->geo.typ==0 && Element->predchozi!=NULL && F->Akce!=F->GEOMETRIE && O!=NULL)//u geo. se upravuje geometrie ostatních elemntů zvlášť v Unit1, pokud je O==NULL mažu elementy smazaného objektu = neupravovat geo. dalších elementů
 			{
 				if(Element==ELEMENTY->dalsi)vloz_G_element(Element->dalsi,0,Element->predchozi->geo.X4,Element->predchozi->geo.Y4,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
 				else vloz_G_element(Element->dalsi,0,Element->geo.X1,Element->geo.Y1,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
@@ -3953,7 +3967,7 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu,unsigned lo
 		long ID=Element->n;
 		if(F->OBJEKT_akt!=NULL && (Element->objekt_n==F->OBJEKT_akt->n || Element==F->predchozi_PM))
 		{
-			ID=Element->mGrid->ID;
+      ID=Element->mGrid->ID;
 			Element->mGrid->Delete();
 			Element->mGrid=NULL;
 		}
@@ -3990,7 +4004,7 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu,unsigned lo
 		{
 			Element->mGrid=new TmGrid(F);
 			Element->mGrid->Tag=6;//ID formu
-			Element->mGrid->ID=ID;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
+			Element->mGrid->ID=ID;//předávání nejvetšího možného ID, aktualizace n elementů se provede, až po mazání, proto přiřadit větší ID aby nedošlo ke kolizi s jiným mGridem
 			Element->mGrid->Create(2,1);
 			F->design_element(Element,false);//nutné!
 		}
@@ -9572,9 +9586,18 @@ void Cvektory::vloz_segment_cesty_do_seznamu_cesty(TTeplomery *teplomery,TElemen
 	////vkládání teploměru
 	if(prvni || posledni)
 	{
+		//nastavení default teploty
+		String name="";
+		switch(vrat_objekt(Element->objekt_n)->id)
+		{
+			case 6:name="30";break;//"vytěkání"
+			case 7:name="50";break;//"sušení"
+			case 8:name="10";break;//chalzeni
+    }
 		//vytvoření elementu a načtení atributů
 		TElement *E=new TElement;
 		E->n=MaxInt;
+		E->name=name;
 		E->objekt_n=Element->objekt_n;
 		E->mGrid=NULL;
 		E->pohon=NULL;
@@ -9798,6 +9821,7 @@ void Cvektory::posun_teplomeru(TElement *teplomer)
 				TElement *t1=NULL,*t2=NULL;
 				t1=new TElement;
 				t1->n=MaxInt;
+				t1->name=T->prvni->name;
 				t1->objekt_n=prvni->objekt_n;
 				t1->mGrid=NULL;
 				t1->pohon=NULL;
@@ -9813,6 +9837,7 @@ void Cvektory::posun_teplomeru(TElement *teplomer)
 				//druhý
 				t2=new TElement;
 				t2->n=MaxInt;
+        t2->name=T->posledni->name;
 				t2->objekt_n=posledni->objekt_n;
 				t2->mGrid=NULL;
 				t2->pohon=NULL;
@@ -9907,6 +9932,7 @@ void Cvektory::zmena_zakazky_vytvoreni_teplomeru(TObjekt *Objekt,TZakazka *Zakt,
 					TElement *t1=NULL,*t2=NULL;
 					t1=new TElement;
 					t1->n=MaxInt;
+					t1->name=T->prvni->name;
 					t1->objekt_n=prvni->Element->objekt_n;
 			  	t1->mGrid=NULL;
 			  	t1->pohon=NULL;
@@ -9922,6 +9948,7 @@ void Cvektory::zmena_zakazky_vytvoreni_teplomeru(TObjekt *Objekt,TZakazka *Zakt,
 			  	//druhý
 					t2=new TElement;
 					t2->n=MaxInt;
+          t2->name=T->posledni->name;
 			  	t2->objekt_n=posledni->Element->objekt_n;
 			  	t2->mGrid=NULL;
 					t2->pohon=NULL;
@@ -10035,6 +10062,7 @@ Cvektory::TTeplomery *Cvektory::kopiruj_teplomer(TTeplomery *original)
 	TElement *t1=NULL,*t2=NULL;
 	t1=new TElement;
 	t1->n=MaxInt;
+	t1->name=original->prvni->name;
 	t1->objekt_n=original->prvni->sparovany->objekt_n;
 	t1->mGrid=NULL;
 	t1->pohon=NULL;
@@ -10053,6 +10081,7 @@ Cvektory::TTeplomery *Cvektory::kopiruj_teplomer(TTeplomery *original)
 	//druhý
 	t2=new TElement;
 	t2->n=MaxInt;
+	t2->name=original->posledni->name;
 	t2->objekt_n=original->posledni->sparovany->objekt_n;
 	t2->mGrid=NULL;
 	t2->pohon=NULL;
