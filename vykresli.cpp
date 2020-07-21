@@ -2366,15 +2366,17 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 void Cvykresli::vykresli_voziky(TCanvas *canv)
 {
 	////test
-	Cvektory::TPohon *P=v.POHONY->dalsi;
-	while(P!=NULL)
-	{
-		//v.vytvor_retez(P);//a palce - aktuálně generuje na MaKr tlačítku
-		//vykresli_retez(canv,P->retez);//spíše pouzdrou řetězu
-		vykresli_palce(canv,P);
-		P=P->dalsi;
-	}
-	delete P;
+//	Cvektory::TPohon *P=v.POHONY->dalsi;
+//	while(P!=NULL)
+//	{
+//		//v.vytvor_retez(P);//a palce - aktuálně generuje na MaKr tlačítku
+//		//vykresli_retez(canv,P->retez);//spíše pouzdrou řetězu
+//		vykresli_palce(canv,P);
+//		P=P->dalsi;
+//	}
+//	delete P;
+	set_pen2(canv,clRed,m.round(1*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true);
+	line(canv,0,500,0+F->sTIME,500);
 	////----
 
 	if(v.VOZIKY!=NULL && F->scGPCheckBox_rozmisteni_voziku->Checked)
@@ -4613,13 +4615,16 @@ void Cvykresli::smart_kurzor(TCanvas *canv,double preXk,double preYk,double preO
 	double RA=-1000;//rotační úhel, výchozí hodnota -1000=nenalezen
 
 	////hledání mezi oblouky
-	for(unsigned short i=0;i<4;i++)
+	if(typElementu!=2)
 	{
-		//testování kladných hodnot a ošetření proti stavu 3x 90° oblouky za sebou a pokud je zároveň na základě předchozího geometrického prvku povoleno
-		if(preRA>=0 && !(POLE_RA[i]==90 && prepreRA==preRA && preRA==90) && (preRA==0 || POLE_RA[i]==preRA) && m.LeziVoblouku(preXk,preYk,preOR-preRA,POLE_RA[i],R,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y))RA=POLE_RA[i];
-		//testování záporných hodnot a ošetření proti stavu 3x 90° oblouky za sebou a pokud je zároveň na základě předchozího geometrického prvku povoleno
-		if(preRA<=0 && !(-POLE_RA[i]==-90 && prepreRA==preRA && preRA==-90) && (preRA==0 || -POLE_RA[i]==preRA) && m.LeziVoblouku(preXk,preYk,preOR-preRA,-POLE_RA[i],R,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y))RA=-POLE_RA[i];
-	} //pokud bych chtěl break, musel bych řadit od nejmenšího POLE_RA
+		for(unsigned short i=0;i<4;i++)
+		{
+			//testování kladných hodnot a ošetření proti stavu 3x 90° oblouky za sebou a pokud je zároveň na základě předchozího geometrického prvku povoleno
+			if(preRA>=0 && !(POLE_RA[i]==90 && prepreRA==preRA && preRA==90) && (preRA==0 || POLE_RA[i]==preRA) && m.LeziVoblouku(preXk,preYk,preOR-preRA,POLE_RA[i],R,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y))RA=POLE_RA[i];
+			//testování záporných hodnot a ošetření proti stavu 3x 90° oblouky za sebou a pokud je zároveň na základě předchozího geometrického prvku povoleno
+			if(preRA<=0 && !(-POLE_RA[i]==-90 && prepreRA==preRA && preRA==-90) && (preRA==0 || -POLE_RA[i]==preRA) && m.LeziVoblouku(preXk,preYk,preOR-preRA,-POLE_RA[i],R,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y))RA=-POLE_RA[i];
+		} //pokud bych chtěl break, musel bych řadit od nejmenšího POLE_RA
+	}
 
 	////hledání v citelné oblasti linie ve tvaru "V" (toto rozmezí, rozptyl je hodnota nejmenšího oblouku (částečně logicky by se nabízelo /2, ale vhodnější /3, +- rozptylu nahrazuje fabs), hledá i přes výše nalezené řešní, což je důležíté ("jinak by se v některých případech na lini vůbec nedostalo")
 	double delka_linie=0;

@@ -14059,7 +14059,10 @@ void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 			scGPGlyphButton_PLAY->GlyphOptions->Kind=scgpbgkPause;
 			scGPGlyphButton_PLAY->Hint="zastavit animaci";
 			scGPGlyphButton_PLAY->ShowCaption=true;            //optimálně pohybově nejpomalejšího pohonu či animovaného elementu
-			Timer_simulace->Interval=floor(m2px/(Zoom/**3*/)/d.v.vrat_min_rychlost_prejezdu()*1000.0/fps);   //ceil(F->m.get_timePERpx(pom->RD,0,d.v.vrat_min_rychlost_prejezdu()));//různá rychlost dle RD, s afps se počítá dle min RD, ale nějak špatně vycházela animace ke konci (nestihl vozík vyjet)
+			//Timer_simulace->Interval=floor(m2px/(Zoom/**3*/)/d.v.vrat_min_rychlost_prejezdu()*1000.0/fps);   //ceil(F->m.get_timePERpx(pom->RD,0,d.v.vrat_min_rychlost_prejezdu()));//různá rychlost dle RD, s afps se počítá dle min RD, ale nějak špatně vycházela animace ke konci (nestihl vozík vyjet)
+			//Timer_simulace->Interval=1;
+			START();
+			naposledy=0;
 		}
 		else//animace zastavena
 		{
@@ -14069,6 +14072,7 @@ void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 			scGPGlyphButton_PLAY->Hint="spustit animaci";
 			zobrazit_meritko=scGPSwitch_meritko->State;//navrácení do původního stavu
 			scGPButton_bug_report->Enabled=false;
+			STOP();
 		}
 	}
 	else MB("V této verzi aplikace lze spustit simulaci pouze v layoutu.");
@@ -14111,9 +14115,10 @@ void __fastcall TForm1::Timer_simulaceTimer(TObject *Sender)
 			else ROsts=0;
 		}
 
-		sTIME+=0.1;/*1*///zajistí posun animace vždy o 1s reálného času (strojového dle Timer_animace->Interval, který by měl reflektovat aktuální rychlosti zajišťující plynulost animace)
+		sTIME+=1;/*1*///zajistí posun animace vždy o 1s reálného času (strojového dle Timer_animace->Interval, který by měl reflektovat aktuální rychlosti zajišťující plynulost animace)
 		//d.v.generuj_VOZIKY();//velice prozatim
-		d.v.posun_palce_retezu();
+		//d.v.posun_palce_retezu();
+		Memo(naposledy+=40,false,true);
 		REFRESH();
 	}
 }
@@ -17712,3 +17717,4 @@ void TForm1::design_statusbar()
 	scLabel_statusbar_2->Width=Image_rozdelovac_3->Left-scLabel_statusbar_2->Left;
 }
 //---------------------------------------------------------------------------
+

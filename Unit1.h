@@ -730,7 +730,8 @@ public:		// User declarations
 	double velikost_citelne_oblasti_elementu;//urèuje velikost citelné oblsati [m] kolem bodu elementu na pohonu
 	Tvlakno_obraz *vlakno_obraz;
 	bool vlakno_PanCreateState;
-  bool zobrazit_upozorneni_teplomery;
+	bool zobrazit_upozorneni_teplomery;
+	long naposledy;
 
 	//metody
 	void kurzor(TKurzory typ_kurzor);
