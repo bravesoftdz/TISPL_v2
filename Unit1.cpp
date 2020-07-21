@@ -6476,7 +6476,7 @@ void TForm1::add_vyhybka_spojka()
 			E=d.v.vloz_element(pom,element_id,bod_vlozeni.x,bod_vlozeni.y,rotace_symbolu);
 			if(E!=NULL)
 			{
-				d.v.vloz_G_element(E,0,E->X,E->Y,0,0,0,0,E->X,E->Y,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,0); Memo(E->dalsi->name+": eID="+String(E->dalsi->eID));
+				d.v.vloz_G_element(E,0,E->X,E->Y,0,0,0,0,E->X,E->Y,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,0);
 				if(E->dalsi!=NULL && (E->objekt_n!=E->dalsi->objekt_n || (E->dalsi->eID==200 && E->dalsi->geo.delka==0 && E->dalsi->dalsi!=NULL)))
 				{
 					E->objekt_n=E->dalsi->objekt_n;
@@ -7073,7 +7073,7 @@ void TForm1::vlozeni_editace_geometrie()
 		E=NULL;delete E;  //REFRESH();
 	}
 	//////definice sekundární větve z výhybky
-	else if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->eID==300 && posledni_editovany_element->objekt_n==OBJEKT_akt->n && d.geoTemp.orientace-d.geoTemp.rotacni_uhel!=posledni_editovany_element->dalsi->geo.orientace-posledni_editovany_element->dalsi->geo.rotacni_uhel)
+	else if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->eID==300 && posledni_editovany_element->objekt_n==OBJEKT_akt->n)// && d.geoTemp.orientace-d.geoTemp.rotacni_uhel!=posledni_editovany_element->dalsi->geo.orientace-posledni_editovany_element->dalsi->geo.rotacni_uhel)
 	{
 		//pokud již byla nadefinovaná sekundární větev, bude odmazána
 		if(posledni_editovany_element->dalsi2->objekt_n==OBJEKT_akt->n)
@@ -10758,42 +10758,47 @@ void TForm1::redesign_element()
 	{
   	switch (pom_element->eID)
   	{
-  		case 1:case 7:case 11:case 15:case 101:case 105:
+			case 0://stopstanice
+			{
+        if(JID==102 || JID==103 || JID==104)zcas=true;
+				break;
+      }
+			case 1:case 7:case 11:case 15:case 101:case 105://kk roboti / operátoři
   		{
   			if (JID==101) zcas=true;//časové buňky
-  			if (JID==102 || JID==103) zLO=true;//délkové buňky
+				if (JID==102 || JID==103) zLO=true;//délkové buňky
   			break;
   		}
-  		case 2:case 8:case 12:case 16:case 102:case 106:
+			case 2:case 8:case 12:case 16:case 102:case 106://S&G roboti / operátoři
   		{
-  			zcas=true;//obsahuje pouze casové buňky
+				if(JID==101 || JID==102 || JID==103)zcas=true;//obsahuje pouze casové buňky
   			break;
   		}
-  		case 3:case 9:case 13:case 17:case 103:case 107:
+			case 3:case 9:case 13:case 17:case 103:case 107://kk roboti / operátoři s otočí
   		{
   			if (JID==101 || JID==104 || JID==108) zcas=true;//čas
   			if (JID==102 || JID==109) zLO=true;//delka
-  			if (JID==105 || JID==106 || JID==107) zdelka_otoce=true;//delka otoče
+				if (JID==105 || JID==106 || JID==107) zdelka_otoce=true;//delka otoče
   			break;
   		}
-  		case 0 :case 4:case 10:case 14:case 18:case 104:case 108:case 301:
-  		{
-  			zcas=true;//pouze čas
+			case 4:case 10:case 14:case 18:case 104:case 108://S&G roboti / operátoři s otočí
+			{
+				if(JID==101 || JID==103 || JID==104 || JID==105 || JID==106)zcas=true;//pouze čas
   			break;
   		}
-  		case 5:
+			case 5://otoč pas.
   		{
   			if (JID==102 || JID==104 || JID==105) zdelka_otoce=true;//délka
   			if (JID==103) zcas=true;//čas
   			break;
-  		}
-  		case 6:
+			}
+  		case 6://otoč akt.
   		{
-  			//if (JID==102) zdelka_otoce=true;//délka
+				//if (JID==102) zdelka_otoce=true;//délka
   			if (JID==102 || JID==103) zcas=true;//čas
   			break;
   		}
-  		case 200://předávací místo
+			case 200://předávací místo
   		case 300://výhybka
   		{
 				if(JID==104)zrychlost=true;
@@ -10802,9 +10807,15 @@ void TForm1::redesign_element()
 				if(JID==109)zRz=true;
   			break;
 			}
+			case 301://spojka
+			{
+        if(JID==101)zcas=true;
+				break;
+      }
+      //teploměry
 			case 400:case 401:case 402:
 			{
-        zcas=true;
+				if(JID==100 || JID==1000)zcas=true;
 				break;
 			}
   	}
@@ -10840,70 +10851,74 @@ void TForm1::redesign_element()
 		if (Rzunit==M) Rzunit=MM;
 		else Rzunit=M;
 	}
-	//nastavení jednotek podle posledních nastavení
-	if (PTunit==SEC) cas="<a>[s]</a>";//0
-	else cas="<a>[min]</a>";//1
-	if (LOunit==M) LO="<a>[m]</a>";//0
-	else LO="<a>[mm]</a>";//1
-	if (DOtocunit==M) delka_otoce="<a>[m]</a>";//0
-	else delka_otoce="<a>[mm]</a>";//1
-	if (aRDunit==SEC) rychlost="<a>[m/s]</a>";//0
-	else rychlost="<a>m/min</a>";//1
-	if (Runit==M) R="<a>[m]</a>";//0
-	else R="<a>[mm]</a>";//1
-	if (Rzunit==M) Rz="<a>[m]</a>";//0
-	else Rz="<a>[mm]</a>";//1
-	//nastavení šířek
-	if(PTunit==SEC && LOunit==M)sirka_1=90;
-	else sirka_1=105;
-	if(PTunit==0)sirka_2=95;
-	else sirka_2=107;
-	if(PTunit==SEC || language==Tlanguage::EN)sirka_3=45;
-	else sirka_3=55;
-	if(language==Tlanguage::EN)sirka_3+=15;
-	sirka_0=120;//default hodnota nastavuje se později
-	sirka_cisla=90;
-	sirka_4=95;
-	sirka_56=96;
-	//procházení pomocného spojitého seznamu
-	Cvektory::TElement *E=OBJEKT_akt->element;//zde lze přeskočit hlavičku
-	Cvektory::TCesta *C=NULL;
-	while (E!=NULL && E->objekt_n==OBJEKT_akt->n)
+  //kontrola, zda má být provedena nějaká změna
+	if(zcas || zLO || zdelka_otoce || zrychlost || zR || zRz)
 	{
-		if(d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n!=0)C=d.v.vrat_segment_cesty(d.v.ZAKAZKA_akt,E);
-		if(C!=NULL)E->data=C->data;//načtení aktuálních informací do elementu
-		akt_tabulek(E,LO,delka_otoce,cas,rychlost,R,Rz,sirka_0,sirka_1,sirka_2,sirka_3,sirka_4,sirka_56,sirka_cisla);
-		if(pom_element==NULL)napln_comba_mGridu(E);//pom_element bude nulový v případě změny jazyka... musí dojít k aktualizaci comb elementů
-		E=d.v.dalsi_krok(E,OBJEKT_akt);
+  	//nastavení jednotek podle posledních nastavení
+  	if (PTunit==SEC) cas="<a>[s]</a>";//0
+  	else cas="<a>[min]</a>";//1
+  	if (LOunit==M) LO="<a>[m]</a>";//0
+  	else LO="<a>[mm]</a>";//1
+  	if (DOtocunit==M) delka_otoce="<a>[m]</a>";//0
+  	else delka_otoce="<a>[mm]</a>";//1
+  	if (aRDunit==SEC) rychlost="<a>[m/s]</a>";//0
+  	else rychlost="<a>m/min</a>";//1
+  	if (Runit==M) R="<a>[m]</a>";//0
+  	else R="<a>[mm]</a>";//1
+  	if (Rzunit==M) Rz="<a>[m]</a>";//0
+  	else Rz="<a>[mm]</a>";//1
+  	//nastavení šířek
+  	if(PTunit==SEC && LOunit==M)sirka_1=90;
+  	else sirka_1=105;
+  	if(PTunit==0)sirka_2=95;
+  	else sirka_2=107;
+  	if(PTunit==SEC || language==Tlanguage::EN)sirka_3=45;
+  	else sirka_3=55;
+  	if(language==Tlanguage::EN)sirka_3+=15;
+  	sirka_0=120;//default hodnota nastavuje se později
+  	sirka_cisla=90;
+  	sirka_4=95;
+  	sirka_56=96;
+		//procházení elementu
+  	Cvektory::TElement *E=OBJEKT_akt->element;//zde lze přeskočit hlavičku
+  	Cvektory::TCesta *C=NULL;
+  	while (E!=NULL && E->objekt_n==OBJEKT_akt->n)
+  	{
+  		if(d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n!=0)C=d.v.vrat_segment_cesty(d.v.ZAKAZKA_akt,E);
+  		if(C!=NULL)E->data=C->data;//načtení aktuálních informací do elementu
+  		akt_tabulek(E,LO,delka_otoce,cas,rychlost,R,Rz,sirka_0,sirka_1,sirka_2,sirka_3,sirka_4,sirka_56,sirka_cisla);
+  		if(pom_element==NULL)napln_comba_mGridu(E);//pom_element bude nulový v případě změny jazyka... musí dojít k aktualizaci comb elementů
+  		E=d.v.dalsi_krok(E,OBJEKT_akt);
+  	}
+  	//změna jednotek i pro předchozí element
+  	if(predchozi_PM!=NULL)
+  	{
+  		if(d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n!=0)C=d.v.vrat_segment_cesty(d.v.ZAKAZKA_akt,predchozi_PM);
+  		if(C!=NULL)predchozi_PM->data=C->data;//načtení aktuálních informací do elementu
+  		akt_tabulek(predchozi_PM,LO,delka_otoce,cas,rychlost,R,Rz,sirka_0,sirka_1,sirka_2,sirka_3,sirka_4,sirka_56,sirka_cisla);
+  	}
+  	//změna jednotek pro tabulku teploměrů
+  	if(OBJEKT_akt->teplomery!=NULL)
+  	{
+  		Cvektory::TTeplomery *T=d.v.vrat_teplomery_podle_zakazky(OBJEKT_akt,d.v.ZAKAZKA_akt);
+  		if(T!=NULL && T->posledni->mGrid!=NULL)
+  		{
+  			akt_tabulek(T->posledni,LO,delka_otoce,cas,rychlost,R,Rz,sirka_0,sirka_1,sirka_2,sirka_3,sirka_4,sirka_56,sirka_cisla);
+  		}
+  		T=NULL;delete T;
+  	}
+  	C=NULL; delete C;
+  	E=NULL; delete E;
+  	//zápis změn do INI
+  	writeINI("nastaveni_nahled", "cas", PTunit);
+  	writeINI("nastaveni_nahled", "LO", LOunit);
+  	writeINI("nastaveni_nahled", "delka_otoce", DOtocunit);
+  	writeINI("nastaveni_form_parametry","RDt", aRDunit);
+  	writeINI("nastaveni_nahled","R", Runit);
+  	writeINI("nastaveni_nahled","Rz", Rzunit);
+  	REFRESH();
+		nahled_ulozit(true);
 	}
-	//změna jednotek i pro předchozí element
-	if(predchozi_PM!=NULL)
-	{
-		if(d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n!=0)C=d.v.vrat_segment_cesty(d.v.ZAKAZKA_akt,predchozi_PM);
-		if(C!=NULL)predchozi_PM->data=C->data;//načtení aktuálních informací do elementu
-		akt_tabulek(predchozi_PM,LO,delka_otoce,cas,rychlost,R,Rz,sirka_0,sirka_1,sirka_2,sirka_3,sirka_4,sirka_56,sirka_cisla);
-	}
-	//změna jednotek pro tabulku teploměrů
-	if(OBJEKT_akt->teplomery!=NULL)
-	{
-		Cvektory::TTeplomery *T=d.v.vrat_teplomery_podle_zakazky(OBJEKT_akt,d.v.ZAKAZKA_akt);
-		if(T!=NULL && T->posledni->mGrid!=NULL)
-		{
-			akt_tabulek(T->posledni,LO,delka_otoce,cas,rychlost,R,Rz,sirka_0,sirka_1,sirka_2,sirka_3,sirka_4,sirka_56,sirka_cisla);
-		}
-		T=NULL;delete T;
-  }
-	C=NULL; delete C;
-	E=NULL; delete E;
-	//zápis změn do INI
-	writeINI("nastaveni_nahled", "cas", PTunit);
-	writeINI("nastaveni_nahled", "LO", LOunit);
-	writeINI("nastaveni_nahled", "delka_otoce", DOtocunit);
-	writeINI("nastaveni_form_parametry","RDt", aRDunit);
-	writeINI("nastaveni_nahled","R", Runit);
-	writeINI("nastaveni_nahled","Rz", Rzunit);
-	REFRESH();
-	nahled_ulozit(true);
 }
 //---------------------------------------------------------------------------
 //přepisuje jednotky a upravuje šířku sloupců
@@ -11164,7 +11179,7 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 			else {PTunit=SEC;}
 			E->mGrid->Cells[2][E->mGrid->RowCount-1].Text=m.round2double(outPT(cas),3);
 			break;
-    }
+		}
 	}
 	E->data.RT.y=puv_RT;//navrácení validace k RT hodnotě
 }
@@ -14136,6 +14151,14 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	Cvektory::TElement *E=OBJEKT_akt->teplomery->dalsi->posledni;
 //	E->mGrid->DeleteRow(E->mGrid->RowCount-1,false);
 //	E->mGrid->Update();
+
+	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+	while(E!=NULL)
+	{
+    Memo(E->name+"->n: "+String(E->n));
+		E=E->dalsi;
+	}
+  delete E;E=NULL;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
