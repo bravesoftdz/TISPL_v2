@@ -6653,6 +6653,7 @@ void TForm1::add_komoru()
 void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 {
 	log(__func__);//logování
+	long ID=0;
 	FormX->vstoupeno_elm=false;
 	UnicodeString name=ls->Strings[271];//"Předávací místo"
 	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
@@ -6672,6 +6673,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 		   		if(OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n)
 		   		{
 						nastav_focus();
+						ID=E->mGrid->ID;
 		   			E->mGrid->Delete();
 		   			E->mGrid=NULL;
 		   		}
@@ -6692,7 +6694,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 					{
 						E->mGrid=new TmGrid(F);
 						E->mGrid->Tag=6;//ID formu
-						E->mGrid->ID=d.v.ELEMENTY->predchozi->n+3;//předávání nejvetšího možného ID, aktualizace n elementů se provede, až po vložení, proto přiřadit větší ID aby nedošlo ke kolizi s jiným mGridem
+						E->mGrid->ID=ID;//předávání nejvetšího možného ID, aktualizace n elementů se provede, až po vložení, proto přiřadit větší ID aby nedošlo ke kolizi s jiným mGridem
 						design_element(E,false);//nutné!
 					}
 				}
@@ -6712,6 +6714,26 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 					if(OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n)design_element(el,true);//nutné!
 					//geometrie
 					d.v.vloz_G_element(el,0,E->geo.X4,E->geo.Y4,0,0,0,0,E->geo.X4,E->geo.Y4,el->geo.orientace,el->geo.rotacni_uhel,el->geo.radius,0);
+					//kontroly, zda jsme před obloukem + ošetření
+					if(E->dalsi!=NULL)
+					{
+						//prohození geometrie, pokud vkládám PM před oblouku, umožní posun PM
+						if(E->dalsi->geo.typ!=0)
+						{
+							d.geoTemp=el->geo;
+							el->geo=E->geo;
+							E->geo=d.geoTemp;
+						}
+						//kontrola pohonů, pokud je za prázdnou zarážkou jiný pohon, přiřadit tento pohon i zarážce, dodržení PM má jeden pohon a za ní je druhý pohon
+						if(E->pohon!=E->dalsi->pohon)E->pohon=E->dalsi->pohon;
+						//kontrola zda je dalsi element v jiném objektu pokud ano přesuň prázdnou zarážku do dalšího objektu
+						if(E->dalsi->objekt_n!=E->objekt_n)
+						{
+							E->objekt_n=E->dalsi->objekt_n;
+							O=d.v.vrat_objekt(E->dalsi->objekt_n);
+							O->element=E;
+						}
+					}
 					//ukazatelové záležitosti
 					el=NULL;delete el;
 					O=NULL;delete O;
@@ -6802,7 +6824,8 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 		  	//mazání mGridu
 		  	if(OBJEKT_akt!=NULL && e_posledni->objekt_n==OBJEKT_akt->n)
 				{
-		  		E->mGrid->Delete();
+          ID=E->mGrid->ID;
+					E->mGrid->Delete();
 		  		E->mGrid=NULL;
 		  	}
 		  	//WT přiřazení
@@ -6821,7 +6844,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 		  	{
 		  		E->mGrid=new TmGrid(F);
 					E->mGrid->Tag=6;//ID formu
-					E->mGrid->ID=d.v.ELEMENTY->predchozi->n+3;//předávání nejvetšího možného ID, aktualizace n elementů se provede, až po vložení, proto přiřadit větší ID aby nedošlo ke kolizi s jiným mGridem
+					E->mGrid->ID=ID;//předávání nejvetšího možného ID, aktualizace n elementů se provede, až po vložení, proto přiřadit větší ID aby nedošlo ke kolizi s jiným mGridem
 					design_element(E,false);//nutné!
 		  	}
 			}
@@ -6841,6 +6864,26 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 				if(OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n)design_element(el,true);//nutné!
 				//geometrie
 				d.v.vloz_G_element(el,0,E->geo.X4,E->geo.Y4,0,0,0,0,E->geo.X4,E->geo.Y4,el->geo.orientace,el->geo.rotacni_uhel,el->geo.radius,0);
+        //kontroly, zda jsme před obloukem + ošetření
+				if(E->dalsi!=NULL)
+				{
+					//prohození geometrie, pokud vkládám PM před oblouku, umožní posun PM
+					if(E->dalsi->geo.typ!=0)
+					{
+						d.geoTemp=el->geo;
+						el->geo=E->geo;
+						E->geo=d.geoTemp;
+					}
+					//kontrola pohonů, pokud je za prázdnou zarážkou jiný pohon, přiřadit tento pohon i zarážce, dodržení PM má jeden pohon a za ní je druhý pohon
+					if(E->pohon!=E->dalsi->pohon)E->pohon=E->dalsi->pohon;
+					//kontrola zda je dalsi element v jiném objektu pokud ano přesuň prázdnou zarážku do dalšího objektu
+					if(E->dalsi->objekt_n!=E->objekt_n)
+					{
+						E->objekt_n=E->dalsi->objekt_n;
+						O=d.v.vrat_objekt(E->dalsi->objekt_n);
+						O->element=E;
+					}
+				}
 				//ukazatelové záležitosti
 				el=NULL;delete el;
 				O=NULL;delete O;
@@ -14063,34 +14106,9 @@ void __fastcall TForm1::Timer_simulaceTimer(TObject *Sender)
 //MaVL - testovací tlačítko
 void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 {
-//  scGPImage_mereni_vzdalenostClick(this);
 //	case 6:eID=402;break;//"vytěkání"
 //	case 7:eID=400;break;//"sušení"
 //	case 8://chalzeni
-//								 Memo(OBJEKT_akt->n); //19
-//	if(OBJEKT_akt==NULL)
-//	{
-//		Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
-//		while(O!=NULL)
-//		{
-//			if(O->id>=6 && O->id<=8)d.v.vytvor_default_c_teplomery(O);
-//			O=O->dalsi;
-//		}
-//		delete O;O=NULL;
-//	}
-//  else vytvor_aktualizuj_tab_teplomeru();
-//	Cvektory::TObjekt *O=d.v.vrat_objekt(8);
-//	d.v.vytvor_default_c_teplomery(O);
-//	Cvektory::TCesta *C=O->teplomery->dalsi->cesta->dalsi;
-//	while(C!=NULL)
-//	{
-//		if(C->sparovany!=NULL)Memo("->eID = "+String(C->sparovany->name)+"; bod: "+String(C->Element->geo.X1)+";"+String(C->Element->geo.Y1));
-//		else Memo(C->Element->name);
-//		C=C->dalsi;
-//	}
-//	delete C;C=NULL;
-//	Memo("prvni teploměr: "+O->teplomery->dalsi->prvni->sparovany->name);
-//	Memo("posledni teploměr: "+O->teplomery->dalsi->posledni->sparovany->name);
 
 	////cyklus pro otevírání a zavírání objektu s volitelným krokem + měření času
 //	TDateTime start;
@@ -14118,15 +14136,6 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	Cvektory::TElement *E=OBJEKT_akt->teplomery->dalsi->posledni;
 //	E->mGrid->DeleteRow(E->mGrid->RowCount-1,false);
 //	E->mGrid->Update();
-  Memo_testy->Clear();
-	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-	while(E!=NULL)
-	{
-		Memo(E->name+"->n="+String(E->n));
-    if(OBJEKT_akt!=NULL && (E->objekt_n==OBJEKT_akt->n || E==predchozi_PM))Memo("->mGrid->ID="+String(E->mGrid->ID));
-		E=E->dalsi;
-	}
-	delete E;E=NULL;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

@@ -3935,7 +3935,7 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu,unsigned lo
 				if(Element->dalsi->eID==301 && Element->dalsi->predchozi2==Element && Element->dalsi->predchozi!=Element)Element->dalsi->predchozi2=Element->predchozi;
 				else Element->dalsi->predchozi=Element->predchozi;
 			}
-			if(Element->dalsi!=NULL && Element->predchozi!=NULL && F->Akce!=F->GEOMETRIE && O!=NULL)//u geo. se upravuje geometrie ostatních elemntů zvlášť v Unit1, pokud je O==NULL mažu elementy smazaného objektu = neupravovat geo. dalších elementů
+			if(Element->dalsi!=NULL && Element->dalsi->geo.typ==0 && Element->predchozi!=NULL && F->Akce!=F->GEOMETRIE && O!=NULL)//u geo. se upravuje geometrie ostatních elemntů zvlášť v Unit1, pokud je O==NULL mažu elementy smazaného objektu = neupravovat geo. dalších elementů
 			{
 				if(Element==ELEMENTY->dalsi)vloz_G_element(Element->dalsi,0,Element->predchozi->geo.X4,Element->predchozi->geo.Y4,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
 				else vloz_G_element(Element->dalsi,0,Element->geo.X1,Element->geo.Y1,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
@@ -3964,8 +3964,10 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu,unsigned lo
 	else if(povolit)//změna na zarážku, v případě že mažu element který obsahuje složitejsí geometrii
 	{
 		//smazání a znovuvytvoření mGridu elementu
+		long ID=Element->n;
 		if(F->OBJEKT_akt!=NULL && (Element->objekt_n==F->OBJEKT_akt->n || Element==F->predchozi_PM))
 		{
+      ID=Element->mGrid->ID;
 			Element->mGrid->Delete();
 			Element->mGrid=NULL;
 		}
@@ -4002,7 +4004,7 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu,unsigned lo
 		{
 			Element->mGrid=new TmGrid(F);
 			Element->mGrid->Tag=6;//ID formu
-			Element->mGrid->ID=ELEMENTY->predchozi->n+5;//předávání nejvetšího možného ID, aktualizace n elementů se provede, až po mazání, proto přiřadit větší ID aby nedošlo ke kolizi s jiným mGridem
+			Element->mGrid->ID=ID;//předávání nejvetšího možného ID, aktualizace n elementů se provede, až po mazání, proto přiřadit větší ID aby nedošlo ke kolizi s jiným mGridem
 			Element->mGrid->Create(2,1);
 			F->design_element(Element,false);//nutné!
 		}
@@ -9580,9 +9582,18 @@ void Cvektory::vloz_segment_cesty_do_seznamu_cesty(TTeplomery *teplomery,TElemen
 	////vkládání teploměru
 	if(prvni || posledni)
 	{
+		//nastavení default teploty
+		String name="";
+		switch(vrat_objekt(Element->objekt_n)->id)
+		{
+			case 6:name="30";break;//"vytěkání"
+			case 7:name="50";break;//"sušení"
+			case 8:name="10";break;//chalzeni
+    }
 		//vytvoření elementu a načtení atributů
 		TElement *E=new TElement;
 		E->n=MaxInt;
+		E->name=name;
 		E->objekt_n=Element->objekt_n;
 		E->mGrid=NULL;
 		E->pohon=NULL;
@@ -9806,6 +9817,7 @@ void Cvektory::posun_teplomeru(TElement *teplomer)
 				TElement *t1=NULL,*t2=NULL;
 				t1=new TElement;
 				t1->n=MaxInt;
+				t1->name=T->prvni->name;
 				t1->objekt_n=prvni->objekt_n;
 				t1->mGrid=NULL;
 				t1->pohon=NULL;
@@ -9821,6 +9833,7 @@ void Cvektory::posun_teplomeru(TElement *teplomer)
 				//druhý
 				t2=new TElement;
 				t2->n=MaxInt;
+        t2->name=T->posledni->name;
 				t2->objekt_n=posledni->objekt_n;
 				t2->mGrid=NULL;
 				t2->pohon=NULL;
@@ -9915,6 +9928,7 @@ void Cvektory::zmena_zakazky_vytvoreni_teplomeru(TObjekt *Objekt,TZakazka *Zakt,
 					TElement *t1=NULL,*t2=NULL;
 					t1=new TElement;
 					t1->n=MaxInt;
+					t1->name=T->prvni->name;
 					t1->objekt_n=prvni->Element->objekt_n;
 			  	t1->mGrid=NULL;
 			  	t1->pohon=NULL;
@@ -9930,6 +9944,7 @@ void Cvektory::zmena_zakazky_vytvoreni_teplomeru(TObjekt *Objekt,TZakazka *Zakt,
 			  	//druhý
 					t2=new TElement;
 					t2->n=MaxInt;
+          t2->name=T->posledni->name;
 			  	t2->objekt_n=posledni->Element->objekt_n;
 			  	t2->mGrid=NULL;
 					t2->pohon=NULL;
@@ -10043,6 +10058,7 @@ Cvektory::TTeplomery *Cvektory::kopiruj_teplomer(TTeplomery *original)
 	TElement *t1=NULL,*t2=NULL;
 	t1=new TElement;
 	t1->n=MaxInt;
+	t1->name=original->prvni->name;
 	t1->objekt_n=original->prvni->sparovany->objekt_n;
 	t1->mGrid=NULL;
 	t1->pohon=NULL;
@@ -10061,6 +10077,7 @@ Cvektory::TTeplomery *Cvektory::kopiruj_teplomer(TTeplomery *original)
 	//druhý
 	t2=new TElement;
 	t2->n=MaxInt;
+	t2->name=original->posledni->name;
 	t2->objekt_n=original->posledni->sparovany->objekt_n;
 	t2->mGrid=NULL;
 	t2->pohon=NULL;

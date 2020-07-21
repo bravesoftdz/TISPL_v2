@@ -907,7 +907,7 @@ void TFormX::aktualizace_tab_elementu_pOdebran ()
 				case 200:
 				case 300:
 				{
-        	update_hodnot_vyhybky_PM(E);//provede zobrazení hodnot pohonu a výpoèítá nové hodnoty mezer, provede aktualizaci WT
+					update_hodnot_vyhybky_PM(E);//provede zobrazení hodnot pohonu a výpoèítá nové hodnoty mezer, provede aktualizaci WT
         }break;
 			}
 			E->mGrid->Refresh();
@@ -1584,7 +1584,7 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
 
 		//aktualizace hodnot
 		vstoupeno_elm=false;
-  	if(E->pohon!=NULL)
+		if(E->pohon!=NULL)
 		{
 			if(input_state==NOTHING && ((E->objekt_n==F->OBJEKT_akt->n && F->OBJEKT_akt->rezim!=0) || (E->objekt_n!=F->OBJEKT_akt->n && F->d.v.vrat_objekt(E->objekt_n)->rezim!=0)))//pøepoèet po pøidání KK elementu, pouze pøi input_state==NOTHING, tz. nepøepoèítávat pøi uživatelské zmìnì
 			{
@@ -1613,7 +1613,7 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
       E->mGrid->Cells[prvni][11].Text="-";
   	}
   	if(E->eID==300)//pro výhybku
-  	{
+		{
     	if(E->dalsi2!=E->predchozi2 && E->dalsi2->pohon!=NULL)
 			{
 				if(input_state==NOTHING && F->OBJEKT_akt->rezim!=0)//pøepoèet po pøidání KK elementu
@@ -1646,9 +1646,9 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
   		}
   	}
   	else//pro PM
-  	{
+		{
       Cvektory::TElement *e_pom=E->dalsi;
-  		if(e_pom==NULL)e_pom=F->d.v.ELEMENTY->dalsi;//v pøípadì PM na konci linky
+			if(e_pom==NULL)e_pom=F->d.v.ELEMENTY->dalsi;//v pøípadì PM na konci linky
 			if(e_pom->pohon!=NULL)
 			{
 				if(input_state==NOTHING && F->d.v.vrat_objekt(e_pom->objekt_n)->rezim!=0)//pøepoèet po pøidání KK elementu
@@ -1693,17 +1693,17 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
 //provede validaci RD
 void TFormX::validace_RD(Cvektory::TElement *E)
 {
-	if((E->eID==200 || E->eID==300) && F->OBJEKT_akt->pohon->aRD!=0)//validovat pouze u PM
+	if(E!=NULL && F->OBJEKT_akt!=NULL && (E->eID==200 || E->eID==300))// && F->OBJEKT_akt->pohon->aRD!=0)//validovat pouze u PM
 	{
 		//smazání pøedchozí validace z VID
 		zapisVID(0,1);//pozice jsou popsány v .h u deklarace VID a vnì metody zapisVID()
 
 		//deklarace
 		AnsiString jednotky;
-  	if(F->aRDunit==0)jednotky="[m/s]";
+		if(F->aRDunit==0)jednotky="[m/s]";
 		else jednotky="[m/min]";
 		AnsiString puv_Note=E->mGrid->Note.Text;
-  	bool mimo_rozmezi=false;
+		bool mimo_rozmezi=false;
 		bool pouze_rozmezi=false;
 		//zjištìní n pohonù v tabulce
 		unsigned int p1_n=0,p2_n=0;
@@ -1716,7 +1716,7 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 
 		//naètení pohonù
 		Cvektory::TPohon *p=NULL,*p1=NULL,*p2=NULL;
-  	if(p1_n!=0)p1=F->d.v.vrat_pohon(p1_n);
+		if(p1_n!=0)p1=F->d.v.vrat_pohon(p1_n);
 		if(p2_n!=0)p2=F->d.v.vrat_pohon(p2_n);
 
 		//dvojtá validace
@@ -1728,66 +1728,70 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 				//naètení požadovaného pohonu pro validaci
 				if(i==3)p=p1;
 				if(i==4)p=p2;
-				//kontrola zda je možné editovat pohon
-				if(E->mGrid->Cells[i][3].Type==E->mGrid->EDIT && p!=NULL)
+				//kontrola zda existuje pohon, pokud ne nemá smysl øešit
+				if(p!=NULL)
 				{
-					podbarvi_edit(E,i,3);//defaultní nastavní barev
-					String Rx1=F->m.round2double(p->Rx,0),Rx2=p->Rx;
-					//kontrola zda je zadaná hodnota v rozmezí
-					if(F->m.between(p->aRD,p->rychlost_od,p->rychlost_do))mimo_rozmezi=false;
-					else mimo_rozmezi=true;
-	     		//zadaná rychlost je mimo rozsah
-					if(mimo_rozmezi && p->aRD > 0)
+					//kontrola zda je možné editovat pohon
+					if(E->mGrid->Cells[i][3].Type==E->mGrid->EDIT && p!=NULL)
 					{
-						E->mGrid->ShowNote(F->ls->Strings[220],F->d.clError,14);//"Rychlost neodpovídá rozmezí!"
-						podbarvi_edit(E,i,3,false);
-						pro_pohon=p->n;//uložení pro který pohon platí validace
-						break;//byl nalezen problém, zastavení validace, lze zobrazit jen jeden problém v Note
-	     		}
-					if(!mimo_rozmezi && E->mGrid->Note.Text!="")
-					{
-						E->mGrid->ShowNote("",F->d.clError,14);
-						//povolit_zakazat_editaci(true);
-					}
-       		// nutné ošetøení pro období zadávání/psaní
-					if (p->aRD > 0)
-					{
-						//výpoèet doporuèené rychosti
-						double dopRD1=0,dopRD2=0,aRD=p->aRD;
-		      	unsigned int n=0;
-						do
+						podbarvi_edit(E,i,3);//defaultní nastavní barev
+						String Rx1=F->m.round2double(p->Rx,0),Rx2=p->Rx;
+			  		//kontrola zda je zadaná hodnota v rozmezí
+						if(F->m.between(p->aRD,p->rychlost_od,p->rychlost_do))mimo_rozmezi=false;
+			  		else mimo_rozmezi=true;
+						//zadaná rychlost je mimo rozsah
+						if(mimo_rozmezi && p->aRD > 0)
 						{
-		      		//navyšování nebo snižování testovací rychlosti, tak aby byla v rozsahu pohonu
-		      		if(n!=0)
-		      		{
-								if(p->aRD>p->rychlost_do || (p->aRD<p->rychlost_do && p->rychlost_do-p->aRD>0 && p->rychlost_do-p->aRD<p->aRD-p->rychlost_od))aRD=0.99*aRD;//snižování hodnoty o 1%
-								else aRD=1.01*aRD;//navýšení hodnoty o 1%
-							}
-							//výpoèet doporuèených rychlostí
-							dopRD1=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,0,p->roztec,F->d.v.PP.TT,aRD);
-							dopRD2=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,90,p->roztec,F->d.v.PP.TT,aRD);
-							//zapsání menší hodnoty jako dopRD
-							if(dopRD1>dopRD2)dopRD=dopRD1;//vypíše vetší hodnotu
-							else dopRD=dopRD2;
-							n++;
-						}while(!F->m.between(dopRD,p->rychlost_od,p->rychlost_do));
-						//je zvolen pohon, jeho aktuální rychlost se nerovná doporuèené
-						if(p->roztec>0 && dopRD!=p->aRD && Rx1!=Rx2 && mimo_rozmezi==false)
-						{
-							//if(E->mGrid->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
-							E->mGrid->ShowNote(F->ls->Strings[221]+" <a>"+AnsiString(F->m.round2double(F->outaRD(dopRD),3))+"</a> "+jednotky,F->d.clError,14);//"Zadejte doporuèenou rychlost pohonu:"
+							E->mGrid->ShowNote(F->ls->Strings[220],F->d.clError,14);//"Rychlost neodpovídá rozmezí!"
+							podbarvi_edit(E,i,3,false);
 							pro_pohon=p->n;//uložení pro který pohon platí validace
-							podbarvi_edit(E,i,3,false);//èervené podbarvení
 							break;//byl nalezen problém, zastavení validace, lze zobrazit jen jeden problém v Note
-						}
-						//vše je vpoøádku
-						if ((dopRD==p->aRD || Rx1==Rx2) && mimo_rozmezi==false)
-	     			{
-	     				//povolit_zakazat_editaci(true);
+			  		}
+			  		if(!mimo_rozmezi && E->mGrid->Note.Text!="")
+						{
 							E->mGrid->ShowNote("",F->d.clError,14);
+			  			//povolit_zakazat_editaci(true);
 						}
-	     		}
-					else E->mGrid->ShowNote(F->ls->Strings[222],F->d.clError,14);//"Neplatná hodnota rychlosti pohonu!"
+						// nutné ošetøení pro období zadávání/psaní
+			  		if (p->aRD > 0)
+			  		{
+			  			//výpoèet doporuèené rychosti
+							double dopRD1=0,dopRD2=0,aRD=p->aRD;
+			  			unsigned int n=0;
+			  			do
+			  			{
+			  				//navyšování nebo snižování testovací rychlosti, tak aby byla v rozsahu pohonu
+								if(n!=0)
+		        		{
+			  					if(p->aRD>p->rychlost_do || (p->aRD<p->rychlost_do && p->rychlost_do-p->aRD>0 && p->rychlost_do-p->aRD<p->aRD-p->rychlost_od))aRD=0.99*aRD;//snižování hodnoty o 1%
+			  					else aRD=1.01*aRD;//navýšení hodnoty o 1%
+			  				}
+								//výpoèet doporuèených rychlostí
+								dopRD1=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,0,p->roztec,F->d.v.PP.TT,aRD);
+								dopRD2=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,90,p->roztec,F->d.v.PP.TT,aRD);
+								//zapsání menší hodnoty jako dopRD
+								if(dopRD1>dopRD2)dopRD=dopRD1;//vypíše vetší hodnotu
+			  				else dopRD=dopRD2;
+								n++;
+			  			}while(!F->m.between(dopRD,p->rychlost_od,p->rychlost_do));
+							//je zvolen pohon, jeho aktuální rychlost se nerovná doporuèené
+			  			if(p->roztec>0 && dopRD!=p->aRD && Rx1!=Rx2 && mimo_rozmezi==false)
+							{
+			  				//if(E->mGrid->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
+								E->mGrid->ShowNote(F->ls->Strings[221]+" <a>"+AnsiString(F->m.round2double(F->outaRD(dopRD),3))+"</a> "+jednotky,F->d.clError,14);//"Zadejte doporuèenou rychlost pohonu:"
+			  				pro_pohon=p->n;//uložení pro který pohon platí validace
+								podbarvi_edit(E,i,3,false);//èervené podbarvení
+			  				break;//byl nalezen problém, zastavení validace, lze zobrazit jen jeden problém v Note
+							}
+			  			//vše je vpoøádku
+							if ((dopRD==p->aRD || Rx1==Rx2) && mimo_rozmezi==false)
+			  			{
+								//povolit_zakazat_editaci(true);
+			  				E->mGrid->ShowNote("",F->d.clError,14);
+							}
+						}
+						else E->mGrid->ShowNote(F->ls->Strings[222],F->d.clError,14);//"Neplatná hodnota rychlosti pohonu!"
+					}
 				}
 			}
 		}
@@ -1856,7 +1860,7 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 						{
 							if(puv_Note!="")podbarvi_edit(e_pom,4,3,false);//èervené podbarvení
 							else podbarvi_edit(e_pom,4,3);//default podbarvení
-            }
+						}
           }
 				}catch(...){;}
 				e_pom=F->d.v.dalsi_krok(e_pom,F->OBJEKT_akt);
@@ -2218,6 +2222,7 @@ void TFormX::mazatPM(Cvektory::TElement *Element)
 	double predchozi_zoom=F->Zoom;
 
 	//dotaz + smazání samotného PM kde byla vyvolaná zmìna
+	Cvektory::TElement *smaz=NULL;//pom ukazatel pro mazání prázdné zarážky pøed obloukem
 	String name="";
 	if(nalezen && E!=NULL)name=E->name;
   //kontrola, zda je možné smazat Element
@@ -2225,6 +2230,7 @@ void TFormX::mazatPM(Cvektory::TElement *Element)
   if(Element==E && E!=NULL)E=NULL;
 	if(mazat_element && Element!=NULL && Element->eID==200)//zmìna mùže být vyvolána i z výhybky
 	{
+		if(Element->dalsi!=NULL && Element->dalsi->geo.delka==0)smaz=Element->dalsi;
 		F->posun_na_element(Element);
 		F->REFRESH(false);//musí následovat pøesunu
 		F->pom_element=Element;
@@ -2233,11 +2239,14 @@ void TFormX::mazatPM(Cvektory::TElement *Element)
 		F->akt_souradnice_kurzoru_PX.x=F->m.L2Px(Element->geo.X4+0.5);
 		F->akt_souradnice_kurzoru_PX.y=F->m.L2Py(Element->geo.Y4+0.5);
 		F->Smazat1Click(this);
+		if(smaz!=NULL)F->d.v.smaz_element(smaz);
+		delete smaz;smaz=NULL;
 	}
 
 	//kontrola zde ovlivnìné PM existuje + dotaz na mazání
 	if(nalezen && mazat_element && E!=NULL)
 	{
+		if(E->dalsi!=NULL && E->dalsi->geo.delka==0)smaz=E->dalsi;
 		F->posun_na_element(E);
 		F->REFRESH(false);//musí následovat pøesunu
 		E->name=name;//pokud došlo k odstranìní napøíklad pøedchozího PM, došlo již i k aktualizaci názvù, napø v praxi smažu první predchozí PM "PM1" a druhy dotaz na Element, který býval "PM2" bude: "Chcete smazat PM1"
@@ -2247,6 +2256,7 @@ void TFormX::mazatPM(Cvektory::TElement *Element)
 		F->akt_souradnice_kurzoru_PX.x=F->m.L2Px(E->geo.X4+0.5);
 		F->akt_souradnice_kurzoru_PX.y=F->m.L2Py(E->geo.Y4+0.5);
 		F->Smazat1Click(this);
+		if(smaz!=NULL)F->d.v.smaz_element(smaz);
 	}
 
 	//uložení posunu a zoom pøed posuny na elementy
@@ -2254,6 +2264,7 @@ void TFormX::mazatPM(Cvektory::TElement *Element)
 	F->Zoom=predchozi_zoom;
 
 	//ukazatelové záležitosti
+  delete smaz;smaz=NULL;
 	E=NULL;delete E;
 }
 //---------------------------------------------------------------------------

@@ -1466,8 +1466,8 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,Cvektory::TObjekt *Objek
 		if(teplomery!=NULL)
 		{
 			////vykreslení teploměrů
-			vykresli_teplomer(canv,m.L2Px(teplomery->prvni->X),m.L2Py(teplomery->prvni->Y),"","",teplomery->prvni->eID,1,teplomery->prvni->sparovany->orientace,1);
-			vykresli_teplomer(canv,m.L2Px(teplomery->posledni->X),m.L2Py(teplomery->posledni->Y),"","",teplomery->posledni->eID,1,teplomery->posledni->sparovany->orientace,1);
+			vykresli_teplomer(canv,m.L2Px(teplomery->prvni->X),m.L2Py(teplomery->prvni->Y),/*teplomery->prvni->name*/"","",teplomery->prvni->eID,1,teplomery->prvni->sparovany->orientace,1);
+			vykresli_teplomer(canv,m.L2Px(teplomery->posledni->X),m.L2Py(teplomery->posledni->Y),/*teplomery->posledni->name*/"","",teplomery->posledni->eID,1,teplomery->posledni->sparovany->orientace,1);
 
 			/////vykresení cesty
 			if(teplomery->prvni->sparovany!=teplomery->posledni->sparovany)
