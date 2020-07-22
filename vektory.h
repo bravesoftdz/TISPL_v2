@@ -127,7 +127,7 @@ class Cvektory
 
 		double WT;//čekání na palec
 
-		T5Rect citelna_oblast;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast celé kóty(rect0), popisku kóty (rect1), jednotek kóty (rect2) a samotného názvu např. Robot 3 (rect3) elementu, hodnota koty mezi LO (rect4) - nedovávat  do CObjekt
+		T5Rect citelna_oblast;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast celé kóty(rect0), popisku kóty (rect1), jednotek kóty (rect2) a samotného názvu např. Robot 3 (rect3) elementu, ohodnoty koty mezi LO (rect4), textu na kótě mezi LO (rect5) - nedovávat  do CObjekt
 
 		TGeometrie geo;//geometrie elementu
 		TGeometrie geoH;//3D geometrie, v případě spojky geometrie vedlejší větve

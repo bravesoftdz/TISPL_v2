@@ -123,6 +123,8 @@ const bool DEBUG=true;
 const bool DEBUG=false;
 #endif
 //---------------------------------------------------------------------------
+void CALLBACK TimerSimulaceEvent(UINT wTimerID,UINT msg,DWORD dwUser,DWORD dw1,DWORD dw2);
+//---------------------------------------------------------------------------
 class TForm1 : public TForm
 {
 __published:	// IDE-managed Components
@@ -505,6 +507,8 @@ private:
 	vlakno_panCreate *vlakno_PanCreate;
 
 	////metody
+	friend void CALLBACK TimerSimulaceEvent(UINT wTimerID, UINT msg, DWORD dwUser, DWORD dw1, DWORD dw2);//provede jeden takt multimediálního TimeruSimulace
+	void TimerKill(UINT wTimerID);//ukonèí daný (dlew TimerID) timer
 	void aut_pozicovani(Cvektory::TElement *E, int X, int Y);
 	void edice();
 	void ESC();
@@ -597,9 +601,11 @@ private:
 	void vymaz_seznam_obrazu();//vymaže všechny obrazy v poøadníku
 	void vytvor_statickou_scenu();//vytvoøí BMP se statickou scénou
 	void vytvor_statickou_scenu(long SCENA);//pøetížená výše uvedené pøímo s parametrem nastavení scény
-  void design_statusbar();//provde zarovnání zarážek a zmìní velikost výpisù ve statusbaru
+	void design_statusbar();//provde zarovnání zarážek a zmìní velikost výpisù ve statusbaru
 
 	////promìnné
+	UINT TimerSimulaceID;
+	UINT TimerPresnost;
 	TDateTime TIME;
 	short n_prihlaseni;
 	bool logovat;
@@ -731,7 +737,6 @@ public:		// User declarations
 	Tvlakno_obraz *vlakno_obraz;
 	bool vlakno_PanCreateState;
 	bool zobrazit_upozorneni_teplomery;
-	long naposledy;
 
 	//metody
 	void kurzor(TKurzory typ_kurzor);

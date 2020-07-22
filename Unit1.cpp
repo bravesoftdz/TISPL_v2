@@ -33,6 +33,8 @@
 #include "MyString.h"
 #include "konzole.h"
 #include <idattachmentfile.hpp>//přílohy mailů
+#include <mmsystem.h>//multimediální timer
+//#include <gdiplus.h>
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 //#pragma link "RzPanel"
@@ -13571,6 +13573,7 @@ void __fastcall TForm1::Timer_backupTimer(TObject *Sender)
 void TForm1::vse_odstranit()
 {
 	log(__func__);//logování
+	TimerKill(TimerSimulaceID);//musí být první
 	d.v.vse_odstranit();
 	if(PmG!=NULL){PmG->Delete();PmG=NULL;delete PmG;}
 	if(OBJEKT_akt!=NULL)scGPButton_stornoClick(this);
@@ -14043,11 +14046,18 @@ void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 			//tlačítko simulace
 			scGPGlyphButton_PLAY->GlyphOptions->Kind=scgpbgkPause;
 			scGPGlyphButton_PLAY->Hint="zastavit animaci";
-			scGPGlyphButton_PLAY->ShowCaption=true;            //optimálně pohybově nejpomalejšího pohonu či animovaného elementu
+			scGPGlyphButton_PLAY->ShowCaption=true;
+			//nastavení timeru
+									//optimálně pohybově nejpomalejšího pohonu či animovaného elementu
 			//Timer_simulace->Interval=floor(m2px/(Zoom/**3*/)/d.v.vrat_min_rychlost_prejezdu()*1000.0/fps);   //ceil(F->m.get_timePERpx(pom->RD,0,d.v.vrat_min_rychlost_prejezdu()));//různá rychlost dle RD, s afps se počítá dle min RD, ale nějak špatně vycházela animace ke konci (nestihl vozík vyjet)
-			//Timer_simulace->Interval=1;
-			START();
-			naposledy=0;
+			Timer_simulace->Interval=100000;
+			//new timer
+			Timer_simulace->Enabled==false;//provizorně
+			int TimerSimulaceInterval=16;
+			TIMECAPS tc;timeGetDevCaps(&tc,sizeof(TIMECAPS));//zjištění přesnosti multimediálního časovače
+			TimerPresnost=tc.wPeriodMin;//vrácení minimální možné přesnosti (1 ms)
+			timeBeginPeriod(TimerPresnost);//if(TIMERR_NOERROR!=timeBeginPeriod(TimerSimulacePresnost))Application->Terminate();
+			TimerSimulaceID=timeSetEvent(TimerSimulaceInterval,TimerPresnost,TimerSimulaceEvent,0,TIME_PERIODIC);
 		}
 		else//animace zastavena
 		{
@@ -14057,7 +14067,7 @@ void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 			scGPGlyphButton_PLAY->Hint="spustit animaci";
 			zobrazit_meritko=scGPSwitch_meritko->State;//navrácení do původního stavu
 			scGPButton_bug_report->Enabled=false;
-			STOP();
+			TimerKill(TimerSimulaceID);
 		}
 	}
 	else MB("V této verzi aplikace lze spustit simulaci pouze v layoutu.");
@@ -14100,12 +14110,29 @@ void __fastcall TForm1::Timer_simulaceTimer(TObject *Sender)
 			else ROsts=0;
 		}
 
-		sTIME+=1;/*1*///zajistí posun animace vždy o 1s reálného času (strojového dle Timer_animace->Interval, který by měl reflektovat aktuální rychlosti zajišťující plynulost animace)
+		//sTIME+=1;/*1*///zajistí posun animace vždy o 1s reálného času (strojového dle Timer_animace->Interval, který by měl reflektovat aktuální rychlosti zajišťující plynulost animace)
 		//d.v.generuj_VOZIKY();//velice prozatim
 		//d.v.posun_palce_retezu();
-		Memo(naposledy+=40,false,true);
-		REFRESH();
+		//REFRESH();
 	}
+}
+//---------------------------------------------------------------------------
+//provede jeden takt multimediálního TimeruSimulace
+void CALLBACK TimerSimulaceEvent(UINT wTimerID, UINT msg,	DWORD dwUser, DWORD dw1, DWORD dw2)
+{
+	//F->d.v.posun_palce_retezu();
+	F->sTIME+=10;
+	F->d.set_pen2(F->Canvas,clRed,F->d.m.round(1*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true);
+	F->d.line(F->Canvas,0,500,0+F->sTIME,500);
+	//mám problém s vykreslením této linie ve d.vykresli_palce, což se volá pomocí níže zakomentovaného F->REFRESH();
+	F->REFRESH();
+}
+//---------------------------------------------------------------------------
+//ukončí daný (dlew TimerID) timer
+void TForm1::TimerKill(UINT wTimerID)
+{
+	timeKillEvent(wTimerID);//ukončí timer
+	timeEndPeriod(TimerPresnost);//odstranění požadovaného rozlišení ze systému, pokud bylo použito timeBeginPeriod(presnost)
 }
 //---------------------------------------------------------------------------
 //MaVL - testovací tlačítko
