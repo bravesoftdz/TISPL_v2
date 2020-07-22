@@ -6677,7 +6677,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 				//změna zarážky na PM
 				if(E->eID==MaxInt && E->geo.typ==0 && (E->dalsi==NULL || (E->dalsi!=NULL && E->dalsi->geo.typ==0)))
 				{
-		   		//smazání a znovuvytvoření mGridu elementu
+					//smazání a znovuvytvoření mGridu elementu
 		   		if(OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n)
 		   		{
 						nastav_focus();
@@ -6719,7 +6719,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 					if(el->orientace==0 || el->orientace==180){el->Xt=el->X-1.9;el->Yt=el->Y+1.6;}
 					else{el->Xt=el->X+0.6;el->Yt=el->Y+0.5;}
 					//vytvoření mGridu elementu
-					if(OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n)design_element(el,true);//nutné!
+					if(OBJEKT_akt!=NULL && el->objekt_n==OBJEKT_akt->n)design_element(el,true);//nutné!
 					//geometrie
 					d.v.vloz_G_element(el,0,E->geo.X4,E->geo.Y4,0,0,0,0,E->geo.X4,E->geo.Y4,el->geo.orientace,el->geo.rotacni_uhel,el->geo.radius,0);
 					//kontroly, zda jsme před obloukem + ošetření
@@ -6735,17 +6735,17 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 						//kontrola pohonů, pokud je za prázdnou zarážkou jiný pohon, přiřadit tento pohon i zarážce, dodržení PM má jeden pohon a za ní je druhý pohon
 						if(E->pohon!=E->dalsi->pohon)E->pohon=E->dalsi->pohon;
 						//kontrola zda je dalsi element v jiném objektu pokud ano přesuň prázdnou zarážku do dalšího objektu
-						if(E->dalsi->objekt_n!=E->objekt_n)
-						{
-							E->objekt_n=E->dalsi->objekt_n;
-							O=d.v.vrat_objekt(E->dalsi->objekt_n);
-							O->element=E;
-						}
+//						if(E->dalsi->objekt_n!=E->objekt_n)
+//						{
+//							E->objekt_n=E->dalsi->objekt_n;
+//							O=d.v.vrat_objekt(E->dalsi->objekt_n);
+//							O->element=E;
+//						}
 					}
+          Akce=NIC;
 					//ukazatelové záležitosti
 					el=NULL;delete el;
 					O=NULL;delete O;
-					Akce=NIC;
 				}
 			}
 	  	//////////Aktualizace WT
@@ -6869,7 +6869,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 				if(el->orientace==0 || el->orientace==180){el->Xt=el->X-1.9;el->Yt=el->Y+1.6;}
 				else{el->Xt=el->X+0.6;el->Yt=el->Y+0.5;}
 				//vytvoření mGridu elementu
-				if(OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n)design_element(el,true);//nutné!
+				if(OBJEKT_akt!=NULL && el->objekt_n==OBJEKT_akt->n)design_element(el,true);//nutné!
 				//geometrie
 				d.v.vloz_G_element(el,0,E->geo.X4,E->geo.Y4,0,0,0,0,E->geo.X4,E->geo.Y4,el->geo.orientace,el->geo.rotacni_uhel,el->geo.radius,0);
         //kontroly, zda jsme před obloukem + ošetření
@@ -6885,12 +6885,12 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 					//kontrola pohonů, pokud je za prázdnou zarážkou jiný pohon, přiřadit tento pohon i zarážce, dodržení PM má jeden pohon a za ní je druhý pohon
 					if(E->pohon!=E->dalsi->pohon)E->pohon=E->dalsi->pohon;
 					//kontrola zda je dalsi element v jiném objektu pokud ano přesuň prázdnou zarážku do dalšího objektu
-					if(E->dalsi->objekt_n!=E->objekt_n)
-					{
-						E->objekt_n=E->dalsi->objekt_n;
-						O=d.v.vrat_objekt(E->dalsi->objekt_n);
-						O->element=E;
-					}
+//					if(E->dalsi->objekt_n!=E->objekt_n)
+//					{
+//						E->objekt_n=E->dalsi->objekt_n;
+//						O=d.v.vrat_objekt(E->dalsi->objekt_n);
+//						O->element=E;
+//					}
 				}
 				//ukazatelové záležitosti
 				el=NULL;delete el;
@@ -6919,7 +6919,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 	//aktualizace předchozího PM a zobrazení či skrytí default tabulky pro pohon
 	if(OBJEKT_akt!=NULL)
 	{
-    //deklarace
+		//deklarace
 		Cvektory::TElement *E=NULL;
 		//kontrola zda se změnilo předchozí PM
 		if(OBJEKT_akt->element->predchozi->n>0)
@@ -6954,7 +6954,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 		//pokud existuje tabulka pohonu a zároveň defaultní, smaže defaultní
 		if(existuje_tab_pohonu && PmG!=NULL)
 		{
-      nastav_focus();
+			nastav_focus();
 			PmG->Delete();
 			PmG=NULL;delete PmG;
 		}
@@ -6964,7 +6964,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 		d.v.vymaz_seznam_VYHYBKY();
 	}
 
-  //ukazatelové záležitosti
+	//ukazatelové záležitosti
 	E=NULL;delete E;
 }
 //---------------------------------------------------------------------------
@@ -14165,14 +14165,14 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	Cvektory::TElement *E=OBJEKT_akt->teplomery->dalsi->posledni;
 //	E->mGrid->DeleteRow(E->mGrid->RowCount-1,false);
 //	E->mGrid->Update();
-  Memo_testy->Clear();
-	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+
+	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;  Memo_testy->Clear();
 	while(E!=NULL)
 	{
-		Memo(E->name+"->geo.typ: "+String(E->geo.typ));
+		Memo(E->name+"->objekt_n="+String(E->objekt_n));
 		E=E->dalsi;
 	}
-	E=NULL;delete E;
+	delete E;E=NULL;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

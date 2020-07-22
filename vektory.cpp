@@ -1908,6 +1908,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	}
 
 	//mGrid elementu
+  novy->mGrid=NULL;
 	if(F->OBJEKT_akt!=NULL && (Objekt->n==F->OBJEKT_akt->n || novy->eID==MaxInt || novy->eID==300 || novy->eID==301))//stačí nastavovat pouze v náhledu při vloz_element, nová strategie, je mgrid, nekopírovat a používat jenom v OBJEKT_akt, zde však podmínka zda se jedná o OBJEKT_akt nebyla z nějakého důvodu možná
 	{
 		novy->mGrid=new TmGrid(F);
