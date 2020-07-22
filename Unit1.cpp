@@ -4180,7 +4180,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			case MOVE:
 			{
 				//pokud byl objekt posunut a obsahuje už pohon a geometrii, zobrazen dotaz zda souhlasím z posunem
-				if(OBJEKT_akt==NULL && pom->element->pohon!=NULL && ((predchozi_souradnice_kurzoru.x!=m.L2Px(pom->element->geo.X1) && predchozi_souradnice_kurzoru.y!=m.L2Px(pom->element->geo.Y1)) || pom->orientace!=predchozi_orientace) && mrNo==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,ls->Strings[416],"",MB_YESNO,true,false))//"Objekt byl přesunut, souhlasíte s aktuálním umístěním?"
+				if(OBJEKT_akt==NULL && pom->element->pohon!=NULL && ((puv_souradnice.x!=pom->element->geo.X1 && puv_souradnice.y!=pom->element->geo.Y1) || pom->orientace!=predchozi_orientace) && mrNo==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,ls->Strings[416],"",MB_YESNO,true,false))//"Objekt byl přesunut, souhlasíte s aktuálním umístěním?"
 				{
 					d.v.posun_objekt(puv_souradnice.x-pom->element->geo.X1,puv_souradnice.y-pom->element->geo.Y1,pom,false,false);
 					if(pom->orientace!=predchozi_orientace)d.v.rotuj_objekt(pom,pom->orientace-predchozi_orientace);
