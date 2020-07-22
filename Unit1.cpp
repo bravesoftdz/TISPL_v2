@@ -3127,7 +3127,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					{
 						if(MOD==LAYOUT)//OBJEKT
 						{
-							if(JID==3&&!d.v.PP.zamek_layoutu){Akce=MOVE;kurzor(posun_l);minule_souradnice_kurzoru=TPoint(X,Y);predchozi_souradnice_kurzoru=m.L2P(pom->element->geo.X1,pom->element->geo.Y1);predchozi_orientace=pom->orientace;}
+							if(JID==3&&!d.v.PP.zamek_layoutu){Akce=MOVE;kurzor(posun_l);minule_souradnice_kurzoru=TPoint(X,Y);puv_souradnice.x=pom->element->geo.X1;puv_souradnice.y=pom->element->geo.Y1;predchozi_orientace=pom->orientace;}
 							else if(JID==-1&&Akce==NIC){Akce=PAN;pan_non_locked=true;}//přímo dovolení PAN pokud se neposová objekt = Rosťova prosba
 							if(JID==-102){if(d.zprava_highlight!=d.zobrazit_celou_zpravu){d.zobrazit_celou_zpravu=d.zprava_highlight;kurzor(close);}else {d.zobrazit_celou_zpravu=0;kurzor(info);}REFRESH(false);}//rozbalení nebo skrytí zpráv
 							if(JID==-2){nastav_focus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_bod_temp=pom_bod;if(pom_bod_temp->n!=1)editovany_text=m.round2double(m.delka(pom_bod_temp->predchozi->X,pom_bod_temp->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);else editovany_text=m.round2double(m.delka(d.v.HALA.body->predchozi->X,d.v.HALA.body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);editovany_text=outDK(ms.MyToDouble(editovany_text));}//převod na mm
@@ -4182,7 +4182,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				//pokud byl objekt posunut a obsahuje už pohon a geometrii, zobrazen dotaz zda souhlasím z posunem
 				if(OBJEKT_akt==NULL && pom->element->pohon!=NULL && ((predchozi_souradnice_kurzoru.x!=m.L2Px(pom->element->geo.X1) && predchozi_souradnice_kurzoru.y!=m.L2Px(pom->element->geo.Y1)) || pom->orientace!=predchozi_orientace) && mrNo==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,ls->Strings[416],"",MB_YESNO,true,false))//"Objekt byl přesunut, souhlasíte s aktuálním umístěním?"
 				{
-					d.v.posun_objekt(m.P2Lx(predchozi_souradnice_kurzoru.x)-pom->element->geo.X1,m.P2Ly(predchozi_souradnice_kurzoru.y)-pom->element->geo.Y1,pom,false,false);
+					d.v.posun_objekt(puv_souradnice.x-pom->element->geo.X1,puv_souradnice.y-pom->element->geo.Y1,pom,false,false);
 					if(pom->orientace!=predchozi_orientace)d.v.rotuj_objekt(pom,pom->orientace-predchozi_orientace);
 				}
 				else if((predchozi_souradnice_kurzoru.x!=m.L2Px(pom->element->geo.X1) && predchozi_souradnice_kurzoru.y!=m.L2Px(pom->element->geo.Y1)) || pom->orientace!=predchozi_orientace)vytvor_obraz();
@@ -6461,20 +6461,20 @@ void TForm1::add_vyhybka_spojka()
 	TPointD bod_vlozeni=bod_vlozeni_elementu();
 	if(bod_vlozeni.x!=-1000 && pom_element_temp!=NULL)//kontrola zda vkládám na přímku
 	{
-		Cvektory::TElement *E=NULL;
+		Cvektory::TElement *E=NULL,*el=NULL;
 		//úprava a zjištění bodu vložení a rotace
 		short rotace_symbolu=rotace_symbol(m.Rt90(pom_element_temp->geo.orientace),m.L2Px(bod_vlozeni.x),m.L2Py(bod_vlozeni.y));
 		bod_vlozeni=uprav_bod_vlozeni_elementu(bod_vlozeni,rotace_symbolu);
 
 		//vkládání elementu, první vložení ... výhybka
-    if(pom_element_temp->geo.X1==bod_vlozeni.x && pom_element_temp->geo.Y1==bod_vlozeni.y)E=pom_element_temp->predchozi;//vkládání na začátek oblouku
-		if(pom_element_temp->geo.X4==bod_vlozeni.x && pom_element_temp->geo.Y4==bod_vlozeni.y)E=pom_element_temp;//vkládání na konec oblouku
+		if(pom_element_temp->geo.X1==bod_vlozeni.x && pom_element_temp->geo.Y1==bod_vlozeni.y)el=pom_element_temp->predchozi;//vkládání na začátek oblouku
+		if(pom_element_temp->geo.X4==bod_vlozeni.x && pom_element_temp->geo.Y4==bod_vlozeni.y)el=pom_element_temp;//vkládání na konec oblouku
 		//vložení nového elementu
 		if(E==NULL || (E!=NULL && E->eID!=MaxInt))
 		{
-      pom=d.v.vrat_objekt(pom_element_temp->objekt_n);
+			pom=d.v.vrat_objekt(pom_element_temp->objekt_n);
 			E=d.v.vloz_element(pom,element_id,bod_vlozeni.x,bod_vlozeni.y,rotace_symbolu);
-			if(E!=NULL)
+			if(el!=NULL)
 			{
 				d.v.vloz_G_element(E,0,E->X,E->Y,0,0,0,0,E->X,E->Y,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,0);
 				if(E->dalsi!=NULL && (E->objekt_n!=E->dalsi->objekt_n || (E->dalsi->eID==200 && E->dalsi->geo.delka==0 && E->dalsi->dalsi!=NULL)))
@@ -6483,7 +6483,14 @@ void TForm1::add_vyhybka_spojka()
 					if(E->dalsi->eID==200)E->objekt_n==E->dalsi->dalsi->objekt_n;
 					Cvektory::TObjekt *O=d.v.vrat_objekt(E->objekt_n);
 					if(O->element==E->dalsi)O->element=E;
-          O=NULL;delete O;
+					O=NULL;delete O;
+				}
+        //pokud je výhybka / spojka před obloukem prohodit geometrii, takto půjde libovolně posouvat
+				if(E->dalsi!=NULL && E->dalsi->dalsi!=NULL && E->dalsi->dalsi->geo.typ!=0)
+				{
+					d.geoTemp=E->geo;
+					E->geo=E->dalsi->geo;
+					E->dalsi->geo=d.geoTemp;
 				}
 			}
 		}
@@ -6588,6 +6595,7 @@ void TForm1::add_vyhybka_spojka()
 		else{E->Xt=E->X+0.6;E->Yt=E->Y+0.5;}
 		//ukazatelové záležitosti
 		E=NULL;delete E;
+    el=NULL;delete el;
 	}
 	else TIP=ls->Strings[309];//"Lze vkládat pouze na linie."
 }
@@ -14157,14 +14165,14 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	Cvektory::TElement *E=OBJEKT_akt->teplomery->dalsi->posledni;
 //	E->mGrid->DeleteRow(E->mGrid->RowCount-1,false);
 //	E->mGrid->Update();
-
+  Memo_testy->Clear();
 	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
 	while(E!=NULL)
 	{
-    Memo(E->name+"->n: "+String(E->n));
+		Memo(E->name+"->geo.typ: "+String(E->geo.typ));
 		E=E->dalsi;
 	}
-  delete E;E=NULL;
+	E=NULL;delete E;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
