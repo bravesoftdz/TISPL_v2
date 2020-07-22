@@ -3767,8 +3767,8 @@ void Cvykresli::vykresli_teplomer(TCanvas *canv,long X,long Y,AnsiString name,An
 	long x=m.round(X-Tw/2.0-canv->TextWidth("°C")/2.0);long y=Y-polomer1*DT-vzdalenostY-Th;
 	TextFraming(canv,x,y,name);
 	//citelná oblast popisku
-	aktOblast=TRect(x,y,x+canv->TextWidth(name),y+Th);//souřadnice pro citelnou oblast
-	//canv->Pen->Color=clRed;canv->Rectangle(aktOblast);//testovací oblast vykreslení
+	float zAA=1.0;if(F->antialiasing)zAA=3.0;
+	aktOblast=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+canv->TextWidth(name))/zAA),m.round((y+Th)/zAA));//souřadnice pro citelnou oblast, pro vykreslení oblasti by muselo být použito bez /zAA
 	//°C
 	canv->Font->Style = TFontStyles();
 	TextFraming(canv,x+Tw,y,"°C");
