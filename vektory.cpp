@@ -1908,6 +1908,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	}
 
 	//mGrid elementu
+  novy->mGrid=NULL;
 	if(F->OBJEKT_akt!=NULL && (Objekt->n==F->OBJEKT_akt->n || novy->eID==MaxInt || novy->eID==300 || novy->eID==301))//stačí nastavovat pouze v náhledu při vloz_element, nová strategie, je mgrid, nekopírovat a používat jenom v OBJEKT_akt, zde však podmínka zda se jedná o OBJEKT_akt nebyla z nějakého důvodu možná
 	{
 		novy->mGrid=new TmGrid(F);
@@ -2064,7 +2065,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 			Element->idetifikator_vyhybka_spojka=pocet_vyhybek;
 			//geometrie
 			vloz_G_element(Element,0,p->geo.X1,p->geo.Y1,0,0,0,0,Element->X,Element->Y,p->geo.orientace);
-			if(Element->X!=p->geo.X4 && Element->Y!=p->geo.Y4 && p->geo.typ==0)vloz_G_element(p,0,Element->X,Element->Y,0,0,0,0,p->geo.X4,p->geo.Y4,p->geo.orientace);
+			if(!((Element->X==p->geo.X1 && Element->Y==p->geo.Y1) || (Element->X==p->geo.X4 && Element->Y==p->geo.Y4)) && p->geo.typ==0)vloz_G_element(p,0,Element->X,Element->Y,0,0,0,0,p->geo.X4,p->geo.Y4,p->geo.orientace);
 			//změna indexů
 			Cvektory::TElement *E=Element;
 			int n=p->n;
@@ -2234,7 +2235,7 @@ Cvektory::TElement *Cvektory::vloz_element_pred(TObjekt *Objekt,TElement *Elemen
 				//přichytávání na konec začátek a konec oblouku, pouze pro výhybku a spojku
 				if((Element->eID==300 || Element->eID==301) && F->Akce==F->Takce::VYH && F->prichytavat_k_mrizce==1 && p->geo.typ!=0)
 				{
-					if(m.delka(Element->X,Element->Y,p->geo.X1,p->geo.Y1)<1){ret=p;break;}//začátek linie
+					if(m.delka(Element->X,Element->Y,p->geo.X1,p->geo.Y1)<1){ret=p->predchozi;break;}//začátek linie
 					if(m.delka(Element->X,Element->Y,p->geo.X4,p->geo.Y4)<1){ret=p->dalsi;break;}//konec linie
 				}
 				//kontrola zda vkládaný element neleží mezi prvním a druhým elementem, druhým až n

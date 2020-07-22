@@ -1547,6 +1547,7 @@ void TFormX::prirazeni_pohohonu_vetvi(Cvektory::TElement *E,long Col)
 	F->vlozit_predavaci_misto_aktualizuj_WT();//provede i aktualizaci WT všem elementù, musí být první
 	input_state=COMBO;//dùležité pro nastavení enabled komponent v aktualizaci elementù
 	aktualizace_tab_elementu();
+	F->d.v.aktualizuj_cestu_teplomeru();//pokud existuje cesta mezi teplomìry aktualizuje ji, jinak vytvoøí default cestu
 
 	//vytvoøení cesty teplomìrù po pøiøazení pohonu
 	Cvektory::TTeplomery *T=F->d.v.vrat_teplomery_podle_zakazky(F->OBJEKT_akt,F->d.v.ZAKAZKA_akt);
@@ -1999,7 +2000,7 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 	if(Col==4)
 	{
 		e=E->dalsi;
-		while(e!=NULL && e->objekt_n==F->OBJEKT_akt->n)
+		while(e!=NULL && (e->objekt_n==F->OBJEKT_akt->n || (E==F->predchozi_PM && e->dalsi!=NULL && e->dalsi->objekt_n==F->OBJEKT_akt->n)))
 		{
 			e->pohon=p;
 			if(e->objekt_n!=E->objekt_n)F->d.v.vrat_objekt(e->objekt_n)->pohon=p;
@@ -2029,15 +2030,11 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 	input_state=COMBO;//dùležité pro nastavení enabled komponent v aktualizaci elementù
 	if(p!=NULL)aktualizace_tab_elementu();
 	else aktualizace_tab_elementu_pOdebran();
+	F->d.v.aktualizuj_cestu_teplomeru();//pokud existuje cesta mezi teplomìry aktualizuje ji, jinak vytvoøí default cestu
 	////aktualizace knihoven
 	F->DrawGrid_knihovna->Refresh();
 	F->DrawGrid_ostatni->Refresh();
 	F->DrawGrid_otoce->Refresh();
-
-	////ukazatelové záležitosti
-	Combo=NULL;delete Combo;
-	p=NULL;delete p;
-	e=NULL;delete e;
 
 	//vytvoøení cesty teplomìrù po pøiøazení pohonu
 	Cvektory::TTeplomery *T=F->d.v.vrat_teplomery_podle_zakazky(F->OBJEKT_akt,F->d.v.ZAKAZKA_akt);
@@ -2053,6 +2050,11 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 		delete T;T=NULL;
 	}
 	T=NULL;delete T;
+
+  ////ukazatelové záležitosti
+	Combo=NULL;delete Combo;
+	p=NULL;delete p;
+	e=NULL;delete e;
 }
 //---------------------------------------------------------------------------
 //pøiøazení pohonu z PmG
@@ -2093,6 +2095,7 @@ void TFormX::prirazeni_pohonu_defTab()
 	F->OBJEKT_akt->stavPM=2;//max po zvolení pohonu
 	F->vlozit_predavaci_misto_aktualizuj_WT();
 	F->aktualizace_tab_pohon(false,true,true);//nebude provedena pokud dojde k odstranìní PmG
+  F->d.v.aktualizuj_cestu_teplomeru();//pokud existuje cesta mezi teplomìry aktualizuje ji, jinak vytvoøí default cestu
 
 	//pokud už neexistuje PmG, nalezení PM pro spuštìní validace
 	if(F->PmG==NULL)
@@ -2160,17 +2163,17 @@ void TFormX::mazatPM(Cvektory::TElement *Element)
 		//hledání ovlivnìného PM
 		E=F->OBJEKT_akt->element;
 		while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
-  	{
-  		//kontrola zda jsem narazil na PM a je možné ho smazat
-  		if(E->eID==200 && (E->dalsi!=NULL && E->pohon==E->dalsi->pohon) || (E->dalsi==NULL && E->pohon==F->d.v.ELEMENTY->dalsi->pohon))
-  		{
+		{
+			//kontrola zda jsem narazil na PM a je možné ho smazat
+			if(E->eID==200 && (E->dalsi!=NULL && E->pohon==E->dalsi->pohon) || (E->dalsi==NULL && E->pohon==F->d.v.ELEMENTY->dalsi->pohon))
+			{
 				Element=E;
 				mazat_element=true;
-  			break;
-  		}
-  		else E=E->dalsi;
+				break;
+			}
+			else E=E->dalsi;
 		}
-    //kontrola predchoziho PM
+		//kontrola predchoziho PM
 		if(F->predchozi_PM!=NULL && ((F->predchozi_PM->dalsi!=NULL && F->predchozi_PM->pohon==F->predchozi_PM->dalsi->pohon) || (F->predchozi_PM->dalsi==NULL && F->predchozi_PM->pohon==F->d.v.ELEMENTY->dalsi->pohon)))
 		{
 			nalezen=true;
@@ -2184,7 +2187,7 @@ void TFormX::mazatPM(Cvektory::TElement *Element)
 		if((Element->dalsi!=NULL && Element->pohon==Element->dalsi->pohon) || (Element->dalsi==NULL && Element->pohon==F->d.v.ELEMENTY->dalsi->pohon))mazat_element=true;
 		//hledání ovlivnìného PM
 		E=Element->dalsi;
-		while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
+		while(E!=NULL && (E->objekt_n==F->OBJEKT_akt->n || (Element==F->predchozi_PM && E->dalsi!=NULL && E->dalsi->objekt_n==F->OBJEKT_akt->n)))
 		{
 			//kontrola zda jsem narazil na PM a je možné ho smazat
 			if(E->eID==200 && (E->dalsi!=NULL && E->pohon==E->dalsi->pohon) || (E->dalsi==NULL && E->pohon==F->d.v.ELEMENTY->dalsi->pohon))
@@ -2226,7 +2229,7 @@ void TFormX::mazatPM(Cvektory::TElement *Element)
 	String name="";
 	if(nalezen && E!=NULL)name=E->name;
   //kontrola, zda je možné smazat Element
-	if(!(Element->dalsi!=NULL && Element->pohon==Element->dalsi->pohon) || (Element->dalsi==NULL && Element->pohon==F->d.v.ELEMENTY->dalsi->pohon))Element=NULL;
+	if((Element->dalsi!=NULL && Element->pohon!=Element->dalsi->pohon) || (Element->dalsi==NULL && Element->pohon!=F->d.v.ELEMENTY->dalsi->pohon))Element=NULL;
   if(Element==E && E!=NULL)E=NULL;
 	if(mazat_element && Element!=NULL && Element->eID==200)//zmìna mùže být vyvolána i z výhybky
 	{
