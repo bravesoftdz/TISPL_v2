@@ -2375,6 +2375,7 @@ void Cvykresli::vykresli_voziky(TCanvas *canv)
 //		P=P->dalsi;
 //	}
 //	delete P;
+	//test2
 	set_pen2(canv,clRed,m.round(1*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true);
 	line(canv,0,500,0+F->sTIME,500);
 	////----
@@ -2980,7 +2981,11 @@ void Cvykresli::vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiStr
 		case 400:
 		case 401:
 		case 402:
-		vykresli_teplomer(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
+		{  //teploměry
+			vykresli_teplomer(canv,X,Y,name,short_name,eID,typ,rotace,stav);
+			E->citelna_oblast.rect3=aktOblast;
+		}
+		break;
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -3437,7 +3442,7 @@ void Cvykresli::vykresli_cloveka(TCanvas *canv,short scena,long X,long Y,AnsiStr
 		  		rotace_textu(canv,-rotace90*10);
 		  		if(rotace90==90){x=m.round(X-Odsazeni);y=m.round(Y-w/2.0);}
 		  		if(rotace90==270){x=m.round(X+Odsazeni);y=m.round(Y+w/2.0);}
-		  		aktOblast=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+h)/zAA),m.round((y+w)/zAA));//souřadnice pro citelnou oblast
+					aktOblast=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+h)/zAA),m.round((y+w)/zAA));//souřadnice pro citelnou oblast
 		  	}
 				TextFraming(canv,x,y,name);//samotný vypis
 			}
