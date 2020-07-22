@@ -9728,29 +9728,49 @@ void Cvektory::vytvor_default_c_teplomery(TObjekt *Objekt)
 	CprvniE=NULL;delete CprvniE;
 }
 ////---------------------------------------------------------------------------
-//hledá zda není uživatel kurzorem nad teploměrem, pokud ano vrátí ukazatel na teploměr
-Cvektory::TElement *Cvektory::najdi_teplomer()
+//hledá zda není uživatel kurzorem nad teploměrem, pokud ano zapíše ukazatel na něj do F->pom_element a vrátí 1 ... teplomer, 2 ... popisek, nebo 0 ... nenalezeno
+short Cvektory::najdi_teplomer()
 {
 	//deklarace
-	TElement *ret=NULL;
+	short ret=0;
 
 	//hledání zda jsem v oblasti nějakého teploměru, pokud existuje cesta a teploměry
 	if(F->OBJEKT_akt!=NULL)
 	{
+    //kontrola těla teploměrů
 		TTeplomery *teplomery=vrat_teplomery_podle_zakazky(F->OBJEKT_akt,ZAKAZKA_akt);
 		if(teplomery!=NULL && teplomery->prvni->sparovany!=NULL && teplomery->posledni->sparovany!=NULL)
 		{
 			//kontrola prvního teploměru
 			if(m.PtInTeplomer(teplomery->prvni->geo.X1,teplomery->prvni->geo.Y1,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,teplomery->prvni->sparovany->orientace))
 			{
-				ret=teplomery->prvni;//nalezeno
+				F->pom_element=teplomery->prvni;//nalezeno
+				ret=1;
 			}
 	  	//kontrola druhého teploměru
 	  	if(m.PtInTeplomer(teplomery->posledni->geo.X1,teplomery->posledni->geo.Y1,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,teplomery->posledni->sparovany->orientace))
 	  	{
-				ret=teplomery->posledni;//nalezeno
-	  	}
+				F->pom_element=teplomery->posledni;//nalezeno
+				ret=1;
+			}
+
+      //kontrola popisků teploměrů
+	  	if(ret==0 && F->scGPCheckBox1_popisky->Checked)
+	  	{
+	  		//pom_element->citelna_oblast.rect3.PtInRect(TPoint(X,Y))
+	  		if(teplomery->prvni->citelna_oblast.rect3.PtInRect(TPoint(F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)))
+	  		{
+	  			F->pom_element=teplomery->prvni;//nalezeno
+	  			ret=2;
+	  		}
+	  		if(teplomery->posledni->citelna_oblast.rect3.PtInRect(TPoint(F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)))
+	  		{
+	  			F->pom_element=teplomery->posledni;//nalezeno
+	  			ret=2;
+	  		}
+			}
 		}
+
     //ukazatelové záležitosti
 		teplomery=NULL;delete teplomery;
 	}

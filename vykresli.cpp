@@ -1465,6 +1465,12 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TO
 		Cvektory::TTeplomery *teplomery=v.vrat_teplomery_podle_zakazky(F->OBJEKT_akt,v.ZAKAZKA_akt);
 		if(teplomery!=NULL)
 		{
+      //nastavení barev
+			TColor clTeplomery=clBlack;//default, vytěkání
+			if(teplomery->prvni->eID==400)clTeplomery=clRed;//sušení
+			if(teplomery->prvni->eID==401)clTeplomery=clBlue;//chlazení
+			clTeplomery=m.clIntensive(clTeplomery,210);//zesvětlení barvy
+
 			////vykreslení teploměrů
 			vykresli_element(canv,scena,m.L2Px(teplomery->prvni->X),m.L2Py(teplomery->prvni->Y),/*teplomery->prvni->name*/"","",teplomery->prvni->eID,1,teplomery->prvni->sparovany->orientace,1,1.5,0,0,0,teplomery->prvni);
 			vykresli_element(canv,scena,m.L2Px(teplomery->posledni->X),m.L2Py(teplomery->posledni->Y),/*teplomery->posledni->name*/"","",teplomery->posledni->eID,1,teplomery->posledni->sparovany->orientace,1,1.5,0,0,0,teplomery->posledni);
@@ -1472,8 +1478,8 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TO
 			/////vykresení cesty
 			if(teplomery->prvni->sparovany!=teplomery->posledni->sparovany)
 			{
-				vykresli_segment_cesty_teplomeru(canv,teplomery->prvni,teplomery->prvni->eID,1);//vykreslení cesty od prvního teploměru
-				vykresli_segment_cesty_teplomeru(canv,teplomery->posledni,teplomery->prvni->eID,2);//vykreslení cesty k poslednímu teploměru
+				vykresli_segment_cesty_teplomeru(canv,teplomery->prvni,clTeplomery,1);//vykreslení cesty od prvního teploměru
+				vykresli_segment_cesty_teplomeru(canv,teplomery->posledni,clTeplomery,2);//vykreslení cesty k poslednímu teploměru
 			}
       //vykrelsení spojnice mezi teploměry na jednom segmentu pohonu
 			else
@@ -1486,7 +1492,7 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TO
 			  	RA=teplomery->prvni->geo.rotacni_uhel;
 			  	X1=teplomery->prvni->geo.X1;Y1=teplomery->prvni->geo.Y1;
 			  	R=m.delka(X1,Y1,teplomery->posledni->geo.X4,teplomery->posledni->geo.Y4);
-					vykresli_Gelement(canv,X1,Y1,OR,RA,R,clRed,3);
+					vykresli_Gelement(canv,X1,Y1,OR,RA,R,clTeplomery,3);
 				}
         //vykrelsení čísti úseku mezi teploměry
 				else
@@ -1497,8 +1503,8 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TO
 	  	Cvektory::TCesta *ct=teplomery->cesta->dalsi;
 	  	while(ct!=NULL)
 			{
-				vykresli_segment_cesty_teplomeru(canv,ct->Element,teplomery->prvni->eID);
-        //posun na další segment cesty
+				vykresli_segment_cesty_teplomeru(canv,ct->Element,clTeplomery);
+				//posun na další segment cesty
 				ct=ct->dalsi;
 			}
 			delete ct;ct=NULL;
@@ -1508,7 +1514,7 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TO
 }
 ////---------------------------------------------------------------------------
 //vykreslí segment cesty oblasti teploměrů, parametr teploměr udává zda se bude vykreslovat prvni nebo posledni teploměr, 1 ... prvni, 2 ... posledni
-void Cvykresli::vykresli_segment_cesty_teplomeru(TCanvas *canv,Cvektory::TElement *Element,unsigned int eID,short teplomer)
+void Cvykresli::vykresli_segment_cesty_teplomeru(TCanvas *canv,Cvektory::TElement *Element,TColor barva,short teplomer)
 {
   //deklarace
 	double X1,Y1,X2,Y2,OR,RA,R;
@@ -1548,14 +1554,10 @@ void Cvykresli::vykresli_segment_cesty_teplomeru(TCanvas *canv,Cvektory::TElemen
 		}
 	}
 	else if(Element->geo.typ==0)R=Element->geo.delka;
-	//nastavení barev pro vykreslení oblasti
-	TColor clTeplomery=clBlack;//default, vytěkání
-	if(eID==400)clTeplomery=clRed;//sušení
-	if(eID==401)clTeplomery=clBlue;//chlazení
-	clTeplomery=m.clIntensive(clTeplomery,210);//zesvětlení barvy
+  //nastavení šířky
 	float width=m.m2px(v.PP.sirka_podvozek/F->Zoom)+2*(1/3.0*F->Zoom)/F->Zoom;//nastavení šířky
 	//samotné vykreslení segmentu, kontrola, pokud existuje jen jden segment, vykreslí ho pouze jednou ne 2x
-	if(X1!=X2 || Y1!=Y2)vykresli_Gelement(canv,X1,Y1,OR,RA,R,clTeplomery,width);
+	if(X1!=X2 || Y1!=Y2)vykresli_Gelement(canv,X1,Y1,OR,RA,R,barva,width);
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
@@ -5135,8 +5137,8 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	{
 		if(aktElement==NULL)//předpokládá se, že je to kóta kabiny
 		{
-			if(F->index_kurzoru==-8 && Y1==Y2)if(F->editovany_text=="")Text="";else Text=F->editovany_text;//pro vodorovnou kótu
-			if(F->index_kurzoru==-9 && X1==X2)if(F->editovany_text=="")Text="";else Text=F->editovany_text;//pro svislou kótu
+//			if(F->index_kurzoru==-8 && Y1==Y2)if(F->editovany_text=="")Text="";else Text=F->editovany_text;//pro vodorovnou kótu
+//			if(F->index_kurzoru==-9 && X1==X2)if(F->editovany_text=="")Text="";else Text=F->editovany_text;//pro svislou kótu
 		}
 		else if(F->index_kurzoru<=-11)//ostatní kóty
 		{
