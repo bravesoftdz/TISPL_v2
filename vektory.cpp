@@ -1944,7 +1944,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 			if(p==NULL)//vkládám na konec
 			{
 				//ukazatelové propojení
-	  		if(posledni==NULL)//vkládání nového objektu - vkládání zarážky
+				if(posledni==NULL)//vkládání nového objektu - vkládání zarážky
 	  		{
 	  			if(ELEMENTY->dalsi==NULL)//vkládání prvního bojektu a první zarážky
 	  			{
@@ -2007,7 +2007,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 
 				//geometrie
 				vloz_G_element(Element,0,p->geo.X1,p->geo.Y1,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,p->geo.orientace);
-				if(Element->X!=p->geo.X4 && Element->Y!=p->geo.Y4 && p->geo.typ==0)vloz_G_element(p,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,p->geo.X4,p->geo.Y4,p->geo.orientace);
+				if(!((Element->X==p->geo.X1 && Element->Y==p->geo.Y1) || (Element->X==p->geo.X4 && Element->Y==p->geo.Y4)) && p->geo.typ==0)vloz_G_element(p,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,p->geo.X4,p->geo.Y4,p->geo.orientace);
 				//změna indexů
 				Cvektory::TElement *E=Element;
 	  		//E->n=vrat_poradi_elementu_do(E)+1;

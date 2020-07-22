@@ -1457,7 +1457,7 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv)
 }
 ////---------------------------------------------------------------------------
 //vykreslí teploměry a cestu mezi nimi
-void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,Cvektory::TObjekt *Objekt)
+void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TObjekt *Objekt)
 {
   //kontrola zda existují teploměry
 	if(Objekt!=NULL && Objekt->teplomery!=NULL)
@@ -1466,8 +1466,8 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,Cvektory::TObjekt *Objek
 		if(teplomery!=NULL)
 		{
 			////vykreslení teploměrů
-			vykresli_teplomer(canv,m.L2Px(teplomery->prvni->X),m.L2Py(teplomery->prvni->Y),/*teplomery->prvni->name*/"","",teplomery->prvni->eID,1,teplomery->prvni->sparovany->orientace,1);
-			vykresli_teplomer(canv,m.L2Px(teplomery->posledni->X),m.L2Py(teplomery->posledni->Y),/*teplomery->posledni->name*/"","",teplomery->posledni->eID,1,teplomery->posledni->sparovany->orientace,1);
+			vykresli_element(canv,scena,m.L2Px(teplomery->prvni->X),m.L2Py(teplomery->prvni->Y),/*teplomery->prvni->name*/"","",teplomery->prvni->eID,1,teplomery->prvni->sparovany->orientace,1,1.5,0,0,0,teplomery->prvni);
+			vykresli_element(canv,scena,m.L2Px(teplomery->posledni->X),m.L2Py(teplomery->posledni->Y),/*teplomery->posledni->name*/"","",teplomery->posledni->eID,1,teplomery->posledni->sparovany->orientace,1,1.5,0,0,0,teplomery->posledni);
 
 			/////vykresení cesty
 			if(teplomery->prvni->sparovany!=teplomery->posledni->sparovany)
