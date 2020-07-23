@@ -629,7 +629,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Caption = ' Voz'#237'k'
     CanFocused = False
     CustomDropDown = False
-    DrawTextMode = scdtmGDI
+    DrawTextMode = scdtmGDIPlus
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
@@ -1006,7 +1006,7 @@ object Form_parametry_linky: TForm_parametry_linky
         Caption = 'GlyphButton_zobrazit_parametry'
         CanFocused = False
         CustomDropDown = False
-        DrawTextMode = scdtmGDI
+        DrawTextMode = scdtmGDIPlus
         FluentLightEffect = False
         Layout = blGlyphLeft
         TransparentBackground = False
@@ -1172,7 +1172,7 @@ object Form_parametry_linky: TForm_parametry_linky
         Caption = 'GlyphButton_smazat'
         CanFocused = False
         CustomDropDown = False
-        DrawTextMode = scdtmGDI
+        DrawTextMode = scdtmGDIPlus
         FluentLightEffect = False
         Layout = blGlyphLeft
         TransparentBackground = False
@@ -1409,7 +1409,7 @@ object Form_parametry_linky: TForm_parametry_linky
         Caption = 'scGPGlyphButton1'
         CanFocused = False
         CustomDropDown = False
-        DrawTextMode = scdtmGDI
+        DrawTextMode = scdtmGDIPlus
         FluentLightEffect = False
         Layout = blGlyphLeft
         TransparentBackground = False
@@ -1614,7 +1614,7 @@ object Form_parametry_linky: TForm_parametry_linky
         Caption = 'GlyphButton_smazat'
         CanFocused = False
         CustomDropDown = False
-        DrawTextMode = scdtmGDI
+        DrawTextMode = scdtmGDIPlus
         FluentLightEffect = False
         Layout = blGlyphLeft
         TransparentBackground = False
@@ -1817,7 +1817,7 @@ object Form_parametry_linky: TForm_parametry_linky
         Caption = 'GlyphButton_zobrazit_parametry'
         CanFocused = False
         CustomDropDown = False
-        DrawTextMode = scdtmGDI
+        DrawTextMode = scdtmGDIPlus
         FluentLightEffect = False
         Layout = blGlyphLeft
         TransparentBackground = False
@@ -2070,7 +2070,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Caption = 'GlyphButton_zobrazit_parametry'
     CanFocused = False
     CustomDropDown = False
-    DrawTextMode = scdtmGDI
+    DrawTextMode = scdtmGDIPlus
     FluentLightEffect = False
     Layout = blGlyphLeft
     TransparentBackground = False
@@ -6226,7 +6226,7 @@ object Form_parametry_linky: TForm_parametry_linky
       Badge.Visible = False
       CanFocused = False
       CustomDropDown = False
-      DrawTextMode = scdtmGDI
+      DrawTextMode = scdtmGDIPlus
       FluentLightEffect = False
       Layout = blGlyphLeft
       TransparentBackground = True
@@ -6514,8 +6514,8 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 10439
-    Top = 16769
+    Left = 10448
+    Top = 16784
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -6617,7 +6617,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Caption = 'scGPGlyphButton_katalog'
     CanFocused = True
     CustomDropDown = False
-    DrawTextMode = scdtmGDI
+    DrawTextMode = scdtmGDIPlus
     FluentLightEffect = False
     Layout = blGlyphLeft
     TransparentBackground = True

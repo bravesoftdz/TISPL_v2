@@ -512,7 +512,7 @@ object Form1: TForm1
       Caption = 'Menu'
       CanFocused = False
       CustomDropDown = False
-      DrawTextMode = scdtmGDI
+      DrawTextMode = scdtmGDIPlus
       Margin = -1
       Spacing = 1
       Layout = blGlyphTop
@@ -1952,7 +1952,7 @@ object Form1: TForm1
       Badge.Visible = False
       CanFocused = False
       CustomDropDown = False
-      DrawTextMode = scdtmGDI
+      DrawTextMode = scdtmGDIPlus
       Margin = -1
       Spacing = 1
       Layout = blGlyphLeft
@@ -2083,7 +2083,7 @@ object Form1: TForm1
       Badge.Visible = False
       CanFocused = False
       CustomDropDown = False
-      DrawTextMode = scdtmGDI
+      DrawTextMode = scdtmGDIPlus
       Margin = -1
       Spacing = 1
       Layout = blGlyphLeft
@@ -3444,7 +3444,7 @@ object Form1: TForm1
       Caption = 'Ulo'#382'it'
       CanFocused = True
       CustomDropDown = False
-      DrawTextMode = scdtmGDI
+      DrawTextMode = scdtmGDIPlus
       Margin = -1
       Spacing = 1
       Layout = blGlyphLeft
@@ -3571,7 +3571,7 @@ object Form1: TForm1
       Caption = 'Storno'
       CanFocused = True
       CustomDropDown = False
-      DrawTextMode = scdtmGDI
+      DrawTextMode = scdtmGDIPlus
       Margin = -1
       Spacing = 1
       Layout = blGlyphLeft
@@ -4649,7 +4649,7 @@ object Form1: TForm1
       Caption = 'x'
       CanFocused = False
       CustomDropDown = True
-      DrawTextMode = scdtmGDI
+      DrawTextMode = scdtmGDIPlus
       Margin = -1
       Spacing = 1
       Layout = blGlyphTop
@@ -5934,7 +5934,7 @@ object Form1: TForm1
     Caption = 'Nahl'#225'sit'
     CanFocused = True
     CustomDropDown = False
-    DrawTextMode = scdtmGDI
+    DrawTextMode = scdtmGDIPlus
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
@@ -8632,7 +8632,7 @@ object Form1: TForm1
       TabOrder = 4
       DragForm = False
       DragTopForm = True
-      DrawTextMode = scdtmGDI
+      DrawTextMode = scdtmGDIPlus
       ContentMarginLeft = 10
       ContentMarginRight = 5
       ContentMarginTop = 7
@@ -8754,7 +8754,7 @@ object Form1: TForm1
       TabOrder = 6
       DragForm = False
       DragTopForm = True
-      DrawTextMode = scdtmGDI
+      DrawTextMode = scdtmGDIPlus
       ContentMarginLeft = 10
       ContentMarginRight = 5
       ContentMarginTop = 7
@@ -8795,7 +8795,7 @@ object Form1: TForm1
       TabOrder = 7
       DragForm = False
       DragTopForm = True
-      DrawTextMode = scdtmGDI
+      DrawTextMode = scdtmGDIPlus
       ContentMarginLeft = 10
       ContentMarginRight = 5
       ContentMarginTop = 7
@@ -8836,7 +8836,7 @@ object Form1: TForm1
       TabOrder = 8
       DragForm = False
       DragTopForm = True
-      DrawTextMode = scdtmGDI
+      DrawTextMode = scdtmGDIPlus
       ContentMarginLeft = 10
       ContentMarginRight = 5
       ContentMarginTop = 7
@@ -8877,7 +8877,7 @@ object Form1: TForm1
       TabOrder = 9
       DragForm = False
       DragTopForm = True
-      DrawTextMode = scdtmGDI
+      DrawTextMode = scdtmGDIPlus
       ContentMarginLeft = 10
       ContentMarginRight = 5
       ContentMarginTop = 7
@@ -8903,11 +8903,20 @@ object Form1: TForm1
       Caption = 'Pozn'#225'mky'
     end
   end
+  object Button1: TButton
+    Left = 688
+    Top = 368
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 19
+    OnClick = Button1Click
+  end
   object ImageList1: TImageList
     Left = 520
     Top = 40
     Bitmap = {
-      494C010118002000100010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118002000380010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9987,7 +9996,7 @@ object Form1: TForm1
     Left = 423
     Top = 38
     Bitmap = {
-      494C010154006000100030003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010154006000380030003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000002004000001002000000000000060
       0C00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -48037,6 +48046,7 @@ object Form1: TForm1
   end
   object IdSNTP1: TIdSNTP
     Port = 123
+    ReceiveTimeout = 3000
     Left = 512
     Top = 88
   end

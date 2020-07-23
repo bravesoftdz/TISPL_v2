@@ -34,7 +34,7 @@ object Form_zpravy: TForm_zpravy
     CustomImageIndex = -1
     DragForm = False
     DragTopForm = True
-    DrawTextMode = scdtmGDI
+    DrawTextMode = scdtmGDIPlus
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
     FillGradientEndAlpha = 255
@@ -848,12 +848,11 @@ object Form_zpravy: TForm_zpravy
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 103
     end
     object scLabel_varovani: TscLabel
       Left = 112
       Top = 6
-      Width = 105
+      Width = 96
       Height = 18
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -879,7 +878,7 @@ object Form_zpravy: TForm_zpravy
     object scLabel_chyby: TscLabel
       Left = 10
       Top = 6
-      Width = 79
+      Width = 72
       Height = 18
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText

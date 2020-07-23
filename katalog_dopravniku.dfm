@@ -246,7 +246,7 @@ object Form_katalog: TForm_katalog
     Caption = 'Ulo'#382'it'
     CanFocused = True
     CustomDropDown = False
-    DrawTextMode = scdtmGDI
+    DrawTextMode = scdtmGDIPlus
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
@@ -376,7 +376,7 @@ object Form_katalog: TForm_katalog
     Caption = 'Storno'
     CanFocused = True
     CustomDropDown = False
-    DrawTextMode = scdtmGDI
+    DrawTextMode = scdtmGDIPlus
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft

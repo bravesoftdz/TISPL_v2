@@ -244,7 +244,7 @@ object Form_adjustace: TForm_adjustace
     Caption = 'Storno'
     CanFocused = True
     CustomDropDown = False
-    DrawTextMode = scdtmGDI
+    DrawTextMode = scdtmGDIPlus
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
@@ -372,7 +372,7 @@ object Form_adjustace: TForm_adjustace
     Caption = 'Ulo'#382'it'
     CanFocused = True
     CustomDropDown = False
-    DrawTextMode = scdtmGDI
+    DrawTextMode = scdtmGDIPlus
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
