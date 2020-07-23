@@ -843,7 +843,7 @@ public:
 	void vloz_segment_cesty_teplomery(TObjekt *Objekt,TElement *Element,bool prvni=false,bool posledni=false,double X=0,double Y=0);//vloží segment cesty do cest teploměrů v objektu, nebo vložení teploměru, doplnění bodu vložení
   void vloz_segment_cesty_do_seznamu_cesty(TTeplomery *teplomery,TElement *Element,bool prvni=false,bool posledni=false,unsigned int eID=400,double X=0,double Y=0);
 	void vytvor_default_c_teplomery(TObjekt *Objekt);//vytvoří 2 teploměry a defaultní cestu mezi nimi
-	Cvektory::TElement *najdi_teplomer();//hledá zda není uživatel kurzorem nad teploměrem, pokud ano vrátí ukazatel na teploměr
+	short najdi_teplomer();//hledá zda není uživatel kurzorem nad teploměrem, pokud ano zapíše ukazatel na něj do F->pom_element a vrátí 1 ... teplomer, 2 ... popisek, nebo 0 ... nenalezeno
 	void posun_teplomeru(TElement *teplomer);//posunem teploměru dochází k editaci jeho oblasti
 	void zmena_zakazky_vytvoreni_teplomeru(TObjekt *Objekt,TZakazka *Zakt,TZakazka *Znova);//provede kontrolu, zda existuje cesta pro akt zakázku pokud ano, zkontroluje jestli existuje cesta i na nové zakázce, pokud ne vytvoří default cestu od vrátek k vrátkům
 	void kopiruj_seznam_teplomery(TObjekt *zdroj,TObjekt *cil);//kopíruje záznamy teploměrů do jiného objektu, pro účely obrazu objektu

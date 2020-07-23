@@ -2737,27 +2737,31 @@ Cvektory::TElement *Cvektory::najdi_posledni_element_podle_eID(unsigned int eID,
 //hledá tabulku elementu pouze pro daný objekt v oblasti definované pomocí šířky a výšky tabulky (která se může nacházet v daném místě kliku), pracuje v logických/metrických souradnicich, vrátí ukazatel na daný element, který tabulku vlastní, pokud se na daných souřadnicích nachází tabulka
 Cvektory::TElement *Cvektory::najdi_tabulku(TObjekt *Objekt, double X, double Y)
 {
-	TElement *E=Objekt->element,*ret=NULL;//NEPŘESKAKOVAT hlavičku!!! kvůli ošetření ohledně existence elementu v objektu
-	while(E!=NULL && E->objekt_n==Objekt->n)
-	{
-		//pokud mgrid existuje hledá poslední mGrid na pozici X,Y ... nesmí být po nalezení break
-		if(E->mGrid!=NULL && E->Xt<=X && X<=E->Xt+E->mGrid->Width*F->m2px/F->Zoom && E->Yt>=Y && Y>=E->Yt-E->mGrid->Height*F->m2px/F->Zoom)ret=E;
-		E=dalsi_krok(E);
-	}
-	//hledání předchozího PM
-	if(ret==NULL && F->predchozi_PM!=NULL && F->predchozi_PM->mGrid!=NULL && F->predchozi_PM->Xt<=X && X<=F->predchozi_PM->Xt+F->predchozi_PM->mGrid->Width*F->m2px/F->Zoom && F->predchozi_PM->Yt>=Y && Y>=F->predchozi_PM->Yt-F->predchozi_PM->mGrid->Height*F->m2px/F->Zoom)ret=F->predchozi_PM;
-  //hledání tabulky teploměru
-	if(ret==NULL && Objekt==F->OBJEKT_akt && Objekt->teplomery!=NULL)
+	//deklarace
+	TElement *ret=NULL;
+
+	//hledání tabulky teploměru
+	if(Objekt==F->OBJEKT_akt && Objekt->teplomery!=NULL)
 	{
 		TTeplomery *T=vrat_teplomery_podle_zakazky(F->OBJEKT_akt,ZAKAZKA_akt);
-    //kontrola zda existuje cesta pro akt zakázku
-		if(T!=NULL && T->posledni->mGrid!=NULL)
-		{
-			E=T->posledni;
-			if(E->mGrid!=NULL && E->Xt<=X && X<=E->Xt+E->mGrid->Width*F->m2px/F->Zoom && E->Yt>=Y && Y>=E->Yt-E->mGrid->Height*F->m2px/F->Zoom)ret=E;
-		}
+		//kontrola zda existuje cesta pro akt zakázku
+		if(T!=NULL && T->posledni->mGrid!=NULL && T->posledni->Xt<=X && X<=T->posledni->Xt+T->posledni->mGrid->Width*F->m2px/F->Zoom && T->posledni->Yt>=Y && Y>=T->posledni->Yt-T->posledni->mGrid->Height*F->m2px/F->Zoom)ret=T->posledni;
     T=NULL;delete T;
-  }
+	}
+
+  //hledání předchozího PM
+	if(ret==NULL && F->predchozi_PM!=NULL && F->predchozi_PM->mGrid!=NULL && F->predchozi_PM->Xt<=X && X<=F->predchozi_PM->Xt+F->predchozi_PM->mGrid->Width*F->m2px/F->Zoom && F->predchozi_PM->Yt>=Y && Y>=F->predchozi_PM->Yt-F->predchozi_PM->mGrid->Height*F->m2px/F->Zoom)ret=F->predchozi_PM;
+
+	//hledání tabulky elementu
+	TElement *E=Objekt->element;
+	while(ret==NULL && E!=NULL && E->objekt_n==Objekt->n)
+	{
+		//pokud mgrid existuje hledá poslední mGrid na pozici X,Y ... nesmí být po nalezení break
+		if(E->mGrid!=NULL && E->Xt<=X && X<=E->Xt+E->mGrid->Width*F->m2px/F->Zoom && E->Yt>=Y && Y>=E->Yt-E->mGrid->Height*F->m2px/F->Zoom)ret=E;//bez break, slouží k nalezení poslední tabulky
+		E=dalsi_krok(E);
+	}
+
+  //ukazatelové záležitosti + return
 	E=NULL;delete E;
 	return ret;
 }
@@ -7342,6 +7346,9 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			//načte hlavičku ze souboru
 			FileStream->Read(&File_hlavicka,sizeof(TFile_hlavicka));//načte hlavičku ze souboru
 
+			//kontrola, zda se shoduje verze projektu a verze souboru, pokud ne vyhodí chybovou hlášku
+			//if(F->get_major_version(String(File_hlavicka.Verze))!=F->get_major_version(F->VERZE))throw new Exception("Verze souboru a projektu se neshoduje");
+
 			//uložení parametrů RASTRu
 			C_raster *R=new C_raster;
 			FileStream->Read(R,sizeof(C_raster));//načte jeden prvek ze souboru
@@ -9728,29 +9735,49 @@ void Cvektory::vytvor_default_c_teplomery(TObjekt *Objekt)
 	CprvniE=NULL;delete CprvniE;
 }
 ////---------------------------------------------------------------------------
-//hledá zda není uživatel kurzorem nad teploměrem, pokud ano vrátí ukazatel na teploměr
-Cvektory::TElement *Cvektory::najdi_teplomer()
+//hledá zda není uživatel kurzorem nad teploměrem, pokud ano zapíše ukazatel na něj do F->pom_element a vrátí 1 ... teplomer, 2 ... popisek, nebo 0 ... nenalezeno
+short Cvektory::najdi_teplomer()
 {
 	//deklarace
-	TElement *ret=NULL;
+	short ret=0;
 
 	//hledání zda jsem v oblasti nějakého teploměru, pokud existuje cesta a teploměry
 	if(F->OBJEKT_akt!=NULL)
 	{
+    //kontrola těla teploměrů
 		TTeplomery *teplomery=vrat_teplomery_podle_zakazky(F->OBJEKT_akt,ZAKAZKA_akt);
 		if(teplomery!=NULL && teplomery->prvni->sparovany!=NULL && teplomery->posledni->sparovany!=NULL)
 		{
 			//kontrola prvního teploměru
 			if(m.PtInTeplomer(teplomery->prvni->geo.X1,teplomery->prvni->geo.Y1,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,teplomery->prvni->sparovany->orientace))
 			{
-				ret=teplomery->prvni;//nalezeno
+				F->pom_element=teplomery->prvni;//nalezeno
+				ret=1;
 			}
 	  	//kontrola druhého teploměru
 	  	if(m.PtInTeplomer(teplomery->posledni->geo.X1,teplomery->posledni->geo.Y1,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,teplomery->posledni->sparovany->orientace))
 	  	{
-				ret=teplomery->posledni;//nalezeno
-	  	}
+				F->pom_element=teplomery->posledni;//nalezeno
+				ret=1;
+			}
+
+      //kontrola popisků teploměrů
+	  	if(ret==0 && F->scGPCheckBox1_popisky->Checked)
+	  	{
+	  		//pom_element->citelna_oblast.rect3.PtInRect(TPoint(X,Y))
+	  		if(teplomery->prvni->citelna_oblast.rect3.PtInRect(TPoint(F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)))
+	  		{
+	  			F->pom_element=teplomery->prvni;//nalezeno
+	  			ret=2;
+	  		}
+	  		if(teplomery->posledni->citelna_oblast.rect3.PtInRect(TPoint(F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)))
+	  		{
+	  			F->pom_element=teplomery->posledni;//nalezeno
+	  			ret=2;
+	  		}
+			}
 		}
+
     //ukazatelové záležitosti
 		teplomery=NULL;delete teplomery;
 	}
