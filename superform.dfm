@@ -178,7 +178,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     CustomImageIndex = -1
     DragForm = False
     DragTopForm = True
-    DrawTextMode = scdtmGDI
+    DrawTextMode = scdtmGDIPlus
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
     FillGradientEndAlpha = 255
@@ -504,7 +504,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Caption = 'Ulo'#382'it'
     CanFocused = True
     CustomDropDown = False
-    DrawTextMode = scdtmGDI
+    DrawTextMode = scdtmGDIPlus
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
@@ -770,7 +770,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Caption = 'Storno'
     CanFocused = True
     CustomDropDown = False
-    DrawTextMode = scdtmGDI
+    DrawTextMode = scdtmGDIPlus
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
