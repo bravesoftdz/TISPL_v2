@@ -7347,7 +7347,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			FileStream->Read(&File_hlavicka,sizeof(TFile_hlavicka));//načte hlavičku ze souboru
 
 			//kontrola, zda se shoduje verze projektu a verze souboru, pokud ne vyhodí chybovou hlášku
-			//if(F->get_major_version(String(File_hlavicka.Verze))!=F->get_major_version(F->VERZE))throw new Exception("Verze souboru a projektu se neshoduje");
+			if(F->get_major_version(String(File_hlavicka.Verze))!=F->get_major_version(F->VERZE))throw new Exception("Verze souboru a projektu se neshoduje");
 
 			//uložení parametrů RASTRu
 			C_raster *R=new C_raster;
