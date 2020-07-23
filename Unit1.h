@@ -670,7 +670,6 @@ public:		// User declarations
 	TmGrid *PmG,*mGrid_knihovna;//ukazatel na mGridovou tabulku pohonu
 	Cvektory::TKomora *pom_komora,*pom_komora_temp;
 	Cvektory::TBod *pom_bod,*pom_bod_temp;
-  Cvektory::TTeplomery *pom_teplomery;
 
 	//souøadnicové promìnné
 	TPoint akt_souradnice_kurzoru_PX;//uchová aktuální pozici kurzoru
