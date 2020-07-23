@@ -7472,7 +7472,9 @@ void TForm1::mGrid_mimo_obraz(Cvektory::TElement *E)
   		}
 		}
 	}
-	if(E==NULL && PmG!=NULL)/////////PmG
+
+  /////////PmG
+	if(E==NULL && PmG!=NULL)
 	{
   	//////kontrola, zda jsou řádky pod spodní lištou
   	presah=m.L2Py(OBJEKT_akt->Yp)+PmG->Height-scGPPanel_bottomtoolbar->Top;
@@ -7527,9 +7529,11 @@ void TForm1::mGrid_on_mGrid()
 		FormX->vstoupeno_elm=false;
 		////deklarace proměnných
 		Cvektory::TElement *E=OBJEKT_akt->element,*prekryty=NULL;
+		Cvektory::TTeplomery *T=d.v.vrat_teplomery_podle_zakazky(OBJEKT_akt,d.v.ZAKAZKA_akt);
 		unsigned long objekt_n=OBJEKT_akt->n;
 		bool pokracovat=true;
 		TRect tab1,tab_PmG;
+		TPoint p1,p2,p3,p4;
 		//načtení rozměrů PmG
 		if(PmG!=NULL)
 		{
@@ -7553,6 +7557,7 @@ void TForm1::mGrid_on_mGrid()
 			mGrid_mimo_obraz(predchozi_PM);//kontrola + ošetření mGridů, ktěré se nacházejí mimo obraz
 		}
 		////kontrola překrytí
+		int odX=0,odY=0;
 		E=OBJEKT_akt->element;
 		//TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
 		while(E!=NULL && E->objekt_n==objekt_n)
@@ -7560,8 +7565,9 @@ void TForm1::mGrid_on_mGrid()
 			if(E->eID!=100 && E->eID!=MaxInt)//pouze pro elementy, které mají tabulku
 			{
 				//naplnění TRectu oblastí tabulky
-				tab1.left=m.L2Px(E->Xt)+E->mGrid->Columns[0].Width;
-				tab1.top=m.L2Py(E->Yt);
+				//if(E->eID==200 || E->eID==300){odX=E->mGrid->Columns[0].Width+E->mGrid->Columns[1].Width+E->mGrid->Columns[2].Width;odY=E->mGrid->Rows[0].Height+E->mGrid->Rows[1].Height;}
+				tab1.left=m.L2Px(E->Xt)+odX;
+				tab1.top=m.L2Py(E->Yt)+odY;
 				tab1.right=m.L2Px(E->Xt)+E->mGrid->Width;
 				tab1.bottom=m.L2Py(E->Yt)+E->mGrid->Height;
 				//průchod všemi ostatními elementy, hledání zda se nepřekrývají s tab1
@@ -7571,7 +7577,6 @@ void TForm1::mGrid_on_mGrid()
 					if(E_temp->eID!=100 && E_temp->eID!=MaxInt)//přeskakovat element s tab1, pouze pro elementy, které mají tabulku
 					{
 						//definice bodů tabulky
-						TPoint p1,p2,p3,p4;
 						p1.x=m.L2Px(E_temp->Xt);p1.y=m.L2Py(E_temp->Yt);
 						p2.x=m.L2Px(E_temp->Xt)+E_temp->mGrid->Width;p2.y=m.L2Py(E_temp->Yt);
 						p3.x=m.L2Px(E_temp->Xt)+E_temp->mGrid->Width;p3.y=m.L2Py(E_temp->Yt)+E_temp->mGrid->Height;
@@ -7600,7 +7605,6 @@ void TForm1::mGrid_on_mGrid()
 				if(pokracovat && predchozi_PM)
 				{
 					//definice bodů tabulky
-					TPoint p1,p2,p3,p4;
 					p1.x=m.L2Px(predchozi_PM->Xt);p1.y=m.L2Py(predchozi_PM->Yt);
 					p2.x=m.L2Px(predchozi_PM->Xt)+predchozi_PM->mGrid->Width;p2.y=m.L2Py(predchozi_PM->Yt);
 					p3.x=m.L2Px(predchozi_PM->Xt)+predchozi_PM->mGrid->Width;p3.y=m.L2Py(predchozi_PM->Yt)+predchozi_PM->mGrid->Height;
@@ -7613,14 +7617,44 @@ void TForm1::mGrid_on_mGrid()
 						prekryty=E;
 					}
 				}
+				//kontrola tabulky teploměrů
+				if(pokracovat && T!=NULL)
+				{
+					//definice bodů tabulky
+					p1.x=m.L2Px(T->posledni->Xt);p1.y=m.L2Py(T->posledni->Yt);
+					p2.x=m.L2Px(T->posledni->Xt)+T->posledni->mGrid->Width;p2.y=m.L2Py(T->posledni->Yt);
+					p3.x=m.L2Px(T->posledni->Xt)+T->posledni->mGrid->Width;p3.y=m.L2Py(T->posledni->Yt)+T->posledni->mGrid->Height;
+					p4.x=m.L2Px(T->posledni->Xt);p4.y=m.L2Py(T->posledni->Yt)+T->posledni->mGrid->Height;
+          //kontrola, zda se některý z bodů druhé tabulky nenachází v první tabulce
+					if((tab1.PtInRect(p1) || tab1.PtInRect(p2) || tab1.PtInRect(p3) || tab1.PtInRect(p4)))
+					{
+						//nalezeno překrytí, uložení tabulky která je vykreslena dříve
+						pokracovat=false;
+						prekryty=E;
+					}
+        }
 				d.v.vymaz_seznam_VYHYBKY();
 				E_temp=NULL;delete E_temp;
 			}
 			if(pokracovat)E=E->dalsi;//d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);//musí být procházeno takto, alg. prochází 2x přes vyhybky a spojky ty nejsou přejmenovávány, tudíž nevadí jeho použití, použit z důvodu, že během tohoto cyklu dochází k dalšímu pruchodu pomocí cyklu dalsi_krok, kdyby byl použit v alg. dalsi_krok vnořený dalsi_krok došlo by k chybnému průchodu
 			else break;
 		}
-		E=NULL;delete E;
-		//delete []tab_pruchodu;tab_pruchodu=NULL;
+
+    //kontrola překrytí s předchozím PM
+		if(prekryty==NULL && predchozi_PM!=NULL && T!=NULL)
+		{
+			//definice bodů tabulky teplomerů
+			p1.x=m.L2Px(T->posledni->Xt);p1.y=m.L2Py(T->posledni->Yt);
+			p2.x=m.L2Px(T->posledni->Xt)+T->posledni->mGrid->Width;p2.y=m.L2Py(T->posledni->Yt);
+			p3.x=m.L2Px(T->posledni->Xt)+T->posledni->mGrid->Width;p3.y=m.L2Py(T->posledni->Yt)+T->posledni->mGrid->Height;
+			p4.x=m.L2Px(T->posledni->Xt);p4.y=m.L2Py(T->posledni->Yt)+T->posledni->mGrid->Height;
+      //definice oblasti tabulky predchozi_PM
+			tab1.left=m.L2Px(predchozi_PM->Xt);
+			tab1.top=m.L2Py(predchozi_PM->Yt);
+			tab1.right=m.L2Px(predchozi_PM->Xt)+predchozi_PM->mGrid->Width;
+			tab1.bottom=m.L2Py(predchozi_PM->Yt)+predchozi_PM->mGrid->Height;
+			if((tab1.PtInRect(p1) || tab1.PtInRect(p2) || tab1.PtInRect(p3) || tab1.PtInRect(p4)))prekryty=predchozi_PM;
+		}
 
 		////řešení překrytí
 		if(prekryty!=NULL)
@@ -7637,7 +7671,9 @@ void TForm1::mGrid_on_mGrid()
 		}
 
 		////ukazatelové záležitosti
+    E=NULL;delete E;
 		prekryty=NULL;delete prekryty;
+		T=NULL;delete T;
 	}
 }
 //---------------------------------------------------------------------------
@@ -7698,6 +7734,7 @@ void TForm1::mGrid_puvodni_stav(Cvektory::TElement *E)
 			PmG->Update();update_probehl=true;
 			tab_pohon_COMBO();
 		}
+		if(!PmG->exBUTTONVisible)PmG->exBUTTONVisible=true;
 		aktualizace_tab_pohon(false,false,true);//aktualizace komponent
 		if(!update_probehl)PmG->Update();
 	}
@@ -12456,10 +12493,6 @@ void TForm1::otevri_editaci()
 	FormX->vstoupeno_poh=false;
 	FormX->vstoupeno_elm=false;
 	MOD=EDITACE;
-	//založení pomocného tempového ukazatele pro akutálně editovaný objekt a překopírování jeho atributů
-	//OBJEKT_akt=new Cvektory::TObjekt; OBJEKT_akt->pohon=NULL; OBJEKT_akt->pohon=new Cvektory::TPohon; OBJEKT_akt->element=NULL;
-	//zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze mGrid je propojen
-	//d.v.kopiruj_objekt(pom,OBJEKT_akt);//pokud elementy existují nakopíruje je do pomocného nezávislého spojáku pomocného objektu
 	OBJEKT_akt=pom;//podle nového DM - ostrý ukazatel na originál
 	nastav_focus();
 	popisky_knihovna_nahled(false);//nastavní popisků pro editaci
@@ -12564,8 +12597,6 @@ void TForm1::otevri_editaci()
 	scGPButton_ulozit->Enabled=false;
 	//zapnutí spodního panelu
 	zapnuti_vypnuti_panelEditace(true);
-//	scGPPanel_bottomtoolbar->Visible=true;
-//	scGPButton_bug_report->Top-=scGPPanel_bottomtoolbar->Height;//posun tlačítka report
 
 	nahled_ulozen=false;//nově otevřen, není uložen
 
@@ -12796,10 +12827,6 @@ void TForm1::zmena_editovaneho_objektu()
   	FormX->vstoupeno_elm=false;
 		MOD=EDITACE;
 		mazani=false;//pomocná proměnná pro strono / uložit problém (uložit volá storno, nutno rozlišit zda mažu nebo ukládám)
-  	//založení pomocného tempového ukazatele pro akutálně editovaný objekt a překopírování jeho atributů
-		//OBJEKT_akt=new Cvektory::TObjekt; OBJEKT_akt->pohon=NULL; OBJEKT_akt->pohon=new Cvektory::TPohon; OBJEKT_akt->element=NULL;
-  	//zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze mGrid je propojen
-		//d.v.kopiruj_objekt(pom,OBJEKT_akt);//pokud elementy existují nakopíruje je do pomocného nezávislého spojáku pomocného objektu
 		OBJEKT_akt=pom;//ostrý ukazatel, nové pojetí po změně DM
 		//vymazání kroků z layoutu, musí být po nastavení OBJEKT_aktu!!!!!!!!!!!!!
 		vytvor_obraz(true);//vytvoření obrazu pro storno + UNDO
@@ -17743,6 +17770,28 @@ void TForm1::design_statusbar()
 	if(scGPButton_prichytavat->Visible)rozdil+=scGPButton_prichytavat->Width;
 	Image_rozdelovac_3->Left=ClientWidth-rozdil-1;
 	scLabel_statusbar_2->Width=Image_rozdelovac_3->Left-scLabel_statusbar_2->Left;
+}
+//---------------------------------------------------------------------------
+//vrátí Major verzi z FileVersion
+String TForm1::get_major_version(String version)
+{
+	//deklarace
+	String major="";
+	int pozice=1;
+
+	//extrakce major verze
+	while(pozice<=version.Length())
+	{
+		//pokud není substring číslo, jedná se o oddělovač před minor verzí, přerušít průchod
+		if(ms.MyToDouble(version.SubString(pozice,1))==0 && version.SubString(pozice,1)!="0")break;
+		//zapsání do major
+		major+=version.SubString(pozice,1);
+    //posun na další substring
+		pozice++;
+	}
+
+	//return major verze
+	return major;
 }
 //---------------------------------------------------------------------------
 
