@@ -1472,8 +1472,8 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TO
 			clTeplomery=m.clIntensive(clTeplomery,210);//zesvětlení barvy
 
 			////vykreslení teploměrů
-			vykresli_element(canv,scena,m.L2Px(teplomery->prvni->X),m.L2Py(teplomery->prvni->Y),teplomery->prvni->name,"",teplomery->prvni->eID,1,teplomery->prvni->sparovany->orientace,1,1.5,0,0,0,teplomery->prvni);
-			vykresli_element(canv,scena,m.L2Px(teplomery->posledni->X),m.L2Py(teplomery->posledni->Y),teplomery->posledni->name,"",teplomery->posledni->eID,1,teplomery->posledni->sparovany->orientace,1,1.5,0,0,0,teplomery->posledni);
+			vykresli_element(canv,scena,m.L2Px(teplomery->prvni->X),m.L2Py(teplomery->prvni->Y),teplomery->prvni->name,"",teplomery->prvni->eID,1,m.Rt90(teplomery->prvni->sparovany->geo.orientace-teplomery->prvni->sparovany->geo.rotacni_uhel-90),1,1.5,0,0,0,teplomery->prvni);
+			vykresli_element(canv,scena,m.L2Px(teplomery->posledni->X),m.L2Py(teplomery->posledni->Y),teplomery->posledni->name,"",teplomery->posledni->eID,1,m.Rt90(teplomery->posledni->sparovany->geo.orientace-teplomery->posledni->sparovany->geo.rotacni_uhel-90),1,1.5,0,0,0,teplomery->posledni);
 
 			/////vykresení cesty
 			if(teplomery->prvni->sparovany!=teplomery->posledni->sparovany)

@@ -9743,13 +9743,13 @@ short Cvektory::najdi_teplomer()
 		if(teplomery!=NULL && teplomery->prvni->sparovany!=NULL && teplomery->posledni->sparovany!=NULL)
 		{
 			//kontrola prvního teploměru
-			if(m.PtInTeplomer(teplomery->prvni->geo.X1,teplomery->prvni->geo.Y1,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,teplomery->prvni->sparovany->orientace))
+			if(m.PtInTeplomer(teplomery->prvni->geo.X1,teplomery->prvni->geo.Y1,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,m.Rt90(teplomery->prvni->sparovany->geo.orientace-teplomery->prvni->sparovany->geo.rotacni_uhel-90)))
 			{
 				F->pom_element=teplomery->prvni;//nalezeno
 				ret=1;
 			}
 	  	//kontrola druhého teploměru
-	  	if(m.PtInTeplomer(teplomery->posledni->geo.X1,teplomery->posledni->geo.Y1,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,teplomery->posledni->sparovany->orientace))
+	  	if(m.PtInTeplomer(teplomery->posledni->geo.X1,teplomery->posledni->geo.Y1,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,m.Rt90(teplomery->posledni->sparovany->geo.orientace-teplomery->posledni->sparovany->geo.rotacni_uhel-90)))
 	  	{
 				F->pom_element=teplomery->posledni;//nalezeno
 				ret=1;
