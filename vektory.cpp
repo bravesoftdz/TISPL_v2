@@ -9596,12 +9596,6 @@ void Cvektory::vloz_segment_cesty_do_seznamu_cesty(TTeplomery *teplomery,TElemen
 	{
 		//nastavení default teploty
 		String name="";
-		switch(vrat_objekt(Element->objekt_n)->id)
-		{
-			case 6:name="30";break;//"vytěkání"
-			case 7:name="50";break;//"sušení"
-			case 8:name="10";break;//chalzeni
-    }
 		//vytvoření elementu a načtení atributů
 		TElement *E=new TElement;
 		E->n=MaxInt;
@@ -9765,13 +9759,13 @@ short Cvektory::najdi_teplomer()
 	  	if(ret==0 && F->scGPCheckBox1_popisky->Checked)
 	  	{
 	  		//pom_element->citelna_oblast.rect3.PtInRect(TPoint(X,Y))
-	  		if(teplomery->prvni->citelna_oblast.rect3.PtInRect(TPoint(F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)))
+				if(teplomery->prvni->citelna_oblast.rect3.PtInRect(TPoint(F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)) || teplomery->prvni->citelna_oblast.rect4.PtInRect(TPoint(F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)))
 	  		{
 	  			F->pom_element=teplomery->prvni;//nalezeno
 	  			ret=2;
 	  		}
-	  		if(teplomery->posledni->citelna_oblast.rect3.PtInRect(TPoint(F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)))
-	  		{
+				if(teplomery->posledni->citelna_oblast.rect3.PtInRect(TPoint(F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)) || teplomery->posledni->citelna_oblast.rect4.PtInRect(TPoint(F->akt_souradnice_kurzoru_PX.x,F->akt_souradnice_kurzoru_PX.y)))
+				{
 	  			F->pom_element=teplomery->posledni;//nalezeno
 	  			ret=2;
 	  		}

@@ -1472,8 +1472,8 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TO
 			clTeplomery=m.clIntensive(clTeplomery,210);//zesvětlení barvy
 
 			////vykreslení teploměrů
-			vykresli_element(canv,scena,m.L2Px(teplomery->prvni->X),m.L2Py(teplomery->prvni->Y),/*teplomery->prvni->name*/"","",teplomery->prvni->eID,1,teplomery->prvni->sparovany->orientace,1,1.5,0,0,0,teplomery->prvni);
-			vykresli_element(canv,scena,m.L2Px(teplomery->posledni->X),m.L2Py(teplomery->posledni->Y),/*teplomery->posledni->name*/"","",teplomery->posledni->eID,1,teplomery->posledni->sparovany->orientace,1,1.5,0,0,0,teplomery->posledni);
+			vykresli_element(canv,scena,m.L2Px(teplomery->prvni->X),m.L2Py(teplomery->prvni->Y),teplomery->prvni->name,"",teplomery->prvni->eID,1,teplomery->prvni->sparovany->orientace,1,1.5,0,0,0,teplomery->prvni);
+			vykresli_element(canv,scena,m.L2Px(teplomery->posledni->X),m.L2Py(teplomery->posledni->Y),teplomery->posledni->name,"",teplomery->posledni->eID,1,teplomery->posledni->sparovany->orientace,1,1.5,0,0,0,teplomery->posledni);
 
 			/////vykresení cesty
 			if(teplomery->prvni->sparovany!=teplomery->posledni->sparovany)
@@ -2984,8 +2984,8 @@ void Cvykresli::vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiStr
 		case 401:
 		case 402:
 		{  //teploměry
-			vykresli_teplomer(canv,X,Y,name,short_name,eID,typ,rotace,stav);
-			E->citelna_oblast.rect3=aktOblast;
+			vykresli_teplomer(canv,X,Y,name,short_name,eID,typ,rotace,stav,E);
+			//E->citelna_oblast.rect3=aktOblast;
 		}
 		break;
 	}
@@ -3706,7 +3706,7 @@ void Cvykresli::vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiStr
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::vykresli_teplomer(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav)
+void Cvykresli::vykresli_teplomer(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,Cvektory::TElement *Element)
 {
 	////vstupní proměnné či konstanty
 	double Z=Form1->Zoom;//zoom, pouze zkrácení zápisu
@@ -3770,10 +3770,12 @@ void Cvykresli::vykresli_teplomer(TCanvas *canv,long X,long Y,AnsiString name,An
 	TextFraming(canv,x,y,name);
 	//citelná oblast popisku
 	float zAA=1.0;if(F->antialiasing)zAA=3.0;
-	aktOblast=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+canv->TextWidth(name))/zAA),m.round((y+Th)/zAA));//souřadnice pro citelnou oblast, pro vykreslení oblasti by muselo být použito bez /zAA
+	Element->citelna_oblast.rect3=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+canv->TextWidth(name))/zAA),m.round((y+Th)/zAA));//souřadnice pro citelnou oblast, pro vykreslení oblasti by muselo být použito bez /zAA
 	//°C
 	canv->Font->Style = TFontStyles();
-	TextFraming(canv,x+Tw,y,"°C");
+	x=x+Tw;
+	TextFraming(canv,x,y,"°C");
+	Element->citelna_oblast.rect4=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+canv->TextWidth("°C"))/zAA),m.round((y+Th)/zAA));
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_zarazku(TCanvas *canv,long X,long Y)

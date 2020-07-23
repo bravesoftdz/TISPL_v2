@@ -320,7 +320,8 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	editEditace=NULL;
 	velikost_citelne_oblasti_elementu=0.12;//v metrech, 0.114285714285714 šířka pouzdra pohonu
 	zobrazit_upozorneni_teplomery=true;
-  typElementu=0;
+	typElementu=0;
+  pom_teplomery=NULL;
 
 	//vývojářské featury
 	if(DEBUG && get_user_name()+get_computer_name()=="MartinMARTIN-NOTEBOOK"){ButtonMaVl->Visible=false;}//pokud se dělá překlad u MaKr, je skryto MV tlačítko testovací tlačítko, MaKr testovací se volá přes F9
@@ -2515,7 +2516,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
     				A=NULL;delete A;
 					}break;
 					case -6:OBJEKT_akt->name=nazev_puvodni;break;
-    			case -8:pom_element_temp->name=nazev_puvodni;break;//uprava popisku teploměrů
+    			case -8:pom_teplomery->prvni->name=nazev_puvodni;pom_teplomery->posledni->name=nazev_puvodni;break;//uprava popisku teploměrů
     			case -5:if(pom_bod_temp->n!=1)editovany_text=m.round2double(m.delka(pom_bod_temp->predchozi->X,pom_bod_temp->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);else editovany_text=m.round2double(m.delka(OBJEKT_akt->body->predchozi->X,OBJEKT_akt->body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);if(DKunit==2||DKunit==3)editovany_text=editovany_text/OBJEKT_akt->pohon->aRD;editovany_text=outDK(ms.MyToDouble(editovany_text));break;
     		}
     		if(index_kurzoru==-9||index_kurzoru==-8)//editace kót kabiny
@@ -2784,15 +2785,18 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 		if(pom_element_temp->eID!=200 && pom_element_temp->eID!=300)pom_element_temp->mGrid->MergeCells(0,0,pom_element_temp->mGrid->ColCount-1,0);
 		REFRESH(true);
 	}
-	if (editace_textu && index_kurzoru==-8 && pom_element_temp!=NULL)//editace popisku teploměrů
+	if (editace_textu && index_kurzoru==-8 && pom_teplomery!=NULL)//editace popisku teploměrů
 	{
 		if(Key==8)//pokud je stisknut backspace
-			pom_element_temp->name=pom_element_temp->name.SubString(1,pom_element_temp->name.Length()-1);
+		{
+			pom_teplomery->prvni->name=pom_teplomery->prvni->name.SubString(1,pom_teplomery->prvni->name.Length()-1);
+		}
 		else
 		{
-			pom_element_temp->name+=key;
+			pom_teplomery->prvni->name+=key;
 			if(key=="")MessageBeep(0);
 		}
+    pom_teplomery->posledni->name=pom_teplomery->prvni->name;
 		REFRESH(false);
 	}
 }
@@ -3125,7 +3129,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						//if(JID==100)vytvor_edit();//změna názvu elementu skrze mGrid .. odstaveno
 						//if(JID==1){nastav_focus();stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;nazev_puvodni=pom_element_temp->name;editace_textu=true;TimerKurzor->Enabled=true;}
 						if(JID==-7 || JID==-8){minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;bool stav=OBJEKT_akt->zobrazit_mGrid;OBJEKT_akt->zobrazit_mGrid=false;REFRESH();Akce=POSUN_TEPLOMER;d.SCENA=1111111;vytvor_statickou_scenu();OBJEKT_akt->zobrazit_mGrid=stav;puv_souradnice.x=pom_element->X;puv_souradnice.y=pom_element->Y;}//kliknutí na teploměr
-            //if(JID==-8);//popisek teploměru
+						//if(JID==-8);//popisek teploměru
 						if(JID==0&&pom_komora!=NULL&&pom_element==NULL){Akce=MOVE_KOMORA;pom_komora_temp=pom_komora;}//uchopení a přesun komory, sloužící k jejímu odstranění
 						//nové JID pro objekt
 						if(JID==-2){Akce=MOVE_USECKA;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;nahled_ulozit(true);}//posun úsečky
@@ -4306,7 +4310,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				d.v.posun_teplomeru(pom_element);//ukončení posunu, rozhodnutí zda uložit cestu, neuložit, dolnující dotaz na výhybce
 				Akce=NIC;
 				if(OBJEKT_akt!=NULL)d.SCENA=0;
-				if(OBJEKT_akt!=NULL && JID==-8 && vychozi_souradnice_kurzoru.x==minule_souradnice_kurzoru.x && vychozi_souradnice_kurzoru.y==minule_souradnice_kurzoru.y && pom_element->name!=""){nastav_focus();stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;nazev_puvodni=pom_element_temp->name;editace_textu=true;TimerKurzor->Enabled=true;}
+				if(OBJEKT_akt!=NULL && JID==-8 && vychozi_souradnice_kurzoru.x==minule_souradnice_kurzoru.x && vychozi_souradnice_kurzoru.y==minule_souradnice_kurzoru.y){pom_teplomery=d.v.vrat_teplomery_podle_zakazky(OBJEKT_akt,d.v.ZAKAZKA_akt);nastav_focus();stav_kurzoru=false;index_kurzoru=JID;nazev_puvodni=pom_teplomery->prvni->name;pom_element_temp=pom_element;editace_textu=true;TimerKurzor->Enabled=true;}
         else nahled_ulozit(true);
 				pom_element=NULL;
 			}break;
@@ -7640,7 +7644,7 @@ void TForm1::mGrid_on_mGrid()
 			else break;
 		}
 
-    //kontrola překrytí s předchozím PM
+		//kontrola překrytí tabulky teploměrů s předchozím PM
 		if(prekryty==NULL && predchozi_PM!=NULL && T!=NULL)
 		{
 			//definice bodů tabulky teplomerů
@@ -7655,6 +7659,17 @@ void TForm1::mGrid_on_mGrid()
 			tab1.bottom=m.L2Py(predchozi_PM->Yt)+predchozi_PM->mGrid->Height;
 			if((tab1.PtInRect(p1) || tab1.PtInRect(p2) || tab1.PtInRect(p3) || tab1.PtInRect(p4)))prekryty=predchozi_PM;
 		}
+
+    //kontrola překrytí teploměrů s PmG
+//		if(prekryty==NULL && PmG!=NULL && T!=NULL)
+//		{
+//			//definice bodů tabulky teplomerů
+//			p1.x=m.L2Px(T->posledni->Xt);p1.y=m.L2Py(T->posledni->Yt);
+//			p2.x=m.L2Px(T->posledni->Xt)+T->posledni->mGrid->Width;p2.y=m.L2Py(T->posledni->Yt);
+//			p3.x=m.L2Px(T->posledni->Xt)+T->posledni->mGrid->Width;p3.y=m.L2Py(T->posledni->Yt)+T->posledni->mGrid->Height;
+//			p4.x=m.L2Px(T->posledni->Xt);p4.y=m.L2Py(T->posledni->Yt)+T->posledni->mGrid->Height;
+//			if((tab_PmG.PtInRect(p1) || tab_PmG.PtInRect(p2) || tab_PmG.PtInRect(p3) || tab_PmG.PtInRect(p4)))prekryty=PmG;
+//		}
 
 		////řešení překrytí
 		if(prekryty!=NULL)
@@ -13638,6 +13653,7 @@ void TForm1::vse_odstranit()
 	pom_bod_temp=NULL;delete pom_bod_temp;
 	posledni_editovany_element=NULL;delete posledni_editovany_element;
 	predchozi_PM=NULL;delete predchozi_PM;
+	pom_teplomery=NULL;delete pom_teplomery;
 	copyObjekt=NULL;delete copyObjekt;
 	copyObjektRzRx.x=0;copyObjektRzRx.y=0;
 	vlakno_obraz=NULL;delete vlakno_obraz;
@@ -15184,7 +15200,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 			PmG=NULL;delete PmG;
 		}  
 		//mazání pomocných ukazatelů při odchodu z náhledu, důležité!! (při rychlem posunu myší mohou zůstávat v paměti)
-		pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp;posledni_editovany_element=NULL;delete posledni_editovany_element;JID=-1;Akce=NIC;
+		pom_element_temp=NULL;delete pom_element_temp;pom_komora=NULL;delete pom_komora;pom_komora_temp=NULL;delete pom_komora_temp;pom_element=NULL;delete pom_element;pom_bod=NULL;delete pom_bod;pom_bod_temp=NULL;delete pom_bod_temp;posledni_editovany_element=NULL;delete posledni_editovany_element;JID=-1;Akce=NIC;pom_teplomery=NULL;
 		FormX->posledni_E=NULL;//nutné!! slouží k ukládání posledního editovaného elementu (validace, atd.)
 		if(d.v.DATA->dalsi!=NULL && storno)//pokud bylo stisknuto storno a je třeba přepsat obraz
 		{
@@ -15895,7 +15911,15 @@ void TForm1::smaz_kurzor()
 		if((editovany_text==""||ms.MyToDouble(editovany_text)==0)&&index_kurzoru<=-11 && (Akce==GEOMETRIE || Akce==GEOMETRIE_LIGHT))posledni_editovany_element=pom_element_temp;//{editovany_text=pom_element_temp->geo.delka;if((DKunit==2||DKunit==3) && pom_element_temp->pohon!=NULL)editovany_text=editovany_text/OBJEKT_akt->pohon->aRD;editovany_text=outDK(ms.MyToDouble(editovany_text));}
 		switch(index_kurzoru)
 		{
-			case -8:if(pom_element_temp->name=="" || ms.MyToDouble(pom_element_temp->name)==0)pom_element_temp->name=nazev_puvodni;break;
+			case -8:
+			{
+				if(pom_teplomery->prvni->name=="" || ms.MyToDouble(pom_teplomery->prvni->name)==0)
+				{
+					pom_teplomery->prvni->name=nazev_puvodni;
+          pom_teplomery->posledni->name=nazev_puvodni;
+				}
+				break;
+			}
 			case -7:if(OBJEKT_akt->short_name=="")OBJEKT_akt->short_name=nazev_puvodni;break;
 			case -6:if(editEditace!=NULL)OBJEKT_akt->name=editEditace->Text;if(OBJEKT_akt->name=="")OBJEKT_akt->name=nazev_puvodni;break;
 			case 1:
@@ -16047,6 +16071,7 @@ void TForm1::smaz_kurzor()
 	pom_element_temp=NULL; delete pom_element_temp;
 	pom_komora_temp=NULL; delete pom_komora_temp;
 	pom_bod_temp=NULL; delete pom_bod_temp;
+  pom_teplomery=NULL; delete pom_teplomery;
 	zapnout_vynout_editEditace(false);
 	//pro jistotu na konec
 	editace_textu=false;editovany_text="";index_kurzoru=0;
