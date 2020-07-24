@@ -5105,6 +5105,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double
 void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,AnsiString Text,Cvektory::TElement *aktElement,int Offset,short highlight,float width, TColor color,bool LO_kota,Cvektory::TKomora *komora,Cvektory::TBod *bod)
 {                 
 	////vstupní proměnné
+  highlight=0;//riční vypnutí highlightu kót
 	if(F->JID==-10 && F->MOD==F->EDITACE)highlight=0;//highlight - pokud se mění pouze jednotky, tak se kóta nehiglightuje
 	if(aktElement==NULL&&komora==NULL&&bod==NULL)highlight=0;//highlight -odstranění highlightu na kótách mezi lak. okny
 	short meritko=1;if(F->MOD==F->LAYOUT){width*=5;meritko=5;}//měřítko (náhled vs. schéma)

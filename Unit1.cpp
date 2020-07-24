@@ -2349,7 +2349,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			bmp_total->Canvas->Draw(0,0,bmp_out);delete(bmp_out);
 		}
 		////mGRIDY
-		if(MOD!=SIMULACE && Akce!=MAGNETICKE_LASO && Akce!=POSUN_TEPLOMER)d.vykresli_mGridy(bmp_total->Canvas);//přesunuto do vnitř metody: OBJEKT_akt->elementy!=NULL kvůli pohonům
+		if(MOD!=SIMULACE && Akce!=MAGNETICKE_LASO/* && Akce!=POSUN_TEPLOMER*/)d.vykresli_mGridy(bmp_total->Canvas);//přesunuto do vnitř metody: OBJEKT_akt->elementy!=NULL kvůli pohonům
 		////grafické MĚŘÍTKO
 		if(MOD!=SIMULACE && zobrazit_meritko && Akce!=MOVE_HALA && MOD!=TVORBA_CESTY)d.meritko(bmp_total->Canvas);
 		////finální vykreslení bmp_total do Canvasu
@@ -3126,7 +3126,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						if(JID>=6&&JID<=11)zmena_jednotek_tab_pohon();//změna jednotek v tabulce pohonů
 						//if(JID==100)vytvor_edit();//změna názvu elementu skrze mGrid .. odstaveno
 						//if(JID==1){nastav_focus();stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;nazev_puvodni=pom_element_temp->name;editace_textu=true;TimerKurzor->Enabled=true;}
-						if(JID==-7 || JID==-8){minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;bool stav=OBJEKT_akt->zobrazit_mGrid;OBJEKT_akt->zobrazit_mGrid=false;REFRESH();Akce=POSUN_TEPLOMER;d.SCENA=1111111;vytvor_statickou_scenu();OBJEKT_akt->zobrazit_mGrid=stav;puv_souradnice.x=pom_element->X;puv_souradnice.y=pom_element->Y;}//kliknutí na teploměr
+						if(JID==-7 || JID==-8){Akce=POSUN_TEPLOMER;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;/*bool stav=OBJEKT_akt->zobrazit_mGrid;OBJEKT_akt->zobrazit_mGrid=false;REFRESH();Akce=POSUN_TEPLOMER;d.SCENA=1111111;vytvor_statickou_scenu();OBJEKT_akt->zobrazit_mGrid=stav;*/puv_souradnice.x=pom_element->X;puv_souradnice.y=pom_element->Y;}//kliknutí na tělo teploměru, nebo na jeho popisek
 						//if(JID==-8);//popisek teploměru
 						if(JID==0&&pom_komora!=NULL&&pom_element==NULL){Akce=MOVE_KOMORA;pom_komora_temp=pom_komora;}//uchopení a přesun komory, sloužící k jejímu odstranění
 						//nové JID pro objekt
@@ -3136,8 +3136,8 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						if(JID==-5){nastav_focus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_bod_temp=pom_bod;if(pom_bod_temp->n!=1)editovany_text=m.round2double(m.delka(pom_bod_temp->predchozi->X,pom_bod_temp->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);else editovany_text=m.round2double(m.delka(OBJEKT_akt->body->predchozi->X,OBJEKT_akt->body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);if(DKunit==2||DKunit==3)editovany_text=m.round2double(editovany_text/OBJEKT_akt->pohon->aRD,3);editovany_text=outDK(ms.MyToDouble(editovany_text));nahled_ulozit(true);}//editace kót kabiny
 						if(JID==4){Akce=MOVE_TABLE;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;refresh_mGrid=false;d.nabuffrovat_mGridy();puv_souradnice.x=OBJEKT_akt->Xp;puv_souradnice.y=OBJEKT_akt->Yp;}//posun tabulky pohonu
 						if(JID==-102){if(d.zprava_highlight!=d.zobrazit_celou_zpravu){d.zobrazit_celou_zpravu=d.zprava_highlight;kurzor(close);}else {d.zobrazit_celou_zpravu=0;kurzor(info);}REFRESH(false);}//rozbalení nebo skrytí zpráv
-//						if(JID==-201)Memo("prvni");//oblasti předávacího místa
-//						if(JID==-202)Memo("druhý");//oblasti předávacího místa
+						//if(JID==-201)Memo("prvni");//oblasti předávacího místa
+						//if(JID==-202)Memo("druhý");//oblasti předávacího místa
 					}
 					else
 					{
@@ -4307,7 +4307,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			{
 				d.v.posun_teplomeru(pom_element);//ukončení posunu, rozhodnutí zda uložit cestu, neuložit, dolnující dotaz na výhybce
 				Akce=NIC;
-				if(OBJEKT_akt!=NULL)d.SCENA=0;
+				//if(OBJEKT_akt!=NULL)d.SCENA=0;
 				if(OBJEKT_akt!=NULL && JID==-8 && vychozi_souradnice_kurzoru.x==minule_souradnice_kurzoru.x && vychozi_souradnice_kurzoru.y==minule_souradnice_kurzoru.y){nastav_focus();stav_kurzoru=false;index_kurzoru=JID;nazev_puvodni=pom_element->name;pom_element_temp=pom_element;editace_textu=true;TimerKurzor->Enabled=true;}
         else nahled_ulozit(true);
 				pom_element=NULL;
@@ -4469,7 +4469,7 @@ void TForm1::getJobID(int X, int Y)
 					   							else if(PtInKota_bod==1 && pom_bod!=NULL)JID=-5;//hodnota kóty
 					   							else//kóty elementů RET=13
 					   							{
-					   								if(PtInKota_elementu==0 && pom_element!=NULL)JID=13;//oblast kóty - posun kóty
+														if(PtInKota_elementu==0 && pom_element!=NULL)JID=13;//oblast kóty - posun kóty
 					   								if(PtInKota_elementu==1 && pom_element!=NULL)JID=(10+pom_element->n)*(-1);//hodnota kóty
 					   							}
   				   						}
@@ -4821,18 +4821,23 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
   		//d.nabuffrovat_mGridy(pom_element->mGrid);
 			//if(!refresh_mGrid)Memo("false");else Memo("true");
 			if(element_id!=-1 && Akce !=ADD){refresh_mGrid=true;element_id=-1;}//mazání eid po vkládání, podmínka nutná ke správnému vykreslení mgridů
-			REFRESH();
-			//refresh_mGrid=true;
+
+			//refreshování pouze pro překreslení spojnice mezi mgridy
+			Cvektory::TElement *E=pom_element;
+			if(E==NULL)E=pom_element_puv;
+			if((pom_element_puv!=NULL && pom_element==NULL) || (pom_element_puv==NULL && pom_element!=NULL) && !(JID<=-11 && JID>=-100) && !(JID<=99 && JID>=13) && (d.v.vrat_druh_elementu(E)!=-1 || E->eID==200 || E->eID==300 || E->eID==301 || E->eID==400 || E->eID==401 || E->eID==402) && E->eID!=100)
+				REFRESH();
+			E=NULL;delete E;
 		}
 		if(puvJID==-1 && JID==-1 && PmG!=NULL && PmG->Highlight){PmG->Highlight=false;REFRESH();}//odstranění highlightu tab pohonu pokud je třeba, zamezuje problikávání highlightu
 
   	////oblasti poznámek pod čarou - NOTE, nejdou přes JID
-  	if(JID==-1)
-		{                                                       //zajištuje unhighlight odkazu
-			if(PmG!=NULL)if(PmG->CheckLink(X,Y)==TPoint(-2,-2) || PmGCheckLink){PmGCheckLink=true;refresh_mGrid=true;REFRESH();}
-			if(FormX->check_click_Note(X,Y,true) || StopCheckLink){StopCheckLink=true;refresh_mGrid=true;REFRESH();}
-			//pokud budu chtít ještě získat CheckLink z tabulek elementů budu muset rozšířit testování oblasti tabulky a aby vrátila platný ukazatel na element resp. jeho mgrid
-		}
+//  	if(JID==-1)
+//		{                                                       //zajištuje unhighlight odkazu
+//			if(PmG!=NULL)if(PmG->CheckLink(X,Y)==TPoint(-2,-2) || PmGCheckLink){PmGCheckLink=true;refresh_mGrid=true;REFRESH();}
+//			if(FormX->check_click_Note(X,Y,true) || StopCheckLink){StopCheckLink=true;refresh_mGrid=true;REFRESH();}
+//			//pokud budu chtít ještě získat CheckLink z tabulek elementů budu muset rozšířit testování oblasti tabulky a aby vrátila platný ukazatel na element resp. jeho mgrid
+//		}
 
 		if(d.zprava_highlight>0 && Form_zpravy->Visible)Form_zpravy->highlight(d.zprava_highlight-1);//highlight řádků v miniformu zprávy
 
@@ -14231,20 +14236,6 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	Cvektory::TElement *E=OBJEKT_akt->teplomery->dalsi->posledni;
 //	E->mGrid->DeleteRow(E->mGrid->RowCount-1,false);
 //	E->mGrid->Update();
-
-	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-	while(E!=NULL)
-	{
-		Memo(E->name);
-		Memo("->n :"+String(E->n));
-		Memo("->eID :"+String(E->eID));
-		Memo("->X :"+String(E->X));
-		Memo("->Y :"+String(E->Y));
-		if(E->pohon!=NULL)Memo("->pohon->name :"+String(E->pohon->name));
-    else Memo("->pohon : NULL");
-		E=E->dalsi;
-	}
-	delete E;E=NULL;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -17809,6 +17800,8 @@ void TForm1::design_statusbar()
 //vrátí Major verzi z FileVersion
 String TForm1::get_major_version(String version)
 {
+  log(__func__);
+
 	//deklarace
 	String major="";
 	int pozice=1;
@@ -17826,6 +17819,15 @@ String TForm1::get_major_version(String version)
 
 	//return major verze
 	return major;
+}
+//---------------------------------------------------------------------------
+//kopíruje text do Clipboardu
+void TForm1::copy_to_clipboard(String text)
+{
+  log(__func__);
+	Edit_proFocus->Text=text;
+  Edit_proFocus->SelectAll();
+  Edit_proFocus->CopyToClipboard();
 }
 //---------------------------------------------------------------------------
 

@@ -816,7 +816,8 @@ public:		// User declarations
 	void STOP(bool MB=false);//vypne stopky, pokud je parementr metody nastaven na false (což je implicitnì), je zajištìn výpis do mema, pokud na true tak do ShowMessage
 	void GetTime(short int rezim);
 	void reset_teplomeru(Cvektory::TObjekt *Objekt);//zborazí upozornìní, že došlo ke zmìnì geometrie a resetuje oblasti teplomerù
-  String get_major_version(String version);//vrátí Major verzi z FileVersion
+	String get_major_version(String version);//vrátí Major verzi z FileVersion
+  void copy_to_clipboard(String text);//kopíruje text do Clipboardu
   };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

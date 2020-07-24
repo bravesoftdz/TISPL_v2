@@ -322,7 +322,7 @@ short Cvektory::PtInKota_bod(TObjekt *Objekt)
 		else
 		{
 			if(B->kota.rect2.PtInRect(TPoint(x,y))){RET=2;F->pom_bod=B;break;}//jednotky kóty
-			else if(m.LeziVblizkostiUsecky(x,y,B->kota.rect0.left,B->kota.rect0.top,B->kota.rect0.right,B->kota.rect0.bottom)<=5){RET=0;F->pom_bod=B;break;}//oblast kóty
+			else if(m.LeziVblizkostiUsecky(x,y,B->kota.rect0.left,B->kota.rect0.top,B->kota.rect0.right,B->kota.rect0.bottom)<=F->Zoom){RET=0;F->pom_bod=B;break;}//oblast kóty
 		}
 		B=B->dalsi;
 	}
@@ -1643,7 +1643,7 @@ short Cvektory::PtInKota_komory(TObjekt *Objekt,long X,long Y)
   		else
   		{
   			if(K->kota.rect2.PtInRect(TPoint(X,Y))){RET=2;F->pom_komora=K;break;}//jednotky kóty
-				else if(m.LeziVblizkostiUsecky(x,y,K->kota.rect0.left,K->kota.rect0.top,K->kota.rect0.right,K->kota.rect0.bottom)<=1){RET=0;F->pom_komora=K;break;}//oblast kóty
+				else if(m.LeziVblizkostiUsecky(x,y,K->kota.rect0.left,K->kota.rect0.top,K->kota.rect0.right,K->kota.rect0.bottom)<=F->Zoom){RET=0;F->pom_komora=K;break;}//oblast kóty
   		}
   		K=K->dalsi;
   	}
@@ -2804,7 +2804,7 @@ short Cvektory::PtInKota_elementu(TObjekt *Objekt,long X,long Y)
 		else
 		{
 			if(E->citelna_oblast.rect2.PtInRect(TPoint(X,Y))){RET=2;F->pom_element=E;break;}//jednotky kóty
-			else if(m.LeziVblizkostiUsecky(x,y,E->citelna_oblast.rect0.left,E->citelna_oblast.rect0.top,E->citelna_oblast.rect0.right,E->citelna_oblast.rect0.bottom)<=1){RET=0;F->pom_element=E;break;}//kóta celá
+			else if(m.LeziVblizkostiUsecky(x,y,E->citelna_oblast.rect0.left,E->citelna_oblast.rect0.top,E->citelna_oblast.rect0.right,E->citelna_oblast.rect0.bottom)<=F->Zoom){RET=0;F->pom_element=E;break;}//kóta celá
 		}
 		E=dalsi_krok(E,Objekt);
 	}
@@ -6861,7 +6861,11 @@ void Cvektory::vymazat_ZPRAVY()
 //zapis hlavičky souboru
 void Cvektory::vytvor_hlavicku_souboru()
 {
-	File_hlavicka.Verze=Form1->ms.MyToDouble(Form1->VERZE);
+	unsigned  major,minor,build;
+	GetProductVersion(Application->ExeName,major,minor,build);
+	String ProductVersion=String(major)+"."+String(minor);
+	File_hlavicka.FileVersion=Form1->ms.MyToDouble(Form1->VERZE);
+	File_hlavicka.ProductVersion=Form1->ms.MyToDouble(ProductVersion);
 	File_hlavicka.Mod=Form1->MOD;
 	File_hlavicka.Zoom=Form1->Zoom;
 	File_hlavicka.PosunutiX=Form1->Posun.x;
@@ -7347,7 +7351,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			FileStream->Read(&File_hlavicka,sizeof(TFile_hlavicka));//načte hlavičku ze souboru
 
 			//kontrola, zda se shoduje verze projektu a verze souboru, pokud ne vyhodí chybovou hlášku
-			if(F->get_major_version(String(File_hlavicka.Verze))!=F->get_major_version(F->VERZE))throw new Exception("Verze souboru a projektu se neshoduje");
+			if(F->get_major_version(String(File_hlavicka.FileVersion))!=F->get_major_version(F->VERZE))throw new Exception("Verze souboru a projektu se neshoduje");
 
 			//uložení parametrů RASTRu
 			C_raster *R=new C_raster;

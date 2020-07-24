@@ -456,7 +456,8 @@ class Cvektory
 
 	struct TFile_hlavicka
 	{
-		unsigned short int Verze;
+		unsigned short int FileVersion;
+    unsigned short int ProductVersion;
 		unsigned short int Mod;
 		double Zoom;
 		long PosunutiX;//proměnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souřadnicích zařízení
