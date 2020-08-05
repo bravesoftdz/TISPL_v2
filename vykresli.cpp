@@ -2539,7 +2539,7 @@ void Cvykresli::vykresli_dopravnik(TCanvas *canv, Cvektory::TZakazka *zakazka)
 		if(F->Akce==F->Takce::POSUN_TEPLOMER && !v.obsahuje_segment_cesty_element(E,v.ZAKAZKA_akt)){clRetez=m.clIntensive(clRetez,m.get_intensity());clKolej=m.clIntensive(clKolej,m.get_intensity()/1.8);}//zesvětlení neaktivních věcí
 		float RetezWidth=1;if(E->pohon!=NULL)RetezWidth=F->Zoom*0.5;//pokud není pohon přiřazen, tak jen elementární osa, jinak skutečná tloušťka
 
-		////vykreslení paralelních koleji
+		////vykreslení paralelních kolejí
 		if(zakazka==NULL && F->MOD!=F->TVORBA_CESTY)
 		{
 			if(E->predchozi!=NULL && E->predchozi->pohon!=NULL && E->predchozi->eID==200)vykresli_koleje(canv,E->predchozi);//pouze grafická korekce předchozího segmentu, pokud byl překryt předávacím místem
@@ -2696,10 +2696,19 @@ void Cvykresli::vykresli_koleje(TCanvas *canv,Cvektory::TElement *E)
 {
 	if(F->OBJEKT_akt==NULL || F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n || F->scGPTrackBar_intenzita->Value>25 && F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n)//při editaci zobrazí pasivní jen s intenzitou větší než 25
 	{
+		////nastavení barev
 		TColor clKolej=(TColor) RGB(255,69,0);
 		if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n && F->Akce!=F->Takce::POSUN_TEPLOMER)clKolej=m.clIntensive(clKolej,m.round(m.get_intensity()/1.8));//zesvětlování neaktivních pohonů
 		if(F->Akce==F->Takce::POSUN_TEPLOMER && !v.obsahuje_segment_cesty_element(E,v.ZAKAZKA_akt))clKolej=m.clIntensive(clKolej,m.round(m.get_intensity()/1.8));//zesvětlení neaktivních větví
-		vykresli_koleje(canv,E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,clKolej);
+		////řešení pokud je stoupání če klesání
+		double delka=E->geo.delka;
+		if(E->geoH.radius!=0)//provizorně,atribut supluje výšku či hloubku
+		{
+			delka=E->geoH.delka;
+			vykresli_stoupani_klesani(canv,E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4,E->geoH.radius,0.3);
+		}
+		////samotné volání vykreslení kolejí
+		vykresli_koleje(canv,E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,delka,clKolej);
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -2715,8 +2724,8 @@ void Cvykresli::vykresli_koleje(TCanvas *canv,double X,double Y,short typ,double
 	TPointD S1=m.rotace(o,180-orientace,90);
 	TPointD S2=m.rotace(o,180-orientace,-90);
 	short z=1;if(rotacni_uhel>0)z*=-1;
-	double DR1=delka;if(typ==1)DR1=radius+o*z;//delka či radius
-	double DR2=delka;if(typ==1)DR2=radius+o*z*-1;//delka či radius
+	double DR1=delka;if(typ==1)DR1=radius+o*z;//delka (linie) či radius (oblouk)
+	double DR2=delka;if(typ==1)DR2=radius+o*z*-1;//delka (linie) či radius (oblouk)
 	TPointD *PL1=m.getArcLine(X+S1.x,Y+S1.y,orientace,rotacni_uhel,DR1);
 	TPointD *PL2=m.getArcLine(X+S2.x,Y+S2.y,orientace,rotacni_uhel,DR2);
 	//samotné výkreslení obou parelelních kolejí
@@ -5234,6 +5243,63 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 //	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
+//vykreslí trojúhelník indikující stoupání či klesání
+void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,double X1,double Y1,double X2,double Y2,double heightORdeep,float offset)
+{
+	////vstupní proměnné
+	TColor color=clLtGray;
+	float width=0.2;
+	double X3,Y3;
+	short Z=m.round(heightORdeep/fabs(heightORdeep));//znaménko
+	float H=0.5;//výšku vykreslujeme konstatně, v měřítku by se nevešla
+	//pokud je linie vodorovná
+	if(Y1==Y2)
+	{
+		Y1+=offset;//odsazení
+		if(Z<0)Y1+=H;//pro klesání ještě odsadí a hodnotu klesání
+		Y2=Y1;
+		Y3=Y2+H*Z;//směr dle kladné či záporné hodnoty heightORdeep
+		X3=X2;
+	}
+	//pokud je svislá
+	else
+	{
+		X1+=offset;
+		if(Z<0)X1+=H;//pro klesání ještě odsadí a hodnotu klesání
+		X2=X1;
+		X3=X2+H*Z;//směr dle kladné či záporné hodnoty heightORdeep
+		Y3=Y2;
+	}
+
+	////trojúhelník vykreslení
+	//nastavení vykreslení
+	set_pen(canv,color,m.round(width*F->Zoom),PS_ENDCAP_SQUARE);//pero
+	//definice bodů
+	TPoint points[4];
+	points[0].x = m.L2Px(X1);
+	points[0].y = m.L2Py(Y1);
+	points[1].x = m.L2Px(X2);
+	points[1].y = m.L2Py(Y2);
+	points[2].x = m.L2Px(X3);
+	points[2].y = m.L2Py(Y3);
+	points[3].x = points[0].x;
+	points[3].y = points[0].y;
+	//vykreslení
+	canv->Polyline(points,3);
+
+	////popisek
+	//nastavení textu
+	canv->Font->Pitch=TFontPitch::fpVariable;//každé písmeno fontu stejně široké
+	canv->Font->Pitch=System::Uitypes::TFontPitch::fpVariable;
+	canv->Font->Name=F->aFont->Name;
+	canv->Font->Style=TFontStyles();
+	canv->Font->Color=color;
+	canv->Font->Size=m.round(width*F->Zoom*F->aFont->Size);
+	//výpis
+	String Znamenko="+";if(Z>0)Znamenko="";//příprava pro další pokračování: ±
+	TextOut(canv,m.round((points[1].x+points[2].x)/2.0),m.round((points[1].y+points[2].y)/2.0),Znamenko+String(heightORdeep*1000));
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -5450,11 +5516,48 @@ void Cvykresli::vykresli_tip(TCanvas *canv)
 //vytvoří zvuk
 void Cvykresli::sound()
 {
-	Beep(400,250);	// 440 hertz (A4) for half a second
-	Beep(500,250);	// 494 hertz for half a second
-	Beep(600,250);	// 523 hertz for half a second
-	Beep(700,250);	// 587 hertz for half a second
-	Beep(800,500);	// 659 hertz for half a second
+//	Beep(400,250);	// 440 hertz (A4) for half a second
+//	Beep(500,250);	// 494 hertz for half a second
+//	Beep(600,250);	// 523 hertz for half a second
+//	Beep(700,250);	// 587 hertz for half a second
+//	Beep(800,500);	// 659 hertz for half a second
+
+//note
+int C = 523; // DO - dura 191ms - 382ms
+int D = 587; // RE - dura 170ms - 340ms
+int E = 659; // MI - dura 152ms - 304ms
+int F = 698; // FA - dura 143ms - 286ms
+int G = 740; // SOL - dura 135ms - 270ms
+int A = 880; // LA - dura 114ms - 228ms
+int B = 988; // SI - dura 110ms - 220ms
+// CCDCFE
+Beep(C, 382);
+Beep(C, 382);
+Beep(D, 340);
+Beep(C, 382);
+Beep(F, 286);
+Beep(E, 304);
+// CCDCGF
+Beep(C, 382);
+Beep(C, 382);
+Beep(D, 340);
+Beep(C, 382);
+Beep(G, 270);
+Beep(F, 286);
+// CCCAFE
+Beep(C, 382);
+Beep(C, 382);
+Beep(C, 382);
+Beep(A, 228);
+Beep(F, 286);
+Beep(E, 304);
+//DBBAFGF
+Beep(D, 340);
+Beep(B, 220);
+Beep(B, 220);
+Beep(A, 228);
+Beep(F, 286);
+Beep(G, 270);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::kurzor_cesta(TCanvas *canv)

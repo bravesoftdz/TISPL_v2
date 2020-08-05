@@ -40,7 +40,9 @@ void __fastcall TForm_uvod::Timer1Timer(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm_uvod::FormClose(TObject *Sender,TCloseAction &Action)
 {
+	AnimateWindow(Form1->Handle,2000,0x00080000);//pouze efekt
 	Form1->Show();
+	Form1->REFRESH();//tento refresh není tøeba pokud nebude AnimateWindow použito
 }
 //---------------------------------------------------------------------------
 

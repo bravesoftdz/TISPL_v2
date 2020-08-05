@@ -4778,6 +4778,171 @@ void Cvektory::smazat_palce(TPohon *pohon)
 	};
 }
 ////---------------------------------------------------------------------------
+////---------------------------------------------------------------------------
+void Cvektory::vloz_do_BUFFERU()
+{
+	//pokud ještě nebyla založena hlavička, založí ji
+	if(sBUFFER==NULL)
+	{
+		//alokace
+		T_buffer_simulace *novy=new T_buffer_simulace;
+
+		//atributy
+		novy->n=0;
+		novy->raster=NULL;
+
+		//ukazatelové záležitosti
+		novy->predchozi=novy;//ukazuje sam na sebe
+		novy->dalsi=NULL;
+		sBUFFER=novy;
+		novy=NULL;delete novy;//toto opravdu možno?
+	}
+
+
+	//již standardní vložení
+	T_buffer_simulace *novy;
+	try
+	{
+		//alokace
+		novy=new T_buffer_simulace;
+		//atributy
+		novy->n=sBUFFER->predchozi->n+1;//navýším počítadlo prvku o jedničku
+		//novy->raster=new Graphics::TBitmap();
+		//novy->raster=new TPngImage;
+		//novy->raster->Assign(F->Staticka_scena);
+		//novy->raster->Canvas->Font->Size=50;
+		//novy->raster->Canvas->TextOutW(100,100,novy->n);
+		novy->raster;
+
+		//ukazatelové záležitosti
+		sBUFFER->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
+		novy->predchozi=sBUFFER->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+		novy->dalsi=NULL;//poslední prvek se na žádny dalsí prvek neodkazuje (neexistuje)
+		sBUFFER->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+		if(novy->n==1)sIterator=novy;//ukazovátko aktuálně načítaného rastru,výchozí nastavení pro první prvek
+		novy=NULL;delete novy;//toto opravdu možno?
+	}catch(...)
+	{
+		//novy->raster->FreeImage();//asi netřeba
+		delete novy->raster;
+		delete novy;
+		F->Memo("Buffer naplněn na maximum");
+		//zde zvážit utnutí timeru, buď totální nebo částečné
+	}
+}
+////---------------------------------------------------------------------------
+Cvektory::TmyPx *Cvektory::komprese(Graphics::TBitmap *bmp_in)
+{
+	//vstupní bitmapy
+	bmp_in->PixelFormat=pf24bit;//nutné v případě, že by nebylo nastavovan
+
+	TmyPx *RET=NULL;//ukazatel na první bod v mračnu bodů/spojáku
+	TmyPx *Iterator=NULL;//ukaztel na poslední bod v mračnu bodů/spojáku
+	TmyPx *Rt=NULL;//tempová hodnota pro slučování buněk
+
+	//průchod přes jednotlivé řádky
+	for(unsigned short Y=0;Y<=bmp_in->Height-1;Y++)
+	{
+		//načtení řádků
+		PRGBTriple R=(PRGBTriple)(bmp_in->ScanLine[Y]);// vezmu ukazatel na řádek y z výsledné bitmapy
+
+		//práce se jednolivými pixely (jednoprvkovými sloupci) řádků
+		for(unsigned short X=0;X<=bmp_in->Width-1;X++)
+		{
+			if(R[X].rgbtRed!=255 || R[X].rgbtGreen!=255 || R[X].rgbtBlue!=255)//když NEBUDE BÍLÁ, pokud ano, nemá cenu řešit
+			{
+				if(Rt==NULL || R[X].rgbtRed!=Rt->R || R[X].rgbtGreen!=Rt->G || R[X].rgbtBlue!=Rt->B)//KOMPRESE pokud nebude aktuální buňka hodnotami stejná jako předchozí(resp. množina buněk) buňka na daném řádku, nebo se jedná o první výskyt aktivní (nebílé) buňky na řádku Rt==NULL
+				{
+					//ukazatelové záležitosti
+					if(RET==NULL)//jedná se o první zápis, à la zápis do hlavičky, ale zde se začíná rovnou zápisem do výchozího bodu
+					{
+						RET=new TmyPx;
+						RET->dalsi=NULL;
+						Iterator=RET;
+					}
+					else//zápis dalších prvků
+					{
+						Iterator->dalsi=new TmyPx;//alokace nového bodu
+						Iterator=Iterator->dalsi;//posun na něj
+					}
+					Iterator->dalsi=NULL;
+					//hodnoty
+					Iterator->X=X;
+					Iterator->Y=Y;
+					Iterator->o=0;
+					Iterator->R=R[X].rgbtRed;
+					Iterator->G=R[X].rgbtGreen;
+					Iterator->B=R[X].rgbtBlue;
+					//tempový vzor pro slučování ukazuje na iterator
+					Rt=Iterator;
+				}
+				else//buňka je totožná jako předchozí(resp. množina buněk), lze sloučit a tudíž nutno udělat zápis do první ze slučovaných tj. do poslední přidané do mračna bodů/spojového seznamu, tempová se nemění
+				{
+					Rt->o++;//zápis do posledního přidaného bodu z mračna bodů/spojového seznamu informaci o sloučených buňkách
+				}
+			}
+			else//byla BÍLA, temp je tedy nutné "vymazat"
+			Rt=NULL;
+		}
+	}
+	Iterator=NULL;delete Iterator;//prvně musí být NULL
+	delete Rt;
+	return RET;//vrátí ukazatel na první bod v mračnu bodů/spojáku
+}
+////---------------------------------------------------------------------------
+Graphics::TBitmap *Cvektory::dekomprese(TmyPx *Raster,unsigned short Width,unsigned short Height)
+{
+	Graphics::TBitmap *bmp_out=new Graphics::TBitmap;
+	bmp_out->Width=Width;
+	bmp_out->Height=Height;
+	bmp_out->PixelFormat=pf24bit;
+	TmyPx *Iterator=Raster;
+	PRGBTriple R;
+	unsigned short Y=0;//aktuálně zpracovávaný řádek
+	while(Iterator!=NULL)
+	{
+		//jedná-li se o přechod na jiný řádek nebo výchozí řádek, tak získá přístup k tomuto řádku, jinak ne - tím šetří zbytečné průchody přes řádky
+		if(Y!=Iterator->Y || Iterator==Raster)
+		{
+			Y=Iterator->Y;//index nově zpracovávaného řádku
+			R=(PRGBTriple)bmp_out->ScanLine[Y];
+		}
+
+		//zápis získaných hodnot a DEKOMPRESE (znovuzápis) opakujících se hodnot
+		unsigned short pocet_slouceni=0;
+		do
+		{
+			R[Iterator->X+pocet_slouceni].rgbtRed=Iterator->R;
+			R[Iterator->X+pocet_slouceni].rgbtGreen=Iterator->G;
+			R[Iterator->X+pocet_slouceni].rgbtBlue=Iterator->B;
+		}while(++pocet_slouceni<=Iterator->o);
+
+		//posun na další prvek a smazání z paměti stávajícího
+		//TmyPx *Iterator_old=Iterator; --pro rychlostní testy odstaveno (kvůli opakování dat)
+		Iterator=Iterator->dalsi;
+		//delete Iterator_old;Iterator_old=NULL; --pro rychlostní testy odstaveno (kvůli opakování dat)
+	}
+	delete Iterator;
+	return bmp_out;
+}
+//---------------------------------------------------------------------------
+//Uloží rastrová data do souboru
+void Cvektory::rast_do_souboru(TmyPx *Raster,String FileName)
+{
+	//vytvoření streamu pro zápis do souboru
+	TFileStream *FileStream=new TFileStream(FileName,fmOpenWrite|fmCreate);
+
+	TmyPx *Iterator=Raster;
+	while(Iterator!=NULL)
+	{
+		FileStream->Write(&Iterator,sizeof(TmyPx));//zapiše do souboru jeden prvek
+		Iterator=Iterator->dalsi;//posun na další prvek
+	}
+	delete Iterator;
+	delete FileStream;
+}
+////---------------------------------------------------------------------------
+////---------------------------------------------------------------------------
 //zkontroluje aplikovatelnost uvažovaného hodnodty dle VID parametru, resp. čísla sloupce (aRD=4,R=5,Rz=6,Rx=7) na všech objektech, přiřazených k danému pohonu označeným parametrem PID, vratí doporučenou hodnotu dle VID a vrátí text chybouvé hlášku s problémem a doporučenou hodnotou, pokud vrátí prázdné uvozovky, je vše v pořádku
 //vstupy aRD,R,Rz,Rx a výstupní číselná hodnota jsou v SI jednotkách, naopak textový řetězec problému resp. doporučení, obsahuje hodnotu již převedenou dle aRDunit, Runit, Rzunit
 TTextNumber Cvektory::rVALIDACE(short VID,unsigned long PID,double aRD,double R,double Rz,double Rx,short aRDunit,short Runit,short Rzunit)
@@ -6971,7 +7136,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 			c_ukaz1->rychlost_do=ukaz1->rychlost_do;
 			c_ukaz1->aRD=ukaz1->aRD;
 			c_ukaz1->roztec=ukaz1->roztec;
-      c_ukaz1->roztec_ID=ukaz1->roztec_ID;
+			c_ukaz1->roztec_ID=ukaz1->roztec_ID;
 			c_ukaz1->Rz=ukaz1->Rz;
 			c_ukaz1->Rx=ukaz1->Rx;
 			FileStream->Write(c_ukaz1,sizeof(C_pohon));//zapiše jeden prvek do souboru
@@ -7016,7 +7181,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 				if(ukaz->komora!=NULL) c_ukaz->pocet_komor=ukaz->komora->predchozi->n;
 				else c_ukaz->pocet_komor=0;
 				if(ukaz->teplomery!=NULL) c_ukaz->pocet_teplomeru=ukaz->teplomery->predchozi->n;
-        else c_ukaz->pocet_teplomeru=0;
+				else c_ukaz->pocet_teplomeru=0;
 				//c_ukaz->rotace=ukaz->rotace;
 				if(ukaz->pohon!=NULL)c_ukaz->pohon=ukaz->pohon->n;
 				else c_ukaz->pohon=0;
@@ -7128,7 +7293,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 						cE->geo=T->posledni->geo;
             cE->geoH=T->posledni->geoH;
 						FileStream->Write(cE,sizeof(C_element));//zapiše jeden prvek do souboru
-            name=new wchar_t [cE->name_delka];
+						name=new wchar_t [cE->name_delka];
 						name=T->posledni->name.c_str();
 						FileStream->Write(name,cE->name_delka*sizeof(wchar_t));
 						name=NULL; delete[] name;
