@@ -969,6 +969,14 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 				//vykreslení
 				canv->Ellipse(m.L2Px(P.x)-width,m.L2Py(P.y)-width,m.L2Px(P.x)+width,m.L2Py(P.y)+width);
 			}
+      //kontrola začátku a konce stoupání / klesání
+			else if(F->pom_element->geoH.radius!=0)
+			{
+				if(m.delka(F->pom_element->geo.X1,F->pom_element->geo.Y1,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y)<=F->velikost_citelne_oblasti_elementu)
+					canv->Ellipse(m.L2Px(F->pom_element->geo.X1)-width,m.L2Py(F->pom_element->geo.Y1)-width,m.L2Px(F->pom_element->geo.X1)+width,m.L2Py(F->pom_element->geo.Y1)+width);
+				if(m.delka(F->pom_element->geo.X4,F->pom_element->geo.Y4,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y)<=F->velikost_citelne_oblasti_elementu)
+					canv->Ellipse(m.L2Px(F->pom_element->geo.X4)-width,m.L2Py(F->pom_element->geo.Y4)-width,m.L2Px(F->pom_element->geo.X4)+width,m.L2Py(F->pom_element->geo.Y4)+width);
+			}
 		}
 	}
 }
@@ -998,7 +1006,11 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv)
 			}
 			//ypočet delky
 			if(C->Element->n!=MaxInt && C->n!=1)d=C->Element->geo.delka;
-			else if(C->Element->geo.typ==0)d=m.delka(X,Y,C->Element->geo.X4,C->Element->geo.Y4);
+			else if(C->Element->geo.typ==0)
+			{
+				d=m.delka(X,Y,C->Element->geo.X4,C->Element->geo.Y4);
+				d=m.delkaSklon(d,C->Element->geoH.radius);
+			}
 			else
 			{
 				d=m.delka(X,Y,C->Element->geo.X4,C->Element->geo.Y4);
@@ -1113,6 +1125,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv)
 			//výpočetní část
 			TPointD konec=v.bod_na_geometrii(F->pom_element);
 			d=m.delka(X,Y,konec.x,konec.y);
+			d=m.delkaSklon(d,F->pom_element->geoH.radius);
 			delka+=d;
 
 			//vypočet času
@@ -1164,7 +1177,9 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv)
 			{
 				//výpočet vzdálenosti od stopstanice
 				double s=m.delka(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,F->pom_element->geo.X4,F->pom_element->geo.Y4);
+				s=m.delkaSklon(s,F->pom_element->geoH.radius);
 				double check=m.delka(v.MAG_LASO->Element->geo.X4,v.MAG_LASO->Element->geo.Y4,F->pom_element->geo.X4,F->pom_element->geo.Y4);
+        check=m.delkaSklon(check,F->pom_element->geoH.radius);
 				//výpočet velikosti bufferu stopstanice
 				double buf=F->pom_element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;
 				if(s<buf)//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
@@ -1208,7 +1223,11 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv)
 			}
 			//ypočet delky
 			if(C->Element->n!=MaxInt && C->n!=1)d=C->Element->geo.delka;
-			else if(C->Element->geo.typ==0)d=m.delka(X,Y,C->Element->geo.X1,C->Element->geo.Y1);
+			else if(C->Element->geo.typ==0)
+			{
+				d=m.delka(X,Y,C->Element->geo.X1,C->Element->geo.Y1);
+				d=m.delkaSklon(d,C->Element->geoH.radius);
+			}
 			else
 			{
 				d=m.delka(X,Y,C->Element->geo.X4,C->Element->geo.Y4);
@@ -1266,7 +1285,9 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv)
 					{
 						//výpočet vzdálenosti od stopstanice
 						double check=m.delka(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,C->Element->geo.X4,C->Element->geo.Y4);
+						check=m.delkaSklon(check,C->Element->geoH.radius);
 						double s=m.delka(v.MAG_LASO->Element->geo.X4,v.MAG_LASO->Element->geo.Y4,C->Element->geo.X4,C->Element->geo.Y4);
+						s=m.delkaSklon(s,C->Element->geoH.radius);
 						//výpočet velikosti bufferu stopstanice
 						double buf=C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;
 						//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
@@ -1347,6 +1368,7 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv)
 			//výpočetní část
 			TPointD konec=v.bod_na_geometrii(F->pom_element);
 			d=m.delka(X,Y,konec.x,konec.y);
+      d=m.delkaSklon(d,F->pom_element->geoH.radius);
 			delka+=d;
 
 			//vypočet času
@@ -1396,8 +1418,10 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv)
 		  	if(F->pom_element->eID==0)
 		  	{
   	  		//výpočet vzdálenosti od stopstanice
-		  		double check=m.delka(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,F->pom_element->geo.X4,F->pom_element->geo.Y4);
-		  		double s=m.delka(v.MAG_LASO->Element->geo.X4,v.MAG_LASO->Element->geo.Y4,F->pom_element->geo.X4,F->pom_element->geo.Y4);
+					double check=m.delka(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,F->pom_element->geo.X4,F->pom_element->geo.Y4);
+					check=m.delkaSklon(check,F->pom_element->geoH.radius);
+					double s=m.delka(v.MAG_LASO->Element->geo.X4,v.MAG_LASO->Element->geo.Y4,F->pom_element->geo.X4,F->pom_element->geo.Y4);
+          s=m.delkaSklon(s,F->pom_element->geoH.radius);
 		  		//výpočet velikosti bufferu stopstanice
 		  		double buf=F->pom_element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;
 		  		//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu

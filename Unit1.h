@@ -104,7 +104,7 @@
 
 #include "Tvlakno_obraz.h"
 #include "Tvlakno_panCreate.h"
-#include "RzAnimtr.hpp"
+//#include "RzAnimtr.hpp"
 
 //#include "rImprovedComps.hpp"
 //#include "rImprovedComps.hpp"

@@ -370,7 +370,8 @@ double Cmy::delka(double X1,double Y1,double X2,double Y2)
 //vrátí délku sklonu, může být zadáno i klesání
 double Cmy::delkaSklon(double delka,double vyska)
 {
-	return sqrt(pow(delka,2)+ pow(vyska,2));
+	if(vyska!=0)return sqrt(pow(delka,2)+ pow(vyska,2));
+  else return delka;
 }
 /////////////////////////////////////////////////////////////////////////////
 //prec=preciznost výpočtu
