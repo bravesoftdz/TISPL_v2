@@ -374,6 +374,13 @@ double Cmy::delkaSklon(double delka,double vyska)
   else return delka;
 }
 /////////////////////////////////////////////////////////////////////////////
+//vrátí délku části přepony podle části délky půdorysny
+double Cmy::castPrepony(double castPud,double delka,double delkaPud,double vyska)
+{
+	if(vyska==0 || castPud>delkaPud)return castPud;
+	else return castPud/cos(asin(vyska/delka));
+}
+/////////////////////////////////////////////////////////////////////////////
 //prec=preciznost výpočtu
 //double Cvykresli::bezierDelka(double x1,double y1,double x2,double y2,double x3,double y3,double x4,double y4,double prec)
 //{           DODĚLAT
@@ -807,6 +814,7 @@ bool Cmy::PtInSegment(double X,double Y,short typ,double orientace,double rotacn
 	DeleteObject(h);
 	return RET;
 }
+
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 TPointDbool Cmy::zkratit_polygon_na_roztec(double d, double r,double xp, double yp, double x0, double y0, double x1, double y1)//d - delka linky,r - roztec palcuxp, yp - souradnice oznaceneho bodu x0, y0, x1, y1- souradnice sousedu k oznacenemu bodu

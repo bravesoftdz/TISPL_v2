@@ -3278,6 +3278,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						E->geo.typ=0;
 						//kontrola přichytávání na elementy při počátečním a koncovém bodu
 						Cvektory::TElement *el=d.v.ELEMENTY->dalsi;
+						bool prichiceno=false;
 						while(el!=NULL)
 						{
 							//kontrola oblastí elementů
@@ -3290,6 +3291,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								pom_element=el;
 								//highlight, pouze pro prvního
 								if(d.v.MAG_LASO->dalsi==NULL && d.v.MAG_LASO->Element==NULL)pom_element->stav=2;
+								prichiceno=true;
 								break;
 							}
 							//kontrola přichycení na začátek nebo konec stouání / klesání
@@ -3302,6 +3304,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 									E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=el->geo.Y1;
 									E->name=el->name;
 									pom_element=el;
+									prichiceno=true;
 								}
 								//konec stoupání / klesání
 								if(m.delka(el->geo.X4,el->geo.Y4,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y)<=velikost_citelne_oblasti_elementu)
@@ -3310,10 +3313,11 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 									E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=el->geo.Y4;
 									E->name=el->name;
 									pom_element=el;
+									prichiceno=true;
 								}
 							}
 							//kontrola zda jsem na pohonu
-							else if(m.PtInSegment(el->geo.X1,el->geo.Y1,el->geo.typ,el->geo.orientace,el->geo.rotacni_uhel,el->geo.radius,el->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+							if(!prichiceno && d.v.PtInSegment(el,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
 							{
 								pom_element=el;
 								//kontrola zda jsem na hraně objektu
@@ -4637,7 +4641,7 @@ void TForm1::getJobID(int X, int Y)
 				if(E!=d.v.MAG_LASO->sparovany || (d.v.MAG_LASO->Element->geo.X4!=d.v.MAG_LASO->sparovany->geo.X4 || d.v.MAG_LASO->Element->geo.Y4!=d.v.MAG_LASO->sparovany->geo.Y4))
 					E->stav=1;
 				//kontrola zda jsem na segmentu
-				if(m.PtInSegment(E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+				if(d.v.PtInSegment(E,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
 				{
 					//if(!(pom_element!=NULL && d.v.MAG_LASO->dalsi==NULL && d.v.MAG_LASO->sparovany==pom_element))Memo("uložit");//else Memo("ERROR");
 					//pokud se změnit pom_element nebo je nulový ulož
@@ -8404,8 +8408,8 @@ bool TForm1::bod_na_geometrii(double X, double Y,Cvektory::TElement *Element)
 	{
   	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
   	while(E!=NULL)
-  	{
-  		if(E->geo.typ==0 && (m.PtInSegment(E->geo.X1,E->geo.Y1,0,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,X,Y) || (X==E->geo.X1 && Y==E->geo.Y1))){ret=true;break;}
+		{
+			if(E->geo.typ==0 && (d.v.PtInSegment(E,X,Y) || (X==E->geo.X1 && Y==E->geo.Y1))){ret=true;break;}
   		E=d.v.dalsi_krok(E);
   	}
   	d.v.vymaz_seznam_VYHYBKY();
@@ -14306,6 +14310,13 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //
 //	F->Sv("Vytvořil: "+d.v.File_hlavicka.vytvoril+" "+DateToStr(d.v.File_hlavicka.cas_start)+" "+TimeToStr(d.v.File_hlavicka.cas_start));
 //	F->Sv("Upravil: "+d.v.File_hlavicka.upravil+" "+DateToStr(d.v.File_hlavicka.cas_posledni_upravy)+" "+TimeToStr(d.v.File_hlavicka.cas_posledni_upravy));
+	Cvektory::TElement *E=d.v.ELEMENTY->dalsi->dalsi;
+//	E->geo.HeightDepp=5;
+//	E->geo.delkaPud=E->geo.delka=10;
+//	E->geo.delka=m.delkaSklon(E->geo.delka,E->geo.HeightDepp);
+//	REFRESH();
+//	Memo("delka: "+String(E->geo.delka));
+//	Memo("delkaPud: "+String(E->geo.delkaPud));
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -16528,16 +16539,16 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		    		u1=u2;
 						u2=d_pom;
 					}
-          d_pom=delka=m.R2Larc(d.v.MAG_LASO->sparovany->geo.radius,u2)-m.R2Larc(d.v.MAG_LASO->sparovany->geo.radius,u1);
+					d_pom=delka=m.R2Larc(d.v.MAG_LASO->sparovany->geo.radius,u2)-m.R2Larc(d.v.MAG_LASO->sparovany->geo.radius,u1);
 				}
 				//měření v linii
 				else
 				{
-					delka=m.delka(C->predchozi->Element->geo.X1,C->predchozi->Element->geo.Y1,C->Element->geo.X4,C->Element->geo.Y4);
-					if(C->predchozi->Element==C->sparovany)d_pom=delka=m.delkaSklon(delka,C->sparovany->geo.HeightDepp);
+					d_pom=delka=m.delka(C->predchozi->Element->geo.X1,C->predchozi->Element->geo.Y1,C->Element->geo.X4,C->Element->geo.Y4);
+					d_pom=delka=m.castPrepony(delka,d.v.MAG_LASO->sparovany->geo.delka,d.v.MAG_LASO->sparovany->geo.delkaPud,d.v.MAG_LASO->sparovany->geo.HeightDepp);
 				}
 				//měření času
-				if(d.v.MAG_LASO->sparovany!=NULL && d.v.MAG_LASO->sparovany==d.v.MAG_LASO->predchozi->sparovany && d.v.MAG_LASO->sparovany->pohon!=NULL)
+				if(/*d.v.MAG_LASO->sparovany!=NULL && d.v.MAG_LASO->sparovany==d.v.MAG_LASO->predchozi->sparovany && */d.v.MAG_LASO->sparovany->pohon!=NULL)
 				{
 					if(d.v.MAG_LASO->predchozi->sparovany->eID==0)
 					{
@@ -16546,9 +16557,9 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
             {
 							//výpočet vzdálenosti od stopstanice
 							s=m.delka(C->Element->geo.X4,C->Element->geo.Y4,C->sparovany->geo.X4,C->sparovany->geo.Y4);
-							s=m.delkaSklon(s,C->sparovany->geo.HeightDepp);
+							s=m.castPrepony(s,C->sparovany->geo.delka,C->sparovany->geo.delkaPud,C->sparovany->geo.HeightDepp);
 							check=m.delka(d.v.MAG_LASO->Element->geo.X4,d.v.MAG_LASO->Element->geo.Y4,C->sparovany->geo.X4,C->sparovany->geo.Y4);
-							check=m.delkaSklon(check,C->sparovany->geo.HeightDepp);
+							check=m.castPrepony(check,C->sparovany->geo.delka,C->sparovany->geo.delkaPud,C->sparovany->geo.HeightDepp);
 							//výpočet velikosti bufferu stopstanice
 							buf=C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice;
 						}
@@ -16556,9 +16567,9 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
             {
 							//výpočet vzdálenosti od stopstanice
 							check=m.delka(C->Element->geo.X4,C->Element->geo.Y4,C->sparovany->geo.X4,C->sparovany->geo.Y4);
-							check=m.delkaSklon(check,C->sparovany->geo.HeightDepp);
+							check=m.castPrepony(check,C->sparovany->geo.delka,C->sparovany->geo.delkaPud,C->sparovany->geo.HeightDepp);
 							s=m.delka(d.v.MAG_LASO->Element->geo.X4,d.v.MAG_LASO->Element->geo.Y4,d.v.MAG_LASO->predchozi->sparovany->geo.X4,d.v.MAG_LASO->predchozi->sparovany->geo.Y4);
-              s=m.delkaSklon(s,C->sparovany->geo.HeightDepp);
+							s=m.castPrepony(s,C->sparovany->geo.delka,C->sparovany->geo.delkaPud,C->sparovany->geo.HeightDepp);
 							//výpočet velikosti bufferu stopstanice
 							buf=d.v.MAG_LASO->predchozi->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice;
 						}
@@ -16595,7 +16606,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 							s=m.delka(X,Y,C->Element->geo.X1,C->Element->geo.Y1);
 							if(C->dalsi==NULL)s=m.delka(C->sparovany->geo.X4,C->sparovany->geo.Y4,C->Element->geo.X4,C->Element->geo.Y4);
 						}
-						s=m.delkaSklon(s,C->Element->geo.HeightDepp);
+						s=m.castPrepony(s,C->Element->geo.delka,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
 					}
 					else
 					{
@@ -16624,7 +16635,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 					  		{
 					  			//výpočet vzdálenosti od stopstanice
 									double dl=m.delka(C->predchozi->Element->geo.X4,C->predchozi->Element->geo.Y4,C->Element->geo.X4,C->Element->geo.Y4);
-                  dl=m.delkaSklon(dl,C->Element->geo.HeightDepp);
+									dl=m.castPrepony(dl,C->Element->geo.delka,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
 									//výpočet velikosti bufferu stopstanice
 									double buf=C->sparovany->geo.delka-(C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice);
 									if(dl>buf)//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
@@ -16669,7 +16680,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 						  	{
 						  		//výpočet vzdálenosti od stopstanice
 									double s=m.delka(d.v.MAG_LASO->Element->geo.X4,d.v.MAG_LASO->Element->geo.Y4,CE->geo.X4,CE->geo.Y4);
-									s=m.delkaSklon(s,CE->geo.HeightDepp);
+									s=m.castPrepony(s,CE->geo.delka,CE->geo.delkaPud,CE->geo.HeightDepp);
 						  		//výpočet velikosti bufferu stopstanice
 									double buf=CE->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice;
 						  		//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
@@ -18031,5 +18042,6 @@ void TForm1::copy_to_clipboard(String text)
   Edit_proFocus->CopyToClipboard();
 }
 //---------------------------------------------------------------------------
+
 
 
