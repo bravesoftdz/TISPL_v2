@@ -5268,13 +5268,13 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //vykreslí trojúhelník indikující stoupání či klesání
-void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,double X1,double Y1,double X2,double Y2,double heightORdeep,float offset)
+void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,double X1,double Y1,double X2,double Y2,double HeightDeep,float offset)
 {
 	////vstupní proměnné
 	TColor color=clLtGray;
 	float width=0.2;
 	double X3,Y3;
-	short Z=m.round(heightORdeep/fabs(heightORdeep));//znaménko
+	short Z=m.round(HeightDeep/fabs(HeightDeep));//znaménko
 	float H=0.5;//výšku vykreslujeme konstatně, v měřítku by se nevešla
 	//pokud je linie vodorovná
 	if(Y1==Y2)
@@ -5321,7 +5321,7 @@ void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,double X1,double Y1,doub
 	canv->Font->Size=m.round(width*F->Zoom*F->aFont->Size);
 	//výpis
 	String Znamenko="+";if(Z>0)Znamenko="";//příprava pro další pokračování: ±
-	TextOut(canv,m.round((points[1].x+points[2].x)/2.0),m.round((points[1].y+points[2].y)/2.0),Znamenko+String(heightORdeep*1000));
+	TextOut(canv,m.round((points[1].x+points[2].x)/2.0),m.round((points[1].y+points[2].y)/2.0),Znamenko+String(HeightDeep*1000));
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
