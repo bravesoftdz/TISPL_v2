@@ -6854,7 +6854,7 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 					}
 				}
 				////////////Pozor, překrytí JIGů! - musí být umístěno na konci (popř. na začátku)
-				if(PP.delka_podvozek<m.UDJ(rotaceJ) && pocet_voziku>=1){vloz_zpravu(X+x*(PP.delka_podvozek*pocet_voziku/2.0-PP.uchyt_pozice),Y+y*(PP.delka_podvozek*pocet_voziku/2.0-PP.uchyt_pozice),-1,402,E);pocet_erroru++;}//pro buffer (výpis ve středu bufferu)
+				if(PP.delka_podvozek<m.UDJ(rotaceJ) && pocet_voziku>1/*pocet_voziku>=1*/){vloz_zpravu(X+x*(PP.delka_podvozek*pocet_voziku/2.0-PP.uchyt_pozice),Y+y*(PP.delka_podvozek*pocet_voziku/2.0-PP.uchyt_pozice),-1,402,E);pocet_erroru++;}//pro buffer (výpis ve středu bufferu)
 //				if(E->pohon!=NULL && m.UDV(rotaceJ)>m.Rz(E->pohon->aRD)){vloz_zpravu(X+x*PP.delka_podvozek/2.0,Y+y*PP.delka_podvozek/2.0,-1,403,E);pocet_erroru++;}//pro libovolný přejezd (výpis ve středu přejezdu)
 				if(E->pohon!=NULL && m.UDV(rotaceJ)>m.Rz(E->pohon->aRD)){vloz_zpravu(X,Y,-1,403,E);pocet_erroru++;}//pro libovolný přejezd (výpis ve středu přejezdu)
 			}

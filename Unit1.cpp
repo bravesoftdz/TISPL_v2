@@ -14328,16 +14328,29 @@ void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 
 //Timer1->Enabled=!Timer1->Enabled;
 
-	double delka=12;//původní d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi->geo.delka
-	double vyska=5;
-	double delkaSklon=m.delkaSklon(delka,vyska);
-	d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi->geoH.delka=delka;
-	d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi->geo.delka=delkaSklon;
-	d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi->geo.HeightDepp=vyska;
-	//ád.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi->geo.Y4=d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi->geo.Y1;
-	duvod_validovat=2;
-	vytvor_statickou_scenu();
-	REFRESH();
+
+		pom_element=NULL;
+		Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+		while(E!=NULL)
+		{
+			if(d.v.oblast_elementu(E,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+			{
+				double delka=E->geo.delka;
+				double HeightDeep=5;
+				double delkaSklon=m.delkaSklon(delka,HeightDeep);
+				E->geo.delkaPud=delka;
+				E->geo.delka=delkaSklon;
+				E->geo.HeightDepp=HeightDeep;
+				duvod_validovat=2;
+				vytvor_statickou_scenu();
+				REFRESH();
+				ShowMessage("Nastaveno HeightDeep "+String(HeightDeep*1000)+" mm pro element "+E->name);
+				break;
+			}
+			E=d.v.dalsi_krok(E);
+		}
+		E=NULL;delete E;
+
 
 	//d.vykresli_stoupani_klesani(Canvas,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,akt_souradnice_kurzoru.x+10,akt_souradnice_kurzoru.y,3,false,0);
 
@@ -14371,24 +14384,24 @@ void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 	//Staticka_scena->SaveToFile("SSoriginal.bmp");
 //	STOP();
 
-	Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-	bmp_in->Assign(Staticka_scena);
-	Cvektory::TmyPx *px;
-	vrat_max_oblast();
-	START();
-	for(UINT i=0;i<600;i++)
-	px=d.v.komprese(bmp_in);
-	STOP();
-	int W=bmp_in->Width;int H=bmp_in->Height;
-	delete bmp_in;
-
-	START();
-	for(UINT i=0;i<600;i++)
-	{
-		Graphics::TBitmap *bmp_out=d.v.dekomprese(px,W,H);
-		delete bmp_out;
-	}
-	STOP();
+//	Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+//	bmp_in->Assign(Staticka_scena);
+//	Cvektory::TmyPx *px;
+//	vrat_max_oblast();
+//	START();
+//	for(UINT i=0;i<600;i++)
+//	px=d.v.komprese(bmp_in);
+//	STOP();
+//	int W=bmp_in->Width;int H=bmp_in->Height;
+//	delete bmp_in;
+//
+//	START();
+//	for(UINT i=0;i<600;i++)
+//	{
+//		Graphics::TBitmap *bmp_out=d.v.dekomprese(px,W,H);
+//		delete bmp_out;
+//	}
+//	STOP();
 
 
 
