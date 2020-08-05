@@ -680,7 +680,8 @@ public:		// User declarations
 
 	//promìnné
 	UnicodeString LICENCE;
-	UnicodeString VERZE;
+	UnicodeString FileVersion;
+  UnicodeString ProductVersion;
 	double m2px;//uchovává hodnotu prostorového rozlišení programu, nativní rozlišení 0,1 m na 1 pixel pøi zoomu 1x
 	double fps;//frames per second, èetnost snímkù za sekundu - používá se pro animace a simulace
 	double afps;//frames per second, aktuální èetnost snímkù za sekundu - používá se pro animace a simulace

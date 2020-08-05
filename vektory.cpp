@@ -6861,16 +6861,18 @@ void Cvektory::vymazat_ZPRAVY()
 //zapis hlavičky souboru
 void Cvektory::vytvor_hlavicku_souboru()
 {
-	unsigned  major,minor,build;
-	GetProductVersion(Application->ExeName,major,minor,build);
-	String ProductVersion=String(major)+"."+String(minor);
-	File_hlavicka.FileVersion=Form1->ms.MyToDouble(Form1->VERZE);
-	File_hlavicka.ProductVersion=Form1->ms.MyToDouble(ProductVersion);
+	File_hlavicka.FileVersion=Form1->ms.MyToDouble(Form1->FileVersion);
+	File_hlavicka.ProductVersion=Form1->ms.MyToDouble(Form1->ProductVersion);
 	File_hlavicka.Mod=Form1->MOD;
 	File_hlavicka.Zoom=Form1->Zoom;
 	File_hlavicka.PosunutiX=Form1->Posun.x;
 	File_hlavicka.PosunutiY=Form1->Posun.y;
+
 	File_hlavicka.cas_start=PP.cas_start;
+	//File_hlavicka.vytvoril=PP.vytvoril;
+	//File_hlavicka.cas_posledni_upravy=PP.cas_posledni_upravy;
+	//File_hlavicka.upravil=PP.upravil;
+
 	File_hlavicka.mnozstvi=PP.mnozstvi;
 	File_hlavicka.hod_den=PP.hod_den;
 	File_hlavicka.dni_rok=PP.dni_rok;
@@ -7351,7 +7353,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			FileStream->Read(&File_hlavicka,sizeof(TFile_hlavicka));//načte hlavičku ze souboru
 
 			//kontrola, zda se shoduje verze projektu a verze souboru, pokud ne vyhodí chybovou hlášku
-			if(F->get_major_version(String(File_hlavicka.FileVersion))!=F->get_major_version(F->VERZE))throw new Exception("Verze souboru a projektu se neshoduje");
+			if(F->get_major_version(String(File_hlavicka.FileVersion))!=F->get_major_version(F->FileVersion))throw new Exception("Verze souboru a projektu se neshoduje");
 
 			//uložení parametrů RASTRu
 			C_raster *R=new C_raster;

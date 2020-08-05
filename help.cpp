@@ -42,20 +42,48 @@ void __fastcall TForm_help::FormShow(TObject *Sender)
 Left=Form1->ClientWidth/2-Form_help->Width/2;
 Top=Form1->ClientHeight/2-Form_help->Height/2;
 
+//Product version: x.x (CZ - Verze aplikace)
+//File version: x.x (CZ - Verze souboru)
+//Vytvoøil: Karel Vomáèka , 19.7.2020 20:00 (EN Created by)
+//Poslední zmìna : Milan Vomáèka, 21.7.2020 20:00 (EN Last modified)
+//Location  (CZ Umístìní:....)
+//Nastavení aplikace (Application Settings)  - viditelné pouze v DEBUG (je to tam již konzipováno)
 
-   if(scGPToolPager->ActivePage==scGPToolPagerPage_about)
-  {
-    String about_text="";
-    if(DEBUG)
-    {
-    about_text=Form1->ls->Strings[349]+" "+ F->VERZE +"<br>"+Form1->ls->Strings[350]+" "+ Application->ExeName + "<br>"+"Nastavení aplikace: " + F->get_temp_dir();
-    scHTMLLabel_about->Caption=about_text;
+
+	if(scGPToolPager->ActivePage==scGPToolPagerPage_about)
+	{
+		//deklarace pomocných atriburù
+		String about_text="";
+		bool english=true;
+		//naètení jazyka
+		if(F->readINI("Nastaveni_app","jazyk")=="1")english=false;
+		//vypis textu
+		if(english)
+		{
+			about_text="Product version: "+String(F->ProductVersion)+"<br>"
+								+"File version: "+String(F->FileVersion)+"<br>"
+								+"Created by: "+F->get_user_name()+" , "+DateToStr(F->d.v.PP.cas_start)+" "+TimeToStr(F->d.v.PP.cas_start)+"<br>"
+								+"Last modified: "+F->get_user_name()+" , "+DateToStr(F->d.v.PP.cas_start)+" "+TimeToStr(F->d.v.PP.cas_start)+"<br>"
+								+"Location "+Application->ExeName+"<br>"
+								+"Application Settings "+F->get_temp_dir();
+		}
+		else
+		{
+			about_text="Verze aplikace: "+String(F->ProductVersion)+"<br>"
+								+"Verze souboru: "+String(F->FileVersion)+"<br>"
+	  						+"Vytvoøil: "+F->get_user_name()+" , "+DateToStr(F->d.v.PP.cas_start)+" "+TimeToStr(F->d.v.PP.cas_start)+"<br>"
+								+"Posledni zmìna: "+F->get_user_name()+" , "+DateToStr(F->d.v.PP.cas_start)+" "+TimeToStr(F->d.v.PP.cas_start)+"<br>"
+								+"Umístìní "+Application->ExeName+"<br>"
+								+"Nastavení aplikace "+F->get_temp_dir();
+		}
+    //pokud jsem v režimu debug, pøidat cestu k nastavení app
+		if(DEBUG)
+		{
+			if(english)about_text+="Application Settings "+F->get_temp_dir();
+			else about_text+="Nastavení aplikace "+F->get_temp_dir();
     }
-    else
-    {
-    about_text=Form1->ls->Strings[349]+" "+ F->VERZE +"<br>"+Form1->ls->Strings[350]+" "+ Application->ExeName;
-    scHTMLLabel_about->Caption=about_text;
-    }
+		//zapsání do komponenty
+		scHTMLLabel_about->Caption=about_text;
   }
 
 

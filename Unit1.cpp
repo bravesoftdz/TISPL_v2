@@ -256,7 +256,10 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 
 	//zjistí verzi aplikace
 	DWORD ver=GetFileVersion(Application->ExeName);
-	VERZE=UnicodeString(HIWORD(ver))+"."+UnicodeString(LOWORD(ver));
+	FileVersion=UnicodeString(HIWORD(ver))+"."+UnicodeString(LOWORD(ver));
+  unsigned  major,minor,build;
+	GetProductVersion(Application->ExeName,major,minor,build);
+	ProductVersion=UnicodeString(major)+"."+UnicodeString(minor);
 	//VERZE=UnicodeString(UnicodeString(HIWORD(ver) >> 16)+"."+UnicodeString(HIWORD(ver) & 0xFFFF)+"."+UnicodeString(LOWORD(ver) >> 16)+"."+UnicodeString(LOWORD(ver) & 0xFFFF)); nefunguje
 
 	//licence, logování atp.
@@ -1405,7 +1408,7 @@ void TForm1::aktualizace()
 		//zjištění aktuální verze
 		UnicodeString AKT_VERZE=IdHTTP1->Get("http://81.2.243.72/TISPL/verze.txt");
 		//porovnání akt. verze a používané verze aplikace
-		if(AKT_VERZE!=VERZE)//je k dispozici aktualizace
+		if(AKT_VERZE!=FileVersion)//je k dispozici aktualizace
 		{
 			UnicodeString text=ls->Strings[316],text_1=ls->Strings[317],tip=ls->Strings[294];
 			if(mrYes==MB(text,MB_YESNO,false))
@@ -1421,7 +1424,7 @@ void TForm1::aktualizace()
 						TMemoryStream *MemoryStream=new TMemoryStream();
 						IdHTTP1->Get("http://81.2.243.72/TISPL/LIC/"+LICENCE+"/tispl.exe",MemoryStream);
 						MemoryStream->SaveToFile(SaveDialog->FileName);
-						log2web("aktualizace_z_"+AKT_VERZE+"_na_"+VERZE);
+						log2web("aktualizace_z_"+AKT_VERZE+"_na_"+FileVersion);
 						ShellExecute(0,L"open",SaveDialog->FileName.c_str(),0,0,SW_SHOWNORMAL);
 						MessageBeep(0);
 						Close();
@@ -1512,7 +1515,10 @@ void TForm1::Novy_soubor(bool invalidate)
 		 jedno_ze_tri_otoceni_koleckem_mysi=1;
 		 doba_neotaceni_mysi=0;
 
-		 d.v.PP.cas_start=TDateTime(AnsiString(TIME.CurrentDate().DateString())+" "+"8:00:00");//defaultně dnes v 8:00
+		 d.v.PP.cas_start=TIME.CurrentDateTime();//TDateTime(AnsiString(TIME.CurrentDate().DateString())+" "+"8:00:00");//defaultně dnes v 8:00
+		 //d.v.PP.vytvoril=get_user_name();
+		 //d.v.PP.cas_posledni_upravy=d.v.PP.cas_start;
+		 //d.v.PP.upravil=d.v.PP.vytvoril;
 		 d.v.PP.mnozstvi=20000;
 		 d.v.PP.hod_den=8;
 		 d.v.PP.dni_rok=365;
@@ -1534,7 +1540,6 @@ void TForm1::Novy_soubor(bool invalidate)
 		 d.v.PP.katalog=0;
 		 d.v.PP.radius=1;
 		 d.v.pocet_vyhybek=0;
-		 d.v.PP.autor=get_user_name();
 
 		 //nastavení def. hodnot přichytávání a ortogonalizace
 		 prichytavat_k_mrizce=1;
@@ -13385,6 +13390,8 @@ void TForm1::Ulozit_soubor()
 	delete E;E=NULL;
 
 	//zapis dat do souboru
+	//d.v.PP.cas_posledni_upravy=TIME.CurrentDateTime();
+	//d.v.PP.upravil=get_user_name();
 	d.v.uloz_do_souboru(FileName);
 
 	//nastavení komponent + výpis
@@ -13468,6 +13475,9 @@ unsigned short int TForm1::Otevrit_soubor(UnicodeString soubor)//realizuje samot
 			Posun.x=d.v.File_hlavicka.PosunutiX;
 			Posun.y=d.v.File_hlavicka.PosunutiY;
 			d.v.PP.cas_start=d.v.File_hlavicka.cas_start;
+			//d.v.PP.vytvoril=d.v.File_hlavicka.vytvoril;
+			//d.v.PP.cas_posledni_upravy=d.v.File_hlavicka.cas_posledni_upravy;
+			//d.v.PP.upravil=d.v.File_hlavicka.upravil;
 			d.v.PP.mnozstvi=d.v.File_hlavicka.mnozstvi;
 			d.v.PP.hod_den=d.v.File_hlavicka.hod_den;
 			d.v.PP.dni_rok=d.v.File_hlavicka.dni_rok;
@@ -14236,6 +14246,14 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	Cvektory::TElement *E=OBJEKT_akt->teplomery->dalsi->posledni;
 //	E->mGrid->DeleteRow(E->mGrid->RowCount-1,false);
 //	E->mGrid->Update();
+//	d.v.PP.cas_start=TIME.CurrentDateTime();//TDateTime(AnsiString(TIME.CurrentDate().DateString())+" "+"8:00:00");//defaultně dnes v 8:00
+//	d.v.PP.vytvoril=d.v.PP.vytvoril;
+//	d.v.PP.cas_posledni_upravy=d.v.PP.cas_start;
+//	d.v.PP.upravil=d.v.PP.vytvoril;
+//
+//	F->Sv("Vytvořil: "+d.v.File_hlavicka.vytvoril+" "+DateToStr(d.v.File_hlavicka.cas_start)+" "+TimeToStr(d.v.File_hlavicka.cas_start));
+//	F->Sv("Upravil: "+d.v.File_hlavicka.upravil+" "+DateToStr(d.v.File_hlavicka.cas_posledni_upravy)+" "+TimeToStr(d.v.File_hlavicka.cas_posledni_upravy));
+
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
