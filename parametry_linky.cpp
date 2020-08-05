@@ -104,6 +104,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender) {
   F->log(__func__); // logování
   Button_save->SetFocus(); // pøidal MK 3.4.2020
   input_state = LOADING;
+  scComboBox_vyber_produkt->ItemIndex==0;
   COL = 0;
   ROW = 0;
   Form_parametry_linky->Color = F->m.clIntensive((TColor)RGB(43, 87, 154), 10);
@@ -1136,10 +1137,10 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key,
     // automatické vygenerování pohonù
     if (DEBUG) {
 
-      scGPNumericEdit_delka_podvozek->Value = 380;
+      scGPNumericEdit_delka_podvozek->Value = 600;
       scGPNumericEdit_sirka_jig->Value = 300;
       scGPNumericEdit_delka_jig->Value = 1200;
-      scGPNumericEdit_vyska_jig->Value = 1500;
+      scGPNumericEdit_vyska_jig->Value = 1700;
 
       for (int i = PL_mGrid->RowCount; i <= 4; i++) {
 
