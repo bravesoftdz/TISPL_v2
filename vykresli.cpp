@@ -5277,24 +5277,22 @@ void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,double X1,double Y1,doub
 	float width=0.2;
 	double X3,Y3;
 	short Z=m.round(HeightDeep/fabs(HeightDeep));//znaménko
-	float H=0.5;//výšku vykreslujeme konstatně, v měřítku by se nevešla
+	float V=0.5;//výšku vykreslujeme konstatně, v měřítku by se nevešla
 	//pokud je linie vodorovná
 	if(Y1==Y2)
 	{
 		Y1+=offset;//odsazení
-		if(Z<0)Y1+=H;//pro klesání ještě odsadí a hodnotu klesání
 		Y2=Y1;
-		Y3=Y2+H*Z;//směr dle kladné či záporné hodnoty heightORdeep
-		X3=X2;
+		Y3=Y2+V;//směr dle kladné či záporné hodnoty heightORdeep
+		if(Z>0)X3=X2;else X3=X1;//umístění dle klesání či stoupání
 	}
 	//pokud je svislá
 	else
 	{
 		X1+=offset;
-		if(Z<0)X1+=H;//pro klesání ještě odsadí a hodnotu klesání
 		X2=X1;
-		X3=X2+H*Z;//směr dle kladné či záporné hodnoty heightORdeep
-		Y3=Y2;
+		X3=X2+V;//směr dle kladné či záporné hodnoty heightORdeep
+		if(Z>0)Y3=Y2;else Y3=Y1;//umístění dle klesání či stoupání
 	}
 
 	////trojúhelník vykreslení
@@ -5322,8 +5320,17 @@ void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,double X1,double Y1,doub
 	canv->Font->Color=color;
 	canv->Font->Size=m.round(width*F->Zoom*F->aFont->Size);
 	//výpis
-	String Znamenko="+";if(Z>0)Znamenko="";//příprava pro další pokračování: ±
-	TextOut(canv,m.round((points[1].x+points[2].x)/2.0),m.round((points[1].y+points[2].y)/2.0),Znamenko+String(HeightDeep*1000));
+	String Text=String(HeightDeep*1000)+"  ";
+	if(Z>0)Text="+"+Text;//příprava pro další pokračování: ±
+	//orientace a vycentrování
+	short W,H;
+	if(X1==X2){canv->Font->Orientation=2700;W=-canv->TextHeight(Text);H=canv->TextWidth(Text);}
+	else{W=canv->TextWidth(Text);H=canv->TextHeight(Text);}
+	//samotný výpis
+	if(Z>0)TextFraming(canv,m.round((points[1].x+points[2].x-W)/2.0),m.round((points[1].y+points[2].y-H)/2.0),Text);
+	else TextFraming(canv,m.round((points[0].x+points[2].x-W)/2.0),m.round((points[0].y+points[2].y-H)/2.0),Text);
+	//raději vrácení do původního stavu
+	canv->Font->Orientation=0;
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
