@@ -361,9 +361,16 @@ double Cmy::bezierDelka(int x1,int y1,int x2,int y2,int x3,int y3,int x4,int y4,
 	return delka_RET;
 }
 /////////////////////////////////////////////////////////////////////////////
+//vrátí délku mezi body v absolutní hodnotě
 double Cmy::delka(double X1,double Y1,double X2,double Y2)
 {
 	return sqrt(pow(X2-X1,2)+ pow(Y2-Y1,2));
+}
+/////////////////////////////////////////////////////////////////////////////,
+//vrátí délku sklonu, může být zadáno i klesání
+double Cmy::delkaSklon(double delka,double vyska)
+{
+	return sqrt(pow(delka,2)+ pow(vyska,2));
 }
 /////////////////////////////////////////////////////////////////////////////
 //prec=preciznost výpočtu

@@ -104,6 +104,7 @@
 
 #include "Tvlakno_obraz.h"
 #include "Tvlakno_panCreate.h"
+#include "RzAnimtr.hpp"
 
 //#include "rImprovedComps.hpp"
 //#include "rImprovedComps.hpp"
@@ -280,7 +281,7 @@ __published:	// IDE-managed Components
 	TImage *Image_rozdelovac_1;
 	TImage *Image_rozdelovac_2;
 	TImage *Image_rozdelovac_3;
-  TIdSSLIOHandlerSocketOpenSSL *IdSSLIOHandlerSocketOpenSSL1;
+	TIdSSLIOHandlerSocketOpenSSL *IdSSLIOHandlerSocketOpenSSL1;
   TIdSNTP *IdSNTP1;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
@@ -480,6 +481,7 @@ __published:	// IDE-managed Components
 	void __fastcall scLabel_statusbar_0Click(TObject *Sender);
 	void __fastcall scExPanel_ostatniClick(TObject *Sender);
 	void __fastcall ButtonMaKrClick(TObject *Sender);
+	void __fastcall Timer1Timer(TObject *Sender);
 
 
 
@@ -494,7 +496,7 @@ public:
 	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o,neco,posun_ind,zmena_j,edit_text,zmena_d_x,zmena_d_y,posun_ind_ld,posun_ind_pd,editace_posun,info,close,posun_editace_obj,editace_obj};
 	////instance
   TStringList *ls;
-
+Graphics::TBitmap *Staticka_scena;//bitmapa statické scény
 private:
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
 	struct Tnastaveni{bool autosave;unsigned short int minut;bool posledni_file;};Tnastaveni nastaveni;
@@ -502,7 +504,7 @@ private:
 	////ukazatele
 	Cvektory::TProces *proces_pom;
 	TFileStream *LogFileStream;
-	Graphics::TBitmap *Staticka_scena;//bitmapa statické scény
+	//Graphics::TBitmap *Staticka_scena;//bitmapa statické scény
 	Graphics::TBitmap *Pan_bmp_ALL;//kvùli mGridu jinak staèí private
 	vlakno_panCreate *vlakno_PanCreate;
 
@@ -547,6 +549,8 @@ public:
 	UnicodeString get_computer_name();
 	UnicodeString get_user_name();
 	UnicodeString get_Windows_dir();
+	DWORDLONG get_TotalPhysMemory();//vrátí celkovou pamì na daném zaøízení
+	DWORDLONG get_AvailPhysMemory();//vrátí aktuálnì dostupnou pamì na daném zaøízení
 private:
 	int get_DPI();
 	void redesign_element();
@@ -735,7 +739,7 @@ public:		// User declarations
 	unsigned int vlakno_akce;//uchovává akci, kterou má vlákno vykonat, 0 - nic, 1 - vytvoøení obrazu pro UNDO, 2 - vytvoøení obrazu pro storno a UNDO, 3 - vymazání obrazù
 	double velikost_citelne_oblasti_elementu;//urèuje velikost citelné oblsati [m] kolem bodu elementu na pohonu
 	Tvlakno_obraz *vlakno_obraz;
-	bool vlakno_PanCreateState;
+	//bool vlakno_PanCreateState;
 	bool zobrazit_upozorneni_teplomery;
 
 	//metody

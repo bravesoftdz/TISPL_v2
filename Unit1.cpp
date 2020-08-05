@@ -64,6 +64,7 @@
 #pragma link "scHint"
 //#pragma link "rHintWindow"
 //#pragma link "rImprovedComps"
+#pragma link "RzAnimtr"
 #pragma resource "*.dfm"
 TForm1 *Form1, *F;//pouze zkrácený zapis
 AnsiString Parametry;
@@ -2319,7 +2320,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 	}
 
 	////////jednolivé VRSTVY
-	if(Akce!=PAN_MOVE)
+	if(Akce!=PAN_MOVE && MOD!=SIMULACE) //MOD!=SIMULACE - provizorně, smazat
 	{
 		Graphics::TBitmap *bmp_total=new Graphics::TBitmap;bmp_total->Width=ClientWidth;bmp_total->Height=ClientHeight;//vytvoření finální bmp, která bude vykreslena do Canvasu formu
 		////rastrový uživatelský POKDKLAD
@@ -5537,7 +5538,7 @@ void TForm1::pan_map(TCanvas * canv, int X, int Y)
 	if(OBJEKT_akt!=NULL)if(OBJEKT_akt->zobrazit_mGrid)d.vykresli_mGridy();
 
 	////vykreslení aktuální pan_bmp
-  canv->Brush->Color=clWhite;/*clLtGray*/canv->Brush->Style=bsSolid;
+	canv->Brush->Color=clWhite;/*clLtGray*/canv->Brush->Style=bsSolid;
 	if(panType==0)
 	{
 		//maže při posouvání obrazu starý obraz
@@ -12081,6 +12082,7 @@ void __fastcall TForm1::FormCloseQuery(TObject *Sender, bool &CanClose)
 	//v případě uzavírání aplikace
 	if(CanClose)
 	{
+    AnimateWindow(Handle,500,0x00080000|0x00010000);//pouze efekt při ukončování asi vyhodit, nesmí být zcela na konci, jinak paměťová chyba
 		log(__func__,"CanClose");//logování
 		d.v.vymaz_seznam_KATALOG();
 		//pro ochranu v případě pádu programu
@@ -13597,7 +13599,7 @@ void __fastcall TForm1::Timer_backupTimer(TObject *Sender)
 void TForm1::vse_odstranit()
 {
 	log(__func__);//logování
-	TimerKill(TimerSimulaceID);//musí být první
+	//TimerKill(TimerSimulaceID);//musí být první, aktuálně nepoužito
 	d.v.vse_odstranit();
 	if(PmG!=NULL){PmG->Delete();PmG=NULL;delete PmG;}
 	if(OBJEKT_akt!=NULL)scGPButton_stornoClick(this);
@@ -13672,6 +13674,24 @@ UnicodeString TForm1::get_Windows_dir()
 	DWORD  bufCharCount = INFO_BUFFER_SIZE;
 	GetWindowsDirectory( infoBuf, INFO_BUFFER_SIZE ); //GetSystemDirectory
 	return infoBuf;
+}
+//---------------------------------------------------------------------------
+//vrátí celkovou paměť na daném zařízení
+DWORDLONG TForm1::get_TotalPhysMemory()
+{
+	MEMORYSTATUSEX status;
+	status.dwLength = sizeof(status);
+	GlobalMemoryStatusEx(&status);
+	return status.ullTotalPhys;
+}
+//---------------------------------------------------------------------------
+//vrátí aktuálně dostupnou paměť na daném zařízení
+DWORDLONG TForm1::get_AvailPhysMemory()
+{
+	MEMORYSTATUSEX status;
+	status.dwLength = sizeof(status);
+	GlobalMemoryStatusEx(&status);
+	return status.ullAvailPhys;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -14074,14 +14094,13 @@ void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 			//nastavení timeru
 									//optimálně pohybově nejpomalejšího pohonu či animovaného elementu
 			//Timer_simulace->Interval=floor(m2px/(Zoom/**3*/)/d.v.vrat_min_rychlost_prejezdu()*1000.0/fps);   //ceil(F->m.get_timePERpx(pom->RD,0,d.v.vrat_min_rychlost_prejezdu()));//různá rychlost dle RD, s afps se počítá dle min RD, ale nějak špatně vycházela animace ke konci (nestihl vozík vyjet)
-			Timer_simulace->Interval=100000;
-			//new timer
-			Timer_simulace->Enabled==false;//provizorně
-			int TimerSimulaceInterval=16;
-			TIMECAPS tc;timeGetDevCaps(&tc,sizeof(TIMECAPS));//zjištění přesnosti multimediálního časovače
-			TimerPresnost=tc.wPeriodMin;//vrácení minimální možné přesnosti (1 ms)
-			timeBeginPeriod(TimerPresnost);//if(TIMERR_NOERROR!=timeBeginPeriod(TimerSimulacePresnost))Application->Terminate();
-			TimerSimulaceID=timeSetEvent(TimerSimulaceInterval,TimerPresnost,TimerSimulaceEvent,0,TIME_PERIODIC);
+			Timer_simulace->Interval=40;
+			//Multimediální timer - nevyužito, náročné na synchronizaci vykreslovaných dat, zachováno jako vzor
+//			int TimerSimulaceInterval=40;
+//			TIMECAPS tc;timeGetDevCaps(&tc,sizeof(TIMECAPS));//zjištění přesnosti multimediálního časovače
+//			TimerPresnost=tc.wPeriodMin;//vrácení minimální možné přesnosti (1 ms)
+//			timeBeginPeriod(TimerPresnost);//if(TIMERR_NOERROR!=timeBeginPeriod(TimerSimulacePresnost))Application->Terminate();
+//			TimerSimulaceID=timeSetEvent(TimerSimulaceInterval,TimerPresnost,TimerSimulaceEvent,0,TIME_PERIODIC);
 		}
 		else//animace zastavena
 		{
@@ -14137,26 +14156,40 @@ void __fastcall TForm1::Timer_simulaceTimer(TObject *Sender)
 		//sTIME+=1;/*1*///zajistí posun animace vždy o 1s reálného času (strojového dle Timer_animace->Interval, který by měl reflektovat aktuální rychlosti zajišťující plynulost animace)
 		//d.v.generuj_VOZIKY();//velice prozatim
 		//d.v.posun_palce_retezu();
-		//REFRESH();
+		//F->Canvas->Draw(F->sTIME,0,F->Pan_bmp);
+		if(d.v.sIterator==NULL)
+		{
+			//Timer_simulace->Enabled=false;neukoční jen čeká na doplnění bufferu
+			Memo("Konec bufferu");  //ke zvážení čekání třeba 5 s
+		}
+		else
+		{
+			//Canvas->Draw(d.v.sIterator->n-1,0,d.v.sIterator->bmp,100);
+			d.v.sIterator=d.v.sIterator->dalsi;
+			REFRESH();
+    }
 	}
 }
 //---------------------------------------------------------------------------
-//provede jeden takt multimediálního TimeruSimulace
+//provede jeden takt multimediálního TimeruSimulace - nevyužito, náročné na synchronizaci vykreslovaných dat, zachováno jako vzor
 void CALLBACK TimerSimulaceEvent(UINT wTimerID, UINT msg,	DWORD dwUser, DWORD dw1, DWORD dw2)
 {
 	//F->d.v.posun_palce_retezu();
-	F->sTIME+=10;
-	F->d.set_pen2(F->Canvas,clRed,F->d.m.round(1*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true);
-	F->d.line(F->Canvas,0,500,0+F->sTIME,500);
+	//F->sTIME+=1;
+	//if((int)F->sTIME%2)
+	//F->Canvas->Draw(F->sTIME,0,F->Pan_bmp);
+	//else F->Canvas->Draw(0,F->sTIME,F->Pan_bmp_ALL);
+	//->d.set_pen2(F->Canvas,clRed,F->d.m.round(1*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true);
+	//F->d.line(F->Canvas,0,500,0+F->sTIME,500);
 	//mám problém s vykreslením této linie ve d.vykresli_palce, což se volá pomocí níže zakomentovaného F->REFRESH();
-	F->REFRESH();
+	//F->REFRESH();
 }
 //---------------------------------------------------------------------------
-//ukončí daný (dlew TimerID) timer
+//ukončí daný (dlew TimerID) timer  - nevyužito, náročné na synchronizaci vykreslovaných dat, zachováno jako vzor
 void TForm1::TimerKill(UINT wTimerID)
 {
-	timeKillEvent(wTimerID);//ukončí timer
-	timeEndPeriod(TimerPresnost);//odstranění požadovaného rozlišení ze systému, pokud bylo použito timeBeginPeriod(presnost)
+//	timeKillEvent(wTimerID);//ukončí timer
+//	timeEndPeriod(TimerPresnost);//odstranění požadovaného rozlišení ze systému, pokud bylo použito timeBeginPeriod(presnost)
 }
 //---------------------------------------------------------------------------
 //MaVL - testovací tlačítko
@@ -14199,19 +14232,126 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 {//vždy nechat tento komentář
 
-	Cvektory::TPohon *P=d.v.POHONY->dalsi;
-	while(P!=NULL)
-	{
-		d.v.vytvor_retez(P);//a palce
-		P=P->dalsi;
-	}
-	delete P;
+//	Cvektory::TPohon *P=d.v.POHONY->dalsi;
+//	while(P!=NULL)
+//	{
+//		d.v.vytvor_retez(P);//a palce
+//		P=P->dalsi;
+//	}
+//	delete P;
+//
+//			MOD=SIMULACE;//mód musí být před vytvořením scény
+//			d.SCENA=221111;//zprávy nejsou zobrazeny, vozíky a aktivní části elementů jsou v dynamické scéně
+//			vytvor_statickou_scenu();//načtení statických záležitostí do statické scény, musí být před REFRESH
+//	REFRESH();
 
-			MOD=SIMULACE;//mód musí být před vytvořením scény
-			d.SCENA=221111;//zprávy nejsou zobrazeny, vozíky a aktivní části elementů jsou v dynamické scéně
-			vytvor_statickou_scenu();//načtení statických záležitostí do statické scény, musí být před REFRESH
+//Timer1->Enabled=!Timer1->Enabled;
+
+	double delka=12;//původní d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi->geo.delka
+	double vyska=5;
+	double delkaSklon=m.delkaSklon(delka,vyska);
+	d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi->geoH.delka=delka;
+	d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi->geo.delka=delkaSklon;
+	d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi->geoH.radius=vyska;
+	//ád.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi->geo.Y4=d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi->geo.Y1;
+	duvod_validovat=2;
+	vytvor_statickou_scenu();
 	REFRESH();
 
+	//d.vykresli_stoupani_klesani(Canvas,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,akt_souradnice_kurzoru.x+10,akt_souradnice_kurzoru.y,3,false,0);
+
+
+	//	ShowMessage(sizeof(unsigned char));
+//	ShowMessage(sizeof(unsigned short));
+//	ShowMessage(sizeof(Trgb));
+//	ShowMessage(sizeof(PRGBTriple));
+//		ShowMessage(sizeof(Cvektory::TmyPx));
+
+//	START();
+//	for(UINT i=0;i<500;i++)d.v.vloz_do_BUFFERU();
+//	STOP();
+//
+//	d.v.sBUFFER->predchozi->raster->SaveToFile("test_posledni"+String(d.v.sBUFFER->predchozi->n)+".png");
+//	d.v.sBUFFER->dalsi->raster->SaveToFile("test_posledni"+String(d.v.sBUFFER->dalsi->n)+".png");
+//	Memo(get_AvailPhysMemory());
+
+
+
+//
+
+//
+//	Graphics::TBitmap *bmp_out=d.v.dekomprimace(d.v.komprimace(bmp_in),bmp_in->Width,bmp_in->Height);
+//
+//	bmp_out->SaveToFile("TEST_DEKOMPRIMACE.bmp");
+//	delete bmp_out;
+//
+//	d.v.rast_do_souboru(d.v.komprimace(bmp_in),"TEST.KOMPRIMACE");
+//	delete bmp_in;
+	//Staticka_scena->SaveToFile("SSoriginal.bmp");
+//	STOP();
+
+	Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+	bmp_in->Assign(Staticka_scena);
+	Cvektory::TmyPx *px;
+	vrat_max_oblast();
+	START();
+	for(UINT i=0;i<600;i++)
+	px=d.v.komprese(bmp_in);
+	STOP();
+	int W=bmp_in->Width;int H=bmp_in->Height;
+	delete bmp_in;
+
+	START();
+	for(UINT i=0;i<600;i++)
+	{
+		Graphics::TBitmap *bmp_out=d.v.dekomprese(px,W,H);
+		delete bmp_out;
+	}
+	STOP();
+
+
+
+
+
+//			TMetafile *Metafile = new TMetafile;
+//			//Metafile->Width=MaxX;
+//			//Metafile->Height=MaxY;
+//																																		//Staticka_scena->Canvas->Handle
+//			TMetafileCanvas* MetafileCanvas = new TMetafileCanvas(Metafile,0);
+//			//Vykresli(MetafileCanvas);
+//			MetafileCanvas->Draw(0,0,Staticka_scena);
+//			delete MetafileCanvas;
+//
+//			Metafile->Enhanced=true;
+//			Metafile->SaveToFile("testMeteFile.emf");
+//			delete Metafile;
+
+//Staticka_scena->SaveToFile("test_bmp.bmp");
+//
+//
+//		TJPEGImage *Jpeg = new TJPEGImage();
+//		Jpeg->Assign(Staticka_scena);
+//		Jpeg->SaveToFile("test_jpg.jpg");
+//
+//		TPngImage *Png = new TPngImage;
+//		Png->Assign(Staticka_scena);
+//		Png->SaveToFile("test_png.png");
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::Timer1Timer(TObject *Sender)
+{
+//	if(get_AvailPhysMemory()/(get_TotalPhysMemory()*1.0)<0.3)//ukončí plnění bufferu při dosažení 30% operační paměti
+//	{
+//		Timer1->Enabled=false;
+//		Memo("Dosaženo maximum "+String(get_AvailPhysMemory()/(get_TotalPhysMemory()*1.0)));
+//		Memo(get_AvailPhysMemory());
+//		Memo(get_TotalPhysMemory());
+//	}
+//	else
+//	{
+//		d.v.vloz_do_BUFFERU();
+//		Memo(String(d.v.sBUFFER->predchozi->n)+" "+String(get_AvailPhysMemory()));
+//	}
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -17736,7 +17876,7 @@ void TForm1::reset_teplomeru(Cvektory::TObjekt *Objekt)
 //provde zarovnání zarážek a změní velikost výpisů ve statusbaru
 void TForm1::design_statusbar()
 {
-  log(__func__);
+	log(__func__);
 	int rozdil=0;
 	if(scButton_zamek_layoutu->Visible)rozdil+=scButton_zamek_layoutu->Width;
 	if(scGPButton_zmerit_vzdalenost->Visible)rozdil+=scGPButton_zmerit_vzdalenost->Width;
@@ -17745,4 +17885,5 @@ void TForm1::design_statusbar()
 	scLabel_statusbar_2->Width=Image_rozdelovac_3->Left-scLabel_statusbar_2->Left;
 }
 //---------------------------------------------------------------------------
+
 

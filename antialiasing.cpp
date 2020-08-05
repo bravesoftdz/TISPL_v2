@@ -27,11 +27,11 @@ Graphics::TBitmap *Cantialising::antialiasing(Graphics::TBitmap *bmp_in,bool tra
 	for(int Y=0;Y<=bmp_out->Height-1;Y++)// pro všechny øadky
 	{
 		//naètení øádkù
-		PRGBTriple RD = (PRGBTriple)(bmp_out->ScanLine[Y]);// vezmu ukazatel na sloupec y z výsledné bitmapy
+		PRGBTriple RD = (PRGBTriple)(bmp_out->ScanLine[Y]);// vezmu ukazatel na øádek y z výsledné bitmapy
 		int CY=Y*Z;
 		PRGBTriple R1=(PRGBTriple)(bmp_in->ScanLine[CY]);//Vezmu body od aktuálního
 		PRGBTriple R2=(PRGBTriple)(bmp_in->ScanLine[CY+1]);//následujícího
-		PRGBTriple R3=(PRGBTriple)(bmp_in->ScanLine[CY+2]);// a ještì následujícího sloupce v pøesamplované bitmapì
+		PRGBTriple R3=(PRGBTriple)(bmp_in->ScanLine[CY+2]);// a ještì následujícího øádku v pøesamplované bitmapì
 
 		//práce se jednolivými pixely (jednoprvkovými sloupci) øádkù
 		for(int X=0;X<=bmp_out->Width-1;X++)
@@ -62,11 +62,11 @@ void Cantialising::antialiasing(Graphics::TBitmap *bmp_in,Graphics::TBitmap *bmp
 	for(int Y=0;Y<=bmp_out->Height-1;Y++)// pro všechny øadky
 	{
 		//naètení øádkù
-		PRGBTriple RD = (PRGBTriple)(bmp_out->ScanLine[Y]);// vezmu ukazatel na sloupec y z výsledné bitmapy
+		PRGBTriple RD = (PRGBTriple)(bmp_out->ScanLine[Y]);// vezmu ukazatel na øádek y z výsledné bitmapy
 		int CY=Y*Z;
 		PRGBTriple R1=(PRGBTriple)(bmp_in->ScanLine[CY]);//Vezmu body od aktuálního
 		PRGBTriple R2=(PRGBTriple)(bmp_in->ScanLine[CY+1]);//následujícího
-		PRGBTriple R3=(PRGBTriple)(bmp_in->ScanLine[CY+2]);// a ještì následujícího sloupce v pøesamplované bitmapì
+		PRGBTriple R3=(PRGBTriple)(bmp_in->ScanLine[CY+2]);// a ještì následujícího øádek v pøesamplované bitmapì
 
 		//práce se jednolivými pixely (jednoprvkovými sloupci) øádkù
 		for(int X=0;X<=bmp_out->Width-1;X++)

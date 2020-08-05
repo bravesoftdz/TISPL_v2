@@ -334,6 +334,30 @@ class Cvektory
 		bool transparent;//zda bude vektorová vrstva transparentní - zatím nebude využito
 	};
 
+	struct TmyPx
+	{
+		unsigned short X;
+		unsigned short Y;
+		unsigned short o/*opakování*/;
+		unsigned char R;
+		unsigned char G;
+		unsigned char B;
+		TmyPx *dalsi;
+	};
+
+	struct T_buffer_simulace//slouží k nabuffrování jednotlivých bmp obrazů kroků animované simulace
+	{
+		unsigned long n;//pořadí prvku
+		//Graphics::TBitmap *raster;//ukazatel na nabuffrovanou bitmapu
+		//TPngImage* raster;
+		TmyPx *raster;
+		struct T_buffer_simulace *predchozi;//ukazatel na předchozí prvek ve spojovém seznamu
+		struct T_buffer_simulace *dalsi;//ukazatel na  další prvek ve spojovém seznamu
+	};
+	T_buffer_simulace *sBUFFER;//slouží k nabuffrování jednotlivých bmp obrazů kroků animované simulace
+	T_buffer_simulace *sIterator;//ukazovátko aktuálně načítaného rastru
+
+
 	struct T_parametry_projektu //(Parametry výroby + Parametry linky (vozíky)
 	{
     int katalog;//ID katalogových komponent zvolených pro geometrické elementy linky
@@ -358,7 +382,7 @@ class Cvektory
 	};
 	T_parametry_projektu PP;
 
-	struct TProces
+	struct TProces //možno odstranit
 	{
 		unsigned long n; //pořadí objektu ve spoj.seznamu
 		unsigned long n_v_zakazce;//pořadí objektu v rámci zakázky
@@ -375,7 +399,7 @@ class Cvektory
 	};
 	TProces *PROCESY;//seznam vygenerovaných procesů  v rámci časových os
 
-	struct TOdstavka
+	struct TOdstavka//možno odstranit
 	{
 		unsigned long n; //pořadí objektu ve spoj.seznamu
 		double datum_od;
@@ -385,7 +409,7 @@ class Cvektory
 	};
 	struct TOdstavka ODSTAVKY;//seznam plánovaných odstávek linky
 
-	struct TDoubleHodnota
+	struct TDoubleHodnota//pomocná struktura níže uvedené
 	{
 		unsigned int n; //pořadí objektu ve spoj.seznamu
 		double hodnota;//double hodnota
@@ -716,8 +740,14 @@ private:
 	void vloz_vozik(TZakazka *zakazka,TElement *element,double X,double Y,double orientaceP,double rotaceJ,short stav);
 	void vymaz_seznam_VOZIKY();
 
-//metody pro PROCESY, konrola metody obsahují již neexistující atributy
 public:
+//metody pro BUFFER SIMULACE
+	TmyPx *komprese(Graphics::TBitmap *bmp_in);
+	Graphics::TBitmap *dekomprese(TmyPx *Raster,unsigned short Width,unsigned short Height);
+	void rast_do_souboru(TmyPx *Raster,String FileName);//Uloží rastrová data do souboru
+	void vloz_do_BUFFERU();
+
+//metody pro PROCESY, konrola metody obsahují již neexistující atributy  - již možno smazat
 	void hlavicka_PROCESY();
 	void vloz_proces(TProces *Proces);
 	TProces *najdi_proces(double cas, double vozik);//hledá bod mezi procesy
