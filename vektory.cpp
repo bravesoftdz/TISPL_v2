@@ -2810,6 +2810,13 @@ short Cvektory::PtInKota_elementu(TObjekt *Objekt,long X,long Y)
 	return RET;
 }
 ////---------------------------------------------------------------------------
+//ověří zda se na dané myších souřadnice nachází v geo. segmentu elemnetu
+bool Cvektory::PtInSegment(TElement *E,double Xmys,double Ymys)
+{
+	if(E->geo.HeightDepp==0)return m.PtInSegment(E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka,Xmys,Ymys);
+	else return m.PtInSegment(E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delkaPud,Xmys,Ymys);
+}
+////---------------------------------------------------------------------------
 //posune pouze Element z pomocného spojového seznamu OBJEKT_akt na parametrem uvedenou vzádlenost (v metrech) od elementu předchozího, pokud je implicitní hodnota pusun_dalsich_elementu false změněna na true, jsou o danou změnu posunu přesunuty i elementy následující Elementu (tudíž jejich vzdálenost od Elementu bude zachována, naopak v případě výchozí hodnoty false je následujícím/dalším elementům poloha zachována)
 bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dalsich_elementu,bool posun_kurzorem,bool kontrola_zmeny_poradi)
 { //!!!!!!po nasazení geometrie nutno zdokonalit, nebude se pracovát pouze se vzdálenosti na linii buď vodorvné či svislé, ale i v oblouku
@@ -9972,7 +9979,7 @@ void Cvektory::posun_teplomeru(TElement *teplomer)
         break;
       }
 			//kontrola zda nejsme v segmentu aktuálně kontrolovaného elementu
-			if(m.PtInSegment(CE->Element->geo.X1,CE->Element->geo.Y1,CE->Element->geo.typ,CE->Element->geo.orientace,CE->Element->geo.rotacni_uhel,CE->Element->geo.radius,CE->Element->geo.delka,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y))
+			if(PtInSegment(CE->Element,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y))
 			{
         //upravení souřadnic, "přilepení" přesně na pohon
 				TPointD P=bod_na_geometrii(CE->Element);
@@ -10330,13 +10337,13 @@ void Cvektory::aktualizuj_cestu_teplomeru()
 				while(CE!=NULL)
 				{
 					//kontrola, zda je první element stále na geometrii
-					if(!nalezen_prvni && (m.PtInSegment(CE->Element->geo.X1,CE->Element->geo.Y1,CE->Element->geo.typ,CE->Element->geo.orientace,CE->Element->geo.rotacni_uhel,CE->Element->geo.radius,CE->Element->geo.delka,X1,Y1) || (CE->Element->geo.X4==X1 && CE->Element->geo.Y4==Y1)))
+					if(!nalezen_prvni && (PtInSegment(CE->Element,X1,Y1) || (CE->Element->geo.X4==X1 && CE->Element->geo.Y4==Y1)))
 					{
 						nalezen_prvni=true;
 						T->prvni->sparovany=CE->Element;
-  				}
-  				//kontrola, zda je posledni element stále na geometrii
-  				if(!nalezen_posledni && (m.PtInSegment(CE->Element->geo.X1,CE->Element->geo.Y1,CE->Element->geo.typ,CE->Element->geo.orientace,CE->Element->geo.rotacni_uhel,CE->Element->geo.radius,CE->Element->geo.delka,X2,Y2) || (CE->Element->geo.X4==X2 && CE->Element->geo.Y4==Y2)))
+					}
+					//kontrola, zda je posledni element stále na geometrii
+					if(!nalezen_posledni && (PtInSegment(CE->Element,X2,Y2) || (CE->Element->geo.X4==X2 && CE->Element->geo.Y4==Y2)))
 					{
 						nalezen_posledni=true;
 						T->posledni->sparovany=CE->Element;
