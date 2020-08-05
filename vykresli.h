@@ -40,7 +40,7 @@ class Cvykresli
 	void vykresli_meridlo_po_trendu(TCanvas *canv);//vykreslí mìøení po trendu linky
 	void vykresli_meridlo_proti_trendu(TCanvas *canv);//vykresli mìøení proti trendu linky
   void vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TObjekt *Objekt);//vykreslí teplomìry a cestu mezi nimi
-  void vykresli_segment_cesty_teplomeru(TCanvas *canv,Cvektory::TElement *Element,unsigned int eID,short teplomer=0);//vykreslí segment cesty oblasti teplomìrù, parametr teplomìr udává zda se bude vykreslovat prvni nebo posledni teplomìr, 1 ... prvni, 2 ... posledni
+  void vykresli_segment_cesty_teplomeru(TCanvas *canv,Cvektory::TElement *Element,TColor barva,short teplomer=0);//vykreslí segment cesty oblasti teplomìrù, parametr teplomìr udává zda se bude vykreslovat prvni nebo posledni teplomìr, 1 ... prvni, 2 ... posledni
 	void vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E);//vykresli pozic a obalových zón
 	void vykresli_dopravnik(TCanvas *canv, Cvektory::TZakazka *zakazka=NULL);//kreslí koleje, pouzdro øetìzu, øetìz samotný, pøedávací místo i popisek pohonu, slouží i zároveò na náhled cest zakázek
 	void vykresli_retez(TCanvas *canv,Cvektory::TRetez *Retez);
@@ -62,7 +62,7 @@ class Cvykresli
 	void vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ=0, double rotace=0, short stav=1);
 	void vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID=5,short typ=0,double rotace=0,short stav=1);
 	void vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ,double rotace,short stav,float TS=0);
-	void vykresli_teplomer(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav);
+	void vykresli_teplomer(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,Cvektory::TElement *Element);
 	void vykresli_zarazku(TCanvas *canv,long X,long Y);
 	void vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,long X,long Y,AnsiString name,short typ=0,double rotace=0,short stav=1);
 	void vykresli_lakovaci_okno(TCanvas *canv,long X,long Y,double LO1,double OTOC_delka,double LO2,double delka_ramena,double rotace=0,double LO_pozice=0);

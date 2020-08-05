@@ -684,7 +684,8 @@ public:		// User declarations
 
 	//promìnné
 	UnicodeString LICENCE;
-	UnicodeString VERZE;
+	UnicodeString FileVersion;
+  UnicodeString ProductVersion;
 	double m2px;//uchovává hodnotu prostorového rozlišení programu, nativní rozlišení 0,1 m na 1 pixel pøi zoomu 1x
 	double fps;//frames per second, èetnost snímkù za sekundu - používá se pro animace a simulace
 	double afps;//frames per second, aktuální èetnost snímkù za sekundu - používá se pro animace a simulace
@@ -819,7 +820,9 @@ public:		// User declarations
 	void START();//zapne stopky
 	void STOP(bool MB=false);//vypne stopky, pokud je parementr metody nastaven na false (což je implicitnì), je zajištìn výpis do mema, pokud na true tak do ShowMessage
 	void GetTime(short int rezim);
-  void reset_teplomeru(Cvektory::TObjekt *Objekt);//zborazí upozornìní, že došlo ke zmìnì geometrie a resetuje oblasti teplomerù
+	void reset_teplomeru(Cvektory::TObjekt *Objekt);//zborazí upozornìní, že došlo ke zmìnì geometrie a resetuje oblasti teplomerù
+	String get_major_version(String version);//vrátí Major verzi z FileVersion
+  void copy_to_clipboard(String text);//kopíruje text do Clipboardu
   };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

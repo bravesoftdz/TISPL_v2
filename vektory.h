@@ -127,7 +127,7 @@ class Cvektory
 
 		double WT;//čekání na palec
 
-		T5Rect citelna_oblast;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast celé kóty(rect0), popisku kóty (rect1), jednotek kóty (rect2) a samotného názvu např. Robot 3 (rect3) elementu, ohodnoty koty mezi LO (rect4), textu na kótě mezi LO (rect5) - nedovávat  do CObjekt
+		T5Rect citelna_oblast;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast celé kóty(rect0), popisku kóty (rect1), jednotek kóty (rect2) a samotného názvu např. Robot 3 (rect3) elementu, ohodnoty koty mezi LO (rect4), textu na kótě mezi LO (rect5) - popisek kóty mezi LO, v případě teploměrů, uložena oblast popisku °C, nedovávat  do CObjekt
 
 		TGeometrie geo;//geometrie elementu
 		TGeometrie geoH;//3D geometrie, v případě spojky geometrie vedlejší větve
@@ -364,6 +364,9 @@ class Cvektory
     short typ_linky; //0 - podlahový, 1 - podvěsný
 		double radius;//nastavený radius komponent linky z katalogu
 		TDateTime cas_start;//začátek výroby v SEČ (resp. LSEČ)
+//		UnicodeString vytvoril;//jmeno autora
+//		TDateTime cas_posledni_upravy;//čas a datum poslední úpravy v SEČ (resp. LSEČ)
+//		UnicodeString upravil;//jmeno autora poslední úpravy
 		unsigned long  mnozstvi;//požadované množství
 		double hod_den;//počet hodin za den
 		double dni_rok;//počet hodin za den
@@ -378,7 +381,7 @@ class Cvektory
 		bool zamek_layoutu;//zámek editace layoutu
 		T_raster raster;
 		T_vector vector;//DOPRYC - zakomentovat
-		UnicodeString autor;//nazev autora projektu
+    UnicodeString autor;//nazev autora projektu
 	};
 	T_parametry_projektu PP;
 
@@ -480,7 +483,8 @@ class Cvektory
 
 	struct TFile_hlavicka
 	{
-		unsigned short int Verze;
+		unsigned short int FileVersion;
+    unsigned short int ProductVersion;
 		unsigned short int Mod;
 		double Zoom;
 		long PosunutiX;//proměnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souřadnicích zařízení
@@ -493,6 +497,9 @@ class Cvektory
 		unsigned int pocet_voziku;
 		//parametry projektu (PP):
 		TDateTime cas_start;//začátek výroby v SEČ (resp. LSEČ)
+//		UnicodeString vytvoril;//jmeno autora
+//		TDateTime cas_posledni_upravy;//čas a datum poslední úpravy
+//		UnicodeString upravil;//jmeno autora poslední úpravy
 		unsigned long  mnozstvi;//požadované množství
 		double hod_den;//počet hodin za den
 		double dni_rok;//počet hodin za den
@@ -873,7 +880,7 @@ public:
 	void vloz_segment_cesty_teplomery(TObjekt *Objekt,TElement *Element,bool prvni=false,bool posledni=false,double X=0,double Y=0);//vloží segment cesty do cest teploměrů v objektu, nebo vložení teploměru, doplnění bodu vložení
   void vloz_segment_cesty_do_seznamu_cesty(TTeplomery *teplomery,TElement *Element,bool prvni=false,bool posledni=false,unsigned int eID=400,double X=0,double Y=0);
 	void vytvor_default_c_teplomery(TObjekt *Objekt);//vytvoří 2 teploměry a defaultní cestu mezi nimi
-	Cvektory::TElement *najdi_teplomer();//hledá zda není uživatel kurzorem nad teploměrem, pokud ano vrátí ukazatel na teploměr
+	short najdi_teplomer();//hledá zda není uživatel kurzorem nad teploměrem, pokud ano zapíše ukazatel na něj do F->pom_element a vrátí 1 ... teplomer, 2 ... popisek, nebo 0 ... nenalezeno
 	void posun_teplomeru(TElement *teplomer);//posunem teploměru dochází k editaci jeho oblasti
 	void zmena_zakazky_vytvoreni_teplomeru(TObjekt *Objekt,TZakazka *Zakt,TZakazka *Znova);//provede kontrolu, zda existuje cesta pro akt zakázku pokud ano, zkontroluje jestli existuje cesta i na nové zakázce, pokud ne vytvoří default cestu od vrátek k vrátkům
 	void kopiruj_seznam_teplomery(TObjekt *zdroj,TObjekt *cil);//kopíruje záznamy teploměrů do jiného objektu, pro účely obrazu objektu

@@ -74,7 +74,7 @@ void __fastcall TForm_konzole::scGPButton_odeslatClick(TObject *Sender)
 	//mail odeslání
 	Text_formulare=Text->Lines->GetText();// nahrání dat z Mema
 	String projekt_cesta="";if(scGPCheckBox_odeslat_vcetne_projektu->Checked)projekt_cesta=F->FileName+".bac_"+F->get_user_name()+"_"+F->get_computer_name();
-	if(F->mail("smtp.seznam.cz","builderboy@seznam.cz","camaro69","builderboy@seznam.cz","TISPL",F->LICENCE+"_"+F->get_computer_name()+"_"+F->get_user_name()+"_"+F->VERZE,Text_formulare,"rosta.slechta@gmail.com","","",priloha_cesta,projekt_cesta))
+	if(F->mail("smtp.seznam.cz","builderboy@seznam.cz","camaro69","builderboy@seznam.cz","TISPL",F->LICENCE+"_"+F->get_computer_name()+"_"+F->get_user_name()+"_"+F->FileVersion,Text_formulare,"rosta.slechta@gmail.com","","",priloha_cesta,projekt_cesta))
   {
 	F->zobraz_tip(F->ls->Strings[476]+"                       ");//"Odesláno. Dìkujeme za zpìtnou vazbu.", mezery nutné, kvùli odsazení
   Close();
