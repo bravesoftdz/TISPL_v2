@@ -588,6 +588,7 @@ class Cvektory
 	void vloz_element(TElement *Element);//vkládá elementy za sebe do spojáku ELEMENTY, souží pro načítání ze souboru
 	Cvektory::TElement *vloz_element_pred(TObjekt *Objekt,TElement *Element);//kontrola zda vkládaný element bude umístěn na konec nebo mezi jiné elementy, pokud bude vkládán na konec return=NULL, pokud mezi elementy return=ukazatel na předchozí element
 	void vloz_G_element(TElement *Element,short typ,double X1,double Y1,double X2,double Y2,double X3,double Y3,double X4,double Y4,double orientace=0,double rotacni_uhel=0,double radius=0,double delka=0);//danému elementu přiřadí/naplní geometrickou složku
+  void vloz_Gh_element(TElement *Element,short typ=0,double X1=0,double Y1=0,double X2=0,double Y2=0,double X3=0,double Y3=0,double X4=0,double Y4=0,double orientace=0,double rotacni_uhel=0,double radius=0,double delka=0);//danému elementu přiřadí/naplní geometrickou h složku
 	void uprav_popisky_elementu(TElement *Element);//upraví indexy a popisky elementů po vloženém elementu (parametr Element), pokud dostane parametrem Element NULL přejmenuje a přeindexuje všechny ovlovněné elementy do původního stavu (tlačítko storno)
 	void kopiruj_element(TElement *Original, TElement *Kopie);//zkopíruje atributy elementu bez ukazatelového propojení, pouze ukazatelové propojení na mGrid je zachováno
 	void kopiruj_data_elementu(Tdata Original,TCesta *cesta);//zkopíruje atributy dat, slouží pro zakládání cesty v zakázce, musí být řešeno přes cestu!!!!!! ne Tdata Original, Tdata Kopie
@@ -969,7 +970,7 @@ private:
 		 //	UnicodeString short_name;//krátký název max. 4 znaky
      //	UnicodeString name;//celý název objektu
 			double name_delka;  // celý název objektu
-      double X, Y;//umístění v logických (metrických) souřadnicích
+      double X, Y, Z;//umístění v logických (metrických) souřadnicích
 			double Xt,Yt;//umístění tabulky, resp. mGridu v logických (metrických) souřadnicích
       short orientace;//v jaké orientaci je element na obrazovce vykreslen 0,90,180,270
 			double rotace_jig;//úhel o který element orotuje jig vzhledem k jeho aktuální rotaci jigu vůči podvozku, např. rotace_jig=90°, aktuální rotace jigu 90°, výsledek 180°
@@ -997,6 +998,7 @@ private:
       unsigned long objekt_n;//příslušnost elementu k objektu
       unsigned long pohon_n;//příslušnost elementu k pohonu
 			TGeometrie geo;
+      TGeometrie geoH;
 	};
 
 	struct C_cesta//pouze přidružený spoják, který je součástí zakázky, jeden objekt spojáku je jeden segment cesty
