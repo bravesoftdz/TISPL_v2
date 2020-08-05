@@ -2638,7 +2638,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 			if(ButtonMaKr->Visible)ButtonMaKr->SetFocus();
 		}break;
 		//F10
-		case 121:Invalidate();break;
+		case 121:Invalidate();  if(DEBUG) if(ButtonRosta->Visible)ButtonRosta->SetFocus(); break;
 		//F11
 		case 122:ortogonalizace_on_off();break;//přepíná stav automatické ortogonalizace
 		//F12
@@ -14328,10 +14328,10 @@ void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 
 //Timer1->Enabled=!Timer1->Enabled;
 
-	double delka=12;//původní d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi->geo.delka
+	double delka=d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi->geo.delka;
 	double vyska=5;
 	double delkaSklon=m.delkaSklon(delka,vyska);
-	d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi->geoH.delka=delka;
+	d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi->geo.delkaPud=delka;
 	d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi->geo.delka=delkaSklon;
 	d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi->geo.HeightDepp=vyska;
 	//ád.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi->geo.Y4=d.v.ELEMENTY->dalsi->dalsi->dalsi->dalsi->geo.Y1;
@@ -14371,24 +14371,24 @@ void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 	//Staticka_scena->SaveToFile("SSoriginal.bmp");
 //	STOP();
 
-	Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-	bmp_in->Assign(Staticka_scena);
-	Cvektory::TmyPx *px;
-	vrat_max_oblast();
-	START();
-	for(UINT i=0;i<600;i++)
-	px=d.v.komprese(bmp_in);
-	STOP();
-	int W=bmp_in->Width;int H=bmp_in->Height;
-	delete bmp_in;
-
-	START();
-	for(UINT i=0;i<600;i++)
-	{
-		Graphics::TBitmap *bmp_out=d.v.dekomprese(px,W,H);
-		delete bmp_out;
-	}
-	STOP();
+//	Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+//	bmp_in->Assign(Staticka_scena);
+//	Cvektory::TmyPx *px;
+//	vrat_max_oblast();
+//	START();
+//	for(UINT i=0;i<600;i++)
+//	px=d.v.komprese(bmp_in);
+//	STOP();
+//	int W=bmp_in->Width;int H=bmp_in->Height;
+//	delete bmp_in;
+//
+//	START();
+//	for(UINT i=0;i<600;i++)
+//	{
+//		Graphics::TBitmap *bmp_out=d.v.dekomprese(px,W,H);
+//		delete bmp_out;
+//	}
+//	STOP();
 
 
 
@@ -15208,10 +15208,10 @@ void __fastcall TForm1::ButtonRostaClick(TObject *Sender)
 
 	////////////////připrava ladicí konzole
 	//vytvoření aktuálního snímku obrazovky
-	pan_create();//vytvoří aktuální printscreen jen pracovní plochy
-	TPngImage* PNG = new TPngImage();//kvůli větší kompresi uloženo do PNG (má větší kompresi než JPG)
-	PNG->Assign(Pan_bmp);
-	PNG->SaveToFile(get_temp_dir() +"TISPL\\" + "tispl_PrtScr"+get_user_name()+"_"+get_computer_name()+".png");
+//	pan_create();//vytvoří aktuální printscreen jen pracovní plochy
+//	TPngImage* PNG = new TPngImage();//kvůli větší kompresi uloženo do PNG (má větší kompresi než JPG)
+//	PNG->Assign(Pan_bmp);
+//	PNG->SaveToFile(get_temp_dir() +"TISPL\\" + "tispl_PrtScr"+get_user_name()+"_"+get_computer_name()+".png");
 
 	//připava textových dat
 	//+odeslat uživatele,pc,licencci,mod,aktuální log?
@@ -15243,30 +15243,30 @@ void __fastcall TForm1::ButtonRostaClick(TObject *Sender)
 //	delete MAIL;
 //	delete SMTP;
 
-	TIdMessage *MAIL=new TIdMessage(this);
-	MAIL->Clear();
-	MAIL->From->Address="builderboy@seznam.cz";
-	MAIL->From->Name="TISPL";
-	MAIL->Subject="zkouška 12 včetně přílohy";
-	MAIL->Recipients->EMailAddresses="rosta.slechta@gmail.com,rosta.slechta@seznam.cz";
-	MAIL->CCList->EMailAddresses="";
-	MAIL->BccList->EMailAddresses="";
-	MAIL->ContentType="multipart/related; type=text/html";//text/plain
-	MAIL->CharSet="UTF-8";
-	MAIL->Body->Text=AnsiToUtf8("Snad to <b>půjde</b> 11. port 25. již včetně přílohy Martin");
-	TIdAttachmentFile *Attach = new TIdAttachmentFile(MAIL->MessageParts,"c:\\Users\\rosta\\AppData\\Local\\Temp\\TISPL\\tispl_PrtScrrosta_ROSTA.png");//potřebuje #include <idattachmentfile.hpp>
-
-	TIdSMTP *SMTP=new TIdSMTP(this);
-	SMTP->Host="smtp.seznam.cz";//"smtp.seznam.cz";
-	SMTP->Username="builderboy@seznam.cz";
-	SMTP->Password="camaro69";
-	SMTP->Port=25;//SMTP->UseTLS=utNoTLSSupport; případně použít, pro použití SSL jiný port a zároveň potřeba s SMTP propojit přes IO handler SSL komponentu + 2x patřičné DLL
-	SMTP->Connect();
-	SMTP->Send(MAIL);
-	SMTP->Disconnect(true);
-	delete Attach;//musí být jako první
-	delete MAIL;
-	delete SMTP;
+//	TIdMessage *MAIL=new TIdMessage(this);
+//	MAIL->Clear();
+//	MAIL->From->Address="builderboy@seznam.cz";
+//	MAIL->From->Name="TISPL";
+//	MAIL->Subject="zkouška 12 včetně přílohy";
+//	MAIL->Recipients->EMailAddresses="rosta.slechta@gmail.com,rosta.slechta@seznam.cz";
+//	MAIL->CCList->EMailAddresses="";
+//	MAIL->BccList->EMailAddresses="";
+//	MAIL->ContentType="multipart/related; type=text/html";//text/plain
+//	MAIL->CharSet="UTF-8";
+//	MAIL->Body->Text=AnsiToUtf8("Snad to <b>půjde</b> 11. port 25. již včetně přílohy Martin");
+//	TIdAttachmentFile *Attach = new TIdAttachmentFile(MAIL->MessageParts,"c:\\Users\\rosta\\AppData\\Local\\Temp\\TISPL\\tispl_PrtScrrosta_ROSTA.png");//potřebuje #include <idattachmentfile.hpp>
+//
+//	TIdSMTP *SMTP=new TIdSMTP(this);
+//	SMTP->Host="smtp.seznam.cz";//"smtp.seznam.cz";
+//	SMTP->Username="builderboy@seznam.cz";
+//	SMTP->Password="camaro69";
+//	SMTP->Port=25;//SMTP->UseTLS=utNoTLSSupport; případně použít, pro použití SSL jiný port a zároveň potřeba s SMTP propojit přes IO handler SSL komponentu + 2x patřičné DLL
+//	SMTP->Connect();
+//	SMTP->Send(MAIL);
+//	SMTP->Disconnect(true);
+//	delete Attach;//musí být jako první
+//	delete MAIL;
+//	delete SMTP;
 //
 //	//odeslání dat na FTP server
 //	TIdFTP *FTP=new TIdFTP(this);
@@ -15280,13 +15280,13 @@ void __fastcall TForm1::ButtonRostaClick(TObject *Sender)
 //	FTP->Disconnect();
 //	delete FTP;
 
-  ShowMessage(WhichFailedToLoad());
-  String Response;
-  IdHTTP1->IOHandler = IdSSLIOHandlerSocketOpenSSL1;
-  Response=IdHTTP1->Get("https://time.is/cs/");
-
-  Memo(Response);
-  Memo(ms.EP(Response,"<time id=\"clock\">","</time>"));
+//  ShowMessage(WhichFailedToLoad());
+//  String Response;
+//  IdHTTP1->IOHandler = IdSSLIOHandlerSocketOpenSSL1;
+//  Response=IdHTTP1->Get("https://time.is/cs/");
+//
+//  Memo(Response);
+//  Memo(ms.EP(Response,"<time id=\"clock\">","</time>"));
 // IdSNMP1->Connect();
 
 //IdDayTime1->Host="128.138.140.44";
@@ -15299,7 +15299,28 @@ void __fastcall TForm1::ButtonRostaClick(TObject *Sender)
 //	TDateTime TIME=IdSNTP1->DateTime;
 //	Sk(TIME);
 
-
+    pom_element=NULL;
+		Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+		while(E!=NULL)
+		{
+			if(d.v.oblast_elementu(E,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+			{
+				double delka=E->geo.delka;
+				double HeightDeep=5;
+				double delkaSklon=m.delkaSklon(delka,HeightDeep);
+				E->geo.delkaPud=delka;
+				E->geo.delka=delkaSklon;
+				E->geo.HeightDepp=HeightDeep;
+				duvod_validovat=2;
+				vytvor_statickou_scenu();
+				REFRESH();
+				ShowMessage("Nastaveno HeightDeep "+String(HeightDeep*1000)+" mm pro element "+E->name);
+				break;
+			}
+			E=d.v.dalsi_krok(E);
+		}
+    d.v.vymaz_seznam_VYHYBKY();
+		E=NULL;delete E;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
