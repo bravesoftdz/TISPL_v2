@@ -1009,7 +1009,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv)
 			else if(C->Element->geo.typ==0)
 			{
 				d=m.delka(X,Y,C->Element->geo.X4,C->Element->geo.Y4);
-				d=m.delkaSklon(d,C->Element->geo.HeightDepp);
+				d=m.castPrepony(d,C->Element->geo.delka,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
 			}
 			else
 			{
@@ -1125,7 +1125,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv)
 			//výpočetní část
 			TPointD konec=v.bod_na_geometrii(F->pom_element);
 			d=m.delka(X,Y,konec.x,konec.y);
-			d=m.delkaSklon(d,F->pom_element->geo.HeightDepp);
+			d=m.castPrepony(d,F->pom_element->geo.delka,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
 			delka+=d;
 
 			//vypočet času
@@ -1167,8 +1167,9 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv)
 		X=v.MAG_LASO->Element->geo.X1;Y=v.MAG_LASO->Element->geo.Y1;
 		//výpočetní část
 		delka=m.delka(X,Y,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);
+		if(F->pom_element!=NULL)delka=m.castPrepony(delka,F->pom_element->geo.delka,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
 		azimut=m.azimut(X,Y,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);
-    //výpočt času a vykreslení
+		//výpočt času a vykreslení
 		if(v.MAG_LASO->dalsi==NULL && v.MAG_LASO->sparovany!=NULL && F->pom_element!=NULL && F->pom_element->pohon!=NULL && v.MAG_LASO->sparovany==F->pom_element)
 		{
 			//kontrola + vypočet WT na vozík v bufferu
@@ -1177,9 +1178,9 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv)
 			{
 				//výpočet vzdálenosti od stopstanice
 				double s=m.delka(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,F->pom_element->geo.X4,F->pom_element->geo.Y4);
-				s=m.delkaSklon(s,F->pom_element->geo.HeightDepp);
+				s=m.castPrepony(s,F->pom_element->geo.delka,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
 				double check=m.delka(v.MAG_LASO->Element->geo.X4,v.MAG_LASO->Element->geo.Y4,F->pom_element->geo.X4,F->pom_element->geo.Y4);
-        check=m.delkaSklon(check,F->pom_element->geo.HeightDepp);
+				check=m.castPrepony(check,F->pom_element->geo.delka,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
 				//výpočet velikosti bufferu stopstanice
 				double buf=F->pom_element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;
 				if(s<buf)//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
@@ -1226,7 +1227,7 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv)
 			else if(C->Element->geo.typ==0)
 			{
 				d=m.delka(X,Y,C->Element->geo.X1,C->Element->geo.Y1);
-				d=m.delkaSklon(d,C->Element->geo.HeightDepp);
+				d=m.castPrepony(d,C->Element->geo.delka,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
 			}
 			else
 			{
@@ -1285,9 +1286,9 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv)
 					{
 						//výpočet vzdálenosti od stopstanice
 						double check=m.delka(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,C->Element->geo.X4,C->Element->geo.Y4);
-						check=m.delkaSklon(check,C->Element->geo.HeightDepp);
+						check=m.castPrepony(check,C->Element->geo.delka,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
 						double s=m.delka(v.MAG_LASO->Element->geo.X4,v.MAG_LASO->Element->geo.Y4,C->Element->geo.X4,C->Element->geo.Y4);
-						s=m.delkaSklon(s,C->Element->geo.HeightDepp);
+						s=m.castPrepony(s,C->Element->geo.delka,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
 						//výpočet velikosti bufferu stopstanice
 						double buf=C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;
 						//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
@@ -1368,7 +1369,7 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv)
 			//výpočetní část
 			TPointD konec=v.bod_na_geometrii(F->pom_element);
 			d=m.delka(X,Y,konec.x,konec.y);
-      d=m.delkaSklon(d,F->pom_element->geo.HeightDepp);
+			d=m.castPrepony(d,F->pom_element->geo.delka,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
 			delka+=d;
 
 			//vypočet času
@@ -1406,6 +1407,7 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv)
 		X=v.MAG_LASO->Element->geo.X4;Y=v.MAG_LASO->Element->geo.Y4;
 		//výpočetní část
 		delka=m.delka(X,Y,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);
+		if(F->pom_element!=NULL)delka=m.castPrepony(delka,F->pom_element->geo.delka,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
 		azimut=m.azimut(X,Y,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);
 		//výpočt času a vykreslení
 		if(v.MAG_LASO->dalsi==NULL && v.MAG_LASO->sparovany!=NULL && F->pom_element!=NULL && F->pom_element->pohon!=NULL && v.MAG_LASO->sparovany==F->pom_element)
@@ -1419,9 +1421,9 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv)
 		  	{
   	  		//výpočet vzdálenosti od stopstanice
 					double check=m.delka(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,F->pom_element->geo.X4,F->pom_element->geo.Y4);
-					check=m.delkaSklon(check,F->pom_element->geo.HeightDepp);
+					check=m.castPrepony(check,F->pom_element->geo.delka,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
 					double s=m.delka(v.MAG_LASO->Element->geo.X4,v.MAG_LASO->Element->geo.Y4,F->pom_element->geo.X4,F->pom_element->geo.Y4);
-          s=m.delkaSklon(s,F->pom_element->geo.HeightDepp);
+          s=m.castPrepony(s,F->pom_element->geo.delka,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
 		  		//výpočet velikosti bufferu stopstanice
 		  		double buf=F->pom_element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;
 		  		//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
@@ -5275,24 +5277,22 @@ void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,double X1,double Y1,doub
 	float width=0.2;
 	double X3,Y3;
 	short Z=m.round(HeightDeep/fabs(HeightDeep));//znaménko
-	float H=0.5;//výšku vykreslujeme konstatně, v měřítku by se nevešla
+	float V=0.5;//výšku vykreslujeme konstatně, v měřítku by se nevešla
 	//pokud je linie vodorovná
 	if(Y1==Y2)
 	{
 		Y1+=offset;//odsazení
-		if(Z<0)Y1+=H;//pro klesání ještě odsadí a hodnotu klesání
 		Y2=Y1;
-		Y3=Y2+H*Z;//směr dle kladné či záporné hodnoty heightORdeep
-		X3=X2;
+		Y3=Y2+V;//směr dle kladné či záporné hodnoty heightORdeep
+		if(Z>0)X3=X2;else X3=X1;//umístění dle klesání či stoupání
 	}
 	//pokud je svislá
 	else
 	{
 		X1+=offset;
-		if(Z<0)X1+=H;//pro klesání ještě odsadí a hodnotu klesání
 		X2=X1;
-		X3=X2+H*Z;//směr dle kladné či záporné hodnoty heightORdeep
-		Y3=Y2;
+		X3=X2+V;//směr dle kladné či záporné hodnoty heightORdeep
+		if(Z>0)Y3=Y2;else Y3=Y1;//umístění dle klesání či stoupání
 	}
 
 	////trojúhelník vykreslení
@@ -5320,8 +5320,17 @@ void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,double X1,double Y1,doub
 	canv->Font->Color=color;
 	canv->Font->Size=m.round(width*F->Zoom*F->aFont->Size);
 	//výpis
-	String Znamenko="+";if(Z>0)Znamenko="";//příprava pro další pokračování: ±
-	TextOut(canv,m.round((points[1].x+points[2].x)/2.0),m.round((points[1].y+points[2].y)/2.0),Znamenko+String(HeightDeep*1000));
+	String Text=String(HeightDeep*1000)+"  ";
+	if(Z>0)Text="+"+Text;//příprava pro další pokračování: ±
+	//orientace a vycentrování
+	short W,H;
+	if(X1==X2){canv->Font->Orientation=2700;W=-canv->TextHeight(Text);H=canv->TextWidth(Text);}
+	else{W=canv->TextWidth(Text);H=canv->TextHeight(Text);}
+	//samotný výpis
+	if(Z>0)TextFraming(canv,m.round((points[1].x+points[2].x-W)/2.0),m.round((points[1].y+points[2].y-H)/2.0),Text);
+	else TextFraming(canv,m.round((points[0].x+points[2].x-W)/2.0),m.round((points[0].y+points[2].y-H)/2.0),Text);
+	//raději vrácení do původního stavu
+	canv->Font->Orientation=0;
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
