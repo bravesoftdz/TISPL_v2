@@ -1875,7 +1875,8 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	if(novy->predchozi->n>0 && novy->predchozi->objekt_n==Objekt->n && (novy->predchozi->eID!=300 || (novy->predchozi->eID==300 && novy->predchozi->dalsi==novy)))novy->pohon=novy->predchozi->pohon;
 	if(novy->predchozi->n>0 && Objekt->element!=NULL && novy->predchozi->objekt_n!=Objekt->n && (Objekt->element->predchozi->n>0 && novy->predchozi->objekt_n!=Objekt->element->predchozi->objekt_n || Objekt->element->predchozi->n==0))novy->pohon=novy->predchozi->pohon;
 	if(novy==Objekt->element && novy->dalsi!=NULL)novy->pohon=novy->dalsi->pohon;
-  vloz_Gh_element(novy);//nulování geoH
+	novy->geo.HeightDepp=0;
+  novy->geo.delkaPud=0;
 
 	//název
 	AnsiString T="";
@@ -2294,23 +2295,6 @@ void Cvektory::vloz_G_element(TElement *Element,short typ,double X1,double Y1,do
 	}
 }
 ////---------------------------------------------------------------------------
-//danému elementu přiřadí/naplní geometrickou složku h
-void Cvektory::vloz_Gh_element(TElement *Element,short typ,double X1,double Y1,double X2,double Y2,double X3,double Y3,double X4,double Y4,double orientace,double rotacni_uhel,double radius,double delka)
-{
-  if(Element!=NULL)
-	{
-		Element->geoH.typ=typ;//0 - linie, 1 - oblouk, -1 neidentifikovatelný tvar pomocí bézieru
-		Element->geoH.delka=delka;
-		Element->geoH.radius=radius;
-		Element->geoH.orientace=orientace;
-		Element->geoH.rotacni_uhel=rotacni_uhel;
-		Element->geoH.X1=X1;Element->geoH.Y1=Y1;
-		Element->geoH.X4=X4;Element->geoH.Y4=Y4;
-		Element->geoH.X2=X2;Element->geoH.Y2=Y2;
-		Element->geoH.X3=X3;Element->geoH.Y3=Y3;
-	}
-}
-////---------------------------------------------------------------------------
 //pokud byl nějaký element vložen mezi ostatní a ne na konec, provede přejměnování,dále pokud bylo stisknuto storno vrátí všechny změny
 void Cvektory::uprav_popisky_elementu(TElement *Element)
 {
@@ -2412,7 +2396,6 @@ void Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->data.pocet_voziku=Original->data.pocet_voziku;
 	Kopie->data.pocet_pozic=Original->data.pocet_pozic;
 	Kopie->geo=Original->geo;
-  Kopie->geoH=Original->geoH;
 	Kopie->mGrid=NULL;//nealokovat!!!!!! k alokci pro mGrid dochází v metodě Form1::NP_input() při otevírání náhledu
 	Kopie->objekt_n=Original->objekt_n;
 	//if(Original->pohon!=NULL)Kopie->pohon=vrat_pohon(Original->pohon->n);
@@ -7270,7 +7253,6 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 						cE->objekt_n=T->prvni->objekt_n;
 						cE->sparovany_n=T->prvni->sparovany->n;
 						cE->geo=T->prvni->geo;
-						cE->geoH=T->prvni->geoH;
 						FileStream->Write(cE,sizeof(C_element));//zapiše jeden prvek do souboru
 						wchar_t *name=new wchar_t [cE->name_delka];
 						name=T->prvni->name.c_str();
@@ -7291,7 +7273,6 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 						cE->objekt_n=T->posledni->objekt_n;
 						cE->sparovany_n=T->posledni->sparovany->n;
 						cE->geo=T->posledni->geo;
-            cE->geoH=T->posledni->geoH;
 						FileStream->Write(cE,sizeof(C_element));//zapiše jeden prvek do souboru
 						name=new wchar_t [cE->name_delka];
 						name=T->posledni->name.c_str();
@@ -7374,7 +7355,6 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 				if(E->pohon==NULL) cE->pohon_n=0;
 				else cE->pohon_n=E->pohon->n;
 				cE->geo=E->geo;
-        cE->geoH=E->geoH;
 				//uložení do binárního filu
 				FileStream->Write(cE,sizeof(C_element));//zapiše jeden prvek do souboru
 
@@ -7697,7 +7677,6 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
             E->pohon=NULL;
 						E_pom=NULL;delete E_pom;
 						E->geo=cE->geo;
-            E->geoH=cE->geoH;
 						wchar_t *name=new wchar_t[cE->name_delka];
 						FileStream->Read(name,cE->name_delka*sizeof(wchar_t));
 						E->name=name;
@@ -7725,7 +7704,6 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 						E->pohon=NULL;
 						E_pom=NULL;delete E_pom;
 						E->geo=cE->geo;
-						E->geoH=cE->geoH;
 			  		name=new wchar_t[cE->name_delka];
 			  		FileStream->Read(name,cE->name_delka*sizeof(wchar_t));
 						E->name=name;
@@ -7797,7 +7775,6 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 					E->objekt_n=cE->objekt_n;
 					E->pohon=vrat_pohon(cE->pohon_n);
 					E->geo=cE->geo;
-					E->geoH=cE->geoH;
 					E->sparovany=NULL;
 					//shortname
 					wchar_t *short_name=new wchar_t [5];
@@ -9801,7 +9778,6 @@ void Cvektory::vloz_segment_cesty_do_seznamu_cesty(TTeplomery *teplomery,TElemen
 		E->mGrid=NULL;
 		E->pohon=NULL;
 		E->geo=Element->geo;//kopírování všech parametrů geometrie
-		vloz_Gh_element(E);//nulování geoH
 		E->Xt=E->X=E->geo.X1=E->geo.X4=X;
 		E->Yt=E->Y=E->geo.Y1=E->geo.Y4=Y;
 		E->eID=eID;
@@ -10046,7 +10022,6 @@ void Cvektory::posun_teplomeru(TElement *teplomer)
 				t1->mGrid=NULL;
 				t1->pohon=NULL;
 				t1->geo=prvni->geo;//kopírování všech parametrů geometrie
-				vloz_Gh_element(t1);//nulování geoH
 				t1->Xt=t1->X=t1->geo.X1=t1->geo.X4=T->prvni->X;
 				t1->Yt=t1->Y=t1->geo.Y1=t1->geo.Y4=T->prvni->Y;
 				t1->eID=T->prvni->eID;
@@ -10063,7 +10038,6 @@ void Cvektory::posun_teplomeru(TElement *teplomer)
 				t2->mGrid=NULL;
 				t2->pohon=NULL;
 				t2->geo=prvni->geo;//kopírování všech parametrů geometrie
-        vloz_Gh_element(t2);//nulování geoH
 				t2->Xt=t2->X=t2->geo.X1=t2->geo.X4=T->posledni->X;
 				t2->Yt=t2->Y=t2->geo.Y1=t2->geo.Y4=T->posledni->Y;
 				t2->eID=T->posledni->eID;
@@ -10159,7 +10133,6 @@ void Cvektory::zmena_zakazky_vytvoreni_teplomeru(TObjekt *Objekt,TZakazka *Zakt,
 			  	t1->mGrid=NULL;
 			  	t1->pohon=NULL;
 					t1->geo=prvni->Element->geo;//kopírování všech parametrů geometrie
-					vloz_Gh_element(t1);//nulování geoH
 					t1->Xt=t1->X=t1->geo.X1=t1->geo.X4=T->prvni->X;
 					t1->Yt=t1->Y=t1->geo.Y1=t1->geo.Y4=T->prvni->Y;
 					t1->eID=T->prvni->eID;
@@ -10176,7 +10149,6 @@ void Cvektory::zmena_zakazky_vytvoreni_teplomeru(TObjekt *Objekt,TZakazka *Zakt,
 			  	t2->mGrid=NULL;
 					t2->pohon=NULL;
 					t2->geo=prvni->Element->geo;//kopírování všech parametrů geometrie
-          vloz_Gh_element(t2);//nulování geoH
 					t2->Xt=t2->X=t2->geo.X1=t2->geo.X4=T->posledni->X;
 					t2->Yt=t2->Y=t2->geo.Y1=t2->geo.Y4=T->posledni->Y;
 					t2->eID=T->posledni->eID;
@@ -10291,7 +10263,6 @@ Cvektory::TTeplomery *Cvektory::kopiruj_teplomer(TTeplomery *original)
 	t1->mGrid=NULL;
 	t1->pohon=NULL;
 	t1->geo=original->prvni->sparovany->geo;//kopírování všech parametrů geometrie
-	vloz_Gh_element(t1);//nulování geoH
 	t1->Xt=t1->X=t1->geo.X1=t1->geo.X4=original->prvni->X;
 	t1->Yt=t1->Y=t1->geo.Y1=t1->geo.Y4=original->prvni->Y;
 	t1->eID=original->prvni->eID;
@@ -10311,7 +10282,6 @@ Cvektory::TTeplomery *Cvektory::kopiruj_teplomer(TTeplomery *original)
 	t2->mGrid=NULL;
 	t2->pohon=NULL;
 	t2->geo=original->prvni->sparovany->geo;//kopírování všech parametrů geometrie
-  vloz_Gh_element(t2);//nulování geoH
 	t2->Xt=t2->X=t2->geo.X1=t2->geo.X4=original->posledni->X;
 	t2->Yt=t2->Y=t2->geo.Y1=t2->geo.Y4=original->posledni->Y;
 	t2->eID=original->posledni->eID;
