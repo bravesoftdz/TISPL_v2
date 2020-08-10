@@ -1517,9 +1517,9 @@ void TForm1::Novy_soubor(bool invalidate)
 		 doba_neotaceni_mysi=0;
 
 		 d.v.PP.cas_start=TIME.CurrentDateTime();//TDateTime(AnsiString(TIME.CurrentDate().DateString())+" "+"8:00:00");//defaultně dnes v 8:00
-		 //d.v.PP.vytvoril=get_user_name();
-		 //d.v.PP.cas_posledni_upravy=d.v.PP.cas_start;
-		 //d.v.PP.upravil=d.v.PP.vytvoril;
+		 d.v.PP.vytvoril=get_user_name();
+		 d.v.PP.cas_posledni_upravy=d.v.PP.cas_start;
+		 d.v.PP.upravil=d.v.PP.vytvoril;
 		 d.v.PP.mnozstvi=20000;
 		 d.v.PP.hod_den=8;
 		 d.v.PP.dni_rok=365;
@@ -13419,8 +13419,8 @@ void TForm1::Ulozit_soubor()
 	delete E;E=NULL;
 
 	//zapis dat do souboru
-	//d.v.PP.cas_posledni_upravy=TIME.CurrentDateTime();
-	//d.v.PP.upravil=get_user_name();
+	d.v.PP.cas_posledni_upravy=TIME.CurrentDateTime();
+	d.v.PP.upravil=get_user_name();
 	d.v.uloz_do_souboru(FileName);
 
 	//nastavení komponent + výpis
@@ -13504,9 +13504,9 @@ unsigned short int TForm1::Otevrit_soubor(UnicodeString soubor)//realizuje samot
 			Posun.x=d.v.File_hlavicka.PosunutiX;
 			Posun.y=d.v.File_hlavicka.PosunutiY;
 			d.v.PP.cas_start=d.v.File_hlavicka.cas_start;
-			//d.v.PP.vytvoril=d.v.File_hlavicka.vytvoril;
-			//d.v.PP.cas_posledni_upravy=d.v.File_hlavicka.cas_posledni_upravy;
-			//d.v.PP.upravil=d.v.File_hlavicka.upravil;
+			//d.v.PP.vytvoril=d.v.File_hlavicka.vytvoril;//načteno ve vektorech
+			d.v.PP.cas_posledni_upravy=d.v.File_hlavicka.cas_posledni_upravy;
+			//d.v.PP.upravil=d.v.File_hlavicka.upravil;//načteno ve vektorech
 			d.v.PP.mnozstvi=d.v.File_hlavicka.mnozstvi;
 			d.v.PP.hod_den=d.v.File_hlavicka.hod_den;
 			d.v.PP.dni_rok=d.v.File_hlavicka.dni_rok;

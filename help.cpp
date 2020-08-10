@@ -62,8 +62,8 @@ Top=Form1->ClientHeight/2-Form_help->Height/2;
 		{
 			about_text="Product version: "+String(F->ProductVersion)+"<br>"
 								+"File version: "+String(F->FileVersion)+"<br>"
-								+"Created by: "+F->get_user_name()+" , "+DateToStr(F->d.v.PP.cas_start)+" "+TimeToStr(F->d.v.PP.cas_start)+"<br>"
-								+"Last modified: "+F->get_user_name()+" , "+DateToStr(F->d.v.PP.cas_start)+" "+TimeToStr(F->d.v.PP.cas_start)+"<br>"
+								+"Created by: "+F->d.v.PP.vytvoril+" , "+DateToStr(F->d.v.PP.cas_start)+" "+TimeToStr(F->d.v.PP.cas_start)+"<br>"
+								+"Last modified: "+F->d.v.PP.upravil+" , "+DateToStr(F->d.v.PP.cas_posledni_upravy)+" "+TimeToStr(F->d.v.PP.cas_posledni_upravy)+"<br>"
 								+"Location "+Application->ExeName+"<br>"
 								+"Application Settings "+F->get_temp_dir();
 		}
@@ -71,8 +71,8 @@ Top=Form1->ClientHeight/2-Form_help->Height/2;
 		{
 			about_text="Verze aplikace: "+String(F->ProductVersion)+"<br>"
 								+"Verze souboru: "+String(F->FileVersion)+"<br>"
-	  						+"Vytvoøil: "+F->get_user_name()+" , "+DateToStr(F->d.v.PP.cas_start)+" "+TimeToStr(F->d.v.PP.cas_start)+"<br>"
-								+"Posledni zmìna: "+F->get_user_name()+" , "+DateToStr(F->d.v.PP.cas_start)+" "+TimeToStr(F->d.v.PP.cas_start)+"<br>"
+								+"Vytvoøil: "+F->d.v.PP.vytvoril+" , "+DateToStr(F->d.v.PP.cas_start)+" "+TimeToStr(F->d.v.PP.cas_start)+"<br>"
+								+"Posledni zmìna: "+F->d.v.PP.upravil+" , "+DateToStr(F->d.v.PP.cas_posledni_upravy)+" "+TimeToStr(F->d.v.PP.cas_posledni_upravy)+"<br>"
 								+"Umístìní "+Application->ExeName+"<br>"
 								+"Nastavení aplikace "+F->get_temp_dir();
 		}

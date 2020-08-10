@@ -365,9 +365,9 @@ class Cvektory
     short typ_linky; //0 - podlahový, 1 - podvěsný
 		double radius;//nastavený radius komponent linky z katalogu
 		TDateTime cas_start;//začátek výroby v SEČ (resp. LSEČ)
-//		UnicodeString vytvoril;//jmeno autora
-//		TDateTime cas_posledni_upravy;//čas a datum poslední úpravy v SEČ (resp. LSEČ)
-//		UnicodeString upravil;//jmeno autora poslední úpravy
+		UnicodeString vytvoril;//jmeno autora
+		TDateTime cas_posledni_upravy;//čas a datum poslední úpravy v SEČ (resp. LSEČ)
+		UnicodeString upravil;//jmeno autora poslední úpravy
 		unsigned long  mnozstvi;//požadované množství
 		double hod_den;//počet hodin za den
 		double dni_rok;//počet hodin za den
@@ -498,9 +498,9 @@ class Cvektory
 		unsigned int pocet_voziku;
 		//parametry projektu (PP):
 		TDateTime cas_start;//začátek výroby v SEČ (resp. LSEČ)
-//		UnicodeString vytvoril;//jmeno autora
-//		TDateTime cas_posledni_upravy;//čas a datum poslední úpravy
-//		UnicodeString upravil;//jmeno autora poslední úpravy
+		unsigned int vytvoril_Sdelka;//délka jmena autora
+		TDateTime cas_posledni_upravy;//čas a datum poslední úpravy
+		unsigned int upravil_Sdelka;//délka jména autora poslední úpravy
 		unsigned long  mnozstvi;//požadované množství
 		double hod_den;//počet hodin za den
 		double dni_rok;//počet hodin za den

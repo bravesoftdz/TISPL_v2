@@ -7030,18 +7030,16 @@ void Cvektory::vymazat_ZPRAVY()
 //zapis hlavičky souboru
 void Cvektory::vytvor_hlavicku_souboru()
 {
-	File_hlavicka.FileVersion=Form1->ms.MyToDouble(Form1->FileVersion);
+  File_hlavicka.FileVersion=Form1->ms.MyToDouble(Form1->FileVersion);
 	File_hlavicka.ProductVersion=Form1->ms.MyToDouble(Form1->ProductVersion);
 	File_hlavicka.Mod=Form1->MOD;
 	File_hlavicka.Zoom=Form1->Zoom;
 	File_hlavicka.PosunutiX=Form1->Posun.x;
 	File_hlavicka.PosunutiY=Form1->Posun.y;
-
 	File_hlavicka.cas_start=PP.cas_start;
-	//File_hlavicka.vytvoril=PP.vytvoril;
-	//File_hlavicka.cas_posledni_upravy=PP.cas_posledni_upravy;
-	//File_hlavicka.upravil=PP.upravil;
-
+	File_hlavicka.vytvoril_Sdelka=PP.vytvoril.Length()+1;
+	File_hlavicka.cas_posledni_upravy=PP.cas_posledni_upravy;
+	File_hlavicka.upravil_Sdelka=PP.upravil.Length()+1;
 	File_hlavicka.mnozstvi=PP.mnozstvi;
 	File_hlavicka.hod_den=PP.hod_den;
 	File_hlavicka.dni_rok=PP.dni_rok;
@@ -7094,6 +7092,15 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 		//zapiše hlavičku do souboru //už neplatí:+ zbylé atributy a PP se do hlavičky zapisují v unit1
 		vytvor_hlavicku_souboru();
 		FileStream->Write(&File_hlavicka,sizeof(TFile_hlavicka));
+    //uložení autorů
+		wchar_t *autor=new wchar_t [File_hlavicka.vytvoril_Sdelka];
+		autor=PP.vytvoril.c_str();
+		FileStream->Write(autor,File_hlavicka.vytvoril_Sdelka*sizeof(wchar_t));//
+		autor=NULL; delete[] autor;
+		autor=new wchar_t [File_hlavicka.upravil_Sdelka];
+		autor=PP.upravil.c_str();
+		FileStream->Write(autor,File_hlavicka.upravil_Sdelka*sizeof(wchar_t));//
+		autor=NULL; delete[] autor;
 
 		//uložení parametrů RASTRU
 		C_raster *R=new C_raster;
@@ -7526,6 +7533,16 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 
 			//kontrola, zda se shoduje verze projektu a verze souboru, pokud ne vyhodí chybovou hlášku
 			if(F->get_major_version(String(File_hlavicka.FileVersion))!=F->get_major_version(F->FileVersion))throw new Exception("Verze souboru a projektu se neshoduje");
+
+			//načtení autorů
+			wchar_t *autor=new wchar_t[File_hlavicka.vytvoril_Sdelka];
+			FileStream->Read(autor,File_hlavicka.vytvoril_Sdelka*sizeof(wchar_t));//načte jeden nazev fontu za prvekem bod a popisek bodu
+			PP.vytvoril=autor;
+			autor=NULL; delete[] autor;
+			autor=new wchar_t[File_hlavicka.upravil_Sdelka];
+			FileStream->Read(autor,File_hlavicka.upravil_Sdelka*sizeof(wchar_t));//načte jeden nazev fontu za prvekem bod a popisek bodu
+			PP.upravil=autor;
+			autor=NULL; delete[] autor;
 
 			//uložení parametrů RASTRu
 			C_raster *R=new C_raster;
