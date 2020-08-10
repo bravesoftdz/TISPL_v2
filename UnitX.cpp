@@ -167,6 +167,25 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 				aktualizace_tab_elementu();//update PM provede skrytí èi zobrazení øádkù podle stavuPM
 				F->nahled_ulozit(true);//novì se ukládá stav tabulky -> dùvod uložit pøi zmìnì stavu
 			}break;
+			case 400:case 401:case 402://teplomìry
+			{
+				bool akce;
+				if(E->mGrid->exBUTTON->GlyphOptions->Kind==scgpbgkUpArrow)//skrývat
+				{
+					E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
+					akce=false;
+        }
+				else//zobrazit
+				{
+					E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
+					akce=true;
+        }
+				//nastavování øádkù, vynechání hlavièky a posledního øádku celkem
+				for(unsigned int i=1;i<E->mGrid->RowCount-1;i++)
+				{
+					E->mGrid->VisibleRow(i,akce,false);
+				}
+			}break;
 		}
 		F->nastav_focus();
 		F->REFRESH(true);//musí být opravdu REFRESH() celého formu + mGridu
@@ -1300,8 +1319,8 @@ void TFormX::validace_max_voziku()
 		//validace pøekrytí jigù
 		if(posledni_E->data.pocet_voziku>1)
 		{
-			double rotace=F->m.Rt90(F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(posledni_E)+90);
-			if(rotace==posledni_E->geo.orientace)// || rotace==F->m.Rt90(posledni_E->geo.orientace+180))
+			double rotace=F->m.Rt90(F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(posledni_E));
+			if(rotace==180)//vozíky rovnobežnì s pohonem, dojde k pøekrytí
 			{
 				validace=false;
 				posledni_E->mGrid->ShowNote(F->ls->Strings[426]+" <a>"+AnsiString(1)+"</a>");//"Kvùli pøekryvu jigù nelze nastavit vìtší poèet vozíkù než"
@@ -1428,7 +1447,12 @@ Cvektory::TElement *TFormX::vrat_element_z_tabulky(long ID)
 		}
 		E=F->d.v.dalsi_krok(E,F->OBJEKT_akt);
 	}
-	if(ret==NULL && F->predchozi_PM!=NULL && F->predchozi_PM->mGrid->ID==ID)ret=F->predchozi_PM; 
+	if(ret==NULL && F->predchozi_PM!=NULL && F->predchozi_PM->mGrid->ID==ID)ret=F->predchozi_PM;
+	if(ret==NULL && F->OBJEKT_akt->teplomery!=NULL)
+	{
+		Cvektory::TTeplomery *T=F->d.v.vrat_teplomery_podle_zakazky(F->OBJEKT_akt,F->d.v.ZAKAZKA_akt);
+		if(T!=NULL && T->posledni->mGrid!=NULL && T->posledni->mGrid->ID==ID)ret=T->posledni;
+	}
 	E=NULL;delete E;
 	return ret;
 }
@@ -1665,8 +1689,7 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
   			E->mGrid->Cells[druhy][8].Text=F->m.round2double(F->outRz(F->m.mezera(0,e_pom->pohon->Rz,0)),3);
   			E->mGrid->Cells[druhy][9].Text=F->m.round2double(F->outRz(F->m.mezera(0,e_pom->pohon->Rz,1)),3);
 				E->mGrid->Cells[druhy][10].Text=F->m.round2double(F->outRz(F->m.mezera(90,e_pom->pohon->Rz,1)),3);
-				if(E->WT!=0)E->mGrid->Cells[druhy][11].Text=F->m.round2double(F->outPT(E->WT),3);
-				else E->mGrid->Cells[druhy][11].Text="-";
+				E->mGrid->Cells[druhy][11].Text=F->m.round2double(F->outPT(E->WT),3);//pokud existuje druhý pohon, vždy bude WT + mohlo dojít ke zmìnì
 			}
 			else
 			{

@@ -848,7 +848,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=487;i++)
+	for(unsigned short i=0;i<=489;i++)
 	{
 		switch(i)
 		{
@@ -1340,6 +1340,8 @@ void TForm1::DesignSettings()
 			case 485:text="Čas";break;
 			case 486:text="přejezd";break;
 			case 487:text="celkem";break;
+			case 488:text="Verze uloženého souboru se neschoduje s aktuální verzí prostředí! Verze souboru";break;
+			case 489:text="verze prostředí";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -1570,7 +1572,8 @@ void TForm1::Novy_soubor(bool invalidate)
 		 FileName="Nový.tispl";
 		 scLabel_titulek->Caption=Caption+" - ["+FileName+"]";
 		 TIP="";
-
+     //kontrola, zda nemám zamčeny layout z předchozího projektu, pokud ano odemknout
+		 if(scButton_zamek_layoutu->ImageIndex==67)scButton_zamek_layoutuClick(this);
 		 d.SCENA=vychozi_stav_sceny;
 		 if(invalidate)Invalidate();//vhodnější invalidate než refresh, způsobuje dvojtý problik při otevírání souboru!!
 	 }
@@ -7596,6 +7599,12 @@ void TForm1::mGrid_on_mGrid()
 			mGrid_puvodni_stav(predchozi_PM);
 			mGrid_mimo_obraz(predchozi_PM);//kontrola + ošetření mGridů, ktěré se nacházejí mimo obraz
 		}
+    //teploměry
+		if(T!=NULL)
+		{
+			mGrid_puvodni_stav(T->posledni);
+			mGrid_mimo_obraz(T->posledni);//kontrola + ošetření mGridů, ktěré se nacházejí mimo obraz
+		}
 		////kontrola překrytí
 		int odX=0,odY=0;
 		E=OBJEKT_akt->element;
@@ -7867,6 +7876,12 @@ void TForm1::mGrid_puvodni_stav(Cvektory::TElement *E)
 				E->mGrid->exBUTTONVisible=true;
 				B=NULL;delete B;
 				//edity zařídí fce napln_comba_mGridu(), dynamicky se mění
+				break;
+			}
+			case 400:case 401:case 402:
+			{
+				E->mGrid->exBUTTONVisible=true;
+        E->mGrid->Update();
 				break;
       }
 			default:break;
@@ -10240,6 +10255,10 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Columns[0].Width=75;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			E->mGrid->Columns[2].Width=sirka_cisla;
+      //nastavení exButtonu, skrývání řádku max.WT Stop
+			E->mGrid->exBUTTONVisible=true;
+			E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
+			E->mGrid->exBUTTON->ShowHint=true;E->mGrid->exBUTTON->Hint=ls->Strings[231];//"Rozšířené položky"
 			break;
 		}
 		default://pro elementy, které nemají mGrid
@@ -10825,6 +10844,10 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Columns[0].Width=75;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			E->mGrid->Columns[2].Width=sirka_cisla;
+      //nastavení exButtonu, skrývání řádku max.WT Stop
+			E->mGrid->exBUTTONVisible=true;
+			E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
+			E->mGrid->exBUTTON->ShowHint=true;E->mGrid->exBUTTON->Hint=ls->Strings[231];//"Rozšířené položky"
 			break;
 		}
 		default://pro elementy, které nemají mGrid
@@ -13482,10 +13505,10 @@ void TForm1::Otevrit_soubor()//realizuje otevření opendialogu s následným vo
 unsigned short int TForm1::Otevrit_soubor(UnicodeString soubor)//realizuje samotné otevření souboru
 {
 	log(__func__);//logování
-	unsigned short int ret=0;
+	unsigned short int ret=d.v.nacti_ze_souboru(soubor);
 	//načte data ze souboru a reaguje na návratovou hodnotu
 	UnicodeString text=ls->Strings[345]+" ",text_1=" "+ls->Strings[346],text_2=ls->Strings[347];//"Soubor "," nebyl nalezen!","Neplatná verze souboru formátu *.tispl!"
-	switch(d.v.nacti_ze_souboru(soubor))
+	switch(ret)
 	{
 		case 0://Soubor nebyl nalezen
 		{
@@ -13493,7 +13516,6 @@ unsigned short int TForm1::Otevrit_soubor(UnicodeString soubor)//realizuje samot
 			MB(text+FileName_short(FileName)+text_1);
 			//zavrit_uvod();
 			FileName="Nový.tispl";
-			ret=0;
 		}break;
 		case 1://Soubor byl nalezen
 		{
@@ -13544,22 +13566,20 @@ unsigned short int TForm1::Otevrit_soubor(UnicodeString soubor)//realizuje samot
 			duvod_validovat=2;//soubor se zvaliduje při prvním refresh
 			//aktualizace statusbaru
 			on_change_zoom_change_scGPTrackBar();
-
+			//kontrola jestli má načítaný projekt zamknutý layout, pokud ano a prostřední má layout odemčen, zamče
+			if(scButton_zamek_layoutu->ImageIndex!=67 && d.v.PP.zamek_layoutu)scButton_zamek_layoutuClick(this);
 			d.SCENA=vychozi_stav_sceny;
 			vytvor_statickou_scenu();
-
-			ret=1;
 		}break;
-		case 2://jiná chyba pravděpodbně špatný formát souboru
+		case 2:case 3://jiná chyba pravděpodbně špatný formát souboru + neshodné verze projektu a binárky
 		{
 			zavrit_uvod();//v případě chybové situace, např. soubor nenalezen, nebo špatný formát souboru zavře úvodní dialog
-      d.v.vse_odstranit();//musí být, při načítání může dojít k chybě v pozdějším stadiu, tz. nečo se načte
-			MB(text_2,MB_OK);
+			d.v.vse_odstranit();//musí být, při načítání může dojít k chybě v pozdějším stadiu, tz. nečo se načte
+			if(ret==2)MB(text_2,MB_OK);
+			else MB(ls->Strings[488]+": "+d.v.File_hlavicka.FileVersion+", "+ls->Strings[489]+": "+FileVersion,MB_OK);//"Verze uloženého souboru se neschoduje s aktuální verzí prostředí! Verze souboru"  +  "verze prostředí"
 			FileName="Nový.tispl";
-			ret=2;
 		}break;
-		default: ret=2;
-		break;
+		default:break;
 	}
 	return ret;
 }
@@ -14313,13 +14333,14 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //
 //	F->Sv("Vytvořil: "+d.v.File_hlavicka.vytvoril+" "+DateToStr(d.v.File_hlavicka.cas_start)+" "+TimeToStr(d.v.File_hlavicka.cas_start));
 //	F->Sv("Upravil: "+d.v.File_hlavicka.upravil+" "+DateToStr(d.v.File_hlavicka.cas_posledni_upravy)+" "+TimeToStr(d.v.File_hlavicka.cas_posledni_upravy));
-	Cvektory::TElement *E=d.v.ELEMENTY->dalsi->dalsi;
+//	Cvektory::TElement *E=d.v.ELEMENTY->dalsi->dalsi;
 //	E->geo.HeightDepp=5;
 //	E->geo.delkaPud=E->geo.delka=10;
 //	E->geo.delka=m.delkaSklon(E->geo.delka,E->geo.HeightDepp);
 //	REFRESH();
 //	Memo("delka: "+String(E->geo.delka));
 //	Memo("delkaPud: "+String(E->geo.delkaPud));
+	Memo(d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(d.v.OBJEKTY->dalsi->dalsi->dalsi->element));
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -17248,6 +17269,7 @@ void __fastcall TForm1::scButton_zamek_layoutuClick(TObject *Sender)
 		TIP="";
 		JID=-1;//mazání jidu
 		kurzor(standard);
+		vytvor_statickou_scenu();
 		REFRESH();//překreslení pro jistotu, např. focus na hranu objektu
   }
 	else

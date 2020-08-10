@@ -7532,7 +7532,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			FileStream->Read(&File_hlavicka,sizeof(TFile_hlavicka));//načte hlavičku ze souboru
 
 			//kontrola, zda se shoduje verze projektu a verze souboru, pokud ne vyhodí chybovou hlášku
-			if(F->get_major_version(String(File_hlavicka.FileVersion))!=F->get_major_version(F->FileVersion))throw new Exception("Verze souboru a projektu se neshoduje");
+			if(F->get_major_version(String(File_hlavicka.FileVersion))!=F->get_major_version(F->FileVersion))throw std::invalid_argument("Verze souboru a projektu se neshoduje");
 
 			//načtení autorů
 			wchar_t *autor=new wchar_t[File_hlavicka.vytvoril_Sdelka];
@@ -7949,6 +7949,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			delete FileStream;
 			return 1;
 		}
+		catch(std::invalid_argument){;return 3;}
 		catch(...){;return 2;}//jiná chyba, např. špatný formát souboru
 	}
 }

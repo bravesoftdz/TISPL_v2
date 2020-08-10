@@ -1966,12 +1966,12 @@ void TForm_parametry_linky::OnClick(long Tag, long ID, unsigned long Col,
   text_1 = F->ls->Strings[373] + " <b>"; // "Pohon je používán objekty: <b>"
   text_2 = "</b>. " + F->ls->Strings[374];
   // "</b>. Opravdu má být pohon smazán?"
-  bool smazat = false;
-  if (input_state == NOTHING) {
-    if (Col == 6 && Row >= 2) {
+	bool smazat = false;
+	if (input_state == NOTHING) {
+		if (Col == 6 && Row >= 2) {
       input_state = JOB;
       if (PL_mGrid->getCheck(6, Row)->Checked == false) {
-        if (mrOk == Form1->MB(text, MB_OKCANCEL)) {
+				if (mrOk == Form1->MB(text, MB_OKCANCEL)) {
           Button_save->SetFocus();
           TscGPCheckBox *CH = PL_mGrid->getCheck(6, Row);
           CH->Free();
@@ -2011,7 +2011,7 @@ void TForm_parametry_linky::OnClick(long Tag, long ID, unsigned long Col,
       }
     }
 
-    if (Col == 2 && Row == 0) {
+		if (Col == 2 && Row == 0) {
       UnicodeString text = "Rozmezí a rychlost pohonu ";
       if (F->ls->Strings[201] != "")
         text = F->ls->Strings[201] + " ";
@@ -2097,8 +2097,8 @@ void __fastcall TForm_parametry_linky::FormMouseDown(TObject *Sender,
     TMouseButton Button, TShiftState Shift, int X, int Y) {
   F->log(__func__); // logování
 
-  if (Button == mbLeft && PL_mGrid->CheckPTinTable(X, Y)) // pøepnutí jednotek
-  {
+	if (Button == mbLeft && PL_mGrid->CheckPTinTable(X, Y)) // pøepnutí jednotek
+	{
 
     TPoint RET = PL_mGrid->CheckLink(X, Y);
     if (RET.x == 4) {
@@ -2114,21 +2114,21 @@ void __fastcall TForm_parametry_linky::FormMouseDown(TObject *Sender,
       if (aRDunit == MIN) {
         for (unsigned int i = 2; i < PL_mGrid->RowCount; i++) {
           PL_mGrid->Cells[2][i].Text =
-              F->ms.MyToDouble(PL_mGrid->Cells[2][i].Text) * 60.0;
-          PL_mGrid->Cells[3][i].Text =
-              F->ms.MyToDouble(PL_mGrid->Cells[3][i].Text) * 60.0;
-          PL_mGrid->Cells[4][i].Text =
-              F->ms.MyToDouble(PL_mGrid->Cells[4][i].Text) * 60.0;
-        }
-      }
-      else {
-        for (unsigned int i = 2; i < PL_mGrid->RowCount; i++) {
-          PL_mGrid->Cells[2][i].Text =
-              F->ms.MyToDouble(PL_mGrid->Cells[2][i].Text) / 60.0;
-          PL_mGrid->Cells[3][i].Text =
-              F->ms.MyToDouble(PL_mGrid->Cells[3][i].Text) / 60.0;
-          PL_mGrid->Cells[4][i].Text =
-              F->ms.MyToDouble(PL_mGrid->Cells[4][i].Text) / 60.0;
+							F->m.round2double(F->ms.MyToDouble(PL_mGrid->Cells[2][i].Text) * 60.0,3);
+					PL_mGrid->Cells[3][i].Text =
+							F->m.round2double(F->ms.MyToDouble(PL_mGrid->Cells[3][i].Text) * 60.0,3);
+					PL_mGrid->Cells[4][i].Text =
+							F->m.round2double(F->ms.MyToDouble(PL_mGrid->Cells[4][i].Text) * 60.0,3);
+				}
+			}
+			else {
+				for (unsigned int i = 2; i < PL_mGrid->RowCount; i++) {
+					PL_mGrid->Cells[2][i].Text =
+							F->m.round2double(F->ms.MyToDouble(PL_mGrid->Cells[2][i].Text) / 60.0,3);
+					PL_mGrid->Cells[3][i].Text =
+							F->m.round2double(F->ms.MyToDouble(PL_mGrid->Cells[3][i].Text) / 60.0,3);
+					PL_mGrid->Cells[4][i].Text =
+							F->m.round2double(F->ms.MyToDouble(PL_mGrid->Cells[4][i].Text) / 60.0,3);
         }
       }
       PL_mGrid->MergeCells(2, 0, 4, 0);
@@ -2136,51 +2136,27 @@ void __fastcall TForm_parametry_linky::FormMouseDown(TObject *Sender,
     }
     if (RET.x == 5)
         // ZATÍM NENÍ ZCELA FÈNÍ, protože ukládání do katalogu není v zákl. SI jednotkách
-    {
+		{
       if (Runit == MM) {
         PL_mGrid->Cells[5][1].Text = "<a>[m]</a>";
         Runit = M;
       }
-      else {
+			else {
         PL_mGrid->Cells[5][1].Text = "<a>[mm]</a>";
         Runit = MM;
-      }
+			}
 
-      if (Runit == MM) {
-        for (unsigned int i = 2; i < PL_mGrid->RowCount; i++) {
-          TscGPComboBox *C = PL_mGrid->getCombo(5, i);
-          TscGPListBoxItem *I;
-          double value =
-              F->ms.MyToDouble(PL_mGrid->getCombo(5, i)->Items->operator[]
-              (PL_mGrid->getCombo(5, i)->ItemIndex)->Caption);
-          C->Items->Clear();
-          I = C->Items->Add();
-          I->Caption = value * 1000.0;
-          C->ItemIndex = 0;
-          getROtherValues(Runit, i);
-        }
-
-      }
-      else {
-        for (unsigned int i = 2; i < PL_mGrid->RowCount; i++) {
-          TscGPComboBox *C = PL_mGrid->getCombo(5, i);
-          TscGPListBoxItem *I;
-          double value =
-              F->ms.MyToDouble(PL_mGrid->getCombo(5, i)->Items->operator[]
-              (PL_mGrid->getCombo(5, i)->ItemIndex)->Caption);
-          C->Items->Clear();
-          I = C->Items->Add();
-          I->Caption = value / 1000.0;
-          C->ItemIndex = 0;
-          getROtherValues(Runit, i);
-        }
-
-      }
-      // PL_mGrid->MergeCells(5,0,5,1);
-      PL_mGrid->Update();
-    }
-    Button_storno->SetFocus();
-    PL_mGrid->Update();
+			//zmìna jednotek v comb rozteèi
+      for (unsigned int i = 2; i < PL_mGrid->RowCount; i++) {
+				TscGPComboBox *C = PL_mGrid->getCombo(5, i);
+				double itemindex=C->ItemIndex;
+				getROtherValues(Runit, i);//zmìní combu všechny jeho itemy
+				C->ItemIndex=itemindex;
+				C=NULL;delete C;
+			}
+		}
+		Button_storno->SetFocus();
+		FormPaint(this);//pøekreslení tabulky
   }
 }
 
@@ -2456,11 +2432,10 @@ void TForm_parametry_linky::getROtherValues(Tm_mm Runit, int Row) {
   C->Items->Clear();
   while (H != NULL) {
     I = C->Items->Add();
-    if (Runit == MM)
-      I->Caption = H->hodnota;
-    else
-      I->Caption = H->hodnota / 1000.0;
-
+		if (Runit == MM)
+			I->Caption = H->hodnota;
+		else
+			I->Caption = H->hodnota / 1000.0;
     H = H->dalsi;
   }
   I = NULL;
