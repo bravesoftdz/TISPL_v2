@@ -3344,7 +3344,8 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						if(pom_element!=NULL)
 						{
 							E->geo.typ=pom_element->geo.typ;
-              E->geo.radius=pom_element->geo.radius;
+							E->geo.radius=pom_element->geo.radius;
+              E->geo.delka=pom_element->geo.delka;
 							E->geo.delkaPud=pom_element->geo.delkaPud;
               E->geo.HeightDepp=pom_element->geo.HeightDepp;
             }
@@ -16494,7 +16495,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 	log(__func__);//logování
 	if(editace_textu)smaz_kurzor();//ukončení editace
 	//pokud je otevřené menu nebo options zavře je
-	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;     Memo("----------------------");
+	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
 	if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
 //	if(Akce==NIC)
 //	{
@@ -16628,7 +16629,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 						{
 							s=m.delka(X,Y,C->Element->geo.X1,C->Element->geo.Y1);
 							if(C->dalsi==NULL)s=m.delka(C->sparovany->geo.X4,C->sparovany->geo.Y4,C->Element->geo.X4,C->Element->geo.Y4);
-						}   Memo("delka části úseku: "+String(s)+"; delka: "+String(C->Element->geo.delka)+"; delkaPud: "+String(C->Element->geo.delkaPud)+"; HeightDepp: "+String(C->Element->geo.HeightDepp));
+						}
 						s=m.castPrepony(s,C->Element->geo.delka,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
 					}
 					else
