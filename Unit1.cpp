@@ -3284,11 +3284,11 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 							//kontrola oblastí elementů
 							if(prichytavat_k_mrizce==1 && (el->eID!=MaxInt || (el->eID==MaxInt && el->dalsi==NULL)) && m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,el->geo.X4,el->geo.Y4,velikost_citelne_oblasti_elementu))
 							{
+								pom_element=el;
 								//přichytit souřadnicemi na element, X2 a X3 se používají jako příznak přichycení, pokud je přichicenou jsou nenulové a rovnají se X4
 								E->geo.X2=E->geo.X3=akt_souradnice_kurzoru.x=el->geo.X4;
 								E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=el->geo.Y4;
 								E->name=el->name;
-								pom_element=el;
 								//highlight, pouze pro prvního
 								if(d.v.MAG_LASO->dalsi==NULL && d.v.MAG_LASO->Element==NULL)pom_element->stav=2;
 								prichiceno=true;
@@ -3300,24 +3300,24 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								//začátek stoupání / klesání
 								if(m.delka(el->geo.X1,el->geo.Y1,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y)<=velikost_citelne_oblasti_elementu)
 								{
+									pom_element=el;
 									E->geo.X2=E->geo.X3=akt_souradnice_kurzoru.x=el->geo.X1;
 									E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=el->geo.Y1;
 									E->name=el->name;
-									pom_element=el;
 									prichiceno=true;
 								}
 								//konec stoupání / klesání
 								if(m.delka(el->geo.X4,el->geo.Y4,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y)<=velikost_citelne_oblasti_elementu)
 								{
+									pom_element=el;
 									E->geo.X2=E->geo.X3=akt_souradnice_kurzoru.x=el->geo.X4;
 									E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=el->geo.Y4;
 									E->name=el->name;
-									pom_element=el;
 									prichiceno=true;
 								}
 							}
 							//kontrola zda jsem na pohonu
-							if(!prichiceno && d.v.PtInSegment(el,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+							if(/*!prichiceno && */d.v.PtInSegment(el,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
 							{
 								pom_element=el;
 								//kontrola zda jsem na hraně objektu
@@ -3326,7 +3326,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								if(prichytavat_k_mrizce==1)P=d.v.InVrata(el);
 								if(P.x!=-1*MaxInt && P.y!=-1*MaxInt)
 								{
-                  //přichytit souřadnicemi na element, X2 a X3 se používají jako příznak přichycení, pokud je přichicenou jsou nenulové a rovnají se X4
+									//přichytit souřadnicemi na element, X2 a X3 se používají jako příznak přichycení, pokud je přichicenou jsou nenulové a rovnají se X4
 									E->geo.X2=E->geo.X3=akt_souradnice_kurzoru.x=el->geo.X4;
 									E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=el->geo.Y4;
 									E->name="hranu kabiny";
@@ -3340,16 +3340,18 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						}
 						d.v.vymaz_seznam_VYHYBKY();//nutné pokud dojde k nedokončení alg. dalsi_krok
 						el=NULL;delete el;
-						//uložení typu geometrie
+            //uložení parametrů geometrie z úseku, stoupání, typ atd.
 						if(pom_element!=NULL)
 						{
 							E->geo.typ=pom_element->geo.typ;
-							E->geo.radius=pom_element->geo.radius;
-						}
+              E->geo.radius=pom_element->geo.radius;
+							E->geo.delkaPud=pom_element->geo.delkaPud;
+              E->geo.HeightDepp=pom_element->geo.HeightDepp;
+            }
 						//vkládání počátečního bodu pro měření
 						if(d.v.MAG_LASO->dalsi==NULL && d.v.MAG_LASO->Element==NULL)
 						{
-              E->geo.X1=akt_souradnice_kurzoru.x;
+							E->geo.X1=akt_souradnice_kurzoru.x;
 							E->geo.Y1=akt_souradnice_kurzoru.y;
 							E->geo.X2=E->geo.X3=0;
 							E->geo.Y2=E->geo.Y3=0;
@@ -16492,7 +16494,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 	log(__func__);//logování
 	if(editace_textu)smaz_kurzor();//ukončení editace
 	//pokud je otevřené menu nebo options zavře je
-	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
+	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;     Memo("----------------------");
 	if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
 //	if(Akce==NIC)
 //	{
@@ -16609,7 +16611,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 				}
 				if(C->sparovany!=NULL && C->Element->geo.X2==C->Element->geo.X3 && C->Element->geo.X3==C->Element->geo.X4)popisek+=", přichyceno na "+C->Element->name;
 			}
-			else//nelineární měření
+			else//nelineární měření, mag. laso
 			{
 				while(C!=NULL)
 				{
@@ -16626,7 +16628,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 						{
 							s=m.delka(X,Y,C->Element->geo.X1,C->Element->geo.Y1);
 							if(C->dalsi==NULL)s=m.delka(C->sparovany->geo.X4,C->sparovany->geo.Y4,C->Element->geo.X4,C->Element->geo.Y4);
-						}
+						}   Memo("delka části úseku: "+String(s)+"; delka: "+String(C->Element->geo.delka)+"; delkaPud: "+String(C->Element->geo.delkaPud)+"; HeightDepp: "+String(C->Element->geo.HeightDepp));
 						s=m.castPrepony(s,C->Element->geo.delka,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
 					}
 					else
