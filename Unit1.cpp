@@ -2335,7 +2335,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		////VEKTORY
 		if((d.SCENA==1111111 || d.SCENA==111111) && Akce!=GEOMETRIE && MOD!=TVORBA_CESTY && Akce!=MAGNETICKE_LASO && pom==NULL)//vše STATICKÁ scéna - totální statická scena, nejsou žádně akce
 		{
-			bmp_total->Canvas->Draw(0,0,Staticka_scena);//varianta, kdy je přeantialiasingovaná
+			bmp_total->Canvas->Draw(0,0,Staticka_scena);//varianta, kdy je už přeantialiasingovaná
 		}
 		else
 		{
@@ -8036,6 +8036,22 @@ TRect TForm1::vrat_max_oblast(Cvektory::TObjekt *Objekt,bool pouze_body)
 	return ret;
 }
 //---------------------------------------------------------------------------
+//vrátí max zobrazitelnou (na monitoru) oblast z metody výše uvedené vrat_max_oblast
+TRect TForm1::vrat_max_zobrazitelnou_oblast()
+{
+	TRect oblast=vrat_max_oblast();//vrácení celé aktuální oblasti ve fyzických souřadnicích
+	short R=50;//prozatimní neexaktní řešení
+	oblast.Left-=R;
+	oblast.Right+=R;
+	oblast.Top-=R;
+	oblast.Bottom+=R;
+	if(oblast.Left<0)oblast.Left=0;
+	if(ClientWidth-1<oblast.Right)oblast.Right=ClientWidth-1;
+	if(oblast.Top<0)oblast.Top=0;
+	if(ClientHeight-1<oblast.Bottom)oblast.Bottom=ClientHeight-1;
+	return oblast;
+}
+//---------------------------------------------------------------------------
 //vrací souřadnice (PX) lakovacího okna elementu pokud nějaké má,pokud ne vrátí souřadnice elementu
 TRect TForm1::souradnice_LO(Cvektory::TElement *E)
 {
@@ -12165,7 +12181,7 @@ void __fastcall TForm1::FormCloseQuery(TObject *Sender, bool &CanClose)
 	//v případě uzavírání aplikace
 	if(CanClose)
 	{
-    AnimateWindow(Handle,500,0x00080000|0x00010000);//pouze efekt při ukončování asi vyhodit, nesmí být zcela na konci, jinak paměťová chyba
+    //AnimateWindow(Handle,500,0x00080000|0x00010000);//pouze efekt při ukončování asi vyhodit, nesmí být zcela na konci, jinak paměťová chyba
 		log(__func__,"CanClose");//logování
 		d.v.vymaz_seznam_KATALOG();
 		//pro ochranu v případě pádu programu
@@ -14324,6 +14340,32 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 {//vždy nechat tento komentář
 
+		pom_element=NULL;
+		Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+		while(E!=NULL)
+		{
+			if(d.v.oblast_elementu(E,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+			{
+				double delka=E->geo.delka;
+				double HeightDeep=-3;
+				double delkaSklon=m.delkaSklon(delka,HeightDeep);
+				E->geo.delkaPud=delka;
+				E->geo.delka=delkaSklon;
+				E->geo.HeightDepp=HeightDeep;
+//nulování
+//				E->geo.delka=E->geo.delkaPud;
+//				E->geo.delkaPud=0;
+//				E->geo.HeightDepp=0;
+				duvod_validovat=2;
+				vytvor_statickou_scenu();
+				REFRESH();
+				//ShowMessage("Nastaveno HeightDeep "+String(HeightDeep*1000)+" mm pro element "+E->name);
+				break;
+			}
+			E=d.v.dalsi_krok(E);
+		}
+		E=NULL;delete E;
+
 //	Cvektory::TPohon *P=d.v.POHONY->dalsi;
 //	while(P!=NULL)
 //	{
@@ -14340,32 +14382,13 @@ void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 //Timer1->Enabled=!Timer1->Enabled;
 
 
-		pom_element=NULL;
-		Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-		while(E!=NULL)
-		{
-			if(d.v.oblast_elementu(E,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
-			{
-				double delka=E->geo.delka;
-				double HeightDeep=5;
-				double delkaSklon=m.delkaSklon(delka,HeightDeep);
-				E->geo.delkaPud=delka;
-				E->geo.delka=delkaSklon;
-				E->geo.HeightDepp=HeightDeep;
-				duvod_validovat=2;
-				vytvor_statickou_scenu();
-				REFRESH();
-				ShowMessage("Nastaveno HeightDeep "+String(HeightDeep*1000)+" mm pro element "+E->name);
-				break;
-			}
-			E=d.v.dalsi_krok(E);
-		}
-		E=NULL;delete E;
 
 
-	//d.vykresli_stoupani_klesani(Canvas,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,akt_souradnice_kurzoru.x+10,akt_souradnice_kurzoru.y,3,false,0);
 
-
+//	d.vykresli_stoupani_klesani(Canvas,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,akt_souradnice_kurzoru.x+10,akt_souradnice_kurzoru.y,-3);
+//	d.vykresli_stoupani_klesani(Canvas,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,akt_souradnice_kurzoru.x-10,akt_souradnice_kurzoru.y,3);
+//	d.vykresli_stoupani_klesani(Canvas,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y+10,+3);
+//	d.vykresli_stoupani_klesani(Canvas,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y-10,3);
 	//	ShowMessage(sizeof(unsigned char));
 //	ShowMessage(sizeof(unsigned short));
 //	ShowMessage(sizeof(Trgb));
@@ -14384,7 +14407,7 @@ void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 
 //
 
-//
+////
 //	Graphics::TBitmap *bmp_out=d.v.dekomprimace(d.v.komprimace(bmp_in),bmp_in->Width,bmp_in->Height);
 //
 //	bmp_out->SaveToFile("TEST_DEKOMPRIMACE.bmp");
@@ -14395,24 +14418,64 @@ void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 	//Staticka_scena->SaveToFile("SSoriginal.bmp");
 //	STOP();
 
-//	Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-//	bmp_in->Assign(Staticka_scena);
+	//Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+	//bmp_in->Assign(Staticka_scena);
 //	Cvektory::TmyPx *px;
-//	vrat_max_oblast();
-//	START();
-//	for(UINT i=0;i<600;i++)
-//	px=d.v.komprese(bmp_in);
-//	STOP();
-//	int W=bmp_in->Width;int H=bmp_in->Height;
-//	delete bmp_in;
+//
+//	TRect oblast=vrat_max_zobrazitelnou_oblast();
+//	bool resize=true;
+//	//int W=bmp_in->Width;int H=bmp_in->Height;
+//	int W=ClientWidth;int H=ClientHeight;
+//	if(resize){W=oblast.Right-oblast.Left;H=oblast.Bottom-oblast.Top;}
+//
+//
 //
 //	START();
 //	for(UINT i=0;i<600;i++)
 //	{
+//		Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+//		bmp_in->Width=Width;
+//		bmp_in->Height=Height;
+//		bmp_in->PixelFormat=pf24bit;
+//		//simulování přidávání dynamické scény
+//		//bmp_in->Assign(Staticka_scena);//nutné vynulování (či nahradit alternativou a přiřazení podkladové statické sceny ale zpomaluje o 1-2 s
+//		bmp_in->Canvas->Brush->Style=bsClear;
+//		bmp_in->Canvas->Font->Size=150;
+//		bmp_in->Canvas->TextOutW(0+i,100,i);
+//		//komprese dat
+//		//px=d.v.komprese(bmp_in,oblast,resize);
+//		Graphics::TBitmap *bmp_out=d.v.dekomprese(d.v.komprese(bmp_in,oblast,resize),W,H);
+//		delete bmp_in;
+//		//bmp_out->SaveToFile("TEST_OBlast"+String(i)+".bmp");
+//
+//		Graphics::TBitmap *bmp_t=new Graphics::TBitmap;
+//		bmp_t->Assign(Staticka_scena);
+//		bmp_t->Canvas->Draw(0,0,bmp_out);//extrémně pomalá metoda
+//		delete bmp_out;
+//		//bmp_t->SaveToFile("TEST_OBlast"+String(i)+".bmp");
+//	}
+//	STOP();
+
+//	ZÁVĚR PŮSOBÍ TAKTO: AKT. DYNAMICKOU SCENU KRESLIT DO KOPIE STATICKÉ SCENY A TU KOMPRIMOVAT DO BUFFERU A NESLEDNĚ PO DEKOMPRIMACI POUZE PŘEHRÁVAT
+//	BOHUŽEL UKLADAT JEN DYNAMICKOU SCENU BY BYLO VHODNĚJŠÍ, ALE POMALOST PŘI POUŽTÍ DRAW PO DEKOMPIMACI DYNAMICKÉ SCENY DO STATICKÉ JE DOST ČASOVĚ NÁKLADNÉ
+//	POPŘ.NAJÍT JEŠTĚ JINOU VYKRESLOVACÍ METODU DO BMP, RESP. NA SLOUČENÍ DVOU BMP
+//	???CO TOTO DO DEKOMPRESE POSLAT KOPII STATICKÉ, DO KTERÉ SE PŘI SCANLINE NAPÍŠÍ JEDNOTLIVÉ PIXELY DYNAMICKÉ SCENY, POUZE DYNAMICKÁ BUDE ULOŽENA V BUFFERU
+
+	//bmp_in->SaveToFile("TEST_BMPIN.bmp");
+	//delete bmp_in;
+
+
+//	START();
+//	for(UINT i=0;i<600;i++)
+//	{
 //		Graphics::TBitmap *bmp_out=d.v.dekomprese(px,W,H);
+//		//bmp_out->SaveToFile("TEST_OBlast.bmp");
+//		//bmp_out->SaveToFile("TEST_OBlast"+String(i)+".bmp");
 //		delete bmp_out;
 //	}
 //	STOP();
+
+
 
 
 
@@ -17208,11 +17271,11 @@ void __fastcall TForm1::scButton_zamek_layoutuClick(TObject *Sender)
 	//pokud je otevřené menu nebo options zavře je
 	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
 	if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
-	if(scButton_zamek_layoutu->ImageIndex==68)//odemčeno budu zamykat
+	if(scButton_zamek_layoutu->ImageIndex==68)//odemčeno budu nyní kódem zamykat
 	{
 		scButton_zamek_layoutu->ImageIndex=67;
 		Schema->ImageIndex=79;
-		scButton_zamek_layoutu->Hint=ls->Strings[409];//"Odemknout layout";
+		scButton_zamek_layoutu->Hint=ls->Strings[409];//zobrazení textu "Odemknout layout";
 		d.v.PP.zamek_layoutu=true;
 		//vypnutí knihovny objektů
 		nastav_focus();
@@ -17226,11 +17289,11 @@ void __fastcall TForm1::scButton_zamek_layoutuClick(TObject *Sender)
 		kurzor(standard);
 		REFRESH();//překreslení pro jistotu, např. focus na hranu objektu
   }
-	else
+	else//zamčeno budu nyní kódem odemykat
 	{
 		scButton_zamek_layoutu->ImageIndex=68;
 		Schema->ImageIndex=78;
-		scButton_zamek_layoutu->Hint=ls->Strings[43];//"Zamknout layout";
+		scButton_zamek_layoutu->Hint=ls->Strings[43];//zobrazení textu "Zamknout layout";
 		d.v.PP.zamek_layoutu=false;
 		//zapnutí knihovny objektů
 		scSplitView_LEFTTOOLBAR->Opened=true;
@@ -18043,5 +18106,21 @@ void TForm1::copy_to_clipboard(String text)
 }
 //---------------------------------------------------------------------------
 
+
+
+void __fastcall TForm1::Button1Click(TObject *Sender)
+{
+	//Memo("Pro MT "+Edit1->Text+"s je RT="+String(m.RT(60,Edit1->Text.ToDouble(),2.9,2,0.067))+"s");
+//	Cvektory::TElement *E=new Cvektory::TElement;
+//	E->geo.X1=akt_souradnice_kurzoru.x;
+//	E->geo.Y1=akt_souradnice_kurzoru.y;
+//	E->geo.X4=akt_souradnice_kurzoru.x+10;
+//	E->geo.Y4=akt_souradnice_kurzoru.y;
+//	E->geo.HeightDepp=-3;
+//	d.vykresli_stoupani_klesani(Canvas,E);
+//	Canvas->Rectangle(E->citelna_oblast.rect8);
+scGPButton_ulozit->Enabled=true;
+}
+//---------------------------------------------------------------------------
 
 

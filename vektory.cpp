@@ -4821,23 +4821,30 @@ void Cvektory::vloz_do_BUFFERU()
 	}
 }
 ////---------------------------------------------------------------------------
-Cvektory::TmyPx *Cvektory::komprese(Graphics::TBitmap *bmp_in)
+Cvektory::TmyPx *Cvektory::komprese(Graphics::TBitmap *bmp_in,TRect oblast,bool resize)
 {
 	//vstupní bitmapy
 	bmp_in->PixelFormat=pf24bit;//nutné v případě, že by nebylo nastavovan
+	if(oblast==TRect(0,0,0,0))//pokud nebyla dodána oblast, použije se ta nativní z bmp
+	{
+		oblast.Left=0;
+		oblast.Top=0;
+		oblast.Right=bmp_in->Width-1;
+		oblast.Bottom=bmp_in->Height-1;
+	}
 
 	TmyPx *RET=NULL;//ukazatel na první bod v mračnu bodů/spojáku
 	TmyPx *Iterator=NULL;//ukaztel na poslední bod v mračnu bodů/spojáku
 	TmyPx *Rt=NULL;//tempová hodnota pro slučování buněk
 
 	//průchod přes jednotlivé řádky
-	for(unsigned short Y=0;Y<=bmp_in->Height-1;Y++)
+	for(unsigned short Y=oblast.Top;Y<=oblast.Bottom;Y++)
 	{
 		//načtení řádků
 		PRGBTriple R=(PRGBTriple)(bmp_in->ScanLine[Y]);// vezmu ukazatel na řádek y z výsledné bitmapy
 
 		//práce se jednolivými pixely (jednoprvkovými sloupci) řádků
-		for(unsigned short X=0;X<=bmp_in->Width-1;X++)
+		for(unsigned short X=oblast.Left;X<=oblast.Right;X++)
 		{
 			if(R[X].rgbtRed!=255 || R[X].rgbtGreen!=255 || R[X].rgbtBlue!=255)//když NEBUDE BÍLÁ, pokud ano, nemá cenu řešit
 			{
@@ -4857,8 +4864,8 @@ Cvektory::TmyPx *Cvektory::komprese(Graphics::TBitmap *bmp_in)
 					}
 					Iterator->dalsi=NULL;
 					//hodnoty
-					Iterator->X=X;
-					Iterator->Y=Y;
+					Iterator->X=X;Iterator->Y=Y;
+					if(resize){Iterator->X-=oblast.Left;Iterator->Y-=oblast.Top;}//pokud je požadováno zmenšení výstupního rastru
 					Iterator->o=0;
 					Iterator->R=R[X].rgbtRed;
 					Iterator->G=R[X].rgbtGreen;
@@ -4868,7 +4875,7 @@ Cvektory::TmyPx *Cvektory::komprese(Graphics::TBitmap *bmp_in)
 				}
 				else//buňka je totožná jako předchozí(resp. množina buněk), lze sloučit a tudíž nutno udělat zápis do první ze slučovaných tj. do poslední přidané do mračna bodů/spojového seznamu, tempová se nemění
 				{
-					Rt->o++;//zápis do posledního přidaného bodu z mračna bodů/spojového seznamu informaci o sloučených buňkách
+					Rt->o++;//zápis do posledního přidaného bodu z mračna bodů/spojového seznamu informaci o sloučených buňkách, že následují další totožné
 				}
 			}
 			else//byla BÍLA, temp je tedy nutné "vymazat"
@@ -4882,7 +4889,7 @@ Cvektory::TmyPx *Cvektory::komprese(Graphics::TBitmap *bmp_in)
 ////---------------------------------------------------------------------------
 Graphics::TBitmap *Cvektory::dekomprese(TmyPx *Raster,unsigned short Width,unsigned short Height)
 {
-	Graphics::TBitmap *bmp_out=new Graphics::TBitmap;
+	Graphics::TBitmap *bmp_out=new Graphics::TBitmap;  //je sice rychlejší mít bmp_out připravenou, ale nelze do ni připisovat, stejně se musí vymazat či vytvořit nová
 	bmp_out->Width=Width;
 	bmp_out->Height=Height;
 	bmp_out->PixelFormat=pf24bit;
@@ -4908,9 +4915,9 @@ Graphics::TBitmap *Cvektory::dekomprese(TmyPx *Raster,unsigned short Width,unsig
 		}while(++pocet_slouceni<=Iterator->o);
 
 		//posun na další prvek a smazání z paměti stávajícího
-		//TmyPx *Iterator_old=Iterator; --pro rychlostní testy odstaveno (kvůli opakování dat)
+		//TmyPx *Iterator_old=Iterator; --pro rychlostní testy mazání odstaveno (kvůli opakování dat)
 		Iterator=Iterator->dalsi;
-		//delete Iterator_old;Iterator_old=NULL; --pro rychlostní testy odstaveno (kvůli opakování dat)
+		//delete Iterator_old;Iterator_old=NULL; --pro rychlostní testy mazání odstaveno (kvůli opakování dat)
 	}
 	delete Iterator;
 	return bmp_out;
@@ -6508,9 +6515,9 @@ void Cvektory::vytvor_KATALOG()
 
 	////CALDAN HD140
 	vloz_typ_dopravniku("HD140","http://caldan.dk/sites/default/files/TechSpecsPDF/HD140_2018_uk.pdf",0);
-	vloz_do_typu_dopravniku(R,180);
+	vloz_do_typu_dopravniku(R,1440);
 	vloz_do_typu_dopravniku(R,270);
-  vloz_do_typu_dopravniku(R,300);
+	vloz_do_typu_dopravniku(R,540);
 	//horizontální oblouky
 	vloz_do_typu_dopravniku(hO,90);
 	vloz_do_typu_dopravniku(hO,45);
@@ -6850,7 +6857,7 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 					Ep=NULL;delete Ep;
 				}
 				////////////RT záporné nebo bez rezervy
-				if(vrat_druh_elementu(E)==0)//pouze pro S&G
+				if(vrat_druh_elementu(E)==0 && E->data.pocet_voziku>0)//pouze pro S&G a mimo průjezdních stopek
 				{
 					if(fabs(E->data.RT.y)>=1000000){vloz_zpravu(X,Y,-1,450,E);pocet_erroru++;}
 					else

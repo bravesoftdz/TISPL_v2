@@ -283,6 +283,7 @@ __published:	// IDE-managed Components
 	TImage *Image_rozdelovac_3;
 	TIdSSLIOHandlerSocketOpenSSL *IdSSLIOHandlerSocketOpenSSL1;
   TIdSNTP *IdSNTP1;
+	TButton *Button1;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -482,6 +483,7 @@ __published:	// IDE-managed Components
 	void __fastcall scExPanel_ostatniClick(TObject *Sender);
 	void __fastcall ButtonMaKrClick(TObject *Sender);
 	void __fastcall Timer1Timer(TObject *Sender);
+	void __fastcall Button1Click(TObject *Sender);
 
 
 
@@ -772,6 +774,7 @@ public:		// User declarations
 	void tab_knihovna_click(double X,double Y,long Col=-1,long Row=-1);//klik do knihovny objektù, spouštìní akce pøidávání objektu
 	short RO; short ROs; short ROst;short ROsts;short Rotace_symbolu_minula;
 	TRect vrat_max_oblast(Cvektory::TObjekt *Objekt=NULL,bool pouze_body=false);//vrací max a min hodnoty x a y souøadnic, všecho v layout(elementù, objektù), nebo parametrem Objekt lze hledat max souøadnice v jednom objektu
+	TRect vrat_max_zobrazitelnou_oblast();//vrátí max zobrazitelnou (na monitoru) oblast z metody výše uvedené vrat_max_oblast
 	double inLO  (double inLO);
 	double outLO (double outLO);
   double inPT  (double inPT);
