@@ -3074,7 +3074,7 @@ void Cvektory::prirad_sparovany_element(TElement *Element)
 		TElement *E=Element->predchozi;
 		while(E!=NULL && E->n>0)
 		{
-			if(vrat_druh_elementu(E)==0)break;//nalezen předchozí S&G
+			if(vrat_druh_elementu(E)==0 && (E->eID!=0 || (E->eID==0 && E->stav>0)))break;//nalezen předchozí S&G
 			E=E->predchozi;
 		}
 		if(E->n!=0)
@@ -3096,7 +3096,7 @@ void Cvektory::prirad_sparovany_element(TElement *Element)
 			E=ELEMENTY->dalsi;
 			while(E!=NULL)
 			{
-				if(vrat_druh_elementu(E)==0)break;
+				if(vrat_druh_elementu(E)==0 && (E->eID!=0 || (E->eID==0 && E->stav>0)))break;
 				E=E->dalsi;
 			}
 			if(E!=NULL)
@@ -3105,7 +3105,7 @@ void Cvektory::prirad_sparovany_element(TElement *Element)
 				E=ELEMENTY->predchozi;
 				while(E!=NULL && E->n>0)
 				{
-					if(vrat_druh_elementu(E)==0)break;//nalezen předchozí S&G
+					if(vrat_druh_elementu(E)==0 && (E->eID!=0 || (E->eID==0 && E->stav>0)))break;//nalezen předchozí S&G
 					E=E->predchozi;
 				}
 				if(E!=NULL && (E->objekt_n!=prvni_stopka->objekt_n || E->objekt_n==prvni_stopka->objekt_n && E->n!=prvni_stopka->n))//pokud existuje poslední stop elemet a nerovná se mrvnímu
@@ -3142,7 +3142,7 @@ void Cvektory::aktualizuj_sparovane_ukazatele()
 	while(E!=NULL)
 	{
 		//hledám první S&G element
-		if(vrat_druh_elementu(E)==0)//nalezen první element, nyní musím hledat další S&G element
+		if(vrat_druh_elementu(E)==0 && (E->eID!=0 || (E->eID==0 && E->stav>0)))//nalezen první element, nyní musím hledat další S&G element
 		{
 			if(prvni==NULL)prvni=E;//zapsaní prvního S&G elementu na lince, pouze prvního
 			posledni=E;//zapisování každého S&G elementu do ukazatele poslední, na konci zbyde poslední S&G element
@@ -3150,7 +3150,7 @@ void Cvektory::aktualizuj_sparovane_ukazatele()
 			while(E1!=NULL)
 			{
 				//nalezen další S&G element
-				if(vrat_druh_elementu(E1)==0)break;
+				if(vrat_druh_elementu(E1)==0 && (E1->eID!=0 || (E1->eID==0 && E1->stav>0)))break;
 				E1=E1->dalsi;
 			}
 			//////zapsání sparovaného ukazatele
@@ -7539,7 +7539,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			FileStream->Read(&File_hlavicka,sizeof(TFile_hlavicka));//načte hlavičku ze souboru
 
 			//kontrola, zda se shoduje verze projektu a verze souboru, pokud ne vyhodí chybovou hlášku
-			if(F->get_major_version(String(File_hlavicka.FileVersion))!=F->get_major_version(F->FileVersion))throw std::invalid_argument("Verze souboru a projektu se neshoduje");
+			if(F->get_major_version(String(File_hlavicka.FileVersion))!=F->get_major_version(F->FileVersion))throw new Exception("Verze souboru a projektu se neshoduje");//std::invalid_argument("Verze souboru a projektu se neshoduje");
 
 			//načtení autorů
 			wchar_t *autor=new wchar_t[File_hlavicka.vytvoril_Sdelka];
@@ -7956,7 +7956,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			delete FileStream;
 			return 1;
 		}
-		catch(std::invalid_argument){;return 3;}
+		//catch(std::invalid_argument){;return 3;}
 		catch(...){;return 2;}//jiná chyba, např. špatný formát souboru
 	}
 }
