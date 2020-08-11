@@ -979,6 +979,89 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 			}
 		}
 	}
+
+  //vykreslování oblastí pro přichycení
+ 	if(F->prichytavat_k_mrizce==1 && v.MAG_LASO->Element==NULL && v.MAG_LASO->sparovany==NULL)vykresli_cit_oblasti_lasa(canv);
+}
+////---------------------------------------------------------------------------
+//vykreslí citelné oblasti elementů na které je možné se přichytit
+void Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
+{
+	//bod vykreslení
+	TPointD bod,P;
+  bod.x=MaxInt;bod.y=MaxInt;
+
+  //hledání bodu pro přichycení
+	if(F->pom_element==NULL)
+	{
+		//hledání v elementech pro přichycení
+		Cvektory::TElement *E=v.ELEMENTY->dalsi;
+		while(E!=NULL)
+		{
+      //nulování stavu
+			E->stav=1;
+			if(E->eID==0 && E->data.pocet_voziku==0)E->stav=0;
+			//kontrola vrátek
+			P=v.InVrata(E);
+			if(P.x!=-1*MaxInt && P.y!=-1*MaxInt)
+			{
+				bod=P;
+				break;
+			}
+      //kontrola fce. elementů
+			if(E->eID!=MaxInt && m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,E->geo.X4,E->geo.Y4,F->velikost_citelne_oblasti_elementu))
+			{
+				bod.x=E->geo.X4;
+				bod.y=E->geo.Y4;
+        E->stav=2;
+        break;
+			}
+      //kontrola začátku a konce stoupání
+			if(E->geo.HeightDepp!=0)
+			{
+				if(m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,E->geo.X1,E->geo.Y1,F->velikost_citelne_oblasti_elementu))
+				{
+					bod.x=E->geo.X1;
+			   	bod.y=E->geo.Y1;
+					break;
+        }
+				if(m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,E->geo.X4,E->geo.Y4,F->velikost_citelne_oblasti_elementu))
+				{
+					bod.x=E->geo.X4;
+			  	bod.y=E->geo.Y4;
+					break;
+        }
+			}
+			E=v.dalsi_krok(E);
+		}
+		v.vymaz_seznam_VYHYBKY();
+		E=NULL;delete E;
+
+		//kontrola bodů vozíků
+		if(bod.x==MaxInt && bod.y==MaxInt)
+		{
+			Cvektory::TVozik *V=v.VOZIKY->dalsi;
+			while(V!=NULL)
+			{
+				if(m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,V->X,V->Y,F->velikost_citelne_oblasti_elementu))
+				{
+					bod.x=V->X;
+					bod.y=V->Y;
+					break;
+        }
+				V=V->dalsi;
+			}
+      V=NULL;delete V;
+		}
+
+    //nastavení geometrického pera
+  	short width=m.round(m.m2px(F->velikost_citelne_oblasti_elementu));
+  	set_pen(canv,clMeridlo,width,PS_ENDCAP_FLAT);
+		canv->Pen->Mode=pmNotXor;
+
+		//vykreslení
+		if(bod.x!=MaxInt && bod.y!=MaxInt)canv->Ellipse(m.L2Px(bod.x)-width,m.L2Py(bod.y)-width,m.L2Px(bod.x)+width,m.L2Py(bod.y)+width);
+	}
 }
 ////---------------------------------------------------------------------------
 //vykreslí měření po trendu linky
@@ -1030,16 +1113,16 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv)
 				if(C->n==1)R=v.MAG_LASO->sparovany->geo.radius;
 				if(uhel==0)uhel=RA;//max z rotačního úhlu
 			}
-      //výpočet času
+			//výpočet času
 			if((C->Element->n!=MaxInt && C->Element->pohon==NULL) || (C->Element->n==MaxInt && C->sparovany!=NULL && C->sparovany->pohon==NULL));
 			else
 			{
 				if(C->Element->n==MaxInt && C->sparovany!=NULL)
 				{
 					cas+=d/C->sparovany->pohon->aRD;
-					if(C->n>1)
+					if(!(C->predchozi->sparovany!=NULL && C->predchozi->sparovany==C->Element && C->predchozi->sparovany->geo.X4==C->predchozi->Element->geo.X2 && C->predchozi->Element->geo.X2==C->predchozi->Element->geo.X3))
 					{
-				  	if(v.vrat_druh_elementu(C->sparovany)==0)cas+=C->sparovany->data.PT1+C->sparovany->data.PT2+C->sparovany->WT+C->sparovany->PTotoc;
+						if(v.vrat_druh_elementu(C->sparovany)==0)cas+=C->sparovany->data.PT1+C->sparovany->data.PT2+C->sparovany->WT+C->sparovany->PTotoc;
 				  	if(C->sparovany->eID==0 && C->dalsi==NULL && C->Element->geo.X2==C->Element->geo.X3 && C->Element->geo.X3==C->Element->geo.X4)
 				  	{
 				  		cas+=C->sparovany->data.WTstop;
@@ -1052,7 +1135,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv)
 				else
 				{
 					cas+=d/C->Element->pohon->aRD;
-					if(C->n>1)
+					if(!(C->predchozi->sparovany!=NULL && C->predchozi->sparovany==C->Element && C->predchozi->sparovany->geo.X4==C->predchozi->Element->geo.X2 && C->predchozi->Element->geo.X2==C->predchozi->Element->geo.X3))
 					{
 						if(v.vrat_druh_elementu(C->Element)==0)cas+=C->Element->data.PT1+C->Element->data.PT2+C->Element->WT+C->Element->PTotoc+C->Element->data.WTstop;;
 				  	if(C->Element->eID==0)

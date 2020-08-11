@@ -7531,41 +7531,6 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			//načte hlavičku ze souboru
 			FileStream->Read(&File_hlavicka,sizeof(TFile_hlavicka));//načte hlavičku ze souboru
 
-			///////temp pro převod
-//			File_hlavicka.FileVersion=File_hlavicka_temp.FileVersion;
-//			File_hlavicka.ProductVersion=File_hlavicka_temp.ProductVersion;
-//    	File_hlavicka.Mod=File_hlavicka_temp.Mod;
-//			File_hlavicka.Zoom=File_hlavicka_temp.Zoom;
-//			File_hlavicka.PosunutiX=File_hlavicka_temp.PosunutiX;
-//			File_hlavicka.PosunutiY=File_hlavicka_temp.PosunutiY;
-//			File_hlavicka.cas_start=File_hlavicka_temp.cas_start;
-//			File_hlavicka.cas_posledni_upravy=File_hlavicka_temp.cas_start;
-//    	File_hlavicka.mnozstvi=File_hlavicka_temp.mnozstvi;
-//			File_hlavicka.hod_den=File_hlavicka_temp.hod_den;
-//			File_hlavicka.dni_rok=File_hlavicka_temp.dni_rok;
-//			File_hlavicka.efektivita=File_hlavicka_temp.efektivita;
-//			File_hlavicka.TT=File_hlavicka_temp.TT;
-//			File_hlavicka.typ_linky=File_hlavicka_temp.typ_linky;
-//			File_hlavicka.delka_jig=File_hlavicka_temp.delka_jig;
-//			File_hlavicka.sirka_jig=File_hlavicka_temp.sirka_jig;
-//			File_hlavicka.vyska_jig=File_hlavicka_temp.vyska_jig;
-//			File_hlavicka.delka_podvozek=File_hlavicka_temp.delka_podvozek;
-//			File_hlavicka.uchyt_pozice=File_hlavicka_temp.uchyt_pozice;
-//			File_hlavicka.zamek_layoutu=File_hlavicka_temp.zamek_layoutu;
-//			File_hlavicka.pocet_pohonu=File_hlavicka_temp.pocet_pohonu;
-//			File_hlavicka.pocet_objektu=File_hlavicka_temp.pocet_objektu;
-//			File_hlavicka.pocet_elementu=File_hlavicka_temp.pocet_elementu;
-//			File_hlavicka.pocet_zakazek=File_hlavicka_temp.pocet_zakazek;
-//			File_hlavicka.pocet_voziku=File_hlavicka_temp.pocet_voziku;
-//			File_hlavicka.pocet_vyhybek=File_hlavicka_temp.pocet_vyhybek;
-//			File_hlavicka.katalog=File_hlavicka_temp.katalog;
-//			File_hlavicka.typ_linky=File_hlavicka_temp.typ_linky;
-//			File_hlavicka.radius=File_hlavicka_temp.radius;
-//			File_hlavicka.zakazka_akt=File_hlavicka_temp.zakazka_akt;
-//			PP.vytvoril="Autor";
-//			PP.upravil="Upravil";
-			///////
-
 			//kontrola, zda se shoduje verze projektu a verze souboru, pokud ne vyhodí chybovou hlášku
 			if(F->get_major_version(String(File_hlavicka.FileVersion))!=F->get_major_version(F->FileVersion))throw std::invalid_argument("Verze souboru a projektu se neshoduje");
 
