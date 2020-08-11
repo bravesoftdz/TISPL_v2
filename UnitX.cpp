@@ -187,6 +187,7 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 				}
 			}break;
 		}
+    F->mGrid_on_mGrid();//mohlo dojít k pøekryvu, nebo odstranìní pøekryvu ... nutná kontrola
 		F->nastav_focus();
 		F->REFRESH(true);//musí být opravdu REFRESH() celého formu + mGridu
 		E->mGrid->exBUTTON->Hint=Hint;//navrácení pùvodního textu hintu

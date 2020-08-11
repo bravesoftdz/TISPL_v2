@@ -1276,7 +1276,7 @@ void TForm1::DesignSettings()
       case 421:text="RT není relevantní, některý z objektů nemá pohon!";break;
       case 422:text="Nerelevantní hodnota časové rezervy (RT), na některém objektu není přiřazen pohon!";break;
       case 423:text="Nelze editovat, layout je zamčený";break;
-      case 424:text="Nepodařilo se načíst podklad";break;
+			case 424:text="Nepodařilo se načíst podklad";break;
       case 425:text="Kvůli překryvu jigů nelze nastavit větší počet vozíků než";break;
       case 426:text="místo pro úchyt palce";break;
       case 427:text="místo pro úchyt palce";break;
@@ -1821,8 +1821,15 @@ void TForm1::startUP()
 		SB(ls->Strings[378]+" ");
 		akutalizace_stavu_prichytavani_vSB();
 		if(volat_parametry_linky)Button_dopravnik_parametryClick(this);//zavolání formáláře pro prvotní vyplnění či potvzení hodnot parametrů linky, testovací pozice
-		//pokud je v PP raster, ale nelze ho najít vypíše se hláška
-		if(d.v.PP.raster.filename!="" && !FileExists(d.v.PP.raster.filename) && mrYes==MB(ls->Strings[424]+" "+d.v.PP.raster.filename+ls->Strings[425],MB_YESNO))scButton_nacist_podkladClick(this);//"Nepodařilo se načíst podklad filename, zkontrolujte jeho existenci, nebo proveďte nové načtení."
+		//pokud je v PP raster, ale nelze ho najít vypíše se dotaz na aktualizaci cesty k souboru
+		if(d.v.PP.raster.filename!="" && !FileExists(d.v.PP.raster.filename) && mrYes==MB(ls->Strings[424]+" "+d.v.PP.raster.filename+ls->Strings[425],MB_YESNO))//"Nepodařilo se načíst podklad filename, zkontrolujte jeho existenci, nebo proveďte nové načtení."
+		{
+      //otevření okna s dotazem na načtení podkladu
+			OpenDialog1->Title="Načíst podklad";
+			OpenDialog1->DefaultExt="*.bmp";
+    	OpenDialog1->Filter="Soubory formátu bmp (*.bmp)|*.bmp";
+			if(OpenDialog1->Execute())Nacist_podklad(OpenDialog1->FileName,true);//pouze aktualizace cesty k souboru
+    }
 		vytvor_obraz();//vytvoření prvotního obrazu
 		d.v.update_akt_zakazky();//pokud je uživatelská provede aktualizace, pokud ne aktualizuje defaultní
 	}
@@ -3120,7 +3127,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 				if(Akce==NIC && posun_objektu==false && funkcni_klavesa==0)//pokud není aktivovaná jiná akce
 				{
 					if(MOD==EDITACE && OBJEKT_akt!=NULL)//TABULKA či ELEMENT
-					{     
+					{
 						if(JID==-1){Akce=PAN;pan_non_locked=true;}//pouze posun obrazu, protože v aktuálním místě pozici myši se nenachází vektor ani interaktivní text
 						if(JID==0&&pom_komora==NULL&&pom_element!=NULL || JID==1){Akce=MOVE_ELEMENT;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;mazani=true;pom_element_temp=pom_element;puv_souradnice.x=pom_element->X;puv_souradnice.y=pom_element->Y;}//ELEMENT posun
 						if(1000<=JID && JID<2000 || JID>2000 && JID<3000 || JID==100){Akce=MOVE_TABLE;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;pom_element->mGrid->Highlight;refresh_mGrid=false;d.nabuffrovat_mGridy();puv_souradnice.x=pom_element->Xt;puv_souradnice.y=pom_element->Yt;}//TABULKA posun
@@ -8212,6 +8219,7 @@ double TForm1::vzdalenost_meziLO(Cvektory::TElement *E,double orientace)
 		case 180:ret=m.px2m(souradnice_2.top-souradnice_1.bottom);break;
 		case 270:ret=m.px2m(souradnice_1.left-souradnice_2.right);break;
 	}
+	//m.delka(X1,Y1,X2,Y2)*(1+999*F->DKunit);
 	return ret;
 }
 //---------------------------------------------------------------------------
@@ -9729,7 +9737,9 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 					else sirka_0-=100;
 				}
 			}
-      E->mGrid->Columns[0].Width=E->mGrid->Rows[0].Height;
+			E->mGrid->Columns[0].Width=E->mGrid->Rows[0].Height;
+			if(sirka_0==80 && ((id>=6 && id<=10) || id==12))sirka_0+=15;
+			if((id>=6 && id<=10) || id==12)sirka_0+=35;
 			E->mGrid->Columns[1].Width=sirka_0;
 			E->mGrid->Columns[2].Width=sirka_cisla;
 			//nastavení hintů
@@ -10317,11 +10327,13 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 				else
 				{
 					if(language==Tlanguage::CS)sirka_0-=105;
-					else sirka_0-=100;
+					else sirka_0-=100;  //100
 				}
 			}
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=E->mGrid->Rows[0].Height;
+			if(sirka_0==80 && ((id>=6 && id<=10) || id==12))sirka_0+=15;
+			if((id>=6 && id<=10) || id==12)sirka_0+=35;
 			E->mGrid->Columns[1].Width=sirka_0;
 			E->mGrid->Columns[2].Width=sirka_cisla;
 			//nastavení hintů
@@ -11056,7 +11068,7 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 		{
 			if(E->mGrid->Rows[6].Visible)
 			{
-        sirka_0=200;
+				sirka_0=200;
 				if(PTunit==Tminsec::SEC)sirka_0-=115;
 				else
 				{
@@ -11077,6 +11089,8 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 			E->mGrid->Cells[2][4].Text=m.round2double(outPT(E->WT),3);
 			E->mGrid->Cells[1][5].Text=ls->Strings[225];//"počet pozic";
 			E->mGrid->Cells[1][6].Text=ls->Strings[226];//"počet vozíků";
+			if(sirka_0==80 && ((OBJEKT_akt->id>=6 && OBJEKT_akt->id<=10) || OBJEKT_akt->id==12))sirka_0+=15;
+			if((OBJEKT_akt->id>=6 && OBJEKT_akt->id<=10) || OBJEKT_akt->id==12)sirka_0+=35;
 			E->mGrid->Columns[1].Width=sirka_0;
 			break;
 		}
@@ -14340,7 +14354,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	REFRESH();
 //	Memo("delka: "+String(E->geo.delka));
 //	Memo("delkaPud: "+String(E->geo.delkaPud));
-	Memo(d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(d.v.OBJEKTY->dalsi->dalsi->dalsi->element));
+	Memo("");
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -15548,30 +15562,33 @@ void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
   scButton_nacist_podklad->Down=false;
 }
 //---------------------------------------------------------------------------
- unsigned short int  TForm1::Nacist_podklad(UnicodeString soubor)
+ unsigned short int  TForm1::Nacist_podklad(UnicodeString soubor,bool akt_filename)
  {
-  log(__func__);//logování
-  d.v.PP.raster.show=true;
-	d.v.PP.raster.filename=soubor;
-	d.v.PP.raster.X=m.P2Lx(scSplitView_LEFTTOOLBAR->Width +10);d.v.PP.raster.Y=m.P2Ly(scGPPanel_mainmenu->Height + 10);//souřadnice v metrech
-	d.v.PP.raster.resolution=m2px;  //výpočet metry děleno počet PX, výchozí zobrazení v nativním rozlišení (bez usazení do metrického měřítka) je 0.1
-  scGPCheckBox_zobraz_podklad->Checked=true;
-	scButton_nacist_podklad->Down=false;  //ošetření proti tmavému vysvícení při dalším zobrazení mainmenu
-  REFRESH();
-	auto_settings_open=false;
-	zobraz_tip(ls->Strings[303]);//"Pro správné umístění a nastavení měřítka podkladu, využijte volbu v pravém horním menu."
-//  if(mrOk==MB("Pro správné umístění a nastavení měřítka podkladu, využijte volbu v pravém horním menu. Přejít do nastavení?",MB_OKCANCEL))
-//  {
-  auto_settings_open=true;
- // scGPGlyphButton_OPTIONSClick();  //tohle nesežral
-  scSplitView_OPTIONS->Opened=true;
-  scGPCheckBox_zobraz_podklad->Enabled=true;
-  scGPCheckBox_stupne_sedi->Enabled=true;
-  scGPTrackBar_svetelnost_posuvka->Enabled=false; //prozatim zakazano
-  scLabel1_svetelnost->Enabled=false;        // prozatim zakazano
-  scGPButton_kalibrace->Enabled=true;
-	scGPButton_adjustace->Enabled=true;
-	scGPButton_smazat->Enabled=true;
+	log(__func__);//logování
+	d.v.PP.raster.show=true;
+  d.v.PP.raster.filename=soubor;
+	if(!akt_filename)
+	{
+		d.v.PP.raster.X=m.P2Lx(scSplitView_LEFTTOOLBAR->Width +10);d.v.PP.raster.Y=m.P2Ly(scGPPanel_mainmenu->Height + 10);//souřadnice v metrech
+  	d.v.PP.raster.resolution=m2px;  //výpočet metry děleno počet PX, výchozí zobrazení v nativním rozlišení (bez usazení do metrického měřítka) je 0.1
+  	scGPCheckBox_zobraz_podklad->Checked=true;
+  	scButton_nacist_podklad->Down=false;  //ošetření proti tmavému vysvícení při dalším zobrazení mainmenu
+  	REFRESH();
+  	auto_settings_open=false;
+  	zobraz_tip(ls->Strings[303]);//"Pro správné umístění a nastavení měřítka podkladu, využijte volbu v pravém horním menu."
+  //  if(mrOk==MB("Pro správné umístění a nastavení měřítka podkladu, využijte volbu v pravém horním menu. Přejít do nastavení?",MB_OKCANCEL))
+  //  {
+  	auto_settings_open=true;
+	 // scGPGlyphButton_OPTIONSClick();  //tohle nesežral
+  	scSplitView_OPTIONS->Opened=true;
+  	scGPCheckBox_zobraz_podklad->Enabled=true;
+  	scGPCheckBox_stupne_sedi->Enabled=true;
+  	scGPTrackBar_svetelnost_posuvka->Enabled=false; //prozatim zakazano
+  	scLabel1_svetelnost->Enabled=false;        // prozatim zakazano
+  	scGPButton_kalibrace->Enabled=true;
+  	scGPButton_adjustace->Enabled=true;
+		scGPButton_smazat->Enabled=true;
+	}
 	return 0;
   //scGPGlyphButton_OPTIONS->ShowHint=true;
  // }
@@ -16667,49 +16684,54 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 						if(po_trendu)
 						{
 					  	if(C->Element->n==MaxInt && C->sparovany!=NULL)
-					  	{
+							{
 								double d_pom=s;
-					  		//pokud se jedná o poslední element (musí být přichycen), nezařína se od hlavičky (prvního bodu)
-					  		if(C->sparovany->eID==0 && C->dalsi==NULL && C->Element->geo.X2==C->Element->geo.X3 && C->Element->geo.X3==C->Element->geo.X4 && C->predchozi->Element!=C->sparovany)
-					  		{
-					  			cas+=C->sparovany->data.WTstop;
-					  			cas-=(C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->sparovany->pohon->aRD;
-					  		}
-					  		//pokud se jedná o nedokončený segment stopky, kontrola zda jsem na nějakém vozíku, pokud ano připočítat WT na jeho pozici
-					  		else if(C->sparovany->eID==0)
-					  		{
-					  			//výpočet vzdálenosti od stopstanice
-									double dl=m.delka(C->predchozi->Element->geo.X4,C->predchozi->Element->geo.Y4,C->Element->geo.X4,C->Element->geo.Y4);
-									dl=m.castPrepony(dl,C->Element->geo.delka,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
-									//výpočet velikosti bufferu stopstanice
-									double buf=C->sparovany->geo.delka-(C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice);
-									if(dl>buf)//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
-					  			{
-										cas+=m.V2WT(ceil((dl-buf)/d.v.PP.delka_podvozek),d.v.PP.TT);//připočítání WT na aktuálním vozíku
-										d_pom-=dl-buf;//zmenšení délky jen na délku pojezdu
-					  			}
-					  		}
-					  		//výpočet času přejezdu
-					  		cas+=d_pom/C->sparovany->pohon->aRD;
-					  		//přičtení WT na palec při změně pohonu
-					  		if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->sparovany->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
-								if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->sparovany->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
-					  	}
+                //výpočet času přejezdu
+								cas+=d_pom/C->sparovany->pohon->aRD;
+								//pokud se jedná o poslední element (musí být přichycen), nezařína se od hlavičky (prvního bodu)
+								if(C->n>1)//kromě prvního, nemá smysl připočítávat u prvního např čas na stopce, když začínám měření přesně na stopce a jdu za ni
+								{
+							  	if(C->sparovany->eID==0 && C->dalsi==NULL && C->Element->geo.X2==C->Element->geo.X3 && C->Element->geo.X3==C->Element->geo.X4 && C->predchozi->Element!=C->sparovany)
+							  	{
+							  		cas+=C->sparovany->data.WTstop;
+							  		cas-=(C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->sparovany->pohon->aRD;
+					  	  	}
+							  	//pokud se jedná o nedokončený segment stopky, kontrola zda jsem na nějakém vozíku, pokud ano připočítat WT na jeho pozici
+							  	else if(C->sparovany->eID==0)
+					  	  	{
+					  	  		//výpočet vzdálenosti od stopstanice
+							  		double dl=m.delka(C->predchozi->Element->geo.X4,C->predchozi->Element->geo.Y4,C->Element->geo.X4,C->Element->geo.Y4);
+							  		dl=m.castPrepony(dl,C->Element->geo.delka,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
+							  		//výpočet velikosti bufferu stopstanice
+							  		double buf=C->sparovany->geo.delka-(C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice);
+							  		if(dl>buf)//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
+							  		{
+							  			cas+=m.V2WT(ceil((dl-buf)/d.v.PP.delka_podvozek),d.v.PP.TT);//připočítání WT na aktuálním vozíku
+							  			d_pom-=dl-buf;//zmenšení délky jen na délku pojezdu
+					  	  		}
+							  	}
+							  	//přičtení WT na palec při změně pohonu
+							  	if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->sparovany->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
+							  	if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->sparovany->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
+								}
+							}
 					  	else
 					  	{
-								if(d.v.vrat_druh_elementu(C->Element)==0)cas+=C->Element->data.PT1+C->Element->data.PT2+C->Element->WT+C->Element->PTotoc;
 								cas+=s/C->Element->pohon->aRD;
-					  		if(C->Element->eID==0)
+								if(C->n>1)//kromě prvního, nemá smysl připočítávat u prvního např čas na stopce, když začínám měření přesně na stopce a jdu za ni
 								{
-									cas+=C->Element->data.WTstop;
-					  			double buf=C->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice;
-					  			//pokud je úsek uložený v mag. lasu kompletní ... odečtení přejezdu přes buffer
-					  			if(s>=buf)
-										cas-=(C->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->Element->pohon->aRD;
-									//není třeba řešít nedokončený buffer, zde se nepočátá poslendí element, ale pouze již prošl= elementy
+							  	if(d.v.vrat_druh_elementu(C->Element)==0)cas+=C->Element->data.PT1+C->Element->data.PT2+C->Element->WT+C->Element->PTotoc+C->Element->data.WTstop;
+							  	if(C->Element->eID==0)
+							  	{
+							  		double buf=C->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice;
+							  		//pokud je úsek uložený v mag. lasu kompletní ... odečtení přejezdu přes buffer
+							  		if(s>=buf)
+							  			cas-=(C->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->Element->pohon->aRD;
+							  		//není třeba řešít nedokončený buffer, zde se nepočátá poslendí element, ale pouze již prošl= elementy
+							  	}
+							  	if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->Element->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
+									if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->Element->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
 								}
-								if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->Element->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
-					  		if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->Element->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
 							}
 						}
             //měření času proti trendu linky

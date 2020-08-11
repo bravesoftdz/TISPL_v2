@@ -521,6 +521,45 @@ class Cvektory
 		//UnicodeString autor;//nazev autora projektu
 	};
 	TFile_hlavicka File_hlavicka;
+	struct TFile_hlavicka_temp
+	{
+		unsigned short int FileVersion;
+    unsigned short int ProductVersion;
+		unsigned short int Mod;
+		double Zoom;
+		long PosunutiX;//proměnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souřadnicích zařízení
+		long PosunutiY;//proměnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souřadnicích zařízení
+		unsigned int pocet_objektu;
+		unsigned int pocet_elementu;
+		unsigned int pocet_vyhybek;//uchovává počet výhybek a spojek pro tvoření pole průchodu při rekonstrukci elementů
+		unsigned int pocet_pohonu;
+		unsigned int pocet_zakazek;
+		unsigned int pocet_voziku;
+		//parametry projektu (PP):
+		TDateTime cas_start;//začátek výroby v SEČ (resp. LSEČ)
+//		unsigned int vytvoril_Sdelka;//délka jmena autora
+//		TDateTime cas_posledni_upravy;//čas a datum poslední úpravy
+//		unsigned int upravil_Sdelka;//délka jména autora poslední úpravy
+		unsigned long  mnozstvi;//požadované množství
+		double hod_den;//počet hodin za den
+		double dni_rok;//počet hodin za den
+		double efektivita;//přepokládaná výrobní efektivina
+		double TT;//globální TT linky
+		double delka_jig;
+		double sirka_jig;
+		double vyska_jig;
+		double delka_podvozek;
+		double sirka_podvozek;
+		double uchyt_pozice;
+		bool zamek_layoutu;//zámek editace layoutu
+    int katalog;
+		short typ_linky;
+    double radius;
+		short objekt_posunout_vse;
+		unsigned long zakazka_akt;//uchovává n aktuální zakázky
+		//UnicodeString autor;//nazev autora projektu
+	};
+	TFile_hlavicka_temp File_hlavicka_temp;
 
 	struct TDATA//obraz datového modelu projektu
 	{
