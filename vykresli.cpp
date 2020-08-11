@@ -183,8 +183,13 @@ void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)//scena 0 - vše do 
 			if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n)stav=1;//elementy v aktivním objektu
 			else stav=-1;//disabled elementy ostatních objektů
 			if(stav!=-1 || F->OBJEKT_akt==NULL)stav=E->stav;//předávání stavu v aktivní kabině pro highlightování elementů// přídání OBJEKT_akt!=NULL MV 24.6.2020
+			if(E->eID==0 && E->data.pocet_voziku==0)//průjezdní stopka
+			{
+				stav=0;
+				if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n)stav=-2;//průjezdní stopka v needitovaném objektu
+			}
 			//vykreslení elementu a pozic
-			if(F->MOD!=F->SIMULACE && scena<=2)vykresli_pozice_a_zony(canv,E);
+			if(F->MOD!=F->SIMULACE && scena<=2 && stav!=-2 && stav!=0)vykresli_pozice_a_zony(canv,E);
 			if(!(F->OBJEKT_akt!=NULL && E->objekt_n!=F->OBJEKT_akt->n && F->scGPTrackBar_intenzita->Value<5))vykresli_element(canv,scena,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->data.LO1,E->OTOC_delka,E->data.LO2,E->data.LO_pozice,E);
 			//uložení citelné oblasti pro další použití
 			E->citelna_oblast.rect3=aktOblast;
@@ -279,10 +284,10 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	}
 	//highlight hrany objektu mimo editaci
 	if(F->OBJEKT_akt==NULL && F->pom!=NULL && F->pom->n==O->n && F->JID==4){if(F->pom_bod->n==1)stav=O->body->predchozi->n*2;else stav=O->body->predchozi->n+F->pom_bod->n-1;}
-  //highilightování kabiny při přejetí kurzorem přes název objektu, řešeno zde metoda polygon() neumí zvýraznit všechny hrany
+	//highilightování kabiny při přejetí kurzorem přes název objektu, řešeno zde metoda polygon() neumí zvýraznit všechny hrany
 	if(F->OBJEKT_akt==NULL && F->pom!=NULL && F->pom->n==O->n && F->JID==-6)clAkt=m.clIntensive(clStenaKabiny,-50);
 	////vnější obrys kabiny
-	if(!(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=O->n && F->scGPTrackBar_intenzita->Value<5 || F->MOD==F->SIMULACE && sirka_steny_px==0))polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);
+	if(!(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=O->n && F->scGPTrackBar_intenzita->Value<5 || (F->MOD==F->SIMULACE || F->scButton_zamek_layoutu->ImageIndex==67) && sirka_steny_px==0))polygon(canv,O->body,clAkt,sirka_steny_px,stav,zobrazit_koty);//zobrazí se pouze za daných podmínek
 
 	short highlight=0;//nastavování zda mají být koty highlightovány
 
@@ -2813,12 +2818,12 @@ void Cvykresli::vykresli_koleje(TCanvas *canv,Cvektory::TElement *E)
 		TColor clKolej=(TColor) RGB(255,69,0);
 		if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n && F->Akce!=F->Takce::POSUN_TEPLOMER)clKolej=m.clIntensive(clKolej,m.round(m.get_intensity()/1.8));//zesvětlování neaktivních pohonů
 		if(F->Akce==F->Takce::POSUN_TEPLOMER && !v.obsahuje_segment_cesty_element(E,v.ZAKAZKA_akt))clKolej=m.clIntensive(clKolej,m.round(m.get_intensity()/1.8));//zesvětlení neaktivních větví
-		////řešení pokud je stoupání če klesání
+		////řešení pokud je stoupání či klesání
 		double delka=E->geo.delka;
-		if(E->geo.HeightDepp!=0)//provizorně,atribut supluje výšku či hloubku
+		if(E->geo.HeightDepp!=0)//výšku či hloubku
 		{
-			delka=E->geo.delkaPud;
-			vykresli_stoupani_klesani(canv,E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4,E->geo.HeightDepp,0.3);
+			delka=E->geo.delkaPud;//délka půdorysní
+			vykresli_stoupani_klesani(canv,E,0.3);
 		}
 		////samotné volání vykreslení kolejí
 		vykresli_koleje(canv,E->geo.X1,E->geo.Y1,E->geo.typ,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,delka,clKolej);
@@ -3121,8 +3126,8 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	rotace=m.Rt90(rotace+180);//kvůli převrácenému symbolu
 
 	//barva výplně
-	TColor barva=TColor RGB(218,36,44);if(stav==0)barva=(TColor)RGB(60,179,113);//zelená světlejší(TColor)RGB(50,205,50);
-	if(stav==-1 && F->OBJEKT_akt!=NULL)
+	TColor barva=TColor RGB(218,36,44);if(stav==0 || stav==-2)barva=(TColor)RGB(60,179,113);//zelená světlejší(TColor)RGB(50,205,50);
+	if((stav==-1 || stav==-2) && F->OBJEKT_akt!=NULL)
 	{
 		short I=m.get_intensity();
 		if(typ==0)I=180;//pro ikony v knihovně elementů
@@ -3799,7 +3804,7 @@ void Cvykresli::vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiStr
 			if(F->scGPCheckBox1_popisky->Checked)//pokud je povoleno zobrazení popisků elementů
 			{
 		  	if(/*stav==2 || */stav==3)canv->Font->Style = TFontStyles()<< fsBold;//došlo k vybrání elementu-tato část odstavena nebo přímo jeho textu
-		  	float zAA=1.0;if(F->antialiasing)zAA=3.0;
+				float zAA=1.0;if(F->antialiasing)zAA=3.0;
 
 		  	AnsiString Text=short_name;/*if(Z>4*3) */Text=name;//odstaveno
 		  	int w=canv->TextWidth(Text);
@@ -5357,11 +5362,16 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //vykreslí trojúhelník indikující stoupání či klesání
-void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,double X1,double Y1,double X2,double Y2,double HeightDeep,float offset)
+void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,Cvektory::TElement *Element,float offset)
 {
-	////vstupní proměnné
+	////vstupní konstanty a proměnné
 	TColor color=clLtGray;
 	float width=0.2;
+	double X1=Element->geo.X1;
+	double Y1=Element->geo.Y1;
+	double X2=Element->geo.X4;
+	double Y2=Element->geo.Y4;
+	double HeightDeep=Element->geo.HeightDepp;
 	double X3,Y3;
 	short Z=m.round(HeightDeep/fabs(HeightDeep));//znaménko
 	float V=0.5;//výšku vykreslujeme konstatně, v měřítku by se nevešla
@@ -5395,7 +5405,7 @@ void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,double X1,double Y1,doub
 	points[2].y = m.L2Py(Y3);
 	points[3].x = points[0].x;
 	points[3].y = points[0].y;
-	//vykreslení
+	//samotné vykreslení
 	canv->Polyline(points,3);
 
 	////popisek
@@ -5413,11 +5423,24 @@ void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,double X1,double Y1,doub
 	short W,H;
 	if(X1==X2){canv->Font->Orientation=2700;W=-canv->TextHeight(Text);H=canv->TextWidth(Text);}
 	else{W=canv->TextWidth(Text);H=canv->TextHeight(Text);}
+	//souřadnice
+	long x=m.round((points[0].x+points[2].x-W)/2.0);
+	long y=m.round((points[0].y+points[2].y-H)/2.0);
+	if(Z>0)
+	{
+		x=m.round((points[1].x+points[2].x-W)/2.0);
+		y=m.round((points[1].y+points[2].y-H)/2.0);
+  }
 	//samotný výpis
-	if(Z>0)TextFraming(canv,m.round((points[1].x+points[2].x-W)/2.0),m.round((points[1].y+points[2].y-H)/2.0),Text);
-	else TextFraming(canv,m.round((points[0].x+points[2].x-W)/2.0),m.round((points[0].y+points[2].y-H)/2.0),Text);
-	//raději vrácení do původního stavu
+	TextFraming(canv,x,y,Text);
+	//pro jistotu vrácení do původního stavu
 	canv->Font->Orientation=0;
+	//uložení citelných oblastí - Z - souřadnice aktualní element (počátek stoupání či klesání) rect6, Z - souřadnice další element (konec stoupání či klesání) - rect 7, HeightDeep hodnota - rect 8
+	float zAA=1.0;if(F->antialiasing)zAA=3.0;
+	//Element->citelna_oblast.rect6=//Z - souřadnice aktualní element (počátek stoupání či klesání)
+	//Element->citelna_oblast.rect7=//Z - souřadnice další element (konec stoupání či klesání)
+	Element->citelna_oblast.rect8=TRect(m.round(x/zAA),m.round(y/zAA),m.round(x+W/zAA),m.round(y+H/zAA));//HeightDeep hodnota
+	//upozornění pro testování výpisu citelné oblasti zde je nutné aZZ nastavit na 1!!! při kreslení přimo do Canvasu netřeba... Canvas->Rectangle(E->citelna_oblast.rect8);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------

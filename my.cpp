@@ -1104,9 +1104,9 @@ double Cmy::Dotoc(double PTo,double RD)
 //Přetížená metoda
 double Cmy::RT(double PT,double doba_prejezdu,double WT,unsigned int pocet_voziku,double RD)
 {
-	if(RD==0) return 0;
+	if(RD==0 || pocet_voziku==0) return 0;//pokud není přiřazen pohon nebo se jedná o průjezdní stopku
 	else
-	{                                                             //ubraná čast přejezdu o buffer
+	{                                                             //ubraná časová čast přejezdu o buffer
 		double pocet_voziku_prejezd=(doba_prejezdu-pocet_voziku/*nastavených - stojicích v bufferu*/*F->d.v.PP.delka_podvozek/RD)/F->d.v.PP.TT;//doplní včetně skutečného počtu vozíků (tzn. vozíky v bufferu a v pohybu) na přejezdu
 		return (pocet_voziku_prejezd+pocet_voziku)*F->d.v.PP.TT-(doba_prejezdu+PT+WT);
 	}
