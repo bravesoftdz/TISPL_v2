@@ -2827,10 +2827,10 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 		bool posun_povolit=true;
 		TPointD puv_souradnice;
 		puv_souradnice.x=Element->X;puv_souradnice.y=Element->Y;
-		if(F->OBJEKT_akt->element!=NULL && vzdalenost!=0)//musí existovat alespoň jeden element&&nesmí být vzdálenost rovna nule
+		if(F->OBJEKT_akt->element!=NULL && vzdalenost!=0)//musí existovat alespoň jeden element && nesmí být vzdálenost rovna nule
 		{
 			//////Načtení délky před posunem
-			double vzd=Element->geo.delka;//vzdalenost_od_predchoziho_elementu(Element,false);
+			double vzd=vzdalenost_od_predchoziho_elementu(Element,false);//musí zde být vzdálenost k předchozímu funkčnímu elementu, tj. velikost kóty
 			if((Element->dalsi!=NULL && Element->dalsi->geo.typ!=0 || Element->geo.typ!=0) && kontrola_zmeny_poradi)posun_povolit=false;//pokud by element ovlivnil posunem geometrii
 			//////Realizace posunu + validace
 			if(!posun_kurzorem && posun_povolit)//posun z kót!!!!!!!!!!!!!!!!!!!!!
@@ -7037,18 +7037,16 @@ void Cvektory::vymazat_ZPRAVY()
 //zapis hlavičky souboru
 void Cvektory::vytvor_hlavicku_souboru()
 {
-	File_hlavicka.FileVersion=Form1->ms.MyToDouble(Form1->FileVersion);
+  File_hlavicka.FileVersion=Form1->ms.MyToDouble(Form1->FileVersion);
 	File_hlavicka.ProductVersion=Form1->ms.MyToDouble(Form1->ProductVersion);
 	File_hlavicka.Mod=Form1->MOD;
 	File_hlavicka.Zoom=Form1->Zoom;
 	File_hlavicka.PosunutiX=Form1->Posun.x;
 	File_hlavicka.PosunutiY=Form1->Posun.y;
-
 	File_hlavicka.cas_start=PP.cas_start;
-	//File_hlavicka.vytvoril=PP.vytvoril;
-	//File_hlavicka.cas_posledni_upravy=PP.cas_posledni_upravy;
-	//File_hlavicka.upravil=PP.upravil;
-
+	File_hlavicka.vytvoril_Sdelka=PP.vytvoril.Length()+1;
+	File_hlavicka.cas_posledni_upravy=PP.cas_posledni_upravy;
+	File_hlavicka.upravil_Sdelka=PP.upravil.Length()+1;
 	File_hlavicka.mnozstvi=PP.mnozstvi;
 	File_hlavicka.hod_den=PP.hod_den;
 	File_hlavicka.dni_rok=PP.dni_rok;
@@ -7101,6 +7099,15 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 		//zapiše hlavičku do souboru //už neplatí:+ zbylé atributy a PP se do hlavičky zapisují v unit1
 		vytvor_hlavicku_souboru();
 		FileStream->Write(&File_hlavicka,sizeof(TFile_hlavicka));
+    //uložení autorů
+		wchar_t *autor=new wchar_t [File_hlavicka.vytvoril_Sdelka];
+		autor=PP.vytvoril.c_str();
+		FileStream->Write(autor,File_hlavicka.vytvoril_Sdelka*sizeof(wchar_t));//
+		autor=NULL; delete[] autor;
+		autor=new wchar_t [File_hlavicka.upravil_Sdelka];
+		autor=PP.upravil.c_str();
+		FileStream->Write(autor,File_hlavicka.upravil_Sdelka*sizeof(wchar_t));//
+		autor=NULL; delete[] autor;
 
 		//uložení parametrů RASTRU
 		C_raster *R=new C_raster;
@@ -7531,8 +7538,53 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			//načte hlavičku ze souboru
 			FileStream->Read(&File_hlavicka,sizeof(TFile_hlavicka));//načte hlavičku ze souboru
 
+			///////temp pro převod
+//			File_hlavicka.FileVersion=File_hlavicka_temp.FileVersion;
+//			File_hlavicka.ProductVersion=File_hlavicka_temp.ProductVersion;
+//    	File_hlavicka.Mod=File_hlavicka_temp.Mod;
+//			File_hlavicka.Zoom=File_hlavicka_temp.Zoom;
+//			File_hlavicka.PosunutiX=File_hlavicka_temp.PosunutiX;
+//			File_hlavicka.PosunutiY=File_hlavicka_temp.PosunutiY;
+//			File_hlavicka.cas_start=File_hlavicka_temp.cas_start;
+//			File_hlavicka.cas_posledni_upravy=File_hlavicka_temp.cas_start;
+//    	File_hlavicka.mnozstvi=File_hlavicka_temp.mnozstvi;
+//			File_hlavicka.hod_den=File_hlavicka_temp.hod_den;
+//			File_hlavicka.dni_rok=File_hlavicka_temp.dni_rok;
+//			File_hlavicka.efektivita=File_hlavicka_temp.efektivita;
+//			File_hlavicka.TT=File_hlavicka_temp.TT;
+//			File_hlavicka.typ_linky=File_hlavicka_temp.typ_linky;
+//			File_hlavicka.delka_jig=File_hlavicka_temp.delka_jig;
+//			File_hlavicka.sirka_jig=File_hlavicka_temp.sirka_jig;
+//			File_hlavicka.vyska_jig=File_hlavicka_temp.vyska_jig;
+//			File_hlavicka.delka_podvozek=File_hlavicka_temp.delka_podvozek;
+//			File_hlavicka.uchyt_pozice=File_hlavicka_temp.uchyt_pozice;
+//			File_hlavicka.zamek_layoutu=File_hlavicka_temp.zamek_layoutu;
+//			File_hlavicka.pocet_pohonu=File_hlavicka_temp.pocet_pohonu;
+//			File_hlavicka.pocet_objektu=File_hlavicka_temp.pocet_objektu;
+//			File_hlavicka.pocet_elementu=File_hlavicka_temp.pocet_elementu;
+//			File_hlavicka.pocet_zakazek=File_hlavicka_temp.pocet_zakazek;
+//			File_hlavicka.pocet_voziku=File_hlavicka_temp.pocet_voziku;
+//			File_hlavicka.pocet_vyhybek=File_hlavicka_temp.pocet_vyhybek;
+//			File_hlavicka.katalog=File_hlavicka_temp.katalog;
+//			File_hlavicka.typ_linky=File_hlavicka_temp.typ_linky;
+//			File_hlavicka.radius=File_hlavicka_temp.radius;
+//			File_hlavicka.zakazka_akt=File_hlavicka_temp.zakazka_akt;
+//			PP.vytvoril="Autor";
+//			PP.upravil="Upravil";
+			///////
+
 			//kontrola, zda se shoduje verze projektu a verze souboru, pokud ne vyhodí chybovou hlášku
-			if(F->get_major_version(String(File_hlavicka.FileVersion))!=F->get_major_version(F->FileVersion))throw new Exception("Verze souboru a projektu se neshoduje");
+			if(F->get_major_version(String(File_hlavicka.FileVersion))!=F->get_major_version(F->FileVersion))throw std::invalid_argument("Verze souboru a projektu se neshoduje");
+
+			//načtení autorů
+			wchar_t *autor=new wchar_t[File_hlavicka.vytvoril_Sdelka];
+			FileStream->Read(autor,File_hlavicka.vytvoril_Sdelka*sizeof(wchar_t));//načte jeden nazev fontu za prvekem bod a popisek bodu
+			PP.vytvoril=autor;
+			autor=NULL; delete[] autor;
+			autor=new wchar_t[File_hlavicka.upravil_Sdelka];
+			FileStream->Read(autor,File_hlavicka.upravil_Sdelka*sizeof(wchar_t));//načte jeden nazev fontu za prvekem bod a popisek bodu
+			PP.upravil=autor;
+			autor=NULL; delete[] autor;
 
 			//uložení parametrů RASTRu
 			C_raster *R=new C_raster;
@@ -7939,6 +7991,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			delete FileStream;
 			return 1;
 		}
+		catch(std::invalid_argument){;return 3;}
 		catch(...){;return 2;}//jiná chyba, např. špatný formát souboru
 	}
 }

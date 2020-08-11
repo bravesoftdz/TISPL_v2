@@ -541,9 +541,9 @@ private:
 	void Novy_soubor(bool invalidate=true);//samotné vytvoøení nového souboru
 	void Ulozit_soubor();//samotné uložení
 	void Otevrit_soubor();//realizuje otevøení opendialogu s následným voláním realizace samotného otevøení souboru
-  void Nacist_podklad();//realizuje otevøení opendialogu s následným voláním realizace samotného nacteni podkladu
+	void Nacist_podklad();//realizuje otevøení opendialogu s následným voláním realizace samotného nacteni podkladu
 	unsigned short int Otevrit_soubor(UnicodeString soubor);//realizuje samotné otevøení souboru
-  unsigned short int Nacist_podklad(UnicodeString soubor);//realizuje nacteni podkladu
+  unsigned short int Nacist_podklad(UnicodeString soubor,bool akt_filename=false);//realizuje nacteni podkladu
 	void ulozit_posledni_otevreny();//uloží do ini nazev posledního pracovního souboru
 	void ulozit_historie_otevrenych();//ukládání 3 naposledy otevøených projektù do historie
 	void vse_odstranit();
@@ -595,7 +595,6 @@ private:
 	void ukonceni_geometrie(bool kontorla=true);//ukonèení akce geometrie a pøípadné uzavøení kruhu
 	void vloz_bod_haly_objektu(int X,int Y);//vloží bod haly nebo objektu na zvolené souøadnice (fyzické), zohlední pøichytávání
 	void smaz_bod_haly_objektu(Cvektory::TBod *bod);//smaže bod haly nebo objektu, pokud existují už jen 2 poslední body smaže oba
-	void mGrid_on_mGrid();//prohledá zda se pøekrývají mGridy
   void mGrid_mimo_obraz(Cvektory::TElement *E=NULL);//kontrola zde je mGrid mimo obraz, pokud ano vypnutí komponent
 	void mGrid_puvodni_stav(Cvektory::TElement *E=NULL);//nadesingnuje tabulky elementù nebo tabulku pohonu na pùvodní stav, obnový komponenty, naplní comba, provede Update() mGridu
 	void set_font(int velikost=14);//nastaví komponentám aFont
@@ -825,7 +824,8 @@ public:		// User declarations
 	void GetTime(short int rezim);
 	void reset_teplomeru(Cvektory::TObjekt *Objekt);//zborazí upozornìní, že došlo ke zmìnì geometrie a resetuje oblasti teplomerù
 	String get_major_version(String version);//vrátí Major verzi z FileVersion
-  void copy_to_clipboard(String text);//kopíruje text do Clipboardu
+	void copy_to_clipboard(String text);//kopíruje text do Clipboardu
+  void mGrid_on_mGrid();//prohledá zda se pøekrývají mGridy
   };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
