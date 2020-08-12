@@ -3278,130 +3278,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					}break;
 					case MAGNETICKE_LASO:
 					{
-						if(pom_element!=NULL)akt_souradnice_kurzoru=d.v.bod_na_geometrii(pom_element);
-						Cvektory::TElement *E=new Cvektory::TElement;
-						E->n=MaxInt;
-						E->geo.rotacni_uhel=0;
-						E->geo.orientace=0;
-						E->geo.radius=0;
-						E->geo.delka=0;
-						E->geo.typ=0;
-						E->geo.X2=2;E->geo.Y2=2;
-						E->geo.X3=3;E->geo.Y3=3;
-						//kontrola přichytávání na elementy při počátečním a koncovém bodu
-						Cvektory::TElement *el=d.v.ELEMENTY->dalsi;
-						bool prichiceno=false;
-						while(el!=NULL)
-						{
-							//kontrola oblastí elementů
-							if(prichytavat_k_mrizce==1 && (el->eID!=MaxInt || (el->eID==MaxInt && el->dalsi==NULL)) && m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,el->geo.X4,el->geo.Y4,velikost_citelne_oblasti_elementu))
-							{
-								pom_element=el;
-								//přichytit souřadnicemi na element, X2 a X3 se používají jako příznak přichycení, pokud je přichicenou jsou nenulové a rovnají se X4
-								E->geo.X2=E->geo.X3=akt_souradnice_kurzoru.x=el->geo.X4;
-								E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=el->geo.Y4;
-								E->name=el->name;
-								//highlight, pouze pro prvního
-								if(d.v.MAG_LASO->dalsi==NULL && d.v.MAG_LASO->Element==NULL)pom_element->stav=2;
-								prichiceno=true;
-								break;
-							}
-							//kontrola přichycení na začátek nebo konec stouání / klesání
-							else if(prichytavat_k_mrizce==1 && el->geo.HeightDepp!=0)
-							{
-								//začátek stoupání / klesání
-								if(m.delka(el->geo.X1,el->geo.Y1,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y)<=velikost_citelne_oblasti_elementu)
-								{
-									pom_element=el;
-									E->geo.X2=E->geo.X3=akt_souradnice_kurzoru.x=el->geo.X1;
-									E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=el->geo.Y1;
-									E->name=el->name;
-									prichiceno=true;
-								}
-								//konec stoupání / klesání
-								if(m.delka(el->geo.X4,el->geo.Y4,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y)<=velikost_citelne_oblasti_elementu)
-								{
-									pom_element=el;
-									E->geo.X2=E->geo.X3=akt_souradnice_kurzoru.x=el->geo.X4;
-									E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=el->geo.Y4;
-									E->name=el->name;
-									prichiceno=true;
-								}
-							}
-							//kontrola zda jsem na pohonu
-							if(/*!prichiceno && */d.v.PtInSegment(el,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
-							{
-								pom_element=el;
-								//kontrola zda jsem na hraně objektu
-								TPointD P;
-								P.x=-1*MaxInt;P.y=-1*MaxInt;
-								if(prichytavat_k_mrizce==1)P=d.v.InVrata(el);
-								if(P.x!=-1*MaxInt && P.y!=-1*MaxInt)
-								{
-									//přichytit souřadnicemi na element, X2 a X3 se používají jako příznak přichycení, pokud je přichicenou jsou nenulové a rovnají se X4
-									E->geo.X2=E->geo.X3=akt_souradnice_kurzoru.x=el->geo.X4;
-									E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=el->geo.Y4;
-									E->name="hranu kabiny";
-									akt_souradnice_kurzoru=P;
-								}
-								//pokud ne přilepit pouze na pohon
-								else akt_souradnice_kurzoru=d.v.bod_na_geometrii(pom_element);
-								break;
-							}
-							el=d.v.dalsi_krok(el);
-						}
-						d.v.vymaz_seznam_VYHYBKY();//nutné pokud dojde k nedokončení alg. dalsi_krok
-						el=NULL;delete el;
-						//kontrola přichycení na vozík
-						Cvektory::TVozik *V=d.v.VOZIKY->dalsi;
-	       		while(V!=NULL)
-						{
-							if(m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,V->X,V->Y,velikost_citelne_oblasti_elementu))
-	       			{
-								E->geo.X2=E->geo.X3=akt_souradnice_kurzoru.x=V->X;
-								E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=V->Y;
-                E->name="vozík";
-	       				break;
-	       			}
-	       			V=V->dalsi;
-	       		}
-						V=NULL;delete V;
-            //uložení parametrů geometrie z úseku, stoupání, typ atd.
-						if(pom_element!=NULL)
-						{
-							E->geo.typ=pom_element->geo.typ;
-							E->geo.radius=pom_element->geo.radius;
-              E->geo.delka=pom_element->geo.delka;
-							E->geo.delkaPud=pom_element->geo.delkaPud;
-              E->geo.HeightDepp=pom_element->geo.HeightDepp;
-            }
-						//vkládání počátečního bodu pro měření
-						if(d.v.MAG_LASO->dalsi==NULL && d.v.MAG_LASO->Element==NULL)
-						{
-							E->geo.X1=akt_souradnice_kurzoru.x;
-							E->geo.Y1=akt_souradnice_kurzoru.y;
-							E->geo.X4=E->geo.X1;
-							E->geo.Y4=E->geo.Y1;
-							d.v.MAG_LASO->Element=E;
-							d.v.MAG_LASO->sparovany=NULL;
-							//ukládání počátečního elementu pokud jsem začal na geometrii
-							if(pom_element!=NULL)d.v.MAG_LASO->sparovany=pom_element;
-						}
-						//vkládání koncového bodu a ukončení měření
-						else
-						{
-							//vkládání posledního elementu
-							if(pom_element==NULL && d.v.MAG_LASO->predchozi->n>0)d.v.smaz_segment_MAG_LASA(d.v.MAG_LASO->dalsi->Element);//pokud jsem kliknul mimo pohon, jedná se o lineární měření, cesta nění třeba
-							E->geo.X1=d.v.MAG_LASO->predchozi->Element->geo.X4;
-							E->geo.Y1=d.v.MAG_LASO->predchozi->Element->geo.Y4;
-							E->geo.X4=akt_souradnice_kurzoru.x;
-							E->geo.Y4=akt_souradnice_kurzoru.y;
-							d.v.vloz_segment_MAG_LASA(E);
-							if(pom_element!=NULL)d.v.MAG_LASO->predchozi->sparovany=pom_element;//ukládání počátečního elementu pokud jsem začal na geometrii
-							E=NULL;delete E;
-							scGPImage_mereni_vzdalenostClick(this);
-						}
-						E=NULL;delete E;
+            //pan_create();//pro případ posunu obrazu bez akce PAN
 					}break;
 					case BLOK:Akce=NIC;break;//uvolnění blokace
 					default: break;
@@ -4045,12 +3922,12 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 						pom_element=E;
 						break;
 					}
-					if(E!=OBJEKT_akt->element && E->predchozi->objekt_n!=OBJEKT_akt->n && d.v.oblast_elementu(E->predchozi,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+					if(E!=OBJEKT_akt->element && E->predchozi->objekt_n!=OBJEKT_akt->n && m.PtInCircle(E->predchozi->geo.X4,E->predchozi->geo.Y4,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,velikost_citelne_oblasti_elementu))
 					{
 						pom_element=E->predchozi;
 						break;
 					}
-					if(E->eID==301 && E->predchozi2->objekt_n!=OBJEKT_akt->n && d.v.oblast_elementu(E->predchozi2,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+					if(E->eID==301 && E->predchozi2->objekt_n!=OBJEKT_akt->n && m.PtInCircle(E->predchozi2->geo.X4,E->predchozi2->geo.Y4,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,velikost_citelne_oblasti_elementu))
 					{
 						pom_element=E->predchozi2;
 						break;
@@ -4164,7 +4041,14 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			//algoritmus na ověřování zda se kurzor nachází na objektem (a může být tedy povoleno v pop-up menu zobrazení volby nastavit parametry) přesunut do metody mousedownclick, zde se to zbytečně volalo při každém posunu myši
 			break;
 		}
-		case MAGNETICKE_LASO:getJobID(X,Y);break;
+		case MAGNETICKE_LASO:
+		{
+      //pan_move při stisknutém levém tlačítku
+			//if(stisknute_leve_tlacitko_mysi){pan_map(Canvas,X,Y);kurzor(pan_move);Akce_temp=PAN;}else if(Screen->Cursor==pan_move)kurzor(add_o);
+			//běžná fce.
+			/*else*/ getJobID(X,Y);
+		}
+		break;
 		default: break;
 	}
 	////akce nad akcemi
@@ -4360,6 +4244,139 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				break;
 			}
 			case GEOMETRIE:if(Akce_temp==NIC)pan_move_map();break;
+			case MAGNETICKE_LASO:
+			{
+        //začátek a konec měření
+				if(Akce_temp==NIC)
+				{
+			  	if(pom_element!=NULL)akt_souradnice_kurzoru=d.v.bod_na_geometrii(pom_element);
+			  	Cvektory::TElement *E=new Cvektory::TElement;
+			  	E->n=MaxInt;
+			  	E->geo.rotacni_uhel=0;
+			  	E->geo.orientace=0;
+			  	E->geo.radius=0;
+			  	E->geo.delka=0;
+			  	E->geo.typ=0;
+			  	E->geo.X2=2;E->geo.Y2=2;
+			  	E->geo.X3=3;E->geo.Y3=3;
+			  	//kontrola přichytávání na elementy při počátečním a koncovém bodu
+			  	Cvektory::TElement *el=d.v.ELEMENTY->dalsi;
+			  	bool prichiceno=false;
+			  	while(el!=NULL)
+			  	{
+			  		//kontrola oblastí elementů
+			  		if(prichytavat_k_mrizce==1 && (el->eID!=MaxInt || (el->eID==MaxInt && el->dalsi==NULL)) && m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,el->geo.X4,el->geo.Y4,velikost_citelne_oblasti_elementu))
+			  		{
+			  			pom_element=el;
+			  			//přichytit souřadnicemi na element, X2 a X3 se používají jako příznak přichycení, pokud je přichicenou jsou nenulové a rovnají se X4
+			  			E->geo.X2=E->geo.X3=akt_souradnice_kurzoru.x=el->geo.X4;
+			  			E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=el->geo.Y4;
+			  			E->name=el->name;
+			  			//highlight, pouze pro prvního
+			  			if(d.v.MAG_LASO->dalsi==NULL && d.v.MAG_LASO->Element==NULL)pom_element->stav=2;
+			  			prichiceno=true;
+			  			break;
+			  		}
+			  		//kontrola přichycení na začátek nebo konec stouání / klesání
+			  		else if(prichytavat_k_mrizce==1 && el->geo.HeightDepp!=0)
+			  		{
+			  			//začátek stoupání / klesání
+			  			if(m.delka(el->geo.X1,el->geo.Y1,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y)<=velikost_citelne_oblasti_elementu)
+			  			{
+			  				pom_element=el;
+			  				E->geo.X2=E->geo.X3=akt_souradnice_kurzoru.x=el->geo.X1;
+			  				E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=el->geo.Y1;
+			  				E->name=el->name;
+			  				prichiceno=true;
+			  			}
+			  			//konec stoupání / klesání
+			  			if(m.delka(el->geo.X4,el->geo.Y4,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y)<=velikost_citelne_oblasti_elementu)
+			  			{
+			  				pom_element=el;
+			  				E->geo.X2=E->geo.X3=akt_souradnice_kurzoru.x=el->geo.X4;
+			  				E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=el->geo.Y4;
+			  				E->name=el->name;
+			  				prichiceno=true;
+			  			}
+			  		}
+			  		//kontrola zda jsem na pohonu
+			  		if(/*!prichiceno && */d.v.PtInSegment(el,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+			  		{
+			  			pom_element=el;
+			  			//kontrola zda jsem na hraně objektu
+			  			TPointD P;
+			  			P.x=-1*MaxInt;P.y=-1*MaxInt;
+			  			if(prichytavat_k_mrizce==1)P=d.v.InVrata(el);
+			  			if(P.x!=-1*MaxInt && P.y!=-1*MaxInt)
+			  			{
+			  				//přichytit souřadnicemi na element, X2 a X3 se používají jako příznak přichycení, pokud je přichicenou jsou nenulové a rovnají se X4
+			  				E->geo.X2=E->geo.X3=akt_souradnice_kurzoru.x=el->geo.X4;
+			  				E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=el->geo.Y4;
+			  				E->name="hranu kabiny";
+			  				akt_souradnice_kurzoru=P;
+			  			}
+			  			//pokud ne přilepit pouze na pohon
+			  			else akt_souradnice_kurzoru=d.v.bod_na_geometrii(pom_element);
+			  			break;
+			  		}
+			  		el=d.v.dalsi_krok(el);
+			  	}
+			  	d.v.vymaz_seznam_VYHYBKY();//nutné pokud dojde k nedokončení alg. dalsi_krok
+			  	el=NULL;delete el;
+			  	//kontrola přichycení na vozík
+			  	Cvektory::TVozik *V=d.v.VOZIKY->dalsi;
+			  	while(V!=NULL)
+			  	{
+			  		if(m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,V->X,V->Y,velikost_citelne_oblasti_elementu))
+			  		{
+			  			E->geo.X2=E->geo.X3=akt_souradnice_kurzoru.x=V->X;
+			  			E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=V->Y;
+              E->name="vozík";
+			  			break;
+	        	}
+	        	V=V->dalsi;
+			  	}
+			  	V=NULL;delete V;
+          //uložení parametrů geometrie z úseku, stoupání, typ atd.
+			  	if(pom_element!=NULL)
+			  	{
+			  		E->geo.typ=pom_element->geo.typ;
+			  		E->geo.radius=pom_element->geo.radius;
+			  		E->geo.delka=pom_element->geo.delka;
+			  		E->geo.delkaPud=pom_element->geo.delkaPud;
+			  		E->geo.HeightDepp=pom_element->geo.HeightDepp;
+			  	}
+			  	//vkládání počátečního bodu pro měření
+			  	if(d.v.MAG_LASO->dalsi==NULL && d.v.MAG_LASO->Element==NULL)
+			  	{
+			  		E->geo.X1=akt_souradnice_kurzoru.x;
+			  		E->geo.Y1=akt_souradnice_kurzoru.y;
+			  		E->geo.X4=E->geo.X1;
+			  		E->geo.Y4=E->geo.Y1;
+			  		d.v.MAG_LASO->Element=E;
+			  		d.v.MAG_LASO->sparovany=NULL;
+			  		//ukládání počátečního elementu pokud jsem začal na geometrii
+			  		if(pom_element!=NULL)d.v.MAG_LASO->sparovany=pom_element;
+			  	}
+			  	//vkládání koncového bodu a ukončení měření
+			  	else
+			  	{
+			  		//vkládání posledního elementu
+			  		if(pom_element==NULL && d.v.MAG_LASO->predchozi->n>0)d.v.smaz_segment_MAG_LASA(d.v.MAG_LASO->dalsi->Element);//pokud jsem kliknul mimo pohon, jedná se o lineární měření, cesta nění třeba
+			  		E->geo.X1=d.v.MAG_LASO->predchozi->Element->geo.X4;
+			  		E->geo.Y1=d.v.MAG_LASO->predchozi->Element->geo.Y4;
+			  		E->geo.X4=akt_souradnice_kurzoru.x;
+			  		E->geo.Y4=akt_souradnice_kurzoru.y;
+			  		d.v.vloz_segment_MAG_LASA(E);
+			  		if(pom_element!=NULL)d.v.MAG_LASO->predchozi->sparovany=pom_element;//ukládání počátečního elementu pokud jsem začal na geometrii
+			  		E=NULL;delete E;
+			  		scGPImage_mereni_vzdalenostClick(this);
+			  	}
+			  	E=NULL;delete E;
+				}
+        //posun obrazu při akci měření
+				else pan_move_map();
+			}break;
 			case POSUN_TEPLOMER:
 			{
 				d.v.posun_teplomeru(pom_element);//ukončení posunu, rozhodnutí zda uložit cestu, neuložit, dolnující dotaz na výhybce
@@ -4377,8 +4394,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 
 		switch(Akce_temp)
 		{
-			case OFFSET_KOTY:Akce_temp=NIC;break;
-			default:break;
+			default:if(Akce_temp!=NIC)Akce_temp=NIC;break;
     }
 	}
 	if(Button==mbMiddle && Akce==PAN_MOVE)//ukončení posunu pomocí stisknutého kolečka
@@ -6182,7 +6198,7 @@ void TForm1::spojeni_prvni_posledni(double citlivost)
 void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 {
 	//e_posledni == poslední element ve vedlejší větvi
-	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)==m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel) && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=1)
+	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)==m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel) && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=1 && e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel==m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel))
 	{
     bool vypnout=false;
 		if(Akce==GEOMETRIE)vypnout=true;
@@ -6201,104 +6217,122 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 			if(orientace==0 || orientace==180)
 			{
 				//posun spojky na místo, pokud je spojka na linii
+				if(e_posledni->dalsi->geo.typ==0 && posun_y<e_posledni->geo.delka && ((e_posledni->dalsi!=NULL && posun_y<e_posledni->dalsi->geo.delka) || e_posledni->dalsi==NULL))//kontrola zde je kam posouvat
+				{
+					d.v.vloz_G_element(e_posledni->dalsi,0,e_posledni->dalsi->geo.X1,e_posledni->dalsi->geo.Y1,0,0,0,0,e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4+posun_y,e_posledni->dalsi->geo.orientace);
+					e_posledni->dalsi->Y+=posun_y;
+					d.v.vloz_G_element(e_posledni->dalsi->dalsi,0,e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,0,0,0,0,e_posledni->dalsi->dalsi->geo.X4,e_posledni->dalsi->dalsi->geo.Y4,e_posledni->dalsi->dalsi->geo.orientace);
+          posun_y=0;
+				}
+				//vertikální posun (Y)
+				if(posun_y!=0)//kontrola zda je třeba
+				{
+			  	E=e_posledni;
+			  	while(E!=NULL)
+			  	{
+			  		if(E->eID==300 && E->idetifikator_vyhybka_spojka==e_posledni->dalsi->idetifikator_vyhybka_spojka){E=NULL;break;}//narazil sem na konec větve ukončení
+			  		if(E->geo.orientace==orientace && E->geo.typ==0)break;
+			  		E=E->predchozi;
+			  	}
+			  	if(E!=NULL)
+			  	{
+			  		d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1,0,0,0,0,E->geo.X4,E->geo.Y4-posun_y,E->geo.orientace,E->geo.rotacni_uhel);
+			  		E->Y-=posun_y;
+			  		E=E->dalsi;
+			  		while(E->eID!=301)
+			  		{
+              if(E->eID==301 && E->idetifikator_vyhybka_spojka==e_posledni->dalsi->idetifikator_vyhybka_spojka)break;
+							d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1-posun_y,E->geo.X2,E->geo.Y2-posun_y,E->geo.X3,E->geo.Y3-posun_y,E->geo.X4,E->geo.Y4-posun_y,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka);
+			  			E->Y-=posun_y;
+							E=E->dalsi;
+			  		}
+					}
+				}
+				//horizontální posun (X)
+				if(posun_x!=0)//kontrola zda je třeba
+				{
+					E=e_posledni;//->dalsi->predchozi;//procházení hlavní větve
+			  	while(E!=NULL && E->n>0)
+					{
+						if(E->eID==300 && E->idetifikator_vyhybka_spojka==e_posledni->dalsi->idetifikator_vyhybka_spojka){E=NULL;break;}//narazil sem na konec hlavní větve, ukončení
+						if((E->geo.orientace==m.Rt90(orientace+90) || E->geo.orientace==m.Rt90(orientace-90)) && E->geo.typ==0)break;
+			  		E=E->predchozi;
+			  	}
+			  	if(E!=NULL)
+					{
+						posun_x*=-1;
+						d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1,0,0,0,0,E->geo.X4+posun_x,E->geo.Y4,E->geo.orientace,E->geo.rotacni_uhel);
+						E->X+=posun_x;
+			  		E=E->dalsi;
+						while(E!=NULL)
+			  		{
+							//kontrola, zda nejsem na spojce
+							if(E->eID==301 && E->idetifikator_vyhybka_spojka==e_posledni->dalsi->idetifikator_vyhybka_spojka)break;
+							d.v.vloz_G_element(E,E->geo.typ,E->geo.X1+posun_x,E->geo.Y1,E->geo.X2+posun_x,E->geo.Y2,E->geo.X3+posun_x,E->geo.Y3,E->geo.X4+posun_x,E->geo.Y4,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka);
+			  			E->X+=posun_x;
+							//posun na další element
+							E=E->dalsi;
+						}
+			  	}
+				}
+			}
+			else//horizontální geometriie spojky
+			{
+        //posun spojky na místo, pokud je spojka na linii
 				if(e_posledni->dalsi->geo.typ==0 && posun_x<e_posledni->geo.delka && ((e_posledni->dalsi!=NULL && posun_x<e_posledni->dalsi->geo.delka) || e_posledni->dalsi==NULL))//kontrola zde je kam posouvat
 				{
 					d.v.vloz_G_element(e_posledni->dalsi,0,e_posledni->dalsi->geo.X1,e_posledni->dalsi->geo.Y1,0,0,0,0,e_posledni->dalsi->geo.X4+posun_x,e_posledni->dalsi->geo.Y4,e_posledni->dalsi->geo.orientace);
 					e_posledni->dalsi->X+=posun_x;
 					d.v.vloz_G_element(e_posledni->dalsi->dalsi,0,e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,0,0,0,0,e_posledni->dalsi->dalsi->geo.X4,e_posledni->dalsi->dalsi->geo.Y4,e_posledni->dalsi->dalsi->geo.orientace);
-				}
-				//vertikální posun (Y)
-				E=e_posledni;
-				while(E!=NULL)
-				{
-					if(E->eID==300){E=NULL;break;}//narazil sem na konec větve ukončení
-					if(E->geo.orientace==orientace && E->geo.typ==0)break;
-					E=E->predchozi;
-				}
-				if(E!=NULL)
-				{
-					d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1,0,0,0,0,E->geo.X4,E->geo.Y4-posun_y,E->geo.orientace,E->geo.rotacni_uhel);
-					E->Y-=posun_y;
-					E=E->dalsi;
-					while(E->eID!=301)
-					{
-						d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1-posun_y,E->geo.X2,E->geo.Y2-posun_y,E->geo.X3,E->geo.Y3-posun_y,E->geo.X4,E->geo.Y4-posun_y,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka);
-						E->Y-=posun_y;
-						E=E->dalsi;
-   				}
+					posun_x=0;
 				}
 				//horizontální posun (X)
-        E=e_posledni->dalsi->predchozi;//procházení hlavní větve
-				while(E!=NULL && E->n>0)
+				if(posun_x!=0)//kontrola zda je třeba
 				{
-					if(E->eID==300 && E->idetifikator_vyhybka_spojka==e_posledni->idetifikator_vyhybka_spojka){E=NULL;break;}//narazil sem na konec hlavní větve, ukončení
-					if((E->geo.orientace==m.Rt90(orientace+90) || E->geo.orientace==m.Rt90(orientace-90)) && E->geo.typ==0)break;
-					E=E->predchozi;
-				}
-				if(E!=NULL)
-				{
-					d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1,0,0,0,0,E->geo.X4+posun_x,E->geo.Y4,E->geo.orientace,E->geo.rotacni_uhel);
-					E->X+=posun_x;
-					E=E->dalsi;
-					while(E!=NULL)
-					{
-						d.v.vloz_G_element(E,E->geo.typ,E->geo.X1+posun_x,E->geo.Y1,E->geo.X2+posun_x,E->geo.Y2,E->geo.X3+posun_x,E->geo.Y3,E->geo.X4+posun_x,E->geo.Y4,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka);
-						E->X+=posun_x;
-						//posun na další element, nebo ukončení průchodu
-						if(E->eID==301 && E->idetifikator_vyhybka_spojka==e_posledni->idetifikator_vyhybka_spojka)break;
-						else E=E->dalsi;
+			  	E=e_posledni;
+			  	while(E!=NULL && E->n>0)
+			  	{
+						if(E->eID==300 && E->idetifikator_vyhybka_spojka==e_posledni->dalsi->idetifikator_vyhybka_spojka){E=NULL;break;}//narazil sem na konec větve ukončení
+			  		if(E->geo.orientace==orientace && E->geo.typ==0)break;
+			  		E=E->predchozi;
+			  	}
+			  	if(E!=NULL)
+			  	{
+			  		d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1,0,0,0,0,E->geo.X4-posun_x,E->geo.Y4,E->geo.orientace,E->geo.rotacni_uhel);
+			  		E->X-=posun_x;
+			  		E=E->dalsi;
+						while(E->eID==301 && E->idetifikator_vyhybka_spojka==e_posledni->dalsi->idetifikator_vyhybka_spojka)
+			  		{
+			  			d.v.vloz_G_element(E,E->geo.typ,E->geo.X1-posun_x,E->geo.Y1,E->geo.X2-posun_x,E->geo.Y2,E->geo.X3-posun_x,E->geo.Y3,E->geo.X4-posun_x,E->geo.Y4,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka);
+			  			E->X-=posun_x;
+			  			E=E->dalsi;
+			  		}
 					}
 				}
-			}
-			else//horizontální geometriie spojky
-			{
-				//posun spojky na místo, pokud je spojka na linii
-				if(e_posledni->dalsi->geo.typ==0 && posun_y<e_posledni->geo.delka && ((e_posledni->dalsi!=NULL && posun_y<e_posledni->dalsi->geo.delka) || e_posledni->dalsi==NULL))//kontrola zde je kam posouvat
+				//vertikální posun (Y)
+				if(posun_y!=0)//kontrola zda je třeba
 				{
-					d.v.vloz_G_element(e_posledni->dalsi,0,e_posledni->dalsi->geo.X1,e_posledni->dalsi->geo.Y1,0,0,0,0,e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4+posun_y,e_posledni->dalsi->geo.orientace);
-					e_posledni->dalsi->Y+=posun_y;
-   		  	d.v.vloz_G_element(e_posledni->dalsi->dalsi,0,e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,0,0,0,0,e_posledni->dalsi->dalsi->geo.X4,e_posledni->dalsi->dalsi->geo.Y4,e_posledni->dalsi->dalsi->geo.orientace);
-				}
-				//vertikální posun (X)
-				E=e_posledni;
-				while(E!=NULL && E->n>0)
-				{
-					if(E->eID==300 && E->idetifikator_vyhybka_spojka==e_posledni->idetifikator_vyhybka_spojka){E=NULL;break;}//narazil sem na konec větve ukončení
-					if(E->geo.orientace==orientace && E->geo.typ==0)break;
-					E=E->predchozi;
-				}
-				if(E!=NULL)
-				{
-					d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1,0,0,0,0,E->geo.X4-posun_x,E->geo.Y4,E->geo.orientace,E->geo.rotacni_uhel);
-					E->X-=posun_x;
-					E=E->dalsi;
-					while(E->eID==301 && E->idetifikator_vyhybka_spojka==e_posledni->idetifikator_vyhybka_spojka)
-					{
-						d.v.vloz_G_element(E,E->geo.typ,E->geo.X1-posun_x,E->geo.Y1,E->geo.X2-posun_x,E->geo.Y2,E->geo.X3-posun_x,E->geo.Y3,E->geo.X4-posun_x,E->geo.Y4,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka);
-						E->X-=posun_x;
-						E=E->dalsi;
-					}
-				}
-				//horizontální posun (Y)
-				E=e_posledni->dalsi->predchozi;//procházení hlavní větve
-				while(E!=NULL && E->n>0)
-				{
-					if(E->eID==300 && E->idetifikator_vyhybka_spojka==e_posledni->idetifikator_vyhybka_spojka){E=NULL;break;}//narazil sem na konec hlavní větve, ukončení
-					if((E->geo.orientace==m.Rt90(orientace+90) || E->geo.orientace==m.Rt90(orientace-90)) && E->geo.typ==0)break;
-					E=E->predchozi;
-				}
-				if(E!=NULL)
-				{
-					d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1,0,0,0,0,E->geo.X4,E->geo.Y4+posun_y,E->geo.orientace,E->geo.rotacni_uhel);
-					E->Y+=posun_y;
-					E=E->dalsi;
-					while(E!=NULL)
-					{
-						d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1+posun_y,E->geo.X2,E->geo.Y2+posun_y,E->geo.X3,E->geo.Y3+posun_y,E->geo.X4,E->geo.Y4+posun_y,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka);
-						E->Y+=posun_y;
-						//posun na další element, nebo ukončení průchodu
-						if(E->eID==301 && E->idetifikator_vyhybka_spojka==e_posledni->idetifikator_vyhybka_spojka)break;
-						else E=E->dalsi;
+					E=e_posledni;//->dalsi->predchozi;//procházení hlavní větve
+			  	while(E!=NULL && E->n>0)
+			  	{
+						if(E->eID==300 && E->idetifikator_vyhybka_spojka==e_posledni->dalsi->idetifikator_vyhybka_spojka){E=NULL;break;}//narazil sem na konec hlavní větve, ukončení
+			  		if((E->geo.orientace==m.Rt90(orientace+90) || E->geo.orientace==m.Rt90(orientace-90)) && E->geo.typ==0)break;
+			  		E=E->predchozi;
+			  	}
+			  	if(E!=NULL)
+			  	{
+            posun_y*=-1;
+						d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1,0,0,0,0,E->geo.X4,E->geo.Y4+posun_y,E->geo.orientace,E->geo.rotacni_uhel);
+			  		E->Y+=posun_y;
+			  		E=E->dalsi;
+			  		while(E!=NULL)
+			  		{
+							if(E->eID==301 && E->idetifikator_vyhybka_spojka==e_posledni->dalsi->idetifikator_vyhybka_spojka)break;
+							d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1+posun_y,E->geo.X2,E->geo.Y2+posun_y,E->geo.X3,E->geo.Y3+posun_y,E->geo.X4,E->geo.Y4+posun_y,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka);
+			  			E->Y+=posun_y;
+			  			//posun na další element
+							E=E->dalsi;
+			  		}
 					}
 				}
 			}
@@ -6307,7 +6341,7 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 			{
 				Akce=BLOK;//blokace akce, aby se nespoštěl refresh při změně viditelnosti vrstev
 				AnsiString T;
-		  	if(T==0 || T=="")rotace_jigu=0;else rotace_jigu=1;
+				if(T==0 || T=="")rotace_jigu=0;else rotace_jigu=1;
 		  	T=readINI("nastaveni_editace","zobrazeni_pozic"); //zobrazit pozice
 		  	if(T==0 || T=="")zobrazit_pozice=0;else zobrazit_pozice=1;
 		  	T=readINI("nastaveni_editace","zobrazit_popisky"); //zobrazit popisky
@@ -16677,10 +16711,10 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 				else
 				{
 					d_pom=delka=m.delka(C->predchozi->Element->geo.X1,C->predchozi->Element->geo.Y1,C->Element->geo.X4,C->Element->geo.Y4);
-					d_pom=delka=m.castPrepony(delka,d.v.MAG_LASO->sparovany->geo.delka,d.v.MAG_LASO->sparovany->geo.delkaPud,d.v.MAG_LASO->sparovany->geo.HeightDepp);
+					if(d.v.MAG_LASO->sparovany!=NULL)d_pom=delka=m.castPrepony(delka,d.v.MAG_LASO->sparovany->geo.delka,d.v.MAG_LASO->sparovany->geo.delkaPud,d.v.MAG_LASO->sparovany->geo.HeightDepp);
 				}
 				//měření času
-				if(/*d.v.MAG_LASO->sparovany!=NULL && d.v.MAG_LASO->sparovany==d.v.MAG_LASO->predchozi->sparovany && */d.v.MAG_LASO->sparovany->pohon!=NULL)
+				if(d.v.MAG_LASO->sparovany!=NULL && d.v.MAG_LASO->sparovany==d.v.MAG_LASO->predchozi->sparovany && d.v.MAG_LASO->sparovany->pohon!=NULL)
 				{
 					if(d.v.MAG_LASO->predchozi->sparovany->eID==0)
 					{
