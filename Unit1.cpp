@@ -3278,7 +3278,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					}break;
 					case MAGNETICKE_LASO:
 					{
-            pan_create();//pro případ posunu obrazu bez akce PAN
+            //pan_create();//pro případ posunu obrazu bez akce PAN
 					}break;
 					case BLOK:Akce=NIC;break;//uvolnění blokace
 					default: break;
@@ -4044,9 +4044,9 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		case MAGNETICKE_LASO:
 		{
       //pan_move při stisknutém levém tlačítku
-			if(stisknute_leve_tlacitko_mysi){pan_map(Canvas,X,Y);kurzor(pan_move);Akce_temp=PAN;}else if(Screen->Cursor==pan_move)kurzor(add_o);
+			//if(stisknute_leve_tlacitko_mysi){pan_map(Canvas,X,Y);kurzor(pan_move);Akce_temp=PAN;}else if(Screen->Cursor==pan_move)kurzor(add_o);
 			//běžná fce.
-			else getJobID(X,Y);
+			/*else*/ getJobID(X,Y);
 		}
 		break;
 		default: break;
