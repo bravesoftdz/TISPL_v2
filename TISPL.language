@@ -486,4 +486,5 @@ Section;X;Úsek
 Time;X;Èas
 crossing;X;pøejezd
 total;X;celkem
-The version of the saved file does not match the current version of the environment!;X;Verze uloženého souboru se neschoduje s aktuální verzí prostøedí!
+The version of the saved file does not match the current version of the environment! File version;X;Verze uloženého souboru se neschoduje s aktuální verzí prostøedí! Verze souboru
+environment version;X;verze prostøedí

@@ -507,8 +507,8 @@ void TForm_definice_zakazek::vloz_davku(Cvektory::TZakazka *Z,Cvektory::TDavka *
 		Z->mGrid->Cells[Col][4].Text = davka->pocet_celkem;
 	}
 	Z->mGrid->Update();
-	setGlyphButtonDavka_Add(Z->n, Col + 1); // vytvoøí glyph na pøidání dávky
- 	setGlyphButtonDavka_Remove(Col,Z,davka); // nastaví glyph na smazání dávky
+	setGlyphButtonDavka_Add(Z->n, Col + 1);// vytvoøí glyph na pøidání dávky
+	setGlyphButtonDavka_Remove(Col,Z,davka);// nastaví glyph na smazání dávky
 	volno = true;
 }
 //////////////////////////////////////////////////////////
@@ -524,8 +524,8 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col, unsig
     TscGPGlyphButton *J = Z->mGrid->getGlyphButton(Col, Row);
     // VÌTEV NA PØIDÁVÁNÍ DÁVEK DO ZAKÁZKY
     if (J->GlyphOptions->Kind == scgpbgkPlus)
-    {
-      vloz_davku(Z);
+		{
+			vloz_davku(Z);
       Z->mGrid->Cells[1][0].Background->Color =Z->mGrid->getGlyphButton(1,1)->Options->NormalColor;
       Z->mGrid->getEdit(1,0)->Options->FocusedColorAlpha=255;
       Z->mGrid->getEdit(1,0)->Options->FocusedColor=Z->mGrid->getGlyphButton(1,1)->Options->NormalColor;
@@ -543,7 +543,7 @@ void TForm_definice_zakazek::OnClick(long Tag, long ID, unsigned long Col, unsig
       Z->mGrid->Cells[2][2].Text = "0";
       Z->mGrid->Cells[2][3].Text = "0";
       Z->mGrid->Cells[2][4].Text = "0";
-      }
+			}
 
     }
     // VÌTEV NA MAZÁNÍ DÁVEK ZE ZAKÁZKY
@@ -885,7 +885,7 @@ void __fastcall TForm_definice_zakazek::FormClose(TObject *Sender,TCloseAction &
 
 void TForm_definice_zakazek::setGlyphButtonDavka_Add(unsigned long ID,unsigned long Col)
 {
-	Cvektory::TZakazka *Z = F->d.v.vrat_temp_zakazku_z_mGridu(ID);
+	Cvektory::TZakazka *Z = F->d.v.vrat_temp_zakazku(ID);
 	TscGPGlyphButton *J = Z->mGrid->getGlyphButton(Col, 1);
   J->GlyphOptions->Kind = scgpbgkPlus;
   J->GlyphOptions->Thickness = 1;

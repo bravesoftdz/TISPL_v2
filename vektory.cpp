@@ -7743,7 +7743,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
             E=NULL;delete E;
 			  		//načtení cesty teploměrů
 						for(unsigned int i=1;i<=cT.pocet_sehmentu_cesty;i++)
-			  		{
+						{
 			  			C_cesta cC;
 							FileStream->Read(&cC,sizeof(C_cesta));//načte jeden prvek ze souboru
 							E_pom=new TElement;
@@ -7819,6 +7819,10 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 					E->name=name;
 					//ShowMessage(AnsiString(name)+", nacti pohon n:"+AnsiString(cE.pohon_n));
 					delete[] name; name=NULL;
+
+					//stav
+					E->stav=1;
+          if(E->eID==0 && E->data.pocet_voziku==0)E->stav=0;//pokud se jedná o průjezdnou stop stanici nastavit korektní stav
 
 					sekvencni_zapis_cteni(E,NULL,tab_pruchodu);//vloží element do spojáku elementů, hlavní vedlejší větve
 				}
@@ -7957,7 +7961,12 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			return 1;
 		}
 		//catch(std::invalid_argument){;return 3;}
-		catch(...){;return 2;}//jiná chyba, např. špatný formát souboru
+		//catch(...){;return 2;}//jiná chyba, např. špatný formát souboru
+		catch(Exception &exeption)
+		{
+			if(exeption.Message=="Verze souboru a projektu se neshoduje")return 3;
+      else return 2;
+		}
 	}
 }
 ////---------------------------------------------------------------------------

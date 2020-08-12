@@ -1103,10 +1103,47 @@ void TFormX::korelace_tab_pohonu_elementy(Cvektory::TElement *mimo_element)
 				E->mGrid->Cells[Col][8].Highlight=true;
 				E->mGrid->Cells[Col][9].Highlight=true;
 				E->mGrid->Cells[Col][10].Highlight=true;
+				if(E->mGrid->Cells[Col][11].Text!="-")E->mGrid->Cells[Col][11].Highlight=true;
 			}
     }
-		E=E->dalsi;
+		E=F->d.v.dalsi_krok(E,F->OBJEKT_akt);
 	}
+
+	//korelace v tabulce pøedchozího pm
+	if(F->predchozi_PM!=NULL)
+	{
+		E=F->predchozi_PM;
+		if(E->n!=n && mimo_element!=E)
+		{
+			//zjištìní, zda má element stejný pohon jako upravovaný pohon, pokud ano zjistí v jakém je sloupci
+			long Col=0;
+			if(E->pohon==F->OBJEKT_akt->pohon)Col=3;
+			if(E->eID==300 && E->predchozi2!=E->dalsi2 && E->dalsi2->pohon==F->OBJEKT_akt->pohon)Col=4;
+			if(E->eID==200)
+			{
+				Cvektory::TElement *e_pom=E->dalsi;
+				if(e_pom==NULL)e_pom=F->d.v.ELEMENTY->dalsi;
+				if(e_pom->pohon==F->OBJEKT_akt->pohon)Col=4;
+				e_pom=NULL;delete e_pom;
+			}
+			//pokud byl zjištìn sloupec, pokraèuje
+			if(Col!=0)
+			{
+				if(F->prohodit_sloupce_PM(E))
+				{
+					if(Col==4)Col=3;
+					else Col=4;
+				}
+				E->mGrid->Cells[Col][3].Highlight=true;
+				E->mGrid->Cells[Col][7].Highlight=true;
+				E->mGrid->Cells[Col][5].Highlight=true;
+				E->mGrid->Cells[Col][8].Highlight=true;
+				E->mGrid->Cells[Col][9].Highlight=true;
+				E->mGrid->Cells[Col][10].Highlight=true;
+				if(E->mGrid->Cells[Col][11].Text!="-")E->mGrid->Cells[Col][11].Highlight=true;
+			}
+		}
+  }
 	E=NULL; delete E;
 }
 //---------------------------------------------------------------------------
@@ -1163,6 +1200,7 @@ void TFormX::korelace_v_elementech(long ID,long Col,long Row)
 				E->mGrid->Cells[Col][8].Highlight=true;
 				E->mGrid->Cells[Col][9].Highlight=true;
 				E->mGrid->Cells[Col][10].Highlight=true;
+				if(E->mGrid->Cells[Col][11].Text!="-")E->mGrid->Cells[Col][11].Highlight=true;
 				korelace_tab_pohonu_elementy(E);//oznaèení v ostatních tabulkách
 			}
 			if(Row==6 || Row==7)
@@ -1172,6 +1210,7 @@ void TFormX::korelace_v_elementech(long ID,long Col,long Row)
 				E->mGrid->Cells[Col][8].Highlight=true;
 				E->mGrid->Cells[Col][9].Highlight=true;
 				E->mGrid->Cells[Col][10].Highlight=true;
+        if(E->mGrid->Cells[Col][11].Text!="-")E->mGrid->Cells[Col][11].Highlight=true;
 				korelace_tab_pohonu_elementy(E);//oznaèení v ostatních tabulkách
 			}
 			break;

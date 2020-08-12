@@ -1134,7 +1134,8 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv)
 				  		cas-=(C->sparovany->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)/C->sparovany->pohon->aRD;
 				  	}
 				  	if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->sparovany->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
-				  	if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->sparovany->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
+						if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->sparovany->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
+						if(C->dalsi==NULL && C->sparovany->dalsi!=NULL && C->sparovany->pohon!=C->sparovany->dalsi->pohon)m.cekani_na_palec(0,C->sparovany->dalsi->pohon->roztec,C->sparovany->dalsi->pohon->aRD,3);
 					}
 				}
 				else
@@ -1147,9 +1148,10 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv)
 						{
 				  		if(d>=C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)
 				  			cas-=(C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)/C->Element->pohon->aRD;
-				  	}
-				  	if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->Element->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
+						}
+						if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->Element->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
 						if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->Element->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
+						if(C->dalsi==NULL && C->Element->dalsi!=NULL && C->Element->pohon!=C->Element->dalsi->pohon)cas+=m.cekani_na_palec(0,C->Element->dalsi->pohon->roztec,C->Element->dalsi->pohon->aRD,3);
 					}
 				}
 			}
@@ -1194,12 +1196,12 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv)
 				if(v.MAG_LASO->predchozi->Element->n==MaxInt && v.MAG_LASO->predchozi->sparovany!=NULL)
 		  	{
 					cas+=d/F->pom_element->pohon->aRD;
-					if(v.MAG_LASO->predchozi->sparovany->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
+					//if(v.MAG_LASO->predchozi->sparovany->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
 				}
 		  	else
 		  	{
 					cas+=d/F->pom_element->pohon->aRD;
-					if(v.MAG_LASO->predchozi->Element->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
+					//if(v.MAG_LASO->predchozi->Element->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
 				}
 			}
 
@@ -1212,12 +1214,13 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv)
 		else if(F->pom_element!=NULL && v.MAG_LASO->Element!=NULL)
 		{
 			//načítání parametrů
+			double delka_Pud;
 			X=F->pom_element->geo.X1;Y=F->pom_element->geo.Y1;
 			if(v.MAG_LASO->dalsi==NULL){X=v.MAG_LASO->predchozi->Element->geo.X1;Y=v.MAG_LASO->predchozi->Element->geo.Y1;}
 			OR=F->pom_element->geo.orientace;
 			//výpočetní část
 			TPointD konec=v.bod_na_geometrii(F->pom_element);
-			d=m.delka(X,Y,konec.x,konec.y);
+			delka_Pud=d=m.delka(X,Y,konec.x,konec.y);
 			d=m.castPrepony(d,F->pom_element->geo.delka,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
 			delka+=d;
 
@@ -1239,17 +1242,17 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv)
 				if(v.MAG_LASO->predchozi->Element->n==MaxInt && v.MAG_LASO->predchozi->sparovany!=NULL)
 				{
 					cas+=d_pom/F->pom_element->pohon->aRD;
-					if(v.MAG_LASO->predchozi->sparovany->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
+					//if(v.MAG_LASO->predchozi->sparovany->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
 				}
 				else
 				{
 					cas+=d_pom/F->pom_element->pohon->aRD;
-					if(v.MAG_LASO->predchozi->Element->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
+					//if(v.MAG_LASO->predchozi->Element->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
 				}
 			}
 
 			//vykreslovací část
-			vykresli_Gelement(canv,X,Y,OR,0,d,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]",2);
+			vykresli_Gelement(canv,X,Y,OR,0,delka_Pud,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]",2);
 		}
 	}
 
@@ -1455,12 +1458,14 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv)
 		else
 		{
 			//načítání parametrů
+			double delka_Pud;
 			X=F->pom_element->geo.X4;Y=F->pom_element->geo.Y4;
 			if(v.MAG_LASO->dalsi==NULL){X=v.MAG_LASO->predchozi->Element->geo.X1;Y=v.MAG_LASO->predchozi->Element->geo.Y1;}
 			OR=m.Rt90(F->pom_element->geo.orientace-180);
 			//výpočetní část
 			TPointD konec=v.bod_na_geometrii(F->pom_element);
 			d=m.delka(X,Y,konec.x,konec.y);
+			delka_Pud=d;
 			d=m.castPrepony(d,F->pom_element->geo.delka,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
 			delka+=d;
 
@@ -1490,7 +1495,7 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv)
 			}
 
 			//vykreslovací část
-			vykresli_Gelement(canv,X,Y,OR,0,d,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]",2);
+			vykresli_Gelement(canv,X,Y,OR,0,delka_Pud,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]",2);
 		}
 	}
 	else if(v.MAG_LASO->Element!=NULL)
