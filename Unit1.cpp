@@ -18194,8 +18194,9 @@ void __fastcall TForm1::Button1Click(TObject *Sender)
 //	E->geo.HeightDepp=-3;
 //	d.vykresli_stoupani_klesani(Canvas,E);
 //	Canvas->Rectangle(E->citelna_oblast.rect8);
-scGPButton_ulozit->Enabled=true;
+//scGPButton_ulozit->Enabled=true;
 }
 //---------------------------------------------------------------------------
+
 
 

@@ -283,6 +283,7 @@ __published:	// IDE-managed Components
 	TImage *Image_rozdelovac_3;
 	TIdSSLIOHandlerSocketOpenSSL *IdSSLIOHandlerSocketOpenSSL1;
   TIdSNTP *IdSNTP1;
+	TButton *Button1;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);

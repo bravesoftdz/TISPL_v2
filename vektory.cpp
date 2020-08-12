@@ -6002,6 +6002,7 @@ TPointD_3Dbool Cvektory::generuj_voziky_segementu_mimo_stop_a_buffer(TElement *E
 					else rotacni_zbytek=false;//dokončena ilustrace otáčení JIGu
 				}
 				//finální vložení vozíku s vypočítanými parametry do spojáku VOZIKY
+
 				if(!predchazi_stop)vloz_vozik(ZAKAZKA_akt,E,Pt.x,Pt.y,Pt.z,akt_rotace_jigu+R,1);//vkládá se pouze pokud se nejedná o stopku, vozíky stopky se vkládájí v separátní metodě na tvorbu bufferu, (nicméně i přes stop se musí kvůli umístění zde projít, a proto se tato metoda celá volá)
 				else predchazi_stop=false;//zdisablování pro další stavy, pokud bylo zrovna aktivní/tj. stop element
 			}
