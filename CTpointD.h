@@ -8,6 +8,7 @@ struct TTextNumber{AnsiString text;double number1;int number2;};
 struct TTextWNumber{UnicodeString text;double number1;int number2;};
 struct TTextXYZ{AnsiString text;long X;long Y;long Z;};
 struct TTextXYZd{AnsiString text;double X;double Y;double Z;};
+struct TRectD{double left;double top;double right;double bottom;};
 struct T2Rect{TRect rect1; TRect rect2;};
 struct T3Rect{TRect rect0; TRect rect1; TRect rect2;};
 struct T4Rect{TRect rect0; TRect rect1; TRect rect2; TRect rect3;};

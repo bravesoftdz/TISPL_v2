@@ -417,7 +417,7 @@ Number of warnings;X;Poèet varování
 Object moved, do you agree with the current location?;X;Objekt byl pøesunut, souhlasíte s aktuálním umístìním?
 maximum time ;X;maximální èas
 including max. WT thumb;X;vèetnì max. WT palec
-Waiting;X;Èekání
+Time STOP;X;Èas STOP
 buffer wait time;X;doba èekání v bufferu
 RT is not relevant, some of the objects have no drive!;X;RT není relevantní, nìkterý z objektù nemá pohon!
 Irrelevant time reserve value (RT), drive is not assigned to some object!;X;Nerelevantní hodnota èasové rezervy (RT), na nìkterém objektu není pøiøazen pohon!
