@@ -131,7 +131,7 @@ class Cvektory
 
 		T8Rect citelna_oblast;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast celé kóty(rect0), popisku kóty (rect1), jednotek kóty (rect2) a samotného názvu např. Robot 3 (rect3) elementu, ohodnoty koty mezi LO (rect4), textu na kótě mezi LO (rect5) - popisek kóty mezi LO, v případě teploměrů, uložena oblast popisku °C, Z - souřadnice aktualní element (počátek stoupání či klesání) rect6, Z - souřadnice další element (konec stoupání či klesání) - rect 7, HeightDeep hodnota - rect 8 --- strukturu nedovávat  do CObjekt
 
-		TGeometrie geo;//geometrie elementu, ale ta která následuje za elementem, tzn. X==X1,Y==Y1
+		TGeometrie geo;//geometrie elementu, ale ta která předchází, tzn. X==X4,Y==Y4
 		TmGrid *mGrid;
     Tdata data;//data elementu, která se mění v závislosti na zakázce
 
