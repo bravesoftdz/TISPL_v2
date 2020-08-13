@@ -4331,7 +4331,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			  		{
 			  			E->geo.X2=E->geo.X3=akt_souradnice_kurzoru.x=V->X;
 			  			E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=V->Y;
-              E->name="vozík";
+              E->name="vozík č."+String(V->n);
 			  			break;
 	        	}
 	        	V=V->dalsi;
@@ -8243,7 +8243,7 @@ short TForm1::prekryti_LO(Cvektory::TElement *E)
 				case 180:if(el1.bottom>el2.top)prekryti=true;break;
 				case 270:if(el1.left<el2.right)prekryti=true;break;
 			}
-			if(prekryti && (E->dalsi->eID==5 || E->dalsi->eID==6))ret=3;
+			if(prekryti && ((E->dalsi->eID==5 || E->dalsi->eID==6) || (E->eID==5 || E->eID==6)))ret=3;
 			else if(prekryti)ret=1;
 		}
 		//kontrola konfliktu s přechozím elementem
@@ -8257,7 +8257,7 @@ short TForm1::prekryti_LO(Cvektory::TElement *E)
 				case 180:if(el1.top<el2.bottom)prekryti=true;break;
 				case 270:if(el1.right>el2.left)prekryti=true;break;
 			}
-			if(prekryti && (E->predchozi->eID==5 || E->predchozi->eID==6))ret=3;
+			if(prekryti && ((E->predchozi->eID==5 || E->predchozi->eID==6) || (E->eID==5 || E->eID==6)))ret=3;
 			else if(prekryti)ret=1;
 		}
 		//kontrola konflikru s prvním a posledním bodem objektu, pokud už nebylo odhaleno překrytí
@@ -14409,9 +14409,6 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	REFRESH();
 //	Memo("delka: "+String(E->geo.delka));
 //	Memo("delkaPud: "+String(E->geo.delkaPud));
-	//4,1
-	d.v.ELEMENTY->dalsi->mGrid->Cells[1][3].Text="čas STOP <a>[min]</a>";
-	d.v.ELEMENTY->dalsi->mGrid->Refresh();
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -16714,7 +16711,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 					if(d.v.MAG_LASO->sparovany!=NULL)d_pom=delka=m.castPrepony(delka,d.v.MAG_LASO->sparovany->geo.delka,d.v.MAG_LASO->sparovany->geo.delkaPud,d.v.MAG_LASO->sparovany->geo.HeightDepp);
 				}
 				//měření času
-				if(d.v.MAG_LASO->sparovany!=NULL && d.v.MAG_LASO->sparovany==d.v.MAG_LASO->predchozi->sparovany && d.v.MAG_LASO->sparovany->pohon!=NULL)
+				if(d.v.MAG_LASO->sparovany!=NULL /*&& d.v.MAG_LASO->sparovany==d.v.MAG_LASO->predchozi->sparovany*/ && d.v.MAG_LASO->sparovany->pohon!=NULL)
 				{
 					if(d.v.MAG_LASO->predchozi->sparovany->eID==0)
 					{
@@ -16820,7 +16817,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 								}
 							}
 					  	else
-					  	{
+							{
 								cas+=s/C->Element->pohon->aRD;
 								if((!(C->predchozi->sparovany!=NULL && C->predchozi->sparovany==C->Element && C->predchozi->sparovany->geo.X4==C->predchozi->Element->geo.X2 && C->predchozi->Element->geo.X2==C->predchozi->Element->geo.X3)))//kromě prvního, nemá smysl připočítávat u prvního např čas na stopce, když začínám měření přesně na stopce a jdu za ni
 								{
@@ -16885,13 +16882,15 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 				}
 				delete C;C=NULL;
 				//kontrola přichycení na PM, pokud ano přičtení WT
-				if((d.v.MAG_LASO->predchozi->sparovany->eID==200 || d.v.MAG_LASO->predchozi->sparovany->eID==300) && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->Element->geo.X3 && d.v.MAG_LASO->predchozi->Element->geo.Y2==d.v.MAG_LASO->predchozi->Element->geo.Y3)
+				if((d.v.MAG_LASO->predchozi->sparovany->eID==200 || d.v.MAG_LASO->predchozi->sparovany->eID==300) && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->Element->geo.X3 && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->sparovany->geo.X4)
 					cas+=d.v.MAG_LASO->predchozi->sparovany->WT;
 				//nastavení popiků pro MB
 				popisek="; Čas = "+String(m.round2double(cas,2))+" [s]";
 				if(chyba)popisek+=", nerelevatní časový údaj, na některém úseku nebyl nadefinován pohon";
+        if(d.v.MAG_LASO->sparovany!=NULL && d.v.MAG_LASO->Element->geo.X2==d.v.MAG_LASO->Element->geo.X3 && d.v.MAG_LASO->Element->geo.X3==d.v.MAG_LASO->Element->geo.X4)
+					popisek+=", začátek: "+d.v.MAG_LASO->Element->name;
 				if(d.v.MAG_LASO->predchozi->sparovany!=NULL && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->Element->geo.X3 && d.v.MAG_LASO->predchozi->Element->geo.X3==d.v.MAG_LASO->predchozi->Element->geo.X4)
-					popisek+=", přichyceno na "+d.v.MAG_LASO->predchozi->Element->name;
+					popisek+=", konec: "+d.v.MAG_LASO->predchozi->Element->name;
 			}
 			MB(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,"Délka = "+String(m.round2double(delka*1000,2))+" [mm]"+popisek,"",MB_OK,true,false,366,true,true);
 			C=NULL;delete C;

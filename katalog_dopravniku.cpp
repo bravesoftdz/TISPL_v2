@@ -116,7 +116,8 @@ void TForm_katalog::LoadValues ()
 {
   // vytvoření hlavičky
  // K_mGrid->Cells[0][0].Text="Výběr";
-	K_mGrid->Cells[1][0].Text="CALDAN";
+	K_mGrid->Cells[0][0].Text="CALDAN";
+  K_mGrid->Cells[0][0].Align=K_mGrid->Talign::LEFT;K_mGrid->Cells[0][0].Valign=K_mGrid->Tvalign::MIDDLE;//zarovnání popisku na střed, působilo problémy, musí být nastaveno separátně
 	K_mGrid->Cells[2][0].Text=F->ls->Strings[196];//"Rozteč palců [mm]";
 	K_mGrid->Cells[5][0].Text=F->ls->Strings[197];//"Horizontální oblouky";
 	K_mGrid->Cells[5][1].Text=F->ls->Strings[293];//"Oblouk [°]";
