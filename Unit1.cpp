@@ -18229,6 +18229,9 @@ void __fastcall TForm1::Button1Click(TObject *Sender)
 //	d.vykresli_stoupani_klesani(Canvas,E);
 //	Canvas->Rectangle(E->citelna_oblast.rect8);
 //scGPButton_ulozit->Enabled=true;
+ShowMessage(d.v.ELEMENTY->dalsi->WT);
+
+
 }
 //---------------------------------------------------------------------------
 
