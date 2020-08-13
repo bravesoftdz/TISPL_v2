@@ -4696,68 +4696,8 @@ void TForm1::getJobID(int X, int Y)
 						pom_element=E;//uložení elementu, slouží pro přenos informace zda m.PtInSegmet je true
 					}
 
-					//pokud byla zapčata cesta ukládání již pročlých segmentů
-					if(d.v.MAG_LASO->Element!=NULL)
-					{
-						//zjištění zda se element již nevyskytuje v mag- lasu
-						short segment=d.v.obsahuje_MAG_LASO_element(E);
-
-            /////////měření po trendu
-						//element není obsažen v magnetickém lasu a je to následující element v cestě, nepořítam se spojkou v mag. lasu
-						if(segment==0 && (d.v.MAG_LASO->predchozi->sparovany==E->predchozi || (E->predchozi!=NULL && E->predchozi->n>0 && E->predchozi->predchozi==d.v.MAG_LASO->predchozi->Element)))
-							d.v.vloz_segment_MAG_LASA(E->predchozi);
-
-						//kontrola zda není předchozí spojka, vedlejší větev
-						if(segment==0 && E->predchozi->eID==301 && E->predchozi->predchozi2->predchozi==d.v.MAG_LASO->predchozi->Element)
-							d.v.vloz_segment_MAG_LASA(E->predchozi->predchozi2);
-
-						//kontrola zda není předchozí spojka, hlavní větev
-						if(segment==0 && E->predchozi->eID==301 && E->predchozi->predchozi->predchozi==d.v.MAG_LASO->predchozi->Element)
-							d.v.vloz_segment_MAG_LASA(E->predchozi->predchozi);
-
-						//kontrola zde předchozí předchozí není spojka, vedlejší větev
-						if(segment==0 && E->predchozi->n>0 && E->predchozi->predchozi->eID==301 && E->predchozi->predchozi->predchozi2==d.v.MAG_LASO->predchozi->Element)
-							d.v.vloz_segment_MAG_LASA(E->predchozi);
-
-						//kontrola zde předchozí předchozí není spojka, hlavní větev
-						if(segment==0 && E->predchozi->n>0 && E->predchozi->predchozi->eID==301 && E->predchozi->predchozi->predchozi==d.v.MAG_LASO->predchozi->Element)
-							d.v.vloz_segment_MAG_LASA(E->predchozi);
-
-						/////////měření proti trendu
-						//začátek + obecně na hlavní větvi
-						if(segment==0 && ((d.v.MAG_LASO->predchozi->sparovany==E->dalsi && E->dalsi!=NULL) || (E->dalsi!=NULL && E->dalsi->n>0 && E->dalsi->eID!=301 && E->dalsi->dalsi==d.v.MAG_LASO->predchozi->Element)))
-							d.v.vloz_segment_MAG_LASA(E->dalsi);
-
-						//začátek měření přes spojku
-						if(segment==0 && d.v.MAG_LASO->dalsi==NULL && E->dalsi!=NULL && E->dalsi->eID==301 && E->dalsi->dalsi==d.v.MAG_LASO->predchozi->sparovany)
-							d.v.vloz_segment_MAG_LASA(E->dalsi);
-
-						//z hlavnní větve na vedlejší přes spojku
-						if(segment==0 && E->dalsi!=NULL && E->dalsi->dalsi!=NULL && E->dalsi->dalsi->eID==301 && E->dalsi->dalsi->dalsi==d.v.MAG_LASO->predchozi->Element)
-							d.v.vloz_segment_MAG_LASA(E->dalsi);
-
-						//návrat z vedlejší větve na hlavní přes výhybku
-						if(segment==0 && E->eID==300 && E->dalsi2->dalsi==d.v.MAG_LASO->predchozi->Element)
-							d.v.vloz_segment_MAG_LASA(E->dalsi2);
-
-						//předchozí výhybka, předchozí v ceste vedlejší větev
-						if(segment==0 && E->dalsi!=NULL && E->dalsi->eID==300 && E->dalsi->dalsi2==d.v.MAG_LASO->predchozi->Element)
-							d.v.vloz_segment_MAG_LASA(E->dalsi);
-
-						//z hlavní větve na hlavní přes spojku
-						if(segment==0 && E->dalsi!=NULL && E->dalsi->eID==301 && E->dalsi->dalsi!=NULL && E->dalsi->dalsi->dalsi==d.v.MAG_LASO->predchozi->Element)
-							d.v.vloz_segment_MAG_LASA(E->dalsi->dalsi);
-
-						//začátek na vedlejší větvi, za spojkou
-						if(segment==0 && E->eID==300 && E->dalsi2!=NULL && E->dalsi2==d.v.MAG_LASO->predchozi->sparovany)
-							d.v.vloz_segment_MAG_LASA(E->dalsi2);
-
-						/////////mazání obsaženého
-						//element je již obsazen v seznamu magnetického lasa, bude smazán segment cesty obsahující E, taktéž budou smazány následující segmenty cesty, pokud existují další segmenty
-						if(segment>0)
-							d.v.smaz_segment_MAG_LASA(E);
-					}
-					//break;//odstaveno z důvodu resetování stavu elementů pro potřeby highlightu
+          //kontorla + případné vložení elementu do spojáku mag lasa
+					d.v.kontrola_vlozeni_do_mag_lasa(E);
 
 					//hledání oblastí pro highlight elementu
 					if(prichytavat_k_mrizce==1)
@@ -4766,8 +4706,8 @@ void TForm1::getJobID(int X, int Y)
 						if(pom_element->eID!=MaxInt && m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,pom_element->geo.X4,pom_element->geo.Y4,velikost_citelne_oblasti_elementu))
 						{
 			    		//highlightování elementu
-				  		pom_element->stav=2;
-			    	}
+							pom_element->stav=2;
+						}
 				  	//kontrola zda nebudu přichicen na předchozí element
 						else if(pom_element->predchozi!=NULL && pom_element->predchozi->n>0 && pom_element->predchozi->eID!=MaxInt && m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,pom_element->predchozi->geo.X4,pom_element->predchozi->geo.Y4,velikost_citelne_oblasti_elementu))
 						{
@@ -7874,6 +7814,9 @@ void TForm1::mGrid_puvodni_stav(Cvektory::TElement *E)
   		case 0://stop stanice, nastavování režimů podle ID objektu
   		{
 				E->mGrid->Cells[2][3].Type=E->mGrid->EDIT;E->mGrid->Cells[2][6].Type=E->mGrid->EDIT;
+				////temp odemknutí editace max WT
+				E->mGrid->Cells[2][4].Type=E->mGrid->EDIT;//cokoliv
+				////konec temp
 				E->mGrid->exBUTTONVisible=true;
 				E->mGrid->Update();
   			break;
@@ -7942,6 +7885,10 @@ void TForm1::mGrid_puvodni_stav(Cvektory::TElement *E)
 				//if(B!=NULL)B->Visible=true;
 				E->mGrid->Cells[3][2].Type=E->mGrid->COMBO;
 				E->mGrid->Cells[4][2].Type=E->mGrid->COMBO;
+        ////temp odemknutí editace max WT
+				E->mGrid->Cells[3][11].Type=E->mGrid->EDIT;
+		  	E->mGrid->Cells[4][11].Type=E->mGrid->EDIT;
+				////konec temp
 				if(E->mGrid->Rows[3].Visible)E->mGrid->exBUTTONVisible=true;
         E->mGrid->Update();
 				B=NULL;delete B;
@@ -9461,7 +9408,14 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni,bool plnit
 			E->mGrid->Cells[i][8].TopBorder->Width=2;
 			E->mGrid->Cells[i][11].TopBorder->Width=2;
 		}
+		////temp odemknutí editace max WT
+		E->mGrid->Cells[3][11].InputNumbersOnly=0;//cokoliv
+		E->mGrid->Cells[4][11].InputNumbersOnly=0;
+		////konec temp
 	}
+	////temp odemknutí editace max WT
+	if(E->eID==0)E->mGrid->Cells[2][4].InputNumbersOnly=0;//cokoliv
+	////konec temp
 
 	if(plnit_comba)napln_comba_mGridu(E);
 	set_enabled_mGrid(E);
@@ -9807,8 +9761,10 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->data.WTstop=m.V2WT(E->data.pocet_voziku,d.v.PP.TT);
 			E->mGrid->Cells[2][3].Text=outPT(E->data.WTstop);
 			E->mGrid->Cells[0][4].Text=ls->Strings[224]+" "+cas;//"WT palec "
-			E->mGrid->Cells[2][4].Text=outPT(m.cekani_na_palec(0,F->OBJEKT_akt->pohon->roztec,F->OBJEKT_akt->pohon->aRD,3));
-			E->WT=inPT(ms.MyToDouble(E->mGrid->Cells[2][4].Text));
+			////temp odemknutí editace max WT
+			if(E->WT==0)E->WT=m.cekani_na_palec(0,F->OBJEKT_akt->pohon->roztec,F->OBJEKT_akt->pohon->aRD,3);
+      ////konec temp
+			E->mGrid->Cells[2][4].Text=outPT(m.round2double(E->WT,3));
 			E->mGrid->Cells[0][5].Font->Orientation=900;E->mGrid->Cells[0][5].Valign=TmGrid::MIDDLE;
 			E->mGrid->Cells[0][5].Text=ls->Strings[464];
 			E->mGrid->Cells[1][5].Text=ls->Strings[225];//"počet pozic";
@@ -9842,6 +9798,9 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->MergeCells(0,3,1,3);
 			E->mGrid->MergeCells(0,4,1,4);
 			E->mGrid->MergeCells(0,5,0,6);
+			////temp odemknutí editace max WT
+			E->mGrid->Cells[2][4].Type=E->mGrid->EDIT;//cokoliv
+			////konec temp
 			//skrytí řádků
 			if(!(id>=6 && id<=10 || id==12)){E->mGrid->VisibleRow(4,false,false); E->mGrid->VisibleRow(5,false,false); E->mGrid->VisibleRow(6,false,false);E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;}
 			break;
@@ -10255,6 +10214,10 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 				}
 				e_pom=NULL;delete e_pom;
 			}
+			////temp odemknutí editace max WT
+			E->mGrid->Cells[prvni][11].Type=E->mGrid->EDIT;
+			E->mGrid->Cells[druhy][11].Type=E->mGrid->EDIT;
+			////konec temp
 			if(E->WT!=0)E->mGrid->Cells[druhy][11].Text=outPT(E->WT);
 			else E->mGrid->Cells[druhy][11].Text="-";
 			//nastavení šířek
@@ -10424,6 +10387,9 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->MergeCells(0,3,1,3);
 			E->mGrid->MergeCells(0,4,1,4);
 			E->mGrid->MergeCells(0,5,0,6);
+      ////temp odemknutí editace max WT
+			E->mGrid->Cells[2][4].Type=E->mGrid->EDIT;//cokoliv
+			////konec temp
 			//skrytí / zobrazení řádků
 			switch(stav)
 			{
@@ -10834,6 +10800,10 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 				}
 				e_pom=NULL;delete e_pom;
 			}
+      ////temp odemknutí editace max WT
+			E->mGrid->Cells[prvni][11].Type=E->mGrid->EDIT;
+			E->mGrid->Cells[druhy][11].Type=E->mGrid->EDIT;
+			////konec temp
 			if(E->WT!=0)E->mGrid->Cells[druhy][11].Text=outPT(E->WT);
 			else E->mGrid->Cells[druhy][11].Text="-";
 			//nastavení šířek

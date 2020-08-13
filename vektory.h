@@ -832,6 +832,7 @@ public:
 //magnetické laso
 	void hlavicka_MAG_LASO();//vytvoří novou hlavičku pro magnetické laso
 	long vymaz_seznam_MAG_LASO();//smaže kompletní seznam pro magnetické laso
+	void kontrola_vlozeni_do_mag_lasa(TElement *E);//provede kontrolu zda může být element vložen do seznamu mag. laso, pokud ano vloží ho
 	void vloz_segment_MAG_LASA(TElement *E);//vloží nový segment do magnetického lasa
 	void smaz_segment_MAG_LASA(TElement *E);//smaže segment z magnetického lasa
 	TPointD bod_na_geometrii(TElement *E);//"přilepování" souřadnic na gaometrii linky, linie i oblouky
