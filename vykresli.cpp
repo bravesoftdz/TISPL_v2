@@ -986,7 +986,7 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 			{
 				bod.x=E->geo.X4;
 				bod.y=E->geo.Y4;
-        E->stav=2;
+				E->stav=2;
         break;
 			}
       //kontrola začátku a konce stoupání
@@ -995,7 +995,7 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 				if(m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,E->geo.X1,E->geo.Y1,F->velikost_citelne_oblasti_elementu))
 				{
 					bod.x=E->geo.X1;
-			   	bod.y=E->geo.Y1;
+					bod.y=E->geo.Y1;
 					break;
         }
 				if(m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,E->geo.X4,E->geo.Y4,F->velikost_citelne_oblasti_elementu))
@@ -1051,13 +1051,13 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 		if(F->pom_element->stav==2 && (F->pom_element!=v.MAG_LASO->sparovany || (v.MAG_LASO->Element->geo.X4!=v.MAG_LASO->sparovany->geo.X4 || v.MAG_LASO->Element->geo.Y4!=v.MAG_LASO->sparovany->geo.Y4)))
 		{
 			canv->Ellipse(m.L2Px(F->pom_element->geo.X4)-width,m.L2Py(F->pom_element->geo.Y4)-width,m.L2Px(F->pom_element->geo.X4)+width,m.L2Py(F->pom_element->geo.Y4)+width);
-			//F->akt_souradnice_kurzoru.x=F->pom_element->geo.X4;F->akt_souradnice_kurzoru.y=F->pom_element->geo.Y4;
+			F->akt_souradnice_kurzoru.x=F->pom_element->geo.X4;F->akt_souradnice_kurzoru.y=F->pom_element->geo.Y4;
 			ret=true;
 		}
 		else if(F->pom_element->predchozi->stav==2 && (F->pom_element->predchozi!=v.MAG_LASO->sparovany || (v.MAG_LASO->Element->geo.X4!=v.MAG_LASO->sparovany->geo.X4 || v.MAG_LASO->Element->geo.Y4!=v.MAG_LASO->sparovany->geo.Y4)))
 		{
 			canv->Ellipse(m.L2Px(F->pom_element->predchozi->geo.X4)-width,m.L2Py(F->pom_element->predchozi->geo.Y4)-width,m.L2Px(F->pom_element->predchozi->geo.X4)+width,m.L2Py(F->pom_element->predchozi->geo.Y4)+width);
-			//F->akt_souradnice_kurzoru.x=F->pom_element->predchozi->geo.X4;F->akt_souradnice_kurzoru.y=F->pom_element->predchozi->geo.Y4;
+			F->akt_souradnice_kurzoru.x=F->pom_element->predchozi->geo.X4;F->akt_souradnice_kurzoru.y=F->pom_element->predchozi->geo.Y4;
 			ret=true;
 		}
 		//kontrola zda jsem na vrátkách objektu
@@ -1072,7 +1072,7 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 				{
 					canv->Ellipse(m.L2Px(V->X)-width,m.L2Py(V->Y)-width,m.L2Px(V->X)+width,m.L2Py(V->Y)+width);
 					pokracovat=false;
-					//F->akt_souradnice_kurzoru.x=V->X;F->akt_souradnice_kurzoru.y=V->Y;
+					F->akt_souradnice_kurzoru.x=V->X;F->akt_souradnice_kurzoru.y=V->Y;
           ret=true;
 					break;
 				}
@@ -1084,11 +1084,11 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 			if(pokracovat)
 			{
 		  	P=v.InVrata(F->pom_element);
-		  	if(P.x!=-1*MaxInt && P.y!=-1*MaxInt)
-		  	{
+				if(P.x!=-1*MaxInt && P.y!=-1*MaxInt)
+				{
 		  		//vykreslení
 					canv->Ellipse(m.L2Px(P.x)-width,m.L2Py(P.y)-width,m.L2Px(P.x)+width,m.L2Py(P.y)+width);
-					//F->akt_souradnice_kurzoru=P;
+					F->akt_souradnice_kurzoru=P;
 					ret=true;
 		  	}
 		  	//kontrola začátku a konce stoupání / klesání
@@ -1097,13 +1097,13 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 		  		if(m.delka(F->pom_element->geo.X1,F->pom_element->geo.Y1,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y)<=F->velikost_citelne_oblasti_elementu)
 					{
 						canv->Ellipse(m.L2Px(F->pom_element->geo.X1)-width,m.L2Py(F->pom_element->geo.Y1)-width,m.L2Px(F->pom_element->geo.X1)+width,m.L2Py(F->pom_element->geo.Y1)+width);
-						//F->akt_souradnice_kurzoru.x=F->pom_element->geo.X1;F->akt_souradnice_kurzoru.y=F->pom_element->geo.Y1;
+						F->akt_souradnice_kurzoru.x=F->pom_element->geo.X1;F->akt_souradnice_kurzoru.y=F->pom_element->geo.Y1;
 						ret=true;
 					}
 					if(m.delka(F->pom_element->geo.X4,F->pom_element->geo.Y4,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y)<=F->velikost_citelne_oblasti_elementu)
 					{
 						canv->Ellipse(m.L2Px(F->pom_element->geo.X4)-width,m.L2Py(F->pom_element->geo.Y4)-width,m.L2Px(F->pom_element->geo.X4)+width,m.L2Py(F->pom_element->geo.Y4)+width);
-						//F->akt_souradnice_kurzoru.x=F->pom_element->geo.X4;F->akt_souradnice_kurzoru.y=F->pom_element->geo.Y4;
+						F->akt_souradnice_kurzoru.x=F->pom_element->geo.X4;F->akt_souradnice_kurzoru.y=F->pom_element->geo.Y4;
 						ret=true;
 					}
 				}
@@ -1178,9 +1178,9 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 				  		cas+=C->sparovany->data.WTstop;
 				  		cas-=(C->sparovany->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)/C->sparovany->pohon->aRD;
 				  	}
-				  	if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->sparovany->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
-						if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->sparovany->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
-						if(C->dalsi==NULL && C->sparovany->dalsi!=NULL && C->sparovany->pohon!=C->sparovany->dalsi->pohon)m.cekani_na_palec(0,C->sparovany->dalsi->pohon->roztec,C->sparovany->dalsi->pohon->aRD,3);
+						if(!prichyceno && C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->sparovany->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
+						if(!prichyceno && C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->sparovany->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
+						if(!prichyceno && C->dalsi==NULL && C->sparovany->dalsi!=NULL && C->sparovany->pohon!=C->sparovany->dalsi->pohon)m.cekani_na_palec(0,C->sparovany->dalsi->pohon->roztec,C->sparovany->dalsi->pohon->aRD,3);
 					}
 				}
 				else
@@ -1194,9 +1194,9 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 				  		if(d>=C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)
 				  			cas-=(C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)/C->Element->pohon->aRD;
 						}
-						if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->Element->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
-						if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->Element->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
-						if(C->dalsi==NULL && C->Element->dalsi!=NULL && C->Element->pohon!=C->Element->dalsi->pohon)cas+=m.cekani_na_palec(0,C->Element->dalsi->pohon->roztec,C->Element->dalsi->pohon->aRD,3);
+						if(!prichyceno && C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->Element->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
+						if(!prichyceno && C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->Element->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
+						if(!prichyceno && C->dalsi==NULL && C->Element->dalsi!=NULL && C->Element->pohon!=C->Element->dalsi->pohon)cas+=m.cekani_na_palec(0,C->Element->dalsi->pohon->roztec,C->Element->dalsi->pohon->aRD,3);
 					}
 				}
 			}
@@ -1363,7 +1363,7 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
 				RA=v.MAG_LASO->sparovany->geo.rotacni_uhel;
 				OR=m.Rt90(v.MAG_LASO->sparovany->geo.orientace-180);
 			}
-			//ypočet delky
+			//výpočet delky
 			if(C->Element->n!=MaxInt && C->n!=1)d=C->Element->geo.delka;
 			else if(C->Element->geo.typ==0)
 			{
@@ -1486,12 +1486,12 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
 				if(v.MAG_LASO->predchozi->Element->n==MaxInt && v.MAG_LASO->predchozi->sparovany!=NULL)
 		  	{
 					cas+=d/F->pom_element->pohon->aRD;
-					if(v.MAG_LASO->predchozi->sparovany->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
+					if(!prichyceno && v.MAG_LASO->predchozi->sparovany->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
 				}
 		  	else
 		  	{
 					cas+=d/F->pom_element->pohon->aRD;
-					if(v.MAG_LASO->predchozi->Element->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
+					if(!prichyceno && v.MAG_LASO->predchozi->Element->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
 				}
 			}
 
@@ -1530,12 +1530,12 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
 				if(v.MAG_LASO->predchozi->Element->n==MaxInt && v.MAG_LASO->predchozi->sparovany!=NULL)
 				{
 					cas+=d_pom/F->pom_element->pohon->aRD;
-					if(v.MAG_LASO->predchozi->sparovany->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);//není třeba zde řešít, řeší se výše v průchodu uložených segmentů
+					if(!prichyceno && v.MAG_LASO->predchozi->sparovany->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);//není třeba zde řešít, řeší se výše v průchodu uložených segmentů
 				}
 				else
 				{
 					cas+=d_pom/F->pom_element->pohon->aRD;
-					if(v.MAG_LASO->predchozi->Element->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);//není třeba zde řešít, řeší se výše v průchodu uložených segmentů
+					if(!prichyceno && v.MAG_LASO->predchozi->Element->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);//není třeba zde řešít, řeší se výše v průchodu uložených segmentů
 				}
 			}
 

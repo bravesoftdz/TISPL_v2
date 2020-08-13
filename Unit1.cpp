@@ -10120,7 +10120,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[2][8].Text=ls->Strings[212];//"Podvozky"
 			E->mGrid->Cells[2][9].Text=ls->Strings[213];//"Jigy 0°"
 			E->mGrid->Cells[2][10].Text=ls->Strings[214];//"Jigy 90°"
-			E->mGrid->Cells[0][11].Text="max WT "+cas;
+			E->mGrid->Cells[0][11].Text="max "+ls->Strings[224]+" "+cas;
 			//nastavení sloučených sloupců
 			E->mGrid->Cells[0][3].Text=ls->Strings[452];//+" "+rychlost;//"Rychlost"
 			E->mGrid->Cells[1][3].Text=rychlost;//jednotky
@@ -10223,7 +10223,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			//nastavení šířek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=E->mGrid->Columns[1].Width=E->mGrid->Rows[0].Height;
-			E->mGrid->Columns[2].Width=90;
+			E->mGrid->Columns[2].Width=105;//90;
 			E->mGrid->Columns[3].Width=145;
 			E->mGrid->Columns[4].Width=145;
 			//nastavení exButtonu, skrývání řádku max.WT Stop
@@ -10706,7 +10706,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[2][8].Text=ls->Strings[212];//"Podvozky"
 			E->mGrid->Cells[2][9].Text=ls->Strings[213];//"Jigy 0°"
 			E->mGrid->Cells[2][10].Text=ls->Strings[214];//"Jigy 90°"
-			E->mGrid->Cells[0][11].Text="max WT "+cas;
+			E->mGrid->Cells[0][11].Text="max "+ls->Strings[224]+" "+cas;
 			//nastavení sloučených sloupců
 			E->mGrid->Cells[0][3].Text=ls->Strings[452];//+" "+rychlost;//"Rychlost"
 			E->mGrid->Cells[1][3].Text=rychlost;//jednotky
@@ -10809,7 +10809,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			//nastavení šířek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=E->mGrid->Columns[1].Width=E->mGrid->Rows[0].Height;
-			E->mGrid->Columns[2].Width=90;
+			E->mGrid->Columns[2].Width=105;//90;
 			E->mGrid->Columns[3].Width=145;
 			E->mGrid->Columns[4].Width=145;
 			//nastavení exButtonu, skrývání řádku max.WT Stop
@@ -11246,7 +11246,7 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 			E->mGrid->Cells[2][8].Text=ls->Strings[212];//"Podvozky"
 			E->mGrid->Cells[2][9].Text=ls->Strings[213];//"Jigy 0°"
 			E->mGrid->Cells[2][10].Text=ls->Strings[214];//"Jigy 90°"
-			E->mGrid->Cells[2][11].Text="max WT "+cas;
+			E->mGrid->Cells[2][11].Text="max "+ls->Strings[224]+" "+cas;//"max WT palec"
 			//popisky sloučených sloupců
 			E->mGrid->Cells[0][4].Text=ls->Strings[452];///"Rychlost"
 			E->mGrid->Cells[1][4].Text=rychlost;//jednotky
@@ -14379,6 +14379,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	REFRESH();
 //	Memo("delka: "+String(E->geo.delka));
 //	Memo("delkaPud: "+String(E->geo.delkaPud));
+  Memo("");
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -16762,7 +16763,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 								if((!(C->predchozi->sparovany!=NULL && C->predchozi->sparovany==C->Element && C->predchozi->sparovany->geo.X4==C->predchozi->Element->geo.X2 && C->predchozi->Element->geo.X2==C->predchozi->Element->geo.X3)))//kromě prvního, nemá smysl připočítávat u prvního např čas na stopce, když začínám měření přesně na stopce a jdu za ni
 								{
 							  	if(C->sparovany->eID==0 && C->dalsi==NULL && C->Element->geo.X2==C->Element->geo.X3 && C->Element->geo.X3==C->Element->geo.X4 && C->predchozi->Element!=C->sparovany)
-							  	{
+									{
 							  		cas+=C->sparovany->data.WTstop;
 							  		cas-=(C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->sparovany->pohon->aRD;
 					  	  	}
@@ -16779,7 +16780,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 							  			cas+=m.V2WT(ceil((dl-buf)/d.v.PP.delka_podvozek),d.v.PP.TT);//připočítání WT na aktuálním vozíku
 							  			d_pom-=dl-buf;//zmenšení délky jen na délku pojezdu
 					  	  		}
-							  	}
+									}
 							  	//přičtení WT na palec při změně pohonu
 							  	if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->sparovany->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
 							  	if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->sparovany->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
@@ -16798,7 +16799,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 							  		if(s>=buf)
 							  			cas-=(C->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->Element->pohon->aRD;
 							  		//není třeba řešít nedokončený buffer, zde se nepočátá poslendí element, ale pouze již prošl= elementy
-							  	}
+									}
 							  	if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->Element->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
 									if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->Element->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
 								}
@@ -16841,7 +16842,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 							}
 							//připočtení čekání na palec při přechodu mezi pohony
 							if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && CE->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
-							if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && CE->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
+							if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->Element->geo.X2!=C->dalsi->sparovany->geo.X4 && C->dalsi->sparovany->pohon!=NULL && CE->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
 							//ukazatelové záležitosti
 							CE=NULL;delete CE;
             }
@@ -16851,8 +16852,8 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 				}
 				delete C;C=NULL;
 				//kontrola přichycení na PM, pokud ano přičtení WT
-				if((d.v.MAG_LASO->predchozi->sparovany->eID==200 || d.v.MAG_LASO->predchozi->sparovany->eID==300) && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->Element->geo.X3 && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->sparovany->geo.X4)
-					cas+=d.v.MAG_LASO->predchozi->sparovany->WT;
+//				if((d.v.MAG_LASO->predchozi->sparovany->eID==200 || d.v.MAG_LASO->predchozi->sparovany->eID==300) && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->Element->geo.X3 && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->sparovany->geo.X4)
+//					cas+=d.v.MAG_LASO->predchozi->sparovany->WT;
 				//nastavení popiků pro MB
 				popisek="; Čas = "+String(m.round2double(cas,2))+" [s]";
 				if(chyba)popisek+=", nerelevatní časový údaj, na některém úseku nebyl nadefinován pohon";
