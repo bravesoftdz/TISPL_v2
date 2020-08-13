@@ -259,6 +259,14 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					//pøepoèet RT
 					F->d.v.reserve_time(E,c);
 				}
+				////temp odemknutí editace max WT
+				if(Row==4)//Col=2
+				{
+					input_state=WT;
+					E->WT=F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text);
+          F->aktualizace_RT();
+				}
+        ////konec temp
         //pokud nejsou nastaveny žádné vozíky, nastavit stav na 0
 				if(E->data.pocet_voziku==0)E->stav=0;
         else E->stav=1;
@@ -575,6 +583,22 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 						aktualizace_tab_elementu(E);
 						break;
 					}
+					////temp odemknutí editace max WT
+					case 11:
+					{
+						input_state=WT;
+						//urèení cílového pohonu
+						Cvektory::TPohon *p=F->d.v.vrat_pohon(E->mGrid->getCombo(Col,2)->ItemIndex);
+						if(p!=NULL)
+						{
+							E->WT=F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text);
+							F->aktualizace_RT();
+						}
+						else E->mGrid->Cells[Col][Row].Text="-";
+            p=NULL;delete p;
+						break;
+					}
+          ////konec temp
 				}
 			} break;
 		}

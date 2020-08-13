@@ -9470,10 +9470,76 @@ long Cvektory::vymaz_seznam_MAG_LASO()
 	return pocet_smazanych_segmentu;
 }
 ////---------------------------------------------------------------------------
+//provede kontrolu zda může být element vložen do seznamu mag. laso, pokud ano vloží ho
+void Cvektory::kontrola_vlozeni_do_mag_lasa(TElement *E)
+{
+	//pokud byla zapčata cesta ukládání již pročlých segmentů
+	if(MAG_LASO->Element!=NULL)
+	{
+		//zjištění zda se element již nevyskytuje v mag- lasu
+		short segment=obsahuje_MAG_LASO_element(E);
+
+		/////////měření po trendu
+		//element není obsažen v magnetickém lasu a je to následující element v cestě, nepořítam se spojkou v mag. lasu
+		if(segment==0 && (MAG_LASO->predchozi->sparovany==E->predchozi || (E->predchozi!=NULL && E->predchozi->n>0 && E->predchozi->predchozi==MAG_LASO->predchozi->Element)))
+			vloz_segment_MAG_LASA(E->predchozi);
+
+		//kontrola zda není předchozí spojka, vedlejší větev
+		if(segment==0 && E->predchozi->eID==301 && E->predchozi->predchozi2->predchozi==MAG_LASO->predchozi->Element)
+			vloz_segment_MAG_LASA(E->predchozi->predchozi2);
+
+		//kontrola zda není předchozí spojka, hlavní větev
+		if(segment==0 && E->predchozi->eID==301 && E->predchozi->predchozi->predchozi==MAG_LASO->predchozi->Element)
+			vloz_segment_MAG_LASA(E->predchozi->predchozi);
+
+		//kontrola zde předchozí předchozí není spojka, vedlejší větev
+		if(segment==0 && E->predchozi->n>0 && E->predchozi->predchozi->eID==301 && E->predchozi->predchozi->predchozi2==MAG_LASO->predchozi->Element)
+			vloz_segment_MAG_LASA(E->predchozi);
+
+		//kontrola zde předchozí předchozí není spojka, hlavní větev
+		if(segment==0 && E->predchozi->n>0 && E->predchozi->predchozi->eID==301 && E->predchozi->predchozi->predchozi==MAG_LASO->predchozi->Element)
+			vloz_segment_MAG_LASA(E->predchozi);
+
+		/////////měření proti trendu
+		//začátek + obecně na hlavní větvi
+		if(segment==0 && ((MAG_LASO->predchozi->sparovany==E->dalsi && E->dalsi!=NULL) || (E->dalsi!=NULL && E->dalsi->n>0 && E->dalsi->eID!=301 && E->dalsi->dalsi==MAG_LASO->predchozi->Element)))
+			vloz_segment_MAG_LASA(E->dalsi);
+
+		//začátek měření přes spojku
+		if(segment==0 && MAG_LASO->dalsi==NULL && E->dalsi!=NULL && E->dalsi->eID==301 && E->dalsi->dalsi==MAG_LASO->predchozi->sparovany)
+			vloz_segment_MAG_LASA(E->dalsi);
+
+		//z hlavnní větve na vedlejší přes spojku
+		if(segment==0 && E->dalsi!=NULL && E->dalsi->dalsi!=NULL && E->dalsi->dalsi->eID==301 && E->dalsi->dalsi->dalsi==MAG_LASO->predchozi->Element)
+			vloz_segment_MAG_LASA(E->dalsi);
+
+		//návrat z vedlejší větve na hlavní přes výhybku
+		if(segment==0 && E->eID==300 && E->dalsi2->dalsi==MAG_LASO->predchozi->Element)
+			vloz_segment_MAG_LASA(E->dalsi2);
+
+		//předchozí výhybka, předchozí v ceste vedlejší větev
+		if(segment==0 && E->dalsi!=NULL && E->dalsi->eID==300 && E->dalsi->dalsi2==MAG_LASO->predchozi->Element)
+			vloz_segment_MAG_LASA(E->dalsi);
+
+		//z hlavní větve na hlavní přes spojku
+		if(segment==0 && E->dalsi!=NULL && E->dalsi->eID==301 && E->dalsi->dalsi!=NULL && E->dalsi->dalsi->dalsi==MAG_LASO->predchozi->Element)
+			vloz_segment_MAG_LASA(E->dalsi->dalsi);
+
+		//začátek na vedlejší větvi, za spojkou
+		if(segment==0 && E->eID==300 && E->dalsi2!=NULL && E->dalsi2==MAG_LASO->predchozi->sparovany)
+			vloz_segment_MAG_LASA(E->dalsi2);
+
+		/////////mazání obsaženého
+		//element je již obsazen v seznamu magnetického lasa, bude smazán segment cesty obsahující E, taktéž budou smazány následující segmenty cesty, pokud existují další segmenty
+		if(segment>0)
+			smaz_segment_MAG_LASA(E);
+	}
+}
+////---------------------------------------------------------------------------
 //vloží nový segment do magnetického lasa
 void Cvektory::vloz_segment_MAG_LASA(TElement *E)
 {
-  //ukazatelové vytvoření a vložení segmentu
+	//ukazatelové vytvoření a vložení segmentu
 	TCesta *novy=new TCesta;
 	novy->n=MAG_LASO->predchozi->n+1;
 	novy->dalsi=NULL;

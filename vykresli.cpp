@@ -946,22 +946,23 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv,int X,int Y,bool kalibracni_sipka
 //metoda na vykreslení měřítka á la magnetické laso nebo vzádlenost teploměrů na pohonu
 void Cvykresli::vykresli_meridlo(TCanvas *canv)
 {
-  ////přesměrování podle typu vykreslení
-	if(F->pom_element!=NULL && ((v.MAG_LASO->dalsi==NULL && m.azimut(v.MAG_LASO->Element->geo.X1,v.MAG_LASO->Element->geo.Y1,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y)!=F->pom_element->geo.orientace-F->pom_element->geo.rotacni_uhel) || (v.MAG_LASO->dalsi!=NULL && v.MAG_LASO->sparovany!=NULL && ((v.MAG_LASO->predchozi->n==1 && ((F->pom_element->dalsi==v.MAG_LASO->sparovany || (F->pom_element->dalsi!=NULL && F->pom_element->dalsi->dalsi==v.MAG_LASO->sparovany)) || F->pom_element->dalsi2==v.MAG_LASO->sparovany)) || (v.MAG_LASO->predchozi->n>1 && (v.MAG_LASO->dalsi->dalsi->Element->dalsi==v.MAG_LASO->sparovany || (v.MAG_LASO->dalsi->dalsi->Element->dalsi!=NULL && v.MAG_LASO->dalsi->dalsi->Element->dalsi->dalsi==v.MAG_LASO->sparovany) || v.MAG_LASO->dalsi->dalsi->Element->dalsi2==v.MAG_LASO->sparovany))))))
-		vykresli_meridlo_proti_trendu(canv);
-	else
-		vykresli_meridlo_po_trendu(canv);
+  ////vykreslní citelných oblastí
+	bool prichyceno=vykresli_cit_oblasti_lasa(canv);
 
-	////vykreslní citelných oblastí
-	vykresli_cit_oblasti_lasa(canv);
+	////přesměrování podle typu vykreslení
+	if(F->pom_element!=NULL && ((v.MAG_LASO->dalsi==NULL && m.azimut(v.MAG_LASO->Element->geo.X1,v.MAG_LASO->Element->geo.Y1,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y)!=F->pom_element->geo.orientace-F->pom_element->geo.rotacni_uhel) || (v.MAG_LASO->dalsi!=NULL && v.MAG_LASO->sparovany!=NULL && ((v.MAG_LASO->predchozi->n==1 && ((F->pom_element->dalsi==v.MAG_LASO->sparovany || (F->pom_element->dalsi!=NULL && F->pom_element->dalsi->dalsi==v.MAG_LASO->sparovany)) || F->pom_element->dalsi2==v.MAG_LASO->sparovany)) || (v.MAG_LASO->predchozi->n>1 && (v.MAG_LASO->dalsi->dalsi->Element->dalsi==v.MAG_LASO->sparovany || (v.MAG_LASO->dalsi->dalsi->Element->dalsi!=NULL && v.MAG_LASO->dalsi->dalsi->Element->dalsi->dalsi==v.MAG_LASO->sparovany) || v.MAG_LASO->dalsi->dalsi->Element->dalsi2==v.MAG_LASO->sparovany))))))
+		vykresli_meridlo_proti_trendu(canv,prichyceno);
+	else
+		vykresli_meridlo_po_trendu(canv,prichyceno);
 }
 ////---------------------------------------------------------------------------
 //vykreslí citelné oblasti elementů na které je možné se přichytit
-void Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
+bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 {
   //bod vykreslení
 	TPointD bod,P;
 	bod.x=MaxInt;bod.y=MaxInt;
+	bool ret=false;
 
 	//vykreslení před měřením
 	if(F->prichytavat_k_mrizce==1 && v.MAG_LASO->Element==NULL && v.MAG_LASO->sparovany==NULL && F->pom_element==NULL)
@@ -1032,7 +1033,11 @@ void Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 		canv->Pen->Mode=pmNotXor;
 
 		//vykreslení
-		if(bod.x!=MaxInt && bod.y!=MaxInt)canv->Ellipse(m.L2Px(bod.x)-width,m.L2Py(bod.y)-width,m.L2Px(bod.x)+width,m.L2Py(bod.y)+width);
+		if(bod.x!=MaxInt && bod.y!=MaxInt)
+		{
+			canv->Ellipse(m.L2Px(bod.x)-width,m.L2Py(bod.y)-width,m.L2Px(bod.x)+width,m.L2Py(bod.y)+width);
+			ret=true;
+		}
 	}
 
 	//vykreslení během měření
@@ -1044,9 +1049,17 @@ void Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 		canv->Pen->Mode=pmNotXor;
 		//vykreslení
 		if(F->pom_element->stav==2 && (F->pom_element!=v.MAG_LASO->sparovany || (v.MAG_LASO->Element->geo.X4!=v.MAG_LASO->sparovany->geo.X4 || v.MAG_LASO->Element->geo.Y4!=v.MAG_LASO->sparovany->geo.Y4)))
+		{
 			canv->Ellipse(m.L2Px(F->pom_element->geo.X4)-width,m.L2Py(F->pom_element->geo.Y4)-width,m.L2Px(F->pom_element->geo.X4)+width,m.L2Py(F->pom_element->geo.Y4)+width);
+			//F->akt_souradnice_kurzoru.x=F->pom_element->geo.X4;F->akt_souradnice_kurzoru.y=F->pom_element->geo.Y4;
+			ret=true;
+		}
 		else if(F->pom_element->predchozi->stav==2 && (F->pom_element->predchozi!=v.MAG_LASO->sparovany || (v.MAG_LASO->Element->geo.X4!=v.MAG_LASO->sparovany->geo.X4 || v.MAG_LASO->Element->geo.Y4!=v.MAG_LASO->sparovany->geo.Y4)))
+		{
 			canv->Ellipse(m.L2Px(F->pom_element->predchozi->geo.X4)-width,m.L2Py(F->pom_element->predchozi->geo.Y4)-width,m.L2Px(F->pom_element->predchozi->geo.X4)+width,m.L2Py(F->pom_element->predchozi->geo.Y4)+width);
+			//F->akt_souradnice_kurzoru.x=F->pom_element->predchozi->geo.X4;F->akt_souradnice_kurzoru.y=F->pom_element->predchozi->geo.Y4;
+			ret=true;
+		}
 		//kontrola zda jsem na vrátkách objektu
 		else
 		{
@@ -1059,6 +1072,8 @@ void Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 				{
 					canv->Ellipse(m.L2Px(V->X)-width,m.L2Py(V->Y)-width,m.L2Px(V->X)+width,m.L2Py(V->Y)+width);
 					pokracovat=false;
+					//F->akt_souradnice_kurzoru.x=V->X;F->akt_souradnice_kurzoru.y=V->Y;
+          ret=true;
 					break;
 				}
 				V=V->dalsi;
@@ -1072,23 +1087,35 @@ void Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 		  	if(P.x!=-1*MaxInt && P.y!=-1*MaxInt)
 		  	{
 		  		//vykreslení
-		  		canv->Ellipse(m.L2Px(P.x)-width,m.L2Py(P.y)-width,m.L2Px(P.x)+width,m.L2Py(P.y)+width);
+					canv->Ellipse(m.L2Px(P.x)-width,m.L2Py(P.y)-width,m.L2Px(P.x)+width,m.L2Py(P.y)+width);
+					//F->akt_souradnice_kurzoru=P;
+					ret=true;
 		  	}
 		  	//kontrola začátku a konce stoupání / klesání
 		  	else if(F->pom_element->geo.HeightDepp!=0)
 		  	{
 		  		if(m.delka(F->pom_element->geo.X1,F->pom_element->geo.Y1,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y)<=F->velikost_citelne_oblasti_elementu)
-		  			canv->Ellipse(m.L2Px(F->pom_element->geo.X1)-width,m.L2Py(F->pom_element->geo.Y1)-width,m.L2Px(F->pom_element->geo.X1)+width,m.L2Py(F->pom_element->geo.Y1)+width);
-		  		if(m.delka(F->pom_element->geo.X4,F->pom_element->geo.Y4,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y)<=F->velikost_citelne_oblasti_elementu)
-		  			canv->Ellipse(m.L2Px(F->pom_element->geo.X4)-width,m.L2Py(F->pom_element->geo.Y4)-width,m.L2Px(F->pom_element->geo.X4)+width,m.L2Py(F->pom_element->geo.Y4)+width);
+					{
+						canv->Ellipse(m.L2Px(F->pom_element->geo.X1)-width,m.L2Py(F->pom_element->geo.Y1)-width,m.L2Px(F->pom_element->geo.X1)+width,m.L2Py(F->pom_element->geo.Y1)+width);
+						//F->akt_souradnice_kurzoru.x=F->pom_element->geo.X1;F->akt_souradnice_kurzoru.y=F->pom_element->geo.Y1;
+						ret=true;
+					}
+					if(m.delka(F->pom_element->geo.X4,F->pom_element->geo.Y4,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y)<=F->velikost_citelne_oblasti_elementu)
+					{
+						canv->Ellipse(m.L2Px(F->pom_element->geo.X4)-width,m.L2Py(F->pom_element->geo.Y4)-width,m.L2Px(F->pom_element->geo.X4)+width,m.L2Py(F->pom_element->geo.Y4)+width);
+						//F->akt_souradnice_kurzoru.x=F->pom_element->geo.X4;F->akt_souradnice_kurzoru.y=F->pom_element->geo.Y4;
+						ret=true;
+					}
 				}
 			}
 		}
 	}
+
+  return ret;
 }
 ////---------------------------------------------------------------------------
 //vykreslí měření po trendu linky
-void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv)
+void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 {
 	////deklarace
 	double R,RA,OR,X,Y,uhel=0,delka=0,azimut,cas=0,d;
@@ -1314,7 +1341,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv)
 }
 ////---------------------------------------------------------------------------
 //vykreslí měření proti trendu linky
-void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv)
+void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
 {
 	////deklarace
 	double R,RA,OR,X,Y,uhel=0,delka=0,azimut,cas=0,d;

@@ -37,9 +37,9 @@ class Cvykresli
 	void vykresli_grid(TCanvas *canv,int size_grid=10);
 	void vykresli_meridlo(TCanvas *canv,int X,int Y,bool kalibracni_sipka=false);//v pøípadì mìøení vzdálenosti vykreslí spojnici a popø. vypisuje hodnotu vzdálenosti, používá se asi i na kalibraci podkladu
 	void vykresli_meridlo(TCanvas *canv);//metoda na vykreslení mìøítka á la magnetické laso nebo vzádlenost teplomìrù v na pohonu, pøsmìruje vykreslení podle trendu
-  void vykresli_cit_oblasti_lasa(TCanvas *canv);//vykreslí citelné oblasti elementù na které je možné se pøichytit
-	void vykresli_meridlo_po_trendu(TCanvas *canv);//vykreslí mìøení po trendu linky
-	void vykresli_meridlo_proti_trendu(TCanvas *canv);//vykresli mìøení proti trendu linky
+  bool vykresli_cit_oblasti_lasa(TCanvas *canv);//vykreslí citelné oblasti elementù na které je možné se pøichytit, vrací true, pokud byla oblast vykreslena
+	void vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno);//vykreslí mìøení po trendu linky
+	void vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno);//vykresli mìøení proti trendu linky
   void vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TObjekt *Objekt);//vykreslí teplomìry a cestu mezi nimi
   void vykresli_segment_cesty_teplomeru(TCanvas *canv,Cvektory::TElement *Element,TColor barva,short teplomer=0);//vykreslí segment cesty oblasti teplomìrù, parametr teplomìr udává zda se bude vykreslovat prvni nebo posledni teplomìr, 1 ... prvni, 2 ... posledni
 	void vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E);//vykresli pozic a obalových zón
