@@ -315,6 +315,14 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					E->data.PT1=F->inPT(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text));//INPUT
 					F->d.v.reserve_time(E,c);
 				}
+				////temp odemknutí editace max WT
+				if(Row==3)//Col=1
+				{
+					input_state=WT;
+					E->WT=F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text);
+					F->aktualizace_RT();
+				}
+				////konec temp
 			} break;
 			case 3:case 9:case 13:case 17:case 103:case 107: //robot s pasivní otoèí
 			{
@@ -498,6 +506,14 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					//E->mGrid->Cells[Col][Row-1].Text = F->m.round2double(F->outDO(E->OTOC_delka),3);//OUTPUT
 					F->d.v.reserve_time(E,c);
 				}
+        ////temp odemknutí editace max WT
+				if(Row==4)//Col=1
+				{
+					input_state=WT;
+					E->WT=F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text);
+					F->aktualizace_RT();
+				}
+				////konec temp
 			} break;
 			case 200://pøedávací místo
 			case 300://výhybka
@@ -1093,8 +1109,8 @@ void TFormX::korelace_tab_pohonu_elementy(Cvektory::TElement *mimo_element)
 				}break;
 				case 6://otoè aktivní
 				{
-					//E->mGrid->Cells[1][3].Highlight=true;
 					E->mGrid->Cells[1][3].Highlight=true;
+					E->mGrid->Cells[1][4].Highlight=true;
 				}break;
 			}
 			E->mGrid->Refresh();

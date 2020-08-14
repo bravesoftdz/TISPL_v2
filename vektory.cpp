@@ -3286,6 +3286,32 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 		//narácení dat do segmentu cesty zakázky
 		if(Cesta!=NULL)	Cesta->data=Element->data;
 	}
+
+	//kontrola RT, pokud je záporné, výpis doporučeného PT
+	if(F->OBJEKT_akt!=NULL &&  F->OBJEKT_akt->zobrazit_mGrid)
+	{
+		TElement *E=F->OBJEKT_akt->element;
+		String note="",jednotky=" s";
+		if(F->PTunit==F->Tminsec::MIN)jednotky=" min";
+		while(E!=NULL)
+		{
+			try{
+		  	if(vrat_druh_elementu(E)==0 && E->mGrid!=NULL && E->pohon==F->OBJEKT_akt->pohon && (E->eID!=0 || (E->eID==0 && (E->mGrid->Note.Text==" " || (E->mGrid->Note.Text!="" && E->mGrid->Note.Text.SubString(1,F->ls->Strings[250].Length())!=F->ls->Strings[250] && E->mGrid->Note.Text.SubString(1,F->ls->Strings[251].Length())!=F->ls->Strings[251] && E->mGrid->Note.Text.SubString(1,F->ls->Strings[426].Length())!=F->ls->Strings[426])))))
+				{
+		  		note="Dop. hodnota PT je maximálně ";
+		  		//kontrola, zda je RT záporné
+		  		if(E->data.RT.y<0)
+		  		{
+		  			note+=AnsiString(m.round2double(E->data.PT1+E->data.PT2+E->PTotoc+E->data.RT.y,3))+jednotky;
+		  			E->mGrid->ShowNote(note);
+		  		}
+		  		else E->mGrid->Note.Text="";
+				}
+			}catch(...){;}//dochází k tomuto při načítání mgridů
+			E=dalsi_krok(E,F->OBJEKT_akt);
+		}
+    E=NULL;delete E;
+	}
 }
 ////---------------------------------------------------------------------------
 //vrátí poslední element v objektu
@@ -9509,6 +9535,20 @@ void Cvektory::kontrola_vlozeni_do_mag_lasa(TElement *E)
 		if(segment==0 && E->predchozi->n>0 && E->predchozi->predchozi->eID==301 && E->predchozi->predchozi->predchozi==MAG_LASO->predchozi->Element)
 			vloz_segment_MAG_LASA(E->predchozi);
 
+		//kontrola zda se nenechází element bez geometrie uprostřed měření
+		if(segment==0 && E->predchozi->geo.delka==0 && E->predchozi->n>2 && E->predchozi->predchozi->predchozi==MAG_LASO->predchozi->Element)
+		{
+			vloz_segment_MAG_LASA(E->predchozi);
+			vloz_segment_MAG_LASA(E->predchozi->predchozi);
+		}
+
+		//kontrola zda se nenechází element bez geometrie na začátku měření
+		if(segment==0 && E->predchozi->geo.delka==0 && E->predchozi->n>1 && E->predchozi->predchozi==MAG_LASO->predchozi->sparovany)
+		{
+			vloz_segment_MAG_LASA(MAG_LASO->predchozi->sparovany);
+			vloz_segment_MAG_LASA(E->predchozi);
+		}
+
 		/////////měření proti trendu
 		//začátek + obecně na hlavní větvi
 		if(segment==0 && ((MAG_LASO->predchozi->sparovany==E->dalsi && E->dalsi!=NULL) || (E->dalsi!=NULL && E->dalsi->n>0 && E->dalsi->eID!=301 && E->dalsi->dalsi==MAG_LASO->predchozi->Element)))
@@ -9537,6 +9577,17 @@ void Cvektory::kontrola_vlozeni_do_mag_lasa(TElement *E)
 		//začátek na vedlejší větvi, za spojkou
 		if(segment==0 && E->eID==300 && E->dalsi2!=NULL && E->dalsi2==MAG_LASO->predchozi->sparovany)
 			vloz_segment_MAG_LASA(E->dalsi2);
+
+		 //kontrola zda se nenechází element bez geometrie uprostřed měření
+		if(segment==0 && E->dalsi!=NULL && E->dalsi->geo.delka==0 && E->dalsi->dalsi!=NULL && E->dalsi->dalsi->dalsi==MAG_LASO->predchozi->Element)
+		{
+			vloz_segment_MAG_LASA(E->dalsi);
+			vloz_segment_MAG_LASA(E->dalsi->dalsi);
+		}
+
+		//kontrola zda se nenechází element bez geometrie na začátku měření
+		if(segment==0 && E->dalsi!=NULL && E->dalsi->geo.delka==0 && E->dalsi->dalsi==MAG_LASO->predchozi->sparovany)
+			vloz_segment_MAG_LASA(E->dalsi);
 
 		/////////mazání obsaženého
 		//element je již obsazen v seznamu magnetického lasa, bude smazán segment cesty obsahující E, taktéž budou smazány následující segmenty cesty, pokud existují další segmenty
