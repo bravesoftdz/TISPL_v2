@@ -9500,6 +9500,17 @@ void Cvektory::kontrola_vlozeni_do_mag_lasa(TElement *E)
 		if(segment==0 && E->predchozi->n>0 && E->predchozi->predchozi->eID==301 && E->predchozi->predchozi->predchozi==MAG_LASO->predchozi->Element)
 			vloz_segment_MAG_LASA(E->predchozi);
 
+		//kontrola zda se nenechází element bez geometrie uprostřed měření
+		if(segment==0 && E->predchozi->geo.delka==0 && E->predchozi->n>2 && E->predchozi->predchozi->predchozi==MAG_LASO->predchozi->Element)
+		{
+			vloz_segment_MAG_LASA(E->predchozi);
+			vloz_segment_MAG_LASA(E->predchozi->predchozi);
+		}
+
+		//kontrola zda se nenechází element bez geometrie na začátku měření
+		if(segment==0 && E->predchozi->geo.delka==0 && E->predchozi->n>1 && E->predchozi->predchozi==MAG_LASO->predchozi->sparovany)
+			vloz_segment_MAG_LASA(E->predchozi);
+
 		/////////měření proti trendu
 		//začátek + obecně na hlavní větvi
 		if(segment==0 && ((MAG_LASO->predchozi->sparovany==E->dalsi && E->dalsi!=NULL) || (E->dalsi!=NULL && E->dalsi->n>0 && E->dalsi->eID!=301 && E->dalsi->dalsi==MAG_LASO->predchozi->Element)))
@@ -9528,6 +9539,17 @@ void Cvektory::kontrola_vlozeni_do_mag_lasa(TElement *E)
 		//začátek na vedlejší větvi, za spojkou
 		if(segment==0 && E->eID==300 && E->dalsi2!=NULL && E->dalsi2==MAG_LASO->predchozi->sparovany)
 			vloz_segment_MAG_LASA(E->dalsi2);
+
+		 //kontrola zda se nenechází element bez geometrie uprostřed měření
+		if(segment==0 && E->dalsi!=NULL && E->dalsi->geo.delka==0 && E->dalsi->dalsi!=NULL && E->dalsi->dalsi->dalsi==MAG_LASO->predchozi->Element)
+		{
+			vloz_segment_MAG_LASA(E->dalsi);
+			vloz_segment_MAG_LASA(E->dalsi->dalsi);
+		}
+
+		//kontrola zda se nenechází element bez geometrie na začátku měření
+		if(segment==0 && E->dalsi!=NULL && E->dalsi->geo.delka==0 && E->dalsi->dalsi==MAG_LASO->predchozi->sparovany)
+			vloz_segment_MAG_LASA(E->dalsi);
 
 		/////////mazání obsaženého
 		//element je již obsazen v seznamu magnetického lasa, bude smazán segment cesty obsahující E, taktéž budou smazány následující segmenty cesty, pokud existují další segmenty

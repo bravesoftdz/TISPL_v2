@@ -3972,7 +3972,8 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				{
 					if(posledni_editovany_element->eID==300)
 					{
-						if(posledni_editovany_element->dalsi->geo.typ==0)typElementu=1;//povolit oblouky
+						if((posledni_editovany_element->dalsi->geo.delka>0 && posledni_editovany_element->dalsi->geo.typ==0) || (posledni_editovany_element->dalsi->dalsi!=NULL && posledni_editovany_element->dalsi->dalsi->geo.delka==0 && posledni_editovany_element->dalsi->dalsi->geo.typ==0))
+							typElementu=1;//povolit oblouky
 						else typElementu=2;//povolit linie
 					}else typElementu=0;//povolit vše
 				}
@@ -14379,7 +14380,13 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	REFRESH();
 //	Memo("delka: "+String(E->geo.delka));
 //	Memo("delkaPud: "+String(E->geo.delkaPud));
-  Memo("");
+	Cvektory::TElement *E=OBJEKT_akt->element;
+	while(E!=NULL && (E->objekt_n==OBJEKT_akt->n || E->objekt_n==OBJEKT_akt->n+1))
+	{
+    Memo(E->name);//+"->geo.typ= "+String(E->geo.typ)+"; ->geo.delka= "+String(E->geo.delka));
+		E=E->dalsi;
+	}
+  E=NULL;delete E;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
