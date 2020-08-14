@@ -3295,17 +3295,19 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 		if(F->PTunit==F->Tminsec::MIN)jednotky=" min";
 		while(E!=NULL)
 		{
-			if(vrat_druh_elementu(E)==0 && E->mGrid!=NULL && E->pohon==F->OBJEKT_akt->pohon && (E->eID!=0 || (E->eID==0 && (E->mGrid->Note.Text==" " || (E->mGrid->Note.Text!="" && E->mGrid->Note.Text.SubString(1,F->ls->Strings[250].Length())!=F->ls->Strings[250] && E->mGrid->Note.Text.SubString(1,F->ls->Strings[251].Length())!=F->ls->Strings[251] && E->mGrid->Note.Text.SubString(1,F->ls->Strings[426].Length())!=F->ls->Strings[426])))))
-			{
-				note="Dop. hodnota PT je maximálně ";
-				//kontrola, zda je RT záporné
-				if(E->data.RT.y<0)
+			try{
+		  	if(vrat_druh_elementu(E)==0 && E->mGrid!=NULL && E->pohon==F->OBJEKT_akt->pohon && (E->eID!=0 || (E->eID==0 && (E->mGrid->Note.Text==" " || (E->mGrid->Note.Text!="" && E->mGrid->Note.Text.SubString(1,F->ls->Strings[250].Length())!=F->ls->Strings[250] && E->mGrid->Note.Text.SubString(1,F->ls->Strings[251].Length())!=F->ls->Strings[251] && E->mGrid->Note.Text.SubString(1,F->ls->Strings[426].Length())!=F->ls->Strings[426])))))
 				{
-					note+=AnsiString(m.round2double(E->data.PT1+E->data.PT2+E->PTotoc+E->data.RT.y,3))+jednotky;
-					try{E->mGrid->ShowNote(note);}catch(...){;}//dochází k tomuto při načítání mgridů
+		  		note="Dop. hodnota PT je maximálně ";
+		  		//kontrola, zda je RT záporné
+		  		if(E->data.RT.y<0)
+		  		{
+		  			note+=AnsiString(m.round2double(E->data.PT1+E->data.PT2+E->PTotoc+E->data.RT.y,3))+jednotky;
+		  			E->mGrid->ShowNote(note);
+		  		}
+		  		else E->mGrid->Note.Text="";
 				}
-				else E->mGrid->Note.Text="";
-			}
+			}catch(...){;}//dochází k tomuto při načítání mgridů
 			E=dalsi_krok(E,F->OBJEKT_akt);
 		}
     E=NULL;delete E;
