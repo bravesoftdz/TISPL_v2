@@ -9513,7 +9513,10 @@ void Cvektory::kontrola_vlozeni_do_mag_lasa(TElement *E)
 
 		//kontrola zda se nenechází element bez geometrie na začátku měření
 		if(segment==0 && E->predchozi->geo.delka==0 && E->predchozi->n>1 && E->predchozi->predchozi==MAG_LASO->predchozi->sparovany)
+		{
+			vloz_segment_MAG_LASA(MAG_LASO->predchozi->sparovany);
 			vloz_segment_MAG_LASA(E->predchozi);
+		}
 
 		/////////měření proti trendu
 		//začátek + obecně na hlavní větvi

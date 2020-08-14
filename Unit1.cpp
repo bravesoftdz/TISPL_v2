@@ -4448,7 +4448,7 @@ void TForm1::getJobID(int X, int Y)
 	if(Akce!=MAGNETICKE_LASO)
 	{
   	if(MOD==EDITACE && !OBJEKT_akt->uzamknout_nahled)
-  	{
+		{
   		//nejdříve se zkouší hledat souřadnice myši v TABULCE POHONů
   		if(PmG!=NULL && OBJEKT_akt->zobrazit_mGrid)
   		{
@@ -4595,7 +4595,7 @@ void TForm1::getJobID(int X, int Y)
   		//0; bod haly nebo objektu
   		//1; úsečka haly nebo objektu
   		//2; oblast kóty bodu (přímka [A,B] uložena v bodě B)
-  		//3; oblas objektu
+			//3; oblas objektu
   		//4; hrana objektu
   		//5; element v objektu
   		//6; výhybka nebo spojnice mezi výhybkou a spojoku
@@ -4639,12 +4639,12 @@ void TForm1::getJobID(int X, int Y)
   		if(JID==-1&&d.v.OBJEKTY->dalsi!=NULL&&Akce==NIC)
 			{
   			pom=NULL;pom_bod=NULL;
-  			pom=d.v.PtInObjekt();
-  			if(pom!=NULL)//byl nalezen objekt
+				pom=d.v.PtInObjekt();
+				if(pom!=NULL)//byl nalezen objekt
   			{
-  				pom_bod=d.v.najdi_usecku(pom,5);
+					pom_bod=d.v.najdi_usecku(pom,5);
   				if(pom_bod!=NULL)JID=4;//nalezena hrana objektu
-  				else JID=3;//nalezen pouze objekt
+					else JID=3;//nalezen pouze objekt
   			}
   		}
   		if(JID==-1&&(d.v.HALA.body!=NULL||pom!=NULL&&pom->body!=NULL)&&Akce==NIC)//má smysl pouze pokd existuje hala nebo objekt
@@ -7621,10 +7621,10 @@ void TForm1::mGrid_on_mGrid()
 		//TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
 		while(E!=NULL && E->objekt_n==objekt_n)
 		{
-			if(E->eID!=100 && E->eID!=MaxInt)//pouze pro elementy, které mají tabulku
+			if(E->eID!=100 && E->eID!=MaxInt && E->pohon==OBJEKT_akt->pohon)//pouze pro elementy, které mají tabulku, jen pro tabulky co jsou zobrazené
 			{
 				//naplnění TRectu oblastí tabulky
-				//if(E->eID==200 || E->eID==300){odX=E->mGrid->Columns[0].Width+E->mGrid->Columns[1].Width+E->mGrid->Columns[2].Width;odY=E->mGrid->Rows[0].Height+E->mGrid->Rows[1].Height;}
+				if(E->eID==200 || E->eID==300)/*{*/odX=E->mGrid->Columns[0].Width+E->mGrid->Columns[1].Width+E->mGrid->Columns[2].Width;//odY=E->mGrid->Rows[0].Height+E->mGrid->Rows[1].Height;}
 				tab1.left=m.L2Px(E->Xt)+odX;
 				tab1.top=m.L2Py(E->Yt)+odY;
 				tab1.right=m.L2Px(E->Xt)+E->mGrid->Width;
@@ -7633,7 +7633,7 @@ void TForm1::mGrid_on_mGrid()
 				Cvektory::TElement *E_temp=OBJEKT_akt->element;
 				while(E_temp!=NULL && E_temp->objekt_n==objekt_n)
 				{
-					if(E_temp->eID!=100 && E_temp->eID!=MaxInt)//přeskakovat element s tab1, pouze pro elementy, které mají tabulku
+					if(E_temp->eID!=100 && E_temp->eID!=MaxInt && E->pohon==OBJEKT_akt->pohon)//přeskakovat element s tab1, pouze pro elementy, které mají tabulku
 					{
 						//definice bodů tabulky
 						p1.x=m.L2Px(E_temp->Xt);p1.y=m.L2Py(E_temp->Yt);
@@ -7808,8 +7808,9 @@ void TForm1::mGrid_puvodni_stav(Cvektory::TElement *E)
 		aktualizace_tab_pohon(false,false,true);//aktualizace komponent
 		if(!update_probehl)PmG->Update();
 	}
-	else////nastavení komponent
+	else if(E->pohon==OBJEKT_akt->pohon)////nastavení komponent, pouze pokud jsou tabulky viditelné
 	{
+
 		switch(E->eID)
 		{
   		case 0://stop stanice, nastavování režimů podle ID objektu
@@ -7906,7 +7907,7 @@ void TForm1::mGrid_puvodni_stav(Cvektory::TElement *E)
 		}
 
 		////naplnění comb
-	 	napln_comba_mGridu(E);//pro PM a výhybku nastaví edity
+		napln_comba_mGridu(E);//pro PM a výhybku nastaví edity
 	}
 }
 //---------------------------------------------------------------------------
@@ -14380,13 +14381,75 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	REFRESH();
 //	Memo("delka: "+String(E->geo.delka));
 //	Memo("delkaPud: "+String(E->geo.delkaPud));
-	Cvektory::TElement *E=OBJEKT_akt->element;
-	while(E!=NULL && (E->objekt_n==OBJEKT_akt->n || E->objekt_n==OBJEKT_akt->n+1))
+	//deklarace
+	Cvektory::TObjekt *Objekt=d.v.PtInObjekt();
+	TPointD bod_vlozeni=bod_vlozeni_elementu();
+	Cvektory::TElement *novy=new Cvektory::TElement;
+
+	//parametry
+	novy->eID=MaxInt;
+  novy->idetifikator_vyhybka_spojka=0;
+	novy->X=bod_vlozeni.x;
+	novy->Y=bod_vlozeni.y;
+  novy->Z=0;
+	novy->Xt=-100;
+	novy->Yt=-100;
+	novy->orientace=90;//důležité pro volání makra m.Rxy, bez tohoto by makro vracelo chybné hodnoty
+	novy->dalsi=NULL;
+	novy->predchozi=NULL;
+	novy->dalsi2=NULL;
+	novy->predchozi2=NULL;
+	//řazení
+	novy->dalsi=pom_element_temp;
+	pom_element_temp->predchozi->dalsi=novy;
+	novy->predchozi=pom_element_temp->predchozi;
+	pom_element_temp->predchozi=novy;
+	//defaultní data
+  novy->name="Zarážka";
+	novy->data.LO1=1.5;
+	novy->OTOC_delka=0;
+	novy->zona_pred=0;
+	novy->zona_za=0;
+	novy->data.LO2=0;
+	novy->data.LO_pozice=0;
+	novy->data.PT1=0;
+	novy->PTotoc=0;
+	novy->data.PT2=0;
+	novy->WT=0;//čekání na palec
+	novy->data.WTstop=0;//čekání na stopce
+	novy->data.RT.x=0;//ryzí reserve time
+	novy->data.RT.y=0;//pokrácený reserve time
+	novy->data.pocet_voziku=0;
+	novy->data.pocet_pozic=0;
+	novy->rotace_jig=0;
+	novy->stav=1;
+	novy->data.PD=-1;//defaultní stav pro S&G roboty
+	novy->objekt_n=Objekt->n;//příslušnost elementu k objektu
+	novy->pohon=NULL;//pohon na kterém se nachází element
+  novy->sparovany=NULL;
+	if(Objekt->element==novy->dalsi)Objekt->element=novy;
+	if(novy->predchozi->n>0 && novy->predchozi->objekt_n==Objekt->n && (novy->predchozi->eID!=300 || (novy->predchozi->eID==300 && novy->predchozi->dalsi==novy)))novy->pohon=novy->predchozi->pohon;
+	if(novy->predchozi->n>0 && Objekt->element!=NULL && novy->predchozi->objekt_n!=Objekt->n && (Objekt->element->predchozi->n>0 && novy->predchozi->objekt_n!=Objekt->element->predchozi->objekt_n || Objekt->element->predchozi->n==0))novy->pohon=novy->predchozi->pohon;
+	if(novy==Objekt->element && novy->dalsi!=NULL)novy->pohon=novy->dalsi->pohon;
+	novy->geo.HeightDepp=0;
+	novy->geo.delkaPud=0;
+
+	//geometrie
+	d.v.vloz_G_element(novy,0,pom_element_temp->geo.X1,pom_element_temp->geo.Y1,0,0,0,0,bod_vlozeni.x,bod_vlozeni.y,pom_element_temp->geo.orientace,pom_element_temp->geo.rotacni_uhel,pom_element_temp->geo.radius);
+	d.v.vloz_G_element(pom_element_temp,0,novy->geo.X4,novy->geo.Y4,0,0,0,0,pom_element_temp->geo.X4,pom_element_temp->geo.Y4,pom_element_temp->geo.orientace,pom_element_temp->geo.rotacni_uhel,pom_element_temp->geo.radius);
+
+  //update n a popisků
+	novy=d.v.ELEMENTY->dalsi;
+	unsigned int n=1;
+	while(novy!=NULL)
 	{
-    Memo(E->name);//+"->geo.typ= "+String(E->geo.typ)+"; ->geo.delka= "+String(E->geo.delka));
-		E=E->dalsi;
+		novy->n=n;
+		n++;
+		novy=d.v.dalsi_krok(novy);
 	}
-  E=NULL;delete E;
+  d.v.uprav_popisky_elementu(NULL);
+	novy=NULL;delete novy;
+	Objekt=NULL;delete Objekt;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -16476,62 +16539,66 @@ void __fastcall TForm1::scButton_zamekClick(TObject *Sender)
 void __fastcall TForm1::scGPButton_viditelnostmGridClick(TObject *Sender)
 {
 	log(__func__);//logování
-	if(Akce==GEOMETRIE)ukonceni_geometrie();//ukončení pouze geometrie, ESC zde zlobí
 	if(editace_textu)smaz_kurzor();//ukončení editace
-	//pokud je otevřené menu nebo options zavře je
-	if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)
+	if(Akce==NIC)//pouze pokud není žádná akce
 	{
-		if(OBJEKT_akt!=NULL)DrawGrid_knihovna->Visible=false;DrawGrid_otoce->Visible=false;DrawGrid_ostatni->Visible=false;DrawGrid_geometrie->Visible=false;DrawGrid_poznamky->Visible=false;
-		if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
-		if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
-		if(OBJEKT_akt!=NULL)DrawGrid_knihovna->Visible=true;DrawGrid_otoce->Visible=true;DrawGrid_ostatni->Visible=true;DrawGrid_geometrie->Visible=true;DrawGrid_poznamky->Visible=true;
+		//pokud je otevřené menu nebo options zavře je
+  	if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)
+  	{
+  		if(OBJEKT_akt!=NULL)DrawGrid_knihovna->Visible=false;DrawGrid_otoce->Visible=false;DrawGrid_ostatni->Visible=false;DrawGrid_geometrie->Visible=false;DrawGrid_poznamky->Visible=false;
+  		if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
+  		if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
+  		if(OBJEKT_akt!=NULL)DrawGrid_knihovna->Visible=true;DrawGrid_otoce->Visible=true;DrawGrid_ostatni->Visible=true;DrawGrid_geometrie->Visible=true;DrawGrid_poznamky->Visible=true;
+  	}
+  	if(scGPButton_viditelnostmGrid->ImageIndex==55)//vypnuto budu zapínat
+  	{
+  		scGPButton_viditelnostmGrid->ImageIndex=54;//zapnuto
+  		scGPButton_viditelnostmGrid->Hint=ls->Strings[121];//"Skrýt tabulky";
+  		OBJEKT_akt->zobrazit_mGrid=true;
+  	}
+  	else//zapnuto budu vypínat
+  	{
+  		scGPButton_viditelnostmGrid->ImageIndex=55;
+  		scGPButton_viditelnostmGrid->Hint=ls->Strings[122];//"Zobrazit tabulky";
+  		OBJEKT_akt->zobrazit_mGrid=false;
+  	}
+  	nahled_ulozit(true);
+  	nastav_focus();
+		REFRESH();
 	}
-	if(scGPButton_viditelnostmGrid->ImageIndex==55)//vypnuto budu zapínat
-	{
-		scGPButton_viditelnostmGrid->ImageIndex=54;//zapnuto
-		scGPButton_viditelnostmGrid->Hint=ls->Strings[121];//"Skrýt tabulky";
-		OBJEKT_akt->zobrazit_mGrid=true;
-	}
-	else//zapnuto budu vypínat
-	{
-		scGPButton_viditelnostmGrid->ImageIndex=55;
-		scGPButton_viditelnostmGrid->Hint=ls->Strings[122];//"Zobrazit tabulky";
-		OBJEKT_akt->zobrazit_mGrid=false;
-	}
-	nahled_ulozit(true);
-	nastav_focus();
-	REFRESH();
 }
 //---------------------------------------------------------------------------
 //přepíná viditelnost kót
 void __fastcall TForm1::scGPButton_viditelnostKotyClick(TObject *Sender)
 {
 	log(__func__);//logování
-	if(Akce==GEOMETRIE)ukonceni_geometrie();//ukončení pouze geometrie, ESC zde zlobí
 	if(editace_textu)smaz_kurzor();//ukončení editace
-	//pokud je otevřené menu nebo options zavře je
-	if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)
+	if(Akce==NIC)//pouze pokud není žádná akce
 	{
-		if(OBJEKT_akt!=NULL)DrawGrid_knihovna->Visible=false;DrawGrid_otoce->Visible=false;DrawGrid_ostatni->Visible=false;DrawGrid_geometrie->Visible=false;DrawGrid_poznamky->Visible=false;
-		if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
-		if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
-		if(OBJEKT_akt!=NULL)DrawGrid_knihovna->Visible=true;DrawGrid_otoce->Visible=true;DrawGrid_ostatni->Visible=true;DrawGrid_geometrie->Visible=true;DrawGrid_poznamky->Visible=true;
+  	//pokud je otevřené menu nebo options zavře je
+  	if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)
+  	{
+  		if(OBJEKT_akt!=NULL)DrawGrid_knihovna->Visible=false;DrawGrid_otoce->Visible=false;DrawGrid_ostatni->Visible=false;DrawGrid_geometrie->Visible=false;DrawGrid_poznamky->Visible=false;
+  		if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
+  		if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
+  		if(OBJEKT_akt!=NULL)DrawGrid_knihovna->Visible=true;DrawGrid_otoce->Visible=true;DrawGrid_ostatni->Visible=true;DrawGrid_geometrie->Visible=true;DrawGrid_poznamky->Visible=true;
+  	}
+  	if(scGPButton_viditelnostKoty->ImageIndex==57)//vypnuto budu zapínat
+  	{
+  		scGPButton_viditelnostKoty->ImageIndex=56;//zapnuto
+  		scGPButton_viditelnostKoty->Hint=ls->Strings[123];//"Skrýt kóty";
+  		OBJEKT_akt->zobrazit_koty=true;
+  	}
+  	else//zapnuto budu vypínat
+  	{
+  		scGPButton_viditelnostKoty->ImageIndex=57;
+  		scGPButton_viditelnostKoty->Hint=ls->Strings[124];//"Zobrazit kóty";
+  		OBJEKT_akt->zobrazit_koty=false;
+  	}
+  	nahled_ulozit(true);
+  	nastav_focus();
+		REFRESH();
 	}
-	if(scGPButton_viditelnostKoty->ImageIndex==57)//vypnuto budu zapínat
-	{
-		scGPButton_viditelnostKoty->ImageIndex=56;//zapnuto
-		scGPButton_viditelnostKoty->Hint=ls->Strings[123];//"Skrýt kóty";
-		OBJEKT_akt->zobrazit_koty=true;
-	}
-	else//zapnuto budu vypínat
-	{
-		scGPButton_viditelnostKoty->ImageIndex=57;
-		scGPButton_viditelnostKoty->Hint=ls->Strings[124];//"Zobrazit kóty";
-		OBJEKT_akt->zobrazit_koty=false;
-	}
-	nahled_ulozit(true);
-	nastav_focus();
-	REFRESH();
 }
 //---------------------------------------------------------------------------
 //přepínání posunu dalších elementů
