@@ -14393,24 +14393,24 @@ void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 		{
 			if(d.v.oblast_elementu(E,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
 			{
-				//smazání zarážky v linii
-				if(E->geo.typ==0 && E->eID==MaxInt)
-				{
-					E->dalsi->geo.X1=E->geo.X1;
-					E->dalsi->geo.Y1=E->geo.Y1;
-					E->dalsi->geo.X2=E->geo.X1;
-					E->dalsi->geo.Y2=E->geo.Y1;
-					E->dalsi->geo.delka=m.delka(E->dalsi->geo.X1,E->dalsi->geo.Y1,E->dalsi->geo.X4,E->dalsi->geo.Y4);
-					d.v.smaz_element(E);
-				}
+//				//smazání zarážky v linii
+//				if(E->geo.typ==0 && E->eID==MaxInt)
+//				{
+//					E->dalsi->geo.X1=E->geo.X1;
+//					E->dalsi->geo.Y1=E->geo.Y1;
+//					E->dalsi->geo.X2=E->geo.X1;
+//					E->dalsi->geo.Y2=E->geo.Y1;
+//					E->dalsi->geo.delka=m.delka(E->dalsi->geo.X1,E->dalsi->geo.Y1,E->dalsi->geo.X4,E->dalsi->geo.Y4);
+//					d.v.smaz_element(E);
+//				}
 
 //přidání stoupání/klesání
-//				double delka=E->geo.delka;
-//				double HeightDeep=-3;
-//				double delkaSklon=m.delkaSklon(delka,HeightDeep);
-//				E->geo.delkaPud=delka;
-//				E->geo.delka=delkaSklon;
-//				E->geo.HeightDepp=HeightDeep;
+				double delka=E->geo.delka;
+				double HeightDeep=-0.7;
+				double delkaSklon=m.delkaSklon(delka,HeightDeep);//přepona
+				E->geo.delkaPud=delka;//jenom pokud je jiná neže delka, jinak 0
+				E->geo.delka=delkaSklon;
+				E->geo.HeightDepp=HeightDeep;
 //nulování stoupání/klesání
 //				E->geo.delka=E->geo.delkaPud;
 //				E->geo.delkaPud=0;
