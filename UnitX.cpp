@@ -315,6 +315,14 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					E->data.PT1=F->inPT(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text));//INPUT
 					F->d.v.reserve_time(E,c);
 				}
+				////temp odemknutí editace max WT
+				if(Row==3)//Col=1
+				{
+					input_state=WT;
+					E->WT=F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text);
+					F->aktualizace_RT();
+				}
+				////konec temp
 			} break;
 			case 3:case 9:case 13:case 17:case 103:case 107: //robot s pasivní otoèí
 			{

@@ -7837,6 +7837,9 @@ void TForm1::mGrid_puvodni_stav(Cvektory::TElement *E)
   		case 2://robot se stop stanicí
   		{
 				E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
+        ////temp odemknutí editace max WT
+				E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;//cokoliv
+				////konec temp
 				E->mGrid->Update();
   			break;
   		}
@@ -9877,6 +9880,9 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][2].ShowHint=true;
 			E->mGrid->Cells[0][3].Hint=ls->Strings[229];//"maximální možná doba čekání na palec";
 			E->mGrid->Cells[0][3].ShowHint=true;
+			////temp odemknutí editace max WT
+			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;//cokoliv
+			////konec temp
 			break;
 		}
 		case 9:case 13:case 17:case 103:case 107:
@@ -10468,6 +10474,9 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][2].ShowHint=true;
 			E->mGrid->Cells[0][3].Hint=ls->Strings[229];//"maximální možná doba čekání na palec";
 			E->mGrid->Cells[0][3].ShowHint=true;
+      ////temp odemknutí editace max WT
+			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;//cokoliv
+			////konec temp
 			break;
 		}
 		case 9:case 13:case 17:case 103:case 107:
