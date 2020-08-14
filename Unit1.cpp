@@ -7880,6 +7880,7 @@ void TForm1::mGrid_puvodni_stav(Cvektory::TElement *E)
   		{
 				E->mGrid->Cells[1][1].Type=E->mGrid->COMBO;
 				E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;
+        E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;
 				E->mGrid->Update();
   			break;
 			}
@@ -9994,7 +9995,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outPT(E->PTotoc);
 			E->mGrid->Cells[0][4].Text="PT2 "+cas;
 			E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;E->mGrid->Cells[1][4].Text=outPT(E->data.PT2);
-			E->mGrid->Cells[0][6].Text="WT "+cas;
+			E->mGrid->Cells[0][6].Text="max WT "+cas;
 			E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Text=outPT(m.cekani_na_palec(0,roztec,aRD,3));
 			E->WT=inPT(ms.MyToDouble(E->mGrid->Cells[1][6].Text));
 			E->mGrid->Cells[0][7].Text=ls->Strings[223];//"Párová stop";
@@ -10082,20 +10083,23 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
       //načtení hodnot z pohonu + ošetření proti nepřiřazenému pohonu
 			if(E->pohon!=NULL){aRD=E->pohon->aRD;roztec=E->pohon->roztec;}
 			//samotné vytvoření matice-tabulky
-			E->mGrid->Create(2,5);
+			E->mGrid->Create(2,6);
 			//definice buněk
 			E->mGrid->Cells[0][1].Text=ls->Strings[239]+" [°]";//"rotace [°]";
 			E->mGrid->Cells[1][1].Type=E->mGrid->COMBO;
 			E->mGrid->Cells[0][2].Text="PT "+cas;
 			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);
 			E->mGrid->Cells[0][3].Text="RT "+cas;
-			E->mGrid->Cells[0][4].Text=ls->Strings[223];//"Párová stop";
-			if(E->sparovany!=NULL)E->mGrid->Cells[1][4].Text=E->sparovany->name;else E->mGrid->Cells[1][4].Text="N/A";
+			E->mGrid->Cells[0][4].Text="max WT "+cas;
+			if(E->pohon!=NULL)E->WT=m.cekani_na_palec(0,roztec,aRD,3);else E->WT=0;
+		 	E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;E->mGrid->Cells[1][4].Text=outPT(m.round2double(E->WT,3));
+			E->mGrid->Cells[0][5].Text=ls->Strings[223];//"Párová stop";
+			if(E->sparovany!=NULL)E->mGrid->Cells[1][5].Text=E->sparovany->name;else E->mGrid->Cells[1][5].Text="N/A";
 			E->WT=m.cekani_na_palec(0,roztec,aRD,3);
 			d.v.reserve_time(E);//výpočet a vypsání
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
-			E->mGrid->Columns[0].Width=sirka_56;
+			E->mGrid->Columns[0].Width=sirka_2;//56;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			//nastavení hintů
 			E->mGrid->Cells[0][2].Hint=ls->Strings[242];//"celkový čas procesu otoče";
@@ -10597,7 +10601,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;E->mGrid->Cells[1][4].Text=outPT(E->data.PT2);
 			E->mGrid->Cells[0][5].Text="RT "+cas;
 			E->mGrid->Cells[1][5].Text=outPT(E->data.RT.y);
-			E->mGrid->Cells[0][6].Text="WT "+cas;
+			E->mGrid->Cells[0][6].Text="max WT "+cas;
 			E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Text=outPT(E->WT);
 			E->mGrid->Cells[0][7].Text=ls->Strings[223];//"Párová stop";
 			if(E->sparovany!=NULL)E->mGrid->Cells[1][7].Text=E->sparovany->name;else E->mGrid->Cells[1][7].Text="N/A";
@@ -10672,7 +10676,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 		case 6://otoč aktivní (resp. otoč se stop stanicí)
 		{
 			//samotné vytvoření matice-tabulky
-			E->mGrid->Create(2,5);
+			E->mGrid->Create(2,6);
 			//definice buněk
 			E->mGrid->Cells[0][1].Text=ls->Strings[239]+" [°]";//"rotace [°]";
 			E->mGrid->Cells[1][1].Type=E->mGrid->COMBO;
@@ -10680,11 +10684,13 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);
 			E->mGrid->Cells[0][3].Text="RT "+cas;
 			E->mGrid->Cells[1][3].Text=outPT(E->data.RT.y);
-			E->mGrid->Cells[0][4].Text=ls->Strings[223];//"Párová stop";
-			if(E->sparovany!=NULL)E->mGrid->Cells[1][4].Text=E->sparovany->name;else E->mGrid->Cells[1][4].Text="N/A";
+			E->mGrid->Cells[0][4].Text="max WT "+cas;
+			E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;E->mGrid->Cells[1][4].Text=outPT(m.round2double(E->WT,3));
+			E->mGrid->Cells[0][5].Text=ls->Strings[223];//"Párová stop";
+			if(E->sparovany!=NULL)E->mGrid->Cells[1][5].Text=E->sparovany->name;else E->mGrid->Cells[1][5].Text="N/A";
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
-			E->mGrid->Columns[0].Width=sirka_56;
+			E->mGrid->Columns[0].Width=sirka_2;//56;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			//nastavení hintů
 			E->mGrid->Cells[0][2].Hint=ls->Strings[242];//"celkový čas procesu otoče";
@@ -10977,7 +10983,7 @@ void TForm1::redesign_element()
   		case 6://otoč akt.
   		{
 				//if (JID==102) zdelka_otoce=true;//délka
-  			if (JID==102 || JID==103) zcas=true;//čas
+  			if (JID==102 || JID==103 || JID==104) zcas=true;//čas
   			break;
   		}
 			case 200://předávací místo
@@ -11192,7 +11198,7 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 			E->mGrid->Cells[0][3].Text=ls->Strings[245]+" "+cas;//"PTo
 			E->mGrid->Cells[0][4].Text="PT2 "+cas;
 			E->mGrid->Cells[0][5].Text="RT "+cas;
-			E->mGrid->Cells[0][6].Text="WT "+cas;
+			E->mGrid->Cells[0][6].Text="max WT "+cas;
 			E->mGrid->Cells[0][7].Text=ls->Strings[223];//"Párová stop";
 			E->mGrid->Cells[1][1].Text=m.round2double(outPT(E->data.PT1),3);
 			E->mGrid->Cells[1][3].Text=m.round2double(outPT(E->PTotoc),3);
@@ -11236,8 +11242,10 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 			E->mGrid->Cells[1][2].Text=m.round2double(outPT(E->PTotoc),3);
 			E->mGrid->Cells[0][3].Text="RT "+cas;
 			E->mGrid->Cells[1][3].Text=m.round2double(outPT(E->data.RT.y),3);
-			E->mGrid->Cells[0][4].Text=ls->Strings[223];//"Párová stop";
-			E->mGrid->Columns[0].Width=sirka_56;
+      E->mGrid->Cells[0][4].Text="max WT "+cas;
+			E->mGrid->Cells[1][4].Text=m.round2double(outPT(E->WT),3);
+			E->mGrid->Cells[0][5].Text=ls->Strings[223];//"Párová stop";
+			E->mGrid->Columns[0].Width=sirka_2;//56;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			break;
 		}
