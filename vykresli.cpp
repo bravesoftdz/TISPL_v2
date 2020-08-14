@@ -2535,7 +2535,7 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 //vykreslí všechny vozíky ze seznamu vozíků
 void Cvykresli::vykresli_voziky(TCanvas *canv)
 {
-	////test
+	////test simulace
 //	Cvektory::TPohon *P=v.POHONY->dalsi;
 //	while(P!=NULL)
 //	{
@@ -2545,11 +2545,11 @@ void Cvykresli::vykresli_voziky(TCanvas *canv)
 //		P=P->dalsi;
 //	}
 //	delete P;
-	//test2
-	set_pen2(canv,clRed,m.round(1*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true);
-	line(canv,0,500,0+F->sTIME,500);
+	//test2 simulace
+	//set_pen2(canv,clRed,m.round(1*F->Zoom),PS_ENDCAP_SQUARE,PS_JOIN_MITER,true);
+	//line(canv,0,500,0+F->sTIME,500);
 	////----
-
+	TColor clChassisTemp=clChassis;//záloha
 	if(v.VOZIKY!=NULL && F->scGPCheckBox_rozmisteni_voziku->Checked)
 	{
 		Cvektory::TVozik *V=v.VOZIKY->dalsi;
@@ -2557,6 +2557,15 @@ void Cvykresli::vykresli_voziky(TCanvas *canv)
 		{
 			TColor clJigTemp=clJig;if(V->zakazka->n!=0)clJigTemp=V->zakazka->barva;//mimo default zakázky JIGy nesou barvy dané zakázky
 			//F->Memo(String(V->n)+" "+String(V->X)+" "+String(V->Y));//pro ladění
+			//narazil do vozíku před ním vyhákává či již je po nárazu vyháknutý -2, vyháknutý -1, čeká na palec 0, jede 1
+			switch(V->stav)
+			{
+				case -2: clChassis=clRed;break;
+				case -1: clChassis=clPasiv;break;
+				case 0: clChassis=clWebOrange;break;
+				case 1: clChassis=clGreen;break;
+			}
+
 			if(F->MOD==F->EDITACE && F->OBJEKT_akt!=NULL && V->element!=NULL && V->element->objekt_n!=F->OBJEKT_akt->n)//při editaci vozíky v pasivních objektech
 				vykresli_vozik(canv,V->n,V->X,V->Y,v.PP.delka_jig,v.PP.sirka_jig,V->orientace_podvozek,V->rotace_jig/*připadně později dle zakázky V->Zakazka->Jig...*/,m.clIntensive(clChassis,m.get_intensity()),m.clIntensive(clJigTemp,m.get_intensity()));
 			else//všechny ostatní situace
@@ -2565,6 +2574,7 @@ void Cvykresli::vykresli_voziky(TCanvas *canv)
 		}
 		delete V;
 	}
+	clChassis=clChassisTemp;//navrácení zpět
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //vykreslení jednoho komplexního vozíku (podvozek včetně jigu), X,Y jsou souřadnice uchycení vozíku k palci, což nemusí být střed vozíku

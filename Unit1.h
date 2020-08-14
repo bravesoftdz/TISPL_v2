@@ -283,7 +283,6 @@ __published:	// IDE-managed Components
 	TImage *Image_rozdelovac_3;
 	TIdSSLIOHandlerSocketOpenSSL *IdSSLIOHandlerSocketOpenSSL1;
   TIdSNTP *IdSNTP1;
-	TButton *Button1;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -483,7 +482,6 @@ __published:	// IDE-managed Components
 	void __fastcall scExPanel_ostatniClick(TObject *Sender);
 	void __fastcall ButtonMaKrClick(TObject *Sender);
 	void __fastcall Timer1Timer(TObject *Sender);
-	void __fastcall Button1Click(TObject *Sender);
 
 
 

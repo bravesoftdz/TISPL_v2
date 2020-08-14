@@ -14400,13 +14400,25 @@ void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 		{
 			if(d.v.oblast_elementu(E,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
 			{
-				double delka=E->geo.delka;
-				double HeightDeep=-3;
-				double delkaSklon=m.delkaSklon(delka,HeightDeep);
-				E->geo.delkaPud=delka;
-				E->geo.delka=delkaSklon;
-				E->geo.HeightDepp=HeightDeep;
-//nulování
+				//smazání zarážky v linii
+				if(E->geo.typ==0 && E->eID==MaxInt)
+				{
+					E->dalsi->geo.X1=E->geo.X1;
+					E->dalsi->geo.Y1=E->geo.Y1;
+					E->dalsi->geo.X2=E->geo.X1;
+					E->dalsi->geo.Y2=E->geo.Y1;
+					E->dalsi->geo.delka=m.delka(E->dalsi->geo.X1,E->dalsi->geo.Y1,E->dalsi->geo.X4,E->dalsi->geo.Y4);
+					d.v.smaz_element(E);
+				}
+
+//přidání stoupání/klesání
+//				double delka=E->geo.delka;
+//				double HeightDeep=-3;
+//				double delkaSklon=m.delkaSklon(delka,HeightDeep);
+//				E->geo.delkaPud=delka;
+//				E->geo.delka=delkaSklon;
+//				E->geo.HeightDepp=HeightDeep;
+//nulování stoupání/klesání
 //				E->geo.delka=E->geo.delkaPud;
 //				E->geo.delkaPud=0;
 //				E->geo.HeightDepp=0;
@@ -14419,6 +14431,7 @@ void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 			E=d.v.dalsi_krok(E);
 		}
 		E=NULL;delete E;
+
 
 //	Cvektory::TPohon *P=d.v.POHONY->dalsi;
 //	while(P!=NULL)
@@ -18194,23 +18207,7 @@ void TForm1::copy_to_clipboard(String text)
 
 
 
-void __fastcall TForm1::Button1Click(TObject *Sender)
-{
-	//Memo("Pro MT "+Edit1->Text+"s je RT="+String(m.RT(60,Edit1->Text.ToDouble(),2.9,2,0.067))+"s");
-//	Cvektory::TElement *E=new Cvektory::TElement;
-//	E->geo.X1=akt_souradnice_kurzoru.x;
-//	E->geo.Y1=akt_souradnice_kurzoru.y;
-//	E->geo.X4=akt_souradnice_kurzoru.x+10;
-//	E->geo.Y4=akt_souradnice_kurzoru.y;
-//	E->geo.HeightDepp=-3;
-//	d.vykresli_stoupani_klesani(Canvas,E);
-//	Canvas->Rectangle(E->citelna_oblast.rect8);
-//scGPButton_ulozit->Enabled=true;
-ShowMessage(d.v.ELEMENTY->dalsi->WT);
 
-
-}
-//---------------------------------------------------------------------------
 
 
 

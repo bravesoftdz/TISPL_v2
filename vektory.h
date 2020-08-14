@@ -40,7 +40,7 @@ class Cvektory
 		double radius;
 		double orientace;
 		double rotacni_uhel;
-		double X1,Y1,X2,Y2,X3,Y3,X4,Y4;//body bézieru
+		double X1,Y1,X2,Y2,X3,Y3,X4,Y4;//body bézieru, v případě linie X1==X2, Y1==Y2, X3==X4, Y3==Y4
 	};
 
 	struct TRetez//resp. geometrie pouzdra řetězu
@@ -304,7 +304,7 @@ class Cvektory
 		double orientace_podvozek;//orientace podvozku dle pohybu na lince
 		double rotace_jig;//rotace jigu vuči podvozku (nehledí na skutečnou orientaci jigu)
 		short typ;//1-normální, 0 - prazdný
-		short stav;//vyháknutý -1, čeká na palec 0, jede 1
+		short stav;//narazil do vozíku před ním vyhákává či již je po nárazu vyháknutý -2, vyháknutý -1, čeká na palec 0, jede 1
 		struct TElement *element;//na jekém segmentu elementu se momentálně nachází
 		struct TPalec *palec;//pokud je uchycen k palci, tak k jakému
 		struct TZakazka *zakazka;//ukazatel na přidruženou zakázku
