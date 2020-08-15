@@ -3211,7 +3211,7 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 			if(E->n>0)//kontrola za nejsem na hlavičce až na tomto místě, to dovolí překlopění cyklu na konec pokud dojde na hlaviču (žádoucí)
 			{
 		  	if(E->eID==200)cas+=E->WT;//wt na předávacím místě
-				if((vrat_druh_elementu(E)==0 && (E->eID!=0 || (E->eID==0 && E->stav>0))) || (E->n==Element->n && E->objekt_n==Element->objekt_n))break;//pokud je předchozi S&G prěruš cyklus
+				if((vrat_druh_elementu(E)==0 && (E->eID!=0 || (E->eID==0 && E->data.pocet_voziku>0))) || (E->n==Element->n && E->objekt_n==Element->objekt_n))break;//pokud je předchozi S&G prěruš cyklus
 				if(E->pohon!=NULL)cas+=E->geo.delka/E->pohon->aRD;//pokud existuje úsek a má pohon
 				else error=true;//jinak error
 			}
@@ -3221,7 +3221,7 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 		double RT=0,WT=Element->WT;
 		if(Element->eID==0/* && Element->data.pocet_voziku>0*/ && cas+Element->WT<PP.TT)WT*=Element->data.pocet_voziku;
 		double RD=0; if(Element->pohon!=NULL)RD=Element->pohon->aRD;
-		RT=m.RT(Element->data.PT1+Element->data.PT2+Element->PTotoc,cas,WT,Element->data.pocet_voziku,RD);
+		RT=m.RT(Element->data.PT1+Element->data.PT2+Element->PTotoc+Element->data.WTstop,cas,WT,Element->data.pocet_voziku,RD);
 		Element->data.RT.x=RT;//ryzí RT
 		//if(Element->eID==0 && Element->data.pocet_voziku>1 || Element->eID==6)RT=fmod(RT,PP.TT);
 		Element->data.RT.y=RT;//přepočítané RT, nebo totožné s ryzím - již se může odstranit?
@@ -3242,12 +3242,12 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 						if(Element->data.pocet_pozic<Element->data.pocet_voziku)//pokud při posunu akt. počet vozíků přesáhne maximální
 	  				{
 	  					Element->data.pocet_voziku=Element->data.pocet_pozic;
-	  					Element->data.WTstop=F->m.V2WT(Element->data.pocet_voziku,PP.TT);//uložení do paměti + výpočet
+							Element->data.WTstop=F->m.V2WT(Element->data.pocet_voziku,PP.TT);//uložení do paměti + výpočet
 							Element->mGrid->Cells[2][3].Text=F->m.round2double(F->outPT(Element->data.WTstop),3);//OUTPUT
 							//nové RT, protože se změnilo WTstop
 							WT=Element->WT;
 							if(Element->eID==0/* && Element->data.pocet_voziku>1 */&& cas+Element->WT<PP.TT)WT*=Element->data.pocet_voziku;
-							RT=m.RT(Element->data.PT1+Element->data.PT2+Element->PTotoc,cas,WT,Element->data.pocet_voziku,RD);
+							RT=m.RT(Element->data.PT1+Element->data.PT2+Element->PTotoc+Element->data.WTstop,cas,WT,Element->data.pocet_voziku,RD);
 							Element->data.RT.x=RT;//ryzí
 //	  					if(Element->data.pocet_voziku==1)RT==fmod(RT,PP.TT);   možno odsranit
 							Element->data.RT.y=RT;//přepočítané RT, nebo totožné s ryzím
