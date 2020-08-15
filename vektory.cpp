@@ -3211,7 +3211,7 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 			if(E->n>0)//kontrola za nejsem na hlavičce až na tomto místě, to dovolí překlopění cyklu na konec pokud dojde na hlaviču (žádoucí)
 			{
 		  	if(E->eID==200)cas+=E->WT;//wt na předávacím místě
-				if((vrat_druh_elementu(E)==0) || (E->n==Element->n && E->objekt_n==Element->objekt_n))break;//pokud je předchozi S&G prěruš cyklus
+				if((vrat_druh_elementu(E)==0 && (E->eID!=0 || (E->eID==0 && E->stav>0))) || (E->n==Element->n && E->objekt_n==Element->objekt_n))break;//pokud je předchozi S&G prěruš cyklus
 				if(E->pohon!=NULL)cas+=E->geo.delka/E->pohon->aRD;//pokud existuje úsek a má pohon
 				else error=true;//jinak error
 			}
