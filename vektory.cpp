@@ -6077,7 +6077,7 @@ void Cvektory::generuj_voziky_stop_a_bufferu(TElement *E,double akt_rotace_jigu,
 		//TZakazka *Z=new TZakazka;//pouze jen kvůli testům
 		if(pocet_voziku_z_prejezdu_na_bufferu>0){/*Z->n=1;Z->barva=clRed;*/stav=-2;pocet_voziku_z_prejezdu_na_bufferu--;}//barevné odlišení pouze jen kvůli testům
 		else {/*Z->n=2;Z->barva=clBlue;*/stav=-1;}//barevné odlišení pouze jen kvůli testům
-		if(umisteni+PP.delka_podvozek>=E->geo.delka)stav=0;//vozík přímo na stopcebarevné odlišení pouze jen kvůli testům
+		if(umisteni+PP.delka_podvozek-0.001>E->geo.delka)stav=0;//vozík přímo na stopcebarevné odlišení pouze jen kvůli testům, 0.001 pouze WA aby nenastavalo stav i druhému vozíku
 		//vloz_vozik(Z,E,Pt.x,Pt.y,Pt.z,akt_rotace_jigu,stav);//finální vložení vozíku s vypočítanými parametry do spojáku VOZIKY, se stave odháknuto
 		vloz_vozik(ZAKAZKA_akt,E,Pt.x,Pt.y,Pt.z,akt_rotace_jigu,stav);//finální vložení vozíku s vypočítanými parametry do spojáku VOZIKY, se stave odháknuto
 		stav=-1;//další již vyháknuto
@@ -6906,6 +6906,11 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 						if(E->data.RT.y==0){vloz_zpravu(X,Y,1,407,E);pocet_warningu++;}
 						//dodělat pokud RT==0 a aRD==0 vypsat, že není zadaná platná rychlost
 					}
+				}
+				////////////RT záporné nebo bez rezervy na předávacích místech - NEDOKONALÉ DODĚLAT
+				if(E->eID==200)
+				{                                          //chtělo by nahradit přímo z rotace jigu z elementu
+					if(E->pohon->Rx>0 && (PP.TT-E->WT)<m.UDV(vrat_rotaci_jigu_po_predchazejicim_elementu(E))/E->pohon->aRD){vloz_zpravu(X,Y,-1,402,E);pocet_erroru++;}//pokud čekání na palec z kontinuálního pohonu bude větší nebo rovno času přejezdu
 				}
 				////////////Pozor, překrytí JIGů! - musí být umístěno na konci (popř. na začátku)
 				if(PP.delka_podvozek<m.UDJ(rotaceJ) && pocet_voziku>1/*pocet_voziku>=1*/){vloz_zpravu(X+x*(PP.delka_podvozek*pocet_voziku/2.0-PP.uchyt_pozice),Y+y*(PP.delka_podvozek*pocet_voziku/2.0-PP.uchyt_pozice),-1,402,E);pocet_erroru++;}//pro buffer (výpis ve středu bufferu)
