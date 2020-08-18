@@ -6908,7 +6908,7 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 					}
 				}
 				////////////RT záporné nebo bez rezervy na předávacích místech - NEDOKONALÉ DODĚLAT
-				if(E->eID==200)
+				if(E->eID==200 && E->pohon!=NULL)
 				{                                          //chtělo by nahradit přímo z rotace jigu z elementu
 					if(E->pohon->Rx>0 && (PP.TT-E->WT)<m.UDV(vrat_rotaci_jigu_po_predchazejicim_elementu(E))/E->pohon->aRD){vloz_zpravu(X,Y,-1,402,E);pocet_erroru++;}//pokud čekání na palec z kontinuálního pohonu bude větší nebo rovno času přejezdu
 				}
