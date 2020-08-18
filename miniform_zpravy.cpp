@@ -56,8 +56,8 @@ void __fastcall TForm_zpravy::FormShow(TObject *Sender)
 	}
 	TPoint pocet_zprav=F->d.v.vrat_pocet_zprav();
 	update_zpravy(pocet_zprav.x,pocet_zprav.y);
-  POCET_ERRORU = pocet_zprav.x;
-  POCET_WARNINGU= pocet_zprav.y;
+	POCET_ERRORU = pocet_zprav.x;
+	POCET_WARNINGU= pocet_zprav.y;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_zpravy::scGPListBox_zpravyMouseMove(TObject *Sender, TShiftState Shift,
@@ -151,7 +151,7 @@ void  TForm_zpravy::update_zpravy(long pocet_erroru, long pocet_warningu)
 				while(Z!=NULL)
 				{
 					TscGPListBoxItem *I=scGPListBox_zpravy->Items->Add();
-					AnsiString Element="";if(Z!=NULL && Z->Element->name!="")Element=Z->Element->name.UpperCase()+": ";//získá název elementu u daného problému
+					AnsiString Element="";if(Z!=NULL && Z->Element!=NULL && Z->Element->name!="")Element=Z->Element->name.UpperCase()+": ";//získá název elementu u daného problému
 					I->Caption=Element+F->d.v.getVID(Z->VID);
 					if(Z->zID==-1)I->ImageIndex=69;//error
 					else I->ImageIndex=71;//warning

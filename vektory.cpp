@@ -6077,7 +6077,7 @@ void Cvektory::generuj_voziky_stop_a_bufferu(TElement *E,double akt_rotace_jigu,
 	{
 		TPointD_3D Pt=m.getPt(E->geo.radius,E->geo.orientace,E->geo.rotacni_uhel,E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4,umisteni/E->geo.delka,(umisteni+PP.uchyt_pozice-PP.delka_podvozek/2.0)/E->geo.delka);//zjištění aktuálních souřadnic vozíků
 		//TZakazka *Z=new TZakazka;//pouze jen kvůli testům
-		if(pocet_voziku_z_prejezdu_na_bufferu>0){/*Z->n=1;Z->barva=clRed;*/stav=-2;pocet_voziku_z_prejezdu_na_bufferu--;}//barevné odlišení pouze jen kvůli testům
+		if(pocet_voziku_z_prejezdu_na_bufferu>0){/*Z->n=1;Z->barva=clRed;*/stav=-2;pocet_voziku_z_prejezdu_na_bufferu--;}//barevné odlišení pouze jen kvůli testům, vozík na přejezdu, který narazil do bufferu nad rámec jeho nastaveného počtu
 		else {/*Z->n=2;Z->barva=clBlue;*/stav=-1;}//barevné odlišení pouze jen kvůli testům
 		if(umisteni+PP.delka_podvozek-0.001>E->geo.delka)stav=0;//vozík přímo na stopcebarevné odlišení pouze jen kvůli testům, 0.001 pouze WA aby nenastavalo stav i druhému vozíku
 		//vloz_vozik(Z,E,Pt.x,Pt.y,Pt.z,akt_rotace_jigu,stav);//finální vložení vozíku s vypočítanými parametry do spojáku VOZIKY, se stave odháknuto
@@ -6924,6 +6924,18 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 		}
 		delete E;E=NULL;
 
+		//testování vozíků
+		if(VOZIKY!=NULL)
+		{
+			TVozik *V=VOZIKY->dalsi;
+			while(V!=NULL)
+			{
+				if(V->stav==-2){vloz_zpravu(V->X,V->Y,1,451,V->element);pocet_warningu++;}
+				V=V->dalsi;
+			}
+			delete V;
+		}
+
 		//zakutalizuje zprávy v miniformu zpráv
 		Form_zpravy->update_zpravy(pocet_erroru,pocet_warningu);
 	}
@@ -6943,7 +6955,8 @@ UnicodeString Cvektory::getVID(long VID)
 		case 406: Text=F->ls->Strings[406];break;//Nestíhá se přejezd, záporná časová rezerva!
 		case 407: Text=F->ls->Strings[407];break;//Nulová časová rezerva.
 		case 450: Text=F->ls->Strings[469];break;//Nulová časová rezerva."Nerelevantní hodnota časové rezervy, na některém objektu není přiřazen pohon!"
-		default: Text="Error or warning!";break;//obecná chyba či varování
+		case 451: Text="Upozornění,v bufferu je výšší počet vozíku, než je nastaveno.";break;//přeložit
+		default:  Text="Error or warning!";break;//obecná chyba či varování
 	}
 	return Text;
 }

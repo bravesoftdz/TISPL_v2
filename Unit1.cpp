@@ -13101,6 +13101,19 @@ void TForm1::posun_na_element(unsigned long n_zpravy)
 		//////ostatní
 		E=NULL;delete E;
 	}
+	if(Z!=NULL && Z->Element==NULL)//pokud neobsahuje zpráva ukazatel na Element
+	{
+		//nastavení zoomu na vhodný náhled
+		//if(Zoom<=4 && OBJEKT_akt!=NULL)
+		Zoom=10.0;
+		zneplatnit_minulesouradnice();
+		TPoint Centr;Centr.x=Z->X;Centr.y=Z->Y;
+		//vycentrování obrazu na střed
+		Posun.x=Centr.x/m2px-ClientWidth/2/Zoom;
+		Posun.y=-Centr.y/m2px-(ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2/Zoom;
+		vytvor_statickou_scenu();//načtení statických záležitostí do statické scény, musí být před REFRESH
+		REFRESH();
+	}
 	Z=NULL;delete Z;
 }
 //---------------------------------------------------------------------------
@@ -14379,6 +14392,7 @@ void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 		Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
 		while(E!=NULL)
 		{
+
 			if(d.v.oblast_elementu(E,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
 			{
 //				//smazání zarážky v linii
