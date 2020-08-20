@@ -399,7 +399,9 @@ double Cmy::azimut(double X1,double Y1,double X2,double Y2)
 {
 	try
 	{
-		if(delka(X1,Y1,X2,Y2)!=0)
+		double ac=(Y2-Y1)/(delka(X1,Y1,X2,Y2)*1.0);
+		//if(ac<-1 || 1<ac)F->Memo("azimut acos problém: "+String(X1)+" "+String(Y1)+" "+String(X2)+" "+String(Y2));
+		if(delka(X1,Y1,X2,Y2)!=0 && -1<=ac && ac<=1)
 		{
 			double A=acos((Y2-Y1)/(delka(X1,Y1,X2,Y2)*1.0))*180/M_PI;
 			if(X2<X1)A=360-A;
@@ -415,7 +417,9 @@ double Cmy::uhel(double X1,double Y1,double X2,double Y2)
 {
 	try
 	{
-		if(delka(X1,Y1,X2,Y2)!=0)
+		double ac=(Y2-Y1)/(delka(X1,Y1,X2,Y2)*1.0);
+		//if(ac<-1 || 1<ac)F->Memo("uhel acos problém: "+String(ac));
+		if(delka(X1,Y1,X2,Y2)!=0 && -1<=ac && ac<=1)
 		{
 			return acos((Y2-Y1)/(delka(X1,Y1,X2,Y2)*1.0))*180/M_PI;
 		}
@@ -1108,11 +1112,26 @@ double Cmy::Dotoc(double PTo,double RD)
 //		double pocet_voziku_prejezd=(doba_prejezdu-pocet_voziku/*nastavených - stojicích v bufferu*/*F->d.v.PP.delka_podvozek/RD)/F->d.v.PP.TT;//doplní včetně skutečného počtu vozíků (tzn. vozíky v bufferu a v pohybu) na přejezdu
 //		return (pocet_voziku_prejezd+pocet_voziku)*F->d.v.PP.TT-(doba_prejezdu+PT+WT);
 //	}
+//	F->Memo(F->d.v.PP.TT);
+//	F->Memo(doba_prejezdu);
+//	F->Memo(pocet_voziku_v_bufferu);
+//	F->Memo(F->d.v.PP.delka_podvozek);
+//	F->Memo(RD);
+//
+//	60
+//100,536980351773
+//8
+//0,6
+//0,081
+//
+//	60-(fmod(100.536980351773-(8-1)*0,6/0.081,60)+0+6.7)+(8-1)*60
 
 	if(RD==0 || pocet_voziku_v_bufferu==0)return 0;//pokud není přiřazen pohon nebo se jedná o průjezdní stopku
 	else
 	{                                                         //ubraná časová čast přejezdu o buffer, jeden vozík již zoohledněn (proto -1)
-		return F->d.v.PP.TT-(fmod(doba_prejezdu-(pocet_voziku_v_bufferu-1/*nastavených - stojicích v bufferu*/)*F->d.v.PP.delka_podvozek/RD,F->d.v.PP.TT)+PT+WT)+(pocet_voziku_v_bufferu-1)*F->d.v.PP.TT;
+		if(pocet_voziku_v_bufferu==1)
+		return F->d.v.PP.TT+/*(pocet_voziku_v_bufferu-1)*F->d.v.PP.TT*/-(fmod(doba_prejezdu-(pocet_voziku_v_bufferu-1/*nastavených - stojicích v bufferu*/)*F->d.v.PP.delka_podvozek/RD,F->d.v.PP.TT)+PT+WT);
+		else F->d.v.PP.TT*pocet_voziku_v_bufferu;
 	}
 
 	//doba_prejezdu-

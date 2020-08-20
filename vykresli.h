@@ -64,7 +64,7 @@ class Cvykresli
 	void vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID=5,short typ=0,double rotace=0,short stav=1);
 	void vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ,double rotace,short stav,float TS=0);
 	void vykresli_teplomer(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,Cvektory::TElement *Element);
-	void vykresli_zarazku(TCanvas *canv,long X,long Y);
+	void vykresli_zarazku(TCanvas *canv,long X,long Y,String name="");
 	void vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,long X,long Y,AnsiString name,short typ=0,double rotace=0,short stav=1);
 	void vykresli_lakovaci_okno(TCanvas *canv,long X,long Y,double LO1,double OTOC_delka,double LO2,double delka_ramena,double rotace=0,double LO_pozice=0);
 	void vykresli_ikonu_linie(TCanvas *canv,int X,int Y,AnsiString Popisek="linie",short stav=0);

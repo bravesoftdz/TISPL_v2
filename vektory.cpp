@@ -3363,7 +3363,7 @@ long Cvektory::vymaz_seznam_VYHYBKY()
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
-//určí další krok průchodového algorytmu ve spojáku elementů, 2 možností průchod kompletního spojáku ELEMENTY, druhá průchod pouze elementů jednoho objektu
+//určí další krok průchodového algoritmu ve spojáku elementů, 2 možností průchod kompletního spojáku ELEMENTY, druhá průchod pouze elementů jednoho objektu
 Cvektory::TElement *Cvektory::dalsi_krok(TElement *E,TObjekt *O)
 {
 	////normální průchod kompletním spojákem elementů

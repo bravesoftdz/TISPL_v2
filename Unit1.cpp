@@ -14410,6 +14410,19 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 {//vždy nechat tento komentář
 
+//	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+//	while(E!=NULL)
+//	{
+////		if(floor(E->X)==41)// -0,0406901325296329)09523809524
+////		{
+////			Memo(String(E->n)+" "+E->name);
+////		}
+//		//if(E->name=="Zarážka 70") Memo(String(E->n)+" "+E->X);
+//		E=d.v.dalsi_krok(E);
+//	}
+//	E=NULL;delete E;
+
+
 		pom_element=NULL;
 		Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
 		while(E!=NULL)
@@ -14432,7 +14445,7 @@ void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 				double delka=E->geo.delka;
 				double HeightDeep=-0.7;
 				double delkaSklon=m.delkaSklon(delka,HeightDeep);//přepona
-				E->geo.delkaPud=delka;//jenom pokud je jiná neže delka, jinak 0
+				E->geo.delkaPud=delka;//jenom pokud je jiná než delka, jinak 0
 				E->geo.delka=delkaSklon;
 				E->geo.HeightDepp=HeightDeep;
 //nulování stoupání/klesání
@@ -14442,7 +14455,7 @@ void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 				duvod_validovat=2;
 				vytvor_statickou_scenu();
 				REFRESH();
-				//ShowMessage("Nastaveno HeightDeep "+String(HeightDeep*1000)+" mm pro element "+E->name);
+				ShowMessage("Nastaveno HeightDeep "+String(HeightDeep*1000)+" mm pro element "+E->name);
 				break;
 			}
 			E=d.v.dalsi_krok(E);
