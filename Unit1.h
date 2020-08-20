@@ -581,7 +581,6 @@ private:
 	int pocet_vyskytu_elementu_s_otoci(Cvektory::TObjekt *Objekt);//prohledá elementy v objektu, vrátí 0 pokud je rotace v objektu všude stejná, vrátí 1 pokud je pøítomno více rotací
 	void vytvor_edit();//vytvoøí edit na místì hlavièky tabulky, slouí ke zmìnì názvu elementu
 	void smaz_edit(bool refresh=true);//smae edit, kterı slouil pro zmìnu názvu elementu a novı název zapíše do elementu, defaultnì provede refresh, pokud není pøedáno parametrem jinak
-  void zapnout_vynout_editEditace(bool zapnout,bool smazat=false);//zapnì èi vypne edit pro editaci textu v náhledu
 	void vykresli_spojinici_EmGrid(TCanvas *Canv,Cvektory::TElement *E);//vykreslí spojnici mezi tabulkou a elementem z nejblišího rohu tabulky
 	void nacti_podklad(TCanvas *Canv);
 	unsigned short load_language(Tlanguage language,bool akt_mGrid=false);
@@ -653,7 +652,6 @@ private:
 	int offset_scGPButton_bug_report;
 	bool storno;//slouí k rozlišení jestli bylo stisknuto storno nebo byl zavolán jeho stisk z tlaèítka uloit
 	bool refreshovat_scGPTrackBar;//promìnná zajišujíci, e se scGPTracBar nerefreshuje pokud mu pøi zmìnì zoomu mimo scGPTracBar
-	TscGPEdit *editEditace;
 	long vychozi_stav_sceny;
 	TDateTime start;
   short typElementu;//slouí k rozlišení vykreslení u smart_kurzoru

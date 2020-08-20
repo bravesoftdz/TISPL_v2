@@ -19,12 +19,12 @@ __fastcall TFormX::TFormX(TComponent* Owner)
   editace_pohonu=false;
   //nastavení pozic bunìk v tabulce pohonu
 	rychlost=1;
-  roztec_palce=2;
-  nasobek_roztece=3;
+	roztec_palce=2;
+	nasobek_roztece=3;
   roztec_jigu=4;
   mezera_podvozky=5;
-  mezera_jig1=6;
-  mezera_jig2=7;
+	mezera_jig1=6;
+	mezera_jig2=7;
   posledni_E=NULL;
 	validovany_pohon=0;
 	VID="00";//zde se definuje poèet èíslic obažených ve VID
@@ -33,8 +33,8 @@ __fastcall TFormX::TFormX(TComponent* Owner)
 //---------------------------------------------------------------------------
 void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 {
-// pøi kliku do nìjaké buòky nastavím input_state=NOTHING, pokud udìlám zmìnu buòky je v OnChange události switch, který zajistí
-// výpoèet konkrétní buòky dle pøedávaných parametrù v události
+  //pøi kliku do nìjaké buòky nastavím input_state=NOTHING, pokud udìlám zmìnu buòky je v OnChange události switch, který zajistí
+	//výpoèet konkrétní buòky dle pøedávaných parametrù v události
 	input_state=NO;
 	if(ID==6666)F->tab_knihovna_click(-100,-100,Col,Row);//pøeposání události
 	//funkcionalita exBUTTONu v tabulce pohonu
@@ -53,7 +53,7 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 			F->OBJEKT_akt->stavPM=0;//default
 		}
 		else
-    {
+		{
 			F->PmG->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
 			F->PmG->VisibleRow(3,true,false);
 			F->PmG->VisibleRow(4,true,false);
@@ -92,7 +92,7 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 			F->REFRESH(true);
 		}
 		E=NULL;delete E;
-  }
+	}
 
 	if(ID!=9999&&Row==-2)
 	//funkcionalita exBUTTONu v tabulkách elementù
@@ -105,13 +105,13 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 			{
       	if(E->mGrid->Rows[4].Visible)
 	    	{
-	    		E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
+					E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
 					E->mGrid->VisibleRow(4,false,false);//nepøekreslovat
 					E->mGrid->VisibleRow(5,false,false);
 					E->mGrid->VisibleRow(6,false,false);
 	    	}
 	    	else
-	    	{
+				{
 					double rotaceJ=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(E);
 					if(E->mGrid->Cells[2][6].Text==1 && (F->m.Rt90(rotaceJ)==E->geo.orientace || F->m.Rt90(rotaceJ)==F->m.Rt90(E->geo.orientace+180)) && F->d.v.PP.delka_podvozek<F->m.UDJ(rotaceJ))
 					E->mGrid->Note.Text="Pøi 0° èi 180° rotaci jigu a poètu nastavených pozic 1 nejsou zobrazeny potenciální pozice";
@@ -174,12 +174,12 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 				{
 					E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
 					akce=false;
-        }
+				}
 				else//zobrazit
 				{
 					E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
 					akce=true;
-        }
+				}
 				//nastavování øádkù, vynechání hlavièky a posledního øádku celkem
 				for(unsigned int i=1;i<E->mGrid->RowCount-1;i++)
 				{
@@ -187,7 +187,7 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 				}
 			}break;
 		}
-    F->mGrid_on_mGrid();//mohlo dojít k pøekryvu, nebo odstranìní pøekryvu ... nutná kontrola
+		F->mGrid_on_mGrid();//mohlo dojít k pøekryvu, nebo odstranìní pøekryvu ... nutná kontrola
 		F->nastav_focus();
 		F->REFRESH(true);//musí být opravdu REFRESH() celého formu + mGridu
 		E->mGrid->exBUTTON->Hint=Hint;//navrácení pùvodního textu hintu
@@ -212,7 +212,7 @@ void TFormX::OnEnter(long Tag,long ID,unsigned long Col,unsigned long Row)
 		korelace_tab_pohonu(Row);//spuštìno pouze v pøípadì KK tabulky
 	if(ID==9999 && Row>=1)korelace_tab_pohonu_elementy();//pøi S&G režimu je stále nutné zobrazit korelaci v elementech
 	if(ID!=9999 && F->OBJEKT_akt->pohon!=NULL)//korelace v tabulkách elementù
-	korelace_v_elementech(ID,Col,Row);
+		korelace_v_elementech(ID,Col,Row);
 }
 //---------------------------------------------------------------------------
 //zpracování onchange události - INPUT, výpoèet a OUTPUT zpìt do ovlivnìné buòky
@@ -221,14 +221,14 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 	if(input_state==NOTHING&&ID!=9999&&vstoupeno_elm&&!editace_pohonu)
 	{
 		F->Timer_neaktivity->Enabled=false;//vypnutí timeru neaktivity, pokud dochází k OnChange rychle za sebou nestpustí timer refresh
-    //deklarace ukazatelù
+		//deklarace ukazatelù
 		Cvektory::TElement *E=posledni_E;//pokud edituji stejný element znova není potøeba si jej znova vracet
 		Cvektory::TCesta *c=posledni_c;
 		//pokud se jedná o jiný element, znova naplnit E
 		if(posledni_E==NULL || posledni_E!=NULL && posledni_E->mGrid!=NULL && posledni_E->mGrid->ID!=ID || posledni_E!=NULL && posledni_E->mGrid==NULL)
 		{
 			E=vrat_element_z_tabulky(ID);//ne vždy je ID tabulky stejné jako n robota, proto nutné hledat ID=ID ne ID=n
-	  	//nahrání aktuálních dat do ukazatele
+			//nahrání aktuálních dat do ukazatele
 			if(F->d.v.ZAKAZKA_akt!=NULL && F->d.v.ZAKAZKA_akt->n!=0)//pokud pracuji v nìjaké zakázce
 	  	{
 				c=F->d.v.vrat_segment_cesty(F->d.v.ZAKAZKA_akt,E);
@@ -266,7 +266,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					E->WT=F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text);
           F->aktualizace_RT();
 				}
-        ////konec temp
+				////konec temp
         //pokud nejsou nastaveny žádné vozíky, nastavit stav na 0
 				if(E->data.pocet_voziku==0)E->stav=0;
         else E->stav=1;
@@ -284,7 +284,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 						F->OBJEKT_akt->pohon->aRD=E->data.LO1/E->data.PT1;//uložení do pamìti + výpoèet
 						if(F->PmG!=NULL)F->PmG->Cells[3][rychlost].Text=F->m.round2double(F->outaRD(F->OBJEKT_akt->pohon->aRD),3);//OUTPUT
 						//nutné ošetøení podmínkou, v pøípadì editace textu, který je celý oznaèená událost OnChange spuštìna 2x
-			  		//zmìna v ostatních elementech
+						//zmìna v ostatních elementech
 						if(E->mGrid->Cells[Col][Row].Text!="")zmena_aRD(E);
 						if(F->PmG!=NULL)F->PmG->Refresh();//došlo ke zmìnì hodnot v PmG, musí být refresh, PmG refreš obsluhuje druhž case v OnChange
 					}
@@ -506,7 +506,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					//E->mGrid->Cells[Col][Row-1].Text = F->m.round2double(F->outDO(E->OTOC_delka),3);//OUTPUT
 					F->d.v.reserve_time(E,c);
 				}
-        ////temp odemknutí editace max WT
+				////temp odemknutí editace max WT
 				if(Row==4)//Col=1
 				{
 					input_state=WT;
@@ -2201,7 +2201,7 @@ void TFormX::prirazeni_pohonu_defTab()
 	F->OBJEKT_akt->stavPM=2;//max po zvolení pohonu
 	F->vlozit_predavaci_misto_aktualizuj_WT();
 	F->aktualizace_tab_pohon(false,true,true);//nebude provedena pokud dojde k odstranìní PmG
-  F->d.v.aktualizuj_cestu_teplomeru();//pokud existuje cesta mezi teplomìry aktualizuje ji, jinak vytvoøí default cestu
+	F->d.v.aktualizuj_cestu_teplomeru();//pokud existuje cesta mezi teplomìry aktualizuje ji, jinak vytvoøí default cestu
 
 	//pokud už neexistuje PmG, nalezení PM pro spuštìní validace
 	if(F->PmG==NULL)

@@ -562,7 +562,7 @@ void Cvektory::nastav_atributy_objektu(TObjekt *novy,unsigned int id, double X, 
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
 	////
-	if(id==3)novy->koty_elementu_offset.x=1;else novy->koty_elementu_offset.x=4;//odsazení kót elementů v metrech,v kabině POW se kóty vykroslují od hrany kabiny, ne od pohonu
+	if(id==3)novy->koty_elementu_offset.x=1;else novy->koty_elementu_offset.x=4*0.6;//odsazení kót elementů v metrech,v kabině POW se kóty vykroslují od hrany kabiny, ne od pohonu
 	novy->koty_elementu_offset.y=0.4;
 	novy->komora=NULL;//ukazatel na komory
 	novy->teplomery=NULL;
@@ -1872,11 +1872,12 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->data.PD=-1;//defaultní stav pro S&G roboty
 	novy->objekt_n=Objekt->n;//příslušnost elementu k objektu
 	novy->pohon=NULL;//pohon na kterém se nachází element
-	if(novy->predchozi->n>0 && novy->predchozi->objekt_n==Objekt->n && (novy->predchozi->eID!=300 || (novy->predchozi->eID==300 && novy->predchozi->dalsi==novy)))novy->pohon=novy->predchozi->pohon;
-	if(novy->predchozi->n>0 && Objekt->element!=NULL && novy->predchozi->objekt_n!=Objekt->n && (Objekt->element->predchozi->n>0 && novy->predchozi->objekt_n!=Objekt->element->predchozi->objekt_n || Objekt->element->predchozi->n==0))novy->pohon=novy->predchozi->pohon;
-	if(novy==Objekt->element && novy->dalsi!=NULL)novy->pohon=novy->dalsi->pohon;
+//	if(novy->predchozi->n>0 && novy->predchozi->objekt_n==Objekt->n && (novy->predchozi->eID!=300 || (novy->predchozi->eID==300 && novy->predchozi->dalsi==novy)))novy->pohon=novy->predchozi->pohon;
+//	if(novy->predchozi->n>0 && Objekt->element!=NULL && novy->predchozi->objekt_n!=Objekt->n && (Objekt->element->predchozi->n>0 && novy->predchozi->objekt_n!=Objekt->element->predchozi->objekt_n || Objekt->element->predchozi->n==0))novy->pohon=novy->predchozi->pohon;
+//	if(novy==Objekt->element && novy->dalsi!=NULL)novy->pohon=novy->dalsi->pohon;
+	if(novy->dalsi!=NULL)novy->pohon=novy->dalsi->pohon;
 	novy->geo.HeightDepp=0;
-  novy->geo.delkaPud=0;
+	novy->geo.delkaPud=0;
 
 	//název
 	AnsiString T="";
@@ -3230,8 +3231,8 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 		if(F->OBJEKT_akt!=NULL && Element->objekt_n==F->OBJEKT_akt->n)
 		{
 			switch(Element->eID)
-	  	{
-	  		case 0://stop stanice
+			{
+				case 0://stop stanice
 				{
 					//při posunu stopstanice může dojít ke změně poštu aktuálních vozíku, nový přepočet, pokud k této změně došlo
 					if(highlight_bunek)
@@ -3251,8 +3252,8 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 							Element->data.RT.x=RT;//ryzí
 //	  					if(Element->data.pocet_voziku==1)RT==fmod(RT,PP.TT);   možno odsranit
 							Element->data.RT.y=RT;//přepočítané RT, nebo totožné s ryzím
-	  				}
-	  			}
+						}
+					}
 					//vypsání OK pokud je RT kladné a zároveň má stopka více akt_vozíku
 					if(Element->data.RT.y>0 && Element->data.pocet_voziku>1){Element->mGrid->Cells[2][2].Text="OK";Element->mGrid->Cells[2][2].Hint=F->m.round2double(F->outPT(Element->data.RT.y),3);Element->mGrid->Cells[2][2].ShowHint=true;}
 					else {Element->mGrid->Cells[2][2].Text=F->m.round2double(F->outPT(Element->data.RT.y),3);Element->mGrid->Cells[2][2].Hint="";Element->mGrid->Cells[2][2].ShowHint=false;}
@@ -3261,17 +3262,17 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 				{
 					Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->data.RT.y),3);
 	  			if(highlight_bunek)Element->mGrid->Cells[1][2].Highlight=true;//slouži pro higlightování buňky s RT při posunu elementu
-	  		}break;
+				}break;
     		case 4:case 10:case 14:case 18:case 104:case 108://roboti s aktivní otočí
 	  		{
 					Element->mGrid->Cells[1][5].Text=F->m.round2double(F->outPT(Element->data.RT.y),3);
-	  			if(highlight_bunek)Element->mGrid->Cells[1][5].Highlight=true;//slouži pro higlightování buňky s RT při posunu elementu
-	  		}break;
-	  		case 6://aktivní otoč
+					if(highlight_bunek)Element->mGrid->Cells[1][5].Highlight=true;//slouži pro higlightování buňky s RT při posunu elementu
+				}break;
+				case 6://aktivní otoč
 				{
 					Element->mGrid->Cells[1][3].Text=F->m.round2double(F->outPT(Element->data.RT.y),3);
 					if(highlight_bunek)Element->mGrid->Cells[1][3].Highlight=true;//slouži pro higlightování buňky s RT při posunu elementu
-	  		}break;
+				}break;
 			}
 			//pokud některý z geometrických úseků neměl přiřazený pohon RT nebude správné, vypsat error
 			if(error)Element->mGrid->ShowNote(F->ls->Strings[421],F->d.clError,14);//"RT není relevantní, některý z objektů nemá pohon!"
@@ -3288,7 +3289,7 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 	}
 
 	//kontrola RT, pokud je záporné, výpis doporučeného PT
-	if(F->OBJEKT_akt!=NULL &&  F->OBJEKT_akt->zobrazit_mGrid)
+	if(F->OBJEKT_akt!=NULL &&  F->OBJEKT_akt->zobrazit_mGrid && F->Akce==F->Takce::NIC)
 	{
 		TElement *E=F->OBJEKT_akt->element;
 		String note="",jednotky=" s";
@@ -3300,17 +3301,18 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 				{
 		  		note="Dop. hodnota PT je maximálně ";
 		  		//kontrola, zda je RT záporné
-		  		if(E->data.RT.y<0)
+					if(E->data.RT.y<0)
 		  		{
 		  			note+=AnsiString(m.round2double(E->data.PT1+E->data.PT2+E->PTotoc+E->data.RT.y,3))+jednotky;
-		  			E->mGrid->ShowNote(note);
-		  		}
-		  		else E->mGrid->Note.Text="";
+		  			E->mGrid->Note.Text=note; //E->mGrid->ShowNote(note);
+					}
+					else E->mGrid->Note.Text="";
+          E->mGrid->Refresh();
 				}
 			}catch(...){;}//dochází k tomuto při načítání mgridů
 			E=dalsi_krok(E,F->OBJEKT_akt);
 		}
-    E=NULL;delete E;
+		E=NULL;delete E;
 	}
 }
 ////---------------------------------------------------------------------------
@@ -9145,7 +9147,11 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 				dO=dO->dalsi;
 			}
 			delete dO;dO=NULL;
-			if(obraz->edit_Objekt!=0 && !storno)F->OBJEKT_akt=vrat_objekt(obraz->edit_Objekt);
+			if(obraz->edit_Objekt!=0 && !storno)
+			{
+				F->OBJEKT_akt=vrat_objekt(obraz->edit_Objekt);
+        F->pom=F->OBJEKT_akt;
+			}
 			
 			////načtení Elementů
 			pocet_vyhybek=obraz->pocet_vyhybek;//navrácení počtu výhybek,musí být před vytvářením tabulky průchodu
@@ -9163,7 +9169,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 					E->mGrid=new TmGrid(F);
 					E->mGrid->Tag=6;//ID formu
 					E->mGrid->ID=E->n;
-					F->design_element(E,false,false);
+					F->design_element(E,false,true);
 					if(E->eID==200 || E->eID==300)exituje_tab_poh=true;
 				}
 				//vloz_element(E);
@@ -9522,7 +9528,7 @@ long Cvektory::vymaz_seznam_MAG_LASO()
 void Cvektory::kontrola_vlozeni_do_mag_lasa(TElement *E)
 {
 	//pokud byla zapčata cesta ukládání již pročlých segmentů
-	if(MAG_LASO->Element!=NULL)
+	if(MAG_LASO->Element!=NULL && E!=NULL)
 	{
 		//zjištění zda se element již nevyskytuje v mag- lasu
 		short segment=obsahuje_MAG_LASO_element(E);
