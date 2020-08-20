@@ -283,6 +283,7 @@ __published:	// IDE-managed Components
 	TImage *Image_rozdelovac_3;
 	TIdSSLIOHandlerSocketOpenSSL *IdSSLIOHandlerSocketOpenSSL1;
   TIdSNTP *IdSNTP1;
+	TscGPCheckBox *scGPCheckBox_meridlo_casy;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -482,6 +483,7 @@ __published:	// IDE-managed Components
 	void __fastcall scExPanel_ostatniClick(TObject *Sender);
 	void __fastcall ButtonMaKrClick(TObject *Sender);
 	void __fastcall Timer1Timer(TObject *Sender);
+	void __fastcall scGPCheckBox_meridlo_casyClick(TObject *Sender);
 
 
 
@@ -739,6 +741,7 @@ public:		// User declarations
 	Tvlakno_obraz *vlakno_obraz;
 	//bool vlakno_PanCreateState;
 	bool zobrazit_upozorneni_teplomery;
+  bool mereni_po_trendu;//slouží pro uchovávání stavu, zda mìøím po trendu nebo proti, pøedáváno z Cvykresli::vykresli_meridlo()
 
 	//metody
 	void kurzor(TKurzory typ_kurzor);

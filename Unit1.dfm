@@ -8055,6 +8055,113 @@ object Form1: TForm1
         UseFontColorToStyleColor = False
         Caption = 'EN'
       end
+      object scGPCheckBox_meridlo_casy: TscGPCheckBox
+        AlignWithMargins = True
+        Left = 7
+        Top = 63
+        Width = 239
+        Height = 33
+        Margins.Left = 7
+        Margins.Top = 0
+        Margins.Bottom = 0
+        Align = alTop
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -16
+        Font.Name = 'Roboto'
+        Font.Style = []
+        ParentFont = False
+        FluentUIOpaque = False
+        TabOrder = 10
+        TabStop = True
+        OnClick = scGPCheckBox_meridlo_casyClick
+        Animation = False
+        Caption = 'P'#345'ipo'#269#237't'#225'vat '#269'as prvn'#237'ho el.'
+        CanFocused = True
+        Spacing = 1
+        Layout = blGlyphLeft
+        ImageIndex = -1
+        GlowEffect.Enabled = False
+        GlowEffect.Color = clHighlight
+        GlowEffect.AlphaValue = 95
+        GlowEffect.GlowSize = 7
+        GlowEffect.Offset = 0
+        GlowEffect.Intensive = True
+        GlowEffect.StyleColors = True
+        GlowEffect.HotColor = clNone
+        GlowEffect.PressedColor = clNone
+        GlowEffect.FocusedColor = clNone
+        GlowEffect.PressedGlowSize = 7
+        GlowEffect.PressedAlphaValue = 255
+        GlowEffect.States = [scsHot, scsPressed, scsFocused]
+        ImageGlow = True
+        DrawTextMode = scdtmGDI
+        DisabledFontColor = clNone
+        Options.NormalColor = clWindow
+        Options.HotColor = clWindow
+        Options.PressedColor = clWindow
+        Options.DisabledColor = clWindow
+        Options.NormalColorAlpha = 255
+        Options.HotColorAlpha = 255
+        Options.PressedColorAlpha = 200
+        Options.DisabledColorAlpha = 125
+        Options.FrameNormalColor = clBtnShadow
+        Options.FrameHotColor = clHighlight
+        Options.FramePressedColor = clHighlight
+        Options.FrameDisabledColor = clBtnShadow
+        Options.FrameWidth = 2
+        Options.FrameNormalColorAlpha = 255
+        Options.FrameHotColorAlpha = 255
+        Options.FramePressedColorAlpha = 255
+        Options.FrameDisabledColorAlpha = 255
+        Options.CheckMarkNormalColor = clWindowText
+        Options.CheckMarkHotColor = clWindowText
+        Options.CheckMarkPressedColor = clWindowText
+        Options.CheckMarkDisabledColor = clWindowText
+        Options.CheckMarkNormalColorAlpha = 255
+        Options.CheckMarkHotColorAlpha = 255
+        Options.CheckMarkPressedColorAlpha = 255
+        Options.CheckMarkDisabledColorAlpha = 125
+        Options.ShapeSize = 20
+        Options.CheckMarkThickness = 2
+        Options.StyleColors = True
+        OptionsChecked.NormalColor = clWindow
+        OptionsChecked.HotColor = clWindow
+        OptionsChecked.PressedColor = clWindow
+        OptionsChecked.DisabledColor = clWindow
+        OptionsChecked.NormalColorAlpha = 255
+        OptionsChecked.HotColorAlpha = 255
+        OptionsChecked.PressedColorAlpha = 200
+        OptionsChecked.DisabledColorAlpha = 125
+        OptionsChecked.FrameNormalColor = clBtnShadow
+        OptionsChecked.FrameHotColor = clHighlight
+        OptionsChecked.FramePressedColor = clHighlight
+        OptionsChecked.FrameDisabledColor = clBtnShadow
+        OptionsChecked.FrameWidth = 2
+        OptionsChecked.FrameNormalColorAlpha = 255
+        OptionsChecked.FrameHotColorAlpha = 255
+        OptionsChecked.FramePressedColorAlpha = 255
+        OptionsChecked.FrameDisabledColorAlpha = 255
+        OptionsChecked.CheckMarkNormalColor = clWindowText
+        OptionsChecked.CheckMarkHotColor = clWindowText
+        OptionsChecked.CheckMarkPressedColor = clWindowText
+        OptionsChecked.CheckMarkDisabledColor = clWindowText
+        OptionsChecked.CheckMarkNormalColorAlpha = 255
+        OptionsChecked.CheckMarkHotColorAlpha = 255
+        OptionsChecked.CheckMarkPressedColorAlpha = 255
+        OptionsChecked.CheckMarkDisabledColorAlpha = 125
+        OptionsChecked.ShapeSize = 20
+        OptionsChecked.CheckMarkThickness = 2
+        OptionsChecked.StyleColors = True
+        Checked = True
+        State = cbChecked
+        ScaleFrameWidth = True
+        ScaleCheckMarkThickness = True
+        ShowFocusRect = True
+        UseFontColorToStyleColor = False
+        ExplicitLeft = 10
+        ExplicitTop = 71
+      end
     end
     object scExPanel1: TscExPanel
       Left = 1
@@ -8907,7 +9014,7 @@ object Form1: TForm1
     Left = 520
     Top = 40
     Bitmap = {
-      494C010118004800480010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118004800040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9987,7 +10094,7 @@ object Form1: TForm1
     Left = 423
     Top = 38
     Bitmap = {
-      494C010154009000480030003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010154009000040030003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000002004000001002000000000000060
       0C00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

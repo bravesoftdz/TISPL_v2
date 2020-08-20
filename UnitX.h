@@ -56,7 +56,8 @@ public:		// User declarations
 	void vynulujVID();//vynuluje VID, podle délky nastavené v konstruktoru (viz. popisek deklarace VID) napø. 2 èíslice
 	void aktualizace_tab_elementu (Cvektory::TElement *mimo_element=NULL);//aktualizuje výpoèty ve všech tabulkách elemntù, parametr mimo_element je ukazatel na element, který má být pøeskoèen, defaultnì hodnota, které E->n nidky nedosáhne
 	void mazatPM(Cvektory::TElement *Element=NULL);//kontorla a dotaz zda mají být PM na stejném pohonu smazána
-  void aktualizace_teplomeru();//provede aktualizaci èasu v tabulce teplomìrù
+	void aktualizace_teplomeru();//provede aktualizaci èasu v tabulce teplomìrù
+  void zmena_rezimu_pohonu(Cvektory::TPohon *pohon);//aktualizuje položky v pohonových tabulkách, v pøípadì, že došlo ke zmìnì režimu pohonu
 
 	//promìnné pro vyøazení OnChange metody pøi vykreslování tabulek
   enum Tinput_state{NO,NOTHING,PT,PT2,LO,LO2,WT,DO,PTotoc,COMBO,aRD,R,Rz,Rx,P_VOZ};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)

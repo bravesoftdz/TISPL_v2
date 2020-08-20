@@ -200,6 +200,9 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	T=readINI("nastaveni_editace","zobrazit_popisek_pohonu"); //zobrazit_popisek_pohonu
 	if(T==1 || T=="")zobrazit_popisek_pohonu=1;else zobrazit_popisek_pohonu=0;
 	if(T=="")writeINI("nastaveni_editace","zobrazit_popisek_pohonu",zobrazit_popisek_pohonu);
+  //temp
+	T=readINI("nastaveni_editace","pripocitavat_casy_prvniho_el");
+	if(T==0 || T=="")scGPCheckBox_meridlo_casy->Checked=false;else scGPCheckBox_meridlo_casy->Checked=true;
 
 
 	if(rotace_jigu==1) scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
@@ -324,6 +327,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	velikost_citelne_oblasti_elementu=0.12;//v metrech, 0.114285714285714 šířka pouzdra pohonu
 	zobrazit_upozorneni_teplomery=true;
 	typElementu=0;
+  mereni_po_trendu=true;
 
 	//vývojářské featury
 	if(DEBUG && get_user_name()+get_computer_name()=="MartinMARTIN-NOTEBOOK"){ButtonMaVl->Visible=false;}//pokud se dělá překlad u MaKr, je skryto MV tlačítko testovací tlačítko, MaKr testovací se volá přes F9
@@ -3807,7 +3811,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				}
 				//hledání elementu na kterém je kurzor
 				pom_element=NULL;
-				Cvektory::TElement *E=OBJEKT_akt->element;Memo_testy->Clear();
+				Cvektory::TElement *E=OBJEKT_akt->element;
 				while(E!=NULL)
 				{
 					if(m.PtInCircle(E->geo.X4,E->geo.Y4,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,velikost_citelne_oblasti_elementu))
@@ -3849,7 +3853,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 						else//kóty elementů RET=11-99
 						{
 							if(PtInKota_elementu==0 && pom_element!=NULL)JID=13;//oblast kóty - posun kóty
-							if(PtInKota_elementu==1 && pom_element!=NULL)JID=(10+pom_element->n)*(-1);//hodnota kóty
+							if(PtInKota_elementu==1 && pom_element!=NULL)JID=-11;//hodnota kóty
 						}
 					}
 				}
@@ -3857,7 +3861,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				if(puvJID!=JID)//pokud došlo ke změně JID, nebo změně bodu bez změny JID, jinak nemá smysl řešit
 				{
 					kurzor(standard);
-					if(JID<=-11&&!editace_textu){kurzor(edit_text);refresh_mGrid=false;}//kurzor pro editaci textu
+					if(JID==-11&&!editace_textu){kurzor(edit_text);refresh_mGrid=false;}//kurzor pro editaci textu
 					if(JID==13){if(pom_element->geo.orientace==90||pom_element->geo.orientace==270)kurzor(zmena_d_y);else kurzor(zmena_d_x);refresh_mGrid=false;}//interaktivní kóty elementů
 				}
 				//////přepínání typu elementu pro smart_kurzor
@@ -6338,7 +6342,8 @@ void TForm1::add_element (int X, int Y)
 			d.v.update_akt_zakazky();//protřeba mít nový element v cestě
 			d.v.aktualizuj_sparovane_ukazatele();//aktualizace spárovaných ukazatelů
 			//přiřazení režimu kabině + aktualizace pohon tabulek
-			d.v.aktualizace_rezimu_objektu(OBJEKT_akt);
+			//d.v.aktualizace_rezimu_objektu(OBJEKT_akt);
+      if(E->eID!=5 && E->eID!=6 && E->eID!=100 && E->eID!=200)d.v.aktualizuj_rezim_pohonu(E->pohon,d.v.vrat_druh_elementu(E));//přeskakovat elementy co neudávají režim
 			//aktualizace a validace
 			if(E->dalsi!=NULL && E->eID==0 && E->dalsi->eID==0)design_element(E->dalsi,false);//aktualizace počtů pozic, pokud je stopka vložena do oblasti jiné stopky
 			if(E->eID==5 || E->eID==6)FormX->validace_max_voziku();//přidána otoč do kabiny, aktualizace validace
@@ -6618,7 +6623,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 	FormX->vstoupeno_elm=false;
 	UnicodeString name=ls->Strings[271];//"Předávací místo"
 	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
+	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
 	while(E!=NULL)
 	{
 		//deklarace atributů
@@ -7097,29 +7102,44 @@ void TForm1::vlozeni_editace_geometrie()
 	//////editace pohonu ve středu
 	else if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID!=301 && posledni_editovany_element->dalsi->objekt_n==posledni_editovany_element->objekt_n)
 	{
-		//vložení úseku
-		if(posun_dalsich_elementu)
+    //rozšíření poslední zarážky o novou geometrii
+		if(posledni_editovany_element->geo.typ==0 && d.geoTemp.typ==0)
 		{
-			posunx=d.geoTemp.X4-d.geoTemp.X1;posuny=d.geoTemp.Y4-d.geoTemp.Y1;
-			posledni_editovany_element=d.v.vloz_element(OBJEKT_akt,MaxInt,d.geoTemp.X4,d.geoTemp.Y4,orientace,posledni_editovany_element->dalsi);
-			design_element(posledni_editovany_element,true);//nutné!!!!!!!!
-			posledni_editovany_element->geo=d.geoTemp;
+			d.v.vloz_G_element(posledni_editovany_element,0,posledni_editovany_element->geo.X1,posledni_editovany_element->geo.Y1,0,0,0,0,d.geoTemp.X4,d.geoTemp.Y4,posledni_editovany_element->geo.orientace,posledni_editovany_element->geo.rotacni_uhel,posledni_editovany_element->geo.radius);
+			if(posledni_editovany_element->dalsi!=NULL && !posun_dalsich_elementu && posledni_editovany_element->dalsi->eID==MaxInt)d.v.smaz_element(posledni_editovany_element->dalsi,true,1);//smazat bez kontrol
+			if(posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->objekt_n==posledni_editovany_element->objekt_n)
+			{
+				posunx=-posledni_editovany_element->dalsi->geo.X1+posledni_editovany_element->geo.X4;
+				posuny=-posledni_editovany_element->dalsi->geo.Y1+posledni_editovany_element->geo.Y4;
+      }
 		}
-		//změna úseku
+		//vložení nové zarážky s geometrii
 		else
 		{
-			posunx=d.geoTemp.X4-posledni_editovany_element->dalsi->geo.X4;posuny=d.geoTemp.Y4-posledni_editovany_element->dalsi->geo.Y4;
-			posledni_editovany_element->dalsi->geo=d.geoTemp;
-			posledni_editovany_element->dalsi->X+=posunx;posledni_editovany_element->dalsi->Y+=posuny;
-			posledni_editovany_element=posledni_editovany_element->dalsi;
+	  	//vložení úseku
+			if(posun_dalsich_elementu)
+	  	{
+	  		posunx=d.geoTemp.X4-d.geoTemp.X1;posuny=d.geoTemp.Y4-d.geoTemp.Y1;
+	  		posledni_editovany_element=d.v.vloz_element(OBJEKT_akt,MaxInt,d.geoTemp.X4,d.geoTemp.Y4,orientace,posledni_editovany_element->dalsi);
+	  		design_element(posledni_editovany_element,true);//nutné!!!!!!!!
+	  		posledni_editovany_element->geo=d.geoTemp;
+	  	}
+	  	//změna úseku
+	  	else
+	  	{
+	  		posunx=d.geoTemp.X4-posledni_editovany_element->dalsi->geo.X4;posuny=d.geoTemp.Y4-posledni_editovany_element->dalsi->geo.Y4;
+	  		posledni_editovany_element->dalsi->geo=d.geoTemp;
+	  		posledni_editovany_element->dalsi->X+=posunx;posledni_editovany_element->dalsi->Y+=posuny;
+	  		posledni_editovany_element=posledni_editovany_element->dalsi;
+			}
 		}
-		//posun ostatních úseků geometrie
+    //posun ostatních úseků geometrie
 		Cvektory::TElement *E=posledni_editovany_element->dalsi;
 		while(E!=NULL && E->objekt_n==posledni_editovany_element->objekt_n)
 		{
 			E->X+=posunx;E->Y+=posuny;//souřadnice elementu
 			//geometrie elementu
-			E->geo.X1+=posunx;E->geo.X2+=posunx;E->geo.X3+=posunx;E->geo.X4+=posunx;
+	  	E->geo.X1+=posunx;E->geo.X2+=posunx;E->geo.X3+=posunx;E->geo.X4+=posunx;
 			E->geo.Y1+=posuny;E->geo.Y2+=posuny;E->geo.Y3+=posuny;E->geo.Y4+=posuny;
 			if(E->dalsi!=NULL && E->dalsi->eID==301 && E->dalsi->predchozi2==E)break;
 			E=E->dalsi;
@@ -7129,21 +7149,30 @@ void TForm1::vlozeni_editace_geometrie()
 	//////přidávání za poslední geometrii (hlavní i vedlejší)
 	else if(posledni_editovany_element!=NULL && (posledni_editovany_element->dalsi==NULL || (posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301) || (posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->objekt_n!=posledni_editovany_element->objekt_n)))
 	{
-		//vložím nový prvek, který převezme geometrii posledniho a zařadí se před nej, poslední pak převezme novou geometrii - tz. posouvám poslední prvek stále před sebou
-		if(posledni_editovany_element->geo.delka!=0)//normální provoz
+    //rozšíření poslední zarážky o novou geometrii
+		if(posledni_editovany_element->geo.typ==0 && d.geoTemp.typ==0)
 		{
-			//kontrola a uchovávání zda edituji hlavní nebo veldejší větev
-			if(posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->predchozi2==posledni_editovany_element)d.v.vyhybka_pom=posledni_editovany_element;
-			posledni_editovany_element=d.v.vloz_element(OBJEKT_akt,MaxInt,d.geoTemp.X4,d.geoTemp.Y4,orientace,posledni_editovany_element->dalsi);
-			posledni_editovany_element->geo=d.geoTemp;
-			design_element(posledni_editovany_element,true);//nutné!!!!!!!!
-			d.v.vyhybka_pom=NULL;
+      d.v.vloz_G_element(posledni_editovany_element,0,posledni_editovany_element->geo.X1,posledni_editovany_element->geo.Y1,0,0,0,0,d.geoTemp.X4,d.geoTemp.Y4,posledni_editovany_element->geo.orientace,posledni_editovany_element->geo.rotacni_uhel,posledni_editovany_element->geo.radius);
 		}
-		else//pokud je veškerá geometrie odstraněna z kabiny
+		//vložení nové zarážky s geometrii
+		else
 		{
-			posledni_editovany_element->geo=d.geoTemp;
-			posledni_editovany_element->X=posledni_editovany_element->geo.X4;
-			posledni_editovany_element->Y=posledni_editovany_element->geo.Y4;
+	  	//vložím nový prvek, který převezme geometrii posledniho a zařadí se před nej, poslední pak převezme novou geometrii - tz. posouvám poslední prvek stále před sebou
+	  	if(posledni_editovany_element->geo.delka!=0)//normální provoz
+	  	{
+	  		//kontrola a uchovávání zda edituji hlavní nebo veldejší větev
+	  		if(posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->predchozi2==posledni_editovany_element)d.v.vyhybka_pom=posledni_editovany_element;
+	  		posledni_editovany_element=d.v.vloz_element(OBJEKT_akt,MaxInt,d.geoTemp.X4,d.geoTemp.Y4,orientace,posledni_editovany_element->dalsi);
+	  		posledni_editovany_element->geo=d.geoTemp;
+	  		design_element(posledni_editovany_element,true);//nutné!!!!!!!!
+	  		d.v.vyhybka_pom=NULL;
+	  	}
+	  	else//pokud je veškerá geometrie odstraněna z kabiny
+	  	{
+	  		posledni_editovany_element->geo=d.geoTemp;
+	  		posledni_editovany_element->X=posledni_editovany_element->geo.X4;
+	  		posledni_editovany_element->Y=posledni_editovany_element->geo.Y4;
+			}
 		}
 	}
 
@@ -7512,7 +7541,7 @@ void TForm1::mGrid_on_mGrid()
 		////kontrola překrytí
 		int odX=0,odY=0;
 		E=OBJEKT_akt->element;
-		//TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
+		//TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
 		while(E!=NULL && E->objekt_n==objekt_n)
 		{
 			if(E->eID!=100 && E->eID!=MaxInt && E->pohon==OBJEKT_akt->pohon)//pouze pro elementy, které mají tabulku, jen pro tabulky co jsou zobrazené
@@ -8917,7 +8946,7 @@ void TForm1::aktualizace_tab_pohon(bool popisky,bool data,bool komponenty)
 	{
   	if(OBJEKT_akt->pohon!=NULL)
   	{
-			if(OBJEKT_akt->rezim!=0)//přepočet po přidání KK elementu
+			if(OBJEKT_akt->pohon->rezim!=0)//přepočet po přidání KK elementu
 			{
 				F->OBJEKT_akt->pohon->Rz=F->m.Rz(F->OBJEKT_akt->pohon->aRD);
 				F->OBJEKT_akt->pohon->Rx=F->m.Rx(F->OBJEKT_akt->pohon->aRD,F->OBJEKT_akt->pohon->roztec);
@@ -8925,11 +8954,11 @@ void TForm1::aktualizace_tab_pohon(bool popisky,bool data,bool komponenty)
 			PmG->Cells[3][1].Text=m.round2double(outaRD(OBJEKT_akt->pohon->aRD),3);
   		PmG->Cells[3][2].Text=AnsiString(m.round2double(outaRD(OBJEKT_akt->pohon->rychlost_od),3))+" - "+AnsiString(m.round2double(outaRD(OBJEKT_akt->pohon->rychlost_do),3));
 			PmG->Cells[3][4].Text=m.round2double(outR(OBJEKT_akt->pohon->roztec),3);
-			if(OBJEKT_akt->rezim!=0)PmG->Cells[3][5].Text=m.round2double(OBJEKT_akt->pohon->Rx,3);
-			if(OBJEKT_akt->rezim!=0)PmG->Cells[3][3].Text=m.round2double(outR(OBJEKT_akt->pohon->Rz),3);
-			if(OBJEKT_akt->rezim!=0)PmG->Cells[3][6].Text=m.round2double(outRz(m.mezera(0,OBJEKT_akt->pohon->Rz,0)),3);
-			if(OBJEKT_akt->rezim!=0)PmG->Cells[3][7].Text=m.round2double(outRz(m.mezera(0,OBJEKT_akt->pohon->Rz,1)),3);
-			if(OBJEKT_akt->rezim!=0)PmG->Cells[3][8].Text=m.round2double(outRz(m.mezera(90,OBJEKT_akt->pohon->Rz,1)),3);
+			if(OBJEKT_akt->pohon->rezim!=0)PmG->Cells[3][5].Text=m.round2double(OBJEKT_akt->pohon->Rx,3);
+			if(OBJEKT_akt->pohon->rezim!=0)PmG->Cells[3][3].Text=m.round2double(outR(OBJEKT_akt->pohon->Rz),3);
+			if(OBJEKT_akt->pohon->rezim!=0)PmG->Cells[3][6].Text=m.round2double(outRz(m.mezera(0,OBJEKT_akt->pohon->Rz,0)),3);
+			if(OBJEKT_akt->pohon->rezim!=0)PmG->Cells[3][7].Text=m.round2double(outRz(m.mezera(0,OBJEKT_akt->pohon->Rz,1)),3);
+			if(OBJEKT_akt->pohon->rezim!=0)PmG->Cells[3][8].Text=m.round2double(outRz(m.mezera(90,OBJEKT_akt->pohon->Rz,1)),3);
   	}
   	else
   	{
@@ -8950,7 +8979,7 @@ void TForm1::aktualizace_tab_pohon(bool popisky,bool data,bool komponenty)
 		//pokud pohon exituje a není používaný
   	if(OBJEKT_akt->pohon!=NULL && !d.v.pohon_je_pouzivan(OBJEKT_akt->pohon->n,false))
 		{
-			if(OBJEKT_akt->rezim!=0)//povolit editaci všeho
+			if(OBJEKT_akt->pohon->rezim!=0)//povolit editaci všeho
 			{
 				PmG->Cells[3][1].Type=PmG->EDIT;if(PmG->Note.Text==""){PmG->Cells[3][1].Background->Color=clWhite;PmG->Cells[3][1].Font->Color=(TColor)RGB(43,87,154);}
 				PmG->Cells[3][4].Type=PmG->EDIT;if(PmG->Note.Text==""){PmG->Cells[3][4].Background->Color=clWhite;PmG->Cells[3][4].Font->Color=(TColor)RGB(43,87,154);}
@@ -8970,7 +8999,7 @@ void TForm1::aktualizace_tab_pohon(bool popisky,bool data,bool komponenty)
 			if(PmG->Cells[3][5].Type==PmG->EDIT){mGrid_komponenta_na_draw(PmG,3,5);if(PmG->Note.Text==""){PmG->Cells[3][5].Background->Color=(TColor)RGB(240,240,240);PmG->Cells[3][5].Font->Color=(TColor)RGB(128,128,128);}}
 		}
 		//kontrola režimu objektu
-		if(OBJEKT_akt->rezim==0)//pokud je režim S&G, většina informací je nerelevantních
+		if(OBJEKT_akt->pohon!=NULL && OBJEKT_akt->pohon->rezim==0)//pokud je režim S&G, většina informací je nerelevantních
 		{
 			PmG->Cells[3][3].Text="-";
 			//PmG->Cells[3][4].Text="-";
@@ -9525,7 +9554,7 @@ void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
 	if(E->eID==200 || E->eID==300)//pouze pro pohonové tabulky
 	{
 		TscGPComboBox *C1=E->mGrid->getCombo(3,2),*C2=E->mGrid->getCombo(4,2),*C_pom=NULL;
-		int prvni=3,druhy=4,rezim=0;
+		int prvni=3,druhy=4,rezim=-1;
 		//kontrola zda budou prohozeny sloupce
 		if(prohodit_sloupce_PM(E))
 		{
@@ -9551,7 +9580,7 @@ void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
 		}
 
 		////první sloupec
-		rezim=d.v.vrat_objekt(E->objekt_n)->rezim;
+		if(E->pohon!=NULL)rezim=E->pohon->rezim;
 		if(C1!=NULL && C1->Enabled)
 		{
 	  	//pokud pohon exituje a není používaný
@@ -9592,7 +9621,8 @@ void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
 		Cvektory::TElement *e_pom=E->dalsi2;
 		if(E->eID==200 && E->dalsi!=NULL)e_pom=E->dalsi;
 		if(E->eID==200 && E->dalsi==NULL)e_pom=d.v.ELEMENTY->dalsi;
-		rezim=d.v.vrat_objekt(e_pom->objekt_n)->rezim;
+		rezim=-1;
+		if(e_pom->pohon!=NULL)rezim=e_pom->pohon->rezim;
 		if(C2!=NULL && C2->Enabled)
 		{
 			//pokud pohon exituje a není používaný
@@ -11536,14 +11566,14 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 				//změna vykreslení robotů v případě vložení elementu
 				if(OBJEKT_akt->pohon!=NULL && (d.v.ZAKAZKA_akt==NULL || d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n==0))
 				{
-			  	if(OBJEKT_akt->rezim==1)
+					if(OBJEKT_akt->pohon->rezim==1)
 			  	{
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,KK,label_pom,101);
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G",label_pom,102,0,0,-1);
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,KKs,pas_otoc,103);
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,ls->Strings[429],akt_otoc,104,0,0,-1);
 			  	}
-			  	else if (OBJEKT_akt->rezim==0)
+			  	else if (OBJEKT_akt->pohon->rezim==0)
 			  	{
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,KK,label_pom,101,0,0,-1);
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G",label_pom,102);
@@ -11573,14 +11603,14 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 				//změna vykreslení robotů v případě vložení elementu
 				if(OBJEKT_akt->pohon!=NULL && (d.v.ZAKAZKA_akt==NULL || d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n==0))
 				{
-			  	if(OBJEKT_akt->rezim==1)
+					if(OBJEKT_akt->pohon->rezim==1)
 			  	{
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,KK,"CO2",15);
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G","CO2",16,0,0,-1);
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,KKs,pas_otoc,17);
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,ls->Strings[429],akt_otoc,18,0,0,-1);
 			  	}
-					else if (OBJEKT_akt->rezim==0)
+					else if (OBJEKT_akt->pohon->rezim==0)
 			  	{
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,KK,"CO2",15,0,0,-1);
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G","CO2",16);
@@ -11615,14 +11645,14 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 				//změna vykreslení robotů v případě vložení elementu
 				if(OBJEKT_akt->pohon!=NULL && (d.v.ZAKAZKA_akt==NULL || d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n==0))
 				{
-			  	if(OBJEKT_akt->rezim==1)
+					if(OBJEKT_akt->pohon->rezim==1)
 			  	{
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,KK,label_pom,rob1);
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G",label_pom,rob2,0,0,-1);
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,KKs,pas_otoc,rob3);
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,ls->Strings[429],akt_otoc,rob4,0,0,-1);
 			  	}
-			  	else if (OBJEKT_akt->rezim==0)
+			  	else if (OBJEKT_akt->pohon->rezim==0)
 			  	{
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,KK,label_pom,rob1,0,0,-1);
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G",label_pom,rob2);
@@ -11640,7 +11670,7 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 				if(scGPSwitch_robot_clovek->State==0){n_od=7;n_do=10;rob1=7;rob2=8;rob3=9;rob4=10;Zoom=10;odsazeni=19;}
 				else{n_od=105;n_do=108;rob1=105;rob2=106;rob3=107;rob4=108;Zoom=15;odsazeni=54;}
 				label_pom=ls->Strings[261];//"ionizace";
-				if(OBJEKT_akt->rezim==-1)
+				if((OBJEKT_akt->pohon!=NULL && OBJEKT_akt->pohon->rezim==-1) || OBJEKT_akt->pohon==NULL)
 				{
 			  	for(unsigned short n=n_od;n<=n_do;n++)
 			  	{
@@ -11659,14 +11689,14 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 				}
 				if(OBJEKT_akt->pohon!=NULL && (d.v.ZAKAZKA_akt==NULL || d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n==0))
 				{
-					if(OBJEKT_akt->rezim==1)
+					if(OBJEKT_akt->pohon->rezim==1)
 			  	{
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,KK,label_pom,rob1);
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G",label_pom,rob2,0,0,-1);
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,KKs,pas_otoc,rob3);
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,ls->Strings[429],akt_otoc,rob4,0,0,-1);
 			  	}
-			  	else if (OBJEKT_akt->rezim==0)
+			  	else if (OBJEKT_akt->pohon->rezim==0)
 			  	{
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,KK,label_pom,rob1,0,0,-1);
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G",label_pom,rob2);
@@ -11700,20 +11730,20 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 				//změna vykreslení robotů v případě vložení elementu
 				if(OBJEKT_akt->pohon!=NULL && (d.v.ZAKAZKA_akt==NULL || d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n==0))
 				{
-			  	if(OBJEKT_akt->rezim==1)
-			  	{
+					if(OBJEKT_akt->pohon->rezim==1)
+					{
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,KK,label_pom,rob1);
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G",label_pom,rob2,0,0,-1);
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,KKs,pas_otoc,rob3);
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,ls->Strings[429],akt_otoc,rob4,0,0,-1);
-			  	}
-			  	else if (OBJEKT_akt->rezim==0)
-			  	{
+					}
+					else if (OBJEKT_akt->pohon->rezim==0)
+					{
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,KK,label_pom,rob1,0,0,-1);
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G",label_pom,rob2);
 						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,KKs,pas_otoc,rob3,0,0,-1);
-			  		d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,ls->Strings[429],akt_otoc,rob4);
-			  	}
+						d.vykresli_element(C,0,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,ls->Strings[429],akt_otoc,rob4);
+					}
 				}
 			}break;
 			default://pro objekty které nemají žádné elementy, přepozicovat zbývající knihovny
@@ -12182,11 +12212,13 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 				if((pom_element->eID!=200 && mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text+pom_element_temp->name.UpperCase()+"?","",MB_YESNO)))// || (pom_element->eID==200 && pom_element->dalsi!=NULL && pom_element->objekt_n==OBJEKT_akt->n && pom_element->dalsi->objekt_n==OBJEKT_akt->n) && mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text_PM,"",MB_YESNO))
 				{
 					int eID=pom_element_temp->eID;
+					Cvektory::TPohon *p=pom_element_temp->pohon;//slouží k uchování pohonu pro jeho následnou aktualizaci režimu
 					if(eID==300)OBJEKT_akt->pohon=pom_element_temp->pohon;//zajištění si zprávného akt. editovaného pohonu
 					Cvektory::TElement *dalsi_element=NULL;
-					if(pom_element_temp->dalsi!=NULL&&OBJEKT_akt->rezim==0)dalsi_element=pom_element_temp->dalsi;//pokud je kabina ve S&G režimu a za smazaným elementem se nachází další element, je nutné dalšímu přepočítat RT
+					if(pom_element_temp->dalsi!=NULL && p!=NULL && p->rezim==0)dalsi_element=pom_element_temp->dalsi;//pokud je kabina ve S&G režimu a za smazaným elementem se nachází další element, je nutné dalšímu přepočítat RT
 					d.v.smaz_element(pom_element_temp);
-					d.v.aktualizace_rezimu_objektu(OBJEKT_akt);//aktualizace režimu, např. z důvodu odstranění poslední KK elementu ... režím objektu jež nemůže být KK
+          d.v.aktualizuj_rezim_pohonu(p);//musí být před aktualizací vykreslení knihoven
+					//d.v.aktualizace_rezimu_objektu(OBJEKT_akt);//aktualizace režimu, např. z důvodu odstranění poslední KK elementu ... režím objektu jež nemůže být KK
 					if(eID==200 || eID==300)vlozit_predavaci_misto_aktualizuj_WT();//bylo odstraněno PM
 					Akce=NIC;
 					DuvodUlozit(true);
@@ -12199,6 +12231,8 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 					if(eID%2==0 && eID!=100 && eID!=200 && eID!=MaxInt)d.v.aktualizuj_sparovane_ukazatele();//odstraněn stop-element, nutná aktualizace
 					dalsi_element=NULL;delete dalsi_element;
 					d.v.aktualizuj_cestu_teplomeru();//pokud existuje cesta mezi teploměry aktualizuje ji, jinak vytvoří default cestu
+
+					p=NULL;delete p;
 				}
 				else if(pom_element->eID==200)
 				{
@@ -14372,15 +14406,20 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //  d.v.uprav_popisky_elementu(NULL);
 //	novy=NULL;delete novy;
 //	Objekt=NULL;delete Objekt;
-	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
-	while(O!=NULL)
-	{
-		if(O->id==3)O->koty_elementu_offset.x=1;else O->koty_elementu_offset.x=4*0.6;//odsazení kót elementů v metrech,v kabině POW se kóty vykroslují od hrany kabiny, ne od pohonu
-		O->koty_elementu_offset.y=0.4;
-		O=O->dalsi;
-	}
-  delete O;O=NULL;
-	Memo("done!");
+
+//	Cvektory::TElement *E=d.v.ELEMENTY->predchozi;
+//	if(OBJEKT_akt->dalsi!=NULL)OBJEKT_akt->dalsi->element->predchozi;
+//	while(E!=NULL && E->n>0 && E->objekt_n==OBJEKT_akt->n)
+//	{
+//		if(E->predchozi->n>0 && E->predchozi->eID==MaxInt && E->geo.typ==0 && E->predchozi->geo.typ==0 && E->geo.orientace==E->predchozi->geo.orientace)
+//		{
+//			d.v.vloz_G_element(E,0,E->predchozi->geo.X1,E->predchozi->geo.Y1,0,0,0,0,E->geo.X4,E->geo.Y4,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius);
+//			d.v.smaz_element(E->predchozi,true,1);
+//		}
+//		E=E->predchozi;
+//	}
+//	E=NULL;delete E;
+//  Memo("hotovo");
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -15273,7 +15312,7 @@ void __fastcall TForm1::ButtonRostaClick(TObject *Sender)
 
 //ShowMessage(OBJEKT_akt->elementy->name);
 
-//	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];
+//	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek];
 //	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
 //	while(O!=NULL)
 //	{
@@ -16680,13 +16719,12 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		//zjištění délky a času, první a poslední segment cesty jsou fiktivní elementy
 		if(d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->predchozi->Element->n==MaxInt)
 		{
-			//kontrola zda měřím po trendu nebo proti
-			bool po_trendu=true;
-			if((d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->dalsi->sparovany!=NULL && d.v.MAG_LASO->dalsi->sparovany==d.v.MAG_LASO->sparovany && m.azimut(d.v.MAG_LASO->Element->geo.X1,d.v.MAG_LASO->Element->geo.Y1,d.v.MAG_LASO->predchozi->Element->geo.X4,d.v.MAG_LASO->predchozi->Element->geo.Y4)!=d.v.MAG_LASO->dalsi->sparovany->geo.orientace-d.v.MAG_LASO->dalsi->sparovany->geo.rotacni_uhel) || (d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->sparovany!=NULL && (d.v.MAG_LASO->predchozi->n>1 && ((d.v.MAG_LASO->dalsi->dalsi->Element->n!=MaxInt && (d.v.MAG_LASO->dalsi->dalsi->Element->dalsi==d.v.MAG_LASO->sparovany || (d.v.MAG_LASO->dalsi->dalsi->Element->dalsi!=NULL && d.v.MAG_LASO->dalsi->dalsi->Element->dalsi->dalsi==d.v.MAG_LASO->sparovany) || d.v.MAG_LASO->dalsi->dalsi->Element->dalsi2==d.v.MAG_LASO->sparovany)) || (d.v.MAG_LASO->dalsi->dalsi->Element->n==MaxInt && d.v.MAG_LASO->dalsi->dalsi->sparovany!=NULL && (d.v.MAG_LASO->dalsi->dalsi->sparovany->dalsi==d.v.MAG_LASO->sparovany || (d.v.MAG_LASO->dalsi->dalsi->sparovany->dalsi!=NULL && d.v.MAG_LASO->dalsi->dalsi->sparovany->dalsi->dalsi==d.v.MAG_LASO->sparovany) || d.v.MAG_LASO->dalsi->dalsi->sparovany->dalsi2==d.v.MAG_LASO->sparovany))))))
-				po_trendu=false;
+      //kontrola zda mám přichyceno na fce elementu
+			bool prichyceno=false;
+			if(d.v.MAG_LASO->predchozi->sparovany!=NULL && d.v.MAG_LASO->predchozi->sparovany->eID!=MaxInt && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->Element->geo.X3 && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->sparovany->geo.X4)prichyceno=true;
 			//měření
 			Cvektory::TCesta *C=d.v.MAG_LASO->dalsi;
-			double s=0,delka=0,cas=0,X,Y,uhel;
+			double s=0,delka=0,cas=0,cas_pom=0,X,Y,uhel;
 			bool chyba=false;
 			String popisek="";//slouží pro rozšíření MB o
 			if(d.v.MAG_LASO->predchozi->n==1 && C->Element->n==MaxInt)//lineární měření
@@ -16714,13 +16752,13 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 					if(d.v.MAG_LASO->sparovany!=NULL)d_pom=delka=m.castPrepony(delka,d.v.MAG_LASO->sparovany->geo.delka,d.v.MAG_LASO->sparovany->geo.delkaPud,d.v.MAG_LASO->sparovany->geo.HeightDepp);
 				}
 				//měření času
-				if(d.v.MAG_LASO->sparovany!=NULL /*&& d.v.MAG_LASO->sparovany==d.v.MAG_LASO->predchozi->sparovany*/ && d.v.MAG_LASO->sparovany->pohon!=NULL)
+				if(d.v.MAG_LASO->sparovany!=NULL && d.v.MAG_LASO->sparovany->pohon==d.v.MAG_LASO->predchozi->sparovany->pohon && d.v.MAG_LASO->sparovany->pohon!=NULL)
 				{
 					if(d.v.MAG_LASO->predchozi->sparovany->eID==0)
 					{
 						double check,buf;
-						if(po_trendu)//měření po trendu
-            {
+						if(mereni_po_trendu)//měření po trendu
+						{
 							//výpočet vzdálenosti od stopstanice
 							s=m.delka(C->Element->geo.X4,C->Element->geo.Y4,C->sparovany->geo.X4,C->sparovany->geo.Y4);
 							s=m.castPrepony(s,C->sparovany->geo.delka,C->sparovany->geo.delkaPud,C->sparovany->geo.HeightDepp);
@@ -16730,7 +16768,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 							buf=C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice;
 						}
 						else//měření proti trendu
-            {
+						{
 							//výpočet vzdálenosti od stopstanice
 							check=m.delka(C->Element->geo.X4,C->Element->geo.Y4,C->sparovany->geo.X4,C->sparovany->geo.Y4);
 							check=m.castPrepony(check,C->sparovany->geo.delka,C->sparovany->geo.delkaPud,C->sparovany->geo.HeightDepp);
@@ -16743,14 +16781,17 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 						if(s<=buf)
 						{
 							cas+=m.V2WT(ceil((buf-s)/d.v.PP.delka_podvozek),d.v.PP.TT);//připočítání WT na aktuálním vozíku
+							cas_pom+=m.V2WT(ceil((buf-s)/d.v.PP.delka_podvozek),d.v.PP.TT);
 							if(check<buf)d_pom=0;//nepočítám žádný další čas
 							else d_pom-=buf-s;//zmenšení délky jen na délku pojezdu
 						}
 					}
 					cas+=d_pom/d.v.MAG_LASO->sparovany->pohon->aRD;
+					cas_pom+=d_pom/d.v.MAG_LASO->sparovany->pohon->aRD;
+					if(prichyceno)cas_pom+=d.v.MAG_LASO->predchozi->sparovany->data.PT1+d.v.MAG_LASO->predchozi->sparovany->data.PT2+d.v.MAG_LASO->predchozi->sparovany->PTotoc+d.v.MAG_LASO->predchozi->sparovany->WT;
+					//if(prichyceno && !mereni_po_trendu)cas_pom+=d.v.MAG_LASO->predchozi->sparovany->data.WTstop;
 					popisek="; Čas = "+String(m.round2double(cas,2))+" [s]";
-					if((d.v.MAG_LASO->predchozi->sparovany->eID==200 || d.v.MAG_LASO->predchozi->sparovany->eID==300) && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->Element->geo.X3 && d.v.MAG_LASO->predchozi->Element->geo.Y2==d.v.MAG_LASO->predchozi->Element->geo.Y3)
-						cas+=d.v.MAG_LASO->predchozi->sparovany->WT;
+					if(cas!=cas_pom && mereni_po_trendu)popisek+="; Čas = "+String(m.round2double(cas_pom,2))+" [s]";
 				}
 			}
 			else//nelineární měření, mag. laso
@@ -16758,14 +16799,14 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 				while(C!=NULL)
 				{
 					//zjištění souřadnic
-					if(po_trendu){X=C->Element->geo.X1;Y=C->Element->geo.Y1;}
+					if(mereni_po_trendu){X=C->Element->geo.X1;Y=C->Element->geo.Y1;}
 					else  {X=C->predchozi->Element->geo.X1;Y=C->predchozi->Element->geo.Y1;}
 					if(C->n==1){X=d.v.MAG_LASO->Element->geo.X1;Y=d.v.MAG_LASO->Element->geo.Y1;}
 					//vypočet delky
 					if(C->Element->n!=MaxInt && C->n!=1)s=C->Element->geo.delka;
 					else if(C->Element->geo.typ==0)
 					{
-						if(po_trendu)s=m.delka(X,Y,C->Element->geo.X4,C->Element->geo.Y4);
+						if(mereni_po_trendu)s=m.delka(X,Y,C->Element->geo.X4,C->Element->geo.Y4);
 						else
 						{
 							s=m.delka(X,Y,C->Element->geo.X1,C->Element->geo.Y1);
@@ -16784,60 +16825,70 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 					else
 					{
 						//měření času po trednu linky
-						if(po_trendu)
+						if(mereni_po_trendu)
 						{
-					  	if(C->Element->n==MaxInt && C->sparovany!=NULL)
+							//poslední element
+							if(C->Element->n==MaxInt && C->sparovany!=NULL)
 							{
 								double d_pom=s;
                 //výpočet času přejezdu
 								cas+=d_pom/C->sparovany->pohon->aRD;
-								//pokud se jedná o poslední element (musí být přichycen), nezařína se od hlavičky (prvního bodu)
-								if((!(C->predchozi->sparovany!=NULL && C->predchozi->sparovany==C->Element && C->predchozi->sparovany->geo.X4==C->predchozi->Element->geo.X2 && C->predchozi->Element->geo.X2==C->predchozi->Element->geo.X3)))//kromě prvního, nemá smysl připočítávat u prvního např čas na stopce, když začínám měření přesně na stopce a jdu za ni
+								cas_pom+=d_pom/C->sparovany->pohon->aRD;
+								//pokud se jedná o poslední element (přichycený), připočítání jeho dat pouze do cas_pom
+								//if(prichyceno)cas_pom+=C->sparovany->data.PT1+C->sparovany->data.PT2+C->sparovany->PTotoc+C->sparovany->WT;
+								//nepřichycený elemenet, připočítání časů
+								//else
 								{
-							  	if(C->sparovany->eID==0 && C->dalsi==NULL && C->Element->geo.X2==C->Element->geo.X3 && C->Element->geo.X3==C->Element->geo.X4 && C->predchozi->Element!=C->sparovany)
+									if(prichyceno)//C->dalsi==NULL && C->Element->geo.X2==C->Element->geo.X3 && C->Element->geo.X3==C->Element->geo.X4 && C->predchozi->Element!=C->sparovany)
 									{
-							  		cas+=C->sparovany->data.WTstop;
-							  		cas-=(C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->sparovany->pohon->aRD;
-					  	  	}
-							  	//pokud se jedná o nedokončený segment stopky, kontrola zda jsem na nějakém vozíku, pokud ano připočítat WT na jeho pozici
-							  	else if(C->sparovany->eID==0)
-					  	  	{
-					  	  		//výpočet vzdálenosti od stopstanice
+										cas+=C->sparovany->data.WTstop;
+										cas_pom+=C->sparovany->data.WTstop;
+										//cas-=(C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->sparovany->pohon->aRD;
+										//cas_pom-=(C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->sparovany->pohon->aRD;
+									}
+									//pokud se jedná o nedokončený segment stopky, kontrola zda jsem na nějakém vozíku, pokud ano připočítat WT na jeho pozici
+									else if(C->sparovany->eID==0)
+									{
+										//výpočet vzdálenosti od stopstanice
 							  		double dl=m.delka(C->predchozi->Element->geo.X4,C->predchozi->Element->geo.Y4,C->Element->geo.X4,C->Element->geo.Y4);
-							  		dl=m.castPrepony(dl,C->Element->geo.delka,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
+										dl=m.castPrepony(dl,C->Element->geo.delka,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
 							  		//výpočet velikosti bufferu stopstanice
 							  		double buf=C->sparovany->geo.delka-(C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice);
-							  		if(dl>buf)//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
-							  		{
-							  			cas+=m.V2WT(ceil((dl-buf)/d.v.PP.delka_podvozek),d.v.PP.TT);//připočítání WT na aktuálním vozíku
-							  			d_pom-=dl-buf;//zmenšení délky jen na délku pojezdu
-					  	  		}
+										if(dl>buf)//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
+										{
+											cas+=m.V2WT(ceil((dl-buf)/d.v.PP.delka_podvozek),d.v.PP.TT);//připočítání WT na aktuálním vozíku
+											cas_pom+=m.V2WT(ceil((dl-buf)/d.v.PP.delka_podvozek),d.v.PP.TT);
+											d_pom-=dl-buf;//zmenšení délky jen na délku pojezdu
+										}
 									}
-							  	//přičtení WT na palec při změně pohonu
-							  	if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->sparovany->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
-							  	if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->sparovany->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
+									if(prichyceno)cas_pom+=C->sparovany->data.PT1+C->sparovany->data.PT2+C->sparovany->PTotoc+C->sparovany->WT;
 								}
 							}
+              //elementy ve středu spojáku (kromě posledního)
 					  	else
 							{
+								//čas přejezdu
 								cas+=s/C->Element->pohon->aRD;
-								if((!(C->predchozi->sparovany!=NULL && C->predchozi->sparovany==C->Element && C->predchozi->sparovany->geo.X4==C->predchozi->Element->geo.X2 && C->predchozi->Element->geo.X2==C->predchozi->Element->geo.X3)))//kromě prvního, nemá smysl připočítávat u prvního např čas na stopce, když začínám měření přesně na stopce a jdu za ni
+								cas_pom+=s/C->Element->pohon->aRD;
+								//připočítávat casy prvního
+								if(scGPCheckBox_meridlo_casy->Checked || (!scGPCheckBox_meridlo_casy->Checked && C->Element!=d.v.MAG_LASO->sparovany))
 								{
-							  	if(d.v.vrat_druh_elementu(C->Element)==0)cas+=C->Element->data.PT1+C->Element->data.PT2+C->Element->WT+C->Element->PTotoc+C->Element->data.WTstop;
-							  	if(C->Element->eID==0)
+							  	//časy obsažené v elementu
+							  	if(!prichyceno || (prichyceno && C->Element!=d.v.MAG_LASO->predchozi->sparovany))//vynechání přichyceného elementu
 							  	{
-							  		double buf=C->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice;
-							  		//pokud je úsek uložený v mag. lasu kompletní ... odečtení přejezdu přes buffer
-							  		if(s>=buf)
-							  			cas-=(C->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->Element->pohon->aRD;
-							  		//není třeba řešít nedokončený buffer, zde se nepočátá poslendí element, ale pouze již prošl= elementy
-									}
-							  	if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && C->Element->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
-									if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->sparovany->pohon!=NULL && C->Element->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
+							  		cas+=C->Element->data.WTstop+C->Element->data.PT1+C->Element->data.PT2+C->Element->PTotoc+C->Element->WT;
+							  		cas_pom+=C->Element->data.WTstop+C->Element->data.PT1+C->Element->data.PT2+C->Element->PTotoc+C->Element->WT;
+							  	}
+							  	//odečtení času přejezdu v bufferu, pokud existuje
+							  	if(C->Element->eID==0 && s>=C->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)
+							  	{
+							  		cas-=(C->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->Element->pohon->aRD;
+							  		cas_pom-=(C->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->Element->pohon->aRD;
+							  	}
 								}
 							}
 						}
-            //měření času proti trendu linky
+						//měření času proti trendu linky
 						else
 						{
 							Cvektory::TElement *CE=C->Element;
@@ -16883,11 +16934,9 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 					C=C->dalsi;
 				}
 				delete C;C=NULL;
-				//kontrola přichycení na PM, pokud ano přičtení WT
-//				if((d.v.MAG_LASO->predchozi->sparovany->eID==200 || d.v.MAG_LASO->predchozi->sparovany->eID==300) && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->Element->geo.X3 && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->sparovany->geo.X4)
-//					cas+=d.v.MAG_LASO->predchozi->sparovany->WT;
 				//nastavení popiků pro MB
 				popisek="; Čas = "+String(m.round2double(cas,2))+" [s]";
+				if(cas!=cas_pom && mereni_po_trendu)popisek+="; Čas = "+String(m.round2double(cas_pom,2))+" [s]";
 				if(chyba)popisek+=", nerelevatní časový údaj, na některém úseku nebyl nadefinován pohon";
 			}
 			//kontrola přichycení
@@ -18227,10 +18276,17 @@ void TForm1::copy_to_clipboard(String text)
   Edit_proFocus->CopyToClipboard();
 }
 //---------------------------------------------------------------------------
-
-
-
-
-
-
+//přepínání meřidla časy
+void __fastcall TForm1::scGPCheckBox_meridlo_casyClick(TObject *Sender)
+{
+  log(__func__);//logování
+	if(Akce==NIC)
+	{
+		short pripocitavat_casy_prvniho_el;
+		if(scGPCheckBox_meridlo_casy->Checked)pripocitavat_casy_prvniho_el=1;
+		else pripocitavat_casy_prvniho_el=0;
+		writeINI("nastaveni_editace","pripocitavat_casy_prvniho_el",pripocitavat_casy_prvniho_el);
+	}
+}
+//---------------------------------------------------------------------------
 
