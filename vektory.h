@@ -76,6 +76,7 @@ class Cvektory
 		double Rz;//rozestup aktivních palců v m
 		double Rx;//rozestup aktivních palců (počet aktivních palců)
 		double umisteni;//umisteni retezu resp. palců, tempová proměnná pro simulaci
+    short rezim;////rezim objektu 0-S&G,1-Kontin., -1 nenastaven
 		TRetez *retez;//geometrie pohonu, řetězu resp. pouzdro řetězu
 		TPalec *palec;//jednotlivé palce v podstatě ve skutečnosti řetěz
 		struct TPohon *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
@@ -192,7 +193,7 @@ class Cvektory
 		double sirka_steny;//šířka stěny kabiny objektu v metrech  - NEW + dodat do CObjekt!!!!
 		double Xk,Yk;//bude ke smazání - umístění levého horního rohu kabiny v layoutu a náhledu kabiny  //DOPRYC
 		double Xt,Yt;// souřadnice popisku objektu pro možnost posouvání dodat!!!   //PRIDAT
-    double orientace_text;//orientace textu (názvu objektu) dle světových stran
+		double orientace_text;//orientace textu (názvu objektu) dle světových stran
 		double Xp,Yp;// souřadnice tab pohonu pro možnost posouvání dodat!!!   //PRIDAT
 		short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking)KK,2-Postprocesní (PP), -1 nenastaven, pouzíva tab.pohonu
 		short stavPM;//obsahuje stav pohonových tabulek v objektu 0-normal (zobrazeny rychlosti a comba, dafaultní stav), 1-minimized (pouze hlavička tabulek a comba), 2-maximized (vše zobrazeno)
@@ -669,6 +670,8 @@ class Cvektory
 	bool pohon_je_pouzivan(unsigned long n,bool po_obektech=true,bool vsechny_elementy=false);//dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv
 	TObjekt *pohon_je_pouzivan(unsigned long n,TObjekt *mimo_objekt,short rezim=-1);//dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv, ten vrátí formou ukazatale na první nalezený používáný, druhý vstupní parametr metody TObjekt mimo_objekt je ukazatel na objekt, který se bude při vyhledávání ignorovat, nenajde-li vrací NULL, třetí parametr, pokud je náchán na implicitní -1 řeší se pro všechny režim, pokud je v rozmezí 0 až 2 řeší se pro konkrétní režim
   void aktualizuj_parametry_pouzivanych_pohonu();//aktualizuje Rx a Rz pohonů, které jsou používané, provádí se pro přepsání pohonů na PL
+	void aktualizuj_rezim_pohonu();//aktualizuje režim všem pohonům, použito například při načtení z binárky
+	void aktualizuj_rezim_pohonu(TPohon *pohon,short rezim=-1);//zapíše stav konkrétnímu pohon, nebo zjistí stav pohonu a zapíše ho
 	unsigned long vrat_pocet_nepouzivanych_pohonu();//vrátí počet nepoužívaných pohonů
 	double minRD(TPohon *pohon);//SMAZAT??vrátí nejnižší možnou rychlost ze všech objektů, které jsou přiřazené k danému pohonu (využívá se pro S&G a PP, u KK musí být RD v souladu s TT)//pokud vrátí 0, znamená, že pohon není využíván
 	AnsiString vypis_objekty_nestihajici_prejezd(TPohon *pohon,double testRD,short rezim=-1);//vypíše objekty přiřazené k danému pohonu nestíhající přejezd při navrhovaném testRD, možno nastavit režim, pro S&G + PP hodnota režim 20

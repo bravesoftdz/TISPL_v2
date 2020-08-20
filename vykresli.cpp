@@ -133,7 +133,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv, short scena)//scena 0 - vše, sc
 	if(m.getValueFromPosition(SCENA,5)==scena && SCENA!=0)vykresli_elementy(canv,scena+2);//implicitně dynamická sekce (může být ale i ve statické scéně), pokud se vykresluje vše do dynamické, tato se již kvůli zbytečnému dalšímu průchodu cyklu již nevykresluje, protože výše vykresluje statickou tak dynamickou sekci společně
 
 	/////VALIDACE její samotné provední, vnitřek metody se provede jen pokud duvod_validovat==2
-	if(m.getValueFromPosition(SCENA,7)==scena)v.VALIDACE();
+	if(m.getValueFromPosition(SCENA,7)==scena)v.VALIDACE();//odstaveno MV, 19.8.2020, způsobuje chyby při editaci objektu
 
 	/////vykreslení VOZÍKů, musí být až za VALIDACí kvůli generování vozíků, které je ve VALIDACi
 	if(F->MOD!=F->TVORBA_CESTY && F->Akce!=F->GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT && m.getValueFromPosition(SCENA,6)==scena)vykresli_voziky(canv);
@@ -1168,27 +1168,27 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			//výpočet času
 			if(C->Element!=NULL && C->Element->pohon!=NULL)
 			{
+        //čas přejezdu
 				cas+=d/C->Element->pohon->aRD;
 				cas_pom+=d/C->Element->pohon->aRD;
-				//if(!(C->predchozi->sparovany!=NULL && C->predchozi->sparovany==C->Element && C->predchozi->sparovany->geo.X4==C->predchozi->Element->geo.X2 && C->predchozi->Element->geo.X2==C->predchozi->Element->geo.X3))
+				cas+=C->Element->data.WTstop;
+				cas_pom+=C->Element->data.WTstop;
+				if(C->Element->eID==0)
 				{
-					if(v.vrat_druh_elementu(C->Element)==0)
+					if(d>=C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)
 					{
-						cas+=C->Element->data.PT1+C->Element->data.PT2+C->Element->PTotoc+C->Element->data.WTstop;
-						cas_pom+=C->Element->data.PT1+C->Element->data.PT2+C->Element->PTotoc+C->Element->data.WTstop;
+						cas-=(C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)/C->Element->pohon->aRD;
+						cas_pom-=(C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)/C->Element->pohon->aRD;
 					}
-					if(C->Element->eID==0)
-					{
-						if(d>=C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)
-						{
-							cas-=(C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)/C->Element->pohon->aRD;
-							cas_pom-=(C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)/C->Element->pohon->aRD;
-						}
-					}
-					//připočátávání WT zvlášť
-					if((prichyceno && C->dalsi!=NULL) || !prichyceno){cas+=C->Element->WT;cas_pom+=C->Element->WT;}
-					if(prichyceno && C->dalsi==NULL)cas_pom+=F->pom_element->WT;
 				}
+				//připočátávání časů elementu zvlášť, pokud je ve spojáku přichycený element přeskočit (ten započátat pouze do cas_pom)
+				if((prichyceno && (C->dalsi!=NULL || (C->dalsi==NULL && C->Element!=F->pom_element))) || !prichyceno)
+				{
+					cas+=C->Element->data.PT1+C->Element->data.PT2+C->Element->PTotoc+C->Element->WT;
+					cas_pom+=C->Element->data.PT1+C->Element->data.PT2+C->Element->PTotoc+C->Element->WT;
+				}
+				//připočátávání času přichyceného elementu do cas_pom
+				if(prichyceno && C->dalsi==NULL && C->Element==F->pom_element)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT;
 			}
 			//nastavení typu vykreslení, zarážka na konci || zarážka na začátku || bez zarážky
 			short typ=0;
@@ -1281,7 +1281,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 					if(d>rozdil)
 					{
 						cas+=m.V2WT(ceil((d-rozdil)/v.PP.delka_podvozek),v.PP.TT);//připočítání WT na aktuálním vozíku
-            cas_pom+=m.V2WT(ceil((d-rozdil)/v.PP.delka_podvozek),v.PP.TT);
+						cas_pom+=m.V2WT(ceil((d-rozdil)/v.PP.delka_podvozek),v.PP.TT);
 						d_pom=rozdil;//zmenšení délky jen na délku pojezdu
 					}
 				}
@@ -1298,6 +1298,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
           cas_pom+=d_pom/F->pom_element->pohon->aRD;
 					//if(v.MAG_LASO->predchozi->Element->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
 				}
+				if(prichyceno)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT;
 			}
 
 			//vykreslovací část
@@ -1341,7 +1342,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			//vypočet času přejezdu
 			cas+=delka/F->pom_element->pohon->aRD;
 			cas_pom+=delka/F->pom_element->pohon->aRD;
-      if(prichyceno)cas_pom+=F->pom_element->WT;
+			if(prichyceno)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT;
 			//vykreslení
       if(prichyceno && cas_pom!=cas)popisek=String(m.round2double(cas,2))+" [s]; "+String(m.round2double(cas_pom,2))+" [s]";
 			else popisek=String(m.round2double(cas,2))+" [s]";

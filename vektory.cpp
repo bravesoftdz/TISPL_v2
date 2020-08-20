@@ -450,7 +450,7 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->sirka_steny=0;
 	novy->short_name="";//krátký název
 	novy->name="";//celý název objektu
-	novy->rezim=0;
+	novy->rezim=-1;
 	novy->pohon=NULL;//ukazatel na použitý pohon
 	novy->element=NULL;//ukazatel na přidružené elementy
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
@@ -1008,27 +1008,8 @@ void Cvektory::aktualizace_rezimu_objektu(TObjekt *Objekt,bool aktualizovat_sta_
 	//v případě přerušení průchodu nutné smazat
 	vymaz_seznam_VYHYBKY();
 
-  //zkontrolovat zda nejsou v objektu PM nebo výhybky, pokud ano aktualizovat jim editované položky
-	if(aktualizovat_sta_mGridu && predchozi_rezim!=Objekt->rezim)
-	{
-		bool probehla_validace=false;
-		E=Objekt->element;
-		while(E!=NULL && E->objekt_n==Objekt->n)
-		{
-			if(E->eID==200 || E->eID==300)
-			{
-				FormX->update_hodnot_vyhybky_PM(E);//provede aktualizaci dat a editovaných položek v mGridu
-				if(!probehla_validace && E->eID==200)//spouštět validaci jen jednou a to pokud narazím na PM
-				{
-					FormX->validace_RD(E);//pokud byl změněn režím provede validaci aktuální rychlosti
-					probehla_validace=true;//zapsaní, že validace proběhla
-				}
-			}
-			E=dalsi_krok(E,Objekt);
-		}
-		if(F->predchozi_PM!=NULL)FormX->update_hodnot_vyhybky_PM(F->predchozi_PM);//provede aktualizaci dat a editovaných položek v mGridu u předchozího PM
-		F->aktualizace_tab_pohon(false,true,true);//obsahuje podmínku.. pokud existuje PmG
-	}
+	//zkontrolovat zda nejsou v objektu PM nebo výhybky, pokud ano aktualizovat jim editované položky
+  if(F->OBJEKT_akt!=NULL)FormX->zmena_rezimu_pohonu(NULL);
 
 	//ukazatelové záležitosti
 	E=NULL;delete E;
@@ -4162,6 +4143,7 @@ void Cvektory::hlavicka_POHONY()
 	novy->roztec_ID=0;
 	novy->Rz=0;
 	novy->Rx=0;
+	novy->rezim=-1;
 	novy->retez=NULL;
 	novy->palec=NULL;
 
@@ -4199,6 +4181,7 @@ void Cvektory::vloz_pohon(UnicodeString name,double rychlost_od,double rychlost_
   novy->roztec_ID=roztec_ID;
 	novy->Rz=Rz;
 	novy->Rx=Rx;
+	novy->rezim=-1;
 	novy->retez=NULL;
 	novy->palec=NULL;
 	vloz_pohon(novy);
@@ -4320,6 +4303,72 @@ void Cvektory::aktualizuj_parametry_pouzivanych_pohonu()
   	}
   	//ukazatelové záležitosti
   	delete p;p=NULL;
+	}
+}
+////---------------------------------------------------------------------------
+//aktualizuje režim všem pohonům, použito například při načtení z binárky
+void Cvektory::aktualizuj_rezim_pohonu()
+{
+	TPohon *p=POHONY->dalsi;
+	while(p!=NULL)
+	{
+    aktualizuj_rezim_pohonu(p);//zjistí a nastaví režim pohonu
+		p=p->dalsi;
+	}
+  delete p;p=NULL;
+}
+////---------------------------------------------------------------------------
+//zapíše stav konkrétnímu pohon, nebo zjistí stav pohonu a zapíše ho
+void Cvektory::aktualizuj_rezim_pohonu(TPohon *pohon,short rezim)
+{
+	//kontrola, zda existuje pohon
+	if(pohon!=NULL)
+	{
+		//uložení původního režimu pohonu
+		short puv_rezim=pohon->rezim;
+
+		//pokud byl zaslán režim uloží ho
+		if(rezim>-1)
+		{
+      //pokud není pohon v řežimu S&G zapsat poslaný režim
+			if(pohon->rezim!=0)pohon->rezim=rezim;
+		}
+		//pokud nebyl zaslán zjistí ho
+		else
+		{
+			//průchod skrze všechny elementy, hledání počtu S&G a KK elementů na pohonu
+			unsigned int pSG=0,pKK=0;
+			bool pokracovat=true;
+			TElement *E=ELEMENTY->dalsi;
+			while(E!=NULL)
+			{
+				//pokud je elemenent na stejném pohonu, kontrola
+				if(E->pohon==pohon && E->eID!=5 && E->eID!=6 && E->eID!=100 && E->eID!=200 && E->eID!=300 && E->eID!=301)//přeskakovat otoče, ion. tyče, PM, výhybky a spojky, neudávají režim
+				{
+					//kontrola typu elementu
+					switch(vrat_druh_elementu(E))
+			  	{
+						case 0:{pSG++;pokracovat=false;}break;//na pohonu se nachází S&G element, pokud byl nalezen jeden S&G element, ukončení průchodu
+			  		case 1:pKK++;break;//na pohonu se nachází S&G element
+			  		default:break;
+					}
+				}
+				//přesun na další element
+				if(pokracovat)E=dalsi_krok(E);
+        //pokud jsem narazil na S&G element dojde k ukončení průchodu
+				else break;
+			}
+			E=NULL;delete E;
+			vymaz_seznam_VYHYBKY();//pokud může dojít k přerušení alg. průchodu, nutné mazat!!
+
+			//nastavení režimu
+			pohon->rezim=-1;
+			if(pSG>0)pohon->rezim=0;
+			else if(pKK>0)pohon->rezim=1;
+		}
+
+    //pokud došlo ke změně režimu a je otevřena editace, aktualizuje zobrazení v tabulkách
+		if(F->OBJEKT_akt!=NULL && puv_rezim!=pohon->rezim)FormX->zmena_rezimu_pohonu(pohon);
 	}
 }
 ////---------------------------------------------------------------------------
@@ -5933,7 +5982,7 @@ void Cvektory::generuj_VOZIKY()
 		}
 		E=NULL;delete E; //pokud nedojde algoritmus na konec seznamu
 		delete E;E=NULL; //pokud dojde na konec seznamu
-		bool *POLE_element_pouzit=new bool[pocet_elementu];
+		bool *POLE_element_pouzit=new bool[pocet_elementu+1];//nutné přičíst k počtu elementu jedna, elementy číslované od 1, pole číslováno od 0s
 
 		////procházení seznamu cesty dané zakázky
 		TCesta *C=ZAKAZKA_akt->cesta->dalsi;//přeskočí hlavičku
@@ -7036,6 +7085,7 @@ Cvektory::TZprava *Cvektory::vrat_zpravu(unsigned long n)
 		return Z;
 	}
 }
+
 //---------------------------------------------------------------------------
 //vrátí počet errorů a warningů
 TPoint Cvektory::vrat_pocet_zprav()
@@ -7649,6 +7699,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 					ukaz1->roztec_ID=c_ukaz1->roztec_ID;
 					ukaz1->Rz=c_ukaz1->Rz;
 					ukaz1->Rx=c_ukaz1->Rx;
+          ukaz1->rezim=-1;//nenastaveno, následně dojde k aktualizaci
 					ukaz1->retez=NULL;//možná prozatím jinak načítat buď z přidruženého spojáku nebo volat metodu po načtení elementů
 					ukaz1->palec=NULL;//možná prozatím jinak načítat buď z přidruženého spojáku nebo volat metodu po načtení elementů
 
@@ -8017,6 +8068,9 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			delete O;O=NULL;
 			//aktualizuje spárovné ukazatele po načtení
 			aktualizuj_sparovane_ukazatele();
+      //aktualizace režimu pohonů
+			aktualizuj_rezim_pohonu();
+
 			delete FileStream;
 			return 1;
 		}
@@ -9211,6 +9265,8 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 		}
 		delete p;p=NULL;
 		delete dp;dp=NULL;
+    //aktualizace režimu pohonů
+		aktualizuj_rezim_pohonu();
 
 		//načtení cest do zakázek, nnutno aktualizovat
 		if(ZAKAZKY!=NULL && ZAKAZKY->dalsi!=NULL && obraz->Z_cesty->dalsi!=NULL)
