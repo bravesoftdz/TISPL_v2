@@ -2283,7 +2283,7 @@ void Cvektory::uprav_popisky_elementu(TElement *Element)
 	bool rename=false;//proměná sloužící k spouštění přejměnování
 	AnsiString t_operator=F->ls->Strings[272],t_ion=F->ls->Strings[270],t_otoc=F->ls->Strings[273],t_PM=F->ls->Strings[271];
 	//úprava názvu pro roboty
-	TPoint *tab_pruchodu=new TPoint[pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
+	TPoint *tab_pruchodu=new TPoint[pocet_vyhybek];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
 	Cvektory::TElement *E=ELEMENTY->dalsi;//začíná se od začátku, někdy je potřeba ovlivnit i předchozí elementy
 	if(Element!=NULL)E=vrat_objekt(Element->objekt_n)->element;//pokud vím který element byl změněn začnu od prvního elementu v tomto objektu
 	while (E!=NULL)
@@ -3511,8 +3511,8 @@ Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruc
 		//aktuálně se ukazatel nachází na výhybce
 		if(E->eID==300)
 		{
-			pruchod=tab_pruchodu_TP[E->idetifikator_vyhybka_spojka].x;//uložení stavu průchodu před navýšením
-			tab_pruchodu_TP[E->idetifikator_vyhybka_spojka].x+=1;//navýšení stavu průchodu, musí být zde, v dalším řádku ztracím ukazatel na výhybku
+			pruchod=tab_pruchodu_TP[E->idetifikator_vyhybka_spojka-1].x;//uložení stavu průchodu před navýšením
+			tab_pruchodu_TP[E->idetifikator_vyhybka_spojka-1].x+=1;//navýšení stavu průchodu, musí být zde, v dalším řádku ztracím ukazatel na výhybku
 			//podle průcohdu (první nebo další) určí následující element
 			if(pruchod==0)E=E->dalsi2;//první průchod, následuje element z vedlejší větve
 			else E=E->dalsi;//další průchod, následuje element z hlavní větve
@@ -3520,8 +3520,8 @@ Cvektory::TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruc
 		//aktuálně se ukazatel nachází na spojce
 		else if(E->eID==301)
 		{
-			pruchod=tab_pruchodu_TP[E->idetifikator_vyhybka_spojka].y;//uložení stavu průchodu před navýšením
-			tab_pruchodu_TP[E->idetifikator_vyhybka_spojka].y+=1;//navýšení stavu průchodu, musí být zde, v dalším řádku ztracím ukazatel na spojku
+			pruchod=tab_pruchodu_TP[E->idetifikator_vyhybka_spojka-1].y;//uložení stavu průchodu před navýšením
+			tab_pruchodu_TP[E->idetifikator_vyhybka_spojka-1].y+=1;//navýšení stavu průchodu, musí být zde, v dalším řádku ztracím ukazatel na spojku
 			//podle průcohdu (první nebo další) určí následující element
 			if(pruchod==0)E=E->dalsi2;//první průchod, následuje spárovaná výhybka
 			else E=E->dalsi;//další průchod následuje další element
@@ -3703,7 +3703,7 @@ void Cvektory::smaz_vyhybku_spojku(TElement *Element,unsigned long maz_OBJ)
 
 	//průchod skrze všechny ovlivněné elementy
 	T2Element *tab_pruchodu_T2E=vytvor_tabElm_pruchodu();
-	TPoint *tab=new TPoint[pocet_vyhybek+1];
+	TPoint *tab=new TPoint[pocet_vyhybek];
 	E=Element;
 	while(E!=NULL)
 	{
@@ -5982,7 +5982,7 @@ void Cvektory::generuj_VOZIKY()
 		}
 		E=NULL;delete E; //pokud nedojde algoritmus na konec seznamu
 		delete E;E=NULL; //pokud dojde na konec seznamu
-		bool *POLE_element_pouzit=new bool[pocet_elementu+1];//nutné přičíst k počtu elementu jedna, elementy číslované od 1, pole číslováno od 0s
+		bool *POLE_element_pouzit=new bool[pocet_elementu];
 
 		////procházení seznamu cesty dané zakázky
 		TCesta *C=ZAKAZKA_akt->cesta->dalsi;//přeskočí hlavičku
@@ -6024,7 +6024,7 @@ void Cvektory::generuj_VOZIKY()
 					Esd=NULL;delete Esd;
 				}
 				///PROVIZORNĚ pro buffer na vedlejší větvi
-				POLE_element_pouzit[C->Element->n]=true;
+				POLE_element_pouzit[C->Element->n-1]=true;//nutné odečíst do n elementu jedna, elementy číslované od 1, pole číslováno od 0
 			}
 			////pro KONTINUÁLNÍ linku tj. bez S&G elementu, např. ale i pro úvodní zakreslování
 			////taktuje se od začátku prvního geometrického elementu prvního vloženého objektu, generuje se se zpětně (co předchází elementu)
@@ -6041,8 +6041,8 @@ void Cvektory::generuj_VOZIKY()
 		///PROVIZORNĚ vytvoření bufferu na vedlejší větvi
 		E=ELEMENTY->dalsi;
 		while(E!=NULL)
-		{
-			if(POLE_element_pouzit[E->n]==false && vrat_druh_elementu(E)==0 && E->data.pocet_voziku>0)//pokud se jedná o nepoužitý element a je to zároveň S&G element a obsahuje více vozíků
+		{                        //nutné odečíst do n elementu jedna, elementy číslované od 1, pole číslováno od 0
+			if(POLE_element_pouzit[E->n-1]==false && vrat_druh_elementu(E)==0 && E->data.pocet_voziku>0)//pokud se jedná o nepoužitý element a je to zároveň S&G element a obsahuje více vozíků
 			generuj_voziky_stop_a_bufferu(E,90/*nutné ještě dodat dle skutečného stavu*/,0);
 			E=dalsi_krok(E);
 		}
@@ -7175,7 +7175,7 @@ void Cvektory::vytvor_hlavicku_souboru()
 
 	//nutnost průchodu, skrze výhybky nelze určít počet elementů z posledního elementu
 	TElement *E=ELEMENTY->dalsi;
-	TPoint *tab_pruchodu=new TPoint[pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
+	TPoint *tab_pruchodu=new TPoint[pocet_vyhybek];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
 	File_hlavicka.pocet_elementu=0;
 	while(E!=NULL)
 	{
@@ -7444,7 +7444,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 		ukaz=NULL;delete ukaz;
 
 		////ELEMENTY
-		TPoint *tab_pruchodu=new TPoint[pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
+		TPoint *tab_pruchodu=new TPoint[pocet_vyhybek];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
 		TElement *E=ELEMENTY->dalsi;
 		while(E!=NULL)
 		{
@@ -9018,7 +9018,7 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 
 		//kopírování všech elementů
 		TElement *E=ELEMENTY->dalsi,*e_kop=NULL;
-		TPoint *tab_pruchodu=new TPoint[pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
+		TPoint *tab_pruchodu=new TPoint[pocet_vyhybek];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
 		while(E!=NULL)
 		{
 			//vytvoření kopie

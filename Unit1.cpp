@@ -200,6 +200,9 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	T=readINI("nastaveni_editace","zobrazit_popisek_pohonu"); //zobrazit_popisek_pohonu
 	if(T==1 || T=="")zobrazit_popisek_pohonu=1;else zobrazit_popisek_pohonu=0;
 	if(T=="")writeINI("nastaveni_editace","zobrazit_popisek_pohonu",zobrazit_popisek_pohonu);
+  //temp
+	T=readINI("nastaveni_editace","pripocitavat_casy_prvniho_el");
+	if(T==0 || T=="")scGPCheckBox_meridlo_casy->Checked=false;else scGPCheckBox_meridlo_casy->Checked=true;
 
 
 	if(rotace_jigu==1) scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
@@ -324,6 +327,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	velikost_citelne_oblasti_elementu=0.12;//v metrech, 0.114285714285714 šířka pouzdra pohonu
 	zobrazit_upozorneni_teplomery=true;
 	typElementu=0;
+  mereni_po_trendu=true;
 
 	//vývojářské featury
 	if(DEBUG && get_user_name()+get_computer_name()=="MartinMARTIN-NOTEBOOK"){ButtonMaVl->Visible=false;}//pokud se dělá překlad u MaKr, je skryto MV tlačítko testovací tlačítko, MaKr testovací se volá přes F9
@@ -3849,7 +3853,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 						else//kóty elementů RET=11-99
 						{
 							if(PtInKota_elementu==0 && pom_element!=NULL)JID=13;//oblast kóty - posun kóty
-							if(PtInKota_elementu==1 && pom_element!=NULL)JID=(10+pom_element->n)*(-1);//hodnota kóty
+							if(PtInKota_elementu==1 && pom_element!=NULL)JID=-11;//hodnota kóty
 						}
 					}
 				}
@@ -3857,7 +3861,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				if(puvJID!=JID)//pokud došlo ke změně JID, nebo změně bodu bez změny JID, jinak nemá smysl řešit
 				{
 					kurzor(standard);
-					if(JID<=-11&&!editace_textu){kurzor(edit_text);refresh_mGrid=false;}//kurzor pro editaci textu
+					if(JID==-11&&!editace_textu){kurzor(edit_text);refresh_mGrid=false;}//kurzor pro editaci textu
 					if(JID==13){if(pom_element->geo.orientace==90||pom_element->geo.orientace==270)kurzor(zmena_d_y);else kurzor(zmena_d_x);refresh_mGrid=false;}//interaktivní kóty elementů
 				}
 				//////přepínání typu elementu pro smart_kurzor
@@ -6619,7 +6623,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 	FormX->vstoupeno_elm=false;
 	UnicodeString name=ls->Strings[271];//"Předávací místo"
 	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
+	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
 	while(E!=NULL)
 	{
 		//deklarace atributů
@@ -7102,7 +7106,7 @@ void TForm1::vlozeni_editace_geometrie()
 		if(posledni_editovany_element->geo.typ==0 && d.geoTemp.typ==0)
 		{
 			d.v.vloz_G_element(posledni_editovany_element,0,posledni_editovany_element->geo.X1,posledni_editovany_element->geo.Y1,0,0,0,0,d.geoTemp.X4,d.geoTemp.Y4,posledni_editovany_element->geo.orientace,posledni_editovany_element->geo.rotacni_uhel,posledni_editovany_element->geo.radius);
-			if(posledni_editovany_element->dalsi!=NULL && !posun_dalsich_elementu)d.v.smaz_element(posledni_editovany_element->dalsi,true,1);//smazat bez kontrol
+			if(posledni_editovany_element->dalsi!=NULL && !posun_dalsich_elementu && posledni_editovany_element->dalsi->eID==MaxInt)d.v.smaz_element(posledni_editovany_element->dalsi,true,1);//smazat bez kontrol
 			if(posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->objekt_n==posledni_editovany_element->objekt_n)
 			{
 				posunx=-posledni_editovany_element->dalsi->geo.X1+posledni_editovany_element->geo.X4;
@@ -7537,7 +7541,7 @@ void TForm1::mGrid_on_mGrid()
 		////kontrola překrytí
 		int odX=0,odY=0;
 		E=OBJEKT_akt->element;
-		//TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
+		//TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
 		while(E!=NULL && E->objekt_n==objekt_n)
 		{
 			if(E->eID!=100 && E->eID!=MaxInt && E->pohon==OBJEKT_akt->pohon)//pouze pro elementy, které mají tabulku, jen pro tabulky co jsou zobrazené
@@ -14402,7 +14406,20 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //  d.v.uprav_popisky_elementu(NULL);
 //	novy=NULL;delete novy;
 //	Objekt=NULL;delete Objekt;
-  Memo("");
+
+//	Cvektory::TElement *E=d.v.ELEMENTY->predchozi;
+//	if(OBJEKT_akt->dalsi!=NULL)OBJEKT_akt->dalsi->element->predchozi;
+//	while(E!=NULL && E->n>0 && E->objekt_n==OBJEKT_akt->n)
+//	{
+//		if(E->predchozi->n>0 && E->predchozi->eID==MaxInt && E->geo.typ==0 && E->predchozi->geo.typ==0 && E->geo.orientace==E->predchozi->geo.orientace)
+//		{
+//			d.v.vloz_G_element(E,0,E->predchozi->geo.X1,E->predchozi->geo.Y1,0,0,0,0,E->geo.X4,E->geo.Y4,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius);
+//			d.v.smaz_element(E->predchozi,true,1);
+//		}
+//		E=E->predchozi;
+//	}
+//	E=NULL;delete E;
+//  Memo("hotovo");
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -15295,7 +15312,7 @@ void __fastcall TForm1::ButtonRostaClick(TObject *Sender)
 
 //ShowMessage(OBJEKT_akt->elementy->name);
 
-//	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek+1];
+//	TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek];
 //	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
 //	while(O!=NULL)
 //	{
@@ -16705,10 +16722,6 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
       //kontrola zda mám přichyceno na fce elementu
 			bool prichyceno=false;
 			if(d.v.MAG_LASO->predchozi->sparovany!=NULL && d.v.MAG_LASO->predchozi->sparovany->eID!=MaxInt && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->Element->geo.X3 && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->sparovany->geo.X4)prichyceno=true;
-			//kontrola zda měřím po trendu nebo proti
-			bool po_trendu=true;
-			if((d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->dalsi->sparovany!=NULL && d.v.MAG_LASO->dalsi->sparovany==d.v.MAG_LASO->sparovany && m.azimut(d.v.MAG_LASO->Element->geo.X1,d.v.MAG_LASO->Element->geo.Y1,d.v.MAG_LASO->predchozi->Element->geo.X4,d.v.MAG_LASO->predchozi->Element->geo.Y4)!=d.v.MAG_LASO->dalsi->sparovany->geo.orientace-d.v.MAG_LASO->dalsi->sparovany->geo.rotacni_uhel) || (d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->sparovany!=NULL && (d.v.MAG_LASO->predchozi->n>1 && ((d.v.MAG_LASO->dalsi->dalsi->Element->n!=MaxInt && (d.v.MAG_LASO->dalsi->dalsi->Element->dalsi==d.v.MAG_LASO->sparovany || (d.v.MAG_LASO->dalsi->dalsi->Element->dalsi!=NULL && d.v.MAG_LASO->dalsi->dalsi->Element->dalsi->dalsi==d.v.MAG_LASO->sparovany) || d.v.MAG_LASO->dalsi->dalsi->Element->dalsi2==d.v.MAG_LASO->sparovany)) || (d.v.MAG_LASO->dalsi->dalsi->Element->n==MaxInt && d.v.MAG_LASO->dalsi->dalsi->sparovany!=NULL && (d.v.MAG_LASO->dalsi->dalsi->sparovany->dalsi==d.v.MAG_LASO->sparovany || (d.v.MAG_LASO->dalsi->dalsi->sparovany->dalsi!=NULL && d.v.MAG_LASO->dalsi->dalsi->sparovany->dalsi->dalsi==d.v.MAG_LASO->sparovany) || d.v.MAG_LASO->dalsi->dalsi->sparovany->dalsi2==d.v.MAG_LASO->sparovany))))))
-				po_trendu=false;
 			//měření
 			Cvektory::TCesta *C=d.v.MAG_LASO->dalsi;
 			double s=0,delka=0,cas=0,cas_pom=0,X,Y,uhel;
@@ -16739,13 +16752,13 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 					if(d.v.MAG_LASO->sparovany!=NULL)d_pom=delka=m.castPrepony(delka,d.v.MAG_LASO->sparovany->geo.delka,d.v.MAG_LASO->sparovany->geo.delkaPud,d.v.MAG_LASO->sparovany->geo.HeightDepp);
 				}
 				//měření času
-				if(d.v.MAG_LASO->sparovany!=NULL /*&& d.v.MAG_LASO->sparovany==d.v.MAG_LASO->predchozi->sparovany*/ && d.v.MAG_LASO->sparovany->pohon!=NULL)
+				if(d.v.MAG_LASO->sparovany!=NULL && d.v.MAG_LASO->sparovany->pohon==d.v.MAG_LASO->predchozi->sparovany->pohon && d.v.MAG_LASO->sparovany->pohon!=NULL)
 				{
 					if(d.v.MAG_LASO->predchozi->sparovany->eID==0)
 					{
 						double check,buf;
-						if(po_trendu)//měření po trendu
-            {
+						if(mereni_po_trendu)//měření po trendu
+						{
 							//výpočet vzdálenosti od stopstanice
 							s=m.delka(C->Element->geo.X4,C->Element->geo.Y4,C->sparovany->geo.X4,C->sparovany->geo.Y4);
 							s=m.castPrepony(s,C->sparovany->geo.delka,C->sparovany->geo.delkaPud,C->sparovany->geo.HeightDepp);
@@ -16755,7 +16768,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 							buf=C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice;
 						}
 						else//měření proti trendu
-            {
+						{
 							//výpočet vzdálenosti od stopstanice
 							check=m.delka(C->Element->geo.X4,C->Element->geo.Y4,C->sparovany->geo.X4,C->sparovany->geo.Y4);
 							check=m.castPrepony(check,C->sparovany->geo.delka,C->sparovany->geo.delkaPud,C->sparovany->geo.HeightDepp);
@@ -16775,9 +16788,10 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 					}
 					cas+=d_pom/d.v.MAG_LASO->sparovany->pohon->aRD;
 					cas_pom+=d_pom/d.v.MAG_LASO->sparovany->pohon->aRD;
-					if(prichyceno)cas_pom+=d.v.MAG_LASO->sparovany->data.PT1+d.v.MAG_LASO->sparovany->data.PT2+d.v.MAG_LASO->sparovany->PTotoc+d.v.MAG_LASO->sparovany->WT;
+					if(prichyceno)cas_pom+=d.v.MAG_LASO->predchozi->sparovany->data.PT1+d.v.MAG_LASO->predchozi->sparovany->data.PT2+d.v.MAG_LASO->predchozi->sparovany->PTotoc+d.v.MAG_LASO->predchozi->sparovany->WT;
+					//if(prichyceno && !mereni_po_trendu)cas_pom+=d.v.MAG_LASO->predchozi->sparovany->data.WTstop;
 					popisek="; Čas = "+String(m.round2double(cas,2))+" [s]";
-					if(cas!=cas_pom)popisek+="; Čas = "+String(m.round2double(cas_pom,2))+" [s]";
+					if(cas!=cas_pom && mereni_po_trendu)popisek+="; Čas = "+String(m.round2double(cas_pom,2))+" [s]";
 				}
 			}
 			else//nelineární měření, mag. laso
@@ -16785,14 +16799,14 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 				while(C!=NULL)
 				{
 					//zjištění souřadnic
-					if(po_trendu){X=C->Element->geo.X1;Y=C->Element->geo.Y1;}
+					if(mereni_po_trendu){X=C->Element->geo.X1;Y=C->Element->geo.Y1;}
 					else  {X=C->predchozi->Element->geo.X1;Y=C->predchozi->Element->geo.Y1;}
 					if(C->n==1){X=d.v.MAG_LASO->Element->geo.X1;Y=d.v.MAG_LASO->Element->geo.Y1;}
 					//vypočet delky
 					if(C->Element->n!=MaxInt && C->n!=1)s=C->Element->geo.delka;
 					else if(C->Element->geo.typ==0)
 					{
-						if(po_trendu)s=m.delka(X,Y,C->Element->geo.X4,C->Element->geo.Y4);
+						if(mereni_po_trendu)s=m.delka(X,Y,C->Element->geo.X4,C->Element->geo.Y4);
 						else
 						{
 							s=m.delka(X,Y,C->Element->geo.X1,C->Element->geo.Y1);
@@ -16811,7 +16825,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 					else
 					{
 						//měření času po trednu linky
-						if(po_trendu)
+						if(mereni_po_trendu)
 						{
 							//poslední element
 							if(C->Element->n==MaxInt && C->sparovany!=NULL)
@@ -16821,20 +16835,20 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 								cas+=d_pom/C->sparovany->pohon->aRD;
 								cas_pom+=d_pom/C->sparovany->pohon->aRD;
 								//pokud se jedná o poslední element (přichycený), připočítání jeho dat pouze do cas_pom
-								if(prichyceno)cas_pom+=C->sparovany->data.PT1+C->sparovany->data.PT2+C->sparovany->PTotoc+C->sparovany->WT;
+								//if(prichyceno)cas_pom+=C->sparovany->data.PT1+C->sparovany->data.PT2+C->sparovany->PTotoc+C->sparovany->WT;
 								//nepřichycený elemenet, připočítání časů
-								else
+								//else
 								{
-									if(C->dalsi==NULL && C->Element->geo.X2==C->Element->geo.X3 && C->Element->geo.X3==C->Element->geo.X4 && C->predchozi->Element!=C->sparovany)
+									if(prichyceno)//C->dalsi==NULL && C->Element->geo.X2==C->Element->geo.X3 && C->Element->geo.X3==C->Element->geo.X4 && C->predchozi->Element!=C->sparovany)
 									{
 										cas+=C->sparovany->data.WTstop;
 										cas_pom+=C->sparovany->data.WTstop;
-										cas-=(C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->sparovany->pohon->aRD;
-										cas_pom-=(C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->sparovany->pohon->aRD;
+										//cas-=(C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->sparovany->pohon->aRD;
+										//cas_pom-=(C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->sparovany->pohon->aRD;
 									}
 									//pokud se jedná o nedokončený segment stopky, kontrola zda jsem na nějakém vozíku, pokud ano připočítat WT na jeho pozici
 									else if(C->sparovany->eID==0)
-					  	  	{
+									{
 										//výpočet vzdálenosti od stopstanice
 							  		double dl=m.delka(C->predchozi->Element->geo.X4,C->predchozi->Element->geo.Y4,C->Element->geo.X4,C->Element->geo.Y4);
 										dl=m.castPrepony(dl,C->Element->geo.delka,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
@@ -16847,6 +16861,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 											d_pom-=dl-buf;//zmenšení délky jen na délku pojezdu
 										}
 									}
+									if(prichyceno)cas_pom+=C->sparovany->data.PT1+C->sparovany->data.PT2+C->sparovany->PTotoc+C->sparovany->WT;
 								}
 							}
               //elementy ve středu spojáku (kromě posledního)
@@ -16855,17 +16870,21 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 								//čas přejezdu
 								cas+=s/C->Element->pohon->aRD;
 								cas_pom+=s/C->Element->pohon->aRD;
-								//časy obsažené v elementu
-								if(!prichyceno || (prichyceno && C->Element!=d.v.MAG_LASO->predchozi->sparovany))//vynechání přichyceného elementu
+								//připočítávat casy prvního
+								if(scGPCheckBox_meridlo_casy->Checked || (!scGPCheckBox_meridlo_casy->Checked && C->Element!=d.v.MAG_LASO->sparovany))
 								{
-									cas+=C->Element->data.WTstop+C->Element->data.PT1+C->Element->data.PT2+C->Element->PTotoc+C->Element->WT;
-									cas_pom+=C->Element->data.WTstop+C->Element->data.PT1+C->Element->data.PT2+C->Element->PTotoc+C->Element->WT;
-								}
-								//odečtení času přejezdu v bufferu, pokud existuje
-								if(C->Element->eID==0 && s>=C->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)
-								{
-									cas-=(C->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->Element->pohon->aRD;
-									cas_pom-=(C->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->Element->pohon->aRD;
+							  	//časy obsažené v elementu
+							  	if(!prichyceno || (prichyceno && C->Element!=d.v.MAG_LASO->predchozi->sparovany))//vynechání přichyceného elementu
+							  	{
+							  		cas+=C->Element->data.WTstop+C->Element->data.PT1+C->Element->data.PT2+C->Element->PTotoc+C->Element->WT;
+							  		cas_pom+=C->Element->data.WTstop+C->Element->data.PT1+C->Element->data.PT2+C->Element->PTotoc+C->Element->WT;
+							  	}
+							  	//odečtení času přejezdu v bufferu, pokud existuje
+							  	if(C->Element->eID==0 && s>=C->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)
+							  	{
+							  		cas-=(C->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->Element->pohon->aRD;
+							  		cas_pom-=(C->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->Element->pohon->aRD;
+							  	}
 								}
 							}
 						}
@@ -16917,7 +16936,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 				delete C;C=NULL;
 				//nastavení popiků pro MB
 				popisek="; Čas = "+String(m.round2double(cas,2))+" [s]";
-				if(cas!=cas_pom)popisek+="; Čas = "+String(m.round2double(cas_pom,2))+" [s]";
+				if(cas!=cas_pom && mereni_po_trendu)popisek+="; Čas = "+String(m.round2double(cas_pom,2))+" [s]";
 				if(chyba)popisek+=", nerelevatní časový údaj, na některém úseku nebyl nadefinován pohon";
 			}
 			//kontrola přichycení
@@ -18257,10 +18276,17 @@ void TForm1::copy_to_clipboard(String text)
   Edit_proFocus->CopyToClipboard();
 }
 //---------------------------------------------------------------------------
-
-
-
-
-
-
+//přepínání meřidla časy
+void __fastcall TForm1::scGPCheckBox_meridlo_casyClick(TObject *Sender)
+{
+  log(__func__);//logování
+	if(Akce==NIC)
+	{
+		short pripocitavat_casy_prvniho_el;
+		if(scGPCheckBox_meridlo_casy->Checked)pripocitavat_casy_prvniho_el=1;
+		else pripocitavat_casy_prvniho_el=0;
+		writeINI("nastaveni_editace","pripocitavat_casy_prvniho_el",pripocitavat_casy_prvniho_el);
+	}
+}
+//---------------------------------------------------------------------------
 
