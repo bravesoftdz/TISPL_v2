@@ -3132,7 +3132,7 @@ void Cvykresli::vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiStr
 		case 107:vykresli_cloveka(canv,scena,X,Y,name,short_name,eID,typ,rotace+F->RO,stav,LO1,OTOC_delka,LO2);break;//lidský robot  ionizace s pasivní otočí
 		case 108:vykresli_cloveka(canv,scena,X,Y,name,short_name,eID,typ,rotace+F->RO,stav,LO1,0,0);break;//lidský robot ionizace s aktivní otočí (resp. s otočí a stop stanicí)
 		case 200:if(scena<=2)vykresli_predavaci_misto(canv,E,X,Y,name,typ,rotace,stav);break;//vykreslení předávacího místa - pouze popisek
-		//case MaxInt:if(scena==0 || scena==1)vykresli_zarazku(canv,X,Y);break;//vykreslení zarážky pro testovací účely
+		//case MaxInt:if(scena==0 || scena==1)vykresli_zarazku(canv,X,Y,name);break;//vykreslení zarážky pro testovací účely
 		case 300://výhybka
 		case 301://spojka
 		{
@@ -3965,7 +3965,7 @@ void Cvykresli::vykresli_teplomer(TCanvas *canv,long X,long Y,AnsiString name,An
 	Element->citelna_oblast.rect4=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+canv->TextWidth("°C"))/zAA),m.round((y+Th)/zAA));//citelná oblast popisku "°C"
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::vykresli_zarazku(TCanvas *canv,long X,long Y)
+void Cvykresli::vykresli_zarazku(TCanvas *canv,long X,long Y,String name)
 {
 	if(F->Akce==F->GEOMETRIE || F->Akce==F->GEOMETRIE_LIGHT)
 	{
@@ -3977,6 +3977,7 @@ void Cvykresli::vykresli_zarazku(TCanvas *canv,long X,long Y)
 		canv->Pen->Mode=pmCopy;
 		canv->Pen->Width=m.round(Form1->Zoom);
 		canv->Ellipse(X-W,Y-W,X+W,Y+W);
+		TextFraming(canv,X,Y,name);
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -5436,7 +5437,7 @@ void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,Cvektory::TElement *Elem
 	short Z=m.round(HeightDeep/fabs(HeightDeep));//znaménko
 	float V=0.5;//výšku vykreslujeme konstatně, v měřítku by se nevešla
 	//pokud je linie vodorovná
-	if(Y1==Y2)
+	if(Element->geo.orientace==90 || Element->geo.orientace==270)//nepoužívat Y1==Y2 - nepřesnost
 	{
 		Y1+=offset;//odsazení
 		Y2=Y1;
