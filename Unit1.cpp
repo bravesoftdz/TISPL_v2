@@ -2397,7 +2397,7 @@ void TForm1::vytvor_statickou_scenu()
 		bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
 		d.vykresli_vektory(bmp_in->Canvas,1);
 		Cantialising a;Staticka_scena=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
-		//Staticka_scena->SaveToFile("staticka_scena_bezAA.bmp");
+		//Staticka_scena->SaveToFile("staticka_scena_sAA.bmp");
 	}
 	else
 	if(d.SCENA>0 && d.SCENA!=2222222)//pro případy kdy se nejedná o kompletní statickou a ani kompletní dynamickou scenu, v tomto případě nemá smysl nyní Statickou scenu antialiasingovat

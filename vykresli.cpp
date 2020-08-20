@@ -3170,7 +3170,7 @@ void Cvykresli::vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiStr
 		case 300://výhybka
 		case 301://spojka
 		{
-			if(scena==0 || scena==1)
+			if(F->scButton_zamek_layoutu->ImageIndex==68 && (scena==0 || scena==1))//pokud je odemčený layout jsou viditelné vyhýbky
 			{
 				/////////provizorní řešení !!!!!!!!!!!!
 				unsigned int velikost=m.round(2*F->Zoom);
@@ -3182,12 +3182,12 @@ void Cvykresli::vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiStr
 				canv->Brush->Color=barva;
 				canv->Brush->Style=bsSolid;
 				canv->Rectangle(X-velikost,Y-velikost,X+velikost,Y+velikost);
-        ////vykreslení popisku
-        canv->Font->Color=barva;
+				////vykreslení popisku
+				canv->Font->Color=barva;
 				canv->Font->Size=F->m.round(2.8*F->Zoom);if(F->aFont->Size==12)canv->Font->Size=F->m.round(2*F->Zoom);
 				canv->Font->Name=F->aFont->Name;
 	    	canv->Font->Style = TFontStyles();
-	    	canv->Brush->Color=clWhite;
+				canv->Brush->Color=clWhite;
 				canv->Brush->Style=bsClear;
 				AnsiString t="V";
 				if(E->eID==301)t="S";
