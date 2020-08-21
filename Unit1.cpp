@@ -820,7 +820,7 @@ void TForm1::DesignSettings()
 	scGPComboBox_prepinacKot->Top=(scGPPanel_bottomtoolbar->Height-scGPComboBox_prepinacKot->Height)/2;//combobox na přepínání mezi kotami čas -- delka
  //	scGPLabel1->Top=(scGPPanel_bottomtoolbar->Height-scGPLabel1->Height)/2;
 	scGPLabel_prepinacKot->Top=(scGPPanel_bottomtoolbar->Height-scGPLabel_prepinacKot->Height)/2;
-	offset_scGPButton_bug_report=10;//používá se na více místech
+	offset_scGPButton_bug_report=20;//10;//používá se na více místech
 	scGPButton_bug_report->Top=ClientHeight-scGPPanel_statusbar->Height-scGPButton_bug_report->Height-offset_scGPButton_bug_report;
 	scGPButton_bug_report->Left=ClientWidth-scGPButton_bug_report->Width-offset_scGPButton_bug_report;
 	scGPImage_mereni_vzdalenost->Top=(scGPPanel_bottomtoolbar->Height-scGPImage_mereni_vzdalenost->Height)/2;
@@ -2016,7 +2016,7 @@ void __fastcall TForm1::FormResize(TObject *Sender)
 	scGPComboBox_prepinacKot->Top=(scGPPanel_bottomtoolbar->Height-scGPComboBox_prepinacKot->Height)/2;//combobox na přepínání mezi kotami čas -- delka
  //	scGPLabel1->Top=(scGPPanel_bottomtoolbar->Height-scGPLabel1->Height)/2;
 	scGPLabel_prepinacKot->Top=(scGPPanel_bottomtoolbar->Height-scGPLabel_prepinacKot->Height)/2;
-	offset_scGPButton_bug_report=10;//používá se na více místech
+	offset_scGPButton_bug_report=20;//10;//používá se na více místech
 	scGPButton_bug_report->Top=ClientHeight-scGPPanel_statusbar->Height-scGPButton_bug_report->Height-offset_scGPButton_bug_report;
 	scGPButton_bug_report->Left=ClientWidth-scGPButton_bug_report->Width-offset_scGPButton_bug_report;
 	scGPImage_mereni_vzdalenost->Top=(scGPPanel_bottomtoolbar->Height-scGPImage_mereni_vzdalenost->Height)/2;
@@ -3164,7 +3164,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 									E=NULL;delete E;
 								}
               }
-							if(JID<=-11&&!editace_textu){nastav_focus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=pom_element->geo.delka;if((DKunit==2||DKunit==3)&&pom_element->pohon!=NULL)editovany_text=editovany_text/pom_element->pohon->aRD;editovany_text=outDK(m.round2double(ms.MyToDouble(editovany_text),3));}//editace textu
+							if(JID==-11&&!editace_textu){nastav_focus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=pom_element->geo.delka;if((DKunit==2||DKunit==3)&&pom_element->pohon!=NULL)editovany_text=editovany_text/pom_element->pohon->aRD;editovany_text=outDK(m.round2double(ms.MyToDouble(editovany_text),3));}//editace textu
 							if(JID==13){Akce_temp=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//offset kót
 						}
 						pan_create();//pro případ posunu obrazu bez akce PAN
@@ -3172,7 +3172,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					}break;
 					case GEOMETRIE_LIGHT:
 					{
-						if(JID<=-11&&!editace_textu){nastav_focus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=pom_element->geo.delka;if((DKunit==2||DKunit==3)&&pom_element->pohon!=NULL)editovany_text=editovany_text/pom_element->pohon->aRD;editovany_text=outDK(m.round2double(ms.MyToDouble(editovany_text),3));}//editace textu
+						if(JID==-11&&!editace_textu){nastav_focus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=pom_element->geo.delka;Memo(editovany_text);if((DKunit==2||DKunit==3)&&pom_element->pohon!=NULL)editovany_text=editovany_text/pom_element->pohon->aRD;editovany_text=outDK(m.round2double(ms.MyToDouble(editovany_text),3));}//editace textu
 						if(JID==13){Akce_temp=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//offset kót
 					}break;
 					case MAGNETICKE_LASO:
@@ -3899,7 +3899,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 					else//kóty elementů RET=11-99
 					{
 						if(PtInKota_elementu==0 && pom_element!=NULL)JID=13;//oblast kóty - posun kóty
-						if(PtInKota_elementu==1 && pom_element!=NULL)JID=(10+pom_element->n)*(-1);//hodnota kóty
+						if(PtInKota_elementu==1 && pom_element!=NULL)JID=-11;//hodnota kóty
 					}
 				}
 			}
@@ -4269,8 +4269,9 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			  		if(pom_element!=NULL)d.v.MAG_LASO->predchozi->sparovany=pom_element;//ukládání počátečního elementu pokud jsem začal na geometrii
 			  		E=NULL;delete E;
 			  		scGPImage_mereni_vzdalenostClick(this);
-			  	}
-			  	E=NULL;delete E;
+					}
+					if(E->geo.X2==E->geo.X3 && d.v.MAG_LASO->predchozi->n==0)TIP="Přichyceno na "+E->name;
+					E=NULL;delete E;
 				}
         //posun obrazu při akci měření
 				else pan_move_map();
@@ -14420,6 +14421,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	}
 //	E=NULL;delete E;
 //  Memo("hotovo");
+	Memo(scGPButton_bug_report->Top); //=957
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -16713,6 +16715,9 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		Akce=MAGNETICKE_LASO;//až po refresh
 		if(OBJEKT_akt!=NULL)OBJEKT_akt->zobrazit_mGrid=p_stav;//navrácení původního stavu do objektu
 		count_memo=0;//ukazatel kolikrát proběhl cyklus načtení dat ze zakázky, pouze jednou
+		mereni_delka=0;
+		mereni_cas.x=0;
+		mereni_cas.y=0;
 	}
 	else
 	{
@@ -16727,224 +16732,226 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 			double s=0,delka=0,cas=0,cas_pom=0,X,Y,uhel;
 			bool chyba=false;
 			String popisek="";//slouží pro rozšíření MB o
-			if(d.v.MAG_LASO->predchozi->n==1 && C->Element->n==MaxInt)//lineární měření
-			{
-				double d_pom;
-				//měření v oblouku
-				if(d.v.MAG_LASO->sparovany!=NULL && d.v.MAG_LASO->sparovany->geo.typ!=0)
-				{
-					double u1,u2,X,Y;
-					X=d.v.MAG_LASO->sparovany->geo.X1;Y=d.v.MAG_LASO->sparovany->geo.Y1;
-					u1=m.uhelObloukuVsMys(X,Y,d.v.MAG_LASO->sparovany->geo.orientace,d.v.MAG_LASO->sparovany->geo.rotacni_uhel,d.v.MAG_LASO->sparovany->geo.radius,d.v.MAG_LASO->Element->geo.X1,d.v.MAG_LASO->Element->geo.Y1);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
-					u2=m.uhelObloukuVsMys(X,Y,d.v.MAG_LASO->sparovany->geo.orientace,d.v.MAG_LASO->sparovany->geo.rotacni_uhel,d.v.MAG_LASO->sparovany->geo.radius,C->Element->geo.X4,C->Element->geo.Y4);
-					if((u2-u1<0 && u1>0 && u2>0) || (u2-u1>0 && u1<0 && u2<0))
-		    	{
-						d_pom=u1;
-		    		u1=u2;
-						u2=d_pom;
-					}
-					d_pom=delka=m.R2Larc(d.v.MAG_LASO->sparovany->geo.radius,u2)-m.R2Larc(d.v.MAG_LASO->sparovany->geo.radius,u1);
-				}
-				//měření v linii
-				else
-				{
-					d_pom=delka=m.delka(C->predchozi->Element->geo.X1,C->predchozi->Element->geo.Y1,C->Element->geo.X4,C->Element->geo.Y4);
-					if(d.v.MAG_LASO->sparovany!=NULL)d_pom=delka=m.castPrepony(delka,d.v.MAG_LASO->sparovany->geo.delka,d.v.MAG_LASO->sparovany->geo.delkaPud,d.v.MAG_LASO->sparovany->geo.HeightDepp);
-				}
-				//měření času
-				if(d.v.MAG_LASO->sparovany!=NULL && d.v.MAG_LASO->sparovany->pohon==d.v.MAG_LASO->predchozi->sparovany->pohon && d.v.MAG_LASO->sparovany->pohon!=NULL)
-				{
-					if(d.v.MAG_LASO->predchozi->sparovany->eID==0)
-					{
-						double check,buf;
-						if(mereni_po_trendu)//měření po trendu
-						{
-							//výpočet vzdálenosti od stopstanice
-							s=m.delka(C->Element->geo.X4,C->Element->geo.Y4,C->sparovany->geo.X4,C->sparovany->geo.Y4);
-							s=m.castPrepony(s,C->sparovany->geo.delka,C->sparovany->geo.delkaPud,C->sparovany->geo.HeightDepp);
-							check=m.delka(d.v.MAG_LASO->Element->geo.X4,d.v.MAG_LASO->Element->geo.Y4,C->sparovany->geo.X4,C->sparovany->geo.Y4);
-							check=m.castPrepony(check,C->sparovany->geo.delka,C->sparovany->geo.delkaPud,C->sparovany->geo.HeightDepp);
-							//výpočet velikosti bufferu stopstanice
-							buf=C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice;
-						}
-						else//měření proti trendu
-						{
-							//výpočet vzdálenosti od stopstanice
-							check=m.delka(C->Element->geo.X4,C->Element->geo.Y4,C->sparovany->geo.X4,C->sparovany->geo.Y4);
-							check=m.castPrepony(check,C->sparovany->geo.delka,C->sparovany->geo.delkaPud,C->sparovany->geo.HeightDepp);
-							s=m.delka(d.v.MAG_LASO->Element->geo.X4,d.v.MAG_LASO->Element->geo.Y4,d.v.MAG_LASO->predchozi->sparovany->geo.X4,d.v.MAG_LASO->predchozi->sparovany->geo.Y4);
-							s=m.castPrepony(s,C->sparovany->geo.delka,C->sparovany->geo.delkaPud,C->sparovany->geo.HeightDepp);
-							//výpočet velikosti bufferu stopstanice
-							buf=d.v.MAG_LASO->predchozi->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice;
-						}
-						//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
-						if(s<=buf)
-						{
-							cas+=m.V2WT(ceil((buf-s)/d.v.PP.delka_podvozek),d.v.PP.TT);//připočítání WT na aktuálním vozíku
-							cas_pom+=m.V2WT(ceil((buf-s)/d.v.PP.delka_podvozek),d.v.PP.TT);
-							if(check<buf)d_pom=0;//nepočítám žádný další čas
-							else d_pom-=buf-s;//zmenšení délky jen na délku pojezdu
-						}
-					}
-					cas+=d_pom/d.v.MAG_LASO->sparovany->pohon->aRD;
-					cas_pom+=d_pom/d.v.MAG_LASO->sparovany->pohon->aRD;
-					if(prichyceno)cas_pom+=d.v.MAG_LASO->predchozi->sparovany->data.PT1+d.v.MAG_LASO->predchozi->sparovany->data.PT2+d.v.MAG_LASO->predchozi->sparovany->PTotoc+d.v.MAG_LASO->predchozi->sparovany->WT;
-					//if(prichyceno && !mereni_po_trendu)cas_pom+=d.v.MAG_LASO->predchozi->sparovany->data.WTstop;
-					popisek="; Čas = "+String(m.round2double(cas,2))+" [s]";
-					if(cas!=cas_pom && mereni_po_trendu)popisek+="; Čas = "+String(m.round2double(cas_pom,2))+" [s]";
-				}
-			}
-			else//nelineární měření, mag. laso
-			{
-				while(C!=NULL)
-				{
-					//zjištění souřadnic
-					if(mereni_po_trendu){X=C->Element->geo.X1;Y=C->Element->geo.Y1;}
-					else  {X=C->predchozi->Element->geo.X1;Y=C->predchozi->Element->geo.Y1;}
-					if(C->n==1){X=d.v.MAG_LASO->Element->geo.X1;Y=d.v.MAG_LASO->Element->geo.Y1;}
-					//vypočet delky
-					if(C->Element->n!=MaxInt && C->n!=1)s=C->Element->geo.delka;
-					else if(C->Element->geo.typ==0)
-					{
-						if(mereni_po_trendu)s=m.delka(X,Y,C->Element->geo.X4,C->Element->geo.Y4);
-						else
-						{
-							s=m.delka(X,Y,C->Element->geo.X1,C->Element->geo.Y1);
-							if(C->dalsi==NULL)s=m.delka(C->sparovany->geo.X4,C->sparovany->geo.Y4,C->Element->geo.X4,C->Element->geo.Y4);
-						}
-						s=m.castPrepony(s,C->Element->geo.delka,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
-					}
-					else
-					{
-						s=m.delka(X,Y,C->Element->geo.X4,C->Element->geo.Y4);
-						double uhel=m.T2Aarc(C->Element->geo.radius,s);
-						s=m.R2Larc(C->Element->geo.radius,uhel);
-					}
-					//vypočet času
-					if((C->Element->n!=MaxInt && C->Element->pohon==NULL) || (C->Element->n==MaxInt && C->sparovany!=NULL && C->sparovany->pohon==NULL))chyba=true;
-					else
-					{
-						//měření času po trednu linky
-						if(mereni_po_trendu)
-						{
-							//poslední element
-							if(C->Element->n==MaxInt && C->sparovany!=NULL)
-							{
-								double d_pom=s;
-                //výpočet času přejezdu
-								cas+=d_pom/C->sparovany->pohon->aRD;
-								cas_pom+=d_pom/C->sparovany->pohon->aRD;
-								//pokud se jedná o poslední element (přichycený), připočítání jeho dat pouze do cas_pom
-								//if(prichyceno)cas_pom+=C->sparovany->data.PT1+C->sparovany->data.PT2+C->sparovany->PTotoc+C->sparovany->WT;
-								//nepřichycený elemenet, připočítání časů
-								//else
-								{
-									if(prichyceno)//C->dalsi==NULL && C->Element->geo.X2==C->Element->geo.X3 && C->Element->geo.X3==C->Element->geo.X4 && C->predchozi->Element!=C->sparovany)
-									{
-										cas+=C->sparovany->data.WTstop;
-										cas_pom+=C->sparovany->data.WTstop;
-										//cas-=(C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->sparovany->pohon->aRD;
-										//cas_pom-=(C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->sparovany->pohon->aRD;
-									}
-									//pokud se jedná o nedokončený segment stopky, kontrola zda jsem na nějakém vozíku, pokud ano připočítat WT na jeho pozici
-									else if(C->sparovany->eID==0)
-									{
-										//výpočet vzdálenosti od stopstanice
-							  		double dl=m.delka(C->predchozi->Element->geo.X4,C->predchozi->Element->geo.Y4,C->Element->geo.X4,C->Element->geo.Y4);
-										dl=m.castPrepony(dl,C->Element->geo.delka,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
-							  		//výpočet velikosti bufferu stopstanice
-							  		double buf=C->sparovany->geo.delka-(C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice);
-										if(dl>buf)//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
-										{
-											cas+=m.V2WT(ceil((dl-buf)/d.v.PP.delka_podvozek),d.v.PP.TT);//připočítání WT na aktuálním vozíku
-											cas_pom+=m.V2WT(ceil((dl-buf)/d.v.PP.delka_podvozek),d.v.PP.TT);
-											d_pom-=dl-buf;//zmenšení délky jen na délku pojezdu
-										}
-									}
-									if(prichyceno)cas_pom+=C->sparovany->data.PT1+C->sparovany->data.PT2+C->sparovany->PTotoc+C->sparovany->WT;
-								}
-							}
-              //elementy ve středu spojáku (kromě posledního)
-					  	else
-							{
-								//čas přejezdu
-								cas+=s/C->Element->pohon->aRD;
-								cas_pom+=s/C->Element->pohon->aRD;
-								//připočítávat casy prvního
-								if(scGPCheckBox_meridlo_casy->Checked || (!scGPCheckBox_meridlo_casy->Checked && C->Element!=d.v.MAG_LASO->sparovany))
-								{
-							  	//časy obsažené v elementu
-							  	if(!prichyceno || (prichyceno && C->Element!=d.v.MAG_LASO->predchozi->sparovany))//vynechání přichyceného elementu
-							  	{
-							  		cas+=C->Element->data.WTstop+C->Element->data.PT1+C->Element->data.PT2+C->Element->PTotoc+C->Element->WT;
-							  		cas_pom+=C->Element->data.WTstop+C->Element->data.PT1+C->Element->data.PT2+C->Element->PTotoc+C->Element->WT;
-							  	}
-							  	//odečtení času přejezdu v bufferu, pokud existuje
-							  	if(C->Element->eID==0 && s>=C->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)
-							  	{
-							  		cas-=(C->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->Element->pohon->aRD;
-							  		cas_pom-=(C->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->Element->pohon->aRD;
-							  	}
-								}
-							}
-						}
-						//měření času proti trendu linky
-						else
-						{
-							Cvektory::TElement *CE=C->Element;
-							if(C->Element->n==MaxInt)CE=C->sparovany;
-							cas+=s/CE->pohon->aRD;//výpočet času přejezdu
-							if(C->n==1)//výpočet času pro první sgment
-							{
-								//kontrola + vypočet WT na vozík v bufferu
-								if(CE->eID==0)
-						  	{
-						  		//výpočet vzdálenosti od stopstanice
-									double s=m.delka(d.v.MAG_LASO->Element->geo.X4,d.v.MAG_LASO->Element->geo.Y4,CE->geo.X4,CE->geo.Y4);
-									s=m.castPrepony(s,CE->geo.delka,CE->geo.delkaPud,CE->geo.HeightDepp);
-						  		//výpočet velikosti bufferu stopstanice
-									double buf=CE->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice;
-						  		//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
-									if(s<=buf)
-									{
-										cas+=m.V2WT(ceil((buf-s)/d.v.PP.delka_podvozek),d.v.PP.TT);//připočítání WT na aktuálním vozíku
-										cas-=(buf-s)/CE->pohon->aRD;//zmenšení délky jen na délku pojezdu
-						  		}
-								}
-							}
-							//výpočet času pro všechny kromě prvního
-							else
-							{
-                if(d.v.vrat_druh_elementu(CE)==0)cas+=CE->data.PT1+CE->data.PT2+CE->WT+CE->PTotoc+CE->data.WTstop;//přičtení časových složek u S&G elementů
-								if(CE->eID==0)//odečtení přejezdu v bufferu
-								{
-									double buf=CE->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice;
-									if(s>=buf)cas-=(buf)/CE->pohon->aRD;
-									else cas-=(s)/CE->pohon->aRD;
-								}
-							}
-							//připočtení čekání na palec při přechodu mezi pohony
-							if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && CE->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
-							if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->Element->geo.X2!=C->dalsi->sparovany->geo.X4 && C->dalsi->sparovany->pohon!=NULL && CE->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
-							//ukazatelové záležitosti
-							CE=NULL;delete CE;
-            }
-					}
-					delka+=s;
-					C=C->dalsi;
-				}
-				delete C;C=NULL;
-				//nastavení popiků pro MB
-				popisek="; Čas = "+String(m.round2double(cas,2))+" [s]";
-				if(cas!=cas_pom && mereni_po_trendu)popisek+="; Čas = "+String(m.round2double(cas_pom,2))+" [s]";
-				if(chyba)popisek+=", nerelevatní časový údaj, na některém úseku nebyl nadefinován pohon";
-			}
+//			if(d.v.MAG_LASO->predchozi->n==1 && C->Element->n==MaxInt)//lineární měření
+//			{
+//				double d_pom;
+//				//měření v oblouku
+//				if(d.v.MAG_LASO->sparovany!=NULL && d.v.MAG_LASO->sparovany->geo.typ!=0)
+//				{
+//					double u1,u2,X,Y;
+//					X=d.v.MAG_LASO->sparovany->geo.X1;Y=d.v.MAG_LASO->sparovany->geo.Y1;
+//					u1=m.uhelObloukuVsMys(X,Y,d.v.MAG_LASO->sparovany->geo.orientace,d.v.MAG_LASO->sparovany->geo.rotacni_uhel,d.v.MAG_LASO->sparovany->geo.radius,d.v.MAG_LASO->Element->geo.X1,d.v.MAG_LASO->Element->geo.Y1);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
+//					u2=m.uhelObloukuVsMys(X,Y,d.v.MAG_LASO->sparovany->geo.orientace,d.v.MAG_LASO->sparovany->geo.rotacni_uhel,d.v.MAG_LASO->sparovany->geo.radius,C->Element->geo.X4,C->Element->geo.Y4);
+//					if((u2-u1<0 && u1>0 && u2>0) || (u2-u1>0 && u1<0 && u2<0))
+//		    	{
+//						d_pom=u1;
+//		    		u1=u2;
+//						u2=d_pom;
+//					}
+//					d_pom=delka=m.R2Larc(d.v.MAG_LASO->sparovany->geo.radius,u2)-m.R2Larc(d.v.MAG_LASO->sparovany->geo.radius,u1);
+//				}
+//				//měření v linii
+//				else
+//				{
+//					d_pom=delka=m.delka(C->predchozi->Element->geo.X1,C->predchozi->Element->geo.Y1,C->Element->geo.X4,C->Element->geo.Y4);
+//					if(d.v.MAG_LASO->sparovany!=NULL)d_pom=delka=m.castPrepony(delka,d.v.MAG_LASO->sparovany->geo.delka,d.v.MAG_LASO->sparovany->geo.delkaPud,d.v.MAG_LASO->sparovany->geo.HeightDepp);
+//				}
+//				//měření času
+//				if(d.v.MAG_LASO->sparovany!=NULL && d.v.MAG_LASO->sparovany->pohon==d.v.MAG_LASO->predchozi->sparovany->pohon && d.v.MAG_LASO->sparovany->pohon!=NULL)
+//				{
+//					if(d.v.MAG_LASO->predchozi->sparovany->eID==0)
+//					{
+//						double check,buf;
+//						if(mereni_po_trendu)//měření po trendu
+//						{
+//							//výpočet vzdálenosti od stopstanice
+//							s=m.delka(C->Element->geo.X4,C->Element->geo.Y4,C->sparovany->geo.X4,C->sparovany->geo.Y4);
+//							s=m.castPrepony(s,C->sparovany->geo.delka,C->sparovany->geo.delkaPud,C->sparovany->geo.HeightDepp);
+//							check=m.delka(d.v.MAG_LASO->Element->geo.X4,d.v.MAG_LASO->Element->geo.Y4,C->sparovany->geo.X4,C->sparovany->geo.Y4);
+//							check=m.castPrepony(check,C->sparovany->geo.delka,C->sparovany->geo.delkaPud,C->sparovany->geo.HeightDepp);
+//							//výpočet velikosti bufferu stopstanice
+//							buf=C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice;
+//						}
+//						else//měření proti trendu
+//						{
+//							//výpočet vzdálenosti od stopstanice
+//							check=m.delka(C->Element->geo.X4,C->Element->geo.Y4,C->sparovany->geo.X4,C->sparovany->geo.Y4);
+//							check=m.castPrepony(check,C->sparovany->geo.delka,C->sparovany->geo.delkaPud,C->sparovany->geo.HeightDepp);
+//							s=m.delka(d.v.MAG_LASO->Element->geo.X4,d.v.MAG_LASO->Element->geo.Y4,d.v.MAG_LASO->predchozi->sparovany->geo.X4,d.v.MAG_LASO->predchozi->sparovany->geo.Y4);
+//							s=m.castPrepony(s,C->sparovany->geo.delka,C->sparovany->geo.delkaPud,C->sparovany->geo.HeightDepp);
+//							//výpočet velikosti bufferu stopstanice
+//							buf=d.v.MAG_LASO->predchozi->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice;
+//						}
+//						//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
+//						if(s<=buf)
+//						{
+//							cas+=m.V2WT(ceil((buf-s)/d.v.PP.delka_podvozek),d.v.PP.TT);//připočítání WT na aktuálním vozíku
+//							cas_pom+=m.V2WT(ceil((buf-s)/d.v.PP.delka_podvozek),d.v.PP.TT);
+//							if(check<buf)d_pom=0;//nepočítám žádný další čas
+//							else d_pom-=buf-s;//zmenšení délky jen na délku pojezdu
+//						}
+//					}
+//					cas+=d_pom/d.v.MAG_LASO->sparovany->pohon->aRD;
+//					cas_pom+=d_pom/d.v.MAG_LASO->sparovany->pohon->aRD;
+//					if(prichyceno)cas_pom+=d.v.MAG_LASO->predchozi->sparovany->data.PT1+d.v.MAG_LASO->predchozi->sparovany->data.PT2+d.v.MAG_LASO->predchozi->sparovany->PTotoc+d.v.MAG_LASO->predchozi->sparovany->WT;
+//					//if(prichyceno && !mereni_po_trendu)cas_pom+=d.v.MAG_LASO->predchozi->sparovany->data.WTstop;
+//					popisek="; Čas = "+String(m.round2double(cas,2))+" [s]";
+//					if(cas!=cas_pom && mereni_po_trendu)popisek+="; Čas = "+String(m.round2double(cas_pom,2))+" [s]";
+//				}
+//			}
+//			else//nelineární měření, mag. laso
+//			{
+//				while(C!=NULL)
+//				{
+//					//zjištění souřadnic
+//					if(mereni_po_trendu){X=C->Element->geo.X1;Y=C->Element->geo.Y1;}
+//					else  {X=C->predchozi->Element->geo.X1;Y=C->predchozi->Element->geo.Y1;}
+//					if(C->n==1){X=d.v.MAG_LASO->Element->geo.X1;Y=d.v.MAG_LASO->Element->geo.Y1;}
+//					//vypočet delky
+//					if(C->Element->n!=MaxInt && C->n!=1)s=C->Element->geo.delka;
+//					else if(C->Element->geo.typ==0)
+//					{
+//						if(mereni_po_trendu)s=m.delka(X,Y,C->Element->geo.X4,C->Element->geo.Y4);
+//						else
+//						{
+//							s=m.delka(X,Y,C->Element->geo.X1,C->Element->geo.Y1);
+//							if(C->dalsi==NULL)s=m.delka(C->sparovany->geo.X4,C->sparovany->geo.Y4,C->Element->geo.X4,C->Element->geo.Y4);
+//						}
+//						s=m.castPrepony(s,C->Element->geo.delka,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
+//					}
+//					else
+//					{
+//						s=m.delka(X,Y,C->Element->geo.X4,C->Element->geo.Y4);
+//						double uhel=m.T2Aarc(C->Element->geo.radius,s);
+//						s=m.R2Larc(C->Element->geo.radius,uhel);
+//					}
+//					//vypočet času
+//					if((C->Element->n!=MaxInt && C->Element->pohon==NULL) || (C->Element->n==MaxInt && C->sparovany!=NULL && C->sparovany->pohon==NULL))chyba=true;
+//					else
+//					{
+//						//měření času po trednu linky
+//						if(mereni_po_trendu)
+//						{
+//							//poslední element
+//							if(C->Element->n==MaxInt && C->sparovany!=NULL)
+//							{
+//								double d_pom=s;
+//                //výpočet času přejezdu
+//								cas+=d_pom/C->sparovany->pohon->aRD;
+//								cas_pom+=d_pom/C->sparovany->pohon->aRD;
+//								//pokud se jedná o poslední element (přichycený), připočítání jeho dat pouze do cas_pom
+//								//if(prichyceno)cas_pom+=C->sparovany->data.PT1+C->sparovany->data.PT2+C->sparovany->PTotoc+C->sparovany->WT;
+//								//nepřichycený elemenet, připočítání časů
+//								//else
+//								{
+//									if(prichyceno)//C->dalsi==NULL && C->Element->geo.X2==C->Element->geo.X3 && C->Element->geo.X3==C->Element->geo.X4 && C->predchozi->Element!=C->sparovany)
+//									{
+//										cas+=C->sparovany->data.WTstop;
+//										cas_pom+=C->sparovany->data.WTstop;
+//										//cas-=(C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->sparovany->pohon->aRD;
+//										//cas_pom-=(C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->sparovany->pohon->aRD;
+//									}
+//									//pokud se jedná o nedokončený segment stopky, kontrola zda jsem na nějakém vozíku, pokud ano připočítat WT na jeho pozici
+//									else if(C->sparovany->eID==0)
+//									{
+//										//výpočet vzdálenosti od stopstanice
+//							  		double dl=m.delka(C->predchozi->Element->geo.X4,C->predchozi->Element->geo.Y4,C->Element->geo.X4,C->Element->geo.Y4);
+//										dl=m.castPrepony(dl,C->Element->geo.delka,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
+//							  		//výpočet velikosti bufferu stopstanice
+//							  		double buf=C->sparovany->geo.delka-(C->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice);
+//										if(dl>buf)//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
+//										{
+//											cas+=m.V2WT(ceil((dl-buf)/d.v.PP.delka_podvozek),d.v.PP.TT);//připočítání WT na aktuálním vozíku
+//											cas_pom+=m.V2WT(ceil((dl-buf)/d.v.PP.delka_podvozek),d.v.PP.TT);
+//											d_pom-=dl-buf;//zmenšení délky jen na délku pojezdu
+//										}
+//									}
+//									if(prichyceno)cas_pom+=C->sparovany->data.PT1+C->sparovany->data.PT2+C->sparovany->PTotoc+C->sparovany->WT;
+//								}
+//							}
+//              //elementy ve středu spojáku (kromě posledního)
+//					  	else
+//							{
+//								//čas přejezdu
+//								cas+=s/C->Element->pohon->aRD;
+//								cas_pom+=s/C->Element->pohon->aRD;
+//								//připočítávat casy prvního
+//								if(scGPCheckBox_meridlo_casy->Checked || (!scGPCheckBox_meridlo_casy->Checked && C->Element!=d.v.MAG_LASO->sparovany))
+//								{
+//							  	//časy obsažené v elementu
+//							  	if(!prichyceno || (prichyceno && C->Element!=d.v.MAG_LASO->predchozi->sparovany))//vynechání přichyceného elementu
+//							  	{
+//							  		cas+=C->Element->data.WTstop+C->Element->data.PT1+C->Element->data.PT2+C->Element->PTotoc+C->Element->WT;
+//							  		cas_pom+=C->Element->data.WTstop+C->Element->data.PT1+C->Element->data.PT2+C->Element->PTotoc+C->Element->WT;
+//							  	}
+//							  	//odečtení času přejezdu v bufferu, pokud existuje
+//							  	if(C->Element->eID==0 && s>=C->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)
+//							  	{
+//							  		cas-=(C->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->Element->pohon->aRD;
+//							  		cas_pom-=(C->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)/C->Element->pohon->aRD;
+//							  	}
+//								}
+//							}
+//						}
+//						//měření času proti trendu linky
+//						else
+//						{
+//							Cvektory::TElement *CE=C->Element;
+//							if(C->Element->n==MaxInt)CE=C->sparovany;
+//							cas+=s/CE->pohon->aRD;//výpočet času přejezdu
+//							if(C->n==1)//výpočet času pro první sgment
+//							{
+//								//kontrola + vypočet WT na vozík v bufferu
+//								if(CE->eID==0)
+//						  	{
+//						  		//výpočet vzdálenosti od stopstanice
+//									double s=m.delka(d.v.MAG_LASO->Element->geo.X4,d.v.MAG_LASO->Element->geo.Y4,CE->geo.X4,CE->geo.Y4);
+//									s=m.castPrepony(s,CE->geo.delka,CE->geo.delkaPud,CE->geo.HeightDepp);
+//						  		//výpočet velikosti bufferu stopstanice
+//									double buf=CE->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice;
+//						  		//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
+//									if(s<=buf)
+//									{
+//										cas+=m.V2WT(ceil((buf-s)/d.v.PP.delka_podvozek),d.v.PP.TT);//připočítání WT na aktuálním vozíku
+//										cas-=(buf-s)/CE->pohon->aRD;//zmenšení délky jen na délku pojezdu
+//						  		}
+//								}
+//							}
+//							//výpočet času pro všechny kromě prvního
+//							else
+//							{
+//                if(d.v.vrat_druh_elementu(CE)==0)cas+=CE->data.PT1+CE->data.PT2+CE->WT+CE->PTotoc+CE->data.WTstop;//přičtení časových složek u S&G elementů
+//								if(CE->eID==0)//odečtení přejezdu v bufferu
+//								{
+//									double buf=CE->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice;
+//									if(s>=buf)cas-=(buf)/CE->pohon->aRD;
+//									else cas-=(s)/CE->pohon->aRD;
+//								}
+//							}
+//							//připočtení čekání na palec při přechodu mezi pohony
+//							if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany==NULL && C->dalsi->Element->pohon!=NULL && CE->pohon!=C->dalsi->Element->pohon)cas+=m.cekani_na_palec(0,C->dalsi->Element->pohon->roztec,C->dalsi->Element->pohon->aRD,3);
+//							if(C->dalsi!=NULL && C->dalsi->Element!=NULL && C->dalsi->sparovany!=NULL && C->dalsi->Element->geo.X2!=C->dalsi->sparovany->geo.X4 && C->dalsi->sparovany->pohon!=NULL && CE->pohon!=C->dalsi->sparovany->pohon)cas+=m.cekani_na_palec(0,C->dalsi->sparovany->pohon->roztec,C->dalsi->sparovany->pohon->aRD,3);
+//							//ukazatelové záležitosti
+//							CE=NULL;delete CE;
+//            }
+//					}
+//					delka+=s;
+//					C=C->dalsi;
+//				}
+//				delete C;C=NULL;
+//				//nastavení popiků pro MB
+//				popisek="; Čas = "+String(m.round2double(cas,2))+" [s]";
+//				if(cas!=cas_pom && mereni_po_trendu)popisek+="; Čas = "+String(m.round2double(cas_pom,2))+" [s]";
+//				if(chyba)popisek+=", nerelevatní časový údaj, na některém úseku nebyl nadefinován pohon";
+//			}
+			popisek="; Čas = "+String(m.round2double(mereni_cas.x,2))+" [s]";
+			if(mereni_cas.x!=mereni_cas.y)popisek+="; Čas = "+String(m.round2double(mereni_cas.y,2))+" [s]";
 			//kontrola přichycení
 			if(d.v.MAG_LASO->sparovany!=NULL && d.v.MAG_LASO->Element->geo.X2==d.v.MAG_LASO->Element->geo.X3 && d.v.MAG_LASO->Element->geo.X3==d.v.MAG_LASO->Element->geo.X4)
 				popisek+=", začátek: "+d.v.MAG_LASO->Element->name;
 			if(d.v.MAG_LASO->predchozi->sparovany!=NULL && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->Element->geo.X3 && d.v.MAG_LASO->predchozi->Element->geo.X3==d.v.MAG_LASO->predchozi->Element->geo.X4)
 				popisek+=", konec: "+d.v.MAG_LASO->predchozi->Element->name;
-			MB(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,"Délka = "+String(m.round2double(delka*1000,2))+" [mm]"+popisek,"",MB_OK,true,false,366,true,true);
+			MB(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,"Délka = "+String(m.round2double(mereni_delka*1000,2))+" [mm]"+popisek,"",MB_OK,true,false,366,true,true);
 			C=NULL;delete C;
 		}
 		Akce=NIC;

@@ -2262,7 +2262,13 @@ void Cvektory::vloz_G_element(TElement *Element,short typ,double X1,double Y1,do
 			}break;
 			case 0://linie
 			{
-				if(delka==0)Element->geo.delka=m.delka(Element->geo.X1,Element->geo.Y1,Element->geo.X4,Element->geo.Y4);//pokud nebyla délka dodána
+				if(Element->geo.HeightDepp!=0)
+				{
+					double d=m.delka(Element->geo.X1,Element->geo.Y1,Element->geo.X4,Element->geo.Y4);//pokud nebyla délka dodána
+					Element->geo.delka=m.castPrepony(d,Element->geo.delka,Element->geo.delkaPud,Element->geo.HeightDepp);
+					Element->geo.delkaPud=d;
+				}
+				else if(delka==0)Element->geo.delka=m.delka(Element->geo.X1,Element->geo.Y1,Element->geo.X4,Element->geo.Y4);//pokud nebyla délka dodána
 				Element->geo.radius=0;
 				Element->geo.rotacni_uhel=0;
 				Element->geo.X2=Element->geo.X1;Element->geo.Y2=Element->geo.Y1;
@@ -2829,7 +2835,6 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				//kontrola zda je element stále na linii
 				if(F->bod_na_geometrii(0,0,Element) || Element->n==vrat_posledni_element_objektu(F->OBJEKT_akt)->n || !kontrola_zmeny_poradi)
 				{
-
 					//kontrola + změna pořadí
 					if(kontrola_zmeny_poradi)
 					{
@@ -2841,7 +2846,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 					if(kontrola_zmeny_poradi)
 					{
 						//aktualizace dalšího elemtnu
-				  	if(Element->dalsi!=NULL)vloz_G_element(Element->dalsi,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
+						if(Element->dalsi!=NULL)vloz_G_element(Element->dalsi,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
 						//aktualizace RT
 						if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){reserve_time(Element,NULL,true,true);reserve_time(Element->sparovany,NULL,true,true);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
 						else reserve_time(Element,NULL,true,true);

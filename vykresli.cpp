@@ -1180,24 +1180,24 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
         //připočítávat casy prvního
 				if(F->scGPCheckBox_meridlo_casy->Checked || (!F->scGPCheckBox_meridlo_casy->Checked && C->Element!=v.MAG_LASO->sparovany))
 				{
-			  	cas+=C->Element->data.WTstop;
-			  	cas_pom+=C->Element->data.WTstop;
 					if(C->Element->eID==0)
 					{
+            cas+=C->Element->data.WTstop;
+						cas_pom+=C->Element->data.WTstop;
 						if(d>=C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)
 						{
 							cas-=(C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)/C->Element->pohon->aRD;
 			  			cas_pom-=(C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)/C->Element->pohon->aRD;
 			  		}
 			  	}
-			  	//připočátávání časů elementu zvlášť, pokud je ve spojáku přichycený element přeskočit (ten započátat pouze do cas_pom)
-			  	if((prichyceno && (C->dalsi!=NULL || (C->dalsi==NULL && C->Element!=F->pom_element))) || !prichyceno)
+					//připočátávání časů elementu zvlášť, pokud je ve spojáku přichycený element přeskočit (ten započátat pouze do cas_pom)
+					if(((prichyceno && (C->dalsi!=NULL || (C->dalsi==NULL && C->Element!=F->pom_element))) || !prichyceno) && v.vrat_druh_elementu(C->Element)==0)
 			  	{
 			  		cas+=C->Element->data.PT1+C->Element->data.PT2+C->Element->PTotoc+C->Element->WT;
 			  		cas_pom+=C->Element->data.PT1+C->Element->data.PT2+C->Element->PTotoc+C->Element->WT;
 			  	}
 			  	//připočátávání času přichyceného elementu do cas_pom
-			  	if(prichyceno && C->dalsi==NULL && C->Element==F->pom_element)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT;
+			  	if(prichyceno && C->dalsi==NULL && C->Element==F->pom_element && v.vrat_druh_elementu(F->pom_element)==0)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT;
 				}
 			}
 			//nastavení typu vykreslení, zarážka na konci || zarážka na začátku || bez zarážky
@@ -1306,7 +1306,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 					cas+=d_pom/F->pom_element->pohon->aRD;
 					cas_pom+=d_pom/F->pom_element->pohon->aRD;
 				}
-				if(prichyceno)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT;
+				if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT;
 			}
 
 			//vykreslovací část
@@ -1350,14 +1350,19 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			//vypočet času přejezdu
 			cas+=delka/F->pom_element->pohon->aRD;
 			cas_pom+=delka/F->pom_element->pohon->aRD;
-			if(prichyceno)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT;
+			if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT;
 			//vykreslení
-      if(prichyceno && cas_pom!=cas)popisek=String(m.round2double(cas,2))+" [s]; "+String(m.round2double(cas_pom,2))+" [s]";
+			if(prichyceno && cas_pom!=cas)popisek=String(m.round2double(cas,2))+" [s]; "+String(m.round2double(cas_pom,2))+" [s]";
 			else popisek=String(m.round2double(cas,2))+" [s]";
 			vykresli_Gelement(canv,X,Y,azimut,0,d,clMeridlo,2,String(m.round2double(d*1000,2))+" [mm]",popisek,3);
 		}
 		else vykresli_Gelement(canv,X,Y,azimut,0,delka,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]");
 	}
+
+	//uložení naměřených hodnot
+	F->mereni_delka=delka;
+	F->mereni_cas.x=cas;
+	F->mereni_cas.y=cas_pom;
 }
 ////---------------------------------------------------------------------------
 //vykreslí měření proti trendu linky
@@ -1664,6 +1669,10 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
     //vykreslení linie bez pohonu
 		else vykresli_Gelement(canv,X,Y,azimut,0,delka,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]");
 	}
+
+  //uložení naměřených hodnot
+	F->mereni_delka=delka;
+	F->mereni_cas.x=F->mereni_cas.y=cas;
 }
 ////---------------------------------------------------------------------------
 //vykreslí teploměry a cestu mezi nimi
@@ -5232,6 +5241,10 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_do)
 	if(F->Akce==F->GEOMETRIE || F->Akce==F->GEOMETRIE_LIGHT)
 	{
 		if(Element_do->geo.typ==0)vykresli_kotu(canv,Element_do->geo.X1,Element_do->geo.Y1,Element_do->geo.X4,Element_do->geo.Y4,Element_do,F->OBJEKT_akt->koty_elementu_offset.y,highlight);
+//		{
+//			String hodnota=
+//			vykresli_kotu(canv,m.L2Px(Element_do->geo.X1),m.L2Py(Element_do->geo.Y1),m.L2Px(Element_do->geo.X4),m.L2Py(Element_do->geo.Y4),Element_do,F->OBJEKT_akt->koty_elementu_offset.y,highlight);
+//		}
 	}
 	//////bežná funkcionalita
 	else if(Element_do->eID!=MaxInt)
@@ -5301,15 +5314,16 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_do)
 //v metrických jednotkách kromě width, zde v px + automaticky dopočítává délku a dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně, aktElement pokud bude NULL, předpokládá se, že je to kóta kabiny
 void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,Cvektory::TElement *aktElement,double Offset,short highlight,float width,TColor color,bool LO_kota,Cvektory::TKomora *komora)
 {    //Jednotky=" [s]";if(F->DKunit==3)Jednotky=" [min]";
-	double delka=0;
+	double delka=m.delka(X1,Y1,X2,Y2);
+	if(aktElement!=NULL)delka=m.castPrepony(delka,aktElement->geo.delka,aktElement->geo.delkaPud,aktElement->geo.HeightDepp);
 	AnsiString T="";
 	if(F->OBJEKT_akt->pohon==NULL && F->DKunit>1)F->DKunit=(TForm1::Tm_mm)(F->DKunit-2);//ošetření pro případ není pohon a jsou špatně nastaveny jednotky
 	if(F->DKunit>1)//zobrazení kót v čase
 	{
 		if(aktElement!=NULL && aktElement->pohon!=NULL && aktElement->pohon->aRD>0 || komora!=NULL && F->OBJEKT_akt->pohon!=NULL && F->OBJEKT_akt->pohon->aRD>0)
 		{
-			if(aktElement!=NULL)delka=m.delka(X1,Y1,X2,Y2)/aktElement->pohon->aRD/(1+59.0*(F->DKunit-2));//výpočet délky a šířky kabiny + případný převod m->mm
-			else delka=m.delka(X1,Y1,X2,Y2)/F->OBJEKT_akt->pohon->aRD/(1+59.0*(F->DKunit-2));//pro komory v POW
+			if(aktElement!=NULL)delka=delka/aktElement->pohon->aRD/(1+59.0*(F->DKunit-2));//výpočet délky a šířky kabiny + případný převod m->mm
+			else delka=delka/F->OBJEKT_akt->pohon->aRD/(1+59.0*(F->DKunit-2));//pro komory v POW
 		}
 		else T=F->ls->Strings[274];//"pohon nevybrán"
 		//if(aktElement!=NULL) delka=v.vzdalenost_od_predchoziho_elementu(aktElement)/F->OBJEKT_akt->pohon->aRD/(1+59.0*(F->DKunit-2));//výpočet vzdálenosti mezi elementy
@@ -5317,7 +5331,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double
 	}
 	else//standardní zobrazení ve vzdálenost
 	{
-		delka=m.delka(X1,Y1,X2,Y2)*(1+999*F->DKunit);//výpočet délky a šířky kabiny + případný převod m->mm
+		delka=delka*(1+999*F->DKunit);//výpočet délky a šířky kabiny + případný převod m->mm
 		//if(LO_kota)delka=m.round2double(delka,0);//problém v zaokrouhlování u LO kót
 		//if(aktElement!=NULL)delka=v.vzdalenost_od_predchoziho_elementu(aktElement)*(1+999*F->DKunit);//výpočet vzdálenosti mezi elementy
 		//if(LO_kota)delka=F->outDK(m.round2double(F->vzdalenost_meziLO(aktElement,F->OBJEKT_akt->orientace),2));

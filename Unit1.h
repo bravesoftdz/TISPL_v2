@@ -741,7 +741,9 @@ public:		// User declarations
 	Tvlakno_obraz *vlakno_obraz;
 	//bool vlakno_PanCreateState;
 	bool zobrazit_upozorneni_teplomery;
-  bool mereni_po_trendu;//slouží pro uchovávání stavu, zda mìøím po trendu nebo proti, pøedáváno z Cvykresli::vykresli_meridlo()
+	bool mereni_po_trendu;//slouží pro uchovávání stavu, zda mìøím po trendu nebo proti, pøedáváno z Cvykresli::vykresli_meridlo()
+	double mereni_delka;//uchovává v sobì namìøenou délku
+	TPointD mereni_cas;//uchovává v sobì namìøený èas bez èasù v elementech (x) a s èasem elemntù (y)
 
 	//metody
 	void kurzor(TKurzory typ_kurzor);

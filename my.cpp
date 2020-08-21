@@ -377,8 +377,15 @@ double Cmy::delkaSklon(double delka,double vyska)
 //vrátí délku části přepony podle části délky půdorysny
 double Cmy::castPrepony(double castPud,double delka,double delkaPud,double vyska)
 {
-	if(vyska==0 || castPud>delkaPud)return castPud;
+	if(vyska==0)return castPud;
 	else return castPud/cos(asin(vyska/delka));
+}
+/////////////////////////////////////////////////////////////////////////////
+//vrátí půdorysnou délku z části přepony
+double Cmy::vrat_delku_z_casti_prepony(double cast_prepony,double delkaPud,double vyska)
+{
+	if(vyska==0)return cast_prepony;
+	else return cast_prepony*cos(atan(vyska/delkaPud));
 }
 /////////////////////////////////////////////////////////////////////////////
 //prec=preciznost výpočtu

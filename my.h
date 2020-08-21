@@ -53,6 +53,7 @@ class Cmy
 	double delka(double X1,double Y1,double X2,double Y2);//vrátí délku mezi body v absolutní hodnotě
 	double delkaSklon(double delka,double vyska);//vrátí délku sklonu, může být zadáno i klesání
 	double castPrepony(double castPud,double delka,double delkaPud,double vyska);//vrátí délku části přepony podle části délky půdorysny
+  double vrat_delku_z_casti_prepony(double cast_prepony,double delkaPud,double vyska);//vrátí půdorysnou délku z části přepony
 	double azimut(double X1,double Y1,double X2,double Y2);
 	double uhel(double X1,double Y1,double X2,double Y2);
 	TPointD rotace(double delka, double akt_uhel, double rotace); //pozor, akt_uhel neni azimut, nutno používat akt_uhel=180-dodaný azimut (potom odpovídá orientaci tzn. např. 270 je na "vpravo, na západě"), příklad rotace(10,180-270,90); orotuje 10 metrovou linii směrující vodorovně zleva doprava o 90° proti směru hodinových ručiček tj. na 180° orientace, rotace - naopak rotuje proti směru hodinových ručiček
