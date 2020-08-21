@@ -2262,13 +2262,14 @@ void Cvektory::vloz_G_element(TElement *Element,short typ,double X1,double Y1,do
 			}break;
 			case 0://linie
 			{
-				if(Element->geo.HeightDepp!=0)
-				{
-					double d=m.delka(Element->geo.X1,Element->geo.Y1,Element->geo.X4,Element->geo.Y4);//pokud nebyla délka dodána
-					Element->geo.delka=m.castPrepony(d,Element->geo.delka,Element->geo.delkaPud,Element->geo.HeightDepp);
-					Element->geo.delkaPud=d;
-				}
-				else if(delka==0)Element->geo.delka=m.delka(Element->geo.X1,Element->geo.Y1,Element->geo.X4,Element->geo.Y4);//pokud nebyla délka dodána
+//				if(Element->geo.HeightDepp!=0)
+//				{
+//					double d=m.delka(Element->geo.X1,Element->geo.Y1,Element->geo.X4,Element->geo.Y4);//pokud nebyla délka dodána
+//					Element->geo.delka=m.castPrepony(d,Element->geo.delka,Element->geo.delkaPud,Element->geo.HeightDepp);
+//					Element->geo.delkaPud=d;
+//				}
+//				else
+				if(delka==0)Element->geo.delka=m.delka(Element->geo.X1,Element->geo.Y1,Element->geo.X4,Element->geo.Y4);//pokud nebyla délka dodána
 				Element->geo.radius=0;
 				Element->geo.rotacni_uhel=0;
 				Element->geo.X2=Element->geo.X1;Element->geo.Y2=Element->geo.Y1;
