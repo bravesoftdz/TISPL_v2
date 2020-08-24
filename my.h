@@ -64,6 +64,7 @@ class Cmy
 	void zrcadli_polygon(TPointD *POLE,long posledni_prvek,double uhel);//zajistí přezrcadlení polygonů zadaného v logických souřadnicích pomocí pole dle požadovaného parametru uhel zrcadlení
 	TPointDbool zkratit_polygon_na_roztec(double d, double r,double xp, double yp, double x0, double y0, double x1, double y1);//d - delka linky,r - roztec palcuxp, yp - souradnice oznaceneho bodu x0, y0, x1, y1- souradnice sousedu k oznacenemu bodu
 	double cekani_na_palec(double cas, double roztec_palcu, double rychlost_dopravniku,int funkce);//vrátí dobu čekání na palec v sec, zadání je u čas (výstupu vozíku z objektu) v min, rozteče je v m resp. v m za z minu u rychlosti dopravniku
+	double latence_mezi_stopkami(double RD);//vratí v jednotkách času [s] zpoždění mezí reakcí stopek, RD - rychlost pohonu, na které je stopka z které je vyslána informace o možnosti otevření stopky předchozí
 	double mezera_mezi_voziky(double dJ,double sJ,double rotace,double roztec,double mezera=0,unsigned short typ=0);//metoda vratí minimální možnou mezeru mezi vozíky (proměnná vozíku prezentuje šířku čí délku vozíku dle aktuální rotace v objektu), za předpokladu, že je parametr mezera roven 0, v případě nenulového parametru mezery vrací vhodnou nejmenší hodnotu této mezery vůči rozměrům rozteč a rozměr vozíku, lze parametrizovat vracený výsledek 0 (implicitně) - kritická mezera, 1 či 281 - mezera mezi JIG, 2 či 282 mezera mezi PODVOZKY
 	double mezera(double dJ,double sJ,double rotace,double Rx,double R,short typ=-1);//vrátí mezeru dle rozestupu v palcích a rozteče a velikosti vozíku dle rotace, typ==-1 vrátí velikost mezery automaticky co je kritištější, zda podovzek či jig, 0 - podvozek, 1 - jig
 	double mezera(double rotace,double Rz,short typ=-1);//vrátí mezeru dle rozestupu a rotace (resp. velikosti vozíku spočítané dle rotace), typ==-1 vrátí velikost mezery automaticky co je kritištější, zda podovzek či jig, 0 - podvozek, 1 - jig
@@ -82,7 +83,7 @@ class Cmy
 	double Dotoc(double PTo,double RD);//dle aktuálního RD a času otáčení otoče vrátí délku otáčení
 	TPointD zona_otaceni(double rotace_pred,double rotace_otoce,double delka_otoc);//vypočítá velikost zóny otáčení před a za otočí
 	//double RT(double PT,double delka_prejezdu,double RD,double R,double WT=-1);//vratí hodnotu RT (reserve time), ta může být i záporná, WT čekání na palac si dopočítává metoda sama, pokud WT==-1, pokud je dosazena kladná hodnota větší než 0, tak je ta uvažovaná jako WT, 0 hodnota znamena WT čekání na palec neuvažovat
-	double RT(double PT,double doba_prejezdu,double WT,unsigned int pocet_voziku_v_bufferu,double RD);//přetížená metoda
+	double RT(double PT,double doba_prejezdu,double WT,unsigned int pocet_voziku_v_bufferu,double RD,double WT0=0);//přetížená metoda WT0-vstupní čekání
 	double RDo(double Dotoc,double PTo);//vratí RD dle délky otoče a času otáčení
 	double dopRD(double dJ,double sJ,double rotace,double R,double TT,double RD);//vrátí doporučenou nejbližší rychlost pohonu, k rychlosti zadané tak, aby se reflektovala rozteč mezi palci i takt
 	bool kontrola_zda_zmena_R_ovlivni_RzRD(double R_puvodni,double R_nove);//vrací true pokud nová rozteč (R) ovlivní Rz resp RD

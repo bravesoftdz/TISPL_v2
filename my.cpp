@@ -911,6 +911,11 @@ double Cmy::cekani_na_palec(double cas, double roztec_palcu,double rychlost_dopr
 	return RET;
 }
 /////////////////////////////////////////////////////////////////////////////
+double Cmy::latence_mezi_stopkami(double RD)//vratí v jednotkách času [s] zpoždění mezí reakcí stopek, RD - rychlost pohonu, na které je stopka z které je vyslána informace o možnosti otevření stopky předchozí
+{
+  return 0.1/RD;//aktuálně nastaveno na 10 cm
+}
+/////////////////////////////////////////////////////////////////////////////
 //metoda vratí minimální možnou mezeru mezi vozíky, pokud je parametr mezera roven 0, v případě nenulového parametru mezery vrací vhodnou nejbližší hodnotu této mezery vůči rozměrům rozteč a rozměr vozíku, pokud nebude zadaná rozteč tj. bude 0, vrací hodnotu 0, lze parametrizovat vracený výsledek 0 (implicitně) - kritická mezera, 1 či 281 - mezera mezi JIG, 2 či 282 mezera mezi PODVOZKY
 double Cmy::mezera_mezi_voziky(double dJ,double sJ,double rotace,double roztec,double mezera,unsigned short typ)
 {
@@ -1111,7 +1116,7 @@ double Cmy::Dotoc(double PTo,double RD)
 //		return F->d.v.PP.TT-(delka_prejezdu/RD+PT+WT);
 //	}
 //	else return 0;
-//}double Cmy::RT(double PT,double doba_prejezdu,double WT,unsigned int pocet_voziku_v_bufferu,double RD)
+//}double Cmy::RT(double PT,double doba_prejezdu,double WT,unsigned int pocet_voziku_v_bufferu,double RD,double WT0)
 {
   //	if(RD==0 || pocet_voziku==0) return 0;//pokud není přiřazen pohon nebo se jedná o průjezdní stopku
 //	else
@@ -1136,9 +1141,9 @@ double Cmy::Dotoc(double PTo,double RD)
 	if(RD==0 || pocet_voziku_v_bufferu==0)return 0;//pokud není přiřazen pohon nebo se jedná o průjezdní stopku
 	else
 	{                                                         //ubraná časová čast přejezdu o buffer, jeden vozík již zoohledněn (proto -1)
-		if(pocet_voziku_v_bufferu==1)
-		return F->d.v.PP.TT+/*(pocet_voziku_v_bufferu-1)*F->d.v.PP.TT*/-(fmod(doba_prejezdu-(pocet_voziku_v_bufferu-1/*nastavených - stojicích v bufferu*/)*F->d.v.PP.delka_podvozek/RD,F->d.v.PP.TT)+PT+WT);
-		else return F->d.v.PP.TT*pocet_voziku_v_bufferu;
+		if(pocet_voziku_v_bufferu==1)                                                                         //tj. 0
+		return F->d.v.PP.TT+/*(pocet_voziku_v_bufferu-1)*F->d.v.PP.TT*/-(fmod(doba_prejezdu-(pocet_voziku_v_bufferu-1/*nastavených - stojicích v bufferu*/)*F->d.v.PP.delka_podvozek/RD,F->d.v.PP.TT)+PT+WT+WT0+latence_mezi_stopkami(RD));
+		else return F->d.v.PP.TT-(WT+F->d.v.PP.delka_podvozek/RD+WT);//WT opravdu 2x při uchycení pře mikropřejezdem a potom na stopce//F->d.v.PP.TT*pocet_voziku_v_bufferu - čas mezi stopkami, nikoliv rezerva na stopce;
 	}
 
 	//doba_prejezdu-
