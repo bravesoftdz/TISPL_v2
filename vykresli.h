@@ -17,6 +17,7 @@ class Cvykresli
 	Cvektory::TProces *Pom_proces;//pomocný ukazatel na proces, využívá se v pøi naèítání pùvodnì vytvoøených náhodných hodnot èekání na palec
 	short oY;//ofset na ose Y, 5 pouze grafická korekce
 	float sizeP;//velikost textù popiskù elementù v knihovnì
+  bool prichyceno_na_vozik;
 
 	public:
 	Cvykresli();//konstruktor

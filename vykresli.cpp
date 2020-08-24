@@ -969,6 +969,7 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 	TPointD bod,P;
 	bod.x=MaxInt;bod.y=MaxInt;
 	bool ret=false;
+	prichyceno_na_vozik=false;
 	F->TIP="";
 
 	//vykreslení před měřením
@@ -1090,6 +1091,7 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 					F->akt_souradnice_kurzoru.x=V->X;F->akt_souradnice_kurzoru.y=V->Y;
 					//ret=true;//nepřichyceno na element = nevracet přichyceno
 					F->TIP="Přichyceno na vozík č. "+String(V->n);
+          prichyceno_na_vozik=true;//pomocná proměnná pro přípočítávání TT v bufferu
 					break;
 				}
 				V=V->dalsi;
@@ -1189,27 +1191,54 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
         //čas přejezdu
 				cas+=d/C->Element->pohon->aRD;
 				cas_pom+=d/C->Element->pohon->aRD;
-        //připočítávat casy prvního
-				if(F->scGPCheckBox_meridlo_casy->Checked || (!F->scGPCheckBox_meridlo_casy->Checked && C->Element!=v.MAG_LASO->sparovany))
+				//připočítávat casy prvního
+				//F->Memo(String(v.MAG_LASO->Element->geo.X2)+" == "+String(v.MAG_LASO->Element->geo.X3)+" == "+String(v.MAG_LASO->sparovany->geo.X4));
+				if(F->scGPCheckBox_meridlo_casy->Checked || (!F->scGPCheckBox_meridlo_casy->Checked && (C->Element!=v.MAG_LASO->sparovany || (C->Element==v.MAG_LASO->sparovany && v.MAG_LASO->sparovany!=NULL && v.MAG_LASO->Element->geo.X2!=v.MAG_LASO->sparovany->geo.X4))))
 				{
+          double buf=0;
 					if(C->Element->eID==0)
 					{
-            cas+=C->Element->data.WTstop;
-						cas_pom+=C->Element->data.WTstop;
-						if(d>=C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)
-						{
-							cas-=(C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)/C->Element->pohon->aRD;
-			  			cas_pom-=(C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)/C->Element->pohon->aRD;
-			  		}
+//						cas+=C->Element->data.WTstop;
+//						cas_pom+=C->Element->data.WTstop;
+//						if(d>=C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)
+//						{
+//							cas-=(C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)/C->Element->pohon->aRD;
+//							cas_pom-=(C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)/C->Element->pohon->aRD;
+//						}
 			  	}
 					//připočátávání časů elementu zvlášť, pokud je ve spojáku přichycený element přeskočit (ten započátat pouze do cas_pom)
 					if(((prichyceno && (C->dalsi!=NULL || (C->dalsi==NULL && C->Element!=F->pom_element))) || !prichyceno) && v.vrat_druh_elementu(C->Element)==0)
-			  	{
-			  		cas+=C->Element->data.PT1+C->Element->data.PT2+C->Element->PTotoc+C->Element->WT;
-			  		cas_pom+=C->Element->data.PT1+C->Element->data.PT2+C->Element->PTotoc+C->Element->WT;
-			  	}
+					{
+						if(C->Element->eID==0)
+						{
+							cas+=C->Element->data.WTstop;
+							cas_pom+=C->Element->data.WTstop;
+							if(C->Element->data.pocet_voziku>1)
+							{
+								buf=(C->Element->data.pocet_voziku-1)*v.PP.delka_podvozek-v.PP.uchyt_pozice;
+								if(d>=buf)
+								{
+									cas-=buf/C->Element->pohon->aRD;
+									cas_pom-=buf/C->Element->pohon->aRD;
+								}
+							}
+						}
+						cas+=C->Element->data.PT1+C->Element->data.PT2+C->Element->PTotoc+C->Element->WT;
+						cas_pom+=C->Element->data.PT1+C->Element->data.PT2+C->Element->PTotoc+C->Element->WT;
+					}
+					else if(C->Element->eID==0 && C->Element->data.pocet_voziku>1)
+					{
+						cas+=C->Element->data.WTstop-v.PP.TT;//odečten jeden vozík
+						cas_pom+=C->Element->data.WTstop-v.PP.TT;
+						buf=(C->Element->data.pocet_voziku-1)*v.PP.delka_podvozek-v.PP.uchyt_pozice;
+						if(d>=buf)
+						{
+							cas-=buf/C->Element->pohon->aRD;
+							cas_pom-=buf/C->Element->pohon->aRD;
+						}
+          }
 			  	//připočátávání času přichyceného elementu do cas_pom
-			  	if(prichyceno && C->dalsi==NULL && C->Element==F->pom_element && v.vrat_druh_elementu(F->pom_element)==0)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT;
+					if(prichyceno && C->dalsi==NULL && C->Element==F->pom_element && v.vrat_druh_elementu(F->pom_element)==0)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT+v.PP.TT;
 				}
 			}
 			//nastavení typu vykreslení, zarážka na konci || zarážka na začátku || bez zarážky
@@ -1297,9 +1326,10 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			{
 				double d_pom=d;
 				//přičítání času čekání při přejíždění nad pozicemi bufferu
-				if(F->pom_element->eID==0)
+				if(F->pom_element->eID==0 && F->pom_element->data.pocet_voziku>1)
 				{
-					double rozdil=F->pom_element->geo.delka-(F->pom_element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice);
+					double rozdil=F->pom_element->geo.delka-((F->pom_element->data.pocet_voziku-1)*v.PP.delka_podvozek-v.PP.uchyt_pozice);
+					if(prichyceno_na_vozik)d+=F->velikost_citelne_oblasti_elementu;//WA
 					if(d>rozdil)
 					{
 						cas+=m.V2WT(ceil((d-rozdil)/v.PP.delka_podvozek),v.PP.TT);//připočítání WT na aktuálním vozíku
@@ -1318,7 +1348,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 					cas+=d_pom/F->pom_element->pohon->aRD;
 					cas_pom+=d_pom/F->pom_element->pohon->aRD;
 				}
-				if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT;
+				if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT+v.PP.TT;
 			}
 
 			//vykreslovací část
@@ -1342,7 +1372,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 		{
 			//kontrola + vypočet WT na vozík v bufferu
 			d=delka;
-			if(F->pom_element->eID==0)
+			if(F->pom_element->eID==0 && F->pom_element->data.pocet_voziku>1)
 			{
 				//výpočet vzdálenosti od stopstanice
 				double s=m.delka(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,F->pom_element->geo.X4,F->pom_element->geo.Y4);
@@ -1350,11 +1380,14 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 				double check=m.delka(v.MAG_LASO->Element->geo.X4,v.MAG_LASO->Element->geo.Y4,F->pom_element->geo.X4,F->pom_element->geo.Y4);
 				check=m.castPrepony(check,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
 				//výpočet velikosti bufferu stopstanice
-				double buf=F->pom_element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;
+				if(prichyceno_na_vozik)s-=F->velikost_citelne_oblasti_elementu;//WA
+				double buf=(F->pom_element->data.pocet_voziku-1)*v.PP.delka_podvozek-v.PP.uchyt_pozice;
 				if(s<buf)//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
 				{
-					cas+=m.V2WT(ceil((buf-s)/v.PP.delka_podvozek),v.PP.TT);//připočítání WT na aktuálním vozíku
-					cas_pom+=m.V2WT(ceil((buf-s)/v.PP.delka_podvozek),v.PP.TT);
+					unsigned int pocet=ceil((buf-s)/v.PP.delka_podvozek);
+					cas+=m.V2WT(pocet,v.PP.TT);//připočítání WT na aktuálním vozíku
+					cas_pom+=m.V2WT(pocet,v.PP.TT);
+					if(prichyceno_na_vozik)s+=F->velikost_citelne_oblasti_elementu;//WA
 					delka-=buf-s;//zmenšení délky jen na délku pojezdu
 					if(check<buf)delka=0;
 				}
@@ -1362,11 +1395,12 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			//vypočet času přejezdu
 			cas+=delka/F->pom_element->pohon->aRD;
 			cas_pom+=delka/F->pom_element->pohon->aRD;
-			if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT;
+			if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT+v.PP.TT;
 			//vykreslení
 			if(prichyceno && cas_pom!=cas)popisek=String(m.round2double(cas,2))+" [s]; "+String(m.round2double(cas_pom,2))+" [s]";
 			else popisek=String(m.round2double(cas,2))+" [s]";
 			vykresli_Gelement(canv,X,Y,azimut,0,d,clMeridlo,2,String(m.round2double(d*1000,2))+" [mm]",popisek,3);
+      delka=d;
 		}
 		else vykresli_Gelement(canv,X,Y,azimut,0,delka,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]");
 	}
@@ -5572,21 +5606,21 @@ void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,Cvektory::TElement *Elem
   }
 	//samotný výpis
 	TextFraming(canv,x,y,Text);
-  float zAA=1.0;if(F->antialiasing)zAA=3.0;
-	Element->citelna_oblast.rect8=TRect(m.round(x/zAA),m.round(y/zAA),m.round(x+W/zAA),m.round(y+H/zAA));//HeightDeep hodnota
+	float zAA=1.0;if(F->antialiasing)zAA=3.0;
+	Element->citelna_oblast.rect8=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+W)/zAA),m.round((y+H)/zAA));//HeightDeep hodnota
 
 	//popisek začátku S/K
 //	Text="+-0";W=canv->TextWidth(Text);
 //	x=points[1].x-W/2.0;y=points[1].y-H;
 //	TextFraming(canv,x,y,Text);
-//	Element->citelna_oblast.rect6=TRect(m.round(x/zAA),m.round(y/zAA),m.round(x+W/zAA),m.round(y+H/zAA));//začátek S/K hodnota
-
-	//popisek konce S/K
+//	Element->citelna_oblast.rect8=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+W)/zAA),m.round((y+H)/zAA));//začátek S/K hodnota
+//
+//	//popisek konce S/K
 //	Text="";if(HeightDeep>0)Text="+";
 //	Text+=String(HeightDeep);W=canv->TextWidth(Text);
 //	x=points[2].x-W/2.0;y=points[2].y-H;
 //	TextFraming(canv,x,y,Text);
-//	Element->citelna_oblast.rect7=TRect(m.round(x/zAA),m.round(y/zAA),m.round(x+W/zAA),m.round(y+H/zAA));//konec S/K hodnota
+//	Element->citelna_oblast.rect8=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+W)/zAA),m.round((y+H)/zAA));//konec S/K hodnota
 
 	//pro jistotu vrácení do původního stavu
 	canv->Font->Orientation=0;
