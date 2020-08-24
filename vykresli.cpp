@@ -1238,7 +1238,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 						}
           }
 			  	//připočátávání času přichyceného elementu do cas_pom
-					if(prichyceno && C->dalsi==NULL && C->Element==F->pom_element && v.vrat_druh_elementu(F->pom_element)==0)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT+v.PP.TT;
+					if(prichyceno && C->dalsi==NULL && C->Element==F->pom_element && v.vrat_druh_elementu(F->pom_element)==0)cas_pom=ceil(cas/v.PP.TT)*v.PP.TT;//cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT+v.PP.TT;
 				}
 			}
 			//nastavení typu vykreslení, zarážka na konci || zarážka na začátku || bez zarážky
@@ -1348,7 +1348,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 					cas+=d_pom/F->pom_element->pohon->aRD;
 					cas_pom+=d_pom/F->pom_element->pohon->aRD;
 				}
-				if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT+v.PP.TT;
+				if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0)cas_pom=ceil(cas/v.PP.TT)*v.PP.TT;//cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT+v.PP.TT;
 			}
 
 			//vykreslovací část
@@ -1395,7 +1395,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			//vypočet času přejezdu
 			cas+=delka/F->pom_element->pohon->aRD;
 			cas_pom+=delka/F->pom_element->pohon->aRD;
-			if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT+v.PP.TT;
+			if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0)cas_pom=ceil(cas/v.PP.TT)*v.PP.TT;//cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT+v.PP.TT;
 			//vykreslení
 			if(prichyceno && cas_pom!=cas)popisek=String(m.round2double(cas,2))+" [s]; "+String(m.round2double(cas_pom,2))+" [s]";
 			else popisek=String(m.round2double(cas,2))+" [s]";
