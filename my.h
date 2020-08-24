@@ -52,7 +52,7 @@ class Cmy
 	double bezierDelka(int x1,int y1,int x2,int y2,int x3,int y3,int x4,int y4,double prec=0.001);//vrátí délku bézierovy křivky, prec=preciznost výpočtu
 	double delka(double X1,double Y1,double X2,double Y2);//vrátí délku mezi body v absolutní hodnotě
 	double delkaSklon(double delka,double vyska);//vrátí délku sklonu, může být zadáno i klesání
-	double castPrepony(double castPud,double delka,double delkaPud,double vyska);//vrátí délku části přepony podle části délky půdorysny
+	double castPrepony(double castPud,double delkaPud,double vyska);//vrátí délku části přepony podle části délky půdorysny
   double vrat_delku_z_casti_prepony(double cast_prepony,double delkaPud,double vyska);//vrátí půdorysnou délku z části přepony
 	double azimut(double X1,double Y1,double X2,double Y2);
 	double uhel(double X1,double Y1,double X2,double Y2);

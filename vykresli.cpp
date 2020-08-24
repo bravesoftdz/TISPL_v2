@@ -969,6 +969,7 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 	TPointD bod,P;
 	bod.x=MaxInt;bod.y=MaxInt;
 	bool ret=false;
+	F->TIP="";
 
 	//vykreslení před měřením
 	if(F->prichytavat_k_mrizce==1 && v.MAG_LASO->Element==NULL && v.MAG_LASO->sparovany==NULL && F->pom_element==NULL)
@@ -985,6 +986,7 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 			if(P.x!=-1*MaxInt && P.y!=-1*MaxInt)
 			{
 				bod=P;
+				F->TIP="Přichyceno na vrátka objektu";
 				break;
 			}
       //kontrola fce. elementů
@@ -993,6 +995,7 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 				bod.x=E->geo.X4;
 				bod.y=E->geo.Y4;
 				E->stav=2;
+				F->TIP="Přichyceno na "+E->name;
         break;
 			}
       //kontrola začátku a konce stoupání
@@ -1002,12 +1005,14 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 				{
 					bod.x=E->geo.X1;
 					bod.y=E->geo.Y1;
+					F->TIP="Přichyceno na začátek S/K";
 					break;
         }
 				if(m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,E->geo.X4,E->geo.Y4,F->velikost_citelne_oblasti_elementu))
 				{
 					bod.x=E->geo.X4;
 					bod.y=E->geo.Y4;
+          F->TIP="Přichyceno na konec S/K";
 					break;
 				}
 			}
@@ -1026,6 +1031,7 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 				{
 					bod.x=V->X;
 					bod.y=V->Y;
+					F->TIP="Přichyceno na vozík č. "+String(V->n);
 					break;
         }
 				V=V->dalsi;
@@ -1059,13 +1065,15 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 			canv->Ellipse(m.L2Px(F->pom_element->geo.X4)-width,m.L2Py(F->pom_element->geo.Y4)-width,m.L2Px(F->pom_element->geo.X4)+width,m.L2Py(F->pom_element->geo.Y4)+width);
 			F->akt_souradnice_kurzoru.x=F->pom_element->geo.X4;F->akt_souradnice_kurzoru.y=F->pom_element->geo.Y4;
 			ret=true;
+			F->TIP="Přichyceno na "+F->pom_element->name;
 		}
 		else if(F->pom_element->predchozi->stav==2 && (F->pom_element->predchozi!=v.MAG_LASO->sparovany || (v.MAG_LASO->Element->geo.X4!=v.MAG_LASO->sparovany->geo.X4 || v.MAG_LASO->Element->geo.Y4!=v.MAG_LASO->sparovany->geo.Y4)))
 		{
 			canv->Ellipse(m.L2Px(F->pom_element->predchozi->geo.X4)-width,m.L2Py(F->pom_element->predchozi->geo.Y4)-width,m.L2Px(F->pom_element->predchozi->geo.X4)+width,m.L2Py(F->pom_element->predchozi->geo.Y4)+width);
 			F->akt_souradnice_kurzoru.x=F->pom_element->predchozi->geo.X4;F->akt_souradnice_kurzoru.y=F->pom_element->predchozi->geo.Y4;
 			ret=true;
-      F->pom_element=F->pom_element->predchozi;
+			F->pom_element=F->pom_element->predchozi;
+			F->TIP="Přichyceno na "+F->pom_element->name;
 		}
 		//kontrola zda jsem na vrátkách objektu
 		else
@@ -1081,6 +1089,7 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 					pokracovat=false;
 					F->akt_souradnice_kurzoru.x=V->X;F->akt_souradnice_kurzoru.y=V->Y;
 					//ret=true;//nepřichyceno na element = nevracet přichyceno
+					F->TIP="Přichyceno na vozík č. "+String(V->n);
 					break;
 				}
 				V=V->dalsi;
@@ -1096,6 +1105,7 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 		  		//vykreslení
 					canv->Ellipse(m.L2Px(P.x)-width,m.L2Py(P.y)-width,m.L2Px(P.x)+width,m.L2Py(P.y)+width);
 					F->akt_souradnice_kurzoru=P;
+          F->TIP="Přichyceno na vrátka objektu";
 					//ret=true;
 		  	}
 		  	//kontrola začátku a konce stoupání / klesání
@@ -1106,12 +1116,14 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 						canv->Ellipse(m.L2Px(F->pom_element->geo.X1)-width,m.L2Py(F->pom_element->geo.Y1)-width,m.L2Px(F->pom_element->geo.X1)+width,m.L2Py(F->pom_element->geo.Y1)+width);
 						F->akt_souradnice_kurzoru.x=F->pom_element->geo.X1;F->akt_souradnice_kurzoru.y=F->pom_element->geo.Y1;
 						ret=true;
+						F->TIP="Přichyceno na začátek S/K";
 					}
 					if(m.delka(F->pom_element->geo.X4,F->pom_element->geo.Y4,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y)<=F->velikost_citelne_oblasti_elementu)
 					{
 						canv->Ellipse(m.L2Px(F->pom_element->geo.X4)-width,m.L2Py(F->pom_element->geo.Y4)-width,m.L2Px(F->pom_element->geo.X4)+width,m.L2Py(F->pom_element->geo.Y4)+width);
 						F->akt_souradnice_kurzoru.x=F->pom_element->geo.X4;F->akt_souradnice_kurzoru.y=F->pom_element->geo.Y4;
 						ret=true;
+            F->TIP="Přichyceno na konec S/K";
 					}
 				}
 			}
@@ -1150,7 +1162,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			else if(C->Element->geo.typ==0)
 			{
 				d=m.delka(X,Y,C->Element->geo.X4,C->Element->geo.Y4);
-				d=m.castPrepony(d,C->Element->geo.delka,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
+				d=m.castPrepony(d,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
 			}
 			else
 			{
@@ -1277,7 +1289,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			//výpočetní část
 			TPointD konec=v.bod_na_geometrii(F->pom_element);
 			delka_Pud=d=m.delka(X,Y,konec.x,konec.y);
-			d=m.castPrepony(d,F->pom_element->geo.delka,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
+			d=m.castPrepony(d,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
 			delka+=d;
 
 			//vypočet času
@@ -1323,7 +1335,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 		X=v.MAG_LASO->Element->geo.X1;Y=v.MAG_LASO->Element->geo.Y1;
 		//výpočetní část
 		delka=m.delka(X,Y,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);
-		if(F->pom_element!=NULL)delka=m.castPrepony(delka,F->pom_element->geo.delka,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
+		if(F->pom_element!=NULL)delka=m.castPrepony(delka,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
 		azimut=m.azimut(X,Y,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);
 		//výpočt času a vykreslení
 		if(v.MAG_LASO->dalsi==NULL && v.MAG_LASO->sparovany!=NULL && F->pom_element!=NULL && F->pom_element->pohon!=NULL && v.MAG_LASO->sparovany==F->pom_element)
@@ -1334,9 +1346,9 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			{
 				//výpočet vzdálenosti od stopstanice
 				double s=m.delka(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,F->pom_element->geo.X4,F->pom_element->geo.Y4);
-				s=m.castPrepony(s,F->pom_element->geo.delka,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
+				s=m.castPrepony(s,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
 				double check=m.delka(v.MAG_LASO->Element->geo.X4,v.MAG_LASO->Element->geo.Y4,F->pom_element->geo.X4,F->pom_element->geo.Y4);
-				check=m.castPrepony(check,F->pom_element->geo.delka,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
+				check=m.castPrepony(check,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
 				//výpočet velikosti bufferu stopstanice
 				double buf=F->pom_element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;
 				if(s<buf)//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
@@ -1395,7 +1407,7 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
 			else if(C->Element->geo.typ==0)
 			{
 				d=m.delka(X,Y,C->Element->geo.X1,C->Element->geo.Y1);
-				d=m.castPrepony(d,C->Element->geo.delka,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
+				d=m.castPrepony(d,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
 			}
 			else
 			{
@@ -1447,9 +1459,9 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
 					{
 						//výpočet vzdálenosti od stopstanice
 						double check=m.delka(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,C->Element->geo.X4,C->Element->geo.Y4);
-						check=m.castPrepony(check,C->Element->geo.delka,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
+						check=m.castPrepony(check,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
 						double s=m.delka(v.MAG_LASO->Element->geo.X4,v.MAG_LASO->Element->geo.Y4,C->Element->geo.X4,C->Element->geo.Y4);
-						s=m.castPrepony(s,C->Element->geo.delka,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
+						s=m.castPrepony(s,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
 						//výpočet velikosti bufferu stopstanice
 						double buf=C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;
 						//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
@@ -1545,7 +1557,7 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
 			TPointD konec=v.bod_na_geometrii(F->pom_element);
 			d=m.delka(X,Y,konec.x,konec.y);
 			delka_Pud=d;
-			d=m.castPrepony(d,F->pom_element->geo.delka,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
+			d=m.castPrepony(d,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
 			delka+=d;
 
 			//vypočet času
@@ -1590,7 +1602,7 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
 		X=v.MAG_LASO->Element->geo.X4;Y=v.MAG_LASO->Element->geo.Y4;
 		//výpočetní část
 		delka=m.delka(X,Y,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);
-		if(F->pom_element!=NULL)delka=m.castPrepony(delka,F->pom_element->geo.delka,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
+		if(F->pom_element!=NULL)delka=m.castPrepony(delka,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
 		azimut=m.azimut(X,Y,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);
 		//výpočt času a vykreslení
 		if(F->pom_element->pohon!=NULL)// && (F->pom_element==v.MAG_LASO->sparovany || F->pom_element==v.MAG_LASO->predchozi->Element))
@@ -1604,9 +1616,9 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
 				{
   	  		//výpočet vzdálenosti od stopstanice
 					double check=m.delka(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,F->pom_element->geo.X4,F->pom_element->geo.Y4);
-					check=m.castPrepony(check,F->pom_element->geo.delka,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
+					check=m.castPrepony(check,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
 					double s=m.delka(v.MAG_LASO->Element->geo.X4,v.MAG_LASO->Element->geo.Y4,F->pom_element->geo.X4,F->pom_element->geo.Y4);
-          s=m.castPrepony(s,F->pom_element->geo.delka,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
+          s=m.castPrepony(s,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
 		  		//výpočet velikosti bufferu stopstanice
 		  		double buf=F->pom_element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;
 		  		//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
@@ -5315,7 +5327,10 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_do)
 void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,Cvektory::TElement *aktElement,double Offset,short highlight,float width,TColor color,bool LO_kota,Cvektory::TKomora *komora)
 {    //Jednotky=" [s]";if(F->DKunit==3)Jednotky=" [min]";
 	double delka=m.delka(X1,Y1,X2,Y2);
-	if(aktElement!=NULL)delka=m.castPrepony(delka,aktElement->geo.delka,aktElement->geo.delkaPud,aktElement->geo.HeightDepp);
+	if(aktElement!=NULL)
+	{
+		delka=m.castPrepony(delka,aktElement->geo.delkaPud,aktElement->geo.HeightDepp);
+	}
 	AnsiString T="";
 	if(F->OBJEKT_akt->pohon==NULL && F->DKunit>1)F->DKunit=(TForm1::Tm_mm)(F->DKunit-2);//ošetření pro případ není pohon a jsou špatně nastaveny jednotky
 	if(F->DKunit>1)//zobrazení kót v čase
@@ -5539,7 +5554,8 @@ void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,Cvektory::TElement *Elem
 	canv->Font->Style=TFontStyles();
 	canv->Font->Color=color;
 	canv->Font->Size=m.round(width*F->Zoom*F->aFont->Size);
-	//výpis
+
+	//vykreslení popisků
 	String Text=String(HeightDeep*1000)+"  ";
 	if(Z>0)Text="+"+Text;//příprava pro další pokračování: ±
 	//orientace a vycentrování
@@ -5556,13 +5572,28 @@ void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,Cvektory::TElement *Elem
   }
 	//samotný výpis
 	TextFraming(canv,x,y,Text);
+  float zAA=1.0;if(F->antialiasing)zAA=3.0;
+	Element->citelna_oblast.rect8=TRect(m.round(x/zAA),m.round(y/zAA),m.round(x+W/zAA),m.round(y+H/zAA));//HeightDeep hodnota
+
+	//popisek začátku S/K
+//	Text="+-0";W=canv->TextWidth(Text);
+//	x=points[1].x-W/2.0;y=points[1].y-H;
+//	TextFraming(canv,x,y,Text);
+//	Element->citelna_oblast.rect6=TRect(m.round(x/zAA),m.round(y/zAA),m.round(x+W/zAA),m.round(y+H/zAA));//začátek S/K hodnota
+
+	//popisek konce S/K
+//	Text="";if(HeightDeep>0)Text="+";
+//	Text+=String(HeightDeep);W=canv->TextWidth(Text);
+//	x=points[2].x-W/2.0;y=points[2].y-H;
+//	TextFraming(canv,x,y,Text);
+//	Element->citelna_oblast.rect7=TRect(m.round(x/zAA),m.round(y/zAA),m.round(x+W/zAA),m.round(y+H/zAA));//konec S/K hodnota
+
 	//pro jistotu vrácení do původního stavu
 	canv->Font->Orientation=0;
 	//uložení citelných oblastí - Z - souřadnice aktualní element (počátek stoupání či klesání) rect6, Z - souřadnice další element (konec stoupání či klesání) - rect 7, HeightDeep hodnota - rect 8
-	float zAA=1.0;if(F->antialiasing)zAA=3.0;
+	//float zAA=1.0;if(F->antialiasing)zAA=3.0;
 	//Element->citelna_oblast.rect6=//Z - souřadnice aktualní element (počátek stoupání či klesání)
 	//Element->citelna_oblast.rect7=//Z - souřadnice další element (konec stoupání či klesání)
-	Element->citelna_oblast.rect8=TRect(m.round(x/zAA),m.round(y/zAA),m.round(x+W/zAA),m.round(y+H/zAA));//HeightDeep hodnota
 	//upozornění pro testování výpisu citelné oblasti zde je nutné aZZ nastavit na 1!!! při kreslení přimo do Canvasu netřeba... Canvas->Rectangle(E->citelna_oblast.rect8);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -375,10 +375,10 @@ double Cmy::delkaSklon(double delka,double vyska)
 }
 /////////////////////////////////////////////////////////////////////////////
 //vrátí délku části přepony podle části délky půdorysny
-double Cmy::castPrepony(double castPud,double delka,double delkaPud,double vyska)
+double Cmy::castPrepony(double castPud,double delkaPud,double vyska)
 {
 	if(vyska==0)return castPud;
-	else return castPud/cos(asin(vyska/delka));
+	else return castPud/cos(atan(vyska/delkaPud));
 }
 /////////////////////////////////////////////////////////////////////////////
 //vrátí půdorysnou délku z části přepony
@@ -1138,7 +1138,7 @@ double Cmy::Dotoc(double PTo,double RD)
 	{                                                         //ubraná časová čast přejezdu o buffer, jeden vozík již zoohledněn (proto -1)
 		if(pocet_voziku_v_bufferu==1)
 		return F->d.v.PP.TT+/*(pocet_voziku_v_bufferu-1)*F->d.v.PP.TT*/-(fmod(doba_prejezdu-(pocet_voziku_v_bufferu-1/*nastavených - stojicích v bufferu*/)*F->d.v.PP.delka_podvozek/RD,F->d.v.PP.TT)+PT+WT);
-		else F->d.v.PP.TT*pocet_voziku_v_bufferu;
+		else return F->d.v.PP.TT*pocet_voziku_v_bufferu;
 	}
 
 	//doba_prejezdu-
