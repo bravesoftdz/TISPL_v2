@@ -3216,8 +3216,8 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 		//výpočet RT a zapsání do dat elemetnu
 		double RT=0,WT=Element->WT;
 		if(Element->eID==0/* && Element->data.pocet_voziku>0*/ && cas+Element->WT<PP.TT)WT*=Element->data.pocet_voziku;
-		double RD=0; if(Element->pohon!=NULL)RD=Element->pohon->aRD;
-		RT=m.RT(Element->data.PT1+Element->data.PT2+Element->PTotoc+Element->data.WTstop,cas,WT,Element->data.pocet_voziku,RD);
+		double RD=0;if(Element->pohon!=NULL)RD=Element->pohon->aRD;
+		RT=m.RT(Element->data.PT1+Element->data.PT2+Element->PTotoc/*+Element->data.WTstop*/,cas,WT,Element->data.pocet_voziku,RD);
 		Element->data.RT.x=RT;//ryzí RT
 		//if(Element->eID==0 && Element->data.pocet_voziku>1 || Element->eID==6)RT=fmod(RT,PP.TT);
 		Element->data.RT.y=RT;//přepočítané RT, nebo totožné s ryzím - již se může odstranit?
@@ -3292,14 +3292,14 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 		while(E!=NULL)
 		{
 			try{
-		  	if(vrat_druh_elementu(E)==0 && E->mGrid!=NULL && E->pohon==F->OBJEKT_akt->pohon && (E->eID!=0 || (E->eID==0 && (E->mGrid->Note.Text==" " || (E->mGrid->Note.Text!="" && E->mGrid->Note.Text.SubString(1,F->ls->Strings[250].Length())!=F->ls->Strings[250] && E->mGrid->Note.Text.SubString(1,F->ls->Strings[251].Length())!=F->ls->Strings[251] && E->mGrid->Note.Text.SubString(1,F->ls->Strings[426].Length())!=F->ls->Strings[426])))))
+				if(vrat_druh_elementu(E)==0 && E->mGrid!=NULL && E->pohon==F->OBJEKT_akt->pohon && (E->eID!=0))// || (E->eID==0 && (E->mGrid->Note.Text=="" || (E->mGrid->Note.Text!="" && E->mGrid->Note.Text.SubString(1,F->ls->Strings[250].Length())!=F->ls->Strings[250] && E->mGrid->Note.Text.SubString(1,F->ls->Strings[251].Length())!=F->ls->Strings[251] && E->mGrid->Note.Text.SubString(1,F->ls->Strings[426].Length())!=F->ls->Strings[426])))))
 				{
 		  		note="Dop. hodnota PT je maximálně ";
 		  		//kontrola, zda je RT záporné
 					if(E->data.RT.y<0)
-		  		{
-		  			note+=AnsiString(m.round2double(E->data.PT1+E->data.PT2+E->PTotoc+E->data.RT.y,3))+jednotky;
-		  			E->mGrid->Note.Text=note; //E->mGrid->ShowNote(note);
+					{
+						note+=AnsiString(m.round2double(E->data.PT1+E->data.PT2+E->PTotoc+E->data.RT.y,3))+jednotky;
+						E->mGrid->Note.Text=note; //E->mGrid->ShowNote(note);
 					}
 					else E->mGrid->Note.Text="";
           E->mGrid->Refresh();
