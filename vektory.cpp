@@ -3214,10 +3214,11 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 			E=E->predchozi;
 		}
 		//výpočet RT a zapsání do dat elemetnu
-		double RT=0,WT=Element->WT;
+		double RT=0,WT=Element->WT,WTin=0;
+		if(F->scGPCheckBox_meridlo_casy->Checked)WTin=Element->WT;
 		if(Element->eID==0/* && Element->data.pocet_voziku>0*/ && cas+Element->WT<PP.TT)WT*=Element->data.pocet_voziku;
 		double RD=0;if(Element->pohon!=NULL)RD=Element->pohon->aRD;
-		RT=m.RT(Element->data.PT1+Element->data.PT2+Element->PTotoc/*+Element->data.WTstop*/,cas,WT,Element->data.pocet_voziku,RD);
+		RT=m.RT(Element->data.PT1+Element->data.PT2+Element->PTotoc/*+Element->data.WTstop*/,cas,WT,Element->data.pocet_voziku,RD,WTin);
 		Element->data.RT.x=RT;//ryzí RT
 		//if(Element->eID==0 && Element->data.pocet_voziku>1 || Element->eID==6)RT=fmod(RT,PP.TT);
 		Element->data.RT.y=RT;//přepočítané RT, nebo totožné s ryzím - již se může odstranit?
@@ -9198,7 +9199,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 
 			////mazání ukazatelů
       F->pom=NULL;//musí zde být, může působit problémy při vykreslení
-								 
+
 			////načtení Objektů
 			TObjekt *dO=obraz->Objekty->dalsi,*O=NULL;
 			while(dO!=NULL)
@@ -9220,7 +9221,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 				F->OBJEKT_akt=vrat_objekt(obraz->edit_Objekt);
         F->pom=F->OBJEKT_akt;
 			}
-			
+
 			////načtení Elementů
 			pocet_vyhybek=obraz->pocet_vyhybek;//navrácení počtu výhybek,musí být před vytvářením tabulky průchodu
 			TElement *dE=obraz->Elementy->dalsi,*E=NULL;

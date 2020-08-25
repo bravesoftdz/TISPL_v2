@@ -1193,7 +1193,16 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 				cas_pom+=d/C->Element->pohon->aRD;
 				//připočítávat casy prvního
 				//F->Memo(String(v.MAG_LASO->Element->geo.X2)+" == "+String(v.MAG_LASO->Element->geo.X3)+" == "+String(v.MAG_LASO->sparovany->geo.X4));
-				if(F->scGPCheckBox_meridlo_casy->Checked || (!F->scGPCheckBox_meridlo_casy->Checked && (C->Element!=v.MAG_LASO->sparovany || (C->Element==v.MAG_LASO->sparovany && v.MAG_LASO->sparovany!=NULL && v.MAG_LASO->Element->geo.X2!=v.MAG_LASO->sparovany->geo.X4))))
+				//pokud mám načítat dat z prvního elementu, načítám pouze WT a latenci
+				if(F->scGPCheckBox_meridlo_casy->Checked && C->n==1)
+				{
+          if(C->Element->eID==0)
+					{
+						cas+=C->Element->WT;
+						if(C->Element->dalsi!=NULL && C->Element->dalsi->pohon!=NULL)cas+=m.latence_mezi_stopkami(C->Element->dalsi->pohon->aRD);
+					}
+        }
+				if((F->scGPCheckBox_meridlo_casy->Checked && C->n>1) || (!F->scGPCheckBox_meridlo_casy->Checked && (C->Element!=v.MAG_LASO->sparovany || (C->Element==v.MAG_LASO->sparovany && v.MAG_LASO->sparovany!=NULL && v.MAG_LASO->Element->geo.X2!=v.MAG_LASO->sparovany->geo.X4))))
 				{
           double buf=0;
 					if(C->Element->eID==0)
@@ -1205,23 +1214,27 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 //							cas-=(C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)/C->Element->pohon->aRD;
 //							cas_pom-=(C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)/C->Element->pohon->aRD;
 //						}
-			  	}
+					}
 					//připočátávání časů elementu zvlášť, pokud je ve spojáku přichycený element přeskočit (ten započátat pouze do cas_pom)
 					if(((prichyceno && (C->dalsi!=NULL || (C->dalsi==NULL && C->Element!=F->pom_element))) || !prichyceno) && v.vrat_druh_elementu(C->Element)==0)
 					{
 						if(C->Element->eID==0)
 						{
-							cas+=C->Element->data.WTstop;
-							cas_pom+=C->Element->data.WTstop;
+							//cas+=C->Element->data.WTstop-v.PP.TT;
+							//cas_pom+=C->Element->data.WTstop-v.PP.TT;
 							if(C->Element->data.pocet_voziku>1)
 							{
 								buf=(C->Element->data.pocet_voziku-1)*v.PP.delka_podvozek-v.PP.uchyt_pozice;
+								cas+=C->Element->data.WTstop-v.PP.TT;
+							  cas_pom+=C->Element->data.WTstop-v.PP.TT;
 								if(d>=buf)
 								{
 									cas-=buf/C->Element->pohon->aRD;
 									cas_pom-=buf/C->Element->pohon->aRD;
 								}
 							}
+							if(!prichyceno || (prichyceno && C->Element!=F->pom_element))cas=ceil(cas/v.PP.TT)*v.PP.TT;
+							if(!prichyceno || (prichyceno && C->Element!=F->pom_element))cas_pom=ceil(cas_pom/v.PP.TT)*v.PP.TT;
 						}
 						cas+=C->Element->data.PT1+C->Element->data.PT2+C->Element->PTotoc+C->Element->WT;
 						cas_pom+=C->Element->data.PT1+C->Element->data.PT2+C->Element->PTotoc+C->Element->WT;
@@ -1236,7 +1249,14 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 							cas-=buf/C->Element->pohon->aRD;
 							cas_pom-=buf/C->Element->pohon->aRD;
 						}
-          }
+						if(!prichyceno || (prichyceno && C->Element!=F->pom_element))cas=ceil(cas/v.PP.TT)*v.PP.TT;
+						if(!prichyceno || (prichyceno && C->Element!=F->pom_element))cas_pom=ceil(cas_pom/v.PP.TT)*v.PP.TT;
+					}
+					else if(C->Element->eID==0)
+					{
+						if(!prichyceno || (prichyceno && C->Element!=F->pom_element))cas=ceil(cas/v.PP.TT)*v.PP.TT;
+						if(!prichyceno || (prichyceno && C->Element!=F->pom_element))cas_pom=ceil(cas_pom/v.PP.TT)*v.PP.TT;
+					}
 			  	//připočátávání času přichyceného elementu do cas_pom
 					if(prichyceno && C->dalsi==NULL && C->Element==F->pom_element && v.vrat_druh_elementu(F->pom_element)==0)cas_pom=ceil(cas/v.PP.TT)*v.PP.TT;//cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT+v.PP.TT;
 				}

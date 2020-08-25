@@ -267,9 +267,9 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
           F->aktualizace_RT();
 				}
 				////konec temp
-        //pokud nejsou nastaveny žádné vozíky, nastavit stav na 0
-				if(E->data.pocet_voziku==0)E->stav=0;
-        else E->stav=1;
+        //pokud nejsou nastaveny žádné vozíky, nastavit stav na 0, musí probìhnout aktualizace spárovaných ukazatelù
+				if(E->data.pocet_voziku==0){E->stav=0;F->d.v.aktualizuj_sparovane_ukazatele();}
+				else if(E->stav==0){E->stav=1;F->d.v.aktualizuj_sparovane_ukazatele();}
 				//dodìlat plnìní pamìti pøi editaci bunìk
 			} break;
 			case 1:case 7:case 11:case 15:case 101:case 105: //robot (kontinuální)
