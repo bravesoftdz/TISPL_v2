@@ -1139,7 +1139,7 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 {
 	////deklarace
-	double R,RA,OR,X,Y,uhel=0,delka=0,azimut,cas=0,cas_pom=0,d;
+	double R,RA,OR,X,Y,uhel=0,delka=0,azimut,cas=0,cas_pom=0,d=0,delka_Pud=0;
 	String popisek="";
 
 	///vykreslení uložených segmentů v mag lasu, pokud je třeba
@@ -1163,20 +1163,20 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			if(C->Element->n!=MaxInt && C->n!=1)d=C->Element->geo.delka;
 			else if(C->Element->geo.typ==0)
 			{
-				d=m.delka(X,Y,C->Element->geo.X4,C->Element->geo.Y4);
+				delka_Pud=d=m.delka(X,Y,C->Element->geo.X4,C->Element->geo.Y4);
 				d=m.castPrepony(d,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
 			}
 			else
 			{
 				d=m.delka(X,Y,C->Element->geo.X4,C->Element->geo.Y4);
 				uhel=m.T2Aarc(C->Element->geo.radius,d);
-				d=m.R2Larc(C->Element->geo.radius,uhel);
+				delka_Pud=d=m.R2Larc(C->Element->geo.radius,uhel);
 			}
 			delka+=d;
 
   		if(C->Element->geo.typ==0)
 			{
-  			R=d;
+  			R=delka_Pud;
 				uhel=0;
 			}
   		else
@@ -1277,7 +1277,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			if(prichyceno && F->pom_element==v.MAG_LASO->predchozi->Element && C->dalsi==NULL)
 			{
 				t1=String(m.round2double(delka*1000,2))+" [mm]";
-				if(cas_pom!=cas)t2=String(m.round2double(cas,2))+" [s]; "+String(m.round2double(cas_pom,2))+" [s]";
+				if(cas_pom!=cas)t2="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
 				else t2=String(m.round2double(cas,2))+" [s]";
 				typ=2;if(C->n==1)typ=3;
       }
@@ -1322,7 +1322,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			}
 
 			//vykreslovací část
-			if(prichyceno && cas_pom!=cas)popisek=String(m.round2double(cas_pom,2))+" [s]; "+String(m.round2double(cas,2))+" [s]";
+			if(prichyceno && cas_pom!=cas)popisek="IN  "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
 			else popisek=String(m.round2double(cas,2))+" [s]";
 			vykresli_Gelement(canv,X,Y,OR,uhel,R,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",popisek,2);//vykreslení měřícího kurzoru, popisek není nutné používat, metodu ještě vylepším
 		}
@@ -1331,7 +1331,6 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 		else if(F->pom_element!=NULL && v.MAG_LASO->Element!=NULL)
 		{
 			//načítání parametrů
-			double delka_Pud;
 			X=F->pom_element->geo.X1;Y=F->pom_element->geo.Y1;
 			if(v.MAG_LASO->dalsi==NULL){X=v.MAG_LASO->predchozi->Element->geo.X1;Y=v.MAG_LASO->predchozi->Element->geo.Y1;}
 			OR=F->pom_element->geo.orientace;
@@ -1372,7 +1371,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			}
 
 			//vykreslovací část
-			if(prichyceno && cas_pom!=cas)popisek=String(m.round2double(cas,2))+" [s]; "+String(m.round2double(cas_pom,2))+" [s]";
+			if(prichyceno && cas_pom!=cas)popisek="IN  "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
 			else popisek=String(m.round2double(cas,2))+" [s]";
 			vykresli_Gelement(canv,X,Y,OR,0,delka_Pud,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",popisek,2);
 		}
@@ -1382,9 +1381,9 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 	else if(v.MAG_LASO->Element!=NULL && (F->pom_element==NULL || (F->pom_element!=NULL && F->pom_element!=v.MAG_LASO->predchozi->Element && F->pom_element->predchozi2!=v.MAG_LASO->predchozi->Element && F->pom_element->predchozi->predchozi2!=v.MAG_LASO->predchozi->Element && F->pom_element->predchozi->predchozi!=v.MAG_LASO->predchozi->Element)))
 	{
 		//načtení parametrů
-		X=v.MAG_LASO->Element->geo.X1;Y=v.MAG_LASO->Element->geo.Y1;
+    X=v.MAG_LASO->Element->geo.X1;Y=v.MAG_LASO->Element->geo.Y1;
 		//výpočetní část
-		delka=m.delka(X,Y,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);
+		delka_Pud=delka=m.delka(X,Y,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);
 		if(F->pom_element!=NULL)delka=m.castPrepony(delka,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
 		azimut=m.azimut(X,Y,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);
 		//výpočt času a vykreslení
@@ -1417,9 +1416,9 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			cas_pom+=delka/F->pom_element->pohon->aRD;
 			if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0)cas_pom=ceil(cas/v.PP.TT)*v.PP.TT;//cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT+v.PP.TT;
 			//vykreslení
-			if(prichyceno && cas_pom!=cas)popisek=String(m.round2double(cas,2))+" [s]; "+String(m.round2double(cas_pom,2))+" [s]";
+			if(prichyceno && cas_pom!=cas)popisek="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
 			else popisek=String(m.round2double(cas,2))+" [s]";
-			vykresli_Gelement(canv,X,Y,azimut,0,d,clMeridlo,2,String(m.round2double(d*1000,2))+" [mm]",popisek,3);
+			vykresli_Gelement(canv,X,Y,azimut,0,delka_Pud,clMeridlo,2,String(m.round2double(d*1000,2))+" [mm]",popisek,3);
       delka=d;
 		}
 		else vykresli_Gelement(canv,X,Y,azimut,0,delka,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]");
@@ -1596,7 +1595,7 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
 			//TPointD *souradnice_k_dalsimu_pouziti=//poslední souřadnice vráceného pole lze použít např. na umístění teploměru, či pokud se nebude hodit přímo při vykreslení (ale jinak zbytečné), lze použít samostatnou matematickou metodu: //TPointD *Cmy::getArcLine(double X,double Y,double orientace,double rotacni_uhel,double radius)
 //      if(prichyceno && cas_pom!=cas)popisek=String(m.round2double(cas,2))+" [s]; "+String(m.round2double(cas_pom,2))+" [s]";
 //			else
-			popisek=String(m.round2double(cas,2))+" [s]";
+			//popisek=String(m.round2double(cas,2))+" [s]";
 			vykresli_Gelement(canv,X,Y,OR,uhel,R,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",popisek,2);//vykreslení měřícího kurzoru, popisek není nutné používat, metodu ještě vylepším
 		}
 		//vykreslení části linie
@@ -1644,7 +1643,7 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
 			//vykreslovací část
 //      if(prichyceno && cas_pom!=cas)popisek=String(m.round2double(cas,2))+" [s]; "+String(m.round2double(cas_pom,2))+" [s]";
 //			else
-			popisek=String(m.round2double(cas,2))+" [s]";
+			//popisek=String(m.round2double(cas,2))+" [s]";
 			vykresli_Gelement(canv,X,Y,OR,0,delka_Pud,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",popisek,2);
 		}
 	}
@@ -1691,7 +1690,7 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
 				//vykreslení
 //				if(prichyceno && cas_pom!=cas)popisek=String(m.round2double(cas,2))+" [s]; "+String(m.round2double(cas_pom,2))+" [s]";
 //				else
-				popisek=String(m.round2double(cas,2))+" [s]";
+				//popisek=String(m.round2double(cas,2))+" [s]";
 				vykresli_Gelement(canv,X,Y,azimut,0,d,clMeridlo,2,String(m.round2double(d*1000,2))+" [mm]",popisek,3);
 			}
 			//vykreslení části oblouku, na pohonu
@@ -1710,7 +1709,7 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
         }
 				delka=m.R2Larc(v.MAG_LASO->sparovany->geo.radius,u2)-m.R2Larc(v.MAG_LASO->sparovany->geo.radius,u1);
 				cas=delka/F->pom_element->pohon->aRD;
-				vykresli_Gelement(canv,X,Y,v.MAG_LASO->sparovany->geo.orientace,u2,v.MAG_LASO->sparovany->geo.radius,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",String(m.round2double(cas,2))+" [s]",2);
+				vykresli_Gelement(canv,X,Y,v.MAG_LASO->sparovany->geo.orientace,u2,v.MAG_LASO->sparovany->geo.radius,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",/*String(m.round2double(cas,2))+" [s]"*/"",2);
 				vykresli_Gelement(canv,X,Y,v.MAG_LASO->sparovany->geo.orientace,u1,v.MAG_LASO->sparovany->geo.radius,(TColor) RGB(255,69,0),2,"","",2,clMeridlo);
 			}
 		}
@@ -1738,7 +1737,7 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
 
   //uložení naměřených hodnot
 	F->mereni_delka=delka;
-	F->mereni_cas.x=F->mereni_cas.y=cas;
+	F->mereni_cas.x=F->mereni_cas.y=0;//cas;
 }
 ////---------------------------------------------------------------------------
 //vykreslí teploměry a cestu mezi nimi

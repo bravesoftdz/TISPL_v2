@@ -3163,6 +3163,7 @@ void Cvektory::aktualizuj_sparovane_ukazatele()
 			//vymazání pomocných ukazatelů
 			E1=NULL;delete E1;
 		}
+    else E->sparovany==NULL;
 		E=dalsi_krok(E);
 	}
 	//ukazatelové záležitosti
@@ -3215,7 +3216,7 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 		}
 		//výpočet RT a zapsání do dat elemetnu
 		double RT=0,WT=Element->WT,WTin=0;
-		if(F->scGPCheckBox_meridlo_casy->Checked)WTin=Element->WT;
+		if(F->scGPCheckBox_meridlo_casy->Checked)WTin=Element->sparovany->WT;
 		if(Element->eID==0/* && Element->data.pocet_voziku>0*/ && cas+Element->WT<PP.TT)WT*=Element->data.pocet_voziku;
 		double RD=0;if(Element->pohon!=NULL)RD=Element->pohon->aRD;
 		RT=m.RT(Element->data.PT1+Element->data.PT2+Element->PTotoc/*+Element->data.WTstop*/,cas,WT,Element->data.pocet_voziku,RD,WTin);
