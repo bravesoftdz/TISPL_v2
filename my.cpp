@@ -1140,10 +1140,13 @@ double Cmy::Dotoc(double PTo,double RD)
 
 	if(RD==0 || pocet_voziku_v_bufferu==0)return 0;//pokud není přiřazen pohon nebo se jedná o průjezdní stopku
 	else
-	{                                                         //ubraná časová čast přejezdu o buffer, jeden vozík již zoohledněn (proto -1)
+	{
+		double latence=0;if(F->scGPCheckBox_meridlo_casy->Checked)latence=latence_mezi_stopkami(RD);//latence mezi stopkami
+																													//ubraná časová čast přejezdu o buffer, jeden vozík již zoohledněn (proto -1)
 		if(pocet_voziku_v_bufferu==1)                                                                         //tj. 0
-		return F->d.v.PP.TT+/*(pocet_voziku_v_bufferu-1)*F->d.v.PP.TT*/-(fmod(doba_prejezdu-(pocet_voziku_v_bufferu-1/*nastavených - stojicích v bufferu*/)*F->d.v.PP.delka_podvozek/RD,F->d.v.PP.TT)+PT+WT+WT0+latence_mezi_stopkami(RD));
+		return F->d.v.PP.TT+/*(pocet_voziku_v_bufferu-1)*F->d.v.PP.TT*/-(fmod(doba_prejezdu-(pocet_voziku_v_bufferu-1/*nastavených - stojicích v bufferu*/)*F->d.v.PP.delka_podvozek/RD,F->d.v.PP.TT)+PT+WT+WT0+latence);
 		else return F->d.v.PP.TT-(WT+F->d.v.PP.delka_podvozek/RD+WT);//WT opravdu 2x při uchycení pře mikropřejezdem a potom na stopce//F->d.v.PP.TT*pocet_voziku_v_bufferu - čas mezi stopkami, nikoliv rezerva na stopce;
+
 	}
 
 	//doba_prejezdu-
