@@ -2547,7 +2547,7 @@ short Cvektory::vrat_druh_elementu(TElement *Element)
 	if(Element!=NULL)//zarážka předávací místo  výhybka a spojka 				                      //nutné přeskakovat elementarní hlavičku!
 	if(Element->eID!=MaxInt && Element->eID!=200 && Element->eID!=300 && Element->eID!=301 && Element->eID!=400 && Element->eID!=401 && Element->eID!=402 && Element->n>0)
 	{
-		if(Element->eID%2==0 && Element->eID!=100 && Element->data.pocet_voziku>0)RET=0;//S&G elementy (mimo těch průjezdních), mimo ION tyče
+		if(Element->eID%2==0 && Element->eID!=100 && Element->data.pocet_voziku>0)RET=0;//S&G elementy, mimo těch průjezdních a mimo ION tyče
 		else RET=1;//kontinuální elementy, či S&G elementy průjezdní (tj. kontinuální)
 	}
 	return RET;
