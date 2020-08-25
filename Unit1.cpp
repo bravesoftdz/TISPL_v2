@@ -3266,8 +3266,8 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 					}
 					//element mimo kabinu
 					if((JID==5 || JID==6) && pom_element!=NULL)pom=d.v.vrat_objekt(pom_element->objekt_n);
-					if(pom!=NULL && Akce==NIC && !d.v.PP.zamek_layoutu)otevri_editaci();//otevření editace
-					if(pom!=NULL && d.v.PP.zamek_layoutu){MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,ls->Strings[423],"",MB_OK,true,false);pom=NULL;}//info o zamčeném layoutu
+					if(pom!=NULL && Akce==NIC /*&& !d.v.PP.zamek_layoutu*/)otevri_editaci();//otevření editace
+					//if(pom!=NULL && d.v.PP.zamek_layoutu){MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,ls->Strings[423],"",MB_OK,true,false);pom=NULL;}//info o zamčeném layoutu
 					if(JID==1)vloz_bod_haly_objektu(X,Y);//přidání bodu haly
 				}
 			}break;
@@ -4980,6 +4980,7 @@ void TForm1::onPopUP(int X, int Y)
 //			pom_bod=d.v.najdi_bod(pom);
 			//element mimo kabinu
 			if(pom==NULL && (JID==5 || JID==6) && pom_element!=NULL)pom=d.v.vrat_objekt(pom_element->objekt_n);
+			if(d.v.PP.zamek_layoutu)pom=d.v.PtInObjekt();
 			pom_vyhybka=pom;//uchovávání ukazatele pro případ, že uživatel po zobrazení popup menu sjede kurzorem z objektu
 			pom_element_temp=NULL;
 			if(pom!=NULL && JID!=-6)// nelze volat přímo metodu najdi objekt, protože pom se používá dále
@@ -4996,12 +4997,14 @@ void TForm1::onPopUP(int X, int Y)
 					//PopUPmenu->scLabel_kopirovat->Caption=kopirovat+" "+pom->name.UpperCase();
 					if(d.v.ZAKAZKA_akt==NULL || d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n==0)PopUPmenu->scLabel_smazat->Caption=smazat+" "+pom->name.UpperCase();
 				}
-				PopUPmenu->Item_otocit_doleva->Visible=true;PopUPmenu->Panel_UP->Height+=34;
-				PopUPmenu->Item_otocit_doprava->Visible=true;PopUPmenu->Panel_UP->Height+=34;
-				//pozor rozhoduje pořadí
-				if(d.v.ZAKAZKA_akt==NULL || d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n==0)PopUPmenu->Item_smazat->FillColor=(TColor)RGB(240,240,240);//workaround, nutnost takto vytáhnout, jinak se položka zvýrazňuje, musí být tady
-				if(d.v.ZAKAZKA_akt==NULL || d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n==0){PopUPmenu->Item_smazat->Visible=true;PopUPmenu->Panel_UP->Height+=34;}
-				//PopUPmenu->Item_kopirovat->Visible=true;PopUPmenu->Panel_UP->Height+=34;
+				if(!d.v.PP.zamek_layoutu)
+				{
+			  	PopUPmenu->Item_otocit_doleva->Visible=true;PopUPmenu->Panel_UP->Height+=34;
+			  	PopUPmenu->Item_otocit_doprava->Visible=true;PopUPmenu->Panel_UP->Height+=34;
+			  	//pozor rozhoduje pořadí
+			  	if(d.v.ZAKAZKA_akt==NULL || d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n==0)PopUPmenu->Item_smazat->FillColor=(TColor)RGB(240,240,240);//workaround, nutnost takto vytáhnout, jinak se položka zvýrazňuje, musí být tady
+			  	if(d.v.ZAKAZKA_akt==NULL || d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n==0){PopUPmenu->Item_smazat->Visible=true;PopUPmenu->Panel_UP->Height+=34;}
+				}
 				if((long)pom->id!=VyID&&(long)pom->id!=pocet_objektu_knihovny+1)
 				{PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;}
 			}
@@ -5018,7 +5021,7 @@ void TForm1::onPopUP(int X, int Y)
 				PopUPmenu->scLabel_nastavit_parametry->Caption=ls->Strings[166];//"  Přidat bod";
 				PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 			}
-			if(pom_bod!=NULL || d.v.PtInBody()!=NULL || pom!=NULL){PopUPmenu->Item_posun_obrysu->Visible=true;PopUPmenu->Panel_UP->Height+=34;}
+			if(!d.v.PP.zamek_layoutu && (pom_bod!=NULL || d.v.PtInBody()!=NULL || pom!=NULL)){PopUPmenu->Item_posun_obrysu->Visible=true;PopUPmenu->Panel_UP->Height+=34;}
 			if((JID==5 || JID==6) && pom_element!=NULL && (pom_element->eID==300 || pom_element->eID==301))//nabízení možnosti odstranění výhybky nebo spojky
 			{
         pom_element_temp=pom_element;//uložení pro případ ztráty ukazatele při pohybu kurzorem
@@ -5033,7 +5036,7 @@ void TForm1::onPopUP(int X, int Y)
 				PopUPmenu->Item_otocit_doprava->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 			}
 			//skrývání, zobrazování stěn objektu
-			if(pom_vyhybka!=NULL)// && (pom_vyhybka->id==0 || pom_vyhybka->id==9 || pom_vyhybka->id==12))
+			if(pom_vyhybka!=NULL && !d.v.PP.zamek_layoutu)// && (pom_vyhybka->id==0 || pom_vyhybka->id==9 || pom_vyhybka->id==12))
 			{
 				if(pom_vyhybka->sirka_steny==0)PopUPmenu->scLabel_zobrazitskryt_steny->Caption=ls->Strings[479];
 				else PopUPmenu->scLabel_zobrazitskryt_steny->Caption=ls->Strings[480];
@@ -14429,7 +14432,20 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	}
 //	E=NULL;delete E;
 //  Memo("hotovo");
-  Memo("");
+//	Cvektory::TElement *E=OBJEKT_akt->element->dalsi->dalsi->dalsi;
+//	Canvas->Pen->Color=clRed;
+//	Canvas->Brush->Color=clWhite;
+//	Canvas->Rectangle(E->citelna_oblast.rect6);
+////	Canvas->Rectangle(E->citelna_oblast.rect7);
+////	Canvas->Rectangle(E->citelna_oblast.rect8);
+//  E=NULL;delete E;
+	Cvektory::TElement *E=OBJEKT_akt->element;  Memo_testy->Clear();
+	while(E!=NULL && OBJEKT_akt->n==E->objekt_n)
+	{
+		if(E->sparovany!=NULL)Memo(E->name+"->sparovany: "+E->sparovany->name);
+		E=E->dalsi;
+	}
+  E=NULL;delete E;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -15671,7 +15687,8 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		UnicodeString File_language="TISPL.language";
 		if(FileExists(File_language))scGPSwitch1->Enabled=true;
 		//opětovné vytvoření tabulky objektů nebo skrytí panelu
-		vytvoreni_tab_knihovna();
+		if(!d.v.PP.zamek_layoutu)vytvoreni_tab_knihovna();
+    else scSplitView_LEFTTOOLBAR->Opened=false;
 		DrawGrid_knihovna->Top=10000;//musí být zobrazena, odchytává stisk kláves
 		on_change_zoom_change_scGPTrackBar();//pozor už nevyvolává refresh
 		//d.SCENA=1111111, prozatím statická scéna funkční pouze v layoutu, pro editaci se nepoužívá
@@ -16743,7 +16760,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 			double s=0,delka=0,cas=0,cas_pom=0,X,Y,uhel;
 			bool chyba=false;
 			String popisek="";//slouží pro rozšíření MB o
-			popisek="; Čas = "+String(m.round2double(mereni_cas.x,2))+" [s]";
+			if(mereni_cas.x!=0)popisek="; Čas = "+String(m.round2double(mereni_cas.x,2))+" [s]";
 			if(mereni_cas.x!=mereni_cas.y)popisek+="; Čas = "+String(m.round2double(mereni_cas.y,2))+" [s]";
 			//kontrola přichycení
 			if(d.v.MAG_LASO->sparovany!=NULL && d.v.MAG_LASO->Element->geo.X2==d.v.MAG_LASO->Element->geo.X3 && d.v.MAG_LASO->Element->geo.X3==d.v.MAG_LASO->Element->geo.X4)
