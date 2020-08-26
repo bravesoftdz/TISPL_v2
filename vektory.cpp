@@ -2855,7 +2855,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 					case 270:Element->X=Element->X+vzdalenost;break;
 				}
 				//kontrola zda je element stále na linii
-				if(F->bod_na_geometrii(0,0,Element) || Element->n==vrat_posledni_element_objektu(F->OBJEKT_akt)->n || !kontrola_zmeny_poradi)
+				if(F->bod_na_geometrii(0,0,Element) /*|| Element->n==vrat_posledni_element_objektu(F->OBJEKT_akt)->n*/ || !kontrola_zmeny_poradi)
 				{
 					//kontrola + změna pořadí
 					if(kontrola_zmeny_poradi)

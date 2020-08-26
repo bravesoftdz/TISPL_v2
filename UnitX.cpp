@@ -1407,7 +1407,7 @@ void TFormX::validace_max_voziku()
 		if(posledni_E->data.pocet_voziku>1)
 		{
 			double rotace=F->m.Rt90(F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(posledni_E));
-			if(rotace==180)//vozíky rovnobežnì s pohonem, dojde k pøekrytí
+			if(F->d.v.PP.delka_podvozek<F->m.UDJ(rotace))//vozíky rovnobežnì s pohonem, dojde k pøekrytí
 			{
 				validace=false;
 				posledni_E->mGrid->ShowNote(F->ls->Strings[426]+" <a>"+AnsiString(1)+"</a>");//"Kvùli pøekryvu jigù nelze nastavit vìtší poèet vozíkù než"
