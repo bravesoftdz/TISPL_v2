@@ -947,7 +947,7 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv,int X,int Y,bool kalibracni_sipka
 void Cvykresli::vykresli_meridlo(TCanvas *canv)
 {
 	////zjistění, zda se jedná o meření po trendu nebo proti
-	if(F->pom_element!=NULL && ((v.MAG_LASO->dalsi==NULL && m.azimut(v.MAG_LASO->Element->geo.X1,v.MAG_LASO->Element->geo.Y1,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y)!=F->pom_element->geo.orientace-F->pom_element->geo.rotacni_uhel) || (v.MAG_LASO->dalsi!=NULL && v.MAG_LASO->sparovany!=NULL && ((v.MAG_LASO->predchozi->n==1 && ((F->pom_element->dalsi==v.MAG_LASO->sparovany || (F->pom_element->dalsi!=NULL && F->pom_element->dalsi->dalsi==v.MAG_LASO->sparovany)) || F->pom_element->dalsi2==v.MAG_LASO->sparovany)) || (v.MAG_LASO->predchozi->n>1 && (v.MAG_LASO->dalsi->dalsi->Element->dalsi==v.MAG_LASO->sparovany || (v.MAG_LASO->dalsi->dalsi->Element->dalsi!=NULL && v.MAG_LASO->dalsi->dalsi->Element->dalsi->dalsi==v.MAG_LASO->sparovany) || v.MAG_LASO->dalsi->dalsi->Element->dalsi2==v.MAG_LASO->sparovany))))))
+	if(F->pom_element!=NULL && ((v.MAG_LASO->dalsi==NULL && F->pom_element==v.MAG_LASO->sparovany && m.Rt90(m.azimut(v.MAG_LASO->Element->geo.X1,v.MAG_LASO->Element->geo.Y1,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y))!=m.Rt90(F->pom_element->geo.orientace-F->pom_element->geo.rotacni_uhel)) || (v.MAG_LASO->dalsi!=NULL && v.MAG_LASO->sparovany!=NULL && ((v.MAG_LASO->predchozi->n==1 && ((F->pom_element->dalsi==v.MAG_LASO->sparovany || (F->pom_element->dalsi!=NULL && F->pom_element->dalsi->dalsi==v.MAG_LASO->sparovany)) || F->pom_element->dalsi2==v.MAG_LASO->sparovany)) || (v.MAG_LASO->predchozi->n>1 && (v.MAG_LASO->dalsi->dalsi->Element->dalsi==v.MAG_LASO->sparovany || (v.MAG_LASO->dalsi->dalsi->Element->dalsi!=NULL && v.MAG_LASO->dalsi->dalsi->Element->dalsi->dalsi==v.MAG_LASO->sparovany) || v.MAG_LASO->dalsi->dalsi->Element->dalsi2==v.MAG_LASO->sparovany))))))
 		F->mereni_po_trendu=false;
 	else
 		F->mereni_po_trendu=true;
@@ -1160,7 +1160,11 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 				OR=v.MAG_LASO->sparovany->geo.orientace;
 			}
 			//vypočet delky
-			if(C->Element->n!=MaxInt && C->n!=1)d=C->Element->geo.delka;
+			if(C->Element->n!=MaxInt && C->n!=1)
+			{
+				delka_Pud=d=C->Element->geo.delka;
+        if(C->Element->geo.HeightDepp!=0)delka_Pud=C->Element->geo.delkaPud;
+			}
 			else if(C->Element->geo.typ==0)
 			{
 				delka_Pud=d=m.delka(X,Y,C->Element->geo.X4,C->Element->geo.Y4);
@@ -1174,9 +1178,9 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			}
 			delka+=d;
 
-  		if(C->Element->geo.typ==0)
+			if(C->Element->geo.typ==0)
 			{
-  			R=delka_Pud;
+				R=delka_Pud;
 				uhel=0;
 			}
   		else
@@ -1218,7 +1222,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 					//připočátávání časů elementu zvlášť, pokud je ve spojáku přichycený element přeskočit (ten započátat pouze do cas_pom)
 					if(((prichyceno && (C->dalsi!=NULL || (C->dalsi==NULL && C->Element!=F->pom_element))) || !prichyceno) && v.vrat_druh_elementu(C->Element)==0)
 					{
-						if(C->Element->eID==0)
+						if(C->Element->eID==0 && C->Element->data.pocet_voziku!=0)
 						{
 							//cas+=C->Element->data.WTstop-v.PP.TT;
 							//cas_pom+=C->Element->data.WTstop-v.PP.TT;
@@ -1252,7 +1256,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 						if(!prichyceno || (prichyceno && C->Element!=F->pom_element))cas=ceil(cas/v.PP.TT)*v.PP.TT;
 						if(!prichyceno || (prichyceno && C->Element!=F->pom_element))cas_pom=ceil(cas_pom/v.PP.TT)*v.PP.TT;
 					}
-					else if(C->Element->eID==0)
+					else if(C->Element->eID==0 && C->Element->data.pocet_voziku!=0)
 					{
 						if(!prichyceno || (prichyceno && C->Element!=F->pom_element))cas=ceil(cas/v.PP.TT)*v.PP.TT;
 						if(!prichyceno || (prichyceno && C->Element!=F->pom_element))cas_pom=ceil(cas_pom/v.PP.TT)*v.PP.TT;
@@ -1280,7 +1284,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 				if(cas_pom!=cas)t2="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
 				else t2=String(m.round2double(cas,2))+" [s]";
 				typ=2;if(C->n==1)typ=3;
-      }
+			}
 			vykresli_Gelement(canv,X,Y,OR,uhel,R,clMeridlo,2,t1,t2,typ);
 			//posun na další segment
 			C=C->dalsi;
@@ -1322,7 +1326,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			}
 
 			//vykreslovací část
-			if(prichyceno && cas_pom!=cas)popisek="IN  "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
+			if(prichyceno && cas_pom!=cas)popisek="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
 			else popisek=String(m.round2double(cas,2))+" [s]";
 			vykresli_Gelement(canv,X,Y,OR,uhel,R,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",popisek,2);//vykreslení měřícího kurzoru, popisek není nutné používat, metodu ještě vylepším
 		}
@@ -1371,7 +1375,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			}
 
 			//vykreslovací část
-			if(prichyceno && cas_pom!=cas)popisek="IN  "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
+			if(prichyceno && cas_pom!=cas)popisek="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
 			else popisek=String(m.round2double(cas,2))+" [s]";
 			vykresli_Gelement(canv,X,Y,OR,0,delka_Pud,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",popisek,2);
 		}
@@ -3128,7 +3132,7 @@ void Cvykresli::vykresli_popisek_pohonu(TCanvas *canv,AnsiString text,TPoint zac
 	double odsazeni=1.2;if(obratit>0)odsazeni=1.1;//pomocná proměnná pro posun šipky od pohonu
 	switch(trend)
 	{
-		case 0:
+		case 0:case 180:
 		{
 			//nastavení odsazení pro text
 			poziceY+=m.round(0.5*1.1*delka_sipky/4.0);//centrování podlě šipky, ne podle textu
@@ -3139,21 +3143,6 @@ void Cvykresli::vykresli_popisek_pohonu(TCanvas *canv,AnsiString text,TPoint zac
 			//nastavení bodů pro šipku
 			zacatek=TPoint(poziceX-odsazeniX+m.round(H*odsazeni)*pozice,poziceY-m.round(delka_sipky/2.0));//počáteční bod
 			konec=TPoint(poziceX-odsazeniX+m.round(H*odsazeni)*pozice,poziceY+m.round(delka_sipky/2.0));//koncový bod
-			break;
-		}
-		case 180:
-		{
-			//nastavení odsazení pro text
-			poziceY-=m.round(0.5*1.1*delka_sipky/4.0);//centrování podlě šipky, ne podle textu
-			obratit*=-1;//nutno otočit, orientace 180 má více odlišností
-			odsazeniX=H;odsazeniY=W;
-			canv->Font->Orientation=2700;
-			odsazeniY=+odsazeniY/2.0;if(obratit<0)odsazeniX*=2.14;//jednou je třeba připočítat výšku textu
-			odsazeniX*=obratit;//převrácení vodoznaku
-			//nastavení bodů pro šipku
-			zacatek=TPoint(poziceX-odsazeniX-m.round(H*odsazeni)*pozice,poziceY-m.round(delka_sipky/2.0));//počáteční bod
-			konec=TPoint(poziceX-odsazeniX-m.round(H*odsazeni)*pozice,poziceY+m.round(delka_sipky/2.0));//koncový bod
-			obratit*=-1;//navrácení do původního stavu
 			break;
 		}
 		case 90:case 270:
