@@ -7385,7 +7385,7 @@ double TForm1::max_voziku(Cvektory::TElement *stopka)
 					if(E->data.LO2>0)delka-=E->data.LO2+E->data.LO_pozice;
 					else delka-=(E->data.LO1+E->data.LO2)/2.0+E->data.LO_pozice;
 				}
-				if(E->geo.typ==0 && E->eID==MaxInt && E->geo.orientace==stopka->geo.orientace)delka+=E->geo.delka;
+				if(E->geo.typ==0 && (E->eID==MaxInt || E->eID==200) && E->geo.orientace==stopka->geo.orientace)delka+=E->geo.delka;
 				else break;
 			}
 			E=E->predchozi;
