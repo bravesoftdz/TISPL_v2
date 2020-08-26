@@ -5377,7 +5377,7 @@ void TForm1::pan_create()
 	short o=0;if(scSplitView_LEFTTOOLBAR->Visible)o=scSplitView_LEFTTOOLBAR->Width;
 	if(MaxY-MinY>K*ClientHeight || MOD==EDITACE || 0+o<=MinX && MaxX<=ClientWidth && 0<=MinY && MaxY<=ClientHeight)//pokud by se jednalo o příliš velkou oblast nebo editaci nebo je daná oblast menší než zobrazovaná
 	{
-		//varianta 0) - povodní varianta sreenu obrazovky, bez nutnosti AA - velice rychlá, bez nabuffrovaného přesahu, tj. při každém posunu je vidět bílá nepřipravená plocha + nevýhodou je obtisk všech tlačítek či měřítka
+		//varianta 0) - původní varianta sreenu obrazovky, bez nutnosti AA - velice rychlá, bez nabuffrovaného přesahu, tj. při každém posunu je vidět bílá nepřipravená plocha + nevýhodou je obtisk všech tlačítek či měřítka
 		panType=0;
 		int W=scSplitView_LEFTTOOLBAR->Width;
 		if(MOD==CASOVAOSA || MOD==TECHNOPROCESY)W=0;//zajistí, že se posová i číslování vozíků resp.celá oblast
@@ -17615,9 +17615,17 @@ void __fastcall TForm1::scGPButton_bug_reportClick(TObject *Sender)
 	Timer_backupTimer(Sender);
   if(scSplitView_MENU->Opened) scSplitView_MENU->Opened=false; //pokud je otevřené menu, tak ho zavřu
 	//vytvoření printscreeunu
-	pan_create();//vytvoří aktuální printscreen jen pracovní plochy
+	int W=scSplitView_LEFTTOOLBAR->Width;
+	short H=scGPPanel_mainmenu->Height;
+	int Gh=0;if(scGPPanel_bottomtoolbar->Visible)Gh=scGPPanel_bottomtoolbar->Height;Gh-=6;//WA, z nějaké důvodu to chce odebrat, aby byla posouváná plocha kompletní
+	scGPButton_bug_report->Visible=false;
+	Graphics::TBitmap *Screen_bmp=new Graphics::TBitmap();
+	Screen_bmp->Width=ClientWidth;Screen_bmp->Height=ClientHeight-H-Gh;//velikost pan plochy
+	Screen_bmp->Canvas->CopyRect(Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh),Canvas,Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh));//uloží pan výřez
+	if(MOD!=SIMULACE)scGPButton_bug_report->Visible=true;
 	TPngImage* PNG = new TPngImage();//kvůli větší kompresi uloženo do PNG (má větší kompresi než JPG)
-	PNG->Assign(Pan_bmp);
+	PNG->Assign(Screen_bmp);
+	delete Screen_bmp;
 	PNG->SaveToFile(get_temp_dir() +"TISPL\\" + "tispl_PrtScr"+get_user_name()+"_"+get_computer_name()+".png");
 	//zobrazení samotné konzole
 	Form_konzole->ShowModal();
