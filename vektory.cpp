@@ -2299,7 +2299,7 @@ void Cvektory::uprav_popisky_elementu(TElement *Element)
 		switch(E->eID)
 		{
 			//stopka
-			case 0:if(E->name.SubString(1,5)=="Stop " || E->name=="")rename=true;else rename=false;break;
+			case 0:if(E->name.SubString(1,5).UpperCase()=="STOP " || E->name=="")rename=true;else rename=false;break;
 			//otoče
 			case 5:
 			case 6:if(E->name.SubString(1,4)==t_otoc || E->name.SubString(1,7)==t_otoc/*"Otoč" || "Turning"*/ || E->name=="")rename=true;else rename=false;break;
