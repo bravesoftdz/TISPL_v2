@@ -16731,7 +16731,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		scGPImage_mereni_vzdalenost->ClipFrameFillColor=(TColor)RGB(225,225,225);
 		scGPButton_zmerit_vzdalenost->Options->NormalColor=(TColor)RGB(86,120,173);
 		Timer_getjobid->Enabled=false;//odstavení timeru, není potřeba
-		d.SCENA=122111;//ZprVozEledElesDopObjHal
+		d.SCENA=222111;//ZprVozEledElesDopObjHal - vozíky nutno nechat v dynamické (jinak budou překresleny bufferem)
 		vytvor_statickou_scenu();//vypnutí vrstvy errorů a nastavení zbytku na statickou scénu
 		zobraz_tip(ls->Strings[483]);//má v sobě REFRESH(), je nutné volat až po vytvořeni statické scény
 		Akce=MAGNETICKE_LASO;//až po refresh
