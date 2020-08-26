@@ -7364,7 +7364,7 @@ double TForm1::max_voziku(Cvektory::TElement *stopka)
 	log(__func__);//logování
 	double ret=1;
 	double delka=stopka->geo.delka;
-	if(delka>0)//musí být něco v délce, pokud nula tak problém
+	if(delka>0 && !(d.v.PP.delka_podvozek<m.UDJ(d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(stopka))))//musí být něco v délce, pokud nula tak problém
 	{
 		Cvektory::TCesta *C=NULL;
 		Cvektory::TElement *E=stopka->predchozi;
@@ -7385,7 +7385,7 @@ double TForm1::max_voziku(Cvektory::TElement *stopka)
 					if(E->data.LO2>0)delka-=E->data.LO2+E->data.LO_pozice;
 					else delka-=(E->data.LO1+E->data.LO2)/2.0+E->data.LO_pozice;
 				}
-				if(E->geo.typ==0 && E->eID==MaxInt && E->geo.orientace==stopka->geo.orientace)delka+=E->geo.delka;
+				if(E->geo.typ==0 && (E->eID==MaxInt || E->eID==200) && E->geo.orientace==stopka->geo.orientace)delka+=E->geo.delka;
 				else break;
 			}
 			E=E->predchozi;
@@ -14440,8 +14440,11 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 ////	Canvas->Rectangle(E->citelna_oblast.rect7);
 ////	Canvas->Rectangle(E->citelna_oblast.rect8);
 //  E=NULL;delete E;
-	TRect oblast=F->vrat_max_oblast(OBJEKT_akt);
-	Canvas->Rectangle(oblast);
+
+//	Cvektory::TObjekt *O=d.v.vrat_objekt(21);
+//	max_voziku(O->element->dalsi->dalsi);
+//	O=NULL;delete O;
+
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

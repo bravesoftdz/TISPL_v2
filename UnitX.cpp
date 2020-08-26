@@ -268,9 +268,12 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				}
 				////konec temp
         //pokud nejsou nastaveny žádné vozíky, nastavit stav na 0, musí probìhnout aktualizace spárovaných ukazatelù
-				if(E->data.pocet_voziku==0){E->stav=0;E->sparovany=NULL;F->d.v.aktualizuj_sparovane_ukazatele();}
-				else if(E->stav==0){E->stav=1;F->d.v.aktualizuj_sparovane_ukazatele();}
-        if(E->sparovany!=NULL)E->mGrid->Cells[2][1].Text=E->sparovany->name;else E->mGrid->Cells[2][1].Text="N/A";
+				if(E->mGrid->Cells[Col][Row].Text!="")
+				{
+					if(E->data.pocet_voziku==0){E->stav=0;E->sparovany=NULL;F->d.v.aktualizuj_sparovane_ukazatele();}
+					else if(E->stav==0){E->stav=1;F->d.v.aktualizuj_sparovane_ukazatele();}
+					if(E->sparovany!=NULL)E->mGrid->Cells[2][1].Text=E->sparovany->name;else E->mGrid->Cells[2][1].Text="N/A";
+				}
 				//dodìlat plnìní pamìti pøi editaci bunìk
 			} break;
 			case 1:case 7:case 11:case 15:case 101:case 105: //robot (kontinuální)
@@ -1407,7 +1410,7 @@ void TFormX::validace_max_voziku()
 		if(posledni_E->data.pocet_voziku>1)
 		{
 			double rotace=F->m.Rt90(F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(posledni_E));
-			if(rotace==180)//vozíky rovnobežnì s pohonem, dojde k pøekrytí
+			if(F->d.v.PP.delka_podvozek<F->m.UDJ(rotace))//vozíky rovnobežnì s pohonem, dojde k pøekrytí
 			{
 				validace=false;
 				posledni_E->mGrid->ShowNote(F->ls->Strings[426]+" <a>"+AnsiString(1)+"</a>");//"Kvùli pøekryvu jigù nelze nastavit vìtší poèet vozíkù než"
