@@ -2714,8 +2714,8 @@ void Cvykresli::vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dJ
 	////jig
 	vykresli_jig(canv,C.x,C.y,dJ,sJ,orientaceP,rotaceJ,clJig,Width);
 
-	////text - ID vozíku není vypisováno, pokud by se začlo používat, tak pozor u vykreslení pozic by bylo potřeba nastavit separátně písmo u chybových výpisů
-	if(ID>0){canv->Font->Size=m.round(2*F->Zoom);canv->Font->Color=clJig;SetBkMode(canv->Handle,TRANSPARENT/*OPAQUE*/);TextFraming(canv,m.L2Px(X),m.L2Py(Y),ID);}
+	////text - ID vozíku nebylo vypisováno, pokud by se začlo používat, tak pozor u vykreslení pozic by bylo potřeba nastavit separátně písmo u chybových výpisů
+	if(ID>0){canv->Font->Size=m.round(2*F->Zoom);canv->Font->Color=clJig;SetBkMode(canv->Handle,TRANSPARENT/*OPAQUE*/);TextFraming(canv,m.L2Px(C.x)-m.round(canv->TextWidth(ID)/2.0),m.L2Py(C.y),ID);}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_jig(TCanvas *canv,double X,double Y,double dJ,double sJ,double orientaceP,double rotaceJ,TColor clJig,float Width)
