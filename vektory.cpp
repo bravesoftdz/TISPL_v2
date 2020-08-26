@@ -1593,7 +1593,21 @@ Cvektory::TKomora *Cvektory::najdi_komoru(TObjekt* Objekt)
 	TKomora *K=Objekt->komora->dalsi;//přeskočení hlavičky
 	double vzdalenost=0;
 	bool nalezeno=false;
-	TRect oblast=F->vrat_max_oblast(Objekt);
+	TRect oblast;
+	//zjištění max oblasti
+	oblast.left=MaxInt;oblast.right=MaxInt*(-1);
+	oblast.top=MaxInt;oblast.bottom=MaxInt*(-1);
+	TBod *B=Objekt->body->dalsi;
+	while(B!=NULL)
+	{
+		if(m.L2Px(B->X)<oblast.left)oblast.left=m.L2Px(B->X);
+		if(m.L2Px(B->X)>oblast.right)oblast.right=m.L2Px(B->X);
+		if(m.L2Py(B->Y)<oblast.top)oblast.top=m.L2Py(B->Y);
+		if(m.L2Py(B->Y)>oblast.bottom)oblast.bottom=m.L2Py(B->Y);
+		B=B->dalsi;
+	}
+	delete B;B=NULL;
+  //kontrola oblasti komor
 	while(K!=NULL)
 	{
 		switch((int)Objekt->orientace)
