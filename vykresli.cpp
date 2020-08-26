@@ -5452,7 +5452,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 		}
 		else if(F->index_kurzoru<=-11)//ostatní kóty
 		{
-			if(F->pom_element_temp!=NULL)//nutné ošetření z pohledu paměťové chyby, toto nemůže být znegované výše, protože by při přepisování kóty kabiny se přepisovaly i kóty elementů
+			if(F->pom_element_temp!=NULL && F->pom_komora_temp==NULL)//nutné ošetření z pohledu paměťové chyby, toto nemůže být znegované výše, protože by při přepisování kóty kabiny se přepisovaly i kóty elementů
 			if((aktElement->n==F->pom_element_temp->n && F->index_kurzoru==-101 && LO_kota) || (aktElement->n==F->pom_element_temp->n && F->index_kurzoru!=-101 && !LO_kota))//aktuální vykreslováná kota
 			{
 				if(F->editovany_text=="")Text="";//musí být v každé zvlášť pro řešení konkrétní editované kóty
