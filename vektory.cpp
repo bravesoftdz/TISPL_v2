@@ -2837,76 +2837,44 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			double vzd=vzdalenost_od_predchoziho_elementu(Element,false);//musí zde být vzdálenost k předchozímu funkčnímu elementu, tj. velikost kóty
 			if((Element->dalsi!=NULL && Element->dalsi->geo.typ!=0 || Element->geo.typ!=0) && kontrola_zmeny_poradi)posun_povolit=false;//pokud by element ovlivnil posunem geometrii
 			//////Realizace posunu + validace
-			//if(!posun_kurzorem && posun_povolit);//posun z kót!!!!!!!!!!!!!!!!!!!!!
-			if(posun_kurzorem && posun_povolit)
+			if(posun_kurzorem && posun_povolit)//pokud se jedná o posun kurzorem, třeba jinak určit vzdálenost
 			{
 				if(Element->geo.orientace==90 || Element->geo.orientace==0)vzdalenost=vzd+vzdalenost;
 				else vzdalenost=vzd-vzdalenost;
 			}
+			//realizace posunu
+			if(Element->geo.HeightDepp==0)vzdalenost=(/*vzd/m.abs_d(vzd))*(*/m.abs_d(vzd)-vzdalenost);
+			else vzdalenost=m.abs_d(vzd)-vzdalenost*cos(asin(Element->geo.HeightDepp/vzdalenost));//zjištění posunu ve S/K
+			switch((int)Element->geo.orientace)
 			{
-				//realizace posunu
-				if(Element->geo.HeightDepp==0)vzdalenost=(/*vzd/m.abs_d(vzd))*(*/m.abs_d(vzd)-vzdalenost);
-				else vzdalenost=m.abs_d(vzd)-vzdalenost*cos(asin(Element->geo.HeightDepp/vzdalenost));//zjištění posunu ve S/K
-				switch((int)Element->geo.orientace)
-				{
-					case   0:Element->Y=Element->Y-vzdalenost;break;
-					case  90:Element->X=Element->X-vzdalenost;break;
-					case 180:Element->Y=Element->Y+vzdalenost;break;
-					case 270:Element->X=Element->X+vzdalenost;break;
-				}
-				//kontrola zda je element stále na linii
-				if(F->bod_na_geometrii(0,0,Element) /*|| Element->n==vrat_posledni_element_objektu(F->OBJEKT_akt)->n*/ || !kontrola_zmeny_poradi)
-				{
-					//kontrola + změna pořadí
-					if(kontrola_zmeny_poradi)
-					{
-						E=vloz_element_pred(F->OBJEKT_akt,Element);
-						if(E!=NULL && Element->dalsi!=NULL && E->n!=Element->dalsi->n)zmen_poradi_elementu(Element,E);
-					}
-					//aktualizace posouvaného elementu
-					vloz_G_element(Element,0,Element->geo.X1,Element->geo.Y1,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,Element->geo.orientace);
-					if(kontrola_zmeny_poradi)
-					{
-						//aktualizace dalšího elemtnu
-						if(Element->dalsi!=NULL)vloz_G_element(Element->dalsi,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
-						//aktualizace RT
-						if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){reserve_time(Element,NULL,true,true);reserve_time(Element->sparovany,NULL,true,true);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
-						else reserve_time(Element,NULL,true,true);
-					}
-				}
-				//pokud ne budou mu navráceny původní souřadnice
-				else
-				{Element->X=puv_souradnice.x;Element->Y=puv_souradnice.y;posun_povolit=false;F->TIP=F->ls->Strings[307];}//"Prvek nelze přesunout"
+				case   0:Element->Y=Element->Y-vzdalenost;break;
+				case  90:Element->X=Element->X-vzdalenost;break;
+				case 180:Element->Y=Element->Y+vzdalenost;break;
+				case 270:Element->X=Element->X+vzdalenost;break;
 			}
-//			else if(posun_kurzorem && posun_povolit)//posun kurozem!!!!!!!!!!!!!!!!!!!!!
-//			{
-//        vzdalenost=m.vrat_delku_z_casti_prepony(vzdalenost,Element->geo.delkaPud,Element->geo.HeightDepp);//přepočet do 2D souřadnic pro uskutečnění posunu
-//				//realizace posunu
-//				if(Element->geo.orientace-Element->geo.rotacni_uhel==90||Element->geo.orientace-Element->geo.rotacni_uhel==270)Element->X=Element->X+vzdalenost;
-//				else Element->Y=Element->Y+vzdalenost;
-//				//kontrola zda je element stále na linii
-//				if(F->bod_na_geometrii(0,0,Element) || /*Element->n==vrat_posledni_element_objektu(F->OBJEKT_akt)->n ||*/ !kontrola_zmeny_poradi)//pokud ano
-//				{
-//					//kontrola + změna pořadí
-//					if(kontrola_zmeny_poradi)
-//					{
-//						E=vloz_element_pred(F->OBJEKT_akt,Element);
-//						if(E!=NULL && Element->dalsi!=NULL && E->n!=Element->dalsi->n)zmen_poradi_elementu(Element,E);
-//					}
-//					//aktualizace posouvaného elementu
-//					vloz_G_element(Element,0,Element->geo.X1,Element->geo.Y1,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,Element->geo.orientace);
-//					if(kontrola_zmeny_poradi)
-//					{
-//						//aktualizace dalšího elemtnu
-//						if(Element->dalsi!=NULL)vloz_G_element(Element->dalsi,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
-//						//aktualizace RT
-//						if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){reserve_time(Element,NULL,true,true);reserve_time(Element->sparovany,NULL,true,true);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
-//						else reserve_time(Element,NULL,true,true);
-//					}
-//				}
-//				//pokud ne budou mu navráceny původní souřadnice
-//				else {Element->X=puv_souradnice.x;Element->Y=puv_souradnice.y;posun_povolit=false;}
-//			}
+			//kontrola zda je element stále na linii
+			if(F->bod_na_geometrii(0,0,Element) /*|| Element->n==vrat_posledni_element_objektu(F->OBJEKT_akt)->n*/ || !kontrola_zmeny_poradi)
+			{
+				//kontrola + změna pořadí
+				if(kontrola_zmeny_poradi)
+				{
+					E=vloz_element_pred(F->OBJEKT_akt,Element);
+					if(E!=NULL && Element->dalsi!=NULL && E->n!=Element->dalsi->n)zmen_poradi_elementu(Element,E);
+				}
+				//aktualizace posouvaného elementu
+				vloz_G_element(Element,0,Element->geo.X1,Element->geo.Y1,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,Element->geo.orientace);
+				if(kontrola_zmeny_poradi)
+				{
+					//aktualizace dalšího elemtnu
+					if(Element->dalsi!=NULL)vloz_G_element(Element->dalsi,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
+					//aktualizace RT
+					if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){reserve_time(Element,NULL,true,true);reserve_time(Element->sparovany,NULL,true,true);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
+					else reserve_time(Element,NULL,true,true);
+				}
+			}
+			//pokud ne budou mu navráceny původní souřadnice
+			else
+			{Element->X=puv_souradnice.x;Element->Y=puv_souradnice.y;posun_povolit=false;F->TIP=F->ls->Strings[307];}//"Prvek nelze přesunout"
 			//////Posun dalsích elementů
 			if(pusun_dalsich_elementu && posun_povolit)
 			{
@@ -2915,21 +2883,22 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				{
 					puv_souradnice.x=E->X;puv_souradnice.y=E->Y;
 					if(E->geo.typ!=0)break;//ukončení v případě, že se někde nachází jiná geometrie než linie
-					if(vzd!=0 && !posun_kurzorem && E->eID!=MaxInt && E->eID!=200)//neposunovat zarážku
+					if(E->eID!=MaxInt && E->eID!=200)
 					{
-						if(Element->geo.orientace-Element->geo.rotacni_uhel==90||Element->geo.orientace-Element->geo.rotacni_uhel==270)E->X=E->X-(vzd/m.abs_d(vzd))*(m.abs_d(vzd)-vzdalenost);//výpočet pro posuv z kót
-						else E->Y=E->Y-(vzd/m.abs_d(vzd))*(m.abs_d(vzd)-vzdalenost);
-					}
-					if(vzd!=0 && posun_kurzorem && E->eID!=MaxInt && E->eID!=200)
-					{
-						if(Element->geo.orientace-Element->geo.rotacni_uhel==90||Element->geo.orientace-Element->geo.rotacni_uhel==270)E->X=E->X+vzdalenost;//výpočet pro posun kurzorem
-						else E->Y=E->Y+vzdalenost;
+			   		switch((int)E->geo.orientace)
+			   		{
+			   			case   0:E->Y=E->Y-vzdalenost;break;
+			   			case  90:E->X=E->X-vzdalenost;break;
+			   			case 180:E->Y=E->Y+vzdalenost;break;
+			   			case 270:E->X=E->X+vzdalenost;break;
+						}
 					}
           //kontrola zda je element stále na linii
 					if(F->bod_na_geometrii(0,0,E))//pokud ano
 					{
 						//aktualizace geometrie
 						vloz_G_element(E,0,E->predchozi->geo.X4,E->predchozi->geo.Y4,0,0,0,0,F->d.Rxy(E).x,F->d.Rxy(E).y,E->geo.orientace);
+						if(E->dalsi!=NULL)vloz_G_element(E->dalsi,0,E->geo.X4,E->geo.Y4,0,0,0,0,E->dalsi->geo.X4,E->dalsi->geo.Y4,E->dalsi->geo.orientace);
 					}
 					//pokud ne budou mu navráceny původní souřadnice
 					else {E->X=puv_souradnice.x;E->Y=puv_souradnice.y;}

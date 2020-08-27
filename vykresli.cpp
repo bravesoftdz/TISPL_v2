@@ -969,8 +969,18 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 	TPointD bod,P;
 	bod.x=MaxInt;bod.y=MaxInt;
 	bool ret=false;
+	short width=m.round(m.m2px(F->velikost_citelne_oblasti_elementu));
 	prichyceno_na_vozik=false;
 	F->TIP="";
+
+	//trvalé vykreslení prvního přichyceného
+	if(F->prichytavat_k_mrizce==1 && v.MAG_LASO!=NULL && v.MAG_LASO->sparovany!=NULL && v.MAG_LASO->Element->geo.X2==v.MAG_LASO->Element->geo.X3)
+	{
+		bod.x=v.MAG_LASO->Element->geo.X1;bod.y=v.MAG_LASO->Element->geo.Y1;
+		set_pen(canv,clMeridlo,width,PS_ENDCAP_FLAT);
+		canv->Ellipse(m.L2Px(bod.x)-width,m.L2Py(bod.y)-width,m.L2Px(bod.x)+width,m.L2Py(bod.y)+width);
+    bod.x=MaxInt;bod.y=MaxInt;
+	}
 
 	//vykreslení před měřením
 	if(F->prichytavat_k_mrizce==1 && v.MAG_LASO->Element==NULL && v.MAG_LASO->sparovany==NULL && F->pom_element==NULL)
@@ -1041,7 +1051,6 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 		}
 
     //nastavení geometrického pera
-		short width=m.round(m.m2px(F->velikost_citelne_oblasti_elementu));
 		set_pen(canv,clMeridlo,width,PS_ENDCAP_FLAT);
 		//canv->Pen->Mode=pmNotXor;
 
@@ -1057,7 +1066,6 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 	if(F->prichytavat_k_mrizce==1 && F->pom_element!=NULL)
 	{
 		//nastavení geometrického pera
-		short width=m.round(m.m2px(F->velikost_citelne_oblasti_elementu));
 		set_pen(canv,clMeridlo,width,PS_ENDCAP_FLAT);
 		//canv->Pen->Mode=pmNotXor;
 		//vykreslení
@@ -1237,11 +1245,11 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 									cas_pom-=buf/C->Element->pohon->aRD;
 								}
 							}
-							if(!prichyceno || (prichyceno && C->Element!=F->pom_element))cas=ceil(cas/v.PP.TT)*v.PP.TT;
-							if(!prichyceno || (prichyceno && C->Element!=F->pom_element))cas_pom=ceil(cas_pom/v.PP.TT)*v.PP.TT;
 						}
-						cas+=C->Element->data.PT1+C->Element->data.PT2+C->Element->PTotoc+C->Element->WT;
-						cas_pom+=C->Element->data.PT1+C->Element->data.PT2+C->Element->PTotoc+C->Element->WT;
+						cas+=C->Element->WT;
+						cas_pom+=C->Element->WT;
+						if(!prichyceno || (prichyceno && C->Element!=F->pom_element))cas=ceil(cas/v.PP.TT)*v.PP.TT;
+						if(!prichyceno || (prichyceno && C->Element!=F->pom_element))cas_pom=ceil(cas_pom/v.PP.TT)*v.PP.TT;
 					}
 					else if(C->Element->eID==0 && C->Element->data.pocet_voziku>1)
 					{
