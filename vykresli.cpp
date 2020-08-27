@@ -403,7 +403,8 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 				canv->LineTo(X2,Y1-W);
 			}
 			//symbolika tekoucí kapaliny u POW //dodělat po změně souřadnicového modelu
-			if(O->komora->predchozi->typ==1)vykresli_pow_sprchu(canv,m.L2Px(O->element->geo.X4),m.L2Px(F->d.v.vrat_posledni_element_objektu(O)->geo.X4),m.L2Py(O->body->dalsi->Y),m.L2Py(O->body->predchozi->Y),m.m2px(O->komora->predchozi->velikost),clAkt,sirka_steny_px/4.0,pmpp,0,orientace);
+			long X1=m.L2Px(O->element->geo.X1)+m.m2px(vzdalenost+O->komora->predchozi->velikost);
+			if(O->komora->predchozi->typ==1)vykresli_pow_sprchu(canv,X1,X1,m.L2Py(O->body->dalsi->Y),m.L2Py(O->body->predchozi->Y),m.m2px(O->komora->predchozi->velikost),clAkt,sirka_steny_px/4.0,pmpp,0,orientace);
 		}
 		else
 		{
