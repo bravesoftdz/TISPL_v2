@@ -1237,11 +1237,11 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 									cas_pom-=buf/C->Element->pohon->aRD;
 								}
 							}
-							if(!prichyceno || (prichyceno && C->Element!=F->pom_element))cas=ceil(cas/v.PP.TT)*v.PP.TT;
-							if(!prichyceno || (prichyceno && C->Element!=F->pom_element))cas_pom=ceil(cas_pom/v.PP.TT)*v.PP.TT;
 						}
-						cas+=C->Element->data.PT1+C->Element->data.PT2+C->Element->PTotoc+C->Element->WT;
-						cas_pom+=C->Element->data.PT1+C->Element->data.PT2+C->Element->PTotoc+C->Element->WT;
+						cas+=C->Element->WT;
+						cas_pom+=C->Element->WT;
+						if(!prichyceno || (prichyceno && C->Element!=F->pom_element))cas=ceil(cas/v.PP.TT)*v.PP.TT;
+						if(!prichyceno || (prichyceno && C->Element!=F->pom_element))cas_pom=ceil(cas_pom/v.PP.TT)*v.PP.TT;
 					}
 					else if(C->Element->eID==0 && C->Element->data.pocet_voziku>1)
 					{
