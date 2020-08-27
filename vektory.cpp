@@ -6132,17 +6132,17 @@ void Cvektory::generuj_voziky_stop_a_bufferu(TElement *E,double akt_rotace_jigu,
 	double X1=E->geo.X1;
 	double Y1=E->geo.Y1;
 	double delka=E->geo.delka;
-//	double delka_BpPM=buffer_pres_predavaci_misto(E);
-//	if(delka_BpPM)
+	double delka_BpPM=buffer_pres_predavaci_misto(E);
+//	if(delka_BpPM>0)
 //	{
 //		delka+=delka_BpPM;
 //		X1=E->predchozi->geo.X1;
 //		Y1=E->predchozi->geo.Y1;
-//  }
+//	}
 	double umisteni=delka-(E->data.pocet_voziku+pocet_voziku_z_prejezdu_na_bufferu-1)*PP.delka_podvozek;//delka bufferu (-1, protože druhý vozík má až pozici 1xdelka podvozku), nepouživat -PP.uchyt_pozice, protože se to počítá právě pro úchyt nikoliv začátek vozíku
-	while(umisteni<=delka)//generuje vozíky bufferu včetně toho na stopce (<=), pokud jsem generoval bez, dělalo občas (<) problemy
+	while(umisteni<=delka+0.0000000001)//generuje vozíky bufferu včetně toho na stopce, nutno s <=,  0.0000000001 nutný WA kvůli řádové chybě při porovnání dvou totožných double hodnot
 	{
-		TPointD_3D Pt=m.getPt(E->geo.radius,E->geo.orientace,E->geo.rotacni_uhel,X1,E->geo.Y1,E->geo.X4,E->geo.Y4,umisteni/delka,(umisteni+PP.uchyt_pozice-PP.delka_podvozek/2.0)/delka);//zjištění aktuálních souřadnic vozíků
+		TPointD_3D Pt=m.getPt(E->geo.radius,E->geo.orientace,E->geo.rotacni_uhel,X1,Y1,E->geo.X4,E->geo.Y4,umisteni/delka,(umisteni+PP.uchyt_pozice-PP.delka_podvozek/2.0)/delka);//zjištění aktuálních souřadnic vozíků
 		//TZakazka *Z=new TZakazka;//pouze jen kvůli testům
 		if(pocet_voziku_z_prejezdu_na_bufferu>0){/*Z->n=1;Z->barva=clRed;*/stav=-2;pocet_voziku_z_prejezdu_na_bufferu--;}//barevné odlišení pouze jen kvůli testům, vozík na přejezdu, který narazil do bufferu nad rámec jeho nastaveného počtu
 		else {/*Z->n=2;Z->barva=clBlue;*/stav=-1;}//barevné odlišení pouze jen kvůli testům
