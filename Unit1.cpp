@@ -3563,7 +3563,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				d.v.posun_hranu(posunx,posuny,A,B);
 			}
 			//rozšiřování el. osy + komor
-			if(pom!=NULL && OBJEKT_akt==NULL && pom->body->predchozi->n==4 && (pom->element->dalsi==NULL || pom->element->dalsi!=NULL && pom->element->dalsi->objekt_n!=pom->n) && pom->element->geo.typ==0 && pom->element->pohon==NULL || OBJEKT_akt!=NULL && OBJEKT_akt->body->predchozi->n==4 && (OBJEKT_akt->element->dalsi==NULL || OBJEKT_akt->element->dalsi!=NULL && OBJEKT_akt->element->dalsi->objekt_n!=OBJEKT_akt->n) && OBJEKT_akt->element->geo.typ==0 && OBJEKT_akt->element->pohon==NULL)//speciální uprava objektu POW při posunu jeho přímek, z layoutu + z editace
+			if((pom!=NULL && OBJEKT_akt==NULL && pom->body->predchozi->n==4 && (pom->element->dalsi==NULL || pom->element->dalsi!=NULL && pom->element->dalsi->objekt_n!=pom->n) && pom->element->geo.typ==0) || (OBJEKT_akt!=NULL && OBJEKT_akt->body->predchozi->n==4 && (OBJEKT_akt->element->dalsi==NULL || (OBJEKT_akt->element->dalsi!=NULL && OBJEKT_akt->element->dalsi->objekt_n!=OBJEKT_akt->n)) && OBJEKT_akt->element->geo.typ==0))//speciální uprava objektu POW při posunu jeho přímek, z layoutu + z editace
 			{
         //bool zmena_pohonu=false;
 				Cvektory::TObjekt *O=pom;
@@ -3580,34 +3580,44 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 					if(O->orientace==270){posun_x=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);pom1*=-1;}
 					zmena=pom1*posun_x+pom2*posun_y;
 					//pokud změnu provádím z editace měním rozměry poslendí nebo první komory
-					if(pom->id==3)
+					if(O->id==3)
 					{
-				  	if(A->n==2 && OBJEKT_akt!=NULL)OBJEKT_akt->komora->predchozi->velikost+=zmena;
-				  	if(A->n==4 && OBJEKT_akt!=NULL)OBJEKT_akt->komora->dalsi->velikost+=zmena;
-				  	//pokud provádím změnu z layoutu celý objket bude měnit rozměry proporcionálně
-				  	if(OBJEKT_akt==NULL)
-				  	{
-				  		pom_komora=pom->komora->dalsi;
-				  		while(pom_komora!=NULL)
-				  		{
-				  			pom_komora->velikost+=zmena/(double)pom->komora->predchozi->n;
-				  			pom_komora=pom_komora->dalsi;
-				  		}
-				  		delete pom_komora;pom_komora=NULL;
-				  	}
+						if(A->n==2)
+						{
+							O->komora->predchozi->velikost+=zmena;
+							if(O->komora->predchozi->velikost>O->komora->dalsi->velikost*1.05)//5% na víc
+							{
+								d.v.vloz_komoru(O,O->komora->dalsi->velikost,O->komora->predchozi,abs(O->komora->predchozi->typ-1));
+								O->komora->predchozi->velikost=O->komora->predchozi->velikost-O->komora->dalsi->velikost;
+							}
+							if(O->komora->predchozi->velikost<0)d.v.smaz_komoru(O,O->komora->predchozi);
+						}
+						if(A->n==4)
+						{
+							O->komora->dalsi->velikost+=zmena;
+							if(O->komora->dalsi->velikost>O->komora->predchozi->velikost*1.05)//5% na víc
+							{
+								d.v.vloz_komoru(O,O->komora->predchozi->velikost,O->komora->dalsi,abs(O->komora->dalsi->dalsi->typ-1));
+								O->komora->dalsi->velikost=O->komora->dalsi->velikost-O->komora->predchozi->velikost;
+							}
+							if(O->komora->dalsi->velikost<0)d.v.smaz_komoru(O,O->komora->dalsi);
+						}
 					}
-			  	//rozšíření pohonu
-			  	if(B->n==1 && A->n==4)
+					//rozšíření pohonu
+					if(O->element->pohon==NULL)
 					{
-						O->element->geo.X1+=posun_x;
-						O->element->geo.Y1+=posun_y;
-			  	}
-			  	else
-					{
-						O->element->X+=posun_x;
-						O->element->Y+=posun_y;
-			  	}
-					d.v.vloz_G_element(O->element,0,O->element->geo.X1,O->element->geo.Y1,0,0,0,0,O->element->X,O->element->Y,O->element->geo.orientace);
+				  	if(B->n==1 && A->n==4)
+				  	{
+				  		O->element->geo.X1+=posun_x;
+				  		O->element->geo.Y1+=posun_y;
+				  	}
+				  	else
+				  	{
+				  		O->element->X+=posun_x;
+				  		O->element->Y+=posun_y;
+						}
+						d.v.vloz_G_element(O->element,0,O->element->geo.X1,O->element->geo.Y1,0,0,0,0,O->element->X,O->element->Y,O->element->geo.orientace);
+					}
 					//zmena_pohonu=true;
 				}
 				//////uchopeno za vrh/spodek .. budu posouvat osu pohonu
@@ -14442,6 +14452,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //  d.v.uprav_popisky_elementu(NULL);
 //	novy=NULL;delete novy;
 //	Objekt=NULL;delete Objekt;
+  Memo("");
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
