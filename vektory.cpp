@@ -6038,15 +6038,24 @@ void Cvektory::generuj_VOZIKY()
 		delete C;//osdranění již nepotřebného pomocného ukazatele
 
 		///PROVIZORNĚ vytvoření bufferu na vedlejší větvi
-		E=ELEMENTY->dalsi;
-		while(E!=NULL)
-		{                        //nutné odečíst do n elementu jedna, elementy číslované od 1, pole číslováno od 0
-			if(POLE_element_pouzit[E->n-1]==false && vrat_druh_elementu(E)==0 && E->data.pocet_voziku>0)//pokud se jedná o nepoužitý element a je to zároveň S&G element a obsahuje více vozíků
-			generuj_voziky_stop_a_bufferu(E,90/*nutné ještě dodat dle skutečného stavu*/,0);
-			E=dalsi_krok(E);
-		}
+//		E=ELEMENTY->dalsi;
+//		while(E!=NULL)
+//		{                        //nutné odečíst do n elementu jedna, elementy číslované od 1, pole číslováno od 0
+//			if(POLE_element_pouzit[E->n-1]==false && vrat_druh_elementu(E)==0 && E->data.pocet_voziku>0)//pokud se jedná o nepoužitý element a je to zároveň S&G element a obsahuje více vozíků
+//			generuj_voziky_stop_a_bufferu(E,90/*nutné ještě dodat dle skutečného stavu*/,0);
+//			E=dalsi_krok(E);
+//		}
 		E=NULL;delete E;
 		delete[] POLE_element_pouzit;
+
+		////obrácení přeindexování číslování vozíků, aby byl první vozík první najetý na lince
+		TVozik *V=VOZIKY->dalsi;
+		while(V!=NULL)
+		{
+			V->n=VOZIKY->predchozi->n-(V->n-1);//inverzní přepočítání indexu
+			V=V->dalsi;//posun na další vozík
+		}
+		delete V;
 	}
 }
 ////---------------------------------------------------------------------------
@@ -6120,12 +6129,20 @@ TPointD_3Dbool Cvektory::generuj_voziky_segementu_mimo_stop_a_buffer(TElement *E
 void Cvektory::generuj_voziky_stop_a_bufferu(TElement *E,double akt_rotace_jigu,int pocet_voziku_z_prejezdu_na_bufferu)
 {
 	short stav=0;//stav uchycení vozíku, první vozík čeká na palec, další vyháknuto
-
-	double delka=E->geo.delka/*+buffer_pres_predavaci_misto(E)*/;
+	double X1=E->geo.X1;
+	double Y1=E->geo.Y1;
+	double delka=E->geo.delka;
+//	double delka_BpPM=buffer_pres_predavaci_misto(E);
+//	if(delka_BpPM)
+//	{
+//		delka+=delka_BpPM;
+//		X1=E->predchozi->geo.X1;
+//		Y1=E->predchozi->geo.Y1;
+//  }
 	double umisteni=delka-(E->data.pocet_voziku+pocet_voziku_z_prejezdu_na_bufferu-1)*PP.delka_podvozek;//delka bufferu (-1, protože druhý vozík má až pozici 1xdelka podvozku), nepouživat -PP.uchyt_pozice, protože se to počítá právě pro úchyt nikoliv začátek vozíku
 	while(umisteni<=delka)//generuje vozíky bufferu včetně toho na stopce (<=), pokud jsem generoval bez, dělalo občas (<) problemy
 	{
-		TPointD_3D Pt=m.getPt(E->geo.radius,E->geo.orientace,E->geo.rotacni_uhel,E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4,umisteni/delka,(umisteni+PP.uchyt_pozice-PP.delka_podvozek/2.0)/delka);//zjištění aktuálních souřadnic vozíků
+		TPointD_3D Pt=m.getPt(E->geo.radius,E->geo.orientace,E->geo.rotacni_uhel,X1,E->geo.Y1,E->geo.X4,E->geo.Y4,umisteni/delka,(umisteni+PP.uchyt_pozice-PP.delka_podvozek/2.0)/delka);//zjištění aktuálních souřadnic vozíků
 		//TZakazka *Z=new TZakazka;//pouze jen kvůli testům
 		if(pocet_voziku_z_prejezdu_na_bufferu>0){/*Z->n=1;Z->barva=clRed;*/stav=-2;pocet_voziku_z_prejezdu_na_bufferu--;}//barevné odlišení pouze jen kvůli testům, vozík na přejezdu, který narazil do bufferu nad rámec jeho nastaveného počtu
 		else {/*Z->n=2;Z->barva=clBlue;*/stav=-1;}//barevné odlišení pouze jen kvůli testům
@@ -6139,7 +6156,7 @@ void Cvektory::generuj_voziky_stop_a_bufferu(TElement *E,double akt_rotace_jigu,
 ////---------------------------------------------------------------------------
 //pokud je buffer přes předávací místo, vrátí délku bufferu, co předchází předávacímu místu, pokud ne vrátí se 0
 double Cvektory::buffer_pres_predavaci_misto(TElement *E)
-{
+{                        //ještě pořešit zda před PM je linie - mělo by se řešit na úrovni editace
 	if(E->pohon!=NULL && vrat_druh_elementu(E)==0 && E->predchozi!=NULL && E->predchozi->pohon!=NULL && E->predchozi->eID==200 && E->geo.delka<E->data.pocet_pozic*PP.delka_podvozek-PP.uchyt_pozice)
 	return E->data.pocet_pozic*PP.delka_podvozek-PP.uchyt_pozice-E->geo.delka;
 	else return 0;
