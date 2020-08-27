@@ -2646,7 +2646,7 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 				{
 					if(i+1>pocet_voziku)vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,m.clIntensive(clPotencialBuffer,-50),clPotencialBuffer,0);//nevyužitá pozice - záměrně šedou jak podvozek tak JIG jako potenicální pozice
 					else if(!F->scGPCheckBox_rozmisteni_voziku->Checked)vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,clChassisTemp,clJigTemp);//využitá pozice - vykresluje se tato větev pouze pro případ skrytí zobrazení vozíků či posun vozíků při simulaci, jinak by neměla význam, protože by na těchto pozicích měly být vozíky
-				}  					//tuto větev nutné také duplicitně použít do tvorby vozíků!!!!!!!!!!!!!
+				}
 			}
 		}
 	}
