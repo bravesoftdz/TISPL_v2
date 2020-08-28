@@ -7400,9 +7400,9 @@ double TForm1::max_voziku(Cvektory::TElement *stopka)
 	if(delka>0 && !(d.v.PP.delka_podvozek<m.UDJ(d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(stopka))))//musí být něco v délce, pokud nula tak problém
 	{
 //		Cvektory::TCesta *C=NULL;
-//		Cvektory::TElement *E=stopka->predchozi;
-//		while(E!=NULL && E->n>0)//cyklus projde předchazijicí liniové úseky (z nich počítá délku) a zastaví až na nelionovém nebo nalezeném funkčním elementu
-//		{
+		Cvektory::TElement *E=stopka->predchozi;
+		while(E!=NULL && E->n>0)//cyklus projde předchazijicí liniové úseky (z nich počítá délku) a zastaví až na nelionovém nebo nalezeném funkčním elementu
+		{
 //			if(E->n>0)
 //			{
 //				if(E->OTOC_delka>0)
@@ -7418,13 +7418,13 @@ double TForm1::max_voziku(Cvektory::TElement *stopka)
 //					if(E->data.LO2>0)delka-=E->data.LO2+E->data.LO_pozice;
 //					else delka-=(E->data.LO1+E->data.LO2)/2.0+E->data.LO_pozice;
 //				}
-//				if(E->geo.typ==0 && E->dalsi->objekt_n==E->objekt_n && ((E->eID==MaxInt && E->geo.HeightDepp==0) || E->eID==200) && E->geo.orientace==stopka->geo.orientace)delka+=E->geo.delka;
-//				else break;
+				if(E!=NULL && E->n>0 && E->geo.typ==0 && E->objekt_n==stopka->objekt_n && E->eID==200 && E->geo.orientace==stopka->geo.orientace)delka+=E->geo.delka;
+				else break;
 //			}
-//			E=E->predchozi;
-//		}
+			E=E->predchozi;
+		}
 		short predchazi_SG_element=1;/*NE*/ if(stopka->predchozi!=NULL && stopka->predchozi->data.pocet_voziku>0)predchazi_SG_element=0;/*ANO*///pokud je buffer až předchozímu S&G elementu, potom uchyt pozice nemám vliv na zvětšení bufferu, protože i na předcházející stopce zabírá (přesahuje) stejný prostor
-//		E=NULL;delete E;
+		E=NULL;delete E;
 //		C=NULL;delete C;
 		if(delka>0)ret=floor((delka+d.v.PP.uchyt_pozice*predchazi_SG_element)/d.v.PP.delka_podvozek);
 		if(ret<1)ret=1;
