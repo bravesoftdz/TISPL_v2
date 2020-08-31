@@ -988,6 +988,7 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 	{
 		//hledání v elementech pro přichycení
 		Cvektory::TElement *E=v.ELEMENTY->dalsi;
+    Cvektory::T2Element *VYHYBKY=v.hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 		while(E!=NULL)
 		{
       //nulování stavu
@@ -1028,9 +1029,10 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 					break;
 				}
 			}
-			E=v.dalsi_krok(E);
+			E=v.dalsi_krok(VYHYBKY,E);
 		}
-		v.vymaz_seznam_VYHYBKY();
+		v.vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+		delete VYHYBKY;VYHYBKY=NULL;
 		E=NULL;delete E;
 
 		//kontrola bodů vozíků
@@ -2837,6 +2839,7 @@ void Cvykresli::vykresli_dopravnik(TCanvas *canv, Cvektory::TZakazka *zakazka)
 	unsigned int pocet_pruchodu=0;//predchozi_pocet_pruchodu=0;
 
 	Cvektory::TElement *E=v.ELEMENTY->dalsi;
+	Cvektory::T2Element *VYHYBKY=v.hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 	while(E!=NULL)
 	{
 		////vstupní proměnné
@@ -2952,8 +2955,10 @@ void Cvykresli::vykresli_dopravnik(TCanvas *canv, Cvektory::TZakazka *zakazka)
 		/////konec testů
 
 		////ukazatelové záležitosti
-		E=v.dalsi_krok(E);//posun na další element nahrazuje při použití výhybek dřívější E=E->dalsi;
+		E=v.dalsi_krok(VYHYBKY,E);//posun na další element nahrazuje při použití výhybek dřívější E=E->dalsi;
 	}
+  v.vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+	delete VYHYBKY;VYHYBKY=NULL;
 	delete E;E=NULL;//smazání již nepotřebného ukazatele
 	delete[]POLE;POLE=NULL;
 }
@@ -4479,6 +4484,7 @@ Graphics::TBitmap *Cvykresli::nacti_nahled_cesty(Cvektory::TZakazka *zakazka)
 	double MaxX=MaxInt*(-1),MaxY=MaxInt,MinX=MaxInt,MinY=MaxInt*(-1);
 	////zjištění max oblasti vykreslení pohonu
 	Cvektory::TElement *E=v.ELEMENTY->dalsi;
+  Cvektory::T2Element *VYHYBKY=v.hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 	while(E!=NULL)
 	{
 		if(E->geo.X1<MinX)MinX=E->geo.X1;
@@ -4489,8 +4495,10 @@ Graphics::TBitmap *Cvykresli::nacti_nahled_cesty(Cvektory::TZakazka *zakazka)
 		if(E->geo.X4>MaxX)MaxX=E->geo.X4;
 		if(E->geo.Y4<MaxY)MaxY=E->geo.Y4;
 		if(E->geo.Y4>MinY)MinY=E->geo.Y4;
-		E=v.dalsi_krok(E);
+		E=v.dalsi_krok(VYHYBKY,E);
 	}
+  v.vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+	delete VYHYBKY;VYHYBKY=NULL;
 	delete E;E=NULL;
 
 	////výpočet nového Zoom, podle maximální oblasti vykreslení a velikosti bmp
@@ -5111,6 +5119,7 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 		if(F->OBJEKT_akt->element!=NULL)
 		{
 			Cvektory::TElement *E=F->OBJEKT_akt->element;//přeskočí rovnou hlavičku
+			Cvektory::T2Element *VYHYBKY=v.hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 			while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
 			{
 				if((E->pohon==NULL && F->OBJEKT_akt->pohon==NULL || E->pohon!=NULL && F->OBJEKT_akt->pohon!=NULL && E->pohon->n==F->OBJEKT_akt->pohon->n || E->eID==200 || E->eID==300 || E->eID==301) && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT)//vykreslení tabulek elementů, kteří mají stejný pohon jako aktuálně editovaný pohon
@@ -5144,8 +5153,10 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 					}
 				}
 				else E->mGrid->SetVisibleComponents(false);//pokud pohon elementu se nerovná aktuálně editovanému pohonu, je třeba skrýt všechny komponenty (posun obrazu PAN MOVE či skryté mGridy)
-				E=v.dalsi_krok(E,F->OBJEKT_akt);
+				E=v.dalsi_krok(VYHYBKY,E,F->OBJEKT_akt);
 			}
+      v.vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+			delete VYHYBKY;VYHYBKY=NULL;
 
 			//pokud existuje předchozí předávací místo bude vykresleno
 			E=F->predchozi_PM;
