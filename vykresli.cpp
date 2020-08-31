@@ -3543,7 +3543,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,short scena,long X,long Y,AnsiStri
 		  		if(rotace==90){x=m.round(X-h/2.0);y=m.round(Y-w/2.0);}
 		  		if(rotace==270){x=m.round(X-h/2.0);y=m.round(Y-w/2.0);}
 		  		aktOblast=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+h)/zAA),m.round((y+w)/zAA));//souřadnice pro citelnou oblast
-		  		if(rotace==90){x=m.round(X+h/2.0);y=m.round(Y-w/2.0);}//souřadnice vykreslení textu a souřadnice citelné oblasti nejsou totožné, nutné znova určit
+					if(rotace==90){x=m.round(X+h/2.0);y=m.round(Y-w/2.0);}//souřadnice vykreslení textu a souřadnice citelné oblasti nejsou totožné, nutné znova určit
 		  		if(rotace==270){x=m.round(X-h/2.0);y=m.round(Y+w/2.0);}
 				}
 				TextFraming(canv,x,y,name);//samotný vypis
@@ -5657,6 +5657,36 @@ void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,Cvektory::TElement *Elem
 	//Element->citelna_oblast.rect6=//Z - souřadnice aktualní element (počátek stoupání či klesání)
 	//Element->citelna_oblast.rect7=//Z - souřadnice další element (konec stoupání či klesání)
 	//upozornění pro testování výpisu citelné oblasti zde je nutné aZZ nastavit na 1!!! při kreslení přimo do Canvasu netřeba... Canvas->Rectangle(E->citelna_oblast.rect8);
+}
+//vykreslí ikonu trojúhelníku indikující stoupání či klesání
+void Cvykresli::vykresli_ikonu_stoupani_klesani(TCanvas *canv,int X,int Y,short typ,String popisek,short stav)
+{
+	////deklarace
+	TColor barva=clBlack;
+	int odsazeniX=20*3,odsazeniY=10*3,vyoseni=4*3;
+  if(typ!=0)odsazeniX*=-1;
+
+	////trojúhelník vykreslení
+	set_pen(canv,barva,3,PS_ENDCAP_SQUARE);//pero
+	//definice bodů
+	TPoint points[3];
+	points[0].x = X-odsazeniX;
+	points[0].y = Y+odsazeniY-vyoseni;
+	points[1].x = X+odsazeniX;
+	points[1].y = Y-odsazeniY-vyoseni;
+	points[2].x = X+odsazeniX;
+	points[2].y = Y+odsazeniY-vyoseni;
+	points[3].x = points[0].x;
+	points[3].y = points[0].y;
+	//samotné vykreslení
+	canv->Polyline(points,3);
+
+	////popisek
+	canv->Brush->Style=bsClear;
+	canv->Font->Color=m.clIntensive(barva,100);
+	canv->Font->Name=F->aFont->Name;
+	canv->Font->Size=11*3;
+	canv->TextOutW(X-canv->TextWidth(popisek)/2,Y+9*3,popisek);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------

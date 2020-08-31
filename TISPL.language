@@ -488,3 +488,5 @@ crossing;X;pøejezd
 total;X;celkem
 The version of the saved file does not match the current version of the environment! File version;X;Verze uloženého souboru se neschoduje s aktuální verzí prostøedí! Verze souboru
 environment version;X;verze prostøedí
+ascension;X;stoupání
+descent;X;klesání

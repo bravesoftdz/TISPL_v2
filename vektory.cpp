@@ -2860,7 +2860,7 @@ bool Cvektory::PtInSegment(TElement *E,double Xmys,double Ymys)
 ////---------------------------------------------------------------------------
 //posune pouze Element z pomocného spojového seznamu OBJEKT_akt na parametrem uvedenou vzádlenost (v metrech) od elementu předchozího, pokud je implicitní hodnota pusun_dalsich_elementu false změněna na true, jsou o danou změnu posunu přesunuty i elementy následující Elementu (tudíž jejich vzdálenost od Elementu bude zachována, naopak v případě výchozí hodnoty false je následujícím/dalším elementům poloha zachována)
 bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dalsich_elementu,bool posun_kurzorem,bool kontrola_zmeny_poradi)
-{ //!!!!!!po nasazení geometrie nutno zdokonalit, nebude se pracovát pouze se vzdálenosti na linii buď vodorvné či svislé, ale i v oblouku
+{
 	Cvektory::TElement *E=NULL;
 	bool RET=true;
 	if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->element!=NULL/*&&F->Akce!=F->MOVE_ELEMENT*/)//raději ošetření, ač by se metoda měla volat jen v případě existence OBJEKT_akt
@@ -2897,7 +2897,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				{
 					E=vloz_element_pred(F->OBJEKT_akt,Element);
 					if(E!=NULL && Element->dalsi!=NULL && E->n!=Element->dalsi->n && E->geo.HeightDepp==0)zmen_poradi_elementu(Element,E);
-					if(E->geo.HeightDepp!=0)error=true;
+					if(E!=NULL && E->geo.HeightDepp!=0)error=true;
 				}
 				//aktualizace posouvaného elementu
 				if(!error)
