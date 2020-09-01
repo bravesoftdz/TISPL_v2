@@ -1525,14 +1525,9 @@ void Cvektory::rotuj_objekt(TObjekt *Objekt, double rotace)
 		}
 		E=NULL;delete E;
 		//rotace nadpisu
-		TElement *E_pom=vrat_posledni_element_objektu(Objekt);
-		switch((int)azimut)
-		{
-			case 0:Objekt->Xt=m.P2Lx(F->vrat_max_oblast(Objekt).left);Objekt->Yt=E_pom->geo.Y4-(E_pom->geo.Y4-Objekt->element->geo.Y1)/2.0;break;
-			case 90:case 270:Objekt->Xt=E_pom->geo.X4-(E_pom->geo.X4-Objekt->element->geo.X1)/2.0;Objekt->Yt=m.P2Ly(F->vrat_max_oblast(Objekt).top);break;
-			case 180:Objekt->Xt=m.P2Lx(F->vrat_max_oblast(Objekt).right);Objekt->Yt=E_pom->geo.Y4-(E_pom->geo.Y4-Objekt->element->geo.Y1)/2.0;break;
-		}
-		E_pom=NULL;delete E_pom;
+		TPointD bod;bod.x=Objekt->Xt;bod.y=Objekt->Yt;
+		bod=m.rotace(Objekt->element->geo.X1,Objekt->element->geo.Y1,bod.x,bod.y,rotace);
+		Objekt->Xt=bod.x;Objekt->Yt=bod.y;
 		Objekt->orientace=Objekt->orientace_text=azimut;
 		F->duvod_validovat=2;//je přímý důvod k validaci
 	}
@@ -2589,7 +2584,7 @@ short Cvektory::vrat_druh_elementu(TElement *Element)
 	if(Element!=NULL)//zarážka předávací místo  výhybka a spojka 				                      //nutné přeskakovat elementarní hlavičku!
 	if(Element->eID!=MaxInt && Element->eID!=200 && Element->eID!=300 && Element->eID!=301 && Element->eID!=400 && Element->eID!=401 && Element->eID!=402 && Element->n>0)
 	{
-		if(Element->eID%2==0 && Element->eID!=100 && Element->data.pocet_voziku>0)RET=0;//S&G elementy, mimo těch průjezdních a mimo ION tyče
+		if(Element->eID%2==0 && Element->eID!=100 && ((Element->eID==0 && Element->data.pocet_voziku>0) || Element->eID!=0))RET=0;//S&G elementy, mimo těch průjezdních a mimo ION tyče
 		else RET=1;//kontinuální elementy, či S&G elementy průjezdní (tj. kontinuální)
 	}
 	return RET;
@@ -3318,7 +3313,7 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 	}
 
 	//kontrola RT, pokud je záporné, výpis doporučeného PT
-	if(F->OBJEKT_akt!=NULL &&  F->OBJEKT_akt->zobrazit_mGrid && F->Akce==F->Takce::NIC)
+	if(F->OBJEKT_akt!=NULL &&  F->OBJEKT_akt->zobrazit_mGrid && (F->Akce==F->Takce::NIC/* || F->Akce==F->Takce::ADD*/))
 	{
 		TElement *E=F->OBJEKT_akt->element;
     T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
@@ -3333,7 +3328,7 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 		  		//kontrola, zda je RT záporné
 					if(E->data.RT.y<0)
 					{
-						note+=AnsiString(m.round2double(E->data.PT1+E->data.PT2+E->PTotoc+E->data.RT.y,3))+jednotky;
+						note+=AnsiString(m.round2double(F->outPT(E->data.PT1+E->data.PT2+E->PTotoc+E->data.RT.y),3))+jednotky;
 						E->mGrid->Note.Text=note; //E->mGrid->ShowNote(note);
 					}
 					else E->mGrid->Note.Text="";

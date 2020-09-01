@@ -60,19 +60,19 @@ Top=Form1->ClientHeight/2-Form_help->Height/2;
 		//vypis textu
 		if(english)
 		{
-			about_text="Product version: "+String(F->ProductVersion)+"<br>"
-								+"File version: "+String(F->FileVersion)+"<br>"
+			about_text="<b>Project</b><br>File version: "+String(F->FileVersion)+"<br>"
 								+"Created by: "+F->d.v.PP.vytvoril+" , "+DateToStr(F->d.v.PP.cas_start)+" "+TimeToStr(F->d.v.PP.cas_start)+"<br>"
 								+"Last modified: "+F->d.v.PP.upravil+" , "+DateToStr(F->d.v.PP.cas_posledni_upravy)+" "+TimeToStr(F->d.v.PP.cas_posledni_upravy)+"<br>"
+								+"<br><b>Application</b><br>Product version: "+String(F->ProductVersion)+"<br>"
 								+"Location "+Application->ExeName+"<br>"
 								+"Application Settings "+F->get_temp_dir();
 		}
 		else
 		{
-			about_text="Verze aplikace: "+String(F->ProductVersion)+"<br>"
-								+"Verze souboru: "+String(F->FileVersion)+"<br>"
+			about_text="<b>Projekt</b><br>Verze souboru: "+String(F->FileVersion)+"<br>"
 								+"Vytvoøil: "+F->d.v.PP.vytvoril+" , "+DateToStr(F->d.v.PP.cas_start)+" "+TimeToStr(F->d.v.PP.cas_start)+"<br>"
 								+"Posledni zmìna: "+F->d.v.PP.upravil+" , "+DateToStr(F->d.v.PP.cas_posledni_upravy)+" "+TimeToStr(F->d.v.PP.cas_posledni_upravy)+"<br>"
+								+"<br><b>Aplikace</b><br>Verze aplikace: "+String(F->ProductVersion)+"<br>"
 								+"Umístìní "+Application->ExeName+"<br>"
 								+"Nastavení aplikace "+F->get_temp_dir();
 		}
