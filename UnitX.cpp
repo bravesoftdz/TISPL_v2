@@ -28,6 +28,7 @@ __fastcall TFormX::TFormX(TComponent* Owner)
   posledni_E=NULL;
 	validovany_pohon=0;
 	VID="00";//zde se definuje poèet èíslic obažených ve VID
+  aut_mazani_PM=false;//je true pouze v èase automatického odmazávání PM
 	//pokud dojde ke zmìnì poøadí øádku, nastavit nové pozice zde, + pøepsání switche pro tabulku pohonu v OnChange + pøepsaní switche v korelace_tab_pohonu()
 }
 //---------------------------------------------------------------------------
@@ -2149,30 +2150,17 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 
 	////naètení dat z pohonu do mGridu
 	mazatPM(E);//kontrola a dotaz na mazání elementu + ovlivnìných PM
+	F->d.v.aktualizuj_rezim_pohonu();//aktualizuje režimy všem pohonùm
 	F->vlozit_predavaci_misto_aktualizuj_WT();//musí být první!!
 	input_state=COMBO;//dùležité pro nastavení enabled komponent v aktualizaci elementù
 	if(p!=NULL)aktualizace_tab_elementu();
 	else aktualizace_tab_elementu_pOdebran();
 	F->d.v.aktualizuj_cestu_teplomeru();//pokud existuje cesta mezi teplomìry aktualizuje ji, jinak vytvoøí default cestu
+
 	////aktualizace knihoven
 	F->DrawGrid_knihovna->Refresh();
 	F->DrawGrid_ostatni->Refresh();
 	F->DrawGrid_otoce->Refresh();
-
-	//vytvoøení cesty teplomìrù po pøiøazení pohonu
-	Cvektory::TTeplomery *T=F->d.v.vrat_teplomery_podle_zakazky(F->OBJEKT_akt,F->d.v.ZAKAZKA_akt);
-	if(F->OBJEKT_akt->pohon!=NULL && F->OBJEKT_akt->id>=6 && F->OBJEKT_akt->id<=8 && T==NULL)
-	{
-		F->d.v.vytvor_default_c_teplomery(F->OBJEKT_akt);
-		F->vytvor_aktualizuj_tab_teplomeru();
-	}
-	//pokud dojde k odstranìní pohonu, dojde ke smazání teplomìrù
-	if((F->OBJEKT_akt->pohon==NULL ||  !(F->OBJEKT_akt->id>=6 && F->OBJEKT_akt->id<=8)) && T!=NULL)
-	{
-		F->d.v.vymaz_teplomery(F->OBJEKT_akt,T);
-		delete T;T=NULL;
-	}
-	T=NULL;delete T;
 
   ////ukazatelové záležitosti
 	Combo=NULL;delete Combo;
@@ -2211,6 +2199,7 @@ void TFormX::prirazeni_pohonu_defTab()
 		E=E->dalsi;
 	}
 	input_state=COMBO;//dùležité pro nastavení enabled komponent v aktualizaci elementù
+  F->d.v.aktualizuj_rezim_pohonu();//aktualizuje režimy všem pohonùm
 	if(p==NULL)aktualizace_tab_elementu_pOdebran();//aktualizace tabulek elemntù
 	else aktualizace_tab_elementu();//došlo ke zmìnám v tabulce pohonu, které ovlivní i ostatní elementy
 
@@ -2230,21 +2219,6 @@ void TFormX::prirazeni_pohonu_defTab()
 			posledni_E=posledni_E->dalsi;
 		}
 	}
-
-	//vytvoøení cesty teplomìrù po pøiøazení pohonu
-	Cvektory::TTeplomery *T=F->d.v.vrat_teplomery_podle_zakazky(F->OBJEKT_akt,F->d.v.ZAKAZKA_akt);
-	if(F->OBJEKT_akt->pohon!=NULL && F->OBJEKT_akt->id>=6 && F->OBJEKT_akt->id<=8 && T==NULL)
-	{
-		F->d.v.vytvor_default_c_teplomery(F->OBJEKT_akt);
-		F->vytvor_aktualizuj_tab_teplomeru();
-	}
-	//pokud dojde k odstranìní pohonu, dojde ke smazání teplomìrù
-	if((F->OBJEKT_akt->pohon==NULL ||  !(F->OBJEKT_akt->id>=6 && F->OBJEKT_akt->id<=8)) && T!=NULL)
-	{
-		F->d.v.vymaz_teplomery(F->OBJEKT_akt,T);
-		delete T;T=NULL;
-	}
-	T=NULL;delete T;
 
 	//ukazatelové záležitosti
 	E=NULL;p=NULL;
@@ -2348,6 +2322,7 @@ void TFormX::mazatPM(Cvektory::TElement *Element)
 	double predchozi_zoom=F->Zoom;
 
 	//dotaz + smazání samotného PM kde byla vyvolaná zmìna
+	aut_mazani_PM=true;
 	Cvektory::TElement *smaz=NULL;//pom ukazatel pro mazání prázdné zarážky pøed obloukem
 	String name="";
 	if(nalezen && E!=NULL)name=E->name;
@@ -2384,6 +2359,9 @@ void TFormX::mazatPM(Cvektory::TElement *Element)
 		F->Smazat1Click(this);
 		if(smaz!=NULL)F->d.v.smaz_element(smaz);
 	}
+
+  //navrácení stavu
+	aut_mazani_PM=false;
 
 	//uložení posunu a zoom pøed posuny na elementy
 	F->Posun=predchozi_posun;

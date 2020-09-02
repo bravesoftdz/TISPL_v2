@@ -1875,6 +1875,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 //	if(novy->predchozi->n>0 && Objekt->element!=NULL && novy->predchozi->objekt_n!=Objekt->n && (Objekt->element->predchozi->n>0 && novy->predchozi->objekt_n!=Objekt->element->predchozi->objekt_n || Objekt->element->predchozi->n==0))novy->pohon=novy->predchozi->pohon;
 //	if(novy==Objekt->element && novy->dalsi!=NULL)novy->pohon=novy->dalsi->pohon;
 	if(novy->dalsi!=NULL)novy->pohon=novy->dalsi->pohon;
+	else if(novy->predchozi->n>0 && novy->predchozi->eID!=200)novy->pohon=novy->predchozi->pohon;//například při vkládání gemetri na konec linky
 	novy->geo.HeightDepp=0;
 	novy->geo.delkaPud=0;
 
@@ -2866,7 +2867,8 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 		if(F->OBJEKT_akt->element!=NULL && vzdalenost!=0)//musí existovat alespoň jeden element && nesmí být vzdálenost rovna nule
 		{
 			//////Načtení délky před posunem
-			double vzd=vzdalenost_od_predchoziho_elementu(Element,false);//musí zde být vzdálenost k předchozímu funkčnímu elementu, tj. velikost kóty
+			double vzd=Element->geo.delka;//leze použít pouze délku elementu, nově se nevyskytují zarážky mezi fce. elementy
+			//vzd=vzdalenost_od_predchoziho_elementu(Element,false);//musí zde být vzdálenost k předchozímu funkčnímu elementu, tj. velikost kóty
 			if((Element->dalsi!=NULL && Element->dalsi->geo.typ!=0 || Element->geo.typ!=0) && kontrola_zmeny_poradi)posun_povolit=false;//pokud by element ovlivnil posunem geometrii
 			//////Realizace posunu + validace
 			if(posun_kurzorem && posun_povolit)//pokud se jedná o posun kurzorem, třeba jinak určit vzdálenost
@@ -2876,7 +2878,9 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			}
 			//realizace posunu
 			if(Element->geo.HeightDepp==0)vzdalenost=(/*vzd/m.abs_d(vzd))*(*/m.abs_d(vzd)-vzdalenost);
-			else vzdalenost=m.abs_d(vzd)-vzdalenost*cos(asin(Element->geo.HeightDepp/vzdalenost));//zjištění posunu ve S/K
+			else if(Element->geo.HeightDepp/vzdalenost<1)vzdalenost=-vzdalenost*cos(asin(Element->geo.HeightDepp/vzdalenost))+Element->geo.delkaPud;//zjištění posunu ve S/K
+			else {vzdalenost=0;posun_povolit=false;}//nebyly dodrženy pravidla pravoúhlého trojúhelníku, znemožnit editaci
+			//F->Memo(Element->geo.delkaPud-vzdalenost);
 			switch((int)Element->geo.orientace)
 			{
 				case   0:Element->Y=Element->Y-vzdalenost;break;
@@ -2908,11 +2912,11 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			  	}
 				}
         else
-				{Element->X=puv_souradnice.x;Element->Y=puv_souradnice.y;posun_povolit=false;F->TIP=F->ls->Strings[307];}//"Prvek nelze přesunout"
+				{Element->X=puv_souradnice.x;Element->Y=puv_souradnice.y;posun_povolit=false;}
 			}
 			//pokud ne budou mu navráceny původní souřadnice
 			else
-			{Element->X=puv_souradnice.x;Element->Y=puv_souradnice.y;posun_povolit=false;F->TIP=F->ls->Strings[307];}//"Prvek nelze přesunout"
+			{Element->X=puv_souradnice.x;Element->Y=puv_souradnice.y;posun_povolit=false;}
 			//////Posun dalsích elementů
 			if(pusun_dalsich_elementu && posun_povolit)
 			{
@@ -2946,6 +2950,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			}
 		}
 		RET=posun_povolit;
+		if(!RET)F->TIP=F->ls->Strings[307];//"Prvek nelze přesunout"
 	}
 	E=NULL; delete E;
 	return RET;
@@ -9873,7 +9878,7 @@ TPointD Cvektory::InVrata(TElement *E,bool kontrola_kurzoru)
 	ret.x=ret.y=-1*MaxInt;//defaultní stav nenalezeno
 	TObjekt *O=vrat_objekt(E->objekt_n);
 	//pouze kontrolovat u objektů se stěnami a má body, pouze pro liniovou geometrii objektu
-	if(E->geo.typ==0 && O!=NULL && O->sirka_steny>0 && O->body!=NULL && O->body->dalsi!=NULL)
+	if(E->geo.typ==0 && O!=NULL/* && O->sirka_steny>0*/ && O->body!=NULL && O->body->dalsi!=NULL)
 	{
 		//deklarace parametrů úseček
 		TPointD P;

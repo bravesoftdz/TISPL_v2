@@ -5325,35 +5325,37 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_do)
 //		}
 	}
 	//////bežná funkcionalita
-	else if(Element_do->eID!=MaxInt)
+	else if(Element_do->eID!=MaxInt || (Element_do->eID==MaxInt && (Element_do->geo.HeightDepp!=0 || (Element_do->dalsi!=NULL && Element_do->dalsi->geo.HeightDepp!=0))))
 	{
 		////kota mezi elementy
 		double x1,y1,x2,y2;          //////////////////////////kota mezi kabinou a prvním elementem !!!!!
 		Cvektory::TElement *Element_od=Element_do->predchozi;
-		while(Element_od!=NULL && Element_od->n>0 && Element_od->objekt_n==Element_do->objekt_n)
-		{
-			if(Element_od->geo.typ!=0)break;
-			if(Element_od->eID!=MaxInt)break;//kota element - element
-			Element_od=Element_od->predchozi;
-		}
+//		while(Element_od!=NULL && Element_od->n>0 && Element_od->objekt_n==Element_do->objekt_n)
+//		{
+//			if(Element_od->geo.typ!=0)break;
+//			if(Element_od->eID!=MaxInt)break;//kota element - element
+//			Element_od=Element_od->predchozi;
+//		}
 		//ošetření proti tomu je-li hned první element mimo kabinu, nebo hlavička elementů
 		//if(Element_od!=NULL && (Element_od->n==0 || Element_od->objekt_n!=Element_do->objekt_n))Element_od=NULL;
 		//určení bodů kóty
-		if(Element_do->geo.orientace==90||Element_do->geo.orientace==270)//vodorovná kabina
-		{
-			if(Element_od==NULL)
-			{x1=Element_do->geo.X1;y1=Element_do->geo.Y1;}
-			else if(Element_od->n!=0 && Element_od->objekt_n==Element_do->objekt_n){x1=Element_od->X;y1=Element_od->geo.Y4;}
-			else {x1=F->OBJEKT_akt->element->geo.X1;y1=F->OBJEKT_akt->element->geo.Y1;}
-			x2=Element_do->X;y2=y1;
-		}
-		else
-		{
-			if(Element_od==NULL){x1=Element_do->geo.X1;y1=Element_do->geo.Y1;}
-			else if(Element_od->n!=0 && Element_od->objekt_n==Element_do->objekt_n){x1=Element_od->geo.X4;y1=Element_od->Y;}
-			else {x1=F->OBJEKT_akt->element->geo.X1;y1=F->OBJEKT_akt->element->geo.Y1;}
-			y2=Element_do->Y;x2=x1;
-		}
+//		if(Element_do->geo.orientace==90||Element_do->geo.orientace==270)//vodorovná kabina
+//		{
+//			if(Element_od==NULL)
+//			{x1=Element_do->geo.X1;y1=Element_do->geo.Y1;}
+//			else if(Element_od->n!=0 && Element_od->objekt_n==Element_do->objekt_n){x1=Element_od->X;y1=Element_od->geo.Y4;}
+//			else {x1=F->OBJEKT_akt->element->geo.X1;y1=F->OBJEKT_akt->element->geo.Y1;}
+//			x2=Element_do->X;y2=y1;
+//		}
+//		else
+//		{
+//			if(Element_od==NULL){x1=Element_do->geo.X1;y1=Element_do->geo.Y1;}
+//			else if(Element_od->n!=0 && Element_od->objekt_n==Element_do->objekt_n){x1=Element_od->geo.X4;y1=Element_od->Y;}
+//			else {x1=F->OBJEKT_akt->element->geo.X1;y1=F->OBJEKT_akt->element->geo.Y1;}
+//			y2=Element_do->Y;x2=x1;
+//		}
+		x1=Element_do->geo.X1;y1=Element_do->geo.Y1;
+		x2=Element_do->geo.X4;y2=Element_do->geo.Y4;
 		if(x2<F->OBJEKT_akt->element->geo.X1)O=(O-0.66)*(-1);//ošetření chybného zobrazení kóty elementu, který je před kabinou
 		//vykreslení kóty
 		vykresli_kotu(canv,x1,y1,x2,y2,Element_do,F->OBJEKT_akt->koty_elementu_offset.x,highlight);
@@ -5477,7 +5479,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 		else if(F->index_kurzoru<=-11)//ostatní kóty
 		{
 			if(F->pom_element_temp!=NULL && F->pom_komora_temp==NULL)//nutné ošetření z pohledu paměťové chyby, toto nemůže být znegované výše, protože by při přepisování kóty kabiny se přepisovaly i kóty elementů
-			if((aktElement->n==F->pom_element_temp->n && F->index_kurzoru==-101 && LO_kota) || (aktElement->n==F->pom_element_temp->n && F->index_kurzoru!=-101 && !LO_kota))//aktuální vykreslováná kota
+			if((aktElement->n==F->pom_element_temp->n && F->index_kurzoru==-101 && LO_kota) || (aktElement->n==F->pom_element_temp->n && F->index_kurzoru==-11 && !LO_kota))//aktuální vykreslováná kota
 			{
 				if(F->editovany_text=="")Text="";//musí být v každé zvlášť pro řešení konkrétní editované kóty
 				else Text=F->editovany_text;
@@ -5668,7 +5670,7 @@ void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,Cvektory::TElement *Elem
 	{
 		Text="";if(HeightDeep>0)Text="+";
 		Text+=String(HeightDeep);
-		if(F->editace_textu && F->index_kurzoru && F->pom_element_temp==Element)Text=F->editovany_text;
+		if(F->editace_textu && F->index_kurzoru==-13 && F->pom_element_temp==Element)Text=F->editovany_text;
 	}
 	else
 	{
