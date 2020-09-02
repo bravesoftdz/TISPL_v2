@@ -4170,50 +4170,50 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,lon
 		canv->Brush->Color=clWhite;
 		canv->Brush->Style=bsClear;
 
-		if(typ==1 && E!=NULL)//normální zobrazení typ==1
-		{
-			if(/*stav==2 || */stav==3)canv->Font->Style = TFontStyles()<< fsBold;//došlo k vybrání elementu-tato část odstavena nebo přímo jeho textu
-			if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n)canv->Font->Color=m.clIntensive(clBlack,m.get_intensity());
-			//nastavení názvů pohonů
-			AnsiString Tpom="",T1=F->ls->Strings[274],T2=F->ls->Strings[274];//"pohon nevybrán"
-			if(E->pohon!=NULL)T1=E->pohon->name;
-			if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)T2=E->dalsi->pohon->name;
-			if(E->dalsi==NULL && v.ELEMENTY->dalsi->pohon!=NULL)T2=v.ELEMENTY->dalsi->pohon->name;
-			//v případě 270 musí být popisky prohozeny
-			if(v.vrat_objekt(E->objekt_n)->orientace==270){Tpom=T1;T1=T2;T2=Tpom;}
-			int w1=canv->TextWidth(T1)/*,w2=canv->TextWidth(T2)*/;
-			int h=canv->TextHeight(T1);
-			long x1=0,y1=0,x2=0,y2=0;short K=0.25*Z;//pouze grafická korekce, text aby se nezohledňovalo zarovnání na diakritiku, vypadá to dinvě
-			switch((int)m.Rt90(E->geo.orientace-E->geo.rotacni_uhel))
-			{
-				case 0:
-				{
-					x2=X-K;y2=Y+w1+m.m2px(0.2);
-					x1=X-h-K;y1=Y-m.m2px(0.2);
-					canv->Font->Orientation=900;
-				}break;
-				case 90:
-				{
-					x1=X-w1-m.m2px(0.2);y1=Y+K;
-					x2=X+m.m2px(0.2);y2=Y-K-h;
-				}break;
-				case 180:
-				{
-					x1=X-K;y1=Y-w1-m.m2px(0.2);
-					x2=X+h+K;y2=Y+m.m2px(0.2);
-					canv->Font->Orientation=-900;
-				}break;
-				case 270:
-				{
-					x2=X-w1-m.m2px(0.2);y1=Y+K;
-					x1=X+m.m2px(0.2);y2=Y-K-h;
-				}break;
-
-			}
-			TextFraming(canv,x1,y1,T1);
-			TextFraming(canv,x2,y2,T2);
-			canv->Font->Orientation=0;
-		}
+//		if(typ==1 && E!=NULL)//normální zobrazení typ==1
+//		{
+//			if(/*stav==2 || */stav==3)canv->Font->Style = TFontStyles()<< fsBold;//došlo k vybrání elementu-tato část odstavena nebo přímo jeho textu
+//			if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n)canv->Font->Color=m.clIntensive(clBlack,m.get_intensity());
+//			//nastavení názvů pohonů
+//			AnsiString Tpom="",T1=F->ls->Strings[274],T2=F->ls->Strings[274];//"pohon nevybrán"
+//			if(E->pohon!=NULL)T1=E->pohon->name;
+//			if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)T2=E->dalsi->pohon->name;
+//			if(E->dalsi==NULL && v.ELEMENTY->dalsi->pohon!=NULL)T2=v.ELEMENTY->dalsi->pohon->name;
+//			//v případě 0 musí být popisky prohozeny
+//			if(E->geo.orientace==0){Tpom=T1;T1=T2;T2=Tpom;}
+//			int w1=canv->TextWidth(T1)/*,w2=canv->TextWidth(T2)*/;
+//			int h=canv->TextHeight(T1);
+//			long x1=0,y1=0,x2=0,y2=0;short K=0.25*Z;//pouze grafická korekce, text aby se nezohledňovalo zarovnání na diakritiku, vypadá to dinvě
+//			switch((int)m.Rt90(E->geo.orientace-E->geo.rotacni_uhel))
+//			{
+//				case 0:
+//				{
+//					x2=X-K;y2=Y+w1+m.m2px(0.2);
+//					x1=X-h-K;y1=Y-m.m2px(0.2);
+//					canv->Font->Orientation=900;
+//				}break;
+//				case 90:
+//				{
+//					x1=X-w1-m.m2px(0.2);y1=Y+K;
+//					x2=X+m.m2px(0.2);y2=Y-K-h;
+//				}break;
+//				case 180:
+//				{
+//					x1=X-K;y1=Y-w1-m.m2px(0.2);
+//					x2=X+h+K;y2=Y+m.m2px(0.2);
+//					canv->Font->Orientation=-900;
+//				}break;
+//				case 270:
+//				{
+//					x2=X-w1-m.m2px(0.2);y1=Y+K;
+//					x1=X+m.m2px(0.2);y2=Y-K-h;
+//				}break;
+//
+//			}
+//			TextFraming(canv,x1,y1,T1);
+//			TextFraming(canv,x2,y2,T2);
+//			canv->Font->Orientation=0;
+//		}
 	}
 	if(typ==0)//ikona v knihovně elementů je text pod elementem
 	{

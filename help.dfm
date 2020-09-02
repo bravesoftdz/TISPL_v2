@@ -751,7 +751,6 @@ object Form_help: TForm_help
             ParentFont = False
             FluentUIOpaque = False
             TabOrder = 2
-            Visible = False
             CanScroll = True
             FillGradientAngle = 90
             FillGradientBeginAlpha = 255
@@ -888,7 +887,6 @@ object Form_help: TForm_help
             ParentFont = False
             FluentUIOpaque = False
             TabOrder = 1
-            Visible = False
             CanScroll = True
             FillGradientAngle = 90
             FillGradientBeginAlpha = 255
@@ -959,7 +957,6 @@ object Form_help: TForm_help
             ParentFont = False
             FluentUIOpaque = False
             TabOrder = 4
-            Visible = False
             CanScroll = True
             FillGradientAngle = 90
             FillGradientBeginAlpha = 255
@@ -1004,16 +1001,17 @@ object Form_help: TForm_help
               Caption = 'scHTMLLabel_about'
               LinkFontNormal.Charset = DEFAULT_CHARSET
               LinkFontNormal.Color = clHighlight
-              LinkFontNormal.Height = -11
+              LinkFontNormal.Height = -15
               LinkFontNormal.Name = 'Tahoma'
               LinkFontNormal.Style = []
               LinkFontHover.Charset = DEFAULT_CHARSET
               LinkFontHover.Color = clHighlight
-              LinkFontHover.Height = -11
+              LinkFontHover.Height = -15
               LinkFontHover.Name = 'Tahoma'
               LinkFontHover.Style = [fsUnderline]
               MaxWidth = 0
               TextAlignment = taLeftJustify
+              OnLinkClick = scHTMLLabel_aboutLinkClick
             end
           end
           object scGPToolPagerPage4: TscGPToolPagerPage

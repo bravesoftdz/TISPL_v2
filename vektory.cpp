@@ -3313,7 +3313,7 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 	}
 
 	//kontrola RT, pokud je záporné, výpis doporučeného PT
-	if(F->OBJEKT_akt!=NULL &&  F->OBJEKT_akt->zobrazit_mGrid && (F->Akce==F->Takce::NIC/* || F->Akce==F->Takce::ADD*/))
+	if(F->OBJEKT_akt!=NULL &&  F->OBJEKT_akt->zobrazit_mGrid && (F->Akce==F->Takce::NIC || F->Akce==F->Takce::ADD))
 	{
 		TElement *E=F->OBJEKT_akt->element;
     T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
@@ -3325,8 +3325,8 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 				if(vrat_druh_elementu(E)==0 && E->mGrid!=NULL && E->pohon==F->OBJEKT_akt->pohon && (E->eID!=0))// || (E->eID==0 && (E->mGrid->Note.Text=="" || (E->mGrid->Note.Text!="" && E->mGrid->Note.Text.SubString(1,F->ls->Strings[250].Length())!=F->ls->Strings[250] && E->mGrid->Note.Text.SubString(1,F->ls->Strings[251].Length())!=F->ls->Strings[251] && E->mGrid->Note.Text.SubString(1,F->ls->Strings[426].Length())!=F->ls->Strings[426])))))
 				{
 		  		note="Dop. hodnota PT je maximálně ";
-		  		//kontrola, zda je RT záporné
-					if(E->data.RT.y<0)
+					//kontrola, zda je RT záporné
+					if(m.round2double(E->data.RT.y,5)<0)
 					{
 						note+=AnsiString(m.round2double(F->outPT(E->data.PT1+E->data.PT2+E->PTotoc+E->data.RT.y),3))+jednotky;
 						E->mGrid->Note.Text=note; //E->mGrid->ShowNote(note);
