@@ -2157,6 +2157,14 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 	else aktualizace_tab_elementu_pOdebran();
 	F->d.v.aktualizuj_cestu_teplomeru();//pokud existuje cesta mezi teplomìry aktualizuje ji, jinak vytvoøí default cestu
 
+  ////povolení / zákaz pøepnutí kót
+	if(F->OBJEKT_akt->pohon!=NULL && !F->scGPComboBox_prepinacKot->Enabled)F->scGPComboBox_prepinacKot->Enabled=true;
+	if(F->OBJEKT_akt->pohon==NULL && F->scGPComboBox_prepinacKot->Enabled)
+	{
+		F->scGPComboBox_prepinacKot->Enabled=false;
+		if(F->scGPComboBox_prepinacKot->ItemIndex==1)F->scGPComboBox_prepinacKot->ItemIndex=0;
+	}
+
 	////aktualizace knihoven
 	F->DrawGrid_knihovna->Refresh();
 	F->DrawGrid_ostatni->Refresh();
@@ -2218,6 +2226,14 @@ void TFormX::prirazeni_pohonu_defTab()
 			if(posledni_E->dalsi==NULL || (posledni_E->dalsi!=NULL && posledni_E->dalsi->objekt_n!=F->OBJEKT_akt->n))break;
 			posledni_E=posledni_E->dalsi;
 		}
+	}
+
+	//povolení / zákaz pøepnutí kót
+	if(F->OBJEKT_akt->pohon!=NULL && !F->scGPComboBox_prepinacKot->Enabled)F->scGPComboBox_prepinacKot->Enabled=true;
+	if(F->OBJEKT_akt->pohon==NULL && F->scGPComboBox_prepinacKot->Enabled)
+	{
+		F->scGPComboBox_prepinacKot->Enabled=false;
+		if(F->scGPComboBox_prepinacKot->ItemIndex==1)F->scGPComboBox_prepinacKot->ItemIndex=0;
 	}
 
 	//ukazatelové záležitosti

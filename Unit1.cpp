@@ -2556,9 +2556,13 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
     		}
 				if((index_kurzoru==-11 || index_kurzoru==-101) && (OBJEKT_akt->id!=3 || (OBJEKT_akt->id==3 && (Akce==GEOMETRIE || Akce==GEOMETRIE_LIGHT))))//editace kót elementů
     		{
-					if(index_kurzoru!=-101)editovany_text=pom_element_temp->geo.delka;//načtení vzdálenosti
+					if(index_kurzoru!=-101)
+					{
+						editovany_text=pom_element_temp->geo.delka;//načtení vzdálenosti
+						if(pom_element_temp->geo.HeightDepp!=0)editovany_text=pom_element_temp->geo.delkaPud;//načtení vzdálenosti
+					}
 					else editovany_text=vzdalenost_meziLO(pom_element_temp,OBJEKT_akt->orientace);
-					if(Akce==GEOMETRIE || Akce==GEOMETRIE_LIGHT)editovany_text=pom_element_temp->geo.delka;
+					if(Akce==GEOMETRIE || Akce==GEOMETRIE_LIGHT){editovany_text=pom_element_temp->geo.delka;if(pom_element_temp->geo.HeightDepp!=0)editovany_text=pom_element_temp->geo.delkaPud;}
     			if(DKunit==2||DKunit==3)editovany_text=editovany_text/OBJEKT_akt->pohon->aRD;//pokud jsou kóty v časovém režimu převede vzdálenost na čas
 					editovany_text=outDK(ms.MyToDouble(editovany_text));//převede na aktuálně používané jednotky
 				}
@@ -3048,7 +3052,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						//if(JID==-6) {nastav_focus();stav_kurzoru=false;editace_textu=true;index_kurzoru=-6;nazev_puvodni=OBJEKT_akt->name;TimerKurzor->Enabled=true;}//editace názvu
 						if(JID==-6) {Akce=MOVE_TEXT;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;nahled_ulozit(true);}//posun názvu
 						if(JID==-10)zmenJednotekKot();//přepnutí jednotek všech kót
-						if((JID==-11 || JID==-101) && OBJEKT_akt->id!=3){nastav_focus();nahled_ulozit(true);TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;if(JID!=-101)editovany_text=pom_element_temp->geo.delka;else editovany_text=vzdalenost_meziLO(pom_element,OBJEKT_akt->orientace);if(DKunit==2||DKunit==3)editovany_text=editovany_text/OBJEKT_akt->pohon->aRD;editovany_text=outDK(ms.MyToDouble(editovany_text));puv_souradnice.x=pom_element->X;puv_souradnice.y=pom_element->Y;editovany_text=m.round2double(ms.MyToDouble(editovany_text),0);}//editace kót elementu
+						if((JID==-11 || JID==-101) && OBJEKT_akt->id!=3){nastav_focus();nahled_ulozit(true);TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;if(JID!=-101){editovany_text=pom_element_temp->geo.delka;if(pom_element_temp->geo.HeightDepp!=0)editovany_text=pom_element_temp->geo.delkaPud;}else editovany_text=vzdalenost_meziLO(pom_element,OBJEKT_akt->orientace);if(DKunit==2||DKunit==3)editovany_text=editovany_text/OBJEKT_akt->pohon->aRD;editovany_text=outDK(ms.MyToDouble(editovany_text));puv_souradnice.x=pom_element->X;puv_souradnice.y=pom_element->Y;editovany_text=m.round2double(ms.MyToDouble(editovany_text),0);}//editace kót elementu
 						if(JID==-9&OBJEKT_akt->id==3){Akce=ROZMER_KOMORA;pom_komora_temp=pom_komora;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}
 						if(JID==-11&OBJEKT_akt->id==3){nastav_focus();nahled_ulozit(true);TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_komora_temp=pom_komora;editovany_text=m.round2double(outDK(pom_komora->velikost),0);}
 						if(JID==13){Akce=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//změna offsetu kót elementů, nebo změna rozměru jednotlivých kabin
@@ -3178,8 +3182,8 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 									d.v.vloz_G_element(E->dalsi,0,E->X,E->Y,0,0,0,0,E->dalsi->geo.X4,E->dalsi->geo.Y4,E->dalsi->geo.orientace);
 									E=NULL;delete E;
 								}
-              }
-							if(JID==-11&&!editace_textu){nastav_focus();nahled_ulozit(true);TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=pom_element->geo.delka;if((DKunit==2||DKunit==3)&&pom_element->pohon!=NULL)editovany_text=editovany_text/pom_element->pohon->aRD;editovany_text=outDK(m.round2double(ms.MyToDouble(editovany_text),3));}//editace textu
+							}
+							if(JID==-11&&!editace_textu){nastav_focus();nahled_ulozit(true);TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=pom_element->geo.delka;if(pom_element_temp->geo.HeightDepp!=0)editovany_text=pom_element_temp->geo.delkaPud;if((DKunit==2||DKunit==3)&&pom_element->pohon!=NULL)editovany_text=editovany_text/pom_element->pohon->aRD;editovany_text=outDK(m.round2double(ms.MyToDouble(editovany_text),3));}//editace textu
 							if(JID==13){Akce_temp=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//offset kót
 						}
 						pan_create();//pro případ posunu obrazu bez akce PAN
@@ -3187,7 +3191,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					}break;
 					case GEOMETRIE_LIGHT:
 					{
-						if(JID==-11&&!editace_textu){nastav_focus();nahled_ulozit(true);TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=pom_element->geo.delka;if((DKunit==2||DKunit==3)&&pom_element->pohon!=NULL)editovany_text=editovany_text/pom_element->pohon->aRD;editovany_text=outDK(m.round2double(ms.MyToDouble(editovany_text),3));}//editace textu
+						if(JID==-11&&!editace_textu){nastav_focus();nahled_ulozit(true);TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=pom_element->geo.delka;if(pom_element_temp->geo.HeightDepp!=0)editovany_text=pom_element_temp->geo.delkaPud;if((DKunit==2||DKunit==3)&&pom_element->pohon!=NULL)editovany_text=editovany_text/pom_element->pohon->aRD;editovany_text=outDK(m.round2double(ms.MyToDouble(editovany_text),3));}//editace textu
 						if(JID==13){Akce_temp=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//offset kót
 					}break;
 					case MAGNETICKE_LASO:
@@ -3983,10 +3987,14 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			if(d.v.MAG_LASO!=NULL && d.v.MAG_LASO->dalsi!=NULL)
 			{
 				REFRESH(false);
+				String popisek="";
 				double X=d.v.MAG_LASO->dalsi->Element->geo.X1,Y=d.v.MAG_LASO->dalsi->Element->geo.Y1,azimut,delka;
+				TPointD souradnice=bod_vlozeni_elementu();//"přilepení" kurzoru na pohon
+				if(souradnice.x!=-1000 && pom_element_temp!=NULL && pom_element_temp==d.v.MAG_LASO->dalsi->sparovany)akt_souradnice_kurzoru=souradnice;//přichycovat na pohon poůze v případě, že jsem na jednom úseku
 				azimut=m.azimut(X,Y,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y);
 				delka=m.delka(X,Y,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y);
-				d.vykresli_Gelement(Canvas,X,Y,azimut,0,delka,d.clMeridlo,2,"","",3);
+				if(souradnice.x!=-1000 && pom_element_temp!=NULL && pom_element_temp==d.v.MAG_LASO->dalsi->sparovany)popisek=String(m.round2double(delka*1000,2))+" [mm]";
+				d.vykresli_Gelement(Canvas,X,Y,azimut,0,delka,d.clMeridlo,2,popisek,"",3);
 			}
 		}break;
 		default: break;
@@ -4395,7 +4403,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 						design_element(E,true);//znovuvytvoření tabulek
 						//vložení S/K
             double delka=E->geo.delka;
-						double HeightDepp=3;//default klesání, stoupání
+						double HeightDepp=1;//default klesání, stoupání
 						double delkaSklon=m.delkaSklon(delka,HeightDepp);
 						if(element_id==-1*MaxInt)HeightDepp*=-1;
 			    	E->geo.delkaPud=delka;
@@ -7905,6 +7913,9 @@ void TForm1::mGrid_on_mGrid()
 				}
 			}
 		}
+
+		//navrácení akce
+		FormX->input_state=FormX->NOTHING;
 
 		////ukazatelové záležitosti
     E=NULL;delete E;
@@ -14618,7 +14629,13 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	Memo("------------");
 //	Memo("Průměrný čas otevření: "+AnsiString(celkem_otevreni/(double)pocet_kroku));
 //	Memo("Průměrný čas zavření: "+AnsiString(celkem_zavreni/(double)pocet_kroku));
-	Memo("");
+//	Memo("");
+	Cvektory::TElement *E=d.v.ELEMENTY->dalsi->dalsi;
+	long x,y;
+	x=E->citelna_oblast.rect6.left+(E->citelna_oblast.rect7.left-E->citelna_oblast.rect6.left)/2;
+	y=E->citelna_oblast.rect6.top+(E->citelna_oblast.rect7.top-E->citelna_oblast.rect6.bottom)/2;
+	d.line(Canvas,0,0,x,y);
+  E=NULL;delete E;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -16550,10 +16567,10 @@ void TForm1::smaz_kurzor()
 		TimerKurzor->Enabled=false;
 		//pokud bylo zadáno nic přepíše nic původními hodnotamy
 		if((editovany_text==""||ms.MyToDouble(editovany_text)==0)&&index_kurzoru==-5){if(pom_bod_temp->n!=1)editovany_text=m.round2double(m.delka(pom_bod_temp->predchozi->X,pom_bod_temp->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);else editovany_text=m.round2double(m.delka(OBJEKT_akt->body->predchozi->X,OBJEKT_akt->body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);if(DKunit==2||DKunit==3)editovany_text=editovany_text/OBJEKT_akt->pohon->aRD;editovany_text=outDK(ms.MyToDouble(editovany_text));}
-		if((editovany_text==""||ms.MyToDouble(editovany_text)==0)&&(index_kurzoru==-11 || index_kurzoru==-101)&&OBJEKT_akt->id!=3&&Akce!=GEOMETRIE&&Akce!=GEOMETRIE_LIGHT){if(index_kurzoru!=-101)editovany_text=pom_element_temp->geo.delka;else editovany_text=outDK(vzdalenost_meziLO(pom_element_temp,OBJEKT_akt->orientace));if(DKunit==2||DKunit==3)editovany_text=editovany_text/OBJEKT_akt->pohon->aRD;}
+		if((editovany_text==""||ms.MyToDouble(editovany_text)==0)&&(index_kurzoru==-11 || index_kurzoru==-101)&&OBJEKT_akt->id!=3&&Akce!=GEOMETRIE&&Akce!=GEOMETRIE_LIGHT){if(index_kurzoru!=-101){editovany_text=pom_element_temp->geo.delka;if(pom_element_temp->geo.HeightDepp!=0)editovany_text=pom_element_temp->geo.delkaPud;}else editovany_text=outDK(vzdalenost_meziLO(pom_element_temp,OBJEKT_akt->orientace));if(DKunit==2||DKunit==3)editovany_text=editovany_text/OBJEKT_akt->pohon->aRD;}
 		if((editovany_text==""||ms.MyToDouble(editovany_text)==0)&&index_kurzoru==-11&&OBJEKT_akt->id==3&&Akce!=GEOMETRIE&&Akce!=GEOMETRIE_LIGHT)editovany_text=outDK(pom_komora_temp->velikost);
 		if((editovany_text==""||ms.MyToDouble(editovany_text)==0)&&index_kurzoru==-11 && (Akce==GEOMETRIE || Akce==GEOMETRIE_LIGHT))posledni_editovany_element=pom_element_temp;//{editovany_text=pom_element_temp->geo.delka;if((DKunit==2||DKunit==3) && pom_element_temp->pohon!=NULL)editovany_text=editovany_text/OBJEKT_akt->pohon->aRD;editovany_text=outDK(ms.MyToDouble(editovany_text));}
-		if((editovany_text==""||ms.MyToDouble(editovany_text)==0)&&index_kurzoru==-13){if(pom_element_temp->geo.HeightDepp>0)editovany_text="+";else editovany_text="";editovany_text+=pom_element_temp->geo.HeightDepp*1000;}
+		if((editovany_text==""/*||ms.MyToDouble(editovany_text)==0*/)&&index_kurzoru==-13){if(pom_element_temp->geo.HeightDepp>0)editovany_text="+";else editovany_text="";editovany_text+=pom_element_temp->geo.HeightDepp*1000;}
 		switch(index_kurzoru)
 		{
 			case -8:
@@ -16606,9 +16623,17 @@ void TForm1::smaz_kurzor()
 			}break;
 			case -13://editace HeightDepp elementu s S/K
 			{
-				double HeightDepp=ms.MyToDouble(editovany_text)/1000.0;
-				pom_element_temp->geo.delka=m.castPrepony(pom_element_temp->geo.delkaPud,pom_element_temp->geo.delkaPud,HeightDepp);
-				pom_element_temp->geo.HeightDepp=HeightDepp;
+				if(ms.MyToDouble(editovany_text)!=0)
+				{
+					double HeightDepp=ms.MyToDouble(editovany_text)/1000.0;
+					pom_element_temp->geo.delka=m.castPrepony(pom_element_temp->geo.delkaPud,pom_element_temp->geo.delkaPud,HeightDepp);
+					pom_element_temp->geo.HeightDepp=HeightDepp;
+				}
+				else
+				{
+          pom_element=pom_element_temp;
+					Smazat1Click(this);
+				}
 			}break;
 		}
 		if((index_kurzoru==-11 || index_kurzoru==-101)&&OBJEKT_akt->id!=3&&Akce!=GEOMETRIE&&Akce!=GEOMETRIE_LIGHT)//editace hodnot kót elementů
@@ -16701,8 +16726,9 @@ void TForm1::smaz_kurzor()
 				if((DKunit==2||DKunit==3) && pom_element_temp->pohon!=NULL)double_text=double_text*pom_element_temp->pohon->aRD;//pokud jsou kóty v časovém režimu nutno přepočítat na vzdálenost
 				////výpočet složek posunu
 				if(pom_element_temp->geo.HeightDepp==0)double_text-=pom_element_temp->geo.delka;//zjištění posunu bez S/K
-				else if(pom_element_temp->geo.HeightDepp/double_text<1)double_text=double_text*cos(asin(pom_element_temp->geo.HeightDepp/double_text))-pom_element_temp->geo.delkaPud;//zjištění posunu ve S/K
-        else double_text=0;
+				else double_text-=pom_element_temp->geo.delkaPud;//zjištění posunu s S/K, na kótách zobrazeny Pud vzdálenosti
+				//else if(pom_element_temp->geo.HeightDepp/double_text<1)double_text=double_text*cos(asin(pom_element_temp->geo.HeightDepp/double_text))-pom_element_temp->geo.delkaPud;//zjištění posunu ve S/K
+        //else double_text=0;
 				posunx=sin(DegToRad(pom_element_temp->geo.orientace+pom_element_temp->geo.rotacni_uhel))*double_text;
 				posuny=cos(DegToRad(pom_element_temp->geo.orientace+pom_element_temp->geo.rotacni_uhel))*double_text;   //Memo("posun: ["+String(posunx)+"; "+String(posuny)+"]");
 				////posun editovaného elementu
@@ -16905,7 +16931,7 @@ void __fastcall TForm1::scGPComboBox_prepinacKotClick(TObject *Sender)
   		if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
   		if(OBJEKT_akt!=NULL)DrawGrid_knihovna->Visible=true;DrawGrid_otoce->Visible=true;DrawGrid_ostatni->Visible=true;DrawGrid_geometrie->Visible=true;DrawGrid_poznamky->Visible=true;
   	}
-  	if(FormX->input_state==FormX->NOTHING)//ošetření proti spouštění 2x při změně COMBA v tabulce pohonu
+		if(FormX->input_state==FormX->NOTHING)//ošetření proti spouštění 2x při změně COMBA v tabulce pohonu
   	{
   		//není nutno provádět kontrolu, prováděna jinde -> aktivace / deaktivace komponenty
   		refresh_mGrid=false;
@@ -16923,7 +16949,7 @@ void __fastcall TForm1::scGPComboBox_prepinacKotClick(TObject *Sender)
   		writeINI("nastaveni_nahled","koty_delka", DKunit);
   		REFRESH(false);
   		refresh_mGrid=true;//navrácení stavu
-  	}
+		}
 	}
 }
 //---------------------------------------------------------------------------
