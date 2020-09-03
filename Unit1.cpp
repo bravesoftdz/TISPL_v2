@@ -7914,6 +7914,9 @@ void TForm1::mGrid_on_mGrid()
 			}
 		}
 
+		//navrácení akce
+		FormX->input_state=FormX->NOTHING;
+
 		////ukazatelové záležitosti
     E=NULL;delete E;
 		prekryty=NULL;delete prekryty;
@@ -16928,7 +16931,7 @@ void __fastcall TForm1::scGPComboBox_prepinacKotClick(TObject *Sender)
   		if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
   		if(OBJEKT_akt!=NULL)DrawGrid_knihovna->Visible=true;DrawGrid_otoce->Visible=true;DrawGrid_ostatni->Visible=true;DrawGrid_geometrie->Visible=true;DrawGrid_poznamky->Visible=true;
   	}
-  	if(FormX->input_state==FormX->NOTHING)//ošetření proti spouštění 2x při změně COMBA v tabulce pohonu
+		if(FormX->input_state==FormX->NOTHING)//ošetření proti spouštění 2x při změně COMBA v tabulce pohonu
   	{
   		//není nutno provádět kontrolu, prováděna jinde -> aktivace / deaktivace komponenty
   		refresh_mGrid=false;
@@ -16946,7 +16949,7 @@ void __fastcall TForm1::scGPComboBox_prepinacKotClick(TObject *Sender)
   		writeINI("nastaveni_nahled","koty_delka", DKunit);
   		REFRESH(false);
   		refresh_mGrid=true;//navrácení stavu
-  	}
+		}
 	}
 }
 //---------------------------------------------------------------------------
