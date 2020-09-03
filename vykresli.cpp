@@ -3255,7 +3255,6 @@ void Cvykresli::vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiStr
 		case 107:vykresli_cloveka(canv,scena,X,Y,name,short_name,eID,typ,rotace+F->RO,stav,LO1,OTOC_delka,LO2);break;//lidský robot  ionizace s pasivní otočí
 		case 108:vykresli_cloveka(canv,scena,X,Y,name,short_name,eID,typ,rotace+F->RO,stav,LO1,0,0);break;//lidský robot ionizace s aktivní otočí (resp. s otočí a stop stanicí)
 		case 200:if(scena<=2)vykresli_predavaci_misto(canv,E,X,Y,name,typ,rotace,stav);break;//vykreslení předávacího místa - pouze popisek
-		//case MaxInt:if(scena==0 || scena==1)vykresli_zarazku(canv,X,Y,name);break;//vykreslení zarážky pro testovací účely
 		case 300://výhybka
 		case 301://spojka
 		{
@@ -3298,6 +3297,14 @@ void Cvykresli::vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiStr
 			//E->citelna_oblast.rect3=aktOblast;
 		}
 		break;
+		case MaxInt://zarážka
+		{
+			//vykreslovat pouze zarážky kolem S/K
+			if(E->geo.HeightDepp!=0 || (E->dalsi!=NULL && E->dalsi->geo.HeightDepp!=0))
+			{
+				if(scena==0 || scena==1)vykresli_zarazku(canv,X,Y,E->geo.orientace,E->objekt_n,name);
+			}
+		}break;//vykreslení zarážky pro testovací účely
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -4088,19 +4095,26 @@ void Cvykresli::vykresli_teplomer(TCanvas *canv,long X,long Y,AnsiString name,An
 	Element->citelna_oblast.rect4=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+canv->TextWidth("°C"))/zAA),m.round((y+Th)/zAA));//citelná oblast popisku "°C"
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::vykresli_zarazku(TCanvas *canv,long X,long Y,String name)
+void Cvykresli::vykresli_zarazku(TCanvas *canv,long X,long Y,double orientace,unsigned long objekt_n,String name)
 {
-	if(F->Akce==F->GEOMETRIE || F->Akce==F->GEOMETRIE_LIGHT)
+	if(F->Akce!=F->GEOMETRIE && F->Akce!=F->GEOMETRIE_LIGHT)
 	{
-		unsigned short W=Form1->Zoom*0.5;//0.25;
-		canv->Pen->Style=psSolid;
-		canv->Brush->Style=bsSolid;
-		canv->Brush->Color=m.clIntensive(clBlack,180);
-		canv->Pen->Color=m.clIntensive(clBlack,180);
-		canv->Pen->Mode=pmCopy;
-		canv->Pen->Width=m.round(Form1->Zoom);
-		canv->Ellipse(X-W,Y-W,X+W,Y+W);
-		TextFraming(canv,X,Y,name);
+		TColor clKolej=(TColor)RGB(255,69,0);
+		if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=objekt_n && F->Akce!=F->Takce::POSUN_TEPLOMER)clKolej=m.clIntensive(clKolej,m.round(m.get_intensity()/1.8));//zesvětlování neaktivních pohonů
+		float width=m.round(F->Zoom*0.5);//tloušťka čáry
+		double o=m.round(m.m2px(v.PP.sirka_podvozek/2.0)+width/2.0);//odsazení od středu kolejí
+		set_pen(canv,clKolej,width,PS_ENDCAP_SQUARE);
+    //vykreslení zarážky
+		if(orientace==90 || orientace==270)
+		{
+			line(canv,X,Y-width,X,Y-o);
+			line(canv,X,Y+width,X,Y+o);
+		}
+		else
+		{
+			line(canv,X-width,Y,X-o,Y);
+			line(canv,X+width,Y,X+o,Y);
+		}
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -5395,10 +5409,10 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_do)
 void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,Cvektory::TElement *aktElement,double Offset,short highlight,float width,TColor color,bool LO_kota,Cvektory::TKomora *komora)
 {    //Jednotky=" [s]";if(F->DKunit==3)Jednotky=" [min]";
 	double delka=m.delka(X1,Y1,X2,Y2);
-	if(aktElement!=NULL)
-	{
-		delka=m.castPrepony(delka,aktElement->geo.delkaPud,aktElement->geo.HeightDepp);
-	}
+//	if(aktElement!=NULL)
+//	{
+//		delka=m.castPrepony(delka,aktElement->geo.delkaPud,aktElement->geo.HeightDepp);
+//	}
 	AnsiString T="";
 	if(F->OBJEKT_akt->pohon==NULL && F->DKunit>1)F->DKunit=(TForm1::Tm_mm)(F->DKunit-2);//ošetření pro případ není pohon a jsou špatně nastaveny jednotky
 	if(F->DKunit>1)//zobrazení kót v čase
@@ -5648,11 +5662,11 @@ void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,Cvektory::TElement *Elem
 	HeightDeep*=1000;
 
 	//popisek začátku S/K
+	unsigned int i=0;
 	if(HeightDeep>0)
 	{
 		Text="±0";
 		if(X1!=X2)W=canv->TextWidth(Text);
-		x=points[0].x-W/2.0;y=points[0].y-H;
 	}
 	else
   {
@@ -5660,8 +5674,9 @@ void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,Cvektory::TElement *Elem
 		Text+=String(HeightDeep);
 		if(F->editace_textu && F->index_kurzoru==-13 && F->pom_element_temp==Element)Text=F->editovany_text;
 		if(X1!=X2)W=canv->TextWidth(Text);
-		x=points[1].x-W/2.0;y=points[1].y-H;
+		i=1;
 	}
+	x=points[i].x-W/2.0;y=points[i].y-H;
 	TextFraming(canv,x,y,Text);
 	Element->citelna_oblast.rect6=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+canv->TextWidth(Text))/zAA),m.round((y+canv->TextHeight(Text))/zAA));//začátek S/K hodnota
 
@@ -5680,6 +5695,14 @@ void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,Cvektory::TElement *Elem
 	x=points[2].x-W/2.0;y=points[2].y-H;
 	TextFraming(canv,x,y,Text);
 	Element->citelna_oblast.rect7=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+canv->TextWidth(Text))/zAA),m.round((y+canv->TextHeight(Text))/zAA));//konec S/K hodnota
+
+	//vypsání délky přepony
+	Text=String(m.round2double(Element->geo.delka*1000.0,0));
+	if(X1!=X2)W=canv->TextWidth(Text);
+	x=points[i].x+(points[2].x-points[i].x)/2-W/2;
+	y=points[i].y+(points[2].y-points[i].y)/2-H;
+	TextFraming(canv,x,y,Text);
+	Element->citelna_oblast.rect8=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+canv->TextWidth(Text))/zAA),m.round((y+canv->TextHeight(Text))/zAA));//konec S/K hodnota
 
 	//pro jistotu vrácení do původního stavu
 	canv->Font->Orientation=0;
