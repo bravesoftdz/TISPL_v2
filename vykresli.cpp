@@ -5638,10 +5638,12 @@ void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,Cvektory::TElement *Elem
 	canv->Font->Size=m.round(width*F->Zoom*F->aFont->Size);
 
 	//vykreslení popisků
-	String Text=String(HeightDeep*1000)+"  ";
-	if(Z>0)Text="+"+Text;//příprava pro další pokračování: ±
+	String Text,pocatek="",konec="";
+	if(Element->predchozi->Z==0)pocatek+="±";if(Element->predchozi->Z>0)pocatek+="+";
+	if(Element->predchozi->Z+Element->geo.HeightDepp==0)konec+="±";if(Element->predchozi->Z+Element->geo.HeightDepp>0)konec+="+";
+	pocatek+=String(Element->predchozi->Z*1000),konec+=String((Element->predchozi->Z+HeightDeep)*1000);
 	//orientace a vycentrování
-	short W=0,H=canv->TextHeight(Text);
+	short W=0,H=canv->TextHeight(pocatek);
 	long x=0,y=0,pom=0;
 	if(X1==X2){H=H/2;W=-10*3;}
 	//else{W=canv->TextWidth(Text);H=canv->TextHeight(Text);}
@@ -5665,36 +5667,37 @@ void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,Cvektory::TElement *Elem
 	unsigned int i=0;
 	if(HeightDeep>0)
 	{
-		Text="±0";
+		Text=pocatek;
+		if(F->editace_textu && F->index_kurzoru==-14 && F->pom_element_temp==Element)Text=F->editovany_text;
 		if(X1!=X2)W=canv->TextWidth(Text);
 	}
 	else
   {
-    Text="";if(HeightDeep>0)Text="+";
-		Text+=String(HeightDeep);
+		Text=konec;
 		if(F->editace_textu && F->index_kurzoru==-13 && F->pom_element_temp==Element)Text=F->editovany_text;
 		if(X1!=X2)W=canv->TextWidth(Text);
 		i=1;
 	}
 	x=points[i].x-W/2.0;y=points[i].y-H;
 	TextFraming(canv,x,y,Text);
-	Element->citelna_oblast.rect6=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+canv->TextWidth(Text))/zAA),m.round((y+canv->TextHeight(Text))/zAA));//začátek S/K hodnota
-
+	if(HeightDeep>0)Element->citelna_oblast.rect6=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+canv->TextWidth(Text))/zAA),m.round((y+canv->TextHeight(Text))/zAA));//začátek S/K hodnota
+	else Element->citelna_oblast.rect7=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+canv->TextWidth(Text))/zAA),m.round((y+canv->TextHeight(Text))/zAA));//konec S/K hodnota
 	//popisek konce S/K
-  if(HeightDeep>0)
+	if(HeightDeep>0)
 	{
-		Text="";if(HeightDeep>0)Text="+";
-		Text+=String(HeightDeep);
+		Text=konec;
 		if(F->editace_textu && F->index_kurzoru==-13 && F->pom_element_temp==Element)Text=F->editovany_text;
 	}
 	else
 	{
-		Text="±0";
+		Text=pocatek;
+    if(F->editace_textu && F->index_kurzoru==-14 && F->pom_element_temp==Element)Text=F->editovany_text;
 	}
 	if(X1!=X2)W=canv->TextWidth(Text);
 	x=points[2].x-W/2.0;y=points[2].y-H;
 	TextFraming(canv,x,y,Text);
-	Element->citelna_oblast.rect7=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+canv->TextWidth(Text))/zAA),m.round((y+canv->TextHeight(Text))/zAA));//konec S/K hodnota
+	if(HeightDeep>0)Element->citelna_oblast.rect7=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+canv->TextWidth(Text))/zAA),m.round((y+canv->TextHeight(Text))/zAA));//konec S/K hodnota
+	else Element->citelna_oblast.rect6=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+canv->TextWidth(Text))/zAA),m.round((y+canv->TextHeight(Text))/zAA));//začátek S/K hodnota
 
 	//vypsání délky přepony
 	Text=String(m.round2double(Element->geo.delka*1000.0,0));

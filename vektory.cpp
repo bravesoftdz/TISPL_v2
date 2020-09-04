@@ -1878,6 +1878,8 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	else if(novy->predchozi->n>0 && novy->predchozi->eID!=200)novy->pohon=novy->predchozi->pohon;//například při vkládání gemetri na konec linky
 	novy->geo.HeightDepp=0;
 	novy->geo.delkaPud=0;
+	if(novy->dalsi!=NULL)novy->Z=novy->dalsi->Z;
+	else if(novy->predchozi->n>0)novy->Z=novy->predchozi->Z+novy->predchozi->geo.HeightDepp;
 
 	//název
 	AnsiString T="";
@@ -2398,6 +2400,7 @@ void Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->name=Original->name;
 	Kopie->X=Original->X;
 	Kopie->Y=Original->Y;
+  Kopie->Z=Original->Z;
 	Kopie->Xt=Original->Xt;
 	Kopie->Yt=Original->Yt;
 	Kopie->orientace=Original->orientace;
