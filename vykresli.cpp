@@ -5641,7 +5641,7 @@ void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,Cvektory::TElement *Elem
 	String Text,pocatek="",konec="";
 	if(Element->predchozi->Z==0)pocatek+="±";if(Element->predchozi->Z>0)pocatek+="+";
 	if(Element->predchozi->Z+Element->geo.HeightDepp==0)konec+="±";if(Element->predchozi->Z+Element->geo.HeightDepp>0)konec+="+";
-	pocatek+=String(Element->predchozi->Z*1000),konec+=String((Element->predchozi->Z+HeightDeep)*1000);
+	pocatek+=String(m.round2double(Element->predchozi->Z*1000,0)),konec+=String(m.round2double((Element->predchozi->Z+HeightDeep)*1000,0));
 	//orientace a vycentrování
 	short W=0,H=canv->TextHeight(pocatek);
 	long x=0,y=0,pom=0;

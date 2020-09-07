@@ -1525,8 +1525,17 @@ void Cvektory::rotuj_objekt(TObjekt *Objekt, double rotace)
 		}
 		E=NULL;delete E;
 		//rotace nadpisu
-		TPointD bod;bod.x=Objekt->Xt;bod.y=Objekt->Yt;
-		bod=m.rotace(Objekt->element->geo.X1,Objekt->element->geo.Y1,bod.x,bod.y,rotace);
+		TPointD bod;
+		TRect oblast=F->vrat_max_oblast(Objekt,true);
+		switch((int)azimut)
+		{
+			case 0:bod.x=oblast.left;bod.y=oblast.top-(oblast.top-oblast.bottom)/2.0;break;
+			case 90:bod.x=oblast.left+(oblast.right-oblast.left)/2.0;bod.y=oblast.top;break;
+			case 180:bod.x=oblast.right;bod.y=oblast.bottom-(oblast.bottom-oblast.top)/2.0;break;
+			case 270:bod.x=oblast.right+(oblast.left-oblast.right)/2.0;bod.y=oblast.top;break;
+      default:break;
+		}
+		bod=m.P2L(TPoint(bod.x,bod.y));
 		Objekt->Xt=bod.x;Objekt->Yt=bod.y;
 		Objekt->orientace=Objekt->orientace_text=azimut;
 		F->duvod_validovat=2;//je přímý důvod k validaci
@@ -2237,11 +2246,12 @@ void Cvektory::vloz_element(TElement *Element)
 Cvektory::TElement *Cvektory::vloz_element_pred(TObjekt *Objekt,TElement *Element)
 {
 	Cvektory::TElement *ret=NULL;//návratová proměnná, defaultně prázdn
-	if((F->Akce==F->ADD || F->Akce==F->VYH || F->Akce==F->MOVE_ELEMENT || F->editace_textu) && Objekt->element!=NULL/* && Objekt->element->dalsi!=NULL*/)//ošetření proti spouštění při zavírání a otvírání náhledu
+	if((F->Akce==F->ADD || F->Akce==F->VYH || F->Akce==F->MOVE_ELEMENT || F->editace_textu))// && Objekt!=NULL && Objekt->element!=NULL/* && Objekt->element->dalsi!=NULL*/)//ošetření proti spouštění při zavírání a otvírání náhledu
 	{
-		TElement *p=Objekt->element;//začnu od prvního elementu v objektu
+		TElement *p=ELEMENTY->dalsi;//začnu od prvního elementu v projektu
+		if(Objekt!=NULL)p=Objekt->element;//začnu od prvního elementu v objektu
 		T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
-		while(p!=NULL && p->objekt_n==Objekt->n)
+		while(p!=NULL)
 		{
 			if(p!=Element)//neřeší se s aktuálním elementem (při posunu)
 			{
@@ -2264,7 +2274,7 @@ Cvektory::TElement *Cvektory::vloz_element_pred(TObjekt *Objekt,TElement *Elemen
 					break;
 				}
 			}
-			p=dalsi_krok(VYHYBKY,p,Objekt);//posun na další prvek
+			p=dalsi_krok(VYHYBKY,p,Objekt);//posun na další prvek, buď v objektu (Objekt!=NULL) nebo v celé lince (Objekt==NULL)
 		}
 		vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
 		delete VYHYBKY;VYHYBKY=NULL;
@@ -2902,9 +2912,10 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				//kontrola + změna pořadí
 				if(kontrola_zmeny_poradi)
 				{
-					E=vloz_element_pred(F->OBJEKT_akt,Element);
-					if(E!=NULL && Element->dalsi!=NULL && E->n!=Element->dalsi->n && E->geo.HeightDepp==0)zmen_poradi_elementu(Element,E);
-					if(E!=NULL && Element->dalsi!=NULL && E->n!=Element->dalsi->n && E->geo.HeightDepp!=0)error=true;//pokud by mělo ojít ke změně pořadí, nedovolit
+					E=vloz_element_pred(NULL,Element);
+					if(E!=NULL && Element->dalsi!=NULL && E!=Element->dalsi && Element->geo.HeightDepp==0 && E->geo.HeightDepp==0 && Element->objekt_n==E->objekt_n)zmen_poradi_elementu(Element,E);
+					if(E!=NULL && Element->dalsi!=NULL && E!=Element->dalsi && (Element->geo.HeightDepp!=0 || E->geo.HeightDepp!=0))error=true;//pokud by mělo ojít ke změně pořadí, nedovolit
+					if(E!=NULL && Element->objekt_n!=E->objekt_n)error=true;//posun mimo kabinu
 				}
 				//aktualizace posouvaného elementu
 				if(!error)
