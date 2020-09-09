@@ -612,7 +612,7 @@ void Cvektory::nastav_atributy_objektu(TObjekt *novy,unsigned int id, double X, 
 	}
 	F->ortogonalizace();//nutné před kontrolou změny trendu
 	//////nově je vše seřazeno ještě před touto metodou
-	if(OBJEKTY->predchozi->n==2 && novy->X==OBJEKTY->dalsi->X && novy->Y==OBJEKTY->dalsi->Y)// && OBJEKTY->dalsi->orientace==90 || F->d.predchozi_oblast==2 && OBJEKTY->predchozi->n==2)//změna trendu linky, pokud nebylo s prvním objektem rotováno
+	if(OBJEKTY->predchozi->n==2 && novy->element->geo.X1==OBJEKTY->dalsi->element->geo.X1 && novy->element->geo.Y1==OBJEKTY->dalsi->element->geo.Y1)// && OBJEKTY->dalsi->orientace==90 || F->d.predchozi_oblast==2 && OBJEKTY->predchozi->n==2)//změna trendu linky, pokud nebylo s prvním objektem rotováno
 	{
 		double rotace=-180;
 		if(OBJEKTY->dalsi->orientace==270)rotace=180;
@@ -3429,7 +3429,6 @@ long Cvektory::vymaz_seznam_VYHYBKY(T2Element *VYHYBKY)
 		VYHYBKY=VYHYBKY->dalsi;
 	}
   delete VYHYBKY;VYHYBKY=NULL;
-	hlavicka_seznam_VYHYBKY();
 	return  pocet_smazanych;
 }
 ////---------------------------------------------------------------------------
@@ -3460,7 +3459,7 @@ Cvektory::TElement *Cvektory::dalsi_krok(T2Element *VYHYBKY,TElement *E,TObjekt 
 				uloz_vyhybku_do_seznamu(E,VYHYBKY);//uloži ji do seznamu, abych věděl kam se mám vrátit
   			E=E->dalsi2;//další krok bude na sekundární větev
   			//kontrola jestli ve vedlejší větvi není pouze spojka
-  			if(E!=NULL && E->eID==301 && VYHYBKY->predchozi->n!=0 && E->idetifikator_vyhybka_spojka==VYHYBKY->predchozi->vyhybka->idetifikator_vyhybka_spojka)
+				if(E!=NULL && E->eID==301 && VYHYBKY->predchozi->n!=0 && E->idetifikator_vyhybka_spojka==VYHYBKY->predchozi->vyhybka->idetifikator_vyhybka_spojka)
   			{
   				//navrácení na hlavní větev
   				do
@@ -3481,7 +3480,7 @@ Cvektory::TElement *Cvektory::dalsi_krok(T2Element *VYHYBKY,TElement *E,TObjekt 
   			}while(E->eID==301 && VYHYBKY->predchozi->n!=0 && E->dalsi->idetifikator_vyhybka_spojka==VYHYBKY->predchozi->vyhybka->idetifikator_vyhybka_spojka);
       }
   		else E=E->dalsi;
-  	}
+		}
 	}
 
 	////průchod pouze v jednom objektu, odlehčený alg. kompletního průchodu k testům
@@ -3519,8 +3518,6 @@ Cvektory::TElement *Cvektory::dalsi_krok(T2Element *VYHYBKY,TElement *E,TObjekt 
 		//if(E!=NULL && E==VYHYBKY->spojka)E=E->dalsi;
 		if(E!=NULL && E->objekt_n!=O->n)E=NULL;//pokud jsem již mimo objekt
 	}
-	//pokud alg. skončí smazat pro jistotu seznam, např. při průchodu pouze v objektu může zůstat naplněný
-	if(E==NULL)vymaz_seznam_VYHYBKY(VYHYBKY);
 	//vrat další krok
 	return E;
 }
@@ -4419,7 +4416,7 @@ void Cvektory::aktualizuj_rezim_pohonu(TPohon *pohon,short rezim)
 			unsigned int pSG=0,pKK=0;
 			bool pokracovat=true;
 			TElement *E=ELEMENTY->dalsi;
-      T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
+			T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 			while(E!=NULL)
 			{
 				//pokud je elemenent na stejném pohonu, kontrola
@@ -4427,7 +4424,7 @@ void Cvektory::aktualizuj_rezim_pohonu(TPohon *pohon,short rezim)
 				{
 					//kontrola typu elementu
 					switch(vrat_druh_elementu(E))
-			  	{
+					{
 						case 0:{pSG++;pokracovat=false;}break;//na pohonu se nachází S&G element, pokud byl nalezen jeden S&G element, ukončení průchodu
 			  		case 1:pKK++;break;//na pohonu se nachází S&G element
 			  		default:break;

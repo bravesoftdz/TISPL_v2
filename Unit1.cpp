@@ -1836,14 +1836,30 @@ void TForm1::startUP()
 		akutalizace_stavu_prichytavani_vSB();
 		if(volat_parametry_linky)Button_dopravnik_parametryClick(this);//zavolání formáláře pro prvotní vyplnění či potvzení hodnot parametrů linky, testovací pozice
 		//pokud je v PP raster, ale nelze ho najít vypíše se dotaz na aktualizaci cesty k souboru
-		if(d.v.PP.raster.filename!="" && !FileExists(d.v.PP.raster.filename) && mrYes==MB(ls->Strings[424]+" "+d.v.PP.raster.filename+ls->Strings[425],MB_YESNO))//"Nepodařilo se načíst podklad filename, zkontrolujte jeho existenci, nebo proveďte nové načtení."
+		if(d.v.PP.raster.filename!="" && !FileExists(d.v.PP.raster.filename))
 		{
-      //otevření okna s dotazem na načtení podkladu
-			OpenDialog1->Title="Načíst podklad";
-			OpenDialog1->DefaultExt="*.bmp";
-    	OpenDialog1->Filter="Soubory formátu bmp (*.bmp)|*.bmp";
-			if(OpenDialog1->Execute())Nacist_podklad(OpenDialog1->FileName,true);//pouze aktualizace cesty k souboru
-    }
+			//extrakce názvu souboru
+			String name=d.v.PP.raster.filename;
+			unsigned int i=name.Length();
+			while(i>0)
+			{
+				if(name[i]==92)break;//pokud sem na lomítku znamená to, že sem prošel přes kompletní název souboru, ukončit
+				else i--;//zpětný průchod
+			}
+			name=name.SubString(i+1,name.Length()-i+1);
+			//kontrola adresáře s EXE, zda neobsahuje podklad
+			name=ExtractFilePath(Application->ExeName).c_str()+name;
+			if(FileExists(name))d.v.PP.raster.filename=name;
+      //nenalezen ani v adresáři EXE, dotaz na uživatele
+			else if(mrYes==MB(ls->Strings[424]+" "+d.v.PP.raster.filename+ls->Strings[425],MB_YESNO))//"Nepodařilo se načíst podklad filename, zkontrolujte jeho existenci, nebo proveďte nové načtení."
+			{
+		  	//otevření okna s dotazem na načtení podkladu
+		  	OpenDialog1->Title="Načíst podklad";
+		  	OpenDialog1->DefaultExt="*.bmp";
+		  	OpenDialog1->Filter="Soubory formátu bmp (*.bmp)|*.bmp";
+		  	if(OpenDialog1->Execute())Nacist_podklad(OpenDialog1->FileName,true);//pouze aktualizace cesty k souboru
+			}
+		}
 		vytvor_obraz();//vytvoření prvotního obrazu
 		d.v.update_akt_zakazky();//pokud je uživatelská provede aktualizace, pokud ne aktualizuje defaultní
 	}
@@ -4003,7 +4019,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				azimut=m.azimut(X,Y,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y);
 				delka=m.delka(X,Y,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y);
 				if(souradnice.x!=-1000 && pom_element_temp!=NULL && pom_element_temp==d.v.MAG_LASO->dalsi->sparovany)popisek=String(m.round2double(delka*1000,2))+" [mm]";
-				d.vykresli_Gelement(Canvas,X,Y,azimut,0,delka,d.clMeridlo,2,popisek,"",3);
+				d.vykresli_Gelement(Canvas,X,Y,azimut,0,delka,m.clIntensive(clGray,-50),2,popisek,"",3);
 			}
 		}break;
 		default: break;
@@ -4428,6 +4444,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 							else E->Z=0;
 							E=d.v.dalsi_krok(VYHYBKY,E);
 						}
+            d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
 						delete VYHYBKY;VYHYBKY=NULL;
             delete E;E=NULL;
 						//důvody k uložení
@@ -5406,16 +5423,16 @@ void TForm1::ZOOM_IN()
 void TForm1::ZOOM_OUT()
 {
 	log(__func__);//logování
-	if(MOD==EDITACE)
-	{
-		if(Zoom>=3)zobrazeni_tabulek=OBJEKT_akt->zobrazit_mGrid;
-	}
+//	if(MOD==EDITACE)
+//	{
+//		if(Zoom>=3)zobrazeni_tabulek=OBJEKT_akt->zobrazit_mGrid;
+//	}
 	if(Zoom>0.5)
 	{
 		Uloz_predchozi_pohled();
 		if(Zoom>10) Zoom-=5.0;
-		else if(Zoom>5) Zoom-=1.0;
-		else Zoom-=0.5;
+		else if(Zoom>5) Zoom-=2*1.0;//zvětšení skoku
+		else Zoom-=2*0.5;
 		ZOOM();
 	}
 	else
@@ -6615,7 +6632,7 @@ void TForm1::add_element (int X, int Y)
 			d.v.aktualizuj_sparovane_ukazatele();//aktualizace spárovaných ukazatelů
 			//přiřazení režimu kabině + aktualizace pohon tabulek
 			//d.v.aktualizace_rezimu_objektu(OBJEKT_akt);
-      if(E->eID!=5 && E->eID!=6 && E->eID!=100 && E->eID!=200)d.v.aktualizuj_rezim_pohonu(E->pohon,d.v.vrat_druh_elementu(E));//přeskakovat elementy co neudávají režim
+			if(E->eID!=5 && E->eID!=6 && E->eID!=100 && E->eID!=200)d.v.aktualizuj_rezim_pohonu(E->pohon,d.v.vrat_druh_elementu(E));//přeskakovat elementy co neudávají režim
 			//aktualizace a validace
 			if(E->dalsi!=NULL && E->eID==0 && E->dalsi->eID==0)design_element(E->dalsi,false);//aktualizace počtů pozic, pokud je stopka vložena do oblasti jiné stopky
 			if(E->eID==5 || E->eID==6)FormX->validace_max_voziku();//přidána otoč do kabiny, aktualizace validace
@@ -6641,7 +6658,7 @@ void TForm1::add_element (int X, int Y)
    				nastav_focus();
    				PmG->Delete();
    				delete PmG;PmG=NULL;
-   			}
+				}
 			}
 			//přilepení elemntu na střed objektu
 			if(E->eID!=0 && E->eID!=5 && E->eID!=6 && E->eID!=100 && E->eID<200 && vkladani_stred && E->geo.delka>=delka_objektu/2.0-delka_objektu*0.2 && E->geo.delka<=delka_objektu/2.0+delka_objektu*0.2 && mrYes==MB(ls->Strings[457],MB_YESNO))//"Chcete umístit element do středu objektu?"
@@ -12625,6 +12642,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 						else E->Z=0;
 						E=d.v.dalsi_krok(VYHYBKY,E);
 					}
+					d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
 					delete VYHYBKY;VYHYBKY=NULL;
 					delete E;E=NULL;
 				}
@@ -13100,19 +13118,19 @@ void TForm1::otevri_editaci()
 		stisknute_leve_tlacitko_mysi=false;//nutné!!! zustává aktivníc z dblclicku
     typElementu=0;
 	}
-	else//normální funkčnost
-	{
-		if(OBJEKT_akt->pohon==NULL && d.v.POHONY->dalsi!=NULL && PmG!=NULL)//otevření COMBA pokud objekt nemá žádný pohon a pokud existují nějaké pohony
-		{
-			TscGPComboBox *C=PmG->getCombo(3,0);
-			if(C!=NULL)
-			{
-				C->DropDown();
-				FormX->vstoupeno_poh=true;
-			}
-			C=NULL;delete C;
-    }
-	}
+//	else//normální funkčnost
+//	{
+//		if(OBJEKT_akt->pohon==NULL && d.v.POHONY->dalsi!=NULL && PmG!=NULL)//otevření COMBA pokud objekt nemá žádný pohon a pokud existují nějaké pohony
+//		{
+//			TscGPComboBox *C=PmG->getCombo(3,0);
+//			if(C!=NULL)
+//			{
+//				C->DropDown();
+//				FormX->vstoupeno_poh=true;
+//			}
+//			C=NULL;delete C;
+//    }
+//	}
 	//d.SCENA=0, prozatím statická scéna funkční pouze v layoutu, pro editaci se nepoužívá
 	REFRESH(0,true);//přidáno kvůli zobrazení tab. pohonů a kót (při shodném zoomu layout->editace)
 	edit_vyhybka=NULL;delete edit_vyhybka;
@@ -13378,16 +13396,16 @@ void TForm1::zmena_editovaneho_objektu()
 		if(kontrola_PM)vlozit_predavaci_misto_aktualizuj_WT();
 		Akce=BLOK;//blokace spouštění mousedown po této metodě, bez blokace dojde k spuštění akce pan
 		REFRESH();//musí být z důvodu změny vykreslení
-		if(OBJEKT_akt->pohon==NULL && d.v.POHONY->dalsi!=NULL && PmG!=NULL)//otevření COMBA pokud objekt nemá žádný pohon a pokud existují nějaké pohony
-		{
-			TscGPComboBox *C=PmG->getCombo(3,0);
-			if(C!=NULL)
-			{
-				C->DropDown();
-				FormX->vstoupeno_poh=true;
-			}
-			C=NULL;delete C;
-    }
+//		if(OBJEKT_akt->pohon==NULL && d.v.POHONY->dalsi!=NULL && PmG!=NULL)//otevření COMBA pokud objekt nemá žádný pohon a pokud existují nějaké pohony
+//		{
+//			TscGPComboBox *C=PmG->getCombo(3,0);
+//			if(C!=NULL)
+//			{
+//				C->DropDown();
+//				FormX->vstoupeno_poh=true;
+//			}
+//			C=NULL;delete C;
+//		}
 	}
 }
 //---------------------------------------------------------------------------
@@ -14679,15 +14697,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	Memo("------------");
 //	Memo("Průměrný čas otevření: "+AnsiString(celkem_otevreni/(double)pocet_kroku));
 //	Memo("Průměrný čas zavření: "+AnsiString(celkem_zavreni/(double)pocet_kroku));
-//	Memo("");
-  Memo_testy->Clear();
-	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-	while(E!=NULL)
-	{
-    Memo(E->name+"->objekt_n: "+String(E->objekt_n));
-		E=E->dalsi;
-	}
-	delete E;E=NULL;
+	Memo("");
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -15052,7 +15062,25 @@ void __fastcall TForm1::scGPGlyphButton_ZOOM_MINUSClick(TObject *Sender)
 		log(__func__);//logování
 		vycentrovat=false;
 		akt_souradnice_kurzoru=m.P2L(ClientWidth/2+scSplitView_LEFTTOOLBAR->Width,ClientHeight/2);
-		ZOOM_OUT();
+		//fce. ZOOM_OUT, fce. není volaná a to z důvodu opužití jiného kroku zde a jiného kroku v ostatních případech
+		if(Zoom>0.5)
+   	{
+   		Uloz_predchozi_pohled();
+   		if(Zoom>10) Zoom-=5.0;
+   		else if(Zoom>5) Zoom-=1.0;
+   		else Zoom-=0.5;
+   		ZOOM();
+   	}
+   	else
+   	{
+   		if(Zoom==0.5)//pro přechod z 0.5 na 0.25
+   		{
+   			Uloz_predchozi_pohled();
+   			Zoom=0.25;
+   			ZOOM();
+   		}
+		}
+		//konec fce.
 		zobraz_tip(ls->Strings[299]);//"TIP: Oddálení obrazu lze také vykonat pomocí stisku klávesy - či F8 nebo CTRL a otáčením kolečko myši směrem dolu."
 	}
 	else MessageBeep(0);
@@ -16690,6 +16718,7 @@ void TForm1::smaz_kurzor()
 						else pom_element_temp->Z=0;
 						pom_element_temp=d.v.dalsi_krok(VYHYBKY,pom_element_temp);
 					}
+					d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
 					delete VYHYBKY;VYHYBKY=NULL;
 					delete pom_element_temp;pom_element_temp=NULL;
 				}
@@ -16716,6 +16745,7 @@ void TForm1::smaz_kurzor()
 						else pom_element_temp->Z=0;
 						pom_element_temp=d.v.dalsi_krok(VYHYBKY,pom_element_temp);
 					}
+          d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
 					delete VYHYBKY;VYHYBKY=NULL;
 					delete pom_element_temp;pom_element_temp=NULL;
 				}
@@ -18174,12 +18204,14 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 
 			////existuje ... aktualizace řádků
 			double cas=0,WT=0,delka=0;
+			int pocet_voziku=0;
 			bool prejezd=true;
 			//výpočet času na začátku
 			if(T->prvni->sparovany->pohon!=NULL)
 			{
 				//výpočet délky oblasti
 				delka=m.delka(T->prvni->geo.X1,T->prvni->geo.Y1,T->prvni->sparovany->geo.X4,T->prvni->sparovany->geo.Y4);
+				delka=m.castPrepony(delka,T->prvni->sparovany->geo.delkaPud,T->prvni->sparovany->geo.HeightDepp);
 				if(T->prvni->sparovany==T->posledni->sparovany)delka=m.delka(T->prvni->geo.X1,T->prvni->geo.Y1,T->posledni->geo.X4,T->posledni->geo.Y4);//pokud jsou oba teploměry na stejném úseku, měřit délku mezi jejich souřadnicemi
 				//pokud se jedná o stopku počítat s bufferem
 				if(T->prvni->sparovany->eID==0)
@@ -18197,7 +18229,9 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 					if(delka<=buf)
 					{
 						prejezd=false;
-						cas+=m.V2WT(ceil((delka-buf)/d.v.PP.delka_podvozek),d.v.PP.TT);//připočítání WT na aktuálním vozíku
+						pocet_voziku=ceil((delka-buf)/d.v.PP.delka_podvozek);
+						if(pocet_voziku<0)pocet_voziku=T->prvni->sparovany->data.pocet_voziku+pocet_voziku;
+						cas+=m.V2WT(pocet_voziku,d.v.PP.TT);//připočítání WT na aktuálním vozíku
 					}
 					//pokud je úsek větší než buffer připočtení WTstop a přejezdu
 					else
@@ -18257,6 +18291,7 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 			{
 				//výpočet délky oblasti
 				delka=m.delka(T->posledni->sparovany->geo.X1,T->posledni->sparovany->geo.Y1,T->posledni->geo.X4,T->posledni->geo.Y4);
+				delka=m.castPrepony(delka,T->posledni->sparovany->geo.delkaPud,T->posledni->sparovany->geo.HeightDepp);
 				//pokud se jedná o stopku počítat s bufferem
 				if(T->posledni->sparovany->eID==0)
 				{
@@ -18275,7 +18310,9 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 						if(prejezd){pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;}//pokud byl přejezd, změna, bude následovat buffer
 						prejezd=false;
 						WT+=T->posledni->sparovany->WT;
-						cas+=m.V2WT(ceil((delka-buf)/d.v.PP.delka_podvozek),d.v.PP.TT);//připočítání WT na aktuálním vozíku
+            pocet_voziku=ceil((delka-buf)/d.v.PP.delka_podvozek);
+						if(pocet_voziku<0)pocet_voziku=T->prvni->sparovany->data.pocet_voziku+pocet_voziku;
+						cas+=m.V2WT(pocet_voziku,d.v.PP.TT);//připočítání WT na aktuálním vozíku
 					}
 					//pokud je úsek větší než buffer připočtení WTstop a přejezdu
 					else
