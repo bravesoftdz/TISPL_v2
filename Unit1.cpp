@@ -4889,7 +4889,7 @@ void TForm1::getJobID(int X, int Y)
 			delete VYHYBKY;VYHYBKY=NULL;
 		}
 
-    //měření na časových dráhách
+    ////měření na časových dráhách
 		unsigned int V=getV();//číslo vozíku
 		if(V>0 && !(pocatek_mereni.x==-1 && pocatek_mereni.y==-1))
 		{
@@ -4897,7 +4897,6 @@ void TForm1::getJobID(int X, int Y)
 			if(prichytavat_k_mrizce==1)konec_mereni.x=d.v.prichytit_cas_SIM(V);
 			konec_mereni.y=V;
 		}
-
 
 //		Cvektory::TCesta *C=d.v.MAG_LASO->dalsi;Memo_testy->Clear();
 //		if(d.v.MAG_LASO->sparovany!=NULL)Memo("sparovany0: "+d.v.MAG_LASO->sparovany->name);
@@ -6342,7 +6341,8 @@ void TForm1::spojeni_prvni_posledni(double citlivost)
 void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 {
 	//e_posledni == poslední element ve vedlejší větvi
-	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && m.Rt90(e_posledni->geo.orientace+e_posledni->geo.rotacni_uhel)==m.Rt90(e_posledni->dalsi->geo.orientace+e_posledni->dalsi->geo.rotacni_uhel) && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=1 && e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel==m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel))
+
+	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)==m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel) && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=1 && e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel==m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel))
 	{
     bool vypnout=false;
 		if(Akce==GEOMETRIE)vypnout=true;
@@ -17307,6 +17307,11 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 				popisek+=", konec: "+d.v.MAG_LASO->predchozi->Element->name;
 			MB(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,"Délka = "+String(m.round2double(mereni_delka*1000,2))+" [mm]"+popisek,"",MB_OK,true,false,366,true,true);
 			C=NULL;delete C;
+		}
+		//měření v časových osách
+		if(pocatek_mereni.x!=-1 && pocatek_mereni.y!=-1)
+		{
+			MB(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,"Čas = "+String(m.round2double(m.abs_d((konec_mereni.x-pocatek_mereni.x)/d.PX2SEC*3),2))+" [s]","",MB_OK,true,false,366,true,true);
 		}
 		scGPImage_mereni_vzdalenost->ClipFrameFillColor=clWhite;
 		scGPButton_zmerit_vzdalenost->Options->NormalColor=scGPButton_zmerit_vzdalenost->Options->HotColor;

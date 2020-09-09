@@ -967,8 +967,23 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
   ////měření na časových osách při simulaci
 	if(F->pocatek_mereni.x!=-1 && F->pocatek_mereni.y!=-1)
 	{
+		//vykreslní popisku
+		String text=String(m.round2double(m.abs_d((F->konec_mereni.x-F->pocatek_mereni.x)/PX2SEC*3),2))+" [s]";
+		canv->Font->Color=clMeridlo;
+		canv->Font->Size=20*3;
+		TextFraming(canv,F->konec_mereni.x*3-canv->TextWidth(text)/2,(F->scGPPanel_mainmenu->Height+(v.SIM->predchozi->V->n+1)*KrokY/3)*3,text);
+    //vykreslení svislic
 		vykresli_svislici_na_casove_osy(canv,F->pocatek_mereni.x*3,true);
-    vykresli_svislici_na_casove_osy(canv,F->konec_mereni.x*3,true);
+		vykresli_svislici_na_casove_osy(canv,F->konec_mereni.x*3,true);
+		//vykreslení kolečka přichycení
+		if(F->prichytavat_k_mrizce==1)
+		{
+	  	double X=F->pocatek_mereni.x*3,olY=F->scGPPanel_mainmenu->Height*3+oY,Y=F->pocatek_mereni.y*KrokY+olY;short s=8*3;
+	  	set_pen(canv,clMeridlo,10,PS_ENDCAP_FLAT);
+	  	canv->Ellipse(X-s,Y-s,X+s,Y+s);
+	  	X=F->konec_mereni.x*3;Y=F->konec_mereni.y*KrokY+olY;
+			canv->Ellipse(X-s,Y-s,X+s,Y+s);
+		}
   }
 }
 ////---------------------------------------------------------------------------
