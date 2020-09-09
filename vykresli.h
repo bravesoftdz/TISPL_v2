@@ -132,7 +132,7 @@ class Cvykresli
 	void vykresli_Xosy(TCanvas *canv);//vykreslí statické svislice na èasové osy
 	void zobrazit_label_zamerovac(int X,int Y);//vypíše labal zamìøovaè na pozici kurzoru myši
 	void vykresli_zamerovac_casovych_os(TCanvas *canv,int X,int Y);//vykreslí pohyblivou svislici na èasové osy dle umístìní kurzoru myši
-	void vykresli_svislici_na_casove_osy(TCanvas *canv,int X=-1);//v aktuálním èase simulace vykreslí svislici aktuální události na èasových osách
+	void vykresli_svislici_na_casove_osy(TCanvas *canv,int X=-1,bool AA=false);//v aktuálním èase simulace vykreslí svislici aktuální události na èasových osách
 
 	//globální public promìnné
 	TColor clStenaKabiny,clStenaHaly,clPasiv,clError,clWarning,clChassis,clJig,clMeridlo;
