@@ -6358,16 +6358,17 @@ void Cvykresli::vykresli_zamerovac_casovych_os(TCanvas *canv,int X,int Y)
 //---------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 //v aktuálním čase simulace vykreslí svislici aktuální události na časových osách
-void Cvykresli::vykresli_svislici_na_casove_osy(TCanvas *canv,int X)
+void Cvykresli::vykresli_svislici_na_casove_osy(TCanvas *canv,int X,bool AA)
 {
 	canv->Pen->Mode=pmCopy;
-	canv->Pen->Width=2;
+	canv->Pen->Width=2;if(AA)canv->Pen->Width*=5;
 	canv->Pen->Style=psSolid;//nastevení čarkované čáry
 	canv->Pen->Color=clMeridlo;
 	canv->Brush->Style=bsClear;
 	int Xf=X;if(X==-1)Xf=m.round(F->CAS*PX2SEC/3.0);//pokud není dodaná hodnota
-	canv->MoveTo(Xf,F->scGPPanel_mainmenu->Height);
-	canv->LineTo(Xf,F->scGPPanel_mainmenu->Height+(v.SIM->predchozi->V->n+1)*KrokY/3);
+	short z=1;if(AA)z=3;
+	canv->MoveTo(Xf,F->scGPPanel_mainmenu->Height*z);
+	canv->LineTo(Xf,(F->scGPPanel_mainmenu->Height+(v.SIM->predchozi->V->n+1)*KrokY/3)*z);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------------------
