@@ -1599,9 +1599,9 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object scLabel_titulek: TscLabel
-      Left = 364
+      Left = 465
       Top = 0
-      Width = 200
+      Width = 99
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -1634,7 +1634,7 @@ object Form1: TForm1
       Caption = 'TISPL'
     end
     object scLabel_mezera: TscLabel
-      Left = 349
+      Left = 450
       Top = 0
       Width = 15
       Height = 34
@@ -1801,15 +1801,15 @@ object Form1: TForm1
     object scGPGlyphButton_PLAY: TscGPGlyphButton
       Left = 312
       Top = 0
-      Width = 37
+      Width = 72
       Height = 34
       Hint = 'spustit animaci'
       Align = alLeft
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWhite
-      Font.Height = -11
+      Font.Height = -13
       Font.Name = 'Tahoma'
-      Font.Style = []
+      Font.Style = [fsBold]
       Font.Quality = fqClearTypeNatural
       ParentFont = False
       ParentShowHint = False
@@ -1818,7 +1818,7 @@ object Form1: TForm1
       TabOrder = 15
       TabStop = True
       OnClick = scGPGlyphButton_PLAYClick
-      Animation = False
+      Animation = True
       Badge.Color = clRed
       Badge.ColorAlpha = 255
       Badge.Font.Charset = DEFAULT_CHARSET
@@ -1827,6 +1827,7 @@ object Form1: TForm1
       Badge.Font.Name = 'Tahoma'
       Badge.Font.Style = [fsBold]
       Badge.Visible = False
+      Caption = '0 s'
       CanFocused = True
       CustomDropDown = False
       DrawTextMode = scdtmGDI
@@ -1910,6 +1911,7 @@ object Form1: TForm1
       TextMargin = -1
       WidthWithCaption = 0
       WidthWithoutCaption = 0
+      ShowCaption = True
       SplitButton = False
       RepeatClick = False
       RepeatClickInterval = 100
@@ -1920,6 +1922,8 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 315
+      ExplicitTop = -1
     end
     object scGPButton_error: TscGPButton
       Left = 564
@@ -2410,6 +2414,252 @@ object Form1: TForm1
       GlyphOptions.DisabledColorAlpha = 100
       GlyphOptions.Kind = scgpbgkRedo
       GlyphOptions.Thickness = 1
+      GlyphOptions.ThicknessScaled = False
+      GlyphOptions.Size = 0
+      GlyphOptions.StyleColors = True
+      TextMargin = -1
+      WidthWithCaption = 0
+      WidthWithoutCaption = 0
+      SplitButton = False
+      RepeatClick = False
+      RepeatClickInterval = 100
+      ShowGalleryMenuFromTop = False
+      ShowGalleryMenuFromRight = False
+      ShowMenuArrow = True
+      ShowFocusRect = True
+      Down = False
+      GroupIndex = 0
+      AllowAllUp = False
+    end
+    object scGPGlyphButton_PLAYminus: TscGPGlyphButton
+      Left = 417
+      Top = 0
+      Width = 33
+      Height = 34
+      Hint = 'spustit animaci'
+      Align = alLeft
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      Font.Quality = fqClearTypeNatural
+      ParentFont = False
+      ParentShowHint = False
+      FluentUIOpaque = False
+      ShowHint = True
+      TabOrder = 20
+      TabStop = True
+      OnClick = scGPGlyphButton_PLAYminusClick
+      Animation = True
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
+      CanFocused = True
+      CustomDropDown = False
+      DrawTextMode = scdtmGDI
+      FluentLightEffect = False
+      Layout = blGlyphLeft
+      TransparentBackground = True
+      ColorValue = clRed
+      Options.NormalColor = clWhite
+      Options.HotColor = clWhite
+      Options.PressedColor = clBtnText
+      Options.FocusedColor = 10114859
+      Options.DisabledColor = clBtnText
+      Options.NormalColor2 = clNone
+      Options.HotColor2 = clNone
+      Options.PressedColor2 = clNone
+      Options.FocusedColor2 = clNone
+      Options.DisabledColor2 = clNone
+      Options.NormalColorAlpha = 0
+      Options.HotColorAlpha = 30
+      Options.PressedColorAlpha = 30
+      Options.FocusedColorAlpha = 255
+      Options.DisabledColorAlpha = 5
+      Options.NormalColor2Alpha = 255
+      Options.HotColor2Alpha = 255
+      Options.PressedColor2Alpha = 255
+      Options.FocusedColor2Alpha = 255
+      Options.DisabledColor2Alpha = 255
+      Options.FrameNormalColor = 10114859
+      Options.FrameHotColor = 10114859
+      Options.FramePressedColor = clBtnText
+      Options.FrameFocusedColor = 10114859
+      Options.FrameDisabledColor = 10114859
+      Options.FrameWidth = 1
+      Options.FrameNormalColorAlpha = 255
+      Options.FrameHotColorAlpha = 255
+      Options.FramePressedColorAlpha = 150
+      Options.FrameFocusedColorAlpha = 255
+      Options.FrameDisabledColorAlpha = 255
+      Options.FontNormalColor = 33023
+      Options.FontHotColor = 33023
+      Options.FontPressedColor = 33023
+      Options.FontFocusedColor = 33023
+      Options.FontDisabledColor = 33023
+      Options.ShapeFillGradientAngle = 90
+      Options.ShapeFillGradientPressedAngle = -90
+      Options.ShapeFillGradientColorOffset = 25
+      Options.ShapeCornerRadius = 10
+      Options.ShapeStyle = scgpRect
+      Options.ArrowSize = 9
+      Options.ArrowAreaSize = 0
+      Options.ArrowType = scgpatDefault
+      Options.ArrowThickness = 2
+      Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
+      Options.StyleColors = True
+      Options.PressedHotColors = False
+      GlyphOptions.NormalColor = clWhite
+      GlyphOptions.HotColor = 33023
+      GlyphOptions.PressedColor = clWhite
+      GlyphOptions.FocusedColor = clWhite
+      GlyphOptions.DisabledColor = 11184810
+      GlyphOptions.NormalColorAlpha = 200
+      GlyphOptions.HotColorAlpha = 255
+      GlyphOptions.PressedColorAlpha = 255
+      GlyphOptions.FocusedColorAlpha = 255
+      GlyphOptions.DisabledColorAlpha = 255
+      GlyphOptions.Kind = scgpbgkMinus
+      GlyphOptions.Thickness = 2
+      GlyphOptions.ThicknessScaled = False
+      GlyphOptions.Size = 0
+      GlyphOptions.StyleColors = True
+      TextMargin = -1
+      WidthWithCaption = 0
+      WidthWithoutCaption = 0
+      SplitButton = False
+      RepeatClick = False
+      RepeatClickInterval = 100
+      ShowGalleryMenuFromTop = False
+      ShowGalleryMenuFromRight = False
+      ShowMenuArrow = True
+      ShowFocusRect = True
+      Down = False
+      GroupIndex = 0
+      AllowAllUp = False
+    end
+    object scGPGlyphButton_PLAYplus: TscGPGlyphButton
+      Left = 384
+      Top = 0
+      Width = 33
+      Height = 34
+      Hint = 'spustit animaci'
+      Align = alLeft
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      Font.Quality = fqClearTypeNatural
+      ParentFont = False
+      ParentShowHint = False
+      FluentUIOpaque = False
+      ShowHint = True
+      TabOrder = 21
+      TabStop = True
+      OnClick = scGPGlyphButton_PLAYplusClick
+      Animation = True
+      Badge.Color = clRed
+      Badge.ColorAlpha = 255
+      Badge.Font.Charset = DEFAULT_CHARSET
+      Badge.Font.Color = clWhite
+      Badge.Font.Height = -11
+      Badge.Font.Name = 'Tahoma'
+      Badge.Font.Style = [fsBold]
+      Badge.Visible = False
+      CanFocused = True
+      CustomDropDown = False
+      DrawTextMode = scdtmGDI
+      FluentLightEffect = False
+      Layout = blGlyphLeft
+      TransparentBackground = True
+      ColorValue = clRed
+      Options.NormalColor = clWhite
+      Options.HotColor = clWhite
+      Options.PressedColor = clBtnText
+      Options.FocusedColor = 10114859
+      Options.DisabledColor = clBtnText
+      Options.NormalColor2 = clNone
+      Options.HotColor2 = clNone
+      Options.PressedColor2 = clNone
+      Options.FocusedColor2 = clNone
+      Options.DisabledColor2 = clNone
+      Options.NormalColorAlpha = 0
+      Options.HotColorAlpha = 30
+      Options.PressedColorAlpha = 30
+      Options.FocusedColorAlpha = 255
+      Options.DisabledColorAlpha = 5
+      Options.NormalColor2Alpha = 255
+      Options.HotColor2Alpha = 255
+      Options.PressedColor2Alpha = 255
+      Options.FocusedColor2Alpha = 255
+      Options.DisabledColor2Alpha = 255
+      Options.FrameNormalColor = 10114859
+      Options.FrameHotColor = 10114859
+      Options.FramePressedColor = clBtnText
+      Options.FrameFocusedColor = 10114859
+      Options.FrameDisabledColor = 10114859
+      Options.FrameWidth = 1
+      Options.FrameNormalColorAlpha = 255
+      Options.FrameHotColorAlpha = 255
+      Options.FramePressedColorAlpha = 150
+      Options.FrameFocusedColorAlpha = 255
+      Options.FrameDisabledColorAlpha = 255
+      Options.FontNormalColor = 33023
+      Options.FontHotColor = 33023
+      Options.FontPressedColor = 33023
+      Options.FontFocusedColor = 33023
+      Options.FontDisabledColor = 33023
+      Options.ShapeFillGradientAngle = 90
+      Options.ShapeFillGradientPressedAngle = -90
+      Options.ShapeFillGradientColorOffset = 25
+      Options.ShapeCornerRadius = 10
+      Options.ShapeStyle = scgpRect
+      Options.ArrowSize = 9
+      Options.ArrowAreaSize = 0
+      Options.ArrowType = scgpatDefault
+      Options.ArrowThickness = 2
+      Options.ArrowThicknessScaled = False
+      Options.ArrowNormalColor = clBtnText
+      Options.ArrowHotColor = clBtnText
+      Options.ArrowPressedColor = clBtnText
+      Options.ArrowFocusedColor = clBtnText
+      Options.ArrowDisabledColor = clBtnText
+      Options.ArrowNormalColorAlpha = 200
+      Options.ArrowHotColorAlpha = 255
+      Options.ArrowPressedColorAlpha = 255
+      Options.ArrowFocusedColorAlpha = 200
+      Options.ArrowDisabledColorAlpha = 125
+      Options.StyleColors = True
+      Options.PressedHotColors = False
+      GlyphOptions.NormalColor = clWhite
+      GlyphOptions.HotColor = 33023
+      GlyphOptions.PressedColor = clWhite
+      GlyphOptions.FocusedColor = clWhite
+      GlyphOptions.DisabledColor = 11184810
+      GlyphOptions.NormalColorAlpha = 200
+      GlyphOptions.HotColorAlpha = 255
+      GlyphOptions.PressedColorAlpha = 255
+      GlyphOptions.FocusedColorAlpha = 255
+      GlyphOptions.DisabledColorAlpha = 255
+      GlyphOptions.Kind = scgpbgkPlus
+      GlyphOptions.Thickness = 2
       GlyphOptions.ThicknessScaled = False
       GlyphOptions.Size = 0
       GlyphOptions.StyleColors = True
@@ -8159,8 +8409,6 @@ object Form1: TForm1
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
-        ExplicitLeft = 10
-        ExplicitTop = 71
       end
     end
     object scExPanel1: TscExPanel
@@ -9010,11 +9258,53 @@ object Form1: TForm1
       Caption = 'Pozn'#225'mky'
     end
   end
+  object scGPLabel_zamerovac: TscGPLabel
+    Left = 174
+    Top = 251
+    Width = 124
+    Height = 23
+    Font.Charset = EASTEUROPE_CHARSET
+    Font.Color = clBtnText
+    Font.Height = -11
+    Font.Name = 'Roboto'
+    Font.Style = []
+    ParentFont = False
+    FluentUIOpaque = False
+    TabOrder = 19
+    Visible = False
+    DragForm = False
+    DragTopForm = True
+    DrawTextMode = scdtmGDI
+    ContentMarginLeft = 5
+    ContentMarginRight = 5
+    ContentMarginTop = 5
+    ContentMarginBottom = 5
+    DisabledFontColor = clNone
+    FrameWidth = 0
+    FillColor = clBtnText
+    FillColorAlpha = 20
+    FillColor2 = clNone
+    FillColor2Alpha = 255
+    FillGradientAngle = 0
+    FrameColor = clBtnText
+    FrameColorAlpha = 40
+    FrameRadius = 0
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clBtnShadow
+    GlowEffect.AlphaValue = 255
+    GlowEffect.GlowSize = 7
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    AutoSize = True
+    Alignment = taCenter
+    Caption = 'scGPLabel_zamerovac'
+  end
   object ImageList1: TImageList
     Left = 520
     Top = 40
     Bitmap = {
-      494C010118004800040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118001C001C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9973,7 +10263,7 @@ object Form1: TForm1
   end
   object Timer_simulace: TTimer
     Enabled = False
-    Interval = 40
+    Interval = 50
     OnTimer = Timer_simulaceTimer
     Left = 272
     Top = 88
@@ -10094,7 +10384,7 @@ object Form1: TForm1
     Left = 423
     Top = 38
     Bitmap = {
-      494C010154009000040030003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C0101540070001C0030003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000002004000001002000000000000060
       0C00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

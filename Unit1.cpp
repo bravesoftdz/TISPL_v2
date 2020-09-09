@@ -32,8 +32,9 @@
 #include "help.h"
 #include "MyString.h"
 #include "konzole.h"
+#include "Tvlakno_sound.h"
 #include <idattachmentfile.hpp>//přílohy mailů
-#include <mmsystem.h>//multimediální timer
+//#include <mmsystem.h>//multimediální timer
 //#include <gdiplus.h>
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -328,7 +329,8 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	velikost_citelne_oblasti_elementu=0.12;//v metrech, 0.114285714285714 šířka pouzdra pohonu
 	zobrazit_upozorneni_teplomery=true;
 	typElementu=0;
-  mereni_po_trendu=true;
+	mereni_po_trendu=true;
+	CAS=0;
 
 	//vývojářské featury
 	if(DEBUG && get_user_name()+get_computer_name()=="MartinMARTIN-NOTEBOOK"){ButtonMaVl->Visible=false;}//pokud se dělá překlad u MaKr, je skryto MV tlačítko testovací tlačítko, MaKr testovací se volá přes F9
@@ -2373,9 +2375,11 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		}
 		////mGRIDY
 		if(MOD!=SIMULACE && Akce!=MAGNETICKE_LASO/* && Akce!=POSUN_TEPLOMER*/)d.vykresli_mGridy(bmp_total->Canvas);//přesunuto do vnitř metody: OBJEKT_akt->elementy!=NULL kvůli pohonům
+		////časové osy pomocné grafické metody mimo AA
+		if(d.v.SIM!=NULL)d.vykresli_svislici_na_casove_osy(bmp_total->Canvas);
 		////grafické MĚŘÍTKO
 		if(MOD!=SIMULACE && zobrazit_meritko && Akce!=MOVE_HALA && MOD!=TVORBA_CESTY)d.meritko(bmp_total->Canvas);
-		////finální vykreslení bmp_total do Canvasu
+		////FINALNÍ vykreslení bmp_total do Canvasu
 		Canvas->Draw(0,0,bmp_total);//finální předání bmp_out do Canvasu
 		delete (bmp_total);//velice nutné
 		////TIP
@@ -3225,22 +3229,22 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 		long X=akt_souradnice_kurzoru_PX.x;long Y=akt_souradnice_kurzoru_PX.y;//pouze zkrácení zápisu
 		switch(MOD)
 		{
-			case CASOVAOSA:
-			{														 //min                      //vozik
-				proces_pom=d.v.najdi_proces((X+d.PosunT.x)/d.PX2MIN*60,ceil((Y+d.PosunT.y-d.KrokY/2-scGPPanel_mainmenu->Height)/(d.KrokY*1.0)));//vrací nalezen proces, proces_pom se využívá ještě dále
-				if(proces_pom!=NULL && !d.mod_vytizenost_objektu)
-				{
-					if(STATUS==NAVRH)//měnit parametry na časových osách je možné pouze v návrháři/architektovi
-					{
-						//pom=proces_pom->segment_cesty->objekt;
-					}
-				}
-			}break;
-			case TECHNOPROCESY:
-			{
-				pom=d.v.vrat_objekt_z_roma(akt_souradnice_kurzoru_PX.x-d.Xofset+d.PosunT.x);
-			}
-			break;
+//			case CASOVAOSA:
+//			{														 //min                      //vozik
+//				proces_pom=d.v.najdi_proces((X+d.PosunT.x)/d.PX2MIN*60,ceil((Y+d.PosunT.y-d.KrokY/2-scGPPanel_mainmenu->Height)/(d.KrokY*1.0)));//vrací nalezen proces, proces_pom se využívá ještě dále
+//				if(proces_pom!=NULL && !d.mod_vytizenost_objektu)
+//				{
+//					if(STATUS==NAVRH)//měnit parametry na časových osách je možné pouze v návrháři/architektovi
+//					{
+//						//pom=proces_pom->segment_cesty->objekt;
+//					}
+//				}
+//			}break;
+//			case TECHNOPROCESY:
+//			{
+//				pom=d.v.vrat_objekt_z_roma(akt_souradnice_kurzoru_PX.x-d.Xofset+d.PosunT.x);
+//			}
+//			break;
 			case SIMULACE:break;
 			default://pro LAYOUT
 			{
@@ -3308,15 +3312,20 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 	vyska_menu=Mouse->CursorPos.y-Y;//uchová rozdíl myšího kurzoru a Y-pixelu v pracovní oblasti
 	akt_souradnice_kurzoru_PX=TPoint(X,Y);
 	akt_souradnice_kurzoru=m.P2L(akt_souradnice_kurzoru_PX);
-	if(MOD==CASOVAOSA)//vykreslování posuvné (dle myši) svislice kolmé na osy procesů, slouží jakou ukázovatko času na ose
+	if(d.v.SIM!=NULL)//if(MOD==CASOVAOSA)//vykreslování posuvné (dle myši) svislice kolmé na osy procesů, slouží jakou ukázovatko času na ose
 	{
-		minule_souradnice_kurzoru=TPoint(X,Y);
-		//d.vykresli_svislici_na_casove_osy(Canvas,X,Y);//nový přístup v zobrazování svislic, jen v momentu zobrazování labalu_zamerovac (bylo odkomentováno)
-		SB(UnicodeString((X+d.PosunT.x)/d.PX2MIN)+" min",6);//výpis času na ose procesů dle kurzoru
-		//hazí stejné souřadnice if(abs((int)minule_souradnice_kurzoru.x-(int)akt_souradnice_kurzoru_PX.x)>1 && abs((int)minule_souradnice_kurzoru.y-(int)akt_souradnice_kurzoru_PX.y)>1)//pokud je změna větší než jeden pixel, pouze ošetření proti divnému chování myši (možná mi docházela baterka, s myší jsem nehýbal, ale přesto docházele k rušení labelu resp. volání metody FormMouseMove)
-		Timer_neaktivity->Enabled=false;
-		Timer_neaktivity->Interval=1000;                                                                                                                                                             //R 21.1.2020 - odebrání časové osy z projektu
-		if(scSplitView_OPTIONS->Opened==false && scSplitView_MENU->Opened==false && PopUPmenu->Showing==false && Form_parametry_linky->Showing==false && Form_definice_zakazek->Showing==false /*&& Form_osa_info->Showing==false*/)Timer_neaktivity->Enabled=true;//spoustí pouze pokud nejsou zobrazeny formuláře z podmínky
+//		pocitadlo_doby_neaktivity=0;
+//		minule_souradnice_kurzoru=TPoint(X,Y);
+//		//d.vykresli_svislici_na_casove_osy(Canvas,X,Y);//nový přístup v zobrazování svislic, jen v momentu zobrazování labalu_zamerovac (bylo odkomentováno)
+		unsigned int V=getV();
+		if(V>0)SB(String(V)+" voz.|"+String(m.round((X+d.PosunT.x)/d.PX2SEC*3))+"[s]",6);//výpis času na ose procesů dle kurzoru
+		else SB("",6);
+//		//hazí stejné souřadnice if(abs((int)minule_souradnice_kurzoru.x-(int)akt_souradnice_kurzoru_PX.x)>1 && abs((int)minule_souradnice_kurzoru.y-(int)akt_souradnice_kurzoru_PX.y)>1)//pokud je změna větší než jeden pixel, pouze ošetření proti divnému chování myši (možná mi docházela baterka, s myší jsem nehýbal, ale přesto docházele k rušení labelu resp. volání metody FormMouseMove)
+//		//Timer_neaktivity->Enabled=false;
+//
+//		Timer_neaktivity->Interval=1000;                                                                                                                                                             //R 21.1.2020 - odebrání časové osy z projektu
+//		//if(scSplitView_OPTIONS->Opened==false && scSplitView_MENU->Opened==false && PopUPmenu->Showing==false && Form_parametry_linky->Showing==false && Form_definice_zakazek->Showing==false /*&& Form_osa_info->Showing==false*/)
+//		Timer_neaktivity->Enabled=true;//spoustí pouze pokud nejsou zobrazeny formuláře z podmínky
 	}
 	else if(MOD==TVORBA_CESTY)
 	{
@@ -4893,43 +4902,43 @@ void TForm1::onPopUP(int X, int Y)
 	//dle modu zobrazí položky, pozor záleží zvláštně!!! na pořadí položek
 	switch(MOD)
 	{
-		case CASOVAOSA:
-		{														 //min                      //vozik
-			proces_pom=d.v.najdi_proces((X+d.PosunT.x)/d.PX2MIN*60,ceil((Y+d.PosunT.y-d.KrokY/2-scGPPanel_mainmenu->Height)/(d.KrokY*1.0)));//vrací nalezen proces, proces_pom se využívá ještě dále
-			PopUPmenu->Item_posouvat->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
-			PopUPmenu->Item_posunout->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
-			if(proces_pom!=NULL && !d.mod_vytizenost_objektu)
-			{
-				PopUPmenu->Item_zobrazit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;//nastavení zobrazení
-				PopUPmenu->Item_zobrazit_parametry->FillColor=(TColor)RGB(240,240,240);//workaround, nutnost takto vytáhnout, jinak se položka zvýrazňuje, musí být tady
-				PopUPmenu->Item_rychly_export->Visible=true;PopUPmenu->Panel_UP->Height+=34;
-				if(STATUS==NAVRH)//měnit parametry na časových osách je možné pouze v návrháři/architektovi
-				{
-					//pom=proces_pom->segment_cesty->objekt;
-					if(AnsiString(N+" "+pom->name).Length()>19)//pokud je více znaků, tak zalamovat manuálně, lze i automaticky pomocí proporties wordwrap, ale to se nemusí projevit např. u všech různě textově dlouhých položek stejně
-					PopUPmenu->scLabel_nastavit_parametry->Caption="  "+N+"\n  "+pom->name.UpperCase();
-					else
-					PopUPmenu->scLabel_nastavit_parametry->Caption="  "+N+" "+pom->name.UpperCase();
-					PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;
-				}
-			}
-		}break;
-		case TECHNOPROCESY:
-		{
-			pom=d.v.vrat_objekt_z_roma(akt_souradnice_kurzoru_PX.x-d.Xofset+d.PosunT.x);
-			if(pom!=NULL)
-			{
-				PopUPmenu->Item_posouvat->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
-				PopUPmenu->Item_posunout->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
-				//PopUPmenu->Item_rychly_export->Visible=true;PopUPmenu->Panel_UP->Height+=34;
-				if(AnsiString(N+" "+pom->name).Length()>19)//pokud je více znaků, tak zalamovat manuálně, lze i automaticky pomocí proporties wordwrap, ale to se nemusí projevit např. u všech různě textově dlouhých položek stejně
-				PopUPmenu->scLabel_nastavit_parametry->Caption="  "+N+"\n  "+pom->name.UpperCase();
-				else
-				PopUPmenu->scLabel_nastavit_parametry->Caption="  "+N+" "+pom->name.UpperCase();
-				PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;
-			}
-		}
-		break;
+//		case CASOVAOSA:
+//		{														 //min                      //vozik
+//			proces_pom=d.v.najdi_proces((X+d.PosunT.x)/d.PX2MIN*60,ceil((Y+d.PosunT.y-d.KrokY/2-scGPPanel_mainmenu->Height)/(d.KrokY*1.0)));//vrací nalezen proces, proces_pom se využívá ještě dále
+//			PopUPmenu->Item_posouvat->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
+//			PopUPmenu->Item_posunout->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
+//			if(proces_pom!=NULL && !d.mod_vytizenost_objektu)
+//			{
+//				PopUPmenu->Item_zobrazit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;//nastavení zobrazení
+//				PopUPmenu->Item_zobrazit_parametry->FillColor=(TColor)RGB(240,240,240);//workaround, nutnost takto vytáhnout, jinak se položka zvýrazňuje, musí být tady
+//				PopUPmenu->Item_rychly_export->Visible=true;PopUPmenu->Panel_UP->Height+=34;
+//				if(STATUS==NAVRH)//měnit parametry na časových osách je možné pouze v návrháři/architektovi
+//				{
+//					//pom=proces_pom->segment_cesty->objekt;
+//					if(AnsiString(N+" "+pom->name).Length()>19)//pokud je více znaků, tak zalamovat manuálně, lze i automaticky pomocí proporties wordwrap, ale to se nemusí projevit např. u všech různě textově dlouhých položek stejně
+//					PopUPmenu->scLabel_nastavit_parametry->Caption="  "+N+"\n  "+pom->name.UpperCase();
+//					else
+//					PopUPmenu->scLabel_nastavit_parametry->Caption="  "+N+" "+pom->name.UpperCase();
+//					PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;
+//				}
+//			}
+//		}break;
+//		case TECHNOPROCESY:
+//		{
+//			pom=d.v.vrat_objekt_z_roma(akt_souradnice_kurzoru_PX.x-d.Xofset+d.PosunT.x);
+//			if(pom!=NULL)
+//			{
+//				PopUPmenu->Item_posouvat->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
+//				PopUPmenu->Item_posunout->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
+//				//PopUPmenu->Item_rychly_export->Visible=true;PopUPmenu->Panel_UP->Height+=34;
+//				if(AnsiString(N+" "+pom->name).Length()>19)//pokud je více znaků, tak zalamovat manuálně, lze i automaticky pomocí proporties wordwrap, ale to se nemusí projevit např. u všech různě textově dlouhých položek stejně
+//				PopUPmenu->scLabel_nastavit_parametry->Caption="  "+N+"\n  "+pom->name.UpperCase();
+//				else
+//				PopUPmenu->scLabel_nastavit_parametry->Caption="  "+N+" "+pom->name.UpperCase();
+//				PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;
+//			}
+//		}
+//		break;
 		//case SIMULACE:break;
 		case EDITACE:
 		{
@@ -14157,7 +14166,7 @@ void __fastcall TForm1::Vypicestuktempu1Click(TObject *Sender)
 void __fastcall TForm1::CheckBoxPALCE_Click(TObject *Sender)
 {
 	log(__func__);//logování
-	d.JIZPOCITANO=true;
+	//d.JIZPOCITANO=true;
 	Invalidate();
 }
 //---------------------------------------------------------------------------
@@ -14172,21 +14181,21 @@ void __fastcall TForm1::Chart1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button2Click(TObject *Sender)
 {
-	log(__func__);//logování
-	switch(d.NOLIEX)
-	{
-		case 0:d.NOLIEX++;Button2->Caption="LINEAR";break;
-		case 1:d.NOLIEX++;Button2->Caption="EXPO";break;
-		case 2:d.NOLIEX=0;Button2->Caption="NO";break;
-	}
-	Invalidate();
+//	log(__func__);//logování
+//	switch(d.NOLIEX)
+//	{
+//		case 0:d.NOLIEX++;Button2->Caption="LINEAR";break;
+//		case 1:d.NOLIEX++;Button2->Caption="EXPO";break;
+//		case 2:d.NOLIEX=0;Button2->Caption="NO";break;
+//	}
+//	Invalidate();
 }
 //---------------------------------------------------------------------------
 //skryje v době neaktivity (po 50 sec) svislice na myši v modu časové osy (kvůli spořiči obrazovky)
 void __fastcall TForm1::Timer_neaktivityTimer(TObject *Sender)
-{
+{       ShowMessage("1");
 	log(__func__);//logování
-//		if(MOD==CASOVAOSA && ++pocitadlo_doby_neaktivity==2)
+//		if(d.v.SIM!=NULL && ++pocitadlo_doby_neaktivity==2)
 //		{
 //			Timer_neaktivity->Enabled=false;
 //			d.zobrazit_label_zamerovac(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
@@ -14212,107 +14221,297 @@ void __fastcall TForm1::Timer_neaktivityTimer(TObject *Sender)
 //tlačítko na spuštění animace v náhledu kabiny
 void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 {
-	if(MOD==LAYOUT || MOD==SIMULACE)
-	{
-		log(__func__);//logování
-		RO-=(1.5*Zoom/m2px)/20.0;
-		sTIME=0;
+	if(d.v.SIM==NULL)vytvorScenar();
 
-		Timer_simulace->Enabled=!Timer_simulace->Enabled;
-	//	if(MOD==EDITACE)scGPButton_viditelnostmGridClick(Sender);//zakáže mgridy - dodělat, když nebudou zobrazené....
-	//	zobrazit_meritko=!Timer_animace->Enabled;
-	//	d.v.PP.raster.show=!Timer_animace->Enabled;
-		if(Timer_simulace->Enabled)//běží animace
-		{
-			scGPCheckBox_rozmisteni_voziku->Checked=true;
-			MOD=SIMULACE;//mód musí být před vytvořením scény
-			d.SCENA=221111;//zprávy nejsou zobrazeny, vozíky a aktivní části elementů jsou v dynamické scéně
-			vytvor_statickou_scenu();//načtení statických záležitostí do statické scény, musí být před REFRESH
-			//ovládací prvky
-			scGPButton_bug_report->Visible=false;
-			if(scButton_zamek_layoutu->ImageIndex==68)scButton_zamek_layoutuClick(Sender);//pokud ještě není layout zamčený zamkne, pozor OBSAHUJE REFRESH
-			//tlačítko simulace
-			scGPGlyphButton_PLAY->GlyphOptions->Kind=scgpbgkPause;
-			scGPGlyphButton_PLAY->Hint="zastavit animaci";
-			scGPGlyphButton_PLAY->ShowCaption=true;
-			//nastavení timeru
-									//optimálně pohybově nejpomalejšího pohonu či animovaného elementu
-			//Timer_simulace->Interval=floor(m2px/(Zoom/**3*/)/d.v.vrat_min_rychlost_prejezdu()*1000.0/fps);   //ceil(F->m.get_timePERpx(pom->RD,0,d.v.vrat_min_rychlost_prejezdu()));//různá rychlost dle RD, s afps se počítá dle min RD, ale nějak špatně vycházela animace ke konci (nestihl vozík vyjet)
-			Timer_simulace->Interval=40;
-			//Multimediální timer - nevyužito, náročné na synchronizaci vykreslovaných dat, zachováno jako vzor
-//			int TimerSimulaceInterval=40;
-//			TIMECAPS tc;timeGetDevCaps(&tc,sizeof(TIMECAPS));//zjištění přesnosti multimediálního časovače
-//			TimerPresnost=tc.wPeriodMin;//vrácení minimální možné přesnosti (1 ms)
-//			timeBeginPeriod(TimerPresnost);//if(TIMERR_NOERROR!=timeBeginPeriod(TimerSimulacePresnost))Application->Terminate();
-//			TimerSimulaceID=timeSetEvent(TimerSimulaceInterval,TimerPresnost,TimerSimulaceEvent,0,TIME_PERIODIC);
-		}
-		else//animace zastavena
-		{
-			MOD=LAYOUT;//mód musí být před vytvořením scény
-			d.SCENA=0;
-			scGPGlyphButton_PLAY->GlyphOptions->Kind=scgpbgkPlay;
-			scGPGlyphButton_PLAY->Hint="spustit animaci";
-			zobrazit_meritko=scGPSwitch_meritko->State;//navrácení do původního stavu
-			scGPButton_bug_report->Enabled=false;
-			TimerKill(TimerSimulaceID);
-		}
+	Timer_simulace->Enabled=!Timer_simulace->Enabled;
+	Timer_simulace->Interval=50;
+	if(Timer_simulace->Enabled)//běží animace
+	{
+		scGPGlyphButton_PLAY->GlyphOptions->Kind=scgpbgkPause;
+		scGPGlyphButton_PLAY->Hint="zastavit animaci";
+		if(CAS==0)Memo(String(CAS)+" [s]: START LINKY");
+		d.v.VOZIKY->dalsi->stav=-1;
+		d.v.VOZIKY->dalsi->dalsi->stav=-1;
+		d.v.VOZIKY->dalsi->dalsi->dalsi->stav=-1;
+			//MOD=SIMULACE;//mód musí být před vytvořením scény - zde narušuje zobrazení
+		d.SCENA=221111;//zprávy nejsou zobrazeny, vozíky a aktivní části elementů jsou v dynamické scéně
+		vytvor_statickou_scenu();//načtení statických záležitostí do statické scény, musí být před REFRESH
+		provedScenar();//pro čas 0
+		REFRESH();
 	}
-	else MB("V této verzi aplikace lze spustit simulaci pouze v layoutu.");
+	else
+	{
+		scGPGlyphButton_PLAY->GlyphOptions->Kind=scgpbgkPlay;
+		scGPGlyphButton_PLAY->Hint="spustit animaci";
+  }
+
+
+
+//	if(MOD==LAYOUT || MOD==SIMULACE)
+//	{
+//		log(__func__);//logování
+//		RO-=(1.5*Zoom/m2px)/20.0;
+//		sTIME=0;
+//
+//		Timer_simulace->Enabled=!Timer_simulace->Enabled;
+//	//	if(MOD==EDITACE)scGPButton_viditelnostmGridClick(Sender);//zakáže mgridy - dodělat, když nebudou zobrazené....
+//	//	zobrazit_meritko=!Timer_animace->Enabled;
+//	//	d.v.PP.raster.show=!Timer_animace->Enabled;
+//		if(Timer_simulace->Enabled)//běží animace
+//		{
+//			scGPCheckBox_rozmisteni_voziku->Checked=true;
+//			MOD=SIMULACE;//mód musí být před vytvořením scény
+//			d.SCENA=221111;//zprávy nejsou zobrazeny, vozíky a aktivní části elementů jsou v dynamické scéně
+//			vytvor_statickou_scenu();//načtení statických záležitostí do statické scény, musí být před REFRESH
+//			//ovládací prvky
+//			scGPButton_bug_report->Visible=false;
+//			if(scButton_zamek_layoutu->ImageIndex==68)scButton_zamek_layoutuClick(Sender);//pokud ještě není layout zamčený zamkne, pozor OBSAHUJE REFRESH
+//			//tlačítko simulace
+//			scGPGlyphButton_PLAY->GlyphOptions->Kind=scgpbgkPause;
+//			scGPGlyphButton_PLAY->Hint="zastavit animaci";
+//			scGPGlyphButton_PLAY->ShowCaption=true;
+//			//nastavení timeru
+//									//optimálně pohybově nejpomalejšího pohonu či animovaného elementu
+//			//Timer_simulace->Interval=floor(m2px/(Zoom/**3*/)/d.v.vrat_min_rychlost_prejezdu()*1000.0/fps);   //ceil(F->m.get_timePERpx(pom->RD,0,d.v.vrat_min_rychlost_prejezdu()));//různá rychlost dle RD, s afps se počítá dle min RD, ale nějak špatně vycházela animace ke konci (nestihl vozík vyjet)
+//			Timer_simulace->Interval=40;
+//			//Multimediální timer - nevyužito, náročné na synchronizaci vykreslovaných dat, zachováno jako vzor
+////			int TimerSimulaceInterval=40;
+////			TIMECAPS tc;timeGetDevCaps(&tc,sizeof(TIMECAPS));//zjištění přesnosti multimediálního časovače
+////			TimerPresnost=tc.wPeriodMin;//vrácení minimální možné přesnosti (1 ms)
+////			timeBeginPeriod(TimerPresnost);//if(TIMERR_NOERROR!=timeBeginPeriod(TimerSimulacePresnost))Application->Terminate();
+////			TimerSimulaceID=timeSetEvent(TimerSimulaceInterval,TimerPresnost,TimerSimulaceEvent,0,TIME_PERIODIC);
+//		}
+//		else//animace zastavena
+//		{
+//			MOD=LAYOUT;//mód musí být před vytvořením scény
+//			d.SCENA=0;
+//			scGPGlyphButton_PLAY->GlyphOptions->Kind=scgpbgkPlay;
+//			scGPGlyphButton_PLAY->Hint="spustit animaci";
+//			zobrazit_meritko=scGPSwitch_meritko->State;//navrácení do původního stavu
+//			scGPButton_bug_report->Enabled=false;
+//			TimerKill(TimerSimulaceID);
+//		}
+//	}
+//	else MB("V této verzi aplikace lze spustit simulaci pouze v layoutu.");
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::scGPGlyphButton_PLAYplusClick(TObject *Sender)
+{
+	if(d.v.SIM==NULL)vytvorScenar();
+	CAS++;
+	Timer_simulaceTimer(Sender);
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::scGPGlyphButton_PLAYminusClick(TObject *Sender)
+{
+	if(d.v.SIM!=NULL)
+	{
+		CAS--;
+		Timer_simulaceTimer(Sender);
+		Memo_testy->Lines->Delete(Memo_testy->Lines->Count-1);
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Timer_simulaceTimer(TObject *Sender)
 {
-	//log(__func__);//logování tady nepoužívat, případně jen v mimořádných testovacích účelech
-	//if(MOD==EDITACE)
+	if(d.v.SIM!=NULL)
 	{
-		double LO=1.5;//lakovací okno
-
-		//rameno - kýve se po šířce lakovacího okna
-		if(ROs==0)
+		if(CAS<=d.v.SIM->predchozi->T2)//dokud se neprojel celý scénář
 		{
-			if(RO>-(LO*Zoom/m2px))
-			{
-				RO-=(LO*Zoom/m2px)/20.0;//krok po 20
-			}
-			else ROs=1;
-		}
-		else
-		{
-			if(RO<(LO*Zoom/m2px))
-			{
-				RO+=(LO*Zoom/m2px)/20.0;//krok po 20
-			}
-			else ROs=0;
-		}
-
-		//tryska - jen se kýve ze strany na strany v rozmezí -30 až +30 stupňů
-		if(ROsts==0)
-		{
-			if(ROst<30)ROst+=5;//krok po 5
-			else ROsts=1;
-		}
-		else
-		{
-			if(ROst>-30)ROst-=5;//krok po 5
-			else ROsts=0;
-		}
-
-		//sTIME+=1;/*1*///zajistí posun animace vždy o 1s reálného času (strojového dle Timer_animace->Interval, který by měl reflektovat aktuální rychlosti zajišťující plynulost animace)
-		//d.v.generuj_VOZIKY();//velice prozatim
-		//d.v.posun_palce_retezu();
-		//F->Canvas->Draw(F->sTIME,0,F->Pan_bmp);
-		if(d.v.sIterator==NULL)
-		{
-			//Timer_simulace->Enabled=false;neukoční jen čeká na doplnění bufferu
-			Memo("Konec bufferu");  //ke zvážení čekání třeba 5 s
-		}
-		else
-		{
-			//Canvas->Draw(d.v.sIterator->n-1,0,d.v.sIterator->bmp,100);
-			d.v.sIterator=d.v.sIterator->dalsi;
+			CAS+=0.1;
+			scGPGlyphButton_PLAY->Caption=String(floor(CAS))+" s";
+			provedScenar();
 			REFRESH();
-    }
+		}
+		else//simulace znovu od počátku
+		{
+			CAS=0;
+		}
+
 	}
+//	if(++pocitadlo_doby_neaktivity*Timer_simulace->Interval>2000)
+//	scGPLabel_zamerovac->Visible=true;
+//	else scGPLabel_zamerovac->Visible=false;
+
+//	//log(__func__);//logování tady nepoužívat, případně jen v mimořádných testovacích účelech
+//	//if(MOD==EDITACE)
+//	{
+//		double LO=1.5;//lakovací okno
+//
+//		//rameno - kýve se po šířce lakovacího okna
+//		if(ROs==0)
+//		{
+//			if(RO>-(LO*Zoom/m2px))
+//			{
+//				RO-=(LO*Zoom/m2px)/20.0;//krok po 20
+//			}
+//			else ROs=1;
+//		}
+//		else
+//		{
+//			if(RO<(LO*Zoom/m2px))
+//			{
+//				RO+=(LO*Zoom/m2px)/20.0;//krok po 20
+//			}
+//			else ROs=0;
+//		}
+//
+//		//tryska - jen se kýve ze strany na strany v rozmezí -30 až +30 stupňů
+//		if(ROsts==0)
+//		{
+//			if(ROst<30)ROst+=5;//krok po 5
+//			else ROsts=1;
+//		}
+//		else
+//		{
+//			if(ROst>-30)ROst-=5;//krok po 5
+//			else ROsts=0;
+//		}
+//
+//		//sTIME+=1;/*1*///zajistí posun animace vždy o 1s reálného času (strojového dle Timer_animace->Interval, který by měl reflektovat aktuální rychlosti zajišťující plynulost animace)
+//		//d.v.generuj_VOZIKY();//velice prozatim
+//		//d.v.posun_palce_retezu();
+//		//F->Canvas->Draw(F->sTIME,0,F->Pan_bmp);
+//		if(d.v.sIterator==NULL)
+//		{
+//			//Timer_simulace->Enabled=false;neukoční jen čeká na doplnění bufferu
+//			Memo("Konec bufferu");  //ke zvážení čekání třeba 5 s
+//		}
+//		else
+//		{
+//			//Canvas->Draw(d.v.sIterator->n-1,0,d.v.sIterator->bmp,100);
+//			d.v.sIterator=d.v.sIterator->dalsi;
+//			REFRESH();
+//		}
+//	}
+}
+//---------------------------------------------------------------------------
+//testovácí metody simulace
+void TForm1::vytvorScenar()
+{
+	Cvektory::TVozik *V3=d.v.VOZIKY->dalsi;
+	Cvektory::TVozik *V2=d.v.VOZIKY->dalsi->dalsi;
+	Cvektory::TVozik *V1=d.v.VOZIKY->dalsi->dalsi->dalsi;
+
+	short start=0;//asi zbytečné
+	short nSTOP=3;
+	short indexStopV1=3;
+	short indexStopV2=indexStopV1-1;
+	short indexStopV3=indexStopV1-2;
+	double L=3;
+	double MT=30;//E1->geo.delka/E1->pohon->aRD;
+	double T=start;
+	double WTmax=7;//konstantní, maximální
+
+	//níže přípra na optimalizaci kodu...
+	for(long i=0;i<nSTOP*2;i++)//počet průjezdů mezi stopkami
+	{
+		//if(i==0)
+		T=(d.v.PP.TT-WTmax-L)*(i)+start;//cykletime mezi otevřením stopek,začátek čekání, na palec VŽDY VE STEJNÝ ČAS, ja taktováno řízením, ne okolnostmi!!! - OTEVŘENO
+		//else T+=L;
+		if(i>0)d.v.SIM->predchozi->predchozi->predchozi->T2=T;//dodá ještě do přechozího kola dobu čekání do otevření stop
+		double WT1=wt();//zjištění výstupního WT, možno RAND
+		d.v.vloz_SIM(T,T+WT1,0,gS(indexStopV1),V1);//začátek čekání na palec, po čekání na stop - OTEVŘENO
+		T+=WT1;d.v.vloz_SIM(T,T,1,gS(indexStopV1),V1);//uchycení na palec - START
+			double WT2=wt();//zjištění výstupního WT, možno RAND
+			if(i>0)d.v.SIM->predchozi->predchozi->predchozi->predchozi->T2=T+L;//dodá ještě do přechozího kola dobu čekání do otevření stop
+			d.v.vloz_SIM(T+L,T+L+WT2,0,gS(indexStopV2),V2);//začátek čekání na palec,  - OTEVŘENO
+			d.v.vloz_SIM(T+L+WT2,T+L+WT2,1,gS(indexStopV2),V2);//uchycení na palec - START
+						double WT3=wt();//zjištění výstupního WT, možno RAND
+						if(i>0)d.v.SIM->predchozi->predchozi->predchozi->predchozi->predchozi->T2=T+L+WT2+L;//dodá ještě do přechozího kola dobu čekání do otevření stop
+						d.v.vloz_SIM(T+L+WT2+L,T+L+WT2+L+WT3,0,gS(indexStopV3),V3);//začátek čekání na palec,  - OTEVŘENO
+						d.v.vloz_SIM(T+L+WT2+L+WT3,T+L+WT2+L+WT3,1,gS(indexStopV3),V3);//uchycení na palec - START
+		//posun indexu stopek
+		if(indexStopV1==nSTOP)indexStopV1=1;else indexStopV1++;
+			if(indexStopV2==nSTOP)indexStopV2=1;else indexStopV2++;
+				if(indexStopV3==nSTOP)indexStopV3=1;else indexStopV3++;
+		//přejezd
+		d.v.vloz_SIM(T,T+MT,2,gS(indexStopV1),V1);
+			d.v.vloz_SIM(T+L+WT2,T+L+WT2+MT,2,gS(indexStopV2),V2);
+				d.v.vloz_SIM(T+L+WT2+L+WT3,T+L+WT2+L+WT3+MT,2,gS(indexStopV3),V3);
+		//dokončení přejezdu - STOP
+		T+=MT;d.v.vloz_SIM(T,T,-1,gS(indexStopV1),V1);
+			d.v.vloz_SIM(T+L+WT2,T+L+WT2,-1,gS(indexStopV2),V2);
+				d.v.vloz_SIM(T+L+WT2+L+WT3,T+L+WT2+L+WT3,-1,gS(indexStopV3),V3);
+				//T=T+L+WT2+L+WT3;
+		/*zde vzniká plovoucí aRT do dalšího cyklu tj. přechod do dalšího kola*/
+	}
+}
+//---------------------------------------------------------------------------
+//testovácí metody simulace
+void TForm1::provedScenar()
+{
+	short Z=1;//stav zvukových efektu 1-spuštěno
+	Cvektory::TSIM *sim=d.v.SIM->dalsi;
+	while(sim!=NULL)
+	{
+		//nastala okamžitá časová událost (nikoliv přejezd)
+		if(m.round2double(sim->T1,1)==m.round2double(CAS,1) /*&& m.round2double(sim->T2,1)==m.round2double(CAS,1) || CAS==0*/)
+		{
+			String A="";//popis akce
+			switch(sim->A)//vyháknutý -1, čeká na palec 0, jede 1
+			{
+				case -1: sim->S->stav=1; sim->V->stav=-1; sim->V->element=sim->S; sim->V->X=sim->S->X;sim->V->Y=sim->S->Y; A="STOP";break;//zastaven na stop stanici
+				case 0:  sim->S->stav=0; sim->V->stav=0;  sim->V->element=sim->S; sim->V->X=sim->S->X;sim->V->Y=sim->S->Y; if(CAS>=d.v.PP.TT)Memo(sim->S->name+" TT (otevřeno): "+String(m.round2double(CAS-sim->S->temp,2))+"[s]");sim->S->temp=CAS; A="OTEVŘENO";break;//čekání na palec, otevření stop stanice
+				case 1:  sim->S->stav=1; sim->V->stav=1;  sim->V->element=sim->S; sim->V->X=sim->S->X;sim->V->Y=sim->S->Y; if(CAS>=d.v.PP.TT)Memo(sim->S->name+" TT (start): "+String(m.round2double(CAS-sim->S->temp2,2))+"[s]");sim->S->temp2=CAS; A="START";break;//uchycen na palec a zavření stop stanice
+			}
+			//výpis
+			if(A!="")Memo(sim->S->name+"\tV"+String(sim->V->n)+"\t"+String(sim->T1)+" [s]\t"+A);//přejezd se navypisuje
+			//zvuk na vlákně, jinak by brzdil simulaci
+			if(Z)PlaySound(sim->A);
+		}
+		//přejezd
+		if(sim->A==2 && sim->T1<CAS && CAS<sim->T2)
+		{
+			sim->V->stav=1;sim->V->element=sim->S;
+			double PR=(CAS-sim->T1)/(sim->T2-sim->T1);
+			Cvektory::TElement *E=sim->V->element;
+			TPointD_3D Pt=m.getPt(E->geo.radius,E->geo.orientace,E->geo.rotacni_uhel,E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4,PR,PR/*umisteni/E->delka,(umisteni+PP.uchyt_pozice-PP.delka_podvozek/2.0)/E->delka*/);//zjištění aktuálních souřadnic vozíků
+			sim->V->X=Pt.x;sim->V->Y=Pt.y;
+			E=NULL;delete E;
+		}
+		//posun na další
+		sim=sim->dalsi;
+	}
+	delete sim;
+}
+//---------------------------------------------------------------------------
+//přehrání zvuku simulace na samostatném vlákně
+void TForm1::PlaySound(short A)
+{
+	TSound *vlakno=new TSound(true);//spustí vlákno
+	vlakno->FreeOnTerminate=true;//po skončení bude uvolněno
+	vlakno->A=A;
+	vlakno->Start();
+}
+//---------------------------------------------------------------------------
+Cvektory::TElement *TForm1::gS(short n)
+{
+	switch (n)
+	{
+		case 1: return d.v.ELEMENTY->dalsi;break;
+		case 2: return d.v.ELEMENTY->dalsi->dalsi;break;
+		case 3: return d.v.ELEMENTY->dalsi->dalsi->dalsi;break;
+	}
+}
+//---------------------------------------------------------------------------
+//provizorní metoda
+double TForm1::wt()
+{
+	double WTmax=7;//konstantní, maximální
+	//return m.RAND(0,WTmax);
+	return WTmax;
+}
+//---------------------------------------------------------------------------
+unsigned int TForm1::getV()
+{
+	unsigned int RET=0;
+	if(d.v.SIM!=NULL && d.v.VOZIKY!=NULL && d.v.VOZIKY->dalsi!=NULL)
+	{
+		unsigned int V=ceil((akt_souradnice_kurzoru_PX.Y+d.PosunT.y-d.KrokY/2.0/3.0-scGPPanel_mainmenu->Height-5)/(d.KrokY*1.0/3.0));//pozn. KrokY/2 kvůli tomu, že střed osy je ve horozintální ose obdelníku
+		if(V<=d.v.VOZIKY->dalsi->n)RET=V;
+	}
+	return RET;
 }
 //---------------------------------------------------------------------------
 //provede jeden takt multimediálního TimeruSimulace - nevyužito, náročné na synchronizaci vykreslovaných dat, zachováno jako vzor
@@ -14452,13 +14651,16 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //  d.v.uprav_popisky_elementu(NULL);
 //	novy=NULL;delete novy;
 //	Objekt=NULL;delete Objekt;
-  Memo("");
+	Memo("");
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //MaKr testovací tlačítko
 void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 {//vždy nechat tento komentář
+
+
+
 
 //	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
 //	while(E!=NULL)
@@ -14473,44 +14675,44 @@ void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 //	E=NULL;delete E;
 
 
-		pom_element=NULL;
-		Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-		while(E!=NULL)
-		{
-
-			if(d.v.oblast_elementu(E,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
-			{
-//				//smazání zarážky v linii
-//				if(E->geo.typ==0 && E->eID==MaxInt)
-//				{
-//					E->dalsi->geo.X1=E->geo.X1;
-//					E->dalsi->geo.Y1=E->geo.Y1;
-//					E->dalsi->geo.X2=E->geo.X1;
-//					E->dalsi->geo.Y2=E->geo.Y1;
-//					E->dalsi->geo.delka=m.delka(E->dalsi->geo.X1,E->dalsi->geo.Y1,E->dalsi->geo.X4,E->dalsi->geo.Y4);
-//					d.v.smaz_element(E);
-//				}
-
-//přidání stoupání/klesání
-				double delka=E->geo.delka;
-				double HeightDeep=-0.7;
-				double delkaSklon=m.delkaSklon(delka,HeightDeep);//přepona
-				E->geo.delkaPud=delka;//jenom pokud je jiná než delka, jinak 0
-				E->geo.delka=delkaSklon;
-				E->geo.HeightDepp=HeightDeep;
-//nulování stoupání/klesání
-//				E->geo.delka=E->geo.delkaPud;
-//				E->geo.delkaPud=0;
-//				E->geo.HeightDepp=0;
-				duvod_validovat=2;
-				vytvor_statickou_scenu();
-				REFRESH();
-				ShowMessage("Nastaveno HeightDeep "+String(HeightDeep*1000)+" mm pro element "+E->name);
-				break;
-			}
-			E=d.v.dalsi_krok(E);
-		}
-		E=NULL;delete E;
+//		pom_element=NULL;
+//		Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+//		while(E!=NULL)
+//		{
+//
+//			if(d.v.oblast_elementu(E,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+//			{
+////				//smazání zarážky v linii
+////				if(E->geo.typ==0 && E->eID==MaxInt)
+////				{
+////					E->dalsi->geo.X1=E->geo.X1;
+////					E->dalsi->geo.Y1=E->geo.Y1;
+////					E->dalsi->geo.X2=E->geo.X1;
+////					E->dalsi->geo.Y2=E->geo.Y1;
+////					E->dalsi->geo.delka=m.delka(E->dalsi->geo.X1,E->dalsi->geo.Y1,E->dalsi->geo.X4,E->dalsi->geo.Y4);
+////					d.v.smaz_element(E);
+////				}
+//
+////přidání stoupání/klesání
+//				double delka=E->geo.delka;
+//				double HeightDeep=-0.7;
+//				double delkaSklon=m.delkaSklon(delka,HeightDeep);//přepona
+//				E->geo.delkaPud=delka;//jenom pokud je jiná než delka, jinak 0
+//				E->geo.delka=delkaSklon;
+//				E->geo.HeightDepp=HeightDeep;
+////nulování stoupání/klesání
+////				E->geo.delka=E->geo.delkaPud;
+////				E->geo.delkaPud=0;
+////				E->geo.HeightDepp=0;
+//				duvod_validovat=2;
+//				vytvor_statickou_scenu();
+//				REFRESH();
+//				ShowMessage("Nastaveno HeightDeep "+String(HeightDeep*1000)+" mm pro element "+E->name);
+//				break;
+//			}
+//			E=d.v.dalsi_krok(E);
+//		}
+//		E=NULL;delete E;
 
 
 //	Cvektory::TPohon *P=d.v.POHONY->dalsi;
@@ -14672,10 +14874,10 @@ void __fastcall TForm1::Timer1Timer(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
 {
-	log(__func__);//logování
-	d.JIZPOCITANO=false;//zajistí přepočet časových os
-	Invalidate();
-	RM();//korekce chyby oskakování pravého menu
+//	log(__func__);//logování
+//	d.JIZPOCITANO=false;//zajistí přepočet časových os
+//	Invalidate();
+//	RM();//korekce chyby oskakování pravého menu
 }
 //-------------------------------------------------------------
 //zapne či vypne antialiasing
@@ -15260,11 +15462,11 @@ void __fastcall TForm1::scSplitView_OPTIONSPanelPaint(TCanvas *ACanvas, TRect &A
 //zajišťuje vygenerování nové doby čekání na palec
 void __fastcall TForm1::scGPButton_generujClick(TObject *Sender)
 {
-	log(__func__);//logování
-	d.RANDOM=true;
-	d.JIZPOCITANO=false;
-	REFRESH();
-	d.RANDOM=false;
+//	log(__func__);//logování
+//	d.RANDOM=true;
+//	d.JIZPOCITANO=false;
+//	REFRESH();
+//	d.RANDOM=false;
 }
 //---------------------------------------------------------------------------
 //korekce chyby oskakování pravého menu
@@ -18139,7 +18341,7 @@ void TForm1::copy_to_clipboard(String text)
 //přepínání meřidla časy
 void __fastcall TForm1::scGPCheckBox_meridlo_casyClick(TObject *Sender)
 {
-  log(__func__);//logování
+	log(__func__);//logování
 	if(Akce==NIC)
 	{
 		short pripocitavat_casy_prvniho_el;

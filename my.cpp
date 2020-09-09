@@ -913,8 +913,7 @@ double Cmy::cekani_na_palec(double cas, double roztec_palcu,double rychlost_dopr
 /////////////////////////////////////////////////////////////////////////////
 double Cmy::latence_mezi_stopkami(double RD)//vratí v jednotkách času [s] zpoždění mezí reakcí stopek, RD - rychlost pohonu, na které je stopka z které je vyslána informace o možnosti otevření stopky předchozí
 {
-	//return 0.1/RD;//aktuálně nastaveno na 10 cm
-	return 0;//nevyužito
+	return 0.1/RD;//aktuálně nastaveno na 10 cm délka patle
 }
 /////////////////////////////////////////////////////////////////////////////
 //metoda vratí minimální možnou mezeru mezi vozíky, pokud je parametr mezera roven 0, v případě nenulového parametru mezery vrací vhodnou nejbližší hodnotu této mezery vůči rozměrům rozteč a rozměr vozíku, pokud nebude zadaná rozteč tj. bude 0, vrací hodnotu 0, lze parametrizovat vracený výsledek 0 (implicitně) - kritická mezera, 1 či 281 - mezera mezi JIG, 2 či 282 mezera mezi PODVOZKY

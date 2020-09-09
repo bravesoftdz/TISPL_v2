@@ -139,6 +139,8 @@ class Cvektory
 		unsigned long objekt_n;//příslušnost elementu k objektu
 		TPohon *pohon;//přiřazený pohon k elementu
 
+		double temp,temp2;//provizorní záležitost pro testovací účely, není ukládáno do binárky
+
 		struct TElement *sparovany;//ukazatel na následující spárovaný element ve spojovém seznamu (nemusí být totožný s dalším)
 		struct TElement *predchozi;//ukazatel na předchozí element ve spojovém seznamu
 		struct TElement *predchozi2;//ukazatel na předchozí element ve spojovém seznamu
@@ -539,6 +541,20 @@ class Cvektory
 	};
 	TDATA *DATA;
 
+	struct TSIM
+	{
+		unsigned long n;
+		double T1;//čas vstup
+		double T2;//čas výstup
+		short A;//akce
+		TElement *S;//stopka
+		TVozik *V;//vozík
+		TSIM *dalsi;
+		TSIM *predchozi;
+	};
+	TSIM *SIM;
+
+
 //konstruktor
 	Cvektory();
 
@@ -759,6 +775,8 @@ public:
 	Graphics::TBitmap *dekomprese(TmyPx *Raster,unsigned short Width,unsigned short Height);
 	void rast_do_souboru(TmyPx *Raster,String FileName);//Uloží rastrová data do souboru
 	void vloz_do_BUFFERU();
+	void vloz_SIM(double T1,double T2,short A,TElement *S,TVozik *V);
+	void vymaz_seznam_SIM();//smaže z paměti
 
 //metody pro PROCESY, konrola metody obsahují již neexistující atributy  - již možno smazat
 	void hlavicka_PROCESY();
@@ -779,7 +797,7 @@ public:
 
 //metody pro PALCE
 // void hlavicka_palce();
-// void vloz_palec();//přidá nový vozík do seznamu PALCE
+// void vloz_palec();//přidá nový palec do seznamu PALCE
 // long vymaz_seznam_palcu();
 
 //metody pro TEXTY
@@ -899,7 +917,7 @@ public:
 
 //pomocné metody
 	void Text2CSV(AnsiString text,AnsiString FileName="",AnsiString Title="",AnsiString DefaultExt="",AnsiString Filter="",bool openDialog=true,bool open=true);//vytovoří a otevře CSV, je-li požadováno
-  void vlakno_obraz();//provádí operace s obrazem na vlákně
+	void vlakno_obraz();//provádí operace s obrazem na vlákně
 
 //pomocné struktury pro ukládání do bináru
 private:

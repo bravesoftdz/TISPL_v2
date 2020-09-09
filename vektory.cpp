@@ -5014,6 +5014,65 @@ void Cvektory::rast_do_souboru(TmyPx *Raster,String FileName)
 	delete Iterator;
 	delete FileStream;
 }
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+void Cvektory::vloz_SIM(double T1,double T2,short A,TElement *S,TVozik *V)
+{
+	////pokud ještě nebyla založena hlavička, založí ji
+	if(SIM==NULL)
+	{
+		//alokace - musí být samostatná
+		TSIM *novy=new TSIM;
+
+		//atributy
+		novy->n=0;
+		novy->T1=0;
+		novy->T2=0;
+		novy->A=0;
+		novy->S=NULL;
+		novy->V=NULL;
+
+		//ukazatelové záležitosti
+		novy->predchozi=novy;//ukazuje sam na sebe
+		novy->dalsi=NULL;
+		SIM=novy;
+		//odstranění již nepotřebného ukazatale
+		novy=NULL;delete novy;//toto opravdu možno?
+	}
+
+	////(pokračuje) již standardní vložení
+	//alokace  - musí být další
+	TSIM *novy=new TSIM;
+
+	//atributy
+	novy->n=SIM->predchozi->n+1;//navýším počítadlo prvku o jedničku
+	novy->T1=T1;//čas vstup
+	novy->T2=T2;//čas vstup
+	novy->A=A;//akce
+	novy->S=S;//stopka
+	novy->V=V;//vozík
+
+	//ukazatelové záležitosti
+	SIM->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
+	novy->predchozi=SIM->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+	novy->dalsi=NULL;//poslední prvek se na žádny dalsí prvek neodkazuje (neexistuje)
+	SIM->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+
+	//odstranění již nepotřebného ukazatale
+	novy=NULL;delete novy;//toto opravdu možno?
+}
+////---------------------------------------------------------------------------
+//smaže z paměti
+void Cvektory::vymaz_seznam_SIM()
+{
+	while(SIM!=NULL)
+	{
+		SIM->predchozi=NULL;
+		delete SIM->predchozi;
+		SIM=SIM->dalsi;
+	};
+}
+////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 //zkontroluje aplikovatelnost uvažovaného hodnodty dle VID parametru, resp. čísla sloupce (aRD=4,R=5,Rz=6,Rx=7) na všech objektech, přiřazených k danému pohonu označeným parametrem PID, vratí doporučenou hodnotu dle VID a vrátí text chybouvé hlášku s problémem a doporučenou hodnotou, pokud vrátí prázdné uvozovky, je vše v pořádku
@@ -6156,7 +6215,7 @@ void Cvektory::generuj_voziky_stop_a_bufferu(TElement *E,double akt_rotace_jigu,
 ////---------------------------------------------------------------------------
 //pokud je buffer přes předávací místo, vrátí délku bufferu, co předchází předávacímu místu, pokud ne vrátí se 0
 double Cvektory::buffer_pres_predavaci_misto(TElement *E)
-{                        //ještě pořešit zda před PM je linie - mělo by se řešit na úrovni editace
+{                        //pozn. zda jed před PM linie se řešit na úrovni editace, v zjišťování velikosti bufferu
 	if(E->pohon!=NULL && vrat_druh_elementu(E)==0 && E->predchozi!=NULL && E->predchozi->pohon!=NULL && E->predchozi->eID==200 && E->geo.delka<E->data.pocet_pozic*PP.delka_podvozek-PP.uchyt_pozice)
 	return E->data.pocet_pozic*PP.delka_podvozek-PP.uchyt_pozice-E->geo.delka;
 	else return 0;
@@ -7007,7 +7066,11 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 			TVozik *V=VOZIKY->dalsi;
 			while(V!=NULL)
 			{
-				if(V->stav==-2){vloz_zpravu(V->X,V->Y,1,451,V->element);pocet_warningu++;}
+				if(V->stav==-2)
+				{
+					if(PP.delka_podvozek<m.UDJ(V->rotace_jig)){vloz_zpravu(V->X,V->Y,-1,402,V->element);pocet_erroru++;}//případně ještě, //Pozor, překrytí JIGů!
+					vloz_zpravu(V->X,V->Y,1,451,V->element);pocet_warningu++;//"Upozornění,v bufferu je vyšší počet vozíku, než je nastaveno."; -- MUSÍ BÝT AŽ DRUHÉ V POŘADÍ
+				}
 				V=V->dalsi;
 			}
 			delete V;
@@ -7032,7 +7095,7 @@ UnicodeString Cvektory::getVID(long VID)
 		case 406: Text=F->ls->Strings[406];break;//Nestíhá se přejezd, záporná časová rezerva!
 		case 407: Text=F->ls->Strings[407];break;//Nulová časová rezerva.
 		case 450: Text=F->ls->Strings[469];break;//Nulová časová rezerva."Nerelevantní hodnota časové rezervy, na některém objektu není přiřazen pohon!"
-		case 451: Text="Upozornění,v bufferu je výšší počet vozíku, než je nastaveno.";break;//přeložit
+		case 451: Text="Upozornění,v bufferu je vyšší počet vozíku, než je nastaveno.";break;//přeložit
 		default:  Text="Error or warning!";break;//obecná chyba či varování
 	}
 	return Text;
@@ -8833,25 +8896,8 @@ void Cvektory::vse_odstranit()
 //			delete PALCE; PALCE=NULL;
 //		}
 
-//	//procesy
-//	if(PROCESY!=NULL && PROCESY->predchozi->n>0)//pokud je více objektů
-//	{
-//		//vymaz_seznam_procesu();
-//		delete PROCESY; PROCESY=NULL;
-//	}
-//	hlavicka_PROCESY();
-
-	/*  až budu pracovat s UNDO a REDO
-	v.vymaz_seznam(v.p_redo);
-	v.vymaz_seznam(v.p_undo);
-	v.vymaz_seznam(v.l_redo);
-	v.vymaz_seznam(v.l_undo);
-
-	delete v.p_redo;v.p_redo=NULL;
-	delete v.p_undo;v.p_undo=NULL;
-	delete v.l_redo;v.l_redo=NULL;
-	delete v.l_undo;v.l_undo=NULL;
-	*/
+  //SIM
+	vymaz_seznam_SIM();
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
@@ -10644,18 +10690,18 @@ void Cvektory::aktualizuj_cestu_teplomeru()
 					}
           //aktualizace tabulky
 					if(Objekt==F->OBJEKT_akt)F->vytvor_aktualizuj_tab_teplomeru();
-  			}
+				}
 
-  			//došlo k chybe vytvoření default cesty, obsahuje aktualizaci tabulky
-  			else F->reset_teplomeru(Objekt);
+				//došlo k chybe vytvoření default cesty, obsahuje aktualizaci tabulky
+				else F->reset_teplomeru(Objekt);
 
-  			//ukazatelové záležitosti
-  			CE=NULL;delete CE;
-  			E1=NULL;delete E1;
-  			E2=NULL;delete E2;
-  		}
-  		//uakazatelové záležitosti
-  		T=NULL;delete T;
+				//ukazatelové záležitosti
+				CE=NULL;delete CE;
+				E1=NULL;delete E1;
+				E2=NULL;delete E2;
+			}
+			//uakazatelové záležitosti
+			T=NULL;delete T;
 		}
 		//posun na další objekt
 		Objekt=Objekt->dalsi;
@@ -10664,4 +10710,5 @@ void Cvektory::aktualizuj_cestu_teplomeru()
 	delete Objekt;Objekt=NULL;
 }
 ////---------------------------------------------------------------------------
+
 

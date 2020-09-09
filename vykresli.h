@@ -126,6 +126,12 @@ class Cvykresli
 	void kurzor_cesta(TCanvas *canv);
 	void vykresli_kurzor_cesta(TCanvas *canv,Cvektory::TElement *E);
 	void vykresli_potencial_cesty(TCanvas *canv,Cvektory::TElement *E);
+	void vykresli_casove_osy(TCanvas *canv,short scena);//vykreslení èasových os
+	void vykresli_proces(TCanvas *canv, AnsiString shortname, TColor color, short typ, long X1, long X2, long Y,bool legenda);//vykreslí jeden dílèí èasový proces èasových os (obdelníèek procesu objektu) pro jeden vozík
+	void vykresli_Xosy(TCanvas *canv);//vykreslí statické svislice na èasové osy
+	void zobrazit_label_zamerovac(int X,int Y);//vypíše labal zamìøovaè na pozici kurzoru myši
+	void vykresli_zamerovac_casovych_os(TCanvas *canv,int X,int Y);//vykreslí pohyblivou svislici na èasové osy dle umístìní kurzoru myši
+	void vykresli_svislici_na_casove_osy(TCanvas *canv,int X=-1);//v aktuálním èase simulace vykreslí svislici aktuální události na èasových osách
 
 	//globální public promìnné
 	TColor clStenaKabiny,clStenaHaly,clPasiv,clError,clWarning,clChassis,clJig,clMeridlo;
@@ -135,17 +141,17 @@ class Cvykresli
 	double DoSkRB;//delka od støedu (X,Y bodu) robota k referenènímu bodu robota (tj. k trysce) v metrech
 	double DkRB;//délka k referenènímu bodu od uchopovacího bodu, respektive odsazení èlovìka od linky
 	unsigned long cas;//ms
-	double PX2MIN;//mìøítko PX na MIN
+	double PX2SEC;//mìøítko PX na sekundy
 	short KrokY;//rozteè na èasových osách
 	int WidthCanvasCasoveOsy,HeightCanvasCasoveOsy;
 	TPointD PosunT; //výchozí posunutí obrazu Posunu
-	bool mod_vytizenost_objektu;
-	short NOLIEX;//NO - 0, LINEAR - 1, EXPO - 2  znázornìní vytížení oobjektu
-	bool JIZPOCITANO;//øešení aby se zbyteènì a opakovanì neukládalo do PROCESù pokud to není treba
-	bool RANDOM;
+	//bool mod_vytizenost_objektu;
+	//short NOLIEX;//NO - 0, LINEAR - 1, EXPO - 2  znázornìní vytížení oobjektu
+	//bool JIZPOCITANO;//øešení aby se zbyteènì a opakovanì neukládalo do PROCESù pokud to není treba
+	//bool RANDOM;
 	bool grafickeDilema;//provizorní promìnná na pøepínání stavu, zda se pøi pøidávání objektu a pøesouvání objektu bude zmenšovat písmo nebo nepøekreslovat objekt
-	short legenda_polozky[8];//zobrazení jednotlivých položek, 0 index je však poèet zobrazených (uložených) položek v poli, -1 stav je u daného atributu normál
-	short Xofset;//zajistí správný poèátek prvního objektu dle šíøky nejdelší vypisované minuty v ROMA
+	//short legenda_polozky[8];//zobrazení jednotlivých položek, 0 index je však poèet zobrazených (uložených) položek v poli, -1 stav je u daného atributu normál
+	//short Xofset;//zajistí správný poèátek prvního objektu dle šíøky nejdelší vypisované minuty v ROMA
 	short precision;//poèet desetinných míst èísel na èasové ose
 	TRect aktOblast;//aktuální citelná oblast popisku elementu urèená k uložení
 	int orientace_objektu;

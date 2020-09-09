@@ -284,6 +284,9 @@ __published:	// IDE-managed Components
 	TIdSSLIOHandlerSocketOpenSSL *IdSSLIOHandlerSocketOpenSSL1;
   TIdSNTP *IdSNTP1;
 	TscGPCheckBox *scGPCheckBox_meridlo_casy;
+	TscGPGlyphButton *scGPGlyphButton_PLAYminus;
+	TscGPGlyphButton *scGPGlyphButton_PLAYplus;
+	TscGPLabel *scGPLabel_zamerovac;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -484,6 +487,8 @@ __published:	// IDE-managed Components
 	void __fastcall ButtonMaKrClick(TObject *Sender);
 	void __fastcall Timer1Timer(TObject *Sender);
 	void __fastcall scGPCheckBox_meridlo_casyClick(TObject *Sender);
+	void __fastcall scGPGlyphButton_PLAYplusClick(TObject *Sender);
+	void __fastcall scGPGlyphButton_PLAYminusClick(TObject *Sender);
 
 
 
@@ -606,6 +611,12 @@ private:
 	void vytvor_statickou_scenu();//vytvoøí BMP se statickou scénou
 	void vytvor_statickou_scenu(long SCENA);//pøetíená vıše uvedené pøímo s parametrem nastavení scény
 	void design_statusbar();//provde zarovnání zaráek a zmìní velikost vıpisù ve statusbaru
+	void vytvorScenar();//testovácí metody simulace
+	void provedScenar();//testovácí metody simulace
+	void PlaySound(short A);//pøehrání zvuku simulace na samostatném vláknì
+	Cvektory::TElement *gS(short n);//testovácí metody simulace
+	double wt();//testovácí metody simulace
+	unsigned int getV();//testovácí metody simulace
 
 	////promìnné
 	UINT TimerSimulaceID;
@@ -656,7 +667,7 @@ private:
 	bool refreshovat_scGPTrackBar;//promìnná zajišujíci, e se scGPTracBar nerefreshuje pokud mu pøi zmìnì zoomu mimo scGPTracBar
 	long vychozi_stav_sceny;
 	TDateTime start;
-  short typElementu;//slouí k rozlišení vykreslení u smart_kurzoru
+	short typElementu;//slouí k rozlišení vykreslení u smart_kurzoru
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
@@ -744,6 +755,8 @@ public:		// User declarations
 	bool mereni_po_trendu;//slouí pro uchovávání stavu, zda mìøím po trendu nebo proti, pøedáváno z Cvykresli::vykresli_meridlo()
 	double mereni_delka;//uchovává v sobì namìøenou délku
 	TPointD mereni_cas;//uchovává v sobì namìøenı èas bez èasù v elementech (x) a s èasem elemntù (y)
+	double CAS;
+	bool CASOVEOSY;
 
 	//metody
 	void kurzor(TKurzory typ_kurzor);
