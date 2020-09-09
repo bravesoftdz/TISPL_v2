@@ -4486,7 +4486,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			default: break;
 		}
     //navrácení do plně statické scény
-		if(MOD==LAYOUT && Akce==NIC && (d.SCENA!=1111111 || pom!=NULL))REFRESH(11111111,false);//zobrazení aktuální scény, např při ukončení posuvu musí být změny promtnuty do BMP scény a ta následně zobrazena
+		if(MOD==LAYOUT && Akce==NIC && d.v.SIM==NULL && (d.SCENA!=1111111 || pom!=NULL))REFRESH(11111111,false);//zobrazení aktuální scény, např při ukončení posuvu musí být změny promtnuty do BMP scény a ta následně zobrazena
 
 		switch(Akce_temp)
 		{
@@ -4903,7 +4903,7 @@ void TForm1::getJobID(int X, int Y)
 		if(pom_element!=NULL && d.v.MAG_LASO!=NULL && d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->sparovany==pom_element)d.v.smaz_segment_MAG_LASA(d.v.MAG_LASO->dalsi->Element);
 		//vykreslení měřidla, pouze v případě, že mám nadefinovaný první bod
 		//if(d.v.MAG_LASO->Element!=NULL)
-		REFRESH();//slouží k vykreslení a překreslení mag. lasa
+		if(d.v.SIM==NULL)REFRESH();//slouží k vykreslení a překreslení mag. lasa, pouze v případě, že není spuštěna simulace
 	}
 	//pouze na test zatížení Memo3->Visible=true;Memo3->Lines->Add(s_mazat++);
 }
@@ -17259,7 +17259,8 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		scGPImage_mereni_vzdalenost->ClipFrameFillColor=(TColor)RGB(225,225,225);
 		scGPButton_zmerit_vzdalenost->Options->NormalColor=(TColor)RGB(86,120,173);
 		Timer_getjobid->Enabled=false;//odstavení timeru, není potřeba
-		d.SCENA=222111;//ZprVozEledElesDopObjHal - vozíky nutno nechat v dynamické (jinak budou překresleny bufferem)
+		if(d.v.SIM==NULL)d.SCENA=222111;//ZprVozEledElesDopObjHal - vozíky nutno nechat v dynamické (jinak budou překresleny bufferem)
+		else d.SCENA=221111;
 		vytvor_statickou_scenu();//vypnutí vrstvy errorů a nastavení zbytku na statickou scénu
 		zobraz_tip(ls->Strings[483]);//má v sobě REFRESH(), je nutné volat až po vytvořeni statické scény
 		Akce=MAGNETICKE_LASO;//až po refresh
@@ -17271,12 +17272,12 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 	}
 	else
 	{
-    Akce=NIC;
+		Akce=NIC;
 		kurzor(standard);
 		//zjištění délky a času, první a poslední segment cesty jsou fiktivní elementy
 		if(d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->predchozi->Element->n==MaxInt)
 		{
-      //kontrola zda mám přichyceno na fce elementu
+			//kontrola zda mám přichyceno na fce elementu
 			bool prichyceno=false;
 			if(d.v.MAG_LASO->predchozi->sparovany!=NULL && d.v.MAG_LASO->predchozi->sparovany->eID!=MaxInt && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->Element->geo.X3 && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->sparovany->geo.X4)prichyceno=true;
 			//měření
@@ -17303,12 +17304,16 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		d.v.vymaz_seznam_MAG_LASO();
 		d.v.hlavicka_MAG_LASO();
 		Timer_getjobid->Enabled=true;
-		if(OBJEKT_akt!=NULL)d.SCENA=0;
-		else d.SCENA=1111111;
-		vytvor_statickou_scenu();//navracení vykreslení errorů
-    REFRESH();
+		if(d.v.SIM!=NULL)d.SCENA=221111;
+		else
+		{
+      if(OBJEKT_akt!=NULL)d.SCENA=0;
+			else d.SCENA=1111111;//ZprVozEledElesDopObjHal
+			vytvor_statickou_scenu();//navracení vykreslení errorů
+			REFRESH();
+		}
 	}
-  //vrátí focus na form
+	//vrátí focus na form
 	nastav_focus();
 }
 //---------------------------------------------------------------------------
