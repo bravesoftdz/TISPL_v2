@@ -757,6 +757,8 @@ public:		// User declarations
 	TPointD mereni_cas;//uchovává v sobì namìøený èas bez èasù v elementech (x) a s èasem elemntù (y)
 	double CAS;
 	bool CASOVEOSY;
+	TPointD pocatek_mereni;//ukládá .x - X souøadnici zaèátku mìøení a .y - Vozík -> n
+	TPointD konec_mereni;//ukládá .x - X souøadnici zaèátku mìøení a .y - Vozík -> n
 
 	//metody
 	void kurzor(TKurzory typ_kurzor);

@@ -4251,8 +4251,26 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			case GEOMETRIE:if(Akce_temp==NIC)pan_move_map();break;
 			case MAGNETICKE_LASO:
 			{
-        //začátek a konec měření
-				if(Akce_temp==NIC)
+				unsigned int V=0;
+				if(d.v.SIM!=NULL)
+				{
+					V=getV();//číslo vozíku
+					if(V>0)//kliknuto do grafu
+					{
+						if(pocatek_mereni.x==-1 && pocatek_mereni.y==-1)
+						{
+							pocatek_mereni.x=akt_souradnice_kurzoru_PX.x;
+							if(prichytavat_k_mrizce==1)pocatek_mereni.x=d.v.prichytit_cas_SIM(V);
+							pocatek_mereni.y=V;
+						}
+						else
+						{
+              scGPImage_mereni_vzdalenostClick(this);
+            }
+          }
+        }
+				//začátek a konec měření na lince
+				if(Akce_temp==NIC && V==0)
 				{
 			  	if(pom_element!=NULL)akt_souradnice_kurzoru=d.v.bod_na_geometrii(pom_element);
 			  	Cvektory::TElement *E=new Cvektory::TElement;
@@ -4382,7 +4400,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 					E=NULL;delete E;
 				}
         //posun obrazu při akci měření
-				else pan_move_map();
+				else if(V==0)pan_move_map();
 			}break;
 			case POSUN_TEPLOMER:
 			{
@@ -4853,23 +4871,6 @@ void TForm1::getJobID(int X, int Y)
 
           //kontorla + případné vložení elementu do spojáku mag lasa
 					d.v.kontrola_vlozeni_do_mag_lasa(E);
-
-					//hledání oblastí pro highlight elementu
-					if(prichytavat_k_mrizce==1)
-					{
-						//hledání viditelných elementu
-						if(pom_element->eID!=MaxInt && m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,pom_element->geo.X4,pom_element->geo.Y4,velikost_citelne_oblasti_elementu))
-						{
-			    		//highlightování elementu
-							pom_element->stav=2;
-						}
-				  	//kontrola zda nebudu přichicen na předchozí element
-						else if(pom_element->predchozi!=NULL && pom_element->predchozi->n>0 && pom_element->predchozi->eID!=MaxInt && m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,pom_element->predchozi->geo.X4,pom_element->predchozi->geo.Y4,velikost_citelne_oblasti_elementu))
-						{
-							//highlightování elementu
-							pom_element->predchozi->stav=2;
-						}
-					}
 				}
         //načtení dat ze zakázky do elementů, pro budoucí výpočty
         if(count_memo==0 && d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n!=0)//pokud pracuji v nějaké zakázce
@@ -4888,6 +4889,16 @@ void TForm1::getJobID(int X, int Y)
 			delete VYHYBKY;VYHYBKY=NULL;
 		}
 
+    //měření na časových dráhách
+		unsigned int V=getV();//číslo vozíku
+		if(V>0 && !(pocatek_mereni.x==-1 && pocatek_mereni.y==-1))
+		{
+			konec_mereni.x=akt_souradnice_kurzoru_PX.x;
+			if(prichytavat_k_mrizce==1)konec_mereni.x=d.v.prichytit_cas_SIM(V);
+			konec_mereni.y=V;
+		}
+
+
 //		Cvektory::TCesta *C=d.v.MAG_LASO->dalsi;Memo_testy->Clear();
 //		if(d.v.MAG_LASO->sparovany!=NULL)Memo("sparovany0: "+d.v.MAG_LASO->sparovany->name);
 //		while(C!=NULL)
@@ -4903,7 +4914,7 @@ void TForm1::getJobID(int X, int Y)
 		if(pom_element!=NULL && d.v.MAG_LASO!=NULL && d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->sparovany==pom_element)d.v.smaz_segment_MAG_LASA(d.v.MAG_LASO->dalsi->Element);
 		//vykreslení měřidla, pouze v případě, že mám nadefinovaný první bod
 		//if(d.v.MAG_LASO->Element!=NULL)
-		if(d.v.SIM==NULL)REFRESH();//slouží k vykreslení a překreslení mag. lasa, pouze v případě, že není spuštěna simulace
+		if(!Timer_simulace->Enabled)REFRESH();//slouží k vykreslení a překreslení mag. lasa, pouze v případě, že není spuštěna simulace
 	}
 	//pouze na test zatížení Memo3->Visible=true;Memo3->Lines->Add(s_mazat++);
 }
@@ -17269,6 +17280,8 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		mereni_delka=0;
 		mereni_cas.x=0;
 		mereni_cas.y=0;
+		pocatek_mereni.x=-1;pocatek_mereni.y=-1;
+    konec_mereni.x=-1;konec_mereni.y=-1;
 	}
 	else
 	{
@@ -17309,9 +17322,12 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		{
       if(OBJEKT_akt!=NULL)d.SCENA=0;
 			else d.SCENA=1111111;//ZprVozEledElesDopObjHal
-			vytvor_statickou_scenu();//navracení vykreslení errorů
-			REFRESH();
 		}
+		if(!Timer_simulace->Enabled)
+		{
+      vytvor_statickou_scenu();//navracení vykreslení errorů
+			REFRESH();
+    }
 	}
 	//vrátí focus na form
 	nastav_focus();

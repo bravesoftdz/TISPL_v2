@@ -5144,6 +5144,31 @@ void Cvektory::vloz_SIM(double T1,double T2,short A,TElement *S,TVozik *V)
 	novy=NULL;delete novy;//toto opravdu možno?
 }
 ////---------------------------------------------------------------------------
+//přichytí X souřadnici na nejbližší čas akci v grafu pro vozík V
+int Cvektory::prichytit_cas_SIM(unsigned int V)
+{
+	//deklarace
+	int X,ret=0,dif=MaxInt;
+	X=F->akt_souradnice_kurzoru_PX.x/F->d.PX2SEC*3;
+	Cvektory::TSIM *sim=SIM->dalsi;
+
+	//průchod skrze simulační data
+	while(sim)
+	{
+    //kontrola zda se jedná o správný vozík a o správný interval
+		if(V==sim->V->n && sim->T1<=X && X<=sim->T2)
+    {
+			if(X-sim->T1<dif){dif=X-sim->T1;ret=sim->T1;}
+			if(sim->T2-X<dif){dif=sim->T2-X;ret=sim->T2;}
+		}
+		sim=sim->dalsi;
+	}
+	delete sim;sim=NULL;
+
+	//vracení přichycené souřadnice
+	return ret*F->d.PX2SEC/3.0;
+}
+////---------------------------------------------------------------------------
 //smaže z paměti
 void Cvektory::vymaz_seznam_SIM()
 {

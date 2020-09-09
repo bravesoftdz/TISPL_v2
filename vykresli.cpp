@@ -963,6 +963,13 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
 		vykresli_meridlo_po_trendu(canv,prichyceno);
 	else
 		vykresli_meridlo_proti_trendu(canv,prichyceno);
+
+  ////měření na časových osách při simulaci
+	if(F->pocatek_mereni.x!=-1 && F->pocatek_mereni.y!=-1)
+	{
+		vykresli_svislici_na_casove_osy(canv,F->pocatek_mereni.x*3,true);
+    vykresli_svislici_na_casove_osy(canv,F->konec_mereni.x*3,true);
+  }
 }
 ////---------------------------------------------------------------------------
 //vykreslí citelné oblasti elementů na které je možné se přichytit
@@ -1074,14 +1081,14 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 		set_pen(canv,clMeridlo,width,PS_ENDCAP_FLAT);
 		//canv->Pen->Mode=pmNotXor;
 		//vykreslení
-		if(F->pom_element->stav==2 && (F->pom_element!=v.MAG_LASO->sparovany || (v.MAG_LASO->Element->geo.X4!=v.MAG_LASO->sparovany->geo.X4 || v.MAG_LASO->Element->geo.Y4!=v.MAG_LASO->sparovany->geo.Y4)))
+		if(m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,F->pom_element->geo.X4,F->pom_element->geo.Y4,F->velikost_citelne_oblasti_elementu) && (F->pom_element!=v.MAG_LASO->sparovany || (v.MAG_LASO->Element->geo.X4!=v.MAG_LASO->sparovany->geo.X4 || v.MAG_LASO->Element->geo.Y4!=v.MAG_LASO->sparovany->geo.Y4)))
 		{
 			canv->Ellipse(m.L2Px(F->pom_element->geo.X4)-width,m.L2Py(F->pom_element->geo.Y4)-width,m.L2Px(F->pom_element->geo.X4)+width,m.L2Py(F->pom_element->geo.Y4)+width);
 			F->akt_souradnice_kurzoru.x=F->pom_element->geo.X4;F->akt_souradnice_kurzoru.y=F->pom_element->geo.Y4;
 			ret=true;
 			F->TIP="Přichyceno na "+F->pom_element->name;
 		}
-		else if(F->pom_element->predchozi->stav==2 && (F->pom_element->predchozi!=v.MAG_LASO->sparovany || (v.MAG_LASO->Element->geo.X4!=v.MAG_LASO->sparovany->geo.X4 || v.MAG_LASO->Element->geo.Y4!=v.MAG_LASO->sparovany->geo.Y4)))
+		else if(m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,F->pom_element->predchozi->geo.X4,F->pom_element->predchozi->geo.Y4,F->velikost_citelne_oblasti_elementu) && (F->pom_element->predchozi!=v.MAG_LASO->sparovany || (v.MAG_LASO->Element->geo.X4!=v.MAG_LASO->sparovany->geo.X4 || v.MAG_LASO->Element->geo.Y4!=v.MAG_LASO->sparovany->geo.Y4)))
 		{
 			canv->Ellipse(m.L2Px(F->pom_element->predchozi->geo.X4)-width,m.L2Py(F->pom_element->predchozi->geo.Y4)-width,m.L2Px(F->pom_element->predchozi->geo.X4)+width,m.L2Py(F->pom_element->predchozi->geo.Y4)+width);
 			F->akt_souradnice_kurzoru.x=F->pom_element->predchozi->geo.X4;F->akt_souradnice_kurzoru.y=F->pom_element->predchozi->geo.Y4;

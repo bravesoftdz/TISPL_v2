@@ -775,6 +775,7 @@ public:
 	void rast_do_souboru(TmyPx *Raster,String FileName);//Uloží rastrová data do souboru
 	void vloz_do_BUFFERU();
 	void vloz_SIM(double T1,double T2,short A,TElement *S,TVozik *V);
+  int prichytit_cas_SIM(unsigned int V);//přichytí X souřadnici na nejbližší čas akci v grafu pro vozík V
 	void vymaz_seznam_SIM();//smaže z paměti
 
 //metody pro PROCESY, konrola metody obsahují již neexistující atributy  - již možno smazat
