@@ -278,3 +278,94 @@ TDateTime start;
 		}
 		//vykreslení celého segmentu
 		canv->PolyBezier(POLE,pocet-1);
+
+
+//	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+//	while(E!=NULL)
+//	{
+////		if(floor(E->X)==41)// -0,0406901325296329)09523809524
+////		{
+////			Memo(String(E->n)+" "+E->name);
+////		}
+//		//if(E->name=="Zarážka 70") Memo(String(E->n)+" "+E->X);
+//		E=d.v.dalsi_krok(E);
+//	}
+//	E=NULL;delete E;
+
+
+//		pom_element=NULL;
+		Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+    Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
+//		{
+//
+//			if(d.v.oblast_elementu(E,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+//			{
+////				//smazání zarážky v linii
+////				if(E->geo.typ==0 && E->eID==MaxInt)
+////				{
+////					E->dalsi->geo.X1=E->geo.X1;
+////					E->dalsi->geo.Y1=E->geo.Y1;
+////					E->dalsi->geo.X2=E->geo.X1;
+////					E->dalsi->geo.Y2=E->geo.Y1;
+////					E->dalsi->geo.delka=m.delka(E->dalsi->geo.X1,E->dalsi->geo.Y1,E->dalsi->geo.X4,E->dalsi->geo.Y4);
+////					d.v.smaz_element(E);
+////				}
+//
+////přidání stoupání/klesání
+//				double delka=E->geo.delka;
+//				double HeightDeep=-0.7;
+//				double delkaSklon=m.delkaSklon(delka,HeightDeep);//přepona
+//				E->geo.delkaPud=delka;//jenom pokud je jiná než delka, jinak 0
+//				E->geo.delka=delkaSklon;
+//				E->geo.HeightDepp=HeightDeep;
+////nulování stoupání/klesání
+////				E->geo.delka=E->geo.delkaPud;
+////				E->geo.delkaPud=0;
+////				E->geo.HeightDepp=0;
+//				duvod_validovat=2;
+//				vytvor_statickou_scenu();
+//				REFRESH();
+//				ShowMessage("Nastaveno HeightDeep "+String(HeightDeep*1000)+" mm pro element "+E->name);
+//				break;
+//			}
+//			E=d.v.dalsi_krok(E);
+//		}
+//		E=NULL;delete E;
+		while(E!=NULL)
+		{
+
+			if(d.v.oblast_elementu(E,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+			{
+//				//smazání zarážky v linii
+//				if(E->geo.typ==0 && E->eID==MaxInt)
+//				{
+//					E->dalsi->geo.X1=E->geo.X1;
+//					E->dalsi->geo.Y1=E->geo.Y1;
+//					E->dalsi->geo.X2=E->geo.X1;
+//					E->dalsi->geo.Y2=E->geo.Y1;
+//					E->dalsi->geo.delka=m.delka(E->dalsi->geo.X1,E->dalsi->geo.Y1,E->dalsi->geo.X4,E->dalsi->geo.Y4);
+//					d.v.smaz_element(E);
+//				}
+
+//přidání stoupání/klesání
+				double delka=E->geo.delka;
+				double HeightDeep=-0.7;
+				double delkaSklon=m.delkaSklon(delka,HeightDeep);//přepona
+				E->geo.delkaPud=delka;//jenom pokud je jiná než delka, jinak 0
+				E->geo.delka=delkaSklon;
+				E->geo.HeightDepp=HeightDeep;
+//nulování stoupání/klesání
+//				E->geo.delka=E->geo.delkaPud;
+//				E->geo.delkaPud=0;
+//				E->geo.HeightDepp=0;
+				duvod_validovat=2;
+				vytvor_statickou_scenu();
+				REFRESH();
+				ShowMessage("Nastaveno HeightDeep "+String(HeightDeep*1000)+" mm pro element "+E->name);
+				break;
+			}
+			E=d.v.dalsi_krok(VYHYBKY,E);
+		}
+		d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
+		delete VYHYBKY;VYHYBKY=NULL;
+		E=NULL;delete E;
