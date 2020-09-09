@@ -5659,20 +5659,7 @@ void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,Cvektory::TElement *Elem
 	short W=0,H=canv->TextHeight(pocatek);
 	long x=0,y=0,pom=0;
 	if(X1==X2){H=H/2;W=-10*3;}
-	//else{W=canv->TextWidth(Text);H=canv->TextHeight(Text);}
-//	//souřadnice
-//	x=m.round((points[0].x+points[2].x-W)/2.0);
-//	y=m.round((points[0].y+points[2].y-H)/2.0);
-//	if(Z>0)
-//	{
-//		x=m.round((points[1].x+points[2].x-W)/2.0);
-//		y=m.round((points[1].y+points[2].y-H)/2.0);
-//  }
-	//samotný výpis
-	//TextFraming(canv,x,y,Text);
 	float zAA=1.0;if(F->antialiasing)zAA=3.0;
-	//Element->citelna_oblast.rect8=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+W)/zAA),m.round((y+H)/zAA));//HeightDeep hodnota
-
 	//převod HeightDeep na mm
 	HeightDeep*=1000;
 
@@ -5713,12 +5700,12 @@ void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,Cvektory::TElement *Elem
 	else Element->citelna_oblast.rect6=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+canv->TextWidth(Text))/zAA),m.round((y+canv->TextHeight(Text))/zAA));//začátek S/K hodnota
 
 	//vypsání délky přepony
-	Text=String(m.round2double(Element->geo.delka*1000.0,0));
-	if(X1!=X2)W=canv->TextWidth(Text);
-	x=points[i].x+(points[2].x-points[i].x)/2-W/2;
-	y=points[i].y+(points[2].y-points[i].y)/2-H;
-	TextFraming(canv,x,y,Text);
-	Element->citelna_oblast.rect8=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+canv->TextWidth(Text))/zAA),m.round((y+canv->TextHeight(Text))/zAA));//konec S/K hodnota
+//	Text=String(m.round2double(Element->geo.delka*1000.0,0));
+//	if(X1!=X2)W=canv->TextWidth(Text);
+//	x=points[i].x+(points[2].x-points[i].x)/2-W/2;
+//	y=points[i].y+(points[2].y-points[i].y)/2-H;
+//	TextFraming(canv,x,y,Text);
+//	Element->citelna_oblast.rect8=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+canv->TextWidth(Text))/zAA),m.round((y+canv->TextHeight(Text))/zAA));//konec S/K hodnota
 
 	//pro jistotu vrácení do původního stavu
 	canv->Font->Orientation=0;
