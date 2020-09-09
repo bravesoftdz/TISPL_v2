@@ -1922,8 +1922,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 315
-      ExplicitTop = -1
     end
     object scGPButton_error: TscGPButton
       Left = 564
@@ -6394,7 +6392,7 @@ object Form1: TForm1
     end
     object scExPanel_vrstvy: TscExPanel
       Left = 1
-      Top = 538
+      Top = 571
       Width = 249
       Height = 264
       Margins.Left = 5
@@ -6432,6 +6430,7 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  Vrstvy'
+      ExplicitTop = 538
       object scGPCheckBox_zobrazit_koleje: TscGPCheckBox
         AlignWithMargins = True
         Left = 7
@@ -7172,7 +7171,7 @@ object Form1: TForm1
     end
     object scExPanel_podklad: TscExPanel
       Left = 1
-      Top = 232
+      Top = 265
       Width = 249
       Height = 238
       Align = alTop
@@ -7209,6 +7208,7 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  Podklad'
+      ExplicitTop = 232
       object scGPButton_adjustace: TscGPButton
         AlignWithMargins = True
         Left = 3
@@ -7889,7 +7889,7 @@ object Form1: TForm1
       Left = 1
       Top = 34
       Width = 249
-      Height = 198
+      Height = 231
       Margins.Left = 5
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -8033,7 +8033,7 @@ object Form1: TForm1
       object scGPSwitch_grid: TscGPSwitch
         AlignWithMargins = True
         Left = 5
-        Top = 97
+        Top = 130
         Width = 42
         Height = 20
         Enabled = False
@@ -8063,7 +8063,7 @@ object Form1: TForm1
       end
       object scGPSwitch_meritko: TscGPSwitch
         Left = 5
-        Top = 127
+        Top = 160
         Width = 42
         Height = 20
         Align = alCustom
@@ -8094,7 +8094,7 @@ object Form1: TForm1
       object scLabel16: TscLabel
         AlignWithMargins = True
         Left = 57
-        Top = 97
+        Top = 130
         Width = 52
         Height = 20
         Margins.Left = 6
@@ -8122,7 +8122,7 @@ object Form1: TForm1
       object scLabel5: TscLabel
         AlignWithMargins = True
         Left = 57
-        Top = 127
+        Top = 160
         Width = 59
         Height = 20
         Margins.Left = 6
@@ -8150,7 +8150,7 @@ object Form1: TForm1
       object scLabel1_intenzita: TscLabel
         AlignWithMargins = True
         Left = 5
-        Top = 67
+        Top = 100
         Width = 164
         Height = 19
         Margins.Top = 0
@@ -8180,7 +8180,7 @@ object Form1: TForm1
       object scGPTrackBar_intenzita: TscGPTrackBar
         AlignWithMargins = True
         Left = 172
-        Top = 67
+        Top = 100
         Width = 73
         Height = 20
         Hint = 'Nastaven'#237' intenzity needitovan'#253'ch objekt'#367
@@ -8221,7 +8221,7 @@ object Form1: TForm1
       end
       object scGPSwitch1: TscGPSwitch
         Left = 35
-        Top = 164
+        Top = 197
         Width = 42
         Height = 20
         Align = alCustom
@@ -8252,7 +8252,7 @@ object Form1: TForm1
       object scLabel_CZ: TscLabel
         AlignWithMargins = True
         Left = 87
-        Top = 164
+        Top = 197
         Width = 21
         Height = 20
         Margins.Left = 6
@@ -8280,7 +8280,7 @@ object Form1: TForm1
       object scLabel_EN: TscLabel
         AlignWithMargins = True
         Left = 8
-        Top = 164
+        Top = 197
         Width = 21
         Height = 20
         Margins.Left = 6
@@ -8413,7 +8413,7 @@ object Form1: TForm1
     end
     object scExPanel1: TscExPanel
       Left = 1
-      Top = 470
+      Top = 503
       Width = 249
       Height = 68
       Margins.Left = 5
@@ -8452,6 +8452,7 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  N'#225'stroje'
+      ExplicitTop = 470
       object scGPButton_mereni_vzdalenost: TscGPButton
         AlignWithMargins = True
         Left = 3
@@ -9304,7 +9305,7 @@ object Form1: TForm1
     Left = 520
     Top = 40
     Bitmap = {
-      494C010118001C001C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118001C00040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10384,7 +10385,7 @@ object Form1: TForm1
     Left = 423
     Top = 38
     Bitmap = {
-      494C0101540070001C0030003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010154007000040030003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000002004000001002000000000000060
       0C00000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
