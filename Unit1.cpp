@@ -14529,7 +14529,7 @@ void __fastcall TForm1::Button2Click(TObject *Sender)
 //---------------------------------------------------------------------------
 //skryje v době neaktivity (po 50 sec) svislice na myši v modu časové osy (kvůli spořiči obrazovky)
 void __fastcall TForm1::Timer_neaktivityTimer(TObject *Sender)
-{       ShowMessage("1");
+{
 	log(__func__);//logování
 //		if(d.v.SIM!=NULL && ++pocitadlo_doby_neaktivity==2)
 //		{
