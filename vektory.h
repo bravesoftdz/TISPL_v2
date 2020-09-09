@@ -159,7 +159,6 @@ class Cvektory
 		T2Element *dalsi;
 		T2Element *predchozi;
 	};
-	T2Element *VYHYBKY;
 
   struct TCesta//pouze přidružený spoják, který je součástí zakázky, jeden objekt spojáku je jeden segment cesty
 	{
@@ -659,11 +658,11 @@ class Cvektory
 	void aktualizuj_sparovane_ukazatele();//projde všechny stop-elementy a aktualizuje jim ukazatele na spárované elementy
 	void reserve_time(TElement *Element,TCesta *Cesta=NULL,bool highlight_bunek=false,bool refresh_mGrid=false);//vypočítá a uloží RT do elementu
 	TElement *vrat_posledni_element_objektu(TObjekt *Objekt);//vrátí poslední element v objektu
-	void hlavicka_seznam_VYHYBKY();
-	void uloz_vyhybku_do_seznamu(TElement *vyhybka);
-	void smaz_vyhybku_ze_seznamu();
-	long vymaz_seznam_VYHYBKY();
-	TElement *dalsi_krok(TElement *E,TObjekt *O=NULL);//určí další krok průchodového algorytmu ve spojáku elementů, 2 možností průchod kompletního spojáku ELEMENTY, druhá průchod pouze elementů jednoho objektu
+	T2Element *hlavicka_seznam_VYHYBKY();
+	void uloz_vyhybku_do_seznamu(TElement *vyhybka,T2Element *VYHYBKY);
+	void smaz_vyhybku_ze_seznamu(T2Element *VYHYBKY);
+	long vymaz_seznam_VYHYBKY(T2Element *VYHYBKY);
+	TElement *dalsi_krok(T2Element *VYHYBKY,TElement *E,TObjekt *O=NULL);//určí další krok průchodového algorytmu ve spojáku elementů, 2 možností průchod kompletního spojáku ELEMENTY, druhá průchod pouze elementů jednoho objektu
 	TElement *predchozi_krok(TElement *E,TObjekt *O=NULL);
   T2Element *vytvor_tabElm_pruchodu();//vytvoří tabulku průchodu pro alg. sekundarni_zapis_cteni()
 	TElement *Cvektory::sekvencni_zapis_cteni(TElement *E,TPoint *tab_pruchodu_TP,T2Element *tab_pruchodu_T2E);

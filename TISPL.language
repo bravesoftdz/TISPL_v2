@@ -470,7 +470,7 @@ Attention, JIGs overlap on the next section of the crossing!;X;Pozor, na následu
 Irrelevant value of time reserve, no drive is assigned to any object!;X;Nerelevantní hodnota èasové rezervy, na nìkterém objektu není pøiøazen pohon!
 Can not be done! To remove, select the same drive in front of and behind the transfer point;X;Nelze provést! Odstranìní provedete výbìrem totožného pohonu pøed a za pøedávacím místem
 Send an error, question or comment;X;Zaslat chybu, dotaz nebo pøipomínku
-Description;X;Popis
+Msg type -;X;Typ zprávy -
 please type in your comment;X;prosím, zadejte svùj komentáø
 Send including project;X;Odeslat vèetnì projektu
 Send;X;Odeslat
@@ -488,3 +488,6 @@ crossing;X;pøejezd
 total;X;celkem
 The version of the saved file does not match the current version of the environment! File version;X;Verze uloženého souboru se neschoduje s aktuální verzí prostøedí! Verze souboru
 environment version;X;verze prostøedí
+climb;X;stoupání
+descent;X;klesání
+Automatically delete;X;Automaticky smazat

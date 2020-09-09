@@ -52,6 +52,8 @@ __published:	// IDE-managed Components
   void __fastcall CloseButtonClick(TObject *Sender);
   void __fastcall FormShow(TObject *Sender);
   void __fastcall scGPToolPagerClick(TObject *Sender);
+	void __fastcall scHTMLLabel_aboutLinkClick(TObject *Sender, int LinkIndex, UnicodeString LinkText,
+          UnicodeString LinkURL);
 private:	// User declarations
 public:		// User declarations
   __fastcall TForm_help(TComponent* Owner);

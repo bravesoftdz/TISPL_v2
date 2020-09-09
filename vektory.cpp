@@ -612,7 +612,7 @@ void Cvektory::nastav_atributy_objektu(TObjekt *novy,unsigned int id, double X, 
 	}
 	F->ortogonalizace();//nutné před kontrolou změny trendu
 	//////nově je vše seřazeno ještě před touto metodou
-	if(OBJEKTY->predchozi->n==2 && novy->X==OBJEKTY->dalsi->X && novy->Y==OBJEKTY->dalsi->Y)// && OBJEKTY->dalsi->orientace==90 || F->d.predchozi_oblast==2 && OBJEKTY->predchozi->n==2)//změna trendu linky, pokud nebylo s prvním objektem rotováno
+	if(OBJEKTY->predchozi->n==2 && novy->element->geo.X1==OBJEKTY->dalsi->element->geo.X1 && novy->element->geo.Y1==OBJEKTY->dalsi->element->geo.Y1)// && OBJEKTY->dalsi->orientace==90 || F->d.predchozi_oblast==2 && OBJEKTY->predchozi->n==2)//změna trendu linky, pokud nebylo s prvním objektem rotováno
 	{
 		double rotace=-180;
 		if(OBJEKTY->dalsi->orientace==270)rotace=180;
@@ -853,11 +853,14 @@ short int Cvektory::smaz_objekt(TObjekt *Objekt)
 
 	//aktualizace číslování elementů->objekt_n
 	TElement *E=ELEMENTY->dalsi;
+	T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();
 	while(E!=NULL)
 	{
 		if(E->objekt_n>mazany)E->objekt_n--;
-		E=dalsi_krok(E);//procházení skrze všechny elementy, nejjistější metoda
+		E=dalsi_krok(VYHYBKY,E);//procházení skrze všechny elementy, nejjistější metoda
 	}
+  vymaz_seznam_VYHYBKY(VYHYBKY);
+	delete VYHYBKY;VYHYBKY=NULL;
 	delete E;E=NULL;
 
 	return 0;
@@ -987,12 +990,12 @@ void Cvektory::aktualizace_objektu(short typ)
 void Cvektory::aktualizace_rezimu_objektu(TObjekt *Objekt,bool aktualizovat_sta_mGridu)
 {
 	//základní nastavění podle typu objektu, 0-S&G,1-Kontin.(line tracking),2-Postprocesní
-	short predchozi_rezim=Objekt->rezim;
 	Objekt->rezim=-1;
 	if(Objekt->id==5 || Objekt->id==6)Objekt->rezim=2;
 
 	//kontrola podle elementů v objektu
 	TElement *E=Objekt->element;
+	T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 	while(E!=NULL && E->objekt_n==Objekt->n)
 	{
 		short druh=vrat_druh_elementu(E);//kontrola druhu elementu
@@ -1003,17 +1006,17 @@ void Cvektory::aktualizace_rezimu_objektu(TObjekt *Objekt,bool aktualizovat_sta_
 			Objekt->rezim=druh;//zapsání změny
 			break;//ukončení průchodu
 		}
-		E=dalsi_krok(E,Objekt);
+		E=dalsi_krok(VYHYBKY,E,Objekt);
 	}
-	//v případě přerušení průchodu nutné smazat
-	vymaz_seznam_VYHYBKY();
+	//odstranění průchodového spojáku
+	vymaz_seznam_VYHYBKY(VYHYBKY);
+	delete VYHYBKY;VYHYBKY=NULL;
 
 	//zkontrolovat zda nejsou v objektu PM nebo výhybky, pokud ano aktualizovat jim editované položky
   if(F->OBJEKT_akt!=NULL)FormX->zmena_rezimu_pohonu(NULL);
 
 	//ukazatelové záležitosti
 	E=NULL;delete E;
-	vymaz_seznam_VYHYBKY();
 }
 //---------------------------------------------------------------------------
 //všem objektům, které měly přiřazen pohon s oldN(oldID), přiřadí pohon s newN(newID), podle toho, jak jsou ukládány nově do spojáku, důležité, pokud dojde k narušení pořadí ID resp n pohonů a pořadí jednotlivých řádků ve stringridu, např. kopirováním, smazáním, změnou pořadí řádků atp.
@@ -1255,6 +1258,7 @@ void Cvektory::nove_indexy(bool nasledne_zmena_nazvu)
 	{
 		//načtení všech elementů objektu do pomocného spojáku, pro účely změny objekt_n
 		TElement *E=O->element;
+		T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 		T2Element *zmena=new T2Element,*novy=NULL;;zmena->n=0;zmena->vyhybka=NULL;zmena->dalsi=NULL;zmena->predchozi=zmena;
 		while(E!=NULL)
 		{
@@ -1265,7 +1269,7 @@ void Cvektory::nove_indexy(bool nasledne_zmena_nazvu)
 			zmena->predchozi->dalsi=novy;
 			zmena->predchozi=novy;
 			novy->dalsi=NULL;
-			E=dalsi_krok(E,O);//E->dalsi;
+			E=dalsi_krok(VYHYBKY,E,O);//E->dalsi;
 		}
 		//změna n objektu
 		O->n=n;
@@ -1288,6 +1292,8 @@ void Cvektory::nove_indexy(bool nasledne_zmena_nazvu)
 			}
 		}while(zmena!=NULL);
 		//ukazatelové záležitosti
+    vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+		delete VYHYBKY;VYHYBKY=NULL;
 		E=NULL;delete E;
 		O=O->dalsi;
 	}
@@ -1448,6 +1454,7 @@ void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_o
 		}
 		////posun elementů
 		TElement *E=Objekt->element;//objekt má vždy element (zarážka)
+    T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 		while(E!=NULL && E->objekt_n==Objekt->n)
 		{
 			E->X+=X;E->Y+=Y;//souřadnice elementu
@@ -1455,8 +1462,10 @@ void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_o
 			//geometrie elementu
 			E->geo.X1+=X;E->geo.X2+=X;E->geo.X3+=X;E->geo.X4+=X;
 			E->geo.Y1+=Y;E->geo.Y2+=Y;E->geo.Y3+=Y;E->geo.Y4+=Y;
-			E=dalsi_krok(E,Objekt);
+			E=dalsi_krok(VYHYBKY,E,Objekt);
 		}
+    vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+		delete VYHYBKY;VYHYBKY=NULL;
 		E=NULL;delete E;
 	}
 	////přilepení objektu na předchozí objekt
@@ -1516,14 +1525,18 @@ void Cvektory::rotuj_objekt(TObjekt *Objekt, double rotace)
 		}
 		E=NULL;delete E;
 		//rotace nadpisu
-		TElement *E_pom=vrat_posledni_element_objektu(Objekt);
+		TPointD bod;
+		TRect oblast=F->vrat_max_oblast(Objekt,true);
 		switch((int)azimut)
 		{
-			case 0:Objekt->Xt=m.P2Lx(F->vrat_max_oblast(Objekt).left);Objekt->Yt=E_pom->geo.Y4-(E_pom->geo.Y4-Objekt->element->geo.Y1)/2.0;break;
-			case 90:case 270:Objekt->Xt=E_pom->geo.X4-(E_pom->geo.X4-Objekt->element->geo.X1)/2.0;Objekt->Yt=m.P2Ly(F->vrat_max_oblast(Objekt).top);break;
-			case 180:Objekt->Xt=m.P2Lx(F->vrat_max_oblast(Objekt).right);Objekt->Yt=E_pom->geo.Y4-(E_pom->geo.Y4-Objekt->element->geo.Y1)/2.0;break;
+			case 0:bod.x=oblast.left;bod.y=oblast.top-(oblast.top-oblast.bottom)/2.0;break;
+			case 90:bod.x=oblast.left+(oblast.right-oblast.left)/2.0;bod.y=oblast.top;break;
+			case 180:bod.x=oblast.right;bod.y=oblast.bottom-(oblast.bottom-oblast.top)/2.0;break;
+			case 270:bod.x=oblast.right+(oblast.left-oblast.right)/2.0;bod.y=oblast.top;break;
+      default:break;
 		}
-		E_pom=NULL;delete E_pom;
+		bod=m.P2L(TPoint(bod.x,bod.y));
+		Objekt->Xt=bod.x;Objekt->Yt=bod.y;
 		Objekt->orientace=Objekt->orientace_text=azimut;
 		F->duvod_validovat=2;//je přímý důvod k validaci
 	}
@@ -1871,8 +1884,11 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 //	if(novy->predchozi->n>0 && Objekt->element!=NULL && novy->predchozi->objekt_n!=Objekt->n && (Objekt->element->predchozi->n>0 && novy->predchozi->objekt_n!=Objekt->element->predchozi->objekt_n || Objekt->element->predchozi->n==0))novy->pohon=novy->predchozi->pohon;
 //	if(novy==Objekt->element && novy->dalsi!=NULL)novy->pohon=novy->dalsi->pohon;
 	if(novy->dalsi!=NULL)novy->pohon=novy->dalsi->pohon;
+	else if(novy->predchozi->n>0 && novy->predchozi->eID!=200)novy->pohon=novy->predchozi->pohon;//například při vkládání gemetri na konec linky
 	novy->geo.HeightDepp=0;
 	novy->geo.delkaPud=0;
+	if(novy->dalsi!=NULL)novy->Z=novy->dalsi->Z;
+	else if(novy->predchozi->n>0)novy->Z=novy->predchozi->Z+novy->predchozi->geo.HeightDepp;
 
 	//název
 	AnsiString T="";
@@ -1962,17 +1978,20 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 	  					Objekt->dalsi->element->predchozi->dalsi=Element;
 	  					Objekt->dalsi->element->predchozi=Element;
 	  	  			//změna indexů
-	  	  			Cvektory::TElement *E=Element;
+							Cvektory::TElement *E=Element;
+							T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 	  					int n=Element->predchozi->n+1;
 	  	      	while(E!=NULL)//projetí od aktuálního objektu až do konce
 	  					{
 	  						//indexy
 	  	  				E->n=n;
 	  	      		n++;
-								E=dalsi_krok(E);
-	  	  			}
+								E=dalsi_krok(VYHYBKY,E);
+							}
+              vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+							delete VYHYBKY;VYHYBKY=NULL;
 	  	  			E=NULL;delete E;
-	  					//změna názvů
+							//změna názvů
 	  	  			uprav_popisky_elementu(NULL);//musí být NULL, pokud je poslán Element načte se jeho objekt a z něj první element, Objekt ale v tuto chvíli nemá ukazatel na první element ... pam. chyba
 	  	  		}
 	  			}
@@ -2011,14 +2030,17 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 					E=ELEMENTY->dalsi;
 					n=1;
 				}
+        T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 	  		while(E!=NULL)//projetí od aktuálního objektu až do konce
 	  		{
 	  			//indexy
 	  			E->n=n;
 	  			n++;
-					E=dalsi_krok(E);
-	  		}
-	  		E=NULL;delete E;
+					E=dalsi_krok(VYHYBKY,E);
+				}
+        vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+				delete VYHYBKY;VYHYBKY=NULL;
+				E=NULL;delete E;
 				//změna názvů
 				if(pocet_vyhybek==0)uprav_popisky_elementu(Element);
 				else uprav_popisky_elementu(NULL);//pokud je v elementech výhybka musí dojít k upravení celého spojáku
@@ -2062,13 +2084,16 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 			//změna indexů
 			Cvektory::TElement *E=Element;
 			int n=p->n;
+			T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 			while(E!=NULL)//projetí od aktuálního objektu až do konce
 			{
 				//indexy
 				E->n=n;
 				n++;
-				E=dalsi_krok(E);
+				E=dalsi_krok(VYHYBKY,E);
 			}
+      vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+			delete VYHYBKY;VYHYBKY=NULL;
 			E=NULL;delete E;
 			//změna názvů
 			uprav_popisky_elementu(Element);
@@ -2117,14 +2142,17 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 			}
 			//změna indexů
 			Cvektory::TElement *E=Element;
+      T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 			int n=force_razeni->n+1;
 			while(E!=NULL)//projetí od aktuálního objektu až do konce
 			{
 				//indexy
 				E->n=n;
 				n++;
-				E=dalsi_krok(E);
+				E=dalsi_krok(VYHYBKY,E);
 			}
+      vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+			delete VYHYBKY;VYHYBKY=NULL;
 			E=NULL;delete E;
 			//změna názvů
 			uprav_popisky_elementu(Element);
@@ -2218,10 +2246,12 @@ void Cvektory::vloz_element(TElement *Element)
 Cvektory::TElement *Cvektory::vloz_element_pred(TObjekt *Objekt,TElement *Element)
 {
 	Cvektory::TElement *ret=NULL;//návratová proměnná, defaultně prázdn
-	if((F->Akce==F->ADD || F->Akce==F->VYH || F->Akce==F->MOVE_ELEMENT || F->editace_textu) && Objekt->element!=NULL/* && Objekt->element->dalsi!=NULL*/)//ošetření proti spouštění při zavírání a otvírání náhledu
+	if((F->Akce==F->ADD || F->Akce==F->VYH || F->Akce==F->MOVE_ELEMENT || F->editace_textu))// && Objekt!=NULL && Objekt->element!=NULL/* && Objekt->element->dalsi!=NULL*/)//ošetření proti spouštění při zavírání a otvírání náhledu
 	{
-		Cvektory::TElement *p=Objekt->element;//začnu od prvního elementu v objektu
-		while(p!=NULL && p->objekt_n==Objekt->n)
+		TElement *p=ELEMENTY->dalsi;//začnu od prvního elementu v projektu
+		if(Objekt!=NULL)p=Objekt->element;//začnu od prvního elementu v objektu
+		T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
+		while(p!=NULL)
 		{
 			if(p!=Element)//neřeší se s aktuálním elementem (při posunu)
 			{
@@ -2244,9 +2274,10 @@ Cvektory::TElement *Cvektory::vloz_element_pred(TObjekt *Objekt,TElement *Elemen
 					break;
 				}
 			}
-			p=dalsi_krok(p,Objekt);//posun na další prvek
+			p=dalsi_krok(VYHYBKY,p,Objekt);//posun na další prvek, buď v objektu (Objekt!=NULL) nebo v celé lince (Objekt==NULL)
 		}
-		vymaz_seznam_VYHYBKY();
+		vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+		delete VYHYBKY;VYHYBKY=NULL;
 		p=NULL; delete p;
 	}
 	return ret;
@@ -2379,6 +2410,7 @@ void Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->name=Original->name;
 	Kopie->X=Original->X;
 	Kopie->Y=Original->Y;
+  Kopie->Z=Original->Z;
 	Kopie->Xt=Original->Xt;
 	Kopie->Yt=Original->Yt;
 	Kopie->orientace=Original->orientace;
@@ -2478,6 +2510,7 @@ unsigned int Cvektory::vrat_poradi_elementu_do(TElement *Element)
 {
 	unsigned int r_pocet=0,s_pocet=0,o_pocet=0,t_pocet=0,pm_pocet=0,z_pocet=0,ret=0;//nastavení všech počtů na nulu
 	TElement *E=ELEMENTY->dalsi;
+  T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 	while(E!=NULL)
 	{
 		//pokud narazím na stejný element, ukončím hledání
@@ -2498,9 +2531,10 @@ unsigned int Cvektory::vrat_poradi_elementu_do(TElement *Element)
 			}break;
 		}
 		//E=E->dalsi;
-		E=dalsi_krok(E);
+		E=dalsi_krok(VYHYBKY,E);
 	}
-	vymaz_seznam_VYHYBKY();
+	vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+	delete VYHYBKY;VYHYBKY=NULL;
 	E=NULL;delete E;
 	//podle eID vrátí příslušný počet elementů
 	switch(Element->eID)
@@ -2522,6 +2556,7 @@ unsigned int Cvektory::vrat_nejvetsi_ID_tabulek (TObjekt *Objekt)
 	if(Objekt->element!=NULL && F->OBJEKT_akt!=NULL)//pouze pro vkládání v editaci
 	{
 		TElement *E=Objekt->element;
+		T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 		while(E!=NULL && E->objekt_n==Objekt->n)
 		{
 			if(E->n>0/*&&E->eID!=100 && E->mGrid!=NULL*/)//přeskočení hlavičky a elementu bez tabulky
@@ -2530,8 +2565,10 @@ unsigned int Cvektory::vrat_nejvetsi_ID_tabulek (TObjekt *Objekt)
 				{if(ret<(unsigned)E->mGrid->ID)ret=E->mGrid->ID;}
 				catch(...){;}
       }
-			E=dalsi_krok(E,Objekt);
+			E=dalsi_krok(VYHYBKY,E,Objekt);
 		}
+    vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+		delete VYHYBKY;VYHYBKY=NULL;
 		E=NULL;delete E;
 	}
 	return ret;
@@ -2561,7 +2598,7 @@ short Cvektory::vrat_druh_elementu(TElement *Element)
 	if(Element!=NULL)//zarážka předávací místo  výhybka a spojka 				                      //nutné přeskakovat elementarní hlavičku!
 	if(Element->eID!=MaxInt && Element->eID!=200 && Element->eID!=300 && Element->eID!=301 && Element->eID!=400 && Element->eID!=401 && Element->eID!=402 && Element->n>0)
 	{
-		if(Element->eID%2==0 && Element->eID!=100 && Element->data.pocet_voziku>0)RET=0;//S&G elementy, mimo těch průjezdních a mimo ION tyče
+		if(Element->eID%2==0 && Element->eID!=100 && ((Element->eID==0 && Element->data.pocet_voziku>0) || Element->eID!=0))RET=0;//S&G elementy, mimo těch průjezdních a mimo ION tyče
 		else RET=1;//kontinuální elementy, či S&G elementy průjezdní (tj. kontinuální)
 	}
 	return RET;
@@ -2683,7 +2720,12 @@ bool Cvektory::oblast_elementu(TElement *Element, double X, double Y)
 			}
 		}
 	}
-	if(Element->eID==MaxInt && F->Akce==F->GEOMETRIE)//zarážka
+	if(Element->eID==MaxInt && F->Akce!=F->Takce::GEOMETRIE)//zarážka s S/K
+	{
+		if(Element->geo.HeightDepp!=0 && m.PtInCircle(X,Y,Element->X,Element->Y,0.3))ret=true;
+    else if(Element->dalsi!=NULL && Element->dalsi->geo.HeightDepp!=0 && m.PtInCircle(X,Y,Element->X,Element->Y,0.3))ret=true;
+	}
+	if(Element->eID==MaxInt && F->Akce==F->Takce::GEOMETRIE)//zarážka při geometrii
 	{
 		if(m.PtInCircle(X,Y,Element->X,Element->Y,0.3))ret=true;
 	}
@@ -2698,6 +2740,7 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 	//vhodno přesunout do globálních proměnných do Cvykresli
 	X=F->akt_souradnice_kurzoru.x;Y=F->akt_souradnice_kurzoru.y;
 	TElement *E=NULL,*ret=NULL;
+  T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 
 	//algoritmus prochází jednotlivé elementy a porovnává vůči jejich pozici aktuální pozici kurzoru, aby se zbytečně netestovalo vše (metoda se volá neustále při každém posunu kurzoru), postupuje algoritmus maximálně větveně (šetření strojového času), tedy v případě uspěchu ihned končí, v případě neúspěchu testuje dále
 	if(Objekt!=NULL)
@@ -2709,10 +2752,11 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 			{
 				if(oblast_elementu(E,X,Y)){ret=E;break;}
 			}
-			E=dalsi_krok(E,Objekt);
+			E=dalsi_krok(VYHYBKY,E,Objekt);
 		}
 	}
-	vymaz_seznam_VYHYBKY();
+	vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+	delete VYHYBKY;VYHYBKY=NULL;
 	E=NULL;delete E;
 	return ret;
 }
@@ -2755,14 +2799,17 @@ Cvektory::TElement *Cvektory::najdi_tabulku(TObjekt *Objekt, double X, double Y)
 
 	//hledání tabulky elementu
 	TElement *E=Objekt->element;
+	T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 	while(ret==NULL && E!=NULL && E->objekt_n==Objekt->n)
 	{
 		//pokud mgrid existuje hledá poslední mGrid na pozici X,Y ... nesmí být po nalezení break
 		if(E->mGrid!=NULL && E->Xt<=X && X<=E->Xt+E->mGrid->Width*F->m2px/F->Zoom && E->Yt>=Y && Y>=E->Yt-E->mGrid->Height*F->m2px/F->Zoom)ret=E;//bez break, slouží k nalezení poslední tabulky
-		E=dalsi_krok(E);
+		E=dalsi_krok(VYHYBKY,E);
 	}
 
-  //ukazatelové záležitosti + return
+	//ukazatelové záležitosti + return
+  vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+	delete VYHYBKY;VYHYBKY=NULL;
 	E=NULL;delete E;
 	return ret;
 }
@@ -2783,12 +2830,14 @@ Cvektory::TElement *Cvektory::vrat_element(TObjekt *Objekt, unsigned int n)
 Cvektory::TElement *Cvektory::vrat_element(unsigned int n)
 {
 	TElement *E=ELEMENTY->dalsi;
+  T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 	while(E!=NULL)
 	{
 		if(E->n==n)break;
-		else E=dalsi_krok(E);
+		else E=dalsi_krok(VYHYBKY,E);
 	}
-	vymaz_seznam_VYHYBKY();
+  vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+	delete VYHYBKY;VYHYBKY=NULL;
 	return E;
 }
 ////---------------------------------------------------------------------------
@@ -2798,6 +2847,7 @@ short Cvektory::PtInKota_elementu(TObjekt *Objekt,long X,long Y)
 	short RET=-1;//nic nenalezeno
 	double x=F->akt_souradnice_kurzoru_PX.x,y=F->akt_souradnice_kurzoru_PX.y;//souřadnice kurzoru jsou neměnné po celou dobu metody, důležité použít fyzické souřadnice !!
 	TElement *E=Objekt->element;
+	T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 	while(E!=NULL && E->objekt_n==Objekt->n)
 	{
 		if(E->citelna_oblast.rect1.PtInRect(TPoint(X,Y)) && (E->pohon!=NULL || E->pohon==NULL && F->DKunit<2)){RET=1;F->pom_element=E;break;}//hodnoty kóty
@@ -2807,9 +2857,10 @@ short Cvektory::PtInKota_elementu(TObjekt *Objekt,long X,long Y)
 			if(E->citelna_oblast.rect2.PtInRect(TPoint(X,Y))){RET=2;F->pom_element=E;break;}//jednotky kóty
 			else if(m.LeziVblizkostiUsecky(x,y,E->citelna_oblast.rect0.left,E->citelna_oblast.rect0.top,E->citelna_oblast.rect0.right,E->citelna_oblast.rect0.bottom)<=F->Zoom){RET=0;F->pom_element=E;break;}//kóta celá
 		}
-		E=dalsi_krok(E,Objekt);
+		E=dalsi_krok(VYHYBKY,E,Objekt);
 	}
-	vymaz_seznam_VYHYBKY();
+	vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+	delete VYHYBKY;VYHYBKY=NULL;
 	E=NULL;delete E;
 	return RET;
 }
@@ -2823,18 +2874,20 @@ bool Cvektory::PtInSegment(TElement *E,double Xmys,double Ymys)
 ////---------------------------------------------------------------------------
 //posune pouze Element z pomocného spojového seznamu OBJEKT_akt na parametrem uvedenou vzádlenost (v metrech) od elementu předchozího, pokud je implicitní hodnota pusun_dalsich_elementu false změněna na true, jsou o danou změnu posunu přesunuty i elementy následující Elementu (tudíž jejich vzdálenost od Elementu bude zachována, naopak v případě výchozí hodnoty false je následujícím/dalším elementům poloha zachována)
 bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dalsich_elementu,bool posun_kurzorem,bool kontrola_zmeny_poradi)
-{ //!!!!!!po nasazení geometrie nutno zdokonalit, nebude se pracovát pouze se vzdálenosti na linii buď vodorvné či svislé, ale i v oblouku
+{
 	Cvektory::TElement *E=NULL;
 	bool RET=true;
 	if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->element!=NULL/*&&F->Akce!=F->MOVE_ELEMENT*/)//raději ošetření, ač by se metoda měla volat jen v případě existence OBJEKT_akt
 	{
-		bool posun_povolit=true;
+		bool posun_povolit=true,error=false;
 		TPointD puv_souradnice;
 		puv_souradnice.x=Element->X;puv_souradnice.y=Element->Y;
 		if(F->OBJEKT_akt->element!=NULL && vzdalenost!=0)//musí existovat alespoň jeden element && nesmí být vzdálenost rovna nule
 		{
 			//////Načtení délky před posunem
-			double vzd=vzdalenost_od_predchoziho_elementu(Element,false);//musí zde být vzdálenost k předchozímu funkčnímu elementu, tj. velikost kóty
+			double vzd=Element->geo.delka;//leze použít pouze délku elementu, nově se nevyskytují zarážky mezi fce. elementy
+			if(Element->geo.HeightDepp!=0)vzd=Element->geo.delkaPud;//pokud se jedná o S/K
+			//vzd=vzdalenost_od_predchoziho_elementu(Element,false);//musí zde být vzdálenost k předchozímu funkčnímu elementu, tj. velikost kóty
 			if((Element->dalsi!=NULL && Element->dalsi->geo.typ!=0 || Element->geo.typ!=0) && kontrola_zmeny_poradi)posun_povolit=false;//pokud by element ovlivnil posunem geometrii
 			//////Realizace posunu + validace
 			if(posun_kurzorem && posun_povolit)//pokud se jedná o posun kurzorem, třeba jinak určit vzdálenost
@@ -2843,8 +2896,9 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				else vzdalenost=vzd-vzdalenost;
 			}
 			//realizace posunu
-			if(Element->geo.HeightDepp==0)vzdalenost=(/*vzd/m.abs_d(vzd))*(*/m.abs_d(vzd)-vzdalenost);
-			else vzdalenost=m.abs_d(vzd)-vzdalenost*cos(asin(Element->geo.HeightDepp/vzdalenost));//zjištění posunu ve S/K
+			/*if(Element->geo.HeightDepp==0)*/vzdalenost=(/*vzd/m.abs_d(vzd))*(*/m.abs_d(vzd)-vzdalenost);
+			//else if(Element->geo.HeightDepp/vzdalenost<1)vzdalenost=-vzdalenost*cos(asin(Element->geo.HeightDepp/vzdalenost))+Element->geo.delkaPud;//zjištění posunu ve S/K
+			//else {vzdalenost=0;posun_povolit=false;}//nebyly dodrženy pravidla pravoúhlého trojúhelníku, znemožnit editaci
 			switch((int)Element->geo.orientace)
 			{
 				case   0:Element->Y=Element->Y-vzdalenost;break;
@@ -2858,23 +2912,30 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				//kontrola + změna pořadí
 				if(kontrola_zmeny_poradi)
 				{
-					E=vloz_element_pred(F->OBJEKT_akt,Element);
-					if(E!=NULL && Element->dalsi!=NULL && E->n!=Element->dalsi->n)zmen_poradi_elementu(Element,E);
+					E=vloz_element_pred(NULL,Element);
+					if(E!=NULL && Element->dalsi!=NULL && E!=Element->dalsi && Element->geo.HeightDepp==0 && E->geo.HeightDepp==0 && Element->objekt_n==E->objekt_n)zmen_poradi_elementu(Element,E);
+					if(E!=NULL && Element->dalsi!=NULL && E!=Element->dalsi && (Element->geo.HeightDepp!=0 || E->geo.HeightDepp!=0))error=true;//pokud by mělo ojít ke změně pořadí, nedovolit
+					if(E!=NULL && Element->objekt_n!=E->objekt_n)error=true;//posun mimo kabinu
 				}
 				//aktualizace posouvaného elementu
-				vloz_G_element(Element,0,Element->geo.X1,Element->geo.Y1,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,Element->geo.orientace);
-				if(kontrola_zmeny_poradi)
+				if(!error)
 				{
-					//aktualizace dalšího elemtnu
-					if(Element->dalsi!=NULL)vloz_G_element(Element->dalsi,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
-					//aktualizace RT
-					if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){reserve_time(Element,NULL,true,true);reserve_time(Element->sparovany,NULL,true,true);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
-					else reserve_time(Element,NULL,true,true);
+			  	vloz_G_element(Element,0,Element->geo.X1,Element->geo.Y1,0,0,0,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,Element->geo.orientace);
+			  	if(kontrola_zmeny_poradi)
+			  	{
+			  		//aktualizace dalšího elemtnu
+			  		if(Element->dalsi!=NULL)vloz_G_element(Element->dalsi,0,F->d.Rxy(Element).x,F->d.Rxy(Element).y,0,0,0,0,Element->dalsi->geo.X4,Element->dalsi->geo.Y4,Element->dalsi->geo.orientace);
+			  		//aktualizace RT
+			  		if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){reserve_time(Element,NULL,true,true);reserve_time(Element->sparovany,NULL,true,true);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
+			  		else reserve_time(Element,NULL,true,true);
+			  	}
 				}
+        else
+				{Element->X=puv_souradnice.x;Element->Y=puv_souradnice.y;posun_povolit=false;}
 			}
 			//pokud ne budou mu navráceny původní souřadnice
 			else
-			{Element->X=puv_souradnice.x;Element->Y=puv_souradnice.y;posun_povolit=false;F->TIP=F->ls->Strings[307];}//"Prvek nelze přesunout"
+			{Element->X=puv_souradnice.x;Element->Y=puv_souradnice.y;posun_povolit=false;}
 			//////Posun dalsích elementů
 			if(pusun_dalsich_elementu && posun_povolit)
 			{
@@ -2908,6 +2969,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			}
 		}
 		RET=posun_povolit;
+		if(!RET)F->TIP=F->ls->Strings[307];//"Prvek nelze přesunout"
 	}
 	E=NULL; delete E;
 	return RET;
@@ -2960,6 +3022,7 @@ void Cvektory::zmen_poradi_elementu(TElement *E,TElement *Ed)
 	unsigned long n=E->n;
 	E->n=Ed->n;Ed->n=n;
 	TElement *E_pom=NULL;//ukazatel na první element, přeskočí hlavičku, metoda volaná jen v případě, že existují min. 2 elementy
+  T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 	if(E->n<Ed->n)E_pom=Ed;//Ed je poslední element z dvojce
 	else E_pom=E;
 	n=E_pom->n;
@@ -2967,8 +3030,10 @@ void Cvektory::zmen_poradi_elementu(TElement *E,TElement *Ed)
 	{
 		E_pom->n=n;
 		n++;
-		E_pom=dalsi_krok(E_pom);
+		E_pom=dalsi_krok(VYHYBKY,E_pom);
 	}
+  vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+	delete VYHYBKY;VYHYBKY=NULL;
 	delete E_pom;E_pom=NULL;
 	uprav_popisky_elementu(E);//změna názvů
 	if(E->eID%2==0 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt || Ed->eID%2==0 && Ed->eID!=100 && Ed->eID!=200 && Ed->eID!=MaxInt)aktualizuj_sparovane_ukazatele();//změna pořadí přičemž alespoň jeden element byl stop-element
@@ -3118,6 +3183,7 @@ void Cvektory::aktualizuj_sparovane_ukazatele()
 	TElement *prvni=NULL,*posledni=NULL;
 	//////procházení od prvního elementu a hledání prvního S&G elementu, po nalezení hledání dalšího S&G elementu
 	TElement *E=ELEMENTY->dalsi,*E1=NULL;
+	T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 	while(E!=NULL)
 	{
 		//hledám první S&G element
@@ -3147,9 +3213,11 @@ void Cvektory::aktualizuj_sparovane_ukazatele()
 			E1=NULL;delete E1;
 		}
     else E->sparovany==NULL;
-		E=dalsi_krok(E);
+		E=dalsi_krok(VYHYBKY,E);
 	}
 	//ukazatelové záležitosti
+  vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+	delete VYHYBKY;VYHYBKY=NULL;
 	delete E;E=NULL;
 
 	//////spárovaný ukazatel z posledního elementu na první
@@ -3269,9 +3337,10 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 	}
 
 	//kontrola RT, pokud je záporné, výpis doporučeného PT
-	if(F->OBJEKT_akt!=NULL &&  F->OBJEKT_akt->zobrazit_mGrid && F->Akce==F->Takce::NIC)
+	if(F->OBJEKT_akt!=NULL &&  F->OBJEKT_akt->zobrazit_mGrid && (F->Akce==F->Takce::NIC || F->Akce==F->Takce::ADD))
 	{
 		TElement *E=F->OBJEKT_akt->element;
+    T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 		String note="",jednotky=" s";
 		if(F->PTunit==F->Tminsec::MIN)jednotky=" min";
 		while(E!=NULL)
@@ -3280,18 +3349,20 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 				if(vrat_druh_elementu(E)==0 && E->mGrid!=NULL && E->pohon==F->OBJEKT_akt->pohon && (E->eID!=0))// || (E->eID==0 && (E->mGrid->Note.Text=="" || (E->mGrid->Note.Text!="" && E->mGrid->Note.Text.SubString(1,F->ls->Strings[250].Length())!=F->ls->Strings[250] && E->mGrid->Note.Text.SubString(1,F->ls->Strings[251].Length())!=F->ls->Strings[251] && E->mGrid->Note.Text.SubString(1,F->ls->Strings[426].Length())!=F->ls->Strings[426])))))
 				{
 		  		note="Dop. hodnota PT je maximálně ";
-		  		//kontrola, zda je RT záporné
-					if(E->data.RT.y<0)
+					//kontrola, zda je RT záporné
+					if(m.round2double(E->data.RT.y,5)<0)
 					{
-						note+=AnsiString(m.round2double(E->data.PT1+E->data.PT2+E->PTotoc+E->data.RT.y,3))+jednotky;
+						note+=AnsiString(m.round2double(F->outPT(E->data.PT1+E->data.PT2+E->PTotoc+E->data.RT.y),3))+jednotky;
 						E->mGrid->Note.Text=note; //E->mGrid->ShowNote(note);
 					}
 					else E->mGrid->Note.Text="";
           E->mGrid->Refresh();
 				}
 			}catch(...){;}//dochází k tomuto při načítání mgridů
-			E=dalsi_krok(E,F->OBJEKT_akt);
+			E=dalsi_krok(VYHYBKY,E,F->OBJEKT_akt);
 		}
+    vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+		delete VYHYBKY;VYHYBKY=NULL;
 		E=NULL;delete E;
 	}
 }
@@ -3314,17 +3385,18 @@ Cvektory::TElement *Cvektory::vrat_posledni_element_objektu(TObjekt *Objekt)
 	else return NULL;
 }
 ////---------------------------------------------------------------------------
-void Cvektory::hlavicka_seznam_VYHYBKY()
+Cvektory::T2Element *Cvektory::hlavicka_seznam_VYHYBKY()
 {
-	VYHYBKY=new T2Element;
+	T2Element *VYHYBKY=new T2Element;
 	VYHYBKY->n=0;
 	VYHYBKY->vyhybka=NULL;
 	VYHYBKY->spojka=NULL;
 	VYHYBKY->dalsi=NULL;
 	VYHYBKY->predchozi=VYHYBKY;
+  return VYHYBKY;
 }
 ////---------------------------------------------------------------------------
-void Cvektory::uloz_vyhybku_do_seznamu(TElement *vyhybka)
+void Cvektory::uloz_vyhybku_do_seznamu(TElement *vyhybka,T2Element *VYHYBKY)
 {
 	T2Element *novy=new T2Element;
 	novy->n=VYHYBKY->predchozi->n+1;
@@ -3338,7 +3410,7 @@ void Cvektory::uloz_vyhybku_do_seznamu(TElement *vyhybka)
 
 }
 ////---------------------------------------------------------------------------
-void Cvektory::smaz_vyhybku_ze_seznamu()
+void Cvektory::smaz_vyhybku_ze_seznamu(T2Element *VYHYBKY)
 {
 	T2Element *smaz=VYHYBKY->predchozi;
 	smaz->predchozi->dalsi=NULL;
@@ -3346,7 +3418,7 @@ void Cvektory::smaz_vyhybku_ze_seznamu()
 	delete smaz;smaz=NULL;
 }
 ////---------------------------------------------------------------------------
-long Cvektory::vymaz_seznam_VYHYBKY()
+long Cvektory::vymaz_seznam_VYHYBKY(T2Element *VYHYBKY)
 {
 	long pocet_smazanych=0;
 	while(VYHYBKY!=NULL)
@@ -3357,13 +3429,12 @@ long Cvektory::vymaz_seznam_VYHYBKY()
 		VYHYBKY=VYHYBKY->dalsi;
 	}
   delete VYHYBKY;VYHYBKY=NULL;
-	hlavicka_seznam_VYHYBKY();
 	return  pocet_smazanych;
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 //určí další krok průchodového algoritmu ve spojáku elementů, 2 možností průchod kompletního spojáku ELEMENTY, druhá průchod pouze elementů jednoho objektu
-Cvektory::TElement *Cvektory::dalsi_krok(TElement *E,TObjekt *O)
+Cvektory::TElement *Cvektory::dalsi_krok(T2Element *VYHYBKY,TElement *E,TObjekt *O)
 {
 	////normální průchod kompletním spojákem elementů
 	if(O==NULL)
@@ -3376,7 +3447,7 @@ Cvektory::TElement *Cvektory::dalsi_krok(TElement *E,TObjekt *O)
 				do
 				{
 					E=VYHYBKY->predchozi->vyhybka->dalsi;//navrácení zpět na výhybku
-					smaz_vyhybku_ze_seznamu();//smazání výhybky kterou jsem již prošel
+					smaz_vyhybku_ze_seznamu(VYHYBKY);//smazání výhybky kterou jsem již prošel
 				}while(E->eID==301 && VYHYBKY->predchozi->n!=0 && E->dalsi->idetifikator_vyhybka_spojka==VYHYBKY->predchozi->vyhybka->idetifikator_vyhybka_spojka);
 			}
 		}
@@ -3385,16 +3456,16 @@ Cvektory::TElement *Cvektory::dalsi_krok(TElement *E,TObjekt *O)
   		//jsem na výhybce
   		if(E->eID==300)
   		{
-  			uloz_vyhybku_do_seznamu(E);//uloži ji do seznamu, abych věděl kam se mám vrátit
+				uloz_vyhybku_do_seznamu(E,VYHYBKY);//uloži ji do seznamu, abych věděl kam se mám vrátit
   			E=E->dalsi2;//další krok bude na sekundární větev
   			//kontrola jestli ve vedlejší větvi není pouze spojka
-  			if(E!=NULL && E->eID==301 && VYHYBKY->predchozi->n!=0 && E->idetifikator_vyhybka_spojka==VYHYBKY->predchozi->vyhybka->idetifikator_vyhybka_spojka)
+				if(E!=NULL && E->eID==301 && VYHYBKY->predchozi->n!=0 && E->idetifikator_vyhybka_spojka==VYHYBKY->predchozi->vyhybka->idetifikator_vyhybka_spojka)
   			{
   				//navrácení na hlavní větev
   				do
   				{
   					E=VYHYBKY->predchozi->vyhybka->dalsi;//navrácení zpět na výhybku
-  					smaz_vyhybku_ze_seznamu();//smazání výhybky kterou jsem již prošel
+						smaz_vyhybku_ze_seznamu(VYHYBKY);//smazání výhybky kterou jsem již prošel
   				}while(E->eID==301 && VYHYBKY->predchozi->n!=0 && E->idetifikator_vyhybka_spojka==VYHYBKY->predchozi->vyhybka->idetifikator_vyhybka_spojka);
   			}
   		}
@@ -3405,11 +3476,11 @@ Cvektory::TElement *Cvektory::dalsi_krok(TElement *E,TObjekt *O)
   			do
     		{
   				E=VYHYBKY->predchozi->vyhybka->dalsi;//navrácení zpět na výhybku
-    			smaz_vyhybku_ze_seznamu();//smazání výhybky kterou jsem již prošel
+					smaz_vyhybku_ze_seznamu(VYHYBKY);//smazání výhybky kterou jsem již prošel
   			}while(E->eID==301 && VYHYBKY->predchozi->n!=0 && E->dalsi->idetifikator_vyhybka_spojka==VYHYBKY->predchozi->vyhybka->idetifikator_vyhybka_spojka);
       }
   		else E=E->dalsi;
-  	}
+		}
 	}
 
 	////průchod pouze v jednom objektu, odlehčený alg. kompletního průchodu k testům
@@ -3418,14 +3489,14 @@ Cvektory::TElement *Cvektory::dalsi_krok(TElement *E,TObjekt *O)
 		//jsem na výhybce
 		if(E->eID==300 && E->predchozi2!=NULL)
 		{
-			uloz_vyhybku_do_seznamu(E);//uloži ji do seznamu, abych věděl kam se mám vrátit
+			uloz_vyhybku_do_seznamu(E,VYHYBKY);//uloži ji do seznamu, abych věděl kam se mám vrátit
 			E=E->dalsi2;//další krok bude na sekundární větev
 			//kontrola jestli ve vedlejší větvi není pouze spojka
 			if(E!=NULL && E->eID==301 && VYHYBKY->predchozi->n!=0 && E->idetifikator_vyhybka_spojka==VYHYBKY->predchozi->vyhybka->idetifikator_vyhybka_spojka || E->objekt_n!=O->n)
 			{
 				//navrácení na hlavní větev
 				E=VYHYBKY->predchozi->vyhybka->dalsi;//navrácení zpět na výhybku
-				smaz_vyhybku_ze_seznamu();//smazání výhybky kterou jsem již prošel
+				smaz_vyhybku_ze_seznamu(VYHYBKY);//smazání výhybky kterou jsem již prošel
 			}
 		}
 		//jsem v sekundární vetvi na posledním elementu před spojkou
@@ -3433,7 +3504,7 @@ Cvektory::TElement *Cvektory::dalsi_krok(TElement *E,TObjekt *O)
 		{
 			//navrácení na hlavní větev + kontrola zda za vyhybkou není hned spojka (výhybka v sekundární větvi)
 			E=VYHYBKY->predchozi->vyhybka->dalsi;//navrácení zpět na výhybku
-			smaz_vyhybku_ze_seznamu();//smazání výhybky kterou jsem již prošel
+			smaz_vyhybku_ze_seznamu(VYHYBKY);//smazání výhybky kterou jsem již prošel
 		}
 		else if(E->eID==301 && E->dalsi2->objekt_n!=O->n && (E!=VYHYBKY->spojka || VYHYBKY->spojka==NULL))//posun na sekundární větev na hranice objektu
 		{
@@ -3447,8 +3518,6 @@ Cvektory::TElement *Cvektory::dalsi_krok(TElement *E,TObjekt *O)
 		//if(E!=NULL && E==VYHYBKY->spojka)E=E->dalsi;
 		if(E!=NULL && E->objekt_n!=O->n)E=NULL;//pokud jsem již mimo objekt
 	}
-	//pokud alg. skončí smazat pro jistotu seznam, např. při průchodu pouze v objektu může zůstat naplněný
-	if(E==NULL)vymaz_seznam_VYHYBKY();
 	//vrat další krok
 	return E;
 }
@@ -3458,24 +3527,24 @@ Cvektory::TElement *Cvektory::dalsi_krok(TElement *E,TObjekt *O)
 Cvektory::TElement *Cvektory::predchozi_krok(TElement *E,TObjekt *O)
 {
 	//jsem na výhybce
-	if(E->eID==301)
-	{
-		uloz_vyhybku_do_seznamu(E);//uloži ji do seznamu, abych věděl kam se mám vrátit
-		E=E->predchozi2;//další krok bude na sekundární větev
-	}
-	//jsem v sekundární vetvi na posledním elementu před spojkou
-	else if(E->predchozi!=NULL && E->predchozi->eID==300 && VYHYBKY->predchozi->n!=0)
-	{
-		E=VYHYBKY->predchozi->vyhybka->predchozi;//navrácení zpět na výhybku
-		smaz_vyhybku_ze_seznamu();//smazání výhybky kterou jsem již prošel
-		//kontrola zda za vyhybkou není hned spojka (výhybka v sekundární větvi)
-		if(E->eID==300)
-		{
-			E=VYHYBKY->predchozi->vyhybka->predchozi;//pokud ano vrat se na predchozi vyhybku
-			smaz_vyhybku_ze_seznamu();//smazání výhybky kterou jsem již prošel
-		}
-	}
-	else E=E->predchozi;
+//	if(E->eID==301)
+//	{
+//		uloz_vyhybku_do_seznamu(E);//uloži ji do seznamu, abych věděl kam se mám vrátit
+//		E=E->predchozi2;//další krok bude na sekundární větev
+//	}
+//	//jsem v sekundární vetvi na posledním elementu před spojkou
+//	else if(E->predchozi!=NULL && E->predchozi->eID==300 && VYHYBKY->predchozi->n!=0)
+//	{
+//		E=VYHYBKY->predchozi->vyhybka->predchozi;//navrácení zpět na výhybku
+//		smaz_vyhybku_ze_seznamu();//smazání výhybky kterou jsem již prošel
+//		//kontrola zda za vyhybkou není hned spojka (výhybka v sekundární větvi)
+//		if(E->eID==300)
+//		{
+//			E=VYHYBKY->predchozi->vyhybka->predchozi;//pokud ano vrat se na predchozi vyhybku
+//			smaz_vyhybku_ze_seznamu();//smazání výhybky kterou jsem již prošel
+//		}
+//	}
+//	else E=E->predchozi;
 	//vrat další krok
 	return E;
 }
@@ -3784,7 +3853,6 @@ void Cvektory::smaz_vyhybku_spojku(TElement *Element,unsigned long maz_OBJ)
 
 	//upravení počtu výhybek
 	aktualizuj_identifikator_vyhybky_spojky();
-	vymaz_seznam_VYHYBKY();
 	//kontrola zda nezbyl nějaký prázdný objekt bez elementů, pokud ano smaže jej
 	TObjekt *O=OBJEKTY->dalsi,*o_pom=NULL;
 	while(O!=NULL)
@@ -3808,6 +3876,7 @@ void Cvektory::aktualizuj_identifikator_vyhybky_spojky()
 	int pocet=0;//počet výhybek, začínám od začátku
 						
 	//průchod kompletního spojáku
+	T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 	while(E!=NULL)
 	{
 		if(E->eID==300)//narazil jsem na výhybku
@@ -3824,10 +3893,12 @@ void Cvektory::aktualizuj_identifikator_vyhybky_spojky()
 	  	smazat->predchozi=pom;
 			pom=NULL;delete pom;
 		}
-		E=dalsi_krok(E);
+		E=dalsi_krok(VYHYBKY,E);
 	}
 
 	//ukazatelové záležitosti
+  vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+	delete VYHYBKY;VYHYBKY=NULL;
 	delete E;E=NULL;
 
   //zapsání počtu výhybek do proměnné
@@ -4096,6 +4167,7 @@ long Cvektory::vymaz_seznam_ELEMENTY()
 	T2Element *smazat=new T2Element,*pom=NULL;
 	smazat->dalsi=NULL;smazat->predchozi=smazat;
 	TElement *E=ELEMENTY->dalsi;
+  T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 	while(E!=NULL)
 	{
 		pom=new T2Element;
@@ -4105,8 +4177,10 @@ long Cvektory::vymaz_seznam_ELEMENTY()
 		smazat->predchozi->dalsi=pom;
 		smazat->predchozi=pom;
 		pom=NULL;delete pom;
-		E=dalsi_krok(E);
+		E=dalsi_krok(VYHYBKY,E);
 	}
+	vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+	delete VYHYBKY;VYHYBKY=NULL;
 	delete E;E=NULL;
 	//mazání elementů a pomocných spojáků
 	while (smazat!=NULL)
@@ -4243,6 +4317,7 @@ bool Cvektory::pohon_je_pouzivan(unsigned long n,bool po_obektech,bool vsechny_e
 	else
 	{
 		TElement *E=ELEMENTY->dalsi;
+		T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 		while(E!=NULL)
 		{
 			if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n || F->OBJEKT_akt==NULL)//kontrolovat pouze mimo aktuálně editované elementy
@@ -4250,8 +4325,10 @@ bool Cvektory::pohon_je_pouzivan(unsigned long n,bool po_obektech,bool vsechny_e
 				if((vsechny_elementy || (!vsechny_elementy && vrat_druh_elementu(E)!=-1)) && E->pohon!=NULL && E->pohon->n==n)
 				{nalezen=true;break;}
 			}
-			E=E->dalsi;
+			E=dalsi_krok(VYHYBKY,E);
 		}
+		vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+		delete VYHYBKY;VYHYBKY=NULL;
 		E=NULL;delete E;
 	}
 	O=NULL;delete O;
@@ -4339,6 +4416,7 @@ void Cvektory::aktualizuj_rezim_pohonu(TPohon *pohon,short rezim)
 			unsigned int pSG=0,pKK=0;
 			bool pokracovat=true;
 			TElement *E=ELEMENTY->dalsi;
+			T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 			while(E!=NULL)
 			{
 				//pokud je elemenent na stejném pohonu, kontrola
@@ -4346,19 +4424,20 @@ void Cvektory::aktualizuj_rezim_pohonu(TPohon *pohon,short rezim)
 				{
 					//kontrola typu elementu
 					switch(vrat_druh_elementu(E))
-			  	{
+					{
 						case 0:{pSG++;pokracovat=false;}break;//na pohonu se nachází S&G element, pokud byl nalezen jeden S&G element, ukončení průchodu
 			  		case 1:pKK++;break;//na pohonu se nachází S&G element
 			  		default:break;
 					}
 				}
 				//přesun na další element
-				if(pokracovat)E=dalsi_krok(E);
+				if(pokracovat)E=dalsi_krok(VYHYBKY,E);
         //pokud jsem narazil na S&G element dojde k ukončení průchodu
 				else break;
 			}
+      vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+			delete VYHYBKY;VYHYBKY=NULL;
 			E=NULL;delete E;
-			vymaz_seznam_VYHYBKY();//pokud může dojít k přerušení alg. průchodu, nutné mazat!!
 
 			//nastavení režimu
 			pohon->rezim=-1;
@@ -4574,6 +4653,7 @@ void Cvektory::vytvor_retez(TPohon *Pohon)
 		//double umisteni=F->Poffset*0.0083333333*3/*pro testy úvodní simulace jinak 0*/;
 		double umisteni=0;
 		TElement *E=ELEMENTY->dalsi;//přeskočí hlavičku
+		T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 		while(E!=NULL)//procházení jednotlivých elementů pro tvorbů řetězu
 		{
 			if(E->pohon!=NULL && Pohon!=NULL && E->pohon->n==Pohon->n && E->geo.delka>0)//řetěz tvořen pouze z geometrie všech elementů, co spadají pod daný pohon
@@ -4650,9 +4730,11 @@ void Cvektory::vytvor_retez(TPohon *Pohon)
 				////kalkulace s umístěním palce pro další segment
 				umisteni-=E->geo.delka;//zbytek z předchzejícího geometrického úseku, který nestihl být zohledněn převeden na další geometrický úsek, resp. element = výchozí umístění v dalším elementu
 			}
-			E=dalsi_krok(E);//posun na další element nahrazuje při použití výhybek dřívější E=E->dalsi;
+			E=dalsi_krok(VYHYBKY,E);//posun na další element nahrazuje při použití výhybek dřívější E=E->dalsi;
 		}
-		delete E;
+    vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+		delete VYHYBKY;VYHYBKY=NULL;
+		delete E;E=NULL;
 
 		////doplnění případného posledního (momentálně virtuálního) palce, který není vidět (je mimo řetěz), pozor řeší jenom předpoklad, že rozteč palců je menší než délka řetězu
 		if(delka>0 && ceil(delka/Pohon->roztec)+1>Pohon->palec->predchozi->n)//pokud je potřebná délka (pro celočíselnou dělitelnost roztečí) řetězu větší než aktuální, přídá palec (momentálně virutální)
@@ -6032,12 +6114,15 @@ void Cvektory::generuj_VOZIKY()
 
 		////PROVIZORNÍ vytvoření pole pro již prošlé elementy, kvůli  bufferu na vedlejší větvi
 		TElement *E=ELEMENTY->dalsi;
+    T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 		unsigned long pocet_elementu=0;
 		while(E!=NULL)
 		{
 			pocet_elementu++;
-			E=dalsi_krok(E);
+			E=dalsi_krok(VYHYBKY,E);
 		}
+    vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+		delete VYHYBKY;VYHYBKY=NULL;
 		E=NULL;delete E; //pokud nedojde algoritmus na konec seznamu
 		delete E;E=NULL; //pokud dojde na konec seznamu
 		bool *POLE_element_pouzit=new bool[pocet_elementu];
@@ -8855,12 +8940,6 @@ void Cvektory::vse_odstranit()
  	}
 	hlavicka_ELEMENTY();//nutnost
 
-	//VYHYBKY
-	if(VYHYBKY!=NULL && VYHYBKY->predchozi->n>0)//pokud je více výhybek
- 	{
-		vymaz_seznam_VYHYBKY();//vymaze vyhybky z paměti a vytvoří hlavičku
-	}
-
  	//POHONY
  	if(POHONY!=NULL && POHONY->predchozi->n>0)//pokud je více objektů
  	{
@@ -9218,12 +9297,15 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 				//mazání mGridů elementů
 				F->nastav_focus();
 				TElement *E=F->OBJEKT_akt->element;
+				T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 				while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
 				{
 					E->mGrid->Delete();
 					E->mGrid=NULL;
-					E=dalsi_krok(E,F->OBJEKT_akt);
+					E=dalsi_krok(VYHYBKY,E,F->OBJEKT_akt);
 				}
+				vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+				delete VYHYBKY;VYHYBKY=NULL;
 				E=NULL;delete E;
 				//mazání PmG
 				if(F->PmG!=NULL)
@@ -9858,7 +9940,7 @@ TPointD Cvektory::InVrata(TElement *E,bool kontrola_kurzoru)
 	ret.x=ret.y=-1*MaxInt;//defaultní stav nenalezeno
 	TObjekt *O=vrat_objekt(E->objekt_n);
 	//pouze kontrolovat u objektů se stěnami a má body, pouze pro liniovou geometrii objektu
-	if(E->geo.typ==0 && O!=NULL && O->sirka_steny>0 && O->body!=NULL && O->body->dalsi!=NULL)
+	if(E->geo.typ==0 && O!=NULL/* && O->sirka_steny>0*/ && O->body!=NULL && O->body->dalsi!=NULL)
 	{
 		//deklarace parametrů úseček
 		TPointD P;

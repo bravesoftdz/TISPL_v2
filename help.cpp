@@ -53,6 +53,8 @@ Top=Form1->ClientHeight/2-Form_help->Height/2;
 	if(scGPToolPager->ActivePage==scGPToolPagerPage_about)
 	{
 		//deklarace pomocných atriburù
+		UnicodeString nastaveni_app=F->get_temp_dir()+"\TISPL",umisteni=ExtractFilePath(Application->ExeName);
+		umisteni=umisteni.SubString(1,umisteni.Length()-1);
 		String about_text="";
 		bool english=true;
 		//naètení jazyka
@@ -60,33 +62,31 @@ Top=Form1->ClientHeight/2-Form_help->Height/2;
 		//vypis textu
 		if(english)
 		{
-			about_text="Product version: "+String(F->ProductVersion)+"<br>"
-								+"File version: "+String(F->FileVersion)+"<br>"
+			about_text="<b>Project</b><br>File version: "+String(F->FileVersion)+"<br>"
 								+"Created by: "+F->d.v.PP.vytvoril+" , "+DateToStr(F->d.v.PP.cas_start)+" "+TimeToStr(F->d.v.PP.cas_start)+"<br>"
 								+"Last modified: "+F->d.v.PP.upravil+" , "+DateToStr(F->d.v.PP.cas_posledni_upravy)+" "+TimeToStr(F->d.v.PP.cas_posledni_upravy)+"<br>"
-								+"Location "+Application->ExeName+"<br>"
-								+"Application Settings "+F->get_temp_dir();
+								+"<br><b>Application</b><br>Product version: "+String(F->ProductVersion)+"<br>"
+								+"Location: <a href="+umisteni+">"+umisteni+"</a><br>";
+								//+"Application Settings: "+F->get_temp_dir();
 		}
 		else
 		{
-			about_text="Verze aplikace: "+String(F->ProductVersion)+"<br>"
-								+"Verze souboru: "+String(F->FileVersion)+"<br>"
+			about_text="<b>Projekt</b><br>Verze souboru: "+String(F->FileVersion)+"<br>"
 								+"Vytvoøil: "+F->d.v.PP.vytvoril+" , "+DateToStr(F->d.v.PP.cas_start)+" "+TimeToStr(F->d.v.PP.cas_start)+"<br>"
 								+"Posledni zmìna: "+F->d.v.PP.upravil+" , "+DateToStr(F->d.v.PP.cas_posledni_upravy)+" "+TimeToStr(F->d.v.PP.cas_posledni_upravy)+"<br>"
-								+"Umístìní "+Application->ExeName+"<br>"
-								+"Nastavení aplikace "+F->get_temp_dir();
+								+"<br><b>Aplikace</b><br>Verze aplikace: "+String(F->ProductVersion)+"<br>"
+								+"Umístìní: <a href="+umisteni+">"+umisteni+"</a><br>";
+								//+"Nastavení aplikace: <a>"+F->get_temp_dir()+"\TISPL</a>";
 		}
     //pokud jsem v režimu debug, pøidat cestu k nastavení app
 		if(DEBUG)
 		{
-			if(english)about_text+="Application Settings "+F->get_temp_dir();
-			else about_text+="Nastavení aplikace "+F->get_temp_dir();
+			if(english)about_text+="Application Settings <a href="+nastaveni_app+">"+nastaveni_app+"</a>";
+			else about_text+="Nastavení aplikace <a href="+nastaveni_app+">"+nastaveni_app+"</a>";
     }
 		//zapsání do komponenty
 		scHTMLLabel_about->Caption=about_text;
-  }
-
-
+	}
 }
 //---------------------------------------------------------------------------
 
@@ -124,4 +124,11 @@ void __fastcall TForm_help::scGPToolPagerClick(TObject *Sender)
 
 
 
+
+void __fastcall TForm_help::scHTMLLabel_aboutLinkClick(TObject *Sender, int LinkIndex,
+					UnicodeString LinkText, UnicodeString LinkURL)
+{
+	if(LinkText!="")ShellExecute(0,L"open",LinkText.c_str(),0,0,SW_SHOWNORMAL);
+}
+//---------------------------------------------------------------------------
 

@@ -35,6 +35,7 @@ __published:	// IDE-managed Components
   TscGPImage *scGPImage1;
   TscLabel *scLabel3;
 	TscGPCheckBox *scGPCheckBox_odeslat_vcetne_projektu;
+  TscGPComboBox *scGPComboBox1;
   void __fastcall CloseButtonClick(TObject *Sender);
   void __fastcall FormShow(TObject *Sender);
   void __fastcall scGPButton_odeslatClick(TObject *Sender);
