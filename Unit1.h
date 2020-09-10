@@ -753,7 +753,7 @@ public:		// User declarations
 	//bool vlakno_PanCreateState;
 	bool zobrazit_upozorneni_teplomery;
 	bool mereni_po_trendu;//slouží pro uchovávání stavu, zda mìøím po trendu nebo proti, pøedáváno z Cvykresli::vykresli_meridlo()
-	double mereni_delka;//uchovává v sobì namìøenou délku
+	TPointD mereni_delka;//uchovává v sobì namìøenou délku (x) a pùdorysnou délku (y)
 	TPointD mereni_cas;//uchovává v sobì namìøený èas bez èasù v elementech (x) a s èasem elemntù (y)
 	double CAS;
 	bool CASOVEOSY;

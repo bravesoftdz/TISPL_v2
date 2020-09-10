@@ -1013,7 +1013,7 @@ void Cvektory::aktualizace_rezimu_objektu(TObjekt *Objekt,bool aktualizovat_sta_
 	delete VYHYBKY;VYHYBKY=NULL;
 
 	//zkontrolovat zda nejsou v objektu PM nebo výhybky, pokud ano aktualizovat jim editované položky
-  if(F->OBJEKT_akt!=NULL)FormX->zmena_rezimu_pohonu(NULL);
+  if(aktualizovat_sta_mGridu && F->OBJEKT_akt!=NULL)FormX->zmena_rezimu_pohonu(NULL);
 
 	//ukazatelové záležitosti
 	E=NULL;delete E;

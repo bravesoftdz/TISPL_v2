@@ -1174,7 +1174,7 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 {
 	////deklarace
-	double R,RA,OR,X,Y,uhel=0,delka=0,azimut,cas=0,cas_pom=0,d=0,delka_Pud=0;
+	double R,RA,OR,X,Y,uhel=0,delka=0,azimut,cas=0,cas_pom=0,delka_pom=0,d=0,delka_Pud=0;
 	String popisek="";
 
 	///vykreslení uložených segmentů v mag lasu, pokud je třeba
@@ -1198,7 +1198,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			if(C->Element->n!=MaxInt && C->n!=1)
 			{
 				delka_Pud=d=C->Element->geo.delka;
-        if(C->Element->geo.HeightDepp!=0)delka_Pud=C->Element->geo.delkaPud;
+				if(C->Element->geo.HeightDepp!=0)delka_Pud=C->Element->geo.delkaPud;
 			}
 			else if(C->Element->geo.typ==0)
 			{
@@ -1212,6 +1212,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 				delka_Pud=d=m.R2Larc(C->Element->geo.radius,uhel);
 			}
 			delka+=d;
+			delka_pom+=delka_Pud;
 
 			if(C->Element->geo.typ==0)
 			{
@@ -1343,6 +1344,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			uhel=m.uhelObloukuVsMys(X,Y,OR,RA,R,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
 			d=m.R2Larc(R,uhel);//požadovaná délka na oblouku vybraná myší, vracení délky dané výseče, tj. k na(při)počítání měřené délky
 			delka+=d;
+			delka_pom+=d;
       //vypočet času
 			if(F->pom_element->pohon!=NULL)
 			{
@@ -1378,6 +1380,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			delka_Pud=d=m.delka(X,Y,konec.x,konec.y);
 			d=m.castPrepony(d,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
 			delka+=d;
+      delka_pom+=delka_Pud;
 
 			//vypočet času
 			if(F->pom_element->pohon!=NULL && d!=0)
@@ -1461,10 +1464,12 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
       delka=d;
 		}
 		else vykresli_Gelement(canv,X,Y,azimut,0,delka,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]");
+    delka_pom=delka_Pud;
 	}
 
 	//uložení naměřených hodnot
-	F->mereni_delka=delka;
+	F->mereni_delka.x=delka;
+  F->mereni_delka.y=delka_pom;
 	F->mereni_cas.x=cas;
 	F->mereni_cas.y=cas_pom;
 }
@@ -1775,7 +1780,7 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
 	}
 
   //uložení naměřených hodnot
-	F->mereni_delka=delka;
+	F->mereni_delka.x=delka;
 	F->mereni_cas.x=F->mereni_cas.y=0;//cas;
 }
 ////---------------------------------------------------------------------------

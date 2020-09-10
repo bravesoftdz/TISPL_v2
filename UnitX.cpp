@@ -767,8 +767,11 @@ void TFormX::OnKeyDown(long Tag,unsigned long Col,unsigned long Row,WORD &Key,TS
 void TFormX::zmena_aRD(Cvektory::TElement *mimo_element)
 {
 	//pøepoèet parametrù pohonu
-	F->OBJEKT_akt->pohon->Rz=F->m.Rz(F->OBJEKT_akt->pohon->aRD);
-	F->OBJEKT_akt->pohon->Rx=F->m.Rx(F->OBJEKT_akt->pohon->aRD,F->OBJEKT_akt->pohon->roztec);
+	if(F->OBJEKT_akt->pohon->rezim!=0)
+	{
+		F->OBJEKT_akt->pohon->Rz=F->m.Rz(F->OBJEKT_akt->pohon->aRD);
+		F->OBJEKT_akt->pohon->Rx=F->m.Rx(F->OBJEKT_akt->pohon->aRD,F->OBJEKT_akt->pohon->roztec);
+	}
 	if(F->PmG!=NULL)
 	{
 		//propoèty v tabulce pohonu
@@ -1295,7 +1298,7 @@ void TFormX::odstranit_korelaci(bool predat_focus)
 void TFormX::validace_aRD(bool pouze_rozmezi)
 {
 	//kontrola pøi KK stavu objektu, validace všeho
-	if(F->PmG!=NULL && F->OBJEKT_akt->pohon!=NULL && F->OBJEKT_akt->pohon->rezim!=0)
+	if(F->PmG!=NULL && F->OBJEKT_akt->pohon!=NULL && F->OBJEKT_akt->rezim!=0)
 	{
     //smazání pøedchozí validace z VID
 		zapisVID(0,1);//pozice jsou popsány v .h u deklarace VID a vnì metody zapisVID()
@@ -1370,7 +1373,7 @@ void TFormX::validace_aRD(bool pouze_rozmezi)
 		povolit_zakazat_editaci();//rozhodne se na základì VIDu
 	}
 	//kontrola pøi ostatních stavech objektu, pouze rozmezí rychlostí
-	if(F->PmG!=NULL && F->OBJEKT_akt->pohon!=NULL && F->OBJEKT_akt->pohon->rezim==0)
+	if(F->PmG!=NULL && F->OBJEKT_akt->pohon!=NULL && F->OBJEKT_akt->rezim==0)
 	{
     //deklarace
 		unsigned int pro_pohon=0;
@@ -1614,8 +1617,16 @@ void TFormX::prirazeni_pohohonu_vetvi(Cvektory::TElement *E,long Col)
 	if(p!=NULL)
 	{
 		F->OBJEKT_akt->stavPM=2;//rozšíøit mGridy
-		p->Rz=F->m.Rz(p->aRD);
-		p->Rx=F->m.Rx(p->aRD,p->roztec);
+		if(p->rezim!=0)
+		{
+			p->Rz=F->m.Rz(p->aRD);
+			p->Rx=F->m.Rx(p->aRD,p->roztec);
+		}
+		else
+		{
+			p->Rz=0;
+      p->Rx=0;
+    }
 	}
 
   ////uložení aktuálnì editovaného pohonu
@@ -1745,7 +1756,7 @@ void TFormX::update_hodnot_vyhybky_PM(Cvektory::TElement *E)
     	if(E->dalsi2!=E->predchozi2 && E->dalsi2->pohon!=NULL)
 			{
 				if(input_state==NOTHING && E->dalsi2->pohon->rezim!=0)//pøepoèet po pøidání KK elementu
-		  	{
+				{
 					E->dalsi2->pohon->Rz=F->m.Rz(E->dalsi2->pohon->aRD);
 					E->dalsi2->pohon->Rx=F->m.Rx(E->dalsi2->pohon->aRD,E->dalsi2->pohon->roztec);
 				}
@@ -1853,7 +1864,7 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 			if(i==3)p=p1;
 			if(i==4)p=p2;
 			//kontrola zda existuje pohon, pokud ne nemá smysl øešit
-			if(p!=NULL && p->rezim!=0)
+			if(p!=NULL && F->OBJEKT_akt->rezim!=0)
 			{
 				//kontrola zda je možné editovat pohon
 				if(E->mGrid->Cells[i][3].Type==E->mGrid->EDIT && p!=NULL)
@@ -2064,8 +2075,16 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 	if(p!=NULL)
 	{
 		F->OBJEKT_akt->stavPM=2;//rozšíøit mGridy
-		p->Rz=F->m.Rz(p->aRD);
-		p->Rx=F->m.Rx(p->aRD,p->roztec);
+		if(p->rezim!=0)
+		{
+			p->Rz=F->m.Rz(p->aRD);
+			p->Rx=F->m.Rx(p->aRD,p->roztec);
+		}
+		else
+		{
+			p->Rz=0;
+			p->Rx=0;
+    }
 	}
 
 	////prohození sloupcù
@@ -2653,7 +2672,8 @@ void TFormX::zmena_rezimu_pohonu(Cvektory::TPohon *pohon)
 	bool probehla_validace=false;
 	Cvektory::TElement *E=F->OBJEKT_akt->element;
 
-	//aktualizace parametrù zmìnìného pohonu
+	//aktualizace parametrù pohonu
+	if(pohon==NULL)pohon=F->OBJEKT_akt->pohon;
 	if(pohon!=NULL)
 	{
 		if(pohon->rezim==0)
@@ -2666,7 +2686,7 @@ void TFormX::zmena_rezimu_pohonu(Cvektory::TPohon *pohon)
 			pohon->Rz=F->m.Rz(pohon->aRD);
 			pohon->Rx=F->m.Rx(pohon->aRD,pohon->roztec);
     }
-  }
+	}
 
 	//prùchod skrze elementy v objektu
 	Cvektory::T2Element *VYHYBKY=F->d.v.hlavicka_seznam_VYHYBKY();//vytvoøení prùchodového spojáku
