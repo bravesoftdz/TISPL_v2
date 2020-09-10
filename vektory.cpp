@@ -4441,8 +4441,18 @@ void Cvektory::aktualizuj_rezim_pohonu(TPohon *pohon,short rezim)
 
 			//nastavení režimu
 			pohon->rezim=-1;
-			if(pSG>0)pohon->rezim=0;
+			if(pSG>0)
+			{
+        pohon->rezim=0;
+				pohon->Rx=0;
+				pohon->Rz=0;
+      }
 			else if(pKK>0)pohon->rezim=1;
+      if(pohon->rezim!=0)
+			{
+				pohon->Rz=m.Rz(pohon->aRD);
+				pohon->Rx=m.Rx(pohon->aRD,pohon->roztec);
+			}
 		}
 
     //pokud došlo ke změně režimu a je otevřena editace, aktualizuje zobrazení v tabulkách
