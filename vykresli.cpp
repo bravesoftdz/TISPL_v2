@@ -967,19 +967,33 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv)
   ////měření na časových osách při simulaci
 	if(F->pocatek_mereni.x!=-1 && F->pocatek_mereni.y!=-1)
 	{
-		//vykreslní popisku
-		String text=String(m.round2double(m.abs_d((F->konec_mereni.x-F->pocatek_mereni.x)/PX2SEC*3),2))+" [s]";
-		canv->Font->Color=clMeridlo;
-		canv->Font->Size=20*3;
-		TextFraming(canv,F->konec_mereni.x*3-canv->TextWidth(text)/2,(F->scGPPanel_mainmenu->Height+(v.SIM->predchozi->V->n+1)*KrokY/3)*3,text);
-    //vykreslení svislic
+		//vykreslení svislic
 		vykresli_svislici_na_casove_osy(canv,F->pocatek_mereni.x*3,true);
 		vykresli_svislici_na_casove_osy(canv,F->konec_mereni.x*3,true);
+
+		//vykreslení kóty
+		if(F->pocatek_mereni.x!=F->konec_mereni.x)
+		{
+      //vykreslení linie
+			int X1,Y,X2,Yoff=5*3;
+			Y=(F->scGPPanel_mainmenu->Height+(v.SIM->predchozi->V->n+1)*KrokY/3)*3;
+	  	X1=F->pocatek_mereni.x*3;X2=F->konec_mereni.x*3;
+	  	line(canv,X1,Y-Yoff,X2,Y-Yoff);
+	  	//vykreslení šipek
+	  	sipka(canv,X1,Y-Yoff,m.azimut(X1,Y,X2,Y)*(-1),false,0.4,clMeridlo,clMeridlo,pmCopy,psSolid,false);
+			sipka(canv,X2,Y-Yoff,m.azimut(X1,Y,X2,Y)*(-1)-180,false,0.4,clMeridlo,clMeridlo,pmCopy,psSolid,false);
+      //vykreslní popisku
+	  	String text=String(m.round2double(m.abs_d((F->konec_mereni.x-F->pocatek_mereni.x)/PX2SEC*3),2))+" [s]";
+	  	canv->Font->Color=clMeridlo;
+	  	canv->Font->Size=15*3;
+			TextFraming(canv,X1+(X2-X1)/2.0-canv->TextWidth(text)/2.0,Y,text);
+		}
+
 		//vykreslení kolečka přichycení
 		if(F->prichytavat_k_mrizce==1)
 		{
-	  	double X=F->pocatek_mereni.x*3,olY=F->scGPPanel_mainmenu->Height*3+oY,Y=F->pocatek_mereni.y*KrokY+olY;short s=8*3;
-	  	set_pen(canv,clMeridlo,10,PS_ENDCAP_FLAT);
+			double X=F->pocatek_mereni.x*3,olY=F->scGPPanel_mainmenu->Height*3+oY,Y=F->pocatek_mereni.y*KrokY+olY;short s=7*3;
+			set_pen(canv,clMeridlo,10,PS_ENDCAP_FLAT);
 	  	canv->Ellipse(X-s,Y-s,X+s,Y+s);
 	  	X=F->konec_mereni.x*3;Y=F->konec_mereni.y*KrokY+olY;
 			canv->Ellipse(X-s,Y-s,X+s,Y+s);

@@ -4208,9 +4208,9 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			}
 			case MOVE_TEXT:if(OBJEKT_akt!=NULL && vychozi_souradnice_kurzoru.x==minule_souradnice_kurzoru.x && vychozi_souradnice_kurzoru.y==minule_souradnice_kurzoru.y){nastav_focus();nahled_ulozit(true);editace_textu=true;index_kurzoru=-6;nazev_puvodni=OBJEKT_akt->name;stav_kurzoru=false;TimerKurzor->Enabled=true;}Akce=NIC;kurzor(standard);pom_vyhybka=NULL;vytvor_obraz();break;
 			case MOVE_BOD:
-			case MOVE_USECKA:Akce=NIC;kurzor(standard);vytvor_obraz();break;
-			case MOVE_HALA:Akce=NIC;kurzor(standard);REFRESH();vytvor_obraz();break;//refresh z důvodu znovu zapnutí měřítka a gridu
-			case ROZMER_KOMORA:Akce=NIC;vytvor_obraz();break;
+			case MOVE_USECKA:JID=-1;Akce=NIC;kurzor(standard);vytvor_obraz();REFRESH();break;
+			case MOVE_HALA:Akce=NIC;kurzor(standard);vytvor_obraz();REFRESH();break;//refresh z důvodu znovu zapnutí měřítka a gridu
+			case ROZMER_KOMORA:Akce=NIC;break;
 			case OFFSET_KOTY:Akce=NIC;break;
 			case MEASURE:
 			{
@@ -5940,6 +5940,7 @@ void TForm1::ESC()
 				//vlastní mazání
 				d.v.smaz_element(smaz,true);
 				delete smaz;smaz=NULL;
+        d.v.pocet_vyhybek--;
 			}
 			//navrácení vrstev
 			Akce=BLOK;
@@ -6341,8 +6342,7 @@ void TForm1::spojeni_prvni_posledni(double citlivost)
 void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 {
 	//e_posledni == poslední element ve vedlejší větvi
-
-	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)==m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel) && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=1 && e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel==m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel))
+	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)==m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel) && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=1)// && e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel==m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel))
 	{
     bool vypnout=false;
 		if(Akce==GEOMETRIE)vypnout=true;
@@ -7660,9 +7660,9 @@ void TForm1::ukonceni_geometrie(bool kontrola)
 	//validovat
 	duvod_validovat=2;
 	//kurzor
-	if(Screen->Cursor!=standard)kurzor(standard);
+	if(Screen->Cursor!=standard)kurzor(standard);    log(__func__,"    před REFRESH");
   //překreslení
-	REFRESH(d.SCENA,true);
+	REFRESH(d.SCENA,true);      log(__func__,"    KONEC");
 }
 //---------------------------------------------------------------------------
 //vrátí maximální možný počet vozíků na stopce, podle geometrie před ní
@@ -12883,6 +12883,7 @@ void __fastcall TForm1::NastavitparametryClick1Click(TObject *Sender)
 	if(OBJEKT_akt!=NULL && pom_bod_temp!=NULL)//přidání bodu objektu
 	{
 		vloz_bod_haly_objektu(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
+    JID=-1;REFRESH();
 	}
 	if(Akce==GEOMETRIE)//přidávání zarážky při editaci geometrie
 	{
