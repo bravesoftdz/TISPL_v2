@@ -62,7 +62,7 @@ class Cvykresli
 	void vykresli_robota(TCanvas *canv,short scena,long X,long Y,AnsiString name,AnsiString short_name,short eID=1,short typ=0,double rotace=0,short stav=1,double LO1=1.5,double OTOC_delka=0,double LO2=0,double aP=0,float TS=0,double LO_pozice=0);
 	void vykresli_cloveka(TCanvas *canv,short scena,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,double LO1,double OTOC_delka,double LO2);//vykresli siluetu èlovìk s pøípadnì pøidruženým elememntem, rotuje po smìru hodinových ruèièek, pro animaci slouží okolo hranièních stupòu 0,90,180,270, vždy rozsah -45° až +44°, napø. 45-134° je maximální pracovní rozsah pro èlovìka rotovaného na 90° atd.
 	void vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ=0, double rotace=0, short stav=1);
-	void vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID=5,short typ=0,double rotace=0,short stav=1);
+	void vykresli_otoc(TCanvas *canv,short scena,long X,long Y,AnsiString name,AnsiString short_name,short eID=5,short typ=0,double rotace=0,short stav=1);
 	void vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ,double rotace,short stav,float TS=0);
 	void vykresli_teplomer(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,Cvektory::TElement *Element);
 	void vykresli_zarazku(TCanvas *canv,long X,long Y,double orientace,unsigned long objekt_n,String name="");
