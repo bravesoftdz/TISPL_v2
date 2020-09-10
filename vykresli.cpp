@@ -2616,6 +2616,7 @@ double Cvykresli::trend(Cvektory::TObjekt *Objekt)
 //vykresli pozic a obalových zón
 void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 {                                                                                                                                                                                                                                                                                                     //oblouk
+  if(F->scButton_zamek_layoutu->ImageIndex==68)//vše bude zobrazenou pouze pokud je layout určen k editaci, nebo probíhá editace, tj. je odemčen zámek layoutu
 	if(F->scGPTrackBar_intenzita->Value>5 && F->scGPCheckBox_zobrazit_pozice->Checked && E->data.pocet_pozic>0 || (F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180) || F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->geo.typ==1)//pokud se má smysl algoritmem zabývat, pouze optimalizační podmínky
 	{
 		////výchozí hodnoty
@@ -2697,12 +2698,13 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 			unsigned int pocet_voziku=E->data.pocet_voziku;
 			TColor clChassisTemp=m.clIntensive(clPotencial,-30),clJigTemp=m.clIntensive(clPotencial,-70),clPotencialBuffer=m.clIntensive(clPotencial,40);
 			//vykreslení jednoho vozíku či pozice, od zadu, aby byly vykresleny nejdříve pozice
-			if(pocet_voziku==1 && (m.Rt90(rotaceJ)==0 || m.Rt90(rotaceJ)==180) && v.PP.delka_podvozek<m.UDJ(rotaceJ))if(!F->scGPCheckBox_rozmisteni_voziku->Checked)vykresli_vozik(canv,0,X,Y,dJ,sJ,orientaceP,rotaceJ,clChassisTemp,clJigTemp);//využitá pozice - když je na stopce jenom jeden vozík a stejně se překrývají jigy nezobrazuje se buffer, jinýmy slovy při této situaci se nepředpokládá, že má smysl zobrazovat buffer (jsou to např. situace ve stopkách v lakování či přímo na robotech)
+			if(pocet_voziku==1 && (m.Rt90(rotaceJ)==0 || m.Rt90(rotaceJ)==180) && v.PP.delka_podvozek<m.UDJ(rotaceJ)){if(!F->scGPCheckBox_rozmisteni_voziku->Checked)vykresli_vozik(canv,0,X,Y,dJ,sJ,orientaceP,rotaceJ,clChassisTemp,clJigTemp);}//využitá pozice - když je na stopce jenom jeden vozík a stejně se překrývají jigy nezobrazuje se buffer, jinýmy slovy při této situaci se nepředpokládá, že má smysl zobrazovat buffer (jsou to např. situace ve stopkách v lakování či přímo na robotech)
 			else
 			{
 				for(unsigned int i=pocet_pozic-1;0<i+1;i--)//nutno zápis 0<i+1, jinak zamrzá!!!
 				{
-					if(i+1>pocet_voziku)vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,m.clIntensive(clPotencialBuffer,-50),clPotencialBuffer,0);//nevyužitá pozice - záměrně šedou jak podvozek tak JIG jako potenicální pozice
+					//vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,m.clIntensive(clPotencialBuffer,-50),clPotencialBuffer,0);
+					if(i+1>pocet_voziku){vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,m.clIntensive(clPotencialBuffer,-50),clPotencialBuffer,0);}//nevyužitá pozice - záměrně šedou jak podvozek tak JIG jako potenicální pozice
 					else if(!F->scGPCheckBox_rozmisteni_voziku->Checked)vykresli_vozik(canv,/*i+1*/0,X+x*v.PP.delka_podvozek*i,Y+y*v.PP.delka_podvozek*i,dJ,sJ,orientaceP,rotaceJ,clChassisTemp,clJigTemp);//využitá pozice - vykresluje se tato větev pouze pro případ skrytí zobrazení vozíků či posun vozíků při simulaci, jinak by neměla význam, protože by na těchto pozicích měly být vozíky
 				}
 			}
