@@ -914,7 +914,6 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 		E=F->d.v.dalsi_krok(VYHYBKY,E,F->OBJEKT_akt);
 	}
 	F->d.v.vymaz_seznam_VYHYBKY(VYHYBKY);//odstranìní prùchodového spojáku
-	delete VYHYBKY;VYHYBKY=NULL;
 
 	//pøedchozí PM
 	if(F->predchozi_PM!=NULL && F->predchozi_PM!=mimo_element)
@@ -1164,7 +1163,6 @@ void TFormX::korelace_tab_pohonu_elementy(Cvektory::TElement *mimo_element)
 		E=F->d.v.dalsi_krok(VYHYBKY,E,F->OBJEKT_akt);
 	}
 	F->d.v.vymaz_seznam_VYHYBKY(VYHYBKY);//odstranìní prùchodového spojáku
-	delete VYHYBKY;VYHYBKY=NULL;
 
 	//korelace v tabulce pøedchozího pm
 	if(F->predchozi_PM!=NULL)
@@ -1471,7 +1469,6 @@ bool TFormX::check_click_Note(double X,double Y,bool check_for_highlight)
 		E=F->d.v.dalsi_krok(VYHYBKY,E,F->OBJEKT_akt);
 	}
 	F->d.v.vymaz_seznam_VYHYBKY(VYHYBKY);//odstranìní prùchodového spojáku
-	delete VYHYBKY;VYHYBKY=NULL;
 	if(!ret && F->predchozi_PM!=NULL && F->predchozi_PM->mGrid!=NULL && F->predchozi_PM->mGrid->Note.Text!="" && F->predchozi_PM->mGrid->CheckLink(X,Y)==TPoint(-2,-2))
 	{
 		E=F->predchozi_PM;
@@ -1552,7 +1549,6 @@ Cvektory::TElement *TFormX::vrat_element_z_tabulky(long ID)
 		E=F->d.v.dalsi_krok(VYHYBKY,E,F->OBJEKT_akt);
 	}
 	F->d.v.vymaz_seznam_VYHYBKY(VYHYBKY);//odstranìní prùchodového spojáku
-	delete VYHYBKY;VYHYBKY=NULL;
 	if(ret==NULL && F->predchozi_PM!=NULL && F->predchozi_PM->mGrid->ID==ID)ret=F->predchozi_PM;
 	if(ret==NULL && F->OBJEKT_akt->teplomery!=NULL)
 	{
@@ -2000,7 +1996,6 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 				e_pom=F->d.v.dalsi_krok(VYHYBKY,e_pom,F->OBJEKT_akt);
 			}
 			F->d.v.vymaz_seznam_VYHYBKY(VYHYBKY);//odstranìní prùchodového spojáku
-			delete VYHYBKY;VYHYBKY=NULL;
 			e_pom=NULL;delete e_pom;
 		}
 
@@ -2709,8 +2704,7 @@ void TFormX::zmena_rezimu_pohonu(Cvektory::TPohon *pohon)
 	F->aktualizace_tab_pohon(false,true,true);//obsahuje podmínku.. pokud existuje PmG
 
 	//ukazatelové záležitosti
-  F->d.v.vymaz_seznam_VYHYBKY(VYHYBKY);//odstranìní prùchodového spojáku
-	delete VYHYBKY;VYHYBKY=NULL;
+	F->d.v.vymaz_seznam_VYHYBKY(VYHYBKY);//odstranìní prùchodového spojáku
 	E=NULL;delete E;
 }
 //---------------------------------------------------------------------------

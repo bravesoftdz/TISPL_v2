@@ -1070,7 +1070,6 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 			E=v.dalsi_krok(VYHYBKY,E);
 		}
 		v.vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
-		delete VYHYBKY;VYHYBKY=NULL;
 		E=NULL;delete E;
 
 		//kontrola bodů vozíků
@@ -1818,38 +1817,41 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TO
 			vykresli_element(canv,scena,m.L2Px(teplomery->posledni->X),m.L2Py(teplomery->posledni->Y),teplomery->posledni->name,"",teplomery->posledni->eID,1,m.Rt90(teplomery->posledni->sparovany->geo.orientace-teplomery->posledni->sparovany->geo.rotacni_uhel-90),1,1.5,0,0,0,teplomery->posledni);
 
 			/////vykresení cesty
-			if(teplomery->prvni->sparovany!=teplomery->posledni->sparovany)
+			if(F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT && F->Akce!=F->Takce::MOVE_ELEMENT)
 			{
-				vykresli_segment_cesty_teplomeru(canv,teplomery->prvni,clTeplomery,1);//vykreslení cesty od prvního teploměru
-				vykresli_segment_cesty_teplomeru(canv,teplomery->posledni,clTeplomery,2);//vykreslení cesty k poslednímu teploměru
+		  	if(teplomery->prvni->sparovany!=teplomery->posledni->sparovany)
+		  	{
+		  		vykresli_segment_cesty_teplomeru(canv,teplomery->prvni,clTeplomery,1);//vykreslení cesty od prvního teploměru
+		  		vykresli_segment_cesty_teplomeru(canv,teplomery->posledni,clTeplomery,2);//vykreslení cesty k poslednímu teploměru
+		  	}
+		  	//vykrelsení spojnice mezi teploměry na jednom segmentu pohonu
+		  	else
+		  	{
+		  		double X1,Y1,OR,RA,R;
+		  		//vykreslení linie mezi teploměry
+		  		if(teplomery->prvni->sparovany->geo.typ==0)
+		  		{
+		  			OR=teplomery->prvni->geo.orientace;
+		  			RA=teplomery->prvni->geo.rotacni_uhel;
+		  	  	X1=teplomery->prvni->geo.X1;Y1=teplomery->prvni->geo.Y1;
+		  			R=m.delka(X1,Y1,teplomery->posledni->geo.X4,teplomery->posledni->geo.Y4);
+		  			vykresli_Gelement(canv,X1,Y1,OR,RA,R,clTeplomery,3);
+		  		}
+		  		//vykrelsení čísti úseku mezi teploměry
+		  		else
+		  		{
+		  			;//nelze aplikovat stejnou metodu vykreslení jako u mag_lasa, kreslí se na prázdný prostor, zde nopomůže barva kolejí
+		  		}
+		  	}
+		  	Cvektory::TCesta *ct=teplomery->cesta->dalsi;
+		  	while(ct!=NULL)
+		  	{
+		  		vykresli_segment_cesty_teplomeru(canv,ct->Element,clTeplomery);
+		  		//posun na další segment cesty
+		  		ct=ct->dalsi;
+		  	}
+				delete ct;ct=NULL;
 			}
-      //vykrelsení spojnice mezi teploměry na jednom segmentu pohonu
-			else
-			{
-				double X1,Y1,OR,RA,R;
-				//vykreslení linie mezi teploměry
-				if(teplomery->prvni->sparovany->geo.typ==0)
-				{
-			  	OR=teplomery->prvni->geo.orientace;
-			  	RA=teplomery->prvni->geo.rotacni_uhel;
-			  	X1=teplomery->prvni->geo.X1;Y1=teplomery->prvni->geo.Y1;
-			  	R=m.delka(X1,Y1,teplomery->posledni->geo.X4,teplomery->posledni->geo.Y4);
-					vykresli_Gelement(canv,X1,Y1,OR,RA,R,clTeplomery,3);
-				}
-        //vykrelsení čísti úseku mezi teploměry
-				else
-				{
-					;//nelze aplikovat stejnou metodu vykreslení jako u mag_lasa, kreslí se na prázdný prostor, zde nopomůže barva kolejí
-        }
-      }
-	  	Cvektory::TCesta *ct=teplomery->cesta->dalsi;
-			while(ct!=NULL)
-			{
-				vykresli_segment_cesty_teplomeru(canv,ct->Element,clTeplomery);
-				//posun na další segment cesty
-				ct=ct->dalsi;
-			}
-			delete ct;ct=NULL;
 		}
     teplomery=NULL;delete teplomery;
 	}
@@ -3006,8 +3008,7 @@ void Cvykresli::vykresli_dopravnik(TCanvas *canv, Cvektory::TZakazka *zakazka)
 		////ukazatelové záležitosti
 		E=v.dalsi_krok(VYHYBKY,E);//posun na další element nahrazuje při použití výhybek dřívější E=E->dalsi;
 	}
-  v.vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
-	delete VYHYBKY;VYHYBKY=NULL;
+	v.vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
 	delete E;E=NULL;//smazání již nepotřebného ukazatele
 	delete[]POLE;POLE=NULL;
 }
@@ -4575,8 +4576,7 @@ Graphics::TBitmap *Cvykresli::nacti_nahled_cesty(Cvektory::TZakazka *zakazka)
 		if(E->geo.Y4>MinY)MinY=E->geo.Y4;
 		E=v.dalsi_krok(VYHYBKY,E);
 	}
-  v.vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
-	delete VYHYBKY;VYHYBKY=NULL;
+	v.vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
 	delete E;E=NULL;
 
 	////výpočet nového Zoom, podle maximální oblasti vykreslení a velikosti bmp
@@ -5200,7 +5200,7 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			Cvektory::T2Element *VYHYBKY=v.hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 			while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
 			{
-				if((E->pohon==NULL && F->OBJEKT_akt->pohon==NULL || E->pohon!=NULL && F->OBJEKT_akt->pohon!=NULL && E->pohon->n==F->OBJEKT_akt->pohon->n || E->eID==200 || E->eID==300 || E->eID==301) && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT && F->Akce!=F->Takce::S_K)//vykreslení tabulek elementů, kteří mají stejný pohon jako aktuálně editovaný pohon
+				if(((E->pohon==NULL && F->OBJEKT_akt->pohon==NULL) || (E->pohon!=NULL && F->OBJEKT_akt->pohon!=NULL) || (E->eID==200 || E->eID==300 || E->eID==301)) && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT && F->Akce!=F->Takce::S_K)//vykreslení tabulek elementů, kteří mají stejný pohon jako aktuálně editovaný pohon
 				{
 					if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
 					{
@@ -5233,14 +5233,13 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 				else E->mGrid->SetVisibleComponents(false);//pokud pohon elementu se nerovná aktuálně editovanému pohonu, je třeba skrýt všechny komponenty (posun obrazu PAN MOVE či skryté mGridy)
 				E=v.dalsi_krok(VYHYBKY,E,F->OBJEKT_akt);
 			}
-      v.vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
-			delete VYHYBKY;VYHYBKY=NULL;
+			v.vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
 
 			//pokud existuje předchozí předávací místo bude vykresleno
 			E=F->predchozi_PM;
 			if(E!=NULL)
 			{
-				if((E->pohon==NULL && F->OBJEKT_akt->pohon==NULL || E->pohon!=NULL && F->OBJEKT_akt->pohon!=NULL && E->pohon->n==F->OBJEKT_akt->pohon->n || E->eID==200 || E->eID==300 || E->eID==301) && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT && F->Akce!=F->Takce::S_K)//vykreslení tabulek elementů, kteří mají stejný pohon jako aktuálně editovaný pohon
+				if(((E->pohon==NULL && F->OBJEKT_akt->pohon==NULL) || (E->pohon!=NULL && F->OBJEKT_akt->pohon!=NULL) || (E->eID==200 || E->eID==300 || E->eID==301)) && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT && F->Akce!=F->Takce::S_K)//vykreslení tabulek elementů, kteří mají stejný pohon jako aktuálně editovaný pohon
 				{
 					if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
 					{
