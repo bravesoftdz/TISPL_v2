@@ -6361,7 +6361,7 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 			if(orientace==0 || orientace==180)
 			{
 				//posun spojky na místo, pokud je spojka na linii
-				if(e_posledni->dalsi->geo.typ==0 && posun_y<e_posledni->geo.delka && ((e_posledni->dalsi!=NULL && posun_y<e_posledni->dalsi->geo.delka) || e_posledni->dalsi==NULL))//kontrola zde je kam posouvat
+				if(e_posledni->dalsi->geo.typ==0 && e_posledni->dalsi->geo.delka!=0 && posun_y<e_posledni->geo.delka && ((e_posledni->dalsi!=NULL && posun_y<e_posledni->dalsi->geo.delka) || e_posledni->dalsi==NULL))//kontrola zde je kam posouvat
 				{
 					d.v.vloz_G_element(e_posledni->dalsi,0,e_posledni->dalsi->geo.X1,e_posledni->dalsi->geo.Y1,0,0,0,0,e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4+posun_y,e_posledni->dalsi->geo.orientace);
 					e_posledni->dalsi->Y+=posun_y;
@@ -6383,7 +6383,7 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 			  		d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1,0,0,0,0,E->geo.X4,E->geo.Y4-posun_y,E->geo.orientace,E->geo.rotacni_uhel);
 			  		E->Y-=posun_y;
 			  		E=E->dalsi;
-			  		while(E->eID!=301)
+			  		while(!(E->eID==301 && E->idetifikator_vyhybka_spojka==e_posledni->dalsi->idetifikator_vyhybka_spojka))
 			  		{
               if(E->eID==301 && E->idetifikator_vyhybka_spojka==e_posledni->dalsi->idetifikator_vyhybka_spojka)break;
 							d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1-posun_y,E->geo.X2,E->geo.Y2-posun_y,E->geo.X3,E->geo.Y3-posun_y,E->geo.X4,E->geo.Y4-posun_y,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka);
@@ -6422,8 +6422,8 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 			}
 			else//horizontální geometriie spojky
 			{
-        //posun spojky na místo, pokud je spojka na linii
-				if(e_posledni->dalsi->geo.typ==0 && posun_x<e_posledni->geo.delka && ((e_posledni->dalsi!=NULL && posun_x<e_posledni->dalsi->geo.delka) || e_posledni->dalsi==NULL))//kontrola zde je kam posouvat
+				//posun spojky na místo, pokud je spojka na linii
+				if(e_posledni->dalsi->geo.typ==0 && e_posledni->dalsi->geo.delka!=0 &&  posun_x<e_posledni->geo.delka && ((e_posledni->dalsi!=NULL && posun_x<e_posledni->dalsi->geo.delka) || e_posledni->dalsi==NULL))//kontrola zde je kam posouvat
 				{
 					d.v.vloz_G_element(e_posledni->dalsi,0,e_posledni->dalsi->geo.X1,e_posledni->dalsi->geo.Y1,0,0,0,0,e_posledni->dalsi->geo.X4+posun_x,e_posledni->dalsi->geo.Y4,e_posledni->dalsi->geo.orientace);
 					e_posledni->dalsi->X+=posun_x;
@@ -6433,50 +6433,50 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 				//horizontální posun (X)
 				if(posun_x!=0)//kontrola zda je třeba
 				{
-			  	E=e_posledni;
-			  	while(E!=NULL && E->n>0)
-			  	{
+					E=e_posledni;
+					while(E!=NULL && E->n>0)
+					{
 						if(E->eID==300 && E->idetifikator_vyhybka_spojka==e_posledni->dalsi->idetifikator_vyhybka_spojka){E=NULL;break;}//narazil sem na konec větve ukončení
-			  		if(E->geo.orientace==orientace && E->geo.typ==0)break;
-			  		E=E->predchozi;
-			  	}
+						if(E->geo.orientace==orientace && E->geo.typ==0)break;
+						E=E->predchozi;
+					}
 			  	if(E!=NULL)
-			  	{
-			  		d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1,0,0,0,0,E->geo.X4-posun_x,E->geo.Y4,E->geo.orientace,E->geo.rotacni_uhel);
-			  		E->X-=posun_x;
-			  		E=E->dalsi;
-						while(E->eID==301 && E->idetifikator_vyhybka_spojka==e_posledni->dalsi->idetifikator_vyhybka_spojka)
-			  		{
-			  			d.v.vloz_G_element(E,E->geo.typ,E->geo.X1-posun_x,E->geo.Y1,E->geo.X2-posun_x,E->geo.Y2,E->geo.X3-posun_x,E->geo.Y3,E->geo.X4-posun_x,E->geo.Y4,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka);
-			  			E->X-=posun_x;
-			  			E=E->dalsi;
-			  		}
+					{
+						d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1,0,0,0,0,E->geo.X4-posun_x,E->geo.Y4,E->geo.orientace,E->geo.rotacni_uhel);
+						E->X-=posun_x;
+						E=E->dalsi;
+						while(!(E->eID==301 && E->idetifikator_vyhybka_spojka==e_posledni->dalsi->idetifikator_vyhybka_spojka))
+						{
+							d.v.vloz_G_element(E,E->geo.typ,E->geo.X1-posun_x,E->geo.Y1,E->geo.X2-posun_x,E->geo.Y2,E->geo.X3-posun_x,E->geo.Y3,E->geo.X4-posun_x,E->geo.Y4,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka);
+							E->X-=posun_x;
+							E=E->dalsi;
+						}
 					}
 				}
 				//vertikální posun (Y)
 				if(posun_y!=0)//kontrola zda je třeba
 				{
 					E=e_posledni;//->dalsi->predchozi;//procházení hlavní větve
-			  	while(E!=NULL && E->n>0)
-			  	{
+					while(E!=NULL && E->n>0)
+					{
 						if(E->eID==300 && E->idetifikator_vyhybka_spojka==e_posledni->dalsi->idetifikator_vyhybka_spojka){E=NULL;break;}//narazil sem na konec hlavní větve, ukončení
-			  		if((E->geo.orientace==m.Rt90(orientace+90) || E->geo.orientace==m.Rt90(orientace-90)) && E->geo.typ==0)break;
+						if((E->geo.orientace==m.Rt90(orientace+90) || E->geo.orientace==m.Rt90(orientace-90)) && E->geo.typ==0)break;
 			  		E=E->predchozi;
 			  	}
 			  	if(E!=NULL)
-			  	{
+					{
             posun_y*=-1;
 						d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1,0,0,0,0,E->geo.X4,E->geo.Y4+posun_y,E->geo.orientace,E->geo.rotacni_uhel);
 			  		E->Y+=posun_y;
-			  		E=E->dalsi;
-			  		while(E!=NULL)
-			  		{
+						E=E->dalsi;
+						while(E!=NULL)
+						{
 							if(E->eID==301 && E->idetifikator_vyhybka_spojka==e_posledni->dalsi->idetifikator_vyhybka_spojka)break;
 							d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1+posun_y,E->geo.X2,E->geo.Y2+posun_y,E->geo.X3,E->geo.Y3+posun_y,E->geo.X4,E->geo.Y4+posun_y,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka);
 			  			E->Y+=posun_y;
 			  			//posun na další element
 							E=E->dalsi;
-			  		}
+						}
 					}
 				}
 			}
@@ -6740,6 +6740,8 @@ void TForm1::add_vyhybka_spojka()
 		//vložení nového elementu
 		if(E==NULL || (E!=NULL && E->eID!=MaxInt))
 		{
+			if(pom_element_temp->geo.typ!=0 && bod_vlozeni.x==pom_element_temp->geo.X1 && bod_vlozeni.y==pom_element_temp->geo.Y1 && pom_element_temp->predchozi->n>0)pom_element_temp=pom_element_temp->predchozi;
+			if(pom_element_temp->geo.typ!=0 && bod_vlozeni.x==pom_element_temp->geo.X4 && bod_vlozeni.y==pom_element_temp->geo.Y4 && pom_element_temp->dalsi!=NULL)pom_element_temp=pom_element_temp->dalsi;
 			pom=d.v.vrat_objekt(pom_element_temp->objekt_n);
 			E=d.v.vloz_element(pom,element_id,bod_vlozeni.x,bod_vlozeni.y,rotace_symbolu);
 			if(el!=NULL)
@@ -6759,7 +6761,7 @@ void TForm1::add_vyhybka_spojka()
 //					O=NULL;delete O;
 //				}
 				//pokud je výhybka / spojka před obloukem prohodit geometrii, takto půjde libovolně posouvat
-				if(E->dalsi!=NULL && E->dalsi->dalsi!=NULL && E->dalsi->dalsi->geo.typ!=0)
+				if(E->dalsi!=NULL && E->dalsi->dalsi!=NULL && E->dalsi->dalsi->geo.typ!=0 && E->geo.X4==E->dalsi->dalsi->geo.X1 && E->geo.Y4==E->dalsi->dalsi->geo.Y1)
 				{
 					d.geoTemp=E->geo;
 					E->geo=E->dalsi->geo;
@@ -6948,7 +6950,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 			if(E->eID!=200 && ((E->dalsi!=NULL && E->dalsi->pohon!=NULL && E->pohon!=NULL && E->dalsi->pohon->n!=E->pohon->n) || (E->dalsi!=NULL && (E->dalsi->pohon==NULL && E->pohon!=NULL || E->dalsi->pohon!=NULL && E->pohon==NULL))))
 			{
 				//změna zarážky na PM
-				if(E->eID==MaxInt && E->geo.typ==0 && (E->dalsi==NULL || (E->dalsi!=NULL && E->dalsi->geo.typ==0)))
+				if(E->eID==MaxInt && E->geo.typ==0 && (E->geo.delka==0 || E->dalsi==NULL || (E->dalsi!=NULL && E->dalsi->geo.typ==0)))
 				{
 					//smazání a znovuvytvoření mGridu elementu
 					if(OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n)
@@ -7081,7 +7083,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 				}
 				else E->WT=0;
 				//zapsání do mgridu
-				if(OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n)E->mGrid->Cells[1][1].Text = F->m.round2double(F->outPT(E->WT),3);
+				if(OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n && E->mGrid!=NULL)E->mGrid->Cells[1][1].Text = F->m.round2double(F->outPT(E->WT),3);
 			}
 			//ukazatelové záležitosti
 			p1=NULL;p2=NULL;C=NULL;
@@ -14917,15 +14919,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	Memo("------------");
 //	Memo("Průměrný čas otevření: "+AnsiString(celkem_otevreni/(double)pocet_kroku));
 //	Memo("Průměrný čas zavření: "+AnsiString(celkem_zavreni/(double)pocet_kroku));
-//	Memo("");
-	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-	while(E!=NULL)
-	{
-		if(E->eID==301)break;
-		E=E->dalsi;
-	}
-  Memo(E->);
-	E=NULL;delete E;
+	Memo("");
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -18244,7 +18238,7 @@ void TForm1::vymaz_seznam_obrazu()
 //  vlakno_obraz=new Tvlakno_obraz(true);//spustí vlákno zajišťující stáhnutí mapového podkladu
 //	vlakno_obraz->FreeOnTerminate=true;//po skončení bude uvolněno
 //	vlakno_obraz->Start();
- 	d.v.vlakno_obraz();
+	d.v.vlakno_obraz();
 }
 //---------------------------------------------------------------------------
 //přepínání stavu přichytávat
