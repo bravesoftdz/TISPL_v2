@@ -4755,7 +4755,7 @@ void TForm1::getJobID(int X, int Y)
 			}
 		}
   	if(MOD==LAYOUT && !d.v.PP.zamek_layoutu)//pro schéma, zjišťování jidů pro body a úsečky
-		{
+		{     log(__func__,"     LAYOUT");
 			/////////////JID udává pouze akci, není třeba aby se k němu přičítalo i číslo bodu, bod je držen jako ukazatel pom_bod/////////////
   		//-102; citelná oblast zprávy
   		//-6; název objektu
@@ -4771,26 +4771,26 @@ void TForm1::getJobID(int X, int Y)
   		d.zprava_highlight=d.v.PtInZpravy();
   		if(d.zprava_highlight>0)JID=-102;//hledání citelné oblasti zprávy
   		if(JID==-1)//hledání citelných oblastí elementů pro otevírání náhledu (element mimo kabinu),!!!!!!!!!!!!!!!!!!!!!!způsobí zamrzání (nově předěláno - sledovat)!!!!!!!!!!!!!!!!!!!
-  		{
+			{
   			pom_element=NULL;
 				Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
 				Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
   			while(E!=NULL)
 				{
-  				if(d.v.oblast_elementu(E,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
-  				{
-  					if(E->eID==300 || E->eID==301)JID=6;
-  					else JID=5;
-  					pom_element=E;
-  					break;//pokud chci první nalezený element ... break, pokud chci poslední nalezeny bez breaku (např. problém překrývání 2 citelných oblastí)
-  				}
-  				//hledání zda nejsem na vedlejší větvi výhybky
-  				else if(E->eID==300 && E->dalsi2==E->predchozi2 && m.LeziVblizkostiUsecky(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,E->geo.X4,E->geo.Y4,E->predchozi2->geo.X4,E->predchozi2->geo.Y4)<=0.5)
-  				{
-  					JID=6;
-  					pom_element=E;
-  					break;
-          }
+					if(d.v.oblast_elementu(E,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+					{
+						if(E->eID==300 || E->eID==301)JID=6;
+						else JID=5;
+						pom_element=E;
+						break;//pokud chci první nalezený element ... break, pokud chci poslední nalezeny bez breaku (např. problém překrývání 2 citelných oblastí)
+					}
+					//hledání zda nejsem na vedlejší větvi výhybky
+					else if(E->eID==300 && E->dalsi2==E->predchozi2 && m.LeziVblizkostiUsecky(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,E->geo.X4,E->geo.Y4,E->predchozi2->geo.X4,E->predchozi2->geo.Y4)<=0.5)
+					{
+						JID=6;
+						pom_element=E;
+						break;
+					}
 					E=d.v.dalsi_krok(VYHYBKY,E);
   			}
 				E=NULL;delete E;
@@ -4798,7 +4798,7 @@ void TForm1::getJobID(int X, int Y)
 				delete VYHYBKY;VYHYBKY=NULL;
 			}
 			if(JID==-1 && d.v.OBJEKTY->dalsi!=NULL)//hledání nadpisu objektu
-  		{
+			{
   			Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
   			while(O!=NULL)
   			{
@@ -4806,7 +4806,7 @@ void TForm1::getJobID(int X, int Y)
 					O=O->dalsi;
 				}
 				O=NULL;delete O;
-  		}
+			}
   		if(JID==-1&&d.v.OBJEKTY->dalsi!=NULL&&Akce==NIC)
 			{
   			pom=NULL;pom_bod=NULL;
@@ -4817,10 +4817,10 @@ void TForm1::getJobID(int X, int Y)
   				if(pom_bod!=NULL)JID=4;//nalezena hrana objektu
 					else JID=3;//nalezen pouze objekt
   			}
-  		}
+			}
   		if(JID==-1&&(d.v.HALA.body!=NULL||pom!=NULL&&pom->body!=NULL)&&Akce==NIC)//má smysl pouze pokd existuje hala nebo objekt
-  		{
-  			pom_bod=d.v.najdi_bod(pom);//pokouším se najít bod
+			{
+				pom_bod=d.v.najdi_bod(pom);//pokouším se najít bod
   			if(pom_bod!=NULL)JID=0;//bod nalezen
   			else//bod nenalezen, pokusí se najít úsečku
   	  	{
@@ -6744,16 +6744,21 @@ void TForm1::add_vyhybka_spojka()
 			E=d.v.vloz_element(pom,element_id,bod_vlozeni.x,bod_vlozeni.y,rotace_symbolu);
 			if(el!=NULL)
 			{
-				d.v.vloz_G_element(E,0,E->X,E->Y,0,0,0,0,E->X,E->Y,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,0);
-				if(E->dalsi!=NULL && (E->objekt_n!=E->dalsi->objekt_n || (E->dalsi->eID==200 && E->dalsi->geo.delka==0 && E->dalsi->dalsi!=NULL)))
+				if(E->dalsi!=NULL && E->dalsi->objekt_n!=pom->n)
 				{
 					E->objekt_n=E->dalsi->objekt_n;
-					if(E->dalsi->eID==200)E->objekt_n==E->dalsi->dalsi->objekt_n;
-					Cvektory::TObjekt *O=d.v.vrat_objekt(E->objekt_n);
-					if(O->element==E->dalsi)O->element=E;
-					O=NULL;delete O;
+					d.v.vrat_objekt(E->dalsi->objekt_n)->element=E;
 				}
-        //pokud je výhybka / spojka před obloukem prohodit geometrii, takto půjde libovolně posouvat
+				d.v.vloz_G_element(E,0,E->X,E->Y,0,0,0,0,E->X,E->Y,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,0);
+//				if(E->dalsi!=NULL && (E->objekt_n!=E->dalsi->objekt_n || (E->dalsi->eID==200 && E->dalsi->geo.delka==0 && E->dalsi->dalsi!=NULL)))
+//				{
+//					E->objekt_n=E->dalsi->objekt_n;
+//					if(E->dalsi->eID==200)E->objekt_n==E->dalsi->dalsi->objekt_n;
+//					Cvektory::TObjekt *O=d.v.vrat_objekt(E->objekt_n);
+//					if(O->element==E->dalsi)O->element=E;
+//					O=NULL;delete O;
+//				}
+				//pokud je výhybka / spojka před obloukem prohodit geometrii, takto půjde libovolně posouvat
 				if(E->dalsi!=NULL && E->dalsi->dalsi!=NULL && E->dalsi->dalsi->geo.typ!=0)
 				{
 					d.geoTemp=E->geo;
@@ -7208,7 +7213,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 				predchozi_PM=E;
 				predchozi_PM->mGrid=new TmGrid(F);
 				predchozi_PM->mGrid->Tag=6;//ID formu
-				predchozi_PM->mGrid->ID=predchozi_PM->n;//předávání nejvetšího možného ID, aktualizace n elementů se provede, až po vložení, proto přiřadit větší ID aby nedošlo ke kolizi s jiným mGridem
+				predchozi_PM->mGrid->ID=predchozi_PM->n+d.v.ELEMENTY->predchozi->n;//předávání nejvetšího možného ID, aktualizace n elementů se provede, až po vložení, proto přiřadit větší ID aby nedošlo ke kolizi s jiným mGridem
 				design_element(predchozi_PM,false);//nutné!
 			}
 		}
@@ -7488,36 +7493,38 @@ void TForm1::vlozeni_editace_geometrie()
 		}
 	}
 
-  //////pokud edituji úsek PM, změnit PM na zarážku
-	if(posledni_editovany_element!=NULL && posledni_editovany_element->eID==200)
+	//////pokud edituji úsek PM, změnit PM na zarážku
+	Cvektory::TElement *E=posledni_editovany_element;
+	if(E!=NULL && E->eID!=200 && E->predchozi->n>0)E=E->predchozi;
+	if(E!=NULL && E->eID==200)
 	{
 		//smazání a znovuvytvoření mGridu elementu
-		if(posledni_editovany_element->mGrid!=NULL)
+		if(E->mGrid!=NULL)
 		{
 			nastav_focus();
-			posledni_editovany_element->mGrid->Delete();
-			posledni_editovany_element->mGrid=NULL;
+			E->mGrid->Delete();
+			E->mGrid=NULL;
 		}
 		//nulování WT
-		posledni_editovany_element->WT=0;//čekání na palec
+		E->WT=0;//čekání na palec
 		//změna elemetnu na zarážku
-		posledni_editovany_element->eID=MaxInt;
+		E->eID=MaxInt;
 		//název
 		if(DEBUG)
 		{
-			posledni_editovany_element->name="Zarážka";
-			d.v.uprav_popisky_elementu(posledni_editovany_element);
+			E->name="Zarážka";
+			d.v.uprav_popisky_elementu(E);
 		}
-		else posledni_editovany_element->name="";
-		posledni_editovany_element->mGrid=new TmGrid(F);
-		posledni_editovany_element->mGrid->Tag=6;//ID formu
-		posledni_editovany_element->mGrid->ID=posledni_editovany_element->n;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
-		design_element(posledni_editovany_element,false);//nutné!
+		else E->name="";
+		E->mGrid=new TmGrid(F);
+		E->mGrid->Tag=6;//ID formu
+		E->mGrid->ID=E->n;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
+		design_element(E,false);//nutné!
 	}
 
   ////aktualizace indexů
 	unsigned long n=1;
-	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+	E=d.v.ELEMENTY->dalsi;
 	Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
 	while(E!=NULL)
 	{
@@ -7580,6 +7587,7 @@ void TForm1::smaz_usek_geometrie()
 		TIP="";
 		REFRESH(false);
 		vytvor_obraz();
+    nahled_ulozit(true);
 	}
 	else if(Akce==GEOMETRIE && !editace_textu && TIP=="")zobraz_tip(ls->Strings[311]);
 }
@@ -7660,9 +7668,9 @@ void TForm1::ukonceni_geometrie(bool kontrola)
 	//validovat
 	duvod_validovat=2;
 	//kurzor
-	if(Screen->Cursor!=standard)kurzor(standard);    log(__func__,"    před REFRESH");
+	if(Screen->Cursor!=standard)kurzor(standard);
   //překreslení
-	REFRESH(d.SCENA,true);      log(__func__,"    KONEC");
+	REFRESH(d.SCENA,true);
 }
 //---------------------------------------------------------------------------
 //vrátí maximální možný počet vozíků na stopce, podle geometrie před ní
@@ -14909,7 +14917,15 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	Memo("------------");
 //	Memo("Průměrný čas otevření: "+AnsiString(celkem_otevreni/(double)pocet_kroku));
 //	Memo("Průměrný čas zavření: "+AnsiString(celkem_zavreni/(double)pocet_kroku));
-	Memo("");
+//	Memo("");
+	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+	while(E!=NULL)
+	{
+		if(E->eID==301)break;
+		E=E->dalsi;
+	}
+  Memo(E->);
+	E=NULL;delete E;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
