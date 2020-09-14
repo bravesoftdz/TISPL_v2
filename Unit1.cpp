@@ -5703,6 +5703,7 @@ void TForm1::pan_create()
 //			MinY=0-Oy;
 //			MaxY=ClientHeight+Oy;
 //	 }
+
 		panType=3;
 		bmpPANall_XY.x=m.P2Lx(MinX);bmpPANall_XY.y=m.P2Ly(MinY);
 		Zoom_predchozi_AA=Zoom;//záloha původního zoomu
@@ -5713,7 +5714,8 @@ void TForm1::pan_create()
 		Graphics::TBitmap *bmp_test=new Graphics::TBitmap;
 		bmp_test->Width=ceil(abs((double)MaxX-MinX)*3);bmp_test->Height=ceil(abs((double)MaxY-MinY)*3);//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
 		d.vykresli_vektory(bmp_test->Canvas,1);
-		Cantialising a; Pan_bmp_ALL=a.antialiasing(bmp_test,false);delete(bmp_test);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
+		Cantialising a;
+		Pan_bmp_ALL=a.antialiasing(bmp_test,false);delete(bmp_test);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
 		//Pan_bmp_ALL->SaveToFile("testALL.bmp");
 		Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 		Posun=Posun_predchozi;
@@ -6330,13 +6332,36 @@ void TForm1::spojeni_prvni_posledni(double citlivost)
 //provede kontrolu, zdá je možnost geometrii spojit, dotáže se a spojí geometrii pokud uživatel souhlasí
 void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 {
+	log(__func__);
+	bool vypnout=false,dotazano=false;
+	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && (m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)!=m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel) || e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel!=m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)) && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=2 && mrYes==MB(ls->Strings[455],MB_YESNO))
+	{
+		d.geoTemp.typ=1;
+		d.geoTemp.radius=d.v.PP.radius;
+		d.geoTemp.orientace=m.a360(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel);
+		double orientace=d.geoTemp.orientace;if(orientace==0)orientace=360;
+		d.geoTemp.rotacni_uhel=d.geoTemp.orientace-e_posledni->dalsi->geo.orientace;//m.a360(e_posledni->dalsi->geo.orientace-d.geoTemp.orientace);
+		d.geoTemp.delka=m.R2Larc(d.geoTemp.radius,d.geoTemp.rotacni_uhel);
+		TPointD *PL=m.getArcLine(e_posledni->geo.X4,e_posledni->geo.Y4,d.geoTemp.orientace,d.geoTemp.rotacni_uhel,d.geoTemp.radius);
+  	d.geoTemp.X1=PL[0].x;d.geoTemp.Y1=PL[0].y;d.geoTemp.X2=PL[1].x;d.geoTemp.Y2=PL[1].y;d.geoTemp.X3=PL[2].x;d.geoTemp.Y3=PL[2].y;d.geoTemp.X4=PL[3].x;d.geoTemp.Y4=PL[3].y;
+
+		//kontrola a uchovávání zda edituji hlavní nebo veldejší větev
+		if(Akce!=GEOMETRIE){Akce=GEOMETRIE;vypnout=true;}
+		if(e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni)d.v.vyhybka_pom=e_posledni;
+		e_posledni=d.v.vloz_element(d.v.vrat_objekt(e_posledni->objekt_n),MaxInt,d.geoTemp.X4,d.geoTemp.Y4,e_posledni->orientace,e_posledni->dalsi);
+		if(vypnout)Akce=NIC;
+		e_posledni->geo=d.geoTemp;
+		if(e_posledni->objekt_n==OBJEKT_akt->n)design_element(e_posledni,true);//nutné!!!!!!!!
+		d.v.vyhybka_pom=NULL;
+		dotazano=true;
+	}
 	//e_posledni == poslední element ve vedlejší větvi
 	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)==m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel) && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=1 && e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel==m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel))
 	{
-    bool vypnout=false;
+		vypnout=false;
 		if(Akce==GEOMETRIE)vypnout=true;
 		Akce=BLOK;
-		if(mrYes==MB(ls->Strings[455],MB_YESNO))//"Chcete automaticky spojit geometrii?"
+		if(/*(!dotazano && mrYes==MB(ls->Strings[455],MB_YESNO)) ||*/ dotazano)//"Chcete automaticky spojit geometrii?"
 		{
 			double posun_x,posun_y;
 			short orientace=m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel);
@@ -14888,26 +14913,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	Memo("------------");
 //	Memo("Průměrný čas otevření: "+AnsiString(celkem_otevreni/(double)pocet_kroku));
 //	Memo("Průměrný čas zavření: "+AnsiString(celkem_zavreni/(double)pocet_kroku));
-//	Memo("");
-	Cvektory::TElement *E=d.v.ELEMENTY->predchozi->predchozi->predchozi2;
-
-	d.geoTemp.typ=1;
-	d.geoTemp.radius=d.v.PP.radius;
-	d.geoTemp.orientace=m.a360(E->geo.orientace-E->geo.rotacni_uhel);
-	d.geoTemp.rotacni_uhel=d.geoTemp.orientace-E->dalsi->geo.orientace;//m.a360(E->dalsi->geo.orientace-d.geoTemp.orientace);
-	d.geoTemp.delka=m.R2Larc(d.geoTemp.radius,d.geoTemp.rotacni_uhel);
-
-	TPointD *PL=m.getArcLine(E->geo.X4,E->geo.Y4,d.geoTemp.orientace,d.geoTemp.rotacni_uhel,d.geoTemp.radius);
-	d.geoTemp.X1=PL[0].x;d.geoTemp.Y1=PL[0].y;d.geoTemp.X2=PL[1].x;d.geoTemp.Y2=PL[1].y;d.geoTemp.X3=PL[2].x;d.geoTemp.Y3=PL[2].y;d.geoTemp.X4=PL[3].x;d.geoTemp.Y4=PL[3].y;
-
-	//kontrola a uchovávání zda edituji hlavní nebo veldejší větev
-	if(E->dalsi!=NULL && E->dalsi->eID==301 && E->dalsi->predchozi2==E)d.v.vyhybka_pom=E;
-	E=d.v.vloz_element(OBJEKT_akt,MaxInt,d.geoTemp.X4,d.geoTemp.Y4,E->orientace,E->dalsi);
-	E->geo=d.geoTemp;
-	design_element(E,true);//nutné!!!!!!!!
-	d.v.vyhybka_pom=NULL;
-
-  E=NULL;delete E;
+	Memo("");
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

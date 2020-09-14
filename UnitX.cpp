@@ -2203,7 +2203,22 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 	else aktualizace_tab_elementu_pOdebran();
 	F->d.v.aktualizuj_cestu_teplomeru();//pokud existuje cesta mezi teplomìry aktualizuje ji, jinak vytvoøí default cestu
 
-  ////povolení / zákaz pøepnutí kót
+  //vytvoøení cesty teplomìrù po pøiøazení pohonu
+	Cvektory::TTeplomery *T=F->d.v.vrat_teplomery_podle_zakazky(F->OBJEKT_akt,F->d.v.ZAKAZKA_akt);
+	if(F->OBJEKT_akt->pohon!=NULL && F->OBJEKT_akt->id>=6 && F->OBJEKT_akt->id<=8 && T==NULL)
+	{
+		F->d.v.vytvor_default_c_teplomery(F->OBJEKT_akt);
+		F->vytvor_aktualizuj_tab_teplomeru();
+	}
+	//pokud dojde k odstranìní pohonu, dojde ke smazání teplomìrù
+	if((F->OBJEKT_akt->pohon==NULL ||  !(F->OBJEKT_akt->id>=6 && F->OBJEKT_akt->id<=8)) && T!=NULL)
+	{
+		F->d.v.vymaz_teplomery(F->OBJEKT_akt,T);
+		delete T;T=NULL;
+	}
+	T=NULL;delete T;
+
+	////povolení / zákaz pøepnutí kót
 	if(F->OBJEKT_akt->pohon!=NULL && !F->scGPComboBox_prepinacKot->Enabled)F->scGPComboBox_prepinacKot->Enabled=true;
 	if(F->OBJEKT_akt->pohon==NULL && F->scGPComboBox_prepinacKot->Enabled)
 	{
@@ -2262,6 +2277,21 @@ void TFormX::prirazeni_pohonu_defTab()
 	F->vlozit_predavaci_misto_aktualizuj_WT();
 	F->aktualizace_tab_pohon(false,true,true);//nebude provedena pokud dojde k odstranìní PmG
 	F->d.v.aktualizuj_cestu_teplomeru();//pokud existuje cesta mezi teplomìry aktualizuje ji, jinak vytvoøí default cestu
+
+  //vytvoøení cesty teplomìrù po pøiøazení pohonu
+	Cvektory::TTeplomery *T=F->d.v.vrat_teplomery_podle_zakazky(F->OBJEKT_akt,F->d.v.ZAKAZKA_akt);
+	if(F->OBJEKT_akt->pohon!=NULL && F->OBJEKT_akt->id>=6 && F->OBJEKT_akt->id<=8 && T==NULL)
+	{
+		F->d.v.vytvor_default_c_teplomery(F->OBJEKT_akt);
+		F->vytvor_aktualizuj_tab_teplomeru();
+	}
+	//pokud dojde k odstranìní pohonu, dojde ke smazání teplomìrù
+	if((F->OBJEKT_akt->pohon==NULL ||  !(F->OBJEKT_akt->id>=6 && F->OBJEKT_akt->id<=8)) && T!=NULL)
+	{
+		F->d.v.vymaz_teplomery(F->OBJEKT_akt,T);
+		delete T;T=NULL;
+	}
+	T=NULL;delete T;
 
 	//pokud už neexistuje PmG, nalezení PM pro spuštìní validace
 	if(F->PmG==NULL)
