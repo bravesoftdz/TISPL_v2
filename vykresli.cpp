@@ -1493,7 +1493,6 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
 	////deklarace
 	double R,RA,OR,X,Y,uhel=0,delka=0,azimut,cas=0,cas_pom=0,d=0;
 	String popisek="";
-	bool vykresleno=false;//pomocná proměnná
 
 	////výpočty délky a času pro segmenty v mag. lasu
 	if(F->pom_element!=NULL && (F->pom_element==v.MAG_LASO->predchozi->Element || F->pom_element->dalsi==v.MAG_LASO->predchozi->Element || F->pom_element->dalsi2==v.MAG_LASO->predchozi->Element || (F->pom_element->dalsi!=NULL && F->pom_element->dalsi->dalsi==v.MAG_LASO->predchozi->Element) || F->pom_element->dalsi2==v.MAG_LASO->predchozi->Element))
@@ -3227,7 +3226,7 @@ void Cvykresli::vykresli_popisek_pohonu(TCanvas *canv,AnsiString text,TPoint zac
 
 	////vykreslení šipky u pohonu
 	//nastavení grafického pera
-	canv->Pen->Style=bsSolid;
+	canv->Pen->Style=psSolid;
 	canv->Pen->Width=m.round(F->Zoom/5.0);
 	canv->Pen->Color=barva;
 	obratit=1;
@@ -5703,7 +5702,7 @@ void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,Cvektory::TElement *Elem
 	pocatek+=String(m.round2double(Element->predchozi->Z*1000,0)),konec+=String(m.round2double((Element->predchozi->Z+HeightDeep)*1000,0));
 	//orientace a vycentrování
 	short W=0,H=canv->TextHeight(pocatek);
-	long x=0,y=0,pom=0;
+	long x=0,y=0;
 	if(X1==X2){H=H/2;W=-10*3;}
 	float zAA=1.0;if(F->antialiasing)zAA=3.0;
 	//převod HeightDeep na mm

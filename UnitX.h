@@ -67,7 +67,8 @@ public:		// User declarations
 	Cvektory::TCesta *posledni_c;
 	int validovany_pohon;
 	AnsiString VID;//dvouciferné èíslo, první èíslo znázoròuje validaci pohonu, druhé validaci stopek, pokud je èíslo 00 = bez chyb, 10 = chyba na pohonu, stop v poøádku (viz. 777 webové soubory), poèet èíslic nastaven v konstruktoru, mìnit pouze tam!!
-  bool aut_mazani_PM;
+	bool aut_mazani_PM;
+  bool validovat_pohon;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFormX *FormX;

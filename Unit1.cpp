@@ -6331,7 +6331,7 @@ void TForm1::spojeni_prvni_posledni(double citlivost)
 void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 {
 	//e_posledni == poslední element ve vedlejší větvi
-	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)==m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel) && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=1)// && e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel==m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel))
+	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)==m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel) && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=1 && e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel==m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel))
 	{
     bool vypnout=false;
 		if(Akce==GEOMETRIE)vypnout=true;
@@ -7466,12 +7466,12 @@ void TForm1::vlozeni_editace_geometrie()
 	  	//vložím nový prvek, který převezme geometrii posledniho a zařadí se před nej, poslední pak převezme novou geometrii - tz. posouvám poslední prvek stále před sebou
 	  	if(posledni_editovany_element->geo.delka!=0)//normální provoz
 	  	{
-	  		//kontrola a uchovávání zda edituji hlavní nebo veldejší větev
-	  		if(posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->predchozi2==posledni_editovany_element)d.v.vyhybka_pom=posledni_editovany_element;
-	  		posledni_editovany_element=d.v.vloz_element(OBJEKT_akt,MaxInt,d.geoTemp.X4,d.geoTemp.Y4,orientace,posledni_editovany_element->dalsi);
-	  		posledni_editovany_element->geo=d.geoTemp;
-	  		design_element(posledni_editovany_element,true);//nutné!!!!!!!!
-	  		d.v.vyhybka_pom=NULL;
+				//kontrola a uchovávání zda edituji hlavní nebo veldejší větev
+				if(posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->predchozi2==posledni_editovany_element)d.v.vyhybka_pom=posledni_editovany_element;
+				posledni_editovany_element=d.v.vloz_element(OBJEKT_akt,MaxInt,d.geoTemp.X4,d.geoTemp.Y4,orientace,posledni_editovany_element->dalsi);
+				posledni_editovany_element->geo=d.geoTemp;
+				design_element(posledni_editovany_element,true);//nutné!!!!!!!!
+				d.v.vyhybka_pom=NULL;
 	  	}
 	  	else//pokud je veškerá geometrie odstraněna z kabiny
 	  	{
@@ -14538,7 +14538,7 @@ void __fastcall TForm1::Timer_neaktivityTimer(TObject *Sender)
 		vytvor_obraz();//obraz pro ctrl+z
 		FormX->validace_max_voziku();//metoda rozlišuje zda byla editovaná stopka, pokud ano provede validaci, pokud ne neudělá nic
 		//pokud byl poslední editovaný element PM spustí validaci
-		if(FormX->posledni_E!=NULL && (FormX->posledni_E->eID==200 || FormX->posledni_E->eID==300))FormX->validace_RD(FormX->posledni_E);
+		if((FormX->posledni_E!=NULL && (FormX->posledni_E->eID==200 || FormX->posledni_E->eID==300)) || FormX->validovat_pohon)FormX->validace_RD(FormX->posledni_E);
 		if(FormX->posledni_E!=NULL && FormX->posledni_E->eID==0)FormX->aktualizace_teplomeru();
 		if(PmG!=NULL)FormX->validace_aRD();
 		REFRESH(true); //nedocází k refresh tabulek, tabulky jsou v tuto chvíli naplněny aktuálními hodnotami
@@ -14888,7 +14888,26 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	Memo("------------");
 //	Memo("Průměrný čas otevření: "+AnsiString(celkem_otevreni/(double)pocet_kroku));
 //	Memo("Průměrný čas zavření: "+AnsiString(celkem_zavreni/(double)pocet_kroku));
-	Memo("");
+//	Memo("");
+	Cvektory::TElement *E=d.v.ELEMENTY->predchozi->predchozi->predchozi2;
+
+	d.geoTemp.typ=1;
+	d.geoTemp.radius=d.v.PP.radius;
+	d.geoTemp.orientace=m.a360(E->geo.orientace-E->geo.rotacni_uhel);
+	d.geoTemp.rotacni_uhel=d.geoTemp.orientace-E->dalsi->geo.orientace;//m.a360(E->dalsi->geo.orientace-d.geoTemp.orientace);
+	d.geoTemp.delka=m.R2Larc(d.geoTemp.radius,d.geoTemp.rotacni_uhel);
+
+	TPointD *PL=m.getArcLine(E->geo.X4,E->geo.Y4,d.geoTemp.orientace,d.geoTemp.rotacni_uhel,d.geoTemp.radius);
+	d.geoTemp.X1=PL[0].x;d.geoTemp.Y1=PL[0].y;d.geoTemp.X2=PL[1].x;d.geoTemp.Y2=PL[1].y;d.geoTemp.X3=PL[2].x;d.geoTemp.Y3=PL[2].y;d.geoTemp.X4=PL[3].x;d.geoTemp.Y4=PL[3].y;
+
+	//kontrola a uchovávání zda edituji hlavní nebo veldejší větev
+	if(E->dalsi!=NULL && E->dalsi->eID==301 && E->dalsi->predchozi2==E)d.v.vyhybka_pom=E;
+	E=d.v.vloz_element(OBJEKT_akt,MaxInt,d.geoTemp.X4,d.geoTemp.Y4,E->orientace,E->dalsi);
+	E->geo=d.geoTemp;
+	design_element(E,true);//nutné!!!!!!!!
+	d.v.vyhybka_pom=NULL;
+
+  E=NULL;delete E;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -17256,13 +17275,8 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		//zjištění délky a času, první a poslední segment cesty jsou fiktivní elementy
 		if(d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->predchozi->Element->n==MaxInt)
 		{
-			//kontrola zda mám přichyceno na fce elementu
-			bool prichyceno=false;
-			if(d.v.MAG_LASO->predchozi->sparovany!=NULL && d.v.MAG_LASO->predchozi->sparovany->eID!=MaxInt && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->Element->geo.X3 && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->sparovany->geo.X4)prichyceno=true;
 			//měření
 			Cvektory::TCesta *C=d.v.MAG_LASO->dalsi;
-			double s=0,delka=0,cas=0,cas_pom=0,X,Y,uhel;
-			bool chyba=false;
 			String popisek1="",popisek2="";//slouží pro rozšíření MB o
 			if(mereni_cas.x!=0)popisek2="; Čas = "+String(m.round2double(mereni_cas.x,2))+" [s]";
 			if(mereni_cas.x!=mereni_cas.y)popisek2+="; Čas = "+String(m.round2double(mereni_cas.y,2))+" [s]";
