@@ -2777,14 +2777,14 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 		key="";
 	////////
 	//key = pouze čísla, Key = všechny znaky
-	if (editace_textu&&index_kurzoru==-6 && funkcni_klavesa==0)//editace nadpisu kabiny, není třeba nic provádět
+	if (editace_textu && index_kurzoru==-6 && funkcni_klavesa==0)//editace nadpisu kabiny, není třeba nic provádět
 	{
 		//pokud je stisknut backspace
 		if(Key==8)OBJEKT_akt->name=OBJEKT_akt->name.SubString(1,OBJEKT_akt->name.Length()-1);
 		else OBJEKT_akt->name+=Key;
 		REFRESH(false);
 	}
-	if (editace_textu&&index_kurzoru==-7)//editace short nadpisu kabiny
+	if (editace_textu && index_kurzoru==-7)//editace short nadpisu kabiny
 	{
 		if(Key==8)//pokud je stisknut backspace
 			OBJEKT_akt->short_name=OBJEKT_akt->short_name.SubString(1,OBJEKT_akt->short_name.Length()-1);
@@ -2793,7 +2793,7 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 		else MessageBeep(0);
 		REFRESH(false);
 	}
-	if (editace_textu&&(index_kurzoru==-101||index_kurzoru==-14||index_kurzoru==-13||index_kurzoru==-11||index_kurzoru==-2||index_kurzoru==-5))//editace vzdálenosti LO,začatek S/K elementu,konec S/K elementu,kót elementů,kót haly nebo objektu, kót kabiny
+	if (editace_textu && (index_kurzoru==-101||index_kurzoru==-14||index_kurzoru==-13||index_kurzoru==-11||index_kurzoru==-2||index_kurzoru==-5))//editace vzdálenosti LO,začatek S/K elementu,konec S/K elementu,kót elementů,kót haly nebo objektu, kót kabiny
 	{
 		if(Key==8)//pokud je stisknut backspace
 			editovany_text=editovany_text.SubString(1,editovany_text.Length()-1);
@@ -3104,7 +3104,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						{
 							if(JID==3&&!d.v.PP.zamek_layoutu){Akce=MOVE;kurzor(posun_l);minule_souradnice_kurzoru=TPoint(X,Y);puv_souradnice.x=pom->element->geo.X1;puv_souradnice.y=pom->element->geo.Y1;predchozi_orientace=pom->orientace;}
 							else if(JID==-1&&Akce==NIC){Akce=PAN;pan_non_locked=true;}//přímo dovolení PAN pokud se neposová objekt = Rosťova prosba
-							if(JID==-102){if(d.zprava_highlight!=d.zobrazit_celou_zpravu){d.zobrazit_celou_zpravu=d.zprava_highlight;kurzor(close);}else {d.zobrazit_celou_zpravu=0;kurzor(info);}REFRESH(false);}//rozbalení nebo skrytí zpráv
+							if(JID==-102){if(d.zprava_highlight!=d.zobrazit_celou_zpravu){d.zobrazit_celou_zpravu=d.zprava_highlight;kurzor(close);}else {d.zobrazit_celou_zpravu=0;kurzor(info);}REFRESH(false);vytvor_statickou_scenu();}//rozbalení nebo skrytí zpráv
 							if(JID==-2){nastav_focus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_bod_temp=pom_bod;if(pom_bod_temp->n!=1)editovany_text=m.round2double(m.delka(pom_bod_temp->predchozi->X,pom_bod_temp->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);else editovany_text=m.round2double(m.delka(d.v.HALA.body->predchozi->X,d.v.HALA.body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);editovany_text=outDK(ms.MyToDouble(editovany_text));}//převod na mm
 							if(JID==0){Akce=MOVE_BOD;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;ortogonalizace_stav=false;}//posun jednoho bodu
 							if(JID==1||JID==4){Akce=MOVE_USECKA;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//posun úsečky
@@ -6361,7 +6361,7 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 		vypnout=false;
 		if(Akce==GEOMETRIE)vypnout=true;
 		Akce=BLOK;
-		if(/*(!dotazano && mrYes==MB(ls->Strings[455],MB_YESNO)) ||*/ dotazano)//"Chcete automaticky spojit geometrii?"
+		if((!dotazano && mrYes==MB(ls->Strings[455],MB_YESNO)) || dotazano)//"Chcete automaticky spojit geometrii?"
 		{
 			double posun_x,posun_y;
 			short orientace=m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel);
@@ -8180,6 +8180,7 @@ void TForm1::mGrid_puvodni_stav(Cvektory::TElement *E)
 
 		////naplnění comb
 		napln_comba_mGridu(E);//pro PM a výhybku nastaví edity
+    set_enabled_mGrid(E);
 	}
 }
 //---------------------------------------------------------------------------
@@ -8754,9 +8755,9 @@ bool TForm1::bod_na_geometrii(double X, double Y,Cvektory::TElement *Element)
 	{
 		Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
 		Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
-  	while(E!=NULL)
+		while(E!=NULL)
 		{
-			if(E->geo.typ==0 && (d.v.PtInSegment(E,X,Y) || (X==E->geo.X1 && Y==E->geo.Y1))){ret=true;break;}
+			if(E->geo.typ==0 && m.PtInLine(E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4,X,Y)){ret=true;break;}
 			E=d.v.dalsi_krok(VYHYBKY,E);
   	}
 		d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
@@ -9503,7 +9504,7 @@ void TForm1::set_enabled_mGrid(Cvektory::TElement *E)
 	//nastavení stavu
 	bool stav=true;
 	if(E->pohon==NULL)stav=false;
-	if(OBJEKT_akt->pohon!=NULL && E->pohon!=NULL && OBJEKT_akt->pohon->n==E->pohon->n && d.v.pohon_je_pouzivan(OBJEKT_akt->pohon->n,false))stav=false;
+	if(E->pohon!=NULL && d.v.pohon_je_pouzivan(E->pohon->n,false))stav=false;
 	//přepnutí buněk
 	switch(E->eID)
 	{
@@ -14914,6 +14915,30 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	Memo("Průměrný čas otevření: "+AnsiString(celkem_otevreni/(double)pocet_kroku));
 //	Memo("Průměrný čas zavření: "+AnsiString(celkem_zavreni/(double)pocet_kroku));
 	Memo("");
+
+//	Cvektory::TElement *e_posledni=d.v.ELEMENTY->predchozi->predchozi->predchozi2;
+//	e_posledni->geo.rotacni_uhel+=-45;
+//	e_posledni->geo.delka=m.R2Larc(e_posledni->geo.radius,e_posledni->geo.rotacni_uhel);
+//	TPointD *PL=m.getArcLine(e_posledni->geo.X1,e_posledni->geo.Y1,e_posledni->geo.orientace,-90,e_posledni->geo.radius);
+//	e_posledni->geo.X1=PL[0].x;e_posledni->geo.Y1=PL[0].y;e_posledni->geo.X2=PL[1].x;e_posledni->geo.Y2=PL[1].y;e_posledni->geo.X3=PL[2].x;e_posledni->geo.Y3=PL[2].y;e_posledni->geo.X4=PL[3].x;e_posledni->geo.Y4=PL[3].y;
+//	vytvor_statickou_scenu();
+//	REFRESH();
+//  e_posledni=NULL;delete e_posledni;
+
+//	Cvektory::Ttyp_dopravniku *K=d.v.vrat_typ_dopravniku(d.v.KATALOG->predchozi->n-2);//d.v.PP.katalog);
+//	Cvektory::TDoubleHodnota *h=K->vOblouk->dalsi;
+//	short oblouky[4];oblouky[0]=0;oblouky[1]=0;oblouky[2]=0;oblouky[3]=0;
+//	while(h!=NULL)
+//	{
+//		oblouky[h->n-1]=h->hodnota;
+//		h=h->dalsi;
+//	}
+//	delete h;h=NULL;
+//
+//	for(unsigned int i=0;i<4;i++)
+//	{
+//		Memo(String(i)+": "+String(oblouky[i]));
+//	}
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

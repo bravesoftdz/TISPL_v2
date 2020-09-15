@@ -1330,7 +1330,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			if(prichyceno && F->pom_element==v.MAG_LASO->predchozi->Element && C->dalsi==NULL)
 			{
 				t1=String(m.round2double(delka*1000,2))+" [mm]";
-				if(cas_pom!=cas)t2="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
+				if(cas_pom!=cas && v.vrat_druh_elementu(F->pom_element)==0)t2="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
 				else t2=String(m.round2double(cas,2))+" [s]";
 				typ=2;if(C->n==1)typ=3;
 			}
@@ -1376,7 +1376,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			}
 
 			//vykreslovací část
-			if(prichyceno && cas_pom!=cas)popisek="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
+			if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0 && cas_pom!=cas)popisek="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
 			else popisek=String(m.round2double(cas,2))+" [s]";
 			vykresli_Gelement(canv,X,Y,OR,uhel,R,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",popisek,2);//vykreslení měřícího kurzoru, popisek není nutné používat, metodu ještě vylepším
 		}
@@ -1426,7 +1426,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			}
 
 			//vykreslovací část
-			if(prichyceno && cas_pom!=cas)popisek="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
+			if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0 && cas_pom!=cas)popisek="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
 			else popisek=String(m.round2double(cas,2))+" [s]";
 			vykresli_Gelement(canv,X,Y,OR,0,delka_Pud,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",popisek,2);
 		}
@@ -1471,7 +1471,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			cas_pom+=delka/F->pom_element->pohon->aRD;
 			if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0)cas_pom=ceil(cas/v.PP.TT)*v.PP.TT;//cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT+v.PP.TT;
 			//vykreslení
-			if(prichyceno && cas_pom!=cas)popisek="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
+			if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0 && cas_pom!=cas)popisek="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
 			else popisek=String(m.round2double(cas,2))+" [s]";
 			vykresli_Gelement(canv,X,Y,azimut,0,delka_Pud,clMeridlo,2,String(m.round2double(d*1000,2))+" [mm]",popisek,3);
       delka=d;
@@ -1484,6 +1484,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 	F->mereni_delka.x=delka;
   F->mereni_delka.y=delka_pom;
 	F->mereni_cas.x=cas;
+	if(prichyceno && v.vrat_druh_elementu(F->pom_element)!=0)cas_pom=cas;//pokud jsem přichycený na elementu (např. zarážka) srovnat pro jistotu cas a cas_pom
 	F->mereni_cas.y=cas_pom;
 }
 ////---------------------------------------------------------------------------

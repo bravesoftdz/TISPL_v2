@@ -982,13 +982,13 @@ void TFormX::aktualizace_tab_elementu_pOdebran ()
 				}break;
 				case 301://spojka
 				{
-					E->mGrid->Cells[1][2].Text=0;
+					E->mGrid->Cells[1][1].Text=0;
 				}break;
 				case 200:
 				case 300:
 				{
 					update_hodnot_vyhybky_PM(E);//provede zobrazení hodnot pohonu a výpoèítá nové hodnoty mezer, provede aktualizaci WT
-        }break;
+				}break;
 			}
 			E->mGrid->Refresh();
 		}
