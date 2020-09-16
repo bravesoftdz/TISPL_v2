@@ -1102,7 +1102,7 @@ TPointD Cmy::zona_otaceni(double orientace_jig_vstup,double rotace_otoce,double 
 			else
 			{
 				mezi_vypocet=diam*cos(DegToRad(a)+DegToRad(rotace_otoce)*mezi_vypocet/delka_otoc)+mezi_vypocet;
-			}    // F->Sv(mezi_vypocet);
+			}
 			//hledání extrémů
 			if(mezi_vypocet>max)max=mezi_vypocet;
 			if(mezi_vypocet<min)min=mezi_vypocet;
@@ -1163,6 +1163,18 @@ double Cmy::Dotoc(double PTo,double RD)
 	}
 
 	//doba_prejezdu-
+}
+/////////////////////////////////////////////////////////////////////////////
+//výpočet časové rezervy pro KK roboty
+double Cmy::KKRT(double PT,double LO,double aRD)
+{
+	double KKRT=0;
+	if(aRD>0)
+	{
+		KKRT=LO/aRD;
+		if(KKRT>F->d.v.PP.TT)KKRT=F->d.v.PP.TT;
+  }     //F->Memo("KKRT: "+String(KKRT)+"PT: "+String(PT));
+	return KKRT-PT;
 }
 /////////////////////////////////////////////////////////////////////////////
 //vratí RD dle délky otoče a času otáčení

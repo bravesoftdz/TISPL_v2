@@ -793,6 +793,7 @@ public:
 	Ttyp_dopravniku *vrat_typ_dopravniku(unsigned long n);//dla zadaného n vrátí daný typ dopravníku formou ukazatatele
 	double vrat_hodnotu_typu_dopravniku(unsigned long nDopravniku,TtypHodnoty typHodnoty,unsigned long n);//vrátí od zadaného typu dopravníku dle zadaného n a typu hodnoty hodnotu - přetížená následující
 	double vrat_hodnotu_typu_dopravniku(Ttyp_dopravniku *typDopravniku,TtypHodnoty typHodnoty,unsigned long n);//vrátí od zadaného typu dopravníku dle zadaného n a typu hodnoty hodnotu
+  bool hodnota_v_katalogu(unsigned long nDopravniku,double hodnota,TtypHodnoty typHodnoty=hO);//zkontroluje zda se hodnota nachází v dopravníku, například hodnota oblouku v hobloucích dopravníku
 	void vymaz_seznam_KATALOG();//smaže celý katalog, včetně přidružených spojových seznamů
 
 //metody pro PALCE

@@ -3248,7 +3248,7 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 		}
 		//výpočet RT a zapsání do dat elemetnu
 		double RT=0,WT=Element->WT,WTin=0;
-		if(F->scGPCheckBox_meridlo_casy->Checked)WTin=Element->sparovany->WT;
+		if(F->scGPCheckBox_meridlo_casy->Checked && Element->sparovany!=NULL)WTin=Element->sparovany->WT;
 		if(Element->eID==0/* && Element->data.pocet_voziku>0*/ && cas+Element->WT<PP.TT)WT*=Element->data.pocet_voziku;
 		double RD=0;if(Element->pohon!=NULL)RD=Element->pohon->aRD;
 		RT=m.RT(Element->data.PT1+Element->data.PT2+Element->PTotoc/*+Element->data.WTstop*/,cas,WT,Element->data.pocet_voziku,RD,WTin);
@@ -6977,6 +6977,41 @@ double Cvektory::vrat_hodnotu_typu_dopravniku(Ttyp_dopravniku *typDopravniku,Tty
 		else return -1;
 	}
 	else return -2;
+}
+//---------------------------------------------------------------------------
+//zkontroluje zda se hodnota nachází v dopravníku, například hodnota oblouku v hobloucích dopravníku
+bool Cvektory::hodnota_v_katalogu(unsigned long nDopravniku,double hodnota,TtypHodnoty typHodnoty)
+{
+	//deklarace
+	Ttyp_dopravniku *K=vrat_typ_dopravniku(nDopravniku);
+	TDoubleHodnota *TH=NULL;
+	bool ret=false;
+
+	//kontrola existence doprvníku + fce
+	if(K!=NULL && hodnota>0)
+	{
+		//načtení DoubleHodnota
+		switch(typHodnoty)
+		{
+			//horizontální oblouky
+			case hO:TH=K->hOblouk->dalsi;break;
+			//vertikální oblouky
+			case vO:TH=K->vOblouk->dalsi;break;
+			//nedefinované
+			default:break;
+		}
+		//načtení konkrétních hodnot
+		while(TH!=NULL)
+		{
+			if(TH->hodnota==hodnota){ret=true;break;}
+			TH=TH->dalsi;
+    }
+	}
+
+  //ukazatelové záležitosti
+	K=NULL;delete K;
+	TH=NULL;delete TH;
+  return ret;
 }
 //---------------------------------------------------------------------------
 //smaže celý katalog, včetně přidružených spojových seznamů

@@ -6334,29 +6334,35 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 {
 	log(__func__);
 	bool vypnout=false,dotazano=false;
-	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && (m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)!=m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel) || e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel!=m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)) && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=2 && mrYes==MB(ls->Strings[455],MB_YESNO))
+	//kontrola, zda se orientace vetve == orientaci spojky, pokud ne vloží oblouk
+	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && (m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)!=m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel) || e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel!=m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)) && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=1.5)
 	{
-		d.geoTemp.typ=1;
-		d.geoTemp.radius=d.v.PP.radius;
-		d.geoTemp.orientace=m.a360(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel);
-		double orientace=d.geoTemp.orientace;if(orientace==0)orientace=360;
-		d.geoTemp.rotacni_uhel=d.geoTemp.orientace-e_posledni->dalsi->geo.orientace;//m.a360(e_posledni->dalsi->geo.orientace-d.geoTemp.orientace);
-		d.geoTemp.delka=m.R2Larc(d.geoTemp.radius,d.geoTemp.rotacni_uhel);
-		TPointD *PL=m.getArcLine(e_posledni->geo.X4,e_posledni->geo.Y4,d.geoTemp.orientace,d.geoTemp.rotacni_uhel,d.geoTemp.radius);
-  	d.geoTemp.X1=PL[0].x;d.geoTemp.Y1=PL[0].y;d.geoTemp.X2=PL[1].x;d.geoTemp.Y2=PL[1].y;d.geoTemp.X3=PL[2].x;d.geoTemp.Y3=PL[2].y;d.geoTemp.X4=PL[3].x;d.geoTemp.Y4=PL[3].y;
+		double orientace=m.a360(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel);if(orientace==0)orientace=360;
+		double rotacni_uhel=orientace-e_posledni->dalsi->geo.orientace;
+		if(d.v.hodnota_v_katalogu(d.v.PP.katalog,m.abs_d(rotacni_uhel)) && mrYes==MB(ls->Strings[455],MB_YESNO))
+		{
+      //parametry geometrie
+			d.geoTemp.typ=1;
+	  	d.geoTemp.radius=d.v.PP.radius;
+	  	d.geoTemp.orientace=m.a360(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel);
+	  	d.geoTemp.rotacni_uhel=orientace-e_posledni->dalsi->geo.orientace;//m.a360(e_posledni->dalsi->geo.orientace-d.geoTemp.orientace);
+	  	d.geoTemp.delka=m.R2Larc(d.geoTemp.radius,d.geoTemp.rotacni_uhel);
+	  	TPointD *PL=m.getArcLine(e_posledni->geo.X4,e_posledni->geo.Y4,d.geoTemp.orientace,d.geoTemp.rotacni_uhel,d.geoTemp.radius);
+	  	d.geoTemp.X1=PL[0].x;d.geoTemp.Y1=PL[0].y;d.geoTemp.X2=PL[1].x;d.geoTemp.Y2=PL[1].y;d.geoTemp.X3=PL[2].x;d.geoTemp.Y3=PL[2].y;d.geoTemp.X4=PL[3].x;d.geoTemp.Y4=PL[3].y;
 
-		//kontrola a uchovávání zda edituji hlavní nebo veldejší větev
-		if(Akce!=GEOMETRIE){Akce=GEOMETRIE;vypnout=true;}
-		if(e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni)d.v.vyhybka_pom=e_posledni;
-		e_posledni=d.v.vloz_element(d.v.vrat_objekt(e_posledni->objekt_n),MaxInt,d.geoTemp.X4,d.geoTemp.Y4,e_posledni->orientace,e_posledni->dalsi);
-		if(vypnout)Akce=NIC;
-		e_posledni->geo=d.geoTemp;
-		if(e_posledni->objekt_n==OBJEKT_akt->n)design_element(e_posledni,true);//nutné!!!!!!!!
-		d.v.vyhybka_pom=NULL;
-		dotazano=true;
+	  	//kontrola a uchovávání zda edituji hlavní nebo veldejší větev
+	  	if(Akce!=GEOMETRIE){Akce=GEOMETRIE;vypnout=true;}
+	  	if(e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni)d.v.vyhybka_pom=e_posledni;
+	  	e_posledni=d.v.vloz_element(d.v.vrat_objekt(e_posledni->objekt_n),MaxInt,d.geoTemp.X4,d.geoTemp.Y4,e_posledni->orientace,e_posledni->dalsi);
+	  	if(vypnout)Akce=NIC;
+	  	e_posledni->geo=d.geoTemp;
+	  	if(e_posledni->objekt_n==OBJEKT_akt->n)design_element(e_posledni,true);//nutné!!!!!!!!
+	  	d.v.vyhybka_pom=NULL;
+			dotazano=true;
+		}
 	}
 	//e_posledni == poslední element ve vedlejší větvi
-	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)==m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel) && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=1 && e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel==m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel))
+	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)==m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel) && (m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=1 || dotazano) && e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel==m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel))
 	{
 		vypnout=false;
 		if(Akce==GEOMETRIE)vypnout=true;
@@ -6494,62 +6500,64 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 					}
 				}
 			}
-			//ukončení editace geometrie
-			if(vypnout)
-			{
-				Akce=BLOK;//blokace akce, aby se nespoštěl refresh při změně viditelnosti vrstev
-				AnsiString T;
-				if(T==0 || T=="")rotace_jigu=0;else rotace_jigu=1;
-		  	T=readINI("nastaveni_editace","zobrazeni_pozic"); //zobrazit pozice
-		  	if(T==0 || T=="")zobrazit_pozice=0;else zobrazit_pozice=1;
-		  	T=readINI("nastaveni_editace","zobrazit_popisky"); //zobrazit popisky
-		  	if(T==0 || T=="")zobrazit_popisky=0;else zobrazit_popisky=1;
-		  	T=readINI("nastaveni_editace","zobrazit_koleje"); //zobrazit koleje
-		  	if(T==0 || T=="")zobrazit_koleje=0;else zobrazit_koleje=1;
-		  	T=readINI("nastaveni_editace","zobrazit_palce"); //zobrazit_palce
-		  	if(T==0 || T=="")zobrazit_palce=0;else zobrazit_palce=1;
-		  	T=readINI("nastaveni_editace","rotace_jigu"); //zobrazit rotaci jigu
-		  	if(T==0 || T=="")rotace_jigu=0;else rotace_jigu=1;
-		  	T=readINI("nastaveni_editace","zobrazit_rozmisteni_voziku"); //zobrazit_rozmisteni_jigu
-		  	if(T==0 || T=="")zobrazit_rozmisteni_voziku=0;else zobrazit_rozmisteni_voziku=1;
-		  	T=readINI("nastaveni_editace","zobrazit_popisek_pohonu"); //zobrazit_popisek_pohonu
-		  	if(T==1 || T=="")zobrazit_popisek_pohonu=1;else zobrazit_popisek_pohonu=0;
-		  	if(rotace_jigu==1)scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
-		  	else scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=false;
-		  	if(zobrazit_pozice==1)scGPCheckBox_zobrazit_pozice->Checked=true;
-		  	else scGPCheckBox_zobrazit_pozice->Checked=false;
-		  	if(zobrazit_popisky==1)scGPCheckBox1_popisky->Checked=true;
-		  	else scGPCheckBox1_popisky->Checked=false;
-		  	if(zobrazit_koleje==1)scGPCheckBox_zobrazit_koleje->Checked=true;
-		  	else scGPCheckBox_zobrazit_koleje->Checked=false;
-		  	if(zobrazit_palce==1)scGPCheckBox_zobrazit_palce->Checked=true;
-		  	else scGPCheckBox_zobrazit_palce->Checked=false;
-		  	if(rotace_jigu==1) scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
-		  	else scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=false;
-		  	if(zobrazit_rozmisteni_voziku==1) scGPCheckBox_rozmisteni_voziku->Checked=true;
-		  	else scGPCheckBox_rozmisteni_voziku->Checked=false;
-		  	if(zobrazit_popisek_pohonu==1)scGPCheckBox_popisek_pohonu->Checked=true;
-				else scGPCheckBox_popisek_pohonu->Checked=false;
-				//aktualizace comb ve výhybkách + refreshování všech tabulek, musí být, aby nedošlo k chybnému vykreslení mgridů, způsobuje zobrazení MB
-				Cvektory::TElement *E=OBJEKT_akt->element;
-        Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
-				while(E!=NULL)
-				{
-					if(E->eID==300)napln_comba_mGridu(E);
-					E->mGrid->Refresh();
-					E=d.v.dalsi_krok(VYHYBKY,E,OBJEKT_akt);
-				}
-				E=NULL;delete E;
-				d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
-				//refresh ostatních tabulek
-				if(predchozi_PM!=NULL)predchozi_PM->mGrid->Refresh();
-				Cvektory::TTeplomery *Tep=d.v.vrat_teplomery_podle_zakazky(OBJEKT_akt,d.v.ZAKAZKA_akt);
-				if(Tep!=NULL)Tep->posledni->mGrid->Refresh();
-				Tep=NULL;delete Tep;
-			}
-			REFRESH(d.SCENA,true);
 			E=NULL;delete E;
+			dotazano=true;
 		}
+	}
+  //ukončení editace geometrie
+	if(dotazano)
+	{
+		Akce=BLOK;//blokace akce, aby se nespoštěl refresh při změně viditelnosti vrstev
+		AnsiString T;
+		if(T==0 || T=="")rotace_jigu=0;else rotace_jigu=1;
+		T=readINI("nastaveni_editace","zobrazeni_pozic"); //zobrazit pozice
+		if(T==0 || T=="")zobrazit_pozice=0;else zobrazit_pozice=1;
+		T=readINI("nastaveni_editace","zobrazit_popisky"); //zobrazit popisky
+		if(T==0 || T=="")zobrazit_popisky=0;else zobrazit_popisky=1;
+		T=readINI("nastaveni_editace","zobrazit_koleje"); //zobrazit koleje
+		if(T==0 || T=="")zobrazit_koleje=0;else zobrazit_koleje=1;
+		T=readINI("nastaveni_editace","zobrazit_palce"); //zobrazit_palce
+		if(T==0 || T=="")zobrazit_palce=0;else zobrazit_palce=1;
+		T=readINI("nastaveni_editace","rotace_jigu"); //zobrazit rotaci jigu
+		if(T==0 || T=="")rotace_jigu=0;else rotace_jigu=1;
+		T=readINI("nastaveni_editace","zobrazit_rozmisteni_voziku"); //zobrazit_rozmisteni_jigu
+		if(T==0 || T=="")zobrazit_rozmisteni_voziku=0;else zobrazit_rozmisteni_voziku=1;
+		T=readINI("nastaveni_editace","zobrazit_popisek_pohonu"); //zobrazit_popisek_pohonu
+		if(T==1 || T=="")zobrazit_popisek_pohonu=1;else zobrazit_popisek_pohonu=0;
+		if(rotace_jigu==1)scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
+		else scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=false;
+		if(zobrazit_pozice==1)scGPCheckBox_zobrazit_pozice->Checked=true;
+		else scGPCheckBox_zobrazit_pozice->Checked=false;
+		if(zobrazit_popisky==1)scGPCheckBox1_popisky->Checked=true;
+		else scGPCheckBox1_popisky->Checked=false;
+		if(zobrazit_koleje==1)scGPCheckBox_zobrazit_koleje->Checked=true;
+		else scGPCheckBox_zobrazit_koleje->Checked=false;
+		if(zobrazit_palce==1)scGPCheckBox_zobrazit_palce->Checked=true;
+		else scGPCheckBox_zobrazit_palce->Checked=false;
+		if(rotace_jigu==1) scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
+		else scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=false;
+		if(zobrazit_rozmisteni_voziku==1) scGPCheckBox_rozmisteni_voziku->Checked=true;
+		else scGPCheckBox_rozmisteni_voziku->Checked=false;
+		if(zobrazit_popisek_pohonu==1)scGPCheckBox_popisek_pohonu->Checked=true;
+		else scGPCheckBox_popisek_pohonu->Checked=false;
+		//aktualizace comb ve výhybkách + refreshování všech tabulek, musí být, aby nedošlo k chybnému vykreslení mgridů, způsobuje zobrazení MB
+		Cvektory::TElement *E=OBJEKT_akt->element;
+    Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
+		while(E!=NULL)
+		{
+			if(E->eID==300)napln_comba_mGridu(E);
+			E->mGrid->Refresh();
+			E=d.v.dalsi_krok(VYHYBKY,E,OBJEKT_akt);
+		}
+		E=NULL;delete E;
+		d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
+		//refresh ostatních tabulek
+		if(predchozi_PM!=NULL)predchozi_PM->mGrid->Refresh();
+		Cvektory::TTeplomery *Tep=d.v.vrat_teplomery_podle_zakazky(OBJEKT_akt,d.v.ZAKAZKA_akt);
+		if(Tep!=NULL)Tep->posledni->mGrid->Refresh();
+		Tep=NULL;delete Tep;
+		if(e_posledni->geo.X4!=e_posledni->dalsi->geo.X4 || e_posledni->geo.Y4!=e_posledni->dalsi->geo.Y4)TIP="Nelze automaticky dopojit";
+    REFRESH(d.SCENA,true);
 	}
 }
 //---------------------------------------------------------------------------
@@ -8095,9 +8103,9 @@ void TForm1::mGrid_puvodni_stav(Cvektory::TElement *E)
   		case 1://robot (kontinuální)
   		{
   			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
-  			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;
 				E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;
-				E->mGrid->Cells[1][4].Type=E->mGrid->COMBO;
+				E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;
+				E->mGrid->Cells[1][5].Type=E->mGrid->COMBO;
 				E->mGrid->Update();
   			break;
   		}
@@ -8120,7 +8128,7 @@ void TForm1::mGrid_puvodni_stav(Cvektory::TElement *E)
 				E->mGrid->Cells[3][5].Type=E->mGrid->EDIT;
 				E->mGrid->Cells[3][8].Type=E->mGrid->EDIT;
 				E->mGrid->Cells[3][9].Type=E->mGrid->EDIT;
-  			E->mGrid->Cells[3][10].Type=E->mGrid->COMBO;
+  			E->mGrid->Cells[3][11].Type=E->mGrid->COMBO;
 				E->mGrid->exBUTTONVisible=true;
 				E->mGrid->Update();
   			break;
@@ -10104,19 +10112,22 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 				t_hint2=ls->Strings[482];//"vyosení pracovní oblasti";
 			}
 			//samotné vytvoření matice-tabulky
-			E->mGrid->Create(2,5);
+			E->mGrid->Create(2,6);
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT "+cas;
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
-			E->mGrid->Cells[1][1].Text=outPT(m.PT(E->data.LO1,aRD));
-			E->data.PT1=inPT(ms.MyToDouble(E->mGrid->Cells[1][1].Text));
-			E->mGrid->Cells[0][2].Text=t+LO;
-			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outLO(E->data.LO1);
-			E->mGrid->Cells[0][3].Text=ls->Strings[236]+" "+LO;//"vyosení "
-			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=0;
-			E->mGrid->Cells[1][3].isNegativeNumber->Color=(TColor)RGB(43,87,154);//musí být nastaveno ručně, vymazání podmíněného formátování
-			E->mGrid->Cells[0][4].Text="PD jig";
-			E->mGrid->Cells[1][4].Type=E->mGrid->COMBO;
+			E->data.PT1=m.KKRT(0,E->data.LO1,aRD);
+			E->mGrid->Cells[1][1].Text=outPT(E->data.PT1);
+			E->mGrid->Cells[0][2].Text="RT "+cas;
+      E->data.RT.y=m.KKRT(E->data.PT1,E->data.LO1,aRD);
+			E->mGrid->Cells[1][2].Text=m.round2double(outPT(E->data.RT.y),3);
+			E->mGrid->Cells[0][3].Text=t+LO;
+			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outLO(E->data.LO1);
+			E->mGrid->Cells[0][4].Text=ls->Strings[236]+" "+LO;//"vyosení "
+			E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;E->mGrid->Cells[1][4].Text=outLO(E->data.LO_pozice);
+			E->mGrid->Cells[1][4].isNegativeNumber->Color=(TColor)RGB(43,87,154);//musí být nastaveno ručně, vymazání podmíněného formátování
+			E->mGrid->Cells[0][5].Text="PD jig";
+			E->mGrid->Cells[1][5].Type=E->mGrid->COMBO;
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_1;
@@ -10124,12 +10135,14 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			//nastavení hintů
 			E->mGrid->Cells[0][1].Hint=ls->Strings[237];//"celkový čas procesu, který je složen z dílčích časů";//přesun robota, aretace, lakování, číštění pistole,..."
 			E->mGrid->Cells[0][1].ShowHint=true;
-			E->mGrid->Cells[0][2].Hint=t_hint;
+			E->mGrid->Cells[0][2].Hint=ls->Strings[227];//"časová rezerva";
 			E->mGrid->Cells[0][2].ShowHint=true;
-			E->mGrid->Cells[0][3].Hint=t_hint2;
+			E->mGrid->Cells[0][3].Hint=t_hint;
 			E->mGrid->Cells[0][3].ShowHint=true;
-			E->mGrid->Cells[0][4].Hint="part detect";
+			E->mGrid->Cells[0][4].Hint=t_hint2;
 			E->mGrid->Cells[0][4].ShowHint=true;
+			E->mGrid->Cells[0][5].Hint="part detect";
+			E->mGrid->Cells[0][5].ShowHint=true;
 			break;
 		}
 		case 8:case 12:case 16:case 102:case 106:
@@ -10187,7 +10200,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 				t_hint=ls->Strings[235];//"délka pracovní oblasti";
 			}
 			//samotné vytvoření matice-tabulky
-			E->mGrid->Create(4,11);
+			E->mGrid->Create(4,12);
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT1 "+cas;
 			E->mGrid->Cells[3][1].Type=E->mGrid->EDIT;E->mGrid->Cells[3][1].Text=outPT(m.PT(E->data.LO1,aRD));
@@ -10222,8 +10235,10 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[3][9].Type=E->mGrid->EDIT;E->mGrid->Cells[3][9].Text=outLO(E->data.LO2);
 			E->mGrid->Cells[0][9].BottomBorder->Width=2;
 			E->mGrid->Cells[3][9].BottomBorder->Width=2;
-			E->mGrid->Cells[0][10].Text="PD jig";
-			E->mGrid->Cells[3][10].Type=E->mGrid->COMBO;
+			E->mGrid->Cells[0][10].Text="RT "+cas;
+			E->mGrid->Cells[3][10].Text=m.round2double(outPT(E->data.RT.y),3);
+			E->mGrid->Cells[0][11].Text="PD jig";
+			E->mGrid->Cells[3][11].Type=E->mGrid->COMBO;
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=E->mGrid->Rows[0].Height;
@@ -10247,8 +10262,10 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][8].ShowHint=true;
 			E->mGrid->Cells[0][9].Hint=t_hint;
 			E->mGrid->Cells[0][9].ShowHint=true;
-			E->mGrid->Cells[0][10].Hint="part detect";
+			E->mGrid->Cells[0][10].Hint=ls->Strings[227];//"časová rezerva";
 			E->mGrid->Cells[0][10].ShowHint=true;
+			E->mGrid->Cells[0][11].Hint="part detect";
+			E->mGrid->Cells[0][11].ShowHint=true;
 			//nastavení exButtonu, skrývání řádku max.WT Stop
 			E->mGrid->exBUTTONVisible=true;
 			E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
@@ -10262,6 +10279,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->MergeCells(0,8,2,8);
 			E->mGrid->MergeCells(0,9,2,9);
 			E->mGrid->MergeCells(0,10,2,10);
+      E->mGrid->MergeCells(0,11,2,11);
 			E->mGrid->MergeCells(0,3,0,7);
 			E->mGrid->Cells[0][7].BottomBorder->Width=2;
 			break;
@@ -10724,18 +10742,20 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 				t_hint2=ls->Strings[482];//"vyosení pracovní oblasti";
 			}
 			//samotné vytvoření matice-tabulky
-			E->mGrid->Create(2,5);
+			E->mGrid->Create(2,6);
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT "+cas;
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
 			E->mGrid->Cells[1][1].Text=outPT(E->data.PT1);
-			E->mGrid->Cells[0][2].Text=t+LO;
-			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outLO(E->data.LO1);
-			E->mGrid->Cells[0][3].Text=ls->Strings[236]+" "+LO;//"vyosení "
-			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outLO(E->data.LO_pozice);
-			E->mGrid->Cells[1][3].isNegativeNumber->Color=(TColor)RGB(43,87,154);//musí být nastaveno ručně, vymazání podmíněného formátování
-			E->mGrid->Cells[0][4].Text="PD jig";
-			E->mGrid->Cells[1][4].Type=E->mGrid->COMBO;
+			E->mGrid->Cells[0][2].Text="RT "+cas;
+			E->mGrid->Cells[1][2].Text=m.round2double(outPT(E->data.RT.y),3);
+			E->mGrid->Cells[0][3].Text=t+LO;
+			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outLO(E->data.LO1);
+			E->mGrid->Cells[0][4].Text=ls->Strings[236]+" "+LO;//"vyosení "
+			E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;E->mGrid->Cells[1][4].Text=outLO(E->data.LO_pozice);
+			E->mGrid->Cells[1][4].isNegativeNumber->Color=(TColor)RGB(43,87,154);//musí být nastaveno ručně, vymazání podmíněného formátování
+			E->mGrid->Cells[0][5].Text="PD jig";
+			E->mGrid->Cells[1][5].Type=E->mGrid->COMBO;
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_1;
@@ -10743,12 +10763,14 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			//nastavení hintů
 			E->mGrid->Cells[0][1].Hint=ls->Strings[237];//"celkový čas procesu, který je složen z dílčích časů";//přesun robota, aretace, lakování, číštění pistole,..."
 			E->mGrid->Cells[0][1].ShowHint=true;
-			E->mGrid->Cells[0][2].Hint=t_hint;
+      E->mGrid->Cells[0][2].Hint=ls->Strings[227];//"časová rezerva";
 			E->mGrid->Cells[0][2].ShowHint=true;
-			E->mGrid->Cells[0][3].Hint=t_hint2;
+			E->mGrid->Cells[0][3].Hint=t_hint;
 			E->mGrid->Cells[0][3].ShowHint=true;
-			E->mGrid->Cells[0][4].Hint="part detect";
+			E->mGrid->Cells[0][4].Hint=t_hint2;
 			E->mGrid->Cells[0][4].ShowHint=true;
+			E->mGrid->Cells[0][5].Hint="part detect";
+			E->mGrid->Cells[0][5].ShowHint=true;
 			break;
 		}
 		case 8:case 12:case 16:case 102:case 106:
@@ -10819,8 +10841,9 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[3][9].Type=E->mGrid->EDIT;
 			E->mGrid->Cells[0][9].BottomBorder->Width=2;
 			E->mGrid->Cells[3][9].BottomBorder->Width=2;
-			E->mGrid->Cells[0][10].Text="PD jig";
-			E->mGrid->Cells[3][10].Type=E->mGrid->COMBO;
+      E->mGrid->Cells[0][10].Text="RT "+cas;
+			E->mGrid->Cells[0][11].Text="PD jig";
+			E->mGrid->Cells[3][11].Type=E->mGrid->COMBO;
 			E->mGrid->Cells[3][1].Text=outPT(E->data.PT1);
 			E->mGrid->Cells[3][2].Text=outLO(E->data.LO1);
 			E->mGrid->Cells[3][4].Text=outPT(E->PTotoc);
@@ -10829,6 +10852,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[3][7].Text=outDO(m.round2double(E->zona_za,3));
 			E->mGrid->Cells[3][8].Text=outPT(E->data.PT2);
 			E->mGrid->Cells[3][9].Text=outLO(E->data.LO2);
+			E->mGrid->Cells[3][10].Text=m.round2double(outPT(E->data.RT.y),3);
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=E->mGrid->Rows[0].Height;
@@ -10852,8 +10876,10 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][8].ShowHint=true;
 			E->mGrid->Cells[0][9].Hint=t_hint;
 			E->mGrid->Cells[0][9].ShowHint=true;
-			E->mGrid->Cells[0][10].Hint="part detect";
+      E->mGrid->Cells[0][10].Hint=ls->Strings[227];//"časová rezerva";
 			E->mGrid->Cells[0][10].ShowHint=true;
+			E->mGrid->Cells[0][11].Hint="part detect";
+			E->mGrid->Cells[0][11].ShowHint=true;
 			//nastavení exButtonu, skrývání řádku max.WT Stop
 			E->mGrid->exBUTTONVisible=true;
 			E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
@@ -10868,6 +10894,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->MergeCells(0,8,2,8);
 			E->mGrid->MergeCells(0,9,2,9);
 			E->mGrid->MergeCells(0,10,2,10);
+      E->mGrid->MergeCells(0,11,2,11);
 			//E->mGrid->MergeCells(0,3,0,7);
 			if(!rozbalena)//tabulka byla zbalená
 			{
@@ -11249,8 +11276,8 @@ void TForm1::redesign_element()
       }
 			case 1:case 7:case 11:case 15:case 101:case 105://kk roboti / operátoři
   		{
-  			if (JID==101) zcas=true;//časové buňky
-				if (JID==102 || JID==103) zLO=true;//délkové buňky
+  			if (JID==101 || JID==102) zcas=true;//časové buňky
+				if (JID==103 || JID==104) zLO=true;//délkové buňky
   			break;
   		}
 			case 2:case 8:case 12:case 16:case 102:case 106://S&G roboti / operátoři
@@ -11260,7 +11287,7 @@ void TForm1::redesign_element()
   		}
 			case 3:case 9:case 13:case 17:case 103:case 107://kk roboti / operátoři s otočí
   		{
-  			if (JID==101 || JID==104 || JID==108) zcas=true;//čas
+  			if (JID==101 || JID==104 || JID==108 ||JID==110) zcas=true;//čas
   			if (JID==102 || JID==109) zLO=true;//delka
 				if (JID==105 || JID==106 || JID==107) zdelka_otoce=true;//delka otoče
   			break;
@@ -11352,7 +11379,7 @@ void TForm1::redesign_element()
   	if (Rzunit==M) Rz="<a>[m]</a>";//0
   	else Rz="<a>[mm]</a>";//1
   	//nastavení šířek
-  	if(PTunit==SEC && LOunit==M)sirka_1=90;
+  	if(/*PTunit==SEC && */LOunit==M)sirka_1=90;
   	else sirka_1=105;
   	if(PTunit==0)sirka_2=95;
   	else sirka_2=107;
@@ -11439,13 +11466,15 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 			AnsiString t=ls->Strings[232];//"LO "
 			if(E->eID!=1)t=ls->Strings[234];//"PO "
 			E->mGrid->Cells[0][1].Text="PT "+cas;
-			E->mGrid->Cells[0][2].Text=t+LO;
-			E->mGrid->Cells[0][3].Text=ls->Strings[236]+" "+LO;//"vyosení "
+			E->mGrid->Cells[0][2].Text="RT "+cas;
+			E->mGrid->Cells[0][3].Text=t+LO;
+			E->mGrid->Cells[0][4].Text=ls->Strings[236]+" "+LO;//"vyosení "
 			E->mGrid->Cells[1][1].Text=m.round2double(outPT(E->data.PT1),3);
-			E->mGrid->Cells[1][2].Text=m.round2double(outLO(E->data.LO1),3);
-			E->mGrid->Cells[1][3].Text=m.round2double(outLO(E->data.LO_pozice),3);
+      E->mGrid->Cells[1][2].Text=m.round2double(outPT(E->data.RT.y),3);
+			E->mGrid->Cells[1][3].Text=m.round2double(outLO(E->data.LO1),3);
+			E->mGrid->Cells[1][4].Text=m.round2double(outLO(E->data.LO_pozice),3);
 			E->mGrid->Columns[0].Width=sirka_1;
-			if(sirka_cisla<100)sirka_cisla+=15;
+			//if(sirka_cisla<100)sirka_cisla+=15;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			break;
 		}
@@ -11477,7 +11506,8 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 			E->mGrid->Cells[2][7].Text=ls->Strings[276];//"Zóna za "
 			E->mGrid->Cells[2][8].Text="PT2 "+cas;
 			E->mGrid->Cells[2][9].Text=t+"2 "+LO;
-			E->mGrid->Cells[2][10].Text="PD jig";
+      E->mGrid->Cells[2][10].Text="RT "+cas;
+			E->mGrid->Cells[2][11].Text="PD jig";
 			E->mGrid->Cells[3][1].Text=m.round2double(outPT(E->data.PT1),3);
 			E->mGrid->Cells[3][2].Text=m.round2double(outLO(E->data.LO1),3);
 			E->mGrid->Cells[3][4].Text=m.round2double(outPT(E->PTotoc),3);
@@ -11486,6 +11516,7 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 			E->mGrid->Cells[3][7].Text=m.round2double(outDO(E->zona_za),3);
 			E->mGrid->Cells[3][8].Text=m.round2double(outPT(E->data.PT2),3);
 			E->mGrid->Cells[3][9].Text=m.round2double(outLO(E->data.LO2),3);
+      E->mGrid->Cells[3][10].Text=m.round2double(outPT(E->data.RT.y),3);
 			E->mGrid->Columns[2].Width=sirka_3;
 			break;
 		}

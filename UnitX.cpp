@@ -296,20 +296,22 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 						if(E->mGrid->Cells[Col][Row].Text!="")zmena_aRD(E);
 						if(F->PmG!=NULL)F->PmG->Refresh();//došlo ke zmìnì hodnot v PmG, musí být refresh, PmG refreš obsluhuje druhž case v OnChange
 					}
+					E->data.RT.y=F->m.KKRT(E->data.PT1,E->data.LO1,F->OBJEKT_akt->pohon->aRD);//uložení do pamìti + výpoèet
+					E->mGrid->Cells[Col][Row+1].Text=F->m.round2double(F->outPT(E->data.RT.y),3);
 				}
-				if(Row==2)// eidtace LO
+				if(Row==3)// eidtace LO
 				{
 					input_state=LO; //nastaveni stavu
 					E->data.LO1=F->inLO(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text));//INPUT
 					E->data.PT1=E->data.LO1/F->OBJEKT_akt->pohon->aRD;//uložení do pamìti + výpoèet
-					E->mGrid->Cells[Col][Row-1].Text = F->m.round2double(F->outPT(E->data.PT1),3); //OUTPUT
+					E->mGrid->Cells[Col][1].Text = F->m.round2double(F->outPT(E->data.PT1),3); //OUTPUT
 				}
-				if(Row==3)// eidtace LO_pozice
+				if(Row==4)// eidtace LO_pozice
 				{
 					input_state=LO2; //nastaveni stavu
 					E->data.LO_pozice=F->inLO(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text));//pouze uložení do dat
 				}
-				if(Row==4)// eidtace COMBO PD
+				if(Row==5)// eidtace COMBO PD
 				{
 					input_state=COMBO; //nastaveni stavu
 					E->data.PD=E->mGrid->getCombo(1,Row)->ItemIndex;//pouze uložení do dat
@@ -1223,7 +1225,7 @@ void TFormX::korelace_v_elementech(long ID,long Col,long Row)
 		case 1:case 7:case 11:case 15:case 101:case 105: //robot (kontinuální)
 		{
 			if(Row==1){if(F->PmG!=NULL){F->PmG->Cells[3][rychlost].Highlight=true;korelace_tab_pohonu(1);}korelace_tab_pohonu_elementy();}//E->mGrid->Cells[1][Row+1].Highlight=true;
-			if(Row==2)E->mGrid->Cells[1][Row-1].Highlight=true;
+			if(Row==3)E->mGrid->Cells[1][1].Highlight=true;
 		} break;
 		case 2:case 8:case 12:case 16:case 102:case 106: //robot se stop stanicí
 		{
@@ -1848,7 +1850,8 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 	AnsiString jednotky;
 	if(F->aRDunit==0)jednotky="[m/s]";
 	else jednotky="[m/min]";
-	AnsiString puv_Note=E->mGrid->Note.Text;
+	AnsiString puv_Note="";
+	if(E!=NULL)puv_Note=E->mGrid->Note.Text;
 	bool mimo_rozmezi=false;
 	//zjištìní n pohonù v tabulce
 	unsigned int p1_n=0,p2_n=0,pro_pohon=0;
