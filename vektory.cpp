@@ -2254,7 +2254,8 @@ Cvektory::TElement *Cvektory::vloz_element_pred(TObjekt *Objekt,TElement *Elemen
 					if(m.delka(Element->X,Element->Y,p->geo.X4,p->geo.Y4)<1){ret=p->dalsi;break;}//konec linie
 				}
 				//kontrola zda vkládaný element neleží mezi prvním a druhým elementem, druhým až n
-				if(p->geo.typ==0 && m.LeziVblizkostiUsecky(m.round2double(F->d.Rxy(Element).x,2),m.round2double(F->d.Rxy(Element).y,2),m.round2double(p->geo.X1,2),m.round2double(p->geo.Y1,2),m.round2double(p->geo.X4,2),m.round2double(p->geo.Y4,2))==0)
+				if(p->geo.typ==0 && m.PtInLine(p->geo.X1,p->geo.Y1,p->geo.X4,p->geo.Y4,F->d.Rxy(Element).x,F->d.Rxy(Element).y))
+				//if(p->geo.typ==0 && m.LeziVblizkostiUsecky(m.round2double(F->d.Rxy(Element).x,2),m.round2double(F->d.Rxy(Element).y,2),m.round2double(p->geo.X1,2),m.round2double(p->geo.Y1,2),m.round2double(p->geo.X4,2),m.round2double(p->geo.Y4,2))==0)
 				{
 					ret=p;//uložení elementu, který předcházi vkládanému elementu
 					break;

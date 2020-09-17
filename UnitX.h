@@ -60,7 +60,7 @@ public:		// User declarations
   void zmena_rezimu_pohonu(Cvektory::TPohon *pohon);//aktualizuje položky v pohonových tabulkách, v pøípadì, že došlo ke zmìnì režimu pohonu
 
 	//promìnné pro vyøazení OnChange metody pøi vykreslování tabulek
-  enum Tinput_state{NO,NOTHING,PT,PT2,LO,LO2,WT,DO,PTotoc,COMBO,aRD,R,Rz,Rx,P_VOZ};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
+  enum Tinput_state{NO,NOTHING,PT,PT2,LO,LO2,WT,DO,PTotoc,COMBO,aRD,R,Rz,Rx,P_VOZ,CT};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
 	Tinput_state input_state;//stav vstupu PT,LO,DelkaOtoce...
 	bool vstoupeno_poh, vstoupeno_elm,validace_true;
 	Cvektory::TElement *posledni_E;//slouží pro uložení editovaného elementu, nemusím pøi každém stisku klávesy vracet E

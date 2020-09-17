@@ -1165,16 +1165,32 @@ double Cmy::Dotoc(double PTo,double RD)
 	//doba_prejezdu-
 }
 /////////////////////////////////////////////////////////////////////////////
-//výpočet časové rezervy pro KK roboty
-double Cmy::KKRT(double PT,double LO,double aRD)
+//výpočet časové rezervy pro KK roboty / operátory
+double Cmy::CT(double LO,double aRD)
 {
-	double KKRT=0;
+	double CT=0;
 	if(aRD>0)
 	{
-		KKRT=LO/aRD;
-		if(KKRT>F->d.v.PP.TT)KKRT=F->d.v.PP.TT;
-  }     //F->Memo("KKRT: "+String(KKRT)+"PT: "+String(PT));
-	return KKRT-PT;
+		CT=LO/aRD;
+		if(CT>F->d.v.PP.TT)CT=F->d.v.PP.TT;
+	}
+	return CT;
+}
+/////////////////////////////////////////////////////////////////////////////
+//výpočet RT pro KK roboty
+double Cmy::KKRT(double CT,double PT)
+{
+	return CT-PT;
+}
+/////////////////////////////////////////////////////////////////////////////
+//výpočet RT pro KK roboty s otočí
+double Cmy::KKRT(double CT1,double PT1,double CT2,double PT2)
+{
+	double RT1,RT2;
+	RT1=CT1-PT1;
+	RT2=CT2-PT2;
+	if(RT1<RT2)return RT1;
+  else return RT2;
 }
 /////////////////////////////////////////////////////////////////////////////
 //vratí RD dle délky otoče a času otáčení

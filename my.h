@@ -84,7 +84,9 @@ class Cmy
 	TPointD zona_otaceni(double rotace_pred,double rotace_otoce,double delka_otoc);//vypočítá velikost zóny otáčení před a za otočí
 	//double RT(double PT,double delka_prejezdu,double RD,double R,double WT=-1);//vratí hodnotu RT (reserve time), ta může být i záporná, WT čekání na palac si dopočítává metoda sama, pokud WT==-1, pokud je dosazena kladná hodnota větší než 0, tak je ta uvažovaná jako WT, 0 hodnota znamena WT čekání na palec neuvažovat
 	double RT(double PT,double doba_prejezdu,double WT,unsigned int pocet_voziku_v_bufferu,double RD,double WT0=0);//přetížená metoda WT0-vstupní čekání
-  double KKRT(double PT,double LO,double aRD);//výpočet časové rezervy pro KK roboty
+  double CT(double LO,double aRD);//výpočet časové rezervy pro KK roboty / operátory
+	double KKRT(double CT,double PT);//výpočet RT pro KK roboty
+  double KKRT(double CT1,double PT1,double CT2,double PT2);//výpočet RT pro KK roboty s otočí
 	double RDo(double Dotoc,double PTo);//vratí RD dle délky otoče a času otáčení
 	double dopRD(double dJ,double sJ,double rotace,double R,double TT,double RD);//vrátí doporučenou nejbližší rychlost pohonu, k rychlosti zadané tak, aby se reflektovala rozteč mezi palci i takt
 	bool kontrola_zda_zmena_R_ovlivni_RzRD(double R_puvodni,double R_nove);//vrací true pokud nová rozteč (R) ovlivní Rz resp RD
