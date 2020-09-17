@@ -7338,7 +7338,8 @@ void TForm1::vlozeni_editace_geometrie()
 	//////pokud edituji úsek PM, změnit PM na zarážku
 	Cvektory::TElement *E=posledni_editovany_element;
 	//if(E!=NULL && E->eID!=200 && E->predchozi->n>0)E=E->predchozi;
-	if(E!=NULL && E->eID==200)
+  if(E==NULL)E=OBJEKT_akt->element;
+	if(E!=NULL && E->eID==200 && d.geoTemp.typ!=-1)
 	{
 		//smazání a znovuvytvoření mGridu elementu
 		if(E->mGrid!=NULL)
