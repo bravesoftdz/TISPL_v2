@@ -770,7 +770,7 @@ public:		// User declarations
 	void REFRESH(bool refreshovat_mGridy);
 	void REFRESH(long ZprVozEledElesDopObjHal,bool refreshovat_mGridy);
 	void DuvodUlozit(bool stav);
-	void nahled_ulozit(bool duvod_ulozit);
+	void nahled_ulozit(bool duvod_ulozit,bool duvod_validovat=true);
 	void SB(UnicodeString Text, unsigned short Pane=4);//domnívám se, že zde má být hodnota 5
 	void S(UnicodeString Text="");//usnadòuje pøístup k ShowMessage
 	void Sk(UnicodeString Text="",AnsiString umisteni="neuvedeno");//usnadòuje pøístup k ShowMessage - MaKr

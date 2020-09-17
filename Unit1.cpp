@@ -3530,7 +3530,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				REFRESH(false);
 			}
 			minule_souradnice_kurzoru=TPoint(X,Y);
-			nahled_ulozit(true);
+			nahled_ulozit(true,false);
 			break;
 		}
 		case MOVE_ELEMENT://posun elementu + příprava na kontrolu
@@ -7516,46 +7516,46 @@ void TForm1::vlozeni_editace_geometrie()
 	}
 
 	//////pokud edituji úsek PM, změnit PM na zarážku
-	Cvektory::TElement *E=posledni_editovany_element;
-	if(E!=NULL && E->eID!=200 && E->predchozi->n>0)E=E->predchozi;
-	if(E!=NULL && E->eID==200)
-	{
-		//smazání a znovuvytvoření mGridu elementu
-		if(E->mGrid!=NULL)
-		{
-			nastav_focus();
-			E->mGrid->Delete();
-			E->mGrid=NULL;
-		}
-		//nulování WT
-		E->WT=0;//čekání na palec
-		//změna elemetnu na zarážku
-		E->eID=MaxInt;
-		//název
-		if(DEBUG)
-		{
-			E->name="Zarážka";
-			d.v.uprav_popisky_elementu(E);
-		}
-		else E->name="";
-		E->mGrid=new TmGrid(F);
-		E->mGrid->Tag=6;//ID formu
-		E->mGrid->ID=E->n;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
-		design_element(E,false);//nutné!
-	}
+//	Cvektory::TElement *E=posledni_editovany_element;
+//	if(E!=NULL && E->eID!=200 && E->predchozi->n>0)E=E->predchozi;
+//	if(E!=NULL && E->eID==200)
+//	{
+//		//smazání a znovuvytvoření mGridu elementu
+//		if(E->mGrid!=NULL)
+//		{
+//			nastav_focus();
+//			E->mGrid->Delete();
+//			E->mGrid=NULL;
+//		}
+//		//nulování WT
+//		E->WT=0;//čekání na palec
+//		//změna elemetnu na zarážku
+//		E->eID=MaxInt;
+//		//název
+//		if(DEBUG)
+//		{
+//			E->name="Zarážka";
+//			d.v.uprav_popisky_elementu(E);
+//		}
+//		else E->name="";
+//		E->mGrid=new TmGrid(F);
+//		E->mGrid->Tag=6;//ID formu
+//		E->mGrid->ID=E->n;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
+//		design_element(E,false);//nutné!
+//	}
 
   ////aktualizace indexů
-	unsigned long n=1;
-	E=d.v.ELEMENTY->dalsi;
-	Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
-	while(E!=NULL)
-	{
-		E->n=n;
-		n++;
-		E=d.v.dalsi_krok(VYHYBKY,E);
-	}
-	d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
-	delete E;E=NULL;
+//	unsigned long n=1;
+//	E=d.v.ELEMENTY->dalsi;
+//	Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
+//	while(E!=NULL)
+//	{
+//		E->n=n;
+//		n++;
+//		E=d.v.dalsi_krok(VYHYBKY,E);
+//	}
+//	d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
+//	delete E;E=NULL;
 
 	////připnutí vedlejší větve na hlavní
 	napojeni_vedlejsi_vetve(posledni_editovany_element);
@@ -8778,13 +8778,13 @@ bool TForm1::bod_na_geometrii(double X, double Y,Cvektory::TElement *Element)
 }
 //---------------------------------------------------------------------------
 //metoda pro sledování zda je nutné náhled uložit
-void TForm1::nahled_ulozit (bool duvod_ulozit)
+void TForm1::nahled_ulozit (bool duvod_ulozit,bool duvod_validovat)
 {
 	log(__func__);//logování
 	//aby mohlo být tlačítko aktivované musí k tomu vzniknout důvod (přidání robota, editace hodnot, ...), ale zároveň nesmí být chybná hodnota rychlosti (validace)
 	if(duvod_ulozit && FormX->validovany_pohon==0) {scGPButton_ulozit->Enabled=true;duvod_ulozit_nahled=true;DuvodUlozit(true);}
 	if(!duvod_ulozit) {scGPButton_ulozit->Enabled=false;duvod_ulozit_nahled=false;}
-	if(duvod_ulozit_nahled && !F->editace_textu){if(stisknute_leve_tlacitko_mysi)duvod_validovat=1;else duvod_validovat=2;}//pokud je důvod validovat, tj. až po dokončení operace=1, aby neustále neproblikávalo i během posunu elementů
+	if(duvod_ulozit_nahled && !F->editace_textu && duvod_validovat){if(stisknute_leve_tlacitko_mysi)duvod_validovat=1;else duvod_validovat=2;}//pokud je důvod validovat, tj. až po dokončení operace=1, aby neustále neproblikávalo i během posunu elementů
 }
 //---------------------------------------------------------------------------
 //automatické nekonfliktní pozicování tabulek podle tabulek ostatních elementů
