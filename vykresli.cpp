@@ -5430,7 +5430,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_do)
 		x2=Element_do->geo.X4;y2=Element_do->geo.Y4;
 		if(x2<F->OBJEKT_akt->element->geo.X1)O=(O-0.66)*(-1);//ošetření chybného zobrazení kóty elementu, který je před kabinou
 		//vykreslení kóty
-		vykresli_kotu(canv,x1,y1,x2,y2,Element_do,F->OBJEKT_akt->koty_elementu_offset.x,highlight);
+		if(Element_do->geo.typ==0)vykresli_kotu(canv,x1,y1,x2,y2,Element_do,F->OBJEKT_akt->koty_elementu_offset.x,highlight);
 		////kota mezi LO
 		bool vykreslit=false;
 		bool el_od=false,el_do=false;

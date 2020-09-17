@@ -14640,7 +14640,8 @@ void __fastcall TForm1::Timer_neaktivityTimer(TObject *Sender)
 		if((FormX->posledni_E!=NULL && (FormX->posledni_E->eID==200 || FormX->posledni_E->eID==300)) || FormX->validovat_pohon)FormX->validace_RD(FormX->posledni_E);
 		if(FormX->posledni_E!=NULL && FormX->posledni_E->eID==0)FormX->aktualizace_teplomeru();
 		if(PmG!=NULL)FormX->validace_aRD();
-		REFRESH(true); //nedocází k refresh tabulek, tabulky jsou v tuto chvíli naplněny aktuálními hodnotami
+    duvod_validovat=2;//může dojít k přenastavení pohonu, nutné přegenerovat vozíky
+		REFRESH(true);//nedocází k refresh tabulek, tabulky jsou v tuto chvíli naplněny aktuálními hodnotami
 	}
 	Timer_neaktivity->Enabled=false;
 }
@@ -15012,10 +15013,6 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	{
 //		Memo(String(i)+": "+String(oblouky[i]));
 //	}
-
-	Cvektory::TElement *E=OBJEKT_akt->teplomery->dalsi->prvni;
-	double azimut=m.azimut(E->geo.X1,E->geo.Y1,OBJEKT_akt->teplomery->dalsi->posledni->geo.X1,OBJEKT_akt->teplomery->dalsi->posledni->geo.X1);
-  Memo(azimut);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
