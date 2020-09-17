@@ -6333,6 +6333,9 @@ void TForm1::spojeni_prvni_posledni(double citlivost)
 void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 {
 	log(__func__);
+	int puv_akce=Akce;
+	Akce=BLOK;
+  JID=-1;stisknute_leve_tlacitko_mysi=false;
 	bool vypnout=false,dotazano=false;
 	//kontrola, zda se orientace vetve == orientaci spojky, pokud ne vloží oblouk
 	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && (m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)!=m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel) || e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel!=m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)) && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=1.5)
@@ -6359,14 +6362,13 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 	  	if(e_posledni->objekt_n==OBJEKT_akt->n)design_element(e_posledni,true);//nutné!!!!!!!!
 	  	d.v.vyhybka_pom=NULL;
 			dotazano=true;
+			vypnout=true;
 		}
 	}
 	//e_posledni == poslední element ve vedlejší větvi
 	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)==m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel) && (m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=1 || dotazano) && e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel==m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel))
 	{
-		vypnout=false;
-		if(Akce==GEOMETRIE)vypnout=true;
-		Akce=BLOK;
+		/*if(Akce==GEOMETRIE)*/vypnout=true;
 		if((!dotazano && mrYes==MB(ls->Strings[455],MB_YESNO)) || dotazano)//"Chcete automaticky spojit geometrii?"
 		{
 			double posun_x,posun_y;
@@ -6505,7 +6507,7 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 		}
 	}
   //ukončení editace geometrie
-	if(dotazano)
+	if(vypnout)
 	{
 		Akce=BLOK;//blokace akce, aby se nespoštěl refresh při změně viditelnosti vrstev
 		AnsiString T;
@@ -6559,6 +6561,7 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 		if(e_posledni->geo.X4!=e_posledni->dalsi->geo.X4 || e_posledni->geo.Y4!=e_posledni->dalsi->geo.Y4)TIP="Nelze automaticky dopojit";
     REFRESH(d.SCENA,true);
 	}
+	else Akce=puv_akce;
 }
 //---------------------------------------------------------------------------
 void TForm1::move_objekt(double X, double Y,Cvektory::TObjekt *Objekt)
@@ -7332,6 +7335,35 @@ void TForm1::vlozeni_editace_geometrie()
 	//////nastavení orientace
 	short orientace=0;
 	if(posledni_editovany_element!=NULL){orientace=posledni_editovany_element->orientace;}else {orientace=d.v.vrat_posledni_element_objektu(OBJEKT_akt)->orientace;}
+	//////pokud edituji úsek PM, změnit PM na zarážku
+	Cvektory::TElement *E=posledni_editovany_element;
+	//if(E!=NULL && E->eID!=200 && E->predchozi->n>0)E=E->predchozi;
+	if(E!=NULL && E->eID==200)
+	{
+		//smazání a znovuvytvoření mGridu elementu
+		if(E->mGrid!=NULL)
+		{
+			nastav_focus();
+			E->mGrid->Delete();
+			E->mGrid=NULL;
+		}
+		//nulování WT
+		E->WT=0;//čekání na palec
+		//změna elemetnu na zarážku
+		E->eID=MaxInt;
+		//název
+		if(DEBUG)
+		{
+			E->name="Zarážka";
+			d.v.uprav_popisky_elementu(E);
+		}
+		else E->name="";
+		E->mGrid=new TmGrid(F);
+		E->mGrid->Tag=6;//ID formu
+		E->mGrid->ID=E->n;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
+		design_element(E,false);//nutné!
+	}
+
 	//////dokončování / začátek geometrie sekundární větve v objektu spojky
 	if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->objekt_n!=OBJEKT_akt->n && posledni_editovany_element->dalsi->objekt_n==OBJEKT_akt->n && posledni_editovany_element->dalsi->predchozi2==posledni_editovany_element || posledni_editovany_element!=NULL && posledni_editovany_element->dalsi2!=NULL && posledni_editovany_element->dalsi2->eID==301 && posledni_editovany_element->objekt_n!=OBJEKT_akt->n && posledni_editovany_element->dalsi2->objekt_n==OBJEKT_akt->n && posledni_editovany_element->dalsi2->predchozi2==posledni_editovany_element)
 	{
@@ -7515,47 +7547,18 @@ void TForm1::vlozeni_editace_geometrie()
 		}
 	}
 
-	//////pokud edituji úsek PM, změnit PM na zarážku
-//	Cvektory::TElement *E=posledni_editovany_element;
-//	if(E!=NULL && E->eID!=200 && E->predchozi->n>0)E=E->predchozi;
-//	if(E!=NULL && E->eID==200)
-//	{
-//		//smazání a znovuvytvoření mGridu elementu
-//		if(E->mGrid!=NULL)
-//		{
-//			nastav_focus();
-//			E->mGrid->Delete();
-//			E->mGrid=NULL;
-//		}
-//		//nulování WT
-//		E->WT=0;//čekání na palec
-//		//změna elemetnu na zarážku
-//		E->eID=MaxInt;
-//		//název
-//		if(DEBUG)
-//		{
-//			E->name="Zarážka";
-//			d.v.uprav_popisky_elementu(E);
-//		}
-//		else E->name="";
-//		E->mGrid=new TmGrid(F);
-//		E->mGrid->Tag=6;//ID formu
-//		E->mGrid->ID=E->n;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
-//		design_element(E,false);//nutné!
-//	}
-
   ////aktualizace indexů
-//	unsigned long n=1;
-//	E=d.v.ELEMENTY->dalsi;
-//	Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
-//	while(E!=NULL)
-//	{
-//		E->n=n;
-//		n++;
-//		E=d.v.dalsi_krok(VYHYBKY,E);
-//	}
-//	d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
-//	delete E;E=NULL;
+	unsigned long n=1;
+	E=d.v.ELEMENTY->dalsi;
+	Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
+	while(E!=NULL)
+	{
+		E->n=n;
+		n++;
+		E=d.v.dalsi_krok(VYHYBKY,E);
+	}
+	d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
+	delete E;E=NULL;
 
 	////připnutí vedlejší větve na hlavní
 	napojeni_vedlejsi_vetve(posledni_editovany_element);
@@ -14983,7 +14986,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	Memo("------------");
 //	Memo("Průměrný čas otevření: "+AnsiString(celkem_otevreni/(double)pocet_kroku));
 //	Memo("Průměrný čas zavření: "+AnsiString(celkem_zavreni/(double)pocet_kroku));
-	Memo("");
+//	Memo("");
 
 //	Cvektory::TElement *e_posledni=d.v.ELEMENTY->predchozi->predchozi->predchozi2;
 //	e_posledni->geo.rotacni_uhel+=-45;
@@ -15008,6 +15011,10 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	{
 //		Memo(String(i)+": "+String(oblouky[i]));
 //	}
+
+	Cvektory::TElement *E=OBJEKT_akt->teplomery->dalsi->prvni;
+	double azimut=m.azimut(E->geo.X1,E->geo.Y1,OBJEKT_akt->teplomery->dalsi->posledni->geo.X1,OBJEKT_akt->teplomery->dalsi->posledni->geo.X1);
+  Memo(azimut);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

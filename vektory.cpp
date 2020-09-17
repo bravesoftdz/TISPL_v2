@@ -1879,8 +1879,8 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 //	if(novy->predchozi->n>0 && novy->predchozi->objekt_n==Objekt->n && (novy->predchozi->eID!=300 || (novy->predchozi->eID==300 && novy->predchozi->dalsi==novy)))novy->pohon=novy->predchozi->pohon;
 //	if(novy->predchozi->n>0 && Objekt->element!=NULL && novy->predchozi->objekt_n!=Objekt->n && (Objekt->element->predchozi->n>0 && novy->predchozi->objekt_n!=Objekt->element->predchozi->objekt_n || Objekt->element->predchozi->n==0))novy->pohon=novy->predchozi->pohon;
 //	if(novy==Objekt->element && novy->dalsi!=NULL)novy->pohon=novy->dalsi->pohon;
-	if(novy->dalsi!=NULL && novy->dalsi->predchozi==novy)novy->pohon=novy->dalsi->pohon;//pokud definuji sek větev nepřiřazovat pohon
-	else if(novy->predchozi->n>0 && novy->predchozi->eID!=200 && novy->predchozi->dalsi==novy)novy->pohon=novy->predchozi->pohon;//například při vkládání gemetri na konec linky
+	if(novy->predchozi->n>0 && novy->predchozi->eID!=200 && novy->predchozi->dalsi==novy)novy->pohon=novy->predchozi->pohon;//například při vkládání gemetri na konec linky
+	else if(novy->dalsi!=NULL && novy->dalsi->predchozi==novy)novy->pohon=novy->dalsi->pohon;//pokud definuji sek větev nepřiřazovat pohon
 	novy->geo.HeightDepp=0;
 	novy->geo.delkaPud=0;
 	if(novy->dalsi!=NULL)novy->Z=novy->dalsi->Z;

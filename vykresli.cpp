@@ -1822,21 +1822,20 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TO
 		  	if(teplomery->prvni->sparovany!=teplomery->posledni->sparovany)
 		  	{
 		  		vykresli_segment_cesty_teplomeru(canv,teplomery->prvni,clTeplomery,1);//vykreslení cesty od prvního teploměru
-		  		vykresli_segment_cesty_teplomeru(canv,teplomery->posledni,clTeplomery,2);//vykreslení cesty k poslednímu teploměru
+					vykresli_segment_cesty_teplomeru(canv,teplomery->posledni,clTeplomery,2);//vykreslení cesty k poslednímu teploměru
 		  	}
 		  	//vykrelsení spojnice mezi teploměry na jednom segmentu pohonu
 		  	else
 		  	{
 		  		double X1,Y1,OR,RA,R;
-		  		//vykreslení linie mezi teploměry
+					//vykreslení linie mezi teploměry
 		  		if(teplomery->prvni->sparovany->geo.typ==0)
-		  		{
-		  			OR=teplomery->prvni->geo.orientace;
-		  			RA=teplomery->prvni->geo.rotacni_uhel;
-		  	  	X1=teplomery->prvni->geo.X1;Y1=teplomery->prvni->geo.Y1;
-		  			R=m.delka(X1,Y1,teplomery->posledni->geo.X4,teplomery->posledni->geo.Y4);
-		  			vykresli_Gelement(canv,X1,Y1,OR,RA,R,clTeplomery,3);
-		  		}
+					{
+						X1=teplomery->prvni->geo.X1;Y1=teplomery->prvni->geo.Y1;
+						set_pen(canv,clTeplomery,m.round(F->Zoom*3),PS_ENDCAP_FLAT);//nastavení geometrického pera
+						canv->Pen->Mode=pmNotXor;
+						line(canv,m.L2Px(X1),m.L2Py(Y1),m.L2Px(teplomery->posledni->geo.X4),m.L2Py(teplomery->posledni->geo.Y4));
+					}
 		  		//vykrelsení čísti úseku mezi teploměry
 		  		else
 		  		{
@@ -1846,7 +1845,7 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TO
 		  	Cvektory::TCesta *ct=teplomery->cesta->dalsi;
 		  	while(ct!=NULL)
 		  	{
-		  		vykresli_segment_cesty_teplomeru(canv,ct->Element,clTeplomery);
+					vykresli_segment_cesty_teplomeru(canv,ct->Element,clTeplomery);
 		  		//posun na další segment cesty
 		  		ct=ct->dalsi;
 		  	}
