@@ -18897,6 +18897,7 @@ void TForm1::byly_pohony_editovany()
 			if(editovane[i]!=0 && je_pohon_pouzivan(editovane[i]))
 			{
 				d.v.aktualizuj_data_elementum_na_pohonu(editovane[i]);
+        TIP="Došlo ke změně dat elementů v ostatních kabinách";
 			}
     }
 		//mazání seznamů
