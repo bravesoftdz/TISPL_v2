@@ -29,7 +29,8 @@ __fastcall TFormX::TFormX(TComponent* Owner)
 	validovany_pohon=0;
 	validovat_pohon=false;
 	VID="00";//zde se definuje poèet èíslic obažených ve VID
-  aut_mazani_PM=false;//je true pouze v èase automatického odmazávání PM
+	aut_mazani_PM=false;//je true pouze v èase automatického odmazávání PM
+	popisky_pouzivany_pohon=false;
 	//pokud dojde ke zmìnì poøadí øádku, nastavit nové pozice zde, + pøepsání switche pro tabulku pohonu v OnChange + pøepsaní switche v korelace_tab_pohonu()
 }
 //---------------------------------------------------------------------------
@@ -239,7 +240,8 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 		}
 		//F->posledni_editovany_element=E;//odstaveno, narušuje tvorbu geometrie
 		if(F->OBJEKT_akt->pohon!=E->pohon)F->OBJEKT_akt->pohon=E->pohon;
-    validovat_pohon=false;
+		validovat_pohon=false;
+    popisky_pouzivany_pohon=false;
 		////výpoèty
 		switch(E->eID)
 		{
@@ -2290,6 +2292,9 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 	Combo=NULL;delete Combo;
 	p=NULL;delete p;
 	e=NULL;delete e;
+
+	//vypsání upozornìní k používaným pohonùm
+	popisky_pouzivany_pohon=true;
 }
 //---------------------------------------------------------------------------
 //pøiøazení pohonu z PmG
@@ -2370,6 +2375,9 @@ void TFormX::prirazeni_pohonu_defTab()
 	//ukazatelové záležitosti
 	E=NULL;p=NULL;
 	delete E;delete p;
+
+  //vypsání upozornìní k používaným pohonùm
+	popisky_pouzivany_pohon=true;
 }
 //---------------------------------------------------------------------------
 //zapiše na danou pozici ve VID dané èíslo
@@ -2505,6 +2513,7 @@ void TFormX::mazatPM(Cvektory::TElement *Element)
 		F->akt_souradnice_kurzoru_PX.y=F->m.L2Py(E->geo.Y4+0.5);
 		F->Smazat1Click(this);
 		if(smaz!=NULL)F->d.v.smaz_element(smaz);
+    delete smaz;smaz=NULL;
 	}
 
   //navrácení stavu
@@ -2823,5 +2832,54 @@ void TFormX::zmena_rezimu_pohonu(Cvektory::TPohon *pohon)
 	//ukazatelové záležitosti
 	F->d.v.vymaz_seznam_VYHYBKY(VYHYBKY);//odstranìní prùchodového spojáku
 	E=NULL;delete E;
+}
+//---------------------------------------------------------------------------
+//vypíše upozornìní pod pohonové tabulky používající používaný pohon
+void TFormX::zobraz_pouzivane_pohony()
+{
+	//pro pohonovou tabulku
+	if(F->PmG!=NULL)
+	{
+		if(F->OBJEKT_akt->pohon!=NULL && F->je_pohon_pouzivan(F->OBJEKT_akt->pohon->n) && F->PmG->Note.Text=="")F->PmG->Note.Text=F->OBJEKT_akt->pohon->name+" je používán";
+		if(F->PmG->Note.Text!="")F->PmG->Refresh();
+	}
+	//pro PM nebo výhybku
+	else
+	{
+		//deklarace
+		String popisek="";
+		Cvektory::TElement *E=F->OBJEKT_akt->element;
+		Cvektory::T2Element *VYHYBKY=F->d.v.hlavicka_seznam_VYHYBKY();
+		//prùchod skrze elementy v objektu
+		while(E!=NULL)
+		{
+			//pouze v PM a výhybkách
+			if((E->eID==200 || E->eID==300) && E->mGrid->Note.Text=="")
+			{
+				//kontrola, zda obsahují nìkterý pohon, který je používán
+				popisek="";
+				if(E->pohon!=NULL && F->je_pohon_pouzivan(E->pohon->n))popisek=E->pohon->name+" je používán, ";
+				if(E->eID==200 && E->dalsi!=NULL && E->dalsi->pohon!=NULL && E->dalsi->objekt_n==F->OBJEKT_akt->n && F->je_pohon_pouzivan(E->dalsi->pohon->n))popisek+=E->dalsi->pohon->name+" je používán";
+				if(E->eID==300 && E->dalsi2!=E->predchozi2 && E->dalsi2->pohon!=NULL && F->je_pohon_pouzivan(E->dalsi2->pohon->n))popisek+=E->dalsi2->pohon->name+" je používán";
+				if(popisek!="" && popisek.SubString(popisek.Length()-1,2)==", ")popisek=popisek.SubString(1,popisek.Length()-2);
+				E->mGrid->Note.Text=popisek;
+        //pokud ano, vykresli popisek
+				if(popisek!="")E->mGrid->Refresh();
+			}
+			E=F->d.v.dalsi_krok(VYHYBKY,E,F->OBJEKT_akt);
+		}
+		//uakazatelové záležitosti
+		F->d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
+		delete E;E=NULL;
+
+    //kontrola pøedchozího PM
+		if(F->predchozi_PM!=NULL)
+		{
+      //kontrolo využívání používaného pohonu
+			if(F->predchozi_PM->dalsi!=NULL && F->predchozi_PM->dalsi->pohon!=NULL && F->predchozi_PM->dalsi->objekt_n==F->OBJEKT_akt->n && F->je_pohon_pouzivan(F->predchozi_PM->dalsi->pohon->n))popisek=F->predchozi_PM->dalsi->pohon->name+" je používán";
+			F->predchozi_PM->mGrid->Note.Text=popisek;
+			if(popisek!="")F->predchozi_PM->mGrid->Refresh();
+		}
+  }
 }
 //---------------------------------------------------------------------------

@@ -30,7 +30,7 @@ private:	// User declarations
 	void zapisVID(int zapis,int pozice);//zapiše na danou pozici ve VID dané èíslo
 	void zobrazit_skryt_radkyPM(Cvektory::TElement *E);//zobrazí èi skryje øádky PM tabulek podle stavu uloženého v objektu
   unsigned int aktualizuj_radek_tab_teplomeru(TmGrid *mGrid,unsigned int radek,double cas,double WT,bool soucet=false);//aktualizuje parametry konkrétního øádku tabulky teplomìrù
-  void podbarvi_edit(Cvektory::TElement *E,long Col,long Row,bool def_nastaveni=true);//nastaví defautlní barvy editu a buòce, nebo podbarvé buòku
+	void podbarvi_edit(Cvektory::TElement *E,long Col,long Row,bool def_nastaveni=true);//nastaví defautlní barvy editu a buòce, nebo podbarvé buòku
 
 	//promìnné pro UnitX
 	bool editace_pohonu;
@@ -57,7 +57,8 @@ public:		// User declarations
 	void aktualizace_tab_elementu (Cvektory::TElement *mimo_element=NULL);//aktualizuje výpoèty ve všech tabulkách elemntù, parametr mimo_element je ukazatel na element, který má být pøeskoèen, defaultnì hodnota, které E->n nidky nedosáhne
 	void mazatPM(Cvektory::TElement *Element=NULL);//kontorla a dotaz zda mají být PM na stejném pohonu smazána
 	void aktualizace_teplomeru();//provede aktualizaci èasu v tabulce teplomìrù
-  void zmena_rezimu_pohonu(Cvektory::TPohon *pohon);//aktualizuje položky v pohonových tabulkách, v pøípadì, že došlo ke zmìnì režimu pohonu
+	void zmena_rezimu_pohonu(Cvektory::TPohon *pohon);//aktualizuje položky v pohonových tabulkách, v pøípadì, že došlo ke zmìnì režimu pohonu
+  void zobraz_pouzivane_pohony();//vypíše upozornìní pod pohonové tabulky používající používaný pohon
 
 	//promìnné pro vyøazení OnChange metody pøi vykreslování tabulek
   enum Tinput_state{NO,NOTHING,PT,PT2,LO,LO2,WT,DO,PTotoc,COMBO,aRD,R,Rz,Rx,P_VOZ,CT};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
@@ -68,7 +69,8 @@ public:		// User declarations
 	int validovany_pohon;
 	AnsiString VID;//dvouciferné èíslo, první èíslo znázoròuje validaci pohonu, druhé validaci stopek, pokud je èíslo 00 = bez chyb, 10 = chyba na pohonu, stop v poøádku (viz. 777 webové soubory), poèet èíslic nastaven v konstruktoru, mìnit pouze tam!!
 	bool aut_mazani_PM;
-  bool validovat_pohon;
+	bool validovat_pohon;
+  bool popisky_pouzivany_pohon;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFormX *FormX;

@@ -3348,6 +3348,103 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 	}
 }
 ////---------------------------------------------------------------------------
+//přepočíta data elementů na danném pohonu
+void Cvektory::aktualizuj_data_elementum_na_pohonu(unsigned long pohon_n)
+{
+	//kontrola existence pohonů a správnosti pohon_n
+	if(POHONY!=NULL && POHONY->dalsi!=NULL && 0<pohon_n && pohon_n<=POHONY->predchozi->n && F->OBJEKT_akt!=NULL)
+	{
+		//deklarace
+		TElement *E=ELEMENTY->dalsi;
+		T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();
+		//průchod skrze všechny elementy
+		while(E!=NULL)
+		{
+			//kontorla, zda je element na pohon_n a není v akt. editovaném objektu
+			if(E->pohon!=NULL && E->pohon->n==pohon_n && E->objekt_n!=F->OBJEKT_akt->n)
+			{
+				//přepočítání dat
+				switch(E->eID)
+				{
+					//stopstanice
+					case 0:
+					{
+						E->WT=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
+            reserve_time(E);
+						break;
+					}
+					//robot (kontinuální)
+					case 1:case 7:case 11:case 15:case 101:case 105:
+					{
+						double CT=m.CT(E->data.LO1,E->pohon->aRD);
+            E->data.RT.y=m.KKRT(CT,E->data.PT1);
+						break;
+					}
+          //robot se stop stanicí
+					case 2:case 8:case 12:case 16:case 102:case 106:
+					{
+						E->WT=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
+            reserve_time(E);
+						break;
+					}
+					//robot s pasivní otočí
+					case 3:case 9:case 13:case 17:case 103:case 107:
+					{
+						E->PTotoc=m.PTo(E->OTOC_delka,E->pohon->aRD);
+						double CT1=m.CT(E->data.LO1,E->pohon->aRD),CT2=m.CT(E->data.LO2,E->pohon->aRD);
+						E->data.RT.y=m.KKRT(CT1,E->data.PT1,CT2,E->data.PT2);
+						break;
+					}
+					//robot s aktivní otočí (resp. s otočí a stop stanicí)
+					case 4:case 10:case 14:case 18:case 104:case 108:
+					{
+						E->WT=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
+            reserve_time(E);
+						break;
+					}
+					//otoč pasivní
+					case 5:
+          {
+						E->PTotoc=m.PTo(E->OTOC_delka,E->pohon->aRD);
+						break;
+					}
+					//otoč aktivní (resp. otoč se stop stanicí)
+					case 6:
+          {
+						E->WT=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
+            reserve_time(E);
+						break;
+					}
+					//PM
+					case 200:
+					{
+						if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)E->WT=m.cekani_na_palec(0,E->dalsi->pohon->roztec,E->dalsi->pohon->aRD,3);
+						break;
+					}
+					//výhybky
+					case 300:
+					{
+						E->WT=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
+						break;
+					}
+					//spojka
+					case 301:
+					{
+						E->WT=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
+						break;
+					}
+					default:break;
+        }
+			}
+			//posun na další element
+			E=dalsi_krok(VYHYBKY,E);
+		}
+		//ukazatelové záležistosi
+    vymaz_seznam_VYHYBKY(VYHYBKY);
+		delete E;E=NULL;
+  }
+}
+////---------------------------------------------------------------------------
 //vrátí poslední element v objektu
 Cvektory::TElement *Cvektory::vrat_posledni_element_objektu(TObjekt *Objekt)
 {
@@ -3982,7 +4079,7 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu,unsigned lo
 	}
 	//hláška uživateli
 	if(!povolit && F->OBJEKT_akt!=NULL && zobrazit_tip)F->TIP=F->ls->Strings[315];//"Nelze odstranit předávací místo"
-	if(povolit && (Element->eID!=200 || (Element->eID==200 && preskocit_kontolu) || (Element->eID==200 && Element->geo.delka==0)) && (Element->dalsi==NULL || Element->dalsi!=NULL && ((Element->geo.typ==0 && Element->dalsi->geo.typ==0) || Element->geo.delka==0) || (maz_OBJ>0/* && Element->objekt_n==maz_OBJ*/)))//pokud bude hlavní větev pokračovat obloukem, problém při ukončování projektu kontrola
+	if(povolit && (Element->eID!=200 || (Element->eID==200 && preskocit_kontolu) || (Element->eID==200 && Element->geo.delka==0) || (Element->eID==200 && Element->dalsi!=NULL && Element->dalsi->objekt_n==Element->objekt_n && Element->dalsi->geo.delka!=0)) && (Element->dalsi==NULL || Element->dalsi!=NULL && ((Element->geo.typ==0 && Element->dalsi->geo.typ==0) || Element->geo.delka==0) || (maz_OBJ>0/* && Element->objekt_n==maz_OBJ*/)))//pokud bude hlavní větev pokračovat obloukem, problém při ukončování projektu kontrola
 	{
 		if(O!=NULL && O->element->n==Element->n && Element->dalsi!=NULL && Element->dalsi->objekt_n==O->n)O->element=Element->dalsi;
 		//nejdříve smazání tabulky Elelementu
@@ -7873,7 +7970,6 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 
 			//kontrola, zda se shoduje verze projektu a verze souboru, pokud ne vyhodí chybovou hlášku
 			if(F->get_major_version(String(File_hlavicka.FileVersion))!=F->get_major_version(F->FileVersion))throw new Exception("Verze souboru a projektu se neshoduje");//std::invalid_argument("Verze souboru a projektu se neshoduje");
-
 			//načtení autorů
 			wchar_t *autor=new wchar_t[File_hlavicka.vytvoril_Sdelka];
 			FileStream->Read(autor,File_hlavicka.vytvoril_Sdelka*sizeof(wchar_t));//načte jeden nazev fontu za prvekem bod a popisek bodu

@@ -177,6 +177,7 @@ void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)//scena 0 - vše do 
 	if(F->MOD!=F->TVORBA_CESTY)
 	{
 		Cvektory::TElement *E=v.ELEMENTY->dalsi,*pom=NULL;
+    Cvektory::T2Element *VYHYBKY=v.hlavicka_seznam_VYHYBKY();
 		TPoint *tab_pruchodu=new TPoint[v.pocet_vyhybek];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
 		while(E!=NULL)
 		{
@@ -208,9 +209,9 @@ void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)//scena 0 - vše do 
 				canv->Pen->Width=1;
 				canv->Pen->Color=clRed;
 				canv->Brush->Style=bsClear;
-				if(pom!=NULL && pom->geo.delka!=0 && E->geo.delka!=0)
+				if(pom!=NULL/* && pom->geo.delka!=0 && E->geo.delka!=0*/)
 				{
-					if(pom->eID==301 && pom->predchozi2==E){bod.x=pom->X;bod.y=pom->Y;}
+					if(pom->eID==301 && pom->predchozi2==E){bod.x=pom->geo.X4;bod.y=pom->geo.Y4;}
 					else {bod.x=pom->geo.X1;bod.y=pom->geo.Y1;}
 					if(m.round2double(E->geo.X4,2)!=m.round2double(bod.x,2) || m.round2double(E->geo.Y4,2)!=m.round2double(bod.y,2))
 					{
@@ -244,8 +245,9 @@ void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)//scena 0 - vše do 
 			}
 
 			////posun na další element
-			E=v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);//nutné použít tento průchodový algoritmus, v tomto průchodu je použit algoritmus dalsi_krok, nelze užit dalsi_krok pro průchod ve kterém bude vnořený znova algoritmus dalsi_krok, tento alg. používá glob. seznam výhybek, přes které prošel, pokud by běžely dva současně ukládaly by do jednoho seznamu, to by vedlo k chybným výsledkům obou průchodu, viz. https://docs.google.com/document/d/1ApxDG9tpTS6qEpKk2COsvrLZrzDl1fynWlD7xmoE6qM/edit?ts=5e3d669e#heading=h.a4ve3tnox7u5
+			E=v.dalsi_krok(VYHYBKY,E);
 		}
+		v.vymaz_seznam_VYHYBKY(VYHYBKY);
 		delete E;E=NULL;
 		pom=NULL;delete pom;
 		delete []tab_pruchodu;
