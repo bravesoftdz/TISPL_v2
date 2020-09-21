@@ -1737,7 +1737,7 @@ void TFormX::prirazeni_pohohonu_vetvi(Cvektory::TElement *E,long Col)
 	{
 		unsigned long o1=E->objekt_n;
 		e=E->dalsi2;//pøiøazuji pohon z výhybky
-		while(e!=NULL && e->idetifikator_vyhybka_spojka!=E->idetifikator_vyhybka_spojka)
+		while(e!=NULL && e->identifikator_vyhybka_spojka!=E->identifikator_vyhybka_spojka)
 		{
 			e->pohon=p;
 			if(e->objekt_n!=o1 && e->objekt_n!=o1)F->d.v.vrat_objekt(e->objekt_n)->pohon=p;//pokud je na sekundární vìtvi nìjaký objekt, pøiøadí mu pohon
@@ -2859,8 +2859,8 @@ void TFormX::zobraz_pouzivane_pohony()
 				//kontrola, zda obsahují nìkterý pohon, který je používán
 				popisek="";
 				if(E->pohon!=NULL && F->je_pohon_pouzivan(E->pohon->n))popisek=E->pohon->name+" je používán, ";
-				if(E->eID==200 && E->dalsi!=NULL && E->dalsi->pohon!=NULL && E->dalsi->objekt_n==F->OBJEKT_akt->n && F->je_pohon_pouzivan(E->dalsi->pohon->n))popisek+=E->dalsi->pohon->name+" je používán";
-				if(E->eID==300 && E->dalsi2!=E->predchozi2 && E->dalsi2->pohon!=NULL && F->je_pohon_pouzivan(E->dalsi2->pohon->n))popisek+=E->dalsi2->pohon->name+" je používán";
+				if(E->eID==200 && E->dalsi!=NULL && E->dalsi->pohon!=NULL && E->pohon!=E->dalsi->pohon && E->dalsi->objekt_n==F->OBJEKT_akt->n && F->je_pohon_pouzivan(E->dalsi->pohon->n))popisek+=E->dalsi->pohon->name+" je používán";
+				if(E->eID==300 && E->dalsi2!=E->predchozi2 && E->dalsi2->pohon!=NULL && E->pohon!=E->dalsi2->pohon && F->je_pohon_pouzivan(E->dalsi2->pohon->n))popisek+=E->dalsi2->pohon->name+" je používán";
 				if(popisek!="" && popisek.SubString(popisek.Length()-1,2)==", ")popisek=popisek.SubString(1,popisek.Length()-2);
 				E->mGrid->Note.Text=popisek;
         //pokud ano, vykresli popisek
@@ -2876,7 +2876,7 @@ void TFormX::zobraz_pouzivane_pohony()
 		if(F->predchozi_PM!=NULL)
 		{
       //kontrolo využívání používaného pohonu
-			if(F->predchozi_PM->dalsi!=NULL && F->predchozi_PM->dalsi->pohon!=NULL && F->predchozi_PM->dalsi->objekt_n==F->OBJEKT_akt->n && F->je_pohon_pouzivan(F->predchozi_PM->dalsi->pohon->n))popisek=F->predchozi_PM->dalsi->pohon->name+" je používán";
+			if(F->predchozi_PM->dalsi!=NULL && F->predchozi_PM->dalsi->pohon!=NULL && F->predchozi_PM->pohon!=F->predchozi_PM->dalsi->pohon && F->predchozi_PM->dalsi->objekt_n==F->OBJEKT_akt->n && F->je_pohon_pouzivan(F->predchozi_PM->dalsi->pohon->n))popisek=F->predchozi_PM->dalsi->pohon->name+" je používán";
 			F->predchozi_PM->mGrid->Note.Text=popisek;
 			if(popisek!="")F->predchozi_PM->mGrid->Refresh();
 		}

@@ -113,7 +113,7 @@ class Cvektory
 	{
 		unsigned long n; //pořadí ve spoj.seznamu
 		unsigned int eID; //id typu elementu viz. tabulka elementů https://docs.google.com/spreadsheets/d/1_S7yp1L25tov0mKqP3Rl_0Y2cx-e3UwDXb102hDvRlA/edit?usp=sharing
-		unsigned int idetifikator_vyhybka_spojka;
+		unsigned int identifikator_vyhybka_spojka;
 		UnicodeString short_name;//krátký název max. 4 znaky
 		UnicodeString name;//celý název objektu
 		short orientace;//v jaké orientaci je element na obrazovce vykreslen 0,90,180,270 (orientace dle světových stran)
@@ -1022,7 +1022,7 @@ private:
 	{
 			unsigned long n; //pořadí ve spoj.seznamu
 			unsigned int eID; //id typu elementu: 0 - stop stanice, 1 - robot, 2 - robot se stop stanicí, 3 - robot s pasivní otočí, 4 - robot s aktivní otočí (resp. s otočí a stop stanicí), 5 - otoč pasivní, 6 - otoč aktivní (resp. otoč se stop stanicí), 7 - pouze geometrická zarážka
-			unsigned int idetifikator_vyhybka_spojka;//uchovává identifikátor spojky a výhybky
+			unsigned int identifikator_vyhybka_spojka;//uchovává identifikátor spojky a výhybky
 		 //	UnicodeString short_name;//krátký název max. 4 znaky
      //	UnicodeString name;//celý název objektu
 			double name_delka;  // celý název objektu

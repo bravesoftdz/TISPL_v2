@@ -3337,7 +3337,7 @@ void Cvykresli::vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiStr
 				canv->Brush->Style=bsClear;
 				AnsiString t="V";
 				if(E->eID==301)t="S";
-				t+=String(E->idetifikator_vyhybka_spojka);
+				t+=String(E->identifikator_vyhybka_spojka);
 				switch((int)E->geo.orientace)
 				{
 					case 90:case 270:X=m.round(X-canv->TextWidth(t)/2.0);Y=m.round(Y-velikost*1.2-canv->TextHeight(t));break;

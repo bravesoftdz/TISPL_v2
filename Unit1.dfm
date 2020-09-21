@@ -6430,7 +6430,6 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  Vrstvy'
-      ExplicitTop = 538
       object scGPCheckBox_zobrazit_koleje: TscGPCheckBox
         AlignWithMargins = True
         Left = 7
@@ -7208,7 +7207,6 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  Podklad'
-      ExplicitTop = 232
       object scGPButton_adjustace: TscGPButton
         AlignWithMargins = True
         Left = 3
@@ -8452,7 +8450,6 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  N'#225'stroje'
-      ExplicitTop = 470
       object scGPButton_mereni_vzdalenost: TscGPButton
         AlignWithMargins = True
         Left = 3
@@ -9014,7 +9011,7 @@ object Form1: TForm1
       Caption = 'Roboti'
     end
     object scGPPanel_pomocn_proSwitch: TscGPPanel
-      Left = 55
+      Left = 59
       Top = 6
       Width = 42
       Height = 22
