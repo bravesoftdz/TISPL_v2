@@ -298,16 +298,16 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 						if(E->mGrid->Cells[Col][Row].Text!="")zmena_aRD(E);
 						if(F->PmG!=NULL)F->PmG->Refresh();//došlo ke zmìnì hodnot v PmG, musí být refresh, PmG refreš obsluhuje druhž case v OnChange
 					}
-					E->data.RT.y=F->m.KKRT(CT,E->data.PT1);
-					E->mGrid->Cells[Col][3].Text = F->m.round2double(F->outPT(E->data.RT.y),3); //OUTPUT
+					E->data.RT=F->m.KKRT(CT,E->data.PT1);
+					E->mGrid->Cells[Col][3].Text = F->m.round2double(F->outPT(E->data.RT),3); //OUTPUT
         }
 				if(Row==2)// editace PT
 				{
 					input_state=PT; //nastaveni stavu
           double CT=F->m.CT(E->data.LO1,E->pohon->aRD);
 					E->data.PT1 = F->inPT(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text));//INPUT
-					E->data.RT.y=F->m.KKRT(CT,E->data.PT1);
-					E->mGrid->Cells[Col][3].Text = F->m.round2double(F->outPT(E->data.RT.y),3); //OUTPUT
+					E->data.RT=F->m.KKRT(CT,E->data.PT1);
+					E->mGrid->Cells[Col][3].Text = F->m.round2double(F->outPT(E->data.RT),3); //OUTPUT
 				}
 				if(Row==4)// eidtace LO
 				{
@@ -315,8 +315,8 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					E->data.LO1=F->inLO(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text));//INPUT
 					double CT=F->m.CT(E->data.LO1,F->OBJEKT_akt->pohon->aRD);//uložení do pamìti + výpoèet
 					E->mGrid->Cells[Col][1].Text = F->m.round2double(F->outPT(CT),3); //OUTPUT
-          E->data.RT.y=F->m.KKRT(CT,E->data.PT1);
-					E->mGrid->Cells[Col][3].Text = F->m.round2double(F->outPT(E->data.RT.y),3); //OUTPUT
+          E->data.RT=F->m.KKRT(CT,E->data.PT1);
+					E->mGrid->Cells[Col][3].Text = F->m.round2double(F->outPT(E->data.RT),3); //OUTPUT
 				}
 				if(Row==5)// eidtace LO_pozice
 				{
@@ -368,8 +368,8 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 						if(F->PmG!=NULL)F->PmG->Refresh();//došlo ke zmìnì hodnot v PmG
 					}
 					//RT
-					E->data.RT.y=F->m.KKRT(CT1,E->data.PT1,CT2,E->data.PT2);
-					E->mGrid->Cells[3][12].Text=F->m.round2double(F->outPT(E->data.RT.y),3);
+					E->data.RT=F->m.KKRT(CT1,E->data.PT1,CT2,E->data.PT2);
+					E->mGrid->Cells[3][12].Text=F->m.round2double(F->outPT(E->data.RT),3);
         }
 				if (Row==2)//editace PT1
 				{
@@ -377,8 +377,8 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					E->data.PT1 = F->inPT(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text)); //INPUT
 					//RT
           double CT1=F->m.CT(E->data.LO1,F->OBJEKT_akt->pohon->aRD),CT2=F->m.CT(E->data.LO2,F->OBJEKT_akt->pohon->aRD);
-					E->data.RT.y=F->m.KKRT(CT1,E->data.PT1,CT2,E->data.PT2);
-					E->mGrid->Cells[3][12].Text=F->m.round2double(F->outPT(E->data.RT.y),3);
+					E->data.RT=F->m.KKRT(CT1,E->data.PT1,CT2,E->data.PT2);
+					E->mGrid->Cells[3][12].Text=F->m.round2double(F->outPT(E->data.RT),3);
 				}
 				if (Row==3)//editace LO1
 				{
@@ -388,8 +388,8 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					E->mGrid->Cells[Col][1].Text = F->m.round2double(F->outPT(CT1),3);//OUTPUT
           //RT
 					double CT2=F->m.CT(E->data.LO2,F->OBJEKT_akt->pohon->aRD);
-					E->data.RT.y=F->m.KKRT(CT1,E->data.PT1,CT2,E->data.PT2);
-					E->mGrid->Cells[3][12].Text=F->m.round2double(F->outPT(E->data.RT.y),3);
+					E->data.RT=F->m.KKRT(CT1,E->data.PT1,CT2,E->data.PT2);
+					E->mGrid->Cells[3][12].Text=F->m.round2double(F->outPT(E->data.RT),3);
 				}
 				if (Row==4)//editace COMBO
 				{
@@ -440,8 +440,8 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 						if(F->PmG!=NULL)F->PmG->Refresh();//došlo ke zmìnì hodnot v PmG
 					}
 					//RT
-					E->data.RT.y=F->m.KKRT(CT1,E->data.PT1,CT2,E->data.PT2);
-					E->mGrid->Cells[3][12].Text=F->m.round2double(F->outPT(E->data.RT.y),3);
+					E->data.RT=F->m.KKRT(CT1,E->data.PT1,CT2,E->data.PT2);
+					E->mGrid->Cells[3][12].Text=F->m.round2double(F->outPT(E->data.RT),3);
 				}
 				if (Row==10)//editace PT2
 				{
@@ -449,8 +449,8 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					E->data.PT2=F->inPT(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text)); //INPUT
           //RT
           double CT1=F->m.CT(E->data.LO1,F->OBJEKT_akt->pohon->aRD),CT2=F->m.CT(E->data.LO2,F->OBJEKT_akt->pohon->aRD);
-					E->data.RT.y=F->m.KKRT(CT1,E->data.PT1,CT2,E->data.PT2);
-					E->mGrid->Cells[3][12].Text=F->m.round2double(F->outPT(E->data.RT.y),3);
+					E->data.RT=F->m.KKRT(CT1,E->data.PT1,CT2,E->data.PT2);
+					E->mGrid->Cells[3][12].Text=F->m.round2double(F->outPT(E->data.RT),3);
 				}
 				if (Row==11)//editace LO2
 				{
@@ -460,8 +460,8 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					E->mGrid->Cells[Col][9].Text = F->m.round2double(F->outPT(CT2),3);//OUTPUT
           //RT
           double CT1=F->m.CT(E->data.LO1,F->OBJEKT_akt->pohon->aRD);
-					E->data.RT.y=F->m.KKRT(CT1,E->data.PT1,CT2,E->data.PT2);
-					E->mGrid->Cells[3][12].Text=F->m.round2double(F->outPT(E->data.RT.y),3);
+					E->data.RT=F->m.KKRT(CT1,E->data.PT1,CT2,E->data.PT2);
+					E->mGrid->Cells[3][12].Text=F->m.round2double(F->outPT(E->data.RT),3);
 				}
 				if(Row==13)// eidtace COMBO PD
 				{
@@ -898,8 +898,8 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 					//pøepoèty
 					double CT=F->m.CT(E->data.LO1,F->OBJEKT_akt->pohon->aRD);//uložení do pamìti + výpoèet
 					E->mGrid->Cells[1][1].Text = F->m.round2double(F->outPT(CT),3); //OUTPUT
-					E->data.RT.y=F->m.KKRT(CT,E->data.PT1);//uložení do pamìti + výpoèet
-					E->mGrid->Cells[1][3].Text = F->m.round2double(F->outPT(E->data.RT.y),3); //OUTPUT
+					E->data.RT=F->m.KKRT(CT,E->data.PT1);//uložení do pamìti + výpoèet
+					E->mGrid->Cells[1][3].Text = F->m.round2double(F->outPT(E->data.RT),3); //OUTPUT
 				}
 				break;
 				case 2:case 8:case 12:case 16:case 102:case 106://robot se stop stanicí
@@ -924,8 +924,8 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 					E->mGrid->Cells[3][5].Text=F->m.round2double(F->outPT(E->PTotoc),3);
 					CT2=F->m.CT(E->data.LO2,aRD);
 					E->mGrid->Cells[3][9].Text=F->m.round2double(F->outPT(CT2),3);
-					E->data.RT.y=F->m.KKRT(CT1,E->data.PT1,CT2,E->data.PT2);
-					E->mGrid->Cells[3][12].Text=F->m.round2double(F->outPT(E->data.RT.y),3);
+					E->data.RT=F->m.KKRT(CT1,E->data.PT1,CT2,E->data.PT2);
+					E->mGrid->Cells[3][12].Text=F->m.round2double(F->outPT(E->data.RT),3);
 				}
 				break;
 				case 4:case 10:case 14:case 18:case 104:case 108://robot s aktivní otoèí

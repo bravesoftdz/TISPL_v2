@@ -319,9 +319,8 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
       		UnicodeString PT1=F->m.round2double(E->data.PT1,3);
       		UnicodeString PT2=F->m.round2double(E->data.PT2,3);
       		UnicodeString WTstop=F->m.round2double(E->data.WTstop,3);
-      		UnicodeString RT_x=F->m.round2double(E->data.RT.x,3);
-      		UnicodeString RT_y=F->m.round2double(E->data.RT.y,3);
-      		UnicodeString pocet_pozic=E->data.pocet_pozic;
+					UnicodeString RT_x=F->m.round2double(E->data.RT,3);
+					UnicodeString pocet_pozic=E->data.pocet_pozic;
       		UnicodeString pocet_voziku=E->data.pocet_voziku;
       		if(F->d.v.vrat_druh_elementu(E)!=0)pocet_pozic=pocet_voziku="-";
       		UnicodeString objekt_n=E->objekt_n;

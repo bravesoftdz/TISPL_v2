@@ -1812,8 +1812,7 @@ void Cvektory::hlavicka_ELEMENTY()
 	novy->data.PT1=0;
 	novy->data.PT2=0;
 	novy->data.WTstop=0;
-	novy->data.RT.x=0;
-	novy->data.RT.y=0;
+	novy->data.RT=0;
 	novy->data.pocet_pozic=0;
 	novy->data.pocet_voziku=0;
 
@@ -1865,8 +1864,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->data.PT2=0;
 	novy->WT=0;//čekání na palec
 	novy->data.WTstop=0;//čekání na stopce
-	novy->data.RT.x=0;//ryzí reserve time
-	novy->data.RT.y=0;//pokrácený reserve time
+	novy->data.RT=0;//ryzí reserve time
 	novy->data.pocet_voziku=0;
 	novy->data.pocet_pozic=0;
 	novy->rotace_jig=0;
@@ -2443,8 +2441,7 @@ void Cvektory::kopiruj_data_elementu(Tdata Original,TCesta *Cesta)
 	Cesta->data.PT1=Original.PT1;
 	Cesta->data.PT2=Original.PT2;
 	Cesta->data.WTstop=Original.WTstop;
-	Cesta->data.RT.x=Original.RT.x;
-	Cesta->data.RT.y=Original.RT.y;
+	Cesta->data.RT=Original.RT;
 	Cesta->data.pocet_pozic=Original.pocet_pozic;
 	Cesta->data.pocet_voziku=Original.pocet_voziku;
 }
@@ -3253,9 +3250,7 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 		if(Element->eID==0/* && Element->data.pocet_voziku>0*/ && cas+Element->WT<PP.TT)WT*=Element->data.pocet_voziku;
 		double RD=0;if(Element->pohon!=NULL)RD=Element->pohon->aRD;
 		RT=m.RT(Element->data.PT1+Element->data.PT2+Element->PTotoc/*+Element->data.WTstop*/,cas,WT,Element->data.pocet_voziku,RD,WTin);
-		Element->data.RT.x=RT;//ryzí RT
-		//if(Element->eID==0 && Element->data.pocet_voziku>1 || Element->eID==6)RT=fmod(RT,PP.TT);
-		Element->data.RT.y=RT;//přepočítané RT, nebo totožné s ryzím - již se může odstranit?
+		Element->data.RT=RT;//ryzí RT
 
 		//vypsání RT do tabulky elementu
 		if(F->OBJEKT_akt!=NULL && Element->objekt_n==F->OBJEKT_akt->n)
@@ -3279,28 +3274,26 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 							WT=Element->WT;
 							if(Element->eID==0/* && Element->data.pocet_voziku>1 */&& cas+Element->WT<PP.TT)WT*=Element->data.pocet_voziku;
 							RT=m.RT(Element->data.PT1+Element->data.PT2+Element->PTotoc+Element->data.WTstop,cas,WT,Element->data.pocet_voziku,RD);
-							Element->data.RT.x=RT;//ryzí
-//	  					if(Element->data.pocet_voziku==1)RT==fmod(RT,PP.TT);   možno odsranit
-							Element->data.RT.y=RT;//přepočítané RT, nebo totožné s ryzím
+							Element->data.RT=RT;//ryzí
 						}
 					}
 					//vypsání OK pokud je RT kladné a zároveň má stopka více akt_vozíku
-					if(Element->data.RT.y>0 && Element->data.pocet_voziku>1){Element->mGrid->Cells[2][2].Text="OK";Element->mGrid->Cells[2][2].Hint=F->m.round2double(F->outPT(Element->data.RT.y),3);Element->mGrid->Cells[2][2].ShowHint=true;}
-					else {Element->mGrid->Cells[2][2].Text=F->m.round2double(F->outPT(Element->data.RT.y),3);Element->mGrid->Cells[2][2].Hint="";Element->mGrid->Cells[2][2].ShowHint=false;}
+					if(Element->data.RT>0 && Element->data.pocet_voziku>1){Element->mGrid->Cells[2][2].Text="OK";Element->mGrid->Cells[2][2].Hint=F->m.round2double(F->outPT(Element->data.RT),3);Element->mGrid->Cells[2][2].ShowHint=true;}
+					else {Element->mGrid->Cells[2][2].Text=F->m.round2double(F->outPT(Element->data.RT),3);Element->mGrid->Cells[2][2].Hint="";Element->mGrid->Cells[2][2].ShowHint=false;}
 				}break;
 				case 2:case 8:case 12:case 16:case 102:case 106://roboti se stop stanicí
 				{
-					Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->data.RT.y),3);
+					Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->data.RT),3);
 	  			if(highlight_bunek)Element->mGrid->Cells[1][2].Highlight=true;//slouži pro higlightování buňky s RT při posunu elementu
 				}break;
     		case 4:case 10:case 14:case 18:case 104:case 108://roboti s aktivní otočí
 	  		{
-					Element->mGrid->Cells[1][5].Text=F->m.round2double(F->outPT(Element->data.RT.y),3);
+					Element->mGrid->Cells[1][5].Text=F->m.round2double(F->outPT(Element->data.RT),3);
 					if(highlight_bunek)Element->mGrid->Cells[1][5].Highlight=true;//slouži pro higlightování buňky s RT při posunu elementu
 				}break;
 				case 6://aktivní otoč
 				{
-					Element->mGrid->Cells[1][3].Text=F->m.round2double(F->outPT(Element->data.RT.y),3);
+					Element->mGrid->Cells[1][3].Text=F->m.round2double(F->outPT(Element->data.RT),3);
 					if(highlight_bunek)Element->mGrid->Cells[1][3].Highlight=true;//slouži pro higlightování buňky s RT při posunu elementu
 				}break;
 			}
@@ -3309,11 +3302,7 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 			if(F->OBJEKT_akt->zobrazit_mGrid && refresh_mGrid)Element->mGrid->Refresh();
 		}
     //uložení erroru do dat, + 1 000 000 nebo - 1 000 000
-		if(error)
-		{
-			if(Element->data.RT.x>0)Element->data.RT.x+=1000000;else Element->data.RT.x-=1000000;
-			if(Element->data.RT.y>0)Element->data.RT.y+=1000000;else Element->data.RT.y-=1000000;
-		}
+		if(error && Element->data.RT>0)Element->data.RT+=1000000;else Element->data.RT-=1000000;
 		//narácení dat do segmentu cesty zakázky
 		if(Cesta!=NULL)	Cesta->data=Element->data;
 	}
@@ -3332,9 +3321,9 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 				{
 		  		note="Dop. hodnota PT je maximálně ";
 					//kontrola, zda je RT záporné
-					if(m.round2double(E->data.RT.y,5)<0)
+					if(m.round2double(E->data.RT,5)<0)
 					{
-						note+=AnsiString(m.round2double(F->outPT(E->data.PT1+E->data.PT2+E->PTotoc+E->data.RT.y),3))+jednotky;
+						note+=AnsiString(m.round2double(F->outPT(E->data.PT1+E->data.PT2+E->PTotoc+E->data.RT),3))+jednotky;
 						E->mGrid->Note.Text=note; //E->mGrid->ShowNote(note);
 					}
 					else E->mGrid->Note.Text="";
@@ -3377,7 +3366,7 @@ void Cvektory::aktualizuj_data_elementum_na_pohonu(unsigned long pohon_n)
 					case 1:case 7:case 11:case 15:case 101:case 105:
 					{
 						double CT=m.CT(E->data.LO1,E->pohon->aRD);
-            E->data.RT.y=m.KKRT(CT,E->data.PT1);
+            E->data.RT=m.KKRT(CT,E->data.PT1);
 						break;
 					}
           //robot se stop stanicí
@@ -3392,7 +3381,7 @@ void Cvektory::aktualizuj_data_elementum_na_pohonu(unsigned long pohon_n)
 					{
 						E->PTotoc=m.PTo(E->OTOC_delka,E->pohon->aRD);
 						double CT1=m.CT(E->data.LO1,E->pohon->aRD),CT2=m.CT(E->data.LO2,E->pohon->aRD);
-						E->data.RT.y=m.KKRT(CT1,E->data.PT1,CT2,E->data.PT2);
+						E->data.RT=m.KKRT(CT1,E->data.PT1,CT2,E->data.PT2);
 						break;
 					}
 					//robot s aktivní otočí (resp. s otočí a stop stanicí)
@@ -4154,8 +4143,7 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu,unsigned lo
 		Element->data.PT2=0;
 		Element->WT=0;//čekání na palec
 		Element->data.WTstop=0;//čekání na stopce
-		Element->data.RT.x=0;//ryzí reserve time
-		Element->data.RT.y=0;//pokrácený reserve time
+		Element->data.RT=0;//ryzí reserve time
 		Element->data.pocet_voziku=0;
 		Element->data.pocet_pozic=0;
 		Element->rotace_jig=0;
@@ -7264,11 +7252,11 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 				////////////RT záporné nebo bez rezervy
 				if(vrat_druh_elementu(E)==0 && E->data.pocet_voziku>0)//pouze pro S&G a mimo průjezdních stopek
 				{
-					if(fabs(E->data.RT.y)>=1000000){vloz_zpravu(X,Y,-1,450,E);pocet_erroru++;}
+					if(fabs(E->data.RT)>=1000000){vloz_zpravu(X,Y,-1,450,E);pocet_erroru++;}
 					else
 					{
-						if(E->data.RT.y<0){vloz_zpravu(X,Y,-1,406,E);pocet_erroru++;}
-						if(E->data.RT.y==0){vloz_zpravu(X,Y,1,407,E);pocet_warningu++;}
+						if(E->data.RT<0){vloz_zpravu(X,Y,-1,406,E);pocet_erroru++;}
+						if(E->data.RT==0){vloz_zpravu(X,Y,1,407,E);pocet_warningu++;}
 						//dodělat pokud RT==0 a aRD==0 vypsat, že není zadaná platná rychlost
 					}
 				}
@@ -7786,21 +7774,12 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 				cE->orientace=E->orientace;
 				cE->rotace_jig=E->rotace_jig;
 				cE->stav=E->stav;
-				cE->PD=E->data.PD;
-				cE->LO1=E->data.LO1;
 				cE->OTOC_delka=E->OTOC_delka;
 				cE->zona_pred=E->zona_pred;
 				cE->zona_za=E->zona_za;
-				cE->LO2=E->data.LO2;
-				cE->LO_pozice=E->data.LO_pozice;
-				cE->PT1=E->data.PT1;
 				cE->PTotoc=E->PTotoc;
-				cE->PT2=E->data.PT2;
 				cE->WT=E->WT;
-				cE->WTstop=E->data.WTstop;
-				cE->RT=E->data.RT.y;
-				cE->akt_pocet_voziku=E->data.pocet_voziku;
-				cE->max_pocet_voziku=E->data.pocet_pozic;
+				cE->data=E->data;
 				cE->objekt_n=E->objekt_n;
 				//  ShowMessage("E->pohony->n");
 				if(E->pohon==NULL) cE->pohon_n=0;
@@ -8174,7 +8153,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			  		//načtení cesty teploměrů
 						for(unsigned int i=1;i<=cT.pocet_sehmentu_cesty;i++)
 						{
-			  			C_cesta cC;
+							C_cesta cC;
 							FileStream->Read(&cC,sizeof(C_cesta));//načte jeden prvek ze souboru
 							E_pom=new TElement;
 							E_pom->n=cC.n_element;
@@ -8218,22 +8197,12 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 					E->orientace=cE->orientace;
 					E->rotace_jig=cE->rotace_jig;
 					E->stav=1;//cE->stav;
-					E->data.PD=cE->PD;
-					E->data.LO1=cE->LO1;
 					E->OTOC_delka=cE->OTOC_delka;
 					E->zona_pred=cE->zona_pred;
 					E->zona_za=cE->zona_za;
-					E->data.LO2=cE->LO2;
-					E->data.LO_pozice=cE->LO_pozice;
-					E->data.PT1=cE->PT1;
 					E->PTotoc=cE->PTotoc;
-					E->data.PT2=cE->PT2;
 					E->WT=cE->WT;
-					E->data.WTstop=cE->WTstop;
-					E->data.RT.x=cE->RT;
-					E->data.RT.y=cE->RT;
-					E->data.pocet_voziku=cE->akt_pocet_voziku;
-					E->data.pocet_pozic=cE->max_pocet_voziku;
+					E->data=cE->data;
 					E->objekt_n=cE->objekt_n;
 					E->pohon=vrat_pohon(cE->pohon_n);
 					E->geo=cE->geo;
@@ -9209,8 +9178,7 @@ Cvektory::TDATA *Cvektory::vytvor_prazdny_obraz()
 	obraz->Elementy->data.PT1=0;
 	obraz->Elementy->data.PT2=0;
 	obraz->Elementy->data.WTstop=0;
-	obraz->Elementy->data.RT.x=0;
-	obraz->Elementy->data.RT.y=0;
+	obraz->Elementy->data.RT=0;
 	obraz->Elementy->data.pocet_pozic=0;
 	obraz->Elementy->data.pocet_voziku=0;
 	obraz->Elementy->objekt_n=0;
@@ -9396,8 +9364,7 @@ void Cvektory::vytvor_obraz_DATA(bool storno)
 		  		c_u->data.PT1=c->data.PT1;
 		  		c_u->data.PT2=c->data.PT2;
 		  		c_u->data.WTstop=c->data.WTstop;
-		  		c_u->data.RT.x=c->data.RT.x;
-		  		c_u->data.RT.y=c->data.RT.y;
+					c_u->data.RT=c->data.RT;
 		  		c_u->data.pocet_pozic=c->data.pocet_pozic;
 		  		c_u->data.pocet_voziku=c->data.pocet_voziku;
 		  		c_u->dalsi=NULL;
