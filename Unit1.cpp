@@ -7522,11 +7522,19 @@ void TForm1::vlozeni_editace_geometrie()
 	//////přidávání za poslední geometrii (hlavní i vedlejší)
 	else if(posledni_editovany_element!=NULL && (posledni_editovany_element->dalsi==NULL || (posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301) || (posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->objekt_n!=posledni_editovany_element->objekt_n)))
 	{
-    //rozšíření poslední zarážky o novou geometrii
+		//rozšíření poslední zarážky o novou geometrii
 		if(posledni_editovany_element->geo.typ==0 && posledni_editovany_element->eID==MaxInt && d.geoTemp.typ==0)
 		{
-      d.v.vloz_G_element(posledni_editovany_element,0,posledni_editovany_element->geo.X1,posledni_editovany_element->geo.Y1,0,0,0,0,d.geoTemp.X4,d.geoTemp.Y4,posledni_editovany_element->geo.orientace,posledni_editovany_element->geo.rotacni_uhel,posledni_editovany_element->geo.radius);
+			d.v.vloz_G_element(posledni_editovany_element,0,posledni_editovany_element->geo.X1,posledni_editovany_element->geo.Y1,0,0,0,0,d.geoTemp.X4,d.geoTemp.Y4,posledni_editovany_element->geo.orientace,posledni_editovany_element->geo.rotacni_uhel,posledni_editovany_element->geo.radius);
 		}
+		//rozšíření oblouku, pokud je možno
+		else if(posledni_editovany_element->geo.typ!=0 && posledni_editovany_element->eID==MaxInt && d.geoTemp.typ!=0 && posledni_editovany_element->geo.rotacni_uhel/m.abs_d(posledni_editovany_element->geo.rotacni_uhel)==d.geoTemp.rotacni_uhel/m.abs_d(d.geoTemp.rotacni_uhel) && d.v.hodnota_v_katalogu(d.v.PP.katalog,m.abs_d(posledni_editovany_element->geo.rotacni_uhel+d.geoTemp.rotacni_uhel)))
+		{
+			posledni_editovany_element->geo.rotacni_uhel+=d.geoTemp.rotacni_uhel;
+			posledni_editovany_element->geo.delka=m.R2Larc(posledni_editovany_element->geo.radius,posledni_editovany_element->geo.rotacni_uhel);
+			TPointD *PL=m.getArcLine(posledni_editovany_element->geo.X1,posledni_editovany_element->geo.Y1,posledni_editovany_element->geo.orientace,posledni_editovany_element->geo.rotacni_uhel,posledni_editovany_element->geo.radius);
+			posledni_editovany_element->geo.X1=PL[0].x;posledni_editovany_element->geo.Y1=PL[0].y;posledni_editovany_element->geo.X2=PL[1].x;posledni_editovany_element->geo.Y2=PL[1].y;posledni_editovany_element->geo.X3=PL[2].x;posledni_editovany_element->geo.Y3=PL[2].y;posledni_editovany_element->geo.X4=PL[3].x;posledni_editovany_element->geo.Y4=PL[3].y;
+    }
 		//vložení nové zarážky s geometrii
 		else
 		{

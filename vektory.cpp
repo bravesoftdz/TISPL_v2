@@ -7798,7 +7798,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 				cE->PT2=E->data.PT2;
 				cE->WT=E->WT;
 				cE->WTstop=E->data.WTstop;
-				cE->RT=E->data.RT;
+				cE->RT=E->data.RT.y;
 				cE->akt_pocet_voziku=E->data.pocet_voziku;
 				cE->max_pocet_voziku=E->data.pocet_pozic;
 				cE->objekt_n=E->objekt_n;
@@ -8230,7 +8230,8 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 					E->data.PT2=cE->PT2;
 					E->WT=cE->WT;
 					E->data.WTstop=cE->WTstop;
-					E->data.RT=cE->RT;
+					E->data.RT.x=cE->RT;
+					E->data.RT.y=cE->RT;
 					E->data.pocet_voziku=cE->akt_pocet_voziku;
 					E->data.pocet_pozic=cE->max_pocet_voziku;
 					E->objekt_n=cE->objekt_n;
