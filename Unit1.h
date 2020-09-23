@@ -617,6 +617,9 @@ private:
 	Cvektory::TElement *gS(short n);//testovácí metody simulace
 	double wt();//testovácí metody simulace
 	unsigned int getV();//testovácí metody simulace
+	void vytvor_seznam_pouzivanych_pohonu();//vytvoøí seznam, kam se zapíší pohony, které jsou používány jinde
+	void smaz_seznam_pouzivanych_pohonu();//smaže seznam používaných pohonù
+  void byly_pohony_editovany();//provede kontrolu jaké pohony byly editovány
 
 	////promìnné
 	UINT TimerSimulaceID;
@@ -668,6 +671,7 @@ private:
 	long vychozi_stav_sceny;
 	TDateTime start;
 	short typElementu;//slouží k rozlišení vykreslení u smart_kurzoru
+  unsigned long *pouzivane_pohony;//ukládá n pohonù, které jsou používané
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
@@ -770,7 +774,7 @@ public:		// User declarations
 	void REFRESH(bool refreshovat_mGridy);
 	void REFRESH(long ZprVozEledElesDopObjHal,bool refreshovat_mGridy);
 	void DuvodUlozit(bool stav);
-	void nahled_ulozit(bool duvod_ulozit);
+	void nahled_ulozit(bool duvod_ulozit,bool duvod_validovat=true);
 	void SB(UnicodeString Text, unsigned short Pane=4);//domnívám se, že zde má být hodnota 5
 	void S(UnicodeString Text="");//usnadòuje pøístup k ShowMessage
 	void Sk(UnicodeString Text="",AnsiString umisteni="neuvedeno");//usnadòuje pøístup k ShowMessage - MaKr
@@ -841,7 +845,8 @@ public:		// User declarations
 	void reset_teplomeru(Cvektory::TObjekt *Objekt);//zborazí upozornìní, že došlo ke zmìnì geometrie a resetuje oblasti teplomerù
 	String get_major_version(String version);//vrátí Major verzi z FileVersion
 	void copy_to_clipboard(String text);//kopíruje text do Clipboardu
-  void mGrid_on_mGrid();//prohledá zda se pøekrývají mGridy
+	void mGrid_on_mGrid();//prohledá zda se pøekrývají mGridy
+  bool je_pohon_pouzivan(unsigned long n);//provede kontrolu, zda je pohon v seznamu používaných, vrátí výsledek
   };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

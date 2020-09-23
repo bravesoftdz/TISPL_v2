@@ -177,6 +177,7 @@ void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)//scena 0 - vše do 
 	if(F->MOD!=F->TVORBA_CESTY)
 	{
 		Cvektory::TElement *E=v.ELEMENTY->dalsi,*pom=NULL;
+    Cvektory::T2Element *VYHYBKY=v.hlavicka_seznam_VYHYBKY();
 		TPoint *tab_pruchodu=new TPoint[v.pocet_vyhybek];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
 		while(E!=NULL)
 		{
@@ -208,9 +209,9 @@ void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)//scena 0 - vše do 
 				canv->Pen->Width=1;
 				canv->Pen->Color=clRed;
 				canv->Brush->Style=bsClear;
-				if(pom!=NULL && pom->geo.delka!=0 && E->geo.delka!=0)
+				if(pom!=NULL/* && pom->geo.delka!=0 && E->geo.delka!=0*/)
 				{
-					if(pom->eID==301 && pom->predchozi2==E){bod.x=pom->X;bod.y=pom->Y;}
+					if(pom->eID==301 && pom->predchozi2==E){bod.x=pom->geo.X4;bod.y=pom->geo.Y4;}
 					else {bod.x=pom->geo.X1;bod.y=pom->geo.Y1;}
 					if(m.round2double(E->geo.X4,2)!=m.round2double(bod.x,2) || m.round2double(E->geo.Y4,2)!=m.round2double(bod.y,2))
 					{
@@ -244,8 +245,9 @@ void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)//scena 0 - vše do 
 			}
 
 			////posun na další element
-			E=v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);//nutné použít tento průchodový algoritmus, v tomto průchodu je použit algoritmus dalsi_krok, nelze užit dalsi_krok pro průchod ve kterém bude vnořený znova algoritmus dalsi_krok, tento alg. používá glob. seznam výhybek, přes které prošel, pokud by běžely dva současně ukládaly by do jednoho seznamu, to by vedlo k chybným výsledkům obou průchodu, viz. https://docs.google.com/document/d/1ApxDG9tpTS6qEpKk2COsvrLZrzDl1fynWlD7xmoE6qM/edit?ts=5e3d669e#heading=h.a4ve3tnox7u5
+			E=v.dalsi_krok(VYHYBKY,E);
 		}
+		v.vymaz_seznam_VYHYBKY(VYHYBKY);
 		delete E;E=NULL;
 		pom=NULL;delete pom;
 		delete []tab_pruchodu;
@@ -1330,7 +1332,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			if(prichyceno && F->pom_element==v.MAG_LASO->predchozi->Element && C->dalsi==NULL)
 			{
 				t1=String(m.round2double(delka*1000,2))+" [mm]";
-				if(cas_pom!=cas)t2="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
+				if(cas_pom!=cas && v.vrat_druh_elementu(F->pom_element)==0)t2="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
 				else t2=String(m.round2double(cas,2))+" [s]";
 				typ=2;if(C->n==1)typ=3;
 			}
@@ -1376,7 +1378,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			}
 
 			//vykreslovací část
-			if(prichyceno && cas_pom!=cas)popisek="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
+			if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0 && cas_pom!=cas)popisek="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
 			else popisek=String(m.round2double(cas,2))+" [s]";
 			vykresli_Gelement(canv,X,Y,OR,uhel,R,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",popisek,2);//vykreslení měřícího kurzoru, popisek není nutné používat, metodu ještě vylepším
 		}
@@ -1426,7 +1428,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			}
 
 			//vykreslovací část
-			if(prichyceno && cas_pom!=cas)popisek="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
+			if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0 && cas_pom!=cas)popisek="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
 			else popisek=String(m.round2double(cas,2))+" [s]";
 			vykresli_Gelement(canv,X,Y,OR,0,delka_Pud,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",popisek,2);
 		}
@@ -1471,7 +1473,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			cas_pom+=delka/F->pom_element->pohon->aRD;
 			if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0)cas_pom=ceil(cas/v.PP.TT)*v.PP.TT;//cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT+v.PP.TT;
 			//vykreslení
-			if(prichyceno && cas_pom!=cas)popisek="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
+			if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0 && cas_pom!=cas)popisek="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
 			else popisek=String(m.round2double(cas,2))+" [s]";
 			vykresli_Gelement(canv,X,Y,azimut,0,delka_Pud,clMeridlo,2,String(m.round2double(d*1000,2))+" [mm]",popisek,3);
       delka=d;
@@ -1484,6 +1486,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 	F->mereni_delka.x=delka;
   F->mereni_delka.y=delka_pom;
 	F->mereni_cas.x=cas;
+	if(prichyceno && v.vrat_druh_elementu(F->pom_element)!=0)cas_pom=cas;//pokud jsem přichycený na elementu (např. zarážka) srovnat pro jistotu cas a cas_pom
 	F->mereni_cas.y=cas_pom;
 }
 ////---------------------------------------------------------------------------
@@ -1493,7 +1496,6 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
 	////deklarace
 	double R,RA,OR,X,Y,uhel=0,delka=0,azimut,cas=0,cas_pom=0,d=0;
 	String popisek="";
-	bool vykresleno=false;//pomocná proměnná
 
 	////výpočty délky a času pro segmenty v mag. lasu
 	if(F->pom_element!=NULL && (F->pom_element==v.MAG_LASO->predchozi->Element || F->pom_element->dalsi==v.MAG_LASO->predchozi->Element || F->pom_element->dalsi2==v.MAG_LASO->predchozi->Element || (F->pom_element->dalsi!=NULL && F->pom_element->dalsi->dalsi==v.MAG_LASO->predchozi->Element) || F->pom_element->dalsi2==v.MAG_LASO->predchozi->Element))
@@ -1822,21 +1824,20 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TO
 		  	if(teplomery->prvni->sparovany!=teplomery->posledni->sparovany)
 		  	{
 		  		vykresli_segment_cesty_teplomeru(canv,teplomery->prvni,clTeplomery,1);//vykreslení cesty od prvního teploměru
-		  		vykresli_segment_cesty_teplomeru(canv,teplomery->posledni,clTeplomery,2);//vykreslení cesty k poslednímu teploměru
+					vykresli_segment_cesty_teplomeru(canv,teplomery->posledni,clTeplomery,2);//vykreslení cesty k poslednímu teploměru
 		  	}
 		  	//vykrelsení spojnice mezi teploměry na jednom segmentu pohonu
 		  	else
 		  	{
 		  		double X1,Y1,OR,RA,R;
-		  		//vykreslení linie mezi teploměry
+					//vykreslení linie mezi teploměry
 		  		if(teplomery->prvni->sparovany->geo.typ==0)
-		  		{
-		  			OR=teplomery->prvni->geo.orientace;
-		  			RA=teplomery->prvni->geo.rotacni_uhel;
-		  	  	X1=teplomery->prvni->geo.X1;Y1=teplomery->prvni->geo.Y1;
-		  			R=m.delka(X1,Y1,teplomery->posledni->geo.X4,teplomery->posledni->geo.Y4);
-		  			vykresli_Gelement(canv,X1,Y1,OR,RA,R,clTeplomery,3);
-		  		}
+					{
+						X1=teplomery->prvni->geo.X1;Y1=teplomery->prvni->geo.Y1;
+						set_pen(canv,clTeplomery,m.round(F->Zoom*3),PS_ENDCAP_FLAT);//nastavení geometrického pera
+						canv->Pen->Mode=pmNotXor;
+						line(canv,m.L2Px(X1),m.L2Py(Y1),m.L2Px(teplomery->posledni->geo.X4),m.L2Py(teplomery->posledni->geo.Y4));
+					}
 		  		//vykrelsení čísti úseku mezi teploměry
 		  		else
 		  		{
@@ -1846,7 +1847,7 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TO
 		  	Cvektory::TCesta *ct=teplomery->cesta->dalsi;
 		  	while(ct!=NULL)
 		  	{
-		  		vykresli_segment_cesty_teplomeru(canv,ct->Element,clTeplomery);
+					vykresli_segment_cesty_teplomeru(canv,ct->Element,clTeplomery);
 		  		//posun na další segment cesty
 		  		ct=ct->dalsi;
 		  	}
@@ -3227,7 +3228,7 @@ void Cvykresli::vykresli_popisek_pohonu(TCanvas *canv,AnsiString text,TPoint zac
 
 	////vykreslení šipky u pohonu
 	//nastavení grafického pera
-	canv->Pen->Style=bsSolid;
+	canv->Pen->Style=psSolid;
 	canv->Pen->Width=m.round(F->Zoom/5.0);
 	canv->Pen->Color=barva;
 	obratit=1;
@@ -3336,7 +3337,7 @@ void Cvykresli::vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiStr
 				canv->Brush->Style=bsClear;
 				AnsiString t="V";
 				if(E->eID==301)t="S";
-				t+=String(E->idetifikator_vyhybka_spojka);
+				t+=String(E->identifikator_vyhybka_spojka);
 				switch((int)E->geo.orientace)
 				{
 					case 90:case 270:X=m.round(X-canv->TextWidth(t)/2.0);Y=m.round(Y-velikost*1.2-canv->TextHeight(t));break;
@@ -5434,7 +5435,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_do)
 		x2=Element_do->geo.X4;y2=Element_do->geo.Y4;
 		if(x2<F->OBJEKT_akt->element->geo.X1)O=(O-0.66)*(-1);//ošetření chybného zobrazení kóty elementu, který je před kabinou
 		//vykreslení kóty
-		vykresli_kotu(canv,x1,y1,x2,y2,Element_do,F->OBJEKT_akt->koty_elementu_offset.x,highlight);
+		if(Element_do->geo.typ==0)vykresli_kotu(canv,x1,y1,x2,y2,Element_do,F->OBJEKT_akt->koty_elementu_offset.x,highlight);
 		////kota mezi LO
 		bool vykreslit=false;
 		bool el_od=false,el_do=false;
@@ -5706,7 +5707,7 @@ void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,Cvektory::TElement *Elem
 	pocatek+=String(m.round2double(Element->predchozi->Z*1000,0)),konec+=String(m.round2double((Element->predchozi->Z+HeightDeep)*1000,0));
 	//orientace a vycentrování
 	short W=0,H=canv->TextHeight(pocatek);
-	long x=0,y=0,pom=0;
+	long x=0,y=0;
 	if(X1==X2){H=H/2;W=-10*3;}
 	float zAA=1.0;if(F->antialiasing)zAA=3.0;
 	//převod HeightDeep na mm

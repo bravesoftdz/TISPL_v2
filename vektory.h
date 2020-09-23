@@ -104,7 +104,7 @@ class Cvektory
 		double PT1;//procesní čas
 		double PT2;
 		double WTstop;//čekání na stopce
-		TPointD RT;//reserve time (ryzí,pokrácený)
+		double RT;//reserve time (ryzí,pokrácený)
 		unsigned int pocet_pozic;//daný geometrií před stopstanicí (maximální možný počet vozíků, které lze nabufrovat)
 		unsigned int pocet_voziku;//počet vozíků v buffru
 	};
@@ -113,7 +113,7 @@ class Cvektory
 	{
 		unsigned long n; //pořadí ve spoj.seznamu
 		unsigned int eID; //id typu elementu viz. tabulka elementů https://docs.google.com/spreadsheets/d/1_S7yp1L25tov0mKqP3Rl_0Y2cx-e3UwDXb102hDvRlA/edit?usp=sharing
-		unsigned int idetifikator_vyhybka_spojka;
+		unsigned int identifikator_vyhybka_spojka;
 		UnicodeString short_name;//krátký název max. 4 znaky
 		UnicodeString name;//celý název objektu
 		short orientace;//v jaké orientaci je element na obrazovce vykreslen 0,90,180,270 (orientace dle světových stran)
@@ -486,8 +486,8 @@ class Cvektory
 
 	struct TFile_hlavicka
 	{
-		unsigned short int FileVersion;
-    unsigned short int ProductVersion;
+		double FileVersion;
+		double ProductVersion;
 		unsigned short int Mod;
 		double Zoom;
 		long PosunutiX;//proměnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souřadnicích zařízení
@@ -657,6 +657,7 @@ class Cvektory
 	void prirad_sparovany_element(TElement *Element);//přiřadí Elementu ukazatel na jeho spárovaný element, zároveň aktualizuje tomuto spárovanému elementu spárovaný element + aktualizace první - poslední S&G element
 	void aktualizuj_sparovane_ukazatele();//projde všechny stop-elementy a aktualizuje jim ukazatele na spárované elementy
 	void reserve_time(TElement *Element,TCesta *Cesta=NULL,bool highlight_bunek=false,bool refresh_mGrid=false);//vypočítá a uloží RT do elementu
+  void aktualizuj_data_elementum_na_pohonu(unsigned long pohon_n);//přepočíta data elementů na danném pohonu
 	TElement *vrat_posledni_element_objektu(TObjekt *Objekt);//vrátí poslední element v objektu
 	T2Element *hlavicka_seznam_VYHYBKY();
 	void uloz_vyhybku_do_seznamu(TElement *vyhybka,T2Element *VYHYBKY);
@@ -793,6 +794,7 @@ public:
 	Ttyp_dopravniku *vrat_typ_dopravniku(unsigned long n);//dla zadaného n vrátí daný typ dopravníku formou ukazatatele
 	double vrat_hodnotu_typu_dopravniku(unsigned long nDopravniku,TtypHodnoty typHodnoty,unsigned long n);//vrátí od zadaného typu dopravníku dle zadaného n a typu hodnoty hodnotu - přetížená následující
 	double vrat_hodnotu_typu_dopravniku(Ttyp_dopravniku *typDopravniku,TtypHodnoty typHodnoty,unsigned long n);//vrátí od zadaného typu dopravníku dle zadaného n a typu hodnoty hodnotu
+  bool hodnota_v_katalogu(unsigned long nDopravniku,double hodnota,TtypHodnoty typHodnoty=hO);//zkontroluje zda se hodnota nachází v dopravníku, například hodnota oblouku v hobloucích dopravníku
 	void vymaz_seznam_KATALOG();//smaže celý katalog, včetně přidružených spojových seznamů
 
 //metody pro PALCE
@@ -1016,45 +1018,34 @@ private:
 			unsigned long opakov_servis;//cyklus opakování servisních vozíku
 	};
 
-		struct C_element//pouze pridruzeny spojak
+  struct C_element//pouze pridruzeny spojak
 	{
 			unsigned long n; //pořadí ve spoj.seznamu
 			unsigned int eID; //id typu elementu: 0 - stop stanice, 1 - robot, 2 - robot se stop stanicí, 3 - robot s pasivní otočí, 4 - robot s aktivní otočí (resp. s otočí a stop stanicí), 5 - otoč pasivní, 6 - otoč aktivní (resp. otoč se stop stanicí), 7 - pouze geometrická zarážka
-			unsigned int idetifikator_vyhybka_spojka;//uchovává identifikátor spojky a výhybky
+			unsigned int identifikator_vyhybka_spojka;//uchovává identifikátor spojky a výhybky
 		 //	UnicodeString short_name;//krátký název max. 4 znaky
-     //	UnicodeString name;//celý název objektu
+		 //	UnicodeString name;//celý název objektu
 			double name_delka;  // celý název objektu
-      double X, Y, Z;//umístění v logických (metrických) souřadnicích
+			double X, Y, Z;//umístění v logických (metrických) souřadnicích
 			double Xt,Yt;//umístění tabulky, resp. mGridu v logických (metrických) souřadnicích
-      short orientace;//v jaké orientaci je element na obrazovce vykreslen 0,90,180,270
+			short orientace;//v jaké orientaci je element na obrazovce vykreslen 0,90,180,270
 			double rotace_jig;//úhel o který element orotuje jig vzhledem k jeho aktuální rotaci jigu vůči podvozku, např. rotace_jig=90°, aktuální rotace jigu 90°, výsledek 180°
-      short stav;
-      short PD;//part detect:  -1 = nic, 0 = začátek jigu, 1 = střed jigu, 2 = celý jig
-
-      double LO1;
+			short stav;
 			double OTOC_delka;
 			double zona_pred;
 			double zona_za;
-      double LO2;
-			double LO_pozice;
+			double PTotoc;
+			double WT;//čekání na palec
 
-			double PT1;
-      double PTotoc;
-      double PT2;
+			Tdata data;
 
-      double WT;//čekání na palec
-      double WTstop;//čekání na stopce
-			TPointD RT;//reserve time
-
-      unsigned int akt_pocet_voziku;
-			unsigned int max_pocet_voziku;
-      unsigned long sparovany_n;
-      unsigned long objekt_n;//příslušnost elementu k objektu
-      unsigned long pohon_n;//příslušnost elementu k pohonu
+			unsigned long sparovany_n;
+			unsigned long objekt_n;//příslušnost elementu k objektu
+			unsigned long pohon_n;//příslušnost elementu k pohonu
 			TGeometrie geo;
 	};
 
-	struct C_cesta//pouze přidružený spoják, který je součástí zakázky, jeden objekt spojáku je jeden segment cesty
+  struct C_cesta//pouze přidružený spoják, který je součástí zakázky, jeden objekt spojáku je jeden segment cesty
 	{
 			unsigned long n;//n segmentu cesty
 			unsigned long n_element;

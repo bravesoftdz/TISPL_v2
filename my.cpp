@@ -654,6 +654,20 @@ TPointD Cmy::PrusecikPrimek(double xs1,double ys1,double xk1,double yk1,double x
 	return RET;
 }
 /////////////////////////////////////////////////////////////////////////////
+//kontroluje zda se bod nachází na linii, linie mohou být jen svoslé nebo vodorovné, nikoliv pod sklonem (vrací false)
+bool Cmy::PtInLine(double X1,double Y1,double X2,double Y2,double Xmys,double Ymys)
+{
+	//kontrola pořadí bodů přímky + přehození
+	double pom;
+	if(X1>X2){pom=X1;X1=X2;X2=pom;}
+	if(Y1>Y2){pom=Y1;Y1=Y2;Y2=pom;}
+	//kontrola zda je přímka vodorovná nebo svislá a zároveň, zda se bod nachází na přimce
+	if(X1==X2 && Y1<=Ymys && Ymys<=Y2 && X1==Xmys)return true;
+	else if(Y1==Y1 && X1<=Xmys && Xmys<=X2 && Y1==Ymys)return true;
+	//přímka je pod úhlem nebo se bod nennachází na přímce
+	else return false;
+}
+/////////////////////////////////////////////////////////////////////////////
 //funkce ověří, zda se bod nachází v zadaném kruhu
 bool Cmy::PtInCircle(double point_X,double point_Y,double center_X,double center_Y,double radius)
 {
@@ -1088,7 +1102,7 @@ TPointD Cmy::zona_otaceni(double orientace_jig_vstup,double rotace_otoce,double 
 			else
 			{
 				mezi_vypocet=diam*cos(DegToRad(a)+DegToRad(rotace_otoce)*mezi_vypocet/delka_otoc)+mezi_vypocet;
-			}    // F->Sv(mezi_vypocet);
+			}
 			//hledání extrémů
 			if(mezi_vypocet>max)max=mezi_vypocet;
 			if(mezi_vypocet<min)min=mezi_vypocet;
@@ -1149,6 +1163,34 @@ double Cmy::Dotoc(double PTo,double RD)
 	}
 
 	//doba_prejezdu-
+}
+/////////////////////////////////////////////////////////////////////////////
+//výpočet časové rezervy pro KK roboty / operátory
+double Cmy::CT(double LO,double aRD)
+{
+	double CT=0;
+	if(aRD>0)
+	{
+		CT=LO/aRD;
+		if(CT>F->d.v.PP.TT)CT=F->d.v.PP.TT;
+	}
+	return CT;
+}
+/////////////////////////////////////////////////////////////////////////////
+//výpočet RT pro KK roboty
+double Cmy::KKRT(double CT,double PT)
+{
+	return CT-PT;
+}
+/////////////////////////////////////////////////////////////////////////////
+//výpočet RT pro KK roboty s otočí
+double Cmy::KKRT(double CT1,double PT1,double CT2,double PT2)
+{
+	double RT1,RT2;
+	RT1=CT1-PT1;
+	RT2=CT2-PT2;
+	if(RT1<RT2)return RT1;
+  else return RT2;
 }
 /////////////////////////////////////////////////////////////////////////////
 //vratí RD dle délky otoče a času otáčení

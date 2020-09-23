@@ -20,7 +20,7 @@ private:	// User declarations
 	void zmena_Rx ();//výpoèty vyvolané zmìnou Rx
 	void aktualizace_tab_elementu_pOdebran ();//vynuluje všechny hodnoty závislé na pohonu ve všech tabulkách elementù
 	void aktualizace_tab_pohonu();
-	void korelace_tab_pohonu(int Row);//zobrazi korelaci v tabulce pohonu
+	void korelace_tab_pohonu(int Row,bool vypsat_note_pouzivan=true);//zobrazi korelaci v tabulce pohonu
 	void korelace_tab_pohonu_elementy(Cvektory::TElement *mimo_element=NULL);//zobrazí korelaci podle tabulky pohonu ve všech elementech,volitelný parametr, ukazatel na element který chci pøeskoèit
 	void korelace_v_elementech(long ID,long Col,long Row);//jedná se o vnitøní korelace, v jednom elementu (jeden element však mùže ovlivnit i tabulku pohonu)
 	Cvektory::TElement *vrat_element_z_tabulky(long ID);//vrátí ukazatel na element, nelze použít vra element stavající, z dùvodu že ID tabulky již nemusí být totožné s n robota
@@ -30,7 +30,7 @@ private:	// User declarations
 	void zapisVID(int zapis,int pozice);//zapiše na danou pozici ve VID dané èíslo
 	void zobrazit_skryt_radkyPM(Cvektory::TElement *E);//zobrazí èi skryje øádky PM tabulek podle stavu uloženého v objektu
   unsigned int aktualizuj_radek_tab_teplomeru(TmGrid *mGrid,unsigned int radek,double cas,double WT,bool soucet=false);//aktualizuje parametry konkrétního øádku tabulky teplomìrù
-  void podbarvi_edit(Cvektory::TElement *E,long Col,long Row,bool def_nastaveni=true);//nastaví defautlní barvy editu a buòce, nebo podbarvé buòku
+	void podbarvi_edit(Cvektory::TElement *E,long Col,long Row,bool def_nastaveni=true);//nastaví defautlní barvy editu a buòce, nebo podbarvé buòku
 
 	//promìnné pro UnitX
 	bool editace_pohonu;
@@ -57,17 +57,19 @@ public:		// User declarations
 	void aktualizace_tab_elementu (Cvektory::TElement *mimo_element=NULL);//aktualizuje výpoèty ve všech tabulkách elemntù, parametr mimo_element je ukazatel na element, který má být pøeskoèen, defaultnì hodnota, které E->n nidky nedosáhne
 	void mazatPM(Cvektory::TElement *Element=NULL);//kontorla a dotaz zda mají být PM na stejném pohonu smazána
 	void aktualizace_teplomeru();//provede aktualizaci èasu v tabulce teplomìrù
-  void zmena_rezimu_pohonu(Cvektory::TPohon *pohon);//aktualizuje položky v pohonových tabulkách, v pøípadì, že došlo ke zmìnì režimu pohonu
+	void zmena_rezimu_pohonu(Cvektory::TPohon *pohon);//aktualizuje položky v pohonových tabulkách, v pøípadì, že došlo ke zmìnì režimu pohonu
 
 	//promìnné pro vyøazení OnChange metody pøi vykreslování tabulek
-  enum Tinput_state{NO,NOTHING,PT,PT2,LO,LO2,WT,DO,PTotoc,COMBO,aRD,R,Rz,Rx,P_VOZ};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
+  enum Tinput_state{NO,NOTHING,PT,PT2,LO,LO2,WT,DO,PTotoc,COMBO,aRD,R,Rz,Rx,P_VOZ,CT};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
 	Tinput_state input_state;//stav vstupu PT,LO,DelkaOtoce...
 	bool vstoupeno_poh, vstoupeno_elm,validace_true;
 	Cvektory::TElement *posledni_E;//slouží pro uložení editovaného elementu, nemusím pøi každém stisku klávesy vracet E
 	Cvektory::TCesta *posledni_c;
 	int validovany_pohon;
 	AnsiString VID;//dvouciferné èíslo, první èíslo znázoròuje validaci pohonu, druhé validaci stopek, pokud je èíslo 00 = bez chyb, 10 = chyba na pohonu, stop v poøádku (viz. 777 webové soubory), poèet èíslic nastaven v konstruktoru, mìnit pouze tam!!
-  bool aut_mazani_PM;
+	bool aut_mazani_PM;
+	bool validovat_pohon;
+  bool popisky_pouzivany_pohon;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFormX *FormX;

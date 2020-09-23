@@ -84,6 +84,9 @@ class Cmy
 	TPointD zona_otaceni(double rotace_pred,double rotace_otoce,double delka_otoc);//vypočítá velikost zóny otáčení před a za otočí
 	//double RT(double PT,double delka_prejezdu,double RD,double R,double WT=-1);//vratí hodnotu RT (reserve time), ta může být i záporná, WT čekání na palac si dopočítává metoda sama, pokud WT==-1, pokud je dosazena kladná hodnota větší než 0, tak je ta uvažovaná jako WT, 0 hodnota znamena WT čekání na palec neuvažovat
 	double RT(double PT,double doba_prejezdu,double WT,unsigned int pocet_voziku_v_bufferu,double RD,double WT0=0);//přetížená metoda WT0-vstupní čekání
+  double CT(double LO,double aRD);//výpočet časové rezervy pro KK roboty / operátory
+	double KKRT(double CT,double PT);//výpočet RT pro KK roboty
+  double KKRT(double CT1,double PT1,double CT2,double PT2);//výpočet RT pro KK roboty s otočí
 	double RDo(double Dotoc,double PTo);//vratí RD dle délky otoče a času otáčení
 	double dopRD(double dJ,double sJ,double rotace,double R,double TT,double RD);//vrátí doporučenou nejbližší rychlost pohonu, k rychlosti zadané tak, aby se reflektovala rozteč mezi palci i takt
 	bool kontrola_zda_zmena_R_ovlivni_RzRD(double R_puvodni,double R_nove);//vrací true pokud nová rozteč (R) ovlivní Rz resp RD
@@ -101,6 +104,7 @@ class Cmy
 	long LeziVblizkostiUsecky(double x, double y, double X1, double Y1, double X2, double Y2);
 	bool LeziVoblouku(double X,double Y,double orientace,double RA,double R,double Xmys,double Ymys);//funkce ověřující, zda kurzor myši, leží v obdelníku obsaném danému oblouku, souřadnice kurzoru myši se zadávají v logických souřadnicích, ostatní v logických, pro ověření zda leží na oblouku (s určitým perimetrem okolo obloukové linie) řešení níže metoda PtInSegment
 	TPointD PrusecikPrimek(double xs1,double ys1,double xk1,double yk1,double xs2,double ys2,double xk2,double yk2);//funkce vrátí průsečík dvou přímek či úseček, daná přímka musí být definována dvěma body na přímce (úsečkou, ale průsečík řesí mimo rozsah úsečky), pozor nutné ošetřit výstupní stavy, pokud jsou úsečky totožné, vrací pro každou souřadnici NAN (lze otestovat pomocí IsNan(vrácená_hodnota),nebo rovnoběžné -INF, či rovnoběžné protisměrné INF (lze otestovat pomocí IsInfinite(vrácená_hodnota))
+  bool PtInLine(double X1,double Y1,double X2,double Y2,double Xmys,double Ymys);//kontroluje zda se bod nachází na linii, linie mohou být jen svoslé nebo vodorovné, nikoliv pod sklonem (vrací false)
 	bool PtInCircle(double point_X,double point_Y,double center_X,double center_Y,double radius);//metoda ověří, zda se bod nachází v zadaném kruhu
 	bool PtInRectangle(double X1,double Y1,double X2,double Y2,double Xmys,double Ymys);//metoda ověří, zda se bod nachází v obdelníku
 	bool PtInStopka(double Ex,double Ey,double X,double Y,short uhel);//metoda ověří, zda se bod nachází ve stopce

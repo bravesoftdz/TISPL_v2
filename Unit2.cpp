@@ -383,6 +383,7 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 	el->mG->Cells[0][3].Font->Orientation=900;el->mG->Cells[0][3].Valign=TmGrid::MIDDLE;
 	el->mG->Cells[1][3].Font->Orientation=900;el->mG->Cells[1][3].Valign=TmGrid::MIDDLE;
 	el->mG->Cells[0][5].Text=F->ls->Strings[453];//"Rozteè"
+  el->mG->Cells[1][5].Type=el->mG->EDIT;
 	el->mG->Cells[1][5].Text=R;//jednotky
 	el->mG->Cells[0][5].Font->Orientation=900;el->mG->Cells[0][5].Valign=TmGrid::MIDDLE;
 	el->mG->Cells[1][5].Font->Orientation=2700;el->mG->Cells[1][5].Valign=TmGrid::MIDDLE;
@@ -617,35 +618,9 @@ void __fastcall TForm2::Button2Click(TObject *Sender)
 //test volání pøi onclick          //pozor metody musí mít i znamenkové longové Col, Row, kvùli -2 exBUTTOn
 void TForm2::OnClick(long Tag,long ID,long Col,long Row)
 {
-	//ShowMessage("UNIT2\nToto vypisuje metoda OnClick\nDošlo ke kliku v tabulce tag formu: "+AnsiString(Tag)+", ID tabulky: "+AnsiString(ID)+", na buòce: "+AnsiString(Col)+","+AnsiString(Row));
-	if(Row==-2)
-	{
-		//ShowMessage("UNIT2\nexBUTTON");
-		if(ELEMENTY->mG->Rows[2].Visible)//skrývání
-		{
-			ELEMENTY->mG->VisibleRow(2,false);
-			ELEMENTY->mG->VisibleRow(3,false);
-			ELEMENTY->mG->VisibleRow(4,false);
-			ELEMENTY->mG->VisibleRow(5,false);
-			ELEMENTY->mG->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
-		}
-		else//zobrazování
-		{
-			ELEMENTY->mG->VisibleRow(2,true);
-			ELEMENTY->mG->VisibleRow(3,true);
-			ELEMENTY->mG->VisibleRow(4,true);
-			ELEMENTY->mG->VisibleRow(5,true);
-			ELEMENTY->mG->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
-		}
-	}
-//	mGrid->HighlightCell(Col,Row);
-//	mGrid->Cells[0][0].Text="test";
-//	FormPaint(this);//zajistí pøekreslení bez probliku
-//	//toto problikává mGrid->Refresh();
-//if(Col==3)
-//{
-//	ELEMENTY->dalsi->mG->DeleteRow(Row);
-//}
+ //	ShowMessage("UNIT2\nToto vypisuje metoda OnClick\nDošlo ke kliku v tabulce tag formu: "+AnsiString(Tag)+", ID tabulky: "+AnsiString(ID)+", na buòce: "+AnsiString(Col)+","+AnsiString(Row));
+
+ if(ID==0) {ELEMENTY->mG->ShowNote("Zmìna hodnoty ovlivní všechny prvky na tomto pohonu"); ELEMENTY->dalsi->mG->ShowNote("");    } if(ID==1) {ELEMENTY->dalsi->mG->ShowNote("Zmìna hodnoty ovlivní všechny prvky na tomto pohonu");  ELEMENTY->mG->ShowNote("");      }
 
 }
 //---------------------------------------------------------------------------
