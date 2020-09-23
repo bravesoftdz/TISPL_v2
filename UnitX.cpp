@@ -1121,8 +1121,10 @@ void TFormX::korelace_tab_pohonu(int Row)
 				F->PmG->Cells[3][7].Highlight=true; //mezera mezi jigy
 				F->PmG->Cells[3][8].Highlight=true;
   		}break;
-  	}
-  	F->PmG->Refresh();
+		}
+    //vypisování upozornìní u používaných pohonù
+		if(F->OBJEKT_akt->pohon!=NULL && F->PmG->Note.Text=="" && F->je_pohon_pouzivan(F->OBJEKT_akt->pohon->n))F->PmG->ShowNote(F->ls->Strings[493]);//“Tato zmìna ovlivní všechny prvky na tomto pohonu.”
+		else F->PmG->Refresh();
 	}
 	korelace_tab_pohonu_elementy();
 }
@@ -1265,19 +1267,23 @@ void TFormX::korelace_tab_pohonu_elementy(Cvektory::TElement *mimo_element)
 void TFormX::korelace_v_elementech(long ID,long Col,long Row)
 {
 	Cvektory::TElement *E=vrat_element_z_tabulky(ID);
-  if(F->OBJEKT_akt->pohon!=E->pohon)F->OBJEKT_akt->pohon=E->pohon;
+	bool byl_refreshovan=false;
+	if(F->OBJEKT_akt->pohon!=E->pohon)F->OBJEKT_akt->pohon=E->pohon;
 	switch(E->eID)
 	{
 		case 0://stopka
 		{
 			if(Row==3)E->mGrid->Cells[2][6].Highlight=true;
 			if(Row==6)E->mGrid->Cells[2][3].Highlight=true;
+      break;
 		}
 		case 1:case 7:case 11:case 15:case 101:case 105: //robot (kontinuální)
 		{
 			if(Row==1){if(F->PmG!=NULL){F->PmG->Cells[3][rychlost].Highlight=true;korelace_tab_pohonu(1);}korelace_tab_pohonu_elementy();E->mGrid->Cells[1][3].Highlight=true;}//E->mGrid->Cells[1][Row+1].Highlight=true;
       if(Row==2)E->mGrid->Cells[1][3].Highlight=true;
 			if(Row==4){E->mGrid->Cells[1][1].Highlight=true;E->mGrid->Cells[1][3].Highlight=true;}
+      //vypisování upozornìní u používaných pohonù
+			if(Row==1 && E->pohon!=NULL && E->mGrid->Note.Text=="" && F->je_pohon_pouzivan(E->pohon->n)){E->mGrid->ShowNote(F->ls->Strings[493]);byl_refreshovan=true;}//“Tato zmìna ovlivní všechny prvky na tomto pohonu.”
 		} break;
 		case 2:case 8:case 12:case 16:case 102:case 106: //robot se stop stanicí
 		{
@@ -1292,6 +1298,8 @@ void TFormX::korelace_v_elementech(long ID,long Col,long Row)
 			if(Row==9){if(F->PmG!=NULL){F->PmG->Cells[3][rychlost].Highlight=true;korelace_tab_pohonu(1);}korelace_tab_pohonu_elementy();E->mGrid->Cells[3][1].Highlight=true;E->mGrid->Cells[3][5].Highlight=true;}//E->mGrid->Cells[1][Row+1].Highlight=true;
 			if(Row==10)E->mGrid->Cells[3][12].Highlight=true;
 			if(Row==11){E->mGrid->Cells[3][9].Highlight=true;E->mGrid->Cells[3][12].Highlight=true;}
+      //vypisování upozornìní u používaných pohonù
+			if((Row==1 || Row==9) && E->pohon!=NULL && E->mGrid->Note.Text=="" && F->je_pohon_pouzivan(E->pohon->n)){E->mGrid->ShowNote(F->ls->Strings[493]);byl_refreshovan=true;}//“Tato zmìna ovlivní všechny prvky na tomto pohonu.”
 		} break;
 		case 4:case 10:case 14:case 18:case 104:case 108://robot s aktivní otoèí (resp. s otoèí a stop stanicí)
 		{
@@ -1338,10 +1346,12 @@ void TFormX::korelace_v_elementech(long ID,long Col,long Row)
         if(E->mGrid->Cells[Col][11].Text!="-")E->mGrid->Cells[Col][11].Highlight=true;
 				korelace_tab_pohonu_elementy(E);//oznaèení v ostatních tabulkách
 			}
+      //vypisování upozornìní u používaných pohonù
+			if(Row!=0 && Row<11 && E->pohon!=NULL && E->mGrid->Note.Text=="" && F->je_pohon_pouzivan(E->pohon->n)){E->mGrid->ShowNote(F->ls->Strings[493]);byl_refreshovan=true;}//“Tato zmìna ovlivní všechny prvky na tomto pohonu.”
 			break;
     }
 	}
-	E->mGrid->Refresh();
+	if(!byl_refreshovan)E->mGrid->Refresh();
 	E=NULL; delete E;
 }
 //---------------------------------------------------------------------------
@@ -1350,15 +1360,26 @@ void TFormX::odstranit_korelaci(bool predat_focus)
 {
 	if(predat_focus)
 		F->DrawGrid_knihovna->SetFocus();//po kliku mimo zùstával focus poøád na editu
-	if(F->PmG!=NULL)F->PmG->unHighlightAll();
+	if(F->PmG!=NULL)
+	{
+		F->PmG->unHighlightAll();
+		if(F->PmG->Note.Text==F->ls->Strings[493])F->PmG->Note.Text="";
+	}
 	Cvektory::TElement *E=F->OBJEKT_akt->element;
 	while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
 	{
 		if(E->n>0)
+		{
 			E->mGrid->unHighlightAll();
+			if(E->mGrid->Note.Text==F->ls->Strings[493])E->mGrid->Note.Text="";
+		}
 		E=E->dalsi;
 	}
-	if(F->predchozi_PM!=NULL)F->predchozi_PM->mGrid->unHighlightAll();
+	if(F->predchozi_PM!=NULL)
+	{
+		F->predchozi_PM->mGrid->unHighlightAll();
+		if(F->predchozi_PM->mGrid->Note.Text==F->ls->Strings[493])F->predchozi_PM->mGrid->Note.Text="";
+	}
 	E=NULL;delete E;
 }
 //---------------------------------------------------------------------------
@@ -2832,54 +2853,5 @@ void TFormX::zmena_rezimu_pohonu(Cvektory::TPohon *pohon)
 	//ukazatelové záležitosti
 	F->d.v.vymaz_seznam_VYHYBKY(VYHYBKY);//odstranìní prùchodového spojáku
 	E=NULL;delete E;
-}
-//---------------------------------------------------------------------------
-//vypíše upozornìní pod pohonové tabulky používající používaný pohon
-void TFormX::zobraz_pouzivane_pohony()
-{
-	//pro pohonovou tabulku
-	if(F->PmG!=NULL)
-	{
-		if(F->OBJEKT_akt->pohon!=NULL && F->je_pohon_pouzivan(F->OBJEKT_akt->pohon->n) && F->PmG->Note.Text=="")F->PmG->Note.Text=F->OBJEKT_akt->pohon->name+" je používán";
-		if(F->PmG->Note.Text!="")F->PmG->Refresh();
-	}
-	//pro PM nebo výhybku
-	else
-	{
-		//deklarace
-		String popisek="";
-		Cvektory::TElement *E=F->OBJEKT_akt->element;
-		Cvektory::T2Element *VYHYBKY=F->d.v.hlavicka_seznam_VYHYBKY();
-		//prùchod skrze elementy v objektu
-		while(E!=NULL)
-		{
-			//pouze v PM a výhybkách
-			if((E->eID==200 || E->eID==300) && E->mGrid->Note.Text=="")
-			{
-				//kontrola, zda obsahují nìkterý pohon, který je používán
-				popisek="";
-				if(E->pohon!=NULL && F->je_pohon_pouzivan(E->pohon->n))popisek=E->pohon->name+" je používán, ";
-				if(E->eID==200 && E->dalsi!=NULL && E->dalsi->pohon!=NULL && E->pohon!=E->dalsi->pohon && E->dalsi->objekt_n==F->OBJEKT_akt->n && F->je_pohon_pouzivan(E->dalsi->pohon->n))popisek+=E->dalsi->pohon->name+" je používán";
-				if(E->eID==300 && E->dalsi2!=E->predchozi2 && E->dalsi2->pohon!=NULL && E->pohon!=E->dalsi2->pohon && F->je_pohon_pouzivan(E->dalsi2->pohon->n))popisek+=E->dalsi2->pohon->name+" je používán";
-				if(popisek!="" && popisek.SubString(popisek.Length()-1,2)==", ")popisek=popisek.SubString(1,popisek.Length()-2);
-				E->mGrid->Note.Text=popisek;
-        //pokud ano, vykresli popisek
-				if(popisek!="")E->mGrid->Refresh();
-			}
-			E=F->d.v.dalsi_krok(VYHYBKY,E,F->OBJEKT_akt);
-		}
-		//uakazatelové záležitosti
-		F->d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
-		delete E;E=NULL;
-
-    //kontrola pøedchozího PM
-		if(F->predchozi_PM!=NULL)
-		{
-      //kontrolo využívání používaného pohonu
-			if(F->predchozi_PM->dalsi!=NULL && F->predchozi_PM->dalsi->pohon!=NULL && F->predchozi_PM->pohon!=F->predchozi_PM->dalsi->pohon && F->predchozi_PM->dalsi->objekt_n==F->OBJEKT_akt->n && F->je_pohon_pouzivan(F->predchozi_PM->dalsi->pohon->n))popisek=F->predchozi_PM->dalsi->pohon->name+" je používán";
-			F->predchozi_PM->mGrid->Note.Text=popisek;
-			if(popisek!="")F->predchozi_PM->mGrid->Refresh();
-		}
-  }
 }
 //---------------------------------------------------------------------------

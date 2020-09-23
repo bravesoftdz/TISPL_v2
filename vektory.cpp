@@ -7948,7 +7948,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			FileStream->Read(&File_hlavicka,sizeof(TFile_hlavicka));//načte hlavičku ze souboru
 
 			//kontrola, zda se shoduje verze projektu a verze souboru, pokud ne vyhodí chybovou hlášku
-			if(F->get_major_version(String(File_hlavicka.FileVersion))!=F->get_major_version(F->FileVersion))throw new Exception("Verze souboru a projektu se neshoduje");//std::invalid_argument("Verze souboru a projektu se neshoduje");
+			if(File_hlavicka.FileVersion!=F->ms.MyToDouble(F->FileVersion))throw new Exception("Verze souboru a projektu se neshoduje");//std::invalid_argument("Verze souboru a projektu se neshoduje");
 			//načtení autorů
 			wchar_t *autor=new wchar_t[File_hlavicka.vytvoril_Sdelka];
 			FileStream->Read(autor,File_hlavicka.vytvoril_Sdelka*sizeof(wchar_t));//načte jeden nazev fontu za prvekem bod a popisek bodu
