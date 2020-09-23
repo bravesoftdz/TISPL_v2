@@ -1091,7 +1091,7 @@ void TFormX::aktualizace_tab_pohonu()
 }
 //---------------------------------------------------------------------------
 //highlightovaní buòìk tabulky pohonu
-void TFormX::korelace_tab_pohonu(int Row)
+void TFormX::korelace_tab_pohonu(int Row,bool vypsat_note_pouzivan)
 {
 	if(F->PmG!=NULL)
 	{
@@ -1123,7 +1123,7 @@ void TFormX::korelace_tab_pohonu(int Row)
   		}break;
 		}
     //vypisování upozornìní u používaných pohonù
-		if(F->OBJEKT_akt->pohon!=NULL && F->PmG->Note.Text=="" && F->je_pohon_pouzivan(F->OBJEKT_akt->pohon->n))F->PmG->ShowNote(F->ls->Strings[493]);//“Tato zmìna ovlivní všechny prvky na tomto pohonu.”
+		if(vypsat_note_pouzivan && F->OBJEKT_akt->pohon!=NULL && F->PmG->Note.Text=="" && F->je_pohon_pouzivan(F->OBJEKT_akt->pohon->n))F->PmG->ShowNote(F->ls->Strings[493]);//“Tato zmìna ovlivní všechny prvky na tomto pohonu.”
 		else F->PmG->Refresh();
 	}
 	korelace_tab_pohonu_elementy();
@@ -1279,7 +1279,7 @@ void TFormX::korelace_v_elementech(long ID,long Col,long Row)
 		}
 		case 1:case 7:case 11:case 15:case 101:case 105: //robot (kontinuální)
 		{
-			if(Row==1){if(F->PmG!=NULL){F->PmG->Cells[3][rychlost].Highlight=true;korelace_tab_pohonu(1);}korelace_tab_pohonu_elementy();E->mGrid->Cells[1][3].Highlight=true;}//E->mGrid->Cells[1][Row+1].Highlight=true;
+			if(Row==1){if(F->PmG!=NULL){F->PmG->Cells[3][rychlost].Highlight=true;korelace_tab_pohonu(1,false);}korelace_tab_pohonu_elementy();E->mGrid->Cells[1][3].Highlight=true;}//E->mGrid->Cells[1][Row+1].Highlight=true;
       if(Row==2)E->mGrid->Cells[1][3].Highlight=true;
 			if(Row==4){E->mGrid->Cells[1][1].Highlight=true;E->mGrid->Cells[1][3].Highlight=true;}
       //vypisování upozornìní u používaných pohonù
@@ -1291,11 +1291,11 @@ void TFormX::korelace_v_elementech(long ID,long Col,long Row)
 		} break;
 		case 3:case 9:case 13:case 17:case 103:case 107: //robot s pasivní otoèí
 		{
-			if(Row==1){if(F->PmG!=NULL){F->PmG->Cells[3][rychlost].Highlight=true;korelace_tab_pohonu(1);}korelace_tab_pohonu_elementy();E->mGrid->Cells[3][12].Highlight=true;}//E->mGrid->Cells[1][Row+1].Highlight=true;
+			if(Row==1){if(F->PmG!=NULL){F->PmG->Cells[3][rychlost].Highlight=true;korelace_tab_pohonu(1,false);}korelace_tab_pohonu_elementy();E->mGrid->Cells[3][12].Highlight=true;}//E->mGrid->Cells[1][Row+1].Highlight=true;
 			if(Row==2)E->mGrid->Cells[3][12].Highlight=true;
 			if(Row==3){E->mGrid->Cells[3][1].Highlight=true;E->mGrid->Cells[3][12].Highlight=true;}
 			if(Row==6){E->mGrid->Cells[3][5].Highlight=true;E->mGrid->Cells[3][7].Highlight=true;E->mGrid->Cells[3][8].Highlight=true;}
-			if(Row==9){if(F->PmG!=NULL){F->PmG->Cells[3][rychlost].Highlight=true;korelace_tab_pohonu(1);}korelace_tab_pohonu_elementy();E->mGrid->Cells[3][1].Highlight=true;E->mGrid->Cells[3][5].Highlight=true;}//E->mGrid->Cells[1][Row+1].Highlight=true;
+			if(Row==9){if(F->PmG!=NULL){F->PmG->Cells[3][rychlost].Highlight=true;korelace_tab_pohonu(1,false);}korelace_tab_pohonu_elementy();E->mGrid->Cells[3][1].Highlight=true;E->mGrid->Cells[3][5].Highlight=true;}//E->mGrid->Cells[1][Row+1].Highlight=true;
 			if(Row==10)E->mGrid->Cells[3][12].Highlight=true;
 			if(Row==11){E->mGrid->Cells[3][9].Highlight=true;E->mGrid->Cells[3][12].Highlight=true;}
       //vypisování upozornìní u používaných pohonù
@@ -1358,14 +1358,20 @@ void TFormX::korelace_v_elementech(long ID,long Col,long Row)
 //odstraní highlight na všech tabulkách
 void TFormX::odstranit_korelaci(bool predat_focus)
 {
+	//pøedávání focusu
 	if(predat_focus)
 		F->DrawGrid_knihovna->SetFocus();//po kliku mimo zùstával focus poøád na editu
+
+	//pohonová tabulka
 	if(F->PmG!=NULL)
 	{
 		F->PmG->unHighlightAll();
 		if(F->PmG->Note.Text==F->ls->Strings[493])F->PmG->Note.Text="";
 	}
+
+	//elementy v objektu
 	Cvektory::TElement *E=F->OBJEKT_akt->element;
+	Cvektory::T2Element *VYH=F->d.v.hlavicka_seznam_VYHYBKY();
 	while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
 	{
 		if(E->n>0)
@@ -1375,12 +1381,15 @@ void TFormX::odstranit_korelaci(bool predat_focus)
 		}
 		E=E->dalsi;
 	}
+	F->d.v.vymaz_seznam_VYHYBKY(VYH);
+	E=NULL;delete E;
+
+	//pøedchozí PM
 	if(F->predchozi_PM!=NULL)
 	{
 		F->predchozi_PM->mGrid->unHighlightAll();
 		if(F->predchozi_PM->mGrid->Note.Text==F->ls->Strings[493])F->predchozi_PM->mGrid->Note.Text="";
 	}
-	E=NULL;delete E;
 }
 //---------------------------------------------------------------------------
 //validace rychlosti pøi její zmìnì
