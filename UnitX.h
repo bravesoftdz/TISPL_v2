@@ -20,7 +20,7 @@ private:	// User declarations
 	void zmena_Rx ();//vıpoèty vyvolané zmìnou Rx
 	void aktualizace_tab_elementu_pOdebran ();//vynuluje všechny hodnoty závislé na pohonu ve všech tabulkách elementù
 	void aktualizace_tab_pohonu();
-	void korelace_tab_pohonu(int Row);//zobrazi korelaci v tabulce pohonu
+	void korelace_tab_pohonu(int Row,bool vypsat_note_pouzivan=true);//zobrazi korelaci v tabulce pohonu
 	void korelace_tab_pohonu_elementy(Cvektory::TElement *mimo_element=NULL);//zobrazí korelaci podle tabulky pohonu ve všech elementech,volitelnı parametr, ukazatel na element kterı chci pøeskoèit
 	void korelace_v_elementech(long ID,long Col,long Row);//jedná se o vnitøní korelace, v jednom elementu (jeden element však mùe ovlivnit i tabulku pohonu)
 	Cvektory::TElement *vrat_element_z_tabulky(long ID);//vrátí ukazatel na element, nelze pouít vra element stavající, z dùvodu e ID tabulky ji nemusí bıt totoné s n robota

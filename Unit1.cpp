@@ -9361,20 +9361,20 @@ void TForm1::aktualizace_tab_pohon(bool popisky,bool data,bool komponenty)
 			if(OBJEKT_akt->rezim!=0)//povolit editaci všeho
 			{
 				PmG->Cells[3][1].Type=PmG->EDIT;if(PmG->Note.Text==""){PmG->Cells[3][1].Background->Color=clWhite;PmG->Cells[3][1].Font->Color=(TColor)RGB(43,87,154);}
-				PmG->Cells[3][4].Type=PmG->EDIT;if(PmG->Note.Text==""){PmG->Cells[3][4].Background->Color=clWhite;PmG->Cells[3][4].Font->Color=(TColor)RGB(43,87,154);}
+				//PmG->Cells[3][4].Type=PmG->EDIT;if(PmG->Note.Text==""){PmG->Cells[3][4].Background->Color=clWhite;PmG->Cells[3][4].Font->Color=(TColor)RGB(43,87,154);}
 				PmG->Cells[3][5].Type=PmG->EDIT;if(PmG->Note.Text==""){PmG->Cells[3][5].Background->Color=clWhite;PmG->Cells[3][5].Font->Color=(TColor)RGB(43,87,154);}
   		}
 			else//povolit editaci RD a rozteče palce
 			{
 				PmG->Cells[3][1].Type=PmG->EDIT;if(PmG->Note.Text==""){PmG->Cells[3][1].Background->Color=clWhite;PmG->Cells[3][1].Font->Color=(TColor)RGB(43,87,154);}
-				if(PmG->Cells[3][4].Type==PmG->EDIT){mGrid_komponenta_na_draw(PmG,3,4);if(PmG->Note.Text==""){PmG->Cells[3][4].Background->Color=(TColor)RGB(240,240,240);PmG->Cells[3][4].Font->Color=(TColor)RGB(128,128,128);}}
+				//if(PmG->Cells[3][4].Type==PmG->EDIT){mGrid_komponenta_na_draw(PmG,3,4);if(PmG->Note.Text==""){PmG->Cells[3][4].Background->Color=(TColor)RGB(240,240,240);PmG->Cells[3][4].Font->Color=(TColor)RGB(128,128,128);}}
 				if(PmG->Cells[3][5].Type==PmG->EDIT){mGrid_komponenta_na_draw(PmG,3,5);if(PmG->Note.Text==""){PmG->Cells[3][5].Background->Color=(TColor)RGB(240,240,240);PmG->Cells[3][5].Font->Color=(TColor)RGB(128,128,128);}}
 			}
   	}
 		else//vše zakázat pokud je editace povolená
 		{
 			if(PmG->Cells[3][1].Type==PmG->EDIT){mGrid_komponenta_na_draw(PmG,3,1);if(PmG->Note.Text==""){PmG->Cells[3][1].Background->Color=(TColor)RGB(240,240,240);PmG->Cells[3][1].Font->Color=(TColor)RGB(128,128,128);}}
-			if(PmG->Cells[3][4].Type==PmG->EDIT){mGrid_komponenta_na_draw(PmG,3,4);if(PmG->Note.Text==""){PmG->Cells[3][4].Background->Color=(TColor)RGB(240,240,240);PmG->Cells[3][4].Font->Color=(TColor)RGB(128,128,128);}}
+			//if(PmG->Cells[3][4].Type==PmG->EDIT){mGrid_komponenta_na_draw(PmG,3,4);if(PmG->Note.Text==""){PmG->Cells[3][4].Background->Color=(TColor)RGB(240,240,240);PmG->Cells[3][4].Font->Color=(TColor)RGB(128,128,128);}}
 			if(PmG->Cells[3][5].Type==PmG->EDIT){mGrid_komponenta_na_draw(PmG,3,5);if(PmG->Note.Text==""){PmG->Cells[3][5].Background->Color=(TColor)RGB(240,240,240);PmG->Cells[3][5].Font->Color=(TColor)RGB(128,128,128);}}
 		}
 		//kontrola režimu objektu
@@ -9948,13 +9948,13 @@ void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
 		if(C1!=NULL && !C1->Enabled)
 		{
 			if(E->mGrid->Cells[prvni][3].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,prvni,3);if(E->mGrid->Note.Text==""){E->mGrid->Cells[prvni][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[prvni][3].Font->Color=(TColor)RGB(128,128,128);}}
-			if(E->mGrid->Cells[prvni][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,prvni,6);if(E->mGrid->Note.Text==""){E->mGrid->Cells[prvni][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[prvni][6].Font->Color=(TColor)RGB(128,128,128);}}
+			//if(E->mGrid->Cells[prvni][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,prvni,6);if(E->mGrid->Note.Text==""){E->mGrid->Cells[prvni][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[prvni][6].Font->Color=(TColor)RGB(128,128,128);}}
 			if(E->mGrid->Cells[prvni][7].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,prvni,7);if(E->mGrid->Note.Text==""){E->mGrid->Cells[prvni][7].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[prvni][7].Font->Color=(TColor)RGB(128,128,128);}}
 		}
 		if(C2!=NULL && !C2->Enabled)
 		{
 			if(E->mGrid->Cells[druhy][3].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,3);if(E->mGrid->Note.Text==""){E->mGrid->Cells[druhy][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][3].Font->Color=(TColor)RGB(128,128,128);}}
-			if(E->mGrid->Cells[druhy][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,6);if(E->mGrid->Note.Text==""){E->mGrid->Cells[druhy][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][6].Font->Color=(TColor)RGB(128,128,128);}}
+			//if(E->mGrid->Cells[druhy][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,6);if(E->mGrid->Note.Text==""){E->mGrid->Cells[druhy][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][6].Font->Color=(TColor)RGB(128,128,128);}}
 			if(E->mGrid->Cells[druhy][7].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,7);if(E->mGrid->Note.Text==""){E->mGrid->Cells[druhy][7].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][7].Font->Color=(TColor)RGB(128,128,128);}}
 		}
 
@@ -9968,20 +9968,20 @@ void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
 	  		if(rezim!=0)//povolit editaci všeho
 	  		{
 					E->mGrid->Cells[prvni][3].Type=E->mGrid->EDIT;if(E->mGrid->Note.Text==""){E->mGrid->Cells[prvni][3].Background->Color=clWhite;E->mGrid->Cells[prvni][3].Font->Color=(TColor)RGB(43,87,154);}
-					E->mGrid->Cells[prvni][6].Type=E->mGrid->EDIT;if(E->mGrid->Note.Text==""){E->mGrid->Cells[prvni][6].Background->Color=clWhite;E->mGrid->Cells[prvni][6].Font->Color=(TColor)RGB(43,87,154);}
+					//E->mGrid->Cells[prvni][6].Type=E->mGrid->EDIT;if(E->mGrid->Note.Text==""){E->mGrid->Cells[prvni][6].Background->Color=clWhite;E->mGrid->Cells[prvni][6].Font->Color=(TColor)RGB(43,87,154);}
 					E->mGrid->Cells[prvni][7].Type=E->mGrid->EDIT;if(E->mGrid->Note.Text==""){E->mGrid->Cells[prvni][7].Background->Color=clWhite;E->mGrid->Cells[prvni][7].Font->Color=(TColor)RGB(43,87,154);}
 	  		}
 	  		else//povolit editaci RD a rozteče palce
 	  		{
 					E->mGrid->Cells[prvni][3].Type=E->mGrid->EDIT;if(E->mGrid->Note.Text==""){E->mGrid->Cells[prvni][3].Background->Color=clWhite;E->mGrid->Cells[prvni][3].Font->Color=(TColor)RGB(43,87,154);}
-					if(E->mGrid->Cells[prvni][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,prvni,6);if(E->mGrid->Note.Text==""){E->mGrid->Cells[prvni][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[prvni][6].Font->Color=(TColor)RGB(128,128,128);}}
+					//if(E->mGrid->Cells[prvni][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,prvni,6);if(E->mGrid->Note.Text==""){E->mGrid->Cells[prvni][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[prvni][6].Font->Color=(TColor)RGB(128,128,128);}}
 					if(E->mGrid->Cells[prvni][7].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,prvni,7);if(E->mGrid->Note.Text==""){E->mGrid->Cells[prvni][7].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[prvni][7].Font->Color=(TColor)RGB(128,128,128);}}
 	  		}
 	  	}
 	  	else//vše zakázat pokud je editace povolená
 	  	{
 				if(E->mGrid->Cells[prvni][3].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,prvni,3);if(E->mGrid->Note.Text==""){E->mGrid->Cells[prvni][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[prvni][3].Font->Color=(TColor)RGB(128,128,128);}}
-				if(E->mGrid->Cells[prvni][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,prvni,6);if(E->mGrid->Note.Text==""){E->mGrid->Cells[prvni][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[prvni][6].Font->Color=(TColor)RGB(128,128,128);}}
+				//if(E->mGrid->Cells[prvni][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,prvni,6);if(E->mGrid->Note.Text==""){E->mGrid->Cells[prvni][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[prvni][6].Font->Color=(TColor)RGB(128,128,128);}}
 				if(E->mGrid->Cells[prvni][7].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,prvni,7);if(E->mGrid->Note.Text==""){E->mGrid->Cells[prvni][7].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[prvni][7].Font->Color=(TColor)RGB(128,128,128);}}
 			}
 		}
@@ -10010,20 +10010,20 @@ void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
 				if(rezim!=0)//povolit editaci všeho
 				{
 					E->mGrid->Cells[druhy][3].Type=E->mGrid->EDIT;if(E->mGrid->Note.Text==""){E->mGrid->Cells[druhy][3].Background->Color=clWhite;E->mGrid->Cells[druhy][3].Font->Color=(TColor)RGB(43,87,154);}
-					E->mGrid->Cells[druhy][6].Type=E->mGrid->EDIT;if(E->mGrid->Note.Text==""){E->mGrid->Cells[druhy][6].Background->Color=clWhite;E->mGrid->Cells[druhy][6].Font->Color=(TColor)RGB(43,87,154);}
+					//E->mGrid->Cells[druhy][6].Type=E->mGrid->EDIT;if(E->mGrid->Note.Text==""){E->mGrid->Cells[druhy][6].Background->Color=clWhite;E->mGrid->Cells[druhy][6].Font->Color=(TColor)RGB(43,87,154);}
 					E->mGrid->Cells[druhy][7].Type=E->mGrid->EDIT;if(E->mGrid->Note.Text==""){E->mGrid->Cells[druhy][7].Background->Color=clWhite;E->mGrid->Cells[druhy][7].Font->Color=(TColor)RGB(43,87,154);}
 				}
 				else//povolit editaci RD a rozteče palce
 				{
 					E->mGrid->Cells[druhy][3].Type=E->mGrid->EDIT;if(E->mGrid->Note.Text==""){E->mGrid->Cells[druhy][3].Background->Color=clWhite;E->mGrid->Cells[druhy][3].Font->Color=(TColor)RGB(43,87,154);}
-					if(E->mGrid->Cells[druhy][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,6);if(E->mGrid->Note.Text==""){E->mGrid->Cells[druhy][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][6].Font->Color=(TColor)RGB(128,128,128);}}
+					//if(E->mGrid->Cells[druhy][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,6);if(E->mGrid->Note.Text==""){E->mGrid->Cells[druhy][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][6].Font->Color=(TColor)RGB(128,128,128);}}
 					if(E->mGrid->Cells[druhy][7].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,7);if(E->mGrid->Note.Text==""){E->mGrid->Cells[druhy][7].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][7].Font->Color=(TColor)RGB(128,128,128);}}
 				}
 			}
 			else//vše zakázat pokud je editace povolená
 			{
 				if(E->mGrid->Cells[druhy][3].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,3);if(E->mGrid->Note.Text==""){E->mGrid->Cells[druhy][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][3].Font->Color=(TColor)RGB(128,128,128);}}
-				if(E->mGrid->Cells[druhy][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,6);if(E->mGrid->Note.Text==""){E->mGrid->Cells[druhy][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][6].Font->Color=(TColor)RGB(128,128,128);}}
+				//if(E->mGrid->Cells[druhy][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,6);if(E->mGrid->Note.Text==""){E->mGrid->Cells[druhy][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][6].Font->Color=(TColor)RGB(128,128,128);}}
 				if(E->mGrid->Cells[druhy][7].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,7);if(E->mGrid->Note.Text==""){E->mGrid->Cells[druhy][7].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][7].Font->Color=(TColor)RGB(128,128,128);}}
 			}
 		}
@@ -10492,7 +10492,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			{
 				E->mGrid->Cells[prvni][3].Type=E->mGrid->EDIT;E->mGrid->Cells[prvni][3].Text=m.round2double(outaRD(E->pohon->aRD),3);
 				E->mGrid->Cells[prvni][4].Text=AnsiString(m.round2double(outaRD(E->pohon->rychlost_od),3))+" - "+AnsiString(m.round2double(outaRD(E->pohon->rychlost_do),3));
-				E->mGrid->Cells[prvni][6].Type=E->mGrid->EDIT;E->mGrid->Cells[prvni][6].Text=m.round2double(outR(E->pohon->roztec),3);
+				/*E->mGrid->Cells[prvni][6].Type=E->mGrid->EDIT;*/E->mGrid->Cells[prvni][6].Text=m.round2double(outR(E->pohon->roztec),3);
 				E->mGrid->Cells[prvni][7].Type=E->mGrid->EDIT;E->mGrid->Cells[prvni][7].Text=m.round2double(E->pohon->Rx,3);
 				E->mGrid->Cells[prvni][5].Text=m.round2double(outR(E->pohon->Rz),3);
 				E->mGrid->Cells[prvni][8].Text=m.round2double(outRz(m.mezera(0,E->pohon->Rz,0)),3);
@@ -10519,7 +10519,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 				{
 					E->mGrid->Cells[druhy][3].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][3].Text=m.round2double(outaRD(E->dalsi2->pohon->aRD),3);
 					E->mGrid->Cells[druhy][4].Text=AnsiString(m.round2double(outaRD(E->dalsi2->pohon->rychlost_od),3))+" - "+AnsiString(m.round2double(outaRD(E->dalsi2->pohon->rychlost_do),3));
-					E->mGrid->Cells[druhy][6].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][6].Text=m.round2double(outR(E->dalsi2->pohon->roztec),3);
+					/*E->mGrid->Cells[druhy][6].Type=E->mGrid->EDIT;*/E->mGrid->Cells[druhy][6].Text=m.round2double(outR(E->dalsi2->pohon->roztec),3);
 					E->mGrid->Cells[druhy][7].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][7].Text=m.round2double(E->dalsi2->pohon->Rx,3);
 					E->mGrid->Cells[druhy][5].Text=m.round2double(outR(E->dalsi2->pohon->Rz),3);
 					E->mGrid->Cells[druhy][8].Text=m.round2double(outRz(m.mezera(0,E->dalsi2->pohon->Rz,0)),3);
@@ -10546,7 +10546,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 				{
 					E->mGrid->Cells[druhy][3].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][3].Text=m.round2double(outaRD(e_pom->pohon->aRD),3);
 					E->mGrid->Cells[druhy][4].Text=AnsiString(m.round2double(outaRD(e_pom->pohon->rychlost_od),3))+" - "+AnsiString(m.round2double(outaRD(e_pom->pohon->rychlost_do),3));
-					E->mGrid->Cells[druhy][6].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][6].Text=m.round2double(outR(e_pom->pohon->roztec),3);
+					/*E->mGrid->Cells[druhy][6].Type=E->mGrid->EDIT;*/E->mGrid->Cells[druhy][6].Text=m.round2double(outR(e_pom->pohon->roztec),3);
 					E->mGrid->Cells[druhy][7].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][7].Text=m.round2double(e_pom->pohon->Rx,3);
 					E->mGrid->Cells[druhy][5].Text=m.round2double(outR(e_pom->pohon->Rz),3);
 					E->mGrid->Cells[druhy][8].Text=m.round2double(outRz(m.mezera(0,e_pom->pohon->Rz,0)),3);
@@ -11136,7 +11136,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 				{
 					E->mGrid->Cells[druhy][3].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][3].Text=m.round2double(outaRD(E->dalsi2->pohon->aRD),3);
 					E->mGrid->Cells[druhy][4].Text=AnsiString(m.round2double(outaRD(E->dalsi2->pohon->rychlost_od),3))+" - "+AnsiString(m.round2double(outaRD(E->dalsi2->pohon->rychlost_do),3));
-					E->mGrid->Cells[druhy][6].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][6].Text=m.round2double(outR(E->dalsi2->pohon->roztec),3);
+					/*E->mGrid->Cells[druhy][6].Type=E->mGrid->EDIT;*/E->mGrid->Cells[druhy][6].Text=m.round2double(outR(E->dalsi2->pohon->roztec),3);
 					E->mGrid->Cells[druhy][7].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][7].Text=m.round2double(E->dalsi2->pohon->Rx,3);
 					E->mGrid->Cells[druhy][5].Text=m.round2double(outR(E->dalsi2->pohon->Rz),3);
 					E->mGrid->Cells[druhy][8].Text=m.round2double(outRz(m.mezera(0,E->dalsi2->pohon->Rz,0)),3);
@@ -11163,7 +11163,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 				{
 					E->mGrid->Cells[druhy][3].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][3].Text=m.round2double(outaRD(e_pom->pohon->aRD),3);
 					E->mGrid->Cells[druhy][4].Text=AnsiString(m.round2double(outaRD(e_pom->pohon->rychlost_od),3))+" - "+AnsiString(m.round2double(outaRD(e_pom->pohon->rychlost_do),3));
-					E->mGrid->Cells[druhy][6].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][6].Text=m.round2double(outR(e_pom->pohon->roztec),3);
+					/*E->mGrid->Cells[druhy][6].Type=E->mGrid->EDIT;*/E->mGrid->Cells[druhy][6].Text=m.round2double(outR(e_pom->pohon->roztec),3);
 					E->mGrid->Cells[druhy][7].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][7].Text=m.round2double(e_pom->pohon->Rx,3);
 					E->mGrid->Cells[druhy][5].Text=m.round2double(outR(e_pom->pohon->Rz),3);
 					E->mGrid->Cells[druhy][8].Text=m.round2double(outRz(m.mezera(0,e_pom->pohon->Rz,0)),3);
