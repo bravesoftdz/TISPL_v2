@@ -14895,6 +14895,18 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //MaKr testovací tlačítko
 void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 {//vždy nechat tento komentář
+	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+	while(E!=NULL)
+	{
+		if(d.v.vrat_druh_elementu(E)==0)
+		{
+			Memo(E->name);Memo(E->data.pocet_pozic);Memo(E->data.pocet_voziku);
+    }
+		E=E->dalsi;
+	}
+	delete E;
+
+
 
 //	Cvektory::TPohon *P=d.v.POHONY->dalsi;
 //	while(P!=NULL)

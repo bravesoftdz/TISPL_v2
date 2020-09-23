@@ -2618,7 +2618,7 @@ double Cvykresli::trend(Cvektory::TObjekt *Objekt)
 //vykresli pozic a obalových zón
 void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 {                                                                                                                                                                                                                                                                                                     //oblouk
-  if(F->scButton_zamek_layoutu->ImageIndex==68)//vše bude zobrazenou pouze pokud je layout určen k editaci, nebo probíhá editace, tj. je odemčen zámek layoutu
+	if(F->scButton_zamek_layoutu->ImageIndex==68 || F->OBJEKT_akt!=NULL)//vše bude zobrazenou pouze pokud je layout určen k editaci, nebo probíhá editace, tj. je odemčen zámek layoutu
 	if(F->scGPTrackBar_intenzita->Value>5 && F->scGPCheckBox_zobrazit_pozice->Checked && E->data.pocet_pozic>0 || (F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180) || F->scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked && E->geo.typ==1)//pokud se má smysl algoritmem zabývat, pouze optimalizační podmínky
 	{
 		////výchozí hodnoty
@@ -3277,12 +3277,12 @@ void Cvykresli::vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiStr
 		{
 			vykresli_stopku(canv,X,Y,name,short_name,typ,rotace,stav);
 			/*provizorně:*/
-			if(F->CAS>=20)
-			{
-				String T="otev. "+String(ceil(v.PP.TT-F->CAS+E->temp))+"[s]";
-				canv->Font->Size=6*F->Zoom/3;TextFraming(canv,X-canv->TextWidth(T)/2,Y+6*F->Zoom/3,T);
-				TextFraming(canv,X-canv->TextWidth(T)/2,Y+6*F->Zoom/3+canv->TextHeight(T),"uchyt. "+String(m.round(F->CAS-E->temp2))+"[s]");
-			}
+//			if(F->CAS>=20)
+//			{
+//				String T="otev. "+String(ceil(v.PP.TT-F->CAS+E->temp))+"[s]";
+//				canv->Font->Size=6*F->Zoom/3;TextFraming(canv,X-canv->TextWidth(T)/2,Y+6*F->Zoom/3,T);
+//				TextFraming(canv,X-canv->TextWidth(T)/2,Y+6*F->Zoom/3+canv->TextHeight(T),"uchyt. "+String(m.round(F->CAS-E->temp2))+"[s]");
+//			}
 		}break;//stopka
 		case 1:  vykresli_robota(canv,scena,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0,F->RO,F->ROst,LO_pozice);break;//kontinuální robota
 		case 2:  vykresli_robota(canv,scena,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0,F->RO,F->ROst);break;//robot se stopkou
@@ -4301,78 +4301,81 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,lon
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_lakovaci_okno(TCanvas *canv,long X,long Y,double LO1,double OTOC_delka,double LO2,double delka_ramena,double rotace,double LO_pozice)
 {
-	LO1=m.m2px(LO1);
-	OTOC_delka=m.m2px(OTOC_delka);
-	LO2=m.m2px(LO2);
-	LO_pozice=m.m2px(LO_pozice);//zajišťuje vyosení lakovacího okna
-
-	canv->Pen->Width=1;
-	canv->Pen->Color=clBlack;
-	canv->Pen->Mode=pmCopy;
-	canv->Pen->Style=psDash;
-	//rotace
-	switch((int)rotace)
+	if(F->scButton_zamek_layoutu->ImageIndex==68 || F->OBJEKT_akt!=NULL)//vše bude zobrazenou pouze pokud je layout určen k editaci, nebo probíhá editace, tj. je odemčen zámek layoutu
 	{
-		case 0:
+		LO1=m.m2px(LO1);
+		OTOC_delka=m.m2px(OTOC_delka);
+		LO2=m.m2px(LO2);
+		LO_pozice=m.m2px(LO_pozice);//zajišťuje vyosení lakovacího okna
+
+		canv->Pen->Width=1;
+		canv->Pen->Color=clBlack;
+		canv->Pen->Mode=pmCopy;
+		canv->Pen->Style=psDash;
+		//rotace
+		switch((int)rotace)
 		{
-			if(LO2==0)//pouze kk
+			case 0:
 			{
-				line(canv,X,Y,m.round(X-LO1/2.0+LO_pozice),m.round(Y-delka_ramena));
-				line(canv,X,Y,m.round(X+LO1/2.0+LO_pozice),m.round(Y-delka_ramena));
-			}
-			else//kk s otočí či kk s vyoseným LO
+				if(LO2==0)//pouze kk
+				{
+					line(canv,X,Y,m.round(X-LO1/2.0+LO_pozice),m.round(Y-delka_ramena));
+					line(canv,X,Y,m.round(X+LO1/2.0+LO_pozice),m.round(Y-delka_ramena));
+				}
+				else//kk s otočí či kk s vyoseným LO
+				{
+					line(canv,X,Y,m.round(X-LO1-OTOC_delka/2.0),m.round(Y-delka_ramena));
+					if(OTOC_delka)line(canv,X,Y,m.round(X-OTOC_delka/2.0),m.round(Y-delka_ramena));
+					if(OTOC_delka)line(canv,X,Y,m.round(X+OTOC_delka/2.0),m.round(Y-delka_ramena));
+					line(canv,X,Y,m.round(X+OTOC_delka/2.0+LO2),m.round(Y-delka_ramena));
+				}
+			}break;
+			case 90:
 			{
-				line(canv,X,Y,m.round(X-LO1-OTOC_delka/2.0),m.round(Y-delka_ramena));
-				if(OTOC_delka)line(canv,X,Y,m.round(X-OTOC_delka/2.0),m.round(Y-delka_ramena));
-				if(OTOC_delka)line(canv,X,Y,m.round(X+OTOC_delka/2.0),m.round(Y-delka_ramena));
-				line(canv,X,Y,m.round(X+OTOC_delka/2.0+LO2),m.round(Y-delka_ramena));
-			}
-		}break;
-		case 90:
-		{
-			if(LO2==0)//pouze kk
+				if(LO2==0)//pouze kk
+				{
+					line(canv,X,Y,m.round(X+delka_ramena),m.round(Y-LO1/2.0+LO_pozice));
+					line(canv,X,Y,m.round(X+delka_ramena),m.round(Y+LO1/2.0+LO_pozice));
+				}
+				else//kk s otočí či kk s vyoseným LO
+				{
+					line(canv,X,Y,m.round(X+delka_ramena),m.round(Y-LO1-OTOC_delka/2.0));
+					if(OTOC_delka)line(canv,X,Y,m.round(X+delka_ramena),m.round(Y-OTOC_delka/2.0));
+					if(OTOC_delka)line(canv,X,Y,m.round(X+delka_ramena),m.round(Y+OTOC_delka/2.0));
+					line(canv,X,Y,m.round(X+delka_ramena),m.round(Y+OTOC_delka/2.0+LO2));
+				}
+			}break;
+			case 180:
 			{
-				line(canv,X,Y,m.round(X+delka_ramena),m.round(Y-LO1/2.0+LO_pozice));
-				line(canv,X,Y,m.round(X+delka_ramena),m.round(Y+LO1/2.0+LO_pozice));
-			}
-			else//kk s otočí či kk s vyoseným LO
+				if(LO2==0)//pouze kk
+				{
+					line(canv,X,Y,m.round(X-LO1/2.0+LO_pozice),m.round(Y+delka_ramena));
+					line(canv,X,Y,m.round(X+LO1/2.0+LO_pozice),m.round(Y+delka_ramena));
+				}
+				else//kk s otočí či kk s vyoseným LO
+				{
+					line(canv,X,Y,m.round(X-LO1-OTOC_delka/2.0),m.round(Y+delka_ramena));
+					if(OTOC_delka)line(canv,X,Y,m.round(X-OTOC_delka/2.0),m.round(Y+delka_ramena));
+					if(OTOC_delka)line(canv,X,Y,m.round(X+OTOC_delka/2.0),m.round(Y+delka_ramena));
+					line(canv,X,Y,m.round(X+OTOC_delka/2.0+LO2),m.round(Y+delka_ramena));
+				}
+			}break;
+			case 270:
 			{
-				line(canv,X,Y,m.round(X+delka_ramena),m.round(Y-LO1-OTOC_delka/2.0));
-				if(OTOC_delka)line(canv,X,Y,m.round(X+delka_ramena),m.round(Y-OTOC_delka/2.0));
-				if(OTOC_delka)line(canv,X,Y,m.round(X+delka_ramena),m.round(Y+OTOC_delka/2.0));
-				line(canv,X,Y,m.round(X+delka_ramena),m.round(Y+OTOC_delka/2.0+LO2));
-			}
-		}break;
-		case 180:
-		{
-			if(LO2==0)//pouze kk
-			{
-				line(canv,X,Y,m.round(X-LO1/2.0+LO_pozice),m.round(Y+delka_ramena));
-				line(canv,X,Y,m.round(X+LO1/2.0+LO_pozice),m.round(Y+delka_ramena));
-			}
-			else//kk s otočí či kk s vyoseným LO
-			{
-				line(canv,X,Y,m.round(X-LO1-OTOC_delka/2.0),m.round(Y+delka_ramena));
-				if(OTOC_delka)line(canv,X,Y,m.round(X-OTOC_delka/2.0),m.round(Y+delka_ramena));
-				if(OTOC_delka)line(canv,X,Y,m.round(X+OTOC_delka/2.0),m.round(Y+delka_ramena));
-				line(canv,X,Y,m.round(X+OTOC_delka/2.0+LO2),m.round(Y+delka_ramena));
-			}
-		}break;
-		case 270:
-		{
-			if(LO2==0)//pouze kk
-			{
-				line(canv,X,Y,m.round(X-delka_ramena),m.round(Y-LO1/2.0+LO_pozice));
-				line(canv,X,Y,m.round(X-delka_ramena),m.round(Y+LO1/2.0+LO_pozice));
-			}
-			else//kk s otočí či kk s vyoseným LO
-			{
-				line(canv,X,Y,m.round(X-delka_ramena),m.round(Y-LO1-OTOC_delka/2.0));
-				if(OTOC_delka)line(canv,X,Y,m.round(X-delka_ramena),m.round(Y-OTOC_delka/2.0));
-				if(OTOC_delka)line(canv,X,Y,m.round(X-delka_ramena),m.round(Y+OTOC_delka/2.0));
-				line(canv,X,Y,m.round(X-delka_ramena),m.round(Y+OTOC_delka/2.0+LO2));
-			}
-		}break;
+				if(LO2==0)//pouze kk
+				{
+					line(canv,X,Y,m.round(X-delka_ramena),m.round(Y-LO1/2.0+LO_pozice));
+					line(canv,X,Y,m.round(X-delka_ramena),m.round(Y+LO1/2.0+LO_pozice));
+				}
+				else//kk s otočí či kk s vyoseným LO
+				{
+					line(canv,X,Y,m.round(X-delka_ramena),m.round(Y-LO1-OTOC_delka/2.0));
+					if(OTOC_delka)line(canv,X,Y,m.round(X-delka_ramena),m.round(Y-OTOC_delka/2.0));
+					if(OTOC_delka)line(canv,X,Y,m.round(X-delka_ramena),m.round(Y+OTOC_delka/2.0));
+					line(canv,X,Y,m.round(X-delka_ramena),m.round(Y+OTOC_delka/2.0+LO2));
+				}
+			}break;
+		}
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------

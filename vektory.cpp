@@ -2594,7 +2594,7 @@ short Cvektory::vrat_druh_elementu(TElement *Element)
 //vrátí true, pokud se jedná o funční element
 bool Cvektory::funkcni_element(TElement *Element)
 {                                                 //nutné přeskakovat elementarní hlavičku!
-	if(Element->eID!=MaxInt && Element->eID!=200 && Element->n>0)return true;
+	if(Element->eID!=MaxInt && Element->eID<199 && Element->n>0)return true;
 	else return false;
 }
 ////---------------------------------------------------------------------------
@@ -6221,9 +6221,9 @@ TPointD_3Dbool Cvektory::generuj_voziky_segementu_mimo_stop_a_buffer(TElement *E
 	if(E->pohon!=NULL && E->pohon->aRD>0)//pokud je element resp. jeho geometrie relevantní k zobrazení vozíků, bez pohonu či uvedené rychlosti to nejde
 	{
 		double umisteni=umisteniCas*E->pohon->aRD;//umístění vozíku z prostorového hlediska, přepočet z časoveho
-		//if(umisteniCas<0)ShowMessage(umisteniCas);
 		double Rz=m.Rz(E->pohon->aRD);//stanovený rozestup dle RD pohonu
 		double buffer_zona=0; if(pocet_voziku>0)buffer_zona=pocet_voziku*PP.delka_podvozek/*toto ne, jde jen o délku mezi uchyty-PP.uchyt_pozice*/;//délka [v metrech] buffrovácí zony, pokud je obsažena na daném elementu
+		if(E->eID==200 && E->dalsi!=NULL && E->dalsi->pohon!=NULL)buffer_zona=buffer_pres_predavaci_misto(E->dalsi);//pokud se generují vozíky v segmentu předávacího místa, které je součástí bufferu
 		RET.z=0;//počet vozíků z přejezdu, které už přesahuji buffer, a ten o danou hodnotu navyšují
 		//cyklické navýšení umístění dle rozestup Rz, včetně řešení těch, co se do segmentu nevejdou kvůli bufferu
 		while(umisteni<=E->geo.delka)
@@ -6231,8 +6231,8 @@ TPointD_3Dbool Cvektory::generuj_voziky_segementu_mimo_stop_a_buffer(TElement *E
 			if(umisteni<=E->geo.delka-buffer_zona)//vozíky pouze na přejezdu
 			{
 				short stav=1;//stav uchycení vozíku
-				double umisteni_temp=umisteni;if(umisteni<0){umisteni=0;stav=0;}//zatím čeká uchycení na palec
-				//aplikace náhodného čekání na palcep problem while, problém musí se vejít na palce musí mít vozíky rozestup dle R atd... umisteni+=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,2)*E->pohon->aRD;
+				double umisteni_temp=umisteni;if(umisteni<0){umisteni=0;stav=0;}//zatím čeká na uchycení na palec
+				//aplikace náhodného čekání na palce problem while, problém musí se vejít na palce musí mít vozíky rozestup dle R atd... umisteni+=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,2)*E->pohon->aRD;
 				//výpočet souřadnic a rotace jigu dle aktuálního umístění
 				TPointD_3D Pt=m.getPt(E->geo.radius,E->geo.orientace,E->geo.rotacni_uhel,E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4,umisteni/E->geo.delka,(umisteni+PP.uchyt_pozice-PP.delka_podvozek/2.0)/E->geo.delka);
 				//pasivní otoče - POZOR pouze pro kontinuální/pasivní otoč pro aktavní bude sice na místě, ale řešit otáčením dle umisteniČas
@@ -6288,20 +6288,20 @@ void Cvektory::generuj_voziky_stop_a_bufferu(TElement *E,double akt_rotace_jigu,
 	double Y1=E->geo.Y1;
 	double delka=E->geo.delka;
 	double delka_BpPM=buffer_pres_predavaci_misto(E);
-//	if(delka_BpPM>0)
-//	{
-//		delka+=delka_BpPM;
-//		X1=E->predchozi->geo.X1;
-//		Y1=E->predchozi->geo.Y1;
-//	}
+	if(delka_BpPM>0)
+	{
+		delka+=delka_BpPM;
+		X1=E->predchozi->geo.X1;
+		Y1=E->predchozi->geo.Y1;
+	}
 	double umisteni=delka-(E->data.pocet_voziku+pocet_voziku_z_prejezdu_na_bufferu-1)*PP.delka_podvozek;//delka bufferu (-1, protože druhý vozík má až pozici 1xdelka podvozku), nepouživat -PP.uchyt_pozice, protože se to počítá právě pro úchyt nikoliv začátek vozíku
 	while(umisteni<=delka+0.0000000001)//generuje vozíky bufferu včetně toho na stopce, nutno s <=,  0.0000000001 nutný WA kvůli řádové chybě při porovnání dvou totožných double hodnot
 	{
 		TPointD_3D Pt=m.getPt(E->geo.radius,E->geo.orientace,E->geo.rotacni_uhel,X1,Y1,E->geo.X4,E->geo.Y4,umisteni/delka,(umisteni+PP.uchyt_pozice-PP.delka_podvozek/2.0)/delka);//zjištění aktuálních souřadnic vozíků
 		//TZakazka *Z=new TZakazka;//pouze jen kvůli testům
 		if(pocet_voziku_z_prejezdu_na_bufferu>0){/*Z->n=1;Z->barva=clRed;*/stav=-2;pocet_voziku_z_prejezdu_na_bufferu--;}//barevné odlišení pouze jen kvůli testům, vozík na přejezdu, který narazil do bufferu nad rámec jeho nastaveného počtu
-		else {/*Z->n=2;Z->barva=clBlue;*/stav=-1;}//barevné odlišení pouze jen kvůli testům
-		if(umisteni+PP.delka_podvozek-0.001>E->geo.delka)stav=0;//vozík přímo na stopcebarevné odlišení pouze jen kvůli testům, 0.001 pouze WA aby nenastavalo stav i druhému vozíku
+		else {/*Z->n=2;Z->barva=clBlue;*/stav=-1;}//pasivní stojí - vyháknutý (v bufferu)barevné odlišení pouze jen kvůli testům
+		if(umisteni+PP.delka_podvozek-0.001>delka)stav=0;//vozík přímo na stopce - barevné odlišení pouze jen kvůli testům, 0.001 pouze WA aby nenastavalo stav i druhému vozíku
 		//vloz_vozik(Z,E,Pt.x,Pt.y,Pt.z,akt_rotace_jigu,stav);//finální vložení vozíku s vypočítanými parametry do spojáku VOZIKY, se stave odháknuto
 		vloz_vozik(ZAKAZKA_akt,E,Pt.x,Pt.y,Pt.z,akt_rotace_jigu,stav);//finální vložení vozíku s vypočítanými parametry do spojáku VOZIKY, se stave odháknuto
 		stav=-1;//další již vyháknut
@@ -6309,11 +6309,14 @@ void Cvektory::generuj_voziky_stop_a_bufferu(TElement *E,double akt_rotace_jigu,
 	}
 }
 ////---------------------------------------------------------------------------
-//pokud je buffer přes předávací místo, vrátí délku bufferu, co předchází předávacímu místu, pokud ne vrátí se 0
+//pokud je buffer přes předávací místo, vrátí délku bufferu, co předchází předávacímu místu, pokud ne vrátí se 0, založeno na úvaze, že v bufferu nemůže být výhybka
 double Cvektory::buffer_pres_predavaci_misto(TElement *E)
 {                        //pozn. zda jed před PM linie se řešit na úrovni editace, v zjišťování velikosti bufferu
-	if(E->pohon!=NULL && vrat_druh_elementu(E)==0 && E->predchozi!=NULL && E->predchozi->pohon!=NULL && E->predchozi->eID==200 && E->geo.delka<E->data.pocet_pozic*PP.delka_podvozek-PP.uchyt_pozice)
-	return E->data.pocet_pozic*PP.delka_podvozek-PP.uchyt_pozice-E->geo.delka;
+	if(E->pohon!=NULL && vrat_druh_elementu(E)==0 && E->predchozi!=NULL && E->predchozi->pohon!=NULL && E->predchozi->eID==200 && E->geo.delka<E->data.pocet_pozic*PP.delka_podvozek-PP.uchyt_pozice)//pokud je buffer od dané stop přes předávací místo
+	{
+		//F->Memo("Delka: "+String(E->geo.delka)+" výp.:"+String(E->data.pocet_pozic*PP.delka_podvozek-PP.uchyt_pozice));
+		return E->data.pocet_pozic*PP.delka_podvozek-PP.uchyt_pozice-E->geo.delka;
+	}
 	else return 0;
 }
 ////---------------------------------------------------------------------------
@@ -7082,7 +7085,8 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 		long pocet_erroru=0,pocet_warningu=0;
 
 		//pokud se budou testovat všechny elementy, je nutné vymazat všechny zprávy
-		if(Element==NULL)vymazat_ZPRAVY();
+		long tzEx,tzEy,tVID=0;if(F->d.zobrazit_celou_zpravu>0){TZprava *Z=vrat_zpravu(F->d.zobrazit_celou_zpravu);tzEx=Z->X;tzEy=Z->Y;tVID=Z->VID;Z=NULL;delete Z;}//pokud je zobrazen výpis zprávy, zazálohuje jeho ukazatel, kvůli znovuzobrazení
+		if(Element==NULL){F->d.zobrazit_celou_zpravu=0;vymazat_ZPRAVY();}
 
 		//průchod přes všechny elementy
 		TElement *E=ELEMENTY;//nepřeskakovat raději hlavičku
@@ -7129,7 +7133,7 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 					Ep=NULL;delete Ep;
 				}
 				////////////RT záporné nebo bez rezervy
-				if(vrat_druh_elementu(E)==0 && E->data.pocet_voziku>0)//pouze pro S&G a mimo průjezdních stopek
+				if(funkcni_element(E) && E->eID!=5  && E->eID!=100)//používáme (+testujeme) RT u všech funkčních elementů, mimo otoče a předávacího místaf
 				{
 					if(fabs(E->data.RT.y)>=1000000){vloz_zpravu(X,Y,-1,450,E);pocet_erroru++;}
 					else
@@ -7140,7 +7144,7 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 					}
 				}
 				////////////RT záporné nebo bez rezervy na předávacích místech - NEDOKONALÉ DODĚLAT
-				if(E->eID==200 && E->pohon!=NULL)
+				if(E->eID==200 && E->pohon!=NULL && E->dalsi!=NULL && E->dalsi->geo.delka>=E->dalsi->data.pocet_pozic*PP.delka_podvozek-PP.uchyt_pozice)//neřeší, pokud je předávací místo součástí bufferu, CHTĚLO BY ALE ZKONTROLOVAT, KDYBY PŘEDÁVACÍ MÍSTO NESTÍHALO ZÁSOBIT BUFFER
 				{                                          //chtělo by nahradit přímo z rotace jigu z elementu
 					if(E->pohon->Rx>0 && (PP.TT-E->WT)<m.UDV(vrat_rotaci_jigu_po_predchazejicim_elementu(E))/E->pohon->aRD
 					&& !(E->dalsi!=NULL && E->dalsi->pohon!=NULL && vrat_druh_elementu(E->dalsi)==0 && E->dalsi->geo.delka<E->data.pocet_pozic*PP.delka_podvozek-PP.uchyt_pozice))//pro situace, kdy není předávací místo v bufferu (viz situace magna po chlazení)
@@ -7174,6 +7178,19 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 
 		//zakutalizuje zprávy v miniformu zpráv
 		Form_zpravy->update_zpravy(pocet_erroru,pocet_warningu);
+		if(tVID>0)//pokud byl zobrazen popis zprávy,vyhledá se nové umístění případné zprávy (má jiné n i jiný ukazatel) a zobrazí se popis znovu
+		{
+			TZprava *Z=ZPRAVY->dalsi;
+			while(Z!=NULL)
+			{
+				if(Z->VID==tVID && Z->X==tzEx && Z->Y==tzEx)//pokud se jedná o stejnou zprávu jako původní (před přegenerováním seznamu zpráv) se zobrazeným rozšiřujícím textem
+				{
+					F->d.zobrazit_celou_zpravu=Z->n;
+				}
+				Z=Z->dalsi;
+			}
+			Z=NULL; delete Z;
+		}
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -8120,7 +8137,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 
 					//stav
 					E->stav=1;
-          if(E->eID==0 && E->data.pocet_voziku==0)E->stav=0;//pokud se jedná o průjezdnou stop stanici nastavit korektní stav
+					if(E->eID==0 && E->data.pocet_voziku==0)E->stav=0;//pokud se jedná o průjezdnou stop stanici nastavit korektní stav
 
 					sekvencni_zapis_cteni(E,NULL,tab_pruchodu);//vloží element do spojáku elementů, hlavní vedlejší větve
 				}
