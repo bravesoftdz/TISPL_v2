@@ -862,7 +862,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=494;i++)
+	for(unsigned short i=0;i<=495;i++)
 	{
 		switch(i)
 		{
@@ -1354,13 +1354,14 @@ void TForm1::DesignSettings()
 			case 485:text="Čas";break;
 			case 486:text="přejezd";break;
 			case 487:text="celkem";break;
-			case 488:text="Verze uloženého souboru se neschoduje s aktuální verzí prostředí! Verze souboru";break;
-			case 489:text="verze prostředí";break;
+			case 488:text="Projekt nelze otevřít. Verze načítaného projektu -";break;
+			case 489:text=". Požadovaná verze -";break;
 			case 490:text="stoupání";break;
 			case 491:text="klesání";break;
 			case 492:text="Automaticky smazat";break;
 			case 493:text="Změna hodnoty ovlivní všechny prvky na tomto pohonu.";break;
 			case 494:text="Došlo ke změně parametrů prvků na pohonu";break;
+      case 495:text=". Verze aplikace -";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -4241,11 +4242,6 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 					double vzdalenost=Form_adjustace->scGPNumericEdit_vzdalenost->Value/(1+999.0*Form_adjustace->Delkaunit);
 					d.v.PP.raster.resolution=m.getResolution(vychozi_souradnice_kurzoru.X,vychozi_souradnice_kurzoru.Y,X,Y,vzdalenost);
 				}
-				else
-				{
-					d.v.PP.raster.show=false;
-					d.v.PP.raster.filename="";
-				}
 				Akce=NIC;kurzor(standard);
 				zobraz_tip("");//nahrazuje zároveň Refresh
 				break;
@@ -6336,7 +6332,7 @@ void TForm1::spojeni_prvni_posledni(double citlivost)
 void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 {
 	log(__func__);
-	int puv_akce=Akce;
+	Takce puv_akce=Akce;
 	Akce=BLOK;
   JID=-1;stisknute_leve_tlacitko_mysi=false;
 	bool vypnout=false,dotazano=false;
@@ -6357,7 +6353,7 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 	  	d.geoTemp.X1=PL[0].x;d.geoTemp.Y1=PL[0].y;d.geoTemp.X2=PL[1].x;d.geoTemp.Y2=PL[1].y;d.geoTemp.X3=PL[2].x;d.geoTemp.Y3=PL[2].y;d.geoTemp.X4=PL[3].x;d.geoTemp.Y4=PL[3].y;
 
 	  	//kontrola a uchovávání zda edituji hlavní nebo veldejší větev
-	  	if(Akce!=GEOMETRIE){Akce=GEOMETRIE;vypnout=true;}
+			if(Akce!=GEOMETRIE){Akce=GEOMETRIE;vypnout=true;}
 	  	if(e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni)d.v.vyhybka_pom=e_posledni;
 	  	e_posledni=d.v.vloz_element(d.v.vrat_objekt(e_posledni->objekt_n),MaxInt,d.geoTemp.X4,d.geoTemp.Y4,e_posledni->orientace,e_posledni->dalsi);
 	  	if(vypnout)Akce=NIC;
@@ -9363,14 +9359,14 @@ void TForm1::aktualizace_tab_pohon(bool popisky,bool data,bool komponenty)
 				PmG->Cells[3][1].Type=PmG->EDIT;if(PmG->Note.Text==""){PmG->Cells[3][1].Background->Color=clWhite;PmG->Cells[3][1].Font->Color=(TColor)RGB(43,87,154);}
 				//PmG->Cells[3][4].Type=PmG->EDIT;if(PmG->Note.Text==""){PmG->Cells[3][4].Background->Color=clWhite;PmG->Cells[3][4].Font->Color=(TColor)RGB(43,87,154);}
 				PmG->Cells[3][5].Type=PmG->EDIT;if(PmG->Note.Text==""){PmG->Cells[3][5].Background->Color=clWhite;PmG->Cells[3][5].Font->Color=(TColor)RGB(43,87,154);}
-  		}
+			}
 			else//povolit editaci RD a rozteče palce
 			{
 				PmG->Cells[3][1].Type=PmG->EDIT;if(PmG->Note.Text==""){PmG->Cells[3][1].Background->Color=clWhite;PmG->Cells[3][1].Font->Color=(TColor)RGB(43,87,154);}
 				//if(PmG->Cells[3][4].Type==PmG->EDIT){mGrid_komponenta_na_draw(PmG,3,4);if(PmG->Note.Text==""){PmG->Cells[3][4].Background->Color=(TColor)RGB(240,240,240);PmG->Cells[3][4].Font->Color=(TColor)RGB(128,128,128);}}
 				if(PmG->Cells[3][5].Type==PmG->EDIT){mGrid_komponenta_na_draw(PmG,3,5);if(PmG->Note.Text==""){PmG->Cells[3][5].Background->Color=(TColor)RGB(240,240,240);PmG->Cells[3][5].Font->Color=(TColor)RGB(128,128,128);}}
 			}
-  	}
+		}
 		else//vše zakázat pokud je editace povolená
 		{
 			if(PmG->Cells[3][1].Type==PmG->EDIT){mGrid_komponenta_na_draw(PmG,3,1);if(PmG->Note.Text==""){PmG->Cells[3][1].Background->Color=(TColor)RGB(240,240,240);PmG->Cells[3][1].Font->Color=(TColor)RGB(128,128,128);}}
@@ -14065,10 +14061,15 @@ unsigned short int TForm1::Otevrit_soubor(UnicodeString soubor)//realizuje samot
 		}break;
 		case 2:case 3://jiná chyba pravděpodbně špatný formát souboru + neshodné verze projektu a binárky
 		{
+			//načtení verze souboru
+			String verze=d.v.File_hlavicka.FileVersion;
+			int pozice=verze.Pos(",");
+			if(0<pozice && pozice<5){verze.Delete(pozice,1);verze.Insert(".",pozice);}//nahrazení "," (double) za "." (String)
+      else verze="N/A";//pokud se načte nesmysl
 			zavrit_uvod();//v případě chybové situace, např. soubor nenalezen, nebo špatný formát souboru zavře úvodní dialog
 			d.v.vse_odstranit();//musí být, při načítání může dojít k chybě v pozdějším stadiu, tz. nečo se načte
 			if(ret==2)MB(text_2,MB_OK);
-			else MB(ls->Strings[488]+": "+d.v.File_hlavicka.FileVersion+", "+ls->Strings[489]+": "+FileVersion,MB_OK);//"Verze uloženého souboru se neschoduje s aktuální verzí prostředí! Verze souboru"  +  "verze prostředí"
+			else MB(ls->Strings[488]+" "+verze+ls->Strings[489]+" "+FileVersion+ls->Strings[495]+" "+ProductVersion+".",MB_OK);//Projekt nelze otevřít. Verze načítaného projektu - "verze_souboru". Požadovaná verze -  "verze_souboru_aktualni". Verze aplikace - “app_version”
 			FileName="Nový.tispl";
 		}break;
 		default:break;
@@ -18871,7 +18872,6 @@ void TForm1::byly_pohony_editovany()
 		//ukazatelové záležitosti
 		delete p;p=NULL;
 		delete pD;pD=NULL;
-		Memo_testy->Clear();
     //akualizace parametrů, výpis upozornění pro uživatele
 		TIP="";
 		for(unsigned int i=0;i<d.v.POHONY->predchozi->n;i++)
@@ -18886,7 +18886,9 @@ void TForm1::byly_pohony_editovany()
 				if(TIP=="")TIP=ls->Strings[494]+" "+p->name;//"Došlo ke změně parametrů prvků na pohonu"
 				else TIP+=", "+p->name;
         //ukazatelové záležitosti
-        p=NULL;delete p;
+				p=NULL;delete p;
+				//nastavení pro validaci
+				duvod_validovat=2;//pokud doško ke změně na nějakém pohonu, při příštím REFRESHI provést validaci
 			}
     }
 		//mazání seznamů

@@ -1425,7 +1425,7 @@ void TFormX::validace_aRD(bool pouze_rozmezi)
 		{
 			//výpoèet doporuèené rychosti
 			double dopRD1=0,dopRD2=0,aRD=F->OBJEKT_akt->pohon->aRD;
-			unsigned int n=0;  F->Memo_testy->Clear();
+			unsigned int n=0;
 			do
 			{
 				//navyšování nebo snižování testovací rychlosti, tak aby byla v rozsahu pohonu
@@ -2129,8 +2129,8 @@ void TFormX::podbarvi_edit(Cvektory::TElement *E,long Col,long Row,bool def_nast
 {
 	//nastevení podkresové barvy
 	TColor barva=F->m.clIntensive(clRed,210);
-	if(def_nastaveni && E!=NULL)barva=E->mGrid->Cells[Col][Row+3].Background->Color;
-	if(def_nastaveni && E==NULL)barva=F->PmG->Cells[Col][Row+3].Background->Color;
+	if(def_nastaveni && E!=NULL)barva=E->mGrid->Cells[Col][Row+4].Background->Color;
+	if(def_nastaveni && E==NULL)barva=F->PmG->Cells[Col][Row+4].Background->Color;
 
   //kontrola existence elementu a jeho mrgridu
 	if(E!=NULL && E->mGrid!=NULL)

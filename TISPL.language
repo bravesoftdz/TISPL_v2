@@ -486,10 +486,11 @@ Section;X;Úsek
 Time;X;Èas
 crossing;X;pøejezd
 total;X;celkem
-The version of the saved file does not match the current version of the environment! File version;X;Verze uloženého souboru se neschoduje s aktuální verzí prostøedí! Verze souboru
-environment version;X;verze prostøedí
+The project cannot be opened. Version of the loaded project -;X;Projekt nelze otevøít. Verze naèítaného projektu -
+. Required version -;X;. Požadovaná verze -
 climb;X;stoupání
 descent;X;klesání
 Automatically delete;X;Automaticky smazat
 Changing the value will affect all elements on this drive.;X;Zmìna hodnoty ovlivní všechny prvky na tomto pohonu.
 Element parameters have changed on the drive;X;Došlo ke zmìnì parametrù prvkù na pohonu
+. Application version -;X;. Verze aplikace -
