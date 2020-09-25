@@ -60,6 +60,7 @@ void TPopUPmenu::pasiveColor()//nastaví všechny položky na pasivní resp. default
 	Item_otocit_doprava->FillColor=clBg;
 	Item_posun_obrysu->FillColor=clBg;
 	Item_zobrazitskryt_steny->FillColor=clBg;
+	Item_rozmistit_mgridy->FillColor=clBg;
 	GlyphButton_close->Options->NormalColor=clAcBg;
 	GlyphButton_close->Options->HotColor=clRed;
 	GlyphButton_close->Options->FocusedColor=clAcBg;
@@ -111,6 +112,9 @@ void TPopUPmenu::pasiveColor()//nastaví všechny položky na pasivní resp. default
 	scGPGlyphButton_zobrazitskryt_steny->Options->NormalColor=clGlyph;
 	scGPGlyphButton_zobrazitskryt_steny->GlyphOptions->NormalColor=clWhite;
 	scGPGlyphButton_zobrazitskryt_steny->GlyphOptions->NormalColorAlpha=200;
+	GlyphButton_rozmistit_mgridy->Options->NormalColor=clGlyph;
+	GlyphButton_rozmistit_mgridy->GlyphOptions->NormalColor=clWhite;
+	GlyphButton_rozmistit_mgridy->GlyphOptions->NormalColorAlpha=200;
 	closing=false;
 }
 //---------------------------------------------------------------------------
@@ -702,10 +706,46 @@ void __fastcall TPopUPmenu::scGPGlyphButton_zobrazitskryt_stenyMouseLeave(TObjec
 	pasiveColor();
 }
 //---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+/////////////////////////Rozmístìní mGridù
+void __fastcall TPopUPmenu::scLabel_rozmistit_mgridyMouseEnter(TObject *Sender)
+{
+  pasiveColor();
+	Item_rozmistit_mgridy->FillColor=clAcBg;
+	GlyphButton_rozmistit_mgridy->Options->NormalColor=clAcBg;
+	GlyphButton_rozmistit_mgridy->Options->HotColor=clAcBg;
+	GlyphButton_rozmistit_mgridy->Options->FocusedColor=clAcBg;
+	GlyphButton_rozmistit_mgridy->GlyphOptions->NormalColor=clAcGlyph;
+	GlyphButton_rozmistit_mgridy->GlyphOptions->NormalColorAlpha=255;
+	top_positon(Item_rozmistit_mgridy->Top);//hlídání horní pozice, je-li daná komponenta horní
+}
+//---------------------------------------------------------------------------
+void __fastcall TPopUPmenu::scLabel_rozmistit_mgridyMouseLeave(TObject *Sender)
+{
+  pasiveColor();
+}
+//---------------------------------------------------------------------------
+void __fastcall TPopUPmenu::scLabel_rozmistit_mgridyClick(TObject *Sender)
+{
+  closing=true;
+	Close();
+	F->rozmisti_mGridy();
+}
+//---------------------------------------------------------------------------
+void __fastcall TPopUPmenu::GlyphButton_rozmistit_mgridyMouseEnter(TObject *Sender)
+{
+	scLabel_rozmistit_mgridyMouseEnter(this);
+}
+//---------------------------------------------------------------------------
+void __fastcall TPopUPmenu::GlyphButton_rozmistit_mgridyMouseLeave(TObject *Sender)
+{
+  pasiveColor();
+}
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 //pøi uzavírání formu musí být pøedán focus na Form1
 void __fastcall TPopUPmenu::FormCloseQuery(TObject *Sender, bool &CanClose)
 {
 	F->nastav_focus();//pøedá focus na form1, skrze odcyhtávání kláves
 }
-
-
+//---------------------------------------------------------------------------

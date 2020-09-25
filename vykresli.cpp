@@ -5455,13 +5455,15 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_do)
 		}
 		if(vykreslit)
 		{
-			TRectD E_od=F->souradnice_LO(Element_od),E_do=F->souradnice_LO(Element_do);
+			TPointD obOD=F->oblast_LO(Element_od),obDO=F->oblast_LO(Element_do);
+			x1=Element_od->geo.X4;y1=Element_od->geo.Y4;
+      x2=Element_do->geo.X4;y2=Element_do->geo.Y4;
 			switch((int)Element_do->geo.orientace)
 			{
-				case 0:y1=E_od.top;y2=E_do.bottom;x1=x2=Element_do->geo.X1;break;
-				case 90:x1=E_od.right;x2=E_do.left;y1=y2=Element_do->geo.Y1;break;
-				case 180:y1=E_od.bottom;y2=E_do.top;x1=x2=Element_do->geo.X1;break;
-				case 270:x1=E_od.left;x2=E_do.right;y1=y2=Element_do->geo.Y1;break;
+				case 0:  y1+=obOD.y;y2-=obDO.x;x1=x2=Element_do->geo.X1;break;
+				case 90: x1+=obOD.y;x2-=obDO.x;y1=y2=Element_do->geo.Y1;break;
+				case 180:y1-=obOD.y;y2+=obDO.x;x1=x2=Element_do->geo.X1;break;
+				case 270:x1-=obOD.y;x2+=obDO.x;y1=y2=Element_do->geo.Y1;break;
 			}
 			vykresli_kotu(canv,x1,y1,x2,y2,Element_do,F->OBJEKT_akt->koty_elementu_offset.y,highlight,0.2,clGray,true);
 		}

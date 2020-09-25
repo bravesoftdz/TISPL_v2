@@ -94,7 +94,7 @@ Export...;X;Export...
 Last opened;X;Naposledy otevøený
 New…;X;Nový...
 Save;X;Uložit
-Load background ...;X;Naèíst podklad...
+Load new background;X;Naèíst nový podklad
 Options;X;Nastavení
                   Layers;X;                  Vrstvy
 Conveyor tracks;X;Koleje dopravníku
@@ -494,3 +494,4 @@ Automatically delete;X;Automaticky smazat
 Changing the value will affect all elements on this drive.;X;Zmìna hodnoty ovlivní všechny prvky na tomto pohonu.
 Element parameters have changed on the drive;X;Došlo ke zmìnì parametrù prvkù na pohonu
 . Application version -;X;. Verze aplikace -
+The background already exists, do you want to load a new one?;X;Podklad již existuje, pøejete si naèíst nový?

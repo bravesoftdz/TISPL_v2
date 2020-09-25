@@ -31,14 +31,12 @@ __published:	// IDE-managed Components
 	TscGPButton *Button_Cancel;
 	TscGPCheckBox *CheckBox_pamatovat;
 	TscGPGlyphButton *scGPGlyphButton_copy;
-	TscGPEdit *scGPEdit1;
   TscLabel *Label_text;
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall scGPGlyphButton_copyClick(TObject *Sender);
-	void __fastcall scGPEdit1KeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall Button_YesClick(TObject *Sender);
 	void __fastcall CheckBox_pamatovatClick(TObject *Sender);
 

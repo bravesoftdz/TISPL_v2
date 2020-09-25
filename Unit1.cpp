@@ -862,7 +862,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=495;i++)
+	for(unsigned short i=0;i<=496;i++)
 	{
 		switch(i)
 		{
@@ -962,7 +962,7 @@ void TForm1::DesignSettings()
       case 93:text="Naposledy otevřený";break;
       case 94:text="Nový...";break;
       case 95:text="Uložit";break;
-      case 96:text="Načíst podklad...";break;
+      case 96:text="Načíst nový podklad";break;
       case 97:text="Nastavení";break;
       case 98:text="                  Vrstvy";break;
 			case 99:text="Koleje dopravníku";break;
@@ -1361,7 +1361,8 @@ void TForm1::DesignSettings()
 			case 492:text="Automaticky smazat";break;
 			case 493:text="Změna hodnoty ovlivní všechny prvky na tomto pohonu.";break;
 			case 494:text="Došlo ke změně parametrů prvků na pohonu";break;
-      case 495:text=". Verze aplikace -";break;
+			case 495:text=". Verze aplikace -";break;
+      case 496:text="Podklad již existuje, přejete si načíst nový?";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -5229,12 +5230,13 @@ void TForm1::onPopUP(int X, int Y)
 			if(PopUPmenu->Item_zobrazit_parametry->Visible)i++;
 			if(PopUPmenu->Item_zobrazitskryt_steny->Visible)i++;
 			PopUPmenu->Panel_UP->Height+=i*34;
-			////////nastavení sodního panelu
+			////////nastavení spodního panelu
 			PopUPmenu->Item_posunout->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
 			PopUPmenu->Item_priblizit->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
 			PopUPmenu->Item_oddalit->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
 			PopUPmenu->Item_vybrat_oknem->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
 			PopUPmenu->Item_cely_pohled->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
+			if(OBJEKT_akt->zobrazit_mGrid){PopUPmenu->Item_rozmistit_mgridy->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;}
 			break;
 		}  
 		case LAYOUT://pro LAYOUT
@@ -5359,6 +5361,7 @@ void TForm1::close_all_items_popUPmenu()
 	PopUPmenu->Item_otocit_doprava->Visible=false;
 	PopUPmenu->Item_posun_obrysu->Visible=false;
 	PopUPmenu->Item_zobrazitskryt_steny->Visible=false;
+  PopUPmenu->Item_rozmistit_mgridy->Visible=false;
 
 	PopUPmenu->Panel_UP->Height=0;
 	PopUPmenu->Panel_DOWN->Height=0;
@@ -8390,149 +8393,75 @@ TRect TForm1::vrat_max_zobrazitelnou_oblast()
 	return oblast;
 }
 //---------------------------------------------------------------------------
-//vrací souřadnice (PX) lakovacího okna elementu pokud nějaké má,pokud ne vrátí souřadnice elementu
-TRectD TForm1::souradnice_LO(Cvektory::TElement *E)
+//vrací velikosti oblastí lakovacích oken, .x = oblast před, .y = oblast za
+TPointD TForm1::oblast_LO(Cvektory::TElement *E)
 {
-	log(__func__);//logování
-	double x1,x2,y1,y2; TRectD ret;
-	//pouze pro kontinuální
-	if(E->eID==1 || E->eID==3 || E->eID==7 || E->eID==9 || E->eID==11 || E->eID==13 || E->eID==15 || E->eID==17 || E->eID==101 || E->eID==103 || E->eID==105 || E->eID==107)
+	log(__func__);
+	//deklarce
+	TPointD ret;
+	ret.x=0;ret.y=0;
+
+	//má smysl pouze u KK elementů
+	if(d.v.vrat_druh_elementu(E)==1)
 	{
-		switch((int)E->geo.orientace)
+		switch(E->eID)
 		{
-			case 0:
+			//otoč
+			case 5:
 			{
-				ret.left=ret.right=E->geo.X4;
-				if(E->data.LO2>0)ret.top=E->geo.Y4+E->data.LO2+(E->OTOC_delka)/2.0+E->data.LO_pozice;
-				else ret.top=E->geo.Y4+(E->data.LO1+E->data.LO2)/2.0+E->data.LO_pozice;
-				if(E->data.LO2>0)ret.bottom=E->geo.Y4-E->data.LO1-(E->OTOC_delka)/2.0+E->data.LO_pozice;
-				else ret.bottom=E->geo.Y4-(E->data.LO1)/2.0+E->data.LO_pozice;
-			}break;
-			case 90:
-			{
-				ret.top=ret.bottom=E->geo.Y4;
-				if(E->data.LO2>0)ret.right=E->geo.X4+E->data.LO2+(E->OTOC_delka)/2.0+E->data.LO_pozice;
-				else ret.right=E->geo.X4+(E->data.LO1+E->data.LO2)/2.0+E->data.LO_pozice;
-				if(E->data.LO2>0)ret.left=E->geo.X4-E->data.LO1-(E->OTOC_delka)/2.0+E->data.LO_pozice;
-				else ret.left=E->geo.X4-(E->data.LO1)/2.0+E->data.LO_pozice;
-			}break;
-  		case 180:
-			{
-				ret.left=ret.right=E->geo.X4;
-				if(E->data.LO2>0)ret.bottom=E->geo.Y4-E->data.LO2-(E->OTOC_delka)/2.0+E->data.LO_pozice;
-				else ret.bottom=E->geo.Y4-(E->data.LO1+E->data.LO2)/2.0+E->data.LO_pozice;
-				if(E->data.LO2>0)ret.top=E->geo.Y4+E->data.LO1+(E->OTOC_delka)/2.0+E->data.LO_pozice;
-				else ret.top=E->geo.Y4+(E->data.LO1)/2.0+E->data.LO_pozice;
-  		}break;
-			case 270:
-			{
-				ret.top=ret.bottom=E->geo.Y4;
-				if(E->data.LO2>0)ret.left=E->geo.X4-E->data.LO2-(E->OTOC_delka)/2.0+E->data.LO_pozice;
-				else ret.left=E->geo.X4-(E->data.LO1+E->data.LO2)/2.0+E->data.LO_pozice;
-				if(E->data.LO2>0)ret.right=E->geo.X4+E->data.LO1+(E->OTOC_delka)/2.0+E->data.LO_pozice;
-				else ret.right=E->geo.X4+(E->data.LO1)/2.0+E->data.LO_pozice;
-  		}break;
-  	}
-	}
-	else if(E->eID==5 || E->eID==6)//zóna otáčení
-	{
-  	switch((int)OBJEKT_akt->orientace)
-		{
-			case 0:
-			{
-				ret.left=ret.right=E->geo.X4;
-				ret.bottom=E->geo.Y4-E->zona_pred;
-				ret.top=E->geo.Y4+E->zona_za;
-			}break;
-			case 90:
-			{
-				ret.top=ret.bottom=E->geo.Y4;
-				ret.left=E->geo.X4-E->zona_pred;
-				ret.right=E->geo.X4+E->zona_za;
-			}break;
-  		case 180:
-			{
-				ret.left=ret.right=E->geo.X4;
-				ret.bottom=E->geo.Y4+E->zona_pred;
-				ret.top=E->geo.Y4-E->zona_za;
-  		}break;
-			case 270:
-			{
-				ret.top=ret.bottom=E->geo.Y4;
-				ret.left=E->geo.X4+E->zona_pred;
-				ret.right=E->geo.X4-E->zona_za;
-  		}break;
+				ret.x=E->zona_pred;
+				ret.y=E->zona_za;
+				break;
+			}
+			//roboti a operátoři
+			default:
+  		{
+				//element se 2 lakovacími okny
+				if(E->data.LO2>0)
+				{
+					ret.x=E->data.LO1+(E->OTOC_delka)/2.0+E->data.LO_pozice;
+  				ret.y=E->data.LO2+(E->OTOC_delka)/2.0+E->data.LO_pozice;
+				}
+  			//element s 1 lakovacími okny
+  	  	else
+				{
+  				ret.x=ret.y=E->data.LO1/2.0+E->data.LO_pozice;
+				}
+				break;
+			}
 		}
-  }
-	else//element bez lakovacího okna
-	{
-		ret.left=ret.right=E->X;
-		ret.top=ret.bottom=E->Y;
-  }
+	}
+
+	//vracení výsledku
 	return ret;
 }
 //---------------------------------------------------------------------------
 //prozkoumá zda se element nepřekrýva lak. oknem se sousedními, validace elementu
 short TForm1::prekryti_LO(Cvektory::TElement *E)
 {
-	log(__func__);//logování
-	bool prekryti=false;
-	short ret=0;
-	TRectD el1=souradnice_LO(E),el2;
-	//////Kontrola překryvu lakovacích oken
-	if(OBJEKT_akt!=NULL && E!=NULL && d.v.vrat_druh_elementu(E)!=-1)
+	log(__func__);
+	//deklarace
+	bool prekryto=false;
+	short typ=0;//ukládá v sobě typ překrytí: 0 = žádné, 1 = došlo k překrytí s LO, 2 = došlo k překrytí zón otáčení
+	TPointD obE=oblast_LO(E);//.x = oblast před, .y = oblast po
+
+	//první vlna testování
+	if(E->geo.delka<obE.x || (E->dalsi!=NULL && E->dalsi->geo.delka<obE.y) || E->dalsi==NULL){prekryto=true;typ=1;if(E->eID==5)typ=2;}
+	//druhá vlna testování
+	if(!prekryto && E->predchozi->n>0)
 	{
-		//kontrola konfliktu s dalším elementem
-		if(E->dalsi!=NULL && E->dalsi->eID!=MaxInt)
-		{
-			el2=souradnice_LO(E->dalsi); //Memo(E->geo.orientace);Memo("top: "+String(el1.top)+";  bottom: "+String(el2.bottom));
-			switch((int)E->geo.orientace)
-			{
-				case 0:if(el1.top<el2.bottom)prekryti=true;break;
-				case 90:if(el1.right>el2.left)prekryti=true;break;
-				case 180:if(el1.bottom<el2.top)prekryti=true;break;
-				case 270:if(el1.left<el2.right)prekryti=true;break;
-			}
-			if(prekryti && ((E->dalsi->eID==5 || E->dalsi->eID==6) || (E->eID==5 || E->eID==6)))ret=3;
-			else if(prekryti)ret=1;
-		}
-		//kontrola konfliktu s přechozím elementem
-		if(E->predchozi!=NULL && E->predchozi->n>0 && E->n!=1 && E->predchozi->eID!=MaxInt)
-		{
-			el2=souradnice_LO(E->predchozi);
-			switch((int)E->geo.orientace)
-			{
-				case 0:if(el1.bottom>el2.top)prekryti=true;break;
-				case 90:if(el1.left<el2.right)prekryti=true;break;
-				case 180:if(el1.top>el2.bottom)prekryti=true;break;
-				case 270:if(el1.right>el2.left)prekryti=true;break;
-			}
-			if(prekryti && ((E->predchozi->eID==5 || E->predchozi->eID==6) || (E->eID==5 || E->eID==6)))ret=3;
-			else if(prekryti)ret=1;
-		}
-		//kontrola konflikru s prvním a posledním bodem objektu, pokud už nebylo odhaleno překrytí
-		if(!prekryti && (E->n==1 || (E->dalsi!=NULL && E->dalsi->n==d.v.ELEMENTY->predchozi->n)))
-		{
-			double e_LO=0,e2_LO=0;
-			if(E->eID==1 || E->eID==3 || E->eID==7 || E->eID==9 || E->eID==11 || E->eID==13 || E->eID==15 || E->eID==17 || E->eID==101 || E->eID==103 || E->eID==105 || E->eID==107)
-			{
-				if(E->data.LO2>0)e_LO=E->data.LO1+(E->OTOC_delka)/2.0+E->data.LO_pozice;
-				else e_LO=(E->data.LO1+E->data.LO2)/2.0+E->data.LO_pozice;
-			}
-			if(E->n+1==d.v.ELEMENTY->predchozi->n)
-			{
-				if(E->dalsi->eID==1 || E->dalsi->eID==3 || E->dalsi->eID==7 || E->dalsi->eID==9 || E->dalsi->eID==11 || E->dalsi->eID==13 || E->dalsi->eID==15 || E->dalsi->eID==17 || E->dalsi->eID==101 || E->dalsi->eID==103 || E->dalsi->eID==105 || E->dalsi->eID==107)
-				{
-					if(E->dalsi->data.LO2>0)e2_LO=E->dalsi->data.LO1+(E->dalsi->OTOC_delka)/2.0+E->dalsi->data.LO_pozice;
-					else e2_LO=(E->dalsi->data.LO1+E->dalsi->data.LO2)/2.0+E->dalsi->data.LO_pozice;
-				}
-			}
-			if(e_LO>E->geo.delka || e_LO+e2_LO>E->dalsi->geo.delka)prekryti=true;
-			if(prekryti && (E->eID==5 || E->eID==6))ret=2;
-			if(prekryti && ret==0)ret=1;
-		}
+		TPointD obP=oblast_LO(E->predchozi);
+		if(E->geo.delka-obP.y<obE.x || E->geo.delka-obP.y<0){prekryto=true;typ=1;if(E->eID==5)typ=2;}
 	}
-	return ret;
+	//třetí vlna testování
+	if(!prekryto && E->dalsi!=NULL)
+	{
+		TPointD obD=oblast_LO(E->dalsi);
+		if(E->dalsi->geo.delka-obD.x<obE.y || E->dalsi->geo.delka-obD.x<0){prekryto=true;typ=1;if(E->eID==5)typ=2;}
+	}
+
+	//vracení výsledku
+	return typ;
 }
 //---------------------------------------------------------------------------
 //vrati delku v metrech mezi LO elementů
@@ -8551,14 +8480,7 @@ double TForm1::vzdalenost_meziLO(Cvektory::TElement *E,double orientace)
 	if(E_pred->objekt_n!=E->objekt_n)E_pred=NULL;
 	if(E_pred!=NULL && (E_pred->data.LO1>0 || E_pred->data.LO2>0))
 	{
-		TRectD souradnice_2=souradnice_LO(E),souradnice_1=souradnice_LO(E_pred);//došlo ke kliku na kótu ... předchozí element existuje
-  	switch((int)orientace)
-		{
-			case 0:ret=souradnice_1.top-souradnice_2.bottom;break;
-			case 90:ret=souradnice_2.left-souradnice_1.right;break;
-			case 180:ret=souradnice_2.top-souradnice_1.bottom;break;
-			case 270:ret=souradnice_1.left-souradnice_2.right;break;
-		}
+		ret=E->geo.delka-oblast_LO(E_pred).y-oblast_LO(E).x;
 	}
 	E_pred=NULL;delete E_pred;
 	return ret;
@@ -16250,14 +16172,17 @@ void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
 {
 	log(__func__);//logování
 	scSplitView_MENU->Opened=false;
-	OpenDialog1->Title="Načíst podklad";
-	OpenDialog1->DefaultExt="*.bmp";
-	OpenDialog1->Filter="Soubory formátu bmp (*.bmp)|*.bmp";
-	if(OpenDialog1->Execute())
+	if(MB(ls->Strings[496],MB_YESNO)==mrYes)//"Podklad již existuje, přejete si načíst nový?"
 	{
-		//načtení podkladu
-		Nacist_podklad(OpenDialog1->FileName);
-    edice();
+  	OpenDialog1->Title="Načíst podklad";
+		OpenDialog1->DefaultExt="*.bmp";
+  	OpenDialog1->Filter="Soubory formátu bmp (*.bmp)|*.bmp";
+  	if(OpenDialog1->Execute())
+  	{
+  		//načtení podkladu
+  		Nacist_podklad(OpenDialog1->FileName);
+  		edice();
+		}
 	}
   scButton_nacist_podklad->Down=false;
 }
@@ -18894,6 +18819,50 @@ void TForm1::byly_pohony_editovany()
 		//mazání seznamů
 		delete[] editovane;editovane=NULL;
 	}
+}
+//---------------------------------------------------------------------------
+//rovnoměrně rozmístí mGridny, počátek je left top
+void TForm1::rozmisti_mGridy()
+{
+  log(__func__);
+	//nastavení oblastí
+	TRect celek;
+	celek.left=scSplitView_LEFTTOOLBAR->Width;celek.top=scGPPanel_mainmenu->Height;
+	celek.right=ClientWidth;celek.bottom=ClientHeight-scGPPanel_statusbar->Height-scGPPanel_bottomtoolbar->Height;
+
+	//nastavení odsazení
+	int oX=25,oY=30;
+	int left=celek.left+oX,left_next=left,top=celek.top+oY,top_next=top;
+
+	//průchod skrze elementy
+	Cvektory::TElement *E=OBJEKT_akt->element;
+	if(predchozi_PM!=NULL)E=predchozi_PM;//začátek průchodu od předchozího PM
+	Cvektory::T2Element *VYH=d.v.hlavicka_seznam_VYHYBKY();
+	while(E!=NULL)
+	{
+		//hontrola, zda nejsem mimo oblast
+    if(left>=celek.right || left+oX+E->mGrid->Width>=celek.right)
+		{
+			//přesun na další sloupec
+			left=celek.left+oX;
+			top=top_next+oY;
+		}
+		//umístění tabulky
+    E->Xt=m.P2Lx(left+oX);
+		E->Yt=m.P2Ly(top);
+		//přičtení tabulky do posledních souřadnic
+		left+=oX+E->mGrid->Width;
+		if(top+E->mGrid->Height>top_next)top_next=top+E->mGrid->Height;
+		//posun na další element
+		if(E==predchozi_PM && predchozi_PM!=NULL)E=OBJEKT_akt->element;
+    else E=d.v.dalsi_krok(VYH,E,OBJEKT_akt);
+	}
+	//ukazatelové záležitosti
+	d.v.vymaz_seznam_VYHYBKY(VYH);
+	E=NULL;delete E;
+
+	//překreslení
+	REFRESH();
 }
 //---------------------------------------------------------------------------
 

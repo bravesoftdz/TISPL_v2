@@ -619,7 +619,7 @@ private:
 	unsigned int getV();//testovácí metody simulace
 	void vytvor_seznam_pouzivanych_pohonu();//vytvoøí seznam, kam se zapíší pohony, které jsou používány jinde
 	void smaz_seznam_pouzivanych_pohonu();//smaže seznam používaných pohonù
-  void byly_pohony_editovany();//provede kontrolu jaké pohony byly editovány
+	void byly_pohony_editovany();//provede kontrolu jaké pohony byly editovány
 
 	////promìnné
 	UINT TimerSimulaceID;
@@ -810,7 +810,7 @@ public:		// User declarations
 	double outRz(double outRz);
 	void Memo(AnsiString Text,bool clear=false,bool count=false,bool copyFinalTextToClipboard=false);//urychlení vypsání do Memo_testy
 	void log(AnsiString Text,AnsiString Text2="");//zapíše log do textového souboru a pøidá datum
-	TRectD souradnice_LO(Cvektory::TElement *E);//vrací souøadnice (PX) lakovacího okna elementu pokud nìjaké má,pokud ne vrátí souøadnice elementu
+	TPointD oblast_LO(Cvektory::TElement *E);//vrací velikosti oblastí lakovacích oken, .x = oblast pøed, .y = oblast za
 	short prekryti_LO(Cvektory::TElement *E);//prozkoumá zda se element nepøekrýva lak. oknem se sousedními,  0=nepøkrývá se, 1=pøekrývá se LO, 2=pøekrývá se zóna
 	double vzdalenost_meziLO(Cvektory::TElement *E,double orientace);//vrati delku v metrech mezi LO elementù
 	void design_element(Cvektory::TElement *E,bool prvni_spusteni,bool plnit_comba=true);//nadesignuje tabulky daného elementu
@@ -846,7 +846,8 @@ public:		// User declarations
 	String get_major_version(String version);//vrátí Major verzi z FileVersion
 	void copy_to_clipboard(String text);//kopíruje text do Clipboardu
 	void mGrid_on_mGrid();//prohledá zda se pøekrývají mGridy
-  bool je_pohon_pouzivan(unsigned long n);//provede kontrolu, zda je pohon v seznamu používaných, vrátí výsledek
+	bool je_pohon_pouzivan(unsigned long n);//provede kontrolu, zda je pohon v seznamu používaných, vrátí výsledek
+  void rozmisti_mGridy();//rovnomìrnì rozmístí mGridny, poèátek je left top
   };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

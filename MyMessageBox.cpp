@@ -28,7 +28,7 @@ void __fastcall TmyMessageBox::FormShow(TObject *Sender)
 	myMessageBox->Left=Form1->Left+Form1->ClientWidth-myMessageBox->Width-5;
 	if(myMessageBox->Top>=Form1->Top+Form1->ClientHeight-myMessageBox->Height)
 	myMessageBox->Top=Form1->Top+Form1->ClientHeight-myMessageBox->Height-5;
-	scGPEdit1->SetFocus();//použito kvùli odchytávání stisku kláves
+	Konec->SetFocus();//použito kvùli odchytávání stisku kláves
 	closing=false;
 }
 //---------------------------------------------------------------------------
@@ -170,15 +170,7 @@ void __fastcall TmyMessageBox::FormPaint(TObject *Sender)
 //kopírování obsahu label_text do schránky
 void __fastcall TmyMessageBox::scGPGlyphButton_copyClick(TObject *Sender)
 {
-	scGPEdit1->Text=Label_text->Caption;
-	scGPEdit1->SelectAll();
-	scGPEdit1->CopyToClipboard();
-}
-//---------------------------------------------------------------------------
-//funguje pouze jako pøesmìrování této události na form, edit má na sobì neustále focus
-void __fastcall TmyMessageBox::scGPEdit1KeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
-{
-	FormKeyDown(this,Key,Shift);
+	F->copy_to_clipboard(Label_text->Caption);
 }
 //---------------------------------------------------------------------------
 //po klikutí pøepnì glob. promìnou na true, slouží k blokaci formactivate na Unit1

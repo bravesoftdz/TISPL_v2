@@ -662,8 +662,8 @@ bool Cmy::PtInLine(double X1,double Y1,double X2,double Y2,double Xmys,double Ym
 	if(X1>X2){pom=X1;X1=X2;X2=pom;}
 	if(Y1>Y2){pom=Y1;Y1=Y2;Y2=pom;}
 	//kontrola zda je přímka vodorovná nebo svislá a zároveň, zda se bod nachází na přimce
-	if(X1==X2 && Y1<=Ymys && Ymys<=Y2 && X1==Xmys)return true;
-	else if(Y1==Y1 && X1<=Xmys && Xmys<=X2 && Y1==Ymys)return true;
+	if(round2double(X1,5)==round2double(X2,5) && Y1<=Ymys && Ymys<=Y2 && round2double(X1,5)==round2double(Xmys,5))return true;
+	else if(round2double(Y1,5)==round2double(Y2,5) && X1<=Xmys && Xmys<=X2 && round2double(Y1,5)==round2double(Ymys,5))return true;
 	//přímka je pod úhlem nebo se bod nennachází na přímce
 	else return false;
 }
