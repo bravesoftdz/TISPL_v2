@@ -348,6 +348,7 @@ object myMessageBox: TmyMessageBox
     TabOrder = 1
     TabStop = True
     OnClick = Button_YesClick
+    OnMouseEnter = Button_YesMouseEnter
     Animation = False
     Badge.Color = clRed
     Badge.ColorAlpha = 255
@@ -370,7 +371,7 @@ object myMessageBox: TmyMessageBox
     Options.NormalColor = 33023
     Options.HotColor = 1871359
     Options.PressedColor = clLime
-    Options.FocusedColor = 33023
+    Options.FocusedColor = 1871359
     Options.DisabledColor = 10210815
     Options.NormalColor2 = clNone
     Options.HotColor2 = clNone
@@ -388,7 +389,7 @@ object myMessageBox: TmyMessageBox
     Options.FocusedColor2Alpha = 255
     Options.DisabledColor2Alpha = 255
     Options.FrameNormalColor = 33023
-    Options.FrameHotColor = 1871359
+    Options.FrameHotColor = 10114859
     Options.FramePressedColor = 33023
     Options.FrameFocusedColor = 10114859
     Options.FrameDisabledColor = 10210815
@@ -476,6 +477,7 @@ object myMessageBox: TmyMessageBox
     TabOrder = 2
     TabStop = True
     OnClick = Button_YesClick
+    OnMouseEnter = Button_NoMouseEnter
     Animation = False
     Badge.Color = clRed
     Badge.ColorAlpha = 255
@@ -498,7 +500,7 @@ object myMessageBox: TmyMessageBox
     Options.NormalColor = 33023
     Options.HotColor = 1871359
     Options.PressedColor = clRed
-    Options.FocusedColor = 33023
+    Options.FocusedColor = 1871359
     Options.DisabledColor = 33023
     Options.NormalColor2 = clNone
     Options.HotColor2 = clNone
@@ -516,7 +518,7 @@ object myMessageBox: TmyMessageBox
     Options.FocusedColor2Alpha = 255
     Options.DisabledColor2Alpha = 255
     Options.FrameNormalColor = 33023
-    Options.FrameHotColor = 1871359
+    Options.FrameHotColor = 10114859
     Options.FramePressedColor = 33023
     Options.FrameFocusedColor = 10114859
     Options.FrameDisabledColor = 33023
@@ -604,6 +606,7 @@ object myMessageBox: TmyMessageBox
     TabOrder = 3
     TabStop = True
     OnClick = Button_YesClick
+    OnMouseEnter = Button_OKMouseEnter
     Animation = False
     Badge.Color = clRed
     Badge.ColorAlpha = 255
@@ -626,7 +629,7 @@ object myMessageBox: TmyMessageBox
     Options.NormalColor = 33023
     Options.HotColor = 1871359
     Options.PressedColor = clLime
-    Options.FocusedColor = 33023
+    Options.FocusedColor = 1871359
     Options.DisabledColor = 10210815
     Options.NormalColor2 = clNone
     Options.HotColor2 = clNone
@@ -644,7 +647,7 @@ object myMessageBox: TmyMessageBox
     Options.FocusedColor2Alpha = 255
     Options.DisabledColor2Alpha = 255
     Options.FrameNormalColor = 33023
-    Options.FrameHotColor = 1871359
+    Options.FrameHotColor = 10114859
     Options.FramePressedColor = 33023
     Options.FrameFocusedColor = 10114859
     Options.FrameDisabledColor = 10210815
@@ -732,6 +735,7 @@ object myMessageBox: TmyMessageBox
     TabOrder = 4
     TabStop = True
     OnClick = Button_YesClick
+    OnMouseEnter = Button_CancelMouseEnter
     Animation = False
     Badge.Color = clRed
     Badge.ColorAlpha = 255
@@ -754,7 +758,7 @@ object myMessageBox: TmyMessageBox
     Options.NormalColor = 33023
     Options.HotColor = 1871359
     Options.PressedColor = 33023
-    Options.FocusedColor = 33023
+    Options.FocusedColor = 1871359
     Options.DisabledColor = 33023
     Options.NormalColor2 = clNone
     Options.HotColor2 = clNone
@@ -772,7 +776,7 @@ object myMessageBox: TmyMessageBox
     Options.FocusedColor2Alpha = 255
     Options.DisabledColor2Alpha = 255
     Options.FrameNormalColor = 33023
-    Options.FrameHotColor = 1871359
+    Options.FrameHotColor = 10114859
     Options.FramePressedColor = 33023
     Options.FrameFocusedColor = 10114859
     Options.FrameDisabledColor = 33023

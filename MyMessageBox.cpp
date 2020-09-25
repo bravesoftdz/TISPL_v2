@@ -28,7 +28,8 @@ void __fastcall TmyMessageBox::FormShow(TObject *Sender)
 	myMessageBox->Left=Form1->Left+Form1->ClientWidth-myMessageBox->Width-5;
 	if(myMessageBox->Top>=Form1->Top+Form1->ClientHeight-myMessageBox->Height)
 	myMessageBox->Top=Form1->Top+Form1->ClientHeight-myMessageBox->Height-5;
-	Konec->SetFocus();//použito kvùli odchytávání stisku kláves
+	if(Button_OK->Visible)Button_OK->SetFocus();
+  else Button_Yes->SetFocus();
 	closing=false;
 }
 //---------------------------------------------------------------------------
@@ -153,7 +154,7 @@ void __fastcall TmyMessageBox::FormKeyDown(TObject *Sender, WORD &Key, TShiftSta
 		//BACKSPACE
 		case 8: break;
 		//ENTER
-		case 13:if(Button_OK->Visible)Button_OK->Down=true;else Button_Yes->Down=true;break;
+		//case 13:if(Button_OK->Visible)Button_OK->Down=true;else Button_Yes->Down=true;break;
 		//ESC
 		case 27:closing=true;Close();break;
 		//MEZERNÍK
@@ -184,6 +185,26 @@ void __fastcall TmyMessageBox::Button_YesClick(TObject *Sender)
 void __fastcall TmyMessageBox::CheckBox_pamatovatClick(TObject *Sender)
 {
   F->zobrazit_upozorneni_teplomery=false;//zatím použito pouze pro úèel MB s oznámením, že cesty budou pøegenerovány
+}
+//---------------------------------------------------------------------------
+void __fastcall TmyMessageBox::Button_YesMouseEnter(TObject *Sender)
+{
+	if(!Button_Yes->Focused())Button_Yes->SetFocus();
+}
+//---------------------------------------------------------------------------
+void __fastcall TmyMessageBox::Button_OKMouseEnter(TObject *Sender)
+{
+	if(!Button_OK->Focused())Button_OK->SetFocus();
+}
+//---------------------------------------------------------------------------
+void __fastcall TmyMessageBox::Button_NoMouseEnter(TObject *Sender)
+{
+	if(!Button_No->Focused())Button_No->SetFocus();
+}
+//---------------------------------------------------------------------------
+void __fastcall TmyMessageBox::Button_CancelMouseEnter(TObject *Sender)
+{
+	if(!Button_Cancel->Focused())Button_Cancel->SetFocus();
 }
 //---------------------------------------------------------------------------
 

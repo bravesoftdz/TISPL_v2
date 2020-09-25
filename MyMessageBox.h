@@ -39,6 +39,10 @@ __published:	// IDE-managed Components
 	void __fastcall scGPGlyphButton_copyClick(TObject *Sender);
 	void __fastcall Button_YesClick(TObject *Sender);
 	void __fastcall CheckBox_pamatovatClick(TObject *Sender);
+	void __fastcall Button_YesMouseEnter(TObject *Sender);
+	void __fastcall Button_OKMouseEnter(TObject *Sender);
+	void __fastcall Button_NoMouseEnter(TObject *Sender);
+	void __fastcall Button_CancelMouseEnter(TObject *Sender);
 
 private:	// User declarations
 	enum T_mbTYPE{OK=0,OKCANCEL=1,YESNO=4,YESNOCANCEL=3};

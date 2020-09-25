@@ -18840,19 +18840,23 @@ void TForm1::rozmisti_mGridy()
 	Cvektory::T2Element *VYH=d.v.hlavicka_seznam_VYHYBKY();
 	while(E!=NULL)
 	{
-		//hontrola, zda nejsem mimo oblast
-    if(left>=celek.right || left+oX+E->mGrid->Width>=celek.right)
+		//má smysl pouze pro elementy, které mají tabulky
+		if(E->eID!=MaxInt && E->eID!=100)
 		{
-			//přesun na další sloupec
-			left=celek.left+oX;
-			top=top_next+oY;
+	  	//hontrola, zda nejsem mimo oblast
+	  	if(left>=celek.right || left+oX+E->mGrid->Width>=celek.right)
+	  	{
+	  		//přesun na další sloupec
+	  		left=celek.left+oX;
+	  		top=top_next+oY;
+	  	}
+	  	//umístění tabulky
+	  	E->Xt=m.P2Lx(left+oX);
+	  	E->Yt=m.P2Ly(top);
+	  	//přičtení tabulky do posledních souřadnic
+	  	left+=oX+E->mGrid->Width;
+			if(top+E->mGrid->Height>top_next)top_next=top+E->mGrid->Height;
 		}
-		//umístění tabulky
-    E->Xt=m.P2Lx(left+oX);
-		E->Yt=m.P2Ly(top);
-		//přičtení tabulky do posledních souřadnic
-		left+=oX+E->mGrid->Width;
-		if(top+E->mGrid->Height>top_next)top_next=top+E->mGrid->Height;
 		//posun na další element
 		if(E==predchozi_PM && predchozi_PM!=NULL)E=OBJEKT_akt->element;
     else E=d.v.dalsi_krok(VYH,E,OBJEKT_akt);
