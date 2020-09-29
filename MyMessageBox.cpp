@@ -31,6 +31,22 @@ void __fastcall TmyMessageBox::FormShow(TObject *Sender)
 	if(Button_OK->Visible)Button_OK->SetFocus();
   else Button_Yes->SetFocus();
 	closing=false;
+
+  Button_Yes->Options->FrameWidth=1;
+  Button_OK->Options->FrameWidth=Button_Yes->Options->FrameWidth;
+  Button_No->Options->FrameWidth=Button_Yes->Options->FrameWidth;
+  Button_Cancel->Options->FrameWidth=Button_Yes->Options->FrameWidth;
+
+  Button_Yes->Options->FrameFocusedColor = (TColor)RGB(43,87,154);
+  Button_No->Options->FrameFocusedColor =  Button_Yes->Options->FrameFocusedColor;
+  Button_OK->Options->FrameFocusedColor =  Button_Yes->Options->FrameFocusedColor;
+  Button_Cancel->Options->FrameFocusedColor =  Button_Yes->Options->FrameFocusedColor;
+
+  Button_Yes->Options->FrameHotColor  = Button_Yes->Options->FrameFocusedColor;
+  Button_No->Options->FrameHotColor  = Button_Yes->Options->FrameFocusedColor;
+  Button_OK->Options->FrameHotColor  = Button_Yes->Options->FrameFocusedColor;
+  Button_Cancel->Options->FrameHotColor  = Button_Yes->Options->FrameFocusedColor;
+
 }
 //---------------------------------------------------------------------------
 //pøetížená metoda
