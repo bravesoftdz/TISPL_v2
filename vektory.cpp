@@ -4484,7 +4484,7 @@ void Cvektory::aktualizuj_rezim_pohonu(TPohon *pohon,short rezim)
 	  	while(E!=NULL)
 	  	{
 	  		//pokud je elemenent na stejném pohonu, kontrola
-	  		if(E->pohon==pohon && E->eID!=5 && E->eID!=6 && E->eID!=100 && E->eID!=200 && E->eID!=300 && E->eID!=301)//přeskakovat otoče, ion. tyče, PM, výhybky a spojky, neudávají režim
+	  		if(E->pohon==pohon && E->eID!=0 && E->eID!=5 && E->eID!=6 && E->eID!=100 && E->eID!=200 && E->eID!=300 && E->eID!=301)//přeskakovat otoče, ion. tyče, PM, výhybky a spojky, neudávají režim
 	  		{
 	  			//kontrola typu elementu
 	  			switch(vrat_druh_elementu(E))
