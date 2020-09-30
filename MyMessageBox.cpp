@@ -32,7 +32,7 @@ void __fastcall TmyMessageBox::FormShow(TObject *Sender)
   else Button_Yes->SetFocus();
 	closing=false;
 
-  Button_Yes->Options->FrameWidth=1;
+  Button_Yes->Options->FrameWidth=2;
   Button_OK->Options->FrameWidth=Button_Yes->Options->FrameWidth;
   Button_No->Options->FrameWidth=Button_Yes->Options->FrameWidth;
   Button_Cancel->Options->FrameWidth=Button_Yes->Options->FrameWidth;
@@ -203,24 +203,33 @@ void __fastcall TmyMessageBox::CheckBox_pamatovatClick(TObject *Sender)
   F->zobrazit_upozorneni_teplomery=false;//zatím použito pouze pro úèel MB s oznámením, že cesty budou pøegenerovány
 }
 //---------------------------------------------------------------------------
-void __fastcall TmyMessageBox::Button_YesMouseEnter(TObject *Sender)
+//highlight tlaèítek pøi tab a pøi mouse move
+void __fastcall TmyMessageBox::Button_YesMouseMove(TObject *Sender, TShiftState Shift,int X, int Y)
 {
-	if(!Button_Yes->Focused())Button_Yes->SetFocus();
+	Button_Yes->Options->FrameWidth=1;
 }
 //---------------------------------------------------------------------------
-void __fastcall TmyMessageBox::Button_OKMouseEnter(TObject *Sender)
+void __fastcall TmyMessageBox::Button_OKMouseMove(TObject *Sender, TShiftState Shift,int X, int Y)
 {
-	if(!Button_OK->Focused())Button_OK->SetFocus();
+	Button_OK->Options->FrameWidth=1;
 }
 //---------------------------------------------------------------------------
-void __fastcall TmyMessageBox::Button_NoMouseEnter(TObject *Sender)
+void __fastcall TmyMessageBox::Button_NoMouseMove(TObject *Sender, TShiftState Shift,int X, int Y)
 {
-	if(!Button_No->Focused())Button_No->SetFocus();
+	Button_No->Options->FrameWidth=1;
 }
 //---------------------------------------------------------------------------
-void __fastcall TmyMessageBox::Button_CancelMouseEnter(TObject *Sender)
+void __fastcall TmyMessageBox::Button_CancelMouseMove(TObject *Sender, TShiftState Shift,int X, int Y)
 {
-	if(!Button_Cancel->Focused())Button_Cancel->SetFocus();
+	Button_Cancel->Options->FrameWidth=1;
+}
+//---------------------------------------------------------------------------
+void __fastcall TmyMessageBox::FormMouseMove(TObject *Sender, TShiftState Shift, int X,int Y)
+{
+	Button_Yes->Options->FrameWidth=2;
+	Button_OK->Options->FrameWidth=2;
+	Button_No->Options->FrameWidth=2;
+	Button_Cancel->Options->FrameWidth=2;
 }
 //---------------------------------------------------------------------------
 

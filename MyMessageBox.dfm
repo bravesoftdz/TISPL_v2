@@ -13,6 +13,7 @@ object myMessageBox: TmyMessageBox
   KeyPreview = True
   OldCreateOrder = False
   OnKeyDown = FormKeyDown
+  OnMouseMove = FormMouseMove
   OnPaint = FormPaint
   OnShow = FormShow
   PixelsPerInch = 96
@@ -348,7 +349,7 @@ object myMessageBox: TmyMessageBox
     TabOrder = 1
     TabStop = True
     OnClick = Button_YesClick
-    OnMouseEnter = Button_YesMouseEnter
+    OnMouseMove = Button_YesMouseMove
     Animation = False
     Badge.Color = clRed
     Badge.ColorAlpha = 255
@@ -477,7 +478,7 @@ object myMessageBox: TmyMessageBox
     TabOrder = 2
     TabStop = True
     OnClick = Button_YesClick
-    OnMouseEnter = Button_NoMouseEnter
+    OnMouseMove = Button_NoMouseMove
     Animation = False
     Badge.Color = clRed
     Badge.ColorAlpha = 255
@@ -606,7 +607,7 @@ object myMessageBox: TmyMessageBox
     TabOrder = 3
     TabStop = True
     OnClick = Button_YesClick
-    OnMouseEnter = Button_OKMouseEnter
+    OnMouseMove = Button_OKMouseMove
     Animation = False
     Badge.Color = clRed
     Badge.ColorAlpha = 255
@@ -735,7 +736,7 @@ object myMessageBox: TmyMessageBox
     TabOrder = 4
     TabStop = True
     OnClick = Button_YesClick
-    OnMouseEnter = Button_CancelMouseEnter
+    OnMouseMove = Button_CancelMouseMove
     Animation = False
     Badge.Color = clRed
     Badge.ColorAlpha = 255

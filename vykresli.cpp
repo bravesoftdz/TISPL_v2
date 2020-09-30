@@ -4296,6 +4296,7 @@ void Cvykresli::vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,lon
 		int odsazeni=-30;//odsazení z důvodu správného zobrazení v knihovně
 		canv->Font->Name=F->aFont->Name;
 		canv->Font->Size=F->m.round(sizeP*Z);if(F->aFont->Size==12)canv->Font->Size=F->m.round(3*Z);
+    if(typ==0 && stav!=-1)canv->Font->Color=m.clIntensive(barva,100);else canv->Font->Color=barva;//ikona vs. normální zobrazení
 		canv->TextOutW(X-canv->TextWidth(name)/2,m.round(Y/*+vzdalenost+polomer*/-odsazeni),name); //1 pouze korekce
 	}
 }

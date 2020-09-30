@@ -686,7 +686,7 @@ void __fastcall TPopUPmenu::scLabel_zobrazitskryt_stenyClick(TObject *Sender)
 	{
 		if(F->OBJEKT_akt->sirka_steny!=0)F->OBJEKT_akt->sirka_steny=0;
 		else F->OBJEKT_akt->sirka_steny=0.15;
-		F->MB(F->ls->Strings[481]);//"Zmìna se projeví po pøechodu do Layout"
+		//F->MB(F->ls->Strings[481]);//"Zmìna se projeví po pøechodu do Layout"
 	}
 	else
 	{

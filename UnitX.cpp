@@ -1145,7 +1145,7 @@ void TFormX::korelace_tab_pohonu_elementy(Cvektory::TElement *mimo_element)
 				case 0:
 				{
 					E->mGrid->Cells[2][2].Highlight=true;
-					E->mGrid->Cells[2][3].Highlight=true;
+					//E->mGrid->Cells[2][3].Highlight=true;
 					E->mGrid->Cells[2][4].Highlight=true;
 				}
 				break;//stop stanice
@@ -2522,8 +2522,8 @@ void TFormX::mazatPM(Cvektory::TElement *Element)
 		F->pom_element=Element;
 		F->pom_element_temp=Element;
 		//podstrèení souøadnic pro zobrazení MB
-		F->akt_souradnice_kurzoru_PX.x=F->m.L2Px(Element->geo.X4+0.5);
-		F->akt_souradnice_kurzoru_PX.y=F->m.L2Py(Element->geo.Y4+0.5);
+		F->akt_souradnice_kurzoru_PX.x=F->m.L2Px(Element->X);
+		F->akt_souradnice_kurzoru_PX.y=F->m.L2Py(Element->Y);
 		F->Smazat1Click(this);
 		if(smaz!=NULL)F->d.v.smaz_element(smaz);
 		delete smaz;smaz=NULL;
@@ -2539,8 +2539,8 @@ void TFormX::mazatPM(Cvektory::TElement *Element)
 		F->pom_element=E;
 		F->pom_element_temp=E;
 		//podstrèení souøadnic pro zobrazení MB
-		F->akt_souradnice_kurzoru_PX.x=F->m.L2Px(E->geo.X4+0.5);
-		F->akt_souradnice_kurzoru_PX.y=F->m.L2Py(E->geo.Y4+0.5);
+		F->akt_souradnice_kurzoru_PX.x=F->m.L2Px(E->X);
+		F->akt_souradnice_kurzoru_PX.y=F->m.L2Py(E->Y);
 		F->Smazat1Click(this);
 		if(smaz!=NULL)F->d.v.smaz_element(smaz);
     delete smaz;smaz=NULL;

@@ -286,7 +286,7 @@ Cvektory::TBod *Cvektory::najdi_usecku(TObjekt* Objekt,long presnost)
 {
 	double x=F->akt_souradnice_kurzoru_PX.x,y=F->akt_souradnice_kurzoru_PX.y;//souřadnice kurzoru jsou neměnné po celou dobu metody
 	TBod *A=NULL,*B=NULL;//return proměnná + krokování cyklu
-	if(Objekt!=NULL&&Objekt->body!=NULL)B=Objekt->body->dalsi->dalsi;//jedná se o body objektu + přeskočí hlavičku + začátek na druhém bodu
+	if(Objekt!=NULL&&Objekt->body!=NULL){B=Objekt->body->dalsi->dalsi;presnost=0.6*m.m2px(0.15);}//jedná se o body objektu + přeskočí hlavičku + začátek na druhém bodu, přesnost se nastaví na 60% ze šířky stěny objektu
 	else if(HALA.body!=NULL&&HALA.body->predchozi->n>1)B=HALA.body->dalsi->dalsi;//jedná se bod haly + přeskočí hlavičku + začně na druhém bodu (pokud existuje, jestli ne return NULL)
 	while(B!=NULL)
 	{

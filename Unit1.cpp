@@ -4242,6 +4242,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				{
 					double vzdalenost=Form_adjustace->scGPNumericEdit_vzdalenost->Value/(1+999.0*Form_adjustace->Delkaunit);
 					d.v.PP.raster.resolution=m.getResolution(vychozi_souradnice_kurzoru.X,vychozi_souradnice_kurzoru.Y,X,Y,vzdalenost);
+          RzToolButton11Click(Sender);//celý pohled
 				}
 				Akce=NIC;kurzor(standard);
 				zobraz_tip("");//nahrazuje zároveň Refresh
@@ -4760,7 +4761,7 @@ void TForm1::getJobID(int X, int Y)
   		//1; úsečka haly nebo objektu
   		//2; oblast kóty bodu (přímka [A,B] uložena v bodě B)
 			//3; oblas objektu
-  		//4; hrana objektu
+			//4; hrana objektu
   		//5; element v objektu
   		//6; výhybka nebo spojnice mezi výhybkou a spojoku
   		d.zprava_highlight=d.v.PtInZpravy();
@@ -4801,7 +4802,7 @@ void TForm1::getJobID(int X, int Y)
 				}
 				O=NULL;delete O;
 			}
-  		if(JID==-1&&d.v.OBJEKTY->dalsi!=NULL&&Akce==NIC)
+  		if(JID==-1 && d.v.OBJEKTY->dalsi!=NULL && Akce==NIC)
 			{
   			pom=NULL;pom_bod=NULL;
 				pom=d.v.PtInObjekt();
@@ -4812,7 +4813,7 @@ void TForm1::getJobID(int X, int Y)
 					else JID=3;//nalezen pouze objekt
   			}
 			}
-  		if(JID==-1&&(d.v.HALA.body!=NULL||pom!=NULL&&pom->body!=NULL)&&Akce==NIC)//má smysl pouze pokd existuje hala nebo objekt
+  		if(JID==-1 && (d.v.HALA.body!=NULL || (pom!=NULL && pom->body!=NULL)) && Akce==NIC)//má smysl pouze pokd existuje hala nebo objekt
 			{
 				pom_bod=d.v.najdi_bod(pom);//pokouším se najít bod
   			if(pom_bod!=NULL)JID=0;//bod nalezen
@@ -6222,7 +6223,7 @@ bool TForm1::pripnuti_dalsich_objektu()
 void TForm1::spojeni_prvni_posledni(double citlivost)
 {
 	log(__func__);//logování
-	if(prichytavat_k_mrizce==1 && /*d.v.OBJEKTY->predchozi->n>=3 && */d.v.ELEMENTY->dalsi->geo.typ==0 && m.delka(d.v.ELEMENTY->dalsi->geo.X1,d.v.ELEMENTY->dalsi->geo.Y1,d.v.ELEMENTY->predchozi->geo.X4,d.v.ELEMENTY->predchozi->geo.Y4)<=citlivost && m.delka(d.v.ELEMENTY->dalsi->geo.X1,d.v.ELEMENTY->dalsi->geo.Y1,d.v.ELEMENTY->predchozi->geo.X4,d.v.ELEMENTY->predchozi->geo.Y4)!=0)// && mrYes==MB(ls->Strings[431],MB_YESNO,true))//"Linka nenavazuje, přejete si automaticky dokončit?"
+	if(prichytavat_k_mrizce==1 && d.v.ELEMENTY->dalsi->geo.typ==0 && m.delka(d.v.ELEMENTY->dalsi->geo.X1,d.v.ELEMENTY->dalsi->geo.Y1,d.v.ELEMENTY->predchozi->geo.X4,d.v.ELEMENTY->predchozi->geo.Y4)<=citlivost && m.delka(d.v.ELEMENTY->dalsi->geo.X1,d.v.ELEMENTY->dalsi->geo.Y1,d.v.ELEMENTY->predchozi->geo.X4,d.v.ELEMENTY->predchozi->geo.Y4)!=0)// && mrYes==MB(ls->Strings[431],MB_YESNO,true))//"Linka nenavazuje, přejete si automaticky dokončit?"
 	{
 		Cvektory::TGeometrie zaloha,zaloha_posledni=d.v.ELEMENTY->predchozi->geo;
 		bool pridan=false;
@@ -6252,7 +6253,7 @@ void TForm1::spojeni_prvni_posledni(double citlivost)
 		Cvektory::TElement *E=d.v.ELEMENTY->predchozi->predchozi,*upraven=NULL;
 		while(E!=NULL && E->n>0)
 		{
-			if((hor && (rozdil.y==0 || rozdil.y<0.00000000000001)) || (ver && (rozdil.x==0 || rozdil.y<0.00000000000001)))break;//konrola zde je nutné upravovat druhou
+			if((hor && (rozdil.y==0 || m.abs_d(rozdil.y)<0.00000000000001)) || (ver && (rozdil.x==0 || m.abs_d(rozdil.x)<0.00000000000001)))break;//konrola zde je nutné upravovat druhou
 			if(hor && E->geo.typ==0 && (E->eID==MaxInt || E->eID==200) && (E->geo.orientace==0 || E->geo.orientace==180))
 			{
 				E->Y+=rozdil.y;
@@ -6674,6 +6675,7 @@ void TForm1::add_element (int X, int Y)
 		//element byl vložen
 		if(E!=NULL)
 		{
+      duvod_validovat=1;//při dalším refreshi dojde k validaci + generování vozíků, důležité např. pro vkládání otoče
 			d.v.update_akt_zakazky();//protřeba mít nový element v cestě
 			d.v.aktualizuj_sparovane_ukazatele();//aktualizace spárovaných ukazatelů
 			//přiřazení režimu kabině + aktualizace pohon tabulek
@@ -8413,6 +8415,8 @@ TPointD TForm1::oblast_LO(Cvektory::TElement *E)
 				ret.y=E->zona_za;
 				break;
 			}
+			//ion. tyč, PM, výhybka, spojka, zarážka
+			case 100:case 200:case 300:case 301:case MaxInt:break;
 			//roboti a operátoři
 			default:
   		{
@@ -12591,6 +12595,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 	{
 		case EDITACE:       //kvůli MB hází při mazání z popUP paměťovou chybu
 		{
+      duvod_validovat=2;//validace a generování vozíků při následujícím refreshi
 			if(Akce!=GEOMETRIE && pom_element!=NULL && pom_element->eID!=MaxInt)//případ mazání běžného elementu
 			{
 				AnsiString text_PM=ls->Strings[465];
@@ -14934,7 +14939,27 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	vytvor_statickou_scenu();
 //	REFRESH();
 //  e_posledni=NULL;delete e_posledni;
-	Memo("");
+//	Memo("");
+	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+	Cvektory::T2Element *VYH=d.v.hlavicka_seznam_VYHYBKY();
+	while(E!=NULL)
+	{
+		Memo(E->name+":");
+		Memo("->n: "+String(E->n));
+		Memo("->eID: "+String(E->eID));
+		Memo("->VSID: "+String(E->identifikator_vyhybka_spojka));
+		Memo("->X: "+String(E->X));
+		Memo("->Y: "+String(E->Y));
+		Memo("->geo.typ: "+String(E->geo.typ));
+		Memo("->geo.delka: "+String(E->geo.delka));
+		Memo("->geo.delkaPud: "+String(E->geo.delkaPud));
+		Memo("->geo.HeightDepp: "+String(E->geo.HeightDepp));
+		Memo("->geo.radius: "+String(E->geo.radius));
+		E=d.v.dalsi_krok(VYH,E);
+    Memo("-------------");
+	}
+	d.v.vymaz_seznam_VYHYBKY(VYH);
+	delete E;E=NULL;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -16172,7 +16197,7 @@ void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
 {
 	log(__func__);//logování
 	scSplitView_MENU->Opened=false;
-	if(MB(ls->Strings[496],MB_YESNO)==mrYes)//"Podklad již existuje, přejete si načíst nový?"
+	if(d.v.PP.raster.filename=="" || (d.v.PP.raster.filename!="" && MB(ls->Strings[496],MB_YESNO)==mrYes))//"Podklad již existuje, přejete si načíst nový?"
 	{
   	OpenDialog1->Title="Načíst podklad";
 		OpenDialog1->DefaultExt="*.bmp";
@@ -16319,7 +16344,7 @@ void __fastcall TForm1::scGPButton_adjustaceClick(TObject *Sender)
 {
   log(__func__);//logování
 	kurzor(add_o);
-  Akce=ADJUSTACE;
+	Akce=ADJUSTACE;
   scSplitView_OPTIONS->Opened=false;
   }
 //---------------------------------------------------------------------------
@@ -18843,27 +18868,65 @@ void TForm1::rozmisti_mGridy()
 		//má smysl pouze pro elementy, které mají tabulky
 		if(E->eID!=MaxInt && E->eID!=100)
 		{
-	  	//hontrola, zda nejsem mimo oblast
-	  	if(left>=celek.right || left+oX+E->mGrid->Width>=celek.right)
-	  	{
-	  		//přesun na další sloupec
-	  		left=celek.left+oX;
-	  		top=top_next+oY;
-	  	}
-	  	//umístění tabulky
-	  	E->Xt=m.P2Lx(left+oX);
-	  	E->Yt=m.P2Ly(top);
-	  	//přičtení tabulky do posledních souřadnic
-	  	left+=oX+E->mGrid->Width;
+			//hontrola, zda nejsem mimo oblast
+			if(left>=celek.right || left+oX+E->mGrid->Width>=celek.right)
+			{
+				//přesun na další sloupec
+				left=celek.left+oX;
+				top=top_next+oY;
+			}
+			//umístění tabulky
+			E->Xt=m.P2Lx(left+oX);
+			E->Yt=m.P2Ly(top);
+			//přičtení tabulky do posledních souřadnic
+			left+=oX+E->mGrid->Width;
 			if(top+E->mGrid->Height>top_next)top_next=top+E->mGrid->Height;
 		}
 		//posun na další element
 		if(E==predchozi_PM && predchozi_PM!=NULL)E=OBJEKT_akt->element;
-    else E=d.v.dalsi_krok(VYH,E,OBJEKT_akt);
+		else E=d.v.dalsi_krok(VYH,E,OBJEKT_akt);
 	}
 	//ukazatelové záležitosti
 	d.v.vymaz_seznam_VYHYBKY(VYH);
 	E=NULL;delete E;
+
+	//sežazení PmG, pokud existuje
+	if(PmG!=NULL)
+	{
+    //hontrola, zda nejsem mimo oblast
+		if(left>=celek.right || left+oX+PmG->Width>=celek.right)
+		{
+			//přesun na další sloupec
+			left=celek.left+oX;
+			top=top_next+oY;
+		}
+		//umístění tabulky
+		OBJEKT_akt->Xp=m.P2Lx(left+oX);
+		OBJEKT_akt->Yp=m.P2Ly(top);
+		//přičtení tabulky do posledních souřadnic
+		left+=oX+PmG->Width;
+		if(top+PmG->Height>top_next)top_next=top+PmG->Height;
+	}
+
+	//seřatení tabulky teploměrů, pokud existuje
+	Cvektory::TTeplomery *T=d.v.vrat_teplomery_podle_zakazky(OBJEKT_akt,d.v.ZAKAZKA_akt);
+	if(T!=NULL && T->posledni->mGrid!=NULL)
+	{
+    //hontrola, zda nejsem mimo oblast
+		if(left>=celek.right || left+oX+T->posledni->mGrid->Width>=celek.right)
+		{
+			//přesun na další sloupec
+			left=celek.left+oX;
+			top=top_next+oY;
+		}
+		//umístění tabulky
+		T->posledni->Xt=m.P2Lx(left+oX);
+		T->posledni->Yt=m.P2Ly(top);
+		//přičtení tabulky do posledních souřadnic
+		left+=oX+T->posledni->mGrid->Width;
+		if(top+T->posledni->mGrid->Height>top_next)top_next=top+T->posledni->mGrid->Height;
+	}
+	T=NULL;delete T;
 
 	//překreslení
 	REFRESH();
