@@ -816,11 +816,8 @@ void TFormX::OnKeyDown(long Tag,unsigned long Col,unsigned long Row,WORD &Key,TS
 void TFormX::zmena_aRD(Cvektory::TElement *mimo_element)
 {
 	//pøepoèet parametrù pohonu
-	if(F->OBJEKT_akt->pohon->rezim!=0)
-	{
-		F->OBJEKT_akt->pohon->Rz=F->m.Rz(F->OBJEKT_akt->pohon->aRD);
-		F->OBJEKT_akt->pohon->Rx=F->m.Rx(F->OBJEKT_akt->pohon->aRD,F->OBJEKT_akt->pohon->roztec);
-	}
+	F->OBJEKT_akt->pohon->Rz=F->m.Rz(F->OBJEKT_akt->pohon->aRD);
+	F->OBJEKT_akt->pohon->Rx=F->m.Rx(F->OBJEKT_akt->pohon->aRD,F->OBJEKT_akt->pohon->roztec);
 	if(F->PmG!=NULL)
 	{
 		//propoèty v tabulce pohonu
