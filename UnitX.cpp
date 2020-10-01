@@ -2126,14 +2126,17 @@ void TFormX::podbarvi_edit(Cvektory::TElement *E,long Col,long Row,bool def_nast
 {
 	//nastevení podkresové barvy
 	TColor barva=F->m.clIntensive(clRed,210);
-	if(def_nastaveni && E!=NULL)barva=E->mGrid->Cells[Col][Row+4].Background->Color;
-	if(def_nastaveni && E==NULL)barva=F->PmG->Cells[Col][Row+4].Background->Color;
+	TscGPEdit *Edit=NULL;
+	if(def_nastaveni && E!=NULL)Edit=E->mGrid->getEdit(Col,Row);
+	if(def_nastaveni && E==NULL)Edit=F->PmG->getEdit(Col,Row);
+	if(Edit==NULL || (Edit!=NULL && !Edit->Enabled))barva=(TColor)RGB(240,240,240);
+	else barva=clWhite;
 
   //kontrola existence elementu a jeho mrgridu
 	if(E!=NULL && E->mGrid!=NULL)
 	{
 		//získání editu
-		TscGPEdit *Edit=E->mGrid->getEdit(Col,Row);
+		if(Edit==NULL)Edit=E->mGrid->getEdit(Col,Row);
 
 		//nastavení barev editu
 		if(Edit!=NULL)
@@ -2141,8 +2144,7 @@ void TFormX::podbarvi_edit(Cvektory::TElement *E,long Col,long Row,bool def_nast
 			Edit->Options->FocusedColor=barva;
 			Edit->Options->NormalColor=barva;
 			Edit->Options->HotColor=barva;
-  	}
-  	Edit=NULL;delete Edit;
+		}
 
 		//nastavení barev buòky, nutné!!
 		E->mGrid->Cells[Col][Row].Background->Color=barva;
@@ -2152,7 +2154,7 @@ void TFormX::podbarvi_edit(Cvektory::TElement *E,long Col,long Row,bool def_nast
 	if(E==NULL && F->PmG!=NULL)
 	{
     //získání editu
-		TscGPEdit *Edit=F->PmG->getEdit(Col,Row);
+		if(Edit==NULL)Edit=F->PmG->getEdit(Col,Row);
 
 		//nastavení barev editu
 		if(Edit!=NULL)
@@ -2160,12 +2162,13 @@ void TFormX::podbarvi_edit(Cvektory::TElement *E,long Col,long Row,bool def_nast
 			Edit->Options->FocusedColor=barva;
 			Edit->Options->NormalColor=barva;
 			Edit->Options->HotColor=barva;
-  	}
-  	Edit=NULL;delete Edit;
+		}
 
 		//nastavení barev buòky, nutné!!
 		F->PmG->Cells[Col][Row].Background->Color=barva;
-  }
+	}
+
+	Edit=NULL;delete Edit;
 }
 //---------------------------------------------------------------------------
 //pøiøazení pohonu pøed PM, nebo za PM
