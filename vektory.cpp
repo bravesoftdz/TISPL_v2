@@ -3301,10 +3301,11 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 			if(error)Element->mGrid->ShowNote(F->ls->Strings[421],F->d.clError,14);//"RT není relevantní, některý z objektů nemá pohon!"
 			if(F->OBJEKT_akt->zobrazit_mGrid && refresh_mGrid)Element->mGrid->Refresh();
 		}
-    //uložení erroru do dat, + 1 000 000 nebo - 1 000 000
-		if(error && Element->data.RT>0)Element->data.RT+=1000000;else Element->data.RT-=1000000;
+		//uložení erroru do dat, + 1 000 000 nebo - 1 000 000
+		if(error && Element->data.RT>0)Element->data.RT+=1000000;
+		if(error && Element->data.RT<0)Element->data.RT-=1000000;
 		//narácení dat do segmentu cesty zakázky
-		if(Cesta!=NULL)	Cesta->data=Element->data;
+		if(Cesta!=NULL)Cesta->data=Element->data;
 	}
 
 	//kontrola RT, pokud je záporné, výpis doporučeného PT

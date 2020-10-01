@@ -2314,6 +2314,7 @@ void TFormX::prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col)
 	F->DrawGrid_knihovna->Refresh();
 	F->DrawGrid_ostatni->Refresh();
 	F->DrawGrid_otoce->Refresh();
+	F->DrawGrid_geometrie->Refresh();
 
   ////ukazatelové záležitosti
 	Combo=NULL;delete Combo;

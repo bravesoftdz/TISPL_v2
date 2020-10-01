@@ -9883,7 +9883,7 @@ void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
 		if(C1!=NULL && C1->Enabled)
 		{
 	  	//pokud pohon exituje a není používaný
-			if(E->pohon!=NULL)// && !d.v.pohon_je_pouzivan(E->pohon->n,false))
+			if(E->pohon!=NULL)
 			{
 				if(rezim!=0)//povolit editaci všeho
 				{
@@ -9921,33 +9921,29 @@ void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
 		if(C2!=NULL && C2->Enabled)
 		{
 			//pokud pohon exituje a není používaný
-			if(e_pom->pohon!=NULL)// && !d.v.pohon_je_pouzivan(e_pom->pohon->n,false))
+			if(e_pom->pohon!=NULL)
 			{
 				if(rezim!=0)//povolit editaci všeho
 				{
-					E->mGrid->Cells[druhy][3].Type=E->mGrid->EDIT;/*if(E->mGrid->Note.Text=="")*/{E->mGrid->Cells[druhy][3].Background->Color=clWhite;E->mGrid->Cells[druhy][3].Font->Color=(TColor)RGB(43,87,154);}
-					//E->mGrid->Cells[druhy][6].Type=E->mGrid->EDIT;if(E->mGrid->Note.Text==""){E->mGrid->Cells[druhy][6].Background->Color=clWhite;E->mGrid->Cells[druhy][6].Font->Color=(TColor)RGB(43,87,154);}
-					E->mGrid->Cells[druhy][7].Type=E->mGrid->EDIT;/*if(E->mGrid->Note.Text=="")*/{E->mGrid->Cells[druhy][7].Background->Color=clWhite;E->mGrid->Cells[druhy][7].Font->Color=(TColor)RGB(43,87,154);}
+					E->mGrid->Cells[druhy][3].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][3].Background->Color=clWhite;E->mGrid->Cells[druhy][3].Font->Color=(TColor)RGB(43,87,154);
+					E->mGrid->Cells[druhy][7].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][7].Background->Color=clWhite;E->mGrid->Cells[druhy][7].Font->Color=(TColor)RGB(43,87,154);
 				}
 				else//povolit editaci RD a rozteče palce
 				{
-					E->mGrid->Cells[druhy][3].Type=E->mGrid->EDIT;/*if(E->mGrid->Note.Text=="")*/{E->mGrid->Cells[druhy][3].Background->Color=clWhite;E->mGrid->Cells[druhy][3].Font->Color=(TColor)RGB(43,87,154);}
-					//if(E->mGrid->Cells[druhy][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,6);if(E->mGrid->Note.Text==""){E->mGrid->Cells[druhy][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][6].Font->Color=(TColor)RGB(128,128,128);}}
-					if(E->mGrid->Cells[druhy][7].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,7);/*if(E->mGrid->Note.Text=="")*/{E->mGrid->Cells[druhy][7].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][7].Font->Color=(TColor)RGB(128,128,128);}}
+					E->mGrid->Cells[druhy][3].Type=E->mGrid->EDIT;E->mGrid->Cells[druhy][3].Background->Color=clWhite;E->mGrid->Cells[druhy][3].Font->Color=(TColor)RGB(43,87,154);
+					if(E->mGrid->Cells[druhy][7].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,7);E->mGrid->Cells[druhy][7].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][7].Font->Color=(TColor)RGB(128,128,128);}
 				}
 			}
 			else//vše zakázat pokud je editace povolená
 			{
-				if(E->mGrid->Cells[druhy][3].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,3);/*if(E->mGrid->Note.Text=="")*/{E->mGrid->Cells[druhy][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][3].Font->Color=(TColor)RGB(128,128,128);}}
-				//if(E->mGrid->Cells[druhy][6].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,6);if(E->mGrid->Note.Text==""){E->mGrid->Cells[druhy][6].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][6].Font->Color=(TColor)RGB(128,128,128);}}
-				if(E->mGrid->Cells[druhy][7].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,7);/*if(E->mGrid->Note.Text=="")*/{E->mGrid->Cells[druhy][7].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][7].Font->Color=(TColor)RGB(128,128,128);}}
+				if(E->mGrid->Cells[druhy][3].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,3);E->mGrid->Cells[druhy][3].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][3].Font->Color=(TColor)RGB(128,128,128);}
+				if(E->mGrid->Cells[druhy][7].Type==E->mGrid->EDIT){mGrid_komponenta_na_draw(E->mGrid,druhy,7);E->mGrid->Cells[druhy][7].Background->Color=(TColor)RGB(240,240,240);E->mGrid->Cells[druhy][7].Font->Color=(TColor)RGB(128,128,128);}
 			}
 		}
 		//nerelevantní data, skrýt
 		if(rezim==0)
 		{
 			E->mGrid->Cells[druhy][5].Text="-";
-			//E->mGrid->Cells[druhy][6].Text="-";
 			E->mGrid->Cells[druhy][7].Text="-";
 			E->mGrid->Cells[druhy][8].Text="-";
 			E->mGrid->Cells[druhy][9].Text="-";
@@ -11406,10 +11402,11 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 	switch(E->eID)
 	{
 		case 0://stop stanice
-		{
+		{        
 			E->mGrid->Cells[1][1].Text=ls->Strings[223];//"Párová stop";
 			E->mGrid->Cells[1][2].Text="RT "+cas;
-			E->mGrid->Cells[2][2].Text=m.round2double(outPT(E->data.RT),3);
+			if(E->mGrid->Cells[2][2].Text!="OK")E->mGrid->Cells[2][2].Text=m.round2double(outPT(E->data.RT),3);
+			E->mGrid->Cells[2][2].Hint=m.round2double(outPT(E->data.RT),3);
 			E->mGrid->Cells[1][3].Text=ls->Strings[419]+" "+cas;
 			E->mGrid->Cells[2][3].Text=m.round2double(outPT(E->data.WTstop),3);
 			E->mGrid->Cells[0][6].Text=ls->Strings[464];//"Pozice"
