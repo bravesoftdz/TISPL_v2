@@ -603,12 +603,13 @@ void Cvektory::nastav_atributy_objektu(TObjekt *novy,unsigned int id, double X, 
 	vloz_G_element(zarazka,0,X,Y,0,0,0,0,konec.x,konec.y,novy->orientace);
 	zarazka=NULL;delete zarazka;
 	//definice pozice názvu kabiny
+	double odsazeni=0.5;
 	switch((int)novy->orientace)
 	{
-		case 0:novy->Xt=X-rozmery_kabiny.y/2.0;novy->Yt=Y+rozmery_kabiny.x/2.0;break;
-		case 90:novy->Xt=X+rozmery_kabiny.x/2.0;novy->Yt=Y+rozmery_kabiny.y/2.0;break;
-		case 180:novy->Xt=X+rozmery_kabiny.y/2.0;novy->Yt=Y-rozmery_kabiny.x/2.0;break;
-		case 270:novy->Xt=X-rozmery_kabiny.x/2.0;novy->Yt=Y+rozmery_kabiny.y/2.0;break;
+		case 0:novy->Xt=X-rozmery_kabiny.y/2.0-odsazeni;novy->Yt=Y+rozmery_kabiny.x/2.0;break;
+		case 90:novy->Xt=X+rozmery_kabiny.x/2.0;novy->Yt=Y+rozmery_kabiny.y/2.0+odsazeni;break;
+		case 180:novy->Xt=X+rozmery_kabiny.y/2.0+odsazeni;novy->Yt=Y-rozmery_kabiny.x/2.0;break;
+		case 270:novy->Xt=X-rozmery_kabiny.x/2.0;novy->Yt=Y+rozmery_kabiny.y/2.0+odsazeni;break;
 	}
 	F->ortogonalizace();//nutné před kontrolou změny trendu
 	//////nově je vše seřazeno ještě před touto metodou
@@ -1523,12 +1524,13 @@ void Cvektory::rotuj_objekt(TObjekt *Objekt, double rotace)
 		//rotace nadpisu
 		TPointD bod;
 		TRect oblast=F->vrat_max_oblast(Objekt,true);
+		long odsazeni=m.m2px(0.5);
 		switch((int)azimut)
 		{
-			case 0:bod.x=oblast.left;bod.y=oblast.top-(oblast.top-oblast.bottom)/2.0;break;
-			case 90:bod.x=oblast.left+(oblast.right-oblast.left)/2.0;bod.y=oblast.top;break;
-			case 180:bod.x=oblast.right;bod.y=oblast.bottom-(oblast.bottom-oblast.top)/2.0;break;
-			case 270:bod.x=oblast.right+(oblast.left-oblast.right)/2.0;bod.y=oblast.top;break;
+			case 0:bod.x=oblast.left-odsazeni;bod.y=oblast.top-(oblast.top-oblast.bottom)/2.0;break;
+			case 90:bod.x=oblast.left+(oblast.right-oblast.left)/2.0;bod.y=oblast.top-odsazeni;break;
+			case 180:bod.x=oblast.right+odsazeni;bod.y=oblast.bottom-(oblast.bottom-oblast.top)/2.0;break;
+			case 270:bod.x=oblast.right+(oblast.left-oblast.right)/2.0;bod.y=oblast.top-odsazeni;break;
       default:break;
 		}
 		bod=m.P2L(TPoint(bod.x,bod.y));
@@ -2769,26 +2771,26 @@ Cvektory::TElement *Cvektory::najdi_tabulku(TObjekt *Objekt, double X, double Y)
 	//deklarace
 	TElement *ret=NULL;
 
-	//hledání tabulky teploměru
-	if(Objekt==F->OBJEKT_akt && Objekt->teplomery!=NULL)
-	{
-		TTeplomery *T=vrat_teplomery_podle_zakazky(F->OBJEKT_akt,ZAKAZKA_akt);
-		//kontrola zda existuje cesta pro akt zakázku
-		if(T!=NULL && T->posledni->mGrid!=NULL && T->posledni->Xt<=X && X<=T->posledni->Xt+T->posledni->mGrid->Width*F->m2px/F->Zoom && T->posledni->Yt>=Y && Y>=T->posledni->Yt-T->posledni->mGrid->Height*F->m2px/F->Zoom)ret=T->posledni;
-    T=NULL;delete T;
-	}
-
   //hledání předchozího PM
 	if(ret==NULL && F->predchozi_PM!=NULL && F->predchozi_PM->mGrid!=NULL && F->predchozi_PM->Xt<=X && X<=F->predchozi_PM->Xt+F->predchozi_PM->mGrid->Width*F->m2px/F->Zoom && F->predchozi_PM->Yt>=Y && Y>=F->predchozi_PM->Yt-F->predchozi_PM->mGrid->Height*F->m2px/F->Zoom)ret=F->predchozi_PM;
 
 	//hledání tabulky elementu
 	TElement *E=Objekt->element;
 	T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
-	while(ret==NULL && E!=NULL && E->objekt_n==Objekt->n)
+	while(E!=NULL)
 	{
 		//pokud mgrid existuje hledá poslední mGrid na pozici X,Y ... nesmí být po nalezení break
 		if(E->mGrid!=NULL && E->Xt<=X && X<=E->Xt+E->mGrid->Width*F->m2px/F->Zoom && E->Yt>=Y && Y>=E->Yt-E->mGrid->Height*F->m2px/F->Zoom)ret=E;//bez break, slouží k nalezení poslední tabulky
-		E=dalsi_krok(VYHYBKY,E);
+		E=dalsi_krok(VYHYBKY,E,Objekt);
+	}
+
+  //hledání tabulky teploměru
+	if(Objekt==F->OBJEKT_akt && Objekt->teplomery!=NULL)
+	{
+		TTeplomery *T=vrat_teplomery_podle_zakazky(F->OBJEKT_akt,ZAKAZKA_akt);
+		//kontrola zda existuje cesta pro akt zakázku
+		if(T!=NULL && T->posledni->mGrid!=NULL && T->posledni->Xt<=X && X<=T->posledni->Xt+T->posledni->mGrid->Width*F->m2px/F->Zoom && T->posledni->Yt>=Y && Y>=T->posledni->Yt-T->posledni->mGrid->Height*F->m2px/F->Zoom)ret=T->posledni;
+    T=NULL;delete T;
 	}
 
 	//ukazatelové záležitosti + return

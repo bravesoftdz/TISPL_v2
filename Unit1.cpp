@@ -1940,8 +1940,9 @@ bool TForm1::mail(String Host,String Username,String Password,String FromAddress
 		delete SMTP;
 		return true;
 	}
-	catch(...)//v případě chyby odeslání
+	catch(Exception &exeption)//v případě chyby odeslání
 	{
+    log(__func__,exeption.Message);
 		return false;//"Odeslání se nezdařilo! či jiná chyba
 	}
 }
@@ -4139,6 +4140,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				Akce=NIC;kurzor(standard);//REFRESH();znovu zakomentován, protože je volán v setJobIDOnMouseMove
         //vytvoření obrazu pro UNDO a REDO
 				vytvor_obraz();
+        REFRESH();
 			}break;
 			case MOVE_ELEMENT:
 			{
@@ -7838,6 +7840,39 @@ void TForm1::mGrid_mimo_obraz(Cvektory::TElement *E)
 	}
 }
 //---------------------------------------------------------------------------
+//vrátí oblast pro kontrolu překrytí mGridů
+TRect TForm1::oblast_prekryti_mGridu(Cvektory::TElement *E)
+{
+	//deklarace
+	TRect ret;
+	long odX=0,odY=0;
+
+	//oblsat pro tabulku pohonu
+	if(E==NULL && PmG!=NULL)
+	{
+		ret.left=m.L2Px(OBJEKT_akt->Xp);
+		ret.top=m.L2Py(OBJEKT_akt->Yp);
+		ret.right=m.L2Px(OBJEKT_akt->Xp)+PmG->Width;
+		ret.bottom=m.L2Py(OBJEKT_akt->Yp)+PmG->Height;
+	}
+
+	//oblast pro tabulky elementů
+	if(E!=NULL)
+	{
+		for(unsigned int i=0;i<E->mGrid->ColCount-1;i++){odX+=E->mGrid->Columns[i].Width;}
+		ret.left=m.L2Px(E->Xt)+odX;
+		ret.right=m.L2Px(E->Xt)+E->mGrid->Width;
+		for(unsigned int j=0;j<E->mGrid->RowCount;j++){if(E->mGrid->Cells[E->mGrid->ColCount-1][j].Type!=E->mGrid->Ttype::DRAW)break;odY+=E->mGrid->Rows[j].Height;}
+		ret.top=m.L2Py(E->Yt)+odY;
+		odY=E->mGrid->Height;
+		for(unsigned int j=E->mGrid->RowCount-1;j>=0;j--){if(E->mGrid->Cells[E->mGrid->ColCount-1][j].Type!=E->mGrid->Ttype::DRAW)break;odY-=E->mGrid->Rows[j].Height;}
+		ret.bottom=m.L2Py(E->Yt)+odY;
+	}
+
+  //vracení výsledku
+	return ret;
+}
+//---------------------------------------------------------------------------
 //prohledá zda se překrývají mGridy
 void TForm1::mGrid_on_mGrid()
 {
@@ -7852,166 +7887,113 @@ void TForm1::mGrid_on_mGrid()
 		Cvektory::TElement *E=OBJEKT_akt->element,*prekryty=NULL;
 		Cvektory::TTeplomery *T=d.v.vrat_teplomery_podle_zakazky(OBJEKT_akt,d.v.ZAKAZKA_akt);
 		unsigned long objekt_n=OBJEKT_akt->n;
-		bool pokracovat=true;
-		TRect tab1,tab_PmG;
+		TRect tab1,tab_PmG,R;
 		TPoint p1,p2,p3,p4;
-		//načtení rozměrů PmG
+
+		////načtení rozměrů PmG
 		if(PmG!=NULL)
 		{
-	  	tab_PmG.left=m.L2Px(OBJEKT_akt->Xp)-7;//uprava oblasti detekování
-	  	tab_PmG.top=m.L2Py(OBJEKT_akt->Yp);
-	  	tab_PmG.right=m.L2Px(OBJEKT_akt->Xp)+PmG->Width;
-			tab_PmG.bottom=m.L2Py(OBJEKT_akt->Yp)+PmG->Height;
+			tab_PmG=oblast_prekryti_mGridu();
 			////uvedení do původního stavu + kontrola zda není mGrid mimo obraz
 			mGrid_puvodni_stav();//uvedení PmG do původního stavu
 			mGrid_mimo_obraz();//kontrola + ošetření když je PmG mimo obraz
 		}
+
+    ////původní stavy tabulek + tabulky mimo obraz
+		if(predchozi_PM!=NULL)E=predchozi_PM;//zahrnutí předchozího PM do průchodu
 		Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
-		while(E!=NULL && E->objekt_n==objekt_n)
+		while(E!=NULL)
 		{
 			mGrid_puvodni_stav(E);
 			mGrid_mimo_obraz(E);//kontrola + ošetření mGridů, ktěré se nacházejí mimo obraz
-			E=d.v.dalsi_krok(VYHYBKY,E,OBJEKT_akt);
+			if(predchozi_PM!=NULL && E==predchozi_PM)E=OBJEKT_akt->element;//pokud jsem byl na předchozím PM přesun na první element v objektu
+			else E=d.v.dalsi_krok(VYHYBKY,E,OBJEKT_akt);//přesun po elementech v objektu
 		}
 		d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
-		if(predchozi_PM!=NULL)
-		{
-			mGrid_puvodni_stav(predchozi_PM);
-			mGrid_mimo_obraz(predchozi_PM);//kontrola + ošetření mGridů, ktěré se nacházejí mimo obraz
-		}
     //teploměry
 		if(T!=NULL)
 		{
 			mGrid_puvodni_stav(T->posledni);
 			mGrid_mimo_obraz(T->posledni);//kontrola + ošetření mGridů, ktěré se nacházejí mimo obraz
 		}
+
 		////kontrola překrytí
-		int odX=0,odY=0;
-		E=OBJEKT_akt->element;
-		//TPoint *tab_pruchodu=new TPoint[d.v.pocet_vyhybek];//.x uchovává počet průchodu přes výhybku, .y uchovává počet průchodů přes spojku
-		while(E!=NULL && E->objekt_n==objekt_n)
+		if(predchozi_PM!=NULL)E=predchozi_PM;//zahrnutí předchozího PM do průchodu
+		else E=OBJEKT_akt->element;
+		Cvektory::T2Element *VYH=d.v.hlavicka_seznam_VYHYBKY();
+		while(E!=NULL)
 		{
-			if(E->eID!=100 && E->eID!=MaxInt && E->pohon==OBJEKT_akt->pohon)//pouze pro elementy, které mají tabulku, jen pro tabulky co jsou zobrazené
+			if(E->eID!=100 && E->eID!=MaxInt)//pouze pro elementy, které mají tabulku, jen pro tabulky co jsou zobrazené
 			{
 				//naplnění TRectu oblastí tabulky
-				if(E->eID==200 || E->eID==300)/*{*/odX=E->mGrid->Columns[0].Width+E->mGrid->Columns[1].Width+E->mGrid->Columns[2].Width;//odY=E->mGrid->Rows[0].Height+E->mGrid->Rows[1].Height;}
-				tab1.left=m.L2Px(E->Xt)+odX;
-				tab1.top=m.L2Py(E->Yt)+odY;
-				tab1.right=m.L2Px(E->Xt)+E->mGrid->Width;
-				tab1.bottom=m.L2Py(E->Yt)+E->mGrid->Height;
+				tab1=oblast_prekryti_mGridu(E);
 				//průchod všemi ostatními elementy, hledání zda se nepřekrývají s tab1
-				Cvektory::TElement *E_temp=OBJEKT_akt->element;
+				Cvektory::TElement *E_temp=E->dalsi;
+        if(E==predchozi_PM)E_temp=OBJEKT_akt->element;
 				Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
-				while(E_temp!=NULL && E_temp->objekt_n==objekt_n)
+				while(E_temp!=NULL && E_temp->objekt_n==OBJEKT_akt->n)
 				{
-					if(E_temp->eID!=100 && E_temp->eID!=MaxInt && E->pohon==OBJEKT_akt->pohon)//přeskakovat element s tab1, pouze pro elementy, které mají tabulku
+					if(E_temp->eID!=100 && E_temp->eID!=MaxInt)//přeskakovat element s tab1, pouze pro elementy, které mají tabulku
 					{
 						//definice bodů tabulky
-						p1.x=m.L2Px(E_temp->Xt);p1.y=m.L2Py(E_temp->Yt);
-						p2.x=m.L2Px(E_temp->Xt)+E_temp->mGrid->Width;p2.y=m.L2Py(E_temp->Yt);
-						p3.x=m.L2Px(E_temp->Xt)+E_temp->mGrid->Width;p3.y=m.L2Py(E_temp->Yt)+E_temp->mGrid->Height;
-						p4.x=m.L2Px(E_temp->Xt);p4.y=m.L2Py(E_temp->Yt)+E_temp->mGrid->Height;
+						R.left=m.L2Px(E_temp->Xt);R.right=m.L2Px(E_temp->Xt)+E_temp->mGrid->Width;
+						R.top=m.L2Py(E_temp->Yt);R.bottom=m.L2Py(E_temp->Yt)+E_temp->mGrid->Height;
 						//kontrola, zda se některý z bodů druhé tabulky nenachází v první tabulce
-						if(E_temp->n!=E->n && (tab1.PtInRect(p1) || tab1.PtInRect(p2) || tab1.PtInRect(p3) || tab1.PtInRect(p4)))
+						if(tab1.Intersects(R))
 						{
 							//nalezeno překrytí, uložení tabulky která je vykreslena dříve
-							pokracovat=false;
-							if(E->n>E_temp->n)prekryty=E_temp;
-							else prekryty=E;
-							break;
-						}
-						//kontrola překrytí s tabulkou pohonu
-						if(prekryty==NULL && PmG!=NULL && E_temp->n==E->n && (tab_PmG.PtInRect(p1) || tab_PmG.PtInRect(p2) || tab_PmG.PtInRect(p3) || tab_PmG.PtInRect(p4)))
-						{
-							//nalezeno překrytí, uložení tabulky elementu
-							pokracovat=false;
-							prekryty=E_temp;
+							prekryty=E;
 							break;
 						}
 					}
 					E_temp=d.v.dalsi_krok(VYHYBKY,E_temp,OBJEKT_akt);
 				}
-				//nebyla nalezena tabulka elementu v překryvu, kontrola s tabulkou předchozí PM
-				if(pokracovat && predchozi_PM)
-				{
-					//definice bodů tabulky
-					p1.x=m.L2Px(predchozi_PM->Xt);p1.y=m.L2Py(predchozi_PM->Yt);
-					p2.x=m.L2Px(predchozi_PM->Xt)+predchozi_PM->mGrid->Width;p2.y=m.L2Py(predchozi_PM->Yt);
-					p3.x=m.L2Px(predchozi_PM->Xt)+predchozi_PM->mGrid->Width;p3.y=m.L2Py(predchozi_PM->Yt)+predchozi_PM->mGrid->Height;
-					p4.x=m.L2Px(predchozi_PM->Xt);p4.y=m.L2Py(predchozi_PM->Yt)+predchozi_PM->mGrid->Height;
-					//kontrola, zda se některý z bodů druhé tabulky nenachází v první tabulce
-					if((tab1.PtInRect(p1) || tab1.PtInRect(p2) || tab1.PtInRect(p3) || tab1.PtInRect(p4)))
-					{
-						//nalezeno překrytí, uložení tabulky která je vykreslena dříve
-						pokracovat=false;
-						prekryty=E;
-					}
-				}
-				//kontrola tabulky teploměrů
-				if(pokracovat && T!=NULL)
-				{
-					//definice bodů tabulky
-					p1.x=m.L2Px(T->posledni->Xt);p1.y=m.L2Py(T->posledni->Yt);
-					p2.x=m.L2Px(T->posledni->Xt)+T->posledni->mGrid->Width;p2.y=m.L2Py(T->posledni->Yt);
-					p3.x=m.L2Px(T->posledni->Xt)+T->posledni->mGrid->Width;p3.y=m.L2Py(T->posledni->Yt)+T->posledni->mGrid->Height;
-					p4.x=m.L2Px(T->posledni->Xt);p4.y=m.L2Py(T->posledni->Yt)+T->posledni->mGrid->Height;
-          //kontrola, zda se některý z bodů druhé tabulky nenachází v první tabulce
-					if((tab1.PtInRect(p1) || tab1.PtInRect(p2) || tab1.PtInRect(p3) || tab1.PtInRect(p4)))
-					{
-						//nalezeno překrytí, uložení tabulky která je vykreslena dříve
-						pokracovat=false;
-						prekryty=E;
-					}
-				}
-				d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
+        d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
 				E_temp=NULL;delete E_temp;
-			}
-			if(pokracovat)E=E->dalsi;//d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);//musí být procházeno takto, alg. prochází 2x přes vyhybky a spojky ty nejsou přejmenovávány, tudíž nevadí jeho použití, použit z důvodu, že během tohoto cyklu dochází k dalšímu pruchodu pomocí cyklu dalsi_krok, kdyby byl použit v alg. dalsi_krok vnořený dalsi_krok došlo by k chybnému průchodu
-			else break;
-		}
-
-		//kontrola překrytí tabulky teploměrů s předchozím PM
-		if(prekryty==NULL && predchozi_PM!=NULL && T!=NULL)
-		{
-			//definice bodů tabulky teplomerů
-			p1.x=m.L2Px(T->posledni->Xt);p1.y=m.L2Py(T->posledni->Yt);
-			p2.x=m.L2Px(T->posledni->Xt)+T->posledni->mGrid->Width;p2.y=m.L2Py(T->posledni->Yt);
-			p3.x=m.L2Px(T->posledni->Xt)+T->posledni->mGrid->Width;p3.y=m.L2Py(T->posledni->Yt)+T->posledni->mGrid->Height;
-			p4.x=m.L2Px(T->posledni->Xt);p4.y=m.L2Py(T->posledni->Yt)+T->posledni->mGrid->Height;
-      //definice oblasti tabulky predchozi_PM
-			tab1.left=m.L2Px(predchozi_PM->Xt);
-			tab1.top=m.L2Py(predchozi_PM->Yt);
-			tab1.right=m.L2Px(predchozi_PM->Xt)+predchozi_PM->mGrid->Width;
-			tab1.bottom=m.L2Py(predchozi_PM->Yt)+predchozi_PM->mGrid->Height;
-			if((tab1.PtInRect(p1) || tab1.PtInRect(p2) || tab1.PtInRect(p3) || tab1.PtInRect(p4)))prekryty=predchozi_PM;
-		}
-
-    //kontrola překrytí teploměrů s PmG
-//		if(prekryty==NULL && PmG!=NULL && T!=NULL)
-//		{
-//			//definice bodů tabulky teplomerů
-//			p1.x=m.L2Px(T->posledni->Xt);p1.y=m.L2Py(T->posledni->Yt);
-//			p2.x=m.L2Px(T->posledni->Xt)+T->posledni->mGrid->Width;p2.y=m.L2Py(T->posledni->Yt);
-//			p3.x=m.L2Px(T->posledni->Xt)+T->posledni->mGrid->Width;p3.y=m.L2Py(T->posledni->Yt)+T->posledni->mGrid->Height;
-//			p4.x=m.L2Px(T->posledni->Xt);p4.y=m.L2Py(T->posledni->Yt)+T->posledni->mGrid->Height;
-//			if((tab_PmG.PtInRect(p1) || tab_PmG.PtInRect(p2) || tab_PmG.PtInRect(p3) || tab_PmG.PtInRect(p4)))prekryty=PmG;
-//		}
-
-		////řešení překrytí
-		if(prekryty!=NULL)
-		{
-			unsigned int Col=1;
-			if(prekryty->eID==200 || prekryty->eID==300)Col=3;
-			for(unsigned int j=Col;j<prekryty->mGrid->ColCount;j++)
-			{
-				for(unsigned int i=1;i<prekryty->mGrid->RowCount;i++)
+				//kontrola překrytí s tabulkou pohonu
+				if(prekryty==NULL && PmG!=NULL && tab1.Intersects(tab_PmG))
 				{
-					if(prekryty->mGrid->Cells[j][i].Type!=TmGrid::DRAW && prekryty->mGrid->Cells[j][i].Type!=TmGrid::glyphBUTTON)mGrid_komponenta_na_draw(prekryty->mGrid,j,i);//kontrola zda jsem narazil na komponentu nikoliv na buňku, změna na DRAW
+					//nalezeno překrytí, uložení tabulky elementu
+					prekryty=E;
+					break;
+				}
+				//nebyla nalezena tabulka elementu v překryvu, kontrola tabulky teploměrů
+				if(prekryty==NULL && T!=NULL)
+				{
+					//definice bodů tabulky
+					R.left=m.L2Px(T->posledni->Xt);R.right=m.L2Px(T->posledni->Xt)+T->posledni->mGrid->Width;
+					R.top=m.L2Py(T->posledni->Yt);R.bottom=m.L2Py(T->posledni->Yt)+T->posledni->mGrid->Height;
+          //kontrola, zda se některý z bodů druhé tabulky nenachází v první tabulce
+					if(tab1.Intersects(R))
+					{
+						//nalezeno překrytí, uložení tabulky která je vykreslena dříve
+						prekryty=E;
+					}
 				}
 			}
-		}
 
-		//navrácení akce
+      //řešení překrytí
+	  	if(prekryty!=NULL)
+	  	{
+	  		unsigned int Col=1;
+	  		if(prekryty->eID==200 || prekryty->eID==300)Col=3;
+	  		for(unsigned int j=Col;j<prekryty->mGrid->ColCount;j++)
+	  		{
+	  			for(unsigned int i=1;i<prekryty->mGrid->RowCount;i++)
+	  			{
+	  				if(prekryty->mGrid->Cells[j][i].Type!=TmGrid::DRAW && prekryty->mGrid->Cells[j][i].Type!=TmGrid::glyphBUTTON)mGrid_komponenta_na_draw(prekryty->mGrid,j,i);//kontrola zda jsem narazil na komponentu nikoliv na buňku, změna na DRAW
+	  			}
+				}
+				prekryty=NULL;//nulování pro další použití
+	  	}
+
+			//posun na další
+			if(predchozi_PM!=NULL && E==predchozi_PM)E=OBJEKT_akt->element;//pokud jsem byl na předchozím PM přesun na první element v objektu
+			else E=d.v.dalsi_krok(VYH,E,OBJEKT_akt);//posun po elementech v objektu
+		}
+		d.v.vymaz_seznam_VYHYBKY(VYH);
+
+		////navrácení akce
 		FormX->input_state=FormX->NOTHING;
 
 		////ukazatelové záležitosti
@@ -8082,7 +8064,7 @@ void TForm1::mGrid_puvodni_stav(Cvektory::TElement *E)
 		aktualizace_tab_pohon(false,false,true);//aktualizace komponent
 		if(!update_probehl)PmG->Update();
 	}
-	else if(E->pohon==OBJEKT_akt->pohon)////nastavení komponent, pouze pokud jsou tabulky viditelné
+	else if(E->pohon==OBJEKT_akt->pohon || E==predchozi_PM)////nastavení komponent, pouze pokud jsou tabulky viditelné
 	{
 
 		switch(E->eID)
@@ -14910,7 +14892,10 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	REFRESH();
 //  e_posledni=NULL;delete e_posledni;
 //	Memo("");
-	Memo(OBJEKT_akt->rezim);
+	TRect R=oblast_prekryti_mGridu(OBJEKT_akt->teplomery->dalsi->posledni);
+	Canvas->Brush->Color=clRed;
+	Canvas->Pen->Color=clRed;
+	Canvas->Rectangle(R);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -15383,6 +15368,9 @@ void __fastcall TForm1::scGPTrackBar1Change(TObject *Sender)
 		REFRESH();
 	}
 	else refreshovat_scGPTrackBar=true;
+
+  //překrytí tabulek
+	if(OBJEKT_akt!=NULL && OBJEKT_akt->zobrazit_mGrid)mGrid_on_mGrid();
 }
 //---------------------------------------------------------------------------
 //při změně zoomu aktulizuje palec na trackBaru, inverzní funkce k funkci předchozí
@@ -15412,6 +15400,8 @@ void TForm1::on_change_zoom_change_scGPTrackBar()
 	if(Zoom==30)		scGPTrackBar1->Value=20;
 	scLabel_ZOOM->Caption=String(Zoom*100)+" %";
 
+	//překrytí tabulek
+	if(OBJEKT_akt!=NULL && OBJEKT_akt->zobrazit_mGrid)mGrid_on_mGrid();
 	//zobrazení a skrytím mgridů při konkrétním zoomu
 	//if(OBJEKT_akt!=NULL && ((Zoom<=2.5 && OBJEKT_akt->zobrazit_mGrid) || (Zoom>=3 && !OBJEKT_akt->zobrazit_mGrid)))scGPButton_viditelnostmGridClick(this);
 }
@@ -16848,9 +16838,7 @@ void TForm1::smaz_kurzor()
 				if(pom_bod_temp->n==1)A=OBJEKT_akt->body->predchozi;
 				//výpočet posunu (jednotlivé souřadnice bodu) + posun
 				puv=m.round2double(m.delka(A->X,A->Y,pom_bod_temp->X,pom_bod_temp->Y),3);
-				double azimut=m.Rt90(m.azimut(A->X,A->Y,pom_bod_temp->X,pom_bod_temp->Y));
-				if(azimut==270 || azimut==0)posun=nov-puv;
-				else posun=-nov+puv;
+				posun=nov-puv;
 				posunx=sin(DegToRad(fmod(m.azimut(A->X,A->Y,pom_bod_temp->X,pom_bod_temp->Y),360)))*posun;posuny=cos(DegToRad(fmod(m.azimut(A->X,A->Y,pom_bod_temp->X,pom_bod_temp->Y),360)))*posun;
 				pom_bod_temp=pom_bod_temp->predchozi;
 				if(pom_bod_temp->n==0)pom_bod_temp=OBJEKT_akt->body->dalsi;
@@ -18507,7 +18495,10 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 		}
 
 		//ukazatelové záležitosti
-    T=NULL;delete T;
+		T=NULL;delete T;
+
+    //překrytí mGridu
+		mGrid_on_mGrid();
 	}
 }
 //---------------------------------------------------------------------------
@@ -18883,6 +18874,7 @@ void TForm1::rozmisti_mGridy()
 
 	//překreslení
 	REFRESH();
+	nahled_ulozit(true,false);//povolit uložení náhledu bez validace
 }
 //---------------------------------------------------------------------------
 
