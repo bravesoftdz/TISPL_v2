@@ -3470,6 +3470,7 @@
         ParentFont = False
         FluentUIOpaque = False
         TabOrder = 1
+        OnClick = scLabel_rozmistit_mgridyClick
         OnMouseEnter = GlyphButton_rozmistit_mgridyMouseEnter
         OnMouseLeave = GlyphButton_rozmistit_mgridyMouseLeave
         Animation = False
