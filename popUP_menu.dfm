@@ -1992,7 +1992,6 @@
       StorePaintBuffer = True
       Sizeable = False
       WallpaperIndex = -1
-      ExplicitTop = 205
       object scLabel_poznamka: TscLabel
         Left = 37
         Top = 0
@@ -2197,7 +2196,6 @@
       StorePaintBuffer = True
       Sizeable = False
       WallpaperIndex = -1
-      ExplicitTop = 171
       object scLabel_cely_pohled: TscLabel
         Left = 37
         Top = 0
@@ -2402,7 +2400,6 @@
       StorePaintBuffer = True
       Sizeable = False
       WallpaperIndex = -1
-      ExplicitTop = 103
       object scLabel_oddálit: TscLabel
         Left = 37
         Top = 0
@@ -2607,7 +2604,6 @@
       StorePaintBuffer = True
       Sizeable = False
       WallpaperIndex = -1
-      ExplicitTop = 137
       object scLabel_vybrat_oknem: TscLabel
         Left = 37
         Top = 0
@@ -2812,7 +2808,6 @@
       StorePaintBuffer = True
       Sizeable = False
       WallpaperIndex = -1
-      ExplicitTop = 69
       object scLabel_priblizit: TscLabel
         Left = 37
         Top = 0
@@ -3017,7 +3012,6 @@
       StorePaintBuffer = True
       Sizeable = False
       WallpaperIndex = -1
-      ExplicitTop = 35
       object scLabel_posunout: TscLabel
         Left = 37
         Top = 0
@@ -3257,7 +3251,6 @@
         VertAlignment = scvtaCenter
         UseFontColorToStyleColor = True
         Caption = '  Posouvat'
-        ExplicitTop = 34
       end
       object GlyphButton_posouvat: TscGPGlyphButton
         Left = 0
@@ -3427,7 +3420,6 @@
       StorePaintBuffer = True
       Sizeable = False
       WallpaperIndex = -1
-      ExplicitTop = 35
       object scLabel_rozmistit_mgridy: TscLabel
         Left = 37
         Top = 0
@@ -3565,7 +3557,7 @@
         GlyphOptions.PressedColorAlpha = 255
         GlyphOptions.FocusedColorAlpha = 255
         GlyphOptions.DisabledColorAlpha = 150
-        GlyphOptions.Kind = scgpbgkCalendar
+        GlyphOptions.Kind = scgpbgkDetails
         GlyphOptions.Thickness = 2
         GlyphOptions.ThicknessScaled = False
         GlyphOptions.Size = 0
