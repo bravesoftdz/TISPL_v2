@@ -4753,7 +4753,7 @@ void TForm1::getJobID(int X, int Y)
 			}
 		}
   	if(MOD==LAYOUT && !d.v.PP.zamek_layoutu)//pro schéma, zjišťování jidů pro body a úsečky
-		{     log(__func__,"     LAYOUT");
+		{
 			/////////////JID udává pouze akci, není třeba aby se k němu přičítalo i číslo bodu, bod je držen jako ukazatel pom_bod/////////////
   		//-102; citelná oblast zprávy
   		//-6; název objektu
@@ -8691,10 +8691,12 @@ void TForm1::nahled_ulozit (bool duvod_ulozit,bool duvod_validovat)
 void TForm1::aut_pozicovani(Cvektory::TElement *E, int X, int Y)
 {
 	log(__func__);//logování
+	//deklarace
 	short O=120;//hodnota odsazení  30
 	double x=0,x1=0,y=0,y1=0;//původní a překlopené souřadnice tabulky
 	bool hor=false,ver=false;
 	X=m.L2Px(E->geo.X4);Y=m.L2Py(E->geo.Y4);
+  //nastavení dvou možných pozic mGridu
 	switch(E->orientace)
 	{
 		case 0:x=X-E->mGrid->Width/2.0;y=Y-O-E->mGrid->Height;y1=Y+O;hor=true;break;
@@ -8702,79 +8704,85 @@ void TForm1::aut_pozicovani(Cvektory::TElement *E, int X, int Y)
 		case 180:x=X-E->mGrid->Width/2.0;y=Y+O;y1=Y-O-E->mGrid->Height;hor=true;break;
 		case 270:x=X-O-E->mGrid->Width;x1=X+O;y=Y-E->mGrid->Height/2.0;ver=true;break;
 	}
-	//Pro horizontální překlápění
-	if(E->predchozi->n>=1 && hor)//Kontrola zda je už vložený nějaký element
+
+	//deklarace pro test
+	Cvektory::TElement *el=NULL;
+	Cvektory::T2Element *VYH=NULL;
+	bool prekryto=false,konec=false;
+	TRect E_tab,el_tab,PmG_tab,T_tab;
+	int pokus=0;
+	//načtení oblastí tabulek PmG a teploměrů
+	if(PmG!=NULL)
 	{
-		Cvektory::TElement *O=E->predchozi;
-		while(O->n>=1 && O->objekt_n==E->objekt_n)//kontrola překrytí napříč všemi dosut přidanými elementy
-		{
-			if(O->eID!=100)//ošetření z důvodu, že některý element nemá mGrid
-			{
-	   		if ((x<=m.L2Px(O->Xt)+O->mGrid->Width && x>=m.L2Px(O->Xt)) ||//Překrývají se v X souřadnici
-	   		(x+E->mGrid->Width<=m.L2Px(O->Xt)+O->mGrid->Width&&x+E->mGrid->Width>=m.L2Px(O->Xt)))
-				{
-	   			if ((y>=m.L2Py(O->Yt)&&y<=m.L2Py(O->Yt)+O->mGrid->Height) || (y+E->mGrid->Height>=m.L2Py(O->Yt)&&y+E->mGrid->Height<=m.L2Py(O->Yt)+O->mGrid->Height))
-					{
-	   				y=y1;
-	   				Cvektory::TElement *O1=E->predchozi;
-						while(O1->n>=1 && O1->objekt_n==E->objekt_n)
-						{
-	   					if ((x<=m.L2Px(O1->Xt)+O->mGrid->Width && x>=m.L2Px(O1->Xt))||(x+E->mGrid->Width<=m.L2Px(O1->Xt)+O1->mGrid->Width&&x+E->mGrid->Width>=m.L2Px(O1->Xt)))
-	   					if ((y>=m.L2Py(O1->Yt)&&y<=m.L2Py(O1->Yt)+O1->mGrid->Height) || (y+E->mGrid->Height>=m.L2Py(O1->Yt)&&y+E->mGrid->Height<=m.L2Py(O1->Yt)+O1->mGrid->Height))
-	   					{
-	   						x=X;
-	   						y=Y;
-	   						break;
-	   					}
-	   					O1=O1->predchozi;
-	   				}
-	   				O1=NULL;delete O1;
-	   			}
-				}
-			}
-			O=O->predchozi;
-		}
-		O=NULL;delete O;
+		PmG_tab.left=m.L2Px(OBJEKT_akt->Xp);PmG_tab.right=PmG_tab.left+PmG->Width;
+		PmG_tab.top=m.L2Py(OBJEKT_akt->Yp);PmG_tab.bottom=PmG_tab.top+PmG->Height;
 	}
-	//Pro vertikální překlápění
-	if(E->predchozi->n>=1 && ver)//Kontrola zda je už vložený nějaký element
+	Cvektory::TTeplomery *T=d.v.vrat_teplomery_podle_zakazky(OBJEKT_akt,d.v.ZAKAZKA_akt);
+	if(T!=NULL)
 	{
-		Cvektory::TElement *O=E->predchozi;
-		while(O->n>=1 && O->objekt_n==E->objekt_n)//kontrola překrytí napříč všemi dosut přidanými elementy
-		{
-			if(O->eID!=100)//ošetření z důvodu, že některý element nemá mGrid
-			{
-		  	if ((y<=m.L2Py(O->Yt)+O->mGrid->Height && y>=m.L2Py(O->Yt)) ||//Překrývají se v Y souřadnici
-		  	(y+E->mGrid->Height<=m.L2Py(O->Yt)+O->mGrid->Height&&y+E->mGrid->Height>=m.L2Py(O->Yt)))
-		  	{
-		  		if ((x>=m.L2Px(O->Xt)&&x<=m.L2Px(O->Xt)+O->mGrid->Width) || (x+E->mGrid->Width>=m.L2Px(O->Xt)&&x+E->mGrid->Width<=m.L2Px(O->Xt)+O->mGrid->Width))
-		  		{
-		  			x=x1;
-		  			Cvektory::TElement *O1=E->predchozi;
-		  			while(O1->n>=1 && O1->objekt_n==E->objekt_n)
-		  			{
-		  				if ((y<=m.L2Py(O1->Yt)+O->mGrid->Height && y>=m.L2Py(O1->Yt)) || (y+E->mGrid->Height<=m.L2Py(O1->Yt)+O1->mGrid->Height&&y+E->mGrid->Height>=m.L2Py(O1->Yt)))
-		  				if ((x>=m.L2Px(O1->Xt)&&x<=m.L2Px(O1->Xt)+O1->mGrid->Width) || (x+E->mGrid->Width>=m.L2Px(O1->Xt)&&x+E->mGrid->Width<=m.L2Px(O1->Xt)+O1->mGrid->Width))
-		  				{
-		  					x=X;
-		  					y=Y;
-		  					break;
-		  				}
-		  				O1=O1->predchozi;
-		  			}
-		  			O1=NULL;delete O1;
-		  		}
-				}
-			}
-			O=O->predchozi;
-		}
-		O=NULL;delete O;
+		T_tab.left=m.L2Px(T->posledni->Xt);T_tab.right=T_tab.left+T->posledni->mGrid->Width;
+		T_tab.top=m.L2Py(T->posledni->Yt);T_tab.bottom=T_tab.top+T->posledni->mGrid->Height;
 	}
-  //zapsaní nejlepších souřadnic
+
+	//test překrytí ve 2 krocích, prvni průchod kontrola překryvu tabulky na akt. pozici (např. x,y), pokud dojde ke konfliktu nastane druhý průchod, kontrola překryvu tabulky na nové pozici (např. x1,y), pokud nastane kolize, vložení tabulky na souřadnice elementu
+	do
+	{
+		//načtení oblasti vkládané tabulky
+		E_tab.left=x;E_tab.right=x+E->mGrid->Width;
+		E_tab.top=y;E_tab.bottom=y+E->mGrid->Height;
+		//nastavení parametrů
+		prekryto=false;
+		pokus++;
+    el=OBJEKT_akt->element;
+		if(predchozi_PM!=NULL)el=predchozi_PM;
+		VYH=d.v.hlavicka_seznam_VYHYBKY();
+
+		//průchod skrze všechny elementy v objektu
+		while(el!=NULL)
+		{
+			if(el!=E && E->eID!=MaxInt && E->eID!=100)//vynechat vkládaný element a elementy bez viditelných mGridů
+			{
+				//načtení oblasti tabulky elementu
+				el_tab.left=m.L2Px(el->Xt);el_tab.right=el_tab.left+el->mGrid->Width;
+				el_tab.top=m.L2Py(el->Yt);el_tab.bottom=el_tab.top+el->mGrid->Width;
+				//kontrola zda je s ní v překryvu
+				if(E_tab.Intersects(el_tab)){prekryto=true;break;}
+			}
+      //posun na další
+			if(predchozi_PM!=NULL && el==predchozi_PM)el=OBJEKT_akt->element;
+      else el=d.v.dalsi_krok(VYH,el,OBJEKT_akt);
+		}
+
+    //kontrola překrytí s PmG a teplomery
+    if(!prekryto && PmG!=NULL && E_tab.Intersects(PmG_tab))prekryto=true;
+		if(!prekryto && T!=NULL && E_tab.Intersects(T_tab))prekryto=true;
+
+    //nastalo překrytí, řešení
+		if(hor && prekryto)
+		{
+			if(pokus==1)y=y1;//v prvním kroku, posun mGridu na alternativní pozici
+			else {x=X;y=Y;konec=true;}//v druhém kroku, posun mGridu na souřadnice elementu, ukončení testu
+		}
+		if(ver && prekryto)
+		{
+			if(pokus==1)x=x1;//v prvním kroku, posun mGridu na alternativní pozici
+			else {x=X;y=Y;konec=true;}//v druhém kroku, posun mGridu na souřadnice elementu, ukončení testu
+		}
+
+		//uakzatelové záležitosti
+		d.v.vymaz_seznam_VYHYBKY(VYH);
+		el=NULL;delete el;
+    //kontrola zda nebylo vše OK při prvním průchodu, pokud ano ukončení testu
+		if(!prekryto)konec=true;
+  }
+	while(!konec && pokus<2);//ukončit test pokud byl dokončen, nebo pokud byl naplněn maximální počet pokusů
+
+	//zapsaní nejlepších souřadnic
 	E->Xt=m.P2Lx(x);
 	E->Yt=m.P2Ly(y);
 	//vynulování a smazání ukazatele
 	E=NULL;delete E;
+  T=NULL;delete T;
 }
 //---------------------------------------------------------------------------
 //dle toho, zda je umisťovaný element nad osou či pod osou pohonu je vrácena rotace symbolu, X_bod,.. je bbod vkládání elementu (jedna souřadnice ho váže na pohon)
@@ -12572,7 +12580,6 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 					if(eID%2==0 && eID!=100 && eID!=200 && eID!=MaxInt)d.v.aktualizuj_sparovane_ukazatele();//odstraněn stop-element, nutná aktualizace
 					dalsi_element=NULL;delete dalsi_element;
 					d.v.aktualizuj_cestu_teplomeru();//pokud existuje cesta mezi teploměry aktualizuje ji, jinak vytvoří default cestu
-
 					p=NULL;delete p;
 				}
 				else if(pom_element->eID==200)
@@ -12613,7 +12620,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 				nahled_ulozit(true);
 			}
       //mazání zarážky s S/K
-			if(pom_element!=NULL && pom_element->geo.HeightDepp!=0)//&& pom_element->eID==MaxInt)//mazání zarážky z popup
+			else if(pom_element!=NULL && pom_element->geo.HeightDepp!=0)//&& pom_element->eID==MaxInt)//mazání zarážky z popup
 			{
 				String SK=ls->Strings[490];//stoupání
 				if(pom_element->geo.HeightDepp<0)SK=ls->Strings[491];//klesání
@@ -12637,7 +12644,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 					delete E;E=NULL;
 				}
 			}
-			if(pom_bod_temp!=NULL)//mazání bodu v obrysu kabiny
+			else if(pom_bod_temp!=NULL)//mazání bodu v obrysu kabiny
 			{
 				if(OBJEKT_akt->body->predchozi->n>2 && mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text_1+AnsiString(pom_bod_temp->n),"",MB_YESNO))
 				{
@@ -12645,7 +12652,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 					pom_bod_temp=NULL;delete pom_bod_temp;
 				}
 			}
-			if(pom_komora_temp!=NULL && OBJEKT_akt->komora->predchozi->n>2)//případ mazání kabiny
+			else if(pom_komora_temp!=NULL && OBJEKT_akt->komora->predchozi->n>2)//případ mazání kabiny
 			{
 				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text_2+AnsiString(pom_komora_temp->n)+"?","",MB_YESNO))
 				{
@@ -14890,11 +14897,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	vytvor_statickou_scenu();
 //	REFRESH();
 //  e_posledni=NULL;delete e_posledni;
-//	Memo("");
-	TRect R=oblast_prekryti_mGridu(OBJEKT_akt->teplomery->dalsi->posledni);
-	Canvas->Brush->Color=clRed;
-	Canvas->Pen->Color=clRed;
-	Canvas->Rectangle(R);
+	Memo("");
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

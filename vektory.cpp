@@ -9880,6 +9880,13 @@ void Cvektory::kontrola_vlozeni_do_mag_lasa(TElement *E)
 		if(segment==0 && (MAG_LASO->predchozi->sparovany==E->predchozi || (E->predchozi!=NULL && E->predchozi->n>0 && E->predchozi->predchozi==MAG_LASO->predchozi->Element)))
 			vloz_segment_MAG_LASA(E->predchozi);
 
+		//přechod přes konec na začátek linky, počátek měření na konci nebo před koncem
+		if(segment==0 && E->predchozi->n==0 && ((E->predchozi->predchozi==MAG_LASO->predchozi->sparovany) || (E->predchozi->predchozi->predchozi==MAG_LASO->predchozi->Element)))
+			vloz_segment_MAG_LASA(E->predchozi->predchozi);
+
+		if(segment==0 && E->predchozi->predchozi->n==0 && E->predchozi->predchozi->predchozi==MAG_LASO->predchozi->Element)
+      vloz_segment_MAG_LASA(E->predchozi);
+
 		//kontrola zda není předchozí spojka, vedlejší větev
 		if(segment==0 && E->predchozi->eID==301 && E->predchozi->predchozi2->predchozi==MAG_LASO->predchozi->Element)
 			vloz_segment_MAG_LASA(E->predchozi->predchozi2);
