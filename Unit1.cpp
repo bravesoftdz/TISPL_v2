@@ -1931,7 +1931,7 @@ bool TForm1::mail(String Host,String Username,String Password,String FromAddress
 		SMTP->Host=Host;//"smtp.seznam.cz";
 		SMTP->Username=Username;
 		SMTP->Password=Password;
-		SMTP->Port=25;//SMTP->UseTLS=utNoTLSSupport; případně použít, pro použití SSL jiný port a zároveň potřeba s SMTP propojit přes IO handler SSL komponentu + 2x patřičné DLL
+		SMTP->Port=587;//25;//SMTP->UseTLS=utNoTLSSupport; případně použít, pro použití SSL jiný port a zároveň potřeba s SMTP propojit přes IO handler SSL komponentu + 2x patřičné DLL
 		SMTP->Connect();
 		SMTP->Send(MAIL);
 		SMTP->Disconnect(true);
