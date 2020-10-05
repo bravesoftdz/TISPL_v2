@@ -1959,13 +1959,12 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 	if(E!=NULL && F->OBJEKT_akt!=NULL && (E->eID==200 || E->eID==300))// && F->OBJEKT_akt->pohon->aRD!=0)
 	{
 		//naètení pohonù
-		TscGPComboBox *C=E->mGrid->getCombo(3,2);
-		if(C!=NULL && C->Enabled)p1_n=C->ItemIndex;
-		C=E->mGrid->getCombo(4,2);
-		if(C!=NULL && C->Enabled)p2_n=C->ItemIndex;
-		Cvektory::TPohon *p=NULL,*p1=NULL,*p2=NULL;
-		if(p1_n!=0)p1=F->d.v.vrat_pohon(p1_n);
-		if(p2_n!=0)p2=F->d.v.vrat_pohon(p2_n);
+		Cvektory::TElement *e_dalsi=NULL;
+		if(E->eID==300)e_dalsi=E->dalsi2;
+		else if(E->dalsi!=NULL)e_dalsi=E->dalsi;
+		else e_dalsi=F->d.v.ELEMENTY->dalsi;
+		Cvektory::TPohon *p=NULL,*p1=E->pohon,*p2=e_dalsi->pohon;
+    e_dalsi=NULL;delete e_dalsi;
 
 		//dvojtá validace
 		//pokud nalezne problém zastaví se a zobrazího, i v pøípadì, že je problémù více, až bude problém vyøešen probìhne validace zda neexistuje další problém
@@ -1978,7 +1977,7 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 			if(p!=NULL && F->OBJEKT_akt->rezim!=0)
 			{
 				//kontrola zda je možné editovat pohon
-				if(E->mGrid->Cells[i][3].Type==E->mGrid->EDIT && p!=NULL)
+				//if(E->mGrid->Cells[i][3].Type==E->mGrid->EDIT && p!=NULL)
 				{
 					podbarvi_edit(E,i,3);//defaultní nastavní barev
 					String Rx1=F->m.round2double(p->Rx,0),Rx2=p->Rx;
@@ -2067,58 +2066,56 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 		if(puv_Note!=E->mGrid->Note.Text)//došlo ke zmìnì note
 		{
 			puv_Note=E->mGrid->Note.Text;
-			try//v pøípadì že by neexistovalo combo, mGrid mimo obraz
-			{
-        //rozmnožení note po ostatních pm
-				if(F->predchozi_PM!=NULL && F->predchozi_PM!=E && (F->predchozi_PM->mGrid->getCombo(3,2)->ItemIndex==validovany_pohon || F->predchozi_PM->mGrid->getCombo(4,2)->ItemIndex==validovany_pohon))//pokud má PM stejný pohon jako validovaný pohon
-					F->predchozi_PM->mGrid->ShowNote(puv_Note,F->d.clError,14);
-        //rozmnožení èerveného podbarvení editu
-				if(F->predchozi_PM->mGrid->Cells[3][2].Type==TmGrid::COMBO && F->predchozi_PM->mGrid->getCombo(3,2)->ItemIndex==validovany_pohon)
-				{
-					if(puv_Note!="")podbarvi_edit(F->predchozi_PM,3,3,false);//èervené podbarvení
-					else podbarvi_edit(F->predchozi_PM,3,3);//default podbarvení
-				}
-				if(F->predchozi_PM->mGrid->Cells[4][2].Type==TmGrid::COMBO && F->predchozi_PM->mGrid->getCombo(4,2)->ItemIndex==validovany_pohon)
-				{
-					if(puv_Note!="")podbarvi_edit(F->predchozi_PM,4,3,false);//èervené podbarvení
-					else podbarvi_edit(F->predchozi_PM,4,3);//default podbarvení
-				}
-			}catch(...){;}
+			int prvni=3,druhy=4;
 			Cvektory::TElement *e_pom=F->OBJEKT_akt->element;
+			if(F->predchozi_PM!=NULL)e_pom=F->predchozi_PM;
 			Cvektory::T2Element *VYHYBKY=F->d.v.hlavicka_seznam_VYHYBKY();//vytvoøení prùchodového spojáku
-			while(e_pom!=NULL && e_pom->objekt_n==F->OBJEKT_akt->n)
+			while(e_pom!=NULL)
 			{
 				try
 				{
-					if(e_pom->eID==200 || e_pom->eID==300)
+					if(e_pom!=E && (e_pom->eID==200 || e_pom->eID==300))
 					{
 						//rozmnožení note po ostatních pm
-						if((e_pom->mGrid->Cells[3][2].Type==TmGrid::COMBO && e_pom->mGrid->getCombo(3,2)->ItemIndex==validovany_pohon) || (e_pom->mGrid->Cells[4][2].Type==TmGrid::COMBO && e_pom->mGrid->getCombo(4,2)->ItemIndex==validovany_pohon))
+						if(F->prohodit_sloupce_PM(e_pom)){prvni=4;druhy=3;}
+						else {prvni=3;druhy=4;}
+						//kontrola prvního sloupce
+						if(e_pom->pohon!=NULL && e_pom->pohon->n==validovany_pohon)
+						{
 							e_pom->mGrid->ShowNote(puv_Note,F->d.clError,14);
-            //rozmnožení èerveného podbarvení editu
-						if(e_pom->mGrid->Cells[3][2].Type==TmGrid::COMBO && e_pom->mGrid->getCombo(3,2)->ItemIndex==validovany_pohon)
-						{
-							if(puv_Note!="")podbarvi_edit(e_pom,3,3,false);//èervené podbarvení
-							else podbarvi_edit(e_pom,3,3);//default podbarvení
+							if(puv_Note!="")podbarvi_edit(e_pom,prvni,3,false);//èervené podbarvení
+							else podbarvi_edit(e_pom,prvni,3);//default podbarvení
 						}
-						if(e_pom->mGrid->Cells[4][2].Type==TmGrid::COMBO && e_pom->mGrid->getCombo(4,2)->ItemIndex==validovany_pohon)
+            //kontrola druhého sloupce
+						else
 						{
-							if(puv_Note!="")podbarvi_edit(e_pom,4,3,false);//èervené podbarvení
-							else podbarvi_edit(e_pom,4,3);//default podbarvení
-						}
+							if(e_pom->eID==300)e_dalsi=e_pom->dalsi2;
+							else if(e_pom->dalsi!=NULL)e_dalsi=e_pom->dalsi;
+							else e_dalsi=F->d.v.ELEMENTY->dalsi;
+							if(e_dalsi->pohon!=NULL && e_dalsi->pohon->n==validovany_pohon)
+							{
+                e_pom->mGrid->ShowNote(puv_Note,F->d.clError,14);
+								if(puv_Note!="")podbarvi_edit(e_pom,druhy,3,false);//èervené podbarvení
+								else podbarvi_edit(e_pom,druhy,3);//default podbarvení
+              }
+            }
           }
 				}catch(...){;}
-				e_pom=F->d.v.dalsi_krok(VYHYBKY,e_pom,F->OBJEKT_akt);
+        //pøesun na další
+				if(e_pom==F->predchozi_PM && F->predchozi_PM!=NULL)e_pom=F->OBJEKT_akt->element;
+				else e_pom=F->d.v.dalsi_krok(VYHYBKY,e_pom,F->OBJEKT_akt);
 			}
+      //ukazatelové záležitosti
 			F->d.v.vymaz_seznam_VYHYBKY(VYHYBKY);//odstranìní prùchodového spojáku
 			e_pom=NULL;delete e_pom;
+      e_dalsi=NULL;delete e_dalsi;
 		}
 
 		//ukazatelové záležitosti
-		C=NULL;p=NULL;p1=NULL;p2=NULL;
-		delete C;delete p;delete p1;delete p2;
+		p=NULL;p1=NULL;p2=NULL;
+		delete p;delete p1;delete p2;
 	}
-  validovat_pohon=false;
+	validovat_pohon=false;
 }
 //---------------------------------------------------------------------------
 //nastaví defautlní barvy editu a buòce, nebo podbarvé buòku
@@ -2127,10 +2124,15 @@ void TFormX::podbarvi_edit(Cvektory::TElement *E,long Col,long Row,bool def_nast
 	//nastevení podkresové barvy
 	TColor barva=F->m.clIntensive(clRed,210);
 	TscGPEdit *Edit=NULL;
-	if(def_nastaveni && E!=NULL)Edit=E->mGrid->getEdit(Col,Row);
-	if(def_nastaveni && E==NULL)Edit=F->PmG->getEdit(Col,Row);
-	if(Edit==NULL || (Edit!=NULL && !Edit->Enabled))barva=(TColor)RGB(240,240,240);
-	else barva=clWhite;
+	//naètení editu
+  if(E!=NULL)Edit=E->mGrid->getEdit(Col,Row);
+	if(E==NULL)Edit=F->PmG->getEdit(Col,Row);
+	//naètení default barvy
+	if(def_nastaveni)
+	{
+		if(Edit==NULL || (Edit!=NULL && !Edit->Enabled))barva=(TColor)RGB(240,240,240);
+		else barva=clWhite;
+	}
 
   //kontrola existence elementu a jeho mrgridu
 	if(E!=NULL && E->mGrid!=NULL)
