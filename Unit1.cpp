@@ -862,7 +862,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=503;i++)
+	for(unsigned short i=0;i<=504;i++)
 	{
 		switch(i)
 		{
@@ -1369,7 +1369,8 @@ void TForm1::DesignSettings()
 			case 500:text="Vkládaní se nezdařilo, musíte se držet v oblasti pohonu.";break;
 			case 501:text="Kliknutím do oblasti pohonu vložíte začátek.";break;
 			case 502:text="Tažením myši a následným kliknutím vložíte koncový bod.";break;
-      case 503:text="Tažením myši přizpůsobujete oblast měření. Kliknutím ukončíte.";break;
+			case 503:text="Tažením myši přizpůsobujete oblast měření. Kliknutím ukončíte.";break;
+			case 504:text="Uchopením a tažením v oblasti pohonu změníte umístění teploměru.";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -3995,12 +3996,17 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		case POSUN_TEPLOMER:
 		{
 			//posun prvního teploměru
+			double orientace=m.Rt90(pom_element->geo.orientace-pom_element->geo.rotacni_uhel);
+			TPointD korekce;
+			korekce.x=-(d.v.PP.sirka_podvozek/2.0+0.4);korekce.y=0;
+			if(orientace==90 || orientace==270){korekce.x=0;korekce.y=-(d.v.PP.sirka_podvozek/2.0+0.4);}
 			if(pom_element!=NULL)
 			{
-				pom_element->X=akt_souradnice_kurzoru.x;
-				pom_element->Y=akt_souradnice_kurzoru.y;
+				pom_element->X=akt_souradnice_kurzoru.x+korekce.x;
+				pom_element->Y=akt_souradnice_kurzoru.y+korekce.y;
 			}
-      minule_souradnice_kurzoru=TPoint(X,Y);
+			minule_souradnice_kurzoru=TPoint(X,Y);
+      TIP=ls->Strings[504];//"Uchopením a tažením v oblasti pohonu změníte umístění teploměru."
 			REFRESH();
 		}break;
 		case NIC://přejíždění po ploše aplikace, bez aktuálně nastavené akce
@@ -4416,6 +4422,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				d.v.posun_teplomeru(pom_element);//ukončení posunu, rozhodnutí zda uložit cestu, neuložit, dolnující dotaz na výhybce
 				Akce=NIC;
 				//if(OBJEKT_akt!=NULL)d.SCENA=0;
+        TIP="";
 				if(OBJEKT_akt!=NULL && JID==-8 && vychozi_souradnice_kurzoru.x==minule_souradnice_kurzoru.x && vychozi_souradnice_kurzoru.y==minule_souradnice_kurzoru.y){nastav_focus();nahled_ulozit(true);stav_kurzoru=false;index_kurzoru=JID;nazev_puvodni=pom_element->name;pom_element_temp=pom_element;editace_textu=true;TimerKurzor->Enabled=true;}
         else {nahled_ulozit(true);REFRESH();}
 				pom_element=NULL;
@@ -15095,18 +15102,18 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	REFRESH();
 //  e_posledni=NULL;delete e_posledni;
 //	Memo("");
-	int i=0;
-	Cvektory::TElement *E=OBJEKT_akt->element;
-	while(E!=NULL)
+	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
+	while(O!=NULL)
 	{
-		if(E->eID==0)i++;
-		if(i==2)break;
-		else E=E->dalsi;
+		if(O->id>=6 && O->id<=8)
+		{
+			d.v.vytvor_default_c_teplomery(O);
+			if(O->teplomery->dalsi->prvni->geo.orientace!=O->teplomery->dalsi->prvni->sparovany->geo.orientace)Memo(O->name+" - prvni error");
+			if(O->teplomery->dalsi->posledni->geo.orientace!=O->teplomery->dalsi->posledni->sparovany->geo.orientace)Memo(O->name+" - posledni error");
+		}
+		O=O->dalsi;
 	}
-	Memo(E->name,true);
-	d.v.reserve_time(E);
-
-  E=NULL;delete E;
+	delete O;O=NULL;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

@@ -1786,9 +1786,14 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TO
 			if(teplomery->prvni->eID==401)clTeplomery=clBlue;//chlazení
 			clTeplomery=m.clIntensive(clTeplomery,210);//zesvětlení barvy
 
+			////aktualizace orientace před vykreslením
+			teplomery->prvni->geo.orientace=teplomery->prvni->sparovany->geo.orientace;
+			teplomery->prvni->geo.rotacni_uhel=teplomery->prvni->sparovany->geo.rotacni_uhel;
+			teplomery->posledni->geo.orientace=teplomery->posledni->sparovany->geo.orientace;
+			teplomery->posledni->geo.rotacni_uhel=teplomery->posledni->sparovany->geo.rotacni_uhel;
 			////vykreslení teploměrů
-			vykresli_element(canv,scena,m.L2Px(teplomery->prvni->X),m.L2Py(teplomery->prvni->Y),teplomery->prvni->name,"",teplomery->prvni->eID,1,m.Rt90(teplomery->prvni->sparovany->geo.orientace-teplomery->prvni->sparovany->geo.rotacni_uhel-90),1,1.5,0,0,0,teplomery->prvni);
-			vykresli_element(canv,scena,m.L2Px(teplomery->posledni->X),m.L2Py(teplomery->posledni->Y),teplomery->posledni->name,"",teplomery->posledni->eID,1,m.Rt90(teplomery->posledni->sparovany->geo.orientace-teplomery->posledni->sparovany->geo.rotacni_uhel-90),1,1.5,0,0,0,teplomery->posledni);
+			vykresli_element(canv,scena,m.L2Px(teplomery->prvni->X),m.L2Py(teplomery->prvni->Y),teplomery->prvni->name,"",teplomery->prvni->eID,1,m.Rt90(teplomery->prvni->geo.orientace-teplomery->prvni->geo.rotacni_uhel-90),1,1.5,0,0,0,teplomery->prvni);
+			vykresli_element(canv,scena,m.L2Px(teplomery->posledni->X),m.L2Py(teplomery->posledni->Y),teplomery->posledni->name,"",teplomery->posledni->eID,1,m.Rt90(teplomery->posledni->geo.orientace-teplomery->posledni->geo.rotacni_uhel-90),1,1.5,0,0,0,teplomery->posledni);
 
 			/////vykresení cesty
 			if(F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT && F->Akce!=F->Takce::MOVE_ELEMENT)
