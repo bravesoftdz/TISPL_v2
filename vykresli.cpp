@@ -1012,7 +1012,8 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 	bool ret=false;
 	short width=m.round(m.m2px(F->velikost_citelne_oblasti_elementu));
 	prichyceno_na_vozik=false;
-	F->TIP="";
+	F->TIP=F->ls->Strings[483];//"Kliknutím do libovolné oblasti zahájíte měření"
+	if(v.MAG_LASO!=NULL && v.MAG_LASO->Element!=NULL)F->TIP=F->ls->Strings[503];//"Tažením myši přizpůsobujete oblast měření. Kliknutím ukončíte."
 
 	//trvalé vykreslení prvního přichyceného
 	if(F->prichytavat_k_mrizce==1 && v.MAG_LASO!=NULL && v.MAG_LASO->sparovany!=NULL && v.MAG_LASO->Element->geo.X2==v.MAG_LASO->Element->geo.X3)

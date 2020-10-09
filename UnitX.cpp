@@ -660,20 +660,24 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					case 11:
 					{
 						input_state=WT;
-						//urèení cílového pohonu
-						Cvektory::TPohon *p=F->d.v.vrat_pohon(E->mGrid->getCombo(Col,2)->ItemIndex);
-						if(p!=NULL)
-						{
-							E->WT=F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text);
-							F->aktualizace_RT();
-						}
-						else E->mGrid->Cells[Col][Row].Text="-";
-            p=NULL;delete p;
+            F->zmena_editovanych_bunek(E);
 						break;
 					}
           ////konec temp
 				}
-			} break;
+			}break;
+			//spojka
+			case 301:
+			{
+				switch(Row)
+				{
+					case 3:
+					{
+						input_state=WT;
+						F->zmena_editovanych_bunek(E);
+					}break;
+				}
+			}break;
 		}
 		if(E!=NULL && E->mGrid!=NULL)E->mGrid->Refresh();//refresh aktuálnì upravované tabulky
 		posledni_E=E;//uložení posledního editovaného elementu
@@ -859,7 +863,7 @@ void TFormX::zmena_Rx ()
 	{
 		//pøepoèet hodnot v tabulce pohonu
 		aktualizace_tab_pohonu();
-  	//pøepoèet hodnot v elementech
+		//pøepoèet hodnot v elementech
 		aktualizace_tab_elementu();
 	}
 }
@@ -871,9 +875,9 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 	if(mimo_element!=NULL)n=mimo_element->n;
 	Cvektory::TElement *E=F->OBJEKT_akt->element;
 	Cvektory::T2Element *VYHYBKY=F->d.v.hlavicka_seznam_VYHYBKY();
-	while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
+	while(E!=NULL)
 	{
-    if(E->eID==200 || E->eID==300)zobrazit_skryt_radkyPM(E);
+		if(E->eID==200 || E->eID==300)zobrazit_skryt_radkyPM(E);
 		if(E->n>0 && E->n!=n && E->pohon!=NULL && F->OBJEKT_akt->pohon!=NULL && (E->pohon->n==F->OBJEKT_akt->pohon->n || (E->eID==200 || E->eID==300)))//pøeskoèí mimo_element a hlavièku, poze pøepoèet elementùm které mají stejný pohon jako aktuálnì editovaný pohon
 		{
 			switch(E->eID)
@@ -934,7 +938,7 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 					E->mGrid->Cells[1][6].Text=F->m.round2double(F->outPT(E->WT),3);
 					F->d.v.reserve_time(E);
 				}break;
- 				case 5://otoè pasivní
+				case 5://otoè pasivní
 				{
           //naètení hodnot z pohonu
 					double aRD=F->OBJEKT_akt->pohon->aRD;
@@ -957,6 +961,10 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 				{
 					update_hodnot_vyhybky_PM(E);//provede zobrazení hodnot pohonu a výpoèítá nové hodnoty mezer, provede aktualizaci WT
 					//validace_RD(E);
+				}break;
+				case 301://spojka
+				{
+					F->zmena_editovanych_bunek(E);
 				}break;
 			}
 			if(input_state==COMBO)F->set_enabled_mGrid(E);//pouze pøi zmìnì pohonu, jinak zbyteèné
@@ -1030,7 +1038,7 @@ void TFormX::aktualizace_tab_elementu_pOdebran ()
 				}break;
 				case 301://spojka
 				{
-					E->mGrid->Cells[1][1].Text=0;
+					F->zmena_editovanych_bunek(E);
 				}break;
 				case 200:
 				case 300:
@@ -1775,9 +1783,11 @@ void TFormX::prirazeni_pohohonu_vetvi(Cvektory::TElement *E,long Col)
 	}
 
 	////naètení dat z pohonu do mGridu
+  mazatPM(E);//kontrola a dotaz na mazání elementu + ovlivnìných PM
 	F->vlozit_predavaci_misto_aktualizuj_WT();//provede i aktualizaci WT všem elementù, musí být první
 	input_state=COMBO;//dùležité pro nastavení enabled komponent v aktualizaci elementù
-	aktualizace_tab_elementu();
+	if(p!=NULL)aktualizace_tab_elementu();
+	else aktualizace_tab_elementu_pOdebran();
 	F->d.v.aktualizuj_cestu_teplomeru();//pokud existuje cesta mezi teplomìry aktualizuje ji, jinak vytvoøí default cestu
 
 	//vytvoøení cesty teplomìrù po pøiøazení pohonu
@@ -1794,6 +1804,12 @@ void TFormX::prirazeni_pohohonu_vetvi(Cvektory::TElement *E,long Col)
 		delete T;T=NULL;
 	}
 	T=NULL;delete T;
+
+  ////aktualizace knihoven
+	F->DrawGrid_knihovna->Refresh();
+	F->DrawGrid_ostatni->Refresh();
+	F->DrawGrid_otoce->Refresh();
+	F->DrawGrid_geometrie->Refresh();
 
 	////ukazatelové záležitosti
 	Combo=NULL;delete Combo;
@@ -1964,7 +1980,8 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 		else if(E->dalsi!=NULL)e_dalsi=E->dalsi;
 		else e_dalsi=F->d.v.ELEMENTY->dalsi;
 		Cvektory::TPohon *p=NULL,*p1=E->pohon,*p2=e_dalsi->pohon;
-    e_dalsi=NULL;delete e_dalsi;
+		e_dalsi=NULL;delete e_dalsi;
+		int Col=3;
 
 		//dvojtá validace
 		//pokud nalezne problém zastaví se a zobrazího, i v pøípadì, že je problémù více, až bude problém vyøešen probìhne validace zda neexistuje další problém
@@ -1973,13 +1990,18 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 			//naètení požadovaného pohonu pro validaci
 			if(i==3)p=p1;
 			if(i==4)p=p2;
+			Col=i;if(F->prohodit_sloupce_PM(E))
+			{
+				if(Col==3)Col=4;
+				else Col=3;
+      }
 			//kontrola zda existuje pohon, pokud ne nemá smysl øešit
 			if(p!=NULL && F->OBJEKT_akt->rezim!=0)
 			{
 				//kontrola zda je možné editovat pohon
 				//if(E->mGrid->Cells[i][3].Type==E->mGrid->EDIT && p!=NULL)
 				{
-					podbarvi_edit(E,i,3);//defaultní nastavní barev
+					podbarvi_edit(E,Col,3);//defaultní nastavní barev
 					String Rx1=F->m.round2double(p->Rx,0),Rx2=p->Rx;
 					//kontrola zda je zadaná hodnota v rozmezí
 					if(F->m.between(p->aRD,p->rychlost_od,p->rychlost_do))mimo_rozmezi=false;
@@ -1988,7 +2010,7 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 					if(mimo_rozmezi && p->aRD > 0)
 					{
 						E->mGrid->ShowNote(F->ls->Strings[220],F->d.clError,14);//"Rychlost neodpovídá rozmezí!"
-						podbarvi_edit(E,i,3,false);
+						podbarvi_edit(E,Col,3,false);
 						pro_pohon=p->n;//uložení pro který pohon platí validace
 						break;//byl nalezen problém, zastavení validace, lze zobrazit jen jeden problém v Note
 					}
@@ -2025,7 +2047,9 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 							//if(E->mGrid->Note.Text=="")povolit_zakazat_editaci(false);//ošetøeno podmínkou proti opìtovnému spouštìní
 							E->mGrid->ShowNote(F->ls->Strings[221]+" <a>"+AnsiString(F->m.round2double(F->outaRD(dopRD),3))+"</a> "+jednotky,F->d.clError,14);//"Zadejte doporuèenou rychlost pohonu:"
 							pro_pohon=p->n;//uložení pro který pohon platí validace
-							podbarvi_edit(E,i,3,false);//èervené podbarvení
+//							F->Memo("p1: "+p1->name+"; p2: "+p2->name);
+//							F->Memo("pro pohon: "+p->name+"; i: "+String(i)+"; Col: "+String(Col));
+							podbarvi_edit(E,Col,3,false);//èervené podbarvení
 							break;//byl nalezen problém, zastavení validace, lze zobrazit jen jeden problém v Note
 						}
 						//vše je vpoøádku
@@ -2442,68 +2466,30 @@ void TFormX::mazatPM(Cvektory::TElement *Element)
 	bool mazat_element=false;
 	Cvektory::TElement *E=NULL;
 
+	//kontrola zda mazat Element
+	if(Element!=NULL && ((Element->dalsi!=NULL && Element->pohon==Element->dalsi->pohon) || (Element->dalsi==NULL && Element->pohon==F->d.v.ELEMENTY->dalsi->pohon)))mazat_element=true;
 	//hledání ovlivnìného PM v celém objektu
-	if(Element==NULL)
+	Cvektory::T2Element *VYH=F->d.v.hlavicka_seznam_VYHYBKY();
+	E=F->OBJEKT_akt->element;
+	if(F->predchozi_PM!=NULL)E=F->predchozi_PM;
+	while(E!=NULL)
 	{
-		//hledání ovlivnìného PM
-		E=F->OBJEKT_akt->element;
-		while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
+		//kontrola zda jsem narazil na PM a je možné ho smazat
+		if(E->eID==200 && Element!=E && ((E->dalsi!=NULL && E->pohon==E->dalsi->pohon) || (E->dalsi==NULL && E->pohon==F->d.v.ELEMENTY->dalsi->pohon)))
 		{
-			//kontrola zda jsem narazil na PM a je možné ho smazat
-			if(E->eID==200 && (E->dalsi!=NULL && E->pohon==E->dalsi->pohon) || (E->dalsi==NULL && E->pohon==F->d.v.ELEMENTY->dalsi->pohon))
+			if(Element==NULL)
 			{
 				Element=E;
 				mazat_element=true;
-				break;
 			}
-			else E=E->dalsi;
+			else nalezen=true;
+			break;
 		}
-		//kontrola predchoziho PM
-		if(F->predchozi_PM!=NULL && ((F->predchozi_PM->dalsi!=NULL && F->predchozi_PM->pohon==F->predchozi_PM->dalsi->pohon) || (F->predchozi_PM->dalsi==NULL && F->predchozi_PM->pohon==F->d.v.ELEMENTY->dalsi->pohon)))
-		{
-			nalezen=true;
-			E=F->predchozi_PM;
-		}
+		//pøesun na další
+		if(F->predchozi_PM!=NULL && E==F->predchozi_PM)E=F->OBJEKT_akt->element;
+		else E=F->d.v.dalsi_krok(VYH,E,F->OBJEKT_akt);
 	}
-
-	//hledání ovlivnìného PM pøed a za PM, které vyvolalo zmìnu
-	else
-	{
-		if((Element->dalsi!=NULL && Element->pohon==Element->dalsi->pohon) || (Element->dalsi==NULL && Element->pohon==F->d.v.ELEMENTY->dalsi->pohon))mazat_element=true;
-		//hledání ovlivnìného PM
-		E=Element->dalsi;
-		while(E!=NULL && (E->objekt_n==F->OBJEKT_akt->n || (Element==F->predchozi_PM && E->dalsi!=NULL && E->dalsi->objekt_n==F->OBJEKT_akt->n)))
-		{
-			//kontrola zda jsem narazil na PM a je možné ho smazat
-			if(E->eID==200 && (E->dalsi!=NULL && E->pohon==E->dalsi->pohon) || (E->dalsi==NULL && E->pohon==F->d.v.ELEMENTY->dalsi->pohon))
-			{
-				nalezen=true;
-				break;
-			}
-			else E=E->dalsi;
-		}
-		//kontrola zda sem za PM našel ovlivnìné PM, pokud ne kontrola pøed PM
-		if(!nalezen)
-		{
-			E=Element->predchozi;
-			while(E!=NULL && E->n>0 && E->objekt_n==F->OBJEKT_akt->n)
-			{
-				//kontrola zda jsem narazil na PM a je možné ho smazat
-				if(E->eID==200 && (E->dalsi!=NULL && E->pohon==E->dalsi->pohon) || (E->dalsi==NULL && E->pohon==F->d.v.ELEMENTY->dalsi->pohon))
-				{
-					nalezen=true;
-					break;
-				}
-				else E=E->predchozi;
-      }
-		}
-  	//kontrola predchoziho PM
-		if(!nalezen && F->predchozi_PM!=NULL && ((F->predchozi_PM->dalsi!=NULL && F->predchozi_PM->pohon==F->predchozi_PM->dalsi->pohon) || (F->predchozi_PM->dalsi==NULL && F->predchozi_PM->pohon==F->d.v.ELEMENTY->dalsi->pohon)))
-		{
-			nalezen=true;
-			E=F->predchozi_PM;
-		}
-	}
+	F->d.v.vymaz_seznam_VYHYBKY(VYH);
 
   //uložení posunu a zoom pøed posuny na elementy
 	TPointD predchozi_posun=F->Posun;
@@ -2642,6 +2628,7 @@ void TFormX::zobrazit_skryt_radkyPM(Cvektory::TElement *E)
 				E->mGrid->VisibleRow(11,true,false);
 			}
 			E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
+			F->napln_comba_mGridu(E);//nutné pro naplnìní comb WT
 			break;
 		}
 	}

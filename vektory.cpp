@@ -1850,6 +1850,8 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->predchozi=NULL;
 	novy->dalsi2=NULL;
 	novy->predchozi2=NULL;
+	novy->geo.HeightDepp=0;
+  novy->geo.delkaPud=0;
 
 	//ukazatelové propojení + řazení
 	vloz_element(Objekt,novy,Ep);

@@ -622,6 +622,7 @@ private:
 	void vytvor_seznam_pouzivanych_pohonu();//vytvoøí seznam, kam se zapíší pohony, které jsou používány jinde
 	void smaz_seznam_pouzivanych_pohonu();//smaže seznam používaných pohonù
 	void byly_pohony_editovany();//provede kontrolu jaké pohony byly editovány
+  void nastav_combo_mGridu(TscGPComboBox *C);//nastaví barvy a chování pro combo
 
 	////promìnné
 	UINT TimerSimulaceID;

@@ -495,3 +495,10 @@ Changing the value will affect all elements on this drive.;X;Zmìna hodnoty ovliv
 Element parameters have changed on the drive;X;Došlo ke zmìnì parametrù prvkù na pohonu
 . Application version -;X;. Verze aplikace -
 The background already exists, do you want to load a new one?;X;Podklad již existuje, pøejete si naèíst nový?
+none;X;žádné
+maximum time potential (travel time through the working/painting area);X;maximální èasový potenciál (èas pøejezdu pøes pracovní/lakovací oblast)
+Climbing or descenting can only be entered in the direction of the line.;X;Stoupání èi klesání lze zadat pouze po smìru linky.
+Insertion failed, you must stay in the drive area.;X;Vkládaní se nezdaøilo, musíte se držet v oblasti pohonu.
+Click in the drive area to insert the start.;X;Kliknutím do oblasti pohonu vložíte zaèátek.
+Drag the mouse and then click to insert an endpoint.;X;Tažením myši a následným kliknutím vložíte koncový bod.
+Drag the mouse to adjust the measurement area. Click to exit.;X;Tažením myši pøizpùsobujete oblast mìøení. Kliknutím ukonèíte.
