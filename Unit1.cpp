@@ -6237,7 +6237,7 @@ bool TForm1::pripnuti_dalsich_objektu(double citlivost)
 void TForm1::spojeni_prvni_posledni(double citlivost)
 {
 	log(__func__);//logování
-	if(prichytavat_k_mrizce==1 && d.v.ELEMENTY->dalsi->geo.typ==0 && m.delka(d.v.ELEMENTY->dalsi->geo.X1,d.v.ELEMENTY->dalsi->geo.Y1,d.v.ELEMENTY->predchozi->geo.X4,d.v.ELEMENTY->predchozi->geo.Y4)<=citlivost && m.delka(d.v.ELEMENTY->dalsi->geo.X1,d.v.ELEMENTY->dalsi->geo.Y1,d.v.ELEMENTY->predchozi->geo.X4,d.v.ELEMENTY->predchozi->geo.Y4)!=0 && mrYes==MB(ls->Strings[431],MB_YESNO,true))//"Linka nenavazuje, přejete si automaticky dokončit?"
+	if(prichytavat_k_mrizce==1 && d.v.ELEMENTY->dalsi->geo.typ==0 && (m.round2double(d.v.ELEMENTY->dalsi->geo.X1,4)!=m.round2double(d.v.ELEMENTY->predchozi->geo.X4,4) || m.round2double(d.v.ELEMENTY->dalsi->geo.Y1,4)!=m.round2double(d.v.ELEMENTY->dalsi->geo.Y4,4)) && m.delka(d.v.ELEMENTY->dalsi->geo.X1,d.v.ELEMENTY->dalsi->geo.Y1,d.v.ELEMENTY->predchozi->geo.X4,d.v.ELEMENTY->predchozi->geo.Y4)<=citlivost && mrYes==MB(ls->Strings[431],MB_YESNO,true))//"Linka nenavazuje, přejete si automaticky dokončit?"
 	{
 		Cvektory::TGeometrie zaloha,zaloha_posledni=d.v.ELEMENTY->predchozi->geo;
 		bool pridan=false;
@@ -8443,13 +8443,13 @@ short TForm1::prekryti_LO(Cvektory::TElement *E)
 	if(!prekryto && E->predchozi->n>0)
 	{
 		TPointD obP=oblast_LO(E->predchozi);
-		if(E->geo.delka-obP.y<obE.x || E->geo.delka-obP.y<0){prekryto=true;typ=1;if(E->eID==5)typ=2;}
+		if(E->geo.delka-obP.y<obE.x || E->geo.delka-obP.y<0){prekryto=true;typ=1;if(E->predchozi->eID==5)typ=2;}
 	}
 	//třetí vlna testování
 	if(!prekryto && E->dalsi!=NULL)
 	{
 		TPointD obD=oblast_LO(E->dalsi);
-		if(E->dalsi->geo.delka-obD.x<obE.y || E->dalsi->geo.delka-obD.x<0){prekryto=true;typ=1;if(E->eID==5)typ=2;}
+		if(E->dalsi->geo.delka-obD.x<obE.y || E->dalsi->geo.delka-obD.x<0){prekryto=true;typ=1;if(E->dalsi->eID==5)typ=2;}
 	}
 
 	//vracení výsledku
@@ -18640,6 +18640,7 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 						//výpočet času
 						if(!prejezd){pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;}//pokud byl před tím buffer, změna, potřebuju zapsat přejezd
 						delka=CE->Element->geo.delka-(CE->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice);
+						if(delka<0)delka=0;//pokud je délka záporná, znamená to, že v bufferu je PM, nepřidávat žádný čas
 						cas+=delka/CE->Element->pohon->aRD;
 						prejezd=true;
 						pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;//zapsání části přejezdu
@@ -18651,6 +18652,13 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 						if(!prejezd){pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;}//pokud byl před tím buffer, změna, bude následovat přejezd
 						prejezd=true;
 						cas+=CE->Element->geo.delka/CE->Element->pohon->aRD;
+						//kontrola zda další není stopka a aktuální element není v bufferu
+						if(CE->dalsi!=NULL && CE->dalsi->Element->eID==0 && CE->dalsi->Element->geo.delka<CE->dalsi->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice)
+						{
+              //element je v bufferu odečíst část bufferu
+							delka=CE->dalsi->Element->geo.delka-(CE->dalsi->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice);
+							cas+=delka/CE->Element->pohon->aRD;
+            }
 					}
 					WT+=CE->Element->WT;
 				}
@@ -19099,6 +19107,7 @@ void TForm1::rozmisti_mGridy()
 	//překreslení
 	REFRESH();
 	nahled_ulozit(true,false);//povolit uložení náhledu bez validace
+  mGrid_on_mGrid();//odstraní překrytí, pokud bylo
 }
 //---------------------------------------------------------------------------
 

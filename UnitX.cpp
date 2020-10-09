@@ -394,7 +394,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				if (Row==4)//editace COMBO
 				{
 					input_state=COMBO;//nastaveni stavu
-					switch(E->mGrid->getCombo(3,3)->ItemIndex)
+					switch(E->mGrid->getCombo(Col,Row)->ItemIndex)
 					{
 						case 0:E->rotace_jig=-180;break;
 						case 1:E->rotace_jig=-90;break;
