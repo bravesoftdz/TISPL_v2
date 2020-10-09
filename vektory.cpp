@@ -2924,7 +2924,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			//////Posun dalsích elementů
 			if(pusun_dalsich_elementu && posun_povolit)
 			{
-				TElement *E=Element->dalsi;        //F->Memo_testy->Clear();
+				TElement *E=Element->dalsi;
 				while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
 				{
 					puv_souradnice.x=E->X;puv_souradnice.y=E->Y;
@@ -3232,6 +3232,8 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 			Cesta=vrat_segment_cesty(ZAKAZKA_akt,Element);
 			if(Cesta!=NULL)Element->data=Cesta->data;
 		}
+		//přepočet vozíků, aktualizace pro další výpočty
+		if(Element->eID==0)Element->data.pocet_pozic=F->max_voziku(Element);
 		//TObjekt *O=vrat_objekt(Element->objekt_n);
 		if(Element->pohon!=NULL)cas+=Element->geo.delka/Element->pohon->aRD;//pokud má element pohon výpočet času přejezdu jeho úseku
 		else error=true;//nemá pohon = error
@@ -3267,8 +3269,8 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 					if(highlight_bunek)
 	  			{
 						Element->mGrid->Cells[2][2].Highlight=true;//slouži pro higlightování buňky s RT při posunu elementu
-						Element->data.pocet_pozic=F->max_voziku(Element);
 						Element->mGrid->Cells[2][5].Text=Element->data.pocet_pozic;
+            Element->mGrid->Cells[2][6].Text=Element->data.pocet_voziku;
 						if(Element->data.pocet_pozic<Element->data.pocet_voziku)//pokud při posunu akt. počet vozíků přesáhne maximální
 	  				{
 	  					Element->data.pocet_voziku=Element->data.pocet_pozic;

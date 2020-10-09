@@ -4200,12 +4200,13 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 						napojeni_vedlejsi_vetve(pom_element->predchozi2);
 					}
 					d.v.aktualizuj_cestu_teplomeru();//pokud existuje cesta mezi teploměry aktualizuje ji, jinak vytvoří default cestu
+					duvod_validovat=2;//validovat při refreshi
 				}
 				pom_element_temp=NULL; delete pom_element_temp;
 				vlozit_predavaci_misto_aktualizuj_WT();//kontrola zda nebyly přesunuty 2 PM na sebe
 				//nejednalo se o posun ale o editaci textu
 				if(OBJEKT_akt!=NULL && vychozi_souradnice_kurzoru.x==minule_souradnice_kurzoru.x && vychozi_souradnice_kurzoru.y==minule_souradnice_kurzoru.y){nastav_focus();nahled_ulozit(true);stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;nazev_puvodni=pom_element_temp->name;editace_textu=true;TimerKurzor->Enabled=true;}
-				else vytvor_obraz();
+				else {vytvor_obraz();REFRESH(false);}
 				break;//posun elementu
 			}
 			case MOVE_KOMORA:
@@ -7718,36 +7719,21 @@ double TForm1::max_voziku(Cvektory::TElement *stopka)
 	double delka=stopka->geo.delka;
 	if(delka>0 && !(d.v.PP.delka_podvozek<m.UDJ(d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(stopka))))//musí být něco v délce, pokud nula tak problém
 	{
-//		Cvektory::TCesta *C=NULL;
 		Cvektory::TElement *E=stopka->predchozi;
 		while(E!=NULL && E->n>0)//cyklus projde předchazijicí liniové úseky (z nich počítá délku) a zastaví až na nelionovém nebo nalezeném funkčním elementu
 		{
-//			if(E->n>0)
-//			{
-//				if(E->OTOC_delka>0)
-//				{
-//					delka-=E->zona_za;//odsazení před otočí
-//					double rotace_jigu=m.Rt90(d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(E)+E->rotace_jig);
-//					if(rotace_jigu==0 || rotace_jigu==180)delka-=d.v.PP.delka_jig/2.0;else delka-=d.v.PP.sirka_jig/2.0;
-//				}
-//				if(E->eID==1 || E->eID==3 || E->eID==7 || E->eID==9 || E->eID==11 || E->eID==13 || E->eID==15 || E->eID==17 || E->eID==101 || E->eID==103 || E->eID==105 || E->eID==107)
-//				{
-//					if(d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n!=0)C=d.v.vrat_segment_cesty(d.v.ZAKAZKA_akt,E);
-//					if(C!=NULL)E->data=C->data;
-//					if(E->data.LO2>0)delka-=E->data.LO2+E->data.LO_pozice;
-//					else delka-=(E->data.LO1+E->data.LO2)/2.0+E->data.LO_pozice;
-//				}
-				if(E!=NULL && E->n>0 && E->geo.typ==0 && E->objekt_n==stopka->objekt_n && E->eID==200 && E->geo.orientace==stopka->geo.orientace)delka+=E->geo.delka;
-				else break;
-//			}
+			if(E!=NULL && E->n>0 && E->geo.typ==0 && E->objekt_n==stopka->objekt_n && E->eID==200 && E->geo.orientace==stopka->geo.orientace)delka+=E->geo.delka;
+			else break;
 			E=E->predchozi;
 		}
 		short predchazi_SG_element=1;/*NE*/ if(stopka->predchozi!=NULL && stopka->predchozi->data.pocet_voziku>0)predchazi_SG_element=0;/*ANO*///pokud je buffer až předchozímu S&G elementu, potom uchyt pozice nemám vliv na zvětšení bufferu, protože i na předcházející stopce zabírá (přesahuje) stejný prostor
 		E=NULL;delete E;
-//		C=NULL;delete C;
 		if(delka>0)ret=floor((delka+d.v.PP.uchyt_pozice*predchazi_SG_element)/d.v.PP.delka_podvozek);
 		if(ret<1)ret=1;
 	}
+	//kontrola při posunu, zda sem nepřekročil možnosti
+	if(Akce==MOVE_ELEMENT && ret<stopka->data.pocet_voziku)stopka->data.pocet_voziku=ret;
+	//navracení hodnoty
 	return ret;
 }
 //---------------------------------------------------------------------------
@@ -12670,6 +12656,17 @@ void TForm1::akutalizace_stavu_prichytavani_vSB()
 		case 1:SB(ls->Strings[375],5);grid=true;break;//přichytí automaticky
 		case 2:SB(ls->Strings[388],5);break;//automaticky nepřichyt
 	}
+  //přepínání barev
+	if(prichytavat_k_mrizce==1)
+	{
+		scGPButton_prichytavat->Options->NormalColor=(TColor)RGB(86,120,173);
+		scGPButton_prichytavat->Options->FrameNormalColor=(TColor)RGB(86,120,173);
+	}
+	else
+	{
+		scGPButton_prichytavat->Options->NormalColor=scGPButton_prichytavat->Options->HotColor;
+		scGPButton_prichytavat->Options->FrameNormalColor=scGPButton_prichytavat->Options->HotColor;
+	}
 }
 //---------------------------------------------------------------------------
 //přepínání dotazu, přichytávání, nepřychtávání k mřížce
@@ -15097,7 +15094,19 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	vytvor_statickou_scenu();
 //	REFRESH();
 //  e_posledni=NULL;delete e_posledni;
-	Memo("");
+//	Memo("");
+	int i=0;
+	Cvektory::TElement *E=OBJEKT_akt->element;
+	while(E!=NULL)
+	{
+		if(E->eID==0)i++;
+		if(i==2)break;
+		else E=E->dalsi;
+	}
+	Memo(E->name,true);
+	d.v.reserve_time(E);
+
+  E=NULL;delete E;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -17056,6 +17065,7 @@ void TForm1::smaz_kurzor()
 			}break;
 			case -13://editace konce S/K
 			{
+				if(editovany_text.SubString(1,1)=="±")editovany_text.Delete(1,1);
 				if(ms.MyToDouble(editovany_text)!=0 || editovany_text=="0" || editovany_text=="+0" || editovany_text=="-0" || editovany_text=="±0")
 				{
 					double HeightDepp=ms.MyToDouble(editovany_text)/1000.0;//konec == Z +HeightDepp
@@ -17081,6 +17091,7 @@ void TForm1::smaz_kurzor()
 			}break;
 			case -14://editace začátku S/K
 			{
+				if(editovany_text.SubString(1,1)=="±")editovany_text.Delete(1,1);
 				if(ms.MyToDouble(editovany_text)!=0 || editovany_text=="0" || editovany_text=="+0" || editovany_text=="-0" || editovany_text=="±0")
 				{
 					double HeightDepp=ms.MyToDouble(editovany_text)/1000.0;//začátek = predchozi Z
@@ -17462,7 +17473,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		//zapnutí akceá
 		if(Akce!=NIC)ESC();
 		kurzor(add_o);
-		scGPImage_mereni_vzdalenost->ClipFrameFillColor=(TColor)RGB(225,225,225);
+		scGPButton_zmerit_vzdalenost->Options->FrameNormalColor=(TColor)RGB(86,120,173);
 		scGPButton_zmerit_vzdalenost->Options->NormalColor=(TColor)RGB(86,120,173);
 		Timer_getjobid->Enabled=false;//odstavení timeru, není potřeba
 		if(d.v.SIM==NULL)d.SCENA=222111;//ZprVozEledElesDopObjHal - vozíky nutno nechat v dynamické (jinak budou překresleny bufferem)
@@ -17508,6 +17519,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 			MB(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,"Čas = "+String(m.round2double(m.abs_d((konec_mereni.x-pocatek_mereni.x)/d.PX2SEC*3),2))+" [s]","",MB_OK,true,false,366,true,true);
 		}
 		scGPImage_mereni_vzdalenost->ClipFrameFillColor=clWhite;
+		scGPButton_zmerit_vzdalenost->Options->FrameNormalColor=scGPButton_zmerit_vzdalenost->Options->HotColor;
 		scGPButton_zmerit_vzdalenost->Options->NormalColor=scGPButton_zmerit_vzdalenost->Options->HotColor;
 		//odstranění stavů
 		if(d.v.MAG_LASO->sparovany!=NULL)d.v.MAG_LASO->sparovany->stav=1;
@@ -18143,9 +18155,18 @@ void __fastcall TForm1::scGPButton_prichytavatClick(TObject *Sender)
 	//pokud je otevřené menu nebo options zavře je
 	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
 	if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
-	scLabel_statusbar_0Click(this);
-	if(prichytavat_k_mrizce==1)scGPButton_prichytavat->Hint=ls->Strings[411];//"Vypnout přichytávání";
-	else scGPButton_prichytavat->Hint=ls->Strings[410];//"Zapnout přichytávání";
+	if(grid)//aby se po zobrazení mřížky zachoval stavající stav,tedy nebude zohledněn další if
+	if(++prichytavat_k_mrizce==3)prichytavat_k_mrizce=1;
+	if(prichytavat_k_mrizce==1)
+	{
+		scGPButton_prichytavat->Hint=ls->Strings[411];//"Vypnout přichytávání";
+	}
+	else
+	{
+		scGPButton_prichytavat->Hint=ls->Strings[410];//"Zapnout přichytávání";
+	}
+	akutalizace_stavu_prichytavani_vSB();
+	nastav_focus();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPButton_errorClick(TObject *Sender)
@@ -18435,14 +18456,15 @@ void TForm1::vymaz_seznam_obrazu()
 void __fastcall TForm1::scLabel_statusbar_0Click(TObject *Sender)
 {
 	log(__func__);//logování
+	scGPButton_prichytavatClick(this);
 	//pokud je otevřené menu nebo options zavře je
-	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
-	if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
-	if(grid)//aby se po zobrazení mřížky zachoval stavající stav,tedy nebude zohledněn další if
-	if(++prichytavat_k_mrizce==3)prichytavat_k_mrizce=1;
-
-	akutalizace_stavu_prichytavani_vSB();
-	REFRESH();
+//	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;
+//	if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;
+//	if(grid)//aby se po zobrazení mřížky zachoval stavající stav,tedy nebude zohledněn další if
+//	if(++prichytavat_k_mrizce==3)prichytavat_k_mrizce=1;
+//
+//	akutalizace_stavu_prichytavani_vSB();
+//	REFRESH();
 }
 //---------------------------------------------------------------------------
 //zapnout nebo vypnout panel editace, automaticky podle MODu zobrazí či skryje určité prvky

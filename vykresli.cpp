@@ -1111,14 +1111,14 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 		set_pen(canv,clMeridlo,width,PS_ENDCAP_FLAT);
 		//canv->Pen->Mode=pmNotXor;
 		//vykreslení
-		if(m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,F->pom_element->geo.X4,F->pom_element->geo.Y4,F->velikost_citelne_oblasti_elementu) && (F->pom_element!=v.MAG_LASO->sparovany || (v.MAG_LASO->Element->geo.X4!=v.MAG_LASO->sparovany->geo.X4 || v.MAG_LASO->Element->geo.Y4!=v.MAG_LASO->sparovany->geo.Y4)))
+		if(F->pom_element->eID!=MaxInt && m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,F->pom_element->geo.X4,F->pom_element->geo.Y4,F->velikost_citelne_oblasti_elementu) && (F->pom_element!=v.MAG_LASO->sparovany || (v.MAG_LASO->Element->geo.X4!=v.MAG_LASO->sparovany->geo.X4 || v.MAG_LASO->Element->geo.Y4!=v.MAG_LASO->sparovany->geo.Y4)))
 		{
 			canv->Ellipse(m.L2Px(F->pom_element->geo.X4)-width,m.L2Py(F->pom_element->geo.Y4)-width,m.L2Px(F->pom_element->geo.X4)+width,m.L2Py(F->pom_element->geo.Y4)+width);
 			F->akt_souradnice_kurzoru.x=F->pom_element->geo.X4;F->akt_souradnice_kurzoru.y=F->pom_element->geo.Y4;
 			ret=true;
 			F->TIP="Přichyceno na "+F->pom_element->name;
 		}
-		else if(m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,F->pom_element->predchozi->geo.X4,F->pom_element->predchozi->geo.Y4,F->velikost_citelne_oblasti_elementu) && (F->pom_element->predchozi!=v.MAG_LASO->sparovany || (v.MAG_LASO->Element->geo.X4!=v.MAG_LASO->sparovany->geo.X4 || v.MAG_LASO->Element->geo.Y4!=v.MAG_LASO->sparovany->geo.Y4)))
+		else if(F->pom_element->predchozi->eID!=MaxInt && m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,F->pom_element->predchozi->geo.X4,F->pom_element->predchozi->geo.Y4,F->velikost_citelne_oblasti_elementu) && (F->pom_element->predchozi!=v.MAG_LASO->sparovany || (v.MAG_LASO->Element->geo.X4!=v.MAG_LASO->sparovany->geo.X4 || v.MAG_LASO->Element->geo.Y4!=v.MAG_LASO->sparovany->geo.Y4)))
 		{
 			canv->Ellipse(m.L2Px(F->pom_element->predchozi->geo.X4)-width,m.L2Py(F->pom_element->predchozi->geo.Y4)-width,m.L2Px(F->pom_element->predchozi->geo.X4)+width,m.L2Py(F->pom_element->predchozi->geo.Y4)+width);
 			F->akt_souradnice_kurzoru.x=F->pom_element->predchozi->geo.X4;F->akt_souradnice_kurzoru.y=F->pom_element->predchozi->geo.Y4;
@@ -1245,17 +1245,22 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
         //čas přejezdu
 				cas+=d/C->Element->pohon->aRD;
 				cas_pom+=d/C->Element->pohon->aRD;
+				if(v.vrat_druh_elementu(C->Element)!=0 && (!prichyceno || (prichyceno && C->Element!=F->pom_element)))
+				{
+					cas+=C->Element->WT;
+					cas_pom+=C->Element->WT;
+        }
 				//připočítávat casy prvního
 				//pokud mám načítat dat z prvního elementu, načítám pouze WT a latenci
-				if(F->scGPCheckBox_meridlo_casy->Checked && C->n==1)
+				if(F->scGPCheckBox_meridlo_casy->Checked && C->n==1 && v.MAG_LASO->Element->geo.X1==C->Element->geo.X4 && v.MAG_LASO->Element->geo.Y1==C->Element->geo.Y4)
 				{
           if(C->Element->eID==0)
 					{
 						cas+=C->Element->WT;
 						if(C->Element->dalsi!=NULL && C->Element->dalsi->pohon!=NULL)cas+=m.latence_mezi_stopkami(C->Element->dalsi->pohon->aRD);
 					}
-        }
-				if((F->scGPCheckBox_meridlo_casy->Checked && C->n>1) || (!F->scGPCheckBox_meridlo_casy->Checked && (C->Element!=v.MAG_LASO->sparovany || (C->Element==v.MAG_LASO->sparovany && v.MAG_LASO->sparovany!=NULL && v.MAG_LASO->Element->geo.X2!=v.MAG_LASO->sparovany->geo.X4))))
+				}
+				if((F->scGPCheckBox_meridlo_casy->Checked && C->n>1) || (F->scGPCheckBox_meridlo_casy->Checked && (C->Element!=v.MAG_LASO->sparovany || (C->Element==v.MAG_LASO->sparovany && v.MAG_LASO->sparovany!=NULL && v.MAG_LASO->Element->geo.X1!=v.MAG_LASO->sparovany->geo.X4))))
 				{
 					double buf=0;
 					//připočátávání časů elementu zvlášť, pokud je ve spojáku přichycený element přeskočit (ten započátat pouze do cas_pom)
