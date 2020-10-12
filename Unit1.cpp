@@ -2411,7 +2411,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			bmp_total->Canvas->Draw(0,0,bmp_out);delete(bmp_out);
 		}
 		////mGRIDY
-		if(MOD!=SIMULACE && Akce!=MAGNETICKE_LASO/* && Akce!=POSUN_TEPLOMER*/)d.vykresli_mGridy(bmp_total->Canvas);//přesunuto do vnitř metody: OBJEKT_akt->elementy!=NULL kvůli pohonům
+		if(MOD!=SIMULACE)d.vykresli_mGridy(bmp_total->Canvas);//přesunuto do vnitř metody: OBJEKT_akt->elementy!=NULL kvůli pohonům
 		////časové osy pomocné grafické metody mimo AA
 		if(d.v.SIM!=NULL)d.vykresli_svislici_na_casove_osy(bmp_total->Canvas);
 		////grafické MĚŘÍTKO
@@ -3099,7 +3099,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						if(JID==-14){nastav_focus();nahled_ulozit(true);TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text="";if(pom_element->predchozi!=NULL)Z=pom_element->predchozi->Z;if(Z==0)editovany_text="±";if(Z>0)editovany_text="+";editovany_text+=m.round2double(Z*1000,0);}//editace začátku S/K elementu
 						//if(JID==100)vytvor_edit();//změna názvu elementu skrze mGrid .. odstaveno
 						//if(JID==1){nastav_focus();stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;nazev_puvodni=pom_element_temp->name;editace_textu=true;TimerKurzor->Enabled=true;}
-						if(JID==-7 || JID==-8){Akce=POSUN_TEPLOMER;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;/*bool stav=OBJEKT_akt->zobrazit_mGrid;OBJEKT_akt->zobrazit_mGrid=false;REFRESH();Akce=POSUN_TEPLOMER;d.SCENA=1111111;vytvor_statickou_scenu();OBJEKT_akt->zobrazit_mGrid=stav;*/puv_souradnice.x=pom_element->X;puv_souradnice.y=pom_element->Y;}//kliknutí na tělo teploměru, nebo na jeho popisek
+						if(JID==-7 || JID==-8){Akce=POSUN_TEPLOMER;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;/*bool stav=OBJEKT_akt->zobrazit_mGrid;OBJEKT_akt->zobrazit_mGrid=false;REFRESH();Akce=POSUN_TEPLOMER;d.SCENA=1111111;vytvor_statickou_scenu();OBJEKT_akt->zobrazit_mGrid=stav;*/puv_souradnice.x=pom_element->X;puv_souradnice.y=pom_element->Y;d.SCENA=1111111;vytvor_statickou_scenu();}//kliknutí na tělo teploměru, nebo na jeho popisek
 						//if(JID==-8);//popisek teploměru
 						if(JID==0&&pom_komora!=NULL&&pom_element==NULL){Akce=MOVE_KOMORA;pom_komora_temp=pom_komora;}//uchopení a přesun komory, sloužící k jejímu odstranění
 						//nové JID pro objekt
@@ -4000,7 +4000,27 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			TPointD korekce;
 			korekce.x=-(d.v.PP.sirka_podvozek/2.0+0.4);korekce.y=0;
 			if(orientace==90 || orientace==270){korekce.x=0;korekce.y=-(d.v.PP.sirka_podvozek/2.0+0.4);}
-			if(pom_element!=NULL)
+			////////////////
+			bool prichyceno=false;
+			pom_element_temp=d.v.ELEMENTY->dalsi;
+			Cvektory::T2Element *VYH=d.v.hlavicka_seznam_VYHYBKY();
+			while(pom_element_temp!=NULL)
+			{
+				if(d.v.PtInSegment(pom_element_temp,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+		  	{
+		  		//upravení souřadnic, "přilepení" přesně na pohon
+					korekce=d.v.bod_na_geometrii(pom_element_temp);
+					pom_element->X=korekce.x;
+					pom_element->Y=korekce.y;
+					prichyceno=true;
+		  		break;
+				}
+				pom_element_temp=d.v.dalsi_krok(VYH,pom_element_temp);
+			}
+      d.v.vymaz_seznam_VYHYBKY(VYH);
+			pom_element_temp=NULL;delete pom_element_temp;
+			////////////////
+			if(pom_element!=NULL && !prichyceno)
 			{
 				pom_element->X=akt_souradnice_kurzoru.x+korekce.x;
 				pom_element->Y=akt_souradnice_kurzoru.y+korekce.y;
@@ -4421,8 +4441,8 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			{
 				d.v.posun_teplomeru(pom_element);//ukončení posunu, rozhodnutí zda uložit cestu, neuložit, dolnující dotaz na výhybce
 				Akce=NIC;
-				//if(OBJEKT_akt!=NULL)d.SCENA=0;
-        TIP="";
+				TIP="";
+        d.SCENA=0;
 				if(OBJEKT_akt!=NULL && JID==-8 && vychozi_souradnice_kurzoru.x==minule_souradnice_kurzoru.x && vychozi_souradnice_kurzoru.y==minule_souradnice_kurzoru.y){nastav_focus();nahled_ulozit(true);stav_kurzoru=false;index_kurzoru=JID;nazev_puvodni=pom_element->name;pom_element_temp=pom_element;editace_textu=true;TimerKurzor->Enabled=true;}
         else {nahled_ulozit(true);REFRESH();}
 				pom_element=NULL;
@@ -4501,6 +4521,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 						//smazání seznamu MAG_LASO
 						d.v.vymaz_seznam_MAG_LASO();
 						d.v.hlavicka_MAG_LASO();
+						d.SCENA=0;
 						REFRESH(false);
 					}
           E=NULL;delete E;
@@ -4514,6 +4535,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 					d.v.vymaz_seznam_MAG_LASO();
 					d.v.hlavicka_MAG_LASO();
 					TIP=ls->Strings[500];//"Vkládaní se nezdařilo, musíte se držet v oblasti pohonu."
+          d.SCENA=0;
 					REFRESH(false);
         }
 			}break;
@@ -6009,6 +6031,7 @@ void TForm1::ESC()
 			//smazání seznamu MAG_LASO
 			d.v.vymaz_seznam_MAG_LASO();
 			d.v.hlavicka_MAG_LASO();
+      d.SCENA=0;
       REFRESH(false);
     }
 	}
@@ -12608,7 +12631,9 @@ void __fastcall TForm1::DrawGrid_geometrieMouseDown(TObject *Sender, TMouseButto
 		Akce=S_K;
 		kurzor(add_o);
 		TIP=ls->Strings[501];//"Kliknutím do oblasti pohonu vložíte začátek."
-		REFRESH(false);
+		d.SCENA=1111111;//ZprVozEledElesDopObjHal - vozíky nutno nechat v dynamické (jinak budou překresleny bufferem
+		vytvor_statickou_scenu();//vypnutí vrstvy errorů a nastavení zbytku na statickou scénu
+		REFRESH();
 	}
 }
 //---------------------------------------------------------------------------
@@ -15101,19 +15126,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	vytvor_statickou_scenu();
 //	REFRESH();
 //  e_posledni=NULL;delete e_posledni;
-//	Memo("");
-	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
-	while(O!=NULL)
-	{
-		if(O->id>=6 && O->id<=8)
-		{
-			d.v.vytvor_default_c_teplomery(O);
-			if(O->teplomery->dalsi->prvni->geo.orientace!=O->teplomery->dalsi->prvni->sparovany->geo.orientace)Memo(O->name+" - prvni error");
-			if(O->teplomery->dalsi->posledni->geo.orientace!=O->teplomery->dalsi->posledni->sparovany->geo.orientace)Memo(O->name+" - posledni error");
-		}
-		O=O->dalsi;
-	}
-	delete O;O=NULL;
+	Memo("");
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -17469,14 +17482,6 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 	////zapnutí akce
 	if(Akce!=MAGNETICKE_LASO)
 	{
-		bool p_stav;
-		//skrytí mgridů v editaci
-		if(OBJEKT_akt!=NULL)
-		{
-			p_stav=OBJEKT_akt->zobrazit_mGrid;//uložení původního stavu mGridů
-			OBJEKT_akt->zobrazit_mGrid=false;//skrytí
-			//REFRESH();//můsí být překresleno, překreslením dojde ke skrytí komponent mGridů, jinak by byly stále viditelné, REFRESH je vyvolán níže v metodě zobraz_tip
-		}
 		//zapnutí akceá
 		if(Akce!=NIC)ESC();
 		kurzor(add_o);
@@ -17488,7 +17493,6 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		vytvor_statickou_scenu();//vypnutí vrstvy errorů a nastavení zbytku na statickou scénu
 		zobraz_tip(ls->Strings[483]);//má v sobě REFRESH(), je nutné volat až po vytvořeni statické scény
 		Akce=MAGNETICKE_LASO;//až po refresh
-		if(OBJEKT_akt!=NULL)OBJEKT_akt->zobrazit_mGrid=p_stav;//navrácení původního stavu do objektu
 		count_memo=0;//ukazatel kolikrát proběhl cyklus načtení dat ze zakázky, pouze jednou
 		mereni_delka.x=0;
     mereni_delka.y=0;
@@ -18596,27 +18600,20 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 				//pokud se jedná o stopku počítat s bufferem
 				if(T->prvni->sparovany->eID==0)
 				{
-					//nahrání aktuálních dat do ukazatele
-					if(d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n!=0)//pokud pracuji v nějaké zakázce
-					{
-						Cvektory::TCesta *c=d.v.vrat_segment_cesty(d.v.ZAKAZKA_akt,T->prvni->sparovany);
-						if(c!=NULL)T->prvni->sparovany->data=c->data;//přepsání aktuálních dat ze zakázky do elementu
-						c=NULL;delete c;
-					}
 					//výpočet délky bufferu
 					double buf=T->prvni->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice;
 					//pokud je úsek menší než délka bufferu připočtení wt podle toho na jakém jsem vozíku
 					if(delka<=buf)
 					{
 						prejezd=false;
-						pocet_voziku=ceil((delka-buf)/d.v.PP.delka_podvozek);
+						pocet_voziku=ceil((buf-delka)/d.v.PP.delka_podvozek);
 						if(pocet_voziku<0)pocet_voziku=T->prvni->sparovany->data.pocet_voziku+pocet_voziku;
 						cas+=m.V2WT(pocet_voziku,d.v.PP.TT);//připočítání WT na aktuálním vozíku
 					}
 					//pokud je úsek větší než buffer připočtení WTstop a přejezdu
 					else
 					{
-            delka=delka-buf;
+						delka=delka-buf;
 						cas+=delka/T->prvni->sparovany->pohon->aRD;
 						//rozpad na přejezd a buffer
 						prejezd=true;
@@ -18637,13 +18634,6 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 				{
 					if(CE->Element->eID==0)
 					{
-						//nahrání aktuálních dat do ukazatele
-		      	if(d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n!=0)//pokud pracuji v nějaké zakázce
-						{
-							Cvektory::TCesta *c=d.v.vrat_segment_cesty(d.v.ZAKAZKA_akt,CE->Element);
-							if(c!=NULL)CE->Element->data=c->data;//přepsání aktuálních dat ze zakázky do elementu
-              c=NULL;delete c;
-						}
 						//výpočet času
 						if(!prejezd){pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;}//pokud byl před tím buffer, změna, potřebuju zapsat přejezd
 						delka=CE->Element->geo.delka-(CE->Element->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice);
@@ -18683,37 +18673,30 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 				//pokud se jedná o stopku počítat s bufferem
 				if(T->posledni->sparovany->eID==0)
 				{
-					//nahrání aktuálních dat do ukazatele
-					if(d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n!=0)//pokud pracuji v nějaké zakázce
-					{
-						Cvektory::TCesta *c=d.v.vrat_segment_cesty(d.v.ZAKAZKA_akt,T->posledni->sparovany);
-						if(c!=NULL)T->posledni->sparovany->data=c->data;//přepsání aktuálních dat ze zakázky do elementu
-						c=NULL;delete c;
-					}
 					//výpočet délky bufferu
 					double buf=T->posledni->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice;
+					buf=T->posledni->sparovany->geo.delka-buf;
 					//pokud je úsek menší než délka bufferu připočtení wt podle toho na jakém jsem vozíku
-					if(delka<=buf)
+					if(delka>buf)
 					{
-						if(prejezd){pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;}//pokud byl přejezd, změna, bude následovat buffer
+						if(!prejezd){pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;}//pokud byl přejezd, změna, bude následovat buffer
+						prejezd=true;
+						cas+=buf/T->posledni->sparovany->pohon->aRD;
+						pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;//pokud byl přejezd, změna, bude následovat buffer
 						prejezd=false;
 						WT+=T->posledni->sparovany->WT;
             pocet_voziku=ceil((delka-buf)/d.v.PP.delka_podvozek);
 						if(pocet_voziku<0)pocet_voziku=T->prvni->sparovany->data.pocet_voziku+pocet_voziku;
 						cas+=m.V2WT(pocet_voziku,d.v.PP.TT);//připočítání WT na aktuálním vozíku
+						pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;
 					}
 					//pokud je úsek větší než buffer připočtení WTstop a přejezdu
 					else
 					{
-						if(!prejezd){pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;}//pokud byl před tím buffer, změna, potřebuju zapsat přejezd
-						delka=delka-buf;
 						cas+=delka/T->posledni->sparovany->pohon->aRD;
 						prejezd=true;
 						//rozpad na přejezd a buffer
 						pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;//zapsání části přejezdu
-						prejezd=false;
-						WT+=T->posledni->sparovany->WT;
-						cas+=T->posledni->sparovany->data.WTstop;
 					}
 				}
 				else//není stop
@@ -18723,12 +18706,9 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 					cas+=delka/T->posledni->sparovany->pohon->aRD;
 					WT+=T->posledni->sparovany->WT;
 				}
-
-				//vypsání řádku
-				pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;
 			}
-      //kontrola zda nejsou ještě k vypsání nějaké hodnoty, může nastat, když budou oba teploměry na jedné stoce
-			if(cas>0 || WT>0){pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;}
+			//kontrola zda nejsou ještě k vypsání nějaké hodnoty, může nastat, když budou oba teploměry na jedné stoce
+			if(cas>0 || WT>0){Memo("čas: "+String(cas)+"; WT: "+String(WT));pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;}
 			//vložení řádku součtu
 			pridej_radek_tab_teplomeru(T->posledni,cas,WT,false,true);
 		}

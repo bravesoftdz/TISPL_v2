@@ -1260,7 +1260,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 						if(C->Element->dalsi!=NULL && C->Element->dalsi->pohon!=NULL)cas+=m.latence_mezi_stopkami(C->Element->dalsi->pohon->aRD);
 					}
 				}
-				if((F->scGPCheckBox_meridlo_casy->Checked && C->n>1) || (F->scGPCheckBox_meridlo_casy->Checked && (C->Element!=v.MAG_LASO->sparovany || (C->Element==v.MAG_LASO->sparovany && v.MAG_LASO->sparovany!=NULL && v.MAG_LASO->Element->geo.X1!=v.MAG_LASO->sparovany->geo.X4))))
+				if(!F->scGPCheckBox_meridlo_casy->Checked || (F->scGPCheckBox_meridlo_casy->Checked && C->n>1) || (F->scGPCheckBox_meridlo_casy->Checked && (C->Element!=v.MAG_LASO->sparovany || (C->Element==v.MAG_LASO->sparovany && v.MAG_LASO->sparovany!=NULL && v.MAG_LASO->Element->geo.X1!=v.MAG_LASO->sparovany->geo.X4))))
 				{
 					double buf=0;
 					//připočátávání časů elementu zvlášť, pokud je ve spojáku přichycený element přeskočit (ten započátat pouze do cas_pom)
@@ -5183,7 +5183,7 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			Cvektory::T2Element *VYHYBKY=v.hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 			while(E!=NULL)
 			{
-				if(F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT && F->Akce!=F->Takce::S_K)//vykreslení tabulek elementů, kteří mají stejný pohon jako aktuálně editovaný pohon
+				if(F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT && F->Akce!=F->Takce::S_K && F->Akce!=F->Takce::POSUN_TEPLOMER && F->Akce!=F->Takce::MAGNETICKE_LASO)//vykreslení tabulek elementů, kteří mají stejný pohon jako aktuálně editovaný pohon
 				{
 					if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
 					{
@@ -5219,43 +5219,6 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 				else E=v.dalsi_krok(VYHYBKY,E,F->OBJEKT_akt);//posun po elementech v objektu
 			}
 			v.vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
-
-			//pokud existuje předchozí předávací místo bude vykresleno
-//			E=F->predchozi_PM;
-//			if(E!=NULL)
-//			{
-//				if(((E->pohon==NULL && F->OBJEKT_akt->pohon==NULL) || (E->pohon!=NULL && F->OBJEKT_akt->pohon!=NULL) || (E->eID==200 || E->eID==300 || E->eID==301)) && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT && F->Akce!=F->Takce::S_K)//vykreslení tabulek elementů, kteří mají stejný pohon jako aktuálně editovaný pohon
-//				{
-//					if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
-//					{
-//						if(F->OBJEKT_akt->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud nemají být zobrazeny mgridy nemá být zobrazen ani rastr
-//						{
-//							E->mGrid->Redraw=false;
-//							E->mGrid->SetVisibleComponents(false);
-//							E->mGrid->Left=m.L2Px(E->Xt);//kvůli případnému přesouvání tabulky
-//							E->mGrid->Top=m.L2Py(E->Yt);//kvůli případnému přesouvání tabulky
-//							E->mGrid->Show(canv);
-//						}
-//					}
-//					else
-//					{
-//						if(F->OBJEKT_akt->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
-//						{
-//							E->mGrid->Redraw=true;
-//							E->mGrid->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak E->mGrid->Buffer(false);
-//							if(E->mGrid->VisibleComponents>-1)E->mGrid->VisibleComponents=true;//stačí volat toto, protože se pomocí Show (resp. Draw-SetCompontens-Set...) cyklem všechny komponenty na základě tohoto zobrazí pokud je nastaveno na -1 tak se při překreslování zohlední individuální nastavení komponent (z tohoto stavu je však pro další použítí třeba vrátit do stavu 0 nebo 1)
-//							E->mGrid->Left=m.L2Px(E->Xt);
-//							E->mGrid->Top=m.L2Py(E->Yt);
-//							E->mGrid->Show(canv);
-//						}
-//						else//pokud ne, je třeba skrýt všechny komponenty (posun obrazu PAN MOVE či skryté mGridy)
-//						{
-//							E->mGrid->SetVisibleComponents(false);
-//						}
-//					}
-//				}
-//				else E->mGrid->SetVisibleComponents(false);//pokud pohon elementu se nerovná aktuálně editovanému pohonu, je třeba skrýt všechny komponenty (posun obrazu PAN MOVE či skryté mGridy)
-//			}
 			E=NULL;delete E;
 		}
 		////tabulka teploměru
@@ -5267,7 +5230,7 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			{
 		  	if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
 		  	{
-					if(F->OBJEKT_akt->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT && F->Akce!=F->Takce::S_K)//pokud nemají být zobrazeny mgridy nemá být zobrazen ani rastr
+					if(F->OBJEKT_akt->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT && F->Akce!=F->Takce::S_K && F->Akce!=F->Takce::POSUN_TEPLOMER && F->Akce!=F->Takce::MAGNETICKE_LASO)//pokud nemají být zobrazeny mgridy nemá být zobrazen ani rastr
 					{
 						T->posledni->mGrid->Redraw=false;
 						T->posledni->mGrid->Left=m.L2Px(T->posledni->Xt);
@@ -5282,7 +5245,7 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 		  	}
 		  	else
 				{
-		  		if(F->OBJEKT_akt->zobrazit_mGrid &&  F->Akce!=F->Takce::PAN_MOVE && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT && F->Akce!=F->Takce::S_K)//pokud je mGrid zobrazen a nejedná se o posun obrazu
+					if(F->OBJEKT_akt->zobrazit_mGrid &&  F->Akce!=F->Takce::PAN_MOVE && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT && F->Akce!=F->Takce::S_K && F->Akce!=F->Takce::POSUN_TEPLOMER && F->Akce!=F->Takce::MAGNETICKE_LASO)//pokud je mGrid zobrazen a nejedná se o posun obrazu
 		  		{
 		  			T->posledni->mGrid->Redraw=true;
 						T->posledni->mGrid->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak T->posledni->mGrid->Buffer(false);
@@ -5305,7 +5268,7 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			TRect oblast_kabiny=F->vrat_max_oblast(F->OBJEKT_akt);
 			if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
 			{
-				if(F->OBJEKT_akt->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT && F->Akce!=F->Takce::S_K)//pokud nemají být zobrazeny mgridy nemá být zobrazen ani rastr
+				if(F->OBJEKT_akt->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT && F->Akce!=F->Takce::S_K && F->Akce!=F->Takce::POSUN_TEPLOMER && F->Akce!=F->Takce::MAGNETICKE_LASO)//pokud nemají být zobrazeny mgridy nemá být zobrazen ani rastr
 				{
 					F->PmG->Redraw=false;
 			  	F->PmG->Left=m.L2Px(F->OBJEKT_akt->Xp);
@@ -5320,7 +5283,7 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			}
 			else
 			{
-				if(F->OBJEKT_akt->zobrazit_mGrid &&  F->Akce!=F->Takce::PAN_MOVE && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT && F->Akce!=F->Takce::S_K)//pokud je mGrid zobrazen a nejedná se o posun obrazu
+				if(F->OBJEKT_akt->zobrazit_mGrid &&  F->Akce!=F->Takce::PAN_MOVE && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT && F->Akce!=F->Takce::S_K && F->Akce!=F->Takce::POSUN_TEPLOMER && F->Akce!=F->Takce::MAGNETICKE_LASO)//pokud je mGrid zobrazen a nejedná se o posun obrazu
 				{
 					F->PmG->Redraw=true;
 					F->PmG->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak F->PmG->Buffer(false);
