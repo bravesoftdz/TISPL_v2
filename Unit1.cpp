@@ -18708,7 +18708,7 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 				}
 			}
 			//kontrola zda nejsou ještě k vypsání nějaké hodnoty, může nastat, když budou oba teploměry na jedné stoce
-			if(cas>0 || WT>0){Memo("čas: "+String(cas)+"; WT: "+String(WT));pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;}
+			if(cas>0 || WT>0){pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;}
 			//vložení řádku součtu
 			pridej_radek_tab_teplomeru(T->posledni,cas,WT,false,true);
 		}

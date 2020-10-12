@@ -2862,7 +2862,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 {
 	Cvektory::TElement *E=NULL;
 	bool RET=true;
-	if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->element!=NULL/*&&F->Akce!=F->MOVE_ELEMENT*/)//raději ošetření, ač by se metoda měla volat jen v případě existence OBJEKT_akt
+	if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->element!=NULL)//raději ošetření, ač by se metoda měla volat jen v případě existence OBJEKT_akt
 	{
 		bool posun_povolit=true,error=false;
 		TPointD puv_souradnice;
@@ -2872,7 +2872,6 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			//////Načtení délky před posunem
 			double vzd=Element->geo.delka;//leze použít pouze délku elementu, nově se nevyskytují zarážky mezi fce. elementy
 			if(Element->geo.HeightDepp!=0)vzd=Element->geo.delkaPud;//pokud se jedná o S/K
-			//vzd=vzdalenost_od_predchoziho_elementu(Element,false);//musí zde být vzdálenost k předchozímu funkčnímu elementu, tj. velikost kóty
 			if((Element->dalsi!=NULL && Element->dalsi->geo.typ!=0 || Element->geo.typ!=0) && kontrola_zmeny_poradi)posun_povolit=false;//pokud by element ovlivnil posunem geometrii
 			//////Realizace posunu + validace
 			if(posun_kurzorem && posun_povolit)//pokud se jedná o posun kurzorem, třeba jinak určit vzdálenost
@@ -2881,9 +2880,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				else vzdalenost=vzd-vzdalenost;
 			}
 			//realizace posunu
-			/*if(Element->geo.HeightDepp==0)*/vzdalenost=(/*vzd/m.abs_d(vzd))*(*/m.abs_d(vzd)-vzdalenost);
-			//else if(Element->geo.HeightDepp/vzdalenost<1)vzdalenost=-vzdalenost*cos(asin(Element->geo.HeightDepp/vzdalenost))+Element->geo.delkaPud;//zjištění posunu ve S/K
-			//else {vzdalenost=0;posun_povolit=false;}//nebyly dodrženy pravidla pravoúhlého trojúhelníku, znemožnit editaci
+			vzdalenost=(m.abs_d(vzd)-vzdalenost);
 			switch((int)Element->geo.orientace)
 			{
 				case   0:Element->Y=Element->Y-vzdalenost;break;
@@ -2892,7 +2889,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				case 270:Element->X=Element->X+vzdalenost;break;
 			}
 			//kontrola zda je element stále na linii
-			if(F->bod_na_geometrii(0,0,Element) /*|| Element->n==vrat_posledni_element_objektu(F->OBJEKT_akt)->n*/ || !kontrola_zmeny_poradi)
+			if(F->bod_na_geometrii(0,0,Element) || !kontrola_zmeny_poradi)
 			{
 				//kontrola + změna pořadí
 				if(kontrola_zmeny_poradi)
@@ -2929,15 +2926,17 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				{
 					puv_souradnice.x=E->X;puv_souradnice.y=E->Y;
 					if(E->geo.typ!=0 || (E->dalsi!=NULL && E->dalsi->geo.typ!=0) || E->geo.delka==0 || (E->dalsi!=NULL && E->dalsi->geo.delka==0))break;//ukončení v případě, že se někde nachází jiná geometrie než linie
-					if(E->eID!=MaxInt && E->eID!=200)
+					if(E->eID==MaxInt || E->eID==200)
 					{
-			   		switch((int)E->geo.orientace)
-			   		{
-			   			case   0:E->Y=E->Y-vzdalenost;break;
-			   			case  90:E->X=E->X-vzdalenost;break;
-			   			case 180:E->Y=E->Y+vzdalenost;break;
-							case 270:E->X=E->X+vzdalenost;break;
-						}
+						E->X=E->geo.X4;
+            E->Y=E->geo.Y4;
+					}
+					switch((int)E->geo.orientace)
+					{
+						case   0:E->Y=E->Y-vzdalenost;break;
+			   		case  90:E->X=E->X-vzdalenost;break;
+						case 180:E->Y=E->Y+vzdalenost;break;
+						case 270:E->X=E->X+vzdalenost;break;
 					}
 					//kontrola zda je element stále na linii
 					if(F->bod_na_geometrii(0,0,E))//pokud ano
