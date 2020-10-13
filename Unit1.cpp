@@ -4012,6 +4012,8 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 					korekce=d.v.bod_na_geometrii(pom_element_temp);
 					pom_element->X=korekce.x;
 					pom_element->Y=korekce.y;
+					pom_element->geo.orientace=pom_element_temp->geo.orientace;//aktualizace orientace podle aktuálně přichyceného elementu
+					pom_element->geo.rotacni_uhel=pom_element_temp->geo.rotacni_uhel;
 					prichyceno=true;
 		  		break;
 				}
@@ -4596,6 +4598,7 @@ void TForm1::getJobID(int X, int Y)
 {
 	log(__func__);//logování
 	JID=-1;//výchozí stav, nic nenalezeno
+  FormX->vykresli_vetev=0;
 	pom_element=NULL;
 	pom_komora=NULL;
 	pom_bod=NULL;   
@@ -4625,7 +4628,7 @@ void TForm1::getJobID(int X, int Y)
   		if(JID==-1)//pokud nebyla tabulka pohonu nalezena zkouší hledat další aktivní prvky náhledu
   		{
     		//dále TABULKY ELEMENTŮ
-  			pom_element=d.v.najdi_tabulku(OBJEKT_akt,m.P2Lx(X),m.P2Ly(Y));
+				pom_element=d.v.najdi_tabulku(OBJEKT_akt,m.P2Lx(X),m.P2Ly(Y));
   			if(pom_element!=NULL && OBJEKT_akt->zobrazit_mGrid)//možné měnit rozmístění a rozměry a tabulka nalezena, tzn. klik či přejetí myší přes tabulku
 				{
   				int IdxRow=pom_element->mGrid->GetIdxRow(X,Y);
@@ -4636,16 +4639,28 @@ void TForm1::getJobID(int X, int Y)
 						else if(OBJEKT_akt->uzamknout_nahled==false)JID=1000+0;//hlavička - posouvat tabulku je možné pouze při odemčeném náhledu
     			}
     			if(IdxRow>0)//nějaký z řádků mimo nultého tj. hlavičky, nelze použít else, protože IdxRow -1 bude také možný výsledek
-  				{
+					{
 						int IdxCol=pom_element->mGrid->GetIdxColumn(X,Y);
   					if(pom_element->mGrid->CheckLink(X,Y,IdxCol,IdxRow))JID=100+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
-  					else if(IdxCol==0)//řádky v prvním sloupeci
+						else if(IdxCol==0)//řádky v prvním sloupeci
   					{
   						//if(pom_element->mGrid->CheckLink(X,Y,IdxCol,IdxRow))JID=100+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
   						/*else */if(OBJEKT_akt->uzamknout_nahled==false)JID=1000+IdxRow;//řádky bez odkazu možné posouvat tabulku je možné pouze při odemčeném náhledu
-  					}
-    				else if(OBJEKT_akt->uzamknout_nahled==false)JID=2000+IdxRow;//řádky v druhém a dalších sloupcích
-  				}
+						}
+						else if(OBJEKT_akt->uzamknout_nahled==false)JID=(IdxCol+1)*1000+IdxRow;//řádky v druhém a dalších sloupcích
+						//nastavenní vykreslovací větve
+						if(pom_element->eID==300 && ((JID>=4004 && JID<=4010) || (JID>=5004 && JID<=5010)))
+						{
+							if(JID>=5004)FormX->vykresli_vetev=2;
+							else FormX->vykresli_vetev=1;
+							if(prohodit_sloupce_PM(pom_element))
+							{
+								if(FormX->vykresli_vetev==1)FormX->vykresli_vetev=2;
+                else FormX->vykresli_vetev=1;
+              }
+						}
+						if(pom_element->eID==301 && (JID==2002 || JID==3002))FormX->vykresli_vetev=(JID-2)/1000;
+					}
     		}
 				else//tabulka nenalezena, takže zkouší najít ELEMENT
   			{
@@ -9632,7 +9647,7 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni,bool plnit
 			E->mGrid->Cells[j][i].RightMargin = 3;
 			E->mGrid->Cells[j][i].Align=mGrid->RIGHT;
 			if(ms.MyToDouble(E->mGrid->Cells[j][i].Text)!=0)E->mGrid->Cells[j][i].Text=m.round2double(ms.MyToDouble(E->mGrid->Cells[j][i].Text),3);//přeskočení prvního řádku v tabulce stopky
-			if((((E->eID!=300 && E->eID!=200 || E->eID==300) && i!=1) || (E->eID==200 && i!=1) || (E->eID==301 && i!=1)) && E->mGrid->Cells[j][i].Type!=E->mGrid->EDIT&&E->mGrid->Cells[j][i].Type!=E->mGrid->COMBO)
+			if((((E->eID==300 || E->eID==200 || E->eID==300 || E->eID==301) && i!=1) || (E->eID!=300 && E->eID!=200 && E->eID!=300 && E->eID!=301)) && E->mGrid->Cells[j][i].Type!=E->mGrid->EDIT&&E->mGrid->Cells[j][i].Type!=E->mGrid->COMBO)
 			{
 				E->mGrid->Cells[j][i].Background->Color=clBackgroundHidden;
 				E->mGrid->Cells[j][i].RightMargin=5;
@@ -9940,9 +9955,13 @@ void TForm1::nastav_combo_mGridu(TscGPComboBox *C)
 //rozhodne zda mají být prohozeny sloupce PM, podle trendu geometrie
 bool TForm1::prohodit_sloupce_PM(Cvektory::TElement *E)
 {
+  log(__func__);
 	bool ret=false;
-	short orientace=m.Rt90(E->geo.orientace-E->geo.rotacni_uhel);
-	if(orientace==270)ret=true;
+	if(E->eID==200 || E->eID==300)
+	{
+		short orientace=m.Rt90(E->geo.orientace-E->geo.rotacni_uhel);
+		if(orientace==270)ret=true;
+	}
 	return ret;
 }
 //---------------------------------------------------------------------------
@@ -18582,7 +18601,7 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 				//mazání všech rádků kromě hlavičky
 				for(unsigned int i=T->posledni->mGrid->RowCount-1;i>0;i--)
 				{
-					T->posledni->mGrid->DeleteRow(i,false); 
+					T->posledni->mGrid->DeleteRow(i,false);
 				}
 			}
 
@@ -18631,7 +18650,7 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 			while(CE!=NULL)
 			{
 				if(CE->Element->pohon!=NULL)
-				{
+				{           Memo(CE->Element->name);
 					if(CE->Element->eID==0)
 					{
 						//výpočet času
@@ -18644,7 +18663,7 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 						prejezd=false;
 						cas+=CE->Element->data.WTstop;
 					}
-					else 
+					else
 					{
 						if(!prejezd){pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;}//pokud byl před tím buffer, změna, bude následovat přejezd
 						prejezd=true;
@@ -18676,12 +18695,12 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 					//výpočet délky bufferu
 					double buf=T->posledni->sparovany->data.pocet_voziku*d.v.PP.delka_podvozek-d.v.PP.uchyt_pozice;
 					buf=T->posledni->sparovany->geo.delka-buf;
+					if(!prejezd){pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;}//pokud byl buffer, změna, bude následovat přejezd
 					//pokud je úsek menší než délka bufferu připočtení wt podle toho na jakém jsem vozíku
 					if(delka>buf)
 					{
-						if(!prejezd){pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;}//pokud byl přejezd, změna, bude následovat buffer
-						prejezd=true;
 						cas+=buf/T->posledni->sparovany->pohon->aRD;
+						prejezd=true;
 						pridej_radek_tab_teplomeru(T->posledni,cas,WT,prejezd);cas=0;WT=0;//pokud byl přejezd, změna, bude následovat buffer
 						prejezd=false;
 						WT+=T->posledni->sparovany->WT;
@@ -18716,8 +18735,8 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 		//ukazatelové záležitosti
 		T=NULL;delete T;
 
-    //překrytí mGridu
-		mGrid_on_mGrid();
+		//překrytí mGridu
+	  mGrid_on_mGrid();
 	}
 }
 //---------------------------------------------------------------------------
