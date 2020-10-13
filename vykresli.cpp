@@ -127,8 +127,11 @@ void Cvykresli::vykresli_vektory(TCanvas *canv, short scena)//scena 0 - vše, sc
 	/////Vykreslení dopravníků
 	if(m.getValueFromPosition(SCENA,3)==scena)vykresli_dopravnik(canv);
 
+	/////Vykreslení highlightu akt. větve
+  vykresli_vetev_dopravniku(canv);
+
 	/////Vykreslení elementů
-	if(m.getValueFromPosition(SCENA,4)==scena)vykresli_elementy(canv,scena);							//implicitně statická sekce (může být ale i v dynamické scéně), popř. pokud se vykresluje vše do dynamické vykresluje jak statickou tak dynamickou sekci společně
+	if(m.getValueFromPosition(SCENA,4)==scena)vykresli_elementy(canv,scena);//implicitně statická sekce (může být ale i v dynamické scéně), popř. pokud se vykresluje vše do dynamické vykresluje jak statickou tak dynamickou sekci společně
 	if(m.getValueFromPosition(SCENA,5)==scena && SCENA!=0)vykresli_elementy(canv,scena+2);//implicitně dynamická sekce (může být ale i ve statické scéně), pokud se vykresluje vše do dynamické, tato se již kvůli zbytečnému dalšímu průchodu cyklu již nevykresluje, protože výše vykresluje statickou tak dynamickou sekci společně
 
 	/////VALIDACE její samotné provední, vnitřek metody se provede jen pokud duvod_validovat==2
@@ -1260,7 +1263,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 						if(C->Element->dalsi!=NULL && C->Element->dalsi->pohon!=NULL)cas+=m.latence_mezi_stopkami(C->Element->dalsi->pohon->aRD);
 					}
 				}
-				if(!F->scGPCheckBox_meridlo_casy->Checked || (F->scGPCheckBox_meridlo_casy->Checked && C->n>1) || (F->scGPCheckBox_meridlo_casy->Checked && (C->Element!=v.MAG_LASO->sparovany || (C->Element==v.MAG_LASO->sparovany && v.MAG_LASO->sparovany!=NULL && v.MAG_LASO->Element->geo.X1!=v.MAG_LASO->sparovany->geo.X4))))
+				if((!F->scGPCheckBox_meridlo_casy->Checked && (C->Element!=v.MAG_LASO->sparovany || (C->Element==v.MAG_LASO->sparovany && v.MAG_LASO->sparovany!=NULL && v.MAG_LASO->Element->geo.X1!=v.MAG_LASO->sparovany->geo.X4))) || (F->scGPCheckBox_meridlo_casy->Checked && C->n>1) || (F->scGPCheckBox_meridlo_casy->Checked && (C->Element!=v.MAG_LASO->sparovany || (C->Element==v.MAG_LASO->sparovany && v.MAG_LASO->sparovany!=NULL && v.MAG_LASO->Element->geo.X1!=v.MAG_LASO->sparovany->geo.X4))))
 				{
 					double buf=0;
 					//připočátávání časů elementu zvlášť, pokud je ve spojáku přichycený element přeskočit (ten započátat pouze do cas_pom)
@@ -1272,7 +1275,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 							{
 								buf=(C->Element->data.pocet_voziku-1)*v.PP.delka_podvozek-v.PP.uchyt_pozice;
 								cas+=C->Element->data.WTstop-v.PP.TT;
-							  cas_pom+=C->Element->data.WTstop-v.PP.TT;
+								cas_pom+=C->Element->data.WTstop-v.PP.TT;
 								if(d>=buf)
 								{
 									cas-=buf/C->Element->pohon->aRD;
@@ -1787,10 +1790,16 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TO
 			clTeplomery=m.clIntensive(clTeplomery,210);//zesvětlení barvy
 
 			////aktualizace orientace před vykreslením
-			teplomery->prvni->geo.orientace=teplomery->prvni->sparovany->geo.orientace;
-			teplomery->prvni->geo.rotacni_uhel=teplomery->prvni->sparovany->geo.rotacni_uhel;
-			teplomery->posledni->geo.orientace=teplomery->posledni->sparovany->geo.orientace;
-			teplomery->posledni->geo.rotacni_uhel=teplomery->posledni->sparovany->geo.rotacni_uhel;
+			if(F->Akce!=F->Takce::POSUN_TEPLOMER || (F->Akce==F->Takce::POSUN_TEPLOMER && teplomery->prvni!=F->pom_element))
+			{
+				teplomery->prvni->geo.orientace=teplomery->prvni->sparovany->geo.orientace;
+				teplomery->prvni->geo.rotacni_uhel=teplomery->prvni->sparovany->geo.rotacni_uhel;
+			}
+			if(F->Akce!=F->Takce::POSUN_TEPLOMER || (F->Akce==F->Takce::POSUN_TEPLOMER && teplomery->posledni!=F->pom_element))
+			{
+				teplomery->posledni->geo.orientace=teplomery->posledni->sparovany->geo.orientace;
+				teplomery->posledni->geo.rotacni_uhel=teplomery->posledni->sparovany->geo.rotacni_uhel;
+			}
 			////vykreslení teploměrů
 			vykresli_element(canv,scena,m.L2Px(teplomery->prvni->X),m.L2Py(teplomery->prvni->Y),teplomery->prvni->name,"",teplomery->prvni->eID,1,m.Rt90(teplomery->prvni->geo.orientace-teplomery->prvni->geo.rotacni_uhel-90),1,1.5,0,0,0,teplomery->prvni);
 			vykresli_element(canv,scena,m.L2Px(teplomery->posledni->X),m.L2Py(teplomery->posledni->Y),teplomery->posledni->name,"",teplomery->posledni->eID,1,m.Rt90(teplomery->posledni->geo.orientace-teplomery->posledni->geo.rotacni_uhel-90),1,1.5,0,0,0,teplomery->posledni);
@@ -1916,7 +1925,7 @@ void Cvykresli::set_pen(TCanvas *canv, TColor color, int width, int style)//PS_E
 ////---------------------------------------------------------------------------
 ////nastaví pero                                                             //http://www.zive.cz/clanky/geometricka-pera/sc-3-a-103079,http://mrxray.on.coocan.jp/Delphi/plSamples/190_LineEdgeStyle.htm
 void Cvykresli::set_pen2(TCanvas *canv, TColor color, int width, int ENDCAP,int JOIN,bool INSIDEFRAME,DWORD *Array,unsigned short LenghtArray,int TextureWidth)//vrátí HANDLE na nastavení pera,//popř.PS_ENDCAP_FLAT PS_ENDCAP_ROUND, PS_ENDCAP_SQUARE a PS_JOIN_ROUND, PS_JOIN_MITER (lze nastavit přes SetMiterlimit) PS_JOIN_BEVEL, viz Matoušek III str. 179 či http://www.zive.cz/clanky/geometricka-pera/sc-3-a-103079, dodáním předposledního parametru UserLineArray např. DWORD pole[]={m.round(3/3.0*F->Zoom),m.round(0.5/3.0*F->Zoom),m.round(0.2/3.0*F->Zoom),m.round(0.5/3.0*F->Zoom)} apod.  lze nadefinovat vlastní typ linie, poslední parametr je počet prvků onoho pole
-{                                                                         //PS_JOIN_ROUND, PS_JOIN_MITER (lze nastavit přes SetMiterlimit) PS_JOIN_BEVEL,
+{                                                                      //PS_JOIN_ROUND, PS_JOIN_MITER (lze nastavit přes SetMiterlimit) PS_JOIN_BEVEL,
 	DeleteObject(canv->Pen->Handle);//zruší původní pero
 	DWORD pStyle = 0;
 	int STYLE=PS_SOLID;
@@ -2605,7 +2614,7 @@ void Cvykresli::vykresli_pozice_a_zony(TCanvas *canv,Cvektory::TElement *E)
 		double X=E->geo.X4;
 		double Y=E->geo.Y4;
 		double dJ=v.PP.delka_jig;
-		double sJ=v.PP.sirka_jig; //v případě že se budou zakázkám nastavovat individuální rozměry jiguif(v.ZAKAZKA_akt!=NULL){dJ=v.ZAKAZKA_akt->jig.delka;sJ=v.ZAKAZKA_akt->jig.sirka;}//případně vezme rozměr ze zakázky
+		double sJ=v.PP.sirka_jig;//v případě že se budou zakázkám nastavovat individuální rozměry jiguif(v.ZAKAZKA_akt!=NULL){dJ=v.ZAKAZKA_akt->jig.delka;sJ=v.ZAKAZKA_akt->jig.sirka;}//případně vezme rozměr ze zakázky
 		double rotaceJ=v.vrat_rotaci_jigu_po_predchazejicim_elementu(E);//nepůjde rovnou načítat z Elementu??? a metoda by se nemusela užívat?
 		short rozmezi=55;//pouze empiricky dodaná hodnota barevného rozpětí od první až po poslední pozici rotace, bylo 40
 		unsigned short clPotRGB=180;//hotnota barevných složek dle RGB potenciálních pozic
@@ -2989,6 +2998,29 @@ void Cvykresli::vykresli_dopravnik(TCanvas *canv, Cvektory::TZakazka *zakazka)
 	v.vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
 	delete E;E=NULL;//smazání již nepotřebného ukazatele
 	delete[]POLE;POLE=NULL;
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//vykreslení highlightu akt. editované větve
+void Cvykresli::vykresli_vetev_dopravniku(TCanvas *canv)
+{
+	//doplnit fce.
+	if(F->OBJEKT_akt!=NULL && F->pom_element!=NULL && FormX->vykresli_vetev>0 && (F->pom_element->eID==300 || F->pom_element->eID==301))
+	{
+		double R;
+		Cvektory::TElement *prvni=F->pom_element;
+		if(prvni->eID==301)prvni=prvni->dalsi2;//zajištění výhybky
+		Cvektory::TElement *E=prvni->dalsi;
+		if(FormX->vykresli_vetev==2)E=prvni->dalsi2;
+		while(E!=NULL)
+		{
+			if(FormX->vykresli_vetev==2 && E->identifikator_vyhybka_spojka==F->pom_element->identifikator_vyhybka_spojka)break;
+			R=E->geo.radius;if(E->geo.typ==0)R=E->geo.delka;
+			vykresli_Gelement(canv,E->geo.X1,E->geo.Y1,E->geo.orientace,E->geo.rotacni_uhel,R,clMeridlo,2,"","",0);
+      if(FormX->vykresli_vetev==1 && E->identifikator_vyhybka_spojka==F->pom_element->identifikator_vyhybka_spojka)break;
+			E=E->dalsi;
+		}
+    E=NULL;delete E;
+	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //samotné vykreslení jednoho řetězu
@@ -4862,7 +4894,7 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva,short si
 		if(zobrazit_koty)//pokud je požádováno
 		{
 			//nastavení hodnot pro highlight, jiné hodnoty pro highlighty na hale a kabině
-      int hodnota_koty=-2,oblast_koty=2;//defaultní hodnoty pro halu
+			int hodnota_koty=-2,oblast_koty=2;//defaultní hodnoty pro halu
 			if(F->OBJEKT_akt!=NULL)//highlight pro objekt
 			{hodnota_koty=-5,oblast_koty=-4;}
 			//kontrola zda se jedná o čtverec či odelník (vykreslení pouze dvou kót)
@@ -6005,7 +6037,8 @@ Beep(G, 270);
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::kurzor_cesta(TCanvas *canv)
 {
-	Cvektory::TElement *E=Form_definice_zakazek->Z_cesta->cesta->predchozi->Element;      if(E==v.ELEMENTY->predchozi)E=v.ELEMENTY->dalsi;
+	Cvektory::TElement *E=Form_definice_zakazek->Z_cesta->cesta->predchozi->Element;
+	if(E==v.ELEMENTY->predchozi)E=v.ELEMENTY->dalsi;
 	if(E->eID==300 || E==v.ELEMENTY->dalsi)vykresli_kurzor_cesta(canv,E);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -6016,22 +6049,25 @@ void Cvykresli::vykresli_kurzor_cesta(TCanvas *canv,Cvektory::TElement *E)
 	double X=E->geo.X4,Y=E->geo.Y4;
 	if(E->dalsi2==NULL){X=E->geo.X1;Y=E->geo.Y1;}//pokdu nejsem na výhybce, jsem na začátku linky, proto musím začínat z X1,Y1
 	set_pen(canv,clBlack,m.m2px(v.PP.sirka_podvozek/2.0+m.px2m(1/3.0*F->Zoom)+2*m.px2m(m.round(F->Zoom))),PS_ENDCAP_FLAT);//nastavení geometrického pera
-	TPointD *PL;  bool pokracovat=true,vykreslit=false;
-	if(E->dalsi->geo.typ!=0)PL=m.getArcLine(X,Y,E->dalsi->geo.orientace,E->dalsi->geo.rotacni_uhel,E->dalsi->geo.radius);
+	TPointD *PL;
+	bool pokracovat=true,vykreslit=false;
+	Cvektory::TElement *Edalsi=E->dalsi;
+  if(E->eID==300 && E->dalsi->geo.delka==0 && E->dalsi->dalsi!=NULL)Edalsi=E->dalsi->dalsi;
+	if(Edalsi->geo.typ!=0)PL=m.getArcLine(X,Y,Edalsi->geo.orientace,Edalsi->geo.rotacni_uhel,Edalsi->geo.radius);
 	else
 	{
 		PL=new TPointD[4];
 		PL[0].x=X;
 		PL[0].y=Y;
-		if(E->dalsi->geo.orientace==90 || E->dalsi->geo.orientace==270)
+		if(Edalsi->geo.orientace==90 || Edalsi->geo.orientace==270)
 		{
-			double x=2;if(E->dalsi->geo.orientace==270)x=-2;
+			double x=2;if(Edalsi->geo.orientace==270)x=-2;
 			PL[3].x=X+x;
 			PL[3].y=Y;
 		}
 		else
 		{
-			double y=2;if(E->dalsi->geo.orientace==180)y=-2;
+			double y=2;if(Edalsi->geo.orientace==180)y=-2;
 			PL[3].x=X;
 			PL[3].y=Y+y;
 		}
@@ -6039,17 +6075,20 @@ void Cvykresli::vykresli_kurzor_cesta(TCanvas *canv,Cvektory::TElement *E)
 		PL[2].y=PL[1].y=(PL[0].y+PL[3].y)/2.0;
 	}
 
-	if(E->dalsi->geo.typ==0 && m.LeziVblizkostiUsecky(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,PL[0].x,PL[0].y,PL[3].x,PL[3].y)==0 || E->dalsi->geo.typ!=0 && m.LeziVoblouku(X,Y,E->dalsi->geo.orientace,E->dalsi->geo.rotacni_uhel,E->dalsi->geo.radius,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y))
+	if((Edalsi->geo.typ==0 && m.LeziVblizkostiUsecky(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,PL[0].x,PL[0].y,PL[3].x,PL[3].y)==0) || (Edalsi->geo.typ!=0 && m.LeziVoblouku(X,Y,Edalsi->geo.orientace,Edalsi->geo.rotacni_uhel,Edalsi->geo.radius,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y)))
 	{
 		vykreslit=true;
 		pokracovat=false;
 		if(E!=v.ELEMENTY->dalsi)
 		{
-			F->pom_element_temp=E->dalsi;
+			F->pom_element_temp=Edalsi;
+			if(Edalsi!=E->dalsi)F->pom_element_temp=E->dalsi;
 			E=E->dalsi;
 		}
 		else F->pom_element_temp=E;
 	}
+	Edalsi=NULL;delete Edalsi;
+
 	if(pokracovat && E->dalsi2!=NULL)
 	{
 		if(E->dalsi2->geo.typ!=0)PL=m.getArcLine(X,Y,E->dalsi2->geo.orientace,E->dalsi2->geo.rotacni_uhel,E->dalsi2->geo.radius);
@@ -6073,7 +6112,7 @@ void Cvykresli::vykresli_kurzor_cesta(TCanvas *canv,Cvektory::TElement *E)
   		PL[2].x=PL[1].x=(PL[0].x+PL[3].x)/2.0;
   		PL[2].y=PL[1].y=(PL[0].y+PL[3].y)/2.0;
   	}
-		if(E->dalsi2->geo.typ==0 && m.LeziVblizkostiUsecky(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,PL[0].x,PL[0].y,PL[3].x,PL[3].y)==0 || E->dalsi2->geo.typ!=0 && m.LeziVoblouku(X,Y,E->dalsi2->geo.orientace,E->dalsi2->geo.rotacni_uhel,E->dalsi2->geo.radius,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y))
+		if((E->dalsi2->geo.typ==0 && m.LeziVblizkostiUsecky(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,PL[0].x,PL[0].y,PL[3].x,PL[3].y)==0) || (E->dalsi2->geo.typ!=0 && m.LeziVoblouku(X,Y,E->dalsi2->geo.orientace,E->dalsi2->geo.rotacni_uhel,E->dalsi2->geo.radius,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y)))
 		{
 			vykreslit=true;
 			F->pom_element_temp=E->dalsi2;
@@ -6134,28 +6173,31 @@ void Cvykresli::vykresli_potencial_cesty(TCanvas *canv,Cvektory::TElement *E)
 	double Width=v.PP.sirka_podvozek/2.0+m.px2m(1/3.0*F->Zoom)+2*m.px2m(m.round(F->Zoom));
 	Width=m.m2px(Width/2.0);
 	////potenciální Gelement
+	Cvektory::TElement *Edalsi=E->dalsi;
+	if(E->eID==300 && E->dalsi->geo.delka==0 && E->dalsi->dalsi!=NULL)Edalsi=E->dalsi->dalsi;//přeskočení prázdného elementu
 	TPointD *PL;//=m.getArcLine(X,Y,orientace,rotacni_uhel,radius);
-	if(E->dalsi->geo.typ!=0)PL=m.getArcLine(X,Y,E->dalsi->geo.orientace,E->dalsi->geo.rotacni_uhel,E->dalsi->geo.radius);
+	if(Edalsi->geo.typ!=0)PL=m.getArcLine(X,Y,Edalsi->geo.orientace,Edalsi->geo.rotacni_uhel,Edalsi->geo.radius);
 	else
 	{
 		PL=new TPointD[4];
 		PL[0].x=X;
 		PL[0].y=Y;
-		if(E->dalsi->geo.orientace==90 || E->dalsi->geo.orientace==270)
+		if(Edalsi->geo.orientace==90 || Edalsi->geo.orientace==270)
 		{
-			double x=2;if(E->dalsi->geo.orientace==270)x=-2;
+			double x=2;if(Edalsi->geo.orientace==270)x=-2;
 			PL[3].x=X+x;
 			PL[3].y=Y;
 		}
 		else
 		{
-			double y=2;if(E->dalsi->geo.orientace==180)y=-2;
+			double y=2;if(Edalsi->geo.orientace==180)y=-2;
 			PL[3].x=X;
 			PL[3].y=Y+y;
 		}
 		PL[2].x=PL[1].x=(PL[0].x+PL[3].x)/2.0;
 		PL[2].y=PL[1].y=(PL[0].y+PL[3].y)/2.0;
 	}
+  Edalsi=NULL;delete Edalsi;
 
 	POINT POLE[]={{m.L2Px(PL[0].x),m.L2Py(PL[0].y)},m.L2Px(PL[1].x),m.L2Py(PL[1].y),m.L2Px(PL[2].x),m.L2Py(PL[2].y),m.L2Px(PL[3].x),m.L2Py(PL[3].y)};//převod do fyzických souřadnic
 	//nastavení geometrického pera
@@ -6163,7 +6205,7 @@ void Cvykresli::vykresli_potencial_cesty(TCanvas *canv,Cvektory::TElement *E)
 	if(F->scGPCheckBox_zobrazit_koleje->Checked)set_pen(canv,color,Width,PS_ENDCAP_FLAT);//popisek v tomto případě vybraný gelement
 	else set_pen(canv,color,Width,PS_ENDCAP_FLAT);//nastavení geometrického pera
 	canv->PolyBezier((TPoint*)POLE,3);//samotné vykreslení bézierovy křivky
-					color=m.clIntensive(clBlack,245);
+
 	if(E->dalsi2!=NULL)
 	{
   	if(E->dalsi2->geo.typ!=0)PL=m.getArcLine(X,Y,E->dalsi2->geo.orientace,E->dalsi2->geo.rotacni_uhel,E->dalsi2->geo.radius);

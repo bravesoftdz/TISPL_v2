@@ -29,7 +29,6 @@ private:	// User declarations
 	void prirazeni_pohonu_defTab();//pøiøazení pohonu z PmG
 	void zapisVID(int zapis,int pozice);//zapiše na danou pozici ve VID dané èíslo
 	void zobrazit_skryt_radkyPM(Cvektory::TElement *E);//zobrazí èi skryje øádky PM tabulek podle stavu uloženého v objektu
-  unsigned int aktualizuj_radek_tab_teplomeru(TmGrid *mGrid,unsigned int radek,double cas,double WT,bool soucet=false);//aktualizuje parametry konkrétního øádku tabulky teplomìrù
 	void podbarvi_edit(Cvektory::TElement *E,long Col,long Row,bool def_nastaveni=true);//nastaví defautlní barvy editu a buòce, nebo podbarvé buòku
 
 	//promìnné pro UnitX
@@ -41,6 +40,7 @@ public:		// User declarations
   __fastcall TFormX(TComponent* Owner);
 	void OnClick(long Tag,long ID,long Col,long Row);
 	void OnEnter(long Tag,long ID,unsigned long Col,unsigned long Row);
+  void OnMouseMove(long Tag,long ID,int X,int Y,unsigned long Col,unsigned long Row);
 	void OnChange(long Tag,long ID,unsigned long Col,unsigned long Row);
 	void OnKeyPress(long Tag,long ID,unsigned long Col,unsigned long Row,System::WideChar &Key);
 	void OnKeyDown(long Tag,unsigned long Col,unsigned long Row,WORD &Key,TShiftState Shift);//slouží pro spuštìní funkcionality ctrl+z a ctrl+y pokud je focus na mGridu
@@ -69,7 +69,8 @@ public:		// User declarations
 	AnsiString VID;//dvouciferné èíslo, první èíslo znázoròuje validaci pohonu, druhé validaci stopek, pokud je èíslo 00 = bez chyb, 10 = chyba na pohonu, stop v poøádku (viz. 777 webové soubory), poèet èíslic nastaven v konstruktoru, mìnit pouze tam!!
 	bool aut_mazani_PM;
 	bool validovat_pohon;
-  bool popisky_pouzivany_pohon;
+	bool popisky_pouzivany_pohon;
+  int vykresli_vetev;//0 - žádnou, 1 - hlavní, 2 - vedlejší
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFormX *FormX;

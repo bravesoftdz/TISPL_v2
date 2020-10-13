@@ -4659,7 +4659,7 @@ void TForm1::getJobID(int X, int Y)
                 else FormX->vykresli_vetev=1;
               }
 						}
-						if(pom_element->eID==301 && (JID==2002 || JID==3002))FormX->vykresli_vetev=(JID-2)/1000;
+						if(pom_element->eID==301 && (JID==2002 || JID==3002))FormX->vykresli_vetev=(JID-2)/1000-1;
 					}
     		}
 				else//tabulka nenalezena, takže zkouší najít ELEMENT
@@ -4982,6 +4982,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 			catch(...){;}
 		}     
 		int puvJID=JID;//záloha původního JID
+		int puvVV=FormX->vykresli_vetev;
 		Cvektory::TElement *pom_element_puv=pom_element;//pouze ošetření, aby neproblikával mGrid elementu, při přejíždění přes element
 		Cvektory::TKomora *pom_komora_puv=pom_komora;
 		getJobID(X,Y);//zjištění aktuálního JID
@@ -5070,6 +5071,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 				REFRESH();
 			E=NULL;delete E;
 		}
+		if(puvVV!=FormX->vykresli_vetev)REFRESH();
 		if(puvJID==-1 && JID==-1 && PmG!=NULL && PmG->Highlight){PmG->Highlight=false;REFRESH();}//odstranění highlightu tab pohonu pokud je třeba, zamezuje problikávání highlightu
 
   	////oblasti poznámek pod čarou - NOTE, nejdou přes JID
