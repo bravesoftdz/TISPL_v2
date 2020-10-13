@@ -222,20 +222,28 @@ void TFormX::OnEnter(long Tag,long ID,unsigned long Col,unsigned long Row)
 //MouseMove z komponent v mGridu
 void TFormX::OnMouseMove(long Tag,long ID,int X,int Y,unsigned long Col,unsigned long Row)
 {
-	int puv=vykresli_vetev;
-	vykresli_vetev=0;
-	if(F->pom_element==NULL && !F->OBJEKT_akt->uzamknout_nahled)F->pom_element=vrat_element_z_tabulky(ID);
-	if(F->pom_element!=NULL && !F->OBJEKT_akt->uzamknout_nahled && (F->pom_element->eID==300 || F->pom_element->eID==301))
+	if(F->OBJEKT_akt!=NULL)
 	{
-		if(F->pom_element->eID==300)Col=Col-2;
-		if(F->prohodit_sloupce_PM(F->pom_element))
-		{
-			if(Col==1)Col=2;
-			else Col=1;
-		}
-		vykresli_vetev=Col;
+  	//deklarace
+  	int puv=vykresli_vetev;
+  	vykresli_vetev=0;//nulování pøed testem
+  	if(F->pom_element==NULL && !F->OBJEKT_akt->uzamknout_nahled)F->pom_element=vrat_element_z_tabulky(ID);//pokud je pom_element je NULL naètení z tabulky
+
+  	//kontrola, zda se jedná o výhybku nebo spojku
+  	if(F->pom_element!=NULL && !F->OBJEKT_akt->uzamknout_nahled && (F->pom_element->eID==300 || F->pom_element->eID==301))
+  	{
+  		if(F->pom_element->eID==300)Col=Col-2;
+  		if(F->prohodit_sloupce_PM(F->pom_element))
+			{
+  			if(Col==1)Col=2;
+  			else Col=1;
+  		}
+  		vykresli_vetev=Col;
+  	}
+
+		//pokud došlo ke zmìnì, REFRESH
+		if(vykresli_vetev!=puv)F->REFRESH();
 	}
-	if(vykresli_vetev!=puv)F->REFRESH();
 }
 //---------------------------------------------------------------------------
 //zpracování onchange události - INPUT, výpoèet a OUTPUT zpìt do ovlivnìné buòky

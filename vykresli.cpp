@@ -3003,22 +3003,25 @@ void Cvykresli::vykresli_dopravnik(TCanvas *canv, Cvektory::TZakazka *zakazka)
 //vykreslení highlightu akt. editované větve
 void Cvykresli::vykresli_vetev_dopravniku(TCanvas *canv)
 {
-	//doplnit fce.
+	//pouze v editacu a pokud jsem na tabulkou spojky nebo výhybky
 	if(F->OBJEKT_akt!=NULL && F->pom_element!=NULL && FormX->vykresli_vetev>0 && (F->pom_element->eID==300 || F->pom_element->eID==301))
 	{
+		//deklarace
 		double R;
 		Cvektory::TElement *prvni=F->pom_element;
 		if(prvni->eID==301)prvni=prvni->dalsi2;//zajištění výhybky
-		Cvektory::TElement *E=prvni->dalsi;
-		if(FormX->vykresli_vetev==2)E=prvni->dalsi2;
+		Cvektory::TElement *E=prvni->dalsi;//vykreslit hlavní větev
+		if(FormX->vykresli_vetev==2)E=prvni->dalsi2;//vykreslit vedlejší větev
+		//průchod skrze elementy ve větvi
 		while(E!=NULL)
 		{
-			if(FormX->vykresli_vetev==2 && E->identifikator_vyhybka_spojka==F->pom_element->identifikator_vyhybka_spojka)break;
+			if(FormX->vykresli_vetev==2 && E->identifikator_vyhybka_spojka==F->pom_element->identifikator_vyhybka_spojka)break;//ukončení
 			R=E->geo.radius;if(E->geo.typ==0)R=E->geo.delka;
 			vykresli_Gelement(canv,E->geo.X1,E->geo.Y1,E->geo.orientace,E->geo.rotacni_uhel,R,clMeridlo,2,"","",0);
-      if(FormX->vykresli_vetev==1 && E->identifikator_vyhybka_spojka==F->pom_element->identifikator_vyhybka_spojka)break;
+      if(FormX->vykresli_vetev==1 && E->identifikator_vyhybka_spojka==F->pom_element->identifikator_vyhybka_spojka)break;//ukončení
 			E=E->dalsi;
 		}
+    //ukazatelové záležitosti
     E=NULL;delete E;
 	}
 }
