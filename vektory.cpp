@@ -1867,8 +1867,10 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->data.PT1=0;
 	novy->PTotoc=0;
 	novy->data.PT2=0;
-	novy->WT1=0;//čekání na palec
-	novy->WT2=0;//čekání na palec
+	novy->WT1=0;//čekání na palec pro hlavní větev
+	novy->WT2=0;//čekání na palec pro vedlejší větev
+	novy->VID=0;
+  novy->VID_value=0;
 	novy->data.WTstop=0;//čekání na stopce
 	novy->data.RT=0;//ryzí reserve time
 	novy->data.pocet_voziku=0;
@@ -3306,7 +3308,7 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 				}break;
 			}
 			//pokud některý z geometrických úseků neměl přiřazený pohon RT nebude správné, vypsat error
-			if(error)Element->mGrid->ShowNote(F->ls->Strings[421],F->d.clError,14);//"RT není relevantní, některý z objektů nemá pohon!"
+			if(error)FormX->zadat_validaci(8,0,Element);//"RT není relevantní, některý z objektů nemá pohon!"
 			if(F->OBJEKT_akt->zobrazit_mGrid && refresh_mGrid)Element->mGrid->Refresh();
 		}
 		//uložení erroru do dat, + 1 000 000 nebo - 1 000 000
@@ -3314,35 +3316,6 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 		if(error && Element->data.RT<0)Element->data.RT-=1000000;
 		//narácení dat do segmentu cesty zakázky
 		if(Cesta!=NULL)Cesta->data=Element->data;
-	}
-
-	//kontrola RT, pokud je záporné, výpis doporučeného PT
-	if(F->OBJEKT_akt!=NULL &&  F->OBJEKT_akt->zobrazit_mGrid && (F->Akce==F->Takce::NIC || F->Akce==F->Takce::ADD))
-	{
-		TElement *E=F->OBJEKT_akt->element;
-    T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
-		String note="",jednotky=" s";
-		if(F->PTunit==F->Tminsec::MIN)jednotky=" min";
-		while(E!=NULL)
-		{
-			try{
-				if(vrat_druh_elementu(E)==0 && E->mGrid!=NULL && E->pohon==F->OBJEKT_akt->pohon && (E->eID!=0))// || (E->eID==0 && (E->mGrid->Note.Text=="" || (E->mGrid->Note.Text!="" && E->mGrid->Note.Text.SubString(1,F->ls->Strings[250].Length())!=F->ls->Strings[250] && E->mGrid->Note.Text.SubString(1,F->ls->Strings[251].Length())!=F->ls->Strings[251] && E->mGrid->Note.Text.SubString(1,F->ls->Strings[426].Length())!=F->ls->Strings[426])))))
-				{
-		  		note="Dop. hodnota PT je maximálně ";
-					//kontrola, zda je RT záporné
-					if(m.round2double(E->data.RT,5)<0)
-					{
-						note+=AnsiString(m.round2double(F->outPT(E->data.PT1+E->data.PT2+E->PTotoc+E->data.RT),3))+jednotky;
-						E->mGrid->Note.Text=note; //E->mGrid->ShowNote(note);
-					}
-					else E->mGrid->Note.Text="";
-          E->mGrid->Refresh();
-				}
-			}catch(...){;}//dochází k tomuto při načítání mgridů
-			E=dalsi_krok(VYHYBKY,E,F->OBJEKT_akt);
-		}
-		vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
-		E=NULL;delete E;
 	}
 }
 ////---------------------------------------------------------------------------
@@ -8239,6 +8212,8 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 					E->PTotoc=cE->PTotoc;
 					E->WT1=cE->WT1;
 					E->WT2=cE->WT2;
+					E->VID=0;
+					E->VID_value=0;
 					E->data=cE->data;
 					E->objekt_n=cE->objekt_n;
 					E->pohon=vrat_pohon(cE->pohon_n);

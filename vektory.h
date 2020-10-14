@@ -128,11 +128,11 @@ class Cvektory
 		double zona_pred;//zóna od počátku otáčení do středu otoče
 		double zona_za;//zona od středu otoče do konce otáčení
 
-		double WT1;//čekání na palec
-		double WT2;
+		double WT1;//čekání na palec pro hlavní větev
+		double WT2;//čekání na palec pro vedlejší větev
 
-		unsigned int VID;
-    double VID_value;
+		unsigned int VID;//validační ID, uchovává ID validace v mGridu, např. dopRD
+    double VID_value;//uchovává v sobě hodnotu pro validaci, např. hodnotu dopRD
 
 		T8Rect citelna_oblast;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast celé kóty(rect0), popisku kóty (rect1), jednotek kóty (rect2) a samotného názvu např. Robot 3 (rect3) elementu, ohodnoty koty mezi LO (rect4), textu na kótě mezi LO (rect5) - popisek kóty mezi LO, v případě teploměrů, uložena oblast popisku °C, Z - souřadnice aktualní element (počátek stoupání či klesání) rect6, Z - souřadnice další element (konec stoupání či klesání) - rect 7, HeightDeep hodnota - rect 8 --- strukturu nedovávat  do CObjekt
 

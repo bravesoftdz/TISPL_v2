@@ -200,7 +200,8 @@ void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)//scena 0 - vše do 
 			//uložení citelné oblasti pro další použití
 			E->citelna_oblast.rect3=aktOblast;
 			//vykreslení kót
-			if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n && F->OBJEKT_akt->zobrazit_koty)vykresli_kotu(canv,E);//mezi elementy
+			if(scena!=0 && F->OBJEKT_akt!=NULL && F->pom_element_temp!=NULL && F->pom_element_temp==E && F->editace_textu && F->index_kurzoru==-11);
+			else if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n && F->OBJEKT_akt->zobrazit_koty)vykresli_kotu(canv,E);//mezi elementy
 			//E=E->dalsi;
 			pom=E->dalsi;
 

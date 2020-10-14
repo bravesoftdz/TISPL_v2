@@ -689,6 +689,8 @@ public:		// User declarations
 	Cvektory::TObjekt *pom,*pom_vyhybka,*OBJEKT_akt,*copyObjekt;
 	Cvektory::TElement *pom_element,*pom_element_temp,*posledni_editovany_element,*element_temp,*predchozi_PM;//element_temp je nulován pøi každém pøejetí kurzoru používán na vìci kolem PM
 	TmGrid *PmG,*mGrid_knihovna;//ukazatel na mGridovou tabulku pohonu
+	unsigned int PmG_VID;//validaèní ID, uchovává ID validace v mGridu, napø. dopRD
+  double PmG_VID_value;//uchovává v sobì hodnotu pro validaci, napø. hodnotu dopRD
 	Cvektory::TKomora *pom_komora,*pom_komora_temp;
 	Cvektory::TBod *pom_bod,*pom_bod_temp;
 
