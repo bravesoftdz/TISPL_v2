@@ -57,7 +57,7 @@ public:		// User declarations
 		void OnClick(long Tag,long ID,unsigned long Col,unsigned long Row);
     bool zmena;
     double radius;
-    int katalog_id;
+    unsigned int katalog_id;
     void vypis(UnicodeString text,bool red=true,bool link=false);
     Tinput_state input_state;//stav vstupu DV,SV,TT...atd
     unsigned long ColCount;

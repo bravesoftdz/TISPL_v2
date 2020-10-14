@@ -1796,7 +1796,8 @@ void Cvektory::hlavicka_ELEMENTY()
 	novy->zona_pred=0;
 	novy->zona_za=0;
 
-	novy->WT=0;
+	novy->WT1=0;
+  novy->WT2=0;
 
 	novy->citelna_oblast.rect0=TRect(0,0,0,0);
 	novy->citelna_oblast.rect1=TRect(0,0,0,0);
@@ -1866,7 +1867,8 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->data.PT1=0;
 	novy->PTotoc=0;
 	novy->data.PT2=0;
-	novy->WT=0;//čekání na palec
+	novy->WT1=0;//čekání na palec
+	novy->WT2=0;//čekání na palec
 	novy->data.WTstop=0;//čekání na stopce
 	novy->data.RT=0;//ryzí reserve time
 	novy->data.pocet_voziku=0;
@@ -2420,7 +2422,8 @@ void Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->data.PT1=Original->data.PT1;
 	Kopie->PTotoc=Original->PTotoc;
 	Kopie->data.PT2=Original->data.PT2;
-	Kopie->WT=Original->WT;
+	Kopie->WT1=Original->WT1;
+	Kopie->WT2=Original->WT2;
 	Kopie->data.WTstop=Original->data.WTstop;
 	Kopie->data.RT=Original->data.RT;
 	Kopie->data.pocet_voziku=Original->data.pocet_voziku;
@@ -3242,7 +3245,7 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 		{
 			if(E->n>0)//kontrola za nejsem na hlavičce až na tomto místě, to dovolí překlopění cyklu na konec pokud dojde na hlaviču (žádoucí)
 			{
-		  	if(E->eID==200)cas+=E->WT;//wt na předávacím místě
+				if(E->eID==200)cas+=E->WT1;//wt na předávacím místě
 				if((vrat_druh_elementu(E)==0 && (E->eID!=0 || (E->eID==0 && E->data.pocet_voziku>0))) || (E->n==Element->n && E->objekt_n==Element->objekt_n))break;//pokud je předchozi S&G prěruš cyklus
 				if(E->pohon!=NULL)cas+=E->geo.delka/E->pohon->aRD;//pokud existuje úsek a má pohon
 				else error=true;//jinak error
@@ -3250,9 +3253,9 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 			E=E->predchozi;
 		}
 		//výpočet RT a zapsání do dat elemetnu
-		double RT=0,WT=Element->WT,WTin=0;
-		if(F->scGPCheckBox_meridlo_casy->Checked && Element->sparovany!=NULL)WTin=Element->sparovany->WT;
-		if(Element->eID==0/* && Element->data.pocet_voziku>0*/ && cas+Element->WT<PP.TT)WT*=Element->data.pocet_voziku;
+		double RT=0,WT=Element->WT1,WTin=0;
+		if(F->scGPCheckBox_meridlo_casy->Checked && Element->sparovany!=NULL)WTin=Element->sparovany->WT1;
+		if(Element->eID==0/* && Element->data.pocet_voziku>0*/ && cas+Element->WT1<PP.TT)WT*=Element->data.pocet_voziku;
 		double RD=0;if(Element->pohon!=NULL)RD=Element->pohon->aRD;
 		RT=m.RT(Element->data.PT1+Element->data.PT2+Element->PTotoc/*+Element->data.WTstop*/,cas,WT,Element->data.pocet_voziku,RD,WTin);
 		Element->data.RT=RT;//ryzí RT
@@ -3276,8 +3279,8 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 							Element->data.WTstop=F->m.V2WT(Element->data.pocet_voziku,PP.TT);//uložení do paměti + výpočet
 							Element->mGrid->Cells[2][3].Text=F->m.round2double(F->outPT(Element->data.WTstop),3);//OUTPUT
 							//nové RT, protože se změnilo WTstop
-							WT=Element->WT;
-							if(Element->eID==0/* && Element->data.pocet_voziku>1 */&& cas+Element->WT<PP.TT)WT*=Element->data.pocet_voziku;
+							WT=Element->WT1;
+							if(Element->eID==0/* && Element->data.pocet_voziku>1 */&& cas+Element->WT1<PP.TT)WT*=Element->data.pocet_voziku;
 							RT=m.RT(Element->data.PT1+Element->data.PT2+Element->PTotoc+Element->data.WTstop,cas,WT,Element->data.pocet_voziku,RD);
 							Element->data.RT=RT;//ryzí
 						}
@@ -3364,7 +3367,7 @@ void Cvektory::aktualizuj_data_elementum_na_pohonu(unsigned long pohon_n)
 					//stopstanice
 					case 0:
 					{
-						E->WT=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
+						E->WT1=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
             reserve_time(E);
 						break;
 					}
@@ -3378,7 +3381,7 @@ void Cvektory::aktualizuj_data_elementum_na_pohonu(unsigned long pohon_n)
           //robot se stop stanicí
 					case 2:case 8:case 12:case 16:case 102:case 106:
 					{
-						E->WT=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
+						E->WT1=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
             reserve_time(E);
 						break;
 					}
@@ -3393,7 +3396,7 @@ void Cvektory::aktualizuj_data_elementum_na_pohonu(unsigned long pohon_n)
 					//robot s aktivní otočí (resp. s otočí a stop stanicí)
 					case 4:case 10:case 14:case 18:case 104:case 108:
 					{
-						E->WT=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
+						E->WT1=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
             reserve_time(E);
 						break;
 					}
@@ -3406,26 +3409,26 @@ void Cvektory::aktualizuj_data_elementum_na_pohonu(unsigned long pohon_n)
 					//otoč aktivní (resp. otoč se stop stanicí)
 					case 6:
           {
-						E->WT=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
+						E->WT1=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
             reserve_time(E);
 						break;
 					}
 					//PM
 					case 200:
 					{
-						if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)E->WT=m.cekani_na_palec(0,E->dalsi->pohon->roztec,E->dalsi->pohon->aRD,3);
+						if(E->dalsi!=NULL && E->dalsi->pohon!=NULL)E->WT1=m.cekani_na_palec(0,E->dalsi->pohon->roztec,E->dalsi->pohon->aRD,3);
 						break;
 					}
 					//výhybky
 					case 300:
 					{
-						E->WT=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
+						E->WT1=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
 						break;
 					}
 					//spojka
 					case 301:
 					{
-						E->WT=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
+						E->WT1=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
 						break;
 					}
 					default:break;
@@ -4147,7 +4150,8 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu,unsigned lo
 		Element->data.PT1=0;
 		Element->PTotoc=0;
 		Element->data.PT2=0;
-		Element->WT=0;//čekání na palec
+		Element->WT1=0;//čekání na palec
+		Element->WT2=0;//čekání na palec
 		Element->data.WTstop=0;//čekání na stopce
 		Element->data.RT=0;//ryzí reserve time
 		Element->data.pocet_voziku=0;
@@ -6358,7 +6362,7 @@ TPointD_3Dbool Cvektory::generuj_voziky_segementu_mimo_stop_a_buffer(TElement *E
 		umisteni-=E->geo.delka;//zbytek z předchzejícího geometrického úseku, který nestihl být zohledněn převeden na další geometrický úsek, resp. element = výchozí umístění v dalším elementu, případně zohlední i přechod na nový pohon (díky práci v jednotkách délky), pouze je následně nutné odečíst případné WT při přechodu
 		//ShowMessage(String(umisteni));
 		umisteniCas=umisteni/E->pohon->aRD;//z praktického univerzálního hlediska dané zpoždění resp. časový fond vrací v časé (není díky tomu následně nutné hledat hodnotu rychlosti předchozího pohonu)
-		if(E->eID==200)umisteniCas-=E->WT;//čekání na předávacím místě způsobí následné zpoždění/rozsunutí mezi vozíků, upozornění čekání se počítá až z rychlosti dalšího pohonu
+		if(E->eID==200)umisteniCas-=E->WT1;//čekání na předávacím místě způsobí následné zpoždění/rozsunutí mezi vozíků, upozornění čekání se počítá až z rychlosti dalšího pohonu
 		//zajištění aktuální rotace pro následující úsek
 		if(E->rotace_jig!=0 && -180<=E->rotace_jig && E->rotace_jig<=180)
 		{
@@ -7273,7 +7277,7 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 				////////////RT záporné nebo bez rezervy na předávacích místech - NEDOKONALÉ DODĚLAT
 				if(E->eID==200 && E->pohon!=NULL && E->dalsi!=NULL && E->dalsi->geo.delka>=E->dalsi->data.pocet_pozic*PP.delka_podvozek-PP.uchyt_pozice)//neřeší, pokud je předávací místo součástí bufferu, CHTĚLO BY ALE ZKONTROLOVAT, KDYBY PŘEDÁVACÍ MÍSTO NESTÍHALO ZÁSOBIT BUFFER
 				{                                          //chtělo by nahradit přímo z rotace jigu z elementu
-					if(E->pohon->Rx>0 && (PP.TT-E->WT)<m.UDV(vrat_rotaci_jigu_po_predchazejicim_elementu(E))/E->pohon->aRD
+					if(E->pohon->Rx>0 && (PP.TT-E->WT1)<m.UDV(vrat_rotaci_jigu_po_predchazejicim_elementu(E))/E->pohon->aRD
 					&& !(E->dalsi!=NULL && E->dalsi->pohon!=NULL && vrat_druh_elementu(E->dalsi)==0 && E->dalsi->geo.delka<E->data.pocet_pozic*PP.delka_podvozek-PP.uchyt_pozice))//pro situace, kdy není předávací místo v bufferu (viz situace magna po chlazení)
 					{vloz_zpravu(X,Y,-1,402,E);pocet_erroru++;}//pokud čekání na palec z kontinuálního pohonu bude větší nebo rovno času přejezdu
 				}
@@ -7711,6 +7715,8 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
             cE->Z=T->prvni->Z;
 						cE->Xt=T->prvni->Xt;
 						cE->Yt=T->prvni->Yt;
+						cE->WT1=T->prvni->WT1;
+						cE->WT2=T->prvni->WT2;
 						cE->orientace=T->prvni->orientace;
 						cE->objekt_n=T->prvni->objekt_n;
 						cE->sparovany_n=T->prvni->sparovany->n;
@@ -7731,6 +7737,8 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
             cE->Z=T->posledni->Z;
 						cE->Xt=T->posledni->Xt;
 						cE->Yt=T->posledni->Yt;
+            cE->WT1=T->posledni->WT1;
+						cE->WT2=T->posledni->WT2;
 						cE->orientace=T->posledni->orientace;
 						cE->objekt_n=T->posledni->objekt_n;
 						cE->sparovany_n=T->posledni->sparovany->n;
@@ -7801,7 +7809,8 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 				cE->zona_pred=E->zona_pred;
 				cE->zona_za=E->zona_za;
 				cE->PTotoc=E->PTotoc;
-				cE->WT=E->WT;
+				cE->WT1=E->WT1;
+				cE->WT2=E->WT2;
 				cE->data=E->data;
 				cE->objekt_n=E->objekt_n;
 				//  ShowMessage("E->pohony->n");
@@ -8134,10 +8143,12 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 						E->Yt=cE->Yt;
 						E->orientace=cE->orientace;
 						E->objekt_n=cE->objekt_n;
+						E->WT1=cE->WT1;
+            E->WT2=cE->WT2;
 						E_pom->n=cE->sparovany_n;
 						E->sparovany=E_pom;
 						E->mGrid=NULL;
-            E->pohon=NULL;
+						E->pohon=NULL;
 						E_pom=NULL;delete E_pom;
 						E->geo=cE->geo;
 						wchar_t *name=new wchar_t[cE->name_delka];
@@ -8160,6 +8171,8 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 						E->Yt=cE->Yt;
 						E->orientace=cE->orientace;
 						E->objekt_n=cE->objekt_n;
+						E->WT1=cE->WT1;
+            E->WT2=cE->WT2;
 						E_pom=new TElement;
 						E_pom->n=cE->sparovany_n;
 						E->sparovany=E_pom;
@@ -8224,7 +8237,8 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 					E->zona_pred=cE->zona_pred;
 					E->zona_za=cE->zona_za;
 					E->PTotoc=cE->PTotoc;
-					E->WT=cE->WT;
+					E->WT1=cE->WT1;
+					E->WT2=cE->WT2;
 					E->data=cE->data;
 					E->objekt_n=cE->objekt_n;
 					E->pohon=vrat_pohon(cE->pohon_n);
@@ -9185,7 +9199,8 @@ Cvektory::TDATA *Cvektory::vytvor_prazdny_obraz()
 	obraz->Elementy->OTOC_delka=0;
 	obraz->Elementy->zona_pred=0;
 	obraz->Elementy->zona_za=0;
-	obraz->Elementy->WT=0;
+	obraz->Elementy->WT1=0;
+  obraz->Elementy->WT2=0;
 	obraz->Elementy->citelna_oblast.rect0=TRect(0,0,0,0);
 	obraz->Elementy->citelna_oblast.rect1=TRect(0,0,0,0);
 	obraz->Elementy->citelna_oblast.rect2=TRect(0,0,0,0);

@@ -58,6 +58,7 @@ public:		// User declarations
 	void mazatPM(Cvektory::TElement *Element=NULL);//kontorla a dotaz zda mají být PM na stejném pohonu smazána
 	void aktualizace_teplomeru();//provede aktualizaci èasu v tabulce teplomìrù
 	void zmena_rezimu_pohonu(Cvektory::TPohon *pohon);//aktualizuje položky v pohonových tabulkách, v pøípadì, že došlo ke zmìnì režimu pohonu
+	UnicodeString getVID(unsigned int VID);//z èísla VIDu vrátí jeho textový popis
 
 	//promìnné pro vyøazení OnChange metody pøi vykreslování tabulek
   enum Tinput_state{NO,NOTHING,PT,PT2,LO,LO2,WT,DO,PTotoc,COMBO,aRD,R,Rz,Rx,P_VOZ,CT};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
@@ -65,7 +66,7 @@ public:		// User declarations
 	bool vstoupeno_poh, vstoupeno_elm,validace_true;
 	Cvektory::TElement *posledni_E;//slouží pro uložení editovaného elementu, nemusím pøi každém stisku klávesy vracet E
 	Cvektory::TCesta *posledni_c;
-	int validovany_pohon;
+	unsigned int validovany_pohon;
 	AnsiString VID;//dvouciferné èíslo, první èíslo znázoròuje validaci pohonu, druhé validaci stopek, pokud je èíslo 00 = bez chyb, 10 = chyba na pohonu, stop v poøádku (viz. 777 webové soubory), poèet èíslic nastaven v konstruktoru, mìnit pouze tam!!
 	bool aut_mazani_PM;
 	bool validovat_pohon;

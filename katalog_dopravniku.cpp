@@ -273,9 +273,9 @@ void TForm_katalog::LoadStyles ()
    K_mGrid->Cells[18][r].isZero->Color=clOTHER_AFTER_CHOOSE;
  }
 
-  for (int i = 0; i <=K_mGrid->RowCount-1; i++)
+	for (unsigned int i = 0; i <=K_mGrid->RowCount-1; i++)
   {
-   for (int j = 1; j <= K_mGrid->ColCount-1; j++)
+	 for (unsigned int j = 1; j <= K_mGrid->ColCount-1; j++)
    {
     int width=2;
      if(j==1)K_mGrid->Cells[j][i].RightBorder->Width=width;
@@ -323,7 +323,7 @@ void TForm_katalog::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row
         }
       }
     }
-    if(Col==0 && katalog_id!=Row-1)
+		if(Col==0 && katalog_id!=Row-1)
      {
        for(unsigned int i=2;i<K_mGrid->RowCount;i++)
         {
@@ -370,7 +370,7 @@ K_mGrid=NULL;
 void __fastcall TForm_katalog::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
           int Y)
 {
-	unsigned long Row=K_mGrid->GetIdxRow(X,Y);
+	//unsigned long Row=K_mGrid->GetIdxRow(X,Y);
  //	if(Row>=2 && Row<100)K_mGrid->HighlightRowOnMouse(X,Y,(TColor)RGB(240,240,240));
 }
 //---------------------------------------------------------------------------
@@ -516,7 +516,7 @@ void TForm_katalog::getCheckSettings ()
 void TForm_katalog::clearCheck()
 {
 
-  for (int i=2; i < RowCount; i++)
+  for (unsigned int i=2; i < RowCount; i++)
   {
       for(unsigned int j=9;j<=12;j++)
       {

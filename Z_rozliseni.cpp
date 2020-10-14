@@ -62,7 +62,7 @@ void TForm_Z_rozliseni::zmena_jazyka()
 	ls_temp=new TStringList;
 	UnicodeString text="";
   //naètení aktuálního jazyka
-	for(unsigned int i=0;i<ls->Count;i++)
+	for(unsigned int i=0;i<(unsigned)ls->Count;i++)
 	{
 		switch((int)scGPSwitch_language->State)
 		{

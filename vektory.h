@@ -128,7 +128,11 @@ class Cvektory
 		double zona_pred;//zóna od počátku otáčení do středu otoče
 		double zona_za;//zona od středu otoče do konce otáčení
 
-		double WT;//čekání na palec
+		double WT1;//čekání na palec
+		double WT2;
+
+		unsigned int VID;
+    double VID_value;
 
 		T8Rect citelna_oblast;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast celé kóty(rect0), popisku kóty (rect1), jednotek kóty (rect2) a samotného názvu např. Robot 3 (rect3) elementu, ohodnoty koty mezi LO (rect4), textu na kótě mezi LO (rect5) - popisek kóty mezi LO, v případě teploměrů, uložena oblast popisku °C, Z - souřadnice aktualní element (počátek stoupání či klesání) rect6, Z - souřadnice další element (konec stoupání či klesání) - rect 7, HeightDeep hodnota - rect 8 --- strukturu nedovávat  do CObjekt
 
@@ -1018,7 +1022,7 @@ private:
 			unsigned long opakov_servis;//cyklus opakování servisních vozíku
 	};
 
-  struct C_element//pouze pridruzeny spojak
+	struct C_element//pouze pridruzeny spojak
 	{
 			unsigned long n; //pořadí ve spoj.seznamu
 			unsigned int eID; //id typu elementu: 0 - stop stanice, 1 - robot, 2 - robot se stop stanicí, 3 - robot s pasivní otočí, 4 - robot s aktivní otočí (resp. s otočí a stop stanicí), 5 - otoč pasivní, 6 - otoč aktivní (resp. otoč se stop stanicí), 7 - pouze geometrická zarážka
@@ -1035,7 +1039,8 @@ private:
 			double zona_pred;
 			double zona_za;
 			double PTotoc;
-			double WT;//čekání na palec
+			double WT1;//čekání na palec
+      double WT2;//čekání na palec, pro sekundární větev
 
 			Tdata data;
 

@@ -84,6 +84,7 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 
 
 
+		short int ret=1;
 		AnsiString data_HTML="",data_CSV="",data_export="";//celková textová data k exportu
 
     	AnsiString T=F->readINI("nastaveni_form_parametry", "CT");
@@ -309,7 +310,7 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
       		UnicodeString OTOC_delka=F->m.round2double(E->OTOC_delka,3);
       		UnicodeString zona_pred=F->m.round2double(E->zona_pred,3);
       		UnicodeString zona_za=F->m.round2double(E->zona_za,3);
-      		UnicodeString WT=F->m.round2double(E->WT,3);
+      		UnicodeString WT=F->m.round2double(E->WT1,3);
       		UnicodeString PD=F->m.round2double(E->data.PD,3);
       		UnicodeString orientace_jig_pred=E->data.orientace_jig_pred;
 					UnicodeString LO1=F->m.round2double(E->data.LO1,3);
@@ -488,10 +489,10 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 
 
 		delete MemoryStream;
-		return 1;
 
 		}
-		catch(...){;}
+		catch(...){ret=2;}
+		return ret;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_report::scButton_csvClick(TObject *Sender)

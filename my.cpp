@@ -785,7 +785,7 @@ bool Cmy::PtInTeplomer(double X,double Y,double Xmys,double Ymys,double rotace)
 {
 	////vstupní proměnné či konstanty
 	X=L2Px(X);Y=L2Py(Y);
-	double Z=F->Zoom;//zoom, pouze zkrácení zápisu
+	//double Z=F->Zoom;//zoom, pouze zkrácení zápisu
 	float polomer=0.2;//poloměr kružnic zadaná v metrech
 	int polomer1=m2px(polomer);//poloměr kružnic
 	int polomer2=m2px(polomer/2.0);//poloměr kružnic
