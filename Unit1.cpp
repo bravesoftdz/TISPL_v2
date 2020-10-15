@@ -862,7 +862,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=505;i++)
+	for(unsigned short i=0;i<=511;i++)
 	{
 		switch(i)
 		{
@@ -870,15 +870,15 @@ void TForm1::DesignSettings()
 			case 1:text="čeština";break;
 			case 2:text="mongolština";break;
 			case 3:text="angličtina";break;
-			case 4:text="vozík:min:";break;
-      case 5:text="Založí nový soubor";break;
-      case 6:text="Otevře existující soubor";break;
-      case 7:text="Uloží aktuální soubor";break;
-      case 8:text="Zpět";break;
-      case 9:text="Vpřed";break;
-			case 10:text="Posouvat obraz";break;
-      case 11:text="Posunout obraz";break;
-      case 12:text="Přiblížit obraz";break;
+			case 4:text="Smazat cestu";break;
+			case 5:text="Smazat úsek cesty";break;
+			case 6:text="Nová zakázka s hlavní cestou";break;
+      case 7:text="Nová zakázka s cestou poslední zakázky";break;
+      case 8:text="nový pohon";break;
+			case 9:text="Výhybka";break;
+			case 10:text="Spojka";break;
+			case 11:text="V";break;
+			case 12:text="S";break;
       case 13:text="Oddálit obraz";break;
       case 14:text="Přiblížit obraz dle výběru oknem";break;
       case 15:text="Zobrazit všechny objekty";break;
@@ -1371,7 +1371,13 @@ void TForm1::DesignSettings()
 			case 502:text="Tažením myši a následným kliknutím vložíte koncový bod.";break;
 			case 503:text="Tažením myši přizpůsobujete oblast měření. Kliknutím ukončíte.";break;
 			case 504:text="Uchopením a tažením v oblasti pohonu změníte umístění teploměru.";break;
-      case 505:text="Dop. hodnota PT je maximálně";break;
+			case 505:text="Dop. hodnota PT je maximálně";break;
+			case 506:text="Přichyceno k";break;
+			case 507:text="Přichyceno k hraně kabiny";break;
+			case 508:text="Přichyceno k vozíku č.";break;
+			case 509:text="Přichyceno k začátku S/K";break;
+			case 510:text="Přichyceno ke konci S/K";break;
+			case 511:text="Byla změněna geometrie linky, oblast teploměrů bude obnovena.";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -4002,35 +4008,90 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			TPointD korekce;
 			korekce.x=-(d.v.PP.sirka_podvozek/2.0+0.4);korekce.y=0;
 			if(orientace==90 || orientace==270){korekce.x=0;korekce.y=-(d.v.PP.sirka_podvozek/2.0+0.4);}
-			////////////////
-			bool prichyceno=false;
+			//přichytávání
+			int prichyceno=0;
+			pom_element->short_name="";//identifikátor, že teploměr byl přichycen na element nebo kabinu
 			pom_element_temp=d.v.ELEMENTY->dalsi;
 			Cvektory::T2Element *VYH=d.v.hlavicka_seznam_VYHYBKY();
 			while(pom_element_temp!=NULL)
 			{
-				if(d.v.PtInSegment(pom_element_temp,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
-		  	{
-		  		//upravení souřadnic, "přilepení" přesně na pohon
-					korekce=d.v.bod_na_geometrii(pom_element_temp);
-					pom_element->X=korekce.x;
-					pom_element->Y=korekce.y;
+				//kontrola, zda jsem na elementu
+				if(pom_element_temp->eID!=MaxInt && m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,pom_element_temp->geo.X4,pom_element_temp->geo.Y4,velikost_citelne_oblasti_elementu))
+				{
+					//přilepení na element
+					pom_element->X=pom_element_temp->geo.X4;
+					pom_element->Y=pom_element_temp->geo.Y4;
 					pom_element->geo.orientace=pom_element_temp->geo.orientace;//aktualizace orientace podle aktuálně přichyceného elementu
 					pom_element->geo.rotacni_uhel=pom_element_temp->geo.rotacni_uhel;
-					prichyceno=true;
-		  		break;
+					TIP=ls->Strings[506]+" "+pom_element_temp->name;//"Přichyceno k"
+					pom_element->short_name=pom_element_temp->name;
+					prichyceno=1;
+					break;
+        }
+				//kontrola, zda sem na geometrii
+				if(d.v.PtInSegment(pom_element_temp,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+				{
+					//kontrola, zda nejsem na hraně objektu
+					TPointD P;
+					P.x=-1*MaxInt;P.y=-1*MaxInt;
+					if(prichytavat_k_mrizce==1)P=d.v.InVrata(pom_element_temp);
+					if(P.x!=-1*MaxInt && P.y!=-1*MaxInt)
+					{
+						//přilepení souřadnic na hranu kabiny
+						pom_element->X=P.x;
+						pom_element->Y=P.y;
+						TIP=ls->Strings[507];//"Přichyceno k hraně kabiny"
+						prichyceno=1;
+						pom_element->short_name=pom_element_temp->name;
+						break;
+					}
+          //kontrola začátku a konce stoupání
+					if(pom_element_temp->geo.HeightDepp!=0)
+		    	{
+						if(m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,pom_element_temp->geo.X1,pom_element_temp->geo.Y1,velikost_citelne_oblasti_elementu))
+		    		{
+							pom_element->X=pom_element_temp->geo.X1;
+							pom_element->Y=pom_element_temp->geo.Y1;
+							TIP=ls->Strings[509];//"Přichyceno k začátku S/K"
+              prichyceno=1;
+							pom_element->short_name=pom_element_temp->name;
+		    			break;
+		    		}
+						if(m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,pom_element_temp->geo.X4,pom_element_temp->geo.Y4,velikost_citelne_oblasti_elementu))
+		    		{
+							pom_element->X=pom_element_temp->geo.X4;
+							pom_element->Y=pom_element_temp->geo.Y4;
+							TIP=ls->Strings[510];//"Přichyceno ke konci S/K"
+              prichyceno=1;
+							pom_element->short_name=pom_element_temp->name;
+		    			break;
+		    		}
+					}
+					//pouze na geometrii
+					if(d.v.PtInSegment(pom_element_temp,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+					{
+						//přilepení souřadnic na geometrii
+						korekce=d.v.bod_na_geometrii(pom_element_temp);
+				   	pom_element->X=korekce.x;
+				   	pom_element->Y=korekce.y;
+						prichyceno=2;
+					}
+					pom_element->geo.orientace=pom_element_temp->geo.orientace;//aktualizace orientace podle aktuálně přichyceného elementu
+					pom_element->geo.rotacni_uhel=pom_element_temp->geo.rotacni_uhel;
+					break;
 				}
 				pom_element_temp=d.v.dalsi_krok(VYH,pom_element_temp);
 			}
       d.v.vymaz_seznam_VYHYBKY(VYH);
 			pom_element_temp=NULL;delete pom_element_temp;
-			////////////////
-			if(pom_element!=NULL && !prichyceno)
+			//posun pokud není přichyceno
+			if(pom_element!=NULL && prichyceno==0)
 			{
 				pom_element->X=akt_souradnice_kurzoru.x+korekce.x;
 				pom_element->Y=akt_souradnice_kurzoru.y+korekce.y;
 			}
 			minule_souradnice_kurzoru=TPoint(X,Y);
-      TIP=ls->Strings[504];//"Uchopením a tažením v oblasti pohonu změníte umístění teploměru."
+			if(prichyceno==0 || prichyceno==2)TIP=ls->Strings[504];//"Uchopením a tažením v oblasti pohonu změníte umístění teploměru."
 			REFRESH();
 		}break;
 		case NIC://přejíždění po ploše aplikace, bez aktuálně nastavené akce
@@ -4315,77 +4376,84 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				//začátek a konec měření na lince
 				if(Akce_temp==NIC && V==0)
 				{
-			  	if(pom_element!=NULL)akt_souradnice_kurzoru=d.v.bod_na_geometrii(pom_element);
+					if(pom_element!=NULL)akt_souradnice_kurzoru=d.v.bod_na_geometrii(pom_element);
 			  	Cvektory::TElement *E=new Cvektory::TElement;
 			  	E->n=MaxInt;
 			  	E->geo.rotacni_uhel=0;
 			  	E->geo.orientace=0;
 			  	E->geo.radius=0;
-			  	E->geo.delka=0;
-			  	E->geo.typ=0;
+					E->geo.delka=0;
+					E->geo.typ=0;
 			  	E->geo.X2=2;E->geo.Y2=2;
 			  	E->geo.X3=3;E->geo.Y3=3;
-			  	//kontrola přichytávání na elementy při počátečním a koncovém bodu
+					//kontrola přichytávání na elementy při počátečním a koncovém bodu
 					Cvektory::TElement *el=d.v.ELEMENTY->dalsi;
 					Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
-			  	bool prichiceno=false;
-			  	while(el!=NULL)
+					bool prichiceno=false;
+					while(el!=NULL)
 					{
-			  		//kontrola oblastí elementů
-			  		if(prichytavat_k_mrizce==1 && (el->eID!=MaxInt || (el->eID==MaxInt && el->dalsi==NULL)) && m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,el->geo.X4,el->geo.Y4,velikost_citelne_oblasti_elementu))
-			  		{
-			  			pom_element=el;
-			  			//přichytit souřadnicemi na element, X2 a X3 se používají jako příznak přichycení, pokud je přichicenou jsou nenulové a rovnají se X4
-			  			E->geo.X2=E->geo.X3=akt_souradnice_kurzoru.x=el->geo.X4;
-			  			E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=el->geo.Y4;
-			  			E->name=el->name;
-			  			//highlight, pouze pro prvního
+						//kontrola oblastí elementů
+						if(prichytavat_k_mrizce==1 && (el->eID!=MaxInt || (el->eID==MaxInt && el->dalsi==NULL)) && m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,el->geo.X4,el->geo.Y4,velikost_citelne_oblasti_elementu))
+						{
+							pom_element=el;
+							//přichytit souřadnicemi na element, X2 a X3 se používají jako příznak přichycení, pokud je přichicenou jsou nenulové a rovnají se X4
+							E->geo.X2=E->geo.X3=akt_souradnice_kurzoru.x=el->geo.X4;
+							E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=el->geo.Y4;
+							E->name=ls->Strings[506]+" "+el->name;//"Přichyceno k"
+							//highlight, pouze pro prvního
 			  			if(d.v.MAG_LASO->dalsi==NULL && d.v.MAG_LASO->Element==NULL)pom_element->stav=2;
-			  			prichiceno=true;
+							prichiceno=true;
 			  			break;
 			  		}
 			  		//kontrola přichycení na začátek nebo konec stouání / klesání
 			  		else if(prichytavat_k_mrizce==1 && el->geo.HeightDepp!=0)
-			  		{
+						{
 			  			//začátek stoupání / klesání
 			  			if(m.delka(el->geo.X1,el->geo.Y1,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y)<=velikost_citelne_oblasti_elementu)
-			  			{
+							{
 			  				pom_element=el;
 			  				E->geo.X2=E->geo.X3=akt_souradnice_kurzoru.x=el->geo.X1;
-			  				E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=el->geo.Y1;
-			  				E->name=el->name;
-			  				prichiceno=true;
+								E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=el->geo.Y1;
+								E->name=F->ls->Strings[509];//"Přichyceno k začátku S/K"
+								prichiceno=true;
+								break;
 			  			}
-			  			//konec stoupání / klesání
+							//konec stoupání / klesání
 			  			if(m.delka(el->geo.X4,el->geo.Y4,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y)<=velikost_citelne_oblasti_elementu)
-			  			{
-			  				pom_element=el;
-			  				E->geo.X2=E->geo.X3=akt_souradnice_kurzoru.x=el->geo.X4;
-			  				E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=el->geo.Y4;
-			  				E->name=el->name;
-			  				prichiceno=true;
-			  			}
-			  		}
+							{
+								pom_element=el;
+								E->geo.X2=E->geo.X3=akt_souradnice_kurzoru.x=el->geo.X4;
+								E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=el->geo.Y4;
+								E->name=F->ls->Strings[510];//"Přichyceno ke koneci S/K"
+								prichiceno=true;
+								break;
+							}
+						}
+						//kontrola přichycení na hranu objektu
+						if(prichytavat_k_mrizce==1)
+						{
+							//kontrola zda jsem na hraně objektu
+							TPointD P;
+							P.x=-1*MaxInt;P.y=-1*MaxInt;
+							P=d.v.InVrata(el);
+							if(P.x!=-1*MaxInt && P.y!=-1*MaxInt)
+							{
+								pom_element=el;
+								//přichytit souřadnicemi na element, X2 a X3 se používají jako příznak přichycení, pokud je přichicenou jsou nenulové a rovnají se X4
+								akt_souradnice_kurzoru=P;
+								E->geo.X2=E->geo.X3=akt_souradnice_kurzoru.x;
+								E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y;
+								E->name=ls->Strings[507];//"Přichyceno k hraně kabiny"
+                prichiceno=true;
+								break;
+							}
+						}
 						//kontrola zda jsem na pohonu
-						if(!prichiceno && d.v.PtInSegment(el,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
-			  		{
-			  			pom_element=el;
-			  			//kontrola zda jsem na hraně objektu
-			  			TPointD P;
-			  			P.x=-1*MaxInt;P.y=-1*MaxInt;
-			  			if(prichytavat_k_mrizce==1)P=d.v.InVrata(el);
-			  			if(P.x!=-1*MaxInt && P.y!=-1*MaxInt)
-			  			{
-			  				//přichytit souřadnicemi na element, X2 a X3 se používají jako příznak přichycení, pokud je přichicenou jsou nenulové a rovnají se X4
-			  				E->geo.X2=E->geo.X3=akt_souradnice_kurzoru.x=el->geo.X4;
-			  				E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=el->geo.Y4;
-			  				E->name="hranu kabiny";
-			  				akt_souradnice_kurzoru=P;
-			  			}
-			  			//pokud ne přilepit pouze na pohon
-			  			else akt_souradnice_kurzoru=d.v.bod_na_geometrii(pom_element);
-			  			break;
-			  		}
+						if(d.v.PtInSegment(el,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+						{
+							pom_element=el;
+							akt_souradnice_kurzoru=d.v.bod_na_geometrii(pom_element);
+						}
 						el=d.v.dalsi_krok(VYHYBKY,el);
 			  	}
 					d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
@@ -4393,12 +4461,12 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			  	//kontrola přichycení na vozík
 			  	Cvektory::TVozik *V=d.v.VOZIKY->dalsi;
 					while(!prichiceno && V!=NULL)
-			  	{
-			  		if(m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,V->X,V->Y,velikost_citelne_oblasti_elementu))
+					{
+						if(m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,V->X,V->Y,velikost_citelne_oblasti_elementu))
 			  		{
 			  			E->geo.X2=E->geo.X3=akt_souradnice_kurzoru.x=V->X;
 			  			E->geo.Y2=E->geo.Y3=akt_souradnice_kurzoru.y=V->Y;
-              E->name="vozík č."+String(V->n);
+              E->name=ls->Strings[508]+" "+String(V->n);//"Přichyceno k vozíku č."
 			  			break;
 	        	}
 	        	V=V->dalsi;
@@ -4406,8 +4474,8 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			  	V=NULL;delete V;
           //uložení parametrů geometrie z úseku, stoupání, typ atd.
 			  	if(pom_element!=NULL)
-			  	{
-			  		E->geo.typ=pom_element->geo.typ;
+					{
+						E->geo.typ=pom_element->geo.typ;
 			  		E->geo.radius=pom_element->geo.radius;
 			  		E->geo.delka=pom_element->geo.delka;
 			  		E->geo.delkaPud=pom_element->geo.delkaPud;
@@ -5579,7 +5647,7 @@ void TForm1::ZOOM_WINDOW()
 
 	//výpočet nového Zoomu
 	double Z1=abs(Zoom*PD_x/(MaxX-MinX)),Z2=abs(Zoom*PD_y/abs(MaxY-MinY));
-	Z1-=fmod(Z1,0.5);Z2-=fmod(Z2,0.5);
+	Z1=m.getZoomValue(Z1);Z2=m.getZoomValue(Z2);
 	if(Z1>Z2)Zoom=Z2;else Zoom=Z1;
 	if(Zoom<0.5)Zoom=0.5;
 	if(Zoom>20 && !DEBUG)Zoom=20;
@@ -5943,7 +6011,7 @@ void __fastcall TForm1::RzToolButton11Click(TObject *Sender)
 
 			//výpočet nového Zoomu
 			double Z1=abs(Zoom*PD_x/(MaxX-MinX)),Z2=abs(Zoom*PD_y/abs(MaxY-MinY));
-			Z1-=fmod(Z1,0.5);Z2-=fmod(Z2,0.5);
+			Z1=m.getZoomValue(Z1);Z2=m.getZoomValue(Z2);
 			if(Z1>Z2)Zoom=Z2;else Zoom=Z1;
 			if(Zoom<0.5)Zoom=0.5;if(Zoom>10)Zoom=10;
 
@@ -6915,13 +6983,15 @@ void TForm1::add_vyhybka_spojka()
 			E->predchozi2=NULL;
 			if(element_id==300)
 			{
-				E->name="Výhybka";
+				E->name=ls->Strings[9];//"Výhybka"
+				E->short_name=ls->Strings[11];//"V"
 				d.v.vyhybka_pom=E;
 				d.v.pocet_vyhybek++;
 			}
 			else
 			{
-				E->name="Spojka";
+				E->name=ls->Strings[10];//"Spojka"
+        E->short_name=ls->Strings[12];//"S"
 				E->dalsi2=d.v.vyhybka_pom;
 				E->predchozi2=d.v.vyhybka_pom;
 				d.v.vyhybka_pom->predchozi2=E;
@@ -6930,6 +7000,7 @@ void TForm1::add_vyhybka_spojka()
 			}
 			E->identifikator_vyhybka_spojka=d.v.pocet_vyhybek;
 			E->name+=" "+String(E->identifikator_vyhybka_spojka);
+			E->short_name+=E->identifikator_vyhybka_spojka;
 		}
 
 		//změna na vkládání spojky
@@ -10738,7 +10809,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			if(E->pohon!=NULL)p1=E->pohon->name;if(E->predchozi2->pohon!=NULL)p2=E->predchozi2->pohon->name;
 			E->mGrid->Create(3,4);
 			E->mGrid->Cells[0][1].Text=ls->Strings[447];//"Pohon "
-			E->mGrid->Cells[1][1].Text="IN";E->mGrid->Cells[2][1].Text="IN/V"+String(E->identifikator_vyhybka_spojka);
+			E->mGrid->Cells[1][1].Text="IN";E->mGrid->Cells[2][1].Text="IN/"+E->dalsi2->short_name;
 			E->mGrid->Cells[1][2].Text=p1;E->mGrid->Cells[2][2].Text=p2;
 			E->mGrid->Cells[1][3].Type=E->mGrid->COMBO;E->mGrid->Cells[2][3].Type=E->mGrid->COMBO;
 			E->mGrid->Cells[0][3].Text=ls->Strings[224]+" "+cas;//"WT palec "
@@ -11368,7 +11439,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			if(E->pohon!=NULL)p1=E->pohon->name;if(E->predchozi2->pohon!=NULL)p2=E->predchozi2->pohon->name;
 			E->mGrid->Create(3,4);
 			E->mGrid->Cells[0][1].Text=ls->Strings[447];//"Pohon "
-			E->mGrid->Cells[1][1].Text="IN";E->mGrid->Cells[2][1].Text="IN/V"+String(E->identifikator_vyhybka_spojka);
+			E->mGrid->Cells[1][1].Text="IN";E->mGrid->Cells[2][1].Text="IN/"+E->dalsi2->short_name;
 			E->mGrid->Cells[1][2].Text=p1;E->mGrid->Cells[2][2].Text=p2;
 			E->mGrid->Cells[1][3].Type=E->mGrid->COMBO;E->mGrid->Cells[2][3].Type=E->mGrid->COMBO;
 			E->mGrid->Cells[0][3].Text=ls->Strings[224]+" "+cas;//"WT palec "
@@ -17531,9 +17602,9 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 			if(mereni_delka.x!=mereni_delka.y)popisek1+="; DélkaPud = "+String(m.round2double(mereni_delka.y*1000,2))+" [mm]";
 			//kontrola přichycení
 			if(d.v.MAG_LASO->sparovany!=NULL && d.v.MAG_LASO->Element->geo.X2==d.v.MAG_LASO->Element->geo.X3 && d.v.MAG_LASO->Element->geo.X3==d.v.MAG_LASO->Element->geo.X4)
-				popisek2+=", začátek: "+d.v.MAG_LASO->Element->name;
+				popisek2+=", "+d.v.MAG_LASO->Element->name;
 			if(d.v.MAG_LASO->predchozi->sparovany!=NULL && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->Element->geo.X3 && d.v.MAG_LASO->predchozi->Element->geo.X3==d.v.MAG_LASO->predchozi->Element->geo.X4)
-				popisek2+=", konec: "+d.v.MAG_LASO->predchozi->Element->name;
+				popisek2+=", "+d.v.MAG_LASO->predchozi->Element->name;
 			MB(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,popisek1+popisek2,"",MB_OK,true,false,366,true,true);
 			C=NULL;delete C;
 		}
@@ -17722,20 +17793,15 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 		}
 		delete ls_temp;ls_temp=NULL;
 		//začít od 4!!!
-//		Label_zamerovac->Caption=ls->Strings[4];
-//		RzToolButton1->Hint=ls->Strings[5];
-//    RzToolButton2->Hint=ls->Strings[6];
-//		RzToolButton3->Hint=ls->Strings[7];
-//    RzToolButton4->Hint=ls->Strings[8];
-//		RzToolButton5->Hint=ls->Strings[9];
-//		RzToolButton6->Hint=ls->Strings[10];
-//    RzToolButton7->Hint=ls->Strings[11];
-//    RzToolButton8->Hint=ls->Strings[12];
+		N11->Caption=ls->Strings[4];
+		scGPGlyphButton_odstran_cestu->Hint=ls->Strings[4];
+		N21->Caption=ls->Strings[5];
+    //zakomentované == volné
 //    RzToolButton9->Hint=ls->Strings[13];
-//    RzToolButton10->Hint=ls->Strings[14];
-//    RzToolButton11->Hint=ls->Strings[15];
-//    RzToolButton12->Hint=ls->Strings[16];
-//    Button4->Caption=ls->Strings[17];
+//		RzToolButton10->Hint=ls->Strings[14];
+//		RzToolButton11->Hint=ls->Strings[15];
+//		RzToolButton12->Hint=ls->Strings[16];
+//		Button4->Caption=ls->Strings[17];
     ButtonPLAY_O->Caption=ls->Strings[18];
     Konec->Caption=ls->Strings[19];
 		if(OBJEKT_akt==NULL)Schema->Caption=ls->Strings[20];
@@ -18839,7 +18905,7 @@ void TForm1::reset_teplomeru(Cvektory::TObjekt *Objekt)
 			d.v.vytvor_default_c_teplomery(Objekt);
 			if(Objekt==OBJEKT_akt)vytvor_aktualizuj_tab_teplomeru();
       //pokud mám zobrazit upozornění, zobrazím
-			if(zobrazit_upozorneni_teplomery && Objekt==OBJEKT_akt)MB(-1,-1,"Byla změněna geometrie linky, oblast teploměrů bude obnovena.","",MB_OK,true,true);
+			if(zobrazit_upozorneni_teplomery && Objekt==OBJEKT_akt)MB(-1,-1,ls->Strings[511],"",MB_OK,true,true);//"Byla změněna geometrie linky, oblast teploměrů bude obnovena."
     }
 	}
 }

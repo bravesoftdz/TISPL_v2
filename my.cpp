@@ -1459,3 +1459,50 @@ double Cmy::RAND(double MIN, double MAX,unsigned short precision,bool MINin,bool
 }
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
+//vrátí Zoom upravený na používané stupnici
+double Cmy::getZoomValue(double Zoom)
+{
+	if(Zoom<=0.25 || (Zoom>=0.25 && Zoom<0.5))Zoom=0.25;
+	if(Zoom>=0.5 && Zoom<1)Zoom=0.5;
+	if(Zoom>=1 && Zoom<1.5)Zoom=1;
+	if(Zoom>=1.5 && Zoom<2)Zoom=1.5;
+	if(Zoom>=2 && Zoom<2.5)Zoom=2;
+	if(Zoom>=2.5 && Zoom<3)Zoom=2.5;
+	if(Zoom>=3 && Zoom<3.5)Zoom=3;
+	if(Zoom>=3.5 && Zoom<4)Zoom=3.5;
+	if(Zoom>=4 && Zoom<4.5)Zoom=4;
+	if(Zoom>=4.5 && Zoom<5)Zoom=4.5;
+	if(Zoom>=5 && Zoom<6)Zoom=5;
+	if(Zoom>=6 && Zoom<7)Zoom=6;
+	if(Zoom>=7 && Zoom<8)Zoom=7;
+	if(Zoom>=8 && Zoom<9)Zoom=8;
+	if(Zoom>=9 && Zoom<10)Zoom=9;
+	if(Zoom>=10 && Zoom<15)Zoom=10;
+	if(Zoom>=15 && Zoom<20)Zoom=15;
+	if(Zoom>=20 && Zoom<25)Zoom=20;
+	if(Zoom>=25 && Zoom<30)Zoom=25;
+	if(Zoom>=30)Zoom=30;
+	return Zoom;
+}
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+//Zoom=0.25;
+//Zoom=0.5;
+//Zoom=1;
+//Zoom=1.5;
+//Zoom=2;
+//Zoom=2.5;
+//Zoom=3;
+//Zoom=3.5;
+//Zoom=4;
+//Zoom=4.5;
+//Zoom=5;
+//Zoom=6;
+//Zoom=7;
+//Zoom=8;
+//Zoom=9;
+//Zoom=10;
+//Zoom=15;
+//Zoom=20;
+//Zoom=25;
+//Zoom=30;

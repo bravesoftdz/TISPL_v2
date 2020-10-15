@@ -1893,7 +1893,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	else if(novy->predchozi->n>0)novy->Z=novy->predchozi->Z+novy->predchozi->geo.HeightDepp;
 
 	//název
-	AnsiString T="";
+	AnsiString T="",T_short="";
 	switch(eID)
 	{
 		case 0: T="Stop"; break;//stop stanice
@@ -1905,8 +1905,8 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 		case 6: T=F->ls->Strings[273]; 										 													novy->PTotoc=20;novy->rotace_jig=90;break;//aktivní otoč
 		case 100: T=F->ls->Strings[270];break;
 		case 200: T=F->ls->Strings[271];break;
-		case 300: T="Výhybka";break;
-		case 301: T="Spojka";break;
+		case 300: T=F->ls->Strings[9];T_short=F->ls->Strings[11];break;
+		case 301: T=F->ls->Strings[10];T_short=F->ls->Strings[12];break;
 		case MaxInt: T="Zarážka";break;
 	}
 	if(101<=eID && eID<=108)T=F->ls->Strings[272];//"Operátor";
@@ -1915,7 +1915,8 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 		unsigned int nTyp=vrat_poradi_elementu_do(novy)+1;//pokud se jedná o roboty
 		if(novy->eID==300 || novy->eID==301)nTyp=novy->identifikator_vyhybka_spojka;
 		novy->name=T+" "+AnsiString(nTyp);//číslování a pojmenovávání zarážek pouze v debug
-		novy->short_name=T.SubString(1,3)+AnsiString(nTyp);
+		if(novy->eID==300 || novy->eID==301)novy->short_name=T_short+AnsiString(nTyp);
+		else novy->short_name=T.SubString(1,3)+AnsiString(nTyp);
 	}
 
 	//mGrid elementu
@@ -7282,7 +7283,7 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 
 		//zakutalizuje zprávy v miniformu zpráv
 		Form_zpravy->update_zpravy(pocet_erroru,pocet_warningu);
-		if(tVID>0)//pokud byl zobrazen popis zprávy,vyhledá se nové umístění případné zprávy (má jiné n i jiný ukazatel) a zobrazí se popis znovu
+		if(tVID>0 && ZPRAVY!=NULL)//pokud byl zobrazen popis zprávy,vyhledá se nové umístění případné zprávy (má jiné n i jiný ukazatel) a zobrazí se popis znovu
 		{
 			TZprava *Z=ZPRAVY->dalsi;
 			while(Z!=NULL)

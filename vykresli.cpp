@@ -202,7 +202,6 @@ void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)//scena 0 - vše do 
 			//vykreslení kót
 			if(scena!=0 && F->OBJEKT_akt!=NULL && F->pom_element_temp!=NULL && F->pom_element_temp==E && F->editace_textu && F->index_kurzoru==-11);
 			else if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n && F->OBJEKT_akt->zobrazit_koty)vykresli_kotu(canv,E);//mezi elementy
-			//E=E->dalsi;
 			pom=E->dalsi;
 
 			////vykreslení spojnic pokud geometrie nenavazuje
@@ -1044,7 +1043,7 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 			if(P.x!=-1*MaxInt && P.y!=-1*MaxInt)
 			{
 				bod=P;
-				F->TIP="Přichyceno na vrátka objektu";
+				F->TIP=F->ls->Strings[507];//"Přichyceno k hraně objektu"
 				break;
 			}
       //kontrola fce. elementů
@@ -1053,7 +1052,7 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 				bod.x=E->geo.X4;
 				bod.y=E->geo.Y4;
 				E->stav=2;
-				F->TIP="Přichyceno na "+E->name;
+				F->TIP=F->ls->Strings[506]+" "+E->name;//"Přichyceno k"
         break;
 			}
       //kontrola začátku a konce stoupání
@@ -1063,14 +1062,14 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 				{
 					bod.x=E->geo.X1;
 					bod.y=E->geo.Y1;
-					F->TIP="Přichyceno na začátek S/K";
+					F->TIP=F->ls->Strings[509];//"Přichyceno k začátku S/K"
 					break;
         }
 				if(m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,E->geo.X4,E->geo.Y4,F->velikost_citelne_oblasti_elementu))
 				{
 					bod.x=E->geo.X4;
 					bod.y=E->geo.Y4;
-          F->TIP="Přichyceno na konec S/K";
+					F->TIP=F->ls->Strings[510];//"Přichyceno ke konci S/K"
 					break;
 				}
 			}
@@ -1089,7 +1088,7 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 				{
 					bod.x=V->X;
 					bod.y=V->Y;
-					F->TIP="Přichyceno na vozík č. "+String(V->n);
+					F->TIP=F->ls->Strings[508]+" "+String(V->n);//"Přichyceno k vozíku č."
 					break;
         }
 				V=V->dalsi;
@@ -1120,7 +1119,7 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 			canv->Ellipse(m.L2Px(F->pom_element->geo.X4)-width,m.L2Py(F->pom_element->geo.Y4)-width,m.L2Px(F->pom_element->geo.X4)+width,m.L2Py(F->pom_element->geo.Y4)+width);
 			F->akt_souradnice_kurzoru.x=F->pom_element->geo.X4;F->akt_souradnice_kurzoru.y=F->pom_element->geo.Y4;
 			ret=true;
-			F->TIP="Přichyceno na "+F->pom_element->name;
+			F->TIP=F->ls->Strings[506]+" "+F->pom_element->name;//"Přichyceno k"
 		}
 		else if(F->pom_element->predchozi->eID!=MaxInt && m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,F->pom_element->predchozi->geo.X4,F->pom_element->predchozi->geo.Y4,F->velikost_citelne_oblasti_elementu) && (F->pom_element->predchozi!=v.MAG_LASO->sparovany || (v.MAG_LASO->Element->geo.X4!=v.MAG_LASO->sparovany->geo.X4 || v.MAG_LASO->Element->geo.Y4!=v.MAG_LASO->sparovany->geo.Y4)))
 		{
@@ -1128,7 +1127,7 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 			F->akt_souradnice_kurzoru.x=F->pom_element->predchozi->geo.X4;F->akt_souradnice_kurzoru.y=F->pom_element->predchozi->geo.Y4;
 			ret=true;
 			F->pom_element=F->pom_element->predchozi;
-			F->TIP="Přichyceno na "+F->pom_element->name;
+			F->TIP=F->ls->Strings[506]+" "+F->pom_element->name;//"Přichyceno k"
 		}
 		//kontrola zda jsem na vrátkách objektu
 		else
@@ -1144,7 +1143,7 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 					pokracovat=false;
 					F->akt_souradnice_kurzoru.x=V->X;F->akt_souradnice_kurzoru.y=V->Y;
 					//ret=true;//nepřichyceno na element = nevracet přichyceno
-					F->TIP="Přichyceno na vozík č. "+String(V->n);
+					F->TIP=F->ls->Strings[508]+" "+String(V->n);//"Přichyceno k vozíku č."
           prichyceno_na_vozik=true;//pomocná proměnná pro přípočítávání TT v bufferu
 					break;
 				}
@@ -1161,7 +1160,7 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 		  		//vykreslení
 					canv->Ellipse(m.L2Px(P.x)-width,m.L2Py(P.y)-width,m.L2Px(P.x)+width,m.L2Py(P.y)+width);
 					F->akt_souradnice_kurzoru=P;
-          F->TIP="Přichyceno na vrátka objektu";
+          F->TIP=F->ls->Strings[507];//"Přichyceno k hraně objektu"
 		  	}
 		  	//kontrola začátku a konce stoupání / klesání
 		  	else if(F->pom_element->geo.HeightDepp!=0)
@@ -1171,14 +1170,14 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 						canv->Ellipse(m.L2Px(F->pom_element->geo.X1)-width,m.L2Py(F->pom_element->geo.Y1)-width,m.L2Px(F->pom_element->geo.X1)+width,m.L2Py(F->pom_element->geo.Y1)+width);
 						F->akt_souradnice_kurzoru.x=F->pom_element->geo.X1;F->akt_souradnice_kurzoru.y=F->pom_element->geo.Y1;
 						ret=true;
-						F->TIP="Přichyceno na začátek S/K";
+						F->TIP=F->ls->Strings[509];//"Přichyceno k začátku S/K"
 					}
 					if(m.delka(F->pom_element->geo.X4,F->pom_element->geo.Y4,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y)<=F->velikost_citelne_oblasti_elementu)
 					{
 						canv->Ellipse(m.L2Px(F->pom_element->geo.X4)-width,m.L2Py(F->pom_element->geo.Y4)-width,m.L2Px(F->pom_element->geo.X4)+width,m.L2Py(F->pom_element->geo.Y4)+width);
 						F->akt_souradnice_kurzoru.x=F->pom_element->geo.X4;F->akt_souradnice_kurzoru.y=F->pom_element->geo.Y4;
 						ret=true;
-            F->TIP="Přichyceno na konec S/K";
+						F->TIP=F->ls->Strings[510];//"Přichyceno ke koneci S/K"
 					}
 				}
 			}
@@ -1801,6 +1800,13 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TO
 				teplomery->posledni->geo.orientace=teplomery->posledni->sparovany->geo.orientace;
 				teplomery->posledni->geo.rotacni_uhel=teplomery->posledni->sparovany->geo.rotacni_uhel;
 			}
+      //vykreslení kuličky přichycení
+			if(F->Akce==F->Takce::POSUN_TEPLOMER && F->pom_element!=NULL && F->pom_element->short_name!="")//short_name je identifikátor, že teploměr byl přichycen na element nebo kabinu
+			{
+				short width=m.round(m.m2px(F->velikost_citelne_oblasti_elementu));
+				set_pen(canv,clMeridlo,width,PS_ENDCAP_FLAT);//nastavení geometrického pera
+				canv->Ellipse(m.L2Px(F->pom_element->X)-width,m.L2Py(F->pom_element->Y)-width,m.L2Px(F->pom_element->X)+width,m.L2Py(F->pom_element->Y)+width);
+      }
 			////vykreslení teploměrů
 			vykresli_element(canv,scena,m.L2Px(teplomery->prvni->X),m.L2Py(teplomery->prvni->Y),teplomery->prvni->name,"",teplomery->prvni->eID,1,m.Rt90(teplomery->prvni->geo.orientace-teplomery->prvni->geo.rotacni_uhel-90),1,1.5,0,0,0,teplomery->prvni);
 			vykresli_element(canv,scena,m.L2Px(teplomery->posledni->X),m.L2Py(teplomery->posledni->Y),teplomery->posledni->name,"",teplomery->posledni->eID,1,m.Rt90(teplomery->posledni->geo.orientace-teplomery->posledni->geo.rotacni_uhel-90),1,1.5,0,0,0,teplomery->posledni);
@@ -5979,6 +5985,7 @@ void Cvykresli::vykresli_packy_PL(TCanvas *canv,TscGPButton *zamek_aRD,TscGPButt
 //zajišťuje vykreslování-vypisování tool tipu
 void Cvykresli::vykresli_tip(TCanvas *canv)
 {
+	int off=25;if(F->zobrazit_meritko)off+=22;
 	canv->Font->Color=m.clIntensive(clRed,110);
 	//SetBkMode(canv->Handle,TRANSPARENT);//nastvení netransparentního pozadí
 	canv->Font->Size=14;
@@ -5986,9 +5993,9 @@ void Cvykresli::vykresli_tip(TCanvas *canv)
 	canv->Brush->Color=clWhite;
 	canv->Font->Style = TFontStyles();//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
 	if(F->scGPPanel_bottomtoolbar->Visible)
-		canv->TextOutW(F->ClientWidth-canv->TextWidth(F->TIP)-10,F->scGPPanel_bottomtoolbar->Top-25,F->TIP);
+		canv->TextOutW(/*F->ClientWidth-canv->TextWidth(F->TIP)-10*/F->scSplitView_LEFTTOOLBAR->Width+5,F->scGPPanel_bottomtoolbar->Top-off,F->TIP);
 	else
-		canv->TextOutW(F->ClientWidth-canv->TextWidth(F->TIP)-10,F->scGPPanel_statusbar->Top-25,F->TIP);
+		canv->TextOutW(/*F->ClientWidth-canv->TextWidth(F->TIP)-10*/F->scSplitView_LEFTTOOLBAR->Width+5,F->scGPPanel_statusbar->Top-off,F->TIP);
 	canv->Font->Color=clBlack;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
