@@ -2,15 +2,15 @@ Language;X;Jazyk
 Czech;X;èeština
 Mongolian;X;mongolština
 English;X;angliètina
-wagon:min:;X;vozík:min:
-Creates a new file;X;Založí nový soubor
-Opens an existing file;X;Otevøe existující soubor
-Saves the current file;X;Uloží aktuální soubor
-Back;X;Zpìt
-Next;X;Vpøed
-Pan  ;X;Posouvat obraz
-Pan  ;X;Posunout obraz
-Zoom in;X;Pøiblížit obraz
+Delete path;X;Smazat cestu
+Delete path segment;X;Smazat úsek cesty
+New contract with the main route;X;Nová zakázka s hlavní cestou
+New contract with the path of the last order;X;Nová zakázka s cestou poslední zakázky
+new drive;X;nový pohon
+Chain switch;X;Výhybka
+Chain merge;X;Spojka
+CS;X;V
+CM;X;S
 Zoom out;X;Oddálit obraz
 Zoom window;X;Pøiblížit obraz dle výbìru oknem
 Show all objects;X;Zobrazit všechny objekty
