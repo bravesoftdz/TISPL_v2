@@ -684,6 +684,16 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					case 11:
 					{
 						input_state=WT;
+						int prvni=3,druhy=4;
+						if(F->prohodit_sloupce_PM(E)){prvni=4;druhy=3;}
+						TscGPComboBox *C=E->mGrid->getCombo(Col,Row);
+						if(C!=NULL)
+						{
+              if(C->ItemIndex==0)E->WT_index=0;
+							if(prvni==Col && C->ItemIndex==1)E->WT_index=1;
+							if(druhy==Col && C->ItemIndex==1)E->WT_index=2;
+						}
+            C=NULL;delete C;
             F->zmena_editovanych_bunek(E);
 						break;
 					}
@@ -698,6 +708,14 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					case 3:
 					{
 						input_state=WT;
+						TscGPComboBox *C=E->mGrid->getCombo(Col,Row);
+						if(C!=NULL)
+						{
+              if(C->ItemIndex==0)E->WT_index=0;
+							if(Col==1 && C->ItemIndex==1)E->WT_index=1;
+							if(Col==2 && C->ItemIndex==1)E->WT_index=2;
+						}
+            C=NULL;delete C;
 						F->zmena_editovanych_bunek(E);
 					}break;
 				}

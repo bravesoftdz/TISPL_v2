@@ -4916,7 +4916,7 @@ void TForm1::getJobID(int X, int Y)
 						break;//pokud chci první nalezený element ... break, pokud chci poslední nalezeny bez breaku (např. problém překrývání 2 citelných oblastí)
 					}
 					//hledání zda nejsem na vedlejší větvi výhybky
-					if(E->eID==300 && E->dalsi2==E->predchozi2 && m.LeziVblizkostiUsecky(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,E->geo.X4,E->geo.Y4,E->predchozi2->geo.X4,E->predchozi2->geo.Y4)<=m.m2px(1))
+					if(E->eID==300 && E->dalsi2==E->predchozi2 && m.LeziVblizkostiUsecky(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,E->geo.X4,E->geo.Y4,E->predchozi2->geo.X4,E->predchozi2->geo.Y4)<=0.5)
 					{
 						JID=6;
 						pom_element=E;
@@ -6849,6 +6849,7 @@ void TForm1::add_element (int X, int Y)
 			if(E->eID!=5 && E->eID!=6 && E->eID!=100 && E->eID!=200)d.v.aktualizuj_rezim_pohonu(E->pohon,d.v.vrat_druh_elementu(E));//přeskakovat elementy co neudávají režim, podle režimu pohonu jsou upravovány některá data
 			d.v.aktualizace_rezimu_objektu(OBJEKT_akt);//aktualizace rezimu objektu, podle něj se řídí tabulky a vkládání robotů
 			//aktualizace a validace
+			vypocet_WT(E);
 			if(E->dalsi!=NULL && E->eID==0 && E->dalsi->eID==0)design_element(E->dalsi,false);//aktualizace počtů pozic, pokud je stopka vložena do oblasti jiné stopky
 			if(E->eID==5 || E->eID==6)FormX->validace_max_voziku();//přidána otoč do kabiny, aktualizace validace
       if(d.v.vrat_druh_elementu(E)==0 && E->eID!=0)FormX->validace_PT(E);//validace PT podle RT, u S&G elementů (kromě stopky)
@@ -6947,14 +6948,6 @@ void TForm1::add_vyhybka_spojka()
 					d.v.vrat_objekt(E->dalsi->objekt_n)->element=E;
 				}
 				d.v.vloz_G_element(E,0,E->X,E->Y,0,0,0,0,E->X,E->Y,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,0);
-//				if(E->dalsi!=NULL && (E->objekt_n!=E->dalsi->objekt_n || (E->dalsi->eID==200 && E->dalsi->geo.delka==0 && E->dalsi->dalsi!=NULL)))
-//				{
-//					E->objekt_n=E->dalsi->objekt_n;
-//					if(E->dalsi->eID==200)E->objekt_n==E->dalsi->dalsi->objekt_n;
-//					Cvektory::TObjekt *O=d.v.vrat_objekt(E->objekt_n);
-//					if(O->element==E->dalsi)O->element=E;
-//					O=NULL;delete O;
-//				}
 				//pokud je výhybka / spojka před obloukem prohodit geometrii, takto půjde libovolně posouvat
 				if(E->dalsi!=NULL && E->dalsi->dalsi!=NULL && E->dalsi->dalsi->geo.typ!=0 && E->geo.X4==E->dalsi->dalsi->geo.X1 && E->geo.Y4==E->dalsi->dalsi->geo.Y1)
 				{
@@ -6984,7 +6977,7 @@ void TForm1::add_vyhybka_spojka()
     	E->PTotoc=0;
     	E->data.PT2=0;
 			E->WT=0;//čekání na palec
-      E->WT_index=1;
+      E->WT_index=0;
 			E->data.WTstop=0;//čekání na stopce
 			E->data.RT=0;//ryzí reserve time
 			E->data.pocet_voziku=0;
@@ -7016,6 +7009,8 @@ void TForm1::add_vyhybka_spojka()
 			E->name+=" "+String(E->identifikator_vyhybka_spojka);
 			E->short_name+=E->identifikator_vyhybka_spojka;
 		}
+		//vypočet RT
+		vypocet_WT(E);
 
 		//změna na vkládání spojky
 		if(element_id==300)element_id=301;//vložena výhybka přechod na vkládání spojky
@@ -7158,7 +7153,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 					}
 					//WT přiřazení
 					E->WT=0;//čekání na palec
-					E->WT_index=1;
+					E->WT_index=0;
 					//souřadnice tabulky
 		   		if(E->orientace==0 || E->orientace==180){E->Xt=E->X-1.9;E->Yt=E->Y+1.6;}
 		   		else{E->Xt=E->X+0.6;E->Yt=E->Y+0.5;}
@@ -7186,7 +7181,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
           el->pohon=E->pohon;
 					//WT přiřazení
 					el->WT=0;//čekání na palec
-					el->WT_index=1;
+					el->WT_index=0;
 					//souřadnice tabulky
 					if(el->orientace==0 || el->orientace==180){el->Xt=el->X-1.9;el->Yt=el->Y+1.6;}
 					else{el->Xt=el->X+0.6;el->Yt=el->Y+0.5;}
@@ -7214,37 +7209,12 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 				}
 			}
 	  	//////////Aktualizace WT
-			if(E->eID==200)
-			{
-				//výpočet WT
-//				if(E->pohon!=NULL)E->WT1=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
-//				Cvektory::TElement *E_pom=E->dalsi;
-//				if(E_pom==NULL)E_pom=d.v.ELEMENTY->dalsi;
-//				if(E_pom->pohon!=NULL)E->WT2=m.cekani_na_palec(0,E_pom->pohon->roztec,E_pom->pohon->aRD,3);
-//				E_pom=NULL;delete E_pom;
-//				if(E->pohon!=E_pom->pohon)E->WT1=0;//pokud nejsou stejné, nemá smysl
-//				if(OBJEKT_akt!=NULL && (E->objekt_n==OBJEKT_akt->n || E==predchozi_PM))napln_comba_mGridu(E);
-			}
+			if(E->eID==200)vypocet_WT(E);
 		}
 		//aktualizace WT u výhybky
-		if(E->eID==300)
-		{
-			//výpočet WT
-//			if(E->pohon!=NULL)E->WT1=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
-//			Cvektory::TElement *E_pom=E->dalsi;
-//			if(E->eID==300)E_pom=E->dalsi2;
-//			if(E_pom->pohon!=NULL)E->WT2=m.cekani_na_palec(0,E_pom->pohon->roztec,E_pom->pohon->aRD,3);
-//			E_pom=NULL;delete E_pom;
-//			if(OBJEKT_akt!=NULL &&  E->objekt_n==OBJEKT_akt->n)napln_comba_mGridu(E);
-		}
+		if(E->eID==300)vypocet_WT(E);
 		//aktualizace WT u spojky
-		if(E->eID==301)
-		{
-			//výpočet WT
-//			if(E->pohon!=NULL)E->WT1=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
-//			if(E->predchozi2!=E->dalsi2 && E->predchozi2->pohon!=NULL)E->WT2=m.cekani_na_palec(0,E->predchozi2->pohon->roztec,E->predchozi2->pohon->aRD,3);
-//			if(OBJEKT_akt!=NULL &&  E->objekt_n==OBJEKT_akt->n)napln_comba_mGridu(E);
-		}
+		if(E->eID==301)vypocet_WT(E);
 		//ukazatelové záležitosti
 		E=d.v.sekvencni_zapis_cteni(E,tab_pruchodu,NULL);//nutné procházet tímto algoritmem, jeho nepoužitím může dojít k přeskočení kontroly elementu před spojkou (na hlavní větvi)
 	}
@@ -7268,7 +7238,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 				}
 		  	//WT přiřazení
 				E->WT=0;//čekání na palec
-				E->WT_index=1;
+				E->WT_index=0;
 		  	//souřadnice tabulky
 		  	if(e_posledni->orientace==0 || e_posledni->orientace==180){E->Xt=E->X-1.9;E->Yt=E->Y+1.6;}
 		  	else{E->Xt=E->X+0.6;E->Yt=E->Y+0.5;}
@@ -7294,7 +7264,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 				Cvektory::TElement *el=d.v.vloz_element(O,200,E->geo.X4,E->geo.Y4,E->orientace);
 				//WT přiřazení
 				el->WT=0;//čekání na palec
-				el->WT_index=1;
+				el->WT_index=0;
 				//souřadnice tabulky
 				if(el->orientace==0 || el->orientace==180){el->Xt=el->X-1.9;el->Yt=el->Y+1.6;}
 				else{el->Xt=el->X+0.6;el->Yt=el->Y+0.5;}
@@ -7322,16 +7292,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 			}
 		}
 		//////////Aktualizace WT
-		if(e_posledni->eID==200)
-		{
-			//výpočet WT
-//			if(e_posledni->pohon!=NULL)e_posledni->WT1=m.cekani_na_palec(0,e_posledni->pohon->roztec,e_posledni->pohon->aRD,3);
-//			Cvektory::TElement *E_pom=E->dalsi;
-//			if(E_pom==NULL)E_pom=d.v.ELEMENTY->dalsi;
-//			if(E_pom->pohon!=NULL)E->WT2=m.cekani_na_palec(0,E_pom->pohon->roztec,E_pom->pohon->aRD,3);
-//			E_pom=NULL;delete E_pom;
-//			if(OBJEKT_akt!=NULL && (e_posledni->objekt_n==OBJEKT_akt->n || e_posledni==predchozi_PM))napln_comba_mGridu(e_posledni);
-		}
+		if(e_posledni->eID==200)vypocet_WT(E);
 		//////////Mazání pomocných ukazatelů
 		e_prvni=NULL;delete e_prvni;
 		e_posledni=NULL;delete e_posledni;
@@ -7472,7 +7433,7 @@ void TForm1::vlozeni_editace_geometrie()
 		}
 		//nulování WT
 		E->WT=0;//čekání na palec
-    E->WT_index=1;
+    E->WT_index=0;
 		//změna elemetnu na zarážku
 		E->eID=MaxInt;
 		//název
@@ -9922,7 +9883,7 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 		C1=E->mGrid->getCombo(3,11);C2=E->mGrid->getCombo(4,11);
 		if(C1!=NULL && C2!=NULL)
 		{
-      //prohození, je-li potřeba
+			//prohození, je-li potřeba
 			if(prohodit_sloupce_PM(E))
 			{
 				//prohhození comb
@@ -9944,7 +9905,7 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 			//vybrání položky
 			C1->ItemIndex=0;
 			C2->ItemIndex=0;
-      //kontrola zda můžu editovat pohon
+			//kontrola zda můžu editovat pohon
 			zmena_editovanych_bunek(E);//automaticky nastaví editované položky a needitovatelné položky pro pohonové tabulky
 		}
 
@@ -9952,32 +9913,40 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 		B=NULL;delete B;
 		C1=NULL;delete C1;
 		C2=NULL;delete C2;
-    C_pom=NULL;delete C_pom;
+		C_pom=NULL;delete C_pom;
 	}
 	//spojka
 	if(E->eID==301)
 	{
 		E->mGrid->Update();//musí být přítomen před zakazováním komponent, před Update tabulka ještě neexistuje
-		TscGPComboBox *C1=E->mGrid->getCombo(1,3),*C2=E->mGrid->getCombo(2,3),*C_pom=C1;
-		if(C1==NULL)C_pom=C2;
-		while(C_pom!=NULL)
+		TscGPComboBox *C1=E->mGrid->getCombo(1,3),*C2=E->mGrid->getCombo(2,3),*C_pom=NULL;
+		if(C1!=NULL && C2!=NULL)
 		{
-			C_pom->Clear();
+			//prohození, je-li potřeba
+			if(prohodit_sloupce_PM(E))
+			{
+				//prohhození comb
+				C_pom=C1;
+				C1=C2;
+				C2=C_pom;
+			}
+			C1->Clear();C2->Clear();
 			//nastavení default barev comba
-			nastav_combo_mGridu(C_pom);
-			//přidávání itemů do comba
-			TscGPListBoxItem *I;
-			I=C_pom->Items->Add();
-			I->Caption=ls->Strings[497];//"žádné"
-			I=C_pom->Items->Add();
-			I->Caption=String(outPT(m.round2double(E->WT,3)));
-			I=NULL;delete I;
-			//přiřazení itemindexu podle pohonu na vedlejší větvi, pokud je definovaná
-			C_pom->ItemIndex=0;
-			if(C_pom==C2)C_pom=NULL;
-			if(C_pom==C1)C_pom=C2;
+			nastav_combo_mGridu(C1);nastav_combo_mGridu(C2);
+			//přidání itemů
+			TscGPListBoxItem *I1=NULL,*I2=NULL;
+			I1=C1->Items->Add();I2=C2->Items->Add();
+			I1->Caption=ls->Strings[497];I2->Caption=ls->Strings[497];//"žádné"
+			I1=C1->Items->Add();I2=C2->Items->Add();
+			I1->Caption=String(m.round2double(outPT(E->WT),3));I2->Caption=String(m.round2double(outPT(E->WT),3));
+			I1=NULL;delete I1;
+			I2=NULL;delete I2;
+			//vybrání položky
+			C1->ItemIndex=0;
+			C2->ItemIndex=0;
+			//kontrola zda můžu editovat pohon
+			zmena_editovanych_bunek(E);//automaticky nastaví editované položky a needitovatelné položky pro pohonové tabulky
 		}
-		zmena_editovanych_bunek(E);
 		C1=NULL;C2=NULL;C_pom=NULL;
 		delete C1;delete C2;delete C_pom;
 	}
@@ -10114,24 +10083,21 @@ void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
 		}
 
 		//nastavení WT comb
+		e_pom=E->dalsi;if(e_pom==NULL)e_pom=d.v.ELEMENTY->dalsi;
+		if(E->eID==300)e_pom=E->dalsi2;
 		C1=NULL;C2=NULL;
 		C1=E->mGrid->getCombo(prvni,11);C2=E->mGrid->getCombo(druhy,11);
-		int i1=-1,i2=-1;
 		if(C1!=NULL && C2!=NULL)
 		{
-			i1=C1->ItemIndex;
-			if(E->pohon!=NULL)C1->Enabled=true;
-			else C1->Enabled=false;
-			i2=C2->ItemIndex;
-			if(e_pom->pohon!=NULL && e_pom!=E->predchozi2)C2->Enabled=true;
-			else C2->Enabled=false;
-			if(C1!=NULL && i2>0)C1->Enabled=false;
-			if(C2!=NULL && i1>0)C2->Enabled=false;
-			if(E->eID==200)
-			{
-				if(E->objekt_n!=OBJEKT_akt->n)C1->Enabled=false;
-				if((E->dalsi!=NULL && E->dalsi->objekt_n!=E->objekt_n || E->dalsi==NULL) && predchozi_PM!=E)C2->Enabled=false;
-			}
+			//itemindex
+			if(E->WT_index==1)C1->ItemIndex=1;
+			if(E->WT_index==2)C2->ItemIndex=1;
+			//zakázání / povolení
+      C1->Enabled=true;C2->Enabled=true;//defaultní nastavení
+			if(E->WT_index==0 && E->pohon!=e_pom->pohon){C1->Enabled=false;C2->Enabled=false;}
+			if(E->WT_index==1)C2->Enabled=false;
+			if(E->WT_index==2)C1->Enabled=false;
+			if(E->WT_index==2 && E->pohon!=e_pom->pohon){C1->Enabled=false;C2->Enabled=false;}
 			//nastavení barev
 			if(C1->Enabled){E->mGrid->Cells[prvni][11].Background->Color=clWhite;E->mGrid->Cells[prvni][11].Font->Color=(TColor)RGB(43,87,154);}
 			if(C2->Enabled){E->mGrid->Cells[druhy][11].Background->Color=clWhite;E->mGrid->Cells[druhy][11].Font->Color=(TColor)RGB(43,87,154);}
@@ -10152,25 +10118,25 @@ void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
 		if(E->pohon!=NULL)p1=E->pohon->name;if(E->predchozi2->pohon!=NULL)p2=E->predchozi2->pohon->name;
     E->mGrid->Cells[1][2].Text=p1;E->mGrid->Cells[2][2].Text=p2;
 		//povolení / zákaz comb
-		int i1=-1,i2=-1;
+		Cvektory::TElement *e_pom=E->predchozi2;
 		TscGPComboBox *C1=E->mGrid->getCombo(1,3),*C2=E->mGrid->getCombo(2,3);
-		//základní nastavení podle existence pohonu
-		if(C1!=NULL)
+		if(C1!=NULL && C2!=NULL)
 		{
-			i1=C1->ItemIndex;
-			if(E->pohon!=NULL)C1->Enabled=true;
-			else C1->Enabled=false;
-    }
-		if(C2!=NULL)
-		{
-			i2=C2->ItemIndex;
-			if(E->predchozi2->pohon!=NULL)C2->Enabled=true;
-			else C2->Enabled=false;
+			//itemindex
+			if(E->WT_index==1)C1->ItemIndex=1;
+			if(E->WT_index==2)C2->ItemIndex=1;
+			//zakázání / povolení
+      C1->Enabled=true;C2->Enabled=true;//defaultní nastavení
+			if(E->WT_index==0 && E->pohon!=e_pom->pohon){C1->Enabled=false;C2->Enabled=false;}
+			if(E->WT_index==1)C2->Enabled=false;
+			if(E->WT_index==2)C1->Enabled=false;
+			if(E->WT_index==2 && E->pohon!=e_pom->pohon){C1->Enabled=false;C2->Enabled=false;}
+			//nastavení barev
+			if(C1->Enabled){E->mGrid->Cells[1][3].Background->Color=clWhite;E->mGrid->Cells[2][3].Font->Color=(TColor)RGB(43,87,154);}
+			if(C2->Enabled){E->mGrid->Cells[2][3].Background->Color=clWhite;E->mGrid->Cells[2][3].Font->Color=(TColor)RGB(43,87,154);}
 		}
-		if(C1!=NULL && i2>0)C1->Enabled=false;
-		if(C2!=NULL && i1>0)C2->Enabled=false;
-		C1=NULL;C2=NULL;
-		delete C1;delete C2;
+		C1=NULL;C2=NULL;e_pom=NULL;
+		delete C1;delete C2;delete e_pom;
   }
 }
 //---------------------------------------------------------------------------
@@ -15181,7 +15147,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
 	while(E!=NULL)
 	{
-		if(E->objekt_n==OBJEKT_akt->n || E==predchozi_PM)Memo(E->name+"->WT: "+String(OBJEKT_akt->element->WT)+"; ->WT_index: "+String(OBJEKT_akt->element->WT_index));
+		if(E->eID==301)Memo(E->name+"->WT: "+String(E->WT)+"; ->WT_index: "+String(E->WT_index));
 		E=E->dalsi;
 	}
 	delete E;E=NULL;
@@ -19148,6 +19114,68 @@ void TForm1::rozmisti_mGridy()
 	REFRESH();
 	nahled_ulozit(true,false);//povolit uložení náhledu bez validace
   mGrid_on_mGrid();//odstraní překrytí, pokud bylo
+}
+//---------------------------------------------------------------------------
+//vypočíta WT pro PM, výhybku a spojku
+void TForm1::vypocet_WT(Cvektory::TElement *E)
+{
+	log(__func__);
+  //defaultní hodnota
+	E->WT=0;
+	Cvektory::TElement *e_pom=NULL;//deklarace pom elementu
+	bool error=false;
+
+	//naplnění poomcného elementu
+	switch(E->eID)
+	{
+		case 200:
+		{
+			e_pom=E->dalsi;
+			if(e_pom==NULL)e_pom=d.v.ELEMENTY->dalsi;
+			break;
+		}
+		case 300:e_pom=E->dalsi2;break;
+		case 301:e_pom=E->predchozi2;break;
+		default:error=true;break;
+  }
+
+	//výpočt WT podle zvoleného pohonu
+	if(!error)
+	{
+  	switch((int)E->WT_index)
+  	{
+  		//první nastavování
+  		case 0:default:
+  		{
+  			if(e_pom->pohon!=NULL)
+  			{
+  				if(e_pom->pohon==E->pohon)E->WT=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
+  				else
+  				{
+  					E->WT=m.cekani_na_palec(0,e_pom->pohon->roztec,e_pom->pohon->aRD,3);
+  					E->WT_index=2;
+  					if(OBJEKT_akt!=NULL && (E->objekt_n==F->OBJEKT_akt->n || E==predchozi_PM))napln_comba_mGridu(E);
+  				}
+  			}
+  			break;
+  		}
+  		//nastaveno na první pohon
+  		case 1:
+  		{
+  			if(E->pohon!=NULL)E->WT=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
+  			break;
+  		}
+  		//nastaveno na druhý pohon
+  		case 2:
+  		{
+  			if(e_pom->pohon!=NULL)E->WT=m.cekani_na_palec(0,e_pom->pohon->roztec,e_pom->pohon->aRD,3);
+  			break;
+  		}
+		}
+	}
+
+	//ukazatelové záležitosti
+	e_pom=NULL;delete e_pom;
 }
 //---------------------------------------------------------------------------
 

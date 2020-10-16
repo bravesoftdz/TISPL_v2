@@ -852,7 +852,8 @@ public:		// User declarations
 	void copy_to_clipboard(String text);//kopíruje text do Clipboardu
 	void mGrid_on_mGrid();//prohledá zda se pøekrývají mGridy
 	bool je_pohon_pouzivan(unsigned long n);//provede kontrolu, zda je pohon v seznamu používaných, vrátí výsledek
-  void rozmisti_mGridy();//rovnomìrnì rozmístí mGridny, poèátek je left top
+	void rozmisti_mGridy();//rovnomìrnì rozmístí mGridny, poèátek je left top
+  void vypocet_WT(Cvektory::TElement *E);//vypoèíta WT pro PM, výhybku a spojku
   };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

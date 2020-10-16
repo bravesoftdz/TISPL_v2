@@ -1797,7 +1797,7 @@ void Cvektory::hlavicka_ELEMENTY()
 	novy->zona_za=0;
 
 	novy->WT=0;
-  novy->WT_index=1;
+  novy->WT_index=0;
 
 	novy->citelna_oblast.rect0=TRect(0,0,0,0);
 	novy->citelna_oblast.rect1=TRect(0,0,0,0);
@@ -1868,7 +1868,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->PTotoc=0;
 	novy->data.PT2=0;
 	novy->WT=0;//čekání na palec pro hlavní větev
-	novy->WT_index=1;//index, určuje pro který pohon je WT určeno
+	novy->WT_index=0;//index, určuje pro který pohon je WT určeno
 	novy->VID=0;
   novy->VID_value=0;
 	novy->data.WTstop=0;//čekání na stopce
@@ -4127,7 +4127,7 @@ void Cvektory::smaz_element(TElement *Element,bool preskocit_kontolu,unsigned lo
 		Element->PTotoc=0;
 		Element->data.PT2=0;
 		Element->WT=0;//čekání na palec
-		Element->WT_index=1;//čekání na palec
+		Element->WT_index=0;//čekání na palec
 		Element->data.WTstop=0;//čekání na stopce
 		Element->data.RT=0;//ryzí reserve time
 		Element->data.pocet_voziku=0;
