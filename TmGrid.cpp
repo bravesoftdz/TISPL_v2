@@ -653,10 +653,13 @@ void TmGrid::DrawNote(TCanvas *C)
 	{
 		////zarovnání dle exBUTTONu
 		short leftOffset=0,rightOffset=0;
-		switch(exBUTTONalign)
+		if(exBUTTON->Visible)
 		{
-			case LEFT:exBUTTON->Left=Left;leftOffset=exBUTTON->Width;break;
-			case RIGHT:exBUTTON->Left=Left+Width-exBUTTON->Width+m.round(Border.Width/2.0);rightOffset=exBUTTON->Width;break;
+			switch(exBUTTONalign)
+			{
+				case LEFT:exBUTTON->Left=Left;leftOffset=exBUTTON->Width;break;
+				case RIGHT:exBUTTON->Left=Left+Width-exBUTTON->Width+m.round(Border.Width/2.0);rightOffset=exBUTTON->Width;break;
+			}
 		}
 
 		////výpis poznámky

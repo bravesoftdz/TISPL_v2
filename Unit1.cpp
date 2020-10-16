@@ -2373,31 +2373,36 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 	if(Akce!=PAN_MOVE && MOD!=SIMULACE) //MOD!=SIMULACE - provizorně, smazat
 	{
 		Graphics::TBitmap *bmp_total=new Graphics::TBitmap;bmp_total->Width=ClientWidth;bmp_total->Height=ClientHeight;//vytvoření finální bmp, která bude vykreslena do Canvasu formu
+		//bmp_total->Canvas->Brush->Color=RGB(50,50,50);bmp_total->Canvas->Rectangle(0,0,ClientWidth,ClientHeight);
 		////rastrový uživatelský POKDKLAD
 		if(d.v.PP.raster.show && MOD!=SIMULACE)nacti_podklad(bmp_total->Canvas);
 		////vykreslení GRIDu
 		if(grid && Zoom_predchozi_AA>0.5 && (Akce==MOVE_BOD||Akce==DRAW_HALA) && prichytavat_k_mrizce==1 && MOD!=SIMULACE)d.vykresli_grid(bmp_total->Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí//vykreslení gridu
 		////VEKTORY
-		if((d.SCENA==1111111 || d.SCENA==111111) && Akce!=GEOMETRIE && MOD!=TVORBA_CESTY && Akce!=MAGNETICKE_LASO && pom==NULL)//vše STATICKÁ scéna - totální statická scena, nejsou žádně akce
+		if((d.SCENA==1111111 || d.SCENA==111111) && Akce!=GEOMETRIE && MOD!=TVORBA_CESTY && Akce!=MAGNETICKE_LASO)//vše STATICKÁ scéna - totální statická scena a nejsou žádně akce nebo případně, že je v totálně statické označen (vybrán) nějaká objekt resp. hrana tohoto objektu
 		{
 			bmp_total->Canvas->Draw(0,0,Staticka_scena);//varianta, kdy je už přeantialiasingovaná
+			if(pom!=NULL)d.vykresli_objekt(bmp_total->Canvas,pom);//případne, že je v totálně statické označen (vybrán) nějaká objekt resp. hrana tohoto objektu
 		}
 		else
 		{
 			Graphics::TBitmap *bmp_in=new Graphics::TBitmap;bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;
-			if(d.SCENA>0 && d.SCENA!=2222222 /*&& d.SCENA!=1111111 && d.SCENA!=111111*/)bmp_in->Canvas->Draw(0,0,Staticka_scena);//STATICKÁ scéna, je volaná pouze pokud to má smysl, není přeantialiasingovaná(AA), je jen připravená (3x větší) pro AA (aby byl již dříve AAnemá to smysl, pouze je 3x větší BMP, ale jinak by se nejednalo o úsporu)
-			Zoom_predchozi_AA=Zoom;Zoom*=3;//záloha původního zoomu,nový *3 vyplývá z logiky algoritmu antialiasingu
+			if(d.SCENA>0 && d.SCENA!=2222222)bmp_in->Canvas->Draw(0,0,Staticka_scena);//STATICKÁ scéna, je volaná pouze pokud to má smysl, není přeantialiasingovaná(AA), je jen připravená (3x větší) pro AA (aby byl již dříve AAnemá to smysl, pouze je 3x větší BMP, ale jinak by se nejednalo o úsporu)
+			if(antialiasing) Zoom_predchozi_AA=Zoom;Zoom*=3;//záloha původního zoomu,nový *3 vyplývá z logiky algoritmu antialiasingu
 			short s=2;if(d.SCENA==0)s=0;//řešení pro vykreslit VŠE
-			//if(/*d.SCENA!=1111111 && d.SCENA!=111111 || */pom!=NULL)
 			d.vykresli_vektory(bmp_in->Canvas,s);//DYNAMICKÁ scéna, pokud není vše do statické nebo je aktivní pom objekt (např. výběr hrany atp.), tak se řešeí dynamická scena, jinak ne, protože nemá smysl
 			if(Akce==GEOMETRIE && Akce_temp==NIC && !editace_textu)d.smart_kurzor(bmp_in->Canvas,posledni_editovany_element,typElementu);//0,1,2
 			if(MOD==TVORBA_CESTY)d.kurzor_cesta(bmp_in->Canvas);
 			if(Akce==MAGNETICKE_LASO)d.vykresli_meridlo(bmp_in->Canvas);
 			if(OBJEKT_akt!=NULL && Akce!=GEOMETRIE)d.vykresli_oblast_teplomery(bmp_in->Canvas,s,OBJEKT_akt);
+			if(antialiasing)
+			{
 			Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 			Cantialising a;
 			Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
 			bmp_total->Canvas->Draw(0,0,bmp_out);delete(bmp_out);
+			}
+			else {bmp_total->Canvas->Draw(0,0,bmp_in);delete(bmp_in);}//není aktivní AA
 		}
 		////mGRIDY
 		if(MOD!=SIMULACE && Akce!=MAGNETICKE_LASO/* && Akce!=POSUN_TEPLOMER*/)d.vykresli_mGridy(bmp_total->Canvas);//přesunuto do vnitř metody: OBJEKT_akt->elementy!=NULL kvůli pohonům
@@ -2420,6 +2425,10 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		if(mGrid_knihovna->VisibleComponents>-1)mGrid_knihovna->VisibleComponents=true;//stačí volat toto, protože se pomocí Show (resp. Draw-SetCompontens-Set...) cyklem všechny komponenty na základě tohoto zobrazí pokud je nastaveno na -1 tak se při překreslování zohlední individuální nastavení komponent (z tohoto stavu je však pro další použítí třeba vrátit do stavu 0 nebo 1)
 		mGrid_knihovna->Show(Image_knihovna_objektu->Canvas);
 	}
+
+	short p=0,a=0;
+	if(pom!=NULL)p=1;if(OBJEKT_akt!=NULL)a=10;
+	Memo(String(p+a)+" "+String(d.SCENA),true);
 }
 //---------------------------------------------------------------------------
 //vytvoří BMP se statickou scénou, NEVYTVÁŘÍ POUZE pro kompletní dynamickou scénu
@@ -2427,25 +2436,36 @@ void TForm1::vytvor_statickou_scenu()
 {
 	log(__func__,String(d.SCENA));//logování
 	if(Staticka_scena!=NULL){delete Staticka_scena;Staticka_scena=NULL;}//před vytvořením nové kvůli realokaci nejdříve nutné odstranit
-	Zoom_predchozi_AA=Zoom;//záloha původního zoomu
-	Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
-	if((d.SCENA==1111111 || d.SCENA==111111) && Akce!=GEOMETRIE && MOD!=TVORBA_CESTY && Akce!=MAGNETICKE_LASO && pom==NULL)//vše STATICKÁ scéna, nejsou žádně akce, pokud se jedná o kompletně statickou scenu, vytvoří již bmp Staticka_scena rovnou přeantialiasingovanoou
+
+	if(antialiasing)
 	{
-		Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-		bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
-		d.vykresli_vektory(bmp_in->Canvas,1);
-		Cantialising a;Staticka_scena=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
-		//Staticka_scena->SaveToFile("staticka_scena_sAA.bmp");
+		Zoom_predchozi_AA=Zoom;//záloha původního zoomu
+		Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
+		if((d.SCENA==1111111 || d.SCENA==111111) && Akce!=GEOMETRIE && MOD!=TVORBA_CESTY && Akce!=MAGNETICKE_LASO)//vše STATICKÁ scéna, nejsou žádně akce, pokud se jedná o kompletně statickou scenu, vytvoří již bmp Staticka_scena rovnou přeantialiasingovanoou
+		{
+			Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+			bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+			d.vykresli_vektory(bmp_in->Canvas,1);
+			Cantialising a;Staticka_scena=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
+			//Staticka_scena->SaveToFile("staticka_scena_sAA.bmp");
+		}
+		else
+		if(d.SCENA>0 && d.SCENA!=2222222)//pro případy kdy se nejedná o kompletní statickou a ani kompletní dynamickou scenu, v tomto případě nemá smysl nyní Statickou scenu antialiasingovat
+		{
+			Staticka_scena=new Graphics::TBitmap;
+			Staticka_scena->Width=ClientWidth*3;Staticka_scena->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu, nicméně nemá smysl nyní Statickou scenu antialiasingovat, protože by se stejně antialiasingovala samostatná dynamická scéna a navíc to způsobovalo zde umístěné grafické chyby
+			d.vykresli_vektory(Staticka_scena->Canvas,1);
+			//Staticka_scena->SaveToFile("staticka_scena_sAA.bmp");
+		}
+		Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 	}
-	else
-	if(d.SCENA>0 && d.SCENA!=2222222)//pro případy kdy se nejedná o kompletní statickou a ani kompletní dynamickou scenu, v tomto případě nemá smysl nyní Statickou scenu antialiasingovat
+	else//není povolen AA
 	{
 		Staticka_scena=new Graphics::TBitmap;
-		Staticka_scena->Width=ClientWidth*3;Staticka_scena->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu, nicméně nemá smysl nyní Statickou scenu antialiasingovat, protože by se stejně antialiasingovala samostatná dynamická scéna a navíc to způsobovalo zde umístěné grafické chyby
+		Staticka_scena->Width=ClientWidth;Staticka_scena->Height=ClientHeight;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+		Staticka_scena->Width=ClientWidth;Staticka_scena->Height=ClientHeight;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
 		d.vykresli_vektory(Staticka_scena->Canvas,1);
-		//Staticka_scena->SaveToFile("staticka_scena_sAA.bmp");
 	}
-	Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 
 //  log(__func__,"vlakno_pan_create");//logování
 //	Memo((short)vlakno_PanCreateState);
@@ -2663,8 +2683,12 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		case 102:{Mouse->CursorPos=TPoint(Mouse->CursorPos.x+1,Mouse->CursorPos.y);break;}
 		//ŠIPKA NAHORU
 		case 104:{Mouse->CursorPos=TPoint(Mouse->CursorPos.x,Mouse->CursorPos.y-1);break;}
+		//CTRL+D
+		case 68: if(ssCtrl)ShowMessage("ctrl + d");break;
 		//CTRL+M
 		case 77: if(ssCtrl)Akce=MEASURE;kurzor(add_o);break;
+		//CTRL+u
+		case 85: if(ssCtrl)ShowMessage("ctrl + u");break;
 		//+
 		case 107:if(!editace_textu)ZOOM_IN();break;
 		//-
@@ -5716,6 +5740,7 @@ void TForm1::pan_create()
 		Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu, lépe za posunem
 		Graphics::TBitmap *bmp_test=new Graphics::TBitmap;
 		bmp_test->Width=ceil(abs((double)MaxX-MinX)*3);bmp_test->Height=ceil(abs((double)MaxY-MinY)*3);//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+		if(d.v.PP.raster.show && MOD!=SIMULACE)nacti_podklad(bmp_test->Canvas);//ale není dobré, že se přeantialiasingovává, nebo by se muselo prohnat přes  a.antialiasing(bmp_test,s alokovaným Pan_bmp_ALL a zapsaným s rastrem), nebo je varianta zcela odříznout tuto variantu pan_create při spuštěném rastru
 		d.vykresli_vektory(bmp_test->Canvas,1);
 		Cantialising a;
 		Pan_bmp_ALL=a.antialiasing(bmp_test,false);delete(bmp_test);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
@@ -15018,16 +15043,43 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //MaKr testovací tlačítko
 void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 {//vždy nechat tento komentář
-	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-	while(E!=NULL)
-	{
-		if(d.v.vrat_druh_elementu(E)==0)
-		{
-			Memo(E->name);Memo(E->data.pocet_pozic);Memo(E->data.pocet_voziku);
-    }
-		E=E->dalsi;
-	}
-	delete E;
+
+////  	//odeslání dat na FTP server
+//	TIdFTP *FTP=new TIdFTP(this);
+//	FTP->Host="lyzarskejihlavsko.cz";//FTP server
+//	FTP->Username="hojkov@lyzarskejihlavsko.cz";
+//	FTP->Password="modryextra";
+//	FTP->TransferType=ftBinary;
+//	FTP->Passive=true;//nutno
+//	FTP->Connect();
+//	//FTP->Put("C:\\Users\\Martin\\AppData\\Local\\Temp\\TISPL\\tispl_PrtScrMartin_MARTIN-NOTEBOOK.png");
+//
+//
+//	HANDLE h;
+//	WIN32_FIND_DATA wfd;
+//	String text;
+//	short pocet_souboru=-1;
+//
+//	h=FindFirstFile(L"*.*",&wfd);
+//	if(h!=INVALID_HANDLE_VALUE)
+//	{
+//		while(FindNextFile(h,&wfd))
+//		{
+//			//text+=String(wfd.cFileName)+"\t";
+//			if(++pocet_souboru>0)
+//			{
+//				FTP->Put(ExtractFilePath(Application->ExeName)+wfd.cFileName);
+//			}
+//		}
+//		FindClose(h);
+//	}
+////
+////	Memo(text);
+//
+//	FTP->Disconnect();
+//	delete FTP;
+
+
 
 
 

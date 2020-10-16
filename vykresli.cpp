@@ -122,7 +122,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv, short scena)//scena 0 - vše, sc
 
 	/////Vykreslení objektů
 	if(m.getValueFromPosition(SCENA,2)==scena)vykresli_objekty(canv);
-	if(m.getValueFromPosition(SCENA,2)==1 && scena==2 && F->pom!=NULL)vykresli_objekt(canv,F->pom);//v případě v layoutu editovaného objektu, jsou-li všechny objekty nastaveny jako statické, vykreslí editovaný v rámci dynamické scény
+	if(m.getValueFromPosition(SCENA,2)==1 && scena==2 && F->pom!=NULL)vykresli_objekt(canv,F->pom);//jsou-li všechny objekty nastaveny jako statické, vykreslí aktálně označený objekt v rámci dynamické scény (v případě v layoutu se již aktuálně volá přímo ve formpaint, v totálně statické sekci)
 
 	/////Vykreslení dopravníků
 	if(m.getValueFromPosition(SCENA,3)==scena)vykresli_dopravnik(canv);

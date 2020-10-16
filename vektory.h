@@ -190,7 +190,7 @@ class Cvektory
 		UnicodeString short_name;//krátký název max. 4 znaky         //DOPRYC
 		UnicodeString name;//celý název objektu
 		double X,Y;//umístění objektu ve schématu - prozatím, bude ale sloužit na umístění popisku objektu!!!
-		TBod *body;//definice obrysu haly - NEW + dodat do CObjekt!!!!
+		TBod *body;//definice obrysu objektu
 		double sirka_steny;//šířka stěny kabiny objektu v metrech  - NEW + dodat do CObjekt!!!!
 		double Xk,Yk;//bude ke smazání - umístění levého horního rohu kabiny v layoutu a náhledu kabiny  //DOPRYC
 		double Xt,Yt;// souřadnice popisku objektu pro možnost posouvání dodat!!!   //PRIDAT
@@ -568,7 +568,7 @@ class Cvektory
 	TBod *najdi_bod(TObjekt* Objekt=NULL);//na aktuálních souřadnicích myši hledá bod, pokud je nalezen vrátí na něj ukazatel, pokud je ukazatel na Objekt NULL, jedná se o metodu pro HALU
 	TBod *najdi_usecku(TObjekt* Objekt=NULL,long presnost=3);//na aktuálních souřadnicích myši hledá úsečku, pokud je nalezena je vracen ukazatel na druhý bod, pokd nebylo nalezeno nic vrátí NULL, parametr Objekt implicitně NULLL, rozlišuje hledání úsečky v HALE nebo v Objektu, parametr přesnost určuje vzdálenost od přímky, která je nutná k její detekci
 	short PtInKota_bod(TObjekt *Objekt=NULL);//ověří zda se na daných fyzických souřadnicích myši nachází kóta hrany/stěny HALy či Objektu (Objektu pokud Objekt!=NULL), pokud ne vrací -1, pokud ano 0 v celé kótě, 1 - na hodnotě kóty, 2 - na jednotkách kóty , pozn. oblast kóty se testuje až jako poslední
-	bool PtInBody(TObjekt *Objekt=NULL);//ověří zda se souřadnicích myši nachází ve vnitř polygonu, pokud je Objekt==NULL, hledá se v polygonu HALy
+	bool PtInBody(TObjekt *Objekt=NULL,bool vcetne_poloviny_sirky_steny=false);//ověří zda se souřadnicích myši nachází ve vnitř polygonu, pokud je Objekt==NULL, hledá se v polygonu HALy
 	void kopiruj_body(TObjekt *Original,TObjekt *Kopie);//zkopíruje body včetně z originálu na kopii bez ukazatelového propojení, funguje jenom pro body objektů nikoliv HALY!!!
 	void smaz_bod(TBod* Bod,TObjekt* Objekt=NULL);//smaže konkrétní bod, pokud je ukazatel na Objekt NULL, jedná se o metodu pro HALU
 	void vymaz_body(TObjekt* Objekt=NULL);//vymaže všechny body včetně hlavičky, pokud je ukazatel na Objekt NULL, jedná se o metodu pro HALU
