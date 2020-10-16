@@ -128,8 +128,8 @@ class Cvektory
 		double zona_pred;//zóna od počátku otáčení do středu otoče
 		double zona_za;//zona od středu otoče do konce otáčení
 
-		double WT1;//čekání na palec pro hlavní větev
-		double WT2;//čekání na palec pro vedlejší větev
+		double WT;//čekání na palec pro hlavní větev
+		double WT_index;//index, určuje pro který pohon je WT určeno, 1 - defaultně, 2 - druhý pohon (sekundární větev, pohon za PM)
 
 		unsigned int VID;//validační ID, uchovává ID validace v mGridu, např. dopRD
     double VID_value;//uchovává v sobě hodnotu pro validaci, např. hodnotu dopRD
@@ -1040,7 +1040,7 @@ private:
 			double zona_za;
 			double PTotoc;
 			double WT1;//čekání na palec
-      double WT2;//čekání na palec, pro sekundární větev
+			double WT2;//čekání na palec, pro sekundární větev
 
 			Tdata data;
 

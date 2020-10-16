@@ -11,8 +11,8 @@ Chain switch;X;Výhybka
 Chain merge;X;Spojka
 CS;X;V
 CM;X;S
-Zoom out;X;Oddálit obraz
-Zoom window;X;Pøiblížit obraz dle výbìru oknem
+Moving overlaps work areas, do you want to move the element?;X;Pøesunem dojde k pøekrytí pracovních oblastí, chcete element pøesunout?
+Paste overlaps the work areas, do you want to insert the element?;X;Vložením dojde k pøekrytí pracovních oblastí, chcete element vložit?
 Show all objects;X;Zobrazit všechny objekty
 Previous view;X;Pøedchozí pohled
 Pause simulation;X;Pauza simulace
@@ -423,7 +423,7 @@ RT is not relevant, some of the objects have no drive!;X;RT není relevantní, nìk
 Irrelevant time reserve value (RT), drive is not assigned to some object!;X;Nerelevantní hodnota èasové rezervy (RT), na nìkterém objektu není pøiøazen pohon!
 Cannot edit, layout is locked.;X;Nelze editovat, layout je zamèený
 Failed to load background;X;Nepodaøilo se naèíst podklad
-, check its existence or reload.;X;, zkontrolujte jeho existenci, nebo proveïte nové naètení.
+, do you want to reload?;X;, chcete provést nové naètení?
 Due to the overlap of jigs, no more carts can be set than;X;Kvùli pøekryvu jigù nelze nastavit vìtší poèet vozíkù než
 place for grip thumb;X;místo pro úchyt palce
 Delete background;X;Smazat podklad

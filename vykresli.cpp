@@ -1250,8 +1250,8 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 				cas_pom+=d/C->Element->pohon->aRD;
 				if(v.vrat_druh_elementu(C->Element)!=0 && (!prichyceno || (prichyceno && C->Element!=F->pom_element)))
 				{
-					cas+=C->Element->WT1;
-					cas_pom+=C->Element->WT1;
+					cas+=C->Element->WT;
+					cas_pom+=C->Element->WT;
         }
 				//připočítávat casy prvního
 				//pokud mám načítat dat z prvního elementu, načítám pouze WT a latenci
@@ -1259,7 +1259,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 				{
           if(C->Element->eID==0)
 					{
-						cas+=C->Element->WT1;
+						cas+=C->Element->WT;
 						if(C->Element->dalsi!=NULL && C->Element->dalsi->pohon!=NULL)cas+=m.latence_mezi_stopkami(C->Element->dalsi->pohon->aRD);
 					}
 				}
@@ -1283,8 +1283,8 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 								}
 							}
 						}
-						cas+=C->Element->WT1;
-						cas_pom+=C->Element->WT1;
+						cas+=C->Element->WT;
+						cas_pom+=C->Element->WT;
 						if(!prichyceno || (prichyceno && C->Element!=F->pom_element))cas=ceil(cas/v.PP.TT)*v.PP.TT;
 						if(!prichyceno || (prichyceno && C->Element!=F->pom_element))cas_pom=ceil(cas_pom/v.PP.TT)*v.PP.TT;
 					}
@@ -1541,10 +1541,10 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
 					cas_pom+=d/C->Element->pohon->aRD;
 					if(!prichyceno || (prichyceno && F->pom_element!=C->Element))
 					{
-						cas+=C->Element->data.PT1+C->Element->data.PT2+C->Element->WT1+C->Element->PTotoc+C->Element->data.WTstop;
-						cas_pom+=C->Element->data.PT1+C->Element->data.PT2+C->Element->WT1+C->Element->PTotoc+C->Element->data.WTstop;
+						cas+=C->Element->data.PT1+C->Element->data.PT2+C->Element->WT+C->Element->PTotoc+C->Element->data.WTstop;
+						cas_pom+=C->Element->data.PT1+C->Element->data.PT2+C->Element->WT+C->Element->PTotoc+C->Element->data.WTstop;
 					}
-					if(prichyceno && C->dalsi==NULL && C->Element==F->pom_element->dalsi)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->WT1+F->pom_element->PTotoc+F->pom_element->data.WTstop;
+					if(prichyceno && C->dalsi==NULL && C->Element==F->pom_element->dalsi)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->WT+F->pom_element->PTotoc+F->pom_element->data.WTstop;
 					if(C->Element->eID==0)
 					{
 						if(d>=C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)
@@ -1661,8 +1661,8 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
 				if(F->pom_element->eID==0 && !prichyceno)
 				{
 					double buf=F->pom_element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;
-					cas+=F->pom_element->data.WTstop+F->pom_element->WT1;
-					cas_pom+=F->pom_element->data.WTstop+F->pom_element->WT1;
+					cas+=F->pom_element->data.WTstop+F->pom_element->WT;
+					cas_pom+=F->pom_element->data.WTstop+F->pom_element->WT;
 					if(d<=buf)d_pom=0;
 					else d_pom-=buf;//odstranění přejezdu přes buffer
 				}
@@ -1678,7 +1678,7 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
 					cas_pom+=d_pom/F->pom_element->pohon->aRD;
 				}
 			}
-			if(prichyceno)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->WT1+F->pom_element->PTotoc+F->pom_element->data.WTstop;
+			if(prichyceno)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->WT+F->pom_element->PTotoc+F->pom_element->data.WTstop;
 
 			//vykreslovací část
 			vykresli_Gelement(canv,X,Y,OR,0,delka_Pud,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",popisek,2);
@@ -1723,7 +1723,7 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
 		  	//vypočet času přejezdu
 				cas+=delka/F->pom_element->pohon->aRD;
 				cas_pom+=delka/F->pom_element->pohon->aRD;
-				if(prichyceno)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT1+F->pom_element->data.WTstop;
+				if(prichyceno)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT+F->pom_element->data.WTstop;
 				//vykreslení
 				vykresli_Gelement(canv,X,Y,azimut,0,d,clMeridlo,2,String(m.round2double(d*1000,2))+" [mm]",popisek,3);
 			}
@@ -3020,7 +3020,7 @@ void Cvykresli::vykresli_vetev_dopravniku(TCanvas *canv)
 		Cvektory::TElement *E=prvni->dalsi;//vykreslit hlavní větev
 		if(FormX->vykresli_vetev==2)E=prvni->dalsi2;//vykreslit vedlejší větev
 		//průchod skrze elementy ve větvi
-		while(E!=NULL)
+		while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
 		{
 			if(FormX->vykresli_vetev==2 && E->identifikator_vyhybka_spojka==F->pom_element->identifikator_vyhybka_spojka)break;//ukončení
 			R=E->geo.radius;if(E->geo.typ==0)R=E->geo.delka;
