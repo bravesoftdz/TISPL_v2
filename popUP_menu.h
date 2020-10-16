@@ -65,6 +65,9 @@ __published:	// IDE-managed Components
 	TscGPPanel *Item_zobrazitskryt_steny;
 	TscLabel *scLabel_zobrazitskryt_steny;
 	TscGPGlyphButton *scGPGlyphButton_zobrazitskryt_steny;
+	TscGPPanel *Item_rozmistit_mgridy;
+	TscLabel *scLabel_rozmistit_mgridy;
+	TscGPGlyphButton *GlyphButton_rozmistit_mgridy;
 	void __fastcall scLabel_smazatClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall scLabel_zobrazit_parametryMouseEnter(TObject *Sender);
@@ -145,6 +148,11 @@ __published:	// IDE-managed Components
 	void __fastcall scLabel_zobrazitskryt_stenyClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_zobrazitskryt_stenyMouseEnter(TObject *Sender);
 	void __fastcall scGPGlyphButton_zobrazitskryt_stenyMouseLeave(TObject *Sender);
+	void __fastcall scLabel_rozmistit_mgridyMouseEnter(TObject *Sender);
+	void __fastcall scLabel_rozmistit_mgridyMouseLeave(TObject *Sender);
+	void __fastcall scLabel_rozmistit_mgridyClick(TObject *Sender);
+	void __fastcall GlyphButton_rozmistit_mgridyMouseEnter(TObject *Sender);
+	void __fastcall GlyphButton_rozmistit_mgridyMouseLeave(TObject *Sender);
 
 
 private:	// User declarations

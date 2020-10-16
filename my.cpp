@@ -662,8 +662,8 @@ bool Cmy::PtInLine(double X1,double Y1,double X2,double Y2,double Xmys,double Ym
 	if(X1>X2){pom=X1;X1=X2;X2=pom;}
 	if(Y1>Y2){pom=Y1;Y1=Y2;Y2=pom;}
 	//kontrola zda je přímka vodorovná nebo svislá a zároveň, zda se bod nachází na přimce
-	if(X1==X2 && Y1<=Ymys && Ymys<=Y2 && X1==Xmys)return true;
-	else if(Y1==Y1 && X1<=Xmys && Xmys<=X2 && Y1==Ymys)return true;
+	if(round2double(X1,5)==round2double(X2,5) && Y1<=Ymys && Ymys<=Y2 && round2double(X1,5)==round2double(Xmys,5))return true;
+	else if(round2double(Y1,5)==round2double(Y2,5) && X1<=Xmys && Xmys<=X2 && round2double(Y1,5)==round2double(Ymys,5))return true;
 	//přímka je pod úhlem nebo se bod nennachází na přímce
 	else return false;
 }
@@ -785,7 +785,7 @@ bool Cmy::PtInTeplomer(double X,double Y,double Xmys,double Ymys,double rotace)
 {
 	////vstupní proměnné či konstanty
 	X=L2Px(X);Y=L2Py(Y);
-	double Z=F->Zoom;//zoom, pouze zkrácení zápisu
+	//double Z=F->Zoom;//zoom, pouze zkrácení zápisu
 	float polomer=0.2;//poloměr kružnic zadaná v metrech
 	int polomer1=m2px(polomer);//poloměr kružnic
 	int polomer2=m2px(polomer/2.0);//poloměr kružnic
@@ -1459,3 +1459,50 @@ double Cmy::RAND(double MIN, double MAX,unsigned short precision,bool MINin,bool
 }
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
+//vrátí Zoom upravený na používané stupnici
+double Cmy::getZoomValue(double Zoom)
+{
+	if(Zoom<=0.25 || (Zoom>=0.25 && Zoom<0.5))Zoom=0.25;
+	if(Zoom>=0.5 && Zoom<1)Zoom=0.5;
+	if(Zoom>=1 && Zoom<1.5)Zoom=1;
+	if(Zoom>=1.5 && Zoom<2)Zoom=1.5;
+	if(Zoom>=2 && Zoom<2.5)Zoom=2;
+	if(Zoom>=2.5 && Zoom<3)Zoom=2.5;
+	if(Zoom>=3 && Zoom<3.5)Zoom=3;
+	if(Zoom>=3.5 && Zoom<4)Zoom=3.5;
+	if(Zoom>=4 && Zoom<4.5)Zoom=4;
+	if(Zoom>=4.5 && Zoom<5)Zoom=4.5;
+	if(Zoom>=5 && Zoom<6)Zoom=5;
+	if(Zoom>=6 && Zoom<7)Zoom=6;
+	if(Zoom>=7 && Zoom<8)Zoom=7;
+	if(Zoom>=8 && Zoom<9)Zoom=8;
+	if(Zoom>=9 && Zoom<10)Zoom=9;
+	if(Zoom>=10 && Zoom<15)Zoom=10;
+	if(Zoom>=15 && Zoom<20)Zoom=15;
+	if(Zoom>=20 && Zoom<25)Zoom=20;
+	if(Zoom>=25 && Zoom<30)Zoom=25;
+	if(Zoom>=30)Zoom=30;
+	return Zoom;
+}
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+//Zoom=0.25;
+//Zoom=0.5;
+//Zoom=1;
+//Zoom=1.5;
+//Zoom=2;
+//Zoom=2.5;
+//Zoom=3;
+//Zoom=3.5;
+//Zoom=4;
+//Zoom=4.5;
+//Zoom=5;
+//Zoom=6;
+//Zoom=7;
+//Zoom=8;
+//Zoom=9;
+//Zoom=10;
+//Zoom=15;
+//Zoom=20;
+//Zoom=25;
+//Zoom=30;

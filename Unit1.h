@@ -600,11 +600,13 @@ private:
 	void vloz_bod_haly_objektu(int X,int Y);//vloží bod haly nebo objektu na zvolené souøadnice (fyzické), zohlední pøichytávání
 	void smaz_bod_haly_objektu(Cvektory::TBod *bod);//smaže bod haly nebo objektu, pokud existují už jen 2 poslední body smaže oba
   void mGrid_mimo_obraz(Cvektory::TElement *E=NULL);//kontrola zde je mGrid mimo obraz, pokud ano vypnutí komponent
+  TRect oblast_prekryti_mGridu(Cvektory::TElement *E=NULL);//vrátí oblast pro kontrolu pøekrytí mGridù
 	void mGrid_puvodni_stav(Cvektory::TElement *E=NULL);//nadesingnuje tabulky elementù nebo tabulku pohonu na pùvodní stav, obnový komponenty, naplní comba, provede Update() mGridu
 	void set_font(int velikost=14);//nastaví komponentám aFont
-	bool pripnuti_dalsich_objektu();//pokud pøi uložení editovaného objektu je detekováno, že konec objketu nenavazuje na zaèátek následujísího objektu je položen dotaz a po potvrzení dojde ke spojení
+	bool pripnuti_dalsich_objektu(double citlivost=0.5);//pokud pøi uložení editovaného objektu je detekováno, že konec objketu nenavazuje na zaèátek následujísího objektu je položen dotaz a po potvrzení dojde ke spojení
 	void spojeni_prvni_posledni(double citlivost=0.5);//kontrola zda na sebe první a polední objekt navazují, pokud jsou blízko u sebe, ale nenavazují - naváže je
 	void napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni);//provede kontrolu, zdá je možnost geometrii spojit, dotáže se a spojí geometrii pokud uživatel souhlasí
+  void vypni_geometrii();//vypne akci geometrie
 	void Otevri_posledni_ulozeny(UnicodeString soubor);//otevøe jeden z posledních otevøených souborù
 	void vytvor_obraz(bool stornoUNDO=false);//slouží k vytvoøení obrazu pro storno + undo nebo jen undo
 	void vymaz_seznam_obrazu();//vymaže všechny obrazy v poøadníku
@@ -619,7 +621,8 @@ private:
 	unsigned int getV();//testovácí metody simulace
 	void vytvor_seznam_pouzivanych_pohonu();//vytvoøí seznam, kam se zapíší pohony, které jsou používány jinde
 	void smaz_seznam_pouzivanych_pohonu();//smaže seznam používaných pohonù
-  void byly_pohony_editovany();//provede kontrolu jaké pohony byly editovány
+	void byly_pohony_editovany();//provede kontrolu jaké pohony byly editovány
+  void nastav_combo_mGridu(TscGPComboBox *C);//nastaví barvy a chování pro combo
 
 	////promìnné
 	UINT TimerSimulaceID;
@@ -686,6 +689,8 @@ public:		// User declarations
 	Cvektory::TObjekt *pom,*pom_vyhybka,*OBJEKT_akt,*copyObjekt;
 	Cvektory::TElement *pom_element,*pom_element_temp,*posledni_editovany_element,*element_temp,*predchozi_PM;//element_temp je nulován pøi každém pøejetí kurzoru používán na vìci kolem PM
 	TmGrid *PmG,*mGrid_knihovna;//ukazatel na mGridovou tabulku pohonu
+	unsigned int PmG_VID;//validaèní ID, uchovává ID validace v mGridu, napø. dopRD
+  double PmG_VID_value;//uchovává v sobì hodnotu pro validaci, napø. hodnotu dopRD
 	Cvektory::TKomora *pom_komora,*pom_komora_temp;
 	Cvektory::TBod *pom_bod,*pom_bod_temp;
 
@@ -810,7 +815,7 @@ public:		// User declarations
 	double outRz(double outRz);
 	void Memo(AnsiString Text,bool clear=false,bool count=false,bool copyFinalTextToClipboard=false);//urychlení vypsání do Memo_testy
 	void log(AnsiString Text,AnsiString Text2="");//zapíše log do textového souboru a pøidá datum
-	TRectD souradnice_LO(Cvektory::TElement *E);//vrací souøadnice (PX) lakovacího okna elementu pokud nìjaké má,pokud ne vrátí souøadnice elementu
+	TPointD oblast_LO(Cvektory::TElement *E);//vrací velikosti oblastí lakovacích oken, .x = oblast pøed, .y = oblast za
 	short prekryti_LO(Cvektory::TElement *E);//prozkoumá zda se element nepøekrýva lak. oknem se sousedními,  0=nepøkrývá se, 1=pøekrývá se LO, 2=pøekrývá se zóna
 	double vzdalenost_meziLO(Cvektory::TElement *E,double orientace);//vrati delku v metrech mezi LO elementù
 	void design_element(Cvektory::TElement *E,bool prvni_spusteni,bool plnit_comba=true);//nadesignuje tabulky daného elementu
@@ -846,7 +851,9 @@ public:		// User declarations
 	String get_major_version(String version);//vrátí Major verzi z FileVersion
 	void copy_to_clipboard(String text);//kopíruje text do Clipboardu
 	void mGrid_on_mGrid();//prohledá zda se pøekrývají mGridy
-  bool je_pohon_pouzivan(unsigned long n);//provede kontrolu, zda je pohon v seznamu používaných, vrátí výsledek
+	bool je_pohon_pouzivan(unsigned long n);//provede kontrolu, zda je pohon v seznamu používaných, vrátí výsledek
+	void rozmisti_mGridy();//rovnomìrnì rozmístí mGridny, poèátek je left top
+  void vypocet_WT(Cvektory::TElement *E);//vypoèíta WT pro PM, výhybku a spojku
   };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

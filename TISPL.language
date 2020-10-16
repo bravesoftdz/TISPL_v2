@@ -2,17 +2,17 @@ Language;X;Jazyk
 Czech;X;èeština
 Mongolian;X;mongolština
 English;X;angliètina
-wagon:min:;X;vozík:min:
-Creates a new file;X;Založí nový soubor
-Opens an existing file;X;Otevøe existující soubor
-Saves the current file;X;Uloží aktuální soubor
-Back;X;Zpìt
-Next;X;Vpøed
-Pan  ;X;Posouvat obraz
-Pan  ;X;Posunout obraz
-Zoom in;X;Pøiblížit obraz
-Zoom out;X;Oddálit obraz
-Zoom window;X;Pøiblížit obraz dle výbìru oknem
+Delete path;X;Smazat cestu
+Delete path segment;X;Smazat úsek cesty
+New contract with the main route;X;Nová zakázka s hlavní cestou
+New contract with the path of the last order;X;Nová zakázka s cestou poslední zakázky
+new drive;X;nový pohon
+Chain switch;X;Výhybka
+Chain merge;X;Spojka
+CS;X;V
+CM;X;S
+Moving overlaps work areas, do you want to move the element?;X;Pøesunem dojde k pøekrytí pracovních oblastí, chcete element pøesunout?
+Paste overlaps the work areas, do you want to insert the element?;X;Vložením dojde k pøekrytí pracovních oblastí, chcete element vložit?
 Show all objects;X;Zobrazit všechny objekty
 Previous view;X;Pøedchozí pohled
 Pause simulation;X;Pauza simulace
@@ -94,7 +94,7 @@ Export...;X;Export...
 Last opened;X;Naposledy otevøený
 New…;X;Nový...
 Save;X;Uložit
-Load background ...;X;Naèíst podklad...
+Load new background;X;Naèíst nový podklad
 Options;X;Nastavení
                   Layers;X;                  Vrstvy
 Conveyor tracks;X;Koleje dopravníku
@@ -423,7 +423,7 @@ RT is not relevant, some of the objects have no drive!;X;RT není relevantní, nìk
 Irrelevant time reserve value (RT), drive is not assigned to some object!;X;Nerelevantní hodnota èasové rezervy (RT), na nìkterém objektu není pøiøazen pohon!
 Cannot edit, layout is locked.;X;Nelze editovat, layout je zamèený
 Failed to load background;X;Nepodaøilo se naèíst podklad
-, check its existence or reload.;X;, zkontrolujte jeho existenci, nebo proveïte nové naètení.
+, do you want to reload?;X;, chcete provést nové naètení?
 Due to the overlap of jigs, no more carts can be set than;X;Kvùli pøekryvu jigù nelze nastavit vìtší poèet vozíkù než
 place for grip thumb;X;místo pro úchyt palce
 Delete background;X;Smazat podklad
@@ -486,10 +486,27 @@ Section;X;Úsek
 Time;X;Èas
 crossing;X;pøejezd
 total;X;celkem
-The version of the saved file does not match the current version of the environment! File version;X;Verze uloženého souboru se neschoduje s aktuální verzí prostøedí! Verze souboru
-environment version;X;verze prostøedí
+The project cannot be opened. Version of the loaded project -;X;Projekt nelze otevøít. Verze naèítaného projektu -
+. Required version -;X;. Požadovaná verze -
 climb;X;stoupání
 descent;X;klesání
 Automatically delete;X;Automaticky smazat
 Changing the value will affect all elements on this drive.;X;Zmìna hodnoty ovlivní všechny prvky na tomto pohonu.
 Element parameters have changed on the drive;X;Došlo ke zmìnì parametrù prvkù na pohonu
+. Application version -;X;. Verze aplikace -
+The background already exists, do you want to load a new one?;X;Podklad již existuje, pøejete si naèíst nový?
+none;X;žádné
+maximum time potential (travel time through the working/painting area);X;maximální èasový potenciál (èas pøejezdu pøes pracovní/lakovací oblast)
+Climbing or descenting can only be entered in the direction of the line.;X;Stoupání èi klesání lze zadat pouze po smìru linky.
+Insertion failed, you must stay in the drive area.;X;Vkládaní se nezdaøilo, musíte se držet v oblasti pohonu.
+Click in the drive area to insert the start.;X;Kliknutím do oblasti pohonu vložíte zaèátek.
+Drag the mouse and then click to insert an endpoint.;X;Tažením myši a následným kliknutím vložíte koncový bod.
+Drag the mouse to adjust the measurement area. Click to exit.;X;Tažením myši pøizpùsobujete oblast mìøení. Kliknutím ukonèíte.
+Grasp and drag in the drive area to reposition the thermometer.;X;Uchopením a tažením v oblasti pohonu zmìníte umístìní teplomìru.
+Rec. PT value is maximum;X;Dop. hodnota PT je maximálnì
+Snapped to;X;Pøichyceno k
+Snapped to the edge of the cabin;X;Pøichyceno k hranì kabiny
+Snapped to wagon no.;X;Pøichyceno k vozíku è.
+Snapped to begin of C/D;X;Pøichyceno k zaèátku S/K
+Snapped to end of C/D;X;Pøichyceno ke konci S/K
+Geometric lines have been changed, the thermometer area will be restored.;X;Byla zmìnìna geometrie linky, oblast teplomìrù bude obnovena.

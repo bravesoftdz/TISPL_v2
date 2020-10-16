@@ -31,16 +31,24 @@ __published:	// IDE-managed Components
 	TscGPButton *Button_Cancel;
 	TscGPCheckBox *CheckBox_pamatovat;
 	TscGPGlyphButton *scGPGlyphButton_copy;
-	TscGPEdit *scGPEdit1;
   TscLabel *Label_text;
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall scGPGlyphButton_copyClick(TObject *Sender);
-	void __fastcall scGPEdit1KeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall Button_YesClick(TObject *Sender);
 	void __fastcall CheckBox_pamatovatClick(TObject *Sender);
+	void __fastcall Button_YesMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
+	void __fastcall Button_OKMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
+	void __fastcall Button_NoMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
+	void __fastcall Button_CancelMouseMove(TObject *Sender, TShiftState Shift, int X,
+          int Y);
+	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
+
+
+
+
 
 private:	// User declarations
 	enum T_mbTYPE{OK=0,OKCANCEL=1,YESNO=4,YESNOCANCEL=3};

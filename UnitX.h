@@ -27,9 +27,7 @@ private:	// User declarations
 	void prirazeni_pohohonu_vetvi(Cvektory::TElement *E,long Col);//zmìní pohon sekundární vìtvi, z výhybky nebo spojky (pokud sekundární vìtev existuje)
 	void prirazeni_pohohonu_PM(Cvektory::TElement *E,long Col);//pøiøazení pohonu pøed PM, nebo za PM
 	void prirazeni_pohonu_defTab();//pøiøazení pohonu z PmG
-	void zapisVID(int zapis,int pozice);//zapiše na danou pozici ve VID dané èíslo
 	void zobrazit_skryt_radkyPM(Cvektory::TElement *E);//zobrazí èi skryje øádky PM tabulek podle stavu uloženého v objektu
-  unsigned int aktualizuj_radek_tab_teplomeru(TmGrid *mGrid,unsigned int radek,double cas,double WT,bool soucet=false);//aktualizuje parametry konkrétního øádku tabulky teplomìrù
 	void podbarvi_edit(Cvektory::TElement *E,long Col,long Row,bool def_nastaveni=true);//nastaví defautlní barvy editu a buòce, nebo podbarvé buòku
 
 	//promìnné pro UnitX
@@ -41,23 +39,29 @@ public:		// User declarations
   __fastcall TFormX(TComponent* Owner);
 	void OnClick(long Tag,long ID,long Col,long Row);
 	void OnEnter(long Tag,long ID,unsigned long Col,unsigned long Row);
+  void OnMouseMove(long Tag,long ID,int X,int Y,unsigned long Col,unsigned long Row);
 	void OnChange(long Tag,long ID,unsigned long Col,unsigned long Row);
 	void OnKeyPress(long Tag,long ID,unsigned long Col,unsigned long Row,System::WideChar &Key);
 	void OnKeyDown(long Tag,unsigned long Col,unsigned long Row,WORD &Key,TShiftState Shift);//slouží pro spuštìní funkcionality ctrl+z a ctrl+y pokud je focus na mGridu
 	void odstranit_korelaci(bool predat_focus=true);//odstraní veškerou korelaci, nepoviný prametr urèuje zda má být pøedán focus z mGridu, defaultnì focus pøedává
 	void validace_aRD(bool pouze_rozmezi=false);//validace zadávané aktuální rychlosti
 	void validace_max_voziku();//validace maximálního poètu vozíkù na stopce
+  void validace_PT(Cvektory::TElement *E);//kontrola a validace PT podle RT u S&G elementù kromì stopky
 	void povolit_zakazat_editaci();//zakazuje èi povolí ukládání editace na základì VID
+  bool existuje_validace();//zkontroluje zda existuje v objektu validace na úrovní mGridù, vrátí výsledek
 	void naplneni_dopRD();//doplni doporuèenou rychlost do tabulky pohonu
   bool check_click_Note(double X,double Y,bool check_for_highlight=false);
 	void aktualizace_zon_otaceni(Cvektory::TElement *E);//po zmìnì rotace na elementu E, projde všechny elementy za a pøepoèítá jim zóny otáèení
 	void validace_RD(Cvektory::TElement *E);//provede validaci RD
 	void update_hodnot_vyhybky_PM(Cvektory::TElement *E);//zobrazí aktuální hodnoty z dat v tabulkách
-	void vynulujVID();//vynuluje VID, podle délky nastavené v konstruktoru (viz. popisek deklarace VID) napø. 2 èíslice
 	void aktualizace_tab_elementu (Cvektory::TElement *mimo_element=NULL);//aktualizuje výpoèty ve všech tabulkách elemntù, parametr mimo_element je ukazatel na element, který má být pøeskoèen, defaultnì hodnota, které E->n nidky nedosáhne
 	void mazatPM(Cvektory::TElement *Element=NULL);//kontorla a dotaz zda mají být PM na stejném pohonu smazána
 	void aktualizace_teplomeru();//provede aktualizaci èasu v tabulce teplomìrù
 	void zmena_rezimu_pohonu(Cvektory::TPohon *pohon);//aktualizuje položky v pohonových tabulkách, v pøípadì, že došlo ke zmìnì režimu pohonu
+	UnicodeString getVID(unsigned int VID);//z èísla VIDu vrátí jeho textový popis
+  UnicodeString getVID_value_out(unsigned int VID,double VID_value);//vrátí VID_value pøevedenou na aktuálnì zobrazené jednotky
+	void zadat_validaci(unsigned int VID,double VID_value,Cvektory::TElement *E=NULL,bool show=true);//vloží do elementu a do mGridu validaci
+  void zmen_jednotky_validace(Cvektory::TElement *E=NULL);//zmìna jednotek ve výpisu validace
 
 	//promìnné pro vyøazení OnChange metody pøi vykreslování tabulek
   enum Tinput_state{NO,NOTHING,PT,PT2,LO,LO2,WT,DO,PTotoc,COMBO,aRD,R,Rz,Rx,P_VOZ,CT};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
@@ -65,11 +69,11 @@ public:		// User declarations
 	bool vstoupeno_poh, vstoupeno_elm,validace_true;
 	Cvektory::TElement *posledni_E;//slouží pro uložení editovaného elementu, nemusím pøi každém stisku klávesy vracet E
 	Cvektory::TCesta *posledni_c;
-	int validovany_pohon;
-	AnsiString VID;//dvouciferné èíslo, první èíslo znázoròuje validaci pohonu, druhé validaci stopek, pokud je èíslo 00 = bez chyb, 10 = chyba na pohonu, stop v poøádku (viz. 777 webové soubory), poèet èíslic nastaven v konstruktoru, mìnit pouze tam!!
+	unsigned int validovany_pohon;
 	bool aut_mazani_PM;
 	bool validovat_pohon;
-  bool popisky_pouzivany_pohon;
+	bool popisky_pouzivany_pohon;
+  int vykresli_vetev;//0 - žádnou, 1 - hlavní, 2 - vedlejší
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFormX *FormX;

@@ -28,8 +28,25 @@ void __fastcall TmyMessageBox::FormShow(TObject *Sender)
 	myMessageBox->Left=Form1->Left+Form1->ClientWidth-myMessageBox->Width-5;
 	if(myMessageBox->Top>=Form1->Top+Form1->ClientHeight-myMessageBox->Height)
 	myMessageBox->Top=Form1->Top+Form1->ClientHeight-myMessageBox->Height-5;
-	scGPEdit1->SetFocus();//použito kvùli odchytávání stisku kláves
+	if(Button_OK->Visible)Button_OK->SetFocus();
+  else Button_Yes->SetFocus();
 	closing=false;
+
+  Button_Yes->Options->FrameWidth=2;
+  Button_OK->Options->FrameWidth=Button_Yes->Options->FrameWidth;
+  Button_No->Options->FrameWidth=Button_Yes->Options->FrameWidth;
+  Button_Cancel->Options->FrameWidth=Button_Yes->Options->FrameWidth;
+
+  Button_Yes->Options->FrameFocusedColor = (TColor)RGB(43,87,154);
+  Button_No->Options->FrameFocusedColor =  Button_Yes->Options->FrameFocusedColor;
+  Button_OK->Options->FrameFocusedColor =  Button_Yes->Options->FrameFocusedColor;
+  Button_Cancel->Options->FrameFocusedColor =  Button_Yes->Options->FrameFocusedColor;
+
+  Button_Yes->Options->FrameHotColor  = Button_Yes->Options->FrameFocusedColor;
+  Button_No->Options->FrameHotColor  = Button_Yes->Options->FrameFocusedColor;
+  Button_OK->Options->FrameHotColor  = Button_Yes->Options->FrameFocusedColor;
+  Button_Cancel->Options->FrameHotColor  = Button_Yes->Options->FrameFocusedColor;
+
 }
 //---------------------------------------------------------------------------
 //pøetížená metoda
@@ -153,7 +170,7 @@ void __fastcall TmyMessageBox::FormKeyDown(TObject *Sender, WORD &Key, TShiftSta
 		//BACKSPACE
 		case 8: break;
 		//ENTER
-		case 13:if(Button_OK->Visible)Button_OK->Down=true;else Button_Yes->Down=true;break;
+		//case 13:if(Button_OK->Visible)Button_OK->Down=true;else Button_Yes->Down=true;break;
 		//ESC
 		case 27:closing=true;Close();break;
 		//MEZERNÍK
@@ -170,15 +187,7 @@ void __fastcall TmyMessageBox::FormPaint(TObject *Sender)
 //kopírování obsahu label_text do schránky
 void __fastcall TmyMessageBox::scGPGlyphButton_copyClick(TObject *Sender)
 {
-	scGPEdit1->Text=Label_text->Caption;
-	scGPEdit1->SelectAll();
-	scGPEdit1->CopyToClipboard();
-}
-//---------------------------------------------------------------------------
-//funguje pouze jako pøesmìrování této události na form, edit má na sobì neustále focus
-void __fastcall TmyMessageBox::scGPEdit1KeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
-{
-	FormKeyDown(this,Key,Shift);
+	F->copy_to_clipboard(Label_text->Caption);
 }
 //---------------------------------------------------------------------------
 //po klikutí pøepnì glob. promìnou na true, slouží k blokaci formactivate na Unit1
@@ -192,6 +201,35 @@ void __fastcall TmyMessageBox::Button_YesClick(TObject *Sender)
 void __fastcall TmyMessageBox::CheckBox_pamatovatClick(TObject *Sender)
 {
   F->zobrazit_upozorneni_teplomery=false;//zatím použito pouze pro úèel MB s oznámením, že cesty budou pøegenerovány
+}
+//---------------------------------------------------------------------------
+//highlight tlaèítek pøi tab a pøi mouse move
+void __fastcall TmyMessageBox::Button_YesMouseMove(TObject *Sender, TShiftState Shift,int X, int Y)
+{
+	Button_Yes->Options->FrameWidth=1;
+}
+//---------------------------------------------------------------------------
+void __fastcall TmyMessageBox::Button_OKMouseMove(TObject *Sender, TShiftState Shift,int X, int Y)
+{
+	Button_OK->Options->FrameWidth=1;
+}
+//---------------------------------------------------------------------------
+void __fastcall TmyMessageBox::Button_NoMouseMove(TObject *Sender, TShiftState Shift,int X, int Y)
+{
+	Button_No->Options->FrameWidth=1;
+}
+//---------------------------------------------------------------------------
+void __fastcall TmyMessageBox::Button_CancelMouseMove(TObject *Sender, TShiftState Shift,int X, int Y)
+{
+	Button_Cancel->Options->FrameWidth=1;
+}
+//---------------------------------------------------------------------------
+void __fastcall TmyMessageBox::FormMouseMove(TObject *Sender, TShiftState Shift, int X,int Y)
+{
+	Button_Yes->Options->FrameWidth=2;
+	Button_OK->Options->FrameWidth=2;
+	Button_No->Options->FrameWidth=2;
+	Button_Cancel->Options->FrameWidth=2;
 }
 //---------------------------------------------------------------------------
 

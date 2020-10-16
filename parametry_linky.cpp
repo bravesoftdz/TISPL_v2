@@ -774,8 +774,8 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
       UnicodeString nazev;
 
       if (PL_mGrid->Cells[1][i].Text == "")
-        nazev = "nový pohon";
-      else
+				nazev = F->ls->Strings[8];//"nový pohon"
+			else
         nazev = PL_mGrid->Cells[1][i].Text;
 
       if (PL_mGrid->Cells[2][i].Text == "")
@@ -912,7 +912,7 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender) {
     // poøadí øádku o jednièku nižší než poèet øádkù
 
     PL_mGrid->Cells[0][i].Text = getMaxPID() + 1; // PL_mGrid->RowCount - 2;
-    PL_mGrid->Cells[1][i].Text = "nový pohon ";
+    PL_mGrid->Cells[1][i].Text = F->ls->Strings[8];//"nový pohon"
     // rStringGridEd_tab_dopravniky->Cells[1][i - 1];
 
     getmGridWidth();
@@ -1162,7 +1162,7 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key,
 
         // naètení hodnoty rozteèe do roletky + nastavení jako ItemIndex=0
 
-        PL_mGrid->Cells[1][i].Text = "nový pohon " + AnsiString(i - 1);
+        PL_mGrid->Cells[1][i].Text = F->ls->Strings[8] + " " + AnsiString(i - 1);//"nový pohon"
         if (i == 2) {
           PL_mGrid->Cells[2][i].Text = "0,2";
           PL_mGrid->Cells[3][i].Text = "5";

@@ -117,7 +117,9 @@ void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender)
 // ---------------------------------------------------------------------------
 // provede pøepnutí jazyka na komponentách, mGridy se zmìní automaticky pøi vytváøení
 void TForm_definice_zakazek::nastav_jazyk() {
-  F->log(__func__); // logování
+	F->log(__func__); // logování
+	N11->Caption=F->ls->Strings[6];
+  N21->Caption=F->ls->Strings[7];
 	scLabel_header->Caption = F->ls->Strings[432];
   scGPGlyphButton_add_zakazka->Hint = F->ls->Strings[433];
   scGPButton_Ulozit->Caption = F->ls->Strings[24];

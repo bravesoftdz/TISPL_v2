@@ -1922,8 +1922,11 @@ void __fastcall TmGrid::getTagMouseMove(TObject *Sender, TShiftState Shift, int 
 {
 	if(AnsiString(Tag).SubString(1,1)=="6")
 	{
-		F->ID_tabulky=ID;//přeposílání ID tabulky na form1
-		Form1->FormMouseMove(Sender,Shift,X,Y);//přesměrování události na form1
+    Col=getColFromTag(((TComponent*)(Sender))->Tag);
+		Row=getRowFromTag(((TComponent*)(Sender))->Tag);
+		//F->ID_tabulky=ID;//přeposílání ID tabulky na form1
+		//Form1->FormMouseMove(Sender,Shift,X,Y);//přesměrování události na form1
+		FormX->OnMouseMove(Tag,ID,X,Y,Col,Row);//z unit1 do unitX
 	}
 }
 //---------------------------------------------------------------------------
