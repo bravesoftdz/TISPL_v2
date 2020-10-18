@@ -332,7 +332,7 @@ short Cvektory::PtInKota_bod(TObjekt *Objekt)
 ////---------------------------------------------------------------------------
 //ověří zda se souřadnicích myši nachází ve vnitř polygonu, pokud je Objekt==NULL, hledá se v polygonu HALy
 bool Cvektory::PtInBody(TObjekt *Objekt,bool vcetne_poloviny_sirky_steny)
-{                                     vcetne_poloviny_sirky_steny=true;
+{                                     vcetne_poloviny_sirky_steny=false;//nefunguje zatím správně
 	////vstupní proměnné
 	bool RET=false;
 	TBod *B=NULL;
@@ -354,20 +354,21 @@ bool Cvektory::PtInBody(TObjekt *Objekt,bool vcetne_poloviny_sirky_steny)
 			B=B->dalsi;
 		}
 		//v případě pokud má být započtena polovina stěny, je zajištěn výpočet koeficient zvětšení objektu resp. testované oblasti
-		if(vcetne_poloviny_sirky_steny)
-		{
-			double faktorX=(maxX-minX+Objekt->sirka_steny)/(maxX-minX); double ofsetX=minX*faktorX-minX;
-			double faktorY=(maxY-minY+Objekt->sirka_steny)/(maxY-minY); double ofsetY=minY*faktorY-minY;
-			if(Objekt!=NULL && Objekt->body!=NULL)B=Objekt->body;//jedná se o body objektu
-			else if(HALA.body!=NULL && HALA.body->predchozi->n>1)B=HALA.body;//jedná se bod haly
-			B=B->dalsi;//přeskočí hlavičku
-			//plnění do pole
-			while(B!=NULL)
-			{
-				body[B->n-1].x=m.L2Px(B->X*faktorX-ofsetX);body[B->n-1].y=m.L2Py(B->Y*faktorY-ofsetY);
-				B=B->dalsi;
-			}
-		}
+		//nefunguje zatím správně, třeba doladit
+//		if(vcetne_poloviny_sirky_steny)
+//		{
+//			double faktorX=(maxX-minX+Objekt->sirka_steny)/(maxX-minX); double ofsetX=minX*faktorX-minX;
+//			double faktorY=(maxY-minY+Objekt->sirka_steny)/(maxY-minY); double ofsetY=minY*faktorY-minY;
+//			if(Objekt!=NULL && Objekt->body!=NULL)B=Objekt->body;//jedná se o body objektu
+//			else if(HALA.body!=NULL && HALA.body->predchozi->n>1)B=HALA.body;//jedná se bod haly
+//			B=B->dalsi;//přeskočí hlavičku
+//			//plnění do pole
+//			while(B!=NULL)
+//			{
+//				body[B->n-1].x=m.L2Px(B->X*faktorX-ofsetX);body[B->n-1].y=m.L2Py(B->Y*faktorY-ofsetY);
+//				B=B->dalsi;
+//			}
+//		}
 
 		//testování oblasti
 		HRGN hreg=CreatePolygonRgn(body,pocet,WINDING);//vytvoření regionu
@@ -6332,8 +6333,8 @@ TPointD_3Dbool Cvektory::generuj_voziky_segementu_mimo_stop_a_buffer(TElement *E
 					R=E->rotace_jig/2.0*(E->OTOC_delka/2.0-(E->geo.delka-umisteniJIG))/(E->OTOC_delka/2.0);//pozice vozíku v zoně otáčení, v počátku až do středu otoče, princip výpočtu zde funguje jako PŘIČTENÍ rotace k orientaci jigu při vstupu do zóny otáčení
 				}
 				if(rotacni_zbytek)//dokončení rotace jigu na elementu následujícím otoči (který zajišťuje na svém geometrickém počátku, který začíná otočí)
-				{
-					if(umisteniJIG<=E->predchozi->OTOC_delka/2.0)R=-E->predchozi->rotace_jig/2.0*(E->predchozi->OTOC_delka/2.0-umisteniJIG)/(E->predchozi->OTOC_delka/2.0);//pozice vozíku v zoně otáčení, od středu otoče až do konce zóny otáčení, princip výpočtu zde funguje jako ODEČTENÍ rotace od FINÁLNÍ orientaci jigu při vÝstupu ze zóny otáčení
+				{                                                 //podmínka dodaná dodatečně, pokud by otáčení technicky nesprávně přeteklo, do ještě následující sekce elementu, nastala situace, že za pasivní otočí (v její zóně) bylo hned pm, dokončení otáčení se však přeneslo ještě za toto PM a tudíž se v následujícím algoritmu dělilo nulou E->predchozi->OTOC_delka tzn. R bylo NAN
+					if(umisteniJIG<=E->predchozi->OTOC_delka/2.0 && E->predchozi->OTOC_delka>0)R=-E->predchozi->rotace_jig/2.0*(E->predchozi->OTOC_delka/2.0-umisteniJIG)/(E->predchozi->OTOC_delka/2.0);//pozice vozíku v zoně otáčení, od středu otoče až do konce zóny otáčení, princip výpočtu zde funguje jako ODEČTENÍ rotace od FINÁLNÍ orientaci jigu při vÝstupu ze zóny otáčení
 					else rotacni_zbytek=false;//dokončena ilustrace otáčení JIGu
 				}
 				//finální vložení vozíku s vypočítanými parametry do spojáku VOZIKY
