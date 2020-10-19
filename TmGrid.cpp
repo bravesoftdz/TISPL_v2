@@ -745,8 +745,7 @@ void TmGrid::ShowNote(UnicodeString Text,TColor Color,short FontSize)
 			if(FontSize!=0)Note.Font->Size=FontSize;
 			Note.Font->Color=Color;
 			Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-			bmp_in->Width=Note.NoteArea.Width();//tady je to 0
-			bmp_in->Height=Note.NoteArea.Height();//tady je to 0
+			//bmp_in->Width=Note.NoteArea.Width();bmp_in->Height=Note.NoteArea.Height();//tady je to 0, protože nastavení velikosti poznámky se zjišťuje v DrawNote, možná by mělo smysl v DrawNote pokud je parametr bmp_in->Canvas a nikoliv jen Canvas, tak nastavovat tento rozměr, ale působí to, že to funguje i bez tohoto
 			DrawNote(bmp_in->Canvas);
 			Cantialising a;
 			Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);delete (bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
@@ -754,10 +753,7 @@ void TmGrid::ShowNote(UnicodeString Text,TColor Color,short FontSize)
 			delete (bmp_out);//velice nutné
 			short W=m.round(Note.NoteArea.Width()/3.0);
 			short H=m.round(Note.NoteArea.Height()/3.0);
-			//doladit invalidate rect...
-			//InvalidateRect(Form->Handle,&TRect(Note.NoteArea.Left,helpBUTTON->Top,Note.NoteArea.Left+W,helpBUTTON->Top+H),true);//asi kvůli případnému updatu poznámky???
-			InvalidateRect(Form->Handle,&Note.NoteArea,true);
-			//helpBUTTON
+			InvalidateRect(Form->Handle,&TRect(Note.NoteArea.Left,Note.NoteArea.Top,Note.NoteArea.Left+W,Note.NoteArea.Top+H),true);//slouží pro první zobrazení resp. zinvalidování dané poznámky
 			helpBUTTON->Left=Note.NoteArea.Left+W-helpBUTTON->Width-helpBUTTON->Options->FrameWidth;helpBUTTON->Top=Note.NoteArea.Top+H-helpBUTTON->Height-helpBUTTON->Options->FrameWidth;
 			helpBUTTON->Visible=true;
 		}
