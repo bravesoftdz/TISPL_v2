@@ -2400,7 +2400,8 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		if((d.SCENA==1111111 || d.SCENA==111111) && Akce!=GEOMETRIE && MOD!=TVORBA_CESTY && Akce!=MAGNETICKE_LASO)//vše STATICKÁ scéna - totální statická scena a nejsou žádně akce nebo případně, že je v totálně statické označen (vybrán) nějaká objekt resp. hrana tohoto objektu
 		{
 			bmp_total->Canvas->Draw(0,0,Staticka_scena);//varianta, kdy je už přeantialiasingovaná
-			if(pom!=NULL)d.vykresli_objekt(bmp_total->Canvas,pom);//případne, že je v totálně statické označen (vybrán) nějaká objekt resp. hrana tohoto objektu
+			if(pom!=NULL)d.vykresli_objekt(bmp_total->Canvas,pom);//případne, že je v totálně statické označen (vybrán) nějaká objekt resp. hrana tohoto objektu, ale je zde bez AA
+			if(OBJEKT_akt!=NULL && editace_textu && pom_element_temp!=NULL && index_kurzoru==-11)d.vykresli_kotu(bmp_total->Canvas,pom_element_temp);//pokud je editavaná hodnota na kótě elementu, vykreslení pouze kóty, ale je zde bez AA
 		}
 		else
 		{
@@ -2413,16 +2414,16 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			if(MOD==TVORBA_CESTY)d.kurzor_cesta(bmp_in->Canvas);
 			if(Akce==MAGNETICKE_LASO)d.vykresli_meridlo(bmp_in->Canvas);
 			if(OBJEKT_akt!=NULL && Akce!=GEOMETRIE)d.vykresli_oblast_teplomery(bmp_in->Canvas,s,OBJEKT_akt);
-			if(OBJEKT_akt!=NULL && editace_textu && pom_element_temp!=NULL && index_kurzoru==-11)d.vykresli_kotu(bmp_in->Canvas,pom_element_temp);//pokud je editavaná hodnota na kótě elementu, vykreslení pouze kóty
 			if(antialiasing)
 			{
-			Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
-			Cantialising a;
-			Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
-			bmp_total->Canvas->Draw(0,0,bmp_out);delete(bmp_out);
+				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
+				Cantialising a;
+				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp_out, kvůli smazání bitmapy vracené AA
+				bmp_total->Canvas->Draw(0,0,bmp_out);delete(bmp_out);
 			}
 			else {bmp_total->Canvas->Draw(0,0,bmp_in);delete(bmp_in);}//není aktivní AA
 		}
+		//následující položky není třeba antialiasingovat, buď jsou (příklad mgridů, nebo to není vyžadovánováno z vizuálního hlediska)
 		////mGRIDY
 		if(MOD!=SIMULACE)d.vykresli_mGridy(bmp_total->Canvas);//přesunuto do vnitř metody: OBJEKT_akt->elementy!=NULL kvůli pohonům
 		////časové osy pomocné grafické metody mimo AA
@@ -2445,9 +2446,9 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		mGrid_knihovna->Show(Image_knihovna_objektu->Canvas);
 	}
 
-	short p=0,a=0;
-	if(pom!=NULL)p=1;if(OBJEKT_akt!=NULL)a=10;
-	Memo(String(p+a)+" "+String(d.SCENA),true);
+	//test výpisu aktuálního nastavení scén
+//	short p=0,a=0;if(pom!=NULL)p=1;if(OBJEKT_akt!=NULL)a=10;
+//	Memo(String(p+a)+" "+String(d.SCENA),true);
 }
 //---------------------------------------------------------------------------
 //vytvoří BMP se statickou scénou, NEVYTVÁŘÍ POUZE pro kompletní dynamickou scénu
@@ -15182,45 +15183,6 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //MaKr testovací tlačítko
 void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 {//vždy nechat tento komentář
-
-////  	//odeslání dat na FTP server
-//	TIdFTP *FTP=new TIdFTP(this);
-//	FTP->Host="lyzarskejihlavsko.cz";//FTP server
-//	FTP->Username="hojkov@lyzarskejihlavsko.cz";
-//	FTP->Password="modryextra";
-//	FTP->TransferType=ftBinary;
-//	FTP->Passive=true;//nutno
-//	FTP->Connect();
-//	//FTP->Put("C:\\Users\\Martin\\AppData\\Local\\Temp\\TISPL\\tispl_PrtScrMartin_MARTIN-NOTEBOOK.png");
-//
-//
-//	HANDLE h;
-//	WIN32_FIND_DATA wfd;
-//	String text;
-//	short pocet_souboru=-1;
-//
-//	h=FindFirstFile(L"*.*",&wfd);
-//	if(h!=INVALID_HANDLE_VALUE)
-//	{
-//		while(FindNextFile(h,&wfd))
-//		{
-//			//text+=String(wfd.cFileName)+"\t";
-//			if(++pocet_souboru>0)
-//			{
-//				FTP->Put(ExtractFilePath(Application->ExeName)+wfd.cFileName);
-//			}
-//		}
-//		FindClose(h);
-//	}
-////
-////	Memo(text);
-//
-//	FTP->Disconnect();
-//	delete FTP;
-
-
-
-
 
 //	Cvektory::TPohon *P=d.v.POHONY->dalsi;
 //	while(P!=NULL)

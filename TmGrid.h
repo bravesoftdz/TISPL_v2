@@ -177,6 +177,7 @@ class TmGrid
 	Tvalign exBUTTONvalign;//pozice rozšířeného tlačítka vůči tabulce
 	bool exBUTTONVisible;//stav zobrazení či skrytí exBUTTNU, nepoužívat přímo exBUTTON->Visible, ale toto exBUTTONVisible, exBUTTON používat pouze na designování
 	bool exBUTTONLockPosition;//uzamkne pozici exButtonu (použito při updatu)
+	TscGPGlyphButton *helpBUTTON;//HELP BUTTON v poznámce - tlačítko pro zobrazení nápovědy
 	short Decimal;//implicitní počet desetinných míst u numericeditů
 	bool IntegerDecimalNull;//pokud je výše uvedené Decimal na hodnotu vyšší než 0, toto nastavuje zda se nuly doplní do počtu decimál i u celých čísel
 	short VisibleComponents;//nastaví componenty na skryté (0 či false) či zobrazené (1 či true) nebo pokud je nastaveno na -1 tak se při překreslování zohlední individuální nastavení komponent (z tohoto stavu je však pro další použítí třeba vrátit do stavu 0 nebo 1)
