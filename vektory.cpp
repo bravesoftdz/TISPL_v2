@@ -331,13 +331,13 @@ short Cvektory::PtInKota_bod(TObjekt *Objekt)
 }
 ////---------------------------------------------------------------------------
 //ověří zda se souřadnicích myši nachází ve vnitř polygonu, pokud je Objekt==NULL, hledá se v polygonu HALy
-bool Cvektory::PtInBody(TObjekt *Objekt)
-{
+bool Cvektory::PtInBody(TObjekt *Objekt,bool vcetne_poloviny_sirky_steny)
+{                                     vcetne_poloviny_sirky_steny=false;//nefunguje zatím správně
 	////vstupní proměnné
 	bool RET=false;
 	TBod *B=NULL;
 	if(Objekt!=NULL && Objekt->body!=NULL)B=Objekt->body;//jedná se o body objektu
-	else if(HALA.body!=NULL && HALA.body->predchozi->n>1)B=HALA.body;//jedná se bod haly +
+	else if(HALA.body!=NULL && HALA.body->predchozi->n>1)B=HALA.body;//jedná se bod haly
 
 	////vytvoření regionu
 	if(B!=NULL)
@@ -346,11 +346,29 @@ bool Cvektory::PtInBody(TObjekt *Objekt)
 		POINT *body=new POINT[pocet];//dynamické pole bodů již ve fyzických souřadnicích, zde jen alokace
 		B=B->dalsi;//přeskočí hlavičku
 		//plnění do pole
+		double maxX=DOUBLE_MIN; double minX=DOUBLE_MAX; double maxY=maxX; double minY=minX;
 		while(B!=NULL)
 		{
-			body[B->n-1].x=m.L2Px(B->X);body[B->n-1].y=m.L2Py(B->Y);
+			if(!vcetne_poloviny_sirky_steny){body[B->n-1].x=m.L2Px(B->X);body[B->n-1].y=m.L2Py(B->Y);}
+			else {maxX=maxX>B->X?maxX:B->X;maxY=maxY>B->Y?maxY:B->Y;minX=minX<B->X?minX:B->X;minY=minY<B->Y?minY:B->Y;}
 			B=B->dalsi;
 		}
+		//v případě pokud má být započtena polovina stěny, je zajištěn výpočet koeficient zvětšení objektu resp. testované oblasti
+		//nefunguje zatím správně, třeba doladit
+//		if(vcetne_poloviny_sirky_steny)
+//		{
+//			double faktorX=(maxX-minX+Objekt->sirka_steny)/(maxX-minX); double ofsetX=minX*faktorX-minX;
+//			double faktorY=(maxY-minY+Objekt->sirka_steny)/(maxY-minY); double ofsetY=minY*faktorY-minY;
+//			if(Objekt!=NULL && Objekt->body!=NULL)B=Objekt->body;//jedná se o body objektu
+//			else if(HALA.body!=NULL && HALA.body->predchozi->n>1)B=HALA.body;//jedná se bod haly
+//			B=B->dalsi;//přeskočí hlavičku
+//			//plnění do pole
+//			while(B!=NULL)
+//			{
+//				body[B->n-1].x=m.L2Px(B->X*faktorX-ofsetX);body[B->n-1].y=m.L2Py(B->Y*faktorY-ofsetY);
+//				B=B->dalsi;
+//			}
+//		}
 
 		//testování oblasti
 		HRGN hreg=CreatePolygonRgn(body,pocet,WINDING);//vytvoření regionu
@@ -6315,8 +6333,8 @@ TPointD_3Dbool Cvektory::generuj_voziky_segementu_mimo_stop_a_buffer(TElement *E
 					R=E->rotace_jig/2.0*(E->OTOC_delka/2.0-(E->geo.delka-umisteniJIG))/(E->OTOC_delka/2.0);//pozice vozíku v zoně otáčení, v počátku až do středu otoče, princip výpočtu zde funguje jako PŘIČTENÍ rotace k orientaci jigu při vstupu do zóny otáčení
 				}
 				if(rotacni_zbytek)//dokončení rotace jigu na elementu následujícím otoči (který zajišťuje na svém geometrickém počátku, který začíná otočí)
-				{
-					if(umisteniJIG<=E->predchozi->OTOC_delka/2.0)R=-E->predchozi->rotace_jig/2.0*(E->predchozi->OTOC_delka/2.0-umisteniJIG)/(E->predchozi->OTOC_delka/2.0);//pozice vozíku v zoně otáčení, od středu otoče až do konce zóny otáčení, princip výpočtu zde funguje jako ODEČTENÍ rotace od FINÁLNÍ orientaci jigu při vÝstupu ze zóny otáčení
+				{                                                 //podmínka dodaná dodatečně, pokud by otáčení technicky nesprávně přeteklo, do ještě následující sekce elementu, nastala situace, že za pasivní otočí (v její zóně) bylo hned pm, dokončení otáčení se však přeneslo ještě za toto PM a tudíž se v následujícím algoritmu dělilo nulou E->predchozi->OTOC_delka tzn. R bylo NAN
+					if(umisteniJIG<=E->predchozi->OTOC_delka/2.0 && E->predchozi->OTOC_delka>0)R=-E->predchozi->rotace_jig/2.0*(E->predchozi->OTOC_delka/2.0-umisteniJIG)/(E->predchozi->OTOC_delka/2.0);//pozice vozíku v zoně otáčení, od středu otoče až do konce zóny otáčení, princip výpočtu zde funguje jako ODEČTENÍ rotace od FINÁLNÍ orientaci jigu při vÝstupu ze zóny otáčení
 					else rotacni_zbytek=false;//dokončena ilustrace otáčení JIGu
 				}
 				//finální vložení vozíku s vypočítanými parametry do spojáku VOZIKY
@@ -7314,7 +7332,7 @@ UnicodeString Cvektory::getVID(long VID)
 		case 403: Text=F->ls->Strings[468];break;//Pozor, na následujícím úseku přejezdu dochází k překrytí JIGů!
 		case 406: Text=F->ls->Strings[406];break;//Nestíhá se přejezd, záporná časová rezerva!
 		case 407: Text=F->ls->Strings[407];break;//Nulová časová rezerva.
-		case 450: Text=F->ls->Strings[469];break;//Nulová časová rezerva."Nerelevantní hodnota časové rezervy, na některém objektu není přiřazen pohon!"
+		case 450: Text=F->ls->Strings[469];break;//Nerelevantní hodnota časové rezervy, na některém objektu není přiřazen pohon!
 		case 451: Text="Upozornění,v bufferu je vyšší počet vozíku, než je nastaveno.";break;//přeložit
 		default:  Text="Error or warning!";break;//obecná chyba či varování
 	}
