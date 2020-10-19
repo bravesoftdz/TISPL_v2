@@ -2393,7 +2393,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		////vykreslení GRIDu
 		if(grid && Zoom_predchozi_AA>0.5 && (Akce==MOVE_BOD||Akce==DRAW_HALA) && prichytavat_k_mrizce==1 && MOD!=SIMULACE)d.vykresli_grid(bmp_total->Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí//vykreslení gridu
 		////VEKTORY
-		if((d.SCENA==1111111 || d.SCENA==111111) && Akce!=GEOMETRIE && MOD!=TVORBA_CESTY && Akce!=MAGNETICKE_LASO)//vše STATICKÁ scéna - totální statická scena a nejsou žádně akce nebo případně, že je v totálně statické označen (vybrán) nějaká objekt resp. hrana tohoto objektu
+		if((d.SCENA==1111111 || d.SCENA==111111) && Akce!=GEOMETRIE && MOD!=TVORBA_CESTY)//vše STATICKÁ scéna - totální statická scena a nejsou žádně akce nebo případně, že je v totálně statické označen (vybrán) nějaká objekt resp. hrana tohoto objektu
 		{
 			bmp_total->Canvas->Draw(0,0,Staticka_scena);//varianta, kdy je už přeantialiasingovaná
 			if(pom!=NULL)d.vykresli_objekt(bmp_total->Canvas,pom);//případne, že je v totálně statické označen (vybrán) nějaká objekt resp. hrana tohoto objektu, ale je zde bez AA
@@ -2408,7 +2408,6 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			d.vykresli_vektory(bmp_in->Canvas,s);//DYNAMICKÁ scéna, pokud není vše do statické nebo je aktivní pom objekt (např. výběr hrany atp.), tak se řešeí dynamická scena, jinak ne, protože nemá smysl
 			if(Akce==GEOMETRIE && Akce_temp==NIC && !editace_textu)d.smart_kurzor(bmp_in->Canvas,posledni_editovany_element,typElementu);//0,1,2
 			if(MOD==TVORBA_CESTY)d.kurzor_cesta(bmp_in->Canvas);
-			if(Akce==MAGNETICKE_LASO)d.vykresli_meridlo(bmp_in->Canvas);
 			if(OBJEKT_akt!=NULL && Akce!=GEOMETRIE)d.vykresli_oblast_teplomery(bmp_in->Canvas,s,OBJEKT_akt);
 			if(antialiasing)
 			{
@@ -2420,13 +2419,14 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			else {bmp_total->Canvas->Draw(0,0,bmp_in);delete(bmp_in);}//není aktivní AA
 		}
 		//následující položky není třeba antialiasingovat, buď jsou (příklad mgridů, nebo to není vyžadovánováno z vizuálního hlediska)
-		if(editace_textu && index_kurzoru==-11 && pom_element_temp!=NULL)d.vykresli_kotu(bmp_total->Canvas,pom_element_temp);
 		////mGRIDY
 		if(MOD!=SIMULACE)d.vykresli_mGridy(bmp_total->Canvas);//přesunuto do vnitř metody: OBJEKT_akt->elementy!=NULL kvůli pohonům
 		////časové osy pomocné grafické metody mimo AA
 		if(d.v.SIM!=NULL)d.vykresli_svislici_na_casove_osy(bmp_total->Canvas);
 		////grafické MĚŘÍTKO
 		//již nepoužíváno if(MOD!=SIMULACE && zobrazit_meritko && Akce!=MOVE_HALA && MOD!=TVORBA_CESTY)d.meritko(bmp_total->Canvas);
+		////vykreslení magnetického lasa
+		if(Akce==MAGNETICKE_LASO)d.vykresli_meridlo(bmp_total->Canvas);
 		////FINALNÍ vykreslení bmp_total do Canvasu
 		Canvas->Draw(0,0,bmp_total);//finální předání bmp_out do Canvasu
 		delete (bmp_total);//velice nutné
@@ -15180,16 +15180,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	vytvor_statickou_scenu();
 //	REFRESH();
 //  e_posledni=NULL;delete e_posledni;
-//	Memo("");
-	Memo("Cesta: "+OBJEKT_akt->teplomery->dalsi->prvni->sparovany->name,true);
-	Cvektory::TCesta *C=OBJEKT_akt->teplomery->dalsi->cesta->dalsi;
-	while(C!=NULL)
-	{
-		Memo("Cesta: "+C->Element->name);
-		C=C->dalsi;
-	}
-	delete C;C=NULL;
-	Memo("Cesta: "+OBJEKT_akt->teplomery->dalsi->posledni->sparovany->name);
+	Memo("");
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -16436,9 +16427,8 @@ void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
   	d.v.PP.raster.resolution=m2px;  //výpočet metry děleno počet PX, výchozí zobrazení v nativním rozlišení (bez usazení do metrického měřítka) je 0.1
   	scGPCheckBox_zobraz_podklad->Checked=true;
   	scButton_nacist_podklad->Down=false;  //ošetření proti tmavému vysvícení při dalším zobrazení mainmenu
-  	REFRESH();
   	auto_settings_open=false;
-  	zobraz_tip(ls->Strings[303]);//"Pro správné umístění a nastavení měřítka podkladu, využijte volbu v pravém horním menu."
+		TIP=ls->Strings[303];//"Pro správné umístění a nastavení měřítka podkladu, využijte volbu v pravém horním menu."
   //  if(mrOk==MB("Pro správné umístění a nastavení měřítka podkladu, využijte volbu v pravém horním menu. Přejít do nastavení?",MB_OKCANCEL))
   //  {
   	auto_settings_open=true;
@@ -16451,6 +16441,7 @@ void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
   	scGPButton_kalibrace->Enabled=true;
   	scGPButton_adjustace->Enabled=true;
 		scGPButton_smazat->Enabled=true;
+		REFRESH();
 	}
 	return 0;
   //scGPGlyphButton_OPTIONS->ShowHint=true;
@@ -17019,8 +17010,8 @@ void TForm1::vykresli_kurzor(int index)
 				Canvas->Pen->Width=1.5;
 				if(index!=-101)
 				{
-					Canvas->MoveTo(pom_element_temp->citelna_oblast.rect1.right+1,pom_element_temp->citelna_oblast.rect1.top);
-    			Canvas->LineTo(pom_element_temp->citelna_oblast.rect1.right+1,pom_element_temp->citelna_oblast.rect1.bottom);
+					Canvas->MoveTo(pom_element_temp->citelna_oblast.rect1.right*3.0+1,pom_element_temp->citelna_oblast.rect1.top*3.0);
+					Canvas->LineTo(pom_element_temp->citelna_oblast.rect1.right*3.0+1,pom_element_temp->citelna_oblast.rect1.bottom*3.0);
 				}
 				else
 				{
@@ -17530,8 +17521,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		scGPButton_zmerit_vzdalenost->Options->FrameNormalColor=(TColor)RGB(86,120,173);
 		scGPButton_zmerit_vzdalenost->Options->NormalColor=(TColor)RGB(86,120,173);
 		Timer_getjobid->Enabled=false;//odstavení timeru, není potřeba
-		if(d.v.SIM==NULL)d.SCENA=222111;//ZprVozEledElesDopObjHal - vozíky nutno nechat v dynamické (jinak budou překresleny bufferem)
-		else d.SCENA=221111;
+		d.SCENA=1111111;//ZprVozEledElesDopObjHal - vozíky nutno nechat v dynamické (jinak budou překresleny bufferem)
 		vytvor_statickou_scenu();//vypnutí vrstvy errorů a nastavení zbytku na statickou scénu
 		zobraz_tip(ls->Strings[483]);//má v sobě REFRESH(), je nutné volat až po vytvořeni statické scény
 		Akce=MAGNETICKE_LASO;//až po refresh
