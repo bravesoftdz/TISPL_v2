@@ -5461,7 +5461,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	short meritko=1;if(F->MOD==F->LAYOUT){width*=5;meritko=5;}//měřítko (náhled vs. schéma)
 	width=m.round(width*F->Zoom);if(highlight)width*=2;//šířka linie
 	short Presah=m.round(1.3*F->Zoom);if(Offset<0)Presah*=-1;//přesah packy u kóty,v případě záporného offsetu je vystoupení kóty nazákladě tohot záporné
-  if(F->OBJEKT_akt!=NULL)Presah/=2.0;//zmenšení odsazení kót při highlightu v náhledu
+	if(F->OBJEKT_akt!=NULL)Presah/=2.0;//zmenšení odsazení kót při highlightu v náhledu
 	short V=0;//if(highlight==2)V=1;//vystoupení kóty
 	short H=0;if(highlight)H=1;
 	short M=0;if(F->JID==13 && F->MOD==F->EDITACE)M=1;//při celkovém posunu kót se postranní spojnice nově nezvýrazňují
@@ -5944,7 +5944,10 @@ void Cvykresli::vykresli_packy_PL(TCanvas *canv,TscGPButton *zamek_aRD,TscGPButt
 //zajišťuje vykreslování-vypisování tool tipu
 void Cvykresli::vykresli_tip(TCanvas *canv)
 {
-	int off=25;if(F->zobrazit_meritko)off+=22;
+	int offx=5,offy=25;
+	if(F->scSplitView_OPTIONS->Opened)offx+=F->scSplitView_OPTIONS->Width-F->scSplitView_LEFTTOOLBAR->Width;
+	if(F->scSplitView_MENU->Opened)offx+=F->scSplitView_MENU->Width-F->scSplitView_LEFTTOOLBAR->Width;
+	if(F->zobrazit_meritko)offy+=22;
 	canv->Font->Color=m.clIntensive(clRed,110);
 	//SetBkMode(canv->Handle,TRANSPARENT);//nastvení netransparentního pozadí
 	canv->Font->Size=14;
@@ -5952,9 +5955,9 @@ void Cvykresli::vykresli_tip(TCanvas *canv)
 	canv->Brush->Color=clWhite;
 	canv->Font->Style = TFontStyles();//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
 	if(F->scGPPanel_bottomtoolbar->Visible)
-		canv->TextOutW(/*F->ClientWidth-canv->TextWidth(F->TIP)-10*/F->scSplitView_LEFTTOOLBAR->Width+5,F->scGPPanel_bottomtoolbar->Top-off,F->TIP);
+		canv->TextOutW(/*F->ClientWidth-canv->TextWidth(F->TIP)-10*/F->scSplitView_LEFTTOOLBAR->Width+offx,F->scGPPanel_bottomtoolbar->Top-offy,F->TIP);
 	else
-		canv->TextOutW(/*F->ClientWidth-canv->TextWidth(F->TIP)-10*/F->scSplitView_LEFTTOOLBAR->Width+5,F->scGPPanel_statusbar->Top-off,F->TIP);
+		canv->TextOutW(/*F->ClientWidth-canv->TextWidth(F->TIP)-10*/F->scSplitView_LEFTTOOLBAR->Width+offx,F->scGPPanel_statusbar->Top-offy,F->TIP);
 	canv->Font->Color=clBlack;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
