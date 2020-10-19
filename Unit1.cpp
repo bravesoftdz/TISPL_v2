@@ -2426,7 +2426,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		////časové osy pomocné grafické metody mimo AA
 		if(d.v.SIM!=NULL)d.vykresli_svislici_na_casove_osy(bmp_total->Canvas);
 		////grafické MĚŘÍTKO
-		if(MOD!=SIMULACE && zobrazit_meritko && Akce!=MOVE_HALA && MOD!=TVORBA_CESTY)d.meritko(bmp_total->Canvas);
+		//již nepoužíváno if(MOD!=SIMULACE && zobrazit_meritko && Akce!=MOVE_HALA && MOD!=TVORBA_CESTY)d.meritko(bmp_total->Canvas);
 		////FINALNÍ vykreslení bmp_total do Canvasu
 		Canvas->Draw(0,0,bmp_total);//finální předání bmp_out do Canvasu
 		delete (bmp_total);//velice nutné
