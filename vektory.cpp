@@ -1457,8 +1457,16 @@ void Cvektory::posun_objekt(double X,double Y,TObjekt *Objekt,bool kontrolovat_o
 	}
 	if(oblast==0)
 	{
+    ////kód pro přichytávání na mřížku při posunu
+//		TPointD souradnice;
+//		souradnice.x=Objekt->X+X;souradnice.y=Objekt->Y+Y;
+//		if(F->prichytavat_k_mrizce==1)souradnice.x=m.round(souradnice.x/(F->size_grid*1.0*F->m2px))*F->size_grid*F->m2px;souradnice.y=m.round(souradnice.y/(F->size_grid*1.0*F->m2px))*F->size_grid*F->m2px;//přichytí automaticky
+//		X=souradnice.x-Objekt->X;Y=souradnice.y-Objekt->Y;
 		////posun kabiny-polygonu
 		posun_body(X,Y,Objekt);
+		////posun souřadnic objektu
+		Objekt->X+=X;
+		Objekt->Y+=Y;
 		////posun nadpisu
 		Objekt->Xt+=X;
 		Objekt->Yt+=Y;

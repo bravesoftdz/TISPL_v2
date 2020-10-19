@@ -3924,17 +3924,17 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
 				while(E!=NULL)
 				{
-					if(m.PtInCircle(E->geo.X4,E->geo.Y4,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,velikost_citelne_oblasti_elementu))
+					if(E->geo.delka!=0 && m.PtInCircle(E->geo.X4,E->geo.Y4,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,velikost_citelne_oblasti_elementu))
 					{
 						pom_element=E;
 						//break;//musím najít poslední element, který souhlasí se souřadnicemi, důvod: překrytí zarážky a spojky (konec vedlejší větve)
 					}
-					if(E!=OBJEKT_akt->element && E->predchozi->objekt_n!=OBJEKT_akt->n && m.PtInCircle(E->predchozi->geo.X4,E->predchozi->geo.Y4,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,velikost_citelne_oblasti_elementu))
+					if(E!=OBJEKT_akt->element && E->predchozi->objekt_n!=OBJEKT_akt->n && E->predchozi->geo.delka!=0 && m.PtInCircle(E->predchozi->geo.X4,E->predchozi->geo.Y4,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,velikost_citelne_oblasti_elementu))
 					{
 						pom_element=E->predchozi;
 						//break;
 					}
-					if(E->eID==301 && E->predchozi2->objekt_n!=OBJEKT_akt->n && m.PtInCircle(E->predchozi2->geo.X4,E->predchozi2->geo.Y4,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,velikost_citelne_oblasti_elementu))
+					if(E->eID==301 && E->predchozi2->objekt_n!=OBJEKT_akt->n && E->predchozi2->geo.delka!=0 && m.PtInCircle(E->predchozi2->geo.X4,E->predchozi2->geo.Y4,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,velikost_citelne_oblasti_elementu))
 					{
 						pom_element=E->predchozi2;
 						//break;
@@ -19192,36 +19192,39 @@ void TForm1::vypocet_WT(Cvektory::TElement *E)
 	bool error=false;
 
 	//naplnění poomcného elementu
-	switch(E->eID)
+	if(E!=NULL)
 	{
-		case 200:
-		{
-			e_pom=E->dalsi;
-			if(e_pom==NULL)e_pom=d.v.ELEMENTY->dalsi;
-			break;
+   	switch(E->eID)
+   	{
+   		case 200:
+   		{
+   			e_pom=E->dalsi;
+   			if(e_pom==NULL)e_pom=d.v.ELEMENTY->dalsi;
+   			break;
+   		}
+   		case 300:e_pom=E->dalsi2;break;
+   		case 301:e_pom=E->predchozi2;break;
+   		default:error=true;break;
 		}
-		case 300:e_pom=E->dalsi2;break;
-		case 301:e_pom=E->predchozi2;break;
-		default:error=true;break;
-  }
+	}
 
 	//výpočt WT podle zvoleného pohonu
-	if(!error)
+	if(!error && e_pom!=NULL)
 	{
   	switch((int)E->WT_index)
   	{
   		//první nastavování
   		case 0:default:
-  		{
+			{
   			if(e_pom->pohon!=NULL)
-  			{
+				{
   				if(e_pom->pohon==E->pohon)E->WT=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
   				else
   				{
   					E->WT=m.cekani_na_palec(0,e_pom->pohon->roztec,e_pom->pohon->aRD,3);
   					E->WT_index=2;
   					if(OBJEKT_akt!=NULL && (E->objekt_n==F->OBJEKT_akt->n || E==predchozi_PM))napln_comba_mGridu(E);
-  				}
+					}
   			}
   			break;
   		}
