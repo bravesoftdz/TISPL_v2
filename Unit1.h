@@ -237,7 +237,7 @@ __published:	// IDE-managed Components
 	TButton *ButtonMaKr;
   TscGPButton *scGPButton_mereni_vzdalenost;
   TscExPanel *scExPanel_ostatni;
-  TscGPCheckBox *scGPCheckBox_ortogon;
+	TscGPCheckBox *scGPCheckBox_antialiasing;
 	TscGPImage *scGPImage_zamek_posunu;
 	TscButton *scButton_zamek_layoutu;
 	TscGPImageCollection *scGPImageCollection_Objekty;
@@ -390,7 +390,6 @@ __published:	// IDE-managed Components
 	void __fastcall scSplitView_OPTIONSOpened(TObject *Sender);
 	void __fastcall LayoutClick(TObject *Sender);
 	void __fastcall scSplitView_OPTIONSPanelPaint(TCanvas *ACanvas, TRect &ARect);
-	void __fastcall scGPCheckBox_ortogonClick(TObject *Sender);
 	void __fastcall scGPButton_generujClick(TObject *Sender);
 	void __fastcall scExPanel_log_headerClick(TObject *Sender);
 	void __fastcall scExPanel_log_headerMouseDown(TObject *Sender, TMouseButton Button,
@@ -489,6 +488,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPCheckBox_meridlo_casyClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_PLAYplusClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_PLAYminusClick(TObject *Sender);
+	void __fastcall scGPCheckBox_antialiasingClick(TObject *Sender);
 
 
 
