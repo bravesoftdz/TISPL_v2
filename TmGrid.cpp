@@ -162,6 +162,24 @@ TmGrid::TmGrid(TForm *Owner)
 	exBUTTONvalign=BOTTOM;//pozice rozšířeného tlačítka vůči tabulce
 	exBUTTONLockPosition=false;//uzamkne pozici exButtonu (použito při updatu)
 
+	////HELP BUTTON v poznámce - tlačítko pro zobrazení nápovědy
+	helpBUTTON= new TscGPGlyphButton(Form);
+	helpBUTTON->Left=-50;helpBUTTON->Top=-50;
+	helpBUTTON->Width=20;helpBUTTON->Height=20;
+	helpBUTTON->Visible=false;
+	helpBUTTON->Tag=-3;//name musí být však až později, kvůli ID, které ještě  nyní neexistuje
+	helpBUTTON->TransparentBackground=false;
+	helpBUTTON->GlyphOptions->Kind=scgpbgkHelp;
+	helpBUTTON->GlyphOptions->NormalColor=clBlue;
+	helpBUTTON->GlyphOptions->NormalColorAlpha=200;
+	helpBUTTON->Options->FrameNormalColor=clWhite;
+	helpBUTTON->Options->FrameNormalColorAlpha=255;
+	helpBUTTON->Options->NormalColor=clWhite;
+	helpBUTTON->Options->NormalColorAlpha=255;
+	helpBUTTON->Options->FrameWidth=0;
+	helpBUTTON->OnClick=&getTagOnClick;
+	helpBUTTON->Parent=Form;
+
 	////POZNÁMKA - výchozí nastavení
 	Note.Font=new TFont();
 	*Note.Font=*DefaultCell.Font;
@@ -303,6 +321,7 @@ void TmGrid::Delete()
 		Hint->Free();Hint=NULL;delete Hint;
 		Timer->Free();Timer=NULL;delete Timer;
 		exBUTTON->Free();exBUTTON=NULL;delete exBUTTON;//pozor nesmí mít při ukončování formu focus
+		helpBUTTON->Free();helpBUTTON=NULL;delete helpBUTTON;//pozor nesmí mít při ukončování formu focus
 		//uvolnění paměti
 		DeleteTable();
 		DeleteCell(DefaultCell);
@@ -725,20 +744,26 @@ void TmGrid::ShowNote(UnicodeString Text,TColor Color,short FontSize)
 			Note.Text=Text;
 			if(FontSize!=0)Note.Font->Size=FontSize;
 			Note.Font->Color=Color;
-			Cantialising a;
 			Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-			bmp_in->Width=Note.NoteArea.Width();
-			bmp_in->Height=Note.NoteArea.Height();
-			//bmp_in->Canvas->Brush->Color=clRed;
-			//bmp_in->Canvas->FillRect(TRect(0,0,bmp_in->Width,bmp_in->Height));
+			bmp_in->Width=Note.NoteArea.Width();//tady je to 0
+			bmp_in->Height=Note.NoteArea.Height();//tady je to 0
 			DrawNote(bmp_in->Canvas);
-			Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+			Cantialising a;
+			Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);delete (bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 			Form->Canvas->Draw(Note.NoteArea.Left,Note.NoteArea.Top,bmp_out);
-			delete (bmp_out);delete (bmp_in);//velice nutné
+			delete (bmp_out);//velice nutné
+			short W=m.round(Note.NoteArea.Width()/3.0);
+			short H=m.round(Note.NoteArea.Height()/3.0);
+			//doladit invalidate rect...
+			//InvalidateRect(Form->Handle,&TRect(Note.NoteArea.Left,helpBUTTON->Top,Note.NoteArea.Left+W,helpBUTTON->Top+H),true);//asi kvůli případnému updatu poznámky???
 			InvalidateRect(Form->Handle,&Note.NoteArea,true);
+			//helpBUTTON
+			helpBUTTON->Left=Note.NoteArea.Left+W-helpBUTTON->Width-helpBUTTON->Options->FrameWidth;helpBUTTON->Top=Note.NoteArea.Top+H-helpBUTTON->Height-helpBUTTON->Options->FrameWidth;
+			helpBUTTON->Visible=true;
 		}
 		else
 		{
+			helpBUTTON->Visible=false;
 			Note.Text="";
 			InvalidateRect(Form->Handle,&Note.NoteArea,true);
 			Note.NoteArea=TRect(-1,-1,-1,-1);
@@ -1801,6 +1826,7 @@ void __fastcall TmGrid::getTagOnClick(TObject *Sender)
 		//ShowMessage(AnsiString("OnClick ")+IntToStr(((TComponent*)(Sender))->Tag));
 		switch(((TComponent*)(Sender))->Tag)
 		{
+			case -3:Col=-3;Row=-3;break;//helpBUTTON
 			case -2:Col=-2;Row=-2;break;//exBUTTON
 			case -1:break;//Hint - kdyby měl události kliku, tu nyní nemá
 			default://komponenty v tabulce
@@ -1815,7 +1841,7 @@ void __fastcall TmGrid::getTagOnClick(TObject *Sender)
 //		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnClick(Tag,Col,Row);  R 21.1.2020 - ODEBRÁNO Z PROJEKTU
 		if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnClick(Tag,ID,Col,Row);
 		//if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnClick(Tag,Col,Row); R 21.1.2020 - ODEBRÁNO Z PROJEKTU
-    if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnClick(Tag,ID,Col,Row);   //z unit1 do unitX
+		if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnClick(Tag,ID,Col,Row);   //z unit1 do unitX
 		if(AnsiString(Tag).SubString(1,1)=="7")Form_parametry_linky->OnClick(Tag,ID,Col,Row);
     if(AnsiString(Tag).SubString(1,1)=="8")Form_katalog->OnClick(Tag,ID,Col,Row);
     if(AnsiString(Tag).SubString(1,1)=="9")Form_definice_zakazek->OnClick(Tag,ID,Col,Row);
@@ -1836,7 +1862,7 @@ void __fastcall TmGrid::getTagOnEnter(TObject *Sender)
 //		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnEnter(Tag,Col,Row);    R 21.1.2020 - ODEBRÁNO Z PROJEKTU
 		if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnEnter(Tag,Col,Row);
 		//if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnEnter(Tag,Col,Row); R 21.1.2020 - ODEBRÁNO Z PROJEKTU
-    if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnEnter(Tag,ID,Col,Row);//z unit1 do unitX
+		if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnEnter(Tag,ID,Col,Row);//z unit1 do unitX
     if(AnsiString(Tag).SubString(1,1)=="7")Form_parametry_linky->OnEnter(Tag,Col,Row);
 	}
 }
