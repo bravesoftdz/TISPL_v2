@@ -5382,41 +5382,13 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_do)
 	if(F->Akce==F->GEOMETRIE || F->Akce==F->GEOMETRIE_LIGHT)
 	{
 		if(Element_do->geo.typ==0)vykresli_kotu(canv,Element_do->geo.X1,Element_do->geo.Y1,Element_do->geo.X4,Element_do->geo.Y4,Element_do,F->OBJEKT_akt->koty_elementu_offset.y,highlight);
-//		{
-//			String hodnota=
-//			vykresli_kotu(canv,m.L2Px(Element_do->geo.X1),m.L2Py(Element_do->geo.Y1),m.L2Px(Element_do->geo.X4),m.L2Py(Element_do->geo.Y4),Element_do,F->OBJEKT_akt->koty_elementu_offset.y,highlight);
-//		}
 	}
 	//////bežná funkcionalita
 	else if(Element_do->eID!=MaxInt || (Element_do->eID==MaxInt && (Element_do->geo.HeightDepp!=0 || (Element_do->dalsi!=NULL && Element_do->dalsi->geo.HeightDepp!=0))))
 	{
 		////kota mezi elementy
-		double x1,y1,x2,y2;          //////////////////////////kota mezi kabinou a prvním elementem !!!!!
+		double x1,y1,x2,y2;
 		Cvektory::TElement *Element_od=Element_do->predchozi;
-//		while(Element_od!=NULL && Element_od->n>0 && Element_od->objekt_n==Element_do->objekt_n)
-//		{
-//			if(Element_od->geo.typ!=0)break;
-//			if(Element_od->eID!=MaxInt)break;//kota element - element
-//			Element_od=Element_od->predchozi;
-//		}
-		//ošetření proti tomu je-li hned první element mimo kabinu, nebo hlavička elementů
-		//if(Element_od!=NULL && (Element_od->n==0 || Element_od->objekt_n!=Element_do->objekt_n))Element_od=NULL;
-		//určení bodů kóty
-//		if(Element_do->geo.orientace==90||Element_do->geo.orientace==270)//vodorovná kabina
-//		{
-//			if(Element_od==NULL)
-//			{x1=Element_do->geo.X1;y1=Element_do->geo.Y1;}
-//			else if(Element_od->n!=0 && Element_od->objekt_n==Element_do->objekt_n){x1=Element_od->X;y1=Element_od->geo.Y4;}
-//			else {x1=F->OBJEKT_akt->element->geo.X1;y1=F->OBJEKT_akt->element->geo.Y1;}
-//			x2=Element_do->X;y2=y1;
-//		}
-//		else
-//		{
-//			if(Element_od==NULL){x1=Element_do->geo.X1;y1=Element_do->geo.Y1;}
-//			else if(Element_od->n!=0 && Element_od->objekt_n==Element_do->objekt_n){x1=Element_od->geo.X4;y1=Element_od->Y;}
-//			else {x1=F->OBJEKT_akt->element->geo.X1;y1=F->OBJEKT_akt->element->geo.Y1;}
-//			y2=Element_do->Y;x2=x1;
-//		}
 		x1=Element_do->geo.X1;y1=Element_do->geo.Y1;
 		x2=Element_do->geo.X4;y2=Element_do->geo.Y4;
 		if(x2<F->OBJEKT_akt->element->geo.X1)O=(O-0.66)*(-1);//ošetření chybného zobrazení kóty elementu, který je před kabinou
@@ -5458,12 +5430,8 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_do)
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //v metrických jednotkách kromě width, zde v px + automaticky dopočítává délku a dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně, aktElement pokud bude NULL, předpokládá se, že je to kóta kabiny
 void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,Cvektory::TElement *aktElement,double Offset,short highlight,float width,TColor color,bool LO_kota,Cvektory::TKomora *komora)
-{    //Jednotky=" [s]";if(F->DKunit==3)Jednotky=" [min]";
+{
 	double delka=m.delka(X1,Y1,X2,Y2);
-//	if(aktElement!=NULL)
-//	{
-//		delka=m.castPrepony(delka,aktElement->geo.delkaPud,aktElement->geo.HeightDepp);
-//	}
 	AnsiString T="";
 	if(F->OBJEKT_akt->pohon==NULL && F->DKunit>1)F->DKunit=(TForm1::Tm_mm)(F->DKunit-2);//ošetření pro případ není pohon a jsou špatně nastaveny jednotky
 	if(F->DKunit>1)//zobrazení kót v čase
@@ -5474,21 +5442,12 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double
 			else delka=delka/F->OBJEKT_akt->pohon->aRD/(1+59.0*(F->DKunit-2));//pro komory v POW
 		}
 		else T=F->ls->Strings[274];//"pohon nevybrán"
-		//if(aktElement!=NULL) delka=v.vzdalenost_od_predchoziho_elementu(aktElement)/F->OBJEKT_akt->pohon->aRD/(1+59.0*(F->DKunit-2));//výpočet vzdálenosti mezi elementy
-		//if(LO_kota)delka=m.round2double(F->vzdalenost_meziLO(aktElement,F->OBJEKT_akt->orientace),2)/F->OBJEKT_akt->pohon->aRD/(1+59.0*(F->DKunit-2));
 	}
 	else//standardní zobrazení ve vzdálenost
 	{
 		delka=delka*(1+999*F->DKunit);//výpočet délky a šířky kabiny + případný převod m->mm
-		//if(LO_kota)delka=m.round2double(delka,0);//problém v zaokrouhlování u LO kót
-		//if(aktElement!=NULL)delka=v.vzdalenost_od_predchoziho_elementu(aktElement)*(1+999*F->DKunit);//výpočet vzdálenosti mezi elementy
-		//if(LO_kota)delka=F->outDK(m.round2double(F->vzdalenost_meziLO(aktElement,F->OBJEKT_akt->orientace),2));
 	}
-	//odstaveno zobrazujeme na 3 realná delka=m.round2double(delka,8);//výpočet délky s max zobrazením na 8 míst (z důvodu případů 0.000000001 atp.) pouze v případě metrů, v mm by přetékalo při výpočtu, bylo by třeba long double
-	//if(!F->DKunit)delka=m.round2double(delka,5);//výpočet délky s max zobrazením na 8 míst (z důvodu případů 0.000000001 atp.) pouze v případě metrů, v mm by přetékalo při výpočtu, bylo by třeba long double
-	//else delka=m.round2double(delka,3);//if(AnsiString(delka).Pos("00000000001"))F->ms.MyToDouble(AnsiString(delka).SubString(1,AnsiString(delka).Pos("00000000001")-1));//pro mm ošetření proti 00000000001, protože nelze použít zaokrouhlení na větší počet desitnných míst
 	if(T=="")T=m.round2double(delka,0/*nefuguje zde správně,".."*/);//standardní zobrazení na 3 reálná místa
-	//odstaveno zobrazujeme na 3 realná if(highlight==1 || F->editace_textu)T=delka;//pokud se na kótu najede a předpokládá se editace tak se číslo rozbalí - nezaokrouhluje se, editace textu je možná navíc
 	if(T!="0")vykresli_kotu(canv,m.L2Px(X1),m.L2Py(Y1),m.L2Px(X2),m.L2Py(Y2),T,aktElement,m.m2px(Offset),highlight,width,color,LO_kota,komora);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------

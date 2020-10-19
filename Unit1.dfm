@@ -109,6 +109,7 @@ object Form1: TForm1
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
+    WordWrap = False
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 1231
@@ -226,6 +227,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -344,6 +346,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object Schema: TscGPButton
       Left = 834
@@ -476,6 +479,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
+      ToggleMode = False
     end
     object PopupMenuButton: TscGPButton
       AlignWithMargins = True
@@ -610,6 +614,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object Analyza: TscGPButton
       Left = 964
@@ -741,6 +746,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
+      ToggleMode = False
     end
     object Toolbar_Ulozit: TscGPGlyphButton
       AlignWithMargins = True
@@ -862,6 +868,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object Toolbar_NovySoubor: TscGPGlyphButton
       AlignWithMargins = True
@@ -983,6 +990,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object Toolbar_Otevrit: TscGPGlyphButton
       AlignWithMargins = True
@@ -1104,6 +1112,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -1222,6 +1231,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object DetailsButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -1342,6 +1352,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object Layout: TscGPButton
       Left = 614
@@ -1473,6 +1484,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
+      ToggleMode = False
     end
     object scGPGlyphButton_napoveda: TscGPGlyphButton
       Left = 1094
@@ -1597,6 +1609,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object scLabel_titulek: TscLabel
       Left = 465
@@ -1797,6 +1810,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
+      ToggleMode = False
     end
     object scGPGlyphButton_PLAY: TscGPGlyphButton
       Left = 312
@@ -1922,6 +1936,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object scGPButton_error: TscGPButton
       Left = 564
@@ -2053,6 +2068,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object scGPButton_warning: TscGPButton
       Left = 589
@@ -2184,6 +2200,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object scGPGlyphButton_undo: TscGPGlyphButton
       AlignWithMargins = True
@@ -2306,6 +2323,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object scGPGlyphButton_redo: TscGPGlyphButton
       AlignWithMargins = True
@@ -2428,6 +2446,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object scGPGlyphButton_PLAYminus: TscGPGlyphButton
       Left = 417
@@ -2551,6 +2570,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object scGPGlyphButton_PLAYplus: TscGPGlyphButton
       Left = 384
@@ -2674,6 +2694,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
   end
   object scGPPanel_statusbar: TscGPPanel
@@ -2720,6 +2741,7 @@ object Form1: TForm1
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
+    WordWrap = False
     object Image_rozdelovac_0: TImage
       Left = 207
       Top = 0
@@ -2925,6 +2947,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object scGPGlyphButton_ZOOM_PLUS: TscGPGlyphButton
       AlignWithMargins = True
@@ -3043,6 +3066,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object scGPSizeBox: TscGPSizeBox
       Left = 1255
@@ -3141,6 +3165,7 @@ object Form1: TForm1
       TitleFont.Height = -11
       TitleFont.Name = 'Tahoma'
       TitleFont.Style = [fsBold]
+      ToggleMode = False
       HotImageIndex = -1
       FocusedImageIndex = -1
       PressedImageIndex = -1
@@ -3313,6 +3338,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object scGPButton_prichytavat: TscGPButton
       Left = 1165
@@ -3446,6 +3472,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object scLabel_statusbar_1: TscLabel
       Left = 208
@@ -3664,6 +3691,7 @@ object Form1: TForm1
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
+    WordWrap = False
     object scGPButton_ulozit: TscGPButton
       Left = 504
       Top = 7
@@ -3790,6 +3818,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object scGPButton_zahodit: TscGPButton
       Left = 634
@@ -3917,6 +3946,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object scButton_zamek: TscButton
       Left = 1047
@@ -3969,6 +3999,7 @@ object Form1: TForm1
       TitleFont.Height = -11
       TitleFont.Name = 'Tahoma'
       TitleFont.Style = [fsBold]
+      ToggleMode = False
       HotImageIndex = -1
       FocusedImageIndex = -1
       PressedImageIndex = -1
@@ -4137,6 +4168,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object scGPButton_viditelnostKoty: TscGPButton
       Left = 998
@@ -4261,6 +4293,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object scGPButton_posun_dalsich_elementu: TscGPButton
       Left = 1086
@@ -4385,6 +4418,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object scGPComboBox_prepinacKot: TscGPComboBox
       Left = 209
@@ -4552,7 +4586,7 @@ object Form1: TForm1
       FrameColorAlpha = 40
       FrameRadius = 5
       GlowEffect.Enabled = False
-      GlowEffect.Color = clBtnShadow
+      GlowEffect.Color = clSilver
       GlowEffect.AlphaValue = 255
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
@@ -4599,6 +4633,7 @@ object Form1: TForm1
       Color = clWhite
       Caption = 'scGPImage_mereni_vzdalenost'
       StorePaintBuffer = False
+      WordWrap = False
       ImageIndex = -1
       InterpolationMode = scgppimDefault
       ClipFrame = scgpcfRoundedRect
@@ -4714,6 +4749,7 @@ object Form1: TForm1
       Color = clWhite
       Caption = 'scGPImage_zamek_posunu'
       StorePaintBuffer = False
+      WordWrap = False
       Images = scGPImageCollection_Objekty
       ImageIndex = 28
       InterpolationMode = scgppimDefault
@@ -4858,6 +4894,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object scGPGlyphButton_odstran_cestu: TscGPButton
       Left = 757
@@ -4997,6 +5034,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
   end
   object ButtonMaKr: TButton
@@ -5038,6 +5076,7 @@ object Form1: TForm1
     Alignment = taLeftJustify
     Color = 10114859
     StorePaintBuffer = False
+    WordWrap = False
     AnimationStep = 25
     AnimationType = scsvaInertial
     CompactWidth = 0
@@ -5112,6 +5151,7 @@ object Form1: TForm1
       TitleFont.Height = -11
       TitleFont.Name = 'Tahoma'
       TitleFont.Style = [fsBold]
+      ToggleMode = False
       HotImageIndex = -1
       FocusedImageIndex = -1
       PressedImageIndex = -1
@@ -5206,6 +5246,7 @@ object Form1: TForm1
       TitleFont.Height = -11
       TitleFont.Name = 'Tahoma'
       TitleFont.Style = [fsBold]
+      ToggleMode = False
       HotImageIndex = -1
       FocusedImageIndex = -1
       PressedImageIndex = -1
@@ -5301,6 +5342,7 @@ object Form1: TForm1
       TitleFont.Height = -11
       TitleFont.Name = 'Tahoma'
       TitleFont.Style = [fsBold]
+      ToggleMode = False
       HotImageIndex = -1
       FocusedImageIndex = -1
       PressedImageIndex = -1
@@ -5395,6 +5437,7 @@ object Form1: TForm1
       TitleFont.Height = -11
       TitleFont.Name = 'Tahoma'
       TitleFont.Style = [fsBold]
+      ToggleMode = False
       HotImageIndex = -1
       FocusedImageIndex = -1
       PressedImageIndex = -1
@@ -5489,6 +5532,7 @@ object Form1: TForm1
       TitleFont.Height = -11
       TitleFont.Name = 'Tahoma'
       TitleFont.Style = [fsBold]
+      ToggleMode = False
       HotImageIndex = -1
       FocusedImageIndex = -1
       PressedImageIndex = -1
@@ -5641,6 +5685,7 @@ object Form1: TForm1
       TitleFont.Height = -11
       TitleFont.Name = 'Tahoma'
       TitleFont.Style = [fsBold]
+      ToggleMode = False
       HotImageIndex = -1
       FocusedImageIndex = -1
       PressedImageIndex = -1
@@ -5735,6 +5780,7 @@ object Form1: TForm1
       TitleFont.Height = -11
       TitleFont.Name = 'Tahoma'
       TitleFont.Style = [fsBold]
+      ToggleMode = False
       HotImageIndex = -1
       FocusedImageIndex = -1
       PressedImageIndex = -1
@@ -5828,6 +5874,7 @@ object Form1: TForm1
       TitleFont.Height = -11
       TitleFont.Name = 'Tahoma'
       TitleFont.Style = [fsBold]
+      ToggleMode = False
       HotImageIndex = -1
       FocusedImageIndex = -1
       PressedImageIndex = -1
@@ -5923,6 +5970,7 @@ object Form1: TForm1
       TitleFont.Height = -11
       TitleFont.Name = 'Tahoma'
       TitleFont.Style = [fsBold]
+      ToggleMode = False
       HotImageIndex = -1
       FocusedImageIndex = -1
       PressedImageIndex = -1
@@ -6018,6 +6066,7 @@ object Form1: TForm1
       TitleFont.Height = -11
       TitleFont.Name = 'Tahoma'
       TitleFont.Style = [fsBold]
+      ToggleMode = False
       HotImageIndex = -1
       FocusedImageIndex = -1
       PressedImageIndex = -1
@@ -6112,6 +6161,7 @@ object Form1: TForm1
       TitleFont.Height = -11
       TitleFont.Name = 'Tahoma'
       TitleFont.Style = [fsBold]
+      ToggleMode = False
       HotImageIndex = -1
       FocusedImageIndex = -1
       PressedImageIndex = -1
@@ -6280,6 +6330,7 @@ object Form1: TForm1
     Down = False
     GroupIndex = 0
     AllowAllUp = False
+    ToggleMode = False
   end
   object Edit_proFocus: TEdit
     Left = -1000
@@ -6326,6 +6377,7 @@ object Form1: TForm1
     CaptionGlowEffect.StyleColors = True
     Color = 10114859
     StorePaintBuffer = False
+    WordWrap = False
     OnPanelPaint = scSplitView_OPTIONSPanelPaint
     AnimationStep = 25
     AnimationType = scsvaInertial
@@ -6381,7 +6433,7 @@ object Form1: TForm1
       FrameColorAlpha = 40
       FrameRadius = 0
       GlowEffect.Enabled = False
-      GlowEffect.Color = clBtnShadow
+      GlowEffect.Color = clSilver
       GlowEffect.AlphaValue = 255
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
@@ -7338,6 +7390,7 @@ object Form1: TForm1
         Down = False
         GroupIndex = 0
         AllowAllUp = False
+        ToggleMode = False
       end
       object scGPButton_kalibrace: TscGPButton
         AlignWithMargins = True
@@ -7470,6 +7523,7 @@ object Form1: TForm1
         Down = False
         GroupIndex = 0
         AllowAllUp = False
+        ToggleMode = False
       end
       object scGPCheckBox_stupne_sedi: TscGPCheckBox
         AlignWithMargins = True
@@ -7881,6 +7935,7 @@ object Form1: TForm1
         Down = False
         GroupIndex = 0
         AllowAllUp = True
+        ToggleMode = False
       end
     end
     object scExPanel_ostatni: TscExPanel
@@ -7923,13 +7978,12 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  Obecn'#233
-      object scGPCheckBox_ortogon: TscGPCheckBox
+      object scGPCheckBox_antialiasing: TscGPCheckBox
         AlignWithMargins = True
         Left = 7
         Top = 30
         Width = 239
         Height = 33
-        Hint = 'Zaji'#353#357'uje zadav'#225'n'#237' obrysu haly '#269'i objektu pravo'#250'hle '
         Margins.Left = 7
         Margins.Top = 0
         Margins.Bottom = 0
@@ -7943,9 +7997,9 @@ object Form1: TForm1
         FluentUIOpaque = False
         TabOrder = 0
         TabStop = True
-        OnClick = scGPCheckBox_ortogonClick
+        OnClick = scGPCheckBox_antialiasingClick
         Animation = False
-        Caption = 'Pravo'#250'hl'#233' zad'#225'v'#225'n'#237
+        Caption = 'Antialiasing '
         CanFocused = True
         Spacing = 1
         Layout = blGlyphLeft
@@ -8022,7 +8076,8 @@ object Form1: TForm1
         OptionsChecked.ShapeSize = 20
         OptionsChecked.CheckMarkThickness = 2
         OptionsChecked.StyleColors = True
-        Checked = False
+        Checked = True
+        State = cbChecked
         ScaleFrameWidth = True
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
@@ -8581,6 +8636,7 @@ object Form1: TForm1
         Down = False
         GroupIndex = 0
         AllowAllUp = False
+        ToggleMode = False
       end
     end
   end
@@ -8617,6 +8673,7 @@ object Form1: TForm1
     CaptionGlowEffect.StyleColors = True
     Color = clWhite
     StorePaintBuffer = False
+    WordWrap = False
     AnimationStep = 25
     AnimationType = scsvaInertial
     CompactWidth = 0
@@ -9001,7 +9058,7 @@ object Form1: TForm1
       FrameColorAlpha = 40
       FrameRadius = 0
       GlowEffect.Enabled = False
-      GlowEffect.Color = clBtnShadow
+      GlowEffect.Color = clSilver
       GlowEffect.AlphaValue = 255
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
@@ -9055,6 +9112,7 @@ object Form1: TForm1
       StorePaintBuffer = True
       Sizeable = False
       WallpaperIndex = -1
+      WordWrap = False
       object scGPSwitch_robot_clovek: TscGPSwitch
         Left = 0
         Top = 0
@@ -9123,7 +9181,7 @@ object Form1: TForm1
       FrameColorAlpha = 40
       FrameRadius = 0
       GlowEffect.Enabled = False
-      GlowEffect.Color = clBtnShadow
+      GlowEffect.Color = clSilver
       GlowEffect.AlphaValue = 255
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
@@ -9164,7 +9222,7 @@ object Form1: TForm1
       FrameColorAlpha = 40
       FrameRadius = 0
       GlowEffect.Enabled = False
-      GlowEffect.Color = clBtnShadow
+      GlowEffect.Color = clSilver
       GlowEffect.AlphaValue = 255
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
@@ -9205,7 +9263,7 @@ object Form1: TForm1
       FrameColorAlpha = 40
       FrameRadius = 0
       GlowEffect.Enabled = False
-      GlowEffect.Color = clBtnShadow
+      GlowEffect.Color = clSilver
       GlowEffect.AlphaValue = 255
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
@@ -9246,7 +9304,7 @@ object Form1: TForm1
       FrameColorAlpha = 40
       FrameRadius = 0
       GlowEffect.Enabled = False
-      GlowEffect.Color = clBtnShadow
+      GlowEffect.Color = clSilver
       GlowEffect.AlphaValue = 255
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
@@ -9288,7 +9346,7 @@ object Form1: TForm1
     FrameColorAlpha = 40
     FrameRadius = 0
     GlowEffect.Enabled = False
-    GlowEffect.Color = clBtnShadow
+    GlowEffect.Color = clSilver
     GlowEffect.AlphaValue = 255
     GlowEffect.GlowSize = 7
     GlowEffect.Offset = 0
@@ -10274,7 +10332,6 @@ object Form1: TForm1
   end
   object IdHTTP1: TIdHTTP
     IOHandler = IdSSLIOHandlerSocketOpenSSL1
-    AllowCookies = True
     ProxyParams.BasicAuthentication = False
     ProxyParams.ProxyPort = 0
     Request.ContentLength = -1

@@ -204,6 +204,9 @@ __fastcall TForm1::TForm1(TComponent* Owner)
   //temp
 	T=readINI("nastaveni_editace","pripocitavat_casy_prvniho_el");
 	if(T==0 || T=="")scGPCheckBox_meridlo_casy->Checked=false;else scGPCheckBox_meridlo_casy->Checked=true;
+	//nastavení app
+	T=readINI("Nastaveni_app","antialiasing"); //zobrazit rotaci jigu
+	if(T==0 || T=="")antialiasing=false;else antialiasing=true;
 
 
 	if(rotace_jigu==1) scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
@@ -226,6 +229,9 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 
 	if(zobrazit_popisek_pohonu==1)scGPCheckBox_popisek_pohonu->Checked=true;
 	else   scGPCheckBox_popisek_pohonu->Checked=false;
+
+	if(antialiasing)scGPCheckBox_antialiasing->Checked=true;
+	else   scGPCheckBox_antialiasing->Checked=false;
 
   //načtení posledních uložených souborů
 	N1projekt1->Caption=readINI("historie","posledni_soubor_1");
@@ -250,7 +256,6 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	pocitadlo_doby_neaktivity=0;
 
 	//nastavení zobrazení
-	antialiasing=true;
 	d.SCENA=1111111;
 	vychozi_stav_sceny=d.SCENA;
 
@@ -586,10 +591,6 @@ void TForm1::set_font(int velikost)
   scExPanel_ostatni->Font=aFont;
   scExPanel_ostatni->Font->Color=barva;
   scExPanel_ostatni->Font->Size=velikost;
-  barva=scGPCheckBox_ortogon->Font->Color;
-  scGPCheckBox_ortogon->Font=aFont;
-  scGPCheckBox_ortogon->Font->Color=barva;
-  scGPCheckBox_ortogon->Font->Size=velikost;
   barva=scLabel16->Font->Color;
   scLabel16->Font=aFont;
   scLabel16->Font->Color=barva;
@@ -1423,9 +1424,8 @@ void TForm1::edice()
 			//	Nastvitparametry1->Enabled=false;
 				//Smazat1->Enabled=false;
         scGPButton_mereni_vzdalenost->Enabled=true;
-        scLabel1_svetelnost->Enabled=false;
-        scGPCheckBox_stupne_sedi->Enabled=false;
-        scGPCheckBox_ortogon->Enabled=true;
+				scLabel1_svetelnost->Enabled=false;
+				scGPCheckBox_stupne_sedi->Enabled=false;
 
 
 //				RzToolButton1->Enabled=false;
@@ -1815,8 +1815,8 @@ void TForm1::startUP()
 
     //načte dílčí nastavení aplikace
     AnsiString T=readINI("Nastaveni_app","ortogonalizace"); //o_stav musí být až na druhém místě po scGPCheckbox
-    start_ortogonalizace=true;//pouze ošetření, aby se nevolalo scGPCheckBox_ortogon_onclick
-    if(T=="0" || T==""){scGPCheckBox_ortogon->Checked=false;ortogonalizace_stav=false;}else{scGPCheckBox_ortogon->Checked=true;ortogonalizace_stav=true;}
+		start_ortogonalizace=true;//pouze ošetření, aby se nevolalo scGPCheckBox_ortogon_onclick
+    if(T=="0" || T==""){ortogonalizace_stav=false;}else{ortogonalizace_stav=true;}
     start_ortogonalizace=false;
     T=readINI("Nastaveni_app","prichytavat");
     if(T=="0" || T==""){prichytavat_k_mrizce=1;}else{prichytavat_k_mrizce=ms.MyToDouble(T);}
@@ -2106,9 +2106,6 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
  //	scListGroupKnihovObjektu->Top=scListGroupNastavProjektu->Height;
 	DuvodUlozit(true);
 	Timer_neaktivity->Enabled=false;
-	scGPCheckBox_ortogon->Align=alTop;
-	scGPCheckBox_ortogon->Left=10;
-	scGPCheckBox_ortogon->Visible=true;
   scGPCheckBox_zobraz_podklad->Align=alTop;
   scGPCheckBox_zobraz_podklad->Left=5;
 	scGPCheckBox_stupne_sedi->Align=alTop;
@@ -2150,7 +2147,6 @@ void __fastcall TForm1::LayoutClick(TObject *Sender)
 	scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
  //	scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
 	//scSplitView_LEFTTOOLBAR->Visible=false;
-	scGPCheckBox_ortogon->Visible=false;
 	SB(ls->Strings[379]);
 	//Zoom=5;ZOOM();
 	Pan_bmp->Width=0;Pan_bmp->Height=0;//při přechodu z jiného režimu smaže starou Pan_bmp
@@ -2423,6 +2419,8 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			}
 			else {bmp_total->Canvas->Draw(0,0,bmp_in);delete(bmp_in);}//není aktivní AA
 		}
+    ////vykreslení kóty pro aktuálně editovaný element
+		if(editace_textu && index_kurzoru==-11 && pom_element_temp!=NULL)d.vykresli_kotu(bmp_total->Canvas,pom_element_temp);
 		////mGRIDY
 		if(MOD!=SIMULACE)d.vykresli_mGridy(bmp_total->Canvas);//přesunuto do vnitř metody: OBJEKT_akt->elementy!=NULL kvůli pohonům
 		////časové osy pomocné grafické metody mimo AA
@@ -2445,9 +2443,9 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		mGrid_knihovna->Show(Image_knihovna_objektu->Canvas);
 	}
 
-	short p=0,a=0;
-	if(pom!=NULL)p=1;if(OBJEKT_akt!=NULL)a=10;
-	Memo(String(p+a)+" "+String(d.SCENA),true);
+//	short p=0,a=0;
+//	if(pom!=NULL)p=1;if(OBJEKT_akt!=NULL)a=10;
+//	Memo(String(p+a)+" "+String(d.SCENA),true);
 }
 //---------------------------------------------------------------------------
 //vytvoří BMP se statickou scénou, NEVYTVÁŘÍ POUZE pro kompletní dynamickou scénu
@@ -5367,7 +5365,7 @@ void TForm1::onPopUP(int X, int Y)
 				PopUPmenu->Item_smazat->Visible=true;
 			}
 			//přidávání bodu
-			if(OBJEKT_akt->id!=3 && pom_bod!=NULL && JID==-2)//usečka = přidávání bodu
+			if(OBJEKT_akt->id!=3 && pom_bod!=NULL && (JID==-2 || JID==-3))//usečka = přidávání bodu
 			{
 				pom_bod_temp=pom_bod;
 				PopUPmenu->scLabel_nastavit_parametry->Caption=ls->Strings[166];//"  Přidat bod";
@@ -7410,6 +7408,7 @@ void TForm1::vloz_bod_haly_objektu(int X,int Y)
 		}
 	}
 	else souradnice=m.P2L(TPoint(X,Y));
+	if(JID==-3){souradnice.x=pom_bod->X;souradnice.y=pom_bod->Y;}//vkládání bod na bod
 	//////Získání bodu před
 	Cvektory::TBod *zabod=NULL;
 	if(OBJEKT_akt!=NULL)pom_bod_temp=pom_bod;//plnění temp bodu pro jistotu
@@ -12885,7 +12884,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 						MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,ls->Strings[470],"",MB_OK);//"Nelze provést! Odstranění provedete výběrem totožného pohonu před a za předávacím místem"
 					else
 					{
-            //dotaz zda má být PM odstraněno nebo ponecháno
+						//dotaz zda má být PM odstraněno nebo ponecháno
 						if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text+pom_element_temp->name.UpperCase()+"?","",MB_YESNO))
 						{
 							if(pom_element_temp==predchozi_PM)nulovatPM=true;
@@ -12898,7 +12897,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 					if(nulovatPM)predchozi_PM=NULL;
 					mazani=false;
 					Akce=NIC;
-					d.v.aktualizuj_cestu_teplomeru();//pokud existuje cesta mezi teploměry aktualizuje ji, jinak vytvoří default cestu
+					if(!FormX->aut_mazani_PM)d.v.aktualizuj_cestu_teplomeru();//pokud existuje cesta mezi teploměry aktualizuje ji, jinak vytvoří default cestu
 				}
         DuvodUlozit(true);
 				nahled_ulozit(true);
@@ -14824,7 +14823,7 @@ void __fastcall TForm1::Timer_neaktivityTimer(TObject *Sender)
 		if(FormX->posledni_E!=NULL && FormX->posledni_E->eID==0)FormX->aktualizace_teplomeru();
 		if(PmG!=NULL)FormX->validace_aRD();
 		duvod_validovat=2;//může dojít k přenastavení pohonu, nutné přegenerovat vozíky
-    nahled_ulozit(true);
+		nahled_ulozit(true);
 		REFRESH(true);//nedocází k refresh tabulek, tabulky jsou v tuto chvíli naplněny aktuálními hodnotami
 	}
 	Timer_neaktivity->Enabled=false;
@@ -15182,14 +15181,15 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	REFRESH();
 //  e_posledni=NULL;delete e_posledni;
 //	Memo("");
-  Memo_testy->Clear();
-	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-	while(E!=NULL)
+	Memo("Cesta: "+OBJEKT_akt->teplomery->dalsi->prvni->sparovany->name,true);
+	Cvektory::TCesta *C=OBJEKT_akt->teplomery->dalsi->cesta->dalsi;
+	while(C!=NULL)
 	{
-		if(E->eID==301)Memo(E->name+"->WT: "+String(E->WT)+"; ->WT_index: "+String(E->WT_index));
-		E=E->dalsi;
+		Memo("Cesta: "+C->Element->name);
+		C=C->dalsi;
 	}
-	delete E;E=NULL;
+	delete C;C=NULL;
+	Memo("Cesta: "+OBJEKT_akt->teplomery->dalsi->posledni->sparovany->name);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -15807,16 +15807,6 @@ void __fastcall TForm1::scExPanel_vrstvyClick(TObject *Sender)
 {
 	log(__func__);//logování
 	scExPanel_vrstvy->RollUpState=!scExPanel_vrstvy->RollUpState;
-}
-//---------------------------------------------------------------------------
-//vypnutí či zapnutí ortogonolazice
-void __fastcall TForm1::scGPCheckBox_ortogonClick(TObject *Sender)
-{
-  log(__func__);//logování
-//	if(!start_ortogonalizace)//pokud se nejedná o start aplikace, aby se nevolalo v tomto okamžiku
-//	ortogonalizace_on_off();
-	if(scGPCheckBox_ortogon->State==0)ortogonalizace_stav=false;
-	else ortogonalizace_stav=true;
 }
 //---------------------------------------------------------------------------
 //vypnutí měřítko
@@ -17892,9 +17882,9 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
     scGPCheckBox_zobraz_podklad->Caption=ls->Strings[107];
     scLabel1_svetelnost->Caption=ls->Strings[108];
 		scExPanel_ostatni->Caption=ls->Strings[109];
-    scGPCheckBox_ortogon->Caption=ls->Strings[110];
-    scGPCheckBox_ortogon->Hint=ls->Strings[111];
-    scLabel16->Caption=ls->Strings[112];
+//		scGPCheckBox_ortogon->Caption=ls->Strings[110];
+//    scGPCheckBox_ortogon->Hint=ls->Strings[111];
+		scLabel16->Caption=ls->Strings[112];
     scLabel5->Caption=ls->Strings[113];
     scLabel1_intenzita->Caption=ls->Strings[114];
     scGPTrackBar_intenzita->Hint=ls->Strings[115];
@@ -19247,5 +19237,18 @@ void TForm1::vypocet_WT(Cvektory::TElement *E)
 	e_pom=NULL;delete e_pom;
 }
 //---------------------------------------------------------------------------
-
+//přepínání antialiasingu
+void __fastcall TForm1::scGPCheckBox_antialiasingClick(TObject *Sender)
+{
+	log(__func__);//logování
+	//AA on - off
+	antialiasing=scGPCheckBox_antialiasing->Checked;
+	//uložení do INI
+	AnsiString T=0;if(antialiasing)T="1";
+	writeINI("Nastaveni_app","antialiasing",T); //zobrazit rotaci jigu
+	//překreslení
+  if(d.SCENA!=0)vytvor_statickou_scenu();
+  REFRESH();
+}
+//---------------------------------------------------------------------------
 

@@ -3514,7 +3514,6 @@ long Cvektory::vymaz_seznam_VYHYBKY(T2Element *VYHYBKY)
 //určí další krok průchodového algoritmu ve spojáku elementů, 2 možností průchod kompletního spojáku ELEMENTY, druhá průchod pouze elementů jednoho objektu
 Cvektory::TElement *Cvektory::dalsi_krok(T2Element *VYHYBKY,TElement *E,TObjekt *O)
 {
-  F->log(__func__);
 	////normální průchod kompletním spojákem elementů
 	if(O==NULL)
 	{
