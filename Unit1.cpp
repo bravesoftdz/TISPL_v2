@@ -4566,6 +4566,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 						E->mGrid->Tag=6;//ID formu
 						E->mGrid->ID=d.v.vrat_nejvetsi_ID_tabulek(OBJEKT_akt)+1;
 						design_element(E,true);//znovuvytvoření tabulek
+						E=NULL;delete E;
 						E=d.v.vloz_element(OBJEKT_akt,MaxInt,d.v.MAG_LASO->predchozi->Element->geo.X1,d.v.MAG_LASO->predchozi->Element->geo.Y1,0);
             E->mGrid=new TmGrid(F);
 						E->mGrid->Tag=6;//ID formu
@@ -4579,6 +4580,20 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			    	E->geo.delkaPud=delka;
 			    	E->geo.delka=delkaSklon;
 						E->geo.HeightDepp=HeightDepp;
+						//aktualizace bufferů a validace
+            if(E->dalsi!=NULL && E->dalsi->eID==0)
+						{
+              //výpočet nových hodnot
+							E->dalsi->data.pocet_pozic=max_voziku(E->dalsi);
+							if(E->dalsi->data.pocet_pozic<E->dalsi->data.pocet_voziku)E->dalsi->data.pocet_voziku=E->dalsi->data.pocet_pozic;
+							//zapsání nových hodnot do mGridu
+							if(E->dalsi->objekt_n==OBJEKT_akt->n && E->dalsi->mGrid!=NULL)
+							{
+								E->dalsi->mGrid->Cells[2][5].Text=E->dalsi->data.pocet_pozic;
+								E->dalsi->mGrid->Cells[2][6].Text=E->dalsi->data.pocet_voziku;
+              }
+							duvod_validovat=2;//přegeneruje vozíky
+						}
             //aktualizace teploměrů
 						d.v.aktualizuj_cestu_teplomeru();
 						//aktualizace Z elementům
@@ -4606,7 +4621,6 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 						d.SCENA=0;
 						REFRESH(false);
 					}
-          E=NULL;delete E;
 				}
 				//bylo kliknuto mimo, ukončení akce
 				else //if(d.v.MAG_LASO->predchozi->n>0)
