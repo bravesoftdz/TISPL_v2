@@ -2526,7 +2526,6 @@ int Cvektory::vrat_eID_prvniho_pouziteho_robota(TObjekt *Objekt)
 		}
 		E=NULL;delete E;
 	}
-	if(RET==-1)Objekt->rezim=-1;else{if(RET>0 && RET%2==0)Objekt->rezim=0;else Objekt->rezim=1;}//rovnou nastaví režim objektu
 	return RET;
 }
 ////---------------------------------------------------------------------------

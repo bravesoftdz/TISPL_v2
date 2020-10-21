@@ -997,7 +997,7 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 				}break;
 				case 301://spojka
 				{
-					F->zmena_editovanych_bunek(E);
+					F->napln_comba_mGridu(E);
 				}break;
 			}
 			if(input_state==COMBO)F->set_enabled_mGrid(E);//pouze pøi zmìnì pohonu, jinak zbyteèné
@@ -1071,7 +1071,7 @@ void TFormX::aktualizace_tab_elementu_pOdebran ()
 				}break;
 				case 301://spojka
 				{
-					F->zmena_editovanych_bunek(E);
+					F->napln_comba_mGridu(E);
 				}break;
 				case 200:
 				case 300:

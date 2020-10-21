@@ -3018,7 +3018,11 @@ void Cvykresli::vykresli_vetev_dopravniku(TCanvas *canv)
 		Cvektory::TElement *prvni=F->pom_element;
 		if(prvni->eID==301)prvni=prvni->dalsi2;//zajištění výhybky
 		Cvektory::TElement *E=prvni->dalsi;//vykreslit hlavní větev
-		if(FormX->vykresli_vetev==2)E=prvni->dalsi2;//vykreslit vedlejší větev
+		if(FormX->vykresli_vetev==2)
+		{
+			E=prvni->dalsi2;//vykreslit vedlejší větev
+			if(prvni->dalsi2==prvni->predchozi2)E=NULL;
+    }
 		//průchod skrze elementy ve větvi
 		while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
 		{

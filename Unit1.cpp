@@ -4765,9 +4765,9 @@ void TForm1::getJobID(int X, int Y)
 						}
 						else if(OBJEKT_akt->uzamknout_nahled==false)JID=(IdxCol+1)*1000+IdxRow;//řádky v druhém a dalších sloupcích
 						//nastavenní vykreslovací větve
-						if(pom_element->eID==300 && ((JID>=4004 && JID<=4010) || (JID>=5004 && JID<=5010)))
+						if(pom_element->eID==300 && ((JID>=4001 && JID<=4010) || (JID>=5001 && JID<=5010)))
 						{
-							if(JID>=5004)FormX->vykresli_vetev=2;
+							if(JID>=5001)FormX->vykresli_vetev=2;
 							else FormX->vykresli_vetev=1;
 							if(prohodit_sloupce_PM(pom_element))
 							{
@@ -4775,7 +4775,11 @@ void TForm1::getJobID(int X, int Y)
                 else FormX->vykresli_vetev=1;
               }
 						}
-						if(pom_element->eID==301 && (JID==2002 || JID==3002))FormX->vykresli_vetev=(JID-2)/1000-1;
+						if(pom_element->eID==301 && (JID>=2001 && JID<=2002 || JID>=3001 && JID<=3002))
+						{							
+							if(JID>3000)FormX->vykresli_vetev=2;
+							else FormX->vykresli_vetev=1;
+						}
 					}
     		}
 				else//tabulka nenalezena, takže zkouší najít ELEMENT
@@ -5187,7 +5191,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 			if((pom_element_puv!=NULL && pom_element==NULL) || (pom_element_puv==NULL && pom_element!=NULL) && !(JID<=-11 && JID>=-100) && !(JID<=99 && JID>=13) && (d.v.vrat_druh_elementu(E)!=-1 || E->eID==200 || E->eID==300 || E->eID==301 || E->eID==400 || E->eID==401 || E->eID==402) && E->eID!=100)
 				REFRESH();
 			E=NULL;delete E;
-		}
+		}     
 		if(puvVV!=FormX->vykresli_vetev)REFRESH();
 		if(puvJID==-1 && JID==-1 && PmG!=NULL && PmG->Highlight){PmG->Highlight=false;REFRESH();}//odstranění highlightu tab pohonu pokud je třeba, zamezuje problikávání highlightu
 
@@ -10130,6 +10134,7 @@ void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
 		}
 		C1=NULL;C2=NULL;
 		C1=E->mGrid->getCombo(prvni,11);C2=E->mGrid->getCombo(druhy,11);
+		if(E->eID==300){E->mGrid->Cells[prvni][1].Text="IN/OUT";E->mGrid->Cells[druhy][1].Text="OUT";}//default nastavení nadpisů
 		if(C1!=NULL && C2!=NULL)
 		{
 			//itemindex
@@ -10144,6 +10149,9 @@ void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
 			//nastavení barev
 			if(C1->Enabled){E->mGrid->Cells[prvni][11].Background->Color=clWhite;E->mGrid->Cells[prvni][11].Font->Color=(TColor)RGB(43,87,154);}
 			if(C2->Enabled){E->mGrid->Cells[druhy][11].Background->Color=clWhite;E->mGrid->Cells[druhy][11].Font->Color=(TColor)RGB(43,87,154);}
+			//nastavení nadpisů sloupců
+			if(C1->ItemIndex!=0){E->mGrid->Cells[prvni][1].Text="OUT";E->mGrid->Cells[druhy][1].Text="IN/OUT";}
+			if(C2->ItemIndex!=0){E->mGrid->Cells[prvni][1].Text="IN/OUT";E->mGrid->Cells[druhy][1].Text="OUT";}
 		}
 
 		//ukazatelové záležitosti
@@ -10155,10 +10163,11 @@ void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
 	}
 	//spojka
 	if(E->eID==301)
-	{
+	{       
 		//aktualizace textu pohonů
-    String p1=ls->Strings[217],p2=ls->Strings[217];//"Žádný pohon";
+		String p1=ls->Strings[217],p2=ls->Strings[217];//"Žádný pohon";
 		if(E->pohon!=NULL)p1=E->pohon->name;if(E->predchozi2->pohon!=NULL && E->dalsi2!=E->predchozi2)p2=E->predchozi2->pohon->name;
+		E->mGrid->Cells[1][1].Text="IN/OUT";E->mGrid->Cells[2][1].Text="IN";//default nastaveno
 		E->mGrid->Cells[1][2].Text=p1;E->mGrid->Cells[2][2].Text=p2;
 		//povolení / zákaz comb
 		Cvektory::TElement *e_pom=E->predchozi2;
@@ -10178,6 +10187,9 @@ void TForm1::zmena_editovanych_bunek(Cvektory::TElement *E)
 			//nastavení barev
 			if(C1->Enabled){E->mGrid->Cells[1][3].Background->Color=clWhite;E->mGrid->Cells[2][3].Font->Color=(TColor)RGB(43,87,154);}
 			if(C2->Enabled){E->mGrid->Cells[2][3].Background->Color=clWhite;E->mGrid->Cells[2][3].Font->Color=(TColor)RGB(43,87,154);}
+			//nastavení nadpisů sloupců
+			if(C1->ItemIndex!=0){E->mGrid->Cells[1][1].Text="IN";E->mGrid->Cells[2][1].Text="IN/OUT";}
+			if(C2->ItemIndex!=0){E->mGrid->Cells[1][1].Text="IN/OUT";E->mGrid->Cells[2][1].Text="IN";}
 		}
 		C1=NULL;C2=NULL;e_pom=NULL;
 		delete C1;delete C2;delete e_pom;
@@ -10787,7 +10799,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			if(E->predchozi2->pohon!=NULL && E->dalsi2!=E->predchozi2)p2=E->predchozi2->pohon->name;
 			E->mGrid->Create(3,4);
 			E->mGrid->Cells[0][1].Text=ls->Strings[447];//"Pohon "
-			E->mGrid->Cells[1][1].Text="IN";E->mGrid->Cells[2][1].Text="IN/"+E->dalsi2->short_name;
+			E->mGrid->Cells[1][1].Text="IN/OUT";E->mGrid->Cells[2][1].Text="IN";
 			E->mGrid->Cells[1][2].Text=p1;E->mGrid->Cells[2][2].Text=p2;
 			E->mGrid->Cells[1][3].Type=E->mGrid->COMBO;E->mGrid->Cells[2][3].Type=E->mGrid->COMBO;
 			E->mGrid->Cells[0][3].Text=ls->Strings[224]+" "+cas;//"WT palec "
@@ -11417,7 +11429,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			if(E->pohon!=NULL)p1=E->pohon->name;if(E->predchozi2->pohon!=NULL && E->dalsi2!=E->predchozi2)p2=E->predchozi2->pohon->name;    
 			E->mGrid->Create(3,4);
 			E->mGrid->Cells[0][1].Text=ls->Strings[447];//"Pohon "
-			E->mGrid->Cells[1][1].Text="IN";E->mGrid->Cells[2][1].Text="IN/"+E->dalsi2->short_name;
+			E->mGrid->Cells[1][1].Text="IN/OUT";E->mGrid->Cells[2][1].Text="IN";
 			E->mGrid->Cells[1][2].Text=p1;E->mGrid->Cells[2][2].Text=p2;
 			E->mGrid->Cells[1][3].Type=E->mGrid->COMBO;E->mGrid->Cells[2][3].Type=E->mGrid->COMBO;
 			E->mGrid->Cells[0][3].Text=ls->Strings[224]+" "+cas;//"WT palec "
@@ -12494,12 +12506,10 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton
 	//DrawGrid_knihovna->MouseToCell(X,Y,Col,Row);
 	Col=DrawGrid_knihovna->Col; Row=DrawGrid_knihovna->Row;
 	if(MOD==EDITACE)
-	{
-		bool pridani=false;
+	{           
 		ESC();//ukončení případné akce
 		if(PmG!=NULL && PmG->Rows[3].Visible)FormX->odstranit_korelaci();//pokud je tabulka pohonu v režimu KK je možnost, že je Highlightovaná ... odstranit highlight (korelaci)
-		knihovna_id=1;
-		int EID=d.v.vrat_eID_prvniho_pouziteho_robota(OBJEKT_akt);//kontrola v jakém je kabina režimu (stop&go, kontinuální), podle toho dovolí vkládat roboty pouze stejného režimu
+		knihovna_id=1;  
 		//pro každý objekt jiná podmínka přidání a jiný způsob přiřazení eID
 		switch(OBJEKT_akt->id)
 		{
@@ -12507,15 +12517,11 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton
 			{
 				if(Row==0)element_id=Col+101;
 				if(Row==1)element_id=Col+103;
-				if(((EID==101||EID==103)&&(element_id==101||element_id==103)||(EID==102||EID==104)&&(element_id==102||element_id==104)||EID==-1||(funkcni_klavesa==2&&DEBUG))&&OBJEKT_akt->pohon!=NULL)//při stisku shift lze tuto podmínku v debugu obejít
-					pridani=true;
 			}break;
 			case 1://CO2
 			{
 				if(Row==0)element_id=Col+15;
 				if(Row==1)element_id=Col+17;
-				if(((EID==15||EID==17)&&(element_id==15||element_id==17)||(EID==16||EID==18)&&(element_id==16||element_id==18)||EID==-1||(funkcni_klavesa==2&&DEBUG))&&OBJEKT_akt->pohon!=NULL)//při stisku shift lze tuto podmínku v debugu obejít
-					pridani=true;
 			}break;
 			case 2://ožeh
 			{
@@ -12523,22 +12529,17 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton
 				{
 					if(Row==0)element_id=Col+11;
 					if(Row==1)element_id=Col+13;
-					if(((EID==11||EID==13)&&(element_id==11||element_id==13)||(EID==12||EID==14)&&(element_id==12||element_id==14)||EID==-1||(funkcni_klavesa==2&&DEBUG))&&OBJEKT_akt->pohon!=NULL)//při stisku shift lze tuto podmínku v debugu obejít
-						pridani=true;
 				}
 				else//člověk
 				{
         	if(Row==0)element_id=Col+105;
 					if(Row==1)element_id=Col+107;
-					if(((EID==11||EID==13||EID==105||EID==107)&&(element_id==105||element_id==107)||(EID==8||EID==10||EID==106||EID==108)&&(element_id==106||element_id==108)||EID==-1||(funkcni_klavesa==2&&DEBUG))&&OBJEKT_akt->pohon!=NULL)//při stisku shift lze tuto podmínku v debugu obejít
-						pridani=true;
         }
 			}break;
 			case 3://POW
 			{
 				if(Row==0)element_id=-1;
 				if(Row==1)element_id=-2;
-				if(OBJEKT_akt->pohon!=NULL)pridani=true;
 			}break;
 			case 4://objekt ionizace
 			{
@@ -12546,15 +12547,11 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton
 				{
 					if(Row==0)element_id=Col+7;
 					if(Row==1)element_id=Col+9;
-					if(((EID==7||EID==9||EID==105||EID==107)&&(element_id==7||element_id==9)||(EID==8||EID==10||EID==106||EID==108)&&(element_id==8||element_id==10)||EID==-1||(funkcni_klavesa==2&&DEBUG))&&OBJEKT_akt->pohon!=NULL)//při stisku shift lze tuto podmínku v debugu obejít
-						pridani=true;
 				}
 				else//člověk
 				{
 					if(Row==0)element_id=Col+105;
 					if(Row==1)element_id=Col+107;
-					if(((EID==7||EID==9||EID==105||EID==107)&&(element_id==105||element_id==107)||(EID==8||EID==10||EID==106||EID==108)&&(element_id==106||element_id==108)||EID==-1||(funkcni_klavesa==2&&DEBUG))&&OBJEKT_akt->pohon!=NULL)//při stisku shift lze tuto podmínku v debugu obejít
-						pridani=true;
 				}
 			}break;
 			case 5://objekt lakovna
@@ -12564,21 +12561,22 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton
 				{
 					if(Row==0)element_id=Col+1;
 					if(Row==1)element_id=Col+3;
-					if(((EID==1||EID==3)&&(element_id==1||element_id==3)||(EID==2||EID==4)&&(element_id==2||element_id==4)||EID==-1||(funkcni_klavesa==2&&DEBUG))&&OBJEKT_akt->pohon!=NULL)//při stisku shift lze tuto podmínku v debugu obejít
-						pridani=true;
 				}
 				else//člověk
 				{
 					if(Row==0)element_id=Col+105;
 					if(Row==1)element_id=Col+107;
-					if(((EID==1||EID==3||EID==105||EID==107)&&(element_id==105||element_id==107)||(EID==8||EID==10||EID==106||EID==108)&&(element_id==106||element_id==108)||EID==-1||(funkcni_klavesa==2&&DEBUG))&&OBJEKT_akt->pohon!=NULL)//při stisku shift lze tuto podmínku v debugu obejít
-						pridani=true;
 				}
 			}break;
 		}
-    //pokud byly splněné podmínky pro přidání, zapne událost ADD (vystrčeno mimo z důvodu množení kódu)
+		//kontrola zda mohu vložit
+		bool pridani=true;      
+		if(Col==0 && OBJEKT_akt->rezim==0 && OBJEKT_akt->id)pridani=false;
+		if(Col==1 && OBJEKT_akt->rezim==1 && OBJEKT_akt->id)pridani=false; 
+		if(OBJEKT_akt->pohon==NULL)pridani=false;
+		//pokud byly splněné podmínky pro přidání, zapne událost ADD (vystrčeno mimo z důvodu množení kódu)
 		if(pridani && (d.v.ZAKAZKA_akt==NULL || d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n==0))
-		{
+		{    
 			SB(ls->Strings[387]);//"Kliknutím na libovolné místo umístíte vybraný element."
 			Akce=ADD;kurzor(add_o);
 		}
@@ -15186,7 +15184,8 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	vytvor_statickou_scenu();
 //	REFRESH();
 //  e_posledni=NULL;delete e_posledni;
-	Memo("");
+//	Memo("");
+	Memo(d.v.ELEMENTY->dalsi->dalsi->name+"->WT: "+String(d.v.ELEMENTY->dalsi->dalsi->WT));
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -19132,7 +19131,7 @@ void TForm1::rozmisti_mGridy()
 //vypočíta WT pro PM, výhybku a spojku
 void TForm1::vypocet_WT(Cvektory::TElement *E)
 {
-	log(__func__);       
+	log(__func__);     
 	//defaultní hodnota
 	E->WT=0;
 	Cvektory::TElement *e_pom=NULL;//deklarace pom elementu
@@ -19157,14 +19156,14 @@ void TForm1::vypocet_WT(Cvektory::TElement *E)
 
 	//výpočt WT podle zvoleného pohonu
 	if(!error && e_pom!=NULL)
-	{        
+	{           
 		switch((int)E->WT_index)
   	{
   		//první nastavování
   		case 0:default:
 			{    
   			if(e_pom->pohon!=NULL)
-				{    
+				{       
 					if(e_pom->pohon==E->pohon)
 					{
 						E->WT=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
@@ -19180,18 +19179,18 @@ void TForm1::vypocet_WT(Cvektory::TElement *E)
   			break;
 			}
   		//nastaveno na první pohon
-  		case 1:
-  		{
+			case 1:
+			{     
   			if(E->pohon!=NULL)E->WT=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
   			break;
   		}
   		//nastaveno na druhý pohon
-  		case 2:
-  		{
-  			if(e_pom->pohon!=NULL)E->WT=m.cekani_na_palec(0,e_pom->pohon->roztec,e_pom->pohon->aRD,3);
+			case 2:
+			{      
+				if(e_pom->pohon!=NULL)E->WT=m.cekani_na_palec(0,e_pom->pohon->roztec,e_pom->pohon->aRD,3);
   			break;
-  		}
-		}
+			}
+		}   
 	}
 
 	//ukazatelové záležitosti
