@@ -4717,7 +4717,7 @@ void TForm1::getJobID(int X, int Y)
   FormX->vykresli_vetev=0;
 	pom_element=NULL;
 	pom_komora=NULL;
-	pom_bod=NULL;   
+	pom_bod=NULL;
 	d.zprava_highlight=0;
 	if(Akce!=MAGNETICKE_LASO)
 	{
@@ -4776,7 +4776,7 @@ void TForm1::getJobID(int X, int Y)
               }
 						}
 						if(pom_element->eID==301 && (JID>=2001 && JID<=2002 || JID>=3001 && JID<=3002))
-						{							
+						{
 							if(JID>3000)FormX->vykresli_vetev=2;
 							else FormX->vykresli_vetev=1;
 						}
@@ -4941,6 +4941,33 @@ void TForm1::getJobID(int X, int Y)
 			//6; výhybka nebo spojnice mezi výhybkou a spojoku
 			d.zprava_highlight=d.v.PtInZpravy();
 			if(d.zprava_highlight>0)JID=-102;//hledání citelné oblasti zprávy
+      //hledání citelných oblastí elementů pro otevírání náhledu (element mimo kabinu),!!!!!!!!!!!!!!!!!!!!!!způsobí zamrzání (nově předěláno - sledovat)!!!!!!!!!!!!!!!!!!!
+	  	if(JID==-1)
+	  	{
+	  		pom_element=NULL;
+	  		Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+	  		Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
+	  		while(E!=NULL)
+	  		{
+	  			if(d.v.oblast_elementu(E,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+	  			{
+	  				if(E->eID==300 || E->eID==301)JID=6;
+	  				else JID=5;
+	  				pom_element=E;
+	  				break;//pokud chci první nalezený element ... break, pokud chci poslední nalezeny bez breaku (např. problém překrývání 2 citelných oblastí)
+	  			}
+	  			//hledání zda nejsem na vedlejší větvi výhybky
+	  			if(E->eID==300 && E->dalsi2==E->predchozi2 && m.LeziVblizkostiUsecky(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,E->geo.X4,E->geo.Y4,E->predchozi2->geo.X4,E->predchozi2->geo.Y4)<=0.5)
+	  			{
+	  				JID=6;
+	  				pom_element=E;
+	  				break;
+	  			}
+	  			E=d.v.dalsi_krok(VYHYBKY,E);
+	  		}
+	  		E=NULL;delete E;
+	  		d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
+			}
 			if(JID==-1 && d.v.OBJEKTY->dalsi!=NULL)//hledání nadpisu objektu
 			{
   			Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
@@ -4984,33 +5011,6 @@ void TForm1::getJobID(int X, int Y)
 		{
 			d.zprava_highlight=d.v.PtInZpravy();
 			if(d.zprava_highlight>0)JID=-102;
-		}
-    //hledání citelných oblastí elementů pro otevírání náhledu (element mimo kabinu),!!!!!!!!!!!!!!!!!!!!!!způsobí zamrzání (nově předěláno - sledovat)!!!!!!!!!!!!!!!!!!!
-		if(JID==-1)
-		{
-			pom_element=NULL;
-			Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-			Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
-			while(E!=NULL)
-			{
-				if(d.v.oblast_elementu(E,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
-				{
-					if(E->eID==300 || E->eID==301)JID=6;
-					else JID=5;
-					pom_element=E;
-					break;//pokud chci první nalezený element ... break, pokud chci poslední nalezeny bez breaku (např. problém překrývání 2 citelných oblastí)
-				}
-				//hledání zda nejsem na vedlejší větvi výhybky
-				if(E->eID==300 && E->dalsi2==E->predchozi2 && m.LeziVblizkostiUsecky(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,E->geo.X4,E->geo.Y4,E->predchozi2->geo.X4,E->predchozi2->geo.Y4)<=0.5)
-				{
-					JID=6;
-					pom_element=E;
-					break;
-				}
-				E=d.v.dalsi_krok(VYHYBKY,E);
-			}
-			E=NULL;delete E;
-			d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
 		}
 	}
 
@@ -16214,29 +16214,31 @@ void __fastcall TForm1::ButtonRostaClick(TObject *Sender)
 //	TDateTime TIME=IdSNTP1->DateTime;
 //	Sk(TIME);
 
-    pom_element=NULL;
-		Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-		Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
-		while(E!=NULL)
-		{
-			if(d.v.oblast_elementu(E,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
-			{
-				double delka=E->geo.delka;
-				double HeightDeep=5;
-				double delkaSklon=m.delkaSklon(delka,HeightDeep);
-				E->geo.delkaPud=delka;
-				E->geo.delka=delkaSklon;
-				E->geo.HeightDepp=HeightDeep;
-				duvod_validovat=2;
-				vytvor_statickou_scenu();
-				REFRESH();
-				ShowMessage("Nastaveno HeightDeep "+String(HeightDeep*1000)+" mm pro element "+E->name);
-				break;
-			}
-			E=d.v.dalsi_krok(VYHYBKY,E,NULL);
-		}
-		d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
-		E=NULL;delete E;
+//    pom_element=NULL;
+//		Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+//		Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
+//		while(E!=NULL)
+//		{
+//			if(d.v.oblast_elementu(E,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+//			{
+//				double delka=E->geo.delka;
+//				double HeightDeep=5;
+//				double delkaSklon=m.delkaSklon(delka,HeightDeep);
+//				E->geo.delkaPud=delka;
+//				E->geo.delka=delkaSklon;
+//				E->geo.HeightDepp=HeightDeep;
+//				duvod_validovat=2;
+//				vytvor_statickou_scenu();
+//				REFRESH();
+//				ShowMessage("Nastaveno HeightDeep "+String(HeightDeep*1000)+" mm pro element "+E->name);
+//				break;
+//			}
+//			E=d.v.dalsi_krok(VYHYBKY,E,NULL);
+//		}
+//		d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
+//		E=NULL;delete E;
+
+  Form2->ShowModal();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
