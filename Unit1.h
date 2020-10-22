@@ -622,7 +622,7 @@ private:
 	void vytvor_seznam_pouzivanych_pohonu();//vytvoøí seznam, kam se zapíší pohony, které jsou používány jinde
 	void smaz_seznam_pouzivanych_pohonu();//smaže seznam používaných pohonù
 	void byly_pohony_editovany();//provede kontrolu jaké pohony byly editovány
-  void nastav_combo_mGridu(TscGPComboBox *C);//nastaví barvy a chování pro combo
+	void nastav_combo_mGridu(TscGPComboBox *C);//nastaví barvy a chování pro combo
 
 	////promìnné
 	UINT TimerSimulaceID;
@@ -768,6 +768,8 @@ public:		// User declarations
 	bool CASOVEOSY;
 	TPointD pocatek_mereni;//ukládá .x - X souøadnici zaèátku mìøení a .y - Vozík -> n
 	TPointD konec_mereni;//ukládá .x - X souøadnici zaèátku mìøení a .y - Vozík -> n
+	String data_teplomeru;//slouží k uchování dat do buòìk, vyplnìní dat až na konci
+  unsigned int radku_teplomeru;//uchovává v sobì poèet øádkù teplomìru
 
 	//metody
 	void kurzor(TKurzory typ_kurzor);
@@ -843,7 +845,7 @@ public:		// User declarations
 	void rotuj_objekt_click(double rotace);//zajistí rotaci objektu
 	void pan_create2();//vytvoøí výøez pro pan_move - velký
 	void vytvor_aktualizuj_tab_teplomeru();//vytvoøí nebo aktualizuje mGrid teplomerù pro OBJEKT_akt
-  void pridej_radek_tab_teplomeru(Cvektory::TElement *E,double cas,double WT,bool prejezd,bool celkem=false);
+  String pridej_radek_tab_teplomeru(Cvektory::TElement *E,double cas,double WT,bool prejezd,bool celkem=false);
 	void START();//zapne stopky
 	void STOP(bool MB=false);//vypne stopky, pokud je parementr metody nastaven na false (což je implicitnì), je zajištìn výpis do mema, pokud na true tak do ShowMessage
 	void GetTime(short int rezim);
