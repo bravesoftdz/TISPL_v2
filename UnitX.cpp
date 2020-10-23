@@ -689,9 +689,8 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 						TscGPComboBox *C=E->mGrid->getCombo(Col,Row);
 						if(C!=NULL)
 						{
-              if(C->ItemIndex==0)E->WT_index=0;
-							if(prvni==Col && C->ItemIndex==1)E->WT_index=1;
-							if(druhy==Col && C->ItemIndex==1)E->WT_index=2;
+							if(prvni==Col && C->ItemIndex==0)E->WT_index=2;
+							if(druhy==Col && C->ItemIndex==0)E->WT_index=1;
 						}
             C=NULL;delete C;
             F->zmena_editovanych_bunek(E);
@@ -712,8 +711,8 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 						if(C!=NULL)
 						{
               if(C->ItemIndex==0)E->WT_index=0;
-							if(Col==1 && C->ItemIndex==1)E->WT_index=1;
-							if(Col==2 && C->ItemIndex==1)E->WT_index=2;
+							if(Col==1 && C->ItemIndex==0)E->WT_index=2;
+							if(Col==2 && C->ItemIndex==0)E->WT_index=1;
 						}
             C=NULL;delete C;
 						F->zmena_editovanych_bunek(E);

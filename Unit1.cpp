@@ -2068,6 +2068,7 @@ void __fastcall TForm1::FormResize(TObject *Sender)
 	scGPLabel_prepinacKot->Top=(scGPPanel_bottomtoolbar->Height-scGPLabel_prepinacKot->Height)/2;
 	offset_scGPButton_bug_report=20;//10;//používá se na více místech
 	scGPButton_bug_report->Top=ClientHeight-scGPPanel_statusbar->Height-scGPButton_bug_report->Height-offset_scGPButton_bug_report;
+	if(OBJEKT_akt!=NULL)scGPButton_bug_report->Top-=scGPPanel_bottomtoolbar->Height;
 	scGPButton_bug_report->Left=ClientWidth-scGPButton_bug_report->Width-offset_scGPButton_bug_report;
 	scGPImage_mereni_vzdalenost->Top=(scGPPanel_bottomtoolbar->Height-scGPImage_mereni_vzdalenost->Height)/2;
 	scGPImage_zamek_posunu->Top=(scGPPanel_bottomtoolbar->Height-scGPImage_zamek_posunu->Height)/2;
@@ -2398,6 +2399,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			bmp_total->Canvas->Draw(0,0,Staticka_scena);//varianta, kdy je už přeantialiasingovaná
 			if(pom!=NULL)d.vykresli_objekt(bmp_total->Canvas,pom);//případne, že je v totálně statické označen (vybrán) nějaká objekt resp. hrana tohoto objektu, ale je zde bez AA
 			if(OBJEKT_akt!=NULL && editace_textu && pom_element_temp!=NULL && index_kurzoru==-11)d.vykresli_kotu(bmp_total->Canvas,pom_element_temp);//pokud je editavaná hodnota na kótě elementu, vykreslení pouze kóty, ale je zde bez AA
+			if(OBJEKT_akt!=NULL && Akce!=GEOMETRIE)d.vykresli_oblast_teplomery(bmp_total->Canvas,2,OBJEKT_akt);//vykreslení teploměrů
 		}
 		else
 		{
@@ -6931,12 +6933,6 @@ void TForm1::add_element (int X, int Y)
 	  		//automatické výchozí umístění mGridové tabulky dle rotace elementu a nadesignováné tabulky (jejích rozměrů) - proto musí být až za nastevením designu
 	  		aut_pozicovani(E,X,Y);//automatické pozicování pro nový DM při vkládání PM
 			}
-//			if(E!=NULL && E->eID==200 && E->mGrid!=NULL)//zarovnání tabulky PM
-//			{
-//				//souřadnice tabulky
-//				if(E->orientace==0 || E->orientace==180){E->Xt=E->X-1.9;E->Yt=E->Y+1.6;}
-//				else{E->Xt=E->X+0.6;E->Yt=E->Y+0.5;}
-//	  	}
       //kontrolazda nejsou tabulky přes sebe + řešení
 			mGrid_on_mGrid();
 			OBJEKT_akt->pohon=E->pohon;//aktualizace aktuálně editovaného pohonu
@@ -9926,6 +9922,12 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 		C1=E->mGrid->getCombo(3,11);C2=E->mGrid->getCombo(4,11);
 		if(C1!=NULL && C2!=NULL)
 		{
+			//kontrola zda je zvoleno správně a pokud nedošlo ke změně pohonů
+			Cvektory::TElement *e_pom=E->dalsi;
+			if(E->eID==200 && E->dalsi==NULL)e_pom=d.v.ELEMENTY->dalsi;
+			if(E->eID==300)e_pom=E->dalsi2;
+			if(E->WT_index==1 && e_pom!=NULL && E->pohon!=e_pom->pohon){E->WT_index=2;vypocet_WT(E);}
+			e_pom=NULL;delete e_pom;
 			//prohození, je-li potřeba
 			if(prohodit_sloupce_PM(E))
 			{
@@ -9962,17 +9964,15 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 	if(E->eID==301)
 	{
 		E->mGrid->Update();//musí být přítomen před zakazováním komponent, před Update tabulka ještě neexistuje
-		TscGPComboBox *C1=E->mGrid->getCombo(1,3),*C2=E->mGrid->getCombo(2,3),*C_pom=NULL;
+		TscGPComboBox *C1=E->mGrid->getCombo(1,3),*C2=E->mGrid->getCombo(2,3);
 		if(C1!=NULL && C2!=NULL)
 		{
-			//prohození, je-li potřeba
-			if(prohodit_sloupce_PM(E))
-			{
-				//prohhození comb
-				C_pom=C1;
-				C1=C2;
-				C2=C_pom;
-			}
+      //kontrola zda je zvoleno správně a pokud nedošlo ke změně pohonů
+			Cvektory::TElement *e_pom=E->dalsi;
+			if(E->eID==200 && E->dalsi==NULL)e_pom=d.v.ELEMENTY->dalsi;
+			if(E->eID==300)e_pom=E->dalsi2;
+			if(E->WT_index==1 && e_pom!=NULL && E->pohon!=e_pom->pohon){E->WT_index=2;vypocet_WT(E);}
+			e_pom=NULL;delete e_pom;
 			C1->Clear();C2->Clear();
 			//nastavení default barev comba
 			nastav_combo_mGridu(C1);nastav_combo_mGridu(C2);
@@ -9990,8 +9990,8 @@ void TForm1::napln_comba_mGridu(Cvektory::TElement *E)
 			//kontrola zda můžu editovat pohon
 			zmena_editovanych_bunek(E);//automaticky nastaví editované položky a needitovatelné položky pro pohonové tabulky
 		}
-		C1=NULL;C2=NULL;C_pom=NULL;
-		delete C1;delete C2;delete C_pom;
+		C1=NULL;C2=NULL;
+		delete C1;delete C2;
 	}
 }
 //---------------------------------------------------------------------------
@@ -15186,7 +15186,14 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	vytvor_statickou_scenu();
 //	REFRESH();
 //  e_posledni=NULL;delete e_posledni;
-	Memo("");
+//	Memo("");
+	Cvektory::TElement *E=OBJEKT_akt->element;
+	while(E!=NULL && E->objekt_n==OBJEKT_akt->n)
+	{
+		Memo(E->name+"->WT_index: "+String(E->WT_index));
+		E=E->dalsi;
+	}
+  E=NULL;delete E;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

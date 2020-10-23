@@ -5967,7 +5967,6 @@ void Cvykresli::vykresli_tip(TCanvas *canv)
 	int offx=5,offy=25;
 	if(F->scSplitView_OPTIONS->Opened)offx+=F->scSplitView_OPTIONS->Width-F->scSplitView_LEFTTOOLBAR->Width;
 	if(F->scSplitView_MENU->Opened)offx+=F->scSplitView_MENU->Width-F->scSplitView_LEFTTOOLBAR->Width;
-	if(F->zobrazit_meritko)offy+=22;
 	canv->Font->Color=m.clIntensive(clRed,110);
 	//SetBkMode(canv->Handle,TRANSPARENT);//nastvení netransparentního pozadí
 	canv->Font->Size=14;
