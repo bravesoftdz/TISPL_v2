@@ -2955,7 +2955,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			if(pusun_dalsich_elementu && posun_povolit)
 			{
 				TElement *E=Element->dalsi;
-				while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
+				while(E!=NULL && E->dalsi!=NULL && E->dalsi->objekt_n==F->OBJEKT_akt->n)
 				{
 					puv_souradnice.x=E->X;puv_souradnice.y=E->Y;
 					if(E->geo.typ!=0 || (E->dalsi!=NULL && E->dalsi->geo.typ!=0) || E->geo.delka==0 || (E->dalsi!=NULL && E->dalsi->geo.delka==0))break;//ukončení v případě, že se někde nachází jiná geometrie než linie
@@ -3288,7 +3288,8 @@ void Cvektory::reserve_time(TElement *Element,TCesta *Cesta,bool highlight_bunek
 		if(Element->eID==0/* && Element->data.pocet_voziku>0*/ && cas+Element->WT<PP.TT)WT*=Element->data.pocet_voziku;
 		double RD=0;if(Element->pohon!=NULL)RD=Element->pohon->aRD;
 		RT=m.RT(Element->data.PT1+Element->data.PT2+Element->PTotoc/*+Element->data.WTstop*/,cas,WT,Element->data.pocet_voziku,RD,WTin);
-		Element->data.RT=RT;//ryzí RT
+		if((RT>0 && RT<0.0000000000004) || (RT<0 && RT>-0.0000000000004))RT=0;//ošetření např. proti hodnotě RT=-1,77635683940025E-13;
+		Element->data.RT=RT;
 
 		//vypsání RT do tabulky elementu
 		if(F->OBJEKT_akt!=NULL && Element->objekt_n==F->OBJEKT_akt->n)

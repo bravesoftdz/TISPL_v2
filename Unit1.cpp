@@ -876,7 +876,7 @@ void TForm1::DesignSettings()
 			case 6:text="Nová zakázka s hlavní cestou";break;
 			case 7:text="Nová zakázka s cestou poslední zakázky";break;
 			case 8:text="nový pohon";break;
-      case 9:text="Výhybka";break;
+			case 9:text="Výhybka";break;
 			case 10:text="Spojka";break;
 			case 11:text="V";break;
 			case 12:text="S";break;
@@ -3016,11 +3016,11 @@ void __fastcall TForm1::FormMouseWheelUp(TObject *Sender, TShiftState Shift, TPo
 	{
 			switch(funkcni_klavesa)//Velice nutná konstrukce kvůli špatně fungujicí funkci OnMouseWheel, detekuje stisk kláves ctrl, shift, ctrl+shift
 			{
-				case 0://kolečko nahoru = směr nahoru
-				{
-					DOWN();
-				}
-				break;
+//				case 0://kolečko nahoru = směr nahoru
+//				{
+//					DOWN();
+//				}
+//				break;
 
 				case 1://kolečko nahoru + CTRL = ZOOM IN
 				if(Shift.Contains(ssCtrl))//nutná pojistka
@@ -3029,12 +3029,12 @@ void __fastcall TForm1::FormMouseWheelUp(TObject *Sender, TShiftState Shift, TPo
 				}
 				break;
 
-				case 2://kolečko nahoru + SHIFT = doleva
-				if(Shift.Contains(ssShift))//nutná pojistka
-				{
-					LEFT();
-				}
-				break;
+//				case 2://kolečko nahoru + SHIFT = doleva
+//				if(Shift.Contains(ssShift))//nutná pojistka
+//				{
+//					LEFT();
+//				}
+//				break;
 
 				case 3:break;
 				default:break;
@@ -3053,11 +3053,11 @@ void __fastcall TForm1::FormMouseWheelDown(TObject *Sender, TShiftState Shift, T
 	{
 		switch(funkcni_klavesa)//Velice nutná konstrukce kvůli špatně fungujicí funkci OnMouseWheel, detekuje stisk kláves ctrl, shift, ctrl+shift
 		{
-			case 0://kolečko dolu = směr dolu
-			{
-				UP();
-			}
-			break;
+//			case 0://kolečko dolu = směr dolu
+//			{
+//				UP();
+//			}
+//			break;
 
 			case 1://kolečko dolu + CTRL = ZOOM OUT      //jenom pokud je dokončeno stahování
 			if(Shift.Contains(ssCtrl))//nutná pojistka
@@ -3066,12 +3066,12 @@ void __fastcall TForm1::FormMouseWheelDown(TObject *Sender, TShiftState Shift, T
 			}
 			break;
 
-			case 2://kolečko dolu + SHIFT = doprava
-			if(Shift.Contains(ssShift))//nutná pojistka
-			{
-				RIGHT();
-			}
-			break;
+//			case 2://kolečko dolu + SHIFT = doprava
+//			if(Shift.Contains(ssShift))//nutná pojistka
+//			{
+//				RIGHT();
+//			}
+//			break;
 
 			case 3:break;
 			default:break;
@@ -9024,6 +9024,8 @@ void TForm1::vytvoreni_tab_knihovna()
 	mGrid_knihovna->Cells[1][12].Type=mGrid_knihovna->IMAGE;
 	mGrid_knihovna->Cells[1][12].ImageIndex=13;//vyhybka
 	mGrid_knihovna->Cells[1][12].Align=mGrid_knihovna->LEFT;
+	mGrid_knihovna->Cells[1][12].Hint=ls->Strings[9]+"/ "+ls->Strings[10];//"Výhybka / Spojka"
+	mGrid_knihovna->Cells[1][12].ShowHint=true;
 	/////////centrování komponent
 	mGrid_knihovna->Update();
 	TscGPImage *I=NULL;
@@ -15188,11 +15190,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //  e_posledni=NULL;delete e_posledni;
 //	Memo("");
 	Cvektory::TElement *E=OBJEKT_akt->element;
-	while(E!=NULL && E->objekt_n==OBJEKT_akt->n)
-	{
-		Memo(E->name+"->WT_index: "+String(E->WT_index));
-		E=E->dalsi;
-	}
+	Memo(E->data.RT);
   E=NULL;delete E;
 }
 //---------------------------------------------------------------------------
@@ -15400,16 +15398,16 @@ void __fastcall TForm1::SQL_processIDClick(TObject *Sender)
 
 void __fastcall TForm1::MaxButtonClick(TObject *Sender)
 {
-  log(__func__);//logování
+	log(__func__);//logování
 	if (FMaximized)//zmenšení
 	{
 		//BoundsRect =  FOldBoundsRect;
 		FMaximized = false;
 		scLabel_titulek->DragForm = true;
 		MaxButton->GlyphOptions->Kind = scgpbgkMaximize;
-		if(OBJEKT_akt==NULL){scGPButton_prichytavat->Visible=false;scButton_zamek_layoutu->Visible=false;scGPButton_zmerit_vzdalenost->Visible=false;}
+		if(OBJEKT_akt==NULL){if(!d.v.PP.zamek_layoutu)scGPButton_prichytavat->Visible=false;scButton_zamek_layoutu->Visible=false;scGPButton_zmerit_vzdalenost->Visible=false;scButton_zamek_layoutu->Align=TAlign::alNone;scGPButton_zmerit_vzdalenost->Align=TAlign::alNone;if(!d.v.PP.zamek_layoutu)scGPButton_prichytavat->Align=TAlign::alNone;}
 		scGPSizeBox->Visible = true;
-		if(OBJEKT_akt==NULL){scGPButton_prichytavat->Visible=true;scButton_zamek_layoutu->Visible=true; scGPButton_zmerit_vzdalenost->Visible=true;}
+		if(OBJEKT_akt==NULL){scButton_zamek_layoutu->Visible=true;scGPButton_zmerit_vzdalenost->Visible=true;if(!d.v.PP.zamek_layoutu)scGPButton_prichytavat->Visible=true;scButton_zamek_layoutu->Align=TAlign::alRight;scGPButton_zmerit_vzdalenost->Align=TAlign::alRight;if(!d.v.PP.zamek_layoutu)scGPButton_prichytavat->Align=TAlign::alRight;}
 		Form1->Width=Screen->Width/3*2;//zmenší formulář na 2/3 jeho velikosti
 		Form1->Height=Screen->Height/3*2;//zmenší formulář na 2/3 jeho velikosti
 		scSplitView_OPTIONS->Opened=false;
@@ -15426,6 +15424,12 @@ void __fastcall TForm1::MaxButtonClick(TObject *Sender)
 		scSplitView_OPTIONS->Opened=false;
 		scSplitView_MENU->Opened=false;
 	}
+  //přizpůsobení velikosti statusbaru a rozdělení sekcí
+	int width=scButton_zamek_layoutu->Width+scGPButton_zmerit_vzdalenost->Width+scLabel_statusbar_2->Left+scLabel_statusbar_2->Width;
+	if(!d.v.PP.zamek_layoutu)width+=scGPButton_prichytavat->Width;
+	if(scGPSizeBox->Visible)width+=scGPSizeBox->Width;
+	width=scGPPanel_statusbar->Width-width-1;
+	if(width!=0){scLabel_statusbar_2->Width+=width;Image_rozdelovac_3->Left+=width;}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPGlyphButton_OPTIONS_OldClick(TObject *Sender)
@@ -16416,7 +16420,7 @@ void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
 {
 	log(__func__);//logování
 	scSplitView_MENU->Opened=false;
-	if(d.v.PP.raster.filename=="" || (d.v.PP.raster.filename!="" && MB(ls->Strings[496],MB_YESNO)==mrYes))//"Podklad již existuje, přejete si načíst nový?"
+	if(d.v.PP.raster.filename=="" || (d.v.PP.raster.filename!="" && FileExists(d.v.PP.raster.filename) && MB(ls->Strings[496],MB_YESNO)==mrYes))//"Podklad již existuje, přejete si načíst nový?"
 	{
   	OpenDialog1->Title="Načíst podklad";
 		OpenDialog1->DefaultExt="*.bmp";
